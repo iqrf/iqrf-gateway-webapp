@@ -36,45 +36,39 @@ use Nette\IOException;
 
 /**
  * APT configuration controller
- * @Path("/apt")
- * @Tag("APT configuration")
  */
+#[Path('/apt')]
+#[Tag('APT configuration')]
 class AptController extends BaseConfigController {
-
-	/**
-	 * @var AptManager APT manager
-	 */
-	private AptManager $manager;
 
 	/**
 	 * Constructor
 	 * @param AptManager $manager APT manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(AptManager $manager, RestApiSchemaValidator $validator) {
-		$this->manager = $manager;
+	public function __construct(
+		private readonly AptManager $manager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Retrieves APT configuration
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/AptConfiguration'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('GET')]
+	#[OpenApi('
+		summary: Retrieves APT configuration
+		responses:
+			\'200\':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/AptConfiguration\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	')]
 	public function read(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
 			return $response->writeJsonBody($this->manager->read());
@@ -83,29 +77,26 @@ class AptController extends BaseConfigController {
 		}
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("PUT")
-	 * @OpenApi("
-	 *  summary: Updates APT configuration
-	 *  requestBody:
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/AptConfiguration'
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('PUT')]
+	#[OpenApi('
+		summary: Updates APT configuration
+		requestBody:
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: \'#/components/schemas/AptConfiguration\'
+		responses:
+			\'200\':
+				description: Success
+			\'400\':
+				$ref: \'#/components/responses/BadRequest\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	')]
 	public function changeEnableUnattendedUpgrades(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validator->validateRequest('aptConfiguration', $request);
 		try {

@@ -24,7 +24,6 @@ use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\RequestParameter;
-use Apitte\Core\Annotation\Controller\RequestParameters;
 use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
@@ -37,76 +36,63 @@ use Nette\IOException;
 
 /**
  * Optional feature manager controller
- * @Path("/features")
- * @Tag("Optional feature manager")
  */
+#[Path('/features')]
+#[Tag('Optional feature manager')]
 class FeatureController extends BaseController {
-
-	/**
-	 * @var FeatureManager Optional feature manager
-	 */
-	private FeatureManager $manager;
 
 	/**
 	 * Constructor
 	 * @param FeatureManager $manager Optional feature manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(FeatureManager $manager, RestApiSchemaValidator $validator) {
-		$this->manager = $manager;
+	public function __construct(
+		private readonly FeatureManager $manager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Returns optional features configuration
-	 *  security:
-	 *      - []
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/FeatureList'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('GET')]
+	#[OpenApi('
+		summary: Returns optional features configuration
+		security:
+			- []
+		responses:
+			\'200\':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/FeatureList\'
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	')]
 	public function getAll(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$config = $this->manager->read();
 		return $response->writeJsonBody($config);
 	}
 
-	/**
-	 * @Path("/{feature}")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Returns optional feature configuration
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/Feature'
-	 *      '404':
-	 *          description: Feature not found
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @RequestParameters({
-	 *      @RequestParameter(name="feature", type="string", description="Feature name")
-	 * })
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/{feature}')]
+	#[Method('GET')]
+	#[OpenApi('
+		summary: Returns optional feature configuration
+		responses:
+			\'200\':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/Feature\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'404\':
+				description: Feature not found
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	')]
+	#[RequestParameter(name: 'feature', type: 'string', description: 'Feature name')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$name = urldecode($request->getParameter('feature'));
 		try {
@@ -116,34 +102,29 @@ class FeatureController extends BaseController {
 		}
 	}
 
-	/**
-	 * @Path("/{feature}")
-	 * @Method("PUT")
-	 * @OpenApi("
-	 *  summary: Edits optional feature configuration
-	 *  requestBody:
-	 *     required: true
-	 *     content:
-	 *      application/json:
-	 *          schema:
-	 *              $ref: '#/components/schemas/Feature'
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '404':
-	 *          description: Feature not found
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @RequestParameters({
-	 *      @RequestParameter(name="feature", type="string", description="Feature name")
-	 * })
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/{feature}')]
+	#[Method('PUT')]
+	#[OpenApi('
+		summary: Edits optional feature configuration
+		requestBody:
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: \'#/components/schemas/Feature\'
+		responses:
+			\'200\':
+				description: Success
+			\'400\':
+				$ref: \'#/components/responses/BadRequest\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'404\':
+				description: Feature not found
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	')]
+	#[RequestParameter(name: 'feature', type: 'string', description: 'Feature name')]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$name = urldecode($request->getParameter('feature'));
 		if (!$this->manager->existsDefault($name)) {

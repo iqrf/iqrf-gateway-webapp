@@ -35,35 +35,10 @@ use Doctrine\Migrations\DependencyFactory as MigrationsDependencyFactory;
 
 /**
  * Installation controller
- * @Path("/installation")
- * @Tag("Installation manager")
  */
+#[Path('/installation')]
+#[Tag('Installation manager')]
 class InstallationController extends BaseController {
-
-	/**
-	 * @var DependencyManager Dependency manager
-	 */
-	private DependencyManager $dependencyManager;
-
-	/**
-	 * @var EntityManager Entity manager
-	 */
-	private EntityManager $entityManager;
-
-	/**
-	 * @var MigrationsDependencyFactory Doctrine migrations dependency factory
-	 */
-	private MigrationsDependencyFactory $migrationsDependencyFactory;
-
-	/**
-	 * @var PhpModuleManager PHP module manager
-	 */
-	private PhpModuleManager $phpModuleManager;
-
-	/**
-	 * @var SudoManager Sudo manager
-	 */
-	private SudoManager $sudoManager;
 
 	/**
 	 * Constructor
@@ -74,32 +49,29 @@ class InstallationController extends BaseController {
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 * @param SudoManager $sudoManager Sudo manager
 	 */
-	public function __construct(DependencyManager $dependencyManager, EntityManager $entityManager, MigrationsDependencyFactory $migrationsDependencyFactory, PhpModuleManager $phpModuleManager, RestApiSchemaValidator $validator, SudoManager $sudoManager) {
-		$this->dependencyManager = $dependencyManager;
-		$this->entityManager = $entityManager;
-		$this->migrationsDependencyFactory = $migrationsDependencyFactory;
-		$this->phpModuleManager = $phpModuleManager;
-		$this->sudoManager = $sudoManager;
+	public function __construct(
+		private readonly DependencyManager $dependencyManager,
+		private readonly EntityManager $entityManager,
+		private readonly MigrationsDependencyFactory $migrationsDependencyFactory,
+		private readonly PhpModuleManager $phpModuleManager,
+		RestApiSchemaValidator $validator,
+		private readonly SudoManager $sudoManager,
+	) {
 		parent::__construct($validator);
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Checks the installation
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/InstallationCheck'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('GET')]
+	#[OpenApi('
+		summary: Checks the installation
+		responses:
+			\'200\':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/InstallationCheck\'
+	')]
 	public function check(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$status = [];
 		$status['allMigrationsExecuted'] = $this->migrationsDependencyFactory->getMigrationStatusCalculator()->getNewMigrations()->count() === 0;

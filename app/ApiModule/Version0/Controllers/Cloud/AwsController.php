@@ -40,8 +40,8 @@ use RuntimeException;
 
 /**
  * Amazon AWS IoT connection controller
- * @Path("/aws")
  */
+#[Path('/aws')]
 class AwsController extends CloudsController {
 
 	/**
@@ -54,45 +54,39 @@ class AwsController extends CloudsController {
 		parent::__construct($validator);
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Creates a new MQTT connection into Amazon AWS IoT
-	 *  requestBody:
-	 *      description: Amazon AWS IoT connection configuration
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/CloudAws'
-	 *          multipart/form-data:
-	 *              schema:
-	 *                  type: object
-	 *                  properties:
-	 *                      endpoint:
-	 *                          type: string
-	 *                      certificate:
-	 *                          type: string
-	 *                          format: binary
-	 *                      privateKey:
-	 *                          type: string
-	 *                          format: binary
-	 *
-	 *  responses:
-	 *      '201':
-	 *          description: Created
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('POST')]
+	#[OpenApi('
+		summary: Creates a new MQTT connection into Amazon AWS IoT
+		requestBody:
+			description: Amazon AWS IoT connection configuration
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: \'#/components/schemas/CloudAws\'
+				multipart/form-data:
+					schema:
+						type: object
+						properties:
+							endpoint:
+								type: string
+							certificate:
+								type: string
+								format: binary
+							privateKey:
+								type: string
+								format: binary
+		responses:
+			\'201\':
+				description: Created
+			\'400\':
+				$ref: \'#/components/responses/BadRequest\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	')]
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['clouds']);
 		try {

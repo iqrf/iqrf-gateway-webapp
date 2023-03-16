@@ -34,9 +34,9 @@ use Nette\IOException;
 
 /**
  * Cloud manager controller
- * @Path("/clouds")
- * @Tag("Clouds manager")
  */
+#[Path('/clouds')]
+#[Tag('Cloud manager')]
 abstract class CloudsController extends BaseController {
 
 	/**

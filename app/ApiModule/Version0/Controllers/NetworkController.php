@@ -25,9 +25,9 @@ use Apitte\Core\Annotation\Controller\Tag;
 
 /**
  * Network manager
- * @Path("/network")
- * @Tag("Network network")
  */
+#[Path('/network')]
+#[Tag('IP network manager')]
 abstract class NetworkController extends BaseController {
 
 }

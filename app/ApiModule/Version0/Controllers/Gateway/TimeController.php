@@ -35,44 +35,38 @@ use App\GatewayModule\Models\TimeManager;
 
 /**
  * Time controller
- * @Path("/time")
  */
+#[Path('/time')]
 class TimeController extends GatewayController {
-
-	/**
-	 * @var TimeManager Time manager
-	 */
-	private TimeManager $manager;
 
 	/**
 	 * Constructor
 	 * @param TimeManager $manager Time manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(TimeManager $manager, RestApiSchemaValidator $validator) {
-		$this->manager = $manager;
+	public function __construct(
+		private readonly TimeManager $manager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: 'Returns current gateway date, time, timezone and ntp configuration'
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/TimeGet'
-	 *      '500':
-	 *         $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('GET')]
+	#[OpenApi('
+		summary: \'Returns current gateway date, time, timezone and NTP configuration\'
+		responses:
+			\'200\':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/TimeGet\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	')]
 	public function getTime(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
 			$time = $this->manager->getTime();
@@ -82,23 +76,20 @@ class TimeController extends GatewayController {
 		}
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: 'Sets date, time, timezone and ntp configuration'
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('POST')]
+	#[OpenApi('
+		summary: \'Sets date, time, timezone and NTP configuration\'
+		responses:
+			\'200\':
+				description: Success
+			\'400\':
+				$ref: \'#/components/responses/BadRequest\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	')]
 	public function setTime(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validator->validateRequest('timeSet', $request);
 		try {
@@ -110,23 +101,20 @@ class TimeController extends GatewayController {
 		}
 	}
 
-	/**
-	 * @Path("/timezones")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Returns available timezones
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/TimezoneList'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/timezones')]
+	#[Method('GET')]
+	#[OpenApi('
+		summary: Returns available timezones
+		responses:
+			\'200\':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/TimezoneList\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+	')]
 	public function getTimezones(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$timezones = $this->manager->availableTimezones();
 		return $response->writeJsonBody($timezones);

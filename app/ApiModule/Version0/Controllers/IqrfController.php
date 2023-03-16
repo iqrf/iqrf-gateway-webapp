@@ -25,9 +25,9 @@ use Apitte\Core\Annotation\Controller\Tag;
 
 /**
  * IQRF network manager
- * @Path("/iqrf")
- * @Tag("IQRF network")
  */
+#[Path('/iqrf')]
+#[Tag('IQRF network')]
 abstract class IqrfController extends BaseController {
 
 }

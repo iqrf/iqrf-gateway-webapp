@@ -25,7 +25,6 @@ use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\RequestParameter;
-use Apitte\Core\Annotation\Controller\RequestParameters;
 use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
@@ -42,75 +41,60 @@ use Throwable;
 
 /**
  * Log controller
- * @Path("/")
  */
+#[Path('/logs')]
 class LogController extends GatewayController {
-
-	/**
-	 * @var LogManager Log manager
-	 */
-	private LogManager $logManager;
 
 	/**
 	 * Constructor
 	 * @param LogManager $logManager Log manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(LogManager $logManager, RestApiSchemaValidator $validator) {
-		$this->logManager = $logManager;
+	public function __construct(
+		private readonly LogManager $logManager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 
-	/**
-	 * @Path("/logs")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Returns list of services with available logs
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/LogServices'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('GET')]
+	#[OpenApi('
+		summary: Returns list of services with available logs
+		responses:
+			\'200\':
+				description: \'Success\'
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/LogServices\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+	')]
 	public function logServices(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['gateway:log']);
 		return $response->writeJsonBody($this->logManager->getAvailableServices());
 	}
 
-	/**
-	 * @Path("/logs/{service}")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Returns latest log of a service
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              text/plain:
-	 *                  schema:
-	 *                      type: string
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '404':
-	 *          description: 'Service not found or log not found'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @RequestParameters({
-	 *      @RequestParameter(name="service", type="string", description="Service name")
-	 * })
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/{service}')]
+	#[Method('GET')]
+	#[OpenApi('
+		summary: Returns latest log of a service
+		responses:
+			\'200\':
+				description: \'Success\'
+				content:
+					text/plain:
+						schema:
+							type: string
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'404\':
+				description: \'Service not found or log not found\'
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	')]
+	#[RequestParameter(name: 'service', type: 'string', description: 'Service name')]
 	public function log(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['gateway:log']);
 		$service = $request->getParameter('service');
@@ -126,26 +110,21 @@ class LogController extends GatewayController {
 		}
 	}
 
-	/**
-	 * @Path("/logs/export")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *   summary: Returns archive with IQRF Gateway logs
-	 *   responses:
-	 *       '200':
-	 *           description: 'Success'
-	 *           content:
-	 *               application/zip:
-	 *                   schema:
-	 *                       type: string
-	 *                       format: binary
-	 *       '403':
-	 *           $ref: '#/components/responses/Forbidden'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/export')]
+	#[Method('GET')]
+	#[OpenApi('
+		summary: Returns archive with IQRF Gateway logs
+		responses:
+			\'200\':
+				description: \'Success\'
+				content:
+					application/zip:
+						schema:
+							type: string
+							format: binary
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+	')]
 	public function logArchive(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['gateway:log']);
 		$path = $this->logManager->createArchive();

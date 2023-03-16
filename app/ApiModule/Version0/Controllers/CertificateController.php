@@ -34,45 +34,39 @@ use App\GatewayModule\Models\CertificateManager;
 
 /**
  * TLS certificate controller
- * @Path("/certificate")
- * @Tag("Certificate manager")
  */
+#[Path('/certificate')]
+#[Tag('Certificate manager')]
 class CertificateController extends BaseController {
-
-	/**
-	 * @var CertificateManager TLS certificate manager
-	 */
-	private CertificateManager $manager;
 
 	/**
 	 * Constructor
 	 * @param CertificateManager $manager TLS certificate manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(CertificateManager $manager, RestApiSchemaValidator $validator) {
-		$this->manager = $manager;
+	public function __construct(
+		private readonly CertificateManager $manager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Returns information about TLS certificate
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/CertificateDetail'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('GET')]
+	#[OpenApi('
+		summary: Returns information about TLS certificate
+		responses:
+			\'200\':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/CertificateDetail\'
+			\'400\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
 			return $response->writeJsonBody($this->manager->getInfo());

@@ -31,44 +31,36 @@ use Iqrf\IdeMacros\MacroFileParser;
 
 /**
  * IQRF IDE Macros controller
- * @Path("/macros")
  */
+#[Path('/macros')]
 class MacrosController extends IqrfController {
-
-	/**
-	 * @var MacroFileParser IQRF IDE Macros parser
-	 */
-	private MacroFileParser $macroParser;
 
 	/**
 	 * Constructor
 	 * @param MacroFileParser $macroParser IQRF IDE Macros parser
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(MacroFileParser $macroParser, RestApiSchemaValidator $validator) {
-		$this->macroParser = $macroParser;
+	public function __construct(
+		private readonly MacroFileParser $macroParser,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Returns IQRF IDE macros
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/IqrfIdeMacros'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('GET')]
+	#[OpenApi('
+		summary: Returns IQRF IDE macros
+		responses:
+			\'200\':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/IqrfIdeMacros\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+	')]
 	public function macros(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['iqrf:macros']);
 		return $response->writeJsonBody($this->macroParser->read());

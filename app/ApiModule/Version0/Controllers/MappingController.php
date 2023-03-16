@@ -24,7 +24,6 @@ use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\RequestParameter;
-use Apitte\Core\Annotation\Controller\RequestParameters;
 use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Http\ApiRequest;
@@ -36,90 +35,77 @@ use App\Models\Database\Repositories\MappingRepository;
 
 /**
  * Mapping controller
- * @Path("/mappings")
- * @Tag("Mapping manager")
  */
+#[Path('/mappings')]
+#[Tag('Mapping manager')]
 class MappingController extends BaseController {
-
-	/**
-	 * @var EntityManager Entity manager
-	 */
-	private EntityManager $entityManager;
 
 	/**
 	 * @var MappingRepository Mapping database repository
 	 */
-	private MappingRepository $repository;
+	private readonly MappingRepository $repository;
 
 	/**
 	 * Constructor
 	 * @param EntityManager $entityManager Entity manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(EntityManager $entityManager, RestApiSchemaValidator $validator) {
-		$this->entityManager = $entityManager;
-		$this->repository = $this->entityManager->getMappingRepository();
+	public function __construct(
+		private readonly EntityManager $entityManager,
+		RestApiSchemaValidator $validator,
+	) {
+		$this->repository = $entityManager->getMappingRepository();
 		parent::__construct($validator);
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Lists all mappings
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      type: array
-	 *                      items:
-	 *                          $ref: '#/components/schemas/MappingDetail'
-	 * ")
-	 * @RequestParameters({
-	 *      @RequestParameter(name="interface", in="query", type="string", description="Interface type", required="false")
-	 * })
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('GET')]
+	#[OpenApi('
+		summary: Lists all mappings
+		responses:
+			\'200\':
+				description: Success
+				content:
+					application/json:
+						schema:
+							type: array
+							items:
+								$ref: \'#/components/schemas/MappingDetail\'
+	')]
+	#[RequestParameter(name: 'interface', type: 'string', in: 'query', required: false, description: 'Interface type')]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$criteria = !$request->hasQueryParam('interface') ? [] : ['type' => $request->getQueryParam('interface')];
 		$mappings = $this->repository->findBy($criteria);
 		return $response->writeJsonBody($mappings);
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Creates a new mapping
-	 *  requestBody:
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/Mapping'
-	 *  responses:
-	 *      '201':
-	 *          description: Created
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/MappingDetail'
-	 *          headers:
-	 *              Location:
-	 *                  description: Location of information about the created mapping
-	 *                  schema:
-	 *                      type: string
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('POST')]
+	#[OpenApi('
+		summary: Creates a new mapping
+		requestBody:
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: \'#/components/schemas/Mapping\'
+		responses:
+			\'201\':
+				description: Created
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/MappingDetail\'
+				headers:
+					Location:
+						description: Location of information about the created mapping
+						schema:
+							type: string
+			\'400\':
+				$ref: \'#/components/responses/BadRequest\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+	')]
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validator->validateRequest('mapping', $request);
 		$json = $request->getJsonBodyCopy(false);
@@ -161,28 +147,23 @@ class MappingController extends BaseController {
 			->withStatus(ApiResponse::S201_CREATED);
 	}
 
-	/**
-	 * @Path("/{id}")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Finds mapping by ID
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/MappingDetail'
-	 *      '404':
-	 *          description: Mapping not found
-	 * ")
-	 * @RequestParameters({
-	 *      @RequestParameter(name="id", type="integer", description="Mapping id")
-	 * })
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/{id}')]
+	#[Method('GET')]
+	#[OpenApi('
+		summary: Finds mapping by ID
+		responses:
+			\'200\':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/MappingDetail\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'404\':
+				description: Mapping not found
+	')]
+	#[RequestParameter(name: 'id', type: 'integer', description: 'Mapping ID')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$id = (int) $request->getParameter('id');
 		$mapping = $this->repository->find($id);
@@ -192,24 +173,17 @@ class MappingController extends BaseController {
 		return $response->writeJsonObject($mapping);
 	}
 
-	/**
-	 * @Path("/{id}")
-	 * @Method("DELETE")
-	 * @OpenApi("
-	 *  summary: Removes a mapping
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '404':
-	 *          description: Mapping not found
-	 * ")
-	 * @RequestParameters({
-	 *      @RequestParameter(name="id", type="integer", description="Mapping id")
-	 * })
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/{id}')]
+	#[Method('DELETE')]
+	#[OpenApi('
+		summary: Removes a mapping
+		responses:
+			\'200\':
+				description: Success
+			\'404\':
+				description: Mapping not found
+	')]
+	#[RequestParameter(name: 'id', type: 'integer', description: 'Mapping ID')]
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$id = (int) $request->getParameter('id');
 		$mapping = $this->repository->find($id);
@@ -221,32 +195,27 @@ class MappingController extends BaseController {
 		return $response->writeBody('Workaround');
 	}
 
-	/**
-	 * @Path("/{id}")
-	 * @Method("PUT")
-	 * @OpenApi("
-	 *  summary: Edits a mapping
-	 *  requestBody:
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/Mapping'
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '404':
-	 *          description: 'Mapping not found'
-	 * ")
-	 * @RequestParameters({
-	 *      @RequestParameter(name="id", type="integer", description="Mapping ID")
-	 * })
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/{id}')]
+	#[Method('PUT')]
+	#[OpenApi('
+		summary: Edits a mapping
+		requestBody:
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: \'#/components/schemas/Mapping\'
+		responses:
+			\'200\':
+				description: Success
+			\'400\':
+				$ref: \'#/components/responses/BadRequest\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'404\':
+				description: Mapping not found
+	')]
+	#[RequestParameter(name: 'id', type: 'integer', description: 'Mapping ID')]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$id = (int) $request->getParameter('id');
 		$mapping = $this->repository->find($id);

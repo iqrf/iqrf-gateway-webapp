@@ -42,20 +42,10 @@ use Nette\Utils\JsonException;
 
 /**
  * Mender client configuration controller
- * @Path("/")
- * @Tag("Mender")
  */
+#[Path('/')]
+#[Tag('Mender')]
 class MenderController extends BaseController {
-
-	/**
-	 * @var FeatureManager $featureManager Feature manager
-	 */
-	private FeatureManager $featureManager;
-
-	/**
-	 * @var MenderManager $manager Mender client configuration manager
-	 */
-	private MenderManager $manager;
 
 	/**
 	 * Constructor
@@ -63,33 +53,30 @@ class MenderController extends BaseController {
 	 * @param MenderManager $manager Mender client configuration manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(FeatureManager $featureManager, MenderManager $manager, RestApiSchemaValidator $validator) {
-		$this->featureManager = $featureManager;
-		$this->manager = $manager;
+	public function __construct(
+		private readonly FeatureManager $featureManager,
+		private readonly MenderManager $manager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 
-	/**
-	 * @Path("/config/mender")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Returns current configuration of Mender client
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/MenderConfig'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/config/mender')]
+	#[Method('GET')]
+	#[OpenApi('
+		summary: Returns current configuration of Mender client
+		responses:
+			\'200\':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/MenderConfig\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	')]
 	public function getConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['maintenance:mender']);
 		try {
@@ -102,31 +89,26 @@ class MenderController extends BaseController {
 		}
 	}
 
-	/**
-	 * @Path("/config/mender")
-	 * @Method("PUT")
-	 * @OpenApi("
-	 *  summary: Saves new Mender client configuration
-	 *  requestBody:
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/MenderConfig'
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/config/mender')]
+	#[Method('PUT')]
+	#[OpenApi('
+		summary: Saves new Mender client configuration
+		requestBody:
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: \'#/components/schemas/MenderConfig\'
+		responses:
+			\'200\':
+				description: Success
+			\'400\':
+				$ref: \'#/components/responses/BadRequest\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	')]
 	public function setConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['maintenance:mender']);
 		$this->validator->validateRequest('menderConfig', $request);
@@ -138,36 +120,31 @@ class MenderController extends BaseController {
 		}
 	}
 
-	/**
-	 * @Path("/config/mender/cert")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Uploads and stores a Mender server certificate
-	 *  requestBody:
-	 *      required: true
-	 *      content:
-	 *          multipart/form-data:
-	 *              schema:
-	 *                  type: object
-	 *                  properties:
-	 *                      certificate:
-	 *                          type: string
-	 *                          format: binary
-	 *
-	 *  responses:
-	 *      '201':
-	 *          description: Created
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/config/mender/cert')]
+	#[Method('POST')]
+	#[OpenApi('
+		summary: Uploads and stores a Mender server certificate
+		requestBody:
+			required: true
+			content:
+				multipart/form-data:
+					schema:
+						type: object
+						properties:
+							certificate:
+								type: string
+								format: binary
+
+		responses:
+			\'201\':
+				description: Created
+			\'400\':
+				$ref: \'#/components/responses/BadRequest\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	')]
 	public function uploadCert(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['maintenance:mender']);
 		try {
@@ -182,38 +159,32 @@ class MenderController extends BaseController {
 		}
 	}
 
-	/**
-	 * @Path("/mender/install")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Installs mender artifact
-	 *  requestBody:
-	 *      required: true
-	 *      content:
-	 *          multipart/form-data:
-	 *              schema:
-	 *                  type: object
-	 *                  properties:
-	 *                      file:
-	 *                          type: string
-	 *                          format: binary
-	 *
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '415':
-	 *          description: Unsupported media file
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/mender/install')]
+	#[Method(['POST'])]
+	#[OpenApi('
+		summary: Installs mender artifact
+		requestBody:
+			required: true
+			content:
+				multipart/form-data:
+					schema:
+						type: object
+						properties:
+							file:
+								type: string
+								format: binary
+		responses:
+			\'200\':
+				description: Success
+			\'400\':
+				$ref: \'#/components/responses/BadRequest\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'415\':
+				description: Unsupported media file
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	')]
 	public function installArtifact(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['maintenance:mender']);
 		ContentTypeUtil::validContentType($request, ['multipart/form-data']);
@@ -232,25 +203,20 @@ class MenderController extends BaseController {
 		}
 	}
 
-	/**
-	 * @Path("/mender/commit")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Commits installed mender artifact
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/mender/commit')]
+	#[Method('POST')]
+	#[OpenApi('
+		summary: Commits installed mender artifact
+		responses:
+			\'200\':
+				description: Success
+			\'400\':
+				$ref: \'#/components/responses/BadRequest\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	')]
 	public function commitUpdate(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['maintenance:mender']);
 		try {
@@ -262,25 +228,20 @@ class MenderController extends BaseController {
 		}
 	}
 
-	/**
-	 * @Path("/mender/rollback")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Rolls installed mender artifact back
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/mender/rollback')]
+	#[Method('POST')]
+	#[OpenApi('
+		summary: Rolls installed mender artifact back
+		responses:
+			\'200\':
+				description: Success
+			\'400\':
+				$ref: \'#/components/responses/BadRequest\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	')]
 	public function rollbackUpdate(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['maintenance:mender']);
 		try {
@@ -292,31 +253,26 @@ class MenderController extends BaseController {
 		}
 	}
 
-	/**
-	 * @Path("/mender/remount")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Remounts root fs
-	 *  requestBody:
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/Remount'
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/mender/remount')]
+	#[Method('POST')]
+	#[OpenApi('
+		summary: Remounts root filesystem
+		requestBody:
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: \'#/components/schemas/Remount\'
+		responses:
+			\'200\':
+				description: Success
+			\'400\':
+				$ref: \'#/components/responses/BadRequest\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	')]
 	public function remount(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['maintenance:mender']);
 		if (!$this->featureManager->isEnabled('remount')) {

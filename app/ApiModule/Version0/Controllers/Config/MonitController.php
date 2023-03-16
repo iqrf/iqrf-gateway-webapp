@@ -35,45 +35,37 @@ use Nette\IOException;
 
 /**
  * Monit controller
- * @Path("/monit")
- * @Tag("Monit configuration")
  */
+#[Path('/monit')]
+#[Tag('Monit configuration')]
 class MonitController extends BaseConfigController {
-
-	/**
-	 * @var MonitManager $manager Monit manager
-	 */
-	private MonitManager $manager;
 
 	/**
 	 * Constructor
 	 * @param MonitManager $manager Monit manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(MonitManager $manager, RestApiSchemaValidator $validator) {
-		$this->manager = $manager;
+	public function __construct(
+		private readonly MonitManager $manager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Returns current monit configuration
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/MonitConfig'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('GET')]
+	#[OpenApi('
+		summary: Returns current monit configuration
+		responses:
+			\'200\':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/MonitConfig\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+	 ')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['maintenance:monit']);
 		try {
@@ -84,31 +76,26 @@ class MonitController extends BaseConfigController {
 		}
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("PUT")
-	 * @OpenApi("
-	 *  summary: Saves updated monit configuration
-	 *  requestBody:
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/MonitConfig'
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('PUT')]
+	#[OpenApi('
+		summary: Saves updated monit configuration
+		requestBody:
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: \'#/components/schemas/MonitConfig\'
+		responses:
+			\'200\':
+				description: Success
+			\'400\':
+				$ref: \'#/components/responses/BadRequest\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	 ')]
 	public function save(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['maintenance:monit']);
 		$this->validator->validateRequest('monitConfig', $request);

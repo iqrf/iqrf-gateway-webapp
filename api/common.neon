@@ -126,8 +126,6 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/Journal.json
 		LogServices:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/logServices.json
-		MaolerConfiguration:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/mailer.json
 		MailerConfiguration:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/mailer.json
 		MainConfiguration:

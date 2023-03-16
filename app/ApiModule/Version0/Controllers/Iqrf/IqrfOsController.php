@@ -40,77 +40,64 @@ use Nette\IOException;
 
 /**
  * IQRF OS controller
- * @Path("/")
  */
+#[Path('/')]
 class IqrfOsController extends IqrfController {
-
-	/**
-	 * @var IqrfOsManager IQRF OS manager
-	 */
-	private IqrfOsManager $iqrfOsManager;
 
 	/**
 	 * Constructor
 	 * @param IqrfOsManager $iqrfOsManager IQRF OS manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(IqrfOsManager $iqrfOsManager, RestApiSchemaValidator $validator) {
-		$this->iqrfOsManager = $iqrfOsManager;
+	public function __construct(
+		private readonly IqrfOsManager $iqrfOsManager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 
-	/**
-	 * @Path("/osPatches")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Lists all IQRF OS patches
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      type: array
-	 *                      items:
-	 *                         $ref: '#/components/schemas/IqrfOsPatchDetail'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/osPatches')]
+	#[Method('GET')]
+	#[OpenApi('
+		summary: Lists all IQRF OS patches
+		responses:
+			\'200\':
+				description: Success
+				content:
+					application/json:
+						schema:
+							type: array
+							items:
+								$ref: \'#/components/schemas/IqrfOsPatchDetail\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+	')]
 	public function listOsPatches(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['iqrf:upload']);
 		$patches = $this->iqrfOsManager->listOsPatches();
 		return $response->writeJsonBody($patches);
 	}
 
-	/**
-	 * @Path("/osUpgrades")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Lists all IQRF OS upgrades
-	 *  requestBody:
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/IqrfOsPatchUpgrade'
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application:json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/IqrfOsUpgradeList'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/osUpgrades')]
+	#[Method('POST')]
+	#[OpenApi('
+		summary: Lists all IQRF OS upgrades
+		requestBody:
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: \'#/components/schemas/IqrfOsPatchUpgrade\'
+		responses:
+			\'200\':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/IqrfOsUpgradeList\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+	')]
 	public function listOsUpgrades(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['iqrf:upload']);
 		$this->validator->validateRequest('iqrfOsPatchUpgrade', $request);
@@ -119,30 +106,28 @@ class IqrfOsController extends IqrfController {
 		return $response->writeJsonBody($upgrades);
 	}
 
-	/**
-	 * @Path("/upgradeOs")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Upgrades OS and DPA
-	 *  requestBody:
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/IqrfOsDpaUpgrade'
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '404':
-	 *          description: Not found
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 */
+	#[Path('/upgradeOs')]
+	#[Method('POST')]
+	#[OpenApi('
+		summary: Upgrades OS and DPA
+		requestBody:
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: \'#/components/schemas/IqrfOsDpaUpgrade\'
+		responses:
+			\'200\':
+				description: Success
+			\'400\':
+				$ref: \'#/components/responses/BadRequest\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'404\':
+				description: Not found
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	')]
 	public function upgradeOs(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['iqrf:upload']);
 		$this->validator->validateRequest('iqrfOsDpaUpgrade', $request);

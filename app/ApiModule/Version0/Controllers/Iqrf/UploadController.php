@@ -46,8 +46,8 @@ use Nette\IOException;
 
 /**
  * Upload controller
- * @Path("/")
  */
+#[Path('/')]
 class UploadController extends IqrfController {
 
 	/**
@@ -64,41 +64,35 @@ class UploadController extends IqrfController {
 		parent::__construct($validator);
 	}
 
-	/**
-	 * @Path("/upload")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Uploads file
-	 *  requestBody:
-	 *      description: Uploads file
-	 *      required: true
-	 *      content:
-	 *          multipart/form-data:
-	 *              schema:
-	 *                  type: object
-	 *                  properties:
-	 *                      format:
-	 *                          enum: [hex, iqrf, trcnfg, '']
-	 *                          type: string
-	 *                      file:
-	 *                          type: string
-	 *
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '415':
-	 *          description: Unsupported media file
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/upload')]
+	#[Method('POST')]
+	#[OpenApi('
+		summary: Uploads file
+		requestBody:
+			description: Uploads file
+			required: true
+			content:
+				multipart/form-data:
+					schema:
+						type: object
+						properties:
+							format:
+								enum: [hex, iqrf, trcnfg, \'\']
+								type: string
+							file:
+								type: string
+		responses:
+			\'200\':
+				description: Success
+			\'400\':
+				$ref: \'#/components/responses/BadRequest\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'415\':
+				description: Unsupported media file
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	')]
 	public function upload(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['iqrf:upload']);
 		ContentTypeUtil::validContentType($request, ['multipart/form-data']);
@@ -116,42 +110,37 @@ class UploadController extends IqrfController {
 		}
 	}
 
-	/**
-	 * @Path("/dpaFile")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Retrieves DPA file
-	 *  requestBody:
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/DpaFile'
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      type: object
-	 *                      example:
-	 *                          fileName: DPA-Coordinator-SPI-7xD-V414-200403.iqrf
-	 *                      properties:
-	 *                          fileName:
-	 *                              type: string
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '404':
-	 *          description: Not found
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/dpaFile')]
+	#[Method('POST')]
+	#[OpenApi('
+		summary: Retrieves DPA file
+		requestBody:
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: \'#/components/schemas/DpaFile\'
+		responses:
+			\'200\':
+				description: Success
+				content:
+					application/json:
+						schema:
+							type: object
+							example:
+								fileName: DPA-Coordinator-SPI-7xD-V414-200403.iqrf
+							properties:
+								fileName:
+									type: string
+			\'400\':
+				$ref: \'#/components/responses/BadRequest\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'404\':
+				description: Not found
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	')]
 	public function getDpaFile(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['iqrf:upload']);
 		$this->validator->validateRequest('dpaFile', $request);
@@ -176,33 +165,28 @@ class UploadController extends IqrfController {
 		}
 	}
 
-	/**
-	 * @Path("/uploader")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Executes upload using the IQRF Gateway Uploader
-	 *  requestBody:
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/UploaderFile'
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '404':
-	 *          description: Not found
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/uploader')]
+	#[Method('POST')]
+	#[OpenApi('
+		summary: Executes upload using the IQRF Gateway Uploader
+		requestBody:
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: \'#/components/schemas/UploaderFile\'
+		responses:
+			\'200\':
+				description: Success
+			\'400\':
+				$ref: \'#/components/responses/BadRequest\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'404\':
+				description: Not found
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	')]
 	public function uploader(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['iqrf:upload']);
 		$this->validator->validateRequest('uploaderFile', $request);

@@ -34,75 +34,66 @@ use Nette\Utils\JsonException;
 
 /**
  * Version API controller
- * @Path("/version")
- * @Tag("Version")
  */
+#[Path('/version')]
+#[Tag('Version')]
 class VersionController extends BaseController {
-
-	/**
-	 * @var VersionManager Version manager
-	 */
-	private VersionManager $versionManager;
 
 	/**
 	 * Constructor
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
-	 * @param VersionManager $versionManager Version manager
+	 * @param VersionManager $manager Version manager
 	 */
-	public function __construct(RestApiSchemaValidator $validator, VersionManager $versionManager) {
+	public function __construct(
+		RestApiSchemaValidator $validator,
+		private readonly VersionManager $manager,
+	) {
 		parent::__construct($validator);
-		$this->versionManager = $versionManager;
 	}
 
-	/**
-	 * @Path("/daemon")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Returns IQRF Gateway Daemon version
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/VersionDaemon'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/daemon')]
+	#[Method('GET')]
+	#[OpenApi('
+		summary: Returns IQRF Gateway Daemon version
+		responses:
+			\'200\':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/VersionDaemon\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	')]
 	public function daemonVersion(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$version = $this->versionManager->getDaemon();
+		$version = $this->manager->getDaemon();
 		if ($version !== 'none' && $version !== 'unknown') {
 			return $response->writeJsonBody(['version' => $version]);
 		}
 		throw new ServerErrorException('IQRF Gateway Daemon not installed', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 	}
 
-	/**
-	 * @Path("/webapp")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Returns IQRF Gateway Webapp version
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/VersionWebapp'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/webapp')]
+	#[Method('GET')]
+	#[OpenApi('
+		summary: Returns IQRF Gateway Webapp version
+		responses:
+			\'200\':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/VersionWebapp\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	')]
 	public function webappVersion(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
-			return $response->writeJsonBody($this->versionManager->getWebappJson());
+			return $response->writeJsonBody($this->manager->getWebappJson());
 		} catch (IOException | JsonException $e) {
 			throw new ServerErrorException('Invalid JSON syntax', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}

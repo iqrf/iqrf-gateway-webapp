@@ -31,42 +31,37 @@ use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 
 /**
  * OpenAPI controller
- * @Path("/openapi")
- * @Tag("OpenAPI")
  */
+#[Path('/openapi')]
+#[Tag('OpenAPI')]
 class OpenApiController extends BaseController {
-
-	/**
-	 * @var OpenApiSchemaBuilder OpenAPI schema builder
-	 */
-	private OpenApiSchemaBuilder $schemaBuilder;
 
 	/**
 	 * Constructor
 	 * @param OpenApiSchemaBuilder $schemaBuilder OpenAPI schema builder
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(OpenApiSchemaBuilder $schemaBuilder, RestApiSchemaValidator $validator) {
-		$this->schemaBuilder = $schemaBuilder;
+	public function __construct(
+		private readonly OpenApiSchemaBuilder $schemaBuilder,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Returns OpenAPI schema
-	 *  security:
-	 *     - []
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/OpenApiSpecification'
-	 * ")
-	 */
+	#[Path('/')]
+	#[Method('GET')]
+	#[OpenApi('
+		summary: Returns OpenAPI schema
+		security:
+			- []
+		responses:
+			\'200\':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/OpenApiSpecification\'
+	')]
 	public function index(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $response->writeJsonBody($this->schemaBuilder->getArray());
 	}

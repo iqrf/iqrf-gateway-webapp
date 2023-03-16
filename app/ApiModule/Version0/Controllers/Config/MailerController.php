@@ -39,20 +39,10 @@ use Nette\Utils\JsonException;
 
 /**
  * Mailer configuration controller
- * @Path("/mailer")
- * @Tag("Mailer configuration")
  */
+#[Path('/mailer')]
+#[Tag('Mailer configuration')]
 class MailerController extends BaseConfigController {
-
-	/**
-	 * @var ConfigurationManager Mailer configuration manager
-	 */
-	private ConfigurationManager $manager;
-
-	/**
-	 * @var MailerConfigurationTestMailSender Mailer configuration test mail sender
-	 */
-	private MailerConfigurationTestMailSender $configurationTestSender;
 
 	/**
 	 * Constructor
@@ -60,33 +50,30 @@ class MailerController extends BaseConfigController {
 	 * @param MailerConfigurationTestMailSender $sender Mailer configuration test mail sender
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(ConfigurationManager $manager, MailerConfigurationTestMailSender $sender, RestApiSchemaValidator $validator) {
-		$this->manager = $manager;
-		$this->configurationTestSender = $sender;
+	public function __construct(
+		private readonly ConfigurationManager $manager,
+		private readonly MailerConfigurationTestMailSender $sender,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Returns current configuration of the mailer
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/MailerConfiguration'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('GET')]
+	#[OpenApi('
+		summary: Returns current configuration of the mailer
+		responses:
+			\'200\':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/MailerConfiguration\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	')]
 	public function getConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['mailer']);
 		try {
@@ -99,31 +86,26 @@ class MailerController extends BaseConfigController {
 		}
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("PUT")
-	 * @OpenApi("
-	 *  summary: Saves new configuration of the mailer
-	 *  requestBody:
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/MailerConfiguration'
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('PUT')]
+	#[OpenApi('
+		summary: Saves new configuration of the mailer
+		requestBody:
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: \'#/components/schemas/MailerConfiguration\'
+		responses:
+			\'200\':
+				description: Success
+			\'400\':
+				$ref: \'#/components/responses/BadRequest\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	')]
 	public function setConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['mailer']);
 		$this->validator->validateRequest('mailer', $request);
@@ -133,7 +115,7 @@ class MailerController extends BaseConfigController {
 			$this->manager->write($configuration);
 			$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
 			if ($user->getEmail() !== null) {
-				$this->configurationTestSender->send($user);
+				$this->sender->send($user);
 			}
 			return $response->writeBody('Workaround');
 		} catch (IOException | InvalidSmtpConfigException $e) {
@@ -143,35 +125,30 @@ class MailerController extends BaseConfigController {
 		}
 	}
 
-	/**
-	 * @Path("/test")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Sends a test e-mail to verify configuration of the mailer
-	 *  requestBody:
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/MailerConfiguration'
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '500':
-	 *          description: Unable to send the e-mail
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/test')]
+	#[Method('POST')]
+	#[OpenApi('
+		summary: Sends a test e-mail to verify configuration of the mailer
+		requestBody:
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: \'#/components/schemas/MailerConfiguration\'
+		responses:
+			\'200\':
+				description: Success
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'500\':
+				description: Unable to send the e-mail
+	')]
 	public function testConfiguration(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['mailer']);
 		$this->validator->validateRequest('mailer', $request);
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
 		try {
-			$this->configurationTestSender->send($user, $request->getJsonBodyCopy());
+			$this->sender->send($user, $request->getJsonBodyCopy());
 		} catch (SendException $e) {
 			throw new ServerErrorException('Unable to send the e-mail', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}

@@ -39,24 +39,9 @@ use App\GatewayModule\Models\JournalReaderManager;
 
 /**
  * Journal controller
- * @Path("/journal")
  */
+#[Path('/journal')]
 class JournalController extends GatewayController {
-
-	/**
-	 * @var FeatureManager Feature manager
-	 */
-	private FeatureManager $featureManager;
-
-	/**
-	 * @var JournalConfigManager Journal config manager
-	 */
-	private JournalConfigManager $configManager;
-
-	/**
-	 * @var JournalReaderManager Journal reader manager
-	 */
-	private JournalReaderManager $readerManager;
 
 	/**
 	 * Constructor
@@ -65,32 +50,31 @@ class JournalController extends GatewayController {
 	 * @param JournalReaderManager $readerManager Journal reader manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(FeatureManager $featureManager, JournalConfigManager $configManager, JournalReaderManager $readerManager, RestApiSchemaValidator $validator) {
-		$this->featureManager = $featureManager;
-		$this->configManager = $configManager;
-		$this->readerManager = $readerManager;
+	public function __construct(
+		private readonly FeatureManager $featureManager,
+		private readonly JournalConfigManager $configManager,
+		private readonly JournalReaderManager $readerManager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 
-	/**
-	 * @Path("/config")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Returns journal configuration
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/Journal'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/config')]
+	#[Method('GET')]
+	#[OpenApi('
+		summary: Returns journal configuration
+		responses:
+			\'200\':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/Journal\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	')]
 	public function getConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->featureEnabled();
 		try {
@@ -100,29 +84,26 @@ class JournalController extends GatewayController {
 		}
 	}
 
-	/**
-	 * @Path("/config")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Updates journal configuration
-	 *  requestBody:
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/Journal'
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/config')]
+	#[Method('POST')]
+	#[OpenApi('
+		summary: Updates journal configuration
+		requestBody:
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: \'#/components/schemas/Journal\'
+		responses:
+			\'200\':
+				description: Success
+			\'400\':
+				$ref: \'#/components/responses/BadRequest\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	')]
 	public function saveConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->featureEnabled();
 		$this->validator->validateRequest('journal', $request);
@@ -134,37 +115,36 @@ class JournalController extends GatewayController {
 		}
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Returns journal records
-	 *  parameters:
-	 *      - in: query
-	 *        name: count
-	 *        schema:
-	 *          type: integer
-	 *          minimum: 1
-	 *          maximum: 1000
-	 *          default: 500
-	 *        required: false
-	 *        description: Number of last records to retrieve
-	 *      - in: query
-	 *        name: cursor
-	 *        schema:
-	 *          type: string
-	 *        required: false
-	 *        description: Specifies a record cursor to start from
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('GET')]
+	#[OpenApi('
+		summary: Returns journal records
+		parameters:
+			-
+				in: query
+				name: count
+				schema:
+					type: integer
+					minimum: 1
+					maximum: 1000
+					default: 500
+				required: false
+				description: Number of last records to retrieve
+			-
+				in: query
+				name: cursor
+				schema:
+					type: string
+				required: false
+				description: Specifies a record cursor to start from
+		responses:
+			\'200\':
+				description: Success
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$count = (int) $request->getQueryParam('count', 500);
 		$cursor = $request->getQueryParam('cursor', null);

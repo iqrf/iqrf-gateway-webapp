@@ -33,46 +33,38 @@ use App\NetworkModule\Models\GsmManager;
 
 /**
  * GSM controller
- * @Path("/gsm")
  */
+#[Path('/gsm')]
 class GsmController extends NetworkController {
-
-	/**
-	 * @var GsmManager GSM manager
-	 */
-	private GsmManager $gsmManager;
 
 	/**
 	 * Constructor
 	 * @param GsmManager $gsmManager GSM manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(GsmManager $gsmManager, RestApiSchemaValidator $validator) {
-		$this->gsmManager = $gsmManager;
+	public function __construct(
+		private readonly GsmManager $gsmManager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 
-	/**
-	 * @Path("/modems")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Lists available modems
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/ModemList'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/modems')]
+	#[Method('GET')]
+	#[OpenApi('
+		summary: Lists available modems
+		responses:
+			\'200\':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/ModemList\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	')]
 	public function listModems(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['network']);
 		try {
@@ -82,23 +74,18 @@ class GsmController extends NetworkController {
 		}
 	}
 
-	/**
-	 * @Path("/modems/scan")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Scans for GSM modems
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/modems/scan')]
+	#[Method('POST')]
+	#[OpenApi('
+		summary: Scans for GSM modems
+		responses:
+			\'200\':
+				description: Success
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	')]
 	public function scanModems(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['network']);
 		try {

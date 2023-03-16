@@ -31,8 +31,8 @@ use App\CloudModule\Models\HexioManager;
 
 /**
  * Hexio IoT Platform connection controller
- * @Path("/hexio")
  */
+#[Path('/hexio')]
 class HexioController extends CloudsController {
 
 	/**
@@ -45,32 +45,31 @@ class HexioController extends CloudsController {
 		parent::__construct($validator);
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Creates a new MQTT connection into Hexio IoT Platform
-	 *  requestBody:
-	 *      description: Hexio IoT Platform connection configuration
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/CloudHexio'
-	 *  responses:
-	 *      '201':
-	 *          description: Created
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('POST')]
+	#[OpenApi('
+		summary: Creates a new MQTT connection into Hexio IoT Platform
+		requestBody:
+			description: Hexio IoT Platform connection configuration
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: \'#/components/schemas/CloudHexio\'
+		responses:
+			\'201\':
+				description: Created
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/CloudHexio\'
+			\'400\':
+				$ref: \'#/components/responses/BadRequest\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	')]
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->checkRequest('cloudHexio', $request);
 		return parent::create($request, $response);

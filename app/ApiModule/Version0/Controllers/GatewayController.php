@@ -25,9 +25,9 @@ use Apitte\Core\Annotation\Controller\Tag;
 
 /**
  * Gateway manager controller
- * @Path("/gateway")
- * @Tag("Gateway manager")
  */
+#[Path('/gateway')]
+#[Tag('Gateway manager')]
 abstract class GatewayController extends BaseController {
 
 }

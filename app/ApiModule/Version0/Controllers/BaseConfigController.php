@@ -21,25 +21,11 @@ declare(strict_types = 1);
 namespace App\ApiModule\Version0\Controllers;
 
 use Apitte\Core\Annotation\Controller\Path;
-use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 
 /**
  * Base config controller
- * @Path("/config")
  */
+#[Path('/config')]
 abstract class BaseConfigController extends BaseController {
-
-	/**
-	 * @var RestApiSchemaValidator REST API JSON schema validator
-	 */
-	protected RestApiSchemaValidator $validator;
-
-	/**
-	 * Constructor
-	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
-	 */
-	public function __construct(RestApiSchemaValidator $validator) {
-		parent::__construct($this->validator = $validator);
-	}
 
 }

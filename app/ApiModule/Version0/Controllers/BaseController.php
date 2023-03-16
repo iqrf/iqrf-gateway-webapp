@@ -31,21 +31,17 @@ use App\Models\Database\Entities\User;
 
 /**
  * Base API controller
- * @Path("/api/v0")
  */
+#[Path('/api/v0')]
 abstract class BaseController implements IController {
-
-	/**
-	 * @var RestApiSchemaValidator REST API JSON schema validator
-	 */
-	protected RestApiSchemaValidator $validator;
 
 	/**
 	 * Constructor
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(RestApiSchemaValidator $validator) {
-		$this->validator = $validator;
+	public function __construct(
+		protected readonly RestApiSchemaValidator $validator,
+	) {
 	}
 
 	/**

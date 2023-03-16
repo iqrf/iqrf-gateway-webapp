@@ -35,47 +35,39 @@ use Nette\Utils\JsonException;
 
 /**
  * IQRF Gateway Translator configuration controller
- * @Path("/translator")
- * @Tag("IQRF Gateway Translator configuration")
  */
+#[Path('/translator')]
+#[Tag('IQRF Gateway Translator configuration')]
 class TranslatorController extends BaseConfigController {
-
-	/**
-	 * @var TranslatorConfigManager $manager IQRF Gateway Translator configuration manager
-	 */
-	private TranslatorConfigManager $manager;
 
 	/**
 	 * Constructor
 	 * @param TranslatorConfigManager $manager IQRF Gateway Translator configuration manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(TranslatorConfigManager $manager, RestApiSchemaValidator $validator) {
-		$this->manager = $manager;
+	public function __construct(
+		private readonly TranslatorConfigManager $manager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Returns current configuration of IQRF Gateway Translator
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/TranslatorConfig'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('GET')]
+	#[OpenApi('
+		summary: Returns current configuration of IQRF Gateway Translator
+		responses:
+			\'200\':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/TranslatorConfig\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	')]
 	public function getConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['config:translator']);
 		try {
@@ -88,31 +80,26 @@ class TranslatorController extends BaseConfigController {
 		}
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("PUT")
-	 * @OpenApi("
-	 *  summary: Saves new configuration of IQRF Gateway Translator
-	 *  requestBody:
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/TranslatorConfig'
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('PUT')]
+	#[OpenApi('
+		summary: Saves new configuration of IQRF Gateway Translator
+		requestBody:
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: \'#/components/schemas/TranslatorConfig\'
+		responses:
+			\'200\':
+				description: Success
+			\'400\':
+				$ref: \'#/components/responses/BadRequest\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	')]
 	public function setConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['config:translator']);
 		$this->validator->validateRequest('translatorConfig', $request);

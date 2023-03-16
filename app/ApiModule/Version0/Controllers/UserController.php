@@ -24,7 +24,6 @@ use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\RequestParameter;
-use Apitte\Core\Annotation\Controller\RequestParameters;
 use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
@@ -49,66 +48,43 @@ use function gethostname;
 
 /**
  * User manager API controller
- * @Path("/user")
- * @Tag("User manager")
  */
+#[Path('/user')]
+#[Tag('User manager')]
 class UserController extends BaseController {
 
 	/**
-	 * @var EntityManager Entity manager
-	 */
-	private EntityManager $entityManager;
-
-	/**
-	 * @var JwtConfigurator JWT configurator
-	 */
-	private JwtConfigurator $jwtConfigurator;
-
-	/**
-	 * @var UserManager User manager
-	 */
-	private UserManager $manager;
-
-	/**
-	 * @var PasswordRecoveryMailSender Forgotten password recovery e-mail sender
-	 */
-	private PasswordRecoveryMailSender $passwordRecoverySender;
-
-	/**
 	 * Constructor
-	 * @param JwtConfigurator $configurator JWT configurator
+	 * @param JwtConfigurator $jwtConfigurator JWT configurator
 	 * @param EntityManager $entityManager Entity manager
 	 * @param UserManager $manager User manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 * @param PasswordRecoveryMailSender $passwordRecoverySender Forgotten password recovery e-mail sender
 	 */
-	public function __construct(JwtConfigurator $configurator, EntityManager $entityManager, UserManager $manager, RestApiSchemaValidator $validator, PasswordRecoveryMailSender $passwordRecoverySender) {
-		$this->jwtConfigurator = $configurator;
-		$this->entityManager = $entityManager;
-		$this->manager = $manager;
-		$this->passwordRecoverySender = $passwordRecoverySender;
+	public function __construct(
+		private readonly JwtConfigurator $jwtConfigurator,
+		private readonly EntityManager $entityManager,
+		private readonly UserManager $manager,
+		RestApiSchemaValidator $validator,
+		private readonly PasswordRecoveryMailSender $passwordRecoverySender,
+	) {
 		parent::__construct($validator);
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Returns information about logged in user
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/UserDetail'
-	 *      '403':
-	 *          description: Forbidden - API key is used
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('GET')]
+	#[OpenApi('
+		summary: Returns information about logged in user
+		responses:
+			\'200\':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/UserDetail\'
+			\'403\':
+				description: Forbidden - API key is used
+	')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
 		if ($user instanceof User) {
@@ -117,31 +93,26 @@ class UserController extends BaseController {
 		throw new ClientErrorException('API key is used.', ApiResponse::S403_FORBIDDEN);
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("PUT")
-	 * @OpenApi("
-	 *  summary: Edits user
-	 *  requestBody:
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/UserEdit'
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '403':
-	 *          description: Forbidden - API key is used
-	 *      '409':
-	 *          description: Username or e-mail address is already used
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('PUT')]
+	#[OpenApi('
+		summary: Edits user
+		requestBody:
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: \'#/components/schemas/UserEdit\'
+		responses:
+			\'200\':
+				description: Success
+			\'400\':
+				$ref: \'#/components/responses/BadRequest\'
+			\'403\':
+				description: Forbidden - API key is used
+			\'409\':
+				description: Username or e-mail address is already used
+	')]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
 		if (!($user instanceof User)) {
@@ -192,27 +163,22 @@ class UserController extends BaseController {
 			->writeBody('Workaround');
 	}
 
-	/**
-	 * @Path("/password")
-	 * @Method("PUT")
-	 * @OpenApi("
-	 *  summary: Changes the password
-	 *  requestBody:
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/PasswordChange'
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '403':
-	 *          description: Forbidden - API key is used
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/password')]
+	#[Method('PUT')]
+	#[OpenApi('
+		summary: Changes the password
+		requestBody:
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: \'#/components/schemas/PasswordChange\'
+		responses:
+			\'200\':
+				description: Success
+			\'403\':
+				description: Forbidden - API key is used
+	')]
 	public function changePassword(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
 		if (!($user instanceof User)) {
@@ -238,31 +204,26 @@ class UserController extends BaseController {
 		return $response->writeBody('Workaround');
 	}
 
-	/**
-	 * @Path("/password/recovery")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Requests the password recovery
-	 *  requestBody:
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/PasswordRecoveryRequest'
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '403':
-	 *          description: E-mail address is not verified
-	 *      '404':
-	 *          description: User not found
-	 *      '500':
-	 *          description: Unable to send the e-mail
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/password/recovery')]
+	#[Method('POST')]
+	#[OpenApi('
+		summary: Requests the password recovery
+		requestBody:
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: \'#/components/schemas/PasswordRecoveryRequest\'
+		responses:
+			\'200\':
+				description: Success
+			\'403\':
+				description: E-mail address is not verified
+			\'404\':
+				description: User not found
+			\'500\':
+				description: Unable to send the e-mail
+	')]
 	public function requestPasswordRecovery(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validator->validateRequest('passwordRecoveryRequest', $request);
 		$body = $request->getJsonBodyCopy();
@@ -296,36 +257,29 @@ class UserController extends BaseController {
 		return $response->writeBody('Workaround');
 	}
 
-	/**
-	 * @Path("/password/recovery/{uuid}")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Recovers the forgotten password
-	 *  requestBody:
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/PasswordRecovery'
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/UserToken'
-	 *      '404':
-	 *          description: Password recovery not found
-	 *      '410':
-	 *          description: Password recovery request is expired
-	 * ")
-	 * @RequestParameters({
-	 *      @RequestParameter(name="uuid", type="integer", description="Password recovery request UUID")
-	 * })
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/password/recovery/{uuid}')]
+	#[Method('POST')]
+	#[OpenApi('
+		summary: Recovers the forgotten password
+		requestBody:
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: \'#/components/schemas/PasswordRecovery\'
+		responses:
+			\'200\':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/UserToken\'
+			\'404\':
+				description: Password recovery not found
+			\'410\':
+				description: Password recovery request is expired
+	')]
+	#[RequestParameter(name: 'uuid', type: 'string', description: 'Password recovery request UUID')]
 	public function recoverPassword(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validator->validateRequest('passwordRecovery', $request);
 		$body = $request->getJsonBodyCopy();
@@ -357,23 +311,18 @@ class UserController extends BaseController {
 		return $response->writeJsonBody($json);
 	}
 
-	/**
-	 * @Path("/resendVerification")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Resends the verification e-mail
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '400':
-	 *          description: User is already verified
-	 *      '500':
-	 *          description: Unable to send the e-mail
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/resendVerification')]
+	#[Method('POST')]
+	#[OpenApi('
+		summary: Resends the verification e-mail
+		responses:
+			\'200\':
+				description: Success
+			\'400\':
+				description: User is already verified
+			\'500\':
+				description: Unable to send the e-mail
+	')]
 	public function resendVerification(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
 		if (!($user instanceof User)) {
@@ -391,25 +340,20 @@ class UserController extends BaseController {
 			->writeBody('Workaround');
 	}
 
-	/**
-	 * @Path("/refreshToken")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Refreshes user access token
-	 *  responses:
-	 *      '201':
-	 *          description: Success
-	 *          content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/UserSignIn'
-	 *      '403':
-	 *          description: Forbidden - API key is used
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/refreshToken')]
+	#[Method('POST')]
+	#[OpenApi('
+		summary: Refreshes user access token
+		responses:
+			\'201\':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/UserSignIn\'
+			\'403\':
+				description: Forbidden - API key is used
+	')]
 	public function refreshToken(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
 		if (!($user instanceof User)) {
@@ -420,35 +364,30 @@ class UserController extends BaseController {
 		return $response->writeJsonBody($json);
 	}
 
-	/**
-	 * @Path("/signIn")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Signs in the user
-	 *  security:
-	 *     - []
-	 *  requestBody:
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/UserSignIn'
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/UserToken'
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/signIn')]
+	#[Method('POST')]
+	#[OpenApi('
+		summary: Signs in the user
+		security:
+			- []
+		requestBody:
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: \'#/components/schemas/UserSignIn\'
+		responses:
+			\'200\':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/UserToken\'
+			\'400\':
+				$ref: \'#/components/responses/BadRequest\'
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	')]
 	public function signIn(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validator->validateRequest('userSignIn', $request);
 		$credentials = $request->getJsonBodyCopy();
@@ -464,28 +403,21 @@ class UserController extends BaseController {
 		return $response->writeJsonBody($json);
 	}
 
-	/**
-	 * @Path("/verify/{uuid}")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Verifies the user
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/UserToken'
-	 *      '404':
-	 *          description: Not found
-	 * ")
-	 * @RequestParameters({
-	 *      @RequestParameter(name="uuid", type="integer", description="User verification UUID")
-	 * })
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/verify/{uuid}')]
+	#[Method('GET')]
+	#[OpenApi('
+		summary: Verifies the user
+		responses:
+			\'200\':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/UserToken\'
+			\'404\':
+				description: Not found
+	')]
+	#[RequestParameter(name: 'uuid', type: 'string', description: 'User verification UUID')]
 	public function verify(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$repository = $this->entityManager->getUserVerificationRepository();
 		$verification = $repository->findOneByUuid($request->getParameter('uuid'));

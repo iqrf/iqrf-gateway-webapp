@@ -31,42 +31,36 @@ use App\ConfigModule\Models\IqrfManager;
 
 /**
  * IQRF physical interface controller
- * @Path("/interfaces")
  */
+#[Path('/interfaces')]
 class InterfacesController extends IqrfController {
-
-	/**
-	 * @var IqrfManager IQRF interfaces manager
-	 */
-	private IqrfManager $manager;
 
 	/**
 	 * Constructor
 	 * @param IqrfManager $manager IQRF interfaces manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(IqrfManager $manager, RestApiSchemaValidator $validator) {
-		$this->manager = $manager;
+	public function __construct(
+		private readonly IqrfManager $manager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Returns IQRF interfaces
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/IqrfInterfaces'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('GET')]
+	#[OpenApi('
+		summary: Returns IQRF interfaces
+		responses:
+			\'200\':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/IqrfInterfaces\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+	')]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$interfaces = [
 			'cdc' => $this->manager->getCdcInterfaces(),

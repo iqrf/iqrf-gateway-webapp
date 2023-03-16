@@ -24,7 +24,6 @@ use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\RequestParameter;
-use Apitte\Core\Annotation\Controller\RequestParameters;
 use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
@@ -40,20 +39,10 @@ use Nette\Utils\JsonException;
 
 /**
  * IQRF Gateway Controller configuration controller
- * @Path("/controller")
- * @Tag("IQRF Gateway Controller configuration")
  */
+#[Path('/controller')]
+#[Tag('IQRF Gateway Controller configuration')]
 class ControllerController extends BaseConfigController {
-
-	/**
-	 * @var ControllerConfigManager $configManager IQRF Gateway Controller configuration manager
-	 */
-	private ControllerConfigManager $configManager;
-
-	/**
-	 * @var ControllerPinConfigManager $pinManager IQRF Gateway Controller pin configuration manager
-	 */
-	private ControllerPinConfigManager $pinManager;
 
 	/**
 	 * Constructor
@@ -61,33 +50,30 @@ class ControllerController extends BaseConfigController {
 	 * @param ControllerPinConfigManager $pinManager IQRF Gateway Controller pin configuration manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(ControllerConfigManager $configManager, ControllerPinConfigManager $pinManager, RestApiSchemaValidator $validator) {
-		$this->configManager = $configManager;
-		$this->pinManager = $pinManager;
+	public function __construct(
+		private readonly ControllerConfigManager $configManager,
+		private readonly ControllerPinConfigManager $pinManager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Returns current configuration of IQRF Gateway Controller
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/ControllerConfig'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('GET')]
+	#[OpenApi('
+		summary: Returns current configuration of IQRF Gateway Controller
+		responses:
+			\'200\':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/ControllerConfig\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	')]
 	public function getConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['config:controller']);
 		try {
@@ -100,31 +86,26 @@ class ControllerController extends BaseConfigController {
 		}
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("PUT")
-	 * @OpenApi("
-	 *  summary: Saves new configuration of IQRF Gateway Controller
-	 *  requestBody:
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/ControllerConfig'
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('PUT')]
+	#[OpenApi('
+		summary: Saves new configuration of IQRF Gateway Controller
+		requestBody:
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: \'#/components/schemas/ControllerConfig\'
+		responses:
+			\'200\':
+				description: Success
+			\'400\':
+				$ref: \'#/components/responses/BadRequest\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	')]
 	public function setConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['config:controller']);
 		$this->validator->validateRequest('controllerConfig', $request);
@@ -136,51 +117,43 @@ class ControllerController extends BaseConfigController {
 		}
 	}
 
-	/**
-	 * @Path("/pins")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: List all pin configurations
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      type: array
-	 *                      items:
-	 *                          $ref: '#/components/schemas/ControllerPinConfig'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/pins')]
+	#[Method('GET')]
+	#[OpenApi('
+		summary: List all pin configurations
+		responses:
+			\'200\':
+				description: Success
+				content:
+					application/json:
+						schema:
+							type: array
+							items:
+								$ref: \'#/components/schemas/ControllerPinConfig\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+	')]
 	public function listPins(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $response->writeJsonBody($this->pinManager->listPinConfigs());
 	}
 
-	/**
-	 * @Path("/pins/{id}")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Returns a pin configuration profile
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/ControllerPinConfig'
-	 *      '404':
-	 *          description: Pin configuration profile not found
-	 * ")
-	 * @RequestParameters({
-	 *      @RequestParameter(name="id", type="integer", description="Controller pin configuration profile ID")
-	 * })
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/pins/{id}')]
+	#[Method('GET')]
+	#[OpenApi('
+		summary: Returns a pin configuration profile
+		responses:
+			\'200\':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/ControllerPinConfig\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'404\':
+				description: Pin configuration profile not found
+	')]
+	#[RequestParameter(name: 'id', type: 'integer', description: 'Controller pin configuration profile ID')]
 	public function getPins(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$id = (int) $request->getParameter('id');
 		try {
@@ -191,36 +164,33 @@ class ControllerController extends BaseConfigController {
 		}
 	}
 
-	/**
-	 * @Path("/pins")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Creates a new pin configuration profile
-	 *  requestBody:
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/ControllerPinConfig'
-	 *  responses:
-	 *      '201':
-	 *          description: Created
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/ControllerPinConfig'
-	 *          headers:
-	 *              Location:
-	 *                  description: Location of information about created pin configuration profile
-	 *                  schema:
-	 *                      type: string
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/pins')]
+	#[Method('POST')]
+	#[OpenApi('
+		summary: Creates a new pin configuration profile
+		requestBody:
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: \'#/components/schemas/ControllerPinConfig\'
+		responses:
+			\'201\':
+				description: Created
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/ControllerPinConfig\'
+				headers:
+					Location:
+						description: Location of information about created pin configuration profile
+						schema:
+							type: string
+			\'400\':
+				$ref: \'#/components/responses/BadRequest\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+	')]
 	public function addPins(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validator->validateRequest('controllerPinConfig', $request);
 		$json = $request->getJsonBodyCopy(false);
@@ -230,20 +200,29 @@ class ControllerController extends BaseConfigController {
 			->withStatus(ApiResponse::S201_CREATED);
 	}
 
-	/**
-	 * @Path("/pins/{id}")
-	 * @Method("PUT")
-	 * @OpenApi("
-	 *  summary: Edits a pin configuration profile
-	 *  responses:
-	 * ")
-	 * @RequestParameters({
-	 *      @RequestParameter(name="id", type="integer", description="Controller pin configuration profile ID")
-	 * })
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/pins/{id}')]
+	#[Method('PUT')]
+	#[OpenApi('
+		summary: Edits a pin configuration profile
+		requestBody:
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: \'#/components/schemas/ControllerPinConfig\'
+		responses:
+			\'200\':
+				description: Success
+			\'400\':
+				$ref: \'#/components/responses/BadRequest\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'404\':
+				description: Controller pin configuration profile not found
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	')]
+	#[RequestParameter(name: 'id', type: 'integer', description: 'Controller pin configuration profile ID')]
 	public function editPins(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validator->validateRequest('controllerPinConfig', $request);
 		$id = (int) $request->getParameter('id');
@@ -256,24 +235,19 @@ class ControllerController extends BaseConfigController {
 		}
 	}
 
-	/**
-	 * @Path("/pins/{id}")
-	 * @Method("DELETE")
-	 * @OpenApi("
-	 *  summary: Removes a pin configuration profile
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '404':
-	 *          description: Controller pin configuration profile not found
-	 * ")
-	 * @RequestParameters({
-	 *      @RequestParameter(name="id", type="integer", description="Controller pin configuration profile ID")
-	 * })
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/pins/{id}')]
+	#[Method('DELETE')]
+	#[OpenApi('
+		summary: Removes a pin configuration profile
+		responses:
+			\'200\':
+				description: Success
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'404\':
+				description: Controller pin configuration profile not found
+	')]
+	#[RequestParameter(name: 'id', type: 'integer', description: 'Controller pin configuration profile ID')]
 	public function removePins(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$id = (int) $request->getParameter('id');
 		try {

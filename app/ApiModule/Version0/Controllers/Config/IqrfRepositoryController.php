@@ -35,75 +35,62 @@ use Nette\Neon\Exception as NeonException;
 
 /**
  * IQRF Repository controller
- * @Path("/iqrf-repository")
- * @Tag("IQRF Repository configuration")
  */
+#[Path('/iqrf-repository')]
+#[Tag('IQRF Repository configuration')]
 class IqrfRepositoryController extends BaseConfigController {
-
-	/**
-	 * @var IqrfRepositoryManager IQRF Repository manager
-	 */
-	private IqrfRepositoryManager $manager;
 
 	/**
 	 * Constructor
 	 * @param IqrfRepositoryManager $manager IQRF Repository manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(IqrfRepositoryManager $manager, RestApiSchemaValidator $validator) {
-		$this->manager = $manager;
+	public function __construct(
+		private readonly IqrfRepositoryManager $manager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Returns IQRF repository extension configuration
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/IqrfRepositoryConfig'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('GET')]
+	#[OpenApi('
+		summary: Returns current configuration of IQRF Gateway Translator
+		responses:
+			\'200\':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/IqrfRepositoryConfig\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+	')]
 	public function readConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['config:iqrfRepository']);
 		return $response->writeJsonBody($this->manager->readConfig());
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("PUT")
-	 * @OpenApi("
-	 *  summary: Updates IQRF repository extension configuration
-	 *  requestBody:
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/IqrfRepositoryConfig'
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('PUT')]
+	#[OpenApi('
+		summary: Updates IQRF repository extension configuration
+		requestBody:
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: \'#/components/schemas/IqrfRepositoryConfig\'
+		responses:
+			\'200\':
+				description: Success
+			\'400\':
+				$ref: \'#/components/responses/BadRequest\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	')]
 	public function saveConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['config:iqrfRepository']);
 		$this->validator->validateRequest('iqrfRepositoryConfig', $request);

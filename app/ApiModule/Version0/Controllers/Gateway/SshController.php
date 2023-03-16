@@ -24,7 +24,6 @@ use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\RequestParameter;
-use Apitte\Core\Annotation\Controller\RequestParameters;
 use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
@@ -41,46 +40,38 @@ use Nette\IOException;
 
 /**
  * Gateway SSH controller
- * @Path("/ssh")
  */
+#[Path('/ssh')]
 class SshController extends GatewayController {
-
-	/**
-	 * @var SshManager SSH manager
-	 */
-	private SshManager $manager;
 
 	/**
 	 * Constructor
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
-	 * @param SshManager $sshManager SSH manager
+	 * @param SshManager $manager SSH manager
 	 */
-	public function __construct(RestApiSchemaValidator $validator, SshManager $sshManager) {
-		$this->manager = $sshManager;
+	public function __construct(
+		RestApiSchemaValidator $validator,
+		private readonly SshManager $manager,
+	) {
 		parent::__construct($validator);
 	}
 
-	/**
-	 * @Path("/keyTypes")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Lists SSH key types
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/SshKeyTypes'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/keyTypes')]
+	#[Method('GET')]
+	#[OpenApi('
+		summary: Lists SSH key types
+		responses:
+			\'200\':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/SshKeyTypes\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	')]
 	public function listKeyTypes(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['sshKeys']);
 		try {
@@ -90,58 +81,46 @@ class SshController extends GatewayController {
 		}
 	}
 
-	/**
-	 * @Path("/keys")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: List authorized SSH public keys
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/SshKeyList'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/keys')]
+	#[Method('GET')]
+	#[OpenApi('
+		summary: List authorized SSH public keys
+		responses:
+			\'200\':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/SshKeyList\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	')]
 	public function listKeys(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['sshKeys']);
 		return $response->writeJsonBody($this->manager->listKeys());
 	}
 
-	/**
-	 * @Path("/keys/{id}")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Retrieves authorized SSH public key
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              text/plain:
-	 *                  schema:
-	 *                      type: string
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '404':
-	 *          description: Not found
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @RequestParameters({
-	 *     @RequestParameter(name="id", type="integer", description="SSH public key ID")
-	 * })
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/keys/{id}')]
+	#[Method('GET')]
+	#[OpenApi('
+		summary: Retrieves authorized SSH public key
+		responses:
+			\'200\':
+				description: Success
+				content:
+					text/plain:
+						schema:
+							type: string
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'404\':
+				description: Not found
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	')]
+	#[RequestParameter(name: 'id', type: 'integer', description: 'SSH public key ID')]
 	public function getKey(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['sshKeys']);
 		try {
@@ -154,35 +133,30 @@ class SshController extends GatewayController {
 		}
 	}
 
-	/**
-	 * @Path("/keys")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Adds SSH keys for key-based authentication
-	 *  requestBody:
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/SshKeysAdd'
-	 *  responses:
-	 *      '200':
-	 *          description: 'Partial success, duplicate keys in body (ignored)'
-	 *      '201':
-	 *          description: Created
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '409':
-	 *          description: SSH public key already exists
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/keys')]
+	#[Method('POST')]
+	#[OpenApi('
+		summary: Adds SSH keys for key-based authentication
+		requestBody:
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: \'#/components/schemas/SshKeysAdd\'
+		responses:
+			\'200\':
+				description: \'Partial success, duplicate keys in body (ignored)\'
+			\'201\':
+				description: Created
+			\'400\':
+				$ref: \'#/components/responses/BadRequest\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'409\':
+				description: SSH public key already exists
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	')]
 	public function addKeys(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['sshKeys']);
 		$this->validator->validateRequest('sshKeysAdd', $request);
@@ -202,26 +176,19 @@ class SshController extends GatewayController {
 		}
 	}
 
-	/**
-	 * @Path("/keys/{id}")
-	 * @Method("DELETE")
-	 * @OpenApi("
-	 *  summary: Removes an authorized SSH public key
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '404':
-	 *          description: Not found
-	 * ")
-	 * @RequestParameters({
-	 *     @RequestParameter(name="id", type="integer", description="SSH public key ID")
-	 * })
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/keys/{id}')]
+	#[Method('DELETE')]
+	#[OpenApi('
+		summary: Removes an authorized SSH public key
+		responses:
+			\'200\':
+				description: Success
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'404\':
+				description: Not found
+	')]
+	#[RequestParameter(name: 'id', type: 'integer', description: 'SSH public key ID')]
 	public function deleteKey(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['sshKeys']);
 		try {

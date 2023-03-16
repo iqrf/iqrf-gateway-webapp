@@ -35,19 +35,9 @@ use App\GatewayModule\Models\PasswordManager;
 
 /**
  * Gateway password controller
- * @Path("/")
  */
+#[Path('/password')]
 class PasswordController extends GatewayController {
-
-	/**
-	 * @var FeatureManager Feature manager
-	 */
-	private FeatureManager $featureManager;
-
-	/**
-	 * @var PasswordManager Gateway password manager
-	 */
-	private PasswordManager $manager;
 
 	/**
 	 * Constructor
@@ -55,35 +45,34 @@ class PasswordController extends GatewayController {
 	 * @param PasswordManager $manager Gateway password manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(FeatureManager $featureManager, PasswordManager $manager, RestApiSchemaValidator $validator) {
-		$this->featureManager = $featureManager;
-		$this->manager = $manager;
+	public function __construct(
+		private readonly FeatureManager $featureManager,
+		private readonly PasswordManager $manager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 
-	/**
-	 * @Path("/password")
-	 * @Method("PUT")
-	 * @OpenApi("
-	 *  summary: Sets default gateway user password
-	 *  requestBody:
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/GatewayPassword'
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('PUT')]
+	#[OpenApi('
+		summary: Sets default gateway user password
+		requestBody:
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: \'#/components/schemas/GatewayPassword\'
+		responses:
+			\'200\':
+				description: Success
+			\'400\':
+				$ref: \'#/components/responses/BadRequest\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	')]
 	public function setPassword(ApiRequest $request, ApiResponse $response): ApiResponse {
 		if (!$this->featureManager->isEnabled('gatewayPass')) {
 			throw new ClientErrorException('Gateway password feature is not enabled', ApiResponse::S400_BAD_REQUEST);

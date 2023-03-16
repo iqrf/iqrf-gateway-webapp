@@ -41,54 +41,46 @@ use Nette\Utils\FileSystem;
 
 /**
  * Backup controller
- * @Path("/maintenance")
- * @Tag("Backup & Restore")
  */
+#[Path('/maintenance')]
+#[Tag('Backup & Restore')]
 class BackupController extends BaseController{
-
-	/**
-	 * @var BackupManager Backup manager
-	 */
-	private BackupManager $manager;
 
 	/**
 	 * Constructor
 	 * @param BackupManager $manager Backup manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(BackupManager $manager, RestApiSchemaValidator $validator) {
-		$this->manager = $manager;
+	public function __construct(
+		private readonly BackupManager $manager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 
-	/**
-	 * @Path("/backup")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Backup gateway
-	 *  requestBody:
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/GatewayBackup'
-	 *  responses:
-	 *      '200':
-	 *          description: 'Success'
-	 *          content:
-	 *              application/zip:
-	 *                 schema:
-	 *                     type: string
-	 *                     format: binary
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/backup')]
+	#[Method('POST')]
+	#[OpenApi('
+		summary: Backup gateway
+		requestBody:
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: \'#/components/schemas/GatewayBackup\'
+		responses:
+			\'200\':
+				description: \'Success\'
+				content:
+					application/zip:
+						schema:
+							type: string
+							format: binary
+			\'400\':
+				$ref: \'#/components/responses/BadRequest\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+	')]
 	public function backup(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['maintenance:backup']);
 		$this->validator->validateRequest('gatewayBackup', $request);
@@ -102,36 +94,31 @@ class BackupController extends BaseController{
 		}
 	}
 
-	/**
-	 * @Path("/restore")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Restore gateway from backup
-	 *  requestBody:
-	 *      required: true
-	 *      content:
-	 *          application/zip:
-	 *              schema:
-	 *                  type: string
-	 *                  format: binary
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/PowerControl'
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '415':
-	 *          description: 'Unsupported media type'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/restore')]
+	#[Method('POST')]
+	#[OpenApi('
+		summary: Restore gateway from backup
+		requestBody:
+			required: true
+			content:
+				application/zip:
+					schema:
+						type: string
+						format: binary
+		responses:
+			\'200\':
+				description: \'Success\'
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/PowerControl\'
+			\'400\':
+				$ref: \'#/components/responses/BadRequest\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'415\':
+				description: \'Unsupported media type\'
+	')]
 	public function restore(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['maintenance:backup']);
 		$contentTypes = ['application/zip', 'application/x-zip-compressed'];

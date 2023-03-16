@@ -31,8 +31,8 @@ use App\CloudModule\Models\InteliGlueManager;
 
 /**
  * Inteliments InteliGlue connection controller
- * @Path("/inteliGlue")
  */
+#[Path('/inteliGlue')]
 class InteliGlueController extends CloudsController {
 
 	/**
@@ -45,32 +45,27 @@ class InteliGlueController extends CloudsController {
 		parent::__construct($validator);
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Creates a new MQTT connection into Inteliments InteliGlue
-	 *  requestBody:
-	 *      description: Inteliments InteliGlue connection configuration
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/CloudInteliGlue'
-	 *  responses:
-	 *      '201':
-	 *          description: Created
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('POST')]
+	#[OpenApi('
+		summary: Creates a new MQTT connection into Inteliments InteliGlue
+		requestBody:
+			description: Inteliments InteliGlue connection configuration
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: \'#/components/schemas/CloudInteliGlue\'
+		responses:
+			\'201\':
+				description: Created
+			\'400\':
+				$ref: \'#/components/responses/BadRequest\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	')]
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->checkRequest('cloudInteliGlue', $request);
 		return parent::create($request, $response);

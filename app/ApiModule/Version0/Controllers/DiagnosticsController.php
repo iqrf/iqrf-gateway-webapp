@@ -33,44 +33,36 @@ use Nette\Utils\FileSystem;
 
 /**
  * Diagnostics controller
- * @Path("/diagnostics")
- * @Tag("Gateway manager")
  */
+#[Path('/diagnostics')]
+#[Tag('Gateway manager')]
 class DiagnosticsController extends BaseController {
-
-	/**
-	 * @var DiagnosticsManager Diagnostics manager
-	 */
-	private DiagnosticsManager $manager;
 
 	/**
 	 * Constructor
 	 * @param DiagnosticsManager $manager Diagnostics manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(DiagnosticsManager $manager, RestApiSchemaValidator $validator) {
-		$this->manager = $manager;
+	public function __construct(
+		private readonly DiagnosticsManager $manager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *   summary: Returns archive with diagnostics
-	 *   responses:
-	 *     '200':
-	 *       description: 'Success'
-	 *       content:
-	 *         application/zip:
-	 *           schema:
-	 *             type: string
-	 *             format: binary
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('GET')]
+	#[OpenApi('
+		summary: Returns archive with diagnostics
+		responses:
+			\'200\':
+				description: Success
+				content:
+					application/zip:
+						schema:
+							type: string
+							format: binary
+	')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$path = $this->manager->createArchive();
 		$fileName = basename($path);
