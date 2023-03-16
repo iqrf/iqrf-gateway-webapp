@@ -20,44 +20,20 @@ declare(strict_types = 1);
 
 namespace App\NetworkModule\Enums;
 
-use Grifart\Enum\AutoInstances;
-use Grifart\Enum\Enum;
-
 /**
  * Network connectivity state
- * @method static ConnectivityState NONE()
- * @method static ConnectivityState PORTAL()
- * @method static ConnectivityState LIMITED()
- * @method static ConnectivityState FULL()
- * @method static ConnectivityState UNKNOWN()
  */
-final class ConnectivityState extends Enum {
+enum ConnectivityState: string {
 
-	use AutoInstances;
-
-	/**
-	 * @var string The host is not connected to any network
-	 */
-	private const NONE = 'none';
-
-	/**
-	 * @var string The host is behind a captive portal and cannot reach the full Internet
-	 */
-	private const PORTAL = 'portal';
-
-	/**
-	 * @var string The host is connected to a network, but it has no access to the Internet
-	 */
-	private const LIMITED = 'limited';
-
-	/**
-	 * @var string The host is connected to a network and has full access to the Internet
-	 */
-	private const FULL = 'full';
-
-	/**
-	 * @var string The connectivity status cannot be found out
-	 */
-	private const UNKNOWN = 'unknown';
+	/// The host is not connected to any network
+	case NONE = 'none';
+	/// The host is behind a captive portal and cannot reach the full Internet
+	case PORTAL = 'portal';
+	/// The host is connected to a network, but it has no access to the Internet
+	case LIMITED = 'limited';
+	/// The host is connected to a network and has full access to the Internet
+	case FULL = 'full';
+	/// The connectivity status cannot be found out
+	case UNKNOWN = 'unknown';
 
 }

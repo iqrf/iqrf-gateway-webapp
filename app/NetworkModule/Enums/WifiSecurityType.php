@@ -22,46 +22,23 @@ namespace App\NetworkModule\Enums;
 
 use App\NetworkModule\Entities\WifiConnectionSecurity;
 use App\NetworkModule\Utils\NmCliConnection;
-use Grifart\Enum\AutoInstances;
-use Grifart\Enum\Enum;
-use Grifart\Enum\MissingValueDeclarationException;
+use ValueError;
 
 /**
  * WiFi security type enum
- * @method static WifiSecurityType OPEN()
- * @method static WifiSecurityType LEAP()
- * @method static WifiSecurityType WEP()
- * @method static WifiSecurityType WPA_EAP()
- * @method static WifiSecurityType WPA_PSK()
  */
-final class WifiSecurityType extends Enum {
+enum WifiSecurityType: string {
 
-	use AutoInstances;
-
-	/**
-	 * @var string Open
-	 */
-	private const OPEN = 'open';
-
-	/**
-	 * @var string WEP
-	 */
-	private const WEP = 'wep';
-
-	/**
-	 * @var string Cisco LEAP
-	 */
-	private const LEAP = 'leap';
-
-	/**
-	 * @var string WPA-EAP
-	 */
-	private const WPA_EAP = 'wpa-eap';
-
-	/**
-	 * @var string WPA-PSK
-	 */
-	private const WPA_PSK = 'wpa-psk';
+	/// Open
+	case OPEN = 'open';
+	/// WEP
+	case WEP = 'wep';
+	/// Cisco LEAP
+	case LEAP = 'leap';
+	/// WPA-EAP
+	case WPA_EAP = 'wpa-eap';
+	/// WPA-PSK
+	case WPA_PSK = 'wpa-psk';
 
 	/**
 	 * Deserializes WiFi security entity from nmcli connection configuration
@@ -71,24 +48,24 @@ final class WifiSecurityType extends Enum {
 	public static function nmCliDeserialize(array $nmCli): self {
 		$conf = $nmCli[WifiConnectionSecurity::NMCLI_PREFIX] ?? [];
 		if ($conf === []) {
-			return self::OPEN();
+			return self::OPEN;
 		}
-		$authAlg = WifiAuthAlgorithm::fromScalar($conf['auth-alg'] ?? '');
-		$keyManagement = WifiKeyManagement::fromScalar($conf['key-mgmt']);
+		$authAlg = WifiAuthAlgorithm::from($conf['auth-alg'] ?? '');
+		$keyManagement = WifiKeyManagement::from($conf['key-mgmt']);
 		switch ($keyManagement) {
-			case WifiKeyManagement::DYNAMIC_WEP():
-				if ($authAlg === WifiAuthAlgorithm::LEAP()) {
-					return self::LEAP();
+			case WifiKeyManagement::DYNAMIC_WEP:
+				if ($authAlg === WifiAuthAlgorithm::LEAP) {
+					return self::LEAP;
 				}
-				return self::WEP();
-			case WifiKeyManagement::STATIC_WEP():
-				return self::WEP();
-			case WifiKeyManagement::WPA_EAP():
-				return self::WPA_EAP();
-			case WifiKeyManagement::WPA_PSK():
-				return self::WPA_PSK();
+				return self::WEP;
+			case WifiKeyManagement::STATIC_WEP:
+				return self::WEP;
+			case WifiKeyManagement::WPA_EAP:
+				return self::WPA_EAP;
+			case WifiKeyManagement::WPA_PSK:
+				return self::WPA_PSK;
 			default:
-				throw new MissingValueDeclarationException('There is no value for enum \'' . self::class . '\' and scalar value \'' . $keyManagement->toScalar() . '\'.');
+				throw new ValueError('There is no value for enum \'' . self::class . '\' and scalar value \'' . $keyManagement->value . '\'.');
 		}
 	}
 
@@ -98,27 +75,27 @@ final class WifiSecurityType extends Enum {
 	 */
 	public function nmCliSerialize(): string {
 		switch ($this) {
-			case self::LEAP():
-				$authAlgorithm = WifiAuthAlgorithm::LEAP();
-				$keyManagement = WifiKeyManagement::DYNAMIC_WEP();
+			case self::LEAP:
+				$authAlgorithm = WifiAuthAlgorithm::LEAP;
+				$keyManagement = WifiKeyManagement::DYNAMIC_WEP;
 				break;
-			case self::WEP():
-				$authAlgorithm = WifiAuthAlgorithm::OPEN_SYSTEM();
-				$keyManagement = WifiKeyManagement::STATIC_WEP();
+			case self::WEP:
+				$authAlgorithm = WifiAuthAlgorithm::OPEN_SYSTEM;
+				$keyManagement = WifiKeyManagement::STATIC_WEP;
 				break;
-			case self::WPA_EAP():
-				$keyManagement = WifiKeyManagement::WPA_EAP();
+			case self::WPA_EAP:
+				$keyManagement = WifiKeyManagement::WPA_EAP;
 				break;
-			case self::WPA_PSK():
-				$keyManagement = WifiKeyManagement::WPA_PSK();
+			case self::WPA_PSK:
+				$keyManagement = WifiKeyManagement::WPA_PSK;
 				break;
-			case self::OPEN():
+			case self::OPEN:
 			default:
 				return '';
 		}
-		$config = ['key-mgmt' => $keyManagement->toScalar()];
+		$config = ['key-mgmt' => $keyManagement->value];
 		if (isset($authAlgorithm)) {
-			$config['auth-alg'] = $authAlgorithm->toScalar();
+			$config['auth-alg'] = $authAlgorithm->value;
 		}
 		return NmCliConnection::encode($config, WifiConnectionSecurity::NMCLI_PREFIX);
 	}

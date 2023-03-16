@@ -27,9 +27,9 @@ declare(strict_types = 1);
 namespace Tests\Unit\NetworkModule\Enums;
 
 use App\NetworkModule\Enums\WifiMode;
-use Grifart\Enum\MissingValueDeclarationException;
 use Tester\Assert;
 use Tester\TestCase;
+use ValueError;
 
 require __DIR__ . '/../../../bootstrap.php';
 
@@ -45,15 +45,15 @@ final class WifiModeTest extends TestCase {
 	public function getFromNetworkListData(): array {
 		return [
 			[
-				WifiMode::ADHOC(),
+				WifiMode::ADHOC,
 				'Ad-Hoc',
 			],
 			[
-				WifiMode::INFRA(),
+				WifiMode::INFRA,
 				'Infra',
 			],
 			[
-				WifiMode::MESH(),
+				WifiMode::MESH,
 				'Mesh',
 			],
 		];
@@ -75,7 +75,7 @@ final class WifiModeTest extends TestCase {
 	public function testFromNetworkListUnknown(): void {
 		Assert::throws(function (): void {
 			WifiMode::fromNetworkList('Unknown');
-		}, MissingValueDeclarationException::class, 'There is no value for enum \'' . WifiMode::class . '\' and scalar value \'Unknown\'.');
+		}, ValueError::class, 'There is no value for enum \'' . WifiMode::class . '\' and scalar value \'Unknown\'.');
 	}
 
 }

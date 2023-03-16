@@ -34,30 +34,16 @@ final class IPv4Current implements JsonSerializable {
 	public const NMCLI_PREFIX = 'IP4';
 
 	/**
-	 * @var array<IPv4Address> IPv4 addresses
-	 */
-	private array $addresses = [];
-
-	/**
-	 * @var IPv4|null IPv4 gateway address
-	 */
-	private ?IPv4 $gateway;
-
-	/**
-	 * @var array<IPv4> IPv4 addresses of DNS servers
-	 */
-	private array $dns = [];
-
-	/**
 	 * Current IPv4 configuration entity
 	 * @param array<IPv4Address> $addresses IPv4 addresses
 	 * @param IPv4|null $gateway IPv4 gateway address
 	 * @param array<IPv4> $dns DNS servers
 	 */
-	public function __construct(array $addresses, ?IPv4 $gateway, array $dns) {
-		$this->addresses = $addresses;
-		$this->gateway = $gateway;
-		$this->dns = $dns;
+	public function __construct(
+		private readonly array $addresses,
+		private readonly ?IPv4 $gateway,
+		private readonly array $dns,
+	) {
 	}
 
 	/**

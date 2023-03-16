@@ -20,41 +20,24 @@ declare(strict_types = 1);
 
 namespace App\NetworkModule\Enums;
 
-use Grifart\Enum\AutoInstances;
-use Grifart\Enum\Enum;
-use JsonSerializable;
-
 /**
  * EAP (Extensible Authentication Protocol) phase two authentication method enum
- * @method static EapPhaseTwoMethod GTC()
- * @method static EapPhaseTwoMethod MD5()
- * @method static EapPhaseTwoMethod MSCHAPV2()
  */
-final class EapPhaseTwoMethod extends Enum implements JsonSerializable {
+enum EapPhaseTwoMethod: string {
 
-	use AutoInstances;
-
-	/**
-	 * @var string GTC method
-	 */
-	private const GTC = 'gtc';
-
-	/**
-	 * @var string MD5 method
-	 */
-	private const MD5 = 'md5';
-
-	/**
-	 * @var string MSCHAPv2 method
-	 */
-	private const MSCHAPV2 = 'mschapv2';
+	/// GTC method
+	case GTC = 'gtc';
+	/// MD5 method
+	case MD5 = 'md5';
+	/// MSCHAPv2 method
+	case MSCHAPV2 = 'mschapv2';
 
 	/**
 	 * Serializes EAP phase two authentication method into JSON string
 	 * @return string JSON serialized data
 	 */
 	public function jsonSerialize(): string {
-		return (string) $this->toScalar();
+		return $this->value;
 	}
 
 }

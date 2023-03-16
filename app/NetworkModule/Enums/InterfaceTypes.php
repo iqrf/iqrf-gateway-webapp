@@ -20,98 +20,38 @@ declare(strict_types = 1);
 
 namespace App\NetworkModule\Enums;
 
-use Grifart\Enum\AutoInstances;
-use Grifart\Enum\Enum;
-
 /**
  * Interface type enum
- * @method static InterfaceTypes BOND()
- * @method static InterfaceTypes BLUETOOTH()
- * @method static InterfaceTypes BRIDGE()
- * @method static InterfaceTypes DUMMY()
- * @method static InterfaceTypes ETHERNET()
- * @method static InterfaceTypes GSM()
- * @method static InterfaceTypes IP_TUNNEL()
- * @method static InterfaceTypes LOOPBACK()
- * @method static InterfaceTypes PPP()
- * @method static InterfaceTypes TUN()
- * @method static InterfaceTypes VLAN()
- * @method static InterfaceTypes WIFI()
- * @method static InterfaceTypes WIFI_P2P()
- * @method static InterfaceTypes WIREGUARD()
  */
-final class InterfaceTypes extends Enum {
+enum InterfaceTypes: string {
 
-	use AutoInstances;
-
-	/**
-	 * @var string Bond master interface
-	 */
-	private const BOND = 'bond';
-
-	/**
-	 * @var string Bluetooth interface
-	 */
-	private const BLUETOOTH = 'bt';
-
-	/**
-	 * @var string Bridge master interface
-	 */
-	private const BRIDGE = 'bridge';
-
-	/**
-	 * @var string Dummy interface
-	 */
-	private const DUMMY = 'dummy';
-
-	/**
-	 * @var string Wired Ethernet interface
-	 */
-	private const ETHERNET = 'ethernet';
-
-	/**
-	 * @var string GSM interface
-	 */
-	private const GSM = 'gsm';
-
-	/**
-	 * @var string IP tunnel interface
-	 */
-	private const IP_TUNNEL = 'iptunnel';
-
-	/**
-	 * @var string Loopback interface
-	 */
-	private const LOOPBACK = 'loopback';
-
-	/**
-	 * @var string Point to Point interface
-	 */
-	private const PPP = 'ppp';
-
-	/**
-	 * @var string TUN or TAP interface
-	 */
-	private const TUN = 'tun';
-
-	/**
-	 * @var string 802.1Q VLAN interface
-	 */
-	private const VLAN = 'vlan';
-
-	/**
-	 * @var string 802.11 WiFi interface
-	 */
-	private const WIFI = 'wifi';
-
-	/**
-	 * @var string WiFi P2P interface
-	 */
-	private const WIFI_P2P = 'wifi-p2p';
-
-	/**
-	 * @var string WireGuard
-	 */
-	private const WIREGUARD = 'wireguard';
+	/// Bond master interface
+	case BOND = 'bond';
+	/// Bluetooth interface
+	case BLUETOOTH = 'bt';
+	/// Bridge master interface
+	case BRIDGE = 'bridge';
+	/// Dummy interface
+	case DUMMY = 'dummy';
+	/// Wired Ethernet interface
+	case ETHERNET = 'ethernet';
+	/// GSM interface
+	case GSM = 'gsm';
+	/// IP tunnel interface
+	case IP_TUNNEL = 'iptunnel';
+	/// Loopback interface
+	case LOOPBACK = 'loopback';
+	/// Point to Point interface
+	case PPP = 'ppp';
+	/// TUN or TAP interface
+	case TUN = 'tun';
+	/// 802.1Q VLAN interface
+	case VLAN = 'vlan';
+	/// 802.11 WiFi interface
+	case WIFI = 'wifi';
+	/// WiFi P2P interface
+	case WIFI_P2P = 'wifi-p2p';
+	/// WireGuard
+	case WIREGUARD = 'wireguard';
 
 }

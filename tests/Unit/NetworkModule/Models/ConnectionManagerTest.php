@@ -90,7 +90,7 @@ final class ConnectionManagerTest extends CommandTestCase {
 	 */
 	private function createDetailedConnection(): ConnectionDetail {
 		$uuid = Uuid::fromString(self::UUID);
-		$type = ConnectionTypes::ETHERNET();
+		$type = ConnectionTypes::ETHERNET;
 		$autoConnect = new AutoConnect(true, 0, -1);
 		$ipv4 = $this->createIpv4Connection();
 		$ipv6 = $this->createIpv6Connection();
@@ -102,7 +102,7 @@ final class ConnectionManagerTest extends CommandTestCase {
 	 * @return IPv4Connection IPv4 nmetwork connection entity
 	 */
 	private function createIpv4Connection(): IPv4Connection {
-		$method = IPv4Methods::MANUAL();
+		$method = IPv4Methods::MANUAL;
 		$addresses = [new IPv4Address(IPv4::factory('192.168.1.2'), 24)];
 		$gateway = IPv4::factory('192.168.1.1');
 		$dns = [IPv4::factory('192.168.1.1')];
@@ -114,7 +114,7 @@ final class ConnectionManagerTest extends CommandTestCase {
 	 * @return IPv6Connection IPv6 network connection entity
 	 */
 	private function createIpv6Connection(): IPv6Connection {
-		$method = IPv6Methods::MANUAL();
+		$method = IPv6Methods::MANUAL;
 		$addresses = [new IPv6Address(IPv6::factory('2001:470:5bb2::2'), 64)];
 		$gateway = IPv6::factory('fe80::1');
 		$dns = [IPv6::factory('2001:470:5bb2::1')];
@@ -197,8 +197,8 @@ final class ConnectionManagerTest extends CommandTestCase {
 			. 'wlan0:dd1c59ea-6f5d-471c-8fe7-e066761b9764:802-11-wireless:' . PHP_EOL;
 		$this->receiveCommand(self::COMMANDS['list'], true, $output);
 		$expected = [
-			new Connection('eth0', Uuid::fromString('25ab1b06-2a86-40a9-950f-1c576ddcd35a'), ConnectionTypes::ETHERNET(), 'eth0'),
-			new Connection('wlan0', Uuid::fromString('dd1c59ea-6f5d-471c-8fe7-e066761b9764'), ConnectionTypes::WIFI(), ''),
+			new Connection('eth0', Uuid::fromString('25ab1b06-2a86-40a9-950f-1c576ddcd35a'), ConnectionTypes::ETHERNET, 'eth0'),
+			new Connection('wlan0', Uuid::fromString('dd1c59ea-6f5d-471c-8fe7-e066761b9764'), ConnectionTypes::WIFI, ''),
 		];
 		Assert::equal($expected, $this->manager->list());
 	}

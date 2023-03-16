@@ -76,7 +76,7 @@ class ConnectivityController extends NetworkController {
 	public function check(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['network']);
 		try {
-			$state = $this->manager->check()->toScalar();
+			$state = $this->manager->check()->value;
 			return $response->writeJsonBody(['state' => $state]);
 		} catch (NetworkManagerException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);

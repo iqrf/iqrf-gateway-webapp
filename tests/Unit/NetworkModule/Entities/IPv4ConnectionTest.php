@@ -77,7 +77,7 @@ final class IPv4ConnectionTest extends TestCase {
 	 * Sets up the test environment
 	 */
 	public function __construct() {
-		$this->method = IPv4Methods::MANUAL();
+		$this->method = IPv4Methods::MANUAL;
 		$this->addresses = [
 			new IPv4Address(IPv4::factory('192.168.1.2'), 24),
 		];

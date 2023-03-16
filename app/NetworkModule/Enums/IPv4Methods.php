@@ -20,44 +20,20 @@ declare(strict_types = 1);
 
 namespace App\NetworkModule\Enums;
 
-use Grifart\Enum\AutoInstances;
-use Grifart\Enum\Enum;
-
 /**
  * IPv4 connection method
- * @method static IPv4Methods AUTO()
- * @method static IPv4Methods DISABLED()
- * @method static IPv4Methods LINK_LOCAL()
- * @method static IPv4Methods MANUAL()
- * @method static IPv4Methods SHARED()
  */
-final class IPv4Methods extends Enum {
+enum IPv4Methods: string {
 
-	use AutoInstances;
-
-	/**
-	 * @var string IPv4 configuration should be automatically determined via a method appropriate for the hardware interface, ie DHCP or PPP or some other device-specific manner
-	 */
-	private const AUTO = 'auto';
-
-	/**
-	 * @var string This connection does not use or require IPv4 address and it should be disabled
-	 */
-	private const DISABLED = 'disabled';
-
-	/**
-	 * @var string IPv4 configuration should be automatically configured for link-local-only operation
-	 */
-	private const LINK_LOCAL = 'link-local';
-
-	/**
-	 * @var string All necessary IPv4 configuration is specified in the setting
-	 */
-	private const MANUAL = 'manual';
-
-	/**
-	 * @var string This connection specifies configuration that allows other computers to connect through it to the default network
-	 */
-	private const SHARED = 'shared';
+	/// IPv4 configuration should be automatically determined via a method appropriate for the hardware interface, ie DHCP or PPP or some other device-specific manner
+	case AUTO = 'auto';
+	/// This connection does not use or require IPv4 address and it should be disabled
+	case DISABLED = 'disabled';
+	/// IPv4 configuration should be automatically configured for link-local-only operation
+	case LINK_LOCAL = 'link-local';
+	/// All necessary IPv4 configuration is specified in the setting
+	case MANUAL = 'manual';
+	/// This connection specifies configuration that allows other computers to connect through it to the default network
+	case SHARED = 'shared';
 
 }

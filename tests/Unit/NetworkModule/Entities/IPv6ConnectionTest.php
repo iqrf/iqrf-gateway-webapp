@@ -77,7 +77,7 @@ final class IPv6ConnectionTest extends TestCase {
 	 * Sets up the test environment
 	 */
 	public function __construct() {
-		$this->method = IPv6Methods::MANUAL();
+		$this->method = IPv6Methods::MANUAL;
 		$this->addresses = [
 			new IPv6Address(IPv6::factory('2001:470:5bb2::2'), 64),
 		];

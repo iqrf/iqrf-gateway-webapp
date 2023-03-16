@@ -20,56 +20,24 @@ declare(strict_types = 1);
 
 namespace App\NetworkModule\Enums;
 
-use Grifart\Enum\AutoInstances;
-use Grifart\Enum\Enum;
-
 /**
  * IPv6 connection method enum
- * @method static IPv6Methods AUTO()
- * @method static IPv6Methods DISABLED()
- * @method static IPv6Methods DHCP()
- * @method static IPv6Methods IGNORE()
- * @method static IPv6Methods LINK_LOCAL()
- * @method static IPv6Methods MANUAL()
- * @method static IPv6Methods SHARED()
  */
-final class IPv6Methods extends Enum {
+enum IPv6Methods: string {
 
-	use AutoInstances;
-
-	/**
-	 * @var string IPv6 configuration should be automatically determined via a method appropriate for the hardware interface, ie router advertisements, DHCP, or PPP or some other device-specific manner
-	 */
-	private const AUTO = 'auto';
-
-	/**
-	 * @var string IPv6 is disabled for the configuration
-	 */
-	private const DISABLED = 'disabled';
-
-	/**
-	 * @var string IPv6 configuration should be automatically determined via DHCPv6 only and router advertisements should be ignored
-	 */
-	private const DHCP = 'dhcp';
-
-	/**
-	 * @var string IPv6 is not required or is handled by some other mechanism, and NetworkManager should not configure IPv6 for this connection
-	 */
-	private const IGNORE = 'ignore';
-
-	/**
-	 * @var string IPv6 configuration should be automatically configured for link-local-only operation
-	 */
-	private const LINK_LOCAL = 'link-local';
-
-	/**
-	 * @var string All necessary IPv6 configuration is specified in the setting
-	 */
-	private const MANUAL = 'manual';
-
-	/**
-	 * @var string This connection specifies configuration that allows other computers to connect through it to the default network
-	 */
-	private const SHARED = 'shared';
+	/// IPv6 configuration should be automatically determined via a method appropriate for the hardware interface, ie router advertisements, DHCP, or PPP or some other device-specific manner
+	case AUTO = 'auto';
+	/// IPv6 is disabled for the configuration
+	case DISABLED = 'disabled';
+	/// IPv6 configuration should be automatically determined via DHCPv6 only and router advertisements should be ignored
+	case DHCP = 'dhcp';
+	/// IPv6 is not required or is handled by some other mechanism, and NetworkManager should not configure IPv6 for this connection
+	case IGNORE = 'ignore';
+	/// IPv6 configuration should be automatically configured for link-local-only operation
+	case LINK_LOCAL = 'link-local';
+	/// All necessary IPv6 configuration is specified in the setting
+	case MANUAL = 'manual';
+	/// This connection specifies configuration that allows other computers to connect through it to the default network
+	case SHARED = 'shared';
 
 }

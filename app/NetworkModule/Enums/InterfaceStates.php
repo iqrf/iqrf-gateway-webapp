@@ -20,99 +20,41 @@ declare(strict_types = 1);
 
 namespace App\NetworkModule\Enums;
 
-use Grifart\Enum\AutoInstances;
-use Grifart\Enum\Enum;
 use Nette\Utils\Strings;
 
 /**
  * Network interface states enum
- * @method static InterfaceStates CONNECTED()
- * @method static InterfaceStates CONNECTING()
- * @method static InterfaceStates CONFIG()
- * @method static InterfaceStates DEACTIVATING()
- * @method static InterfaceStates DISCONNECTED()
- * @method static InterfaceStates FAILED()
- * @method static InterfaceStates IP_CONFIG()
- * @method static InterfaceStates IP_CHECK()
- * @method static InterfaceStates NEED_AUTH()
- * @method static InterfaceStates PREPARE()
- * @method static InterfaceStates SECONDARIES()
- * @method static InterfaceStates UNAVAILABLE()
- * @method static InterfaceStates UNMANAGED()
- * @method static InterfaceStates UNKNOWN()
  */
-final class InterfaceStates extends Enum {
+enum InterfaceStates: string {
 
-	use AutoInstances;
-
-	/**
-	 * @var string The interface has a network connection
-	 */
-	private const CONNECTED = 'connected';
-
-	/**
-	 * @var string The interface is connecting to the network
-	 */
-	private const CONNECTING = 'connecting';
-
-	/**
-	 * @var string The interface is configuring connection to the requested network
-	 */
-	private const CONFIG = 'connecting (configuring)';
-
-	/**
-	 * @var string The interface is disconnecting from the current network and the interface is cleaning up resources used for that connection
-	 */
-	private const DEACTIVATING = 'deactivating';
-	/**
-	 * @var string The interface can be activated, but is currently idle and not connected to the network
-	 */
-	private const DISCONNECTED = 'disconnected';
-
-	/**
-	 * @var string The interface failed to connect to the requested network
-	 */
-	private const FAILED = 'connection failed';
-
-	/**
-	 * @var string The interface is getting IP configuration
-	 */
-	private const IP_CONFIG = 'connecting (getting IP configuration)';
-
-	/**
-	 * @var string The interface is checking whether further action is required for the requested network connection
-	 */
-	private const IP_CHECK = 'connecting (checking IP connectivity)';
-
-	/**
-	 * @var string The interface requires more information to continue connecting to the requested network
-	 */
-	private const NEED_AUTH = 'connecting (need authentication)';
-
-	/**
-	 * @var string The interface is preparing the connection to the network
-	 */
-	private const PREPARE = 'connecting (prepare)';
-
-	/**
-	 * @var string The interface is waiting for a secondary connection (like a VPN) which must activated before the interface can be activated
-	 */
-	private const SECONDARIES = 'connecting (starting secondary connections)';
-
-	/**
-	 * @var string The interface is managed by NetworkManager, but is not available for use
-	 */
-	private const UNAVAILABLE = 'unavailable';
-
-	/**
-	 * @var string The interface is recognized, but not managed by NetworkManager
-	 */
-	private const UNMANAGED = 'unmanaged';
-
-	/**
-	 * @var string The interface's state is unknown
-	 */
-	private const UNKNOWN = 'unknown';
+	/// The interface has a network connection
+	case CONNECTED = 'connected';
+	/// The interface is connecting to the network
+	case CONNECTING = 'connecting';
+	/// The interface is configuring connection to the requested network
+	case CONFIG = 'connecting (configuring)';
+	/// The interface is disconnecting from the current network and the interface is cleaning up resources used for that connection
+	case DEACTIVATING = 'deactivating';
+	/// The interface can be activated, but is currently idle and not connected to the network
+	case DISCONNECTED = 'disconnected';
+	/// The interface failed to connect to the requested network
+	case FAILED = 'connection failed';
+	/// The interface is getting IP configuration
+	case IP_CONFIG = 'connecting (getting IP configuration)';
+	/// The interface is checking whether further action is required for the requested network connection
+	case IP_CHECK = 'connecting (checking IP connectivity)';
+	/// The interface requires more information to continue connecting to the requested network
+	case NEED_AUTH = 'connecting (need authentication)';
+	/// The interface is preparing the connection to the network
+	case PREPARE = 'connecting (prepare)';
+	/// The interface is waiting for a secondary connection (like a VPN) which must activated before the interface can be activated
+	case SECONDARIES = 'connecting (starting secondary connections)';
+	/// The interface is managed by NetworkManager, but is not available for use
+	case UNAVAILABLE = 'unavailable';
+	/// The interface is recognized, but not managed by NetworkManager
+	case UNMANAGED = 'unmanaged';
+	/// The interface's state is unknown
+	case UNKNOWN = 'unknown';
 
 	/**
 	 * Creates a new network interface state enum from nmcli
@@ -122,7 +64,7 @@ final class InterfaceStates extends Enum {
 	public static function fromNmCli(string $nmCli): self {
 		$state = Strings::match($nmCli, '~^\d+ \((?\'state\'.+)\)$~')['state'];
 		$state = Strings::replace($state, '# \(externally\)#', '');
-		return self::fromScalar($state);
+		return self::from($state);
 	}
 
 }

@@ -20,65 +20,32 @@ declare(strict_types = 1);
 
 namespace App\NetworkModule\Enums;
 
-use Grifart\Enum\AutoInstances;
-use Grifart\Enum\Enum;
-use JsonSerializable;
-
 /**
  * EAP (Extensible Authentication Protocol) phase one authentication method enum
- * @method static EapPhaseOneMethod FAST()
- * @method static EapPhaseOneMethod LEAP()
- * @method static EapPhaseOneMethod MD5()
- * @method static EapPhaseOneMethod PEAP()
- * @method static EapPhaseOneMethod PWD()
- * @method static EapPhaseOneMethod TLS()
- * @method static EapPhaseOneMethod TTLS()
  */
-final class EapPhaseOneMethod extends Enum implements JsonSerializable {
+enum EapPhaseOneMethod: string {
 
-	use AutoInstances;
-
-	/**
-	 * @var string FAST method
-	 */
-	private const FAST = 'fast';
-
-	/**
-	 * @var string LEAP method
-	 */
-	private const LEAP = 'leap';
-
-	/**
-	 * @var string MD5 method
-	 */
-	private const MD5 = 'md5';
-
-	/**
-	 * @var string PEAP method
-	 */
-	private const PEAP = 'peap';
-
-	/**
-	 * @var string PWD method
-	 */
-	private const PWD = 'pwd';
-
-	/**
-	 * @var string TLS method
-	 */
-	private const TLS = 'tls';
-
-	/**
-	 * @var string TTLS method
-	 */
-	private const TTLS = 'ttls';
+	/// FAST method
+	case FAST = 'fast';
+	/// LEAP method
+	case LEAP = 'leap';
+	/// MD5 method
+	case MD5 = 'md5';
+	/// PEAP method
+	case PEAP = 'peap';
+	/// PWD method
+	case PWD = 'pwd';
+	/// TLS method
+	case TLS = 'tls';
+	/// TTLS method
+	case TTLS = 'ttls';
 
 	/**
 	 * Serializes EAP phase one authentication method into JSON string
 	 * @return string JSON serialized data
 	 */
 	public function jsonSerialize(): string {
-		return (string) $this->toScalar();
+		return $this->value;
 	}
 
 }

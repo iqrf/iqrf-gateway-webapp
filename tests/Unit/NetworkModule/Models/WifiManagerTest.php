@@ -68,8 +68,8 @@ final class WifiManagerTest extends CommandTestCase {
 			. ' :1A\:E8\:29\:E5\:CB\:9A:WIFI MAGDA:Infra:36:405 Mbit/s:32:WPA2' . PHP_EOL;
 		$this->receiveCommand(self::LIST_COMMAND, true, $output);
 		$ssid = 'WIFI MAGDA';
-		$mode = WifiMode::INFRA();
-		$security = WifiSecurity::WPA2_PERSONAL();
+		$mode = WifiMode::INFRA;
+		$security = WifiSecurity::WPA2_PERSONAL;
 		$expected = [
 			new WifiNetwork(true, '04:F0:21:24:1E:53', $ssid, $mode, 36, '405 Mbit/s', 60, $security),
 			new WifiNetwork(false, '18:E8:29:E4:CB:9A', $ssid, $mode, 1, '195 Mbit/s', 47, $security),

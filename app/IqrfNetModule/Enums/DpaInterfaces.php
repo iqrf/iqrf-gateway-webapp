@@ -20,26 +20,14 @@ declare(strict_types = 1);
 
 namespace App\IqrfNetModule\Enums;
 
-use Grifart\Enum\AutoInstances;
-use Grifart\Enum\Enum;
-
 /**
  * DPA communication interface enum
- * @method static DpaInterfaces SPI();
- * @method static DpaInterfaces UART();
  */
-final class DpaInterfaces extends Enum {
+enum DpaInterfaces: string {
 
-	use AutoInstances;
-
-	/**
-	 * @var string SPI interface
-	 */
-	private const SPI = 'SPI';
-
-	/**
-	 * @var string UART interface
-	 */
-	private const UART = 'UART';
+	/// SPI interface
+	case SPI = 'SPI';
+	/// UART interface
+	case UART = 'UART';
 
 }

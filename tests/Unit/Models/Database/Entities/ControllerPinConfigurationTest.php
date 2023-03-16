@@ -83,7 +83,7 @@ class ControllerPinConfigurationTest extends TestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
-		$this->deviceType = DeviceTypes::BOARD();
+		$this->deviceType = DeviceTypes::BOARD;
 		$this->entity = new ControllerPinConfiguration(
 			self::NAME,
 			$this->deviceType,
@@ -122,7 +122,7 @@ class ControllerPinConfigurationTest extends TestCase {
 	 * Tests the function to set device type
 	 */
 	public function testSetDeviceType(): void {
-		$expected = DeviceTypes::ADAPTER();
+		$expected = DeviceTypes::ADAPTER;
 		$this->entity->setDeviceType($expected);
 		Assert::same($expected, $this->entity->getDeviceType());
 	}
@@ -230,7 +230,7 @@ class ControllerPinConfigurationTest extends TestCase {
 		$expected = [
 			'id' => null,
 			'name' => self::NAME,
-			'deviceType' => $this->deviceType->toScalar(),
+			'deviceType' => $this->deviceType->value,
 			'greenLed' => self::GREEN_LED_PIN,
 			'redLed' => self::RED_LED_PIN,
 			'button' => self::BUTTON_PIN,

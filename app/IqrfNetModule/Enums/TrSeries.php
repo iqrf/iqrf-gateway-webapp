@@ -21,28 +21,17 @@ declare(strict_types = 1);
 namespace App\IqrfNetModule\Enums;
 
 use DomainException;
-use Grifart\Enum\AutoInstances;
-use Grifart\Enum\Enum;
 use Nette\Utils\Strings;
 
 /**
  * IQRF TR series enum
- * @method static TrSeries TR_7XD();
- * @method static TrSeries TR_7XG();
  */
-final class TrSeries extends Enum {
+enum TrSeries: string {
 
-	use AutoInstances;
-
-	/**
-	 * @var string IQRF (DC)TR-7xD
-	 */
-	private const TR_7XD = '7xD';
-
-	/**
-	 * @var string IQRF (DC)TR-7xG
-	 */
-	private const TR_7XG = '7xG';
+	/// IQRF (DC)TR-7xD
+	case TR_7XD = '7xD';
+	/// IQRF (DC)TR-7xG
+	case TR_7XG = '7xG';
 
 	/**
 	 * Creates IQRF TR series enum from the IQRF TR type
@@ -57,14 +46,11 @@ final class TrSeries extends Enum {
 		$series = intval($matches['series']);
 		$module = $matches['module'];
 		if ($series === 7) {
-			switch ($module) {
-				case 'D':
-					return self::TR_7XD();
-				case 'G':
-					return self::TR_7XG();
-				default:
-					throw new DomainException();
-			}
+			return match ($module) {
+				'D' => self::TR_7XD,
+				'G' => self::TR_7XG,
+				default => throw new DomainException(),
+			};
 		}
 		throw new DomainException();
 	}
@@ -78,25 +64,16 @@ final class TrSeries extends Enum {
 		$mcuType = $trMcuType & 0x07;
 		$trType = $trMcuType >> 4;
 		if ($mcuType === 4) {
-			switch ($trType) {
-				case 2:
-				case 4:
-				case 11:
-				case 12:
-				case 13:
-					return self::TR_7XD();
-				default:
-					throw new DomainException();
-			}
-		} elseif ($mcuType === 5) {
-			switch ($trType) {
-				case 2:
-				case 11:
-				case 13:
-					return self::TR_7XG();
-				default:
-					throw new DomainException();
-			}
+			return match ($trType) {
+				2, 4, 11, 12, 13 => self::TR_7XD,
+				default => throw new DomainException(),
+			};
+		}
+		if ($mcuType === 5) {
+			return match ($trType) {
+				2, 11, 13 => self::TR_7XG,
+				default => throw new DomainException(),
+			};
 		}
 		throw new DomainException();
 	}
@@ -107,15 +84,11 @@ final class TrSeries extends Enum {
 	 * @return TrSeries IQRF TR series enum
 	 */
 	public static function fromIqrfOsFileName(string $trSeries): self {
-		switch ($trSeries) {
-			case 'TR7x':
-			case 'TR7xD':
-				return self::TR_7XD();
-			case 'TR7xG':
-				return self::TR_7XG();
-			default:
-				throw new DomainException('Unknown or unsupported TR series ' . $trSeries);
-		}
+		return match ($trSeries) {
+			'TR7x', 'TR7xD' => self::TR_7XD,
+			'TR7xG' => self::TR_7XG,
+			default => throw new DomainException('Unknown or unsupported TR series ' . $trSeries),
+		};
 	}
 
 }

@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\NetworkModule\Utils;
 
+use BackedEnum;
 use Nette\Utils\Strings;
 use function explode;
 use function sprintf;
@@ -74,6 +75,9 @@ class NmCliConnection {
 		foreach ($array as $key => $value) {
 			if (gettype($value) === 'boolean') {
 				$value = $value === true ? 'yes' : 'no';
+			}
+			if ($value instanceof BackedEnum) {
+				$value = $value->value;
 			}
 			$string .= sprintf('%s.%s "%s" ', $prefix, $key, $value);
 		}

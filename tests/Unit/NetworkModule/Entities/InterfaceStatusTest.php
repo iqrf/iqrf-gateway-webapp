@@ -90,8 +90,8 @@ final class InterfaceStatusTest extends TestCase {
 	 * Sets up the test environment
 	 */
 	public function __construct() {
-		$this->type = InterfaceTypes::ETHERNET();
-		$this->state = InterfaceStates::CONNECTED();
+		$this->type = InterfaceTypes::ETHERNET;
+		$this->state = InterfaceStates::CONNECTED;
 		$this->connection = Uuid::fromString(self::CONNECTION);
 		$this->entity = new InterfaceStatus(self::NAME, self::MAC_ADDRESS, self::MANUFACTURER, self::MODEL, $this->type, $this->state, $this->connection);
 	}
@@ -128,8 +128,8 @@ GENERAL.CON-UUID:f61b25c9-66d7-400e-add0-d2a30c57b65c
 			'macAddress' => self::MAC_ADDRESS,
 			'manufacturer' => self::MANUFACTURER,
 			'model' => self::MODEL,
-			'type' => $this->type->toScalar(),
-			'state' => $this->state->toScalar(),
+			'type' => $this->type->value,
+			'state' => $this->state->value,
 			'connection' => self::CONNECTION,
 		];
 		Assert::same($expected, $this->entity->jsonSerialize());

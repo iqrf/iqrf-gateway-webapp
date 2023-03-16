@@ -20,41 +20,24 @@ declare(strict_types = 1);
 
 namespace App\NetworkModule\Enums;
 
-use Grifart\Enum\AutoInstances;
-use Grifart\Enum\Enum;
-use JsonSerializable;
-
 /**
  * WEP (Wired Equivalent Privacy) key type enum
- * @method static WepKeyType KEY()
- * @method static WepKeyType PASSPHRASE()
- * @method static WepKeyType UNKNOWN()
  */
-final class WepKeyType extends Enum implements JsonSerializable {
+enum WepKeyType: string {
 
-	use AutoInstances;
-
-	/**
-	 * @var string WEP key
-	 */
-	private const KEY = 'key';
-
-	/**
-	 * @var string WEP passphrase
-	 */
-	private const PASSPHRASE = 'passphrase';
-
-	/**
-	 * @var string Unknown type
-	 */
-	private const UNKNOWN = 'unknown';
+	/// WEP key
+	case KEY = 'key';
+	/// WEP passphrase
+	case PASSPHRASE = 'passphrase';
+	/// Unknown type
+	case UNKNOWN = 'unknown';
 
 	/**
 	 * Serializes WEP key type into JSON string
 	 * @return string JSON serialized data
 	 */
 	public function jsonSerialize(): string {
-		return (string) $this->toScalar();
+		return $this->value;
 	}
 
 }

@@ -57,7 +57,7 @@ final class WifiNetworkTest extends TestCase {
 	/**
 	 * @var WifiMode Mode
 	 */
-	private WifiMode $mode;
+	private WifiMode $mode = WifiMode::INFRA;
 
 	/**
 	 * @var int Channel
@@ -77,20 +77,12 @@ final class WifiNetworkTest extends TestCase {
 	/**
 	 * @var WifiSecurity Security
 	 */
-	private WifiSecurity $security;
+	private WifiSecurity $security = WifiSecurity::WPA2_PERSONAL;
 
 	/**
 	 * @var WifiNetwork Wi-Fi network entity
 	 */
 	private WifiNetwork $entity;
-
-	/**
-	 * Sets up the test environment
-	 */
-	public function __construct() {
-		$this->mode = WifiMode::INFRA();
-		$this->security = WifiSecurity::WPA2_PERSONAL();
-	}
 
 	/**
 	 * Sets up the test environment

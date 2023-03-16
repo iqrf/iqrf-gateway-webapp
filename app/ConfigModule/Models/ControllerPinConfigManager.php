@@ -33,22 +33,18 @@ use stdClass;
 class ControllerPinConfigManager {
 
 	/**
-	 * @var EntityManager Entity manager
-	 */
-	private EntityManager $entityManager;
-
-	/**
 	 * @var ControllerPinConfigurationRepository Controller pins repository
 	 */
-	private ControllerPinConfigurationRepository $repository;
+	private readonly ControllerPinConfigurationRepository $repository;
 
 	/**
 	 * Constructor
 	 * @param EntityManager $entityManager Entity manager
 	 */
-	public function __construct(EntityManager $entityManager) {
-		$this->entityManager = $entityManager;
-		$this->repository = $this->entityManager->getRepository(ControllerPinConfiguration::class);
+	public function __construct(
+		private readonly EntityManager $entityManager,
+	) {
+		$this->repository = $entityManager->getControllerPinConfigurationRepository();
 	}
 
 	/**
@@ -77,7 +73,7 @@ class ControllerPinConfigManager {
 	public function addPinConfig(stdClass $json): ControllerPinConfiguration {
 		$profile = new ControllerPinConfiguration(
 			$json->name,
-			DeviceTypes::fromScalar($json->deviceType),
+			DeviceTypes::from($json->deviceType),
 			$json->greenLed,
 			$json->redLed,
 			$json->button
@@ -102,7 +98,7 @@ class ControllerPinConfigManager {
 	public function editPinConfig(int $id, stdClass $json): void {
 		$profile = $this->findPinConfig($id);
 		$profile->setName($json->name);
-		$profile->setDeviceType(DeviceTypes::fromScalar($json->deviceType));
+		$profile->setDeviceType(DeviceTypes::from($json->deviceType));
 		$profile->setGreenLedPin($json->greenLed);
 		$profile->setRedLedPin($json->redLed);
 		$profile->setButtonPin($json->button);

@@ -39,14 +39,14 @@ require __DIR__ . '/../../../../bootstrap.php';
 final class EapTest extends TestCase {
 
 	/**
-	 * @var string EAP phase one authentication method
+	 * @var EapPhaseOneMethod EAP phase one authentication method
 	 */
-	private const PHASE_ONE = 'peap';
+	private const PHASE_ONE = EapPhaseOneMethod::PEAP;
 
 	/**
-	 * @var string EAP phase two authentication method
+	 * @var EapPhaseTwoMethod EAP phase two authentication method
 	 */
-	private const PHASE_TWO = 'mschapv2';
+	private const PHASE_TWO = EapPhaseTwoMethod::MSCHAPV2;
 
 	/**
 	 * @var string EAP anonymous identity
@@ -77,7 +77,7 @@ final class EapTest extends TestCase {
 	 * Sets up the test environment
 	 */
 	protected function setUp(): void {
-		$this->entity = new Eap(EapPhaseOneMethod::fromScalar(self::PHASE_ONE), EapPhaseTwoMethod::fromScalar(self::PHASE_TWO), self::ANONYMOUS_IDENTITY, self::CERT, self::IDENTITY, self::PASSWORD);
+		$this->entity = new Eap(self::PHASE_ONE, self::PHASE_TWO, self::ANONYMOUS_IDENTITY, self::CERT, self::IDENTITY, self::PASSWORD);
 	}
 
 	/**
@@ -85,8 +85,8 @@ final class EapTest extends TestCase {
 	 */
 	public function testJsonDeserialize(): void {
 		$arrayHash = ArrayHash::from([
-			'phaseOne' => self::PHASE_ONE,
-			'phaseTwo' => self::PHASE_TWO,
+			'phaseOne' => self::PHASE_ONE->value,
+			'phaseTwo' => self::PHASE_TWO->value,
 			'anonymousIdentity' => self::ANONYMOUS_IDENTITY,
 			'cert' => self::CERT,
 			'identity' => self::IDENTITY,
@@ -101,8 +101,8 @@ final class EapTest extends TestCase {
 	 */
 	public function testJsonSerialize(): void {
 		$expected = [
-			'phaseOneMethod' => self::PHASE_ONE,
-			'phaseTwoMethod' => self::PHASE_TWO,
+			'phaseOneMethod' => self::PHASE_ONE->value,
+			'phaseTwoMethod' => self::PHASE_TWO->value,
 			'anonymousIdentity' => self::ANONYMOUS_IDENTITY,
 			'cert' => self::CERT,
 			'identity' => self::IDENTITY,
@@ -129,7 +129,7 @@ final class EapTest extends TestCase {
 	 * Tests the function to serialize EAP entity into NMCLI configfuration string
 	 */
 	public function testNmCliSerialize(): void {
-		$expected = sprintf('802-1x.eap "%s" 802-1x.phase2-auth "%s" 802-1x.anonymous-identity "%s" 802-1x.ca-cert "%s" 802-1x.identity "%s" 802-1x.password "%s" ', self::PHASE_ONE, self::PHASE_TWO, self::ANONYMOUS_IDENTITY, self::CERT, self::IDENTITY, self::PASSWORD);
+		$expected = sprintf('802-1x.eap "%s" 802-1x.phase2-auth "%s" 802-1x.anonymous-identity "%s" 802-1x.ca-cert "%s" 802-1x.identity "%s" 802-1x.password "%s" ', self::PHASE_ONE->value, self::PHASE_TWO->value, self::ANONYMOUS_IDENTITY, self::CERT, self::IDENTITY, self::PASSWORD);
 		Assert::same($expected, $this->entity->nmCliSerialize());
 	}
 

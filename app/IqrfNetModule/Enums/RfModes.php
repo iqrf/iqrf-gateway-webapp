@@ -20,26 +20,14 @@ declare(strict_types = 1);
 
 namespace App\IqrfNetModule\Enums;
 
-use Grifart\Enum\AutoInstances;
-use Grifart\Enum\Enum;
-
 /**
  * RF modes
- * @method static RfModes LP();
- * @method static RfModes STD();
  */
-final class RfModes extends Enum {
+enum RfModes: string {
 
-	use AutoInstances;
-
-	/**
-	 * @var string Low power RF mode
-	 */
-	private const LP = 'LP';
-
-	/**
-	 * @var string Standard RF mode
-	 */
-	private const STD = 'STD';
+	/// Low power RF mode
+	case LP = 'LP';
+	/// Standard RF mode
+	case STD = 'STD';
 
 }

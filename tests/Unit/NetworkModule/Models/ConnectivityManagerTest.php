@@ -72,7 +72,7 @@ final class ConnectivityManagerTest extends CommandTestCase {
 	 */
 	public function testCheckSuccess(): void {
 		$this->receiveCommand(self::CHECK_CMD, true, 'full');
-		Assert::equal(ConnectivityState::FULL(), $this->manager->check());
+		Assert::equal(ConnectivityState::FULL, $this->manager->check());
 	}
 
 }

@@ -45,23 +45,23 @@ final class WifiSecurityTypeTest extends TestCase {
 	public function getNmCliDeserializeData(): array {
 		return [
 			[
-				WifiSecurityType::OPEN(),
+				WifiSecurityType::OPEN,
 				'',
 			],
 			[
-				WifiSecurityType::LEAP(),
+				WifiSecurityType::LEAP,
 				'802-11-wireless-security.key-mgmt:ieee8021x' . PHP_EOL . '802-11-wireless-security.auth-alg:leap',
 			],
 			[
-				WifiSecurityType::WEP(),
+				WifiSecurityType::WEP,
 				'802-11-wireless-security.key-mgmt:none' . PHP_EOL . '802-11-wireless-security.auth-alg:open',
 			],
 			[
-				WifiSecurityType::WPA_EAP(),
+				WifiSecurityType::WPA_EAP,
 				'802-11-wireless-security.key-mgmt:wpa-eap',
 			],
 			[
-				WifiSecurityType::WPA_PSK(),
+				WifiSecurityType::WPA_PSK,
 				'802-11-wireless-security.key-mgmt:wpa-psk',
 			],
 		];
@@ -87,23 +87,23 @@ final class WifiSecurityTypeTest extends TestCase {
 		return [
 			[
 				'',
-				WifiSecurityType::OPEN(),
+				WifiSecurityType::OPEN,
 			],
 			[
 				'802-11-wireless-security.key-mgmt "ieee8021x" 802-11-wireless-security.auth-alg "leap" ',
-				WifiSecurityType::LEAP(),
+				WifiSecurityType::LEAP,
 			],
 			[
 				'802-11-wireless-security.key-mgmt "none" 802-11-wireless-security.auth-alg "open" ',
-				WifiSecurityType::WEP(),
+				WifiSecurityType::WEP,
 			],
 			[
 				'802-11-wireless-security.key-mgmt "wpa-eap" ',
-				WifiSecurityType::WPA_EAP(),
+				WifiSecurityType::WPA_EAP,
 			],
 			[
 				'802-11-wireless-security.key-mgmt "wpa-psk" ',
-				WifiSecurityType::WPA_PSK(),
+				WifiSecurityType::WPA_PSK,
 			],
 		];
 	}

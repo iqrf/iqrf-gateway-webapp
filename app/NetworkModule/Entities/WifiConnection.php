@@ -36,37 +36,18 @@ final class WifiConnection implements INetworkManagerEntity {
 	private const NMCLI_PREFIX = '802-11-wireless';
 
 	/**
-	 * @var string SSID
-	 */
-	private string $ssid;
-
-	/**
-	 * @var WifiMode WiFi network mode
-	 */
-	private WifiMode $mode;
-
-	/**
-	 * @var array<int, string> Seen BSSIDs
-	 */
-	private array $bssids = [];
-
-	/**
-	 * @var WifiConnectionSecurity|null Wifi connection security entity
-	 */
-	private ?WifiConnectionSecurity $security;
-
-	/**
 	 * Constructor
 	 * @param string $ssid SSID
 	 * @param WifiMode $mode WiFi network mode
 	 * @param array<int, string> $bssids Seen BSSIDs
 	 * @param WifiConnectionSecurity|null $security WiFi connection security entity
 	 */
-	public function __construct(string $ssid, WifiMode $mode, array $bssids, ?WifiConnectionSecurity $security) {
-		$this->ssid = $ssid;
-		$this->mode = $mode;
-		$this->bssids = $bssids;
-		$this->security = $security;
+	public function __construct(
+		private readonly string $ssid,
+		private readonly WifiMode $mode,
+		private readonly array $bssids,
+		private readonly ?WifiConnectionSecurity $security,
+	) {
 	}
 
 	/**
@@ -75,7 +56,7 @@ final class WifiConnection implements INetworkManagerEntity {
 	 * @return WifiConnection WiFi connection entity
 	 */
 	public static function jsonDeserialize(stdClass $json): INetworkManagerEntity {
-		$mode = WifiMode::fromScalar($json->mode);
+		$mode = WifiMode::from($json->mode);
 		$security = ($json->security === null) ? null : WifiConnectionSecurity::jsonDeserialize($json->security);
 		return new self($json->ssid, $mode, [], $security);
 	}
@@ -87,7 +68,7 @@ final class WifiConnection implements INetworkManagerEntity {
 	public function jsonSerialize(): array {
 		return [
 			'ssid' => $this->ssid,
-			'mode' => $this->mode->toScalar(),
+			'mode' => $this->mode->value,
 			'bssids' => $this->bssids,
 			'security' => $this->security instanceof WifiConnectionSecurity ? $this->security->jsonSerialize() : null,
 		];
@@ -100,7 +81,7 @@ final class WifiConnection implements INetworkManagerEntity {
 	 */
 	public static function nmCliDeserialize(array $nmCli): INetworkManagerEntity {
 		$array = $nmCli[self::NMCLI_PREFIX];
-		$mode = WifiMode::fromScalar($array['mode']);
+		$mode = WifiMode::from($array['mode']);
 		$bssids = explode(',', $array['seen-bssids']);
 		try {
 			$security = WifiConnectionSecurity::nmCliDeserialize($nmCli);
@@ -117,7 +98,7 @@ final class WifiConnection implements INetworkManagerEntity {
 	public function nmCliSerialize(): string {
 		$array = [
 			'ssid' => $this->ssid,
-			'mode' => $this->mode->toScalar(),
+			'mode' => $this->mode->value,
 		];
 		$string = NmCliConnection::encode($array, self::NMCLI_PREFIX);
 		if ($this->security !== null) {

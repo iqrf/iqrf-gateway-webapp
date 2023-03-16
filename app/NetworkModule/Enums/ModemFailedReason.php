@@ -20,50 +20,22 @@ declare(strict_types = 1);
 
 namespace App\NetworkModule\Enums;
 
-use Grifart\Enum\AutoInstances;
-use Grifart\Enum\Enum;
-
 /**
  * GSM modem failed reason
- * @method static ModemFailedReason NONE()
- * @method static ModemFailedReason UNKNOWN()
- * @method static ModemFailedReason SIM_MISSING()
- * @method static ModemFailedReason SIM_ERROR()
- * @method static ModemFailedReason UNKNOWN_CAPABILITIES()
- * @method static ModemFailedReason ESIM_WITHOUT_PROFILES()
  */
-final class ModemFailedReason extends Enum {
+enum ModemFailedReason: string {
 
-	use AutoInstances;
-
-	/**
-	 * @var string eSIM is not initialized
-	 */
-	private const ESIM_WITHOUT_PROFILES = 'esim-without-profiles';
-
-	/**
-	 * @var string No error
-	 */
-	private const NONE = 'none';
-
-	/**
-	 * @var string SIM is available, but unusable (e.g. permanently locked)
-	 */
-	private const SIM_ERROR = 'sim-error';
-
-	/**
-	 * @var string SIM is required but missing
-	 */
-	private const SIM_MISSING = 'sim-missing';
-
-	/**
-	 * @var string Unknown error
-	 */
-	private const UNKNOWN = 'unknown';
-
-	/**
-	 * @var string Unknown modem capabilities
-	 */
-	private const UNKNOWN_CAPABILITIES = 'unknown-capabilities';
+	/// eSIM is not initialized
+	case ESIM_WITHOUT_PROFILES = 'esim-without-profiles';
+	/// No error
+	case NONE = 'none';
+	/// SIM is available, but unusable (e.g. permanently locked)
+	case SIM_ERROR = 'sim-error';
+	/// SIM is required but missing
+	case SIM_MISSING = 'sim-missing';
+	/// Unknown error
+	case UNKNOWN = 'unknown';
+	/// Unknown modem capabilities
+	case UNKNOWN_CAPABILITIES = 'unknown-capabilities';
 
 }

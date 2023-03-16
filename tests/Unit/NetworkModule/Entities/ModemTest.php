@@ -91,7 +91,7 @@ final class ModemTest extends TestCase {
 	 * Sets up the testing environment
 	 */
 	protected function setUp(): void {
-		$this->state = ModemState::CONNECTED();
+		$this->state = ModemState::CONNECTED;
 		$this->entity = new Modem(self::NETWORK_INTERFACE, self::IMEI, self::MANUFACTURER, self::MODEL, $this->state, $this->failedReason, self::SIGNAL);
 		$this->entity->setRssi(self::RSSI);
 	}
@@ -122,7 +122,7 @@ final class ModemTest extends TestCase {
 			'imei' => self::IMEI,
 			'manufacturer' => self::MANUFACTURER,
 			'model' => self::MODEL,
-			'state' => $this->state->toScalar(),
+			'state' => $this->state->value,
 			'failedReason' => $this->failedReason,
 			'signal' => self::SIGNAL,
 			'rssi' => self::RSSI,

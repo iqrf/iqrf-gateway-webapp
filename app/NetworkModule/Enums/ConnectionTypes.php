@@ -20,112 +20,48 @@ declare(strict_types = 1);
 
 namespace App\NetworkModule\Enums;
 
-use Grifart\Enum\AutoInstances;
-use Grifart\Enum\Enum;
-
 /**
  * Network connection type enum
- * @method static ConnectionTypes BLUETOOTH()
- * @method static ConnectionTypes BRIDGE()
- * @method static ConnectionTypes DUMMY()
- * @method static ConnectionTypes ETHERNET()
- * @method static ConnectionTypes GSM()
- * @method static ConnectionTypes INFINIBAND()
- * @method static ConnectionTypes IP_TUNNEL()
- * @method static ConnectionTypes LOOPBACK()
- * @method static ConnectionTypes TUN()
- * @method static ConnectionTypes VLAN()
- * @method static ConnectionTypes VPN()
- * @method static ConnectionTypes WIFI()
- * @method static ConnectionTypes WIMAX()
- * @method static ConnectionTypes WIREGUARD()
- * @method static ConnectionTypes WPAN()
  */
-final class ConnectionTypes extends Enum {
+enum ConnectionTypes: string {
 
-	use AutoInstances;
-
-	/**
-	 * @var string Bluetooth connection
-	 */
-	private const BLUETOOTH = 'bluetooth';
-
-	/**
-	 * @var string Bridge connection
-	 */
-	private const BRIDGE = 'bridge';
-
-	/**
-	 * @var string Dummy connection
-	 */
-	private const DUMMY = 'dummy';
-
-	/**
-	 * @var string Ethernet connection
-	 */
-	private const ETHERNET = '802-3-ethernet';
-
-	/**
-	 * @var string GSM connection
-	 */
-	private const GSM = 'gsm';
-
-	/**
-	 * @var string IP-over-InfiniBand connection
-	 */
-	private const INFINIBAND = 'infiniband';
-
-	/**
-	 * @var string IP tunnel connection
-	 */
-	private const IP_TUNNEL = 'ip-tunnel';
-
-	/**
-	 * @var string Loopback connection
-	 */
-	private const LOOPBACK = 'loopback';
-
-	/**
-	 * @var string TUN connection
-	 */
-	private const TUN = 'tun';
-
-	/**
-	 * @var string VLAN connection
-	 */
-	private const VLAN = 'vlan';
-
-	/**
-	 * @var string VPN connection
-	 */
-	private const VPN = 'vpn';
-
-	/**
-	 * @var string WiFi connection
-	 */
-	private const WIFI = '802-11-wireless';
-
-	/**
-	 * @var string WiMAX connection
-	 */
-	private const WIMAX = 'wimax';
-
-	/**
-	 * @var string WireGuard connection
-	 */
-	private const WIREGUARD = 'wireguard';
-
-	/**
-	 * @var string WPAN (IEEE 802.15.4) connection
-	 */
-	private const WPAN = 'wpan';
+	/// Bluetooth connection
+	case BLUETOOTH = 'bluetooth';
+	/// Bridge connection
+	case BRIDGE = 'bridge';
+	/// Dummy connection
+	case DUMMY = 'dummy';
+	/// Ethernet connection
+	case ETHERNET = '802-3-ethernet';
+	/// GSM connection
+	case GSM = 'gsm';
+	/// IP-over-InfiniBand connection
+	case INFINIBAND = 'infiniband';
+	/// IP tunnel connection
+	case IP_TUNNEL = 'ip-tunnel';
+	/// Loopback connection
+	case LOOPBACK = 'loopback';
+	/// TUN connection
+	case TUN = 'tun';
+	/// VLAN connection
+	case VLAN = 'vlan';
+	/// VPN connection
+	case VPN = 'vpn';
+	/// WiFi connection
+	case WIFI = '802-11-wireless';
+	/// WiMAX connection
+	case WIMAX = 'wimax';
+	/// WireGuard connection
+	case WIREGUARD = 'wireguard';
+	/// WPAN (IEEE 802.15.4) connection
+	case WPAN = 'wpan';
 
 	/**
 	 * Serializes network connection type enum into JSON string
 	 * @return string JSON serialized string
 	 */
 	public function jsonSerialize(): string {
-		return (string) $this->toScalar();
+		return $this->value;
 	}
 
 }

@@ -43,9 +43,9 @@ final class InterfaceStatesTest extends TestCase {
 	 */
 	public function getStates(): array {
 		return [
-			['100 (connected (externally))', InterfaceStates::CONNECTED()],
-			['100 (connected)', InterfaceStates::CONNECTED()],
-			['60 (connecting (need authentication))', InterfaceStates::NEED_AUTH()],
+			['100 (connected (externally))', InterfaceStates::CONNECTED],
+			['100 (connected)', InterfaceStates::CONNECTED],
+			['60 (connecting (need authentication))', InterfaceStates::NEED_AUTH],
 		];
 	}
 

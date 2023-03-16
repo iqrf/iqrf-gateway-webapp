@@ -102,7 +102,7 @@ class UploadManager {
 		}
 		FileSystem::createDir($this->path);
 		FileSystem::write($this->path . $fileName, $fileContent);
-		return ['fileName' => $fileName, 'format' => $format->toScalar()];
+		return ['fileName' => $fileName, 'format' => $format->value];
 	}
 
 	/**
@@ -153,13 +153,13 @@ class UploadManager {
 	private function recognizeFormat(string $file): UploadFormats {
 		$fileName = Strings::lower($file);
 		if (str_ends_with($fileName, '.hex')) {
-			return UploadFormats::HEX();
+			return UploadFormats::HEX;
 		}
 		if (str_ends_with($fileName, '.iqrf')) {
-			return UploadFormats::IQRF();
+			return UploadFormats::IQRF;
 		}
 		if (str_ends_with($fileName, '.trcnfg')) {
-			return UploadFormats::TRCNFG();
+			return UploadFormats::TRCNFG;
 		}
 		throw new UnknownFileFormatExceptions();
 	}

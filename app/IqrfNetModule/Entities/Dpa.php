@@ -30,37 +30,18 @@ use App\IqrfNetModule\Enums\TrSeries;
 class Dpa {
 
 	/**
-	 * @var string DPA version
-	 */
-	private string $version;
-
-	/**
-	 * @var DpaInterfaces DPA communication interface
-	 */
-	private DpaInterfaces $interface;
-
-	/**
-	 * @var TrSeries TR series
-	 */
-	private TrSeries $trSeries;
-
-	/**
-	 * @var RfModes|null RF mode
-	 */
-	private ?RfModes $rfMode;
-
-	/**
 	 * Constructor
 	 * @param string $version DPA version
 	 * @param DpaInterfaces $interface DPA communication interface
 	 * @param TrSeries $trSeries TR series
 	 * @param RfModes|null $rfMode RF mode
 	 */
-	public function __construct(string $version, DpaInterfaces $interface, TrSeries $trSeries, ?RfModes $rfMode) {
-		$this->version = $version;
-		$this->interface = $interface;
-		$this->trSeries = $trSeries;
-		$this->rfMode = $rfMode;
+	public function __construct(
+		private readonly string $version,
+		private readonly DpaInterfaces $interface,
+		private readonly TrSeries $trSeries,
+		private readonly ?RfModes $rfMode,
+	) {
 	}
 
 	/**
@@ -68,11 +49,11 @@ class Dpa {
 	 * @return array<string> DPA file prefixes
 	 */
 	public function getFilePrefixes(): array {
-		$interface = $this->interface->toScalar();
-		$trSeries = $this->trSeries->toScalar();
+		$interface = $this->interface->value;
+		$trSeries = $this->trSeries->value;
 		$filePrefixes = [];
 		if ($this->rfMode !== null) {
-			$rfMode = $this->rfMode->toScalar();
+			$rfMode = $this->rfMode->value;
 			$filePrefixes = [
 				'GeneralHWP-Coordinator-' . $rfMode . '-' . $interface . '-' . $trSeries . '-',
 				'HWP-Coordinator-' . $rfMode . '-' . $interface . '-' . $trSeries . '-',

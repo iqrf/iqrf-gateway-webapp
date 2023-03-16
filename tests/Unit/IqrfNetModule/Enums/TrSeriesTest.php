@@ -44,9 +44,9 @@ final class TrSeriesTest extends TestCase {
 	 */
 	public function getTrSeriesStringData(): array {
 		return [
-			['(DC)TR-76Dx', TrSeries::TR_7XD()],
-			['TR-76Dx', TrSeries::TR_7XD()],
-			['(DC)TR-72Gx', TrSeries::TR_7XG()],
+			['(DC)TR-76Dx', TrSeries::TR_7XD],
+			['TR-76Dx', TrSeries::TR_7XD],
+			['(DC)TR-72Gx', TrSeries::TR_7XG],
 		];
 	}
 
@@ -56,8 +56,8 @@ final class TrSeriesTest extends TestCase {
 	 */
 	public function getTrMcuNumericalData(): array {
 		return [
-			[36, TrSeries::TR_7XD()],
-			[37, TrSeries::TR_7XG()],
+			[36, TrSeries::TR_7XD],
+			[37, TrSeries::TR_7XG],
 		];
 	}
 
@@ -67,9 +67,9 @@ final class TrSeriesTest extends TestCase {
 	 */
 	public function getOsFileTrData(): array {
 		return [
-			['TR7x', TrSeries::TR_7XD()],
-			['TR7xD', TrSeries::TR_7XD()],
-			['TR7xG', TrSeries::TR_7XG()],
+			['TR7x', TrSeries::TR_7XD],
+			['TR7xD', TrSeries::TR_7XD],
+			['TR7xG', TrSeries::TR_7XG],
 		];
 	}
 

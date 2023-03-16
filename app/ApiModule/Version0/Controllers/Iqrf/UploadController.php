@@ -51,24 +51,16 @@ use Nette\IOException;
 class UploadController extends IqrfController {
 
 	/**
-	 * @var UploadManager Upload manager
-	 */
-	private UploadManager $uploadManager;
-
-	/**
-	 * @var DpaManager DPA manager
-	 */
-	private DpaManager $dpaManager;
-
-	/**
 	 * Constructor
 	 * @param DpaManager $dpaManager IQRF DPA Manager
 	 * @param UploadManager $uploadManager Upload manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(DpaManager $dpaManager, UploadManager $uploadManager, RestApiSchemaValidator $validator) {
-		$this->dpaManager = $dpaManager;
-		$this->uploadManager = $uploadManager;
+	public function __construct(
+		private readonly DpaManager $dpaManager,
+		private readonly UploadManager $uploadManager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 
@@ -113,7 +105,7 @@ class UploadController extends IqrfController {
 		try {
 			$format = $request->getParsedBody()['format'] ?? null;
 			if ($format !== null) {
-				$format = UploadFormats::fromScalar($format);
+				$format = UploadFormats::from($format);
 			}
 			$file = $request->getUploadedFiles()[0];
 			return $response->writeJsonBody($this->uploadManager->uploadToFs($file->getClientFilename(), $file->getStream()->getContents(), $format));
@@ -165,9 +157,9 @@ class UploadController extends IqrfController {
 		$this->validator->validateRequest('dpaFile', $request);
 		try {
 			$data = $request->getJsonBodyCopy(false);
-			$interface = DpaInterfaces::fromScalar($data->interfaceType);
+			$interface = DpaInterfaces::from($data->interfaceType);
 			$trSeries = TrSeries::fromTrMcuType($data->trSeries);
-			$rfMode = property_exists($data, 'rfMode') ? RfModes::fromScalar($data->rfMode) : null;
+			$rfMode = property_exists($data, 'rfMode') ? RfModes::from($data->rfMode) : null;
 			$dpa = new Dpa($data->dpa, $interface, $trSeries, $rfMode);
 			if (hexdec($dpa->getVersion()) < 0x400 && !($rfMode instanceof RfModes)) {
 				throw new ClientErrorException('Missing RF mode for DPA Version < 4.00', ApiResponse::S400_BAD_REQUEST);

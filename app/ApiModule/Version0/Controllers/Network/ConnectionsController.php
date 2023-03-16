@@ -35,7 +35,6 @@ use App\NetworkModule\Enums\ConnectionTypes;
 use App\NetworkModule\Exceptions\NetworkManagerException;
 use App\NetworkModule\Exceptions\NonexistentConnectionException;
 use App\NetworkModule\Models\ConnectionManager;
-use Grifart\Enum\MissingValueDeclarationException;
 use Ramsey\Uuid\Exception\InvalidUuidStringException;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -104,11 +103,7 @@ class ConnectionsController extends NetworkController {
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['network']);
 		$typeParam = $request->getQueryParam('type', null);
-		try {
-			$type = $typeParam === null ? null : ConnectionTypes::fromScalar($typeParam);
-		} catch (MissingValueDeclarationException $e) {
-			$type = null;
-		}
+		$type = $typeParam === null ? null : ConnectionTypes::tryFrom($typeParam);
 		$list = $this->manager->list($type);
 		return $response->writeJsonBody($list);
 	}

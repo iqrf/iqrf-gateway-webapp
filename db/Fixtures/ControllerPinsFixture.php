@@ -40,11 +40,11 @@ class ControllerPinConfigurationFixture implements FixtureInterface, OrderedFixt
 		$queryBuilder = $repository->createQueryBuilder('c');
 
 		$records = [
-			new ControllerPinConfiguration('IQD-GW-01', DeviceTypes::BOARD(), 0, 1, 2),
-			new ControllerPinConfiguration('IQD-GW-02', DeviceTypes::BOARD(), 0, 1, 2, 11, 12),
-			new ControllerPinConfiguration('Unipi Iris Zulu', DeviceTypes::BOARD(), 507, 506, 504),
-			new ControllerPinConfiguration('IQD-GW04', DeviceTypes::BOARD(), 27, 17, 25, -1, 16),
-			new ControllerPinConfiguration('KONA-RASP-04', DeviceTypes::ADAPTER(), 27, 17, 25, -1, 16),
+			new ControllerPinConfiguration('IQD-GW-01', DeviceTypes::BOARD, 0, 1, 2),
+			new ControllerPinConfiguration('IQD-GW-02', DeviceTypes::BOARD, 0, 1, 2, 11, 12),
+			new ControllerPinConfiguration('Unipi Iris Zulu', DeviceTypes::BOARD, 507, 506, 504),
+			new ControllerPinConfiguration('IQD-GW04', DeviceTypes::BOARD, 27, 17, 25, -1, 16),
+			new ControllerPinConfiguration('KONA-RASP-04', DeviceTypes::ADAPTER, 27, 17, 25, -1, 16),
 		];
 
 		foreach ($records as $record) {

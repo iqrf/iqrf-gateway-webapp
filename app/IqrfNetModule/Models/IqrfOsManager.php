@@ -156,9 +156,9 @@ class IqrfOsManager {
 	 * @throws DpaRfMissingException
 	 */
 	private function getDpaUpgrade(stdClass $params): string {
-		$iface = DpaInterfaces::fromScalar($params->interface);
+		$iface = DpaInterfaces::from($params->interface);
 		$trSeries = TrSeries::fromTrMcuType($params->trMcuType);
-		$rfMode = isset($params->rfMode) ? RfModes::fromScalar($params->rfMode) : null;
+		$rfMode = isset($params->rfMode) ? RfModes::from($params->rfMode) : null;
 		$dpa = new Dpa($params->dpa, $iface, $trSeries, $rfMode);
 		if (hexdec($dpa->getVersion()) < 0x400 && $rfMode === null) {
 			throw new DpaRfMissingException('Missing RF mode for DPA version older than 4.00');

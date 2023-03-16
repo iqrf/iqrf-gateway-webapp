@@ -20,38 +20,18 @@ declare(strict_types = 1);
 
 namespace App\NetworkModule\Enums;
 
-use Grifart\Enum\AutoInstances;
-use Grifart\Enum\Enum;
-
 /**
  * WiFi authentication algorithm enum
- * @method static WifiAuthAlgorithm NONE()
- * @method static WifiAuthAlgorithm OPEN_SYSTEM()
- * @method static WifiAuthAlgorithm SHARED_KEY()
- * @method static WifiAuthAlgorithm LEAP()
  */
-final class WifiAuthAlgorithm extends Enum {
+enum WifiAuthAlgorithm: string {
 
-	use AutoInstances;
-
-	/**
-	 * @var string None
-	 */
-	private const NONE = '';
-
-	/**
-	 * @var string Open system
-	 */
-	private const OPEN_SYSTEM = 'open';
-
-	/**
-	 * @var string Shared key
-	 */
-	private const SHARED_KEY = 'shared';
-
-	/**
-	 * @var string Cisco LEAP
-	 */
-	private const LEAP = 'leap';
+	/// None
+	case NONE = '';
+	/// Open system
+	case OPEN_SYSTEM = 'open';
+	/// Shared key
+	case SHARED_KEY = 'shared';
+	/// Cisco LEAP
+	case LEAP = 'leap';
 
 }

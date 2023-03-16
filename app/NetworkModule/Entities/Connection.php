@@ -31,24 +31,9 @@ use Ramsey\Uuid\UuidInterface;
 final class Connection implements JsonSerializable {
 
 	/**
-	 * @var string Network connection name
-	 */
-	private string $name;
-
-	/**
-	 * @var UuidInterface Network connection UUID
-	 */
-	private UuidInterface $uuid;
-
-	/**
-	 * @var ConnectionTypes Network connection type
-	 */
-	private ConnectionTypes $type;
-
-	/**
 	 * @var string|null Network interface name
 	 */
-	private ?string $interfaceName;
+	private readonly ?string $interfaceName;
 
 	/**
 	 * Network connection entity constructor
@@ -57,10 +42,12 @@ final class Connection implements JsonSerializable {
 	 * @param ConnectionTypes $type Network connection type
 	 * @param string|null $interfaceName Network interface name
 	 */
-	public function __construct(string $name, UuidInterface $uuid, ConnectionTypes $type, ?string $interfaceName) {
-		$this->name = $name;
-		$this->uuid = $uuid;
-		$this->type = $type;
+	public function __construct(
+		private readonly string $name,
+		private readonly UuidInterface $uuid,
+		private readonly ConnectionTypes $type,
+		?string $interfaceName,
+	) {
 		$this->interfaceName = $interfaceName === '' ? null : $interfaceName;
 	}
 
@@ -101,7 +88,7 @@ final class Connection implements JsonSerializable {
 	public static function nmCliDeserialize(string $string): self {
 		$array = explode(':', $string);
 		$uuid = Uuid::fromString($array[1]);
-		$type = ConnectionTypes::fromScalar($array[2]);
+		$type = ConnectionTypes::from($array[2]);
 		return new self($array[0], $uuid, $type, $array[3]);
 	}
 

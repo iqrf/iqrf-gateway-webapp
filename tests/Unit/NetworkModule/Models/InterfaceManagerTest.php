@@ -107,9 +107,9 @@ final class InterfaceManagerTest extends CommandTestCase {
 		$output = FileSystem::read(TESTER_DIR . '/data/networkManager/interfaces.txt');
 		$this->receiveCommand('nmcli -t -f GENERAL device show', true, $output);
 		$expected = [
-			new InterfaceStatus('eth0', '02:42:A7:2C:5C:98', null, null, InterfaceTypes::ETHERNET(), InterfaceStates::CONNECTED(), Uuid::fromString('38708e8a-d842-38ae-9e66-3718361ac0b7')),
-			new InterfaceStatus('wlan0', '12:42:A7:2C:5C:98', 'ST-Ericsson', null, InterfaceTypes::WIFI(), InterfaceStates::DISCONNECTED(), null),
-			new InterfaceStatus('lo', '00:00:00:00:00:00', null, null, InterfaceTypes::LOOPBACK(), InterfaceStates::UNMANAGED(), null),
+			new InterfaceStatus('eth0', '02:42:A7:2C:5C:98', null, null, InterfaceTypes::ETHERNET, InterfaceStates::CONNECTED, Uuid::fromString('38708e8a-d842-38ae-9e66-3718361ac0b7')),
+			new InterfaceStatus('wlan0', '12:42:A7:2C:5C:98', 'ST-Ericsson', null, InterfaceTypes::WIFI, InterfaceStates::DISCONNECTED, null),
+			new InterfaceStatus('lo', '00:00:00:00:00:00', null, null, InterfaceTypes::LOOPBACK, InterfaceStates::UNMANAGED, null),
 		];
 		Assert::equal($expected, $this->manager->list());
 	}

@@ -35,7 +35,6 @@ use App\NetworkModule\Enums\InterfaceTypes;
 use App\NetworkModule\Exceptions\NetworkManagerException;
 use App\NetworkModule\Exceptions\NonexistentDeviceException;
 use App\NetworkModule\Models\InterfaceManager;
-use Grifart\Enum\MissingValueDeclarationException;
 
 /**
  * Network interfaces controller
@@ -97,11 +96,7 @@ class InterfacesController extends NetworkController {
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['network']);
 		$typeParam = $request->getQueryParam('type', null);
-		try {
-			$type = $typeParam === null ? null : InterfaceTypes::fromScalar($typeParam);
-		} catch (MissingValueDeclarationException $e) {
-			$type = null;
-		}
+		$type = $typeParam === null ? null : InterfaceTypes::tryFrom($typeParam);
 		$list = $this->interfaceManager->list($type);
 		return $response->writeJsonBody($list);
 	}

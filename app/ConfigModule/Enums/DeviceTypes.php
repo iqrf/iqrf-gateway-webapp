@@ -20,34 +20,22 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Enums;
 
-use Grifart\Enum\AutoInstances;
-use Grifart\Enum\Enum;
-
 /**
  * Configuration device type enum
- * @method static DeviceTypes ADAPTER()
- * @method static DeviceTypes BOARD()
  */
-final class DeviceTypes extends Enum {
+enum DeviceTypes: string {
 
-	use AutoInstances;
-
-	/**
-	 * @var string Adapter device
-	 */
-	private const ADAPTER = 'adapter';
-
-	/**
-	 * @var string Board device
-	 */
-	private const BOARD = 'board';
+	/// Adapter device
+	case ADAPTER = 'adapter';
+	/// Board device
+	case BOARD = 'board';
 
 	/**
 	 * Configuration device type into JSON string
 	 * @return string JSON serialized string
 	 */
 	public function jsonSerialize(): string {
-		return (string) $this->toScalar();
+		return $this->value;
 	}
 
 }

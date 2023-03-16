@@ -43,15 +43,15 @@ final class WifiSecurityTest extends TestCase {
 	 */
 	public function getFromNmCliData(): array {
 		return [
-			[WifiSecurity::OPEN(), ''],
-			[WifiSecurity::OWE(), 'OWE'],
-			[WifiSecurity::WEP(), 'WEP'],
-			[WifiSecurity::WPA_ENTERPRISE(), 'WPA 802.1X'],
-			[WifiSecurity::WPA_PERSONAL(), 'WPA'],
-			[WifiSecurity::WPA2_ENTERPRISE(), 'WPA2 802.1X'],
-			[WifiSecurity::WPA2_PERSONAL(), 'WPA2'],
-			[WifiSecurity::WPA3_ENTERPRISE(), 'WPA3 802.1X'],
-			[WifiSecurity::WPA3_PERSONAL(), 'WPA3'],
+			[WifiSecurity::OPEN, ''],
+			[WifiSecurity::OWE, 'OWE'],
+			[WifiSecurity::WEP, 'WEP'],
+			[WifiSecurity::WPA_ENTERPRISE, 'WPA 802.1X'],
+			[WifiSecurity::WPA_PERSONAL, 'WPA'],
+			[WifiSecurity::WPA2_ENTERPRISE, 'WPA2 802.1X'],
+			[WifiSecurity::WPA2_PERSONAL, 'WPA2'],
+			[WifiSecurity::WPA3_ENTERPRISE, 'WPA3 802.1X'],
+			[WifiSecurity::WPA3_PERSONAL, 'WPA3'],
 		];
 	}
 

@@ -33,39 +33,19 @@ use Ramsey\Uuid\UuidInterface;
 final class InterfaceStatus implements JsonSerializable {
 
 	/**
-	 * @var string Network interface name
-	 */
-	protected string $name;
-
-	/**
 	 * @var string|null MAC address
 	 */
-	protected ?string $macAddress;
+	protected readonly ?string $macAddress;
 
 	/**
 	 * @var string|null Manufacturer
 	 */
-	protected ?string $manufacturer;
+	protected readonly ?string $manufacturer;
 
 	/**
 	 * @var string|null Model
 	 */
-	protected ?string $model;
-
-	/**
-	 * @var InterfaceTypes Network interface type
-	 */
-	protected InterfaceTypes $type;
-
-	/**
-	 * @var InterfaceStates Network interface status
-	 */
-	protected InterfaceStates $state;
-
-	/**
-	 * @var UuidInterface|null Network connection UUID
-	 */
-	protected ?UuidInterface $connection;
+	protected readonly ?string $model;
 
 	/**
 	 * Network interface entity constructor
@@ -77,14 +57,18 @@ final class InterfaceStatus implements JsonSerializable {
 	 * @param InterfaceStates $state Network interface state
 	 * @param UuidInterface|null $connection Network connection UUID
 	 */
-	public function __construct(string $name, ?string $macAddress, ?string $manufacturer, ?string $model, InterfaceTypes $type, InterfaceStates $state, ?UuidInterface $connection) {
-		$this->name = $name;
+	public function __construct(
+		private readonly string $name,
+		?string $macAddress,
+		?string $manufacturer,
+		?string $model,
+		private readonly InterfaceTypes $type,
+		private readonly InterfaceStates $state,
+		private readonly ?UuidInterface $connection,
+	) {
 		$this->macAddress = $macAddress === '' ? null : $macAddress;
 		$this->manufacturer = $manufacturer === '' ? null : $manufacturer;
 		$this->model = $model === '' ? null : $model;
-		$this->type = $type;
-		$this->state = $state;
-		$this->connection = $connection;
 	}
 
 	/**
@@ -105,8 +89,8 @@ final class InterfaceStatus implements JsonSerializable {
 			'macAddress' => $this->macAddress,
 			'manufacturer' => $this->manufacturer,
 			'model' => $this->model,
-			'type' => $this->type->toScalar(),
-			'state' => $this->state->toScalar(),
+			'type' => $this->type->value,
+			'state' => $this->state->value,
 			'connection' => $this->connection?->toString(),
 		];
 	}
@@ -122,7 +106,7 @@ final class InterfaceStatus implements JsonSerializable {
 		$macAddress = $array['GENERAL']['HWADDR'];
 		$manufacturer = $array['GENERAL']['VENDOR'];
 		$model = $array['GENERAL']['PRODUCT'];
-		$type = InterfaceTypes::fromScalar($array['GENERAL']['TYPE']);
+		$type = InterfaceTypes::from($array['GENERAL']['TYPE']);
 		$state = InterfaceStates::fromNmCli($array['GENERAL']['STATE']);
 		$connection = $array['GENERAL']['CON-UUID'];
 		$connection = $connection === '' ? null : Uuid::fromString($connection);

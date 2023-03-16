@@ -70,7 +70,7 @@ final class ConnectionTest extends TestCase {
 	 */
 	public function __construct() {
 		$this->uuid = Uuid::fromString('25ab1b06-2a86-40a9-950f-1c576ddcd35a');
-		$this->type = ConnectionTypes::ETHERNET();
+		$this->type = ConnectionTypes::ETHERNET;
 		$this->entity = new Connection(self::NAME, $this->uuid, $this->type, self::INTERFACE);
 	}
 
@@ -103,7 +103,7 @@ final class ConnectionTest extends TestCase {
 		$expected = [
 			'name' => self::NAME,
 			'uuid' => $this->uuid->toString(),
-			'type' => $this->type->toScalar(),
+			'type' => $this->type->value,
 			'interfaceName' => self::INTERFACE,
 		];
 		Assert::same($expected, $this->entity->jsonSerialize());

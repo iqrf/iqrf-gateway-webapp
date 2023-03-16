@@ -37,31 +37,6 @@ final class IPv4Connection implements INetworkManagerEntity {
 	private const NMCLI_PREFIX = 'ipv4';
 
 	/**
-	 * @var IPv4Methods Connection method
-	 */
-	private IPv4Methods $method;
-
-	/**
-	 * @var array<IPv4Address> IPv4 addresses
-	 */
-	private array $addresses = [];
-
-	/**
-	 * @var IPv4|null IPv4 gateway address
-	 */
-	private ?IPv4 $gateway;
-
-	/**
-	 * @var array<IPv4> IPv4 addresses of DNS servers
-	 */
-	private array $dns = [];
-
-	/**
-	 * @var IPv4Current|null Current IPv4 configuration
-	 */
-	private ?IPv4Current $current;
-
-	/**
 	 * IPv4 connection entity constructor
 	 * @param IPv4Methods $method Connection method
 	 * @param array<IPv4Address> $addresses IPv4 addresses
@@ -69,12 +44,13 @@ final class IPv4Connection implements INetworkManagerEntity {
 	 * @param array<IPv4> $dns DNS servers
 	 * @param IPv4Current|null $current Current configuration
 	 */
-	public function __construct(IPv4Methods $method, array $addresses, ?IPv4 $gateway, array $dns, ?IPv4Current $current) {
-		$this->method = $method;
-		$this->addresses = $addresses;
-		$this->gateway = $gateway;
-		$this->dns = $dns;
-		$this->current = $current;
+	public function __construct(
+		private readonly IPv4Methods $method,
+		private readonly array $addresses,
+		private readonly ?IPv4 $gateway,
+		private readonly array $dns,
+		private readonly ?IPv4Current $current,
+	) {
 	}
 
 	/**
@@ -83,7 +59,7 @@ final class IPv4Connection implements INetworkManagerEntity {
 	 * @return IPv4Connection IPv4 connection entity
 	 */
 	public static function jsonDeserialize(stdClass $json): INetworkManagerEntity {
-		$method = IPv4Methods::fromScalar($json->method);
+		$method = IPv4Methods::from($json->method);
 		$addresses = [];
 		foreach ($json->addresses as $address) {
 			if ($address->address !== '') {
@@ -110,7 +86,7 @@ final class IPv4Connection implements INetworkManagerEntity {
 	 */
 	public function jsonSerialize(): array {
 		$array = [
-			'method' => $this->method->toScalar(),
+			'method' => $this->method->value,
 			'addresses' => array_map(static fn (IPv4Address $a): array => $a->toArray(), $this->addresses),
 			'gateway' => $this->gateway?->getDotAddress(),
 			'dns' => array_map(static fn (IPv4 $a): array => ['address' => $a->getDotAddress()], $this->dns),
@@ -128,7 +104,7 @@ final class IPv4Connection implements INetworkManagerEntity {
 	 */
 	public static function nmCliDeserialize(array $nmCli): INetworkManagerEntity {
 		$array = $nmCli[self::NMCLI_PREFIX];
-		$method = IPv4Methods::fromScalar($array['method']);
+		$method = IPv4Methods::from($array['method']);
 		$addresses = [];
 		if ($array['addresses'] !== '') {
 			$addresses = array_map(static fn (string $address): IPv4Address => IPv4Address::fromPrefix($address), explode(',', $array['addresses']));
@@ -139,7 +115,7 @@ final class IPv4Connection implements INetworkManagerEntity {
 			$dns = array_map(static fn (string $address): IPv4 => IPv4::factory($address), explode(',', $array['dns']));
 		}
 		if (array_key_exists(IPv4Current::NMCLI_PREFIX, $nmCli) &&
-			$method === IPv4Methods::AUTO()) {
+			$method === IPv4Methods::AUTO) {
 			$current = IPv4Current::nmCliDeserialize($nmCli);
 		}
 		return new self($method, $addresses, $gateway, $dns, $current ?? null);
@@ -151,7 +127,7 @@ final class IPv4Connection implements INetworkManagerEntity {
 	 */
 	public function nmCliSerialize(): string {
 		$array = [
-			'method' => $this->method->toScalar(),
+			'method' => $this->method->value,
 			'addresses' => implode(' ', array_map(static fn (IPv4Address $address): string => $address->toString(), $this->addresses)),
 			'gateway' => ($this->gateway !== null) ? $this->gateway->getDotAddress() : '',
 			'dns' => implode(' ', array_map(static fn (IPv4 $ipv4): string => $ipv4->getDotAddress(), $this->dns)),

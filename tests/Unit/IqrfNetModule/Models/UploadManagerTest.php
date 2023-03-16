@@ -97,8 +97,8 @@ final class UploadManagerTest extends CommandTestCase {
 	 */
 	public function getUploadToTrData(): array {
 		return [
-			['ChangeOS-TR7xD-405(08D7)-406(08D8).iqrf', UploadFormats::IQRF(), true],
-			['0402_0002_DDC-SE+RE.hex', UploadFormats::HEX(), false],
+			['ChangeOS-TR7xD-405(08D7)-406(08D8).iqrf', UploadFormats::IQRF, true],
+			['0402_0002_DDC-SE+RE.hex', UploadFormats::HEX, false],
 		];
 	}
 

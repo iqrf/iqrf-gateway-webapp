@@ -68,7 +68,7 @@ class Wep implements INetworkManagerEntity {
 	 * @return INetworkManagerEntity WEP entity
 	 */
 	public static function jsonDeserialize(stdClass $json): INetworkManagerEntity {
-		$type = WepKeyType::fromScalar($json->type);
+		$type = WepKeyType::from($json->type);
 		return new self($type, $json->index, $json->keys);
 	}
 
@@ -91,7 +91,7 @@ class Wep implements INetworkManagerEntity {
 	 */
 	public static function nmCliDeserialize(array $nmCli): INetworkManagerEntity {
 		$array = $nmCli[WifiConnectionSecurity::NMCLI_PREFIX];
-		$type = WepKeyType::fromScalar($array['wep-key-type']);
+		$type = WepKeyType::from($array['wep-key-type']);
 		$index = (int) $array['wep-tx-keyidx'];
 		$keys = [
 			$array['wep-key0'],
@@ -108,7 +108,7 @@ class Wep implements INetworkManagerEntity {
 	 */
 	public function nmCliSerialize(): string {
 		$array = [
-			'wep-key-type' => (string) $this->type->toScalar(),
+			'wep-key-type' => $this->type->value,
 			'wep-tx-keyidx' => $this->index,
 			'wep-key0' => $this->keys[0] ?? '',
 			'wep-key1' => $this->keys[1] ?? '',

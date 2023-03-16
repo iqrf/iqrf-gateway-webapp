@@ -58,10 +58,10 @@ class ControllerPinConfiguration implements JsonSerializable {
 	private string $name;
 
 	/**
-	 * @var string Device type
+	 * @var DeviceTypes Device type
 	 */
-	#[ORM\Column(type: Types::STRING, length: 255)]
-	private string $deviceType;
+	#[ORM\Column(type: Types::STRING, length: 255, enumType: DeviceTypes::class)]
+	private DeviceTypes $deviceType;
 
 	/**
 	 * @var int Green LED pin
@@ -105,7 +105,7 @@ class ControllerPinConfiguration implements JsonSerializable {
 	 */
 	public function __construct(string $name, DeviceTypes $deviceType, int $greenLed, int $redLed, int $button, ?int $sck = null, ?int $sda = null) {
 		$this->name = $name;
-		$this->deviceType = $deviceType->toScalar();
+		$this->deviceType = $deviceType;
 		$this->greenLed = $greenLed;
 		$this->redLed = $redLed;
 		$this->button = $button;
@@ -134,7 +134,7 @@ class ControllerPinConfiguration implements JsonSerializable {
 	 * @return DeviceTypes Device type
 	 */
 	public function getDeviceType(): DeviceTypes {
-		return DeviceTypes::fromScalar($this->deviceType);
+		return $this->deviceType;
 	}
 
 	/**
@@ -142,7 +142,7 @@ class ControllerPinConfiguration implements JsonSerializable {
 	 * @param DeviceTypes $deviceType Device type
 	 */
 	public function setDeviceType(DeviceTypes $deviceType): void {
-		$this->deviceType = $deviceType->toScalar();
+		$this->deviceType = $deviceType;
 	}
 
 	/**
@@ -233,7 +233,7 @@ class ControllerPinConfiguration implements JsonSerializable {
 		$array = [
 			'id' => $this->getId(),
 			'name' => $this->name,
-			'deviceType' => $this->deviceType,
+			'deviceType' => $this->deviceType->value,
 			'greenLed' => $this->greenLed,
 			'redLed' => $this->redLed,
 			'button' => $this->button,

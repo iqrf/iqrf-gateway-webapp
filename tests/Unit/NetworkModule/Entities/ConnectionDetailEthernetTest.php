@@ -102,7 +102,7 @@ final class ConnectionDetailEthernetTest extends TestCase {
 	 */
 	public function __construct() {
 		$this->uuid = Uuid::fromString(self::UUID);
-		$this->type = ConnectionTypes::ETHERNET();
+		$this->type = ConnectionTypes::ETHERNET;
 	}
 
 	/**
@@ -119,7 +119,7 @@ final class ConnectionDetailEthernetTest extends TestCase {
 	 * Creates the IPv4 network connection entity
 	 */
 	private function createIpv4Connection(): void {
-		$method = IPv4Methods::MANUAL();
+		$method = IPv4Methods::MANUAL;
 		$addresses = [new IPv4Address(IPv4::factory('192.168.1.2'), 24)];
 		$gateway = IPv4::factory('192.168.1.1');
 		$dns = [IPv4::factory('192.168.1.1')];
@@ -130,7 +130,7 @@ final class ConnectionDetailEthernetTest extends TestCase {
 	 * Creates the IPv6 network connection entity
 	 */
 	private function createIpv6Connection(): void {
-		$method = IPv6Methods::MANUAL();
+		$method = IPv6Methods::MANUAL;
 		$addresses = [
 			new IPv6Address(IPv6::factory('2001:470:5bb2::2'), 64),
 		];
@@ -145,18 +145,18 @@ final class ConnectionDetailEthernetTest extends TestCase {
 	public function testJsonDeserialize(): void {
 		$json = Json::decode(FileSystem::read(self::NM_DATA . 'fromForm/' . self::UUID . '.json'));
 		$json->uuid = self::UUID;
-		$json->type = $this->type->toScalar();
+		$json->type = $this->type->value;
 		$json->interface = self::INTERFACE;
 		$actual = ConnectionDetail::jsonDeserialize($json);
 		$autoConnect = new AutoConnect(true, 1, 10);
 		$ipv4Addresses = [IPv4Address::fromPrefix('10.0.0.2/16')];
 		$ipv4Gateway = IPv4::factory('10.0.0.1');
 		$ipv4Dns = [IPv4::factory('10.0.0.1'), IPv4::factory('1.1.1.1')];
-		$ipv4 = new IPv4Connection(IPv4Methods::MANUAL(), $ipv4Addresses, $ipv4Gateway, $ipv4Dns, null);
+		$ipv4 = new IPv4Connection(IPv4Methods::MANUAL, $ipv4Addresses, $ipv4Gateway, $ipv4Dns, null);
 		$ipv6Addresses = [IPv6Address::fromPrefix('2001:470:5bb2:2::2/64')];
 		$ipv6Gateway = IPv6::factory('fe80::1');
 		$ipv6Dns = [IPv6::factory('2001:470:5bb2:2::1')];
-		$ipv6 = new IPv6Connection(IPv6Methods::MANUAL(), $ipv6Addresses, $ipv6Gateway, $ipv6Dns, null);
+		$ipv6 = new IPv6Connection(IPv6Methods::MANUAL, $ipv6Addresses, $ipv6Gateway, $ipv6Dns, null);
 		$expected = new ConnectionDetail(self::NAME, $this->uuid, $this->type, self::INTERFACE, $autoConnect, $ipv4, $ipv6);
 		Assert::equal($expected, $actual);
 	}

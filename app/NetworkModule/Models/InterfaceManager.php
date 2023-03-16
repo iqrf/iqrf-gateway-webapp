@@ -79,7 +79,7 @@ class InterfaceManager {
 		$interfaces = [];
 		foreach ($array as $row) {
 			$interface = InterfaceStatus::nmCliDeserialize($row);
-			if ($type === null || $type->equals($interface->getType())) {
+			if ($type === null || $type === $interface->getType()) {
 				$interfaces[] = $interface;
 			}
 		}

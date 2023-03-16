@@ -20,40 +20,24 @@ declare(strict_types = 1);
 
 namespace App\IqrfNetModule\Enums;
 
-use Grifart\Enum\AutoInstances;
-use Grifart\Enum\Enum;
-
 /**
  * Upload formats enum
- * @method static UploadFormats HEX()
- * @method static UploadFormats IQRF()
- * @method static UploadFormats TRCNFG()
  */
-final class UploadFormats extends Enum {
+enum UploadFormats: string {
 
-	use AutoInstances;
-
-	/**
-	 * @var string HEX format
-	 */
-	private const HEX = 'hex';
-
-	/**
-	 * @var string IQRF format
-	 */
-	private const IQRF = 'iqrf';
-
-	/**
-	 * @var string TRCNFG format
-	 */
-	private const TRCNFG = 'trcnfg';
+	/// HEX format
+	case HEX = 'hex';
+	/// IQRF format
+	case IQRF = 'iqrf';
+	/// TRCNFG format
+	case TRCNFG = 'trcnfg';
 
 	/**
 	 * Returns IQRF Gateway Uploader parameter
 	 * @return string IQRF Gateway Uploader parameter
 	 */
 	public function getUploaderParameter(): string {
-		return '--' . self::toScalar();
+		return '--' . $this->value;
 	}
 
 }

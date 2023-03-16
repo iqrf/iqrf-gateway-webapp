@@ -20,50 +20,22 @@ declare(strict_types = 1);
 
 namespace App\NetworkModule\Enums;
 
-use Grifart\Enum\AutoInstances;
-use Grifart\Enum\Enum;
-
 /**
  * WiFi connection key management
- * @method static WifiKeyManagement DYNAMIC_WEP()
- * @method static WifiKeyManagement OWE()
- * @method static WifiKeyManagement SAE()
- * @method static WifiKeyManagement STATIC_WEP()
- * @method static WifiKeyManagement WPA_EAP()
- * @method static WifiKeyManagement WPA_PSK()
  */
-final class WifiKeyManagement extends Enum {
+enum WifiKeyManagement: string {
 
-	use AutoInstances;
-
-	/**
-	 * @var string Dynamic WEP
-	 */
-	private const DYNAMIC_WEP = 'ieee8021x';
-
-	/**
-	 * @var string OWE
-	 */
-	private const OWE = 'owe';
-
-	/**
-	 * @var string SAE
-	 */
-	private const SAE = 'sae';
-
-	/**
-	 * @var string Static WEP
-	 */
-	private const STATIC_WEP = 'none';
-
-	/**
-	 * @var string WPA-EAP
-	 */
-	private const WPA_EAP = 'wpa-eap';
-
-	/**
-	 * @var string WPA-PSK
-	 */
-	private const WPA_PSK = 'wpa-psk';
+	/// Dynamic WEP
+	case DYNAMIC_WEP = 'ieee8021x';
+	/// OWE
+	case OWE = 'owe';
+	/// SAE
+	case SAE = 'sae';
+	/// Static WEP
+	case STATIC_WEP = 'none';
+	/// WPA-EAP
+	case WPA_EAP = 'wpa-eap';
+	/// WPA-PSK
+	case WPA_PSK = 'wpa-psk';
 
 }
