@@ -15,38 +15,40 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<div class='c-app flex-row align-items-center'>
-		<CContainer>
-			<CRow class='justify-content-center'>
-				<CCol lg='10'>
+	<v-main>
+		<v-container fluid fill-height>
+			<v-layout align-center justify-center>
+				<v-flex
+					xs12
+					sm8
+					md6
+					lg4
+				>
 					<div class='logo'>
-						<Logo :alt='title' />
+						<img :alt='title' :src='logo'>
 					</div>
 					<slot />
-				</CCol>
-			</CRow>
-		</CContainer>
-	</div>
+				</v-flex>
+			</v-layout>
+		</v-container>
+	</v-main>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CContainer, CCol, CRow} from '@coreui/vue/src';
 import ThemeManager from '@/helpers/themeManager';
-
-@Component({
-	components: {
-		CContainer,
-		CCol,
-		CRow,
-		Logo: ThemeManager.getWizardLogo(),
-	},
-})
 
 /**
  * Installation base page component
  */
+@Component
 export default class TheWizard extends Vue {
+
+	/**
+	 * Returns the logo URL
+	 * @returns {string} Log URL
+	 */
+	private logo = ThemeManager.getWizardLogo();
 
 	/**
 	 * Returns the app title
@@ -61,13 +63,11 @@ export default class TheWizard extends Vue {
 
 <style lang='scss' scoped>
 .logo {
-	padding-bottom: 3rem;
-	padding-top: 3rem;
+	padding-bottom: 2rem;
 
-	svg {
+	img {
 		height: 32pt;
 		width: 100%;
 	}
 }
-
 </style>

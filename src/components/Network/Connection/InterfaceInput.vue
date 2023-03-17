@@ -22,36 +22,36 @@ limitations under the License.
 			required: $t("network.connection.errors.interface"),
 		}'
 	>
-		<CSelect
-			:value.sync='interface'
+		<v-select
+			v-model='interface'
 			:label='$t("network.connection.interface").toString()'
 			:placeholder='$t("network.connection.errors.interface").toString()'
-			:options='options'
-			:is-valid='touched ? valid : null'
-			:invalid-feedback='errors.join(", ")'
+			:items='options'
+			:success='touched ? valid : null'
+			:error-messages='errors'
 		/>
 	</ValidationProvider>
 </template>
 
 <script lang='ts'>
-import {AxiosError} from 'axios';
-import {CSelect} from '@coreui/vue/src';
-import {extend, ValidationProvider} from 'vee-validate';
-import {required} from 'vee-validate/dist/rules';
 import {Component, Prop, VModel, Vue} from 'vue-property-decorator';
+import {extend, ValidationProvider} from 'vee-validate';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
+import {required} from 'vee-validate/dist/rules';
 import {InterfaceType} from '@/enums/Network/InterfaceType';
-import {IOption} from '@/interfaces/Coreui';
-import {NetworkInterface} from '@/interfaces/Network/Connection';
+
 import NetworkInterfaceService from '@/services/NetworkInterfaceService';
+
+import {AxiosError} from 'axios';
+import {ISelectItem} from '@/interfaces/Vuetify';
+import {NetworkInterface} from '@/interfaces/Network/Connection';
 
 /**
  * Network interface select field
  */
 @Component({
 	components: {
-		CSelect,
 		ValidationProvider,
 	},
 })
@@ -68,9 +68,9 @@ export default class InterfaceInput extends Vue {
 	@VModel({required: true}) interface!: string;
 
 	/**
-	 * @property {Array<IOption>} options Array of CoreUI interface options
+	 * @property {Array<IOption>} options Interface select options
 	 */
-	private options: Array<IOption> = [];
+	private options: Array<ISelectItem> = [];
 
 	/**
 	 * Initializes validation rules
@@ -87,7 +87,7 @@ export default class InterfaceInput extends Vue {
 					if (item.manufacturer !== null && item.model !== null) {
 						label = item.name + ' (' + item.manufacturer + ' ' + item.model + ')';
 					}
-					this.options.push({label: label, value: item.name});
+					this.options.push({text: label, value: item.name});
 				});
 			})
 			.catch((error: AxiosError) => {

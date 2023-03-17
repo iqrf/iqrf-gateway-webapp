@@ -15,24 +15,25 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<div>
+	<v-app dark>
 		<Blocking />
 		<LoadingSpinner />
 		<router-view v-if='installationChecked' />
 		<DaemonModeModal />
 		<SessionExpirationModal v-if='loggedIn' />
-	</div>
+	</v-app>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import InstallationService, {InstallationCheck} from './services/InstallationService';
-import SessionExpirationModal from '@/components/SessionExpirationModal.vue';
-import {AxiosError} from 'axios';
-
 import Blocking from './components/Blocking.vue';
 import DaemonModeModal from './components/DamonModeModal.vue';
 import LoadingSpinner from './components/LoadingSpinner.vue';
+import SessionExpirationModal from '@/components/SessionExpirationModal.vue';
+
+import InstallationService, {InstallationCheck} from './services/InstallationService';
+
+import {AxiosError} from 'axios';
 import {mapGetters} from 'vuex';
 
 @Component({

@@ -16,11 +16,9 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<CCard class='p-4'>
-			<h1 class='text-center'>
-				{{ $t('core.user.verification.title') }}
-			</h1>
-			<CCardBody v-if='success !== null'>
+		<v-card class='p-4'>
+			<v-card-title>{{ $t('core.user.verification.title') }}</v-card-title>
+			<v-card-text v-if='success !== null'>
 				<p class='text-center'>
 					<span v-if='success'>
 						{{ $t('core.user.verification.success') }}
@@ -39,26 +37,23 @@ limitations under the License.
 						{{ $t('core.user.verification.failed', {error: verifyError}) }}
 					</span>
 				</p>
-			</CCardBody>
-		</CCard>
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
-import {CCard, CCardBody, CCardHeader} from '@coreui/vue/src';
 import VueCountdown from '@chenfengyuan/vue-countdown';
 import {Component, Prop, Vue} from 'vue-property-decorator';
 
 import {User, UserRole} from '@/services/AuthenticationService';
 import UserService from '@/services/UserService';
+
+import {AxiosError} from 'axios';
 import {ErrorResponse} from '@/types';
-import { AxiosError } from 'axios';
 
 @Component({
 	components: {
-		CCard,
-		CCardBody,
-		CCardHeader,
 		VueCountdown,
 	},
 	metaInfo: {

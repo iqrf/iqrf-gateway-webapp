@@ -6,7 +6,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-	http://www.apache.org/licenses/LICENSE-2.0
+    http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software,
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,52 +15,43 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CModal
-		:show.sync='show'
-		color='warning'
+	<v-dialog
+		v-model='show'
+		width='50%'
+		persistent
+		no-click-animation
 	>
-		<template #header>
-			<h5 class='modal-title'>
-				{{ $t('sessionExpiration.title') }}
-			</h5>
-		</template>
-		{{ $t('sessionExpiration.prompt') }}
-		<template #footer>
-			<CButton
-				color='warning'
-				@click='renewSession'
-			>
-				{{ `${$t('sessionExpiration.renew')} (${countdown})` }}
-			</CButton>
-		</template>
-	</CModal>
+		<v-card>
+			<v-card-title>{{ $t('sessionExpiration.title') }}</v-card-title>
+			<v-card-text>
+				{{ $t('sessionExpiration.prompt') }}
+			</v-card-text>
+			<v-card-actions>
+				<v-spacer />
+				<v-btn
+					color='primary'
+					@click='renewSession'
+				>
+					{{ `${$t('sessionExpiration.renew')} (${countdown})` }}
+				</v-btn>
+			</v-card-actions>
+		</v-card>
+	</v-dialog>
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CModal} from '@coreui/vue/src';
+import {Component} from 'vue-property-decorator';
+import ModalBase from './ModalBase.vue';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {User} from '@/services/AuthenticationService';
-
 import UserService from '@/services/UserService';
 
-
 /**
- * Session expiration modal component
+ * Session expiration dialog component
  */
-@Component({
-	components: {
-		CButton,
-		CModal,
-	},
-})
-export default class SessionExpirationModal extends Vue {
-	/**
-	 * @var {boolean} show Show expiration modal
-	 */
-	private show = false;
-
+@Component
+export default class SessionExpirationModal extends ModalBase {
 	/**
 	 * @var {number} expirationWarningTimeout Timeout to expiration warning visibility
 	 */
@@ -89,7 +80,7 @@ export default class SessionExpirationModal extends Vue {
 	}
 
 	/**
-	 * Clears expiration timers
+	 * Clears expirations
 	 */
 	beforeDestroy(): void {
 		this.clear();
@@ -142,27 +133,10 @@ export default class SessionExpirationModal extends Vue {
 			.catch((error) => extendedErrorToast(error, 'sessionExpiration.failed'));
 	}
 
-	/**
-	 * Clears timeouts and intervals
-	 */
 	private clear(): void {
 		window.clearTimeout(this.logoutTimeout);
 		window.clearTimeout(this.expirationWarningTimeout);
 		window.clearInterval(this.logoutTimerInterval);
-	}
-
-	/**
-	 * Shows session expiration modal
-	 */
-	private openModal(): void {
-		this.show = true;
-	}
-
-	/**
-	 * Closes session expiration modal
-	 */
-	private closeModal(): void {
-		this.show = false;
 	}
 }
 </script>

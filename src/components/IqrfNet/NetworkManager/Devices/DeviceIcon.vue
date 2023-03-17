@@ -19,26 +19,26 @@ limitations under the License.
 		v-if='device.hasLink()'
 		:to='"/iqrfnet/enumeration/" + device.address'
 	>
-		<CIcon :class='device.getIconColor()' :content='device.getIcon()' />
+		<v-icon :color='device.getIconColor()'>
+			{{ device.getIcon() }}
+		</v-icon>
 	</router-link>
-	<CIcon v-else :class='device.getIconColor()' :content='device.getIcon()' />
+	<v-icon v-else :color='device.getIconColor()'>
+		{{ device.getIcon() }}
+	</v-icon>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CIcon} from '@coreui/vue/src';
 
 import Device from '@/helpers/Device';
 
-@Component({
-	components: {
-		CIcon,
-	}
-})
+
 
 /**
  * DeviceIcon component used in table of devices
  */
+@Component
 export default class DeviceIcon extends Vue {
 	/**
 	 * @property {Device|StandardDevice} device Network device

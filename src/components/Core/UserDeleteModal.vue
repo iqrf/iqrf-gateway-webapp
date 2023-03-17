@@ -15,88 +15,75 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CModal
-		v-show='show'
-		:show='show'
-		color='danger'
-		size='lg'
-		:close-on-backdrop='false'
-		:fade='false'
+	<v-dialog
+		v-model='showModal'
+		width='50%'
+		persistent
+		no-click-animation
 	>
-		<template #header>
-			<h5 class='modal-title'>
+		<v-card v-if='user !== null'>
+			<v-card-title>
 				{{ $t('core.user.modal.title') }}
-			</h5>
-		</template>
-		<span>
-			{{ $t('core.user.modal.prompt', {user: user.username}) }}
-		</span>
-		<template #footer>
-			<CButton
-				class='mr-1'
-				color='secondary'
-				@click='hideModal'
-			>
-				{{ $t('forms.cancel') }}
-			</CButton>
-			<CButton
-				color='danger'
-				@click='remove'
-			>
-				{{ $t('forms.delete') }}
-			</CButton>
-		</template>
-	</CModal>
+			</v-card-title>
+			<v-card-text>
+				{{ $t('core.user.modal.prompt', {user: user.username}) }}
+			</v-card-text>
+			<v-card-actions>
+				<v-spacer />
+				<v-btn
+					@click='hideModal'
+				>
+					{{ $t('forms.cancel') }}
+				</v-btn>
+				<v-btn
+					color='error'
+					@click='remove'
+				>
+					{{ $t('forms.delete') }}
+				</v-btn>
+			</v-card-actions>
+		</v-card>
+	</v-dialog>
 </template>
 
 <script lang='ts'>
-import {Component} from 'vue-property-decorator';
-import {CButton, CModal} from '@coreui/vue/src';
-import ModalBase from '@/components/ModalBase.vue';
+import {Component, Prop, VModel, Vue} from 'vue-property-decorator';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
-import {UserRole} from '@/services/AuthenticationService';
 
 import UserService from '@/services/UserService';
 
 import {AxiosError} from 'axios';
 import {IUser} from '@/interfaces/Core/User';
 
-@Component({
-	components: {
-		CButton,
-		CModal,
-	},
-})
-export default class UserDeleteModal extends ModalBase {
+@Component({})
+export default class UserDeleteModal extends Vue {
 	/**
-	 * @constant {IUser} defaultUser Default user
+	 * User to delete
 	 */
-	private readonly defaultUser: IUser = {
-		username: '',
-		email: '',
-		language: 'en',
-		role: UserRole.BASIC
-	};
+	@VModel({required: true}) user!: IUser|null;
 
 	/**
-	 * @var {IUser} user User
+	 * @property {boolean} onlyUser Deleted user is the only user
 	 */
-	private user: IUser = this.defaultUser;
+	@Prop({required: true}) onlyUser!: boolean;
 
 	/**
-	 * @var {boolean} onlyUser Current user is the only user
+	 * Computes modal display condition
 	 */
-	private onlyUser = false;
+	get showModal(): boolean {
+		return this.user !== null;
+	}
 
 	/**
 	 * Removes an existing user
 	 */
 	private remove(): void {
-		if (this.user.id === undefined) {
+		if (this.user === null || this.user.id === undefined) {
 			return;
 		}
 		const id = this.user.id;
+		const username = this.user.username;
 		this.$store.commit('spinner/SHOW');
 		UserService.delete(id)
 			.then(async () => {
@@ -104,7 +91,7 @@ export default class UserDeleteModal extends ModalBase {
 				this.$toast.success(
 					this.$t(
 						'core.user.messages.deleteSuccess',
-						{user: this.user.username}
+						{user: username}
 					).toString()
 				);
 				if (id === this.$store.getters['user/getId']) {
@@ -121,26 +108,14 @@ export default class UserDeleteModal extends ModalBase {
 					this.$emit('deleted');
 				}
 			})
-			.catch((error: AxiosError) => extendedErrorToast(error, 'core.user.messages.deleteFailed', {user: this.user.username}));
-	}
-
-	/**
-	 * Stores user and shows modal window
-	 * @param {IUser} user User
-	 * @param {boolean} onlyUser
-	 */
-	public showModal(user: IUser, onlyUser: boolean): void {
-		this.user = user;
-		this.onlyUser = onlyUser;
-		this.openModal();
+			.catch((error: AxiosError) => extendedErrorToast(error, 'core.user.messages.deleteFailed', {user: username}));
 	}
 
 	/**
 	 * Resets user and hides modal window
 	 */
 	private hideModal(): void {
-		this.user = this.defaultUser;
-		this.closeModal();
+		this.user = null;
 	}
 }
 </script>

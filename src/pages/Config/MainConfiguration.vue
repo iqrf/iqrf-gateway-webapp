@@ -17,47 +17,51 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('config.daemon.main.title') }}</h1>
-		<CCard body-wrapper>
-			<CForm @submit.prevent='saveConfig'>
-				<CInput
-					v-model='configuration.applicationName'
-					:label='$t("config.daemon.main.form.applicationName")'
-				/>
-				<CInput
-					v-model='configuration.resourceDir'
-					:label='$t("config.daemon.main.form.resourceDir")'
-				/>
-				<CInput
-					v-model='configuration.dataDir'
-					:label='$t("config.daemon.main.form.dataDir")'
-				/>
-				<CInput
-					v-model='configuration.cacheDir'
-					:label='$t("config.daemon.main.form.cacheDir")'
-				/>
-				<CInput
-					v-model='configuration.userDir'
-					:label='$t("config.daemon.main.form.userDir")'
-				/>
-				<CInput
-					v-model='configuration.configurationDir'
-					:label='$t("config.daemon.main.form.configurationDir")'
-				/>
-				<CInput
-					v-model='configuration.deploymentDir'
-					:label='$t("config.daemon.main.form.deploymentDir")'
-				/>
-				<CButton type='submit' color='primary'>
-					{{ $t('forms.save') }}
-				</CButton>
-			</CForm>
-		</CCard>
+		<v-card>
+			<v-card-text>
+				<v-form @submit.prevent='saveConfig'>
+					<v-text-field
+						v-model='configuration.applicationName'
+						:label='$t("config.daemon.main.form.applicationName")'
+					/>
+					<v-text-field
+						v-model='configuration.resourceDir'
+						:label='$t("config.daemon.main.form.resourceDir")'
+					/>
+					<v-text-field
+						v-model='configuration.dataDir'
+						:label='$t("config.daemon.main.form.dataDir")'
+					/>
+					<v-text-field
+						v-model='configuration.cacheDir'
+						:label='$t("config.daemon.main.form.cacheDir")'
+					/>
+					<v-text-field
+						v-model='configuration.userDir'
+						:label='$t("config.daemon.main.form.userDir")'
+					/>
+					<v-text-field
+						v-model='configuration.configurationDir'
+						:label='$t("config.daemon.main.form.configurationDir")'
+					/>
+					<v-text-field
+						v-model='configuration.deploymentDir'
+						:label='$t("config.daemon.main.form.deploymentDir")'
+					/>
+					<v-btn
+						type='submit'
+						color='primary'
+					>
+						{{ $t('forms.save') }}
+					</v-btn>
+				</v-form>
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CForm, CInput} from '@coreui/vue/src';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
@@ -66,12 +70,6 @@ import {AxiosError, AxiosResponse} from 'axios';
 import {IMainConfig} from '@/interfaces/Config/Daemon';
 
 @Component({
-	components: {
-		CButton,
-		CCard,
-		CForm,
-		CInput,
-	},
 	metaInfo: {
 		title: 'config.main.title',
 	}

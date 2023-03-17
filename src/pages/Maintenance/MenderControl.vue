@@ -17,16 +17,17 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('maintenance.mender.service.pageTitle') }}</h1>
-		<CCard body-wrapper>
-			<ServiceControl :service-name='serviceName' />
-		</CCard>
+		<v-card class='mb-5'>
+			<v-card-text>
+				<ServiceControl :service-name='serviceName' />
+			</v-card-text>
+		</v-card>
 		<MenderServiceForm />
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard} from '@coreui/vue/src';
 import MenderServiceForm from '@/components/Maintenance/MenderServiceForm.vue';
 import ServiceControl from '@/components/Maintenance/ServiceControl.vue';
 
@@ -34,8 +35,6 @@ import {NavigationGuardNext, Route} from 'vue-router';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
 		MenderServiceForm,
 		ServiceControl,
 	},

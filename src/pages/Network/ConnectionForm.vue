@@ -17,207 +17,200 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ pageTitle }}</h1>
-		<CCard body-wrapper>
-			<ValidationObserver v-slot='{invalid}'>
-				<CForm @submit.prevent='prepareModal'>
-					<ValidationProvider
-						v-slot='{errors, touched, valid}'
-						rules='required'
-						:custom-messages='{
-							required: $t("network.connection.errors.name"),
-						}'
-					>
-						<CInput
-							v-model='connection.name'
-							:label='$t("network.connection.name").toString()'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
-						/>
-					</ValidationProvider>
-					<div v-if='interfaceType !== null && connection.interface !== undefined'>
-						<GsmModemInput
-							v-if='interfaceType === InterfaceType.GSM'
-							v-model='connection.interface'
-							@input='detectSerial'
-						/>
-						<InterfaceInput
-							v-else
-							v-model='connection.interface'
-							:type='interfaceType'
-						/>
-					</div>
-					<div class='form-group'>
-						<label for='autoConnect'>
-							<strong>{{ $t("network.connection.autoConnect") }}</strong>
-						</label><br>
-						<CSwitch
-							id='autoConnect'
-							:checked.sync='connection.autoConnect.enabled'
-							size='lg'
-							shape='pill'
+		<v-card class='mb-5'>
+			<v-card-text>
+				<ValidationObserver v-slot='{invalid}'>
+					<v-form @submit.prevent='prepareModal'>
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							rules='required'
+							:custom-messages='{
+								required: $t("network.connection.errors.name"),
+							}'
+						>
+							<v-text-field
+								v-model='connection.name'
+								:label='$t("network.connection.name").toString()'
+								:success='touched ? valid : null'
+								:error-messages='errors'
+							/>
+						</ValidationProvider>
+						<div v-if='interfaceType !== null && connection.interface !== undefined'>
+							<GsmModemInput
+								v-if='interfaceType === InterfaceType.GSM'
+								v-model='connection.interface'
+								@input='detectSerial'
+							/>
+							<InterfaceInput
+								v-else
+								v-model='connection.interface'
+								:type='interfaceType'
+							/>
+						</div>
+						<v-switch
+							v-model='connection.autoConnect.enabled'
+							:label='$t("network.connection.autoConnect")'
 							color='primary'
-							label-on='ON'
-							label-off='OFF'
+							inset
+							dense
 						/>
-					</div>
-					<WiFiConfiguration v-if='connection.wifi' v-model='connection' :ap='ap' />
-					<div
-						v-if='connection.gsm'
-						:key='refresh'
+						<WiFiConfiguration v-if='connection.wifi' v-model='connection' :ap='ap' />
+						<div
+							v-if='connection.gsm'
+							:key='refresh'
+						>
+							<h5>{{ $t('network.mobile.form.title') }}</h5>
+							<ValidationProvider
+								v-slot='{errors, touched, valid}'
+								rules='required|apn'
+								:custom-messages='{
+									required: $t("network.mobile.errors.apnMissing"),
+									apn: $t("network.mobile.errors.apnInvalid"),
+								}'
+							>
+								<v-text-field
+									v-model='connection.gsm.apn'
+									:label='$t("network.mobile.form.apn").toString()'
+									:success='touched ? valid : null'
+									:error-messages='errors'
+								/>
+							</ValidationProvider>
+							<ValidationProvider
+								v-slot='{errors, touched, valid}'
+								rules='pin'
+								:custom-messages='{
+									pin: $t("network.mobile.errors.pinInvalid"),
+								}'
+							>
+								<PasswordInput
+									v-model='connection.gsm.pin'
+									:label='$t("network.mobile.form.pin").toString()'
+									:success='touched ? valid : null'
+									:error-messages='errors'
+								/>
+							</ValidationProvider>
+							<v-row>
+								<v-col>
+									<ValidationProvider
+										v-slot='{errors, touched, valid}'
+										:rules='{
+											required: connection.gsm.password.length > 0
+										}'
+										:custom-messages='{
+											required: $t("network.mobile.errors.credentialsMissing"),
+										}'
+									>
+										<v-text-field
+											v-model='connection.gsm.username'
+											:label='$t("forms.fields.username").toString()'
+											:success='touched ? valid : null'
+											:error-messages='errors'
+										/>
+									</ValidationProvider>
+								</v-col>
+								<v-col>
+									<ValidationProvider
+										v-slot='{errors, touched, valid}'
+										:rules='{
+											required: connection.gsm.username.length > 0
+										}'
+										:custom-messages='{
+											required: $t("network.mobile.errors.credentialsMissing"),
+										}'
+									>
+										<PasswordInput
+											v-model='connection.gsm.password'
+											:label='$t("forms.fields.password").toString()'
+											:success='touched ? valid : null'
+											:error-messages='errors'
+										/>
+									</ValidationProvider>
+								</v-col>
+							</v-row>
+						</div>
+						<SerialConfiguration v-if='connection.serial' v-model='connection' />
+						<v-row v-if='interfaceType'>
+							<v-col cols='12'>
+								<v-alert v-if='disabledBothIpStacks' type='error' text>
+									{{ $t('network.connection.messages.disabledBothIpStacks') }}
+								</v-alert>
+							</v-col>
+							<v-col cols='12' md='6'>
+								<h5>{{ $t('network.connection.ipv4.title') }}</h5>
+								<IPv4Configuration v-model='connection' />
+							</v-col>
+							<v-col cols='12' md='6'>
+								<h5>{{ $t('network.connection.ipv6.title') }}</h5>
+								<IPv6Configuration v-model='connection' :disabled='hasBrokenGsmModem' />
+							</v-col>
+						</v-row>
+						<v-btn
+							type='submit'
+							color='primary'
+							:disabled='invalid || !ipv4InSubnet || disabledBothIpStacks'
+						>
+							{{ $t('forms.save') }}
+						</v-btn>
+					</v-form>
+				</ValidationObserver>
+			</v-card-text>
+		</v-card>
+		<v-card
+			v-if='interfaceType === InterfaceType.GSM'
+		>
+			<v-card-text>
+				<NetworkOperators
+					:allow-set='true'
+					@set-operator='updateGsm'
+				/>
+			</v-card-text>
+		</v-card>
+		<v-dialog
+			v-model='showModal'
+			width='50%'
+			persistent
+			no-click-animation
+		>
+			<v-card>
+				<v-card-title>
+					{{ $t('network.connection.modal.title') }}
+				</v-card-title>
+				<v-card-text>
+					<span v-if='modalMessages.ipv4 !== ""'>
+						{{ modalMessages.ipv4 }}
+					</span>
+					<a
+						v-if='modalMessages.ipv4Addr !== ""'
+						style='color: blue; cursor: pointer;'
+						:href='modalMessages.ipv4Addr'
+						target='_blank'
 					>
-						<legend>{{ $t('network.mobile.form.title') }}</legend>
-						<ValidationProvider
-							v-slot='{errors, touched, valid}'
-							rules='required|apn'
-							:custom-messages='{
-								required: $t("network.mobile.errors.apnMissing"),
-								apn: $t("network.mobile.errors.apnInvalid"),
-							}'
-						>
-							<CInput
-								v-model='connection.gsm.apn'
-								:label='$t("network.mobile.form.apn").toString()'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
-							/>
-						</ValidationProvider>
-						<ValidationProvider
-							v-slot='{errors, touched, valid}'
-							rules='pin'
-							:custom-messages='{
-								pin: $t("network.mobile.errors.pinInvalid"),
-							}'
-						>
-							<PasswordInput
-								v-model='connection.gsm.pin'
-								:label='$t("network.mobile.form.pin").toString()'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
-							/>
-						</ValidationProvider>
-						<CRow>
-							<CCol>
-								<ValidationProvider
-									v-slot='{errors, touched, valid}'
-									:rules='{
-										required: connection.gsm.password.length > 0
-									}'
-									:custom-messages='{
-										required: $t("network.mobile.errors.credentialsMissing"),
-									}'
-								>
-									<CInput
-										v-model='connection.gsm.username'
-										:label='$t("forms.fields.username").toString()'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='errors.join(", ")'
-									/>
-								</ValidationProvider>
-							</CCol>
-							<CCol>
-								<ValidationProvider
-									v-slot='{errors, touched, valid}'
-									:rules='{
-										required: connection.gsm.username.length > 0
-									}'
-									:custom-messages='{
-										required: $t("network.mobile.errors.credentialsMissing"),
-									}'
-								>
-									<PasswordInput
-										v-model='connection.gsm.password'
-										:label='$t("forms.fields.password").toString()'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='errors.join(", ")'
-									/>
-								</ValidationProvider>
-								<CCol />
-							</ccol>
-						</CRow>
-					</div>
-					<SerialConfiguration v-if='connection.serial' v-model='connection' />
-					<CRow>
-						<CCol md='12'>
-							<CAlert v-if='disabledBothIpStacks' color='danger'>
-								{{ $t("network.connection.messages.disabledBothIpStacks") }}
-							</CAlert>
-						</CCol>
-						<CCol md='6'>
-							<legend>{{ $t('network.connection.ipv4.title') }}</legend>
-							<IPv4Configuration v-model='connection' />
-						</CCol>
-						<CCol md='6'>
-							<legend>{{ $t('network.connection.ipv6.title') }}</legend>
-							<IPv6Configuration v-model='connection' :disabled='hasBrokenGsmModem' />
-						</CCol>
-					</CRow>
-					<CButton
-						type='submit'
-						color='primary'
-						:disabled='invalid || !ipv4InSubnet || disabledBothIpStacks'
+						{{ modalMessages.ipv4Addr }}
+					</a>
+					{{ $t('network.connection.modal.confirmPrompt') }}
+				</v-card-text>
+				<v-card-actions>
+					<v-spacer />
+					<v-btn
+						class='mr-1'
+						@click='showModal = false'
+					>
+						{{ $t('forms.cancel') }}
+					</v-btn>
+					<v-btn
+						color='warning'
+						@click='saveConnection'
 					>
 						{{ $t('forms.save') }}
-					</CButton>
-				</CForm>
-			</ValidationObserver>
-		</CCard>
-		<CCard v-if='interfaceType === InterfaceType.GSM' body-wrapper>
-			<NetworkOperators @apply='updateGsm' />
-		</CCard>
-		<CModal
-			:show.sync='showModal'
-			color='warning'
-			size='lg'
-		>
-			<template #header>
-				<h5 class='modal-title'>
-					{{ $t('network.connection.modal.title') }}
-				</h5>
-			</template>
-			<div>
-				<span v-if='modalMessages.ipv4 !== ""'>
-					{{ modalMessages.ipv4 }}
-				</span>
-				<a
-					v-if='modalMessages.ipv4Addr !== ""'
-					style='color: blue; cursor: pointer;'
-					:href='modalMessages.ipv4Addr'
-					target='_blank'
-				>
-					{{ modalMessages.ipv4Addr }}
-				</a>
-			</div>
-			{{ $t('network.connection.modal.confirmPrompt') }}
-			<template #footer>
-				<CButton
-					color='warning'
-					@click='saveConnection'
-				>
-					{{ $t('forms.save') }}
-				</CButton> <CButton
-					color='secondary'
-					@click='showModal = false'
-				>
-					{{ $t('forms.cancel') }}
-				</CButton>
-			</template>
-		</CModal>
+					</v-btn>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 	</div>
 </template>
 
 <script lang='ts'>
 import axios, {AxiosError, AxiosResponse} from 'axios';
-import {
-	CAlert,
-	CButton,
-	CCard,
-	CCol,
-	CForm,
-	CInput,
-	CModal,
-	CRow,
-	CSwitch
-} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 import {MetaInfo} from 'vue-meta';
@@ -226,16 +219,12 @@ import {v4 as uuidv4} from 'uuid';
 
 import GsmModemInput from '@/components/Network/Connection/GsmModemInput.vue';
 import InterfaceInput from '@/components/Network/Connection/InterfaceInput.vue';
-import IPv4Configuration
-	from '@/components/Network/Connection/IPv4Configuration.vue';
-import IPv6Configuration
-	from '@/components/Network/Connection/IPv6Configuration.vue';
-import SerialConfiguration
-	from '@/components/Network/Connection/SerialConfiguration.vue';
-import WiFiConfiguration
-	from '@/components/Network/Connection/WiFiConfiguration.vue';
-import NetworkOperators from '@/components/Network/NetworkOperators.vue';
+import IPv4Configuration from '@/components/Network/Connection/IPv4Configuration.vue';
+import IPv6Configuration from '@/components/Network/Connection/IPv6Configuration.vue';
 import PasswordInput from '@/components/Core/PasswordInput.vue';
+import SerialConfiguration from '@/components/Network/Connection/SerialConfiguration.vue';
+import WiFiConfiguration from '@/components/Network/Connection/WiFiConfiguration.vue';
+import NetworkOperators from '@/components/Network/NetworkOperators.vue';
 
 import NetworkOperator from '@/entities/NetworkOperator';
 
@@ -245,8 +234,8 @@ import {Ipv4Method, Ipv6Method} from '@/enums/Network/Ip';
 import {WepKeyType} from '@/enums/Network/WifiSecurity';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
-import IpAddressHelper from '@/helpers/IpAddressHelper';
 import {apn, pin} from '@/helpers/validationRules/Network';
+import IpAddressHelper from '@/helpers/IpAddressHelper';
 import {sleep} from '@/helpers/sleep';
 import UrlBuilder from '@/helpers/urlBuilder';
 
@@ -263,25 +252,16 @@ import ServiceService from '@/services/ServiceService';
 
 @Component({
 	components: {
-		CAlert,
-		CButton,
-		CCard,
-		CCol,
-		CForm,
-		CInput,
-		CModal,
-		CRow,
-		CSwitch,
 		GsmModemInput,
 		InterfaceInput,
 		IPv4Configuration,
 		IPv6Configuration,
 		NetworkOperators,
+		PasswordInput,
 		SerialConfiguration,
 		ValidationObserver,
 		ValidationProvider,
 		WiFiConfiguration,
-		PasswordInput,
 	},
 	data: () => ({
 		InterfaceType,

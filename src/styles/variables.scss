@@ -1,0 +1,35 @@
+// typography
+$body-font-family: 'Arial', sans-serif !important;
+$font-size-root: 1rem;
+
+// buttons
+$btn-text-transform: none;
+
+// chips
+$chip-padding: 0 6px;
+
+// lists
+$list-padding: 0 !important;
+$list-dense-icon-margin: 12px;
+$list-item-action-icon-margin: 16px;
+$list-item-dense-title-font-weight: 400;
+$list-item-dense-title-font-size: 0.875rem !important;
+
+// pickers
+$time-picker-title-color: black;
+
+// form elements
+$file-input-chip-margin: 0;
+$select-chip-margin: 0;
+
+// tables
+$data-table-regular-header-font-size: 0.875rem;
+
+// materials
+$material-light: (
+	'text': (
+		'theme': #3c4b64,
+		'primary': rgba(#3c4b64, 1),
+		'secondary': rgba(#3c4b64, 1)
+	)
+);

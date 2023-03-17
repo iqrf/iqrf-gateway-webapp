@@ -24,11 +24,11 @@ limitations under the License.
 				required: $t("network.serial.errors.baudRateMissing"),
 			}'
 		>
-			<CInput
+			<v-text-field
 				v-model.number='connection.serial.baudRate'
 				:label='$t("network.serial.form.baudRate").toString()'
-				:is-valid='touched ? valid : null'
-				:invalid-feedback='errors.join(", ")'
+				:success='touched ? valid : null'
+				:error-messages='errors'
 				type='number'
 			/>
 		</ValidationProvider>
@@ -37,7 +37,6 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, VModel, Vue} from 'vue-property-decorator';
-import {CInput} from '@coreui/vue/src';
 import {extend, ValidationProvider} from 'vee-validate';
 
 import {required} from 'vee-validate/dist/rules';
@@ -49,7 +48,6 @@ import PasswordInput from '@/components/Core/PasswordInput.vue';
  */
 @Component({
 	components: {
-		CInput,
 		PasswordInput,
 		ValidationProvider,
 	},

@@ -1,10 +1,10 @@
 <template>
-	<CCard>
-		<CCardHeader>{{ $t('install.steps.smtp') }}</CCardHeader>
-		<CCardBody>
+	<v-card>
+		<v-card-title>{{ $t('install.steps.smtp') }}</v-card-title>
+		<v-card-text>
 			<SmtpForm @done='nextStep' />
-		</CCardBody>
-	</CCard>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>

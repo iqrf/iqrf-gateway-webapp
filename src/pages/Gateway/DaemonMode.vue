@@ -17,74 +17,111 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('gateway.mode.title') }}</h1>
-		<CCard body-wrapper>
-			<CRow align-vertical='center'>
-				<CCol md='2'>
-					<strong>{{ $t('gateway.info.gwMode') }}</strong>
-				</CCol>
-				<CCol>
-					<CDropdown
-						color='primary'
-						:toggler-text='$t(`gateway.mode.modes.${mode}`)'
-						placement='bottom'
-					>
-						<CDropdownItem
-							@click='setMode(modes.operational)'
-						>
-							{{ $t('gateway.mode.modes.operational') }}
-						</CDropdownItem>
-						<CDropdownItem
-							@click='setMode(modes.service)'
-						>
-							{{ $t('gateway.mode.modes.service') }}
-						</CDropdownItem>
-						<CDropdownItem
-							@click='setMode(modes.forwarding)'
-						>
-							{{ $t('gateway.mode.modes.forwarding') }}
-						</CDropdownItem>
-					</CDropdown>
-				</CCol>
-			</CRow>
-			<CRow
-				v-if='ideConfiguration !== null'
-				class='mt-4'
-				align-vertical='center'
-			>
-				<CCol md='2'>
-					<strong>{{ $t('gateway.mode.startupMode') }}</strong>
-				</CCol>
-				<CCol>
-					<CDropdown
-						color='primary'
-						:toggler-text='$t(`gateway.mode.modes.${ideConfiguration.operMode}`)'
-						placement='bottom'
-					>
-						<CDropdownItem
-							@click='setStartupMode(modes.operational)'
-						>
-							{{ $t('gateway.mode.modes.operational') }}
-						</CDropdownItem>
-						<CDropdownItem
-							@click='setStartupMode(modes.service)'
-						>
-							{{ $t('gateway.mode.modes.service') }}
-						</CDropdownItem>
-						<CDropdownItem
-							@click='setStartupMode(modes.forwarding)'
-						>
-							{{ $t('gateway.mode.modes.forwarding') }}
-						</CDropdownItem>
-					</CDropdown>
-				</CCol>
-			</CRow>
-		</CCard>
+		<v-card>
+			<v-card-text>
+				<v-row align='center'>
+					<v-col md='2'>
+						<strong>
+							{{ $t('gateway.info.gwMode') }}
+						</strong>
+					</v-col>
+					<v-col md='2'>
+						<v-menu offset-y>
+							<template #activator='{on, attrs}'>
+								<v-btn
+									color='primary'
+									small
+									:disabled='mode === DaemonModeEnum.unknown'
+									v-bind='attrs'
+									v-on='on'
+								>
+									{{ $t(`gateway.mode.modes.${mode}`) }}
+									<v-icon>
+										mdi-menu-down
+									</v-icon>
+								</v-btn>
+							</template>
+							<v-list dense>
+								<v-list-item
+									dense
+									@click='setMode(modes.operational)'
+								>
+									{{ $t('gateway.mode.modes.operational') }}
+								</v-list-item>
+								<v-divider />
+								<v-list-item
+									dense
+									@click='setMode(modes.service)'
+								>
+									{{ $t('gateway.mode.modes.service') }}
+								</v-list-item>
+								<v-divider />
+								<v-list-item
+									dense
+									@click='setMode(modes.forwarding)'
+								>
+									{{ $t('gateway.mode.modes.forwarding') }}
+								</v-list-item>
+							</v-list>
+						</v-menu>
+					</v-col>
+				</v-row>
+				<v-row
+					v-if='ideConfiguration !== null'
+					align='center'
+				>
+					<v-col md='2'>
+						<strong>
+							{{ $t('gateway.mode.startupMode') }}
+						</strong>
+					</v-col>
+					<v-col md='2'>
+						<v-menu offset-y>
+							<template #activator='{on, attrs}'>
+								<v-btn
+									color='primary'
+									small
+									v-bind='attrs'
+									v-on='on'
+								>
+									{{ $t(`gateway.mode.modes.${ideConfiguration.operMode}`) }}
+									<v-icon>
+										mdi-menu-down
+									</v-icon>
+								</v-btn>
+							</template>
+							<v-list dense>
+								<v-list-item
+									dense
+									@click='setStartupMode(modes.operational)'
+								>
+									{{ $t('gateway.mode.modes.operational') }}
+								</v-list-item>
+								<v-divider />
+								<v-list-item
+									dense
+									@click='setStartupMode(modes.service)'
+								>
+									{{ $t('gateway.mode.modes.service') }}
+								</v-list-item>
+								<v-divider />
+								<v-list-item
+									dense
+									@click='setStartupMode(modes.forwarding)'
+								>
+									{{ $t('gateway.mode.modes.forwarding') }}
+								</v-list-item>
+							</v-list>
+						</v-menu>
+					</v-col>
+				</v-row>
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CDropdown, CDropdownItem} from '@coreui/vue/src';
 
 import {buildDaemonMessageOptions} from '@/store/modules/daemonClient.module';
 import {DaemonModeEnum} from '@/enums/Gateway/DaemonMode';
@@ -98,12 +135,6 @@ import {IIdeCounterpart} from '@/interfaces/Config/IdeCounterpart';
 import {DaemonClientState} from '@/interfaces/wsClient';
 
 @Component({
-	components: {
-		CButton,
-		CCard,
-		CDropdown,
-		CDropdownItem
-	},
 	data: () => ({
 		DaemonModeEnum,
 	}),

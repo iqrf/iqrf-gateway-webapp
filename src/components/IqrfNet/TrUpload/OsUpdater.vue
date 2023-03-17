@@ -16,69 +16,67 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<CCard>
-			<CCardHeader>
+		<v-card>
+			<v-card-title>
 				{{ $t('iqrfnet.trUpload.osUpload.title') }}
-			</CCardHeader>
-			<CCardBody>
-				<CElementCover
+			</v-card-title>
+			<v-card-text>
+				<v-overlay
 					v-if='loadFailed'
-					style='z-index: 1;'
-					:opacity='0.85'
+					absolute
+					:opacity='0.65'
 				>
 					{{ $t('iqrfnet.trUpload.osUpload.messages.fetchFailed') }}
-				</CElementCover>
+				</v-overlay>
 				<ValidationObserver v-slot='{invalid}'>
-					<CForm>
-						<fieldset :disabled='loadFailed'>
-							<div class='form-group'>
-								<span v-if='currentOsVersion !== "" && currentOsBuild !== ""'>
-									<strong>{{ $t('iqrfnet.trUpload.osUpload.form.current') }}</strong> {{ prettyVersion(currentOsVersion) + ' (' + currentOsBuild + ')' }}
-								</span>
-							</div>
-							<CAlert
-								v-if='!loadFailed && selectVersions.length === 0'
-								color='success'
-								class='mb-0'
+					<v-form>
+						<p v-if='currentOsVersion !== "" && currentOsBuild !== ""'>
+							<span>
+								<strong>{{ $t('iqrfnet.trUpload.osUpload.form.current') }}</strong> {{ prettyVersion(currentOsVersion) + ' (' + currentOsBuild + ')' }}
+							</span>
+						</p>
+						<v-alert
+							v-if='!loadFailed && selectVersions.length === 0'
+							color='success'
+							text
+							outlined
+						>
+							{{ $t('iqrfnet.trUpload.osUpload.messages.newest') }}
+						</v-alert>
+						<div v-else-if='!loadFailed && selectVersions.length > 0'>
+							<ValidationProvider
+								v-slot='{errors, touched, valid}'
+								rules='required'
+								:custom-messages='{
+									required: $t("iqrfnet.trUpload.osUpload.errors.version"),
+								}'
 							>
-								{{ $t('iqrfnet.trUpload.osUpload.messages.newest') }}
-							</CAlert>
-							<div v-else-if='!loadFailed && selectVersions.length > 0'>
-								<ValidationProvider
-									v-slot='{errors, touched, valid}'
-									rules='required'
-									:custom-messages='{
-										required: $t("iqrfnet.trUpload.osUpload.errors.version"),
-									}'
-								>
-									<CSelect
-										:value.sync='osVersion'
-										:label='$t("iqrfnet.trUpload.osUpload.form.version")'
-										:placeholder='$t("iqrfnet.trUpload.osUpload.errors.version")'
-										:options='selectVersions'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='errors.join(", ")'
-									/>
-								</ValidationProvider>
-								<CButton
-									color='primary'
-									:disabled='invalid'
-									@click='upgradeOs'
-								>
-									{{ $t('forms.upload') }}
-								</CButton>
-							</div>
-						</fieldset>
-					</CForm>
+								<v-select
+									v-model='osVersion'
+									:items='selectVersions'
+									:label='$t("iqrfnet.trUpload.osUpload.form.version")'
+									:placeholder='$t("iqrfnet.trUpload.osUpload.errors.version")'
+									:success='touched ? valid : null'
+									:error-messages='errors'
+								/>
+							</ValidationProvider>
+							<v-btn
+								color='primary'
+								:disabled='invalid'
+								@click='upgradeOs'
+							>
+								{{ $t('forms.upload') }}
+							</v-btn>
+						</div>
+					</v-form>
 				</ValidationObserver>
-			</CCardBody>
-		</CCard>
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {daemonErrorToast, extendedErrorToast} from '@/helpers/errorToast';
@@ -88,17 +86,10 @@ import ServiceService from '@/services/ServiceService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {IAvailableOsUpgrade, IOsUpgradeParams} from '@/interfaces/trUpload';
-import {IOption} from '@/interfaces/Coreui';
+import {ISelectItem} from '@/interfaces/Vuetify';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CElementCover,
-		CForm,
-		CSelect,
 		ValidationObserver,
 		ValidationProvider
 	}
@@ -129,9 +120,9 @@ export default class OsUpdater extends Vue {
 	private osVersion: number|null = null;
 
 	/**
-	 * @var {Array<IOption>} selectVersions Array of available IQRF OS versions for CoreUI select
+	 * @var {Array<ISelectItem>} selectVersions IQRF OS version select options
 	 */
-	private selectVersions: Array<IOption> = [];
+	private selectVersions: Array<ISelectItem> = [];
 
 	/**
 	 * @var {number} trMcuType Module TR and MCU type
@@ -194,7 +185,7 @@ export default class OsUpdater extends Vue {
 	 * Updates list of available IQRF OS upgrades for select
 	 */
 	private updateVersions(): void {
-		const versions: Array<IOption> = [];
+		const versions: Array<ISelectItem> = [];
 		for (let i = 0; i < this.upgrades.length; ++i) {
 			const upgrade: IAvailableOsUpgrade = this.upgrades[i];
 			let text = upgrade.os.version + ' (' + upgrade.os.build;
@@ -221,7 +212,7 @@ export default class OsUpdater extends Vue {
 			}
 			versions.push({
 				value: i,
-				label: text,
+				text: text,
 			});
 		}
 		versions.sort();

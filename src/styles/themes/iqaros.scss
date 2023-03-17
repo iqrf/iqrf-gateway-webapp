@@ -15,11 +15,4 @@
  * limitations under the License.
  */
 
-@use 'sass:map';
 @import './colors/iqaros';
-@import '~@coreui/coreui/scss/coreui';
-
-.c-header-dark,
-.c-sidebar-dark {
-	background: map.get($theme-colors, 'dark') !important;
-}

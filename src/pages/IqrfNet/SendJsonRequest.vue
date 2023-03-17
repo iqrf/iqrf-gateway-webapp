@@ -17,28 +17,28 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('iqrfnet.sendJson.title') }}</h1>
-		<CCard>
-			<CCardHeader>
-				<CButton
+		<v-card class='mb-5'>
+			<v-card-title>
+				<v-btn
 					color='primary'
-					size='sm'
-					href='https://docs.iqrf.org/iqrf-gateway/daemon-api.html'
+					small
+					href='https://docs.iqrf.org/iqrf-gateway/user/daemon/api.html'
 					target='_blank'
 				>
 					{{ $t("iqrfnet.sendJson.documentation") }}
-				</CButton>
-			</CCardHeader>
-			<CCardBody>
+				</v-btn>
+			</v-card-title>
+			<v-card-text>
 				<JsonSchemaErrors :errors='validatorErrors' />
-				<CElementCover
+				<v-overlay
 					v-if='!isSocketConnected'
-					style='z-index: 1;'
-					:opacity='0.85'
+					:opacity='0.65'
+					absolute
 				>
 					{{ $t('iqrfnet.messages.socketError') }}
-				</CElementCover>
+				</v-overlay>
 				<ValidationObserver v-slot='{invalid}' slim>
-					<CForm @submit.prevent='processSubmit'>
+					<form @submit.prevent='processSubmit'>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required|json'
@@ -46,89 +46,78 @@ limitations under the License.
 								required: $t("iqrfnet.sendJson.messages.missing"),
 								json: $t("iqrfnet.sendJson.messages.invalid"),
 							}'
-							slim
 						>
-							<JsonEditor
+							<v-textarea
 								v-model='json'
 								:label='$t("iqrfnet.sendJson.form.json").toString()'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
-								@blur='$emit("blur", $event)'
+								:success='touched ? valid : null'
+								:error-messages='errors'
+								rows='1'
+								auto-grow
 							/>
 						</ValidationProvider>
-						<CButton color='primary' type='submit' :disabled='invalid'>
+						<v-btn color='primary' type='submit' :disabled='invalid'>
 							{{ $t('forms.send') }}
-						</CButton>
-					</CForm>
+						</v-btn>
+					</form>
 				</ValidationObserver>
-			</CCardBody>
-		</CCard>
-		<CCard
-			v-if='messages.length !== 0'
-			body-wrapper
-		>
-			<CSelect
-				:value.sync='activeIdx'
-				:label='$t("iqrfnet.sendJson.form.activeMessage").toString()'
-				:options='messageOptions'
-			/>
-			<div v-if='messages.length > 0'>
-				<CRow>
-					<CCol md='6'>
-						<JsonMessage
-							:message='messages[activeIdx].request'
-							type='request'
-							source='sendJson'
-						/>
-					</CCol>
-					<CCol
-						v-if='messages[activeIdx].response.length > 0'
-						md='6'
-					>
-						<JsonMessage
-							v-for='(rsp, i) of messages[activeIdx].response'
-							:key='i'
-							:message='rsp'
-							type='response'
-							source='sendJson'
-						/>
-					</CCol>
-				</CRow>
-			</div>
-		</CCard>
+			</v-card-text>
+		</v-card>
+		<v-card v-if='messages.length !== 0'>
+			<v-card-text>
+				<v-select
+					v-model='activeIdx'
+					:label='$t("iqrfnet.sendJson.form.activeMessage").toString()'
+					:items='messageOptions'
+				/>
+				<div v-if='messages.length > 0'>
+					<v-row>
+						<v-col md='6'>
+							<JsonMessage
+								:message='messages[activeIdx].request'
+								type='request'
+								source='sendJson'
+							/>
+						</v-col>
+						<v-col
+							v-if='messages[activeIdx].response.length > 0'
+							md='6'
+						>
+							<JsonMessage
+								v-for='(rsp, i) of messages[activeIdx].response'
+								:key='i'
+								:message='rsp'
+								type='response'
+								source='sendJson'
+							/>
+						</v-col>
+					</v-row>
+				</div>
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CTextarea} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import JsonEditor from '@/components/Config/JsonEditor.vue';
 import JsonMessage from '@/components/IqrfNet/JsonMessage.vue';
 import JsonSchemaErrors from '@/components/Config/JsonSchemaErrors.vue';
 
 import {required} from 'vee-validate/dist/rules';
 import {StatusMessages} from '@/iqrfNet/sendJson';
 import {v4 as uuidv4} from 'uuid';
+import DaemonApiValidator from '@/helpers/DaemonApiValidator';
+import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 import IqrfNetService from '@/services/IqrfNetService';
 
 import {IMessagePairRequest} from '@/interfaces/DaemonApi/Api';
-import {IOption} from '@/interfaces/Coreui';
+import {ISelectItem} from '@/interfaces/Vuetify';
 import {mapGetters, MutationPayload} from 'vuex';
-import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
-import DaemonApiValidator from '@/helpers/DaemonApiValidator';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CElementCover,
-		CForm,
-		CTextarea,
-		JsonEditor,
 		JsonMessage,
 		JsonSchemaErrors,
 		ValidationObserver,
@@ -245,13 +234,13 @@ export default class SendJsonRequest extends Vue {
 
 	/**
 	 * Generates array of message options to select from to show
-	 * @returns {Array<IOption>} Array of options
+	 * @returns {Array<ISelectItem>} Array of options
 	 */
-	get messageOptions(): Array<IOption> {
-		const options: Array<IOption> = [];
+	get messageOptions(): Array<ISelectItem> {
+		const options: Array<ISelectItem> = [];
 		this.messages.forEach((item: IMessagePairRequest) => {
 			options.push({
-				label: item.label,
+				text: item.label,
 				value: this.messages.indexOf(item),
 			});
 		});
@@ -278,7 +267,7 @@ export default class SendJsonRequest extends Vue {
 	 */
 	private sendRequest(request): void {
 		const options = new DaemonMessageOptions(request);
-		if ({}.hasOwnProperty.call(request.data.req, 'nAdr') && request.data.req.nAdr === 255) { // if a message is broadcasted, do not wait for proper response
+		if (request.data.req !== undefined && {}.hasOwnProperty.call(request.data.req, 'nAdr') && request.data.req.nAdr === 255) { // if a message is broadcasted, do not wait for proper response
 			options.timeout = 1000;
 		} else if (request.mType === 'iqrfEmbedOs_Batch' || request.mType === 'iqrfEmbedOs_SelectiveBatch') { // batch and selective batch requests do not have proper responses, do not wait
 			options.timeout = 1000;

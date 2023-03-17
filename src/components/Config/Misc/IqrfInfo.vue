@@ -15,19 +15,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard class='border-0 card-margin-bottom'>
-		<CCardBody>
-			<CElementCover
+	<v-card :loading='loading'>
+		<v-card-text v-if='!loading'>
+			<v-overlay
 				v-if='loadFailed'
-				style='z-index: 1;'
-				:opacity='0.85'
+				:opacity='0.65'
+				absolute
 			>
 				{{ $t('config.daemon.messages.failedElement') }}
-			</CElementCover>
+			</v-overlay>
 			<ValidationObserver v-slot='{invalid}'>
-				<CForm
-					@submit.prevent='saveConfig'
-				>
+				<v-form @submit.prevent='saveConfig'>
 					<fieldset :disabled='loadFailed'>
 						<ValidationProvider
 							v-if='isAdmin'
@@ -37,74 +35,67 @@ limitations under the License.
 								required: $t("config.daemon.misc.iqrfInfo.errors.instance")
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model='configuration.instance'
 								:label='$t("forms.fields.instanceName")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
-						<div
-							class='form-group'
+						<v-switch
+							v-model='enumPeriodic'
+							:label='$t("config.daemon.misc.iqrfInfo.form.enablePeriodic")'
+							color='primary'
+							inset
+							dense
+						/>
+						<ValidationProvider
+							v-if='enumPeriodic'
+							v-slot='{errors, touched, valid}'
+							rules='integer|min:0|required'
+							:custom-messages='{
+								required: $t("config.daemon.misc.iqrfInfo.errors.enumPeriod"),
+								min: $t("config.daemon.misc.iqrfInfo.errors.enumPeriod"),
+								integer: $t("forms.errors.integer"),
+							}'
 						>
-							<label for='enumPeriodicEnable'>
-								{{ $t("config.daemon.misc.iqrfInfo.form.enablePeriodic") }}
-							</label><br>
-							<CSwitch
-								id='enumPeriodicEnable'
-								color='primary'
-								size='lg'
-								shape='pill'
-								label-on='ON'
-								label-off='OFF'
-								:checked.sync='enumPeriodic'
+							<v-text-field
+								v-model.number='configuration.enumPeriod'
+								type='number'
+								min='0'
+								:label='$t("config.daemon.misc.iqrfInfo.form.enumPeriod")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
-							<ValidationProvider
-								v-if='enumPeriodic'
-								v-slot='{errors, touched, valid}'
-								rules='integer|min:0|required'
-								:custom-messages='{
-									required: $t("config.daemon.misc.iqrfInfo.errors.enumPeriod"),
-									min: $t("config.daemon.misc.iqrfInfo.errors.enumPeriod"),
-									integer: $t("forms.errors.integer"),
-								}'
-							>
-								<CInput
-									v-model.number='configuration.enumPeriod'
-									type='number'
-									min='0'
-									:label='$t("config.daemon.misc.iqrfInfo.form.enumPeriod")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
-								/>
-							</ValidationProvider>
-						</div>
-						<CInputCheckbox
-							:checked.sync='configuration.enumAtStartUp'
+						</ValidationProvider>
+						<v-checkbox
+							v-model='configuration.enumAtStartUp'
 							:label='$t("config.daemon.misc.iqrfInfo.form.enumAtStartUp")'
+							dense
 						/>
-						<CInputCheckbox
-							:checked.sync='configuration.enumUniformDpaVer'
+						<v-checkbox
+							v-model='configuration.enumUniformDpaVer'
 							:label='$t("config.daemon.misc.iqrfInfo.form.enumUniformDpaVer")'
+							dense
 						/>
-						<CInputCheckbox
+						<v-checkbox
 							v-if='!versionLowerEqual("2.3.6")'
-							:checked.sync='configuration.metaDataToMessages'
+							v-model='configuration.metaDataToMessages'
 							:label='$t("config.daemon.misc.iqrfInfo.form.metaDataToMessages")'
+							dense
 						/>
-						<CButton type='submit' color='primary' :disabled='invalid'>
+						<v-btn type='submit' color='primary' :disabled='invalid'>
 							{{ $t('forms.save') }}
-						</CButton>
+						</v-btn>
 					</fieldset>
-				</CForm>
+				</v-form>
 			</ValidationObserver>
-		</CCardBody>
-	</CCard>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
 import {Component, Vue, Watch} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput, CInputCheckbox, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
@@ -120,15 +111,6 @@ import {IIqrfInfo} from '@/interfaces/Config/Misc';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CElementCover,
-		CForm,
-		CInput,
-		CInputCheckbox,
-		CSwitch,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -179,6 +161,11 @@ export default class IqrfInfo extends Vue {
 	private loadFailed = false;
 
 	/**
+	 * @var {boolean} loading Flag for loading state
+	 */
+	private loading = false;
+
+	/**
 	 * Checks if user is an administrator
 	 * @returns {boolean} True if user is an administrator
 	 */
@@ -197,7 +184,7 @@ export default class IqrfInfo extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook created
+	 * Initializes validation rules
 	 */
 	created(): void {
 		extend('integer', integer);
@@ -206,9 +193,10 @@ export default class IqrfInfo extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook mounted
+	 * Loads component configuration
 	 */
 	mounted(): void {
+		this.loading = true;
 		this.updateForm();
 		this.getConfig();
 	}
@@ -222,11 +210,15 @@ export default class IqrfInfo extends Vue {
 				if (response.data.instances.length > 0) {
 					this.parseConfiguration(response.data.instances[0]);
 				}
-				this.$emit('fetched', {name: 'iqrfInfo', success: true});
+				this.loading = false;
 			})
 			.catch(() => {
+				this.loading = false;
 				this.loadFailed = true;
-				this.$emit('fetched', {name: 'iqrfInfo', success: false});
+				this.$toast.error(
+					this.$t('config.daemon.messages.configFetchFailed', {children: 'iqrfInfo'},)
+						.toString()
+				);
 			});
 	}
 
@@ -266,6 +258,7 @@ export default class IqrfInfo extends Vue {
 	 */
 	private handleSuccess(): void {
 		this.getConfig().then(() => {
+			this.$store.commit('spinner/HIDE');
 			this.$toast.success(
 				this.$t('config.daemon.misc.iqrfInfo.messages.saveSuccess').toString()
 			);

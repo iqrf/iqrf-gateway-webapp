@@ -15,28 +15,27 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CAlert v-if='errors !== undefined && errors.length !== 0' color='danger'>
+	<v-alert
+		v-if='errors !== undefined && errors.length !== 0'
+		type='error'
+		text
+	>
 		{{ $t('iqrfnet.sendJson.messages.error.validatorErrors') }}<br>
 		<ol class='validation-errors'>
 			<li v-for='error in errors' :key='error'>
 				{{ error }}
 			</li>
 		</ol>
-	</CAlert>
+	</v-alert>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CAlert} from '@coreui/vue';
 
 /**
  * JSON schema violations viewer
  */
-@Component({
-	components: {
-		CAlert,
-	},
-})
+@Component({})
 export default class JsonSchemaErrors extends Vue {
 
 	/**

@@ -19,6 +19,7 @@
  * Mapping interface type
  */
 export enum MappingType {
+	CDC = 'cdc',
 	SPI = 'spi',
 	UART = 'uart',
 }

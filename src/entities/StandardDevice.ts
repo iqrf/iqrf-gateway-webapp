@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {cilCheckAlt, cilCheckCircle, cilHome, cilSignalCellular4, cilXCircle} from '@coreui/icons';
 import {IInfoSensorDetail} from '@/interfaces/DaemonApi/IqrfInfo';
 import {IProduct} from '@/interfaces/Repository';
 import i18n from '@/plugins/i18n';
@@ -101,12 +100,12 @@ class StandardDevice {
 	/**
 	 * Standard supported icon
 	 */
-	private readonly standardSupported = cilCheckCircle;
+	private readonly standardSupported = 'mdi-check-circle-outline';
 
 	/**
 	 * Standard unsupported icon
 	 */
-	private readonly standardUnsupported = cilXCircle;
+	private readonly standardUnsupported = 'mdi-close-circle-outline';
 
 	/**
 	 * Constructor
@@ -376,14 +375,14 @@ class StandardDevice {
 	 * Returns device icon
 	 * @returns Device MDI
 	 */
-	getIcon(): Array<string> {
+	getIcon(): string {
 		if (this.address === 0) {
-			return cilHome;
+			return 'mdi-home-outline';
 		}
 		if (this.discovered) {
-			return cilSignalCellular4;
+			return 'mdi-signal-cellular-outline';
 		}
-		return cilCheckAlt;
+		return 'mdi-check';
 	}
 
 	/**
@@ -392,16 +391,16 @@ class StandardDevice {
 	 */
 	getIconColor(): string {
 		if (this.online) {
-			return 'text-success';
+			return 'success';
 		}
-		return 'text-info';
+		return 'info';
 	}
 
 	/**
 	 * Returns binout icon
 	 * @returns Binout icon
 	 */
-	getBinoutIcon(): Array<string> {
+	getBinoutIcon(): string {
 		if (this.hasBinout()) {
 			return this.standardSupported;
 		}
@@ -412,7 +411,7 @@ class StandardDevice {
 	 * Returns dali icon
 	 * @returns Dali icon
 	 */
-	getDaliIcon(): Array<string> {
+	getDaliIcon(): string {
 		if (this.hasDali()) {
 			return this.standardSupported;
 		}
@@ -423,7 +422,7 @@ class StandardDevice {
 	 * Returns light icon
 	 * @returns Light icon
 	 */
-	getLightIcon(): Array<string> {
+	getLightIcon(): string {
 		if (this.hasLight()) {
 			return this.standardSupported;
 		}
@@ -434,7 +433,7 @@ class StandardDevice {
 	 * Returns sensor icon
 	 * @returns Sensor icon
 	 */
-	getSensorIcon(): Array<string> {
+	getSensorIcon(): string {
 		if (this.hasSensor()) {
 			return this.standardSupported;
 		}

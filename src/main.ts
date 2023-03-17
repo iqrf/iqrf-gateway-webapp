@@ -21,43 +21,28 @@ import router from './router';
 import ThemeManager from './helpers/themeManager';
 import App from '@/App.vue';
 
-import './css/themes/generic.scss';
-import './css/app.scss';
+import './styles/themes/generic.scss';
+import './styles/app.scss';
 import 'vue-datetime/dist/vue-datetime.css';
 import 'vue-select/dist/vue-select.css';
 import 'vue-toast-notification/dist/theme-sugar.css';
-import '@fortawesome/fontawesome-svg-core/styles.css';
 import 'vue2-datepicker/index.css';
-
-import {config, library} from '@fortawesome/fontawesome-svg-core';
-import {faClipboard, faEye, faEyeSlash, faSquarePlus, faTrashAlt} from '@fortawesome/free-regular-svg-icons';
-import {faKey, faPlus} from '@fortawesome/free-solid-svg-icons';
 
 import '@/plugins/axios';
 import '@/plugins/clipboard';
-import '@/plugins/coreui';
 import i18n from '@/plugins/i18n';
 import '@/plugins/meta';
 import '@/plugins/sentry';
 import '@/plugins/toast';
+import vuetify from '@/plugins/vuetify';
 import '@/plugins/webSocket';
-
-config.autoAddCss = true;
-library.add(
-	faClipboard,
-	faEye,
-	faEyeSlash,
-	faKey,
-	faPlus,
-	faSquarePlus,
-	faTrashAlt
-);
 
 const app = new Vue({
 	router,
 	store,
 	i18n,
 	render: h => h(App),
+	vuetify,
 	metaInfo: {
 		titleTemplate: (titleChunk: string): string => {
 			const title = i18n.t(ThemeManager.getTitleKey()).toString();
@@ -66,6 +51,6 @@ const app = new Vue({
 	},
 }).$mount('#app');
 
-if (process.env.VUE_APP_CYPRESS_ENABLED === '1' && (window['Cypress'] ?? false)) {
+if (import.meta.env.VITE_CYPRESS_ENABLED === '1' && (window['Cypress'] ?? false)) {
 	window['app'] = app;
 }

@@ -15,125 +15,73 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard>
-		<CCardHeader class='datatable-header'>
-			{{ $t("network.interface.title") }}
-			<CButtonToolbar>
-				<CButton
-					color='primary'
-					size='sm'
-					class='float-right'
-					@click='getData'
-				>
-					<CIcon :content='cilReload' size='sm' />
-					{{ $t('forms.refresh') }}
-				</CButton>
-			</CButtonToolbar>
-		</CCardHeader>
-		<CCardBody>
-			<CDataTable
-				:fields='fields'
-				:items='interfaces'
-				:items-per-page='20'
-				:pagination='true'
+	<v-card>
+		<v-card-text>
+			<v-data-table
 				:loading='loading'
-				:sorter='{external: false, resetable: true}'
+				:headers='headers'
+				:items='interfaces'
+				:no-data-text='$t("network.interface.messages.noInterfaces")'
 			>
-				<template #no-items-view='{}'>
-					{{ $t('network.interface.messages.noInterfaces') }}
+				<template #top>
+					<v-toolbar dense flat>
+						<h5>{{ $t('network.interface.title') }}</h5>
+						<v-spacer />
+						<v-btn
+							color='primary'
+							small
+							@click='getInterfaces'
+						>
+							<v-icon small>
+								mdi-refresh
+							</v-icon>
+						</v-btn>
+					</v-toolbar>
 				</template>
-				<template #manufacturer='{item}'>
-					<td>{{ item.manufacturer }}</td>
+				<template #[`item.manufacturer`]='{item}'>
+					{{ item.manufacturer }}
 				</template>
-				<template #model='{item}'>
-					<td>{{ item.model }}</td>
+				<template #[`item.model`]='{item}'>
+					{{ item.model }}
 				</template>
-				<template #macAddress='{item}'>
-					<td>{{ item.macAddress }}</td>
+				<template #[`item.macAddress`]='{item}'>
+					{{ item.macAddress }}
 				</template>
-				<template #state='{item}'>
-					<td>
-						<CBadge :color='stateColor(item.state)'>
-							{{ $t(`network.interface.states.${item.state}`) }}
-						</CBadge>
-					</td>
+				<template #[`item.state`]='{item}'>
+					<v-chip
+						:color='stateColor(item.state)'
+						label
+						small
+					>
+						{{ $t(`network.interface.states.${item.state}`) }}
+					</v-chip>
 				</template>
-			</CDataTable>
-		</CCardBody>
-	</CCard>
+			</v-data-table>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
-import {cilReload} from '@coreui/icons';
-import {
-	CBadge,
-	CButton,
-	CButtonToolbar,
-	CCard,
-	CCardBody,
-	CCardHeader,
-	CDataTable,
-	CIcon,
-} from '@coreui/vue/src';
 import {Component, Prop, Vue} from 'vue-property-decorator';
 
-import {IField} from '@/interfaces/Coreui';
-import {NetworkInterface} from '@/interfaces/Network/Connection';
 import {InterfaceState} from '@/enums/Network/InterfaceState';
 import {InterfaceType} from '@/enums/Network/InterfaceType';
+
 import NetworkInterfaceService from '@/services/NetworkInterfaceService';
+
+import {DataTableHeader} from 'vuetify';
+import {NetworkInterface} from '@/interfaces/Network/Connection';
 
 /**
  * Network interface list
  */
-@Component({
-	components: {
-		CBadge,
-		CButton,
-		CButtonToolbar,
-		CCard,
-		CCardHeader,
-		CCardBody,
-		CDataTable,
-		CIcon,
-	},
-	data: () => ({
-		cilReload,
-	}),
-})
+@Component
 export default class NetworkInterfaces extends Vue {
 
 	/**
 	 * @property {NetworkInterface} type Network interface type
 	 */
 	@Prop({required: true}) type!: InterfaceType;
-
-	/**
-	 * @property {Array<IField>} fields Array of CoreUI data table fields
-	 */
-	get fields(): Array<IField> {return [
-		{
-			key: 'name',
-			label: this.$t('network.interface.name').toString(),
-		},
-		{
-			key: 'manufacturer',
-			label: this.$t('network.interface.manufacturer').toString(),
-		},
-		{
-			key: 'model',
-			label: this.$t('network.interface.model').toString(),
-		},
-		{
-			key: 'macAddress',
-			label: this.$t('network.interface.macAddress').toString(),
-		},
-		{
-			key: 'state',
-			label: this.$t('network.interface.state').toString(),
-		},
-	];
-	}
 
 	/**
 	 * @property {boolean} loading Loading state
@@ -146,16 +94,43 @@ export default class NetworkInterfaces extends Vue {
 	private interfaces: Array<NetworkInterface> = [];
 
 	/**
-	 * Retrieves network interfaces at component creation
+	 * @property {Array<IField>} headers Data table headers
 	 */
-	protected mounted(): void {
-		this.getData();
+	get headers(): Array<DataTableHeader> {return [
+		{
+			value: 'name',
+			text: this.$t('network.interface.name').toString(),
+		},
+		{
+			value: 'manufacturer',
+			text: this.$t('network.interface.manufacturer').toString(),
+		},
+		{
+			value: 'model',
+			text: this.$t('network.interface.model').toString(),
+		},
+		{
+			value: 'macAddress',
+			text: this.$t('network.interface.macAddress').toString(),
+		},
+		{
+			value: 'state',
+			text: this.$t('network.interface.state').toString(),
+		},
+	];
 	}
 
 	/**
-	 * Retrieves network interfaces
+	 * Vue lifecycle hook mounted
 	 */
-	public getData(): void {
+	protected mounted(): void {
+		this.getInterfaces();
+	}
+
+	/**
+	 * Retrieves interfaces
+	 */
+	public getInterfaces(): void {
 		this.loading = true;
 		NetworkInterfaceService.list(this.type)
 			.then((interfaces: Array<NetworkInterface>) => {
@@ -178,7 +153,7 @@ export default class NetworkInterfaces extends Vue {
 			case 'deactivating':
 				return 'warning';
 			case 'disconnected':
-				return 'danger';
+				return 'error';
 			default:
 				return 'secondary';
 		}

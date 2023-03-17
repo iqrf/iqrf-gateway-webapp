@@ -18,10 +18,10 @@ limitations under the License.
 	<div>
 		<h1>{{ $t('iqrfnet.enumeration.title') }}</h1>
 		<div v-if='response !== null'>
-			<CCard>
-				<CCardHeader>{{ $t('iqrfnet.enumeration.deviceInfo') }}</CCardHeader>
-				<CCardBody>
-					<table class='table table-striped'>
+			<v-card class='mb-5'>
+				<v-card-title>{{ $t('iqrfnet.enumeration.deviceInfo') }}</v-card-title>
+				<v-card-text>
+					<v-simple-table>
 						<tbody>
 							<tr>
 								<th>{{ $t('iqrfnet.enumeration.deviceAddr') }}</th>
@@ -54,21 +54,24 @@ limitations under the License.
 							<tr v-if='product !== null'>
 								<th>{{ $t('iqrfnet.enumeration.picture') }}</th>
 								<td>
-									<img
+									<v-img
 										:alt='response.product'
 										class='product-picture'
 										:src='product.picture'
-									>
+										contain
+										min-width='256px'
+										min-height='256px'
+									/>
 								</td>
 							</tr>
 						</tbody>
-					</table>
-				</CCardBody>
-			</CCard>
-			<CCard>
-				<CCardHeader>{{ $t('iqrfnet.enumeration.trInfo') }}</CCardHeader>
-				<CCardBody>
-					<table class='table table-striped'>
+					</v-simple-table>
+				</v-card-text>
+			</v-card>
+			<v-card>
+				<v-card-title>{{ $t('iqrfnet.enumeration.trInfo') }}</v-card-title>
+				<v-card-text>
+					<v-simple-table>
 						<tbody>
 							<tr>
 								<th>{{ $t('iqrfnet.enumeration.trType') }}</th>
@@ -106,12 +109,12 @@ limitations under the License.
 								<td>{{ osData.supplyVoltage }}</td>
 							</tr>
 						</tbody>
-					</table>
-					<CButton color='primary' to='/iqrfnet/network/'>
+					</v-simple-table>
+					<v-btn color='primary' to='/iqrfnet/network/'>
 						{{ $t('iqrfnet.enumeration.back') }}
-					</CButton>
-				</CCardBody>
-			</CCard>
+					</v-btn>
+				</v-card-text>
+			</v-card>
 		</div>
 	</div>
 </template>
@@ -119,7 +122,6 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import {MutationPayload} from 'vuex';
-import {CButton, CCard, CCardBody, CCardHeader} from '@coreui/vue/src';
 import IqrfNetService from '@/services/IqrfNetService';
 import ProductService from '@/services/IqrfRepository/ProductService';
 import RfModeLp from '@/assets/lp-black.svg';
@@ -141,10 +143,6 @@ interface Product {
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
 		RfModeLp,
 		RfModeStd,
 	},
@@ -218,7 +216,7 @@ export default class DeviceEnumeration extends Vue {
 			this.enumerate();
 		} else {
 			this.unwatch = this.$store.watch(
-				(state: DaemonClientState, getter: any) => getter['daemonClient/isConnected'],
+				(_state: DaemonClientState, getter) => getter['daemonClient/isConnected'],
 				(newVal: boolean, oldVal: boolean) => {
 					if (!oldVal && newVal) {
 						this.enumerate();

@@ -15,7 +15,11 @@
  * limitations under the License.
  */
 
+import '@mdi/font/css/materialdesignicons.css';
 import Vue from 'vue';
-import CoreuiVue from '@coreui/vue/src';
+import Vuetify from 'vuetify/lib/framework';
 
-Vue.use(CoreuiVue);
+Vue.use(Vuetify);
+
+export default new Vuetify({
+});

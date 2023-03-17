@@ -98,6 +98,20 @@ class NetworkOperator {
 	public getPassword(): string {
 		return this.password;
 	}
+
+	/**
+	 * Returns operator as JSON object
+	 * @returns {IOperator} Operator JSON object
+	 */
+	public toObject(): IOperator {
+		return {
+			id: this.id,
+			name: this.name,
+			apn: this.apn,
+			username: this.username,
+			password: this.password,
+		};
+	}
 }
 
 export default NetworkOperator;

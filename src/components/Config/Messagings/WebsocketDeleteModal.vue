@@ -15,42 +15,39 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CModal
-		v-show='show'
-		:show.sync='show'
-		color='danger'
-		size='lg'
-		:close-on-backdrop='false'
-		:fade='false'
+	<v-dialog
+		v-model='showModal'
+		width='50%'
+		persistent
+		no-click-animation
 	>
-		<template #header>
-			<h5 class='modal-title'>
+		<v-card v-if='instance !== null'>
+			<v-card-title>
 				{{ $t('config.daemon.messagings.websocket.removeDialog.title', {type: componentType}) }}
-			</h5>
-		</template>
-		{{ $t('config.daemon.messagings.websocket.removeDialog.prompt', {type: componentType, instance: instance}) }}
-		<template #footer>
-			<CButton
-				class='mr-1'
-				color='secondary'
-				@click='hideModal'
-			>
-				{{ $t('forms.cancel') }}
-			</CButton>
-			<CButton
-				color='danger'
-				@click='remove'
-			>
-				{{ $t('forms.delete') }}
-			</CButton>
-		</template>
-	</CModal>
+			</v-card-title>
+			<v-card-text>
+				{{ $t('config.daemon.messagings.websocket.removeDialog.prompt', {type: componentType, instance: instance.instance}) }}
+			</v-card-text>
+			<v-card-actions>
+				<v-spacer />
+				<v-btn
+					@click='hideModal'
+				>
+					{{ $t('forms.cancel') }}
+				</v-btn>
+				<v-btn
+					color='error'
+					@click='remove'
+				>
+					{{ $t('forms.delete') }}
+				</v-btn>
+			</v-card-actions>
+		</v-card>
+	</v-dialog>
 </template>
 
 <script lang='ts'>
-import {Component} from 'vue-property-decorator';
-import {CButton, CModal} from '@coreui/vue/src';
-import ModalBase from '@/components/ModalBase.vue';
+import {Component, Prop, VModel, Vue} from 'vue-property-decorator';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {WebsocketTypes} from '@/enums/Config/Messagings';
@@ -58,42 +55,44 @@ import {WebsocketTypes} from '@/enums/Config/Messagings';
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError} from 'axios';
+import {IWsMessaging, IWsService} from '@/interfaces/Config/Messaging';
 
 /**
  * Websocket delete dialog component
  */
-@Component({
-	components: {
-		CButton,
-		CModal,
-	},
-})
-export default class WebsocketDeleteModal extends ModalBase {
+@Component
+export default class WebsocketDeleteDialog extends Vue {
 	/**
-	 * @var {WebsocketTypes} componentType WebSocket component type
+	 * @property {IWsService|IWsMessaging} instance Instance to delete
 	 */
-	private componentType: WebsocketTypes|null = null;
+	@VModel({required: true}) instance!: IWsService|IWsMessaging|null;
 
 	/**
-	 * @property {string} instance Component instance
+	 * @property {WebsocketTypes} componentType WebSocket component type
 	 */
-	private instance = '';
+	@Prop({required: true}) componentType!: WebsocketTypes;
+
+	/**
+	 * Computes modal display condition
+	 */
+	get showModal(): boolean {
+		return this.instance !== null;
+	}
 
 	/**
 	 * Removes an existing instance of Websocket component
 	 */
 	private remove(): void {
-		if (this.componentType === null || this.instance.length === 0) {
+		if (this.instance === null) {
 			return;
 		}
-		const type = this.componentType;
-		const component = (type === WebsocketTypes.MESSAGING) ? 'iqrf::WebsocketMessaging' : 'shape::WebsocketCppService';
+		const instance = this.instance.instance;
 		this.$store.commit('spinner/SHOW');
-		DaemonConfigurationService.deleteInstance(component, this.instance)
+		DaemonConfigurationService.deleteInstance(this.instance.component, instance)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
-					this.$t('config.daemon.messagings.websocket.removeDialog.deleteSuccess', {type: type, instance: this.instance})
+					this.$t('config.daemon.messagings.websocket.removeDialog.deleteSuccess', {type: this.componentType, instance: instance})
 						.toString()
 				);
 				this.hideModal();
@@ -103,29 +102,16 @@ export default class WebsocketDeleteModal extends ModalBase {
 				extendedErrorToast(
 					error,
 					'config.daemon.messagings.websocket.removeDialog.deleteFailed',
-					{type: type, instance: this.instance}
+					{type: this.componentType, instance: instance}
 				);
 			});
 	}
 
 	/**
-	 * Stores websocket type and instance, and shows modal window
-	 * @param {WebsocketTypes} type Component type
-	 * @param {string} instance Component instance
-	 */
-	public showModal(type: WebsocketTypes, instance: string): void {
-		this.componentType = type;
-		this.instance = instance;
-		this.openModal();
-	}
-
-	/**
-	 * Resets websocket type and instance, and hides modal window
+	 * Hides modal window
 	 */
 	private hideModal(): void {
-		this.componentType = null;
-		this.instance = '';
-		this.closeModal();
+		this.instance = null;
 	}
 }
 </script>

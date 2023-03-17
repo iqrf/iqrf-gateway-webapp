@@ -15,39 +15,41 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<div v-if='ports.length > 0'>
-		<CTabs :active-tab='0'>
-			<CTab :title='$t("config.daemon.interfaces.interfaceMapping.interfaces")'>
-				<CButtonGroup class='my-1 flex-wrap'>
-					<CButton
-						v-for='port of ports'
-						:key='port'
-						color='primary'
-						@click='setPort(port)'
-					>
-						{{ port }}
-					</CButton>
-				</CButtonGroup>
-			</CTab>
-		</CTabs>
+	<div>
+		<h5>{{ $t('config.daemon.interfaces.interfaceMapping.interfaces') }}</h5>
+		<v-item-group
+			v-if='ports.length > 0'
+			dense
+			class='flex-wrap'
+		>
+			<v-btn
+				v-for='port of ports'
+				:key='port'
+				small
+				color='primary'
+				@click='setPort(port)'
+			>
+				{{ port }}
+			</v-btn>
+		</v-item-group>
+		<v-alert
+			v-else
+			color='warning'
+			text
+		>
+			{{ $t('config.daemon.interfaces.interfaceMapping.noInterfaces') }}
+		</v-alert>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CButton, CButtonGroup} from '@coreui/vue/src';
 import IqrfService from '@/services/IqrfService';
-
-@Component({
-	components: {
-		CButton,
-		CButtonGroup,
-	},
-})
 
 /**
  * Interface port mapping
  */
+@Component
 export default class InterfacePorts extends Vue {
 	/**
 	 * @var {Array<string>} ports device ports
@@ -77,3 +79,21 @@ export default class InterfacePorts extends Vue {
 	}
 }
 </script>
+
+<style lang="scss" scoped>
+.v-item-group {
+	.v-btn {
+		border-radius: 0%;
+	}
+
+	.v-btn:first-child {
+		border-top-left-radius: 4px;
+		border-bottom-left-radius: 4px;
+	}
+
+	.v-btn:last-child {
+		border-top-right-radius: 4px;
+		border-bottom-right-radius: 4px;
+	}
+}
+</style>

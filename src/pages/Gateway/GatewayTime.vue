@@ -17,56 +17,49 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('gateway.datetime.title') }}</h1>
-		<CCard v-if='time !== null'>
-			<CCardBody>
-				<CCardTitle style='display: flex; justify-content: space-between;'>
-					<h3>{{ $t('gateway.datetime.status') }}</h3>
-					<CButton
-						color='primary'
-						@click='getTime'
-					>
-						<CIcon :content='cilReload' />
-					</CButton>
-				</CCardTitle>
+		<v-card v-if='time !== null'>
+			<v-card-title>
+				<h3>{{ $t('gateway.datetime.status') }}</h3>
+				<v-spacer />
+				<v-btn
+					color='primary'
+					small
+					@click='getTime'
+				>
+					<v-icon>mdi-refresh</v-icon>
+				</v-btn>
+			</v-card-title>
+			<v-card-text>
 				<p style='font-size: 2em;'>
 					{{ time.formattedTime }}
 				</p>
 				<p style='font-size: 1.5em;'>
 					{{ time.formattedZone }}
 				</p>
-				<hr>
+				<v-divider class='my-2' />
 				<ValidationObserver v-slot='{invalid}'>
-					<CForm>
+					<v-form>
 						<h4>{{ $t('gateway.datetime.form.title') }}</h4>
-						<div class='form-group'>
-							<label>
-								<strong>{{ $t('gateway.datetime.form.zone') }}</strong>
-							</label>
-							<vSelect
-								v-model='timezone'
-								:options='timezoneOptions'
-								label='label'
-								:autoscroll='true'
-								:clearable='false'
-								:filterable='true'
-							/>
-						</div>
-						<CSelect
-							:value.sync='timeSet'
-							:options='timeSetOptions'
+						<v-autocomplete
+							v-model='timezone'
+							:label='$t("gateway.datetime.form.zone")'
+							:items='timezoneOptions'
+							item-text='text'
+							item-value='value'
+							return-object
+						/>
+						<v-select
+							v-model='timeSet'
 							:label='$t("gateway.datetime.form.set")'
+							:items='timeSetOptions'
 						/>
 						<div v-if='timeSet === TimeSetOptions.NTP'>
-							<div class='form-group'>
-								<label>
-									<strong>{{ $t('gateway.datetime.form.defaultServers') }}</strong>
-								</label><br>
-								<CSwitch
-									:checked.sync='defaultServers'
-									color='primary'
-									shape='pill'
-								/>
-							</div>
+							<v-switch
+								v-model='defaultServers'
+								:label='$t("gateway.datetime.form.defaultServers")'
+								inset
+								dense
+							/>
 							<div v-if='!defaultServers'>
 								<ValidationProvider
 									v-for='(server, idx) of time.ntpServers'
@@ -78,79 +71,68 @@ limitations under the License.
 										server: $t("gateway.datetime.errors.serverInvalid"),
 									}'
 								>
-									<CInput
+									<v-text-field
 										v-model='time.ntpServers[idx]'
 										:label='$t("gateway.datetime.form.server")'
-										:is-valid='touched ? valid : null'
-										:invalid-feedback='errors.join(" ")'
+										:success='touched ? valid : null'
+										:error-messages='errors'
 									>
-										<template #prepend-content>
-											<span
-												v-if='idx === (time.ntpServers.length - 1)'
-												class='text-success'
-												@click='addServer'
-											>
-												<FontAwesomeIcon :icon='["far", "plus-square"]' size='xl' />
-											</span>
-										</template>
-										<template #append-content>
-											<span
+										<template #append-outer>
+											<v-btn
 												v-if='time.ntpServers.length > 1'
-												class='text-danger'
+												class='mr-1'
+												color='error'
+												small
 												@click='removeServer(idx)'
 											>
-												<FontAwesomeIcon :icon='["far", "trash-alt"]' size='lg' />
-											</span>
+												<v-icon>mdi-delete-outline</v-icon>
+											</v-btn>
+											<v-btn
+												v-if='idx === (time.ntpServers.length - 1)'
+												color='success'
+												small
+												@click='addServer'
+											>
+												<v-icon>mdi-plus</v-icon>
+											</v-btn>
 										</template>
-									</CInput>
+									</v-text-field>
 								</ValidationProvider>
 							</div>
 						</div>
 						<div v-else>
-							<div class='form-group'>
-								<label>
-									<strong>{{ $t('gateway.datetime.form.datetime') }}</strong>
-								</label><br>
-								<DatePicker
-									v-model='datetime'
-									type='datetime'
-									value-type='date'
-									input-class='form-control'
-									:clearable='false'
-								/>
-							</div>
+							<DateTimePicker
+								ref='datetime'
+								:datetime.sync='datetime'
+								:from-browser='true'
+							/>
 						</div>
-						<CButton
+						<v-btn
 							class='mr-1'
 							color='primary'
 							:disabled='invalid'
 							@click='setTime'
 						>
 							{{ $t('forms.save') }}
-						</CButton>
-						<CButton
+						</v-btn>
+						<v-btn
 							v-if='timeSet === TimeSetOptions.MANUAL'
 							color='primary'
 							@click='setFromBrowser'
 						>
 							{{ $t('gateway.datetime.form.browserTime') }}
-						</CButton>
-					</CForm>
+						</v-btn>
+					</v-form>
 				</ValidationObserver>
-			</CCardBody>
-		</CCard>
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import vSelect from 'vue-select';
-import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
-
-import DatePicker from 'vue2-datepicker';
-
-import {cilPlus, cilReload, cilTrash} from '@coreui/icons';
+import DateTimePicker from '@/components/DateTimePicker.vue';
 
 import ip from 'ip-regex';
 import isFQDN from 'is-fqdn';
@@ -162,21 +144,16 @@ import {TimeSetOptions} from '@/enums/Gateway/Time';
 import TimeService from '@/services/TimeService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IOption} from '@/interfaces/Coreui';
+import {ISelectItem} from '@/interfaces/Vuetify';
 import {ITime, ITimezone, ITimeSet} from '@/interfaces/Gateway/Time';
 
 @Component({
 	components: {
-		DatePicker,
-		FontAwesomeIcon,
+		DateTimePicker,
 		ValidationObserver,
 		ValidationProvider,
-		vSelect,
 	},
 	data: () => ({
-		cilPlus,
-		cilReload,
-		cilTrash,
 		TimeSetOptions,
 	}),
 	metaInfo: {
@@ -199,29 +176,29 @@ export default class GatewayTime extends Vue {
 	private time: ITime|null = null;
 
 	/**
-	 * @var {IOption} timezone Currently selected timezone
+	 * @var {ISelectItem} timezone Currently selected timezone
 	 */
-	private timezone: IOption = {
-		label: '',
+	private timezone: ISelectItem = {
+		text: '',
 		value: '',
 	};
 
 	/**
-	 * @var {Array<IOption>} timezoneOptions Array of available timezones at Gateway
+	 * @var {Array<ISelectItem>} timezoneOptions Array of available timezones at Gateway
 	 */
-	private timezoneOptions: Array<IOption> = [];
+	private timezoneOptions: ISelectItem[] = [];
 
 	/**
-	 * @constant {Array<IOption>} timeSetOptions Array of time configuration options
+	 * @constant {Array<ISelectItem>} timeSetOptions Array of time configuration options
 	 */
-	private timeSetOptions: Array<IOption> = [
+	private timeSetOptions: ISelectItem[] = [
 		{
 			value: TimeSetOptions.NTP,
-			label: this.$t('gateway.datetime.form.setOptions.ntp').toString(),
+			text: this.$t('gateway.datetime.form.setOptions.ntp').toString(),
 		},
 		{
 			value: TimeSetOptions.MANUAL,
-			label: this.$t('gateway.datetime.form.setOptions.manual').toString(),
+			text: this.$t('gateway.datetime.form.setOptions.manual').toString(),
 		},
 	];
 
@@ -277,7 +254,7 @@ export default class GatewayTime extends Vue {
 					this.timeSet = TimeSetOptions.MANUAL;
 				}
 				this.timezone = {
-					label: this.time.formattedZone,
+					text: this.time.formattedZone,
 					value: this.time.zoneName,
 				};
 				this.datetime = DateTime.fromSeconds(this.time.utcTimestamp, {zone: this.time.zoneName}).toJSDate();
@@ -310,11 +287,11 @@ export default class GatewayTime extends Vue {
 	 * @param {Array<ITimezone>} timezones Array of timezones information from REST API
 	 */
 	private parseTimezones(timezones: Array<ITimezone>): void {
-		const timezoneArray: Array<IOption> = [];
+		const timezoneArray: ISelectItem[] = [];
 		for (const timezone of timezones) {
 			timezoneArray.push({
 				value: timezone.name,
-				label: timezone.name + ' (' + timezone.code + ', ' + timezone.offset + ')',
+				text: timezone.name + ' (' + timezone.code + ', ' + timezone.offset + ')',
 			});
 		}
 		this.timezoneOptions = timezoneArray;

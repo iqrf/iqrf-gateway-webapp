@@ -15,94 +15,78 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard>
-		<CCardHeader class='datatable-header'>
-			{{ $t("network.mobile.modems.title") }}
-			<CButtonToolbar>
-				<CButton
-					v-if='hasBrokenGsmModem'
-					color='warning'
-					class='float-right mr-1'
-					size='sm'
-					@click='restartModemManager'
-				>
-					<CIcon :content='cilReload' size='sm' />
-					{{ $t('network.mobile.table.restartModemManager') }}
-				</CButton>
-				<CButton
-					color='secondary'
-					size='sm'
-					class='float-right mr-1'
-					@click='scan'
-				>
-					<CIcon :content='cilSearch' size='sm' />
-					{{ $t('forms.scan') }}
-				</CButton>
-				<CButton
-					color='primary'
-					size='sm'
-					class='float-right'
-					@click='getData'
-				>
-					<CIcon :content='cilReload' size='sm' />
-					{{ $t('forms.refresh') }}
-				</CButton>
-			</CButtonToolbar>
-		</CCardHeader>
-		<CCardBody>
-			<CDataTable
-				:fields='fields'
-				:items='modems'
-				:items-per-page='20'
-				:pagination='true'
+	<v-card>
+		<v-card-text>
+			<v-data-table
 				:loading='loading'
-				:sorter='{external: false, resetable: true}'
+				:headers='headers'
+				:items='modems'
+				:no-data-text='$t("network.mobile.messages.noInterfaces")'
 			>
-				<template #no-items-view='{}'>
-					{{ $t('network.mobile.messages.noInterfaces') }}
+				<template #top>
+					<v-toolbar dense flat>
+						<h5>{{ $t("network.mobile.modems.title") }}</h5>
+						<v-spacer />
+						<v-btn
+							color='warning'
+							class='mr-1'
+							small
+							@click='hasBrokenGsmModem'
+						>
+							<v-icon small>
+								mdi-refresh
+							</v-icon>
+							{{ $t('network.mobile.table.restartModemManager') }}
+						</v-btn>
+						<v-btn
+							color='secondary'
+							small
+							class='mr-1'
+							@click='scan'
+						>
+							<v-icon small>
+								mdi-magnify
+							</v-icon>
+						</v-btn>
+						<v-btn
+							color='primary'
+							small
+							@click='getData'
+						>
+							<v-icon small>
+								mdi-refresh
+							</v-icon>
+						</v-btn>
+					</v-toolbar>
 				</template>
-				<template #rssi='{item}'>
-					<td>
-						{{ item.rssi !== null ? item.rssi + ' dBm' : '-' }}
-					</td>
+				<template #[`item.rssi`]='{item}'>
+					{{ item.rssi !== null ? item.rssi + ' dBm' : '-' }}
 				</template>
-				<template #signal='{item}'>
-					<td>
-						<SignalIndicator :signal='item.signal' />
-					</td>
+				<template #[`item.signal`]='{item}'>
+					<SignalIndicator :signal='item.signal' />
 				</template>
-				<template #state='{item}'>
-					<td>
-						<CBadge :color='stateColor(item.state)'>
-							{{ $t(`network.mobile.modems.states.${item.state}`) }}
-							<span v-if='item.state === "failed"'>
-								({{ $t(`network.mobile.modems.failedReasons.${item.failedReason}`) }})
-							</span>
-						</CBadge>
-					</td>
+				<template #[`item.state`]='{item}'>
+					<v-chip
+						:color='stateColor(item.state)'
+						label
+					>
+						{{ $t(`network.mobile.modems.states.${item.state}`) }}
+						<span v-if='item.state === ModemState.failed'>
+							({{ $t(`network.mobile.modems.failedReasons.${item.failedReason}`) }})
+						</span>
+					</v-chip>
 				</template>
-			</CDataTable>
-		</CCardBody>
-	</CCard>
+			</v-data-table>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
-import {cilReload, cilSearch} from '@coreui/icons';
-import {
-	CBadge,
-	CButton,
-	CButtonToolbar,
-	CCard,
-	CCardBody,
-	CCardHeader,
-	CDataTable,
-	CIcon,
-} from '@coreui/vue/src';
 import {Component, Vue} from 'vue-property-decorator';
+import {DataTableHeader} from 'vuetify';
 
 import SignalIndicator from '@/components/Network/SignalIndicator.vue';
 import {ModemState} from '@/enums/Network/ModemState';
-import {IField} from '@/interfaces/Coreui';
 import {IModem} from '@/interfaces/Network/Mobile';
 import NetworkInterfaceService from '@/services/NetworkInterfaceService';
 import ServiceService from '@/services/ServiceService';
@@ -112,61 +96,13 @@ import ServiceService from '@/services/ServiceService';
  */
 @Component({
 	components: {
-		CBadge,
-		CButton,
-		CButtonToolbar,
-		CCard,
-		CCardHeader,
-		CCardBody,
-		CDataTable,
-		CIcon,
 		SignalIndicator,
 	},
 	data: () => ({
-		cilReload,
-		cilSearch,
+		ModemState,
 	}),
 })
 export default class GsmInterfaces extends Vue {
-
-	/**
-	 * @property {Array<IField>} fields Array of CoreUI data table fields
-	 */
-	private fields: Array<IField> = [
-		{
-			key: 'interface',
-			label: this.$t('network.mobile.modems.interface').toString(),
-		},
-		{
-			key: 'imei',
-			label: this.$t('network.mobile.modems.imei').toString(),
-		},
-		{
-			key: 'manufacturer',
-			label: this.$t('network.mobile.modems.manufacturer').toString(),
-		},
-		{
-			key: 'model',
-			label: this.$t('network.mobile.modems.model').toString(),
-		},
-		{
-			key: 'state',
-			label: this.$t('network.mobile.modems.state').toString(),
-		},
-		{
-			key: 'signal',
-			label: this.$t('network.mobile.modems.signal').toString(),
-		},
-		{
-			key: 'rssi',
-			label: this.$t('network.mobile.modems.rssi').toString(),
-		},
-	];
-
-	/**
-	 * @property {Array<IModem>} modems Array of modems
-   */
-	private modems: Array<IModem> = [];
 
 	/**
 	 * @property {boolean} loading Loading state
@@ -180,6 +116,45 @@ export default class GsmInterfaces extends Vue {
 		return this.$store.getters['gateway/board'] === 'MICRORISC s.r.o. IQD-GW04' &&
 				this.modems.filter((modem: IModem): boolean => modem.interface === 'ttyAMA2').length !== 0;
 	}
+
+	/**
+	 * @property {Array<IModem>} modems Array of modems
+	 */
+	private modems: Array<IModem> = [];
+
+	/**
+	 * @property {Array<DataTableHeader>} fields Data table headers
+	 */
+	private readonly headers: Array<DataTableHeader> = [
+		{
+			value: 'interface',
+			text: this.$t('network.mobile.modems.interface').toString(),
+		},
+		{
+			value: 'imei',
+			text: this.$t('network.mobile.modems.imei').toString(),
+		},
+		{
+			value: 'manufacturer',
+			text: this.$t('network.mobile.modems.manufacturer').toString(),
+		},
+		{
+			value: 'model',
+			text: this.$t('network.mobile.modems.model').toString(),
+		},
+		{
+			value: 'state',
+			text: this.$t('network.mobile.modems.state').toString(),
+		},
+		{
+			value: 'signal',
+			text: this.$t('network.mobile.modems.signal').toString(),
+		},
+		{
+			value: 'rssi',
+			text: this.$t('network.mobile.modems.rssi').toString(),
+		},
+	];
 
 	/**
 	 * Retrieves modems at page load
@@ -222,7 +197,7 @@ export default class GsmInterfaces extends Vue {
 	private stateColor(state: ModemState): string {
 		switch (state) {
 			case ModemState.failed:
-				return 'danger';
+				return 'error';
 			case ModemState.locked:
 			case ModemState.unknown:
 				return 'warning';
