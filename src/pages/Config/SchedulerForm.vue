@@ -17,10 +17,10 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t(pageTitle) }}</h1>
-		<CCard>
-			<CCardBody>
+		<v-card>
+			<v-card-text>
 				<ValidationObserver v-slot='{invalid}'>
-					<CForm>
+					<v-form>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required|uuidv4'
@@ -29,26 +29,23 @@ limitations under the License.
 								uuidv4: $t("config.daemon.scheduler.errors.taskIdInvalid"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model='record.taskId'
 								:label='$t("config.daemon.scheduler.form.task.taskId")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
-						<CInput
+						<v-text-field
 							v-model='record.description'
 							:label='$t("config.daemon.scheduler.form.task.description")'
 						/>
-						<CSelect
-							:value.sync='timeSpecSelected'
+						<v-select
+							v-model='timeSpecSelected'
 							:label='$t("config.daemon.scheduler.form.task.timeSpec")'
-							:options='timeSpecOptions'
+							:items='timeSpecOptions'
 						/>
-						<div
-							v-if='timeSpecSelected === TimeSpecTypes.CRON'
-							class='form-group'
-						>
+						<div v-if='timeSpecSelected === TimeSpecTypes.CRON'>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								rules='cron|required'
@@ -57,23 +54,24 @@ limitations under the License.
 									required: $t("config.daemon.scheduler.errors.cron"),
 								}'
 							>
-								<label for='cronTime'>
-									<strong>{{ $t("config.daemon.scheduler.form.task.cronTime") }}</strong>
-								</label>
-								<CBadge
-									v-if='cronMessage.length > 0'
-									class='ml-1'
-									:color='valid ? "info" : "danger"'
-								>
-									{{ cronMessage }}
-								</CBadge>
-								<CInput
-									id='cronTime'
+								<v-text-field
 									v-model='record.timeSpec.cronTime'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
-									@input='cronMessage = ""'
-								/>
+									:label='$t("config.daemon.scheduler.form.task.cronTime")'
+									:success='touched ? valid : null'
+									:error-messages='errors'
+									@input='cronMessage = null'
+								>
+									<template #append>
+										<v-chip
+											v-if='cronMessage !== null'
+											label
+											small
+											:color='valid ? "info" : "error"'
+										>
+											{{ cronMessage }}
+										</v-chip>
+									</template>
+								</v-text-field>
 							</ValidationProvider>
 						</div>
 						<ValidationProvider
@@ -86,66 +84,84 @@ limitations under the License.
 								min: $t("config.daemon.scheduler.errors.period"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								v-model.number='record.timeSpec.period'
 								type='number'
 								min='0'
 								:label='$t("config.daemon.scheduler.form.task.period")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
-						<div
+						<DateTimePicker
 							v-if='timeSpecSelected === TimeSpecTypes.EXACT'
-							class='form-group'
-						>
-							<label for='exactTime'>
-								{{ $t("config.daemon.scheduler.form.task.startTime") }}
-							</label>
-							<Datetime
-								id='exactTime'
-								v-model='record.timeSpec.startTime'
-								type='datetime'
-								:format='dateFormat'
-								:min-datetime='new Date().toISOString()'
-								input-class='form-control'
-							/>
-						</div>
-						<CInputCheckbox
-							:checked.sync='record.persist'
+							:datetime.sync='record.timeSpec.startTime'
+							:min-date='new Date().toISOString()'
+						/>
+						<v-checkbox
+							v-model='record.persist'
 							:label='$t("config.daemon.scheduler.form.task.persistent")'
+							dense
 						/>
-						<CInputCheckbox
-							:checked.sync='record.enabled'
+						<v-checkbox
+							v-model='record.enabled'
 							:label='$t("config.daemon.scheduler.form.task.enabled")'
+							dense
 						/>
-						<hr>
-						<div class='messages-header'>
-							<h3>
+						<v-divider />
+						<v-toolbar
+							dense
+							flat
+						>
+							<v-toolbar-title>
 								{{ $t('config.daemon.scheduler.form.messages.title') }}
-							</h3>
-							<CButton
+							</v-toolbar-title>
+							<v-spacer />
+							<v-btn
 								color='primary'
-								size='sm'
-								href='https://docs.iqrf.org/iqrf-gateway/daemon-api.html'
+								small
+								href='https://docs.iqrf.org/iqrf-gateway/user/daemon/api.html'
 								target='_blank'
 							>
 								{{ $t("iqrfnet.sendJson.documentation") }}
-							</CButton>
-						</div>
-						<div
-							v-for='i of record.task.length'
-							:key='i'
-							class='form-group'
+							</v-btn>
+						</v-toolbar>
+						<v-expansion-panels
+							class='mb-5'
+							accordion
 						>
-							<hr v-if='i > 1'>
-							<CRow>
-								<CCol>
+							<v-expansion-panel
+								v-for='i of record.task.length'
+								:key='i'
+							>
+								<v-expansion-panel-header class='pt-0 pb-0'>
+									{{ $t('config.daemon.scheduler.form.messages.subtitle') }}
+									<span class='text-end'>
+										<v-btn
+											v-if='record.task.length > 1'
+											color='error'
+											small
+											@click.native.stop='removeMessage(i-1)'
+										>
+											<v-icon small>
+												mdi-delete
+											</v-icon>
+										</v-btn>
+										<v-btn
+											v-if='i === record.task.length'
+											class='ml-1'
+											color='success'
+											small
+											@click.native.stop='addMessage'
+										>
+											<v-icon small>
+												mdi-plus
+											</v-icon>
+										</v-btn>
+									</span>
+								</v-expansion-panel-header>
+								<v-expansion-panel-content eager>
 									<JsonSchemaErrors :errors='validatorErrors[i-1]' />
-								</CCol>
-							</CRow>
-							<CRow>
-								<CCol md='6'>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
 										rules='required|json|mType'
@@ -154,92 +170,79 @@ limitations under the License.
 											json: $t("iqrfnet.sendJson.messages.invalid"),
 											mType: $t("iqrfnet.sendJson.messages.mType"),
 										}'
-										slim
 									>
-										<JsonEditor
+										<v-textarea
 											v-model='record.task[i-1].message'
-											:label='$t("config.daemon.scheduler.form.messages.label").toString()'
-											:is-valid='touched ? valid : null'
-											:invalid-feedback='errors.join(", ").toString()'
+											:label='$t("config.daemon.scheduler.form.messages.label")'
+											:success='touched ? valid : null'
+											:error-messages='errors'
+											rows='1'
+											auto-grow
 										/>
 									</ValidationProvider>
-									<CButton
-										v-if='record.task.length > 1'
-										class='mr-1'
-										color='danger'
-										@click='removeMessage(i-1)'
-									>
-										{{ $t('config.daemon.scheduler.form.messages.remove') }}
-									</CButton>
-									<CButton
-										v-if='i === record.task.length'
-										color='success'
-										@click='addMessage'
-									>
-										{{ $t('config.daemon.scheduler.form.messages.add') }}
-									</CButton>
-								</CCol>
-								<CCol md='6'>
-									<div
+									<ValidationProvider
 										v-for='(messaging, j) of record.task[i-1].messaging'
 										:key='j'
-										class='form-group'
+										v-slot='{errors, touched, valid}'
+										rules='required'
+										:custom-messages='{
+											required: $t("config.daemon.scheduler.errors.service"),
+										}'
 									>
-										<ValidationProvider
-											v-slot='{errors, touched, valid}'
-											rules='required'
-											:custom-messages='{
-												required: $t("config.daemon.scheduler.errors.service"),
-											}'
+										<v-select
+											v-model='record.task[i-1].messaging[j]'
+											:label='$t("config.daemon.scheduler.form.messages.messaging")'
+											:placeholder='$t("config.daemon.scheduler.form.messages.messagingPlaceholder")'
+											:items='messagings'
+											:success='touched ? valid : null'
+											:error-messages='errors'
 										>
-											<CSelect
-												:value.sync='record.task[i-1].messaging[j]'
-												:label='$t("config.daemon.scheduler.form.messages.messaging")'
-												:placeholder='$t("config.daemon.scheduler.form.messages.messagingPlaceholder")'
-												:options='messagings'
-												:is-valid='touched ? valid : null'
-												:invalid-feedback='errors.join(", ")'
-											/>
-										</ValidationProvider>
-										<CButton
-											v-if='record.task[i-1].messaging.length > 1'
-											class='mr-1'
-											color='danger'
-											@click='removeTaskMessaging(i-1, j)'
-										>
-											{{ $t('config.daemon.scheduler.form.messagings.remove') }}
-										</CButton>
-										<CButton
-											v-if='j === (record.task[i-1].messaging.length - 1)'
-											color='success'
-											@click='addTaskMessaging(i-1)'
-										>
-											{{ $t('config.daemon.scheduler.form.messagings.add') }}
-										</CButton>
-									</div>
-								</CCol>
-							</CRow>
-						</div>
-						<CButton
+											<template #append-outer>
+												<v-btn
+													v-if='record.task[i-1].messaging.length > 1'
+													color='error'
+													small
+													@click='removeTaskMessaging(i-1, j)'
+												>
+													<v-icon small>
+														mdi-delete
+													</v-icon>
+												</v-btn> <v-btn
+													v-if='j === (record.task[i-1].messaging.length - 1)'
+													class='ml-1'
+													color='success'
+													small
+													@click='addTaskMessaging(i-1)'
+												>
+													<v-icon small>
+														mdi-plus
+													</v-icon>
+												</v-btn>
+											</template>
+										</v-select>
+									</ValidationProvider>
+								</v-expansion-panel-content>
+							</v-expansion-panel>
+						</v-expansion-panels>
+						<v-btn
 							color='primary'
 							:disabled='invalid || (timeSpecSelected === "exact" && record.timeSpec.startTime === "")'
 							@click='saveTask'
 						>
 							{{ $t('forms.save') }}
-						</CButton>
-					</CForm>
+						</v-btn>
+					</v-form>
 				</ValidationObserver>
-			</CCardBody>
-		</CCard>
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CBadge, CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect, CTextarea} from '@coreui/vue/src';
+import DateTimePicker from '@/components/DateTimePicker.vue';
 import JsonEditor from '@/components/Config/JsonEditor.vue';
 import JsonSchemaErrors from '@/components/Config/JsonSchemaErrors.vue';
-import {Datetime} from 'vue-datetime';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import cron from 'cron-validate';
@@ -257,25 +260,15 @@ import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 import SchedulerService from '@/services/SchedulerService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IOption} from '@/interfaces/Coreui';
 import {ISchedulerRecord, ISchedulerRecordTask} from '@/interfaces/DaemonApi/Scheduler';
 import {IWsMessaging} from '@/interfaces/Config/Messaging';
 import {MetaInfo} from 'vue-meta';
 import {MutationPayload} from 'vuex';
+import { ISelectItem } from '@/interfaces/Vuetify';
 
 @Component({
 	components: {
-		CBadge,
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CForm,
-		CInput,
-		CInputCheckbox,
-		CSelect,
-		CTextarea,
-		Datetime,
+		DateTimePicker,
 		JsonEditor,
 		JsonSchemaErrors,
 		ValidationObserver,
@@ -339,9 +332,9 @@ export default class SchedulerForm extends Vue {
 	private cronMessage = '';
 
 	/**
-	 * @var {Array<IOption>} messagings Array of available messaging component instances
+	 * @var {Array<ISelectItem>} messagings Array of available messaging component instances
 	 */
-	private messagings: Array<IOption> = [];
+	private messagings: Array<ISelectItem> = [];
 
 	/**
 	 * @var {TimeSpecTypes} timeSpecSelected Selected task time specification type
@@ -349,20 +342,20 @@ export default class SchedulerForm extends Vue {
 	private timeSpecSelected = TimeSpecTypes.EXACT;
 
 	/**
-	 * @constant {Array<IOption>} timeSpecOptions Scheduler task time specification options
+	 * @constant {Array<ISelectItem>} timeSpecOptions Scheduler task time specification options
 	 */
-	private timeSpecOptions: Array<IOption> = [
+	private timeSpecOptions: Array<ISelectItem> = [
 		{
 			value: TimeSpecTypes.EXACT,
-			label: this.$t('config.daemon.scheduler.form.task.timeSpecTypes.exact').toString(),
+			text: this.$t('config.daemon.scheduler.form.task.timeSpecTypes.exact').toString(),
 		},
 		{
 			value: TimeSpecTypes.PERIODIC,
-			label: this.$t('config.daemon.scheduler.form.task.timeSpecTypes.periodic').toString(),
+			text: this.$t('config.daemon.scheduler.form.task.timeSpecTypes.periodic').toString(),
 		},
 		{
 			value: TimeSpecTypes.CRON,
-			label: this.$t('config.daemon.scheduler.form.task.timeSpecTypes.cron').toString(),
+			text: this.$t('config.daemon.scheduler.form.task.timeSpecTypes.cron').toString(),
 		},
 	];
 
@@ -519,7 +512,7 @@ export default class SchedulerForm extends Vue {
 					if (item.data.instances) {
 						item.data.instances.forEach((messaging: IWsMessaging) => {
 							this.messagings.push({
-								value: messaging.instance, label: messaging.instance,
+								value: messaging.instance, text: messaging.instance,
 							});
 						});
 					}

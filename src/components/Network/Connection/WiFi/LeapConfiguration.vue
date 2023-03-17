@@ -1,6 +1,6 @@
 <template>
-	<div class='form-group'>
-		<CInput
+	<div>
+		<v-text-field
 			v-model='connection.wifi.security.leap.username'
 			:label='$t("network.wireless.form.username").toString()'
 		/>
@@ -13,7 +13,6 @@
 
 <script lang='ts'>
 import {Component, VModel, Vue} from 'vue-property-decorator';
-import {CInput} from '@coreui/vue/src';
 
 import PasswordInput from '@/components/Core/PasswordInput.vue';
 
@@ -24,7 +23,6 @@ import {IConnection} from '@/interfaces/Network/Connection';
  */
 @Component({
 	components: {
-		CInput,
 		PasswordInput,
 	},
 })

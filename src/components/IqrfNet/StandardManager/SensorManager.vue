@@ -15,10 +15,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard class='border-0 card-margin-bottom'>
-		<CCardBody>
+	<v-card>
+		<v-card-text>
 			<ValidationObserver v-slot='{invalid}'>
-				<CForm>
+				<form>
 					<ValidationProvider
 						v-slot='{errors, touched, valid}'
 						rules='integer|required|between:1,239'
@@ -28,39 +28,37 @@ limitations under the License.
 							between: $t("iqrfnet.standard.form.messages.address"),
 						}'
 					>
-						<CInput
+						<v-text-field
 							v-model.number='address'
 							type='number'
 							min='1'
 							max='239'
 							:label='$t("iqrfnet.standard.form.address")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
 						/>
 					</ValidationProvider>
-					<CButton
-						class='mr-1'
+					<v-btn
 						color='primary'
 						:disabled='invalid'
 						@click.prevent='enumerate'
 					>
 						{{ $t('forms.enumerate') }}
-					</CButton>
-					<CButton
+					</v-btn> <v-btn
 						color='primary'
 						:disabeld='invalid'
 						@click.prevent='read'
 					>
 						{{ $t('iqrfnet.standard.sensor.readAll') }}
-					</CButton>
-				</CForm>
+					</v-btn>
+				</form>
 			</ValidationObserver>
-		</CCardBody>
-		<CCardFooter v-if='responseType !== StandardResponses.NONE'>
-			<table class='table d-block overflow-auto text-nowrap'>
-				<thead>
+		</v-card-text>
+		<v-card-text v-if='responseType !== StandardResponses.NONE'>
+			<v-simple-table>
+				<caption class='simpletable-caption'>
 					{{ $t('iqrfnet.standard.sensor.sensors') }}
-				</thead>
+				</caption>
 				<tbody>
 					<tr>
 						<th>{{ $t('iqrfnet.standard.sensor.type') }}</th>
@@ -81,14 +79,13 @@ limitations under the License.
 						</td>
 					</tr>
 				</tbody>
-			</table>
-		</CCardFooter>
-	</CCard>
+			</v-simple-table>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardFooter, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
@@ -103,14 +100,8 @@ import {MutationPayload} from 'vuex';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardFooter,
-		CForm,
-		CInput,
 		ValidationObserver,
-		ValidationProvider
+		ValidationProvider,
 	},
 	data: () => ({
 		StandardResponses

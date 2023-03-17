@@ -19,13 +19,12 @@ limitations under the License.
 		{{ $t('gateway.info.usages.used') }}
 		{{ usage.usage.replace('%', ' %') }}
 		({{ usage.used }} / {{ usage.size }})
-		<div class='progress'>
-			<div
-				:class='className'
-				role='progressbar'
-				:style='{ width: usage.usage }'
-			/>
-		</div>
+		<v-progress-linear
+			v-model='usage.usage'
+			:color='color'
+			height='1em'
+			rounded
+		/>
 	</div>
 </template>
 
@@ -47,17 +46,15 @@ export default class ResourceUsage extends Vue {
 	/**
 	 * Returns CSS classes for the progress bar
 	 */
-	get className(): string {
+	get color(): string {
 		const usage = Number.parseFloat(this.usage.usage.replace('%', ''));
-		let className = 'progress-bar usage-progress-bar';
 		if (usage >= 90) {
-			className += ' bg-danger';
+			return 'danger';
 		} else if (usage >= 80) {
-			className += ' bg-warning';
+			return 'warning';
 		} else {
-			className += ' bg-success';
+			return 'success';
 		}
-		return className;
 	}
 }
 </script>

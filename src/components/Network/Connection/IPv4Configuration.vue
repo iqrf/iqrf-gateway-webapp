@@ -23,25 +23,24 @@ limitations under the License.
 				required: $t("network.connection.ipv4.errors.method"),
 			}'
 		>
-			<CSelect
-				id='ipv4MethodSelect'
-				:value.sync='connection.ipv4.method'
-				:options='methods'
+			<v-select
+				v-model='connection.ipv4.method'
+				:items='methods'
 				:label='$t("network.connection.ipv4.method").toString()'
 				:placeholder='$t("network.connection.ipv4.methods.null").toString()'
-				:is-valid='touched ? valid : null'
-				:invalid-feedback='errors.join(", ")'
+				:success='touched ? valid : null'
+				:error-messages='errors'
 				@change='onMethodChangeStaticFixup'
 			/>
 		</ValidationProvider>
 		<div v-if='connection.ipv4.method === Ipv4Method.MANUAL'>
-			<hr>
-			<CAlert
+			<v-alert
 				v-if='!ipv4InSubnet'
-				color='danger'
+				color='error'
+				text
 			>
 				{{ $t('network.connection.ipv4.ipNotInSubnet') }}
-			</CAlert>
+			</v-alert>
 			<ValidationProvider
 				v-slot='{errors, touched, valid}'
 				:rules='{
@@ -53,11 +52,11 @@ limitations under the License.
 					ipv4: $t("network.connection.ipv4.errors.addressInvalid"),
 				}'
 			>
-				<CInput
+				<v-text-field
 					v-model='connection.ipv4.addresses[0].address'
 					:label='$t("network.connection.ipv4.address").toString()'
-					:is-valid='touched ? valid : null'
-					:invalid-feedback='errors.join(", ")'
+					:success='touched ? valid : null'
+					:error-messages='errors'
 				/>
 			</ValidationProvider>
 			<ValidationProvider
@@ -73,11 +72,11 @@ limitations under the License.
 					netmask: $t("network.connection.ipv4.errors.maskInvalid"),
 				}'
 			>
-				<CInput
+				<v-text-field
 					v-model='connection.ipv4.addresses[0].mask'
 					:label='$t("network.connection.ipv4.mask").toString()'
-					:is-valid='touched ? valid : null'
-					:invalid-feedback='errors.join(", ")'
+					:success='touched ? valid : null'
+					:error-messages='errors'
 				/>
 			</ValidationProvider>
 			<ValidationProvider
@@ -91,14 +90,14 @@ limitations under the License.
 					ipv4: $t("network.connection.ipv4.errors.addressInvalid"),
 				}'
 			>
-				<CInput
+				<v-text-field
 					v-model='connection.ipv4.gateway'
 					:label='$t("network.connection.ipv4.gateway").toString()'
-					:is-valid='touched ? valid : null'
-					:invalid-feedback='errors.join(", ")'
+					:success='touched ? valid : null'
+					:error-messages='errors'
 				/>
 			</ValidationProvider>
-			<hr>
+			<v-divider class='mb-2' />
 			<div
 				v-for='(address, index) in connection.ipv4.dns'
 				:key='index'
@@ -114,30 +113,36 @@ limitations under the License.
 						ipv4: $t("network.connection.ipv4.errors.addressInvalid"),
 					}'
 				>
-					<CInput
+					<v-text-field
 						v-model='address.address'
 						:label='$t("network.connection.ipv4.dns.address").toString()'
-						:is-valid='touched ? valid : null'
-						:invalid-feedback='errors.join(", ")'
+						:success='touched ? valid : null'
+						:error-messages='errors'
 					>
-						<template #prepend-content>
-							<span
-								class='text-success'
+						<template #prepend>
+							<v-btn
+								color='success'
+								small
 								@click='addDns'
 							>
-								<FontAwesomeIcon :icon='["far", "plus-square"]' size='xl' />
-							</span>
+								<v-icon small>
+									mdi-plus
+								</v-icon>
+							</v-btn>
 						</template>
-						<template #append-content>
-							<span
+						<template #append-outer>
+							<v-btn
 								v-if='connection.ipv4.dns.length > 1'
-								class='text-danger'
+								color='error'
+								small
 								@click='deleteDns(index)'
 							>
-								<FontAwesomeIcon :icon='["far", "trash-alt"]' size='xl' />
-							</span>
+								<v-icon>
+									mdi-delete
+								</v-icon>
+							</v-btn>
 						</template>
-					</CInput>
+					</v-text-field>
 				</ValidationProvider>
 			</div>
 		</div>
@@ -146,9 +151,6 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, VModel, Vue} from 'vue-property-decorator';
-
-import {CAlert, CCol, CInput, CRow, CSelect} from '@coreui/vue/src';
-import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import {extend, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 
@@ -156,23 +158,17 @@ import {ConnectionType} from '@/enums/Network/ConnectionType';
 import {Ipv4Method} from '@/enums/Network/Ip';
 
 import IpAddressHelper from '@/helpers/IpAddressHelper';
-import {ipv4} from '@/helpers/validators';
 import {subnetMask} from '@/helpers/validationRules/Network';
+import {ipv4} from '@/helpers/validators';
 
-import {IOption} from '@/interfaces/Coreui';
 import {IConnection} from '@/interfaces/Network/Connection';
+import {ISelectItem} from '@/interfaces/Vuetify';
 
 /**
  * IPv4 configuration options
  */
 @Component({
 	components: {
-		CAlert,
-		CCol,
-		CInput,
-		CRow,
-		CSelect,
-		FontAwesomeIcon,
 		ValidationProvider,
 	},
 	data: () => ({
@@ -187,11 +183,11 @@ export default class IPv4Configuration extends Vue {
 	@VModel({required: true}) connection!: IConnection;
 
 	/**
-	 * Computes array of CoreUI select options for IPv4 configuration method
-	 * @returns {Array<IOption>} Configuration method options
+	 * Computes array of select options for IPv4 configuration method
+	 * @returns {Array<ISelectItem>} Configuration method options
 	 */
-	get methods(): Array<IOption> {
-		let methods: Array<string>;
+	get methods(): Array<ISelectItem> {
+		let methods: Array<Ipv4Method>;
 		// let methods = ['auto', 'disabled', 'link-local', 'manual', 'shared'];
 		if (this.connection.type === ConnectionType.GSM) {
 			methods = [Ipv4Method.AUTO, Ipv4Method.DISABLED];
@@ -200,7 +196,7 @@ export default class IPv4Configuration extends Vue {
 		}
 		return methods.map((method: string) => ({
 			value: method,
-			label: this.$t(`network.connection.ipv4.methods.${method}`).toString(),
+			text: this.$t(`network.connection.ipv4.methods.${method}`).toString(),
 		}));
 	}
 

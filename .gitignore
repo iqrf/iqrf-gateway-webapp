@@ -33,6 +33,7 @@ docs/build/
 .vscode/
 # Vue.js build
 www/dist/
+components.d.ts
 # Cypress
 cypress/videos
 cypress/screenshots

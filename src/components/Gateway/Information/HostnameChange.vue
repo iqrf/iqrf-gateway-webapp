@@ -1,57 +1,82 @@
+<!--
+Copyright 2017-2023 IQRF Tech s.r.o.
+Copyright 2019-2023 MICRORISC s.r.o.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software,
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
 <template>
 	<ValidationObserver v-slot='{invalid}'>
-		<CModal
-			:show.sync='render'
-			color='primary'
+		<v-dialog
+			v-model='render'
+			width='50%'
+			persistent
+			no-click-animation
 		>
-			<template #header>
-				<h5 class='modal-title'>
-					{{ $t('gateway.hostname.title') }}
-				</h5>
-			</template>
-			<CForm @submit.prevent='save'>
-				<ValidationProvider
-					v-slot='{errors, touched, valid}'
-					rules='hostnamePattern|required'
-					:custom-messages='{
-						hostnamePattern: $t("gateway.hostname.errors.hostnameInvalid"),
-						required: $t("gateway.hostname.errors.hostnameMissing"),
-					}'
-				>
-					<CInput
-						v-model='config.hostname'
-						:label='$t("gateway.info.hostname")'
-						:is-valid='touched ? valid : null'
-						:invalid-feedback='errors.join(", ")'
-					/>
-				</ValidationProvider>
-			</CForm>
-			<template #footer>
-				<CButton
+			<template #activator='{on, attrs}'>
+				<v-btn
 					color='primary'
-					:disabled='invalid'
-					@click='save'
+					small
+					v-bind='attrs'
+					v-on='on'
 				>
-					{{ $t('forms.save') }}
-				</CButton> <CButton
-					color='secondary'
-					@click='hide'
-				>
-					{{ $t('forms.cancel') }}
-				</CButton>
+					<v-icon small>
+						mdi-pencil
+					</v-icon>
+					{{ $t('forms.edit') }}
+				</v-btn>
 			</template>
-		</CModal>
+			<v-card>
+				<v-card-title>{{ $t('gateway.hostname.title') }}</v-card-title>
+				<v-card-text>
+					<form @submit.prevent='save'>
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							rules='hostnamePattern|required'
+							:custom-messages='{
+								hostnamePattern: $t("gateway.hostname.errors.hostnameInvalid"),
+								required: $t("gateway.hostname.errors.hostnameMissing"),
+							}'
+						>
+							<v-text-field
+								v-model='config.hostname'
+								:label='$t("gateway.info.hostname")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
+							/>
+						</ValidationProvider>
+					</form>
+				</v-card-text>
+				<v-card-actions>
+					<v-spacer />
+					<v-btn @click='hide'>
+						{{ $t('forms.cancel') }}
+					</v-btn>
+					<v-btn color='primary' :disabled='invalid' @click='save'>
+						{{ $t('forms.save') }}
+					</v-btn>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 	</ValidationObserver>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CForm, CInput, CModal} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
-import {required} from 'vee-validate/dist/rules';
 import {machineHostname} from '@/helpers/validationRules/Gateway';
+import {required} from 'vee-validate/dist/rules';
 
 import GatewayService from '@/services/GatewayService';
 
@@ -61,10 +86,6 @@ import {AxiosError} from 'axios';
 
 @Component({
 	components: {
-		CButton,
-		CForm,
-		CInput,
-		CModal,
 		ValidationObserver,
 		ValidationProvider,
 	},

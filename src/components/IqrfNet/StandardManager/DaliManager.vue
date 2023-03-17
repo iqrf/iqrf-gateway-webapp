@@ -15,10 +15,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard class='border-0 card-margin-bottom'>
-		<CCardBody>
+	<v-card>
+		<v-card-text>
 			<ValidationObserver v-slot='{invalid}'>
-				<CForm>
+				<form>
 					<ValidationProvider
 						v-slot='{errors, touched, valid}'
 						rules='integer|required|between:1,239'
@@ -28,19 +28,19 @@ limitations under the License.
 							required: $t("iqrfnet.standard.form.messages.address"),
 						}'
 					>
-						<CInput
+						<v-text-field
 							v-model.number='address'
 							type='number'
 							min='1'
 							max='239'
 							:label='$t("iqrfnet.standard.form.address")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
 						/>
 					</ValidationProvider>
 					<ValidationProvider
-						v-for='i of commands.length'
-						:key='i'
+						v-for='(command, idx) of commands'
+						:key='idx'
 						v-slot='{errors, touched, valid}'
 						rules='integer|required|between:0,65535'
 						:custom-messages='{
@@ -49,51 +49,56 @@ limitations under the License.
 							required: $t("iqrfnet.standard.dali.form.messages.command"),
 						}'
 					>
-						<CInput
-							v-model.number='commands[i-1]'
+						<v-text-field
+							v-model.number='commands[idx]'
 							type='number'
 							min='0'
 							max='65535'
 							:label='$t("iqrfnet.standard.dali.form.command")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
 						>
-							<template #prepend-content>
-								<span
-									v-if='i === commands.length'
-									class='text-success'
-									@click='addDaliCommand'
-								>
-									<FontAwesomeIcon :icon='["far", "square-plus"]' size='xl' />
-								</span>
-							</template>
-							<template #append-content>
-								<span
+							<template #append-outer>
+								<v-btn
 									v-if='commands.length > 1'
-									class='text-danger'
-									@click='removeDaliCommand(i-1)'
+									color='error'
+									small
+									@click.prevent='removeDaliCommand(idx)'
 								>
-									<FontAwesomeIcon :icon='["far", "trash-alt"]' size='lg' />
-								</span>
+									<v-icon>
+										mdi-delete-outline
+									</v-icon>
+								</v-btn>
+								<v-btn
+									v-if='idx === (commands.length - 1)'
+									:class='commands.length > 1 ? "ml-1" : ""'
+									color='success'
+									small
+									@click.prevent='addDaliCommand'
+								>
+									<v-icon>
+										mdi-plus
+									</v-icon>
+								</v-btn>
 							</template>
-						</CInput>
+						</v-text-field>
 					</ValidationProvider>
-					<CButton
+					<v-btn
 						color='primary'
 						:disabled='invalid'
-						@click='sendDali'
+						@click.prevent='sendDali'
 					>
 						{{ $t('iqrfnet.standard.dali.form.sendCommand') }}
-					</CButton>
-				</CForm>
+					</v-btn>
+				</form>
 			</ValidationObserver>
-		</CCardBody>
-		<CCardFooter v-if='answers.length > 0'>
-			<table class='table d-block overflow-auto text-nowrap'>
-				<thead>
+		</v-card-text>
+		<v-card-text v-if='answers.length > 0'>
+			<v-simple-table>
+				<caption class='simpletable-caption'>
 					{{ $t('iqrfnet.standard.dali.answers') }}
-				</thead>
-				<tbody class='text-center'>
+				</caption>
+				<tbody>
 					<tr>
 						<th>{{ $t('iqrfnet.standard.dali.status') }}</th>
 						<th>{{ $t('iqrfnet.standard.dali.value') }}</th>
@@ -103,35 +108,24 @@ limitations under the License.
 						<td>{{ answer.value }}</td>
 					</tr>
 				</tbody>
-			</table>
-		</CCardFooter>
-	</CCard>
+			</v-simple-table>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardFooter, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
-import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
-
 import StandardDaliService from '@/services/DaemonApi/StandardDaliService';
+import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 import {IDaliAnswer} from '@/interfaces/DaemonApi/Standard';
 import {MutationPayload} from 'vuex';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardFooter,
-		CCardHeader,
-		CForm,
-		CInput,
-		FontAwesomeIcon,
 		ValidationObserver,
 		ValidationProvider
 	}

@@ -15,55 +15,58 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard body-wrapper class='border-0 card-margin-bottom'>
-		<CElementCover
-			v-if='loadFailed'
-			style='z-index: 1;'
-			:opacity='0.85'
-		>
-			{{ $t('config.daemon.messages.failedElement') }}
-		</CElementCover>
-		<ValidationObserver
-			v-slot='{invalid}'
-		>
-			<CForm @submit.prevent='saveConfig'>
-				<ValidationProvider
-					v-slot='{errors, touched, valid}'
-					rules='required'
-					:custom-messages='{
-						required: $t("config.daemon.misc.jsonSplitter.errors.insId"),
-					}'
-				>
-					<CInput
-						v-model='insId'
-						:label='$t("config.daemon.misc.jsonSplitter.form.insId")'
-						:is-valid='touched ? valid : null'
-						:invalid-feedback='errors.join(", ")'
+	<v-card :loading='loading'>
+		<v-card-text v-if='!loading'>
+			<v-overlay
+				v-if='loadFailed'
+				:opacity='0.65'
+				absolute
+			>
+				{{ $t('config.daemon.messages.failedElement') }}
+			</v-overlay>
+			<ValidationObserver
+				v-slot='{invalid}'
+			>
+				<v-form @submit.prevent='saveConfig'>
+					<ValidationProvider
+						v-slot='{errors, touched, valid}'
+						rules='required'
+						:custom-messages='{
+							required: $t("config.daemon.misc.jsonSplitter.errors.insId"),
+						}'
+					>
+						<v-text-field
+							v-model='insId'
+							:label='$t("config.daemon.misc.jsonSplitter.form.insId")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
+						/>
+					</ValidationProvider>
+					<v-checkbox
+						v-model='asyncDpaMessage'
+						:label='$t("config.daemon.misc.jsonRawApi.form.asyncDpaMessage").toString()'
+						dense
 					/>
-				</ValidationProvider>
-				<CInputCheckbox
-					:checked.sync='asyncDpaMessage'
-					:label='$t("config.daemon.misc.jsonRawApi.form.asyncDpaMessage").toString()'
-				/>
-				<CInputCheckbox
-					:checked.sync='validateJsonResponse'
-					:label='$t("config.daemon.misc.jsonSplitter.form.validateJsonResponse").toString()'
-				/>
-				<CButton
-					type='submit'
-					color='primary'
-					:disabled='invalid'
-				>
-					{{ $t('forms.save') }}
-				</CButton>
-			</CForm>
-		</ValidationObserver>
-	</CCard>
+					<v-checkbox
+						v-model='validateJsonResponse'
+						:label='$t("config.daemon.misc.jsonSplitter.form.validateJsonResponse").toString()'
+						dense
+					/>
+					<v-btn
+						type='submit'
+						color='primary'
+						:disabled='invalid'
+					>
+						{{ $t('forms.save') }}
+					</v-btn>
+				</v-form>
+			</ValidationObserver>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CElementCover,CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
@@ -76,14 +79,6 @@ import {IJsonRaw, IJsonSplitter} from '@/interfaces/Config/JsonApi';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CElementCover,
-		CForm,
-		CInput,
-		CInputCheckbox,
 		ValidationObserver,
 		ValidationProvider,
 	}
@@ -132,6 +127,11 @@ export default class JsonApi extends Vue {
 	private loadFailed = false;
 
 	/**
+	 * @var {boolean} loading Flag for loading state
+	 */
+	private loading = false;
+
+	/**
 	 * Initializes validation rules
 	 */
 	created(): void {
@@ -142,6 +142,7 @@ export default class JsonApi extends Vue {
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
+		this.loading = true;
 		this.getConfig();
 	}
 
@@ -160,11 +161,15 @@ export default class JsonApi extends Vue {
 				this.splitter = responses[1].data.instances[0];
 				this.insId = responses[1].data.instances[0].insId;
 				this.validateJsonResponse = responses[1].data.instances[0].validateJsonResponse;
-				this.$emit('fetched', {name: 'jsonApi', success: true});
+				this.loading = false;
 			})
 			.catch(() => {
+				this.loading = false;
 				this.loadFailed = true;
-				this.$emit('fetched', {name: 'jsonApi', success: false});
+				this.$toast.error(
+					this.$t('config.daemon.messages.configFetchFailed', {children: 'jsonApi'})
+						.toString()
+				);
 			});
 	}
 
@@ -193,6 +198,7 @@ export default class JsonApi extends Vue {
 		Promise.all(requests)
 			.then(() => {
 				this.getConfig().then(() => {
+					this.$store.commit('spinner/HIDE');
 					this.$toast.success(
 						this.$t('config.daemon.misc.jsonApi.messages.saveSuccess').toString()
 					);

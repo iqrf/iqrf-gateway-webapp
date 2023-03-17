@@ -16,206 +16,172 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<CCard>
-			<CCardHeader class='datatable-header'>
-				<div>
+		<v-card>
+			<v-toolbar flat>
+				<v-toolbar-title>
 					{{ $t('iqrfnet.standard.table.title') }}
-				</div>
-				<div>
-					<CButton
-						class='mr-1'
-						color='primary'
-						size='sm'
-						@click='enumerateNetwork'
-					>
-						<CIcon :content='cilSpreadsheet' size='sm' />
-						<span class='d-none d-lg-inline'>
-							{{ $t('iqrfnet.standard.table.actions.enumerate') }}
-						</span>
-					</CButton>
-					<CButton
-						class='mr-1'
-						color='primary'
-						size='sm'
-						@click='getDevices'
-					>
-						<CIcon :content='cilSync' size='sm' />
-						<span class='d-none d-lg-inline'>
-							{{ $t('iqrfnet.standard.table.actions.refresh') }}
-						</span>
-					</CButton>
-					<DatabaseResetModal
-						@reset='devices = []; getDevices()'
-					/>
-				</div>
-			</CCardHeader>
-			<CCardBody>
+				</v-toolbar-title>
+				<v-spacer />
+				<v-btn
+					class='mr-1'
+					color='primary'
+					small
+					@click='enumerateNetwork'
+				>
+					<v-icon small>
+						mdi-google-spreadsheet
+					</v-icon>
+					<span class='d-none d-lg-inline'>
+						{{ $t('iqrfnet.standard.table.actions.enumerate') }}
+					</span>
+				</v-btn>
+				<v-btn
+					class='mr-1'
+					color='primary'
+					small
+					@click='getDevices'
+				>
+					<v-icon small>
+						mdi-sync
+					</v-icon>
+					<span class='d-none d-lg-inline'>
+						{{ $t('iqrfnet.standard.table.actions.refresh') }}
+					</span>
+				</v-btn>
+				<DatabaseResetModal
+					@reset='devices = []; getDevices()'
+				/>
+			</v-toolbar>
+			<v-card-text>
 				<div class='datatable-legend'>
 					<div>
-						<CIcon
-							class='text-info'
-							:content='cilHome'
-							size='lg'
-						/>
+						<v-icon>
+							mdi-information-outline
+						</v-icon>
+						{{ $t('iqrfnet.standard.table.info') }}
+					</div>
+					<div>
+						<v-icon color='info'>
+							mdi-home-outline
+						</v-icon>
 						{{ $t('forms.fields.coordinator') }}
 					</div>
 					<div>
-						<CIcon
-							class='text-info'
-							:content='cilCheckAlt'
-							size='lg'
-						/>
+						<v-icon color='info'>
+							mdi-check
+						</v-icon>
 						{{ $t('iqrfnet.networkManager.devicesInfo.icons.bonded') }}
 					</div>
 					<div>
-						<CIcon
-							class='text-info'
-							:content='cilSignalCellular4'
-							size='lg'
-						/>
+						<v-icon color='info'>
+							mdi-signal-cellular-outline
+						</v-icon>
 						{{ $t('iqrfnet.networkManager.devicesInfo.icons.discovered') }}
 					</div>
 					<div>
-						<CIcon
-							class='text-success'
-							:content='cilCheckAlt'
-							size='lg'
-						/>
+						<v-icon color='success'>
+							mdi-check
+						</v-icon>
 						{{ $t('iqrfnet.networkManager.devicesInfo.icons.bondedOnline') }}
 					</div>
 					<div>
-						<CIcon
-							class='text-success'
-							:content='cilSignalCellular4'
-							size='lg'
-						/>
+						<v-icon color='success'>
+							mdi-signal-cellular-outline
+						</v-icon>
 						{{ $t('iqrfnet.networkManager.devicesInfo.icons.discoveredOnline') }}
 					</div>
 					<div>
-						<CIcon
-							class='text-success'
-							:content='cilCheckCircle'
-							size='lg'
-						/>
+						<v-icon color='success'>
+							mdi-check-circle-outline
+						</v-icon>
 						{{ $t('iqrfnet.standard.table.supported') }}
 					</div>
 					<div>
-						<CIcon
-							class='text-danger'
-							:content='cilXCircle'
-							size='lg'
-						/>
+						<v-icon color='error'>
+							mdi-close-circle-outline
+						</v-icon>
 						{{ $t('iqrfnet.standard.table.unsupported') }}
 					</div>
 				</div>
-				<CDataTable
-					:fields='fields'
+				<v-data-table
+					:headers='headers'
 					:items='devices'
-					:column-filter='true'
-					:pagination='true'
-					:items-per-page='10'
-					:sorter='{external: false, resetable: true}'
+					:no-data-text='$t("iqrfnet.standard.table.fields.noDevices")'
+					show-expand
+					:expanded.sync='expanded'
+					item-key='address'
 				>
-					<template #no-items-view='{}'>
-						{{ $t('iqrfnet.standard.table.fields.noDevices') }}
+					<template #[`item.address`]='{item}'>
+						<router-link :to='"/iqrfnet/enumeration/" + item.getAddress()'>
+							{{ item.getAddress() }}
+						</router-link>
 					</template>
-					<template #address='{item}'>
-						<td>
-							<router-link :to='"/iqrfnet/enumeration/" + item.getAddress()'>
-								{{ item.getAddress() }}
-							</router-link>
-						</td>
+					<template #[`item.product`]='{item}'>
+						{{ item.getProductName() }}
 					</template>
-					<template #product='{item}'>
-						<td>
-							{{ item.getProductName() }}
-						</td>
+					<template #[`item.os`]='{item}'>
+						{{ item.getOs() }}
 					</template>
-					<template #os='{item}'>
-						<td>
-							{{ item.getOs() }}
-						</td>
+					<template #[`item.dpa`]='{item}'>
+						{{ item.getDpa() }}
 					</template>
-					<template #dpa='{item}'>
-						<td>
-							{{ item.getDpa() }}
-						</td>
+					<template #[`item.status`]='{item}'>
+						<v-icon
+							:color='item.getIconColor()'
+							size='xl'
+						>
+							{{ item.getIcon() }}
+						</v-icon>
 					</template>
-					<template #status='{item}'>
-						<td>
-							<CIcon
-								size='xl'
-								:class='item.getIconColor()'
-								:content='item.getIcon()'
-							/>
-						</td>
+					<template #[`item.sensor`]='{item}'>
+						<v-icon
+							:color='item.hasSensor() ? "success" : "error"'
+							size='xl'
+						>
+							{{ item.getSensorIcon() }}
+						</v-icon>
 					</template>
-					<template #sensor='{item}'>
-						<td>
-							<CIcon
-								size='xl'
-								:class='item.hasSensor() ? "text-success" : "text-danger"'
-								:content='item.getSensorIcon()'
-							/>
-						</td>
+					<template #[`item.binout`]='{item}'>
+						<v-icon
+							:color='item.hasBinout() ? "success" : "error"'
+							size='xl'
+						>
+							{{ item.getBinoutIcon() }}
+						</v-icon>
 					</template>
-					<template #binout='{item}'>
-						<td>
-							<CIcon
-								size='xl'
-								:class='item.hasBinout() ? "text-success" : "text-danger"'
-								:content='item.getBinoutIcon()'
-							/>
-						</td>
+					<template #[`item.light`]='{item}'>
+						<v-icon
+							:color='item.hasLight() ? "success" : "error"'
+							size='xl'
+						>
+							{{ item.getLightIcon() }}
+						</v-icon>
 					</template>
-					<template #light='{item}'>
-						<td>
-							<CIcon
-								size='xl'
-								:class='item.hasLight() ? "text-success" : "text-danger"'
-								:content='item.getLightIcon()'
-							/>
-						</td>
+					<template #[`item.dali`]='{item}'>
+						<v-icon
+							:color='item.hasDali() ? "success" : "error"'
+							size='xl'
+						>
+							{{ item.getDaliIcon() }}
+						</v-icon>
 					</template>
-					<template #dali='{item}'>
-						<td>
-							<CIcon
-								size='xl'
-								:class='item.hasDali() ? "text-success" : "text-danger"'
-								:content='item.getDaliIcon()'
-							/>
-						</td>
-					</template>
-					<template #show_details='{item}'>
-						<td class='py-2'>
-							<CButton
-								color='info'
-								size='sm'
-								@click='item.showDetails = !item.showDetails'
-							>
-								<CIcon :content='cilInfo' />
-							</CButton>
-						</td>
-					</template>
-					<template #details='{item}'>
-						<CCollapse :show='item.showDetails'>
-							<CCardBody>
-								<CRow align-vertical='center'>
-									<CCol sm='auto'>
-										<CMedia
-											:aside-image-props='{
-												src: item.getImg(),
-												block: true,
-												width: `150px`,
-												height: `150px`,
-											}'
+					<template #expanded-item='{headers, item}'>
+						<td :colspan='headers.length'>
+							<v-container fluid>
+								<v-row>
+									<v-col cols='auto' align-self='center'>
+										<v-img
+											:src='item.getImg()'
+											max-width='150'
+											max-height='150'
 										/>
-									</CCol>
-									<CCol>
+									</v-col>
+									<v-divider vertical />
+									<v-col cols='auto'>
 										<div class='datatable-expansion-table'>
 											<table>
 												<caption>
-													<strong>{{ $t('iqrfnet.standard.table.info') }}</strong>
+													<b>{{ $t('iqrfnet.standard.table.info') }}</b>
 												</caption>
 												<tr>
 													<th>
@@ -229,7 +195,7 @@ limitations under the License.
 													<th>
 														{{ $t('iqrfnet.standard.table.fields.hwpid') }}
 													</th>
-													<td>{{ item.getHwpid() + ' [' + item.getHwpidHex() + ']' }}</td>
+													<td>{{ `${item.getHwpid()} [${item.getHwpidHex()}]` }}</td>
 												</tr>
 												<tr>
 													<th>
@@ -242,7 +208,7 @@ limitations under the License.
 														{{ $t('iqrfnet.standard.table.fields.mid') }}
 													</th>
 													<td>
-														{{ item.getMid() + ' [' + item.getMidHex() + ']' }}
+														{{ `${item.getMid()} [${item.getMidHex()}]` }}
 													</td>
 												</tr>
 											</table>
@@ -262,23 +228,21 @@ limitations under the License.
 												</tr>
 											</table>
 										</div>
-									</CCol>
-								</CRow>
-							</CCardBody>
-						</CCollapse>
+									</v-col>
+								</v-row>
+							</v-container>
+						</td>
 					</template>
-				</CDataTable>
-			</CCardBody>
-		</CCard>
+				</v-data-table>
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CCollapse, CDataTable, CIcon, CMedia} from '@coreui/vue/src';
-import DatabaseResetModal from '@/components/IqrfNet/StandardManager/DatabaseResetModal.vue';
+import DatabaseResetModal from './DatabaseResetModal.vue';
 
-import {cilCheckAlt, cilCheckCircle, cilHome, cilInfo, cilSignalCellular4, cilSpreadsheet, cilSync, cilXCircle} from '@coreui/icons';
 import {EnumerateCommand} from '@/enums/IqrfNet/info';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
@@ -288,33 +252,15 @@ import IqrfNetService from '@/services/IqrfNetService';
 import ProductService from '@/services/IqrfRepository/ProductService';
 
 import {AxiosResponse} from 'axios';
-import {IField} from '@/interfaces/Coreui';
+import {DataTableHeader} from 'vuetify';
 import {IInfoBinout, IInfoDevice, IInfoLight, IInfoNode, IInfoSensor} from '@/interfaces/DaemonApi/IqrfInfo';
 import {MutationPayload} from 'vuex';
 import DpaService, {OsDpaVersion} from '@/services/IqrfRepository/OsDpaService';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CCollapse,
-		CDataTable,
-		CIcon,
-		CMedia,
 		DatabaseResetModal,
 	},
-	data: () => ({
-		cilCheckAlt,
-		cilCheckCircle,
-		cilHome,
-		cilInfo,
-		cilSignalCellular4,
-		cilSpreadsheet,
-		cilSync,
-		cilXCircle,
-	}),
 })
 
 /**
@@ -337,62 +283,64 @@ export default class StandardDevices extends Vue {
 	private msgId: string|null = null;
 
 	/**
-	 * @constant {Array<IField>} fields Array of CoreUI data table fields
+	 * @var {Array<StandardDevices>} expanded Expanded devices
 	 */
-	private fields: Array<IField> = [
+	private expanded: Array<StandardDevices> = [];
+
+	/**
+	 * @constant {Array<DataTableHeader>} headers Data table headers
+	 */
+	private readonly headers: Array<DataTableHeader> = [
 		{
-			key: 'address',
-			label: this.$t('iqrfnet.standard.table.fields.address'),
+			value: 'address',
+			text: this.$t('iqrfnet.standard.table.fields.address').toString(),
 		},
 		{
-			key: 'product',
-			label: this.$t('iqrfnet.standard.table.fields.product'),
+			value: 'product',
+			text: this.$t('iqrfnet.standard.table.fields.product').toString(),
 		},
 		{
-			key: 'os',
-			label: this.$t('iqrfnet.standard.table.fields.os'),
+			value: 'os',
+			text: this.$t('iqrfnet.standard.table.fields.os').toString(),
 		},
 		{
-			key: 'dpa',
-			label: this.$t('iqrfnet.standard.table.fields.dpa'),
+			value: 'dpa',
+			text: this.$t('iqrfnet.standard.table.fields.dpa').toString(),
 		},
 		{
-			key: 'status',
-			label: this.$t('iqrfnet.standard.table.fields.status'),
-			filter: false,
-			sorter: false,
+			value: 'status',
+			text: this.$t('iqrfnet.standard.table.fields.status').toString(),
+			filterable: false,
+			sortable: false,
 		},
 		{
-			key: 'sensor',
-			label: this.$t('iqrfnet.standard.table.fields.sensor'),
-			filter: false,
-			sorter: false,
+			value: 'sensor',
+			text: this.$t('iqrfnet.standard.table.fields.sensor').toString(),
+			filterable: false,
+			sortable: false,
 		},
 		{
-			key: 'binout',
-			label: this.$t('iqrfnet.standard.table.fields.binout'),
-			filter: false,
-			sorter: false,
+			value: 'binout',
+			text: this.$t('iqrfnet.standard.table.fields.binout').toString(),
+			filterable: false,
+			sortable: false,
 		},
 		{
-			key: 'light',
-			label: this.$t('iqrfnet.standard.table.fields.light'),
-			filter: false,
-			sorter: false,
+			value: 'light',
+			text: this.$t('iqrfnet.standard.table.fields.light').toString(),
+			filterable: false,
+			sortable: false,
 		},
 		{
-			key: 'dali',
-			label: this.$t('iqrfnet.standard.table.fields.dali'),
-			filter: false,
-			sorter: false,
+			value: 'dali',
+			text: this.$t('iqrfnet.standard.table.fields.dali').toString(),
+			filterable: false,
+			sortable: false,
 		},
 		{
-			key: 'show_details',
-			label: '',
-			_style: 'width: 1%',
-			sorter: false,
-			filter: false,
-		}
+			value: 'data-table-expand',
+			text: '',
+		},
 	];
 
 	/**
@@ -680,7 +628,6 @@ export default class StandardDevices extends Vue {
 	private async fetchDeviceDetails(): Promise<void> {
 		const hwpids = new Map();
 		const osVersions = new Map();
-
 		for (const auxDevice of this.auxDevices) {
 			const osBuild = auxDevice.getOsBuild();
 			if (!osVersions.has(osBuild)) {
@@ -786,3 +733,20 @@ export default class StandardDevices extends Vue {
 	}
 }
 </script>
+
+<style scoped lang='scss'>
+.datatable-header {
+	display: flex;
+	flex-wrap: nowrap;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.datatable-legend {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-evenly;
+	margin-bottom: 1.25em;
+}
+</style>

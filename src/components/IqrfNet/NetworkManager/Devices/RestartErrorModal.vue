@@ -15,67 +15,69 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CModal
-		:show.sync='show'
-		color='danger'
-		size='lg'
-		:close-on-backdrop='false'
-		:fade='false'
+	<v-dialog
+		v-model='showModal'
+		width='50%'
+		persistent
+		no-click-animation
 	>
-		<template #header>
-			<h5 class='modal-title'>
-				{{ $t('iqrfnet.networkManager.devicesInfo.restart.title') }}
-			</h5>
-		</template>
-		{{ $t('iqrfnet.networkManager.devicesInfo.restart.prompt') }}<br>
-		<CBadge
-			v-for='(addr, idx) of nodes'
-			:key='idx'
-			class='mr-1'
-			color='danger'
-		>
-			<span style='font-size: 0.9rem;'>
-				{{ addr }}
-			</span>
-		</CBadge>
-		<template #footer>
-			<CButton
-				color='secondary'
-				@click='closeModal'
-			>
-				{{ $t('forms.close') }}
-			</CButton>
-		</template>
-	</CModal>
+		<v-card>
+			<v-card-title>{{ $t('iqrfnet.networkManager.devicesInfo.restart.title') }}</v-card-title>
+			<v-card-text>
+				<div>
+					{{ $t('iqrfnet.networkManager.devicesInfo.restart.prompt') }}
+				</div>
+				<v-chip
+					v-for='(addr, i) of nodes'
+					:key='i'
+					class='mr-1'
+					color='error'
+					small
+					label
+				>
+					<span style='font-size: 18px;'>
+						{{ addr }}
+					</span>
+				</v-chip>
+			</v-card-text>
+			<v-card-actions>
+				<v-spacer />
+				<v-btn
+					@click='hideModal'
+				>
+					{{ $t('forms.close') }}
+				</v-btn>
+			</v-card-actions>
+		</v-card>
+	</v-dialog>
 </template>
 
 <script lang='ts'>
-import {Component} from 'vue-property-decorator';
-import {CBadge, CButton, CModal} from '@coreui/vue/src';
-import ModalBase from '@/components/ModalBase.vue';
+import {Component, VModel, Vue} from 'vue-property-decorator';
 
 /**
  * IQMESH Network Restart error result modal window component
  */
-@Component({
-	components: {
-		CBadge,
-		CButton,
-		CModal,
-	},
-})
-export default class RestartErrorDialog extends ModalBase {
-	/**
-	 * @var {Array<number>} nodes Nodes that failed to restart
-	 */
-	private nodes: Array<number> = [];
+@Component
+export default class RestartErrorDialog extends Vue {
 
 	/**
-	 * Activates restart result modal
+	 * @property {Array<number>} Nodes that failed to restart
 	 */
-	public showModal(nodes): void {
-		this.nodes = nodes;
-		this.openModal();
+	@VModel({required: true, type: Array, default: []}) nodes!: Array<number>;
+
+	/**
+	 * Computes modal display condition
+	 */
+	get showModal(): boolean {
+		return this.nodes.length > 0;
+	}
+
+	/**
+	 * Hides modal window
+	 */
+	private hideModal(): void {
+		this.nodes = [];
 	}
 }
 </script>

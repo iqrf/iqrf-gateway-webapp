@@ -48,7 +48,7 @@ export default class UrlBuilder {
 		this.hostname = window.location.hostname;
 		this.port = window.location.port;
 		this.wsProtocol = (isHttps ? 'wss://' : 'ws://');
-		this.isDev = this.port === '8081' && process.env.NODE_ENV === 'development';
+		this.isDev = import.meta.env.DEV;
 		if (this.port !== '') {
 			this.port = ':' + this.port;
 		}
@@ -72,14 +72,14 @@ export default class UrlBuilder {
 	 * Returns base URL
 	 */
 	getBaseUrl(): string {
-		return window.location.protocol + '//' + this.hostname + (this.isDev ? ':8081' : this.port) + process.env.VUE_APP_BASE_URL;
+		return window.location.protocol + '//' + this.hostname + (this.isDev ? ':8081' : this.port) + import.meta.env.VITE_BASE_URL;
 	}
 
 	/**
 	 * Returns REST API URL
 	 */
 	getRestApiUrl(): string {
-		return '//' + this.hostname + (this.isDev ? ':8080' : this.port) + process.env.VUE_APP_BASE_URL + 'api/v0/';
+		return '//' + this.hostname + (this.isDev ? ':8080' : this.port) + import.meta.env.VITE_BASE_URL + 'api/v0/';
 	}
 
 	/**
@@ -100,7 +100,7 @@ export default class UrlBuilder {
 	 * Returns REST API URL from passed hostname
 	 */
 	getRestApiUrlFromAddr(hostname: string): string {
-		return '//' + hostname + (this.isDev ? ':8080' : this.port) + process.env.VUE_APP_BASE_URL + 'api/v0/';
+		return '//' + hostname + (this.isDev ? ':8080' : this.port) + import.meta.env.VITE_BASE_URL + 'api/v0/';
 	}
 
 }

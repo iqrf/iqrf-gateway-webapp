@@ -15,84 +15,72 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CHeader :fixed='false' color-scheme='dark'>
-		<CToggler
-			in-header
-			class='ml-3 d-lg-none'
-			@click='$store.commit("sidebar/toggleSidebarMobile")'
-		/>
-		<CToggler
-			in-header
-			class='ml-3 d-md-down-none'
-			@click='$store.commit("sidebar/toggleSidebarDesktop")'
-		/>
-		<CHeaderBrand class='ml-auto d-lg-none' to='/'>
-			<Logo :alt='title' />
-		</CHeaderBrand>
-		<CHeaderNav class='ml-auto mr-3'>
-			<CDropdown
-				v-if='$store.getters["user/isLoggedIn"]'
-				id='user-menu-button'
-				:in-nav='true'
-				class='c-header-nav-items'
-				placement='bottom-end'
-				add-menu-classes='pt-0 pb-0'
-			>
-				<template #toggler>
-					<CHeaderNavLink class='dropdown-toggle'>
-						{{ $store.getters['user/getName'] }}
-					</CHeaderNavLink>
-				</template>
-				<CDropdownItem to='/profile'>
-					<CIcon :content='cilUser' />
-					{{ $t('core.profile.title') }}
-				</CDropdownItem>
-				<CDropdownItem @click='signOut'>
-					<CIcon :content='cilLockLocked' />
-					{{ $t('core.sign.out.title') }}
-				</CDropdownItem>
-			</CDropdown>
-		</CHeaderNav>
-	</CHeader>
+	<v-app-bar
+		fixed
+		app
+		dark
+		color='#3c4b64'
+		height='60'
+	>
+		<v-app-bar-nav-icon @click.stop='$store.commit("sidebar/toggleVisibility")' />
+		<v-spacer />
+		<v-menu
+			v-if='$store.getters["user/isLoggedIn"]'
+			bottom
+			left
+			offset-y
+		>
+			<template #activator='{ on, attrs }'>
+				<v-btn
+					v-bind='attrs'
+					id='user-menu-button'
+					color='white'
+					text
+					v-on='on'
+				>
+					{{ $store.getters['user/getName'] }}
+					<v-icon
+						class='hidden-sm-and-down'
+						size='14'
+					>
+						mdi-chevron-down
+					</v-icon>
+				</v-btn>
+			</template>
+			<v-list dense>
+				<v-list-item dense to='/profile'>
+					<v-list-item-icon>
+						<v-icon dense>
+							mdi-account
+						</v-icon>
+					</v-list-item-icon>
+					<v-list-item-title>{{ $t('core.profile.title') }}</v-list-item-title>
+				</v-list-item>
+				<v-divider />
+				<v-list-item dense @click='signOut'>
+					<v-list-item-icon>
+						<v-icon dense>
+							mdi-logout
+						</v-icon>
+					</v-list-item-icon>
+					<v-list-item-title>{{ $t('core.sign.out.title') }}</v-list-item-title>
+				</v-list-item>
+			</v-list>
+		</v-menu>
+	</v-app-bar>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {
-	CBadge,
-	CDropdown,
-	CHeader,
-	CHeaderBrand,
-	CHeaderNav,
-	CHeaderNavLink,
-	CIcon,
-	CToggler,
-} from '@coreui/vue/src';
-import {cilLockLocked, cilUser} from '@coreui/icons';
 import ThemeManager from '@/helpers/themeManager';
 
-@Component({
-	components: {
-		CBadge,
-		CDropdown,
-		CHeader,
-		CHeaderBrand,
-		CHeaderNav,
-		CHeaderNavLink,
-		CIcon,
-		CToggler,
-		Logo: ThemeManager.getSidebarLogo(),
-	},
-	data: () => ({
-		cilLockLocked,
-		cilUser,
-	}),
-})
+@Component({})
 
 /**
  * Header component
  */
 export default class TheHeader extends Vue {
+
 	/**
 	 * Returns the app title
 	 * @return {string} App title

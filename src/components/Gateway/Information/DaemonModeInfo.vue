@@ -16,13 +16,15 @@ limitations under the License.
 -->
 <template>
 	<span v-if='requestRunning && mode === "unknown"'>
-		<CSpinner color='info' class='cinfo-spinner' />
+		<v-progress-circular
+			color='info'
+			indeterminate
+		/>
 	</span>
 	<span v-else>{{ $t(mode !== 'unknown' ? 'gateway.mode.modes.' + mode: 'gateway.mode.messages.getFailed') }}</span>
 </template>
 
 <script lang='ts'>
-
 import {Component, Vue} from 'vue-property-decorator';
 
 import {buildDaemonMessageOptions} from '@/store/modules/daemonClient.module';
@@ -133,10 +135,3 @@ export default class DaemonModeInfo extends Vue {
 	}
 }
 </script>
-
-<style scoped>
-.cinfo-spinner {
-	width: 2rem;
-	height: 2rem;
-}
-</style>

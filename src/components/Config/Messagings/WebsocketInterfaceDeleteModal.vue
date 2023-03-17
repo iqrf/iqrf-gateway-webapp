@@ -15,41 +15,39 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CModal
-		:show.sync='show'
-		color='danger'
-		size='lg'
-		:close-on-backdrop='false'
-		:fade='false'
+	<v-dialog
+		v-model='show'
+		width='50%'
+		persistent
+		no-click-animation
 	>
-		<template #header>
-			<h5 class='modal-title'>
-				{{ $t('config.daemon.messagings.websocket.removeDialog.interfaceTitle') }}
-			</h5>
-		</template>
-		{{ $t('config.daemon.messagings.websocket.removeDialog.interfacePrompt', {instance: messagingInstance}) }}
-		<template #footer>
-			<CButton
-				class='mr-1'
-				color='secondary'
-				@click='hideModal'
-			>
-				{{ $t('forms.cancel') }}
-			</CButton>
-			<CButton
-				color='danger'
-				@click='remove'
-			>
-				{{ $t('forms.delete') }}
-			</CButton>
-		</template>
-	</CModal>
+		<v-card>
+			<v-card-title>
+				<h5>{{ $t('config.daemon.messagings.websocket.removeDialog.interfaceTitle') }}</h5>
+			</v-card-title>
+			<v-card-text>
+				{{ $t('config.daemon.messagings.websocket.removeDialog.interfacePrompt', {instance: _messagingInstance}) }}
+			</v-card-text>
+			<v-card-actions>
+				<v-spacer />
+				<v-btn
+					@click='hideModal'
+				>
+					{{ $t('forms.cancel') }}
+				</v-btn>
+				<v-btn
+					color='error'
+					@click='remove'
+				>
+					{{ $t('forms.delete') }}
+				</v-btn>
+			</v-card-actions>
+		</v-card>
+	</v-dialog>
 </template>
 
 <script lang='ts'>
-import {Component} from 'vue-property-decorator';
-import {CButton, CModal} from '@coreui/vue/src';
-import ModalBase from '@/components/ModalBase.vue';
+import {Component, PropSync, VModel, Vue} from 'vue-property-decorator';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 
@@ -60,13 +58,24 @@ import {AxiosError} from 'axios';
 /**
  * Websocket interface delete dialog component
  */
-@Component({
-	components: {
-		CButton,
-		CModal,
-	},
-})
-export default class WebsocketInterfaceDeleteModal extends ModalBase {
+@Component
+export default class WebsocketInterfaceDeleteModal extends Vue {
+
+	/**
+	 * @property {boolean} show Controls modal visibility
+	 */
+	@VModel({required: true}) show!: boolean;
+
+	/**
+	 * @property {string} _messagingInstance Messaging service instance
+	 */
+	@PropSync('messagingInstance', {required: true, default: ''}) _messagingInstance!: string;
+
+	/**
+	 * @property {string} __serviceInstance Websocket service instance
+	 */
+	@PropSync('serviceInstance', {required: true, default: ''}) _serviceInstance!: string;
+
 	/**
 	 * @constant {string} messagingComponent Websocket messaging component
 	 */
@@ -78,62 +87,41 @@ export default class WebsocketInterfaceDeleteModal extends ModalBase {
 	private readonly serviceComponent = 'shape::WebsocketCppService';
 
 	/**
-	 * @var {string} messagingInstance Websocket messaging instance
-	 */
-	private messagingInstance = '';
-
-	/**
-	 * @var {string} serviceInstance Websocket service instance
-	 */
-	private serviceInstance = '';
-
-	/**
 	 * Removes an existing instance of Websocket interface component
 	 */
 	private remove(): void {
-		this.closeModal();
 		this.$store.commit('spinner/SHOW');
 		Promise.all([
-			DaemonConfigurationService.deleteInstance(this.messagingComponent, this.messagingInstance),
-			DaemonConfigurationService.deleteInstance(this.serviceComponent, this.serviceInstance),
+			DaemonConfigurationService.deleteInstance(this.messagingComponent, this._messagingInstance),
+			DaemonConfigurationService.deleteInstance(this.serviceComponent, this._serviceInstance),
 		])
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
 					this.$t(
 						'config.daemon.messagings.websocket.removeDialog.interfaceDeleteSuccess',
-						{instance: this.messagingInstance},
+						{instance: this._messagingInstance},
 					).toString()
 				);
+				this.hideModal();
 				this.$emit('deleted');
 			})
 			.catch((error: AxiosError) => {
 				extendedErrorToast(
 					error,
 					'config.daemon.messagings.websocket.removeDialog.interfaceDeleteFailed',
-					{interface: this.messagingInstance},
+					{interface: this._messagingInstance},
 				);
 			});
-	}
-
-	/**
-	 * Stores messaging and service instances, and shows modal window
-	 * @param {string} messaging Messaging instance
-	 * @param {string} service Service instance
-	 */
-	public showModal(messaging: string, service: string): void {
-		this.messagingInstance = messaging;
-		this.serviceInstance = service;
-		this.openModal();
 	}
 
 	/**
 	 * Resets messaging and service instances, and hides modal window
 	 */
 	private hideModal(): void {
-		this.messagingInstance = '';
-		this.serviceInstance = '';
-		this.closeModal();
+		this._messagingInstance = '';
+		this._serviceInstance = '';
+		this.show = false;
 	}
 }
 

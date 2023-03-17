@@ -15,20 +15,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard>
-		<CCardHeader>
+	<v-card>
+		<v-card-title>
 			{{ $t('service.unattended-upgrades.configuration') }}
-		</CCardHeader>
-		<CCardBody>
+		</v-card-title>
+		<v-card-text>
 			<ValidationObserver v-slot='{invalid}'>
-				<CForm @submit.prevent='updateConfig'>
-					<CRow form>
-						<CCol
-							v-if='isAdmin'
-							sm='12'
-							lg='4'
-						>
+				<v-form @submit.prevent='updateConfig'>
+					<v-row>
+						<v-col v-if='isAdmin' cols='12' md='4'>
 							<ValidationProvider
+								v-if='isAdmin'
 								v-slot='{errors, touched, valid}'
 								rules='integer|min:0|required'
 								:custom-messages='{
@@ -37,17 +34,17 @@ limitations under the License.
 									required: $t("service.unattended-upgrades.errors.listUpdateInterval"),
 								}'
 							>
-								<CInput
+								<v-text-field
 									v-model='config["APT::Periodic::Update-Package-Lists"]'
 									type='number'
 									min='0'
 									:label='$t("service.unattended-upgrades.form.listUpdateInterval")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
+									:success='touched ? valid : null'
+									:error-messages='errors'
 								/>
 							</ValidationProvider>
-						</CCol>
-						<CCol sm='12' lg='4'>
+						</v-col>
+						<v-col cols='12' md='4'>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								rules='integer|min:0|required'
@@ -57,21 +54,17 @@ limitations under the License.
 									required: $t("service.unattended-upgrades.errors.upgradeInterval"),
 								}'
 							>
-								<CInput
+								<v-text-field
 									v-model='config["APT::Periodic::Unattended-Upgrade"]'
 									type='number'
 									min='0'
 									:label='$t("service.unattended-upgrades.form.upgradeInterval")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
+									:success='touched ? valid : null'
+									:error-messages='errors'
 								/>
 							</ValidationProvider>
-						</CCol>
-						<CCol
-							v-if='isAdmin'
-							sm='12'
-							lg='4'
-						>
+						</v-col>
+						<v-col v-if='isAdmin' cols='12' md='4'>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								rules='integer|min:0|required'
@@ -81,38 +74,38 @@ limitations under the License.
 									required: $t("service.unattended-upgrades.errors.removeInterval"),
 								}'
 							>
-								<CInput
+								<v-text-field
 									v-model='config["APT::Periodic::AutocleanInterval"]'
 									type='number'
 									min='0'
 									:label='$t("service.unattended-upgrades.form.removeInterval")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
+									:success='touched ? valid : null'
+									:error-messages='errors'
 								/>
 							</ValidationProvider>
-						</CCol>
-					</CRow>
-					<CInputCheckbox
-						:value.sync='config["Unattended-Upgrade::Automatic-Reboot"]'
+						</v-col>
+					</v-row>
+					<v-checkbox
+						v-model='config["Unattended-Upgrade::Automatic-Reboot"]'
 						:label='$t("service.unattended-upgrades.form.rebootOnKernelUpdate")'
+						dense
 					/>
 					<div><em>{{ $t('service.unattended-upgrades.form.intervalNote') }}</em></div><br>
-					<CButton
+					<v-btn
 						color='primary'
 						type='submit'
 						:disabled='invalid'
 					>
 						{{ $t('forms.save') }}
-					</CButton>
-				</CForm>
+					</v-btn>
+				</v-form>
 			</ValidationObserver>
-		</CCardBody>
-	</CCard>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
@@ -125,13 +118,6 @@ import {AxiosError} from 'axios';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CForm,
-		CInput,
-		CInputCheckbox,
 		ValidationObserver,
 		ValidationProvider
 	},

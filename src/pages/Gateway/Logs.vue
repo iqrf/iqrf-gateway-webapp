@@ -21,67 +21,84 @@ limitations under the License.
 				{{ $t('gateway.log.title') }}
 			</h1>
 			<div>
-				<CButton
+				<v-btn
 					color='primary'
 					@click='downloadArchive'
 				>
+					<v-icon>mdi-download</v-icon>
 					{{ $t('gateway.log.download') }}
-				</CButton> <CButton
+				</v-btn> <v-btn
 					color='primary'
 					@click='getAvailableLogs'
 				>
+					<v-icon>mdi-refresh</v-icon>
 					{{ $t('forms.refresh') }}
-				</CButton>
+				</v-btn>
 			</div>
 		</header>
-		<CCard>
-			<CTabs :active-tab.sync='tab'>
-				<CTab
-					v-for='(item, key) in logs'
-					:key='key'
-					:title='$t(`gateway.log.services.${key}`)'
+		<v-card>
+			<v-tabs v-model='tab' :show-arrows='true'>
+				<v-tab v-for='key in Object.keys(logs)' :key='key'>
+					{{ $t(`gateway.log.services.${key}`) }}
+				</v-tab>
+				<v-tab>
+					{{ $t('gateway.log.journal.title') }}
+				</v-tab>
+			</v-tabs>
+			<v-divider />
+			<v-tabs-items v-model='tab'>
+				<v-tab-item
+					v-for='(item, i) in logs'
+					:key='i'
+					:transition='false'
 				>
-					<CCard
+					<v-card
 						v-if='!item.available || !item.loaded || item.log.length === 0'
-						class='border-0 mb-0'
+						flat
+						tile
 					>
-						<CCardBody>
-							<CAlert
+						<v-card-text>
+							<v-alert
 								v-if='!item.available'
 								class='mb-0'
-								color='danger'
+								type='error'
+								text
 							>
 								{{ $t('gateway.log.messages.notAvailable') }}
-							</CAlert>
-							<CAlert
+							</v-alert>
+							<v-alert
 								v-else-if='!item.loaded'
 								class='mb-0'
-								color='warning'
+								type='warning'
+								text
 							>
 								{{ $t('gateway.log.messages.notLoaded') }}
-							</CAlert>
-							<CAlert
+							</v-alert>
+							<v-alert
 								v-else-if='item.log.length === 0'
 								class='mb-0'
-								color='info'
+								type='info'
+								text
 							>
 								{{ $t('gateway.log.messages.noLogs') }}
-							</CAlert>
-						</CCardBody>
-					</CCard>
-					<LogViewer v-else :log='item.log' />
-				</CTab>
-				<CTab :title='$t("gateway.log.journal.title")'>
+							</v-alert>
+						</v-card-text>
+					</v-card>
+					<LogViewer v-else :log.sync='item.log' />
+				</v-tab-item>
+				<v-tab-item
+					key='journal'
+					:transition='false'
+				>
 					<JournalViewer v-if='tab === Object.keys(logs).length' />
-				</CTab>
-			</CTabs>
-		</CCard>
+				</v-tab-item>
+			</v-tabs-items>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue, Watch} from 'vue-property-decorator';
-import {CButton, CCard, CTab, CTabs} from '@coreui/vue/src';
 import JournalViewer from '@/components/Gateway/JournalViewer.vue';
 import LogViewer from '@/components/Gateway/LogViewer.vue';
 
@@ -96,10 +113,6 @@ import {MetaInfo} from 'vue-meta';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CTab,
-		CTabs,
 		JournalViewer,
 		LogViewer,
 	},

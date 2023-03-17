@@ -15,47 +15,55 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard>
-		<CCardHeader>{{ $t('install.ssh.title') }}</CCardHeader>
-		<CCardBody>
-			<CElementCover
+	<v-card>
+		<v-card-title>{{ $t('install.ssh.title') }}</v-card-title>
+		<v-card-text>
+			<v-overlay
 				v-if='running'
-				:opacity='0.75'
-				style='z-index: 10000;'
+				:opacity='0.65'
+				absolute
 			>
-				<CSpinner color='primary' />
-			</CElementCover>
-			<CForm>
+				<v-progress-circular color='primary' indeterminate />
+			</v-overlay>
+			<v-form>
 				<div class='form-group'>
 					{{ $t('install.ssh.messages.note') }}
 				</div>
-				<CInputRadioGroup
-					:checked.sync='status'
+				<v-divider class='my-2' />
+				<v-radio-group
+					v-model='status'
 					:options='options'
-					:label='$t("install.ssh.state")'
-				/>
+					dense
+				>
+					<v-radio
+						v-for='option in options'
+						:key='option.value'
+						:value='option.value'
+						:label='option.text'
+					/>
+				</v-radio-group>
 				<p>
 					<em>{{ $t('install.ssh.messages.reminder') }}</em>
 				</p>
-				<CButton
+				<v-btn
+					class='mr-1'
 					color='primary'
 					@click='setService'
 				>
 					{{ $t('forms.save') }}
-				</CButton> <CButton
-					color='secondary'
+				</v-btn>
+				<v-btn
 					@click='nextStep'
 				>
 					{{ $t('forms.skip') }}
-				</CButton>
-			</CForm>
-		</CCardBody>
-	</CCard>
+				</v-btn>
+			</v-form>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CSelect} from '@coreui/vue/src';
 
 import ServiceService from '@/services/ServiceService';
 
@@ -63,16 +71,8 @@ import {extendedErrorToast} from '@/helpers/errorToast';
 import {SSHStatus} from '@/enums/Install/ssh';
 
 import {AxiosError} from 'axios';
-import {IOption} from '@/interfaces/Coreui';
 
 @Component({
-	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CSelect,
-	},
 	metaInfo: {
 		title: 'install.ssh.title'
 	}
@@ -91,20 +91,20 @@ export default class InstallSshStatus extends Vue {
 	private running = false;
 
 	/**
-	 * @constant {Array<IOption>} options SSH service status options
+	 * @constant options SSH service status options
 	 */
-	private options: Array<IOption> = [
+	private options = [
 		{
 			value: SSHStatus.ENABLE,
-			label: this.$t('install.ssh.states.enable').toString(),
+			text: this.$t('install.ssh.states.enable').toString(),
 		},
 		{
 			value: SSHStatus.START,
-			label: this.$t('install.ssh.states.start').toString(),
+			text: this.$t('install.ssh.states.start').toString(),
 		},
 		{
 			value: SSHStatus.DISABLE,
-			label: this.$t('install.ssh.states.disable').toString(),
+			text: this.$t('install.ssh.states.disable').toString(),
 		}
 	];
 

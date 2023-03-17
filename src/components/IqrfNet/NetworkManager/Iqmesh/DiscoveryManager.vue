@@ -15,13 +15,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard class='border-0 card-margin-bottom'>
-		<CCardBody>
-			<h4>{{ $t('iqrfnet.networkManager.discovery.title') }}</h4><br>
-			<ValidationObserver v-slot='{ invalid }'>
-				<CForm @submit.prevent='runDiscovery'>
+	<v-card flat tile>
+		<v-card-title>{{ $t('iqrfnet.networkManager.discovery.title') }}</v-card-title>
+		<v-card-text>
+			<ValidationObserver v-slot='{invalid}'>
+				<v-form>
 					<ValidationProvider
-						v-slot='{ errors, touched, valid }'
+						v-slot='{errors, touched, valid}'
 						rules='integer|required|between:0,7'
 						:custom-messages='{
 							integer: $t("forms.errors.integer"),
@@ -29,18 +29,18 @@ limitations under the License.
 							between: $t("iqrfnet.networkManager.discovery.errors.txPower"),
 						}'
 					>
-						<CInput
+						<v-text-field
 							v-model.number='txPower'
 							type='number'
 							min='0'
 							max='7'
 							:label='$t("iqrfnet.networkManager.discovery.form.txPower")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
 						/>
 					</ValidationProvider>
 					<ValidationProvider
-						v-slot='{ errors, touched, valid }'
+						v-slot='{errors, touched, valid}'
 						rules='integer|required|between:0,239'
 						:custom-messages='{
 							integer: $t("forms.errors.integer"),
@@ -48,28 +48,31 @@ limitations under the License.
 							between: $t("iqrfnet.networkManager.discovery.errors.maxAddr")
 						}'
 					>
-						<CInput
+						<v-text-field
 							v-model.number='maxAddr'
 							type='number'
 							min='0'
 							max='239'
 							:label='$t("iqrfnet.networkManager.discovery.form.maxAddr")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
 						/>
 					</ValidationProvider>
-					<CButton color='primary' type='submit' :disabled='invalid'>
+					<v-btn
+						color='primary'
+						:disabled='invalid'
+						@click='runDiscovery'
+					>
 						{{ $t("forms.runDiscovery") }}
-					</CButton>
-				</CForm>
+					</v-btn>
+				</v-form>
 			</ValidationObserver>
-		</CCardBody>
-	</CCard>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
@@ -80,12 +83,6 @@ import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CForm,
-		CInput,
 		ValidationObserver,
 		ValidationProvider
 	}

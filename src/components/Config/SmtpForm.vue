@@ -16,31 +16,25 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<CElementCover
+		<v-overlay
 			v-if='running'
-			:opacity='0.75'
-			style='z-index: 10000;'
+			:opacity='0.65'
+			absolute
 		>
-			<CSpinner color='primary' />
-		</CElementCover>
+			<v-progress-circular color='primary' indeterminate />
+		</v-overlay>
 		<ValidationObserver v-slot='{invalid}'>
-			<CForm>
-				<div class='form-group'>
-					<label>
-						{{ $t('config.smtp.form.enabled') }}
-					</label><br>
-					<CSwitch
-						:checked.sync='configuration.enabled'
-						color='primary'
-						size='lg'
-						shape='pill'
-						label-on='ON'
-						label-off='OFF'
-					/>
-				</div>
+			<v-form>
+				<v-switch
+					v-model='configuration.enabled'
+					:label='$t("config.smtp.form.enabled")'
+					color='primary'
+					inset
+					dense
+				/>
 				<fieldset :disabled='!configuration.enabled'>
-					<CRow>
-						<CCol md='6'>
+					<v-row>
+						<v-col cols='12' md='6'>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								rules='required|host'
@@ -49,11 +43,11 @@ limitations under the License.
 									host: $t("config.smtp.errors.hostInvalid"),
 								}'
 							>
-								<CInput
+								<v-text-field
 									v-model='configuration.host'
 									:label='$t("config.smtp.form.host").toString()'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
+									:sucess='touched ? valid : null'
+									:error-messages='errors.join(", ")'
 								/>
 							</ValidationProvider>
 							<ValidationProvider
@@ -63,20 +57,20 @@ limitations under the License.
 									required: $t("config.smtp.errors.portMissing"),
 								}'
 							>
-								<CInput
+								<v-text-field
 									v-model.number='configuration.port'
 									:label='$t("config.smtp.form.port").toString()'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
+									:sucess='touched ? valid : null'
+									:error-messages='errors.join(", ")'
 								/>
 							</ValidationProvider>
-							<CSelect
-								:value.sync='configuration.secure'
-								:options='protocols'
+							<v-select
+								v-model='configuration.secure'
+								:items='protocols'
 								:label='$t("config.smtp.form.security").toString()'
 							/>
-						</CCol>
-						<CCol md='6'>
+						</v-col>
+						<v-col cols='12' md='6'>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								rules='required'
@@ -84,11 +78,11 @@ limitations under the License.
 									required: $t("config.smtp.errors.usernameMissing"),
 								}'
 							>
-								<CInput
+								<v-text-field
 									v-model='configuration.username'
 									:label='$t("forms.fields.username").toString()'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
+									:sucess='touched ? valid : null'
+									:error-messages='errors.join(", ")'
 								/>
 							</ValidationProvider>
 							<ValidationProvider
@@ -101,8 +95,8 @@ limitations under the License.
 								<PasswordInput
 									v-model='configuration.password'
 									:label='$t("forms.fields.password").toString()'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
+									:sucess='touched ? valid : null'
+									:error-messages='errors.join(", ")'
 								/>
 							</ValidationProvider>
 							<ValidationProvider
@@ -113,48 +107,52 @@ limitations under the License.
 									email: $t("config.smtp.errors.senderInvalid"),
 								}'
 							>
-								<CInput
+								<v-text-field
 									v-model='configuration.from'
 									:label='$t("config.smtp.form.from").toString()'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='errors.join(", ")'
+									:sucess='touched ? valid : null'
+									:error-messages='errors.join(", ")'
 								/>
 							</ValidationProvider>
-						</CCol>
-					</CRow>
+						</v-col>
+					</v-row>
 				</fieldset>
-				<CButton
+				<v-btn
 					class='mr-1'
 					color='primary'
 					:disabled='invalid'
 					@click='saveConfig'
 				>
 					{{ $t('forms.save') }}
-				</CButton>
-				<CButton
-					v-c-tooltip='!hasEmail ? $t("config.smtp.messages.testDisabled") : ""'
-					class='mr-1'
-					color='info'
-					:disabled='!configuration.enabled || !hasEmail'
-					@click='test'
-				>
-					{{ $t('config.smtp.test') }}
-				</CButton>
-				<CButton
+				</v-btn>
+				<v-tooltip top :disabled='hasEmail'>
+					<template #activator='{on}'>
+						<span v-on='on'>
+							<v-btn
+								class='mr-1'
+								color='info'
+								:disabled='!configuration.enabled || !hasEmail'
+								@click='test'
+							>
+								{{ $t('config.smtp.test') }}
+							</v-btn>
+						</span>
+					</template>
+					<span>{{ $t('config.smtp.messages.testDisabled') }}</span>
+				</v-tooltip>
+				<v-btn
 					v-if='$route.path.includes("/install/smtp")'
-					color='secondary'
 					@click='$emit("done")'
 				>
 					{{ $t('forms.skip') }}
-				</CButton>
-			</CForm>
+				</v-btn>
+			</v-form>
 		</ValidationObserver>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCol, CElementCover, CForm, CInput, CRow, CSelect, CSpinner, CSwitch} from '@coreui/vue/src';
 import {AxiosError} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
@@ -164,21 +162,11 @@ import PasswordInput from '@/components/Core/PasswordInput.vue';
 import {SmtpSecurity} from '@/enums/Config/Smtp';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {email, host} from '@/helpers/validators';
-import {IOption} from '@/interfaces/Coreui';
 import {ISmtp} from '@/interfaces/Config/Smtp';
 import MailerService from '@/services/MailerService';
 
 @Component({
 	components: {
-		CButton,
-		CCol,
-		CElementCover,
-		CForm,
-		CInput,
-		CRow,
-		CSelect,
-		CSpinner,
-		CSwitch,
 		PasswordInput,
 		ValidationObserver,
 		ValidationProvider,
@@ -214,19 +202,19 @@ export default class SmtpForm extends Vue {
 	};
 
 	/**
-	 * @constant {Array<IOption>} protocols Array of SMTP security protocols
+	 * @constant protocols Array of SMTP security protocols
 	 */
-	private protocols: Array<IOption> = [
+	private protocols = [
 		{
-			label: this.$t('config.smtp.form.protocols.none').toString(),
+			text: this.$t('config.smtp.form.protocols.none').toString(),
 			value: SmtpSecurity.PLAINTEXT,
 		},
 		{
-			label: this.$t('config.smtp.form.protocols.starttls').toString(),
+			text: this.$t('config.smtp.form.protocols.starttls').toString(),
 			value: SmtpSecurity.STARTTLS,
 		},
 		{
-			label: this.$t('config.smtp.form.protocols.tls').toString(),
+			text: this.$t('config.smtp.form.protocols.tls').toString(),
 			value: SmtpSecurity.TLS,
 		},
 	];

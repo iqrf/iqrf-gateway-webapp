@@ -17,44 +17,67 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('iqrfnet.networkManager.title') }}</h1>
-		<CRow>
-			<CCol lg='6'>
-				<CCard>
-					<CTabs variant='tabs' :active-tab='activeTab'>
-						<CTab :title='$t("iqrfnet.networkManager.iqmesh")'>
+		<v-row>
+			<v-col lg='6'>
+				<v-card>
+					<v-tabs
+						v-model='activeTab'
+						:show-arrows='true'
+					>
+						<v-tab>
+							{{ $t('iqrfnet.networkManager.iqmesh') }}
+						</v-tab>
+						<v-tab>
+							{{ $t('iqrfnet.networkManager.autoNetwork.title') }}
+						</v-tab>
+						<v-tab>
+							{{ $t('iqrfnet.networkManager.dpaParams.title') }}
+						</v-tab>
+						<v-tab>
+							{{ $t('iqrfnet.networkManager.backupRestore.title') }}
+						</v-tab>
+						<v-tab>
+							{{ $t('iqrfnet.networkManager.otaUpload.title') }}
+						</v-tab>
+						<v-tab>
+							{{ $t('iqrfnet.networkManager.maintenance.title') }}
+						</v-tab>
+					</v-tabs>
+					<v-tabs-items v-model='activeTab'>
+						<v-tab-item :transition='false'>
 							<BondingManager ref='bonding' @update-devices='updateDevices' />
+							<v-divider />
 							<DiscoveryManager @update-devices='updateDevices' />
-						</CTab>
-						<CTab :title='$t("iqrfnet.networkManager.autoNetwork.title")'>
+						</v-tab-item>
+						<v-tab-item :transition='false'>
 							<AutoNetwork @update-devices='updateDevices' />
-						</CTab>
-						<CTab :title='$t("iqrfnet.networkManager.dpaParams.title")'>
+						</v-tab-item>
+						<v-tab-item :transition='false'>
 							<DpaParams />
-						</CTab>
-						<CTab :title='$t("iqrfnet.networkManager.backupRestore.title")'>
+						</v-tab-item>
+						<v-tab-item :transition='false'>
 							<Backup />
+							<v-divider />
 							<Restore />
-						</CTab>
-						<CTab :title='$t("iqrfnet.networkManager.otaUpload.title")'>
+						</v-tab-item>
+						<v-tab-item :transition='false'>
 							<OtaUpload />
-						</CTab>
-						<CTab :title='$t("iqrfnet.networkManager.maintenance.title")'>
+						</v-tab-item>
+						<v-tab-item :transition='false'>
 							<Maintenance ref='maintenance' />
-						</CTab>
-					</CTabs>
-				</CCard>
-			</CCol>
-			<CCol lg='6'>
+						</v-tab-item>
+					</v-tabs-items>
+				</v-card>
+			</v-col>
+			<v-col lg='6'>
 				<DevicesInfo ref='devices' />
-			</CCol>
-		</CRow>
+			</v-col>
+		</v-row>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Ref, Vue} from 'vue-property-decorator';
-import {CCard, CTab, CTabs} from '@coreui/vue/src';
-
 import AutoNetwork from '@/components/IqrfNet/NetworkManager/AutoNetwork/AutoNetwork.vue';
 import Backup from '@/components/IqrfNet/NetworkManager/Backup/Backup.vue';
 import BondingManager from '@/components/IqrfNet/NetworkManager/Iqmesh/BondingManager.vue';
@@ -77,9 +100,6 @@ import {ToastOptions} from 'vue-toast-notification';
  */
 @Component({
 	components: {
-		CCard,
-		CTab,
-		CTabs,
 		AutoNetwork,
 		Backup,
 		BondingManager,
@@ -227,5 +247,6 @@ export default class NetworkManager extends Vue {
 	private enableBondNfc(): void {
 		this.bondingManager.enableBondNfc();
 	}
+
 }
 </script>

@@ -16,18 +16,18 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<CCard>
-			<CCardHeader>{{ $t('install.createUser.title') }}</CCardHeader>
-			<CCardBody>
-				<CElementCover
+		<v-card>
+			<v-card-title>{{ $t('install.createUser.title') }}</v-card-title>
+			<v-card-text>
+				<v-overlay
 					v-if='running'
-					:opacity='0.75'
-					style='z-index: 10000;'
+					:opacity='0.65'
+					absolute
 				>
-					<CSpinner color='primary' />
-				</CElementCover>
+					<v-progress-circular color='primary' indeterminate />
+				</v-overlay>
 				<ValidationObserver v-slot='{invalid}'>
-					<CForm @submit.prevent='handleSubmit'>
+					<v-form @submit.prevent='handleSubmit'>
 						<div class='form-group'>
 							{{ $t('install.createUser.note') }}
 						</div>
@@ -38,12 +38,12 @@ limitations under the License.
 								required: $t("forms.errors.username"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								id='username'
 								v-model='user.username'
 								:label='$t("forms.fields.username").toString()'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
@@ -53,12 +53,12 @@ limitations under the License.
 								email: $t("forms.errors.emailFormat"),
 							}'
 						>
-							<CInput
+							<v-text-field
 								id='email'
 								v-model='user.email'
 								:label='$t("forms.fields.email").toString()'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
@@ -72,45 +72,42 @@ limitations under the License.
 								id='password'
 								v-model='user.password'
 								:label='$t("forms.fields.password").toString()'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='errors.join(", ")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
 							/>
 						</ValidationProvider>
-						<CButton color='primary' type='submit' :disabled='invalid'>
+						<v-btn
+							color='primary'
+							type='submit'
+							:disabled='invalid'
+						>
 							{{ $t('install.createUser.createButton') }}
-						</CButton>
-					</CForm>
+						</v-btn>
+					</v-form>
 				</ValidationObserver>
-			</CCardBody>
-		</CCard>
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput, CSpinner} from '@coreui/vue/src';
-import {AxiosError, AxiosResponse} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {required} from 'vee-validate/dist/rules';
-
 import PasswordInput from '@/components/Core/PasswordInput.vue';
-import {extendedErrorToast} from '@/helpers/errorToast';
-import {sleep} from '@/helpers/sleep';
+
 import {email} from '@/helpers/validators';
-import {IUser} from '@/interfaces/Core/User';
+import {required} from 'vee-validate/dist/rules';
+import {sleep} from '@/helpers/sleep';
+import {extendedErrorToast} from '@/helpers/errorToast';
+
 import {UserCredentials, UserLanguage, UserRole} from '@/services/AuthenticationService';
 import UserService from '@/services/UserService';
 
+import {AxiosError, AxiosResponse} from 'axios';
+import {IUser} from '@/interfaces/Core/User';
+
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CElementCover,
-		CForm,
-		CInput,
-		CSpinner,
 		PasswordInput,
 		ValidationObserver,
 		ValidationProvider,

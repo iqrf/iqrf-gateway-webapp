@@ -15,42 +15,35 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CModal
-		v-show='show'
-		:show.sync='show'
-		color='danger'
-		size='lg'
-		:close-on-backdrop='false'
-		:fade='false'
+	<v-dialog
+		v-model='showModal'
+		width='50%'
+		persistent
+		no-click-animation
 	>
-		<template #header>
-			<h5 class='modal-title'>
-				{{ $t('core.security.ssh.modal.title') }}
-			</h5>
-		</template>
-		{{ $t('core.security.ssh.modal.prompt', {id: key.id}) }}
-		<template #footer>
-			<CButton
-				class='mr-1'
-				colors='secondary'
-				@click='hideModal'
-			>
-				{{ $t('forms.cancel') }}
-			</CButton>
-			<CButton
-				color='danger'
-				@click='remove'
-			>
-				{{ $t('forms.delete') }}
-			</CButton>
-		</template>
-	</CModal>
+		<v-card v-if='key !== null'>
+			<v-card-title>{{ $t('core.security.ssh.modal.title') }}</v-card-title>
+			<v-card-text>{{ $t('core.security.ssh.modal.prompt', {id: key.id}) }}</v-card-text>
+			<v-card-actions>
+				<v-spacer />
+				<v-btn
+					@click='hideModal'
+				>
+					{{ $t('forms.cancel') }}
+				</v-btn>
+				<v-btn
+					color='error'
+					@click='remove'
+				>
+					{{ $t('forms.delete') }}
+				</v-btn>
+			</v-card-actions>
+		</v-card>
+	</v-dialog>
 </template>
 
 <script lang='ts'>
-import {Component} from 'vue-property-decorator';
-import {CButton, CModal} from '@coreui/vue/src';
-import ModalBase from '@/components/ModalBase.vue';
+import {Component, VModel, Vue} from 'vue-property-decorator';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 
@@ -59,33 +52,24 @@ import SshService from '@/services/SshService';
 import {AxiosError} from 'axios';
 import {ISshKey} from '@/interfaces/Core/SshKey';
 
-@Component({
-	components: {
-		CButton,
-		CModal,
-	},
-})
+
+@Component({})
 
 /**
  * SSH key delete modal window component
  */
-export default class SshKeyDeleteModal extends ModalBase {
+export default class SshKeyDeleteModal extends Vue {
 	/**
-	 * @constant {ISshKey} defaultKey Default SSH key
+	 * SSH key to delete
 	 */
-	private readonly defaultKey: ISshKey = {
-		id: 0,
-		description: '',
-		type: '',
-		hash: '',
-		key: '',
-		createdAt: '',
-	};
+	@VModel({required: true}) key!: ISshKey|null;
 
 	/**
-	 * @var {ISshKey} key SSH key to delete
+	 * Computes modal display condition
 	 */
-	private key: ISshKey = this.defaultKey;
+	get showModal(): boolean {
+		return this.key !== null;
+	}
 
 	/**
 	 * Removes an existing SSH key
@@ -94,37 +78,27 @@ export default class SshKeyDeleteModal extends ModalBase {
 		if (this.key === null) {
 			return;
 		}
-		const key = this.key;
+		const id = this.key.id;
 		this.$store.commit('spinner/SHOW');
-		SshService.deleteKey(this.key.id)
+		SshService.deleteKey(id)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
-					this.$t('core.security.ssh.messages.deleteSuccess', {id: key.id}).toString()
+					this.$t('core.security.ssh.messages.deleteSuccess', {id: id}).toString()
 				);
 				this.hideModal();
 				this.$emit('deleted');
 			})
 			.catch((error: AxiosError) => {
-				extendedErrorToast(error, 'core.security.ssh.messages.deleteFailed', {id: key.id});
+				extendedErrorToast(error, 'core.security.ssh.messages.deleteFailed', {id: id});
 			});
 	}
 
 	/**
-	 * Stores key to delete and shows modal window
-	 * @param {ISshKey} key SSH key to delete
-	 */
-	public showModal(key: ISshKey): void {
-		this.key = key;
-		this.openModal();
-	}
-
-	/**
-	 * Resets key to delete and hides modal window
+	 * Closes modal window
 	 */
 	private hideModal(): void {
-		this.key = this.defaultKey;
-		this.closeModal();
+		this.key = null;
 	}
 }
 </script>

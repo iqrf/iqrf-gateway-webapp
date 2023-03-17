@@ -26,7 +26,7 @@ if (version.pipeline !== '') {
 	release += '~' + version.pipeline;
 }
 
-if (process.env.NODE_ENV === 'production') {
+if (import.meta.env.PROD) {
 	Sentry.init({
 		dsn: 'https://435ee2b55f994e5f85e21a9ca93ea7a7@sentry.iqrf.org/5',
 		integrations: [

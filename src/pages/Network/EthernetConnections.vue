@@ -17,144 +17,139 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('network.ethernet.title') }}</h1>
-		<NetworkInterfaces ref='interfaces' :type='InterfaceType.ETHERNET' />
-		<CCard>
-			<CCardHeader class='datatable-header'>
-				{{ $t('network.connection.title') }}
-			</CCardHeader>
-			<CCardBody>
-				<CDataTable
-					:fields='tableFields'
-					:items='connections'
-					:column-filter='true'
-					:items-per-page='20'
-					:pagination='true'
+		<NetworkInterfaces
+			ref='interfaces'
+			class='mb-5'
+			:type='InterfaceType.ETHERNET'
+		/>
+		<v-card>
+			<v-card-text>
+				<v-data-table
 					:loading='loading'
-					:sorter='{external: false, resetable: true}'
+					:headers='headers'
+					:items='connections'
+					:no-data-text='$t("network.connection.messages.noConnections")'
 				>
-					<template #no-items-view='{}'>
-						{{ $t('network.connection.messages.noConnections') }}
-					</template>
-					<template #name='{item}'>
-						<td>
-							<CBadge
-								v-if='item.interfaceName !== null'
-								color='success'
-							>
-								{{ $t('network.connection.states.connected') }}
-							</CBadge>
-							{{ item.name }}
-						</td>
-					</template>
-					<template #interfaceName='{item}'>
-						<td>
-							{{ item.interfaceName }}
-						</td>
-					</template>
-					<template #actions='{item}'>
-						<td class='col-actions'>
-							<CButton
-								v-if='item.interfaceName === null'
-								color='success'
-								size='sm'
-								@click='connect(item)'
-							>
-								<CIcon :content='cilLink' size='sm' />
-								{{ $t('network.table.connect') }}
-							</CButton>
-							<CButton
-								v-else
-								color='danger'
-								size='sm'
-								@click='hostname === "localhost" ? disconnect(item) : connectionModal = item'
-							>
-								<CIcon :content='cilLinkBroken' size='sm' />
-								{{ $t('network.table.disconnect') }}
-							</CButton> <CButton
+					<template #top>
+						<v-toolbar dense flat>
+							<h5>{{ $t('network.connection.title') }}</h5>
+							<v-spacer />
+							<v-btn
 								color='primary'
-								:to='"/ip-network/ethernet/edit/" + item.uuid'
-								size='sm'
+								small
+								@click='getConnections'
 							>
-								<CIcon :content='cilPencil' size='sm' />
-								{{ $t('table.actions.edit') }}
-							</CButton>
-						</td>
+								<v-icon small>
+									mdi-refresh
+								</v-icon>
+							</v-btn>
+						</v-toolbar>
 					</template>
-				</CDataTable>
-			</CCardBody>
-		</CCard>
-		<CModal
-			:show='connectionModal !== null'
-			color='warning'
-			size='lg'
+					<template #[`item.name`]='{item}'>
+						<v-chip
+							v-if='item.interfaceName !== null'
+							color='success'
+							label
+							small
+						>
+							{{ $t('network.connection.states.connected') }}
+						</v-chip>
+						{{ item.name }}
+					</template>
+					<template #[`item.interfaceName`]='{item}'>
+						{{ item.interfaceName }}
+					</template>
+					<template #[`item.actions`]='{item}'>
+						<v-btn
+							v-if='item.interfaceName === null'
+							class='mr-1'
+							color='success'
+							small
+							@click='connect(item)'
+						>
+							<v-icon small>
+								mdi-link
+							</v-icon>
+							{{ $t('network.table.connect') }}
+						</v-btn>
+						<v-btn
+							v-else
+							class='mr-1'
+							color='error'
+							small
+							@click='hostname === "localhost" ? disconnect(item) : connectionModal = item'
+						>
+							<v-icon small>
+								mdi-link-off
+							</v-icon>
+							{{ $t('network.table.disconnect') }}
+						</v-btn>
+						<v-btn
+							color='primary'
+							small
+							:to='"/ip-network/ethernet/edit/" + item.uuid'
+						>
+							<v-icon small>
+								mdi-pencil
+							</v-icon>
+							{{ $t('table.actions.edit') }}
+						</v-btn>
+					</template>
+				</v-data-table>
+			</v-card-text>
+		</v-card>
+		<v-dialog
+			v-model='connectionModal'
+			width='50%'
+			persistent
+			no-click-animation
 		>
-			<template #header>
-				<h5 class='modal-title'>
-					{{ $t('network.ethernet.modal.title') }}
-				</h5>
-			</template>
-			{{ $t('network.ethernet.modal.prompt') }}
-			<template #footer>
-				<CButton
-					color='warning'
-					@click='disconnect(connectionModal)'
-				>
-					{{ $t('network.table.disconnect') }}
-				</CButton> <CButton
-					color='secondary'
-					@click='connectionModal = null'
-				>
-					{{ $t('forms.cancel') }}
-				</CButton>
-			</template>
-		</CModal>
+			<v-card>
+				<v-card-title>
+					<h5>{{ $t('network.ethernet.modal.title') }}</h5>
+				</v-card-title>
+				<v-card-text>
+					{{ $t('network.ethernet.modal.prompt') }}
+				</v-card-text>
+				<v-card-actions>
+					<v-spacer />
+					<v-btn
+						@click='connectionModal = null'
+					>
+						{{ $t('forms.cancel') }}
+					</v-btn>
+					<v-btn
+						color='warning'
+						@click='disconnect(connectionModal)'
+					>
+						{{ $t('network.table.disconnect') }}
+					</v-btn>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 	</div>
 </template>
 
 <script lang='ts'>
-import {cilLink, cilLinkBroken, cilPencil} from '@coreui/icons';
-import {
-	CBadge,
-	CButton,
-	CCard,
-	CCardBody,
-	CCardHeader,
-	CDataTable,
-	CIcon,
-	CModal,
-} from '@coreui/vue/src';
-import {AxiosError} from 'axios';
 import {Component, Ref, Vue} from 'vue-property-decorator';
-
 import NetworkInterfaces from '@/components/Network/NetworkInterfaces.vue';
 
 import {ConnectionType} from '@/enums/Network/ConnectionType';
 import {InterfaceType} from '@/enums/Network/InterfaceType';
-
 import {extendedErrorToast} from '@/helpers/errorToast';
-
-import {IField} from '@/interfaces/Coreui';
-import {NetworkConnection} from '@/interfaces/Network/Connection';
 
 import NetworkConnectionService from '@/services/NetworkConnectionService';
 import VersionService from '@/services/VersionService';
 
+import {AxiosError} from 'axios';
+import {DataTableHeader} from 'vuetify';
+import {NetworkConnection} from '@/interfaces/Network/Connection';
+
 @Component({
 	components: {
-		CBadge,
-		CButton,
-		CCard,
-		CCardBody,
-		CCardHeader,
-		CDataTable,
-		CIcon,
-		CModal,
 		NetworkInterfaces,
 	},
 	data: () => ({
-		cilLink,
-		cilLinkBroken,
-		cilPencil,
 		InterfaceType,
 	}),
 	metaInfo: {
@@ -166,8 +161,18 @@ export default class EthernetConnections extends Vue {
 
 	/**
 	 * @property {NetworkInterfaces} interfaces Network interfaces component
-   */
+	 */
 	@Ref('interfaces') interfaces!: NetworkInterfaces;
+
+	/**
+	 * @property {boolean} loading Loading state
+	 */
+	private loading = true;
+
+	/**
+	 * @var {string} hostname Window hostname
+	 */
+	private hostname = '';
 
 	/**
 	 * @var {Array<NetworkConnection>} connections Array of existing network connections
@@ -180,36 +185,27 @@ export default class EthernetConnections extends Vue {
 	private connectionModal: NetworkConnection|null = null;
 
 	/**
-	 * @property {boolean} loading Loading state
+	 * @constant {Array<DataTableHeader>} headers Data table headers
 	 */
-	private loading = true;
-
-	/**
-	 * @constant {Array<IField>} tableFields Array of CoreUI data table columns
-	 */
-	private tableFields: Array<IField> = [
+	private readonly headers: Array<DataTableHeader> = [
 		{
-			key: 'name',
-			label: this.$t('network.connection.name'),
+			value: 'name',
+			text: this.$t('network.connection.name').toString(),
 		},
 		{
-			key: 'interfaceName',
-			label: this.$t('network.connection.interface'),
-			filter: false,
-			sorter: false,
+			value: 'interfaceName',
+			text: this.$t('network.connection.interface').toString(),
+			filterable: false,
+			sortable: false,
 		},
 		{
-			key: 'actions',
-			label: this.$t('table.actions.title'),
-			filter: false,
-			sorter: false,
+			value: 'actions',
+			text: this.$t('table.actions.title').toString(),
+			filterable: false,
+			sortable: false,
+			align: 'end',
 		},
 	];
-
-	/**
-	 * @var {string} hostname Window hostname
-	 */
-	private hostname = '';
 
 	/**
 	 * Retrieves interfaces and connections
@@ -247,7 +243,7 @@ export default class EthernetConnections extends Vue {
 						{connection: connection.name}
 					).toString());
 				this.getConnections();
-				this.interfaces.getData();
+				this.interfaces.getInterfaces();
 			})
 			.catch((error: AxiosError) => extendedErrorToast(
 				error,
@@ -272,7 +268,7 @@ export default class EthernetConnections extends Vue {
 						{interface: connection.interfaceName, connection: connection.name}
 					).toString());
 				this.getConnections();
-				this.interfaces.getData();
+				this.interfaces.getInterfaces();
 			})
 			.catch((error: AxiosError) => {
 				if (this.hostname === 'localhost') {

@@ -17,41 +17,52 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('core.dashboard') }}</h1>
-		<CAlert
+		<v-alert
 			v-if='userEmail === null'
-			color='warning'
-			class='d-flex justify-content-between align-items-center'
+			type='warning'
+			text
 		>
-			{{ $t('account.email.messages.missing') }}
-			<CButton
-				color='warning'
-				size='sm'
-				to='/profile/'
-			>
-				{{ $t('account.email.add') }}
-			</CButton>
-		</CAlert>
-		<CAlert
+			<v-row align='center'>
+				<v-col class='grow'>
+					{{ $t('account.email.messages.missing') }}
+				</v-col>
+				<v-col class='shrink'>
+					<v-btn
+						color='warning'
+						small
+						to='/profile/'
+					>
+						{{ $t('account.email.add') }}
+					</v-btn>
+				</v-col>
+			</v-row>
+		</v-alert>
+		<v-alert
 			v-if='userEmail !== null && isUserUnverified'
 			color='warning'
-			class='d-flex justify-content-between align-items-center'
+			text
 		>
-			{{ $t('account.email.messages.unverified', {email: userEmail}) }}
-			<CButton
-				color='warning'
-				size='sm'
-				@click='resendVerification()'
-			>
-				{{ $t('core.user.resendVerification') }}
-			</CButton>
-		</CAlert>
+			<v-row align='center'>
+				<v-col class='grow'>
+					{{ $t('account.email.messages.unverified', {email: userEmail}) }}
+				</v-col>
+				<v-col class='shrink'>
+					<v-btn
+						color='warning'
+						small
+						@click='resendVerification()'
+					>
+						{{ $t('core.user.resendVerification') }}
+					</v-btn>
+				</v-col>
+			</v-row>
+		</v-alert>
 		<Disambiguation :links='links' />
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CAlert, CButton} from '@coreui/vue/src';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {mapGetters} from 'vuex';
@@ -65,8 +76,6 @@ import {UserRoleIndex} from '@/services/AuthenticationService';
 
 @Component({
 	components: {
-		CAlert,
-		CButton,
 		Disambiguation,
 	},
 	metaInfo: {

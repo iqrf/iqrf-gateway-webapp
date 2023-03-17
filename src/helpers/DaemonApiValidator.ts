@@ -17,7 +17,7 @@
 
 import {ErrorObject} from 'ajv';
 import i18n from '@/plugins/i18n';
-import validate20 from '@/schemas/functions/genericDaemonRequest.js';
+import validate20 from '@/schemas/functions/genericDaemonRequest.mjs';
 
 /**
  * Daemon API validator callback type declaration

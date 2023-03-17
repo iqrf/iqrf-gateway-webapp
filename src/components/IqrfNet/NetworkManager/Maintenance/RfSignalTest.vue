@@ -15,81 +15,88 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard class='border-top-0 border-left-0 border-right-0 card-margin-bottom'>
-		<CCardBody>
-			<CCardTitle>{{ $t('iqrfnet.networkManager.maintenance.rfSignal.title') }}</CCardTitle>
+	<v-card flat tile>
+		<v-card-title>{{ $t('iqrfnet.networkManager.maintenance.rfSignal.title') }}</v-card-title>
+		<v-card-text>
 			<ValidationObserver v-slot='{invalid}'>
-				<CForm>
-					<CInputRadioGroup
-						:checked.sync='target'
-						:options='targets'
-					/>
+				<v-form>
+					<v-radio-group
+						v-model='target'
+						column
+						dense
+					>
+						<v-radio
+							v-for='(type, idx) of targets'
+							:key='idx'
+							:label='type.text'
+							:value='type.value'
+						/>
+					</v-radio-group>
 					<ValidationProvider
 						v-slot='{errors, touched, valid}'
 						:rules='rfChannelRules.rule'
 						:custom-messages='rfChannelMessages'
 					>
-						<CInput
+						<v-text-field
 							v-model.number='params.rfChannel'
 							type='number'
 							:min='rfChannelRules.min'
 							:max='rfChannelRules.max'
 							:label='$t("iqrfnet.networkManager.maintenance.rfSignal.rfChannel")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
+							:success='touched ? valid : null'
+							:error-messages='errors'
 						/>
 					</ValidationProvider>
 					<ValidationProvider
 						v-slot='{errors, touched, valid}'
 						rules='integer|between:0,64|required'
 						:custom-messages='{
-							between: "iqrfnet.networkManager.maintenance.rfSignal.errors.rxFilter",
-							integer: "iqrfnet.networkManager.maintenance.rfSignal.errors.rxFilter",
-							required: "iqrfnet.networkManager.maintenance.rfSignal.errors.rxFilter",
+							between: $t("iqrfnet.networkManager.maintenance.rfSignal.errors.rxFilter"),
+							integer: $t("iqrfnet.networkManager.maintenance.rfSignal.errors.rxFilter"),
+							required: $t("iqrfnet.networkManager.maintenance.rfSignal.errors.rxFilter"),
 						}'
 					>
-						<CInput
+						<v-text-field
 							v-model.number='params.rxFilter'
 							type='number'
 							min='0'
 							max='64'
 							:label='$t("iqrfnet.networkManager.maintenance.rfSignal.rxFilter")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
+							:success='touched ? valid : null'
+							:error-messages='errors[0]'
 						/>
 					</ValidationProvider>
-					<CSelect
+					<v-select
+						v-model='params.measurementTime'
 						:label='$t("iqrfnet.networkManager.maintenance.rfSignal.timeLabel")'
-						:value.sync='params.measurementTime'
-						:options='measurementTimes'
+						:items='measurementTimes'
 					/>
-					<CButton
+					<v-btn
 						class='mr-1'
 						color='primary'
 						:disabled='invalid'
 						@click='testRf'
 					>
 						{{ $t('iqrfnet.networkManager.maintenance.rfSignal.test') }}
-					</CButton>
-					<CButton
+					</v-btn>
+					<v-btn
 						color='primary'
 						:disabled='results.length === 0'
 						@click='showResults'
 					>
 						{{ $t('iqrfnet.networkManager.maintenance.rfSignal.showResults') }}
-					</CButton>
-				</CForm>
+					</v-btn>
+				</v-form>
 			</ValidationObserver>
-		</CCardBody>
+		</v-card-text>
 		<RfSignalTestResultModal ref='result' />
-	</CCard>
+	</v-card>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardTitle, CForm, CInput, CInputRadioGroup, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import RfSignalTestResultModal from './RfSignalTestResultModal.vue';
+import RfSignalTestResultModal from '@/components/IqrfNet/NetworkManager/Maintenance/RfSignalTestResultModal.vue';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
 import {getRfChannelRules, getRfChannelValidationMessages} from '@/iqrfNet/Iqmesh';
@@ -99,19 +106,11 @@ import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 import IqmeshNetworkService from '@/services/DaemonApi/IqmeshNetworkService';
 
 import {IRfSignalTestParams, IRfSignalTestResult} from '@/interfaces/DaemonApi/Iqmesh/Maintenance';
-import {IOption} from '@/interfaces/Coreui';
+import {ISelectItem} from '@/interfaces/Vuetify';
 import {MutationPayload} from 'vuex';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardTitle,
-		CForm,
-		CInput,
-		CInputRadioGroup,
-		CSelect,
 		RfSignalTestResultModal,
 		ValidationObserver,
 		ValidationProvider,
@@ -123,7 +122,7 @@ import {MutationPayload} from 'vuex';
  */
 export default class RfSignalTest extends Vue {
 	/**
-	 * @var {string} msgId
+	 * @var {string} msgId Message ID
 	 */
 	private msgId = '';
 
@@ -156,28 +155,28 @@ export default class RfSignalTest extends Vue {
 	};
 
 	/**
+	 * @var {Array<IRfSignalTestResult>} results RF Signal Test results
+	 */
+	private results: Array<IRfSignalTestResult> = [];
+
+	/**
 	 * @var {RfSignalTargets} target RF signal test target
 	 */
 	private target: RfSignalTargets = RfSignalTargets.COORDINATOR;
 
 	/**
-	 * @const {Array<IOption>} targets RF signal test targets
+	 * @constant {Array<ISelectItem>} targets RF signal test targets
 	 */
-	private targets: Array<IOption> = [
+	private readonly targets: Array<ISelectItem> = [
 		{
 			value: RfSignalTargets.COORDINATOR,
-			label: this.$t('iqrfnet.networkManager.maintenance.rfSignal.options.coordinator').toString(),
+			text: this.$t('iqrfnet.networkManager.maintenance.rfSignal.options.coordinator').toString(),
 		},
 		{
 			value: RfSignalTargets.ALL_NODES,
-			label: this.$t('iqrfnet.networkManager.maintenance.rfSignal.options.allNodes').toString(),
+			text: this.$t('iqrfnet.networkManager.maintenance.rfSignal.options.allNodes').toString(),
 		},
 	];
-
-	/**
-	 * @var {Array<IRfSignalTestResult>} results RF Signal Test results
-	 */
-	private results: Array<IRfSignalTestResult> = [];
 
 	/**
 	 * Component unsubscribe function
@@ -186,14 +185,14 @@ export default class RfSignalTest extends Vue {
 
 	/**
 	 * Generates measurement times for select component
-	 * @returns {Array<IOption>} Measurement time select options
+	 * @returns {Array<ISelectItem>} Measurement time select options
 	 */
-	get measurementTimes(): Array<IOption> {
-		const measurementTimes: Array<IOption> = [];
+	get measurementTimes(): Array<ISelectItem> {
+		const measurementTimes: Array<ISelectItem> = [];
 		const times: Array<number> = Object.values(RfSignalMeasurementTimes).filter((v): v is number => Number.isInteger(v));
 		times.forEach((value: number) => {
 			measurementTimes.push({
-				label: this.$t('iqrfnet.networkManager.maintenance.rfSignal.time', {time: value}).toString(),
+				text: this.$t('iqrfnet.networkManager.maintenance.rfSignal.time', {time: value}).toString(),
 				value: value,
 			});
 		});
@@ -214,14 +213,10 @@ export default class RfSignalTest extends Vue {
 			if (mutation.payload.data.msgId !== this.msgId) {
 				return;
 			}
-			this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 			this.$store.dispatch('spinner/hide');
+			this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 			if (mutation.payload.mType === 'iqmeshNetwork_MaintenanceTestRF') {
 				this.handleTestRf(mutation.payload.data);
-			} else {
-				this.$toast.error(
-					this.$t('iqrfnet.messages.genericError').toString()
-				);
 			}
 		});
 	}
@@ -288,8 +283,7 @@ export default class RfSignalTest extends Vue {
 	 * Passes results to the modal window and renders it
 	 */
 	private showResults(): void {
-		(this.$refs.result as RfSignalTestResultModal).activateModal(this.results);
+		(this.$refs.result as RfSignalTestResultModal).showModal(this.results);
 	}
 }
-
 </script>

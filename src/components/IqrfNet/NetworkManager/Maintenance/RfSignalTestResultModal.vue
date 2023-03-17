@@ -15,79 +15,53 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CModal
-		:show.sync='show'
-		color='primary'
-		size='lg'
-		:close-on-backdrop='false'
-		:fade='false'
+	<v-dialog
+		v-model='show'
+		width='50%'
+		persistent
+		no-click-animation
 	>
-		<template #header>
-			<h5 class='modal-title'>
-				{{ $t('iqrfnet.networkManager.maintenance.rfSignal.modal.title') }}
-			</h5>
-		</template>
-		<CDataTable
-			:fields='fields'
-			:items='results'
-			:column-filter='true'
-			:items-per-page='10'
-			:pagination='true'
-			:striped='true'
-			:sorter='{external: false, resetable: true}'
-		>
-			<template #online='{item}'>
-				<td>
-					<CIcon
-						size='lg'
-						:class='item.online ? "text-success" : "text-danger"'
-						:content='item.online ? cilCheckCircle : cilXCircle'
-					/>
-				</td>
-			</template>
-			<template #counter='{item}'>
-				<td>
-					{{ item.counter === undefined ? 'N/A' : item.counter }}
-				</td>
-			</template>
-		</CDataTable>
-		<template #footer>
-			<CButton
-				color='secondary'
-				@click='deactivateModal'
-			>
-				{{ $t('forms.close') }}
-			</CButton>
-		</template>
-	</CModal>
+		<v-card>
+			<v-card-title>{{ $t('iqrfnet.networkManager.maintenance.rfSignal.modal.title') }}</v-card-title>
+			<v-card-text>
+				<v-data-table
+					:headers='headers'
+					:items='results'
+				>
+					<template #[`item.online`]='{item}'>
+						<v-icon :color='item.online ? "success" : "error"'>
+							{{ item.online ? 'mdi-check-circle-outline' : 'mdi-close-circle-outline' }}
+						</v-icon>
+					</template>
+					<template #[`item.counter`]='{item}'>
+						{{ item.counter ?? 'N/A' }}
+					</template>
+				</v-data-table>
+			</v-card-text>
+			<v-card-actions>
+				<v-spacer />
+				<v-btn
+					@click='hideModal'
+				>
+					{{ $t('forms.close') }}
+				</v-btn>
+			</v-card-actions>
+		</v-card>
+	</v-dialog>
 </template>
 
 <script lang='ts'>
 import {Component} from 'vue-property-decorator';
-import {CButton, CDataTable, CIcon, CModal} from '@coreui/vue/src';
 import ModalBase from '@/components/ModalBase.vue';
 
-import {cilCheckCircle, cilXCircle} from '@coreui/icons';
-
-import {IField} from '@/interfaces/Coreui';
+import {DataTableHeader} from 'vuetify';
 import {IRfSignalTestResult} from '@/interfaces/DaemonApi/Iqmesh/Maintenance';
 
-@Component({
-	components: {
-		CButton,
-		CDataTable,
-		CIcon,
-		CModal,
-	},
-	data: () => ({
-		cilCheckCircle,
-		cilXCircle,
-	})
-})
 
 /**
  * Maintenance RF Signal Test result component
  */
+@Component
 export default class RfSignalTestResult extends ModalBase {
 	/**
 	 * @var {IRfSignalTestResult} results RF Signal Test results
@@ -95,20 +69,23 @@ export default class RfSignalTestResult extends ModalBase {
 	private results: Array<IRfSignalTestResult> = [];
 
 	/**
-	 * @constant {Array<IField>} fields RF Signal Test results table fields
+	 * @constant {Array<DataTableHeader>} headers RF Signal Test results table headers
 	 */
-	private fields: Array<IField> = [
+	private readonly headers: Array<DataTableHeader> = [
 		{
-			label: this.$t('iqrfnet.networkManager.maintenance.rfSignal.modal.address'),
-			key: 'deviceAddr',
+			value: 'deviceAddr',
+			text: this.$t('iqrfnet.networkManager.maintenance.rfSignal.modal.address').toString(),
+			width: '33%',
 		},
 		{
-			label: this.$t('iqrfnet.networkManager.maintenance.rfSignal.modal.online'),
-			key: 'online',
+			value: 'online',
+			text: this.$t('iqrfnet.networkManager.maintenance.rfSignal.modal.online').toString(),
+			width: '33%',
 		},
 		{
-			label: this.$t('iqrfnet.networkManager.maintenance.rfSignal.modal.counter'),
-			key: 'counter',
+			value: 'counter',
+			text: this.$t('iqrfnet.networkManager.maintenance.rfSignal.modal.counter').toString(),
+			width: '33%',
 		},
 	];
 
@@ -116,7 +93,7 @@ export default class RfSignalTestResult extends ModalBase {
 	 * Stores RF Signal Test results and renders the modal window
 	 * @param {IRfSignalTestResult} results RF Signal Test results
 	 */
-	public activateModal(results: Array<IRfSignalTestResult>): void {
+	public showModal(results: Array<IRfSignalTestResult>): void {
 		this.results = results;
 		this.openModal();
 	}
@@ -124,7 +101,7 @@ export default class RfSignalTestResult extends ModalBase {
 	/**
 	 * Clears RF Signal Test results and closes the modal window
 	 */
-	private deactivateModal(): void {
+	private hideModal(): void {
 		this.closeModal();
 		this.results = [];
 	}

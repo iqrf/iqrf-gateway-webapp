@@ -24,7 +24,7 @@ interface SidebarState {
 	/**
 	 * Sidebar show state
 	 */
-	show: boolean|string;
+	show: boolean;
 
 	/**
 	 * Is the sidebar minimized?
@@ -34,7 +34,7 @@ interface SidebarState {
 }
 
 const state: SidebarState = {
-	show: 'responsive',
+	show: true,
 	minimize: false,
 };
 
@@ -42,20 +42,21 @@ const getters: GetterTree<SidebarState, any> = {
 	isMinimized(state: SidebarState): boolean {
 		return state.minimize;
 	},
+	isVisible(state: SidebarState): boolean {
+		return state.show;
+	},
 };
 
 const mutations: MutationTree<SidebarState> = {
-	toggleSidebarDesktop (state: SidebarState) {
-		const sidebarOpened = [true, 'responsive'].includes(state.show);
-		state.show = sidebarOpened ? false : 'responsive';
+	setVisibility(state: SidebarState, show: boolean): void {
+		state.show = show;
 	},
-	toggleSidebarMobile (state: SidebarState) {
-		const sidebarClosed = [false, 'responsive'].includes(state.show);
-		state.show = sidebarClosed ? true : 'responsive';
+	toggleVisibility(state: SidebarState): void {
+		state.show = !state.show;
 	},
-	set (state: SidebarState, [variable, value]) {
-		state[variable] = value;
-	}
+	toggleSize(state: SidebarState): void {
+		state.minimize = !state.minimize;
+	},
 };
 
 export default {

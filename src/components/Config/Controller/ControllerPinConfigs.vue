@@ -16,39 +16,70 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<h4>{{ $t('config.controller.pins.profiles') }}</h4>
-		<CTabs
-			variant='tabs'
-			:active-tab='activeTab'
+		<h5>{{ $t('config.controller.pins.profiles') }}</h5>
+		<v-dialog
+			v-model='show'
+			width='50%'
+			persistent
+			no-click-animation
 		>
-			<CTab :title='$t("config.controller.pins.adapters")'>
-				<ControllerPinConfigGroup
-					class='my-1'
-					:profiles='adapterProfiles'
-					@set-profile='setProfile'
-					@delete-profile='deleteProfile'
-					@refresh-profiles='listConfigs'
-				/>
-			</CTab>
-			<CTab :title='$t("config.controller.pins.boards")'>
-				<ControllerPinConfigGroup
-					class='my-1'
-					:profiles='boardProfiles'
-					@set-profile='setProfile'
-					@delete-profile='deleteProfile'
-					@refresh-profiles='listConfigs'
-				/>
-			</CTab>
-		</CTabs>
+			<template #activator='{attrs, on}'>
+				<v-btn
+					color='primary'
+					v-bind='attrs'
+					v-on='on'
+					@click='openModal'
+				>
+					{{ $t('config.controller.pins.browse') }}
+				</v-btn>
+			</template>
+			<v-card>
+				<v-card-title>
+					{{ $t('config.controller.pins.profiles') }}
+				</v-card-title>
+				<v-card-text>
+					<v-tabs v-model='activeTab' :show-arrows='true'>
+						<v-tab>{{ $t('config.controller.pins.adapters') }}</v-tab>
+						<v-tab>{{ $t('config.controller.pins.boards') }}</v-tab>
+					</v-tabs>
+					<v-divider />
+					<v-tabs-items v-model='activeTab'>
+						<v-tab-item :transition='false'>
+							<ControllerPinConfigGroup
+								:profiles='adapterProfiles'
+								:loading='loading'
+								@refresh-profiles='listConfigs'
+								@set-profile='setProfile'
+							/>
+						</v-tab-item>
+						<v-tab-item :transition='false'>
+							<ControllerPinConfigGroup
+								:profiles='boardProfiles'
+								:loading='loading'
+								@refresh-profiles='listConfigs'
+								@set-profile='setProfile'
+							/>
+						</v-tab-item>
+					</v-tabs-items>
+				</v-card-text>
+				<v-card-actions>
+					<v-spacer />
+					<v-btn
+						@click='closeModal'
+					>
+						{{ $t('forms.close') }}
+					</v-btn>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 	</div>
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CTab, CTabs} from '@coreui/vue/src';
+import {Component} from 'vue-property-decorator';
 import ControllerPinConfigGroup from '@/components/Config/Controller/ControllerPinConfigGroup.vue';
+import ModalBase from '@/components/ModalBase.vue';
 
-import {cilCopy, cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {ConfigDeviceType} from '@/enums/Config/ConfigurationProfiles';
 
@@ -59,22 +90,19 @@ import {IControllerPinConfig} from '@/interfaces/Config/Controller';
 
 @Component({
 	components: {
-		CTab,
-		CTabs,
 		ControllerPinConfigGroup,
 	},
-	data: () => ({
-		cilCopy,
-		cilPencil,
-		cilPlus,
-		cilTrash,
-	}),
 })
 
 /**
  * Controller pin configurations component
  */
-export default class ControllerPinConfigs extends Vue {
+export default class ControllerPinConfigs extends ModalBase {
+	/**
+	 * @var {boolean} loading Indicates data is loading
+	 */
+	private loading = false;
+
 	/**
 	 * @var {number} activeTab Currently selected tab
 	 */
@@ -112,33 +140,15 @@ export default class ControllerPinConfigs extends Vue {
 	 * Retrieves controller pin configurations
 	 */
 	private listConfigs(): Promise<void> {
+		this.loading = true;
 		return ControllerPinConfigService.list()
-			.then((rsp: AxiosResponse) => this.profiles = rsp.data)
-			.catch((err: AxiosError) => extendedErrorToast(err, 'config.controller.pins.messages.listFailed'));
-	}
-
-	/**
-	 * Delete configuration profile
-	 * @param {number} id Config profile ID
-	 */
-	private deleteProfile(id: number): void {
-		const profile = this.profiles.find((profile: IControllerPinConfig) => profile.id === id);
-		if (profile === undefined) {
-			return;
-		}
-		const name = profile.name;
-		this.$store.commit('spinner/SHOW');
-		ControllerPinConfigService.delete(id)
-			.then(() => {
-				this.listConfigs().then(() => {
-					this.$store.commit('spinner/HIDE');
-					this.$toast.success(
-						this.$t('config.controller.pins.messages.deleteSuccess', {profile: name}).toString()
-					);
-				});
+			.then((rsp: AxiosResponse) => {
+				this.profiles = rsp.data;
+				this.loading = false;
 			})
 			.catch((err: AxiosError) => {
-				extendedErrorToast(err, 'config.controller.pins.messages.deleteFailed', {profile: name});
+				this.loading = false;
+				extendedErrorToast(err, 'config.controller.pins.messages.listFailed');
 			});
 	}
 
@@ -151,6 +161,7 @@ export default class ControllerPinConfigs extends Vue {
 		if (profile !== undefined) {
 			this.$emit('update-pin-config', profile);
 		}
+		this.closeModal();
 	}
 }
 </script>

@@ -15,59 +15,57 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<span>
-		<CButton
-			color='danger'
-			:disabled='(autoAddress || (address < 1 || address > 239 || !Number.isInteger(address)))'
-			@click='openModal'
-		>
-			{{ $t('forms.unbond') }}
-		</CButton>
-		<CModal
-			:show.sync='show'
-			color='danger'
-			size='lg'
-			:close-on-backdrop='false'
-			:fade='false'
-		>
-			<template #header>
-				<h5 class='modal-title'>
-					{{ $t('iqrfnet.networkManager.bondingManager.modal.unbondTitle') }}
-				</h5>
-			</template>
-			{{ $t('iqrfnet.networkManager.bondingManager.modal.unbondPrompt', {address: address}) }}
-			<template #footer>
-				<CButton
-					color='secondary'
+	<v-dialog
+		v-model='show'
+		width='50%'
+		persistent
+		no-click-animation
+	>
+		<template #activator='{attrs, on}'>
+			<v-btn
+				class='mr-1'
+				color='error'
+				v-bind='attrs'
+				:disabled='(autoAddress || (address < 1 || address > 239 || !Number.isInteger(address)))'
+				v-on='on'
+				@click='openModal'
+			>
+				{{ $t('forms.unbond') }}
+			</v-btn>
+		</template>
+		<v-card>
+			<v-card-title>
+				{{ $t('iqrfnet.networkManager.bondingManager.modal.unbondTitle') }}
+			</v-card-title>
+			<v-card-text>
+				{{ $t('iqrfnet.networkManager.bondingManager.modal.unbondPrompt', {address: address}) }}
+			</v-card-text>
+			<v-card-actions>
+				<v-spacer />
+				<v-btn
 					@click='closeModal'
 				>
 					{{ $t('forms.cancel') }}
-				</CButton>
-				<CButton
-					color='danger'
+				</v-btn>
+				<v-btn
+					color='error'
 					@click='unbond'
 				>
 					{{ $t('forms.unbond') }}
-				</CButton>
-			</template>
-		</CModal>
-	</span>
+				</v-btn>
+			</v-card-actions>
+		</v-card>
+	</v-dialog>
 </template>
 
 <script lang='ts'>
 import {Component, Prop} from 'vue-property-decorator';
-import {CButton, CModal} from '@coreui/vue/src';
 import ModalBase from '@/components/ModalBase.vue';
 
 /**
  * Iqmesh modal component
  */
-@Component({
-	components: {
-		CButton,
-		CModal,
-	},
-})
+@Component
 export default class UnbondModal extends ModalBase {
 	/**
 	 * @property {number} address Device address

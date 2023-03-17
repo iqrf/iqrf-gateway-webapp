@@ -15,57 +15,51 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard class='border-top-0 border-left-0 border-right-0 card-margin-bottom'>
-		<CCardBody>
-			<CCardTitle>{{ $t('iqrfnet.networkManager.dpaParams.dpaValue.title') }}</CCardTitle>
-			<CForm>
-				<CSelect
-					:value.sync='type'
-					:options='options'
+	<v-card flat tile>
+		<v-card-title>{{ $t('iqrfnet.networkManager.dpaParams.dpaValue.title') }}</v-card-title>
+		<v-card-text>
+			<v-form>
+				<v-select
+					v-model='type'
+					:items='options'
 					:label='$t("iqrfnet.networkManager.dpaParams.dpaValue.type")'
-					:description='$t("iqrfnet.networkManager.dpaParams.dpaValue.notes.value")'
+					:hint='$t("iqrfnet.networkManager.dpaParams.dpaValue.notes.value")'
+					persistent-hint
+					class='mb-2'
 				/>
-				<CButton
+				<v-btn
 					class='mr-1'
 					color='primary'
 					@click='getValue'
 				>
 					{{ $t('forms.get') }}
-				</CButton>
-				<CButton
+				</v-btn>
+				<v-btn
 					color='primary'
 					@click='setValue'
 				>
 					{{ $t('forms.set') }}
-				</CButton>
-			</CForm>
-		</CCardBody>
-	</CCard>
+				</v-btn>
+			</v-form>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CSelect} from '@coreui/vue/src';
 
 import {DpaParamAction, DpaValueType} from '@/enums/IqrfNet/DpaParams';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 import IqmeshNetworkService from '@/services/DaemonApi/IqmeshNetworkService';
 
-import {IOption} from '@/interfaces/Coreui';
+import {ISelectItem} from '@/interfaces/Vuetify';
 import {MutationPayload} from 'vuex';
 
 /**
  * DPA params DPA value component
  */
-@Component({
-	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CSelect,
-	},
-})
+@Component
 export default class DpaValue extends Vue {
 	/**
 	 * @var {string} msgId Daemon API msg ID
@@ -78,23 +72,23 @@ export default class DpaValue extends Vue {
 	private type = DpaValueType.RSSI;
 
 	/**
-	 * @constant {Array<IOption>} options DPA value type options
+	 * @constant {Array<ISelectItem>} options DPA value type options
 	 */
-	private options: Array<IOption> = [
+	private options: Array<ISelectItem> = [
 		{
-			label: this.$t('iqrfnet.networkManager.dpaParams.dpaValue.types.rssi').toString(),
+			text: this.$t('iqrfnet.networkManager.dpaParams.dpaValue.types.rssi').toString(),
 			value: DpaValueType.RSSI,
 		},
 		{
-			label: this.$t('iqrfnet.networkManager.dpaParams.dpaValue.types.voltage').toString(),
+			text: this.$t('iqrfnet.networkManager.dpaParams.dpaValue.types.voltage').toString(),
 			value: DpaValueType.SUPPLY_VOLTAGE,
 		},
 		{
-			label: this.$t('iqrfnet.networkManager.dpaParams.dpaValue.types.system').toString(),
+			text: this.$t('iqrfnet.networkManager.dpaParams.dpaValue.types.system').toString(),
 			value: DpaValueType.SYSTEM,
 		},
 		{
-			label: this.$t('iqrfnet.networkManager.dpaParams.dpaValue.types.user').toString(),
+			text: this.$t('iqrfnet.networkManager.dpaParams.dpaValue.types.user').toString(),
 			value: DpaValueType.USER,
 		},
 	];

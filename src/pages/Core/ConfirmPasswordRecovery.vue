@@ -15,23 +15,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard class='p-4'>
-		<h1 class='text-center'>
-			{{ $t('account.recovery.title') }}
-		</h1>
-		<CCardBody>
-			<CElementCover
+	<v-card class='p-4'>
+		<v-card-title>{{ $t('account.recovery.title') }}</v-card-title>
+		<v-card-text>
+			<v-overlay
 				v-if='requestInProgress'
-				:opacity='0.75'
-				style='z-index: 10000;'
+				:opacity='0.65'
+				absolute
 			>
-				<CSpinner color='primary' />
-			</CElementCover>
+				<v-progress-circular color='primary' indeterminate />
+			</v-overlay>
 			<p>
 				{{ $t('account.recovery.changePrompt') }}
 			</p>
 			<ValidationObserver v-slot='{invalid}'>
-				<CForm @submit.prevent='confirmRecovery'>
+				<form @submit.prevent='confirmRecovery'>
 					<ValidationProvider
 						v-slot='{valid, touched, errors}'
 						rules='required'
@@ -39,34 +37,35 @@ limitations under the License.
 							required: $t("core.sign.in.messages.password"),
 						}'
 					>
-						<PasswordInput
+						<v-text-field
 							v-model='password'
-							:label='$t("forms.fields.password").toString()'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='errors.join(", ")'
+							:type='passwordVisible ? "text" : "password"'
+							:label='$t("forms.fields.password")'
+							:success='touched ? valid : null'
+							:error-messages='errors'
+							:append-icon='passwordVisible ? "mdi-eye" : "mdi-eye-off"'
+							@click:append='passwordVisible = !passwordVisible'
 						/>
 					</ValidationProvider>
-					<CButton
+					<v-btn
 						color='primary'
 						type='submit'
 						:disabled='invalid'
 					>
 						{{ $t('account.recovery.changePassword') }}
-					</CButton>
-				</CForm>
+					</v-btn>
+				</form>
 			</ValidationObserver>
-		</CCardBody>
-	</CCard>
+		</v-card-text>
+	</v-card>
 </template>
 
 <script lang='ts'>
-import {CButton, CCard, CCardBody, CElementCover, CForm, CInput, CSpinner} from '@coreui/vue/src';
 import {AxiosError} from 'axios';
 import {Component, Vue, Prop} from 'vue-property-decorator';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 
-import PasswordInput from '@/components/Core/PasswordInput.vue';
 import TheWizard from '@/components/TheWizard.vue';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {User, UserRole} from '@/services/AuthenticationService';
@@ -74,14 +73,6 @@ import UserService from '@/services/UserService';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CElementCover,
-		CForm,
-		CInput,
-		CSpinner,
-		PasswordInput,
 		TheWizard,
 		ValidationObserver,
 		ValidationProvider,

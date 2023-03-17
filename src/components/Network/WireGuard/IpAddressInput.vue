@@ -20,38 +20,43 @@ limitations under the License.
 		:rules='rules'
 		:custom-messages='errorMessages'
 	>
-		<CInput
+		<v-text-field
 			v-model='address'
 			:label='label'
-			:is-valid='touched ? valid : null'
-			:invalid-feedback='errors.join(", ")'
+			:success='touched ? valid : null'
+			:error-messages='errors'
 		>
-			<template #prepend-content>
-				<FontAwesomeIcon
+			<template #prepend>
+				<v-btn
 					v-if='multiple'
-					class='text-success'
-					:icon='["far", "plus-square"]'
-					size='xl'
+					color='success'
+					small
 					@click='add'
-				/>
+				>
+					<v-icon>
+						mdi-plus
+					</v-icon>
+				</v-btn>
 			</template>
-			<template #append-content>
-				<FontAwesomeIcon
+			<template #append-outer>
+				<v-btn
 					v-if='multiple && allowRemoval'
-					class='text-danger'
-					:icon='["far", "trash-alt"]'
-					size='xl'
+					color='error'
+					small
 					@click='remove'
-				/>
+				>
+					<v-icon>
+						mdi-delete
+					</v-icon>
+				</v-btn>
 			</template>
-		</CInput>
+		</v-text-field>
 	</ValidationProvider>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, VModel, Vue} from 'vue-property-decorator';
-import {CInput} from '@coreui/vue/src';
-import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
+
 import {extend, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 
@@ -62,8 +67,6 @@ import {ipv4, ipv6} from '@/helpers/validators';
  */
 @Component({
 	components: {
-		CInput,
-		FontAwesomeIcon,
 		ValidationProvider,
 	},
 })

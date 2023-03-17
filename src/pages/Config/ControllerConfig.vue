@@ -17,14 +17,14 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('config.controller.title') }}</h1>
-		<CCard>
-			<CCardBody>
+		<v-card class='mb-5'>
+			<v-card-text>
 				<ValidationObserver v-slot='{invalid}'>
-					<CForm @submit.prevent='save'>
-						<div>
-							<h3>{{ $t("config.controller.form.wsServers.title") }}</h3>
-							<CRow>
-								<CCol md='6'>
+					<v-form>
+						<fieldset>
+							<h5>{{ $t("config.controller.form.wsServers.title") }}</h5>
+							<v-row>
+								<v-col cols='12' sm='6'>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
 										rules='required|ws_addr'
@@ -33,15 +33,15 @@ limitations under the License.
 											ws_addr: $t("config.controller.errors.invalid.ws_format"),
 										}'
 									>
-										<CInput
+										<v-text-field
 											v-model='config.wsServers.api'
 											:label='$t("config.controller.form.wsServers.api")'
-											:is-valid='touched ? valid : null'
-											:invalid-feedback='errors.join(", ")'
+											:success='touched ? valid : null'
+											:error-messages='errors'
 										/>
 									</ValidationProvider>
-								</CCol>
-								<CCol md='6'>
+								</v-col>
+								<v-col cols='12' sm='6'>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
 										rules='required|ws_addr'
@@ -50,20 +50,20 @@ limitations under the License.
 											ws_addr: $t("config.controller.errors.invalid.ws_format"),
 										}'
 									>
-										<CInput
+										<v-text-field
 											v-model='config.wsServers.monitor'
 											:label='$t("config.controller.form.wsServers.monitor")'
-											:is-valid='touched ? valid : null'
-											:invalid-feedback='errors.join(", ")'
+											:success='touched ? valid : null'
+											:error-messages='errors'
 										/>
 									</ValidationProvider>
-								</CCol>
-							</CRow>
-						</div><hr>
-						<div>
-							<h3>{{ $t("config.controller.form.logger.title") }}</h3>
-							<CRow>
-								<CCol md='6'>
+								</v-col>
+							</v-row>
+						</fieldset>
+						<fieldset>
+							<h5>{{ $t("config.controller.form.logger.title") }}</h5>
+							<v-row>
+								<v-col cols='12' sm='6'>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
 										rules='required'
@@ -71,15 +71,15 @@ limitations under the License.
 											required: $t("config.controller.errors.missing.l_file"),
 										}'
 									>
-										<CInput
+										<v-text-field
 											v-model='config.logger.filePath'
 											:label='$t("config.controller.form.logger.filePath")'
-											:is-valid='touched ? valid : null'
-											:invalid-feedback='errors.join(", ")'
+											:success='touched ? valid : null'
+											:error-messages='errors'
 										/>
 									</ValidationProvider>
-								</CCol>
-								<CCol md='6'>
+								</v-col>
+								<v-col cols='12' sm='6'>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
 										rules='required'
@@ -87,81 +87,82 @@ limitations under the License.
 											required: $t("config.controller.errors.missing.l_severity"),
 										}'
 									>
-										<CSelect
-											:value.sync='config.logger.severity'
-											:options='severityOptions'
+										<v-select
+											v-model='config.logger.severity'
+											:items='severityOptions'
 											:label='$t("config.controller.form.logger.severity")'
-											:is-valid='touched ? valid : null'
-											:invalid-feedback='errors.join(", ")'
-											:placeholder='$t("config.controller.errors.missing.l_severity")'
+											:success='touched ? valid : null'
+											:error-messages='errors'
 										/>
 									</ValidationProvider>
-								</CCol>
-							</CRow>
-							<label>
-								<strong>{{ $t('config.controller.form.logger.sink') }}</strong>
-							</label>
-							<CRow>
-								<CCol md='2'>
-									<CInputCheckbox
-										:checked.sync='config.logger.sinks.file'
+								</v-col>
+							</v-row>
+							<v-row>
+								<v-col cols='12' sm='4' lg='2'>
+									<v-checkbox
+										v-model='config.logger.sinks.file'
 										:label='$t("config.controller.form.logger.sinks.file")'
 									/>
-								</CCol>
-								<CCol md='2'>
-									<CInputCheckbox
-										:checked.sync='config.logger.sinks.syslog'
+								</v-col>
+								<v-col cols='12' sm='4' lg='2'>
+									<v-checkbox
+										v-model='config.logger.sinks.syslog'
 										:label='$t("config.controller.form.logger.sinks.syslog")'
 									/>
-								</CCol>
-							</CRow>
-						</div><hr>
-						<div>
-							<h3>{{ $t("config.controller.form.factoryReset.title") }}</h3>
-							<CRow>
-								<CCol md='2'>
-									<CInputCheckbox
-										:checked.sync='config.factoryReset.coordinator'
+								</v-col>
+							</v-row>
+						</fieldset>
+						<fieldset>
+							<h5>{{ $t("config.controller.form.factoryReset.title") }}</h5>
+							<v-row>
+								<v-col cols='12' sm='4' lg='2'>
+									<v-checkbox
+										v-model='config.factoryReset.coordinator'
 										:label='$t("forms.fields.coordinator")'
 									/>
-								</CCol>
-								<CCol md='2'>
-									<CInputCheckbox
-										:checked.sync='config.factoryReset.daemon'
+								</v-col>
+								<v-col cols='12' sm='4' lg='2'>
+									<v-checkbox
+										v-model='config.factoryReset.daemon'
 										:label='$t("config.controller.form.factoryReset.daemon")'
 									/>
-								</CCol>
-								<CCol v-if='config.factoryReset.iqaros !== undefined' md='2'>
-									<CInputCheckbox
-										:checked.sync='config.factoryReset.iqaros'
+								</v-col>
+								<v-col
+									v-if='config.factoryReset.iqaros !== undefined'
+									cols='12'
+									sm='4'
+									lg='2'
+								>
+									<v-checkbox
+										v-model='config.factoryReset.iqaros'
 										:label='$t("config.controller.form.factoryReset.iqaros")'
 									/>
-								</CCol>
-								<CCol md='2'>
-									<CInputCheckbox
-										:checked.sync='config.factoryReset.network'
+								</v-col>
+								<v-col cols='12' sm='4' lg='2'>
+									<v-checkbox
+										v-model='config.factoryReset.network'
 										:label='$t("config.controller.form.factoryReset.network")'
 									/>
-								</CCol>
-								<CCol md='2'>
-									<CInputCheckbox
-										:checked.sync='config.factoryReset.webapp'
+								</v-col>
+								<v-col cols='12' sm='4' lg='2'>
+									<v-checkbox
+										v-model='config.factoryReset.webapp'
 										:label='$t("config.controller.form.factoryReset.webapp")'
 									/>
-								</CCol>
-							</CRow>
-						</div><hr>
-						<div>
-							<h3>{{ $t("config.controller.form.resetButton.title") }}</h3>
-							<CSelect
-								:value.sync='config.resetButton.api'
-								:options='apiCallOptions'
+								</v-col>
+							</v-row>
+						</fieldset>
+						<fieldset>
+							<h5>{{ $t("config.controller.form.resetButton.title") }}</h5>
+							<v-select
+								v-model='config.resetButton.api'
+								:items='apiCallOptions'
 								:label='$t("config.controller.form.resetButton.api")'
 							/>
 							<div v-if='config.resetButton.api === "discovery"'>
-								<h3>{{ $t("config.controller.form.daemonApi.discovery.title") }}</h3>
-								<CRow>
-									<CCol md='6'>
+								<h5>{{ $t("config.controller.form.daemonApi.discovery.title") }}</h5>
+								<v-row>
+									<v-col cols='12' sm='6'>
 										<ValidationProvider
 											v-slot='{errors, touched, valid}'
 											rules='integer|required|between:0,239'
@@ -171,18 +172,18 @@ limitations under the License.
 												between: $t("iqrfnet.networkManager.discovery.errors.maxAddr"),
 											}'
 										>
-											<CInput
+											<v-text-field
 												v-model.number='config.daemonApi.discovery.maxAddr'
 												type='number'
 												min='0'
 												max='239'
 												:label='$t("iqrfnet.networkManager.discovery.form.maxAddr")'
-												:is-valid='touched ? valid : null'
-												:invalid-feedback='errors.join(", ")'
+												:success='touched ? valid : null'
+												:error-messages='errors'
 											/>
 										</ValidationProvider>
-									</CCol>
-									<CCol md='6'>
+									</v-col>
+									<v-col cols='12' sm='6'>
 										<ValidationProvider
 											v-slot='{errors, touched, valid}'
 											rules='integer|required|between:0,7'
@@ -192,27 +193,27 @@ limitations under the License.
 												between: $t("iqrfnet.networkManager.discovery.errors.txPower"),
 											}'
 										>
-											<CInput
+											<v-text-field
 												v-model.number='config.daemonApi.discovery.txPower'
 												type='number'
 												min='0'
 												max='7'
 												:label='$t("iqrfnet.networkManager.discovery.form.txPower")'
-												:is-valid='touched ? valid : null'
-												:invalid-feedback='errors.join(", ")'
+												:success='touched ? valid : null'
+												:error-messages='errors'
 											/>
 										</ValidationProvider>
-									</CCol>
-								</CRow>
-								<CInputCheckbox
-									:checked.sync='config.daemonApi.discovery.returnVerbose'
+									</v-col>
+								</v-row>
+								<v-checkbox
+									v-model='config.daemonApi.discovery.returnVerbose'
 									:label='$t("forms.fields.verbose")'
 								/>
 							</div>
 							<div v-if='config.resetButton.api === "autoNetwork"'>
-								<h3>{{ $t("config.controller.form.daemonApi.autoNetwork.title") }}</h3>
-								<CRow>
-									<CCol md='6'>
+								<h5>{{ $t("config.controller.form.daemonApi.autoNetwork.title") }}</h5>
+								<v-row>
+									<v-col cols='12' sm='6'>
 										<ValidationProvider
 											v-slot='{errors, touched, valid}'
 											rules='required|integer|between:0,3'
@@ -222,18 +223,18 @@ limitations under the License.
 												between: $t("iqrfnet.networkManager.autoNetwork.errors.actionRetries"),
 											}'
 										>
-											<CInput
+											<v-text-field
 												v-model.number='config.daemonApi.autoNetwork.actionRetries'
 												type='number'
 												min='0'
 												max='3'
 												:label='$t("iqrfnet.networkManager.autoNetwork.form.params.actionRetries")'
-												:is-valid='touched ? valid : null'
-												:invalid-feedback='errors.join(", ")'
+												:success='touched ? valid : null'
+												:error-messages='errors'
 											/>
 										</ValidationProvider>
-									</CCol>
-									<CCol md='6'>
+									</v-col>
+									<v-col cols='12' sm='6'>
 										<ValidationProvider
 											v-slot='{errors, touched, valid}'
 											rules='integer|required|between:0,7'
@@ -243,37 +244,35 @@ limitations under the License.
 												between: $t("iqrfnet.networkManager.discovery.errors.txPower"),
 											}'
 										>
-											<CInput
+											<v-text-field
 												v-model.number='config.daemonApi.autoNetwork.discoveryTxPower'
 												type='number'
 												min='0'
 												max='7'
 												:label='$t("iqrfnet.networkManager.autoNetwork.form.params.discoveryTxPower")'
-												:is-valid='touched ? valid : null'
-												:invalid-feedback='errors.join(", ")'
+												:success='touched ? valid : null'
+												:error-messages='errors'
 											/>
 										</ValidationProvider>
-									</CCol>
-								</CRow>
-								<CRow>
-									<CCol md='6'>
-										<CInputCheckbox
-											:checked.sync='config.daemonApi.autoNetwork.discoveryBeforeStart'
+									</v-col>
+								</v-row>
+								<v-row>
+									<v-col cols='12' sm='6'>
+										<v-checkbox
+											v-model='config.daemonApi.autoNetwork.discoveryBeforeStart'
 											:label='$t("iqrfnet.networkManager.autoNetwork.form.params.discoveryBeforeStart")'
 										/>
-									</CCol>
-									<CCol md='6'>
-										<CInputCheckbox
-											:checked.sync='config.daemonApi.autoNetwork.skipDiscoveryEachWave'
+									</v-col>
+									<v-col cols='12' sm='6'>
+										<v-checkbox
+											v-model='config.daemonApi.autoNetwork.skipDiscoveryEachWave'
 											:label='$t("iqrfnet.networkManager.autoNetwork.form.params.skipDiscoveryEachWave")'
 										/>
-									</CCol>
-								</CRow>
-								<h4>
-									{{ $t("iqrfnet.networkManager.autoNetwork.form.stopConditions.title") }}
-								</h4>
-								<CRow>
-									<CCol md='6'>
+									</v-col>
+								</v-row>
+								<h5>{{ $t("iqrfnet.networkManager.autoNetwork.form.stopConditions") }}</h5>
+								<v-row>
+									<v-col cols='12' sm='6'>
 										<ValidationProvider
 											v-slot='{errors, touched, valid}'
 											rules='integer|required|between:1,127'
@@ -283,18 +282,18 @@ limitations under the License.
 												between: $t("iqrfnet.networkManager.autoNetwork.errors.emptyWaves"),
 											}'
 										>
-											<CInput
+											<v-text-field
 												v-model.number='config.daemonApi.autoNetwork.stopConditions.emptyWaves'
 												type='number'
 												min='1'
 												max='127'
 												:label='$t("iqrfnet.networkManager.autoNetwork.form.stopConditions.emptyWaves")'
-												:is-valid='touched ? valid : null'
-												:invalid-feedback='errors.join(", ")'
+												:success='touched ? valid : null'
+												:error-messages='errors'
 											/>
 										</ValidationProvider>
-									</CCol>
-									<CCol md='6'>
+									</v-col>
+									<v-col cols='12' sm='6'>
 										<ValidationProvider
 											v-slot='{errors, touched, valid}'
 											rules='integer|required|between:1,127'
@@ -304,38 +303,40 @@ limitations under the License.
 												between: $t("iqrfnet.networkManager.autoNetwork.errors.waves"),
 											}'
 										>
-											<CInput
+											<v-text-field
 												v-model.number='config.daemonApi.autoNetwork.stopConditions.waves'
 												type='number'
 												min='1'
 												max='127'
 												:label='$t("iqrfnet.networkManager.autoNetwork.form.stopConditions.waves")'
-												:is-valid='touched ? valid : null'
-												:invalid-feedback='errors.join(", ")'
+												:success='touched ? valid : null'
+												:error-messages='errors'
 											/>
 										</ValidationProvider>
-									</CCol>
-								</CRow>
-								<CRow>
-									<CCol md='6'>
-										<CInputCheckbox
-											:checked.sync='config.daemonApi.autoNetwork.stopConditions.abortOnTooManyNodesFound'
+									</v-col>
+								</v-row>
+								<v-row>
+									<v-col cols='12' sm='6'>
+										<v-checkbox
+											v-model='config.daemonApi.autoNetwork.stopConditions.abortOnTooManyNodesFound'
 											:label='$t("iqrfnet.networkManager.autoNetwork.form.params.abortOnTooManyNodesFound")'
+											dense
 										/>
-									</CCol>
-									<CCol md='6'>
-										<CInputCheckbox
-											:checked.sync='config.daemonApi.autoNetwork.returnVerbose'
+									</v-col>
+									<v-col cols='12' sm='6'>
+										<v-checkbox
+											v-model='config.daemonApi.autoNetwork.returnVerbose'
 											:label='$t("forms.fields.verbose")'
+											dense
 										/>
-									</CCol>
-								</CRow>
+									</v-col>
+								</v-row>
 							</div>
-						</div><hr>
-						<div>
-							<h3>{{ $t("config.controller.pins.title") }}</h3>
-							<CRow>
-								<CCol md='4'>
+						</fieldset>
+						<fieldset>
+							<h5>{{ $t("config.controller.pins.title") }}</h5>
+							<v-row>
+								<v-col cols='12' sm='4'>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
 										rules='integer|required'
@@ -344,16 +345,16 @@ limitations under the License.
 											required: $t("config.controller.pins.errors.greenLed"),
 										}'
 									>
-										<CInput
+										<v-text-field
 											v-model.number='config.statusLed.greenLed'
 											type='number'
 											:label='$t("config.controller.pins.form.greenLed")'
-											:is-valid='touched ? valid : null'
-											:invalid-feedback='errors.join(", ")'
+											:success='touched ? valid : null'
+											:error-messages='errors'
 										/>
 									</ValidationProvider>
-								</CCol>
-								<CCol md='4'>
+								</v-col>
+								<v-col cols='12' sm='4'>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
 										rules='integer|required'
@@ -362,16 +363,16 @@ limitations under the License.
 											required: $t("config.controller.pins.errors.redLed"),
 										}'
 									>
-										<CInput
+										<v-text-field
 											v-model.number='config.statusLed.redLed'
 											type='number'
 											:label='$t("config.controller.pins.form.redLed")'
-											:is-valid='touched ? valid : null'
-											:invalid-feedback='errors.join(", ")'
+											:success='touched ? valid : null'
+											:error-messages='errors'
 										/>
 									</ValidationProvider>
-								</CCol>
-								<CCol md='4'>
+								</v-col>
+								<v-col cols='12' sm='4'>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
 										rules='integer|required'
@@ -380,22 +381,22 @@ limitations under the License.
 											required: $t("config.controller.pins.errors.button"),
 										}'
 									>
-										<CInput
+										<v-text-field
 											v-model.number='config.resetButton.button'
 											type='number'
 											:label='$t("config.controller.pins.form.button")'
-											:is-valid='touched ? valid : null'
-											:invalid-feedback='errors.join(", ")'
+											:success='touched ? valid : null'
+											:error-messages='errors'
 										/>
 									</ValidationProvider>
-								</CCol>
-							</CRow>
-							<CInputCheckbox
-								:checked.sync='useI2cPins'
+								</v-col>
+							</v-row>
+							<v-checkbox
+								v-model='useI2cPins'
 								:label='$t("config.controller.pins.form.useI2c")'
 							/>
-							<CRow>
-								<CCol md='4'>
+							<v-row align='center'>
+								<v-col cols='12' sm='4'>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
 										rules='integer|required'
@@ -404,17 +405,17 @@ limitations under the License.
 											required: $t("config.controller.pins.errors.sck"),
 										}'
 									>
-										<CInput
+										<v-text-field
 											v-model.number='config.powerOff.sck'
 											type='number'
 											:label='$t("config.controller.pins.form.sck")'
-											:is-valid='touched ? valid : null'
-											:invalid-feedback='errors.join(", ")'
+											:success='touched ? valid : null'
+											:error-messages='errors'
 											:disabled='!useI2cPins'
 										/>
 									</ValidationProvider>
-								</CCol>
-								<CCol md='4'>
+								</v-col>
+								<v-col cols='12' sm='4'>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
 										rules='integer|required'
@@ -423,34 +424,40 @@ limitations under the License.
 											required: $t("config.controller.pins.errors.sda"),
 										}'
 									>
-										<CInput
+										<v-text-field
 											v-model.number='config.powerOff.sda'
 											type='number'
 											:label='$t("config.controller.pins.form.sda")'
-											:is-valid='touched ? valid : null'
-											:invalid-feedback='errors.join(", ")'
+											:success='touched ? valid : null'
+											:error-messages='errors'
 											:disabled='!useI2cPins'
 										/>
 									</ValidationProvider>
-								</CCol>
-							</CRow>
-						</div>
-						<CButton color='primary' type='submit' :disabled='invalid'>
+								</v-col>
+							</v-row>
+						</fieldset>
+						<v-btn
+							class='mt-4'
+							color='primary'
+							:disabled='invalid'
+							@click='save'
+						>
 							{{ $t('forms.save') }}
-						</CButton>
-					</CForm>
+						</v-btn>
+					</v-form>
 				</ValidationObserver>
-			</CCardBody>
-			<CCardFooter>
+			</v-card-text>
+		</v-card>
+		<v-card>
+			<v-card-text>
 				<ControllerPinConfigs @update-pin-config='updatePinConfig' />
-			</CCardFooter>
-		</CCard>
+			</v-card-text>
+		</v-card>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardFooter, CCardHeader, CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import ControllerPinConfigs from '@/components/Config/Controller/ControllerPinConfigs.vue';
 
@@ -461,25 +468,16 @@ import ServiceService from '@/services/ServiceService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {IController, IControllerPinConfig} from '@/interfaces/Config/Controller';
-import {IOption} from '@/interfaces/Coreui';
-import {NavigationGuardNext, Route} from 'vue-router/types/router';
+import {NavigationGuardNext, Route} from 'vue-router';
+import { ISelectItem } from '@/interfaces/Vuetify';
 
 @Component({
 	components: {
-		CButton,
-		CCard,
-		CCardBody,
-		CCardFooter,
-		CCardHeader,
-		CForm,
-		CInput,
-		CInputCheckbox,
-		CSelect,
 		ControllerPinConfigs,
 		ValidationObserver,
 		ValidationProvider
 	},
-	beforeRouteEnter(to: Route, from: Route, next: NavigationGuardNext): void {
+	beforeRouteEnter(_to: Route, from: Route, next: NavigationGuardNext): void {
 		next((vm: Vue) => {
 			if (!vm.$store.getters['features/isEnabled']('iqrfGatewayController')) {
 				vm.$toast.error(
@@ -498,54 +496,11 @@ import {NavigationGuardNext, Route} from 'vue-router/types/router';
  * IQRF Gateway Controller configuration component
  */
 export default class ControllerConfig extends Vue {
-	/**
-	 * @constant {Array<IOption>} apiCallOptions Array of CoreUI api call select options
-	 */
-	private apiCallOptions: Array<IOption> = [
-		{
-			value: '',
-			label: this.$t('config.controller.form.resetButton.noCall').toString()
-		},
-		{
-			value: 'autoNetwork',
-			label: this.$t('iqrfnet.networkManager.autoNetwork.title').toString()
-		},
-		{
-			value: 'discovery',
-			label: this.$t('iqrfnet.networkManager.discovery.title').toString()
-		}
-	];
 
 	/**
 	 * @constant {string} name Name of Controller service
 	 */
-	private name = 'controller';
-
-	/**
-	 * @constant {Array<IOption>} severityOptions Array of CoreUI logger severity select options
-	 */
-	private severityOptions: Array<IOption> = [
-		{
-			value: 'trace',
-			label: this.$t('forms.fields.messageLevel.trace').toString()
-		},
-		{
-			value: 'debug',
-			label: this.$t('forms.fields.messageLevel.debug').toString()
-		},
-		{
-			value: 'info',
-			label: this.$t('forms.fields.messageLevel.info').toString()
-		},
-		{
-			value: 'warning',
-			label: this.$t('forms.fields.messageLevel.warning').toString()
-		},
-		{
-			value: 'error',
-			label: this.$t('forms.fields.messageLevel.error').toString()
-		}
-	];
+	private readonly name = 'controller';
 
 	/**
 	 * @var {IController} config IQRF Gateway Controller configuration
@@ -606,6 +561,35 @@ export default class ControllerConfig extends Vue {
 	 * @var {boolean} useI2cPins Controls whether I2C pin inputs are disabled
 	 */
 	private useI2cPins = false;
+
+	/**
+	 * @constant {Array<IOption>} apiCallOptions API call options
+	 */
+	private readonly apiCallOptions: Array<ISelectItem> = [
+		{
+			value: '',
+			text: this.$t('config.controller.form.resetButton.noCall').toString(),
+		},
+		{
+			value: 'autoNetwork',
+			text: this.$t('iqrfnet.networkManager.autoNetwork.title').toString(),
+		},
+		{
+			value: 'discovery',
+			text: this.$t('iqrfnet.networkManager.discovery.title').toString(),
+		}
+	];
+
+	/**
+	 * Computes severity options
+	 */
+	get severityOptions(): Array<ISelectItem> {
+		const severities = ['trace', 'debug', 'info', 'warning', 'error'];
+		return severities.map((severity: string) => ({
+			value: severity,
+			text: this.$t(`forms.fields.messageLevel.${severity}`).toString()
+		}));
+	}
 
 	/**
 	 * Vue lifecycle hook created

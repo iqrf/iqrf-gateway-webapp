@@ -15,154 +15,155 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<ValidationObserver v-slot='{invalid}'>
-		<CModal
-			:color='modalColor'
-			size='lg'
-			:show.sync='show'
-			:close-on-backdrop='false'
-			:fade='false'
-		>
-			<template #header>
-				<h5 class='modal-title'>
+	<v-dialog
+		v-model='showModal'
+		width='50%'
+		persistent
+		no-click-animation
+	>
+		<ValidationObserver v-if='profile !== null' v-slot='{invalid}'>
+			<v-card>
+				<v-card-title>
 					{{ modalTitle }}
-				</h5>
-			</template>
-			<CForm>
-				<ValidationProvider
-					v-slot='{errors, touched, valid}'
-					rules='required'
-					:custom-messages='{
-						required: $t("config.controller.pins.errors.name")
-					}'
-				>
-					<CInput
-						v-model='profile.name'
-						:label='$t("config.controller.pins.form.name")'
-						:is-valid='touched ? valid : null'
-						:invalid-feedback='errors.join(", ")'
-					/>
-				</ValidationProvider>
-				<CSelect
-					:value.sync='profile.deviceType'
-					:label='$t("config.controller.pins.form.deviceType")'
-					:options='deviceTypeOptions'
-				/>
-				<ValidationProvider
-					v-slot='{errors, touched, valid}'
-					rules='integer|required'
-					:custom-messages='{
-						integer: $t("config.controller.pins.errors.greenLed"),
-						required: $t("config.controller.pins.errors.greenLed"),
-					}'
-				>
-					<CInput
-						v-model.number='profile.greenLed'
-						type='number'
-						:label='$t("config.controller.pins.form.greenLed")'
-						:is-valid='touched ? valid : null'
-						:invalid-feedback='errors.join(", ")'
-					/>
-				</ValidationProvider>
-				<ValidationProvider
-					v-slot='{errors, touched, valid}'
-					rules='integer|required'
-					:custom-messages='{
-						integer: $t("config.controller.pins.errors.redLed"),
-						required: $t("config.controller.pins.errors.redLed"),
-					}'
-				>
-					<CInput
-						v-model.number='profile.redLed'
-						type='number'
-						:label='$t("config.controller.pins.form.redLed")'
-						:is-valid='touched ? valid : null'
-						:invalid-feedback='errors.join(", ")'
-					/>
-				</ValidationProvider>
-				<ValidationProvider
-					v-slot='{errors, touched, valid}'
-					rules='integer|required'
-					:custom-messages='{
-						integer: $t("config.controller.pins.errors.button"),
-						required: $t("config.controller.pins.errors.button"),
-					}'
-				>
-					<CInput
-						v-model.number='profile.button'
-						type='number'
-						:label='$t("config.controller.pins.form.button")'
-						:is-valid='touched ? valid : null'
-						:invalid-feedback='errors.join(", ")'
-					/>
-				</ValidationProvider>
-				<CInputCheckbox
-					:checked.sync='useI2c'
-					:label='$t("config.controller.pins.form.useI2c")'
-				/>
-				<ValidationProvider
-					v-slot='{errors, touched, valid}'
-					:rules='{
-						integer: useI2c,
-						required: useI2c,
-					}'
-					:custom-messages='{
-						integer: $t("config.controller.pins.errors.sck"),
-						required: $t("config.controller.pins.errors.sck"),
-					}'
-				>
-					<CInput
-						v-model.number='profile.sck'
-						type='number'
-						:label='$t("config.controller.pins.form.sck")'
-						:is-valid='touched ? valid : null'
-						:invalid-feedback='errors.join(", ")'
-						:disabled='!useI2c'
-					/>
-				</ValidationProvider>
-				<ValidationProvider
-					v-slot='{errors, touched, valid}'
-					:rules='{
-						integer: useI2c,
-						required: useI2c,
-					}'
-					:custom-messages='{
-						integer: $t("config.controller.pins.errors.sda"),
-						required: $t("config.controller.pins.errors.sda"),
-					}'
-				>
-					<CInput
-						v-model.number='profile.sda'
-						type='number'
-						:label='$t("config.controller.pins.form.sda")'
-						:is-valid='touched ? valid : null'
-						:invalid-feedback='errors.join(", ")'
-						:disabled='!useI2c'
-					/>
-				</ValidationProvider>
-			</CForm>
-			<template #footer>
-				<CButton
-					color='secondary'
-					@click='deactivateModal'
-				>
-					{{ $t('forms.cancel') }}
-				</CButton>
-				<CButton
-					:color='modalColor'
-					:disabled='invalid'
-					@click='saveProfile'
-				>
-					{{ $t('forms.save') }}
-				</CButton>
-			</template>
-		</CModal>
-	</ValidationObserver>
+				</v-card-title>
+				<v-card-text>
+					<v-form>
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							rules='required'
+							:custom-messages='{
+								required: $t("config.controller.pins.errors.name")
+							}'
+						>
+							<v-text-field
+								v-model='profile.name'
+								:label='$t("config.controller.pins.form.name")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
+							/>
+						</ValidationProvider>
+						<v-select
+							v-model='profile.deviceType'
+							:label='$t("config.controller.pins.form.deviceType")'
+							:items='deviceTypeOptions'
+						/>
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							rules='integer|required'
+							:custom-messages='{
+								integer: $t("config.controller.pins.errors.greenLed"),
+								required: $t("config.controller.pins.errors.greenLed"),
+							}'
+						>
+							<v-text-field
+								v-model.number='profile.greenLed'
+								type='number'
+								:label='$t("config.controller.pins.form.greenLed")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							rules='integer|required'
+							:custom-messages='{
+								integer: $t("config.controller.pins.errors.redLed"),
+								required: $t("config.controller.pins.errors.redLed"),
+							}'
+						>
+							<v-text-field
+								v-model.number='profile.redLed'
+								type='number'
+								:label='$t("config.controller.pins.form.redLed")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							rules='integer|required'
+							:custom-messages='{
+								integer: $t("config.controller.pins.errors.button"),
+								required: $t("config.controller.pins.errors.button"),
+							}'
+						>
+							<v-text-field
+								v-model.number='profile.button'
+								type='number'
+								:label='$t("config.controller.pins.form.button")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
+							/>
+						</ValidationProvider>
+						<v-checkbox
+							v-model='useI2c'
+							:label='$t("config.controller.pins.form.useI2c")'
+							dense
+						/>
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							:rules='{
+								integer: useI2c,
+								required: useI2c,
+							}'
+							:custom-messages='{
+								integer: $t("config.controller.pins.errors.sck"),
+								required: $t("config.controller.pins.errors.sck"),
+							}'
+						>
+							<v-text-field
+								v-model.number='profile.sck'
+								type='number'
+								:label='$t("config.controller.pins.form.sck")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
+								:disabled='!useI2c'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							:rules='{
+								integer: useI2c,
+								required: useI2c,
+							}'
+							:custom-messages='{
+								integer: $t("config.controller.pins.errors.sda"),
+								required: $t("config.controller.pins.errors.sda"),
+							}'
+						>
+							<v-text-field
+								v-model.number='profile.sda'
+								type='number'
+								:label='$t("config.controller.pins.form.sda")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
+								:disabled='!useI2c'
+							/>
+						</ValidationProvider>
+					</v-form>
+				</v-card-text>
+				<v-card-actions>
+					<v-spacer />
+					<v-btn
+						@click='hideModal'
+					>
+						{{ $t('forms.cancel') }}
+					</v-btn>
+					<v-btn
+						:color='modalColor'
+						:disabled='invalid'
+						@click='saveProfile'
+					>
+						{{ $t('forms.save') }}
+					</v-btn>
+				</v-card-actions>
+			</v-card>
+		</ValidationObserver>
+	</v-dialog>
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
+import {Component, VModel, Vue} from 'vue-property-decorator';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
@@ -173,14 +174,10 @@ import ControllerPinConfigService from '@/services/ControllerPinConfigService';
 
 import {AxiosError} from 'axios';
 import {IControllerPinConfig} from '@/interfaces/Config/Controller';
-import {IOption} from '@/interfaces/Coreui';
+import {ISelectItem} from '@/interfaces/Vuetify';
 
 @Component({
 	components: {
-		CButton,
-		CForm,
-		CInput,
-		CInputCheckbox,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -190,47 +187,32 @@ import {IOption} from '@/interfaces/Coreui';
  * Controller pin configuration form modal window component
  */
 export default class ControllerPinConfigFormModal extends Vue {
-	/**
-	 * @var {boolean} show Controls whether modal window is rendered
-	 */
-	private show = false;
 
 	/**
-	 * @var {number} id Controller pin configuration ID
+	 * @property {IControllerPinConfig|null} profile Edited profile
 	 */
-	private id = -1;
+	@VModel({required: true, default: null}) profile!: IControllerPinConfig|null;
 
 	/**
-	 * @var {boolean} useI2c Use I2C pin inputs
+	 * @var {boolean} useI2c Use I2C pins
 	 */
 	private useI2c = false;
 
 	/**
-	 * @var {IControllerPinConfig} defaultProfile Default Controller pin configuration profile
+	 * Computes modal display condition
 	 */
-	private defaultProfile: IControllerPinConfig = {
-		name: '',
-		deviceType: ConfigDeviceType.ADAPTER,
-		greenLed: 0,
-		redLed: 0,
-		button: 0,
-		sck: 0,
-		sda: 0,
-	};
-
-	/**
-	 * @var {IControllerPinConfig} profile Controller pin configuration profile
-	 */
-	private profile: IControllerPinConfig = this.defaultProfile;
+	get showModal(): boolean {
+		return this.profile !== null;
+	}
 
 	/**
 	 * Computes device type options
-	 * @return {Array<IOption>} Device type options
+	 * @return {Array<ISelectItem>} Device type options
 	 */
-	get deviceTypeOptions(): Array<IOption> {
+	get deviceTypeOptions(): Array<ISelectItem> {
 		const types: Array<ConfigDeviceType> = [ConfigDeviceType.ADAPTER, ConfigDeviceType.BOARD];
-		return types.map((item: ConfigDeviceType): IOption => ({
-			label: this.$t(`config.controller.pins.form.deviceTypes.${item}`).toString(),
+		return types.map((item: ConfigDeviceType): ISelectItem => ({
+			text: this.$t(`config.controller.pins.form.deviceTypes.${item}`).toString(),
 			value: item,
 		}));
 	}
@@ -240,7 +222,10 @@ export default class ControllerPinConfigFormModal extends Vue {
 	 * @return {string} Modal window color
 	 */
 	get modalColor(): string {
-		return (this.id === -1 ? 'success' : 'primary');
+		if (this.profile?.id === undefined) {
+			return 'success';
+		}
+		return 'primary';
 	}
 
 	/**
@@ -248,7 +233,10 @@ export default class ControllerPinConfigFormModal extends Vue {
 	 * @return {string} Modal window title
 	 */
 	get modalTitle(): string {
-		return this.$t(`config.controller.pins.${this.id === -1 ? 'add' : 'edit'}`).toString();
+		if (this.profile?.id === undefined) {
+			return this.$t('config.controller.pins.add').toString();
+		}
+		return this.$t('config.controller.pins.edit').toString();
 	}
 
 	/**
@@ -263,68 +251,56 @@ export default class ControllerPinConfigFormModal extends Vue {
 	 * Saves configuration profile
 	 */
 	private saveProfile(): void {
+		if (this.profile === null) {
+			return;
+		}
 		const profile = {...this.profile};
 		if (!this.useI2c) {
 			delete profile.sck;
 			delete profile.sda;
 		}
 		const id = profile.id;
+		const name = profile.name;
 		delete profile.id;
 		this.$store.commit('spinner/SHOW');
-		if (id === -1 || id === undefined) {
+		if (id === undefined) {
 			ControllerPinConfigService.add(profile)
-				.then(this.handleSuccess)
-				.catch(this.handleFailure);
+				.then(() => this.handleSuccess(name))
+				.catch((error: AxiosError) => this.handleFailure(error, name));
 		} else {
-			ControllerPinConfigService.edit(this.id, profile)
-				.then(this.handleSuccess)
-				.catch(this.handleFailure);
+			ControllerPinConfigService.edit(id, profile)
+				.then(() => this.handleSuccess(name))
+				.catch((error: AxiosError) => this.handleFailure(error, name));
 		}
 	}
 
 	/**
 	 * Handles REST API success
+	 * @param {string} name Profile name
 	 */
-	private handleSuccess(): void {
+	private handleSuccess(name: string): void {
 		this.$store.commit('spinner/HIDE');
 		this.$toast.success(
-			this.$t('config.controller.pins.messages.saveSuccess', {profile: this.profile.name}).toString()
+			this.$t('config.controller.pins.messages.saveSuccess', {profile: name}).toString()
 		);
-		this.deactivateModal();
+		this.hideModal();
 		this.$emit('update-profiles');
 	}
 
 	/**
 	 * Handles REST API error
 	 * @param {AxiosError} err Error response
+	 * @param {string} name Profile name
 	 */
-	private handleFailure(err: AxiosError): void {
-		extendedErrorToast(err, 'config.controller.pins.messages.saveFailed', {profile: this.profile.name});
+	private handleFailure(err: AxiosError, name: string): void {
+		extendedErrorToast(err, 'config.controller.pins.messages.saveFailed', {profile: name});
 	}
 
 	/**
-	 * Stores controller pin configuration profile and renders the modal window
-	 * @param {IControllerPinConfig|null} profile Controller pin configuration profile
+	 * Hides modal window
 	 */
-	public activateModal(profile: IControllerPinConfig|null = null): void {
-		if (profile !== null) {
-			this.profile = {...profile};
-			this.id = (profile.id as number);
-			if (profile.sck !== undefined && profile.sda !== undefined) {
-				this.useI2c = true;
-			}
-		}
-		this.show = true;
-	}
-
-	/**
-	 * Clears controller pin configuration profile and closes the modal window
-	 */
-	private deactivateModal(): void {
-		this.show = false;
-		this.useI2c = false;
-		this.id = -1;
-		this.profile = this.defaultProfile;
+	private hideModal(): void {
+		this.profile = null;
 	}
 }
 </script>
