@@ -37,30 +37,16 @@ use Nette\Utils\Strings;
 class VersionManager {
 
 	/**
-	 * @var ApiRequest IQRF Gateway Daemon's JSON API request
-	 */
-	private ApiRequest $apiRequest;
-
-	/**
-	 * @var CommandManager CommandManager
-	 */
-	private CommandManager $commandManager;
-
-	/**
-	 * @var WebSocketClient WebSocket client
-	 */
-	private WebSocketClient $wsClient;
-
-	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
-	 * @param ApiRequest $request IQRF Gateway Daemon's JSON API request
+	 * @param ApiRequest $apiRequest IQRF Gateway Daemon's JSON API request
 	 * @param WebSocketClient $wsClient WebSocket client
 	 */
-	public function __construct(CommandManager $commandManager, ApiRequest $request, WebSocketClient $wsClient) {
-		$this->commandManager = $commandManager;
-		$this->apiRequest = $request;
-		$this->wsClient = $wsClient;
+	public function __construct(
+		private readonly CommandManager $commandManager,
+		private readonly ApiRequest $apiRequest,
+		private readonly WebSocketClient $wsClient,
+	) {
 	}
 
 	/**

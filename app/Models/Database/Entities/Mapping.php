@@ -40,42 +40,42 @@ class Mapping implements JsonSerializable {
 	/**
 	 * @var string Mapping type: SPI
 	 */
-	public const TYPE_SPI = 'spi';
+	final public const  TYPE_SPI = 'spi';
 
 	/**
 	 * @var string Mapping type: UART
 	 */
-	public const TYPE_UART = 'uart';
+	final public const  TYPE_UART = 'uart';
 
 	/**
 	 * @var array<string> Supported mapping types
 	 */
-	public const TYPES = [self::TYPE_SPI, self::TYPE_UART];
+	final public const  TYPES = [self::TYPE_SPI, self::TYPE_UART];
 
 	/**
 	 * @var int Default mapping UART baud rate
 	 */
-	public const BAUD_RATE_DEFAULT = 57600;
+	final public const  BAUD_RATE_DEFAULT = 57600;
 
 	/**
 	 * @var array<int> Supported mapping UART baud rates
 	 */
-	public const BAUD_RATES = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400];
+	final public const  BAUD_RATES = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400];
 
 	/**
 	 * @var string Device type: Adapter
 	 */
-	public const DEVICE_ADAPTER = 'adapter';
+	final public const  DEVICE_ADAPTER = 'adapter';
 
 	/**
 	 * @var string Device type: Board
 	 */
-	public const DEVICE_BOARD = 'board';
+	final public const  DEVICE_BOARD = 'board';
 
 	/**
 	 * @var array<string> Supported device types
 	 */
-	public const DEVICE_TYPES = [self::DEVICE_ADAPTER, self::DEVICE_BOARD];
+	final public const  DEVICE_TYPES = [self::DEVICE_ADAPTER, self::DEVICE_BOARD];
 
 	/**
 	 * @var string Mapping type

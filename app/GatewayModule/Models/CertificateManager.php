@@ -37,16 +37,12 @@ use Nette\IOException;
 class CertificateManager {
 
 	/**
-	 * @var PrivilegedFileManager Privileged file manager
-	 */
-	private PrivilegedFileManager $fileManager;
-
-	/**
 	 * Constructor
 	 * @param PrivilegedFileManager $fileManager Privileged file manager
 	 */
-	public function __construct(PrivilegedFileManager $fileManager) {
-		$this->fileManager = $fileManager;
+	public function __construct(
+		private readonly PrivilegedFileManager $fileManager,
+	) {
 	}
 
 	/**

@@ -53,27 +53,27 @@ class User implements JsonSerializable {
 	/**
 	 * Account state: unverified e-mail address
 	 */
-	public const STATE_UNVERIFIED = 0;
+	final public const STATE_UNVERIFIED = 0;
 
 	/**
 	 * Account state: verified e-mail address
 	 */
-	public const STATE_VERIFIED = 1;
+	final public const STATE_VERIFIED = 1;
 
 	/**
 	 * Account state: blocked account
 	 */
-	public const STATE_BLOCKED = 2;
+	final public const STATE_BLOCKED = 2;
 
 	/**
 	 * Default account state
 	 */
-	public const STATE_DEFAULT = self::STATE_UNVERIFIED;
+	final public const STATE_DEFAULT = self::STATE_UNVERIFIED;
 
 	/**
 	 * Supported account states
 	 */
-	public const STATES = [
+	final public const STATES = [
 		self::STATE_UNVERIFIED => 'unverified',
 		self::STATE_VERIFIED => 'verified',
 		self::STATE_BLOCKED => 'blocked',
@@ -106,7 +106,7 @@ class User implements JsonSerializable {
 	/**
 	 * @var int Account state
 	 */
-	#[ORM\Column(type: Types::INTEGER, length: 10, unique: false, nullable: false, options: ['default' => self::STATE_DEFAULT])]
+	#[ORM\Column(type: Types::INTEGER, length: 10, options: ['default' => self::STATE_DEFAULT])]
 	private int $state = self::STATE_DEFAULT;
 
 	/**
@@ -380,7 +380,7 @@ class User implements JsonSerializable {
 
 	/**
 	 * Returns the JSON serialized User entity
-	 * @return array<string, int|string|null> JSON serialized User entity
+	 * @return array{id: int|null, username: string, email: string|null, role: string, language: string, state: string} JSON serialized User entity
 	 */
 	public function jsonSerialize(): array {
 		return [

@@ -272,7 +272,7 @@ class WireguardPeer implements JsonSerializable {
 			$this->getAddresses()->toArray()
 		));
 		return implode(' ', array_map(
-			fn (string $key, string $value): string => sprintf('%s %s', escapeshellarg($key), escapeshellarg($value)),
+			static fn (string $key, string $value): string => sprintf('%s %s', escapeshellarg($key), escapeshellarg($value)),
 			array_keys($args),
 			$args
 		));

@@ -30,7 +30,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * CLI command to list WireGuard tunnels
  */
 #[AsCommand(name: 'wireguard:list', description: 'Lists WireGuard tunnels')]
-class WireguardListCommand extends WireguardCommand {
+class WireGuardListCommand extends WireGuardCommand {
 
 	/**
 	 * Executes the WireGuard list key list command

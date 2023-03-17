@@ -29,30 +29,16 @@ use stdClass;
 class AutoConnect implements INetworkManagerEntity {
 
 	/**
-	 * @var bool AutoConnect enablement
-	 */
-	private bool $enabled;
-
-	/**
-	 * @var int Connection priority
-	 */
-	private int $priority;
-
-	/**
-	 * @var int Connection retries
-	 */
-	private int $retries;
-
-	/**
 	 * Constructor
 	 * @param bool $enabled Automatic connecting enablement
 	 * @param int $priority Connection priority
 	 * @param int $retries Connection retries
 	 */
-	public function __construct(bool $enabled, int $priority, int $retries) {
-		$this->enabled = $enabled;
-		$this->priority = $priority;
-		$this->retries = $retries;
+	public function __construct(
+		private readonly bool $enabled,
+		private readonly int $priority,
+		private readonly int $retries,
+	) {
 	}
 
 	/**

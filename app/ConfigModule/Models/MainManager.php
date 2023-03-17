@@ -30,11 +30,6 @@ use Nette\Utils\JsonException;
 class MainManager {
 
 	/**
-	 * @var FileManager JSON file manager
-	 */
-	private FileManager $fileManager;
-
-	/**
 	 * @var string File name
 	 */
 	private string $fileName = 'config.json';
@@ -43,8 +38,9 @@ class MainManager {
 	 * Constructor
 	 * @param FileManager $fileManager JSON file manager
 	 */
-	public function __construct(FileManager $fileManager) {
-		$this->fileManager = $fileManager;
+	public function __construct(
+		private readonly FileManager $fileManager,
+	) {
 	}
 
 	/**

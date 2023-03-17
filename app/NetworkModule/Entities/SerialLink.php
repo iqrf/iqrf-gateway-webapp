@@ -31,7 +31,7 @@ final class SerialLink implements INetworkManagerEntity {
 	/**
 	 * @var string nmcli configuration prefix
 	 */
-	public const NMCLI_PREFIX = 'serial';
+	final public const  NMCLI_PREFIX = 'serial';
 
 	/**
 	 * @var positive-int $baud Baud rate

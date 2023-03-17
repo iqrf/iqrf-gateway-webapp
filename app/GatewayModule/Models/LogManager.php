@@ -34,34 +34,29 @@ use SplFileInfo;
 class LogManager {
 
 	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
-
-	/**
 	 * @var string IQRF Gateway Controller name
 	 */
-	public const CONTROLLER = 'iqrf-gateway-controller';
+	final public const  CONTROLLER = 'iqrf-gateway-controller';
 
 	/**
 	 * @var string IQRF Gateway Daemon name
 	 */
-	public const DAEMON = 'iqrf-gateway-daemon';
+	final public const  DAEMON = 'iqrf-gateway-daemon';
 
 	/**
 	 * @var string IQRF Gateway Setter name
 	 */
-	public const SETTER = 'iqrf-gateway-setter';
+	final public const  SETTER = 'iqrf-gateway-setter';
 
 	/**
 	 * @var string IQRF Gateway Translator name
 	 */
-	public const TRANSLATOR = 'iqrf-gateway-translator';
+	final public const  TRANSLATOR = 'iqrf-gateway-translator';
 
 	/**
 	 * @var string IQRF Gateway Uploader name
 	 */
-	public const UPLOADER = 'iqrf-gateway-uploader';
+	final public const  UPLOADER = 'iqrf-gateway-uploader';
 
 	/**
 	 * @ string IQRF Gateway Controller log file
@@ -84,16 +79,6 @@ class LogManager {
 	private const UPLOADER_LOG = 'iqrf-gateway-uploader.log';
 
 	/**
-	 * @var string Path to a directory with log files of IQRF Gateway Daemon
-	 */
-	private string $daemonLogDir;
-
-	/**
-	 * @var string Path to a general directory with log files
-	 */
-	private string $logDir;
-
-	/**
 	 * @var string Path to ZIP archive
 	 */
 	private string $path = '/tmp/iqrf-gateway-logs.zip';
@@ -104,10 +89,11 @@ class LogManager {
 	 * @param string $daemonLogDir Path to a directory with log files of IQRF Gateway Daemon
 	 * @param CommandManager $commandManager Command manager
 	 */
-	public function __construct(string $logDir, string $daemonLogDir, CommandManager $commandManager) {
-		$this->logDir = $logDir;
-		$this->daemonLogDir = $daemonLogDir;
-		$this->commandManager = $commandManager;
+	public function __construct(
+		private readonly string $logDir,
+		private readonly string $daemonLogDir,
+		private readonly CommandManager $commandManager
+	) {
 	}
 
 	/**
@@ -234,19 +220,14 @@ class LogManager {
 		if (!in_array($service, $services, true)) {
 			throw new ServiceLogNotAvailableException('Service not found');
 		}
-		if ($service === self::CONTROLLER) {
-			return $this->getLogFromPath(self::CONTROLLER_LOG);
-		}
-		if ($service === self::DAEMON) {
-			return $this->getLatestDaemonLog();
-		}
-		if ($service === self::SETTER) {
-			return $this->getLogFromPath(self::SETTER_LOG);
-		}
-		if ($service === self::TRANSLATOR) {
-			return $this->getLogFromPath(self::TRANSLATOR_LOG);
-		}
-		return $this->getLogFromPath(self::UPLOADER_LOG);
+		return match ($service) {
+			self::CONTROLLER => $this->getLogFromPath(self::CONTROLLER_LOG),
+			self::DAEMON => $this->getLatestDaemonLog(),
+			self::SETTER => $this->getLogFromPath(self::SETTER_LOG),
+			self::TRANSLATOR => $this->getLogFromPath(self::TRANSLATOR_LOG),
+			self::UPLOADER =>$this->getLogFromPath(self::UPLOADER_LOG),
+			default => throw new ServiceLogNotAvailableException('Service not found'),
+		};
 	}
 
 }

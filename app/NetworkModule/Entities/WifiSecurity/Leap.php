@@ -31,23 +31,14 @@ use stdClass;
 class Leap implements INetworkManagerEntity {
 
 	/**
-	 * @var string LEAP username
-	 */
-	private string $username;
-
-	/**
-	 * @var string LEAP password
-	 */
-	private string $password;
-
-	/**
 	 * Constructor
 	 * @param string $username LEAP username
 	 * @param string $password LEAP password
 	 */
-	public function __construct(string $username, string $password) {
-		$this->password = $password;
-		$this->username = $username;
+	public function __construct(
+		private readonly string $username,
+		private readonly string $password,
+	) {
 	}
 
 	/**

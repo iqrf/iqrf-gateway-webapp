@@ -26,29 +26,30 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Throwable;
 
 /**
- * WireGuard deactivate command
+ * WireGuard activate command
  */
-#[AsCommand(name: 'wireguard:deactivate', description: 'Deactivates a WireGuard tunnel')]
-class WireguardDeactivateCommand extends WireguardCommand {
+#[AsCommand(name: 'wireguard:activate', description: 'Activates a WireGuard tunnel')]
+class WireGuardActivateCommand extends WireGuardCommand {
 
 	/**
-	 * Configures the Wireguard deactivate command
+	 * Configures the WireGuard activate command
 	 */
 	protected function configure(): void {
-		$this->addArgument('name', InputArgument::OPTIONAL, 'Name of WireGuard tunnel to deactivate');
+		$this->addArgument('name', InputArgument::OPTIONAL, 'Name of WireGuard tunnel to activate');
 	}
 
 	/**
-	 * Executes the Wireguard deactivate command
+	 * Executes the WireGuard activate command
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
 	 * @return int Exit code
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$style = new SymfonyStyle($input, $output);
-		$style->title('Deactivate WireGuard tunnel');
+		$style->title('Activate WireGuard tunnel');
 		$tunnelName = $input->getArgument('name');
 		if ($tunnelName === null) {
 			$style->error('No WireGuard tunnel specified.');
@@ -59,15 +60,18 @@ class WireguardDeactivateCommand extends WireguardCommand {
 			$style->error('WireGuard tunnel ' . $tunnelName . ' does not exist.');
 			return Command::FAILURE;
 		}
-		if (!$this->manager->isTunnelActive($tunnel)) {
-			$style->block('WireGuard tunnel ' . $tunnelName . ' is not active.', 'INFO', 'fg=white;bg=blue', ' ', true);
+		if ($this->manager->isTunnelActive($tunnel)) {
+			$style->block('WireGuard tunnel ' . $tunnelName . ' is already active.', 'INFO', 'fg=white;bg=blue', ' ', true);
 			return Command::SUCCESS;
 		}
-		if (!$this->manager->deleteTunnel($tunnel)) {
-			$style->error('An error has occurred while deactivating WiregGuard tunnel ' . $tunnelName);
+		try {
+			$this->manager->initializeTunnel($tunnel);
+		} catch (Throwable $e) {
+			$this->manager->deleteTunnel($tunnel);
+			$style->error($e->getMessage());
 			return Command::FAILURE;
 		}
-		$style->success('WireGuard tunnel ' . $tunnelName . ' has been deactivated.');
+		$style->success('WireGuard tunnel ' . $tunnelName . ' has been activated.');
 		return Command::SUCCESS;
 	}
 

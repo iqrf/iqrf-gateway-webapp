@@ -29,7 +29,7 @@ final class IPv6Current implements JsonSerializable {
 	/**
 	 * @var string nmcli configuration prefix
 	 */
-	public const NMCLI_PREFIX = 'IP6';
+	final public const  NMCLI_PREFIX = 'IP6';
 
 	/**
 	 * IPv6 current configuration constructor

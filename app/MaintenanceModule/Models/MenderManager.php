@@ -84,30 +84,16 @@ class MenderManager {
 	];
 
 	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
-
-	/**
-	 * @var PrivilegedFileManager $fileManager Privileged file manager
-	 */
-	private PrivilegedFileManager $fileManager;
-
-	/**
-	 * @var ServiceManager $serviceManager Service manager
-	 */
-	private ServiceManager $serviceManager;
-
-	/**
-	 * Constructior
+	 * Constructor
 	 * @param CommandManager $commandManager Command manager
 	 * @param PrivilegedFileManager $fileManager Privileged file manager
 	 * @param ServiceManager $serviceManager Service manager
 	 */
-	public function __construct(CommandManager $commandManager, PrivilegedFileManager $fileManager, ServiceManager $serviceManager) {
-		$this->commandManager = $commandManager;
-		$this->fileManager = $fileManager;
-		$this->serviceManager = $serviceManager;
+	public function __construct(
+		private readonly CommandManager $commandManager,
+		private readonly PrivilegedFileManager $fileManager,
+		private readonly ServiceManager $serviceManager,
+	) {
 	}
 
 	/**

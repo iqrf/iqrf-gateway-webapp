@@ -53,15 +53,12 @@ class IqrfRepositoryManager {
 	private const EXTENSION_NAME = 'iqrfRepository';
 
 	/**
-	 * @var string Path to configuration file
-	 */
-	private string $confPath;
-
-	/**
 	 * Constructor
+	 * @param string $confPath Path to configuration file
 	 */
-	public function __construct(string $path) {
-		$this->confPath = $path;
+	public function __construct(
+		private readonly string $confPath,
+	) {
 	}
 
 	/**

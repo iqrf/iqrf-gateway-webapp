@@ -32,16 +32,12 @@ use Nette\Utils\JsonException;
 class AzureManager implements IManager {
 
 	/**
-	 * @var GenericManager Generic configuration manager
-	 */
-	private GenericManager $configManager;
-
-	/**
 	 * Constructor
 	 * @param GenericManager $configManager Generic config manager
 	 */
-	public function __construct(GenericManager $configManager) {
-		$this->configManager = $configManager;
+	public function __construct(
+		private readonly GenericManager $configManager,
+	) {
 	}
 
 	/**
@@ -131,7 +127,7 @@ class AzureManager implements IManager {
 		$ttl = intdiv($now->add($expires)->getTimestamp(), 60) * 60;
 		$encodedResourceUri = urlencode($resourceUri);
 		$toSign = $encodedResourceUri . "\n" . $ttl;
-		$key = strval(base64_decode($signingKey, true));
+		$key = (string) base64_decode($signingKey, true);
 		$hmac = hash_hmac('sha256', $toSign, $key, true);
 		$signature = urlencode(base64_encode($hmac));
 		$token = 'SharedAccessSignature sr=' . $encodedResourceUri . '&sig='

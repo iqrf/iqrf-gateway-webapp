@@ -43,19 +43,9 @@ class SshManager {
 	private const KEYS_FILE = 'authorized_keys';
 
 	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
-
-	/**
 	 * @var string|null Path to SSH directory
 	 */
 	private ?string $directory = null;
-
-	/**
-	 * @var EntityManager Entity manager
-	 */
-	private EntityManager $entityManager;
 
 	/**
 	 * @var PrivilegedFileManager|null Privileged file manager
@@ -65,7 +55,7 @@ class SshManager {
 	/**
 	 * @var SshKeyRepository SSH key repository
 	 */
-	private SshKeyRepository $sshKeyRepository;
+	private readonly SshKeyRepository $sshKeyRepository;
 
 	/**
 	 * Constructor
@@ -73,15 +63,17 @@ class SshManager {
 	 * @param EntityManager $entityManager Entity manager
 	 * @param FeatureManager $featureManager Feature manager
 	 */
-	public function __construct(CommandManager $commandManager, EntityManager $entityManager, FeatureManager $featureManager) {
-		$this->commandManager = $commandManager;
+	public function __construct(
+		private readonly CommandManager $commandManager,
+		private readonly EntityManager $entityManager,
+		FeatureManager $featureManager,
+	) {
 		$feature = $featureManager->get('gatewayPass');
 		$userInfo = posix_getpwnam($feature['user']);
 		if ($userInfo !== false) {
 			$this->directory = $userInfo['dir'] . '/.ssh';
 			$this->fileManager = new PrivilegedFileManager($this->directory, $commandManager);
 		}
-		$this->entityManager = $entityManager;
 		$this->sshKeyRepository = $entityManager->getSshKeyRepository();
 	}
 
@@ -183,7 +175,7 @@ class SshManager {
 	public function deleteKey(int $id): void {
 		$key = $this->sshKeyRepository->find($id);
 		if ($key === null) {
-			throw new SshKeyNotFoundException('SSH key entry with ID ' . strval($id) . ' not found.');
+			throw new SshKeyNotFoundException('SSH key entry with ID ' . $id . ' not found.');
 		}
 		$this->entityManager->remove($key);
 		$this->entityManager->flush();
@@ -197,7 +189,7 @@ class SshManager {
 	public function updateKeysFile(): void {
 		$this->checkSshDirectory();
 		$keys = $this->sshKeyRepository->findAll();
-		$content = implode(PHP_EOL, array_map(fn (SshKey $key): string => $key->toString(), $keys));
+		$content = implode(PHP_EOL, array_map(static fn (SshKey $key): string => $key->toString(), $keys));
 		$this->fileManager->write(self::KEYS_FILE, $content);
 	}
 

@@ -35,6 +35,6 @@ services:
 	- App\ConsoleModule\Commands\UserPasswordCommand
 	- App\ConsoleModule\Commands\UserRemoveCommand
 	- App\ConsoleModule\Commands\UserRemoveAllCommand
-	- App\ConsoleModule\Commands\WireguardActivateCommand
-	- App\ConsoleModule\Commands\WireguardDeactivateCommand
-	- App\ConsoleModule\Commands\WireguardListCommand
+	- App\ConsoleModule\Commands\WireGuardActivateCommand
+	- App\ConsoleModule\Commands\WireGuardDeactivateCommand
+	- App\ConsoleModule\Commands\WireGuardListCommand

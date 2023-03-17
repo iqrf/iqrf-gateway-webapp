@@ -29,6 +29,9 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Throwable;
 
+/**
+ * Creates sqlite3 database
+ */
 #[AsCommand(name: 'database:create', description: 'Creates webapp\'s database')]
 class DatabaseCreateCommand extends Command {
 

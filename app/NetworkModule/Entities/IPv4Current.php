@@ -31,7 +31,7 @@ final class IPv4Current implements JsonSerializable {
 	/**
 	 * @var string nmcli current configuration prefix
 	 */
-	public const NMCLI_PREFIX = 'IP4';
+	final public const  NMCLI_PREFIX = 'IP4';
 
 	/**
 	 * Current IPv4 configuration entity

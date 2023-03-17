@@ -36,7 +36,7 @@ class ConnectionDetail implements INetworkManagerEntity {
 	/**
 	 * @var string nmcli configuration prefix
 	 */
-	public const NMCLI_PREFIX = 'connection';
+	final public const  NMCLI_PREFIX = 'connection';
 
 	/**
 	 * @var WifiConnection|null WiFi network connection entity

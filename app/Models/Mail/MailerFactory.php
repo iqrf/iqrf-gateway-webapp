@@ -30,16 +30,12 @@ use Nette\Mail\SmtpMailer;
 class MailerFactory {
 
 	/**
-	 * @var ConfigurationManager Mailer configuration manager
-	 */
-	private ConfigurationManager $configuration;
-
-	/**
 	 * Constructor
 	 * @param ConfigurationManager $configuration Mailer configuration manager
 	 */
-	public function __construct(ConfigurationManager $configuration) {
-		$this->configuration = $configuration;
+	public function __construct(
+		private readonly ConfigurationManager $configuration,
+	) {
 	}
 
 	/**

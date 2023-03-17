@@ -39,17 +39,17 @@ class ControllerPinConfiguration implements JsonSerializable {
 	/**
 	 * @var string Device type: Adapter
 	 */
-	public const DEVICE_ADAPTER = 'adapter';
+	final public const  DEVICE_ADAPTER = 'adapter';
 
 	/**
 	 * @var string Device type: Board
 	 */
-	public const DEVICE_BOARD = 'board';
+	final public const  DEVICE_BOARD = 'board';
 
 	/**
 	 * @var array<string> Supported device types
 	 */
-	public const DEVICE_TYPES = [self::DEVICE_ADAPTER, self::DEVICE_BOARD];
+	final public const  DEVICE_TYPES = [self::DEVICE_ADAPTER, self::DEVICE_BOARD];
 
 	/**
 	 * @var string Controller pins name

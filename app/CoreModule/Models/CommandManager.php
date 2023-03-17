@@ -35,23 +35,14 @@ use Traversable;
 class CommandManager {
 
 	/**
-	 * @var bool Is sudo required?
-	 */
-	private bool $sudo;
-
-	/**
-	 * @var CommandStack Command stack
-	 */
-	private CommandStack $stack;
-
-	/**
 	 * Constructor
 	 * @param bool $sudo Is sudo required?
 	 * @param CommandStack $stack Command stack
 	 */
-	public function __construct(bool $sudo, CommandStack $stack) {
-		$this->sudo = $sudo;
-		$this->stack = $stack;
+	public function __construct(
+		private readonly bool $sudo,
+		private readonly CommandStack $stack,
+	) {
 	}
 
 	/**
@@ -86,7 +77,7 @@ class CommandManager {
 	 * @throws ProcessTimedOutException When process timed out
 	 * @throws ProcessSignaledException When process stopped after receiving signal
 	 */
-	public function run(string $command, bool $needSudo = false, int $timeout = 60, $input = null): ICommand {
+	public function run(string $command, bool $needSudo = false, int $timeout = 60, mixed $input = null): ICommand {
 		$process = $this->createProcess($command, $needSudo);
 		$process->setInput($input);
 		$process->setTimeout((float) $timeout);
@@ -104,7 +95,7 @@ class CommandManager {
 	 * @param int $timeout Command's timeout
 	 * @param string|int|float|bool|resource|Traversable|null $input Command's input
 	 */
-	public function runAsync(callable $callback, string $command, bool $needSudo = false, int $timeout = 36000, $input = null): void {
+	public function runAsync(callable $callback, string $command, bool $needSudo = false, int $timeout = 36000, mixed $input = null): void {
 		$process = $this->createProcess($command, $needSudo);
 		$process->setInput($input);
 		$process->setTimeout((float) $timeout);

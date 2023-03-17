@@ -88,7 +88,10 @@ class UserRemoveAllCommand extends UserCommand {
 		if ($users === []) {
 			return null;
 		}
-		return implode(', ', array_map(fn (User $user): string => $user->getUserName(), $users));
+		return implode(', ', array_map(
+			static fn (User $user): string => $user->getUserName(),
+			$users
+		));
 	}
 
 	/**

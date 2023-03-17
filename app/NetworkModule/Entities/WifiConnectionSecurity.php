@@ -35,7 +35,7 @@ final class WifiConnectionSecurity implements INetworkManagerEntity {
 	/**
 	 * @var string nmcli 802-11-wireless security configuration prefix
 	 */
-	public const NMCLI_PREFIX = '802-11-wireless-security';
+	final public const  NMCLI_PREFIX = '802-11-wireless-security';
 
 	/**
 	 * @var WifiSecurityType WiFi security type

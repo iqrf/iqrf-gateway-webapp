@@ -54,44 +54,29 @@ class WireguardManager {
 	private const TMP_DIR = '/tmp/wireguard/';
 
 	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
-
-	/**
-	 * @var EntityManager Entity manager
-	 */
-	private EntityManager $entityManager;
-
-	/**
-	 * @var ServiceManager Service manager
-	 */
-	private ServiceManager $serviceManager;
-
-	/**
 	 * @var WireguardInterfaceIpv4Repository WireGuard interface IPv4 repository
 	 */
-	private WireguardInterfaceIpv4Repository $wireguardInterfaceIpv4Repository;
+	private readonly WireguardInterfaceIpv4Repository $wireguardInterfaceIpv4Repository;
 
 	/**
 	 * @var WireguardInterfaceIpv6Repository WireGuard interface IPv6 repository
 	 */
-	private WireguardInterfaceIpv6Repository $wireguardInterfaceIpv6Repository;
+	private readonly WireguardInterfaceIpv6Repository $wireguardInterfaceIpv6Repository;
 
 	/**
 	 * @var WireguardInterfaceRepository WireGuard interface repository
 	 */
-	private WireguardInterfaceRepository $wireguardInterfaceRepository;
+	private readonly WireguardInterfaceRepository $wireguardInterfaceRepository;
 
 	/**
 	 * @var WireguardPeerAddressRepository WireGuard peer address repository
 	 */
-	private WireguardPeerAddressRepository $wireguardPeerAddressRepository;
+	private readonly WireguardPeerAddressRepository $wireguardPeerAddressRepository;
 
 	/**
 	 * @var WireguardPeerRepository WireGuard peer repository
 	 */
-	private WireguardPeerRepository $wireguardPeerRepository;
+	private readonly WireguardPeerRepository $wireguardPeerRepository;
 
 	/**
 	 * Constructor
@@ -99,10 +84,11 @@ class WireguardManager {
 	 * @param EntityManager $entityManager Entity manager
 	 * @param ServiceManager $serviceManager Service manager
 	 */
-	public function __construct(CommandManager $commandManager, EntityManager $entityManager, ServiceManager $serviceManager) {
-		$this->commandManager = $commandManager;
-		$this->entityManager = $entityManager;
-		$this->serviceManager = $serviceManager;
+	public function __construct(
+		private readonly CommandManager $commandManager,
+		private readonly EntityManager $entityManager,
+		private readonly ServiceManager $serviceManager,
+	) {
 		$this->wireguardInterfaceIpv4Repository = $this->entityManager->getWireguardInterfaceIpv4Repository();
 		$this->wireguardInterfaceIpv6Repository = $this->entityManager->getWireguardInterfaceIpv6Repository();
 		$this->wireguardInterfaceRepository = $this->entityManager->getWireguardInterfaceRepository();

@@ -33,7 +33,7 @@ class HostBackup implements IBackupManager {
 	/**
 	 * @var array<string> List of whitelisted files
 	 */
-	public const WHITELIST = [
+	final public const WHITELIST = [
 		'hostname',
 		'hosts',
 	];
@@ -46,21 +46,18 @@ class HostBackup implements IBackupManager {
 	/**
 	 * @var PrivilegedFileManager Privileged file manager
 	 */
-	private PrivilegedFileManager $fileManager;
-
-	/**
-	 * @var RestoreLogger Restore logger
-	 */
-	private RestoreLogger $restoreLogger;
+	private readonly PrivilegedFileManager $fileManager;
 
 	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
 	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
-	public function __construct(CommandManager $commandManager, RestoreLogger $restoreLogger) {
+	public function __construct(
+		CommandManager $commandManager,
+		private readonly RestoreLogger $restoreLogger,
+	) {
 		$this->fileManager = new PrivilegedFileManager(self::CONF_PATH, $commandManager);
-		$this->restoreLogger = $restoreLogger;
 	}
 
 	/**

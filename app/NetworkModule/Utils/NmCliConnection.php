@@ -74,7 +74,7 @@ class NmCliConnection {
 		$string = '';
 		foreach ($array as $key => $value) {
 			if (gettype($value) === 'boolean') {
-				$value = $value === true ? 'yes' : 'no';
+				$value = $value ? 'yes' : 'no';
 			}
 			if ($value instanceof BackedEnum) {
 				$value = $value->value;

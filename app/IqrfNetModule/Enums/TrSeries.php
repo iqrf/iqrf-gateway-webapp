@@ -43,7 +43,7 @@ enum TrSeries: string {
 		if ($matches === null) {
 			throw new DomainException();
 		}
-		$series = intval($matches['series']);
+		$series = (int) $matches['series'];
 		$module = $matches['module'];
 		if ($series === 7) {
 			return match ($module) {

@@ -24,6 +24,7 @@ use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Requests\ApiRequest;
 use Nette\Utils\JsonException;
+use stdClass;
 
 /**
  * Tool for enumerate device in the IQMESH network
@@ -31,29 +32,20 @@ use Nette\Utils\JsonException;
 class EnumerationManager {
 
 	/**
-	 * @var ApiRequest JSON API request
-	 */
-	private ApiRequest $request;
-
-	/**
-	 * @var WebSocketClient WebSocket client
-	 */
-	private WebSocketClient $wsClient;
-
-	/**
 	 * Constructor
 	 * @param ApiRequest $request JSON API request
 	 * @param WebSocketClient $wsClient WebSocket client
 	 */
-	public function __construct(ApiRequest $request, WebSocketClient $wsClient) {
-		$this->request = $request;
-		$this->wsClient = $wsClient;
+	public function __construct(
+		private readonly ApiRequest $request,
+		private readonly WebSocketClient $wsClient,
+	) {
 	}
 
 	/**
 	 * Enumerates a device
 	 * @param int $address Device address to enumerate
-	 * @return array<mixed> API request and response
+	 * @return array{request: stdClass|array<mixed>, response: stdClass} API request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws JsonException

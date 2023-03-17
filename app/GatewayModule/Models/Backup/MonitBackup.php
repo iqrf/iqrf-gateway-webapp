@@ -33,31 +33,21 @@ class MonitBackup implements IBackupManager {
 	/**
 	 * @var array<string> List of whitelisted files
 	 */
-	public const WHITELIST = [
+	final public const WHITELIST = [
 		'monitrc',
 	];
 
 	/**
 	 * @var array<string> Service name
 	 */
-	public const SERVICES = [
+	final public const SERVICES = [
 		'monit',
 	];
 
 	/**
 	 * @var bool Indicates whether feature is enabled
 	 */
-	private bool $featureEnabled;
-
-	/**
-	 * @var PrivilegedFileManager Privileged file manager
-	 */
-	private PrivilegedFileManager $fileManager;
-
-	/**
-	 * @var RestoreLogger Restore logger
-	 */
-	private RestoreLogger $restoreLogger;
+	private readonly bool $featureEnabled;
 
 	/**
 	 * Constructor
@@ -65,9 +55,11 @@ class MonitBackup implements IBackupManager {
 	 * @param FeatureManager $featureManager Feature manager
 	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
-	public function __construct(PrivilegedFileManager $fileManager, FeatureManager $featureManager, RestoreLogger $restoreLogger) {
-		$this->fileManager = $fileManager;
-		$this->restoreLogger = $restoreLogger;
+	public function __construct(
+		private readonly PrivilegedFileManager $fileManager,
+		FeatureManager $featureManager,
+		private readonly RestoreLogger $restoreLogger,
+	) {
 		$this->featureEnabled = $featureManager->get('monit')['enabled'];
 	}
 

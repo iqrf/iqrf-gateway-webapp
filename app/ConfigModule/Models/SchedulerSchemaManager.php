@@ -34,24 +34,22 @@ use Nette\Utils\JsonException;
 class SchedulerSchemaManager extends JsonSchemaManager {
 
 	/**
-	 * @var ApiSchemaManager JSON API JSON schema manager
-	 */
-	private ApiSchemaManager $apiSchemaManager;
-
-	/**
 	 * Constructor
 	 * @param MainManager $mainManager Main configuration manager
 	 * @param CommandManager $commandManager Command manager
 	 * @param ApiSchemaManager $apiSchemaManager JSON API JSON schema manager
 	 */
-	public function __construct(MainManager $mainManager, CommandManager $commandManager, ApiSchemaManager $apiSchemaManager) {
+	public function __construct(
+		MainManager $mainManager,
+		CommandManager $commandManager,
+		private readonly ApiSchemaManager $apiSchemaManager,
+	) {
 		$dataDir = $mainManager->getDataDir();
 		if (!is_readable($dataDir) || !is_writable($dataDir)) {
 			$commandManager->run('chmod 777 ' . escapeshellarg($dataDir), true);
 		}
 		$configDir = $dataDir . 'schedulerSchemas/';
 		parent::__construct($configDir, $commandManager);
-		$this->apiSchemaManager = $apiSchemaManager;
 	}
 
 	/**

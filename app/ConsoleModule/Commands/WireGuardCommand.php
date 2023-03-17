@@ -24,7 +24,7 @@ use App\Models\Database\EntityManager;
 use App\Models\Database\Repositories\WireguardInterfaceRepository;
 use App\NetworkModule\Models\WireguardManager;
 
-abstract class WireguardCommand extends EntityManagerCommand {
+abstract class WireGuardCommand extends EntityManagerCommand {
 
 	/**
 	 * @var WireguardInterfaceRepository WireGuard interface repository

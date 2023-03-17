@@ -47,7 +47,7 @@ class UploadManager {
 	/**
 	 * Path to OS patch files
 	 */
-	public const OS_PATH = __DIR__ . '/../../../iqrf/os/';
+	final public const  OS_PATH = __DIR__ . '/../../../iqrf/os/';
 
 	/**
 	 * @var string Path to the directory for uploaded files

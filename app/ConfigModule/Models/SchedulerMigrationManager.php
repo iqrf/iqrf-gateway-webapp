@@ -38,12 +38,7 @@ class SchedulerMigrationManager {
 	/**
 	 * @var string Path to a directory with scheduler's configuration
 	 */
-	private string $configDirectory;
-
-	/**
-	 * @var SchedulerSchemaManager Scheduler JSON schema manager
-	 */
-	private SchedulerSchemaManager $schemaManager;
+	private readonly string $configDirectory;
 
 	/**
 	 * Constructor
@@ -51,7 +46,11 @@ class SchedulerMigrationManager {
 	 * @param SchedulerSchemaManager $schemaManager Scheduler JSON schema manager
 	 * @param CommandManager $commandManager Command manager
 	 */
-	public function __construct(MainManager $mainManager, SchedulerSchemaManager $schemaManager, CommandManager $commandManager) {
+	public function __construct(
+		MainManager $mainManager,
+		private readonly SchedulerSchemaManager $schemaManager,
+		CommandManager $commandManager,
+	) {
 		$cacheDir = $mainManager->getCacheDir();
 		$dirs = [$cacheDir, $cacheDir . 'scheduler/'];
 		foreach ($dirs as $dir) {
@@ -61,7 +60,6 @@ class SchedulerMigrationManager {
 			$commandManager->run('chmod 777 ' . escapeshellarg($dir), true);
 		}
 		$this->configDirectory = $cacheDir . 'scheduler/';
-		$this->schemaManager = $schemaManager;
 	}
 
 	/**

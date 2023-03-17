@@ -32,7 +32,7 @@ class TranslatorBackup extends IqrfSoftwareBackup {
 	/**
 	 * @var array<string> List of whitelisted files
 	 */
-	public const WHITELIST = [
+	final public const WHITELIST = [
 		'config.json',
 	];
 

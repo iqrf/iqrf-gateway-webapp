@@ -30,23 +30,14 @@ use App\GatewayModule\Exceptions\ChpasswdErrorException;
 class PasswordManager {
 
 	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
-
-	/**
-	 * @var FeatureManager Feature manager
-	 */
-	private FeatureManager $featureManager;
-
-	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
 	 * @param FeatureManager $featureManager Feature manager
 	 */
-	public function __construct(CommandManager $commandManager, FeatureManager $featureManager) {
-		$this->commandManager = $commandManager;
-		$this->featureManager = $featureManager;
+	public function __construct(
+		private readonly CommandManager $commandManager,
+		private readonly FeatureManager $featureManager,
+	) {
 	}
 
 	/**
