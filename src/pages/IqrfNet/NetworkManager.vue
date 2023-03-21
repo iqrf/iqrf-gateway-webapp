@@ -64,7 +64,7 @@ limitations under the License.
 							<OtaUpload />
 						</v-tab-item>
 						<v-tab-item :transition='false'>
-							<Maintenance ref='maintenance' />
+							<Maintenance ref='maintenance' :rf-band='rfBand' />
 						</v-tab-item>
 					</v-tabs-items>
 				</v-card>
@@ -141,6 +141,11 @@ export default class NetworkManager extends Vue {
 	private msgId = '';
 
 	/**
+	 * @var {number} rfBand RF band
+	 */
+	private rfBand = 868;
+
+	/**
 	 * Mutation handler
 	 */
 	private unsubscribe: CallableFunction = () => {return;};
@@ -212,8 +217,7 @@ export default class NetworkManager extends Vue {
 		if (response.status !== 0) {
 			return;
 		}
-		const rfBand = Number.parseInt(response.rsp.trConfiguration.rfBand);
-		this.setRfChannelRules(rfBand);
+		this.rfBand = Number.parseInt(response.rsp.trConfiguration.rfBand);
 		const os = response.rsp.osRead.osBuild;
 		if (parseInt(os, 16) < 0x08d7) {
 			return;
@@ -231,14 +235,6 @@ export default class NetworkManager extends Vue {
 	 */
 	private updateDevices(message: ToastOptions): void {
 		this.devices.getBondedDevices(message);
-	}
-
-	/**
-	 * Passes RF band to the RF Signal Test component
-	 * @param {number} rfBand RF Band
-	 */
-	private setRfChannelRules(rfBand: number): void {
-		this.maintenance.setRfChannelRules(rfBand);
 	}
 
 	/**

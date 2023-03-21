@@ -18,14 +18,14 @@ limitations under the License.
 	<div>
 		<FrcResponseTime />
 		<v-divider />
-		<RfSignalTest ref='rfSignal' />
+		<RfSignalTest ref='rfSignal' :rf-band='rfBand' />
 		<v-divider />
 		<NetworkIssues />
 	</div>
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Component, Prop, Vue} from 'vue-property-decorator';
 import FrcResponseTime from './FrcResponseTime.vue';
 import NetworkIssues from './NetworkIssues.vue';
 import RfSignalTest from './RfSignalTest.vue';
@@ -42,11 +42,8 @@ import RfSignalTest from './RfSignalTest.vue';
 })
 export default class Maintenance extends Vue {
 	/**
-	 * Pass RF band to RF Signal Test component
-	 * @param {number} rfBand RF band
+	 * @property {number} rfBand RF band
 	 */
-	public setRfChannelRules(rfBand: number): void {
-		(this.$refs.rfSignal as RfSignalTest).setRfChannelRulesMessages(rfBand);
-	}
+	@Prop({required: true, default: 868}) rfBand!: number;
 }
 </script>

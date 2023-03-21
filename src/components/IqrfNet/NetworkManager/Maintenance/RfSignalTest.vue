@@ -94,7 +94,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import RfSignalTestResultModal from '@/components/IqrfNet/NetworkManager/Maintenance/RfSignalTestResultModal.vue';
 
@@ -121,6 +121,11 @@ import {MutationPayload} from 'vuex';
  * Maintenance RF signal test component
  */
 export default class RfSignalTest extends Vue {
+	/**
+	 * @property {number} rfBand RF band
+	 */
+	@Prop({required: true, default: 868}) rfBand!: number;
+
 	/**
 	 * @var {string} msgId Message ID
 	 */
@@ -233,16 +238,17 @@ export default class RfSignalTest extends Vue {
 	 * Sets RF channel validation rules and messages based on RF band
 	 * @param {number} rfBand RF band
 	 */
-	public setRfChannelRulesMessages(rfBand: number): void {
-		if (rfBand === 433) {
+	@Watch('rfBand')
+	private setRfChannelRulesMessages(): void {
+		if (this.rfBand === 433) {
 			this.params.rfChannel = 16;
-		} else if (rfBand === 868) {
+		} else if (this.rfBand === 868) {
 			this.params.rfChannel = 52;
 		} else {
 			this.params.rfChannel = 255;
 		}
-		this.rfChannelRules = getRfChannelRules(rfBand);
-		this.rfChannelMessages = getRfChannelValidationMessages(rfBand);
+		this.rfChannelRules = getRfChannelRules(this.rfBand);
+		this.rfChannelMessages = getRfChannelValidationMessages(this.rfBand);
 	}
 
 	/**
