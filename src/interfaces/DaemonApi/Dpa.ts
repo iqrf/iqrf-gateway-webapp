@@ -173,6 +173,10 @@ export interface ITrConfiguration {
 	neverSleep?: boolean
 	nodeDpaInterface?: boolean
 	uartBaudrate: number
+	// initphy
+	thermometerSensorPresent?: boolean
+	serialEepromPresent?: boolean
+	transcieverILType?: boolean
 	// RF
 	rfBand?: string
 	rfChannelA: number

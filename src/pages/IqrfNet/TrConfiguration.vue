@@ -1091,6 +1091,9 @@ export default class TrConfiguration extends Vue {
 		delete config.rfPgmIncorrectUpload;
 		delete config.rfBand;
 		delete config.embPers.values;
+		delete config.thermometerSensorPresent;
+		delete config.serialEepromPresent;
+		delete config.transcieverILType;
 		return config;
 	}
 
