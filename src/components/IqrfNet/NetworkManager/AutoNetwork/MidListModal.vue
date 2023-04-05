@@ -178,7 +178,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, PropSync} from 'vue-property-decorator';
+import {Component, Prop, PropSync, Ref} from 'vue-property-decorator';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import ModalBase from '@/components/ModalBase.vue';
 
@@ -212,6 +212,8 @@ export default class MidList extends ModalBase {
 	 * @property {Array<IAtnwMidErrorList>} _invalid!: Invalid MID list records
 	 */
 	@PropSync('invalid', {type: Array, default: []}) _invalid!: Array<IAtnwMidErrorList>;
+
+	@Ref('form') readonly form!: InstanceType<typeof ValidationObserver>;
 
 	/**
 	 * @var {string} mid Device MID
@@ -348,7 +350,7 @@ export default class MidList extends ModalBase {
 				break;
 			}
 		}
-		(this.$refs.form as InstanceType<typeof ValidationObserver>).reset();
+		this.form.reset();
 	}
 
 	/**
@@ -363,7 +365,6 @@ export default class MidList extends ModalBase {
 	 * Opens modal from the outside
 	 */
 	public showModal(): void {
-		this.reset();
 		this.openModal();
 	}
 }

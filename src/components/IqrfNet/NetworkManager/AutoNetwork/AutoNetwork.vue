@@ -640,6 +640,7 @@ export default class AutoNetwork extends Vue {
 		file.text()
 			.then((content: string) => {
 				this.parseContent(content);
+				(this.$refs.midlist as MidListModal).showModal();
 			})
 			.catch(() => {
 				this.$store.commit('spinner/HIDE');
@@ -729,7 +730,6 @@ export default class AutoNetwork extends Vue {
 		this.mid.midList = valid;
 		this.midInvalid = invalid;
 		this.$store.commit('spinner/HIDE');
-		(this.$refs.midlist as MidListModal).showModal();
 	}
 
 	/**
