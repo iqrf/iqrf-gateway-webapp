@@ -379,7 +379,6 @@ export default class MidList extends ModalBase {
 	 * Opens modal from the outside
 	 */
 	public showModal(): void {
-		this.reset();
 		this.openModal();
 	}
 }

@@ -217,7 +217,7 @@ limitations under the License.
 										:label='$t("iqrfnet.networkManager.autoNetwork.form.bondingControl.mid.file")'
 										:disabled='!useMid'
 										accept='.csv,.txt'
-										@change='midFileChanged($event)'
+										@change='readFile($event)'
 									>
 										<template #append-content>
 											<MidListModal
@@ -611,16 +611,18 @@ export default class AutoNetwork extends Vue {
 
 	/**
 	 * Attempts to read file contents
-	 * @param {File} file File
+	 * @param {FileList} fileList
 	 */
-	private readFile(file: File): void {
-		if (!file) {
+	private readFile(fileList: FileList): void {
+		if (fileList.length === 0) {
 			return;
 		}
+		const file = fileList[0];
 		this.$store.commit('spinner/SHOW');
 		file.text()
 			.then((content: string) => {
 				this.parseContent(content);
+				(this.$refs.midlist as MidListModal).showModal();
 			})
 			.catch(() => {
 				this.$store.commit('spinner/HIDE');
@@ -710,7 +712,6 @@ export default class AutoNetwork extends Vue {
 		this.mid.midList = valid;
 		this.midInvalid = invalid;
 		this.$store.commit('spinner/HIDE');
-		(this.$refs.midlist as MidListModal).showModal();
 	}
 
 	/**
