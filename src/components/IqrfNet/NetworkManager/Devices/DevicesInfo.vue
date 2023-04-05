@@ -445,7 +445,7 @@ export default class DevicesInfo extends Vue {
 </script>
 
 <style scoped lang='scss'>
-@media (min-width: 440px) and (max-width: 1400px) {
+@media (width >= 440px) and (width <= 1400px) {
 	.device-info {
 		td,
 		th {
@@ -454,7 +454,7 @@ export default class DevicesInfo extends Vue {
 	}
 }
 
-@media (max-width: 440px) {
+@media (width <= 440px) {
 	.device-info {
 		td,
 		th {

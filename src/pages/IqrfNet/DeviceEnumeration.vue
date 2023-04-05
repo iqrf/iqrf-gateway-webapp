@@ -298,14 +298,14 @@ export default class DeviceEnumeration extends Vue {
 </script>
 
 <style scoped>
-@media (max-width: 768px) {
+@media (width <= 768px) {
 	.product-picture {
 		max-height: 100%;
 		max-width: 100%;
 	}
 }
 
-@media (min-width: 768px) {
+@media (width >= 768px) {
 	.product-picture {
 		max-height: 33%;
 		max-width: 33%;
