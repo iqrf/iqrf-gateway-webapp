@@ -184,6 +184,7 @@
 		"edit": "Edit",
 		"delete": "Delete",
 		"clear": "Clear",
+		"back": "Back",
 		"indicateCoordinator": "Indicate coordinator",
 		"pingNodes": "Ping nodes",
 		"restartNodes": "Restart nodes",
