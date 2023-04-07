@@ -1659,7 +1659,7 @@
 					"total": "Nodes in network:",
 					"new": "New nodes:",
 					"wave": "Waves:",
-					"empty": "Empty waves:",
+					"emptyWaves": "Consecutive empty waves:",
 					"time": "Total time:",
 					"startMessage": "AutoNetwork process started.",
 					"endMessage": "AutoNetwork process concluded. {message}",
