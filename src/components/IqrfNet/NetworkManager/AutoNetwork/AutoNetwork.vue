@@ -124,12 +124,7 @@ limitations under the License.
 											:label='$t("iqrfnet.networkManager.autoNetwork.form.stopConditions.emptyWaves")'
 											:is-valid='touched ? valid : null'
 											:invalid-feedback='$t(errors[0])'
-											:disabled='!useEmptyWaves'
-										>
-											<template #prepend-content>
-												<CInputCheckbox :checked.sync='useEmptyWaves' />
-											</template>
-										</CInput>
+										/>
 									</ValidationProvider>
 								</CCol>
 							</CRow>
@@ -762,7 +757,7 @@ export default class AutoNetwork extends Vue {
 	private showResultDialog(): void {
 		const waves = this.useWaves ? this.waves : 0;
 		const result = (this.$refs.result as AutoNetworkResultModal);
-		result.showModal(waves, this.emptyWaves);
+		result.showModal(waves);
 	}
 
 	/**

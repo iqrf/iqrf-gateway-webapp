@@ -32,7 +32,7 @@ limitations under the License.
 				<td>{{ result.waves === 0 ? result.wave : result.wave + '/' + result.waves }}</td>
 			</tr>
 			<tr>
-				<th>{{ $t('iqrfnet.networkManager.autoNetwork.resultModal.empty') }}</th>
+				<th>{{ $t('iqrfnet.networkManager.autoNetwork.resultModal.emptyWaves') }}</th>
 				<td>{{ result.emptyWaves }}</td>
 			</tr>
 			<tr>
@@ -131,11 +131,10 @@ export default class AutoNetworkResult extends ModalBase {
 	/**
 	 * Passes autonetwork parameters and activates autonetwork result modal
 	 * @param {number} waves Number of total waves
-	 * @param {number} emptyWaves Number of empty waves
 	 */
-	public showModal(waves = 0, emptyWaves: number): void {
+	public showModal(waves = 0): void {
 		this.result.waves = waves;
-		this.result.emptyWaves = emptyWaves;
+		this.result.emptyWaves = 0;
 		this.openModal();
 		this.startTimer();
 	}
@@ -173,7 +172,12 @@ export default class AutoNetworkResult extends ModalBase {
 			this.result.totalNodes = totalNodes;
 		}
 		if (newNodes !== null) {
-			this.result.newNodes += newNodes;
+			if (newNodes === 0) {
+				this.result.emptyWaves++;
+			} else {
+				this.result.newNodes += newNodes;
+				this.result.emptyWaves = 0;
+			}
 		}
 		if (lastWave) {
 			this.stopTimer();
