@@ -105,10 +105,12 @@ export default class RfSignalTestResult extends ModalBase {
 		{
 			label: this.$t('iqrfnet.networkManager.maintenance.rfSignal.modal.online'),
 			key: 'online',
+			filter: false,
 		},
 		{
 			label: this.$t('iqrfnet.networkManager.maintenance.rfSignal.modal.counter'),
 			key: 'counter',
+			filter: false,
 		},
 	];
 
