@@ -107,8 +107,11 @@ limitations under the License.
 							</tr>
 						</tbody>
 					</table>
-					<CButton color='primary' to='/iqrfnet/network/'>
-						{{ $t('iqrfnet.enumeration.back') }}
+					<CButton
+						color='primary'
+						:to='returnButtonRoute'
+					>
+						{{ $t('forms.back') }}
 					</CButton>
 				</CCardBody>
 			</CCard>
@@ -127,6 +130,7 @@ import RfModeStd from '@/assets/std-black.svg';
 import {AxiosError, AxiosResponse} from 'axios';
 import {IDeviceEnumeration, OsInfo, PeripheralEnumeration} from '@/interfaces/DaemonApi/Dpa';
 import {DaemonClientState} from '@/interfaces/wsClient';
+import {NavigationGuardNext, Route} from 'vue-router/types/router';
 
 interface Product {
 	companyName: string
@@ -148,15 +152,30 @@ interface Product {
 		RfModeLp,
 		RfModeStd,
 	},
+	data() {
+		return {
+			fromRoute: null,
+		};
+	},
 	metaInfo: {
 		title: 'iqrfnet.enumeration.title',
-	}
+	},
+	beforeRouteEnter(to: Route, from: Route, next: NavigationGuardNext): void {
+		next((vm: Vue) => {
+			(vm as DeviceEnumeration).fromRoute = from;
+		});
+	},
 })
 
 /**
  * Device enumeration page component
  */
 export default class DeviceEnumeration extends Vue {
+	/**
+	 * @property {number} address Address of device to enumerate
+	 */
+	@Prop({required: false, default: 0}) address!: number;
+
 	/**
 	 * @var {string} msgId Daemon API message ID
 	 */
@@ -193,9 +212,19 @@ export default class DeviceEnumeration extends Vue {
 	private unwatch: CallableFunction = () => {return;};
 
 	/**
-	 * @property {number} address Address of device to enumerate
+	 * @var {Route|null} fromRoute Previous route
 	 */
-	@Prop({required: false, default: 0}) address!: number;
+	private fromRoute: Route|null = null;
+
+	/**
+	 * @property {string} returnButtonRoute Computes route for return button
+	 */
+	get returnButtonRoute(): string {
+		if (this.fromRoute === null || this.fromRoute.path === '/') {
+			return '/iqrfnet/network/';
+		}
+		return this.fromRoute.path;
+	}
 
 	/**
 	 * Vue lifecycle hook created
