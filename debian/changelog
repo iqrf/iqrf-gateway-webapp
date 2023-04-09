@@ -1,10 +1,15 @@
-iqrf-gateway-webapp (2.5.5~alpha~1.gbp0faddc) UNRELEASED; urgency=medium
+iqrf-gateway-webapp (2.5.5) stable; urgency=medium
 
-  ** SNAPSHOT build @0faddc897564d302724beb0c4e417cb9d7834bbe **
+  [ Karel Hanák ]
+  * Prepare for version 2.5.5-alpha
+  * AutoNetwork: fixed mid list file reading
+  * TrConfiguration: delete readonly config properties
+  * stylelint: fixed media-feature-range-notation error
+  * RfSignalTestResultModal: removed filter fields for result and counter
+  * DeviceEnumeration: back button routes to previous route
+  * AutoNetwork: removed emptyWaves checkbox, fixed emptyWaves counter
 
-  * UNRELEASED
-
- -- Karel Hanák <karel.hanak@iqrf.org>  Sun, 12 Mar 2023 10:07:10 +0100
+ -- Karel Hanák <karel.hanak@iqrf.org>  Sun, 09 Apr 2023 08:16:21 +0200
 
 iqrf-gateway-webapp (2.5.4) stable; urgency=medium
 
