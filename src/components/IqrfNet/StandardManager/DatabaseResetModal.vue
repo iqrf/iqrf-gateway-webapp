@@ -67,6 +67,7 @@ import ModalBase from '@/components/ModalBase.vue';
 import InfoService from '@/services/DaemonApi/InfoService';
 
 import {MutationPayload} from 'vuex';
+import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 /**
  * StandardDevices database reset dialog component
@@ -115,7 +116,8 @@ export default class DatabaseResetDialog extends ModalBase {
 	 */
 	private resetDb(): void {
 		this.$store.dispatch('spinner/show', {timeout: 10000});
-		InfoService.reset(10000, this.$t('iqrfnet.standard.table.messages.resetTimeout'), () => this.msgId = '')
+		const options = new DaemonMessageOptions(null, 10000, this.$t('iqrfnet.standard.table.messages.resetTimeout'), () => this.msgId = '');
+		InfoService.reset(true, options)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
