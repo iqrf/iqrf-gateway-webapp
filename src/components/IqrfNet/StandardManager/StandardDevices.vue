@@ -110,7 +110,7 @@ limitations under the License.
 				</div>
 				<CDataTable
 					:fields='fields'
-					:items='devices'
+					:items='filteredDevices'
 					:column-filter='true'
 					:pagination='true'
 					:items-per-page='10'
@@ -126,20 +126,48 @@ limitations under the License.
 							</router-link>
 						</td>
 					</template>
+					<template #address-filter>
+						<input
+							class='form-control form-control-sm'
+							:value='filters.address'
+							@input='e => filters.address = e.target.value'
+						>
+					</template>
 					<template #product='{item}'>
 						<td>
 							{{ item.getProductName() }}
 						</td>
+					</template>
+					<template #product-filter>
+						<input
+							class='form-control form-control-sm'
+							:value='filters.product'
+							@input='e => filters.product = e.target.value'
+						>
 					</template>
 					<template #os='{item}'>
 						<td>
 							{{ item.getOs() }}
 						</td>
 					</template>
+					<template #os-filter>
+						<input
+							class='form-control form-control-sm'
+							:value='filters.os'
+							@input='e => filters.os = e.target.value'
+						>
+					</template>
 					<template #dpa='{item}'>
 						<td>
 							{{ item.getDpa() }}
 						</td>
+					</template>
+					<template #dpa-filter>
+						<input
+							class='form-control form-control-sm'
+							:value='filters.dpa'
+							@input='e => filters.dpa = e.target.value'
+						>
 					</template>
 					<template #status='{item}'>
 						<td>
@@ -293,6 +321,13 @@ import {IInfoBinout, IInfoDevice, IInfoLight, IInfoNode, IInfoSensor} from '@/in
 import {MutationPayload} from 'vuex';
 import DpaService, {OsDpaVersion} from '@/services/IqrfRepository/OsDpaService';
 
+interface StandardDevicesFilters {
+	address: string;
+	product: string;
+	os: string;
+	dpa: string;
+}
+
 @Component({
 	components: {
 		CButton,
@@ -394,6 +429,37 @@ export default class StandardDevices extends Vue {
 			filter: false,
 		}
 	];
+
+	/**
+	 * @var {StandardDeviceFilters} filters Filters
+	 */
+	private filters: StandardDevicesFilters = {
+		address: '',
+		product: '',
+		os: '',
+		dpa: '',
+	};
+
+	/**
+	 * @var {Array<StandardDevice>} filteredDevices Filtered devices
+	 */
+	get filteredDevices(): Array<StandardDevice> {
+		return this.devices.filter((item: StandardDevice) => {
+			if (this.filters.address.length > 0 && item.getAddress().toString().toUpperCase() !== this.filters.address.toUpperCase()) {
+				return false;
+			}
+			if (this.filters.product.length > 0 && !item.getProductName().toUpperCase().includes(this.filters.product.toUpperCase())) {
+				return false;
+			}
+			if (this.filters.os.length > 0 && !item.getOs().toUpperCase().includes(this.filters.os.toUpperCase())) {
+				return false;
+			}
+			if (this.filters.dpa.length > 0 && !item.getDpa().toUpperCase().includes(this.filters.dpa.toUpperCase())) {
+				return false;
+			}
+			return true;
+		});
+	}
 
 	/**
 	 * Websocket store unsubscribe function

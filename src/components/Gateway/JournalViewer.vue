@@ -28,7 +28,12 @@
 		>
 			{{ $t('gateway.log.journal.noOlderRecords') }}
 		</CAlert>
-		<pre v-if='log.length > 0' ref='journal' class='log card-margin-bottom' @scroll='scrollUpdate'>{{ log }}</pre>
+		<pre
+			v-if='log.length > 0'
+			ref='journal'
+			class='log card-margin-bottom'
+			@scroll='scrollUpdate'
+		>{{ log }}</pre>
 	</CCardBody>
 </template>
 
