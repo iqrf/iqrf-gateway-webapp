@@ -16,20 +16,18 @@ limitations under the License.
 -->
 <template>
 	<v-main>
-		<v-container fluid fill-height>
-			<v-layout align-center justify-center>
-				<v-flex
-					xs12
-					sm8
-					md6
-					lg4
+		<v-container fluid class='fill-height'>
+			<v-row align='center' justify='center'>
+				<v-col
+					cols='12'
+					sm='8'
+					md='6'
+					lg='4'
 				>
-					<div class='logo'>
-						<img :alt='title' :src='logo'>
-					</div>
+					<v-img :alt='title' :src='logo' max-height='32pt' contain class='mb-6' />
 					<slot />
-				</v-flex>
-			</v-layout>
+				</v-col>
+			</v-row>
 		</v-container>
 	</v-main>
 </template>
@@ -60,14 +58,3 @@ export default class TheWizard extends Vue {
 
 }
 </script>
-
-<style lang='scss' scoped>
-.logo {
-	padding-bottom: 2rem;
-
-	img {
-		height: 32pt;
-		width: 100%;
-	}
-}
-</style>

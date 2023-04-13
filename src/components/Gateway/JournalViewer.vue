@@ -33,7 +33,12 @@
 			>
 				{{ $t('gateway.log.journal.noOlderRecords') }}
 			</v-alert>
-			<pre v-if='log.length > 0' ref='journal' v-scroll.self='scrollUpdate' class='log'>{{ log }}</pre>
+			<pre
+				v-if='log.length > 0'
+				ref='journal'
+				v-scroll.self='scrollUpdate'
+				class='log'
+			>{{ log }}</pre>
 		</v-card-text>
 	</v-card>
 </template>

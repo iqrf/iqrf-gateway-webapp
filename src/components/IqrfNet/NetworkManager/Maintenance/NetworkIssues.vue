@@ -33,7 +33,7 @@ limitations under the License.
 						<template #label>
 							<div>
 								{{ type.text }}
-								<div class='caption'>
+								<div class='text-caption'>
 									{{ $t('iqrfnet.networkManager.maintenance.networkIssues.help.' + type.value) }}
 								</div>
 							</div>

@@ -18,11 +18,7 @@
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '@/helpers/authorizationHeader';
 
-import {
-	IGatewayBriefInfo,
-	IGatewayInfo,
-	IHostname
-} from '@/interfaces/Gateway/Information';
+import {IGatewayBriefInfo, IHostname} from '@/interfaces/Gateway/Information';
 
 /**
  * Root password interface

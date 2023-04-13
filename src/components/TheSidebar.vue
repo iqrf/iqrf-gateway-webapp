@@ -26,7 +26,12 @@ limitations under the License.
 		<template #prepend>
 			<v-list-item class='logo'>
 				<router-link to='/'>
-					<img :alt='title' :src='logo'>
+					<v-img
+						:alt='title'
+						:src='logo'
+						contain
+						height='48px'
+					/>
 				</router-link>
 			</v-list-item>
 		</template>
@@ -54,8 +59,6 @@ import SidebarItems, {NavigationItem} from '@/components/SidebarItems.vue';
 import ThemeManager from '@/helpers/themeManager';
 import {UserRoleIndex} from '@/services/AuthenticationService';
 import {LinkTarget} from '@/helpers/DisambiguationHelper';
-
-
 
 @Component({
 	components: {
@@ -490,13 +493,6 @@ export default class TheSidebar extends Vue {
 
 <style lang='scss'>
 .logo {
-	img {
-		max-width: 100%;
-		max-height: 100%;
-		vertical-align: middle;
-	}
-
-	height: 60px;
 	justify-content: center;
 }
 </style>
