@@ -1,10 +1,10 @@
-iqrf-gateway-webapp (2.5.6~alpha~1.gbpd86dea) UNRELEASED; urgency=medium
+iqrf-gateway-webapp (2.5.6) stable; urgency=medium
 
-  ** SNAPSHOT build @d86dea3a187606cdccdc56d9c9083e48d2bbf6a6 **
+  [ Karel Hanák ]
+  * Prepare for version 2.5.6-alpha
+  * StandardDevices: external filtering for nested objects
 
-  * UNRELEASED
-
- -- Karel Hanák <karel.hanak@iqrf.org>  Sun, 09 Apr 2023 08:20:51 +0200
+ -- Karel Hanák <karel.hanak@iqrf.org>  Fri, 14 Apr 2023 08:03:44 +0200
 
 iqrf-gateway-webapp (2.5.5) stable; urgency=medium
 
