@@ -185,7 +185,7 @@ phpstan:
 
 eslint:
   script:
-    - pnpm run lint
+    - pnpm run lint:js
   <<: *coding-style_template
   <<: *npm_template
 
