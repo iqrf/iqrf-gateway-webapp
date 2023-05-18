@@ -17,7 +17,11 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('network.mobile.title') }}</h1>
-		<GsmInterfaces ref='interfaces' />
+		<GsmInterfaces
+			ref='interfaces'
+			@restart='loading = true'
+			@refresh='getConnections'
+		/>
 		<CCard>
 			<CCardHeader class='datatable-header'>
 				{{ $t('network.connection.title') }}

@@ -590,13 +590,14 @@
 				"pin": {
 					"$id": "#/properties/gsm/properties/pin",
 					"title": "SIM PIN",
-					"type": "string",
 					"oneOf": [
 						{
+							"type": "string",
 							"pattern": "^\\d{4}$"
 						},
 						{
-							"const": ""
+							"type": "string",
+							"maxLength": 0
 						}
 					],
 					"example": "1234"

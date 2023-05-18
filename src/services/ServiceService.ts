@@ -75,7 +75,7 @@ class ServiceService {
 	 * @param name Service name
 	 */
 	restart(name: string): Promise<AxiosResponse> {
-		return axios.post('services/' + name + '/restart', null, {headers: authorizationHeader()});
+		return axios.post('services/' + name + '/restart', null, {headers: authorizationHeader(), timeout: 90000});
 	}
 
 	/**

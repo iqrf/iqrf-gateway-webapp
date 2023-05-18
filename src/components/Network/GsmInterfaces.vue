@@ -42,7 +42,7 @@ limitations under the License.
 					color='primary'
 					size='sm'
 					class='float-right'
-					@click='getData'
+					@click='getData(true)'
 				>
 					<CIcon :content='cilReload' size='sm' />
 					{{ $t('forms.refresh') }}
@@ -191,12 +191,15 @@ export default class GsmInterfaces extends Vue {
 	/**
 	 * Retrieves modems
 	 */
-	public getData(): void {
+	public getData(buttonInvoked = false): void {
 		this.loading = true;
 		NetworkInterfaceService.listModems()
 			.then((modems: Array<IModem>) => {
 				this.modems = modems;
 				this.loading = false;
+				if (buttonInvoked) {
+					this.$emit('refresh');
+				}
 			});
 	}
 
@@ -239,9 +242,19 @@ export default class GsmInterfaces extends Vue {
 	 * Restarts ModemManager service to fix broken modem
 	 */
 	private async restartModemManager(): Promise<void> {
-		await ServiceService.restart('ModemManager');
-		await new Promise(resolve => setTimeout(resolve, 15_000));
+		this.$emit('restart');
+		this.loading = true;
+		ServiceService.restart('ModemManager')
+			.then(async () => {
+				await new Promise(resolve => setTimeout(resolve, 15_000));
+				this.getData();
+				this.loading = false;
+				this.$emit('refresh');
+			})
+			.catch(() => {
+				this.loading = false;
+				this.$emit('refresh');
+			});
 	}
-
 }
 </script>

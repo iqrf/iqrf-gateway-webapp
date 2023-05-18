@@ -79,21 +79,24 @@ export default class UrlBuilder {
 	 * Returns REST API URL
 	 */
 	getRestApiUrl(): string {
-		return '//' + this.hostname + (this.isDev ? ':8080' : this.port) + process.env.VUE_APP_BASE_URL + 'api/v0/';
+		//return '//' + this.hostname + (this.isDev ? ':8080' : this.port) + process.env.VUE_APP_BASE_URL + 'api/v0/';
+		return '//192.168.0.230/api/v0/';
 	}
 
 	/**
 	 * Returns WebSocket API URL
 	 */
 	getWsApiUrl(): string {
-		return this.wsProtocol + this.hostname + (this.isDev ? ':1338': this.port + '/ws');
+		//return this.wsProtocol + this.hostname + (this.isDev ? ':1338': this.port + '/ws');
+		return 'ws://192.168.0.230/ws';
 	}
 
 	/**
 	 * Returns WebSocket Monitor URL
 	 */
 	getWsMonitorUrl(): string {
-		return this.wsProtocol + this.hostname + (this.isDev ? ':1438': this.port + '/wsMonitor');
+		//return this.wsProtocol + this.hostname + (this.isDev ? ':1438': this.port + '/wsMonitor');
+		return 'ws://192.168.0.230/wsMonitor';
 	}
 
 	/**
