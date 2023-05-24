@@ -1,10 +1,11 @@
-iqrf-gateway-webapp (2.5.7~alpha~1.gbpbe0b69) UNRELEASED; urgency=medium
+iqrf-gateway-webapp (2.5.7) stable; urgency=medium
 
-  ** SNAPSHOT build @be0b69d24243d22d42530ee9acb22a0de7c2afbb **
+  [ Karel Hanák ]
+  * Prepare for version 2.5.7-alpha
+  * MobileConnections: extend modem handling timeout, updated jsonschema
+  * fixed urlbuilder urls
 
-  * UNRELEASED
-
- -- Karel Hanák <karel.hanak@iqrf.org>  Fri, 14 Apr 2023 08:16:50 +0200
+ -- Karel Hanák <karel.hanak@iqrf.org>  Wed, 24 May 2023 11:29:38 +0200
 
 iqrf-gateway-webapp (2.5.6) stable; urgency=medium
 
