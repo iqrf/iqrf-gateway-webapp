@@ -2405,12 +2405,19 @@
 						"fetch": "Checking online status of devices...",
 						"fetchFailed": "Failed to retrieve status of devices."
 					},
-					"enumNowFailed": "Network enumeration process failed: {error}",
-					"enumNowProgress": "Enumerating network [{progress} %]\nPhase: {phase}\nStep: {current}/{total}\nThis process may take tens of minutes for large networks.",
-					"enumNowSuccess": "Network enumeration has been successfully completed.",
 					"resetFailed": "Failed to reset database: {error}",
 					"resetSuccess": "Database has been successfully reset.",
 					"resetTimeout": "Request to reset database timed out."
+				}
+			},
+			"enumeration": {
+				"title": "Standard devices enumeration",
+				"step": "Step",
+				"time": "Time",
+				"messages": {
+					"conn": "Enumeration process interrupted, connection to IQRF Gateway Daemon lost.",
+					"success": "Standard devices enumeration concluded successfully.",
+					"failure": "Standard devices enumeration failed."
 				}
 			}
 		},

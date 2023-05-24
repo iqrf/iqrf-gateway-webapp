@@ -64,7 +64,9 @@ limitations under the License.
 import {Component} from 'vue-property-decorator';
 import ModalBase from '@/components/ModalBase.vue';
 
-import InfoService from '@/services/DaemonApi/InfoService';
+import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
+
+import DbService from '@/services/DaemonApi/DbService';
 
 import {MutationPayload} from 'vuex';
 
@@ -96,7 +98,7 @@ export default class DatabaseResetDialog extends ModalBase {
 			}
 			this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 			this.$store.dispatch('spinner/hide');
-			if (mutation.payload.mType === 'infoDaemon_Reset') {
+			if (mutation.payload.mType === 'iqrfDb_Reset') {
 				this.handleReset(mutation.payload.data);
 			}
 		});
@@ -115,7 +117,8 @@ export default class DatabaseResetDialog extends ModalBase {
 	 */
 	private resetDb(): void {
 		this.$store.dispatch('spinner/show', {timeout: 10000});
-		InfoService.reset(10000, this.$t('iqrfnet.standard.table.messages.resetTimeout'), () => this.msgId = '')
+		const options = new DaemonMessageOptions(null, 10000, 'iqrfnet.standard.table.messages.resetTimeout', () => this.msgId = '');
+		DbService.resetDatabase(options)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 

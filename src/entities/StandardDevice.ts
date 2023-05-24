@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {IInfoSensorDetail} from '@/interfaces/DaemonApi/IqrfInfo';
+import {IIqrfDbDeviceFull, IIqrfDbSensorDetails} from '@/interfaces/DaemonApi/IqrfDb';
 import {IProduct} from '@/interfaces/Repository';
 import i18n from '@/plugins/i18n';
 
@@ -63,6 +63,21 @@ class StandardDevice {
 	private discovered: boolean;
 
 	/**
+	 * Device virtual routing number
+	 */
+	private vrn: number;
+
+	/**
+	 * Device zone
+	 */
+	private zone: number;
+
+	/**
+	 * Parent device
+	 */
+	private parent: number | null;
+
+	/**
 	 * Is device online?
 	 */
 	private online = false;
@@ -75,7 +90,7 @@ class StandardDevice {
 	/**
 	 * Array of implemented standard sensors
 	 */
-	private sensors: Array<IInfoSensorDetail> = [];
+	private sensors: Array<IIqrfDbSensorDetails> = [];
 
 	/**
 	 * Array of implemented binary outputs
@@ -109,23 +124,20 @@ class StandardDevice {
 
 	/**
 	 * Constructor
-	 * @param address Device address
-	 * @param mid Device MID
-	 * @param hwpid Device HWPID
-	 * @param hwpidVer Device HWPID version
-	 * @param dpa Device DPA version
-	 * @param os Device OS build
-	 * @param discovered Is device discovered?
+	 * @param {IIqrfDbDeviceFull} device Device object from Daemon API
 	 */
-	constructor(address: number, mid: number, hwpid: number, hwpidVer: number, dpa: number, os: number, discovered = false) {
-		this.address = address;
-		this.mid = mid;
-		this.hwpid = hwpid;
-		this.hwpidVer = hwpidVer;
-		this.dpa = dpa;
-		this.osBuild = os;
-		this.osVersion = '';
-		this.discovered = discovered;
+	constructor(device: IIqrfDbDeviceFull) {
+		this.address = device.address;
+		this.mid = device.mid;
+		this.hwpid = device.hwpid;
+		this.hwpidVer = device.hwpidVersion;
+		this.osBuild = device.osBuild;
+		this.osVersion = device.osVersion;
+		this.dpa = device.dpa;
+		this.discovered = device.discovered;
+		this.vrn = device.vrn;
+		this.zone = device.zone;
+		this.parent = device.parent;
 		this.product = {
 			name: 'Unknown',
 			hwpid: this.hwpid,
@@ -134,7 +146,7 @@ class StandardDevice {
 			homePage: '',
 			picture: '',
 			rfMode: -1,
-			pictureOriginal: ''
+			pictureOriginal: '',
 		};
 	}
 
@@ -309,9 +321,9 @@ class StandardDevice {
 
 	/**
 	 * Sets implemented sensors
-	 * @param {Array<IInfoSensorDetail>} sensors Implemented sensors
+	 * @param {Array<IIqrfDbSensorDetails>} sensors Implemented sensors
 	 */
-	setSensors(sensors: Array<IInfoSensorDetail>): void {
+	setSensors(sensors: Array<IIqrfDbSensorDetails>): void {
 		this.sensors = sensors;
 	}
 
@@ -319,7 +331,7 @@ class StandardDevice {
 	 * Returns implemented sensors
 	 * @returns Implemented sensors
 	 */
-	getSensors(): Array<IInfoSensorDetail> {
+	getSensors(): Array<IIqrfDbSensorDetails> {
 		return this.sensors;
 	}
 
