@@ -26,6 +26,10 @@
 			"title": "iqrf::IqrfCdc"
 		},
 		{
+			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__IqrfDb.json",
+			"title": "iqrf::IqrfDb"
+		},
+		{
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__IqrfDpa.json",
 			"title": "iqrf::IqrfDpa"
 		},

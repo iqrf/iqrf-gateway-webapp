@@ -21,7 +21,7 @@ limitations under the License.
 			<v-tabs v-model='activeTab' :show-arrows='true'>
 				<v-tab>{{ $t("config.daemon.misc.jsonApi.title") }}</v-tab>
 				<v-tab>{{ $t("config.daemon.misc.iqrfRepository.title") }}</v-tab>
-				<v-tab>{{ $t("config.daemon.misc.iqrfInfo.title") }}</v-tab>
+				<v-tab>{{ $t("config.daemon.misc.iqrfDb.title") }}</v-tab>
 				<v-tab>{{ $t("config.daemon.misc.monitor.title") }}</v-tab>
 				<v-tab>{{ $t("config.daemon.misc.tracer.title") }}</v-tab>
 			</v-tabs>
@@ -39,7 +39,7 @@ limitations under the License.
 					<IqrfRepository />
 				</v-tab-item>
 				<v-tab-item :transition='false'>
-					<IqrfInfo />
+					<IqrfDb />
 				</v-tab-item>
 				<v-tab-item :transition='false'>
 					<MonitorList />
@@ -54,7 +54,7 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import IqrfInfo from '@/components/Config/Misc/IqrfInfo.vue';
+import IqrfDb from '@/components/Config/Misc/IqrfDb.vue';
 import IqrfRepository from '@/components/Config/Misc/IqrfRepository.vue';
 import JsonApi from '@/components/Config/Misc/JsonApi.vue';
 import JsonRawApi from '@/components/Config/Misc/JsonRawApi.vue';
@@ -66,7 +66,7 @@ import {UserRole} from '@/services/AuthenticationService';
 
 @Component({
 	components: {
-		IqrfInfo,
+		IqrfDb,
 		IqrfRepository,
 		JsonApi,
 		JsonRawApi,
