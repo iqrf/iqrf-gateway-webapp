@@ -45,6 +45,7 @@
 			"type": "string",
 			"title": "Language",
 			"enum": [
+				"cs",
 				"en"
 			],
 			"default": "en",

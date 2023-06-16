@@ -49,7 +49,10 @@
 			"$id": "#/properties/language",
 			"type": "string",
 			"title": "Language",
-			"enum": ["en"],
+			"enum": [
+				"cs",
+				"en"
+			],
 			"default": "en",
 			"example": "en"
 		},

@@ -50,6 +50,11 @@ class User implements JsonSerializable {
 	use TId;
 
 	/**
+	 * Language: Czech
+	 */
+	public const LANGUAGE_CZECH = 'cs';
+
+	/**
 	 * Language: English
 	 */
 	public const LANGUAGE_ENGLISH = 'en';
@@ -62,7 +67,10 @@ class User implements JsonSerializable {
 	/**
 	 * Supported languages
 	 */
-	public const LANGUAGES = [self::LANGUAGE_ENGLISH];
+	public const LANGUAGES = [
+		self::LANGUAGE_CZECH,
+		self::LANGUAGE_ENGLISH,
+	];
 
 	/**
 	 * User role: Admin user

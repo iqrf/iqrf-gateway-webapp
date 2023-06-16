@@ -37,6 +37,7 @@
 			"type": "string",
 			"title": "Language",
 			"enum": [
+				"cs",
 				"en"
 			],
 			"example": "en"

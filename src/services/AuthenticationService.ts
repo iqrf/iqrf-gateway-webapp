@@ -67,6 +67,11 @@ export enum AccountState {
 export enum UserLanguage {
 
 	/**
+	 * Czech
+	 */
+	CZECH = 'cs',
+
+	/**
 	 * English
 	 */
 	ENGLISH = 'en'
