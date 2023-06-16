@@ -745,7 +745,7 @@
 											"});",
 											"pm.test('Error message is \\'JSON does not validate. ', function () {",
 											"    var jsonData = pm.response.json();",
-											"    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: userCreate Violations:\\n[language] Does not have a value in the enumeration [\\\"en\\\"]');",
+											"    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: userCreate Violations:\\n[language] Does not have a value in the enumeration [\\\"cs\\\",\\\"en\\\"]');",
 											"});"
 										],
 										"type": "text/javascript"
