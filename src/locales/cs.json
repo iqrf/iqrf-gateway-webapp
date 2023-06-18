@@ -49,7 +49,9 @@
 				"sendFailed": "Nepodařilo se odeslat e-mail pro obnovení hesla: {error}"
 			},
 			"title": "Obnovení účtu",
-			"changePassword": "Změna hesla"
+			"changePassword": "Změna hesla",
+			"requestPrompt": "Zadejte prosím uživatelské jméno a na přidruženou e-mailovou adresu bude odeslána zpráva pro obnovu hesla.",
+			"sendEmail": "Odeslat e-mail"
 		}
 	},
 	"service": {
@@ -60,6 +62,10 @@
 	"table": {
 		"messages": {
 			"noRecords": "Nebyly nalezeny žádné záznamy."
+		},
+		"actions": {
+			"deleteAll": "Odstranit vše",
+			"disable": "Zakázat"
 		}
 	},
 	"config": {
@@ -178,5 +184,10 @@
 	},
 	"daemonStatus": {
 		"queue": "Fronta daemona"
-	}
+	},
+	"sessionExpiration": {
+		"failed": "Prodloužení relace se nezdařilo.",
+		"success": "Vaše relace byla úspěšně prodloužena."
+	},
+	"messageError": "Požadavek nemohl být proveden z důvodu chyby: {error}"
 }
