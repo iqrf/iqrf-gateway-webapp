@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-image: iqrftech/iqrf-gateway-webapp:tests-bullseye
+image: iqrftech/iqrf-gateway-webapp:tests-bookworm
 
 stages:
   - build-docker-testing
@@ -99,8 +99,8 @@ build-docker:tests:
   only:
     - schedules
   variables:
-    DOCKER_FILE: docker/tests/bullseye.Dockerfile
-    DOCKER_TAG: tests-bullseye
+    DOCKER_FILE: docker/tests/bookworm.Dockerfile
+    DOCKER_TAG: tests-bookworm
 
 test:
   before_script:
