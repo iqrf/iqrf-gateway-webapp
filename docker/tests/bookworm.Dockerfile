@@ -35,5 +35,5 @@ RUN apt-get update \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
-RUN update-alternatives --set php /usr/bin/php7.4
-RUN update-alternatives --set phpdbg /usr/bin/phpdbg7.4
+RUN update-alternatives --set php /usr/bin/php8.2
+RUN update-alternatives --set phpdbg /usr/bin/phpdbg8.2

@@ -180,7 +180,7 @@ phpstan:
     - composer install --no-progress
     - update-alternatives --set php /usr/bin/php7.4
   script:
-    - make phpstan
+    - NETTE_TESTER_RUNNER=1 php vendor/bin/phpstan analyse -c phpstan.neon
   <<: *coding-style_template
 
 eslint:
@@ -200,7 +200,8 @@ qa:
     - composer install --no-progress
     - update-alternatives --set php /usr/bin/php7.4
   script:
-    - make qa
+    - vendor/bin/linter app bin tests
+    - vendor/bin/codesniffer --runtime-set php_version 70400 app bin tests
   <<: *coding-style_template
 
 # Sentry version
