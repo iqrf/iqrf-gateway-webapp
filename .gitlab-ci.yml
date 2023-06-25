@@ -104,8 +104,8 @@ build-docker:tests:
 
 test:
   before_script:
-    - update-alternatives --set php /usr/bin/php${PHP_VERSION}
     - composer install --no-progress
+    - update-alternatives --set php /usr/bin/php${PHP_VERSION}
   script:
     - vendor/bin/tester -p phpdbg${PHP_VERSION} -c ./tests/php.ini -s ./tests
   after_script:
@@ -134,8 +134,8 @@ newman:
 
 coverage:
   before_script:
-    - update-alternatives --set php /usr/bin/php8.1
     - composer install --no-progress
+    - update-alternatives --set php /usr/bin/php8.1
   script:
     - vendor/bin/tester -c ./tests/php-coverage.ini -o none --coverage ./coverage.html --coverage-src ./app ./tests
   allow_failure: true
@@ -168,8 +168,8 @@ coding-style:
 
 doctrine_mapping:
   before_script:
-    - update-alternatives --set php /usr/bin/php7.4
     - composer install --no-progress
+    - update-alternatives --set php /usr/bin/php7.4
   script:
     - bin/manager orm:validate-schema --skip-sync
   <<: *coding-style_template
@@ -177,8 +177,8 @@ doctrine_mapping:
 phpstan:
   retry: 2
   before_script:
-    - update-alternatives --set php /usr/bin/php7.4
     - composer install --no-progress
+    - update-alternatives --set php /usr/bin/php7.4
   script:
     - make phpstan
   <<: *coding-style_template
@@ -197,8 +197,8 @@ stylelint:
 
 qa:
   before_script:
-    - update-alternatives --set php /usr/bin/php7.4
     - composer install --no-progress
+    - update-alternatives --set php /usr/bin/php7.4
   script:
     - make qa
   <<: *coding-style_template
