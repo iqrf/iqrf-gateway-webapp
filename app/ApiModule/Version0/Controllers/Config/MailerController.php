@@ -30,6 +30,7 @@ use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Controllers\BaseConfigController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\ApiModule\Version0\RequestAttributes;
+use App\Exceptions\InvalidSmtpConfigException;
 use App\Models\Mail\ConfigurationManager;
 use App\Models\Mail\Senders\MailerConfigurationTestMailSender;
 use Nette\IOException;
@@ -127,13 +128,15 @@ class MailerController extends BaseConfigController {
 		self::checkScopes($request, ['mailer']);
 		$this->validator->validateRequest('mailer', $request);
 		try {
-			$this->manager->write($request->getJsonBody());
+			$configuration = $request->getJsonBody();
+			$this->manager->test($configuration);
+			$this->manager->write($configuration);
 			$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
 			if ($user->getEmail() !== null) {
 				$this->configurationTestSender->send($user);
 			}
 			return $response->writeBody('Workaround');
-		} catch (IOException $e) {
+		} catch (IOException | InvalidSmtpConfigException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (SendException $e) {
 			throw new ServerErrorException('Configuration saved successfully, but unable to send test email.', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
@@ -168,7 +171,11 @@ class MailerController extends BaseConfigController {
 		$this->validator->validateRequest('mailer', $request);
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
 		try {
-			$this->configurationTestSender->send($user, $request->getJsonBody());
+			$configuration = $request->getJsonBodyCopy();
+			$this->manager->test($configuration);
+			$this->configurationTestSender->send($user, $configuration);
+		} catch (IOException | InvalidSmtpConfigException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (SendException $e) {
 			throw new ServerErrorException('Unable to send the e-mail', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}

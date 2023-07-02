@@ -65,10 +65,11 @@
 		"nettrine/migrations": "^v0.8.1",
 		"nettrine/orm": "^v0.8.4",
 		"php-http/guzzle7-adapter": "^1.0.0",
-		"php-http/discovery": "~1.14.3",
+		"phpmailer/phpmailer": "^6.8.0",
 		"ramsey/uuid": "^4.2.3",
 		"ramsey/uuid-doctrine": "^2.0.0",
 		"ratchet/pawl": "^v0.4.1",
+		"spatie/ssl-certificate": "^1.22",
 		"symfony/process": "^v5.4.28",
 		"tracy/tracy": "^v2.9.7"
 	},
