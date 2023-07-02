@@ -47,3 +47,7 @@ parameters:
 			path: app/NetworkModule/Entities/Modem.php
 		- '#Call to an undefined method Symfony\\Component\\Console\\Helper\\HelperInterface::ask\(\).#'
 		- '#Call to deprecated method forUnsecuredSigner\(\) of class Lcobucci\\JWT\\Configuration\:\s*Deprecated since v4.3#'
+		-
+			message: "#^Negated boolean expression is always false\\.$#"
+			path: app/Models/Mail/ConfigurationManager.php
+			count: 1
