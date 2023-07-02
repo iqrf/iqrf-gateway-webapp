@@ -89,7 +89,7 @@ class ConfigurationManager {
 
 	/**
 	 * Reads mailer configuration
-	 * @return array<string, array<string, mixed>|bool|int|string|null> Mailer configuration
+	 * @return array<string, bool|int|string|null> Mailer configuration
 	 */
 	public function read(): array {
 		if ($this->config !== null) {
@@ -107,18 +107,18 @@ class ConfigurationManager {
 
 	/**
 	 * Writes the mailer configuration
-	 * @param array<string, array<string, mixed>|bool|int|string|null> $configuration Mailer configuration to write
+	 * @param array<string, bool|int|string|null> $configuration Mailer configuration to write
 	 * @throws IOException
 	 */
 	public function write(array $configuration): void {
 		$configuration = $this->mergeConfigurations($configuration);
-		$content = Neon::encode($configuration, blockMode: true);
+		$content = Neon::encode($configuration, Neon::BLOCK);
 		FileSystem::write($this->path, $content);
 	}
 
 	/**
 	 * Tests the mailer configuration
-	 * @param array<string, array<string, mixed>|bool|int|string|null> $configuration Mailer configuration
+	 * @param array<string, bool|int|string|null> $configuration Mailer configuration
 	 * @thrown InvalidSmtpConfigException
 	 */
 	public function test(array $configuration): void {
@@ -190,7 +190,7 @@ class ConfigurationManager {
 
 	/**
 	 * Validates the SSL certificate
-	 * @param array<string, array<string, mixed>|bool|int|string|null> $configuration Mailer configuration
+	 * @param array<string, bool|int|string|null> $configuration Mailer configuration
 	 */
 	private function validateCertificate(array $configuration): void {
 		try {
@@ -221,8 +221,8 @@ class ConfigurationManager {
 
 	/**
 	 * Merges the mailer configuration with the default configuration
-	 * @param array<string, array<string, mixed>|bool|int|string|null> $configuration Mailer configuration
-	 * @return array<string, array<string, mixed>|bool|int|string|null> Merged mailer configuration
+	 * @param array<string, bool|int|string|null> $configuration Mailer configuration
+	 * @return array<string, bool|int|string|null> Merged mailer configuration
 	 */
 	private function mergeConfigurations(array $configuration): array {
 		return (new Processor())->process($this->getConfigSchema(), $configuration);

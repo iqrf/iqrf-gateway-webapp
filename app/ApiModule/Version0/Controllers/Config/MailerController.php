@@ -110,7 +110,7 @@ class MailerController extends BaseConfigController {
 		self::checkScopes($request, ['mailer']);
 		$this->validator->validateRequest('mailer', $request);
 		try {
-			$configuration = $request->getJsonBodyCopy();
+			$configuration = $request->getJsonBody();
 			$this->manager->test($configuration);
 			$this->manager->write($configuration);
 			$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
@@ -148,7 +148,11 @@ class MailerController extends BaseConfigController {
 		$this->validator->validateRequest('mailer', $request);
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
 		try {
-			$this->sender->send($user, $request->getJsonBodyCopy());
+			$configuration = $request->getJsonBodyCopy();
+			$this->manager->test($configuration);
+			$this->configurationTestSender->send($user, $configuration);
+		} catch (IOException | InvalidSmtpConfigException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (SendException $e) {
 			throw new ServerErrorException('Unable to send the e-mail', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
