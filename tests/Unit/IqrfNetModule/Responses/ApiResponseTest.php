@@ -107,7 +107,7 @@ final class ApiResponseTest extends TestCase {
 	 */
 	public function testToJson(): void {
 		$this->response->set($this->json);
-		$expected = Json::encode($this->object, Json::PRETTY);
+		$expected = Json::encode($this->object, pretty: true);
 		Assert::equal($expected, $this->response->toJson(true));
 	}
 

@@ -22,7 +22,6 @@ namespace App\ServiceModule\Models;
 
 use App\CoreModule\Models\CommandManager;
 use App\ServiceModule\Exceptions\NonexistentServiceException;
-use Nette\Utils\Strings;
 
 /**
  * Tool for managing services (systemD init daemon)
@@ -95,7 +94,7 @@ class SystemDManager implements IServiceManager {
 		$cmd = 'systemctl is-enabled ' . $this->formatServiceName($serviceName);
 		$command = $this->commandManager->run($cmd, true);
 		if ($command->getExitCode() === 1 &&
-			Strings::contains($command->getStderr(), 'No such file or directory')) {
+			str_contains($command->getStderr(), 'No such file or directory')) {
 			throw new NonexistentServiceException($command->getStderr());
 		}
 		return $command->getStdout() === 'enabled';

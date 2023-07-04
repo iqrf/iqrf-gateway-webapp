@@ -57,7 +57,7 @@ class JsonSchemaManager extends FileManager {
 	 * @throws InvalidJsonException
 	 * @throws JsonException
 	 */
-	public function validate($json, bool $tryFix = false): void {
+	public function validate(mixed $json, bool $tryFix = false): void {
 		if (!is_array($json) && !($json instanceof stdClass)) {
 			$message = 'Invalid JSON format';
 			throw new InvalidJsonException($message);

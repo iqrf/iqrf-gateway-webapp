@@ -129,7 +129,7 @@ class InfoManager {
 		$output = $this->commandManager->run($command, true)->getStdout();
 		if ($output !== '') {
 			try {
-				return Json::decode($output, Json::FORCE_ARRAY);
+				return Json::decode($output, forceArrays: true);
 			} catch (JsonException $e) {
 				// Skip IQRF GW info file parsing
 			}

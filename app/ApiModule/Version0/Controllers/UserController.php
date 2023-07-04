@@ -42,7 +42,6 @@ use App\Models\Database\Entities\User;
 use App\Models\Database\EntityManager;
 use App\Models\Mail\Senders\PasswordRecoveryMailSender;
 use DateTimeImmutable;
-use Lcobucci\JWT\Configuration;
 use Nette\Mail\SendException;
 use Throwable;
 use function gethostname;
@@ -55,14 +54,14 @@ use function gethostname;
 class UserController extends BaseController {
 
 	/**
-	 * @var Configuration JWT configuration
-	 */
-	private Configuration $configuration;
-
-	/**
 	 * @var EntityManager Entity manager
 	 */
 	private EntityManager $entityManager;
+
+	/**
+	 * @var JwtConfigurator JWT configurator
+	 */
+	private JwtConfigurator $jwtConfigurator;
 
 	/**
 	 * @var UserManager User manager
@@ -83,7 +82,7 @@ class UserController extends BaseController {
 	 * @param PasswordRecoveryMailSender $passwordRecoverySender Forgotten password recovery e-mail sender
 	 */
 	public function __construct(JwtConfigurator $configurator, EntityManager $entityManager, UserManager $manager, RestApiSchemaValidator $validator, PasswordRecoveryMailSender $passwordRecoverySender) {
-		$this->configuration = $configurator->create();
+		$this->jwtConfigurator = $configurator;
 		$this->entityManager = $entityManager;
 		$this->manager = $manager;
 		$this->passwordRecoverySender = $passwordRecoverySender;
@@ -523,16 +522,17 @@ class UserController extends BaseController {
 		} catch (Throwable $e) {
 			throw new ServerErrorException('Date creation error', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
+		$configuration = $this->jwtConfigurator->create();
 		$hostname = gethostname();
-		$builder = $this->configuration->builder()
-			->issuedAt($now)
-			->expiresAt($now->modify('+90 min'))
-			->withClaim('uid', $user->getId());
+		$builder = $configuration->builder();
+		$builder = $builder->issuedAt($now);
+		$builder = $builder->expiresAt($now->modify('+90 min'));
+		$builder = $builder->withClaim('uid', $user->getId());
 		if ($hostname !== false) {
-			$builder->issuedBy($hostname)->identifiedBy($hostname);
+			$builder = $builder->issuedBy($hostname)->identifiedBy($hostname);
 		}
-		$signer = $this->configuration->signer();
-		$signingKey = $this->configuration->signingKey();
+		$signer = $configuration->signer();
+		$signingKey = $configuration->signingKey();
 		return $builder->getToken($signer, $signingKey)->toString();
 	}
 

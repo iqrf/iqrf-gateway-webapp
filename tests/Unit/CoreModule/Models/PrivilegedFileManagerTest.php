@@ -140,7 +140,7 @@ final class PrivilegedFileManagerTest extends CommandTestCase {
 	public function testReadJson(): void {
 		$content = FileSystem::read(self::CONFIG_PATH . self::FILE_NAME);
 		$this->receiveCommand('cat \'' . self::CONFIG_PATH . self::FILE_NAME . '\'', true, $content);
-		Assert::equal(Json::decode($content, Json::FORCE_ARRAY), $this->manager->readJson(self::FILE_NAME));
+		Assert::equal(Json::decode($content, forceArrays: true), $this->manager->readJson(self::FILE_NAME));
 	}
 
 	/**

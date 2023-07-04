@@ -54,7 +54,7 @@ final class InteliGlueManagerTest extends CloudIntegrationTestCase {
 	/**
 	 * @var Mock|InteliGlueManager Inteliments InteliGlue manager
 	 */
-	private $manager;
+	private Mock|InteliGlueManager $manager;
 
 	/**
 	 * Tests the function to create a new MQTT interface

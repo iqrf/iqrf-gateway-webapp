@@ -79,7 +79,7 @@ class VersionManager {
 	 */
 	public function getCurrentWebapp(): string {
 		$json = $this->cache->load('current', function (&$dependencies): string {
-			$dependencies = [Cache::EXPIRE => '1 hour'];
+			$dependencies = [Cache::Expire => '1 hour'];
 			$repoUrl = 'https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp/raw/';
 			try {
 				$url = $repoUrl . 'stable/version.json';
@@ -90,7 +90,7 @@ class VersionManager {
 			}
 			return $file;
 		});
-		return trim(Json::decode($json, Json::FORCE_ARRAY)['version'], 'v');
+		return trim(Json::decode($json, forceArrays: true)['version'], 'v');
 	}
 
 }

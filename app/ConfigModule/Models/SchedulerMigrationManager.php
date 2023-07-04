@@ -27,7 +27,6 @@ use App\CoreModule\Models\ZipArchiveManager;
 use DateTime;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
-use Nette\Utils\Strings;
 use Throwable;
 use ZipArchive;
 
@@ -97,7 +96,7 @@ class SchedulerMigrationManager {
 	public function extractArchive(string $path): void {
 		$zipManager = new ZipArchiveManager($path, ZipArchive::CREATE);
 		foreach ($zipManager->listFiles() as $fileName) {
-			if (Strings::startsWith($fileName, 'schema/')) {
+			if (str_starts_with($fileName, 'schema/')) {
 				continue;
 			}
 			$json = Json::decode($zipManager->openFile($fileName));

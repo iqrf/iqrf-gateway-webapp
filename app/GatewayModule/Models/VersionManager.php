@@ -175,7 +175,7 @@ class VersionManager {
 	 */
 	public function getWebappJson(): array {
 		$json = FileSystem::read(__DIR__ . '/../../../version.json');
-		return Json::decode($json, Json::FORCE_ARRAY);
+		return Json::decode($json, forceArrays: true);
 	}
 
 	/**

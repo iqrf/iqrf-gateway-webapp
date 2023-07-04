@@ -258,16 +258,16 @@ class BackupManager {
 		foreach ($files as $file) {
 			$valid = false;
 			foreach ($whitelistDirs as $dir) {
-				if (Strings::startsWith($file, $dir)) {
+				if (str_starts_with($file, $dir)) {
 					$valid = true;
 				}
 			}
 			if (!$valid) {
 				throw new InvalidBackupContentException('Unexpected file found in backup archive: ' . $file);
 			}
-			if (Strings::startsWith($file, 'controller/')) {
+			if (str_starts_with($file, 'controller/')) {
 				$this->isWhitelisted(ControllerBackup::WHITELIST, $file);
-			} elseif (Strings::startsWith($file, 'daemon/')) {
+			} elseif (str_starts_with($file, 'daemon/')) {
 				$matches = Strings::match($file, '#^\w+\_\_\w+\.json$#');
 				if (!is_array($matches)) {
 					continue;
@@ -285,33 +285,33 @@ class BackupManager {
 					$this->cleanup();
 					throw new InvalidBackupContentException('Failed to validate file ' . $file . ' against JSON schema.');
 				}
-			} elseif (Strings::startsWith($file, 'gateway/')) {
+			} elseif (str_starts_with($file, 'gateway/')) {
 				$this->isWhitelisted(GatewayFileBackup::WHITELIST, $file);
-			} elseif (Strings::startsWith($file, 'host/')) {
+			} elseif (str_starts_with($file, 'host/')) {
 				$this->isWhitelisted(HostBackup::WHITELIST, $file);
-			} elseif (Strings::startsWith($file, 'journal/')) {
+			} elseif (str_starts_with($file, 'journal/')) {
 				$this->isWhitelisted(JournalBackup::WHITELIST, $file);
-			} elseif (Strings::startsWith($file, 'mender/')) {
+			} elseif (str_starts_with($file, 'mender/')) {
 				$this->isWhitelisted(MenderBackup::WHITELIST, $file);
-			} elseif (Strings::startsWith($file, 'monit/')) {
+			} elseif (str_starts_with($file, 'monit/')) {
 				$this->isWhitelisted(MonitBackup::WHITELIST, $file);
-			} elseif (Strings::startsWith($file, 'nm/system-connections/')) {
+			} elseif (str_starts_with($file, 'nm/system-connections/')) {
 				continue;
-			} elseif (Strings::startsWith($file, 'nm/')) {
+			} elseif (str_starts_with($file, 'nm/')) {
 				$this->isWhitelisted(NetworkManagerBackup::WHITELIST, $file);
-			} elseif (Strings::startsWith($file, 'services/')) {
+			} elseif (str_starts_with($file, 'services/')) {
 				$this->isWhitelisted(['enabled_services.json'], $file);
-			} elseif (Strings::startsWith($file, 'time/')) {
+			} elseif (str_starts_with($file, 'time/')) {
 				$this->isWhitelisted(TimeBackup::WHITELIST, $file);
-			} elseif (Strings::startsWith($file, 'timesyncd/')) {
+			} elseif (str_starts_with($file, 'timesyncd/')) {
 				$this->isWhitelisted(TimesyncdBackup::WHITELIST, $file);
-			} elseif (Strings::startsWith($file, 'translator/')) {
+			} elseif (str_starts_with($file, 'translator/')) {
 				$this->isWhitelisted(TranslatorBackup::WHITELIST, $file);
-			} elseif (Strings::startsWith($file, 'uploader/')) {
+			} elseif (str_starts_with($file, 'uploader/')) {
 				$this->isWhitelisted(UploaderBackup::WHITELIST, $file);
-			} elseif (Strings::startsWith($file, 'webapp/')) {
+			} elseif (str_starts_with($file, 'webapp/')) {
 				$this->isWhitelisted(WebappBackup::WHITELIST, $file);
-			} elseif (Strings::startsWith($file, 'nginx/')) {
+			} elseif (str_starts_with($file, 'nginx/')) {
 				$this->isWhitelisted(WebappBackup::NGINX_WHITELIST, $file);
 			} else {
 				$this->zipManager->close();
@@ -343,7 +343,7 @@ class BackupManager {
 		if ($archiveGwFile !== $fsGwFile) {
 			throw new InvalidBackupContentException('Incompatible backup archive and target gateway.');
 		}
-		$restoreGwInfo = Json::decode($this->zipManager->openFile('gateway/iqrf-gateway.json'), Json::FORCE_ARRAY);
+		$restoreGwInfo = Json::decode($this->zipManager->openFile('gateway/iqrf-gateway.json'), forceArrays: true);
 		$pattern = '/^(?\'product\'[^-]*)-(?\'os\'[^-]*)-v(?\'major\'\d+)\.(?\'minor\'\d+)\.\d+(-(alpha|beta|rc\d+))?$/';
 		$restoreMatches = Strings::match($restoreGwInfo['gwImage'], $pattern);
 		if ($restoreMatches === null) {

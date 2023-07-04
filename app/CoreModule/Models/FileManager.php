@@ -88,10 +88,10 @@ class FileManager implements IFileManager {
 	/**
 	 * Reads the file
 	 * @param string $fileName File name
-	 * @return mixed File content
+	 * @return string File content
 	 * @throws IOException
 	 */
-	public function read(string $fileName) {
+	public function read(string $fileName): string {
 		try {
 			return FileSystem::read($this->directory . '/' . $fileName);
 		} catch (IOException $e) {
@@ -108,10 +108,9 @@ class FileManager implements IFileManager {
 	 * @throws IOException
 	 * @throws JsonException
 	 */
-	public function readJson(string $fileName, bool $forceArray = true) {
+	public function readJson(string $fileName, bool $forceArray = true): mixed {
 		$file = $this->read($fileName);
-		$flags = $forceArray ? Json::FORCE_ARRAY : 0;
-		return Json::decode($file, $flags);
+		return Json::decode($file, forceArrays: $forceArray);
 	}
 
 	/**
@@ -120,7 +119,7 @@ class FileManager implements IFileManager {
 	 * @param mixed $content File content
 	 * @throws IOException
 	 */
-	public function write(string $fileName, $content): void {
+	public function write(string $fileName, mixed $content): void {
 		$path = 'nette.safe://' . $this->directory . '/' . $fileName;
 		try {
 			FileSystem::write($path, $content, null);
@@ -137,8 +136,8 @@ class FileManager implements IFileManager {
 	 * @throws IOException
 	 * @throws JsonException
 	 */
-	public function writeJson(string $fileName, $content): void {
-		$json = Json::encode($content, Json::PRETTY);
+	public function writeJson(string $fileName, mixed $content): void {
+		$json = Json::encode($content, pretty: true);
 		$this->write($fileName, $json);
 	}
 

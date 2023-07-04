@@ -101,7 +101,7 @@ final class ApiRequestTest extends TestCase {
 		$this->request->set(self::REQUEST);
 		$array = self::REQUEST;
 		$array['data']['msgId'] = '1';
-		$expected = Json::encode($array, Json::PRETTY);
+		$expected = Json::encode($array, pretty: true);
 		Assert::equal($expected, $this->request->toJson(true));
 	}
 

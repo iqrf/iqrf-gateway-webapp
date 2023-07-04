@@ -45,7 +45,7 @@ final class InfoManagerTest extends CommandTestCase {
 	/**
 	 * @var MockInterface|NetworkManager Mocked network manager
 	 */
-	private $networkManager;
+	private MockInterface|NetworkManager $networkManager;
 
 	/**
 	 * @var InfoManager Gateway Info manager with mocked command manager
@@ -55,7 +55,7 @@ final class InfoManagerTest extends CommandTestCase {
 	/**
 	 * @var MockInterface|VersionManager Mocked version manager
 	 */
-	private $versionManager;
+	private MockInterface|VersionManager $versionManager;
 
 	/**
 	 * @var array<string, string> Executed commands

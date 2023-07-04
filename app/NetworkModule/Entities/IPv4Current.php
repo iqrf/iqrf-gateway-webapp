@@ -85,7 +85,7 @@ final class IPv4Current implements JsonSerializable {
 		return [
 			'method' => 'auto',
 			'addresses' => array_map(static fn (IPv4Address $a): array => $a->toArray(), $this->addresses),
-			'gateway' => $this->gateway !== null ? $this->gateway->getDotAddress() : null,
+			'gateway' => $this->gateway?->getDotAddress(),
 			'dns' => array_map(static fn (IPv4 $a): array => ['address' => $a->getDotAddress()], $this->dns),
 		];
 	}

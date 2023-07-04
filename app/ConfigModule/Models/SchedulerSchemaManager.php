@@ -63,7 +63,7 @@ class SchedulerSchemaManager extends JsonSchemaManager {
 	 * @throws JsonException
 	 * @throws NonexistentJsonSchemaException
 	 */
-	public function validate($json, bool $tryFix = false): void {
+	public function validate(mixed $json, bool $tryFix = false): void {
 		parent::setSchema('schema_cache_record');
 		parent::validate($json, $tryFix);
 		$tasks = is_array($json->task) ? $json->task : [$json->task];

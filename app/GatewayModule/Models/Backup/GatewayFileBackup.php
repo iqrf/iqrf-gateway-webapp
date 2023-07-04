@@ -108,7 +108,7 @@ class GatewayFileBackup implements IBackupManager {
 		}
 		if (file_exists(self::MQTT_PATH)) {
 			$this->restoreLogger->log('Restoring IQRF Gateway Daemon MQTT component configuration.');
-			$config = Json::decode(FileSystem::read(self::MQTT_PATH), Json::FORCE_ARRAY);
+			$config = Json::decode(FileSystem::read(self::MQTT_PATH), forceArrays: true);
 			if (Strings::match($config['ClientId'], self::GWID_PATTERN) !== null) {
 				$config['ClientId'] = $this->gwId;
 			}
@@ -122,7 +122,7 @@ class GatewayFileBackup implements IBackupManager {
 		}
 		if (file_exists(self::SPLITTER_PATH)) {
 			$this->restoreLogger->log('Restoring IQRF Gateway Daemon Splitter component configuration.');
-			$config = Json::decode(FileSystem::read(self::SPLITTER_PATH), Json::FORCE_ARRAY);
+			$config = Json::decode(FileSystem::read(self::SPLITTER_PATH), forceArrays: true);
 			$config['insId'] = $this->gwId;
 			FileSystem::write(self::SPLITTER_PATH, Json::encode($config));
 		}

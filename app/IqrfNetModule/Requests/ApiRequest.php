@@ -39,7 +39,7 @@ class ApiRequest {
 	/**
 	 * @var array<mixed>|stdClass IQRF JSON API request
 	 */
-	protected $request;
+	protected array|stdClass $request;
 
 	/**
 	 * Constructor
@@ -53,7 +53,7 @@ class ApiRequest {
 	 * Returns the IQRF JSON API request
 	 * @return array<mixed>|stdClass IQRF JSON API request
 	 */
-	public function get() {
+	public function get(): array|stdClass {
 		return $this->request;
 	}
 
@@ -61,7 +61,7 @@ class ApiRequest {
 	 * Sets the IQRF JSON API request
 	 * @param mixed $request IQRF JSON API request
 	 */
-	public function set($request): void {
+	public function set(mixed $request): void {
 		if (!is_array($request) && !($request instanceof stdClass)) {
 			throw new InvalidJsonException();
 		}
@@ -87,8 +87,7 @@ class ApiRequest {
 	 * @throws JsonException
 	 */
 	public function toJson(bool $pretty = false): string {
-		$options = $pretty ? Json::PRETTY : 0;
-		return Json::encode($this->request, $options);
+		return Json::encode($this->request, pretty: $pretty);
 	}
 
 }

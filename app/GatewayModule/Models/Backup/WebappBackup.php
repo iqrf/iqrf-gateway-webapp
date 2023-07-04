@@ -24,7 +24,6 @@ use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use App\GatewayModule\Models\SshManager;
 use Nette\Utils\FileSystem;
-use Nette\Utils\Strings;
 
 /**
  * Webapp backup manager
@@ -115,7 +114,7 @@ class WebappBackup implements IBackupManager {
 			return;
 		}
 		foreach ($zipManager->listFiles() as $file) {
-			if (Strings::startsWith($file, 'nginx/') || Strings::startsWith($file, 'webapp/')) {
+			if (str_starts_with($file, 'nginx/') || str_starts_with($file, 'webapp/')) {
 				$zipManager->extract(self::TMP_PATH, $file);
 			}
 		}

@@ -218,7 +218,7 @@ final class ConnectionDetailWifiTest extends TestCase {
 	 */
 	public function testJsonSerialize(): void {
 		$json = FileSystem::read(self::NM_DATA . 'toForm/' . self::UUID . '.json');
-		$expected = Json::decode($json, Json::FORCE_ARRAY);
+		$expected = Json::decode($json, forceArrays: true);
 		Assert::equal($expected, $this->entity->jsonSerialize());
 	}
 

@@ -24,7 +24,6 @@ use App\CoreModule\Models\FeatureManager;
 use App\CoreModule\Models\PrivilegedFileManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use Nette\Utils\FileSystem;
-use Nette\Utils\Strings;
 
 /**
  * NetworkManager backup manager
@@ -99,9 +98,9 @@ class NetworkManagerBackup implements IBackupManager {
 		}
 		$this->restoreLogger->log('Restoring NetworkManager configuration and connection profiles.');
 		foreach ($zipManager->listFiles() as $file) {
-			if (Strings::startsWith($file, 'nm/')) {
+			if (str_starts_with($file, 'nm/')) {
 				$zipManager->extract(self::TMP_PATH, $file);
-				if (Strings::contains($file, 'system-connections/')) {
+				if (str_contains($file, 'system-connections/')) {
 					$this->fileManager->copy('system-connections/' . basename($file), self::TMP_PATH . $file);
 				} else {
 					$this->fileManager->copy(basename($file), self::TMP_PATH . $file);

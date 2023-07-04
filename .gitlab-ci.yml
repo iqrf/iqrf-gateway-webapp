@@ -113,8 +113,6 @@ test:
   parallel:
     matrix:
       - PHP_VERSION:
-        - '7.4'
-        - '8.0'
         - '8.1'
         - '8.2'
   <<: *test_template
@@ -169,7 +167,6 @@ coding-style:
 doctrine_mapping:
   before_script:
     - composer install --no-progress
-    - update-alternatives --set php /usr/bin/php7.4
   script:
     - bin/manager orm:validate-schema --skip-sync
   <<: *coding-style_template
@@ -178,7 +175,6 @@ phpstan:
   retry: 2
   before_script:
     - composer install --no-progress
-    - update-alternatives --set php /usr/bin/php7.4
   script:
     - NETTE_TESTER_RUNNER=1 php vendor/bin/phpstan analyse -c phpstan.neon
   <<: *coding-style_template
@@ -198,10 +194,9 @@ stylelint:
 qa:
   before_script:
     - composer install --no-progress
-    - update-alternatives --set php /usr/bin/php7.4
   script:
     - vendor/bin/linter app bin tests
-    - vendor/bin/codesniffer --runtime-set php_version 70400 app bin tests
+    - vendor/bin/codesniffer --runtime-set php_version 80100 app bin tests
   <<: *coding-style_template
 
 # Sentry version

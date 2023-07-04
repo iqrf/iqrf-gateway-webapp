@@ -69,7 +69,7 @@ class UploadManager {
 		$this->commandManager = $commandManager;
 		try {
 			$cacheDir = $mainManager->getCacheDir();
-			if (!Strings::endsWith($cacheDir, '/')) {
+			if (!str_ends_with($cacheDir, '/')) {
 				$cacheDir .= '/';
 			}
 			$genericManager->setComponent('iqrf::OtaUploadService');
@@ -80,7 +80,7 @@ class UploadManager {
 			if (!isset($uploadDir) || $uploadDir === '') {
 				$uploadDir = 'upload';
 			}
-			if (!Strings::endsWith($uploadDir, '/')) {
+			if (!str_ends_with($uploadDir, '/')) {
 				$uploadDir .= '/';
 			}
 			$this->path = Strings::replace($cacheDir . $uploadDir, '~/+~', '/');
@@ -152,13 +152,13 @@ class UploadManager {
 	 */
 	private function recognizeFormat(string $file): UploadFormats {
 		$fileName = Strings::lower($file);
-		if (Strings::endsWith($fileName, '.hex')) {
+		if (str_ends_with($fileName, '.hex')) {
 			return UploadFormats::HEX();
 		}
-		if (Strings::endsWith($fileName, '.iqrf')) {
+		if (str_ends_with($fileName, '.iqrf')) {
 			return UploadFormats::IQRF();
 		}
-		if (Strings::endsWith($fileName, '.trcnfg')) {
+		if (str_ends_with($fileName, '.trcnfg')) {
 			return UploadFormats::TRCNFG();
 		}
 		throw new UnknownFileFormatExceptions();

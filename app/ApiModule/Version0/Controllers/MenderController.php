@@ -39,7 +39,6 @@ use App\MaintenanceModule\Exceptions\MountErrorException;
 use App\MaintenanceModule\Models\MenderManager;
 use Nette\IOException;
 use Nette\Utils\JsonException;
-use Nette\Utils\Strings;
 
 /**
  * Mender client configuration controller
@@ -339,7 +338,7 @@ class MenderController extends BaseController {
 	 * @throws MenderInvalidArtifactException
 	 */
 	private function checkArtifact(string $fileName): void {
-		if (!Strings::endsWith($fileName, '.mender')) {
+		if (!str_ends_with($fileName, '.mender')) {
 			throw new MenderInvalidArtifactException('Uploaded file is not a .mender artifact file.');
 		}
 	}

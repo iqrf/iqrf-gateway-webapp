@@ -34,7 +34,7 @@ abstract class CommandTestCase extends TestCase {
 	/**
 	 * @var CommandManager|MockInterface Mocked command manager
 	 */
-	protected $commandManager;
+	protected CommandManager|MockInterface $commandManager;
 
 	/**
 	 * Sets up the test environment

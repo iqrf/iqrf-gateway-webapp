@@ -44,10 +44,10 @@ interface IFileManager {
 	/**
 	 * Reads the file
 	 * @param string $fileName File name
-	 * @return mixed File content
+	 * @return string File content
 	 * @throws IOException
 	 */
-	public function read(string $fileName);
+	public function read(string $fileName): string;
 
 	/**
 	 * Writes into the file
@@ -55,6 +55,6 @@ interface IFileManager {
 	 * @param mixed $content File content
 	 * @throws IOException
 	 */
-	public function write(string $fileName, $content): void;
+	public function write(string $fileName, mixed $content): void;
 
 }

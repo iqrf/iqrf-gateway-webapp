@@ -54,7 +54,7 @@ fix-cc: temp/code-checker
 	php temp/code-checker/code-checker -f -l --no-progress --strict-types $(CC_IGNORE)
 
 cs: deps
-	vendor/bin/codesniffer --runtime-set php_version 70400 app bin tests
+	vendor/bin/codesniffer --runtime-set php_version 80100 app bin tests
 
 deb-package:
 	debuild -b -uc -us

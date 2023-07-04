@@ -62,7 +62,7 @@ class GsmManager {
 		$output = $this->commandManager->run('mmcli --list-modems --output-json', true);
 		$this->checkCommand($output);
 		try {
-			$json = Json::decode($output->getStdout(), Json::FORCE_ARRAY);
+			$json = Json::decode($output->getStdout(), forceArrays: true);
 			$entities = array_map(fn(string $path): array => $this->getModemInformation($path)->jsonSerialize(), $json['modem-list']);
 		} catch (JsonException $e) {
 			throw new ModemManagerException($e->getMessage());

@@ -101,7 +101,7 @@ final class AptGetPackageManagerTest extends CommandTestCase {
 	public function testGetUpgradable(): void {
 		$path = TESTER_DIR . '/data/packageManagers/apt-get/';
 		$output = FileSystem::read($path . 'upgradablePackages.stdout');
-		$expected = Json::decode(FileSystem::read($path . 'upgradablePackages.json'), Json::FORCE_ARRAY);
+		$expected = Json::decode(FileSystem::read($path . 'upgradablePackages.json'), forceArrays: true);
 		$command = 'apt-get -s upgrade -V';
 		$this->receiveCommand($command, true, $output);
 		Assert::same($expected, $this->manager->getUpgradable());

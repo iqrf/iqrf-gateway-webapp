@@ -63,12 +63,12 @@ final class VersionManagerTest extends CommandTestCase {
 	/**
 	 * @var GatewayVersionManager|MockInterface Gateway version manager
 	 */
-	private GatewayVersionManager $gwVersionManager;
+	private MockInterface|GatewayVersionManager $gwVersionManager;
 
 	/**
 	 * @var VersionManager|MockInterface Version manager
 	 */
-	private $manager;
+	private MockInterface|VersionManager $manager;
 
 	/**
 	 * Tests the function to check if an update is available for the webapp

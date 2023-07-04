@@ -71,7 +71,7 @@ class IqrfRepositoryManager {
 	 * @throws NeonException
 	 */
 	public function saveConfig(array $config): void {
-		FileSystem::write($this->confPath, Neon::encode([self::EXTENSION_NAME => $config], Neon::BLOCK));
+		FileSystem::write($this->confPath, Neon::encode([self::EXTENSION_NAME => $config], blockMode: true));
 	}
 
 	/**

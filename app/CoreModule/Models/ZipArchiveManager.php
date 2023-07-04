@@ -23,7 +23,6 @@ namespace App\CoreModule\Models;
 use Nette\Utils\Finder;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
-use Nette\Utils\Strings;
 use UnexpectedValueException;
 use ZipArchive;
 
@@ -80,7 +79,7 @@ class ZipArchiveManager {
 	 */
 	public function addFolder(string $path, string $name): void {
 		$this->zip->addEmptyDir($name);
-		if ($name !== '' && !Strings::endsWith($name, '/')) {
+		if ($name !== '' && !str_ends_with($name, '/')) {
 			$name .= '/';
 		}
 		try {
@@ -125,7 +124,7 @@ class ZipArchiveManager {
 	 * @throws JsonException
 	 */
 	public function addJsonFromArray(string $filename, array $jsonData): void {
-		$json = Json::encode($jsonData, Json::PRETTY);
+		$json = Json::encode($jsonData, pretty: true);
 		$dirname = dirname($filename);
 		if ($dirname !== '.') {
 			$this->addEmptyFolder($dirname);
@@ -138,11 +137,11 @@ class ZipArchiveManager {
 	 * @param string $name Name of the directory to delete
 	 */
 	public function deleteDirectory(string $name): void {
-		if (!Strings::endsWith($name, '/')) {
+		if (!str_ends_with($name, '/')) {
 			$name .= '/';
 		}
 		foreach ($this->listFiles() as $file) {
-			if (Strings::startsWith($file, $name)) {
+			if (str_starts_with($file, $name)) {
 				$this->deleteFile($file);
 			}
 		}
@@ -162,7 +161,7 @@ class ZipArchiveManager {
 	 * @param string|array<mixed>|iterable|mixed $var File(s) to check
 	 * @return bool Is file exist
 	 */
-	public function exist($var): bool {
+	public function exist(mixed $var): bool {
 		if (is_string($var)) {
 			return $this->zip->locateName($var, ZipArchive::FL_NOCASE) !== false;
 		}
@@ -203,7 +202,7 @@ class ZipArchiveManager {
 				continue;
 			}
 			$name = $stat['name'];
-			if (!Strings::endsWith($name, '/')) {
+			if (!str_ends_with($name, '/')) {
 				$files[] = $name;
 			}
 		}

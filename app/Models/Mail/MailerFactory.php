@@ -63,7 +63,17 @@ class MailerFactory {
 		if ($configuration['enabled'] !== true) {
 			return null;
 		}
-		return new SmtpMailer($configuration);
+		return new SmtpMailer(
+			$configuration['host'],
+			$configuration['username'],
+			$configuration['password'],
+			$configuration['port'],
+			$configuration['secure'],
+			$configuration['persistent'],
+			$configuration['timeout'],
+			$configuration['clientHost'],
+			$configuration['context'],
+		);
 	}
 
 }

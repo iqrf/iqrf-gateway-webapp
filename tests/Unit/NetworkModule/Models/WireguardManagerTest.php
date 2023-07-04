@@ -91,7 +91,7 @@ final class WireguardManagerTest extends CommandTestCase {
 	/**
 	 * @var MockInterface|ServiceManager Mocked service manager
 	 */
-	private $serviceManager;
+	private MockInterface|ServiceManager $serviceManager;
 
 	/**
 	 * Sets up the test environment

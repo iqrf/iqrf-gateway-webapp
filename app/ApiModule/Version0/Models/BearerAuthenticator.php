@@ -26,7 +26,6 @@ use App\Models\Database\EntityManager;
 use Contributte\Middlewares\Security\IAuthenticator;
 use DateTimeImmutable;
 use InvalidArgumentException;
-use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Token\Plain;
 use Lcobucci\JWT\Validation\Constraint\SignedWith;
 use Nette\Utils\Strings;
@@ -36,23 +35,14 @@ use Throwable;
 class BearerAuthenticator implements IAuthenticator {
 
 	/**
-	 * @var EntityManager Entity manager
-	 */
-	private EntityManager $entityManager;
-
-	/**
-	 * @var Configuration JWT configuration
-	 */
-	private Configuration $configuration;
-
-	/**
 	 * Constructor
-	 * @param JwtConfigurator $configurator JWT configurator
+	 * @param JwtConfigurator $jwtConfigurator JWT configurator
 	 * @param EntityManager $entityManager Entity manager
 	 */
-	public function __construct(JwtConfigurator $configurator, EntityManager $entityManager) {
-		$this->configuration = $configurator->create();
-		$this->entityManager = $entityManager;
+	public function __construct(
+		private readonly JwtConfigurator $jwtConfigurator,
+		private readonly EntityManager $entityManager,
+	) {
 	}
 
 	/**
@@ -89,7 +79,8 @@ class BearerAuthenticator implements IAuthenticator {
 	 * @throws InvalidArgumentException
 	 */
 	public function authenticateUser(string $jwt): ?User {
-		$token = $this->configuration->parser()->parse($jwt);
+		$parser = $this->jwtConfigurator->create()->parser();
+		$token = $parser->parse($jwt);
 		assert($token instanceof Plain);
 		if (!$this->isJwtValid($token)) {
 			return null;
@@ -111,9 +102,10 @@ class BearerAuthenticator implements IAuthenticator {
 	private function isJwtValid(Plain $token): bool {
 		$hostname = gethostname();
 		$now = new DateTimeImmutable();
-		$validator = $this->configuration->validator();
-		$signer = $this->configuration->signer();
-		$verificationKey = $this->configuration->verificationKey();
+		$configuration = $this->jwtConfigurator->create();
+		$validator = $configuration->validator();
+		$signer = $configuration->signer();
+		$verificationKey = $configuration->verificationKey();
 		$signedWith = new SignedWith($signer, $verificationKey);
 		return $validator->validate($token, $signedWith) &&
 			!$token->isExpired($now) &&
@@ -129,7 +121,7 @@ class BearerAuthenticator implements IAuthenticator {
 	 * @return string|null JWT
 	 */
 	public function parseAuthorizationHeader(string $header): ?string {
-		if (!Strings::startsWith($header, 'Bearer')) {
+		if (!str_starts_with($header, 'Bearer')) {
 			return null;
 		}
 		$str = Strings::substring($header, 7);

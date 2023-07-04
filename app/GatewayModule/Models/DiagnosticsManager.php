@@ -248,7 +248,7 @@ class DiagnosticsManager {
 
 	public function addSyslog(): void {
 		$product = $this->gwInfo->getImage();
-		if (Strings::contains($product, 'armbian')) {
+		if (str_contains($product, 'armbian')) {
 				$this->commandManager->run('mkdir -p /tmp/syslog/log.hdd/', true);
 				$this->commandManager->run('cp /var/log.hdd/syslog* /tmp/syslog/log.hdd/', true);
 		}

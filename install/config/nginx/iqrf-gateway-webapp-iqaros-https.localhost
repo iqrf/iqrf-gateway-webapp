@@ -14,9 +14,8 @@
 # limitations under the License.
 
 upstream backend {
-	server unix:/run/php/php8.1-fpm.sock weight=4;
-	server unix:/run/php/php8.0-fpm.sock weight=2;
-	server unix:/run/php/php7.4-fpm.sock;
+	server unix:/run/php/php8.2-fpm.sock weight=2;
+	server unix:/run/php/php8.1-fpm.sock;
 }
 
 server {

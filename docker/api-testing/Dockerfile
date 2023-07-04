@@ -21,7 +21,7 @@ COPY ./ /app
 WORKDIR /app
 RUN composer install --ignore-platform-req=ext-intl
 
-FROM amd64/php:7.4
+FROM amd64/php:8.2
 
 LABEL maintainer="roman.ondracek@iqrf.com"
 

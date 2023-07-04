@@ -55,7 +55,7 @@ final class IbmCloudManagerTest extends CloudIntegrationTestCase {
 	/**
 	 * @var Mock|IbmCloudManager IBM Cloud manager
 	 */
-	private $manager;
+	private IbmCloudManager|Mock $manager;
 
 	/**
 	 * Tests the function to create a new MQTT interface

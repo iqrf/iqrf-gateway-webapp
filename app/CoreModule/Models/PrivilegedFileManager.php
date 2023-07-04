@@ -103,10 +103,9 @@ class PrivilegedFileManager implements IFileManager {
 	 * @throws IOException
 	 * @throws JsonException
 	 */
-	public function readJson(string $fileName, bool $forceArray = true) {
+	public function readJson(string $fileName, bool $forceArray = true): mixed {
 		$file = $this->read($fileName);
-		$flags = $forceArray ? Json::FORCE_ARRAY : 0;
-		return Json::decode($file, $flags);
+		return Json::decode($file, forceArrays: $forceArray);
 	}
 
 
@@ -137,7 +136,7 @@ class PrivilegedFileManager implements IFileManager {
 	 * @param mixed $content File content
 	 * @throws IOException
 	 */
-	public function write(string $fileName, $content): void {
+	public function write(string $fileName, mixed $content): void {
 		$dirName = dirname($fileName);
 		if ($dirName === '.') {
 			$dirName = '';
@@ -159,8 +158,8 @@ class PrivilegedFileManager implements IFileManager {
 	 * @throws IOException
 	 * @throws JsonException
 	 */
-	public function writeJson(string $fileName, $content): void {
-		$json = Json::encode($content, Json::PRETTY);
+	public function writeJson(string $fileName, mixed $content): void {
+		$json = Json::encode($content, pretty: true);
 		$this->write($fileName, $json);
 	}
 

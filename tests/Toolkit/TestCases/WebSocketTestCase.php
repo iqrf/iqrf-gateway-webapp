@@ -39,12 +39,12 @@ abstract class WebSocketTestCase extends TestCase {
 	/**
 	 * @var ApiRequest|MockInterface Mocked IQRF JSON API request
 	 */
-	protected $request;
+	protected MockInterface|ApiRequest $request;
 
 	/**
 	 * @var WebSocketClient|MockInterface Mocked WebSocket client
 	 */
-	protected $wsClient;
+	protected MockInterface|WebSocketClient $wsClient;
 
 	/**
 	 * Asserts the IQRF JSON API request

@@ -107,7 +107,7 @@ final class InterfaceStatus implements JsonSerializable {
 			'model' => $this->model,
 			'type' => $this->type->toScalar(),
 			'state' => $this->state->toScalar(),
-			'connection' => $this->connection === null ? null : $this->connection->toString(),
+			'connection' => $this->connection?->toString(),
 		];
 	}
 

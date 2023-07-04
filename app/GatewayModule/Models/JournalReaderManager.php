@@ -66,7 +66,7 @@ class JournalReaderManager {
 		if ($result->getExitCode() === 2) {
 			throw new JournalReaderInternalException($result->getStderr());
 		}
-		$output = Json::decode($result->getStdout(), Json::FORCE_ARRAY);
+		$output = Json::decode($result->getStdout(), forceArrays: true);
 		$records = [];
 		foreach ($output['records'] as $record) {
 			$records[] = sprintf('%s %s %s[%d]: %s', $record['timestamp'], $record['hostname'], $record['identifier'], $record['pid'], $record['message']);

@@ -25,6 +25,7 @@ use Contributte\Sentry\Integration\BaseIntegration;
 use Nette\DI\Container;
 use Nette\Http\IRequest;
 use Sentry\Event;
+use Sentry\EventHint;
 use Sentry\State\HubInterface;
 use Sentry\UserDataBag;
 
@@ -38,7 +39,7 @@ class SentryUserIntegration extends BaseIntegration {
 	/**
 	 * @var Container Nette DI container
 	 */
-	protected Container $context;
+	protected Container $container;
 
 	/**
 	 * Constructor
@@ -46,12 +47,12 @@ class SentryUserIntegration extends BaseIntegration {
 	 * @param BearerAuthenticator $authenticator Bearer authenticator
 	 */
 	public function __construct(Container $container, BearerAuthenticator $authenticator) {
-		$this->context = $container;
+		$this->container = $container;
 		$this->authenticator = $authenticator;
 	}
 
-	public function setup(HubInterface $hub, Event $event): ?Event {
-		$httpRequest = $this->context->getByType(IRequest::class, false);
+	public function setup(HubInterface $hub, Event $event, EventHint $hint): ?Event {
+		$httpRequest = $this->container->getByType(IRequest::class, false);
 
 		// There is no http request
 		if (!$httpRequest instanceof IRequest) {

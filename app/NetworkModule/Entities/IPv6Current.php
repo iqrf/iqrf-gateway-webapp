@@ -98,7 +98,7 @@ final class IPv6Current implements JsonSerializable {
 		return [
 			'method' => $this->method->toScalar(),
 			'addresses' => array_map(static fn (IPv6Address $a): array => $a->toArray(), $this->addresses),
-			'gateway' => $this->gateway !== null ? $this->gateway->getCompactedAddress() : null,
+			'gateway' => $this->gateway?->getCompactedAddress(),
 			'dns' => array_map(static fn (IPv6 $a): array => ['address' => $a->getCompactedAddress()], $this->dns),
 		];
 	}

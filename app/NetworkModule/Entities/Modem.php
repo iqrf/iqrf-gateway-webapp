@@ -112,7 +112,7 @@ class Modem {
 		$failedReason = $modem->modem->generic->{'state-failed-reason'};
 		$failedReason = $failedReason === '--' ? null : ModemFailedReason::fromScalar($failedReason);
 		$signalQuality = (int) $modem->modem->generic->{'signal-quality'}->value;
-		$rssi = $signal === null ? null : $signal->modem->signal->gsm->rssi ?? null;
+		$rssi = $signal?->modem->signal->gsm->rssi ?? null;
 		$entity = new self($interface, $imei, $manufacturer, $model, $state, $failedReason, $signalQuality);
 		if ($rssi !== null) {
 			$entity->setRssi((float) $rssi);
@@ -131,7 +131,7 @@ class Modem {
 			'manufacturer' => $this->manufacturer,
 			'model' => $this->model,
 			'state' => $this->state->toScalar(),
-			'failedReason' => $this->failedReason === null ? null : $this->failedReason->toScalar(),
+			'failedReason' => $this->failedReason?->toScalar(),
 			'signal' => $this->signal,
 			'rssi' => $this->rssi,
 		];

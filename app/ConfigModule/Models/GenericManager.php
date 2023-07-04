@@ -176,7 +176,7 @@ class GenericManager {
 	 * @param mixed $value Property value
 	 * @return string|null Instance file name
 	 */
-	public function getInstanceByProperty(string $type, $value): ?string {
+	public function getInstanceByProperty(string $type, mixed $value): ?string {
 		$dir = $this->fileManager->getBasePath();
 		foreach (Finder::findFiles('*.json')->exclude('config.json')->in($dir) as $file) {
 			$fileName = Strings::replace($file->getRealPath(), ['~^' . realpath($dir) . '/~', '/.json$/'], '');

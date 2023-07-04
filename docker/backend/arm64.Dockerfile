@@ -22,7 +22,7 @@ WORKDIR /var/www
 
 RUN composer install
 
-FROM arm64v8/php:7.4-fpm
+FROM arm64v8/php:8.2-fpm
 
 LABEL maintainer="roman.ondracek@iqrf.com"
 

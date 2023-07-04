@@ -39,7 +39,7 @@ return static function (RectorConfig $rectorConfig): void {
 		__DIR__ . '/tests',
 	]);
 
-	$rectorConfig->phpVersion(PhpVersion::PHP_74);
+	$rectorConfig->phpVersion(PhpVersion::PHP_81);
 
 	// register a single rule
 	$rectorConfig->rule(InlineConstructorDefaultToPropertyRector::class);
@@ -49,16 +49,14 @@ return static function (RectorConfig $rectorConfig): void {
 		DoctrineSetList::DOCTRINE_CODE_QUALITY,
 		DoctrineSetList::DOCTRINE_COMMON_20,
 		DoctrineSetList::DOCTRINE_DBAL_30,
-		DoctrineSetList::DOCTRINE_ORM_29,
+		DoctrineSetList::DOCTRINE_ORM_214,
 		SetList::CODE_QUALITY,
 		SetList::CODING_STYLE,
 		SetList::DEAD_CODE,
-		SetList::PHP_74,
+		SetList::PHP_81,
 		SetList::TYPE_DECLARATION,
-		SetList::TYPE_DECLARATION_STRICT,
-		SymfonySetList::SYMFONY_60,
+		SymfonySetList::SYMFONY_63,
 		SymfonySetList::SYMFONY_CODE_QUALITY,
-		SymfonySetList::SYMFONY_STRICT,
 	]);
 
 	$rectorConfig->skip([

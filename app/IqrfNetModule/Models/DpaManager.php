@@ -24,7 +24,6 @@ use App\IqrfNetModule\Entities\Dpa;
 use Iqrf\Repository\Entities\OsDpa;
 use Iqrf\Repository\Models\FilesManager;
 use Iqrf\Repository\Models\OsAndDpaManager;
-use Nette\Utils\Strings;
 
 /**
  * DPA manager
@@ -83,7 +82,7 @@ class DpaManager {
 		$this->filesManager->setPath($dpaVersion->getDownloadPath());
 		foreach ($this->filesManager->list()->getFiles() as $file) {
 			foreach ($dpa->getFilePrefixes() as $filePrefix) {
-				if (Strings::startsWith($file->getName(), $filePrefix)) {
+				if (str_starts_with($file->getName(), $filePrefix)) {
 					$fileContent = $this->filesManager->download($file->getName());
 					$filePath = $file->getName();
 					$this->uploadManager->uploadToFs($filePath, $fileContent);

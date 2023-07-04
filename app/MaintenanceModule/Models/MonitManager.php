@@ -59,7 +59,7 @@ class MonitManager {
 	 */
 	public function getConfig(): array {
 		$configArray = explode(PHP_EOL, $this->readConfig());
-		$configArray = array_filter($configArray, fn (string $item): bool => !Strings::startsWith($item, '#'));
+		$configArray = array_filter($configArray, fn (string $item): bool => !str_starts_with($item, '#'));
 		foreach ($configArray as $item) {
 			$matches = Strings::match($item, self::PATTERN);
 			if ($matches !== null) {

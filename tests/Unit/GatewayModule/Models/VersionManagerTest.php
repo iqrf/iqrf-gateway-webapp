@@ -48,12 +48,12 @@ final class VersionManagerTest extends WebSocketTestCase {
 	/**
 	 * @var CommandManager|MockInterface Mocked command manager
 	 */
-	private $commandManager;
+	private MockInterface|CommandManager $commandManager;
 
 	/**
 	 * @var VersionManager|MockInterface Version manager
 	 */
-	private VersionManager $manager;
+	private MockInterface|VersionManager $manager;
 
 	/**
 	 * @var array<string, array<string, bool>|string> IQRF Gateway Daemon's API request

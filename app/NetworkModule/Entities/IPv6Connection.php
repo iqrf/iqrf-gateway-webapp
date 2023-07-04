@@ -109,7 +109,7 @@ final class IPv6Connection implements INetworkManagerEntity {
 		$array = [
 			'method' => $this->method->toScalar(),
 			'addresses' => array_map(static fn (IPv6Address $a): array => $a->toArray(), $this->addresses),
-			'gateway' => $this->gateway !== null ? $this->gateway->getCompactedAddress() : null,
+			'gateway' => $this->gateway?->getCompactedAddress(),
 			'dns' => array_map(static fn (IPv6 $a): array => ['address' => $a->getCompactedAddress()], $this->dns),
 		];
 		if ($this->current !== null) {

@@ -175,7 +175,7 @@ class FeatureManager {
 	 * @throws IOException
 	 */
 	protected function write(array $features): void {
-		$content = Neon::encode($features, Neon::BLOCK);
+		$content = Neon::encode($features, blockMode: true);
 		FileSystem::write($this->path, $content);
 	}
 

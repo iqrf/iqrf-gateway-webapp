@@ -49,7 +49,7 @@ final class AzureManagerTest extends CloudIntegrationTestCase {
 	/**
 	 * @var AzureManager|MockInterface Microsoft Azure IoT Hub manager
 	 */
-	private $manager;
+	private AzureManager|MockInterface $manager;
 
 	/**
 	 * Tests the function to create MQTT interface

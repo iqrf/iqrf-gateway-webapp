@@ -87,7 +87,7 @@ final class UpdaterManagerTest extends CommandTestCase {
 		return array_map(
 			fn(string $fileName): array => [
 				FileSystem::read(TESTER_DIR . '/data/packageManagers/apt-get/' . $fileName . '.stdout'),
-				Json::decode(FileSystem::read(TESTER_DIR . '/data/packageManagers/apt-get/' . $fileName . '.json'), Json::FORCE_ARRAY),
+				Json::decode(FileSystem::read(TESTER_DIR . '/data/packageManagers/apt-get/' . $fileName . '.json'), forceArrays: true),
 			],
 			['upgradablePackages', 'upgradablePackagesNone']
 		);

@@ -24,7 +24,6 @@ use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\PrivilegedFileManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use App\GatewayModule\Models\DaemonDirectories;
-use Nette\Utils\Strings;
 
 /**
  * Daemon backup manager
@@ -111,11 +110,11 @@ class DaemonBackup implements IBackupManager {
 		$owner = $user['name'] . ':' . posix_getgrgid($user['gid'])['name'];
 		$this->commandManager->run('chown -R ' . $owner . ' ' . $this->daemonDirectories->getCacheDir(), true);
 		foreach ($zipManager->listFiles() as $file) {
-			if (Strings::startsWith($file, 'daemon/scheduler/')) {
+			if (str_starts_with($file, 'daemon/scheduler/')) {
 				$zipManager->extract($this->daemonDirectories->getCacheDir(), $file);
-			} elseif (Strings::startsWith($file, 'daemon/DB/')) {
+			} elseif (str_starts_with($file, 'daemon/DB/')) {
 				$zipManager->extract($this->daemonDirectories->getDataDir() . 'DB/', $file);
-			} elseif (Strings::startsWith($file, 'daemon/')) {
+			} elseif (str_starts_with($file, 'daemon/')) {
 				$zipManager->extract($this->daemonDirectories->getConfigurationDir(), $file);
 			}
 		}

@@ -196,7 +196,7 @@ final class ConnectionDetailEthernetTest extends TestCase {
 	 */
 	public function testJsonSerialize(): void {
 		$json = FileSystem::read(self::NM_DATA . 'toForm/' . self::UUID . '.json');
-		$expected = Json::decode($json, Json::FORCE_ARRAY);
+		$expected = Json::decode($json, forceArrays: true);
 		Assert::same($expected, $this->entity->jsonSerialize());
 	}
 

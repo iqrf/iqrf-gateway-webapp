@@ -185,7 +185,7 @@ class ApiKey implements JsonSerializable {
 		$array = [
 			'id' => $this->getId(),
 			'description' => $this->getDescription(),
-			'expiration' => $this->getExpiration() === null ? null : $this->getExpiration()->format('c'),
+			'expiration' => $this->getExpiration()?->format('c'),
 		];
 		if (isset($this->key)) {
 			$array['key'] = $this->getKey();

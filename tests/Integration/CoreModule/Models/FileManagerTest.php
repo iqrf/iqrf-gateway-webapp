@@ -140,7 +140,7 @@ final class FileManagerTest extends TestCase {
 	 */
 	public function testReadJson(): void {
 		$text = FileSystem::read(self::CONFIG_PATH . self::FILE_NAME);
-		$expected = Json::decode($text, Json::FORCE_ARRAY);
+		$expected = Json::decode($text, forceArrays: true);
 		Assert::equal($expected, $this->manager->readJson(self::FILE_NAME));
 	}
 

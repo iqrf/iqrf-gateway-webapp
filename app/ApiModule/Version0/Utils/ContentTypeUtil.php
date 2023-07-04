@@ -23,7 +23,6 @@ namespace App\ApiModule\Version0\Utils;
 use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use Nette\Utils\Strings;
 
 /**
  * Request content type utility
@@ -54,7 +53,7 @@ class ContentTypeUtil {
 	public static function validContentType(ApiRequest $request, array $contentTypes): string {
 		$contentType = self::getContentType($request);
 		foreach ($contentTypes as $item) {
-			if (Strings::contains($contentType, $item)) {
+			if (str_contains($contentType, $item)) {
 				return $item;
 			}
 		}
