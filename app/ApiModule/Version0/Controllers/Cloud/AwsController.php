@@ -124,7 +124,7 @@ class AwsController extends CloudsController {
 		$contentType = ContentTypeUtil::validContentType($request, ['application/json', 'multipart/form-data']);
 		if ($contentType === 'application/json') {
 			$this->validator->validateRequest('cloudAws', $request);
-			return $request->getJsonBody();
+			return $request->getJsonBodyCopy();
 		}
 		$data = $request->getParsedBody();
 		$files = $request->getUploadedFiles();

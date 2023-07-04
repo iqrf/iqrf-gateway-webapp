@@ -131,7 +131,7 @@ class MenderController extends BaseController {
 		self::checkScopes($request, ['maintenance:mender']);
 		$this->validator->validateRequest('menderConfig', $request);
 		try {
-			$this->manager->saveConfig($request->getJsonBody());
+			$this->manager->saveConfig($request->getJsonBodyCopy());
 			return $response->writeBody('Workaround');
 		} catch (IOException | JsonException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
@@ -324,7 +324,7 @@ class MenderController extends BaseController {
 		}
 		$this->validator->validateRequest('remount', $request);
 		try {
-			$conf = $request->getJsonBody(true);
+			$conf = $request->getJsonBodyCopy(true);
 			$this->manager->remount($conf['mode']);
 			return $response->writeBody('Workaround');
 		} catch (MountErrorException $e) {

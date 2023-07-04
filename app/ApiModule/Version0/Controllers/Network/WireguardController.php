@@ -160,7 +160,7 @@ class WireguardController extends NetworkController {
 		self::checkScopes($request, ['network']);
 		$this->validator->validateRequest('wireguardTunnel', $request);
 		try {
-			$this->wireguardManager->createInterface($request->getJsonBody(false));
+			$this->wireguardManager->createInterface($request->getJsonBodyCopy(false));
 			return $response->writeBody('Workaround');
 		} catch (InterfaceExistsException | WireguardInvalidEndpointException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
@@ -203,7 +203,7 @@ class WireguardController extends NetworkController {
 		$this->validator->validateRequest('wireguardTunnel', $request);
 		try {
 			$id = (int) $request->getParameter('id');
-			$this->wireguardManager->editInterface($id, $request->getJsonBody(false));
+			$this->wireguardManager->editInterface($id, $request->getJsonBodyCopy(false));
 			return $response->writeBody('Workaround');
 		} catch (NonexistentWireguardTunnelException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND);

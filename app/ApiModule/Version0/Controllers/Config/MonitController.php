@@ -113,7 +113,7 @@ class MonitController extends BaseConfigController {
 		self::checkScopes($request, ['maintenance:monit']);
 		$this->validator->validateRequest('monitConfig', $request);
 		try {
-			$this->manager->saveConfig($request->getJsonBody());
+			$this->manager->saveConfig($request->getJsonBodyCopy());
 			return $response->writeBody('Workaround');
 		} catch (MonitConfigErrorException | IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);

@@ -102,7 +102,7 @@ class TimeController extends GatewayController {
 	public function setTime(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validator->validateRequest('timeSet', $request);
 		try {
-			$time = $request->getJsonBody(true);
+			$time = $request->getJsonBodyCopy(true);
 			$this->manager->setTime($time);
 			return $response->writeBody('Workaround');
 		} catch (NonexistentTimezoneException $e) {

@@ -90,7 +90,7 @@ class PasswordController extends GatewayController {
 		}
 		$this->validator->validateRequest('gatewayPassword', $request);
 		try {
-			$this->manager->setPassword($request->getJsonBody(true)['password']);
+			$this->manager->setPassword($request->getJsonBodyCopy(true)['password']);
 			return $response->writeBody('Workaround');
 		} catch (ChpasswdErrorException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);

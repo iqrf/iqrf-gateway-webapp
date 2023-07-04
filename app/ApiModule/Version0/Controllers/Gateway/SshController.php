@@ -187,7 +187,7 @@ class SshController extends GatewayController {
 		self::checkScopes($request, ['sshKeys']);
 		$this->validator->validateRequest('sshKeysAdd', $request);
 		try {
-			$failed = $this->manager->addKeys($request->getJsonBody(true));
+			$failed = $this->manager->addKeys($request->getJsonBodyCopy(true));
 			if ($failed !== []) {
 				return $response->withStatus(ApiResponse::S200_OK)
 					->writeJsonBody(['failedKeys' => $failed]);

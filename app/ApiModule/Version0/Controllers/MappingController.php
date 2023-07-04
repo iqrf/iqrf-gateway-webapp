@@ -122,7 +122,7 @@ class MappingController extends BaseController {
 	 */
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validator->validateRequest('mapping', $request);
-		$json = $request->getJsonBody(false);
+		$json = $request->getJsonBodyCopy(false);
 		if ($json->type === Mapping::TYPE_UART) {
 			$mapping = new Mapping(
 				$json->type,
@@ -254,7 +254,7 @@ class MappingController extends BaseController {
 			throw new ClientErrorException('Mapping not found', ApiResponse::S404_NOT_FOUND);
 		}
 		$this->validator->validateRequest('mapping', $request);
-		$json = $request->getJsonBody(false);
+		$json = $request->getJsonBodyCopy(false);
 		$mapping->setName($json->name);
 		$mapping->setDeviceType($json->deviceType);
 		$mapping->setInterface($json->IqrfInterface);

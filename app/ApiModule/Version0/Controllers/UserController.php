@@ -264,7 +264,7 @@ class UserController extends BaseController {
 	 */
 	public function requestPasswordRecovery(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validator->validateRequest('passwordRecoveryRequest', $request);
-		$body = $request->getJsonBody();
+		$body = $request->getJsonBodyCopy();
 		$userRepository = $this->entityManager->getUserRepository();
 		if (array_key_exists('username', $body)) {
 			$user = $userRepository->findOneByUserName($body['username']);
@@ -450,7 +450,7 @@ class UserController extends BaseController {
 	 */
 	public function signIn(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validator->validateRequest('userSignIn', $request);
-		$credentials = $request->getJsonBody();
+		$credentials = $request->getJsonBodyCopy();
 		$user = $this->entityManager->getUserRepository()->findOneByUserName($credentials['username']);
 		if (!($user instanceof User)) {
 			throw new ClientErrorException('Invalid credentials', ApiResponse::S400_BAD_REQUEST);

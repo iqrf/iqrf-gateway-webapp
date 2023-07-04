@@ -62,7 +62,7 @@ abstract class CloudsController extends BaseController {
 	 */
 	protected function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
-			$this->manager->createMqttInterface($request->getJsonBody());
+			$this->manager->createMqttInterface($request->getJsonBodyCopy());
 			return $response->withStatus(ApiResponse::S201_CREATED)
 				->writeBody('Workaround');
 		} catch (NonexistentJsonSchemaException $e) {

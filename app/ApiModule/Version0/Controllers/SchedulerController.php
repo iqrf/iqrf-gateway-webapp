@@ -123,7 +123,7 @@ class SchedulerController extends BaseController {
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['config:daemon']);
 		$this->validator->validateRequest('task', $request);
-		$task = $request->getJsonBody(false);
+		$task = $request->getJsonBodyCopy(false);
 		$taskId = $task->taskId;
 		if ($this->manager->exist($taskId)) {
 			$this->manager->getFileName($taskId);
@@ -264,7 +264,7 @@ class SchedulerController extends BaseController {
 			throw new ClientErrorException('Task not found', ApiResponse::S404_NOT_FOUND, $e);
 		}
 		$this->validator->validateRequest('task', $request);
-		$task = $request->getJsonBody(false);
+		$task = $request->getJsonBodyCopy(false);
 		try {
 			$this->manager->save($task, $fileName);
 		} catch (InvalidTaskMessageException $e) {
@@ -371,7 +371,7 @@ class SchedulerController extends BaseController {
 	 */
 	private function importJson(ApiRequest $request): void {
 		$this->validator->validateRequest('task', $request);
-		$task = $request->getJsonBody(false);
+		$task = $request->getJsonBodyCopy(false);
 		$this->manager->save($task, null);
 	}
 

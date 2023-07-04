@@ -109,7 +109,7 @@ class AptController extends BaseConfigController {
 	public function changeEnableUnattendedUpgrades(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validator->validateRequest('aptConfiguration', $request);
 		try {
-			$this->manager->write($request->getJsonBody());
+			$this->manager->write($request->getJsonBodyCopy());
 			return $response->writeBody('Workaround');
 		} catch (AptErrorException | AptNotFoundException | IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);

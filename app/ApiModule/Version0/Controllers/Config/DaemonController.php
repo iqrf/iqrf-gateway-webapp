@@ -138,7 +138,7 @@ class DaemonController extends BaseConfigController {
 		self::checkScopes($request, ['config:daemon']);
 		$this->validator->validateRequest('mainConfiguration', $request);
 		try {
-			$this->mainManager->save($request->getJsonBody(true));
+			$this->mainManager->save($request->getJsonBodyCopy(true));
 			return $response->writeBody('Workaround');
 		} catch (IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
@@ -172,7 +172,7 @@ class DaemonController extends BaseConfigController {
 		self::checkScopes($request, ['config:daemon']);
 		$this->validator->validateRequest('daemonComponent', $request);
 		try {
-			$this->componentManager->add($request->getJsonBody(true));
+			$this->componentManager->add($request->getJsonBodyCopy(true));
 			return $response->withStatus(ApiResponse::S201_CREATED)
 				->writeBody('Workaround');
 		} catch (IOException $e) {
@@ -254,7 +254,7 @@ class DaemonController extends BaseConfigController {
 		}
 		$this->validator->validateRequest('daemonComponent', $request);
 		try {
-			$this->componentManager->save($request->getJsonBody(), $id);
+			$this->componentManager->save($request->getJsonBodyCopy(), $id);
 		} catch (IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
@@ -345,7 +345,7 @@ class DaemonController extends BaseConfigController {
 	public function createInstance(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['config:daemon']);
 		try {
-			$json = $request->getJsonBody(true);
+			$json = $request->getJsonBodyCopy(true);
 			$component = urldecode($request->getParameter('component'));
 			$this->manager->setComponent($component);
 			if (!isset($json['instance'])) {
@@ -437,7 +437,7 @@ class DaemonController extends BaseConfigController {
 	public function editInstance(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['config:daemon']);
 		try {
-			$json = $request->getJsonBody(true);
+			$json = $request->getJsonBodyCopy(true);
 			$component = urldecode($request->getParameter('component'));
 			$this->manager->setComponent($component);
 			if (!isset($json['instance'])) {
@@ -534,7 +534,7 @@ class DaemonController extends BaseConfigController {
 		self::checkScopes($request, ['config:daemon']);
 		$this->validator->validateRequest('daemonComponentEnabled', $request);
 		try {
-			$reqData = $request->getJsonBody(true);
+			$reqData = $request->getJsonBodyCopy(true);
 			$config = $this->mainManager->load();
 			foreach ($reqData as $component) {
 				$index = array_search($component['name'], array_column($config['components'], 'name'), true);

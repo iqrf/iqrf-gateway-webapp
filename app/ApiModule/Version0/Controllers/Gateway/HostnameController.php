@@ -78,7 +78,7 @@ class HostnameController extends GatewayController {
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validator->validateRequest('hostname', $request);
 		try {
-			$config = $request->getJsonBody(true);
+			$config = $request->getJsonBodyCopy(true);
 			$this->manager->setHostname($config['hostname']);
 			return $response->writeBody('Workaround');
 		} catch (HostnameException $e) {

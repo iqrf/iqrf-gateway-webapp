@@ -129,7 +129,7 @@ class ControllerController extends BaseConfigController {
 		self::checkScopes($request, ['config:controller']);
 		$this->validator->validateRequest('controllerConfig', $request);
 		try {
-			$this->configManager->saveConfig($request->getJsonBody());
+			$this->configManager->saveConfig($request->getJsonBodyCopy());
 			return $response->writeBody('Workaround');
 		} catch (IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
@@ -223,7 +223,7 @@ class ControllerController extends BaseConfigController {
 	 */
 	public function addPins(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validator->validateRequest('controllerPinConfig', $request);
-		$json = $request->getJsonBody(false);
+		$json = $request->getJsonBodyCopy(false);
 		$entity = $this->pinManager->addPinConfig($json);
 		return $response->writeJsonObject($entity)
 			->withHeader('Location', '/api/v0/config/controller/pins/' . $entity->getId())
@@ -247,7 +247,7 @@ class ControllerController extends BaseConfigController {
 	public function editPins(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validator->validateRequest('controllerPinConfig', $request);
 		$id = (int) $request->getParameter('id');
-		$json = $request->getJsonBody(false);
+		$json = $request->getJsonBodyCopy(false);
 		try {
 			$this->pinManager->editPinConfig($id, $json);
 			return $response->writeBody('Workaround');

@@ -126,7 +126,7 @@ class ApiKeyController extends BaseController {
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['apiKeys']);
 		$this->validator->validateRequest('apiKeyModify', $request);
-		$json = $request->getJsonBody(false);
+		$json = $request->getJsonBodyCopy(false);
 		$apiKey = new ApiKey($json->description, null);
 		try {
 			$apiKey->setExpirationFromString($json->expiration);
@@ -242,7 +242,7 @@ class ApiKeyController extends BaseController {
 			throw new ClientErrorException('API key not found', ApiResponse::S404_NOT_FOUND);
 		}
 		$this->validator->validateRequest('apiKeyModify', $request);
-		$json = $request->getJsonBody(false);
+		$json = $request->getJsonBodyCopy(false);
 		$apiKey->setDescription($json->description);
 		try {
 			$apiKey->setExpirationFromString($json->expiration);

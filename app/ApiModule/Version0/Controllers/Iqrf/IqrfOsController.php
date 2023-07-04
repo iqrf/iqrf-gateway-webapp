@@ -114,7 +114,7 @@ class IqrfOsController extends IqrfController {
 	public function listOsUpgrades(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['iqrf:upload']);
 		$this->validator->validateRequest('iqrfOsPatchUpgrade', $request);
-		$data = $request->getJsonBody(false);
+		$data = $request->getJsonBodyCopy(false);
 		$upgrades = $this->iqrfOsManager->listOsUpgrades($data->build, $data->mcuType);
 		return $response->writeJsonBody($upgrades);
 	}
@@ -147,7 +147,7 @@ class IqrfOsController extends IqrfController {
 		self::checkScopes($request, ['iqrf:upload']);
 		$this->validator->validateRequest('iqrfOsDpaUpgrade', $request);
 		try {
-			$this->iqrfOsManager->upgradeOs($request->getJsonBody(false));
+			$this->iqrfOsManager->upgradeOs($request->getJsonBodyCopy(false));
 			return $response->writeBody('Workaround');
 		} catch (DpaRfMissingException | DpaFileNotFoundException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);

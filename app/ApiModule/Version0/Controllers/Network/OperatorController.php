@@ -150,7 +150,7 @@ class OperatorController extends NetworkController {
 	 */
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validator->validateRequest('networkOperator', $request);
-		$json = $request->getJsonBody(false);
+		$json = $request->getJsonBodyCopy(false);
 		$operator = new NetworkOperator($json->name, $json->apn);
 		if (property_exists($json, 'username')) {
 			$operator->setUsername($json->username);
@@ -198,7 +198,7 @@ class OperatorController extends NetworkController {
 			throw new ClientErrorException('Network operator not found', ApiResponse::S404_NOT_FOUND);
 		}
 		$this->validator->validateRequest('networkOperator', $request);
-		$json = $request->getJsonBody(false);
+		$json = $request->getJsonBodyCopy(false);
 		$operator->setName($json->name);
 		$operator->setApn($json->apn);
 		$operator->setUsername($json->username ?? null);

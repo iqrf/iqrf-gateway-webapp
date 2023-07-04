@@ -164,7 +164,7 @@ class UploadController extends IqrfController {
 		self::checkScopes($request, ['iqrf:upload']);
 		$this->validator->validateRequest('dpaFile', $request);
 		try {
-			$data = $request->getJsonBody(false);
+			$data = $request->getJsonBodyCopy(false);
 			$interface = DpaInterfaces::fromScalar($data->interfaceType);
 			$trSeries = TrSeries::fromTrMcuType($data->trSeries);
 			$rfMode = property_exists($data, 'rfMode') ? RfModes::fromScalar($data->rfMode) : null;
@@ -215,7 +215,7 @@ class UploadController extends IqrfController {
 		self::checkScopes($request, ['iqrf:upload']);
 		$this->validator->validateRequest('uploaderFile', $request);
 		try {
-			$data = $request->getJsonBody(false);
+			$data = $request->getJsonBodyCopy(false);
 			$this->uploadManager->uploadToTr($data->name, $data->type === 'OS');
 			return $response->writeBody('Workaround');
 		} catch (UploaderFileException $e) {

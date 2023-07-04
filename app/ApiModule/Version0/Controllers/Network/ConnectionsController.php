@@ -178,7 +178,7 @@ class ConnectionsController extends NetworkController {
 		self::checkScopes($request, ['network']);
 		$this->validator->validateRequest('networkConnection', $request);
 		try {
-			$json = $request->getJsonBody(false);
+			$json = $request->getJsonBodyCopy(false);
 			$uuid = $this->manager->add($json);
 			return $response->writeBody($uuid);
 		} catch (NetworkManagerException $e) {
@@ -220,7 +220,7 @@ class ConnectionsController extends NetworkController {
 		try {
 			$uuid = $this->getUuid($request);
 			$this->validator->validateRequest('networkConnection', $request);
-			$json = $request->getJsonBody(false);
+			$json = $request->getJsonBodyCopy(false);
 			$this->manager->edit($uuid, $json);
 		} catch (NonexistentConnectionException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
