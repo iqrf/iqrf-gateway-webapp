@@ -26,9 +26,10 @@ use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Signer\Ecdsa\Sha256 as EcdsaSha256;
 use Lcobucci\JWT\Signer\Ecdsa\Sha384 as EcdsaSha384;
 use Lcobucci\JWT\Signer\Ecdsa\Sha512 as EcdsaSha512;
+use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Lcobucci\JWT\Signer\Key\InMemory;
-use Lcobucci\JWT\Signer\Rsa\Sha256;
 use Lcobucci\JWT\Signer\Rsa\Sha256 as RsaSha256;
+use Nette\Utils\Strings;
 use Throwable;
 use const OPENSSL_KEYTYPE_EC;
 use const OPENSSL_KEYTYPE_RSA;
@@ -95,6 +96,11 @@ class JwtConfigurator {
 	 */
 	private function createFallback(): Configuration {
 		$key = $this->infoManager->getId() ?? $this->infoManager->getHostname();
+		$keyLength = strlen($key);
+		if ($keyLength < 32) {
+			$key = str_repeat($key, (int) ceil(32 / $keyLength));
+		}
+		$key = Strings::substring($key, 0, 32);
 		return Configuration::forSymmetricSigner(new Sha256(), InMemory::plainText($key));
 	}
 

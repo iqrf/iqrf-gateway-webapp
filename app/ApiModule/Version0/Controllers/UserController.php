@@ -526,6 +526,7 @@ class UserController extends BaseController {
 		$hostname = gethostname();
 		$builder = $configuration->builder();
 		$builder = $builder->issuedAt($now);
+		$builder = $builder->canOnlyBeUsedAfter($now);
 		$builder = $builder->expiresAt($now->modify('+90 min'));
 		$builder = $builder->withClaim('uid', $user->getId());
 		if ($hostname !== false) {
