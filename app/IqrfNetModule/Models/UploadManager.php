@@ -47,7 +47,7 @@ class UploadManager {
 	/**
 	 * Path to OS patch files
 	 */
-	public const OS_PATH = __DIR__ . '/../../../iqrf/os/';
+	final public const OS_PATH = __DIR__ . '/../../../iqrf/os/';
 
 	/**
 	 * @var string Path to the directory for uploaded files
@@ -55,18 +55,16 @@ class UploadManager {
 	private string $path = '/var/cache/iqrf-gateway-daemon/upload/';
 
 	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
-
-	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
 	 * @param GenericManager $genericManager Generic daemon component manager
 	 * @param MainManager $mainManager Main daemon configuration manager
 	 */
-	public function __construct(CommandManager $commandManager, GenericManager $genericManager, MainManager $mainManager) {
-		$this->commandManager = $commandManager;
+	public function __construct(
+		private readonly CommandManager $commandManager,
+		GenericManager $genericManager,
+		MainManager $mainManager,
+	) {
 		try {
 			$cacheDir = $mainManager->getCacheDir();
 			if (!str_ends_with($cacheDir, '/')) {

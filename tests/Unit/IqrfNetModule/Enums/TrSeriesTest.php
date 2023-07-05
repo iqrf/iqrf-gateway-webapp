@@ -87,7 +87,7 @@ final class TrSeriesTest extends TestCase {
 	 * Tests the function to create IQRF TR series enum from unknown IQRF TR type string
 	 */
 	public function testFromTrTypeUnknown(): void {
-		Assert::exception(function (): void {
+		Assert::exception(static function (): void {
 			TrSeries::fromTrType('unknown');
 		}, DomainException::class);
 	}
@@ -106,7 +106,7 @@ final class TrSeriesTest extends TestCase {
 	 * Tests the function to create IQRF TR series enum from the IQRF TR type unknown value
 	 */
 	public function testFromTrMcuTypeUnknown(): void {
-		Assert::exception(function (): void {
+		Assert::exception(static function (): void {
 			TrSeries::fromTrMcuType(0);
 		}, DomainException::class);
 	}
@@ -125,7 +125,7 @@ final class TrSeriesTest extends TestCase {
 	 * Tests the function to create IQRF TR series enum from IQRF OS diff file name - unknown type
 	 */
 	public function testFromIqrfOsFileNameUnknown(): void {
-		Assert::exception(function (): void {
+		Assert::exception(static function (): void {
 			TrSeries::fromIqrfOsFileName('unknown');
 		}, DomainException::class);
 	}

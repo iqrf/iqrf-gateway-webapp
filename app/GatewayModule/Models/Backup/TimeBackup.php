@@ -32,28 +32,19 @@ class TimeBackup implements IBackupManager {
 	/**
 	 * @var array<string> Whitelisted files
 	 */
-	public const WHITELIST = [
+	final public const WHITELIST = [
 		'timezone',
 	];
-
-	/**
-	 * @var RestoreLogger Restore logger
-	 */
-	private RestoreLogger $restoreLogger;
-
-	/**
-	 * @var TimeManager Time manager
-	 */
-	private TimeManager $timeManager;
 
 	/**
 	 * Constructor
 	 * @param RestoreLogger $restoreLogger Restore logger
 	 * @param TimeManager $timeManager Time manager
 	 */
-	public function __construct(RestoreLogger $restoreLogger, TimeManager $timeManager) {
-		$this->restoreLogger = $restoreLogger;
-		$this->timeManager = $timeManager;
+	public function __construct(
+		private readonly RestoreLogger $restoreLogger,
+		private readonly TimeManager $timeManager,
+	) {
 	}
 
 	/**

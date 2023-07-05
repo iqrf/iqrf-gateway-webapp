@@ -41,7 +41,7 @@ final class PhpModuleManagerTest extends TestCase {
 	 * Tests the function to check installed and loaded PHP modules
 	 */
 	public function testCheckModules(): void {
-		Assert::noError(function (): void {
+		Assert::noError(static function (): void {
 			PhpModuleManager::checkModules();
 		});
 	}

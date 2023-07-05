@@ -37,31 +37,6 @@ use Throwable;
 class DiagnosticsManager {
 
 	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
-
-	/**
-	 * @var DaemonDirectories IQRF Gateway Daemon's directory manager
-	 */
-	private DaemonDirectories $daemonDirectories;
-
-	/**
-	 * @var EnumerationManager IQMESH Enumeration manager
-	 */
-	private EnumerationManager $enumerationManager;
-
-	/**
-	 * @var GatewayInfoUtil Gateway info manager
-	 */
-	private GatewayInfoUtil $gwInfo;
-
-	/**
-	 * @var InfoManager Gateway info manager
-	 */
-	private InfoManager $infoManager;
-
-	/**
 	 * @var ZipArchiveManager ZIP archive manager
 	 */
 	private ZipArchiveManager $zipManager;
@@ -74,12 +49,13 @@ class DiagnosticsManager {
 	 * @param InfoManager $infoManager Gateway Info manager
 	 * @param GatewayInfoUtil $gwInfo Gateway information file manager
 	 */
-	public function __construct(CommandManager $commandManager, DaemonDirectories $daemonDirectories, EnumerationManager $enumerationManager, InfoManager $infoManager, GatewayInfoUtil $gwInfo) {
-		$this->commandManager = $commandManager;
-		$this->daemonDirectories = $daemonDirectories;
-		$this->enumerationManager = $enumerationManager;
-		$this->infoManager = $infoManager;
-		$this->gwInfo = $gwInfo;
+	public function __construct(
+		private readonly CommandManager $commandManager,
+		private readonly DaemonDirectories $daemonDirectories,
+		private readonly EnumerationManager $enumerationManager,
+		private readonly InfoManager $infoManager,
+		private readonly GatewayInfoUtil $gwInfo,
+	) {
 	}
 
 	/**

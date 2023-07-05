@@ -29,18 +29,15 @@ use Nette\Localization\Translator;
 class FeatureManager extends CoreFeatureManager {
 
 	/**
-	 * @var Translator Translator
-	 */
-	private Translator $translator;
-
-	/**
 	 * Constructor
 	 * @param string $path Path to the configuration file
 	 * @param Translator $translator ITranslator
 	 */
-	public function __construct(string $path, Translator $translator) {
+	public function __construct(
+		string $path,
+		private readonly Translator $translator,
+	) {
 		parent::__construct($path);
-		$this->translator = $translator;
 	}
 	/**
 	 * Lists the optional features

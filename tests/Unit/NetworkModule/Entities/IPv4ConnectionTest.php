@@ -51,22 +51,22 @@ final class IPv4ConnectionTest extends TestCase {
 	/**
 	 * @var IPv4Methods IPv4 connection method
 	 */
-	private IPv4Methods $method;
+	private const METHOD = IPv4Methods::MANUAL;
 
 	/**
 	 * @var array<IPv4Address> IPv4 addresses
 	 */
-	private array $addresses = [];
+	private readonly array $addresses;
 
 	/**
 	 * @var IPv4 IPv4 gateway address
 	 */
-	private IPv4 $gateway;
+	private readonly IPv4 $gateway;
 
 	/**
 	 * @var array<IPv4> IPv4 addresses of DNS servers
 	 */
-	private array $dns = [];
+	private readonly array $dns;
 
 	/**
 	 * @var IPv4Connection IPv4 connection entity
@@ -77,7 +77,6 @@ final class IPv4ConnectionTest extends TestCase {
 	 * Sets up the test environment
 	 */
 	public function __construct() {
-		$this->method = IPv4Methods::MANUAL;
 		$this->addresses = [
 			new IPv4Address(IPv4::factory('192.168.1.2'), 24),
 		];
@@ -89,7 +88,7 @@ final class IPv4ConnectionTest extends TestCase {
 	 * Sets up the test environment
 	 */
 	protected function setUp(): void {
-		$this->entity = new IPv4Connection($this->method, $this->addresses, $this->gateway, $this->dns, null);
+		$this->entity = new IPv4Connection(self::METHOD, $this->addresses, $this->gateway, $this->dns, null);
 	}
 
 	/**
@@ -116,7 +115,7 @@ final class IPv4ConnectionTest extends TestCase {
 		];
 		$gateway = IPv4::factory('10.0.0.1');
 		$dns = [IPv4::factory('10.0.0.1'), IPv4::factory('1.1.1.1')];
-		$expected = new IPv4Connection($this->method, $addresses, $gateway, $dns, null);
+		$expected = new IPv4Connection(self::METHOD, $addresses, $gateway, $dns, null);
 		$actual = IPv4Connection::jsonDeserialize($arrayHash);
 		Assert::equal($expected, $actual);
 	}

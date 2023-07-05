@@ -31,11 +31,6 @@ use Nette\Utils\JsonException;
 class GatewayInfoUtil {
 
 	/**
-	 * @var string Gateway file path
-	 */
-	private string $path;
-
-	/**
 	 * Returns gateway file schema
 	 * @return Structure Gateway file schema
 	 */
@@ -54,8 +49,9 @@ class GatewayInfoUtil {
 	 * Constructor
 	 * @param string $path Gateway file path
 	 */
-	public function __construct(string $path) {
-		$this->path = $path;
+	public function __construct(
+		private readonly string $path,
+	) {
 	}
 
 	/**

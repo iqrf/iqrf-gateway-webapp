@@ -40,16 +40,6 @@ use Spatie\SslCertificate\SslCertificate;
 class ConfigurationManager {
 
 	/**
-	 * @var string Path to the configuration file
-	 */
-	private string $path;
-
-	/**
-	 * @var array<string, mixed>|null Configuration
-	 */
-	private ?array $config;
-
-	/**
 	 * Returns the configuration schema
 	 * @return Structure Configuration schema
 	 */
@@ -75,9 +65,10 @@ class ConfigurationManager {
 	 * @param string $path Path to the configuration file
 	 * @param array<string, mixed>|null $config Configuration
 	 */
-	public function __construct(string $path, ?array $config = null) {
-		$this->path = $path;
-		$this->config = $config;
+	public function __construct(
+		private readonly string $path,
+		private readonly ?array $config = null,
+	) {
 	}
 
 	/**

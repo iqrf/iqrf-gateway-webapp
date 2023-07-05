@@ -34,31 +34,6 @@ final class SerialLink implements INetworkManagerEntity {
 	public const NMCLI_PREFIX = 'serial';
 
 	/**
-	 * @var positive-int $baud Baud rate
-	 */
-	private int $baudRate;
-
-	/**
-	 * @var positive-int $bits Byte-width
-	 */
-	private int $bits;
-
-	/**
-	 * @var 'E'|'o'|'n'|'' $parity Connection parity 'E' for even, 'o' for odd, 'n' for none
-	 */
-	private string $parity;
-
-	/**
-	 * @var int $sendDelay Delay between bytes in microseconds
-	 */
-	private int $sendDelay;
-
-	/**
-	 * @var int<1,2> $stopBits Stop bits 1 or 2
-	 */
-	private int $stopBits;
-
-	/**
 	 * Constructor
 	 * @param positive-int $baudRate Baud rate
 	 * @param positive-int $bits Byte-width
@@ -66,12 +41,13 @@ final class SerialLink implements INetworkManagerEntity {
 	 * @param positive-int $sendDelay Delay between bytes in microseconds
 	 * @param int<1,2> $stopBits Stop bits 1 or 2
 	 */
-	public function __construct(int $baudRate, int $bits, string $parity, int $sendDelay, int $stopBits) {
-		$this->baudRate = $baudRate;
-		$this->bits = $bits;
-		$this->parity = $parity;
-		$this->sendDelay = $sendDelay;
-		$this->stopBits = $stopBits;
+	public function __construct(
+		private readonly int $baudRate,
+		private readonly int $bits,
+		private readonly string $parity,
+		private readonly int $sendDelay,
+		private readonly int $stopBits,
+	) {
 	}
 
 	/**

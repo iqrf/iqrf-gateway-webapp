@@ -20,31 +20,6 @@ use Nette\Mail\Message;
 abstract class BaseMailSender {
 
 	/**
-	 * @var ConfigurationManager SMTP configuration manager
-	 */
-	protected ConfigurationManager $configuration;
-
-	/**
-	 * @var InfoManager Gateway information manager
-	 */
-	protected InfoManager $gatewayInfo;
-
-	/**
-	 * @var MailerFactory Mailer factory
-	 */
-	protected MailerFactory $mailerFactory;
-
-	/**
-	 * @var TemplateFactory Template factory
-	 */
-	protected TemplateFactory $templateFactory;
-
-	/**
-	 * @var Translator Translator
-	 */
-	protected Translator $translator;
-
-	/**
 	 * Constructor
 	 * @param ConfigurationManager $configuration SMTP configuration manager
 	 * @param InfoManager $gatewayInfo Gareway information manager
@@ -52,12 +27,13 @@ abstract class BaseMailSender {
 	 * @param TemplateFactory $templateFactory Template factory
 	 * @param Translator $translator Translator
 	 */
-	public function __construct(ConfigurationManager $configuration, InfoManager $gatewayInfo, MailerFactory $mailerFactory, TemplateFactory $templateFactory, Translator $translator) {
-		$this->configuration = $configuration;
-		$this->gatewayInfo = $gatewayInfo;
-		$this->mailerFactory = $mailerFactory;
-		$this->templateFactory = $templateFactory;
-		$this->translator = $translator;
+	public function __construct(
+		protected ConfigurationManager $configuration,
+		protected readonly InfoManager $gatewayInfo,
+		protected MailerFactory $mailerFactory,
+		protected readonly TemplateFactory $templateFactory,
+		protected readonly Translator $translator,
+	) {
 	}
 
 	/**

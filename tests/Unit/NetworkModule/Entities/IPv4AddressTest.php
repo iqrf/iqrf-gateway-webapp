@@ -41,7 +41,7 @@ final class IPv4AddressTest extends TestCase {
 	/**
 	 * @var IPv4 IPv4 address
 	 */
-	private IPv4 $address;
+	private readonly IPv4 $address;
 
 	/**
 	 * @var string IPv4 address
@@ -61,12 +61,12 @@ final class IPv4AddressTest extends TestCase {
 	/**
 	 * @var IPv4 IPv4 mask
 	 */
-	private IPv4 $mask;
+	private readonly IPv4 $mask;
 
 	/**
 	 * @var IPv4Address IPv4 address entity
 	 */
-	private IPv4Address $entity;
+	private readonly IPv4Address $entity;
 
 	/**
 	 * Sets up the test environment

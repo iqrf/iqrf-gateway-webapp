@@ -30,16 +30,12 @@ use Nette\Utils\JsonException;
 class IqrfBoardManager implements IBoardManager {
 
 	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
-
-	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
 	 */
-	public function __construct(CommandManager $commandManager) {
-		$this->commandManager = $commandManager;
+	public function __construct(
+		private readonly CommandManager $commandManager,
+	) {
 	}
 
 	/**

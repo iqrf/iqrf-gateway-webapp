@@ -42,14 +42,14 @@ class MappingListCommand extends MappingCommand {
 		foreach ($this->repository->findAll() as $mapping) {
 			$mappings[] = [
 				$mapping->getId(),
-				$mapping->getType(),
+				$mapping->getType()->name,
 				$mapping->getName(),
-				$mapping->getDeviceType(),
+				$mapping->getDeviceType()->name,
 				$mapping->getInterface(),
 				$mapping->getBusPin(),
 				$mapping->getPgmPin(),
 				$mapping->getPowerPin(),
-				$mapping->getBaudRate(),
+				$mapping->getBaudRate()->value,
 				$mapping->getI2cPin(),
 				$mapping->getSpiPin(),
 				$mapping->getUartPin(),

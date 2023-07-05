@@ -287,10 +287,8 @@ class UsersController extends BaseController {
 		}
 		if (array_key_exists('email', $json)) {
 			$email = $json['email'];
-			if ($email !== null && $email !== '') {
-				if ($this->manager->checkEmailUniqueness($email, $id)) {
-					throw new ClientErrorException('E-mail address is already used', ApiResponse::S409_CONFLICT);
-				}
+			if ($email !== null && $email !== '' && $this->manager->checkEmailUniqueness($email, $id)) {
+				throw new ClientErrorException('E-mail address is already used', ApiResponse::S409_CONFLICT);
 			}
 			try {
 				$user->setEmail($email);

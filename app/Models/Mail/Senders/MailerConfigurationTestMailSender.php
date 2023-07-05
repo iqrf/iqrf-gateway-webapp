@@ -32,7 +32,7 @@ class MailerConfigurationTestMailSender extends BaseMailSender {
 	/**
 	 * Sends test e-mail to check mailer configuration
 	 * @param User $user User
-	 * @param array<string, mixed> $config Configuration
+	 * @param array<string, mixed>|null $config Configuration
 	 */
 	public function send(User $user, ?array $config = null): void {
 		if ($config !== null) {

@@ -84,12 +84,12 @@ final class ConnectionDetailWifiTest extends TestCase {
 	/**
 	 * @var UuidInterface Network connection UUID
 	 */
-	private UuidInterface $uuid;
+	private readonly UuidInterface $uuid;
 
 	/**
 	 * @var ConnectionTypes Network connection type
 	 */
-	private ConnectionTypes $type;
+	private readonly ConnectionTypes $type;
 
 	/**
 	 * @var IPv4Connection IPv4 network connection entity

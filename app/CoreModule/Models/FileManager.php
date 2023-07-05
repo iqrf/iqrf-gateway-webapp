@@ -31,23 +31,14 @@ use Nette\Utils\JsonException;
 class FileManager implements IFileManager {
 
 	/**
-	 * @var string Directory with files
-	 */
-	private string $directory;
-
-	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
-
-	/**
 	 * Constructor
 	 * @param string $directory Directory with files
 	 * @param CommandManager $commandManager Command managers
 	 */
-	public function __construct(string $directory, CommandManager $commandManager) {
-		$this->directory = $directory;
-		$this->commandManager = $commandManager;
+	public function __construct(
+		private readonly string $directory,
+		private readonly CommandManager $commandManager,
+	) {
 	}
 
 	/**

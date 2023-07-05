@@ -33,6 +33,6 @@ enum UserLanguage: string {
 	case Czech = 'cs';
 
 	/// Default language
-	public const Default = self::English;
+	final public const Default = self::English;
 
 }

@@ -59,23 +59,14 @@ class AuthenticationMiddleware implements IMiddleware {
 	];
 
 	/**
-	 * @var IAuthenticator Authenticator
-	 */
-	private IAuthenticator $authenticator;
-
-	/**
-	 * @var EntityManager Database entity manager
-	 */
-	private EntityManager $entityManager;
-
-	/**
 	 * Constructor
 	 * @param IAuthenticator $authenticator Authenticator
 	 * @param EntityManager $entityManager Database entity manager
 	 */
-	public function __construct(IAuthenticator $authenticator, EntityManager $entityManager) {
-		$this->authenticator = $authenticator;
-		$this->entityManager = $entityManager;
+	public function __construct(
+		private readonly IAuthenticator $authenticator,
+		private readonly EntityManager $entityManager,
+	) {
 	}
 
 	public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next): ResponseInterface {

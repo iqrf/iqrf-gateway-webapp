@@ -65,7 +65,7 @@ final class CommandManagerTest extends TestCase {
 	 * Tests the function to execute a shell command asynchronously
 	 */
 	public function testRunAsync(): void {
-		$this->manager->runAsync(function (string $type, ?string $buffer): void {
+		$this->manager->runAsync(static function (string $type, ?string $buffer): void {
 			Assert::same(Process::OUT, $type);
 			Assert::same('OK', Strings::trim($buffer));
 		}, self::COMMAND, false, 10);

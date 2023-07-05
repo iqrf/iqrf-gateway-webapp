@@ -54,44 +54,29 @@ class WireguardManager {
 	private const TMP_DIR = '/tmp/wireguard/';
 
 	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
-
-	/**
-	 * @var EntityManager Entity manager
-	 */
-	private EntityManager $entityManager;
-
-	/**
-	 * @var ServiceManager Service manager
-	 */
-	private ServiceManager $serviceManager;
-
-	/**
 	 * @var WireguardInterfaceIpv4Repository WireGuard interface IPv4 repository
 	 */
-	private WireguardInterfaceIpv4Repository $wireguardInterfaceIpv4Repository;
+	private readonly WireguardInterfaceIpv4Repository $interfaceIpv4Repository;
 
 	/**
 	 * @var WireguardInterfaceIpv6Repository WireGuard interface IPv6 repository
 	 */
-	private WireguardInterfaceIpv6Repository $wireguardInterfaceIpv6Repository;
+	private readonly WireguardInterfaceIpv6Repository $interfaceIpv6Repository;
 
 	/**
 	 * @var WireguardInterfaceRepository WireGuard interface repository
 	 */
-	private WireguardInterfaceRepository $wireguardInterfaceRepository;
+	private readonly WireguardInterfaceRepository $interfaceRepository;
 
 	/**
 	 * @var WireguardPeerAddressRepository WireGuard peer address repository
 	 */
-	private WireguardPeerAddressRepository $wireguardPeerAddressRepository;
+	private readonly WireguardPeerAddressRepository $peerAddressRepository;
 
 	/**
 	 * @var WireguardPeerRepository WireGuard peer repository
 	 */
-	private WireguardPeerRepository $wireguardPeerRepository;
+	private readonly WireguardPeerRepository $peerRepository;
 
 	/**
 	 * Constructor
@@ -99,15 +84,16 @@ class WireguardManager {
 	 * @param EntityManager $entityManager Entity manager
 	 * @param ServiceManager $serviceManager Service manager
 	 */
-	public function __construct(CommandManager $commandManager, EntityManager $entityManager, ServiceManager $serviceManager) {
-		$this->commandManager = $commandManager;
-		$this->entityManager = $entityManager;
-		$this->serviceManager = $serviceManager;
-		$this->wireguardInterfaceIpv4Repository = $this->entityManager->getWireguardInterfaceIpv4Repository();
-		$this->wireguardInterfaceIpv6Repository = $this->entityManager->getWireguardInterfaceIpv6Repository();
-		$this->wireguardInterfaceRepository = $this->entityManager->getWireguardInterfaceRepository();
-		$this->wireguardPeerAddressRepository = $this->entityManager->getWireguardPeerAddressRepository();
-		$this->wireguardPeerRepository = $this->entityManager->getWireguardPeerRepository();
+	public function __construct(
+		private readonly CommandManager $commandManager,
+		private readonly EntityManager $entityManager,
+		private readonly ServiceManager $serviceManager,
+	) {
+		$this->interfaceIpv4Repository = $this->entityManager->getWireguardInterfaceIpv4Repository();
+		$this->interfaceIpv6Repository = $this->entityManager->getWireguardInterfaceIpv6Repository();
+		$this->interfaceRepository = $this->entityManager->getWireguardInterfaceRepository();
+		$this->peerAddressRepository = $this->entityManager->getWireguardPeerAddressRepository();
+		$this->peerRepository = $this->entityManager->getWireguardPeerRepository();
 	}
 
 	/**
@@ -120,7 +106,7 @@ class WireguardManager {
 			'name' => $interface->getName(),
 			'active' => $this->serviceManager->isActive('iqrf-gateway-webapp-wg@' . $interface->getName()),
 			'enabled' => $this->serviceManager->isEnabled('iqrf-gateway-webapp-wg@' . $interface->getName()),
-		], $this->wireguardInterfaceRepository->findAll());
+		], $this->interfaceRepository->findAll());
 	}
 
 	/**
@@ -129,7 +115,7 @@ class WireguardManager {
 	 * @return WireguardInterface WireGuard interface configuration
 	 */
 	public function getInterface(int $id): WireguardInterface {
-		$interface = $this->wireguardInterfaceRepository->find($id);
+		$interface = $this->interfaceRepository->find($id);
 		if ($interface === null) {
 			throw new NonexistentWireguardTunnelException('WireGuard tunnel not found');
 		}
@@ -141,7 +127,7 @@ class WireguardManager {
 	 * @param stdClass $values New WireGuard interface configuration
 	 */
 	public function createInterface(stdClass $values): void {
-		if ($this->wireguardInterfaceRepository->findInterfaceByName($values->name) !== null) {
+		if ($this->interfaceRepository->findInterfaceByName($values->name) !== null) {
 			throw new InterfaceExistsException(sprintf('Wireguard tunnel %s already exists.', $values->name));
 		}
 		$interface = new WireguardInterface($values->name, $values->privateKey, $values->port ?? null);
@@ -167,7 +153,7 @@ class WireguardManager {
 	 */
 	public function editInterface(int $id, stdClass $values): void {
 		$interface = $this->getInterface($id);
-		$tunnels = $this->wireguardInterfaceRepository->findBy(['name' => $values->name]);
+		$tunnels = $this->interfaceRepository->findBy(['name' => $values->name]);
 		foreach ($tunnels as $tunnel) {
 			if ($tunnel !== $interface) {
 				throw new InterfaceExistsException(sprintf('Wireguard tunnel %s already exists.', $values->name));
@@ -190,7 +176,7 @@ class WireguardManager {
 		$peersIds = [];
 		foreach ($values->peers as $peer) {
 			if (property_exists($peer, 'id') && $peer->id !== null) {
-				$ifPeer = $this->wireguardPeerRepository->find($peer->id);
+				$ifPeer = $this->peerRepository->find($peer->id);
 				if (!($ifPeer instanceof WireguardPeer)) {
 					throw new NonexistentWireguardTunnelException('WireGuard peer not found');
 				}
@@ -226,7 +212,7 @@ class WireguardManager {
 	 * @param int $protocol IP version
 	 */
 	private function updateInterfaceAddress(stdClass $ip, WireguardInterface $interface, int $protocol): void {
-		$repository = $protocol === 4 ? $this->wireguardInterfaceIpv4Repository : $this->wireguardInterfaceIpv6Repository;
+		$repository = $protocol === 4 ? $this->interfaceIpv4Repository : $this->interfaceIpv6Repository;
 		if (property_exists($ip, 'id')) {
 			$ifIp = $repository->find($ip->id);
 			if (!($ifIp instanceof WireguardInterfaceIpv4) && !($ifIp instanceof WireguardInterfaceIpv6)) {
@@ -295,7 +281,7 @@ class WireguardManager {
 		$addrIds = [];
 		foreach ($addrs as $ip) {
 			if (isset($ip->id)) {
-				$peerAddr = $this->wireguardPeerAddressRepository->find($ip->id);
+				$peerAddr = $this->peerAddressRepository->find($ip->id);
 				if ($peerAddr === null) {
 					throw new NonexistentWireguardTunnelException('WireGuard peer address not found');
 				}
@@ -318,7 +304,7 @@ class WireguardManager {
 	 * @param int $id WireGuard interface id
 	 */
 	public function removeInterface(int $id): void {
-		$interface = $this->wireguardInterfaceRepository->find($id);
+		$interface = $this->interfaceRepository->find($id);
 		if ($interface === null) {
 			throw new NonexistentWireguardTunnelException('WireGuard tunnel not found');
 		}

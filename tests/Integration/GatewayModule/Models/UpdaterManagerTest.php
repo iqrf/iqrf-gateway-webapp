@@ -63,7 +63,7 @@ final class UpdaterManagerTest extends CommandTestCase {
 		$commandManager = Mockery::mock(CommandManager::class);
 		$commandManager->shouldReceive('commandExist')
 			->withArgs(['apt-get'])->andReturn(false);
-		Assert::throws(function () use ($commandManager): void {
+		Assert::throws(static function () use ($commandManager): void {
 			$manager = new UpdaterManager($commandManager);
 			$manager->getUpgradable();
 		}, UnsupportedPackageManagerException::class);
@@ -85,7 +85,7 @@ final class UpdaterManagerTest extends CommandTestCase {
 	 */
 	public function getUpgradablePackages(): array {
 		return array_map(
-			fn(string $fileName): array => [
+			static fn(string $fileName): array => [
 				FileSystem::read(TESTER_DIR . '/data/packageManagers/apt-get/' . $fileName . '.stdout'),
 				Json::decode(FileSystem::read(TESTER_DIR . '/data/packageManagers/apt-get/' . $fileName . '.json'), forceArrays: true),
 			],

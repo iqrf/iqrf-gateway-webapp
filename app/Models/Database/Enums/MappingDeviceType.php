@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 /**
  * Copyright 2017-2023 IQRF Tech s.r.o.
  * Copyright 2019-2023 MICRORISC s.r.o.
@@ -16,36 +18,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types = 1);
 
-namespace App\GatewayModule\Models\BoardManagers;
-
-use App\CoreModule\Models\CommandManager;
+namespace App\Models\Database\Enums;
 
 /**
- * Device tree board manager
+ * Mapping device type enum
  */
-class DeviceTreeBoardManager implements IBoardManager {
+enum MappingDeviceType: string {
 
 	/**
-	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * Adapter device type
 	 */
-	public function __construct(
-		private readonly CommandManager $commandManager,
-	) {
-	}
+	case Adapter = 'adapter';
 
 	/**
-	 * Gets the board's name from device tree
-	 * @return string|null Board's name
+	 * Board device type
 	 */
-	public function getName(): ?string {
-		$deviceTree = $this->commandManager->run('cat /proc/device-tree/model', true)->getStdout();
-		if ($deviceTree !== '') {
-			return $deviceTree;
-		}
-		return null;
-	}
-
+	case Board = 'board';
 }

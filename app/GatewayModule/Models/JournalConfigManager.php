@@ -48,12 +48,12 @@ class JournalConfigManager {
 	/**
 	 * @var string $confFile Journald conf file name
 	 */
-	private string $confFile;
+	private readonly string $confFile;
 
 	/**
 	 * @var PrivilegedFileManager $fileManager File manager
 	 */
-	private PrivilegedFileManager $fileManager;
+	private readonly PrivilegedFileManager $fileManager;
 
 	/**
 	 * Constructor

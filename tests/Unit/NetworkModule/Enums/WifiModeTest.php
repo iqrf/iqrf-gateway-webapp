@@ -73,7 +73,7 @@ final class WifiModeTest extends TestCase {
 	 * Tests the function for creating WiFi mode enum - Unknown
 	 */
 	public function testFromNetworkListUnknown(): void {
-		Assert::throws(function (): void {
+		Assert::throws(static function (): void {
 			WifiMode::fromNetworkList('Unknown');
 		}, ValueError::class, 'There is no value for enum \'' . WifiMode::class . '\' and scalar value \'Unknown\'.');
 	}

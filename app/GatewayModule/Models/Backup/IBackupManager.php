@@ -30,7 +30,7 @@ interface IBackupManager {
 	/**
 	 * @var string Temporary backup directory
 	 */
-	public const TMP_PATH = '/tmp/backup/';
+	final public const TMP_PATH = '/tmp/backup/';
 
 	/**
 	 * Performs backup

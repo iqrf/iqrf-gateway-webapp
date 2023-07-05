@@ -36,24 +36,9 @@ use Nette\Mail\SendException;
 class UserManager {
 
 	/**
-	 * @var EntityManager Entity manager
-	 */
-	private EntityManager $entityManager;
-
-	/**
 	 * @var UserRepository User database repository
 	 */
-	private UserRepository $repository;
-
-	/**
-	 * @var EmailVerificationMailSender Email verification mail sender
-	 */
-	private EmailVerificationMailSender $emailVerificationSender;
-
-	/**
-	 * @var PasswordChangeConfirmationMailSender Password change confirmation mail sender
-	 */
-	private PasswordChangeConfirmationMailSender $passwordChangeConfirmationSender;
+	private readonly UserRepository $repository;
 
 	/**
 	 * Constructor
@@ -61,11 +46,12 @@ class UserManager {
 	 * @param EmailVerificationMailSender $emailVerificationSender Email verification sender
 	 * @param PasswordChangeConfirmationMailSender $passwordChangeConfirmationSender Password change confirmation sender
 	 */
-	public function __construct(EntityManager $entityManager, EmailVerificationMailSender $emailVerificationSender, PasswordChangeConfirmationMailSender $passwordChangeConfirmationSender) {
-		$this->entityManager = $entityManager;
+	public function __construct(
+		private readonly EntityManager $entityManager,
+		private readonly EmailVerificationMailSender $emailVerificationSender,
+		private readonly PasswordChangeConfirmationMailSender $passwordChangeConfirmationSender,
+	) {
 		$this->repository = $entityManager->getUserRepository();
-		$this->emailVerificationSender = $emailVerificationSender;
-		$this->passwordChangeConfirmationSender = $passwordChangeConfirmationSender;
 	}
 
 	/**
@@ -96,7 +82,7 @@ class UserManager {
 	 * @return array<User> Users
 	 */
 	public function list(array $roles = []): array {
-		$criteria = $roles === [] ? [] : ['role' => array_map(static fn (UserRole $role) => $role->value, $roles)];
+		$criteria = $roles === [] ? [] : ['role' => array_map(static fn (UserRole $role): string => $role->value, $roles)];
 		return $this->repository->findBy($criteria);
 	}
 

@@ -28,37 +28,18 @@ use JsonSerializable;
 class Dependency implements JsonSerializable {
 
 	/**
-	 * @var string Command name
-	 */
-	private string $command;
-
-	/**
-	 * @var bool Is the command required?
-	 */
-	private bool $critical;
-
-	/**
-	 * @var string Package name
-	 */
-	private string $package;
-
-	/**
-	 * @var string|null Feature name
-	 */
-	private ?string $feature;
-
-	/**
 	 * Constructor
 	 * @param string $command Command name
 	 * @param bool $critical Is the command required?
 	 * @param string $package Package name
 	 * @param string|null $feature Feature name
 	 */
-	public function __construct(string $command, bool $critical, string $package, ?string $feature = null) {
-		$this->command = $command;
-		$this->critical = $critical;
-		$this->package = $package;
-		$this->feature = $feature;
+	public function __construct(
+		private readonly string $command,
+		private readonly bool $critical,
+		private readonly string $package,
+		private readonly ?string $feature = null,
+	) {
 	}
 
 	/**

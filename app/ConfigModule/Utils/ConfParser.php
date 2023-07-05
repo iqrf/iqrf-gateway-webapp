@@ -30,7 +30,7 @@ class ConfParser {
 	/**
 	 * Converts conf file configuration from string to array
 	 * @param string $content Conf file content
-	 * @return array<string, string|array<string, string>> Configuration array
+	 * @return array<string, string|array<string, string>>|null Configuration array
 	 */
 	public static function toArray(string $content): ?array {
 		$config = Strings::replace($content, [
@@ -46,7 +46,7 @@ class ConfParser {
 	/**
 	 * Converts conf file configuration from array to string
 	 * @param array<string, array<string, mixed>> $config Configuration array
-	 * @return string Configuration string
+	 * @return string|null Configuration string
 	 */
 	public static function toConf(array $config): ?string {
 		$output = [];

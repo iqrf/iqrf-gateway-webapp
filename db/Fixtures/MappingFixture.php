@@ -21,6 +21,9 @@ declare(strict_types=1);
 namespace Database\Fixtures;
 
 use App\Models\Database\Entities\Mapping;
+use App\Models\Database\Enums\MappingBaudRate;
+use App\Models\Database\Enums\MappingDeviceType;
+use App\Models\Database\Enums\MappingType;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\DBAL\Types\Types;
@@ -39,14 +42,14 @@ class MappingFixture implements FixtureInterface, OrderedFixtureInterface {
 		$queryBuilder = $repository->createQueryBuilder('m');
 
 		$records = [
-			new Mapping(Mapping::TYPE_SPI, 'Unipi Iris Zulu', Mapping::DEVICE_BOARD, '/dev/spidev1.0', -1, 510, 511, null, 509, 508, 505),
-			new Mapping(Mapping::TYPE_UART, 'Unipi Iris Zulu', Mapping::DEVICE_BOARD, '/dev/ttymxc3', -1, 510, 511, Mapping::BAUD_RATE_DEFAULT, 509, 508, 505),
-			new Mapping(Mapping::TYPE_SPI, 'IQD-GW04', Mapping::DEVICE_BOARD, '/dev/spidev1.0', -1, 22, 23, null, 18, 7, 6),
-			new Mapping(Mapping::TYPE_UART, 'IQD-GW04', Mapping::DEVICE_BOARD, '/dev/ttyAMA1', -1, 22, 23, Mapping::BAUD_RATE_DEFAULT, 18, 7, 6),
-			new Mapping(Mapping::TYPE_SPI, 'KON-RASP-01', Mapping::DEVICE_ADAPTER, '/dev/spidev0.0', 7, 22, 23),
-			new Mapping(Mapping::TYPE_UART, 'KON-RASP-01', Mapping::DEVICE_ADAPTER, '/dev/ttyS0', 7, 22, 23, Mapping::BAUD_RATE_DEFAULT),
-			new Mapping(Mapping::TYPE_SPI, 'KONA-RASP-04', Mapping::DEVICE_ADAPTER, '/dev/spidev1.0', -1, 22, 23, null, 18, 7, 6),
-			new Mapping(Mapping::TYPE_UART, 'KONA-RASP-04', Mapping::DEVICE_ADAPTER, '/dev/ttyAMA1', -1, 22, 23, Mapping::BAUD_RATE_DEFAULT, 18, 7, 6),
+			new Mapping(MappingType::SPI, 'Unipi Iris Zulu', MappingDeviceType::Board, '/dev/spidev1.0', -1, 510, 511, null, 509, 508, 505),
+			new Mapping(MappingType::UART, 'Unipi Iris Zulu', MappingDeviceType::Board, '/dev/ttymxc3', -1, 510, 511, MappingBaudRate::Default, 509, 508, 505),
+			new Mapping(MappingType::SPI, 'IQD-GW04', MappingDeviceType::Board, '/dev/spidev1.0', -1, 22, 23, null, 18, 7, 6),
+			new Mapping(MappingType::UART, 'IQD-GW04', MappingDeviceType::Board, '/dev/ttyAMA1', -1, 22, 23, MappingBaudRate::Default, 18, 7, 6),
+			new Mapping(MappingType::SPI, 'KON-RASP-01', MappingDeviceType::Adapter, '/dev/spidev0.0', 7, 22, 23),
+			new Mapping(MappingType::UART, 'KON-RASP-01', MappingDeviceType::Adapter, '/dev/ttyS0', 7, 22, 23, MappingBaudRate::Default),
+			new Mapping(MappingType::SPI, 'KONA-RASP-04', MappingDeviceType::Adapter, '/dev/spidev1.0', -1, 22, 23, null, 18, 7, 6),
+			new Mapping(MappingType::UART, 'KONA-RASP-04', MappingDeviceType::Adapter, '/dev/ttyAMA1', -1, 22, 23, MappingBaudRate::Default, 18, 7, 6),
 		];
 
 		foreach ($records as $record) {

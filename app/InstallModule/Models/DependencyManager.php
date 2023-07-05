@@ -30,16 +30,6 @@ use App\InstallModule\Entities\Dependency;
 class DependencyManager {
 
 	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
-
-	/**
-	 * @var FeatureManager Feature manager
-	 */
-	private FeatureManager $featureManager;
-
-	/**
 	 * @var array<string> Enabled features
 	 */
 	private array $features = [];
@@ -55,9 +45,11 @@ class DependencyManager {
 	 * @param CommandManager $commandManager Command manager
 	 * @param FeatureManager $featureManager Feature manager
 	 */
-	public function __construct(bool $sudo, CommandManager $commandManager, FeatureManager $featureManager) {
-		$this->commandManager = $commandManager;
-		$this->featureManager = $featureManager;
+	public function __construct(
+		bool $sudo,
+		private readonly CommandManager $commandManager,
+		private readonly FeatureManager $featureManager,
+	) {
 		$this->dependencies = [
 			new Dependency('apt', true, 'apt'),
 			new Dependency('apt-config', true, 'apt'),
@@ -111,7 +103,7 @@ class DependencyManager {
 	 */
 	public function listMissing(): array {
 		$this->features = $this->featureManager->listEnabled();
-		return array_values(array_filter($this->dependencies, [$this, 'filterMissing']));
+		return array_values(array_filter($this->dependencies, $this->filterMissing(...)));
 	}
 
 }

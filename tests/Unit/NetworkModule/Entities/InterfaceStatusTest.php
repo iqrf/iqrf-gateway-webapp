@@ -69,31 +69,29 @@ final class InterfaceStatusTest extends TestCase {
 	/**
 	 * @var InterfaceTypes Network interface type
 	 */
-	private InterfaceTypes $type;
+	private const TYPE = InterfaceTypes::ETHERNET;
 
 	/**
 	 * @var InterfaceStates Network interface state
 	 */
-	private InterfaceStates $state;
+	private const STATE = InterfaceStates::CONNECTED;
 
 	/**
 	 * @var InterfaceStatus Network interface entity
 	 */
-	private InterfaceStatus $entity;
+	private readonly InterfaceStatus $entity;
 
 	/**
 	 * @var UuidInterface Network connection UUID
 	 */
-	private UuidInterface $connection;
+	private readonly UuidInterface $connection;
 
 	/**
 	 * Sets up the test environment
 	 */
 	public function __construct() {
-		$this->type = InterfaceTypes::ETHERNET;
-		$this->state = InterfaceStates::CONNECTED;
 		$this->connection = Uuid::fromString(self::CONNECTION);
-		$this->entity = new InterfaceStatus(self::NAME, self::MAC_ADDRESS, self::MANUFACTURER, self::MODEL, $this->type, $this->state, $this->connection);
+		$this->entity = new InterfaceStatus(self::NAME, self::MAC_ADDRESS, self::MANUFACTURER, self::MODEL, self::TYPE, self::STATE, $this->connection);
 	}
 
 	/**
@@ -116,7 +114,7 @@ GENERAL.CON-UUID:f61b25c9-66d7-400e-add0-d2a30c57b65c
 	 * Tests the function to get network interface type
 	 */
 	public function testGetType(): void {
-		Assert::same($this->type, $this->entity->getType());
+		Assert::same(self::TYPE, $this->entity->getType());
 	}
 
 	/**
@@ -128,8 +126,8 @@ GENERAL.CON-UUID:f61b25c9-66d7-400e-add0-d2a30c57b65c
 			'macAddress' => self::MAC_ADDRESS,
 			'manufacturer' => self::MANUFACTURER,
 			'model' => self::MODEL,
-			'type' => $this->type->value,
-			'state' => $this->state->value,
+			'type' => self::TYPE->value,
+			'state' => self::STATE->value,
 			'connection' => self::CONNECTION,
 		];
 		Assert::same($expected, $this->entity->jsonSerialize());

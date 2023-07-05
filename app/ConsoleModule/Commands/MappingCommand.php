@@ -22,6 +22,9 @@ namespace App\ConsoleModule\Commands;
 
 use App\Models\Database\Entities\Mapping;
 use App\Models\Database\EntityManager;
+use App\Models\Database\Enums\MappingBaudRate;
+use App\Models\Database\Enums\MappingDeviceType;
+use App\Models\Database\Enums\MappingType;
 use App\Models\Database\Repositories\MappingRepository;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -48,15 +51,19 @@ abstract class MappingCommand extends EntityManagerCommand {
 	 * Asks for the mapping type
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
-	 * @param string $current Default or current mapping type
-	 * @return string Mapping type
+	 * @param MappingType $current Default or current mapping type
+	 * @return MappingType Mapping type
 	 */
-	protected function askType(InputInterface $input, OutputInterface $output, string $current = Mapping::TYPE_SPI): string {
+	protected function askType(InputInterface $input, OutputInterface $output, MappingType $current = MappingType::SPI): MappingType {
 		$type = $input->getOption('type');
-		while ($type === null || !in_array($type, Mapping::TYPES, true)) {
+		if ($type !== null) {
+			$type = MappingType::from($type);
+		}
+		$types = array_column(MappingType::cases(), 'value');
+		while ($type === null) {
 			$helper = $this->getHelper('question');
-			$question = new ChoiceQuestion('Please select mapping type: ', Mapping::TYPES, $current);
-			$type = $helper->ask($input, $output, $question);
+			$question = new ChoiceQuestion('Please select mapping type: ', $types, $current);
+			$type = MappingType::tryFrom($helper->ask($input, $output, $question));
 		}
 		return $type;
 	}
@@ -81,15 +88,19 @@ abstract class MappingCommand extends EntityManagerCommand {
 	 * Asks for device type
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
-	 * @param string $current Default or current device type
-	 * @return string Device type
+	 * @param MappingDeviceType $current Default or current device type
+	 * @return MappingDeviceType Device type
 	 */
-	protected function askDeviceType(InputInterface $input, OutputInterface $output, string $current = Mapping::DEVICE_BOARD): string {
+	protected function askDeviceType(InputInterface $input, OutputInterface $output, MappingDeviceType $current = MappingDeviceType::Board): MappingDeviceType {
 		$type = $input->getOption('device-type');
-		while ($type === null || !in_array($type, Mapping::DEVICE_TYPES, true)) {
+		if ($type !== null) {
+			$type = MappingDeviceType::from($type);
+		}
+		$types = array_column(MappingDeviceType::cases(), 'value');
+		while ($type === null) {
 			$helper = $this->getHelper('question');
-			$question = new ChoiceQuestion('Please selecte device type: ', Mapping::DEVICE_TYPES, $current);
-			$type = $helper->ask($input, $output, $question);
+			$question = new ChoiceQuestion('Please select device type: ', $types, $current);
+			$type = MappingDeviceType::tryFrom($helper->ask($input, $output, $question));
 		}
 		return $type;
 	}
@@ -139,7 +150,6 @@ abstract class MappingCommand extends EntityManagerCommand {
 			$helper = $this->getHelper('question');
 			$question = new Question('Please enter the mapping programming mode switch pin number: ');
 			$pgmPin = $helper->ask($input, $output, $question);
-
 		}
 		return (int) $pgmPin;
 	}
@@ -165,16 +175,21 @@ abstract class MappingCommand extends EntityManagerCommand {
 	 * Asks for the mapping UART baud rate
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
-	 * @return int Mapping UART baud rate
+	 * @param MappingBaudRate $current Current mapping UART baud rate
+	 * @return MappingBaudRate Mapping UART baud rate
 	 */
-	protected function askBaudRate(InputInterface $input, OutputInterface $output, int $current = Mapping::BAUD_RATE_DEFAULT): int {
+	protected function askBaudRate(InputInterface $input, OutputInterface $output, MappingBaudRate $current = MappingBaudRate::Default): MappingBaudRate {
 		$baudRate = $input->getOption('baud-rate');
-		while ($baudRate === null || !ctype_digit($baudRate)) {
-			$helper = $this->getHelper('question');
-			$question = new ChoiceQuestion('Please select the mapping UART baud rate: ', Mapping::BAUD_RATES, $current);
-			$baudRate = $helper->ask($input, $output, $question);
+		if ($baudRate !== null) {
+			$baudRate = MappingBaudRate::from($baudRate);
 		}
-		return (int) $baudRate;
+		$baudRates = array_column(MappingBaudRate::cases(), 'value');
+		while ($baudRate === null) {
+			$helper = $this->getHelper('question');
+			$question = new ChoiceQuestion('Please select the mapping UART baud rate: ', $baudRates, $current);
+			$baudRate = MappingBaudRate::tryFrom(intval($helper->ask($input, $output, $question)));
+		}
+		return $baudRate;
 	}
 
 	/**

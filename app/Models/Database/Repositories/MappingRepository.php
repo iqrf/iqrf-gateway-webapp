@@ -45,7 +45,7 @@ class MappingRepository extends EntityRepository {
 	public function listMappingNamesWithTypes(): array {
 		$array = [];
 		foreach ($this->findAll() as $mapping) {
-			$array[$mapping->getId()] = sprintf('ID:%d - %s (%s)', $mapping->getId(), $mapping->getName(), $mapping->getType());
+			$array[$mapping->getId()] = sprintf('ID:%d - %s (%s)', $mapping->getId(), $mapping->getName(), $mapping->getType()->name);
 		}
 		return $array;
 	}

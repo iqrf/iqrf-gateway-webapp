@@ -51,22 +51,22 @@ final class IPv6ConnectionTest extends TestCase {
 	/**
 	 * @var IPv6Methods IPv6 connection method
 	 */
-	private IPv6Methods $method;
+	private const METHOD = IPv6Methods::MANUAL;
 
 	/**
 	 * @var array<IPv6Address> IPv6 addresses
 	 */
-	private array $addresses = [];
+	private readonly array $addresses;
 
 	/**
 	 * @var IPv6 IPv6 gateway address
 	 */
-	private IPv6 $gateway;
+	private readonly IPv6 $gateway;
 
 	/**
 	 * @var array<IPv6> IPv6 addresses of DNS servers
 	 */
-	private array $dns = [];
+	private readonly array $dns;
 
 	/**
 	 * @var IPv6Connection IPv6 connection entity
@@ -77,7 +77,6 @@ final class IPv6ConnectionTest extends TestCase {
 	 * Sets up the test environment
 	 */
 	public function __construct() {
-		$this->method = IPv6Methods::MANUAL;
 		$this->addresses = [
 			new IPv6Address(IPv6::factory('2001:470:5bb2::2'), 64),
 		];
@@ -91,7 +90,7 @@ final class IPv6ConnectionTest extends TestCase {
 	 * Sets up the test environment
 	 */
 	protected function setUp(): void  {
-		$this->entity = new IPv6Connection($this->method, $this->addresses, $this->gateway, $this->dns, null);
+		$this->entity = new IPv6Connection(self::METHOD, $this->addresses, $this->gateway, $this->dns, null);
 	}
 
 	/**
@@ -114,7 +113,7 @@ final class IPv6ConnectionTest extends TestCase {
 		];
 		$gateway = IPv6::factory('fe80::6f0:21ff:fe23:2900');
 		$dns = [IPv6::factory('fd50:ccd6:13ed::1')];
-		$expected = new IPv6Connection($this->method, $addresses, $gateway, $dns, null);
+		$expected = new IPv6Connection(self::METHOD, $addresses, $gateway, $dns, null);
 		$actual = IPv6Connection::jsonDeserialize($arrayHash);
 		Assert::equal($expected, $actual);
 	}

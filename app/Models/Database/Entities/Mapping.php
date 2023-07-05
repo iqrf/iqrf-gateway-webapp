@@ -21,11 +21,13 @@ declare(strict_types = 1);
 namespace App\Models\Database\Entities;
 
 use App\Models\Database\Attributes\TId;
+use App\Models\Database\Enums\MappingBaudRate;
+use App\Models\Database\Enums\MappingDeviceType;
+use App\Models\Database\Enums\MappingType;
 use App\Models\Database\Repositories\MappingRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
-use function in_array;
 
 /**
  * Mapping entity
@@ -38,156 +40,59 @@ class Mapping implements JsonSerializable {
 	use TId;
 
 	/**
-	 * @var string Mapping type: SPI
-	 */
-	public const TYPE_SPI = 'spi';
-
-	/**
-	 * @var string Mapping type: UART
-	 */
-	public const TYPE_UART = 'uart';
-
-	/**
-	 * @var array<string> Supported mapping types
-	 */
-	public const TYPES = [self::TYPE_SPI, self::TYPE_UART];
-
-	/**
-	 * @var int Default mapping UART baud rate
-	 */
-	public const BAUD_RATE_DEFAULT = 57600;
-
-	/**
-	 * @var array<int> Supported mapping UART baud rates
-	 */
-	public const BAUD_RATES = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400];
-
-	/**
-	 * @var string Device type: Adapter
-	 */
-	public const DEVICE_ADAPTER = 'adapter';
-
-	/**
-	 * @var string Device type: Board
-	 */
-	public const DEVICE_BOARD = 'board';
-
-	/**
-	 * @var array<string> Supported device types
-	 */
-	public const DEVICE_TYPES = [self::DEVICE_ADAPTER, self::DEVICE_BOARD];
-
-	/**
-	 * @var string Mapping type
-	 */
-	#[ORM\Column(type: Types::STRING, length: 255)]
-	private string $type;
-
-	/**
-	 * @var string Mapping name
-	 */
-	#[ORM\Column(type: Types::STRING, length: 255)]
-	private string $name;
-
-	/**
-	 * @var string Device type
-	 */
-	#[ORM\Column(type: Types::STRING, length: 255)]
-	private string $deviceType;
-
-	/**
-	 * @var string Device name
-	 */
-	#[ORM\Column(type: Types::STRING, length: 255)]
-	private string $iqrfInterface;
-
-	/**
-	 * @var int Bus enable pin
-	 */
-	#[ORM\Column(type: Types::INTEGER)]
-	private int $busEnableGpioPin;
-
-	/**
-	 * @var int Programming mode switch pin
-	 */
-	#[ORM\Column(type: Types::INTEGER)]
-	private int $pgmSwitchGpioPin;
-
-	/**
-	 * @var int Power enable pin
-	 */
-	#[ORM\Column(type: Types::INTEGER)]
-	private int $powerEnableGpioPin;
-
-	/**
-	 * @var int|null UART baud rate
-	 */
-	#[ORM\Column(type: Types::INTEGER, nullable: true)]
-	private ?int $baudRate;
-
-	/**
-	 * @var int|null I2C interface enable pin
-	 */
-	#[ORM\Column(type: Types::INTEGER, nullable: true)]
-	private ?int $i2cEnableGpioPin;
-
-	/**
-	 * @var int|null SPI interface enable pin
-	 */
-	#[ORM\Column(type: Types::INTEGER, nullable: true)]
-	private ?int $spiEnableGpioPin;
-
-	/**
-	 * @var int|null UART interface enable pin
-	 */
-	#[ORM\Column(type: Types::INTEGER, nullable: true)]
-	private ?int $uartEnableGpioPin;
-
-	/**
 	 * Constructor
-	 * @param string $type Mapping type
+	 * @param MappingType $type Mapping type
 	 * @param string $name Mapping name
-	 * @param string $deviceType Device type
+	 * @param MappingDeviceType $deviceType Device type
 	 * @param string $iqrfInterface Mapping device name
 	 * @param int $busEnableGpioPin Mapping bus enable pin
 	 * @param int $pgmSwitchGpioPin Mapping programming mode switch pin
 	 * @param int $powerEnableGpioPin Mapping power enable pin
-	 * @param int|null $baudRate Mapping UART baud rate
+	 * @param MappingBaudRate|null $baudRate Mapping UART baud rate
 	 * @param int|null $i2cEnableGpioPin Mapping I2C interface enable pin
 	 * @param int|null $spiEnableGpioPin Mapping SPI interface enable pin
 	 * @param int|null $uartEnableGpioPin Mapping UART interface enable pin
 	 */
-	public function __construct(string $type, string $name, string $deviceType, string $iqrfInterface, int $busEnableGpioPin, int $pgmSwitchGpioPin, int $powerEnableGpioPin, ?int $baudRate = null, ?int $i2cEnableGpioPin = null, ?int $spiEnableGpioPin = null, ?int $uartEnableGpioPin = null) {
-		$this->type = $type;
-		$this->name = $name;
-		$this->deviceType = $deviceType;
-		$this->iqrfInterface = $iqrfInterface;
-		$this->busEnableGpioPin = $busEnableGpioPin;
-		$this->pgmSwitchGpioPin = $pgmSwitchGpioPin;
-		$this->powerEnableGpioPin = $powerEnableGpioPin;
-		$this->baudRate = $baudRate;
-		$this->i2cEnableGpioPin = $i2cEnableGpioPin;
-		$this->spiEnableGpioPin = $spiEnableGpioPin;
-		$this->uartEnableGpioPin = $uartEnableGpioPin;
+	public function __construct(
+		#[ORM\Column(type: Types::STRING, length: 255, enumType: MappingType::class)]
+		private MappingType $type,
+		#[ORM\Column(type: Types::STRING, length: 255)]
+		private string $name,
+		#[ORM\Column(type: Types::STRING, length: 255, enumType: MappingDeviceType::class)]
+		private MappingDeviceType $deviceType,
+		#[ORM\Column(type: Types::STRING, length: 255)]
+		private string $iqrfInterface,
+		#[ORM\Column(type: Types::INTEGER)]
+		private int $busEnableGpioPin,
+		#[ORM\Column(type: Types::INTEGER)]
+		private int $pgmSwitchGpioPin,
+		#[ORM\Column(type: Types::INTEGER)]
+		private int $powerEnableGpioPin,
+		#[ORM\Column(type: Types::INTEGER, nullable: true, enumType: MappingBaudRate::class)]
+		private ?MappingBaudRate $baudRate = null,
+		#[ORM\Column(type: Types::INTEGER, nullable: true)]
+		private ?int $i2cEnableGpioPin = null,
+		#[ORM\Column(type: Types::INTEGER, nullable: true)]
+		private ?int $spiEnableGpioPin = null,
+		#[ORM\Column(type: Types::INTEGER, nullable: true)]
+		private ?int $uartEnableGpioPin = null,
+	) {
 	}
 
 	/**
 	 * Returns mapping type
-	 * @return string Mapping type
+	 * @return MappingType Mapping type
 	 */
-	public function getType(): string {
+	public function getType(): MappingType {
 		return $this->type;
 	}
 
 	/**
 	 * Sets new mapping type
-	 * @param string $type Mapping type
+	 * @param MappingType $type Mapping type
 	 */
-	public function setType(string $type): void {
-		if (!in_array($type, self::TYPES, true)) {
-			return;
-		}
-		if ($this->type === self::TYPE_UART && $type === self::TYPE_SPI) {
+	public function setType(MappingType $type): void {
+		if ($this->type === MappingType::UART && $type === MappingType::SPI) {
 			$this->setBaudRate();
 		}
 		$this->type = $type;
@@ -211,20 +116,17 @@ class Mapping implements JsonSerializable {
 
 	/**
 	 * Returns device type
-	 * @return string Device type
+	 * @return MappingDeviceType Device type
 	 */
-	public function getDeviceType(): string {
+	public function getDeviceType(): MappingDeviceType {
 		return $this->deviceType;
 	}
 
 	/**
 	 * Set device type
-	 * @param string $deviceType Device type
+	 * @param MappingDeviceType $deviceType Device type
 	 */
-	public function setDeviceType(string $deviceType): void {
-		if (!in_array($deviceType, self::DEVICE_TYPES, true)) {
-			return;
-		}
+	public function setDeviceType(MappingDeviceType $deviceType): void {
 		$this->deviceType = $deviceType;
 	}
 
@@ -294,20 +196,17 @@ class Mapping implements JsonSerializable {
 
 	/**
 	 * Returns mapping UART baud rate
-	 * @return int|null Mapping UART baud rate
+	 * @return MappingBaudRate|null Mapping UART baud rate
 	 */
-	public function getBaudRate(): ?int {
+	public function getBaudRate(): ?MappingBaudRate {
 		return $this->baudRate;
 	}
 
 	/**
 	 * Sets new UART baud rate
-	 * @param int|null $baudRate Mapping UART baud rate
+	 * @param MappingBaudRate|null $baudRate Mapping UART baud rate
 	 */
-	public function setBaudRate(?int $baudRate = null): void {
-		if ($baudRate !== null && !in_array($baudRate, self::BAUD_RATES, true)) {
-			return;
-		}
+	public function setBaudRate(?MappingBaudRate $baudRate = null): void {
 		$this->baudRate = $baudRate;
 	}
 
@@ -363,16 +262,16 @@ class Mapping implements JsonSerializable {
 	public function jsonSerialize(): array {
 		$array = [
 			'id' => $this->getId(),
-			'type' => $this->getType(),
+			'type' => $this->getType()->value,
 			'name' => $this->getName(),
-			'deviceType' => $this->getDeviceType(),
+			'deviceType' => $this->getDeviceType()->value,
 			'IqrfInterface' => $this->getInterface(),
 			'busEnableGpioPin' => $this->getBusPin(),
 			'pgmSwitchGpioPin' => $this->getPgmPin(),
 			'powerEnableGpioPin' => $this->getPowerPin(),
 		];
-		if ($this->getType() === self::TYPE_UART) {
-			$array['baudRate'] = $this->getBaudRate();
+		if ($this->getType() === MappingType::UART) {
+			$array['baudRate'] = $this->getBaudRate()->value;
 		}
 		if ($this->getI2cPin() !== null) {
 			$array['i2cEnableGpioPin'] = $this->getI2cPin();

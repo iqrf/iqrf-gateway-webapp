@@ -20,13 +20,15 @@ declare(strict_types = 1);
 
 namespace App\ConsoleModule\Commands;
 
-use App\Models\Database\Entities\Mapping;
+use App\Models\Database\Enums\MappingBaudRate;
+use App\Models\Database\Enums\MappingType;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use ValueError;
 
 /**
  * CLI command to edit existing mapping
@@ -62,11 +64,21 @@ class MappingEditCommand extends MappingCommand {
 		$style = new SymfonyStyle($input, $output);
 		$style->title('Edit mapping profile');
 		$mapping = $this->askId($input, $output);
-		$style->warning('Mapping profile selected to edit: ' . $mapping->getName() . ' (' . $mapping->getType() . ')');
+		$style->warning('Mapping profile selected to edit: ' . $mapping->getName() . ' (' . $mapping->getType()->name . ')');
 		$oldName = $mapping->getName();
 		$name = $this->askName($input, $output);
-		$type = $this->askType($input, $output, $mapping->getType());
-		$deviceType = $this->askDeviceType($input, $output, $mapping->getDeviceType());
+		try {
+			$type = $this->askType($input, $output, $mapping->getType());
+		} catch (ValueError) {
+			$style->error('Invalid mapping type: ' . $input->getOption('type'));
+			return 1;
+		}
+		try {
+			$deviceType = $this->askDeviceType($input, $output, $mapping->getDeviceType());
+		} catch (ValueError) {
+			$style->error('Invalid device type: ' . $input->getOption('device-type'));
+			return 1;
+		}
 		$interface = $this->askInterface($input, $output);
 		$busPin = $this->askBusPin($input, $output);
 		$pgmPin = $this->askPgmPin($input, $output);
@@ -78,8 +90,8 @@ class MappingEditCommand extends MappingCommand {
 		$mapping->setBusPin($busPin);
 		$mapping->setPgmPin($pgmPin);
 		$mapping->setPowerPin($powerPin);
-		if ($type === Mapping::TYPE_UART) {
-			$baudRate = $this->askBaudRate($input, $output, $mapping->getBaudRate() ?? Mapping::BAUD_RATE_DEFAULT);
+		if ($type === MappingType::UART) {
+			$baudRate = $this->askBaudRate($input, $output, $mapping->getBaudRate() ?? MappingBaudRate::Default);
 			$mapping->setBaudRate($baudRate);
 		}
 		$this->entityManager->persist($mapping);

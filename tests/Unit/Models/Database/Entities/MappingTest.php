@@ -27,6 +27,9 @@ declare(strict_types = 1);
 namespace Tests\Unit\Models\Database\Entities;
 
 use App\Models\Database\Entities\Mapping;
+use App\Models\Database\Enums\MappingBaudRate;
+use App\Models\Database\Enums\MappingDeviceType;
+use App\Models\Database\Enums\MappingType;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -48,9 +51,9 @@ class MappingTest extends TestCase {
 	private Mapping $mappingGw;
 
 	/**
-	 * @var string Mapping type
+	 * @var MappingType Mapping type
 	 */
-	private const TYPE = Mapping::TYPE_UART;
+	private const TYPE = MappingType::UART;
 
 	/**
 	 * @var string Mapping name
@@ -63,9 +66,9 @@ class MappingTest extends TestCase {
 	private const INTERFACE = '/dev/ttyS0';
 
 	/**
-	 * @var string Device type
+	 * @var MappingDeviceType Device type
 	 */
-	private const DEVICE_TYPE = Mapping::DEVICE_BOARD;
+	private const DEVICE_TYPE = MappingDeviceType::Board;
 
 	/**
 	 * @var int Mapping bus enable pin number
@@ -83,9 +86,9 @@ class MappingTest extends TestCase {
 	private const POWER_PIN = 3;
 
 	/**
-	 * @var int Mapping UART baud rate
+	 * @var MappingBaudRate Mapping UART baud rate
 	 */
-	private const UART_BAUD_RATE = 57600;
+	private const UART_BAUD_RATE = MappingBaudRate::Default;
 
 	/**
 	 * @var int Mapping I2C interface enable pin number
@@ -154,17 +157,9 @@ class MappingTest extends TestCase {
 	 * Tests the function set device type
 	 */
 	public function testSetDeviceType(): void {
-		$expected = Mapping::DEVICE_ADAPTER;
+		$expected = MappingDeviceType::Adapter;
 		$this->mapping->setDeviceType($expected);
 		Assert::same($expected, $this->mapping->getDeviceType());
-	}
-
-	/**
-	 * Tests the function set unsupported device type
-	 */
-	public function testSetDeviceTypeUnsupported(): void {
-		$this->mapping->setDeviceType('unknown');
-		Assert::same(self::DEVICE_TYPE, $this->mapping->getDeviceType());
 	}
 
 	/**
@@ -234,17 +229,9 @@ class MappingTest extends TestCase {
 	 * Tests the function to set mapping UART baud rate with supported value
 	 */
 	public function testSetBaudRateValid(): void {
-		$expected = 19200;
+		$expected = MappingBaudRate::Bd19200;
 		$this->mapping->setBaudRate($expected);
 		Assert::same($expected, $this->mapping->getBaudRate());
-	}
-
-	/**
-	 * Tests the function to set mapping UART baud rate with invalid value
-	 */
-	public function testSetBaudRateInvalid(): void {
-		$this->mapping->setBaudRate(20);
-		Assert::same(self::UART_BAUD_RATE, $this->mapping->getBaudRate());
 	}
 
 	/**
@@ -324,18 +311,10 @@ class MappingTest extends TestCase {
 	}
 
 	/**
-	 * Tests the function to mapping type with unsupported type
-	 */
-	public function testSetTypeUnsupported(): void {
-		$this->mapping->setType('test');
-		Assert::same(self::TYPE, $this->mapping->getType());
-	}
-
-	/**
 	 * Tests the function to set mapping type, changing type from UART to SPI clears baud rate
 	 */
 	public function testSetTypeUartToSpi(): void {
-		$expected = 'spi';
+		$expected = MappingType::SPI;
 		$this->mapping->setType($expected);
 		Assert::same($expected, $this->mapping->getType());
 		Assert::null($this->mapping->getBaudRate());
@@ -347,14 +326,14 @@ class MappingTest extends TestCase {
 	public function testJsonSerializeUart(): void {
 		$expected = [
 			'id' => null,
-			'type' => self::TYPE,
+			'type' => self::TYPE->value,
 			'name' => self::NAME,
-			'deviceType' => self::DEVICE_TYPE,
+			'deviceType' => self::DEVICE_TYPE->value,
 			'IqrfInterface' => self::INTERFACE,
 			'busEnableGpioPin' => self::BUS_PIN,
 			'pgmSwitchGpioPin' => self::PGM_PIN,
 			'powerEnableGpioPin' => self::POWER_PIN,
-			'baudRate' => self::UART_BAUD_RATE,
+			'baudRate' => self::UART_BAUD_RATE->value,
 		];
 		Assert::same($expected, $this->mapping->jsonSerialize());
 	}
@@ -367,13 +346,13 @@ class MappingTest extends TestCase {
 			'id' => null,
 			'type' => 'spi',
 			'name' => self::NAME,
-			'deviceType' => self::DEVICE_TYPE,
+			'deviceType' => self::DEVICE_TYPE->value,
 			'IqrfInterface' => self::INTERFACE,
 			'busEnableGpioPin' => self::BUS_PIN,
 			'pgmSwitchGpioPin' => self::PGM_PIN,
 			'powerEnableGpioPin' => self::POWER_PIN,
 		];
-		$this->mapping->setType('spi');
+		$this->mapping->setType(MappingType::SPI);
 		Assert::same($expected, $this->mapping->jsonSerialize());
 	}
 
@@ -383,14 +362,14 @@ class MappingTest extends TestCase {
 	public function testJsonSerializeGw(): void {
 		$expected = [
 			'id' => null,
-			'type' => self::TYPE,
+			'type' => self::TYPE->value,
 			'name' => self::NAME,
-			'deviceType' => self::DEVICE_TYPE,
+			'deviceType' => self::DEVICE_TYPE->value,
 			'IqrfInterface' => self::INTERFACE,
 			'busEnableGpioPin' => self::BUS_PIN,
 			'pgmSwitchGpioPin' => self::PGM_PIN,
 			'powerEnableGpioPin' => self::POWER_PIN,
-			'baudRate' => self::UART_BAUD_RATE,
+			'baudRate' => self::UART_BAUD_RATE->value,
 			'i2cEnableGpioPin' => self::I2C_PIN,
 			'spiEnableGpioPin' => self::SPI_PIN,
 			'uartEnableGpioPin' => self::UART_PIN,

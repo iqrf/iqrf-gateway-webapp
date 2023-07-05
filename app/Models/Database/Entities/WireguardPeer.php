@@ -39,43 +39,6 @@ class WireguardPeer implements JsonSerializable {
 	use TId;
 
 	/**
-	 * @var string Peer public key
-	 */
-	#[ORM\Column(type: Types::STRING, length: 255)]
-	private string $publicKey;
-
-	/**
-	 * @var string|null Peer pre-shared key
-	 */
-	#[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
-	private ?string $psk;
-
-	/**
-	 * @var int Peer keepalive interval
-	 */
-	#[ORM\Column(type: Types::INTEGER)]
-	private int $keepalive;
-
-	/**
-	 * @var string Peer endpoint
-	 */
-	#[ORM\Column(type: Types::STRING, length: 255)]
-	private string $endpoint;
-
-	/**
-	 * @var int Peer listen port
-	 */
-	#[ORM\Column(type: Types::INTEGER)]
-	private int $port;
-
-	/**
-	 * @var WireguardInterface Interface
-	 */
-	#[ORM\ManyToOne(targetEntity: WireguardInterface::class, inversedBy: 'peers')]
-	#[ORM\JoinColumn(name: 'interface_id')]
-	private WireguardInterface $interface;
-
-	/**
 	 * @var Collection<int, WireguardPeerAddress> Peer allowed IPs
 	 */
 	#[ORM\OneToMany(mappedBy: 'peer', targetEntity: WireguardPeerAddress::class, cascade: ['persist'], orphanRemoval: true)]
@@ -90,13 +53,21 @@ class WireguardPeer implements JsonSerializable {
 	 * @param int $port Peer listen port
 	 * @param WireguardInterface $interface WireGuard interface
 	 */
-	public function __construct(string $publicKey, ?string $psk, int $keepalive, string $endpoint, int $port, WireguardInterface $interface) {
-		$this->publicKey = $publicKey;
-		$this->psk = $psk;
-		$this->keepalive = $keepalive;
-		$this->endpoint = $endpoint;
-		$this->port = $port;
-		$this->interface = $interface;
+	public function __construct(
+		#[ORM\Column(type: Types::STRING, length: 255)]
+		private string $publicKey,
+		#[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+		private ?string $psk,
+		#[ORM\Column(type: Types::INTEGER)]
+		private int $keepalive,
+		#[ORM\Column(type: Types::STRING, length: 255)]
+		private string $endpoint,
+		#[ORM\Column(type: Types::INTEGER)]
+		private int $port,
+		#[ORM\ManyToOne(targetEntity: WireguardInterface::class, inversedBy: 'peers')]
+		#[ORM\JoinColumn(name: 'interface_id')]
+		private WireguardInterface $interface,
+	) {
 		$this->addresses = new ArrayCollection();
 	}
 
@@ -272,7 +243,7 @@ class WireguardPeer implements JsonSerializable {
 			$this->getAddresses()->toArray()
 		));
 		return implode(' ', array_map(
-			fn (string $key, string $value): string => sprintf('%s %s', escapeshellarg($key), escapeshellarg($value)),
+			static fn (string $key, string $value): string => sprintf('%s %s', escapeshellarg($key), escapeshellarg($value)),
 			array_keys($args),
 			$args
 		));

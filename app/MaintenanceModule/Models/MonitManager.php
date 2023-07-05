@@ -30,11 +30,6 @@ use Nette\Utils\Strings;
 class MonitManager {
 
 	/**
-	 * @var IFileManager $fileManager File manager
-	 */
-	private IFileManager $fileManager;
-
-	/**
 	 * @var string Monit configuration file
 	 */
 	private const CONF_FILE = 'monitrc';
@@ -48,8 +43,9 @@ class MonitManager {
 	 * Constructor
 	 * @param IFileManager $fileManager Privileged file manager
 	 */
-	public function __construct(IFileManager $fileManager) {
-		$this->fileManager = $fileManager;
+	public function __construct(
+		private readonly IFileManager $fileManager,
+	) {
 	}
 
 	/**
@@ -59,7 +55,7 @@ class MonitManager {
 	 */
 	public function getConfig(): array {
 		$configArray = explode(PHP_EOL, $this->readConfig());
-		$configArray = array_filter($configArray, fn (string $item): bool => !str_starts_with($item, '#'));
+		$configArray = array_filter($configArray, static fn (string $item): bool => !str_starts_with($item, '#'));
 		foreach ($configArray as $item) {
 			$matches = Strings::match($item, self::PATTERN);
 			if ($matches !== null) {

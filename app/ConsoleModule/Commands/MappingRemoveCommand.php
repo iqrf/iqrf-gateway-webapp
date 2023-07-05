@@ -55,7 +55,7 @@ class MappingRemoveCommand extends MappingCommand {
 		$style->title('Remove a mapping');
 		$mapping = $this->askId($input, $output);
 		$helper = $this->getHelper('question');
-		$question = new ConfirmationQuestion('Do you really want to remove mapping "' . $mapping->getName() . ' (' . $mapping->getType() . ')"? (Y/N) ', false);
+		$question = new ConfirmationQuestion('Do you really want to remove mapping "' . $mapping->getName() . ' (' . $mapping->getType()->name . ')"? (Y/N) ', false);
 		if (!$helper->ask($input, $output, $question)) {
 			return 0;
 		}

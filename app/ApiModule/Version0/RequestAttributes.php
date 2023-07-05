@@ -30,11 +30,11 @@ interface RequestAttributes extends ApitteRequestAttributes {
 	/**
 	 * @var string Logged 3rd-party app
 	 */
-	public const APP_LOGGED_APP = 'app.logged.app';
+	final public const APP_LOGGED_APP = 'app.logged.app';
 
 	/**
 	 * @var string Logged user
 	 */
-	public const APP_LOGGED_USER = 'app.logged.user';
+	final public const APP_LOGGED_USER = 'app.logged.user';
 
 }

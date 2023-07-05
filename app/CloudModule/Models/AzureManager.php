@@ -32,16 +32,12 @@ use Nette\Utils\JsonException;
 class AzureManager implements IManager {
 
 	/**
-	 * @var GenericManager Generic configuration manager
-	 */
-	private GenericManager $configManager;
-
-	/**
 	 * Constructor
 	 * @param GenericManager $configManager Generic config manager
 	 */
-	public function __construct(GenericManager $configManager) {
-		$this->configManager = $configManager;
+	public function __construct(
+		private readonly GenericManager $configManager,
+	) {
 	}
 
 	/**

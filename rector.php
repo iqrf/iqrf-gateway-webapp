@@ -21,16 +21,20 @@ declare(strict_types = 1);
 use Rector\CodeQuality\Rector\Array_\CallableThisArrayToAnonymousFunctionRector;
 use Rector\CodeQuality\Rector\Class_\InlineConstructorDefaultToPropertyRector;
 use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
+use Rector\CodingStyle\Rector\Assign\SplitDoubleAssignRector;
 use Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector;
 use Rector\CodingStyle\Rector\ClassMethod\NewlineBeforeNewAssignSetRector;
 use Rector\CodingStyle\Rector\PostInc\PostIncDecToPreIncDecRector;
 use Rector\CodingStyle\Rector\Stmt\NewlineAfterStatementRector;
 use Rector\CodingStyle\Rector\String_\SymplifyQuoteEscapeRector;
+use Rector\CodingStyle\Rector\Switch_\BinarySwitchToIfElseRector;
 use Rector\Config\RectorConfig;
 use Rector\Core\ValueObject\PhpVersion;
 use Rector\Doctrine\Set\DoctrineSetList;
 use Rector\Set\ValueObject\SetList;
 use Rector\Symfony\Set\SymfonySetList;
+use Rector\Transform\Rector\Attribute\AttributeKeyToClassConstFetchRector;
+use Rector\TypeDeclaration\Rector\ClassMethod\ArrayShapeFromConstantArrayReturnRector;
 
 return static function (RectorConfig $rectorConfig): void {
 	$rectorConfig->paths([
@@ -55,17 +59,22 @@ return static function (RectorConfig $rectorConfig): void {
 		SetList::DEAD_CODE,
 		SetList::PHP_81,
 		SetList::TYPE_DECLARATION,
+		SetList::INSTANCEOF,
 		SymfonySetList::SYMFONY_63,
 		SymfonySetList::SYMFONY_CODE_QUALITY,
 	]);
 
 	$rectorConfig->skip([
+		ArrayShapeFromConstantArrayReturnRector::class,
+		AttributeKeyToClassConstFetchRector::class,
+		BinarySwitchToIfElseRector::class,
 		CallableThisArrayToAnonymousFunctionRector::class,
 		CatchExceptionNameMatchingTypeRector::class,
 		FlipTypeControlToUseExclusiveTypeRector::class,
 		NewlineAfterStatementRector::class,
 		NewlineBeforeNewAssignSetRector::class,
 		PostIncDecToPreIncDecRector::class,
+		SplitDoubleAssignRector::class,
 		SymplifyQuoteEscapeRector::class,
 		__DIR__ . '/tests/tmp',
 	]);

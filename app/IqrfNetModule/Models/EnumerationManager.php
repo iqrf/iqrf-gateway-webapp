@@ -31,23 +31,14 @@ use Nette\Utils\JsonException;
 class EnumerationManager {
 
 	/**
-	 * @var ApiRequest JSON API request
-	 */
-	private ApiRequest $request;
-
-	/**
-	 * @var WebSocketClient WebSocket client
-	 */
-	private WebSocketClient $wsClient;
-
-	/**
 	 * Constructor
 	 * @param ApiRequest $request JSON API request
 	 * @param WebSocketClient $wsClient WebSocket client
 	 */
-	public function __construct(ApiRequest $request, WebSocketClient $wsClient) {
-		$this->request = $request;
-		$this->wsClient = $wsClient;
+	public function __construct(
+		private readonly ApiRequest $request,
+		private readonly WebSocketClient $wsClient,
+	) {
 	}
 
 	/**

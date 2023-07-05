@@ -30,46 +30,46 @@ class InvalidSmtpConfigException extends RuntimeException {
 	/**
 	 * Connection failed error code
 	 */
-	public const CONNECTION_FAILED = 1;
+	final public const CONNECTION_FAILED = 1;
 
 	/**
 	 * Hello failed error code
 	 */
-	public const HELLO_FAILED = 2;
+	final public const HELLO_FAILED = 2;
 
 	/**
 	 * STARTTLS not supported error code
 	 */
-	public const STARTTLS_NOT_SUPPORTED = 3;
+	final public const STARTTLS_NOT_SUPPORTED = 3;
 
 	/**
 	 * STARTTLS failed error code
 	 */
-	public const STARTTLS_FAILED = 4;
+	final public const STARTTLS_FAILED = 4;
 
 	/**
 	 * Authentication unsupported error code
 	 */
-	public const AUTH_NOT_SUPPORTED = 5;
+	final public const AUTH_NOT_SUPPORTED = 5;
 
 	/**
 	 * Authentication failed error code
 	 */
-	public const AUTH_FAILED = 6;
+	final public const AUTH_FAILED = 6;
 
 	/**
 	 * SSL certificate expired error code
 	 */
-	public const SSL_CERTIFICATE_EXPIRED = 7;
+	final public const SSL_CERTIFICATE_EXPIRED = 7;
 
 	/**
 	 * SSL certificate not valid error code
 	 */
-	public const SSL_CERTIFICATE_INVALID = 8;
+	final public const SSL_CERTIFICATE_INVALID = 8;
 
 	/**
 	 * SSL certificate not found error code
 	 */
-	public const SSL_CERTIFICATE_NOT_FOUND = 9;
+	final public const SSL_CERTIFICATE_NOT_FOUND = 9;
 
 }

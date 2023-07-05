@@ -68,7 +68,7 @@ final class AptGetPackageManagerTest extends CommandTestCase {
 		$commandManager = Mockery::mock(CommandManager::class);
 		$commandManager->shouldReceive('commandExist')
 			->withArgs(['apt-get'])->andReturn(false);
-		Assert::throws(function () use ($commandManager): void {
+		Assert::throws(static function () use ($commandManager): void {
 			new AptGetPackageManager($commandManager);
 		}, UnsupportedPackageManagerException::class);
 	}

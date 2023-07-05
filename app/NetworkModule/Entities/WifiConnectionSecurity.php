@@ -38,43 +38,19 @@ final class WifiConnectionSecurity implements INetworkManagerEntity {
 	public const NMCLI_PREFIX = '802-11-wireless-security';
 
 	/**
-	 * @var WifiSecurityType WiFi security type
-	 */
-	private WifiSecurityType $type;
-
-	/**
-	 * @var string|null Pre-shared key
-	 */
-	private ?string $psk;
-
-	/**
-	 * @var Leap|null Cisco LEAP entity
-	 */
-	private ?Leap $leap;
-
-	/**
-	 * @var Wep|null WEP entity
-	 */
-	private ?Wep $wep;
-
-	/**
-	 * @var Eap|null EAP entity
-	 */
-	private ?Eap $eap;
-
-	/**
 	 * Constructor
 	 * @param WifiSecurityType $type WiFi security type
 	 * @param string|null $psk Pre-shared key
 	 * @param Leap|null $leap Cisco LEAP entity
 	 * @param Wep|null $wep WEP entity
 	 */
-	public function __construct(WifiSecurityType $type, ?string $psk, ?Leap $leap, ?Wep $wep, ?Eap $eap) {
-		$this->type = $type;
-		$this->psk = $psk;
-		$this->leap = $leap;
-		$this->wep = $wep;
-		$this->eap = $eap;
+	public function __construct(
+		private readonly WifiSecurityType $type,
+		private readonly ?string $psk,
+		private readonly ?Leap $leap,
+		private readonly ?Wep $wep,
+		private readonly ?Eap $eap,
+	) {
 	}
 
 	/**

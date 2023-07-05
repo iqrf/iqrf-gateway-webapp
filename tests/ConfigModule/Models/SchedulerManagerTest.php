@@ -65,7 +65,7 @@ final class SchedulerManagerTest extends TestCase {
 	/**
 	 * @var stdClass Scheduler's task settings
 	 */
-	private stdClass $array;
+	private readonly stdClass $array;
 
 	/**
 	 * @var string TASK_UUID Task UUID

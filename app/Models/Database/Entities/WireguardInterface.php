@@ -209,7 +209,7 @@ class WireguardInterface implements JsonSerializable {
 			'name' => $this->getName(),
 			'privateKey' => $this->getPrivateKey(),
 			'port' => $this->getPort(),
-			'peers' => array_map(fn (WireguardPeer $peer): array => $peer->jsonSerialize(), $this->getPeers()->toArray()),
+			'peers' => array_map(static fn (WireguardPeer $peer): array => $peer->jsonSerialize(), $this->getPeers()->toArray()),
 		];
 		if ($this->getIpv4() !== null) {
 			$array['ipv4'] = $this->getIpv4()->jsonSerialize();

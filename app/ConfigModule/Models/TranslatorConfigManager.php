@@ -29,11 +29,6 @@ use Nette\Utils\JsonException;
 class TranslatorConfigManager {
 
 	/**
-	 * @var FileManager $fileManager File manager
-	 */
-	private FileManager $fileManager;
-
-	/**
 	 * @var string JSON file containing translator configuration
 	 */
 	private const FILE_NAME = 'config.json';
@@ -42,8 +37,9 @@ class TranslatorConfigManager {
 	 * Constructor
 	 * @param FileManager $fileManager File manager
 	 */
-	public function __construct(FileManager $fileManager) {
-		$this->fileManager = $fileManager;
+	public function __construct(
+		private readonly FileManager $fileManager,
+	) {
 	}
 
 	/**

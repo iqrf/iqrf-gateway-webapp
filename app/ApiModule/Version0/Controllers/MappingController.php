@@ -31,6 +31,8 @@ use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\Models\Database\Entities\Mapping;
 use App\Models\Database\EntityManager;
+use App\Models\Database\Enums\MappingDeviceType;
+use App\Models\Database\Enums\MappingType;
 use App\Models\Database\Repositories\MappingRepository;
 
 /**
@@ -109,7 +111,7 @@ class MappingController extends BaseController {
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validator->validateRequest('mapping', $request);
 		$json = $request->getJsonBodyCopy(false);
-		if ($json->type === Mapping::TYPE_UART) {
+		if ($json->type === MappingType::UART) {
 			$mapping = new Mapping(
 				$json->type,
 				$json->name,
@@ -225,13 +227,14 @@ class MappingController extends BaseController {
 		$this->validator->validateRequest('mapping', $request);
 		$json = $request->getJsonBodyCopy(false);
 		$mapping->setName($json->name);
-		$mapping->setDeviceType($json->deviceType);
+		$mapping->setDeviceType(MappingDeviceType::from($json->deviceType));
 		$mapping->setInterface($json->IqrfInterface);
 		$mapping->setBusPin($json->busEnableGpioPin);
 		$mapping->setPgmPin($json->pgmSwitchGpioPin);
 		$mapping->setPowerPin($json->powerEnableGpioPin);
-		$mapping->setType($json->type);
-		if ($json->type === Mapping::TYPE_UART) {
+		$type = MappingType::from($json->type);
+		$mapping->setType($type);
+		if ($type === MappingType::UART) {
 			$mapping->setBaudRate($json->baudRate);
 		}
 		if (property_exists($json, 'i2cEnableGpioPin')) {

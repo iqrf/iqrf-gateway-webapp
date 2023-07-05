@@ -51,12 +51,12 @@ final class IPv6AddressTest extends TestCase {
 	/**
 	 * @var IPv6 IPv6 address
 	 */
-	private IPv6 $address;
+	private readonly IPv6 $address;
 
 	/**
 	 * @var IPv6Address IPv6 address entity
 	 */
-	private IPv6Address $entity;
+	private readonly IPv6Address $entity;
 
 	/**
 	 * Sets up the test environment

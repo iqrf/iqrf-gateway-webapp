@@ -29,32 +29,29 @@ use Symfony\Component\Process\Process;
 class Command implements ICommand {
 
 	/**
-	 * @var string Command
-	 */
-	private string $command;
-
-	/**
 	 * @var string Standard output
 	 */
-	private string $stdout;
+	private readonly string $stdout;
 
 	/**
 	 * @var string Standard error output
 	 */
-	private string $stderr;
+	private readonly string $stderr;
 
 	/**
 	 * @var int|null Exit code
 	 */
-	private ?int $exitCode;
+	private readonly ?int $exitCode;
 
 	/**
 	 * Constructor
 	 * @param string $command Command
 	 * @param Process $process Process
 	 */
-	public function __construct(string $command, Process $process) {
-		$this->command = $command;
+	public function __construct(
+		private readonly string $command,
+		Process $process,
+	) {
 		$this->stdout = Strings::trim($process->getOutput());
 		$this->stderr = Strings::trim($process->getErrorOutput());
 		$this->exitCode = $process->getExitCode();

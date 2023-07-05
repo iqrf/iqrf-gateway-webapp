@@ -37,63 +37,6 @@ class ControllerPinConfiguration implements JsonSerializable {
 	use TId;
 
 	/**
-	 * @var string Device type: Adapter
-	 */
-	public const DEVICE_ADAPTER = 'adapter';
-
-	/**
-	 * @var string Device type: Board
-	 */
-	public const DEVICE_BOARD = 'board';
-
-	/**
-	 * @var array<string> Supported device types
-	 */
-	public const DEVICE_TYPES = [self::DEVICE_ADAPTER, self::DEVICE_BOARD];
-
-	/**
-	 * @var string Controller pins name
-	 */
-	#[ORM\Column(type: Types::STRING, length: 255)]
-	private string $name;
-
-	/**
-	 * @var DeviceTypes Device type
-	 */
-	#[ORM\Column(type: Types::STRING, length: 255, enumType: DeviceTypes::class)]
-	private DeviceTypes $deviceType;
-
-	/**
-	 * @var int Green LED pin
-	 */
-	#[ORM\Column(type: Types::INTEGER)]
-	private int $greenLed;
-
-	/**
-	 * @var int Red LED pin
-	 */
-	#[ORM\Column(type: Types::INTEGER)]
-	private int $redLed;
-
-	/**
-	 * @var int Button pin
-	 */
-	#[ORM\Column(type: Types::INTEGER)]
-	private int $button;
-
-	/**
-	 * @var int|null SCK pin
-	 */
-	#[ORM\Column(type: Types::INTEGER, nullable: true)]
-	private ?int $sck;
-
-	/**
-	 * @var int|null SDA pin
-	 */
-	#[ORM\Column(type: Types::INTEGER, nullable: true)]
-	private ?int $sda;
-
-	/**
 	 * Constructor
 	 * @param string $name Controller pins name
 	 * @param DeviceTypes $deviceType Device type
@@ -103,14 +46,22 @@ class ControllerPinConfiguration implements JsonSerializable {
 	 * @param int|null $sck SCK pin
 	 * @param int|null $sda SDA pin
 	 */
-	public function __construct(string $name, DeviceTypes $deviceType, int $greenLed, int $redLed, int $button, ?int $sck = null, ?int $sda = null) {
-		$this->name = $name;
-		$this->deviceType = $deviceType;
-		$this->greenLed = $greenLed;
-		$this->redLed = $redLed;
-		$this->button = $button;
-		$this->sck = $sck;
-		$this->sda = $sda;
+	public function __construct(
+		#[ORM\Column(type: Types::STRING, length: 255)]
+		private string $name,
+		#[ORM\Column(type: Types::STRING, length: 255, enumType: DeviceTypes::class)]
+		private DeviceTypes $deviceType,
+		#[ORM\Column(type: Types::INTEGER)]
+		private int $greenLed,
+		#[ORM\Column(type: Types::INTEGER)]
+		private int $redLed,
+		#[ORM\Column(type: Types::INTEGER)]
+		private int $button,
+		#[ORM\Column(type: Types::INTEGER, nullable: true)]
+		private ?int $sck = null,
+		#[ORM\Column(type: Types::INTEGER, nullable: true)]
+		private ?int $sda = null,
+	) {
 	}
 
 	/**

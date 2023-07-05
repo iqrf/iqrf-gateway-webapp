@@ -21,12 +21,14 @@ declare(strict_types = 1);
 namespace App\ConsoleModule\Commands;
 
 use App\Models\Database\Entities\Mapping;
+use App\Models\Database\Enums\MappingType;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use ValueError;
 
 /**
  * CLI command to add a new mapping
@@ -60,17 +62,32 @@ class MappingAddCommand extends MappingCommand {
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$style = new SymfonyStyle($input, $output);
 		$style->title('Add a new mapping profile');
-		$type = $this->askType($input, $output);
+		try {
+			$type = $this->askType($input, $output);
+		} catch (ValueError) {
+			$style->error('Invalid mapping type: ' . $input->getOption('type'));
+			return 1;
+		}
 		$name = $this->askName($input, $output);
-		$deviceType = $this->askDeviceType($input, $output);
+		try {
+			$deviceType = $this->askDeviceType($input, $output);
+		} catch (ValueError) {
+			$style->error('Invalid device type: ' . $input->getOption('device-type'));
+			return 1;
+		}
 		$interface = $this->askInterface($input, $output);
 		$busPin = $this->askBusPin($input, $output);
 		$pgmPin = $this->askPgmPin($input, $output);
 		$powerPin = $this->askPowerPin($input, $output);
 		$mapping = new Mapping($type, $name, $deviceType, $interface, $busPin, $pgmPin, $powerPin);
-		if ($type === Mapping::TYPE_UART) {
+		if ($type === MappingType::UART) {
 			$baudRate = $this->askBaudRate($input, $output);
-			$mapping->setBaudRate($baudRate);
+			try {
+				$mapping->setBaudRate($baudRate);
+			} catch (ValueError) {
+				$style->error('Invalid UART baud rate: ' . $input->getOption('baud-rate'));
+				return 1;
+			}
 		}
 		$this->entityManager->persist($mapping);
 		$this->entityManager->flush();

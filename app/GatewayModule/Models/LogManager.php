@@ -34,37 +34,32 @@ use SplFileInfo;
 class LogManager {
 
 	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
-
-	/**
 	 * @var string IQRF Gateway Controller name
 	 */
-	public const CONTROLLER = 'iqrf-gateway-controller';
+	final public const CONTROLLER = 'iqrf-gateway-controller';
 
 	/**
 	 * @var string IQRF Gateway Daemon name
 	 */
-	public const DAEMON = 'iqrf-gateway-daemon';
+	final public const DAEMON = 'iqrf-gateway-daemon';
 
 	/**
 	 * @var string IQRF Gateway Setter name
 	 */
-	public const SETTER = 'iqrf-gateway-setter';
+	final public const SETTER = 'iqrf-gateway-setter';
 
 	/**
 	 * @var string IQRF Gateway Translator name
 	 */
-	public const TRANSLATOR = 'iqrf-gateway-translator';
+	final public const TRANSLATOR = 'iqrf-gateway-translator';
 
 	/**
 	 * @var string IQRF Gateway Uploader name
 	 */
-	public const UPLOADER = 'iqrf-gateway-uploader';
+	final public const UPLOADER = 'iqrf-gateway-uploader';
 
 	/**
-	 * @ string IQRF Gateway Controller log file
+	 * @var string IQRF Gateway Controller log file
 	 */
 	private const CONTROLLER_LOG = 'iqrf-gateway-controller.log';
 
@@ -84,16 +79,6 @@ class LogManager {
 	private const UPLOADER_LOG = 'iqrf-gateway-uploader.log';
 
 	/**
-	 * @var string Path to a directory with log files of IQRF Gateway Daemon
-	 */
-	private string $daemonLogDir;
-
-	/**
-	 * @var string Path to a general directory with log files
-	 */
-	private string $logDir;
-
-	/**
 	 * @var string Path to ZIP archive
 	 */
 	private string $path = '/tmp/iqrf-gateway-logs.zip';
@@ -104,10 +89,11 @@ class LogManager {
 	 * @param string $daemonLogDir Path to a directory with log files of IQRF Gateway Daemon
 	 * @param CommandManager $commandManager Command manager
 	 */
-	public function __construct(string $logDir, string $daemonLogDir, CommandManager $commandManager) {
-		$this->logDir = $logDir;
-		$this->daemonLogDir = $daemonLogDir;
-		$this->commandManager = $commandManager;
+	public function __construct(
+		private readonly string $logDir,
+		private readonly string $daemonLogDir,
+		private readonly CommandManager $commandManager,
+	) {
 	}
 
 	/**

@@ -33,19 +33,9 @@ use stdClass;
 class Wep implements INetworkManagerEntity {
 
 	/**
-	 * @var WepKeyType WEP key type
-	 */
-	private WepKeyType $type;
-
-	/**
 	 * @var array<string> WEP keys
 	 */
-	private array $keys = [];
-
-	/**
-	 * @var int WEP key index
-	 */
-	private int $index;
+	private readonly array $keys;
 
 	/**
 	 * Constructor
@@ -53,12 +43,14 @@ class Wep implements INetworkManagerEntity {
 	 * @param int $index WEP key index
 	 * @param array<string> $keys WEP keys
 	 */
-	public function __construct(WepKeyType $type, int $index, array $keys) {
-		$this->type = $type;
+	public function __construct(
+		private readonly WepKeyType $type,
+		private readonly int $index,
+		array $keys,
+	) {
 		if ($index < 0 || $index > 3) {
 			throw new InvalidWepKeyIndexException();
 		}
-		$this->index = $index;
 		$this->keys = array_values($keys);
 	}
 

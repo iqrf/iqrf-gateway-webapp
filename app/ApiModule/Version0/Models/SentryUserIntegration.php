@@ -32,23 +32,14 @@ use Sentry\UserDataBag;
 class SentryUserIntegration extends BaseIntegration {
 
 	/**
-	 * @var BearerAuthenticator Bearer authenticator
-	 */
-	protected BearerAuthenticator $authenticator;
-
-	/**
-	 * @var Container Nette DI container
-	 */
-	protected Container $container;
-
-	/**
 	 * Constructor
 	 * @param Container $container Nette DI container
 	 * @param BearerAuthenticator $authenticator Bearer authenticator
 	 */
-	public function __construct(Container $container, BearerAuthenticator $authenticator) {
-		$this->container = $container;
-		$this->authenticator = $authenticator;
+	public function __construct(
+		private readonly Container $container,
+		private readonly BearerAuthenticator $authenticator,
+	) {
 	}
 
 	public function setup(HubInterface $hub, Event $event, EventHint $hint): ?Event {

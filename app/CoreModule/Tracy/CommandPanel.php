@@ -29,16 +29,12 @@ use Tracy\IBarPanel;
 class CommandPanel implements IBarPanel {
 
 	/**
-	 * @var CommandStack Command stack
-	 */
-	protected CommandStack $stack;
-
-	/**
 	 * Constructor
 	 * @param CommandStack $stack Command stack
 	 */
-	public function __construct(CommandStack $stack) {
-		$this->stack = $stack;
+	public function __construct(
+		protected readonly CommandStack $stack,
+	) {
 	}
 
 	/**

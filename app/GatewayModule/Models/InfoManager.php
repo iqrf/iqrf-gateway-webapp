@@ -43,30 +43,16 @@ class InfoManager {
 	];
 
 	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
-
-	/**
-	 * @var NetworkManager Network manager
-	 */
-	private NetworkManager $networkManager;
-
-	/**
-	 * @var VersionManager Version manager
-	 */
-	private VersionManager $versionManager;
-
-	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
 	 * @param NetworkManager $networkManager Network manager
 	 * @param VersionManager $versionManager Version manager
 	 */
-	public function __construct(CommandManager $commandManager, NetworkManager $networkManager, VersionManager $versionManager) {
-		$this->commandManager = $commandManager;
-		$this->networkManager = $networkManager;
-		$this->versionManager = $versionManager;
+	public function __construct(
+		private readonly CommandManager $commandManager,
+		private readonly NetworkManager $networkManager,
+		private readonly VersionManager $versionManager,
+	) {
 	}
 
 	/**

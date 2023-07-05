@@ -21,42 +21,59 @@ declare(strict_types = 1);
 
 namespace App\Models\Database\Enums;
 
-use App\Exceptions\InvalidUserRoleException;
-use ValueError;
-
 /**
- * User roles enum
+ * Mapping baud rate enum
  */
-enum UserRole: string {
-
-	/// Admin role
-	case Admin = 'admin';
-
-	/// Normal role
-	case Normal = 'normal';
-
-
-	/// Basic admin role
-	case BasicAdmin = 'basicadmin';
-
-	/// Basic role
-	case Basic = 'basic';
-
-	/// Default role
-	final public const Default = self::Normal;
+enum MappingBaudRate: int {
 
 	/**
-	 * Returns user role from string value
-	 * @param string $value User role string value
-	 * @return self User role
-	 * @throws InvalidUserRoleException
+	 * 1 200 Bd baud rate
 	 */
-	public static function fromString(string $value): self {
-		try {
-			return self::from($value);
-		} catch (ValueError $e) {
-			throw new InvalidUserRoleException('Invalid role: "' . $value . '"', previous: $e);
-		}
-	}
+	case Bd1200 = 1_200;
+
+	/**
+	 * 2 400 Bd baud rate
+	 */
+	case Bd2400 = 2_400;
+
+	/**
+	 * 4 800 Bd baud rate
+	 */
+	case Bd4800 = 4_800;
+
+	/**
+	 * 9 600 Bd baud rate
+	 */
+	case Bd9600 = 9_600;
+
+	/**
+	 * 19 200 Bd baud rate
+	 */
+	case Bd19200 = 19_200;
+
+	/**
+	 * 38 400 Bd baud rate
+	 */
+	case Bd38400 = 38_400;
+
+	/**
+	 * 57 600 Bd baud rate
+	 */
+	case Bd57600 = 57_600;
+
+	/**
+	 * 115 200 Bd baud rate
+	 */
+	case Bd115200 = 115_200;
+
+	/**
+	 * 230 400 Bd baud rate
+	 */
+	case Bd230400 = 230_400;
+
+	/**
+	 * Default baud rate
+	 */
+	public const Default = self::Bd57600;
 
 }
