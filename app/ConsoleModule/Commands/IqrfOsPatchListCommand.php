@@ -22,38 +22,26 @@ namespace App\ConsoleModule\Commands;
 
 use App\Models\Database\EntityManager;
 use App\Models\Database\Repositories\IqrfOsPatchRepository;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+#[AsCommand(name: 'iqrf-os:list-patches', description: 'Lists IQRF OS patches')]
 class IqrfOsPatchListCommand extends EntityManagerCommand {
-
-	/**
-	 * @var string|null Command name
-	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-	 */
-	protected static $defaultName = 'iqrf-os:list-patches';
 
 	/**
 	 * @var IqrfOsPatchRepository IQRF OS Patch database repository
 	 */
-	protected IqrfOsPatchRepository $repository;
+	protected readonly IqrfOsPatchRepository $repository;
 
 	/**
 	 * Constructor
 	 * @param EntityManager $entityManager Entity manager
-	 * @param string|null $name Command name
 	 */
-	public function __construct(EntityManager $entityManager, ?string $name = null) {
-		parent::__construct($entityManager, $name);
+	public function __construct(EntityManager $entityManager) {
+		parent::__construct($entityManager);
 		$this->repository = $this->entityManager->getIqrfOsPatchRepository();
-	}
-
-	/**
-	 * Configures the IQRF OS patch list command
-	 */
-	protected function configure(): void {
-		$this->setDescription('Lists IQRF OS patches');
 	}
 
 	/**

@@ -27,24 +27,20 @@ use App\NetworkModule\Models\WireguardManager;
 abstract class WireguardCommand extends EntityManagerCommand {
 
 	/**
-	 * @var WireguardManager Wireguard manager
+	 * @var WireguardInterfaceRepository WireGuard interface repository
 	 */
-	protected WireguardManager $manager;
-
-	/**
-	 * @var WireguardInterfaceRepository Wireguard interface repository
-	 */
-	protected WireguardInterfaceRepository $repository;
+	protected readonly WireguardInterfaceRepository $repository;
 
 	/**
 	 * Constructor
 	 * @param EntityManager $entityManager Entity manager
-	 * @param WireguardManager $manager Wireguard manager
-	 * @param string|null $name Command name
+	 * @param WireguardManager $manager WireGuard manager
 	 */
-	public function __construct(EntityManager $entityManager, WireguardManager $manager, ?string $name = null) {
-		parent::__construct($entityManager, $name);
-		$this->manager = $manager;
+	public function __construct(
+		EntityManager $entityManager,
+		protected readonly WireguardManager $manager,
+	) {
+		parent::__construct($entityManager);
 		$this->repository = $entityManager->getWireguardInterfaceRepository();
 	}
 

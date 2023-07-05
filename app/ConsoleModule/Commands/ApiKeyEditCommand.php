@@ -22,6 +22,7 @@ namespace App\ConsoleModule\Commands;
 
 use App\Exceptions\ApiKeyExpirationPassedException;
 use App\Exceptions\ApiKeyInvalidExpirationException;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
@@ -32,19 +33,13 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * CLI command for editing API keys
  */
+#[AsCommand(name: 'api-key:edit', description: 'Edits an API key')]
 class ApiKeyEditCommand extends ApiKeyCommand {
-
-	/**
-	 * @var string|null Command name
-	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-	 */
-	protected static $defaultName = 'api-key:edit';
 
 	/**
 	 * Configures the user add command
 	 */
 	protected function configure(): void {
-		$this->setDescription('Edits an API key');
 		$definitions = [
 			new InputOption('id', ['i'], InputOption::VALUE_OPTIONAL, 'API key ID to edit'),
 			new InputOption('description', ['d'], InputOption::VALUE_OPTIONAL, 'New API key description'),

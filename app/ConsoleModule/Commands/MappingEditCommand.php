@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\ConsoleModule\Commands;
 
 use App\Models\Database\Entities\Mapping;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -30,19 +31,13 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * CLI command to edit existing mapping
  */
+#[AsCommand(name: 'mapping:edit', description: 'Edits an existing mapping profile')]
 class MappingEditCommand extends MappingCommand {
-
-	/**
-	 * @var string|null Command name
-	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-	 */
-	protected static $defaultName = 'mapping:edit';
 
 	/**
 	 * Configures the mapping edit command
 	 */
 	protected function configure(): void {
-		$this->setDescription('Edits an existing mapping profile');
 		$definitions = [
 			new InputOption('mapping-id', ['i'], InputOption::VALUE_REQUIRED, 'Mapping ID'),
 			new InputOption('type', ['t'], InputOption::VALUE_REQUIRED, 'Mapping type'),

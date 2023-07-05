@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ConsoleModule\Commands;
 
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -29,19 +30,13 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * WireGuard deactivate command
  */
+#[AsCommand(name: 'wireguard:deactivate', description: 'Deactivates a WireGuard tunnel')]
 class WireguardDeactivateCommand extends WireguardCommand {
-
-	/**
-	 * @var string|null Command name
-	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-	 */
-	protected static $defaultName = 'wireguard:deactivate';
 
 	/**
 	 * Configures the Wireguard deactivate command
 	 */
 	protected function configure(): void {
-		$this->setDescription('Deactivates a WireGuard tunnel');
 		$this->addArgument('name', InputArgument::OPTIONAL, 'Name of WireGuard tunnel to deactivate');
 	}
 

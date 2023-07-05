@@ -33,15 +33,14 @@ abstract class MappingCommand extends EntityManagerCommand {
 	/**
 	 * @var MappingRepository Mapping database repository
 	 */
-	protected MappingRepository $repository;
+	protected readonly MappingRepository $repository;
 
 	/**
 	 * Constructor
 	 * @param EntityManager $entityManager Entity manager
-	 * @param string|null $name Command name
 	 */
-	public function __construct(EntityManager $entityManager, ?string $name = null) {
-		parent::__construct($entityManager, $name);
+	public function __construct(EntityManager $entityManager) {
+		parent::__construct($entityManager);
 		$this->repository = $entityManager->getMappingRepository();
 	}
 

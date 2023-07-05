@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ConsoleModule\Commands;
 
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -27,20 +28,8 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * CLI command to list existing mappings
  */
+#[AsCommand(name: 'mapping:list', description: 'Lists mappings')]
 class MappingListCommand extends MappingCommand {
-
-	/**
-	 * @var string|null Command name
-	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-	 */
-	protected static $defaultName = 'mapping:list';
-
-	/**
-	 * Configures the mapping list command
-	 */
-	protected function configure(): void {
-		$this->setDescription('Lists mappings');
-	}
 
 	/**
 	 * Executes the mapping list command

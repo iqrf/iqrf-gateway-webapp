@@ -23,6 +23,7 @@ namespace App\ConsoleModule\Commands;
 use App\CoreModule\Exceptions\FeatureNotFoundException;
 use Nette\IOException;
 use Nette\Neon\Exception as NeonException;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -31,19 +32,13 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * CLI command for enabling features
  */
+#[AsCommand(name: 'feature:enable', description: 'Enables webapp\'s features')]
 class FeatureEnableCommand extends FeatureCommand {
-
-	/**
-	 * @var string|null Command name
-	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-	 */
-	protected static $defaultName = 'feature:enable';
 
 	/**
 	 * Configures the feature enable command
 	 */
 	protected function configure(): void {
-		$this->setDescription('Enables webapp\'s features');
 		$this->addArgument('names', InputArgument::OPTIONAL | InputArgument::IS_ARRAY, 'Names of enabled features');
 	}
 

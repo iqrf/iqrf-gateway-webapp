@@ -25,6 +25,7 @@ use App\Models\Database\Entities\IqrfOsPatch;
 use App\Models\Database\EntityManager;
 use DomainException;
 use Nette\Utils\Finder;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -32,6 +33,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * IQRF OS patch import command
  */
+#[AsCommand(name: 'iqrf-os:import-patches', description: 'Imports IQRF OS patches')]
 class IqrfOsPatchImportCommand extends Command {
 
 	/**
@@ -40,33 +42,14 @@ class IqrfOsPatchImportCommand extends Command {
 	private const DIR_PATH = __DIR__ . '/../../../iqrf/os/';
 
 	/**
-	 * @var string|null Command name
-	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-	 */
-	protected static $defaultName = 'iqrf-os:import-patches';
-
-	/**
-	 * @var EntityManager Entity manager
-	 */
-	private EntityManager $entityManager;
-
-	/**
 	 * Constructor
 	 * @param EntityManager $entityManager Entity manager
-	 * @param string|null $name Command name
 	 */
-	public function __construct(EntityManager $entityManager, ?string $name = null) {
-		parent::__construct($name);
-		$this->entityManager = $entityManager;
+	public function __construct(
+		private readonly EntityManager $entityManager,
+	) {
+		parent::__construct();
 	}
-
-	/**
-	 * Configures the IQRF OS patch import command
-	 */
-	protected function configure(): void {
-		$this->setDescription('Imports IQRF OS patches');
-	}
-
 
 	/**
 	 * Executes the IQRF OS patch import command

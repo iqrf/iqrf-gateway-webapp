@@ -23,39 +23,25 @@ namespace App\ConsoleModule\Commands;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Throwable;
 
+#[AsCommand(name: 'database:create', description: 'Creates webapp\'s database')]
 class DatabaseCreateCommand extends Command {
-
-	/**
-	 * @var string|null Command name
-	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-	 */
-	protected static $defaultName = 'database:create';
-
-	/**
-	 * @var ManagerRegistry Doctrine Persistence manager registry
-	 */
-	private ManagerRegistry $managerRegistry;
 
 	/**
 	 * Constructor
 	 * @param ManagerRegistry $managerRegistry Manager registry
 	 * @param string|null $name Command name
 	 */
-	public function __construct(ManagerRegistry $managerRegistry, ?string $name = null) {
+	public function __construct(
+		private readonly ManagerRegistry $managerRegistry,
+		?string $name = null,
+	) {
 		parent::__construct($name);
-		$this->managerRegistry = $managerRegistry;
-	}
-
-	/**
-	 * Configures the database create command
-	 */
-	protected function configure(): void {
-		$this->setDescription('Creates webapp\'s database');
 	}
 
 	/**

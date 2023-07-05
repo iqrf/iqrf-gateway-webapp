@@ -29,16 +29,12 @@ use Symfony\Component\Console\Command\Command;
 abstract class FeatureCommand extends Command {
 
 	/**
-	 * @var FeatureManager Webapp's optional features manager
-	 */
-	protected FeatureManager $manager;
-
-	/**
 	 * Constructor
 	 * @param FeatureManager $manager Webapp's optional features manager
 	 */
-	public function __construct(FeatureManager $manager) {
-		$this->manager = $manager;
+	public function __construct(
+		protected readonly FeatureManager $manager,
+	) {
 		parent::__construct();
 	}
 

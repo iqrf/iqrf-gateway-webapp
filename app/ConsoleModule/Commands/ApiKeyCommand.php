@@ -35,15 +35,14 @@ abstract class ApiKeyCommand extends EntityManagerCommand {
 	/**
 	 * @var ApiKeyRepository API key database repository
 	 */
-	protected ApiKeyRepository $repository;
+	protected readonly ApiKeyRepository $repository;
 
 	/**
 	 * Constructor
 	 * @param EntityManager $entityManager Entity manager
-	 * @param string|null $name Command name
 	 */
-	public function __construct(EntityManager $entityManager, ?string $name = null) {
-		parent::__construct($entityManager, $name);
+	public function __construct(EntityManager $entityManager) {
+		parent::__construct($entityManager);
 		$this->repository = $entityManager->getApiKeyRepository();
 	}
 

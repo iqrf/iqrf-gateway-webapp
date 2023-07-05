@@ -23,6 +23,7 @@ namespace App\ConsoleModule\Commands;
 use App\CoreModule\Exceptions\FeatureNotFoundException;
 use Nette\IOException;
 use Nette\Neon\Exception as NeonException;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -31,19 +32,13 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * CLI command for disabling features
  */
+#[AsCommand(name: 'feature:disable', description: 'Disables webapp\'s features')]
 class FeatureDisableCommand extends FeatureCommand {
-
-	/**
-	 * @var string|null Command name
-	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-	 */
-	protected static $defaultName = 'feature:disable';
 
 	/**
 	 * Configures the feature disable command
 	 */
 	protected function configure(): void {
-		$this->setDescription('Disables webapp\'s features');
 		$this->addArgument('names', InputArgument::OPTIONAL | InputArgument::IS_ARRAY, 'Names of disabled features');
 	}
 

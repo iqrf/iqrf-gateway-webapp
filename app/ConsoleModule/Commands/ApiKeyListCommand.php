@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ConsoleModule\Commands;
 
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -27,20 +28,8 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * CLI command for listing API keys
  */
+#[AsCommand(name: 'api-key:list', description: 'Lists API keys')]
 class ApiKeyListCommand extends ApiKeyCommand {
-
-	/**
-	 * @var string|null Command name
-	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-	 */
-	protected static $defaultName = 'api-key:list';
-
-	/**
-	 * Configures the API key list command
-	 */
-	protected function configure(): void {
-		$this->setDescription('Lists API keys');
-	}
 
 	/**
 	 * Executes the API key list command

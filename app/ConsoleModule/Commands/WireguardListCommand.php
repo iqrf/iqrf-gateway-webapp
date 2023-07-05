@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ConsoleModule\Commands;
 
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -28,20 +29,8 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * CLI command to list WireGuard tunnels
  */
+#[AsCommand(name: 'wireguard:list', description: 'Lists WireGuard tunnels')]
 class WireguardListCommand extends WireguardCommand {
-
-	/**
-	 * @var string|null Command name
-	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-	 */
-	protected static $defaultName = 'wireguard:list';
-
-	/**
-	 * Configures the WireGuard list command
-	 */
-	protected function configure(): void {
-		$this->setDescription('Lists WireGuard tunnels');
-	}
 
 	/**
 	 * Executes the WireGuard list key list command

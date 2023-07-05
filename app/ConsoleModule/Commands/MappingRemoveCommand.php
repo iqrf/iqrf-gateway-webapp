@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ConsoleModule\Commands;
 
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -30,19 +31,13 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * CLI command to remove exiting mapping
  */
+#[AsCommand(name: 'mapping:remove', description: 'Remove mapping')]
 class MappingRemoveCommand extends MappingCommand {
-
-	/**
-	 * @var string|null Command name
-	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-	 */
-	protected static $defaultName = 'mapping:remove';
 
 	/**
 	 * Configures the mapping remove command
 	 */
 	protected function configure(): void {
-		$this->setDescription('Remove mapping');
 		$definitions = [
 			new InputOption('mapping-id', ['i'], InputOption::VALUE_REQUIRED, 'Mapping ID'),
 		];
