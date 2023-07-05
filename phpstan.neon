@@ -24,7 +24,7 @@ includes:
 parameters:
 	level: 6
 	bootstrapFiles:
-		- tests/bootstrap.php
+		- tests/phpstanBootstrap.php
 	paths:
 		- app
 		- bin
@@ -36,19 +36,12 @@ parameters:
 		- phpt
 	reportUnmatchedIgnoredErrors: false
 	ignoreErrors:
-		- '#Constant (TESTER_DIR|TMP_DIR) not found.#'
-		- '#Constant App\\[a-zA-Z0-9_]+\\Enums\\[a-zA-Z0-9_]+::[a-zA-Z0-9_]+ is unused.#'
 		- '#Method App\\CoreModule\\Models\\CommandManager::run(Async|)\(\) has parameter \$input with no value type specified in iterable type Traversable.#'
 		- '#Method App\\IqrfNetModule\\Models\\WebSocketClient::[a-zA-Z]+\(\) has parameter \$[a-z]+ with no value type specified in iterable type Ratchet\\RFC6455\\Messaging\\MessageInterface\.#'
-		- '#Parameter \#2 \$algo of function password_hash expects int, string given.#'
-		- '#Property App\\Models\\Database\\Entities\\User::\$verifications is never written, only read.#'
-		- '#Template type TEntityClass of method App\\Models\\Database\\EntityManager::getRepository\(\) is not referenced in a parameter.#'
-		- '#Type mixed in generic type Doctrine\\ORM\\EntityRepository\<mixed\> in PHPDoc tag @return is not subtype of template type TEntityClass of object of class Doctrine\\ORM\\EntityRepository\.#'
 		-
 			message: '#Variable property access on mixed.#'
 			path: app/NetworkModule/Entities/Modem.php
 		- '#Call to an undefined method Symfony\\Component\\Console\\Helper\\HelperInterface::ask\(\).#'
-		- '#Call to deprecated method forUnsecuredSigner\(\) of class Lcobucci\\JWT\\Configuration\:\s*Deprecated since v4.3#'
 		-
 			message: "#^Negated boolean expression is always false\\.$#"
 			path: app/Models/Mail/ConfigurationManager.php
