@@ -57,9 +57,9 @@ class MappingFixture implements FixtureInterface, OrderedFixtureInterface {
 				$queryBuilder->setParameters([]);
 			}
 			$queryBuilder->select('count(m.id)')
-				->where('m.type = :type')->setParameter('type', $record->getType(), Types::STRING)
+				->where('m.type = :type')->setParameter('type', $record->getType()->value, Types::STRING)
 				->andWhere('m.name = :name')->setParameter('name', $record->getName(), Types::STRING)
-				->andWhere('m.deviceType = :deviceType')->setParameter('deviceType', $record->getDeviceType(), Types::STRING)
+				->andWhere('m.deviceType = :deviceType')->setParameter('deviceType', $record->getDeviceType()->value, Types::STRING)
 				->andWhere('m.iqrfInterface = :interface')->setParameter('interface', $record->getInterface(), Types::STRING)
 				->andWhere('m.busEnableGpioPin = :busPin')->setParameter('busPin', $record->getBusPin(), Types::INTEGER)
 				->andWhere('m.pgmSwitchGpioPin = :pgmPin')->setParameter('pgmPin', $record->getPgmPin(), Types::INTEGER)
