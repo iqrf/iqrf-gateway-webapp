@@ -65,7 +65,7 @@ class MappingFixture implements FixtureInterface, OrderedFixtureInterface {
 				->andWhere('m.pgmSwitchGpioPin = :pgmPin')->setParameter('pgmPin', $record->getPgmPin(), Types::INTEGER)
 				->andWhere('m.powerEnableGpioPin = :powerPin')->setParameter('powerPin', $record->getPowerPin(), Types::INTEGER);
 			if ($record->getBaudRate() !== null) {
-				$queryBuilder->andWhere('m.baudRate = :baudRate')->setParameter('baudRate', $record->getBaudRate(), Types::INTEGER);
+				$queryBuilder->andWhere('m.baudRate = :baudRate')->setParameter('baudRate', $record->getBaudRate()->value, Types::INTEGER);
 			}
 			if ($record->getI2cPin() !== null) {
 				$queryBuilder->andWhere('m.i2cEnableGpioPin = :i2cPin')->setParameter('i2cPin', $record->getI2cPin(), Types::INTEGER);
