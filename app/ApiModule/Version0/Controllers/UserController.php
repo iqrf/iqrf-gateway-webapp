@@ -463,7 +463,8 @@ class UserController extends BaseController {
 		$builder = $builder->expiresAt($now->modify('+90 min'));
 		$builder = $builder->withClaim('uid', $user->getId());
 		if ($hostname !== false) {
-			$builder = $builder->issuedBy($hostname)->identifiedBy($hostname);
+			$builder = $builder->issuedBy($hostname);
+			$builder = $builder->identifiedBy($hostname);
 		}
 		$signer = $configuration->signer();
 		$signingKey = $configuration->signingKey();
