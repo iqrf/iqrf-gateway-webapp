@@ -34,11 +34,11 @@ class CorsMiddleware implements IMiddleware {
 		if ($request->getMethod() === 'OPTIONS') {
 			return $response->withHeader('Access-Control-Allow-Origin', '*')
 				->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, OPTIONS, DELETE')
-				->withHeader('Access-Control-Allow-Headers', 'Accept, Content-Type, Authorization, sentry-trace, baggage')
+				->withHeader('Access-Control-Allow-Headers', 'Accept, Content-Type, Authorization, User-Agent, sentry-trace, baggage')
 				->withHeader('Access-Control-Expose-Headers', '*');
 		}
 		$response = $response->withHeader('Access-Control-Allow-Origin', '*')
-			->withHeader('Access-Control-Allow-Headers', 'Accept, Content-Type, Authorization, sentry-trace, baggage')
+			->withHeader('Access-Control-Allow-Headers', 'Accept, Content-Type, Authorization, User-Agent, sentry-trace, baggage')
 			->withHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, DELETE, PUT')
 			->withHeader('Access-Control-Expose-Headers', '*');
 		// Pass to next middleware
