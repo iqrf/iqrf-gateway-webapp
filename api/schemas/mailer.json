@@ -103,8 +103,15 @@
 		},
 		"clientHost": {
 			"$id": "#/properties/clientHost",
-			"type": "string",
-			"format": "hostname",
+			"oneOf": [
+				{
+					"type": "null"
+				},
+				{
+					"type": "string",
+					"format": "hostname"
+				}
+			],
 			"title": "SMTP client hostname",
 			"example": "iqrf-gw.localhost.localdomain"
 		},
