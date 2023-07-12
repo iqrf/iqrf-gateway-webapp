@@ -17,26 +17,11 @@
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '@/helpers/authorizationHeader';
 import {UploadUtilFile} from '@/interfaces/trUpload';
- 
+
 interface IqrfInterfacePorts {
 	cdc: Array<string>;
 	spi: Array<string>;
 	uart: Array<string>;
-}
-
-export interface DpaMacro {
-	confirmation: boolean
-	enabled: boolean
-	name: string
-	note: string
-	request: string
-}
-
-export interface DpaMacroGroup {
-	enabled: boolean
-	id: number
-	macros: Array<DpaMacro>
-	name: string
 }
 
 /**
@@ -53,14 +38,6 @@ class IqrfService {
 				const ports: IqrfInterfacePorts = response.data;
 				return ports[interfaceType] as Array<string>;
 			});
-	}
-
-	/**
-	 * Retrieves IQRF IDE Macros
-	 */
-	getMacros(): Promise<Array<DpaMacroGroup>> {
-		return axios.get('iqrf/macros/', {headers: authorizationHeader()})
-			.then((response: AxiosResponse) => response.data as Array<DpaMacroGroup>);
 	}
 
 	/**
@@ -98,4 +75,3 @@ class IqrfService {
 }
 
 export default new IqrfService();
- 

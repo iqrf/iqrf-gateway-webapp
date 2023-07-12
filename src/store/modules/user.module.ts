@@ -14,26 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {
+	AccountState, UserBase,
+	UserInfo,
+	UserRole,
+	UserSignedIn
+} from '@iqrf/iqrf-gateway-webapp-client';
 import * as Sentry from '@sentry/vue';
 import {AxiosError} from 'axios';
 import jwt_decode, {JwtPayload} from 'jwt-decode';
 import {ActionTree, GetterTree, MutationTree} from 'vuex';
 
-import AuthenticationService, {
-	AccountState,
-	IUserBase,
-	User,
-	UserInfo,
-	UserRole,
-	UserRoleIndex,
-} from '@/services/AuthenticationService';
-import UserService from '@/services/UserService';
+import {UserRoleIndex} from '@/services/AuthenticationService';
+import {useApiClient} from '@/services/ApiClient';
 
 /**
  * User state
  */
 interface UserState {
-	user: User|null,
+	user: UserSignedIn|null,
 	expiration: number,
 }
 
@@ -44,7 +43,7 @@ const state: UserState = {
 
 const actions: ActionTree<UserState, any> = {
 	updateInfo({commit}) {
-		return UserService.getLoggedIn()
+		return useApiClient().getAccountService().fetchInfo()
 			.then((user: UserInfo) => {
 				commit('SET_INFO', user);
 			})
@@ -53,7 +52,7 @@ const actions: ActionTree<UserState, any> = {
 				return Promise.reject(error);
 			});
 	},
-	setJwt({commit}, user: User) {
+	setJwt({commit}, user: UserSignedIn) {
 		const now = new Date();
 		const epoch = Math.round(now.getTime() / 1000);
 		const jwt: JwtPayload = jwt_decode(user.token);
@@ -68,8 +67,8 @@ const actions: ActionTree<UserState, any> = {
 		commit('SIGN_IN', user);
 	},
 	signIn({dispatch}, credentials) {
-		return AuthenticationService.login(credentials)
-			.then((user: User) => {
+		return useApiClient().getAuthenticationService().signIn(credentials)
+			.then((user: UserSignedIn) => {
 				dispatch('setJwt', user);
 				const sentryUser: Sentry.User = {
 					username: user.username,
@@ -101,12 +100,12 @@ const getters: GetterTree<UserState, any> = {
 		if (state.user === null) {
 			return null;
 		}
-		return state.user.state === AccountState.UNVERIFIED;
+		return state.user.state === AccountState.Unverified;
 	},
 	hasEmail(state: UserState): boolean {
 		return state.user !== null && state.user.email !== null;
 	},
-	get(state: UserState): IUserBase|null {
+	get(state: UserState): UserBase|null {
 		if (state.user === null) {
 			return null;
 		}
@@ -174,7 +173,7 @@ const mutations: MutationTree<UserState> = {
 	SET_EXPIRATION(state: UserState, expiration: number) {
 		state.expiration = expiration;
 	},
-	SIGN_IN(state: UserState, data: User) {
+	SIGN_IN(state: UserState, data: UserSignedIn) {
 		state.user = data;
 	},
 	SIGN_OUT(state: UserState) {

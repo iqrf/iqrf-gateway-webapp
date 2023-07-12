@@ -30,7 +30,7 @@ limitations under the License.
 						>
 							<v-text-field
 								id='username'
-								v-model='username'
+								v-model='credentials.username'
 								:label='$t("forms.fields.username")'
 								:placeholder='$t("forms.fields.username")'
 								autocomplete='username'
@@ -48,7 +48,7 @@ limitations under the License.
 						>
 							<v-text-field
 								id='password'
-								v-model='password'
+								v-model='credentials.password'
 								:label='$t("forms.fields.password")'
 								:placeholder='$t("forms.fields.password")'
 								type='password'
@@ -74,14 +74,14 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {UserCredentials} from '@iqrf/iqrf-gateway-webapp-client';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import {required} from 'vee-validate/dist/rules';
+import {Component, Vue} from 'vue-property-decorator';
+
 import PasswordInput from '@/components/Core/PasswordInput.vue';
 import TheWizard from '@/components/TheWizard.vue';
-
-import {required} from 'vee-validate/dist/rules';
 import {sleep} from '@/helpers/sleep';
-import {UserCredentials} from '@/services/AuthenticationService';
 
 @Component({
 	components: {
@@ -99,10 +99,6 @@ import {UserCredentials} from '@/services/AuthenticationService';
  * Sign in page component
  */
 export default class SignIn extends Vue {
-	/**
-	 * @var {string} password User password
-	 */
-	private password = '';
 
 	/**
 	 * @var {boolean} submitted Indicates whether the login information have been submitted
@@ -110,9 +106,13 @@ export default class SignIn extends Vue {
 	private submitted = false;
 
 	/**
-	 * @var {string} username User name
-	 */
-	private username = '';
+	 * @property {UserCredentials} credentials User credentials
+   * @private
+   */
+	private credentials: UserCredentials = {
+		username: '',
+		password: '',
+	};
 
 	/**
 	 * Vue lifecycle hook created
@@ -126,8 +126,7 @@ export default class SignIn extends Vue {
 	 * Attempts to log in and retrieve features available for the user's role
 	 */
 	private handleSubmit(): void {
-		const credentials = new UserCredentials(this.username, this.password);
-		this.$store.dispatch('user/signIn', credentials)
+		this.$store.dispatch('user/signIn', this.credentials)
 			.then(async () => {
 				await sleep(500);
 				let destination = (this.$route.query.redirect as string|undefined) ?? '/';

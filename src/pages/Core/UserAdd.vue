@@ -111,20 +111,24 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {
+	UserCreate,
+	UserLanguage,
+	UserRole
+} from '@iqrf/iqrf-gateway-webapp-client';
+import {AxiosError} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import {required} from 'vee-validate/dist/rules';
+import {Component, Vue} from 'vue-property-decorator';
+
 import PasswordInput from '@/components/Core/PasswordInput.vue';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {email} from '@/helpers/validators';
-import {required} from 'vee-validate/dist/rules';
 
-import {UserLanguage, UserRole} from '@/services/AuthenticationService';
-import UserService from '@/services/UserService';
-
-import {AxiosError} from 'axios';
 import {ISelectItem} from '@/interfaces/Vuetify';
-import {IUser} from '@/interfaces/Core/User';
+import {useApiClient} from '@/services/ApiClient';
+import UrlBuilder from '@/helpers/urlBuilder';
 
 @Component({
 	components: {
@@ -142,14 +146,15 @@ import {IUser} from '@/interfaces/Core/User';
  */
 export default class UserAdd extends Vue {
 	/**
-	 * @var {IUser} user User
+	 * @var {UserCreate} user User
 	 */
-	private user: IUser = {
+	private user: UserCreate = {
 		username: '',
 		password: '',
 		email: null,
-		language: UserLanguage.ENGLISH,
-		role: UserRole.BASIC,
+		language: UserLanguage.English,
+		role: UserRole.Basic,
+		baseUrl: new UrlBuilder().getBaseUrl(),
 	};
 
 	/**
@@ -157,7 +162,7 @@ export default class UserAdd extends Vue {
 	 */
 	private readonly languages: Array<ISelectItem> = [
 		{
-			value: UserLanguage.ENGLISH,
+			value: UserLanguage.English,
 			text: this.$t('core.user.languages.en'),
 		},
 	];
@@ -193,7 +198,7 @@ export default class UserAdd extends Vue {
 	 */
 	private saveUser(): void {
 		this.$store.commit('spinner/SHOW');
-		UserService.add(this.user)
+		useApiClient().getUserService().create(this.user)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(

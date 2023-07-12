@@ -89,9 +89,9 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {daemonErrorToast, extendedErrorToast} from '@/helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
 import CloudService from '@/services/CloudService';
-import ServiceService from '@/services/ServiceService';
 
 import {AxiosError} from 'axios';
+import {useApiClient} from '@/services/ApiClient';
 
 @Component({
 	components: {
@@ -133,7 +133,7 @@ export default class AzureCreator extends Vue {
 		CloudService.create(this.serviceName, {'connectionString': this.connectionString})
 			.then(async () => {
 				if (restart) {
-					await ServiceService.restart('iqrf-gateway-daemon')
+					await useApiClient().getServiceService().restart('iqrf-gateway-daemon')
 						.then(() => {
 							this.$toast.success(
 								this.$t('service.iqrf-gateway-daemon.messages.restart')

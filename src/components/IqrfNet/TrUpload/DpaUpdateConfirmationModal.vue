@@ -26,7 +26,7 @@ limitations under the License.
 				{{ $t('iqrfnet.trUpload.dpaUpload.modal.title') }}
 			</v-card-title>
 			<v-card-text>
-				{{ $t('iqrfnet.trUpload.dpaUpload.modal.prompt', {version: prettyVersion(currentDpa)}) }}
+				{{ $t('iqrfnet.trUpload.dpaUpload.modal.prompt', {version: currentDpa}) }}
 			</v-card-text>
 			<v-card-actions>
 				<v-spacer />
@@ -64,21 +64,6 @@ export default class DpaUpdateConfirmationModal extends Vue {
 	 * @property {string} currentDpa Current DPA version
 	 */
 	@Prop({required: false, default: ''}) currentDpa!: string;
-
-	/**
-	 * Converts DPA version string to pretty version
-	 * @param {string} version DPA version string
-	 * @returns {string} DPA version pretty string
-	 */
-	private prettyVersion(version: string): string {
-		if (version.length === 0) {
-			return version;
-		}
-		if (version.startsWith('0')) {
-			return version.charAt(1) + '.' + version.substring(2, 4);
-		}
-		return version.substring(0, 2) + '.' + version.substring(2, 4);
-	}
 
 	/**
 	 * Emits event to start upload

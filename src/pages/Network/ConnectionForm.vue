@@ -247,8 +247,7 @@ import {
 import {IAccessPoint} from '@/interfaces/Network/Wifi';
 
 import NetworkConnectionService from '@/services/NetworkConnectionService';
-import VersionService from '@/services/VersionService';
-import ServiceService from '@/services/ServiceService';
+import {useApiClient} from '@/services/ApiClient';
 
 @Component({
 	components: {
@@ -602,7 +601,7 @@ export default class ConnectionForm extends Vue {
 	 * Restarts ModemManager service to fix broken modem
 	 */
 	private async restartModemManager(): Promise<void> {
-		await ServiceService.restart('ModemManager');
+		await useApiClient().getServiceService().restart('ModemManager');
 		await new Promise(resolve => setTimeout(resolve, 15_000));
 	}
 
@@ -707,7 +706,7 @@ export default class ConnectionForm extends Vue {
 			this.$t('network.connection.messages.ipChange.backendCheck').toString()
 		);
 		await sleep(10000);
-		VersionService.getWebappVersionRest()
+		useApiClient().getVersionService().getWebapp()
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$store.commit('blocking/SHOW',

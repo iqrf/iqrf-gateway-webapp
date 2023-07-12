@@ -91,17 +91,18 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {
+	IqrfRepositoryConfig,
+	IqrfRepositoryService
+} from '@iqrf/iqrf-gateway-webapp-client';
+import {AxiosError} from 'axios';
 import {extend, ValidationProvider, ValidationObserver} from 'vee-validate';
+import {required} from 'vee-validate/dist/rules';
+import {Component, Vue} from 'vue-property-decorator';
+import {NavigationGuardNext, Route} from 'vue-router';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
-import {NavigationGuardNext, Route} from 'vue-router';
-import {required} from 'vee-validate/dist/rules';
-
-import RepositoryConfigService from '@/services/IqrfRepository/IqrfRepositoryConfigService';
-
-import {AxiosError} from 'axios';
-import {IIqrfRepositoryConfig} from '@/interfaces/Config/Misc';
+import {useApiClient} from '@/services/ApiClient';
 
 @Component({
 	components: {
@@ -126,12 +127,12 @@ import {IIqrfRepositoryConfig} from '@/interfaces/Config/Misc';
 /**
  * IQRF repository configuration component
  */
-export default class IqrfRepositoryConfig extends Vue {
+export default class IqrfRepositoryConfiguration extends Vue {
 
 	/**
-	 * @var {IIqrfRepositoryConfig} config IQRF repository configuration
+	 * @var {IqrfRepositoryConfig} config IQRF repository configuration
 	 */
-	private config: IIqrfRepositoryConfig = {
+	private config: IqrfRepositoryConfig = {
 		apiEndpoint: 'https://repository.iqrfalliance.org/api',
 		credentials: {
 			username: null,
@@ -143,6 +144,12 @@ export default class IqrfRepositoryConfig extends Vue {
 	 * @var {boolean} credentials Controls credentials rendering in form
 	 */
 	private credentials = false;
+
+	/**
+	 * @property {IqrfRepositoryService} repositoryService IQRF repository service
+   * @private
+   */
+	private repositoryService: IqrfRepositoryService = useApiClient().getIqrfRepositoryService();
 
 	/**
 	 * Initializes validation rules
@@ -168,8 +175,8 @@ export default class IqrfRepositoryConfig extends Vue {
 	 */
 	private getConfig(): Promise<void> {
 		this.$store.commit('spinner/SHOW');
-		return RepositoryConfigService.get()
-			.then((config: IIqrfRepositoryConfig) => {
+		return this.repositoryService.getConfig()
+			.then((config: IqrfRepositoryConfig) => {
 				this.storeConfig(config);
 				this.$store.commit('spinner/HIDE');
 			})
@@ -181,7 +188,7 @@ export default class IqrfRepositoryConfig extends Vue {
 	/**
 	 * Parses and stores repository configuration
 	 */
-	private storeConfig(config: IIqrfRepositoryConfig): void {
+	private storeConfig(config: IqrfRepositoryConfig): void {
 		this.config = {...this.config, ...config};
 		this.credentials = config.credentials.username !== null;
 	}
@@ -191,11 +198,11 @@ export default class IqrfRepositoryConfig extends Vue {
 	 */
 	private saveConfig(): void {
 		this.$store.commit('spinner/SHOW');
-		const config: IIqrfRepositoryConfig = JSON.parse(JSON.stringify(this.config));
+		const config: IqrfRepositoryConfig = JSON.parse(JSON.stringify(this.config));
 		if (!this.credentials) {
 			config.credentials = {username: null, password: null};
 		}
-		RepositoryConfigService.save(config)
+		this.repositoryService.editConfig(config)
 			.then(() => {
 				this.$store.commit('repository/SET', config);
 				this.getConfig().then(() => {

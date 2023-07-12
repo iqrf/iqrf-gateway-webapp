@@ -63,14 +63,13 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
+import {AxiosError} from 'axios';
 import {Component, Vue} from 'vue-property-decorator';
-
-import ServiceService from '@/services/ServiceService';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {SSHStatus} from '@/enums/Install/ssh';
 
-import {AxiosError} from 'axios';
+import {useApiClient} from '@/services/ApiClient';
 
 @Component({
 	metaInfo: {
@@ -109,20 +108,26 @@ export default class InstallSshStatus extends Vue {
 	];
 
 	/**
+   * @property {ServiceService} service Service service
+   * @private
+   */
+	private service: ServiceService = useApiClient().getServiceService();
+
+	/**
 	 * Advances the install wizard step
 	 */
 	private setService(): void {
 		this.running = true;
 		if (this.status === SSHStatus.ENABLE) {
-			ServiceService.enable('ssh')
+			this.service.enable('ssh')
 				.then(this.handleSuccess)
 				.catch(this.handleFailure);
 		} else if (this.status === SSHStatus.START) {
-			ServiceService.start('ssh')
+			this.service.start('ssh')
 				.then(this.handleSuccess)
 				.catch(this.handleFailure);
 		} else {
-			ServiceService.disable('ssh')
+			this.service.disable('ssh')
 				.then(this.handleSuccess)
 				.catch(this.handleFailure);
 		}

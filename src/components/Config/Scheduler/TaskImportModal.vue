@@ -92,10 +92,10 @@ import {daemonErrorToast, extendedErrorToast} from '@/helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
 
 import SchedulerService from '@/services/SchedulerService';
-import ServiceService from '@/services/ServiceService';
 
 import {AxiosError} from 'axios';
 import ModalBase from '@/components/ModalBase.vue';
+import {useApiClient} from '@/services/ApiClient';
 
 @Component({
 	components: {
@@ -141,7 +141,7 @@ export default class TaskImportModal extends ModalBase {
 					this.$t('config.daemon.scheduler.messages.importSuccess').toString()
 				);
 				this.closeModal();
-				ServiceService.restart('iqrf-gateway-daemon')
+				useApiClient().getServiceService().restart('iqrf-gateway-daemon')
 					.then(() => {
 						this.$store.commit('spinner/HIDE');
 						this.$toast.info(

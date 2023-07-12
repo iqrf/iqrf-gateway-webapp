@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {UserRole} from '@/services/AuthenticationService';
 
 export function getRoleIndex(role: UserRole): number {
 	return Object.values(UserRole).indexOf(role);

@@ -43,14 +43,13 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
+import {UserRole, UserSignedIn} from '@iqrf/iqrf-gateway-webapp-client';
+import {AxiosError} from 'axios';
 import VueCountdown from '@chenfengyuan/vue-countdown';
 import {Component, Prop, Vue} from 'vue-property-decorator';
 
-import {User, UserRole} from '@/services/AuthenticationService';
-import UserService from '@/services/UserService';
-
-import {AxiosError} from 'axios';
 import {ErrorResponse} from '@/types';
+import {useApiClient} from '@/services/ApiClient';
 
 @Component({
 	components: {
@@ -76,7 +75,7 @@ export default class UserVerify extends Vue {
 	 * User entity
 	 * @private
 	 */
-	private user: User|null = null;
+	private user: UserSignedIn|null = null;
 
 	/**
 	 * @var {string} verifyError Verification error message
@@ -88,8 +87,8 @@ export default class UserVerify extends Vue {
 	 */
 	created(): void {
 		this.$store.commit('spinner/SHOW');
-		UserService.verify(this.uuid)
-			.then((user: User) => {
+		useApiClient().getAuthenticationService().verify(this.uuid)
+			.then((user: UserSignedIn) => {
 				this.success = true;
 				this.user = user;
 				this.$store.dispatch('user/setJwt', this.user);
@@ -110,7 +109,7 @@ export default class UserVerify extends Vue {
 		if (this.user === null) {
 			return;
 		}
-		if (this.user.role === UserRole.BASIC) {
+		if (this.user.role === UserRole.Basic) {
 			location.pathname = '/';
 		}
 		this.$router.push('/');

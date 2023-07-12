@@ -73,19 +73,25 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {ServiceService} from '@iqrf/iqrf-gateway-webapp-client';
+import {
+	Client as RepositoryClient,
+	OsDpa,
+	OsDpaService
+} from '@iqrf/iqrf-repository-client';
+import {AxiosError, AxiosResponse} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import {required} from 'vee-validate/dist/rules';
+import {MutationPayload} from 'vuex';
+import {Component, Vue} from 'vue-property-decorator';
 import DpaUpdateConfirmationModal from '@/components/IqrfNet/TrUpload/DpaUpdateConfirmationModal.vue';
 
 import {daemonErrorToast, extendedErrorToast} from '@/helpers/errorToast';
-import {required} from 'vee-validate/dist/rules';
 import DpaService, {RFMode} from '@/services/IqrfRepository/OsDpaService';
 import IqrfNetService from '@/services/IqrfNetService';
 import IqrfService from '@/services/IqrfService';
-import ServiceService from '@/services/ServiceService';
-
-import {AxiosError, AxiosResponse} from 'axios';
-import {MutationPayload} from 'vuex';
+import {useApiClient} from '@/services/ApiClient';
+import {useRepositoryClient} from '@/services/IqrfRepositoryClient';
 
 interface DpaVersions {
 	text: string
@@ -140,6 +146,24 @@ export default class DpaUpdater extends Vue {
 	private trType: number|null = null;
 
 	/**
+   * @property {ServiceService} serviceService Service service
+   * @private
+   */
+	private serviceService: ServiceService = useApiClient().getServiceService();
+
+	/**
+	 * @property {RepositoryClient} repositoryClient IQRF Repository client
+   * @private
+   */
+	private repositoryClient!: RepositoryClient;
+
+	/**
+	 * @property {OsDpaService} osDpaService IQRF OS & DPA service
+   * @private
+   */
+	private osDpaService!: OsDpaService;
+
+	/**
 	 * @var {boolean} showModal Controls whether DPA upload modal is shown
 	 */
 	private showModal = false;
@@ -162,7 +186,9 @@ export default class DpaUpdater extends Vue {
 	/**
 	 * Vue lifecycle hook created
 	 */
-	created(): void {
+	async created(): Promise<void> {
+		this.repositoryClient = await useRepositoryClient();
+		this.osDpaService = this.repositoryClient.getOsDpaService();
 		extend('required', required);
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type !== 'daemonClient/SOCKET_ONMESSAGE') {
@@ -205,26 +231,25 @@ export default class DpaUpdater extends Vue {
 	public handleEnumResponse(response): void {
 		this.osBuild = response.osRead.osBuild ?? '0000';
 		this.trType = response.osRead.trMcuType.value;
-		const dpaStr: string = response.peripheralEnumeration.dpaVer.replaceAll(' ', '0');
-		this.currentDpa = dpaStr.split('.').join('').padStart(4, '0');
-		DpaService.getVersions(this.osBuild)
-			.then((versions) => {
+		this.currentDpa = response.peripheralEnumeration.dpaVer.replaceAll(' ', '0');
+		this.osDpaService.list({osBuild: this.osBuild})
+			.then((versions: OsDpa[]) => {
 				const fetchedVersions: Array<DpaVersions> = [];
 				for (const version of versions) {
-					const dpaVer = Number.parseInt(version.getDpaVersion(false));
+					const dpaVer = Number.parseInt(version.dpa.version.replace(/\./g, ''));
 					if (dpaVer < 400) {
 						fetchedVersions.push({
-							value: version.getDpaVersion(false) + '-' + RFMode.LP,
-							text: version.getDpaVersion(true) + ', ' + RFMode.LP + ' RF mode'
+							value: version.dpa.version + '-' + RFMode.LP,
+							text: version.dpa.version + ', ' + RFMode.LP + ' RF mode'
 						});
 						fetchedVersions.push({
-							value: version.getDpaVersion(false) + '-' + RFMode.STD,
-							text: version.getDpaVersion(true) + ', ' + RFMode.STD + ' RF mode'
+							value: version.dpa.version + '-' + RFMode.STD,
+							text: version.dpa.version + ', ' + RFMode.STD + ' RF mode'
 						});
 					} else {
 						fetchedVersions.push({
-							value: version.getDpaVersion(false),
-							text: version.getDpaVersion(true),
+							value: version.dpa.version,
+							text: version.dpa.version,
 						});
 					}
 				}
@@ -284,14 +309,15 @@ export default class DpaUpdater extends Vue {
 			'osBuild': this.osBuild,
 			'trSeries': this.trType,
 		};
+		const rawVersion = this.version.split('-')[0].replace(/\./g, '').padStart(4, '0');
 		if (this.version.endsWith('-STD')) {
-			Object.assign(request, {'dpa': this.version.split('-')[0]});
+			Object.assign(request, {'dpa': rawVersion});
 			Object.assign(request, {'rfMode': RFMode.STD});
 		} else if (this.version.endsWith('-LP')) {
-			Object.assign(request, {'dpa': this.version.split('-')[0]});
+			Object.assign(request, {'dpa': rawVersion});
 			Object.assign(request, {'rfMode': RFMode.LP});
 		} else {
-			Object.assign(request, {'dpa': this.version});
+			Object.assign(request, {'dpa': rawVersion});
 		}
 		this.$store.commit('spinner/SHOW');
 		this.$store.commit('spinner/UPDATE_TEXT',
@@ -331,7 +357,7 @@ export default class DpaUpdater extends Vue {
 	 * @returns {Promise<void>} Empty promise for request chaining
 	 */
 	private stopDaemon(fileName: string): Promise<void> {
-		return ServiceService.stop('iqrf-gateway-daemon')
+		return this.serviceService.stop('iqrf-gateway-daemon')
 			.then(() => {
 				this.$store.commit('spinner/UPDATE_TEXT',
 					this.$t('service.iqrf-gateway-daemon.messages.stop').toString()
@@ -345,7 +371,7 @@ export default class DpaUpdater extends Vue {
 	 * Starts the IQRF Daemon service upon successful OS upgrade
 	 */
 	private startDaemon(): void {
-		ServiceService.start('iqrf-gateway-daemon')
+		this.serviceService.start('iqrf-gateway-daemon')
 			.then(() => {
 				this.updateVersions();
 				this.$store.commit('spinner/HIDE');

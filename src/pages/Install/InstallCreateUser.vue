@@ -91,20 +91,25 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {
+  EmailSentResponse,
+  UserCreate,
+  UserCredentials,
+  UserLanguage,
+  UserRole
+} from '@iqrf/iqrf-gateway-webapp-client';
+import {AxiosError} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import {required} from 'vee-validate/dist/rules';
+import {Component, Vue} from 'vue-property-decorator';
+
 import PasswordInput from '@/components/Core/PasswordInput.vue';
 
 import {email} from '@/helpers/validators';
-import {required} from 'vee-validate/dist/rules';
 import {sleep} from '@/helpers/sleep';
 import {extendedErrorToast} from '@/helpers/errorToast';
-
-import {UserCredentials, UserLanguage, UserRole} from '@/services/AuthenticationService';
-import UserService from '@/services/UserService';
-
-import {AxiosError, AxiosResponse} from 'axios';
-import {IUser} from '@/interfaces/Core/User';
+import UrlBuilder from '@/helpers/urlBuilder';
+import {useApiClient} from '@/services/ApiClient';
 
 @Component({
 	components: {
@@ -122,14 +127,15 @@ import {IUser} from '@/interfaces/Core/User';
  */
 export default class InstallCreateUser extends Vue {
 	/**
-	 * @var {IUser} user User
+	 * @var {UserCreate} user User
 	 */
-	private user: IUser = {
+	private user: UserCreate = {
 		username: '',
 		password: '',
 		email: '',
-		language: UserLanguage.ENGLISH,
-		role: UserRole.ADMIN,
+		language: UserLanguage.English,
+		role: UserRole.Admin,
+		baseUrl: new UrlBuilder().getBaseUrl(),
 	};
 
 	/**
@@ -150,14 +156,17 @@ export default class InstallCreateUser extends Vue {
 	 */
 	private handleSubmit(): void {
 		this.running = true;
-		UserService.add(this.user)
-			.then((response: AxiosResponse) => {
-				if (response.data.emailSent === true) {
+		useApiClient().getUserService().create(this.user)
+			.then((response: EmailSentResponse) => {
+				if (response.emailSent) {
 					this.$toast.success(
 						this.$t('core.user.messages.verifyNotice').toString()
 					);
 				}
-				const credentials = new UserCredentials(this.user.username, (this.user.password as string));
+				const credentials: UserCredentials = {
+					username: this.user.username,
+					password: this.user.password as string,
+				};
 				this.$store.dispatch('user/signIn', credentials)
 					.then(async () => {
 						await sleep(500);

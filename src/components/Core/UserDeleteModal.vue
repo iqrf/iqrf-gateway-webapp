@@ -47,21 +47,19 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
+import {UserInfo} from '@iqrf/iqrf-gateway-webapp-client';
+import {AxiosError} from 'axios';
 import {Component, Prop, VModel, Vue} from 'vue-property-decorator';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
-
-import UserService from '@/services/UserService';
-
-import {AxiosError} from 'axios';
-import {IUser} from '@/interfaces/Core/User';
+import {useApiClient} from '@/services/ApiClient';
 
 @Component({})
 export default class UserDeleteModal extends Vue {
 	/**
 	 * User to delete
 	 */
-	@VModel({required: true}) user!: IUser|null;
+	@VModel({required: true}) user!: UserInfo|null;
 
 	/**
 	 * @property {boolean} onlyUser Deleted user is the only user
@@ -85,7 +83,7 @@ export default class UserDeleteModal extends Vue {
 		const id = this.user.id;
 		const username = this.user.username;
 		this.$store.commit('spinner/SHOW');
-		UserService.delete(id)
+		useApiClient().getUserService().delete(id)
 			.then(async () => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(

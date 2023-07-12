@@ -25,16 +25,16 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
+import {InstallationChecks} from '@iqrf/iqrf-gateway-webapp-client';
+import {AxiosError} from 'axios';
 import {Component, Vue} from 'vue-property-decorator';
+import {mapGetters} from 'vuex';
+
 import Blocking from './components/Blocking.vue';
 import DaemonModeModal from './components/DamonModeModal.vue';
 import LoadingSpinner from './components/LoadingSpinner.vue';
 import SessionExpirationModal from '@/components/SessionExpirationModal.vue';
-
-import InstallationService, {InstallationCheck} from './services/InstallationService';
-
-import {AxiosError} from 'axios';
-import {mapGetters} from 'vuex';
+import {useApiClient} from '@/services/ApiClient';
 
 @Component({
 	components: {
@@ -66,8 +66,9 @@ export default class App extends Vue {
 			{timeout: null, text: this.$t('install.messages.check').toString()}
 		);
 		await this.$store.dispatch('features/fetch');
-		await InstallationService.check()
-			.then((check: InstallationCheck) => {
+		await useApiClient().getInstallationService().check()
+			.then((check: InstallationChecks) => {
+				this.$store.commit('installation/CHECKED');
 				const installUrl: boolean = this.$route.path.startsWith('/install/');
 				if (check.dependencies.length !== 0) {
 					this.$router.push({

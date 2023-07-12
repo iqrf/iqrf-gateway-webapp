@@ -152,18 +152,21 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {
+	MailerConfig,
+	MailerService,
+	MailerSmtpSecurity,
+} from '@iqrf/iqrf-gateway-webapp-client';
 import {AxiosError} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 import {mapGetters} from 'vuex';
+import {Component, Vue} from 'vue-property-decorator';
 
 import PasswordInput from '@/components/Core/PasswordInput.vue';
-import {SmtpSecurity} from '@/enums/Config/Smtp';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {email, host} from '@/helpers/validators';
-import {ISmtp} from '@/interfaces/Config/Smtp';
-import MailerService from '@/services/MailerService';
+import {useApiClient} from '@/services/ApiClient';
 
 @Component({
 	components: {
@@ -189,15 +192,15 @@ export default class SmtpForm extends Vue {
 	private running = false;
 
 	/**
-	 * @var {ISmtp} configuration SMTP server configuration
+	 * @var {MailerConfig} configuration SMTP server configuration
 	 */
-	private configuration: ISmtp = {
+	private configuration: MailerConfig = {
 		enabled: false,
 		host: '',
 		port: 465,
 		username: '',
 		password: '',
-		secure: SmtpSecurity.PLAINTEXT,
+		secure: null,
 		from: ''
 	};
 
@@ -207,17 +210,22 @@ export default class SmtpForm extends Vue {
 	private protocols = [
 		{
 			text: this.$t('config.smtp.form.protocols.none').toString(),
-			value: SmtpSecurity.PLAINTEXT,
+			value: null,
 		},
 		{
 			text: this.$t('config.smtp.form.protocols.starttls').toString(),
-			value: SmtpSecurity.STARTTLS,
+			value: MailerSmtpSecurity.STARTTLS,
 		},
 		{
 			text: this.$t('config.smtp.form.protocols.tls').toString(),
-			value: SmtpSecurity.TLS,
+			value: MailerSmtpSecurity.TLS,
 		},
 	];
+
+	/**
+	 * @property {MailerService} service Mailer service
+   */
+	private service: MailerService = useApiClient().getMailerService();
 
 	/**
 	 * Initializes validation rules
@@ -240,8 +248,8 @@ export default class SmtpForm extends Vue {
 	 */
 	private getConfig(): void {
 		this.showBlockingElement();
-		MailerService.getConfig()
-			.then((config: ISmtp) => {
+		this.service.getConfig()
+			.then((config: MailerConfig) => {
 				this.configuration = config;
 				this.hideBlockingElement();
 			})
@@ -252,23 +260,11 @@ export default class SmtpForm extends Vue {
 	}
 
 	/**
-	 * Removes or converts invalid values
-	 */
-	private prepareConfigToSend(): ISmtp {
-		const config: ISmtp = JSON.parse(JSON.stringify(this.configuration));
-		if (config.clientHost === null) {
-			delete config.clientHost;
-		}
-		return config;
-	}
-
-	/**
 	 * Saves SMTP configuration
 	 */
 	private saveConfig(): void {
 		this.showBlockingElement();
-		const config = this.prepareConfigToSend();
-		MailerService.saveConfig(config)
+		this.service.editConfig(this.configuration)
 			.then(() => {
 				this.hideBlockingElement();
 				this.$toast.success(
@@ -287,8 +283,7 @@ export default class SmtpForm extends Vue {
 	 */
 	private test(): void {
 		this.showBlockingElement();
-		const config = this.prepareConfigToSend();
-		MailerService.testConfig(config)
+		this.service.testConfig(this.configuration)
 			.then(() => {
 				this.hideBlockingElement();
 				this.$toast.success(

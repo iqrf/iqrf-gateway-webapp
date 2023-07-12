@@ -44,11 +44,11 @@ limitations under the License.
 		<div v-show='loaded && !failed'>
 			<HexUpload class='mb-5' />
 			<DpaUpdater ref='dpaUpdater' />
-			<!--<OsUpdater
+			<OsUpdater
 				ref='osUpdater'
 				class='mt-5'
 				@os-upload='osInfoUpload'
-			/>-->
+			/>
 		</div>
 	</div>
 </template>

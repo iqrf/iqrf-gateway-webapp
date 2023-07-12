@@ -19,9 +19,9 @@ limitations under the License.
 		<h1>{{ title }}</h1>
 		<v-card class='mb-5'>
 			<v-card-text>
-				<div v-if='!missing && !unsupported && !unknown'>
+				<div v-if='serviceStatus !== null && !missing && !unsupported && !unknown'>
 					<v-btn
-						v-if='!service.enabled'
+						v-if='!serviceStatus.enabled'
 						class='mr-1'
 						color='success'
 						@click='enable()'
@@ -29,7 +29,7 @@ limitations under the License.
 						{{ $t('service.actions.enable') }}
 					</v-btn>
 					<v-btn
-						v-if='service.enabled'
+						v-if='serviceStatus.enabled'
 						class='mr-1'
 						color='error'
 						@click='disable()'
@@ -37,7 +37,7 @@ limitations under the License.
 						{{ $t('service.actions.disable') }}
 					</v-btn>
 					<v-btn
-						v-if='!service.active'
+						v-if='!serviceStatus.active'
 						class='mr-1'
 						color='success'
 						@click='start()'
@@ -45,7 +45,7 @@ limitations under the License.
 						{{ $t('service.actions.start') }}
 					</v-btn>
 					<v-btn
-						v-if='service.active'
+						v-if='serviceStatus.active'
 						class='mr-1'
 						color='error'
 						@click='stop()'
@@ -53,7 +53,7 @@ limitations under the License.
 						{{ $t('service.actions.stop') }}
 					</v-btn>
 					<v-btn
-						v-if='service.active'
+						v-if='serviceStatus.active'
 						class='mr-1'
 						color='info'
 						@click='restart()'
@@ -78,13 +78,13 @@ limitations under the License.
 					{{ $t('service.states.unknown') }}
 				</span>
 				<span v-else>
-					<span v-if='service.enabled'>{{ $t('states.enabled') }}</span>
+					<span v-if='serviceStatus.enabled'>{{ $t('states.enabled') }}</span>
 					<span v-else>{{ $t('states.disabled') }}</span>,
-					<span v-if='service.active'>{{ $t('service.states.active') }}</span>
+					<span v-if='serviceStatus.active'>{{ $t('service.states.active') }}</span>
 					<span v-else>{{ $t('service.states.inactive') }}</span>
 				</span>
 				<br><br>
-				<pre v-if='service.status !== null && !unsupported' class='log'>{{ service.status }}</pre>
+				<pre v-if='serviceStatus.status !== null && !unsupported' class='log'>{{ serviceStatus.status }}</pre>
 			</v-card-text>
 		</v-card>
 		<AptConfig v-if='serviceName === "unattended-upgrades" && $store.getters["features/isEnabled"]("unattendedUpgrades")' />
@@ -100,12 +100,13 @@ import GatewayUserPassword from '@/components/Gateway/Services/GatewayUserPasswo
 import SystemdJournaldConfig from '@/components/Gateway/Services/JournalConfig.vue';
 
 import AptService from '@/services/AptService';
-import ServiceService from '@/services/ServiceService';
 import {ErrorResponse} from '@/types';
 
 import {AxiosError} from 'axios';
 import {NavigationGuardNext, Route} from 'vue-router';
 import {MetaInfo} from 'vue-meta';
+import {useApiClient} from '@/services/ApiClient';
+import {ServiceService, ServiceStatus} from '@iqrf/iqrf-gateway-webapp-client';
 
 const whitelisted = [
 	'apcupsd',
@@ -127,12 +128,6 @@ const features = {
 	'unattended-upgrades': 'unattendedUpgrades',
 	'systemd-journald': 'journal',
 };
-
-interface IService {
-	active: boolean
-	enabled: boolean
-	status: string|null
-}
 
 @Component({
 	components: {
@@ -180,13 +175,14 @@ export default class ServiceControl extends Vue {
 	private unsupported = false;
 
 	/**
-	 * @var {IService} service Service auxiliary data
+	 * @var {ServiceStatus} serviceStatus Service auxiliary data
 	 */
-	private service: IService = {
-		active: false,
-		enabled: false,
-		status: null
-	};
+	private serviceStatus: ServiceStatus|null = null;
+
+	/**
+   * @property {ServiceService} service Service service
+   */
+	private service: ServiceService = useApiClient().getServiceService();
 
 	/**
 	 * @var {string} title Page and component card title, changes with service
@@ -244,7 +240,7 @@ export default class ServiceControl extends Vue {
 	 */
 	private enable(): void {
 		this.$store.commit('spinner/SHOW');
-		ServiceService.enable(this.serviceName)
+		this.service.enable(this.serviceName)
 			.then(() => {
 				if (this.serviceName === 'unattended-upgrades') {
 					this.setUnattendedUpgrades(true);
@@ -260,7 +256,7 @@ export default class ServiceControl extends Vue {
 	 */
 	private disable(): void {
 		this.$store.commit('spinner/SHOW');
-		ServiceService.disable(this.serviceName)
+		this.service.disable(this.serviceName)
 			.then(() => {
 				if (this.serviceName === 'unattended-upgrades') {
 					this.setUnattendedUpgrades(false);
@@ -292,9 +288,9 @@ export default class ServiceControl extends Vue {
 	 * Attempts to retrieve status of the service
 	 */
 	private getStatus(): Promise<void> {
-		return ServiceService.getStatus(this.serviceName)
+		return this.service.getStatus(this.serviceName)
 			.then((status) => {
-				this.service = status;
+				this.serviceStatus = status;
 				this.missing = false;
 				this.unknown = false;
 				this.unsupported = false;
@@ -313,7 +309,7 @@ export default class ServiceControl extends Vue {
 		const response = error.response;
 		if (response === undefined) {
 			this.unknown = true;
-			this.service.status = null;
+			this.serviceStatus.status = null;
 			this.$toast.error(this.$t('service.errors.processTimeout').toString());
 			return;
 		}
@@ -352,7 +348,7 @@ export default class ServiceControl extends Vue {
 	 */
 	private restart(): void {
 		this.$store.commit('spinner/SHOW');
-		ServiceService.restart(this.serviceName)
+		this.service.restart(this.serviceName)
 			.then(() => (this.handleSuccess('restart')))
 			.catch(this.handleError);
 	}
@@ -362,7 +358,7 @@ export default class ServiceControl extends Vue {
 	 */
 	private start(): void {
 		this.$store.commit('spinner/SHOW');
-		ServiceService.start(this.serviceName)
+		this.service.start(this.serviceName)
 			.then(() => (this.handleSuccess('start')))
 			.catch(this.handleError);
 	}
@@ -372,7 +368,7 @@ export default class ServiceControl extends Vue {
 	 */
 	private stop(): void {
 		this.$store.commit('spinner/SHOW');
-		ServiceService.stop(this.serviceName)
+		this.service.stop(this.serviceName)
 			.then(() => (this.handleSuccess('stop')))
 			.catch(this.handleError);
 	}

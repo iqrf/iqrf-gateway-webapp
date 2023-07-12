@@ -14,8 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {Product} from '@iqrf/iqrf-repository-client';
 import {IIqrfDbDeviceFull, IIqrfDbSensorDetails} from '@/interfaces/DaemonApi/IqrfDb';
-import {IProduct} from '@/interfaces/Repository';
 import i18n from '@/plugins/i18n';
 
 /**
@@ -110,7 +110,7 @@ class StandardDevice {
 	/**
 	 * Product details
 	 */
-	private product: IProduct;
+	private product: Product;
 
 	/**
 	 * Standard supported icon
@@ -141,11 +141,14 @@ class StandardDevice {
 		this.product = {
 			name: 'Unknown',
 			hwpid: this.hwpid,
-			manufacturerID: -1,
+			manufacturerId: -1,
 			companyName: 'Unknown',
 			homePage: '',
 			picture: '',
-			rfMode: -1,
+			rfModes: {
+				STD: false,
+				LP: false,
+			},
 			pictureOriginal: '',
 		};
 	}
@@ -238,9 +241,9 @@ class StandardDevice {
 
 	/**
 	 * Sets product information
-	 * @param {IProduct|undefined} product Product information
+	 * @param {Product|undefined} product Product information
 	 */
-	setProduct(product: IProduct|undefined): void {
+	setProduct(product: Product|undefined): void {
 		if (product === undefined) {
 			return;
 		}

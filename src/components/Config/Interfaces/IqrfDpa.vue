@@ -77,11 +77,11 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {integer, min_value, required} from 'vee-validate/dist/rules';
-import {UserRole} from '@/services/AuthenticationService';
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {IIqrfDpa} from '@/interfaces/Config/IqrfInterfaces';
+import {UserRole} from '@iqrf/iqrf-gateway-webapp-client';
 
 @Component({
 	components: {
@@ -123,7 +123,7 @@ export default class IqrfDpa extends Vue {
 	 * @returns {boolean} True if user is an administrator
 	 */
 	get isAdmin(): boolean {
-		return this.$store.getters['user/getRole'] === UserRole.ADMIN;
+		return this.$store.getters['user/getRole'] === UserRole.Admin;
 	}
 
 	/**

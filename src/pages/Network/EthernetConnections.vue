@@ -131,7 +131,10 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
+import {AxiosError} from 'axios';
 import {Component, Ref, Vue} from 'vue-property-decorator';
+import {DataTableHeader} from 'vuetify';
+
 import NetworkInterfaces from '@/components/Network/NetworkInterfaces.vue';
 
 import {ConnectionType} from '@/enums/Network/ConnectionType';
@@ -139,11 +142,9 @@ import {InterfaceType} from '@/enums/Network/InterfaceType';
 import {extendedErrorToast} from '@/helpers/errorToast';
 
 import NetworkConnectionService from '@/services/NetworkConnectionService';
-import VersionService from '@/services/VersionService';
 
-import {AxiosError} from 'axios';
-import {DataTableHeader} from 'vuetify';
 import {NetworkConnection} from '@/interfaces/Network/Connection';
+import {useApiClient} from '@/services/ApiClient';
 
 @Component({
 	components: {
@@ -289,7 +290,7 @@ export default class EthernetConnections extends Vue {
 	 * @param {string} name Connection name
 	 */
 	private tryRest(disconnectError: AxiosError, name: string): void {
-		VersionService.getWebappVersionRest()
+		useApiClient().getVersionService().getWebapp()
 			.then(() => {
 				extendedErrorToast(
 					disconnectError,

@@ -111,7 +111,6 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {buildDaemonMessageOptions} from '@/store/modules/daemonClient.module';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {integer, min_value, required} from 'vee-validate/dist/rules';
-import {UserRole} from '@/services/AuthenticationService';
 
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 import ManagementService from '@/services/DaemonApi/ManagementService';
@@ -119,6 +118,7 @@ import ManagementService from '@/services/DaemonApi/ManagementService';
 import {AxiosError, AxiosResponse} from 'axios';
 import {IIqrfRepository} from '@/interfaces/Config/Misc';
 import {MutationPayload} from 'vuex';
+import {UserRole} from '@iqrf/iqrf-gateway-webapp-client';
 
 /**
  * IQRF Repository component configuration
@@ -176,7 +176,7 @@ export default class IqrfRepository extends Vue {
 	 * @returns {boolean} True if user is an administrator
 	 */
 	get isAdmin(): boolean {
-		return this.$store.getters['user/getRole'] === UserRole.ADMIN;
+		return this.$store.getters['user/getRole'] === UserRole.Admin;
 	}
 
 	/**

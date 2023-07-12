@@ -79,20 +79,25 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-// Components
-import {Component, Vue} from 'vue-property-decorator';
+import {
+	UserEdit,
+	UserLanguage,
+	UserRole
+} from '@iqrf/iqrf-gateway-webapp-client';
+import {AxiosError} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import {required} from 'vee-validate/dist/rules';
+import {Component, Vue} from 'vue-property-decorator';
+
 // Module properties
 import {email} from '@/helpers/validators';
-import {required} from 'vee-validate/dist/rules';
 // Auxiliary functions
 import {extendedErrorToast} from '@/helpers/errorToast';
 // Services
-import UserService from '@/services/UserService';
+import {useApiClient} from '@/services/ApiClient';
 // Interfaces
-import {AxiosError} from 'axios';
 import {ISelectItem} from '@/interfaces/Vuetify';
-import {IUserBase, UserLanguage, UserRole} from '@/services/AuthenticationService';
+import UrlBuilder from '@/helpers/urlBuilder';
 
 @Component({
 	components: {
@@ -107,13 +112,13 @@ import {IUserBase, UserLanguage, UserRole} from '@/services/AuthenticationServic
 export default class UserProfileForm extends Vue {
 
 	/**
-	 * @var {IUserBase} user User
+	 * @var {UserEdit} user User
 	 */
-	private user: IUserBase = {
+	private user: UserEdit = {
 		username: '',
 		email: '',
-		language: UserLanguage.ENGLISH,
-		role: UserRole.BASIC,
+		language: UserLanguage.English,
+		role: UserRole.Basic,
 	};
 
 	/**
@@ -121,11 +126,11 @@ export default class UserProfileForm extends Vue {
 	 */
 	private languageOptions: Array<ISelectItem> = [
 		{
-			value: UserLanguage.CZECH,
+			value: UserLanguage.Czech,
 			text: this.$t('core.user.languages.cs').toString(),
 		},
 		{
-			value: UserLanguage.ENGLISH,
+			value: UserLanguage.English,
 			text: this.$t('core.user.languages.en').toString(),
 		},
 	];
@@ -144,6 +149,7 @@ export default class UserProfileForm extends Vue {
 	 */
 	private getUser(): void {
 		this.user = this.$store.getters['user/get'];
+		this.user.baseUrl = new UrlBuilder().getBaseUrl();
 	}
 
 	/**
@@ -151,7 +157,7 @@ export default class UserProfileForm extends Vue {
 	 */
 	private save(): void {
 		this.$store.commit('spinner/SHOW');
-		UserService.editLoggedIn(this.user)
+		useApiClient().getAccountService().edit(this.user)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(

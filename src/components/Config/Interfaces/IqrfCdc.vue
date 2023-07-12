@@ -84,18 +84,18 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import InterfacePorts from '@/components/Config/Interfaces/InterfacePorts.vue';
+import {UserRole} from '@iqrf/iqrf-gateway-webapp-client';
+import {AxiosError, AxiosResponse} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import {required} from 'vee-validate/dist/rules';
+import {Component, Vue} from 'vue-property-decorator';
+
+import InterfacePorts from '@/components/Config/Interfaces/InterfacePorts.vue';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
-import {required} from 'vee-validate/dist/rules';
 import {MappingType} from '@/enums/Config/ConfigurationProfiles';
-import {UserRole} from '@/services/AuthenticationService';
 
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
-
-import {AxiosError, AxiosResponse} from 'axios';
 import {IIqrfCdc} from '@/interfaces/Config/IqrfInterfaces';
 
 @Component({
@@ -142,7 +142,7 @@ export default class IqrfCdc extends Vue {
 	 * @returns {boolean} True if user is an administrator
 	 */
 	get isAdmin(): boolean {
-		return this.$store.getters['user/getRole'] === UserRole.ADMIN;
+		return this.$store.getters['user/getRole'] === UserRole.Admin;
 	}
 
 	/**

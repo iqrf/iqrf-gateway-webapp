@@ -54,8 +54,9 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
+import {DpaMacro, DpaMacroGroup} from '@iqrf/iqrf-gateway-webapp-client';
 import {Component, Vue} from 'vue-property-decorator';
-import IqrfService, {DpaMacro, DpaMacroGroup} from '@/services/IqrfService';
+import {useApiClient} from '@/services/ApiClient';
 
 /**
  * Raw DPA message macros for SendDpaPacket component
@@ -72,7 +73,7 @@ export default class DpaMacros extends Vue {
 	 * Retrieves raw DPA message macros
 	 */
 	created(): void {
-		IqrfService.getMacros()
+		useApiClient().getDpaMacrosService().fetch()
 			.then((response: Array<DpaMacroGroup>) => {
 				this.macros = response.filter((group: DpaMacroGroup): boolean => {
 					if (!group.enabled) {

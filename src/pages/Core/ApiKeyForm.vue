@@ -60,17 +60,17 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
-import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import DateTimePicker from '@/components/DateTimePicker.vue';
-
-import ApiKeyService from '@/services/ApiKeyService';
+import {ApiKeyInfo, ApiKeyService} from '@iqrf/iqrf-gateway-webapp-client';
+import {AxiosError} from 'axios';
 import {DateTime} from 'luxon';
-import {extendedErrorToast} from '@/helpers/errorToast';
+import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
-
-import {AxiosError, AxiosResponse} from 'axios';
 import {MetaInfo} from 'vue-meta';
+import {Component, Prop, Vue} from 'vue-property-decorator';
+
+import DateTimePicker from '@/components/DateTimePicker.vue';
+import {extendedErrorToast} from '@/helpers/errorToast';
+import {useApiClient} from '@/services/ApiClient';
 
 @Component({
 	components: {
@@ -91,9 +91,9 @@ import {MetaInfo} from 'vue-meta';
 export default class ApiKeyForm extends Vue {
 
 	/**
-	 * @var {Record<string, string>} metadata API key metadata
+	 * @var {ApiKeyInfo} metadata API key metadata
 	 */
-	private metadata: Record<string, string|null> = {
+	private metadata: ApiKeyInfo = {
 		description: '',
 		expiration: null
 	};
@@ -107,6 +107,12 @@ export default class ApiKeyForm extends Vue {
 	 * @var {Date} datetime Datetime object
 	 */
 	private datetime = new Date(0);
+
+	/**
+	 * @property {ApiKeyService} service API key service
+   * @private
+   */
+	private service: ApiKeyService = useApiClient().getApiKeyService();
 
 	/**
 	 * @property {number} keyId API key id
@@ -158,11 +164,12 @@ export default class ApiKeyForm extends Vue {
 			return;
 		}
 		this.$store.commit('spinner/SHOW');
-		ApiKeyService.getApiKey(this.keyId)
-			.then((response: AxiosResponse) => {
+		this.service.fetch(this.keyId)
+			.then((response: ApiKeyInfo) => {
 				this.$store.commit('spinner/HIDE');
-				this.metadata = response.data;
-				if (this.metadata.expiration !== null) {
+				this.metadata = response;
+				if (response.expiration !== null) {
+					this.datetime = response.expiration.toJSDate();
 					this.useExpiration = true;
 				}
 			})
@@ -177,19 +184,15 @@ export default class ApiKeyForm extends Vue {
 	 */
 	private save(): void {
 		this.$store.commit('spinner/SHOW');
-		const config = JSON.parse(JSON.stringify(this.metadata));
-		if (this.useExpiration) {
-			const luxondate = DateTime.fromJSDate(this.datetime);
-			config.expiration = luxondate.toISO();
-		} else {
-			config.expiration = null;
-		}
+		const config = {...this.metadata};
+		delete config.id;
+		config.expiration = this.useExpiration ? DateTime.fromJSDate(this.datetime) : null;
 		if (this.keyId !== null) {
-			ApiKeyService.editApiKey(this.keyId, config)
+			this.service.edit(this.keyId, config)
 				.then(() => this.successfulSave())
 				.catch(this.handleSaveError);
 		} else {
-			ApiKeyService.addApiKey(config)
+			this.service.create(config)
 				.then(() => this.successfulSave())
 				.catch(this.handleSaveError);
 		}

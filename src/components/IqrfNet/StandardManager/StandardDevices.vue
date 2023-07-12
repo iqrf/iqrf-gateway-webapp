@@ -235,13 +235,13 @@ import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 import DbService from '@/services/DaemonApi/DbService';
 import IqmeshNetworkService from '@/services/DaemonApi/IqmeshNetworkService';
-import ProductService from '@/services/IqrfRepository/ProductService';
 import StandardDevice from '@/entities/StandardDevice';
 
-import {AxiosResponse} from 'axios';
 import {DataTableHeader} from 'vuetify';
 import {IIqrfDbBoLight, IIqrfDbDeviceFull, IIqrfDbSensor} from '@/interfaces/DaemonApi/IqrfDb';
 import {MutationPayload} from 'vuex';
+import {useRepositoryClient} from '@/services/IqrfRepositoryClient';
+import {Product, ProductService} from '@iqrf/iqrf-repository-client';
 
 @Component({
 	components: {
@@ -335,9 +335,17 @@ export default class StandardDevices extends Vue {
 	private unsubscribe: CallableFunction = () => {return;};
 
 	/**
+   * @property {ProductService|undefined} productService Product service
+   * @private
+   */
+	private productService!: ProductService;
+
+	/**
 	 * Subscribes a mutation handler to websocket store
 	 */
-	created(): void {
+	async created(): Promise<void> {
+		const repositoryClient = await useRepositoryClient();
+		this.productService = repositoryClient.getProductService();
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type !== 'daemonClient/SOCKET_ONMESSAGE') {
 				return;
@@ -378,7 +386,7 @@ export default class StandardDevices extends Vue {
 		this.unsubscribe();
 	}
 
-	
+
 
 	/**
 	 * Retrieves information about devices stored in database
@@ -575,9 +583,9 @@ export default class StandardDevices extends Vue {
 			if ((hwpid & 0xf) === 0xf) {
 				continue;
 			}
-			await ProductService.get(hwpid)
-				.then((response: AxiosResponse) => {
-					hwpids.set(hwpid, response.data);
+			await this.productService.get(hwpid)
+				.then((response: Product) => {
+					hwpids.set(hwpid, response);
 					auxDevice.setProduct(hwpids.get(hwpid));
 				})
 				.catch(() => {

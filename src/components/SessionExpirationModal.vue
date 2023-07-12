@@ -40,12 +40,12 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
+import {UserSignedIn} from '@iqrf/iqrf-gateway-webapp-client';
 import {Component} from 'vue-property-decorator';
 import ModalBase from './ModalBase.vue';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
-import {User} from '@/services/AuthenticationService';
-import UserService from '@/services/UserService';
+import {useApiClient} from '@/services/ApiClient';
 
 /**
  * Session expiration dialog component
@@ -120,8 +120,8 @@ export default class SessionExpirationModal extends ModalBase {
 	 * Renews the session by refreshing jwt token and setting up new expiration
 	 */
 	private async renewSession(): Promise<void> {
-		await UserService.refreshToken()
-			.then((rsp: User) => {
+		await useApiClient().getAuthenticationService().refreshToken()
+			.then((rsp: UserSignedIn) => {
 				this.$store.dispatch('user/setJwt', rsp)
 					.then(() => {
 						this.closeModal();

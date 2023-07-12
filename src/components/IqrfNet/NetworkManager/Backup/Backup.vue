@@ -60,21 +60,21 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-
-import {between, integer, required} from 'vee-validate/dist/rules';
-import {NetworkTarget} from '@/enums/IqrfNet/network';
+import {VersionIqrfGatewayWebapp} from '@iqrf/iqrf-gateway-webapp-client';
 import {saveAs} from 'file-saver';
+import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import {between, integer, required} from 'vee-validate/dist/rules';
+import {Component, Vue} from 'vue-property-decorator';
+import {MutationPayload} from 'vuex';
+
+import {NetworkTarget} from '@/enums/IqrfNet/network';
 
 import IqrfNetService from '@/services/IqrfNetService';
-import VersionService from '@/services/VersionService';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
-import {AxiosResponse} from 'axios';
 import {IBackupData} from '@/interfaces/DaemonApi/Iqmesh/Backup';
 import {ISelectItem} from '@/interfaces/Vuetify';
-import {MutationPayload} from 'vuex';
+import {useApiClient} from '@/services/ApiClient';
 
 @Component({
 	components: {
@@ -174,8 +174,8 @@ export default class Backup extends Vue {
 	}
 
 	mounted(): void {
-		VersionService.getWebappVersionRest()
-			.then((response: AxiosResponse) => this.webappVersion = response.data.version)
+		useApiClient().getVersionService().getWebapp()
+			.then((response: VersionIqrfGatewayWebapp) => this.webappVersion = response.version)
 			.catch(() => this.webappVersion = '');
 	}
 

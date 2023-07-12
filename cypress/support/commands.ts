@@ -17,12 +17,15 @@
 // For more comprehensive examples of custom commands please read more here:
 // https://on.cypress.io/custom-commands
 
-import {UserCredentials} from '../../src/services/AuthenticationService';
 import {Store} from 'vuex';
+import {UserCredentials} from '@iqrf/iqrf-gateway-webapp-client';
 
 Cypress.Commands.add('signIn', (username: string, password: string): Cypress.Chainable<any> => {
 	cy.visit('/sign/in');
-	const credentials = new UserCredentials(username, password);
+	const credentials: UserCredentials = {
+		username: username,
+		password: password,
+	};
 	const store = cy.window().its('app.$store');
 	return store.then((store: Store<any>): Promise<any> => {
 		if (store.getters['user/isLoggedIn']) {

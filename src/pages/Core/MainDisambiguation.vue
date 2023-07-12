@@ -62,17 +62,15 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
+import {AxiosError} from 'axios';
 import {Component, Vue} from 'vue-property-decorator';
-
-import {extendedErrorToast} from '@/helpers/errorToast';
 import {mapGetters} from 'vuex';
 
-import UserService from '@/services/UserService';
-
-import {AxiosError} from 'axios';
 import Disambiguation from '@/components/Disambiguation.vue';
 import {Link, LinkTarget} from '@/helpers/DisambiguationHelper';
+import {extendedErrorToast} from '@/helpers/errorToast';
 import {UserRoleIndex} from '@/services/AuthenticationService';
+import {useApiClient} from '@/services/ApiClient';
 
 @Component({
 	components: {
@@ -188,7 +186,7 @@ export default class MainDisambiguation extends Vue {
 	 */
 	private resendVerification(): void {
 		this.$store.commit('spinner/SHOW');
-		UserService.resendVerificationEmailLoggedIn()
+		useApiClient().getAccountService().resendVerificationEmail()
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(

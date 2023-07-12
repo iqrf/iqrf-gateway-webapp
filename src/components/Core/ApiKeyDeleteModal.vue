@@ -43,14 +43,12 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
+import {ApiKeyInfo} from '@iqrf/iqrf-gateway-webapp-client';
+import {AxiosError} from 'axios';
 import {Component, VModel, Vue} from 'vue-property-decorator';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
-
-import ApiKeyService from '@/services/ApiKeyService';
-
-import {AxiosError} from 'axios';
-import {IApiKey} from '@/interfaces/Core/ApiKey';
+import {useApiClient} from '@/services/ApiClient';
 
 @Component({})
 
@@ -61,7 +59,7 @@ export default class ApiKeyDeleteModal extends Vue {
 	/**
 	 * API key to delete
 	 */
-	@VModel({required: true}) key!: IApiKey|null;
+	@VModel({required: true}) key!: ApiKeyInfo|null;
 
 	/**
 	 * Computes modal display condition
@@ -79,7 +77,7 @@ export default class ApiKeyDeleteModal extends Vue {
 		}
 		const id = this.key.id;
 		this.$store.commit('spinner/SHOW');
-		ApiKeyService.deleteApiKey(id)
+		useApiClient().getApiKeyService().delete(id)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(this.$t('core.security.apiKey.messages.deleteSuccess', {key: id}).toString());

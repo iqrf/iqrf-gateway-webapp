@@ -149,17 +149,22 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
+import {
+	UserBase, UserEdit,
+	UserInfo,
+	UserRole,
+	UserService
+} from '@iqrf/iqrf-gateway-webapp-client';
+import {AxiosError} from 'axios';
 import {Component, Vue} from 'vue-property-decorator';
+import {DataTableHeader} from 'vuetify';
+
 import UserDeleteModal from '@/components/Core/UserDeleteModal.vue';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
-import UserService from '@/services/UserService';
+import UserServiceOld from '@/services/UserService';
 
-import {UserRole} from '@/services/AuthenticationService';
-
-import {AxiosError} from 'axios';
-import {DataTableHeader} from 'vuetify';
-import {IUser} from '@/interfaces/Core/User';
+import {useApiClient} from '@/services/ApiClient';
 
 @Component({
 	components: {
@@ -180,14 +185,14 @@ export default class UserList extends Vue {
 	private loading = false;
 
 	/**
-	 * @var {Array<User>} users Array of user objects
+	 * @var {UserInfo[]} users Array of user objects
 	 */
-	private users: Array<IUser> = [];
+	private users: UserInfo[] = [];
 
 	/**
-	 * @var {IUser|null} userDeleteModel User to delete
+	 * @var {UserInfo|null} userDeleteModel User to delete
 	 */
-	private userDeleteModel: IUser|null = null;
+	private userDeleteModel: UserInfo|null = null;
 
 	/**
 	 * @var {Array<DataTableHeader>} headers Data table headers
@@ -222,11 +227,17 @@ export default class UserList extends Vue {
 	 * @constant {Array<string>} roles Array of user roles
 	 */
 	private readonly roles = [
-		UserRole.ADMIN,
-		UserRole.NORMAL,
-		UserRole.BASICADMIN,
-		UserRole.BASIC,
+		UserRole.Admin,
+		UserRole.Normal,
+		UserRole.BasicAdmin,
+		UserRole.Basic,
 	];
+
+	/**
+   * @property {UserService} service User service
+   * @private
+   */
+	private service: UserService = useApiClient().getUserService();
 
 	/**
 	 * Retrieves list of existing user
@@ -242,8 +253,8 @@ export default class UserList extends Vue {
 		if (!this.loading) {
 			this.loading = true;
 		}
-		return UserService.list()
-			.then((response: Array<IUser>) => {
+		return this.service.list()
+			.then((response: UserInfo[]) => {
 				this.users = response;
 				this.loading = false;
 			})
@@ -258,44 +269,46 @@ export default class UserList extends Vue {
 
 	/**
 	 * Changes user's role from table
-	 * @param {IUser} user User object
+	 * @param {UserInfo} user User object
 	 * @param {string} newRole New user role
 	 */
-	private changeRole(user: IUser, newRole: string): void {
+	private changeRole(user: UserInfo, newRole: string): void {
 		if (user.role === newRole) {
 			return;
 		}
-		this.edit(user, {role: newRole});
+		user.role = newRole;
+		this.edit(user);
 	}
 
 	/**
 	 * Changes user's language from table
-	 * @param {IUser} user User object
+	 * @param {UserInfo} user User object
 	 * @param {string} newLanguage New user language
 	 */
-	private changeLanguage(user: IUser, newLanguage: string): void {
+	private changeLanguage(user: UserInfo, newLanguage: string): void {
 		if (user.language === newLanguage) {
 			return;
 		}
-		this.edit(user, {language: newLanguage});
+		user.language = newLanguage;
+		this.edit(user);
 	}
 
 	/**
 	 * Updates settings of a user object and then stores new values
-	 * @param {IUser} user User object
-	 * @param {Record<string, string>} newSettings Settings to apply to the user object
+	 * @param {UserInfo} user User object
 	 */
-	private edit(user: IUser, newSettings: Record<string, string>) {
+	private edit(user: UserInfo) {
 		if (user.id === undefined) {
 			return;
 		}
 		this.loading = true;
-		const settings = {
-			...user,
-			...newSettings,
+		const config: UserEdit = {
+			username: user.username,
+			email: user.email,
+			role: user.role,
+			language: user.language,
 		};
-		delete settings.id;
-		return UserService.edit(user.id, settings)
+		return this.service.edit(user.id, config)
 			.then(() => {
 				this.getUsers().then(() => {
 					this.$toast.success(
@@ -321,7 +334,7 @@ export default class UserList extends Vue {
 	 */
 	private resendVerification(userId: number): void {
 		this.$store.commit('spinner/SHOW');
-		UserService.resendVerificationEmail(userId)
+		this.service.resendVerificationEmail(userId)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
@@ -333,9 +346,9 @@ export default class UserList extends Vue {
 
 	/**
 	 * Opens user delete modal
-	 * @param {IUser} user User
+	 * @param {UserInfo} user User
 	 */
-	private deleteUser(user: IUser): void {
+	private deleteUser(user: UserInfo): void {
 		this.userDeleteModel = user;
 	}
 }

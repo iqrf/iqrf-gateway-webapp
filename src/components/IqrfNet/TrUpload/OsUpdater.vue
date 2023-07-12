@@ -76,17 +76,18 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {ServiceService} from '@iqrf/iqrf-gateway-webapp-client';
+import {AxiosError, AxiosResponse} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import {required} from 'vee-validate/dist/rules';
+import {Component, Vue} from 'vue-property-decorator';
 
 import {daemonErrorToast, extendedErrorToast} from '@/helpers/errorToast';
-import {required} from 'vee-validate/dist/rules';
 import IqrfService from '@/services/IqrfService';
-import ServiceService from '@/services/ServiceService';
 
-import {AxiosError, AxiosResponse} from 'axios';
 import {IAvailableOsUpgrade, IOsUpgradeParams} from '@/interfaces/trUpload';
 import {ISelectItem} from '@/interfaces/Vuetify';
+import {useApiClient} from '@/services/ApiClient';
 
 @Component({
 	components: {
@@ -138,6 +139,12 @@ export default class OsUpdater extends Vue {
 	 * @var {boolean} loadFailed Indicates whether OS upgrades fetch failed
 	 */
 	private loadFailed = false;
+
+	/**
+   * @property {ServiceService} serviceService Service service
+   * @private
+   */
+	private serviceService: ServiceService = useApiClient().getServiceService();
 
 	/**
 	 * Vue lifecycle hook created
@@ -271,7 +278,7 @@ export default class OsUpdater extends Vue {
 	 * @returns {Promise<void>} Empty promise for request chaining
 	 */
 	private stopDaemon(): Promise<void> {
-		return ServiceService.stop('iqrf-gateway-daemon')
+		return this.serviceService.stop('iqrf-gateway-daemon')
 			.then(() => {
 				this.$store.commit('spinner/UPDATE_TEXT',
 					this.$t('service.iqrf-gateway-daemon.messages.stop').toString()
@@ -284,7 +291,7 @@ export default class OsUpdater extends Vue {
 	 * Starts the IQRF Daemon service upon successful OS upgrade
 	 */
 	private startDaemon(): void {
-		ServiceService.start('iqrf-gateway-daemon')
+		this.serviceService.start('iqrf-gateway-daemon')
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$emit('os-upload');

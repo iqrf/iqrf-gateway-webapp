@@ -464,12 +464,12 @@ import ControllerPinConfigs from '@/components/Config/Controller/ControllerPinCo
 import {between, integer, required} from 'vee-validate/dist/rules';
 import {controllerErrorToast, extendedErrorToast} from '@/helpers/errorToast';
 import FeatureConfigService from '@/services/FeatureConfigService';
-import ServiceService from '@/services/ServiceService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {IController, IControllerPinConfig} from '@/interfaces/Config/Controller';
 import {NavigationGuardNext, Route} from 'vue-router';
 import { ISelectItem } from '@/interfaces/Vuetify';
+import {useApiClient} from '@/services/ApiClient';
 
 @Component({
 	components: {
@@ -653,7 +653,7 @@ export default class ControllerConfig extends Vue {
 	 * Restarts IQRF Controller service
 	 */
 	private restartController(): void {
-		ServiceService.restart('iqrf-gateway-controller')
+		useApiClient().getServiceService().restart('iqrf-gateway-controller')
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(

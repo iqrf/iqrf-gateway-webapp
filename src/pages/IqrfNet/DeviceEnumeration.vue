@@ -92,11 +92,11 @@ limitations under the License.
 							<tr>
 								<th>{{ $t('iqrfnet.enumeration.rfMode') }}</th>
 								<td v-if='peripheralData.flags.rfModeStd'>
-									<RfModeStd alt='STD' class='rf-mode-icon' />
+									<img :src='RfModeStd' alt='STD' class='rf-mode-icon' />
 									<strong>{{ $t('iqrfnet.enumeration.rfModes.std') }}</strong>
 								</td>
 								<td v-else-if='peripheralData.flags.rfModeLp'>
-									<RfModeLp alt='LP' class='rf-mode-icon' />
+									<img :src='RfModeLp' alt='LP' class='rf-mode-icon' />
 									<strong>{{ $t('iqrfnet.enumeration.rfModes.lp') }}</strong>
 								</td>
 							</tr>
@@ -123,16 +123,18 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
+import {ProductService} from '@iqrf/iqrf-repository-client';
+import {AxiosError} from 'axios';
 import {Component, Prop, Vue} from 'vue-property-decorator';
+import {NavigationGuardNext, Route} from 'vue-router/types/router';
 import {MutationPayload} from 'vuex';
+
 import IqrfNetService from '@/services/IqrfNetService';
-import ProductService from '@/services/IqrfRepository/ProductService';
 import RfModeLp from '@/assets/lp-black.svg';
 import RfModeStd from '@/assets/std-black.svg';
-import {AxiosError, AxiosResponse} from 'axios';
 import {IDeviceEnumeration, OsInfo, PeripheralEnumeration} from '@/interfaces/DaemonApi/Dpa';
 import {DaemonClientState} from '@/interfaces/wsClient';
-import {NavigationGuardNext, Route} from 'vue-router/types/router';
+import {useRepositoryClient} from '@/services/IqrfRepositoryClient';
 
 interface Product {
 	companyName: string
@@ -146,9 +148,11 @@ interface Product {
 }
 
 @Component({
-	components: {
-		RfModeLp,
-		RfModeStd,
+	data: () => {
+		return {
+			RfModeLp,
+			RfModeStd,
+		};
 	},
 	metaInfo: {
 		title: 'iqrfnet.enumeration.title',
@@ -210,6 +214,12 @@ export default class DeviceEnumeration extends Vue {
 	private fromRoute: Route|null = null;
 
 	/**
+	 * @property {ProductService|undefined} productService Product service
+   * @private
+   */
+	private productService!: ProductService;
+
+	/**
 	 * @property {string} returnButtonRoute Computes route for return button
 	 */
 	get returnButtonRoute(): string {
@@ -222,7 +232,9 @@ export default class DeviceEnumeration extends Vue {
 	/**
 	 * Vue lifecycle hook created
 	 */
-	created(): void {
+	async created(): Promise <void> {
+		const repositoryClient = await useRepositoryClient();
+		this.productService = repositoryClient.getProductService();
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type !== 'daemonClient/SOCKET_ONMESSAGE') {
 				return;
@@ -302,9 +314,9 @@ export default class DeviceEnumeration extends Vue {
 	 * @param {number} hwpId HW profile ID
 	 */
 	private getProductInformation(hwpId: number): void {
-		ProductService.get(hwpId)
-			.then((response: AxiosResponse) => {
-				this.product = response.data;
+		this.productService.get(hwpId)
+			.then((response: Product) => {
+				this.product = response;
 			})
 			.catch((error: AxiosError) => {
 				if (error.response !== undefined && error.response.status === 404) {

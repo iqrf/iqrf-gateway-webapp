@@ -229,13 +229,13 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {integer, required} from 'vee-validate/dist/rules';
 import {MappingType} from '@/enums/Config/ConfigurationProfiles';
-import {UserRole} from '@/services/AuthenticationService';
 
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {IIqrfSpi} from '@/interfaces/Config/IqrfInterfaces';
 import {IMapping} from '@/interfaces/Config/Mapping';
+import {UserRole} from '@iqrf/iqrf-gateway-webapp-client';
 
 @Component({
 	components: {
@@ -309,7 +309,7 @@ export default class IqrfSpi extends Vue {
    * @returns {boolean} True if user is an administrator
    */
 	get isAdmin(): boolean {
-		return this.$store.getters['user/getRole'] === UserRole.ADMIN;
+		return this.$store.getters['user/getRole'] === UserRole.Admin;
 	}
 
 	/**

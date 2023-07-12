@@ -99,20 +99,24 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
+import {
+	UserEdit,
+	UserInfo,
+	UserLanguage,
+	UserRole,
+	UserService
+} from '@iqrf/iqrf-gateway-webapp-client';
+import {AxiosError} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import PasswordInput from '@/components/Core/PasswordInput.vue';
-
-import {extendedErrorToast} from '@/helpers/errorToast';
-import {email} from '@/helpers/validators';
+import {Component, Prop, Vue} from 'vue-property-decorator';
 import {required} from 'vee-validate/dist/rules';
 
-import {UserLanguage, UserRole} from '@/services/AuthenticationService';
-import UserService from '@/services/UserService';
-
-import {AxiosError} from 'axios';
+import PasswordInput from '@/components/Core/PasswordInput.vue';
+import {extendedErrorToast} from '@/helpers/errorToast';
+import {email} from '@/helpers/validators';
 import {ISelectItem} from '@/interfaces/Vuetify';
-import {IUser} from '@/interfaces/Core/User';
+import {useApiClient} from '@/services/ApiClient';
+import UrlBuilder from '@/helpers/urlBuilder';
 
 @Component({
 	components: {
@@ -128,20 +132,20 @@ import {IUser} from '@/interfaces/Core/User';
 /**
  * User manager form to edit an existing user
  */
-export default class UserEdit extends Vue {
+export default class UserEditForm extends Vue {
 	/**
 	 * @property {number} userId User id
 	 */
 	@Prop({required: true}) userId!: number;
 
 	/**
-	 * @var {IUser} user User
+	 * @var {UserEdit} user User
 	 */
-	private user: IUser = {
+	private user: UserEdit = {
 		username: '',
 		email: '',
-		language: UserLanguage.ENGLISH,
-		role: UserRole.BASIC,
+		language: UserLanguage.English,
+		role: UserRole.Basic,
 	};
 
 	/**
@@ -154,11 +158,11 @@ export default class UserEdit extends Vue {
 	 */
 	private readonly languages: Array<ISelectItem> = [
 		{
-			value: UserLanguage.CZECH,
+			value: UserLanguage.Czech,
 			text: this.$t('core.user.languages.cs'),
 		},
 		{
-			value: UserLanguage.ENGLISH,
+			value: UserLanguage.English,
 			text: this.$t('core.user.languages.en'),
 		},
 	];
@@ -167,6 +171,12 @@ export default class UserEdit extends Vue {
 	 * @var {string} newPassword New user password
 	 */
 	private password = '';
+
+	/**
+	 * @property {UserService} service User service
+   * @private
+   */
+	private service: UserService = useApiClient().getUserService();
 
 	/**
 	 * Initialize validation rules and build user roles
@@ -201,9 +211,15 @@ export default class UserEdit extends Vue {
 	 */
 	private getUser(): void {
 		this.$store.commit('spinner/SHOW');
-		UserService.get(this.userId)
-			.then((user: IUser) => {
-				this.user = user;
+		this.service.fetch(this.userId)
+			.then((user: UserInfo) => {
+				this.user = {
+					username: user.username,
+					email: user.email,
+					language: user.language,
+					role: user.role,
+					baseUrl: new UrlBuilder().getBaseUrl(),
+				};
 				this.$store.commit('spinner/HIDE');
 			})
 			.catch((error: AxiosError) => {
@@ -217,11 +233,11 @@ export default class UserEdit extends Vue {
 	 */
 	private saveUser(): void {
 		this.$store.commit('spinner/SHOW');
-		const user: IUser = JSON.parse(JSON.stringify(this.user));
+		const user: UserEdit = {...this.user};
 		if (this.password !== '') {
-			Object.assign(user, {password: this.password});
+		  user.password = this.password;
 		}
-		UserService.edit(this.userId, user)
+		this.service.edit(this.userId, this.user)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(

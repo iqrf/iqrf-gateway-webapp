@@ -543,11 +543,10 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
+import {Product} from '@iqrf/iqrf-repository-client';
+import {compare, CompareOperator} from 'compare-versions';
 import {Component, Vue} from 'vue-property-decorator';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import PasswordInput from '@/components/Core/PasswordInput.vue';
-import ProductModal from '@/components/IqrfNet/TrConfiguration/ProductModal.vue';
-
 import {
 	between,
 	integer,
@@ -556,15 +555,16 @@ import {
 	min_value,
 	required
 } from 'vee-validate/dist/rules';
+import {MutationPayload} from 'vuex';
+
+import PasswordInput from '@/components/Core/PasswordInput.vue';
+import ProductModal from '@/components/IqrfNet/TrConfiguration/ProductModal.vue';
 import {NetworkTarget} from '@/enums/IqrfNet/network';
 
-import {compare, CompareOperator} from 'compare-versions';
 import IqrfNetService from '@/services/IqrfNetService';
 import OsService from '@/services/DaemonApi/OsService';
 
 import {ITrConfiguration} from '@/interfaces/DaemonApi/Dpa';
-import {IProduct} from '@/interfaces/Repository';
-import {MutationPayload} from 'vuex';
 import {DaemonClientState} from '@/interfaces/wsClient';
 import {ISelectItem} from '@/interfaces/Vuetify';
 
@@ -1188,9 +1188,9 @@ export default class TrConfiguration extends Vue {
 
 	/**
 	 * Sets HWPID from selected product
-	 * @param {IProduct} product Selected product
+	 * @param {Product} product Selected product
 	 */
-	private setSelectedProduct(product: IProduct): void {
+	private setSelectedProduct(product: Product): void {
 		this.hwpid = product.hwpid;
 	}
 }

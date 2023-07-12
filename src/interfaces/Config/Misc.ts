@@ -110,36 +110,6 @@ export interface IIqrfRepository extends ComponentInstanceBase {
 }
 
 /**
- * IQRF repository access configuration
- */
-export interface IIqrfRepositoryConfig {
-	/**
-	 * Repository API endpoint
-	 */
-	apiEndpoint: string
-
-	/**
-	 * Repository credentials
-	 */
-	credentials: IIqrfRepositoryCredentials
-}
-
-/**
- * IQRF Repository credentials
- */
-export interface IIqrfRepositoryCredentials {
-	/**
-	 * Username
-	 */
-	username: string|null
-
-	/**
-	 * Password
-	 */
-	password: string|null
-}
-
-/**
  * Logging service component instance interface
  */
 export interface ITraceService extends ComponentInstanceBase {
@@ -202,7 +172,7 @@ export interface IOtaUploadConfig {
 	 * Component name
 	 */
 	component: string
-	
+
 	/**
 	 * Component instance name
 	 */

@@ -61,8 +61,8 @@ import JsonRawApi from '@/components/Config/Misc/JsonRawApi.vue';
 import JsonSplitter from '@/components/Config/Misc/JsonSplitter.vue';
 import MonitorList from '@/components/Config/Misc/MonitorList.vue';
 import TracerList from '@/components/Config/Misc/TracerList.vue';
+import {UserRole} from '@iqrf/iqrf-gateway-webapp-client';
 
-import {UserRole} from '@/services/AuthenticationService';
 
 @Component({
 	components: {
@@ -104,7 +104,7 @@ export default class MiscConfiguration extends Vue {
 	 * @returns {boolean} True if user is an administrator
 	 */
 	get isAdmin(): boolean {
-		return this.$store.getters['user/getRole'] === UserRole.ADMIN;
+		return this.$store.getters['user/getRole'] === UserRole.Admin;
 	}
 
 	/**

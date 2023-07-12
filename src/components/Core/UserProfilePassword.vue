@@ -28,14 +28,14 @@ limitations under the License.
 					<ValidationProvider
 						v-slot='{valid, touched, errors}'
 						:rules='{
-							required: newPassword.length > 0,
+							required: passwordChange.new.length > 0,
 						}'
 						:custom-messages='{
 							required: $t("core.user.errors.oldPassword"),
 						}'
 					>
 						<PasswordInput
-							v-model='oldPassword'
+							v-model='passwordChange.old'
 							:label='$t("core.profile.form.oldPassword")'
 							:success='touched ? valid : null'
 							:error-messages='errors'
@@ -44,14 +44,14 @@ limitations under the License.
 					<ValidationProvider
 						v-slot='{valid, touched, errors}'
 						:rules='{
-							required: oldPassword.length > 0,
+							required: passwordChange.old.length > 0,
 						}'
 						:custom-messages='{
 							required: $t("core.user.errors.newPassword"),
 						}'
 					>
 						<PasswordInput
-							v-model='newPassword'
+							v-model='passwordChange.new'
 							:label='$t("core.profile.form.newPassword")'
 							:success='touched ? valid : null'
 							:error-messages='errors'
@@ -71,19 +71,18 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-// Components
-import {Component, Vue} from 'vue-property-decorator';
+import {UserPasswordChange} from '@iqrf/iqrf-gateway-webapp-client';
+import {AxiosError} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import PasswordInput from '@/components/Core/PasswordInput.vue';
-
-// Module properties
 import {required} from 'vee-validate/dist/rules';
+import {Component, Vue} from 'vue-property-decorator';
+
+// Components
+import PasswordInput from '@/components/Core/PasswordInput.vue';
 // Auxiliary functions
 import {extendedErrorToast} from '@/helpers/errorToast';
-// Services
-import UserService from '@/services/UserService';
-// Interfaces
-import {AxiosError} from 'axios';
+import UrlBuilder from '@/helpers/urlBuilder';
+import {useApiClient} from '@/services/ApiClient';
 
 @Component({
 	components: {
@@ -97,15 +96,16 @@ import {AxiosError} from 'axios';
  * User profile password change component
  */
 export default class UserProfilePassword extends Vue {
-	/**
-	 * @var {string} oldPassword Old user password
-	 */
-	private oldPassword = '';
 
 	/**
-	 * @var {string} newPassword New user password
-	 */
-	private newPassword = '';
+	 * @property {UserPasswordChange} passwordChange Password change data
+   * @private
+   */
+	private passwordChange: UserPasswordChange = {
+		old: '',
+		new: '',
+		baseUrl: new UrlBuilder().getBaseUrl(),
+	};
 
 	/**
 	 * Retrieves user ID
@@ -119,7 +119,7 @@ export default class UserProfilePassword extends Vue {
 	 */
 	private changePassword(): void {
 		this.$store.commit('spinner/SHOW');
-		UserService.changePasswordLoggedIn(this.oldPassword, this.newPassword)
+		useApiClient().getAccountService().changePassword(this.passwordChange)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(

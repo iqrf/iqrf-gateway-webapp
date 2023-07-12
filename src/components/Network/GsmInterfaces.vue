@@ -89,7 +89,7 @@ import SignalIndicator from '@/components/Network/SignalIndicator.vue';
 import {ModemState} from '@/enums/Network/ModemState';
 import {IModem} from '@/interfaces/Network/Mobile';
 import NetworkInterfaceService from '@/services/NetworkInterfaceService';
-import ServiceService from '@/services/ServiceService';
+import {useApiClient} from '@/services/ApiClient';
 
 /**
  * GSM modem interface list
@@ -214,7 +214,7 @@ export default class GsmInterfaces extends Vue {
 	 * Restarts ModemManager service to fix broken modem
 	 */
 	private async restartModemManager(): Promise<void> {
-		await ServiceService.restart('ModemManager');
+		await useApiClient().getServiceService().restart('ModemManager');
 		await new Promise(resolve => setTimeout(resolve, 15_000));
 	}
 

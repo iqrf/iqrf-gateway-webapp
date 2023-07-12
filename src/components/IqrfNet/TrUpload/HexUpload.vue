@@ -53,17 +53,18 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
+import {ServiceService} from '@iqrf/iqrf-gateway-webapp-client';
+import {AxiosResponse, AxiosError} from 'axios';
 import {Component, Vue} from 'vue-property-decorator';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import {required} from 'vee-validate/dist/rules';
 
 import {daemonErrorToast, extendedErrorToast} from '@/helpers/errorToast';
-import {required} from 'vee-validate/dist/rules';
 import {FileFormat} from '@/iqrfNet/fileFormat';
 import IqrfService from '@/services/IqrfService';
-import ServiceService from '@/services/ServiceService';
 
-import {AxiosResponse, AxiosError} from 'axios';
 import {FileUpload} from '@/interfaces/trUpload';
+import {useApiClient} from '@/services/ApiClient';
 
 @Component({
 	components: {
@@ -80,6 +81,12 @@ export default class HexUpload extends Vue {
 	 * @var {File|null} file Selected file
 	 */
 	private file: File|null = null;
+
+	/**
+   * @property {ServiceService} service Service service
+   * @private
+   */
+	private service: ServiceService = useApiClient().getServiceService();
 
 	/**
 	 * Initializes validation rules
@@ -141,7 +148,7 @@ export default class HexUpload extends Vue {
 	 * @param {FileUpload} response Files to be uploaded
 	 */
 	private stopDaemon(response: FileUpload): void {
-		ServiceService.stop('iqrf-gateway-daemon')
+		this.service.stop('iqrf-gateway-daemon')
 			.then(() => {
 				this.$store.commit('spinner/UPDATE_TEXT',
 					this.$t('service.iqrf-gateway-daemon.messages.stop').toString()
@@ -155,7 +162,7 @@ export default class HexUpload extends Vue {
 	 * Starts the IQRF Daemon service upon successful OS upgrade
 	 */
 	private startDaemon(): void {
-		ServiceService.start('iqrf-gateway-daemon')
+		this.service.start('iqrf-gateway-daemon')
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 			})

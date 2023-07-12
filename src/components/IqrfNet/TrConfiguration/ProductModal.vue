@@ -22,7 +22,7 @@
 				<v-btn
 					color='primary'
 					small
-					@click='getProducts'
+					@click='getProducts()'
 				>
 					<v-icon small>
 						mdi-refresh
@@ -76,14 +76,12 @@
 </template>
 
 <script lang='ts'>
+import {Product} from '@iqrf/iqrf-repository-client';
 import {Component} from 'vue-property-decorator';
-import ModalBase from '@/components/ModalBase.vue';
-
-import ProductService from '@/services/IqrfRepository/ProductService';
-
-import {AxiosResponse} from 'axios';
 import {DataTableHeader} from 'vuetify';
-import {IProduct} from '@/interfaces/Repository';
+
+import ModalBase from '@/components/ModalBase.vue';
+import {useRepositoryClient} from '@/services/IqrfRepositoryClient';
 
 /**
  * Product filters
@@ -105,9 +103,9 @@ export default class ProductModal extends ModalBase {
 	private loading = false;
 
 	/**
-	 * @var {Array<IProduct>} products Array of products from repository
+	 * @var {Product[]} products Array of products from repository
 	 */
-	private products: Array<IProduct> = [];
+	private products: Product[] = [];
 
 	/**
 	 * @var {ProductFilters} filters Product filters
@@ -148,10 +146,10 @@ export default class ProductModal extends ModalBase {
 
 	/**
 	 * Returns filtered products
-	 * @return {Array<IProduct>} Filtered products
+	 * @return {Product[]} Filtered products
 	 */
-	get items(): Array<IProduct> {
-		return this.products.filter((product: IProduct) => {
+	get items(): Product[] {
+		return this.products.filter((product: Product) => {
 			return (
 				(this.filters.companyName === null || product.companyName.toLowerCase().includes(this.filters.companyName.toLowerCase())) &&
 				(this.filters.name === null || product.name.toLowerCase().includes(this.filters.name.toLowerCase()))
@@ -171,9 +169,9 @@ export default class ProductModal extends ModalBase {
 	 */
 	private getProducts(): void {
 		this.loading = true;
-		ProductService.getAll()
-			.then((response: AxiosResponse) => {
-				this.products = response.data;
+		useRepositoryClient().getProductService().list()
+			.then((response: Product[]) => {
+				this.products = response;
 				this.loading = false;
 			})
 			.catch(() => this.loading = false);
@@ -182,7 +180,7 @@ export default class ProductModal extends ModalBase {
 	/**
 	 * Selects product from table and emits data to the parent component
 	 */
-	private selectProduct(product: IProduct): void {
+	private selectProduct(product: Product): void {
 		this.closeModal();
 		this.$emit('selected-product', product);
 	}

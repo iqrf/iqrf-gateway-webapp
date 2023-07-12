@@ -77,21 +77,23 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import ApiKeyDeleteModal from '@/components/Core/ApiKeyDeleteModal.vue';
-
-import ApiKeyService from '@/services/ApiKeyService';
+import {ApiKeyInfo} from '@iqrf/iqrf-gateway-webapp-client';
+import {AxiosError} from 'axios';
 import {DateTime} from 'luxon';
-import {extendedErrorToast} from '@/helpers/errorToast';
-
-import {AxiosError, AxiosResponse} from 'axios';
+import {Component, Vue} from 'vue-property-decorator';
 import {DataTableHeader} from 'vuetify';
-import {IApiKey} from '@/interfaces/Core/ApiKey';
+
+import ApiKeyDeleteModal from '@/components/Core/ApiKeyDeleteModal.vue';
+import {extendedErrorToast} from '@/helpers/errorToast';
+import {useApiClient} from '@/services/ApiClient';
 
 @Component({
 	components: {
 		ApiKeyDeleteModal,
 	},
+	data: () => ({
+		DATETIME_FULL: DateTime.DATETIME_FULL,
+	}),
 	metaInfo: {
 		title: 'core.security.apiKey.title',
 	},
@@ -107,14 +109,14 @@ export default class ApiKeyList extends Vue {
 	private loading = false;
 
 	/**
-	 * @var {Array<IApiKey>} keys List of API key objects
+	 * @var {ApiKeyInfo[]} keys List of API key objects
 	 */
-	private keys: Array<IApiKey> = [];
+	private keys: ApiKeyInfo[] = [];
 
 	/**
-	 * @var {IApiKey|null} keyDeleteModel Key to delete
+	 * @var {ApiKeyInfo|null} keyDeleteModel Key to delete
 	 */
-	private keyDeleteModel: IApiKey|null = null;
+	private keyDeleteModel: ApiKeyInfo|null = null;
 
 	/**
 	 * @constant {Array<DataTableHeader>} headers Data table headers
@@ -153,9 +155,9 @@ export default class ApiKeyList extends Vue {
 	 */
 	private getKeys(): Promise<void> {
 		this.loading = true;
-		return ApiKeyService.getApiKeys()
-			.then((response: AxiosResponse) => {
-				this.keys = response.data;
+		return useApiClient().getApiKeyService().list()
+			.then((response: ApiKeyInfo[]) => {
+				this.keys = response;
 				this.loading = false;
 			})
 			.catch((error: AxiosError) => {
@@ -168,15 +170,15 @@ export default class ApiKeyList extends Vue {
 	 * Converts expiration date and time from UTC to locale string
 	 * @returns {string} Expiration date and time in locale format
 	 */
-	private timeString(item: IApiKey): string {
-		return DateTime.fromISO(item.expiration).toLocaleString(DateTime.DATETIME_FULL);
+	private timeString(item: ApiKeyInfo): string {
+		return item.expiration.toLocaleString(DateTime.DATETIME_FULL);
 	}
 
 	/**
 	 * Opens delete modal with API key
-	 * @param {IApiKey} key API key
+	 * @param {ApiKeyInfo} key API key
 	 */
-	private deleteKey(key: IApiKey) {
+	private deleteKey(key: ApiKeyInfo) {
 		this.keyDeleteModel = key;
 	}
 }

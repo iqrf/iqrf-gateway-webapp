@@ -23,13 +23,13 @@ limitations under the License.
 		<div v-if='unsupported'>
 			{{ $t('service.states.unsupported') }}
 		</div>
-		<div v-if='service !== null'>
-			{{ $t(`states.${service.enabled ? 'enabled' : 'disabled'}`) }},
-			{{ $t(`service.states.${service.active ? 'active' : 'inactive'}`) }}
+		<div v-if='serviceStatus !== null'>
+			{{ $t(`states.${serviceStatus.enabled ? 'enabled' : 'disabled'}`) }},
+			{{ $t(`service.states.${serviceStatus.active ? 'active' : 'inactive'}`) }}
 		</div>
-		<div v-if='service !== null' class='text-end'>
+		<div v-if='serviceStatus !== null' class='text-end'>
 			<v-btn
-				v-if='!service.enabled'
+				v-if='!serviceStatus.enabled'
 				class='mr-1'
 				color='success'
 				small
@@ -38,7 +38,7 @@ limitations under the License.
 				{{ $t('service.actions.enable') }}
 			</v-btn>
 			<v-btn
-				v-if='service.enabled'
+				v-if='serviceStatus.enabled'
 				class='mr-1'
 				color='error'
 				small
@@ -58,12 +58,12 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
+import {ServiceService, ServiceStatus} from '@iqrf/iqrf-gateway-webapp-client';
+import {AxiosError} from 'axios';
 import {Component, Prop, Vue} from 'vue-property-decorator';
 
-import ServiceService, {ServiceStatus} from '@/services/ServiceService';
-
-import {AxiosError} from 'axios';
 import {ErrorResponse} from '@/types';
+import {useApiClient} from '@/services/ApiClient';
 
 /**
  * Service control component
@@ -87,9 +87,14 @@ export default class ServiceControl extends Vue {
 	private unsupported = false;
 
 	/**
-	 * @var {ServiceStatus|null} service Service status object
+	 * @var {ServiceStatus|null} serviceStatus Service status object
 	 */
-	private service: ServiceStatus|null = null;
+	private serviceStatus: ServiceStatus|null = null;
+
+	/**
+	 * @property {ServiceService} service Service service
+   */
+	private service: ServiceService = useApiClient().getServiceService();
 
 	/**
 	 * Retrieves service status
@@ -103,7 +108,7 @@ export default class ServiceControl extends Vue {
 	 */
 	private enable(): void {
 		this.$store.commit('spinner/SHOW');
-		ServiceService.enable(this.serviceName)
+		this.service.enable(this.serviceName)
 			.then(() => {
 				this.getStatus();
 				this.$toast.success(
@@ -119,7 +124,7 @@ export default class ServiceControl extends Vue {
 	 */
 	private disable(): void {
 		this.$store.commit('spinner/SHOW');
-		ServiceService.disable(this.serviceName)
+		this.service.disable(this.serviceName)
 			.then(() => {
 				this.getStatus();
 				this.$toast.success(
@@ -135,7 +140,7 @@ export default class ServiceControl extends Vue {
 	 */
 	private restart(): void {
 		this.$store.commit('spinner/SHOW');
-		ServiceService.restart(this.serviceName)
+		this.service.restart(this.serviceName)
 			.then(() => {
 				this.getStatus();
 				this.$toast.success(
@@ -153,9 +158,9 @@ export default class ServiceControl extends Vue {
 		if (!this.$store.getters['spinner/isEnabled']) {
 			this.$store.commit('spinner/SHOW');
 		}
-		ServiceService.getStatus(this.serviceName)
+		this.service.getStatus(this.serviceName)
 			.then((status: ServiceStatus) => {
-				this.service = status;
+				this.serviceStatus = status;
 				this.unsupported = false;
 				this.$store.commit('spinner/HIDE');
 			})
@@ -167,7 +172,7 @@ export default class ServiceControl extends Vue {
 	 */
 	private handleError(error: AxiosError): void {
 		this.$store.commit('spinner/HIDE');
-		this.service = null;
+		this.serviceStatus = null;
 		const response = error.response;
 		if (response === undefined) {
 			this.$toast.error(this.$t('service.errors.processTimeout').toString());
