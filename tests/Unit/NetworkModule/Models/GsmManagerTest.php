@@ -44,14 +44,6 @@ final class GsmManagerTest extends CommandTestCase {
 	private GsmManager $manager;
 
 	/**
-	 * Sets up the test environment
-	 */
-	protected function setUp(): void {
-		parent::setUp();
-		$this->manager = new GsmManager($this->commandManager);
-	}
-
-	/**
 	 * Tests the function to scan GSM modems
 	 */
 	public function testScanModems(): void {
@@ -89,6 +81,14 @@ final class GsmManagerTest extends CommandTestCase {
 			],
 		];
 		Assert::equal($expected, $actual);
+	}
+
+	/**
+	 * Sets up the test environment
+	 */
+	protected function setUp(): void {
+		parent::setUp();
+		$this->manager = new GsmManager($this->commandManager);
 	}
 
 }

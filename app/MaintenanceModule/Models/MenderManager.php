@@ -40,27 +40,27 @@ use Psr\Http\Message\UploadedFileInterface;
 class MenderManager {
 
 	/**
-	 * @var string Path to certificate storage
+	 * Path to certificate storage
 	 */
 	private const CERT_PATH = '/etc/mender/';
 
 	/**
-	 * @var string JSON file containing mender-client configuration
+	 * JSON file containing mender-client configuration
 	 */
 	private const CLIENT_CONF = 'mender.conf';
 
 	/**
-	 * @var string JSON file containing mender-connect configuration
+	 * JSON file containing mender-connect configuration
 	 */
 	private const CONNECT_CONF = 'mender-connect.conf';
 
 	/**
-	 * @var string Path to upload artifact file to
+	 * Path to upload artifact file to
 	 */
 	private const UPLOAD_PATH = '/tmp/';
 
 	/**
-	 * @var array<string, mixed> Default client configuration
+	 * Default client configuration
 	 */
 	private const DEFAULT_CLIENT_CONFIG = [
 		'ServerURL' => 'https://hosted.mender.io',
@@ -72,7 +72,7 @@ class MenderManager {
 	];
 
 	/**
-	 * @var array<string, array<string, bool>> Default connect configuration
+	 * Default connect configuration
 	 */
 	private const DEFAULT_CONNECT_CONFIG = [
 		'FileTransfer' => [

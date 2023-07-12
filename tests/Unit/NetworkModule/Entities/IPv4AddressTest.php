@@ -39,24 +39,24 @@ require __DIR__ . '/../../../bootstrap.php';
 final class IPv4AddressTest extends TestCase {
 
 	/**
-	 * @var IPv4 IPv4 address
-	 */
-	private readonly IPv4 $address;
-
-	/**
-	 * @var string IPv4 address
+	 * IPv4 address
 	 */
 	private const ADDRESS = '192.168.1.2';
 
 	/**
-	 * @var int IPv4 network prefix
+	 * IPv4 network prefix
 	 */
 	private const PREFIX = 24;
 
 	/**
-	 * @var string IPv4 network mask
+	 * IPv4 network mask
 	 */
 	private const MASK = '255.255.255.0';
+
+	/**
+	 * @var IPv4 IPv4 address
+	 */
+	private readonly IPv4 $address;
 
 	/**
 	 * @var IPv4 IPv4 mask

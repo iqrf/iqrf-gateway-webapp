@@ -32,7 +32,7 @@ use stdClass;
 final class IPv6Connection implements INetworkManagerEntity {
 
 	/**
-	 * @var string nmcli configuration prefix
+	 * nmcli configuration prefix
 	 */
 	private const NMCLI_PREFIX = 'ipv6';
 
@@ -78,6 +78,30 @@ final class IPv6Connection implements INetworkManagerEntity {
 	}
 
 	/**
+	 * Deserializes IPv6 connection entity from nmcli connection configuration
+	 * @param array<string, array<string, array<string>|string>> $nmCli nmcli connection configuration
+	 * @return IPv6Connection IPv6 connection entity
+	 */
+	public static function nmCliDeserialize(array $nmCli): INetworkManagerEntity {
+		$array = $nmCli[self::NMCLI_PREFIX];
+		$method = IPv6Methods::from($array['method']);
+		$addresses = [];
+		$gateway = array_key_exists('gateway', $array) && ($array['gateway'] !== '') ? IPv6::factory($array['gateway']) : null;
+		if ($array['addresses'] !== '') {
+			$addresses = array_map(static fn (string $address): IPv6Address => IPv6Address::fromPrefix($address), explode(',', $array['addresses']));
+		}
+		$dns = [];
+		if ($array['dns'] !== '') {
+			$dns = array_map(static fn (string $address): IPv6 => IPv6::factory($address), explode(',', $array['dns']));
+		}
+		if (array_key_exists(IPv6Current::NMCLI_PREFIX, $nmCli) &&
+			($method === IPv6Methods::AUTO || $method === IPv6Methods::DHCP)) {
+			$current = IPv6Current::nmCliDeserialize($nmCli, $method);
+		}
+		return new self($method, $addresses, $gateway, $dns, $current ?? null);
+	}
+
+	/**
 	 * Serializes IPv6 connection entity into JSON
 	 * @return array{method: string, addresses: array<array{address: string, prefix: int}>, gateway: string|null, dns: array<array{address: string}>, current?: array{method: string, addresses: array<array{address: string, prefix: int}>, gateway: string|null, dns: array<array{address: string}>}} JSON serialized entity
 	 */
@@ -92,30 +116,6 @@ final class IPv6Connection implements INetworkManagerEntity {
 			$array['current'] = $this->current->jsonSerialize();
 		}
 		return $array;
-	}
-
-	/**
-	 * Deserializes IPv6 connection entity from nmcli connection configuration
-	 * @param array<string, array<string, array<string>|string>> $nmCli nmcli connection configuration
-	 * @return IPv6Connection IPv6 connection entity
-	 */
-	public static function nmCliDeserialize(array $nmCli): INetworkManagerEntity {
-		$array = $nmCli[self::NMCLI_PREFIX];
-		$method = IPv6Methods::from($array['method']);
-		$addresses = [];
-		$gateway = array_key_exists('gateway', $array) && ($array['gateway'] !== '') ? IPv6::factory($array['gateway']) : null;
-		if ($array['addresses'] !== '') {
-			$addresses = array_map(static fn(string $address): IPv6Address => IPv6Address::fromPrefix($address), explode(',', $array['addresses']));
-		}
-		$dns = [];
-		if ($array['dns'] !== '') {
-			$dns = array_map(static fn (string $address): IPv6 => IPv6::factory($address), explode(',', $array['dns']));
-		}
-		if (array_key_exists(IPv6Current::NMCLI_PREFIX, $nmCli) &&
-			($method === IPv6Methods::AUTO || $method === IPv6Methods::DHCP)) {
-			$current = IPv6Current::nmCliDeserialize($nmCli, $method);
-		}
-		return new self($method, $addresses, $gateway, $dns, $current ?? null);
 	}
 
 	/**

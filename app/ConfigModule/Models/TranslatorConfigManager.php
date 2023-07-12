@@ -29,7 +29,7 @@ use Nette\Utils\JsonException;
 class TranslatorConfigManager {
 
 	/**
-	 * @var string JSON file containing translator configuration
+	 * JSON file containing translator configuration
 	 */
 	private const FILE_NAME = 'config.json';
 

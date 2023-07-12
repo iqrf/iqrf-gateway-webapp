@@ -46,17 +46,7 @@ require __DIR__ . '/../../../bootstrap.php';
 final class VersionManagerTest extends WebSocketTestCase {
 
 	/**
-	 * @var CommandManager|MockInterface Mocked command manager
-	 */
-	private MockInterface|CommandManager $commandManager;
-
-	/**
-	 * @var VersionManager|MockInterface Version manager
-	 */
-	private MockInterface|VersionManager $manager;
-
-	/**
-	 * @var array<string, array<string, bool>|string> IQRF Gateway Daemon's API request
+	 * IQRF Gateway Daemon's API request
 	 */
 	private const DAEMON_API_REQUEST = [
 		'mType' => 'mngDaemon_Version',
@@ -64,7 +54,7 @@ final class VersionManagerTest extends WebSocketTestCase {
 	];
 
 	/**
-	 * @var array<string, string> Commands for retrieving version
+	 * Commands for retrieving version
 	 */
 	private const COMMANDS = [
 		'controller' => 'iqrf-gateway-controller --version',
@@ -75,7 +65,7 @@ final class VersionManagerTest extends WebSocketTestCase {
 	];
 
 	/**
-	 * @var array<string, string> Standard outputs
+	 * Standard outputs
 	 */
 	private const STDOUTS = [
 		'controller' => 'iqrf-gateway-controller 0.3.4',
@@ -83,8 +73,9 @@ final class VersionManagerTest extends WebSocketTestCase {
 		'daemon_new' => 'IQRF Gateway Daemon v2.5.0-alpha',
 		'setter' => 'IQRF Gateway Setter v1.0.0',
 	];
+
 	/**
-	 * @var array<string, string> Expected versions
+	 * Expected versions
 	 */
 	private const VERSIONS = [
 		'controller' => '0.3.4',
@@ -96,46 +87,14 @@ final class VersionManagerTest extends WebSocketTestCase {
 	];
 
 	/**
-	 * Sets up the test environment
+	 * @var CommandManager|MockInterface Mocked command manager
 	 */
-	protected function setUp(): void {
-		parent::setUp();
-		$this->commandManager = Mockery::mock(CommandManager::class);
-		$this->manager = Mockery::mock(VersionManager::class, [$this->commandManager, $this->request, $this->wsClient])->makePartial();
-	}
+	private MockInterface|CommandManager $commandManager;
 
 	/**
-	 * Mock command existence check
-	 * @param string $command Command to check
-	 * @param bool $result Result of the command
+	 * @var VersionManager|MockInterface Version manager
 	 */
-	private function mockCommendExists(string $command, bool $result): void {
-		$this->commandManager->shouldReceive('commandExist')
-			->with($command)
-			->andReturn($result);
-	}
-
-	/**
-	 * Mock command execution
-	 * @param string $command Command to execute
-	 * @param string $stdout Standard output
-	 * @param string $stderr Standard error output
-	 * @param int $exitCode Exit code
-	 */
-	private function mockCommand(string $command, string $stdout = '', string $stderr = '', int $exitCode = 0): void {
-		$this->commandManager->shouldReceive('run')
-			->with($command)
-			->andReturn(new Command($command, $stdout, $stderr, $exitCode));
-	}
-
-	private function mockWebappJson(string $commit = '', string $pipeline = ''): void {
-		$this->manager->shouldReceive('getWebappJson')
-			->andReturn([
-				'version' => self::VERSIONS['webapp'],
-				'commit' => $commit,
-				'pipeline' => $pipeline,
-			]);
-	}
+	private MockInterface|VersionManager $manager;
 
 	/**
 	 * Tests the function to get IQRF Gateway Controller's version (empty stdout)
@@ -218,7 +177,6 @@ final class VersionManagerTest extends WebSocketTestCase {
 			->andReturn($response);
 		Assert::same(self::VERSIONS['daemon_old'], $this->manager->getDaemon());
 	}
-
 
 	/**
 	 * Tests the function to get IQRF Gateway Daemon's version (IQRF Gateway Daemon is not installed)
@@ -355,6 +313,48 @@ final class VersionManagerTest extends WebSocketTestCase {
 		$this->mockWebappJson();
 		$this->mockCommand('git rev-parse --is-inside-work-tree', 'false');
 		Assert::same(self::VERSIONS['webapp'], $this->manager->getWebapp(true));
+	}
+
+	/**
+	 * Sets up the test environment
+	 */
+	protected function setUp(): void {
+		parent::setUp();
+		$this->commandManager = Mockery::mock(CommandManager::class);
+		$this->manager = Mockery::mock(VersionManager::class, [$this->commandManager, $this->request, $this->wsClient])->makePartial();
+	}
+
+	/**
+	 * Mock command existence check
+	 * @param string $command Command to check
+	 * @param bool $result Result of the command
+	 */
+	private function mockCommendExists(string $command, bool $result): void {
+		$this->commandManager->shouldReceive('commandExist')
+			->with($command)
+			->andReturn($result);
+	}
+
+	/**
+	 * Mock command execution
+	 * @param string $command Command to execute
+	 * @param string $stdout Standard output
+	 * @param string $stderr Standard error output
+	 * @param int $exitCode Exit code
+	 */
+	private function mockCommand(string $command, string $stdout = '', string $stderr = '', int $exitCode = 0): void {
+		$this->commandManager->shouldReceive('run')
+			->with($command)
+			->andReturn(new Command($command, $stdout, $stderr, $exitCode));
+	}
+
+	private function mockWebappJson(string $commit = '', string $pipeline = ''): void {
+		$this->manager->shouldReceive('getWebappJson')
+			->andReturn([
+				'version' => self::VERSIONS['webapp'],
+				'commit' => $commit,
+				'pipeline' => $pipeline,
+			]);
 	}
 
 }

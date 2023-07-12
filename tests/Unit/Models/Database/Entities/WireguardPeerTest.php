@@ -43,27 +43,27 @@ require __DIR__ . '/../../../../bootstrap.php';
 final class WireguardPeerTest extends TestCase {
 
 	/**
-	 * @var string WireGuard peer public key
+	 * WireGuard peer public key
 	 */
 	private const PUBLIC_KEY = 'Z4Csw6v+89bcamtek9elXmuIEA+6PeB6CLnjNh4dJzI=';
 
 	/**
-	 * @var string WireGuard peer pre-shared key
+	 * WireGuard peer pre-shared key
 	 */
 	private const PSK = 'oC9WMZJs56UDp7NU2j8KfBn01zDLPRW2hGxivWC7Rhg=';
 
 	/**
-	 * @var int WireGuard peer keepalive interval
+	 * WireGuard peer keepalive interval
 	 */
 	private const KEEPALIVE = 25;
 
 	/**
-	 * @var string WireGuard peer endpoint
+	 * WireGuard peer endpoint
 	 */
 	private const ENDPOINT = 'vpn.example.org';
 
 	/**
-	 * @var int WireGuard peer listen port
+	 * WireGuard peer listen port
 	 */
 	private const PORT = 51820;
 
@@ -86,16 +86,6 @@ final class WireguardPeerTest extends TestCase {
 	 * @var WireguardPeer WireGuard peer entity
 	 */
 	private WireguardPeer $entity;
-
-	/**
-	 * Sets the test environment
-	 */
-	protected function setUp(): void {
-		$this->interfaceEntity = new WireguardInterface('wg0', 'CHmgTLdcdr33Nr/GblDjKufGqWWxmnGv7a50hN6hZ0c=', null);
-		$this->entity = new WireguardPeer(self::PUBLIC_KEY, self::PSK, self::KEEPALIVE, self::ENDPOINT, self::PORT, $this->interfaceEntity);
-		$this->peerIpv4Entity = new WireguardPeerAddress(new MultiAddress(Multi::factory('10.0.0.0'), 32), $this->entity);
-		$this->peerIpv6Entity = new WireguardPeerAddress(new MultiAddress(Multi::factory('::'), 48), $this->entity);
-	}
 
 	/**
 	 * Tests the function to get wg peer public key
@@ -271,6 +261,16 @@ final class WireguardPeerTest extends TestCase {
 		$this->entity->addAddress($this->peerIpv6Entity);
 		$expected = sprintf('\'peer\' \'%s\' \'preshared-key\' \'%s\' \'endpoint\' \'%s:%u\' \'persistent-keepalive\' \'%u\' \'allowed-ips\' \'10.0.0.0/32,::/48\'', self::PUBLIC_KEY, self::PSK, self::ENDPOINT, self::PORT, self::KEEPALIVE);
 		Assert::same($expected, $this->entity->wgSerialize());
+	}
+
+	/**
+	 * Sets the test environment
+	 */
+	protected function setUp(): void {
+		$this->interfaceEntity = new WireguardInterface('wg0', 'CHmgTLdcdr33Nr/GblDjKufGqWWxmnGv7a50hN6hZ0c=', null);
+		$this->entity = new WireguardPeer(self::PUBLIC_KEY, self::PSK, self::KEEPALIVE, self::ENDPOINT, self::PORT, $this->interfaceEntity);
+		$this->peerIpv4Entity = new WireguardPeerAddress(new MultiAddress(Multi::factory('10.0.0.0'), 32), $this->entity);
+		$this->peerIpv6Entity = new WireguardPeerAddress(new MultiAddress(Multi::factory('::'), 48), $this->entity);
 	}
 
 }

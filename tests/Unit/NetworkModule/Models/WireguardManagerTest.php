@@ -51,7 +51,7 @@ require __DIR__ . '/../../../bootstrap.php';
 final class WireguardManagerTest extends CommandTestCase {
 
 	/**
-	 * @var array<string, string> Commands to be executed during testing
+	 * Commands to be executed during testing
 	 */
 	private const COMMANDS = [
 		'privateKey' => 'umask 077 && wg genkey',
@@ -61,7 +61,7 @@ final class WireguardManagerTest extends CommandTestCase {
 	];
 
 	/**
-	 * @var array{privateKey: string, publicKey: string} Wireguard keypair
+	 * WireGuard keypair
 	 */
 	private const WG_KEYPAIR = [
 		'privateKey' => 'uImD+hh1Dp6uWvWJ+eaYdc2oRloC3TYUpPUUCwfBi0I=',
@@ -92,23 +92,6 @@ final class WireguardManagerTest extends CommandTestCase {
 	 * @var MockInterface|ServiceManager Mocked service manager
 	 */
 	private MockInterface|ServiceManager $serviceManager;
-
-	/**
-	 * Sets up the test environment
-	 */
-	protected function setUp(): void {
-		parent::setUp();
-		$this->interfaceEntity = new WireguardInterface('wg0', 'CHmgTLdcdr33Nr/GblDjKufGqWWxmnGv7a50hN6hZ0c=', 51775);
-		$this->peerEntity = new WireguardPeer('Z4Csw6v+89bcamtek9elXmuIEA+6PeB6CLnjNh4dJzI=', null, 25, 'example.org', 51280, $this->interfaceEntity);
-		$this->entityManager = Mockery::mock(EntityManager::class);
-		$this->entityManager->shouldReceive('getWireguardInterfaceIpv4Repository');
-		$this->entityManager->shouldReceive('getWireguardInterfaceIpv6Repository');
-		$this->entityManager->shouldReceive('getWireguardInterfaceRepository');
-		$this->entityManager->shouldReceive('getWireguardPeerAddressRepository');
-		$this->entityManager->shouldReceive('getWireguardPeerRepository');
-		$this->serviceManager = Mockery::mock(ServiceManager::class);
-		$this->manager = new WireguardManager($this->commandManager, $this->entityManager, $this->serviceManager);
-	}
 
 	/**
 	 * Tests the function to create peer
@@ -261,6 +244,23 @@ final class WireguardManagerTest extends CommandTestCase {
 	public function testDeleteTunnelFailed(): void {
 		$this->receiveCommand(self::COMMANDS['deleteTunnel'], true, '', 'Cannot find device "wg0"', 1);
 		Assert::false($this->manager->deleteTunnel($this->interfaceEntity));
+	}
+
+	/**
+	 * Sets up the test environment
+	 */
+	protected function setUp(): void {
+		parent::setUp();
+		$this->interfaceEntity = new WireguardInterface('wg0', 'CHmgTLdcdr33Nr/GblDjKufGqWWxmnGv7a50hN6hZ0c=', 51775);
+		$this->peerEntity = new WireguardPeer('Z4Csw6v+89bcamtek9elXmuIEA+6PeB6CLnjNh4dJzI=', null, 25, 'example.org', 51280, $this->interfaceEntity);
+		$this->entityManager = Mockery::mock(EntityManager::class);
+		$this->entityManager->shouldReceive('getWireguardInterfaceIpv4Repository');
+		$this->entityManager->shouldReceive('getWireguardInterfaceIpv6Repository');
+		$this->entityManager->shouldReceive('getWireguardInterfaceRepository');
+		$this->entityManager->shouldReceive('getWireguardPeerAddressRepository');
+		$this->entityManager->shouldReceive('getWireguardPeerRepository');
+		$this->serviceManager = Mockery::mock(ServiceManager::class);
+		$this->manager = new WireguardManager($this->commandManager, $this->entityManager, $this->serviceManager);
 	}
 
 }

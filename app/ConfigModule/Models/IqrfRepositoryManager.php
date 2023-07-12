@@ -34,21 +34,7 @@ use Nette\Utils\FileSystem;
 class IqrfRepositoryManager {
 
 	/**
-	 * Returns configuration file schema
-	 * @return Structure Configuration file schema
-	 */
-	private function getSchema(): Structure {
-		return Expect::structure([
-			'apiEndpoint' => Expect::string('https://repository.iqrfalliance.org/api'),
-			'credentials' => Expect::structure([
-				'username' => Expect::type('string|null')->default(null),
-				'password' => Expect::type('string|null')->default(null),
-			])->castTo('array'),
-		])->castTo('array');
-	}
-
-	/**
-	 * @var string Extension name
+	 * Extension name
 	 */
 	private const EXTENSION_NAME = 'iqrfRepository';
 
@@ -83,6 +69,20 @@ class IqrfRepositoryManager {
 		}
 		$processor = new Processor();
 		return $processor->process($this->getSchema(), $content);
+	}
+
+	/**
+	 * Returns configuration file schema
+	 * @return Structure Configuration file schema
+	 */
+	private function getSchema(): Structure {
+		return Expect::structure([
+			'apiEndpoint' => Expect::string('https://repository.iqrfalliance.org/api'),
+			'credentials' => Expect::structure([
+				'username' => Expect::type('string|null')->default(null),
+				'password' => Expect::type('string|null')->default(null),
+			])->castTo('array'),
+		])->castTo('array');
 	}
 
 }

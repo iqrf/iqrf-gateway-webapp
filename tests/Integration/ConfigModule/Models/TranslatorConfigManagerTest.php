@@ -43,12 +43,12 @@ require __DIR__ . '/../../../bootstrap.php';
 final class TranslatorConfigManagerTest extends TestCase {
 
 	/**
-	 * @var string Translator configuration directory path
+	 * Translator configuration directory path
 	 */
 	private const CONF_DIR = TESTER_DIR . '/data/translator/';
 
 	/**
-	 * @var string Translator configuration temporary directory path
+	 * Translator configuration temporary directory path
 	 */
 	private const TEMP_CONF_DIR = TMP_DIR . '/translator/';
 

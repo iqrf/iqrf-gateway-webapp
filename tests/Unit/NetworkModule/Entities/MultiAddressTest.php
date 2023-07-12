@@ -39,6 +39,26 @@ require __DIR__ . '/../../../bootstrap.php';
 final class MultiAddressTest extends TestCase {
 
 	/**
+	 * IPv4 address
+	 */
+	private const IPV4_ADDR = '192.168.1.2';
+
+	/**
+	 * IPv4 address prefix
+	 */
+	private const IPV4_PREFIX = 24;
+
+	/**
+	 * IPv6 address
+	 */
+	private const IPV6_ADDR = '2001:db8::';
+
+	/**
+	 * IPv6 address prefix
+	 */
+	private const IPV6_PREFIX = 32;
+
+	/**
 	 * @var Multi IPv4 address
 	 */
 	private Multi $ipv4;
@@ -49,26 +69,6 @@ final class MultiAddressTest extends TestCase {
 	private Multi $ipv6;
 
 	/**
-	 * @var string IPv4 address
-	 */
-	private const IPV4_ADDR = '192.168.1.2';
-
-	/**
-	 * @var int IPv4 address prefix
-	 */
-	private const IPV4_PREFIX = 24;
-
-	/**
-	 * @var string IPv6 address
-	 */
-	private const IPV6_ADDR = '2001:db8::';
-
-	/**
-	 * @var int IPv6 address prefix
-	 */
-	private const IPV6_PREFIX = 32;
-
-	/**
 	 * @var MultiAddress IPv4 address entity
 	 */
 	private MultiAddress $ipv4Entity;
@@ -77,16 +77,6 @@ final class MultiAddressTest extends TestCase {
 	 * @var MultiAddress IPv6 address entity
 	 */
 	private MultiAddress $ipv6Entity;
-
-	/**
-	 * Sets up the test environment
-	 */
-	protected function setUp(): void {
-		$this->ipv4 = Multi::factory(self::IPV4_ADDR);
-		$this->ipv6 = Multi::factory(self::IPV6_ADDR);
-		$this->ipv4Entity = new MultiAddress($this->ipv4, self::IPV4_PREFIX);
-		$this->ipv6Entity = new MultiAddress($this->ipv6, self::IPV6_PREFIX);
-	}
 
 	/**
 	 * Tests the function to get IPv4 address from multiple address type entity
@@ -158,6 +148,16 @@ final class MultiAddressTest extends TestCase {
 	public function testToStringIpv6(): void {
 		$expected = '2001:db8::/32';
 		Assert::same($expected, $this->ipv6Entity->toString());
+	}
+
+	/**
+	 * Sets up the test environment
+	 */
+	protected function setUp(): void {
+		$this->ipv4 = Multi::factory(self::IPV4_ADDR);
+		$this->ipv6 = Multi::factory(self::IPV6_ADDR);
+		$this->ipv4Entity = new MultiAddress($this->ipv4, self::IPV4_PREFIX);
+		$this->ipv6Entity = new MultiAddress($this->ipv6, self::IPV6_PREFIX);
 	}
 
 }

@@ -42,6 +42,11 @@ require __DIR__ . '/../../../bootstrap.php';
 final class WebSocketClientTest extends TestCase {
 
 	/**
+	 * URL to IQRF Gateway Daemon's WebSocket server
+	 */
+	private const WS_SERVER = 'ws://ws-echo.iqrf.org/';
+
+	/**
 	 * @var WebSocketClient IQRF App manager
 	 */
 	private WebSocketClient $client;
@@ -50,11 +55,6 @@ final class WebSocketClientTest extends TestCase {
 	 * @var ApiRequest JSON API request
 	 */
 	private ApiRequest $request;
-
-	/**
-	 * @var string URL to IQRF Gateway Daemon's WebSocket server
-	 */
-	private const WS_SERVER = 'ws://ws-echo.iqrf.org/';
 
 	/**
 	 * Tests the function to send a JSON DPA request via WebSocket (success)

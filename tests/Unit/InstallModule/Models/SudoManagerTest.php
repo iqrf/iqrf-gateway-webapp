@@ -40,7 +40,7 @@ require __DIR__ . '/../../../bootstrap.php';
 final class SudoManagerTest extends CommandTestCase {
 
 	/**
-	 * @var string Command
+	 * Command
 	 */
 	private const COMMAND = 'sudo -v';
 
@@ -48,14 +48,6 @@ final class SudoManagerTest extends CommandTestCase {
 	 * @var SudoManager Sudo manager
 	 */
 	private SudoManager $manager;
-
-	/**
-	 * Sets up the test environment
-	 */
-	protected function setUp(): void {
-		parent::setUp();
-		$this->manager = new SudoManager($this->commandManager);
-	}
 
 	/**
 	 * Tests the function to check sudo and if webapp can use sudo
@@ -97,6 +89,14 @@ final class SudoManagerTest extends CommandTestCase {
 			Environment::skip('This test has to be run under root.');
 		}
 		Assert::same([], $this->manager->checkSudo());
+	}
+
+	/**
+	 * Sets up the test environment
+	 */
+	protected function setUp(): void {
+		parent::setUp();
+		$this->manager = new SudoManager($this->commandManager);
 	}
 
 }

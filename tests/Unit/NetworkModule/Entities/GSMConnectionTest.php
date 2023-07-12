@@ -41,27 +41,27 @@ require __DIR__ . '/../../../bootstrap.php';
 final class GSMConnectionTest extends TestCase {
 
 	/**
-	 * @var string NetworkManager data directory
+	 * NetworkManager data directory
 	 */
 	private const NM_DATA = TESTER_DIR . '/data/networkManager/';
 
 	/**
-	 * @var string GSM APN
+	 * GSM APN
 	 */
 	private const APN = 'internet';
 
 	/**
-	 * @var string Username
+	 * Username
 	 */
 	private const USERNAME = 'testuser';
 
 	/**
-	 * @var string Password
+	 * Password
 	 */
 	private const PASSWORD = 'testpass';
 
 	/**
-	 * @var string SIM PIN
+	 * SIM PIN
 	 */
 	private const PIN = '1234';
 
@@ -74,14 +74,6 @@ final class GSMConnectionTest extends TestCase {
 	 * @var GSMConnection GSM connection entity with null optional parameters
 	 */
 	private GSMConnection $nullEntity;
-
-	/**
-	 * Sets up the testing environment
-	 */
-	protected function setUp(): void {
-		$this->entity = new GSMConnection(self::APN, self::USERNAME, self::PASSWORD, self::PIN);
-		$this->nullEntity = new GSMConnection(self::APN);
-	}
 
 	/**
 	 * Tests the function to deserialize JSON into GSM connection entity
@@ -130,6 +122,14 @@ final class GSMConnectionTest extends TestCase {
 		Assert::same($expected, $this->entity->nmCliSerialize());
 		$expected = sprintf('gsm.apn "%s" gsm.username "" gsm.password "" gsm.pin "" ', self::APN);
 		Assert::same($expected, $this->nullEntity->nmCliSerialize());
+	}
+
+	/**
+	 * Sets up the testing environment
+	 */
+	protected function setUp(): void {
+		$this->entity = new GSMConnection(self::APN, self::USERNAME, self::PASSWORD, self::PIN);
+		$this->nullEntity = new GSMConnection(self::APN);
 	}
 
 }

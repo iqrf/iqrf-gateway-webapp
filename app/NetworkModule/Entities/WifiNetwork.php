@@ -54,14 +54,6 @@ final class WifiNetwork implements JsonSerializable {
 	}
 
 	/**
-	 * Returns the network's security
-	 * @return WifiSecurity Network security
-	 */
-	public function getSecurity(): WifiSecurity {
-		return $this->security;
-	}
-
-	/**
 	 * Deserializes WiFi network entity from nmcli row
 	 * @param string $nmCli nmcli row
 	 * @return WifiNetwork WiFi network
@@ -77,6 +69,14 @@ final class WifiNetwork implements JsonSerializable {
 		$signal = (int) $matches['signal'];
 		$security = WifiSecurity::fromNmCli($matches['security']);
 		return new self($inUse, $bssid, $ssid, $mode, $channel, $matches['rate'], $signal, $security);
+	}
+
+	/**
+	 * Returns the network's security
+	 * @return WifiSecurity Network security
+	 */
+	public function getSecurity(): WifiSecurity {
+		return $this->security;
 	}
 
 	/**

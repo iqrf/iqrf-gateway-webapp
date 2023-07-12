@@ -30,7 +30,7 @@ use App\CoreModule\Models\FileManager;
 class TranslatorBackup extends IqrfSoftwareBackup {
 
 	/**
-	 * @var array<string> List of whitelisted files
+	 * List of whitelisted files
 	 */
 	final public const WHITELIST = [
 		'config.json',

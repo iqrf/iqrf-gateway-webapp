@@ -32,7 +32,7 @@ use stdClass;
 final class IPv4Connection implements INetworkManagerEntity {
 
 	/**
-	 * @var string nmcli configuration prefix
+	 * nmcli configuration prefix
 	 */
 	private const NMCLI_PREFIX = 'ipv4';
 
@@ -81,23 +81,6 @@ final class IPv4Connection implements INetworkManagerEntity {
 	}
 
 	/**
-	 * Serializes IPv4 connection entity into JSON
-	 * @return array{method: string, addresses: array<array{address: string, prefix: int, mask: string}>, gateway: string|null, dns: array<array{address: string}>, current?: array{method: string, addresses: array<array{address: string, prefix: int, mask: string}>, gateway: string|null, dns: array<array{address: string}>}} JSON serialized entity
-	 */
-	public function jsonSerialize(): array {
-		$array = [
-			'method' => $this->method->value,
-			'addresses' => array_map(static fn (IPv4Address $a): array => $a->toArray(), $this->addresses),
-			'gateway' => $this->gateway?->getDotAddress(),
-			'dns' => array_map(static fn (IPv4 $a): array => ['address' => $a->getDotAddress()], $this->dns),
-		];
-		if ($this->current !== null) {
-			$array['current'] = $this->current->jsonSerialize();
-		}
-		return $array;
-	}
-
-	/**
 	 * Deserializes IPv4 connection entity from nmcli connection configuration
 	 * @param array<string, array<string, array<string>|string>> $nmCli nmcli connection configuration
 	 * @return IPv4Connection IPv4 connection entity
@@ -119,6 +102,23 @@ final class IPv4Connection implements INetworkManagerEntity {
 			$current = IPv4Current::nmCliDeserialize($nmCli);
 		}
 		return new self($method, $addresses, $gateway, $dns, $current ?? null);
+	}
+
+	/**
+	 * Serializes IPv4 connection entity into JSON
+	 * @return array{method: string, addresses: array<array{address: string, prefix: int, mask: string}>, gateway: string|null, dns: array<array{address: string}>, current?: array{method: string, addresses: array<array{address: string, prefix: int, mask: string}>, gateway: string|null, dns: array<array{address: string}>}} JSON serialized entity
+	 */
+	public function jsonSerialize(): array {
+		$array = [
+			'method' => $this->method->value,
+			'addresses' => array_map(static fn (IPv4Address $a): array => $a->toArray(), $this->addresses),
+			'gateway' => $this->gateway?->getDotAddress(),
+			'dns' => array_map(static fn (IPv4 $a): array => ['address' => $a->getDotAddress()], $this->dns),
+		];
+		if ($this->current !== null) {
+			$array['current'] = $this->current->jsonSerialize();
+		}
+		return $array;
 	}
 
 	/**

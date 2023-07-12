@@ -46,12 +46,12 @@ require __DIR__ . '/../../../bootstrap.php';
 final class VersionManagerTest extends CommandTestCase {
 
 	/**
-	 * @var string Current version of the webapp
+	 * Current version of the webapp
 	 */
 	private const CURRENT_VERSION = '3.0.0-alpha';
 
 	/**
-	 * @var string Current stable version of the webapp
+	 * Current stable version of the webapp
 	 */
 	private const STABLE_VERSION = '2.4.0';
 

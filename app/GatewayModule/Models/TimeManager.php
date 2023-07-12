@@ -38,7 +38,7 @@ use Throwable;
 class TimeManager {
 
 	/**
-	 * @var array<string, array<string, string|int>> Default timesyncd configuration
+	 * Default timesyncd configuration
 	 */
 	private const TIMESYNCD_DEFAULT = [
 		'Time' => [
@@ -116,17 +116,6 @@ class TimeManager {
 	}
 
 	/**
-	 * Sets date and time
-	 * @param string $datetime ISO8601 datetime string
-	 */
-	private function setDateTime(string $datetime): void {
-		$command = $this->commandManager->run(sprintf('date --set=%s', escapeshellarg($datetime)), true, 0);
-		if ($command->getExitCode() !== 0) {
-			throw new TimeDateException($command->getStderr());
-		}
-	}
-
-	/**
 	 * Returns timedatectl status
 	 * @return array<string, mixed|array<string, mixed>> Timedatectl status
 	 * @throws TimeDateException
@@ -190,6 +179,17 @@ class TimeManager {
 	 */
 	public function setNtp(bool $enabled): void {
 		$command = $this->commandManager->run('timedatectl set-ntp ' . ($enabled ? 'true' : 'false'), true);
+		if ($command->getExitCode() !== 0) {
+			throw new TimeDateException($command->getStderr());
+		}
+	}
+
+	/**
+	 * Sets date and time
+	 * @param string $datetime ISO8601 datetime string
+	 */
+	private function setDateTime(string $datetime): void {
+		$command = $this->commandManager->run(sprintf('date --set=%s', escapeshellarg($datetime)), true, 0);
 		if ($command->getExitCode() !== 0) {
 			throw new TimeDateException($command->getStderr());
 		}

@@ -80,6 +80,31 @@ class UserRemoveAllCommand extends UserCommand {
 	}
 
 	/**
+	 * Asks for role to remove users by
+	 * @param InputInterface $input Command input
+	 * @param OutputInterface $output Command output
+	 * @return UserRole|null Role
+	 */
+	protected function askUsersRole(InputInterface $input, OutputInterface $output): ?UserRole {
+		$role = $input->getOption('role');
+		if (!$input->isInteractive()) {
+			return $role !== null ? UserRole::fromString($role) : null;
+		}
+		$roles = array_column(UserRole::cases(), 'value');
+		while ($role === null) {
+			$helper = $this->getHelper('question');
+			$question = new ConfirmationQuestion('Do you want to filter removed users by role? (y/N)', false);
+			if (!$helper->ask($input, $output, $question)) {
+				return null;
+			}
+			$helper = $this->getHelper('question');
+			$question = new ChoiceQuestion('Please select a role to delete users by: ', $roles);
+			$role = UserRole::tryFrom($helper->ask($input, $output, $question));
+		}
+		return $role;
+	}
+
+	/**
 	 * Converts array of users to a string of usernames
 	 * @param array<User> $users Array of users
 	 * @return string|null String of usernames
@@ -106,31 +131,6 @@ class UserRemoveAllCommand extends UserCommand {
 			return;
 		}
 		$style->success('Users ' . $this->usersToString($users) . ' were successfully removed.');
-	}
-
-	/**
-	 * Asks for role to remove users by
-	 * @param InputInterface $input Command input
-	 * @param OutputInterface $output Command output
-	 * @return UserRole|null Role
-	 */
-	protected function askUsersRole(InputInterface $input, OutputInterface $output): ?UserRole {
-		$role = $input->getOption('role');
-		if (!$input->isInteractive()) {
-			return $role !== null ? UserRole::fromString($role) : null;
-		}
-		$roles = array_column(UserRole::cases(), 'value');
-		while ($role === null) {
-			$helper = $this->getHelper('question');
-			$question = new ConfirmationQuestion('Do you want to filter removed users by role? (y/N)', false);
-			if (!$helper->ask($input, $output, $question)) {
-				return null;
-			}
-			$helper = $this->getHelper('question');
-			$question = new ChoiceQuestion('Please select a role to delete users by: ', $roles);
-			$role = UserRole::tryFrom($helper->ask($input, $output, $question));
-		}
-		return $role;
 	}
 
 }

@@ -105,7 +105,6 @@ class PrivilegedFileManager implements IFileManager {
 		return Json::decode($file, forceArrays: $forceArray);
 	}
 
-
 	/**
 	 * Deletes the file
 	 * @param string $fileName File name
@@ -117,6 +116,7 @@ class PrivilegedFileManager implements IFileManager {
 			throw new IOException($command->getStderr());
 		}
 	}
+
 	/**
 	 * Checks if the file exists
 	 * @param string $fileName File name

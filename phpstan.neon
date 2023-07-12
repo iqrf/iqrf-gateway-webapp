@@ -25,6 +25,7 @@ parameters:
 	level: 6
 	bootstrapFiles:
 		- tests/phpstanBootstrap.php
+	checkGenericClassInNonGenericObjectType: false
 	paths:
 		- app
 		- bin

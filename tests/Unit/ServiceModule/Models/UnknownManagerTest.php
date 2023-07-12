@@ -39,14 +39,14 @@ require __DIR__ . '/../../../bootstrap.php';
 final class UnknownManagerTest extends TestCase {
 
 	/**
+	 * Name of service
+	 */
+	private const SERVICE_NAME = 'iqrf-gateway-daemon';
+
+	/**
 	 * @var UnknownManager Service manager for unknown init daemon
 	 */
 	private UnknownManager $manager;
-
-	/**
-	 * @var string Name of service
-	 */
-	private const SERVICE_NAME = 'iqrf-gateway-daemon';
 
 	/**
 	 * Tests the function to disable IQRF Gateway Daemon's service via unknown init daemon

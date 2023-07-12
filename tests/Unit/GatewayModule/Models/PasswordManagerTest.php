@@ -42,12 +42,12 @@ require __DIR__ . '/../../../bootstrap.php';
 final class PasswordManagerTest extends CommandTestCase {
 
 	/**
-	 * @var string Password change command
+	 * Password change command
 	 */
 	private const COMMAND = 'chpasswd';
 
 	/**
-	 * @var string Root user and password to change
+	 * Root user and password to change
 	 */
 	private const ARGUMENT = 'root:testpass';
 
@@ -55,17 +55,6 @@ final class PasswordManagerTest extends CommandTestCase {
 	 * @var PasswordManager Root manager
 	 */
 	private PasswordManager $manager;
-
-	/**
-	 * Sets up the test environment
-	 */
-	protected function setUp(): void {
-		parent::setUp();
-		$original = __DIR__ . '/../../../data/features.neon';
-		$path = TMP_DIR . '/features.neon';
-		FileSystem::copy($original, $path);
-		$this->manager = new PasswordManager($this->commandManager, new FeatureManager($path));
-	}
 
 	/**
 	 * Tests the function to change gateway user password
@@ -91,6 +80,17 @@ final class PasswordManagerTest extends CommandTestCase {
 		Assert::throws(function (): void {
 			$this->manager->setPassword('testpass');
 		}, ChpasswdErrorException::class);
+	}
+
+	/**
+	 * Sets up the test environment
+	 */
+	protected function setUp(): void {
+		parent::setUp();
+		$original = __DIR__ . '/../../../data/features.neon';
+		$path = TMP_DIR . '/features.neon';
+		FileSystem::copy($original, $path);
+		$this->manager = new PasswordManager($this->commandManager, new FeatureManager($path));
 	}
 
 }

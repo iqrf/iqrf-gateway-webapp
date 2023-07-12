@@ -80,6 +80,12 @@ class User implements JsonSerializable {
 	];
 
 	/**
+	 * @var UserVerification|null User verification
+	 */
+	#[ORM\OneToOne(mappedBy: 'user', targetEntity: UserVerification::class, cascade: ['persist', 'refresh', 'remove'], orphanRemoval: true)]
+	public ?UserVerification $verification = null;
+
+	/**
 	 * @var string User name
 	 */
 	#[ORM\Column(type: Types::STRING, length: 255, unique: true)]
@@ -116,20 +122,14 @@ class User implements JsonSerializable {
 	private UserLanguage $language = UserLanguage::Default;
 
 	/**
-	 * @var UserVerification|null User verification
-	 */
-	#[ORM\OneToOne(mappedBy: 'user', targetEntity: UserVerification::class, cascade: ['persist', 'refresh', 'remove'], orphanRemoval: true)]
-	public ?UserVerification $verification = null;
-
-	/**
 	 * @var bool Email changed
 	 */
-	private bool $emailChanged;
+	private bool $emailChanged = false;
 
 	/**
 	 * @var bool Password changed
 	 */
-	private bool $passwordChanged;
+	private bool $passwordChanged = false;
 
 	/**
 	 * Constructor
@@ -346,27 +346,6 @@ class User implements JsonSerializable {
 	}
 
 	/**
-	 * Validates e-mail address
-	 * @param string $email E-mail address to validate
-	 */
-	private function validateEmail(string $email): void {
-		$validator = new EmailValidator();
-		$validationRules = [
-			new RFCValidation(),
-		];
-		if (EMAIL_VALIDATE_DNS && function_exists('dns_get_record')) {
-			$validationRules[] = new DNSCheckValidation();
-		}
-		if (!$validator->isValid($email, new MultipleValidationWithAnd($validationRules))) {
-			$error = $validator->getError();
-			if ($error === null) {
-				throw new InvalidEmailAddressException();
-			}
-			throw new InvalidEmailAddressException($error->description(), $error->code());
-		}
-	}
-
-	/**
 	 * Verifies the password
 	 * @param string $password Password to verify
 	 * @return bool Is the password correct?
@@ -391,6 +370,27 @@ class User implements JsonSerializable {
 			'language' => $this->language->value,
 			'state' => self::STATES[$this->state],
 		];
+	}
+
+	/**
+	 * Validates e-mail address
+	 * @param string $email E-mail address to validate
+	 */
+	private function validateEmail(string $email): void {
+		$validator = new EmailValidator();
+		$validationRules = [
+			new RFCValidation(),
+		];
+		if (EMAIL_VALIDATE_DNS && function_exists('dns_get_record')) {
+			$validationRules[] = new DNSCheckValidation();
+		}
+		if (!$validator->isValid($email, new MultipleValidationWithAnd($validationRules))) {
+			$error = $validator->getError();
+			if ($error === null) {
+				throw new InvalidEmailAddressException();
+			}
+			throw new InvalidEmailAddressException($error->description(), $error->code());
+		}
 	}
 
 }

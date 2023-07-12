@@ -52,6 +52,18 @@ final class Connection implements JsonSerializable {
 	}
 
 	/**
+	 * Deserializes network connection entity from the nmcli row
+	 * @param string $string nmcli row
+	 * @return Connection Network connection entity
+	 */
+	public static function nmCliDeserialize(string $string): self {
+		$array = explode(':', $string);
+		$uuid = Uuid::fromString($array[1]);
+		$type = ConnectionTypes::from($array[2]);
+		return new self($array[0], $uuid, $type, $array[3]);
+	}
+
+	/**
 	 * Returns the network connection UUID
 	 * @return UuidInterface Network connection UUID
 	 */
@@ -78,18 +90,6 @@ final class Connection implements JsonSerializable {
 			'type' => $this->type->jsonSerialize(),
 			'interfaceName' => $this->interfaceName,
 		];
-	}
-
-	/**
-	 * Deserializes network connection entity from the nmcli row
-	 * @param string $string nmcli row
-	 * @return Connection Network connection entity
-	 */
-	public static function nmCliDeserialize(string $string): self {
-		$array = explode(':', $string);
-		$uuid = Uuid::fromString($array[1]);
-		$type = ConnectionTypes::from($array[2]);
-		return new self($array[0], $uuid, $type, $array[3]);
 	}
 
 }

@@ -48,6 +48,11 @@ require __DIR__ . '/../../bootstrap.php';
 final class SchedulerManagerTest extends TestCase {
 
 	/**
+	 * Task UUID
+	 */
+	private const TASK_UUID = '210735a5-91fb-4ba8-90cf-2dc36251d19b';
+
+	/**
 	 * @var FileManager JSON file manager
 	 */
 	private FileManager $fileManagerTemp;
@@ -68,9 +73,35 @@ final class SchedulerManagerTest extends TestCase {
 	private readonly stdClass $array;
 
 	/**
-	 * @var string TASK_UUID Task UUID
+	 * Constructor
 	 */
-	private const TASK_UUID = '210735a5-91fb-4ba8-90cf-2dc36251d19b';
+	public function __construct() {
+		$this->array = (object) [
+			'taskId' => self::TASK_UUID,
+			'clientId' => 'SchedulerMessaging',
+			'timeSpec' => (object) [
+				'cronTime' => '*/5 * 1 * * * *',
+				'exactTime' => false,
+				'periodic' => false,
+				'period' => 0,
+				'startTime' => '',
+			],
+			'task' => [
+				(object) [
+					'messaging' => 'WebsocketMessaging',
+					'message' => (object) [
+						'mType' => 'iqrfRaw',
+						'data' => (object) [
+							'msgId' => '1',
+							'timeout' => 1000,
+							'req' => (object) ['rData' => '00.00.06.03.ff.ff'],
+						],
+						'returnVerbose' => true,
+					],
+				],
+			],
+		];
+	}
 
 	/**
 	 * Test function to delete configuration of Scheduler
@@ -223,37 +254,6 @@ final class SchedulerManagerTest extends TestCase {
 		$config->timeSpec->cronTime = '*/5 * 1 * * * *';
 		$this->managerTemp->save($config, null);
 		Assert::equal($expected, $this->fileManagerTemp->readJson('210735a5-91fb-4ba8-90cf-2dc36251d19b.json', false));
-	}
-
-	/**
-	 * Constructor
-	 */
-	public function __construct() {
-		$this->array = (object) [
-			'taskId' => self::TASK_UUID,
-			'clientId' => 'SchedulerMessaging',
-			'timeSpec' => (object) [
-				'cronTime' => '*/5 * 1 * * * *',
-				'exactTime' => false,
-				'periodic' => false,
-				'period' => 0,
-				'startTime' => '',
-			],
-			'task' => [
-				(object) [
-					'messaging' => 'WebsocketMessaging',
-					'message' => (object) [
-						'mType' => 'iqrfRaw',
-						'data' => (object) [
-							'msgId' => '1',
-							'timeout' => 1000,
-							'req' => (object) ['rData' => '00.00.06.03.ff.ff'],
-						],
-						'returnVerbose' => true,
-					],
-				],
-			],
-		];
 	}
 
 	/**

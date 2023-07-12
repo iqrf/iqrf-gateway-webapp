@@ -28,7 +28,7 @@ use App\CoreModule\Models\FileManager;
 class ControllerConfigManager {
 
 	/**
-	 * @var string JSON file containing Controller configuration
+	 * JSON file containing Controller configuration
 	 */
 	private const FILE_NAME = 'config.json';
 

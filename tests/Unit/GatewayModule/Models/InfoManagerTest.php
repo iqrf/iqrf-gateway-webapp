@@ -43,22 +43,7 @@ require __DIR__ . '/../../../bootstrap.php';
 final class InfoManagerTest extends CommandTestCase {
 
 	/**
-	 * @var MockInterface|NetworkManager Mocked network manager
-	 */
-	private MockInterface|NetworkManager $networkManager;
-
-	/**
-	 * @var InfoManager Gateway Info manager with mocked command manager
-	 */
-	private InfoManager $manager;
-
-	/**
-	 * @var MockInterface|VersionManager Mocked version manager
-	 */
-	private MockInterface|VersionManager $versionManager;
-
-	/**
-	 * @var array<string, string> Executed commands
+	 * Executed commands
 	 */
 	private const COMMANDS = [
 		'deviceTreeName' => 'cat /proc/device-tree/model',
@@ -126,6 +111,21 @@ final class InfoManagerTest extends CommandTestCase {
 		],
 		'uptime' => 'up 2 hours, 30 minutes',
 	];
+
+	/**
+	 * @var MockInterface|NetworkManager Mocked network manager
+	 */
+	private MockInterface|NetworkManager $networkManager;
+
+	/**
+	 * @var InfoManager Gateway Info manager with mocked command manager
+	 */
+	private InfoManager $manager;
+
+	/**
+	 * @var MockInterface|VersionManager Mocked version manager
+	 */
+	private MockInterface|VersionManager $versionManager;
 
 	/**
 	 * Tests the function to get information about the board (via IQRF GW json)
@@ -270,7 +270,6 @@ final class InfoManagerTest extends CommandTestCase {
 		$this->receiveCommand($command, null, $output);
 		Assert::same(self::EXPECTED['swapUsage'], $this->manager->getSwapUsage());
 	}
-
 
 	/**
 	 * Tests the function to get swap usage (computer hasn't got swap)

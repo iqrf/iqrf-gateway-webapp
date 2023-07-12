@@ -40,6 +40,17 @@ use Spatie\SslCertificate\SslCertificate;
 class ConfigurationManager {
 
 	/**
+	 * Constructor
+	 * @param string $path Path to the configuration file
+	 * @param array<string, mixed>|null $config Configuration
+	 */
+	public function __construct(
+		private readonly string $path,
+		private readonly ?array $config = null,
+	) {
+	}
+
+	/**
 	 * Returns the configuration schema
 	 * @return Structure Configuration schema
 	 */
@@ -58,17 +69,6 @@ class ConfigurationManager {
 			'persistent' => Expect::bool(false)->dynamic(),
 			'theme' => Expect::string('generic')->dynamic(),
 		])->castTo('array');
-	}
-
-	/**
-	 * Constructor
-	 * @param string $path Path to the configuration file
-	 * @param array<string, mixed>|null $config Configuration
-	 */
-	public function __construct(
-		private readonly string $path,
-		private readonly ?array $config = null,
-	) {
 	}
 
 	/**

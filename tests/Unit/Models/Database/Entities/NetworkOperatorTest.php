@@ -38,22 +38,22 @@ require __DIR__ . '/../../../../bootstrap.php';
 class NetworkOperatorTest extends TestCase {
 
 	/**
-	 * @var string Network operator name
+	 * Network operator name
 	 */
 	private const NAME = 'T-Mobile CZ';
 
 	/**
-	 * @var string Network operator APN
+	 * Network operator APN
 	 */
 	private const APN = 'internet.t-mobile.cz';
 
 	/**
-	 * @var string Network operator username
+	 * Network operator username
 	 */
 	private const USERNAME = 'gprs';
 
 	/**
-	 * @var string Network operator password
+	 * Network operator password
 	 */
 	private const PASSWORD = 'gprs';
 

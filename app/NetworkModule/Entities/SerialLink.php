@@ -29,7 +29,7 @@ use stdClass;
 final class SerialLink implements INetworkManagerEntity {
 
 	/**
-	 * @var string nmcli configuration prefix
+	 * nmcli configuration prefix
 	 */
 	public const NMCLI_PREFIX = 'serial';
 
@@ -65,20 +65,6 @@ final class SerialLink implements INetworkManagerEntity {
 	}
 
 	/**
-	 * Serializes Serial link entity into JSON
-	 * @return array{baudRate: int, bits: int<1, max>, parity: 'E'|'n'|'o'|'', sendDelay: int, stopBits: int<1, 2>} JSON serialized entity
-	 */
-	public function jsonSerialize(): array {
-		return [
-			'baudRate' => $this->baudRate,
-			'bits' => $this->bits,
-			'parity' => $this->parity,
-			'sendDelay' => $this->sendDelay,
-			'stopBits' => $this->stopBits,
-		];
-	}
-
-	/**
 	 * Deserializes Serial link from nmcli connection string
 	 * @param array<string, array<string, array<string>|string>> $nmCli nmcli connection configuration
 	 * @return SerialLink Serial link entity
@@ -94,6 +80,20 @@ final class SerialLink implements INetworkManagerEntity {
 		$sendDelay = (int) ($array['send-delay'] ?? 0);
 		$stopBits = (int) ($array['stopbits'] ?? 1);
 		return new self($baudRate, $bits, $parity, $sendDelay, $stopBits);
+	}
+
+	/**
+	 * Serializes Serial link entity into JSON
+	 * @return array{baudRate: int, bits: int<1, max>, parity: 'E'|'n'|'o'|'', sendDelay: int, stopBits: int<1, 2>} JSON serialized entity
+	 */
+	public function jsonSerialize(): array {
+		return [
+			'baudRate' => $this->baudRate,
+			'bits' => $this->bits,
+			'parity' => $this->parity,
+			'sendDelay' => $this->sendDelay,
+			'stopBits' => $this->stopBits,
+		];
 	}
 
 	/**

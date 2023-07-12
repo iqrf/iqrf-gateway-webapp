@@ -44,7 +44,7 @@ require __DIR__ . '/../../../bootstrap.php';
 final class MonitManagerTest extends TestCase {
 
 	/**
-	 * @var string Monit configuration file name
+	 * Monit configuration file name
 	 */
 	private const FILE_NAME = 'monitrc';
 
@@ -67,22 +67,6 @@ final class MonitManagerTest extends TestCase {
 	 * @var MonitManager Monit manager
 	 */
 	private MonitManager $managerTemp;
-
-	/**
-	 * Sets up the test environment
-	 */
-	protected function setUp(): void {
-		Environment::lock('monit', TMP_DIR);
-		$monitDir = realpath(TESTER_DIR . '/data/maintenance/');
-		$monitTempDir = realpath(TMP_DIR);
-		FileSystem::copy($monitDir, $monitTempDir . '/maintenance/');
-		$commandStack = new CommandStack();
-		$commandManager = new CommandManager(false, $commandStack);
-		$this->fileManager = new FileManager($monitDir, $commandManager);
-		$this->fileManagerTemp = new FileManager($monitTempDir . '/maintenance/', $commandManager);
-		$this->manager = new MonitManager($this->fileManager);
-		$this->managerTemp = new MonitManager($this->fileManagerTemp);
-	}
 
 	/**
 	 * Tests the function to read monit configuration file
@@ -140,6 +124,22 @@ final class MonitManagerTest extends TestCase {
 			];
 			$this->managerTemp->saveConfig($config);
 		}, MonitConfigErrorException::class, 'Monit configuration file contains invalid content.');
+	}
+
+	/**
+	 * Sets up the test environment
+	 */
+	protected function setUp(): void {
+		Environment::lock('monit', TMP_DIR);
+		$monitDir = realpath(TESTER_DIR . '/data/maintenance/');
+		$monitTempDir = realpath(TMP_DIR);
+		FileSystem::copy($monitDir, $monitTempDir . '/maintenance/');
+		$commandStack = new CommandStack();
+		$commandManager = new CommandManager(false, $commandStack);
+		$this->fileManager = new FileManager($monitDir, $commandManager);
+		$this->fileManagerTemp = new FileManager($monitTempDir . '/maintenance/', $commandManager);
+		$this->manager = new MonitManager($this->fileManager);
+		$this->managerTemp = new MonitManager($this->fileManagerTemp);
 	}
 
 }

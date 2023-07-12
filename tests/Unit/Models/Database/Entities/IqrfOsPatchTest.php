@@ -38,57 +38,49 @@ require __DIR__ . '/../../../../bootstrap.php';
 class IqrfOsPatchTest extends TestCase {
 
 	/**
-	 * @var IqrfOsPatch IqrfOsPatch entity
-	 */
-	private IqrfOsPatch $iqrfOsPatch;
-
-	/**
-	 * @var string IQRF module type
+	 * IQRF module type
 	 */
 	private const MODULE_TYPE = 'TR7x';
 
 	/**
-	 * @var int From IQRF OS version
+	 * From IQRF OS version
 	 */
 	private const FROM_OS_VERSION = 307;
 
 	/**
-	 * @var int From IQRF OS build
+	 * From IQRF OS build
 	 */
 	private const FROM_OS_BUILD = 2160;
 
 	/**
-	 * @var int To IQRF OS version
+	 * To IQRF OS version
 	 */
 	private const TO_OS_VERSION = 400;
 
 	/**
-	 * @var int To IQRF OS build
+	 * To IQRF OS build
 	 */
 	private const TO_OS_BUILD = 2225;
 
 	/**
-	 * @var int Patch part number
+	 * Patch part number
 	 */
 	private const PART_NUMBER = 1;
 
 	/**
-	 * @var int Patch parts
+	 * Patch parts
 	 */
 	private const PARTS = 1;
 
 	/**
-	 * @var string File name
+	 * File name
 	 */
 	private const FILE_NAME = 'OS-TR7xD-307(2160)-400(2225).iqrf';
 
 	/**
-	 * Sets up testing environment
+	 * @var IqrfOsPatch IqrfOsPatch entity
 	 */
-	protected function setUp(): void {
-		parent::setUp();
-		$this->iqrfOsPatch = new IqrfOsPatch(self::MODULE_TYPE, self::FROM_OS_VERSION, self::FROM_OS_BUILD, self::TO_OS_VERSION, self::TO_OS_BUILD, self::PART_NUMBER, self::PARTS, self::FILE_NAME);
-	}
+	private IqrfOsPatch $iqrfOsPatch;
 
 	/**
 	 * Tests the function to return module type of patch
@@ -162,6 +154,14 @@ class IqrfOsPatchTest extends TestCase {
 			'fileName' => self::FILE_NAME,
 		];
 		Assert::same($expected, $this->iqrfOsPatch->jsonSerialize());
+	}
+
+	/**
+	 * Sets up testing environment
+	 */
+	protected function setUp(): void {
+		parent::setUp();
+		$this->iqrfOsPatch = new IqrfOsPatch(self::MODULE_TYPE, self::FROM_OS_VERSION, self::FROM_OS_BUILD, self::TO_OS_VERSION, self::TO_OS_BUILD, self::PART_NUMBER, self::PARTS, self::FILE_NAME);
 	}
 
 }

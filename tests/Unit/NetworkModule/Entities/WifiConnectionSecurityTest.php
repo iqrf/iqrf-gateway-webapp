@@ -46,15 +46,6 @@ final class WifiConnectionSecurityTest extends TestCase {
 	 */
 	private WifiConnectionSecurity $entity;
 
-	/**
-	 * Sets up the testing environment
-	 */
-	protected function setUp(): void {
-		$leap = new Leap('', '');
-		$wep = new Wep(WepKeyType::UNKNOWN, 0, ['', '', '', '']);
-		$this->entity = new WifiConnectionSecurity(WifiSecurityType::WPA_PSK, 'password', $leap, $wep, null);
-	}
-
 	public function testJsonSerialize(): void {
 		$expected = [
 			'type' => 'wpa-psk',
@@ -70,6 +61,15 @@ final class WifiConnectionSecurityTest extends TestCase {
 			],
 		];
 		Assert::same($expected, $this->entity->jsonSerialize());
+	}
+
+	/**
+	 * Sets up the testing environment
+	 */
+	protected function setUp(): void {
+		$leap = new Leap('', '');
+		$wep = new Wep(WepKeyType::UNKNOWN, 0, ['', '', '', '']);
+		$this->entity = new WifiConnectionSecurity(WifiSecurityType::WPA_PSK, 'password', $leap, $wep, null);
 	}
 
 }

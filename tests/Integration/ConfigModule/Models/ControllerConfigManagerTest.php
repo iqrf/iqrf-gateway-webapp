@@ -43,12 +43,12 @@ require __DIR__ . '/../../../bootstrap.php';
 final class ControllerConfigManagerTest extends TestCase {
 
 	/**
-	 * @var string Controller configuration directory path
+	 * Controller configuration directory path
 	 */
 	private const CONF_DIR = TESTER_DIR . '/data/controller/';
 
 	/**
-	 * @var string Controller configuration temporary directory path
+	 * Controller configuration temporary directory path
 	 */
 	private const TEMP_CONF_DIR = TMP_DIR . '/controller/';
 

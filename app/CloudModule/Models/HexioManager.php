@@ -35,7 +35,7 @@ use Nette\Utils\Strings;
 class HexioManager implements IManager {
 
 	/**
-	 * @var string CA certificate file name
+	 * CA certificate file name
 	 */
 	private const CA_FILENAME = 'hexio-ca.crt';
 
@@ -89,6 +89,17 @@ class HexioManager implements IManager {
 	}
 
 	/**
+	 * Downloads the root CA certificate
+	 * @throws GuzzleException
+	 * @throws IOException
+	 */
+	public function downloadCaCertificate(): void {
+		$caCertUrl = 'https://letsencrypt.org/certs/isrgrootx1.pem.txt';
+		$caCert = $this->client->request('GET', $caCertUrl)->getBody();
+		FileSystem::write($this->certPath . self::CA_FILENAME, $caCert->getContents());
+	}
+
+	/**
 	 * Creates a directory for certificates
 	 * @throws CannotCreateCertificateDirectoryException
 	 */
@@ -100,17 +111,6 @@ class HexioManager implements IManager {
 		}
 		$realPath = realpath($this->certPath);
 		$this->certPath = (($realPath === false) ? $this->certPath : $realPath) . '/';
-	}
-
-	/**
-	 * Downloads the root CA certificate
-	 * @throws GuzzleException
-	 * @throws IOException
-	 */
-	public function downloadCaCertificate(): void {
-		$caCertUrl = 'https://letsencrypt.org/certs/isrgrootx1.pem.txt';
-		$caCert = $this->client->request('GET', $caCertUrl)->getBody();
-		FileSystem::write($this->certPath . self::CA_FILENAME, $caCert->getContents());
 	}
 
 }

@@ -30,7 +30,7 @@ use Nette\Utils\FileSystem;
 class TimeBackup implements IBackupManager {
 
 	/**
-	 * @var array<string> Whitelisted files
+	 * Whitelisted files
 	 */
 	final public const WHITELIST = [
 		'timezone',

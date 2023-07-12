@@ -32,7 +32,7 @@ use stdClass;
 class Eap implements INetworkManagerEntity {
 
 	/**
-	 * @var string nmcli 802-1x prefix
+	 * nmcli 802-1x prefix
 	 */
 	private const NMCLI_PREFIX = '802-1x';
 
@@ -72,21 +72,6 @@ class Eap implements INetworkManagerEntity {
 	}
 
 	/**
-	 * Serializes EAP entity into JSON
-	 * @return array{phaseOneMethod: string|null, phaseTwoMethod: string|null, anonymousIdentity: string, cert: string, identity: string, password: string} JSON serialized data
-	 */
-	public function jsonSerialize(): array {
-		return [
-			'phaseOneMethod' => ($this->phaseOne !== null) ? $this->phaseOne->jsonSerialize() : null,
-			'phaseTwoMethod' => ($this->phaseTwo !== null) ? $this->phaseTwo->jsonSerialize() : null,
-			'anonymousIdentity' => $this->anonymousIdentity,
-			'cert' => $this->cert,
-			'identity' => $this->identity,
-			'password' => $this->password,
-		];
-	}
-
-	/**
 	 * Deserializes EAP entity from nmcli configuration
 	 * @param array<string, array<string, array<string>|string>> $nmCli nmcli configuration
 	 * @return INetworkManagerEntity EAP entity
@@ -101,6 +86,21 @@ class Eap implements INetworkManagerEntity {
 			$array['identity'],
 			$array['password']
 		);
+	}
+
+	/**
+	 * Serializes EAP entity into JSON
+	 * @return array{phaseOneMethod: string|null, phaseTwoMethod: string|null, anonymousIdentity: string, cert: string, identity: string, password: string} JSON serialized data
+	 */
+	public function jsonSerialize(): array {
+		return [
+			'phaseOneMethod' => ($this->phaseOne !== null) ? $this->phaseOne->jsonSerialize() : null,
+			'phaseTwoMethod' => ($this->phaseTwo !== null) ? $this->phaseTwo->jsonSerialize() : null,
+			'anonymousIdentity' => $this->anonymousIdentity,
+			'cert' => $this->cert,
+			'identity' => $this->identity,
+			'password' => $this->password,
+		];
 	}
 
 	/**

@@ -43,22 +43,22 @@ require __DIR__ . '/../../../bootstrap.php';
 final class FileManagerTest extends TestCase {
 
 	/**
-	 * @var string File name
+	 * File name
 	 */
 	private const FILE_NAME = 'config.json';
 
 	/**
-	 * @var string File name of nonexistent file
+	 * File name of nonexistent file
 	 */
 	private const FILE_NAME_NONEXISTENT = 'nonexistent.json';
 
 	/**
-	 * @var string Directory with configuration files
+	 * Directory with configuration files
 	 */
 	private const CONFIG_PATH = TESTER_DIR . '/data/configuration/';
 
 	/**
-	 * @var string Directory with temporary configuration files
+	 * Directory with temporary configuration files
 	 */
 	private const CONFIG_TEMP_PATH = TMP_DIR . '/configuration/';
 

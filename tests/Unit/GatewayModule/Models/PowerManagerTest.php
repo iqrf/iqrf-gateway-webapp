@@ -43,14 +43,6 @@ final class PowerManagerTest extends CommandTestCase {
 	private PowerManager $manager;
 
 	/**
-	 * Sets up the test environment
-	 */
-	protected function setUp(): void {
-		parent::setUp();
-		$this->manager = new PowerManager($this->commandManager);
-	}
-
-	/**
 	 * Tests the function to power off IQRF Gateway
 	 */
 	public function testPowerOff(): void {
@@ -68,6 +60,14 @@ final class PowerManagerTest extends CommandTestCase {
 		Assert::noError(function (): void {
 			$this->manager->reboot();
 		});
+	}
+
+	/**
+	 * Sets up the test environment
+	 */
+	protected function setUp(): void {
+		parent::setUp();
+		$this->manager = new PowerManager($this->commandManager);
 	}
 
 }

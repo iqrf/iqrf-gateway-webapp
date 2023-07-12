@@ -34,7 +34,7 @@ use Nette\Utils\JsonException;
 class InteliGlueManager implements IManager {
 
 	/**
-	 * @var string CA certificate filename
+	 * CA certificate filename
 	 */
 	private const CA_FILENAME = 'inteliments-ca.crt';
 
@@ -88,6 +88,17 @@ class InteliGlueManager implements IManager {
 	}
 
 	/**
+	 * Downloads the root CA certificate
+	 * @throws GuzzleException
+	 * @throws IOException
+	 */
+	public function downloadCaCertificate(): void {
+		$caCertUrl = 'https://inteliments.com/static/docs/inteliglue/downloads/DST_Root_CA_X3.pem.txt';
+		$caCert = $this->client->request('GET', $caCertUrl)->getBody();
+		FileSystem::write($this->certPath . self::CA_FILENAME, $caCert->getContents());
+	}
+
+	/**
 	 * Creates a directory for certificates
 	 * @throws CannotCreateCertificateDirectoryException
 	 */
@@ -99,17 +110,6 @@ class InteliGlueManager implements IManager {
 		}
 		$realPath = realpath($this->certPath);
 		$this->certPath = (($realPath === false) ? $this->certPath : $realPath) . '/';
-	}
-
-	/**
-	 * Downloads the root CA certificate
-	 * @throws GuzzleException
-	 * @throws IOException
-	 */
-	public function downloadCaCertificate(): void {
-		$caCertUrl = 'https://inteliments.com/static/docs/inteliglue/downloads/DST_Root_CA_X3.pem.txt';
-		$caCert = $this->client->request('GET', $caCertUrl)->getBody();
-		FileSystem::write($this->certPath . self::CA_FILENAME, $caCert->getContents());
 	}
 
 }

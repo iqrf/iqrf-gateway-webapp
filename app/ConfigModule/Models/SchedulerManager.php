@@ -156,22 +156,6 @@ class SchedulerManager {
 	}
 
 	/**
-	 * Reads a task
-	 * @param string $fileName Task file name
-	 * @return stdClass Task configuration
-	 * @throws InvalidJsonException
-	 * @throws InvalidTaskMessageException
-	 * @throws JsonException
-	 * @throws NonexistentJsonSchemaException
-	 * @throws TaskNotFoundException
-	 */
-	private function readFile(string $fileName): stdClass {
-		$config = $this->fileManager->readJson($fileName, false);
-		$this->schemaManager->validate($config);
-		return $config;
-	}
-
-	/**
 	 * Saves the task's configuration
 	 * @param stdClass $config Task's configuration
 	 * @param string|null $fileName Task file name
@@ -196,6 +180,22 @@ class SchedulerManager {
 		}
 		$this->schemaManager->validate($config);
 		$this->fileManager->writeJson($fileName . '.json', $config);
+	}
+
+	/**
+	 * Reads a task
+	 * @param string $fileName Task file name
+	 * @return stdClass Task configuration
+	 * @throws InvalidJsonException
+	 * @throws InvalidTaskMessageException
+	 * @throws JsonException
+	 * @throws NonexistentJsonSchemaException
+	 * @throws TaskNotFoundException
+	 */
+	private function readFile(string $fileName): stdClass {
+		$config = $this->fileManager->readJson($fileName, false);
+		$this->schemaManager->validate($config);
+		return $config;
 	}
 
 }

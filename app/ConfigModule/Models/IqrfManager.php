@@ -46,22 +46,6 @@ class IqrfManager {
 	}
 
 	/**
-	 * Creates a list of interfaces available in the system
-	 * @param string $command Command to list interfaces
-	 * @return array<string> List of interfaces available in the system
-	 */
-	private function getInterfaces(string $command): array {
-		$interfaces = [];
-		$ls = $this->commandManager->run($command, true)->getStdout();
-		foreach (explode(PHP_EOL, $ls) as $interface) {
-			if ($interface !== '') {
-				$interfaces[] = $interface;
-			}
-		}
-		return $interfaces;
-	}
-
-	/**
 	 * Creates a list of SPI interfaces available in the system
 	 * @return array<string> SPI interfaces available in the system
 	 */
@@ -77,6 +61,22 @@ class IqrfManager {
 	public function getUartInterfaces(): array {
 		$command = 'ls -1 /dev/ttyAMA* /dev/ttyS*';
 		return $this->getInterfaces($command);
+	}
+
+	/**
+	 * Creates a list of interfaces available in the system
+	 * @param string $command Command to list interfaces
+	 * @return array<string> List of interfaces available in the system
+	 */
+	private function getInterfaces(string $command): array {
+		$interfaces = [];
+		$ls = $this->commandManager->run($command, true)->getStdout();
+		foreach (explode(PHP_EOL, $ls) as $interface) {
+			if ($interface !== '') {
+				$interfaces[] = $interface;
+			}
+		}
+		return $interfaces;
 	}
 
 }

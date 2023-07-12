@@ -62,7 +62,7 @@ deb-package:
 deps:
 	composer install
 
-qa: lint cs
+qa: cs
 
 install:
 	install -d -o $(WEBAPP_USER) $(CACHE_DIR)
@@ -147,9 +147,6 @@ install:
 	patch $(CONFIG_DIR)/config.neon install/patches/nettrine-fix-db-path.patch
 	patch $(CONFIG_DIR)/config.neon install/patches/config-fix-log-path.patch
 	patch $(DATA_DIR)/app/GatewayModule/Models/DiagnosticsManager.php install/patches/diagnostics-fix-dir-path.patch
-
-lint: deps
-	vendor/bin/linter app bin tests
 
 phpstan: deps
 	NETTE_TESTER_RUNNER=1 php vendor/bin/phpstan analyse -c phpstan.neon

@@ -43,32 +43,32 @@ require __DIR__ . '/../../../bootstrap.php';
 final class ModemTest extends TestCase {
 
 	/**
-	 * @var string Network interface
+	 * Network interface
 	 */
 	private const NETWORK_INTERFACE = 'ttyAMA2';
 
 	/**
-	 * @var string Modem IMEI
+	 * Modem IMEI
 	 */
 	private const IMEI = '865167066186454';
 
 	/**
-	 * @var string Modem manufacturer
+	 * Modem manufacturer
 	 */
 	private const MANUFACTURER = 'Quectel';
 
 	/**
-	 * @var string Modem model
+	 * Modem model
 	 */
 	private const MODEL = 'EG25';
 
 	/**
-	 * @var int Signal strength
+	 * Signal strength
 	 */
 	private const SIGNAL = 60;
 
 	/**
-	 * @var float RSSI
+	 * RSSI
 	 */
 	private const RSSI = -55.0;
 
@@ -86,15 +86,6 @@ final class ModemTest extends TestCase {
 	 * @var ModemFailedReason|null Modem failed reason
 	 */
 	private ?ModemFailedReason $failedReason = null;
-
-	/**
-	 * Sets up the testing environment
-	 */
-	protected function setUp(): void {
-		$this->state = ModemState::CONNECTED;
-		$this->entity = new Modem(self::NETWORK_INTERFACE, self::IMEI, self::MANUFACTURER, self::MODEL, $this->state, $this->failedReason, self::SIGNAL);
-		$this->entity->setRssi(self::RSSI);
-	}
 
 	/**
 	 * Tests the function to create a new Modem entity from mmcli JSON object
@@ -128,6 +119,15 @@ final class ModemTest extends TestCase {
 			'rssi' => self::RSSI,
 		];
 		Assert::same($expected, $this->entity->jsonSerialize());
+	}
+
+	/**
+	 * Sets up the testing environment
+	 */
+	protected function setUp(): void {
+		$this->state = ModemState::CONNECTED;
+		$this->entity = new Modem(self::NETWORK_INTERFACE, self::IMEI, self::MANUFACTURER, self::MODEL, $this->state, $this->failedReason, self::SIGNAL);
+		$this->entity->setRssi(self::RSSI);
 	}
 
 }

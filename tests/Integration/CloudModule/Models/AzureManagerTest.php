@@ -42,7 +42,7 @@ require __DIR__ . '/../../../bootstrap.php';
 final class AzureManagerTest extends CloudIntegrationTestCase {
 
 	/**
-	 * @var string MS Azure IoT Hub connection string for the device
+	 * MS Azure IoT Hub connection string for the device
 	 */
 	private const CONNECTION_STRING = 'HostName=iqrf.azure-devices.net;DeviceId=IQRFGW;SharedAccessKey=1234567890abcdefghijklmnopqrstuvwxyzABCDEFG=';
 

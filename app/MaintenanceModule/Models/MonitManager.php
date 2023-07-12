@@ -30,12 +30,12 @@ use Nette\Utils\Strings;
 class MonitManager {
 
 	/**
-	 * @var string Monit configuration file
+	 * Monit configuration file
 	 */
 	private const CONF_FILE = 'monitrc';
 
 	/**
-	 * @var string Server and credentials pattern
+	 * Server and credentials pattern
 	 */
 	private const PATTERN = '/^set\smmonit\shttps?:\/\/(?\'user\'\w+):(?\'password\'\w+)@(?\'endpoint\'.+)$/';
 

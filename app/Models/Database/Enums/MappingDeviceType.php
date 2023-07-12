@@ -35,4 +35,5 @@ enum MappingDeviceType: string {
 	 * Board device type
 	 */
 	case Board = 'board';
+
 }

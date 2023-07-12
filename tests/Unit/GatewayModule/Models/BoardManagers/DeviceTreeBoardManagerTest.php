@@ -38,14 +38,14 @@ require __DIR__ . '/../../../../bootstrap.php';
 final class DeviceTreeBoardManagerTest extends CommandTestCase {
 
 	/**
+	 * Executed command
+	 */
+	private const COMMAND = 'cat /proc/device-tree/model';
+
+	/**
 	 * @var DeviceTreeBoardManager Device tree board manager
 	 */
 	private DeviceTreeBoardManager $manager;
-
-	/**
-	 * @var string Executed command
-	 */
-	private const COMMAND = 'cat /proc/device-tree/model';
 
 	/**
 	 * Tests the function to get board's name from DMI (success)

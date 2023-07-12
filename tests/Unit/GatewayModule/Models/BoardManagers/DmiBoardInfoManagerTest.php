@@ -38,18 +38,18 @@ require __DIR__ . '/../../../../bootstrap.php';
 final class DmiBoardInfoManagerTest extends CommandTestCase {
 
 	/**
-	 * @var DmiBoardManager DMI board manager
-	 */
-	private DmiBoardManager $manager;
-
-	/**
-	 * @var array<string, string> Executed commands
+	 * Executed commands
 	 */
 	private const COMMANDS = [
 		'dmiBoardName' => 'cat /sys/class/dmi/id/board_name',
 		'dmiBoardVendor' => 'cat /sys/class/dmi/id/board_vendor',
 		'dmiBoardVersion' => 'cat /sys/class/dmi/id/board_version',
 	];
+
+	/**
+	 * @var DmiBoardManager DMI board manager
+	 */
+	private DmiBoardManager $manager;
 
 	/**
 	 * Tests the function to get board's name from DMI (success)

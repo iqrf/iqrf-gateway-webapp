@@ -39,14 +39,14 @@ require __DIR__ . '/../../../bootstrap.php';
 final class SupervisordManagerTest extends CommandTestCase {
 
 	/**
+	 * Name of service
+	 */
+	private const SERVICE_NAME = 'iqrf-gateway-daemon';
+
+	/**
 	 * @var SupervisordManager Service manager for supervisord init daemon in a Docker container
 	 */
 	private SupervisordManager $manager;
-
-	/**
-	 * @var string Name of service
-	 */
-	private const SERVICE_NAME = 'iqrf-gateway-daemon';
 
 	/**
 	 * Tests the function to disable IQRF Gateway Daemon's service via supervisord

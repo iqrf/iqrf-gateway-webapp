@@ -67,17 +67,6 @@ final class WireguardPeerAddressTest extends TestCase {
 	private WireguardPeerAddress $entity;
 
 	/**
-	 * Sets up the test environment
-	 */
-	protected function setUp(): void {
-		$this->interfaceEntity = new WireguardInterface('wg0', 'CHmgTLdcdr33Nr/GblDjKufGqWWxmnGv7a50hN6hZ0c=', null);
-		$this->peerEntity = new WireguardPeer('Z4Csw6v+89bcamtek9elXmuIEA+6PeB6CLnjNh4dJzI=', null, 25, 'vpn.example.org', 51280, $this->interfaceEntity);
-		$this->ipv4Entity = new MultiAddress(Multi::factory('192.168.1.2'), 24);
-		$this->ipv6Entity = new MultiAddress(Multi::factory('::'), 48);
-		$this->entity = new WireguardPeerAddress($this->ipv4Entity, $this->peerEntity);
-	}
-
-	/**
 	 * Tests the function to get WireGuard peer address entity
 	 */
 	public function testGetAddress(): void {
@@ -131,6 +120,17 @@ final class WireguardPeerAddressTest extends TestCase {
 		];
 		$this->entity->setAddress($this->ipv6Entity);
 		Assert::same($expected, $this->entity->jsonSerialize());
+	}
+
+	/**
+	 * Sets up the test environment
+	 */
+	protected function setUp(): void {
+		$this->interfaceEntity = new WireguardInterface('wg0', 'CHmgTLdcdr33Nr/GblDjKufGqWWxmnGv7a50hN6hZ0c=', null);
+		$this->peerEntity = new WireguardPeer('Z4Csw6v+89bcamtek9elXmuIEA+6PeB6CLnjNh4dJzI=', null, 25, 'vpn.example.org', 51280, $this->interfaceEntity);
+		$this->ipv4Entity = new MultiAddress(Multi::factory('192.168.1.2'), 24);
+		$this->ipv6Entity = new MultiAddress(Multi::factory('::'), 48);
+		$this->entity = new WireguardPeerAddress($this->ipv4Entity, $this->peerEntity);
 	}
 
 }

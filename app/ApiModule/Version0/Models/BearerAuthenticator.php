@@ -95,6 +95,22 @@ class BearerAuthenticator implements IAuthenticator {
 	}
 
 	/**
+	 * Parses the authorization header
+	 * @param string $header Authorization header
+	 * @return string|null JWT
+	 */
+	public function parseAuthorizationHeader(string $header): ?string {
+		if (!str_starts_with($header, 'Bearer')) {
+			return null;
+		}
+		$str = Strings::substring($header, 7);
+		if ($str === '') {
+			return null;
+		}
+		return $str;
+	}
+
+	/**
 	 * Validates JWT
 	 * @param Plain $token JWT to validate
 	 * @return bool Is JWT valid?
@@ -113,22 +129,6 @@ class BearerAuthenticator implements IAuthenticator {
 			$token->hasBeenIssuedBefore($now) &&
 			($hostname === false || $token->hasBeenIssuedBy($hostname) &&
 				$token->isIdentifiedBy($hostname));
-	}
-
-	/**
-	 * Parses the authorization header
-	 * @param string $header Authorization header
-	 * @return string|null JWT
-	 */
-	public function parseAuthorizationHeader(string $header): ?string {
-		if (!str_starts_with($header, 'Bearer')) {
-			return null;
-		}
-		$str = Strings::substring($header, 7);
-		if ($str === '') {
-			return null;
-		}
-		return $str;
 	}
 
 }

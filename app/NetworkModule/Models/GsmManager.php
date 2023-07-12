@@ -59,7 +59,7 @@ class GsmManager {
 		$this->checkCommand($output);
 		try {
 			$json = Json::decode($output->getStdout(), forceArrays: true);
-			$entities = array_map(fn(string $path): array => $this->getModemInformation($path)->jsonSerialize(), $json['modem-list']);
+			$entities = array_map(fn (string $path): array => $this->getModemInformation($path)->jsonSerialize(), $json['modem-list']);
 		} catch (JsonException $e) {
 			throw new ModemManagerException($e->getMessage());
 		}

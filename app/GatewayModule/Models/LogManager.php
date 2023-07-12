@@ -34,52 +34,52 @@ use SplFileInfo;
 class LogManager {
 
 	/**
-	 * @var string IQRF Gateway Controller name
+	 * IQRF Gateway Controller name
 	 */
 	final public const CONTROLLER = 'iqrf-gateway-controller';
 
 	/**
-	 * @var string IQRF Gateway Daemon name
+	 * IQRF Gateway Daemon name
 	 */
 	final public const DAEMON = 'iqrf-gateway-daemon';
 
 	/**
-	 * @var string IQRF Gateway Setter name
+	 * IQRF Gateway Setter name
 	 */
 	final public const SETTER = 'iqrf-gateway-setter';
 
 	/**
-	 * @var string IQRF Gateway Translator name
+	 * IQRF Gateway Translator name
 	 */
 	final public const TRANSLATOR = 'iqrf-gateway-translator';
 
 	/**
-	 * @var string IQRF Gateway Uploader name
+	 * IQRF Gateway Uploader name
 	 */
 	final public const UPLOADER = 'iqrf-gateway-uploader';
 
 	/**
-	 * @var string IQRF Gateway Controller log file
+	 * IQRF Gateway Controller log file
 	 */
 	private const CONTROLLER_LOG = 'iqrf-gateway-controller.log';
 
 	/**
-	 * @var string IQRF Gateway Setter log file
+	 * IQRF Gateway Setter log file
 	 */
 	private const SETTER_LOG = 'iqrf-gateway-setter.log';
 
 	/**
-	 * @var string IQRF Gateway Translator log file
+	 * IQRF Gateway Translator log file
 	 */
 	private const TRANSLATOR_LOG = 'iqrf-gateway-translator.log';
 
 	/**
-	 * @var string IQRF Gateway Uploader log file
+	 * IQRF Gateway Uploader log file
 	 */
 	private const UPLOADER_LOG = 'iqrf-gateway-uploader.log';
 
 	/**
-	 * @var string Path to ZIP archive
+	 * Path to ZIP archive
 	 */
 	private string $path = '/tmp/iqrf-gateway-logs.zip';
 

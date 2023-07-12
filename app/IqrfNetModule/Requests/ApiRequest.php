@@ -70,6 +70,16 @@ class ApiRequest {
 	}
 
 	/**
+	 * Converts the IQRF JSON DPA request to JSON string
+	 * @param bool $pretty Pretty formatted JSON
+	 * @return string JSON string
+	 * @throws JsonException
+	 */
+	public function toJson(bool $pretty = false): string {
+		return Json::encode($this->request, pretty: $pretty);
+	}
+
+	/**
 	 * Adds a message ID to the IQRF JSON API request
 	 */
 	protected function addMsgId(): void {
@@ -78,16 +88,6 @@ class ApiRequest {
 		} elseif ($this->request instanceof stdClass && !isset($this->request->data->msgId)) {
 			$this->request->data->msgId = $this->msgIdManager->generate();
 		}
-	}
-
-	/**
-	 * Converts the IQRF JSON DPA request to JSON string
-	 * @param bool $pretty Pretty formatted JSON
-	 * @return string JSON string
-	 * @throws JsonException
-	 */
-	public function toJson(bool $pretty = false): string {
-		return Json::encode($this->request, pretty: $pretty);
 	}
 
 }

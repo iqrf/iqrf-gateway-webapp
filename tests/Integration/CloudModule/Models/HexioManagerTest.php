@@ -41,12 +41,7 @@ require __DIR__ . '/../../../bootstrap.php';
 final class HexioManagerTest extends CloudIntegrationTestCase {
 
 	/**
-	 * @var HexioManager Hexio IoT platform manager
-	 */
-	private HexioManager $manager;
-
-	/**
-	 * @var array<string, string> Values from the configuration form
+	 * Values from the configuration form
 	 */
 	private const VALUES = [
 		'broker' => 'connect.hexio.cloud',
@@ -56,6 +51,11 @@ final class HexioManagerTest extends CloudIntegrationTestCase {
 		'username' => 'user',
 		'password' => 'pass',
 	];
+
+	/**
+	 * @var HexioManager Hexio IoT platform manager
+	 */
+	private HexioManager $manager;
 
 	/**
 	 * Tests the function to create a new MQTT interface

@@ -31,14 +31,14 @@ use Nette\Utils\FileSystem;
 class TimesyncdBackup implements IBackupManager {
 
 	/**
-	 * @var array<string> List of whitelisted files
+	 * List of whitelisted files
 	 */
 	final public const WHITELIST = [
 		'timesyncd.conf',
 	];
 
 	/**
-	 * @var array<string> Service name
+	 * Service name
 	 */
 	final public const SERVICES = [
 		'systemd-timesyncd',
@@ -103,19 +103,19 @@ class TimesyncdBackup implements IBackupManager {
 	}
 
 	/**
-	 * Fixes privileges for restored files
-	 */
-	private function fixPrivileges(): void {
-		$this->fileManager->chown($this->file, 'root', 'root');
-		$this->fileManager->chmod($this->file, 0644);
-	}
-
-	/**
 	 * Returns service names
 	 * @return array<string> Service names
 	 */
 	public function getServices(): array {
 		return self::SERVICES;
+	}
+
+	/**
+	 * Fixes privileges for restored files
+	 */
+	private function fixPrivileges(): void {
+		$this->fileManager->chown($this->file, 'root', 'root');
+		$this->fileManager->chmod($this->file, 0644);
 	}
 
 }

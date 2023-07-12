@@ -27,7 +27,7 @@ use JsonSerializable;
 final class IPv6Current implements JsonSerializable {
 
 	/**
-	 * @var string nmcli configuration prefix
+	 * nmcli configuration prefix
 	 */
 	public const NMCLI_PREFIX = 'IP6';
 
@@ -60,13 +60,13 @@ final class IPv6Current implements JsonSerializable {
 			$gateway = null;
 		}
 		if (array_key_exists('ADDRESS', $array)) {
-			$addresses = array_map(static fn(string $address): IPv6Address => IPv6Address::fromPrefix($address), $array['ADDRESS']);
+			$addresses = array_map(static fn (string $address): IPv6Address => IPv6Address::fromPrefix($address), $array['ADDRESS']);
 		} else {
 			$addresses = [];
 		}
 		$dns = [];
 		if (array_key_exists('DNS', $array)) {
-			$dns = array_map(static fn(string $address): IPv6 => IPv6::factory($address), $array['DNS']);
+			$dns = array_map(static fn (string $address): IPv6 => IPv6::factory($address), $array['DNS']);
 		}
 		return new self($method, $addresses, $gateway, $dns);
 	}

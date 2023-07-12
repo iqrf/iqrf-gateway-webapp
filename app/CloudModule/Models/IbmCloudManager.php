@@ -34,7 +34,7 @@ use Nette\Utils\JsonException;
 class IbmCloudManager implements IManager {
 
 	/**
-	 * @var string CA certificate filename
+	 * CA certificate filename
 	 */
 	private const CA_FILENAME = 'ibm-cloud-ca.crt';
 
@@ -88,6 +88,17 @@ class IbmCloudManager implements IManager {
 	}
 
 	/**
+	 * Downloads the root CA certificate
+	 * @throws GuzzleException
+	 * @throws IOException
+	 */
+	public function downloadCaCertificate(): void {
+		$caCertUrl = 'https://raw.githubusercontent.com/ibm-watson-iot/iot-python/master/src/wiotp/sdk/messaging.pem';
+		$caCert = $this->client->request('GET', $caCertUrl)->getBody();
+		FileSystem::write($this->certPath . self::CA_FILENAME, $caCert->getContents());
+	}
+
+	/**
 	 * Create a directory for certificates
 	 * @throws CannotCreateCertificateDirectoryException
 	 */
@@ -99,17 +110,6 @@ class IbmCloudManager implements IManager {
 		}
 		$realPath = realpath($this->certPath);
 		$this->certPath = (($realPath === false) ? $this->certPath : $realPath) . '/';
-	}
-
-	/**
-	 * Downloads the root CA certificate
-	 * @throws GuzzleException
-	 * @throws IOException
-	 */
-	public function downloadCaCertificate(): void {
-		$caCertUrl = 'https://raw.githubusercontent.com/ibm-watson-iot/iot-python/master/src/wiotp/sdk/messaging.pem';
-		$caCert = $this->client->request('GET', $caCertUrl)->getBody();
-		FileSystem::write($this->certPath . self::CA_FILENAME, $caCert->getContents());
 	}
 
 }

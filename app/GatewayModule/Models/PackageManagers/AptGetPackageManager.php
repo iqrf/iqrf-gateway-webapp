@@ -65,7 +65,7 @@ class AptGetPackageManager implements IPackageManager {
 	 */
 	public function getUpgradable(): array {
 		$stdout = $this->commandManager->run('apt-get -s upgrade -V', true)->getStdout();
-		return array_map(static fn (array $result): array  => [
+		return array_map(static fn (array $result): array => [
 			'name' => $result['name'],
 			'oldVersion' => $result['oldVersion'],
 			'newVersion' => $result['newVersion'],
@@ -120,7 +120,7 @@ class AptGetPackageManager implements IPackageManager {
 	 * @return string List of packages
 	 */
 	private function formatPackages(array $packages): string {
-		return implode(' ', array_map(static fn(string $package): string => escapeshellarg($package), $packages));
+		return implode(' ', array_map(static fn (string $package): string => escapeshellarg($package), $packages));
 	}
 
 }

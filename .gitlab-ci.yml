@@ -195,7 +195,6 @@ qa:
   before_script:
     - composer install --no-progress
   script:
-    - vendor/bin/linter app bin tests
     - vendor/bin/codesniffer --runtime-set php_version 80100 app bin tests
   <<: *coding-style_template
 

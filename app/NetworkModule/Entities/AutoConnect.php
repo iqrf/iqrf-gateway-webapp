@@ -51,18 +51,6 @@ class AutoConnect implements INetworkManagerEntity {
 	}
 
 	/**
-	 * Serializes the automatic connecting entity into JSON
-	 * @return array{enabled: bool, priority: int, retries: int} JSON serialized entity
-	 */
-	public function jsonSerialize(): array {
-		return [
-			'enabled' => $this->enabled,
-			'priority' => $this->priority,
-			'retries' => $this->retries,
-		];
-	}
-
-	/**
 	 * Deserializes the automatic connecting entity from nmcli configuration
 	 * @param array<string, array<string, array<string>|string>> $nmCli nmcli configuration
 	 * @return self Automatic connection entity
@@ -73,6 +61,18 @@ class AutoConnect implements INetworkManagerEntity {
 		$priority = (int) $array['autoconnect-priority'];
 		$retries = (int) $array['autoconnect-retries'];
 		return new self($enabled, $priority, $retries);
+	}
+
+	/**
+	 * Serializes the automatic connecting entity into JSON
+	 * @return array{enabled: bool, priority: int, retries: int} JSON serialized entity
+	 */
+	public function jsonSerialize(): array {
+		return [
+			'enabled' => $this->enabled,
+			'priority' => $this->priority,
+			'retries' => $this->retries,
+		];
 	}
 
 	/**

@@ -32,14 +32,14 @@ use Nette\Utils\FileSystem;
 class JournalBackup implements IBackupManager {
 
 	/**
-	 * @var array<string> Whitelisted files
+	 * Whitelisted files
 	 */
 	final public const WHITELIST = [
 		'journald.conf',
 	];
 
 	/**
-	 * @var array<string> Service name
+	 * Service name
 	 */
 	final public const SERVICES = [
 		'systemd-journald',
@@ -111,19 +111,19 @@ class JournalBackup implements IBackupManager {
 	}
 
 	/**
-	 * Fixes privileges for restored files
-	 */
-	private function fixPrivileges(): void {
-		$this->fileManager->chown($this->file, 'root', 'root');
-		$this->fileManager->chmod($this->file, 0644);
-	}
-
-	/**
 	 * Returns service names
 	 * @return array<string> Service names
 	 */
 	public function getServices(): array {
 		return self::SERVICES;
+	}
+
+	/**
+	 * Fixes privileges for restored files
+	 */
+	private function fixPrivileges(): void {
+		$this->fileManager->chown($this->file, 'root', 'root');
+		$this->fileManager->chmod($this->file, 0644);
 	}
 
 }

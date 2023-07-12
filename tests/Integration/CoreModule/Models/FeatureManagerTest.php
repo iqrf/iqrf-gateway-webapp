@@ -41,12 +41,12 @@ require __DIR__ . '/../../../bootstrap.php';
 final class FeatureManagerTest extends TestCase {
 
 	/**
-	 * @var string Path to the temporary file
+	 * Path to the temporary file
 	 */
 	private const PATH_TEMP = TMP_DIR . '/features.neon';
 
 	/**
-	 * @var string Path to the original file
+	 * Path to the original file
 	 */
 	private const PATH = TESTER_DIR . '/data/features.neon';
 
@@ -59,21 +59,6 @@ final class FeatureManagerTest extends TestCase {
 	 * @var FeatureManager Optional feature manager
 	 */
 	private FeatureManager $managerTemp;
-
-	/**
-	 * Copies the original file
-	 */
-	private function copy(): void {
-		FileSystem::copy(self::PATH, self::PATH_TEMP);
-	}
-
-	/**
-	 * Sets up the test environment
-	 */
-	protected function setUp(): void {
-		$this->manager = new FeatureManager(self::PATH);
-		$this->managerTemp = new FeatureManager(self::PATH_TEMP);
-	}
 
 	/**
 	 * Tests the constructor with nonexistent path
@@ -157,6 +142,21 @@ final class FeatureManagerTest extends TestCase {
 		Assert::exception(function (): void {
 			$this->manager->setEnabled(['nonsense'], true);
 		}, FeatureNotFoundException::class);
+	}
+
+	/**
+	 * Sets up the test environment
+	 */
+	protected function setUp(): void {
+		$this->manager = new FeatureManager(self::PATH);
+		$this->managerTemp = new FeatureManager(self::PATH_TEMP);
+	}
+
+	/**
+	 * Copies the original file
+	 */
+	private function copy(): void {
+		FileSystem::copy(self::PATH, self::PATH_TEMP);
 	}
 
 }

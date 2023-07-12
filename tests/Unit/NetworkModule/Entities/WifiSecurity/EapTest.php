@@ -39,32 +39,32 @@ require __DIR__ . '/../../../../bootstrap.php';
 final class EapTest extends TestCase {
 
 	/**
-	 * @var EapPhaseOneMethod EAP phase one authentication method
+	 * EAP phase one authentication method
 	 */
 	private const PHASE_ONE = EapPhaseOneMethod::PEAP;
 
 	/**
-	 * @var EapPhaseTwoMethod EAP phase two authentication method
+	 * EAP phase two authentication method
 	 */
 	private const PHASE_TWO = EapPhaseTwoMethod::MSCHAPV2;
 
 	/**
-	 * @var string EAP anonymous identity
+	 * EAP anonymous identity
 	 */
 	private const ANONYMOUS_IDENTITY = 'testclient';
 
 	/**
-	 * @var string EAP CA certificate
+	 * EAP CA certificate
 	 */
 	private const CERT = '/certs/ca.cert';
 
 	/**
-	 * @var string EAP identity string
+	 * EAP identity string
 	 */
 	private const IDENTITY = 'testuser';
 
 	/**
-	 * @var string EAP password
+	 * EAP password
 	 */
 	private const PASSWORD = 'testpass';
 
@@ -72,13 +72,6 @@ final class EapTest extends TestCase {
 	 * @var Eap 802.1x entity
 	 */
 	private Eap $entity;
-
-	/**
-	 * Sets up the test environment
-	 */
-	protected function setUp(): void {
-		$this->entity = new Eap(self::PHASE_ONE, self::PHASE_TWO, self::ANONYMOUS_IDENTITY, self::CERT, self::IDENTITY, self::PASSWORD);
-	}
 
 	/**
 	 * Tests the function to deserialize EAP entity from JSON object
@@ -131,6 +124,13 @@ final class EapTest extends TestCase {
 	public function testNmCliSerialize(): void {
 		$expected = sprintf('802-1x.eap "%s" 802-1x.phase2-auth "%s" 802-1x.anonymous-identity "%s" 802-1x.ca-cert "%s" 802-1x.identity "%s" 802-1x.password "%s" ', self::PHASE_ONE->value, self::PHASE_TWO->value, self::ANONYMOUS_IDENTITY, self::CERT, self::IDENTITY, self::PASSWORD);
 		Assert::same($expected, $this->entity->nmCliSerialize());
+	}
+
+	/**
+	 * Sets up the test environment
+	 */
+	protected function setUp(): void {
+		$this->entity = new Eap(self::PHASE_ONE, self::PHASE_TWO, self::ANONYMOUS_IDENTITY, self::CERT, self::IDENTITY, self::PASSWORD);
 	}
 
 }

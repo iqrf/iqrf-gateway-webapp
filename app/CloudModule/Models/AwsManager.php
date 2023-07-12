@@ -37,7 +37,7 @@ use Nette\Utils\JsonException;
 class AwsManager implements IManager {
 
 	/**
-	 * @var string CA certificate filename
+	 * CA certificate filename
 	 */
 	private const CA_FILENAME = 'aws-ca.crt';
 
@@ -97,20 +97,6 @@ class AwsManager implements IManager {
 	}
 
 	/**
-	 * Create a directory for certificates
-	 * @throws CannotCreateCertificateDirectoryException
-	 */
-	private function createDirectory(): void {
-		try {
-			FileSystem::createDir($this->certPath);
-		} catch (IOException $e) {
-			throw new CannotCreateCertificateDirectoryException();
-		}
-		$realPath = realpath($this->certPath);
-		$this->certPath = (($realPath === false) ? $this->certPath : $realPath) . '/';
-	}
-
-	/**
 	 * Creates paths for root CA certificate, certificate and private key
 	 * @return array{cert: string, key: string} Paths for root CA certificate, certificate and private key
 	 */
@@ -156,6 +142,20 @@ class AwsManager implements IManager {
 	public function uploadCertsAndKey(array $paths, string $certificate, string $privateKey): void {
 		FileSystem::write($paths['cert'], $certificate);
 		FileSystem::write($paths['key'], $privateKey);
+	}
+
+	/**
+	 * Create a directory for certificates
+	 * @throws CannotCreateCertificateDirectoryException
+	 */
+	private function createDirectory(): void {
+		try {
+			FileSystem::createDir($this->certPath);
+		} catch (IOException $e) {
+			throw new CannotCreateCertificateDirectoryException();
+		}
+		$realPath = realpath($this->certPath);
+		$this->certPath = (($realPath === false) ? $this->certPath : $realPath) . '/';
 	}
 
 }

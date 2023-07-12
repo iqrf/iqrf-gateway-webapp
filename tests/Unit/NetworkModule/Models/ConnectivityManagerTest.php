@@ -40,22 +40,14 @@ require __DIR__ . '/../../../bootstrap.php';
 final class ConnectivityManagerTest extends CommandTestCase {
 
 	/**
-	 * @var ConnectivityManager Network connectivity manager
-	 */
-	private ConnectivityManager $manager;
-
-	/**
-	 * @var string Connectivity check command
+	 * Connectivity check command
 	 */
 	private const CHECK_CMD = 'nmcli -t networking connectivity check';
 
 	/**
-	 * Sets up the test environment
+	 * @var ConnectivityManager Network connectivity manager
 	 */
-	protected function setUp(): void {
-		parent::setUp();
-		$this->manager = new ConnectivityManager($this->commandManager);
-	}
+	private ConnectivityManager $manager;
 
 	/**
 	 * Tests the function to check network connectivity (failure)
@@ -73,6 +65,14 @@ final class ConnectivityManagerTest extends CommandTestCase {
 	public function testCheckSuccess(): void {
 		$this->receiveCommand(self::CHECK_CMD, true, 'full');
 		Assert::equal(ConnectivityState::FULL, $this->manager->check());
+	}
+
+	/**
+	 * Sets up the test environment
+	 */
+	protected function setUp(): void {
+		parent::setUp();
+		$this->manager = new ConnectivityManager($this->commandManager);
 	}
 
 }

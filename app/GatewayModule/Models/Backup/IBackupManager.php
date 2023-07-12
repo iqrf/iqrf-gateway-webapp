@@ -28,7 +28,7 @@ use App\CoreModule\Models\ZipArchiveManager;
 interface IBackupManager {
 
 	/**
-	 * @var string Temporary backup directory
+	 * Temporary backup directory
 	 */
 	final public const TMP_PATH = '/tmp/backup/';
 

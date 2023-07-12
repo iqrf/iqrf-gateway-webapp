@@ -89,15 +89,6 @@ class NetworkManager {
 	}
 
 	/**
-	 * Lists network interfaces
-	 * @return array<string> Network interfaces
-	 */
-	private function listsInterfaces(): array {
-		$interfaces = $this->commandManager->run('ls /sys/class/net | awk \'{ print $0 }\'', true)->getStdout();
-		return array_diff(explode(PHP_EOL, $interfaces), ['lo']);
-	}
-
-	/**
 	 * Returns MAC addresses of the gateway
 	 * @param array<string> $interfaces Network interfaces
 	 * @return array<string|null> MAC addresses array
@@ -110,6 +101,15 @@ class NetworkManager {
 			$addresses[$interface] = $output === '' ? null : $output;
 		}
 		return $addresses;
+	}
+
+	/**
+	 * Lists network interfaces
+	 * @return array<string> Network interfaces
+	 */
+	private function listsInterfaces(): array {
+		$interfaces = $this->commandManager->run('ls /sys/class/net | awk \'{ print $0 }\'', true)->getStdout();
+		return array_diff(explode(PHP_EOL, $interfaces), ['lo']);
 	}
 
 }

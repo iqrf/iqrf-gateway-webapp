@@ -32,22 +32,22 @@ use InvalidArgumentException;
 abstract class IqrfSoftwareBackup implements IBackupManager {
 
 	/**
-	 * @var string IQRF Gateway Controller
+	 * IQRF Gateway Controller
 	 */
 	final protected const IQRF_GATEWAY_CONTROLLER = 'IQRF Gateway Controller';
 
 	/**
-	 * @var string IQRF Gateway Translator
+	 * IQRF Gateway Translator
 	 */
 	final protected const IQRF_GATEWAY_TRANSLATOR = 'IQRF Gateway Translator';
 
 	/**
-	 * @var string IQRF Gateway Uploader
+	 * IQRF Gateway Uploader
 	 */
 	final protected const IQRF_GATEWAY_UPLOADER = 'IQRF Gateway Uploader';
 
 	/**
-	 * @var array<string> List of whitelisted pieces of software
+	 * List of whitelisted pieces of software
 	 */
 	private const SOFTWARES = [
 		self::IQRF_GATEWAY_CONTROLLER,
@@ -82,6 +82,12 @@ abstract class IqrfSoftwareBackup implements IBackupManager {
 	}
 
 	/**
+	 * Returns service names
+	 * @return array<string> Service names
+	 */
+	abstract public function getServices(): array;
+
+	/**
 	 * Performs IQRF software backup
 	 * @param array<string, array<string, bool>> $params Request parameters
 	 * @param ZipArchiveManager $zipManager ZIP archive manager
@@ -109,18 +115,6 @@ abstract class IqrfSoftwareBackup implements IBackupManager {
 	}
 
 	/**
-	 * Recreates directory
-	 */
-	private function recreateDirectory(): void {
-		$user = posix_getpwuid(posix_geteuid());
-		$owner = $user['name'] . ':' . posix_getgrgid($user['gid'])['name'];
-		$path = escapeshellarg($this->fileManager->getBasePath());
-		$this->commandManager->run('rm -rf ' . $path, true);
-		$this->commandManager->run('mkdir ' . $path, true);
-		$this->commandManager->run('chown -R ' . $owner . ' ' . $path, true);
-	}
-
-	/**
 	 * Returns optional feature name
 	 * @return string Optional feature name
 	 */
@@ -131,6 +125,18 @@ abstract class IqrfSoftwareBackup implements IBackupManager {
 			self::IQRF_GATEWAY_UPLOADER => 'trUpload',
 			default => throw new InvalidArgumentException('Invalid software name.'),
 		};
+	}
+
+	/**
+	 * Recreates directory
+	 */
+	private function recreateDirectory(): void {
+		$user = posix_getpwuid(posix_geteuid());
+		$owner = $user['name'] . ':' . posix_getgrgid($user['gid'])['name'];
+		$path = escapeshellarg($this->fileManager->getBasePath());
+		$this->commandManager->run('rm -rf ' . $path, true);
+		$this->commandManager->run('mkdir ' . $path, true);
+		$this->commandManager->run('chown -R ' . $owner . ' ' . $path, true);
 	}
 
 	/**
@@ -145,11 +151,5 @@ abstract class IqrfSoftwareBackup implements IBackupManager {
 			default => throw new InvalidArgumentException('Invalid software name.'),
 		};
 	}
-
-	/**
-	 * Returns service names
-	 * @return array<string> Service names
-	 */
-	abstract public function getServices(): array;
 
 }

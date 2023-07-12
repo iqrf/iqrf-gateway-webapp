@@ -39,12 +39,12 @@ require __DIR__ . '/../../../bootstrap.php';
 final class SystemDManagerTest extends CommandTestCase {
 
 	/**
-	 * @var string IQRF Gateway Daemon service name
+	 * IQRF Gateway Daemon service name
 	 */
 	private const DAEMON_SERVICE_NAME = 'iqrf-gateway-daemon';
 
 	/**
-	 * @var string Unknown service name
+	 * Unknown service name
 	 */
 	private const UNKNOWN_SERVICE_NAME = 'unknown';
 

@@ -59,12 +59,12 @@ use ZipArchive;
 class BackupManager {
 
 	/**
-	 * @var string Path to temporary backup directory
+	 * Path to temporary backup directory
 	 */
 	private const TMP_PATH = '/tmp/backup/';
 
 	/**
-	 * @var array<string> Services to include in backup
+	 * Services to include in backup
 	 */
 	private const SERVICES = [
 		'apcupsd',

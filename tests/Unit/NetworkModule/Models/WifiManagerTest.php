@@ -42,7 +42,7 @@ require __DIR__ . '/../../../bootstrap.php';
 final class WifiManagerTest extends CommandTestCase {
 
 	/**
-	 * @var string NetworkManager WiFi list command
+	 * NetworkManager WiFi list command
 	 */
 	private const LIST_COMMAND = 'nmcli -t -f IN-USE,BSSID,SSID,MODE,CHAN,RATE,SIGNAL,SECURITY device wifi list --rescan auto';
 
@@ -50,14 +50,6 @@ final class WifiManagerTest extends CommandTestCase {
 	 * @var WifiManager WiFi network manager
 	 */
 	private WifiManager $manager;
-
-	/**
-	 * Sets up the test environment
-	 */
-	protected function setUp(): void {
-		parent::setUp();
-		$this->manager = new WifiManager($this->commandManager);
-	}
 
 	/**
 	 * Tests the function for listing available WiFI networks
@@ -86,6 +78,14 @@ final class WifiManagerTest extends CommandTestCase {
 			$this->receiveCommand(self::LIST_COMMAND, true, '', 'ERROR', 1);
 			$this->manager->list();
 		}, NetworkManagerException::class, 'ERROR');
+	}
+
+	/**
+	 * Sets up the test environment
+	 */
+	protected function setUp(): void {
+		parent::setUp();
+		$this->manager = new WifiManager($this->commandManager);
 	}
 
 }

@@ -41,12 +41,12 @@ require __DIR__ . '/../../../../bootstrap.php';
 class WireguardInterfaceIpv6Test extends TestCase {
 
 	/**
-	 * @var string IPv6 address
+	 * IPv6 address
 	 */
 	private const ADDRESS = '2001:db8::';
 
 	/**
-	 * @var int IPv6 address prefix
+	 * IPv6 address prefix
 	 */
 	private const PREFIX = 32;
 
@@ -59,14 +59,6 @@ class WireguardInterfaceIpv6Test extends TestCase {
 	 * @var WireguardInterfaceIpv6 WireGuard interface IPv4 entity
 	 */
 	private WireguardInterfaceIpv6 $entity;
-
-	/**
-	 * Sets up the test environment
-	 */
-	protected function setUp(): void {
-		$this->interfaceEntity = new WireguardInterface('wg0', 'CHmgTLdcdr33Nr/GblDjKufGqWWxmnGv7a50hN6hZ0c=', 51775);
-		$this->entity = new WireguardInterfaceIpv6(new MultiAddress(Multi::factory(self::ADDRESS), self::PREFIX), $this->interfaceEntity);
-	}
 
 	/**
 	 * Tests the function to get address entity
@@ -118,6 +110,14 @@ class WireguardInterfaceIpv6Test extends TestCase {
 	 */
 	public function testToString(): void {
 		Assert::same('2001:db8::/32', $this->entity->toString());
+	}
+
+	/**
+	 * Sets up the test environment
+	 */
+	protected function setUp(): void {
+		$this->interfaceEntity = new WireguardInterface('wg0', 'CHmgTLdcdr33Nr/GblDjKufGqWWxmnGv7a50hN6hZ0c=', 51775);
+		$this->entity = new WireguardInterfaceIpv6(new MultiAddress(Multi::factory(self::ADDRESS), self::PREFIX), $this->interfaceEntity);
 	}
 
 }

@@ -44,7 +44,7 @@ use App\ServiceModule\Models\ServiceManager;
 class ServicesController extends BaseController {
 
 	/**
-	 * @var array<string, string|null> Whitelisted services
+	 * Whitelisted services
 	 */
 	private const WHITELISTED_SERVICES = [
 		'apcupsd' => 'apcupsd',

@@ -28,7 +28,7 @@ use App\CoreModule\Models\IFileManager;
 class AptManager {
 
 	/**
-	 * @var array<string, string> Default values
+	 * Default values
 	 */
 	private const DEFAULTS = [
 		'APT::Periodic::Enable' => '0',
@@ -39,7 +39,7 @@ class AptManager {
 	];
 
 	/**
-	 * @var string Apt configuration file name
+	 * Apt configuration file name
 	 */
 	private const FILE_NAME = '99iqrf-gateway-webapp';
 

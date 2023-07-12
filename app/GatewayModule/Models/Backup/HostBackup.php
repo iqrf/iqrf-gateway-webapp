@@ -31,7 +31,7 @@ use Nette\Utils\FileSystem;
 class HostBackup implements IBackupManager {
 
 	/**
-	 * @var array<string> List of whitelisted files
+	 * List of whitelisted files
 	 */
 	final public const WHITELIST = [
 		'hostname',
@@ -39,7 +39,7 @@ class HostBackup implements IBackupManager {
 	];
 
 	/**
-	 * @var string Path to configuration directory
+	 * Path to configuration directory
 	 */
 	private const CONF_PATH = '/etc/';
 
@@ -91,6 +91,14 @@ class HostBackup implements IBackupManager {
 	}
 
 	/**
+	 * Returns service names
+	 * @return array<string> Service names
+	 */
+	public function getServices(): array {
+		return [];
+	}
+
+	/**
 	 * Fixes privileges for restored files
 	 */
 	private function fixPrivileges(): void {
@@ -98,14 +106,6 @@ class HostBackup implements IBackupManager {
 			$this->fileManager->chown($file, 'root', 'root');
 			$this->fileManager->chmod($file, 0644);
 		}
-	}
-
-	/**
-	 * Returns service names
-	 * @return array<string> Service names
-	 */
-	public function getServices(): array {
-		return [];
 	}
 
 }

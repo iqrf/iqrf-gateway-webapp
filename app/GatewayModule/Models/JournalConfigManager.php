@@ -34,7 +34,7 @@ use stdClass;
 class JournalConfigManager {
 
 	/**
-	 * @var array<string, string> Journal configuration
+	 * Default journald configuration
 	 */
 	private const DEFAULT_CONFIG = [
 		'ForwardToSyslog' => 'no',
@@ -152,19 +152,6 @@ class JournalConfigManager {
 	}
 
 	/**
-	 * Returns key value if it exists, or default value otherwise
-	 * @param string $key Configuration option
-	 * @param array<string, string> $conf Journal configuration
-	 * @return string Property value
-	 */
-	private function getPropertyDefault(string $key, array $conf): string {
-		if (array_key_exists($key, $conf)) {
-			return $conf[$key];
-		}
-		return self::DEFAULT_CONFIG[$key];
-	}
-
-	/**
 	 * Stores new Journal configuration
 	 * @param stdClass $newConf New Journal configuration
 	 * @throws ConfNotFoundException
@@ -186,6 +173,19 @@ class JournalConfigManager {
 			$conf['Journal']['SystemMaxFileSize'] = strval($newConf->sizeRotation->maxFileSize) . 'M';
 		}
 		$this->fileManager->write($this->confFile, implode(PHP_EOL, $this->toIni($conf)) . PHP_EOL);
+	}
+
+	/**
+	 * Returns key value if it exists, or default value otherwise
+	 * @param string $key Configuration option
+	 * @param array<string, string> $conf Journal configuration
+	 * @return string Property value
+	 */
+	private function getPropertyDefault(string $key, array $conf): string {
+		if (array_key_exists($key, $conf)) {
+			return $conf[$key];
+		}
+		return self::DEFAULT_CONFIG[$key];
 	}
 
 	/**

@@ -303,9 +303,8 @@ class DaemonController extends BaseConfigController {
 			$fileName = $this->manager->getInstanceFileName($json['instance']);
 			if ($fileName !== null) {
 				throw new ClientErrorException('Instance already exists', ApiResponse::S409_CONFLICT);
-			} else {
-				$fileName = $this->manager->generateFileName($json);
 			}
+			$fileName = $this->manager->generateFileName($json);
 			$this->manager->save($json, $fileName);
 			return $response->withStatus(ApiResponse::S201_CREATED)
 				->writeBody('Workaround');

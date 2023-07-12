@@ -39,32 +39,32 @@ require __DIR__ . '/../../../../bootstrap.php';
 class ControllerPinConfigurationTest extends TestCase {
 
 	/**
-	 * @var string Profile name
+	 * Profile name
 	 */
 	private const NAME = 'Test profile';
 
 	/**
-	 * @var int Green LED pin number
+	 * Green LED pin number
 	 */
 	private const GREEN_LED_PIN = 0;
 
 	/**
-	 * @var int Red LED pin number
+	 * Red LED pin number
 	 */
 	private const RED_LED_PIN = 1;
 
 	/**
-	 * @var int Button pin number
+	 * Button pin number
 	 */
 	private const BUTTON_PIN = 2;
 
 	/**
-	 * @var int I2C clock pin number
+	 * I2C clock pin number
 	 */
 	private const SCK_PIN = 3;
 
 	/**
-	 * @var int I2C data pin number
+	 * I2C data pin number
 	 */
 	private const SDA_PIN = 4;
 
@@ -77,23 +77,6 @@ class ControllerPinConfigurationTest extends TestCase {
 	 * @var ControllerPinConfiguration Configuration profile entity
 	 */
 	private ControllerPinConfiguration $entity;
-
-	/**
-	 * Sets up testing environment
-	 */
-	protected function setUp(): void {
-		parent::setUp();
-		$this->deviceType = DeviceTypes::BOARD;
-		$this->entity = new ControllerPinConfiguration(
-			self::NAME,
-			$this->deviceType,
-			self::GREEN_LED_PIN,
-			self::RED_LED_PIN,
-			self::BUTTON_PIN,
-			self::SCK_PIN,
-			self::SDA_PIN
-		);
-	}
 
 	/**
 	 * Tests the function to return profile name
@@ -238,6 +221,23 @@ class ControllerPinConfigurationTest extends TestCase {
 			'sda' => self::SDA_PIN,
 		];
 		Assert::same($expected, $this->entity->jsonSerialize());
+	}
+
+	/**
+	 * Sets up testing environment
+	 */
+	protected function setUp(): void {
+		parent::setUp();
+		$this->deviceType = DeviceTypes::BOARD;
+		$this->entity = new ControllerPinConfiguration(
+			self::NAME,
+			$this->deviceType,
+			self::GREEN_LED_PIN,
+			self::RED_LED_PIN,
+			self::BUTTON_PIN,
+			self::SCK_PIN,
+			self::SDA_PIN
+		);
 	}
 
 }

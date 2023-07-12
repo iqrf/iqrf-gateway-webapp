@@ -74,17 +74,6 @@ final class JournalReaderManagerTest extends CommandTestCase {
 	private JournalReaderManager $journalManager;
 
 	/**
-	 * Sets up the test environment
-	 */
-	protected function setUp(): void {
-		parent::setUp();
-		$commandStack = new CommandStack();
-		$commandManager = new CommandManager(true, $commandStack);
-		$this->fileManager = new FileManager(self::DATA_DIR, $commandManager);
-		$this->journalManager = new JournalReaderManager($this->commandManager);
-	}
-
-	/**
 	 * Tests the function to get journal records without a cursor
 	 */
 	public function testGetRecordsCursorLess(): void {
@@ -129,6 +118,17 @@ final class JournalReaderManagerTest extends CommandTestCase {
 		Assert::exception(function (): void {
 			$this->journalManager->getRecords(10, 's=c898cdeb1833489094a2e5f158e28858;i=39782bc;b=e38555478f2e49389c854801d0aa15c5;m=14855146;t=5ebca2f015ad3;x=bd0404fdde8c58c6');
 		}, JournalReaderInternalException::class, 'Failed to get record cursor: Cannot assign requested address');
+	}
+
+	/**
+	 * Sets up the test environment
+	 */
+	protected function setUp(): void {
+		parent::setUp();
+		$commandStack = new CommandStack();
+		$commandManager = new CommandManager(true, $commandStack);
+		$this->fileManager = new FileManager(self::DATA_DIR, $commandManager);
+		$this->journalManager = new JournalReaderManager($this->commandManager);
 	}
 
 }

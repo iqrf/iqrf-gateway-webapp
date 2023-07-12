@@ -31,14 +31,14 @@ use Nette\Utils\FileSystem;
 class NetworkManagerBackup implements IBackupManager {
 
 	/**
-	 * @var array<string> List of whitelisted files
+	 * List of whitelisted files
 	 */
 	final public const WHITELIST = [
 		'NetworkManager.conf',
 	];
 
 	/**
-	 * @var array<string> Service name
+	 * Service name
 	 */
 	final public const SERVICES = [
 		'NetworkManager',
@@ -104,6 +104,14 @@ class NetworkManagerBackup implements IBackupManager {
 	}
 
 	/**
+	 * Returns service names
+	 * @return array<string> Service names
+	 */
+	public function getServices(): array {
+		return self::SERVICES;
+	}
+
+	/**
 	 * Fixes privileges for restored files
 	 */
 	private function fixPrivileges(): void {
@@ -113,14 +121,6 @@ class NetworkManagerBackup implements IBackupManager {
 			$this->fileManager->chown('system-connections/' . $connectionFile, 'root', 'root');
 			$this->fileManager->chmod('system-connections/' . $connectionFile, 0600);
 		}
-	}
-
-	/**
-	 * Returns service names
-	 * @return array<string> Service names
-	 */
-	public function getServices(): array {
-		return self::SERVICES;
 	}
 
 }

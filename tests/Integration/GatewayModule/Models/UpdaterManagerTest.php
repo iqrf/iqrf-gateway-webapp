@@ -48,15 +48,6 @@ final class UpdaterManagerTest extends CommandTestCase {
 	private UpdaterManager $manager;
 
 	/**
-	 * Sets up the test environment
-	 */
-	protected function setUp(): void {
-		parent::setUp();
-		$this->checkCommandExistence();
-		$this->manager = new UpdaterManager($this->commandManager);
-	}
-
-	/**
 	 * Tests the constructor (unsupported package manager)
 	 */
 	public function testConstructorFailure(): void {
@@ -85,7 +76,7 @@ final class UpdaterManagerTest extends CommandTestCase {
 	 */
 	public function getUpgradablePackages(): array {
 		return array_map(
-			static fn(string $fileName): array => [
+			static fn (string $fileName): array => [
 				FileSystem::read(TESTER_DIR . '/data/packageManagers/apt-get/' . $fileName . '.stdout'),
 				Json::decode(FileSystem::read(TESTER_DIR . '/data/packageManagers/apt-get/' . $fileName . '.json'), forceArrays: true),
 			],
@@ -126,16 +117,26 @@ final class UpdaterManagerTest extends CommandTestCase {
 	}
 
 	/**
+	 * Just an empty callback
+	 */
+	public function callback(): void {
+		// Empty callback
+	}
+
+	/**
+	 * Sets up the test environment
+	 */
+	protected function setUp(): void {
+		parent::setUp();
+		$this->checkCommandExistence();
+		$this->manager = new UpdaterManager($this->commandManager);
+	}
+
+	/**
 	 * Checks a package manager's command existence
 	 */
 	private function checkCommandExistence(): void {
 		$this->receiveCommandExist('apt-get', true);
-	}
-
-	/**
-	 * Just an empty callback
-	 */
-	public function callback(): void {
 	}
 
 }

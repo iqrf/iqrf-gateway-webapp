@@ -32,39 +32,39 @@ use Nette\Utils\Strings;
 class GatewayFileBackup implements IBackupManager {
 
 	/**
-	 * @var array<string> Gateway files whitelist
+	 * Gateway files whitelist
 	 */
 	final public const WHITELIST = [
 		'iqrf-gateway.json',
 	];
 
 	/**
-	 * @var string Path to configuration directory
+	 * Path to configuration directory
 	 */
 	private const CONF_PATH = '/etc/';
 
 	/**
-	 * @var string Path to MqttMessaging component configuration
+	 * Path to MqttMessaging component configuration
 	 */
 	private const MQTT_PATH = '/etc/iqrf-gateway-daemon/iqrf__MqttMessaging.json';
 
 	/**
-	 * @var string Client ID pattern
+	 * Client ID pattern
 	 */
 	private const GWID_PATTERN = '/^[a-f0-9]{16}$/';
 
 	/**
-	 * @var string MQTT request topic pattern
+	 * MQTT request topic pattern
 	 */
 	private const REQUEST_TOPIC_PATTERN = '/^gateway\\/[a-z0-9]{16}\\/iqrf\\/requests$/';
 
 	/**
-	 * @var string MQTT response topic pattern
+	 * MQTT response topic pattern
 	 */
 	private const RESPONSE_TOPIC_PATTERN = '/^gateway\\/[a-z0-9]{16}\\/iqrf\\/responses$/';
 
 	/**
-	 * @var string Path to JsonSplitter component configuration
+	 * Path to JsonSplitter component configuration
 	 */
 	private const SPLITTER_PATH = '/etc/iqrf-gateway-daemon/iqrf__JsonSplitter.json';
 

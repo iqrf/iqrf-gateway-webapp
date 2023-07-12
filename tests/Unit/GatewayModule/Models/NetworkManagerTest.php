@@ -38,12 +38,7 @@ require __DIR__ . '/../../../bootstrap.php';
 final class NetworkManagerTest extends CommandTestCase {
 
 	/**
-	 * @var NetworkManager Network manager with mocked command manager
-	 */
-	private NetworkManager $manager;
-
-	/**
-	 * @var array<string, string> Executed commands
+	 * Executed commands
 	 */
 	private const COMMANDS = [
 		'hostname' => 'hostname -f',
@@ -54,12 +49,9 @@ final class NetworkManagerTest extends CommandTestCase {
 	];
 
 	/**
-	 * Sets up the test environment
+	 * @var NetworkManager Network manager with mocked command manager
 	 */
-	protected function setUp(): void {
-		parent::setUp();
-		$this->manager = new NetworkManager($this->commandManager);
-	}
+	private NetworkManager $manager;
 
 	/**
 	 * Tests the function to get hostname of the gateway
@@ -93,6 +85,14 @@ final class NetworkManagerTest extends CommandTestCase {
 			],
 		];
 		Assert::same($expected, $this->manager->getInterfaces());
+	}
+
+	/**
+	 * Sets up the test environment
+	 */
+	protected function setUp(): void {
+		parent::setUp();
+		$this->manager = new NetworkManager($this->commandManager);
 	}
 
 }

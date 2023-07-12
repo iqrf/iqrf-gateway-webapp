@@ -31,7 +31,7 @@ use App\GatewayModule\Models\DaemonDirectories;
 class DaemonBackup implements IBackupManager {
 
 	/**
-	 * @var array<string> Service name
+	 * Service name
 	 */
 	final public const SERVICES = [
 		'iqrf-gateway-daemon',
@@ -114,18 +114,6 @@ class DaemonBackup implements IBackupManager {
 	}
 
 	/**
-	 * Fixes privileges for restored files
-	 */
-	private function fixPrivileges(): void {
-		$this->commandManager->run('chmod -R 0666 ' . $this->daemonDirectories->getConfigurationDir(), true);
-		foreach ($this->fileManager->listDirectories() as $dir) {
-			$this->commandManager->run('chmod 0777 ' . $dir, true);
-		}
-		$this->commandManager->run('chmod 0600 ' . $this->daemonDirectories->getConfigurationDir() . 'certs/core/*', true);
-	}
-
-
-	/**
 	 * Returns user and group string of current process
 	 * @param array<int, string> $dirs Array of directory paths
 	 */
@@ -139,12 +127,24 @@ class DaemonBackup implements IBackupManager {
 			$this->commandManager->run('chown -R ' . $owner . ' ' . $dir, true);
 		}
 	}
+
 	/**
 	 * Returns service names
 	 * @return array<string> Service names
 	 */
 	public function getServices(): array {
 		return self::SERVICES;
+	}
+
+	/**
+	 * Fixes privileges for restored files
+	 */
+	private function fixPrivileges(): void {
+		$this->commandManager->run('chmod -R 0666 ' . $this->daemonDirectories->getConfigurationDir(), true);
+		foreach ($this->fileManager->listDirectories() as $dir) {
+			$this->commandManager->run('chmod 0777 ' . $dir, true);
+		}
+		$this->commandManager->run('chmod 0600 ' . $this->daemonDirectories->getConfigurationDir() . 'certs/core/*', true);
 	}
 
 }

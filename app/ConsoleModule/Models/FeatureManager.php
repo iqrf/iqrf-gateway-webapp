@@ -39,6 +39,7 @@ class FeatureManager extends CoreFeatureManager {
 	) {
 		parent::__construct($path);
 	}
+
 	/**
 	 * Lists the optional features
 	 * @return array<array<string>> Optional features

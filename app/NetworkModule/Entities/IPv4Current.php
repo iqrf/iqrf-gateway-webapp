@@ -29,7 +29,7 @@ use JsonSerializable;
 final class IPv4Current implements JsonSerializable {
 
 	/**
-	 * @var string nmcli current configuration prefix
+	 * nmcli current configuration prefix
 	 */
 	public const NMCLI_PREFIX = 'IP4';
 

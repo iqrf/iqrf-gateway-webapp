@@ -31,6 +31,15 @@ use Nette\Utils\JsonException;
 class GatewayInfoUtil {
 
 	/**
+	 * Constructor
+	 * @param string $path Gateway file path
+	 */
+	public function __construct(
+		private readonly string $path,
+	) {
+	}
+
+	/**
 	 * Returns gateway file schema
 	 * @return Structure Gateway file schema
 	 */
@@ -43,15 +52,6 @@ class GatewayInfoUtil {
 			'gwImage' => Expect::string('iqube-os-vX.Y.Z'),
 			'gwInterface' => Expect::string('unknown'),
 		])->castTo('array');
-	}
-
-	/**
-	 * Constructor
-	 * @param string $path Gateway file path
-	 */
-	public function __construct(
-		private readonly string $path,
-	) {
 	}
 
 	/**

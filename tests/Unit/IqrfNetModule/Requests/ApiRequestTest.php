@@ -42,7 +42,7 @@ require __DIR__ . '/../../../bootstrap.php';
 final class ApiRequestTest extends TestCase {
 
 	/**
-	 * @var array<string, array<string, bool|array<string, string>>|string> IQRF JSON API request in an array
+	 * IQRF JSON API request in an array
 	 */
 	private const REQUEST = [
 		'mType' => 'mngDaemon_Mode',
@@ -56,15 +56,6 @@ final class ApiRequestTest extends TestCase {
 	 * @var ApiRequest JSON API Request
 	 */
 	private ApiRequest $request;
-
-	/**
-	 * Starts up test environment
-	 */
-	protected function setUp(): void {
-		$msgIdManager = Mockery::mock(MessageIdManager::class);
-		$msgIdManager->shouldReceive('generate')->andReturn('1');
-		$this->request = new ApiRequest($msgIdManager);
-	}
 
 	/**
 	 * Tests the function to set the request (valid request)
@@ -103,6 +94,15 @@ final class ApiRequestTest extends TestCase {
 		$array['data']['msgId'] = '1';
 		$expected = Json::encode($array, pretty: true);
 		Assert::equal($expected, $this->request->toJson(true));
+	}
+
+	/**
+	 * Starts up test environment
+	 */
+	protected function setUp(): void {
+		$msgIdManager = Mockery::mock(MessageIdManager::class);
+		$msgIdManager->shouldReceive('generate')->andReturn('1');
+		$this->request = new ApiRequest($msgIdManager);
 	}
 
 }

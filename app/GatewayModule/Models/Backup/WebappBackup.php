@@ -31,7 +31,7 @@ use Nette\Utils\FileSystem;
 class WebappBackup implements IBackupManager {
 
 	/**
-	 * @var array<string> List of whitelisted webapp files
+	 * List of whitelisted webapp files
 	 */
 	final public const WHITELIST = [
 		'database.db',
@@ -41,7 +41,7 @@ class WebappBackup implements IBackupManager {
 	];
 
 	/**
-	 * @var array<string> List of whitelisted nginx files
+	 * List of whitelisted nginx files
 	 */
 	final public const NGINX_WHITELIST = [
 		'iqrf-gateway-webapp.localhost',
@@ -51,7 +51,7 @@ class WebappBackup implements IBackupManager {
 	];
 
 	/**
-	 * @var string Path to Webapp nginx configuration directory
+	 * Path to Webapp nginx configuration directory
 	 */
 	private const NGINX_PATH = '/etc/iqrf-gateway-webapp/nginx/';
 

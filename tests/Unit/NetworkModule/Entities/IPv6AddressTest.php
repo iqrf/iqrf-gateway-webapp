@@ -39,12 +39,12 @@ require __DIR__ . '/../../../bootstrap.php';
 final class IPv6AddressTest extends TestCase {
 
 	/**
-	 * @var string IPv6 address
+	 * IPv6 address
 	 */
 	private const ADDRESS = '2a00:19a0:3:75::d9c6:75a0:1';
 
 	/**
-	 * @var int IPv6 network prefix
+	 * IPv6 network prefix
 	 */
 	private const PREFIX = 112;
 

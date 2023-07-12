@@ -51,6 +51,16 @@ class Leap implements INetworkManagerEntity {
 	}
 
 	/**
+	 * Deserializes Cisco LEAP entity from nmcli configuration
+	 * @param array<string, array<string, array<string>|string>> $nmCli nmcli configuration
+	 * @return INetworkManagerEntity WEP entity
+	 */
+	public static function nmCliDeserialize(array $nmCli): INetworkManagerEntity {
+		$array = $nmCli[WifiConnectionSecurity::NMCLI_PREFIX];
+		return new self($array['leap-username'], $array['leap-password']);
+	}
+
+	/**
 	 * Serializes Cisco LEAP entity into JSON
 	 * @return array{username: string, password: string} JSON serialized data
 	 */
@@ -59,16 +69,6 @@ class Leap implements INetworkManagerEntity {
 			'username' => $this->username,
 			'password' => $this->password,
 		];
-	}
-
-	/**
-	 * Deserializes Cisco LEAP entity from nmcli configuration
-	 * @param array<string, array<string, array<string>|string>> $nmCli nmcli configuration
-	 * @return INetworkManagerEntity WEP entity
-	 */
-	public static function nmCliDeserialize(array $nmCli): INetworkManagerEntity {
-		$array = $nmCli[WifiConnectionSecurity::NMCLI_PREFIX];
-		return new self($array['leap-username'], $array['leap-password']);
 	}
 
 	/**

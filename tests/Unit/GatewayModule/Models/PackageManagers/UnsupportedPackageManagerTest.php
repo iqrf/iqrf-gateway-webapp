@@ -39,7 +39,7 @@ require __DIR__ . '/../../../../bootstrap.php';
 final class UnsupportedPackageManagerTest extends CommandTestCase {
 
 	/**
-	 * @var array<string> Packages
+	 * Packages
 	 */
 	private const PACKAGES = ['iqrf-gateway-daemon', 'iqrf-gateway-webapp'];
 
@@ -47,14 +47,6 @@ final class UnsupportedPackageManagerTest extends CommandTestCase {
 	 * @var UnsupportedPackageManager Tool for updating IQRF Gateway
 	 */
 	private UnsupportedPackageManager $manager;
-
-	/**
-	 * Sets up the test environment
-	 */
-	protected function setUp(): void {
-		parent::setUp();
-		$this->manager = new UnsupportedPackageManager();
-	}
 
 	/**
 	 * Tests the function to install packages
@@ -121,6 +113,15 @@ final class UnsupportedPackageManagerTest extends CommandTestCase {
 	 * Just an empty callback
 	 */
 	public function callback(): void {
+		// Empty callback
+	}
+
+	/**
+	 * Sets up the test environment
+	 */
+	protected function setUp(): void {
+		parent::setUp();
+		$this->manager = new UnsupportedPackageManager();
 	}
 
 }

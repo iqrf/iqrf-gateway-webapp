@@ -39,7 +39,7 @@ use Psr\Http\Message\ServerRequestInterface;
 class AuthenticationMiddleware implements IMiddleware {
 
 	/**
-	 * @var array<string> Whitelisted installer paths
+	 * Whitelisted installer paths
 	 */
 	private const INSTALLER_PATHS = [
 		'/api/v0/gateway/info',
@@ -48,7 +48,7 @@ class AuthenticationMiddleware implements IMiddleware {
 	];
 
 	/**
-	 * @var array<string> Whitelisted paths
+	 * Whitelisted paths
 	 */
 	private const WHITELISTED_PATHS = [
 		'/api/v0/installation',
@@ -67,6 +67,36 @@ class AuthenticationMiddleware implements IMiddleware {
 		private readonly IAuthenticator $authenticator,
 		private readonly EntityManager $entityManager,
 	) {
+	}
+
+	/**
+	 * Checks if the path is whitelisted
+	 * @param ServerRequestInterface $request API request
+	 * @return bool Is the path whitelisted?
+	 */
+	protected function isWhitelisted(ServerRequestInterface $request): bool {
+		$requestUrl = rtrim($request->getUri()->getPath(), '/');
+		if (in_array($requestUrl, self::WHITELISTED_PATHS, true) ||
+			Strings::match($requestUrl, '#^/api/v0/user/verify/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$#') !== null ||
+			Strings::match($requestUrl, '#^/api/v0/user/password/recovery/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$#') !== null) {
+			return true;
+		}
+		return ($this->entityManager->getUserRepository()->count([]) === 0) &&
+			(in_array($requestUrl, self::INSTALLER_PATHS, true));
+	}
+
+	/**
+	 * Creates unauthorized response
+	 * @param ResponseInterface $response Response to modify
+	 * @param string $message Message
+	 * @return ResponseInterface Response
+	 */
+	private function createUnauthorizedResponse(ResponseInterface $response, string $message): ResponseInterface {
+		$json = Json::encode(['error' => $message]);
+		$response->getBody()->write($json);
+		return $response->withStatus(ApiResponse::S401_UNAUTHORIZED)
+			->withHeader('WWW-Authenticate', 'Bearer')
+			->withHeader('Content-Type', 'application/json');
 	}
 
 	public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next): ResponseInterface {
@@ -92,40 +122,6 @@ class AuthenticationMiddleware implements IMiddleware {
 		}
 		// Pass to next middleware
 		return $next($request, $response);
-	}
-
-	/**
-	 * Creates unauthorized response
-	 * @param ResponseInterface $response Response to modify
-	 * @param string $message Message
-	 * @return ResponseInterface Response
-	 */
-	private function createUnauthorizedResponse(ResponseInterface $response, string $message): ResponseInterface {
-		$json = Json::encode(['error' => $message]);
-		$response->getBody()->write($json);
-		return $response->withStatus(ApiResponse::S401_UNAUTHORIZED)
-			->withHeader('WWW-Authenticate', 'Bearer')
-			->withHeader('Content-Type', 'application/json');
-	}
-
-	/**
-	 * Checks if the path is whitelisted
-	 * @param ServerRequestInterface $request API request
-	 * @return bool Is the path whitelisted?
-	 */
-	protected function isWhitelisted(ServerRequestInterface $request): bool {
-		$requestUrl = rtrim($request->getUri()->getPath(), '/');
-		if (in_array($requestUrl, self::WHITELISTED_PATHS, true)) {
-			return true;
-		}
-		if (Strings::match($requestUrl, '#^/api/v0/user/verify/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$#') !== null) {
-			return true;
-		}
-		if (Strings::match($requestUrl, '#^/api/v0/user/password/recovery/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$#') !== null) {
-			return true;
-		}
-		return ($this->entityManager->getUserRepository()->count([]) === 0) &&
-			(in_array($requestUrl, self::INSTALLER_PATHS, true));
 	}
 
 }

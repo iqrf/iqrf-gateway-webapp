@@ -44,12 +44,12 @@ require __DIR__ . '/../../../bootstrap.php';
 final class UploadManagerTest extends CommandTestCase {
 
 	/**
-	 * @var string Data dir path
+	 * Data dir path
 	 */
 	private const DATA_PATH = TESTER_DIR . '/data/upload/';
 
 	/**
-	 * @var array<string, string> File names
+	 * File names
 	 */
 	private const FILENAMES = [
 		'hex' => 'CustomDpaHandler-Coordinator-FRCandSleep-7xD-V403-190612.hex',
@@ -57,12 +57,12 @@ final class UploadManagerTest extends CommandTestCase {
 	];
 
 	/**
-	 * @var string Upload directory pathUpload directory name
+	 * Upload directory pathUpload directory name
 	 */
 	private const UPLOAD_DIR = '/upload/';
 
 	/**
-	 * @var string Upload directory path
+	 * Upload directory path
 	 */
 	private const UPLOAD_PATH = TMP_DIR . self::UPLOAD_DIR;
 
@@ -127,7 +127,6 @@ final class UploadManagerTest extends CommandTestCase {
 			$this->manager->uploadToTr('test.iqrf');
 		}, UploaderMissingException::class, 'IQRF Gateway Uploader is not installed.');
 	}
-
 
 	/**
 	 * Sets up the test environment

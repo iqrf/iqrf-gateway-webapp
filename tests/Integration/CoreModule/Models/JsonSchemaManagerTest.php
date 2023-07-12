@@ -43,22 +43,22 @@ require __DIR__ . '/../../../bootstrap.php';
 final class JsonSchemaManagerTest extends TestCase {
 
 	/**
-	 * @var string JSON file name
+	 * JSON file name
 	 */
 	private const FILE_NAME = 'iqrf__MqttMessaging.json';
 
 	/**
-	 * @var string Directory with configuration files
+	 * Directory with configuration files
 	 */
 	private const FILE_PATH = TESTER_DIR . '/data/configuration/';
 
 	/**
-	 * @var string JSON schema file name
+	 * JSON schema file name
 	 */
 	private const SCHEMA_NAME = 'schema__iqrf__MqttMessaging';
 
 	/**
-	 * @var string JSON schema directory path
+	 * JSON schema directory path
 	 */
 	private const SCHEMA_PATH = TESTER_DIR . '/data/cfgSchemas/';
 

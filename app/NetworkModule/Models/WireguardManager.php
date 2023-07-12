@@ -49,7 +49,7 @@ use stdClass;
 class WireguardManager {
 
 	/**
-	 * @var string WireGuard temporary directory
+	 * WireGuard temporary directory
 	 */
 	private const TMP_DIR = '/tmp/wireguard/';
 
@@ -101,7 +101,7 @@ class WireguardManager {
 	 * @return array<int, array<string, bool|int|string|null>> List of WireGuard interfaces
 	 */
 	public function listInterfaces(): array {
-		return array_map(fn (WireguardInterface $interface): array  => [
+		return array_map(fn (WireguardInterface $interface): array => [
 			'id' => $interface->getId(),
 			'name' => $interface->getName(),
 			'active' => $this->serviceManager->isActive('iqrf-gateway-webapp-wg@' . $interface->getName()),
@@ -206,33 +206,6 @@ class WireguardManager {
 	}
 
 	/**
-	 * Updates existing WireGuard interface IP address or assigns a new one
-	 * @param stdClass $ip IP address object
-	 * @param WireguardInterface $interface WireGuard interface
-	 * @param int $protocol IP version
-	 */
-	private function updateInterfaceAddress(stdClass $ip, WireguardInterface $interface, int $protocol): void {
-		$repository = $protocol === 4 ? $this->interfaceIpv4Repository : $this->interfaceIpv6Repository;
-		if (property_exists($ip, 'id')) {
-			$ifIp = $repository->find($ip->id);
-			if (!($ifIp instanceof WireguardInterfaceIpv4) && !($ifIp instanceof WireguardInterfaceIpv6)) {
-				throw new NonexistentWireguardTunnelException('WireGuard interface ip address not found.');
-			}
-			$ifIp->setAddress(new MultiAddress(Multi::factory($ip->address), $ip->prefix));
-			$this->entityManager->persist($ifIp);
-		} else {
-			$newAddress = new MultiAddress(Multi::factory($ip->address), $ip->prefix);
-			if ($protocol === 4) {
-				$newIp = new WireguardInterfaceIpv4($newAddress, $interface);
-				$interface->setIpv4($newIp);
-			} else {
-				$newIp = new WireguardInterfaceIpv6($newAddress, $interface);
-				$interface->setIpv6($newIp);
-			}
-		}
-	}
-
-	/**
 	 * Checks DNS records for specified endpoint
 	 */
 	public function validateEndpoint(string $endpoint): void {
@@ -267,35 +240,6 @@ class WireguardManager {
 		foreach ($addrs as $ip) {
 			$address = new WireguardPeerAddress(new MultiAddress(Multi::factory($ip->address), $ip->prefix), $ifPeer);
 			$ifPeer->addAddress($address);
-		}
-	}
-
-	/**
-	 * Adds new, updates existing and deletes missing WireGuard peer addresses
-	 * @param array<int, stdClass> $addrs WireGuard peer addresses
-	 * @param WireguardPeer $ifPeer WireGuard peer entity
-	 * @param int $protocol IP version
-	 */
-	private function updatePeerAddresses(array $addrs, WireguardPeer $ifPeer, int $protocol): void {
-		$oldAddrs = $ifPeer->getAddresses()->toArray();
-		$addrIds = [];
-		foreach ($addrs as $ip) {
-			if (isset($ip->id)) {
-				$peerAddr = $this->peerAddressRepository->find($ip->id);
-				if ($peerAddr === null) {
-					throw new NonexistentWireguardTunnelException('WireGuard peer address not found');
-				}
-				$peerAddr->setAddress(new MultiAddress(Multi::factory($ip->address), $ip->prefix));
-				$this->entityManager->persist($peerAddr);
-				$addrIds[] = $peerAddr->getId();
-			} else {
-				$ifPeer->addAddress(new WireguardPeerAddress(new MultiAddress(Multi::factory($ip->address), $ip->prefix), $ifPeer));
-			}
-		}
-		foreach ($oldAddrs as $addr) {
-			if (!in_array($addr->getId(), $addrIds, true) && $addr->getAddress()->getVersion() === $protocol) {
-				$ifPeer->deleteAddress($addr);
-			}
 		}
 	}
 
@@ -461,6 +405,62 @@ class WireguardManager {
 				if ($output->getExitCode() !== 0) {
 					throw new Exception(sprintf('Failed to set IPv6 route: %s.', $output->getStderr()));
 				}
+			}
+		}
+	}
+
+	/**
+	 * Updates existing WireGuard interface IP address or assigns a new one
+	 * @param stdClass $ip IP address object
+	 * @param WireguardInterface $interface WireGuard interface
+	 * @param int $protocol IP version
+	 */
+	private function updateInterfaceAddress(stdClass $ip, WireguardInterface $interface, int $protocol): void {
+		$repository = $protocol === 4 ? $this->interfaceIpv4Repository : $this->interfaceIpv6Repository;
+		if (property_exists($ip, 'id')) {
+			$ifIp = $repository->find($ip->id);
+			if (!($ifIp instanceof WireguardInterfaceIpv4) && !($ifIp instanceof WireguardInterfaceIpv6)) {
+				throw new NonexistentWireguardTunnelException('WireGuard interface ip address not found.');
+			}
+			$ifIp->setAddress(new MultiAddress(Multi::factory($ip->address), $ip->prefix));
+			$this->entityManager->persist($ifIp);
+		} else {
+			$newAddress = new MultiAddress(Multi::factory($ip->address), $ip->prefix);
+			if ($protocol === 4) {
+				$newIp = new WireguardInterfaceIpv4($newAddress, $interface);
+				$interface->setIpv4($newIp);
+			} else {
+				$newIp = new WireguardInterfaceIpv6($newAddress, $interface);
+				$interface->setIpv6($newIp);
+			}
+		}
+	}
+
+	/**
+	 * Adds new, updates existing and deletes missing WireGuard peer addresses
+	 * @param array<int, stdClass> $addrs WireGuard peer addresses
+	 * @param WireguardPeer $ifPeer WireGuard peer entity
+	 * @param int $protocol IP version
+	 */
+	private function updatePeerAddresses(array $addrs, WireguardPeer $ifPeer, int $protocol): void {
+		$oldAddrs = $ifPeer->getAddresses()->toArray();
+		$addrIds = [];
+		foreach ($addrs as $ip) {
+			if (isset($ip->id)) {
+				$peerAddr = $this->peerAddressRepository->find($ip->id);
+				if ($peerAddr === null) {
+					throw new NonexistentWireguardTunnelException('WireGuard peer address not found');
+				}
+				$peerAddr->setAddress(new MultiAddress(Multi::factory($ip->address), $ip->prefix));
+				$this->entityManager->persist($peerAddr);
+				$addrIds[] = $peerAddr->getId();
+			} else {
+				$ifPeer->addAddress(new WireguardPeerAddress(new MultiAddress(Multi::factory($ip->address), $ip->prefix), $ifPeer));
+			}
+		}
+		foreach ($oldAddrs as $addr) {
+			if (!in_array($addr->getId(), $addrIds, true) && $addr->getAddress()->getVersion() === $protocol) {
+				$ifPeer->deleteAddress($addr);
 			}
 		}
 	}

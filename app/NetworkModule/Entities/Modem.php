@@ -56,14 +56,6 @@ class Modem {
 	}
 
 	/**
-	 * Sets modem RSSI
-	 * @param float|null $rssi RSSI
-	 */
-	public function setRssi(?float $rssi): void {
-		$this->rssi = $rssi;
-	}
-
-	/**
 	 * Creates a new Modem entity from mmcli json
 	 * @param stdClass $modem mmcli modem json object
 	 * @param stdClass|null $signal mmcli modem rssi json object
@@ -84,6 +76,14 @@ class Modem {
 			$entity->setRssi((float) $rssi);
 		}
 		return $entity;
+	}
+
+	/**
+	 * Sets modem RSSI
+	 * @param float|null $rssi RSSI
+	 */
+	public function setRssi(?float $rssi): void {
+		$this->rssi = $rssi;
 	}
 
 	/**

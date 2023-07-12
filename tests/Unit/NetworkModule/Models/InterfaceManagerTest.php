@@ -49,14 +49,6 @@ final class InterfaceManagerTest extends CommandTestCase {
 	private InterfaceManager $manager;
 
 	/**
-	 * Sets up the test environment
-	 */
-	protected function setUp(): void {
-		parent::setUp();
-		$this->manager = new InterfaceManager($this->commandManager);
-	}
-
-	/**
 	 * Tests the function to connect the network interface
 	 */
 	public function testConnect(): void {
@@ -112,6 +104,14 @@ final class InterfaceManagerTest extends CommandTestCase {
 			new InterfaceStatus('lo', '00:00:00:00:00:00', null, null, InterfaceTypes::LOOPBACK, InterfaceStates::UNMANAGED, null),
 		];
 		Assert::equal($expected, $this->manager->list());
+	}
+
+	/**
+	 * Sets up the test environment
+	 */
+	protected function setUp(): void {
+		parent::setUp();
+		$this->manager = new InterfaceManager($this->commandManager);
 	}
 
 }

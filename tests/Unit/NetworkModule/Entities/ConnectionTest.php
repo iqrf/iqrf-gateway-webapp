@@ -41,9 +41,14 @@ require __DIR__ . '/../../../bootstrap.php';
 final class ConnectionTest extends TestCase {
 
 	/**
-	 * @var string Network connection name
+	 * Network connection name
 	 */
 	private const NAME = 'eth0';
+
+	/**
+	 * Network interface name
+	 */
+	private const INTERFACE = 'eth0';
 
 	/**
 	 * @var UuidInterface Network connection UUID
@@ -54,11 +59,6 @@ final class ConnectionTest extends TestCase {
 	 * @var ConnectionTypes Network connection type
 	 */
 	private readonly ConnectionTypes $type;
-
-	/**
-	 * @var string Network interface name
-	 */
-	private const INTERFACE = 'eth0';
 
 	/**
 	 * @var Connection Network connection entity

@@ -53,6 +53,9 @@ require __DIR__ . '/../../../bootstrap.php';
  */
 final class ConnectionManagerTest extends CommandTestCase {
 
+	/**
+	 * Executed commands
+	 */
 	private const COMMANDS = [
 		'delete' => 'nmcli -t connection delete ',
 		'down' => 'nmcli -t connection down ',
@@ -62,12 +65,12 @@ final class ConnectionManagerTest extends CommandTestCase {
 	];
 
 	/**
-	 * @var string NetworkManager data directory
+	 * NetworkManager data directory
 	 */
 	private const NM_DATA = TESTER_DIR . '/data/networkManager/';
 
 	/**
-	 * @var string Connection UUID
+	 * Connection UUID
 	 */
 	private const UUID = '25ab1b06-2a86-40a9-950f-1c576ddcd35a';
 
@@ -75,51 +78,6 @@ final class ConnectionManagerTest extends CommandTestCase {
 	 * @var ConnectionManager Network connection manager
 	 */
 	private ConnectionManager $manager;
-
-	/**
-	 * Sets up the test environment
-	 */
-	protected function setUp(): void {
-		parent::setUp();
-		$this->manager = new ConnectionManager($this->commandManager);
-	}
-
-	/**
-	 * Creates the detailed network connection entity
-	 * @return ConnectionDetail Detailed network connection entity
-	 */
-	private function createDetailedConnection(): ConnectionDetail {
-		$uuid = Uuid::fromString(self::UUID);
-		$type = ConnectionTypes::ETHERNET;
-		$autoConnect = new AutoConnect(true, 0, -1);
-		$ipv4 = $this->createIpv4Connection();
-		$ipv6 = $this->createIpv6Connection();
-		return new ConnectionDetail('eth0', $uuid, $type, 'eth0', $autoConnect, $ipv4, $ipv6);
-	}
-
-	/**
-	 * Creates the IPv4 network connection entity
-	 * @return IPv4Connection IPv4 nmetwork connection entity
-	 */
-	private function createIpv4Connection(): IPv4Connection {
-		$method = IPv4Methods::MANUAL;
-		$addresses = [new IPv4Address(IPv4::factory('192.168.1.2'), 24)];
-		$gateway = IPv4::factory('192.168.1.1');
-		$dns = [IPv4::factory('192.168.1.1')];
-		return new IPv4Connection($method, $addresses, $gateway, $dns, null);
-	}
-
-	/**
-	 * Creates the IPv6 network connection entity
-	 * @return IPv6Connection IPv6 network connection entity
-	 */
-	private function createIpv6Connection(): IPv6Connection {
-		$method = IPv6Methods::MANUAL;
-		$addresses = [new IPv6Address(IPv6::factory('2001:470:5bb2::2'), 64)];
-		$gateway = IPv6::factory('fe80::1');
-		$dns = [IPv6::factory('2001:470:5bb2::1')];
-		return new IPv6Connection($method, $addresses, $gateway, $dns, null);
-	}
 
 	/**
 	 * Tests the function to delete network connection
@@ -264,6 +222,51 @@ final class ConnectionManagerTest extends CommandTestCase {
 		Assert::throws(function () use ($connection): void {
 			$this->manager->up($connection->getUuid());
 		}, NonexistentConnectionException::class, $stderr);
+	}
+
+	/**
+	 * Sets up the test environment
+	 */
+	protected function setUp(): void {
+		parent::setUp();
+		$this->manager = new ConnectionManager($this->commandManager);
+	}
+
+	/**
+	 * Creates the detailed network connection entity
+	 * @return ConnectionDetail Detailed network connection entity
+	 */
+	private function createDetailedConnection(): ConnectionDetail {
+		$uuid = Uuid::fromString(self::UUID);
+		$type = ConnectionTypes::ETHERNET;
+		$autoConnect = new AutoConnect(true, 0, -1);
+		$ipv4 = $this->createIpv4Connection();
+		$ipv6 = $this->createIpv6Connection();
+		return new ConnectionDetail('eth0', $uuid, $type, 'eth0', $autoConnect, $ipv4, $ipv6);
+	}
+
+	/**
+	 * Creates the IPv4 network connection entity
+	 * @return IPv4Connection IPv4 nmetwork connection entity
+	 */
+	private function createIpv4Connection(): IPv4Connection {
+		$method = IPv4Methods::MANUAL;
+		$addresses = [new IPv4Address(IPv4::factory('192.168.1.2'), 24)];
+		$gateway = IPv4::factory('192.168.1.1');
+		$dns = [IPv4::factory('192.168.1.1')];
+		return new IPv4Connection($method, $addresses, $gateway, $dns, null);
+	}
+
+	/**
+	 * Creates the IPv6 network connection entity
+	 * @return IPv6Connection IPv6 network connection entity
+	 */
+	private function createIpv6Connection(): IPv6Connection {
+		$method = IPv6Methods::MANUAL;
+		$addresses = [new IPv6Address(IPv6::factory('2001:470:5bb2::2'), 64)];
+		$gateway = IPv6::factory('fe80::1');
+		$dns = [IPv6::factory('2001:470:5bb2::1')];
+		return new IPv6Connection($method, $addresses, $gateway, $dns, null);
 	}
 
 }

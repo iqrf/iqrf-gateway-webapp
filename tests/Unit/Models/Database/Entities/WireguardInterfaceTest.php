@@ -44,17 +44,17 @@ require __DIR__ . '/../../../../bootstrap.php';
 class WireguardInterfaceTest extends TestCase {
 
 	/**
-	 * @var string WireGuard interface name
+	 * WireGuard interface name
 	 */
 	private const NAME = 'wg0';
 
 	/**
-	 * @var string WireGuard interface private key
+	 * WireGuard interface private key
 	 */
 	private const PRIVATE_KEY = 'CHmgTLdcdr33Nr/GblDjKufGqWWxmnGv7a50hN6hZ0c=';
 
 	/**
-	 * @var int WireGuard interface listen port
+	 * WireGuard interface listen port
 	 */
 	private const PORT = 51775;
 
@@ -77,18 +77,6 @@ class WireguardInterfaceTest extends TestCase {
 	 * @var WireguardInterface WireGuard interface entity
 	 */
 	private WireguardInterface $entity;
-
-	/**
-	 * Sets up the test environment
-	 */
-	protected function setUp(): void {
-		$this->entity = new WireguardInterface(self::NAME, self::PRIVATE_KEY, self::PORT);
-		$this->ipv4Entity = new WireguardInterfaceIpv4(new MultiAddress(Multi::factory('192.168.1.2'), 24), $this->entity);
-		$this->ipv6Entity = new WireguardInterfaceIpv6(new MultiAddress(Multi::factory('2001:db8::'), 32), $this->entity);
-		$this->entity->setIpv4($this->ipv4Entity);
-		$this->entity->setIpv6($this->ipv6Entity);
-		$this->peerEntity = new WireguardPeer('Z4Csw6v+89bcamtek9elXmuIEA+6PeB6CLnjNh4dJzI=', null, 25, 'vpn.example.org', 51280, $this->entity);
-	}
 
 	/**
 	 * Tests the function to return wg interface name
@@ -309,6 +297,18 @@ class WireguardInterfaceTest extends TestCase {
 	public function testWgStatus(): void {
 		$expected = 'wg show \'' . self::NAME . '\'';
 		Assert::same($expected, $this->entity->wgStatus());
+	}
+
+	/**
+	 * Sets up the test environment
+	 */
+	protected function setUp(): void {
+		$this->entity = new WireguardInterface(self::NAME, self::PRIVATE_KEY, self::PORT);
+		$this->ipv4Entity = new WireguardInterfaceIpv4(new MultiAddress(Multi::factory('192.168.1.2'), 24), $this->entity);
+		$this->ipv6Entity = new WireguardInterfaceIpv6(new MultiAddress(Multi::factory('2001:db8::'), 32), $this->entity);
+		$this->entity->setIpv4($this->ipv4Entity);
+		$this->entity->setIpv6($this->ipv6Entity);
+		$this->peerEntity = new WireguardPeer('Z4Csw6v+89bcamtek9elXmuIEA+6PeB6CLnjNh4dJzI=', null, 25, 'vpn.example.org', 51280, $this->entity);
 	}
 
 }

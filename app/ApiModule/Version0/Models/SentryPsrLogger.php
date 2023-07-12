@@ -37,25 +37,6 @@ class SentryPsrLogger implements LoggerInterface {
 	use LoggerTrait;
 
 	/**
-	 * Maps PSR log levels to Sentry log levels.
-	 * @param string $level Level to map to Sentry level
-	 * @return Severity Mapped level
-	 */
-	private function mapLevel(string $level): Severity {
-		$map = [
-			LogLevel::EMERGENCY => Severity::fatal(),
-			LogLevel::ALERT => Severity::fatal(),
-			LogLevel::CRITICAL => Severity::fatal(),
-			LogLevel::ERROR => Severity::error(),
-			LogLevel::WARNING => Severity::warning(),
-			LogLevel::NOTICE => Severity::info(),
-			LogLevel::INFO => Severity::info(),
-			LogLevel::DEBUG => Severity::debug(),
-		];
-		return array_key_exists($level, $map) ? $map[$level] : Severity::info();
-	}
-
-	/**
 	 * Logs with an arbitrary level
 	 * @param mixed $level Log level
 	 * @param string|Stringable $message Log message
@@ -74,6 +55,25 @@ class SentryPsrLogger implements LoggerInterface {
 			$event->setLevel($this->mapLevel($level));
 			SentrySdk::getCurrentHub()->captureEvent($event);
 		}
+	}
+
+	/**
+	 * Maps PSR log levels to Sentry log levels.
+	 * @param string $level Level to map to Sentry level
+	 * @return Severity Mapped level
+	 */
+	private function mapLevel(string $level): Severity {
+		$map = [
+			LogLevel::EMERGENCY => Severity::fatal(),
+			LogLevel::ALERT => Severity::fatal(),
+			LogLevel::CRITICAL => Severity::fatal(),
+			LogLevel::ERROR => Severity::error(),
+			LogLevel::WARNING => Severity::warning(),
+			LogLevel::NOTICE => Severity::info(),
+			LogLevel::INFO => Severity::info(),
+			LogLevel::DEBUG => Severity::debug(),
+		];
+		return array_key_exists($level, $map) ? $map[$level] : Severity::info();
 	}
 
 }

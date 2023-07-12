@@ -39,6 +39,11 @@ require __DIR__ . '/../../../bootstrap.php';
 final class ServiceManagerTest extends CommandTestCase {
 
 	/**
+	 * Name of service
+	 */
+	private const SERVICE_NAME = 'iqrf-gateway-daemon';
+
+	/**
 	 * @var ServiceManager Service manager for systemD init daemon
 	 */
 	private ServiceManager $managerSystemD;
@@ -47,11 +52,6 @@ final class ServiceManagerTest extends CommandTestCase {
 	 * @var ServiceManager Service manager for unknown init daemon
 	 */
 	private ServiceManager $managerUnknown;
-
-	/**
-	 * @var string Name of service
-	 */
-	private const SERVICE_NAME = 'iqrf-gateway-daemon';
 
 	/**
 	 * Tests the function to disable the service via systemD

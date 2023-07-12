@@ -53,22 +53,22 @@ require __DIR__ . '/../../../bootstrap.php';
 final class ConnectionDetailEthernetTest extends TestCase {
 
 	/**
-	 * @var string NetworkManager data directory
+	 * NetworkManager data directory
 	 */
 	private const NM_DATA = TESTER_DIR . '/data/networkManager/';
 
 	/**
-	 * @var string Network interface name
+	 * Network interface name
 	 */
 	private const INTERFACE = 'eth0';
 
 	/**
-	 * @var string Network connection name
+	 * Network connection name
 	 */
 	private const NAME = 'eth0';
 
 	/**
-	 * @var string Connection UUID
+	 * Connection UUID
 	 */
 	private const UUID = '25ab1b06-2a86-40a9-950f-1c576ddcd35a';
 
@@ -103,40 +103,6 @@ final class ConnectionDetailEthernetTest extends TestCase {
 	public function __construct() {
 		$this->uuid = Uuid::fromString(self::UUID);
 		$this->type = ConnectionTypes::ETHERNET;
-	}
-
-	/**
-	 * Sets up the test environment
-	 */
-	protected function setUp(): void {
-		$autoConnect = new AutoConnect(true, 0, -1);
-		$this->createIpv4Connection();
-		$this->createIpv6Connection();
-		$this->entity = new ConnectionDetail(self::NAME, $this->uuid, $this->type, self::INTERFACE, $autoConnect, $this->ipv4, $this->ipv6);
-	}
-
-	/**
-	 * Creates the IPv4 network connection entity
-	 */
-	private function createIpv4Connection(): void {
-		$method = IPv4Methods::MANUAL;
-		$addresses = [new IPv4Address(IPv4::factory('192.168.1.2'), 24)];
-		$gateway = IPv4::factory('192.168.1.1');
-		$dns = [IPv4::factory('192.168.1.1')];
-		$this->ipv4 = new IPv4Connection($method, $addresses, $gateway, $dns, null);
-	}
-
-	/**
-	 * Creates the IPv6 network connection entity
-	 */
-	private function createIpv6Connection(): void {
-		$method = IPv6Methods::MANUAL;
-		$addresses = [
-			new IPv6Address(IPv6::factory('2001:470:5bb2::2'), 64),
-		];
-		$gateway = IPv6::factory('fe80::1');
-		$dns = [IPv6::factory('2001:470:5bb2::1')];
-		$this->ipv6 = new IPv6Connection($method, $addresses, $gateway, $dns, null);
 	}
 
 	/**
@@ -198,6 +164,40 @@ final class ConnectionDetailEthernetTest extends TestCase {
 		$json = FileSystem::read(self::NM_DATA . 'toForm/' . self::UUID . '.json');
 		$expected = Json::decode($json, forceArrays: true);
 		Assert::same($expected, $this->entity->jsonSerialize());
+	}
+
+	/**
+	 * Sets up the test environment
+	 */
+	protected function setUp(): void {
+		$autoConnect = new AutoConnect(true, 0, -1);
+		$this->createIpv4Connection();
+		$this->createIpv6Connection();
+		$this->entity = new ConnectionDetail(self::NAME, $this->uuid, $this->type, self::INTERFACE, $autoConnect, $this->ipv4, $this->ipv6);
+	}
+
+	/**
+	 * Creates the IPv4 network connection entity
+	 */
+	private function createIpv4Connection(): void {
+		$method = IPv4Methods::MANUAL;
+		$addresses = [new IPv4Address(IPv4::factory('192.168.1.2'), 24)];
+		$gateway = IPv4::factory('192.168.1.1');
+		$dns = [IPv4::factory('192.168.1.1')];
+		$this->ipv4 = new IPv4Connection($method, $addresses, $gateway, $dns, null);
+	}
+
+	/**
+	 * Creates the IPv6 network connection entity
+	 */
+	private function createIpv6Connection(): void {
+		$method = IPv6Methods::MANUAL;
+		$addresses = [
+			new IPv6Address(IPv6::factory('2001:470:5bb2::2'), 64),
+		];
+		$gateway = IPv6::factory('fe80::1');
+		$dns = [IPv6::factory('2001:470:5bb2::1')];
+		$this->ipv6 = new IPv6Connection($method, $addresses, $gateway, $dns, null);
 	}
 
 }

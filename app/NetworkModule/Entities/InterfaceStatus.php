@@ -72,6 +72,24 @@ final class InterfaceStatus implements JsonSerializable {
 	}
 
 	/**
+	 * Deserializes network interface entity from the nmcli row
+	 * @param string $string nmcli row
+	 * @return InterfaceStatus Network interface
+	 */
+	public static function nmCliDeserialize(string $string): self {
+		$array = NmCliConnection::decode($string);
+		$name = $array['GENERAL']['DEVICE'];
+		$macAddress = $array['GENERAL']['HWADDR'];
+		$manufacturer = $array['GENERAL']['VENDOR'];
+		$model = $array['GENERAL']['PRODUCT'];
+		$type = InterfaceTypes::from($array['GENERAL']['TYPE']);
+		$state = InterfaceStates::fromNmCli($array['GENERAL']['STATE']);
+		$connection = $array['GENERAL']['CON-UUID'];
+		$connection = $connection === '' ? null : Uuid::fromString($connection);
+		return new self($name, $macAddress, $manufacturer, $model, $type, $state, $connection);
+	}
+
+	/**
 	 * Returns the network interface type
 	 * @return InterfaceTypes Network interface type
 	 */
@@ -93,24 +111,6 @@ final class InterfaceStatus implements JsonSerializable {
 			'state' => $this->state->value,
 			'connection' => $this->connection?->toString(),
 		];
-	}
-
-	/**
-	 * Deserializes network interface entity from the nmcli row
-	 * @param string $string nmcli row
-	 * @return InterfaceStatus Network interface
-	 */
-	public static function nmCliDeserialize(string $string): self {
-		$array = NmCliConnection::decode($string);
-		$name = $array['GENERAL']['DEVICE'];
-		$macAddress = $array['GENERAL']['HWADDR'];
-		$manufacturer = $array['GENERAL']['VENDOR'];
-		$model = $array['GENERAL']['PRODUCT'];
-		$type = InterfaceTypes::from($array['GENERAL']['TYPE']);
-		$state = InterfaceStates::fromNmCli($array['GENERAL']['STATE']);
-		$connection = $array['GENERAL']['CON-UUID'];
-		$connection = $connection === '' ? null : Uuid::fromString($connection);
-		return new self($name, $macAddress, $manufacturer, $model, $type, $state, $connection);
 	}
 
 }

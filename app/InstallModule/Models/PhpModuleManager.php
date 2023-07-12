@@ -28,7 +28,7 @@ use Nette\Utils\Strings;
 class PhpModuleManager {
 
 	/**
-	 * @var array<string, string> Required php extensions and their modules
+	 * Required PHP extensions and their modules
 	 */
 	private const REQUIRED_EXTENSIONS_MODULES = [
 		'curl' => 'curl',

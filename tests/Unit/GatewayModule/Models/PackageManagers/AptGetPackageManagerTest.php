@@ -43,7 +43,7 @@ require __DIR__ . '/../../../../bootstrap.php';
 final class AptGetPackageManagerTest extends CommandTestCase {
 
 	/**
-	 * @var array<string> Packages
+	 * Packages
 	 */
 	private const PACKAGES = ['iqrf-gateway-daemon', 'iqrf-gateway-webapp'];
 
@@ -51,15 +51,6 @@ final class AptGetPackageManagerTest extends CommandTestCase {
 	 * @var AptGetPackageManager Tool for updating IQRF Gateway
 	 */
 	private AptGetPackageManager $manager;
-
-	/**
-	 * Sets up the test environment
-	 */
-	protected function setUp(): void {
-		parent::setUp();
-		$this->checkCommandExistence();
-		$this->manager = new AptGetPackageManager($this->commandManager);
-	}
 
 	/**
 	 * Tests the constructor (failure)
@@ -151,16 +142,26 @@ final class AptGetPackageManagerTest extends CommandTestCase {
 	}
 
 	/**
+	 * Just an empty callback
+	 */
+	public function callback(): void {
+		// Empty callback
+	}
+
+	/**
+	 * Sets up the test environment
+	 */
+	protected function setUp(): void {
+		parent::setUp();
+		$this->checkCommandExistence();
+		$this->manager = new AptGetPackageManager($this->commandManager);
+	}
+
+	/**
 	 * Checks a package manager's command existence
 	 */
 	private function checkCommandExistence(): void {
 		$this->receiveCommandExist('apt-get', true);
-	}
-
-	/**
-	 * Just an empty callback
-	 */
-	public function callback(): void {
 	}
 
 }

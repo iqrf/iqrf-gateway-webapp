@@ -166,16 +166,6 @@ class FeatureManager {
 	}
 
 	/**
-	 * Writes the features configuration
-	 * @param array<string, array<string, bool|int|string>> $features Feature configuration to write
-	 * @throws IOException
-	 */
-	protected function write(array $features): void {
-		$content = Neon::encode($features, blockMode: true);
-		FileSystem::write($this->path, $content);
-	}
-
-	/**
 	 * Checks if the feature is enabled
 	 * @param string $name Feature name
 	 * @return bool Is the feature enabled?
@@ -210,6 +200,16 @@ class FeatureManager {
 			$config[$name]['enabled'] = $enabled;
 		}
 		$this->write($config);
+	}
+
+	/**
+	 * Writes the features configuration
+	 * @param array<string, array<string, bool|int|string>> $features Feature configuration to write
+	 * @throws IOException
+	 */
+	protected function write(array $features): void {
+		$content = Neon::encode($features, blockMode: true);
+		FileSystem::write($this->path, $content);
 	}
 
 }

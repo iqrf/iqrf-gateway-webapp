@@ -65,18 +65,6 @@ class Wep implements INetworkManagerEntity {
 	}
 
 	/**
-	 * Serializes WEP entity into JSON
-	 * @return array{type: string, index: int, keys: array<string>} JSON serialized data
-	 */
-	public function jsonSerialize(): array {
-		return [
-			'type' => $this->type->jsonSerialize(),
-			'index' => $this->index,
-			'keys' => $this->keys,
-		];
-	}
-
-	/**
 	 * Deserializes WEP entity from nmcli configuration
 	 * @param array<string, array<string, array<string>|string>> $nmCli nmcli configuration
 	 * @return INetworkManagerEntity WEP entity
@@ -92,6 +80,18 @@ class Wep implements INetworkManagerEntity {
 			$array['wep-key3'],
 		];
 		return new self($type, $index, $keys);
+	}
+
+	/**
+	 * Serializes WEP entity into JSON
+	 * @return array{type: string, index: int, keys: array<string>} JSON serialized data
+	 */
+	public function jsonSerialize(): array {
+		return [
+			'type' => $this->type->jsonSerialize(),
+			'index' => $this->index,
+			'keys' => $this->keys,
+		];
 	}
 
 	/**

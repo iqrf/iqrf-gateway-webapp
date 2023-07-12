@@ -42,32 +42,32 @@ require __DIR__ . '/../../../../bootstrap.php';
 final class UserTest extends TestCase {
 
 	/**
-	 * @var string User name
+	 * User name
 	 */
 	private const USERNAME = 'admin';
 
 	/**
-	 * @var string E-mail address
+	 * E-mail address
 	 */
 	private const EMAIL = 'admin@iqrf.org';
 
 	/**
-	 * @var string Password
+	 * Password
 	 */
 	private const PASSWORD = 'iqrf';
 
 	/**
-	 * @var UserRole User role
+	 * User role
 	 */
 	private const ROLE = UserRole::Admin;
 
 	/**
-	 * @var UserLanguage User language
+	 * User language
 	 */
 	private const LANGUAGE = UserLanguage::English;
 
 	/**
-	 * @var int User account state
+	 * User account state
 	 */
 	private const STATE = User::STATE_UNVERIFIED;
 
@@ -75,14 +75,6 @@ final class UserTest extends TestCase {
 	 * @var User User entity
 	 */
 	private User $entity;
-
-	/**
-	 * Sets up the test environment
-	 */
-	protected function setUp(): void {
-		parent::setUp();
-		$this->entity = new User(self::USERNAME, self::EMAIL, self::PASSWORD, self::ROLE, self::LANGUAGE);
-	}
 
 	/**
 	 * Tests the function to get the user's ID
@@ -236,6 +228,14 @@ final class UserTest extends TestCase {
 			'state' => User::STATES[self::STATE],
 		];
 		Assert::same($expected, $this->entity->jsonSerialize());
+	}
+
+	/**
+	 * Sets up the test environment
+	 */
+	protected function setUp(): void {
+		parent::setUp();
+		$this->entity = new User(self::USERNAME, self::EMAIL, self::PASSWORD, self::ROLE, self::LANGUAGE);
 	}
 
 }

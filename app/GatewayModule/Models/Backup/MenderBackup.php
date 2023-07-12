@@ -31,7 +31,7 @@ use Nette\Utils\FileSystem;
 class MenderBackup implements IBackupManager {
 
 	/**
-	 * @var array<string> List of whitelisted files
+	 * List of whitelisted files
 	 */
 	final public const WHITELIST = [
 		'mender.conf',
@@ -39,7 +39,7 @@ class MenderBackup implements IBackupManager {
 	];
 
 	/**
-	 * @var array<string> Service names
+	 * Service names
 	 */
 	final public const SERVICES = [
 		'mender-client',
@@ -98,6 +98,14 @@ class MenderBackup implements IBackupManager {
 	}
 
 	/**
+	 * Returns service names
+	 * @return array<string> Service names
+	 */
+	public function getServices(): array {
+		return self::SERVICES;
+	}
+
+	/**
 	 * Fixes privileges for restored files
 	 */
 	private function fixPrivileges(): void {
@@ -105,14 +113,6 @@ class MenderBackup implements IBackupManager {
 			$this->fileManager->chown($file, 'root', 'root');
 			$this->fileManager->chmod($file, 0600);
 		}
-	}
-
-	/**
-	 * Returns service names
-	 * @return array<string> Service names
-	 */
-	public function getServices(): array {
-		return self::SERVICES;
 	}
 
 }

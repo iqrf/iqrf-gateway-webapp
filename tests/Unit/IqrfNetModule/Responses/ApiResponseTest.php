@@ -56,22 +56,6 @@ final class ApiResponseTest extends TestCase {
 	private ApiResponse $response;
 
 	/**
-	 * Starts up test environment
-	 */
-	protected function setUp(): void {
-		$this->object = (object) [
-			'mType' => 'mngDaemon_Mode',
-			'data' => (object) [
-				'rsp' => (object) ['operMode' => 'service'],
-				'msgId' => '1',
-				'status' => 0,
-			],
-		];
-		$this->json = Json::encode($this->object);
-		$this->response = new ApiResponse();
-	}
-
-	/**
 	 * Tests the function to set the request (success)
 	 */
 	public function testSetOk(): void {
@@ -109,6 +93,22 @@ final class ApiResponseTest extends TestCase {
 		$this->response->set($this->json);
 		$expected = Json::encode($this->object, pretty: true);
 		Assert::equal($expected, $this->response->toJson(true));
+	}
+
+	/**
+	 * Starts up test environment
+	 */
+	protected function setUp(): void {
+		$this->object = (object) [
+			'mType' => 'mngDaemon_Mode',
+			'data' => (object) [
+				'rsp' => (object) ['operMode' => 'service'],
+				'msgId' => '1',
+				'status' => 0,
+			],
+		];
+		$this->json = Json::encode($this->object);
+		$this->response = new ApiResponse();
 	}
 
 }

@@ -38,7 +38,7 @@ use App\Models\Database\Repositories\SshKeyRepository;
 class SshManager {
 
 	/**
-	 * @var string SSH authorized keys file
+	 * SSH authorized keys file
 	 */
 	private const KEYS_FILE = 'authorized_keys';
 
@@ -147,29 +147,6 @@ class SshManager {
 	}
 
 	/**
-	 * Validates SSH key and returns key entity
-	 * @param array<string, string> $item SSH key string
-	 * @return SshKey SSH key entity
-	 * @throws SshInvalidKeyException
-	 */
-	private function createKeyEntity(array $item): SshKey {
-		$tokens = explode(' ', $item['key'], 3);
-		if ($this->sshKeyRepository->findByKey($tokens[1]) !== null) {
-			throw new SshKeyExistsException('SSH key already exists.');
-		}
-		$command = $this->commandManager->run('ssh-keygen -l -E sha256 -f /dev/stdin', true, 60, $item['key']);
-		if ($command->getExitCode() !== 0) {
-			throw new SshInvalidKeyException('Submitted key is not a valid SSH public key.');
-		}
-		$hash = explode(' ', $command->getStdout())[1];
-		if ($this->sshKeyRepository->findByHash($hash) !== null) {
-			throw new SshKeyExistsException('SSH key already exists.');
-		}
-		$description = $item['description'];
-		return new SshKey($tokens[0], $tokens[1], $hash, $description);
-	}
-
-	/**
 	 * Removes SSH public key from database
 	 * @param int $id SSH public key ID
 	 * @throws SshDirectoryException
@@ -218,6 +195,29 @@ class SshManager {
 				throw new SshDirectoryException($command->getStderr());
 			}
 		}
+	}
+
+	/**
+	 * Validates SSH key and returns key entity
+	 * @param array<string, string> $item SSH key string
+	 * @return SshKey SSH key entity
+	 * @throws SshInvalidKeyException
+	 */
+	private function createKeyEntity(array $item): SshKey {
+		$tokens = explode(' ', $item['key'], 3);
+		if ($this->sshKeyRepository->findByKey($tokens[1]) !== null) {
+			throw new SshKeyExistsException('SSH key already exists.');
+		}
+		$command = $this->commandManager->run('ssh-keygen -l -E sha256 -f /dev/stdin', true, 60, $item['key']);
+		if ($command->getExitCode() !== 0) {
+			throw new SshInvalidKeyException('Submitted key is not a valid SSH public key.');
+		}
+		$hash = explode(' ', $command->getStdout())[1];
+		if ($this->sshKeyRepository->findByHash($hash) !== null) {
+			throw new SshKeyExistsException('SSH key already exists.');
+		}
+		$description = $item['description'];
+		return new SshKey($tokens[0], $tokens[1], $hash, $description);
 	}
 
 }

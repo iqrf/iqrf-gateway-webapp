@@ -43,17 +43,17 @@ require __DIR__ . '/../../../bootstrap.php';
 final class ComponentSchemaManagerTest extends TestCase {
 
 	/**
-	 * @var string MQTT component name
+	 * MQTT component name
 	 */
 	private const COMPONENT_NAME = 'iqrf::MqttMessaging';
 
 	/**
-	 * @var string Directory with configuration files
+	 * Directory with configuration files
 	 */
 	private const FILE_PATH = TESTER_DIR . '/data/configuration/';
 
 	/**
-	 * @var string JSON schema directory path
+	 * JSON schema directory path
 	 */
 	private const SCHEMA_PATH = TESTER_DIR . '/data/cfgSchemas/';
 

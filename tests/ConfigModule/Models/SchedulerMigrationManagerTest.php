@@ -49,22 +49,22 @@ require __DIR__ . '/../../bootstrap.php';
 final class SchedulerMigrationManagerTest extends TestCase {
 
 	/**
-	 * @var string Path to a directory with scheduler's configuration
+	 * Path to a directory with scheduler's configuration
 	 */
 	private const CONFIG_PATH = TESTER_DIR . '/data/scheduler/';
 
 	/**
-	 * @var string Path to a temporary directory with scheduler's configuration
+	 * Path to a temporary directory with scheduler's configuration
 	 */
 	private const CONFIG_TEMP_PATH = TMP_DIR . '/migrations/scheduler/';
 
 	/**
-	 * @var string Path to the ZIP archive with IQRF Gateway Daemon's configuration
+	 * Path to the ZIP archive with IQRF Gateway Daemon's configuration
 	 */
 	private const ZIP_PATH = TESTER_DIR . '/data/iqrf-gateway-scheduler.zip';
 
 	/**
-	 * @var string Path to the temporary ZIP archive with IQRF Gateway Daemon's configuration
+	 * Path to the temporary ZIP archive with IQRF Gateway Daemon's configuration
 	 */
 	private const ZIP_TEMP_PATH = TMP_DIR . '/iqrf-gateway-scheduler.zip';
 
@@ -90,21 +90,6 @@ final class SchedulerMigrationManagerTest extends TestCase {
 			Assert::same($expected, $zipManager->openFile($file));
 		}
 		$zipManager->close();
-	}
-
-	/**
-	 * Create list of files
-	 * @param string $path Path to the directory
-	 * @return array<string> List of files in the directory
-	 */
-	private function createList(string $path): array {
-		$path = realpath($path) . '/';
-		$list = [];
-		foreach (Finder::findFiles('*.json')->from($path) as $file) {
-			$list[] = str_replace($path, '', $file->getRealPath());
-		}
-		sort($list);
-		return $list;
 	}
 
 	/**
@@ -137,6 +122,13 @@ final class SchedulerMigrationManagerTest extends TestCase {
 	}
 
 	/**
+	 * Cleanup the test environment
+	 */
+	protected function tearDown(): void {
+		Mockery::close();
+	}
+
+	/**
 	 * Copy files for testing
 	 */
 	private function copyFiles(): void {
@@ -145,10 +137,18 @@ final class SchedulerMigrationManagerTest extends TestCase {
 	}
 
 	/**
-	 * Cleanup the test environment
+	 * Create list of files
+	 * @param string $path Path to the directory
+	 * @return array<string> List of files in the directory
 	 */
-	protected function tearDown(): void {
-		Mockery::close();
+	private function createList(string $path): array {
+		$path = realpath($path) . '/';
+		$list = [];
+		foreach (Finder::findFiles('*.json')->from($path) as $file) {
+			$list[] = str_replace($path, '', $file->getRealPath());
+		}
+		sort($list);
+		return $list;
 	}
 
 }

@@ -42,37 +42,37 @@ require __DIR__ . '/../../../bootstrap.php';
 final class InterfaceStatusTest extends TestCase {
 
 	/**
-	 * @var string Network connection UUID
+	 * Network connection UUID
 	 */
 	private const CONNECTION = 'f61b25c9-66d7-400e-add0-d2a30c57b65c';
 
 	/**
-	 * @var string Network interface name
+	 * Network interface name
 	 */
 	private const NAME = 'eth0';
 
 	/**
-	 * @var string Network interface MAC address
+	 * Network interface MAC address
 	 */
 	private const MAC_ADDRESS = '00:00:00:00:00:00';
 
 	/**
-	 * @var string Network interface manufacturer
+	 * Network interface manufacturer
 	 */
 	private const MANUFACTURER = 'Manufacturer';
 
 	/**
-	 * @var string Network interface model
+	 * Network interface model
 	 */
 	private const MODEL = 'Model';
 
 	/**
-	 * @var InterfaceTypes Network interface type
+	 * Network interface type
 	 */
 	private const TYPE = InterfaceTypes::ETHERNET;
 
 	/**
-	 * @var InterfaceStates Network interface state
+	 * Network interface state
 	 */
 	private const STATE = InterfaceStates::CONNECTED;
 

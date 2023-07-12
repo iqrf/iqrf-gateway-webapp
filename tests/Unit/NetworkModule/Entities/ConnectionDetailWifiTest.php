@@ -62,22 +62,22 @@ require __DIR__ . '/../../../bootstrap.php';
 final class ConnectionDetailWifiTest extends TestCase {
 
 	/**
-	 * @var string NetworkManager data directory
+	 * NetworkManager data directory
 	 */
 	private const NM_DATA = __DIR__ . '/../../../data/networkManager/';
 
 	/**
-	 * @var string Network connection ID
+	 * Network connection ID
 	 */
 	private const ID = 'WIFI MAGDA';
 
 	/**
-	 * @var string Network interface name
+	 * Network interface name
 	 */
 	private const INTERFACE = 'wlp4s0';
 
 	/**
-	 * @var string Connection UUID
+	 * Connection UUID
 	 */
 	private const UUID = '5c7010a8-88f6-48e6-8ab2-5ad713217831';
 
@@ -117,6 +117,45 @@ final class ConnectionDetailWifiTest extends TestCase {
 	public function __construct() {
 		$this->uuid = Uuid::fromString(self::UUID);
 		$this->type = ConnectionTypes::WIFI;
+	}
+
+	/**
+	 * Tests the function to deserialize network connection entity from nmcli connection configuration
+	 */
+	public function testNmCliDeserialize(): void {
+		$nmCli = FileSystem::read(self::NM_DATA . self::UUID . '.conf');
+		$nmCli = NmCliConnection::decode($nmCli);
+		Assert::equal($this->entity, ConnectionDetail::nmCliDeserialize($nmCli));
+	}
+
+	/**
+	 * Tests the function to get the network connection UUID
+	 */
+	public function testGetUuid(): void {
+		Assert::same($this->uuid, $this->entity->getUuid());
+	}
+
+	/**
+	 * Tests the function to get the network connection type
+	 */
+	public function testGetType(): void {
+		Assert::same($this->type, $this->entity->getType());
+	}
+
+	/**
+	 * Tests the function to get the network interface name
+	 */
+	public function testGetInterfaceName(): void {
+		Assert::same(self::INTERFACE, $this->entity->getInterfaceName());
+	}
+
+	/**
+	 * Tests the function to serialize network connection entity into JSON
+	 */
+	public function testJsonSerialize(): void {
+		$json = FileSystem::read(self::NM_DATA . 'toForm/' . self::UUID . '.json');
+		$expected = Json::decode($json, forceArrays: true);
+		Assert::equal($expected, $this->entity->jsonSerialize());
 	}
 
 	/**
@@ -181,45 +220,6 @@ final class ConnectionDetailWifiTest extends TestCase {
 		$wep = new Wep(WepKeyType::UNKNOWN, 0, ['', '', '', '']);
 		$security = new WifiConnectionSecurity($securityType, $psk, $leap, $wep, null);
 		$this->wifi = new WifiConnection($ssid, $mode, $bssids, $security);
-	}
-
-	/**
-	 * Tests the function to deserialize network connection entity from nmcli connection configuration
-	 */
-	public function testNmCliDeserialize(): void {
-		$nmCli = FileSystem::read(self::NM_DATA . self::UUID . '.conf');
-		$nmCli = NmCliConnection::decode($nmCli);
-		Assert::equal($this->entity, ConnectionDetail::nmCliDeserialize($nmCli));
-	}
-
-	/**
-	 * Tests the function to get the network connection UUID
-	 */
-	public function testGetUuid(): void {
-		Assert::same($this->uuid, $this->entity->getUuid());
-	}
-
-	/**
-	 * Tests the function to get the network connection type
-	 */
-	public function testGetType(): void {
-		Assert::same($this->type, $this->entity->getType());
-	}
-
-	/**
-	 * Tests the function to get the network interface name
-	 */
-	public function testGetInterfaceName(): void {
-		Assert::same(self::INTERFACE, $this->entity->getInterfaceName());
-	}
-
-	/**
-	 * Tests the function to serialize network connection entity into JSON
-	 */
-	public function testJsonSerialize(): void {
-		$json = FileSystem::read(self::NM_DATA . 'toForm/' . self::UUID . '.json');
-		$expected = Json::decode($json, forceArrays: true);
-		Assert::equal($expected, $this->entity->jsonSerialize());
 	}
 
 }

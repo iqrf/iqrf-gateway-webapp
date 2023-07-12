@@ -85,45 +85,6 @@ class VersionManager {
 	}
 
 	/**
-	 * Returns IQRF Gateway Daemon's version from CLI
-	 * @return string IQRF Gateway Daemon's version
-	 */
-	private function getDaemonCli(): string {
-		if (!$this->commandManager->commandExist('iqrfgd2')) {
-			return 'none';
-		}
-		$command = $this->commandManager->run('iqrfgd2 version');
-		$stdout = $command->getStdout();
-		if ($command->getExitCode() === 0 && $stdout !== '') {
-			return $stdout;
-		}
-		$command = $this->commandManager->run('iqrfgd2 --version');
-		$stdout = $command->getStdout();
-		if ($command->getExitCode() === 0 && $stdout !== '') {
-			return Strings::replace($stdout, '#^IQRF\ Gateway\ Daemon\ #', '');
-		}
-		return 'unknown';
-	}
-
-	/**
-	 * Returns IQRF Gateway Daemon's version from WS client
-	 * @return string IQRF Gateway Daemon's version
-	 * @throws DpaErrorException
-	 * @throws EmptyResponseException
-	 */
-	private function getDaemonWs(): string {
-		$request = [
-			'mType' => 'mngDaemon_Version',
-			'data' => [
-				'returnVerbose' => true,
-			],
-		];
-		$this->apiRequest->set($request);
-		$api = $this->wsClient->sendSync($this->apiRequest);
-		return $api['response']->data->rsp->version;
-	}
-
-	/**
 	 * Returns IQRF Gateway Setter's version
 	 * @return string|null IQRF Gateway Setter's version
 	 */
@@ -191,6 +152,45 @@ class VersionManager {
 			$version .= '~' . $pipeline;
 		}
 		return $version . ($verbose && $commit !== '' ? ' (' . $commit . ')' : '');
+	}
+
+	/**
+	 * Returns IQRF Gateway Daemon's version from CLI
+	 * @return string IQRF Gateway Daemon's version
+	 */
+	private function getDaemonCli(): string {
+		if (!$this->commandManager->commandExist('iqrfgd2')) {
+			return 'none';
+		}
+		$command = $this->commandManager->run('iqrfgd2 version');
+		$stdout = $command->getStdout();
+		if ($command->getExitCode() === 0 && $stdout !== '') {
+			return $stdout;
+		}
+		$command = $this->commandManager->run('iqrfgd2 --version');
+		$stdout = $command->getStdout();
+		if ($command->getExitCode() === 0 && $stdout !== '') {
+			return Strings::replace($stdout, '#^IQRF\ Gateway\ Daemon\ #', '');
+		}
+		return 'unknown';
+	}
+
+	/**
+	 * Returns IQRF Gateway Daemon's version from WS client
+	 * @return string IQRF Gateway Daemon's version
+	 * @throws DpaErrorException
+	 * @throws EmptyResponseException
+	 */
+	private function getDaemonWs(): string {
+		$request = [
+			'mType' => 'mngDaemon_Version',
+			'data' => [
+				'returnVerbose' => true,
+			],
+		];
+		$this->apiRequest->set($request);
+		$api = $this->wsClient->sendSync($this->apiRequest);
+		return $api['response']->data->rsp->version;
 	}
 
 }

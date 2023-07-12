@@ -40,14 +40,14 @@ use Nette\Utils\Strings;
 class UploadManager {
 
 	/**
-	 * IQRF Gateway Uploader command
-	 */
-	private const UPLOADER = 'iqrf-gateway-uploader';
-
-	/**
 	 * Path to OS patch files
 	 */
 	final public const OS_PATH = __DIR__ . '/../../../iqrf/os/';
+
+	/**
+	 * IQRF Gateway Uploader command
+	 */
+	private const UPLOADER = 'iqrf-gateway-uploader';
 
 	/**
 	 * @var string Path to the directory for uploaded files

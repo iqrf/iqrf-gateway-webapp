@@ -39,12 +39,12 @@ require __DIR__ . '/../../../bootstrap.php';
 final class GenericManagerTest extends JsonConfigTestCase {
 
 	/**
-	 * @var string Component name
+	 * Component name
 	 */
 	private const COMPONENT = 'iqrf::MqttMessaging';
 
 	/**
-	 * @var string File name
+	 * File name
 	 */
 	private const FILE_NAME = 'iqrf__MqttMessaging';
 
@@ -153,7 +153,6 @@ final class GenericManagerTest extends JsonConfigTestCase {
 		$this->manager->setComponent(self::COMPONENT);
 		Assert::same([], $this->manager->loadInstance('nonsense'));
 	}
-
 
 	/**
 	 * Tests the function to list configurations

@@ -42,24 +42,24 @@ require __DIR__ . '/../../../../bootstrap.php';
 class ApiKeyTest extends TestCase {
 
 	/**
-	 * @var ApiKey API key entity
-	 */
-	private ApiKey $entity;
-
-	/**
-	 * @var string API key description
+	 * API key description
 	 */
 	private const DESCRIPTION = 'Example API key';
 
 	/**
-	 * @var string API key expiration date in past
+	 * API key expiration date in past
 	 */
 	private const PAST_EXPIRATION = '2020-01-01T00:00:00+02:00';
 
 	/**
-	 * @var string API key expiration date in future
+	 * API key expiration date in future
 	 */
 	private const FUTURE_EXPIRATION = '2025-01-01T00:00:00+02:00';
+
+	/**
+	 * @var ApiKey API key entity
+	 */
+	private ApiKey $entity;
 
 	/**
 	 * @var string API key
@@ -70,16 +70,6 @@ class ApiKeyTest extends TestCase {
 	 * @var DateTime API key expiration
 	 */
 	private DateTime $expiration;
-
-	/**
-	 * Sets up the test environment
-	 */
-	protected function setUp(): void {
-		parent::setUp();
-		$this->expiration = new DateTime(self::FUTURE_EXPIRATION);
-		$this->entity = new ApiKey(self::DESCRIPTION, $this->expiration);
-		$this->key = $this->entity->getKey();
-	}
 
 	/**
 	 * Tests the function to return API key description
@@ -172,6 +162,16 @@ class ApiKeyTest extends TestCase {
 		Assert::match('~^[./A-Za-z0-9]{22}\.[A-Za-z0-9+/=]{44}$~', $actual['key']);
 		unset($actual['key']);
 		Assert::same($expected, $actual);
+	}
+
+	/**
+	 * Sets up the test environment
+	 */
+	protected function setUp(): void {
+		parent::setUp();
+		$this->expiration = new DateTime(self::FUTURE_EXPIRATION);
+		$this->entity = new ApiKey(self::DESCRIPTION, $this->expiration);
+		$this->key = $this->entity->getKey();
 	}
 
 }

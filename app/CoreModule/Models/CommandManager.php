@@ -55,18 +55,6 @@ class CommandManager {
 	}
 
 	/**
-	 * Creates the process
-	 * @param string $cmd Command to execute
-	 * @param bool $needSudo Does the command need sudo?
-	 * @return Process Created process
-	 */
-	private function createProcess(string $cmd, bool $needSudo): Process {
-		$command = ($this->sudo && $needSudo ? 'sudo ' : '') . $cmd;
-		$env = ['LANG' => 'C.UTF-8'];
-		return Process::fromShellCommandline($command, null, $env);
-	}
-
-	/**
 	 * Executes shell command and returns output
 	 * @param string $command Command to execute
 	 * @param bool $needSudo Does the command need sudo?
@@ -103,6 +91,18 @@ class CommandManager {
 		$process->wait();
 		$entity = new Command($command, $process);
 		$this->stack->addCommand($entity);
+	}
+
+	/**
+	 * Creates the process
+	 * @param string $cmd Command to execute
+	 * @param bool $needSudo Does the command need sudo?
+	 * @return Process Created process
+	 */
+	private function createProcess(string $cmd, bool $needSudo): Process {
+		$command = ($this->sudo && $needSudo ? 'sudo ' : '') . $cmd;
+		$env = ['LANG' => 'C.UTF-8'];
+		return Process::fromShellCommandline($command, null, $env);
 	}
 
 }

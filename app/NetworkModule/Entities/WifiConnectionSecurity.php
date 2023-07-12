@@ -33,7 +33,7 @@ use stdClass;
 final class WifiConnectionSecurity implements INetworkManagerEntity {
 
 	/**
-	 * @var string nmcli 802-11-wireless security configuration prefix
+	 * nmcli 802-11-wireless security configuration prefix
 	 */
 	public const NMCLI_PREFIX = '802-11-wireless-security';
 
@@ -71,28 +71,6 @@ final class WifiConnectionSecurity implements INetworkManagerEntity {
 		return new self($type, $json->psk, $leap, $wep, $eap ?? null);
 	}
 
-
-	/**
-	 * Serializes WiFi connection security entity into JSON
-	 * @return array{type: string, psk: string|null, leap?: array{username: string, password: string}, wep?: array{type: string, index: int, keys: array<string>}, eap?: array{phaseOneMethod: string|null, phaseTwoMethod: string|null, anonymousIdentity: string, cert: string, identity: string, password: string}} JSON serialized entity
-	 */
-	public function jsonSerialize(): array {
-		$array = [
-			'type' => $this->type->value,
-			'psk' => $this->psk,
-		];
-		if ($this->leap !== null) {
-			$array['leap'] = $this->leap->jsonSerialize();
-		}
-		if ($this->wep !== null) {
-			$array['wep'] = $this->wep->jsonSerialize();
-		}
-		if ($this->eap !== null) {
-			$array['eap'] = $this->eap->jsonSerialize();
-		}
-		return $array;
-	}
-
 	/**
 	 * Deserializes WiFi connection security entity from nmcli connection configuration
 	 * @param array<string, array<string, array<string>|string>> $nmCli nmcli connection configuration
@@ -113,6 +91,27 @@ final class WifiConnectionSecurity implements INetworkManagerEntity {
 			assert($eap instanceof Eap);
 		}
 		return new self($type, $array['psk'], $leap, $wep, $eap ?? null);
+	}
+
+	/**
+	 * Serializes WiFi connection security entity into JSON
+	 * @return array{type: string, psk: string|null, leap?: array{username: string, password: string}, wep?: array{type: string, index: int, keys: array<string>}, eap?: array{phaseOneMethod: string|null, phaseTwoMethod: string|null, anonymousIdentity: string, cert: string, identity: string, password: string}} JSON serialized entity
+	 */
+	public function jsonSerialize(): array {
+		$array = [
+			'type' => $this->type->value,
+			'psk' => $this->psk,
+		];
+		if ($this->leap !== null) {
+			$array['leap'] = $this->leap->jsonSerialize();
+		}
+		if ($this->wep !== null) {
+			$array['wep'] = $this->wep->jsonSerialize();
+		}
+		if ($this->eap !== null) {
+			$array['eap'] = $this->eap->jsonSerialize();
+		}
+		return $array;
 	}
 
 	/**

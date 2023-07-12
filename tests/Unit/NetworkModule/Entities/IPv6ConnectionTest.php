@@ -44,12 +44,12 @@ require __DIR__ . '/../../../bootstrap.php';
 final class IPv6ConnectionTest extends TestCase {
 
 	/**
-	 * @var string NetworkManager data directory
+	 * NetworkManager data directory
 	 */
 	private const NM_DATA = TESTER_DIR . '/data/networkManager/';
 
 	/**
-	 * @var IPv6Methods IPv6 connection method
+	 * IPv6 connection method
 	 */
 	private const METHOD = IPv6Methods::MANUAL;
 
@@ -84,13 +84,6 @@ final class IPv6ConnectionTest extends TestCase {
 		$this->dns = [
 			IPv6::factory('2001:470:5bb2::1'),
 		];
-	}
-
-	/**
-	 * Sets up the test environment
-	 */
-	protected function setUp(): void  {
-		$this->entity = new IPv6Connection(self::METHOD, $this->addresses, $this->gateway, $this->dns, null);
 	}
 
 	/**
@@ -151,6 +144,13 @@ final class IPv6ConnectionTest extends TestCase {
 	public function testNmCliSerialize(): void {
 		$expected = 'ipv6.method "manual" ipv6.addresses "2001:470:5bb2::2/64" ipv6.gateway "fe80::1" ipv6.dns "2001:470:5bb2::1" ';
 		Assert::same($expected, $this->entity->nmCliSerialize());
+	}
+
+	/**
+	 * Sets up the test environment
+	 */
+	protected function setUp(): void {
+		$this->entity = new IPv6Connection(self::METHOD, $this->addresses, $this->gateway, $this->dns, null);
 	}
 
 }

@@ -41,7 +41,7 @@ require __DIR__ . '/../../../bootstrap.php';
 final class TimeManagerTest extends CommandTestCase {
 
 	/**
-	 * @var array<string, string> Commands to be executed
+	 * Commands to be executed
 	 */
 	private const COMMANDS = [
 		'timestamp' => 'date +%s',
@@ -56,15 +56,6 @@ final class TimeManagerTest extends CommandTestCase {
 	 * @var TimeManager Time manager
 	 */
 	private TimeManager $manager;
-
-	/**
-	 * Sets up test environment
-	 */
-	protected function setUp(): void {
-		parent::setUp();
-		$path = __DIR__ . '../../data/systemd/conf/timesyncd.conf';
-		$this->manager = new TimeManager($this->commandManager, $path);
-	}
 
 	/**
 	 * Tests the function to get timedatectl status
@@ -161,6 +152,15 @@ final class TimeManagerTest extends CommandTestCase {
 		Assert::noError(function (): void {
 			$this->manager->setNtp(true);
 		});
+	}
+
+	/**
+	 * Sets up test environment
+	 */
+	protected function setUp(): void {
+		parent::setUp();
+		$path = __DIR__ . '../../data/systemd/conf/timesyncd.conf';
+		$this->manager = new TimeManager($this->commandManager, $path);
 	}
 
 }

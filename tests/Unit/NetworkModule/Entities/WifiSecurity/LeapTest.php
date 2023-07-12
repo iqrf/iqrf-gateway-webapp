@@ -39,17 +39,17 @@ require __DIR__ . '/../../../../bootstrap.php';
 final class LeapTest extends TestCase {
 
 	/**
-	 * @var string LEAP username
+	 * LEAP username
 	 */
 	private const USERNAME = 'name';
 
 	/**
-	 * @var string LEAP password
+	 * LEAP password
 	 */
 	private const PASSWORD = 'pass';
 
 	/**
-	 * @var array{username: string, password: string} JSON serialized entity
+	 * JSON serialized entity
 	 */
 	private const JSON = [
 		'username' => self::USERNAME,
@@ -60,13 +60,6 @@ final class LeapTest extends TestCase {
 	 * @var Leap Cisco LEAP entity
 	 */
 	private Leap $entity;
-
-	/**
-	 * Sets up the test environment
-	 */
-	protected function setUp(): void {
-		$this->entity = new Leap(self::USERNAME, self::PASSWORD);
-	}
 
 	/**
 	 * Tests the function to deserialize the Cisco LEAP entity from JSON
@@ -98,6 +91,13 @@ final class LeapTest extends TestCase {
 	public function testNmCliSerialize(): void {
 		$expected = '802-11-wireless-security.leap-password "pass" 802-11-wireless-security.leap-username "name" ';
 		Assert::same($expected, $this->entity->nmCliSerialize());
+	}
+
+	/**
+	 * Sets up the test environment
+	 */
+	protected function setUp(): void {
+		$this->entity = new Leap(self::USERNAME, self::PASSWORD);
 	}
 
 }

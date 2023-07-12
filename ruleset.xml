@@ -16,8 +16,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <ruleset name="IQRF">
-	<!-- Ninjify Coding Standard -->
-	<rule ref="./vendor/ninjify/coding-standard/ruleset.xml"/>
+	<!-- Contributte Coding Standard -->
+	<rule ref="./vendor/contributte/qa/ruleset.xml"/>
 
 	<rule ref="Generic.Functions.OpeningFunctionBraceBsdAllman">
 		<exclude name="Generic.Functions.OpeningFunctionBraceBsdAllman.BraceOnSameLine"/>
@@ -37,6 +37,10 @@ limitations under the License.
 		<exclude name="PEAR.Classes.ClassDeclaration.OpenBraceNewLine"/>
 	</rule>
 
+	<rule ref="SlevomatCodingStandard.Classes.ParentCallSpacing">
+		<exclude name="SlevomatCodingStandard.Classes.ParentCallSpacing.IncorrectLinesCountAfterControlStructure"/>
+		<exclude name="SlevomatCodingStandard.Classes.ParentCallSpacing.IncorrectLinesCountBeforeControlStructure"/>
+	</rule>
 	<rule ref="SlevomatCodingStandard.Commenting">
 		<exclude name="SlevomatCodingStandard.Commenting.DocCommentSpacing.IncorrectLinesCountBetweenDescriptionAndAnnotations"/>
 		<exclude name="SlevomatCodingStandard.Commenting.RequireOneLinePropertyDocComment.MultiLinePropertyComment"/>
@@ -57,11 +61,22 @@ limitations under the License.
 	<rule ref="SlevomatCodingStandard.Operators.DisallowIncrementAndDecrementOperators">
 		<exclude name="SlevomatCodingStandard.Operators.DisallowIncrementAndDecrementOperators.DisallowedPostDecrementOperator"/>
 	</rule>
+	<rule ref="SlevomatCodingStandard.Namespaces.ReferenceUsedNamesOnly">
+		<exclude name="SlevomatCodingStandard.Namespaces.ReferenceUsedNamesOnly.PartialUse"/>
+	</rule>
+	<rule ref="SlevomatCodingStandard.Numbers.DisallowNumericLiteralSeparator">
+		<exclude name="SlevomatCodingStandard.Numbers.DisallowNumericLiteralSeparator.DisallowedNumericLiteralSeparator"/>
+	</rule>
+	<rule ref="SlevomatCodingStandard.PHP.DisallowReference">
+		<exclude name="SlevomatCodingStandard.PHP.DisallowReference.DisallowedAssigningByReference"/>
+		<exclude name="SlevomatCodingStandard.PHP.DisallowReference.DisallowedInheritingVariableByReference"/>
+		<exclude name="SlevomatCodingStandard.PHP.DisallowReference.DisallowedPassingByReference"/>
+	</rule>
 	<rule ref="SlevomatCodingStandard.TypeHints">
 		<exclude name="SlevomatCodingStandard.TypeHints.DeclareStrictTypes.IncorrectWhitespaceBeforeDeclare"/>
 		<exclude name="SlevomatCodingStandard.TypeHints.DeclareStrictTypes.IncorrectWhitespaceBetweenOpenTagAndDeclare"/>
 		<exclude name="SlevomatCodingStandard.TypeHints.DisallowMixedTypeHint.DisallowedMixedTypeHint"/>
-		<exclude name="SlevomatCodingStandard.TypeHints.UselessConstantTypeHint"/>
+		<exclude name="SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingTraversableTypeHintSpecification"/>
 	</rule>
 	<rule ref="SlevomatCodingStandard.Operators.DisallowIncrementAndDecrementOperators">
 		<exclude name="SlevomatCodingStandard.Operators.DisallowIncrementAndDecrementOperators.DisallowedPreIncrementOperator" />
