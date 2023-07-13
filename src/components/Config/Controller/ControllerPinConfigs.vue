@@ -76,17 +76,17 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
+import {
+	IqrfGatewayControllerMapping,
+	IqrfGatewayControllerMappingDevice
+} from '@iqrf/iqrf-gateway-webapp-client';
+import {AxiosError} from 'axios';
 import {Component} from 'vue-property-decorator';
+
 import ControllerPinConfigGroup from '@/components/Config/Controller/ControllerPinConfigGroup.vue';
 import ModalBase from '@/components/ModalBase.vue';
-
 import {extendedErrorToast} from '@/helpers/errorToast';
-import {ConfigDeviceType} from '@/enums/Config/ConfigurationProfiles';
-
-import ControllerPinConfigService from '@/services/ControllerPinConfigService';
-
-import {AxiosError, AxiosResponse} from 'axios';
-import {IControllerPinConfig} from '@/interfaces/Config/Controller';
+import {useApiClient} from '@/services/ApiClient';
 
 @Component({
 	components: {
@@ -109,24 +109,24 @@ export default class ControllerPinConfigs extends ModalBase {
 	private activeTab = 0;
 
 	/**
-	 * @var {Array<IControllerPinConfig>} profiles Controller pin configuration profiles
+	 * @var {IqrfGatewayControllerMapping[]} profiles Controller pin configuration profiles
 	 */
-	private profiles: Array<IControllerPinConfig> = [];
+	private profiles: IqrfGatewayControllerMapping[] = [];
 
 	/**
 	 * Computes adapter controller profile options
 	 * @return {Array<IControllerPinConfig>} Adapter controller profile options
 	 */
-	get adapterProfiles(): Array<IControllerPinConfig> {
-		return this.profiles.filter((profile: IControllerPinConfig): boolean => profile.deviceType === ConfigDeviceType.ADAPTER);
+	get adapterProfiles(): Array<IqrfGatewayControllerMapping> {
+		return this.profiles.filter((profile: IqrfGatewayControllerMapping): boolean => profile.deviceType === IqrfGatewayControllerMappingDevice.Adapter);
 	}
 
 	/**
 	 * Computes board controller profile options
-	 * @return {Array<IControllerPinConfig>} Board controller profile options
+	 * @return {Array<IqrfGatewayControllerMapping>} Board controller profile options
 	 */
-	get boardProfiles(): Array<IControllerPinConfig> {
-		return this.profiles.filter((profile: IControllerPinConfig): boolean => profile.deviceType === ConfigDeviceType.BOARD);
+	get boardProfiles(): Array<IqrfGatewayControllerMapping> {
+		return this.profiles.filter((profile: IqrfGatewayControllerMapping): boolean => profile.deviceType === IqrfGatewayControllerMappingDevice.Board);
 	}
 
 	/**
@@ -141,9 +141,9 @@ export default class ControllerPinConfigs extends ModalBase {
 	 */
 	private listConfigs(): Promise<void> {
 		this.loading = true;
-		return ControllerPinConfigService.list()
-			.then((rsp: AxiosResponse) => {
-				this.profiles = rsp.data;
+		return useApiClient().getConfigServices().getIqrfGatewayControllerService().listMappings()
+			.then((rsp: IqrfGatewayControllerMapping[]) => {
+				this.profiles = rsp;
 				this.loading = false;
 			})
 			.catch((err: AxiosError) => {
@@ -157,7 +157,7 @@ export default class ControllerPinConfigs extends ModalBase {
 	 * @param {number} id Config profile ID
 	 */
 	private setProfile(id: number): void {
-		const profile = this.profiles.find((profile: IControllerPinConfig) => profile.id === id);
+		const profile = this.profiles.find((profile: IqrfGatewayControllerMapping) => profile.id === id);
 		if (profile !== undefined) {
 			this.$emit('update-pin-config', profile);
 		}

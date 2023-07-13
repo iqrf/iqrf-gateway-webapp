@@ -54,7 +54,7 @@ limitations under the License.
 							}'
 						>
 							<v-text-field
-								v-model='endpoint'
+								v-model='config.endpoint'
 								:label='$t("cloud.amazonAws.form.endpoint")'
 								:success='touched ? valid : null'
 								:error-messages='errors'
@@ -68,7 +68,7 @@ limitations under the License.
 							}'
 						>
 							<v-file-input
-								v-model='certificate'
+								v-model='config.certificate'
 								accept='.pem'
 								:label='$t("forms.fields.certificate")'
 								:success='touched ? valid : null'
@@ -85,7 +85,7 @@ limitations under the License.
 							}'
 						>
 							<v-file-input
-								v-model='privateKey'
+								v-model='config.privateKey'
 								accept='.pem,.key'
 								:label='$t("forms.fields.privateKey")'
 								:success='touched ? valid : null'
@@ -117,14 +117,13 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {AwsMqttConfig, Client} from '@iqrf/iqrf-gateway-webapp-client';
+import {AxiosError} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import {required} from 'vee-validate/dist/rules';
+import {Component, Vue} from 'vue-property-decorator';
 
 import {daemonErrorToast, extendedErrorToast} from '@/helpers/errorToast';
-import {required} from 'vee-validate/dist/rules';
-import CloudService from '@/services/CloudService';
-
-import {AxiosError} from 'axios';
 import {useApiClient} from '@/services/ApiClient';
 
 @Component({
@@ -143,19 +142,20 @@ import {useApiClient} from '@/services/ApiClient';
 export default class AwsCreator extends Vue {
 
 	/**
-	 * @var {string} endpoint Aws cloud endpoint
-	 */
-	private endpoint = '';
+	 * @property {AwsMqttConfig} config AWS IoT MQTT connection configuration
+   * @private
+   */
+	private config: AwsMqttConfig = {
+		endpoint: '',
+		certificate: null,
+		privateKey: null,
+	};
 
 	/**
-	 * @var {File|null} certificate AWS cloud certificate
-	 */
-	private certificate: File|null = null;
-
-	/**
-	 * @var {File|null} privateKey AWS cloud private key
-	 */
-	private privateKey: File|null = null;
+	 * @property {Client} apiClient IQRF Gateway Webapp API client
+   * @private
+   */
+	private apiClient: Client = useApiClient();
 
 	/**
 	 * Vue lifecycle hook created
@@ -165,27 +165,15 @@ export default class AwsCreator extends Vue {
 	}
 
 	/**
-	 * Creates a formData object as data for Axios request
-	 * @returns {FormData} FormData object
-	 */
-	private buildRequest(): FormData {
-		const formData = new FormData();
-		formData.append('endpoint', this.endpoint);
-		formData.append('certificate', this.certificate as Blob);
-		formData.append('privateKey', this.privateKey as Blob);
-		return formData;
-	}
-
-	/**
 	 * Stores new Aws cloud connection configuration in the gateway filesystem
 	 * @param {boolean} restart Restart daemon on save?
 	 */
 	private save(restart: boolean): void {
 		this.$store.commit('spinner/SHOW');
-		CloudService.createAws(this.buildRequest())
+		this.apiClient.getCloudServices().getAwsService().createMqttInstance(this.config)
 			.then(async () => {
 				if (restart) {
-					await useApiClient().getServiceService().restart('iqrf-gateway-daemon')
+					await this.apiClient.getServiceService().restart('iqrf-gateway-daemon')
 						.then(() => {
 							this.$toast.success(
 								this.$t('service.iqrf-gateway-daemon.messages.restart')

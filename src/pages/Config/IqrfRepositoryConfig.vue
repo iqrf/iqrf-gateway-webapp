@@ -149,7 +149,7 @@ export default class IqrfRepositoryConfiguration extends Vue {
 	 * @property {IqrfRepositoryService} repositoryService IQRF repository service
    * @private
    */
-	private repositoryService: IqrfRepositoryService = useApiClient().getIqrfRepositoryService();
+	private repositoryService: IqrfRepositoryService = useApiClient().getConfigServices().getIqrfRepositoryService();
 
 	/**
 	 * Initializes validation rules

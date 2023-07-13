@@ -225,7 +225,7 @@ export default class SmtpForm extends Vue {
 	/**
 	 * @property {MailerService} service Mailer service
    */
-	private service: MailerService = useApiClient().getMailerService();
+	private service: MailerService = useApiClient().getConfigServices().getMailerService();
 
 	/**
 	 * Initializes validation rules

@@ -163,18 +163,20 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, VModel, Vue} from 'vue-property-decorator';
+import {
+	IqrfGatewayControllerMapping,
+	IqrfGatewayControllerMappingDevice,
+	IqrfGatewayControllerService
+} from '@iqrf/iqrf-gateway-webapp-client';
+import {AxiosError} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import {integer, required} from 'vee-validate/dist/rules';
+import {Component, VModel, Vue} from 'vue-property-decorator';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
-import {integer, required} from 'vee-validate/dist/rules';
 
-import {ConfigDeviceType} from '@/enums/Config/ConfigurationProfiles';
-import ControllerPinConfigService from '@/services/ControllerPinConfigService';
-
-import {AxiosError} from 'axios';
-import {IControllerPinConfig} from '@/interfaces/Config/Controller';
 import {ISelectItem} from '@/interfaces/Vuetify';
+import {useApiClient} from '@/services/ApiClient';
 
 @Component({
 	components: {
@@ -189,9 +191,15 @@ import {ISelectItem} from '@/interfaces/Vuetify';
 export default class ControllerPinConfigFormModal extends Vue {
 
 	/**
-	 * @property {IControllerPinConfig|null} profile Edited profile
+	 * @property {IqrfGatewayControllerMapping|null} profile Edited profile
 	 */
-	@VModel({required: true, default: null}) profile!: IControllerPinConfig|null;
+	@VModel({required: true, default: null}) profile!: IqrfGatewayControllerMapping|null;
+
+	/**
+	 * @property {IqrfGatewayControllerService} service IQRF Gateway Controller configuration service
+   * @private
+   */
+	private service: IqrfGatewayControllerService = useApiClient().getConfigServices().getIqrfGatewayControllerService();
 
 	/**
 	 * @var {boolean} useI2c Use I2C pins
@@ -210,8 +218,11 @@ export default class ControllerPinConfigFormModal extends Vue {
 	 * @return {Array<ISelectItem>} Device type options
 	 */
 	get deviceTypeOptions(): Array<ISelectItem> {
-		const types: Array<ConfigDeviceType> = [ConfigDeviceType.ADAPTER, ConfigDeviceType.BOARD];
-		return types.map((item: ConfigDeviceType): ISelectItem => ({
+		const types: Array<IqrfGatewayControllerMappingDevice> = [
+			IqrfGatewayControllerMappingDevice.Adapter,
+			IqrfGatewayControllerMappingDevice.Board,
+		];
+		return types.map((item: IqrfGatewayControllerMappingDevice): ISelectItem => ({
 			text: this.$t(`config.controller.pins.form.deviceTypes.${item}`).toString(),
 			value: item,
 		}));
@@ -264,11 +275,11 @@ export default class ControllerPinConfigFormModal extends Vue {
 		delete profile.id;
 		this.$store.commit('spinner/SHOW');
 		if (id === undefined) {
-			ControllerPinConfigService.add(profile)
+			this.service.createMapping(profile)
 				.then(() => this.handleSuccess(name))
 				.catch((error: AxiosError) => this.handleFailure(error, name));
 		} else {
-			ControllerPinConfigService.edit(id, profile)
+			this.service.editMapping(id, profile)
 				.then(() => this.handleSuccess(name))
 				.catch((error: AxiosError) => this.handleFailure(error, name));
 		}

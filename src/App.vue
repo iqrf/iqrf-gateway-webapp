@@ -107,6 +107,7 @@ export default class App extends Vue {
 				}
 			})
 			.catch((error: AxiosError) => {
+				this.$store.commit('installation/CHECKED');
 				this.$store.dispatch('spinner/hide');
 				console.error(error);
 			});

@@ -63,6 +63,7 @@ import {useApiClient} from '@/services/ApiClient';
  */
 @Component
 export default class DpaMacros extends Vue {
+
 	/**
 	 * @var {Array<IDpaMacros>} macros Array of raw DPA message macros
 	 */
@@ -73,7 +74,7 @@ export default class DpaMacros extends Vue {
 	 * Retrieves raw DPA message macros
 	 */
 	created(): void {
-		useApiClient().getDpaMacrosService().fetch()
+		useApiClient().getIqrfServices().getDpaMacrosService().fetch()
 			.then((response: Array<DpaMacroGroup>) => {
 				this.macros = response.filter((group: DpaMacroGroup): boolean => {
 					if (!group.enabled) {

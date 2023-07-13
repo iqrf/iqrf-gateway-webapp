@@ -54,7 +54,7 @@ limitations under the License.
 							}'
 						>
 							<v-text-field
-								v-model='connectionString'
+								v-model='config.connectionString'
 								:label='$t("cloud.msAzure.form.connectionString")'
 								:success='touched ? valid : null'
 								:error-messages='errors'
@@ -92,6 +92,7 @@ import CloudService from '@/services/CloudService';
 
 import {AxiosError} from 'axios';
 import {useApiClient} from '@/services/ApiClient';
+import {AzureIotHubConfig, Client} from '@iqrf/iqrf-gateway-webapp-client';
 
 @Component({
 	components: {
@@ -107,15 +108,20 @@ import {useApiClient} from '@/services/ApiClient';
  * Azure cloud mqtt connection configuration creator card
  */
 export default class AzureCreator extends Vue {
-	/**
-	 * @var {string} connectionString Azure cloud connection string
-	 */
-	private connectionString = '';
 
 	/**
-	 * @constant {string} serviceName Azure cloud service name
-	 */
-	private serviceName = 'azure';
+	 * @property {AzureIotHubConfig} config Azure IoT Hub MQTT connection configuration
+   * @private
+   */
+	private config: AzureIotHubConfig = {
+		connectionString: ''
+	};
+
+	/**
+	 * @property {Client} apiClient IQRF Gateway Webapp API client
+   * @private
+   */
+	private apiClient: Client = useApiClient();
 
 	/**
 	 * Vue lifecycle hook created
@@ -130,10 +136,10 @@ export default class AzureCreator extends Vue {
 	 */
 	private save(restart: boolean): void {
 		this.$store.commit('spinner/SHOW');
-		CloudService.create(this.serviceName, {'connectionString': this.connectionString})
+		this.apiClient.getCloudServices().getAzureService().createMqttInstance(this.config)
 			.then(async () => {
 				if (restart) {
-					await useApiClient().getServiceService().restart('iqrf-gateway-daemon')
+					await this.apiClient.getServiceService().restart('iqrf-gateway-daemon')
 						.then(() => {
 							this.$toast.success(
 								this.$t('service.iqrf-gateway-daemon.messages.restart')

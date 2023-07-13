@@ -43,14 +43,12 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
+import {IqrfGatewayControllerMapping} from '@iqrf/iqrf-gateway-webapp-client';
+import {AxiosError} from 'axios';
 import {Component, VModel, Vue} from 'vue-property-decorator';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
-
-import ControllerPinConfigService from '@/services/ControllerPinConfigService';
-
-import {AxiosError} from 'axios';
-import {IControllerPinConfig} from '@/interfaces/Config/Controller';
+import {useApiClient} from '@/services/ApiClient';
 
 /**
  * Controller pin configuration delete modal window component
@@ -59,9 +57,9 @@ import {IControllerPinConfig} from '@/interfaces/Config/Controller';
 export default class ControllerPinConfigDeleteModal extends Vue {
 
 	/**
-	 * @property {IControllerPinConfig|null} profile Profile to delete
+	 * @property {IqrfGatewayControllerMapping|null} profile Profile to delete
 	 */
-	@VModel({required: true, default: null}) profile!: IControllerPinConfig|null;
+	@VModel({required: true, default: null}) profile!: IqrfGatewayControllerMapping|null;
 
 	/**
 	 * Computes modal display condition
@@ -79,7 +77,7 @@ export default class ControllerPinConfigDeleteModal extends Vue {
 		}
 		const name = this.profile.name;
 		this.$store.commit('spinner/SHOW');
-		ControllerPinConfigService.delete(this.profile.id)
+		useApiClient().getConfigServices().getIqrfGatewayControllerService().deleteMapping(this.profile.id)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
