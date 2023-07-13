@@ -92,11 +92,11 @@ limitations under the License.
 							<tr>
 								<th>{{ $t('iqrfnet.enumeration.rfMode') }}</th>
 								<td v-if='peripheralData.flags.rfModeStd'>
-									<img :src='RfModeStd' alt='STD' class='rf-mode-icon' />
+									<img :src='RfModeStd' alt='STD' class='rf-mode-icon'>
 									<strong>{{ $t('iqrfnet.enumeration.rfModes.std') }}</strong>
 								</td>
 								<td v-else-if='peripheralData.flags.rfModeLp'>
-									<img :src='RfModeLp' alt='LP' class='rf-mode-icon' />
+									<img :src='RfModeLp' alt='LP' class='rf-mode-icon'>
 									<strong>{{ $t('iqrfnet.enumeration.rfModes.lp') }}</strong>
 								</td>
 							</tr>

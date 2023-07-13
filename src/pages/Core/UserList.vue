@@ -150,7 +150,7 @@ limitations under the License.
 
 <script lang='ts'>
 import {
-	UserBase, UserEdit,
+	UserEdit,
 	UserInfo,
 	UserRole,
 	UserService
@@ -160,10 +160,7 @@ import {Component, Vue} from 'vue-property-decorator';
 import {DataTableHeader} from 'vuetify';
 
 import UserDeleteModal from '@/components/Core/UserDeleteModal.vue';
-
 import {extendedErrorToast} from '@/helpers/errorToast';
-import UserServiceOld from '@/services/UserService';
-
 import {useApiClient} from '@/services/ApiClient';
 
 @Component({

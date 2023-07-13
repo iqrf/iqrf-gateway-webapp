@@ -235,7 +235,7 @@ export default class UserEditForm extends Vue {
 		this.$store.commit('spinner/SHOW');
 		const user: UserEdit = {...this.user};
 		if (this.password !== '') {
-		  user.password = this.password;
+			user.password = this.password;
 		}
 		this.service.edit(this.userId, this.user)
 			.then(() => {

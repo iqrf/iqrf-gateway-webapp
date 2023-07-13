@@ -92,11 +92,11 @@ limitations under the License.
 
 <script lang='ts'>
 import {
-  EmailSentResponse,
-  UserCreate,
-  UserCredentials,
-  UserLanguage,
-  UserRole
+	EmailSentResponse,
+	UserCreate,
+	UserCredentials,
+	UserLanguage,
+	UserRole
 } from '@iqrf/iqrf-gateway-webapp-client';
 import {AxiosError} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';

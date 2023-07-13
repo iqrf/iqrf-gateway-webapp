@@ -83,16 +83,14 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {AzureIotHubConfig, Client} from '@iqrf/iqrf-gateway-webapp-client';
+import {AxiosError} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import {required} from 'vee-validate/dist/rules';
+import {Component, Vue} from 'vue-property-decorator';
 
 import {daemonErrorToast, extendedErrorToast} from '@/helpers/errorToast';
-import {required} from 'vee-validate/dist/rules';
-import CloudService from '@/services/CloudService';
-
-import {AxiosError} from 'axios';
 import {useApiClient} from '@/services/ApiClient';
-import {AzureIotHubConfig, Client} from '@iqrf/iqrf-gateway-webapp-client';
 
 @Component({
 	components: {

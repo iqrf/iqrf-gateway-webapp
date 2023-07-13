@@ -24,7 +24,13 @@ limitations under the License.
 					md='6'
 					lg='4'
 				>
-					<v-img :alt='title' :src='logo' max-height='32pt' contain class='mb-6' />
+					<v-img
+						:alt='title'
+						:src='logo'
+						max-height='32pt'
+						contain
+						class='mb-6'
+					/>
 					<slot />
 				</v-col>
 			</v-row>
