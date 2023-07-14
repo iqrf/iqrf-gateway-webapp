@@ -69,6 +69,7 @@ export default class App extends Vue {
 		await useApiClient().getInstallationService().check()
 			.then((check: InstallationChecks) => {
 				this.$store.commit('installation/CHECKED');
+				this.$store.dispatch('spinner/hide');
 				const installUrl: boolean = this.$route.path.startsWith('/install/');
 				if (check.dependencies.length !== 0) {
 					this.$router.push({
