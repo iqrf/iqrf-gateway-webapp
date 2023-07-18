@@ -20,7 +20,6 @@ import {authorizationHeader} from '@/helpers/authorizationHeader';
 
 import {
 	IGatewayBriefInfo,
-	IGatewayInfo,
 	IHostname
 } from '@/interfaces/Gateway/Information';
 

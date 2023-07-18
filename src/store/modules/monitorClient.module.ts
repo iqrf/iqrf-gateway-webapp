@@ -50,7 +50,7 @@ const getters: GetterTree<MonitorClientState, any> = {
 };
 
 const mutations: MutationTree<MonitorClientState> = {
-	SOCKET_ONOPEN(state: MonitorClientState, event: Event) {
+	SOCKET_ONOPEN(state: MonitorClientState) {
 		if (state.reconnecting) {
 			state.reconnecting = false;
 		}

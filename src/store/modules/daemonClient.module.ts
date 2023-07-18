@@ -149,7 +149,7 @@ const getters: GetterTree<DaemonClientState, any> = {
 };
 
 const mutations: MutationTree<DaemonClientState> = {
-	SOCKET_ONOPEN(state: DaemonClientState, event: Event) {
+	SOCKET_ONOPEN(state: DaemonClientState) {
 		if (state.hasReconnected) {
 			setTimeout(() => {
 				state.isConnected = true;
