@@ -1352,11 +1352,14 @@
 		"description": "Control this gateway.",
 		"hostname": {
 			"title": "Change hostname",
+			"setIdeCounterpart": "Set the new hostname as IQRF IDE GW hostname",
+			"setJsonSplitter": "Set the new hostname as IQRF Gateway Daemon instance ID",
 			"errors": {
 				"hostnameMissing": "Please enter hostname.",
 				"hostnameInvalid": "Hostname should contain letters a-z (case insensitive), digits 0-9 and a hyphen (-). Cannot start with a hyphen. Cannot be longer than 64 characters."
 			},
 			"messages": {
+				"daemonRestart": "IQRF Gateway Daemon restart is required to apply the changes.",
 				"success": "Hostname configuration has been successfully changed.",
 				"failed": "Failed to change hostname configuration: {error}"
 			}

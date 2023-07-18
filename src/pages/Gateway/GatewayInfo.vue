@@ -131,7 +131,7 @@ limitations under the License.
 				{{ $t('gateway.info.diagnostics') }}
 			</CButton>
 		</CCard>
-		<HostnameChange ref='hostname' @hostname-changed='getInformation' />
+		<HostnameChange ref='hostname' :current='info?.hostname' @hostname-changed='getInformation' />
 	</div>
 </template>
 
