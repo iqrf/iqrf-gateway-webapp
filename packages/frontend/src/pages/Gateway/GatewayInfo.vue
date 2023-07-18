@@ -64,6 +64,7 @@ limitations under the License.
 								<HostnameChange
 									v-if='$store.getters["user/getRole"] === "admin"'
 									ref='hostname'
+									:current='info?.hostname'
 									@hostname-changed='getInformation'
 								/>
 							</td>
