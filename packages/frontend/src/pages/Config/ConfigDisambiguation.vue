@@ -59,6 +59,13 @@ export default class ConfigDisambiguation extends Vue {
 			feature: 'iqrfGatewayController',
 		},
 		{
+			title: this.$t('config.bridge.title').toString(),
+			description: this.$t('config.bridge.description').toString(),
+			to: '/config/bridge/',
+			role: UserRoleIndex.NORMAL,
+			feature: 'iqrfGatewayInfluxdbBridge',
+		},
+		{
 			title: this.$t('config.translator.title').toString(),
 			description: this.$t('config.translator.description').toString(),
 			to: '/config/translator/',

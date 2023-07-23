@@ -81,6 +81,7 @@ const Interfaces = () => import(/* WebpackChunkName: "config" */ '@/pages/Config
 const MiscConfiguration = () => import (/* WebpackChunkName: "config" */ '@/pages/Config/MiscConfiguration.vue');
 const TranslatorConfig = () => import(/* webpackChunkName: "config" */ '@/pages/Config/TranslatorConfig.vue');
 const ControllerConfig = () => import(/* webpackChunkName: "config" */ '@/pages/Config/ControllerConfig.vue');
+const BridgeConfig = () => import(/* webpackChunkName: "config" */ '@/pages/Config/BridgeConfig.vue');
 const MonitorForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/MonitorForm.vue');
 const MessagingDisambiguation = () => import(/* webpackChunkName: "config" */ '@/pages/Config/MessagingDisambiguation.vue');
 const MqMessagingTable = () => import(/* webpackChunkName: "config" */ '@/pages/Config/MqMessagingTable.vue');
@@ -602,6 +603,13 @@ const routes: Array<RouteConfig> = [
 					{
 						component: ControllerConfig,
 						path: 'controller',
+						meta: {
+							role: UserRole.Normal,
+						},
+					},
+					{
+						component: BridgeConfig,
+						path: 'bridge',
 						meta: {
 							role: UserRole.Normal,
 						},

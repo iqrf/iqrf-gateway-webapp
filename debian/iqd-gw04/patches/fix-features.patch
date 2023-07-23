@@ -20,10 +20,10 @@
  iqrfGatewayController:
 -	enabled: false
 +	enabled: true
- # IQRF Gateway Translator configuration
- iqrfGatewayTranslator:
+ # IQRF Gateway InfluxDB Bridge configuration
+ iqrfGatewayInfluxdbBridge:
  	enabled: false
-@@ -43,36 +43,36 @@
+@@ -46,36 +46,36 @@
  	path: /etc/systemd/journald.conf
  # Mender client configuration
  mender:

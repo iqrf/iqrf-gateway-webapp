@@ -100,6 +100,21 @@ class VersionManager {
 	}
 
 	/**
+	 * Returns IQRF Gateway InfluxDB Bridge's version
+	 * @return string|null IQRF Gateway InfluxDB Bridge's version
+	 */
+	public function getInfluxdbBridge(): ?string {
+		if (!$this->commandManager->commandExist('iqrf-gateway-influxdb-bridge')) {
+			return null;
+		}
+		$result = $this->commandManager->run('iqrf-gateway-influxdb-bridge --version')->getStdout();
+		if ($result !== '') {
+			return Strings::replace($result, '#^IQRF\ Gateway\ InfluxDB\ Bridge\ #', '');
+		}
+		return null;
+	}
+
+	/**
 	 * Returns IQRF Gateway Setter's version
 	 * @return string|null IQRF Gateway Setter's version
 	 */

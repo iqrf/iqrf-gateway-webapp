@@ -41,6 +41,10 @@ parameters:
 			logDir: '/var/log/iqrf-gateway-daemon/'
 			# Path to directory with IQRF Gateway Daemon's JSON schemas
 			schemaDir: '/usr/share/iqrf-gateway-daemon/cfgSchemas/'
+		# IQRF Gateway Influxdb Bridge paths
+		iqrfGatewayInfluxdbBridge:
+			# Path to directory containing IQRF Gateway Influxdb Bridge configuration
+			configDir: '/etc/iqrf-gateway-influxdb-bridge/'
 		# IQRF Gateway Translator paths
 		iqrfGatewayTranslator:
 			# Path to directory containing IQRF Gateway Translator configuration

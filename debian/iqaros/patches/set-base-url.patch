@@ -1,7 +1,11 @@
 Sets base URL for IQAROS
 --- a/packages/frontend/.env
 +++ b/packages/frontend/.env
-@@ -1,2 +1,2 @@
+@@ -13,6 +13,6 @@
+ # See the License for the specific language governing permissions and
+ # limitations under the License.
+ 
 -VITE_BASE_URL=/
 +VITE_BASE_URL=/system/
  VITE_CYPRESS_ENABLED=0
+ VITE_THEME=generic

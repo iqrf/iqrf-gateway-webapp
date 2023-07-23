@@ -155,6 +155,12 @@ export default class TheSidebar extends Vue {
 							role: UserRoleIndex.NORMAL,
 						},
 						{
+							title: this.$t('service.iqrf-gateway-influxdb-bridge.title').toString(),
+							to: '/gateway/service/iqrf-gateway-influxdb-bridge/',
+							feature: 'iqrfGatewayInfluxdbBridge',
+							role: UserRoleIndex.NORMAL,
+						},
+						{
 							title: this.$t('service.iqrf-gateway-translator.title').toString(),
 							to: '/gateway/service/iqrf-gateway-translator/',
 							feature: 'iqrfGatewayTranslator',
@@ -271,6 +277,12 @@ export default class TheSidebar extends Vue {
 					title: this.$t('config.translator.title').toString(),
 					to: '/config/translator/',
 					feature: 'iqrfGatewayTranslator',
+					role: UserRoleIndex.NORMAL,
+				},
+				{
+					title: this.$t('config.bridge.title').toString(),
+					to: '/config/bridge/',
+					feature: 'iqrfGatewayInfluxdbBridge',
 					role: UserRoleIndex.NORMAL,
 				},
 				{

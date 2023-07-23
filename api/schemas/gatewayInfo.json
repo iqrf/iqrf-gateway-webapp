@@ -99,6 +99,7 @@
 				"cloudProvisioning",
 				"controller",
 				"daemon",
+				"influxdbBridge",
 				"setter",
 				"uploader",
 				"webapp"
@@ -135,6 +136,19 @@
 					"type": "string",
 					"title": "IQRF Gateway Daemon version",
 					"example": "v2.3.0"
+				},
+				"influxdbBridge": {
+					"$id": "#/properties/version/properties/influxdbBridge",
+					"oneOf": [
+						{
+							"type": "string"
+						},
+						{
+							"type": "null"
+						}
+					],
+					"title": "IQRF Gateway InfluxDB Bridge version",
+					"example": "v1.0.0"
 				},
 				"setter": {
 					"$id": "#/properties/versions/properties/setter",

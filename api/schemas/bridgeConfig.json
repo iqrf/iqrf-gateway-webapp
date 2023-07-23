@@ -1,0 +1,200 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"title": "Configuration schema",
+	"description": "IQRF Gateway Influxdb Bridge configuration schema.",
+	"type": "object",
+	"examples": [
+		{
+			"influx": {
+				"host": "localhost",
+				"port": 8086,
+				"org": "org",
+				"user": "user",
+				"password": "password",
+				"token": "exampletoken",
+				"buckets": {
+					"gateway": "gateway",
+					"devices": "devices",
+					"sensors": "sensors"
+				}
+			},
+			"mqtt": {
+				"host": "localhost",
+				"port": 1883,
+				"user": "user",
+				"password": "password",
+				"client": "client",
+				"topics": [
+					"exampletopic"
+				]
+			},
+			"logLevel": "INFO"
+		}
+	],
+	"required": [
+		"influx",
+		"mqtt",
+		"logLevel"
+	],
+	"additionalProperties": false,
+	"properties": {
+		"influx": {
+			"$id": "#/properties/influx",
+			"title": "Influxdb",
+			"description": "Influxdb client configuration.",
+			"type": "object",
+			"required": [
+				"host",
+				"port",
+				"user",
+				"password",
+				"token",
+				"buckets",
+				"org"
+			],
+			"additionalProperties": false,
+			"properties": {
+				"host": {
+					"$id": "#/properties/influx/properties/host",
+					"title": "Host",
+					"description": "Hostname or address.",
+					"type": "string"
+				},
+				"port": {
+					"$id": "#/properties/influx/properties/port",
+					"title": "Port",
+					"description": "Port number of influxdb.",
+					"type": "integer"
+				},
+				"user": {
+					"$id": "#/properties/influx/properties/user",
+					"title": "User",
+					"description": "Influxdb API authentication username (1.x).",
+					"type": "string"
+				},
+				"password": {
+					"$id": "#/properties/influx/properties/password",
+					"title": "Password",
+					"description": "Influxdb API authentication password (1.x)."
+				},
+				"token": {
+					"$id": "#/properties/influx/properties/token",
+					"title": "API token",
+					"description": "Influxdb API authentication token (2.0).",
+					"type": "string"
+				},
+				"org": {
+					"$id": "#/properties/influx/properties/org",
+					"title": "Organization",
+					"description": "Influxdb organization name.",
+					"type": "string"
+				},
+				"buckets": {
+					"$id": "#/properties/influx/properties/buckets",
+					"title": "Buckets",
+					"description": "Influxdb buckets.",
+					"type": "object",
+					"required": [
+						"gateway",
+						"devices",
+						"sensors"
+					],
+					"additionalProperties": false,
+					"properties": {
+						"gateway": {
+							"$id": "#/properties/influx/properties/buckets/properties/gateway",
+							"title": "Gateway bucket",
+							"description": "Bucket for gateway data.",
+							"type": "string"
+						},
+						"devices": {
+							"$id": "#/properties/influx/properties/buckets/properties/devices",
+							"title": "Device bucket",
+							"description": "Bucket for device data.",
+							"type": "string"
+						},
+						"sensors": {
+							"$id": "#/properties/influx/properties/buckets/properties/sensors",
+							"title": "Sensor bucket",
+							"description": "Bucket for sensor data.",
+							"type": "string"
+						}
+					}
+				}
+			}
+		},
+		"mqtt": {
+			"$id": "#/properties/mqtt",
+			"title": "MQTT",
+			"description": "MQTT client configuration.",
+			"type": "object",
+			"required": [
+				"host",
+				"port",
+				"user",
+				"password",
+				"topics"
+			],
+			"additionalProperties": false,
+			"properties": {
+				"host": {
+					"$id": "#/properties/mqtt/properties/host",
+					"title": "Host",
+					"description": "MQTT broker hostname.",
+					"type": "string"
+				},
+				"port": {
+					"$id": "#/properties/mqtt/properties/port",
+					"title": "Port",
+					"description": "MQTT broker port.",
+					"type": "integer"
+				},
+				"user": {
+					"$id": "#/properties/mqtt/properties/user",
+					"title": "User",
+					"description": "MQTT broker access username.",
+					"type": "string"
+				},
+				"password": {
+					"$id": "#/properties/mqtt/properties/password",
+					"title": "Password",
+					"description": "MQTT broker access password.",
+					"type": "string"
+				},
+				"client": {
+					"$id": "#/properties/mqtt/properties/client",
+					"title": "Client ID",
+					"description": "MQTT client ID.",
+					"type": "string"
+				},
+				"topics": {
+					"$id": "#/properties/mqtt/properties/topics",
+					"title": "Reponse topics",
+					"description": "Array of topics to subscribe to.",
+					"type": "array",
+					"additionalItems": false,
+					"items": {
+						"$id": "#/properties/mqtt/properties/topics/items",
+						"title": "Response topic",
+						"description": "Response topic to subscribe to.",
+						"type": "string"
+					}
+				}
+			}
+		},
+		"logLevel": {
+			"$id": "#/properties/logLevel",
+			"title": "Logging severity",
+			"description": "Logging threshold.",
+			"type": "string",
+			"enum": [
+				"CRITICAL",
+				"FATAL",
+				"ERROR",
+				"WARNING",
+				"INFO",
+				"DEBUG"
+			]
+		}
+	}
+}

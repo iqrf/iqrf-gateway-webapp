@@ -78,13 +78,13 @@ limitations under the License.
 					{{ $t('service.states.unknown') }}
 				</span>
 				<span v-else>
-					<span v-if='serviceStatus.enabled'>{{ $t('states.enabled') }}</span>
+					<span v-if='serviceStatus !== null && serviceStatus.enabled'>{{ $t('states.enabled') }}</span>
 					<span v-else>{{ $t('states.disabled') }}</span>,
-					<span v-if='serviceStatus.active'>{{ $t('service.states.active') }}</span>
+					<span v-if='serviceStatus !== null && serviceStatus.active'>{{ $t('service.states.active') }}</span>
 					<span v-else>{{ $t('service.states.inactive') }}</span>
 				</span>
 				<br><br>
-				<pre v-if='serviceStatus.status !== null && !unsupported' class='log'>{{ serviceStatus.status }}</pre>
+				<pre v-if='serviceStatus !== null && serviceStatus.status !== null && !unsupported' class='log'>{{ serviceStatus.status }}</pre>
 			</v-card-text>
 		</v-card>
 		<AptConfig v-if='serviceName === "unattended-upgrades" && $store.getters["features/isEnabled"]("unattendedUpgrades")' />
@@ -113,6 +113,7 @@ const whitelisted = [
 	'apcupsd',
 	'iqrf-gateway-controller',
 	'iqrf-gateway-daemon',
+	'iqrf-gateway-influxdb-bridge',
 	'iqrf-gateway-translator',
 	'nodered',
 	'ssh',
@@ -123,6 +124,7 @@ const whitelisted = [
 const features = {
 	'apcupsd': 'apcupsd',
 	'iqrf-gateway-controller': 'iqrfGatewayController',
+	'iqrf-gateway-influxdb-bridge': 'iqrfGatewayInfluxdbBridge',
 	'iqrf-gateway-translator': 'iqrfGatewayTranslator',
 	'nodered': 'nodeRed',
 	'ssh': 'ssh',

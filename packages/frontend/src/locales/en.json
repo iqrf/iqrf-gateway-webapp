@@ -131,6 +131,8 @@
 		"fields": {
 			"address": "Address",
 			"id": "ID",
+			"host": "Host",
+			"port": "Port",
 			"email": "E-mail address",
 			"username": "Username",
 			"password": "Password",
@@ -1097,6 +1099,45 @@
 				"fetchFailed": "Failed to retrieve Controller configuration: {error}"
 			}
 		},
+		"bridge": {
+			"title": "IQRF GW InfluxDB Bridge",
+			"description": "InfluxDB Bridge configuration",
+			"influx": "InfluxDB client",
+			"mqtt": "MQTT client",
+			"form": {
+				"org": "Organization",
+				"token": "Authentication token"
+			},
+			"errors": {
+				"influx": {
+					"host": "Please enter InfluxDB hostname.",
+					"port": "Please enter InfluxDB port.",
+					"portInvalid": "InfluxDB port number should be an integer between 1024 and 65535.",
+					"org": "Please enter InfluxDB organization name."
+				},
+				"mqtt": {
+					"host": "Please enter MQTT broker hostname.",
+					"port": "Please enter MQTT broker port.",
+					"portInvalid": "MQTT broker port number should be in integer between 1024 and 65535.",
+					"client": "Please enter MQTT client ID.",
+					"credentials": "Please enter both username and password, or leave both fields empty.",
+					"subscriptionDuplicate": "Subscription topic already exists."
+				}
+			},
+			"messages": {
+				"save": {
+					"success": "IQRF Gateway InfluxDB Bridge configuration successfully saved. Restart the service for changes to take effect.",
+					"failure": "Failed to save IQRF Gateway InfluxDB Bridge configuration: {error}"
+				},
+				"fetch": {
+					"failure": "Failed to retrieve IQRF Gateway InfluxDB Bridge configuration: {error}"
+				}
+			},
+			"notes": {
+				"oldAuth": "User and password are used for v1.x authentication.",
+				"newAuth": "Token is used for v2+ authentication. A token can be used for authentication in version 1.8 with the format <user:password>."
+			}
+		},
 		"selectedComponents": {
 			"title": "Selected components",
 			"description": "Manage selected components."
@@ -1378,6 +1419,7 @@
 				"iqrfCloudProvisioning": "IQRF Cloud Provisioning",
 				"iqrfGatewayController": "IQRF Gateway Controller",
 				"iqrfGatewayDaemon": "IQRF Gateway Daemon",
+				"iqrfGatewayInfluxdbBridge": "IQRF Gateway InfluxDB Bridge",
 				"iqrfGatewaySetter": "IQRF Gateway Setter",
 				"iqrfGatewayUploader": "IQRF Gateway Uploader",
 				"iqrfGatewayWebapp": "IQRF Gateway Webapp"
@@ -3424,6 +3466,17 @@
 				"start": "IQRF Gateway Daemon has been started.",
 				"stop": "IQRF Gateway Daemon has been stopped.",
 				"restart": "IQRF Gateway Daemon has been restarted. It takes tens of seconds before the system is ready."
+			}
+		},
+		"iqrf-gateway-influxdb-bridge": {
+			"title": "InfluxDB Bridge",
+			"description": "Control IQRF Gateway InfluxDB Bridge's service.",
+			"messages": {
+				"disable": "IQRF Gateway InfluxDB Bridge has been disabled.",
+				"enable": "IQRF Gateway InfluxDB Bridge has been enabled.",
+				"start": "IQRF Gateway InfluxDB Bridge has been started.",
+				"stop": "IQRF Gateway InfluxDB Bridge has been stopped.",
+				"restart": "IQRF Gateway InfluxDB Bridge has been restarted. It takes tens of seconds before the system is ready."
 			}
 		},
 		"iqrf-gateway-translator": {

@@ -235,6 +235,7 @@ class User implements JsonSerializable {
 		if ($this->role === UserRole::Normal || $this->role === UserRole::Admin) {
 			$scopes = array_merge($scopes, [
 				'clouds',
+				'config:bridge',
 				'config:controller',
 				'config:daemon',
 				'config:iqrfRepository',

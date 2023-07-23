@@ -31,6 +31,9 @@ grafana:
 # IQRF Gateway Controller configuration
 iqrfGatewayController:
 	enabled: false
+# IQRF Gateway InfluxDB Bridge configuration
+iqrfGatewayInfluxdbBridge:
+	enabled: false
 # IQRF Gateway Translator configuration
 iqrfGatewayTranslator:
 	enabled: false

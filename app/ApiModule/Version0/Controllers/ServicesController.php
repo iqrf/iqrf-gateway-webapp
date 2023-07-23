@@ -50,6 +50,7 @@ class ServicesController extends BaseController {
 		'apcupsd' => 'apcupsd',
 		'iqrf-gateway-controller' => 'iqrfGatewayController',
 		'iqrf-gateway-daemon' => null,
+		'iqrf-gateway-influxdb-bridge' => 'iqrfGatewayInfluxdbBridge',
 		'iqrf-gateway-translator' => 'iqrfGatewayTranslator',
 		'mender-client' => 'mender',
 		'monit' => 'monit',

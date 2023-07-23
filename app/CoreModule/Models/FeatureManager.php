@@ -53,6 +53,9 @@ class FeatureManager {
 		'iqrfGatewayController' => [
 			'enabled' => false,
 		],
+		'iqrfGatewayInfluxdbBridge' => [
+			'enabled' => false,
+		],
 		'iqrfGatewayTranslator' => [
 			'enabled' => false,
 		],

@@ -22,6 +22,11 @@ services:
 	- App\ApiModule\Version0\Controllers\Cloud\IbmCloudController
 	- App\ApiModule\Version0\Controllers\Cloud\InteliGlueController
 	- App\ApiModule\Version0\Controllers\Config\AptController
+	bridge.fileManager:
+		factory: App\CoreModule\Models\FileManager(%paths.iqrfGatewayInfluxdbBridge.configDir%)
+		autowired: false
+	bridge.configManager: App\ConfigModule\Models\IqrfConfigManager(@bridge.fileManager)
+	- App\ApiModule\Version0\Controllers\Config\BridgeController
 	- App\ApiModule\Version0\Controllers\Config\ControllerController
 	- App\ApiModule\Version0\Controllers\Config\DaemonController
 	- App\ApiModule\Version0\Controllers\Config\IqrfRepositoryController

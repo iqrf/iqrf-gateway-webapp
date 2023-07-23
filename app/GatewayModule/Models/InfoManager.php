@@ -70,6 +70,7 @@ class InfoManager {
 				'cloudProvisioning' => $this->versionManager->getCloudProvisioning(),
 				'controller' => $this->versionManager->getController(),
 				'daemon' => $this->versionManager->getDaemon($verbose),
+				'influxdbBridge' => $this->versionManager->getInfluxdbBridge(),
 				'setter' => $this->versionManager->getSetter(),
 				'uploader' => $this->versionManager->getUploader(),
 				'webapp' => $this->versionManager->getWebapp($verbose),
