@@ -1,20 +1,33 @@
 {
 	"compilerOptions": {
-		"target": "ES2020",
-		"strict": true,
+		"allowJs": false,
+		"composite": true,
+		"declaration": true,
+		"declarationDir": "./dist",
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"incremental": true,
+		"lib": [
+			"ESNext",
+			"DOM"
+		],
 		"module": "ESNext",
 		"moduleResolution": "Node",
-		"noImplicitAny": false,
-		"allowSyntheticDefaultImports": true,
-		"sourceMap": true,
-		"baseUrl": ".",
-		"experimentalDecorators": true,
+		"outDir": "./dist",
 		"resolveJsonModule": true,
-		"types": ["jest"],
-		"lib": ["ES2020", "DOM"],
-		"paths": {
-			"@/*": ["src/*"]
-		}
+		"sourceMap": true,
+		"strict": true,
+		"strictNullChecks": true,
+		"target": "ES2020"
 	},
-	"exclude": ["cypress", "cypress.config.ts"]
+	"exclude": [
+		"docs",
+		"dist",
+		"node_modules"
+	],
+	"references": [
+		{
+			"path": "./packages/api-client/"
+		}
+	]
 }

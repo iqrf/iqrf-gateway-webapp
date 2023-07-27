@@ -22,13 +22,13 @@ import {ViteEjsPlugin} from 'vite-plugin-ejs';
 import {createVuePlugin} from 'vite-plugin-vue2';
 import svgLoader from 'vite-svg-loader';
 
-export default defineConfig(({command, mode}) => {
-	const env = loadEnv(mode, process.cwd(), '');
-	const theme = env.VITE_THEME || 'generic';
+export default defineConfig(({mode}) => {
+	const env: Record<string, string> = loadEnv(mode, process.cwd(), '');
+	const theme: string = env.VITE_THEME || 'generic';
 	return {
 		base: env.VITE_BASE_URL,
 		build: {
-			outDir: path.resolve(__dirname, './www/dist'),
+			outDir: path.resolve(__dirname, './dist'),
 		},
 		css: {
 			preprocessorOptions: {

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare module 'version.json' {
+declare module '../../version.json' {
 	const version: string;
 	const commit: string;
 	const pipeline: string;
