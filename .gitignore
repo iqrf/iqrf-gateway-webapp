@@ -28,6 +28,9 @@ tests/*/*/*/*/output/
 tests/tmp/
 coverage.html
 coverage.xml
+# Jest
+packages/*/coverage/
+packages/*/junit.xml
 # VScode
 .vscode/
 # Vue.js build

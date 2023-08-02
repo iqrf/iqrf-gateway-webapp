@@ -8,7 +8,7 @@
 		"noImplicitAny": false,
 		"allowSyntheticDefaultImports": true,
 		"sourceMap": true,
-		"baseUrl": "../..",
+		"baseUrl": ".",
 		"experimentalDecorators": true,
 		"resolveJsonModule": true,
 		"types": ["jest"],
