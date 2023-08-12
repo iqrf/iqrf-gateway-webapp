@@ -16,21 +16,51 @@
  */
 
 /**
+ * Monit check interface
+ */
+export interface MonitCheck extends MonitCheckEnablement {
+	/// Check content
+	content: string
+}
+
+/**
+ * Monit check interface
+ */
+export interface MonitCheckEnablement {
+	/// Check name
+	name: string
+	/// Check enablement
+	enabled: boolean
+}
+
+/**
+ * M/Monit credentials interface
+ */
+export interface MMonitCredentials {
+	/// M/Monit username
+	username: string
+	/// M/Monit password
+	password: string
+}
+
+/**
+ * M/Monit configuration interface
+ */
+export interface MMonitConfig {
+	/// M/Monit connection enablement
+	enabled: boolean
+	/// M/Monit server address
+	server: string
+	/// M/Monit credentials
+	credentials: MMonitCredentials
+}
+
+/**
  * MMonit configuration interface
  */
 export interface IMonitConfig {
-    /**
-     * Username
-     */
-    username: string
-
-    /**
-     * Password
-     */
-    password: string
-
-    /**
-     * Server and endpoint
-     */
-    endpoint: string
+	/// Monit check enablement
+	checks: MonitCheckEnablement[]
+	/// M/Monit connection configuration
+	mmonit: MMonitConfig
 }

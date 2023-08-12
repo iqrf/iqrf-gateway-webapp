@@ -85,7 +85,8 @@
 		"vuetify": "^2.7.1",
 		"vuex": "^3.6.2",
 		"vuex-persistedstate": "^3.2.1",
-		"weekstart": "^1.1.0"
+		"weekstart": "^1.1.0",
+		"zod": "^3.22.2"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.22.20",

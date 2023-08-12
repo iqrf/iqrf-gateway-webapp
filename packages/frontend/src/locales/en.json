@@ -2880,7 +2880,9 @@
 			"table": {
 				"signal": "Signal strength",
 				"rssi": "RSSI",
-				"restartModemManager": "Restart Modem"
+				"restartModemManager": "Restart Modem",
+				"startMonit": "Enable watchdog",
+				"stopMonit": "Disable watchdog"
 			},
 			"form": {
 				"title": "GSM configuration",
@@ -2897,7 +2899,11 @@
 			},
 			"messages": {
 				"noInterfaces": "No active GSM network interface detected.",
-				"noConnections": "No available GSM connections."
+				"noConnections": "No available GSM connections.",
+				"monitEnabledSuccessfully": "Watchdog has been successfully enabled.",
+				"monitEnableFailed": "Failed to enable watchdog.",
+				"monitDisabledSuccessfully": "Watchdog has been successfully disabled.",
+				"monitDisableFailed": "Failed to disable watchdog."
 			}
 		},
 		"serial": {
@@ -3302,17 +3308,28 @@
 		"monit": {
 			"title": "M/Monit monitoring",
 			"description": "Manager M/Monit monitoring service and configuration.",
-			"form": {
-				"endpoint": "M/Monit endpoint",
-				"username": "Username",
-				"password": "Password"
+			"checks": {
+				"title": "M/Monit checks",
+				"name": "Check name",
+				"enable": "Enabled"
 			},
-			"errors": {
-				"endpoint": "Please enter M/Monit endpoint.",
-				"username": "Please enter username.",
-				"usernameInvalid": "Username should be a string of letters and digits.",
-				"password": "Please enter password.",
-				"passwordInvalid": "Password should be a string of letters and digits."
+			"mmonit": {
+				"title": "M/Monit server connection",
+				"enable": "Enable M/Monit server",
+				"server": "M/Monit server URL",
+				"credentials": {
+					"title": "M/Monit server credentials",
+					"username": "Username",
+					"password": "Password",
+					"messages": {
+						"emptyUsername": "Please enter M/Monit server username.",
+						"emptyPassword": "Please enter M/Monit server password."
+					}
+				},
+				"messages": {
+					"emptyServer": "Please enter M/Monit server URL.",
+					"invalidServer": "Invalid M/Monit server URL."
+				}
 			},
 			"messages": {
 				"fetchFailed": "Failed to retrieve MMonit configuration: {error}",

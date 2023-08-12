@@ -1,0 +1,39 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/monitCheckConfig.json",
+	"type": "object",
+	"title": "Monit check configuration",
+	"description": "Schema of the Monit check configuration.",
+	"required": [
+		"name",
+		"enabled",
+		"content"
+	],
+	"additionalProperties": false,
+	"example": {
+		"name": "system",
+		"enabled": true,
+		"content": "check system $HOST\\n  if loadavg (1min) per core > 2 for 5 cycles then alert\\n  if loadavg (5min) per core > 1.5 for 10 cycles then alert\\n  if cpu usage > 95% for 10 cycles then alert\\n  if memory usage > 75% then alert\\n  if swap usage > 25% then alert"
+	},
+	"properties": {
+		"name": {
+			"$id": "#/properties/name",
+			"title": "Check name",
+			"type": "string",
+			"pattern": "^[a-zA-Z0-9_-]+$",
+			"example": "system"
+		},
+		"enabled": {
+			"$id": "#/enabled",
+			"title": "Check enabled",
+			"type": "boolean",
+			"example": true
+		},
+		"content": {
+			"$id": "#/properties/content",
+			"title": "Check content",
+			"type": "string",
+			"example": "check system $HOST\\n  if loadavg (1min) per core > 2 for 5 cycles then alert\\n  if loadavg (5min) per core > 1.5 for 10 cycles then alert\\n  if cpu usage > 95% for 10 cycles then alert\\n  if memory usage > 75% then alert\\n  if swap usage > 25% then alert"
+		}
+	}
+}

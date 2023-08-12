@@ -138,6 +138,8 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/modemList.json
 		MonitConfig:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/monitConfig.json
+		MonitCheckConfig:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/monitCheckConfig.json
 		NetworkConnection:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/networkConnection.json
 		NetworkConnections:

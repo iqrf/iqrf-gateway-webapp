@@ -22,8 +22,10 @@ namespace App\CoreModule\Models;
 
 use Nette\IOException;
 use Nette\Utils\FileSystem;
+use Nette\Utils\Finder;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
+use Nette\Utils\Strings;
 
 /**
  * Tool for reading and writing text files
@@ -42,11 +44,28 @@ class FileManager implements IFileManager {
 	}
 
 	/**
-	 * Returns the directory with files
-	 * @return string Directory with files
+	 * Returns Base directory path
+	 * @return string Base directory path
 	 */
-	public function getDirectory(): string {
+	public function getBasePath(): string {
 		return $this->directory;
+	}
+
+	/**
+	 * Creates the symbolic link
+	 * @param string $target Target of the symbolic link
+	 * @param string $link Symbolic link name
+	 * @throws IOException Failed to create symbolic link
+	 */
+	public function createSymLink(string $target, string $link): void {
+		$this->delete($link);
+		$link = $this->directory . '/' . $link;
+		$target = $this->directory . '/' . $target;
+		@mkdir(dirname($link), 0755, true);
+		$result = symlink($target, $link);
+		if (!$result) {
+			throw new IOException('Failed to create symbolic link: ' . $link);
+		}
 	}
 
 	/**
@@ -74,6 +93,63 @@ class FileManager implements IFileManager {
 			$this->fixPermissions($fileName);
 		}
 		return file_exists($path);
+	}
+
+	/**
+	 * Changes the permissions of a file or directory
+	 * @param string|null $path Path to the file or directory
+	 * @param int $mode File mode
+	 * @param bool $recursive Indicates whether the mode should be changed recursively
+	 */
+	public function chmod(?string $path, int $mode, bool $recursive = false): void {
+		if (!$recursive) {
+			chmod($this->directory . '/' . $path, $mode);
+			return;
+		}
+		foreach (Finder::find('*')->from($this->getRealPath(dirname($path))) as $file) {
+			chmod($file->getRealPath(), $mode);
+		}
+	}
+
+	/**
+	 * Checks if the file is symbolic link
+	 * @param string $fileName File name
+	 * @return bool Is symbolic link?
+	 */
+	public function isSymLink(string $fileName): bool {
+		$path = $this->directory . '/' . $fileName;
+		if (!is_readable($this->directory) || !is_readable($path)) {
+			$this->fixPermissions($fileName);
+		}
+		return is_link($path);
+	}
+
+	/**
+	 * Returns list of subdirectories in directory
+	 * @param string|null $subdirectory Relative path to subdirectory
+	 * @return array<int, string> List of directories
+	 */
+	public function listDirectories(?string $subdirectory = null): array {
+		$realPath = $this->getRealPath($subdirectory);
+		$realPathLen = strlen($realPath) + 1;
+		$files = iterator_to_array(Finder::findDirectories('*')->from($realPath)->getIterator());
+		$files = array_map(static fn ($file): string => Strings::substring($file->getRealPath(), $realPathLen), $files);
+		sort($files);
+		return $files;
+	}
+
+	/**
+	 * Returns list of files in directory
+	 * @param string|null $subdirectory Relative path to subdirectory
+	 * @return array<int, string> List of files
+	 */
+	public function listFiles(?string $subdirectory = null): array {
+		$realPath = $this->getRealPath($subdirectory);
+		$realPathLen = strlen($realPath) + 1;
+		$files = iterator_to_array(Finder::findFiles('*')->from($realPath)->getIterator());
+		$files = array_map(static fn ($file): string => Strings::substring($file->getRealPath(), $realPathLen), $files);
+		sort($files);
+		return $files;
 	}
 
 	/**
@@ -133,11 +209,17 @@ class FileManager implements IFileManager {
 	}
 
 	/**
-	 * Returns Base directory path
-	 * @return string Base directory path
+	 * Returns the real path
+	 * @param string|null $subdirectory Relative path to subdirectory
+	 * @return string Real path
+	 * @throws IOException Directory not found
 	 */
-	public function getBasePath(): string {
-		return $this->directory;
+	private function getRealPath(?string $subdirectory = null): string {
+		$realPath = realpath($this->directory . '/' . ($subdirectory ?? ''));
+		if ($realPath === false) {
+			throw new IOException('Directory not found: ' . $this->directory . '/' . ($subdirectory ?? ''));
+		}
+		return $realPath;
 	}
 
 	/**

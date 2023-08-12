@@ -28,6 +28,21 @@ limitations under the License.
 						<h5>{{ $t("network.mobile.modems.title") }}</h5>
 						<v-spacer />
 						<v-btn
+							v-if='monit !== null'
+							:color='monit.enabled ? "error" : "success"'
+							class='mr-1'
+							small
+							@click='toggleMonit'
+						>
+							<v-icon :icon='monit.enabled ? "mdi-stop" : "mdi-play"' small />
+							<span v-if='monit.enabled'>
+								{{ $t('network.mobile.table.stopMonit') }}
+							</span>
+							<span v-else>
+								{{ $t('network.mobile.table.startMonit') }}
+							</span>
+						</v-btn>
+						<v-btn
 							color='warning'
 							class='mr-1'
 							small
@@ -51,7 +66,7 @@ limitations under the License.
 						<v-btn
 							color='primary'
 							small
-							@click='getData'
+							@click='getData(true)'
 						>
 							<v-icon small>
 								mdi-refresh
@@ -90,6 +105,9 @@ import {ModemState} from '@/enums/Network/ModemState';
 import {IModem} from '@/interfaces/Network/Mobile';
 import NetworkInterfaceService from '@/services/NetworkInterfaceService';
 import {useApiClient} from '@/services/ApiClient';
+import {MonitCheck} from '@/interfaces/Maintenance/Monit';
+import MonitService from '@/services/MonitService';
+import { AxiosResponse } from 'axios';
 
 /**
  * GSM modem interface list
@@ -121,6 +139,16 @@ export default class GsmInterfaces extends Vue {
 	 * @property {Array<IModem>} modems Array of modems
 	 */
 	private modems: Array<IModem> = [];
+
+	/**
+	 * @property {MonitCheck | null} monit Monit check
+	 */
+	private monit: MonitCheck | null = null;
+
+	/**
+	 * @property {string} monitCheckName Monit check name
+	 */
+	private monitCheckName = 'network_ppp0';
 
 	/**
 	 * @property {Array<DataTableHeader>} fields Data table headers
@@ -166,13 +194,25 @@ export default class GsmInterfaces extends Vue {
 	/**
 	 * Retrieves modems
 	 */
-	public getData(): void {
+	public async getData(buttonInvoked = false): Promise<void> {
 		this.loading = true;
 		NetworkInterfaceService.listModems()
 			.then((modems: Array<IModem>) => {
 				this.modems = modems;
 				this.loading = false;
+				if (buttonInvoked) {
+					this.$emit('refresh');
+				}
 			});
+		if (this.$store.getters['features/isEnabled']('monit') && this.hasBrokenGsmModem) {
+			await MonitService.getCheck(this.monitCheckName)
+				.then((response: AxiosResponse<MonitCheck>) => {
+					this.monit = response.data;
+				})
+				.catch(() => {
+					this.monit = null;
+				});
+		}
 	}
 
 	/**
@@ -183,7 +223,7 @@ export default class GsmInterfaces extends Vue {
 		NetworkInterfaceService.scanModems()
 			.then(async () => {
 				await new Promise((resolve) => setTimeout(resolve, 5_000));
-				this.getData();
+				await this.getData();
 			})
 			.catch(() => {
 				this.loading = false;
@@ -214,8 +254,47 @@ export default class GsmInterfaces extends Vue {
 	 * Restarts ModemManager service to fix broken modem
 	 */
 	private async restartModemManager(): Promise<void> {
-		await useApiClient().getServiceService().restart('ModemManager');
-		await new Promise(resolve => setTimeout(resolve, 15_000));
+		this.$emit('restart');
+		this.loading = true;
+		await useApiClient().getServiceService().restart('ModemManager')
+			.then(async () => {
+				await new Promise(resolve => setTimeout(resolve, 15_000));
+				await this.getData();
+				this.loading = false;
+				this.$emit('refresh');
+			})
+			.catch(() => {
+				this.loading = false;
+				this.$emit('refresh');
+			});
+	}
+
+	/**
+	 * Toggles monit check
+	 */
+	private toggleMonit(): void {
+		if (this.monit === null) {
+			return;
+		}
+		this.loading = true;
+		const enabled = this.monit.enabled;
+		(enabled
+			? MonitService.disableCheck(this.monitCheckName)
+			: MonitService.enableCheck(this.monitCheckName))
+			.then(async () => {
+				await useApiClient().getServiceService().restart('monit');
+				await this.getData();
+				this.$toast.success(
+					this.$t(`network.mobile.messages.monit${enabled ? 'Disabled' : 'Enabled'}Successfully`).toString()
+				);
+				this.loading = false;
+			})
+			.catch(() => {
+				this.$toast.error(
+					this.$t(`network.mobile.messages.monit${enabled ? 'Disable' : 'Enable'}Failed`).toString()
+				);
+				this.loading = false;
+			});
 	}
 
 }

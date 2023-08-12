@@ -26,27 +26,20 @@ declare(strict_types = 1);
 
 namespace Tests\Integration\MaintenanceModule\Models;
 
-use App\CoreModule\Entities\CommandStack;
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FileManager;
 use App\MaintenanceModule\Exceptions\MonitConfigErrorException;
 use App\MaintenanceModule\Models\MonitManager;
 use Nette\Utils\FileSystem;
 use Tester\Assert;
 use Tester\Environment;
-use Tester\TestCase;
+use Tests\Toolkit\TestCases\CommandTestCase;
 
 require __DIR__ . '/../../../bootstrap.php';
 
 /**
  * Tests for Monit manager
  */
-final class MonitManagerTest extends TestCase {
-
-	/**
-	 * Monit configuration file name
-	 */
-	private const FILE_NAME = 'monitrc';
+final class MonitManagerTest extends CommandTestCase {
 
 	/**
 	 * @var FileManager Text file manager
@@ -69,30 +62,57 @@ final class MonitManagerTest extends TestCase {
 	private MonitManager $managerTemp;
 
 	/**
-	 * Tests the function to read monit configuration file
-	 */
-	public function testReadConfig(): void {
-		$expected = $this->fileManager->read(self::FILE_NAME);
-		Assert::same($expected, $this->manager->readConfig());
-	}
-
-	/**
 	 * Tests the function to get monit configuration
 	 */
 	public function testGetConfig(): void {
 		$expected = [
-			'endpoint' => 'testendpoint',
-			'username' => 'testuser',
-			'password' => 'testpass',
+			'checks' => [
+				[
+					'name' => 'system',
+					'enabled' => false,
+				],
+			],
+			'mmonit' => [
+				'enabled' => false,
+				'credentials' => [
+					'username' => 'testuser',
+					'password' => 'testpass',
+				],
+				'server' => 'https://testendpoint',
+			],
 		];
 		Assert::same($expected, $this->manager->getConfig());
+	}
+
+	/**
+	 * Tests the function to get monit configuration from monitrc file
+	 */
+	public function testGetConfigMigrated(): void {
+		$this->fileManagerTemp->delete('conf-available/mmonit');
+		$expected = [
+			'checks' => [
+				[
+					'name' => 'system',
+					'enabled' => false,
+				],
+			],
+			'mmonit' => [
+				'enabled' => false,
+				'credentials' => [
+					'username' => 'testuser',
+					'password' => 'testpass',
+				],
+				'server' => 'https://testendpoint',
+			],
+		];
+		Assert::same($expected, $this->managerTemp->getConfig());
 	}
 
 	/**
 	 * Tests the function to get monit configuration from invalid file
 	 */
 	public function testGetConfigInvalid(): void {
-		$this->fileManagerTemp->write(self::FILE_NAME, 'Invalid content.');
+		$this->fileManagerTemp->write('conf-available/mmonit', 'Invalid content.');
 		Assert::exception(function (): void {
 			$this->managerTemp->getConfig();
 		}, MonitConfigErrorException::class, 'Monit configuration file contains invalid content.');
@@ -102,28 +122,27 @@ final class MonitManagerTest extends TestCase {
 	 * Tests the function to save monit configuration
 	 */
 	public function testSaveConfig(): void {
+		$realPath = realpath($this->fileManagerTemp->getBasePath());
+		$this->receiveCommand('monit -t -c ' . escapeshellarg($realPath . '/conf-available/check_system'), true);
+		$this->receiveCommand('monit -t -c ' . escapeshellarg($realPath . '/conf-available/mmonit'), true, '', '', 0, 2);
 		$expected = [
-			'endpoint' => 'nonexistentdomain.org/collector',
-			'username' => 'username',
-			'password' => 'password',
+			'checks' => [
+				[
+					'name' => 'system',
+					'enabled' => true,
+				],
+			],
+			'mmonit' => [
+				'enabled' => true,
+				'credentials' => [
+					'username' => 'u$er',
+					'password' => 'p@ss',
+				],
+				'server' => 'http://company:8080/monit',
+			],
 		];
 		$this->managerTemp->saveConfig($expected);
 		Assert::same($expected, $this->managerTemp->getConfig());
-	}
-
-	/**
-	 * Tests the function to save monit configuration to invalid file
-	 */
-	public function testSaveConfigInvalid(): void {
-		$this->fileManagerTemp->write(self::FILE_NAME, 'Invalid content');
-		Assert::exception(function (): void {
-			$config = [
-				'endpoint' => 'nonexistentdomain.org/collector',
-				'username' => 'username',
-				'password' => 'password',
-			];
-			$this->managerTemp->saveConfig($config);
-		}, MonitConfigErrorException::class, 'Monit configuration file contains invalid content.');
 	}
 
 	/**
@@ -131,15 +150,21 @@ final class MonitManagerTest extends TestCase {
 	 */
 	protected function setUp(): void {
 		Environment::lock('monit', TMP_DIR);
+		parent::setUp();
 		$monitDir = realpath(TESTER_DIR . '/data/maintenance/');
-		$monitTempDir = realpath(TMP_DIR);
-		FileSystem::copy($monitDir, $monitTempDir . '/maintenance/');
-		$commandStack = new CommandStack();
-		$commandManager = new CommandManager(false, $commandStack);
-		$this->fileManager = new FileManager($monitDir, $commandManager);
-		$this->fileManagerTemp = new FileManager($monitTempDir . '/maintenance/', $commandManager);
-		$this->manager = new MonitManager($this->fileManager);
-		$this->managerTemp = new MonitManager($this->fileManagerTemp);
+		$monitTempDir = realpath(TMP_DIR) . '/maintenance/';
+		foreach ([$monitDir, $monitTempDir] as $dir) {
+			$this->receiveCommand('chmod 777 ' . escapeshellarg($dir), true, '', '', 0, null);
+			$this->receiveCommand('chmod 666 ' . escapeshellarg($dir . '/conf-available/check_system'), true, '', '', 0, null);
+			$this->receiveCommand('chmod 666 ' . escapeshellarg($dir . '/conf-available/mmonit'), true, '', '', 0, null);
+			$this->receiveCommand('chmod 666 ' . escapeshellarg($dir . '/conf-enabled/check_system'), true, '', '', 0, null);
+			$this->receiveCommand('chmod 666 ' . escapeshellarg($dir . '/conf-enabled/mmonit'), true, '', '', 0, null);
+		}
+		FileSystem::copy($monitDir, $monitTempDir);
+		$this->fileManager = new FileManager($monitDir, $this->commandManager);
+		$this->fileManagerTemp = new FileManager($monitTempDir, $this->commandManager);
+		$this->manager = new MonitManager($this->fileManager, $this->commandManager);
+		$this->managerTemp = new MonitManager($this->fileManagerTemp, $this->commandManager);
 	}
 
 }
