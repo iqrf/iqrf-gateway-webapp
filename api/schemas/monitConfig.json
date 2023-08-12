@@ -3,39 +3,114 @@
 	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/monitConfig.json",
 	"type": "object",
 	"title": "Monit configuration",
-	"description": "Schema of the monit configuration.",
+	"description": "Schema of the Monit configuration.",
 	"required": [
-		"endpoint",
-		"username",
-		"password"
+		"checks",
+		"mmonit"
 	],
 	"additionalProperties": false,
 	"example": {
-		"endpoint": "server/collector",
-		"username": "user",
-		"password": "password"
+		"checks": [
+			{
+				"name": "system",
+				"enabled": true
+			}
+		],
+		"mmonit": {
+			"enabled": true,
+			"server": "https://mmonit.example.corp",
+			"credentials": {
+				"username": "user",
+				"password": "password"
+			}
+		}
 	},
 	"properties": {
-		"endpoint": {
-			"$id": "#/properties/endpoint",
-			"title": "MMonit server and endpoint",
-			"type": "string",
-			"pattern": "[a-zA-Z0-9\\.-_\\/]+",
-			"example": "server/collector"
+		"checks": {
+			"$id": "#/properties/checks",
+			"title": "Checks",
+			"type": "array",
+			"additionalItems": false,
+			"items": {
+				"$id": "#/properties/checks/items",
+				"title": "Check",
+				"type": "object",
+				"required": [
+					"name",
+					"enabled"
+				],
+				"example": {
+					"name": "system",
+					"enabled": true
+				},
+				"additionalProperties": false,
+				"properties": {
+					"name": {
+						"$id": "#/properties/checks/items/properties/name",
+						"title": "Check name",
+						"type": "string",
+						"pattern": "^[a-zA-Z0-9_-]+$",
+						"example": "system"
+					},
+					"enabled": {
+						"$id": "#/properties/checks/items/properties/enabled",
+						"title": "Check enabled",
+						"type": "boolean",
+						"example": true
+					}
+				}
+			}
 		},
-		"username": {
-			"$id": "#/properties/user",
-			"title": "username",
-			"type": "string",
-			"pattern": "[a-zA-Z0-9]+",
-			"example": "user"
-		},
-		"password": {
-			"$id": "#/properties/password",
-			"title": "password",
-			"type": "string",
-			"pattern": "[a-zA-Z0-9]+",
-			"example": "password"
+		"mmonit": {
+			"$id": "#/properties/mmonit",
+			"title": "M/Monit connection configuration",
+			"type": "object",
+			"required": [
+				"enabled",
+				"credentials",
+				"server"
+			],
+			"additionalProperties": false,
+			"properties": {
+				"enabled": {
+					"$id": "#/properties/mmonit/properties/enabled",
+					"title": "M/Monit connection enabled",
+					"type": "boolean",
+					"example": true
+				},
+				"credentials": {
+					"$id": "#/properties/mmonit/properties/credentials",
+					"title": "M/Monit credentials",
+					"type": "object",
+					"required": [
+						"username",
+						"password"
+					],
+					"additionalProperties": false,
+					"properties": {
+						"username": {
+							"$id": "#/properties/mmonit/properties/credentials/properties/username",
+							"title": "M/Monit username",
+							"type": "string",
+							"pattern": "[a-zA-Z0-9]+",
+							"example": "user"
+						},
+						"password": {
+							"$id": "#/properties/mmonit/properties/credentials/properties/password",
+							"title": "M/Monit password",
+							"type": "string",
+							"pattern": "[a-zA-Z0-9]+",
+							"example": "password"
+						}
+					}
+				},
+				"server": {
+					"$id": "#/properties/mmonit/properties/server",
+					"title": "M/Monit server",
+					"type": "string",
+					"format": "url"
+				}
+			}
 		}
 	}
 }

@@ -52,6 +52,27 @@ class PrivilegedFileManager implements IFileManager {
 	}
 
 	/**
+	 * Returns Base directory path
+	 * @return string Base directory path
+	 */
+	public function getBasePath(): string {
+		return $this->directory;
+	}
+
+	/**
+	 * Creates the symbolic link
+	 * @param string $target Target of the symbolic link
+	 * @param string $link Symbolic link name
+	 */
+	public function createSymLink(string $target, string $link): void {
+		$this->delete($link);
+		$command = $this->commandManager->run('ln -s ' . $this->buildPath($target) . ' ' . $this->buildPath($link), true);
+		if ($command->getExitCode() !== 0) {
+			throw new IOException($command->getStderr());
+		}
+	}
+
+	/**
 	 * Changes the owner of a file or directory
 	 * @param string|null $path Path to the file or directory
 	 * @param string $user User name
@@ -122,6 +143,16 @@ class PrivilegedFileManager implements IFileManager {
 		}
 	}
 	/**
+	 * Checks if the file is symbolic link
+	 * @param string $fileName File name
+	 * @return bool Is symbolic link?
+	 */
+	public function isSymLink(string $fileName): bool {
+		$command = $this->commandManager->run('test -L ' . $this->buildPath($fileName), true);
+		return $command->getExitCode() === 0;
+	}
+
+	/**
 	 * Checks if the file exists
 	 * @param string $fileName File name
 	 * @return bool Is file exists?
@@ -179,7 +210,7 @@ class PrivilegedFileManager implements IFileManager {
 	 * @return array<int, string> List of directories
 	 */
 	public function listDirectories(?string $subdirectory = null): array {
-		$command = $this->commandManager->run('find ' . $this->buildPath($subdirectory) . ' -mindepth 1 -type d -printf \'%P\n\'', true);
+		$command = $this->commandManager->run('find ' . $this->buildPath($subdirectory) . ' -type d -printf \'%P\n\'', true);
 		if ($command->getExitCode() !== 0) {
 			throw new IOException($command->getStderr());
 		}
@@ -205,14 +236,6 @@ class PrivilegedFileManager implements IFileManager {
 			return [];
 		}
 		return explode(PHP_EOL, $output);
-	}
-
-	/**
-	 * Returns Base directory path
-	 * @return string Base directory path
-	 */
-	public function getBasePath(): string {
-		return $this->directory;
 	}
 
 	/**

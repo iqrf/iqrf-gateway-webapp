@@ -66,17 +66,17 @@ export default class App extends Vue {
 		);
 		await this.$store.dispatch('features/fetch');
 		await InstallationService.check()
-			.then((check: InstallationCheck) => {
+			.then(async (check: InstallationCheck) => {
 				const installUrl: boolean = this.$route.path.startsWith('/install/');
 				if (check.dependencies.length !== 0) {
-					this.$router.push({
+					await this.$router.push({
 						name: 'missing-dependency',
 						params: {
 							json: JSON.stringify(check.dependencies),
 						},
 					});
 				} else if (!check.phpModules.allExtensionsLoaded) {
-					this.$router.push({
+					await this.$router.push({
 						name: 'missing-extension',
 						params: {
 							extensionString: check.phpModules.missing!.extensions.join(', '),
@@ -84,7 +84,7 @@ export default class App extends Vue {
 						}
 					});
 				} else if (check.sudo !== undefined && (!check.sudo.exists || !check.sudo.userSudo)) {
-					this.$router.push({
+					await this.$router.push({
 						name: 'sudo-error',
 						params: {
 							user: check.sudo.user,
@@ -93,15 +93,15 @@ export default class App extends Vue {
 						}
 					});
 				} else if (!check.allMigrationsExecuted) {
-					this.$router.push('/install/error/missing-migration');
+					await this.$router.push('/install/error/missing-migration');
 				} else if (!check.hasUsers && !installUrl) {
-					this.$router.push('/install/');
+					await this.$router.push('/install/');
 				} else if (check.hasUsers && installUrl) {
-					this.$router.push('/sign/in/');
+					await this.$router.push('/sign/in/');
 				}
 				if (this.$store.getters['user/isLoggedIn']) {
-					this.$store.dispatch('repository/get');
-					this.$store.dispatch('gateway/getInfo');
+					await this.$store.dispatch('repository/get');
+					await this.$store.dispatch('gateway/getInfo');
 				}
 			})
 			.catch((error: AxiosError) => {

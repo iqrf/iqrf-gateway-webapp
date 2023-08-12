@@ -14,7 +14,7 @@
 ## Global section
 ###############################################################################
 ##
-set mmonit https://testuser:testpass@testendpoint
+set mmonit https://testuser:testpass@testendpoint/collector
     # with timeout 30 seconds              # Default timeout is 5 seconds
     # and register without credentials     # Don't register credentials
 #

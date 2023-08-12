@@ -32,6 +32,7 @@ use App\CoreModule\Models\PrivilegedFileManager;
 use Nette\IOException;
 use Nette\Utils\FileSystem;
 use Tester\Assert;
+use Tester\Environment;
 use Tester\TestCase;
 
 require __DIR__ . '/../../../bootstrap.php';
@@ -42,22 +43,27 @@ require __DIR__ . '/../../../bootstrap.php';
 final class PrivilegedFileManagerTest extends TestCase {
 
 	/**
-	 * @var string File name
+	 * File name
 	 */
 	private const FILE_NAME = 'config.json';
 
 	/**
-	 * @var string File name of nonexistent file
+	 * File name of nonexistent file
 	 */
 	private const FILE_NAME_NONEXISTENT = 'nonexistent.json';
 
 	/**
-	 * @var string Directory with configuration files
+	 * File name of symbolic link
+	 */
+	private const FILE_NAME_SYMLINK = 'symlink.json';
+
+	/**
+	 * Directory with configuration files
 	 */
 	private const CONFIG_PATH = TESTER_DIR . '/data/configuration';
 
 	/**
-	 * @var string Directory with temporary configuration files
+	 * Directory with temporary configuration files
 	 */
 	private const CONFIG_TEMP_PATH = TMP_DIR . '/configuration/';
 
@@ -81,6 +87,49 @@ final class PrivilegedFileManagerTest extends TestCase {
 	 */
 	public function testGetBasePath(): void {
 		Assert::same(self::CONFIG_PATH, $this->manager->getBasePath());
+	}
+
+	/**
+	 * Tests the function to create a symbolic link
+	 */
+	public function testCreateSymLink(): void {
+		Environment::lock('fileManager_symlink', TMP_DIR);
+		$this->managerTest->delete(self::FILE_NAME_SYMLINK);
+		$this->commandStack->clearCommands();
+		$this->managerTest->createSymLink(self::FILE_NAME, self::FILE_NAME_SYMLINK);
+		Assert::true(is_link(self::CONFIG_TEMP_PATH . self::FILE_NAME_SYMLINK));
+		$commands = $this->commandStack->getCommands();
+		Assert::equal(2, count($commands));
+		Assert::equal('rm -rf \'' . self::CONFIG_TEMP_PATH . self::FILE_NAME_SYMLINK . '\'', $commands[0]->getCommand());
+		Assert::equal(0, $commands[0]->getExitCode());
+		Assert::equal('', $commands[0]->getStderr());
+		Assert::equal('', $commands[0]->getStdout());
+		Assert::equal('ln -s \'' . self::CONFIG_TEMP_PATH . self::FILE_NAME . '\' \'' . self::CONFIG_TEMP_PATH . self::FILE_NAME_SYMLINK . '\'', $commands[1]->getCommand());
+		Assert::equal(0, $commands[1]->getExitCode());
+		Assert::equal('', $commands[1]->getStderr());
+		Assert::equal('', $commands[1]->getStdout());
+	}
+
+	/**
+	 * Tests the function to check if a file is a symbolic link
+	 */
+	public function testIsSymLink(): void {
+		Environment::lock('fileManager_symlink', TMP_DIR);
+		$this->managerTest->delete(self::FILE_NAME_SYMLINK);
+		$this->commandStack->clearCommands();
+		Assert::false($this->managerTest->isSymLink(self::FILE_NAME_SYMLINK));
+		symlink(self::CONFIG_PATH . '/' . self::FILE_NAME, self::CONFIG_TEMP_PATH . '/' . self::FILE_NAME_SYMLINK);
+		Assert::true($this->managerTest->isSymLink(self::FILE_NAME_SYMLINK));
+		$commands = $this->commandStack->getCommands();
+		Assert::equal(2, count($commands));
+		Assert::equal('test -L \'' . self::CONFIG_TEMP_PATH . self::FILE_NAME_SYMLINK . '\'', $commands[0]->getCommand());
+		Assert::equal(1, $commands[0]->getExitCode());
+		Assert::equal('', $commands[0]->getStderr());
+		Assert::equal('', $commands[0]->getStdout());
+		Assert::equal('test -L \'' . self::CONFIG_TEMP_PATH . self::FILE_NAME_SYMLINK . '\'', $commands[1]->getCommand());
+		Assert::equal(0, $commands[1]->getExitCode());
+		Assert::equal('', $commands[1]->getStderr());
+		Assert::equal('', $commands[1]->getStdout());
 	}
 
 	/**
@@ -143,6 +192,7 @@ final class PrivilegedFileManagerTest extends TestCase {
 	 * Tests the function to write a text file
 	 */
 	public function testWrite(): void {
+		Environment::lock('fileManager_write', TMP_DIR);
 		$fileName = 'config-test.json';
 		$expected = FileSystem::read(self::CONFIG_PATH . '/' . self::FILE_NAME);
 		$this->managerTest->write($fileName, $expected);
@@ -173,7 +223,7 @@ final class PrivilegedFileManagerTest extends TestCase {
 		Assert::equal($expected, $this->manager->listDirectories());
 		$commands = $this->commandStack->getCommands();
 		Assert::equal(1, count($commands));
-		Assert::equal('find \'' . self::CONFIG_PATH . '\' -mindepth 1 -type d -printf \'%P\n\'', $commands[0]->getCommand());
+		Assert::equal('find \'' . self::CONFIG_PATH . '\' -type d -printf \'%P\n\'', $commands[0]->getCommand());
 		Assert::equal(0, $commands[0]->getExitCode());
 		Assert::equal('', $commands[0]->getStderr());
 		Assert::equal(implode(PHP_EOL, $expected), $commands[0]->getStdout());

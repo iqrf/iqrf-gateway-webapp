@@ -20,90 +20,100 @@ declare(strict_types = 1);
 
 namespace App\MaintenanceModule\Models;
 
+use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\IFileManager;
 use App\MaintenanceModule\Exceptions\MonitConfigErrorException;
-use Nette\Utils\Strings;
+use App\MaintenanceModule\Models\Monit\BaseMonitManager;
+use App\MaintenanceModule\Models\Monit\CheckManager;
+use App\MaintenanceModule\Models\Monit\MmonitManager;
+use Nette\Schema\Elements\Structure;
+use Nette\Schema\Expect;
+use Nette\Schema\Processor;
 
 /**
  * Monit manager
  */
-class MonitManager {
+class MonitManager extends BaseMonitManager {
 
 	/**
-	 * @var IFileManager $fileManager File manager
+	 * @var CheckManager Monit check manager
 	 */
-	private IFileManager $fileManager;
+	private CheckManager $checkManager;
 
 	/**
-	 * @var string Monit configuration file
+	 * @var MmonitManager M/Monit configuration manager
 	 */
-	private const CONF_FILE = 'monitrc';
-
-	/**
-	 * @var string Server and credentials pattern
-	 */
-	private const PATTERN = '/^set\smmonit\shttps?:\/\/(?\'user\'\w+):(?\'password\'\w+)@(?\'endpoint\'.+)$/';
+	private MmonitManager $mmonitManager;
 
 	/**
 	 * Constructor
 	 * @param IFileManager $fileManager Privileged file manager
+	 * @param CommandManager $commandManager Command manager
 	 */
-	public function __construct(IFileManager $fileManager) {
-		$this->fileManager = $fileManager;
+	public function __construct(IFileManager $fileManager, CommandManager $commandManager) {
+		parent::__construct($fileManager, $commandManager);
+		$this->checkManager = new CheckManager($fileManager, $commandManager);
+		$this->mmonitManager = new MmonitManager($fileManager, $commandManager);
+	}
+
+	/**
+	 * Disables Monit check
+	 * @param string $name Monit check name to disable
+	 */
+	public function disableCheck(string $name): void {
+		$this->checkManager->setStates([['name' => $name, 'enabled' => false]]);
+	}
+
+	/**
+	 * Enables Monit check
+	 * @param string $name Monit check name to enable
+	 */
+	public function enableCheck(string $name): void {
+		$this->checkManager->setStates([['name' => $name, 'enabled' => true]]);
+	}
+
+	/**
+	 * Returns Monit check configuration
+	 * @param string $name Monit check name
+	 * @return array{name: string, enabled: bool} Monit check configuration
+	 */
+	public function getCheck(string $name): array {
+		return $this->checkManager->get($name, true);
 	}
 
 	/**
 	 * Parses configuration file and returns configuration as array
-	 * @return array{endpoint: string, username: string, password: string} Monit configuration array
+	 * @return array{checks: array<array{name: string, enabled: bool}>, mmonit: array{enabled: bool, credentials: array{username: string, password: string}, server: string}} Monit configuration array
 	 * @throws MonitConfigErrorException
 	 */
 	public function getConfig(): array {
-		$configArray = explode(PHP_EOL, $this->readConfig());
-		$configArray = array_filter($configArray, fn (string $item): bool => !Strings::startsWith($item, '#'));
-		foreach ($configArray as $item) {
-			$matches = Strings::match($item, self::PATTERN);
-			if ($matches !== null) {
-				break;
-			}
-		}
-		if (!isset($matches)) {
-			throw new MonitConfigErrorException('Monit configuration file contains invalid content.');
-		}
-		return [
-			'endpoint' => $matches['endpoint'],
-			'username' => $matches['user'],
-			'password' => $matches['password'],
+		$config = [
+			'checks' => $this->checkManager->list(),
+			'mmonit' => $this->mmonitManager->readConfig(),
 		];
+		$processor = new Processor();
+		return $processor->process($this->getSchema(), $config);
 	}
 
 	/**
 	 * Saves new monit configuration
-	 * @param array{endpoint: mixed, username: mixed, password: mixed} $newConfig New monit configuration
+	 * @param array{checks: array<array{name: string, enabled: bool}>, mmonit: array{enabled: bool, credentials: array{username: string, password: string}, server: string}} $newConfig New monit configuration
 	 * @throws MonitConfigErrorException
 	 */
 	public function saveConfig(array $newConfig): void {
-		$configArray = explode(PHP_EOL, $this->readConfig());
-		$idx = -1;
-		foreach ($configArray as $key => $val) {
-			$matches = Strings::match($val, self::PATTERN);
-			if ($matches !== null) {
-				$idx = $key;
-				break;
-			}
-		}
-		if ($idx === -1) {
-			throw new MonitConfigErrorException('Monit configuration file contains invalid content.');
-		}
-		$configArray[$idx] = sprintf('set mmonit https://%s:%s@%s', $newConfig['username'], $newConfig['password'], $newConfig['endpoint']);
-		$this->fileManager->write(self::CONF_FILE, implode(PHP_EOL, $configArray));
+		$this->checkManager->setStates($newConfig['checks']);
+		$this->mmonitManager->writeConfig($newConfig['mmonit']);
 	}
 
 	/**
-	 * Reads monit configuration file
-	 * @return string Monit configuration
+	 * Returns configuration file schema
+	 * @return Structure Configuration file schema
 	 */
-	public function readConfig(): string {
-		return $this->fileManager->read(self::CONF_FILE);
+	private function getSchema(): Structure {
+		return Expect::structure([
+			'checks' => $this->checkManager->getEnablementSchema()->default([]),
+			'mmonit' => $this->mmonitManager->getSchema(),
+		])->castTo('array');
 	}
 
 }

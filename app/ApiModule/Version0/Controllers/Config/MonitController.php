@@ -23,7 +23,10 @@ namespace App\ApiModule\Version0\Controllers\Config;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
+use Apitte\Core\Annotation\Controller\RequestParameter;
+use Apitte\Core\Annotation\Controller\RequestParameters;
 use Apitte\Core\Annotation\Controller\Tag;
+use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
@@ -59,7 +62,7 @@ class MonitController extends BaseConfigController {
 	 * @Path("/")
 	 * @Method("GET")
 	 * @OpenApi("
-	 *  summary: Returns current monit configuration
+	 *  summary: Returns current Monit configuration
 	 *  responses:
 	 *      '200':
 	 *          description: Success
@@ -88,7 +91,7 @@ class MonitController extends BaseConfigController {
 	 * @Path("/")
 	 * @Method("PUT")
 	 * @OpenApi("
-	 *  summary: Saves updated monit configuration
+	 *  summary: Saves updated Monit configuration
 	 *  requestBody:
 	 *      required: true
 	 *      content:
@@ -117,6 +120,100 @@ class MonitController extends BaseConfigController {
 			return $response->writeBody('Workaround');
 		} catch (MonitConfigErrorException | IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		}
+	}
+
+	/**
+	 * @Path("/checks/{name}")
+	 * @Method("GET")
+	 * @OpenApi("
+	 *  summary: Returns Monit check configuration
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *          content:
+	 *              application/json:
+	 *                  schema:
+	 *                      $ref: '#/components/schemas/MonitCheckConfig'
+	 *      '403':
+	 *         $ref: '#/components/responses/Forbidden'
+	 *      '404':
+	 *          $ref: '#/components/responses/NotFound'
+	 * ")
+	 * @RequestParameters({
+	 *  @RequestParameter(name="name", type="string", in="path", description="Check name")
+	 * })
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function getCheck(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['maintenance:monit']);
+		try {
+			$config = $this->manager->getCheck($request->getParameter('name'));
+			return $response->writeJsonBody($config);
+		} catch (IOException $e) {
+			throw new ClientErrorException('Not found', ApiResponse::S404_NOT_FOUND, $e);
+		}
+	}
+
+	/**
+	 * @Path("/checks/{name}/enable")
+	 * @Method("POST")
+	 * @OpenApi("
+	 *  summary: Enables Monit check
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
+	 *      '404':
+	 *          $ref: '#/components/responses/NotFound'
+	 * ")
+	 * @RequestParameters({
+	 *      @RequestParameter(name="name", type="string", in="path", description="Check name")
+	 * })
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function enableCheck(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['maintenance:monit']);
+		try {
+			$this->manager->enableCheck($request->getParameter('name'));
+			return $response->writeBody('Workaround');
+		} catch (IOException $e) {
+			throw new ClientErrorException('Not found', ApiResponse::S404_NOT_FOUND, $e);
+		}
+	}
+
+	/**
+	 * @Path("/checks/{name}/disable")
+	 * @Method("POST")
+	 * @OpenApi("
+	 *  summary: Disables Monit check
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '403':
+	 *          $ref: '#/components/responses/Forbidden'
+	 *      '404':
+	 *         $ref: '#/components/responses/NotFound'
+	 * ")
+	 * @RequestParameters({
+	 *      @RequestParameter(name="name", type="string", in="path", description="Check name")
+	 * })
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function disableCheck(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['maintenance:monit']);
+		try {
+			$this->manager->disableCheck($request->getParameter('name'));
+			return $response->writeBody('Workaround');
+		} catch (IOException $e) {
+			throw new ClientErrorException('Not found', ApiResponse::S404_NOT_FOUND, $e);
 		}
 	}
 

@@ -21,46 +21,81 @@ limitations under the License.
 			v-slot='{invalid}'
 		>
 			<CForm @submit.prevent='saveConfig'>
+				<h2>{{ $t('maintenance.monit.checks.title') }}</h2>
+				<div class='table-responsive'>
+					<table class='table'>
+						<tbody>
+							<tr>
+								<th>{{ $t('maintenance.monit.checks.name') }}</th>
+								<th class='text-right'>
+									{{ $t('maintenance.monit.checks.enable') }}
+								</th>
+							</tr>
+							<tr v-for='check of configuration.checks' :key='check.name'>
+								<td>{{ check.name.replace('_', ' ') }}</td>
+								<td>
+									<CInputCheckbox :checked.sync='check.enabled' class='float-right' />
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<h2>{{ $t('maintenance.monit.mmonit.title') }}</h2>
+				<label for='mmonitEnabled'>
+					<strong>{{ $t("maintenance.monit.mmonit.enable") }}</strong>
+				</label><br>
+				<CSwitch
+					id='mmonitEnabled'
+					color='primary'
+					size='lg'
+					shape='pill'
+					label-on='ON'
+					label-off='OFF'
+					:checked.sync='configuration.mmonit.enabled'
+				/>
+				<ValidationProvider
+					v-slot='{errors, touched, valid}'
+					rules='required|mmonitServer'
+					:custom-messages='{
+						required: $t("maintenance.monit.mmonit.messages.emptyServer"),
+						mmonitServer: $t("maintenance.monit.mmonit.messages.invalidServer"),
+					}'
+				>
+					<CInput
+						v-model='configuration.mmonit.server'
+						:disabled='!configuration.mmonit.enabled'
+						:label='$t("maintenance.monit.mmonit.server")'
+						:is-valid='touched ? valid : null'
+						:invalid-feedback='errors.join(", ")'
+					/>
+				</ValidationProvider>
+				<h4>{{ $t('maintenance.monit.mmonit.credentials.title') }}</h4>
 				<ValidationProvider
 					v-slot='{errors, touched, valid}'
 					rules='required'
 					:custom-messages='{
-						required: $t("maintenance.monit.errors.endpoint"),
+						required: $t("maintenance.monit.mmonit.credentials.messages.emptyUsername"),
 					}'
 				>
 					<CInput
-						v-model='configuration.endpoint'
-						:label='$t("maintenance.monit.form.endpoint")'
+						v-model='configuration.mmonit.credentials.username'
+						:disabled='!configuration.mmonit.enabled'
+						:label='$t("maintenance.monit.mmonit.credentials.username")'
 						:is-valid='touched ? valid : null'
 						:invalid-feedback='errors.join(", ")'
 					/>
 				</ValidationProvider>
 				<ValidationProvider
 					v-slot='{errors, touched, valid}'
-					rules='required|alphanum'
+					rules='required'
 					:custom-messages='{
-						required: $t("maintenance.monit.errors.username"),
-						alphanum: $t("maintenance.monit.errors.usernameInvalid"),
+						required: $t("maintenance.monit.mmonit.credentials.messages.emptyPassword"),
 					}'
 				>
-					<CInput
-						v-model='configuration.username'
-						:label='$t("maintenance.monit.form.username")'
-						:is-valid='touched ? valid : null'
-						:invalid-feedback='errors.join(", ")'
-					/>
-				</ValidationProvider>
-				<ValidationProvider
-					v-slot='{errors, touched, valid}'
-					rules='required|alphanum'
-					:custom-messages='{
-						required: $t("maintenance.monit.errors.password"),
-						alphanum: $t("maintenance.monit.errors.passwordInvalid"),
-					}'
-				>
-					<CInput
-						v-model='configuration.password'
-						:label='$t("maintenance.monit.form.password")'
+					<PasswordInput
+						v-model='configuration.mmonit.credentials.password'
+						:disabled='!configuration.mmonit.enabled'
+						:label='$t("maintenance.monit.mmonit.credentials.password")'
 						:is-valid='touched ? valid : null'
 						:invalid-feedback='errors.join(", ")'
 					/>
@@ -78,24 +113,28 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CForm, CInput} from '@coreui/vue/src';
-import {ValidationObserver, ValidationProvider} from 'vee-validate';
-
-import {extend} from 'vee-validate';
-import {extendedErrorToast} from '@/helpers/errorToast';
-import {required, alpha_num} from 'vee-validate/dist/rules';
-
-import FeatureConfigService from '@/services/FeatureConfigService';
-
+import {CButton, CCard, CForm, CInput, CInputCheckbox, CSwitch} from '@coreui/vue/src';
 import {AxiosError, AxiosResponse} from 'axios';
+import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import {required, alpha_num} from 'vee-validate/dist/rules';
+import {Component, Vue} from 'vue-property-decorator';
+import {z} from 'zod';
+
+import PasswordInput from '@/components/Core/PasswordInput.vue';
+import {extendedErrorToast} from '@/helpers/errorToast';
 import {IMonitConfig} from '@/interfaces/Maintenance/Monit';
+import MonitService from '@/services/MonitService';
+import ServiceService from '@/services/ServiceService';
 
 @Component({
 	components: {
 		CButton,
+		CCard,
 		CForm,
 		CInput,
+		CInputCheckbox,
+		CSwitch,
+		PasswordInput,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -122,6 +161,18 @@ export default class MonitForm extends Vue {
 	created(): void {
 		extend('required', required);
 		extend('alphanum', alpha_num);
+		extend('mmonitServer', {
+			validate: (value: string): boolean => {
+				const validator: z.ZodString = z.string().url();
+				try {
+					validator.parse(value);
+					const url: URL = new URL(value);
+					return (url.protocol === 'http:' || url.protocol === 'https:') && url.username === '' && url.password === '' && url.search === '' && url.hash === '';
+				} catch (error) {
+					return false;
+				}
+			},
+		});
 	}
 
 	/**
@@ -132,14 +183,14 @@ export default class MonitForm extends Vue {
 	}
 
 	/**
-	 * Retrieves and store mmonit configuration
+	 * Retrieves and store Monit configuration
 	 */
 	private getConfig(): Promise<void> {
 		if (!this.$store.getters['spinner/isEnabled']) {
 			this.$store.commit('spinner/SHOW');
 		}
-		return FeatureConfigService.getConfig(this.featureName)
-			.then((response: AxiosResponse) => {
+		return MonitService.getConfig()
+			.then((response: AxiosResponse<IMonitConfig>) => {
 				this.configuration = response.data;
 				this.$store.commit('spinner/HIDE');
 			})
@@ -147,17 +198,20 @@ export default class MonitForm extends Vue {
 	}
 
 	/**
-	 * Saves new mmonit configuration
+	 * Saves new Monit configuration
 	 */
 	private saveConfig(): void {
 		if (this.configuration === null) {
 			return;
 		}
 		this.$store.commit('spinner/SHOW');
-		FeatureConfigService.saveConfig(this.featureName, this.configuration)
-			.then(() => this.getConfig().then(() => this.$toast.success(
-				this.$t('maintenance.monit.messages.saveSuccess').toString()
-			)))
+		MonitService.saveConfig(this.configuration)
+			.then(async () => {
+				await ServiceService.restart('monit');
+				await this.getConfig().then(() => this.$toast.success(
+					this.$t('maintenance.monit.messages.saveSuccess').toString()
+				));
+			})
 			.catch((error) => extendedErrorToast(error, 'maintenance.monit.messages.saveFailed'));
 	}
 }

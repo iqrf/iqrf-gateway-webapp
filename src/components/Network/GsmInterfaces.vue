@@ -20,6 +20,21 @@ limitations under the License.
 			{{ $t("network.mobile.modems.title") }}
 			<CButtonToolbar>
 				<CButton
+					v-if='monit !== null'
+					:color='monit.enabled ? "danger" : "success"'
+					class='float-right mr-1'
+					size='sm'
+					@click='toggleMonit'
+				>
+					<CIcon :content='monit.enabled ? cilMediaStop : cilMediaPlay' size='sm' />
+					<span v-if='monit.enabled'>
+						{{ $t('network.mobile.table.stopMonit') }}
+					</span>
+					<span v-else>
+						{{ $t('network.mobile.table.startMonit') }}
+					</span>
+				</CButton>
+				<CButton
 					v-if='hasBrokenGsmModem'
 					color='warning'
 					class='float-right mr-1'
@@ -87,7 +102,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {cilReload, cilSearch} from '@coreui/icons';
+import {cilMediaPlay, cilMediaStop, cilReload, cilSearch} from '@coreui/icons';
 import {
 	CBadge,
 	CButton,
@@ -98,12 +113,15 @@ import {
 	CDataTable,
 	CIcon,
 } from '@coreui/vue/src';
+import {AxiosResponse} from 'axios';
 import {Component, Vue} from 'vue-property-decorator';
 
 import SignalIndicator from '@/components/Network/SignalIndicator.vue';
 import {ModemState} from '@/enums/Network/ModemState';
 import {IField} from '@/interfaces/Coreui';
 import {IModem} from '@/interfaces/Network/Mobile';
+import {MonitCheck} from '@/interfaces/Maintenance/Monit';
+import MonitService from '@/services/MonitService';
 import NetworkInterfaceService from '@/services/NetworkInterfaceService';
 import ServiceService from '@/services/ServiceService';
 
@@ -123,6 +141,8 @@ import ServiceService from '@/services/ServiceService';
 		SignalIndicator,
 	},
 	data: () => ({
+		cilMediaPlay,
+		cilMediaStop,
 		cilReload,
 		cilSearch,
 	}),
@@ -165,13 +185,23 @@ export default class GsmInterfaces extends Vue {
 
 	/**
 	 * @property {Array<IModem>} modems Array of modems
-   */
+	 */
 	private modems: Array<IModem> = [];
 
 	/**
 	 * @property {boolean} loading Loading state
 	 */
 	private loading = true;
+
+	/**
+	 * @property {MonitCheck | null} monit Monit check
+	 */
+	private monit: MonitCheck | null = null;
+
+	/**
+	 * @property {string} monitCheckName Monit check name
+	 */
+	private monitCheckName = 'network_ppp0';
 
 	/**
 	 * @property {boolean} hasBrokenGsmModem Checks if the used modem is broken to prevent hanging on
@@ -191,9 +221,9 @@ export default class GsmInterfaces extends Vue {
 	/**
 	 * Retrieves modems
 	 */
-	public getData(buttonInvoked = false): void {
+	public async getData(buttonInvoked = false): Promise<void> {
 		this.loading = true;
-		NetworkInterfaceService.listModems()
+		await NetworkInterfaceService.listModems()
 			.then((modems: Array<IModem>) => {
 				this.modems = modems;
 				this.loading = false;
@@ -201,6 +231,15 @@ export default class GsmInterfaces extends Vue {
 					this.$emit('refresh');
 				}
 			});
+		if (this.$store.getters['features/isEnabled']('monit') && this.hasBrokenGsmModem) {
+			await MonitService.getCheck(this.monitCheckName)
+				.then((response: AxiosResponse<MonitCheck>) => {
+					this.monit = response.data;
+				})
+				.catch(() => {
+					this.monit = null;
+				});
+		}
 	}
 
 	/**
@@ -211,7 +250,7 @@ export default class GsmInterfaces extends Vue {
 		NetworkInterfaceService.scanModems()
 			.then(async () => {
 				await new Promise((resolve) => setTimeout(resolve, 5_000));
-				this.getData();
+				await this.getData();
 			})
 			.catch(() => {
 				this.loading = false;
@@ -247,7 +286,7 @@ export default class GsmInterfaces extends Vue {
 		ServiceService.restart('ModemManager')
 			.then(async () => {
 				await new Promise(resolve => setTimeout(resolve, 15_000));
-				this.getData();
+				await this.getData();
 				this.loading = false;
 				this.$emit('refresh');
 			})
@@ -256,5 +295,34 @@ export default class GsmInterfaces extends Vue {
 				this.$emit('refresh');
 			});
 	}
+
+	/**
+	 * Toggles monit check
+	 */
+	private toggleMonit(): void {
+		if (this.monit === null) {
+			return;
+		}
+		this.loading = true;
+		const enabled = this.monit.enabled;
+		(enabled
+			? MonitService.disableCheck(this.monitCheckName)
+			: MonitService.enableCheck(this.monitCheckName))
+			.then(async () => {
+				await ServiceService.restart('monit');
+				await this.getData();
+				this.$toast.success(
+					this.$t(`network.mobile.messages.monit${enabled ? 'Disabled' : 'Enabled'}Successfully`).toString()
+				);
+				this.loading = false;
+			})
+			.catch(() => {
+				this.$toast.error(
+					this.$t(`network.mobile.messages.monit${enabled ? 'Disable' : 'Enable'}Failed`).toString()
+				);
+				this.loading = false;
+			});
+	}
+
 }
 </script>

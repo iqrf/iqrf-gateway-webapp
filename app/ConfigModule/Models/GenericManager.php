@@ -96,7 +96,7 @@ class GenericManager {
 	 * @return array<string> Files with component's instances
 	 */
 	public function getInstanceFiles(): array {
-		$dir = $this->fileManager->getDirectory();
+		$dir = $this->fileManager->getBasePath();
 		$instances = [];
 		foreach (Finder::findFiles('*.json')->exclude('config.json')->in($dir) as $file) {
 			$fileName = Strings::replace($file->getRealPath(), ['~^' . realpath($dir) . '/~', '/.json$/'], '');
