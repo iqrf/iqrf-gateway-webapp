@@ -75,7 +75,7 @@ class SchedulerManager {
 	 * Deletes all tasks
 	 */
 	public function deleteAll(): void {
-		$dir = $this->fileManager->getDirectory();
+		$dir = $this->fileManager->getBasePath();
 		foreach (Finder::findFiles('*.json')->in($dir) as $file) {
 			$this->fileManager->delete($file->getBasename());
 		}
@@ -88,7 +88,7 @@ class SchedulerManager {
 	 * @throws TaskNotFoundException
 	 */
 	public function getFileName(string $taskId): string {
-		$dir = $this->fileManager->getDirectory();
+		$dir = $this->fileManager->getBasePath();
 		foreach (Finder::findFiles('*.json')->in($dir) as $file) {
 			$fileName = $file->getBasename();
 			try {
@@ -123,7 +123,7 @@ class SchedulerManager {
 	 */
 	public function list(): array {
 		$tasks = [];
-		$dir = $this->fileManager->getDirectory();
+		$dir = $this->fileManager->getBasePath();
 		foreach (Finder::findFiles('*.json')->in($dir) as $file) {
 			$fileName = $file->getBasename();
 			try {

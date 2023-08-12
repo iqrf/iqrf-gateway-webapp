@@ -57,8 +57,9 @@ abstract class CommandTestCase extends TestCase {
 	 * @param string $stdout Command's standard output
 	 * @param string $stderr Command's standard error output
 	 * @param int $exitCode Command's exit code
+	 * @param int|null $count Number of command calls
 	 */
-	protected function receiveCommand(string $command, ?bool $needSudo = null, string $stdout = '', string $stderr = '', int $exitCode = 0): void {
+	protected function receiveCommand(string $command, ?bool $needSudo = null, string $stdout = '', string $stderr = '', int $exitCode = 0, ?int $count = 1): void {
 		$process = $this->commandManager->shouldReceive('run');
 		$entity = new Command($needSudo ? 'sudo ' : '' . $command, $stdout, $stderr, $exitCode);
 		if ($needSudo === null) {
@@ -66,7 +67,7 @@ abstract class CommandTestCase extends TestCase {
 		} else {
 			$process->with($command, $needSudo);
 		}
-		$process->andReturn($entity)->once();
+		$process->andReturn($entity)->times($count);
 	}
 
 	/**

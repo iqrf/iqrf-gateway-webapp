@@ -39,6 +39,13 @@ class CommandStack {
 	}
 
 	/**
+	 * Clears the stack
+	 */
+	public function clearCommands(): void {
+		$this->commands = [];
+	}
+
+	/**
 	 * Returns commands in the stack
 	 * @return array<Command> Commands in the stack
 	 */
