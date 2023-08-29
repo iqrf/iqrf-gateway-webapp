@@ -35,9 +35,15 @@ nginx_default_site() {
 	if [ -f "${GATEWAY_FILE}" ] ; then
 		image=$(jq -r '.gwImage' "${GATEWAY_FILE}")
 		case "${image}" in
+			industrial*)
+				ln -sf "${WEBAPP_CONFIG_DIR}/iqrf-gateway-webapp-industrial.localhost" "${SITE_AVAILABLE_PATH}"
+				ln -sf "${WEBAPP_CONFIG_DIR}/iqrf-gateway-webapp-industrial-https.localhost" "${SITE_AVAILABLE_PATH_HTTPS}" ;;
 			iqaros*|nakit*)
 				ln -sf "${WEBAPP_CONFIG_DIR}/iqrf-gateway-webapp-iqaros.localhost" "${SITE_AVAILABLE_PATH}"
 				ln -sf "${WEBAPP_CONFIG_DIR}/iqrf-gateway-webapp-iqaros-https.localhost" "${SITE_AVAILABLE_PATH_HTTPS}" ;;
+			iqube*)
+				ln -sf "${WEBAPP_CONFIG_DIR}/iqrf-gateway-webapp-iqube.localhost" "${SITE_AVAILABLE_PATH}"
+				ln -sf "${WEBAPP_CONFIG_DIR}/iqrf-gateway-webapp-iqube-https.localhost" "${SITE_AVAILABLE_PATH_HTTPS}" ;;
 			*)
 				ln -sf "${WEBAPP_CONFIG_DIR}/iqrf-gateway-webapp.localhost" "${SITE_AVAILABLE_PATH}"
 				ln -sf "${WEBAPP_CONFIG_DIR}/iqrf-gateway-webapp-https.localhost" "${SITE_AVAILABLE_PATH_HTTPS}" ;;

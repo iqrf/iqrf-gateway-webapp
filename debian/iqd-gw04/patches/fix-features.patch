@@ -23,7 +23,7 @@
  # IQRF Gateway Translator configuration
  iqrfGatewayTranslator:
  	enabled: false
-@@ -42,17 +42,17 @@
+@@ -42,40 +42,40 @@
  	enabled: false
  # Systemd journald configuration
  journal:
@@ -44,8 +44,11 @@
 +	enabled: true
  # Node-RED
  nodeRed:
- 	enabled: false
-@@ -62,20 +62,20 @@
+-	enabled: false
++	enabled: true
+ 	url: /node-red/
+ # Remount endpoints
+ remount:
  	enabled: false
  # SSH daemon manager
  ssh:
