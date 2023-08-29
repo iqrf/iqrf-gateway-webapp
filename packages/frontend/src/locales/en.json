@@ -3430,6 +3430,18 @@
 				"restart": "Monit service has been restarted."
 			}
 		},
+		"nodered": {
+			"title": "Node-RED service",
+			"description": "Controls the Node-RED service.",
+			"messages": {
+				"disabled": "Node-RED service is disabled.",
+				"disable": "Node-RED service has been disabled.",
+				"enable": "Node-RED service has been enabled.",
+				"start": "Node-RED service has been started.",
+				"stop": "Node-RED service has been stopped.",
+				"restart": "Node-RED service has been restarted."
+			}
+		},
 		"ssh": {
 			"title": "SSH service",
 			"description": "Controls the SSH daemon service.",

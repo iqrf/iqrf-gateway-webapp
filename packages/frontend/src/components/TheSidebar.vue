@@ -169,6 +169,12 @@ export default class TheSidebar extends Vue {
 					role: UserRoleIndex.ADMIN,
 				},
 				{
+					title: this.$t('service.nodered.title').toString(),
+					to: '/gateway/service/nodered/',
+					feature: 'nodeRed',
+					role: UserRoleIndex.NORMAL,
+				},
+				{
 					title: this.$t('service.tempgw.title').toString(),
 					to: '/gateway/service/tempgw/',
 					feature: 'iTemp',

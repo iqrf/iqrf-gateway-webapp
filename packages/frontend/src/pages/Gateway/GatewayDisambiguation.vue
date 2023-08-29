@@ -83,6 +83,13 @@ export default class GatewayDisambiguation extends Vue {
 			feature: 'ssh',
 		},
 		{
+			title: this.$t('service.nodered.title').toString(),
+			description: this.$t('service.nodered.description').toString(),
+			to: '/gateway/service/nodered/',
+			role: UserRoleIndex.NORMAL,
+			feature: 'nodeRed',
+		},
+		{
 			title: this.$t('service.tempgw.title').toString(),
 			description: this.$t('service.tempgw.description').toString(),
 			to: '/gateway/service/tempgw/',
