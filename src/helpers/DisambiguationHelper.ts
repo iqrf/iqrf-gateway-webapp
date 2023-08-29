@@ -76,7 +76,7 @@ export default class DisambiguationHelper {
 	 * @param {UserRoleIndex} role Role to filter by
 	 */
 	public static filter(link: Link, role: UserRoleIndex): boolean {
-		if (link.role !== undefined && ((Array.isArray(link.role) && link.role.indexOf(role) === -1) || role > link.role)) {
+		if (link.role !== undefined && ((Array.isArray(link.role) && link.role.indexOf(role) === -1) || role > (link.role as UserRoleIndex))) {
 			return false;
 		}
 		return !(link.feature !== undefined && !store.getters['features/isEnabled'](link.feature));
