@@ -211,6 +211,13 @@ export default class TheSidebar extends Vue {
 							},
 							{
 								_name: 'CSidebarNavItem',
+								name: this.$t('service.nodered.title'),
+								to: '/gateway/service/nodered/',
+								feature: 'nodeRed',
+								role: UserRole.NORMAL,
+							},
+							{
+								_name: 'CSidebarNavItem',
 								name: this.$t('service.tempgw.title'),
 								to: '/gateway/service/tempgw/',
 								feature: 'iTemp',
