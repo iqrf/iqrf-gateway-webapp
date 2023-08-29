@@ -23,7 +23,7 @@
  # IQRF Gateway Translator configuration
  iqrfGatewayTranslator:
  	enabled: false
-@@ -46,13 +46,13 @@
+@@ -46,36 +46,36 @@
  	path: /etc/systemd/journald.conf
  # Mender client configuration
  mender:
@@ -39,8 +39,11 @@
 +	enabled: true
  # Node-RED
  nodeRed:
- 	enabled: false
-@@ -62,20 +62,20 @@
+-	enabled: false
++	enabled: true
+ 	url: /node-red/
+ # Remount endpoints
+ remount:
  	enabled: false
  # SSH daemon manager
  ssh:

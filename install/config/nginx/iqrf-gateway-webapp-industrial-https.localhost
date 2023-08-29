@@ -1,0 +1,113 @@
+# Copyright 2017-2023 IQRF Tech s.r.o.
+# Copyright 2019-2023 MICRORISC s.r.o.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+upstream backend {
+	server unix:/run/php/php8.1-fpm.sock weight=4;
+	server unix:/run/php/php8.0-fpm.sock weight=2;
+	server unix:/run/php/php7.4-fpm.sock;
+}
+
+server {
+	listen 80;
+	listen [::]:80;
+	listen 443 ssl http2;
+	listen [::]:443 ssl http2;
+
+	root /usr/share/iqrf-gateway-webapp/www;
+	index index.php index.html index.htm index.nginx-debian.html;
+
+	# Logging
+	access_log /var/log/nginx/iqrf-gateway-webapp.access.log;
+	error_log /var/log/nginx/iqrf-gateway-webapp.error.log;
+
+	server_name _;
+
+	location / {
+		root /usr/share/iqrf-gateway-webapp/www/dist;
+		try_files $uri $uri/ /index.html;
+	}
+
+	location ~ ^/api/(.*)$ {
+		try_files $uri $uri/ /index.php?$args;
+	}
+
+	location ^~ /node-red/ {
+		rewrite ^/node-red/(.*) /$1 break;
+		include /etc/nginx/proxy_params;
+		proxy_http_version 1.1;
+		proxy_pass http://127.0.0.1:1880/;
+		proxy_set_header Upgrade $http_upgrade;
+		proxy_set_header Connection "upgrade";
+		proxy_redirect ~^(.*)$ $scheme://$http_host/node-red$1;
+		sub_filter "http://$server_name/" "$scheme://$http_host/node-red/";
+		sub_filter_once off;
+	}
+
+	location /ws {
+		proxy_pass http://localhost:1338;
+		proxy_read_timeout 3600;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header Upgrade $http_upgrade;
+		proxy_set_header Connection "upgrade";
+		proxy_set_header Host "localhost";
+		proxy_http_version 1.1;
+	}
+
+	location /wsMonitor {
+		proxy_pass http://localhost:1438;
+		proxy_read_timeout 3600;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header Upgrade $http_upgrade;
+		proxy_set_header Connection "upgrade";
+		proxy_set_header Host "localhost";
+		proxy_http_version 1.1;
+	}
+
+	location ~ /\. {
+		access_log off;
+		log_not_found off;
+		deny all;
+	}
+
+	location ~ [^/]\.(php|phtml)(/|$) {
+		fastcgi_split_path_info ^(.+?\.php)(/.*)$;
+		if (!-f $document_root$fastcgi_script_name) {
+			return 404;
+		}
+
+		# Mitigate https://httpoxy.org/ vulnerabilities
+		fastcgi_param HTTP_PROXY "";
+
+		fastcgi_param REQUEST_METHOD $request_method;
+		fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+		fastcgi_pass backend;
+		fastcgi_index index.php;
+		include fastcgi_params;
+	}
+
+	if ($scheme != "https") {
+		return 301 https://$host$request_uri;
+	}
+
+	add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://devrepo.iqrfalliance.org https://repository.iqrfalliance.org; connect-src 'self' http: https: ws: wss: https://apidocs.iqrf.org https://devrepo.iqrfalliance.org https://repository.iqrfalliance.org https://sentry.iqrf.org; media-src 'none'; object-src 'none'; prefetch-src 'self'; child-src 'none'; frame-src 'none'; worker-src 'none'; frame-ancestors 'none'; form-action 'self'; block-all-mixed-content; report-uri https://sentry.iqrf.org/api/2/security/?sentry_key=7cd0252aae6d491b98514b9486cd2771" always;
+	add_header Referrer-Policy "same-origin" always;
+	add_header X-Content-Type-Options "nosniff" always;
+	add_header X-Frame-Options "deny" always;
+	add_header X-Xss-Protection "1; mode=block" always;
+	server_tokens off;
+
+	ssl_certificate /etc/iqrf-gateway-webapp/certs/cert.pem;
+	ssl_certificate_key /etc/iqrf-gateway-webapp/certs/privkey.pem;
+}
