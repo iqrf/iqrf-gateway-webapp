@@ -97,7 +97,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Component, Vue, Watch} from 'vue-property-decorator';
 import {DataTableHeader} from 'vuetify';
 
 import SignalIndicator from '@/components/Network/SignalIndicator.vue';
@@ -203,15 +203,21 @@ export default class GsmInterfaces extends Vue {
 					this.$emit('refresh');
 				}
 			});
-		if (this.$store.getters['features/isEnabled']('monit') && this.hasBrokenGsmModem) {
-			await MonitService.getCheck(this.monitCheckName)
-				.then((response: AxiosResponse<MonitCheck>) => {
-					this.monit = response.data;
-				})
-				.catch(() => {
-					this.monit = null;
-				});
+		await this.getMonitCheck();
+	}
+
+	@Watch('gateway.info')
+	public async getMonitCheck(): Promise<void> {
+		if (!this.$store.getters['features/isEnabled']('monit') || !this.hasBrokenGsmModem) {
+			return;
 		}
+		await MonitService.getCheck(this.monitCheckName)
+			.then((response: AxiosResponse<MonitCheck>) => {
+				this.monit = response.data;
+			})
+			.catch(() => {
+				this.monit = null;
+			});
 	}
 
 	/**
