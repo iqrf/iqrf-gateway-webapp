@@ -3091,13 +3091,15 @@
 				},
 				"confirmPrompt": "Are you sure you want to save connection configuration?"
 			},
+			"saveAndConnect": "Save and connect",
 			"state": "Connection state",
 			"states": {
 				"connected": "Connected",
 				"notConnected": "Not connected"
 			},
 			"messages": {
-				"submit": "Saving configuration and attempting to connect...",
+				"saveAndConnect": "Saving configuration and attempting to connect...",
+				"save": "Saving configuration...",
 				"ipChange": {
 					"error": "Unable to confirm web interface availability.",
 					"autoToStatic": "IPv4 method switched from auto to static, web interface is available at {address}",

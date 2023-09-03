@@ -19,7 +19,7 @@ limitations under the License.
 		<h1>{{ pageTitle }}</h1>
 		<CCard body-wrapper>
 			<ValidationObserver v-slot='{invalid}'>
-				<CForm @submit.prevent='prepareModal'>
+				<CForm>
 					<ValidationProvider
 						v-slot='{errors, touched, valid}'
 						rules='required'
@@ -152,9 +152,15 @@ limitations under the License.
 						</CCol>
 					</CRow>
 					<CButton
-						type='submit'
 						color='primary'
 						:disabled='invalid || !ipv4InSubnet || disabledBothIpStacks'
+						@click.prevent='prepareModal(true)'
+					>
+						{{ $t('network.connection.saveAndConnect') }}
+					</CButton> <CButton
+						color='secondary'
+						:disabled='invalid || !ipv4InSubnet || disabledBothIpStacks'
+						@click.prevent='prepareModal(false)'
 					>
 						{{ $t('forms.save') }}
 					</CButton>
@@ -552,19 +558,19 @@ export default class ConnectionForm extends Vue {
 	 * Checks if connection methods have changed and creates warning notices for user
 	 * If methods have not changed, connection is saved immediately
 	 */
-	private prepareModal(): void {
+	private prepareModal(connect: boolean): void {
 		const loc = new UrlBuilder();
 		if (loc.getHostname() === 'localhost' || loc.getHostname() !== this.originalIPv4.address) {
 			// localhost, or frontend accessed at IP that is not in this connection
-			this.saveConnection();
+			this.saveConnection(connect);
 			return;
 		}
 		if (this.originalIPv4.method === Ipv4Method.AUTO && this.connection.ipv4.method === Ipv4Method.AUTO) { // ipv4 method not changed from auto
-			this.saveConnection();
+			this.saveConnection(connect);
 			return;
 		} else if (this.originalIPv4.method === Ipv4Method.AUTO && this.connection.ipv4.method === Ipv4Method.MANUAL) { // ipv4 method changed from auto to static
 			if (this.connection.ipv4.addresses[0].address === this.originalIPv4.address) { // auto to static, but IP hasn't changed
-				this.saveConnection();
+				this.saveConnection(connect);
 				return;
 			}
 			this.modalMessages.ipv4 = this.$t('network.connection.modal.ipv4.autoToStatic').toString();
@@ -629,15 +635,16 @@ export default class ConnectionForm extends Vue {
 	/**
 	 * Saves changes made to connection
 	 */
-	private saveConnection(): void {
+	private saveConnection(connect: boolean): void {
 		let connection: IConnection = JSON.parse(JSON.stringify(this.connection));
 		Object.assign(connection, {interface: connection.interface});
 		connection = this.prepareConnectionToSave(connection);
 		if (this.showModal) {
 			this.showModal = false;
 		}
-		this.$store.commit('spinner/SHOW',
-			this.$t('network.connection.messages.submit').toString()
+		this.$store.commit('spinner/SHOW', connect ?
+			this.$t('network.connection.messages.saveAndConnect').toString() :
+			this.$t('network.connection.messages.save').toString()
 		);
 		if (this.uuid === null || connection.uuid === undefined) {
 			connection.uuid = uuidv4();
@@ -646,7 +653,11 @@ export default class ConnectionForm extends Vue {
 					if (this.interfaceType === InterfaceType.GSM && this.hasBrokenGsmModem) {
 						await this.restartModemManager();
 					}
-					await this.connect(response.data, connection.name, true);
+					if (connect) {
+						await this.connect(response.data, connection.name, true);
+					} else {
+						this.onSuccess();
+					}
 				})
 				.catch((error: AxiosError) => {
 					extendedErrorToast(
@@ -660,7 +671,11 @@ export default class ConnectionForm extends Vue {
 					if (this.interfaceType === InterfaceType.GSM && this.hasBrokenGsmModem) {
 						await this.restartModemManager();
 					}
-					await this.connect(this.uuid!, connection.name, false);
+					if (connect) {
+						await this.connect(this.uuid!, connection.name, false);
+					} else {
+						this.onSuccess();
+					}
 				})
 				.catch((error: AxiosError) => extendedErrorToast(
 					error,
@@ -671,30 +686,34 @@ export default class ConnectionForm extends Vue {
 	}
 
 	/**
+	 * Shows success toast and redirects to connection list
+	 */
+	private onSuccess(): void {
+		this.$store.commit('spinner/HIDE');
+		let message: string;
+		if (this.$route.path.includes('/add')) {
+			message = this.$t('network.connection.messages.add.success', {connection: name}).toString();
+		} else {
+			message = this.$t('network.connection.messages.edit.success', {connection: name}).toString();
+		}
+		this.$toast.success(message);
+		if (this.connection.type === ConnectionType.Ethernet) {
+			this.$router.push('/ip-network/ethernet');
+		} else if (this.connection.type === ConnectionType.WiFi) {
+			this.$router.push('/ip-network/wireless');
+		} else if (this.connection.type === ConnectionType.GSM) {
+			this.$router.push('/ip-network/mobile');
+		}
+	}
+
+	/**
 	 * @param {string} uuid Connection UUID
 	 * @param {string} name Connection name
 	 * @param {boolean} added Connection added before connecting
 	 */
 	private connect(uuid: string, name: string, added = false): void {
 		NetworkConnectionService.connect(uuid, this.connection.interface ?? null)
-			.then(() => {
-				this.$store.commit('spinner/HIDE');
-				let message: string;
-				if (this.$route.path.includes('/add')) {
-					message = this.$t('network.connection.messages.add.success', {connection: name}).toString();
-				} else {
-					message = this.$t('network.connection.messages.edit.success', {connection: name}).toString();
-				}
-				this.$toast.success(message);
-				if (this.connection.type === ConnectionType.Ethernet) {
-					this.$router.push('/ip-network/ethernet');
-				} else if (this.connection.type === ConnectionType.WiFi) {
-					this.$router.push('/ip-network/wireless');
-				} else if (this.connection.type === ConnectionType.GSM) {
-					this.$router.push('/ip-network/mobile');
-				}
-
-			})
+			.then(() => {this.onSuccess();})
 			.catch(async (error: AxiosError) => {
 				if (!this.handleIPChanged) {
 					if (added) {
