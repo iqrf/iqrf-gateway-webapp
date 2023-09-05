@@ -19,6 +19,7 @@ limitations under the License.
 		<h1>{{ $t('network.mobile.title') }}</h1>
 		<GsmInterfaces
 			ref='interfaces'
+			:connections='connections'
 			@restart='loading = true'
 			@refresh='getConnections'
 		/>

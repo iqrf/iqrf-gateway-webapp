@@ -15,90 +15,140 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<CCard>
-		<CCardHeader class='datatable-header'>
-			{{ $t("network.mobile.modems.title") }}
-			<CButtonToolbar>
-				<CButton
-					v-if='monit !== null'
-					:color='monit.enabled ? "danger" : "success"'
-					class='float-right mr-1'
-					size='sm'
-					@click='toggleMonit'
+	<div>
+		<CCard>
+			<CCardHeader class='datatable-header'>
+				{{ $t("network.mobile.modems.title") }}
+				<CButtonToolbar>
+					<CButton
+						v-if='monit !== null'
+						:color='monit.enabled ? "danger" : "success"'
+						class='float-right mr-1'
+						size='sm'
+						@click='toggleMonit(false)'
+					>
+						<CIcon :content='monit.enabled ? cilMediaStop : cilMediaPlay' size='sm' />
+						<span v-if='monit.enabled'>
+							{{ $t('network.mobile.table.stopMonit') }}
+						</span>
+						<span v-else>
+							{{ $t('network.mobile.table.startMonit') }}
+						</span>
+					</CButton>
+					<CButton
+						v-if='hasBrokenGsmModem'
+						color='warning'
+						class='float-right mr-1'
+						size='sm'
+						@click='restartModemManager'
+					>
+						<CIcon :content='cilReload' size='sm' />
+						{{ $t('network.mobile.table.restartModemManager') }}
+					</CButton>
+					<CButton
+						color='secondary'
+						size='sm'
+						class='float-right mr-1'
+						@click='scan'
+					>
+						<CIcon :content='cilSearch' size='sm' />
+						{{ $t('forms.scan') }}
+					</CButton>
+					<CButton
+						color='primary'
+						size='sm'
+						class='float-right'
+						@click='getData(true)'
+					>
+						<CIcon :content='cilReload' size='sm' />
+						{{ $t('forms.refresh') }}
+					</CButton>
+				</CButtonToolbar>
+			</CCardHeader>
+			<CCardBody>
+				<CDataTable
+					:fields='fields'
+					:items='modems'
+					:items-per-page='20'
+					:pagination='true'
+					:loading='loading'
+					:sorter='{external: false, resetable: true}'
 				>
-					<CIcon :content='monit.enabled ? cilMediaStop : cilMediaPlay' size='sm' />
-					<span v-if='monit.enabled'>
-						{{ $t('network.mobile.table.stopMonit') }}
-					</span>
-					<span v-else>
-						{{ $t('network.mobile.table.startMonit') }}
-					</span>
+					<template #no-items-view='{}'>
+						{{ $t('network.mobile.messages.noInterfaces') }}
+					</template>
+					<template #rssi='{item}'>
+						<td>
+							{{ item.rssi !== null ? item.rssi + ' dBm' : '-' }}
+						</td>
+					</template>
+					<template #signal='{item}'>
+						<td>
+							<SignalIndicator :signal='item.signal' />
+						</td>
+					</template>
+					<template #state='{item}'>
+						<td>
+							<CBadge :color='stateColor(item.state)'>
+								{{ $t(`network.mobile.modems.states.${item.state}`) }}
+								<span v-if='item.state === "failed"'>
+									({{ $t(`network.mobile.modems.failedReasons.${item.failedReason}`) }})
+								</span>
+							</CBadge>
+						</td>
+					</template>
+				</CDataTable>
+			</CCardBody>
+		</CCard>
+		<CModal
+			:show='showMonitWithoutConnectionModal'
+			color='danger'
+			size='lg'
+		>
+			<template #header>
+				<h5 class='modal-title'>
+					{{ $t('network.mobile.modals.enableMonitWithoutConnection.title') }}
+				</h5>
+			</template>
+			{{ $t('network.mobile.modals.enableMonitWithoutConnection.body') }}
+			<template #footer>
+				<CButton
+					color='secondary'
+					class='ml-auto'
+					@click='showMonitWithoutConnectionModal = false'
+				>
+					{{ $t('forms.cancel') }}
 				</CButton>
+			</template>
+		</CModal>
+		<CModal
+			:show='showMonitWithoutActiveConnectionModal'
+			color='warning'
+			size='lg'
+		>
+			<template #header>
+				<h5 class='modal-title'>
+					{{ $t('network.mobile.modals.enableMonitWithoutActiveConnection.title') }}
+				</h5>
+			</template>
+			{{ $t('network.mobile.modals.enableMonitWithoutActiveConnection.body') }}
+			<template #footer>
 				<CButton
-					v-if='hasBrokenGsmModem'
 					color='warning'
-					class='float-right mr-1'
-					size='sm'
-					@click='restartModemManager'
+					@click='toggleMonit(true)'
 				>
-					<CIcon :content='cilReload' size='sm' />
-					{{ $t('network.mobile.table.restartModemManager') }}
+					{{ $t('table.actions.enable') }}
 				</CButton>
 				<CButton
 					color='secondary'
-					size='sm'
-					class='float-right mr-1'
-					@click='scan'
+					class='ml-auto'
+					@click='showMonitWithoutActiveConnectionModal = false'
 				>
-					<CIcon :content='cilSearch' size='sm' />
-					{{ $t('forms.scan') }}
+					{{ $t('forms.cancel') }}
 				</CButton>
-				<CButton
-					color='primary'
-					size='sm'
-					class='float-right'
-					@click='getData(true)'
-				>
-					<CIcon :content='cilReload' size='sm' />
-					{{ $t('forms.refresh') }}
-				</CButton>
-			</CButtonToolbar>
-		</CCardHeader>
-		<CCardBody>
-			<CDataTable
-				:fields='fields'
-				:items='modems'
-				:items-per-page='20'
-				:pagination='true'
-				:loading='loading'
-				:sorter='{external: false, resetable: true}'
-			>
-				<template #no-items-view='{}'>
-					{{ $t('network.mobile.messages.noInterfaces') }}
-				</template>
-				<template #rssi='{item}'>
-					<td>
-						{{ item.rssi !== null ? item.rssi + ' dBm' : '-' }}
-					</td>
-				</template>
-				<template #signal='{item}'>
-					<td>
-						<SignalIndicator :signal='item.signal' />
-					</td>
-				</template>
-				<template #state='{item}'>
-					<td>
-						<CBadge :color='stateColor(item.state)'>
-							{{ $t(`network.mobile.modems.states.${item.state}`) }}
-							<span v-if='item.state === "failed"'>
-								({{ $t(`network.mobile.modems.failedReasons.${item.failedReason}`) }})
-							</span>
-						</CBadge>
-					</td>
-				</template>
-			</CDataTable>
-		</CCardBody>
-	</CCard>
+			</template>
+		</CModal>
+	</div>
 </template>
 
 <script lang='ts'>
@@ -112,9 +162,10 @@ import {
 	CCardHeader,
 	CDataTable,
 	CIcon,
+	CModal,
 } from '@coreui/vue/src';
 import {AxiosResponse} from 'axios';
-import {Component, Vue, Watch} from 'vue-property-decorator';
+import {Component, PropSync, Vue, Watch} from 'vue-property-decorator';
 
 import SignalIndicator from '@/components/Network/SignalIndicator.vue';
 import {ModemState} from '@/enums/Network/ModemState';
@@ -124,6 +175,7 @@ import {MonitCheck} from '@/interfaces/Maintenance/Monit';
 import MonitService from '@/services/MonitService';
 import NetworkInterfaceService from '@/services/NetworkInterfaceService';
 import ServiceService from '@/services/ServiceService';
+import {NetworkConnection} from '@/interfaces/Network/Connection';
 
 /**
  * GSM modem interface list
@@ -138,6 +190,7 @@ import ServiceService from '@/services/ServiceService';
 		CCardBody,
 		CDataTable,
 		CIcon,
+		CModal,
 		SignalIndicator,
 	},
 	data: () => ({
@@ -148,6 +201,11 @@ import ServiceService from '@/services/ServiceService';
 	}),
 })
 export default class GsmInterfaces extends Vue {
+
+	/**
+	 * @property {Array<IConnection>} _connections Array of connections
+	 */
+	@PropSync('connections', {type: Array, required: true}) _connections!: Array<NetworkConnection>;
 
 	/**
 	 * @property {Array<IField>} fields Array of CoreUI data table fields
@@ -204,10 +262,34 @@ export default class GsmInterfaces extends Vue {
 	private monitCheckName = 'network_ppp0';
 
 	/**
+	 * @property {boolean} showMonitWithoutConnectionModal Show Monit without connection modal
+	 */
+	private showMonitWithoutConnectionModal = false;
+
+	/**
+	 * @property {boolean} showMonitWithoutActiveConnectionModal Show Monit without active connection modal
+	 */
+	private showMonitWithoutActiveConnectionModal = false;
+
+	/**
 	 * @property {boolean} hasBrokenGsmModem Checks if the used modem is broken to prevent hanging on
 	 */
 	get hasBrokenGsmModem(): boolean {
 		return this.$store.getters['gateway/board'] === 'MICRORISC s.r.o. IQD-GW04';
+	}
+
+	/**
+	 * @property {boolean} hasConnection Checks if there is no connection
+	 */
+	get hasConnections(): boolean {
+		return this._connections.length !== 0;
+	}
+
+	/**
+	 * @property {boolean} hasActiveConnection Checks if there is an active connection
+	 */
+	get hasActiveConnection(): boolean {
+		return this._connections.some((connection: NetworkConnection) => connection.interfaceName !== null);
 	}
 
 	/**
@@ -303,13 +385,36 @@ export default class GsmInterfaces extends Vue {
 
 	/**
 	 * Toggles monit check
+	 * @param {boolean} confirmed Confirmed
 	 */
-	private toggleMonit(): void {
+	private toggleMonit(confirmed: boolean = false): void {
 		if (this.monit === null) {
 			return;
 		}
-		this.loading = true;
 		const enabled = this.monit.enabled;
+		console.warn(
+			{
+				enabled,
+				hasConnections: this.hasConnections,
+				hasActiveConnection: this.hasActiveConnection,
+			}
+		);
+		if (!enabled) {
+			if (!this.hasConnections) {
+				this.showMonitWithoutConnectionModal = true;
+				return;
+			}
+			if (!this.hasActiveConnection) {
+				if (confirmed) {
+					this.showMonitWithoutActiveConnectionModal = false;
+				} else {
+					this.showMonitWithoutActiveConnectionModal = true;
+					return;
+				}
+			}
+		}
+
+		this.loading = true;
 		(enabled
 			? MonitService.disableCheck(this.monitCheckName)
 			: MonitService.enableCheck(this.monitCheckName))

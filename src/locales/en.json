@@ -2896,6 +2896,16 @@
 				"monitEnableFailed": "Failed to enable watchdog.",
 				"monitDisabledSuccessfully": "Watchdog has been successfully disabled.",
 				"monitDisableFailed": "Failed to disable watchdog."
+			},
+			"modals": {
+				"enableMonitWithoutConnection": {
+					"title": "Failed to enable watchdog",
+					"body": "Watchdog can only be enabled when there is at least one mobile connection."
+				},
+				"enableMonitWithoutActiveConnection": {
+					"title": "Watchdog enablement confirmation",
+					"body": "Are you sure you want to enable watchdog? There are no active mobile connections."
+				}
 			}
 		},
 		"serial": {
