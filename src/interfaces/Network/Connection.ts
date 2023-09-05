@@ -24,7 +24,7 @@ import {InterfaceState} from '@/enums/Network/InterfaceState';
  * Network connection interface
  */
 export interface NetworkConnection {
-	interfaceName: string
+	interfaceName: string | null
 	name: string
 	type: string
 	uuid: string

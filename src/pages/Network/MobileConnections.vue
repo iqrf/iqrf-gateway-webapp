@@ -71,7 +71,7 @@ limitations under the License.
 							</CButton> <CButton
 								size='sm'
 								color='danger'
-								@click='item.interfaceName === null ? remove(item) : disconnect(item, true)'
+								@click='connectionToDelete = item'
 							>
 								<CIcon :content='cilTrash' size='sm' />
 								{{ $t('table.actions.delete') }}
@@ -84,11 +84,75 @@ limitations under the License.
 		<CCard body-wrapper>
 			<NetworkOperators />
 		</CCard>
+		<CModal
+			:show='connectionToDisconnect !== null'
+			color='warning'
+			size='lg'
+		>
+			<template #header>
+				<h5 class='modal-title'>
+					{{ $t('network.connection.modals.disconnectWithWatchdog.title') }}
+				</h5>
+			</template>
+			<span v-if='connectionToDisconnect !== null'>
+				{{ $t('network.connection.modals.disconnectWithWatchdog.body', {connection: connectionToDisconnect.name}) }}
+			</span>
+			<template #footer>
+				<CButton
+					color='warning'
+					@click='disconnect(connectionToDisconnect, true)'
+				>
+					{{ $t('network.table.disconnect') }}
+				</CButton> <CButton
+					color='secondary'
+					class='ml-auto'
+					@click='connectionToDisconnect = null'
+				>
+					{{ $t('forms.cancel') }}
+				</CButton>
+			</template>
+		</CModal>
+		<CModal
+			:show='connectionToDelete !== null'
+			color='danger'
+			size='lg'
+		>
+			<template #header>
+				<h5 v-if='monit !== null' class='modal-title'>
+					{{ $t('network.connection.modals.deleteWithWatchdog.title') }}
+				</h5>
+				<h5 v-else class='modal-title'>
+					{{ $t('network.connection.modals.delete.title') }}
+				</h5>
+			</template>
+			<span v-if='connectionToDelete !== null'>
+				<span v-if='monit !== null'>
+					{{ $t('network.connection.modals.deleteWithWatchdog.body', {connection: connectionToDelete.name}) }}
+				</span>
+				<span v-else>
+					{{ $t('network.connection.modals.delete.body', {connection: connectionToDelete.name}) }}
+				</span>
+			</span>
+			<template #footer>
+				<CButton
+					color='danger'
+					@click='remove(connectionToDelete)'
+				>
+					{{ $t('table.actions.delete') }}
+				</CButton> <CButton
+					color='secondary'
+					class='ml-auto'
+					@click='connectionToDelete = null'
+				>
+					{{ $t('forms.cancel') }}
+				</CButton>
+			</template>
+		</CModal>
 	</div>
 </template>
 
 <script lang='ts'>
-import {Component, Ref, Vue} from 'vue-property-decorator';
+import {Component, Ref, Vue, Watch} from 'vue-property-decorator';
 import {
 	CBadge,
 	CButton,
@@ -97,7 +161,8 @@ import {
 	CCardHeader,
 	CDataTable,
 	CIcon,
-	CProgress
+	CProgress,
+	CModal,
 } from '@coreui/vue/src';
 import NetworkOperators from '@/components/Network/NetworkOperators.vue';
 
@@ -111,12 +176,14 @@ import {
 import {extendedErrorToast} from '@/helpers/errorToast';
 import NetworkConnectionService from '@/services/NetworkConnectionService';
 
-import {AxiosError} from 'axios';
+import {AxiosError, AxiosResponse} from 'axios';
 import {IField} from '@/interfaces/Coreui';
 import {IModem} from '@/interfaces/Network/Mobile';
 import {NetworkConnection} from '@/interfaces/Network/Connection';
 import GsmInterfaces from '@/components/Network/GsmInterfaces.vue';
 import {ConnectionType} from '@/enums/Network/ConnectionType';
+import MonitService from '@/services/MonitService';
+import {MonitCheck} from '@/interfaces/Maintenance/Monit';
 
 @Component({
 	components: {
@@ -128,6 +195,7 @@ import {ConnectionType} from '@/enums/Network/ConnectionType';
 		CDataTable,
 		CIcon,
 		CProgress,
+		CModal,
 		GsmInterfaces,
 		NetworkOperators,
 	},
@@ -150,13 +218,23 @@ export default class MobileConnections extends Vue {
 
 	/**
 	 * @property {GsmInterfaces} interfaces - GSM interfaces component
-   */
+	 */
 	@Ref('interfaces') readonly interfaces!: GsmInterfaces;
 
 	/**
 	 * @var {Array<NetworkConnections>} connections Existing mobile connections
 	 */
 	private connections: Array<NetworkConnection> = [];
+
+	/**
+	 * @property {NetworkConnection|null} connectionToDisconnect Connection to disconnect
+	 */
+	private connectionToDisconnect: NetworkConnection|null = null;
+
+	/**
+	 * @property {NetworkConnection|null} connectionToDelete Connection to delete
+	 */
+	private connectionToDelete: NetworkConnection|null = null;
 
 	/**
 	 * @var {Array<IModem>} modems Available modems
@@ -191,6 +269,16 @@ export default class MobileConnections extends Vue {
 	private loading = true;
 
 	/**
+	 * @property {MonitCheck | null} monit Monit check
+	 */
+	private monit: MonitCheck | null = null;
+
+	/**
+	 * @property {string} monitCheckName Monit check name
+	 */
+	private monitCheckName = 'network_ppp0';
+
+	/**
 	 * Builds connections table
 	 */
 	mounted(): void {
@@ -215,6 +303,20 @@ export default class MobileConnections extends Vue {
 				this.loading = false;
 			})
 			.catch((error: AxiosError) => extendedErrorToast(error, 'network.connection.messages.connectionFetchFailed'));
+	}
+
+	@Watch('gateway.info')
+	public async getMonitCheck(): Promise<void> {
+		if (!this.$store.getters['features/isEnabled']('monit') || this.$store.getters['gateway/board'] !== 'MICRORISC s.r.o. IQD-GW04') {
+			return;
+		}
+		await MonitService.getCheck(this.monitCheckName)
+			.then((response: AxiosResponse<MonitCheck>) => {
+				this.monit = response.data;
+			})
+			.catch(() => {
+				this.monit = null;
+			});
 	}
 
 	/**
@@ -245,25 +347,33 @@ export default class MobileConnections extends Vue {
 	/**
 	 * Terminates a GSM connection
 	 * @param {NetworkConnection} connection GSM connection
-	 * @param {boolean} remove Remove connection
+	 * @param {boolean} confirmed Confirmed termination
 	 */
-	private disconnect(connection: NetworkConnection, remove: boolean): Promise<void> {
+	private async disconnect(connection: NetworkConnection, confirmed: boolean): Promise<void> {
+		if (this.$store.getters['features/isEnabled']('monit') &&
+        this.$store.getters['gateway/board'] === 'MICRORISC s.r.o. IQD-GW04' &&
+        connection.interfaceName === 'ttyAMA2'
+		) {
+			if (confirmed) {
+				await MonitService.disableCheck(this.monitCheckName);
+			} else {
+				this.connectionToDisconnect = connection;
+				return Promise.resolve();
+			}
+		}
+		this.connectionToDisconnect = null;
 		this.$store.commit('spinner/SHOW');
 		return NetworkConnectionService.disconnect(connection.uuid)
 			.then(() => {
 				this.getConnections();
 				this.interfaces.getData();
 				this.$store.commit('spinner/HIDE');
-				if (remove) {
-					this.remove(connection);
-				} else {
-					this.$toast.success(
-						this.$t(
-							'network.connection.messages.disconnect.success',
-							{interface: connection.interfaceName, connection: connection.name}
-						).toString()
-					);
-				}
+				this.$toast.success(
+					this.$t(
+						'network.connection.messages.disconnect.success',
+						{interface: connection.interfaceName, connection: connection.name}
+					).toString()
+				);
 			})
 			.catch((error: AxiosError) => extendedErrorToast(
 				error,
@@ -276,8 +386,30 @@ export default class MobileConnections extends Vue {
 	 * Removes a GSM connection
 	 * @param {NetworkConnection} connection GSM connection
 	 */
-	private remove(connection: NetworkConnection): void {
+	private async remove(connection: NetworkConnection): Promise<void> {
 		this.$store.commit('spinner/SHOW');
+		if (this.$store.getters['features/isEnabled']('monit') &&
+        this.$store.getters['gateway/board'] === 'MICRORISC s.r.o. IQD-GW04' &&
+        connection.interfaceName === 'ttyAMA2'
+		) {
+			await MonitService.disableCheck(this.monitCheckName);
+		}
+		this.connectionToDelete = null;
+		if (connection.interfaceName !== null) {
+			const result = await NetworkConnectionService.disconnect(connection.uuid)
+				.then(() => true)
+				.catch(() => false);
+			if (!result) {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.error(
+					this.$t(
+						'network.connection.messages.removeFailed',
+						{connection: connection.name},
+					).toString()
+				);
+				return;
+			}
+		}
 		NetworkConnectionService.remove(connection.uuid)
 			.then(() => {
 				this.getConnections();
