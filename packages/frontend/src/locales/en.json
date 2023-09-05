@@ -3139,6 +3139,20 @@
 				},
 				"removeSuccess": "Network connection {connection} has been removed.",
 				"removeFailed": "Failed to delete network connection {connection}: {error}"
+			},
+			"modals": {
+				"disconnectWithWatchdog": {
+					"title": "Connection disconnect confirmation",
+					"body": "Are you sure you want to disconnect connection {connection}? This will also disable watchdog for this connection."
+				},
+				"deleteWithWatchdog": {
+					"title": "Connection delete confirmation",
+					"body": "Are you sure you want to delete connection {connection}? This will also disable watchdog for this connection."
+				},
+				"delete": {
+					"title": "Connection delete confirmation",
+					"body": "Are you sure you want to delete connection {connection}?"
+				}
 			}
 		},
 		"operators": {
