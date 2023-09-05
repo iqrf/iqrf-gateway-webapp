@@ -51,10 +51,19 @@ import {mapGetters} from 'vuex';
 })
 
 export default class App extends Vue {
+
 	/**
 	 * Main app watch function
 	 */
 	private unwatch: CallableFunction = () => {return;};
+
+	/**
+   * Set the installation checked flag
+   */
+	private setInstallationChecked(): void {
+		this.$store.dispatch('spinner/hide');
+		this.$store.commit('installation/CHECKED');
+	}
 
 	/**
 	 * Vue lifecycle hook before created
@@ -69,6 +78,7 @@ export default class App extends Vue {
 			.then(async (check: InstallationCheck) => {
 				const installUrl: boolean = this.$route.path.startsWith('/install/');
 				if (check.dependencies.length !== 0) {
+					this.setInstallationChecked();
 					await this.$router.push({
 						name: 'missing-dependency',
 						params: {
@@ -76,6 +86,7 @@ export default class App extends Vue {
 						},
 					});
 				} else if (!check.phpModules.allExtensionsLoaded) {
+					this.setInstallationChecked();
 					await this.$router.push({
 						name: 'missing-extension',
 						params: {
@@ -84,6 +95,7 @@ export default class App extends Vue {
 						}
 					});
 				} else if (check.sudo !== undefined && (!check.sudo.exists || !check.sudo.userSudo)) {
+					this.setInstallationChecked();
 					await this.$router.push({
 						name: 'sudo-error',
 						params: {
@@ -93,16 +105,20 @@ export default class App extends Vue {
 						}
 					});
 				} else if (!check.allMigrationsExecuted) {
+					this.setInstallationChecked();
 					await this.$router.push('/install/error/missing-migration');
 				} else if (!check.hasUsers && !installUrl) {
+					this.setInstallationChecked();
 					await this.$router.push('/install/');
 				} else if (check.hasUsers && installUrl) {
+					this.setInstallationChecked();
 					await this.$router.push('/sign/in/');
 				}
 				if (this.$store.getters['user/isLoggedIn']) {
 					await this.$store.dispatch('repository/get');
 					await this.$store.dispatch('gateway/getInfo');
 				}
+				this.setInstallationChecked();
 			})
 			.catch((error: AxiosError) => {
 				this.$store.dispatch('spinner/hide');

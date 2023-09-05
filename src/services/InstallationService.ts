@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 import axios, {AxiosResponse} from 'axios';
-import i18n from '@/plugins/i18n';
-import store from '@/store';
 
 /**
  * Installation check interface
@@ -67,14 +65,8 @@ class InstallationService {
 	 * Checks the installation
 	 */
 	public check(): Promise<InstallationCheck> {
-		store.dispatch(
-			'spinner/show',
-			{timeout: 0, text: i18n.t('install.messages.check').toString()}
-		);
 		return axios.get('/installation')
 			.then((response: AxiosResponse) => {
-				store.commit('installation/CHECKED');
-				store.commit('spinner/HIDE');
 				return response.data as InstallationCheck;
 			});
 	}
