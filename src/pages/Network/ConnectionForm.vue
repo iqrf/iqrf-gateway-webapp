@@ -650,10 +650,10 @@ export default class ConnectionForm extends Vue {
 			connection.uuid = uuidv4();
 			NetworkConnectionService.add(connection)
 				.then(async (response: AxiosResponse) => {
-					if (this.interfaceType === InterfaceType.GSM && this.hasBrokenGsmModem) {
-						await this.restartModemManager();
-					}
 					if (connect) {
+						if (this.interfaceType === InterfaceType.GSM && this.hasBrokenGsmModem) {
+							await this.restartModemManager();
+						}
 						await this.connect(response.data, connection.name, true);
 					} else {
 						this.onSuccess();
@@ -668,10 +668,10 @@ export default class ConnectionForm extends Vue {
 		} else {
 			NetworkConnectionService.edit(this.uuid, connection)
 				.then(async () => {
-					if (this.interfaceType === InterfaceType.GSM && this.hasBrokenGsmModem) {
-						await this.restartModemManager();
-					}
 					if (connect) {
+						if (this.interfaceType === InterfaceType.GSM && this.hasBrokenGsmModem) {
+							await this.restartModemManager();
+						}
 						await this.connect(this.uuid!, connection.name, false);
 					} else {
 						this.onSuccess();
@@ -711,8 +711,8 @@ export default class ConnectionForm extends Vue {
 	 * @param {string} name Connection name
 	 * @param {boolean} added Connection added before connecting
 	 */
-	private connect(uuid: string, name: string, added = false): void {
-		NetworkConnectionService.connect(uuid, this.connection.interface ?? null)
+	private async connect(uuid: string, name: string, added = false): Promise<void> {
+		await NetworkConnectionService.connect(uuid, this.connection.interface ?? null)
 			.then(() => {this.onSuccess();})
 			.catch(async (error: AxiosError) => {
 				if (!this.handleIPChanged) {
