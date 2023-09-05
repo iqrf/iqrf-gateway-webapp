@@ -423,20 +423,26 @@ export default class TheSidebar extends Vue {
 			role: UserRoleIndex.BASIC,
 		},
 		{
-			title: this.$t('core.nodeRed.workflow.title').toString(),
-			href: this.$store.getters['features/configuration']('nodeRed').url,
-			target: LinkTarget.blank,
+			title: this.$t('core.nodeRed.title').toString(),
 			feature: 'nodeRed',
 			icon: 'mdi-code-json',
 			role: UserRoleIndex.BASICADMIN,
-		},
-		{
-			title: this.$t('core.nodeRed.dashboard.title').toString(),
-			href: this.$store.getters['features/configuration']('nodeRed').url + 'ui/',
-			target: LinkTarget.blank,
-			feature: 'nodeRed',
-			icon: 'mdi-view-dashboard',
-			role: UserRoleIndex.BASIC,
+			children: [
+				{
+					title: this.$t('core.nodeRed.workflow.title').toString(),
+					href: this.$store.getters['features/configuration']('nodeRed').url,
+					target: LinkTarget.blank,
+					feature: 'nodeRed',
+					role: UserRoleIndex.BASICADMIN,
+				},
+				{
+					title: this.$t('core.nodeRed.dashboard.title').toString(),
+					href: this.$store.getters['features/configuration']('nodeRed').url + 'ui/',
+					target: LinkTarget.blank,
+					feature: 'nodeRed',
+					role: UserRoleIndex.BASIC,
+				},
+			]
 		},
 		{
 			title: this.$t('core.supervisor.title').toString(),
