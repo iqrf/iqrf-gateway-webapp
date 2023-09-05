@@ -20,6 +20,9 @@ limitations under the License.
 		<GsmInterfaces
 			ref='interfaces'
 			class='mb-5'
+			:connections='connections'
+			@restart='loading = true'
+			@refresh='getConnections'
 		/>
 		<v-card class='mb-5'>
 			<v-card-text>
