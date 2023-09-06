@@ -3332,10 +3332,10 @@
 			}
 		},
 		"monit": {
-			"title": "M/Monit monitoring",
-			"description": "Manager M/Monit monitoring service and configuration.",
+			"title": "Monit monitoring",
+			"description": "Manager Monit monitoring service and configuration.",
 			"checks": {
-				"title": "M/Monit checks",
+				"title": "System checks",
 				"name": "Check name",
 				"enable": "Enabled"
 			},
@@ -3358,9 +3358,9 @@
 				}
 			},
 			"messages": {
-				"fetchFailed": "Failed to retrieve MMonit configuration: {error}",
-				"saveFailed": "Failed to save MMonit configuration: {error}",
-				"saveSuccess": "MMonit configuration has been successfully saved."
+				"fetchFailed": "Failed to retrieve Monit configuration: {error}",
+				"saveFailed": "Failed to save Monit configuration: {error}",
+				"saveSuccess": "Monit configuration has been successfully saved."
 			}
 		}
 	},
