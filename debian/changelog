@@ -1,10 +1,30 @@
-iqrf-gateway-webapp (2.5.8~alpha~1.gbpac574f) UNRELEASED; urgency=medium
+iqrf-gateway-webapp (2.5.8) stable; urgency=medium
 
-  ** SNAPSHOT build @ac574f74d7cc0c84abfaa9cbc4c122cd27cae965 **
+  [ Karel Hanák ]
+  * Prepare for version 2.5.8-alpha
 
-  * UNRELEASED
+  [ Roman Ondráček ]
+  * NPM: update dependencies
+  * Gateway: add options to set the new hostname in IQRF Gateway Daemon's configuration
+  * Composer: update dependencies
+  * Doctrine: fix indexes
+  * Maintenance: refactor Monit configuration, add Monit check configuration
+  * Network: fix condition for broken GSM modem detection
+  * Gateway: add Node-RED service controls
+  * NPM: update dependencies
+  * Debian packaging: enable Node-RED feature on iqube and industrial gateways
+  * Network: fix watchdog button in modem list
+  * NPM: update dependencies
+  * Network: add "Save and connect" button to connection form
+  * Network: add modals for LTE connections
+  * Network: fix 10 s wait before connect on IQD-GW04
+  * Sidebar: update Node-RED
+  * Network: add modals for watchdog enablement if there is no connection or no connection is active
+  * Frontend: fix installation checks
+  * Maintenance: fix texts at Monit manager
+  * Gateway: add section for system services
 
- -- Karel Hanák <karel.hanak@iqrf.org>  Wed, 24 May 2023 11:41:31 +0200
+ -- Roman Ondráček <mail@romanondracek.cz>  Thu, 07 Sep 2023 18:05:00 +0200
 
 iqrf-gateway-webapp (2.5.7) stable; urgency=medium
 
