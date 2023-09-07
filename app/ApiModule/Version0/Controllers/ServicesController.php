@@ -65,7 +65,7 @@ class ServicesController extends BaseController {
 		'mender-client' => 'mender',
 		'monit' => 'monit',
 		'ModemManager' => 'networkManager',
-		'node-red' => 'nodeRed',
+		'nodered' => 'nodeRed',
 		'ssh' => 'ssh',
 		'systemd-journald' => 'journal',
 		'tempgw' => 'iTemp',
