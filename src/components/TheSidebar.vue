@@ -63,6 +63,7 @@ import {UserRole} from '@/services/AuthenticationService';
 interface NavMemberItem {
 	component?: string
 	feature?: string
+	features?: Array<string>
 	href?: string
 	name: VueI18n.TranslateResult
 	role?: UserRole
@@ -203,46 +204,63 @@ export default class TheSidebar extends Vue {
 								],
 							},
 							{
-								_name: 'CSidebarNavItem',
-								name: this.$t('service.ssh.title'),
-								to: '/gateway/service/ssh/',
-								feature: 'ssh',
-								role: UserRole.ADMIN,
-							},
-							{
-								_name: 'CSidebarNavItem',
-								name: this.$t('service.nodered.title'),
-								to: '/gateway/service/nodered/',
-								feature: 'nodeRed',
+								_name: 'CSidebarNavDropdown',
+								name: this.$t('service.system.title'),
+								to: '/gateway/system-services/',
+								route: '/gateway/system-services/',
 								role: UserRole.NORMAL,
-							},
-							{
-								_name: 'CSidebarNavItem',
-								name: this.$t('service.tempgw.title'),
-								to: '/gateway/service/tempgw/',
-								feature: 'iTemp',
-								role: UserRole.NORMAL,
-							},
-							{
-								_name: 'CSidebarNavItem',
-								name: this.$t('service.unattended-upgrades.title'),
-								to: '/gateway/service/unattended-upgrades/',
-								feature: 'unattendedUpgrades',
-								role: UserRole.ADMIN,
-							},
-							{
-								_name: 'CSidebarNavItem',
-								name: this.$t('service.systemd-journald.title'),
-								to: '/gateway/service/systemd-journald/',
-								feature: 'journal',
-								role: UserRole.ADMIN,
-							},
-							{
-								_name: 'CSidebarNavItem',
-								name: this.$t('service.apcupsd.title'),
-								to: '/gateway/service/apcupsd/',
-								feature: 'apcupsd',
-								role: UserRole.NORMAL,
+								features: [
+									'ssh',
+									'nodeRed',
+									'iTemp',
+									'unattendedUpgrades',
+									'journal',
+									'apcupsd',
+								],
+								_children: [
+									{
+										_name: 'CSidebarNavItem',
+										name: this.$t('service.ssh.title'),
+										to: '/gateway/service/ssh/',
+										feature: 'ssh',
+										role: UserRole.ADMIN,
+									},
+									{
+										_name: 'CSidebarNavItem',
+										name: this.$t('service.nodered.title'),
+										to: '/gateway/service/nodered/',
+										feature: 'nodeRed',
+										role: UserRole.NORMAL,
+									},
+									{
+										_name: 'CSidebarNavItem',
+										name: this.$t('service.tempgw.title'),
+										to: '/gateway/service/tempgw/',
+										feature: 'iTemp',
+										role: UserRole.NORMAL,
+									},
+									{
+										_name: 'CSidebarNavItem',
+										name: this.$t('service.unattended-upgrades.title'),
+										to: '/gateway/service/unattended-upgrades/',
+										feature: 'unattendedUpgrades',
+										role: UserRole.ADMIN,
+									},
+									{
+										_name: 'CSidebarNavItem',
+										name: this.$t('service.systemd-journald.title'),
+										to: '/gateway/service/systemd-journald/',
+										feature: 'journal',
+										role: UserRole.ADMIN,
+									},
+									{
+										_name: 'CSidebarNavItem',
+										name: this.$t('service.apcupsd.title'),
+										to: '/gateway/service/apcupsd/',
+										feature: 'apcupsd',
+										role: UserRole.NORMAL,
+									},
+								],
 							},
 							{
 								_name: 'CSidebarNavItem',
@@ -666,6 +684,13 @@ export default class TheSidebar extends Vue {
 			if (item.feature !== undefined &&
 				!this.$store.getters['features/isEnabled'](item.feature)) {
 				return;
+			}
+			if (item.features !== undefined) {
+				for (const feature of item.features) {
+					if (!this.$store.getters['features/isEnabled'](feature)) {
+						return;
+					}
+				}
 			}
 			filteredItems.push(item);
 		});
