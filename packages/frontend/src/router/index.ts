@@ -32,6 +32,7 @@ const Logs = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/Log
 const DaemonMode = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/DaemonMode.vue');
 const PowerControl = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/PowerControl.vue');
 const IqrfServiceDisambiguation = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/IqrfServiceDisambiguation.vue');
+const SystemServiceDisambiguation = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/SystemServiceDisambiguation.vue');
 const ServiceControl = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/ServiceControl.vue');
 
 const MainDisambiguation = () => import(/* webpackChunkName: "core" */ '@/pages/Core/MainDisambiguation.vue');
@@ -676,6 +677,13 @@ const routes: Array<RouteConfig> = [
 						path: 'iqrf-services',
 						meta: {
 							role: UserRole.Normal,
+						},
+					},
+					{
+						component: SystemServiceDisambiguation,
+						path: 'system-services',
+						meta: {
+							role: UserRole.NORMAL,
 						},
 					},
 					{

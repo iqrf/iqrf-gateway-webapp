@@ -41,6 +41,7 @@ export interface NavigationItem {
 	target?: LinkTarget;
 	role?: UserRoleIndex|Array<UserRoleIndex>;
 	feature?: string;
+	features?: Array<string>;
 }
 
 /**
@@ -78,10 +79,16 @@ export default class SidebarItems extends Vue {
 		if (item.children !== undefined) {
 			item.children = item.children.filter((child: NavigationItem) => this.filter(child));
 		}
+		if (item.children !== undefined && item.children.length === 0) {
+			return false;
+		}
 		if (item.role !== undefined && ((Array.isArray(item.role) && item.role.indexOf(role) === -1) || role > item.role)) {
 			return false;
 		}
-		return !(item.feature !== undefined && !this.$store.getters['features/isEnabled'](item.feature));
+		if (item.feature !== undefined && !this.$store.getters['features/isEnabled'](item.feature)) {
+			return false;
+		}
+		return true;
 	}
 
 }

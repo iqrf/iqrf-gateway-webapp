@@ -3381,6 +3381,10 @@
 			"unsupported": "Unsupported",
 			"unknown": "Unknown"
 		},
+		"system": {
+			"title": "System services",
+			"description": "Control system services."
+		},
 		"apcupsd": {
 			"title": "UPS daemon",
 			"description": "Control UPS daemon service.",

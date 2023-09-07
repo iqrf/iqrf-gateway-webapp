@@ -163,34 +163,47 @@ export default class TheSidebar extends Vue {
 					],
 				},
 				{
-					title: this.$t('service.ssh.title').toString(),
-					to: '/gateway/service/ssh/',
-					feature: 'ssh',
-					role: UserRoleIndex.ADMIN,
-				},
-				{
-					title: this.$t('service.nodered.title').toString(),
-					to: '/gateway/service/nodered/',
-					feature: 'nodeRed',
+					title: this.$t('service.system.title'),
+					to: '/gateway/system-services/',
 					role: UserRoleIndex.NORMAL,
-				},
-				{
-					title: this.$t('service.tempgw.title').toString(),
-					to: '/gateway/service/tempgw/',
-					feature: 'iTemp',
-					role: UserRoleIndex.NORMAL,
-				},
-				{
-					title: this.$t('service.unattended-upgrades.title').toString(),
-					to: '/gateway/service/unattended-upgrades/',
-					feature: 'unattendedUpgrades',
-					role: UserRoleIndex.ADMIN,
-				},
-				{
-					title: this.$t('service.systemd-journald.title').toString(),
-					to: '/gateway/service/systemd-journald/',
-					feature: 'journal',
-					role: UserRoleIndex.ADMIN,
+					children: [
+						{
+							title: this.$t('service.ssh.title').toString(),
+							to: '/gateway/service/ssh/',
+							feature: 'ssh',
+							role: UserRoleIndex.ADMIN,
+						},
+						{
+							title: this.$t('service.nodered.title').toString(),
+							to: '/gateway/service/nodered/',
+							feature: 'nodeRed',
+							role: UserRoleIndex.NORMAL,
+						},
+						{
+							title: this.$t('service.tempgw.title').toString(),
+							to: '/gateway/service/tempgw/',
+							feature: 'iTemp',
+							role: UserRoleIndex.NORMAL,
+						},
+						{
+							title: this.$t('service.unattended-upgrades.title').toString(),
+							to: '/gateway/service/unattended-upgrades/',
+							feature: 'unattendedUpgrades',
+							role: UserRoleIndex.ADMIN,
+						},
+						{
+							title: this.$t('service.systemd-journald.title').toString(),
+							to: '/gateway/service/systemd-journald/',
+							feature: 'journal',
+							role: UserRoleIndex.ADMIN,
+						},
+						{
+							title: this.$t('service.apcupsd.title').toString(),
+							to: '/gateway/service/apcupsd/',
+							feature: 'apcupsd',
+							role: UserRoleIndex.NORMAL,
+						}
+					]
 				},
 				{
 					title: this.$t('gateway.power.title').toString(),
