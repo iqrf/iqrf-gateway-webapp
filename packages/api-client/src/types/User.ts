@@ -65,7 +65,7 @@ export enum UserRole {
 	/**
 	 * Basic user with user management
 	 */
-	BasicAdmin = 'basicaadmin',
+	BasicAdmin = 'basicadmin',
 
 	/**
 	 * Basic user
