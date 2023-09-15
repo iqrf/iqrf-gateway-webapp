@@ -88,6 +88,7 @@ class DiagnosticsManager {
 		$this->addSyslog();
 		$this->addInstalledPackages();
 		$this->addProcesses();
+		$this->addTuptime();
 		$this->zipManager->close();
 		$this->cleanup();
 		return $path;
@@ -222,6 +223,9 @@ class DiagnosticsManager {
 		$this->zipManager->addFileFromText('logs/journal.log', $command->getStdout());
 	}
 
+	/**
+	 * Adds syslog files
+	 */
 	public function addSyslog(): void {
 		$product = $this->gwInfo->getImage();
 		if (str_contains($product, 'armbian')) {
@@ -253,6 +257,16 @@ class DiagnosticsManager {
 		if ($this->commandManager->commandExist('ps')) {
 			$output = $this->commandManager->run('ps -axeu', true)->getStdout();
 			$this->zipManager->addFileFromText('processes.txt', $output);
+		}
+	}
+
+	/**
+	 * Adds tuptime (startup/shutdown/downtime) info
+	 */
+	public function addTuptime() {
+		if ($this->commandManager->commandExist('tuptime')) {
+			$output = $this->commandManager->run('tuptime -kpt')->getStdout();
+			$this->zipManager->addFileFromText('tuptime.txt', $output);
 		}
 	}
 
