@@ -287,7 +287,7 @@ class DiagnosticsManager {
 	/**
 	 * Adds tuptime (startup/shutdown/downtime) info
 	 */
-	public function addTuptime() {
+	public function addTuptime(): void {
 		if ($this->commandManager->commandExist('tuptime')) {
 			$output = $this->commandManager->run('tuptime -kpt')->getStdout();
 			$this->zipManager->addFileFromText('tuptime.txt', $output);
