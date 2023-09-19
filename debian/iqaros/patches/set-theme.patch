@@ -1,13 +1,13 @@
 Set theme for the IQAROS
---- a/.env
-+++ b/.env
+--- a/packages/frontend/.env
++++ b/packages/frontend/.env
 @@ -1,3 +1,3 @@
  VITE_BASE_URL=/system/
  VITE_CYPRESS_ENABLED=0
 -VITE_THEME=generic
 +VITE_THEME=iqaros
---- a/src/main.ts
-+++ b/src/main.ts
+--- a/packages/frontend/src/main.ts
++++ b/packages/frontend/src/main.ts
 @@ -21,7 +21,7 @@ import router from './router';
  import ThemeManager from './helpers/themeManager';
  import App from '@/App.vue';

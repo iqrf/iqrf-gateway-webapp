@@ -1,6 +1,6 @@
 Sets base URL for IQAROS
---- a/.env
-+++ b/.env
+--- a/packages/frontend/.env
++++ b/packages/frontend/.env
 @@ -1,2 +1,2 @@
 -VITE_BASE_URL=/
 +VITE_BASE_URL=/system/
