@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {describe, expect, it} from 'vitest';
 
 import {mockedAxios, mockedClient} from '../mocks/axios';
 
-import {VersionService} from '../../services';
-import type {VersionBase, VersionIqrfGatewayWebapp} from '../../types';
+import {VersionService} from '@/services';
+import type {VersionBase, VersionIqrfGatewayWebapp} from '@/types';
 
 describe('VersionService', (): void => {
 
@@ -26,34 +27,29 @@ describe('VersionService', (): void => {
 	 */
 	const service: VersionService = new VersionService(mockedClient);
 
-	afterEach((): void => {
-		jest.clearAllMocks();
-	});
-
 	it('fetch IQRF Gateway Daemon version', async (): Promise<void> => {
-		expect.assertions(3);
+		expect.assertions(1);
 		const version: VersionBase = {
 			version: 'v2.3.0',
 		};
-		mockedAxios.get.mockResolvedValue({data: version});
-		const actual: VersionBase = await service.getDaemon();
-		expect(actual).toStrictEqual(version);
-		expect(mockedAxios.get).toHaveBeenCalledTimes(1);
-		expect(mockedAxios.get).toHaveBeenCalledWith('/version/daemon');
+		mockedAxios.onGet('/version/daemon')
+			.reply(200, version);
+		await service.getDaemon().then((actual: VersionBase) => {
+			expect(actual).toStrictEqual(version);
+		});
 	});
 
 	it('fetch IQRF Gateway Webapp version', async (): Promise<void> => {
-		expect.assertions(3);
 		const version: VersionIqrfGatewayWebapp = {
 			version: 'v2.1.0-alpha',
 			commit: 'b5e6ab29b192bc027615b5d4a712eebcbbe35eb9',
 			pipeline: '3160',
 		};
-		mockedAxios.get.mockResolvedValue({data: version});
-		const actual: VersionIqrfGatewayWebapp = await service.getWebapp();
-		expect(actual).toStrictEqual(version);
-		expect(mockedAxios.get).toHaveBeenCalledTimes(1);
-		expect(mockedAxios.get).toHaveBeenCalledWith('/version/webapp');
+		mockedAxios.onGet('/version/webapp')
+			.reply(200, version);
+		await service.getWebapp().then((actual: VersionIqrfGatewayWebapp) => {
+			expect(actual).toStrictEqual(version);
+		});
 	});
 
 });

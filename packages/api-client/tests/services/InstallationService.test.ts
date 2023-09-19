@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {describe, expect, it} from 'vitest';
 
 import {mockedAxios, mockedClient} from '../mocks/axios';
 
-import {InstallationService} from '../../services';
-import type {InstallationChecks} from '../../types';
+import {InstallationService} from '@/services';
+import type {InstallationChecks} from '@/types';
 
 describe('InstallationService', (): void => {
 
@@ -26,14 +27,10 @@ describe('InstallationService', (): void => {
 	 */
 	const service: InstallationService = new InstallationService(mockedClient);
 
-	afterEach((): void => {
-		jest.clearAllMocks();
-	});
-
 	it('check the installation', async (): Promise<void> => {
-		expect.assertions(3);
-		mockedAxios.get.mockResolvedValue({
-			data: {
+		expect.assertions(1);
+		mockedAxios.onGet('/installation')
+			.reply(200, {
 				'allMigrationsExecuted': true,
 				'phpModules': {
 					'allExtensionsLoaded': true,
@@ -45,24 +42,23 @@ describe('InstallationService', (): void => {
 				},
 				'dependencies': [],
 				'hasUsers': true,
-			},
-		});
-		const actual: InstallationChecks = await service.check();
-		expect(actual).toStrictEqual({
-			allMigrationsExecuted: true,
-			phpModules: {
-				allExtensionsLoaded: true,
-			},
-			sudo: {
-				user: 'www-data',
-				exists: true,
-				userSudo: true,
-			},
-			dependencies: [],
-			hasUsers: true,
-		});
-		expect(mockedAxios.get).toHaveBeenCalledTimes(1);
-		expect(mockedAxios.get).toHaveBeenCalledWith('/installation');
+			});
+		await service.check()
+			.then((actual: InstallationChecks): void => {
+				expect(actual).toStrictEqual({
+					allMigrationsExecuted: true,
+					phpModules: {
+						allExtensionsLoaded: true,
+					},
+					sudo: {
+						user: 'www-data',
+						exists: true,
+						userSudo: true,
+					},
+					dependencies: [],
+					hasUsers: true,
+				});
+			});
 	});
 
 });

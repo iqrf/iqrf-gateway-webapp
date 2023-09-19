@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {describe, expect, it} from 'vitest';
 
 import {mockedAxios, mockedClient} from '../../mocks/axios';
 
-import {IqrfRepositoryService} from '../../../services';
-import type {IqrfRepositoryConfig} from '../../../types';
+import {IqrfRepositoryService} from '@/services';
+import type {IqrfRepositoryConfig} from '@/types';
 
 describe('IqrfRepositoryService', (): void => {
 
@@ -26,12 +27,8 @@ describe('IqrfRepositoryService', (): void => {
 	 */
 	const service: IqrfRepositoryService = new IqrfRepositoryService(mockedClient);
 
-	afterEach((): void => {
-		jest.clearAllMocks();
-	});
-
 	it('fetch IQRF Repository config', async (): Promise<void> => {
-		expect.assertions(3);
+		expect.assertions(1);
 		const config: IqrfRepositoryConfig = {
 			'apiEndpoint': 'https://repository.iqrfalliance.org/api/',
 			'credentials': {
@@ -39,15 +36,16 @@ describe('IqrfRepositoryService', (): void => {
 				'password': 'password',
 			},
 		};
-		mockedAxios.get.mockResolvedValue({data: config});
-		const actual: IqrfRepositoryConfig = await service.getConfig();
-		expect(actual).toStrictEqual(config);
-		expect(mockedAxios.get).toHaveBeenCalledTimes(1);
-		expect(mockedAxios.get).toHaveBeenCalledWith('/config/iqrf-repository');
+		mockedAxios.onGet('/config/iqrf-repository')
+			.reply(200, config);
+		await service.getConfig()
+			.then((actual: IqrfRepositoryConfig): void => {
+				expect(actual).toStrictEqual(config);
+			});
 	});
 
 	it('update IQRF Repository config', async (): Promise<void> => {
-		expect.assertions(2);
+		expect.assertions(0);
 		const config: IqrfRepositoryConfig = {
 			'apiEndpoint': 'https://devrepo.iqrfalliance.org/api/',
 			'credentials': {
@@ -55,12 +53,9 @@ describe('IqrfRepositoryService', (): void => {
 				'password': null,
 			},
 		};
-		mockedAxios.put.mockResolvedValue({
-			data: config,
-		});
+		mockedAxios.onPut('/config/iqrf-repository', config)
+			.reply(200);
 		await service.editConfig(config);
-		expect(mockedAxios.put).toHaveBeenCalledTimes(1);
-		expect(mockedAxios.put).toHaveBeenCalledWith('/config/iqrf-repository', config);
 	});
 
 });

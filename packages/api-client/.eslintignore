@@ -16,5 +16,5 @@ coverage/
 dist/
 docs/
 .eslintrc.js
-jest.config.ts
 typedoc.config.js
+vitest.config.ts

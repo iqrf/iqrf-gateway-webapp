@@ -15,17 +15,16 @@
  */
 
 import axios from 'axios';
+import MockAdapter from 'axios-mock-adapter';
 
-import {Client} from '../../client';
-
-jest.mock('axios');
+import {Client} from '@/client';
 
 /**
- * @const {jest.Mocked<typeof axios>} mockedAxios Mocked axios module
+ * @const {MockAdapter} mockedAxios Mocked axios module
  */
-export const mockedAxios: jest.Mocked<typeof axios> = axios as jest.Mocked<typeof axios>;
+export const mockedAxios: MockAdapter = new MockAdapter(axios);
 
 /**
  * @const {Client} mockedClient Client with mocked axios instance
  */
-export const mockedClient: Client = new Client({axiosInstance: mockedAxios});
+export const mockedClient: Client = new Client({axiosInstance: axios});

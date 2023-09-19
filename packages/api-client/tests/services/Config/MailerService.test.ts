@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {describe, expect, it} from 'vitest';
 
 import {mockedAxios, mockedClient} from '../../mocks/axios';
 
-import {MailerService} from '../../../services';
-import {type MailerConfig, MailerSmtpSecurity} from '../../../types';
+import {MailerService} from '@/services';
+import {type MailerConfig, MailerSmtpSecurity} from '@/types';
 
 describe('MailerService', (): void => {
 
@@ -26,12 +27,8 @@ describe('MailerService', (): void => {
 	 */
 	const service: MailerService = new MailerService(mockedClient);
 
-	afterEach((): void => {
-		jest.clearAllMocks();
-	});
-
 	it('fetch mailer config', async (): Promise<void> => {
-		expect.assertions(3);
+		expect.assertions(1);
 		const config: MailerConfig = {
 			'enabled': false,
 			'host': 'localhost',
@@ -46,15 +43,16 @@ describe('MailerService', (): void => {
 			'clientHost': null,
 			'persistent': false,
 		};
-		mockedAxios.get.mockResolvedValue({data: config});
-		const actual: MailerConfig = await service.getConfig();
-		expect(actual).toStrictEqual(config);
-		expect(mockedAxios.get).toHaveBeenCalledTimes(1);
-		expect(mockedAxios.get).toHaveBeenCalledWith('/config/mailer');
+		mockedAxios.onGet('/config/mailer')
+			.reply(200, config);
+		await service.getConfig()
+			.then((actual: MailerConfig): void => {
+				expect(actual).toStrictEqual(config);
+			});
 	});
 
 	it('fetch mailer config with IDN', async (): Promise<void> => {
-		expect.assertions(3);
+		expect.assertions(1);
 		const config: MailerConfig = {
 			'enabled': true,
 			'host': 'xn--ondrek-sta66a.eu',
@@ -83,16 +81,17 @@ describe('MailerService', (): void => {
 			'clientHost': null,
 			'persistent': false,
 		};
-		mockedAxios.get.mockResolvedValue({data: config});
-		const actual: MailerConfig = await service.getConfig();
-		expect(actual).toStrictEqual(expected);
-		expect(mockedAxios.get).toHaveBeenCalledTimes(1);
-		expect(mockedAxios.get).toHaveBeenCalledWith('/config/mailer');
+		mockedAxios.onGet('/config/mailer')
+			.reply(200, config);
+		await service.getConfig()
+			.then((actual: MailerConfig): void => {
+				expect(actual).toStrictEqual(expected);
+			});
 	});
 
 	it('update mailer config', async (): Promise<void> => {
-		expect.assertions(2);
-		const config: MailerConfig ={
+		expect.assertions(0);
+		const config: MailerConfig = {
 			'enabled': true,
 			'host': 'smtp.example.com',
 			'port': 465,
@@ -106,14 +105,13 @@ describe('MailerService', (): void => {
 			'clientHost': 'iqrf-gw.example.com',
 			'persistent': false,
 		};
-		mockedAxios.put.mockResolvedValue({data: config});
+		mockedAxios.onPut('/config/mailer', config)
+			.reply(200, config);
 		await service.editConfig(config);
-		expect(mockedAxios.put).toHaveBeenCalledTimes(1);
-		expect(mockedAxios.put).toHaveBeenCalledWith('/config/mailer', config);
 	});
 
 	it('update mailer config with IDN', async (): Promise<void> => {
-		expect.assertions(2);
+		expect.assertions(0);
 		const config: MailerConfig = {
 			'enabled': true,
 			'host': 'ondráček.eu',
@@ -142,14 +140,13 @@ describe('MailerService', (): void => {
 			'clientHost': null,
 			'persistent': false,
 		};
-		mockedAxios.put.mockResolvedValue({data: serializedConfig});
+		mockedAxios.onPut('/config/mailer', serializedConfig)
+			.reply(200, serializedConfig);
 		await service.editConfig(config);
-		expect(mockedAxios.put).toHaveBeenCalledTimes(1);
-		expect(mockedAxios.put).toHaveBeenCalledWith('/config/mailer', serializedConfig);
 	});
 
 	it('test mailer config', async (): Promise<void> => {
-		expect.assertions(2);
+		expect.assertions(0);
 		const config: MailerConfig ={
 			'enabled': true,
 			'host': 'smtp.example.com',
@@ -164,10 +161,9 @@ describe('MailerService', (): void => {
 			'clientHost': 'iqrf-gw.example.com',
 			'persistent': false,
 		};
-		mockedAxios.post.mockResolvedValue({data: config});
+		mockedAxios.onPost('/config/mailer/test', config)
+			.reply(200, config);
 		await service.testConfig(config);
-		expect(mockedAxios.post).toHaveBeenCalledTimes(1);
-		expect(mockedAxios.post).toHaveBeenCalledWith('/config/mailer/test', config);
 	});
 
 });

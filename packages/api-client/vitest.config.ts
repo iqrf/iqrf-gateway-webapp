@@ -1,5 +1,6 @@
 /**
- * Copyright 2023 MICRORISC s.r.o.
+ * Copyright 2017-2023 IQRF Tech s.r.o.
+ * Copyright 2019-2023 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {configDefaults, defineConfig} from 'vitest/config';
+import tsconfigPaths from 'vite-tsconfig-paths';
 
-import type {Config} from 'jest';
-
-const config: Config = {
-	preset: 'ts-jest',
-	verbose: true,
-	testEnvironment: 'node',
-	collectCoverage: true,
-	collectCoverageFrom: ['src/**/*.{js,ts}', '!src/__tests__/**/*.{js,ts}'],
-	testPathIgnorePatterns: [
-		'<rootDir>/src/__tests__/mocks/.*.ts',
-		'<rootDir>/dist/.*',
+export default defineConfig({
+	test: {
+		...configDefaults,
+		coverage: {
+			provider: 'istanbul',
+			reporter: ['text', 'html', 'clover'],
+		},
+		outputFile: {
+			junit: 'junit.xml',
+		},
+		reporters: ['default', 'junit'],
+	},
+	plugins: [
+		tsconfigPaths(),
 	],
-};
-
-export default config;
+});

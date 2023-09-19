@@ -22,8 +22,6 @@ module.exports = {
 	},
 	extends: [
 		'eslint:recommended',
-		'plugin:import/recommended',
-		'plugin:import/typescript',
 		'plugin:@typescript-eslint/recommended',
 		'plugin:@typescript-eslint/recommended-requiring-type-checking',
 	],
@@ -34,20 +32,6 @@ module.exports = {
 	},
 	plugins: [
 		'@typescript-eslint',
-	],
-	overrides: [
-		{
-			files: ['src/__tests__/**'],
-			plugins: ['jest'],
-			extends: [
-				'plugin:jest/all',
-			],
-			rules: {
-				'@typescript-eslint/unbound-method': 'off',
-				'jest/prefer-lowercase-title': 'off',
-				'jest/no-hooks': ['error', { allow: ['afterEach', 'beforeEach'] }],
-			}
-		},
 	],
 	rules: {
 		'@typescript-eslint/ban-ts-comment': 'off',

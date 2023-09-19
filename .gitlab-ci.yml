@@ -143,20 +143,25 @@ coverage:
     expire_in: 2 weeks
   <<: *test_template
 
-coverage:jest:frontend:
+coverage:js:
   script:
-    - cd packages/frontend/
-    - pnpm run coverage:unit-ci
+    - cd packages/${PACKAGE}/
+    - pnpm run coverage:unit
   allow_failure: true
   coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
   artifacts:
     paths:
-      - 'packages/frontend/coverage/'
+      - 'packages/${PACKAGE}/coverage/'
     expire_in: 2 weeks
     when: always
     reports:
       junit:
-        - packages/frontend/junit.xml
+        - packages/${PACKAGE}/junit.xml
+  parallel:
+    matrix:
+      - PACKAGE:
+          - api-client
+          - frontend
   <<: *test_template
   <<: *npm_template
 

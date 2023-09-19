@@ -1,6 +1,7 @@
 {
 	"compilerOptions": {
 		"allowJs": false,
+		"baseUrl": "./",
 		"composite": true,
 		"declaration": true,
 		"declarationDir": "./dist",
@@ -14,7 +15,11 @@
 		"module": "ESNext",
 		"moduleResolution": "Node",
 		"outDir": "./dist",
+		"paths": {
+			"@/*": ["./src/*"]
+		},
 		"resolveJsonModule": true,
+		"rootDir": "./",
 		"sourceMap": true,
 		"strict": true,
 		"strictNullChecks": true,
@@ -22,18 +27,18 @@
 	},
 	"include": [
 		"src/**/*",
-		"package.json"
+		"tests/**/*",
+		"package.json",
+		"vitest.config.ts"
 	],
 	"exclude": [
 		"dist",
 		"docs",
 		"node_modules",
-		"jest.config.ts",
 		"typedoc.config.js"
 	],
 	"ts-node": {
 		"moduleTypes": {
-			"jest.config.ts": "commonjs",
 			"typedoc.config.ts": "commonjs"
 		}
 	}

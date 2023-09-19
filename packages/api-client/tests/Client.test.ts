@@ -15,10 +15,11 @@
  */
 
 import axios, {type AxiosInstance, type AxiosRequestConfig} from 'axios';
+import {beforeEach, describe, expect, it} from 'vitest';
 
-import {Client} from '../client';
+import {Client} from '@/client';
 
-import {version} from '../../package.json';
+import {version} from '../package.json';
 import {
 	AccountService,
 	ApiKeyService,
@@ -31,7 +32,7 @@ import {
 	ServiceService,
 	UserService,
 	VersionService,
-} from '../services';
+} from '@/services';
 
 describe('Client', (): void => {
 

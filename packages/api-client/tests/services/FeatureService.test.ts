@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {describe, expect, it} from 'vitest';
 
 import {mockedAxios, mockedClient} from '../mocks/axios';
 
-import {FeatureService} from '../../services';
-import {Feature, type FeatureConfig, type Features} from '../../types';
+import {FeatureService} from '@/services';
+import {Feature, type FeatureConfig, type Features} from '@/types';
 
 describe('FeatureService', (): void => {
 
@@ -26,14 +27,10 @@ describe('FeatureService', (): void => {
 	 */
 	const service: FeatureService = new FeatureService(mockedClient);
 
-	afterEach((): void => {
-		jest.clearAllMocks();
-	});
-
 	it('fetch all features', async (): Promise<void> => {
-		expect.assertions(3);
-		mockedAxios.get.mockResolvedValue({
-			data: {
+		expect.assertions(1);
+		mockedAxios.onGet('/features')
+			.reply(200, {
 				'apcupsd': {
 					'enabled': false,
 				},
@@ -49,61 +46,53 @@ describe('FeatureService', (): void => {
 					'enabled': false,
 					'url': '/grafana/',
 				},
-			},
-		});
-		const actual: Features = await service.fetchAll();
-		expect(actual).toStrictEqual({
-			'apcupsd': {
-				'enabled': false,
-			},
-			'docs': {
-				'enabled': true,
-				'url': 'https://docs.iqrf.org/iqrf-gateway',
-			},
-			'gatewayPass': {
-				'enabled': false,
-				'user': 'root',
-			},
-			'grafana': {
-				'enabled': false,
-				'url': '/grafana/',
-			},
-		});
-		expect(mockedAxios.get).toHaveBeenCalledTimes(1);
-		expect(mockedAxios.get).toHaveBeenCalledWith('/features');
+			});
+		await service.fetchAll()
+			.then((actual: Features): void => {
+				expect(actual).toStrictEqual({
+					'apcupsd': {
+						'enabled': false,
+					},
+					'docs': {
+						'enabled': true,
+						'url': 'https://docs.iqrf.org/iqrf-gateway',
+					},
+					'gatewayPass': {
+						'enabled': false,
+						'user': 'root',
+					},
+					'grafana': {
+						'enabled': false,
+						'url': '/grafana/',
+					},
+				});
+			});
 	});
 
 	it('fetch feature config by its name', async (): Promise<void> => {
-		expect.assertions(3);
-		mockedAxios.get.mockResolvedValue({
-			data: {
+		expect.assertions(1);
+		mockedAxios.onGet('/features/docs')
+			.reply(200, {
 				'enabled': true,
 				'url': 'https://docs.iqrf.org/iqrf-gateway',
-			},
-		});
-		const actual: FeatureConfig = await service.getConfig(Feature.docs);
-		expect(actual).toStrictEqual({
-			'enabled': true,
-			'url': 'https://docs.iqrf.org/iqrf-gateway',
-		});
-		expect(mockedAxios.get).toHaveBeenCalledTimes(1);
-		expect(mockedAxios.get).toHaveBeenCalledWith('/features/docs');
+			});
+		await service.getConfig(Feature.docs)
+			.then((actual: FeatureConfig): void => {
+				expect(actual).toStrictEqual({
+					'enabled': true,
+					'url': 'https://docs.iqrf.org/iqrf-gateway',
+				});
+			});
 	});
 
 	it('set feature config', async (): Promise<void> => {
-		expect.assertions(2);
-		mockedAxios.put.mockResolvedValue({
-			data: {
-				'enabled': true,
-				'url': 'https://docs.iqrf.org/iqrf-gateway',
-			},
-		});
-		await service.setConfig(Feature.docs, {
+		expect.assertions(0);
+		mockedAxios.onPut('/features/docs', {
 			'enabled': true,
 			'url': 'https://docs.iqrf.org/iqrf-gateway',
-		});
-		expect(mockedAxios.put).toHaveBeenCalledTimes(1);
-		expect(mockedAxios.put).toHaveBeenCalledWith('/features/docs', {
+		})
+			.reply(200);
+		await service.setConfig(Feature.docs, {
 			'enabled': true,
 			'url': 'https://docs.iqrf.org/iqrf-gateway',
 		});

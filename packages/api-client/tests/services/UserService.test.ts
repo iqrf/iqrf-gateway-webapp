@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {describe, expect, it} from 'vitest';
 
 import {mockedAxios, mockedClient} from '../mocks/axios';
 
-import {UserService} from '../../services';
-import {AccountState, type EmailSentResponse, type UserInfo, UserLanguage, UserRole} from '../../types';
-import {expect} from '@jest/globals';
+import {UserService} from '@/services';
+import {AccountState, type EmailSentResponse, type UserInfo, UserLanguage, UserRole} from '@/types';
 
 describe('UserService', (): void => {
 
@@ -55,89 +55,85 @@ describe('UserService', (): void => {
 		},
 	];
 
-	afterEach((): void => {
-		jest.clearAllMocks();
-	});
-
 	it('fetch the list of users', async (): Promise<void> => {
-		expect.assertions(3);
-		mockedAxios.get.mockResolvedValue({data: rawUsers});
-		const actual: UserInfo[] = await service.list();
-		expect(actual).toStrictEqual(users);
-		expect(mockedAxios.get).toHaveBeenCalledTimes(1);
-		expect(mockedAxios.get).toHaveBeenCalledWith('/users');
+		expect.assertions(1);
+		mockedAxios.onGet('/users')
+			.reply(200, rawUsers);
+		await service.list()
+			.then((actual: UserInfo[]): void => {
+				expect(actual).toStrictEqual(users);
+			});
 	});
 
 	it('create a new user', async (): Promise<void> => {
-		expect.assertions(3);
+		expect.assertions(1);
 		const response: EmailSentResponse = {
 			emailSent: false,
 		};
-		mockedAxios.post.mockResolvedValue({data: response});
-		const actual: EmailSentResponse = await service.create({
-			username: 'roman',
-			email: null,
-			password: 'password',
-			language: UserLanguage.English,
-			role: UserRole.Admin,
-		});
-		expect(actual).toStrictEqual(response);
-		expect(mockedAxios.post).toHaveBeenCalledTimes(1);
-		expect(mockedAxios.post).toHaveBeenCalledWith('/users', {
+		mockedAxios.onPost('/users', {
 			username: 'roman',
 			email: null,
 			password: 'password',
 			language: 'en',
 			role: 'admin',
-		});
+		})
+			.reply(200, response);
+		await service.create({
+			username: 'roman',
+			email: null,
+			password: 'password',
+			language: UserLanguage.English,
+			role: UserRole.Admin,
+		})
+			.then((actual: EmailSentResponse): void => {
+				expect(actual).toStrictEqual(response);
+			});
 	});
 
 	it('fetch the user with ID `2`', async (): Promise<void> => {
-		expect.assertions(3);
-		mockedAxios.get.mockResolvedValue({data: rawUsers[0]});
-		const actual: UserInfo = await service.fetch(2);
-		expect(actual).toStrictEqual(users[0]);
-		expect(mockedAxios.get).toHaveBeenCalledTimes(1);
-		expect(mockedAxios.get).toHaveBeenCalledWith('/users/2');
+		expect.assertions(1);
+		mockedAxios.onGet('/users/2')
+			.reply(200, rawUsers[0]);
+		await service.fetch(2).then((actual: UserInfo): void => {
+			expect(actual).toStrictEqual(users[0]);
+		});
 	});
 
 	it('update the user with ID `2`', async (): Promise<void> => {
-
-		expect.assertions(3);
+		expect.assertions(1);
 		const response: EmailSentResponse = {
 			emailSent: true,
 		};
-		mockedAxios.put.mockResolvedValue({data: response});
-		const actual: EmailSentResponse = await service.edit(2, {
-			username: 'roman',
-			email: 'roman@ondráček.eu',
-			language: UserLanguage.English,
-			role: UserRole.Admin,
-		});
-		expect(actual).toStrictEqual(response);
-		expect(mockedAxios.put).toHaveBeenCalledTimes(1);
-		expect(mockedAxios.put).toHaveBeenCalledWith('/users/2', {
+		mockedAxios.onPut('/users/2', {
 			username: 'roman',
 			email: 'roman@xn--ondrek-sta66a.eu',
 			language: 'en',
 			role: 'admin',
-		});
+		})
+			.reply(200, response);
+		await service.edit(2, {
+			username: 'roman',
+			email: 'roman@ondráček.eu',
+			language: UserLanguage.English,
+			role: UserRole.Admin,
+		})
+			.then((actual: EmailSentResponse): void => {
+				expect(actual).toStrictEqual(response);
+			});
 	});
 
 	it('delete the user with ID `2`', async (): Promise<void> => {
-		expect.assertions(2);
-		mockedAxios.delete.mockResolvedValue({data: rawUsers[0]});
+		expect.assertions(0);
+		mockedAxios.onDelete('/users/2')
+			.reply(200);
 		await service.delete(2);
-		expect(mockedAxios.delete).toHaveBeenCalledTimes(1);
-		expect(mockedAxios.delete).toHaveBeenCalledWith('/users/2');
 	});
 
 	it('resend the verification email to the user with ID `2`', async (): Promise<void> => {
-		expect.assertions(2);
-		mockedAxios.post.mockResolvedValue({});
+		expect.assertions(0);
+		mockedAxios.onPost('/users/2/resendVerification')
+			.reply(200);
 		await service.resendVerificationEmail(2);
-		expect(mockedAxios.post).toHaveBeenCalledTimes(1);
-		expect(mockedAxios.post).toHaveBeenCalledWith('/users/2/resendVerification');
 	});
 
 });
