@@ -143,19 +143,25 @@ coverage:
     expire_in: 2 weeks
   <<: *test_template
 
-coverage:jest:
+coverage:js:
   script:
-    - pnpm run coverage:unit-ci
+    - cd packages/${PACKAGE}/
+    - pnpm run coverage:unit
   allow_failure: true
   coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
   artifacts:
     paths:
-      - 'coverage/'
+      - 'packages/${PACKAGE}/coverage/'
     expire_in: 2 weeks
     when: always
     reports:
       junit:
-        - junit.xml
+        - packages/${PACKAGE}/junit.xml
+  parallel:
+    matrix:
+      - PACKAGE:
+          - api-client
+          - frontend
   <<: *test_template
   <<: *npm_template
 
@@ -179,14 +185,16 @@ phpstan:
     - NETTE_TESTER_RUNNER=1 php vendor/bin/phpstan analyse -c phpstan.neon
   <<: *coding-style_template
 
-eslint:
+eslint:frontend:
   script:
+    - cd packages/frontend/
     - pnpm run lint:js
   <<: *coding-style_template
   <<: *npm_template
 
-stylelint:
+stylelint:frontend:
   script:
+    - cd packages/frontend/
     - pnpm run lint:css
   <<: *coding-style_template
   <<: *npm_template

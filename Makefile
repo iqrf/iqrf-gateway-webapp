@@ -33,8 +33,9 @@ WEBAPP_GROUP ?= www-data
 
 build:
 	$(COMPOSER) install --no-dev
-	npm install --legacy-peer-deps
-	npm run build
+	npm --prefix packages/frontend/ install --legacy-peer-deps
+	npm --prefix packages/frontend/ run build
+	cp -ru packages/frontend/dist www/
 
 all: qa phpstan cc test
 

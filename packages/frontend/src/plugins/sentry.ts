@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 import * as Sentry from '@sentry/vue';
-import {BrowserTracing} from '@sentry/tracing';
+import {BrowserTracing} from '@sentry/browser';
 import Vue from 'vue';
 
-import * as version from '@/../version.json';
+import * as version from '@/../../../version.json';
 import router from '@/router';
 
 let release = version.version;

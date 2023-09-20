@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import {expect, test} from 'vitest';
 import Packet from '@/iqrfNet/sendPacket';
 
 test('Update Network address in DPA packet', () => {

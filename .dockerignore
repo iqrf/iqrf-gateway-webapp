@@ -7,7 +7,9 @@ vendor/
 composer.lock
 # NPM
 node_modules/
+packages/*/node_modules/
 package-lock.json
+pnpm-lock.yaml
 # Debian package
 debian/.debhelper/
 debian/debhelper-build-stamp
@@ -24,17 +26,16 @@ tests/*/output/
 tests/*/*/output/
 tests/*/*/*/output/
 tests/*/*/*/*/output/
-tests/temp/
+tests/tmp/
 coverage.html
 coverage.xml
-# Sphinx
-docs/build/
 # VScode
 .vscode/
 # Vue.js build
+dist/
+packages/*/dist/
+packages/*/components.d.ts
 www/dist/
 # Cypress
-cypress/videos
-cypress/screenshots
-# Debian packaging
-debian/
+packages/*/cypress/videos
+packages/*/cypress/screenshots
