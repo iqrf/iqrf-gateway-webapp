@@ -61,30 +61,7 @@ export interface InteliGlueConnection {
 }
 
 /**
- * Hexio IoT Platform connection configuration
- */
-export interface HexioConfiguration {
-	/// Hexio cloud host
-	broker: string
-
-	/// Client ID
-	clientId: string
-
-	/// MQTT request topic
-	topicRequest: string
-
-	/// MQTT response topic
-	topicResponse: string
-
-	/// User name
-	username: string
-
-	/// User password
-	password: string
-}
-
-/**
  * Cloud connection configuration type
  */
 export type CloudConfiguration = AzureConfiguration | IbmCloudConfiguration |
-	InteliGlueConnection | HexioConfiguration;
+	InteliGlueConnection;

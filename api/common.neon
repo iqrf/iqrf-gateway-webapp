@@ -70,8 +70,6 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/cloudAws.json
 		CloudAzure:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/cloudAzure.json
-		CloudHexio:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/cloudHexio.json
 		CloudIbm:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/cloudIbm.json
 		CloudInteliGlue:

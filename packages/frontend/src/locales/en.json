@@ -47,16 +47,6 @@
 				"key": "Please enter the private key."
 			}
 		},
-		"hexio": {
-			"title": "Hexio IoT Platform",
-			"description": "Adds a new MQTT connection into Hexio IoT Platform.",
-			"form": {
-				"title": "Hexio IoT Platform MQTT connection wizard"
-			},
-			"messages": {
-				"saveFailed": "Failed to save Hexio IoT Platform MQTT connection configuration: {error}"
-			}
-		},
 		"ibmCloud": {
 			"title": "IBM Cloud",
 			"description": "Adds a new MQTT connection into IBM Cloud.",

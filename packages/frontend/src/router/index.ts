@@ -22,7 +22,6 @@ import TheDashboard from '@/components/TheDashboard.vue';
 const CloudDisambiguation = () => import(/* webpackChunkName: "cloud" */ '@/pages/Cloud/CloudDisambiguation.vue');
 const AzureCreator = () => import(/* webpackChunkName: "cloud" */ '@/pages/Cloud/AzureCreator.vue');
 const AwsCreator = () => import(/* webpackChunkName: "cloud" */ '@/pages/Cloud/AwsCreator.vue');
-const HexioCreator = () => import(/* webpackChunkName: "cloud" */ '@/pages/Cloud/HexioCreator.vue');
 const IbmCreator = () => import(/* webpackChunkName: "cloud" */ '@/pages/Cloud/IbmCreator.vue');
 const InteliGlueCreator = () => import(/* webpackChunkName: "cloud" */ '@/pages/Cloud/InteliGlueCreator.vue');
 
@@ -239,13 +238,6 @@ const routes: Array<RouteConfig> = [
 					{
 						component: AwsCreator,
 						path: 'aws',
-						meta: {
-							role: UserRole.Normal,
-						},
-					},
-					{
-						component: HexioCreator,
-						path: 'hexio',
 						meta: {
 							role: UserRole.Normal,
 						},

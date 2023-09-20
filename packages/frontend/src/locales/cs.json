@@ -21,10 +21,6 @@
 			"success": "Nové připojení do cloudové služby bylo úspěšně vytvořeno.",
 			"cannotCreateDir": "Webové aplikaci se nepodařilo vytvořit složku pro certifikáty."
 		},
-		"hexio": {
-			"title": "Hexio IoT Platform",
-			"description": "Vytvoří nové MQTT připojení do Hexio IoT Platform."
-		},
 		"msAzure": {
 			"title": "Microsoft Azure IoT hub",
 			"description": "Vytvoří nové MQTT připojení do Microsoft Azure IoT Hubu."
