@@ -1,0 +1,2 @@
+src/schemas/functions/*.js
+dist/*

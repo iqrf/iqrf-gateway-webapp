@@ -1,0 +1,49 @@
+<template>
+	<div>
+		<v-app-bar color='primary'>
+			<v-app-bar-nav-icon @click='sidebarStore.toggleVisibility()' />
+			<v-app-bar-title class='logo'>
+				<router-link to='/'>
+					<img v-if='display.mobile.value' :src='IqarosLogoSmall' />
+					<img v-else :src='IqarosLogo' />
+				</router-link>
+			</v-app-bar-title>
+			<v-spacer />
+			<LocaleSelect v-if='!display.mobile.value' />
+			<UserControlsMenu v-if='userStore.isLoggedIn && display.mobile.value' />
+			<UserControls v-else-if='userStore.isLoggedIn' />
+		</v-app-bar>
+	</div>
+</template>
+
+<script lang='ts' setup>
+import UserControlsMenu from '@/components/layout/header/UserControlsMenu.vue';
+import UserControls from '@/components/layout/header/UserControls.vue';
+import IqarosLogoSmall from '@/assets/themes/generic/logo-small.svg?url';
+import IqarosLogo from '@/assets/themes/generic/logo-white.svg?url';
+import LocaleSelect from '@/components/layout/header/LocaleSelect.vue';
+import { useSidebarStore } from '@/store/sidebar';
+import { useDisplay } from 'vuetify';
+import { useUserStore } from '@/store/user';
+
+const userStore = useUserStore();
+const sidebarStore = useSidebarStore();
+const display = useDisplay();
+</script>
+
+<style lang='scss'>
+.logo {
+	img {
+		max-width: 100%;
+		max-height: 100%;
+		vertical-align: middle;
+	}
+
+	justify-content: center;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	margin-inline-start: 0 !important;
+}
+</style>

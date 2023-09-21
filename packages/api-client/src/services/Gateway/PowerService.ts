@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /**
  * Copyright 2023-2024 MICRORISC s.r.o.
  *

@@ -132,13 +132,15 @@ newman:
 
 build:js:
   script:
-    - 'if [[ "${PACKAGE}" != "api-client" ]]; then pnpm --dir packages/api-client build; fi'
+    - 'if [[ "${PACKAGE}" == "frontend" || "${PACKAGE}" == "frontend3" ]]; then pnpm --dir packages/api-client build; fi'
+    - 'if [[ "${PACKAGE}" == "frontend" || "${PACKAGE}" == "frontend3" ]]; then pnpm --dir packages/daemon-utils build; fi'
     - pnpm --dir packages/${PACKAGE} run build
   parallel:
     matrix:
       - PACKAGE:
           - api-client
           - frontend
+          - frontend3
   <<: *test_template
   <<: *npm_template
 
@@ -173,6 +175,7 @@ coverage:js:
       - PACKAGE:
           - api-client
           - frontend
+          - frontend3
   <<: *test_template
   <<: *npm_template
 
@@ -204,6 +207,7 @@ eslint:
       - PACKAGE:
           - api-client
           - frontend
+          - frontend3
   <<: *coding-style_template
   <<: *npm_template
 
@@ -214,6 +218,7 @@ stylelint:
     matrix:
       - PACKAGE:
           - frontend
+          - frontend3
   <<: *coding-style_template
   <<: *npm_template
 

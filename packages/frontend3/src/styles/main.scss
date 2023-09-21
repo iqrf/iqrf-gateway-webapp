@@ -1,0 +1,78 @@
+@use 'vuetify' with (
+	$font-size-root: 0.875rem,
+	$typography: (
+		'button': (
+			'text-transform': none,
+		),
+	),
+);
+@import '@fontsource/roboto/latin-ext.css';
+
+a {
+	text-decoration: none;
+}
+
+.v-application {
+	background-color: #ebedef !important;
+}
+
+.v-btn {
+	text-transform: none !important;
+}
+
+.table-paddings {
+	td,
+	th {
+		padding: 0.75rem !important;
+	}
+}
+
+.extended-input-error {
+	line-height: 14px;
+	font-size: 12px;
+	word-break: break-word;
+	word-wrap: break-word;
+	hyphens: auto;
+	letter-spacing: normal;
+}
+
+.extended-input-description {
+	line-height: 14px;
+	font-size: 12px;
+	word-break: break-word;
+	word-wrap: break-word;
+	hyphens: auto;
+	letter-spacing: normal;
+	color: #3c4b64;
+}
+
+.flex--item {
+	flex: 1 0 auto;
+}
+
+.heading-size {
+	font-size: 1rem;
+}
+
+.switch-group {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
+.sweep {
+	color: white;
+	background: rgb(var(--v-theme-primary));
+}
+
+.sweep:hover {
+	color: black;
+	background: linear-gradient(to right, rgb(var(--v-theme-warning)), rgb(var(--v-theme-warning)));
+	background-repeat: no-repeat;
+	background-size: 0 100%;
+}
+
+.sweep:active {
+	background-size: 100% 100%;
+	transition: background-size 2s 0s linear;
+}

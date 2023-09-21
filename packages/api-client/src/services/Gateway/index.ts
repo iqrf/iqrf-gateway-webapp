@@ -14,16 +14,26 @@
  * limitations under the License.
  */
 
-import {BaseService} from '../BaseService';
+import { BaseService } from '../BaseService';
 
-import {SshKeyService} from './SshKeyService';
+import { PowerService } from './PowerService';
+import { SshKeyService } from './SshKeyService';
 
+export * from './PowerService';
 export * from './SshKeyService';
 
 /**
  * IQRF Gateway services
  */
 export class GatewayServices extends BaseService {
+
+	/**
+	 * Returns power service
+	 * @returns {PowerService} Power service
+	 */
+	public getPowerService(): PowerService {
+		return new PowerService(this.apiClient);
+	}
 
 	/**
 	 * Returns SSH key service
