@@ -79,7 +79,7 @@ limitations under the License.
 import {
 	IqrfGatewayControllerMapping,
 	IqrfGatewayControllerMappingDevice
-} from '@iqrf/iqrf-gateway-webapp-client';
+} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import {AxiosError} from 'axios';
 import {Component} from 'vue-property-decorator';
 

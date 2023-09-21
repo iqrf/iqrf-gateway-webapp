@@ -28,7 +28,9 @@ tests/*/*/*/*/output/
 tests/tmp/
 coverage.html
 coverage.xml
-# Jest
+# Vitest
+coverage/
+junit.xml
 packages/*/coverage/
 packages/*/junit.xml
 # VScode

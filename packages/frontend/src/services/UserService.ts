@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import {UserUtils} from '@iqrf/iqrf-gateway-webapp-client/dist/src/utils';
-import {UserSignedIn} from '@iqrf/iqrf-gateway-webapp-client';
+import {UserSignedIn} from '@iqrf/iqrf-gateway-webapp-client/types';
 import axios, {AxiosResponse} from 'axios';
 
 import {authorizationHeader} from '@/helpers/authorizationHeader';

@@ -16,7 +16,7 @@
 
 import {BaseService} from '../BaseService';
 
-import type {AwsMqttConfig} from '../../types';
+import type {AwsMqttConfig} from '../../types/Cloud';
 
 /**
  * Amazon Web Services IoT service

@@ -17,8 +17,8 @@ import {describe, expect, it} from 'vitest';
 
 import {mockedAxios, mockedClient} from '../../mocks/axios';
 
-import {IqrfRepositoryService} from '@/services';
-import type {IqrfRepositoryConfig} from '@/types';
+import {IqrfRepositoryService} from '../../../src/services/Config';
+import type {IqrfRepositoryConfig} from '../../../src/types/Config';
 
 describe('IqrfRepositoryService', (): void => {
 
@@ -38,7 +38,7 @@ describe('IqrfRepositoryService', (): void => {
 		};
 		mockedAxios.onGet('/config/iqrf-repository')
 			.reply(200, config);
-		await service.getConfig()
+		await service.fetch()
 			.then((actual: IqrfRepositoryConfig): void => {
 				expect(actual).toStrictEqual(config);
 			});
@@ -55,7 +55,7 @@ describe('IqrfRepositoryService', (): void => {
 		};
 		mockedAxios.onPut('/config/iqrf-repository', config)
 			.reply(200);
-		await service.editConfig(config);
+		await service.edit(config);
 	});
 
 });

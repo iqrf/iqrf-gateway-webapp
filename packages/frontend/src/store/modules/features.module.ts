@@ -16,7 +16,7 @@
  */
 import {ActionTree, GetterTree, MutationTree} from 'vuex';
 import {useApiClient} from '@/services/ApiClient';
-import {FeatureConfig, Features} from '@iqrf/iqrf-gateway-webapp-client';
+import {FeatureConfig, Features} from '@iqrf/iqrf-gateway-webapp-client/types';
 
 /**
  * Feature state

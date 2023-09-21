@@ -34,7 +34,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {InstallationCheckDependency} from '@iqrf/iqrf-gateway-webapp-client';
+import {InstallationCheckDependency} from '@iqrf/iqrf-gateway-webapp-client/types';
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import {DataTableHeader} from 'vuetify';
 

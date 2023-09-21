@@ -16,7 +16,7 @@
 
 import {BaseService} from '../BaseService';
 
-import type {AzureIotHubConfig} from '../../types';
+import type {AzureIotHubConfig} from '../../types/Cloud';
 
 /**
  * Azure IoT Hub service

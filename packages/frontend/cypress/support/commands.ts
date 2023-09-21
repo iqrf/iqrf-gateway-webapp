@@ -18,7 +18,7 @@
 // https://on.cypress.io/custom-commands
 
 import {Store} from 'vuex';
-import {UserCredentials} from '@iqrf/iqrf-gateway-webapp-client';
+import {UserCredentials} from '@iqrf/iqrf-gateway-webapp-client/types';
 
 Cypress.Commands.add('signIn', (username: string, password: string): Cypress.Chainable<any> => {
 	cy.visit('/sign/in');

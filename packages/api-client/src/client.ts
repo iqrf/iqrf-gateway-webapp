@@ -26,16 +26,16 @@ import {version as clientVersion} from '../package.json';
 import {
 	AccountService,
 	ApiKeyService,
-	AuthenticationService, CloudServices, ConfigServices,
-	DpaMacrosService,
+	AuthenticationService,
 	FeatureService,
 	InstallationService,
-	IqrfRepositoryService,
-	MailerService,
 	ServiceService,
 	UserService,
 	VersionService,
 } from './services';
+import {CloudServices} from './services/Cloud';
+import {ConfigServices} from './services/Config';
+import {GatewayServices} from './services/Gateway';
 import {IqrfServices} from './services/Iqrf';
 
 /**
@@ -215,19 +215,19 @@ export class Client {
 	}
 
 	/**
+	 * Returns Gateway services
+	 * @return {GatewayServices} Gateway services
+	 */
+	public getGatewayServices(): GatewayServices {
+		return new GatewayServices(this);
+	}
+
+	/**
 	 * Returns IQRF services
 	 * @return {IqrfServices} IQRF services
 	 */
 	public getIqrfServices(): IqrfServices {
 		return new IqrfServices(this);
-	}
-
-	/**
-	 * Returns DPA macros service
-	 * @return {DpaMacrosService} DPA macros service
-	 */
-	public getDpaMacrosService(): DpaMacrosService {
-		return new DpaMacrosService(this);
 	}
 
 	/**
@@ -244,22 +244,6 @@ export class Client {
 	 */
 	public getInstallationService(): InstallationService {
 		return new InstallationService(this);
-	}
-
-	/**
-	 * Returns IQRF Repository configuration service
-	 * @return {IqrfRepositoryService} IQRF Repository configuration service
-	 */
-	public getIqrfRepositoryService(): IqrfRepositoryService {
-		return new IqrfRepositoryService(this);
-	}
-
-	/**
-	 * Returns Mailer configuration service
-	 * @return {MailerService} Mailer configuration service
-	 */
-	public getMailerService(): MailerService {
-		return new MailerService(this);
 	}
 
 	/**

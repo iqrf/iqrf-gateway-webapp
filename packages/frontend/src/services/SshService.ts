@@ -24,20 +24,6 @@ import {ISshInput} from '@/interfaces/Core/SshKey';
 class SshService {
 
 	/**
-	 * Lists SSH key types
-	 */
-	listKeyTypes(): Promise<AxiosResponse> {
-		return axios.get('gateway/ssh/keyTypes', {headers: authorizationHeader()});
-	}
-
-	/**
-	 * Lists SSH public keys
-	 */
-	listKeys(): Promise<AxiosResponse> {
-		return axios.get('gateway/ssh/keys', {headers: authorizationHeader()});
-	}
-
-	/**
 	 * Retrieves SSH public key
 	 * @param {number} id Key ID
 	 */

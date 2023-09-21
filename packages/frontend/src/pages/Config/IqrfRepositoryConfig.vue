@@ -91,10 +91,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {
-	IqrfRepositoryConfig,
-	IqrfRepositoryService
-} from '@iqrf/iqrf-gateway-webapp-client';
+import {IqrfRepositoryService} from '@iqrf/iqrf-gateway-webapp-client/services/Config';
+import {IqrfRepositoryConfig} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import {AxiosError} from 'axios';
 import {extend, ValidationProvider, ValidationObserver} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
@@ -175,7 +173,7 @@ export default class IqrfRepositoryConfiguration extends Vue {
 	 */
 	private getConfig(): Promise<void> {
 		this.$store.commit('spinner/SHOW');
-		return this.repositoryService.getConfig()
+		return this.repositoryService.fetch()
 			.then((config: IqrfRepositoryConfig) => {
 				this.storeConfig(config);
 				this.$store.commit('spinner/HIDE');
@@ -202,7 +200,7 @@ export default class IqrfRepositoryConfiguration extends Vue {
 		if (!this.credentials) {
 			config.credentials = {username: null, password: null};
 		}
-		this.repositoryService.editConfig(config)
+		this.repositoryService.edit(config)
 			.then(() => {
 				this.$store.commit('repository/SET', config);
 				this.getConfig().then(() => {

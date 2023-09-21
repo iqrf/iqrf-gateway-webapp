@@ -60,7 +60,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {VersionIqrfGatewayWebapp} from '@iqrf/iqrf-gateway-webapp-client';
+import {VersionIqrfGatewayWebapp} from '@iqrf/iqrf-gateway-webapp-client/types';
 import {saveAs} from 'file-saver';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';

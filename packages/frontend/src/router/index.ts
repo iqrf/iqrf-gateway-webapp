@@ -116,7 +116,7 @@ const MonitControl = () => import(/* webpackChunkName: "maintenance" */ '@/pages
 
 import i18n from '@/plugins/i18n';
 import store from '@/store';
-import {UserRole} from '@iqrf/iqrf-gateway-webapp-client';
+import {UserRole} from '@iqrf/iqrf-gateway-webapp-client/types';
 
 Vue.use(VueRouter);
 

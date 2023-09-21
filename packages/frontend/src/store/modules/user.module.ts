@@ -15,11 +15,12 @@
  * limitations under the License.
  */
 import {
-	AccountState, UserBase,
+	AccountState,
+	UserBase,
 	UserInfo,
 	UserRole,
 	UserSignedIn
-} from '@iqrf/iqrf-gateway-webapp-client';
+} from '@iqrf/iqrf-gateway-webapp-client/types';
 import * as Sentry from '@sentry/vue';
 import {AxiosError} from 'axios';
 import jwt_decode, {JwtPayload} from 'jwt-decode';

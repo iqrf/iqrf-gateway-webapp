@@ -40,7 +40,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {UserSignedIn} from '@iqrf/iqrf-gateway-webapp-client';
+import {UserSignedIn} from '@iqrf/iqrf-gateway-webapp-client/types';
 import {Component} from 'vue-property-decorator';
 import ModalBase from './ModalBase.vue';
 

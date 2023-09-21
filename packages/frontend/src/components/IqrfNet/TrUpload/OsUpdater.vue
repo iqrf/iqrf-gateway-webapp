@@ -76,7 +76,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {ServiceService} from '@iqrf/iqrf-gateway-webapp-client';
+import {ServiceService} from '@iqrf/iqrf-gateway-webapp-client/services';
 import {AxiosError, AxiosResponse} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';

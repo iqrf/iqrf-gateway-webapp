@@ -94,6 +94,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
+import {ServiceService} from '@iqrf/iqrf-gateway-webapp-client/services';
+import {ServiceStatus} from '@iqrf/iqrf-gateway-webapp-client/types';
 import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
 import AptConfig from '@/components/Gateway/Services/AptConfig.vue';
 import GatewayUserPassword from '@/components/Gateway/Services/GatewayUserPassword.vue';
@@ -106,7 +108,6 @@ import {AxiosError} from 'axios';
 import {NavigationGuardNext, Route} from 'vue-router';
 import {MetaInfo} from 'vue-meta';
 import {useApiClient} from '@/services/ApiClient';
-import {ServiceService, ServiceStatus} from '@iqrf/iqrf-gateway-webapp-client';
 
 const whitelisted = [
 	'apcupsd',

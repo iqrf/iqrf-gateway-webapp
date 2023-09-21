@@ -47,7 +47,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {UserInfo} from '@iqrf/iqrf-gateway-webapp-client';
+import {UserInfo} from '@iqrf/iqrf-gateway-webapp-client/types';
 import {AxiosError} from 'axios';
 import {Component, Prop, VModel, Vue} from 'vue-property-decorator';
 

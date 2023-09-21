@@ -17,8 +17,8 @@ import {describe, expect, it} from 'vitest';
 
 import {mockedAxios, mockedClient} from '../mocks/axios';
 
-import {ServiceService} from '@/services';
-import {type ServiceStatus} from '@/types';
+import {ServiceService} from '../../src/services';
+import {type ServiceStatus} from '../../src/types';
 
 describe('ServiceService', (): void => {
 

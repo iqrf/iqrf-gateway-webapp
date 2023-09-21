@@ -149,12 +149,12 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
+import {UserService} from '@iqrf/iqrf-gateway-webapp-client/services';
 import {
 	UserEdit,
 	UserInfo,
 	UserRole,
-	UserService
-} from '@iqrf/iqrf-gateway-webapp-client';
+} from '@iqrf/iqrf-gateway-webapp-client/types';
 import {AxiosError} from 'axios';
 import {Component, Vue} from 'vue-property-decorator';
 import {DataTableHeader} from 'vuetify';

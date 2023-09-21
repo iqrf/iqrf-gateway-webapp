@@ -17,7 +17,7 @@
 import type {AxiosResponse} from 'axios';
 
 import {BaseService} from '../BaseService';
-import type {DpaMacroGroup} from '../../types';
+import type {DpaMacroGroup} from '../../types/Iqrf';
 
 /**
  * DPA macro service

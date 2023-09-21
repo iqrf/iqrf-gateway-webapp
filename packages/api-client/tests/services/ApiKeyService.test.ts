@@ -19,8 +19,8 @@ import {DateTime} from 'luxon';
 
 import {mockedAxios, mockedClient} from '../mocks/axios';
 
-import {ApiKeyService} from '@/services';
-import type {ApiKeyConfig, ApiKeyCreated, ApiKeyInfo} from '@/types';
+import {ApiKeyService} from '../../src/services';
+import type {ApiKeyConfig, ApiKeyCreated, ApiKeyInfo} from '../../src/types';
 
 describe('ApiKeyService', (): void => {
 

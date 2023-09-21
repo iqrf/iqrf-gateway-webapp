@@ -25,7 +25,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {InstallationChecks} from '@iqrf/iqrf-gateway-webapp-client';
+import {InstallationChecks} from '@iqrf/iqrf-gateway-webapp-client/types';
 import {AxiosError} from 'axios';
 import {Component, Vue} from 'vue-property-decorator';
 import {mapGetters} from 'vuex';

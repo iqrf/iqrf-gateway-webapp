@@ -99,13 +99,13 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
+import {UserService} from '@iqrf/iqrf-gateway-webapp-client/services';
 import {
 	UserEdit,
 	UserInfo,
 	UserLanguage,
 	UserRole,
-	UserService
-} from '@iqrf/iqrf-gateway-webapp-client';
+} from '@iqrf/iqrf-gateway-webapp-client/types';
 import {AxiosError} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {Component, Prop, Vue} from 'vue-property-decorator';

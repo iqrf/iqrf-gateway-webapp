@@ -18,7 +18,7 @@ import type {AxiosResponse} from 'axios';
 
 import {BaseService} from '../BaseService';
 
-import type {IqrfGatewayControllerMapping} from '../../types';
+import type {IqrfGatewayControllerMapping} from '../../types/Config';
 
 /**
  * IQRF Gateway Controller configuration service

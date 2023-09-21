@@ -130,18 +130,16 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import SshKeyDeleteModal from '@/components/Core/SshKeyDeleteModal.vue';
-
-import {extendedErrorToast} from '@/helpers/errorToast';
-
-import SshService from '@/services/SshService';
-
-import {AxiosResponse, AxiosError} from 'axios';
-import {ISshKey} from '@/interfaces/Core/SshKey';
+import {SshKeyService} from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
+import {SshKeyInfo} from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
+import {AxiosError} from 'axios';
 import {DateTime} from 'luxon';
+import {Component, Vue} from 'vue-property-decorator';
 import {DataTableHeader} from 'vuetify';
 
+import SshKeyDeleteModal from '@/components/Core/SshKeyDeleteModal.vue';
+import {extendedErrorToast} from '@/helpers/errorToast';
+import {useApiClient} from '@/services/ApiClient';
 
 @Component({
 	components: {
@@ -162,19 +160,19 @@ export default class SshKeyList extends Vue {
 	private loading = false;
 
 	/**
-	 * @var {Array<ISshKey>} keys List of authorized SSH public keys
+	 * @var {Array<SshKeyInfo>} keys List of authorized SSH public keys
 	 */
-	private keys: Array<ISshKey> = [];
+	private keys: Array<SshKeyInfo> = [];
 
 	/**
-	 * @var {Array<ISshKey>} expandedKeys List of expanded SSH keys
+	 * @var {Array<SshKeyInfo>} expandedKeys List of expanded SSH keys
 	 */
-	private expandedKeys: Array<ISshKey> = [];
+	private expandedKeys: Array<SshKeyInfo> = [];
 
 	/**
-	 * @var {ISshKey|null} keyDeleteModel SSH key to delete
+	 * @var {SshKeyInfo|null} keyDeleteModel SSH key to delete
 	 */
-	private keyDeleteModel: ISshKey|null = null;
+	private keyDeleteModel: SshKeyInfo|null = null;
 
 	/**
 	 * @constant {Diction<string|boolean>} dateFormat Date formatting options
@@ -215,6 +213,11 @@ export default class SshKeyList extends Vue {
 	];
 
 	/**
+   * @property {SshKeyService} sshKeyService SSH key service
+   */
+	private sshKeyService: SshKeyService = useApiClient().getGatewayServices().getSshKeyService();
+
+	/**
 	 * Retrieves list of authorized SSH public keys
 	 */
 	mounted(): void {
@@ -226,9 +229,9 @@ export default class SshKeyList extends Vue {
 	 */
 	private listKeys(): Promise<void> {
 		this.loading = true;
-		return SshService.listKeys()
-			.then((response: AxiosResponse) => {
-				this.keys = response.data;
+		return this.sshKeyService.listKeys()
+			.then((response: SshKeyInfo[]) => {
+				this.keys = response;
 				this.loading = false;
 			})
 			.catch((error: AxiosError) => {
@@ -239,9 +242,9 @@ export default class SshKeyList extends Vue {
 
 	/**
 	 * Opens delete modal with SSH key
-	 * @param {ISshKey} key SSH key
+	 * @param {SshKeyInfo} key SSH key
 	 */
-	private deleteKey(key: ISshKey): void {
+	private deleteKey(key: SshKeyInfo): void {
 		this.keyDeleteModel = key;
 	}
 
@@ -270,9 +273,9 @@ export default class SshKeyList extends Vue {
 
 	/**
 	 * Expands SSH key details
-	 * @var {ISshKey} key SSH key
+	 * @var {SshKeyInfo} key SSH key
 	 */
-	private expandItem(item: ISshKey): void {
+	private expandItem(item: SshKeyInfo): void {
 		if (this.expandedKeys.includes(item)) {
 			this.expandedKeys = this.expandedKeys.filter(key => key.id !== item.id);
 		} else {
@@ -282,10 +285,10 @@ export default class SshKeyList extends Vue {
 
 	/**
 	 * Converts expiration date and time from UTC to locale string
-	 * @var {ISshKey} key SSH key
+	 * @var {SshKeyInfo} key SSH key
 	 * @returns {string} Expiration date and time in locale format
 	 */
-	private timeString(item: ISshKey): string {
+	private timeString(item: SshKeyInfo): string {
 		return DateTime.fromISO(item.createdAt).toLocaleString(this.dateFormat);
 	}
 

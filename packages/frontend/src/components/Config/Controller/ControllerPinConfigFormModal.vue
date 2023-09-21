@@ -163,11 +163,11 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
+import {IqrfGatewayControllerService} from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import {
 	IqrfGatewayControllerMapping,
 	IqrfGatewayControllerMappingDevice,
-	IqrfGatewayControllerService
-} from '@iqrf/iqrf-gateway-webapp-client';
+} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import {AxiosError} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {integer, required} from 'vee-validate/dist/rules';
