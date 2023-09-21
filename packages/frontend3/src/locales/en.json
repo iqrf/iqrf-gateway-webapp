@@ -1,0 +1,238 @@
+{
+	"$vuetify": {
+		"badge": "Badge",
+		"calendar": {
+			"moreEvents": "{0} more"
+		},
+		"carousel": {
+			"ariaLabel": {
+				"delimiter": "Carousel slide {0} of {1}"
+			},
+			"next": "Next visual",
+			"prev": "Previous visual"
+		},
+		"open": "Open",
+		"close": "Close",
+		"dataFooter": {
+			"firstPage": "First page",
+			"itemsPerPageAll": "All",
+			"itemsPerPageText": "Items per page:",
+			"lastPage": "Last page",
+			"nextPage": "Next page",
+			"pageText": "{0}-{1} of {2}",
+			"prevPage": "Previous page"
+		},
+		"dataIterator": {
+			"loadingText": "Loading items...",
+			"noResultsText": "No matching records found"
+		},
+		"dataTable": {
+			"ariaLabel": {
+				"activateAscending": "Activate to sort ascending.",
+				"activateDescending": "Activate to sort descending.",
+				"activateNone": "Activate to remove sorting.",
+				"sortAscending": "Sorted ascending.",
+				"sortDescending": "Sorted descending.",
+				"sortNone": "Not sorted."
+			},
+			"itemsPerPageText": "Rows per page:",
+			"sortBy": "Sort by"
+		},
+		"datePicker": {
+			"itemsSelected": "{0} selected",
+			"nextMonthAriaLabel": "Next month",
+			"nextYearAriaLabel": "Next year",
+			"prevMonthAriaLabel": "Previous month",
+			"prevYearAriaLabel": "Previous year"
+		},
+		"fileInput": {
+			"counter": "{0} files",
+			"counterSize": "{0} files ({1} in total)"
+		},
+		"input": {
+			"appendAction": "{0} appended action",
+			"clear": "Clear {0}",
+			"prependAction": "{0} prepended action"
+		},
+		"noDataText": "No data available",
+		"pagination": {
+			"ariaLabel": {
+				"currentPage": "Page {0}, Current page",
+				"first": "First page",
+				"last": "Last page",
+				"next": "Next page",
+				"page": "Go to page {0}",
+				"previous": "Previous page",
+				"root": "Pagination Navigation"
+			}
+		},
+		"rating": {
+			"ariaLabel": {
+				"item": "Rating {0} of {1}"
+			}
+		},
+		"timePicker": {
+			"am": "AM",
+			"pm": "PM"
+		}
+	},
+	"title": "IQRF Gateway Webapp",
+	"generic": {
+		"button": {
+			"close": "Close",
+			"change": "Change",
+			"edit": "Edit",
+			"save": "Save",
+			"cancel": "Cancel",
+			"select": "Select",
+			"deselect": "Deselect",
+			"enable": "Enable",
+			"disable": "Disable",
+			"activate": "Activate",
+			"deactivate": "Deactivate",
+			"restart": "Restart",
+			"refresh": "Refresh",
+			"selectAll": "Select all",
+			"deselectAll": "Deselect all"
+		},
+		"actions": {
+			"title": "Actions",
+			"add": "Add",
+			"edit": "Edit",
+			"delete": "Delete"
+		},
+		"properties": {
+			"description": "Description",
+			"simple": "Simple",
+			"advanced": "Advanced",
+			"enabled": "Enabled",
+			"disabled": "Disabled",
+			"active": "Active",
+			"inactive": "Inactive"
+		}
+	},
+	"auth": {
+		"sign": {
+			"in": {
+				"title": "Sign in",
+				"recoverPassword": "Forgot password?",
+				"messages": {
+					"incorrectUsernameOrPassword": "The username or password you entered is incorrect.",
+					"success": "You have been signed in successfully."
+				}
+			},
+			"out": {
+				"title": "Sign out",
+				"message": "You have been signed out.",
+				"expired": "Your sign-in session has expired. Please sign in again."
+			}
+		}
+	},
+	"account": {
+		"profile": {
+			"title": "User profile",
+			"details": {
+				"title": "Profile details",
+				"messages": {
+					"success": "User profile has been successfully updated.",
+					"failure": "Failed to update user profile: {error}"
+				}
+			},
+			"password": {
+				"title": "Change password",
+				"current": "Current password",
+				"new": "New password",
+				"validation": {
+					"current": "Please enter current password.",
+					"new": "Please enter new password."
+				}
+			}
+		},
+		"recovery": {
+			"title": "Account recovery",
+			"prompt": "Please enter username and a password recovery email will be sent to the associated address.",
+			"success": "An email containing further instructions to reset your password was sent to the address associated with the account.",
+			"button": "Submit request",
+			"messages": {
+				"success": "Password recovery request successfully sent.",
+				"failure": "An error has occured during password recovery request."
+			}
+		},
+		"verification": {
+			"title": "Account verification",
+			"missing": "Your account does not have an e-mail address set up. Without the verified e-mail address, you can not reset your password if it is forgotten.",
+			"unverified": "Your e-mail address ({email}) is not verified. Without the verified e-mail address, you can not reset your password if it is forgotten.",
+			"addEmail": "Add e-mail address",
+			"resend": "Resend verification e-mail",
+			"messages": {
+				"success": "Your account has been successfully verified.",
+				"redirect": "You will be redirected to the dashboard in {countdown}.",
+				"failure": "Account verification failed, {error}.",
+				"requestSuccess": "Verification e-mail successfully sent.",
+				"requestFailure": "An error has occured while sending verification e-mail."
+			}
+		}
+	},
+	"user": {
+		"username": "Username",
+		"email": "E-mail address",
+		"password": "Password",
+		"language": "Language",
+		"role": "Role",
+		"roles": {
+			"admin": "Administrator",
+			"normal": "Normal user",
+			"basicadmin": "Basic admin",
+			"basic": "Basic user"
+		},
+		"state": "State",
+		"states": {
+			"unverified": "Unverified",
+			"verified": "Verified"
+		},
+		"validation": {
+			"username": "Please enter your username.",
+			"missingEmail": "Please enter your e-mail address.",
+			"invalidEmail": "Invalid e-mail address format.",
+			"password": "Please enter your password."
+		},
+		"messages": {
+			"createFailure": "Failed to create new user: {error}",
+			"verificationSent": "An email containing instructions to verify your account was sent to your address."
+		}
+	},
+	"locale": {
+		"languages": {
+			"cs": "Czech",
+			"en": "English"
+		},
+		"messages": {
+			"set": "Locale changed to: {locale}."
+		}
+	},
+	"docs": {
+		"title": "Documentation"
+	},
+	"errors": {
+		"404": {
+			"title": "Page not found",
+			"header": "Error 404",
+			"text": "The page you requested could not be found. The address may be incorrect, or the page no longer exists."
+		}
+	},
+	"gateway": {
+		"title": "Gateway",
+		"power": {
+			"title": "Power control",
+			"description": "Powers off or reboots this gateway.",
+			"reboot": "Reboot",
+			"powerOff": "Power off",
+			"messages": {
+				"powerOffSuccess": "Your device will be powered off at {time}.",
+				"powerOffFailed": "Failed to schedule gateway poweroff: {error}.",
+				"rebootSuccess": "Your device will be rebooted at {time}, the reboot may take tens of seconds.",
+				"rebootFailed": "Failed to schedule gateway reboot: {error}."
+			}
+		}
+	}
+}

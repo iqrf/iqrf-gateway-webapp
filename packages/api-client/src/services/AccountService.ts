@@ -61,5 +61,4 @@ export class AccountService extends BaseService {
 		return this.axiosInstance.post('`/user/resendVerification')
 			.then((): void => {return;});
 	}
-
 }
