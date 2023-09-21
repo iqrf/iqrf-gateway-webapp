@@ -54,7 +54,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {DpaMacro, DpaMacroGroup} from '@iqrf/iqrf-gateway-webapp-client';
+import {DpaMacro, DpaMacroGroup} from '@iqrf/iqrf-gateway-webapp-client/types/Iqrf';
 import {Component, Vue} from 'vue-property-decorator';
 import {useApiClient} from '@/services/ApiClient';
 

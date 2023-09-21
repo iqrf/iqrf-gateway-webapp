@@ -73,7 +73,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {ServiceService} from '@iqrf/iqrf-gateway-webapp-client';
+import {ServiceService} from '@iqrf/iqrf-gateway-webapp-client/services';
 import {
 	Client as RepositoryClient,
 	OsDpa,

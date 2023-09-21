@@ -71,7 +71,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {UserPasswordChange} from '@iqrf/iqrf-gateway-webapp-client';
+import {UserPasswordChange} from '@iqrf/iqrf-gateway-webapp-client/types';
 import {AxiosError} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';

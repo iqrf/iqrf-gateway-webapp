@@ -58,7 +58,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {ServiceService, ServiceStatus} from '@iqrf/iqrf-gateway-webapp-client';
+import {ServiceService} from '@iqrf/iqrf-gateway-webapp-client/services';
+import {ServiceStatus} from '@iqrf/iqrf-gateway-webapp-client/types';
 import {AxiosError} from 'axios';
 import {Component, Prop, Vue} from 'vue-property-decorator';
 

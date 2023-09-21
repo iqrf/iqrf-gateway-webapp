@@ -43,7 +43,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {ApiKeyInfo} from '@iqrf/iqrf-gateway-webapp-client';
+import {ApiKeyInfo} from '@iqrf/iqrf-gateway-webapp-client/types';
 import {AxiosError} from 'axios';
 import {Component, VModel, Vue} from 'vue-property-decorator';
 

@@ -83,7 +83,7 @@ import {
 	UserEdit,
 	UserLanguage,
 	UserRole
-} from '@iqrf/iqrf-gateway-webapp-client';
+} from '@iqrf/iqrf-gateway-webapp-client/types';
 import {AxiosError} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';

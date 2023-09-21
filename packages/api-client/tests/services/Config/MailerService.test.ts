@@ -17,8 +17,8 @@ import {describe, expect, it} from 'vitest';
 
 import {mockedAxios, mockedClient} from '../../mocks/axios';
 
-import {MailerService} from '@/services';
-import {type MailerConfig, MailerSmtpSecurity} from '@/types';
+import {MailerService} from '../../../src/services/Config';
+import {type MailerConfig, MailerSmtpSecurity} from '../../../src/types/Config';
 
 describe('MailerService', (): void => {
 

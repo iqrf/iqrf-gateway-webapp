@@ -14,13 +14,6 @@
  * limitations under the License.
  */
 
-export * from './Cloud/Aws';
-export * from './Cloud/Azure';
-export * from './Config/IqrfGatewayController';
-export * from './Config/IqrfRepository';
-export * from './Config/Mailer';
-export * from './Gateway/Time';
-export * from './Iqrf/DpaMacro';
 export * from './ApiKey';
 export * from './Authentication';
 export * from './Common';

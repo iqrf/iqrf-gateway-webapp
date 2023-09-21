@@ -53,7 +53,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {ServiceService} from '@iqrf/iqrf-gateway-webapp-client';
+import {ServiceService} from '@iqrf/iqrf-gateway-webapp-client/services';
 import {AxiosResponse, AxiosError} from 'axios';
 import {Component, Vue} from 'vue-property-decorator';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';

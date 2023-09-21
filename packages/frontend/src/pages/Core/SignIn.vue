@@ -74,7 +74,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {UserCredentials} from '@iqrf/iqrf-gateway-webapp-client';
+import {UserCredentials} from '@iqrf/iqrf-gateway-webapp-client/types';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 import {Component, Vue} from 'vue-property-decorator';

@@ -81,7 +81,7 @@ import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {IIqrfDpa} from '@/interfaces/Config/IqrfInterfaces';
-import {UserRole} from '@iqrf/iqrf-gateway-webapp-client';
+import {UserRole} from '@iqrf/iqrf-gateway-webapp-client/types';
 
 @Component({
 	components: {

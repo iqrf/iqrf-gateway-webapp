@@ -4,7 +4,7 @@
 		"target": "ES2020",
 		"strict": true,
 		"module": "ESNext",
-		"moduleResolution": "Node",
+		"moduleResolution": "Node16",
 		"noImplicitAny": false,
 		"allowSyntheticDefaultImports": true,
 		"sourceMap": true,
@@ -13,7 +13,9 @@
 		"resolveJsonModule": true,
 		"lib": ["ES2020", "DOM"],
 		"paths": {
-			"@/*": ["./src/*"]
+			"@/*": ["./src/*"],
+			"@iqrf/iqrf-gateway-webapp-client": ["../api-client/src"],
+			"@iqrf/iqrf-gateway-webapp-client/*": ["../api-client/src/*"]
 		}
 	},
 	"exclude": [

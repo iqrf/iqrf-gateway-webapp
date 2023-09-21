@@ -26,6 +26,8 @@
 		"url": "https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp.git"
 	},
 	"scripts": {
+		"build": "pnpm --dir packages/api-client build && pnpm --dir packages/frontend build",
+		"coverage:unit": "vitest --run --coverage",
 		"lint": "pnpm -r lint",
 		"publish": "pnpm -r publish",
 		"test": "vitest --run"
@@ -34,10 +36,12 @@
 		"packages/*"
 	],
 	"devDependencies": {
-		"@types/node": "^20.6.2",
+		"@types/node": "^20.6.3",
+		"@vitest/coverage-istanbul": "^0.34.4",
 		"pnpm": "^8.7.6",
 		"ts-node": "^10.9.1",
 		"typescript": "^5.2.2",
+		"vite-tsconfig-paths": "^4.2.1",
 		"vitest": "^0.34.4"
 	}
 }

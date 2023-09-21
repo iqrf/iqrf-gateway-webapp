@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {IqrfRepositoryConfig} from '@iqrf/iqrf-gateway-webapp-client';
+import {IqrfRepositoryConfig} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import {ActionTree, GetterTree, MutationTree} from 'vuex';
 
 import {useApiClient} from '@/services/ApiClient';
@@ -31,7 +31,7 @@ const state: RepositoryState = {
 
 const actions: ActionTree<RepositoryState, any> = {
 	get({commit}) {
-		return useApiClient().getIqrfRepositoryService().getConfig()
+		return useApiClient().getConfigServices().getIqrfRepositoryService().fetch()
 			.then((config: IqrfRepositoryConfig) => {
 				commit('SET', config);
 			})

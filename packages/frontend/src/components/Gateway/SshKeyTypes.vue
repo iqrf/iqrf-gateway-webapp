@@ -29,9 +29,8 @@
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 
-import SshService from '@/services/SshService';
-
-import {AxiosResponse} from 'axios';
+import {useApiClient} from '@/services/ApiClient';
+import {SshKeyUtils} from '@iqrf/iqrf-gateway-webapp-client/utils';
 
 @Component({})
 
@@ -54,9 +53,9 @@ export default class SshKeyTypes extends Vue {
 	 * Retrieves key types
 	 */
 	created(): void {
-		SshService.listKeyTypes()
-			.then((response: AxiosResponse) => {
-				this.types = response.data;
+		useApiClient().getGatewayServices().getSshKeyService().fetchKeyTypes()
+			.then((response: string[]) => {
+				this.types = response;
 				this.fetched = true;
 				this.$emit('fetch');
 			})
@@ -72,11 +71,12 @@ export default class SshKeyTypes extends Vue {
 	 * @returns {boolean} True if valid, false otherwise
 	 */
 	validateKey(key: string): boolean {
-		const sections = key.trim().split(' ');
-		if (sections.length < 2) {
+		try {
+			SshKeyUtils.validatePublicKey(key, this.types);
+			return true;
+		} catch (e: Error) {
 			return false;
 		}
-		return this.types.includes(sections[0]);
 	}
 }
 </script>

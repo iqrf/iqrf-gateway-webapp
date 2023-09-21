@@ -17,7 +17,7 @@
 import type {AxiosResponse} from 'axios';
 
 import {BaseService} from '../BaseService';
-import type {IqrfRepositoryConfig} from '../../types';
+import type {IqrfRepositoryConfig} from '../../types/Config';
 
 /**
  * IQRF repository configuration service
@@ -28,7 +28,7 @@ export class IqrfRepositoryService extends BaseService {
 	 * Fetches IQRF repository configuration
 	 * @return {Promise<IqrfRepositoryConfig>} IQRF repository configuration
 	 */
-	public getConfig(): Promise<IqrfRepositoryConfig> {
+	public fetch(): Promise<IqrfRepositoryConfig> {
 		return this.axiosInstance.get('/config/iqrf-repository')
 			.then((response: AxiosResponse<IqrfRepositoryConfig>): IqrfRepositoryConfig => response.data);
 	}
@@ -37,7 +37,7 @@ export class IqrfRepositoryService extends BaseService {
 	 * Sets IQRF repository configuration
 	 * @param {IqrfRepositoryConfig} config IQRF repository configuration
 	 */
-	public editConfig(config: IqrfRepositoryConfig): Promise<void> {
+	public edit(config: IqrfRepositoryConfig): Promise<void> {
 		return this.axiosInstance.put('/config/iqrf-repository', config)
 			.then((): void => {return;});
 	}

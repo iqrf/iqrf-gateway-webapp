@@ -15,4 +15,5 @@
  */
 
 export * from './DateTimeUtils';
+export * from './SshKeyUtils';
 export * from './UserUtils';

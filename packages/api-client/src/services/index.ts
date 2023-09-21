@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-export * from './Cloud';
-export * from './Config';
-export * from './Iqrf/DpaMacrosService';
 export * from './AccountService';
 export * from './ApiKeyService';
 export * from './AuthenticationService';

@@ -43,7 +43,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {IqrfGatewayControllerMapping} from '@iqrf/iqrf-gateway-webapp-client';
+import {IqrfGatewayControllerMapping} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import {AxiosError} from 'axios';
 import {Component, VModel, Vue} from 'vue-property-decorator';
 

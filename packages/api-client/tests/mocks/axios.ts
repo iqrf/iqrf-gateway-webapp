@@ -17,7 +17,7 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 
-import {Client} from '@/client';
+import {Client} from '../../src';
 
 /**
  * @const {MockAdapter} mockedAxios Mocked axios module

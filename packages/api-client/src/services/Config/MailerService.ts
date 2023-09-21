@@ -18,8 +18,8 @@ import type {AxiosResponse} from 'axios';
 import * as punycode from 'punycode/';
 
 import {BaseService} from '../BaseService';
-import type {MailerConfig} from '../../types';
-import {MailerSmtpSecurity} from '../../types';
+import type {MailerConfig} from '../../types/Config';
+import {MailerSmtpSecurity} from '../../types/Config';
 
 /**
  * Mailer configuration service

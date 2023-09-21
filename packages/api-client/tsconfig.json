@@ -15,9 +15,6 @@
 		"module": "ESNext",
 		"moduleResolution": "Node",
 		"outDir": "./dist",
-		"paths": {
-			"@/*": ["./src/*"]
-		},
 		"resolveJsonModule": true,
 		"rootDir": "./",
 		"sourceMap": true,

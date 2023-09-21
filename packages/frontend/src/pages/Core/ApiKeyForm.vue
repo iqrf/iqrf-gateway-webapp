@@ -60,7 +60,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {ApiKeyInfo, ApiKeyService} from '@iqrf/iqrf-gateway-webapp-client';
+import {ApiKeyService} from '@iqrf/iqrf-gateway-webapp-client/services';
+import {ApiKeyInfo} from '@iqrf/iqrf-gateway-webapp-client/types';
 import {AxiosError} from 'axios';
 import {DateTime} from 'luxon';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';

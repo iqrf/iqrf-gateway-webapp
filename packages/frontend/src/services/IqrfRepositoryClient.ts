@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {IqrfRepositoryConfig} from '@iqrf/iqrf-gateway-webapp-client';
+import {IqrfRepositoryConfig} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import {Client, ClientCredentials} from '@iqrf/iqrf-repository-client';
 
 import store from '@/store';
@@ -34,7 +34,7 @@ export const useRepositoryClient = async (): Promise<Client> => {
 	};
 	let config = store.getters['repository/configuration'];
 	if (!config) {
-		config = await useApiClient().getIqrfRepositoryService().getConfig()
+		config = await useApiClient().getConfigServices().getIqrfRepositoryService().fetch()
 			.then((repositoryConfig: IqrfRepositoryConfig) => repositoryConfig);
 	}
 	if (!config) {
