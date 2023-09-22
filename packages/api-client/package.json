@@ -15,7 +15,8 @@
 		"coverage:unit": "vitest --run --coverage",
 		"docs": "rm -rf docs/ && typedoc src/index.ts",
 		"prepublish": "rm -rf dist/ && tsc",
-		"lint": "eslint --ext .js,.vue,.ts --cache --cache-location node_modules/.cache/eslint/ .",
+		"lint": "npm run lint:js",
+		"lint:js": "eslint --ext .js,.vue,.ts --cache --cache-location node_modules/.cache/eslint/ .",
 		"test:unit": "vitest --run"
 	},
 	"homepage": "https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp/-/tree/master/packages/api-client",

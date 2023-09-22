@@ -130,6 +130,18 @@ newman:
   tags:
     - linux, docker, amd64
 
+build:js:
+  script:
+    - 'if [[ "${PACKAGE}" != "api-client" ]]; then pnpm --dir packages/api-client build; fi'
+    - pnpm --dir packages/${PACKAGE} run build
+  parallel:
+    matrix:
+      - PACKAGE:
+          - api-client
+          - frontend
+  <<: *test_template
+  <<: *npm_template
+
 coverage:
   before_script:
     - composer install --no-progress
@@ -145,8 +157,7 @@ coverage:
 
 coverage:js:
   script:
-    - cd packages/${PACKAGE}/
-    - pnpm run coverage:unit
+    - pnpm --dir packages/${PACKAGE} coverage:unit
   allow_failure: true
   coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
   artifacts:
@@ -185,17 +196,24 @@ phpstan:
     - NETTE_TESTER_RUNNER=1 php vendor/bin/phpstan analyse -c phpstan.neon
   <<: *coding-style_template
 
-eslint:frontend:
+eslint:
   script:
-    - cd packages/frontend/
-    - pnpm run lint:js
+    - pnpm --dir packages/${PACKAGE} run lint:js
+  parallel:
+    matrix:
+      - PACKAGE:
+          - api-client
+          - frontend
   <<: *coding-style_template
   <<: *npm_template
 
-stylelint:frontend:
+stylelint:
   script:
-    - cd packages/frontend/
-    - pnpm run lint:css
+    - pnpm --dir packages/${PACKAGE} lint:css
+  parallel:
+    matrix:
+      - PACKAGE:
+          - frontend
   <<: *coding-style_template
   <<: *npm_template
 
