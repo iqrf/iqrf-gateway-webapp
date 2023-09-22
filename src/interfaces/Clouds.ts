@@ -14,40 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * Hexio IoT Platform interface
- */
-export interface IHexioCloud {
-	/**
-	 * Hexio cloud host
-	 */
-	broker: string
-
-	/**
-	 * Client ID
-	 */
-	clientId: string
-
-	/**
-	 * MQTT request topic
-	 */
-	topicRequest: string
-
-	/**
-	 * MQTT response topic
-	 */
-	topicResponse: string
-
-	/**
-	 * User name
-	 */
-	username: string
-
-	/**
-	 * User password
-	 */
-	password: string
-}
 
 /**
  * Ibm Cloud interface
@@ -57,7 +23,7 @@ export interface IIbmCloud {
 	 * Organization ID
 	 */
 	organizationId: string
-	
+
 	/**
 	 * Device type
 	 */
@@ -80,7 +46,7 @@ export interface IIbmCloud {
 }
 
 /**
- * 
+ *
  */
 export interface IInteliGlueCloud {
 	/**

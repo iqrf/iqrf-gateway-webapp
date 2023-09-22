@@ -459,11 +459,6 @@ export default class TheSidebar extends Vue {
 								role: UserRole.NORMAL,
 							},
 							{
-								name: this.$t('cloud.hexio.title'),
-								to: '/cloud/hexio/',
-								role: UserRole.NORMAL,
-							},
-							{
 								name: this.$t('cloud.intelimentsInteliGlue.title'),
 								to: '/cloud/inteli-glue/',
 								role: UserRole.NORMAL,

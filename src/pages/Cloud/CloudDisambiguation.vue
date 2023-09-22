@@ -65,12 +65,6 @@ export default class CloudDisambiguation extends Vue {
 			role: UserRoleIndex.NORMAL,
 		},
 		{
-			title: this.$t('cloud.hexio.title').toString(),
-			description: this.$t('cloud.hexio.description').toString(),
-			to: '/cloud/hexio/',
-			role: UserRoleIndex.NORMAL,
-		},
-		{
 			title: this.$t('cloud.intelimentsInteliGlue.title').toString(),
 			description: this.$t('cloud.intelimentsInteliGlue.description').toString(),
 			to: '/cloud/inteli-glue/',

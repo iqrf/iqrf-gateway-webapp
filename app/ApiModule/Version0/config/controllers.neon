@@ -19,7 +19,6 @@ services:
 	- App\ApiModule\Version0\Controllers\CertificateController
 	- App\ApiModule\Version0\Controllers\Cloud\AwsController
 	- App\ApiModule\Version0\Controllers\Cloud\AzureController
-	- App\ApiModule\Version0\Controllers\Cloud\HexioController
 	- App\ApiModule\Version0\Controllers\Cloud\IbmCloudController
 	- App\ApiModule\Version0\Controllers\Cloud\InteliGlueController
 	- App\ApiModule\Version0\Controllers\Config\AptController
