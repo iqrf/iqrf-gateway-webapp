@@ -3,7 +3,7 @@
 		<template #activator='{ props }'>
 			<v-btn
 				v-bind='props'
-				icon='mdi-account-details'
+				:icon='mdiAccountDetails'
 			/>
 		</template>
 		<v-list density='compact'>
@@ -31,7 +31,7 @@
 			<v-list-item
 				@click='signOut'
 			>
-				<v-icon>mdi-logout</v-icon>
+				<v-icon :icon='mdiLogout' />
 			</v-list-item>
 		</v-list>
 	</v-menu>
@@ -40,6 +40,7 @@
 <script lang='ts' setup>
 import { useLocaleStore } from '@/store/locale';
 import { useUserStore } from '@/store/user';
+import { mdiAccountDetails, mdiLogout } from '@mdi/js';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 

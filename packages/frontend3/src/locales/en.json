@@ -234,5 +234,41 @@
 				"rebootFailed": "Failed to schedule gateway reboot: {error}."
 			}
 		}
+	},
+	"status": {
+		"monitor": {
+			"mode": "Daemon mode",
+			"modes": {
+				"operational": "Operational",
+				"forwarding": "Forwarding",
+				"service": "Service",
+				"unknown": "Unknown"
+			},
+			"notified": "Last notified",
+			"queue": "Queue length",
+			"version": "Daemon version",
+			"enumeration": {
+				"running": "Enumeration in progress.",
+				"notRunning": "Enumeration not running.",
+				"unavailable": "Enumeration status not available."
+			}
+		},
+		"locale": {
+			"languages": {
+				"cs": "Czech",
+				"en": "English"
+			},
+			"messages": {
+				"set": "Locale changed to: {locale}."
+			}
+		},
+		"sessionExpiration": {
+			"title": "Session expiration warning",
+			"prompt": "Your session is about to expire and you will be logged out. Click the renew session button to renew the session and dismiss this windows.",
+			"renew": "Renew session",
+			"success": "Your session has been successfully renewed.",
+			"failed": "Failed to renew session.",
+			"indicator": "Session will expire in: "
+		}
 	}
 }

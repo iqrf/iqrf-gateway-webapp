@@ -1,4 +1,4 @@
-import { AccountState, UserCredentials, UserInfo, UserRole, UserSignedIn } from '@iqrf/iqrf-gateway-webapp-client';
+import { AccountState, UserCredentials, UserInfo, UserRole, UserSignedIn } from '@iqrf/iqrf-gateway-webapp-client/types';
 import * as Sentry from '@sentry/vue';
 import { AxiosError } from 'axios';
 import { jwtDecode, JwtPayload } from 'jwt-decode';

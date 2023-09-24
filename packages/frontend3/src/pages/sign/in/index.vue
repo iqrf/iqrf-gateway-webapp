@@ -15,7 +15,7 @@
 						(v: string|null) => ValidationRules.required(v, $t("user.validation.username")),
 					]'
 					required
-					prepend-inner-icon='mdi-account'
+					:prepend-inner-icon='mdiAccount'
 				/>
 				<PasswordInput
 					v-model='credentials.password'
@@ -24,18 +24,19 @@
 						(v: string|null) => ValidationRules.required(v, $t("user.validation.password")),
 					]'
 					required
-					prepend-inner-icon='mdi-key'
+					:prepend-inner-icon='mdiKey'
 				/>
 				<div style='display: flex; justify-content: space-between;'>
 					<v-btn
 						color='primary'
 						type='submit'
-						prepend-icon='mdi-login'
+						:prepend-icon='mdiLogin'
 					>
 						{{ $t('auth.sign.in.title') }}
 					</v-btn>
 					<v-btn
 						variant='text'
+						color='primary'
 						to='/account/recovery'
 					>
 						{{ $t('auth.sign.in.recoverPassword') }}
@@ -69,6 +70,7 @@ import ValidationRules from '@/helpers/ValidationRules';
 import { basicErrorToast } from '@/helpers/errorToast';
 import { AxiosError } from 'axios';
 import { validateForm } from '@/helpers/validateForm';
+import { mdiAccount, mdiKey, mdiLogin } from '@mdi/js';
 
 const i18n = useI18n();
 const route = useRoute();

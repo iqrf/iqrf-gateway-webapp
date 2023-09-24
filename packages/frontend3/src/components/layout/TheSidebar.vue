@@ -9,7 +9,7 @@
 			<v-list>
 				<v-list-item density='compact' style='margin-top: auto;' @click.stop='sidebarStore.toggleSize()'>
 					<v-list-item-action>
-						<v-icon color='white'>mdi-{{ `chevron-${isMinimized ? 'right' : 'left'}` }}</v-icon>
+						<v-icon color='white' :icon='sidebarToggleIcon' />
 					</v-list-item-action>
 				</v-list-item>
 			</v-list>
@@ -18,7 +18,7 @@
 </template>
 
 <script lang='ts' setup>
-import { UserRole } from '@iqrf/iqrf-gateway-webapp-client';
+import { UserRole } from '@iqrf/iqrf-gateway-webapp-client/types';
 import SidebarItems from '@/components/layout/sidebar/SidebarItems.vue';
 import { storeToRefs } from 'pinia';
 import { useI18n } from 'vue-i18n';
@@ -27,6 +27,8 @@ import { useUserStore } from '@/store/user';
 
 import { SidebarLink } from '@/types/sidebar';
 import { useFeatureStore } from '@/store/features';
+import { mdiAccountKey, mdiBook, mdiChevronLeft, mdiChevronRight, mdiDesktopTower, mdiLogin, mdiPower } from '@mdi/js';
+import { computed } from 'vue';
 
 const i18n = useI18n();
 
@@ -37,6 +39,10 @@ const { isLoggedIn } = storeToRefs(userStore);
 
 const sidebarStore = useSidebarStore();
 const { isMinimized, isVisible } = storeToRefs(sidebarStore);
+
+const sidebarToggleIcon = computed(() => {
+	return isMinimized.value ? mdiChevronRight : mdiChevronLeft;
+});
 
 function filter(item: SidebarLink): boolean {
 	const role: UserRole | null = userStore.getRole;
@@ -55,11 +61,11 @@ function items(): SidebarLink[] {
 		links = [
 			{
 				title: i18n.t('gateway.title').toString(),
-				icon: 'mdi-desktop-tower',
+				icon: mdiDesktopTower,
 				children: [
 					{
 						title: i18n.t('gateway.power.title').toString(),
-						icon: 'mdi-power',
+						icon: mdiPower,
 						to: '/gateway/power',
 					},
 				],
@@ -69,12 +75,12 @@ function items(): SidebarLink[] {
 		links = [
 			{
 				title: i18n.t('auth.sign.in.title').toString(),
-				icon: 'mdi-login',
+				icon: mdiLogin,
 				to: '/sign/in',
 			},
 			{
 				title: i18n.t('account.recovery.title').toString(),
-				icon: 'mdi-account-key',
+				icon: mdiAccountKey,
 				to: '/account/recovery',
 			},
 		];
@@ -82,7 +88,7 @@ function items(): SidebarLink[] {
 	links.push({
 		title: i18n.t('docs.title').toString(),
 		href: featureStore.getConfiguration('docs')?.url,
-		icon: 'mdi-book',
+		icon: mdiBook,
 		feature: 'docs',
 		to: '',
 	});

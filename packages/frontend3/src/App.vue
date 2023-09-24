@@ -7,9 +7,8 @@
 
 <script lang='ts' setup>
 import type { InstallationChecks } from '@iqrf/iqrf-gateway-webapp-client';
-import { Client } from '@iqrf/iqrf-gateway-webapp-client';
 import { AxiosError } from 'axios';
-import { onBeforeMount, watch } from 'vue';
+import { onBeforeMount } from 'vue';
 import { storeToRefs } from 'pinia';
 import router from '@/router';
 

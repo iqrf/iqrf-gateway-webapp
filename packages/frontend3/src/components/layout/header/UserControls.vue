@@ -1,20 +1,19 @@
 <template>
 	<v-btn
 		to='/profile'
-		prepend-icon='mdi-account'
+		:prepend-icon='mdiAccount'
 	>
 		{{ userStore.getName }}
 	</v-btn>
 	<v-btn
-		icon
+		:icon='mdiLogout'
 		@click='signOut'
-	>
-		<v-icon>mdi-logout</v-icon>
-	</v-btn>
+	/>
 </template>
 
 <script lang='ts' setup>
 import { useUserStore } from '@/store/user';
+import { mdiAccount, mdiLogout } from '@mdi/js';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
