@@ -1,8 +1,7 @@
-import '@mdi/font/css/materialdesignicons.css';
 import '@/styles/main.scss';
 
 import {createVuetify} from 'vuetify';
-import {aliases, mdi} from 'vuetify/iconsets/mdi';
+import {aliases, mdi} from 'vuetify/iconsets/mdi-svg';
 import * as labs from 'vuetify/labs/components';
 import {createVueI18nAdapter} from 'vuetify/locale/adapters/vue-i18n';
 import {useI18n} from 'vue-i18n';

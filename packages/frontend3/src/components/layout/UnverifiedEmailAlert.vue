@@ -10,7 +10,7 @@
 				color='warning'
 				size='small'
 				dense
-				prepend-icon='mdi-email-fast'
+				:prepend-icon='mdiEmailFast'
 				@click='resend'
 			>
 				{{ $t('account.verification.resend') }}
@@ -23,7 +23,7 @@
 				size='small'
 				to='/profile'
 				dense
-				prepend-icon='mdi-email-fast'
+				:prepend-icon='mdiEmailFast'
 			>
 				{{ $t('account.verification.addEmail') }}
 			</v-btn>
@@ -40,6 +40,7 @@ import { basicErrorToast } from '@/helpers/errorToast';
 import { useUserStore } from '@/store/user';
 import { useApiClient } from '@/services/ApiClient';
 import { storeToRefs } from 'pinia';
+import { mdiEmailFast } from '@mdi/js';
 
 const i18n = useI18n();
 const userStore = useUserStore();

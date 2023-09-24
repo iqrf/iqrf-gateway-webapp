@@ -5,8 +5,8 @@
 		:label='label'
 		:hint='description'
 		:persistent-hint='showHint'
-		:append-inner-icon='show ? "mdi-eye" : "mdi-eye-off"'
-		:type='show ? "text" : "password"'
+		:append-inner-icon='visibilityIcon'
+		:type='inputType'
 		@click:append-inner='show = !show'
 	>
 		<template #message='{ message }'>
@@ -32,6 +32,7 @@
 <script lang='ts' setup>
 import { computed, ref, Ref } from 'vue';
 import { VTextField } from 'vuetify/components';
+import { mdiEye, mdiEyeOff } from '@mdi/js';
 
 const show: Ref<boolean> = ref(false);
 const props = defineProps({
@@ -51,7 +52,12 @@ const props = defineProps({
 		required: false,
 	}
 });
-
+const visibilityIcon = computed(() => {
+	return show.value ? mdiEye : mdiEyeOff;
+});
+const inputType = computed(() => {
+	return show.value ? 'text' : 'password';
+});
 const showHint = computed(() => props.description.length > 0);
 
 </script>

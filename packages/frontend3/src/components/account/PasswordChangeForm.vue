@@ -11,7 +11,7 @@
 					(v: string|null) => ValidationRules.required(v, $t("account.profile.password.validation.current")),
 				]'
 				required
-				prepend-inner-icon='mdi-key'
+				:prepend-inner-icon='mdiKey'
 			/>
 			<PasswordInput
 				v-model='passwordChange.new'
@@ -20,7 +20,7 @@
 					(v: string|null) => ValidationRules.required(v, $t("account.profile.password.validation.new")),
 				]'
 				required
-				prepend-inner-icon='mdi-key'
+				:prepend-inner-icon='mdiKey'
 			/>
 			<v-btn
 				color='primary'
@@ -33,7 +33,7 @@
 </template>
 
 <script lang='ts' setup>
-import { UserPasswordChange } from '@iqrf/iqrf-gateway-webapp-client';
+import { UserPasswordChange } from '@iqrf/iqrf-gateway-webapp-client/types';
 import type { AxiosError } from 'axios';
 import { ref, Ref } from 'vue';
 import { toast } from 'vue3-toastify';
@@ -46,6 +46,7 @@ import PasswordInput from '@/components/PasswordInput.vue';
 import UrlBuilder from '@/helpers/urlBuilder';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
+import { mdiKey } from '@mdi/js';
 
 const form: Ref<typeof VForm | null> = ref(null);
 const passwordChange: Ref<UserPasswordChange> = ref<UserPasswordChange>({

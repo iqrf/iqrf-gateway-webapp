@@ -22,15 +22,17 @@ limitations under the License.
 		<template #title>{{ $t('gateway.power.title') }}</template>
 		<v-btn
 			color='error'
+			class='mr-1'
+			:prepend-icon='mdiPower'
 			@click='powerOff'
 		>
-			<v-icon>mdi-power</v-icon>
 			{{ $t('gateway.power.powerOff') }}
-		</v-btn> <v-btn
+		</v-btn>
+		<v-btn
 			color='primary'
+			:prepend-icon='mdiReload'
 			@click='reboot'
 		>
-			<v-icon>mdi-reload</v-icon>
 			{{ $t('gateway.power.reboot') }}
 		</v-btn>
 	</Card>
@@ -41,7 +43,7 @@ name: PowerControl
 </route>
 
 <script lang='ts' setup>
-//import { PowerService } from '@iqrf/iqrf-gateway-webapp-client';
+
 import { Head } from '@vueuse/head';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
@@ -50,32 +52,35 @@ import Card from '@/components/Card.vue';
 
 import { basicErrorToast } from '@/helpers/errorToast';
 import { useApiClient } from '@/services/ApiClient';
+import { mdiPower, mdiReload } from '@mdi/js';
 
-import { AxiosError, AxiosResponse } from 'axios';
+import { AxiosError } from 'axios';
+import { PowerActionResponse } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
+import { PowerService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
 
 const i18n = useI18n();
-//const service: PowerService = useApiClient().getPowerService();
+const service: PowerService = useApiClient().getGatewayServices().getPowerService();
 
 function powerOff(): void {
-	/*service.powerOff()
+	service.powerOff()
 		.then((response: PowerActionResponse) =>
 			toast.success(
 				i18n.t('gateway.power.messages.powerOffSuccess', {time: parseActionTime(response.timestamp)}).toString()
 			)
 		).catch((error: AxiosError) =>
 			basicErrorToast(error, 'gateway.power.messages.powerOffFailed')
-		);*/
+		);
 }
 
 function reboot(): void {
-	/*service.reboot()
-		.then((response: AxiosResponse) =>
+	service.reboot()
+		.then((response: PowerActionResponse) =>
 			toast.success(
-				i18n.t('gateway.power.messages.rebootSuccess', {time: this.parseActionTime(response.data.timestamp)}).toString()
+				i18n.t('gateway.power.messages.rebootSuccess', {time: parseActionTime(response.timestamp)}).toString()
 			)
 		).catch((error: AxiosError) =>
 			basicErrorToast(error, 'gateway.power.messages.rebootFailed')
-		);*/
+		);
 }
 
 /**

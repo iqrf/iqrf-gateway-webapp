@@ -7,9 +7,9 @@
 	>
 		<Card>
 			<template #title>
-				{{ $t('core.sessionExpiration.title') }}
+				{{ $t('status.sessionExpiration.title') }}
 			</template>
-			{{ $t('core.sessionExpiration.prompt') }}
+			{{ $t('status.sessionExpiration.prompt') }}
 			<template #actions>
 				<v-spacer />
 				<v-btn
@@ -17,7 +17,7 @@
 					variant='elevated'
 					@click='renewSession'
 				>
-					{{ `${$t('core.sessionExpiration.renew')} (${countdown})` }}
+					{{ `${$t('status.sessionExpiration.renew')} (${countdown})` }}
 				</v-btn>
 			</template>
 		</Card>

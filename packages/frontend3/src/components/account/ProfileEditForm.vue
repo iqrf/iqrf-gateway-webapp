@@ -11,7 +11,7 @@
 					(v: string|null) => ValidationRules.required(v, $t("user.validation.username")),
 				]'
 				required
-				prepend-inner-icon='mdi-account'
+				:prepend-inner-icon='mdiAccount'
 			/>
 			<TextInput
 				v-model='user.email'
@@ -21,13 +21,13 @@
 					(v: string) => ValidationRules.email(v, $t("user.validation.invalidEmail")),
 				]'
 				required
-				prepend-inner-icon='mdi-email'
+				:prepend-inner-icon='mdiEmail'
 			/>
 			<SelectInput
 				v-model='user.language'
 				:items='languageOptions'
 				:label='$t("user.language")'
-				prepend-inner-icon='mdi-translate'
+				:prepend-inner-icon='mdiTranslate'
 			/>
 			<v-btn
 				color='primary'
@@ -40,7 +40,8 @@
 </template>
 
 <script lang='ts' setup>
-import { AccountService, UserEdit, UserInfo, UserLanguage, UserRole } from '@iqrf/iqrf-gateway-webapp-client';
+import { UserEdit, UserInfo, UserLanguage, UserRole } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { AccountService } from '@iqrf/iqrf-gateway-webapp-client/services';
 import { onMounted, ref, Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
@@ -55,6 +56,7 @@ import ValidationRules from '@/helpers/ValidationRules';
 import { getLanguageOptions } from '@/helpers/userData';
 import { useApiClient } from '@/services/ApiClient';
 import UrlBuilder from '@/helpers/urlBuilder';
+import { mdiAccount, mdiEmail, mdiTranslate } from '@mdi/js';
 
 const i18n = useI18n();
 const userStore = useUserStore();
