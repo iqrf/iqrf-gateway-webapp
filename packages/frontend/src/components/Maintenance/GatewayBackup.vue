@@ -20,7 +20,7 @@
 			</v-item-group>
 		</v-card-title>
 		<v-card-text>
-			<v-form>
+			<v-form @submit.prevent='backup'>
 				<v-row>
 					<v-col cols='12' md='6'>
 						<h5>{{ $t('maintenance.backup.headings.software') }}</h5>

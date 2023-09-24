@@ -73,14 +73,14 @@ interface IFileManager {
 	/**
 	 * Returns list of subdirectories in directory
 	 * @param string|null $subdirectory Relative path to subdirectory
-	 * @return array<int, string> List of directories
+	 * @return array<string> List of directories
 	 */
 	public function listDirectories(?string $subdirectory = null): array;
 
 	/**
 	 * Returns list of files in directory
 	 * @param string|null $subdirectory Relative path to subdirectory
-	 * @return array<int, string> List of files
+	 * @return array<string> List of files
 	 */
 	public function listFiles(?string $subdirectory = null): array;
 
@@ -100,7 +100,7 @@ interface IFileManager {
 	 * @throws IOException
 	 * @throws JsonException
 	 */
-	public function readJson(string $fileName, bool $forceArray = true);
+	public function readJson(string $fileName, bool $forceArray = true): mixed;
 
 	/**
 	 * Writes into the file
@@ -117,6 +117,6 @@ interface IFileManager {
 	 * @throws IOException
 	 * @throws JsonException
 	 */
-	public function writeJson(string $fileName, $content): void;
+	public function writeJson(string $fileName, mixed $content): void;
 
 }

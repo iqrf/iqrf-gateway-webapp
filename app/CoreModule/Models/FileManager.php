@@ -127,7 +127,7 @@ class FileManager implements IFileManager {
 	/**
 	 * Returns list of subdirectories in directory
 	 * @param string|null $subdirectory Relative path to subdirectory
-	 * @return array<int, string> List of directories
+	 * @return array<string> List of directories
 	 */
 	public function listDirectories(?string $subdirectory = null): array {
 		$realPath = $this->getRealPath($subdirectory);
@@ -141,7 +141,7 @@ class FileManager implements IFileManager {
 	/**
 	 * Returns list of files in directory
 	 * @param string|null $subdirectory Relative path to subdirectory
-	 * @return array<int, string> List of files
+	 * @return array<string> List of files
 	 */
 	public function listFiles(?string $subdirectory = null): array {
 		$realPath = $this->getRealPath($subdirectory);
