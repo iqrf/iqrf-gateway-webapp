@@ -20,14 +20,14 @@
 export interface AwsMqttConfig {
 
 	/**
-	 * AWS IoT endpoint
-	 */
-	endpoint: string;
-
-	/**
 	 * AWS IoT certificate
 	 */
 	certificate: File|Blob|null;
+
+	/**
+	 * AWS IoT endpoint
+	 */
+	endpoint: string;
 
 	/**
 	 * AWS IoT private key

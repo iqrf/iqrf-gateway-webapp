@@ -22,8 +22,11 @@ module.exports = {
 	},
 	extends: [
 		'eslint:recommended',
-		'plugin:@typescript-eslint/recommended',
-		'plugin:@typescript-eslint/recommended-requiring-type-checking',
+		'plugin:@typescript-eslint/stylistic-type-checked',
+		'plugin:import/recommended',
+		'plugin:import/typescript',
+		'plugin:promise/recommended',
+		"plugin:typescript-sort-keys/recommended",
 	],
 	parser: '@typescript-eslint/parser',
 	parserOptions: {
@@ -63,6 +66,7 @@ module.exports = {
 			'error',
 			'unix'
 		],
+		'no-unused-vars': 'warn',
 		'no-use-before-define': 'error',
 		'quotes': [
 			'error',
@@ -73,4 +77,12 @@ module.exports = {
 			'always'
 		],
 	},
+	overrides: [
+		{
+			files: ['tests/**'],
+			rules: {
+				'promise/always-return': 'off',
+			}
+		},
+	],
 };

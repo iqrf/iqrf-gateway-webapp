@@ -34,7 +34,7 @@ describe('VersionService', (): void => {
 		};
 		mockedAxios.onGet('/version/daemon')
 			.reply(200, version);
-		await service.getDaemon().then((actual: VersionBase) => {
+		await service.getDaemon().then((actual: VersionBase): void => {
 			expect(actual).toStrictEqual(version);
 		});
 	});
@@ -47,7 +47,7 @@ describe('VersionService', (): void => {
 		};
 		mockedAxios.onGet('/version/webapp')
 			.reply(200, version);
-		await service.getWebapp().then((actual: VersionIqrfGatewayWebapp) => {
+		await service.getWebapp().then((actual: VersionIqrfGatewayWebapp): void => {
 			expect(actual).toStrictEqual(version);
 		});
 	});

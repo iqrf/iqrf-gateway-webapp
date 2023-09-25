@@ -53,15 +53,15 @@ describe('Client', (): void => {
 
 	it('can be instantiated', (): void  => {
 		expect.assertions(5);
-		expect(client['axiosInstance'])
+		expect(client.getAxiosInstance())
 			.toBeDefined();
-		expect(client['axiosInstance'].defaults.auth)
+		expect(client.getAxiosInstance().defaults.auth)
 			.toBeUndefined();
-		expect(client['axiosInstance'].defaults.baseURL)
+		expect(client.getAxiosInstance().defaults.baseURL)
 			.toBe('/api/');
-		expect(client['axiosInstance'].defaults.headers['User-Agent'])
+		expect(client.getAxiosInstance().defaults.headers['User-Agent'])
 			.toStrictEqual(userAgent);
-		expect(client['axiosInstance'].defaults.timeout)
+		expect(client.getAxiosInstance().defaults.timeout)
 			.toBe(30_000);
 	});
 
@@ -73,15 +73,15 @@ describe('Client', (): void => {
 		};
 		const axiosInstance: AxiosInstance = axios.create(config);
 		client = new Client({axiosInstance: axiosInstance});
-		expect(client['axiosInstance'])
+		expect(client.getAxiosInstance())
 			.toBeDefined();
-		expect(client['axiosInstance'].defaults.auth)
+		expect(client.getAxiosInstance().defaults.auth)
 			.toBeUndefined();
-		expect(client['axiosInstance'].defaults.baseURL)
+		expect(client.getAxiosInstance().defaults.baseURL)
 			.toBe('https://iqrf-gw.exaple.com/api/');
-		expect(client['axiosInstance'].defaults.headers['User-Agent'])
+		expect(client.getAxiosInstance().defaults.headers['User-Agent'])
 			.toBe(userAgent);
-		expect(client['axiosInstance'].defaults.timeout)
+		expect(client.getAxiosInstance().defaults.timeout)
 			.toBe(5_000);
 	});
 
@@ -92,15 +92,15 @@ describe('Client', (): void => {
 			timeout: 5_000,
 		};
 		client = new Client({config: config});
-		expect(client['axiosInstance'])
+		expect(client.getAxiosInstance())
 			.toBeDefined();
-		expect(client['axiosInstance'].defaults.auth)
+		expect(client.getAxiosInstance().defaults.auth)
 			.toBeUndefined();
-		expect(client['axiosInstance'].defaults.baseURL)
+		expect(client.getAxiosInstance().defaults.baseURL)
 			.toBe('https://iqrf-gw.exaple.com/api/');
-		expect(client['axiosInstance'].defaults.headers['User-Agent'])
+		expect(client.getAxiosInstance().defaults.headers['User-Agent'])
 			.toBe(userAgent);
-		expect(client['axiosInstance'].defaults.timeout)
+		expect(client.getAxiosInstance().defaults.timeout)
 			.toBe(5_000);
 	});
 

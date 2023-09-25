@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {TypeDocOptions} from 'typedoc';
 
-/** @type {import('typedoc').TypeDocOptions} */
-module.exports = {
+export default {
 	entryPoints: ['./src/index.ts'],
 	out: './docs',
 	readme: './README.md',
 	exclude: ['./**/__tests__/**/*', './**/node_modules/**/*', './dist/'],
 	name: 'IQRF Gateway Webapp JavaScript client',
-};
+} as TypeDocOptions;

@@ -32,14 +32,14 @@ export interface InstallationCheckDependency {
 	critical: boolean,
 
 	/**
-	 * Name of the package from which the missing dependency comes
-	 */
-	package: string,
-
-	/**
 	 * Name of the feature that requires the missing command
 	 */
 	feature?: Feature,
+
+	/**
+	 * Name of the package from which the missing dependency comes
+	 */
+	package: string
 
 }
 
@@ -83,14 +83,14 @@ export interface InstallationCheckPhpExtensions {
 export interface InstallationCheckSudo {
 
 	/**
-	 * Name of the user that is used to run the application
-	 */
-	user: string
-
-	/**
 	 * Does the sudo command exist?
 	 */
 	exists: boolean,
+
+	/**
+	 * Name of the user that is used to run the application
+	 */
+	user: string,
 
 	/**
 	 * Is the user allowed to run sudo commands?

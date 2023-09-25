@@ -43,3 +43,5 @@ www/dist/
 # Cypress
 packages/*/cypress/videos
 packages/*/cypress/screenshots
+# Documentations
+packages/*/docs/

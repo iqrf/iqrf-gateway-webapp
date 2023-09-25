@@ -21,11 +21,6 @@
 export interface ErrorResponse {
 
 	/**
-	 * Response status
-	 */
-	status: 'error',
-
-	/**
 	 * Error code
 	 */
 	code: number,
@@ -34,6 +29,11 @@ export interface ErrorResponse {
 	 * Error message
 	 */
 	message: string,
+
+	/**
+	 * Response status
+	 */
+	status: 'error'
 
 }
 

@@ -40,7 +40,7 @@ export class SshKeyService extends BaseService {
 	public list(): Promise<SshKeyInfo[]> {
 		return this.axiosInstance.get('/gateway/ssh/keys')
 			.then((response: AxiosResponse<SshKeyInfoRaw[]>): SshKeyInfo[] =>
-				response.data.map((key: SshKeyInfoRaw): SshKeyInfo => this.deserializeInfo(key))
+				response.data.map((key: SshKeyInfoRaw): SshKeyInfo => this.deserializeInfo(key)),
 			);
 	}
 

@@ -21,7 +21,7 @@ describe('SshKeyUtils', (): void => {
 	/**
 	 * @var {string} key SSH public key
 	 */
-	const key: string = 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJsFi4AP1s9eIJlEz3jutG+/Ez7jDoiGVSkN9DFlAk0W roman@Lenovo-Thinkpad-E595';
+	const key = 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJsFi4AP1s9eIJlEz3jutG+/Ez7jDoiGVSkN9DFlAk0W roman@Lenovo-Thinkpad-E595';
 
 	/**
 	 * @var {string[]} supportedKeyTypes Supported SSH public key types
