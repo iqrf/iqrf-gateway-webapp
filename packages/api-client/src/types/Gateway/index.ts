@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+export * from './Info';
 export * from './Power';
 export * from './SshKey';
 export * from './Time';

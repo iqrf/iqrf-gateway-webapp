@@ -1,4 +1,4 @@
-import type { DaemonApiRequest } from '../types/Messages';
+import type { DaemonApiRequest } from '../types';
 
 /**
  * Daemon API message class
