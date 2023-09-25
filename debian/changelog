@@ -1,10 +1,14 @@
-iqrf-gateway-webapp (2.5.10~alpha~1.gbpf1ba81) UNRELEASED; urgency=medium
+iqrf-gateway-webapp (2.5.10) stable; urgency=medium
 
-  ** SNAPSHOT build @f1ba81ba83407ad327716b266d9181f5fa995e00 **
+  * Prepare for version 2.5.10-alpha
+  * Gateway: add information about startups and shutdowns to the diagnostic archive
+  * NPM: update dependencies
+  * Composer: update dependencies
+  * Gateway: add missing return type hint in diagnostic manager
+  * Clouds: remove Hexio.io
+  * NPM: update dependencies
 
-  * UNRELEASED
-
- -- Roman Ondráček <mail@romanondracek.cz>  Thu, 07 Sep 2023 23:05:00 +0200
+ -- Roman Ondráček <mail@romanondracek.cz>  Mon, 25 Sep 2023 13:30:00 +0200
 
 iqrf-gateway-webapp (2.5.9) stable; urgency=medium
 
