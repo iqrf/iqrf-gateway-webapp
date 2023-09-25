@@ -16,9 +16,11 @@
 
 import { BaseService } from '../BaseService';
 
+import { InfoService } from './InfoService';
 import { PowerService } from './PowerService';
 import { SshKeyService } from './SshKeyService';
 
+export * from './InfoService';
 export * from './PowerService';
 export * from './SshKeyService';
 
@@ -26,6 +28,14 @@ export * from './SshKeyService';
  * IQRF Gateway services
  */
 export class GatewayServices extends BaseService {
+
+	/**
+	 * Returns info service
+	 * @returns {InfoService} Info service
+	 */
+	public getInfoService(): InfoService {
+		return new InfoService(this.apiClient);
+	}
 
 	/**
 	 * Returns power service

@@ -29,9 +29,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
+import {UsageBase} from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
 import {Component, Prop, Vue} from 'vue-property-decorator';
-
-import {IUsageData} from '@/interfaces/Gateway/Information';
 
 /**
  * Resource usage component for gateway information
@@ -39,9 +38,9 @@ import {IUsageData} from '@/interfaces/Gateway/Information';
 @Component({})
 export default class ResourceUsage extends Vue {
 	/**
-	 * @property {Record<string, string>} usage Dictionary of gateway device resource usage
+	 * @property {UsageBase} usage File system usage
 	 */
-	@Prop({ required: true }) usage!: IUsageData;
+	@Prop({ required: true }) usage!: UsageBase;
 
 	/**
 	 * Returns CSS classes for the progress bar

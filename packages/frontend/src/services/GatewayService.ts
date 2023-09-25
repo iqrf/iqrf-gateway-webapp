@@ -15,10 +15,13 @@
  * limitations under the License.
  */
 
+import {
+	GatewayBriefInformation
+} from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '@/helpers/authorizationHeader';
 
-import {IGatewayBriefInfo, IHostname} from '@/interfaces/Gateway/Information';
+import {IHostname} from '@/interfaces/Gateway/Information';
 
 /**
  * Root password interface
@@ -36,15 +39,6 @@ class GatewayService {
 	 */
 	getDiagnosticsArchive(): Promise<AxiosResponse> {
 		return axios.get('diagnostics', {headers: authorizationHeader(), responseType: 'blob'});
-	}
-
-	/**
-	 * Retrieves brief information about the gateway
-	 * @returns {Promise<IGatewayBriefInfo>} Brief information about the gateway
-	 */
-	getBriefInfo(): Promise<IGatewayBriefInfo> {
-		return axios.get('gateway/info/brief', {headers: authorizationHeader()})
-			.then((response: AxiosResponse) => (response.data as IGatewayBriefInfo));
 	}
 
 	/**

@@ -95,16 +95,18 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
+import {InfoService} from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
+import {
+	GatewayInformation
+} from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
 import {Component, Vue} from 'vue-property-decorator';
 import CoordinatorInfo from '@/components/Gateway/Information/CoordinatorInfo.vue';
 import DaemonModeInfo from '@/components/Gateway/Information/DaemonModeInfo.vue';
 
-import {fileDownloader} from '@/helpers/fileDownloader';
+import {dataDownloader} from '@/helpers/fileDownloader';
 
-import GatewayService from '@/services/GatewayService';
-
-import {AxiosResponse} from 'axios';
-import {IGatewayInfo, IpAddress, MacAddress} from '@/interfaces/Gateway/Information';
+import {IpAddress, MacAddress} from '@/interfaces/Gateway/Information';
+import {useApiClient} from '@/services/ApiClient';
 
 @Component({
 	components: {
@@ -121,14 +123,19 @@ import {IGatewayInfo, IpAddress, MacAddress} from '@/interfaces/Gateway/Informat
  */
 export default class InstallGatewayInfo extends Vue {
 	/**
-	 * @var {IGatewayInfo|null} info Gateway information object
+	 * @var {GatewayInformation|null} info Gateway information object
 	 */
-	private info: IGatewayInfo|null = null;
+	private info: GatewayInformation|null = null;
 
 	/**
 	 * @var {boolean} showCoordinator Controls whether coordinator information component can be shown
 	 */
 	private showCoordinator = false;
+
+	/**
+   * @property {InfoService} service Gateway info service
+   */
+	private service: InfoService = useApiClient().getGatewayServices().getInfoService();
 
 	/**
 	 * Computes array of IP address objects from network interfaces
@@ -177,10 +184,10 @@ export default class InstallGatewayInfo extends Vue {
 	 */
 	protected created(): void {
 		this.$store.commit('spinner/SHOW');
-		GatewayService.getInfo()
+		this.service.fetchDetailed()
 			.then(
-				(response: AxiosResponse) => {
-					this.info = response.data;
+				(response: GatewayInformation) => {
+					this.info = response;
 					this.$store.commit('spinner/HIDE');
 				}
 			)
@@ -192,17 +199,19 @@ export default class InstallGatewayInfo extends Vue {
 	 */
 	private downloadDiagnostics(): void {
 		this.$store.commit('spinner/SHOW');
-		GatewayService.getInfo().then(
-			(response: AxiosResponse) => {
-				let fileName = 'iqrf-gateway-info';
-				if (this.info?.gwId) {
-					fileName += '_' + this.info.gwId.toLowerCase();
+		this.service.fetchDetailed()
+			.then(
+				(response: GatewayInformation) => {
+					let fileName = 'iqrf-gateway-info';
+					if (this.info?.gwId) {
+						fileName += '_' + this.info.gwId.toLowerCase();
+					}
+					const file = dataDownloader(response, 'application/json', fileName + '.json');
+					this.$store.commit('spinner/HIDE');
+					file.click();
 				}
-				const file = fileDownloader(response, 'application/json', fileName + '.json');
-				this.$store.commit('spinner/HIDE');
-				file.click();
-			}
-		).catch(() => (this.$store.commit('spinner/HIDE')));
+			)
+			.catch(() => (this.$store.commit('spinner/HIDE')));
 	}
 }
 </script>

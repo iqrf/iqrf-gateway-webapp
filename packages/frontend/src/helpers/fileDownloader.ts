@@ -31,13 +31,20 @@ export function fileDownloader(response: AxiosResponse, contentType: string, fil
 			fileName = fileNameMatch[1];
 		}
 	}
-	let data = response.data;
-	if (contentType === 'application/json') { // default processing is for binary files
-		data = JSON.stringify(data);
-	}
-	const blob = new Blob([data], {type: contentType});
-	const fileUrl = window.URL.createObjectURL(blob);
-	const file = document.createElement('a');
+	return dataDownloader(response.data, contentType, fileName);
+}
+
+/**
+ * Creates a new file download element
+ * @param rawData Data to download
+ * @param {string} contentType Response content MIME
+ * @param {string} fileName Name of downloaded file
+ */
+export function dataDownloader(rawData, contentType: string, fileName: string): HTMLAnchorElement {
+	const data = contentType === 'application/json' ? JSON.stringify(rawData, null,  '\t') : rawData;
+	const blob: Blob = new Blob([data], {type: contentType});
+	const fileUrl: string = window.URL.createObjectURL(blob);
+	const file: HTMLAnchorElement = document.createElement('a');
 	file.href = fileUrl;
 	file.setAttribute('download', fileName);
 	document.body.appendChild(file);

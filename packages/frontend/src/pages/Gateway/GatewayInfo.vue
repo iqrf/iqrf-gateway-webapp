@@ -139,6 +139,10 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
+import {
+	GatewayInformation
+} from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
+import {AxiosResponse} from 'axios';
 import {Component, Vue} from 'vue-property-decorator';
 import CoordinatorInfo from '@/components/Gateway/Information/CoordinatorInfo.vue';
 import DaemonModeInfo from '@/components/Gateway/Information/DaemonModeInfo.vue';
@@ -149,8 +153,9 @@ import {fileDownloader} from '@/helpers/fileDownloader';
 
 import GatewayService from '@/services/GatewayService';
 
-import {AxiosResponse} from 'axios';
-import {IGatewayInfo, IpAddress, MacAddress} from '@/interfaces/Gateway/Information';
+import {IpAddress, MacAddress} from '@/interfaces/Gateway/Information';
+import {useApiClient} from '@/services/ApiClient';
+
 
 @Component({
 	components: {
@@ -169,9 +174,9 @@ import {IGatewayInfo, IpAddress, MacAddress} from '@/interfaces/Gateway/Informat
  */
 export default class GatewayInfo extends Vue {
 	/**
-	 * @var {IGatewayInfo|null} info Gateway information object
+	 * @var {GatewayInformation|null} info Gateway information object
 	 */
-	private info: IGatewayInfo|null = null;
+	private info: GatewayInformation|null = null;
 
 	/**
 	 * @var {boolean} showCoordinator Controls whether coordinator information component can be shown
@@ -232,10 +237,10 @@ export default class GatewayInfo extends Vue {
 	 */
 	private getInformation(): void {
 		this.$store.commit('spinner/SHOW');
-		GatewayService.getInfo()
+		useApiClient().getGatewayServices().getInfoService().fetchDetailed()
 			.then(
-				(response: AxiosResponse) => {
-					this.info = response.data;
+				(response: GatewayInformation): void => {
+					this.info = response;
 					this.$store.commit('spinner/HIDE');
 				}
 			)

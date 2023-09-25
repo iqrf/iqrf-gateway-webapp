@@ -14,13 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {
+	GatewayBriefInformation
+} from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
 import {ActionTree, MutationTree} from 'vuex';
-import GatewayService from '@/services/GatewayService';
-import {IGatewayBriefInfo} from '@/interfaces/Gateway/Information';
+
+import {useApiClient} from '@/services/ApiClient';
 
 interface GatewayState {
 	/// Brief information about the gateway
-	info: IGatewayBriefInfo|null
+	info: GatewayBriefInformation|null
 }
 
 const state: GatewayState = {
@@ -29,9 +32,9 @@ const state: GatewayState = {
 
 const actions: ActionTree<GatewayState, any> = {
 	getInfo({commit}) {
-		return GatewayService.getBriefInfo()
-			.then((info: IGatewayBriefInfo) => commit('SET', info))
-			.catch(() => {return;});
+		return useApiClient().getGatewayServices().getInfoService().fetchBrief()
+			.then((info: GatewayBriefInformation) => commit('SET', info))
+			.catch((): void => {return;});
 	}
 };
 
@@ -45,7 +48,7 @@ const getters = {
 };
 
 const mutations: MutationTree<GatewayState> = {
-	SET(state: GatewayState, info: IGatewayBriefInfo) {
+	SET(state: GatewayState, info: GatewayBriefInformation): void {
 		state.info = info;
 	}
 };
