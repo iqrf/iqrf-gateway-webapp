@@ -20,14 +20,14 @@
 export interface IqrfRepositoryCredentials {
 
 	/**
-	 * Username
-	 */
-	username: string|null;
-
-	/**
 	 * Password
 	 */
 	password: string|null;
+
+	/**
+	 * Username
+	 */
+	username: string|null;
 
 }
 

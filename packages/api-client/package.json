@@ -1,6 +1,6 @@
 {
 	"name": "@iqrf/iqrf-gateway-webapp-client",
-	"version": "0.0.24",
+	"version": "0.1.0",
 	"description": "IQRF Gateway Webapp JavaScript client library",
 	"main": "./dist/src/index.js",
 	"types": "./dist/src/index.d.ts",
@@ -51,6 +51,7 @@
 		}
 	],
 	"license": "Apache-2.0",
+	"type": "module",
 	"dependencies": {
 		"axios": "^1.6.8",
 		"luxon": "^3.4.4",
@@ -68,7 +69,10 @@
 		"@vitest/spy": "^1.6.0",
 		"axios-mock-adapter": "^1.22.0",
 		"eslint": "^8.57.0",
+		"eslint-import-resolver-typescript": "^3.6.1",
 		"eslint-plugin-import": "^2.29.1",
+		"eslint-plugin-promise": "^6.1.1",
+		"eslint-plugin-typescript-sort-keys": "^3.1.0",
 		"ts-node": "^10.9.2",
 		"typedoc": "^0.25.13",
 		"typescript": "^5.4.5",

@@ -20,13 +20,13 @@
 export interface UserCredentials {
 
 	/**
-	 * User name
-	 */
-	username: string;
-
-	/**
 	 * User password
 	 */
 	password: string;
+
+	/**
+	 * User name
+	 */
+	username: string;
 
 }

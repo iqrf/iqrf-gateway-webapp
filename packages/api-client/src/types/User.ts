@@ -58,9 +58,9 @@ export enum UserRole {
 	Admin = 'admin',
 
 	/**
-	 * Normal user
+	 * Basic user
 	 */
-	Normal = 'normal',
+	Basic = 'basic',
 
 	/**
 	 * Basic user with user management
@@ -68,9 +68,9 @@ export enum UserRole {
 	BasicAdmin = 'basicadmin',
 
 	/**
-	 * Basic user
+	 * Normal user
 	 */
-	Basic = 'basic',
+	Normal = 'normal'
 
 }
 
@@ -78,11 +78,6 @@ export enum UserRole {
  * User base interface
  */
 export interface UserBase {
-
-	/**
-	 * User name
-	 */
-	username: string;
 
 	/**
 	 * User email
@@ -98,6 +93,11 @@ export interface UserBase {
 	 * User role
 	 */
 	role: UserRole;
+
+	/**
+	 * User name
+	 */
+	username: string;
 
 }
 
@@ -175,13 +175,13 @@ export interface UserPasswordChange {
 	baseUrl?: string;
 
 	/**
-	 * Current user password
-	 */
-	old: string;
-
-	/**
 	 * New user password
 	 */
 	new: string;
+
+	/**
+	 * Current user password
+	 */
+	old: string;
 
 }

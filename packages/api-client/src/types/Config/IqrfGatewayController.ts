@@ -59,14 +59,9 @@ export enum IqrfGatewayControllerMappingType {
 export interface IqrfGatewayControllerMapping {
 
 	/**
-	 * Mapping ID
+	 * Button GPIO pin
 	 */
-	id?: number;
-
-	/**
-	 * Mapping name
-	 */
-	name: string;
+	button: number;
 
 	/**
 	 * Device type
@@ -79,14 +74,19 @@ export interface IqrfGatewayControllerMapping {
 	greenLed: number;
 
 	/**
+	 * Mapping ID
+	 */
+	id?: number;
+
+	/**
+	 * Mapping name
+	 */
+	name: string;
+
+	/**
 	 * Red LED GPIO pin
 	 */
 	redLed: number;
-
-	/**
-	 * Button GPIO pin
-	 */
-	button: number;
 
 	/**
 	 * I2C clock GPIO pin

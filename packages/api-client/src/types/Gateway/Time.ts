@@ -20,23 +20,23 @@
 export interface TimeSet {
 
 	/**
+	 * Time to set if not synchronized
+	 */
+	datetime?: string,
+
+	/**
+	 * NTP servers
+	 */
+	ntpServers?: string[],
+
+	/**
 	 * Synchronize using NTP?
 	 */
-	ntpSync: boolean
+	ntpSync: boolean,
 
 	/**
 	 * Timezone to set
 	 */
 	zoneName?: string
-
-	/**
-	 * Time to set if not synchronized
-	 */
-	datetime?: string
-
-	/**
-	 * NTP servers
-	 */
-	ntpServers?: string[]
 
 }
