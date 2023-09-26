@@ -3,13 +3,13 @@ import { v4 as uuidv4 } from 'uuid';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
-import ClientSocket, { GenerickSocketState } from '@/modules/clientSocket';
+import ClientSocket, { GenericSocketState } from '@/modules/clientSocket';
 import UrlBuilder from '@/helpers/urlBuilder';
 import { useMonitorStore } from './monitorSocket';
 import type { DaemonApiRequest, DaemonApiResponse } from '@iqrf/iqrf-gateway-daemon-utils';
 import { DaemonMessage, DaemonMessageOptions, DaemonMode } from '@iqrf/iqrf-gateway-daemon-utils';
 
-interface DaemonState extends GenerickSocketState {
+interface DaemonState extends GenericSocketState {
 	receivedMessages: number;
 	requests: Record<string, string | DaemonApiRequest>;
 	responses: Record<string, string | DaemonApiResponse>;

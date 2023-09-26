@@ -1,4 +1,4 @@
-import { AccountState, UserCredentials, UserInfo, UserRole, UserSignedIn } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { AccountState, UserCredentials, UserInfo, UserRole, UserSessionExpiration, UserSignedIn } from '@iqrf/iqrf-gateway-webapp-client/types';
 import * as Sentry from '@sentry/vue';
 import { AxiosError } from 'axios';
 import { jwtDecode, JwtPayload } from 'jwt-decode';
@@ -12,12 +12,14 @@ import { useLocaleStore } from './locale';
 interface UserState {
 	user: UserSignedIn | null;
 	expiration: number;
+	requestedSessionExpiration: UserSessionExpiration | null;
 }
 
 export const useUserStore = defineStore('user', {
 	state: (): UserState => ({
 		user: null,
 		expiration: 0,
+		requestedSessionExpiration: null,
 	}),
 	actions: {
 		async refreshUserInfo(): Promise<void> {
@@ -64,11 +66,15 @@ export const useUserStore = defineStore('user', {
 			this.expiration = jwt.exp + diff;
 			return Promise.resolve();
 		},
+		setRequestedExpiration(expiration: UserSessionExpiration): void {
+			this.requestedSessionExpiration = expiration;
+		},
 		signIn(credentials: UserCredentials): Promise<void> {
 			return useApiClient().getAuthenticationService().signIn(credentials)
 				.then(async (user: UserSignedIn): Promise<void> => {
 					await this.processJwt(user.token);
 					this.setUserInfo(user);
+					this.setRequestedExpiration(credentials.expiration);
 					const localeStore = useLocaleStore();
 					localeStore.setLocale(user.language);
 				})
@@ -138,6 +144,12 @@ export const useUserStore = defineStore('user', {
 		},
 		getExpiration(state: UserState): number {
 			return state.expiration;
+		},
+		getLastRequestedExpiration(state: UserState): UserSessionExpiration {
+			if (state.requestedSessionExpiration === null) {
+				return UserSessionExpiration.Default;
+			}
+			return state.requestedSessionExpiration;
 		},
 	},
 	persist: true

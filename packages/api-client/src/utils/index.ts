@@ -15,5 +15,6 @@
  */
 
 export * from './DateTimeUtils';
+export * from './FileDownloader';
 export * from './SshKeyUtils';
 export * from './UserUtils';

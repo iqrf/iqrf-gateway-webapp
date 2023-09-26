@@ -75,6 +75,37 @@ export enum UserRole {
 }
 
 /**
+ * User session expiration enum
+ */
+export enum UserSessionExpiration {
+
+	/**
+	 * Default expiration (90 min)
+	 */
+	Default = 'default',
+
+	/**
+	 * 24 hours
+	 */
+	Day = 'day',
+
+	/**
+	 * Week
+	 */
+	Week = 'week',
+
+	/**
+	 * Month
+	 */
+	Month = 'month',
+
+	/**
+	 * Year
+	 */
+	Year = 'year'
+}
+
+/**
  * User base interface
  */
 export interface UserBase {
@@ -183,5 +214,22 @@ export interface UserPasswordChange {
 	 * Current user password
 	 */
 	old: string;
+
+}
+
+/**
+ * User account recovery interface
+ */
+export interface UserAccountRecovery {
+
+	/**
+	 * Base url
+	 */
+	baseUrl?: string;
+
+	/**
+	 * Username
+	 */
+	username: string;
 
 }

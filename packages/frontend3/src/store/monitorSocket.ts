@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia';
 import { DaemonMode, type MonitorMessage } from '@iqrf/iqrf-gateway-daemon-utils';
-import ClientSocket, { GenerickSocketState } from '@/modules/clientSocket';
+import ClientSocket, { GenericSocketState } from '@/modules/clientSocket';
 import UrlBuilder from '@/helpers/urlBuilder';
 
-interface MonitorState extends GenerickSocketState {
+interface MonitorState extends GenericSocketState {
 	mode: DaemonMode;
 	queueLength: number;
 	lastTimestamp: number;
@@ -79,6 +79,9 @@ export const useMonitorStore = defineStore('monitor', {
 		},
 	},
 	getters: {
+		isConnected(): boolean {
+			return this.connected;
+		},
 		/**
 		 * Returns current Daemon mode
 		 * @param {MonitorState} state Monitor state

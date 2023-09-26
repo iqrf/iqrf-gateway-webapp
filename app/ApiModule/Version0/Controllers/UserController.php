@@ -16,7 +16,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace App\ApiModule\Version0\Controllers;
 
@@ -32,6 +33,7 @@ use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\JwtConfigurator;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\ApiModule\Version0\RequestAttributes;
+use App\CoreModule\Enums\SessionExpiration;
 use App\CoreModule\Models\UserManager;
 use App\Exceptions\InvalidEmailAddressException;
 use App\Exceptions\InvalidPasswordException;
@@ -418,8 +420,13 @@ class UserController extends BaseController {
 		if (!$user->verifyPassword($credentials['password'])) {
 			throw new ClientErrorException('Invalid credentials', ApiResponse::S400_BAD_REQUEST);
 		}
+		if (array_key_exists('expiration', $credentials)) {
+			$expiration = SessionExpiration::from($credentials['expiration']);
+		} else {
+			$expiration = SessionExpiration::Default;
+		}
 		$json = $user->jsonSerialize();
-		$json['token'] = $this->createToken($user);
+		$json['token'] = $this->createToken($user, $expiration);
 		return $response->writeJsonBody($json);
 	}
 
@@ -465,9 +472,10 @@ class UserController extends BaseController {
 	/**
 	 * Creates a new JWT token
 	 * @param User $user User
+	 * @param SessionExpiration|null $expiration Session expiration
 	 * @return string JWT token
 	 */
-	private function createToken(User $user): string {
+	private function createToken(User $user, ?SessionExpiration $expiration = null): string {
 		try {
 			$now = new DateTimeImmutable();
 			$us = $now->format('u');
@@ -475,12 +483,15 @@ class UserController extends BaseController {
 		} catch (Throwable $e) {
 			throw new ServerErrorException('Date creation error', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
+		if ($expiration === null) {
+			$expiration = SessionExpiration::Default;
+		}
 		$configuration = $this->jwtConfigurator->create();
 		$hostname = gethostname();
 		$builder = $configuration->builder();
 		$builder = $builder->issuedAt($now);
 		$builder = $builder->canOnlyBeUsedAfter($now);
-		$builder = $builder->expiresAt($now->modify('+90 min'));
+		$builder = $builder->expiresAt($now->modify($expiration->toDateModify()));
 		$builder = $builder->withClaim('uid', $user->getId());
 		if ($hostname !== false) {
 			$builder = $builder->issuedBy($hostname);
@@ -490,5 +501,4 @@ class UserController extends BaseController {
 		$signingKey = $configuration->signingKey();
 		return $builder->getToken($signer, $signingKey)->toString();
 	}
-
 }

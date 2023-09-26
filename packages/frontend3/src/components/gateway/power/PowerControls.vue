@@ -15,9 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<Head>
-		<title>{{ $t('gateway.power.title') }}</title>
-	</Head>
 	<Card>
 		<template #title>{{ $t('gateway.power.title') }}</template>
 		<v-btn
@@ -36,12 +33,7 @@ limitations under the License.
 	</Card>
 </template>
 
-<route lang='yaml'>
-name: PowerControl
-</route>
-
 <script lang='ts' setup>
-import { Head } from '@vueuse/head';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 

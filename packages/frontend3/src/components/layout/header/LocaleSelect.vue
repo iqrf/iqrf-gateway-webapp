@@ -1,5 +1,5 @@
 <template>
-	<v-menu location='bottom end'>
+	<v-menu location='bottom'>
 		<template #activator='{ props }'>
 			<v-btn
 				class='mr-2'
@@ -8,6 +8,8 @@
 				color='white'
 				size='small'
 				:ripple='false'
+				width='55'
+				height='36'
 			>
 				<img height='16' :src='"data:image/svg+xml;charset=utf-8;base64," + localeStore.getLocaleFlag' />
 			</v-btn>
