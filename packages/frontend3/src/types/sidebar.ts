@@ -1,4 +1,4 @@
-import { UserRole } from '@iqrf/iqrf-gateway-webapp-client';
+import { UserRole } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { RouteLocationRaw } from 'vue-router';
 
 /**

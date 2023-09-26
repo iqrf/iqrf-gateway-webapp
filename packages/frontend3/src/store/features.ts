@@ -1,4 +1,5 @@
-import { FeatureConfig, Features, Client } from '@iqrf/iqrf-gateway-webapp-client';
+import { Client } from '@iqrf/iqrf-gateway-webapp-client';
+import { FeatureConfig, Features } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { defineStore } from 'pinia';
 import UrlBuilder from '@/helpers/urlBuilder';
 

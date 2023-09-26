@@ -1,4 +1,4 @@
-import { UserLanguage, UserRole } from '@iqrf/iqrf-gateway-webapp-client';
+import { UserLanguage, UserRole } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { computed, ComputedRef } from 'vue';
 
 import { SelectItem } from '@/types/vuetify';

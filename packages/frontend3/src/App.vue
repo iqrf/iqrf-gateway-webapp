@@ -6,7 +6,7 @@
 </template>
 
 <script lang='ts' setup>
-import type { InstallationChecks } from '@iqrf/iqrf-gateway-webapp-client';
+import type { InstallationChecks } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { AxiosError } from 'axios';
 import { onBeforeMount } from 'vue';
 import { storeToRefs } from 'pinia';
