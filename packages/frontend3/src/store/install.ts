@@ -1,4 +1,4 @@
-import { InstallationCheckDependency, InstallationCheckPhpMissingExtensions } from '@iqrf/iqrf-gateway-webapp-client';
+import { InstallationCheckDependency, InstallationCheckPhpMissingExtensions } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { defineStore } from 'pinia';
 
 interface InstallState {

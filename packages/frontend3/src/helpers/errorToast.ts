@@ -1,4 +1,4 @@
-import { ErrorResponse } from '@iqrf/iqrf-gateway-webapp-client';
+import { ErrorResponse } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { AxiosError } from 'axios';
 import { toast } from 'vue3-toastify';
 import i18n from '@/plugins/i18n';

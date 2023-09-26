@@ -25,7 +25,7 @@
 </template>
 
 <script lang='ts' setup>
-import { UserSignedIn } from '@iqrf/iqrf-gateway-webapp-client';
+import { UserSignedIn } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { onBeforeUnmount, onMounted, ref, Ref  } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';

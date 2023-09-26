@@ -61,7 +61,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { VForm } from 'vuetify/components';
 import { toast } from 'vue3-toastify';
 
-import { UserCredentials } from '@iqrf/iqrf-gateway-webapp-client';
+import { UserCredentials } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { useUserStore } from '@/store/user';
 
 import PasswordInput from '@/components/PasswordInput.vue';
