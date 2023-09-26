@@ -18,24 +18,7 @@ limitations under the License.
 	<Head>
 		<title>{{ $t('gateway.power.title') }}</title>
 	</Head>
-	<Card>
-		<template #title>{{ $t('gateway.power.title') }}</template>
-		<v-btn
-			color='error'
-			class='mr-1'
-			:prepend-icon='mdiPower'
-			@click='powerOff'
-		>
-			{{ $t('gateway.power.powerOff') }}
-		</v-btn>
-		<v-btn
-			color='primary'
-			:prepend-icon='mdiReload'
-			@click='reboot'
-		>
-			{{ $t('gateway.power.reboot') }}
-		</v-btn>
-	</Card>
+	<PowerControls />
 </template>
 
 <route lang='yaml'>
@@ -43,50 +26,7 @@ name: PowerControl
 </route>
 
 <script lang='ts' setup>
-
 import { Head } from '@vueuse/head';
-import { useI18n } from 'vue-i18n';
-import { toast } from 'vue3-toastify';
+import PowerControls from '@/components/gateway/power/PowerControls.vue';
 
-import Card from '@/components/Card.vue';
-
-import { basicErrorToast } from '@/helpers/errorToast';
-import { useApiClient } from '@/services/ApiClient';
-import { mdiPower, mdiReload } from '@mdi/js';
-
-import { AxiosError } from 'axios';
-import { PowerActionResponse } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
-import { PowerService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
-
-const i18n = useI18n();
-const service: PowerService = useApiClient().getGatewayServices().getPowerService();
-
-function powerOff(): void {
-	service.powerOff()
-		.then((response: PowerActionResponse) =>
-			toast.success(
-				i18n.t('gateway.power.messages.powerOffSuccess', {time: parseActionTime(response.timestamp)}).toString()
-			)
-		).catch((error: AxiosError) =>
-			basicErrorToast(error, 'gateway.power.messages.powerOffFailed')
-		);
-}
-
-function reboot(): void {
-	service.reboot()
-		.then((response: PowerActionResponse) =>
-			toast.success(
-				i18n.t('gateway.power.messages.rebootSuccess', {time: parseActionTime(response.timestamp)}).toString()
-			)
-		).catch((error: AxiosError) =>
-			basicErrorToast(error, 'gateway.power.messages.rebootFailed')
-		);
-}
-
-/**
- * Converts timestamp to time string
- */
-function parseActionTime(timestamp: number): string {
-	return new Date(timestamp * 1000).toLocaleTimeString();
-}
 </script>

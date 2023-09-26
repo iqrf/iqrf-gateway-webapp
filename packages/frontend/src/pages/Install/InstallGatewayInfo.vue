@@ -95,7 +95,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {InfoService} from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
+import type {InfoService} from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
 import {
 	GatewayInformation
 } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';

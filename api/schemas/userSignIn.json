@@ -20,6 +20,12 @@
 			"type": "string",
 			"title": "Password",
 			"example": "iqrf"
+		},
+		"expiration": {
+			"$id": "#/properties/expiration",
+			"title": "Session expiration",
+			"type": "string",
+			"enum": ["default", "day", "week", "month", "year"]
 		}
 	}
 }

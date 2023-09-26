@@ -1,6 +1,6 @@
 import type { DaemonApiRequest } from '@iqrf/iqrf-gateway-daemon-utils';
 
-export interface GenerickSocketState {
+export interface GenericSocketState {
 	socket: InstanceType<typeof ClientSocket> | null;
 	connected: boolean;
 	reconnecting: boolean;

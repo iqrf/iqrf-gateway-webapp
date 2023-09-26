@@ -8,24 +8,25 @@
 <script lang='ts' setup>
 import type { InstallationChecks } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { AxiosError } from 'axios';
-import { onBeforeMount } from 'vue';
+import { onBeforeMount, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import router from '@/router';
 
 import { useApiClient } from '@/services/ApiClient';
-//import { useDaemonStore } from '@/store/daemonSocket';
+import { useDaemonStore } from '@/store/daemonSocket';
 import { useFeatureStore } from '@/store/features';
 import { useInstallStore } from '@/store/install';
 import { useUserStore } from '@/store/user';
 
 import SessionExpirationDialog from '@/components/SessionExpirationDialog.vue';
 
-/*const daemonStore = useDaemonStore();
-const {isConnected} = storeToRefs(daemonStore);*/
+const daemonStore = useDaemonStore();
+const {isConnected} = storeToRefs(daemonStore);
 
 const featureStore = useFeatureStore();
 
 const installStore = useInstallStore();
+installStore.populateSteps();
 const {isChecked} = storeToRefs(installStore);
 
 const userStore = useUserStore();
@@ -37,6 +38,9 @@ onBeforeMount(async () => {
 		.then((check: InstallationChecks): void => {
 			const isInstallUrl: boolean = router.currentRoute.value.path.startsWith('/install/');
 			const errorUrl: boolean = router.currentRoute.value.path.startsWith('/install/error/');
+			if (check.hasUsers !== undefined) {
+				installStore.setUsers(check.hasUsers);
+			}
 			if (check.dependencies.length !== 0) {
 				installStore.setMissingDependencies(check.dependencies);
 				installStore.setChecked();
@@ -58,7 +62,7 @@ onBeforeMount(async () => {
 				router.push({name: 'MissingMigration'});
 			} else if (!check.hasUsers && !isInstallUrl) {
 				installStore.setChecked();
-				router.push('/install/');
+				router.push({name: 'InstallDisambiguation'});
 			} else if (check.hasUsers && (isInstallUrl || errorUrl)) {
 				installStore.setChecked();
 				router.push('/sign/in');
@@ -75,10 +79,10 @@ onBeforeMount(async () => {
 		});
 });
 
-/*watch(isConnected, (newVal) => {
+watch(isConnected, (newVal) => {
 	if (newVal) {
 		daemonStore.sendVersionRequest();
 	}
-});*/
+});
 
 </script>

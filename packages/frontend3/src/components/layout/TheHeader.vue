@@ -4,8 +4,8 @@
 			<v-app-bar-nav-icon @click='sidebarStore.toggleVisibility()' />
 			<v-app-bar-title class='logo'>
 				<router-link to='/'>
-					<img v-if='display.mobile.value' :src='IqarosLogoSmall' />
-					<img v-else :src='IqarosLogo' />
+					<img v-if='display.mobile.value' :src='LogoSmall' />
+					<img v-else :src='Logo' />
 				</router-link>
 			</v-app-bar-title>
 			<v-spacer />
@@ -19,8 +19,8 @@
 <script lang='ts' setup>
 import UserControlsMenu from '@/components/layout/header/UserControlsMenu.vue';
 import UserControls from '@/components/layout/header/UserControls.vue';
-import IqarosLogoSmall from '@/assets/themes/generic/logo-small.svg?url';
-import IqarosLogo from '@/assets/themes/generic/logo-white.svg?url';
+import LogoSmall from '@/assets/themes/generic/logo-small.svg?url';
+import Logo from '@/assets/themes/generic/logo-white.svg?url';
 import LocaleSelect from '@/components/layout/header/LocaleSelect.vue';
 import { useSidebarStore } from '@/store/sidebar';
 import { useDisplay } from 'vuetify';
@@ -31,7 +31,7 @@ const sidebarStore = useSidebarStore();
 const display = useDisplay();
 </script>
 
-<style lang='scss'>
+<style lang='scss' scoped>
 .logo {
 	img {
 		max-width: 100%;

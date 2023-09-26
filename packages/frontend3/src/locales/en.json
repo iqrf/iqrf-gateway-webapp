@@ -115,6 +115,14 @@
 		"sign": {
 			"in": {
 				"title": "Sign in",
+				"expiration": "Session expiration",
+				"expirations": {
+					"default": "90 minutes",
+					"day": "1 day",
+					"week": "1 week",
+					"month": "1 month",
+					"year": "1 year"
+				},
 				"recoverPassword": "Forgot password?",
 				"messages": {
 					"incorrectUsernameOrPassword": "The username or password you entered is incorrect.",
@@ -220,8 +228,134 @@
 			"text": "The page you requested could not be found. The address may be incorrect, or the page no longer exists."
 		}
 	},
+	"install": {
+		"title": "Installation wizard",
+		"invitation": "Welcome to IQRF Gateway Webapp. Before getting started, you have to create the webapp's first user.",
+		"steps": {
+			"introduction": "Introduction",
+			"smtp": "Configure SMTP server",
+			"webappUser": "Create webapp user",
+			"gatewayUser": "Set gateway user",
+			"sshKeys": "Add SSH keys",
+			"sshService": "SSH service"
+		},
+		"createUser": {
+			"title": "Create a new user",
+			"failure": "Failed to create new webapp user: {error}",
+			"note": "Create a new Webapp user to access the web interface.",
+			"createButton": "Create user"
+		},
+		"gwUser": {
+			"title": "Set gateway user password",
+			"note": "Set gateway user password to access the device via login shell."
+		},
+		"ssh": {
+			"title": "Set SSH service status",
+			"states": {
+				"enable": "Start SSH service on every boot.",
+				"start": "Start SSH service now, once.",
+				"disable": "Do not start SSH service."
+			},
+			"state": "Service status *",
+			"messages": {
+				"serviceError": "Failed to set service status: {error}",
+				"note": "Set SSH service status to access the device via SSH.",
+				"reminder": "* SSH service status can be changed later in the Gateway menu."
+			}
+		},
+		"error": {
+			"howToFix": "How to fix it",
+			"missingDependency": {
+				"title": "One or more dependencies are missing",
+				"description": "IQRF Gateway Webapp did not detect the following dependencies: {dependencies}.",
+				"details": "Details",
+				"command": "Missing command",
+				"package": "Package"
+			},
+			"missingExtension": {
+				"title": "One or more PHP extensions are missing",
+				"description": "IQRF Gateway Webapp did not detect the following required extensions: {extensions}.",
+				"fixDescription": "Install packages containing missing PHP extensions.",
+				"fixDescriptionDebian": "Use the following commands to install packages containing the required PHP extensions:"
+			},
+			"missingMigration": {
+				"title": "Some database table is missing",
+				"description": "IQRF Gateway Webapp cannot find some table in the SQLite3 database.",
+				"fixDescription": "Run these commands in terminal:"
+			},
+			"sudo": {
+				"title": "Sudo error",
+				"missing": "IQRF Gateway Webapp did not detect the sudo utility.",
+				"invalid": "IQRF Gateway Webapp cannot execute commands with sudo.",
+				"fixMissing": "Enter interactive shell as root and install sudo utility using the following commands:",
+				"fixInvalid": "Allow user www-data to execute commands with sudo using the following commands:"
+			}
+		},
+		"gwInfo": {
+			"title": "Some information about this gateway",
+			"button": "Show GW info",
+			"download": "Download as JSON"
+		},
+		"restore": {
+			"title": "Restore gateway from backup",
+			"button": "Restore gateway"
+		},
+		"messages": {
+			"check": "Running installation check…",
+			"finished": "Installation process successfully completed."
+		}
+	},
 	"gateway": {
 		"title": "Gateway",
+		"info": {
+			"title": "Information",
+			"description": "Show information about this gateway.",
+			"board": "Board",
+			"os": "Operating system",
+			"gwId": "IQRF Gateway ID",
+			"gwImage": "IQRF Gateway image",
+			"version": {
+				"iqrfGatewayController": "IQRF Gateway Controller",
+				"iqrfGatewayDaemon": "IQRF Gateway Daemon",
+				"iqrfGatewaySetter": "IQRF Gateway Setter",
+				"iqrfGatewayUploader": "IQRF Gateway Uploader",
+				"iqrfGatewayWebapp": "IQRF Gateway Webapp"
+			},
+			"hostname": "Hostname",
+			"uptime": "Uptime",
+			"addresses": {
+				"ip": "IP addresses",
+				"mac": "MAC addresses"
+			},
+			"tr": {
+				"title": "TR info",
+				"error": "Cannot get information about the Coordinator.",
+				"moduleType": "Module type",
+				"mcuType": "MCU type",
+				"moduleId": "MID",
+				"os": "OS",
+				"dpa": "DPA",
+				"hwpid": "HWPID",
+				"hwpidVersion": "HWPID ver.",
+				"voltage": "Supply voltage"
+			},
+			"usages": {
+				"memory": "Memory usage",
+				"disks": "Disk usages",
+				"swap": "Swap usage",
+				"used": "Used"
+			},
+			"gwMode": "Daemon mode",
+			"diagnostics": "Download diagnostics"
+		},
+		"mode": {
+			"modes": {
+				"forwarding": "Forwarding mode",
+				"operational": "Operational mode",
+				"service": "Service mode",
+				"unknown": "Unknown"
+			}
+		},
 		"power": {
 			"title": "Power control",
 			"description": "Powers off or reboots this gateway.",

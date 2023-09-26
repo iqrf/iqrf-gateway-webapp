@@ -17,7 +17,7 @@ import type {AxiosResponse} from 'axios';
 
 import {BaseService} from './BaseService';
 
-import type {EmailSentResponse, UserEdit, UserInfo, UserPasswordChange} from '../types';
+import type {EmailSentResponse, UserAccountRecovery, UserEdit, UserInfo, UserPasswordChange} from '../types';
 import {UserUtils} from '../utils';
 
 /**
@@ -52,6 +52,15 @@ export class AccountService extends BaseService {
 		return this.axiosInstance.put('/user/password', change)
 			.then((): void => {return;});
 
+	}
+
+	/**
+	 * Request user account recovery
+	 * @param {UserAccountRecovery} recovery Account recovery request
+	 */
+	public requestPasswordRecovery(recovery: UserAccountRecovery): Promise<void> {
+		return this.axiosInstance.post('/user/password/recovery/', recovery)
+			.then((): void => {return});
 	}
 
 	/**

@@ -1,4 +1,4 @@
-import { UserLanguage, UserRole } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { UserLanguage, UserRole, UserSessionExpiration } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { computed, ComputedRef } from 'vue';
 
 import { SelectItem } from '@/types/vuetify';
@@ -22,6 +22,18 @@ export function getRoleOptions(): ComputedRef<Array<SelectItem>> {
 		return roles.map((item: UserRole): SelectItem => {
 			return {
 				title: i18n.global.t(`user.roles.${item}`).toString(),
+				value: item,
+			};
+		});
+	});
+}
+
+export function getExpirationOptions(): ComputedRef<Array<SelectItem>> {
+	return computed(() => {
+		const expirations = Object.values(UserSessionExpiration);
+		return expirations.map((item: UserSessionExpiration): SelectItem => {
+			return {
+				title: i18n.global.t(`auth.sign.in.expirations.${item}`).toString(),
 				value: item,
 			};
 		});
