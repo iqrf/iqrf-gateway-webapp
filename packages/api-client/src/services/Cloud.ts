@@ -14,23 +14,33 @@
  * limitations under the License.
  */
 
-import {BaseService} from '../BaseService';
+import {BaseService} from './BaseService';
 
-import {DpaMacrosService} from './DpaMacrosService';
+import {AwsService} from './Cloud/AwsService';
+import {AzureService} from './Cloud/AzureService';
 
-export * from './DpaMacrosService';
+export * from './Cloud/AwsService';
+export * from './Cloud/AzureService';
 
 /**
- * IQRF services
+ * Cloud services
  */
-export class IqrfServices extends BaseService {
+export class CloudServices extends BaseService {
 
 	/**
-	 * Returns DPA macros service
-	 * @return {DpaMacrosService} DPA macros service
+	 * Returns AWS IoT service
+	 * @return {AwsService} AWS IoT service
 	 */
-	public getDpaMacrosService(): DpaMacrosService {
-		return new DpaMacrosService(this.apiClient);
+	public getAwsService(): AwsService {
+		return new AwsService(this.apiClient);
+	}
+
+	/**
+	 * Returns Azure IoT Hub service
+	 * @return {AzureService} Azure IoT Hub service
+	 */
+	public getAzureService(): AzureService {
+		return new AzureService(this.apiClient);
 	}
 
 }

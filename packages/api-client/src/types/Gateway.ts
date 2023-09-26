@@ -14,32 +14,7 @@
  * limitations under the License.
  */
 
-import {BaseService} from '../BaseService';
-
-import {AwsService} from './AwsService';
-import {AzureService} from './AzureService';
-
-export * from './AwsService';
-
-/**
- * Cloud services
- */
-export class CloudServices extends BaseService {
-
-	/**
-	 * Returns AWS IoT service
-	 * @return {AwsService} AWS IoT service
-	 */
-	public getAwsService(): AwsService {
-		return new AwsService(this.apiClient);
-	}
-
-	/**
-	 * Returns Azure IoT Hub service
-	 * @return {AzureService} Azure IoT Hub service
-	 */
-	public getAzureService(): AzureService {
-		return new AzureService(this.apiClient);
-	}
-
-}
+export * from './Gateway/Info';
+export * from './Gateway/Power';
+export * from './Gateway/SshKey';
+export * from './Gateway/Time';

@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-import {BaseService} from '../BaseService';
+import {BaseService} from './BaseService';
 
-import {IqrfGatewayControllerService} from './IqrfGatewayControllerService';
-import {IqrfRepositoryService} from './IqrfRepositoryService';
-import {MailerService} from './MailerService';
+import {IqrfGatewayControllerService} from './Config/IqrfGatewayControllerService';
+import {IqrfRepositoryService} from './Config/IqrfRepositoryService';
+import {MailerService} from './Config/MailerService';
 
-export * from './IqrfGatewayControllerService';
-export * from './IqrfRepositoryService';
-export * from './MailerService';
+export * from './Config/IqrfGatewayControllerService';
+export * from './Config/IqrfRepositoryService';
+export * from './Config/MailerService';
 
 /**
  * Configuration services

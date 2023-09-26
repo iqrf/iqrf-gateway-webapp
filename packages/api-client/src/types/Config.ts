@@ -14,5 +14,6 @@
  * limitations under the License.
  */
 
-export * from './Aws';
-export * from './Azure';
+export * from './Config/IqrfGatewayController';
+export * from './Config/IqrfRepository';
+export * from './Config/Mailer';
