@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-import { BaseService } from '../BaseService';
+import { BaseService } from './BaseService';
 
-import { InfoService } from './InfoService';
-import { PowerService } from './PowerService';
-import { SshKeyService } from './SshKeyService';
+import { InfoService } from './Gateway/InfoService';
+import { PowerService } from './Gateway/PowerService';
+import { SshKeyService } from './Gateway/SshKeyService';
 
-export * from './InfoService';
-export * from './PowerService';
-export * from './SshKeyService';
+export * from './Gateway/InfoService';
+export * from './Gateway/PowerService';
+export * from './Gateway/SshKeyService';
 
 /**
  * IQRF Gateway services

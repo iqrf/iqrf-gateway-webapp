@@ -14,6 +14,23 @@
  * limitations under the License.
  */
 
-export * from './IqrfGatewayController';
-export * from './IqrfRepository';
-export * from './Mailer';
+import {BaseService} from './BaseService';
+
+import {DpaMacrosService} from './Iqrf/DpaMacrosService';
+
+export * from './Iqrf/DpaMacrosService';
+
+/**
+ * IQRF services
+ */
+export class IqrfServices extends BaseService {
+
+	/**
+	 * Returns DPA macros service
+	 * @return {DpaMacrosService} DPA macros service
+	 */
+	public getDpaMacrosService(): DpaMacrosService {
+		return new DpaMacrosService(this.apiClient);
+	}
+
+}
