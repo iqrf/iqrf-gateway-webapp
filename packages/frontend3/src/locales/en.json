@@ -249,20 +249,6 @@
 			"title": "Set gateway user password",
 			"note": "Set gateway user password to access the device via login shell."
 		},
-		"ssh": {
-			"title": "Set SSH service status",
-			"states": {
-				"enable": "Start SSH service on every boot.",
-				"start": "Start SSH service now, once.",
-				"disable": "Do not start SSH service."
-			},
-			"state": "Service status *",
-			"messages": {
-				"serviceError": "Failed to set service status: {error}",
-				"note": "Set SSH service status to access the device via SSH.",
-				"reminder": "* SSH service status can be changed later in the Gateway menu."
-			}
-		},
 		"error": {
 			"howToFix": "How to fix it",
 			"missingDependency": {
@@ -403,6 +389,95 @@
 			"success": "Your session has been successfully renewed.",
 			"failed": "Failed to renew session.",
 			"indicator": "Session will expire in: "
+		}
+	},
+	"common": {
+		"buttons": {
+			"add": "Add",
+			"edit": "Edit",
+			"delete": "Delete",
+			"save": "Save",
+			"cancel": "Cancel",
+			"close": "Close",
+			"skip": "Skip"
+		},
+		"labels": {
+			"description": "Description"
+		},
+		"columns": {
+			"id": "ID",
+			"description": "Description",
+			"actions": "Actions"
+		}
+	},
+	"components": {
+		"apiKeys": {
+			"form": {
+				"addTitle": "Add API key",
+				"editTitle": "Edit API key",
+				"expiration": "Set expiration"
+			},
+			"table": {
+				"expiration": "Expiration"
+			},
+			"delete": {
+				"title": "API key delete confirmation",
+				"prompt": "Are you sure you want to delete API key ID {id}?"
+			},
+			"validation": {
+				"descriptionMissing": "Please enter API key description."
+			}
+		},
+		"sshKeys": {
+			"form": {
+				"addTitle": "Add SSH key",
+				"editTitle": "Edit SSH key"
+			},
+			"table": {
+				"createdAt": "Date created",
+				"type": "Key type",
+				"hash": "Hash",
+				"key": "Public key"
+			},
+			"delete": {
+				"title": "SSH public key delete confirmation",
+				"prompt": "Are you sure you want to delete SSH public key ID {id}?"
+			},
+			"installNote": "Add SSH public keys to be used for key-based authorization when accessing the device.",
+			"supported": "The following SSH key types are supported.",
+			"noneSupported": "No SSH key type supported.",
+			"fetchFailed": "Failed to retrieve list of supported SSH key types."
+		},
+		"sshService": {
+			"note": "Set SSH service status.",
+			"enable": "Start SSH service on every boot.",
+			"start": "Start SSH service now, once.",
+			"disable": "Do not start SSH service."
+		}
+	},
+	"pages": {
+		"install": {
+			"title": "Installation wizard",
+			"user": {
+				"title": "Create a new user"
+			},
+			"smtp": {
+				"title": "Configure SMTP server"
+			},
+			"sshKeys": {
+				"title": "Add SSH keys"
+			},
+			"sshService": {
+				"title": "SSH service"
+			}
+		},
+		"management": {
+			"apiKeys": {
+				"title": "API keys"
+			},
+			"sshKeys": {
+				"title": "SSH keys"
+			}
 		}
 	}
 }

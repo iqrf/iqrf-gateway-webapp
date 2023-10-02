@@ -15,7 +15,7 @@
 
 						color='primary'
 						:complete='currentStep !== null && currentStep.index > step.index'
-						:title='step.title'
+						:title='$t(step.title)'
 						:value='step.index'
 					/>
 				</template>

@@ -67,7 +67,7 @@ export interface MailerConfig {
 	/**
 	 * Context for connecting to the SMTP server
 	 */
-	context: any[];
+	context?: any[];
 
 	/**
 	 * SMTP server enablement
@@ -92,7 +92,7 @@ export interface MailerConfig {
 	/**
 	 * Persistent connection to the SMTP server
 	 */
-	persistent: boolean;
+	persistent?: boolean;
 
 	/**
 	 * SMTP server port
@@ -112,7 +112,7 @@ export interface MailerConfig {
 	/**
 	 * SMTP server timeout
 	 */
-	timeout: number;
+	timeout?: number;
 
 	/**
 	 * SMTP server username

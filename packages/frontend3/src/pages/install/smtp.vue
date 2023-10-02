@@ -1,8 +1,8 @@
 <template>
 	<Head>
-		<title>{{ $t('install.smtp.title') }}</title>
+		<title>{{ $t('pages.install.smtp.title') }} | {{ $t('pages.install.title') }}</title>
 	</Head>
-	<InstallSmtpForm />
+	<SmtpForm :install='true' />
 </template>
 
 <route lang='yaml'>
@@ -15,5 +15,5 @@ meta:
 
 <script lang='ts' setup>
 import { Head } from '@vueuse/head';
-import InstallSmtpForm from '@/components/install/InstallSmtpForm.vue';
+import SmtpForm from '@/components/config/SmtpForm.vue';
 </script>

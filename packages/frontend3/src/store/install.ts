@@ -3,7 +3,6 @@ import { defineStore } from 'pinia';
 
 import { useFeatureStore } from './features';
 import { useRoute } from 'vue-router';
-import { useI18n } from 'vue-i18n';
 
 interface InstallState {
 	checked: boolean;
@@ -42,42 +41,41 @@ export const useInstallStore = defineStore('install', {
 		},
 		populateSteps(): void {
 			const featureStore = useFeatureStore();
-			const i18n = useI18n();
 			const steps: InstallStep[] = [
 				{
-					index: 0,
-					route: 'InstallDisambiguation',
-					title: i18n.t('install.steps.introduction').toString(),
-				},
-				{
 					index: 1,
-					route: 'InstallUser',
-					title: i18n.t('install.steps.webappUser').toString(),
+					route: 'InstallDisambiguation',
+					title: 'install.steps.introduction',
 				},
 				{
 					index: 2,
+					route: 'InstallUser',
+					title: 'install.steps.webappUser',
+				},
+				{
+					index: 3,
 					route: 'InstallSmtp',
-					title: i18n.t('install.steps.smtp').toString(),
+					title: 'install.steps.smtp',
 				},
 			];
 			if (featureStore.isEnabled('gatewayPass')) {
 				steps.push({
-					index: steps.length,
+					index: steps.length + 1,
 					route: 'InstallGwUser',
-					title: i18n.t('install.steps.gatewayUser').toString(),
+					title: 'install.steps.gatewayUser',
 				});
 			}
 			if (featureStore.isEnabled('ssh')) {
 				steps.push(
 					{
-						index: steps.length,
+						index: steps.length + 1,
 						route: 'InstallSshKeys',
-						title: i18n.t('install.steps.sshKeys').toString(),
+						title: 'install.steps.sshKeys',
 					},
 					{
-						index: steps.length + 1,
+						index: steps.length + 2,
 						route: 'InstallSshService',
-						title: i18n.t('install.steps.sshService').toString(),
+						title: 'install.steps.sshService',
 					},
 				);
 			}
@@ -96,6 +94,9 @@ export const useInstallStore = defineStore('install', {
 		},
 		getCurrentStep(): InstallStep|null {
 			const route = useRoute();
+			if (route === undefined) {
+				return null;
+			}
 			const step = this.steps.find((item: InstallStep) => item.route === route.name);
 			if (step === undefined) {
 				return null;
@@ -104,10 +105,10 @@ export const useInstallStore = defineStore('install', {
 		},
 		getNextStep(): InstallStep|null {
 			const step = this.getCurrentStep;
-			if (step === null || step.index - 1 >= this.steps.length) {
+			if (step === null || step.index >= this.steps.length) {
 				return null;
 			}
-			return this.steps[step.index + 1];
+			return this.steps[step.index];
 		}
 	}
 });

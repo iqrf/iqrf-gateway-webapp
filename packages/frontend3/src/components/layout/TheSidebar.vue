@@ -27,7 +27,7 @@ import { useUserStore } from '@/store/user';
 
 import { SidebarLink } from '@/types/sidebar';
 import { useFeatureStore } from '@/store/features';
-import { mdiAccountKey, mdiBook, mdiChevronLeft, mdiChevronRight, mdiDesktopTower, mdiLogin, mdiPower } from '@mdi/js';
+import { mdiAccountDetails, mdiAccountKey, mdiApi, mdiBook, mdiChevronLeft, mdiChevronRight, mdiCog, mdiDesktopTower, mdiEmailEdit, mdiLock, mdiLogin, mdiPower, mdiSsh } from '@mdi/js';
 import { computed } from 'vue';
 
 const i18n = useI18n();
@@ -69,7 +69,34 @@ function items(): SidebarLink[] {
 						to: '/gateway/power',
 					},
 				],
-			}
+			},
+			{
+				title: 'Config',
+				icon: mdiCog,
+				children: [
+					{
+						title: 'SMTP',
+						icon: mdiEmailEdit,
+						to: '/config/smtp',
+					},
+				],
+			},
+			{
+				title: 'Management',
+				icon: mdiLock,
+				children: [
+					{
+						title: i18n.t('pages.management.apiKeys.title'),
+						icon: mdiApi,
+						to: '/management/api-keys',
+					},
+					{
+						title: i18n.t('pages.management.sshKeys.title'),
+						icon: mdiSsh,
+						to: '/management/ssh-keys',
+					},
+				],
+			},
 		];
 	} else {
 		links = [

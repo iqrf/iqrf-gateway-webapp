@@ -26,7 +26,6 @@ const {isConnected} = storeToRefs(daemonStore);
 const featureStore = useFeatureStore();
 
 const installStore = useInstallStore();
-installStore.populateSteps();
 const {isChecked} = storeToRefs(installStore);
 
 const userStore = useUserStore();
@@ -38,6 +37,7 @@ onBeforeMount(async () => {
 		.then((check: InstallationChecks): void => {
 			const isInstallUrl: boolean = router.currentRoute.value.path.startsWith('/install/');
 			const errorUrl: boolean = router.currentRoute.value.path.startsWith('/install/error/');
+			installStore.populateSteps();
 			if (check.hasUsers !== undefined) {
 				installStore.setUsers(check.hasUsers);
 			}
