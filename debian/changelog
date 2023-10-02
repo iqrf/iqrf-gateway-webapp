@@ -1,10 +1,12 @@
-iqrf-gateway-webapp (2.5.11~alpha~1.gbp4dde35) UNRELEASED; urgency=medium
+iqrf-gateway-webapp (2.5.11) stable; urgency=medium
 
-  ** SNAPSHOT build @4dde358c360f7f3f4ddb0796633b7cfd271e0d45 **
+  [ Roman Ondráček ]
+  * Prepare for version 2.5.11-alpha
 
-  * UNRELEASED
+  [ Karel Hanák ]
+  * Schedulermanager: fixed task file duplication when saving tasks
 
- -- Roman Ondráček <mail@romanondracek.cz>  Mon, 25 Sep 2023 13:44:25 +0200
+ -- Karel Hanák <karel.hanak@iqrf.org>  Mon, 02 Oct 2023 13:12:49 +0200
 
 iqrf-gateway-webapp (2.5.10) stable; urgency=medium
 
