@@ -164,7 +164,7 @@ class SchedulerManager {
 	 */
 	public function save(stdClass $config, ?string $fileName): void {
 		if ($fileName === null) {
-			$fileName = strval($config->taskId);
+			$fileName = strval($config->taskId . '.json');
 		}
 		foreach ($config->task as &$task) {
 			if (!isset($task->message->data->timeout)) {
@@ -179,7 +179,7 @@ class SchedulerManager {
 			$config->timeSpec->period = 0;
 		}
 		$this->schemaManager->validate($config);
-		$this->fileManager->writeJson($fileName . '.json', $config);
+		$this->fileManager->writeJson($fileName, $config);
 	}
 
 	/**
