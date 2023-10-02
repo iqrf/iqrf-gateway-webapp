@@ -229,7 +229,7 @@ export default class SshKeyList extends Vue {
 	 */
 	private listKeys(): Promise<void> {
 		this.loading = true;
-		return this.sshKeyService.listKeys()
+		return this.sshKeyService.list()
 			.then((response: SshKeyInfo[]) => {
 				this.keys = response;
 				this.loading = false;

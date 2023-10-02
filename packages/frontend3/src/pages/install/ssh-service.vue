@@ -1,12 +1,12 @@
 <template>
 	<Head>
-		<title>{{ $t('pages.install.user.title') }} | {{ $t('pages.install.title') }}</title>
+		<title>{{ $t('pages.install.sshService.title') }} | {{ $t('pages.install.title') }}</title>
 	</Head>
-	<CreateUserForm />
+	<SshService />
 </template>
 
 <route lang='yaml'>
-name: InstallUser
+name: InstallSshService
 meta:
   layout: Install
   requiresAuth: false
@@ -15,5 +15,5 @@ meta:
 
 <script lang='ts' setup>
 import { Head } from '@vueuse/head';
-import CreateUserForm from '@/components/install/CreateUserForm.vue';
+import SshService from '@/components/install/SshService.vue';
 </script>

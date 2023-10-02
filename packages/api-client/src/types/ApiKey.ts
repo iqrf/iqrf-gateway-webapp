@@ -41,7 +41,7 @@ export interface ApiKeyInfo extends ApiKeyConfig {
 	/**
 	 * API key ID
 	 */
-	id: number,
+	id?: number,
 
 }
 

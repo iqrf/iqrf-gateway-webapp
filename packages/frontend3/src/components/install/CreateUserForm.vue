@@ -1,58 +1,56 @@
 <template>
-	<v-card>
-		<v-card-title>{{ $t('install.createUser.title') }}</v-card-title>
-		<v-card-text>
-			<v-form ref='form' @submit.prevent='onSubmit'>
-				<TextInput
-					v-model='user.username'
-					:label='$t("user.username")'
-					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("user.validation.username")),
-					]'
-					required
-					:prepend-inner-icon='mdiAccount'
-				/>
-				<TextInput
-					v-model='user.email'
-					:label='$t("user.email")'
-					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("user.validation.missingEmail")),
-						(v: string) => ValidationRules.email(v, $t("user.validation.invalidEmail")),
-					]'
-					required
-					:prepend-inner-icon='mdiEmail'
-				/>
-				<PasswordInput
-					v-model='user.password'
-					:label='$t("user.password")'
-					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("user.validation.password")),
-					]'
-					required
-					:prepend-inner-icon='mdiKey'
-				/>
-				<SelectInput
-					v-model='user.language'
-					:items='languageOptions'
-					:label='$t("user.language")'
-					:prepend-inner-icon='mdiTranslate'
-				/>
-				<SelectInput
-					v-model='expiration'
-					:items='expirationOptions'
-					:label='$t("auth.sign.in.expiration")'
-					:prepend-inner-icon='mdiAccountClock'
-				/>
-				<v-btn
-					color='primary'
-					variant='elevated'
-					type='submit'
-				>
-					{{ $t('install.createUser.createButton') }}
-				</v-btn>
-			</v-form>
-		</v-card-text>
-	</v-card>
+	<Card>
+		<template #title>{{ $t('install.createUser.title') }}</template>
+		<v-form ref='form' @submit.prevent='onSubmit'>
+			<TextInput
+				v-model='user.username'
+				:label='$t("user.username")'
+				:rules='[
+					(v: string|null) => ValidationRules.required(v, $t("user.validation.username")),
+				]'
+				required
+				:prepend-inner-icon='mdiAccount'
+			/>
+			<TextInput
+				v-model='user.email'
+				:label='$t("user.email")'
+				:rules='[
+					(v: string|null) => ValidationRules.required(v, $t("user.validation.missingEmail")),
+					(v: string) => ValidationRules.email(v, $t("user.validation.invalidEmail")),
+				]'
+				required
+				:prepend-inner-icon='mdiEmail'
+			/>
+			<PasswordInput
+				v-model='user.password'
+				:label='$t("user.password")'
+				:rules='[
+					(v: string|null) => ValidationRules.required(v, $t("user.validation.password")),
+				]'
+				required
+				:prepend-inner-icon='mdiKey'
+			/>
+			<SelectInput
+				v-model='user.language'
+				:items='languageOptions'
+				:label='$t("user.language")'
+				:prepend-inner-icon='mdiTranslate'
+			/>
+			<SelectInput
+				v-model='expiration'
+				:items='expirationOptions'
+				:label='$t("auth.sign.in.expiration")'
+				:prepend-inner-icon='mdiAccountClock'
+			/>
+			<v-btn
+				color='primary'
+				variant='elevated'
+				type='submit'
+			>
+				{{ $t('install.createUser.createButton') }}
+			</v-btn>
+		</v-form>
+	</Card>
 </template>
 
 <script lang='ts' setup>
@@ -65,6 +63,7 @@ import { VForm } from 'vuetify/components';
 import { useInstallStore } from '@/store/install';
 import { useUserStore } from '@/store/user';
 
+import Card from '@/components/Card.vue';
 import PasswordInput from '@/components/PasswordInput.vue';
 import SelectInput from '@/components/SelectInput.vue';
 import TextInput from '@/components/TextInput.vue';
