@@ -5,7 +5,7 @@ import { CZ, GB } from 'country-flag-icons/string/3x2';
 
 import i18n from '@/plugins/i18n';
 
-interface Locale {
+export interface Locale {
 	/// Locale code
 	code: string;
 	/// Locale Unicode flag

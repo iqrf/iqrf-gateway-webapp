@@ -411,6 +411,45 @@
 		}
 	},
 	"components": {
+		"management": {
+			"users": {
+				"actions": {
+					"add": "Add user",
+					"edit": "Edit user",
+					"delete": "Delete user"
+				},
+				"delete": {
+					"title": "User delete confirmation",
+					"prompt": "Are you sure you want to delete user {user}?"
+				},
+				"username": "Username",
+				"email": "E-mail address",
+				"password": "Password",
+				"language": "Language",
+				"role": "Role",
+				"roles": {
+					"admin": "Administrator",
+					"normal": "Normal user",
+					"basicadmin": "Basic admin",
+					"basic": "Basic user"
+				},
+				"state": "State",
+				"states": {
+					"unverified": "Unverified",
+					"verified": "Verified"
+				},
+				"validation": {
+					"username": "Please enter the username.",
+					"password": "Please enter the password.",
+					"emailInvalid": "Invalid e-mail address format."
+				},
+				"messages": {
+					"delete": {
+						"success": "User {user} has been deleted successfully."
+					}
+				}
+			}
+		},
 		"apiKeys": {
 			"form": {
 				"addTitle": "Add API key",
@@ -472,6 +511,9 @@
 			}
 		},
 		"management": {
+			"users": {
+				"title": "Users"
+			},
 			"apiKeys": {
 				"title": "API keys"
 			},

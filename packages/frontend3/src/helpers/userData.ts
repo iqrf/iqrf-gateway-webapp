@@ -28,6 +28,21 @@ export function getRoleOptions(): ComputedRef<Array<SelectItem>> {
 	});
 }
 
+export function getFilteredRoleOptions(role: UserRole): ComputedRef<Array<SelectItem>> {
+	return computed(() => {
+		const roles = [UserRole.Admin, UserRole.Normal, UserRole.BasicAdmin, UserRole.Basic];
+		if (role !== UserRole.Admin) {
+			roles.splice(0, roles.indexOf(role));
+		}
+		return roles.map((item: UserRole): SelectItem => {
+			return {
+				title: i18n.global.t(`user.roles.${item}`).toString(),
+				value: item,
+			};
+		});
+	});
+}
+
 export function getExpirationOptions(): ComputedRef<Array<SelectItem>> {
 	return computed(() => {
 		const expirations = Object.values(UserSessionExpiration);

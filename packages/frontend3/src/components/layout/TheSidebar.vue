@@ -27,7 +27,7 @@ import { useUserStore } from '@/store/user';
 
 import { SidebarLink } from '@/types/sidebar';
 import { useFeatureStore } from '@/store/features';
-import { mdiAccountDetails, mdiAccountKey, mdiApi, mdiBook, mdiChevronLeft, mdiChevronRight, mdiCog, mdiDesktopTower, mdiEmailEdit, mdiLock, mdiLogin, mdiPower, mdiSsh } from '@mdi/js';
+import { mdiAccountDetails, mdiAccountGroup, mdiAccountKey, mdiApi, mdiBook, mdiChevronLeft, mdiChevronRight, mdiCog, mdiDesktopTower, mdiEmailEdit, mdiLock, mdiLogin, mdiPower, mdiSsh } from '@mdi/js';
 import { computed } from 'vue';
 
 const i18n = useI18n();
@@ -48,6 +48,9 @@ function filter(item: SidebarLink): boolean {
 	const role: UserRole | null = userStore.getRole;
 	if (item.children !== undefined) {
 		item.children = item.children.filter((child: SidebarLink) => filter(child));
+		if (item.children.length === 0) {
+			return false;
+		}
 	}
 	if (item.feature !== undefined && !featureStore.isEnabled(item.feature)) {
 		return false;
@@ -86,14 +89,22 @@ function items(): SidebarLink[] {
 				icon: mdiLock,
 				children: [
 					{
+						title: i18n.t('pages.management.users.title'),
+						icon: mdiAccountGroup,
+						to: '/management/users',
+						roles: [UserRole.Admin, UserRole.BasicAdmin],
+					},
+					{
 						title: i18n.t('pages.management.apiKeys.title'),
 						icon: mdiApi,
 						to: '/management/api-keys',
+						roles: [UserRole.Admin],
 					},
 					{
 						title: i18n.t('pages.management.sshKeys.title'),
 						icon: mdiSsh,
 						to: '/management/ssh-keys',
+						roles: [UserRole.Admin],
 					},
 				],
 			},
