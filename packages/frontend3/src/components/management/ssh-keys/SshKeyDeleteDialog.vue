@@ -16,9 +16,9 @@
 		</template>
 		<Card>
 			<template #title>
-				{{ $t('components.sshKeys.delete.title') }}
+				{{ $t('components.management.sshKeys.delete.title') }}
 			</template>
-			{{ $t('components.sshKeys.delete.prompt', {id: sshKey.id}) }}
+			{{ $t('components.management.sshKeys.delete.prompt', {id: sshKey.id}) }}
 			<template #actions>
 				<v-btn
 					color='primary'

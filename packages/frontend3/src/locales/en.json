@@ -448,44 +448,44 @@
 						"success": "User {user} has been deleted successfully."
 					}
 				}
+			},
+			"apiKeys": {
+				"form": {
+					"addTitle": "Add API key",
+					"editTitle": "Edit API key",
+					"expiration": "Set expiration"
+				},
+				"table": {
+					"expiration": "Expiration"
+				},
+				"delete": {
+					"title": "API key delete confirmation",
+					"prompt": "Are you sure you want to delete API key ID {id}?"
+				},
+				"validation": {
+					"descriptionMissing": "Please enter API key description."
+				}
+			},
+			"sshKeys": {
+				"form": {
+					"addTitle": "Add SSH key",
+					"editTitle": "Edit SSH key"
+				},
+				"table": {
+					"createdAt": "Date created",
+					"type": "Key type",
+					"hash": "Hash",
+					"key": "Public key"
+				},
+				"delete": {
+					"title": "SSH public key delete confirmation",
+					"prompt": "Are you sure you want to delete SSH public key ID {id}?"
+				},
+				"installNote": "Add SSH public keys to be used for key-based authorization when accessing the device.",
+				"supported": "The following SSH key types are supported.",
+				"noneSupported": "No SSH key type supported.",
+				"fetchFailed": "Failed to retrieve list of supported SSH key types."
 			}
-		},
-		"apiKeys": {
-			"form": {
-				"addTitle": "Add API key",
-				"editTitle": "Edit API key",
-				"expiration": "Set expiration"
-			},
-			"table": {
-				"expiration": "Expiration"
-			},
-			"delete": {
-				"title": "API key delete confirmation",
-				"prompt": "Are you sure you want to delete API key ID {id}?"
-			},
-			"validation": {
-				"descriptionMissing": "Please enter API key description."
-			}
-		},
-		"sshKeys": {
-			"form": {
-				"addTitle": "Add SSH key",
-				"editTitle": "Edit SSH key"
-			},
-			"table": {
-				"createdAt": "Date created",
-				"type": "Key type",
-				"hash": "Hash",
-				"key": "Public key"
-			},
-			"delete": {
-				"title": "SSH public key delete confirmation",
-				"prompt": "Are you sure you want to delete SSH public key ID {id}?"
-			},
-			"installNote": "Add SSH public keys to be used for key-based authorization when accessing the device.",
-			"supported": "The following SSH key types are supported.",
-			"noneSupported": "No SSH key type supported.",
-			"fetchFailed": "Failed to retrieve list of supported SSH key types."
 		},
 		"sshService": {
 			"note": "Set SSH service status.",

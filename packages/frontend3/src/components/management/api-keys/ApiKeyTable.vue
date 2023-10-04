@@ -1,5 +1,16 @@
 <template>
 	<Card>
+		<template #title>
+			{{ $t('pages.management.apiKeys.title') }}
+		</template>
+		<template #titleActions>
+			<ApiKeyForm :action='FormAction.Add' @refresh='getKeys' />
+			<v-btn
+				color='white'
+				:icon='mdiReload'
+				@click='getKeys'
+			/>
+		</template>
 		<DataTable
 			:headers='headers'
 			:items='keys'
@@ -7,23 +18,6 @@
 			:hover='true'
 			:dense='true'
 		>
-			<template #top>
-				<v-toolbar
-					color='primary'
-					density='compact'
-					rounded
-				>
-					<v-toolbar-title>{{ $t('pages.management.apiKeys.title') }}</v-toolbar-title>
-					<v-toolbar-items>
-						<ApiKeyForm :action='FormAction.Add' @refresh='getKeys' />
-						<v-btn
-							color='white'
-							:icon='mdiReload'
-							@click='getKeys'
-						/>
-					</v-toolbar-items>
-				</v-toolbar>
-			</template>
 			<template #item.expiration='{ item }'>
 				{{ item.expiration.setLocale(localeStore.getLocale).toLocaleString(DateTime.DATETIME_FULL_WITH_SECONDS) }}
 			</template>
@@ -70,7 +64,7 @@ const loading: Ref<boolean> = ref(false);
 const headers = [
 	{key: 'id', title: i18n.t('common.columns.id').toString()},
 	{key: 'description', title: i18n.t('common.columns.description').toString()},
-	{key: 'expiration', title: i18n.t('components.apiKeys.table.expiration').toString()},
+	{key: 'expiration', title: i18n.t('components.management.apiKeys.table.expiration').toString()},
 	{key: 'actions', title: i18n.t('common.columns.actions').toString(), align: 'end'},
 ];
 const keys: Ref<ApiKeyInfo[]> = ref([]);

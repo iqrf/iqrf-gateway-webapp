@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { v4 as uuidv4 } from 'uuid';
-import { useI18n } from 'vue-i18n';
+import i18n from '@/plugins/i18n';
 import { toast } from 'vue3-toastify';
 
 import ClientSocket, { GenericSocketState } from '@/modules/clientSocket';
@@ -101,8 +101,7 @@ export const useDaemonStore = defineStore('daemon', {
 					if (options.message === null) {
 						return;
 					}
-					const i18n = useI18n();
-					toast.error(i18n.t(options.message).toString());
+					toast.error(i18n.global.t(options.message).toString());
 				}, options.timeout);
 			}
 			this.messages.push(new DaemonMessage(msgId, timeout));

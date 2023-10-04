@@ -31,16 +31,16 @@
 					v-model='key.description'
 					:label='$t("common.labels.description")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.apiKeys.validation.descriptionMissing")),
+						(v: string|null) => ValidationRules.required(v, $t("components.management.apiKeys.validation.descriptionMissing")),
 					]'
 					required
 				/>
 				<v-checkbox
 					v-model='setExpiration'
-					:label='$t("components.apiKeys.form.expiration")'
+					:label='$t("components.management.apiKeys.form.expiration")'
 				/>
 				<label for='datetimeinput'>
-					{{ $t('components.apiKeys.table.expiration') }}
+					{{ $t('components.management.apiKeys.table.expiration') }}
 				</label>
 				<VueDatePicker
 					id='datetimeinput'
@@ -130,9 +130,9 @@ const activatorIcon = computed(() => {
 });
 const dialogTitle = computed(() => {
 	if (props.action === FormAction.Add) {
-		return i18n.t('components.apiKeys.form.addTitle').toString();
+		return i18n.t('components.management.apiKeys.form.addTitle').toString();
 	}
-	return i18n.t('components.apiKeys.form.editTitle').toString();
+	return i18n.t('components.management.apiKeys.form.editTitle').toString();
 });
 const datePickerState = computed((): false|null => {
 	if (!setExpiration.value) {
