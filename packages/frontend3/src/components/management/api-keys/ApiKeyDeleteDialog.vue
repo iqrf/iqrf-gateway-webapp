@@ -16,9 +16,9 @@
 		</template>
 		<Card>
 			<template #title>
-				{{ $t('components.apiKeys.delete.title') }}
+				{{ $t('components.management.apiKeys.delete.title') }}
 			</template>
-			{{ $t('components.apiKeys.delete.prompt', {id: apiKey.id}) }}
+			{{ $t('components.management.apiKeys.delete.prompt', {id: apiKey.id}) }}
 			<template #actions>
 				<v-btn
 					color='primary'

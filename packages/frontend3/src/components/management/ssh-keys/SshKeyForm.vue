@@ -124,9 +124,9 @@ const activatorIcon = computed(() => {
 });
 const dialogTitle = computed(() => {
 	if (props.action === FormAction.Add) {
-		return i18n.t('components.sshKeys.form.addTitle').toString();
+		return i18n.t('components.management.sshKeys.form.addTitle').toString();
 	}
-	return i18n.t('components.sshKeys.form.editTitle').toString();
+	return i18n.t('components.management.sshKeys.form.editTitle').toString();
 });
 
 watchEffect(async(): Promise<void> => {

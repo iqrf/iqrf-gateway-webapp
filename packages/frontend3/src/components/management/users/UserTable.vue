@@ -1,5 +1,16 @@
 <template>
 	<Card>
+		<template #title>
+			{{ $t('pages.management.users.title') }}
+		</template>
+		<template #titleActions>
+			<UserForm :action='FormAction.Add' @refresh='getUsers' />
+			<v-btn
+				color='white'
+				:icon='mdiReload'
+				@click='getUsers'
+			/>
+		</template>
 		<DataTable
 			:headers='headers'
 			:items='users'
@@ -7,16 +18,6 @@
 			:hover='true'
 			:dense='true'
 		>
-			<template #top>
-				<v-toolbar color='primary' density='compact' rounded>
-					<v-toolbar-title>
-						{{ $t('pages.management.users.title') }}
-					</v-toolbar-title>
-					<v-toolbar-items>
-						<UserForm :action='FormAction.Add' @refresh='getUsers' />
-					</v-toolbar-items>
-				</v-toolbar>
-			</template>
 			<template #item.role='{ item }'>
 				<UserRoleColumn :role='item.role' />
 			</template>
@@ -65,6 +66,7 @@ import UserStateColumn from '@/components/management/users/UserStateColumn.vue';
 
 import { FormAction } from '@/enums/controls';
 import { useApiClient } from '@/services/ApiClient';
+import { mdiReload } from '@mdi/js';
 
 const i18n = useI18n();
 

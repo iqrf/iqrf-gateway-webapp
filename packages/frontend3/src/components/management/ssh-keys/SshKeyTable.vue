@@ -51,13 +51,13 @@
 					>
 						<tbody>
 							<tr>
-								<th>{{ $t('components.sshKeys.table.type') }}</th>
+								<th>{{ $t('components.management.sshKeys.table.type') }}</th>
 								<td>
 									{{ item.type }}
 								</td>
 							</tr>
 							<tr>
-								<th>{{ $t('components.sshKeys.table.hash') }}</th>
+								<th>{{ $t('components.management.sshKeys.table.hash') }}</th>
 								<td>
 									{{ item.hash }}
 									<v-icon
@@ -68,7 +68,7 @@
 								</td>
 							</tr>
 							<tr>
-								<th>{{ $t('components.sshKeys.table.key') }}</th>
+								<th>{{ $t('components.management.sshKeys.table.key') }}</th>
 								<td>
 									{{ item.key }}
 									<v-icon
@@ -107,7 +107,7 @@ const loading: Ref<boolean> = ref(false);
 const headers = [
 	{key: 'id', title: i18n.t('common.columns.id').toString()},
 	{key: 'description', title: i18n.t('common.columns.description').toString()},
-	{key: 'createdAt', title: i18n.t('components.sshKeys.table.createdAt').toString()},
+	{key: 'createdAt', title: i18n.t('components.management.sshKeys.table.createdAt').toString()},
 	{key: 'actions', title: i18n.t('common.columns.actions').toString(), align: 'end'},
 ];
 const keys: Ref<SshKeyInfo[]> = ref([]);

@@ -4,7 +4,7 @@
 			{{ $t('pages.install.sshKeys.title') }}
 		</template>
 		<div v-if='install'>
-			{{ $t('components.sshKeys.installNote') }}
+			{{ $t('components.management.sshKeys.installNote') }}
 		</div>
 		<v-alert
 			v-if='loaded !== null'
@@ -14,10 +14,10 @@
 		>
 			<span v-if='loaded'>
 				<span v-if='types.length === 0'>
-					{{ $t('components.sshKeys.noneSupported') }}
+					{{ $t('components.management.sshKeys.noneSupported') }}
 				</span>
 				<span v-else>
-					{{ $t('components.sshKeys.supported') }}
+					{{ $t('components.management.sshKeys.supported') }}
 					<ul>
 						<li
 							v-for='key of types'

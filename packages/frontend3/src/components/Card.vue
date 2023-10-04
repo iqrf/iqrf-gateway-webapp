@@ -1,8 +1,17 @@
 <template>
 	<v-card :class='bottomMargin ? "mb-4" : null'>
-		<v-card-title v-if='$slots.title' :class='headerClass'>
-			<slot name='title' />
-		</v-card-title>
+		<v-toolbar
+			v-if='$slots.title || $slots.actions'
+			:class='headerClass'
+			density='compact'
+		>
+			<v-toolbar-title v-if='$slots.title'>
+				<slot name='title' />
+			</v-toolbar-title>
+			<v-toolbar-items v-if='$slots.titleActions'>
+				<slot name='titleActions' />
+			</v-toolbar-items>
+		</v-toolbar>
 		<v-card-text class='card-text'>
 			<slot />
 		</v-card-text>

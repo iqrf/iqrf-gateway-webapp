@@ -27,7 +27,21 @@ import { useUserStore } from '@/store/user';
 
 import { SidebarLink } from '@/types/sidebar';
 import { useFeatureStore } from '@/store/features';
-import { mdiAccountDetails, mdiAccountGroup, mdiAccountKey, mdiApi, mdiBook, mdiChevronLeft, mdiChevronRight, mdiCog, mdiDesktopTower, mdiEmailEdit, mdiLock, mdiLogin, mdiPower, mdiSsh } from '@mdi/js';
+import { 
+	mdiAccountGroup,
+	mdiAccountKey,
+	mdiApi,
+	mdiBook,
+	mdiChevronLeft,
+	mdiChevronRight,
+	mdiCog,
+	mdiDesktopTower,
+	mdiEmailEdit,
+	mdiLogin,
+	mdiPower,
+	mdiSecurity,
+	mdiSsh
+} from '@mdi/js';
 import { computed } from 'vue';
 
 const i18n = useI18n();
@@ -86,7 +100,7 @@ function items(): SidebarLink[] {
 			},
 			{
 				title: 'Management',
-				icon: mdiLock,
+				icon: mdiSecurity,
 				children: [
 					{
 						title: i18n.t('pages.management.users.title'),
