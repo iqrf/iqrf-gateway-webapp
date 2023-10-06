@@ -39,12 +39,12 @@ const icon = computed(() => {
 });
 const message = computed(() => {
 	if (!connected.value) {
-		return 'status.monitor.enumeration.unavailable';
+		return 'components.status.monitor.enumeration.unavailable';
 	}
 	if (active.value) {
-		return 'status.monitor.enumeration.running';
+		return 'components.status.monitor.enumeration.running';
 	}
-	return 'status.monitor.enumeration.notRunning';
+	return 'components.status.monitor.enumeration.notRunning';
 });
 
 </script>

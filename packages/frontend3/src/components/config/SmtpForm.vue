@@ -23,7 +23,7 @@
 				:disabled='loading'
 				@click='onSubmit'
 			>
-				{{ $t('generic.button.save') }}
+				{{ $t('common.buttons.save') }}
 			</v-btn>
 			<v-btn
 				class='mr-1'
@@ -32,7 +32,7 @@
 				:disabled='!configuration.enabled || loading'
 				@click='testConfiguration'
 			>
-				{{ $t('configuration.smtp.form.test') }}
+				{{ $t('components.configuration.smtp.test') }}
 			</v-btn>
 			<v-btn
 				v-if='install'
@@ -45,9 +45,10 @@
 		</Card>
 		<Card v-else header-color='primary'>
 			<template #title>
-				{{ $t('configuration.smtp.title') }}
+				{{ $t('pages.configuration.smtp.title') }}
+			</template>
+			<template #titleActions>
 				<v-btn
-					class='float-right'
 					size='small'
 					@click='configuration.enabled = !configuration.enabled'
 				>
@@ -70,7 +71,7 @@
 					:disabled='!configuration.enabled || loading'
 					@click='testConfiguration'
 				>
-					{{ $t('configuration.smtp.form.test') }}
+					{{ $t('components.configuration.smtp.test') }}
 				</v-btn>
 			</template>
 		</Card>

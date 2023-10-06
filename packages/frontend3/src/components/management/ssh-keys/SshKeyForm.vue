@@ -4,7 +4,7 @@
 		peristent
 		scrollable
 		no-click-animation
-		width='60%'
+		:width='width'
 	>
 		<template #activator='{ props }'>
 			<v-btn
@@ -27,6 +27,26 @@
 				<template #title>
 					{{ dialogTitle }}
 				</template>
+				<v-alert
+					type='info'
+					variant='tonal'
+					class='mb-4'
+				>
+					<span v-if='keyTypes.length === 0'>
+						{{ $t('components.management.sshKeys.noneSupported') }}
+					</span>
+					<span v-else>
+						{{ $t('components.management.sshKeys.supported') }}
+						<ul>
+							<li
+								v-for='key of keyTypes'
+								:key='key'
+							>
+								{{ key }}
+							</li>
+						</ul>
+					</span>
+				</v-alert>
 				<TextInput
 					v-model='key.key'
 					label='SSH key'
@@ -78,9 +98,13 @@ import { mdiPencil, mdiPlus } from '@mdi/js';
 import TextInput from '@/components/TextInput.vue';
 import ValidationRules from '@/helpers/ValidationRules';
 import { SshKeyUtils } from '@iqrf/iqrf-gateway-webapp-client/utils';
+import { SshKeyService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
+import { useApiClient } from '@/services/ApiClient';
+import { AxiosError } from 'axios';
+import { basicErrorToast } from '@/helpers/errorToast';
+import { getModalWidth } from '@/helpers/modal';
 
-
-const emit = defineEmits(['add', 'edit']);
+const emit = defineEmits(['refresh']);
 const props = defineProps({
 	install: {
 		type: Boolean,
@@ -101,6 +125,7 @@ const props = defineProps({
 		required: true,
 	},
 });
+const width = getModalWidth();
 const i18n = useI18n();
 const show: Ref<boolean> = ref(false);
 const form: Ref<typeof VForm | null> = ref(null);
@@ -109,6 +134,7 @@ const defaultKey: SshKeyCreate = {
 	description: '',
 };
 const key: Ref<SshKeyCreate> = ref(defaultKey);
+const service: SshKeyService = useApiClient().getGatewayServices().getSshKeyService();
 
 const iconColor = computed(() => {
 	if (props.action === FormAction.Add) {
@@ -154,12 +180,12 @@ async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
 	}
-	if (props.action === FormAction.Add) {
-		emit('add', key.value);
-	} else {
-		emit('edit', key.value);
-	}
-	close();
+	service.createSshKeys([key.value])
+		.then(() => {
+			close();
+			emit('refresh');
+		})
+		.catch((error: AxiosError) => basicErrorToast(error, 'core.security.ssh.messages.saveFailed'));
 }
 
 function updateDescription(): void {

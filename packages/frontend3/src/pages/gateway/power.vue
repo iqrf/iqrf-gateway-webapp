@@ -16,7 +16,7 @@ limitations under the License.
 -->
 <template>
 	<Head>
-		<title>{{ $t('gateway.power.title') }}</title>
+		<title>{{ $t('pages.gateway.power.title') }}</title>
 	</Head>
 	<PowerControls />
 </template>
