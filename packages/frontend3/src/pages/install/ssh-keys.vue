@@ -2,7 +2,7 @@
 	<Head>
 		<title>{{ $t('pages.install.sshKeys.title') }} | {{ $t('pages.install.title') }}</title>
 	</Head>
-	<SshKeyAddTable :install='true' />
+	<SshKeyTable :install='true' />
 </template>
 
 <route lang='yaml'>
@@ -15,5 +15,5 @@ meta:
 
 <script lang='ts' setup>
 import { Head } from '@vueuse/head';
-import SshKeyAddTable from '@/components/management/ssh-keys/SshKeyAddTable.vue';
+import SshKeyTable from '@/components/management/ssh-keys/SshKeyTable.vue';
 </script>

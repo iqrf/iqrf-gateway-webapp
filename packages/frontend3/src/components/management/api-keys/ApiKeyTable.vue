@@ -28,12 +28,24 @@
 						:api-key='toRaw(item)'
 						@refresh='getKeys'
 					/>
+					<v-tooltip
+						activator='parent'
+						location='bottom'
+					>
+						{{ $t('components.management.apiKeys.actions.edit') }}
+					</v-tooltip>
 				</span>
 				<span>
 					<ApiKeyDeleteDialog
 						:api-key='toRaw(item)'
 						@refresh='getKeys'
 					/>
+					<v-tooltip
+						activator='parent'
+						location='bottom'
+					>
+						{{ $t('components.management.apiKeys.actions.delete') }}
+					</v-tooltip>
 				</span>
 			</template>
 		</DataTable>
@@ -46,6 +58,7 @@ import { useI18n } from 'vue-i18n';
 import { useLocaleStore } from '@/store/locale';
 
 import ApiKeyDeleteDialog from '@/components/management/api-keys/ApiKeyDeleteDialog.vue';
+import ApiKeyForm from '@/components/management/api-keys/ApiKeyForm.vue';
 import Card from '@/components/Card.vue';
 import DataTable from '@/components/DataTable.vue';
 
@@ -54,7 +67,6 @@ import { ApiKeyService } from '@iqrf/iqrf-gateway-webapp-client/services';
 import { ApiKeyInfo } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { mdiReload } from '@mdi/js';
 import { DateTime } from 'luxon';
-import ApiKeyForm from './ApiKeyForm.vue';
 import { FormAction } from '@/enums/controls';
 
 const i18n = useI18n();
@@ -62,10 +74,10 @@ const localeStore = useLocaleStore();
 const service: ApiKeyService = useApiClient().getApiKeyService();
 const loading: Ref<boolean> = ref(false);
 const headers = [
-	{key: 'id', title: i18n.t('common.columns.id').toString()},
-	{key: 'description', title: i18n.t('common.columns.description').toString()},
-	{key: 'expiration', title: i18n.t('components.management.apiKeys.table.expiration').toString()},
-	{key: 'actions', title: i18n.t('common.columns.actions').toString(), align: 'end'},
+	{key: 'id', title: i18n.t('common.columns.id')},
+	{key: 'description', title: i18n.t('common.columns.description')},
+	{key: 'expiration', title: i18n.t('components.management.apiKeys.table.expiration')},
+	{key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false},
 ];
 const keys: Ref<ApiKeyInfo[]> = ref([]);
 

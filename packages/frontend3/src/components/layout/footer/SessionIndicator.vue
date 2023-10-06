@@ -9,7 +9,7 @@
 				{{ mdiTimerSand }}
 			</v-icon>
 		</template>
-		{{ $t('status.sessionExpiration.indicator') }} {{ remaining }}
+		{{ $t('components.status.sessionExpiration.indicator') }} {{ remaining }}
 	</v-tooltip>
 </template>
 

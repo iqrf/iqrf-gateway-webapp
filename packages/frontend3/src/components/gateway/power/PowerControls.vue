@@ -16,19 +16,19 @@ limitations under the License.
 -->
 <template>
 	<Card>
-		<template #title>{{ $t('gateway.power.title') }}</template>
+		<template #title>{{ $t('pages.gateway.power.title') }}</template>
 		<v-btn
 			color='error'
 			@click='powerOff'
 		>
 			<v-icon :icon='mdiPower' />
-			{{ $t('gateway.power.powerOff') }}
+			{{ $t('components.gateway.power.powerOff') }}
 		</v-btn> <v-btn
 			color='primary'
 			@click='reboot'
 		>
 			<v-icon :icon='mdiReload' />
-			{{ $t('gateway.power.reboot') }}
+			{{ $t('components.gateway.power.reboot') }}
 		</v-btn>
 	</Card>
 </template>
@@ -54,10 +54,10 @@ function powerOff(): void {
 	service.powerOff()
 		.then((response: PowerActionResponse) =>
 			toast.success(
-				i18n.t('gateway.power.messages.powerOffSuccess', {time: parseActionTime(response.timestamp)}).toString()
+				i18n.t('components.gateway.power.messages.powerOffSuccess', {time: parseActionTime(response.timestamp)}).toString()
 			)
 		).catch((error: AxiosError) =>
-			basicErrorToast(error, 'gateway.power.messages.powerOffFailed')
+			basicErrorToast(error, 'components.gateway.power.messages.powerOffFailed')
 		);
 }
 
@@ -65,10 +65,10 @@ function reboot(): void {
 	service.reboot()
 		.then((response: PowerActionResponse) =>
 			toast.success(
-				i18n.t('gateway.power.messages.rebootSuccess', {time: parseActionTime(response.timestamp)}).toString()
+				i18n.t('components.gateway.power.messages.rebootSuccess', {time: parseActionTime(response.timestamp)}).toString()
 			)
 		).catch((error: AxiosError) =>
-			basicErrorToast(error, 'gateway.power.messages.rebootFailed')
+			basicErrorToast(error, 'components.gateway.power.messages.rebootFailed')
 		);
 }
 

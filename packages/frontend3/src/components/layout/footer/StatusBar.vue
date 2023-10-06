@@ -10,7 +10,7 @@
 				{{ mdiInformation }}
 			</v-icon>
 		</template>
-		{{ $t("status.monitor.version") }}: {{ daemonVersion }}
+		{{ $t('components.status.monitor.version') }}: {{ daemonVersion }}
 	</v-tooltip>
 	<v-tooltip location='bottom'>
 		<template #activator='{ props }'>
@@ -23,7 +23,7 @@
 				{{ mdiConnection }}
 			</v-icon>
 		</template>
-		{{ $t("status.monitor.notified") }}: {{ date }}
+		{{ $t('components.status.monitor.notified') }}: {{ date }}
 	</v-tooltip>
 	<v-tooltip location='bottom'>
 		<template #activator='{ props }'>
@@ -36,8 +36,8 @@
 				{{ modeIcon }}
 			</v-icon>
 		</template>
-		{{ $t("status.monitor.mode") }}:
-		{{ $t(`status.monitor.modes.${monitorStore.mode}`) }}
+		{{ $t('components.status.monitor.mode') }}:
+		{{ $t(`components.status.monitor.modes.${monitorStore.mode}`) }}
 	</v-tooltip>
 	<v-tooltip location='bottom'>
 		<template #activator='{ props }'>
@@ -50,7 +50,7 @@
 				{{ queueIcon }}
 			</v-icon>
 		</template>
-		{{ $t("status.monitor.queue") }}: {{ daemonStore.isConnected ? monitorStore.queueLength : 'N/A' }}
+		{{ $t('components.status.monitor.queue') }}: {{ daemonStore.isConnected ? monitorStore.queueLength : 'N/A' }}
 	</v-tooltip>
 	<EnumerationIndicator />
 	<SessionIndicator v-if='loggedIn' />

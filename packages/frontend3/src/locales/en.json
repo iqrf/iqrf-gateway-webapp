@@ -341,54 +341,6 @@
 				"service": "Service mode",
 				"unknown": "Unknown"
 			}
-		},
-		"power": {
-			"title": "Power control",
-			"description": "Powers off or reboots this gateway.",
-			"reboot": "Reboot",
-			"powerOff": "Power off",
-			"messages": {
-				"powerOffSuccess": "Your device will be powered off at {time}.",
-				"powerOffFailed": "Failed to schedule gateway poweroff: {error}.",
-				"rebootSuccess": "Your device will be rebooted at {time}, the reboot may take tens of seconds.",
-				"rebootFailed": "Failed to schedule gateway reboot: {error}."
-			}
-		}
-	},
-	"status": {
-		"monitor": {
-			"mode": "Daemon mode",
-			"modes": {
-				"operational": "Operational",
-				"forwarding": "Forwarding",
-				"service": "Service",
-				"unknown": "Unknown"
-			},
-			"notified": "Last notified",
-			"queue": "Queue length",
-			"version": "Daemon version",
-			"enumeration": {
-				"running": "Enumeration in progress.",
-				"notRunning": "Enumeration not running.",
-				"unavailable": "Enumeration status not available."
-			}
-		},
-		"locale": {
-			"languages": {
-				"cs": "Czech",
-				"en": "English"
-			},
-			"messages": {
-				"set": "Locale changed to: {locale}."
-			}
-		},
-		"sessionExpiration": {
-			"title": "Session expiration warning",
-			"prompt": "Your session is about to expire and you will be logged out. Click the renew session button to renew the session and dismiss this windows.",
-			"renew": "Renew session",
-			"success": "Your session has been successfully renewed.",
-			"failed": "Failed to renew session.",
-			"indicator": "Session will expire in: "
 		}
 	},
 	"common": {
@@ -402,15 +354,113 @@
 			"skip": "Skip"
 		},
 		"labels": {
+			"hostname": "Hostname",
+			"port": "Port",
+			"username": "Username",
+			"password": "Password",
 			"description": "Description"
 		},
 		"columns": {
 			"id": "ID",
 			"description": "Description",
 			"actions": "Actions"
+		},
+		"validation": {
+
 		}
 	},
 	"components": {
+		"status": {
+			"monitor": {
+				"mode": "Daemon mode",
+				"modes": {
+					"operational": "Operational",
+					"forwarding": "Forwarding",
+					"service": "Service",
+					"unknown": "Unknown"
+				},
+				"notified": "Last notified",
+				"queue": "Queue length",
+				"version": "Daemon version",
+				"enumeration": {
+					"running": "Enumeration in progress.",
+					"notRunning": "Enumeration not running.",
+					"unavailable": "Enumeration status not available."
+				}
+			},
+			"locale": {
+				"languages": {
+					"cs": "Czech",
+					"en": "English"
+				},
+				"messages": {
+					"set": "Locale changed to: {locale}."
+				}
+			},
+			"sessionExpiration": {
+				"title": "Session expiration warning",
+				"prompt": "Your session is about to expire and you will be logged out. Click the renew session button to renew the session and dismiss this windows.",
+				"renew": "Renew session",
+				"success": "Your session has been successfully renewed.",
+				"failed": "Failed to renew session.",
+				"indicator": "Session will expire in: "
+			}
+		},
+		"configuration": {
+			"smtp": {
+				"test": "Test configuration",
+				"form": {
+					"security": "Connection security",
+					"securityLevels": {
+						"none": "None",
+						"starttls": "STARTTLS",
+						"tls": "TLS"
+					},
+					"sender": "Sender"
+				},
+				"validation": {
+					"hostMissing": "Please enter SMTP host.",
+					"hostInvalid": "Invalid SMTP host address.",
+					"portMissing": "Please enter SMTP port.",
+					"portInvalid": "Invalid SMTP port number.",
+					"usernameMissing": "Please enter SMTP username.",
+					"passwordMissing": "Please enter SMTP password.",
+					"senderMissing": "Please enter sender email.",
+					"senderInvalid": "Invalid e-mail address."
+				},
+				"messages": {
+
+				}
+			}
+		},
+		"gateway": {
+			"power": {
+				"reboot": "Reboot",
+				"powerOff": "Power off",
+				"messages": {
+					"powerOffSuccess": "Your device will be powered off at {time}.",
+					"powerOffFailed": "Failed to schedule gateway poweroff: {error}.",
+					"rebootSuccess": "Your device will be rebooted at {time}, the reboot may take tens of seconds.",
+					"rebootFailed": "Failed to schedule gateway reboot: {error}."
+				}
+			},
+			"services": {
+				"actions": {
+					"enable": "Enable service",
+					"disable": "Disable service",
+					"start": "Start service",
+					"stop": "Stop service",
+					"refresh": "Refresh service",
+					"refreshAll": "Refresh services",
+					"status": "Toggle status"
+				},
+				"table": {
+					"service": "Service",
+					"active": "Active",
+					"enabled": "Enabled"
+				}
+			}
+		},
 		"management": {
 			"users": {
 				"actions": {
@@ -450,6 +500,11 @@
 				}
 			},
 			"apiKeys": {
+				"actions": {
+					"add": "Add API key",
+					"edit": "Edit API key",
+					"delete": "Delete API key"
+				},
 				"form": {
 					"addTitle": "Add API key",
 					"editTitle": "Edit API key",
@@ -467,6 +522,11 @@
 				}
 			},
 			"sshKeys": {
+				"actions": {
+					"add": "Add SSH key",
+					"edit": "Edit SSH key",
+					"delete": "Delete SSH key"
+				},
 				"form": {
 					"addTitle": "Add SSH key",
 					"editTitle": "Edit SSH key"
@@ -495,6 +555,21 @@
 		}
 	},
 	"pages": {
+		"gateway": {
+			"power": {
+				"title": "Power control",
+				"description": "Powers off or reboots this gateway."
+			},
+			"services": {
+				"title": "Services"
+			}
+		},
+		"configuration": {
+			"title": "Configuration",
+			"smtp": {
+				"title": "SMTP"
+			}
+		},
 		"install": {
 			"title": "Installation wizard",
 			"user": {

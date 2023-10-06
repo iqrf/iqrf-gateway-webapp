@@ -1,6 +1,6 @@
 <template>
 	<Head>
-		<title>{{ $t('configuration.smtp.title') }}</title>
+		<title>{{ $t('pages.configuration.smtp.title') }}</title>
 	</Head>
 	<SmtpForm />
 </template>

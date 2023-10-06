@@ -1,5 +1,20 @@
 <template>
 	<Card>
+		<template #title>
+			{{ $t('pages.management.sshKeys.title') }}
+		</template>
+		<template #titleActions>
+			<SshKeyForm
+				:action='FormAction.Add'
+				:key-types='types'
+				@refresh='getKeys'
+			/>
+			<v-btn
+				color='white'
+				:icon='mdiReload'
+				@click='getKeys'
+			/>
+		</template>
 		<DataTable
 			:headers='headers'
 			:items='keys'
@@ -8,26 +23,6 @@
 			:hover='true'
 			:dense='true'
 		>
-			<template #top>
-				<v-toolbar
-					color='primary'
-					density='compact'
-					rounded>
-					<v-toolbar-title>{{ $t('pages.management.sshKeys.title') }}</v-toolbar-title>
-					<v-toolbar-items>
-						<v-btn
-							color='white'
-							:icon='mdiPlus'
-							to='/management/ssh-keys/add'
-						/>
-						<v-btn
-							color='white'
-							:icon='mdiReload'
-							@click='getKeys'
-						/>
-					</v-toolbar-items>
-				</v-toolbar>
-			</template>
 			<template #item.createdAt='{ item }'>
 				{{ item.createdAt.setLocale(localeStore.getLocale).toLocaleString(DateTime.DATETIME_FULL_WITH_SECONDS) }}
 			</template>
@@ -35,12 +30,26 @@
 				<span>
 					<v-icon
 						color='primary'
+						size='large'
+						class='me-2'
 						:icon='mdiInformation'
 						@click='toggleExpand(internalItem)'
 					/>
+					<v-tooltip
+						activator='parent'
+						location='bottom'
+					>
+						{{ $t('components.management.sshKeys.actions.edit') }}
+					</v-tooltip>
 				</span>
 				<span>
 					<SshKeyDeleteDialog :ssh-key='toRaw(item)' @refresh='getKeys' />
+					<v-tooltip
+						activator='parent'
+						location='bottom'
+					>
+						{{ $t('components.management.sshKeys.actions.delete') }}
+					</v-tooltip>
 				</span>
 			</template>
 			<template #expanded-row='{ columns, item }'>
@@ -89,32 +98,37 @@
 <script lang='ts' setup>
 import { onMounted, ref, Ref, toRaw } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useLocaleStore } from '@/store/locale';
+import { useApiClient } from '@/services/ApiClient';
 
 import Card from '@/components/Card.vue';
 import DataTable from '@/components/DataTable.vue';
-
-import { useApiClient } from '@/services/ApiClient';
-import { SshKeyInfo } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
-import { mdiContentCopy, mdiInformation, mdiPlus, mdiReload } from '@mdi/js';
 import SshKeyDeleteDialog from '@/components/management/ssh-keys/SshKeyDeleteDialog.vue';
-import { useLocaleStore } from '@/store/locale';
+import SshKeyForm from '@/components/management/ssh-keys/SshKeyForm.vue';
+
 import { DateTime } from 'luxon';
+
+import { FormAction } from '@/enums/controls';
+import { SshKeyInfo } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
+import { mdiContentCopy, mdiInformation, mdiReload } from '@mdi/js';
 
 const i18n = useI18n();
 const localeStore = useLocaleStore();
 const service = useApiClient().getGatewayServices().getSshKeyService();
 const loading: Ref<boolean> = ref(false);
 const headers = [
-	{key: 'id', title: i18n.t('common.columns.id').toString()},
-	{key: 'description', title: i18n.t('common.columns.description').toString()},
-	{key: 'createdAt', title: i18n.t('components.management.sshKeys.table.createdAt').toString()},
-	{key: 'actions', title: i18n.t('common.columns.actions').toString(), align: 'end'},
+	{key: 'id', title: i18n.t('common.columns.id')},
+	{key: 'description', title: i18n.t('common.columns.description')},
+	{key: 'createdAt', title: i18n.t('components.management.sshKeys.table.createdAt')},
+	{key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false},
 ];
+const types: Ref<string[]> = ref([]);
 const keys: Ref<SshKeyInfo[]> = ref([]);
 const expanded: Ref<SshKeyInfo[]> = ref([]);
 
 onMounted(() => {
 	getKeys();
+	getKeyTypes();
 });
 
 function getKeys(): void {
@@ -125,6 +139,14 @@ function getKeys(): void {
 			loading.value = false;
 		})
 		.catch(() => loading.value = false);
+}
+
+function getKeyTypes(): void {
+	service.fetchKeyTypes()
+		.then((rsp: string[]) => {
+			types.value = rsp;
+		})
+		.catch(() => {});
 }
 
 function copyToClipboard(content: string): void {
