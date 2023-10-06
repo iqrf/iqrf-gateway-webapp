@@ -27,7 +27,7 @@ import { useUserStore } from '@/store/user';
 
 import { SidebarLink } from '@/types/sidebar';
 import { useFeatureStore } from '@/store/features';
-import { 
+import {
 	mdiAccountGroup,
 	mdiAccountKey,
 	mdiApi,
@@ -40,7 +40,8 @@ import {
 	mdiLogin,
 	mdiPower,
 	mdiSecurity,
-	mdiSsh
+	mdiSsh,
+	mdiTools
 } from '@mdi/js';
 import { computed } from 'vue';
 
@@ -81,18 +82,23 @@ function items(): SidebarLink[] {
 				icon: mdiDesktopTower,
 				children: [
 					{
-						title: i18n.t('gateway.power.title').toString(),
+						title: i18n.t('pages.gateway.services.title').toString(),
+						icon: mdiTools,
+						to: '/gateway/services',
+					},
+					{
+						title: i18n.t('pages.gateway.power.title').toString(),
 						icon: mdiPower,
 						to: '/gateway/power',
 					},
 				],
 			},
 			{
-				title: 'Config',
+				title: i18n.t('pages.configuration.title').toString(),
 				icon: mdiCog,
 				children: [
 					{
-						title: 'SMTP',
+						title: i18n.t('pages.configuration.smtp.title').toString(),
 						icon: mdiEmailEdit,
 						to: '/config/smtp',
 					},
