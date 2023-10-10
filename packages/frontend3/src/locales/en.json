@@ -461,7 +461,7 @@
 				}
 			}
 		},
-		"management": {
+		"accessControl": {
 			"users": {
 				"actions": {
 					"add": "Add user",
@@ -556,16 +556,20 @@
 	},
 	"pages": {
 		"gateway": {
+			"title": "Gateway",
+			"description": "Display gateway information, services and power controls.",
 			"power": {
 				"title": "Power control",
 				"description": "Powers off or reboots this gateway."
 			},
 			"services": {
-				"title": "Services"
+				"title": "Services",
+				"description": "Control services and display their status."
 			}
 		},
 		"configuration": {
 			"title": "Configuration",
+			"description": "Configure gateway, IQRF software and other services.",
 			"smtp": {
 				"title": "SMTP"
 			}
@@ -585,15 +589,20 @@
 				"title": "SSH service"
 			}
 		},
-		"management": {
+		"accessControl": {
+			"title": "Access control",
+			"description": "Manage access via users, API or SSH keys.",
 			"users": {
-				"title": "Users"
+				"title": "Users",
+				"description": "Manager Webapp users."
 			},
 			"apiKeys": {
-				"title": "API keys"
+				"title": "API keys",
+				"description": "Manage API keys."
 			},
 			"sshKeys": {
-				"title": "SSH keys"
+				"title": "SSH keys",
+				"description": "Manage SSH keys."
 			}
 		}
 	}

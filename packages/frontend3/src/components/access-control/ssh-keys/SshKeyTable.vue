@@ -1,7 +1,7 @@
 <template>
 	<Card>
 		<template #title>
-			{{ $t('pages.management.sshKeys.title') }}
+			{{ $t('pages.accessControl.sshKeys.title') }}
 		</template>
 		<template #titleActions>
 			<SshKeyForm
@@ -39,7 +39,7 @@
 						activator='parent'
 						location='bottom'
 					>
-						{{ $t('components.management.sshKeys.actions.edit') }}
+						{{ $t('components.accessControl.sshKeys.actions.edit') }}
 					</v-tooltip>
 				</span>
 				<span>
@@ -48,7 +48,7 @@
 						activator='parent'
 						location='bottom'
 					>
-						{{ $t('components.management.sshKeys.actions.delete') }}
+						{{ $t('components.accessControl.sshKeys.actions.delete') }}
 					</v-tooltip>
 				</span>
 			</template>
@@ -60,13 +60,13 @@
 					>
 						<tbody>
 							<tr>
-								<th>{{ $t('components.management.sshKeys.table.type') }}</th>
+								<th>{{ $t('components.accessControl.sshKeys.table.type') }}</th>
 								<td>
 									{{ item.type }}
 								</td>
 							</tr>
 							<tr>
-								<th>{{ $t('components.management.sshKeys.table.hash') }}</th>
+								<th>{{ $t('components.accessControl.sshKeys.table.hash') }}</th>
 								<td>
 									{{ item.hash }}
 									<v-icon
@@ -77,7 +77,7 @@
 								</td>
 							</tr>
 							<tr>
-								<th>{{ $t('components.management.sshKeys.table.key') }}</th>
+								<th>{{ $t('components.accessControl.sshKeys.table.key') }}</th>
 								<td>
 									{{ item.key }}
 									<v-icon
@@ -103,8 +103,8 @@ import { useApiClient } from '@/services/ApiClient';
 
 import Card from '@/components/Card.vue';
 import DataTable from '@/components/DataTable.vue';
-import SshKeyDeleteDialog from '@/components/management/ssh-keys/SshKeyDeleteDialog.vue';
-import SshKeyForm from '@/components/management/ssh-keys/SshKeyForm.vue';
+import SshKeyDeleteDialog from '@/components/access-control/ssh-keys/SshKeyDeleteDialog.vue';
+import SshKeyForm from '@/components/access-control/ssh-keys/SshKeyForm.vue';
 
 import { DateTime } from 'luxon';
 
@@ -119,7 +119,7 @@ const loading: Ref<boolean> = ref(false);
 const headers = [
 	{key: 'id', title: i18n.t('common.columns.id')},
 	{key: 'description', title: i18n.t('common.columns.description')},
-	{key: 'createdAt', title: i18n.t('components.management.sshKeys.table.createdAt')},
+	{key: 'createdAt', title: i18n.t('components.accessControl.sshKeys.table.createdAt')},
 	{key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false},
 ];
 const types: Ref<string[]> = ref([]);

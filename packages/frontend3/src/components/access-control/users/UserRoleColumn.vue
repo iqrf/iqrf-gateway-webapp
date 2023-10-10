@@ -3,7 +3,7 @@
 		:color='roleColor'
 		:prepend-icon='roleIcon'
 	>
-		{{ $t(`components.management.users.roles.${role}`) }}
+		{{ $t(`components.accessControl.users.roles.${role}`) }}
 	</v-chip>
 </template>
 

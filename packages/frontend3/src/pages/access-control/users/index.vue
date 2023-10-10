@@ -1,6 +1,6 @@
 <template>
 	<Head>
-		<title>{{ $t('pages.management.users.title') }}</title>
+		<title>{{ $t('pages.accessControl.users.title') }}</title>
 	</Head>
 	<UserTable />
 </template>
@@ -11,6 +11,6 @@ name: Users
 
 <script lang='ts' setup>
 import { Head } from '@vueuse/head';
-import UserTable from '@/components/management/users/UserTable.vue';
+import UserTable from '@/components/access-control/users/UserTable.vue';
 
 </script>

@@ -1,6 +1,6 @@
 <template>
 	<Head>
-		<title>{{ $t('pages.management.sshKeys.title') }}</title>
+		<title>{{ $t('pages.accessControl.sshKeys.title') }}</title>
 	</Head>
 	<SshKeyTable />
 </template>
@@ -11,5 +11,5 @@ name: SshKeys
 
 <script lang='ts' setup>
 import { Head } from '@vueuse/head';
-import SshKeyTable from '@/components/management/ssh-keys/SshKeyTable.vue';
+import SshKeyTable from '@/components/access-control/ssh-keys/SshKeyTable.vue';
 </script>

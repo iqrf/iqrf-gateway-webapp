@@ -11,5 +11,5 @@ name: SshKeysAdd
 
 <script lang='ts' setup>
 import { Head } from '@vueuse/head';
-import SshKeyAddTable from '@/components/management/ssh-keys/SshKeyAddTable.vue';
+import SshKeyAddTable from '@/components/access-control/ssh-keys/SshKeyAddTable.vue';
 </script>
