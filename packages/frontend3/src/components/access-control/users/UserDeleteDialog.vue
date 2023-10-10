@@ -17,9 +17,9 @@
 		</template>
 		<Card header-color='primary'>
 			<template #title>
-				{{ $t('components.management.users.delete.title') }}
+				{{ $t('components.accessControl.users.delete.title') }}
 			</template>
-			{{ $t('components.management.users.delete.prompt', {user: user.username}) }}
+			{{ $t('components.accessControl.users.delete.prompt', {user: user.username}) }}
 			<template #actions>
 				<v-btn
 					color='primary'
@@ -75,7 +75,7 @@ function onSubmit(): void {
 	useApiClient().getUserService().delete(props.user.id)
 		.then(async () => {
 			toast.success(
-				i18n.t('components.management.users.messages.delete.success', {user: props.user.username})
+				i18n.t('components.accessControl.users.messages.delete.success', {user: props.user.username})
 			);
 			if (props.user.id === userStore.getId) {
 				close();
@@ -89,7 +89,7 @@ function onSubmit(): void {
 			}
 		})
 		.catch((error: AxiosError) => {
-			basicErrorToast(error, 'components.management.users.messages.delete.failure', {user: props.user.username});
+			basicErrorToast(error, 'components.accessControl.users.messages.delete.failure', {user: props.user.username});
 		});
 }
 

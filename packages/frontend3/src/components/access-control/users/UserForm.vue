@@ -27,31 +27,31 @@
 			<Card>
 				<template #title>
 					<v-icon>{{ headerIcon() }}</v-icon>
-					{{ $t(`components.management.users.actions.${action}`) }}
+					{{ $t(`components.accessControl.users.actions.${action}`) }}
 				</template>
 				<TextInput
 					v-model='user.username'
-					:label='$t("components.management.users.username")'
+					:label='$t("components.accessControl.users.username")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.management.users.validation.username")),
+						(v: string|null) => ValidationRules.required(v, $t("components.accessControl.users.validation.username")),
 					]'
 					required
 					:prepend-inner-icon='mdiAccount'
 				/>
 				<TextInput
 					v-model='user.email'
-					:label='$t("components.management.users.email")'
+					:label='$t("components.accessControl.users.email")'
 					:rules='[
-						(v: string) => v !== null && v.length > 0 ? ValidationRules.email(v, $t("components.management.users.validation.emailInvalid")) : true,
+						(v: string) => v !== null && v.length > 0 ? ValidationRules.email(v, $t("components.accessControl.users.validation.emailInvalid")) : true,
 					]'
 					:prepend-inner-icon='mdiEmail'
 				/>
 				<PasswordInput
 					v-if='action === FormAction.Add'
 					v-model='(user as UserEdit).password'
-					:label='$t("components.management.users.password")'
+					:label='$t("components.accessControl.users.password")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.management.users.validation.password")),
+						(v: string|null) => ValidationRules.required(v, $t("components.accessControl.users.validation.password")),
 					]'
 					required
 					:prepend-inner-icon='mdiKey'
@@ -59,13 +59,13 @@
 				<SelectInput
 					v-model='user.role'
 					:items='roles'
-					:label='$t("components.management.users.role")'
+					:label='$t("components.accessControl.users.role")'
 					:prepend-inner-icon='mdiAccountBadge'
 				/>
 				<SelectInput
 					v-model='user.language'
 					:items='languages'
-					:label='$t("components.management.users.language")'
+					:label='$t("components.accessControl.users.language")'
 					:prepend-inner-icon='mdiTranslate'
 				/>
 				<template #actions>
@@ -202,14 +202,14 @@ async function onSubmit(): Promise<void> {
 
 function onSuccess(entity: UserCreate | UserEdit): void {
 	toast.success(
-		i18n.t(`components.management.users.messages.${props.action}.success`, {user: entity.username})
+		i18n.t(`components.accessControl.users.messages.${props.action}.success`, {user: entity.username})
 	);
 	close();
 	emit('refresh');
 }
 
 function onFailure(error: AxiosError, entity: UserCreate | UserEdit): void {
-	basicErrorToast(error, `components.management.users.messages.${props.action}.failure`, {user: entity.username});
+	basicErrorToast(error, `components.accessControl.users.messages.${props.action}.failure`, {user: entity.username});
 }
 
 function close(): void {

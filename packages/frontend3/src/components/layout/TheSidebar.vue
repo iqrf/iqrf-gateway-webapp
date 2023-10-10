@@ -78,52 +78,52 @@ function items(): SidebarLink[] {
 	if (isLoggedIn.value) {
 		links = [
 			{
-				title: i18n.t('gateway.title').toString(),
+				title: i18n.t('gateway.title'),
 				icon: mdiDesktopTower,
 				children: [
 					{
-						title: i18n.t('pages.gateway.services.title').toString(),
+						title: i18n.t('pages.gateway.services.title'),
 						icon: mdiTools,
 						to: '/gateway/services',
 					},
 					{
-						title: i18n.t('pages.gateway.power.title').toString(),
+						title: i18n.t('pages.gateway.power.title'),
 						icon: mdiPower,
 						to: '/gateway/power',
 					},
 				],
 			},
 			{
-				title: i18n.t('pages.configuration.title').toString(),
+				title: i18n.t('pages.configuration.title'),
 				icon: mdiCog,
 				children: [
 					{
-						title: i18n.t('pages.configuration.smtp.title').toString(),
+						title: i18n.t('pages.configuration.smtp.title'),
 						icon: mdiEmailEdit,
 						to: '/config/smtp',
 					},
 				],
 			},
 			{
-				title: 'Management',
+				title: i18n.t('pages.accessControl.title'),
 				icon: mdiSecurity,
 				children: [
 					{
-						title: i18n.t('pages.management.users.title'),
+						title: i18n.t('pages.accessControl.users.title'),
 						icon: mdiAccountGroup,
-						to: '/management/users',
+						to: '/access-control/users',
 						roles: [UserRole.Admin, UserRole.BasicAdmin],
 					},
 					{
-						title: i18n.t('pages.management.apiKeys.title'),
+						title: i18n.t('pages.accessControl.apiKeys.title'),
 						icon: mdiApi,
-						to: '/management/api-keys',
+						to: '/access-control/api-keys',
 						roles: [UserRole.Admin],
 					},
 					{
-						title: i18n.t('pages.management.sshKeys.title'),
+						title: i18n.t('pages.accessControl.sshKeys.title'),
 						icon: mdiSsh,
-						to: '/management/ssh-keys',
+						to: '/access-control/ssh-keys',
 						roles: [UserRole.Admin],
 					},
 				],
@@ -132,19 +132,19 @@ function items(): SidebarLink[] {
 	} else {
 		links = [
 			{
-				title: i18n.t('auth.sign.in.title').toString(),
+				title: i18n.t('auth.sign.in.title'),
 				icon: mdiLogin,
 				to: '/sign/in',
 			},
 			{
-				title: i18n.t('account.recovery.title').toString(),
+				title: i18n.t('account.recovery.title'),
 				icon: mdiAccountKey,
 				to: '/account/recovery',
 			},
 		];
 	}
 	links.push({
-		title: i18n.t('docs.title').toString(),
+		title: i18n.t('docs.title'),
 		href: featureStore.getConfiguration('docs')?.url,
 		icon: mdiBook,
 		feature: 'docs',

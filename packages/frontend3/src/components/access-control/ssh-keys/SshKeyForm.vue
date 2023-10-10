@@ -33,10 +33,10 @@
 					class='mb-4'
 				>
 					<span v-if='keyTypes.length === 0'>
-						{{ $t('components.management.sshKeys.noneSupported') }}
+						{{ $t('components.accessControl.sshKeys.noneSupported') }}
 					</span>
 					<span v-else>
-						{{ $t('components.management.sshKeys.supported') }}
+						{{ $t('components.accessControl.sshKeys.supported') }}
 						<ul>
 							<li
 								v-for='key of keyTypes'
@@ -150,9 +150,9 @@ const activatorIcon = computed(() => {
 });
 const dialogTitle = computed(() => {
 	if (props.action === FormAction.Add) {
-		return i18n.t('components.management.sshKeys.form.addTitle').toString();
+		return i18n.t('components.accessControl.sshKeys.form.addTitle').toString();
 	}
-	return i18n.t('components.management.sshKeys.form.editTitle').toString();
+	return i18n.t('components.accessControl.sshKeys.form.editTitle').toString();
 });
 
 watchEffect(async(): Promise<void> => {

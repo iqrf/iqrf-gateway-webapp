@@ -1,7 +1,7 @@
 <template>
 	<Card>
 		<template #title>
-			{{ $t('pages.management.users.title') }}
+			{{ $t('pages.accessControl.users.title') }}
 		</template>
 		<template #titleActions>
 			<UserForm :action='FormAction.Add' @refresh='getUsers' />
@@ -34,7 +34,7 @@
 						activator='parent'
 						location='bottom'
 					>
-						{{ $t('components.management.users.actions.edit') }}
+						{{ $t('components.accessControl.users.actions.edit') }}
 					</v-tooltip>
 				</span>
 				<span>
@@ -43,7 +43,7 @@
 						activator='parent'
 						location='bottom'
 					>
-						{{ $t('components.management.users.actions.delete') }}
+						{{ $t('components.accessControl.users.actions.delete') }}
 					</v-tooltip>
 				</span>
 			</template>
@@ -58,11 +58,11 @@ import { useI18n } from 'vue-i18n';
 
 import Card from '@/components/Card.vue';
 import DataTable from '@/components/DataTable.vue';
-import UserDeleteDialog from '@/components/management/users/UserDeleteDialog.vue';
-import UserForm from '@/components/management/users/UserForm.vue';
-import UserLanguageColumn from '@/components/management/users/UserLanguageColumn.vue';
-import UserRoleColumn from '@/components/management/users/UserRoleColumn.vue';
-import UserStateColumn from '@/components/management/users/UserStateColumn.vue';
+import UserDeleteDialog from '@/components/access-control/users/UserDeleteDialog.vue';
+import UserForm from '@/components/access-control/users/UserForm.vue';
+import UserLanguageColumn from '@/components/access-control/users/UserLanguageColumn.vue';
+import UserRoleColumn from '@/components/access-control/users/UserRoleColumn.vue';
+import UserStateColumn from '@/components/access-control/users/UserStateColumn.vue';
 
 import { FormAction } from '@/enums/controls';
 import { useApiClient } from '@/services/ApiClient';
@@ -72,11 +72,11 @@ const i18n = useI18n();
 
 const loading: Ref<boolean> = ref(false);
 const headers = [
-	{key: 'username', title: i18n.t('components.management.users.username')},
-	{key: 'email', title: i18n.t('components.management.users.email')},
-	{key: 'role', title: i18n.t('components.management.users.role')},
-	{key: 'language', title: i18n.t('components.management.users.language')},
-	{key: 'state', title: i18n.t('components.management.users.state')},
+	{key: 'username', title: i18n.t('components.accessControl.users.username')},
+	{key: 'email', title: i18n.t('components.accessControl.users.email')},
+	{key: 'role', title: i18n.t('components.accessControl.users.role')},
+	{key: 'language', title: i18n.t('components.accessControl.users.language')},
+	{key: 'state', title: i18n.t('components.accessControl.users.state')},
 	{key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false}
 ];
 const users: Ref<UserInfo[]> = ref([]);

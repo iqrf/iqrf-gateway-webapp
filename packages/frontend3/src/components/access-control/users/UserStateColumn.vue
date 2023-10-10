@@ -3,7 +3,7 @@
 		:color='stateColor'
 		:prepend-icon='stateIcon'
 	>
-		{{ $t(`components.management.users.states.${state}`) }}
+		{{ $t(`components.accessControl.users.states.${state}`) }}
 	</v-chip>
 </template>
 

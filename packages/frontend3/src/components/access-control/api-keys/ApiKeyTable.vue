@@ -1,7 +1,7 @@
 <template>
 	<Card>
 		<template #title>
-			{{ $t('pages.management.apiKeys.title') }}
+			{{ $t('pages.accessControl.apiKeys.title') }}
 		</template>
 		<template #titleActions>
 			<ApiKeyForm :action='FormAction.Add' @refresh='getKeys' />
@@ -32,7 +32,7 @@
 						activator='parent'
 						location='bottom'
 					>
-						{{ $t('components.management.apiKeys.actions.edit') }}
+						{{ $t('components.accessControl.apiKeys.actions.edit') }}
 					</v-tooltip>
 				</span>
 				<span>
@@ -44,7 +44,7 @@
 						activator='parent'
 						location='bottom'
 					>
-						{{ $t('components.management.apiKeys.actions.delete') }}
+						{{ $t('components.accessControl.apiKeys.actions.delete') }}
 					</v-tooltip>
 				</span>
 			</template>
@@ -57,8 +57,8 @@ import { onMounted, ref, Ref, toRaw } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useLocaleStore } from '@/store/locale';
 
-import ApiKeyDeleteDialog from '@/components/management/api-keys/ApiKeyDeleteDialog.vue';
-import ApiKeyForm from '@/components/management/api-keys/ApiKeyForm.vue';
+import ApiKeyDeleteDialog from '@/components/access-control/api-keys/ApiKeyDeleteDialog.vue';
+import ApiKeyForm from '@/components/access-control/api-keys/ApiKeyForm.vue';
 import Card from '@/components/Card.vue';
 import DataTable from '@/components/DataTable.vue';
 
@@ -76,7 +76,7 @@ const loading: Ref<boolean> = ref(false);
 const headers = [
 	{key: 'id', title: i18n.t('common.columns.id')},
 	{key: 'description', title: i18n.t('common.columns.description')},
-	{key: 'expiration', title: i18n.t('components.management.apiKeys.table.expiration')},
+	{key: 'expiration', title: i18n.t('components.accessControl.apiKeys.table.expiration')},
 	{key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false},
 ];
 const keys: Ref<ApiKeyInfo[]> = ref([]);

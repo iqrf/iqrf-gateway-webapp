@@ -16,9 +16,9 @@
 		</template>
 		<Card>
 			<template #title>
-				{{ $t('components.management.sshKeys.delete.title') }}
+				{{ $t('components.accessControl.apiKeys.delete.title') }}
 			</template>
-			{{ $t('components.management.sshKeys.delete.prompt', {id: sshKey.id}) }}
+			{{ $t('components.accessControl.apiKeys.delete.prompt', {id: apiKey.id}) }}
 			<template #actions>
 				<v-btn
 					color='primary'
@@ -50,23 +50,23 @@ import Card from '@/components/Card.vue';
 import { getModalWidth } from '@/helpers/modal';
 import { mdiDelete } from '@mdi/js';
 import { PropType } from 'vue';
-import { SshKeyInfo } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
-import { SshKeyService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
 import { useApiClient } from '@/services/ApiClient';
+import { ApiKeyService } from '@iqrf/iqrf-gateway-webapp-client/services';
+import { ApiKeyInfo } from '@iqrf/iqrf-gateway-webapp-client/types';
 
 const emit = defineEmits(['refresh']);
 const props = defineProps({
-	sshKey: {
-		type: Object as PropType<SshKeyInfo>,
+	apiKey: {
+		type: Object as PropType<ApiKeyInfo>,
 		required: true,
 	},
 });
 const show: Ref<boolean> = ref(false);
 const width = getModalWidth();
-const service: SshKeyService = useApiClient().getGatewayServices().getSshKeyService();
+const service: ApiKeyService = useApiClient().getApiKeyService();
 
 async function onSubmit(): Promise<void> {
-	service.deleteKey(props.sshKey.id)
+	service.delete(props.apiKey.id)
 		.then(() => {
 			close();
 			emit('refresh');
