@@ -74,7 +74,7 @@ class Kernel {
 		}
 		if (!defined('EMAIL_VALIDATE_DNS')) {
 			$container = $configurator->createContainer();
-			define('EMAIL_VALIDATE_DNS', $container->parameters['emailValidateDns']);
+			define('EMAIL_VALIDATE_DNS', $container->getParameters()['emailValidateDns']);
 		}
 		return $configurator;
 	}
