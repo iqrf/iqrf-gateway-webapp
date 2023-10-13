@@ -59,9 +59,6 @@ class FeatureManager {
 		'iqrfRepository' => [
 			'enabled' => false,
 		],
-		'iTemp' => [
-			'enabled' => false,
-		],
 		'journal' => [
 			'enabled' => false,
 			'path' => '/etc/systemd/journald.conf',

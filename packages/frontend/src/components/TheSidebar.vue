@@ -180,12 +180,6 @@ export default class TheSidebar extends Vue {
 							role: UserRoleIndex.NORMAL,
 						},
 						{
-							title: this.$t('service.tempgw.title').toString(),
-							to: '/gateway/service/tempgw/',
-							feature: 'iTemp',
-							role: UserRoleIndex.NORMAL,
-						},
-						{
 							title: this.$t('service.unattended-upgrades.title').toString(),
 							to: '/gateway/service/unattended-upgrades/',
 							feature: 'unattendedUpgrades',

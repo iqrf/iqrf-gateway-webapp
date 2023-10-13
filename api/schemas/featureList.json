@@ -11,7 +11,6 @@
 		"iqrfGatewayController",
 		"iqrfGatewayTranslator",
 		"iqrfRepository",
-		"iTemp",
 		"mender",
 		"monit",
 		"networkManager",
@@ -48,9 +47,6 @@
 		},
 		"iqrfRepository": {
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/iqrfRepository.json"
-		},
-		"iTemp": {
-			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/iTemp.json"
 		},
 		"mender": {
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/mender.json"

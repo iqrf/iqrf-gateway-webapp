@@ -21,7 +21,6 @@ features:
 	iqrfGatewayController: IQRF Gateway Controller configuration
 	iqrfGatewayTranslator: IQRF Gateway Translator configuration
 	iqrfRepository: IQRF Repository extension configuration
-	iTemp: iTemp
 	journal: Systemd Journald configuration
 	mender: Mender
 	monit: Monit

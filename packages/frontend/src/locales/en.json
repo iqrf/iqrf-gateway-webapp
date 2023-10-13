@@ -3484,18 +3484,6 @@
 				"restart": "SSH daemon service has been restarted."
 			}
 		},
-		"tempgw": {
-			"title": "iTemp service",
-			"description": "Controls the iTemp cloud daemon service.",
-			"messages": {
-				"disabled": "iTemp service is disabled.",
-				"disable": "iTemp service has been disabled.",
-				"enable": "iTemp service has been enabled.",
-				"start": "iTemp service has been started.",
-				"stop": "iTemp service has been stopped.",
-				"restart": "iTemp service has been restarted."
-			}
-		},
 		"unattended-upgrades": {
 			"title": "Automatic upgrades",
 			"description": "Controls the automatic unattended upgrades service.",

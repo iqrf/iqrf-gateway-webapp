@@ -61,13 +61,6 @@ export default class SystemServiceDisambiguation extends Vue {
 			feature: 'nodeRed',
 		},
 		{
-			title: this.$t('service.tempgw.title').toString(),
-			description: this.$t('service.tempgw.description').toString(),
-			to: '/gateway/service/tempgw/',
-			role: UserRoleIndex.NORMAL,
-			feature: 'iTemp',
-		},
-		{
 			title: this.$t('service.unattended-upgrades.title').toString(),
 			description: this.$t('service.unattended-upgrades.description').toString(),
 			to: '/gateway/service/unattended-upgrades/',

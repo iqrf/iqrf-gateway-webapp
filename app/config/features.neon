@@ -37,9 +37,6 @@ iqrfGatewayTranslator:
 # IQRF Repository Extension configuration
 iqrfRepository:
 	enabled: false
-# iTemp service
-iTemp:
-	enabled: false
 # Systemd journald configuration
 journal:
 	enabled: false
