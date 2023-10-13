@@ -68,7 +68,6 @@ class ServicesController extends BaseController {
 		'nodered' => 'nodeRed',
 		'ssh' => 'ssh',
 		'systemd-journald' => 'journal',
-		'tempgw' => 'iTemp',
 		'unattended-upgrades' => 'unattendedUpgrades',
 	];
 

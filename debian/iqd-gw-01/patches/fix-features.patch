@@ -23,7 +23,7 @@
  # IQRF Gateway Translator configuration
  iqrfGatewayTranslator:
  	enabled: false
-@@ -46,36 +46,36 @@
+@@ -43,36 +43,36 @@
  	path: /etc/systemd/journald.conf
  # Mender client configuration
  mender:

@@ -104,7 +104,6 @@ const whitelisted = [
 	'iqrf-gateway-translator',
 	'nodered',
 	'ssh',
-	'tempgw',
 	'unattended-upgrades',
 	'systemd-journald',
 ];
@@ -115,7 +114,6 @@ const features = {
 	'iqrf-gateway-translator': 'iqrfGatewayTranslator',
 	'nodered': 'nodeRed',
 	'ssh': 'ssh',
-	'tempgw': 'iTemp',
 	'unattended-upgrades': 'unattendedUpgrades',
 	'systemd-journald': 'journal',
 };
