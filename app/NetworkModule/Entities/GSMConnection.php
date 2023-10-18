@@ -92,6 +92,7 @@ final class GSMConnection implements INetworkManagerEntity {
 		$array['username'] ??= '';
 		$array['password'] ??= '';
 		$array['pin'] ??= '';
+		$array['pin-flags'] = $array['pin'] === '' ? 'not-required' : 'none';
 		return NmCliConnection::encode($array, self::NMCLI_PREFIX);
 	}
 
