@@ -67,6 +67,7 @@ class InfoManager {
 			'gwImage' => $this->getImage(),
 			'os' => $this->getOs(),
 			'versions' => [
+				'cloudProvisioning' => $this->versionManager->getCloudProvisioning(),
 				'controller' => $this->versionManager->getController(),
 				'daemon' => $this->versionManager->getDaemon($verbose),
 				'setter' => $this->versionManager->getSetter(),
