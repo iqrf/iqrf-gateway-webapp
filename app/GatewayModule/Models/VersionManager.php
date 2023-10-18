@@ -54,7 +54,7 @@ class VersionManager {
 	 * @return string|null IQRF Cloud Provisioning's version
 	 */
 	public function getCloudProvisioning(): ?string {
-		if (!$this->commandManager->commandExist('')) {
+		if (!$this->commandManager->commandExist('iqrf-cloud-provisioning')) {
 			return null;
 		}
 		$result = $this->commandManager->run('iqrf-cloud-provisioning --version')->getStdout();
