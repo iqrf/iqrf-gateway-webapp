@@ -126,9 +126,9 @@ final class GSMConnectionTest extends TestCase {
 	 * Tests the function to serialize GSM connection entity to nmcli connection configuration
 	 */
 	public function testNmCliSerialize(): void {
-		$expected = sprintf('gsm.apn "%s" gsm.username "%s" gsm.password "%s" gsm.pin "%s" ', self::APN, self::USERNAME, self::PASSWORD, self::PIN);
+		$expected = sprintf('gsm.apn "%s" gsm.username "%s" gsm.password "%s" gsm.pin "%s" gsm.pin-flags "none" ', self::APN, self::USERNAME, self::PASSWORD, self::PIN);
 		Assert::same($expected, $this->entity->nmCliSerialize());
-		$expected = sprintf('gsm.apn "%s" gsm.username "" gsm.password "" gsm.pin "" ', self::APN);
+		$expected = sprintf('gsm.apn "%s" gsm.username "" gsm.password "" gsm.pin "" gsm.pin-flags "not-required" ', self::APN);
 		Assert::same($expected, $this->nullEntity->nmCliSerialize());
 	}
 
