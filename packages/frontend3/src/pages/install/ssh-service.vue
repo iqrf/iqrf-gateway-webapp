@@ -14,6 +14,6 @@ meta:
 </route>
 
 <script lang='ts' setup>
-import { Head } from '@vueuse/head';
+import { Head } from '@unhead/vue/components';
 import SshService from '@/components/install/SshService.vue';
 </script>

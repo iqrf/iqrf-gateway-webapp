@@ -17,6 +17,6 @@ meta:
 </route>
 
 <script lang='ts' setup>
-import {Head} from '@vueuse/head';
+import {Head} from '@unhead/vue';
 import Card from '@/components/Card.vue';
 </script>

@@ -10,7 +10,7 @@ name: Users
 </route>
 
 <script lang='ts' setup>
-import { Head } from '@vueuse/head';
+import { Head } from '@unhead/vue/components';
 import UserTable from '@/components/access-control/users/UserTable.vue';
 
 </script>

@@ -214,6 +214,8 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/timezoneSet.json
 		TranslatorConfig:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/translatorConfig.json
+		TuptimeStats:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/tuptimeStats.json
 		UploaderFile:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/uploaderFile.json
 		UserCreate:

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\ApiModule\Version0\Controllers;
 
@@ -501,4 +501,5 @@ class UserController extends BaseController {
 		$signingKey = $configuration->signingKey();
 		return $builder->getToken($signer, $signingKey)->toString();
 	}
+
 }

@@ -71,6 +71,7 @@ services:
 	- App\GatewayModule\Models\PowerManager
 	- App\GatewayModule\Models\SshManager
 	- App\GatewayModule\Models\TimeManager(@commandManager, %paths.timesyncd.config%)
+	- App\GatewayModule\Models\TuptimeManager
 	- App\GatewayModule\Models\UpdaterManager
 	- App\GatewayModule\Models\Utils\GatewayInfoUtil('/etc/iqrf-gateway.json')
 	- App\GatewayModule\Models\VersionManager

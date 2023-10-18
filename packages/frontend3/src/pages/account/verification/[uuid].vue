@@ -33,7 +33,7 @@ meta:
 <script lang='ts' setup>
 import VueCountdown from '@chenfengyuan/vue-countdown';
 import { ErrorResponse, UserSignedIn } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { Head } from '@vueuse/head';
+import { Head } from '@unhead/vue/components';
 import { AxiosError } from 'axios';
 import { validate as uuidValidate, version as uuidVersion } from 'uuid';
 import { onMounted, ref, Ref } from 'vue';

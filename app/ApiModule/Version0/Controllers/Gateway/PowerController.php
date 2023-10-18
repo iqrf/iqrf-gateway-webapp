@@ -23,11 +23,16 @@ namespace App\ApiModule\Version0\Controllers\Gateway;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
+use Apitte\Core\Exception\Api\ClientErrorException;
+use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Controllers\GatewayController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\GatewayModule\Exceptions\TuptimeErrorException;
+use App\GatewayModule\Exceptions\TuptimeNotFoundException;
 use App\GatewayModule\Models\PowerManager;
+use App\GatewayModule\Models\TuptimeManager;
 
 /**
  * Gateway power controller
@@ -38,10 +43,12 @@ class PowerController extends GatewayController {
 	/**
 	 * Constructor
 	 * @param PowerManager $powerManager Gateway power manager
+	 * @param TuptimeManager $tuptimeManager Gateway uptime stats manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
 	public function __construct(
 		private readonly PowerManager $powerManager,
+		private readonly TuptimeManager $tuptimeManager,
 		RestApiSchemaValidator $validator,
 	) {
 		parent::__construct($validator);
@@ -83,6 +90,31 @@ class PowerController extends GatewayController {
 	public function reboot(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['gateway:power']);
 		return $response->writeJsonBody($this->powerManager->reboot());
+	}
+
+	#[Path('/stats')]
+	#[Method('GET')]
+	#[OpenApi('
+		summary: Returns power statistics
+		responses:
+			\'200\':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/TuptimeStats\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+	')]
+	public function stats(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['gateway:power']);
+		try {
+			return $response->writeJsonBody($this->tuptimeManager->list());
+		} catch (TuptimeNotFoundException $e) {
+			throw new ClientErrorException('tuptime not found', ApiResponse::S424_FAILED_DEPENDENCY, $e);
+		} catch (TuptimeErrorException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		}
 	}
 
 }
