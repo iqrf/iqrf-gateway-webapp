@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /**
  * Copyright 2023-2024 MICRORISC s.r.o.
  *
@@ -15,9 +14,10 @@
  * limitations under the License.
  */
 import type { AxiosResponse } from 'axios';
+import {DateTime, Duration} from 'luxon';
 
 import { BaseService } from '../BaseService';
-import { type PowerActionResponse } from '../../types/Gateway';
+import { type GatewayUptime, type GatewayUptimeRaw, type PowerActionResponse } from '../../types/Gateway';
 
 export class PowerService extends BaseService {
 
@@ -37,5 +37,24 @@ export class PowerService extends BaseService {
 	public reboot(): Promise<PowerActionResponse> {
 		return this.axiosInstance.post('/gateway/power/reboot')
 			.then((response: AxiosResponse<PowerActionResponse>): PowerActionResponse => response.data);
+	}
+
+	/**
+	 * Retrieves gateway uptime stats
+	 * @returns {Promise<GatewayUptime[]>} Gateway uptime stats
+	 */
+	public fetchStats(): Promise<GatewayUptime[]> {
+		return this.axiosInstance.get('/gateway/power/stats')
+			.then((response: AxiosResponse<GatewayUptimeRaw[]>): GatewayUptime[] =>
+				response.data.map((uptime: GatewayUptimeRaw): GatewayUptime => ({
+					...uptime,
+					downtime: Duration.fromObject({ seconds: uptime.downtime }),
+					running: Duration.fromObject({ seconds: uptime.running }),
+					sleeping: Duration.fromObject({ seconds: uptime.sleeping }),
+					shutdown: uptime.shutdown ? DateTime.fromISO(uptime.shutdown) : null,
+					start: DateTime.fromISO(uptime.start),
+				}))
+					.sort((a: GatewayUptime, b: GatewayUptime): number => b.id - a.id),
+			);
 	}
 }

@@ -1,0 +1,83 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/tuptimeStats.json",
+	"type": "array",
+	"title": "Gateway uptime statistics",
+	"additionalItems": false,
+	"items": {
+		"title": "Gateway uptime statistics",
+		"type": "object",
+		"required": [
+			"id",
+			"start",
+			"shutdown",
+			"running",
+			"sleeping",
+			"downtime",
+			"graceful",
+			"kernel"
+		],
+		"additionalProperties": true,
+		"properties": {
+			"id": {
+				"title": "ID",
+				"type": "number",
+				"examples": [
+					1
+				]
+			},
+			"start": {
+				"title": "Startup time",
+				"type": "string",
+				"examples": [
+					"2023-09-18T04:40:05+00:00"
+				]
+			},
+			"shutdown": {
+				"title": "Shutdown time",
+				"type": [
+					"string",
+					"null"
+				],
+				"examples": [
+					null
+				]
+			},
+			"running": {
+				"title": "Running time in seconds",
+				"type": "number",
+				"examples": [
+					141856
+				]
+			},
+			"sleeping": {
+				"title": "Sleep time in seconds",
+				"type": "number",
+				"examples": [
+					0
+				]
+			},
+			"downtime": {
+				"title": "Downtime in seconds",
+				"type": "number",
+				"examples": [
+					3600
+				]
+			},
+			"graceful": {
+				"title": "Graceful shutdown",
+				"type": "boolean",
+				"examples": [
+					true
+				]
+			},
+			"kernel": {
+				"title": "Kernel version",
+				"type": "string",
+				"examples": [
+					"Linux-6.5.0-2-amd64-x86_64-with-glibc2.37"
+				]
+			}
+		}
+	}
+}

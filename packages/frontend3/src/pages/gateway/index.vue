@@ -12,7 +12,7 @@ name: 'Gateway'
 <script lang='ts' setup>
 import { ref, Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { Head } from '@vueuse/head';
+import { Head } from '@unhead/vue/components';
 import Disambiguation from '@/components/Disambiguation.vue';
 import { DisambiguationLink } from '@/types/disambiguation';
 

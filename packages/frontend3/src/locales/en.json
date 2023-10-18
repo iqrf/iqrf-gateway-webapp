@@ -442,6 +442,20 @@
 					"powerOffFailed": "Failed to schedule gateway poweroff: {error}.",
 					"rebootSuccess": "Your device will be rebooted at {time}, the reboot may take tens of seconds.",
 					"rebootFailed": "Failed to schedule gateway reboot: {error}."
+				},
+				"stats": {
+					"title": "Power statistics",
+					"columns":{
+						"start": "Startup time",
+						"shutdown": "Shutdown time",
+						"graceful": "Graceful shutdown",
+						"uptime": "Uptime",
+						"downtime": "Downtime"
+					},
+					"messages": {
+						"tuptimeMissing": "Tuptime utility is not installed. Please install it to see power statistics.",
+						"fetchFailed": "Failed to retrieve power statistics."
+					}
 				}
 			},
 			"services": {

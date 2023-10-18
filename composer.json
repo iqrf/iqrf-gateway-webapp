@@ -20,7 +20,7 @@
 		}
 	],
 	"require": {
-		"php": ">=8.1.0",
+		"php": ">=8.1.2",
 		"ext-json": "*",
 		"ext-openssl": "*",
 		"ext-posix": "*",
@@ -44,6 +44,7 @@
 		"justinrainbow/json-schema": "^5.2.13",
 		"latte/latte": "^v3.0.13",
 		"lcobucci/jwt": "^5.2.0",
+		"league/csv": "^9.15.0",
 		"nette/application": "^v3.2.0",
 		"nette/bootstrap": "v3.2.2",
 		"nette/caching": "^v3.2.3",
@@ -117,7 +118,7 @@
 	},
 	"config": {
 		"platform": {
-			"php": "8.1.0"
+			"php": "8.1.2"
 		},
 		"sort-packages": true,
 		"allow-plugins": {

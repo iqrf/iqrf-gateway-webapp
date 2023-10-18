@@ -19,6 +19,7 @@ limitations under the License.
 		<title>{{ $t('pages.gateway.power.title') }}</title>
 	</Head>
 	<PowerControls />
+	<UptimeStats class='mt-3' />
 </template>
 
 <route lang='yaml'>
@@ -26,7 +27,8 @@ name: PowerControl
 </route>
 
 <script lang='ts' setup>
-import { Head } from '@vueuse/head';
-import PowerControls from '@/components/gateway/power/PowerControls.vue';
+import { Head } from '@unhead/vue/components';
 
+import PowerControls from '@/components/gateway/power/PowerControls.vue';
+import UptimeStats from '@/components/gateway/power/UptimeStats.vue';
 </script>
