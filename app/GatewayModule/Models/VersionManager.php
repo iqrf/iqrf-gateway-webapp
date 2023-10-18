@@ -64,6 +64,21 @@ class VersionManager {
 	}
 
 	/**
+	 * Returns IQRF Cloud Provisioning's version
+	 * @return string|null IQRF Cloud Provisioning's version
+	 */
+	public function getCloudProvisioning(): ?string {
+		if (!$this->commandManager->commandExist('')) {
+			return null;
+		}
+		$result = $this->commandManager->run('iqrf-cloud-provisioning --version')->getStdout();
+		if ($result !== '') {
+			return $result;
+		}
+		return null;
+	}
+
+	/**
 	 * Returns IQRF Gateway Controller's version
 	 * @return string|null IQRF Gateway Controller's version
 	 */

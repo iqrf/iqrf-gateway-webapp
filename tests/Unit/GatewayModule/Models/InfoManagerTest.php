@@ -83,6 +83,7 @@ final class InfoManagerTest extends CommandTestCase {
 			'homePage' => 'https://www.debian.org/',
 		],
 		'versions' => [
+			'cloudProvisioning' => 'v1.0.0',
 			'controller' => 'v1.0.0',
 			'daemon' => 'v2.3.0',
 			'setter' => 'v1.0.0',
@@ -314,6 +315,8 @@ final class InfoManagerTest extends CommandTestCase {
 			->andReturn(self::EXPECTED['gwImage']);
 		$manager->shouldReceive('getOs')
 			->andReturn(self::EXPECTED['os']);
+		$this->versionManager->shouldReceive('getCloudProvisioning')
+			->andReturn(self::EXPECTED['versions']['cloudProvisioning']);
 		$this->versionManager->shouldReceive('getController')
 			->andReturn(self::EXPECTED['versions']['controller']);
 		$this->versionManager->shouldReceive('getDaemon')

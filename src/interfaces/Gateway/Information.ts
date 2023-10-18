@@ -96,6 +96,7 @@ export interface SwapInfo {
  * GatewayInfo iqrf software versions interface
  */
 export interface VersionsInfo {
+	cloudProvisioning: string
 	controller: string
 	daemon: string
 	setter: string

@@ -1362,6 +1362,7 @@
 			"gwId": "IQRF Gateway ID",
 			"gwImage": "IQRF Gateway image",
 			"version": {
+				"iqrfCloudProvisioning": "IQRF Cloud Provisioning",
 				"iqrfGatewayController": "IQRF Gateway Controller",
 				"iqrfGatewayDaemon": "IQRF Gateway Daemon",
 				"iqrfGatewaySetter": "IQRF Gateway Setter",

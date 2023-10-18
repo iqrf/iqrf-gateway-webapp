@@ -37,6 +37,10 @@ limitations under the License.
 							<th>{{ $t('gateway.info.gwImage') }}</th>
 							<td>{{ info.gwImage }}</td>
 						</tr>
+						<tr v-if='info.versions.cloudProvisioning'>
+							<th>{{ $t('gateway.info.version.iqrfCloudProvisioning') }}</th>
+							<td>{{ info.versions.cloudProvisioning }}</td>
+						</tr>
 						<tr v-if='info.versions.controller'>
 							<th>{{ $t('gateway.info.version.iqrfGatewayController') }}</th>
 							<td>{{ info.versions.controller }}</td>
