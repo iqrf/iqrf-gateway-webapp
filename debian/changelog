@@ -1,10 +1,18 @@
-iqrf-gateway-webapp (2.5.12~alpha~1.gbp1f496c) UNRELEASED; urgency=medium
+iqrf-gateway-webapp (2.5.12) stable; urgency=medium
 
-  ** SNAPSHOT build @1f496c96e3842d4e3612e18ed13a966dd494f890 **
+  [ Karel Hanák ]
+  * Prepare for version 2.5.12-alpha
 
-  * UNRELEASED
+  [ Roman Ondráček ]
+  * Services: remove iTemp
 
- -- Karel Hanák <karel.hanak@iqrf.org>  Mon, 02 Oct 2023 13:26:58 +0200
+  [ Karel Hanák ]
+  * GSMConnection: set pin-flags to allow empty pin
+  * GSMConnectionTest: added missing gsm pin flags
+  * include cloud provisioning version in gateway info if available
+  * VersionManager: fixed cloud provisioning command check
+
+ -- Karel Hanák <karel.hanak@iqrf.org>  Thu, 19 Oct 2023 08:58:39 +0200
 
 iqrf-gateway-webapp (2.5.11) stable; urgency=medium
 
