@@ -468,6 +468,48 @@
 					"refreshAll": "Refresh services",
 					"status": "Toggle status"
 				},
+				"service": {
+					"apcupsd": {
+						"name": "APC UPS Daemon",
+						"description": ""
+					},
+					"iqrf-gateway-controller": {
+						"name": "IQRF Gateway Controller",
+						"description": ""
+					},
+					"iqrf-gateway-daemon": {
+						"name": "IQRF Gateway Daemon",
+						"description": "IQRF Gateway Daemon is a core component of the IQRF Gateway."
+					},
+					"iqrf-gateway-translator": {
+						"name": "IQRF Gateway Translator",
+						"description": ""
+					},
+					"monit": {
+						"name": "Monit",
+						"description": ""
+					},
+					"ModemManager": {
+						"name": "Modem Manager",
+						"description": "Modem Manager is used to manage GSM modems."
+					},
+					"nodered": {
+						"name": "Node-RED",
+						"description": ""
+					},
+					"ssh": {
+						"name": "SSH daemon",
+						"description": "SSH daemon is used to access the device via SSH protocol."
+					},
+					"systemd-timesyncd": {
+						"name": "Systemd Time Sync Service",
+						"description": ""
+					},
+					"unattended-upgrades": {
+						"name": "Unattended Upgrades",
+						"description": ""
+					}
+				},
 				"table": {
 					"service": "Service",
 					"active": "Active",

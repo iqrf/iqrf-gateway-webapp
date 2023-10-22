@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\ServiceModule\Models;
 
 use App\CoreModule\Models\CommandManager;
+use App\ServiceModule\Entities\ServiceState;
 use App\ServiceModule\Exceptions\NotImplementedException;
 
 /**
@@ -104,6 +105,21 @@ class SupervisordManager implements IServiceManager {
 	public function getStatus(string $serviceName): string {
 		$cmd = 'supervisorctl status ' . escapeshellarg($serviceName);
 		return $this->commandManager->run($cmd, true)->getStdout();
+	}
+
+	/**
+	 * Returns state of the service
+	 * @param string $serviceName Service name
+	 * @param bool $withStatus Include service status?
+	 * @return ServiceState Service state
+	 */
+	public function getState(string $serviceName, bool $withStatus = false): ServiceState {
+		return new ServiceState(
+			name: $serviceName,
+			enabled: null,
+			active: null,
+			status: $withStatus ? $this->getStatus($serviceName) : null,
+		);
 	}
 
 }
