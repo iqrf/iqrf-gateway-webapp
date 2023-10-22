@@ -18,15 +18,9 @@
  * Account state enum
  */
 export enum AccountState {
-
-	/**
-	 * Unverified account
-	 */
+	/// Unverified account
 	Unverified = 'unverified',
-
-	/**
-	 * Verified account
-	 */
+	/// Verified account
 	Verified = 'verified',
 }
 
@@ -34,74 +28,39 @@ export enum AccountState {
  * User language enum
  */
 export enum UserLanguage {
-
-	/**
-	 * Czech
-	 */
+	/// Czech
 	Czech = 'cs',
-
-	/**
-	 * English
-	 */
+	/// English
 	English = 'en',
-
 }
 
 /**
  * User role enum
  */
 export enum UserRole {
-
-	/**
-	 * Administrator
-	 */
+	/// Administrator
 	Admin = 'admin',
-
-	/**
-	 * Basic user
-	 */
+	/// Basic user
 	Basic = 'basic',
-
-	/**
-	 * Basic user with user management
-	 */
+	/// Basic user with user management
 	BasicAdmin = 'basicadmin',
-
-	/**
-	 * Normal user
-	 */
+	/// Normal user
 	Normal = 'normal'
-
 }
 
 /**
  * User session expiration enum
  */
 export enum UserSessionExpiration {
-
-	/**
-	 * Default expiration (90 min)
-	 */
-	Default = 'default',
-
-	/**
-	 * 24 hours
-	 */
+	/// Day
 	Day = 'day',
-
-	/**
-	 * Week
-	 */
-	Week = 'week',
-
-	/**
-	 * Month
-	 */
+	/// Default expiration (90 min)
+	Default = 'default',
+	/// Month
 	Month = 'month',
-
-	/**
-	 * Year
-	 */
+	/// Week
+	Week = 'week',
+	/// Year
 	Year = 'year'
 }
 
@@ -109,127 +68,72 @@ export enum UserSessionExpiration {
  * User base interface
  */
 export interface UserBase {
-
-	/**
-	 * User email
-	 */
+	/// User e-mail address
 	email: string|null;
-
-	/**
-	 * User language
-	 */
+	/// User language
 	language: UserLanguage;
-
-	/**
-	 * User role
-	 */
+	/// User role
 	role: UserRole;
-
-	/**
-	 * User name
-	 */
+	/// User name
 	username: string;
-
 }
 
 /**
  * User create interface
  */
 export interface UserCreate extends UserBase {
-
-	/**
-	 * Base URL
-	 */
+	/// Base URL
 	baseUrl?: string;
-
-	/**
-	 * User password
-	 */
+	/// User password
 	password: string;
-
 }
 
 /**
  * User edit interface
  */
 export interface UserEdit extends UserBase {
-
-	/**
-	 * Base URL
-	 */
+	/// Base URL
 	baseUrl?: string;
-
-	/**
-	 * User password
-	 */
+	/// User password
 	password?: string;
-
 }
 
 /**
  * User info interface
  */
 export interface UserInfo extends UserBase {
-
-	/**
-	 * User ID
-	 */
+	/// User ID
 	id: number;
-
-	/**
-	 * User account state
-	 */
+	/// User account state
 	state: AccountState;
-
 }
 
 /**
  * User signed in interface
  */
 export interface UserSignedIn extends UserInfo {
-
-	/**
-	 * User JWT token
-	 */
+	/// User JWT token
 	token: string;
-
 }
 
 /**
  * User password change interface
  */
 export interface UserPasswordChange {
-
-	/**
-	 * Base URL
-	 */
+	/// Base URL
 	baseUrl?: string;
-
-	/**
-	 * New user password
-	 */
+	/// New user password
 	new: string;
-
-	/**
-	 * Current user password
-	 */
+	/// Current user password
 	old: string;
-
 }
 
 /**
  * User account recovery interface
  */
 export interface UserAccountRecovery {
-
-	/**
-	 * Base url
-	 */
+	/// Base URL
 	baseUrl?: string;
-
-	/**
-	 * Username
-	 */
+	/// Username
 	username: string;
-
 }

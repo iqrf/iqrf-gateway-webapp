@@ -52,7 +52,7 @@ export class SshKeyService extends BaseService {
 	public getKey(id: number): Promise<SshKeyInfo> {
 		return this.axiosInstance.get('gateway/ssh/keys/' + id)
 			.then((response: AxiosResponse<SshKeyInfoRaw>): SshKeyInfo =>
-				this.deserializeInfo(response.data)
+				this.deserializeInfo(response.data),
 			);
 	}
 
