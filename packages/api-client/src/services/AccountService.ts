@@ -60,7 +60,7 @@ export class AccountService extends BaseService {
 	 */
 	public requestPasswordRecovery(recovery: UserAccountRecovery): Promise<void> {
 		return this.axiosInstance.post('/user/password/recovery/', recovery)
-			.then((): void => {return});
+			.then((): void => {return;});
 	}
 
 	/**

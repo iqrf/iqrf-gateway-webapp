@@ -14,25 +14,16 @@
  * limitations under the License.
  */
 
-import { UserSessionExpiration } from './User';
+import { type UserSessionExpiration } from './User';
 
 /**
  * User credentials
  */
 export interface UserCredentials {
-
-	/**
-	 * User password
-	 */
-	password: string;
-
-	/**
-	 * User name
-	 */
-	username: string;
-
-	/**
-	 * Requested session expiration
-	 */
+	///Requested session expiration
 	expiration: UserSessionExpiration;
+	/// User password
+	password: string;
+	/// User name
+	username: string;
 }
