@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\ServiceModule\Models;
 
 use App\CoreModule\Models\CommandManager;
+use App\ServiceModule\Entities\ServiceState;
 use App\ServiceModule\Exceptions\NonexistentServiceException;
 use App\ServiceModule\Exceptions\NotImplementedException;
 use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
@@ -28,7 +29,7 @@ use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
 /**
  * Tool for managing services
  */
-class ServiceManager {
+class ServiceManager implements IServiceManager {
 
 	/**
 	 * @var IServiceManager Init daemon service manager
@@ -134,10 +135,23 @@ class ServiceManager {
 	 * Returns status of the service
 	 * @param string $serviceName Service name
 	 * @return string Service status
+	 * @throws NonexistentServiceException
 	 * @throws UnsupportedInitSystemException
 	 */
 	public function getStatus(string $serviceName): string {
 		return $this->initDaemon->getStatus($serviceName);
+	}
+
+	/**
+	 * Returns state of the service
+	 * @param string $serviceName Service name
+	 * @param bool $withStatus Include service status?
+	 * @return ServiceState Service state
+	 * @throws NonexistentServiceException
+	 * @throws UnsupportedInitSystemException
+	 */
+	public function getState(string $serviceName, bool $withStatus = false): ServiceState {
+		return $this->initDaemon->getState($serviceName, $withStatus);
 	}
 
 }

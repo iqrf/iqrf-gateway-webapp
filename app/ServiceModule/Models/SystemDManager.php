@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\ServiceModule\Models;
 
 use App\CoreModule\Models\CommandManager;
+use App\ServiceModule\Entities\ServiceState;
 use App\ServiceModule\Exceptions\NonexistentServiceException;
 
 /**
@@ -148,6 +149,32 @@ class SystemDManager implements IServiceManager {
 			throw new NonexistentServiceException($command->getStderr());
 		}
 		return $command->getStdout();
+	}
+
+	/**
+	 * Returns state of the service
+	 * @param string $serviceName Service name
+	 * @param bool $withStatus Include service status?
+	 * @return ServiceState Service state
+	 * @throws NonexistentServiceException
+	 */
+	public function getState(string $serviceName, bool $withStatus = false): ServiceState {
+		$cmd = 'systemctl show --property=UnitFileState,ActiveState ' . $this->formatServiceName($serviceName);
+		$command = $this->commandManager->run($cmd, true);
+		if ($command->getExitCode() !== 0) {
+			throw new NonexistentServiceException($command->getStderr());
+		}
+		$parsedOutput = parse_ini_string($command->getStdout());
+		$status = null;
+		if ($withStatus) {
+			$status = $this->getStatus($serviceName);
+		}
+		return new ServiceState(
+			name: $serviceName,
+			enabled: $parsedOutput['UnitFileState'] === 'enabled',
+			active: $parsedOutput['ActiveState'] === 'active',
+			status: $status,
+		);
 	}
 
 	/**

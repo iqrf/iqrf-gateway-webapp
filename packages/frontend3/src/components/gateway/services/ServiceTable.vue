@@ -22,17 +22,21 @@
 		<DataTable
 			:headers='headers'
 			:items='services'
-			:expanded='expanded'
 			:loading='loading'
 			:hover='true'
 			:dense='true'
 		>
+			<template #item.name='{ item }'>
+				{{ $t(`components.gateway.services.service.${item.name}.name`) }}
+			</template>
+			<template #item.description='{ item }'>
+				{{ $t(`components.gateway.services.service.${item.name}.description`) }}
+			</template>
 			<template #item.enabled='{ item }'>
 				<v-icon
 					:icon='statusIcon(item.enabled)'
 					:color='iconColor(item.enabled)'
 					size='large'
-
 				/>
 			</template>
 			<template #item.active='{ item }'>
@@ -121,7 +125,7 @@ import Card from '@/components/Card.vue';
 import DataTable from '@/components/DataTable.vue';
 
 import { ServiceService } from '@iqrf/iqrf-gateway-webapp-client/services';
-import { ServiceStatus } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { ServiceState, ServiceStatus } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { mdiCheckCircle, mdiCloseCircle, mdiInformation, mdiPlay, mdiPlayCircleOutline, mdiReload, mdiStop, mdiStopCircleOutline } from '@mdi/js';
 
 const i18n = useI18n();
@@ -134,16 +138,11 @@ const headers = [
 	{key: 'active', title: i18n.t('components.gateway.services.table.active')},
 	{key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false},
 ];
-const services: Ref<ServiceStatus[]> = ref([]);
-const expanded: Ref<ServiceStatus[]> = ref([]);
-
-onMounted(() => {
-	getServices();
-});
+const services: Ref<ServiceState[]> = ref([]);
 
 function getServices(): void {
-	service.getStatus('iqrf-gateway-daemon')
-		.then((item: ServiceStatus) => services.value.push(item));
+	service.list(true)
+		.then((states: ServiceState[]) => services.value = states);
 }
 
 function enableService(name: string, index: number): void {
@@ -168,7 +167,17 @@ function stopService(name: string, index: number): void {
 
 function refreshService(name: string, index: number): void {
 	service.getStatus(name)
-		.then((item: ServiceStatus) => services.value[index] = item);
+		.then((status: ServiceStatus) => {
+			const idx = services.value.findIndex((item: ServiceState) => item.name === name);
+			if (idx !== -1) {
+			  services.value[idx] = {
+					...services.value[idx],
+					active: status.active ?? null,
+					enabled: status.enabled ?? null,
+					status: status.status,
+				};
+			}
+		});
 }
 
 function iconColor(state: boolean): string {
@@ -212,5 +221,9 @@ function activeTooltip(state: boolean): string {
 	}
 	return i18n.t('components.gateway.services.actions.start');
 }
+
+onMounted(() => {
+	getServices();
+});
 
 </script>

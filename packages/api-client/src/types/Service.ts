@@ -15,23 +15,27 @@
  */
 
 /**
+ * System service state
+ */
+export interface ServiceState {
+	/// Is the service active?
+	active: boolean | null;
+	/// Is the service enabled?
+	enabled: boolean | null;
+	/// Service name
+	name: string;
+	/// Service status
+	status: string | null;
+}
+
+/**
  * System service status
  */
 export interface ServiceStatus {
-
-	/**
-	 * Is the service active?
-	 */
+	/// Is the service active?
 	active?: boolean;
-
-	/**
-	 * Is the service enabled?
-	 */
+	/// Is the service enabled?
 	enabled?: boolean;
-
-	/**
-	 * Service status
-	 */
+	/// Service status
 	status: string;
-
 }

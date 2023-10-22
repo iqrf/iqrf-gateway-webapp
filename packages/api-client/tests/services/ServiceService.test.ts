@@ -18,7 +18,7 @@ import {describe, expect, it} from 'vitest';
 import {mockedAxios, mockedClient} from '../mocks/axios';
 
 import {ServiceService} from '../../src/services';
-import {type ServiceStatus} from '../../src/types';
+import {type ServiceState, type ServiceStatus} from '../../src/types';
 
 describe('ServiceService', (): void => {
 
@@ -34,11 +34,22 @@ describe('ServiceService', (): void => {
 
 	it('fetch list of supported system services', async (): Promise<void> => {
 		expect.assertions(1);
-		const services: string[] = ['iqrf-gateway-daemon'];
-		mockedAxios.onGet('/services')
-			.reply(200, {services: services});
-		await service.list()
-			.then((actual: string[]): void => {
+		const services: ServiceState[] = [
+			{
+				active: true,
+				enabled: true,
+				name: 'iqrf-gateway-daemon',
+				status: null,
+			},
+		];
+		mockedAxios.onGet('/services', {
+			params: {
+				withStatus: false,
+			},
+		})
+			.reply(200, services);
+		await service.list(false)
+			.then((actual: ServiceState[]): void => {
 				expect(actual).toStrictEqual(services);
 			});
 	});
