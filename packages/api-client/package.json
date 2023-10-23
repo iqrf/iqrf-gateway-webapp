@@ -1,6 +1,6 @@
 {
 	"name": "@iqrf/iqrf-gateway-webapp-client",
-	"version": "0.1.4",
+	"version": "0.1.6",
 	"description": "IQRF Gateway Webapp JavaScript client library",
 	"exports": {
 		".": {
@@ -37,6 +37,11 @@
 			"import": "./dist/src/utils/*.js",
 			"require": "./dist/src/utils/*.js",
 			"types": "./dist/src/utils/*.d.ts"
+		}
+	},
+	"typesVersions": {
+		"*": {
+			"*": ["./dist/src/*"]
 		}
 	},
 	"scripts": {
