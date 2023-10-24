@@ -11,6 +11,9 @@
 			<v-toolbar-items v-if='$slots.titleActions'>
 				<slot name='titleActions' />
 			</v-toolbar-items>
+			<template #extension v-if='$slots.extension'>
+				<slot name='extension' />
+			</template>
 		</v-toolbar>
 		<v-card-text class='card-text'>
 			<slot />

@@ -17,10 +17,12 @@
 import {BaseService} from './BaseService';
 
 import {IqrfGatewayControllerService} from './Config/IqrfGatewayControllerService';
+import {IqrfGatewayDaemonService} from './Config/IqrfGatewayDaemonService';
 import {IqrfRepositoryService} from './Config/IqrfRepositoryService';
 import {MailerService} from './Config/MailerService';
 
 export * from './Config/IqrfGatewayControllerService';
+export * from './Config/IqrfGatewayDaemonService';
 export * from './Config/IqrfRepositoryService';
 export * from './Config/MailerService';
 
@@ -43,6 +45,14 @@ export class ConfigServices extends BaseService {
 	 */
 	public getIqrfGatewayControllerService(): IqrfGatewayControllerService {
 		return new IqrfGatewayControllerService(this.apiClient);
+	}
+
+	/**
+	 * Returns IQRF Gateway Daemon configuration service
+	 * @returns {IqrfGatewayDaemonService} IQRF Gateway Daemon configuration service
+	 */
+	public getIqrfGatewayDaemonService(): IqrfGatewayDaemonService {
+		return new IqrfGatewayDaemonService(this.apiClient);
 	}
 
 	/**

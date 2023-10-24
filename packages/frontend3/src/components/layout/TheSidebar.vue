@@ -37,10 +37,13 @@ import {
 	mdiCog,
 	mdiDesktopTower,
 	mdiEmailEdit,
+	mdiInformationOutline,
 	mdiLogin,
 	mdiPower,
 	mdiSecurity,
 	mdiSsh,
+	mdiSwapHorizontal,
+	mdiTextBoxOutline,
 	mdiTools
 } from '@mdi/js';
 import { computed } from 'vue';
@@ -78,9 +81,24 @@ function items(): SidebarLink[] {
 	if (isLoggedIn.value) {
 		links = [
 			{
-				title: i18n.t('gateway.title'),
+				title: i18n.t('pages.gateway.title'),
 				icon: mdiDesktopTower,
 				children: [
+					{
+						title: i18n.t('pages.gateway.information.title'),
+						icon: mdiInformationOutline,
+						to: '/gateway/information'
+					},
+					{
+						title: i18n.t('pages.gateway.logs.title'),
+						icon: mdiTextBoxOutline,
+						to: '/gateway/logs'
+					},
+					{
+						title: i18n.t('pages.gateway.mode.title'),
+						icon: mdiSwapHorizontal,
+						to: '/gateway/mode',
+					},
 					{
 						title: i18n.t('pages.gateway.services.title'),
 						icon: mdiTools,

@@ -291,58 +291,6 @@
 			"finished": "Installation process successfully completed."
 		}
 	},
-	"gateway": {
-		"title": "Gateway",
-		"info": {
-			"title": "Information",
-			"description": "Show information about this gateway.",
-			"board": "Board",
-			"os": "Operating system",
-			"gwId": "IQRF Gateway ID",
-			"gwImage": "IQRF Gateway image",
-			"version": {
-				"iqrfGatewayController": "IQRF Gateway Controller",
-				"iqrfGatewayDaemon": "IQRF Gateway Daemon",
-				"iqrfGatewaySetter": "IQRF Gateway Setter",
-				"iqrfGatewayUploader": "IQRF Gateway Uploader",
-				"iqrfGatewayWebapp": "IQRF Gateway Webapp"
-			},
-			"hostname": "Hostname",
-			"uptime": "Uptime",
-			"addresses": {
-				"ip": "IP addresses",
-				"mac": "MAC addresses"
-			},
-			"tr": {
-				"title": "TR info",
-				"error": "Cannot get information about the Coordinator.",
-				"moduleType": "Module type",
-				"mcuType": "MCU type",
-				"moduleId": "MID",
-				"os": "OS",
-				"dpa": "DPA",
-				"hwpid": "HWPID",
-				"hwpidVersion": "HWPID ver.",
-				"voltage": "Supply voltage"
-			},
-			"usages": {
-				"memory": "Memory usage",
-				"disks": "Disk usages",
-				"swap": "Swap usage",
-				"used": "Used"
-			},
-			"gwMode": "Daemon mode",
-			"diagnostics": "Download diagnostics"
-		},
-		"mode": {
-			"modes": {
-				"forwarding": "Forwarding mode",
-				"operational": "Operational mode",
-				"service": "Service mode",
-				"unknown": "Unknown"
-			}
-		}
-	},
 	"common": {
 		"buttons": {
 			"add": "Add",
@@ -434,6 +382,64 @@
 			}
 		},
 		"gateway": {
+			"information": {
+				"board": "Board",
+				"os": "Operating system",
+				"gwId": "IQRF Gateway ID",
+				"gwImage": "IQRF Gateway Image",
+				"version": {
+					"iqrfCloudProvisioning": "IQRF Cloud Provisioning",
+					"iqrfGatewayController": "IQRF Gateway Controller",
+					"iqrfGatewayDaemon": "IQRF Gateway Daemon",
+					"iqrfGatewaySetter": "IQRF Gateway Setter",
+					"iqrfGatewayUploader": "IQRF Gateway Uploader",
+					"iqrfGatewayWebapp": "IQRF Gateway Webapp"
+				},
+				"hostname": "Hostname",
+				"hostnameChange": {
+					"title": "Change hostname",
+					"setSplitterId": "Set hostname as IQRF Gateway Daemon instance ID",
+					"setIdeHostname": "Set hostname as IQRF IDE GW hostname",
+					"validation": {
+						"hostname": "Please enter hostname."
+					}
+				},
+				"uptime": "Uptime",
+				"addresses": {
+					"ip": "IP addresses",
+					"mac": "MAC addresses"
+				},
+				"tr": {
+					"title": "TR info",
+					"error": "Cannot get information about the Coordinator.",
+					"moduleType": "Module type",
+					"mcuType": "MCU type",
+					"moduleId": "MID",
+					"os": "OS",
+					"dpa": "DPA",
+					"hwpid": "HWPID",
+					"hwpidVersion": "HWPID ver.",
+					"voltage": "Supply voltage"
+				},
+				"usages": {
+					"memory": "Memory usage",
+					"disks": "Disk usages",
+					"swap": "Swap usage",
+					"used": "Used"
+				},
+				"gwMode": "Daemon mode",
+				"diagnostics": "Download diagnostics"
+			},
+			"mode": {
+				"current": "Current mode",
+				"startup": "Startup mode",
+				"modes": {
+					"forwarding": "Forwarding mode",
+					"operational": "Operational mode",
+					"service": "Service mode",
+					"unknown": "Unknown"
+				}
+			},
 			"power": {
 				"reboot": "Reboot",
 				"powerOff": "Power off",
@@ -614,6 +620,18 @@
 		"gateway": {
 			"title": "Gateway",
 			"description": "Display gateway information, services and power controls.",
+			"information": {
+				"title": "Information",
+				"description": "Information about this gateway."
+			},
+			"logs": {
+				"title": "Logs",
+				"description": "Display gateway logs."
+			},
+			"mode": {
+				"title": "Mode",
+				"description": "Change gateway mode."
+			},
 			"power": {
 				"title": "Power control",
 				"description": "Powers off or reboots this gateway."

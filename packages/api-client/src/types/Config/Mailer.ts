@@ -120,3 +120,30 @@ export interface MailerConfig {
 	username: string;
 
 }
+
+/**
+ * Mailer headers
+ */
+export interface MailerHeaders {
+
+	/**
+	 * Default SMTP configuration
+	 */
+	defaultConfig: boolean;
+}
+
+/**
+ * Mailer
+ */
+export interface MailerGetConfigResponse {
+
+	/**
+	 * Mailer headers
+	 */
+	headers: MailerHeaders | null;
+
+	/**
+	 * Mailer configuration
+	 */
+	config: MailerConfig;
+}

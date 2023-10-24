@@ -19,6 +19,21 @@ import { DisambiguationLink } from '@/types/disambiguation';
 const i18n = useI18n();
 const links: Ref<DisambiguationLink[]> = ref([
 	{
+		title: i18n.t('pages.gateway.information.title'),
+		description: i18n.t('pages.gateway.information.description'),
+		to: '/gateway/information'
+	},
+	{
+		title: i18n.t('pages.gateway.logs.title'),
+		description: i18n.t('pages.gateway.logs.description'),
+		to: '/gateway/logs'
+	},
+	{
+		title: i18n.t('pages.gateway.mode.title'),
+		description: i18n.t('pages.gateway.mode.description'),
+		to: '/gateway/mode'
+	},
+	{
 		title: i18n.t('pages.gateway.services.title'),
 		description: i18n.t('pages.gateway.services.description'),
 		to: '/gateway/services',

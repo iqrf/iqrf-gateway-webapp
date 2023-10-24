@@ -18,7 +18,7 @@ import {beforeEach, describe, expect, it} from 'vitest';
 import {mockedAxios, mockedClient} from '../../mocks/axios';
 
 import {MailerService} from '../../../src/services/Config';
-import {type MailerConfig, MailerSmtpSecurity} from '../../../src/types/Config';
+import {type MailerGetConfigResponse, type MailerConfig, MailerSmtpSecurity} from '../../../src/types/Config';
 
 describe('MailerService', (): void => {
 
@@ -29,33 +29,39 @@ describe('MailerService', (): void => {
 	/**
 	 * Default mailer configuration
 	 */
-	const defaultConfig: MailerConfig = {
-		'enabled': false,
-		'host': 'localhost',
-		'port': 25,
-		'username': 'root',
-		'password': '',
-		'secure': null,
-		'from': 'iqrf-gw@localhost.localdomain',
-		'theme': 'generic',
-		'timeout': 20,
-		'context': [],
-		'clientHost': null,
-		'persistent': false,
+	const defaultConfig: MailerGetConfigResponse = {
+		headers: null,
+		config: {
+			'enabled': false,
+			'host': 'localhost',
+			'port': 25,
+			'username': 'root',
+			'password': '',
+			'secure': null,
+			'from': 'iqrf-gw@localhost.localdomain',
+			'theme': 'generic',
+			'timeout': 20,
+			'context': [],
+			'clientHost': null,
+			'persistent': false,
+		},
 	};
 
 	/**
 	 * Base of custom mailer configuration
 	 */
-	const baseConfig: MailerConfig = {
-		...defaultConfig,
-		'enabled': true,
-		'host': 'smtp.example.com',
-		'port': 465,
-		'username': 'iqrf-gw',
-		'password': 'password',
-		'secure': MailerSmtpSecurity.TLS,
-		'from': 'iqrf-gw@example.com',
+	const baseConfig: MailerGetConfigResponse = {
+		headers: null,
+		config: {
+			...defaultConfig.config,
+			'enabled': true,
+			'host': 'smtp.example.com',
+			'port': 465,
+			'username': 'iqrf-gw',
+			'password': 'password',
+			'secure': MailerSmtpSecurity.TLS,
+			'from': 'iqrf-gw@example.com',
+		},
 	};
 
 	/**
@@ -66,29 +72,35 @@ describe('MailerService', (): void => {
 	it('fetch mailer config', async (): Promise<void> => {
 		expect.assertions(1);
 		mockedAxios.onGet('/config/mailer')
-			.reply(200, defaultConfig);
+			.reply(200, defaultConfig.config);
 		await service.getConfig()
-			.then((actual: MailerConfig): void => {
+			.then((actual: MailerGetConfigResponse): void => {
 				expect(actual).toStrictEqual(defaultConfig);
 			});
 	});
 
 	it('fetch mailer config with IDN', async (): Promise<void> => {
 		expect.assertions(1);
-		const config: MailerConfig = {
-			...baseConfig,
-			'host': 'xn--ondrek-sta66a.eu',
-			'from': 'iqrf-gw@xn--ondrek-sta66a.eu',
+		const config: MailerGetConfigResponse = {
+			headers: baseConfig.headers,
+			config: {
+				...baseConfig.config,
+				'host': 'xn--ondrek-sta66a.eu',
+				'from': 'iqrf-gw@xn--ondrek-sta66a.eu',
+			},
 		};
-		const expected: MailerConfig = {
-			...baseConfig,
-			'host': 'ondráček.eu',
-			'from': 'iqrf-gw@ondráček.eu',
+		const expected: MailerGetConfigResponse = {
+			headers: baseConfig.headers,
+			config: {
+				...baseConfig.config,
+				'host': 'ondráček.eu',
+				'from': 'iqrf-gw@ondráček.eu',
+			},
 		};
 		mockedAxios.onGet('/config/mailer')
-			.reply(200, config);
+			.reply(200, config.config);
 		await service.getConfig()
-			.then((actual: MailerConfig): void => {
+			.then((actual: MailerGetConfigResponse): void => {
 				expect(actual).toStrictEqual(expected);
 			});
 	});
@@ -96,7 +108,7 @@ describe('MailerService', (): void => {
 	it('update mailer config', async (): Promise<void> => {
 		expect.assertions(0);
 		const config: MailerConfig = {
-			...baseConfig,
+			...baseConfig.config,
 			'clientHost': 'iqrf-gw.example.com',
 		};
 		mockedAxios.onPut('/config/mailer', config)
@@ -107,7 +119,7 @@ describe('MailerService', (): void => {
 	it('update mailer config - plain text transport', async (): Promise<void> => {
 		expect.assertions(3);
 		const config: MailerConfig = {
-			...baseConfig,
+			...baseConfig.config,
 			'port': 25,
 			'secure': MailerSmtpSecurity.PlainText,
 			'clientHost': 'iqrf-gw.example.com',
@@ -127,12 +139,12 @@ describe('MailerService', (): void => {
 	it('update mailer config with IDN', async (): Promise<void> => {
 		expect.assertions(0);
 		const config: MailerConfig = {
-			...baseConfig,
+			...baseConfig.config,
 			'host': 'ondráček.eu',
 			'from': 'iqrf-gw@ondráček.eu',
 		};
 		const serializedConfig: MailerConfig = {
-			...baseConfig,
+			...baseConfig.config,
 			'host': 'xn--ondrek-sta66a.eu',
 			'from': 'iqrf-gw@xn--ondrek-sta66a.eu',
 		};
@@ -144,7 +156,7 @@ describe('MailerService', (): void => {
 	it('test mailer config', async (): Promise<void> => {
 		expect.assertions(0);
 		const config: MailerConfig = {
-			...baseConfig,
+			...baseConfig.config,
 			'clientHost': 'iqrf-gw.example.com',
 		};
 		mockedAxios.onPost('/config/mailer/test', config)
