@@ -60,7 +60,7 @@
 import { computed } from 'vue';
 import { DateTime } from 'luxon';
 import { useMonitorStore } from '@/store/monitorSocket';
-import { DaemonMode } from '@iqrf/iqrf-gateway-daemon-utils';
+import { DaemonMode } from '@iqrf/iqrf-gateway-daemon-utils/enums';
 import { useDaemonStore } from '@/store/daemonSocket';
 import { useUserStore } from '@/store/user';
 import { storeToRefs } from 'pinia';

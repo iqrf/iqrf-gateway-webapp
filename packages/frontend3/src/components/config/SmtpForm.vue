@@ -79,7 +79,7 @@
 </template>
 
 <script lang='ts' setup>
-import { MailerConfig } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import { MailerConfig, MailerGetConfigResponse } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { MailerService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import { AxiosError } from 'axios';
 import { computed, onMounted, ref, Ref } from 'vue';
@@ -135,8 +135,8 @@ onMounted(() => {
 function getConfig(): void {
 	loading.value = true;
 	service.getConfig()
-		.then((config: MailerConfig) => {
-			configuration.value = config;
+		.then((response: MailerGetConfigResponse) => {
+			configuration.value = response.config;
 			loading.value = false;
 		})
 		.catch((error: AxiosError) => {

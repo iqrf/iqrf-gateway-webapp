@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
-import { DaemonMode, type MonitorMessage } from '@iqrf/iqrf-gateway-daemon-utils';
+import { MonitorMessage } from '@iqrf/iqrf-gateway-daemon-utils/types';
+import { DaemonMode } from '@iqrf/iqrf-gateway-daemon-utils/enums';
 import ClientSocket, { GenericSocketState } from '@/modules/clientSocket';
 import UrlBuilder from '@/helpers/urlBuilder';
 

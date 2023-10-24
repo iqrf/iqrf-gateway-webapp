@@ -15,5 +15,6 @@
  */
 
 export * from './Config/IqrfGatewayController';
+export * from './Config/IqrfGatewayDaemon';
 export * from './Config/IqrfRepository';
 export * from './Config/Mailer';

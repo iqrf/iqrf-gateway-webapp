@@ -23,26 +23,26 @@ limitations under the License.
 		/>
 	</span>
 	<span v-else>
-		<span v-if='loaded'>
-			<strong>{{ $t('gateway.info.tr.moduleType') }}: </strong>
+		<div v-if='loaded' class='py-2'>
+			<strong>{{ $t('components.gateway.information.tr.moduleType') }}: </strong>
 			{{ trMcuType.trType }}<br>
-			<strong>{{ $t('gateway.info.tr.mcuType') }}: </strong>
+			<strong>{{ $t('components.gateway.information.tr.mcuType') }}: </strong>
 			{{ trMcuType.mcuType }}<br>
-			<strong>{{ $t('gateway.info.tr.moduleId') }}: </strong>
+			<strong>{{ $t('components.gateway.information.tr.moduleId') }}: </strong>
 			{{ osRead.mid }}<br>
-			<strong>{{ $t('gateway.info.tr.os') }}: </strong>
+			<strong>{{ $t('components.gateway.information.tr.os') }}: </strong>
 			{{ osRead.osVersion }} ({{ osRead.osBuild }})<br>
-			<strong>{{ $t('gateway.info.tr.dpa') }}: </strong>
+			<strong>{{ $t('components.gateway.information.tr.dpa') }}: </strong>
 			{{ enumeration.dpaVer }}<br>
-			<strong>{{ $t('gateway.info.tr.hwpid') }}: </strong>
+			<strong>{{ $t('components.gateway.information.tr.hwpid') }}: </strong>
 			{{ enumeration.hwpId }} ({{ enumeration.hwpId.toString(16).padStart(4, '0') }})<br>
-			<strong>{{ $t('gateway.info.tr.hwpidVersion') }}: </strong>
+			<strong>{{ $t('components.gateway.information.tr.hwpidVersion') }}: </strong>
 			{{ enumeration.hwpIdVer }}<br>
-			<strong>{{ $t('gateway.info.tr.voltage') }}: </strong>
+			<strong>{{ $t('components.gateway.information.tr.voltage') }}: </strong>
 			{{ osRead.supplyVoltage }}<br>
-		</span>
+		</div>
 		<span v-else>
-			{{ $t('gateway.info.tr.error') }}
+			{{ $t('components.gateway.information.tr.error') }}
 		</span>
 	</span>
 </template>

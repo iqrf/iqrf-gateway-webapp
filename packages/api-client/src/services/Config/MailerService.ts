@@ -18,7 +18,7 @@ import type {AxiosResponse} from 'axios';
 import * as punycode from 'punycode/';
 
 import {BaseService} from '../BaseService';
-import type {MailerConfig} from '../../types/Config';
+import type {MailerGetConfigResponse, MailerConfig} from '../../types/Config';
 import {MailerSmtpSecurity} from '../../types/Config';
 
 /**
@@ -28,11 +28,17 @@ export class MailerService extends BaseService {
 
 	/**
 	 * Fetches mailer configuration
-	 * @return {Promise<MailerConfig>} Mailer configuration
+	 * @return {Promise<Mailer>} Mailer data
 	 */
-	public getConfig(): Promise<MailerConfig> {
+	public getConfig(): Promise<MailerGetConfigResponse> {
 		return this.axiosInstance.get('/config/mailer')
-			.then((response: AxiosResponse<MailerConfig>): MailerConfig => this.deserializeConfig(response.data));
+			.then((response: AxiosResponse<MailerConfig>): MailerGetConfigResponse => {
+				const defaultConfig = response.headers['X-Smtp-Default-Config'];
+				return {
+					headers: defaultConfig ? {defaultConfig: defaultConfig} : null,
+					config: this.deserializeConfig(response.data),
+				};
+			});
 	}
 
 	/**
