@@ -52,7 +52,8 @@
 		"prepublish": "rm -rf dist/ && tsc",
 		"lint": "npm run lint:js",
 		"lint:js": "eslint --ext .js,.vue,.ts --cache --cache-location node_modules/.cache/eslint/ .",
-		"test:unit": "vitest --run"
+		"test:unit": "vitest --run",
+		"reload": "tsc --watch"
 	},
 	"homepage": "https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp/-/tree/master/packages/api-client",
 	"bugs": {
