@@ -20,6 +20,16 @@
 			"require": "./dist/src/enums/*.js",
 			"types": "./dist/src/enums/*.d.ts"
 		},
+		"./services": {
+			"import": "./dist/src/services.js",
+			"require": "./dist/src/services.js",
+			"types": "./dist/src/services.d.ts"
+		},
+		"./services/*": {
+			"import": "./dist/src/services/*.js",
+			"require": "./dist/src/services/*.js",
+			"types": "./dist/src/services/*.d.ts"
+		},
 		"./types": {
 			"import": "./dist/src/types.js",
 			"require": "./dist/src/types.js",
@@ -41,6 +51,11 @@
 			"types": "./dist/src/utils/*.d.ts"
 		}
 	},
+	"typesVersions": {
+		"*": {
+			"*": ["./dist/src/*"]
+		}
+	},
 	"scripts": {
 		"build": "rm -rf dist/ && tsc --build",
 		"coverage:unit": "vitest --run --coverage",
@@ -49,7 +64,8 @@
 		"prepublish": "rm -rf dist/ && tsc",
 		"lint": "npm run lint:js",
 		"lint:js": "eslint --ext .js,.vue,.ts --cache --cache-location node_modules/.cache/eslint/ .",
-		"test:unit": "vitest --run"
+		"test:unit": "vitest --run",
+		"reload": "tsc --watch"
 	},
 	"files": [
 		"dist",
