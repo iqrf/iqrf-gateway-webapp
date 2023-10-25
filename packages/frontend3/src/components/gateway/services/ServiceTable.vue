@@ -25,6 +25,7 @@
 			:loading='loading'
 			:hover='true'
 			:dense='true'
+			item-value='name'
 		>
 			<template #item.name='{ item }'>
 				{{ $t(`components.gateway.services.service.${item.name}.name`) }}
@@ -108,9 +109,11 @@
 				</span>
 			</template>
 			<template #expanded-row='{ columns, item }'>
-				<td :colspan='columns.length'>
-					<pre>{{ item.status }}</pre>
-				</td>
+				<tr>
+					<td :colspan='columns.length'>
+						<pre>{{ item.status }}</pre>
+					</td>
+				</tr>
 			</template>
 		</DataTable>
 	</Card>
@@ -168,15 +171,12 @@ function stopService(name: string, index: number): void {
 function refreshService(name: string, index: number): void {
 	service.getStatus(name)
 		.then((status: ServiceStatus) => {
-			const idx = services.value.findIndex((item: ServiceState) => item.name === name);
-			if (idx !== -1) {
-			  services.value[idx] = {
-					...services.value[idx],
-					active: status.active ?? null,
-					enabled: status.enabled ?? null,
-					status: status.status,
-				};
-			}
+			services.value[index] = {
+				...services.value[index],
+				active: status.active ?? null,
+				enabled: status.enabled ?? null,
+				status: status.status,
+			};
 		});
 }
 
