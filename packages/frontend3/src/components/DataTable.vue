@@ -1,5 +1,6 @@
 <template>
 	<v-data-table
+		v-model:expanded='expanded'
 		v-model:page='page'
 		:items-per-page='pageItems'
 		:headers='headers'
@@ -57,6 +58,7 @@ const props = defineProps({
 	},
 });
 
+const expanded = ref([]);
 const page: Ref<number> = ref(1);
 const pageCount = computed(() => {
 	return Math.ceil(props.items.length / pageItems.value);
