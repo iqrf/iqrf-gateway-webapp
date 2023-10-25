@@ -438,6 +438,11 @@
 					"operational": "Operational mode",
 					"service": "Service mode",
 					"unknown": "Unknown"
+				},
+				"messages": {
+					"setFailed": "Mode change request failed.",
+					"setSuccess": "Mode successfully changed to {mode}.",
+					"setTimeout": "Mode change request timed out."
 				}
 			},
 			"power": {

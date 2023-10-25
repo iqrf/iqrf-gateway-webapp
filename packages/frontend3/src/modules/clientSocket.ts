@@ -152,6 +152,13 @@ export default class ClientSocket {
 	}
 
 	/**
+	 * Checks if socket is connected and open
+	 */
+	isConnected(): boolean {
+		return this.socket?.readyState === WebSocket.OPEN;
+	}
+
+	/**
 	 * Connects client to server
 	 */
 	connect(): WebSocket {
