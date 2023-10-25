@@ -22,7 +22,7 @@
 		<DataTable
 			:headers='headers'
 			:items='services'
-			:loading='loading'
+			:loading='state === ComponentState.Loading'
 			:hover='true'
 			:dense='true'
 			item-value='name'
@@ -130,10 +130,10 @@ import DataTable from '@/components/DataTable.vue';
 import { ServiceService } from '@iqrf/iqrf-gateway-webapp-client/services';
 import { ServiceState, ServiceStatus } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { mdiCheckCircle, mdiCloseCircle, mdiInformation, mdiPlay, mdiPlayCircleOutline, mdiReload, mdiStop, mdiStopCircleOutline } from '@mdi/js';
+import { ComponentState } from '@/types/ComponentState';
 
 const i18n = useI18n();
 const service: ServiceService = useApiClient().getServiceService();
-const loading: Ref<boolean> = ref(false);
 const headers = [
 	{key: 'name', title: i18n.t('components.gateway.services.table.service')},
 	{key: 'description', title: i18n.t('common.columns.description')},
@@ -141,34 +141,46 @@ const headers = [
 	{key: 'active', title: i18n.t('components.gateway.services.table.active')},
 	{key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false},
 ];
+/// Component state
+const state: Ref<ComponentState> = ref(ComponentState.Created);
+/// Gateway services
 const services: Ref<ServiceState[]> = ref([]);
 
 function getServices(): void {
+	state.value = ComponentState.Loading;
 	service.list(true)
-		.then((states: ServiceState[]) => services.value = states);
+		.then((states: ServiceState[]) => {
+			services.value = states;
+			state.value = ComponentState.Ready;
+		});
 }
 
 function enableService(name: string, index: number): void {
+	state.value = ComponentState.Loading;
 	service.enable(name)
 		.then(() => refreshService(name, index));
 }
 
 function disableService(name: string, index: number): void {
+	state.value = ComponentState.Loading;
 	service.disable(name)
 		.then(() => refreshService(name, index));
 }
 
 function startService(name: string, index: number): void {
+	state.value = ComponentState.Loading;
 	service.start(name)
 		.then(() => refreshService(name, index));
 }
 
 function stopService(name: string, index: number): void {
+	state.value = ComponentState.Loading;
 	service.stop(name)
 		.then(() => refreshService(name, index));
 }
 
 function refreshService(name: string, index: number): void {
+	state.value = ComponentState.Loading;
 	service.getStatus(name)
 		.then((status: ServiceStatus) => {
 			services.value[index] = {
@@ -177,6 +189,7 @@ function refreshService(name: string, index: number): void {
 				enabled: status.enabled ?? null,
 				status: status.status,
 			};
+			state.value = ComponentState.Ready;
 		});
 }
 
