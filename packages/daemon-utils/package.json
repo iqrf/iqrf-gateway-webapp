@@ -53,7 +53,9 @@
 	},
 	"typesVersions": {
 		"*": {
-			"*": ["./dist/src/*"]
+			"*": [
+				"./dist/src/*"
+			]
 		}
 	},
 	"scripts": {
