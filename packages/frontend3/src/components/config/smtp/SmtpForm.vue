@@ -7,8 +7,9 @@
 		<Card v-if='install'>
 			<template #title>
 				{{ $t('pages.install.smtp.title') }}
+			</template>
+			<template #titleActions>
 				<v-btn
-					class='float-right'
 					size='small'
 					@click='configuration.enabled = !configuration.enabled'
 				>
@@ -92,7 +93,7 @@ import Card from '@/components/Card.vue';
 import { basicErrorToast } from '@/helpers/errorToast';
 import { useApiClient } from '@/services/ApiClient';
 import { validateForm } from '@/helpers/validateForm';
-import SmtpFormElements from './SmtpFormElements.vue';
+import SmtpFormElements from '@/components/config/smtp/SmtpFormElements.vue';
 import router from '@/router';
 import { useInstallStore } from '@/store/install';
 

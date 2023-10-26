@@ -1,6 +1,7 @@
 import { toASCII as punycodeToASCII } from 'punycode/';
 
 import { z } from 'zod';
+import isFQDN from 'is-fqdn';
 
 export default class ValidationRules {
 
@@ -53,5 +54,15 @@ export default class ValidationRules {
 			return true;
 		}
 		return error;
+	}
+
+	public static server(value: string | null, error: string): boolean | string {
+		if (value === null) {
+			return error;
+		}
+		const ipv4Validator = z.string().ip({version: 'v4'});
+		const ipv6Validator = z.string().ip({version: 'v6'});
+		return (ipv4Validator.safeParse(value).success || ipv6Validator.safeParse(value).success || value === 'localhost' || isFQDN(value)) || error;
+
 	}
 }
