@@ -426,6 +426,12 @@
 					"setIdeHostname": "Set hostname as IQRF IDE GW hostname",
 					"validation": {
 						"hostname": "Please enter hostname."
+					},
+					"messages": {
+						"daemonRestart": "IQRF Gateway Daemon restart is required to apply the changes.",
+						"save": {
+							"success": "Hostname has been successfully changed."
+						}
 					}
 				},
 				"uptime": "Uptime",

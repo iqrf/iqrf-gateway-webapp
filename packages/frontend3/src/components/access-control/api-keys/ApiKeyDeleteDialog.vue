@@ -42,8 +42,6 @@
 
 <script lang='ts' setup>
 import { ref, Ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { toast } from 'vue3-toastify';
 
 import Card from '@/components/Card.vue';
 
@@ -66,7 +64,7 @@ const width = getModalWidth();
 const service: ApiKeyService = useApiClient().getApiKeyService();
 
 async function onSubmit(): Promise<void> {
-	service.delete(props.apiKey.id)
+	service.delete(props.apiKey.id as number)
 		.then(() => {
 			close();
 			emit('refresh');

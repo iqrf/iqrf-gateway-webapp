@@ -42,8 +42,6 @@
 
 <script lang='ts' setup>
 import { ref, Ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { toast } from 'vue3-toastify';
 
 import Card from '@/components/Card.vue';
 

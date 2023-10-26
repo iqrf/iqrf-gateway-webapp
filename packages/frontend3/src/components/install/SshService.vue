@@ -2,7 +2,7 @@
 	<Card>
 		<template #title>{{ $t('pages.install.sshService.title') }}</template>
 		{{ $t('components.sshService.note') }}
-		<v-form>
+		<v-form @submit.prevent='setServiceStatus'>
 			<v-radio-group
 				v-model='status'
 			>
