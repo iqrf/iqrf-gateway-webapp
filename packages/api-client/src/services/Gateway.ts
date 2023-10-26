@@ -16,11 +16,13 @@
 
 import { BaseService } from './BaseService';
 
+import { HostnameService } from './Gateway/HostnameService';
 import { InfoService } from './Gateway/InfoService';
 import { PowerService } from './Gateway/PowerService';
 import { SshKeyService } from './Gateway/SshKeyService';
 import { TimeService } from './Gateway/TimeService';
 
+export * from './Gateway/HostnameService';
 export * from './Gateway/InfoService';
 export * from './Gateway/PowerService';
 export * from './Gateway/SshKeyService';
@@ -30,6 +32,14 @@ export * from './Gateway/TimeService';
  * IQRF Gateway services
  */
 export class GatewayServices extends BaseService {
+
+	/**
+	 * Returns hostname service
+	 * @returns {HostnameService} Hostname service
+	 */
+	public getHostnameService(): HostnameService {
+		return new HostnameService(this.apiClient);
+	}
 
 	/**
 	 * Returns info service
