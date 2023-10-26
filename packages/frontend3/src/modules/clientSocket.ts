@@ -90,6 +90,7 @@ export default class ClientSocket {
 			return;
 		}
 		this.onOpenCallback = callback;
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		this.socket.onopen = function(_) {
 			callback();
 		};

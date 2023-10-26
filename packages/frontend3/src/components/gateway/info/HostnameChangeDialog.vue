@@ -52,7 +52,7 @@
 				<v-btn
 					color='grey-darken-2'
 					variant='elevated'
-					@click='show = false'
+					@click='close'
 				>
 					{{ $t('common.buttons.cancel') }}
 				</v-btn>
@@ -72,20 +72,31 @@ import { mdiPencil } from '@mdi/js';
 import { getModalWidth } from '@/helpers/modal';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
+import { HostnameService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
+import { useApiClient } from '@/services/ApiClient';
+import { toast } from 'vue3-toastify';
+import { useI18n } from 'vue-i18n';
+import { IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
+import { AxiosResponse } from 'axios';
 
-
+const emit = defineEmits(['saved']);
 const props = defineProps({
 	currentHostname: {
 		type: [String, null] as PropType<string | null>,
 		required: true,
 	}
 });
-const show: Ref<boolean> = ref(false);
+const i18n = useI18n();
+const hostnameService: HostnameService = useApiClient().getGatewayServices().getHostnameService();
+const daemonConfigurationService: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
 const width = getModalWidth();
+const show: Ref<boolean> = ref(false);
 const form: Ref<typeof VForm | null> = ref(null);
 const hostname: Ref<string> = ref('');
 const setSplitterId: Ref<boolean> = ref(false);
 const setIdeHostname: Ref<boolean> = ref(false);
+const ideComponentComponent = 'iqrf::IdeCounterpart';
+const splitterComponent = 'iqrf::JsonSplitter';
 
 watchEffect((): void => {
 	if (props.currentHostname === null) {
@@ -99,23 +110,62 @@ async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
 	}
+	Promise.all([
+		updateSplitterConfig(),
+		updateIdeCounterpartConfig(),
+		hostnameService.setHostname(hostname.value),
+	])
+		.then(() => {
+			toast.success(
+				i18n.t('components.gateway.information.hostnameChange.messages.save.success')
+			);
+			if (setSplitterId.value || setIdeHostname.value) {
+				toast.success(
+					i18n.t('components.gateway.information.hostnameChange.messages.daemonRestart')
+				);
+			}
+			clear();
+			close();
+			emit('saved');
+		})
+		.catch(() => {
+			toast.error('TODO ERROR HANDLING');
+		});
 }
 
 async function updateSplitterConfig(): Promise<void> {
 	if (!setSplitterId.value) {
 		return;
 	}
+	const instance = await daemonConfigurationService.getComponent(splitterComponent)
+		.then((response: AxiosResponse) => response.data.instances[0] ?? null);
+	if (instance === null) {
+		return;
+	}
+	instance.insId = hostname.value;
+	await daemonConfigurationService.updateInstance(splitterComponent, instance.instance, instance);
 }
 
 async function updateIdeCounterpartConfig(): Promise<void> {
 	if (!setIdeHostname.value) {
 		return;
 	}
+	const instance = await daemonConfigurationService.getComponent(ideComponentComponent)
+		.then((response: AxiosResponse) => response.data.instances[0] ?? null);
+	if (instance === null) {
+		return;
+	}
+	instance.gwIdentName = hostname.value;
+	await daemonConfigurationService.updateInstance(ideComponentComponent, instance.instance, instance);
 }
 
 function clear(): void {
 	setSplitterId.value = false;
 	setIdeHostname.value = false;
+}
+
+function close(): void {
+	show.value = false;
 }
 
 </script>

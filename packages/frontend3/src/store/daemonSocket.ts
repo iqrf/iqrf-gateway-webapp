@@ -126,6 +126,7 @@ export const useDaemonStore = defineStore('daemon', {
 		 * @param {CloseEvent} event Close event
 		 */
 		onClose(event: CloseEvent): void {
+			console.error(event);
 			this.connected = false;
 			this.reconnecting = true;
 		},

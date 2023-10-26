@@ -76,7 +76,10 @@
 					</td>
 					<td>
 						{{ info.hostname }}
-						<HostnameChangeDialog :current-hostname='info.hostname' />
+						<HostnameChangeDialog
+							:current-hostname='info.hostname'
+							@saved='getInformation'
+						/>
 					</td>
 				</tr>
 				<tr>
@@ -195,8 +198,6 @@ import { InfoService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
 import { useApiClient } from '@/services/ApiClient';
 import { GatewayInformation, NetworkInterface } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
 import { mdiDownload } from '@mdi/js';
-
-
 
 const service: InfoService = useApiClient().getGatewayServices().getInfoService();
 const info: Ref<GatewayInformation | null> = ref(null);
