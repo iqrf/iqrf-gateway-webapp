@@ -17,6 +17,7 @@
 import type { AxiosResponse } from 'axios';
 
 import { BaseService } from '../BaseService';
+import { IqrfGatewayDaemonComponent } from 'src/types/Config';
 
 /**
  * IQRF Gateway Daemon configuration service
@@ -28,8 +29,9 @@ export class IqrfGatewayDaemonService extends BaseService {
 	 * @param {string} component Component name
 	 * @return {Promise<AxiosResponse>} IQRF Gateway Daemon component configuration with instances
 	 */
-	public getComponent(component: string): Promise<AxiosResponse> {
-		return this.axiosInstance.get(`/config/daemon/${encodeURIComponent(component)}`);
+	public getComponent(component: string): Promise<IqrfGatewayDaemonComponent> {
+		return this.axiosInstance.get(`/config/daemon/${encodeURIComponent(component)}`)
+			.then((response: AxiosResponse<IqrfGatewayDaemonComponent>): IqrfGatewayDaemonComponent => response.data);
 	}
 
 	/**
