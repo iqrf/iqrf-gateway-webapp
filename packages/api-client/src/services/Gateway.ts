@@ -19,10 +19,12 @@ import { BaseService } from './BaseService';
 import { InfoService } from './Gateway/InfoService';
 import { PowerService } from './Gateway/PowerService';
 import { SshKeyService } from './Gateway/SshKeyService';
+import { TimeService } from './Gateway/TimeService';
 
 export * from './Gateway/InfoService';
 export * from './Gateway/PowerService';
 export * from './Gateway/SshKeyService';
+export * from './Gateway/TimeService';
 
 /**
  * IQRF Gateway services
@@ -51,6 +53,14 @@ export class GatewayServices extends BaseService {
 	 */
 	public getSshKeyService(): SshKeyService {
 		return new SshKeyService(this.apiClient);
+	}
+
+	/**
+	 * Returns time service
+	 * @returns {TimeService} Time service
+	 */
+	public getTimeService(): TimeService {
+		return new TimeService(this.apiClient);
 	}
 
 }
