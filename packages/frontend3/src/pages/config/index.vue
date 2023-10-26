@@ -1,12 +1,12 @@
 <template>
 	<Head>
-		<title>{{ $t('title') }}</title>
+		<title>{{ $t('pages.configuration.title') }}</title>
 	</Head>
 	<Disambiguation :links='links' />
 </template>
 
 <route lang='yaml'>
-name: Dashboard
+name: Configuration
 </route>
 
 <script lang='ts' setup>
@@ -19,19 +19,14 @@ import { DisambiguationLink } from '@/types/disambiguation';
 const i18n = useI18n();
 const links: Ref<DisambiguationLink[]> = ref([
 	{
-		title: i18n.t('pages.gateway.title'),
-		description: i18n.t('pages.gateway.description'),
-		to: '/gateway',
+		title: i18n.t('pages.configuration.smtp.title'),
+		description: i18n.t('pages.configuration.smtp.description'),
+		to: '/config/smtp',
 	},
 	{
-		title: i18n.t('pages.configuration.title'),
-		description: i18n.t('pages.configuration.description'),
-		to: '/config',
-	},
-	{
-		title: i18n.t('pages.accessControl.title'),
-		description: i18n.t('pages.accessControl.description'),
-		to: '/access-control'
+		title: i18n.t('pages.configuration.time.title'),
+		description: i18n.t('pages.configuration.time.description'),
+		to: '/config/time',
 	}
 ]);
 </script>

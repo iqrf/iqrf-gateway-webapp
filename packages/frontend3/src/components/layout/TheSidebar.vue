@@ -34,6 +34,7 @@ import {
 	mdiBook,
 	mdiChevronLeft,
 	mdiChevronRight,
+	mdiClockTimeFourOutline,
 	mdiCog,
 	mdiDesktopTower,
 	mdiEmailEdit,
@@ -120,6 +121,11 @@ function items(): SidebarLink[] {
 						icon: mdiEmailEdit,
 						to: '/config/smtp',
 					},
+					{
+						title: i18n.t('pages.configuration.time.title'),
+						icon: mdiClockTimeFourOutline,
+						to: '/config/time',
+					}
 				],
 			},
 			{

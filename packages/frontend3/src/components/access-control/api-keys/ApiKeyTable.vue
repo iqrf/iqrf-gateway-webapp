@@ -19,7 +19,7 @@
 			:dense='true'
 		>
 			<template #item.expiration='{ item }'>
-				{{ item.expiration.setLocale(localeStore.getLocale).toLocaleString(DateTime.DATETIME_FULL_WITH_SECONDS) }}
+				{{ formatTime(item.expiration) }}
 			</template>
 			<template #item.actions='{ item }'>
 				<span>
@@ -93,6 +93,13 @@ function getKeys(): void {
 			loading.value = false;
 		})
 		.catch(() => loading.value = false);
+}
+
+function formatTime(time: DateTime | null): string|null {
+	if (time === null) {
+		return null;
+	}
+	return time.setLocale(localeStore.getLocale).toLocaleString(DateTime.DATETIME_FULL_WITH_SECONDS);
 }
 
 </script>

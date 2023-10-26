@@ -88,7 +88,7 @@ class TimeManager {
 			'abbrevation' => $tokens[1],
 			'gmtOffset' => $tokens[2],
 			'gmtOffsetSec' => intval($tokens[3]),
-			'formattedZone' => sprintf('%s (%s, %s)', $tokens[0], $tokens[1], $tokens[2]),
+			'formattedZone' => sprintf('(UTC%s) %s (%s)', $tokens[2], $tokens[0], $tokens[1]),
 			'utcTimestamp' => intval($tokens[4]),
 			'localTimestamp' => intval($tokens[4]) + intval($tokens[3]),
 			'formattedTime' => $tokens[5],

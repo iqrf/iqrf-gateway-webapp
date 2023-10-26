@@ -379,6 +379,30 @@
 				"messages": {
 
 				}
+			},
+			"time": {
+				"gatewayDateTime": "Gateway date and time: ",
+				"timezone": "Time zone",
+				"datetime": "Date and time",
+				"ntpSync": "Synchronize time automatically",
+				"ntpServers": {
+					"title": "NTP servers",
+					"address": "NTP server address",
+					"add": "Add NTP server",
+					"edit": "Edit NTP server",
+					"delete": "Delete NTP server",
+					"deleteAll": "Delete all NTP servers",
+					"noRecords": "No custom NTP server defined. Default NTP servers will be used for time synchronization.",
+					"validation": {
+						"serverMissing": "Please enter NTP server address.",
+						"serverInvalid": "NTP server address should be a valid IP or fully qualified domain name."
+					}
+				},
+				"messages": {
+					"save": {
+						"success": "Time and NTP configuration successfully saved."
+					}
+				}
 			}
 		},
 		"gateway": {
@@ -650,7 +674,12 @@
 			"title": "Configuration",
 			"description": "Configure gateway, IQRF software and other services.",
 			"smtp": {
-				"title": "SMTP"
+				"title": "SMTP",
+				"description": "Configure SMTP server."
+			},
+			"time": {
+				"title": "Time",
+				"description": "Configure time, timezone and NTP synchronization."
 			}
 		},
 		"install": {

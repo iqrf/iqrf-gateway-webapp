@@ -16,6 +16,14 @@ a {
 	background-color: #ebedef !important;
 }
 
+.input-skeleton-loader {
+	.v-skeleton-loader__heading {
+		border-radius: 12px;
+		margin: 11px !important;
+		height: 56px !important;
+	}
+}
+
 .v-btn {
 	text-transform: none !important;
 }
