@@ -17,7 +17,7 @@
 /**
  * IQRF Gateway Daemon component configuration
  */
-export interface IqrfGatewayDaemonComponent {
+export interface IqrfGatewayDaemonComponentConfiguration {
 	/// Component enabled
 	enabled: boolean;
 	/// Library file name
@@ -49,6 +49,9 @@ export enum IqrfGatewayDaemonIdeCounterpartMode {
 	Service = 'service',
 }
 
+/**
+ * IQRF Gateway Daemon IdeCounterpart component configuration
+ */
 export interface IqrfGatewayDaemonIdeCounterpart extends IqrfGatewayDaemonComponentInstanceBase {
 	/// Gateway identification IP stack version
 	gwIdentIpStack: string;
@@ -62,4 +65,31 @@ export interface IqrfGatewayDaemonIdeCounterpart extends IqrfGatewayDaemonCompon
 	gwIdentPublicIp: string;
 	/// Startup operation mode
 	operMode?: IqrfGatewayDaemonIdeCounterpartMode;
+}
+
+/**
+ * IQRF Gateway Daemon JsonSplitter component configuration
+ */
+export interface IqrfGatewayDaemonJsonSplitter extends IqrfGatewayDaemonComponentInstanceBase {
+	/// Instance ID
+	insId: string;
+	/// List of messaging service instances
+	messagingList: string[];
+	/// Validate outgoing responses
+	validateJsonResponse: boolean;
+}
+
+/**
+ * IQRF Gateway Daemon component instance union type
+ */
+export type IqrfGatewayDaemonComponentInstanceConfiguration =
+	| IqrfGatewayDaemonIdeCounterpart
+	| IqrfGatewayDaemonJsonSplitter;
+
+/**
+ * IQRF Gateway Daemon component generic
+ */
+export interface IqrfGatewayDaemonComponent {
+	configuration: IqrfGatewayDaemonComponentConfiguration;
+	instances: IqrfGatewayDaemonComponentInstanceConfiguration[];
 }
