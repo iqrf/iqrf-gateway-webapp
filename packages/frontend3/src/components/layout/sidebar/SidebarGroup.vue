@@ -1,7 +1,7 @@
 <template>
 	<v-list-group
-		:prepend-icon='props.subGroup ? "" : item.icon'
-		:subgroup='props.subGroup'
+		:prepend-icon='subGroup ? "" : item.icon'
+		:subgroup='subGroup'
 		:value='item.title'
 	>
 		<template #activator='{ props }'>
@@ -31,5 +31,5 @@ interface Props {
 	/// Is subgroup?
 	subGroup?: boolean;
 }
-const props = defineProps<Props>();
+defineProps<Props>();
 </script>

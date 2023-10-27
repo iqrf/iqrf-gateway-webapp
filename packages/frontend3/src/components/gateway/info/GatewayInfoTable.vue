@@ -189,6 +189,7 @@ import { type InfoService } from '@iqrf/iqrf-gateway-webapp-client/services/Gate
 import { type GatewayInformation, type NetworkInterface } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
 import { mdiDownload } from '@mdi/js';
 import { computed, onMounted, ref, type Ref } from 'vue';
+import { toast } from 'vue3-toastify';
 
 import Card from '@/components/Card.vue';
 import CoordinatorInfo from '@/components/gateway/info/CoordinatorInfo.vue';
@@ -221,9 +222,10 @@ onMounted(() => {
 function getInformation(): void {
 	service.fetchDetailed()
 		.then((rsp: GatewayInformation) => info.value = rsp)
-		.catch(() => {});
+		.catch(() => toast.error('TODO ERROR HANDLING'));
 }
 
 function getDiagnostics(): void {
+	//
 }
 </script>

@@ -1,3 +1,4 @@
+<!-- eslint-disable vuetify/no-deprecated-components -->
 <template>
 	<v-card v-if='currentStep !== null'>
 		<v-stepper

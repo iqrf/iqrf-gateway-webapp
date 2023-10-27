@@ -119,7 +119,7 @@ interface Props {
 
 const i18n = useI18n();
 const emit = defineEmits(['refresh']);
-const props = defineProps<Props>();
+const componentProps = defineProps<Props>();
 const showDialog: Ref<boolean> = ref(false);
 const width = getModalWidth();
 const form: Ref<typeof VForm | null> = ref(null);
@@ -135,36 +135,36 @@ const languages = getLanguageOptions();
 const roles = getFilteredRoleOptions(userStore.getRole!);
 
 function iconColor(): string {
-	if (props.action === FormAction.Add) {
+	if (componentProps.action === FormAction.Add) {
 		return 'white';
 	}
 	return 'info';
 }
 
 function activatorIcon(): string {
-	if (props.action === FormAction.Add) {
+	if (componentProps.action === FormAction.Add) {
 		return mdiAccountPlus;
 	}
 	return mdiPencil;
 }
 
 function headerIcon(): string {
-	if (props.action === FormAction.Add) {
+	if (componentProps.action === FormAction.Add) {
 		return mdiAccountPlus;
 	}
 	return mdiAccountEdit;
 }
 
 watchEffect(async (): Promise<void> => {
-	if (props.action === FormAction.Add) {
+	if (componentProps.action === FormAction.Add) {
 		user.value = {...defaultUser, password: ''} as UserCreate;
-	} else if (props.action === FormAction.Edit) {
-		if (props.userInfo) {
+	} else if (componentProps.action === FormAction.Edit) {
+		if (componentProps.userInfo) {
 			user.value = {
-				username: props.userInfo.username,
-				email: props.userInfo.email,
-				role: props.userInfo.role,
-				language: props.userInfo.language,
+				username: componentProps.userInfo.username,
+				email: componentProps.userInfo.email,
+				role: componentProps.userInfo.role,
+				language: componentProps.userInfo.language,
 			};
 		} else {
 			user.value = {...defaultUser};
@@ -177,18 +177,18 @@ async function onSubmit(): Promise<void> {
 		return;
 	}
 	const service = useApiClient().getUserService();
-	if (props.action === FormAction.Add) {
+	if (componentProps.action === FormAction.Add) {
 		service.create(user.value as UserCreate)
 			.then(() => onSuccess(user.value))
 			.catch((error: AxiosError) => onFailure(error, user.value));
 	} else {
-		if (props.userInfo?.id === undefined) {
+		if (componentProps.userInfo?.id === undefined) {
 			return;
 		}
-		service.edit(props.userInfo.id, user.value as UserEdit)
+		service.edit(componentProps.userInfo.id, user.value as UserEdit)
 			.then(() => {
 				onSuccess(user.value);
-				if (props.userInfo?.id === userStore.getId) {
+				if (componentProps.userInfo?.id === userStore.getId) {
 					userStore.refreshUserInfo();
 				}
 			})
@@ -198,14 +198,14 @@ async function onSubmit(): Promise<void> {
 
 function onSuccess(entity: UserCreate | UserEdit): void {
 	toast.success(
-		i18n.t(`components.accessControl.users.messages.${props.action}.success`, {user: entity.username}),
+		i18n.t(`components.accessControl.users.messages.${componentProps.action}.success`, {user: entity.username}),
 	);
 	close();
 	emit('refresh');
 }
 
 function onFailure(error: AxiosError, entity: UserCreate | UserEdit): void {
-	basicErrorToast(error, `components.accessControl.users.messages.${props.action}.failure`, {user: entity.username});
+	basicErrorToast(error, `components.accessControl.users.messages.${componentProps.action}.failure`, {user: entity.username});
 }
 
 function close(): void {

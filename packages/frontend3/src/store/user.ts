@@ -1,5 +1,5 @@
 import { AccountState, type UserCredentials, type UserInfo, type UserRole, UserSessionExpiration, type UserSignedIn } from '@iqrf/iqrf-gateway-webapp-client/types';
-import * as Sentry from '@sentry/vue';
+import { setUser, type User as SentryUser } from '@sentry/vue';
 import { type AxiosError } from 'axios';
 import { jwtDecode, type JwtPayload } from 'jwt-decode';
 import { defineStore } from 'pinia';
@@ -41,7 +41,7 @@ export const useUserStore = defineStore('user', {
 		},
 		setUserInfo(user: UserSignedIn): void {
 			this.user = user;
-			const sentryUser: Sentry.User = {
+			const sentryUser: SentryUser = {
 				id: user.id.toString(),
 				username: user.username,
 				ip_address: '{{auto}}',
@@ -49,7 +49,7 @@ export const useUserStore = defineStore('user', {
 			if (user.email !== null) {
 				sentryUser.email = user.email;
 			}
-			Sentry.setUser(sentryUser);
+			setUser(sentryUser);
 		},
 		processJwt(token: string): Promise<void> {
 			const jwt: JwtPayload = jwtDecode(token);
@@ -85,7 +85,7 @@ export const useUserStore = defineStore('user', {
 		signOut(): Promise<void> {
 			this.expiration = 0;
 			this.user = null;
-			Sentry.setUser(null);
+			setUser(null);
 			router.push('/sign/in');
 			return Promise.resolve();
 		},

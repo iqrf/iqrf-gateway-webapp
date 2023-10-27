@@ -2,7 +2,7 @@
 	<Head>
 		<title>{{ $t('pages.install.sshKeys.title') }}</title>
 	</Head>
-	<SshKeyAddTable />
+	<SshKeyTable />
 </template>
 
 <route lang='yaml'>
@@ -12,5 +12,5 @@ name: SshKeysAdd
 <script lang='ts' setup>
 import { Head } from '@unhead/vue/components';
 
-import SshKeyAddTable from '@/components/access-control/ssh-keys/SshKeyAddTable.vue';
+import SshKeyTable from '@/components/access-control/ssh-keys/SshKeyTable.vue';
 </script>

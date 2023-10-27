@@ -80,11 +80,12 @@
 </template>
 
 <script lang='ts' setup>
-import  { type InfoService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
-import  { type GatewayInformation, type NetworkInterface } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
+import { type InfoService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
+import { type GatewayInformation, type NetworkInterface } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
 import { FileDownloader } from '@iqrf/iqrf-gateway-webapp-client/utils';
 import { mdiFileDownload } from '@mdi/js';
 import { computed, onMounted, ref, type Ref } from 'vue';
+import { toast } from 'vue3-toastify';
 
 import CoordinatorInfo from '@/components/gateway/info/CoordinatorInfo.vue';
 import DaemonModeInfo from '@/components/gateway/info/DaemonModeInfo.vue';
@@ -114,7 +115,7 @@ onMounted(() => {
 function getInfo(): void {
 	service.fetchDetailed()
 		.then((rsp: GatewayInformation) => info.value = rsp)
-		.catch(() => {});
+		.catch(() => toast.error('TODO ERROR HANDLING'));
 }
 
 function downloadDiagnostics(): void {
@@ -126,7 +127,7 @@ function downloadDiagnostics(): void {
 			}
 			FileDownloader.downloadFromData(rsp, 'application/json', fileName + '.json');
 		})
-		.catch(() => {});
+		.catch(() => toast.error('TODO ERROR HANDLING'));
 }
 
 </script>

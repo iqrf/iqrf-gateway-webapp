@@ -101,7 +101,7 @@ import { mdiContentCopy, mdiInformation, mdiReload } from '@mdi/js';
 import { DateTime } from 'luxon';
 import { onMounted, ref, type Ref, toRaw } from 'vue';
 import { useI18n } from 'vue-i18n';
-
+import { toast } from 'vue3-toastify';
 
 import SshKeyDeleteDialog from '@/components/access-control/ssh-keys/SshKeyDeleteDialog.vue';
 import SshKeyForm from '@/components/access-control/ssh-keys/SshKeyForm.vue';
@@ -146,7 +146,7 @@ function getKeyTypes(): void {
 		.then((rsp: string[]) => {
 			types.value = rsp;
 		})
-		.catch(() => {});
+		.catch(() => toast.error('TODO ERROR HANDLING'));
 }
 
 function copyToClipboard(content: string): void {

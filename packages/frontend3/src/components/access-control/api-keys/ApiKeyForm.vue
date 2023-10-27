@@ -91,11 +91,8 @@ import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
 
-
-
-
 const emit = defineEmits(['refresh']);
-const props = defineProps({
+const componentProps = defineProps({
 	action: {
 		type: String as PropType<FormAction>,
 		default: FormAction.Add,
@@ -103,6 +100,11 @@ const props = defineProps({
 	},
 	apiKey: {
 		type: Object as PropType<ApiKeyConfig | ApiKeyInfo>,
+		default: () => ({
+			description: '',
+			expiration: null,
+		}),
+		required: false,
 	},
 });
 const i18n = useI18n();
@@ -119,19 +121,19 @@ const expiration: Ref<Date | null> = ref(null);
 const key: Ref<ApiKeyInfo> = ref(defaultKey);
 
 const iconColor = computed(() => {
-	if (props.action === FormAction.Add) {
+	if (componentProps.action === FormAction.Add) {
 		return 'white';
 	}
 	return 'info';
 });
 const activatorIcon = computed(() => {
-	if (props.action === FormAction.Add) {
+	if (componentProps.action === FormAction.Add) {
 		return mdiPlus;
 	}
 	return mdiPencil;
 });
 const dialogTitle = computed(() => {
-	if (props.action === FormAction.Add) {
+	if (componentProps.action === FormAction.Add) {
 		return i18n.t('components.accessControl.apiKeys.form.addTitle').toString();
 	}
 	return i18n.t('components.accessControl.apiKeys.form.editTitle').toString();
@@ -147,11 +149,11 @@ const datePickerState = computed((): false|null => {
 });
 
 watchEffect(async(): Promise<void> => {
-	if (props.action === FormAction.Add) {
+	if (componentProps.action === FormAction.Add) {
 		key.value = {...defaultKey};
-	} else if (props.action === FormAction.Edit) {
-		if (props.apiKey) {
-			key.value = {...props.apiKey};
+	} else if (componentProps.action === FormAction.Edit) {
+		if (componentProps.apiKey) {
+			key.value = {...componentProps.apiKey};
 		} else {
 			key.value = {...defaultKey};
 		}
@@ -174,7 +176,7 @@ async function onSubmit(): Promise<void> {
 	} else {
 		keyToSave.expiration = null;
 	}
-	if (props.action === FormAction.Add) {
+	if (componentProps.action === FormAction.Add) {
 		service.create(keyToSave)
 			.then(() => {
 				close();
@@ -183,7 +185,7 @@ async function onSubmit(): Promise<void> {
 			.catch(() => {
 				// TODO ERROR
 			});
-	} else if (props.action === FormAction.Edit) {
+	} else if (componentProps.action === FormAction.Edit) {
 		const id = keyToSave.id!;
 		delete keyToSave.id;
 		service.edit(id, keyToSave)

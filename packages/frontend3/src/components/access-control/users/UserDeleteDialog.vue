@@ -66,20 +66,20 @@ const userStore = useUserStore();
 const i18n = useI18n();
 const router = useRouter();
 const emit = defineEmits(['refresh']);
-const props = defineProps<Props>();
+const componentProps = defineProps<Props>();
 const showDialog: Ref<boolean> = ref(false);
 const width = getModalWidth();
 
 function onSubmit(): void {
-	useApiClient().getUserService().delete(props.user.id)
+	useApiClient().getUserService().delete(componentProps.user.id)
 		.then(async () => {
 			toast.success(
-				i18n.t('components.accessControl.users.messages.delete.success', {user: props.user.username}),
+				i18n.t('components.accessControl.users.messages.delete.success', {user: componentProps.user.username}),
 			);
-			if (props.user.id === userStore.getId) {
+			if (componentProps.user.id === userStore.getId) {
 				close();
 				await userStore.signOut();
-				if (props.onlyUser) {
+				if (componentProps.onlyUser) {
 					await router.push('/install/');
 				}
 			} else {
@@ -88,7 +88,7 @@ function onSubmit(): void {
 			}
 		})
 		.catch((error: AxiosError) => {
-			basicErrorToast(error, 'components.accessControl.users.messages.delete.failure', {user: props.user.username});
+			basicErrorToast(error, 'components.accessControl.users.messages.delete.failure', {user: componentProps.user.username});
 		});
 }
 

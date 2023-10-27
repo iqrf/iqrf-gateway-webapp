@@ -45,13 +45,14 @@ import { type SshKeyService } from '@iqrf/iqrf-gateway-webapp-client/services/Ga
 import { type SshKeyInfo } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
 import { mdiDelete } from '@mdi/js';
 import { ref, type Ref , type PropType } from 'vue';
+import { toast } from 'vue3-toastify';
 
 import Card from '@/components/Card.vue';
 import { getModalWidth } from '@/helpers/modal';
 import { useApiClient } from '@/services/ApiClient';
 
 const emit = defineEmits(['refresh']);
-const props = defineProps({
+const componentProps = defineProps({
 	sshKey: {
 		type: Object as PropType<SshKeyInfo>,
 		required: true,
@@ -62,12 +63,12 @@ const width = getModalWidth();
 const service: SshKeyService = useApiClient().getGatewayServices().getSshKeyService();
 
 async function onSubmit(): Promise<void> {
-	service.deleteKey(props.sshKey.id)
+	service.deleteKey(componentProps.sshKey.id)
 		.then(() => {
 			close();
 			emit('refresh');
 		})
-		.catch(() => {});
+		.catch(() => toast.error('TODO ERROR HANDLING'));
 }
 
 function close(): void {
