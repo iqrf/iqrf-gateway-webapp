@@ -1,13 +1,12 @@
-import { AccountState, UserCredentials, UserInfo, UserRole, UserSessionExpiration, UserSignedIn } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { AccountState, type UserCredentials, type UserInfo, type UserRole, UserSessionExpiration, type UserSignedIn } from '@iqrf/iqrf-gateway-webapp-client/types';
 import * as Sentry from '@sentry/vue';
-import { AxiosError } from 'axios';
-import { jwtDecode, JwtPayload } from 'jwt-decode';
+import { type AxiosError } from 'axios';
+import { jwtDecode, type JwtPayload } from 'jwt-decode';
 import { defineStore } from 'pinia';
 
-import { useApiClient } from '@/services/ApiClient';
 import router from '@/router';
-import { useLocaleStore } from './locale';
-
+import { useApiClient } from '@/services/ApiClient';
+import { useLocaleStore } from '@/store/locale';
 
 interface UserState {
 	user: UserSignedIn | null;
@@ -89,7 +88,7 @@ export const useUserStore = defineStore('user', {
 			Sentry.setUser(null);
 			router.push('/sign/in');
 			return Promise.resolve();
-		}
+		},
 	},
 	getters: {
 		isLoggedIn(state: UserState): boolean {
@@ -152,5 +151,5 @@ export const useUserStore = defineStore('user', {
 			return state.requestedSessionExpiration;
 		},
 	},
-	persist: true
+	persist: true,
 });

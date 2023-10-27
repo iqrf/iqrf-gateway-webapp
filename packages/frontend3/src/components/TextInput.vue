@@ -27,8 +27,7 @@
 </template>
 
 <script lang='ts' setup>
-import { PropType } from 'vue';
-import { computed } from 'vue';
+import { computed, type PropType } from 'vue';
 import { VTextField } from 'vuetify/components';
 
 const props = defineProps({
@@ -46,7 +45,7 @@ const props = defineProps({
 		type: String,
 		default: '',
 		required: false,
-	}
+	},
 });
 
 const showHint = computed(() => props.description.length > 0);

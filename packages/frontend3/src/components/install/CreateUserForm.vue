@@ -1,6 +1,8 @@
 <template>
 	<Card>
-		<template #title>{{ $t('install.createUser.title') }}</template>
+		<template #title>
+			{{ $t('install.createUser.title') }}
+		</template>
 		<v-form ref='form' @submit.prevent='onSubmit'>
 			<TextInput
 				v-model='user.username'
@@ -54,29 +56,28 @@
 </template>
 
 <script lang='ts' setup>
-import { ref, Ref } from 'vue';
-import { AxiosError } from 'axios';
+import { type EmailSentResponse, type UserCreate, type UserCredentials, UserLanguage, UserRole, UserSessionExpiration } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { mdiAccount, mdiAccountClock, mdiEmail, mdiKey, mdiTranslate } from '@mdi/js';
+import { type AxiosError } from 'axios';
+import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
-import { useInstallStore } from '@/store/install';
-import { useUserStore } from '@/store/user';
 
 import Card from '@/components/Card.vue';
 import PasswordInput from '@/components/PasswordInput.vue';
 import SelectInput from '@/components/SelectInput.vue';
 import TextInput from '@/components/TextInput.vue';
-
 import { basicErrorToast } from '@/helpers/errorToast';
+import UrlBuilder from '@/helpers/urlBuilder';
 import { getExpirationOptions, getLanguageOptions } from '@/helpers/userData';
 import { validateForm } from '@/helpers/validateForm';
-import UrlBuilder from '@/helpers/urlBuilder';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
+import { useInstallStore } from '@/store/install';
+import { useUserStore } from '@/store/user';
 
-import { mdiAccount, mdiAccountClock, mdiEmail, mdiKey, mdiTranslate } from '@mdi/js';
-import { EmailSentResponse, UserCreate, UserCredentials, UserLanguage, UserRole, UserSessionExpiration } from '@iqrf/iqrf-gateway-webapp-client/types';
 
 const i18n = useI18n();
 
@@ -105,7 +106,7 @@ async function onSubmit(): Promise<void> {
 		.then(async (response: EmailSentResponse) => {
 			if (response.emailSent) {
 				toast.success(
-					i18n.t('core.user.messages.verificationSent').toString()
+					i18n.t('core.user.messages.verificationSent').toString(),
 				);
 			}
 			const credentials: UserCredentials = {

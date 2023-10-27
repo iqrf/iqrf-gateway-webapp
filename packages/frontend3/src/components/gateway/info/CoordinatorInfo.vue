@@ -48,12 +48,13 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { ref, Ref } from 'vue';
-import { useDaemonStore } from '@/store/daemonSocket';
-import { DaemonApiResponse, DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils';
-import { DeviceEnumeration, OsRead, PeripheralEnumeration, TrMcuType } from '@/types/DaemonApi/Iqmesh';
+import { type DaemonApiResponse, DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils';
+import { ref, type Ref , onMounted } from 'vue';
+
 import { IqmeshNetworkService } from '@/services/DaemonApi/IqmeshNetworkService';
-import { onMounted } from 'vue';
+import { useDaemonStore } from '@/store/daemonSocket';
+import { type DeviceEnumeration, type OsRead, type PeripheralEnumeration, type TrMcuType } from '@/types/DaemonApi/Iqmesh';
+
 
 const daemonStore = useDaemonStore();
 const service: IqmeshNetworkService = new IqmeshNetworkService();
@@ -85,7 +86,7 @@ daemonStore.$onAction(
 				}
 			});
 		}
-	}
+	},
 );
 
 onMounted(() => {
@@ -101,7 +102,7 @@ function enumerate(): void {
 			msgId = '';
 			loaded.value = false;
 			loading.value = false;
-		}
+		},
 	);
 	service.deviceEnumeration(0, options)
 		.then((id: string) => {

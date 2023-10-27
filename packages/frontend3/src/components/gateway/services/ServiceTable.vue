@@ -17,7 +17,6 @@
 				</template>
 				{{ $t('components.gateway.services.actions.refreshAll') }}
 			</v-tooltip>
-
 		</template>
 		<DataTable
 			:headers='headers'
@@ -120,16 +119,16 @@
 </template>
 
 <script lang='ts' setup>
-import { onMounted, ref, Ref } from 'vue';
+import { type ServiceService } from '@iqrf/iqrf-gateway-webapp-client/services';
+import { type ServiceState, type ServiceStatus } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { mdiCheckCircle, mdiCloseCircle, mdiInformation, mdiPlay, mdiPlayCircleOutline, mdiReload, mdiStop, mdiStopCircleOutline } from '@mdi/js';
+import { onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useApiClient } from '@/services/ApiClient';
+
 
 import Card from '@/components/Card.vue';
 import DataTable from '@/components/DataTable.vue';
-
-import { ServiceService } from '@iqrf/iqrf-gateway-webapp-client/services';
-import { ServiceState, ServiceStatus } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { mdiCheckCircle, mdiCloseCircle, mdiInformation, mdiPlay, mdiPlayCircleOutline, mdiReload, mdiStop, mdiStopCircleOutline } from '@mdi/js';
+import { useApiClient } from '@/services/ApiClient';
 import { ComponentState } from '@/types/ComponentState';
 
 const i18n = useI18n();

@@ -106,7 +106,6 @@
 							<span
 								v-for='{name, macAddress} of macAddrs'
 								:key='name'
-
 							>
 								<strong>{{ name }}: </strong> {{ macAddress }}<br>
 							</span>
@@ -186,19 +185,19 @@
 </template>
 
 <script lang='ts' setup>
-import { computed, onMounted, ref, Ref } from 'vue';
-import CoordinatorInfo from '@/components/gateway/info/CoordinatorInfo.vue';
-import DaemonModeInfo from '@/components/gateway/info/DaemonModeInfo.vue';
-import HostnameChangeDialog from '@/components/gateway/info/HostnameChangeDialog.vue';
-import DiskResourceUsage from '@/components/gateway/info/DiskResourceUsage.vue';
-import ResourceUsage from '@/components/gateway/info/ResourceUsage.vue';
+import { type InfoService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
+import { type GatewayInformation, type NetworkInterface } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
+import { mdiDownload } from '@mdi/js';
+import { computed, onMounted, ref, type Ref } from 'vue';
 
 import Card from '@/components/Card.vue';
-
-import { InfoService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
+import CoordinatorInfo from '@/components/gateway/info/CoordinatorInfo.vue';
+import DaemonModeInfo from '@/components/gateway/info/DaemonModeInfo.vue';
+import DiskResourceUsage from '@/components/gateway/info/DiskResourceUsage.vue';
+import HostnameChangeDialog from '@/components/gateway/info/HostnameChangeDialog.vue';
+import ResourceUsage from '@/components/gateway/info/ResourceUsage.vue';
 import { useApiClient } from '@/services/ApiClient';
-import { GatewayInformation, NetworkInterface } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
-import { mdiDownload } from '@mdi/js';
+
 
 const service: InfoService = useApiClient().getGatewayServices().getInfoService();
 const info: Ref<GatewayInformation | null> = ref(null);

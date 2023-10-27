@@ -9,7 +9,7 @@
 					lg='4'
 				>
 					<div class='logo'>
-						<img :src='Logo' height='40' />
+						<img :src='Logo' height='40'>
 					</div>
 					<Steps v-if='!hasUsers' class='mb-4' />
 					<slot />
@@ -20,10 +20,12 @@
 </template>
 
 <script lang='ts' setup>
-import Steps from '@/components/install/Steps.vue';
-import Logo from '@/assets/themes/generic/logo-blue.svg?url';
-import { useInstallStore } from '@/store/install';
 import { storeToRefs } from 'pinia';
+
+import Logo from '@/assets/themes/generic/logo-blue.svg?url';
+import Steps from '@/components/install/Steps.vue';
+import { useInstallStore } from '@/store/install';
+
 
 const installStore = useInstallStore();
 const {hasUsers} = storeToRefs(installStore);

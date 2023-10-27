@@ -6,19 +6,19 @@
 </template>
 
 <script lang='ts' setup>
-import type { InstallationChecks } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { AxiosError } from 'axios';
-import { onBeforeMount, watch } from 'vue';
+import  { type InstallationChecks } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { type AxiosError } from 'axios';
 import { storeToRefs } from 'pinia';
-import router from '@/router';
+import { onBeforeMount, watch } from 'vue';
 
+import SessionExpirationDialog from '@/components/SessionExpirationDialog.vue';
+import router from '@/router';
 import { useApiClient } from '@/services/ApiClient';
 import { useDaemonStore } from '@/store/daemonSocket';
 import { useFeatureStore } from '@/store/features';
 import { useInstallStore } from '@/store/install';
 import { useUserStore } from '@/store/user';
 
-import SessionExpirationDialog from '@/components/SessionExpirationDialog.vue';
 
 const daemonStore = useDaemonStore();
 const {isConnected} = storeToRefs(daemonStore);

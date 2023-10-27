@@ -42,21 +42,20 @@
 </template>
 
 <script lang='ts' setup>
-import { UserInfo } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { AxiosError } from 'axios';
-import { ref, Ref } from 'vue';
+import { type UserInfo } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { mdiDelete } from '@mdi/js';
+import { type AxiosError } from 'axios';
+import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { toast } from 'vue3-toastify';
 
-import { useUserStore } from '@/store/user';
 
 import Card from '@/components/Card.vue';
-
 import { basicErrorToast } from '@/helpers/errorToast';
 import { getModalWidth } from '@/helpers/modal';
 import { useApiClient } from '@/services/ApiClient';
-import { mdiDelete } from '@mdi/js';
+import { useUserStore } from '@/store/user';
 
 interface Props {
 	user: UserInfo
@@ -75,7 +74,7 @@ function onSubmit(): void {
 	useApiClient().getUserService().delete(props.user.id)
 		.then(async () => {
 			toast.success(
-				i18n.t('components.accessControl.users.messages.delete.success', {user: props.user.username})
+				i18n.t('components.accessControl.users.messages.delete.success', {user: props.user.username}),
 			);
 			if (props.user.id === userStore.getId) {
 				close();

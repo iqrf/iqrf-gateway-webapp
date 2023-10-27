@@ -29,7 +29,7 @@ export const useSidebarStore = defineStore('sidebar', {
 		 */
 		toggleVisibility() {
 			this.visible = !this.visible;
-		}
+		},
 	},
 	getters: {
 		/**

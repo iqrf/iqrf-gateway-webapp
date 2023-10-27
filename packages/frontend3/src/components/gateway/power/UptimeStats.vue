@@ -16,7 +16,9 @@ limitations under the License.
 -->
 <template>
 	<Card>
-		<template #title>{{ $t('components.gateway.power.stats.title') }}</template>
+		<template #title>
+			{{ $t('components.gateway.power.stats.title') }}
+		</template>
 		<v-alert v-if='state === ComponentState.NotFound'>
 			{{ $t('components.gateway.power.stats.messages.tuptimeMissing') }}
 		</v-alert>
@@ -60,12 +62,12 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { PowerService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
-import { GatewayUptime } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
+import { type PowerService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
+import { type GatewayUptime } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
 import { mdiCheckCircleOutline, mdiCloseCircleOutline } from '@mdi/js';
-import { AxiosError } from 'axios';
+import { type AxiosError } from 'axios';
 import humanizeDuration from 'humanize-duration';
-import { onMounted, ref, Ref } from 'vue';
+import { onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 

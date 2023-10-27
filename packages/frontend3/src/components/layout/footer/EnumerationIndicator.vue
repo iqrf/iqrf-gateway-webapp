@@ -15,10 +15,11 @@
 </template>
 
 <script lang='ts' setup>
-import { useDaemonStore } from '@/store/daemonSocket';
 import { mdiDatabase, mdiDatabaseAlert, mdiDatabaseArrowDown } from '@mdi/js';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
+
+import { useDaemonStore } from '@/store/daemonSocket';
 
 const daemonStore = useDaemonStore();
 const { isEnumerationRunning: active, isConnected: connected } = storeToRefs(daemonStore);

@@ -51,25 +51,24 @@
 </template>
 
 <script lang='ts' setup>
-import { onMounted, ref, Ref } from 'vue';
+import { type UserCredentials, UserSessionExpiration } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { mdiAccount, mdiAccountClock, mdiKey, mdiLogin } from '@mdi/js';
+import { type AxiosError } from 'axios';
+import { onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
-import { VForm } from 'vuetify/components';
 import { toast } from 'vue3-toastify';
+import { VForm } from 'vuetify/components';
 
 import PasswordInput from '@/components/PasswordInput.vue';
 import SelectInput from '@/components/SelectInput.vue';
 import TextInput from '@/components/TextInput.vue';
-
 import { basicErrorToast } from '@/helpers/errorToast';
-import { mdiAccount, mdiAccountClock, mdiKey, mdiLogin } from '@mdi/js';
 import { getExpirationOptions } from '@/helpers/userData';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useUserStore } from '@/store/user';
 
-import { AxiosError } from 'axios';
-import { UserCredentials, UserSessionExpiration } from '@iqrf/iqrf-gateway-webapp-client/types';
 
 const i18n = useI18n();
 const route = useRoute();
@@ -99,7 +98,7 @@ async function onSubmit(): Promise<void> {
 			}
 			router.push(destination);
 			toast.success(
-				i18n.t('auth.sign.in.messages.success').toString()
+				i18n.t('auth.sign.in.messages.success').toString(),
 			);
 		})
 		.catch((error: AxiosError) => {

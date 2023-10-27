@@ -20,11 +20,11 @@
 </template>
 
 <script lang='ts' setup>
-import { computed, ComputedRef, PropType } from 'vue';
-import { DisambiguationLink } from '@/types/disambiguation';
-import { useUserStore } from '@/store/user';
-import { UserRole } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { computed, type ComputedRef, type PropType } from 'vue';
+
 import { useFeatureStore } from '@/store/features';
+import { useUserStore } from '@/store/user';
+import { type DisambiguationLink } from '@/types/disambiguation';
 
 const userStore = useUserStore();
 const featureStore = useFeatureStore();
@@ -38,7 +38,7 @@ const props = defineProps({
 
 const filteredLinks: ComputedRef<DisambiguationLink[]> = computed(() => {
 	return props.links.filter((link: DisambiguationLink) => {
-		if (link.roles !== undefined && !link.roles.includes(userStore.getRole as UserRole)) {
+		if (link.roles !== undefined && !link.roles.includes(userStore.getRole!)) {
 			return false;
 		}
 		return !(link.feature !== undefined && !featureStore.isEnabled(link.feature));

@@ -1,8 +1,9 @@
-import { defineStore } from 'pinia';
-import { MonitorMessage } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { DaemonMode } from '@iqrf/iqrf-gateway-daemon-utils/enums';
-import ClientSocket, { GenericSocketState } from '@/modules/clientSocket';
+import { type MonitorMessage } from '@iqrf/iqrf-gateway-daemon-utils/types';
+import { defineStore } from 'pinia';
+
 import UrlBuilder from '@/helpers/urlBuilder';
+import ClientSocket, { type GenericSocketState } from '@/modules/clientSocket';
 
 interface MonitorState extends GenericSocketState {
 	mode: DaemonMode;
@@ -86,7 +87,6 @@ export const useMonitorStore = defineStore('monitor', {
 		},
 		/**
 		 * Returns current Daemon mode
-		 * @param {MonitorState} state Monitor state
 		 * @returns {DaemonMode} Daemon mode
 		 */
 		getMode(): DaemonMode {
@@ -94,7 +94,6 @@ export const useMonitorStore = defineStore('monitor', {
 		},
 		/**
 		 * Returns current queue length
-		 * @param {MonitorState} state Monitor state
 		 * @returns {number} Queue length
 		 */
 		getQueueLength(): number {
@@ -102,7 +101,6 @@ export const useMonitorStore = defineStore('monitor', {
 		},
 		/**
 		 * Returns timestamp of last monitor notification
-		 * @param {MonitorState} state Monitor state
 		 * @returns {number} Last notification timestamp
 		 */
 		getLastTimestamp(): number {

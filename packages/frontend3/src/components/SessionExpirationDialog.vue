@@ -25,16 +25,16 @@
 </template>
 
 <script lang='ts' setup>
-import { UserSignedIn } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { onBeforeUnmount, onMounted, ref, Ref  } from 'vue';
+import { type UserSignedIn } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { onBeforeUnmount, onMounted, ref, type Ref  } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { toast } from 'vue3-toastify';
 
+import Card from '@/components/Card.vue';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
 
-import Card from '@/components/Card.vue';
 
 const i18n = useI18n();
 const userStore = useUserStore();
@@ -74,7 +74,7 @@ async function setup(): Promise<void> {
 			.then(async () => {
 				await router.push({path: '/sign/in', query: {redirect: router.currentRoute.value.path}});
 				toast.warning(
-					i18n.t('core.sign.out.expired').toString()
+					i18n.t('core.sign.out.expired').toString(),
 				);
 			});
 	}, timeout);

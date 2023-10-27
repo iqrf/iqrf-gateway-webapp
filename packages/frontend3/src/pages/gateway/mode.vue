@@ -11,5 +11,6 @@ name: 'GatewayMode'
 
 <script lang='ts' setup>
 import { Head } from '@unhead/vue/components';
+
 import ModeTable from '@/components/gateway/mode/ModeTable.vue';
 </script>

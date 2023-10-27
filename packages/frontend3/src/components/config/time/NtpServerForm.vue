@@ -60,17 +60,16 @@
 </template>
 
 <script lang='ts' setup>
-import { ref, Ref, watchEffect } from 'vue';
+import { mdiPencil, mdiPlus } from '@mdi/js';
+import { ref, type Ref, watchEffect } from 'vue';
 import { VForm } from 'vuetify/components';
 
 import Card from '@/components/Card.vue';
 import TextInput from '@/components/TextInput.vue';
-
+import { FormAction } from '@/enums/controls';
 import { getModalWidth } from '@/helpers/modal';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
-import { mdiPencil, mdiPlus } from '@mdi/js';
-import { FormAction } from '@/enums/controls';
 
 interface Props {
 	action: FormAction;
@@ -96,14 +95,14 @@ watchEffect(async (): Promise<void> => {
 });
 
 function activatorIcon(): string {
-	if (props.action == FormAction.Add) {
+	if (props.action === FormAction.Add) {
 		return mdiPlus;
 	}
 	return mdiPencil;
 }
 
 function iconColor(): string {
-	if (props.action == FormAction.Add) {
+	if (props.action === FormAction.Add) {
 		return 'white';
 	}
 	return 'info';

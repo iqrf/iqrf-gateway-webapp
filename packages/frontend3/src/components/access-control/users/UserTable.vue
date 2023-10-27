@@ -52,21 +52,20 @@
 </template>
 
 <script lang='ts' setup>
-import { UserInfo } from '@iqrf/iqrf-gateway-webapp-client/types/User';
-import { onMounted, ref, Ref, toRaw } from 'vue';
+import { type UserInfo } from '@iqrf/iqrf-gateway-webapp-client/types/User';
+import { mdiReload } from '@mdi/js';
+import { onMounted, ref, type Ref, toRaw } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import Card from '@/components/Card.vue';
-import DataTable from '@/components/DataTable.vue';
 import UserDeleteDialog from '@/components/access-control/users/UserDeleteDialog.vue';
 import UserForm from '@/components/access-control/users/UserForm.vue';
 import UserLanguageColumn from '@/components/access-control/users/UserLanguageColumn.vue';
 import UserRoleColumn from '@/components/access-control/users/UserRoleColumn.vue';
 import UserStateColumn from '@/components/access-control/users/UserStateColumn.vue';
-
+import Card from '@/components/Card.vue';
+import DataTable from '@/components/DataTable.vue';
 import { FormAction } from '@/enums/controls';
 import { useApiClient } from '@/services/ApiClient';
-import { mdiReload } from '@mdi/js';
 
 const i18n = useI18n();
 
@@ -77,7 +76,7 @@ const headers = [
 	{key: 'role', title: i18n.t('components.accessControl.users.role')},
 	{key: 'language', title: i18n.t('components.accessControl.users.language')},
 	{key: 'state', title: i18n.t('components.accessControl.users.state')},
-	{key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false}
+	{key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false},
 ];
 const users: Ref<UserInfo[]> = ref([]);
 

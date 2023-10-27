@@ -4,8 +4,8 @@
 		:subgroup='props.subGroup'
 		:value='item.title'
 	>
-		<template #activator='{props}'>
-			<v-list-item :title='item.title' density='compact' v-bind='props'/>
+		<template #activator='{ props }'>
+			<v-list-item :title='item.title' density='compact' v-bind='props' />
 		</template>
 		<div v-for='(navItem, idx) in item.children' :key='idx'>
 			<SidebarGroup
@@ -23,7 +23,8 @@
 
 <script lang='ts' setup>
 import SidebarItem from '@/components/layout/sidebar/SidebarItem.vue';
-import {SidebarLink} from '@/types/sidebar';
+import { type SidebarLink } from '@/types/sidebar';
+
 interface Props {
 	/// Sidebar items to render
 	item: SidebarLink;

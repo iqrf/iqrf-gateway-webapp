@@ -41,16 +41,15 @@
 </template>
 
 <script lang='ts' setup>
-import { ref, Ref } from 'vue';
+import { type ApiKeyService } from '@iqrf/iqrf-gateway-webapp-client/services';
+import { type ApiKeyInfo } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { mdiDelete } from '@mdi/js';
+import { ref, type Ref , type PropType } from 'vue';
 
 import Card from '@/components/Card.vue';
-
 import { getModalWidth } from '@/helpers/modal';
-import { mdiDelete } from '@mdi/js';
-import { PropType } from 'vue';
 import { useApiClient } from '@/services/ApiClient';
-import { ApiKeyService } from '@iqrf/iqrf-gateway-webapp-client/services';
-import { ApiKeyInfo } from '@iqrf/iqrf-gateway-webapp-client/types';
+
 
 const emit = defineEmits(['refresh']);
 const props = defineProps({
@@ -64,7 +63,7 @@ const width = getModalWidth();
 const service: ApiKeyService = useApiClient().getApiKeyService();
 
 async function onSubmit(): Promise<void> {
-	service.delete(props.apiKey.id as number)
+	service.delete(props.apiKey.id!)
 		.then(() => {
 			close();
 			emit('refresh');

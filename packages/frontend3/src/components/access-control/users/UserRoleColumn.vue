@@ -8,9 +8,9 @@
 </template>
 
 <script lang='ts' setup>
-import { computed } from 'vue';
 import { UserRole } from '@iqrf/iqrf-gateway-webapp-client/types/User';
 import { mdiAccount, mdiAccountBadge, mdiAccountSearch, mdiShieldAccount } from '@mdi/js';
+import { computed } from 'vue';
 
 interface Props {
 	role: UserRole

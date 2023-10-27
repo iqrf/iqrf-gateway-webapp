@@ -25,9 +25,10 @@
 </template>
 
 <script lang='ts' setup>
-import { useInstallStore } from '@/store/install';
 import { storeToRefs } from 'pinia';
 import { useDisplay } from 'vuetify';
+
+import { useInstallStore } from '@/store/install';
 
 const display = useDisplay();
 const installStore = useInstallStore();

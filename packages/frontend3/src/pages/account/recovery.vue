@@ -13,6 +13,7 @@ meta:
 
 <script lang='ts' setup>
 import { Head } from '@unhead/vue/components';
+
 import AccountRecoveryForm from '@/components/account/AccountRecoveryForm.vue';
 
 </script>

@@ -1,5 +1,5 @@
 export interface EmbeddedPeripherals {
-	values?: Array<number>
+	values?: number[]
 	coordinator?: boolean
 	node?: boolean
 	os?: boolean
@@ -66,12 +66,12 @@ export interface PeripheralInformation {
 
 export interface PeripheralEnumeration {
 	dpaVer: string
-	embPers: Array<number>
+	embPers: number[]
 	flags: PeripheralEnumerationFlags
 	hwpId: number
 	hwpIdVer: number
 	perNr: number
-	userPers: Array<unknown>
+	userPers: unknown[]
 }
 
 export interface PeripheralEnumerationFlags {
@@ -130,6 +130,6 @@ export interface DeviceEnumeration {
 	osRead: OsRead
 	peripheralEnumeration: PeripheralEnumeration
 	product: string
-	standards: Array<string>
+	standards: string[]
 	trConfiguration: TrConfiguration
 }

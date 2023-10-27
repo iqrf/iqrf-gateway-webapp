@@ -80,16 +80,17 @@
 </template>
 
 <script lang='ts' setup>
-import { computed, onMounted, ref, Ref } from 'vue';
+import  { type InfoService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
+import  { type GatewayInformation, type NetworkInterface } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
+import { FileDownloader } from '@iqrf/iqrf-gateway-webapp-client/utils';
+import { mdiFileDownload } from '@mdi/js';
+import { computed, onMounted, ref, type Ref } from 'vue';
+
 import CoordinatorInfo from '@/components/gateway/info/CoordinatorInfo.vue';
 import DaemonModeInfo from '@/components/gateway/info/DaemonModeInfo.vue';
-
-import { FileDownloader } from '@iqrf/iqrf-gateway-webapp-client/utils';
 import { useApiClient } from '@/services/ApiClient';
-import { mdiFileDownload } from '@mdi/js';
 
-import type { InfoService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
-import type { GatewayInformation, NetworkInterface } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
+
 
 const service: InfoService = useApiClient().getGatewayServices().getInfoService();
 const info: Ref<GatewayInformation | null> = ref(null);

@@ -1,25 +1,26 @@
+import { DaemonMessage, type DaemonMessageOptions, DaemonMode , type DaemonApiRequest, type DaemonApiResponse } from '@iqrf/iqrf-gateway-daemon-utils';
 import { defineStore } from 'pinia';
 import { v4 as uuidv4 } from 'uuid';
-import i18n from '@/plugins/i18n';
 import { toast } from 'vue3-toastify';
 
-import ClientSocket, { GenericSocketState } from '@/modules/clientSocket';
 import UrlBuilder from '@/helpers/urlBuilder';
+import ClientSocket, { type GenericSocketState } from '@/modules/clientSocket';
+import i18n from '@/plugins/i18n';
+
 import { useMonitorStore } from './monitorSocket';
-import type { DaemonApiRequest, DaemonApiResponse } from '@iqrf/iqrf-gateway-daemon-utils';
-import { DaemonMessage, DaemonMessageOptions, DaemonMode } from '@iqrf/iqrf-gateway-daemon-utils';
+
 
 interface DaemonState extends GenericSocketState {
 	receivedMessages: number;
 	requests: Record<string, string | DaemonApiRequest>;
 	responses: Record<string, string | DaemonApiResponse>;
-	messages: Array<DaemonMessage>;
+	messages: DaemonMessage[];
 	version: string;
 	versionMsgId: string;
 	enum: boolean;
 }
 
-const serviceModeWhitelist: Array<string> = [
+const serviceModeWhitelist: string[] = [
 	'mngDaemon_Exit',
 	'mngDaemon_Mode',
 	'mngDaemon_Version',
@@ -54,13 +55,13 @@ export const useDaemonStore = defineStore('daemon', {
 					url: urlBuilder.getDaemonApiUrl(),
 					autoConnect: true,
 					reconnect: true,
-					reconnectDelay: 5000
+					reconnectDelay: 5000,
 				},
 				this.onOpen,
 				this.onClose,
 				this.onError,
 				this.onMessage,
-				this.onSend
+				this.onSend,
 			);
 		},
 		sendVersionRequest(): void {

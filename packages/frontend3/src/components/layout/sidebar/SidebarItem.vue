@@ -14,9 +14,10 @@
 </template>
 
 <script lang='ts' setup>
-import {Ref, ref, watchEffect} from 'vue';
+import {type Ref, ref, watchEffect} from 'vue';
 import {useRoute} from 'vue-router';
-import {SidebarLink} from '@/types/sidebar';
+
+import {type SidebarLink} from '@/types/sidebar';
 interface Props {
 	/// Sidebar item to render
 	item: SidebarLink;

@@ -1,10 +1,10 @@
 import { UserLanguage, UserRole, UserSessionExpiration } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { computed, ComputedRef } from 'vue';
+import { computed, type ComputedRef } from 'vue';
 
-import { SelectItem } from '@/types/vuetify';
 import i18n from '@/plugins/i18n';
+import { type SelectItem } from '@/types/vuetify';
 
-export function getLanguageOptions(): ComputedRef<Array<SelectItem>> {
+export function getLanguageOptions(): ComputedRef<SelectItem[]> {
 	return computed(() => {
 		const languages = Object.values(UserLanguage);
 		return languages.map((item: UserLanguage): SelectItem => {
@@ -16,7 +16,7 @@ export function getLanguageOptions(): ComputedRef<Array<SelectItem>> {
 	});
 }
 
-export function getRoleOptions(): ComputedRef<Array<SelectItem>> {
+export function getRoleOptions(): ComputedRef<SelectItem[]> {
 	return computed(() => {
 		const roles = Object.values(UserRole);
 		return roles.map((item: UserRole): SelectItem => {
@@ -28,7 +28,7 @@ export function getRoleOptions(): ComputedRef<Array<SelectItem>> {
 	});
 }
 
-export function getFilteredRoleOptions(role: UserRole): ComputedRef<Array<SelectItem>> {
+export function getFilteredRoleOptions(role: UserRole): ComputedRef<SelectItem[]> {
 	return computed(() => {
 		const roles = [UserRole.Admin, UserRole.Normal, UserRole.BasicAdmin, UserRole.Basic];
 		if (role !== UserRole.Admin) {
@@ -43,7 +43,7 @@ export function getFilteredRoleOptions(role: UserRole): ComputedRef<Array<Select
 	});
 }
 
-export function getExpirationOptions(): ComputedRef<Array<SelectItem>> {
+export function getExpirationOptions(): ComputedRef<SelectItem[]> {
 	return computed(() => {
 		const expirations = Object.values(UserSessionExpiration);
 		return expirations.map((item: UserSessionExpiration): SelectItem => {

@@ -15,5 +15,6 @@ meta:
 
 <script lang='ts' setup>
 import { Head } from '@unhead/vue/components';
+
 import Dashboard from '@/components/install/Dashboard.vue';
 </script>

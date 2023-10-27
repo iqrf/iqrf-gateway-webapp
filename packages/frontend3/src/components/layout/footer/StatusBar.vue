@@ -57,16 +57,18 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
-import { DateTime } from 'luxon';
-import { useMonitorStore } from '@/store/monitorSocket';
 import { DaemonMode } from '@iqrf/iqrf-gateway-daemon-utils/enums';
-import { useDaemonStore } from '@/store/daemonSocket';
-import { useUserStore } from '@/store/user';
+import { mdiCheckCircleOutline, mdiConnection, mdiForward, mdiHelp, mdiInformation, mdiTray, mdiTrayAlert, mdiTrayFull, mdiTrayRemove, mdiWrench } from '@mdi/js';
+import { DateTime } from 'luxon';
 import { storeToRefs } from 'pinia';
+import { computed } from 'vue';
+
 import EnumerationIndicator from '@/components/layout/footer/EnumerationIndicator.vue';
 import SessionIndicator from '@/components/layout/footer/SessionIndicator.vue';
-import { mdiCheckCircleOutline, mdiConnection, mdiForward, mdiHelp, mdiInformation, mdiTray, mdiTrayAlert, mdiTrayFull, mdiTrayRemove, mdiWrench } from '@mdi/js';
+import { useDaemonStore } from '@/store/daemonSocket';
+import { useMonitorStore } from '@/store/monitorSocket';
+import { useUserStore } from '@/store/user';
+
 
 const daemonStore = useDaemonStore();
 const { getVersion: version } = storeToRefs(daemonStore);
@@ -91,7 +93,7 @@ const connectionColor = computed(() => {
 
 const date = computed(() => {
 	return DateTime.fromSeconds(monitorStore.lastTimestamp).toLocaleString(
-		DateTime.DATETIME_FULL_WITH_SECONDS
+		DateTime.DATETIME_FULL_WITH_SECONDS,
 	);
 });
 

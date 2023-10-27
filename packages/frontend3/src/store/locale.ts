@@ -1,7 +1,7 @@
+import { CZ, GB } from 'country-flag-icons/string/3x2';
+import { Base64 } from 'js-base64';
 import { defineStore } from 'pinia';
 import { preferredLocale } from 'preferred-locale';
-import { Base64 } from 'js-base64';
-import { CZ, GB } from 'country-flag-icons/string/3x2';
 
 import i18n from '@/plugins/i18n';
 
@@ -38,7 +38,7 @@ export const useLocaleStore = defineStore('locale', {
 			// @ts-ignore
 			i18n.global.locale.value = locale;
 			this.locale = locale;
-		}
+		},
 	},
 	getters: {
 		/**

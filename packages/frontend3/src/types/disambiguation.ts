@@ -1,7 +1,7 @@
-import {Feature, UserRole} from '@iqrf/iqrf-gateway-webapp-client/types';
+import { type Feature, type UserRole } from '@iqrf/iqrf-gateway-webapp-client/types';
 
 /**
- * Link taget enum
+ * Link target enum
  */
 export enum LinkTarget {
 	blank = '_blank',

@@ -75,22 +75,24 @@
 </template>
 
 <script lang='ts' setup>
-import { computed, PropType, ref, Ref, watchEffect } from 'vue';
+import { type ApiKeyService } from '@iqrf/iqrf-gateway-webapp-client/services';
+import { type ApiKeyConfig, type ApiKeyInfo } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { DateTimeUtils } from '@iqrf/iqrf-gateway-webapp-client/utils';
+import { mdiPencil, mdiPlus } from '@mdi/js';
+import { computed, type PropType, ref, type Ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { VForm } from 'vuetify/components';
+
 import Card from '@/components/Card.vue';
 import TextInput from '@/components/TextInput.vue';
-
 import { FormAction } from '@/enums/controls';
 import { getModalWidth } from '@/helpers/modal';
 import { validateForm } from '@/helpers/validateForm';
+import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
 
-import { ApiKeyService } from '@iqrf/iqrf-gateway-webapp-client/services';
-import { ApiKeyConfig, ApiKeyInfo } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { mdiPencil, mdiPlus } from '@mdi/js';
-import ValidationRules from '@/helpers/ValidationRules';
-import { DateTimeUtils } from '@iqrf/iqrf-gateway-webapp-client/utils';
+
+
 
 const emit = defineEmits(['refresh']);
 const props = defineProps({
@@ -182,7 +184,7 @@ async function onSubmit(): Promise<void> {
 				// TODO ERROR
 			});
 	} else if (props.action === FormAction.Edit) {
-		const id = keyToSave.id as number;
+		const id = keyToSave.id!;
 		delete keyToSave.id;
 		service.edit(id, keyToSave)
 			.then(() => {

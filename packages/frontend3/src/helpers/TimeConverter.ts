@@ -1,4 +1,5 @@
 import { DateTime } from 'luxon';
+
 import { useLocaleStore } from '@/store/locale';
 
 /**
@@ -24,7 +25,7 @@ export default class TimeConverter {
 		return `${d}d, ${h}h, ${m}m, ${s}s`;
 	}
 
-	static hoursToMillis(hours: number = 0, minutes: number = 0, seconds: number = 0): number {
+	static hoursToMillis(hours = 0, minutes = 0, seconds = 0): number {
 		return (hours * 60 * 60 + minutes * 60 + seconds) * 1000;
 	}
 }

@@ -16,15 +16,15 @@
 </template>
 
 <script lang='ts' setup>
-import {SidebarLink} from '@/types/sidebar';
 import SidebarGroup from '@/components/layout/sidebar/SidebarGroup.vue';
 import SidebarItem from '@/components/layout/sidebar/SidebarItem.vue';
+import {type SidebarLink} from '@/types/sidebar';
 /**
  * Sidebar item component props
  */
 interface Props {
 	/// Sidebar items to render
-	items: Array<SidebarLink>;
+	items: SidebarLink[];
 }
 const props = defineProps<Props>();
 </script>

@@ -55,13 +55,13 @@
 </template>
 
 <script lang='ts' setup>
-import { computed, PropType } from 'vue';
+import { type MailerConfig, MailerSmtpSecurity } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import { computed, type PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import PasswordInput from '@/components/PasswordInput.vue';
 import ValidationRules from '@/helpers/ValidationRules';
 
-import { MailerConfig, MailerSmtpSecurity } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 
 const props = defineProps({
 	config: {
@@ -81,7 +81,7 @@ const i18n = useI18n();
 const securityOptions = [
 	{
 		title: i18n.t('components.configuration.smtp.form.securityLevels.none'),
-		value: null
+		value: null,
 	},
 	{
 		title: i18n.t('components.configuration.smtp.form.securityLevels.starttls'),

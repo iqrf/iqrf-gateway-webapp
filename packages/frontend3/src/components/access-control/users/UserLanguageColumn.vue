@@ -1,11 +1,12 @@
 <template>
-	<img height='16' :src='"data:image/svg+xml;charset=utf-8;base64," + languageFlag' />
+	<img height='16' :src='"data:image/svg+xml;charset=utf-8;base64," + languageFlag'>
 </template>
 
 <script lang='ts' setup>
-import { UserLanguage } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { Locale, useLocaleStore } from '@/store/locale';
+import { type UserLanguage } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { computed } from 'vue';
+
+import { type Locale, useLocaleStore } from '@/store/locale';
 
 interface Props {
 	language: UserLanguage

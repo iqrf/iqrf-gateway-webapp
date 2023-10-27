@@ -1,5 +1,6 @@
+import { type DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
+
 import { useDaemonStore } from '@/store/daemonSocket';
-import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 
 export class IqmeshNetworkService {
 

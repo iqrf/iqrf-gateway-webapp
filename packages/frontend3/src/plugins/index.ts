@@ -1,14 +1,16 @@
-import type {App} from 'vue';
 
+import  {type App} from 'vue';
+
+import registerDatetime from '@/plugins/datetime';
 import head from '@/plugins/head';
 import i18n from '@/plugins/i18n';
+import registerSentry from '@/plugins/sentry';
 import toastify, {ToastOptions} from '@/plugins/toastify';
 import vuetify from '@/plugins/vuetify';
-import pinia from '@/store';
-import router from '@/router';
-import registerDatetime from '@/plugins/datetime';
-import registerSentry from '@/plugins/sentry';
 import registerSockets from '@/plugins/websocket';
+import router from '@/router';
+import pinia from '@/store';
+
 
 export function registerPlugins(app: App) {
 	app

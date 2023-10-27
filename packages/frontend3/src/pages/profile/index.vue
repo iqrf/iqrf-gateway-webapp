@@ -12,6 +12,7 @@ name: Profile
 
 <script lang='ts' setup>
 import { Head } from '@unhead/vue/components';
-import ProfileEditForm from '@/components/account/ProfileEditForm.vue';
+
 import PasswordChangeForm from '@/components/account/PasswordChangeForm.vue';
+import ProfileEditForm from '@/components/account/ProfileEditForm.vue';
 </script>

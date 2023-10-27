@@ -4,7 +4,7 @@
 		color='#1c241e'
 		:rail='isMinimized'
 	>
-		<SidebarItems :items='items()'/>
+		<SidebarItems :items='items()' />
 		<template #append>
 			<v-list>
 				<v-list-item density='compact' style='margin-top: auto;' @click.stop='sidebarStore.toggleSize()'>
@@ -19,14 +19,6 @@
 
 <script lang='ts' setup>
 import {Feature, UserRole} from '@iqrf/iqrf-gateway-webapp-client/types';
-import SidebarItems from '@/components/layout/sidebar/SidebarItems.vue';
-import { storeToRefs } from 'pinia';
-import { useI18n } from 'vue-i18n';
-import { useSidebarStore } from '@/store/sidebar';
-import { useUserStore } from '@/store/user';
-
-import { SidebarLink } from '@/types/sidebar';
-import { useFeatureStore } from '@/store/features';
 import {
 	mdiAccountGroup,
 	mdiAccountKey,
@@ -45,9 +37,18 @@ import {
 	mdiSsh,
 	mdiSwapHorizontal,
 	mdiTextBoxOutline,
-	mdiTools
+	mdiTools,
 } from '@mdi/js';
+import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+import SidebarItems from '@/components/layout/sidebar/SidebarItems.vue';
+import { useFeatureStore } from '@/store/features';
+import { useSidebarStore } from '@/store/sidebar';
+import { useUserStore } from '@/store/user';
+import { type SidebarLink } from '@/types/sidebar';
+
 
 const i18n = useI18n();
 
@@ -88,12 +89,12 @@ function items(): SidebarLink[] {
 					{
 						title: i18n.t('pages.gateway.information.title'),
 						icon: mdiInformationOutline,
-						to: '/gateway/information'
+						to: '/gateway/information',
 					},
 					{
 						title: i18n.t('pages.gateway.logs.title'),
 						icon: mdiTextBoxOutline,
-						to: '/gateway/logs'
+						to: '/gateway/logs',
 					},
 					{
 						title: i18n.t('pages.gateway.mode.title'),
@@ -125,7 +126,7 @@ function items(): SidebarLink[] {
 						title: i18n.t('pages.configuration.time.title'),
 						icon: mdiClockTimeFourOutline,
 						to: '/config/time',
-					}
+					},
 				],
 			},
 			{

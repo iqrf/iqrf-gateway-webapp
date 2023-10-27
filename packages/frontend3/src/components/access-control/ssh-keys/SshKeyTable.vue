@@ -96,21 +96,21 @@
 </template>
 
 <script lang='ts' setup>
-import { onMounted, ref, Ref, toRaw } from 'vue';
+import { type SshKeyInfo } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
+import { mdiContentCopy, mdiInformation, mdiReload } from '@mdi/js';
+import { DateTime } from 'luxon';
+import { onMounted, ref, type Ref, toRaw } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useLocaleStore } from '@/store/locale';
-import { useApiClient } from '@/services/ApiClient';
 
-import Card from '@/components/Card.vue';
-import DataTable from '@/components/DataTable.vue';
+
 import SshKeyDeleteDialog from '@/components/access-control/ssh-keys/SshKeyDeleteDialog.vue';
 import SshKeyForm from '@/components/access-control/ssh-keys/SshKeyForm.vue';
-
-import { DateTime } from 'luxon';
-
+import Card from '@/components/Card.vue';
+import DataTable from '@/components/DataTable.vue';
 import { FormAction } from '@/enums/controls';
-import { SshKeyInfo } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
-import { mdiContentCopy, mdiInformation, mdiReload } from '@mdi/js';
+import { useApiClient } from '@/services/ApiClient';
+import { useLocaleStore } from '@/store/locale';
+
 
 const i18n = useI18n();
 const localeStore = useLocaleStore();
