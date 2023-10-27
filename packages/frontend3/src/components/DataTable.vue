@@ -28,7 +28,7 @@
 </template>
 
 <script lang='ts' setup>
-import { computed, ref, Ref } from 'vue';
+import { computed, ref, type Ref } from 'vue';
 
 const props = defineProps({
 	headers: {

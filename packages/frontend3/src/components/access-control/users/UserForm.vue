@@ -91,30 +91,26 @@
 </template>
 
 <script lang='ts' setup>
-import { UserCreate, UserEdit, UserInfo, UserLanguage, UserRole } from '@iqrf/iqrf-gateway-webapp-client/types/User';
-import { AxiosError } from 'axios';
-import { ref, Ref, watchEffect } from 'vue';
+import { type UserCreate, type UserEdit, type UserInfo, UserLanguage, UserRole } from '@iqrf/iqrf-gateway-webapp-client/types/User';
+import { mdiAccount, mdiAccountBadge, mdiAccountEdit, mdiAccountPlus, mdiEmail, mdiKey, mdiPencil, mdiTranslate } from '@mdi/js';
+import { type AxiosError } from 'axios';
+import { ref, type Ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
-
-import { useUserStore } from '@/store/user';
 
 import Card from '@/components/Card.vue';
 import PasswordInput from '@/components/PasswordInput.vue';
 import SelectInput from '@/components/SelectInput.vue';
 import TextInput from '@/components/TextInput.vue';
-
-
+import { FormAction } from '@/enums/controls';
 import { basicErrorToast } from '@/helpers/errorToast';
 import { getModalWidth } from '@/helpers/modal';
 import { getFilteredRoleOptions, getLanguageOptions } from '@/helpers/userData';
-import ValidationRules from '@/helpers/ValidationRules';
-
-import { useApiClient } from '@/services/ApiClient';
 import { validateForm } from '@/helpers/validateForm';
-import { mdiAccount, mdiAccountBadge, mdiAccountEdit, mdiAccountPlus, mdiEmail, mdiKey, mdiPencil, mdiTranslate } from '@mdi/js';
-import { FormAction } from '@/enums/controls';
+import ValidationRules from '@/helpers/ValidationRules';
+import { useApiClient } from '@/services/ApiClient';
+import { useUserStore } from '@/store/user';
 
 interface Props {
 	action: FormAction;
@@ -136,33 +132,33 @@ const defaultUser: UserCreate | UserEdit = {
 };
 const user: Ref<UserCreate | UserEdit> = ref(defaultUser);
 const languages = getLanguageOptions();
-const roles = getFilteredRoleOptions(userStore.getRole as UserRole);
+const roles = getFilteredRoleOptions(userStore.getRole!);
 
 function iconColor(): string {
-	if (props.action == FormAction.Add) {
+	if (props.action === FormAction.Add) {
 		return 'white';
 	}
 	return 'info';
 }
 
 function activatorIcon(): string {
-	if (props.action == FormAction.Add) {
+	if (props.action === FormAction.Add) {
 		return mdiAccountPlus;
 	}
 	return mdiPencil;
 }
 
 function headerIcon(): string {
-	if (props.action == FormAction.Add) {
+	if (props.action === FormAction.Add) {
 		return mdiAccountPlus;
 	}
 	return mdiAccountEdit;
 }
 
 watchEffect(async (): Promise<void> => {
-	if (props.action == FormAction.Add) {
+	if (props.action === FormAction.Add) {
 		user.value = {...defaultUser, password: ''} as UserCreate;
-	} else if (props.action == FormAction.Edit) {
+	} else if (props.action === FormAction.Edit) {
 		if (props.userInfo) {
 			user.value = {
 				username: props.userInfo.username,
@@ -181,7 +177,7 @@ async function onSubmit(): Promise<void> {
 		return;
 	}
 	const service = useApiClient().getUserService();
-	if (props.action == FormAction.Add) {
+	if (props.action === FormAction.Add) {
 		service.create(user.value as UserCreate)
 			.then(() => onSuccess(user.value))
 			.catch((error: AxiosError) => onFailure(error, user.value));
@@ -202,7 +198,7 @@ async function onSubmit(): Promise<void> {
 
 function onSuccess(entity: UserCreate | UserEdit): void {
 	toast.success(
-		i18n.t(`components.accessControl.users.messages.${props.action}.success`, {user: entity.username})
+		i18n.t(`components.accessControl.users.messages.${props.action}.success`, {user: entity.username}),
 	);
 	close();
 	emit('refresh');

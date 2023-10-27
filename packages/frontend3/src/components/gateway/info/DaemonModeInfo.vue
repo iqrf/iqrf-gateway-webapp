@@ -12,9 +12,10 @@
 </template>
 
 <script lang='ts' setup>
-import { useMonitorStore } from '@/store/monitorSocket';
-import { storeToRefs } from 'pinia';
 import { DaemonMode } from '@iqrf/iqrf-gateway-daemon-utils/enums';
+import { storeToRefs } from 'pinia';
+
+import { useMonitorStore } from '@/store/monitorSocket';
 
 const monitorStore = useMonitorStore();
 const {isConnected: connected, getMode: mode} = storeToRefs(monitorStore);

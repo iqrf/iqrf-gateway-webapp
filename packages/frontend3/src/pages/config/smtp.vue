@@ -11,5 +11,6 @@ name: SmtpConfig
 
 <script lang='ts' setup>
 import { Head } from '@unhead/vue/components';
+
 import SmtpForm from '@/components/config/smtp/SmtpForm.vue';
 </script>

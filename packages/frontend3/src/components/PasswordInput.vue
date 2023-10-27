@@ -30,9 +30,9 @@
 </template>
 
 <script lang='ts' setup>
-import { computed, ref, Ref } from 'vue';
-import { VTextField } from 'vuetify/components';
 import { mdiEye, mdiEyeOff } from '@mdi/js';
+import { computed, ref, type Ref } from 'vue';
+import { VTextField } from 'vuetify/components';
 
 const show: Ref<boolean> = ref(false);
 const props = defineProps({
@@ -50,7 +50,7 @@ const props = defineProps({
 		type: String,
 		default: '',
 		required: false,
-	}
+	},
 });
 const visibilityIcon = computed(() => {
 	return show.value ? mdiEye : mdiEyeOff;

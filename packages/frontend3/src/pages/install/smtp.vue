@@ -15,5 +15,6 @@ meta:
 
 <script lang='ts' setup>
 import { Head } from '@unhead/vue/components';
-import SmtpForm from '@/components/config/SmtpForm.vue';
+
+import SmtpForm from '@/components/config/smtp/SmtpForm.vue';
 </script>

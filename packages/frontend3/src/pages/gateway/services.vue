@@ -27,6 +27,7 @@ name: Services
 
 <script lang='ts' setup>
 import { Head } from '@unhead/vue/components';
+
 import ServiceTable from '@/components/gateway/services/ServiceTable.vue';
 
 </script>

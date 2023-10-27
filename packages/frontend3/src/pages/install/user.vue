@@ -15,5 +15,6 @@ meta:
 
 <script lang='ts' setup>
 import { Head } from '@unhead/vue/components';
+
 import CreateUserForm from '@/components/install/CreateUserForm.vue';
 </script>

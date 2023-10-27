@@ -11,6 +11,7 @@ name: Users
 
 <script lang='ts' setup>
 import { Head } from '@unhead/vue/components';
+
 import UserTable from '@/components/access-control/users/UserTable.vue';
 
 </script>

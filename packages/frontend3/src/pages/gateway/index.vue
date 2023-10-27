@@ -10,28 +10,29 @@ name: 'Gateway'
 </route>
 
 <script lang='ts' setup>
-import { ref, Ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { Head } from '@unhead/vue/components';
+import { ref, type Ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+
 import Disambiguation from '@/components/Disambiguation.vue';
-import { DisambiguationLink } from '@/types/disambiguation';
+import { type DisambiguationLink } from '@/types/disambiguation';
 
 const i18n = useI18n();
 const links: Ref<DisambiguationLink[]> = ref([
 	{
 		title: i18n.t('pages.gateway.information.title'),
 		description: i18n.t('pages.gateway.information.description'),
-		to: '/gateway/information'
+		to: '/gateway/information',
 	},
 	{
 		title: i18n.t('pages.gateway.logs.title'),
 		description: i18n.t('pages.gateway.logs.description'),
-		to: '/gateway/logs'
+		to: '/gateway/logs',
 	},
 	{
 		title: i18n.t('pages.gateway.mode.title'),
 		description: i18n.t('pages.gateway.mode.description'),
-		to: '/gateway/mode'
+		to: '/gateway/mode',
 	},
 	{
 		title: i18n.t('pages.gateway.services.title'),

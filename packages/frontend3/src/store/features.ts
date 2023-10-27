@@ -1,10 +1,11 @@
 import { Client } from '@iqrf/iqrf-gateway-webapp-client';
 import {
-	Feature,
-	FeatureConfig,
-	Features
+	type Feature,
+	type FeatureConfig,
+	type Features,
 } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { defineStore } from 'pinia';
+
 import UrlBuilder from '@/helpers/urlBuilder';
 
 interface FeatureState {
@@ -19,13 +20,13 @@ export const useFeatureStore = defineStore('features', {
 		async fetch(): Promise<void> {
 			return (new Client({
 				config: {
-					baseURL: (new UrlBuilder()).getRestApiUrl()
-				}
+					baseURL: (new UrlBuilder()).getRestApiUrl(),
+				},
 			})).getFeatureService().fetchAll()
 				.then((features: Features): void => {
 					this.features = features;
 				});
-		}
+		},
 	},
 	getters: {
 		isEnabled: (state: FeatureState) => (name: Feature): boolean|undefined => {

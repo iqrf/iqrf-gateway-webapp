@@ -15,5 +15,6 @@ meta:
 
 <script lang='ts' setup>
 import { Head } from '@unhead/vue/components';
+
 import SshKeyTable from '@/components/access-control/ssh-keys/SshKeyTable.vue';
 </script>

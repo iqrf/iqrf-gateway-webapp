@@ -29,7 +29,8 @@
 
 <script lang='ts' setup>
 import { computed } from 'vue';
-import { SelectItem } from '@/types/vuetify';
+
+import { type SelectItem } from '@/types/vuetify';
 
 const props = defineProps({
 	modelValue: {

@@ -11,5 +11,6 @@ name: TimeConfig
 
 <script lang='ts' setup>
 import { Head } from '@unhead/vue/components';
+
 import TimeConfig from '@/components/config/time/TimeConfig.vue';
 </script>

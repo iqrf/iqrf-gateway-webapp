@@ -53,21 +53,22 @@
 </template>
 
 <script lang='ts' setup>
-import { onMounted, ref, Ref, toRaw } from 'vue';
+
+
+import { type ApiKeyService } from '@iqrf/iqrf-gateway-webapp-client/services';
+import { type ApiKeyInfo } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { mdiReload } from '@mdi/js';
+import { DateTime } from 'luxon';
+import { onMounted, ref, type Ref, toRaw } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useLocaleStore } from '@/store/locale';
 
 import ApiKeyDeleteDialog from '@/components/access-control/api-keys/ApiKeyDeleteDialog.vue';
 import ApiKeyForm from '@/components/access-control/api-keys/ApiKeyForm.vue';
 import Card from '@/components/Card.vue';
 import DataTable from '@/components/DataTable.vue';
-
-import { useApiClient } from '@/services/ApiClient';
-import { ApiKeyService } from '@iqrf/iqrf-gateway-webapp-client/services';
-import { ApiKeyInfo } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { mdiReload } from '@mdi/js';
-import { DateTime } from 'luxon';
 import { FormAction } from '@/enums/controls';
+import { useApiClient } from '@/services/ApiClient';
+import { useLocaleStore } from '@/store/locale';
 
 const i18n = useI18n();
 const localeStore = useLocaleStore();

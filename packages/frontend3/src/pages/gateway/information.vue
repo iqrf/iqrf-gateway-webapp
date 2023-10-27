@@ -11,5 +11,6 @@ name: 'GatewayInformation'
 
 <script lang='ts' setup>
 import { Head } from '@unhead/vue/components';
+
 import GatewayInfoTable from '@/components/gateway/info/GatewayInfoTable.vue';
 </script>

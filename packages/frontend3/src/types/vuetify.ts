@@ -1,4 +1,4 @@
-import VueI18n from 'vue-i18n';
+import type VueI18n from 'vue-i18n';
 
 export interface SelectItem {
 	title: string|VueI18n.TranslateResult

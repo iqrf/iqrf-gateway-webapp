@@ -18,5 +18,6 @@ meta:
 
 <script lang='ts' setup>
 import {Head} from '@unhead/vue';
+
 import Card from '@/components/Card.vue';
 </script>

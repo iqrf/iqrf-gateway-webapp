@@ -62,19 +62,19 @@
 </template>
 
 <script lang='ts' setup>
-import { IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
-import { HostnameService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
+import { type IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
+import { type HostnameService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
 import {
-	IqrfGatewayDaemonComponent,
+	type IqrfGatewayDaemonComponent,
 	IqrfGatewayDaemonComponentName,
-	IqrfGatewayDaemonIdeCounterpart,
-	IqrfGatewayDaemonJsonSplitter,
+	type IqrfGatewayDaemonIdeCounterpart,
+	type IqrfGatewayDaemonJsonSplitter,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { mdiPencil } from '@mdi/js';
-import { PropType, ref, Ref, watchEffect } from 'vue';
+import { type PropType, ref, type Ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { VForm } from 'vuetify/components';
 import { toast } from 'vue3-toastify';
+import { VForm } from 'vuetify/components';
 
 import Card from '@/components/Card.vue';
 import TextInput from '@/components/TextInput.vue';
@@ -88,7 +88,7 @@ const props = defineProps({
 	currentHostname: {
 		type: [String, null] as PropType<string | null>,
 		required: true,
-	}
+	},
 });
 const i18n = useI18n();
 const hostnameService: HostnameService = useApiClient().getGatewayServices().getHostnameService();
@@ -121,11 +121,11 @@ async function onSubmit(): Promise<void> {
 	])
 		.then(() => {
 			toast.success(
-				i18n.t('components.gateway.information.hostnameChange.messages.save.success')
+				i18n.t('components.gateway.information.hostnameChange.messages.save.success'),
 			);
 			if (setSplitterId.value || setIdeHostname.value) {
 				toast.success(
-					i18n.t('components.gateway.information.hostnameChange.messages.daemonRestart')
+					i18n.t('components.gateway.information.hostnameChange.messages.daemonRestart'),
 				);
 			}
 			clear();

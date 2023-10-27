@@ -32,15 +32,15 @@
 </template>
 
 <script lang='ts' setup>
-import { AxiosError } from 'axios';
+import { mdiEmailFast } from '@mdi/js';
+import { type AxiosError } from 'axios';
+import { storeToRefs } from 'pinia';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import { basicErrorToast } from '@/helpers/errorToast';
-import { useUserStore } from '@/store/user';
 import { useApiClient } from '@/services/ApiClient';
-import { storeToRefs } from 'pinia';
-import { mdiEmailFast } from '@mdi/js';
+import { useUserStore } from '@/store/user';
 
 const i18n = useI18n();
 const userStore = useUserStore();
@@ -54,7 +54,7 @@ function resend(): void {
 	useApiClient().getUserService().resendVerificationEmail(userId)
 		.then(() => {
 			toast.success(
-				i18n.t('core.account.verification.messages.requestSuccess').toString()
+				i18n.t('core.account.verification.messages.requestSuccess').toString(),
 			);
 		})
 		.catch((error: AxiosError) => {

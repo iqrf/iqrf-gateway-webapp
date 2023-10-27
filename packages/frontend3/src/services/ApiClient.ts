@@ -1,5 +1,5 @@
 import { Client } from '@iqrf/iqrf-gateway-webapp-client';
-import { AxiosError, AxiosResponse } from 'axios';
+import { type AxiosError, type AxiosResponse } from 'axios';
 import { storeToRefs } from 'pinia';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
@@ -16,7 +16,7 @@ export const useApiClient = (): Client => {
 	const client: Client = new Client({
 		config: {
 			baseURL: new UrlBuilder().getRestApiUrl(),
-		}
+		},
 	});
 	/// Set authorization JWT token
 	const userStore = useUserStore();

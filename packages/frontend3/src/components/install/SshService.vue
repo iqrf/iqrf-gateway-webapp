@@ -1,6 +1,8 @@
 <template>
 	<Card>
-		<template #title>{{ $t('pages.install.sshService.title') }}</template>
+		<template #title>
+			{{ $t('pages.install.sshService.title') }}
+		</template>
 		{{ $t('components.sshService.note') }}
 		<v-form @submit.prevent='setServiceStatus'>
 			<v-radio-group
@@ -32,16 +34,15 @@
 </template>
 
 <script lang='ts' setup>
-import { ref, Ref } from 'vue';
+import { type ServiceService } from '@iqrf/iqrf-gateway-webapp-client/services';
+import { type AxiosError } from 'axios';
+import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import Card from '@/components/Card.vue';
 
+import Card from '@/components/Card.vue';
 import { ServiceAction } from '@/enums/controls';
 import { useApiClient } from '@/services/ApiClient';
-
-import { AxiosError } from 'axios';
-import { ServiceService } from '@iqrf/iqrf-gateway-webapp-client/services';
 import { useInstallStore } from '@/store/install';
 
 const i18n = useI18n();
@@ -61,7 +62,7 @@ const options = [
 	{
 		value: ServiceAction.Disable,
 		text: i18n.t('components.sshService.disable').toString(),
-	}
+	},
 ];
 
 function setServiceStatus(): void {

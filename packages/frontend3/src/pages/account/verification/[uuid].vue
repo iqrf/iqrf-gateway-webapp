@@ -14,7 +14,6 @@
 				:time='10_000'
 				@end='signIn'
 			>
-
 				{{ $t('core.account.verification.messages.redirect', {countdown: seconds}) }}
 			</vue-countdown>
 		</div>
@@ -32,16 +31,16 @@ meta:
 
 <script lang='ts' setup>
 import VueCountdown from '@chenfengyuan/vue-countdown';
-import { ErrorResponse, UserSignedIn } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { type ErrorResponse, type UserSignedIn } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { Head } from '@unhead/vue/components';
-import { AxiosError } from 'axios';
+import { type AxiosError } from 'axios';
 import { validate as uuidValidate, version as uuidVersion } from 'uuid';
-import { onMounted, ref, Ref } from 'vue';
+import { onMounted, ref, type Ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import Card from '@/components/Card.vue';
-import { useUserStore } from '@/store/user';
 import { useApiClient } from '@/services/ApiClient';
+import { useUserStore } from '@/store/user';
 
 const props = defineProps({
 	uuid: {

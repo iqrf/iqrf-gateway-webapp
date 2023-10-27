@@ -11,7 +11,7 @@
 			<v-toolbar-items v-if='$slots.titleActions'>
 				<slot name='titleActions' />
 			</v-toolbar-items>
-			<template #extension v-if='$slots.extension'>
+			<template v-if='$slots.extension' #extension>
 				<slot name='extension' />
 			</template>
 		</v-toolbar>
@@ -30,7 +30,7 @@ const props = defineProps({
 	headerColor: {
 		type: String,
 		default: 'primary',
-		required: false
+		required: false,
 	},
 	actionsColor: {
 		type: String,

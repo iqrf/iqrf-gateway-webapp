@@ -41,15 +41,13 @@
 </template>
 
 <script lang='ts' setup>
-import { ref, Ref } from 'vue';
+import { type SshKeyService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
+import { type SshKeyInfo } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
+import { mdiDelete } from '@mdi/js';
+import { ref, type Ref , type PropType } from 'vue';
 
 import Card from '@/components/Card.vue';
-
 import { getModalWidth } from '@/helpers/modal';
-import { mdiDelete } from '@mdi/js';
-import { PropType } from 'vue';
-import { SshKeyInfo } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
-import { SshKeyService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
 import { useApiClient } from '@/services/ApiClient';
 
 const emit = defineEmits(['refresh']);

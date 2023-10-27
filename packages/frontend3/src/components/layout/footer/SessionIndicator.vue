@@ -14,13 +14,13 @@
 </template>
 
 <script lang='ts' setup>
-import { computed, onMounted, ref, Ref } from 'vue';
+import { mdiTimerSand } from '@mdi/js';
 import { storeToRefs } from 'pinia';
-import { useUserStore } from '@/store/user';
+import { computed, onMounted, ref, type Ref , onBeforeUnmount } from 'vue';
 
 import TimeConverter from '@/helpers/TimeConverter';
-import { onBeforeUnmount } from 'vue';
-import { mdiTimerSand } from '@mdi/js';
+import { useUserStore } from '@/store/user';
+
 
 const userStore = useUserStore();
 const { getExpiration: expiration } = storeToRefs(userStore);

@@ -11,12 +11,12 @@
 			rounded
 		/>
 	</div>
-	<br v-if='!last' />
+	<br v-if='!last'>
 </template>
 
 <script lang='ts' setup>
-import { computed, PropType } from 'vue';
-import { FileSystemUsage } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
+import { type FileSystemUsage } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
+import { computed, type PropType } from 'vue';
 
 const props = defineProps({
 	usage: {
@@ -27,12 +27,12 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 		required: false,
-	}
+	},
 });
 
 const color = computed(() => {
 	const percentage = Number.parseFloat(
-		props.usage.usage.replace('%', '')
+		props.usage.usage.replace('%', ''),
 	);
 	if (percentage >= 90) {
 		return 'danger';

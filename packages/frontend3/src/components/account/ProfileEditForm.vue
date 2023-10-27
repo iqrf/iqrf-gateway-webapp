@@ -40,23 +40,24 @@
 </template>
 
 <script lang='ts' setup>
-import { UserEdit, UserInfo, UserLanguage, UserRole } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { AccountService } from '@iqrf/iqrf-gateway-webapp-client/services';
-import { onMounted, ref, Ref } from 'vue';
+import { type AccountService } from '@iqrf/iqrf-gateway-webapp-client/services';
+import { type UserEdit, type UserInfo, UserLanguage, UserRole } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { mdiAccount, mdiEmail, mdiTranslate } from '@mdi/js';
+import { type AxiosError } from 'axios';
+import { onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
-import { AxiosError } from 'axios';
 
-import { basicErrorToast } from '@/helpers/errorToast';
-import { useUserStore } from '@/store/user';
 import Card from '@/components/Card.vue';
 import SelectInput from '@/components/SelectInput.vue';
 import TextInput from '@/components/TextInput.vue';
-import ValidationRules from '@/helpers/ValidationRules';
-import { getLanguageOptions } from '@/helpers/userData';
-import { useApiClient } from '@/services/ApiClient';
+import { basicErrorToast } from '@/helpers/errorToast';
 import UrlBuilder from '@/helpers/urlBuilder';
-import { mdiAccount, mdiEmail, mdiTranslate } from '@mdi/js';
+import { getLanguageOptions } from '@/helpers/userData';
+import ValidationRules from '@/helpers/ValidationRules';
+import { useApiClient } from '@/services/ApiClient';
+import { useUserStore } from '@/store/user';
+
 
 const i18n = useI18n();
 const userStore = useUserStore();
@@ -87,7 +88,7 @@ async function onSubmit(): Promise<void> {
 	accountService.edit(user.value)
 		.then(() => {
 			toast.success(
-				i18n.t('account.profile.details.messages.success').toString()
+				i18n.t('account.profile.details.messages.success').toString(),
 			);
 			userStore.refreshUserInfo();
 		})

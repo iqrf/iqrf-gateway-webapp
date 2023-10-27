@@ -13,19 +13,19 @@
 </template>
 
 <script lang='ts' setup>
-import { computed, PropType } from 'vue';
-import { UsageBase } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
+import { type UsageBase } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
+import { computed, type PropType } from 'vue';
 
 const props = defineProps({
 	usage: {
 		type: Object as PropType<UsageBase>,
 		required: true,
-	}
+	},
 });
 
 const color = computed(() => {
 	const percentage = Number.parseFloat(
-		props.usage.usage.replace('%', '')
+		props.usage.usage.replace('%', ''),
 	);
 	if (percentage >= 90) {
 		return 'error';

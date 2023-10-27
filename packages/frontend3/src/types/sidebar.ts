@@ -1,5 +1,5 @@
-import {Feature, UserRole} from '@iqrf/iqrf-gateway-webapp-client/types';
-import { RouteLocationRaw } from 'vue-router';
+import { type Feature, type UserRole } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { type RouteLocationRaw } from 'vue-router';
 
 /**
  * Sidebar item

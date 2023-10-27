@@ -1,12 +1,12 @@
 import {
 	Feature,
-	InstallationCheckDependency,
-	InstallationCheckPhpMissingExtensions
+	type InstallationCheckDependency,
+	type InstallationCheckPhpMissingExtensions,
 } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { defineStore } from 'pinia';
+import { useRoute } from 'vue-router';
 
 import { useFeatureStore } from './features';
-import { useRoute } from 'vue-router';
 
 interface InstallState {
 	checked: boolean;
@@ -84,7 +84,7 @@ export const useInstallStore = defineStore('install', {
 				);
 			}
 			this.steps = steps;
-		}
+		},
 	},
 	getters: {
 		isChecked(): boolean {
@@ -113,6 +113,6 @@ export const useInstallStore = defineStore('install', {
 				return null;
 			}
 			return this.steps[step.index];
-		}
-	}
+		},
+	},
 });

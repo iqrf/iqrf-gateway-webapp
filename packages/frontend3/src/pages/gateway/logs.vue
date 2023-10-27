@@ -11,5 +11,6 @@ name: 'GatewayLogs'
 
 <script lang='ts' setup>
 import { Head } from '@unhead/vue/components';
+
 import LogViewer from '@/components/gateway/logs/LogViewer.vue';
 </script>

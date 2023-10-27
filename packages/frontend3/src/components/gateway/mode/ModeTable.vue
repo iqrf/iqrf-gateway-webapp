@@ -68,23 +68,23 @@
 </template>
 
 <script lang='ts' setup>
-import { DaemonApiResponse, DaemonMessageOptions, ManagementService } from '@iqrf/iqrf-gateway-daemon-utils';
+import { type DaemonApiResponse, DaemonMessageOptions, ManagementService } from '@iqrf/iqrf-gateway-daemon-utils';
 import { DaemonMode, ManagementMessages } from '@iqrf/iqrf-gateway-daemon-utils/enums';
-import { IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
+import { type IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import {
-	IqrfGatewayDaemonComponent,
+	type IqrfGatewayDaemonComponent,
 	IqrfGatewayDaemonComponentName,
-	IqrfGatewayDaemonIdeCounterpart,
+	type IqrfGatewayDaemonIdeCounterpart,
 	IqrfGatewayDaemonIdeCounterpartMode,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { mdiMenuDown } from '@mdi/js';
-import { onMounted, Ref, ref, watchEffect } from 'vue';
+import { onMounted, type Ref, ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import Card from '@/components/Card.vue';
-import { useDaemonStore } from '@/store/daemonSocket';
 import { useApiClient } from '@/services/ApiClient';
+import { useDaemonStore } from '@/store/daemonSocket';
 import { useMonitorStore } from '@/store/monitorSocket';
 
 const i18n = useI18n();
@@ -120,7 +120,7 @@ daemonStore.$onAction(
 				}
 			});
 		}
-	}
+	},
 );
 
 watchEffect(() => {
@@ -135,10 +135,10 @@ function setMode(mode: DaemonMode): void {
 		null,
 		5000,
 		'components.gateway.mode.messages.setTimeout',
-		() => {msgId.value = null;}
+		() => {msgId.value = null;},
 	);
 	daemonStore.sendMessage(
-		ManagementService.setMode(mode, options)
+		ManagementService.setMode(mode, options),
 	)
 		.then((val: string) => msgId.value = val);
 }
@@ -146,13 +146,13 @@ function setMode(mode: DaemonMode): void {
 function handleSetMode(rsp: DaemonApiResponse): void {
 	if (rsp.data.status !== 0) {
 		toast.error(
-			i18n.t('components.gateway.mode.message.setFailed')
+			i18n.t('components.gateway.mode.message.setFailed'),
 		);
 		return;
 	}
 	monitorStore.setMode(rsp.data.rsp.operMode);
 	toast.success(
-		i18n.t('components.gateway.mode.messages.setSuccess', {mode: rsp.data.rsp.operMode})
+		i18n.t('components.gateway.mode.messages.setSuccess', {mode: rsp.data.rsp.operMode}),
 	);
 }
 
@@ -164,7 +164,7 @@ async function getStartupMode(): Promise<void> {
 				inst.operMode = IqrfGatewayDaemonIdeCounterpartMode.Operational;
 			}
 			instance.value = inst;
-			startupMode.value = instance.value.operMode as IqrfGatewayDaemonIdeCounterpartMode;
+			startupMode.value = inst.operMode;
 		});
 }
 

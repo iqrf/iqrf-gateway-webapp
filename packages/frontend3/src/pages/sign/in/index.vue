@@ -13,5 +13,6 @@ meta:
 
 <script lang='ts' setup>
 import { Head } from '@unhead/vue/components';
+
 import SignInForm from '@/components/auth/SignInForm.vue';
 </script>

@@ -49,16 +49,17 @@
 </template>
 
 <script lang='ts' setup>
-import { Ref, ref } from 'vue';
-import Card from '@/components/Card.vue';
 import { mdiFolderDownloadOutline, mdiReload } from '@mdi/js';
+import { type Ref, ref } from 'vue';
+
+import Card from '@/components/Card.vue';
 
 const services = [
 	'Controller',
 	'Daemon',
 	'Setter',
 	'Uploader',
-	'Journal'
+	'Journal',
 ];
 const tab: Ref<string> = ref('Controller');
 </script>

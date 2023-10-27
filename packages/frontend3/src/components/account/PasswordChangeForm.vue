@@ -33,20 +33,21 @@
 </template>
 
 <script lang='ts' setup>
-import { UserPasswordChange } from '@iqrf/iqrf-gateway-webapp-client/types';
-import type { AxiosError } from 'axios';
-import { ref, Ref } from 'vue';
+import { type UserPasswordChange } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { mdiKey } from '@mdi/js';
+import  { type AxiosError } from 'axios';
+import { ref, type Ref } from 'vue';
 import { toast } from 'vue3-toastify';
 import {VForm} from 'vuetify/components';
-
-import ValidationRules from '@/helpers/ValidationRules';
 
 import Card from '@/components/Card.vue';
 import PasswordInput from '@/components/PasswordInput.vue';
 import UrlBuilder from '@/helpers/urlBuilder';
 import { validateForm } from '@/helpers/validateForm';
+import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
-import { mdiKey } from '@mdi/js';
+
+
 
 const form: Ref<typeof VForm | null> = ref(null);
 const passwordChange: Ref<UserPasswordChange> = ref<UserPasswordChange>({

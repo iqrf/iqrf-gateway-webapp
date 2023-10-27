@@ -14,19 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import * as proc from 'child_process';
+import {fileURLToPath, URL} from 'node:url';
+import path from 'path';
+
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite';
 import UnheadVite from '@unhead/addons/vite';
 import vue from '@vitejs/plugin-vue';
-import * as proc from 'child_process';
-import path from 'path';
-import {fileURLToPath, URL} from 'node:url';
 import {defineConfig, loadEnv} from 'vite';
 import {ViteEjsPlugin} from 'vite-plugin-ejs';
+import Pages from 'vite-plugin-pages';
+import VueDevTools from 'vite-plugin-vue-devtools';
+import Layouts from 'vite-plugin-vue-layouts';
 import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify';
 import svgLoader from 'vite-svg-loader';
-import VueDevTools from 'vite-plugin-vue-devtools';
-import Pages from 'vite-plugin-pages';
-import Layouts from 'vite-plugin-vue-layouts';
 
 const gitCommitHash = proc.execSync('git rev-parse --short HEAD').toString().trim();
 
@@ -51,7 +52,7 @@ export default defineConfig(({mode}) => {
 				autoImport: true,
 				styles: {
 					configFile: 'src/styles/vuetify-settings.scss',
-				}
+				},
 			}),
 			ViteEjsPlugin({
 				theme: env.VITE_THEME,

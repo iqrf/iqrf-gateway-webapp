@@ -8,9 +8,9 @@
 </template>
 
 <script lang='ts' setup>
-import { computed } from 'vue';
 import { AccountState } from '@iqrf/iqrf-gateway-webapp-client/types/User';
 import { mdiCheck, mdiHelp } from '@mdi/js';
+import { computed } from 'vue';
 
 interface Props {
 	state: AccountState
@@ -19,14 +19,14 @@ interface Props {
 const props = defineProps<Props>();
 
 const stateColor = computed(() => {
-	if (props.state == AccountState.Unverified) {
+	if (props.state === AccountState.Unverified) {
 		return 'orange';
 	}
 	return 'green';
 });
 
 const stateIcon = computed(() => {
-	if (props.state == AccountState.Unverified) {
+	if (props.state === AccountState.Unverified) {
 		return mdiHelp;
 	}
 	return mdiCheck;

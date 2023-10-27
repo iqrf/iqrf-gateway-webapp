@@ -3,7 +3,7 @@
 		<TheHeader />
 		<TheSidebar />
 		<v-main>
-			<UnverifiedEmailAlert  />
+			<UnverifiedEmailAlert />
 			<v-container fluid>
 				<router-view />
 			</v-container>

@@ -84,25 +84,23 @@
 </template>
 
 <script lang='ts' setup>
-import { PropType, ref, Ref, watchEffect } from 'vue';
+import { type SshKeyService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
+import { type SshKeyCreate } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
+import { SshKeyUtils } from '@iqrf/iqrf-gateway-webapp-client/utils';
+import { mdiPencil, mdiPlus } from '@mdi/js';
+import { type AxiosError } from 'axios';
+import { type PropType, ref, type Ref, watchEffect , computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { VForm } from 'vuetify/components';
+
 import Card from '@/components/Card.vue';
-
-import { FormAction } from '@/enums/controls';
-import { validateForm } from '@/helpers/validateForm';
-
-import { SshKeyCreate } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
-import { computed } from 'vue';
-import { mdiPencil, mdiPlus } from '@mdi/js';
 import TextInput from '@/components/TextInput.vue';
-import ValidationRules from '@/helpers/ValidationRules';
-import { SshKeyUtils } from '@iqrf/iqrf-gateway-webapp-client/utils';
-import { SshKeyService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
-import { useApiClient } from '@/services/ApiClient';
-import { AxiosError } from 'axios';
+import { FormAction } from '@/enums/controls';
 import { basicErrorToast } from '@/helpers/errorToast';
 import { getModalWidth } from '@/helpers/modal';
+import { validateForm } from '@/helpers/validateForm';
+import ValidationRules from '@/helpers/ValidationRules';
+import { useApiClient } from '@/services/ApiClient';
 
 const emit = defineEmits(['refresh']);
 const props = defineProps({

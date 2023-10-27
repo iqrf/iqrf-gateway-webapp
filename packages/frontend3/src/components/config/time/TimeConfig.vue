@@ -29,8 +29,8 @@
 						:items='timezones'
 						:label='$t("components.configuration.time.timezone")'
 						item-value='name'
-						:itemProps='(e) => itemProps(e as Timezone)'
-						returnObject
+						:item-props='(e) => itemProps(e as Timezone)'
+						return-object
 					/>
 					<v-checkbox
 						v-model='timeSet.ntpSync'
@@ -112,19 +112,20 @@
 </template>
 
 <script lang='ts' setup>
-import { Ref, computed, ref } from 'vue';
-import Card from '@/components/Card.vue';
+import { type TimeService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway/TimeService';
+import { type TimeConfig, type TimeSet, type Timezone } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
 import { mdiDelete, mdiReload } from '@mdi/js';
-import { TimeService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway/TimeService';
-import { TimeConfig, TimeSet, Timezone } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
-import { useApiClient } from '@/services/ApiClient';
-import { onMounted } from 'vue';
-import DataTable from '@/components/DataTable.vue';
-import NtpServerForm from '@/components/config/time/NtpServerForm.vue';
-import { useI18n } from 'vue-i18n';
-import { FormAction } from '@/enums/controls';
 import { DateTime } from 'luxon';
+import { onMounted } from 'vue';
+import { type Ref, computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
+
+import Card from '@/components/Card.vue';
+import NtpServerForm from '@/components/config/time/NtpServerForm.vue';
+import DataTable from '@/components/DataTable.vue';
+import { FormAction } from '@/enums/controls';
+import { useApiClient } from '@/services/ApiClient';
 import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
@@ -178,14 +179,14 @@ async function onSubmit(): Promise<void> {
 		delete params.datetime;
 	} else {
 		delete params.ntpServers;
-		const luxonDate = DateTime.fromJSDate(datetime.value, {zone: (timezone.value.name as string)});
-		params.datetime = luxonDate.toISO() as string;
+		const luxonDate = DateTime.fromJSDate(datetime.value, {zone: (timezone.value.name)});
+		params.datetime = luxonDate.toISO()!;
 	}
 	service.setTime(params)
 		.then(() => {
 			getTime().then(() => {
 				toast.success(
-					i18n.t('components.configuration.time.messages.save.success')
+					i18n.t('components.configuration.time.messages.save.success'),
 				);
 			});
 		})

@@ -1,8 +1,8 @@
 <template>
 	<v-form
 		ref='form'
-		@submit.prevent='onSubmit'
 		:disabled='loading || !configuration.enabled'
+		@submit.prevent='onSubmit'
 	>
 		<Card v-if='install'>
 			<template #title>
@@ -80,21 +80,20 @@
 </template>
 
 <script lang='ts' setup>
-import { MailerConfig, MailerGetConfigResponse } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { MailerService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
-import { AxiosError } from 'axios';
-import { computed, onMounted, ref, Ref } from 'vue';
+import { type MailerService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
+import { type MailerConfig, type MailerGetConfigResponse } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import { type AxiosError } from 'axios';
+import { computed, onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
 import Card from '@/components/Card.vue';
-
-import { basicErrorToast } from '@/helpers/errorToast';
-import { useApiClient } from '@/services/ApiClient';
-import { validateForm } from '@/helpers/validateForm';
 import SmtpFormElements from '@/components/config/smtp/SmtpFormElements.vue';
+import { basicErrorToast } from '@/helpers/errorToast';
+import { validateForm } from '@/helpers/validateForm';
 import router from '@/router';
+import { useApiClient } from '@/services/ApiClient';
 import { useInstallStore } from '@/store/install';
 
 const installStore = useInstallStore();
@@ -155,7 +154,7 @@ async function onSubmit(): Promise<void> {
 		.then(() => {
 			loading.value = false;
 			toast.success(
-				i18n.t('configuration.smtp.messages.saveSuccess')
+				i18n.t('configuration.smtp.messages.saveSuccess'),
 			);
 			if (props.install) {
 				toNextStep();
@@ -176,7 +175,7 @@ async function testConfiguration(): Promise<void> {
 		.then(() => {
 			loading.value = false;
 			toast.success(
-				i18n.t('configuration.smtp.messages.testSuccess')
+				i18n.t('configuration.smtp.messages.testSuccess'),
 			);
 		})
 		.catch((error: AxiosError) => {
