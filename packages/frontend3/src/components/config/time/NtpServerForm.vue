@@ -78,31 +78,31 @@ interface Props {
 }
 
 const emit = defineEmits(['save']);
-const props = defineProps<Props>();
+const componentProps = defineProps<Props>();
 const show: Ref<boolean> = ref(false);
 const width = getModalWidth();
 const form: Ref<typeof VForm | null> = ref(null);
 const ntpServer: Ref<string> = ref('');
 
 watchEffect(async (): Promise<void> => {
-	if (props.action === FormAction.Add) {
+	if (componentProps.action === FormAction.Add) {
 		ntpServer.value = '';
 	} else {
-		if (props.server !== undefined) {
-			ntpServer.value = props.server;
+		if (componentProps.server !== undefined) {
+			ntpServer.value = componentProps.server;
 		}
 	}
 });
 
 function activatorIcon(): string {
-	if (props.action === FormAction.Add) {
+	if (componentProps.action === FormAction.Add) {
 		return mdiPlus;
 	}
 	return mdiPencil;
 }
 
 function iconColor(): string {
-	if (props.action === FormAction.Add) {
+	if (componentProps.action === FormAction.Add) {
 		return 'white';
 	}
 	return 'info';
@@ -113,7 +113,7 @@ async function onSubmit(): Promise<void> {
 		return;
 	}
 	close();
-	emit('save', props.index, ntpServer.value);
+	emit('save', componentProps.index, ntpServer.value);
 	ntpServer.value = '';
 }
 

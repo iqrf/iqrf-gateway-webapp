@@ -39,16 +39,16 @@
 						{{ $t('components.accessControl.sshKeys.supported') }}
 						<ul>
 							<li
-								v-for='key of keyTypes'
-								:key='key'
+								v-for='keyType of keyTypes'
+								:key='keyType'
 							>
-								{{ key }}
+								{{ keyType }}
 							</li>
 						</ul>
 					</span>
 				</v-alert>
 				<TextInput
-					v-model='key.key'
+					v-model='localKey.key'
 					label='SSH key'
 					:rules='[
 						(v: string|null) => ValidationRules.required(v, "waaaah need key"),
@@ -58,7 +58,7 @@
 					@change='updateDescription'
 				/>
 				<TextInput
-					v-model='key.description'
+					v-model='localKey.description'
 					label='Description'
 				/>
 				<template #actions>
@@ -103,7 +103,7 @@ import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
 
 const emit = defineEmits(['refresh']);
-const props = defineProps({
+const componentProps = defineProps({
 	install: {
 		type: Boolean,
 		default: false,
@@ -116,6 +116,11 @@ const props = defineProps({
 	},
 	sshKey: {
 		type: Object as PropType<SshKeyCreate>,
+		default: () => ({
+			key: '',
+			description: '',
+		}),
+		required: false,
 	},
 	keyTypes: {
 		type: Array as PropType<string[]>,
@@ -131,43 +136,43 @@ const defaultKey: SshKeyCreate = {
 	key: '',
 	description: '',
 };
-const key: Ref<SshKeyCreate> = ref(defaultKey);
+const localKey: Ref<SshKeyCreate> = ref(defaultKey);
 const service: SshKeyService = useApiClient().getGatewayServices().getSshKeyService();
 
 const iconColor = computed(() => {
-	if (props.action === FormAction.Add) {
+	if (componentProps.action === FormAction.Add) {
 		return 'white';
 	}
 	return 'info';
 });
 const activatorIcon = computed(() => {
-	if (props.action === FormAction.Add) {
+	if (componentProps.action === FormAction.Add) {
 		return mdiPlus;
 	}
 	return mdiPencil;
 });
 const dialogTitle = computed(() => {
-	if (props.action === FormAction.Add) {
+	if (componentProps.action === FormAction.Add) {
 		return i18n.t('components.accessControl.sshKeys.form.addTitle').toString();
 	}
 	return i18n.t('components.accessControl.sshKeys.form.editTitle').toString();
 });
 
 watchEffect(async(): Promise<void> => {
-	if (props.action === FormAction.Add) {
-		key.value = {...defaultKey};
-	} else if (props.action === FormAction.Edit) {
-		if (props.sshKey) {
-			key.value = {...props.sshKey};
+	if (componentProps.action === FormAction.Add) {
+		localKey.value = {...defaultKey};
+	} else if (componentProps.action === FormAction.Edit) {
+		if (componentProps.sshKey) {
+			localKey.value = {...componentProps.sshKey};
 		} else {
-			key.value = {...defaultKey};
+			localKey.value = {...defaultKey};
 		}
 	}
 });
 
 function validateKey(key: string): boolean|string {
 	try {
-		SshKeyUtils.validatePublicKey(key, props.keyTypes);
+		SshKeyUtils.validatePublicKey(key, componentProps.keyTypes);
 		return true;
 	} catch (e) {
 		return (e as Error).message;
@@ -178,7 +183,7 @@ async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
 	}
-	service.createSshKeys([key.value])
+	service.createSshKeys([localKey.value])
 		.then(() => {
 			close();
 			emit('refresh');
@@ -187,12 +192,12 @@ async function onSubmit(): Promise<void> {
 }
 
 function updateDescription(): void {
-	key.value.description = key.value.key.split(' ').slice(2).join(' ');
+	localKey.value.description = localKey.value.key.split(' ').slice(2).join(' ');
 }
 
 function close(): void {
 	show.value = false;
-	key.value = {...defaultKey};
+	localKey.value = {...defaultKey};
 }
 
 </script>

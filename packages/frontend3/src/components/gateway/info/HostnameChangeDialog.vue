@@ -84,7 +84,7 @@ import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
 
 const emit = defineEmits(['saved']);
-const props = defineProps({
+const componentProps = defineProps({
 	currentHostname: {
 		type: [String, null] as PropType<string | null>,
 		required: true,
@@ -103,10 +103,10 @@ const ideComponentComponent = IqrfGatewayDaemonComponentName.IqrfIdeCounterpart;
 const splitterComponent = IqrfGatewayDaemonComponentName.IqrfJsonSplitter;
 
 watchEffect((): void => {
-	if (props.currentHostname === null) {
+	if (componentProps.currentHostname === null) {
 		hostname.value = '';
 	} else {
-		hostname.value = props.currentHostname.split('.', 1)[0] ?? '';
+		hostname.value = componentProps.currentHostname.split('.', 1)[0] ?? '';
 	}
 });
 

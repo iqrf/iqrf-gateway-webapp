@@ -45,6 +45,7 @@ import { type ApiKeyService } from '@iqrf/iqrf-gateway-webapp-client/services';
 import { type ApiKeyInfo } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { mdiDelete } from '@mdi/js';
 import { ref, type Ref , type PropType } from 'vue';
+import { toast } from 'vue3-toastify';
 
 import Card from '@/components/Card.vue';
 import { getModalWidth } from '@/helpers/modal';
@@ -52,7 +53,7 @@ import { useApiClient } from '@/services/ApiClient';
 
 
 const emit = defineEmits(['refresh']);
-const props = defineProps({
+const componentProps = defineProps({
 	apiKey: {
 		type: Object as PropType<ApiKeyInfo>,
 		required: true,
@@ -63,12 +64,12 @@ const width = getModalWidth();
 const service: ApiKeyService = useApiClient().getApiKeyService();
 
 async function onSubmit(): Promise<void> {
-	service.delete(props.apiKey.id!)
+	service.delete(componentProps.apiKey.id!)
 		.then(() => {
 			close();
 			emit('refresh');
 		})
-		.catch(() => {});
+		.catch(() => toast.error('TODO ERROR HANDLING'));
 }
 
 function close(): void {
