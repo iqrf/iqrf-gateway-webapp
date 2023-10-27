@@ -96,5 +96,15 @@ export default defineConfig(({mode}) => {
 				'.vue',
 			],
 		},
+		test: {
+			coverage: {
+				provider: 'istanbul',
+				reporter: ['text', 'html', 'clover'],
+			},
+			outputFile: {
+				junit: 'junit.xml',
+			},
+			reporters: ['default', 'junit'],
+		},
 	};
 });
