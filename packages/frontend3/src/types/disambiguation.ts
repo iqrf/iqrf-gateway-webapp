@@ -1,4 +1,4 @@
-import { UserRole } from '@iqrf/iqrf-gateway-webapp-client/types';
+import {Feature, UserRole} from '@iqrf/iqrf-gateway-webapp-client/types';
 
 /**
  * Link taget enum
@@ -21,7 +21,7 @@ export interface DisambiguationLink {
 	/// Link external location
 	href?: string;
 	/// Feature
-	feature?: string;
+	feature?: Feature;
 	/// Roles
 	roles?: UserRole[];
 	/// Link target

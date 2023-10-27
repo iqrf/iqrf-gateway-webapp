@@ -19,7 +19,8 @@
 						<strong>{{ $t('components.gateway.information.os') }}</strong>
 					</td>
 					<td>
-						<a :href='info?.os.homePage'>{{ info?.os.name }}</a>
+						<a v-if='info?.os.homePage !== null' :href='info?.os.homePage'>{{ info?.os.name }}</a>
+						<span v-else>{{ info?.os.name }}</span>
 					</td>
 				</tr>
 				<tr v-if='info?.gwId'>

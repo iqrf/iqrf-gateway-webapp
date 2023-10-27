@@ -1,15 +1,19 @@
 import { Client } from '@iqrf/iqrf-gateway-webapp-client';
-import { FeatureConfig, Features } from '@iqrf/iqrf-gateway-webapp-client/types';
+import {
+	Feature,
+	FeatureConfig,
+	Features
+} from '@iqrf/iqrf-gateway-webapp-client/types';
 import { defineStore } from 'pinia';
 import UrlBuilder from '@/helpers/urlBuilder';
 
 interface FeatureState {
-	features: Features;
+	features: Features|null;
 }
 
 export const useFeatureStore = defineStore('features', {
 	state: (): FeatureState => ({
-		features: {},
+		features: null,
 	}),
 	actions: {
 		async fetch(): Promise<void> {
@@ -24,14 +28,20 @@ export const useFeatureStore = defineStore('features', {
 		}
 	},
 	getters: {
-		isEnabled: (state: FeatureState) => (name: string): boolean|undefined => {
+		isEnabled: (state: FeatureState) => (name: Feature): boolean|undefined => {
+			if (state.features === null) {
+				return undefined;
+			}
 			try {
 				return state.features[name].enabled;
 			} catch (e) {
 				return undefined;
 			}
 		},
-		getConfiguration: (state: FeatureState) => (name: string): FeatureConfig|undefined => {
+		getConfiguration: (state: FeatureState) => (name: Feature): FeatureConfig|undefined => {
+			if (state.features === null) {
+				return undefined;
+			}
 			try {
 				return state.features[name];
 			} catch (e) {

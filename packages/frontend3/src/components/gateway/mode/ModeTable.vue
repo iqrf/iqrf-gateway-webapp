@@ -68,21 +68,24 @@
 </template>
 
 <script lang='ts' setup>
-import { Ref, ref } from 'vue';
-import Card from '@/components/Card.vue';
-import { IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
-import { IqrfGatewayDaemonIdeCounterpart, IqrfGatewayDaemonIdeCounterpartMode } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { DaemonMode, ManagementMessages } from '@iqrf/iqrf-gateway-daemon-utils/enums';
-import { mdiMenuDown } from '@mdi/js';
-import { useDaemonStore } from '@/store/daemonSocket';
-import { onMounted } from 'vue';
-import { useApiClient } from '@/services/ApiClient';
-import { AxiosResponse } from 'axios';
 import { DaemonApiResponse, DaemonMessageOptions, ManagementService } from '@iqrf/iqrf-gateway-daemon-utils';
-import { useMonitorStore } from '@/store/monitorSocket';
-import { watchEffect } from 'vue';
-import { toast } from 'vue3-toastify';
+import { DaemonMode, ManagementMessages } from '@iqrf/iqrf-gateway-daemon-utils/enums';
+import { IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
+import {
+	IqrfGatewayDaemonComponent,
+	IqrfGatewayDaemonComponentName,
+	IqrfGatewayDaemonIdeCounterpart,
+	IqrfGatewayDaemonIdeCounterpartMode,
+} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import { mdiMenuDown } from '@mdi/js';
+import { onMounted, Ref, ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { toast } from 'vue3-toastify';
+
+import Card from '@/components/Card.vue';
+import { useDaemonStore } from '@/store/daemonSocket';
+import { useApiClient } from '@/services/ApiClient';
+import { useMonitorStore } from '@/store/monitorSocket';
 
 const i18n = useI18n();
 const daemonStore = useDaemonStore();
@@ -101,7 +104,7 @@ const startupModeOptions = [
 ];
 const currentMode: Ref<DaemonMode> = ref(DaemonMode.Unknown);
 const startupMode: Ref<IqrfGatewayDaemonIdeCounterpartMode> = ref(IqrfGatewayDaemonIdeCounterpartMode.Operational);
-const componentName: string = 'iqrf::IdeCounterpart';
+const componentName: IqrfGatewayDaemonComponentName = IqrfGatewayDaemonComponentName.IqrfIdeCounterpart;
 const instance: Ref<IqrfGatewayDaemonIdeCounterpart | null> = ref(null);
 
 daemonStore.$onAction(
@@ -155,8 +158,8 @@ function handleSetMode(rsp: DaemonApiResponse): void {
 
 async function getStartupMode(): Promise<void> {
 	daemonConfigService.getComponent(componentName)
-		.then((rsp: AxiosResponse) => {
-			const inst: IqrfGatewayDaemonIdeCounterpart = (rsp.data.instances as IqrfGatewayDaemonIdeCounterpart[])[0];
+		.then((response: IqrfGatewayDaemonComponent<IqrfGatewayDaemonComponentName.IqrfIdeCounterpart>) => {
+			const inst: IqrfGatewayDaemonIdeCounterpart = response.instances[0];
 			if (inst.operMode === undefined) {
 				inst.operMode = IqrfGatewayDaemonIdeCounterpartMode.Operational;
 			}
@@ -169,8 +172,10 @@ function setStartupMode(mode: IqrfGatewayDaemonIdeCounterpartMode): void {
 	if (instance.value === null || instance.value.operMode === mode) {
 		return;
 	}
-	const configuration = {...instance.value};
-	configuration.operMode = mode;
+	const configuration: IqrfGatewayDaemonIdeCounterpart = {
+		...instance.value,
+		operMode: mode,
+	};
 	daemonConfigService.updateInstance(componentName, configuration.instance, configuration)
 		.then(() => {
 			getStartupMode().then(() => {

@@ -29,8 +29,10 @@
 	"include": [
 		"src/**/*.ts",
 		"src/**/*.d.ts",
-		"src/**/*.tsx",
-		"src/**/*.vue"
+		"src/**/*.vue",
+		".eslintrc.cjs",
+		"vite.config.ts",
+		"vue-i18n-extract.config.js"
 	],
 	"exclude": [
 		"dist",

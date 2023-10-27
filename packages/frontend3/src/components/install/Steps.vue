@@ -26,8 +26,8 @@
 
 <script lang='ts' setup>
 import { useInstallStore } from '@/store/install';
-import { useDisplay } from 'vuetify/lib/framework.mjs';
 import { storeToRefs } from 'pinia';
+import { useDisplay } from 'vuetify';
 
 const display = useDisplay();
 const installStore = useInstallStore();
