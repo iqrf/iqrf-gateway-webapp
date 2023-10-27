@@ -138,12 +138,12 @@ export interface MailerHeaders {
 export interface MailerGetConfigResponse {
 
 	/**
-	 * Mailer headers
-	 */
-	headers: MailerHeaders | null;
-
-	/**
 	 * Mailer configuration
 	 */
 	config: MailerConfig;
+
+	/**
+	 * Mailer headers
+	 */
+	headers: MailerHeaders | null;
 }

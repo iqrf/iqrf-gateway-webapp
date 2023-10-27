@@ -1,4 +1,8 @@
-import { InstallationCheckDependency, InstallationCheckPhpMissingExtensions } from '@iqrf/iqrf-gateway-webapp-client/types';
+import {
+	Feature,
+	InstallationCheckDependency,
+	InstallationCheckPhpMissingExtensions
+} from '@iqrf/iqrf-gateway-webapp-client/types';
 import { defineStore } from 'pinia';
 
 import { useFeatureStore } from './features';
@@ -58,14 +62,14 @@ export const useInstallStore = defineStore('install', {
 					title: 'install.steps.smtp',
 				},
 			];
-			if (featureStore.isEnabled('gatewayPass')) {
+			if (featureStore.isEnabled(Feature.gatewayPassword)) {
 				steps.push({
 					index: steps.length + 1,
 					route: 'InstallGwUser',
 					title: 'install.steps.gatewayUser',
 				});
 			}
-			if (featureStore.isEnabled('ssh')) {
+			if (featureStore.isEnabled(Feature.ssh)) {
 				steps.push(
 					{
 						index: steps.length + 1,
@@ -97,14 +101,14 @@ export const useInstallStore = defineStore('install', {
 			if (route === undefined) {
 				return null;
 			}
-			const step = this.steps.find((item: InstallStep) => item.route === route.name);
+			const step = this.steps.find((item: InstallStep): boolean => item.route === route.name);
 			if (step === undefined) {
 				return null;
 			}
 			return step;
 		},
 		getNextStep(): InstallStep|null {
-			const step = this.getCurrentStep;
+			const step: InstallStep|null = this.getCurrentStep;
 			if (step === null || step.index >= this.steps.length) {
 				return null;
 			}

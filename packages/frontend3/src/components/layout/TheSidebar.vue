@@ -18,7 +18,7 @@
 </template>
 
 <script lang='ts' setup>
-import { UserRole } from '@iqrf/iqrf-gateway-webapp-client/types';
+import {Feature, UserRole} from '@iqrf/iqrf-gateway-webapp-client/types';
 import SidebarItems from '@/components/layout/sidebar/SidebarItems.vue';
 import { storeToRefs } from 'pinia';
 import { useI18n } from 'vue-i18n';
@@ -169,9 +169,9 @@ function items(): SidebarLink[] {
 	}
 	links.push({
 		title: i18n.t('docs.title'),
-		href: featureStore.getConfiguration('docs')?.url,
+		href: featureStore.getConfiguration(Feature.docs)?.url,
 		icon: mdiBook,
-		feature: 'docs',
+		feature: Feature.docs,
 		to: '',
 	});
 	return links.filter((item: SidebarLink) => filter(item));

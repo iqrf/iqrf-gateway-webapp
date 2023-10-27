@@ -30,10 +30,10 @@ export interface TimeConfig {
 	gmtOffsetSec: number;
 	/// Local timestamp
 	localTimestamp: number;
-	/// NTP synchronization enabled
-	ntpSync: boolean;
 	/// NTP synchronization servers
 	ntpServers: string[];
+	/// NTP synchronization enabled
+	ntpSync: boolean;
 	/// UTC timestamp
 	utcTimestamp: number;
 	/// Time zone name

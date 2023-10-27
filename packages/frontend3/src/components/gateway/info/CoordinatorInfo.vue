@@ -25,21 +25,21 @@ limitations under the License.
 	<span v-else>
 		<div v-if='loaded' class='py-2'>
 			<strong>{{ $t('components.gateway.information.tr.moduleType') }}: </strong>
-			{{ trMcuType.trType }}<br>
+			{{ trMcuType!.trType }}<br>
 			<strong>{{ $t('components.gateway.information.tr.mcuType') }}: </strong>
-			{{ trMcuType.mcuType }}<br>
+			{{ trMcuType!.mcuType }}<br>
 			<strong>{{ $t('components.gateway.information.tr.moduleId') }}: </strong>
-			{{ osRead.mid }}<br>
+			{{ osRead!.mid }}<br>
 			<strong>{{ $t('components.gateway.information.tr.os') }}: </strong>
-			{{ osRead.osVersion }} ({{ osRead.osBuild }})<br>
+			{{ osRead!.osVersion }} ({{ osRead!.osBuild }})<br>
 			<strong>{{ $t('components.gateway.information.tr.dpa') }}: </strong>
-			{{ enumeration.dpaVer }}<br>
+			{{ enumeration!.dpaVer }}<br>
 			<strong>{{ $t('components.gateway.information.tr.hwpid') }}: </strong>
-			{{ enumeration.hwpId }} ({{ enumeration.hwpId.toString(16).padStart(4, '0') }})<br>
+			{{ enumeration!.hwpId }} ({{ enumeration!.hwpId.toString(16).padStart(4, '0') }})<br>
 			<strong>{{ $t('components.gateway.information.tr.hwpidVersion') }}: </strong>
-			{{ enumeration.hwpIdVer }}<br>
+			{{ enumeration!.hwpIdVer }}<br>
 			<strong>{{ $t('components.gateway.information.tr.voltage') }}: </strong>
-			{{ osRead.supplyVoltage }}<br>
+			{{ osRead!.supplyVoltage }}<br>
 		</div>
 		<span v-else>
 			{{ $t('components.gateway.information.tr.error') }}

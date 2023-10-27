@@ -17,7 +17,11 @@
 import type { AxiosResponse } from 'axios';
 
 import { BaseService } from '../BaseService';
-import { IqrfGatewayDaemonComponent } from 'src/types/Config';
+import {
+	type IqrfGatewayDaemonComponent,
+	type IqrfGatewayDaemonComponentInstanceConfiguration,
+	type IqrfGatewayDaemonComponentName,
+} from '../../types/Config';
 
 /**
  * IQRF Gateway Daemon configuration service
@@ -26,21 +30,29 @@ export class IqrfGatewayDaemonService extends BaseService {
 
 	/**
 	 * Retrieves IQRF Gateway Daemon component configuration and instances
-	 * @param {string} component Component name
-	 * @return {Promise<AxiosResponse>} IQRF Gateway Daemon component configuration with instances
+	 * @template C Component name
+	 * @param {C} component Component name
+	 * @return {Promise<IqrfGatewayDaemonComponent<C>>} IQRF Gateway Daemon component configuration with instances
 	 */
-	public getComponent(component: string): Promise<IqrfGatewayDaemonComponent> {
+	public getComponent<C extends IqrfGatewayDaemonComponentName>(
+		component: C,
+	): Promise<IqrfGatewayDaemonComponent<C>> {
 		return this.axiosInstance.get(`/config/daemon/${encodeURIComponent(component)}`)
-			.then((response: AxiosResponse<IqrfGatewayDaemonComponent>): IqrfGatewayDaemonComponent => response.data);
+			.then((response: AxiosResponse<IqrfGatewayDaemonComponent<C>>): IqrfGatewayDaemonComponent<C> => response.data);
 	}
 
 	/**
 	 * Updates the component instance configuration
-	 * @param {string} component Daemon component name
+	 * @template C Component name
+	 * @param {C} component Daemon component name
 	 * @param {string} instance Daemon component instance name
-	 * @param {Record<string, any>} configuration Daemon component instance configuration
+	 * @param {IqrfGatewayDaemonComponentInstanceConfiguration<C>} configuration Daemon component instance configuration
 	 */
-	public updateInstance(component: string, instance: string, configuration: Record<string, any>): Promise<void> {
+	public updateInstance<C extends IqrfGatewayDaemonComponentName>(
+		component: C,
+		instance: string,
+		configuration: IqrfGatewayDaemonComponentInstanceConfiguration<C>,
+	): Promise<void> {
 		return this.axiosInstance.put(`/config/daemon/${encodeURIComponent(component)}/${encodeURIComponent(instance)}`, configuration)
 			.then((): void => {return;});
 	}

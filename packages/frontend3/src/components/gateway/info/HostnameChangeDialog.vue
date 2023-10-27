@@ -62,23 +62,26 @@
 </template>
 
 <script lang='ts' setup>
+import { IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
+import { HostnameService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
+import {
+	IqrfGatewayDaemonComponent,
+	IqrfGatewayDaemonComponentName,
+	IqrfGatewayDaemonIdeCounterpart,
+	IqrfGatewayDaemonJsonSplitter,
+} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import { mdiPencil } from '@mdi/js';
 import { PropType, ref, Ref, watchEffect } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { VForm } from 'vuetify/components';
+import { toast } from 'vue3-toastify';
 
 import Card from '@/components/Card.vue';
 import TextInput from '@/components/TextInput.vue';
-
-import { mdiPencil } from '@mdi/js';
 import { getModalWidth } from '@/helpers/modal';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
-import { HostnameService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
 import { useApiClient } from '@/services/ApiClient';
-import { toast } from 'vue3-toastify';
-import { useI18n } from 'vue-i18n';
-import { IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
-import { AxiosResponse } from 'axios';
-import { IqrfGatewayDaemonComponent, IqrfGatewayDaemonIdeCounterpart, IqrfGatewayDaemonJsonSplitter } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 
 const emit = defineEmits(['saved']);
 const props = defineProps({
@@ -96,8 +99,8 @@ const form: Ref<typeof VForm | null> = ref(null);
 const hostname: Ref<string> = ref('');
 const setSplitterId: Ref<boolean> = ref(false);
 const setIdeHostname: Ref<boolean> = ref(false);
-const ideComponentComponent = 'iqrf::IdeCounterpart';
-const splitterComponent = 'iqrf::JsonSplitter';
+const ideComponentComponent = IqrfGatewayDaemonComponentName.IqrfIdeCounterpart;
+const splitterComponent = IqrfGatewayDaemonComponentName.IqrfJsonSplitter;
 
 watchEffect((): void => {
 	if (props.currentHostname === null) {
@@ -138,8 +141,9 @@ async function updateSplitterConfig(): Promise<void> {
 	if (!setSplitterId.value) {
 		return;
 	}
-	const instance: IqrfGatewayDaemonJsonSplitter = await daemonConfigurationService.getComponent(splitterComponent)
-		.then((response: IqrfGatewayDaemonComponent) => (response.instances as IqrfGatewayDaemonJsonSplitter[])[0] ?? null);
+	const instance: IqrfGatewayDaemonJsonSplitter|null = await daemonConfigurationService.getComponent(splitterComponent)
+		.then((response: IqrfGatewayDaemonComponent<IqrfGatewayDaemonComponentName.IqrfJsonSplitter>): IqrfGatewayDaemonJsonSplitter|null =>
+			(response.instances[0] ?? null));
 	if (instance === null) {
 		return;
 	}
@@ -151,8 +155,9 @@ async function updateIdeCounterpartConfig(): Promise<void> {
 	if (!setIdeHostname.value) {
 		return;
 	}
-	const instance: IqrfGatewayDaemonIdeCounterpart = await daemonConfigurationService.getComponent(ideComponentComponent)
-		.then((response: IqrfGatewayDaemonComponent) => (response.instances as IqrfGatewayDaemonIdeCounterpart[])[0] ?? null);
+	const instance: IqrfGatewayDaemonIdeCounterpart|null = await daemonConfigurationService.getComponent(ideComponentComponent)
+		.then((response: IqrfGatewayDaemonComponent<IqrfGatewayDaemonComponentName.IqrfIdeCounterpart>): IqrfGatewayDaemonIdeCounterpart|null =>
+			(response.instances[0] ?? null));
 	if (instance === null) {
 		return;
 	}

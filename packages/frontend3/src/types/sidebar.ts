@@ -1,4 +1,4 @@
-import { UserRole } from '@iqrf/iqrf-gateway-webapp-client/types';
+import {Feature, UserRole} from '@iqrf/iqrf-gateway-webapp-client/types';
 import { RouteLocationRaw } from 'vue-router';
 
 /**
@@ -22,5 +22,5 @@ export interface SidebarLink {
 	/// User roles
 	roles?: UserRole[];
 	/// Feature enabled
-	feature?: string;
+	feature?: Feature;
 }
