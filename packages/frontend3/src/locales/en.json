@@ -219,9 +219,6 @@
 			"set": "Locale changed to: {locale}."
 		}
 	},
-	"docs": {
-		"title": "Documentation"
-	},
 	"errors": {
 		"404": {
 			"title": "Page not found",
@@ -847,6 +844,10 @@
 				"title": "SSH keys",
 				"description": "Manage SSH keys."
 			}
+		},
+		"docs": {
+			"title": "Documentation",
+			"description": "Opens documentation in a new tab."
 		}
 	}
 }

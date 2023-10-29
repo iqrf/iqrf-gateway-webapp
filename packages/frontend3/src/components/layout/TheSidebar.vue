@@ -176,7 +176,7 @@ function items(): SidebarLink[] {
 		];
 	}
 	links.push({
-		title: i18n.t('docs.title'),
+		title: i18n.t('pages.docs.title'),
 		href: featureStore.getConfiguration(Feature.docs)?.url,
 		icon: mdiBook,
 		feature: Feature.docs,
