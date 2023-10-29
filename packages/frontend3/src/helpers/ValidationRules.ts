@@ -28,7 +28,10 @@ export default class ValidationRules {
 	 * @return {boolean|string} Validation result
 	 */
 	public static requiredIf(value: unknown, condition: boolean, error: string): boolean | string {
-		return !condition || !!ValidationRules.required(value, error);
+		if (!condition) {
+			return true;
+		}
+		return ValidationRules.required(value, error);
 	}
 
 	/**
