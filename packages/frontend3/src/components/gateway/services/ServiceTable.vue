@@ -82,6 +82,21 @@
 						color='primary'
 						size='large'
 						class='me-1'
+						:icon='mdiRestart'
+						@click='restartService(item.name, index)'
+					/>
+					<v-tooltip
+						activator='parent'
+						location='bottom'
+					>
+						{{ $t('components.gateway.services.actions.restart') }}
+					</v-tooltip>
+				</span>
+				<span>
+					<v-icon
+						color='primary'
+						size='large'
+						class='me-1'
 						:icon='mdiReload'
 						@click='refreshService(item.name, index)'
 					/>
@@ -121,7 +136,7 @@
 <script lang='ts' setup>
 import { type ServiceService } from '@iqrf/iqrf-gateway-webapp-client/services';
 import { type ServiceState, type ServiceStatus } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { mdiCheckCircle, mdiCloseCircle, mdiInformation, mdiPlay, mdiPlayCircleOutline, mdiReload, mdiStop, mdiStopCircleOutline } from '@mdi/js';
+import { mdiCheckCircle, mdiCloseCircle, mdiInformation, mdiPlay, mdiPlayCircleOutline, mdiReload, mdiRestart, mdiStop, mdiStopCircleOutline } from '@mdi/js';
 import { onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -175,6 +190,12 @@ function startService(name: string, index: number): void {
 function stopService(name: string, index: number): void {
 	state.value = ComponentState.Loading;
 	service.stop(name)
+		.then(() => refreshService(name, index));
+}
+
+function restartService(name: string, index: number): void {
+	state.value = ComponentState.Loading;
+	service.restart(name)
 		.then(() => refreshService(name, index));
 }
 
