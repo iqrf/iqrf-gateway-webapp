@@ -18,7 +18,7 @@
 </template>
 
 <script lang='ts' setup>
-import {Feature, UserRole} from '@iqrf/iqrf-gateway-webapp-client/types';
+import { Feature, UserRole } from '@iqrf/iqrf-gateway-webapp-client/types';
 import {
 	mdiAccountGroup,
 	mdiAccountKey,
@@ -31,6 +31,7 @@ import {
 	mdiDesktopTower,
 	mdiEmailEdit,
 	mdiInformationOutline,
+	mdiLedOff,
 	mdiLogin,
 	mdiPower,
 	mdiSecurity,
@@ -117,6 +118,12 @@ function items(): SidebarLink[] {
 				title: i18n.t('pages.configuration.title'),
 				icon: mdiCog,
 				children: [
+					{
+						title: i18n.t('pages.configuration.controller.title'),
+						icon: mdiLedOff,
+						to: '/config/controller',
+						feature: Feature.iqrfGatewayController,
+					},
 					{
 						title: i18n.t('pages.configuration.smtp.title'),
 						icon: mdiEmailEdit,

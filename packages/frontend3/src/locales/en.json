@@ -1,6 +1,7 @@
 {
 	"$vuetify": {
 		"badge": "Badge",
+		"loading": "Loading",
 		"calendar": {
 			"moreEvents": "{0} more"
 		},
@@ -302,11 +303,26 @@
 			"skip": "Skip"
 		},
 		"labels": {
+			"general": "General",
+			"protocol": "Protocol",
+			"protocols": {
+				"ws": "Insecure websocket",
+				"wss": "Secure websocket"
+			},
 			"hostname": "Hostname",
 			"port": "Port",
+			"path": "Path",
 			"username": "Username",
 			"password": "Password",
-			"description": "Description"
+			"description": "Description",
+			"severity": {
+				"debug": "Debug",
+				"info": "Information",
+				"error": "Error",
+				"warning": "Warning",
+				"trace": "Trace"
+			},
+			"returnVerbose": "Verbose response"
 		},
 		"columns": {
 			"id": "ID",
@@ -314,7 +330,10 @@
 			"actions": "Actions"
 		},
 		"validation": {
-
+			"hostnameMissing": "Please enter hostname.",
+			"hostnameInvalid": "Hostname should be IPv4, IPv6, localhost or fully-qualified domain name.",
+			"portMissing": "Please enter port.",
+			"portInvalid": "Port should be an integer between 1 and 65535."
 		}
 	},
 	"components": {
@@ -355,6 +374,107 @@
 			}
 		},
 		"configuration": {
+			"controller": {
+				"form": {
+					"sections": {
+						"websocket": "Websocket",
+						"logging": "Logging",
+						"factoryReset": "Factory reset",
+						"button": "Action button",
+						"pins": "Pin configuration"
+					},
+					"websocket": {
+						"api": "Daemon API",
+						"monitor": "Monitor"
+					},
+					"logging": {
+						"path": "Path to log file",
+						"severity": "Severity level",
+						"sinks": {
+							"file": "Log to file",
+							"syslog": "Log to syslog"
+						}
+					},
+					"factoryReset": {
+						"coordinator": "Coordinator",
+						"iqaros": "IQAROS",
+						"network": "IP network"
+					},
+					"button": {
+						"action": "Action",
+						"actions": {
+							"none": "None",
+							"autonetwork": "Autonetwork",
+							"discovery": "Discovery"
+						},
+						"configure": "Configure"
+					},
+					"pins": {
+						"greenLed": "Green LED GPIO pin",
+						"redLed": "Red LED GPIO pin",
+						"button": "Action button GPIO pin",
+						"useWatchdogPins": "Use hardware Watchdog Timer pins",
+						"sck": "I2C clock GPIO pin",
+						"sda": "I2C data GPIO pin"
+					},
+					"autonetwork": {
+						"actionRetries": "Action retries",
+						"discoveryTxPower": "Discovery TX power",
+						"discoveryBeforeStart": "Run discovery before starting autonetwork",
+						"skipDiscoveryEachWave": "Skip discovery in each wave",
+						"stopConditions": "Stop conditions",
+						"waves": "Maximum number of waves",
+						"emptyWaves": "Maximum number of empty waves",
+						"abortOnTooManyNodesFound": "Abort Autonetwork if more nodes than the network can contain are found"
+					},
+					"discovery": {
+						"maxAddr": "Maximum node address",
+						"txPower": "TX power"
+					}
+				},
+				"validation": {
+					"logPath": "Please enter path to log file.",
+					"buttonPin": "Please enter action button GPIO pin as an integer.",
+					"greenLed": "Please enter green LED GPIO pin as an integer.",
+					"redLed": "Please enter red LED GPIO pin as an integer.",
+					"sck": "Please enter I2C clock GPIO pin as an integer.",
+					"sda": "Please enter I2C data GPIO pin as an integer."
+				},
+				"messages": {
+					"save": {
+						"success": "IQRF Gateway Controller configuration was successfully saved. Restart the service for changes to take effect."
+					}
+				},
+				"profiles": {
+					"actions": {
+						"apply": "Apply device profile",
+						"add": "Add device profile",
+						"edit": "Edit device profile",
+						"delete": "Delete device profile"
+					},
+					"name": "Profile name",
+					"type": "Device type",
+					"types": {
+						"adapter": "Adapter",
+						"board": "Board"
+					},
+					"delete": {
+						"title": "Device configuration profile delete confirmation",
+						"prompt": "Are you sure you want to delete device configuration profile {name}?"
+					},
+					"validation": {
+						"nameMissing": "Please enter device profile name."
+					},
+					"messages": {
+						"save": {
+							"success": "Device configuration profile {name} successfully saved."
+						},
+						"delete": {
+							"success": "Device configuration profile {name} successfully deleted."
+						}
+					}
+				}
+			},
 			"smtp": {
 				"test": "Test configuration",
 				"form": {
@@ -505,6 +625,7 @@
 					"disable": "Disable service",
 					"start": "Start service",
 					"stop": "Stop service",
+					"restart": "Restart service",
 					"refresh": "Refresh service",
 					"refreshAll": "Refresh services",
 					"status": "Toggle status"
@@ -679,6 +800,14 @@
 		"configuration": {
 			"title": "Configuration",
 			"description": "Configure gateway, IQRF software and other services.",
+			"controller": {
+				"title": "IQRF GW Controller",
+				"description": "IQRF Gateway Controller configuration.",
+				"profiles": {
+					"title": "Device profiles",
+					"description": "Manage IQRF Gateway Controller device configuration profiles."
+				}
+			},
 			"smtp": {
 				"title": "SMTP",
 				"description": "Configure SMTP server."
