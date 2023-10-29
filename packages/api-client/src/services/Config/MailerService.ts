@@ -33,9 +33,9 @@ export class MailerService extends BaseService {
 	public getConfig(): Promise<MailerGetConfigResponse> {
 		return this.axiosInstance.get('/config/mailer')
 			.then((response: AxiosResponse<MailerConfig>): MailerGetConfigResponse => {
-				const defaultConfig = response.headers['X-Smtp-Default-Config'];
+				const defaultConfig = response.headers['x-smtp-default-config'];
 				return {
-					headers: defaultConfig ? {defaultConfig: defaultConfig} : null,
+					headers: (defaultConfig !== undefined && defaultConfig !== null) ? {defaultConfig: defaultConfig === '1'} : null,
 					config: this.deserializeConfig(response.data),
 				};
 			});
