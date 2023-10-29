@@ -69,7 +69,7 @@
 
 <script lang='ts' setup>
 import { type DaemonApiResponse, DaemonMessageOptions, ManagementService } from '@iqrf/iqrf-gateway-daemon-utils';
-import { DaemonMode, ManagementMessages } from '@iqrf/iqrf-gateway-daemon-utils/enums';
+import { DaemonMode, ManagementMessages } from '@iqrf/iqrf-gateway-daemon-utils';
 import { type IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import {
 	type IqrfGatewayDaemonComponent,

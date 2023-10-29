@@ -1,6 +1,5 @@
 <template>
 	<v-text-field
-		:model-value='modelValue'
 		v-bind='$attrs'
 		:label='label'
 		:hint='description'
@@ -27,15 +26,10 @@
 </template>
 
 <script lang='ts' setup>
-import { computed, type PropType } from 'vue';
+import { computed } from 'vue';
 import { VTextField } from 'vuetify/components';
 
 const props = defineProps({
-	modelValue: {
-		type: null as unknown as PropType<string | number | null>,
-		default: null,
-		required: true,
-	},
 	label: {
 		type: String,
 		default: '',
