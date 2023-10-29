@@ -331,13 +331,13 @@ import Card from '@/components/Card.vue';
 import ControllerAutonetworkForm from '@/components/config/controller/ControllerAutonetworkForm.vue';
 import ControllerDiscoveryForm from '@/components/config/controller/ControllerDiscoveryForm.vue';
 import DeviceProfilesTable from '@/components/config/controller/profiles/DeviceProfilesTable.vue';
+import WebsocketUrlForm from '@/components/config/WebsocketUrlForm.vue';
 import SelectInput from '@/components/SelectInput.vue';
 import TextInput from '@/components/TextInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
 import { ComponentState } from '@/types/ComponentState';
-import WebsocketUrlForm from '../WebsocketUrlForm.vue';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const display = useDisplay();
