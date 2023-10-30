@@ -6,7 +6,7 @@
 </template>
 
 <route lang='yaml'>
-name: ControllerConfig
+name: ControllerSettings
 </route>
 
 <script lang='ts' setup>

@@ -293,10 +293,29 @@
 						</v-col>
 					</v-row>
 				</section>
+				<span class='d-flex justify-space-around'>
+					<v-menu
+						v-model='showProfileMenu'
+						location='top center'
+						transition='slide-y-transition'
+						:close-on-content-click='false'
+						eager
+					>
+						<template #activator='{ props }'>
+							<v-btn
+								v-bind='props'
+								color='primary'
+							>
+								{{ $t('pages.configuration.controller.profiles.title') }}
+							</v-btn>
+						</template>
+						<DeviceProfilesTable
+							:show-apply='true'
+							@apply='applyProfile'
+						/>
+					</v-menu>
+				</span>
 			</span>
-			<DeviceProfilesTable
-				@apply='applyProfile'
-			/>
 			<template #actions>
 				<v-btn
 					color='primary'
@@ -382,6 +401,7 @@ const actionOptions = [
 	},
 ];
 const watchdogPins: Ref<boolean> = ref(false);
+const showProfileMenu: Ref<boolean> = ref(false);
 
 async function getConfig(): Promise<void> {
 	componentState.value = ComponentState.Loading;
@@ -447,6 +467,7 @@ function applyProfile(profile: IqrfGatewayControllerMapping): void {
 		configuration.value.powerOff = {sck: -1, sda: -1};
 		watchdogPins.value = false;
 	}
+	showProfileMenu.value = false;
 }
 
 onMounted((): void => {
