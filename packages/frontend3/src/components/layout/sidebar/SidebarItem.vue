@@ -1,15 +1,15 @@
 <template>
 	<v-list-item
-		:href='props.item.href'
-		:prepend-icon='props.item.icon'
-		:target='props.item.target'
-		:to='props.item.to'
+		:href='item.href'
+		:prepend-icon='item.icon'
+		:target='item.target'
+		:to='item.to'
 		:active='active'
 		density='compact'
 		exact
 		router
 	>
-		<v-list-item-title>{{ props.item.title }}</v-list-item-title>
+		<v-list-item-title>{{ item.title }}</v-list-item-title>
 	</v-list-item>
 </template>
 
@@ -18,6 +18,7 @@ import {type Ref, ref, watchEffect} from 'vue';
 import {useRoute} from 'vue-router';
 
 import {type SidebarLink} from '@/types/sidebar';
+
 interface Props {
 	/// Sidebar item to render
 	item: SidebarLink;
@@ -35,9 +36,3 @@ watchEffect((): void => {
 	}
 });
 </script>
-
-<style lang='scss' scoped>
-.v-list-group__items .v-list-item {
-	padding-inline-start: 2rem !important;
-}
-</style>

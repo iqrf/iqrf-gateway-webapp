@@ -1,11 +1,17 @@
 <template>
 	<v-list-group
-		:prepend-icon='subGroup ? "" : item.icon'
+		:prepend-icon='item.icon'
 		:subgroup='subGroup'
 		:value='item.title'
 	>
-		<template #activator='{ props }'>
-			<v-list-item :title='item.title' density='compact' v-bind='props' />
+		<template #activator='{ props, isOpen }'>
+			<v-list-item
+				:title='item.title'
+				density='compact'
+				v-bind='props'
+				:prepend-icon='item.icon ?? ""'
+				:append-icon='isOpen ? mdiChevronUp : mdiChevronDown'
+			/>
 		</template>
 		<div v-for='(navItem, idx) in item.children' :key='idx'>
 			<SidebarGroup
@@ -22,6 +28,8 @@
 </template>
 
 <script lang='ts' setup>
+import { mdiChevronDown, mdiChevronUp } from '@mdi/js';
+
 import SidebarItem from '@/components/layout/sidebar/SidebarItem.vue';
 import { type SidebarLink } from '@/types/sidebar';
 
@@ -33,3 +41,29 @@ interface Props {
 }
 defineProps<Props>();
 </script>
+
+<style lang='scss' scoped>
+.v-list-group {
+	.v-list-group__items {
+		.v-list-item {
+			padding-inline-start: 4em !important;
+		}
+
+		.v-list-group {
+			.v-list-group__items {
+				.v-list-item {
+					padding-inline-start: 6em !important;
+				}
+
+				.v-list-group {
+					.v-list-group__items {
+						.v-list-item {
+							padding-inline-start: 8em !important;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+</style>
