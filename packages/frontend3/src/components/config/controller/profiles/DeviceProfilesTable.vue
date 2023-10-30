@@ -22,7 +22,7 @@
 			:dense='true'
 		>
 			<template #item.actions='{ item }'>
-				<span>
+				<span v-show='showApply'>
 					<v-icon
 						color='success'
 						size='large'
@@ -84,6 +84,13 @@ import { FormAction } from '@/enums/controls';
 import { useApiClient } from '@/services/ApiClient';
 import { ComponentState } from '@/types/ComponentState';
 
+defineProps({
+	showApply: {
+		type: Boolean,
+		default: false,
+		required: false,
+	},
+});
 const emit = defineEmits(['apply']);
 const i18n = useI18n();
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);

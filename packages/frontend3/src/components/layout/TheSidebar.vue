@@ -123,6 +123,16 @@ function items(): SidebarLink[] {
 						icon: mdiLedOff,
 						to: '/config/controller',
 						feature: Feature.iqrfGatewayController,
+						children: [
+							{
+								title: i18n.t('pages.configuration.controller.settings.title'),
+								to: '/config/controller/settings',
+							},
+							{
+								title: i18n.t('pages.configuration.controller.profiles.title'),
+								to: '/config/controller/profiles',
+							},
+						],
 					},
 					{
 						title: i18n.t('pages.configuration.smtp.title'),

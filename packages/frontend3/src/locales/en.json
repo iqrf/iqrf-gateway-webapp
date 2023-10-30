@@ -799,10 +799,33 @@
 			"description": "Configure gateway, IQRF software and other services.",
 			"controller": {
 				"title": "IQRF GW Controller",
-				"description": "IQRF Gateway Controller configuration.",
+				"description": "Configure IQRF Gateway Controller.",
+				"settings": {
+					"title": "Settings",
+					"description": "Update IQRF Gateway Controller settings."
+				},
 				"profiles": {
 					"title": "Device profiles",
 					"description": "Manage IQRF Gateway Controller device configuration profiles."
+				}
+			},
+			"daemon": {
+				"title": "IQRF GW Daemon",
+				"description": "Configure IQRF Gateway Daemon.",
+				"interfaces": {
+					"title": "Communication interfaces",
+					"dpa": {
+						"title": "DPA"
+					},
+					"uart": {
+						"title": "UART"
+					},
+					"spi": {
+						"title": "SPI"
+					},
+					"cdc": {
+						"title": "CDC"
+					}
 				}
 			},
 			"smtp": {
