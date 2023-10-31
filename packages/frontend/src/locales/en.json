@@ -69,23 +69,6 @@
 				"saveFailed": "Failed to save IBM Cloud MQTT connection configuration: {error}"
 			}
 		},
-		"intelimentsInteliGlue": {
-			"title": "Inteliments InteliGlue",
-			"description": "Adds a new MQTT connection into Inteliments InteliGlue.",
-			"form": {
-				"title": "Inteliments InteliGlue MQTT connection wizard",
-				"rootTopic": "Root Topic",
-				"assignedPort": "Assigned Port"
-			},
-			"errors": {
-				"rootTopic": "Please enter the root topic.",
-				"assignedPort": "Please enter the assigned port.",
-				"assignedPortRange": "Port has to be an integer in range from 0 to 65535."
-			},
-			"messages": {
-				"saveFailed": "Failed to save InteliGlue MQTT connection configuration: {error}"
-			}
-		},
 		"msAzure": {
 			"title": "Microsoft Azure IoT hub",
 			"description": "Adds a new MQTT connection into Microsoft Azure IoT Hub.",

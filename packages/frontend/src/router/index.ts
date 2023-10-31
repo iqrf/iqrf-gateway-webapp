@@ -23,7 +23,6 @@ const CloudDisambiguation = () => import(/* webpackChunkName: "cloud" */ '@/page
 const AzureCreator = () => import(/* webpackChunkName: "cloud" */ '@/pages/Cloud/AzureCreator.vue');
 const AwsCreator = () => import(/* webpackChunkName: "cloud" */ '@/pages/Cloud/AwsCreator.vue');
 const IbmCreator = () => import(/* webpackChunkName: "cloud" */ '@/pages/Cloud/IbmCreator.vue');
-const InteliGlueCreator = () => import(/* webpackChunkName: "cloud" */ '@/pages/Cloud/InteliGlueCreator.vue');
 
 const GatewayDisambiguation = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/GatewayDisambiguation.vue');
 const GatewayInfo = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/GatewayInfo.vue');
@@ -247,13 +246,6 @@ const routes: Array<RouteConfig> = [
 					{
 						component: IbmCreator,
 						path: 'ibm-cloud',
-						meta: {
-							role: UserRole.Normal,
-						},
-					},
-					{
-						component: InteliGlueCreator,
-						path: 'inteli-glue',
 						meta: {
 							role: UserRole.Normal,
 						},

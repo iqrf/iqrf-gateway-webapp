@@ -24,10 +24,6 @@
 		"msAzure": {
 			"title": "Microsoft Azure IoT hub",
 			"description": "Vytvoří nové MQTT připojení do Microsoft Azure IoT Hubu."
-		},
-		"intelimentsInteliGlue": {
-			"description": "Vytvoří nové MQTT připojení do Inteliments InteliGlue.",
-			"title": "Inteliments InteliGlue"
 		}
 	},
 	"account": {

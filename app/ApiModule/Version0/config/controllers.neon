@@ -20,7 +20,6 @@ services:
 	- App\ApiModule\Version0\Controllers\Cloud\AwsController
 	- App\ApiModule\Version0\Controllers\Cloud\AzureController
 	- App\ApiModule\Version0\Controllers\Cloud\IbmCloudController
-	- App\ApiModule\Version0\Controllers\Cloud\InteliGlueController
 	- App\ApiModule\Version0\Controllers\Config\AptController
 	bridge.fileManager:
 		factory: App\CoreModule\Models\FileManager(%paths.iqrfGatewayInfluxdbBridge.configDir%)

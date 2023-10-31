@@ -74,8 +74,6 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/cloudAzure.json
 		CloudIbm:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/cloudIbm.json
-		CloudInteliGlue:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/cloudInteliGlue.json
 		ControllerConfig:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/controllerConfig.json
 		ControllerPinConfig:
