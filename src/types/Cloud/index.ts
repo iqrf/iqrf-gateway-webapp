@@ -44,24 +44,6 @@ export interface IbmCloudConfiguration {
 }
 
 /**
- * Inteliments InteliGlue connection configuration
- */
-export interface InteliGlueConnection {
-	/// MQTT topic
-	rootTopic: string
-
-	/// Assigned port
-	assignedPort: number
-
-	/// Client ID
-	clientId: string
-
-	/// Client password
-	password: string
-}
-
-/**
  * Cloud connection configuration type
  */
-export type CloudConfiguration = AzureConfiguration | IbmCloudConfiguration |
-	InteliGlueConnection;
+export type CloudConfiguration = AzureConfiguration | IbmCloudConfiguration;

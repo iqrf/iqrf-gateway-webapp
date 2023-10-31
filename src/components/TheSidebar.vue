@@ -451,11 +451,6 @@ export default class TheSidebar extends Vue {
 								to: '/cloud/aws/',
 								role: UserRole.NORMAL,
 							},
-							{
-								name: this.$t('cloud.intelimentsInteliGlue.title'),
-								to: '/cloud/inteli-glue/',
-								role: UserRole.NORMAL,
-							},
 						],
 					},
 					{

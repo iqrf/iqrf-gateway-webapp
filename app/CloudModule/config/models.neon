@@ -17,4 +17,3 @@ services:
 	- App\CloudModule\Models\AwsManager(%paths.iqrfGatewayDaemon.certDir%)
 	- App\CloudModule\Models\AzureManager
 	- App\CloudModule\Models\IbmCloudManager(%paths.iqrfGatewayDaemon.certDir%)
-	- App\CloudModule\Models\InteliGlueManager(%paths.iqrfGatewayDaemon.certDir%)

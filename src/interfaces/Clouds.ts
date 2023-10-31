@@ -44,28 +44,3 @@ export interface IIbmCloud {
 	 */
 	eventId: string
 }
-
-/**
- *
- */
-export interface IInteliGlueCloud {
-	/**
-	 * MQTT topic
-	 */
-	rootTopic: string
-
-	/**
-	 * Post number
-	 */
-	assignedPort: number
-
-	/**
-	 * Client ID
-	 */
-	clientId: string
-
-	/**
-	 * Client password
-	 */
-	password: string
-}
