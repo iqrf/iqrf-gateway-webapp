@@ -297,7 +297,9 @@
 			"save": "Save",
 			"cancel": "Cancel",
 			"close": "Close",
-			"skip": "Skip"
+			"skip": "Skip",
+			"reload": "Reload",
+			"refresh": "Refresh"
 		},
 		"labels": {
 			"general": "General",
@@ -319,7 +321,8 @@
 				"warning": "Warning",
 				"trace": "Trace"
 			},
-			"returnVerbose": "Verbose response"
+			"returnVerbose": "Verbose response",
+			"none": "None"
 		},
 		"columns": {
 			"id": "ID",
@@ -441,34 +444,126 @@
 					"save": {
 						"success": "IQRF Gateway Controller configuration was successfully saved. Restart the service for changes to take effect."
 					}
-				},
-				"profiles": {
-					"actions": {
-						"apply": "Apply device profile",
-						"add": "Add device profile",
-						"edit": "Edit device profile",
-						"delete": "Delete device profile"
+				}
+			},
+			"daemon": {
+				"component": "Component name",
+				"instance": "Instance name",
+				"interfaces": {
+					"profiles": {
+						"spi": "SPI device profiles",
+						"uart": "UART device profiles"
 					},
-					"name": "Profile name",
-					"type": "Device type",
-					"types": {
-						"adapter": "Adapter",
-						"board": "Board"
+					"apply": "Apply interface",
+					"interface": "Interface name",
+					"active": {
+						"title": "Active IQRF interface",
+						"interface": "IQRF interface",
+						"messages": {
+							"save": {
+								"success": "IQRF interface successfully changed."
+							}
+						}
 					},
-					"delete": {
-						"title": "Device configuration profile delete confirmation",
-						"prompt": "Are you sure you want to delete device configuration profile {name}?"
+					"cdc": {
+						"devices": "CDC interfaces",
+						"messages": {
+							"save": {
+								"success": "IQRF USB CDC configuration successfully saved."
+							}
+						}
+					},
+					"busPin": "Bus enable GPIO pin",
+					"powerPin": "Power enable GPIO pin",
+					"pgmPin": "Programming mode switch GPIO pin",
+					"interfacePins": "Use communication interface pins",
+					"i2cPin": "I2C enable GPIO pin",
+					"spiPin": "SPI enable GPIO pin",
+					"uartPin": "UART enable GPIO pin",
+					"spi": {
+						"devices": "SPI interfaces",
+						"spiReset": "Enable SPI reset",
+						"messages": {
+							"save": {
+								"success": "IQRF SPI configuration successfully saved."
+							}
+						}
+					},
+					"uart": {
+						"devices": "UART interfaces",
+						"baudRate": "Baud rate",
+						"uartReset": "Enable UART reset",
+						"messages": {
+							"save": {
+								"success": "IQRF UART configuration successfully saved."
+							}
+						}
+					},
+					"dpa": {
+						"timeout": "DPA handler timeout",
+						"validation": {
+							"timeoutMissing": "Please enter DPA handler timeout",
+							"timeoutInvalid": "DPA handler timeout should be an integer greater or equal to 0."
+						},
+						"messages": {
+							"save": {
+								"success": "IQRF DPA configuration successfully saved."
+							}
+						}
 					},
 					"validation": {
-						"nameMissing": "Please enter device profile name."
+						"interfaceMissing": "Please enter interface name.",
+						"busPinMissing": "Please enter bus enable GPIO pin",
+						"busPinInvalid": "Bus enable GPIO pin should be an integer.",
+						"powerPinMissing": "Please enter power enable GPIO pin.",
+						"powerPinInvalid": "Power enable GPIO pin should be an integer.",
+						"pgmPinMissing": "Please enter programming mode switch GPIO pin.",
+						"pgmPinInvalid": "Programming mode switch GPIO pin should be an integer.",
+						"i2cPinMissing": "Please enter I2C enable GPIO pin.",
+						"i2cPinInvalid": "I2C enable GPIO pin should be an integer.",
+						"spiPinMissing": "Please enter SPI enable GPIO pin.",
+						"spiPinInvalid": "SPI enable GPIO pin should be an integer.",
+						"uartPinMissing": "Please enter UART enable GPIO pin.",
+						"uartPinInvalid": "UART enable GPIO pin should be an integer."
+					}
+				},
+				"validation": {
+					"instanceMissing": "Please enter instance name."
+				}
+			},
+			"profiles": {
+				"title": "Device profiles",
+				"actions": {
+					"apply": "Apply device profile",
+					"add": "Add device profile",
+					"edit": "Edit device profile",
+					"delete": "Delete device profile"
+				},
+				"id": "Profile ID",
+				"name": "Profile name",
+				"deviceType": "Device type",
+				"deviceTypes": {
+					"adapter": "Adapter",
+					"board": "Board"
+				},
+				"profileType": "Profile type",
+				"profileTypes": {
+					"spi": "SPI",
+					"uart": "UART"
+				},
+				"delete": {
+					"title": "Device configuration profile delete confirmation",
+					"prompt": "Are you sure you want to delete device configuration profile {name}?"
+				},
+				"validation": {
+					"nameMissing": "Please enter device profile name."
+				},
+				"messages": {
+					"save": {
+						"success": "Device configuration profile {name} successfully saved."
 					},
-					"messages": {
-						"save": {
-							"success": "Device configuration profile {name} successfully saved."
-						},
-						"delete": {
-							"success": "Device configuration profile {name} successfully deleted."
-						}
+					"delete": {
+						"success": "Device configuration profile {name} successfully deleted."
 					}
 				}
 			},
@@ -494,7 +589,9 @@
 					"senderInvalid": "Invalid e-mail address."
 				},
 				"messages": {
-
+					"save": {
+						"success": "SMTP configuration successfully saved."
+					}
 				}
 			},
 			"time": {
@@ -803,17 +900,13 @@
 				"settings": {
 					"title": "Settings",
 					"description": "Update IQRF Gateway Controller settings."
-				},
-				"profiles": {
-					"title": "Device profiles",
-					"description": "Manage IQRF Gateway Controller device configuration profiles."
 				}
 			},
 			"daemon": {
 				"title": "IQRF GW Daemon",
 				"description": "Configure IQRF Gateway Daemon.",
 				"interfaces": {
-					"title": "Communication interfaces",
+					"title": "Interfaces",
 					"dpa": {
 						"title": "DPA"
 					},
@@ -824,7 +917,7 @@
 						"title": "SPI"
 					},
 					"cdc": {
-						"title": "CDC"
+						"title": "USB CDC"
 					}
 				}
 			},

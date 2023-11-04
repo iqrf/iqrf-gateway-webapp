@@ -2,7 +2,6 @@
 	<v-form
 		ref='form'
 		v-slot='{ isValid }'
-		validate-on='input'
 	>
 		<Card>
 			<template #title>
@@ -306,11 +305,10 @@
 								v-bind='props'
 								color='primary'
 							>
-								{{ $t('pages.configuration.controller.profiles.title') }}
+								{{ $t('components.configuration.profiles.title') }}
 							</v-btn>
 						</template>
 						<DeviceProfilesTable
-							:show-apply='true'
 							@apply='applyProfile'
 						/>
 					</v-menu>

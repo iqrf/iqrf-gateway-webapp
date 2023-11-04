@@ -82,7 +82,6 @@
 <script lang='ts' setup>
 import { type MailerService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import { type MailerConfig, type MailerGetConfigResponse } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { type AxiosError } from 'axios';
 import { computed, onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
@@ -90,7 +89,6 @@ import { VForm } from 'vuetify/components';
 
 import Card from '@/components/Card.vue';
 import SmtpFormElements from '@/components/config/smtp/SmtpFormElements.vue';
-import { basicErrorToast } from '@/helpers/errorToast';
 import { validateForm } from '@/helpers/validateForm';
 import router from '@/router';
 import { useApiClient } from '@/services/ApiClient';
@@ -139,9 +137,9 @@ function getConfig(): void {
 			configuration.value = response.config;
 			loading.value = false;
 		})
-		.catch((error: AxiosError) => {
+		.catch(() => {
 			loading.value = false;
-			basicErrorToast(error, 'configuration.smtp.messages.fetchFailed');
+			toast.error('TODO FETCH ERROR HANDLING');
 		});
 }
 
@@ -154,15 +152,15 @@ async function onSubmit(): Promise<void> {
 		.then(() => {
 			loading.value = false;
 			toast.success(
-				i18n.t('configuration.smtp.messages.saveSuccess'),
+				i18n.t('components.configuration.smtp.messages.save.success'),
 			);
 			if (props.install) {
 				toNextStep();
 			}
 		})
-		.catch((error: AxiosError) => {
+		.catch(() => {
 			loading.value = false;
-			basicErrorToast(error, 'configuration.smtp.messages.saveFailed');
+			toast.error('TODO SAVE ERROR HANDLING');
 		});
 }
 
@@ -175,12 +173,12 @@ async function testConfiguration(): Promise<void> {
 		.then(() => {
 			loading.value = false;
 			toast.success(
-				i18n.t('configuration.smtp.messages.testSuccess'),
+				i18n.t('configuration.smtp.messages.test.success'),
 			);
 		})
-		.catch((error: AxiosError) => {
+		.catch(() => {
 			loading.value = false;
-			basicErrorToast(error, 'configuration.smtp.messages.testFailed');
+			toast.error('TODO TEST ERROR HANDLING');
 		});
 }
 
