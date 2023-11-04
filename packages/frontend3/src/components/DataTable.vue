@@ -2,7 +2,7 @@
 	<v-data-table
 		v-model:expanded='expanded'
 		v-model:page='page'
-		:items-per-page='pageItems'
+		:items-per-page='itemsPerPage'
 		:headers='headers'
 		:items='items'
 		:items-length='items.length'
@@ -30,7 +30,7 @@
 <script lang='ts' setup>
 import { computed, ref, type Ref } from 'vue';
 
-const props = defineProps({
+const componentProps = defineProps({
 	headers: {
 		type: Array,
 		default: () => [],
@@ -40,6 +40,11 @@ const props = defineProps({
 		type: Array,
 		default: () => [],
 		required: true,
+	},
+	itemsPerPage: {
+		type: Number,
+		default: 10,
+		required: false,
 	},
 	loading: {
 		type: Boolean,
@@ -61,7 +66,6 @@ const props = defineProps({
 const expanded = ref([]);
 const page: Ref<number> = ref(1);
 const pageCount = computed(() => {
-	return Math.ceil(props.items.length / pageItems.value);
+	return Math.ceil(componentProps.items.length / componentProps.itemsPerPage);
 });
-const pageItems: Ref<number> = ref(10);
 </script>

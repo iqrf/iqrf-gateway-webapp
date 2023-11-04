@@ -1,14 +1,14 @@
 <template>
 	<v-list class='text-white'>
-		<template v-for='(navItem, idx) in props.items'>
+		<template v-for='navItem in props.items'>
 			<SidebarGroup
 				v-if='navItem.children !== undefined && navItem.children.length > 0'
-				:key='"sidebarGroup" + idx'
+				:key='navItem.title + "_group"'
 				:item='navItem'
 			/>
 			<SidebarItem
 				v-else
-				:key='"sidebarItem" + idx'
+				:key='navItem.title + "_item"'
 				:item='navItem'
 			/>
 		</template>
