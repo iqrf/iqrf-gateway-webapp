@@ -1,6 +1,5 @@
 <template>
 	<v-select
-		:model-value='modelValue'
 		:items='items'
 		v-bind='$attrs'
 		:label='label'
@@ -33,11 +32,6 @@ import { computed } from 'vue';
 import { type SelectItem } from '@/types/vuetify';
 
 const props = defineProps({
-	modelValue: {
-		type: String,
-		default: '',
-		required: true,
-	},
 	items: {
 		type: Array<SelectItem>,
 		default: () => [],
