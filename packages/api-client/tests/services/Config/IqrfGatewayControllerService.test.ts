@@ -23,8 +23,8 @@ import {
 	IqrfGatewayControllerLoggingSeverity,
 	IqrfGatewayControllerAction,
 	type IqrfGatewayControllerMapping,
-	IqrfGatewayControllerMappingDevice,
 } from '../../../src/types/Config';
+import { MappingDeviceType } from '../../../src/types/Config/Mapping';
 
 describe('IqrfGatewayControllerService', (): void => {
 
@@ -94,7 +94,7 @@ describe('IqrfGatewayControllerService', (): void => {
 	 */
 	const profile: IqrfGatewayControllerMapping = {
 		button: 2,
-		deviceType: IqrfGatewayControllerMappingDevice.Board,
+		deviceType: MappingDeviceType.Board,
 		greenLed: 0,
 		redLed: 1,
 		name: 'Test',
@@ -170,7 +170,7 @@ describe('IqrfGatewayControllerService', (): void => {
 	it('edit IQRF Gateway Controller mapping', async(): Promise<void> => {
 		expect.assertions(0);
 		const data = {...profile};
-		data.deviceType = IqrfGatewayControllerMappingDevice.Adapter;
+		data.deviceType = MappingDeviceType.Adapter;
 		mockedAxios.onPut('/config/controller/pins/1', data)
 			.reply(200);
 		await service.editMapping(1, data);

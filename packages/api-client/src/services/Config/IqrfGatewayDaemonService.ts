@@ -18,15 +18,28 @@ import type { AxiosResponse } from 'axios';
 
 import { BaseService } from '../BaseService';
 import {
+	type IqrfGatewayDaemonConfig,
 	type IqrfGatewayDaemonComponent,
 	type IqrfGatewayDaemonComponentInstanceConfiguration,
 	type IqrfGatewayDaemonComponentName,
+	type IqrfGatewayDaemonComponentState,
+	type IqrfGatewayDaemonMapping,
 } from '../../types/Config';
+import { type MappingType } from '../../types/Config/Mapping';
 
 /**
  * IQRF Gateway Daemon configuration service
  */
 export class IqrfGatewayDaemonService extends BaseService {
+
+	/**
+	 * Retrieves IQRF Gateway Daemon main configuration
+	 * @return {Promise<IqrfGatewayDaemonConfig>} IQRF Gateway Daemon main configuration
+	 */
+	public getConfig(): Promise<IqrfGatewayDaemonConfig> {
+		return this.axiosInstance.get('/config/daemon')
+			.then((response: AxiosResponse<IqrfGatewayDaemonConfig>): IqrfGatewayDaemonConfig => response.data);
+	}
 
 	/**
 	 * Retrieves IQRF Gateway Daemon component configuration and instances
@@ -56,4 +69,64 @@ export class IqrfGatewayDaemonService extends BaseService {
 		return this.axiosInstance.put(`/config/daemon/${encodeURIComponent(component)}/${encodeURIComponent(instance)}`, configuration)
 			.then((): void => {return;});
 	}
+
+	/**
+	 * Changed component(s) state
+	 * @param {IqrfGatewayDaemonComponentState[]} components Component state configuration
+	 */
+	public changeEnabledComponents(components: IqrfGatewayDaemonComponentState[]): Promise<void> {
+		return this.axiosInstance.patch('/config/daemon/components', components)
+			.then((): void => {return;});
+	}
+
+	/**
+	 * List IQRF Gateway Daemon mappings
+	 * @return {Promise<IqrfGatewayDaemonMapping[]>} IQRF Gateway Daemon mappings
+	 */
+	public listMappings(interfaceType: MappingType | null = null): Promise<IqrfGatewayDaemonMapping[]> {
+		const params = interfaceType ? {interface: interfaceType} : {};
+		return this.axiosInstance.get('/mappings', {params: params})
+			.then((response: AxiosResponse<IqrfGatewayDaemonMapping[]>) => response.data);
+	}
+
+	/**
+	 * Fetch IQRF Gateway Daemon mapping
+	 * @param {number} id IQRF Gateway Daemon mapping ID
+	 * @return {Promise<IqrfGatewayDaemonMapping>} IQRF Gateway Daemon mapping
+	 */
+	public fetchMapping(id: number): Promise<IqrfGatewayDaemonMapping> {
+		return this.axiosInstance.get(`/mappings/${id}`)
+			.then((response: AxiosResponse<IqrfGatewayDaemonMapping>) => response.data);
+	}
+
+	/**
+	 * Create IQRF Gateway Daemon mapping
+	 * @param {IqrfGatewayDaemonMapping} mapping IQRF Gateway Daemon mapping
+	 */
+	public createMapping(mapping: IqrfGatewayDaemonMapping): Promise<void> {
+		delete mapping.id;
+		return this.axiosInstance.post('/mappings', mapping)
+			.then((): void => {return;});
+	}
+
+	/**
+	 * Edit IQRF Gateway Daemon mapping
+	 * @param {number} id IQRF Gateway Daemon mapping ID
+	 * @param {IqrfGatewayDaemonMapping} mapping IQRF Gateway Daemon mapping
+	 */
+	public editMapping(id: number, mapping: IqrfGatewayDaemonMapping): Promise<void> {
+		delete mapping.id;
+		return this.axiosInstance.put(`/mappings/${id}`, mapping)
+			.then((): void => {return;});
+	}
+
+	/**
+	 * Delete IQRF Gateway Daemon mapping
+	 * @param {number} id IQRF Gateway Daemon mapping ID
+	 */
+	public deleteMapping(id: number): Promise<void> {
+		return this.axiosInstance.delete(`/mappings/${id}`)
+			.then((): void => {return;});
+	}
+
 }

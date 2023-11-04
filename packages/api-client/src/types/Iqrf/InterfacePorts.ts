@@ -1,5 +1,5 @@
 /**
- * Copyright 2023-2024 MICRORISC s.r.o.
+ * Copyright 2023 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,5 +14,23 @@
  * limitations under the License.
  */
 
-export * from './DpaMacro';
-export * from './InterfacePorts';
+/**
+ * Interface types
+ */
+export enum IqrfInterfaceType {
+	/// CDC
+	CDC = 'cdc',
+	/// SPI
+	SPI = 'spi',
+	/// UART
+	UART = 'uart',
+}
+
+/**
+ * Interface ports
+ */
+export interface InterfacePorts {
+	cdc: string[];
+	spi: string[];
+	uart: string[];
+}
