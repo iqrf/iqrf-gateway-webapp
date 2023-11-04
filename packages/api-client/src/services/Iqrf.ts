@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-import {BaseService} from './BaseService';
+import { BaseService } from './BaseService';
 
-import {DpaMacrosService} from './Iqrf/DpaMacrosService';
+import { DpaMacrosService } from './Iqrf/DpaMacrosService';
+import { InterfacePortsService } from './Iqrf/InterfacePortsService';
 
 export * from './Iqrf/DpaMacrosService';
+export * from './Iqrf/InterfacePortsService';
 
 /**
  * IQRF services
@@ -31,6 +33,14 @@ export class IqrfServices extends BaseService {
 	 */
 	public getDpaMacrosService(): DpaMacrosService {
 		return new DpaMacrosService(this.apiClient);
+	}
+
+	/**
+	 * Returns inteface ports service
+	 * @return {InterfacePortsService} Interface ports service
+	 */
+	public getInterfacePortsService(): InterfacePortsService {
+		return new InterfacePortsService(this.apiClient);
 	}
 
 }

@@ -14,27 +14,7 @@
  * limitations under the License.
  */
 
-/**
- * IQRF Gateway Controller mapping device type
- */
-export enum IqrfGatewayControllerMappingDevice {
-	/// Adapter
-	Adapter = 'adapter',
-	/// Board
-	Board = 'board',
-}
-
-/**
- * IQRF Gateway Controller mapping type
- */
-export enum IqrfGatewayControllerMappingType {
-	/// USB CDC
-	CDC = 'cdc',
-	/// SPI
-	SPI = 'spi',
-	/// UART
-	UART = 'uart',
-}
+import { type MappingDeviceType } from './Mapping';
 
 /**
  * IQRF Gateway Controller mapping configuration
@@ -43,7 +23,7 @@ export interface IqrfGatewayControllerMapping {
 	/// Action button GPIO pin
 	button: number;
 	/// Device type
-	deviceType: IqrfGatewayControllerMappingDevice;
+	deviceType: MappingDeviceType;
 	/// Green LED GPIO pin
 	greenLed: number;
 	/// Mapping ID
