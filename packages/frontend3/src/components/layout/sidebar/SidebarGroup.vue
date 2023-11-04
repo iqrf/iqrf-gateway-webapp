@@ -51,13 +51,6 @@ defineProps<Props>();
 
 		.v-list-group {
 			.v-list-group__items {
-				.v-list-group {
-					.v-list-group__items {
-						.v-list-item {
-							padding-inline-start: 2.5em !important;
-						}
-					}
-				}
 				.v-list-item {
 					padding-inline-start: 6em !important;
 				}

@@ -1,11 +1,12 @@
 <template>
 	<Card>
 		<template #title>
-			{{ $t('components.configuration.profiles.title') }}
+			{{ $t(`components.configuration.daemon.interfaces.profiles.${mappingType}`) }}
 		</template>
 		<template #titleActions>
 			<DeviceProfileForm
 				:action='FormAction.Add'
+				:mapping-type='mappingType ?? MappingType.SPI'
 				@saved='getProfiles'
 			/>
 			<v-btn
@@ -41,6 +42,7 @@
 				<span>
 					<DeviceProfileForm
 						:action='FormAction.Edit'
+						:mapping-type='mappingType ?? MappingType.SPI'
 						:device-profile='item'
 						@saved='getProfiles'
 					/>
@@ -69,37 +71,50 @@
 </template>
 
 <script lang='ts' setup>
-import { type IqrfGatewayControllerService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
-import { type IqrfGatewayControllerMapping } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import { type IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
+import { type IqrfGatewayDaemonMapping } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import { MappingType } from '@iqrf/iqrf-gateway-webapp-client/types/Config/Mapping';
 import { mdiCheckboxMarkedOutline, mdiReload } from '@mdi/js';
-import { onMounted, type Ref, ref } from 'vue';
+import {
+	onMounted,
+	type PropType,
+	type Ref,
+	ref,
+} from 'vue';
 import { useI18n } from 'vue-i18n';
-import { toast } from 'vue3-toastify';
-
 
 import Card from '@/components/Card.vue';
-import DeviceProfileDeleteDialog from '@/components/config/controller/profiles/DeviceProfileDeleteDialog.vue';
-import DeviceProfileForm from '@/components/config/controller/profiles/DeviceProfileForm.vue';
+import DeviceProfileDeleteDialog from '@/components/config/daemon/interfaces/profiles/DeviceProfileDeleteDialog.vue';
+import DeviceProfileForm from '@/components/config/daemon/interfaces/profiles/DeviceProfileForm.vue';
 import DataTable from '@/components/DataTable.vue';
 import { FormAction } from '@/enums/controls';
 import { useApiClient } from '@/services/ApiClient';
 import { ComponentState } from '@/types/ComponentState';
 
+const componentProps = defineProps({
+	mappingType: {
+		type: [String, null] as PropType<MappingType | null>,
+		default: null,
+		required: false,
+	},
+});
 const emit = defineEmits(['apply']);
 const i18n = useI18n();
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
-const service: IqrfGatewayControllerService = useApiClient().getConfigServices().getIqrfGatewayControllerService();
-const profiles: Ref<IqrfGatewayControllerMapping[]> = ref([]);
+const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
 const headers = [
 	{key: 'name', title: i18n.t('components.configuration.profiles.name')},
+	{key: 'type', title: i18n.t('components.configuration.profiles.profileType')},
 	{key: 'deviceType', title: i18n.t('components.configuration.profiles.deviceType')},
 	{key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false},
 ];
+const profiles: Ref<IqrfGatewayDaemonMapping[]> = ref([]);
+
 async function getProfiles(): Promise<void> {
 	componentState.value = ComponentState.Loading;
-	service.listMappings()
-		.then((data: IqrfGatewayControllerMapping[]) => {
-			profiles.value = data.sort((a: IqrfGatewayControllerMapping, b: IqrfGatewayControllerMapping): number => {
+	service.listMappings(componentProps.mappingType)
+		.then((data: IqrfGatewayDaemonMapping[]) => {
+			profiles.value = data.sort((a: IqrfGatewayDaemonMapping, b: IqrfGatewayDaemonMapping): number => {
 				if (a === b) {
 					return 0;
 				}
@@ -109,14 +124,10 @@ async function getProfiles(): Promise<void> {
 				return a.deviceType.localeCompare(b.deviceType);
 			});
 			componentState.value = ComponentState.Ready;
-		})
-		.catch(() => {
-			toast.error('TODO FETCH ERROR HANDLING');
-			componentState.value = ComponentState.FetchFailed;
 		});
 }
 
-function applyProfile(profile: IqrfGatewayControllerMapping): void {
+function applyProfile(profile: IqrfGatewayDaemonMapping): void {
 	emit('apply', profile);
 }
 

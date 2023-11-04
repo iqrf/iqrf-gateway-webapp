@@ -41,8 +41,8 @@
 </template>
 
 <script lang='ts' setup>
-import { type IqrfGatewayControllerService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
-import { type IqrfGatewayControllerMapping } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import { type IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
+import { type IqrfGatewayDaemonMapping } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { mdiDelete } from '@mdi/js';
 import { type Ref, ref , type PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -55,14 +55,14 @@ import { useApiClient } from '@/services/ApiClient';
 const emit = defineEmits(['deleted']);
 const componentProps = defineProps({
 	profile: {
-		type: Object as PropType<IqrfGatewayControllerMapping>,
+		type: Object as PropType<IqrfGatewayDaemonMapping>,
 		required: true,
 	},
 });
 const i18n = useI18n();
 const width = getModalWidth();
 const show: Ref<boolean> = ref(false);
-const service: IqrfGatewayControllerService = useApiClient().getConfigServices().getIqrfGatewayControllerService();
+const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
 
 async function onSubmit(): Promise<void> {
 	if (componentProps.profile.id === undefined) {

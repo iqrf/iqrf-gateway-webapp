@@ -34,16 +34,16 @@
 				</template>
 				<TextInput
 					v-model='profile.name'
-					:label='$t("components.configuration.controller.profiles.name")'
+					:label='$t("components.configuration.profiles.name")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.configuration.controller.profiles.validation.nameMissing")),
+						(v: string|null) => ValidationRules.required(v, $t("components.configuration.profiles.validation.nameMissing")),
 					]'
 					required
 				/>
 				<SelectInput
 					v-model='profile.deviceType'
 					:items='typeOptions'
-					:label='$t("components.configuration.controller.profiles.type")'
+					:label='$t("components.configuration.profiles.deviceType")'
 					required
 				/>
 				<TextInput
@@ -132,7 +132,8 @@
 
 <script lang='ts' setup>
 import { type IqrfGatewayControllerService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
-import { type IqrfGatewayControllerMapping, IqrfGatewayControllerMappingDevice } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import { type IqrfGatewayControllerMapping } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import { MappingDeviceType } from '@iqrf/iqrf-gateway-webapp-client/types/Config/Mapping';
 import { mdiPencil, mdiPlus } from '@mdi/js';
 import { computed, type PropType, type Ref, ref , watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -159,7 +160,7 @@ const componentProps = defineProps({
 		type: Object as PropType<IqrfGatewayControllerMapping>,
 		default: (): IqrfGatewayControllerMapping => ({
 			button: 0,
-			deviceType: IqrfGatewayControllerMappingDevice.Adapter,
+			deviceType: MappingDeviceType.Adapter,
 			greenLed: 0,
 			name: '',
 			redLed: 0,
@@ -176,7 +177,7 @@ const show: Ref<boolean> = ref(false);
 const form: Ref<typeof VForm | null> = ref(null);
 const defaultProfile: IqrfGatewayControllerMapping = {
 	name: '',
-	deviceType: IqrfGatewayControllerMappingDevice.Board,
+	deviceType: MappingDeviceType.Board,
 	button: 0,
 	greenLed: 0,
 	redLed: 0,
@@ -187,12 +188,12 @@ const profile: Ref<IqrfGatewayControllerMapping> = ref({...defaultProfile});
 const watchdogPins: Ref<boolean> = ref(false);
 const typeOptions = [
 	{
-		title: i18n.t('components.configuration.controller.profiles.types.adapter'),
-		value: IqrfGatewayControllerMappingDevice.Adapter,
+		title: i18n.t('components.configuration.profiles.deviceTypes.adapter'),
+		value: MappingDeviceType.Adapter,
 	},
 	{
-		title: i18n.t('components.configuration.controller.profiles.types.board'),
-		value: IqrfGatewayControllerMappingDevice.Board,
+		title: i18n.t('components.configuration.profiles.deviceTypes.board'),
+		value: MappingDeviceType.Board,
 	},
 ];
 const iconColor = computed(() => {
@@ -209,9 +210,9 @@ const activatorIcon = computed(() => {
 });
 const dialogTitle = computed(() => {
 	if (componentProps.action === FormAction.Add) {
-		return i18n.t('components.configuration.controller.profiles.actions.add').toString();
+		return i18n.t('components.configuration.profiles.actions.add').toString();
 	}
-	return i18n.t('components.configuration.controller.profiles.actions.edit').toString();
+	return i18n.t('components.configuration.profiles.actions.edit').toString();
 });
 
 watchEffect(async(): Promise<void> => {
@@ -246,7 +247,7 @@ async function onSubmit(): Promise<void> {
 
 function handleSuccess(name: string): void {
 	toast.success(
-		i18n.t('components.configuration.controller.profiles.messages.save.success', {name: name}),
+		i18n.t('components.configuration.profiles.messages.save.success', {name: name}),
 	);
 	close();
 	emit('saved');
@@ -258,6 +259,5 @@ function handleError(): void {
 
 function close(): void {
 	show.value = false;
-	profile.value = {...defaultProfile};
 }
 </script>

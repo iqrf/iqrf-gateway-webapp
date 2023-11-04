@@ -123,14 +123,32 @@ function items(): SidebarLink[] {
 						icon: mdiLedOff,
 						to: '/config/controller',
 						feature: Feature.iqrfGatewayController,
+					},
+					{
+						title: i18n.t('pages.configuration.daemon.title'),
+						to: '/config/daemon',
 						children: [
 							{
-								title: i18n.t('pages.configuration.controller.settings.title'),
-								to: '/config/controller/settings',
-							},
-							{
-								title: i18n.t('pages.configuration.controller.profiles.title'),
-								to: '/config/controller/profiles',
+								title: i18n.t('pages.configuration.daemon.interfaces.title'),
+								to: '/config/daemon/interfaces',
+								children: [
+									{
+										title: i18n.t('pages.configuration.daemon.interfaces.dpa.title'),
+										to: '/config/daemon/interfaces/dpa',
+									},
+									{
+										title: i18n.t('pages.configuration.daemon.interfaces.uart.title'),
+										to: '/config/daemon/interfaces/uart',
+									},
+									{
+										title: i18n.t('pages.configuration.daemon.interfaces.spi.title'),
+										to: '/config/daemon/interfaces/spi',
+									},
+									{
+										title: i18n.t('pages.configuration.daemon.interfaces.cdc.title'),
+										to: '/config/daemon/interfaces/cdc',
+									},
+								],
 							},
 						],
 					},

@@ -27,6 +27,11 @@ const links: Ref<DisambiguationLink[]> = ref([
 		feature: Feature.iqrfGatewayController,
 	},
 	{
+		title: i18n.t('pages.configuration.daemon.title'),
+		description: i18n.t('pages.configuration.daemon.description'),
+		to: '/config/daemon',
+	},
+	{
 		title: i18n.t('pages.configuration.smtp.title'),
 		description: i18n.t('pages.configuration.smtp.description'),
 		to: '/config/smtp',
