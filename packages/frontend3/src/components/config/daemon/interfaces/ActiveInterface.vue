@@ -2,6 +2,7 @@
 	<v-form
 		ref='form'
 		v-slot='{ isValid }'
+		:disabled='[ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
 	>
 		<Card>
 			<template #title>
@@ -39,7 +40,7 @@
 				<v-btn
 					color='primary'
 					variant='elevated'
-					:disabled='componentState !== ComponentState.Ready || !isValid.value'
+					:disabled='!isValid.value || [ComponentState.Loading, ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
 					@click='onSubmit'
 				>
 					{{ $t('common.buttons.save') }}
@@ -95,7 +96,11 @@ const whitelist = [
 ];
 
 async function getConfig(): Promise<void> {
-	componentState.value = ComponentState.Loading;
+	if (componentState.value === ComponentState.Created) {
+		componentState.value = ComponentState.Loading;
+	} else {
+		componentState.value = ComponentState.Reloading;
+	}
 	service.getConfig()
 		.then((response: IqrfGatewayDaemonConfig) => {
 			const ifaceComponents = response.components.filter((component: IqrfGatewayDaemonComponentConfiguration<IqrfGatewayDaemonComponentName>) => whitelist.includes(component.name));
@@ -114,6 +119,7 @@ async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value) || active.value === null) {
 		return;
 	}
+	componentState.value = ComponentState.Saving;
 	const components: IqrfGatewayDaemonComponentState[] = whitelist.map((value: IqrfGatewayDaemonComponentName) => {
 		return {
 			enabled: value === active.value,

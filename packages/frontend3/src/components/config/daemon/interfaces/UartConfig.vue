@@ -2,10 +2,11 @@
 	<v-form
 		ref='form'
 		v-slot='{ isValid }'
+		:disabled='[ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
 	>
 		<Card>
 			<template #title>
-				{{ $t('pages.configuration.daemon.interfaces.spi.title') }}
+				{{ $t('pages.configuration.daemon.interfaces.uart.title') }}
 			</template>
 			<template #titleActions>
 				<v-tooltip
@@ -213,7 +214,7 @@
 				<v-btn
 					color='primary'
 					variant='elevated'
-					:disabled='componentState !== ComponentState.Ready || !isValid.value'
+					:disabled='!isValid.value || [ComponentState.Loading, ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
 					@click='onSubmit'
 				>
 					{{ $t('common.buttons.save') }}
@@ -238,12 +239,14 @@ import { computed, onMounted, type Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { useDisplay } from 'vuetify';
+import { VForm } from 'vuetify/components';
 
 import Card from '@/components/Card.vue';
 import InterfacePorts from '@/components/config/daemon/interfaces/InterfacePorts.vue';
 import DeviceProfileTable from '@/components/config/daemon/interfaces/profiles/DeviceProfileTable.vue';
 import SelectInput from '@/components/SelectInput.vue';
 import TextInput from '@/components/TextInput.vue';
+import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
 import { ComponentState } from '@/types/ComponentState';
@@ -252,6 +255,7 @@ const i18n = useI18n();
 const display = useDisplay();
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
+const form: Ref<typeof VForm | null> = ref(null);
 const config: Ref<IqrfGatewayDaemonUart | null> = ref(null);
 let instance = '';
 const interfacePins: Ref<boolean> = ref(false);
@@ -266,7 +270,11 @@ const baudRateOptions = computed(() => {
 });
 
 async function getConfig(): Promise<void> {
-	componentState.value = ComponentState.Loading;
+	if (componentState.value === ComponentState.Created) {
+		componentState.value = ComponentState.Loading;
+	} else {
+		componentState.value = ComponentState.Reloading;
+	}
 	service.getComponent(IqrfGatewayDaemonComponentName.IqrfUart)
 		.then((response: IqrfGatewayDaemonComponent<IqrfGatewayDaemonComponentName.IqrfUart>): void => {
 			config.value = response.instances[0] ?? null;
@@ -279,9 +287,10 @@ async function getConfig(): Promise<void> {
 }
 
 async function onSubmit(): Promise<void> {
-	if (config.value === null) {
+	if (!await validateForm(form.value) || config.value === null) {
 		return;
 	}
+	componentState.value = ComponentState.Saving;
 	const params = {...config.value};
 	if (!interfacePins.value) {
 		delete params.i2cEnableGpioPin;
