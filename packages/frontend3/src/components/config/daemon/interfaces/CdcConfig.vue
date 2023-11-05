@@ -2,6 +2,7 @@
 	<v-form
 		ref='form'
 		v-slot='{ isValid }'
+		:disabled='[ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
 	>
 		<Card>
 			<template #title>
@@ -74,7 +75,7 @@
 				<v-btn
 					color='primary'
 					variant='elevated'
-					:disabled='componentState !== ComponentState.Ready || !isValid.value'
+					:disabled='!isValid.value || [ComponentState.Loading, ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
 					@click='onSubmit'
 				>
 					{{ $t('common.buttons.save') }}
@@ -96,10 +97,12 @@ import { mdiReload } from '@mdi/js';
 import { onMounted, type Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
+import { VForm } from 'vuetify/components';
 
 import Card from '@/components/Card.vue';
 import InterfacePorts from '@/components/config/daemon/interfaces/InterfacePorts.vue';
 import TextInput from '@/components/TextInput.vue';
+import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
 import { ComponentState } from '@/types/ComponentState';
@@ -107,12 +110,17 @@ import { ComponentState } from '@/types/ComponentState';
 const i18n = useI18n();
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
+const form: Ref<typeof VForm | null> = ref(null);
 const config: Ref<IqrfGatewayDaemonCdc | null> = ref(null);
 let instance = '';
 const showIntefaceMenu: Ref<boolean> = ref(false);
 
 async function getConfig(): Promise<void> {
-	componentState.value = ComponentState.Loading;
+	if (componentState.value === ComponentState.Created) {
+		componentState.value = ComponentState.Loading;
+	} else {
+		componentState.value = ComponentState.Reloading;
+	}
 	service.getComponent(IqrfGatewayDaemonComponentName.IqrfCdc)
 		.then((response: IqrfGatewayDaemonComponent<IqrfGatewayDaemonComponentName.IqrfCdc>): void => {
 			config.value = response.instances[0] ?? null;
@@ -125,9 +133,10 @@ async function getConfig(): Promise<void> {
 }
 
 async function onSubmit(): Promise<void> {
-	if (config.value === null) {
+	if (!await validateForm(form.value) || config.value === null) {
 		return;
 	}
+	componentState.value = ComponentState.Saving;
 	const params = {...config.value};
 	service.updateInstance(IqrfGatewayDaemonComponentName.IqrfCdc, instance, params)
 		.then(() => {

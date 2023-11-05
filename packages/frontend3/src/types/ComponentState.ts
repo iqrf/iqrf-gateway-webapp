@@ -23,8 +23,12 @@ export enum ComponentState {
 	Created = 'created',
 	/// Data required for component are being loaded
 	Loading = 'loading',
+	/// Data has previously been loaded, and are being loaded again
+	Reloading = 'reloading',
 	/// Data required for component are loaded
 	Ready = 'ready',
+	/// Saving data
+	Saving = 'saving',
 	/// An error occurred
 	Error = 'error',
 	/// An error occurred during data loading

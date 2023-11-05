@@ -2,6 +2,7 @@
 	<v-form
 		ref='form'
 		v-slot='{ isValid }'
+		:disabled='[ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
 	>
 		<Card>
 			<template #title>
@@ -55,7 +56,7 @@
 				<v-btn
 					color='primary'
 					variant='elevated'
-					:disabled='componentState !== ComponentState.Ready || !isValid.value'
+					:disabled='!isValid.value || [ComponentState.Loading, ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
 					@click='onSubmit'
 				>
 					{{ $t('common.buttons.save') }}
@@ -93,13 +94,17 @@ const config: Ref<IqrfGatewayDaemonDpa | null> = ref(null);
 let instance = '';
 
 async function getConfig(): Promise<void> {
-	componentState.value = ComponentState.Loading;
+	if (componentState.value === ComponentState.Created) {
+		componentState.value = ComponentState.Loading;
+	} else {
+		componentState.value = ComponentState.Reloading;
+	}
 	service.getComponent(IqrfGatewayDaemonComponentName.IqrfDpa)
 		.then((response: IqrfGatewayDaemonComponent<IqrfGatewayDaemonComponentName.IqrfDpa>): void => {
 			config.value = response.instances[0] ?? null;
 			if (config.value !== null) {
-				componentState.value = ComponentState.Ready;
 				instance = config.value.instance;
+				componentState.value = ComponentState.Ready;
 			}
 		})
 		.catch(() => toast.error('TODO FETCH ERROR HANDLING'));
@@ -109,6 +114,7 @@ async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value) || config.value === null) {
 		return;
 	}
+	componentState.value = ComponentState.Saving;
 	const params = {...config.value};
 	service.updateInstance(IqrfGatewayDaemonComponentName.IqrfDpa, instance, params)
 		.then(() => {
