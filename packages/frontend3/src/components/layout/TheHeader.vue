@@ -19,8 +19,8 @@
 <script lang='ts' setup>
 import { useDisplay } from 'vuetify';
 
-import LogoSmall from '@/assets/themes/generic/logo-small.svg?url';
-import Logo from '@/assets/themes/generic/logo-white.svg?url';
+import LogoSmall from '@/assets/themes/generic/gateway-logo-white-small.svg?url';
+import Logo from '@/assets/themes/generic/gateway-logo-white.svg?url';
 import LocaleSelect from '@/components/layout/header/LocaleSelect.vue';
 import UserControls from '@/components/layout/header/UserControls.vue';
 import UserControlsMenu from '@/components/layout/header/UserControlsMenu.vue';
