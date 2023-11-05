@@ -22,6 +22,8 @@ import { type MappingDeviceType, type MappingType } from './Mapping';
 export enum IqrfGatewayDaemonComponentName {
 	/// IQRF CDC component
 	IqrfCdc = 'iqrf::IqrfCdc',
+	/// IQRF DB component
+	IqrfDb = 'iqrf::IqrfDb',
 	/// IQRF DPA component
 	IqrfDpa = 'iqrf::IqrfDpa',
 	/// IQRF IDE counterpart component
@@ -70,6 +72,18 @@ export interface IqrfGatewayDaemonCdc extends IqrfGatewayDaemonComponentInstance
 	IqrfInterface: string;
 }
 
+/**
+ * IQRF Gateway Daemon IqrfDb component configuration
+ */
+export interface IqrfGatewayDaemonDb extends IqrfGatewayDaemonComponentInstanceBase<IqrfGatewayDaemonComponentName.IqrfDb> {
+	/// Enumerate automatically without prior invocation
+	autoEnumerateBeforeInvoked: boolean;
+	/// Run enumeration on launch
+	enumerateOnLaunch: boolean;
+	/// Include metadata in responses
+	metadataToMessages: boolean;
+}
+
 
 /**
  * IQRF Gateway Daemon IqrfSpi component configuration
@@ -93,6 +107,9 @@ export interface IqrfGatewayDaemonSpi extends IqrfGatewayDaemonComponentInstance
 	uartEnableGpioPin?: number;
 }
 
+/**
+ * IQRF Gateway Daemon IqrfUart component configuration
+ */
 export interface IqrfGatewayDaemonUart extends IqrfGatewayDaemonComponentInstanceBase<IqrfGatewayDaemonComponentName.IqrfUart> {
 	/// Device name
 	IqrfInterface: string;
@@ -149,6 +166,9 @@ export interface IqrfGatewayDaemonIdeCounterpart extends IqrfGatewayDaemonCompon
 	operMode?: IqrfGatewayDaemonIdeCounterpartMode;
 }
 
+/**
+ * IQRF Gateway Daemon JsCache component configuration
+ */
 export interface IqrfGatewayDaemonJsCache extends IqrfGatewayDaemonComponentInstanceBase<IqrfGatewayDaemonComponentName.IqrfJsCache> {
 	/// Cache update check period
 	checkPeriodInMinutes: number;
@@ -178,6 +198,7 @@ export interface IqrfGatewayDaemonComponentInstanceConfigurations {
 	[IqrfGatewayDaemonComponentName.IqrfSpi]: IqrfGatewayDaemonSpi;
 	[IqrfGatewayDaemonComponentName.IqrfUart]: IqrfGatewayDaemonUart;
 	[IqrfGatewayDaemonComponentName.IqrfDpa]: IqrfGatewayDaemonDpa;
+	[IqrfGatewayDaemonComponentName.IqrfDb]: IqrfGatewayDaemonDb;
 	[IqrfGatewayDaemonComponentName.IqrfIdeCounterpart]: IqrfGatewayDaemonIdeCounterpart;
 	[IqrfGatewayDaemonComponentName.IqrfJsCache]: IqrfGatewayDaemonJsCache;
 	[IqrfGatewayDaemonComponentName.IqrfJsonSplitter]: IqrfGatewayDaemonJsonSplitter;

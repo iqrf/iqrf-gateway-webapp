@@ -6,7 +6,7 @@
 	>
 		<Card>
 			<template #title>
-				{{ $t('pages.configuration.daemon.cache.title') }}
+				{{ $t('pages.configuration.daemon.db.title') }}
 			</template>
 			<template #titleActions>
 				<v-tooltip
@@ -26,35 +26,27 @@
 			<v-skeleton-loader
 				class='input-skeleton-loader'
 				:loading='componentState === ComponentState.Loading'
-				type='heading, text'
+				type='text@3'
 			>
 				<v-responsive>
 					<section v-if='config'>
-						<TextInput
-							v-model='config.urlRepo'
-							:label='$t("components.configuration.daemon.cache.url")'
-							:rules='[
-								(v: string|null) => ValidationRules.required(v, "components.configuration.daemon.cache.validation.urlMissing"),
-							]'
-							required
+						<v-checkbox
+							v-model='config.autoEnumerateBeforeInvoked'
+							:label='$t("components.configuration.daemon.db.autoEnumerate")'
+							density='compact'
+							hide-details
 						/>
 						<v-checkbox
-							v-model='updateCachePeriodically'
-							:label='$t("components.configuration.daemon.cache.update")'
+							v-model='config.enumerateOnLaunch'
+							:label='$t("components.configuration.daemon.db.enumerateOnLaunch")'
 							density='compact'
-							:hide-details='!updateCachePeriodically'
+							hide-details
 						/>
-						<TextInput
-							v-if='updateCachePeriodically'
-							v-model.number='config.checkPeriodInMinutes'
-							type='number'
-							:label='$t("components.configuration.daemon.cache.updatePeriod")'
-							:rules='updateCachePeriodically ? [
-								(v: number|null) => ValidationRules.required(v, "components.configuration.daemon.cache.validation.updatePeriodMissing"),
-								(v: number) => ValidationRules.integer(v, "components.configuration.daemon.cache.validation.updatePeriodInvalid"),
-								(v: number) => ValidationRules.min(v, 0, "components.configuration.daemon.cache.validation.updatePeriodInvalid"),
-							] : []'
-							:required='updateCachePeriodically'
+						<v-checkbox
+							v-model='config.metadataToMessages'
+							:label='$t("components.configuration.daemon.db.includeMetadata")'
+							density='compact'
+							hide-details
 						/>
 					</section>
 				</v-responsive>
@@ -78,7 +70,7 @@ import { type IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/
 import {
 	type IqrfGatewayDaemonComponent,
 	IqrfGatewayDaemonComponentName,
-	type IqrfGatewayDaemonJsCache,
+	type IqrfGatewayDaemonDb,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { mdiReload } from '@mdi/js';
 import {
@@ -91,9 +83,7 @@ import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
 import Card from '@/components/Card.vue';
-import TextInput from '@/components/TextInput.vue';
 import { validateForm } from '@/helpers/validateForm';
-import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
 import { ComponentState } from '@/types/ComponentState';
 
@@ -102,8 +92,7 @@ const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
 const form: Ref<typeof VForm | null> = ref(null);
 let instance = '';
-const config: Ref<IqrfGatewayDaemonJsCache | null> = ref(null);
-const updateCachePeriodically: Ref<boolean> = ref(false);
+const config: Ref<IqrfGatewayDaemonDb | null> = ref(null);
 
 async function getConfig(): Promise<void> {
 	if (componentState.value === ComponentState.Created) {
@@ -111,12 +100,11 @@ async function getConfig(): Promise<void> {
 	} else {
 		componentState.value = ComponentState.Reloading;
 	}
-	service.getComponent(IqrfGatewayDaemonComponentName.IqrfJsCache)
-		.then((response: IqrfGatewayDaemonComponent<IqrfGatewayDaemonComponentName.IqrfJsCache>): void => {
+	service.getComponent(IqrfGatewayDaemonComponentName.IqrfDb)
+		.then((response: IqrfGatewayDaemonComponent<IqrfGatewayDaemonComponentName.IqrfDb>): void => {
 			config.value = response.instances[0] ?? null;
 			if (config.value !== null) {
 				instance = config.value.instance;
-				updateCachePeriodically.value = config.value.checkPeriodInMinutes !== 0;
 				componentState.value = ComponentState.Ready;
 			}
 		})
@@ -129,11 +117,11 @@ async function onSubmit(): Promise<void> {
 	}
 	componentState.value = ComponentState.Saving;
 	const params = {...config.value};
-	service.updateInstance(IqrfGatewayDaemonComponentName.IqrfJsCache, instance, params)
+	service.updateInstance(IqrfGatewayDaemonComponentName.IqrfDb, instance, params)
 		.then(() => {
 			getConfig().then(() => {
 				toast.success(
-					i18n.t('components.configuration.daemon.cache.messages.save.success'),
+					i18n.t('components.configuration.daemon.db.messages.save.success'),
 				);
 			});
 		})
