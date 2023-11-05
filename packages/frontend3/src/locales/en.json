@@ -527,6 +527,21 @@
 						"uartPinInvalid": "UART enable GPIO pin should be an integer."
 					}
 				},
+				"cache": {
+					"url": "IQRF repository URL",
+					"update": "Update cache periodically",
+					"updatePeriod": "Cache update period (in minutes)",
+					"validation": {
+						"urlMissing": "Please enter IQRF repository url.",
+						"updatePeriodMissing": "Please enter cache update period.",
+						"updatePeriodInvalid": "Cache update period should be an integer greater or equal to 0."
+					},
+					"messages": {
+						"save": {
+							"success": "Cache and repository configuration sucessfully saved."
+						}
+					}
+				},
 				"validation": {
 					"instanceMissing": "Please enter instance name."
 				}
@@ -690,8 +705,16 @@
 				}
 			},
 			"power": {
-				"reboot": "Reboot",
-				"powerOff": "Power off",
+				"powerOff": {
+					"action": "Power off",
+					"title": "Power off confirmation",
+					"prompt": "The gateway will power off within 60 seconds."
+				},
+				"reboot": {
+					"action": "Reboot",
+					"title": "Reboot confirmation",
+					"prompt": "The gateway will reboot within 60 seconds."
+				},
 				"messages": {
 					"powerOffSuccess": "Your device will be powered off at {time}.",
 					"powerOffFailed": "Failed to schedule gateway poweroff: {error}.",
@@ -907,18 +930,27 @@
 				"description": "Configure IQRF Gateway Daemon.",
 				"interfaces": {
 					"title": "Interfaces",
+					"description": "Configure IQRF communication interfaces.",
 					"dpa": {
-						"title": "DPA"
+						"title": "DPA",
+						"description": "Configure DPA channel and active IQRF interface."
 					},
 					"uart": {
-						"title": "UART"
+						"title": "UART",
+						"description": "Configure UART interface."
 					},
 					"spi": {
-						"title": "SPI"
+						"title": "SPI",
+						"description": "Configure SPI interface."
 					},
 					"cdc": {
-						"title": "USB CDC"
+						"title": "USB CDC",
+						"description": "Configure USB CDC interface."
 					}
+				},
+				"cache": {
+					"title": "Cache and repository",
+					"description": "Configure cache and IQRF repository."
 				}
 			},
 			"smtp": {

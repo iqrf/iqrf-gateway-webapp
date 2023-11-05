@@ -150,6 +150,10 @@ function items(): SidebarLink[] {
 									},
 								],
 							},
+							{
+								title: i18n.t('pages.configuration.daemon.cache.title'),
+								to: '/config/daemon/cache',
+							},
 						],
 					},
 					{

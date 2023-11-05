@@ -26,6 +26,8 @@ export enum IqrfGatewayDaemonComponentName {
 	IqrfDpa = 'iqrf::IqrfDpa',
 	/// IQRF IDE counterpart component
 	IqrfIdeCounterpart = 'iqrf::IdeCounterpart',
+	/// IQRF JS Cache component
+	IqrfJsCache = 'iqrf::JsCache',
 	/// IQRF Gateway Daemon JSON splitter component
 	IqrfJsonSplitter = 'iqrf::JsonSplitter',
 	/// IQRF SPI component
@@ -147,6 +149,15 @@ export interface IqrfGatewayDaemonIdeCounterpart extends IqrfGatewayDaemonCompon
 	operMode?: IqrfGatewayDaemonIdeCounterpartMode;
 }
 
+export interface IqrfGatewayDaemonJsCache extends IqrfGatewayDaemonComponentInstanceBase<IqrfGatewayDaemonComponentName.IqrfJsCache> {
+	/// Cache update check period
+	checkPeriodInMinutes: number;
+	/// Download repository cache if empty
+	downloadIfRepoCacheEmpty: boolean;
+	/// IQRF repository URL
+	urlRepo: string;
+}
+
 /**
  * IQRF Gateway Daemon JsonSplitter component configuration
  */
@@ -168,6 +179,7 @@ export interface IqrfGatewayDaemonComponentInstanceConfigurations {
 	[IqrfGatewayDaemonComponentName.IqrfUart]: IqrfGatewayDaemonUart;
 	[IqrfGatewayDaemonComponentName.IqrfDpa]: IqrfGatewayDaemonDpa;
 	[IqrfGatewayDaemonComponentName.IqrfIdeCounterpart]: IqrfGatewayDaemonIdeCounterpart;
+	[IqrfGatewayDaemonComponentName.IqrfJsCache]: IqrfGatewayDaemonJsCache;
 	[IqrfGatewayDaemonComponentName.IqrfJsonSplitter]: IqrfGatewayDaemonJsonSplitter;
 }
 
