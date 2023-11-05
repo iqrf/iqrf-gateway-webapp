@@ -19,31 +19,21 @@ limitations under the License.
 		<template #title>
 			{{ $t('pages.gateway.power.title') }}
 		</template>
-		<v-btn
-			color='error'
-			@click='powerOff'
-		>
-			<v-icon :icon='mdiPower' />
-			{{ $t('components.gateway.power.powerOff') }}
-		</v-btn> <v-btn
-			color='primary'
-			@click='reboot'
-		>
-			<v-icon :icon='mdiReload' />
-			{{ $t('components.gateway.power.reboot') }}
-		</v-btn>
+		<PowerOffDialog @confirm='powerOff' />
+		<RebootDialog @confirm='reboot' />
 	</Card>
 </template>
 
 <script lang='ts' setup>
 import { type PowerService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
 import { type PowerActionResponse } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
-import { mdiPower, mdiReload } from '@mdi/js';
 import { type AxiosError } from 'axios';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import Card from '@/components/Card.vue';
+import PowerOffDialog from '@/components/gateway/power/PowerOffDialog.vue';
+import RebootDialog from '@/components/gateway/power/RebootDialog.vue';
 import { basicErrorToast } from '@/helpers/errorToast';
 import { useApiClient } from '@/services/ApiClient';
 
