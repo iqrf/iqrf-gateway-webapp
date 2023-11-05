@@ -542,6 +542,16 @@
 						}
 					}
 				},
+				"db": {
+					"autoEnumerate": "Run enumeration automatically without manual invocation",
+					"enumerateOnLaunch": "Run enumeration on Daemon launch",
+					"includeMetadata": "Include device metadata in response messages",
+					"messages": {
+						"save": {
+							"success": "Database configuration successfully saved."
+						}
+					}
+				},
 				"validation": {
 					"instanceMissing": "Please enter instance name."
 				}
@@ -951,6 +961,10 @@
 				"cache": {
 					"title": "Cache and repository",
 					"description": "Configure cache and IQRF repository."
+				},
+				"db": {
+					"title": "Device database",
+					"description": "Configure device database."
 				}
 			},
 			"smtp": {
