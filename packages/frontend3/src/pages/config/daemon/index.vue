@@ -24,5 +24,10 @@ const links: Ref<DisambiguationLink[]> = ref([
 		description: i18n.t('pages.configuration.daemon.interfaces.description'),
 		to: '/config/daemon/interfaces',
 	},
+	{
+		title: i18n.t('pages.configuration.daemon.cache.title'),
+		description: i18n.t('pages.configuration.daemon.cache.description'),
+		to: '/config/daemon/cache',
+	},
 ]);
 </script>
