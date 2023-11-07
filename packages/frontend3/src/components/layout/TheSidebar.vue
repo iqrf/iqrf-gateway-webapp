@@ -151,6 +151,24 @@ function items(): SidebarLink[] {
 								],
 							},
 							{
+								title: i18n.t('pages.configuration.daemon.connections.title'),
+								to: '/config/daemon/connections',
+								children: [
+									{
+										title: i18n.t('pages.configuration.daemon.connections.mqtt.title'),
+										to: '/config/daemon/connections/mqtt',
+									},
+									{
+										title: i18n.t('pages.configuration.daemon.connections.udp.title'),
+										to: '/config/daemon/connections/udp',
+									},
+								],
+							},
+							{
+								title: i18n.t('pages.configuration.daemon.jsonApi.title'),
+								to: '/config/daemon/json-api',
+							},
+							{
 								title: i18n.t('pages.configuration.daemon.cache.title'),
 								to: '/config/daemon/cache',
 							},

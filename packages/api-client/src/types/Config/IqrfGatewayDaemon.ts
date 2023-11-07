@@ -28,14 +28,20 @@ export enum IqrfGatewayDaemonComponentName {
 	IqrfDpa = 'iqrf::IqrfDpa',
 	/// IQRF IDE counterpart component
 	IqrfIdeCounterpart = 'iqrf::IdeCounterpart',
-	/// IQRF JS Cache component
+	/// JS Cache component
 	IqrfJsCache = 'iqrf::JsCache',
-	/// IQRF Gateway Daemon JSON splitter component
+	/// JSON DPA API RAW component
+	IqrfJsonDpaApiRaw = 'iqrf::JsonDpaApiRaw',
+	/// JSON splitter component
 	IqrfJsonSplitter = 'iqrf::JsonSplitter',
+	/// MQTT messaging component
+	IqrfMqttMessaging = 'iqrf::MqttMessaging',
 	/// IQRF SPI component
 	IqrfSpi = 'iqrf::IqrfSpi',
 	/// IQRF UART component
-	IqrfUart = 'iqrf::IqrfUart'
+	IqrfUart = 'iqrf::IqrfUart',
+	/// UDP messaging component
+	IqrfUdpMessaging = 'iqrf::UdpMessaging'
 }
 
 /**
@@ -82,53 +88,6 @@ export interface IqrfGatewayDaemonDb extends IqrfGatewayDaemonComponentInstanceB
 	enumerateOnLaunch: boolean;
 	/// Include metadata in responses
 	metadataToMessages: boolean;
-}
-
-
-/**
- * IQRF Gateway Daemon IqrfSpi component configuration
- */
-export interface IqrfGatewayDaemonSpi extends IqrfGatewayDaemonComponentInstanceBase<IqrfGatewayDaemonComponentName.IqrfSpi> {
-	/// Device name
-	IqrfInterface: string;
-	/// BUS enable GPIO pin
-	busEnableGpioPin: number;
-	/// I2C enable GPIO pin
-	i2cEnableGpioPin?: number;
-	/// Programming mode switch GPIO pin mode
-	pgmSwitchGpioPin: number;
-	/// Power enable GPIO pin
-	powerEnableGpioPin: number;
-	/// SPI enable GPIO pin
-	spiEnableGpioPin?: number;
-	/// Reset SPI on start
-	spiReset: boolean;
-	/// UART enable GPIO pin
-	uartEnableGpioPin?: number;
-}
-
-/**
- * IQRF Gateway Daemon IqrfUart component configuration
- */
-export interface IqrfGatewayDaemonUart extends IqrfGatewayDaemonComponentInstanceBase<IqrfGatewayDaemonComponentName.IqrfUart> {
-	/// Device name
-	IqrfInterface: string;
-	/// UART baud rate
-	baudRate: number;
-	/// BUS enable GPIO pin
-	busEnableGpioPin: number;
-	/// I2C enable GPIO pin
-	i2cEnableGpioPin?: number;
-	/// Programming mode switch GPIO pin mode
-	pgmSwitchGpioPin: number;
-	/// Power enable GPIO pin
-	powerEnableGpioPin: number;
-	/// SPI enable GPIO pin
-	spiEnableGpioPin?: number;
-	/// UART enable GPIO pin
-	uartEnableGpioPin?: number;
-	/// Reset UART on start
-	uartReset: boolean;
 }
 
 /**
@@ -179,6 +138,14 @@ export interface IqrfGatewayDaemonJsCache extends IqrfGatewayDaemonComponentInst
 }
 
 /**
+ * IQRF Gateway Daemon JsonDpaApiRaw component configuration
+ */
+export interface IqrfGatewayDaemonJsonDpaApiRaw extends IqrfGatewayDaemonComponentInstanceBase<IqrfGatewayDaemonComponentName.IqrfJsonDpaApiRaw> {
+	/// Allow asynchronous DPA messages
+	asyncDpaMessage: boolean;
+}
+
+/**
  * IQRF Gateway Daemon JsonSplitter component configuration
  */
 export interface IqrfGatewayDaemonJsonSplitter extends IqrfGatewayDaemonComponentInstanceBase<IqrfGatewayDaemonComponentName.IqrfJsonSplitter> {
@@ -191,17 +158,148 @@ export interface IqrfGatewayDaemonJsonSplitter extends IqrfGatewayDaemonComponen
 }
 
 /**
+ * IQRF Gateway Daemon MqttMessaging persistence options
+ */
+export enum IqrfGatewayDaemonMqttMessagingPersistence {
+	/// Memory-based
+	MEMORY = 0,
+	/// Filesystem-based
+	FILESYSTEM = 1,
+	/// Application-based
+	APPLICATION = 2,
+}
+
+/**
+ * IQRF Gateway Daemon MqttMessaging qos options
+ */
+export enum IqrfGatewayDaemonMqttMessagingQos {
+	/// At most once
+	AT_MOST_ONCE = 0,
+	/// At least once
+	AT_LEAST_ONCE = 1,
+	/// Exactly once
+	ONCE = 2,
+}
+
+/**
+ * IQRF Gateway Daemon MqttMessaging component configuration
+ */
+export interface IqrfGatewayDaemonMqttMessaging extends IqrfGatewayDaemonComponentInstanceBase<IqrfGatewayDaemonComponentName.IqrfMqttMessaging> {
+	/// Broker URL
+	BrokerAddr: string;
+	/// Client ID
+	ClientId: string;
+	/// Connection timeout
+	ConnectTimeout: number;
+	/// Authenticate certificate server-side
+	EnableServerCertAuth: boolean;
+	/// Cipher suites
+	EnabledCipherSuites: string;
+	/// TLS enabled
+	EnabledSSL: boolean;
+	/// Keep-alive interval
+	KeepAliveInterval: number;
+	/// Path to key store
+	KeyStore: string;
+	/// Maximum reconnect delay
+	MaxReconnect: number;
+	/// Minimum reconnect delay
+	MinReconnect: number;
+	/// Client password
+	Password: string;
+	/// Persistence option
+	Persistence: IqrfGatewayDaemonMqttMessagingPersistence;
+	/// Path to private key
+	PrivateKey: string;
+	/// Private key password
+	PrivateKeyPassword: string;
+	/// QoS level
+	Qos: IqrfGatewayDaemonMqttMessagingQos;
+	/// Request topic
+	TopicRequest: string;
+	/// Response topic
+	TopicResponse: string;
+	/// Path to trust store
+	TrustStore: string;
+	/// Client username
+	User: string;
+	/// Allow asynchronous messages
+	acceptAsyncMsg: boolean;
+}
+
+/**
+ * IQRF Gateway Daemon IqrfSpi component configuration
+ */
+export interface IqrfGatewayDaemonSpi extends IqrfGatewayDaemonComponentInstanceBase<IqrfGatewayDaemonComponentName.IqrfSpi> {
+	/// Device name
+	IqrfInterface: string;
+	/// BUS enable GPIO pin
+	busEnableGpioPin: number;
+	/// I2C enable GPIO pin
+	i2cEnableGpioPin?: number;
+	/// Programming mode switch GPIO pin mode
+	pgmSwitchGpioPin: number;
+	/// Power enable GPIO pin
+	powerEnableGpioPin: number;
+	/// SPI enable GPIO pin
+	spiEnableGpioPin?: number;
+	/// Reset SPI on start
+	spiReset: boolean;
+	/// UART enable GPIO pin
+	uartEnableGpioPin?: number;
+}
+
+/**
+ * IQRF Gateway Daemon IqrfUart component configuration
+ */
+export interface IqrfGatewayDaemonUart extends IqrfGatewayDaemonComponentInstanceBase<IqrfGatewayDaemonComponentName.IqrfUart> {
+	/// Device name
+	IqrfInterface: string;
+	/// UART baud rate
+	baudRate: number;
+	/// BUS enable GPIO pin
+	busEnableGpioPin: number;
+	/// I2C enable GPIO pin
+	i2cEnableGpioPin?: number;
+	/// Programming mode switch GPIO pin mode
+	pgmSwitchGpioPin: number;
+	/// Power enable GPIO pin
+	powerEnableGpioPin: number;
+	/// SPI enable GPIO pin
+	spiEnableGpioPin?: number;
+	/// UART enable GPIO pin
+	uartEnableGpioPin?: number;
+	/// Reset UART on start
+	uartReset: boolean;
+}
+
+/**
+ * IQRF Gateway Daemon UdpMessaging component configuration
+ */
+export interface IqrfGatewayDaemonUdpMessaging extends IqrfGatewayDaemonComponentInstanceBase<IqrfGatewayDaemonComponentName.IqrfUdpMessaging> {
+	/// Local port number
+	LocalPort: number;
+	/// Remote port number
+	RemotePort: number;
+	/// UDP client records expiration time
+	deviceRecordExpiration: number;
+}
+
+/**
  * IQRF Gateway Daemon component instance configurations
  */
 export interface IqrfGatewayDaemonComponentInstanceConfigurations {
 	[IqrfGatewayDaemonComponentName.IqrfCdc]: IqrfGatewayDaemonCdc;
-	[IqrfGatewayDaemonComponentName.IqrfSpi]: IqrfGatewayDaemonSpi;
-	[IqrfGatewayDaemonComponentName.IqrfUart]: IqrfGatewayDaemonUart;
 	[IqrfGatewayDaemonComponentName.IqrfDpa]: IqrfGatewayDaemonDpa;
 	[IqrfGatewayDaemonComponentName.IqrfDb]: IqrfGatewayDaemonDb;
 	[IqrfGatewayDaemonComponentName.IqrfIdeCounterpart]: IqrfGatewayDaemonIdeCounterpart;
 	[IqrfGatewayDaemonComponentName.IqrfJsCache]: IqrfGatewayDaemonJsCache;
+	[IqrfGatewayDaemonComponentName.IqrfJsonDpaApiRaw]: IqrfGatewayDaemonJsonDpaApiRaw;
 	[IqrfGatewayDaemonComponentName.IqrfJsonSplitter]: IqrfGatewayDaemonJsonSplitter;
+	[IqrfGatewayDaemonComponentName.IqrfMqttMessaging]: IqrfGatewayDaemonMqttMessaging;
+	[IqrfGatewayDaemonComponentName.IqrfSpi]: IqrfGatewayDaemonSpi;
+	[IqrfGatewayDaemonComponentName.IqrfUart]: IqrfGatewayDaemonUart;
+	[IqrfGatewayDaemonComponentName.IqrfUdpMessaging]: IqrfGatewayDaemonUdpMessaging;
 }
 
 /**
