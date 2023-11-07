@@ -51,7 +51,7 @@
 						variant='elevated'
 						@click='close'
 					>
-						{{ $t('generic.button.cancel') }}
+						{{ $t('common.buttons.cancel') }}
 					</v-btn>
 				</template>
 			</Card>

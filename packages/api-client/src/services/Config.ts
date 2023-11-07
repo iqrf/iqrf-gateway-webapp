@@ -15,6 +15,7 @@
  */
 
 import {BaseService} from './BaseService';
+import { AptService } from './Config/AptService';
 
 import { IqrfGatewayControllerService } from './Config/IqrfGatewayControllerService';
 import { IqrfGatewayDaemonService } from './Config/IqrfGatewayDaemonService';
@@ -22,6 +23,7 @@ import { IqrfRepositoryService } from './Config/IqrfRepositoryService';
 import { JournalService } from './Config/JournalService';
 import { MailerService } from './Config/MailerService';
 
+export * from './Config/AptService';
 export * from './Config/IqrfGatewayControllerService';
 export * from './Config/IqrfGatewayDaemonService';
 export * from './Config/IqrfRepositoryService';
@@ -32,6 +34,14 @@ export * from './Config/MailerService';
  * Configuration services
  */
 export class ConfigServices extends BaseService {
+
+	/**
+	 * Returns APT service
+	 * @return {AptService} APT service
+	 */
+	public getAptService(): AptService {
+		return new AptService(this.apiClient);
+	}
 
 	/**
 	 * Returns IQRF repository service
