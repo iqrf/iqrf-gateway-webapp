@@ -41,5 +41,11 @@ const links: Ref<DisambiguationLink[]> = ref([
 		description: i18n.t('pages.configuration.time.description'),
 		to: '/config/time',
 	},
+	{
+		title: i18n.t('pages.configuration.journal.title'),
+		description: i18n.t('pages.configuration.journal.description'),
+		to: '/config/journal',
+		feature: Feature.journal,
+	},
 ]);
 </script>

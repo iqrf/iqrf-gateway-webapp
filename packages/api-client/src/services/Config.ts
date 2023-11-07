@@ -16,14 +16,16 @@
 
 import {BaseService} from './BaseService';
 
-import {IqrfGatewayControllerService} from './Config/IqrfGatewayControllerService';
-import {IqrfGatewayDaemonService} from './Config/IqrfGatewayDaemonService';
-import {IqrfRepositoryService} from './Config/IqrfRepositoryService';
-import {MailerService} from './Config/MailerService';
+import { IqrfGatewayControllerService } from './Config/IqrfGatewayControllerService';
+import { IqrfGatewayDaemonService } from './Config/IqrfGatewayDaemonService';
+import { IqrfRepositoryService } from './Config/IqrfRepositoryService';
+import { JournalService } from './Config/JournalService';
+import { MailerService } from './Config/MailerService';
 
 export * from './Config/IqrfGatewayControllerService';
 export * from './Config/IqrfGatewayDaemonService';
 export * from './Config/IqrfRepositoryService';
+export * from './Config/JournalService';
 export * from './Config/MailerService';
 
 /**
@@ -53,6 +55,14 @@ export class ConfigServices extends BaseService {
 	 */
 	public getIqrfGatewayDaemonService(): IqrfGatewayDaemonService {
 		return new IqrfGatewayDaemonService(this.apiClient);
+	}
+
+	/**
+	 * Returns journal service
+	 * @return {JournalService} Journal service
+	 */
+	public getJournalService(): JournalService {
+		return new JournalService(this.apiClient);
 	}
 
 	/**

@@ -781,7 +781,47 @@
 				}
 			},
 			"journal": {
-
+				"forwardToSyslog": "Forward journal to syslog",
+				"storage": "Storage method",
+				"storages": {
+					"volatile": "In-memory persistence",
+					"persistent": "Filesystem persistence"
+				},
+				"maxSize": "Maximum disk space used by journal in MB",
+				"maxFiles": "Maximum number of log files to keep",
+				"maxFileSize": "Maximum log size in MB",
+				"sizeRotation": "File-size based log rotation",
+				"timeRotation": "Time-based log rotation",
+				"timeUnit": "Time unit",
+				"timeUnits": {
+					"seconds": "Seconds",
+					"minutes": "Minutes",
+					"hours": "Hours",
+					"days": "Days",
+					"weeks": "Weeks",
+					"months": "Months",
+					"years": "Years"
+				},
+				"unitCount": "Unit count",
+				"notes": {
+					"systemDefault": "Set value to 0 to use systemd default.",
+					"maxFiles": "Systemd default value is 100 files."
+				},
+				"validation": {
+					"maxSizeMissing": "Please enter maximum disk space usable by journal.",
+					"maxSizeInvalid": "Maximum disk space used should be an integer greater or equal to 0.",
+					"maxFilesMissing": "Please enter maximum number of log files to keep.",
+					"maxFilesInvalid": "Maximum number of files to keep should be an integer greater or equal to 1.",
+					"maxFileSizeMissing": "Please enter maximum log file size.",
+					"maxFileSizeInvalid": "Maximum log file size should be an integer greater or equal to 0.",
+					"unitCountMissing": "Please enter unit count.",
+					"unitCountInvalid": "Unit count should be an integer greater or equal to 1."
+				},
+				"messages": {
+					"save": {
+						"success": "Journal configuration successfully saved."
+					}
+				}
 			}
 		},
 		"gateway": {
@@ -1130,6 +1170,10 @@
 			"time": {
 				"title": "Time",
 				"description": "Configure time, timezone and NTP synchronization."
+			},
+			"journal": {
+				"title": "Journal",
+				"description": "Configure systemd Journal logging."
 			}
 		},
 		"install": {
