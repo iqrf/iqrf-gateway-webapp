@@ -78,40 +78,6 @@
 		}
 	},
 	"title": "IQRF Gateway Webapp",
-	"generic": {
-		"button": {
-			"close": "Close",
-			"change": "Change",
-			"edit": "Edit",
-			"save": "Save",
-			"cancel": "Cancel",
-			"select": "Select",
-			"deselect": "Deselect",
-			"enable": "Enable",
-			"disable": "Disable",
-			"activate": "Activate",
-			"deactivate": "Deactivate",
-			"restart": "Restart",
-			"refresh": "Refresh",
-			"selectAll": "Select all",
-			"deselectAll": "Deselect all"
-		},
-		"actions": {
-			"title": "Actions",
-			"add": "Add",
-			"edit": "Edit",
-			"delete": "Delete"
-		},
-		"properties": {
-			"description": "Description",
-			"simple": "Simple",
-			"advanced": "Advanced",
-			"enabled": "Enabled",
-			"disabled": "Disabled",
-			"active": "Active",
-			"inactive": "Inactive"
-		}
-	},
 	"auth": {
 		"sign": {
 			"in": {
@@ -325,6 +291,14 @@
 			},
 			"returnVerbose": "Verbose response",
 			"none": "None"
+		},
+		"states": {
+			"active": "Active",
+			"inactive": "Inactive",
+			"enabled": "Enabled",
+			"disabled": "Disabled",
+			"valid": "Valid",
+			"invalid": "Invalid"
 		},
 		"columns": {
 			"id": "ID",
@@ -822,6 +796,26 @@
 						"success": "Journal configuration successfully saved."
 					}
 				}
+			},
+			"unattendedUpgrades": {
+				"interval": "Day(s)",
+				"packageListUpdateInterval": "Package list update interval",
+				"packageUpdateInterval": "Package update interval",
+				"packageRemovalInterval": "Unnecessary package removal interval",
+				"rebootOnKernelUpdate": "Reboot on kernel update",
+				"notes": {
+					"packageListUpdateInterval": "Set value 0 to disable automatic package list updates.",
+					"packageUpdateInterval": "Set value 0 to disable automatic package updates.",
+					"packageRemovalInterval": "Set value 0 to disable automatic package removal."
+				},
+				"validation": {
+					"packageListUpdateIntervalMissing": "Please enter package list update interval.",
+					"packageListUpdateIntervalInvalid": "Package list update interval should be an integer greater or equal to 0.",
+					"packageUpdateIntervalMissing": "Please enter package update interval.",
+					"packageUpdateIntervalInvalid": "Package update interval should be an integer greater or equal to 0.",
+					"packageRemovalIntervalMissing": "Please enter package removal interval.",
+					"packageRemovalIntervalInvalid": "Package removal interval should be an integer greater or equal to 0."
+				}
 			}
 		},
 		"gateway": {
@@ -954,6 +948,10 @@
 						"name": "IQRF Gateway Translator",
 						"description": ""
 					},
+					"journal": {
+						"name": "Systemd Journal",
+						"description": ""
+					},
 					"monit": {
 						"name": "Monit",
 						"description": ""
@@ -980,9 +978,7 @@
 					}
 				},
 				"table": {
-					"service": "Service",
-					"active": "Active",
-					"enabled": "Enabled"
+					"service": "Service"
 				}
 			}
 		},
@@ -1174,6 +1170,10 @@
 			"journal": {
 				"title": "Journal",
 				"description": "Configure systemd Journal logging."
+			},
+			"unattendedUpgrades": {
+				"title": "Automatic upgrades",
+				"description": "Configure automatic unattended upgrades service."
 			}
 		},
 		"install": {

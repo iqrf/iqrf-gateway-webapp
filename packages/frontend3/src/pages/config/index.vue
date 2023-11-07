@@ -47,5 +47,11 @@ const links: Ref<DisambiguationLink[]> = ref([
 		to: '/config/journal',
 		feature: Feature.journal,
 	},
+	{
+		title: i18n.t('pages.configuration.unattendedUpgrades.title'),
+		description: i18n.t('pages.configuration.unattendedUpgrades.description'),
+		to: '/config/unattended-upgrades',
+		feature: Feature.unattendedUpgrades,
+	},
 ]);
 </script>

@@ -151,8 +151,8 @@ const service: ServiceService = useApiClient().getServiceService();
 const headers = [
 	{key: 'name', title: i18n.t('components.gateway.services.table.service')},
 	{key: 'description', title: i18n.t('common.columns.description')},
-	{key: 'enabled', title: i18n.t('components.gateway.services.table.enabled')},
-	{key: 'active', title: i18n.t('components.gateway.services.table.active')},
+	{key: 'enabled', title: i18n.t('common.states.enabled')},
+	{key: 'active', title: i18n.t('common.states.active')},
 	{key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false},
 ];
 /// Component state

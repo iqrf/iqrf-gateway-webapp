@@ -26,7 +26,7 @@
 				color='primary'
 				type='submit'
 			>
-				{{ $t('generic.button.change') }}
+				{{ $t('common.buttons.change') }}
 			</v-btn>
 		</v-form>
 	</Card>

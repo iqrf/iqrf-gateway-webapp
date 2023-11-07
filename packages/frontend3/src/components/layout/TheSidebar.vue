@@ -40,6 +40,7 @@ import {
 	mdiSwapHorizontal,
 	mdiTextBoxOutline,
 	mdiTools,
+	mdiUpdate,
 } from '@mdi/js';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
@@ -194,6 +195,12 @@ function items(): SidebarLink[] {
 						icon: mdiArchiveCogOutline,
 						to: '/config/journal',
 						feature: Feature.journal,
+					},
+					{
+						title: i18n.t('pages.configuration.unattendedUpgrades.title'),
+						icon: mdiUpdate,
+						to: '/config/unattended-upgrades',
+						feature: Feature.unattendedUpgrades,
 					},
 				],
 			},

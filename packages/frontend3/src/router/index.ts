@@ -31,7 +31,6 @@ router.beforeEach((to: RouteLocationNormalized, _from: RouteLocationNormalized, 
 		return next((to.query.redirect as string|undefined) ?? '/');
 	}
 	const feature: string|undefined = (to.meta.feature as string) ?? undefined;
-	console.warn(feature);
 	if (feature && feature in Feature && !featureStore.isEnabled(feature as Feature)) {
 		return next('/');
 	}

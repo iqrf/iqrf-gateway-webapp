@@ -105,7 +105,7 @@
 				:disabled='componentState === ComponentState.Loading'
 				@click='onSubmit'
 			>
-				{{ $t('generic.button.save') }}
+				{{ $t('common.buttons.save') }}
 			</v-btn>
 		</template>
 	</Card>

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+export * from './Config/Apt';
 export * from './Config/IqrfGatewayController';
 export * from './Config/IqrfGatewayDaemon';
 export * from './Config/IqrfRepository';
