@@ -305,6 +305,8 @@
 			"general": "General",
 			"protocol": "Protocol",
 			"protocols": {
+				"tcp": "Insecure TCP",
+				"ssl": "Encrypted SSL/TLS",
 				"ws": "Insecure websocket",
 				"wss": "Secure websocket"
 			},
@@ -333,7 +335,10 @@
 			"hostnameMissing": "Please enter hostname.",
 			"hostnameInvalid": "Hostname should be IPv4, IPv6, localhost or fully-qualified domain name.",
 			"portMissing": "Please enter port.",
-			"portInvalid": "Port should be an integer between 1 and 65535."
+			"portInvalid": "Port should be an integer between 1 and 65535.",
+			"usernameMissing": "Please enter username.",
+			"passwordMissing": "Please enter password.",
+			"credentialsMissing": "Please enter both username and password, or leave both fields empty."
 		}
 	},
 	"components": {
@@ -527,6 +532,114 @@
 						"uartPinInvalid": "UART enable GPIO pin should be an integer."
 					}
 				},
+				"connections": {
+					"profile": "Connection profile",
+					"acceptAsyncMessages": "Accept asynchronous messages",
+					"validation": {
+						"profileMissing": "Please enter connection profile name."
+					},
+					"trustStore": "Trust store",
+					"keyStore": "Key store",
+					"enableTls": "Enable TLS",
+					"privateKey": "Private key",
+					"privateKeyPassword": "Private key password",
+					"cipherSuites": "Cipher suites",
+					"serverCertAuth": "Enable server certificate authentication",
+					"mqtt": {
+						"actions": {
+							"add": "Add MQTT connection profile",
+							"edit": "Edit MQTT connection profile",
+							"delete": "Delete MQTT connection profile"
+						},
+						"broker": "Broker URL",
+						"clientId": "Client ID",
+						"requestTopic": "Request topic",
+						"responseTopic": "Response topic",
+						"qos": "Quality of Service",
+						"qosLevels": {
+							"atMostOnce": "QoS 0 - At most once",
+							"atLeastOnce": "QoS 1 - At least once",
+							"exactlyOnce": "QoS 2 - Exactly once"
+						},
+						"persistence": "Persistence",
+						"persistenceLevels": {
+							"memory": "In-memory",
+							"filesystem": "File system-based",
+							"application": "Application-specific"
+						},
+						"keepAlive": "Keep-alive interval",
+						"timeout": "Connection timeout",
+						"minReconnect": "Minimum reconnect period",
+						"maxReconnect": "Maximum reconnect period",
+						"delete": {
+							"title": "MQTT connection profile delete confirmation",
+							"prompt": "Are you sure you want to delete MQTT connection profile {name}?"
+						},
+						"validation": {
+							"clientIdMissing": "Please enter MQTT client ID.",
+							"requestTopicMissing": "Please enter request topic.",
+							"responseTopicMissing": "Please enter response topic.",
+							"keepAliveMissing": "Please enter keep alive interval.",
+							"keepAliveInvalid": "Keep alive interval should be a positive integer.",
+							"timeoutMissing": "Please enter connection timeout.",
+							"timeoutInvalid": "Connection timeout should be a positive integer.",
+							"minReconnectMissing": "Please enter minimum reconnect period.",
+							"minReconnectInvalid": "Minimum reconnect period should be an integer greater or equal to 1 second.",
+							"minReconnectHigh": "Minimum reconnect period should be less or equal to maximum reconnect period.",
+							"maxReconnectMissing": "Please enter maximum reconnect period.",
+							"maxReconnectInvalid": "Maximum reconnect period should be at integer greater or equal to 1 second.",
+							"maxReconnectLow": "Maximum reconnect period should be greater or equal to minimum reconnect period."
+						},
+						"messages": {
+							"qos": {
+								"atMostOnce": "Fastest method, but the delivery of a message is not guaranteed.",
+								"atLeastOnce": "Messages are guaranteed to be delivered at least once by acknowledging receipt of a message.",
+								"exactlyOnce": "Safest but slowest method. Message is guaranteed to be delivered exactly once utilizing a 4-part handshake."
+							},
+							"persistence": {
+								"memory": "State of in-flight messages is lost in case of a client shutdown or failure. Some messages may not be delivered even with QoS 1 or higher.",
+								"filesystem": "State of in-flight messages is held in persistent storage and prevents loss of messages to some degree in case of a client failure.",
+								"application": "Persistence control is delegated to the application."
+							},
+							"save": {
+								"success": "MQTT connection profile {name} successfully saved."
+							},
+							"delete": {
+								"success": "MQTT connection profile {name} successfully deleted."
+							}
+						}
+					},
+					"udp": {
+						"actions": {
+							"add": "Add UDP connection profile",
+							"edit": "Edit UDP connection profile",
+							"delete": "Delete UDP connection profile"
+						},
+						"localPort": "Local port",
+						"remotePort": "Remote port",
+						"expiration": "UDP client records expiration (in seconds)",
+						"delete": {
+							"title": "UDP connection profile delete confirmation",
+							"prompt": "Are you sure you want to delete UDP connection profile {name}?"
+						},
+						"validation": {
+							"localPortMissing": "Please enter local port.",
+							"localPortInvalid": "Local port should be an integer between 1 and 65535.",
+							"remotePortMissing": "Please enter remote port.",
+							"remotePortInvalid": "Remote port should be an integer between 1 and 65535.",
+							"expirationMissing": "Please enter client records expiration.",
+							"expirationInvalid": "Client records expiration should be an integer greater or equal to 0."
+						},
+						"messages": {
+							"save": {
+								"success": "UDP connection profile {name} successfully saved."
+							},
+							"delete": {
+								"success": "UDP connection profile {name} successfully deleted."
+							}
+						}
+					}
+				},
 				"cache": {
 					"url": "IQRF repository URL",
 					"update": "Update cache periodically",
@@ -549,6 +662,30 @@
 					"messages": {
 						"save": {
 							"success": "Database configuration successfully saved."
+						}
+					}
+				},
+				"jsonApi": {
+					"raw": {
+						"title": "Generic messages",
+						"asyncMessages": "Allow asynchronous generic DPA messages",
+						"messages": {
+							"save": {
+								"success": "Generic messages configuration successfully saved."
+							}
+						}
+					},
+					"splitter": {
+						"title": "JSON splitter",
+						"instanceId": "Instance ID",
+						"validateResponses": "Validate JSON responses",
+						"validation": {
+							"instanceIdMissing": "Please enter instance ID."
+						},
+						"messages": {
+							"save": {
+								"success": "JSON splitter configuration successfully saved."
+							}
 						}
 					}
 				},
@@ -642,6 +779,9 @@
 						"success": "Time and NTP configuration successfully saved."
 					}
 				}
+			},
+			"journal": {
+
 			}
 		},
 		"gateway": {
@@ -958,6 +1098,18 @@
 						"description": "Configure USB CDC interface."
 					}
 				},
+				"connections": {
+					"title": "Connections",
+					"description": "Configure WebSocket, MQTT, MQ and UDP connections.",
+					"mqtt": {
+						"title": "MQTT",
+						"description": "Configure MQTT connections."
+					},
+					"udp": {
+						"title": "UDP",
+						"description": "Configure UDP connections."
+					}
+				},
 				"cache": {
 					"title": "Cache and repository",
 					"description": "Configure cache and IQRF repository."
@@ -965,6 +1117,10 @@
 				"db": {
 					"title": "Device database",
 					"description": "Configure device database."
+				},
+				"jsonApi": {
+					"title": "JSON API",
+					"description": "Configure JSON API."
 				}
 			},
 			"smtp": {

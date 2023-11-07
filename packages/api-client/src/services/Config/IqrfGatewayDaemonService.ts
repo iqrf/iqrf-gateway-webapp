@@ -55,6 +55,20 @@ export class IqrfGatewayDaemonService extends BaseService {
 	}
 
 	/**
+	 * Create new component instance
+	 * @template C Component name
+	 * @param {C} component Daemon component name
+	 * @param {IqrfGatewayDaemonComponentInstanceConfiguration<C>} configuration Daemon component instance configuration
+	 */
+	public createInstance<C extends IqrfGatewayDaemonComponentName>(
+		component: C,
+		configuration: IqrfGatewayDaemonComponentInstanceConfiguration<C>,
+	): Promise<void> {
+		return this.axiosInstance.post(`/config/daemon/${encodeURIComponent(component)}`, configuration)
+			.then((): void => {return;});
+	}
+
+	/**
 	 * Updates the component instance configuration
 	 * @template C Component name
 	 * @param {C} component Daemon component name
@@ -67,6 +81,20 @@ export class IqrfGatewayDaemonService extends BaseService {
 		configuration: IqrfGatewayDaemonComponentInstanceConfiguration<C>,
 	): Promise<void> {
 		return this.axiosInstance.put(`/config/daemon/${encodeURIComponent(component)}/${encodeURIComponent(instance)}`, configuration)
+			.then((): void => {return;});
+	}
+
+	/**
+	 * Deletes component instance
+	 * @template C Component name
+	 * @param {C} component Daemon component name
+	 * @param {string} instance Daemon component instance name
+	 */
+	public deleteInstance<C extends IqrfGatewayDaemonComponentName>(
+		component: C,
+		instance: string,
+	): Promise<void> {
+		return this.axiosInstance.delete(`/config/daemon/${encodeURIComponent(component)}/${encodeURIComponent(instance)}`)
 			.then((): void => {return;});
 	}
 

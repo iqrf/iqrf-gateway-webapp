@@ -25,6 +25,16 @@ const links: Ref<DisambiguationLink[]> = ref([
 		to: '/config/daemon/interfaces',
 	},
 	{
+		title: i18n.t('pages.configuration.daemon.connections.title'),
+		description: i18n.t('pages.configuration.daemon.connections.description'),
+		to: '/config/daemon/connections',
+	},
+	{
+		title: i18n.t('pages.configuration.daemon.jsonApi.title'),
+		description: i18n.t('pages.configuration.daemon.jsonApi.description'),
+		to: '/config/daemon/json-api',
+	},
+	{
 		title: i18n.t('pages.configuration.daemon.cache.title'),
 		description: i18n.t('pages.configuration.daemon.cache.description'),
 		to: '/config/daemon/cache',
