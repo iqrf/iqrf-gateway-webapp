@@ -31,11 +31,13 @@ export default createVuetify({
 			dark: {
 				colors: {
 					primary: '#367fa9',
+					background: '#ebedef',
 				},
 			},
 			light: {
 				colors: {
 					primary: '#367fa9',
+					background: '#ebedef',
 				},
 			},
 		},

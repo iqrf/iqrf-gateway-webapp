@@ -41,7 +41,7 @@
 							]'
 							required
 						>
-							<template #prepend-inner>
+							<template #append-inner>
 								<v-chip
 									label
 									:color='intervalColor(config.packageListUpdateInterval)'
@@ -61,7 +61,7 @@
 							]'
 							required
 						>
-							<template #prepend-inner>
+							<template #append-inner>
 								<v-chip
 									label
 									:color='intervalColor(config.packageUpdateInterval)'
@@ -81,7 +81,7 @@
 							]'
 							required
 						>
-							<template #prepend-inner>
+							<template #append-inner>
 								<v-chip
 									label
 									:color='intervalColor(config.packageRemovalInterval)'
