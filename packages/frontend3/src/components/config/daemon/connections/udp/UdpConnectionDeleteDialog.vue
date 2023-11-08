@@ -8,11 +8,18 @@
 	>
 		<template #activator='{ props }'>
 			<v-icon
+				id='delete-activator'
 				v-bind='props'
 				color='error'
 				size='large'
 				:icon='mdiDelete'
 			/>
+			<v-tooltip
+				activator='#delete-activator'
+				location='bottom'
+			>
+				{{ $t('components.configuration.daemon.connections.udp.actions.delete') }}
+			</v-tooltip>
 		</template>
 		<Card>
 			<template #title>

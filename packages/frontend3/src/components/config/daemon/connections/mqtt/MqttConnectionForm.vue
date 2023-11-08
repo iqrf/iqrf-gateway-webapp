@@ -9,18 +9,34 @@
 		<template #activator='{ props }'>
 			<v-btn
 				v-if='action === FormAction.Add'
+				id='add-activator'
 				v-bind='props'
 				:color='iconColor'
 				:icon='activatorIcon'
 			/>
+			<v-tooltip
+				v-if='action === FormAction.Add'
+				activator='#add-activator'
+				location='bottom'
+			>
+				{{ $t('components.configuration.daemon.connections.mqtt.actions.add') }}
+			</v-tooltip>
 			<v-icon
-				v-else
+				v-if='action === FormAction.Edit'
+				id='edit-activator'
 				v-bind='props'
 				:color='iconColor'
 				:icon='activatorIcon'
 				size='large'
 				class='me-2'
 			/>
+			<v-tooltip
+				v-if='action === FormAction.Edit'
+				activator='#edit-activator'
+				location='bottom'
+			>
+				{{ $t('components.configuration.daemon.connections.mqtt.actions.edit') }}
+			</v-tooltip>
 		</template>
 		<v-form
 			ref='form'
