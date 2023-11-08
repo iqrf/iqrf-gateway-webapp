@@ -8,11 +8,21 @@
 				:action='FormAction.Add'
 				@saved='getConfigs'
 			/>
+			<CloudConnectionSelector
+				@saved='getConfigs'
+			/>
 			<v-btn
+				id='reload-activator'
 				color='white'
 				:icon='mdiReload'
 				@click='getConfigs'
 			/>
+			<v-tooltip
+				activator='#reload-activator'
+				location='bottom'
+			>
+				{{ $t('components.configuration.daemon.connections.mqtt.actions.reload') }}
+			</v-tooltip>
 		</template>
 		<DataTable
 			:headers='headers'
@@ -22,31 +32,15 @@
 			:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
 		>
 			<template #item.actions='{ item }'>
-				<span>
-					<MqttConnectionForm
-						:action='FormAction.Edit'
-						:connection-profile='item'
-						@saved='getConfigs'
-					/>
-					<v-tooltip
-						activator='parent'
-						location='bottom'
-					>
-						{{ $t('components.configuration.daemon.connections.udp.actions.edit') }}
-					</v-tooltip>
-				</span>
-				<span>
-					<MqttConnectionDeleteDialog
-						:connection-profile='item'
-						@deleted='getConfigs'
-					/>
-					<v-tooltip
-						activator='parent'
-						location='bottom'
-					>
-						{{ $t('components.configuration.daemon.connections.udp.actions.delete') }}
-					</v-tooltip>
-				</span>
+				<MqttConnectionForm
+					:action='FormAction.Edit'
+					:connection-profile='item'
+					@saved='getConfigs'
+				/>
+				<MqttConnectionDeleteDialog
+					:connection-profile='item'
+					@deleted='getConfigs'
+				/>
 			</template>
 		</DataTable>
 	</Card>
@@ -62,6 +56,7 @@ import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import Card from '@/components/Card.vue';
+import CloudConnectionSelector from '@/components/config/daemon/connections/mqtt/cloud/CloudConnectionSelector.vue';
 import MqttConnectionDeleteDialog from '@/components/config/daemon/connections/mqtt/MqttConnectionDeleteDialog.vue';
 import MqttConnectionForm from '@/components/config/daemon/connections/mqtt/MqttConnectionForm.vue';
 import DataTable from '@/components/DataTable.vue';

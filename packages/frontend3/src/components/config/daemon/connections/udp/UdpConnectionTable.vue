@@ -9,10 +9,17 @@
 				@saved='getConfigs'
 			/>
 			<v-btn
+				id='reload-activator'
 				color='white'
 				:icon='mdiReload'
 				@click='getConfigs'
 			/>
+			<v-tooltip
+				activator='#reload-activator'
+				location='bottom'
+			>
+				{{ $t('components.configuration.daemon.connections.udp.actions.reload') }}
+			</v-tooltip>
 		</template>
 		<DataTable
 			:headers='headers'
@@ -22,31 +29,15 @@
 			:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
 		>
 			<template #item.actions='{ item }'>
-				<span>
-					<UdpConnectionForm
-						:action='FormAction.Edit'
-						:connection-profile='item'
-						@saved='getConfigs'
-					/>
-					<v-tooltip
-						activator='parent'
-						location='bottom'
-					>
-						{{ $t('components.configuration.daemon.connections.udp.actions.edit') }}
-					</v-tooltip>
-				</span>
-				<span>
-					<UdpConnectionDeleteDialog
-						:connection-profile='item'
-						@deleted='getConfigs'
-					/>
-					<v-tooltip
-						activator='parent'
-						location='bottom'
-					>
-						{{ $t('components.configuration.daemon.connections.udp.actions.delete') }}
-					</v-tooltip>
-				</span>
+				<UdpConnectionForm
+					:action='FormAction.Edit'
+					:connection-profile='item'
+					@saved='getConfigs'
+				/>
+				<UdpConnectionDeleteDialog
+					:connection-profile='item'
+					@deleted='getConfigs'
+				/>
 			</template>
 		</DataTable>
 	</Card>

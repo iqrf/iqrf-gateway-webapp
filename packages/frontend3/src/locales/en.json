@@ -520,10 +520,52 @@
 					"cipherSuites": "Cipher suites",
 					"serverCertAuth": "Enable server certificate authentication",
 					"mqtt": {
+						"clouds": {
+							"add": "Add MQTT cloud connection profile",
+							"aws": {
+								"title": "Amazon AWS IoT",
+								"endpoint": "Endpoint",
+								"certificate": "Certificate",
+								"privateKey": "Private key",
+								"validation": {
+									"endpointMissing": "Please enter enpoint.",
+									"certificateMissing": "Please select certificate file.",
+									"privateKeyMissing": "Please select private key file."
+								}
+							},
+							"azure": {
+								"title": "Microsoft Azure IoT Hub",
+								"connectionString": "IoT Hub device connection string",
+								"validation": {
+									"connectionStringMissing": "Please enter IoT Hub device connection string."
+								}
+							},
+							"ibm": {
+								"title": "IBM Cloud",
+								"orgId": "Organization ID",
+								"deviceType": "Device type",
+								"deviceId": "Device ID",
+								"token": "Authentication token",
+								"eventId": "Command and event ID",
+								"validation": {
+									"orgIdMissing": "Please enter organization ID.",
+									"deviceTypeMissing": "Please enter device type.",
+									"deviceIdMissing": "Please enter device ID.",
+									"tokenMissing": "Please enter authentication token.",
+									"eventIdMissing": "Please enter command and event ID."
+								}
+							},
+							"messages": {
+								"save": {
+									"success": "MQTT cloud connection successfully added."
+								}
+							}
+						},
 						"actions": {
 							"add": "Add MQTT connection profile",
 							"edit": "Edit MQTT connection profile",
-							"delete": "Delete MQTT connection profile"
+							"delete": "Delete MQTT connection profile",
+							"reload": "Reload MQTT connection profiles"
 						},
 						"broker": "Broker URL",
 						"clientId": "Client ID",
@@ -587,7 +629,8 @@
 						"actions": {
 							"add": "Add UDP connection profile",
 							"edit": "Edit UDP connection profile",
-							"delete": "Delete UDP connection profile"
+							"delete": "Delete UDP connection profile",
+							"reload": "Reload UDP connection profiles"
 						},
 						"localPort": "Local port",
 						"remotePort": "Remote port",
