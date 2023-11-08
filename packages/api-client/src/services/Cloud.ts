@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-import {BaseService} from './BaseService';
+import { BaseService } from './BaseService';
 
-import {AwsService} from './Cloud/AwsService';
-import {AzureService} from './Cloud/AzureService';
+import { AwsService } from './Cloud/AwsService';
+import { AzureService } from './Cloud/AzureService';
+import { IbmService } from './Cloud/IbmService';
 
 export * from './Cloud/AwsService';
 export * from './Cloud/AzureService';
+export * from './Cloud/IbmService';
 
 /**
  * Cloud services
@@ -41,6 +43,14 @@ export class CloudServices extends BaseService {
 	 */
 	public getAzureService(): AzureService {
 		return new AzureService(this.apiClient);
+	}
+
+	/**
+	 * Returns IBM cloud service
+	 * @return {IbmService} IBM cloud service
+	 */
+	public getIbmService(): IbmService {
+		return new IbmService(this.apiClient);
 	}
 
 }

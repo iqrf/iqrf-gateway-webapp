@@ -1,5 +1,5 @@
 /**
- * Copyright 2023-2024 MICRORISC s.r.o.
+ * Copyright 2023 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,21 @@
  * limitations under the License.
  */
 
-export * from './Cloud/Aws';
-export * from './Cloud/Azure';
-export * from './Cloud/Ibm';
+import { BaseService } from '../BaseService';
+
+import type { IbmCloudConfig } from '../../types/Cloud';
+
+/**
+ * IBM cloud service
+ */
+export class IbmService extends BaseService {
+
+	/**
+	 * Creates a new IBM cloud MQTT instance
+	 * @param {IbmCloudConfig} config IBM cloud configuration
+	 */
+	public createMqttInstance(config: IbmCloudConfig): Promise<void> {
+		return this.axiosInstance.post('/clouds/ibmCloud', config)
+			.then((): void => {return;});
+	}
+}
