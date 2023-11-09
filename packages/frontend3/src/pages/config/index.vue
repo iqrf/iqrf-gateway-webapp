@@ -53,5 +53,11 @@ const links: Ref<DisambiguationLink[]> = ref([
 		to: '/config/unattended-upgrades',
 		feature: Feature.unattendedUpgrades,
 	},
+	{
+		title: i18n.t('pages.configuration.monit.title'),
+		description: i18n.t('pages.configuration.monit.description'),
+		to: '/config/monit',
+		feature: Feature.monit,
+	},
 ]);
 </script>

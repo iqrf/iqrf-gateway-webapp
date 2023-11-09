@@ -12,7 +12,7 @@
 	>
 		<template #bottom>
 			<div
-				v-if='items.length > 0'
+				v-if='items.length > 0 && !hidePagination'
 				class='text-center pt-2'
 			>
 				<v-pagination
@@ -60,6 +60,11 @@ const componentProps = defineProps({
 		type: Boolean,
 		default: false,
 		required: false,
+	},
+	hidePagination: {
+		type: Boolean,
+		default: false,
+		requierd: false,
 	},
 });
 
