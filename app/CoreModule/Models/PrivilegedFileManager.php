@@ -224,10 +224,12 @@ class PrivilegedFileManager implements IFileManager {
 	/**
 	 * Returns list of files in directory
 	 * @param string|null $subdirectory Relative path to subdirectory
+	 * @param bool $includeSymlinks Include symlinks in list
 	 * @return array<int, string> List of files
 	 */
-	public function listFiles(?string $subdirectory = null): array {
-		$command = $this->commandManager->run('find ' . $this->buildPath($subdirectory) . ' -type f -printf \'%P\n\'', true);
+	public function listFiles(?string $subdirectory = null, bool $includeSymlinks = false): array {
+		$fileTypes = $includeSymlinks ? ' -type f,l' : ' -type f';
+		$command = $this->commandManager->run('find ' . $this->buildPath($subdirectory) . $fileTypes . ' -printf \'%P\n\'', true);
 		if ($command->getExitCode() !== 0) {
 			throw new IOException($command->getStderr());
 		}
