@@ -859,6 +859,27 @@
 					"packageRemovalIntervalMissing": "Please enter package removal interval.",
 					"packageRemovalIntervalInvalid": "Package removal interval should be an integer greater or equal to 0."
 				}
+			},
+			"monit": {
+				"checks": {
+					"title": "System checks",
+					"name": "Check name",
+					"noRecords": "No checks detected."
+				},
+				"mmonit": {
+					"title": "M/Monit connection",
+					"enable": "Enable M/Monit server connection",
+					"server": "M/Monit server URL"
+				},
+				"validation": {
+					"serverMissing": "Please enter M/Monit server URL.",
+					"serverInvalid": "M/Monit server URL should be IPv4, IPv6, localhost or fully-qualified domain name."
+				},
+				"messages": {
+					"save": {
+						"success": "Monit configuration has been successfully saved."
+					}
+				}
 			}
 		},
 		"gateway": {
@@ -991,13 +1012,13 @@
 						"name": "IQRF Gateway Translator",
 						"description": ""
 					},
-					"journal": {
-						"name": "Systemd Journal",
-						"description": ""
+					"mender-client": {
+						"name": "Mender",
+						"description": "Mender is an over-the-air update manager for IoT and embedded devices."
 					},
 					"monit": {
 						"name": "Monit",
-						"description": ""
+						"description": "Monit is a utility for management and monitoring of Unix systems."
 					},
 					"ModemManager": {
 						"name": "Modem Manager",
@@ -1011,13 +1032,17 @@
 						"name": "SSH daemon",
 						"description": "SSH daemon is used to access the device via SSH protocol."
 					},
+					"systemd-journald": {
+						"name": "Systemd Journal",
+						"description": "Systemd Journal collects and stores logging data from services and processes."
+					},
 					"systemd-timesyncd": {
 						"name": "Systemd Time Sync Service",
 						"description": ""
 					},
 					"unattended-upgrades": {
 						"name": "Unattended Upgrades",
-						"description": ""
+						"description": "Unattended upgrades is a service used to keep device software up-to-date automatically."
 					}
 				},
 				"table": {
@@ -1217,6 +1242,10 @@
 			"unattendedUpgrades": {
 				"title": "Automatic upgrades",
 				"description": "Configure automatic unattended upgrades service."
+			},
+			"monit": {
+				"title": "Monit",
+				"description": "Configure Monit client and system health checks."
 			}
 		},
 		"install": {
