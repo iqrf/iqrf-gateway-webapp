@@ -24,6 +24,7 @@ use App\CoreModule\Models\FeatureManager;
 use App\CoreModule\Models\PrivilegedFileManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use Nette\Utils\FileSystem;
+use Nette\Utils\Strings;
 
 /**
  * Monit backup manager
@@ -35,6 +36,7 @@ class MonitBackup implements IBackupManager {
 	 */
 	final public const WHITELIST = [
 		'monitrc',
+		'conf-enabled',
 	];
 
 	/**
@@ -72,9 +74,13 @@ class MonitBackup implements IBackupManager {
 		if (!$params['software']['monit'] || !$this->featureEnabled) {
 			return;
 		}
-		if ($this->fileManager->exists('')) {
-			$zipManager->addFileFromText('monit/monitrc', $this->fileManager->read('monitrc'));
+		if (!$this->fileManager->exists('')) {
+			return;
 		}
+		$zipManager->addFileFromText('monit/monitrc', $this->fileManager->read('monitrc'));
+		$zipManager->addFolder($this->fileManager->getBasePath() . '/conf-available', 'monit/conf-available');
+		$enabled = $this->fileManager->listFiles('conf-enabled', true);
+		$zipManager->addFileFromText('monit/conf-enabled', implode(PHP_EOL, $enabled));
 	}
 
 	/**
@@ -88,16 +94,18 @@ class MonitBackup implements IBackupManager {
 		$this->restoreLogger->log('Restoring Monit configuration.');
 		$zipManager->extract(self::TMP_PATH, 'monit/monitrc');
 		$this->fileManager->copy('monitrc', self::TMP_PATH . 'monit/monitrc');
+		foreach ($zipManager->listFiles() as $file) {
+			if (Strings::startsWith($file, 'monit/conf-available/')) {
+				$zipManager->extract(self::TMP_PATH, $file);
+				$this->fileManager->copy('conf-available/' . basename($file), self::TMP_PATH . $file);
+			}
+		}
+		$enabled = explode(PHP_EOL, $zipManager->openFile('monit/conf-enabled'));
+		foreach ($enabled as $file) {
+			$this->fileManager->createSymLink('conf-available/' . $file, 'conf-enabled/' . $file);
+		}
 		FileSystem::delete(self::TMP_PATH . 'monit');
 		$this->fixPrivileges();
-	}
-
-	/**
-	 * Returns service names
-	 * @return array<string> Service names
-	 */
-	public function getServices(): array {
-		return self::SERVICES;
 	}
 
 	/**
@@ -106,6 +114,16 @@ class MonitBackup implements IBackupManager {
 	private function fixPrivileges(): void {
 		$this->fileManager->chown('monitrc', 'root', 'root');
 		$this->fileManager->chmod('monitrc', 0600);
+		$this->fileManager->chown('conf-available', 'root', 'root', true);
+		$this->fileManager->chmod('conf-available', 0644, true);
+	}
+
+	/**
+	 * Returns service names
+	 * @return array<string> Service names
+	 */
+	public function getServices(): array {
+		return self::SERVICES;
 	}
 
 }

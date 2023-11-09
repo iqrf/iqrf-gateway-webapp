@@ -215,6 +215,7 @@ class BackupManager {
 			'journal/',
 			'mender/',
 			'monit/',
+			'monit/conf-available/',
 			'nm/',
 			'nm/system-connections/',
 			'services/',
@@ -264,7 +265,9 @@ class BackupManager {
 				$this->isWhitelisted(JournalBackup::WHITELIST, $file);
 			} elseif (str_starts_with($file, 'mender/')) {
 				$this->isWhitelisted(MenderBackup::WHITELIST, $file);
-			} elseif (str_starts_with($file, 'monit/')) {
+			} elseif (Strings::startsWith($file, 'monit/conf-available/')) {
+				continue;
+			} elseif (Strings::startsWith($file, 'monit/')) {
 				$this->isWhitelisted(MonitBackup::WHITELIST, $file);
 			} elseif (str_starts_with($file, 'nm/system-connections/')) {
 				continue;
