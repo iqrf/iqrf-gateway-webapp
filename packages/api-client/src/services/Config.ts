@@ -22,6 +22,7 @@ import { IqrfGatewayDaemonService } from './Config/IqrfGatewayDaemonService';
 import { IqrfRepositoryService } from './Config/IqrfRepositoryService';
 import { JournalService } from './Config/JournalService';
 import { MailerService } from './Config/MailerService';
+import { MonitService } from './Config/MonitService';
 
 export * from './Config/AptService';
 export * from './Config/IqrfGatewayControllerService';
@@ -29,6 +30,7 @@ export * from './Config/IqrfGatewayDaemonService';
 export * from './Config/IqrfRepositoryService';
 export * from './Config/JournalService';
 export * from './Config/MailerService';
+export * from './Config/MonitService';
 
 /**
  * Configuration services
@@ -82,4 +84,13 @@ export class ConfigServices extends BaseService {
 	public getMailerService(): MailerService {
 		return new MailerService(this.apiClient);
 	}
+
+	/**
+	 * Returns monit service
+	 * @return {MonitService} Monit service
+	 */
+	public getMonitService(): MonitService {
+		return new MonitService(this.apiClient);
+	}
+
 }
