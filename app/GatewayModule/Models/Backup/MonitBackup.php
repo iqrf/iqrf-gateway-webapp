@@ -121,7 +121,7 @@ class MonitBackup implements IBackupManager {
 		$this->fileManager->chown('monitrc', 'root', 'root');
 		$this->fileManager->chmod('monitrc', 0600);
 		$this->fileManager->chown('conf-available', 'root', 'root', true);
-		$this->fileManager->chmod('conf-available', 0644, true);
+		$this->fileManager->chmod('conf-available', 0600, true);
 	}
 
 	/**
