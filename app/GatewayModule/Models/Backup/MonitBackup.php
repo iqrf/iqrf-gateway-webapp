@@ -78,7 +78,10 @@ class MonitBackup implements IBackupManager {
 			return;
 		}
 		$zipManager->addFileFromText('monit/monitrc', $this->fileManager->read('monitrc'));
-		$zipManager->addFolder($this->fileManager->getBasePath() . '/conf-available', 'monit/conf-available');
+		$available = $this->fileManager->listFiles('conf-available');
+		foreach ($available as $file) {
+			$zipManager->addFileFromText('monit/conf-available/' . $file, $this->fileManager->read('conf-available/' . $file));
+		}
 		$enabled = $this->fileManager->listFiles('conf-enabled', true);
 		$zipManager->addFileFromText('monit/conf-enabled', implode(PHP_EOL, $enabled));
 	}
