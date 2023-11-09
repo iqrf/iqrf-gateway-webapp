@@ -111,6 +111,9 @@ class MonitBackup implements IBackupManager {
 				$this->fileManager->copy('conf-available/' . basename($file), self::TMP_PATH . $file);
 			}
 		}
+		if (!$this->fileManager->exists('conf-enabled')) {
+			$this->fileManager->createDirectory('conf-enabled');
+		}
 		$enabled = explode(PHP_EOL, $zipManager->openFile('monit/conf-enabled'));
 		foreach ($enabled as $file) {
 			$this->fileManager->createSymLink('conf-available/' . $file, 'conf-enabled/' . $file);
