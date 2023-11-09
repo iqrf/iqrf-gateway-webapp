@@ -237,6 +237,17 @@ class PrivilegedFileManager implements IFileManager {
 	}
 
 	/**
+	 * Creates a directory
+	 * @param string $directory Relative path to subdirectory
+	 */
+	public function createDirectory(string $directory): void {
+		$command = $this->commandManager->run('mkdir -p ' . $this->buildPath($directory), true);
+		if ($command->getExitCode() !== 0) {
+			throw new IOException($command->getStderr());
+		}
+	}
+
+	/**
 	 * Returns path to subdirectory or file, if the path contains spaces, returned string is surrounded in quotation marks
 	 * @param string|null $name Name of subdirectory or file
 	 * @return string Path to subdirectory or file
