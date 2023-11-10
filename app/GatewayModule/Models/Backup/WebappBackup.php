@@ -49,6 +49,8 @@ class WebappBackup implements IBackupManager {
 		'iqrf-gateway-webapp-https.localhost',
 		'iqrf-gateway-webapp-iqaros.localhost',
 		'iqrf-gateway-webapp-iqaros-https.localhost',
+		'iqrf-gateway-webapp-industrial.localhost',
+		'iqrf-gateway-webapp-industrial-https.localhost',
 	];
 
 	/**
