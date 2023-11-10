@@ -20,10 +20,9 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models\Backup;
 
+use App\CoreModule\Models\PrivilegedFileManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use App\GatewayModule\Models\Utils\GatewayInfoUtil;
-use Nette\Utils\FileSystem;
-use Nette\Utils\Json;
 use Nette\Utils\Strings;
 
 /**
@@ -46,7 +45,7 @@ class GatewayFileBackup implements IBackupManager {
 	/**
 	 * @var string Path to MqttMessaging component configuration
 	 */
-	private const MQTT_PATH = '/etc/iqrf-gateway-daemon/iqrf__MqttMessaging.json';
+	private const MQTT_FILE = 'iqrf__MqttMessaging.json';
 
 	/**
 	 * @var string Client ID pattern
@@ -66,12 +65,17 @@ class GatewayFileBackup implements IBackupManager {
 	/**
 	 * @var string Path to JsonSplitter component configuration
 	 */
-	private const SPLITTER_PATH = '/etc/iqrf-gateway-daemon/iqrf__JsonSplitter.json';
+	private const SPLITTER_FILE = 'iqrf__JsonSplitter.json';
 
 	/**
 	 * @var string Gateway ID
 	 */
 	private string $gwId;
+
+	/**
+	 * @var PrivilegedFileManager Daemon file manager
+	 */
+	private PrivilegedFileManager $daemonFileManager;
 
 	/**
 	 * @var RestoreLogger Restore logger
@@ -80,9 +84,12 @@ class GatewayFileBackup implements IBackupManager {
 
 	/**
 	 * Constructor
+	 * @param PrivilegedFileManager $daemonFileManager Daemon file manager
 	 * @param GatewayInfoUtil $gwInfo Gateway information utility
+	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
-	public function __construct(GatewayInfoUtil $gwInfo, RestoreLogger $restoreLogger) {
+	public function __construct(PrivilegedFileManager $daemonFileManager, GatewayInfoUtil $gwInfo, RestoreLogger $restoreLogger) {
+		$this->daemonFileManager = $daemonFileManager;
 		$this->gwId = Strings::lower($gwInfo->getId());
 		$this->restoreLogger = $restoreLogger;
 	}
@@ -106,9 +113,9 @@ class GatewayFileBackup implements IBackupManager {
 		if (!$zipManager->exist('gateway/')) {
 			return;
 		}
-		if (file_exists(self::MQTT_PATH)) {
+		if ($this->daemonFileManager->exists(self::MQTT_FILE)) {
 			$this->restoreLogger->log('Restoring IQRF Gateway Daemon MQTT component configuration.');
-			$config = Json::decode(FileSystem::read(self::MQTT_PATH), Json::FORCE_ARRAY);
+			$config = $this->daemonFileManager->readJson(self::MQTT_FILE, true);
 			if (Strings::match($config['ClientId'], self::GWID_PATTERN) !== null) {
 				$config['ClientId'] = $this->gwId;
 			}
@@ -118,13 +125,13 @@ class GatewayFileBackup implements IBackupManager {
 			if (Strings::match($config['TopicResponse'], self::RESPONSE_TOPIC_PATTERN) !== null) {
 				$config['TopicResponse'] = 'gateway/' . $this->gwId . '/iqrf/responses';
 			}
-			FileSystem::write(self::MQTT_PATH, Json::encode($config));
+			$this->daemonFileManager->writeJson(self::MQTT_FILE, $config);
 		}
-		if (file_exists(self::SPLITTER_PATH)) {
+		if ($this->daemonFileManager->exists(self::SPLITTER_FILE)) {
 			$this->restoreLogger->log('Restoring IQRF Gateway Daemon Splitter component configuration.');
-			$config = Json::decode(FileSystem::read(self::SPLITTER_PATH), Json::FORCE_ARRAY);
+			$config = $this->daemonFileManager->readJson(self::SPLITTER_FILE, true);
 			$config['insId'] = $this->gwId;
-			FileSystem::write(self::SPLITTER_PATH, Json::encode($config));
+			$this->daemonFileManager->writeJson(self::SPLITTER_FILE, $config);
 		}
 	}
 
