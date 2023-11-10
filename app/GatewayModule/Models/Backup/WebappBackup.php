@@ -46,6 +46,8 @@ class WebappBackup implements IBackupManager {
 	final public const NGINX_WHITELIST = [
 		'iqrf-gateway-webapp.localhost',
 		'iqrf-gateway-webapp-https.localhost',
+		'iqrf-gateway-webapp-iqube.localhost',
+		'iqrf-gateway-webapp-iqube-https.localhost',
 		'iqrf-gateway-webapp-iqaros.localhost',
 		'iqrf-gateway-webapp-iqaros-https.localhost',
 		'iqrf-gateway-webapp-industrial.localhost',
