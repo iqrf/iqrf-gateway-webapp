@@ -17,7 +17,10 @@ services:
 	- App\GatewayModule\Models\Backup\RestoreLogger
 	controllerBackup: App\GatewayModule\Models\Backup\ControllerBackup(@controller.fileManager)
 	daemonBackup: App\GatewayModule\Models\Backup\DaemonBackup
-	gatewayFileBackup: App\GatewayModule\Models\Backup\GatewayFileBackup
+	gatewayFileBackup.fileManager:
+		factory: App\CoreModule\Models\PrivilegedFileManager(%paths.iqrfGatewayDaemon.configDir%)
+		autowired: false
+	gatewayFileBackup: App\GatewayModule\Models\Backup\GatewayFileBackup(@gatewayFileBackup.fileManager)
 	hostBackup: App\GatewayModule\Models\Backup\HostBackup
 	journalBackup: App\GatewayModule\Models\Backup\JournalBackup
 	menderBackup: App\GatewayModule\Models\Backup\MenderBackup(@mender.fileManager)
