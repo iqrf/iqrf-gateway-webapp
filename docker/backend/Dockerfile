@@ -13,14 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM iqrftech/iqrf-gateway-webapp:tests-buster
+FROM iqrftech/iqrf-gateway-webapp:tests-bullseye AS builder
 
 LABEL maintainer="roman.ondracek@iqrf.com"
 
 COPY . /var/www
 WORKDIR /var/www
 
-RUN composer install
+RUN composer install --ignore-platform-req=ext-intl
 
 FROM php:7.4-fpm
 
@@ -29,7 +29,7 @@ LABEL maintainer="roman.ondracek@iqrf.com"
 ENV DEBIAN_FRONTEND noninteractive
 
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
-RUN install-php-extensions intl xsl zip
+RUN install-php-extensions intl sockets xsl zip
 
 COPY --from=builder /var/www /var/www
 WORKDIR /var/www

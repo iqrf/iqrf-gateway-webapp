@@ -19,7 +19,7 @@ LABEL maintainer="roman.ondracek@iqrf.com"
 
 COPY ./ /app
 WORKDIR /app
-RUN composer install
+RUN composer install --ignore-platform-req=ext-intl
 
 FROM amd64/php:7.4
 

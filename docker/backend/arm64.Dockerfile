@@ -13,14 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM iqrftech/iqrf-gateway-webapp:tests-buster as builder
+FROM iqrftech/iqrf-gateway-webapp:tests-bullseye AS builder
 
 LABEL maintainer="roman.ondracek@iqrf.com"
 
 COPY . /var/www
 WORKDIR /var/www
 
-RUN composer install
+RUN composer install --ignore-platform-req=ext-intl
 
 FROM arm64v8/php:7.4-fpm
 
