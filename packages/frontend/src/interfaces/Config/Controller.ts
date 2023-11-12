@@ -152,6 +152,11 @@ interface IControllerDaemonApi {
  */
 interface IControllerFactoryReset {
 	/**
+	 * Reset IQRF Cloud Provisioning
+	 */
+	cloudProv?: boolean
+
+	/**
 	 * Reset coordinator
 	 */
 	coordinator: boolean

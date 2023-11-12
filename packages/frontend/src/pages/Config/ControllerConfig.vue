@@ -128,13 +128,24 @@ limitations under the License.
 									/>
 								</v-col>
 								<v-col
+									v-if='config.factoryReset.cloudProv !== undefined'
+									cols='12'
+									sm='4'
+									lg='2'
+								>
+									<v-checkbox
+										:checked.sync='config.factoryReset.cloudProv'
+										:label='$t("config.controller.form.factoryReset.cloudProv")'
+									/>
+								</v-col>
+								<v-col
 									v-if='config.factoryReset.iqaros !== undefined'
 									cols='12'
 									sm='4'
 									lg='2'
 								>
 									<v-checkbox
-										v-model='config.factoryReset.iqaros'
+										:checked.sync='config.factoryReset.iqaros'
 										:label='$t("config.controller.form.factoryReset.iqaros")'
 									/>
 								</v-col>
