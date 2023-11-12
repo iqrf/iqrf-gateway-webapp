@@ -37,6 +37,7 @@ import {CloudServices} from './services/Cloud';
 import {ConfigServices} from './services/Config';
 import {GatewayServices} from './services/Gateway';
 import {IqrfServices} from './services/Iqrf';
+import {MaintenanceServices} from './services/MaintenanceService';
 
 /**
  * IQRF Gateway Webapp API client options
@@ -244,6 +245,14 @@ export class Client {
 	 */
 	public getInstallationService(): InstallationService {
 		return new InstallationService(this);
+	}
+
+	/**
+	 * Returns Maintenance services
+	 * @return {MaintenanceServices} Maintenance services
+	 */
+	public getMaintenanceServices(): MaintenanceServices {
+		return new MaintenanceServices(this);
 	}
 
 	/**

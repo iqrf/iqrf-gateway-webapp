@@ -265,7 +265,11 @@
 			"close": "Close",
 			"skip": "Skip",
 			"reload": "Reload",
-			"refresh": "Refresh"
+			"refresh": "Refresh",
+			"backup": "Backup",
+			"restore": "Restore",
+			"selectAll": "Select all",
+			"deselectAll": "Deselect all"
 		},
 		"labels": {
 			"general": "General",
@@ -1050,6 +1054,34 @@
 				}
 			}
 		},
+		"maintenance": {
+			"backup": {
+				"backup": {
+					"title": "Gateway backup",
+					"item": "Software and system configuration",
+					"software": {
+						"iqrf": "IQRF Gateway Software",
+						"mender": "Mender",
+						"monit": "Monit"
+					},
+					"system": {
+						"hostname": "Hostname",
+						"network": "Network manager",
+						"time": "Time synchronization",
+						"journal": "Journal"
+					}
+				},
+				"restore": {
+					"title": "Gateway restore",
+					"archive": "Backup archive",
+					"messages": {
+						"save": {
+							"success": "Gateway successfully restored from backup archive and will reboot at {time}."
+						}
+					}
+				}
+			}
+		},
 		"accessControl": {
 			"users": {
 				"actions": {
@@ -1246,6 +1278,18 @@
 			"monit": {
 				"title": "Monit",
 				"description": "Configure Monit client and system health checks."
+			}
+		},
+		"maintenance": {
+			"title": "Maintenance",
+			"description": "Gateway maintenance tools and utilities.",
+			"backup": {
+				"title": "Backup and restore",
+				"description": "Backup or restore gateway."
+			},
+			"mender": {
+				"title": "Mender update",
+				"description": "Update gateway using Mender artifacts."
 			}
 		},
 		"install": {

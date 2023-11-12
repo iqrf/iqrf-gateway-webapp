@@ -119,9 +119,9 @@ const configuration: Ref<MailerConfig> = ref({
 const form: Ref<typeof VForm | null> = ref(null);
 const stateButtonLabel = computed(() => {
 	if (configuration.value.enabled) {
-		return i18n.t('generic.properties.enabled');
+		return i18n.t('common.states.enabled');
 	}
-	return i18n.t('generic.properties.disabled');
+	return i18n.t('common.states.disabled');
 });
 
 const service: MailerService = useApiClient().getConfigServices().getMailerService();

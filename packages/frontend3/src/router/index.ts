@@ -1,4 +1,3 @@
-import { Feature } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { setupLayouts } from 'virtual:generated-layouts';
 import generatedRoutes from 'virtual:generated-pages';
 import { createRouter, createWebHistory, type NavigationGuardNext, type RouteLocationNormalized, type RouteRecordRaw } from 'vue-router';
