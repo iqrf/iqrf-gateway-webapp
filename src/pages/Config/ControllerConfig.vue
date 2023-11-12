@@ -131,6 +131,12 @@ limitations under the License.
 										:label='$t("config.controller.form.factoryReset.daemon")'
 									/>
 								</CCol>
+								<CCol v-if='config.factoryReset.cloudProv !== undefined' md='2'>
+									<CInputCheckbox
+										:checked.sync='config.factoryReset.cloudProv'
+										:label='$t("config.controller.form.factoryReset.cloudProv")'
+									/>
+								</CCol>
 								<CCol v-if='config.factoryReset.iqaros !== undefined' md='2'>
 									<CInputCheckbox
 										:checked.sync='config.factoryReset.iqaros'

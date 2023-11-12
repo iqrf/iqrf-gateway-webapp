@@ -991,6 +991,7 @@
 				},
 				"factoryReset": {
 					"title": "Factory reset",
+					"cloudProv": "Cloud Provisioning",
 					"daemon": "Daemon",
 					"iqaros": "IQAROS",
 					"network": "IP network",
