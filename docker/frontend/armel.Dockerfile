@@ -13,16 +13,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM node:lts as builder
+FROM node:lts AS builder
 
 LABEL maintainer="roman.ondracek@iqrf.com"
 
 WORKDIR /app
 
 COPY . /app
+RUN npm install --global npm pnpm
+COPY . /app
 RUN sed -i "s/\t\"commit\"\: .*/\t\"commit\"\: \"`git rev-parse --verify HEAD`\",/" version.json
-RUN npm install --legacy-peer-deps
-RUN npm run build
+RUN pnpm install
+RUN pnpm run build
 
 FROM arm32v5/nginx:stable
 
