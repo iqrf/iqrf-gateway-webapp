@@ -33,6 +33,11 @@ const links: Ref<DisambiguationLink[]> = ref([
 		to: '/config',
 	},
 	{
+		title: i18n.t('pages.maintenance.title'),
+		description: i18n.t('pages.maintenance.description'),
+		to: '/maintenance',
+	},
+	{
 		title: i18n.t('pages.accessControl.title'),
 		description: i18n.t('pages.accessControl.description'),
 		to: '/access-control',

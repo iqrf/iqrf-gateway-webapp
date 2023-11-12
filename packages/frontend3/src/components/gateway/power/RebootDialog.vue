@@ -38,7 +38,7 @@ limitations under the License.
 			{{ $t('components.gateway.power.reboot.prompt') }}
 			<template #actions>
 				<v-btn
-					color='error'
+					color='primary'
 					variant='elevated'
 					@click='reboot'
 				>

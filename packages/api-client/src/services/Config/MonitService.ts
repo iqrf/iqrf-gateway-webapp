@@ -17,7 +17,7 @@
 import { type AxiosResponse } from 'axios';
 
 import { BaseService } from '../BaseService';
-import { MonitCheckWithDefinition, type MonitConfig } from '../../types/Config/Monit';
+import { type MonitCheckWithDefinition, type MonitConfig } from '../../types/Config/Monit';
 
 /**
  * Monit service

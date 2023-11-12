@@ -24,6 +24,7 @@ import {
 	mdiAccountKey,
 	mdiApi,
 	mdiArchiveCogOutline,
+	mdiBackupRestore,
 	mdiBook,
 	mdiChevronLeft,
 	mdiChevronRight,
@@ -42,6 +43,7 @@ import {
 	mdiTextBoxOutline,
 	mdiTools,
 	mdiUpdate,
+	mdiWrenchClock,
 } from '@mdi/js';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
@@ -208,6 +210,17 @@ function items(): SidebarLink[] {
 						icon: mdiNotificationClearAll,
 						to: '/config/monit',
 						feature: Feature.monit,
+					},
+				],
+			},
+			{
+				title: i18n.t('pages.maintenance.title'),
+				icon: mdiWrenchClock,
+				children: [
+					{
+						title: i18n.t('pages.maintenance.backup.title'),
+						icon: mdiBackupRestore,
+						to: '/maintenance/backup',
 					},
 				],
 			},
