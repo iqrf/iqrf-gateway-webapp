@@ -57,28 +57,31 @@ export class MenderService extends BaseService {
 	/**
 	 * Installs data from Mender artifact
 	 * @param {File} artifact Mender artifact file
+	 * @return {Promise<string>} Mender update output log
 	 */
-	public install(artifact: File): Promise<void> {
+	public install(artifact: File): Promise<string> {
 		const formData = new FormData();
 		formData.append('file', artifact);
 		return this.axiosInstance.post('/mender/install')
-			.then((): void => {return;});
+			.then((response: AxiosResponse<string>): string => response.data);
 	}
 
 	/**
 	 * Commits installed artifact update
+	 * @return {Promise<string>} Mender update output log
 	 */
-	public commit(): Promise<void> {
+	public commit(): Promise<string> {
 		return this.axiosInstance.post('/mender/commit')
-			.then((): void => {return;});
+			.then((response: AxiosResponse<string>): string => response.data);
 	}
 
 	/**
 	 * Rolls installed artifact update back
+	 * @return {Promise<string>} Mender update output log
 	 */
-	public rollback(): Promise<void> {
+	public rollback(): Promise<string> {
 		return this.axiosInstance.post('/mender/rollback')
-			.then((): void => {return;});
+			.then((response: AxiosResponse<string>): string => response.data);
 	}
 
 	/**

@@ -10,9 +10,9 @@
 			<v-file-input
 				v-model='archive'
 				accept='.zip'
-				:label='$t("components.configuration.daemon.connections.mqtt.clouds.aws.certificate")'
+				:label='$t("components.maintenance.backup.restore.archive")'
 				:rules='[
-					(v: File|Blob|null) => ValidationRules.required(v, $t("components.configuration.daemon.connections.mqtt.clouds.aws.validation.certificateMissing")),
+					(v: File|Blob|null) => ValidationRules.required(v, $t("components.maintenance.backup.restore.validation.archiveMissing")),
 				]'
 				:prepend-inner-icon='mdiFileOutline'
 				:prepend-icon='null'

@@ -269,7 +269,9 @@
 			"backup": "Backup",
 			"restore": "Restore",
 			"selectAll": "Select all",
-			"deselectAll": "Deselect all"
+			"deselectAll": "Deselect all",
+			"upload": "Upload",
+			"clipboard": "Copy to clipboard"
 		},
 		"labels": {
 			"general": "General",
@@ -884,6 +886,48 @@
 						"success": "Monit configuration has been successfully saved."
 					}
 				}
+			},
+			"mender": {
+				"connection": "Connection",
+				"inventory": "Inventory",
+				"features": "Enabled features",
+				"client": {
+					"server": "Mender server URL",
+					"cert": "Path to certificate",
+					"tenantToken": "Tenant token",
+					"inventoryPollInterval": "Inventory update interval (seconds)",
+					"retryPollInterval": "Connection retry interval (seconds)",
+					"updatePollInterval": "Update check interval (seconds)"
+				},
+				"connect": {
+					"fileTransfer": "File Transfer",
+					"portForward": "Port Forwarding"
+				},
+				"upload": {
+					"title": "Mender certificate upload",
+					"cert": "Certificate to upload",
+					"certPath": "Path to uploaded certificate"
+				},
+				"validation": {
+					"serverMissing": "Please enter Mender server URL.",
+					"serverInvalid": "Mender server URL should be IPv4, IPv6, localhost or fully-qualified domain name.",
+					"inventoryPollIntervalMissing": "Please enter inventory poll interval.",
+					"inventoryPollIntervalInvalid": "Inventory poll interval should be an integer greater or equal to 0.",
+					"retryPollIntervalMissing": "Please enter connection retry interval.",
+					"retryPollIntervalInvalid": "Connnection retry interval should be an integer greater or equal to 0.",
+					"updatePollIntervalMissing": "Please enter update check interval.",
+					"updatePollIntervalInvalid": "Update check interval should be an integer greater or equal to 0.",
+					"tenantTokenMissing": "Please enter Tenant token.",
+					"certificateMissing": "Please select certificate file to upload."
+				},
+				"messages": {
+					"save": {
+						"success": "Mender configuration has been successfully saved."
+					},
+					"upload": {
+						"success": "Certificate has been successfully uploaded."
+					}
+				}
 			}
 		},
 		"gateway": {
@@ -1074,10 +1118,47 @@
 				"restore": {
 					"title": "Gateway restore",
 					"archive": "Backup archive",
+					"validation": {
+						"archiveMissing": "Please select gateway backup archive."
+					},
 					"messages": {
 						"save": {
 							"success": "Gateway successfully restored from backup archive and will reboot at {time}."
 						}
+					}
+				}
+			},
+			"mender": {
+				"update": {
+					"artifact": "Mender artifact",
+					"install": "Install artifact",
+					"commit": "Commit update",
+					"rollback": "Rollback update",
+					"log": {
+						"title": "Mender log",
+						"button": "Show log"
+					},
+					"validation": {
+						"artifactMissing": "Please select mender artifact file."
+					},
+					"messages": {
+						"install": {
+							"success": "Mender artifact update has been successfully installed."
+						},
+						"commit": {
+							"success": "Update has been succesfully commited."
+						},
+						"rollback": {
+							"success": "Update has been succesfully rolled back."
+						}
+					}
+				},
+				"remount": {
+					"title": "Re-mount filesystem",
+					"readonly": "Read-only",
+					"readwrite": "Read-write",
+					"messages": {
+						"success": "Filesystem has been successfully re-mounted."
 					}
 				}
 			}
@@ -1278,6 +1359,10 @@
 			"monit": {
 				"title": "Monit",
 				"description": "Configure Monit client and system health checks."
+			},
+			"mender": {
+				"title": "Mender",
+				"description": "Configure Mender client for remote and features."
 			}
 		},
 		"maintenance": {
