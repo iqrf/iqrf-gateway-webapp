@@ -29,6 +29,7 @@ import {
 	AuthenticationService,
 	FeatureService,
 	InstallationService,
+	MenderService,
 	ServiceService,
 	UserService,
 	VersionService,
@@ -253,6 +254,14 @@ export class Client {
 	 */
 	public getMaintenanceServices(): MaintenanceServices {
 		return new MaintenanceServices(this);
+	}
+
+	/**
+	 * Returns Mender service
+	 * @return {MenderService} Mender service
+	 */
+	public getMenderService(): MenderService {
+		return new MenderService(this);
 	}
 
 	/**
