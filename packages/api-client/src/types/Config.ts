@@ -20,4 +20,5 @@ export * from './Config/IqrfGatewayDaemon';
 export * from './Config/IqrfRepository';
 export * from './Config/Journal';
 export * from './Config/Mailer';
+export * from './Config/Mender';
 export * from './Config/Monit';
