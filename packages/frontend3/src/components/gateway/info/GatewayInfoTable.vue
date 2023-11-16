@@ -53,6 +53,12 @@
 					</td>
 					<td>{{ info.versions.daemon }}</td>
 				</tr>
+				<tr v-if='info?.versions.influxdbBridge'>
+					<td>
+						<strong>{{ $t('components.gateway.information.version.iqrfGatewayInfluxdbBridge') }}</strong>
+					</td>
+					<td>{{ info.versions.influxdbBridge }}</td>
+				</tr>
 				<tr v-if='info?.versions.setter'>
 					<td>
 						<strong>{{ $t('components.gateway.information.version.iqrfGatewaySetter') }}</strong>

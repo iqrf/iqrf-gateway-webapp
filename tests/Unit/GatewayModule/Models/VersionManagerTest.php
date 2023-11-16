@@ -60,6 +60,7 @@ final class VersionManagerTest extends WebSocketTestCase {
 		'controller' => 'iqrf-gateway-controller --version',
 		'daemon_new' => 'iqrfgd2 --version',
 		'daemon_old' => 'iqrfgd2 version',
+		'influxdb-bridge' => 'iqrf-gateway-influxdb-bridge --version',
 		'setter' => 'iqrf-gateway-setter --version',
 		'uploader' => 'iqrf-gateway-uploader --version',
 	];
@@ -71,6 +72,7 @@ final class VersionManagerTest extends WebSocketTestCase {
 		'controller' => 'iqrf-gateway-controller 0.3.4',
 		'daemon_old' => 'v2.1.0 2019-06-12T20:44:25',
 		'daemon_new' => 'IQRF Gateway Daemon v2.5.0-alpha',
+		'influxdb-bridge' => 'IQRF Gateway InfluxDB Bridge v1.2.0-alpha',
 		'setter' => 'IQRF Gateway Setter v1.0.0',
 	];
 
@@ -81,6 +83,7 @@ final class VersionManagerTest extends WebSocketTestCase {
 		'controller' => '0.3.4',
 		'daemon_new' => 'v2.5.0-alpha',
 		'daemon_old' => 'v2.1.0',
+		'influxdb-bridge' => 'v1.2.0-alpha',
 		'setter' => 'v1.0.0',
 		'uploader' => 'v1.0.0',
 		'webapp' => 'v3.0.0-alpha',
@@ -204,6 +207,23 @@ final class VersionManagerTest extends WebSocketTestCase {
 			->withAnyArgs()
 			->andThrow(EmptyResponseException::class);
 		Assert::same('unknown', $this->manager->getDaemon());
+	}
+
+	/**
+	 * Tests the function to get IQRF Gateway InfluxDB Bridge's version (not installed)
+	 */
+	public function testGetInfluxdbBridgeNotInstalled(): void {
+		$this->mockCommendExists('iqrf-gateway-influxdb-bridge', false);
+		Assert::null($this->manager->getInfluxdbBridge());
+	}
+
+	/**
+	 * Tests the function to get IQRF Gateway InfluxDB Bridge's version
+	 */
+	public function testGetInfluxdbBridge(): void {
+		$this->mockCommendExists('iqrf-gateway-influxdb-bridge', true);
+		$this->mockCommand(self::COMMANDS['influxdb-bridge'], self::STDOUTS['influxdb-bridge']);
+		Assert::same(self::VERSIONS['influxdb-bridge'], $this->manager->getInfluxdbBridge());
 	}
 
 	/**

@@ -76,6 +76,11 @@ export enum Feature {
 	iqrfGatewayController = 'iqrfGatewayController',
 
 	/**
+	 * IQRF Gateway InfluxDB Bridge feature
+	 */
+	iqrfGatewayInfluxdbBridge = 'iqrfGatewayInfluxdbBridge',
+
+	/**
 	 * IQRF Gateway Translator feature
 	 */
 	iqrfGatewayTranslator = 'iqrfGatewayTranslator',
