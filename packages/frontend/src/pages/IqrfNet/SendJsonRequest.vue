@@ -267,7 +267,7 @@ export default class SendJsonRequest extends Vue {
 	 */
 	private sendRequest(request): void {
 		const options = new DaemonMessageOptions(request);
-		if (request.data.req !== undefined && {}.hasOwnProperty.call(request.data.req, 'nAdr') && request.data.req.nAdr === 255) { // if a message is broadcasted, do not wait for proper response
+		if ({}.hasOwnProperty.call(request.data, 'req') && {}.hasOwnProperty.call(request.data.req, 'nAdr') && request.data.req.nAdr === 255) { // if a message is broadcasted, do not wait for proper response
 			options.timeout = 1000;
 		} else if (request.mType === 'iqrfEmbedOs_Batch' || request.mType === 'iqrfEmbedOs_SelectiveBatch') { // batch and selective batch requests do not have proper responses, do not wait
 			options.timeout = 1000;
