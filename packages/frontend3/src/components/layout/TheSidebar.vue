@@ -186,6 +186,11 @@ function items(): SidebarLink[] {
 						],
 					},
 					{
+						title: i18n.t('pages.configuration.influxdb-bridge.title'),
+						to: '/config/influxdb-bridge',
+						feature: Feature.iqrfGatewayInfluxdbBridge,
+					},
+					{
 						title: i18n.t('pages.configuration.smtp.title'),
 						icon: mdiEmailEdit,
 						to: '/config/smtp',

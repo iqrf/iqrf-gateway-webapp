@@ -19,6 +19,7 @@ import { AptService } from './Config/AptService';
 
 import { IqrfGatewayControllerService } from './Config/IqrfGatewayControllerService';
 import { IqrfGatewayDaemonService } from './Config/IqrfGatewayDaemonService';
+import { IqrfGatewayInfluxdbBridgeService } from './Config/IqrfGatewayInfluxdbBridgeService';
 import { IqrfRepositoryService } from './Config/IqrfRepositoryService';
 import { JournalService } from './Config/JournalService';
 import { MailerService } from './Config/MailerService';
@@ -27,6 +28,7 @@ import { MonitService } from './Config/MonitService';
 export * from './Config/AptService';
 export * from './Config/IqrfGatewayControllerService';
 export * from './Config/IqrfGatewayDaemonService';
+export * from './Config/IqrfGatewayInfluxdbBridgeService';
 export * from './Config/IqrfRepositoryService';
 export * from './Config/JournalService';
 export * from './Config/MailerService';
@@ -63,10 +65,18 @@ export class ConfigServices extends BaseService {
 
 	/**
 	 * Returns IQRF Gateway Daemon configuration service
-	 * @returns {IqrfGatewayDaemonService} IQRF Gateway Daemon configuration service
+	 * @return {IqrfGatewayDaemonService} IQRF Gateway Daemon configuration service
 	 */
 	public getIqrfGatewayDaemonService(): IqrfGatewayDaemonService {
 		return new IqrfGatewayDaemonService(this.apiClient);
+	}
+
+	/**
+	 * Returns IQRF Gateway InfluxDB Bridge configuration service
+	 * @return {IqrfGatewayInfluxdbBridgeService} IQRF Gateway InfluxDB Bridge configuration service
+	 */
+	public getIqrfGatewayInfluxdbBridgeService(): IqrfGatewayInfluxdbBridgeService {
+		return new IqrfGatewayInfluxdbBridgeService(this.apiClient);
 	}
 
 	/**

@@ -1125,7 +1125,7 @@
 									"            'enabled': false,",
 									"        },",
 									"        'iqrfGatewayInfluxdbBridge': {",
-									"            'enabled': false, ",
+									"            'enabled': false,",
 									"        },",
 									"        'iqrfGatewayTranslator': {",
 									"            'enabled': false,",

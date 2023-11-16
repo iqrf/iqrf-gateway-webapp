@@ -96,6 +96,8 @@ export interface SoftwareVersions {
 	controller: string|null;
 	/// IQRF Gateway Daemon version
 	daemon: string|null;
+	/// IQRF Gateway InfluxDB Bridge version
+	influxdbBridge: string|null;
 	/// IQRF Gateway Setter version
 	setter: string|null;
 	/// IQRF Gateway Uploader version

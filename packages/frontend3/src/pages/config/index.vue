@@ -32,6 +32,12 @@ const links: Ref<DisambiguationLink[]> = ref([
 		to: '/config/daemon',
 	},
 	{
+		title: i18n.t('pages.configuration.influxdb-bridge.title'),
+		description: i18n.t('pages.configuration.influxdb-bridge.description'),
+		to: '/config/influxdb-bridge',
+		feature: Feature.iqrfGatewayInfluxdbBridge,
+	},
+	{
 		title: i18n.t('pages.configuration.smtp.title'),
 		description: i18n.t('pages.configuration.smtp.description'),
 		to: '/config/smtp',

@@ -6,7 +6,7 @@
 </template>
 
 <route lang='yaml'>
-name: TimeConfig
+name: TimeConfiguration
 </route>
 
 <script lang='ts' setup>

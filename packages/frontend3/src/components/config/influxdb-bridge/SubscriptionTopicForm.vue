@@ -9,12 +9,21 @@
 		<template #activator='{ props }'>
 			<v-btn
 				v-if='action === FormAction.Add'
+				id='add-activator'
 				v-bind='props'
 				:color='iconColor()'
 				:icon='activatorIcon()'
 			/>
+			<v-tooltip
+				v-if='action === FormAction.Add'
+				activator='#add-activator'
+				location='bottom'
+			>
+				{{ $t('components.configuration.influxdb-bridge.actions.add') }}
+			</v-tooltip>
 			<v-icon
-				v-else
+				v-if='action === FormAction.Edit'
+				id='edit-activator'
 				v-bind='props'
 				:color='iconColor()'
 				class='me-2'
@@ -22,18 +31,28 @@
 			>
 				{{ activatorIcon() }}
 			</v-icon>
+			<v-tooltip
+				v-if='action === FormAction.Edit'
+				activator='#edit-activator'
+				location='bottom'
+			>
+				{{ $t('components.configuration.influxdb-bridge.actions.edit') }}
+			</v-tooltip>
 		</template>
-		<v-form ref='form' @submit.prevent='onSubmit'>
+		<v-form
+			ref='form'
+			v-slot='{ isValid }'
+			@submit.prevent='onSubmit'
+		>
 			<Card>
 				<template #title>
-					{{ $t(`components.configuration.time.ntpServers.${action}`) }}
+					{{ $t(`components.configuration.influxdb-bridge.actions.${action}`) }}
 				</template>
 				<TextInput
-					v-model='ntpServer'
-					label='NTP server address'
+					v-model='subscriptionTopic'
+					:label='$t("components.configuration.influxdb-bridge.topic")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.configuration.time.ntpServers.validation.serverMissing")),
-						(v: string|null) => ValidationRules.server(v, $t("components.configuration.time.ntpServers.validation.serverInvalid")),
+						(v: string|null) => ValidationRules.required(v, $t("components.configuration.influxdb-bridge.validation.topic")),
 					]'
 					required
 				/>
@@ -42,6 +61,7 @@
 						color='primary'
 						type='submit'
 						variant='elevated'
+						:disabled='!isValid.value'
 					>
 						{{ $t(`common.buttons.${action}`) }}
 					</v-btn>
@@ -74,7 +94,7 @@ import ValidationRules from '@/helpers/ValidationRules';
 interface Props {
 	action: FormAction;
 	index?: number;
-	server?: string;
+	topic?: string;
 }
 
 const emit = defineEmits(['save']);
@@ -82,14 +102,14 @@ const componentProps = defineProps<Props>();
 const show: Ref<boolean> = ref(false);
 const width = getModalWidth();
 const form: Ref<typeof VForm | null> = ref(null);
-const ntpServer: Ref<string> = ref('');
+const subscriptionTopic: Ref<string> = ref('');
 
 watchEffect(async (): Promise<void> => {
 	if (componentProps.action === FormAction.Add) {
-		ntpServer.value = '';
+		subscriptionTopic.value = '';
 	} else {
-		if (componentProps.server !== undefined) {
-			ntpServer.value = componentProps.server;
+		if (componentProps.topic !== undefined) {
+			subscriptionTopic.value = componentProps.topic;
 		}
 	}
 });
@@ -103,7 +123,7 @@ function activatorIcon(): string {
 
 function iconColor(): string {
 	if (componentProps.action === FormAction.Add) {
-		return 'white';
+		return 'primary';
 	}
 	return 'info';
 }
@@ -113,8 +133,8 @@ async function onSubmit(): Promise<void> {
 		return;
 	}
 	close();
-	emit('save', componentProps.index, ntpServer.value);
-	ntpServer.value = '';
+	emit('save', componentProps.index, subscriptionTopic.value);
+	subscriptionTopic.value = '';
 }
 
 function close(): void {

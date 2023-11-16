@@ -6,7 +6,7 @@
 </template>
 
 <route lang='yaml'>
-name: SmtpConfig
+name: SmtpConfiguration
 </route>
 
 <script lang='ts' setup>

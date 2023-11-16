@@ -752,6 +752,40 @@
 					}
 				}
 			},
+			"influxdb-bridge": {
+				"influx": "InfluxDB client",
+				"mqtt": "MQTT client",
+				"org": "Organization",
+				"token": "Authentication token",
+				"devicesBucket": "Devices bucket name",
+				"gatewayBucket": "Gateway bucket name",
+				"sensorsBucket": "Sensor bucket name",
+				"topicTitle": "Subscriptions",
+				"topic": "Topic",
+				"actions": {
+					"add": "Add subscription topic",
+					"edit": "Edit subscription topic",
+					"delete": "Delete subscription topic",
+					"deleteAll": "Delete all subscription topics"
+				},
+				"noTopics": "No subscription topics specified.",
+				"validation": {
+					"orgMissing": "Please enter organization name.",
+					"devicesBucketMissing": "Please enter devices bucket name.",
+					"gatewayBucketMissing": "Please enter gateway bucket name.",
+					"sensorsBucketMissing": "Please enter sensors bucket name.",
+					"topic": "Please enter subscription topic."
+				},
+				"messages": {
+					"save": {
+						"success": "IQRF Gateway InfluxDB Bridge configuration successfully saved."
+					}
+				},
+				"notes": {
+					"oldAuth": "User and password are used for v1.x authentication.",
+					"newAuth": "Token is used for v2+ authentication. A token can be used for authentication in version 1.8 with the format <user:password>."
+				}
+			},
 			"smtp": {
 				"test": "Test configuration",
 				"form": {
@@ -940,6 +974,7 @@
 					"iqrfCloudProvisioning": "IQRF Cloud Provisioning",
 					"iqrfGatewayController": "IQRF Gateway Controller",
 					"iqrfGatewayDaemon": "IQRF Gateway Daemon",
+					"iqrfGatewayInfluxdbBridge": "IQRF Gateway InfluxDB Bridge",
 					"iqrfGatewaySetter": "IQRF Gateway Setter",
 					"iqrfGatewayUploader": "IQRF Gateway Uploader",
 					"iqrfGatewayWebapp": "IQRF Gateway Webapp"
@@ -1055,6 +1090,10 @@
 					"iqrf-gateway-daemon": {
 						"name": "IQRF Gateway Daemon",
 						"description": "IQRF Gateway Daemon is a core component of the IQRF Gateway."
+					},
+					"iqrf-gateway-influxdb-bridge": {
+						"name": "IQRF Gateway InfluxDB Bridge",
+						"description": "Stores sensor measurement data in InfluxDB."
 					},
 					"iqrf-gateway-translator": {
 						"name": "IQRF Gateway Translator",
@@ -1339,6 +1378,10 @@
 					"title": "JSON API",
 					"description": "Configure JSON API."
 				}
+			},
+			"influxdb-bridge": {
+				"title": "IQRF GW InfluxDB Bridge",
+				"description": "Configure IQRF Gateway InfluxDB Bridge."
 			},
 			"smtp": {
 				"title": "SMTP",
