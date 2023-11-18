@@ -712,6 +712,62 @@
 						}
 					}
 				},
+				"logging": {
+					"actions": {
+						"add": "Add logging profile",
+						"edit": "Edit logging profile",
+						"delete": "Delete logging profile",
+						"reload": "Reload logging profiles"
+					},
+					"profile": "Logging profile",
+					"logDir": "Path to log directory",
+					"filename": "File name",
+					"maxSize": "Maximum file size in bytes",
+					"timestamps": "Split and rotate log files",
+					"maxAge": "Maximum lifespan of log files to keep",
+					"maxNumber": "Maximum number of log files to keep",
+					"channels": {
+						"title": "Logging channels",
+						"actions": {
+							"add": "Add logging channel",
+							"edit": "Edit logging channel",
+							"delete": "Delete logging channel",
+							"deleteAll": "Delete all logging channels"
+						},
+						"noChannels": "No logging channels specified."
+					},
+					"channel": "Logging channel",
+					"severity": "Logging severity",
+					"delete": {
+						"title": "Logging profile delete confirmation",
+						"prompt": "Are you sure you want to delete logging profile {name}?"
+					},
+					"validation": {
+						"profileMissing": "Please enter logging profile name.",
+						"logDirMissing": "Please enter path to log directory.",
+						"filenameMissing": "Please enter file name.",
+						"maxSizeMissing": "Please enter maximum file size.",
+						"maxSizeInvalid": "Maximum file size should be an integer greater or equal to 1.",
+						"maxAgeMissing": "Please enter maximum lifespan of log files.",
+						"maxAgeInvalid": "Maximum lifespan of log files should greater or equal to 0.",
+						"maxNumberMissing": "Please enter maximum number of log files to keep.",
+						"maxNumberInvalid": "Maximum number of log files to keep should be an integer greater or equal to 0.",
+						"channelMissing": "Please enter logging channel.",
+						"channelInvalid": "Logging channel should be an integer greater or equal to 0."
+					},
+					"notes": {
+						"timestampsDisabled": "Setting value to 0 disables this feature."
+					},
+					"messages": {
+						"save": {
+							"success": "Logging profile {name} has been successfully saved."
+						},
+						"delete": {
+							"success": "Logging profile {name} has been successfully deleted."
+						}
+					}
+
+				},
 				"validation": {
 					"instanceMissing": "Please enter instance name."
 				}
@@ -1377,6 +1433,10 @@
 				"jsonApi": {
 					"title": "JSON API",
 					"description": "Configure JSON API."
+				},
+				"logging": {
+					"title": "Logging",
+					"description": "Configure logging service."
 				}
 			},
 			"influxdb-bridge": {

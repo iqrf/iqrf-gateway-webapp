@@ -44,5 +44,10 @@ const links: Ref<DisambiguationLink[]> = ref([
 		description: i18n.t('pages.configuration.daemon.db.description'),
 		to: '/config/daemon/database',
 	},
+	{
+		title: i18n.t('pages.configuration.daemon.logging.title'),
+		description: i18n.t('pages.configuration.daemon.logging.description'),
+		to: '/config/daemon/logging',
+	},
 ]);
 </script>
