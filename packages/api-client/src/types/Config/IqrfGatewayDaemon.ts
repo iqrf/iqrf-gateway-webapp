@@ -41,7 +41,9 @@ export enum IqrfGatewayDaemonComponentName {
 	/// IQRF UART component
 	IqrfUart = 'iqrf::IqrfUart',
 	/// UDP messaging component
-	IqrfUdpMessaging = 'iqrf::UdpMessaging'
+	IqrfUdpMessaging = 'iqrf::UdpMessaging',
+	/// Shape Trace file service component
+	ShapeTraceFile = 'shape::TraceFileService',
 }
 
 /**
@@ -286,6 +288,50 @@ export interface IqrfGatewayDaemonUdpMessaging extends IqrfGatewayDaemonComponen
 }
 
 /**
+ * Shape trace verbosity
+ */
+export enum ShapeTraceVerbosity {
+	/// Debug
+	Debug = 'DBG',
+	/// Error
+	Error = 'Err',
+	/// Information
+	Info = 'INF',
+	/// Warning
+	Warning = 'WAR'
+}
+
+/**
+ * Shape trace channel verbosity interface
+ */
+export interface ShapeTraceChannelVerbosity {
+	/// Tracing channel
+	channel: number;
+	/// Logging severity
+	level: ShapeTraceVerbosity;
+}
+
+/**
+ * Shape trace file service interface
+ */
+export interface ShapeTraceFileService extends IqrfGatewayDaemonComponentInstanceBase<IqrfGatewayDaemonComponentName.ShapeTraceFile> {
+	/// Array of verbosity levels for different channels
+	VerbosityLevels: ShapeTraceChannelVerbosity[];
+	/// Name of log file
+	filename: string;
+	/// Maximum lifespan of timestamped files in minutes (Daemon version >= 2.3.0)
+	maxAgeMinutes: number;
+	/// Maximum number of timestamped files (Daemon version >= 2.3.0)
+	maxNumber: number;
+	/// Maximum log file size
+	maxSizeMB: number;
+	/// Path to directory with log files
+	path: string;
+	/// Should log files be timestamped?
+	timestampFiles: boolean;
+}
+
+/**
  * IQRF Gateway Daemon component instance configurations
  */
 export interface IqrfGatewayDaemonComponentInstanceConfigurations {
@@ -300,6 +346,7 @@ export interface IqrfGatewayDaemonComponentInstanceConfigurations {
 	[IqrfGatewayDaemonComponentName.IqrfSpi]: IqrfGatewayDaemonSpi;
 	[IqrfGatewayDaemonComponentName.IqrfUart]: IqrfGatewayDaemonUart;
 	[IqrfGatewayDaemonComponentName.IqrfUdpMessaging]: IqrfGatewayDaemonUdpMessaging;
+	[IqrfGatewayDaemonComponentName.ShapeTraceFile]: ShapeTraceFileService;
 }
 
 /**
