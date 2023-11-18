@@ -1,10 +1,28 @@
-iqrf-gateway-webapp (2.5.13~alpha~1.gbp7a3178) UNRELEASED; urgency=medium
+iqrf-gateway-webapp (2.5.13) stable; urgency=medium
 
-  ** SNAPSHOT build @7a3178a923432438b72c7c59cba5e9a1a2043a73 **
+  [ Karel Hanák ]
+  * Prepare for version 2.5.13-alpha
+  * MonitBackup: include available and enabled conf files
+  * MonitBackup: use privileged manager to read files
+  * MonitBackup: create enabled conf dir if it doesn't exist
+  * MonitBackup: set permissions to 0600
+  * GatewayFileBackup: use privileged file manager to update splitter and mqtt configuration
+  * WebappBackup: added industrial nginx configuration to whitelist
+  * WebappBackup: added iqube nginx config to whitelist
 
-  * UNRELEASED
+  [ Roman Ondráček ]
+  * Mail: test SMTP configuration
 
- -- Karel Hanák <karel.hanak@iqrf.org>  Thu, 19 Oct 2023 09:44:28 +0200
+  [ Karel Hanák ]
+  * ControllerConfig: added support for cloud provisioning factory reset
+
+  [ Roman Ondráček ]
+  * Docker: fix images for backend and frontend
+
+  [ Karel Hanák ]
+  * SendJsonRequest: check for existence of req object
+
+ -- Karel Hanák <karel.hanak@iqrf.org>  Sat, 18 Nov 2023 12:11:33 +0100
 
 iqrf-gateway-webapp (2.5.12) stable; urgency=medium
 
