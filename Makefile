@@ -24,7 +24,7 @@ VENDOR_DIR=${DATA_DIR}/vendor
 SBIN_DIR=${DESTDIR}/usr/sbin
 SYSTEMD_DIR=${DESTDIR}/lib/systemd/system
 
-CC_IGNORE=-i "coverage.*" -i "docs/" -i "tests/temp/" -i "www/dist/" -i ".vscode/" -i "packages/api-client/dist/" -i "packages/frontend/dist/" -i "tests/iqrf-gateway-webapp.postman_collection.json" -i "tests/data/gatewayInfo/syntax_error/iqrf-gateway.json"
+CC_IGNORE=-i "coverage.*" -i "docs/" -i "tests/temp/" -i "www/dist/" -i ".vscode/" -i "packages/api-client/dist/" -i "packages/frontend/dist/" -i "packages/frontend3/dist/" -i "tests/iqrf-gateway-webapp.postman_collection.json" -i "tests/data/gatewayInfo/syntax_error/iqrf-gateway.json"
 
 WEBAPP_USER ?= www-data
 WEBAPP_GROUP ?= www-data
@@ -33,10 +33,13 @@ WEBAPP_GROUP ?= www-data
 
 build:
 	$(COMPOSER) install --no-dev
-	npm install --legacy-peer-deps
+	npm --prefix packages/api-client/ install
 	npm --prefix packages/api-client/ run build
-	npm --prefix packages/frontend/ run build
-	cp -ru packages/frontend/dist www/
+	npm --prefix packages/daemon-utils/ install
+	npm --prefix packages/daemon-utils/ run build
+	npm --prefix packages/frontend3/ install --legacy-peer-deps
+	npm --prefix packages/frontend3/ run build
+	cp -ru packages/frontend3/dist www/
 
 all: qa phpstan cc test
 

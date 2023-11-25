@@ -1,7 +1,7 @@
 --- a/app/config/features.neon
 +++ b/app/config/features.neon
-@@ -15,14 +15,14 @@
- 
+@@ -15,11 +15,11 @@
+
  # apcupsd service
  apcupsd:
 -	enabled: false
