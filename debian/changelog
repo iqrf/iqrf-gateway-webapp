@@ -1,10 +1,10 @@
-iqrf-gateway-webapp (2.5.14~alpha~1.gbpe243f5) UNRELEASED; urgency=medium
+iqrf-gateway-webapp (2.5.14) stable; urgency=medium
 
-  ** SNAPSHOT build @e243f5423035b8e827b259470f342aed1d610eb9 **
+  [ Karel Hanák ]
+  * Prepare for version 2.5.14-alpha
+  * MonitBackup: fixed permissions for check files
 
-  * UNRELEASED
-
- -- Karel Hanák <karel.hanak@iqrf.org>  Sat, 18 Nov 2023 12:17:07 +0100
+ -- Karel Hanák <karel.hanak@iqrf.org>  Sun, 03 Dec 2023 12:41:37 +0100
 
 iqrf-gateway-webapp (2.5.13) stable; urgency=medium
 
