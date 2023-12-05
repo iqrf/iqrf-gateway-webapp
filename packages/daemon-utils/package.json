@@ -2,8 +2,6 @@
 	"name": "@iqrf/iqrf-gateway-daemon-utils",
 	"version": "0.0.1",
 	"description": "IQRF Gateway Daemon JavaScript utilities",
-	"main": "./dist/src/index.js",
-	"types": "./dist/src/index.d.ts",
 	"exports": {
 		".": {
 			"import": "./dist/src/index.js",
@@ -93,6 +91,7 @@
 	"license": "Apache-2.0",
 	"dependencies": {
 		"axios": "^1.6.3",
+		"cronstrue": "^2.47.0",
 		"luxon": "^3.4.4",
 		"punycode": "^2.3.1",
 		"uuid": "^9.0.1"

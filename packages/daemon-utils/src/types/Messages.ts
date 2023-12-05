@@ -14,6 +14,9 @@ export interface ResponseData {
 	msgId: string;
 	rsp: Record<string, any>;
 	status: number
+	errorStr?: string
+	insId?: string
+	statusStr?: string
 }
 
 export interface DaemonApiRequest extends DaemonApiMessage {
