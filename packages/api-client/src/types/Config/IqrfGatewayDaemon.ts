@@ -423,3 +423,13 @@ export interface IqrfGatewayDaemonMapping {
 	/// UART enable GPIO pin
 	uartEnableGpioPin?: number;
 }
+
+/**
+ * IQRF Gateway Daemon scheduler messaging instances
+ */
+export interface IqrfGatewayDaemonSchedulerMessagings {
+	/// MQTT messaging instances
+	mqtt: string[],
+	/// WS messaging instances
+	ws: string[],
+}
