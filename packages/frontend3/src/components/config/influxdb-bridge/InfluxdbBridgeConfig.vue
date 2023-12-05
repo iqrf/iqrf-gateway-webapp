@@ -111,10 +111,10 @@
 								md='4'
 							>
 								<TextInput
-									v-model='config.influx.buckets.gateway'
-									:label='$t("components.configuration.influxdb-bridge.gatewayBucket")'
+									v-model='config.influx.buckets.devices'
+									:label='$t("components.configuration.influxdb-bridge.devicesBucket")'
 									:rules='[
-										(v: string|null) => ValidationRules.required(v, $t("components.configuration.influxdb-bridge.validation.gatewayBucketMissing")),
+										(v: string|null) => ValidationRules.required(v, $t("components.configuration.influxdb-bridge.validation.devicesBucketMissing")),
 									]'
 									required
 								/>
@@ -124,10 +124,10 @@
 								md='4'
 							>
 								<TextInput
-									v-model='config.influx.buckets.gateway'
-									:label='$t("components.configuration.influxdb-bridge.gatewayBucket")'
+									v-model='config.influx.buckets.sensors'
+									:label='$t("components.configuration.influxdb-bridge.sensorsBucket")'
 									:rules='[
-										(v: string|null) => ValidationRules.required(v, $t("components.configuration.influxdb-bridge.validation.gatewayBucketMissing")),
+										(v: string|null) => ValidationRules.required(v, $t("components.configuration.influxdb-bridge.validation.sensorsBucketMissing")),
 									]'
 									required
 								/>

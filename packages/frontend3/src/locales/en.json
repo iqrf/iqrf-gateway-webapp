@@ -663,6 +663,93 @@
 						}
 					}
 				},
+				"scheduler": {
+					"actions": {
+						"add": "Add task",
+						"edit": "Edit task",
+						"delete": "Delete task",
+						"deleteAll": "Delete all tasks",
+						"reload": "Reload tasks",
+						"start": "Start task",
+						"stop": "Stop task",
+						"import": "Import tasks",
+						"export": "Export tasks"
+					},
+					"noTasks": "No tasks defined.",
+					"taskId": "Task ID",
+					"time": "Time",
+					"type": "Task execution condition",
+					"types": {
+						"oneshot": "Oneshot - execute task once at specified time",
+						"periodic": "Periodic - frequency of task execution in seconds",
+						"cron": "Cron time expression - specifies when and how frequently a task is executed"
+					},
+					"cron": "Time in cron format",
+					"period": "Period in seconds",
+					"oneshot": "Execution time",
+					"persist": "Persistent task",
+					"enabled": "Start task automatically",
+					"task": {
+						"actions": {
+							"add": "Add message",
+							"edit": "Edit message",
+							"delete": "Delete message",
+							"deleteAll": "Delete all messages"
+						},
+						"title": "Task messages",
+						"mType": "Message type",
+						"message": "Message (JSON API request)",
+						"messaging": "Connection profiles"
+					},
+					"noMessages": "No task messages specified.",
+					"delete": {
+						"title": "Task delete confirmation",
+						"prompt": "Are you sure you want to delete task {id}?"
+					},
+					"deleteAll": {
+						"title": "Tasks delete confirmation",
+						"prompt": "Are you sure you want to delete all tasks?"
+					},
+					"import": {
+						"title": "Import task(s)",
+						"file": "Task JSON file or ZIP archive",
+						"imported": "Imported",
+						"reason": "Reason"
+					},
+					"validation": {
+						"importFileMissing": "Please select a task JSON file or ZIP archive.",
+						"taskIdMissing": "Please enter task ID.",
+						"taskIdInvalid": "Task ID should be UUID version 4 string.",
+						"cronMissing": "Please enter a valid 7 field cron time expression.",
+						"periodMissing": "Please enter task execution period in seconds.",
+						"periodInvalid": "Task execution period should be an integer greater than 0.",
+						"messageMissing": "Please enter task message.",
+						"messageInvalid": "Task message should be a valid Daemon JSON API request."
+					},
+					"messages": {
+						"add": {
+							"success": "Task {id} successfully created."
+						},
+						"delete": {
+							"success": "Task {id} successfully deleted."
+						},
+						"deleteAll": {
+							"success": "All tasks have been deleted."
+						},
+						"import": {
+							"archiveInvalid": "",
+							"jsonInvalid": "",
+							"fileInvalid": "",
+							"success": "Scheduler tasks have been successfully imported."
+						},
+						"start": {
+							"success": "Task {id} sucessfully started."
+						},
+						"stop": {
+							"success": "Task {id} sucessfully stopped."
+						}
+					}
+				},
 				"cache": {
 					"url": "IQRF repository URL",
 					"update": "Update cache periodically",
@@ -1421,6 +1508,10 @@
 						"title": "UDP",
 						"description": "Configure UDP connections."
 					}
+				},
+				"scheduler": {
+					"title": "Scheduler",
+					"description": "Manage scheduler tasks."
 				},
 				"cache": {
 					"title": "Cache and repository",

@@ -172,6 +172,10 @@ function items(): SidebarLink[] {
 								],
 							},
 							{
+								title: i18n.t('pages.configuration.daemon.scheduler.title'),
+								to: '/config/daemon/scheduler',
+							},
+							{
 								title: i18n.t('pages.configuration.daemon.jsonApi.title'),
 								to: '/config/daemon/json-api',
 							},

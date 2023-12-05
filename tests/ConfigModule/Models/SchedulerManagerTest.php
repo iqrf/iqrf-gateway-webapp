@@ -27,6 +27,7 @@ declare(strict_types = 1);
 namespace Tests\ConfigModule\Models;
 
 use App\ConfigModule\Exceptions\TaskNotFoundException;
+use App\ConfigModule\Models\GenericManager;
 use App\ConfigModule\Models\MainManager;
 use App\ConfigModule\Models\SchedulerManager;
 use App\ConfigModule\Models\SchedulerSchemaManager;
@@ -273,8 +274,9 @@ final class SchedulerManagerTest extends TestCase {
 		$schedulerSchemaManager = Mockery::mock(SchedulerSchemaManager::class);
 		$schedulerSchemaManager->shouldReceive('validate')
 			->andReturnTrue();
-		$this->manager = new SchedulerManager($mainConfigManager, $timeManager, $commandManager, $schedulerSchemaManager);
-		$this->managerTemp = new SchedulerManager($mainConfigManagerTemp, $timeManager, $commandManager, $schedulerSchemaManager);
+		$genericManager = Mockery::mock(GenericManager::class);
+		$this->manager = new SchedulerManager($mainConfigManager, $timeManager, $commandManager, $schedulerSchemaManager, $genericManager);
+		$this->managerTemp = new SchedulerManager($mainConfigManagerTemp, $timeManager, $commandManager, $schedulerSchemaManager, $genericManager);
 	}
 
 	/**

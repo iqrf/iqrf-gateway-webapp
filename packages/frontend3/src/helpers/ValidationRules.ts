@@ -148,6 +148,38 @@ export default class ValidationRules {
 		const ipv4Validator: z.ZodString = z.string().ip({version: 'v4'});
 		const ipv6Validator: z.ZodString = z.string().ip({version: 'v6'});
 		return (ipv4Validator.safeParse(value).success || ipv6Validator.safeParse(value).success || value === 'localhost' || isFQDN(value)) || error;
-
 	}
+
+	/**
+	 * UUID
+	 * @param {string|null} value Field value
+	 * @param {string} error Error message
+	 * @return {boolean|string} Validation result
+	 */
+	public static uuid(value: string | null, error: string): boolean | string {
+		if (value === null) {
+			return error;
+		}
+		const uuidValidator: z.ZodString = z.string().uuid();
+		return uuidValidator.safeParse(value).success || error;
+	}
+
+	/**
+	 * JSON object
+	 * @param {string|null} value Field value
+	 * @param {string} error Error message
+	 * @return {boolean|string} Validation result
+	 */
+	public static json(value: string | null, error: string): boolean | string {
+		if (value === null) {
+			return error;
+		}
+		try {
+			JSON.parse(value);
+			return true;
+		} catch (e) {
+			return error;
+		}
+	}
+
 }
