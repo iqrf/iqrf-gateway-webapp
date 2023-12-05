@@ -190,6 +190,8 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/powerControl.json
 		Remount:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/remount.json
+		SchedulerMessagings:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/schedulerMessagings.json
 		ServiceList:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/serviceList.json
 		ServiceStatus:

@@ -2,7 +2,7 @@
 	<v-text-field
 		v-bind='$attrs'
 		:label='label'
-		:hint='description'
+		:hint='description ?? undefined'
 		:persistent-hint='showHint'
 	>
 		<template #message='{ message }'>
@@ -26,7 +26,7 @@
 </template>
 
 <script lang='ts' setup>
-import { computed } from 'vue';
+import { type PropType , computed } from 'vue';
 import { VTextField } from 'vuetify/components';
 
 const props = defineProps({
@@ -36,12 +36,12 @@ const props = defineProps({
 		required: false,
 	},
 	description: {
-		type: String,
-		default: '',
+		type: [String, null] as PropType<string | null>,
+		default: null,
 		required: false,
 	},
 });
 
-const showHint = computed(() => props.description.length > 0);
+const showHint = computed(() => props.description !== null && props.description.length > 0);
 
 </script>

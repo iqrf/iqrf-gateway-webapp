@@ -20,6 +20,14 @@ a {
 	}
 }
 
+.table-row-skeleton-loader {
+	.v-skeleton-loader__text {
+		border-radius: 10px;
+		margin: 0 !important;
+		padding: 0 !important;
+	}
+}
+
 .v-btn {
 	text-transform: none !important;
 }

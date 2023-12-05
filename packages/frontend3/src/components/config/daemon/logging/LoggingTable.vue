@@ -21,41 +21,49 @@
 				{{ $t('components.configuration.daemon.logging.actions.reload') }}
 			</v-tooltip>
 		</template>
-		<DataTable
-			:headers='headers'
-			:items='instances'
-			:hover='true'
-			:dense='true'
-			:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+		<v-skeleton-loader
+			class='input-skeleton-loader'
+			:loading='componentState === ComponentState.Loading'
+			type='table-heading, table-row-divider@2, table-row'
 		>
-			<template #item.actions='{ item }'>
-				<span>
-					<LoggingForm
-						:action='FormAction.Edit'
-						:logging-profile='item'
-						@saved='getConfigs'
-					/>
-					<v-tooltip
-						activator='parent'
-						location='bottom'
-					>
-						{{ $t('components.configuration.daemon.logging.actions.edit') }}
-					</v-tooltip>
-				</span>
-				<span>
-					<LoggingDeleteDialog
-						:logging-instance='item'
-						@deleted='getConfigs'
-					/>
-					<v-tooltip
-						activator='parent'
-						location='bottom'
-					>
-						{{ $t('components.configuration.daemon.logging.actions.delete') }}
-					</v-tooltip>
-				</span>
-			</template>
-		</DataTable>
+			<v-responsive>
+				<DataTable
+					:headers='headers'
+					:items='instances'
+					:hover='true'
+					:dense='true'
+					:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+				>
+					<template #item.actions='{ item }'>
+						<span>
+							<LoggingForm
+								:action='FormAction.Edit'
+								:logging-profile='item'
+								@saved='getConfigs'
+							/>
+							<v-tooltip
+								activator='parent'
+								location='bottom'
+							>
+								{{ $t('components.configuration.daemon.logging.actions.edit') }}
+							</v-tooltip>
+						</span>
+						<span>
+							<LoggingDeleteDialog
+								:logging-instance='item'
+								@deleted='getConfigs'
+							/>
+							<v-tooltip
+								activator='parent'
+								location='bottom'
+							>
+								{{ $t('components.configuration.daemon.logging.actions.delete') }}
+							</v-tooltip>
+						</span>
+					</template>
+				</DataTable>
+			</v-responsive>
+		</v-skeleton-loader>
 	</Card>
 </template>
 

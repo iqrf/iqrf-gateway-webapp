@@ -30,6 +30,11 @@ const links: Ref<DisambiguationLink[]> = ref([
 		to: '/config/daemon/connections',
 	},
 	{
+		title: i18n.t('pages.configuration.daemon.scheduler.title'),
+		description: i18n.t('pages.configuration.daemon.scheduler.description'),
+		to: '/config/daemon/scheduler',
+	},
+	{
 		title: i18n.t('pages.configuration.daemon.jsonApi.title'),
 		description: i18n.t('pages.configuration.daemon.jsonApi.description'),
 		to: '/config/daemon/json-api',
