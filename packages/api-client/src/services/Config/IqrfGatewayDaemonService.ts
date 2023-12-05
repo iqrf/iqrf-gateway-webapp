@@ -24,6 +24,7 @@ import {
 	type IqrfGatewayDaemonComponentName,
 	type IqrfGatewayDaemonComponentState,
 	type IqrfGatewayDaemonMapping,
+	type IqrfGatewayDaemonSchedulerMessagings,
 } from '../../types/Config';
 import { type MappingType } from '../../types/Config/Mapping';
 
@@ -155,6 +156,33 @@ export class IqrfGatewayDaemonService extends BaseService {
 	public deleteMapping(id: number): Promise<void> {
 		return this.axiosInstance.delete(`/mappings/${id}`)
 			.then((): void => {return;});
+	}
+
+	/**
+	 * Import scheduler tasks
+	 * @param {File} data Scheduler task JSON file or ZIP archive
+	 */
+	public schedulerImport(data: File): Promise<void> {
+		return this.axiosInstance.post('/scheduler/import', data, {headers: {'Content-Type': data.type}})
+			.then((): void => {return;});
+	}
+
+	/**
+	 * Export scheduler tasks
+	 * @return {Promise<ArrayBuffer>} Scheduler task ZIP archive
+	 */
+	public schedulerExport(): Promise<ArrayBuffer> {
+		return this.axiosInstance.get('/scheduler/export', {responseType: 'arraybuffer'})
+			.then((response: AxiosResponse<ArrayBuffer>) => response.data);
+	}
+
+	/**
+	 * Fetch scheduler messaging instances
+	 * @return {Promise<>} Scheduler task suitable messaging instances
+	 */
+	public schedulerMessagings(): Promise<IqrfGatewayDaemonSchedulerMessagings> {
+		return this.axiosInstance.get('/scheduler/messagings')
+			.then((response: AxiosResponse<IqrfGatewayDaemonSchedulerMessagings>): IqrfGatewayDaemonSchedulerMessagings => response.data);
 	}
 
 }
