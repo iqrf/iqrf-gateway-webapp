@@ -18,12 +18,14 @@ import { BaseService } from './BaseService';
 
 import { HostnameService } from './Gateway/HostnameService';
 import { InfoService } from './Gateway/InfoService';
+import { LogService } from './Gateway/LogService';
 import { PowerService } from './Gateway/PowerService';
 import { SshKeyService } from './Gateway/SshKeyService';
 import { TimeService } from './Gateway/TimeService';
 
 export * from './Gateway/HostnameService';
 export * from './Gateway/InfoService';
+export * from './Gateway/LogService';
 export * from './Gateway/PowerService';
 export * from './Gateway/SshKeyService';
 export * from './Gateway/TimeService';
@@ -47,6 +49,14 @@ export class GatewayServices extends BaseService {
 	 */
 	public getInfoService(): InfoService {
 		return new InfoService(this.apiClient);
+	}
+
+	/**
+	 * Returns log service
+	 * @returns {LogService} Log service
+	 */
+	public getLogService(): LogService {
+		return new LogService(this.apiClient);
 	}
 
 	/**

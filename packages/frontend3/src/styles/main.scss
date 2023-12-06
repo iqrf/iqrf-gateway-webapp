@@ -94,3 +94,10 @@ a {
 	background-size: 100% 100%;
 	transition: background-size 2s 0s linear;
 }
+
+.log {
+	max-height: 75vh;
+	white-space: pre-wrap;
+	word-wrap: break-word;
+	overflow-y: scroll;
+}
