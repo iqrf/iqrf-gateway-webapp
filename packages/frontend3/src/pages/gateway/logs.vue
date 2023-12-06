@@ -2,7 +2,7 @@
 	<Head>
 		<title>{{ $t('pages.gateway.logs.title') }}</title>
 	</Head>
-	<LogViewer />
+	<LogSelector />
 </template>
 
 <route lang='yaml'>
@@ -12,5 +12,5 @@ name: 'GatewayLogs'
 <script lang='ts' setup>
 import { Head } from '@unhead/vue/components';
 
-import LogViewer from '@/components/gateway/logs/LogViewer.vue';
+import LogSelector from '@/components/gateway/logs/LogSelector.vue';
 </script>

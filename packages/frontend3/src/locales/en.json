@@ -1163,6 +1163,11 @@
 				"gwMode": "Daemon mode",
 				"diagnostics": "Download diagnostics"
 			},
+			"logs": {
+				"journal": {
+					"oldestRecords": "No older Journal records available."
+				}
+			},
 			"mode": {
 				"current": "Current mode",
 				"startup": "Startup mode",
