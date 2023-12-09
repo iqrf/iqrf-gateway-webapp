@@ -1,4 +1,12 @@
 /**
+ * Generic messages
+ */
+export enum GenericMessages {
+	/// Raw DPA message
+	Raw = 'iqrfRaw'
+}
+
+/**
  * Scheduler message types
  */
 export enum SchedulerMessages {

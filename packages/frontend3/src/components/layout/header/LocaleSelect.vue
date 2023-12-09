@@ -14,7 +14,10 @@
 				<img height='16' :src='"data:image/svg+xml;charset=utf-8;base64," + localeStore.getLocaleFlag'>
 			</v-btn>
 		</template>
-		<v-list density='compact'>
+		<v-list
+			class='pt-0 pb-0'
+			density='compact'
+		>
 			<v-list-item
 				v-for='locale in localeStore.getAvailableLocales'
 				:key='locale.code'
