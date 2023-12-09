@@ -1,5 +1,4 @@
-
-import  {type App} from 'vue';
+import {type App} from 'vue';
 
 import registerDatetime from '@/plugins/datetime';
 import head from '@/plugins/head';

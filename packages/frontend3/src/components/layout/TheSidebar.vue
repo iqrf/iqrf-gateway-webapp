@@ -20,31 +20,15 @@
 <script lang='ts' setup>
 import { Feature, UserRole } from '@iqrf/iqrf-gateway-webapp-client/types';
 import {
-	mdiAccountGroup,
 	mdiAccountKey,
-	mdiApi,
-	mdiArchiveCogOutline,
-	mdiBackupRestore,
 	mdiBook,
+	mdiBroadcast,
 	mdiChevronLeft,
 	mdiChevronRight,
-	mdiClockTimeFourOutline,
 	mdiCog,
 	mdiDesktopTower,
-	mdiEmailEdit,
-	mdiInformationOutline,
-	mdiLedOff,
 	mdiLogin,
-	mdiNotificationClearAll,
-	mdiPower,
-	mdiProgressUpload,
-	mdiProgressWrench,
 	mdiSecurity,
-	mdiSsh,
-	mdiSwapHorizontal,
-	mdiTextBoxOutline,
-	mdiTools,
-	mdiUpdate,
 	mdiWrenchClock,
 } from '@mdi/js';
 import { storeToRefs } from 'pinia';
@@ -96,27 +80,22 @@ function items(): SidebarLink[] {
 				children: [
 					{
 						title: i18n.t('pages.gateway.information.title'),
-						icon: mdiInformationOutline,
 						to: '/gateway/information',
 					},
 					{
 						title: i18n.t('pages.gateway.logs.title'),
-						icon: mdiTextBoxOutline,
 						to: '/gateway/logs',
 					},
 					{
 						title: i18n.t('pages.gateway.mode.title'),
-						icon: mdiSwapHorizontal,
 						to: '/gateway/mode',
 					},
 					{
 						title: i18n.t('pages.gateway.services.title'),
-						icon: mdiTools,
 						to: '/gateway/services',
 					},
 					{
 						title: i18n.t('pages.gateway.power.title'),
-						icon: mdiPower,
 						to: '/gateway/power',
 					},
 				],
@@ -127,7 +106,6 @@ function items(): SidebarLink[] {
 				children: [
 					{
 						title: i18n.t('pages.configuration.controller.title'),
-						icon: mdiLedOff,
 						to: '/config/controller',
 						feature: Feature.iqrfGatewayController,
 					},
@@ -200,37 +178,41 @@ function items(): SidebarLink[] {
 					},
 					{
 						title: i18n.t('pages.configuration.smtp.title'),
-						icon: mdiEmailEdit,
 						to: '/config/smtp',
 					},
 					{
 						title: i18n.t('pages.configuration.time.title'),
-						icon: mdiClockTimeFourOutline,
 						to: '/config/time',
 					},
 					{
 						title: i18n.t('pages.configuration.journal.title'),
-						icon: mdiArchiveCogOutline,
 						to: '/config/journal',
 						feature: Feature.journal,
 					},
 					{
 						title: i18n.t('pages.configuration.unattendedUpgrades.title'),
-						icon: mdiUpdate,
 						to: '/config/unattended-upgrades',
 						feature: Feature.unattendedUpgrades,
 					},
 					{
 						title: i18n.t('pages.configuration.mender.title'),
-						icon: mdiProgressWrench,
 						to: '/config/mender',
 						feature: Feature.mender,
 					},
 					{
 						title: i18n.t('pages.configuration.monit.title'),
-						icon: mdiNotificationClearAll,
 						to: '/config/monit',
 						feature: Feature.monit,
+					},
+				],
+			},
+			{
+				title: i18n.t('pages.iqrfnet.title'),
+				icon: mdiBroadcast,
+				children: [
+					{
+						title: i18n.t('pages.iqrfnet.send-dpa.title'),
+						to: '/iqrfnet/send-dpa',
 					},
 				],
 			},
@@ -240,12 +222,10 @@ function items(): SidebarLink[] {
 				children: [
 					{
 						title: i18n.t('pages.maintenance.backup.title'),
-						icon: mdiBackupRestore,
 						to: '/maintenance/backup',
 					},
 					{
 						title: i18n.t('pages.maintenance.mender.title'),
-						icon: mdiProgressUpload,
 						to: '/maintenance/mender-update',
 						feature: Feature.mender,
 					},
@@ -257,19 +237,16 @@ function items(): SidebarLink[] {
 				children: [
 					{
 						title: i18n.t('pages.accessControl.users.title'),
-						icon: mdiAccountGroup,
 						to: '/access-control/users',
 						roles: [UserRole.Admin, UserRole.BasicAdmin],
 					},
 					{
 						title: i18n.t('pages.accessControl.apiKeys.title'),
-						icon: mdiApi,
 						to: '/access-control/api-keys',
 						roles: [UserRole.Admin],
 					},
 					{
 						title: i18n.t('pages.accessControl.sshKeys.title'),
-						icon: mdiSsh,
 						to: '/access-control/ssh-keys',
 						roles: [UserRole.Admin],
 					},

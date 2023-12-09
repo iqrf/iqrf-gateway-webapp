@@ -271,7 +271,8 @@
 			"selectAll": "Select all",
 			"deselectAll": "Deselect all",
 			"upload": "Upload",
-			"clipboard": "Copy to clipboard"
+			"clipboard": "Copy to clipboard",
+			"send": "Send"
 		},
 		"labels": {
 			"general": "General",
@@ -1285,6 +1286,51 @@
 				}
 			}
 		},
+		"iqrfnet": {
+			"send-dpa": {
+				"presets": "Presets",
+				"decimal": "Change to decimal",
+				"hexadecimal": "Change to hexadecimal",
+				"lock": "Lock NADR",
+				"unlock": "Unlock NADR",
+				"nadr": "NADR",
+				"pnum": "PNUM",
+				"pcmd": "PCMD",
+				"hwpid": "HWPID",
+				"pdata": "PDATA",
+				"useCustomTimeout": "Use custom DPA timeout",
+				"customTimeout": "Custom DPA timeout",
+				"history": {
+					"title": "Packet history",
+					"time": "Time",
+					"request": "Request",
+					"confirmation": "Confirmation",
+					"response": "Response"
+				},
+				"macros": {
+					"title": "Macros"
+				},
+				"validation": {
+					"nadrMissing": "Please enter decimal NADR.",
+					"nadrInvalid": "Decimal NADR should be an integer between 0 and 255.",
+					"nadrHexMissing": "Please enter hexadecimal NADR.",
+					"nadrHexInvalid": "Hexadecimal NADR should be a 2 characters long string between 00 and ff.",
+					"pnumMissing": "Please enter decimal PNUM.",
+					"pnumInvalid": "Decimal PNUM should be an integer between 0 and 255.",
+					"pnumHexMissing": "Please enter hexadecimal PNUM.",
+					"pnumHexInvalid": "Hexadecimal PNUM should be a 2 characters long string between 00 and ff.",
+					"pcmdMissing": "Please enter decimal PCMD.",
+					"pcmdInvalid": "Decimal PCMD should be an integer between 0 and 127.",
+					"pcmdHexMissing": "Please enter hexadecimal PCMD.",
+					"pcmdHexInvalid": "Hexadecimal PCMD should be a 2 characters long string between 00 and 7f.",
+					"hwpidMissing": "Please enter decimal HWPID.",
+					"hwpidInvalid": "Decimal HWPID should be an integer between 0 and 65535.",
+					"hwpidHexMissing": "Please enter hexadecimal HWPID.",
+					"hwpidHexInvalid": "Hexadecimal HWPID should be a 4 characters long string between 0000 and ffff.",
+					"pdataInvalid": "PDATA should be at most 57 hexadecimal bytes separated by a dot."
+				}
+			}
+		},
 		"maintenance": {
 			"backup": {
 				"backup": {
@@ -1562,6 +1608,13 @@
 			"mender": {
 				"title": "Mender",
 				"description": "Configure Mender client for remote and features."
+			}
+		},
+		"iqrfnet": {
+			"title": "IQRF Network",
+			"description": "Manager IQRF network and devices.",
+			"send-dpa": {
+				"title": "Send DPA packet"
 			}
 		},
 		"maintenance": {
