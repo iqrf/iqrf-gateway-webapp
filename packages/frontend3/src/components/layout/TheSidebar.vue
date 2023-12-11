@@ -1,7 +1,7 @@
 <template>
 	<v-navigation-drawer
 		v-model='isVisible'
-		color='#1c241e'
+		theme='dark'
 		:rail='isMinimized'
 	>
 		<SidebarItems :items='items()' />
