@@ -22,7 +22,6 @@ import axios, {
 	type InternalAxiosRequestConfig,
 } from 'axios';
 
-import {version as clientVersion} from '../package.json';
 import {
 	AccountService,
 	ApiKeyService,
@@ -105,11 +104,6 @@ export class Client {
 		baseURL: '/api/',
 		/** Timeout in milliseconds */
 		timeout: 30_000,
-		/** Headers */
-		headers: {
-			/** User agent */
-			'User-Agent': `iqrf-gateway-webapp-js-client_v${clientVersion}`,
-		},
 	};
 
 	/**

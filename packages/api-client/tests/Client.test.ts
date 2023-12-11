@@ -19,7 +19,6 @@ import {beforeEach, describe, expect, it} from 'vitest';
 
 import {Client} from '../src';
 
-import {version} from '../package.json';
 import {
 	AccountService,
 	ApiKeyService,
@@ -42,31 +41,24 @@ describe('Client', (): void => {
 	 */
 	let client: Client;
 
-	/**
-	 * @var {string} userAgent User agent
-	 */
-	const userAgent = `iqrf-gateway-webapp-js-client_v${version}`;
-
 	beforeEach((): void => {
 		client = new Client();
 	});
 
 	it('can be instantiated', (): void  => {
-		expect.assertions(5);
+		expect.assertions(4);
 		expect(client.getAxiosInstance())
 			.toBeDefined();
 		expect(client.getAxiosInstance().defaults.auth)
 			.toBeUndefined();
 		expect(client.getAxiosInstance().defaults.baseURL)
 			.toBe('/api/');
-		expect(client.getAxiosInstance().defaults.headers['User-Agent'])
-			.toStrictEqual(userAgent);
 		expect(client.getAxiosInstance().defaults.timeout)
 			.toBe(30_000);
 	});
 
 	it('can be instantiated with custom Axios instance', (): void  => {
-		expect.assertions(5);
+		expect.assertions(4);
 		const config: AxiosRequestConfig = {
 			baseURL: 'https://iqrf-gw.exaple.com/api/',
 			timeout: 5_000,
@@ -79,14 +71,12 @@ describe('Client', (): void => {
 			.toBeUndefined();
 		expect(client.getAxiosInstance().defaults.baseURL)
 			.toBe('https://iqrf-gw.exaple.com/api/');
-		expect(client.getAxiosInstance().defaults.headers['User-Agent'])
-			.toBe(userAgent);
 		expect(client.getAxiosInstance().defaults.timeout)
 			.toBe(5_000);
 	});
 
 	it('can be instantiated with custom Axios instance configuration', (): void  => {
-		expect.assertions(5);
+		expect.assertions(4);
 		const config: AxiosRequestConfig = {
 			baseURL: 'https://iqrf-gw.exaple.com/api/',
 			timeout: 5_000,
@@ -98,8 +88,6 @@ describe('Client', (): void => {
 			.toBeUndefined();
 		expect(client.getAxiosInstance().defaults.baseURL)
 			.toBe('https://iqrf-gw.exaple.com/api/');
-		expect(client.getAxiosInstance().defaults.headers['User-Agent'])
-			.toBe(userAgent);
 		expect(client.getAxiosInstance().defaults.timeout)
 			.toBe(5_000);
 	});
