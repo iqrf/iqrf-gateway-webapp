@@ -1,15 +1,20 @@
 <template>
-	<v-app dark>
-		<router-view v-if='isChecked' />
-		<SessionExpirationDialog v-if='isLoggedIn' />
-	</v-app>
+	<v-theme-provider theme='light'>
+		<v-app dark>
+			<router-view v-if='isChecked' />
+			<SessionExpirationDialog v-if='isLoggedIn' />
+		</v-app>
+	</v-theme-provider>
 </template>
 
 <script lang='ts' setup>
-import  { type InstallationChecks } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { type InstallationChecks } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { type AxiosError } from 'axios';
 import { storeToRefs } from 'pinia';
+import { useHead } from 'unhead';
 import { onBeforeMount, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useTheme } from 'vuetify';
 
 import SessionExpirationDialog from '@/components/SessionExpirationDialog.vue';
 import router from '@/router';
@@ -17,8 +22,11 @@ import { useApiClient } from '@/services/ApiClient';
 import { useDaemonStore } from '@/store/daemonSocket';
 import { useFeatureStore } from '@/store/features';
 import { useInstallStore } from '@/store/install';
+import { useLocaleStore } from '@/store/locale';
 import { useUserStore } from '@/store/user';
 
+const i18n = useI18n();
+const theme = useTheme();
 
 const daemonStore = useDaemonStore();
 const {isConnected} = storeToRefs(daemonStore);
@@ -31,7 +39,33 @@ const {isChecked} = storeToRefs(installStore);
 const userStore = useUserStore();
 const {isLoggedIn} = storeToRefs(userStore);
 
+const localeStore = useLocaleStore();
+const {locale} = storeToRefs(localeStore);
+
+/**
+ * Sets head options
+ * @param {string} newLocale New locale
+ */
+function setHeadOptions(newLocale: string): void {
+	useHead({
+		htmlAttrs: {
+			class: {
+				'v-theme--light': theme.global.name.value === 'light',
+				'v-theme--dark': theme.global.name.value === 'dark',
+			},
+			lang: newLocale,
+		},
+		titleTemplate: '%s %separator %siteName',
+		templateParams: {
+			siteName: i18n.t('title').toString(),
+			separator: '|',
+		},
+	});
+}
+
 onBeforeMount(async () => {
+	theme.global.name.value = 'light';
+	setHeadOptions(locale.value);
 	await featureStore.fetch();
 	await useApiClient().getInstallationService().check()
 		.then((check: InstallationChecks): void => {
@@ -84,5 +118,7 @@ watch(isConnected, (newVal) => {
 		daemonStore.sendVersionRequest();
 	}
 });
+
+watch(locale, setHeadOptions);
 
 </script>

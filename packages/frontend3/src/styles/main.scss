@@ -81,18 +81,17 @@ a {
 .sweep {
 	color: white;
 	background: rgb(var(--v-theme-primary));
-}
 
-.sweep:hover {
-	color: black;
-	background: linear-gradient(to right, rgb(var(--v-theme-warning)), rgb(var(--v-theme-warning)));
-	background-repeat: no-repeat;
-	background-size: 0 100%;
-}
+	&:hover {
+		color: black;
+		background: linear-gradient(to right, rgb(var(--v-theme-warning)), rgb(var(--v-theme-warning))) no-repeat;
+		background-size: 0 100%;
+	}
 
-.sweep:active {
-	background-size: 100% 100%;
-	transition: background-size 2s 0s linear;
+	&:active {
+		background-size: 100% 100%;
+		transition: background-size 2s 0s linear;
+	}
 }
 
 .log {
@@ -100,4 +99,50 @@ a {
 	white-space: pre-wrap;
 	word-wrap: break-word;
 	overflow-y: scroll;
+}
+
+html {
+	overflow-y: auto;
+}
+
+.v-theme--light {
+	::-webkit-scrollbar {
+		width: 12px;
+	}
+
+	::-webkit-scrollbar-track {
+		background: #e6e6e6;
+		border-left: 1px solid #dadada;
+	}
+
+	::-webkit-scrollbar-thumb {
+		background: #b0b0b0;
+		border: solid 3px #e6e6e6;
+		border-radius: 7px;
+
+		&:hover {
+			background: black;
+		}
+	}
+}
+
+.v-theme--dark {
+	::-webkit-scrollbar {
+		width: 12px;
+	}
+
+	::-webkit-scrollbar-track {
+		background: #202020;
+		border-left: 1px solid #2c2c2c;
+	}
+
+	::-webkit-scrollbar-thumb {
+		background: #3e3e3e;
+		border: solid 3px #202020;
+		border-radius: 7px;
+
+		&:hover {
+			background: white;
+		}
+	}
 }
