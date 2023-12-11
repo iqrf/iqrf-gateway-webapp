@@ -44,3 +44,11 @@ export interface DpaPacketMessage {
 	confirmation?: string,
 	response?: string,
 }
+
+export interface JsonMessage {
+	msgId: string,
+	mType: string,
+	timestamp: string,
+	request: string,
+	response: string[],
+}

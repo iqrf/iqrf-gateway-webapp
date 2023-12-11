@@ -33,6 +33,11 @@ const links: Ref<DisambiguationLink[]> = ref([
 		to: '/config',
 	},
 	{
+		title: i18n.t('pages.iqrfnet.title'),
+		description: i18n.t('pages.iqrfnet.description'),
+		to: '/iqrfnet',
+	},
+	{
 		title: i18n.t('pages.maintenance.title'),
 		description: i18n.t('pages.maintenance.description'),
 		to: '/maintenance',

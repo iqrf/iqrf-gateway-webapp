@@ -20,9 +20,14 @@ import { type DisambiguationLink } from '@/types/disambiguation';
 const i18n = useI18n();
 const links: Ref<DisambiguationLink[]> = ref([
 	{
-		title: i18n.t('pages.iqrfnet.sendDpa.title'),
+		title: i18n.t('pages.iqrfnet.send-dpa.title'),
 		description: i18n.t('pages.iqrfnet.send-dpa.description'),
 		to: '/iqrfnet/send-dpa',
+	},
+	{
+		title: i18n.t('pages.iqrfnet.send-json.title'),
+		description: i18n.t('pages.iqrfnet.send-json.description'),
+		to: '/iqrfnet/send-json',
 	},
 ]);
 </script>
