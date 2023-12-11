@@ -297,7 +297,9 @@
 				"trace": "Trace"
 			},
 			"returnVerbose": "Verbose response",
-			"none": "None"
+			"none": "None",
+			"request": "Request",
+			"response": "Response"
 		},
 		"states": {
 			"active": "Active",
@@ -1287,6 +1289,14 @@
 			}
 		},
 		"iqrfnet": {
+			"inProgress": "Request handling in progress.",
+			"products": {
+				"title": "Product browser",
+				"button": "Browse products",
+				"manufacturer": "Manufacturer",
+				"name": "Product name",
+				"hwpid": "Product HWPID"
+			},
 			"send-dpa": {
 				"presets": "Presets",
 				"decimal": "Change to decimal",
@@ -1303,9 +1313,7 @@
 				"history": {
 					"title": "Packet history",
 					"time": "Time",
-					"request": "Request",
-					"confirmation": "Confirmation",
-					"response": "Response"
+					"confirmation": "Confirmation"
 				},
 				"macros": {
 					"title": "Macros"
@@ -1328,6 +1336,14 @@
 					"hwpidHexMissing": "Please enter hexadecimal HWPID.",
 					"hwpidHexInvalid": "Hexadecimal HWPID should be a 4 characters long string between 0000 and ffff.",
 					"pdataInvalid": "PDATA should be at most 57 hexadecimal bytes separated by a dot."
+				}
+			},
+			"send-json": {
+				"api": "API documentation",
+				"json": "Request message",
+				"history": {
+					"title": "Request history",
+					"noMessages": "No recorded JSON messages."
 				}
 			}
 		},
@@ -1614,7 +1630,12 @@
 			"title": "IQRF Network",
 			"description": "Manager IQRF network and devices.",
 			"send-dpa": {
-				"title": "Send DPA packet"
+				"title": "Send DPA packet",
+				"description": "Send raw DPA packets into the IQRF network."
+			},
+			"send-json": {
+				"title": "Send JSON request",
+				"description": "Send JSON requests into the IQRF network."
 			}
 		},
 		"maintenance": {

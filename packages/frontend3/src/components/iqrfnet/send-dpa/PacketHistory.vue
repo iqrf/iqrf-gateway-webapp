@@ -52,7 +52,7 @@ const headers = [
 	},
 	{
 		key: 'request',
-		title: i18n.t('components.iqrfnet.send-dpa.history.request'),
+		title: i18n.t('common.labels.request'),
 		width: '30%',
 		minWidth: '30%',
 		maxWidth: '30%',
@@ -68,7 +68,7 @@ const headers = [
 	},
 	{
 		key: 'response',
-		title: i18n.t('components.iqrfnet.send-dpa.history.response'),
+		title: i18n.t('common.labels.response'),
 		width: '35%',
 		minWidth: '35%',
 		maxWidth: '35%',

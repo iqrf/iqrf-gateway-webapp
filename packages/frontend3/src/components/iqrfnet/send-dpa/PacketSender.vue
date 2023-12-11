@@ -3,6 +3,13 @@
 		<template #title>
 			{{ $t('pages.iqrfnet.send-dpa.title') }}
 		</template>
+		<v-alert
+			v-if='componentState === ComponentState.Saving'
+			variant='tonal'
+			color='info'
+			:text='$t("components.iqrfnet.inProgress")'
+			class='mb-2'
+		/>
 		<v-form
 			ref='form'
 			v-slot='{ isValid }'
@@ -285,7 +292,10 @@
 								</template>
 								{{ $t('components.iqrfnet.send-dpa.hexadecimal') }}
 							</v-tooltip>
-							<v-menu>
+							<v-menu
+								v-model='hwpidMenu'
+								eager
+							>
 								<template #activator='{ props }'>
 									<v-icon
 										v-bind='props'
@@ -309,6 +319,11 @@
 									>
 										{{ preset.title }}
 									</v-list-item>
+									<ProductBrowser
+										:list-activator='true'
+										@apply='(item) => applyHwpidPreset(item.hwpid)'
+										@close='hwpidMenu = false'
+									/>
 								</v-list>
 							</v-menu>
 						</template>
@@ -336,7 +351,10 @@
 								</template>
 								{{ $t('components.iqrfnet.send-dpa.decimal') }}
 							</v-tooltip>
-							<v-menu>
+							<v-menu
+								v-model='hwpidMenu'
+								eager
+							>
 								<template #activator='{ props }'>
 									<v-icon
 										v-bind='props'
@@ -360,6 +378,11 @@
 									>
 										{{ preset.title }}
 									</v-list-item>
+									<ProductBrowser
+										:list-activator='true'
+										@apply='(item) => applyHwpidPreset(item.hwpid)'
+										@close='hwpidMenu = false'
+									/>
 								</v-list>
 							</v-menu>
 						</template>
@@ -423,6 +446,7 @@ import { type Ref, ref } from 'vue';
 import { VForm } from 'vuetify/components';
 
 import Card from '@/components/Card.vue';
+import ProductBrowser from '@/components/iqrfnet/ProductBrowser.vue';
 import PacketHistory from '@/components/iqrfnet/send-dpa/PacketHistory.vue';
 import PacketMacros from '@/components/iqrfnet/send-dpa/PacketMacros.vue';
 import TextInput from '@/components/TextInput.vue';
@@ -436,6 +460,7 @@ const daemonStore = useDaemonStore();
 const form: Ref<typeof VForm | null> = ref(null);
 const msgId: Ref<string | null> = ref(null);
 const messages: Ref<DpaPacketMessage[]> = ref([]);
+const hwpidMenu: Ref<boolean> = ref(false);
 
 daemonStore.$onAction(
 	({ name, after }) => {
