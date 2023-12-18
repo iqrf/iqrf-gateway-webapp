@@ -40,12 +40,8 @@ const userStore = useUserStore();
 const {isLoggedIn} = storeToRefs(userStore);
 
 const localeStore = useLocaleStore();
-const {locale} = storeToRefs(localeStore);
+const {getLocale: locale} = storeToRefs(localeStore);
 
-/**
- * Sets head options
- * @param {string} newLocale New locale
- */
 function setHeadOptions(newLocale: string): void {
 	useHead({
 		htmlAttrs: {
@@ -57,7 +53,7 @@ function setHeadOptions(newLocale: string): void {
 		},
 		titleTemplate: '%s %separator %siteName',
 		templateParams: {
-			siteName: i18n.t('title').toString(),
+			siteName: i18n.t('pages.title').toString(),
 			separator: '|',
 		},
 	});

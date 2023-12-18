@@ -29,5 +29,10 @@ const links: Ref<DisambiguationLink[]> = ref([
 		description: i18n.t('pages.iqrfnet.send-json.description'),
 		to: '/iqrfnet/send-json',
 	},
+	{
+		title: i18n.t('pages.iqrfnet.upload.title'),
+		description: i18n.t('pages.iqrfnet.upload.description'),
+		to: '/iqrfnet/upload',
+	},
 ]);
 </script>

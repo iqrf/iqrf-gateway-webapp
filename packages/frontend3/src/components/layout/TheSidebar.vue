@@ -218,6 +218,10 @@ function items(): SidebarLink[] {
 						title: i18n.t('pages.iqrfnet.send-json.title'),
 						to: '/iqrfnet/send-json',
 					},
+					{
+						title: i18n.t('pages.iqrfnet.upload.title'),
+						to: '/iqrfnet/upload',
+					},
 				],
 			},
 			{

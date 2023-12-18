@@ -77,7 +77,6 @@
 			"pm": "PM"
 		}
 	},
-	"title": "IQRF Gateway Webapp",
 	"auth": {
 		"sign": {
 			"in": {
@@ -1345,6 +1344,18 @@
 					"title": "Request history",
 					"noMessages": "No recorded JSON messages."
 				}
+			},
+			"upload": {
+				"dpa-handler": {
+					"title": "Custom DPA handler",
+					"file": "Hex file to upload",
+					"validation": {
+						"fileMissing": "Please select custom DPA handler hex file."
+					},
+					"messages": {
+						"success": "Custom DPA handler has been successfully uploaded."
+					}
+				}
 			}
 		},
 		"maintenance": {
@@ -1506,6 +1517,7 @@
 		}
 	},
 	"pages": {
+		"title": "IQRF Gateway Webapp",
 		"gateway": {
 			"title": "Gateway",
 			"description": "Display gateway information, services and power controls.",
@@ -1636,6 +1648,10 @@
 			"send-json": {
 				"title": "Send JSON request",
 				"description": "Send JSON requests into the IQRF network."
+			},
+			"upload": {
+				"title": "Coordinator upload",
+				"description": "Upload custom DPA handlers and change DPA version."
 			}
 		},
 		"maintenance": {
