@@ -1,7 +1,4 @@
 <template>
-	<Head>
-		<title>{{ $t('title') }}</title>
-	</Head>
 	<Disambiguation :links='links' />
 </template>
 
@@ -11,7 +8,6 @@ name: Dashboard
 
 <script lang='ts' setup>
 import { Feature } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { Head } from '@unhead/vue/components';
 import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 

@@ -82,8 +82,12 @@ export default defineConfig(({mode}) => {
 				// daemon utils
 				'@iqrf/iqrf-gateway-daemon-utils/enums/*': path.resolve(__dirname, '../daemon-utils/src/enums/*'),
 				'@iqrf/iqrf-gateway-daemon-utils/enums': path.resolve(__dirname, '../daemon-utils/src/enums'),
+				'@iqrf/iqrf-gateway-daemon-utils/services/*': path.resolve(__dirname, '../daemon-utils/src/services/*'),
+				'@iqrf/iqrf-gateway-daemon-utils/services': path.resolve(__dirname, '../daemon-utils/src/services'),
 				'@iqrf/iqrf-gateway-daemon-utils/types/*': path.resolve(__dirname, '../daemon-utils/src/types/*'),
 				'@iqrf/iqrf-gateway-daemon-utils/types': path.resolve(__dirname, '../daemon-utils/src/types'),
+				'@iqrf/iqrf-gateway-daemon-utils/utils/*': path.resolve(__dirname, '../daemon-utils/src/utils/*'),
+				'@iqrf/iqrf-gateway-daemon-utils/utils': path.resolve(__dirname, '../daemon-utils/src/utils'),
 				'@iqrf/iqrf-gateway-daemon-utils': path.resolve(__dirname, '../daemon-utils'),
 			},
 			extensions: [

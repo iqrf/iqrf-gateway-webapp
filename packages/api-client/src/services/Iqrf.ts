@@ -18,9 +18,11 @@ import { BaseService } from './BaseService';
 
 import { DpaMacrosService } from './Iqrf/DpaMacrosService';
 import { InterfacePortsService } from './Iqrf/InterfacePortsService';
+import { UpgradeService } from './Iqrf/UpgradeService';
 
 export * from './Iqrf/DpaMacrosService';
 export * from './Iqrf/InterfacePortsService';
+export * from './Iqrf/UpgradeService';
 
 /**
  * IQRF services
@@ -41,6 +43,14 @@ export class IqrfServices extends BaseService {
 	 */
 	public getInterfacePortsService(): InterfacePortsService {
 		return new InterfacePortsService(this.apiClient);
+	}
+
+	/**
+	 * Returns upgrade service
+	 * @return {UpgradeService} Upgrade service
+	 */
+	public getUpgradeService(): UpgradeService {
+		return new UpgradeService(this.apiClient);
 	}
 
 }

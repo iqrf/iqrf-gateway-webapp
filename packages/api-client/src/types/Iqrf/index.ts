@@ -16,3 +16,4 @@
 
 export * from './DpaMacro';
 export * from './InterfacePorts';
+export * from './Upgrade';
