@@ -1,4 +1,4 @@
-import { CZ, GB } from 'country-flag-icons/string/3x2';
+import { GB } from 'country-flag-icons/string/3x2';
 import { Base64 } from 'js-base64';
 import { defineStore } from 'pinia';
 import { preferredLocale } from 'preferred-locale';
@@ -22,12 +22,12 @@ interface LocaleState {
 
 const locales: Locale[] = [
 	{code: 'en', flag: Base64.encode(GB)},
-	{code: 'cs', flag: Base64.encode(CZ)},
+	//{code: 'cs', flag: Base64.encode(CZ)},
 ];
 
 export const useLocaleStore = defineStore('locale', {
 	state: (): LocaleState => ({
-		locale: preferredLocale('en', ['cs', 'en'], {languageOnly: true}),
+		locale: preferredLocale('en', ['en'], {languageOnly: true}),
 	}),
 	actions: {
 		/**
