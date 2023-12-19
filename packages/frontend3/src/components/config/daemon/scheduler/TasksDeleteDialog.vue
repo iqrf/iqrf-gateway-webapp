@@ -50,12 +50,12 @@
 </template>
 
 <script lang='ts' setup>
-import { type DaemonApiResponse, SchedulerMessages, SchedulerService, DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils';
+import { SchedulerMessages } from '@iqrf/iqrf-gateway-daemon-utils/enums';
+import { SchedulerService } from '@iqrf/iqrf-gateway-daemon-utils/services';
+import { type DaemonApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
+import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { mdiDelete } from '@mdi/js';
-import {
-	ref,
-	type Ref,
-} from 'vue';
+import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 

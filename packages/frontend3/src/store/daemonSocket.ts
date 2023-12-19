@@ -1,4 +1,6 @@
-import { DaemonMessage, type DaemonMessageOptions, DaemonMode , type DaemonApiRequest, type DaemonApiResponse } from '@iqrf/iqrf-gateway-daemon-utils';
+import { DaemonMode } from '@iqrf/iqrf-gateway-daemon-utils/enums';
+import { type DaemonApiRequest, type DaemonApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
+import { DaemonMessage, type DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { defineStore } from 'pinia';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'vue3-toastify';

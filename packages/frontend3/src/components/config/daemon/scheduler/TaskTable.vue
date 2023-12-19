@@ -120,14 +120,10 @@
 </template>
 
 <script lang='ts' setup>
-import {
-	type DaemonApiResponse,
-	DaemonMessageOptions,
-	type SchedulerRecord,
-	SchedulerMessages,
-	type SchedulerRecordTimeSpec,
-} from '@iqrf/iqrf-gateway-daemon-utils';
-import { SchedulerService as DaemonSchedulerService } from '@iqrf/iqrf-gateway-daemon-utils';
+import { SchedulerMessages } from '@iqrf/iqrf-gateway-daemon-utils/enums';
+import { SchedulerService } from '@iqrf/iqrf-gateway-daemon-utils/services';
+import { type DaemonApiResponse, type SchedulerRecord, type SchedulerRecordTimeSpec } from '@iqrf/iqrf-gateway-daemon-utils/types';
+import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { type IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import { type IqrfGatewayDaemonSchedulerMessagings } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { FileDownloader } from '@iqrf/iqrf-gateway-webapp-client/utils';
@@ -253,7 +249,7 @@ function listTasks(): void {
 		() => {msgId.value = null;},
 	);
 	daemonStore.sendMessage(
-		DaemonSchedulerService.listTasks(true, options),
+		SchedulerService.listTasks(true, options),
 	).then((val: string) => msgId.value = val);
 }
 
@@ -279,7 +275,7 @@ function getTask(taskId: string): void {
 		() => {msgId.value = null;},
 	);
 	daemonStore.sendMessage(
-		DaemonSchedulerService.getTask(taskId, options),
+		SchedulerService.getTask(taskId, options),
 	).then((val: string) => msgId.value = val);
 }
 
@@ -310,7 +306,7 @@ function startTask(taskId: string): void {
 		() => {msgId.value = null;},
 	);
 	daemonStore.sendMessage(
-		DaemonSchedulerService.startTask(taskId, options),
+		SchedulerService.startTask(taskId, options),
 	).then((val: string) => msgId.value = val);
 }
 
@@ -337,7 +333,7 @@ function stopTask(taskId: string): void {
 		() => {msgId.value = null;},
 	);
 	daemonStore.sendMessage(
-		DaemonSchedulerService.stopTask(taskId, options),
+		SchedulerService.stopTask(taskId, options),
 	).then((val: string) => msgId.value = val);
 }
 

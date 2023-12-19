@@ -49,7 +49,7 @@
 </template>
 
 <script lang='ts' setup>
-import { type JsonMessage } from '@iqrf/iqrf-gateway-daemon-utils';
+import { type JsonMessage } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { mdiDelete } from '@mdi/js';
 import { computed, type PropType, type Ref, ref } from 'vue';
 

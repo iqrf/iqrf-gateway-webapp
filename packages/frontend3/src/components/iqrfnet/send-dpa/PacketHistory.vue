@@ -25,7 +25,7 @@
 </template>
 
 <script lang='ts' setup>
-import { type DpaPacketMessage } from '@iqrf/iqrf-gateway-daemon-utils';
+import { type DpaPacketMessage } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { mdiDelete } from '@mdi/js';
 import { type PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
