@@ -1,4 +1,4 @@
-import  { type DaemonApiRequest } from '@iqrf/iqrf-gateway-daemon-utils';
+import { type DaemonApiRequest } from '@iqrf/iqrf-gateway-daemon-utils/types';
 
 export interface GenericSocketState {
 	socket: InstanceType<typeof ClientSocket> | null;

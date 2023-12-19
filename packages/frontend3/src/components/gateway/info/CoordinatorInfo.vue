@@ -48,8 +48,9 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { type DaemonApiResponse, DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils';
-import { ref, type Ref , onMounted } from 'vue';
+import { type DaemonApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
+import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
+import { ref, type Ref, onMounted } from 'vue';
 
 import { IqmeshNetworkService } from '@/services/DaemonApi/IqmeshNetworkService';
 import { useDaemonStore } from '@/store/daemonSocket';

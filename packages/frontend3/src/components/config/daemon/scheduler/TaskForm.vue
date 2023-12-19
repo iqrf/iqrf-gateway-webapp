@@ -205,18 +205,15 @@
 </template>
 
 <script lang='ts' setup>
-import {
-	DaemonMessageOptions,
-	SchedulerMessages,
-	SchedulerService as DaemonSchedulerService,
-	SchedulerCron,
-} from '@iqrf/iqrf-gateway-daemon-utils';
+import { SchedulerMessages } from '@iqrf/iqrf-gateway-daemon-utils/enums';
+import { SchedulerService } from '@iqrf/iqrf-gateway-daemon-utils/services';
 import {
 	type DaemonApiResponse,
 	type SchedulerRecord,
 	type SchedulerRecordTask,
 	SchedulerTaskType,
 } from '@iqrf/iqrf-gateway-daemon-utils/types';
+import { DaemonMessageOptions, SchedulerCron } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { type IqrfGatewayDaemonSchedulerMessagings } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { mdiDelete, mdiHelpBox, mdiPencil, mdiPlus } from '@mdi/js';
 import cron from 'cron-validate';
@@ -263,7 +260,7 @@ const width = getModalWidth();
 const show: Ref<boolean> = ref(false);
 const form: Ref<typeof VForm | null> = ref(null);
 const defaultTask: SchedulerRecord = {
-	clientId: DaemonSchedulerService.ClientID,
+	clientId: SchedulerService.ClientID,
 	taskId: '',
 	description: '',
 	task: [],
@@ -422,7 +419,7 @@ function addTask(record: SchedulerRecord): void {
 	);
 	componentState.value = ComponentState.Saving;
 	daemonStore.sendMessage(
-		DaemonSchedulerService.addTask(record, options),
+		SchedulerService.addTask(record, options),
 	).then((val: string) => msgId.value = val);
 }
 
@@ -435,7 +432,7 @@ function editTask(record: SchedulerRecord): void {
 	);
 	componentState.value = ComponentState.Saving;
 	daemonStore.sendMessage(
-		DaemonSchedulerService.editTask(record, options),
+		SchedulerService.editTask(record, options),
 	).then((val: string) => msgId.value = val);
 }
 

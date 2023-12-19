@@ -75,7 +75,7 @@
 </template>
 
 <script lang='ts' setup>
-import { type DaemonApiRequest, type SchedulerRecordTask } from '@iqrf/iqrf-gateway-daemon-utils';
+import { type DaemonApiRequest, type SchedulerRecordTask } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { type IqrfGatewayDaemonSchedulerMessagings } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { mdiPencil, mdiPlus } from '@mdi/js';
 import { ref, type Ref, watchEffect , type PropType, computed } from 'vue';

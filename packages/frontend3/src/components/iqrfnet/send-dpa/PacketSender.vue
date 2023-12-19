@@ -433,13 +433,10 @@
 </template>
 
 <script lang='ts' setup>
-import {
-	type DaemonApiResponse,
-	type DpaPacketMessage,
-	DaemonMessageOptions,
-	GenericMessages,
-	GenericService,
-} from '@iqrf/iqrf-gateway-daemon-utils';
+import { GenericMessages } from '@iqrf/iqrf-gateway-daemon-utils/enums';
+import { GenericService } from '@iqrf/iqrf-gateway-daemon-utils/services';
+import { type DaemonApiResponse, type DpaPacketMessage } from '@iqrf/iqrf-gateway-daemon-utils/types';
+import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { mdiHexadecimal, mdiMenu, mdiNumeric, mdiLock, mdiLockOpen } from '@mdi/js';
 import { vMaska } from 'maska';
 import { type Ref, ref } from 'vue';

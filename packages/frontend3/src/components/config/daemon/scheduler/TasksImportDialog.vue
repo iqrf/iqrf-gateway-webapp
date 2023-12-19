@@ -92,13 +92,10 @@
 </template>
 
 <script lang='ts' setup>
-import {
-	SchedulerService,
-	type SchedulerRecord,
-	DaemonMessageOptions,
-	type DaemonApiResponse,
-	SchedulerMessages,
-} from '@iqrf/iqrf-gateway-daemon-utils';
+import { SchedulerMessages } from '@iqrf/iqrf-gateway-daemon-utils/enums';
+import { SchedulerService } from '@iqrf/iqrf-gateway-daemon-utils/services';
+import { type DaemonApiResponse, type SchedulerRecord } from '@iqrf/iqrf-gateway-daemon-utils/types';
+import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { mdiCheckCircleOutline, mdiCloseCircleOutline, mdiFileOutline, mdiImport } from '@mdi/js';
 import { BlobReader, TextWriter, ZipReader } from '@zip.js/zip.js';
 import { ref, type Ref } from 'vue';

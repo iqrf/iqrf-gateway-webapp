@@ -49,12 +49,8 @@
 </template>
 
 <script lang='ts' setup>
-import {
-	type DaemonApiResponse,
-	DaemonMessageOptions,
-	type DaemonApiRequest,
-	type JsonMessage,
-} from '@iqrf/iqrf-gateway-daemon-utils';
+import { type DaemonApiResponse, type DaemonApiRequest, type JsonMessage } from '@iqrf/iqrf-gateway-daemon-utils/types';
+import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { type Ref, ref } from 'vue';
 import { VForm } from 'vuetify/components';
 
@@ -63,6 +59,7 @@ import RequestHistory from '@/components/iqrfnet/send-json/RequestHistory.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useDaemonStore } from '@/store/daemonSocket';
 import { ComponentState } from '@/types/ComponentState';
+
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
 const daemonStore = useDaemonStore();
