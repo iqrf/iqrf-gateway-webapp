@@ -271,7 +271,8 @@
 			"deselectAll": "Deselect all",
 			"upload": "Upload",
 			"clipboard": "Copy to clipboard",
-			"send": "Send"
+			"send": "Send",
+			"import": "Import"
 		},
 		"labels": {
 			"general": "General",
@@ -516,9 +517,22 @@
 				},
 				"connections": {
 					"profile": "Connection profile",
+					"profileFile": "Connection profile file",
 					"acceptAsyncMessages": "Accept asynchronous messages",
+					"actions": {
+						"add": "Create connection profile",
+						"edit": "Edit connection profile",
+						"delete": "Delete connection profile",
+						"reload": "Reload connection profiles",
+						"import": "Import connection profile",
+						"export": "Export connection profile"
+					},
 					"validation": {
-						"profileMissing": "Please enter connection profile name."
+						"profileMissing": "Please enter connection profile name.",
+						"profileFileMissing": "Please select connection profile file."
+					},
+					"messages": {
+						"profileFileInvalid": "Selected file is not a valid connection profile file."
 					},
 					"trustStore": "Trust store",
 					"keyStore": "Key store",
@@ -529,7 +543,7 @@
 					"serverCertAuth": "Enable server certificate authentication",
 					"mqtt": {
 						"clouds": {
-							"add": "Add MQTT cloud connection profile",
+							"add": "Create cloud connection profile",
 							"aws": {
 								"title": "Amazon AWS IoT",
 								"endpoint": "Endpoint",
@@ -569,12 +583,6 @@
 								}
 							}
 						},
-						"actions": {
-							"add": "Add MQTT connection profile",
-							"edit": "Edit MQTT connection profile",
-							"delete": "Delete MQTT connection profile",
-							"reload": "Reload MQTT connection profiles"
-						},
 						"broker": "Broker URL",
 						"clientId": "Client ID",
 						"requestTopic": "Request topic",
@@ -595,6 +603,9 @@
 						"timeout": "Connection timeout",
 						"minReconnect": "Minimum reconnect period",
 						"maxReconnect": "Maximum reconnect period",
+						"import": {
+							"title": "MQTT connection profile import"
+						},
 						"delete": {
 							"title": "MQTT connection profile delete confirmation",
 							"prompt": "Are you sure you want to delete MQTT connection profile {name}?"
@@ -634,15 +645,12 @@
 						}
 					},
 					"udp": {
-						"actions": {
-							"add": "Add UDP connection profile",
-							"edit": "Edit UDP connection profile",
-							"delete": "Delete UDP connection profile",
-							"reload": "Reload UDP connection profiles"
-						},
 						"localPort": "Local port",
 						"remotePort": "Remote port",
 						"expiration": "UDP client records expiration (in seconds)",
+						"import": {
+							"title": "UDP connection profile import"
+						},
 						"delete": {
 							"title": "UDP connection profile delete confirmation",
 							"prompt": "Are you sure you want to delete UDP connection profile {name}?"
@@ -752,7 +760,7 @@
 						}
 					}
 				},
-				"cache": {
+				"repository": {
 					"url": "Repository URL",
 					"update": "Update repository cache periodically",
 					"updatePeriod": "Repository cache update period (in minutes)",
@@ -1580,9 +1588,9 @@
 					"title": "Scheduler",
 					"description": "Manage scheduler tasks."
 				},
-				"cache": {
+				"repository": {
 					"title": "IQRF Repository",
-					"description": "ConfigureI QRF repository."
+					"description": "Configure IQRF repository."
 				},
 				"db": {
 					"title": "Device database",

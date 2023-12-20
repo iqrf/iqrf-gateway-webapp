@@ -19,7 +19,7 @@
 				activator='#add-activator'
 				location='bottom'
 			>
-				{{ $t('components.configuration.daemon.connections.udp.actions.add') }}
+				{{ $t('components.configuration.daemon.connections.actions.add') }}
 			</v-tooltip>
 			<v-icon
 				v-if='action === FormAction.Edit'
@@ -35,7 +35,7 @@
 				activator='#edit-activator'
 				location='bottom'
 			>
-				{{ $t('components.configuration.daemon.connections.udp.actions.edit') }}
+				{{ $t('components.configuration.daemon.connections.actions.edit') }}
 			</v-tooltip>
 		</template>
 		<v-form
@@ -180,9 +180,9 @@ const activatorIcon = computed(() => {
 });
 const dialogTitle = computed(() => {
 	if (componentProps.action === FormAction.Add) {
-		return i18n.t('components.configuration.daemon.connections.udp.actions.add').toString();
+		return i18n.t('components.configuration.daemon.connections.actions.add').toString();
 	}
-	return i18n.t('components.configuration.daemon.connections.udp.actions.edit').toString();
+	return i18n.t('components.configuration.daemon.connections.actions.edit').toString();
 });
 
 watchEffect(async(): Promise<void> => {
@@ -226,6 +226,15 @@ function handleError(): void {
 	componentState.value = ComponentState.Ready;
 	toast.error('TODO ERROR HANDLING');
 }
+
+function importFromConfig(config: IqrfGatewayDaemonUdpMessaging): void {
+	profile.value = {...config};
+	show.value = true;
+}
+
+defineExpose({
+	importFromConfig,
+});
 
 function close(): void {
 	show.value = false;

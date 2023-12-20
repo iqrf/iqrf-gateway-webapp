@@ -158,8 +158,8 @@ function items(): SidebarLink[] {
 								to: '/config/daemon/json-api',
 							},
 							{
-								title: i18n.t('pages.configuration.daemon.cache.title'),
-								to: '/config/daemon/cache',
+								title: i18n.t('pages.configuration.daemon.repository.title'),
+								to: '/config/daemon/repository',
 							},
 							{
 								title: i18n.t('pages.configuration.daemon.db.title'),
