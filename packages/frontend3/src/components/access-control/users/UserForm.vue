@@ -74,7 +74,7 @@
 						type='submit'
 						variant='elevated'
 					>
-						{{ $t(`generic.actions.${action}`) }}
+						{{ $t(`common.buttons.${action}`) }}
 					</v-btn>
 					<v-spacer />
 					<v-btn

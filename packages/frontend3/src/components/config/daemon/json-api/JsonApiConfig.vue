@@ -6,7 +6,7 @@
 	>
 		<Card>
 			<template #title>
-				{{ $t('components.configuration.daemon.jsonApi.raw.title') }}
+				{{ $t('pages.configuration.daemon.json-api.title') }}
 			</template>
 			<template #titleActions>
 				<v-tooltip
@@ -26,13 +26,21 @@
 			<v-skeleton-loader
 				class='input-skeleton-loader'
 				:loading='componentState === ComponentState.Loading'
-				type='text'
+				type='heading, text'
 			>
 				<v-responsive>
 					<section v-if='config'>
+						<TextInput
+							v-model='config.insId'
+							:label='$t("components.configuration.daemon.json-api.instanceId")'
+							:rules='[
+								(v: string|null) => ValidationRules.required(v, $t("components.configuration.daemon.json-api.validation.instanceIdMissing")),
+							]'
+							required
+						/>
 						<v-checkbox
-							v-model='config.asyncDpaMessage'
-							:label='$t("components.configuration.daemon.jsonApi.raw.asyncMessages")'
+							v-model='config.validateJsonResponse'
+							:label='$t("components.configuration.daemon.json-api.validateResponses")'
 							density='compact'
 							hide-details
 						/>
@@ -58,7 +66,7 @@ import { type IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/
 import {
 	type IqrfGatewayDaemonComponent,
 	IqrfGatewayDaemonComponentName,
-	type IqrfGatewayDaemonJsonDpaApiRaw,
+	type IqrfGatewayDaemonJsonSplitter,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { mdiReload } from '@mdi/js';
 import {
@@ -71,7 +79,9 @@ import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
 import Card from '@/components/Card.vue';
+import TextInput from '@/components/TextInput.vue';
 import { validateForm } from '@/helpers/validateForm';
+import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
 import { ComponentState } from '@/types/ComponentState';
 
@@ -80,7 +90,7 @@ const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
 const form: Ref<typeof VForm | null> = ref(null);
 let instance = '';
-const config: Ref<IqrfGatewayDaemonJsonDpaApiRaw | null> = ref(null);
+const config: Ref<IqrfGatewayDaemonJsonSplitter | null> = ref(null);
 
 async function getConfig(): Promise<void> {
 	if (componentState.value === ComponentState.Created) {
@@ -88,8 +98,8 @@ async function getConfig(): Promise<void> {
 	} else {
 		componentState.value = ComponentState.Reloading;
 	}
-	service.getComponent(IqrfGatewayDaemonComponentName.IqrfJsonDpaApiRaw)
-		.then((response: IqrfGatewayDaemonComponent<IqrfGatewayDaemonComponentName.IqrfJsonDpaApiRaw>): void => {
+	service.getComponent(IqrfGatewayDaemonComponentName.IqrfJsonSplitter)
+		.then((response: IqrfGatewayDaemonComponent<IqrfGatewayDaemonComponentName.IqrfJsonSplitter>): void => {
 			config.value = response.instances[0] ?? null;
 			if (config.value !== null) {
 				instance = config.value.instance;
@@ -105,11 +115,11 @@ async function onSubmit(): Promise<void> {
 	}
 	componentState.value = ComponentState.Saving;
 	const params = {...config.value};
-	service.updateInstance(IqrfGatewayDaemonComponentName.IqrfJsonDpaApiRaw, instance, params)
+	service.updateInstance(IqrfGatewayDaemonComponentName.IqrfJsonSplitter, instance, params)
 		.then(() => {
 			getConfig().then(() => {
 				toast.success(
-					i18n.t('components.configuration.daemon.jsonApi.raw.messages.save.success'),
+					i18n.t('components.configuration.daemon.json-api.messages.save.success'),
 				);
 			});
 		})

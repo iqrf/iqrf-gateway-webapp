@@ -154,7 +154,7 @@ function items(): SidebarLink[] {
 								to: '/config/daemon/scheduler',
 							},
 							{
-								title: i18n.t('pages.configuration.daemon.jsonApi.title'),
+								title: i18n.t('pages.configuration.daemon.json-api.title'),
 								to: '/config/daemon/json-api',
 							},
 							{

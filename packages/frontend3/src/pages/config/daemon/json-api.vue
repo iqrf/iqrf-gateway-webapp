@@ -1,9 +1,8 @@
 <template>
 	<Head>
-		<title>{{ $t('pages.configuration.daemon.jsonApi.title') }}</title>
+		<title>{{ $t('pages.configuration.daemon.json-api.title') }}</title>
 	</Head>
-	<JsonApiRawConfig class='mb-4' />
-	<JsonSplitterConfig />
+	<JsonApiConfig />
 </template>
 
 <route lang='yaml'>
@@ -13,6 +12,5 @@ name: JsonApiConfiguration
 <script lang='ts' setup>
 import { Head } from '@unhead/vue/components';
 
-import JsonApiRawConfig from '@/components/config/daemon/json-api/JsonApiRawConfig.vue';
-import JsonSplitterConfig from '@/components/config/daemon/json-api/JsonSplitterConfig.vue';
+import JsonApiConfig from '@/components/config/daemon/json-api/JsonApiConfig.vue';
 </script>

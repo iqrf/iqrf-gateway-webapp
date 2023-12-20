@@ -753,17 +753,17 @@
 					}
 				},
 				"cache": {
-					"url": "IQRF repository URL",
-					"update": "Update cache periodically",
-					"updatePeriod": "Cache update period (in minutes)",
+					"url": "Repository URL",
+					"update": "Update repository cache periodically",
+					"updatePeriod": "Repository cache update period (in minutes)",
 					"validation": {
-						"urlMissing": "Please enter IQRF repository url.",
-						"updatePeriodMissing": "Please enter cache update period.",
-						"updatePeriodInvalid": "Cache update period should be an integer greater or equal to 0."
+						"urlMissing": "Please enter repository url.",
+						"updatePeriodMissing": "Please enter repository cache update period.",
+						"updatePeriodInvalid": "Repository cache update period should be an integer greater or equal to 0."
 					},
 					"messages": {
 						"save": {
-							"success": "Cache and repository configuration sucessfully saved."
+							"success": "IQRF repository configuration sucessfully saved."
 						}
 					}
 				},
@@ -777,27 +777,15 @@
 						}
 					}
 				},
-				"jsonApi": {
-					"raw": {
-						"title": "Generic messages",
-						"asyncMessages": "Allow asynchronous generic DPA messages",
-						"messages": {
-							"save": {
-								"success": "Generic messages configuration successfully saved."
-							}
-						}
+				"json-api": {
+					"instanceId": "Instance ID",
+					"validateResponses": "Validate JSON responses",
+					"validation": {
+						"instanceIdMissing": "Please enter instance ID."
 					},
-					"splitter": {
-						"title": "JSON splitter",
-						"instanceId": "Instance ID",
-						"validateResponses": "Validate JSON responses",
-						"validation": {
-							"instanceIdMissing": "Please enter instance ID."
-						},
-						"messages": {
-							"save": {
-								"success": "JSON splitter configuration successfully saved."
-							}
+					"messages": {
+						"save": {
+							"success": "JSON API configuration successfully saved."
 						}
 					}
 				},
@@ -1593,14 +1581,14 @@
 					"description": "Manage scheduler tasks."
 				},
 				"cache": {
-					"title": "Cache and repository",
-					"description": "Configure cache and IQRF repository."
+					"title": "IQRF Repository",
+					"description": "ConfigureI QRF repository."
 				},
 				"db": {
 					"title": "Device database",
 					"description": "Configure device database."
 				},
-				"jsonApi": {
+				"json-api": {
 					"title": "JSON API",
 					"description": "Configure JSON API."
 				},
