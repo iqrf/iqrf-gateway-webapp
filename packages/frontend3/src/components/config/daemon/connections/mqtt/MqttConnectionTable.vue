@@ -5,12 +5,14 @@
 		</template>
 		<template #titleActions>
 			<MqttConnectionForm
+				ref='addForm'
 				:action='FormAction.Add'
 				@saved='getConfigs'
 			/>
 			<CloudConnectionSelector
 				@saved='getConfigs'
 			/>
+			<MqttConnectionImportDialog @import='importFromConfig' />
 			<v-btn
 				id='reload-activator'
 				color='white'
@@ -21,7 +23,7 @@
 				activator='#reload-activator'
 				location='bottom'
 			>
-				{{ $t('components.configuration.daemon.connections.mqtt.actions.reload') }}
+				{{ $t('components.configuration.daemon.connections.actions.reload') }}
 			</v-tooltip>
 		</template>
 		<DataTable
@@ -32,6 +34,19 @@
 			:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
 		>
 			<template #item.actions='{ item }'>
+				<v-tooltip location='bottom'>
+					<template #activator='{ props }'>
+						<v-icon
+							v-bind='props'
+							color='info'
+							size='large'
+							:icon='mdiExport'
+							class='me-2'
+							@click='exportConfig(item)'
+						/>
+					</template>
+					{{ $t('components.configuration.daemon.connections.actions.export') }}
+				</v-tooltip>
 				<MqttConnectionForm
 					:action='FormAction.Edit'
 					:connection-profile='item'
@@ -49,7 +64,8 @@
 <script lang='ts' setup>
 import { type IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import { type IqrfGatewayDaemonComponent, IqrfGatewayDaemonComponentName, type IqrfGatewayDaemonMqttMessaging } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { mdiReload } from '@mdi/js';
+import { FileDownloader } from '@iqrf/iqrf-gateway-webapp-client/utils';
+import { mdiExport, mdiReload } from '@mdi/js';
 import { type Ref, ref } from 'vue';
 import { onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -59,6 +75,7 @@ import Card from '@/components/Card.vue';
 import CloudConnectionSelector from '@/components/config/daemon/connections/mqtt/cloud/CloudConnectionSelector.vue';
 import MqttConnectionDeleteDialog from '@/components/config/daemon/connections/mqtt/MqttConnectionDeleteDialog.vue';
 import MqttConnectionForm from '@/components/config/daemon/connections/mqtt/MqttConnectionForm.vue';
+import MqttConnectionImportDialog from '@/components/config/daemon/connections/mqtt/MqttConnectionImportDialog.vue';
 import DataTable from '@/components/DataTable.vue';
 import { FormAction } from '@/enums/controls';
 import { useApiClient } from '@/services/ApiClient';
@@ -75,6 +92,7 @@ const headers = [
 ];
 const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
 const instances: Ref<IqrfGatewayDaemonMqttMessaging[]> = ref([]);
+const addForm: Ref<typeof MqttConnectionForm | null> = ref(null);
 
 async function getConfigs(): Promise<void> {
 	if (componentState.value === ComponentState.Created) {
@@ -88,6 +106,21 @@ async function getConfigs(): Promise<void> {
 			componentState.value = ComponentState.Ready;
 		})
 		.catch(() => toast.error('TODO FETCH ERROR'));
+}
+
+function importFromConfig(config: IqrfGatewayDaemonMqttMessaging): void {
+	if (addForm.value === null) {
+		return;
+	}
+	addForm.value.importFromConfig(config);
+}
+
+function exportConfig(config: IqrfGatewayDaemonMqttMessaging): void {
+	FileDownloader.downloadFromData(
+		config,
+		'application/json',
+		`${config.component.replace('::','__')}__${config.instance}.json`,
+	);
 }
 
 onMounted(() => {

@@ -18,7 +18,7 @@
 				activator='#delete-activator'
 				location='bottom'
 			>
-				{{ $t('components.configuration.daemon.connections.mqtt.actions.delete') }}
+				{{ $t('components.configuration.daemon.connections.actions.delete') }}
 			</v-tooltip>
 		</template>
 		<Card>
