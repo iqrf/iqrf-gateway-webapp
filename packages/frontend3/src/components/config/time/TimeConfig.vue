@@ -46,7 +46,7 @@
 						no-data-text='components.configuration.time.ntpServers.noRecords'
 					>
 						<template #top>
-							<v-toolbar color='primary' density='compact' rounded>
+							<v-toolbar color='gray' density='compact' rounded>
 								<v-toolbar-title>
 									{{ $t('components.configuration.time.ntpServers.title') }}
 								</v-toolbar-title>
@@ -56,7 +56,7 @@
 										@save='saveServer'
 									/>
 									<v-btn
-										color='white'
+										color='error'
 										:icon='mdiDelete'
 										@click='clearServers'
 									/>

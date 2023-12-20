@@ -155,7 +155,7 @@ function activatorIcon(): string {
 
 function iconColor(): string {
 	if (componentProps.action === FormAction.Add) {
-		return 'primary';
+		return 'black';
 	}
 	return 'info';
 }

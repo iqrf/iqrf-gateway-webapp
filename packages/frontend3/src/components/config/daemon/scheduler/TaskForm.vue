@@ -132,7 +132,7 @@
 					no-data-text='components.configuration.daemon.scheduler.noMessages'
 				>
 					<template #top>
-						<v-toolbar color='primary' density='compact' rounded>
+						<v-toolbar color='gray' density='compact' rounded>
 							<v-toolbar-title>
 								{{ $t('components.configuration.daemon.scheduler.task.title') }}
 							</v-toolbar-title>
@@ -142,7 +142,7 @@
 									@save='saveMessage'
 								/>
 								<v-btn
-									color='white'
+									color='error'
 									:icon='mdiDelete'
 									@click='clearMessages'
 								/>
