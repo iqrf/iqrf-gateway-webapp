@@ -44,6 +44,7 @@ server {
 	}
 
 	location ^~ /node-red/ {
+		add_header Content-Security-Policy "default-src * data: 'unsafe-inline' 'unsafe-hashes' 'unsafe-eval'" always;
 		rewrite ^/node-red/(.*) /$1 break;
 		include /etc/nginx/proxy_params;
 		proxy_http_version 1.1;
