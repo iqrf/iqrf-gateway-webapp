@@ -14,12 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import vue from '@vitejs/plugin-vue2';
 import path from 'path';
 import Components from 'unplugin-vue-components/vite';
 import {VuetifyResolver} from 'unplugin-vue-components/resolvers';
 import {defineConfig, loadEnv} from 'vite';
 import {ViteEjsPlugin} from 'vite-plugin-ejs';
-import {createVuePlugin} from 'vite-plugin-vue2';
 import svgLoader from 'vite-svg-loader';
 
 export default defineConfig(({mode}) => {
@@ -46,7 +46,7 @@ export default defineConfig(({mode}) => {
 			ViteEjsPlugin({
 				theme: env.VITE_THEME,
 			}),
-			createVuePlugin(),
+			vue(),
 			svgLoader({defaultImport: 'url'}),
 			Components({resolvers: [VuetifyResolver()]}),
 		],

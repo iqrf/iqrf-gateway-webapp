@@ -247,7 +247,7 @@ export default class SmtpForm extends Vue {
 		this.showBlockingElement();
 		this.service.getConfig()
 			.then((config: MailerConfig) => {
-				this.configuration = config;
+				this.configuration = config.config;
 				this.hideBlockingElement();
 			})
 			.catch((error: AxiosError) => {
