@@ -46,10 +46,12 @@ class BearerAuthenticator implements IAuthenticator {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Authenticates the application or user
+	 * @param ServerRequestInterface $request HTTP request
+	 * @return ApiKey|User|null API key or user entity
 	 * @throws InvalidArgumentException
 	 */
-	public function authenticate(ServerRequestInterface $request) {
+	public function authenticate(ServerRequestInterface $request): ApiKey|User|null {
 		$header = $request->getHeader('Authorization')[0] ?? '';
 		$token = $this->parseAuthorizationHeader($header);
 		if ($token === null) {
@@ -62,6 +64,7 @@ class BearerAuthenticator implements IAuthenticator {
 	}
 
 	/**
+	 * Authenticates the application
 	 * @param string $key API key
 	 * @return ApiKey|null API key entity
 	 */
@@ -89,7 +92,7 @@ class BearerAuthenticator implements IAuthenticator {
 			$repository = $this->entityManager->getUserRepository();
 			$id = $token->claims()->get('uid');
 			return $repository->find($id);
-		} catch (Throwable $e) {
+		} catch (Throwable) {
 			return null;
 		}
 	}

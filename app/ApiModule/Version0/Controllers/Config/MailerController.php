@@ -78,7 +78,7 @@ class MailerController extends BaseConfigController {
 		self::checkScopes($request, ['mailer']);
 		try {
 			$config = $this->manager->read();
-			return $response->writeJsonBody($config);
+			return $response->writeJsonObject($config);
 		} catch (JsonException $e) {
 			throw new ServerErrorException('Invalid JSON syntax', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (IOException $e) {
@@ -150,7 +150,7 @@ class MailerController extends BaseConfigController {
 		try {
 			$configuration = $request->getJsonBodyCopy();
 			$this->manager->test($configuration);
-			$this->configurationTestSender->send($user, $configuration);
+			$this->sender->send($user, $configuration);
 		} catch (IOException | InvalidSmtpConfigException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (SendException $e) {

@@ -24,7 +24,6 @@ use App\CoreModule\Models\FeatureManager;
 use App\CoreModule\Models\PrivilegedFileManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use Nette\Utils\FileSystem;
-use Nette\Utils\Strings;
 
 /**
  * Monit backup manager
@@ -98,7 +97,7 @@ class MonitBackup implements IBackupManager {
 		$zipManager->extract(self::TMP_PATH, 'monit/monitrc');
 		$this->fileManager->copy('monitrc', self::TMP_PATH . 'monit/monitrc');
 		foreach ($zipManager->listFiles() as $file) {
-			if (Strings::startsWith($file, 'monit/conf-available/')) {
+			if (str_starts_with($file, 'monit/conf-available/')) {
 				$zipManager->extract(self::TMP_PATH, $file);
 				$this->fileManager->copy('conf-available/' . basename($file), self::TMP_PATH . $file);
 			}
@@ -115,6 +114,14 @@ class MonitBackup implements IBackupManager {
 	}
 
 	/**
+	 * Returns service names
+	 * @return array<string> Service names
+	 */
+	public function getServices(): array {
+		return self::SERVICES;
+	}
+
+	/**
 	 * Fixes privileges for restored files
 	 */
 	private function fixPrivileges(): void {
@@ -123,14 +130,6 @@ class MonitBackup implements IBackupManager {
 		$this->fileManager->chown('conf-available', 'root', 'root', true);
 		$this->fileManager->chmod('conf-available', 0600, true);
 		$this->fileManager->chmod('conf-available', 0755);
-	}
-
-	/**
-	 * Returns service names
-	 * @return array<string> Service names
-	 */
-	public function getServices(): array {
-		return self::SERVICES;
 	}
 
 }

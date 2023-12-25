@@ -27,14 +27,12 @@ use Rector\CodingStyle\Rector\ClassMethod\NewlineBeforeNewAssignSetRector;
 use Rector\CodingStyle\Rector\PostInc\PostIncDecToPreIncDecRector;
 use Rector\CodingStyle\Rector\Stmt\NewlineAfterStatementRector;
 use Rector\CodingStyle\Rector\String_\SymplifyQuoteEscapeRector;
-use Rector\CodingStyle\Rector\Switch_\BinarySwitchToIfElseRector;
 use Rector\Config\RectorConfig;
 use Rector\Core\ValueObject\PhpVersion;
 use Rector\Doctrine\Set\DoctrineSetList;
 use Rector\Set\ValueObject\SetList;
 use Rector\Symfony\Set\SymfonySetList;
 use Rector\Transform\Rector\Attribute\AttributeKeyToClassConstFetchRector;
-use Rector\TypeDeclaration\Rector\ClassMethod\ArrayShapeFromConstantArrayReturnRector;
 
 return static function (RectorConfig $rectorConfig): void {
 	$rectorConfig->paths([
@@ -65,9 +63,7 @@ return static function (RectorConfig $rectorConfig): void {
 	]);
 
 	$rectorConfig->skip([
-		ArrayShapeFromConstantArrayReturnRector::class,
 		AttributeKeyToClassConstFetchRector::class,
-		BinarySwitchToIfElseRector::class,
 		CallableThisArrayToAnonymousFunctionRector::class,
 		CatchExceptionNameMatchingTypeRector::class,
 		FlipTypeControlToUseExclusiveTypeRector::class,

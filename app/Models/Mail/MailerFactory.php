@@ -56,19 +56,19 @@ class MailerFactory {
 	 */
 	private function buildSmtpMailer(): ?SmtpMailer {
 		$configuration = $this->configuration->read();
-		if ($configuration['enabled'] !== true) {
+		if (!$configuration->enabled) {
 			return null;
 		}
 		return new SmtpMailer(
-			$configuration['host'],
-			$configuration['username'],
-			$configuration['password'],
-			$configuration['port'],
-			$configuration['secure'],
-			$configuration['persistent'],
-			$configuration['timeout'],
-			$configuration['clientHost'],
-			$configuration['context'],
+			$configuration->host,
+			$configuration->username,
+			$configuration->password,
+			$configuration->port,
+			$configuration->secure,
+			$configuration->persistent,
+			$configuration->timeout,
+			$configuration->clientHost,
+			is_array($configuration->context) ? $configuration->context : null,
 		);
 	}
 
