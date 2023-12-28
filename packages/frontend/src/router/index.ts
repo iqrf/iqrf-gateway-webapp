@@ -683,7 +683,7 @@ const routes: Array<RouteConfig> = [
 						component: SystemServiceDisambiguation,
 						path: 'system-services',
 						meta: {
-							role: UserRole.NORMAL,
+							role: UserRole.Normal,
 						},
 					},
 					{

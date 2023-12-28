@@ -41,7 +41,7 @@ limitations under the License.
 					:readonly='true'
 				/>
 			</div>
-			<div v-if='!exists'>
+			<div v-if='!userSudo'>
 				<br>
 				{{ $t('install.error.sudo.fixInvalid') }}
 				<prism-editor
