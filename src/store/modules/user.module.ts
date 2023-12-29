@@ -16,7 +16,7 @@
  */
 import * as Sentry from '@sentry/vue';
 import {AxiosError} from 'axios';
-import jwt_decode, {JwtPayload} from 'jwt-decode';
+import { jwtDecode, JwtPayload } from 'jwt-decode';
 import {ActionTree, GetterTree, MutationTree} from 'vuex';
 
 import AuthenticationService, {
@@ -56,7 +56,7 @@ const actions: ActionTree<UserState, any> = {
 	setJwt({commit}, user: User) {
 		const now = new Date();
 		const epoch = Math.round(now.getTime() / 1000);
-		const jwt: JwtPayload = jwt_decode(user.token);
+		const jwt: JwtPayload = jwtDecode(user.token);
 		if (jwt.exp === undefined) {
 			return Promise.reject(new Error('Expiration missing in JWT token.'));
 		}
