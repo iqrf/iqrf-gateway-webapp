@@ -32,16 +32,16 @@ use App\GatewayModule\Models\PowerManager;
 /**
  * Gateway power controller
  */
-#[Path('/')]
+#[Path('/power')]
 class PowerController extends GatewayController {
 
 	/**
 	 * Constructor
-	 * @param PowerManager $manager Gateway power manager
+	 * @param PowerManager $powerManager Gateway power manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
 	public function __construct(
-		private readonly PowerManager $manager,
+		private readonly PowerManager $powerManager,
 		RestApiSchemaValidator $validator,
 	) {
 		parent::__construct($validator);
@@ -63,7 +63,7 @@ class PowerController extends GatewayController {
 	')]
 	public function powerOff(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['gateway:power']);
-		return $response->writeJsonBody($this->manager->powerOff());
+		return $response->writeJsonBody($this->powerManager->powerOff());
 	}
 
 	#[Path('/reboot')]
@@ -82,7 +82,7 @@ class PowerController extends GatewayController {
 	')]
 	public function reboot(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['gateway:power']);
-		return $response->writeJsonBody($this->manager->reboot());
+		return $response->writeJsonBody($this->powerManager->reboot());
 	}
 
 }

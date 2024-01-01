@@ -14,6 +14,13 @@
  * limitations under the License.
  */
 
-export * from './Power';
-export * from './SshKey';
-export * from './Time';
+/**
+ * Power action response
+ */
+export interface PowerActionResponse {
+
+	/**
+	 * Restart timestamp
+	 */
+	timestamp: number
+}
