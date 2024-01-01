@@ -124,12 +124,24 @@
 		},
 		"recovery": {
 			"title": "Account recovery",
-			"prompt": "Please enter username and a password recovery email will be sent to the associated address.",
-			"success": "An email containing further instructions to reset your password was sent to the address associated with the account.",
-			"button": "Submit request",
-			"messages": {
-				"success": "Password recovery request successfully sent.",
-				"failure": "An error has occured during password recovery request."
+			"confirmation": {
+				"button": "Set new password",
+				"prompt": "Please enter new password.",
+				"messages": {
+					"failure": "An error has occurred during password change.",
+					"expired": "Password recovery request has expired.",
+					"notFound": "Password recovery request not found.",
+					"success": "Password successfully changed."
+				}
+			},
+			"request": {
+				"prompt": "Please enter username and a password recovery email will be sent to the associated address.",
+				"success": "An email containing further instructions to reset your password was sent to the address associated with the account.",
+				"button": "Submit request",
+				"messages": {
+					"success": "Password recovery request successfully sent.",
+					"failure": "An error has occurred during password recovery request."
+				}
 			}
 		},
 		"verification": {

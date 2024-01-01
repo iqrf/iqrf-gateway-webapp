@@ -39,7 +39,7 @@ limitations under the License.
 							}'
 						>
 							<v-text-field
-								v-model='user'
+								v-model='request.username'
 								:label='$t("forms.fields.username")'
 								autocomplete='username'
 								:success='touched ? valid : null'
@@ -64,15 +64,16 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
+import {UserAccountRecovery} from '@iqrf/iqrf-gateway-webapp-client/types';
+import {AxiosError} from 'axios';
 import {Component, Vue} from 'vue-property-decorator';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import TheWizard from '@/components/TheWizard.vue';
-
-import {extendedErrorToast} from '@/helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
-import UserService from '@/services/UserService';
 
-import {AxiosError} from 'axios';
+import TheWizard from '@/components/TheWizard.vue';
+import {extendedErrorToast} from '@/helpers/errorToast';
+import UrlBuilder from '@/helpers/urlBuilder';
+import {useApiClient} from '@/services/ApiClient';
 
 @Component({
 	components: {
@@ -105,6 +106,11 @@ export default class RequestPasswordRecovery extends Vue {
 	 */
 	private sent = false;
 
+	private request: UserAccountRecovery = {
+		baseUrl: (new UrlBuilder()).getBaseUrl(),
+		username: '',
+	};
+
 	/**
 	 * Initializes validation rules
 	 */
@@ -117,7 +123,7 @@ export default class RequestPasswordRecovery extends Vue {
 	 */
 	private requestRecovery(): void {
 		this.requestInProgress = true;
-		UserService.requestPasswordRecovery(this.user)
+		useApiClient().getAccountService().requestPasswordRecovery(this.request)
 			.then(() => {
 				this.requestInProgress = false;
 				this.sent = true;
@@ -129,4 +135,3 @@ export default class RequestPasswordRecovery extends Vue {
 	}
 }
 </script>
-

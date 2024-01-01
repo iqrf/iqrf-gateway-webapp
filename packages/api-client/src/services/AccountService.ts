@@ -13,11 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type {AxiosResponse} from 'axios';
+import { type AxiosResponse } from 'axios';
 
 import {BaseService} from './BaseService';
 
-import type {EmailSentResponse, UserAccountRecovery, UserEdit, UserInfo, UserPasswordChange} from '../types';
+import {
+	type EmailSentResponse,
+	type UserAccountRecovery,
+	type UserEdit,
+	type UserInfo,
+	type UserPasswordChange,
+	type UserSignedIn,
+} from '../types';
 import {UserUtils} from '../utils';
 
 /**
@@ -52,6 +59,19 @@ export class AccountService extends BaseService {
 		return this.axiosInstance.put('/user/password', change)
 			.then((): void => {return;});
 
+	}
+
+	/**
+	 * Sets the new user's password
+	 * @param {string} uuid Password recovery request UUID
+	 * @param {string} password New password
+	 */
+	public confirmPasswordRecovery(uuid: string, password: string): Promise<UserSignedIn> {
+		const body = {
+			password: password,
+		};
+		return this.axiosInstance.post(`/user/password/recovery/${uuid}`, body)
+			.then((response: AxiosResponse<UserSignedIn>) => UserUtils.deserialize(response.data));
 	}
 
 	/**
