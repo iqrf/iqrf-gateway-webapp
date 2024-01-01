@@ -68,8 +68,8 @@ import {required} from 'vee-validate/dist/rules';
 
 import TheWizard from '@/components/TheWizard.vue';
 import {extendedErrorToast} from '@/helpers/errorToast';
-import UserService from '@/services/UserService';
 import {UserRole, UserSignedIn} from '@iqrf/iqrf-gateway-webapp-client/types';
+import {useApiClient} from '@/services/ApiClient';
 
 @Component({
 	components: {
@@ -119,7 +119,7 @@ export default class ConfirmPasswordRecovery extends Vue {
 	 */
 	private confirmRecovery(): void {
 		this.requestInProgress = true;
-		UserService.confirmPasswordRecovery(this.recoveryId, this.password)
+		useApiClient().getAccountService().confirmPasswordRecovery(this.recoveryId, this.password)
 			.then((user: UserSignedIn) => {
 				this.requestInProgress = false;
 				if (user.role === UserRole.Basic) {

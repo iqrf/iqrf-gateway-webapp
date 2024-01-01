@@ -14,6 +14,6 @@ meta:
 <script lang='ts' setup>
 import { Head } from '@unhead/vue/components';
 
-import AccountRecoveryForm from '@/components/account/AccountRecoveryForm.vue';
+import AccountRecoveryForm from '@/components/account/AccountRecoveryRequestForm.vue';
 
 </script>

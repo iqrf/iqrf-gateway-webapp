@@ -1,45 +1,45 @@
 <template>
-	<v-card>
-		<v-card-title class='text-center'>
+	<Card>
+		<template #title>
 			{{ $t('account.recovery.title') }}
-		</v-card-title>
-		<v-card-text>
-			<div v-if='!success'>
-				{{ $t('account.recovery.prompt') }}
-				<v-form ref='form' class='mt-4' @submit.prevent='onSubmit'>
-					<TextInput
-						v-model='request.username'
-						:label='$t("user.username")'
-						:rules='[
-							(v: string|null) => ValidationRules.required(v, $t("user.validation.username")),
-						]'
-						required
-						:prepend-inner-icon='mdiAccount'
-					/>
-					<v-btn
-						color='primary'
-						type='submit'
-					>
-						{{ $t('account.recovery.button') }}
-					</v-btn>
-				</v-form>
-			</div>
-			<div v-else>
-				{{ $t('account.recovery.success') }}
-			</div>
-		</v-card-text>
-	</v-card>
+		</template>
+		<div v-if='!success'>
+			{{ $t('account.recovery.request.prompt') }}
+			<v-form ref='form' class='mt-4' @submit.prevent='onSubmit'>
+				<TextInput
+					v-model='request.username'
+					:label='$t("user.username")'
+					:rules='[
+						(v: string|null) => ValidationRules.required(v, $t("user.validation.username")),
+					]'
+					required
+					:prepend-inner-icon='mdiAccount'
+				/>
+				<v-btn
+					color='primary'
+					type='submit'
+					:prepend-icon='mdiAccountKey'
+				>
+					{{ $t('account.recovery.request.button') }}
+				</v-btn>
+			</v-form>
+		</div>
+		<div v-else>
+			{{ $t('account.recovery.request.success') }}
+		</div>
+	</Card>
 </template>
 
 <script lang='ts' setup>
 import { type AccountService } from '@iqrf/iqrf-gateway-webapp-client/services';
 import { type UserAccountRecovery } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { mdiAccount } from '@mdi/js';
+import { mdiAccount, mdiAccountKey } from '@mdi/js';
 import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
+import Card from '@/components/Card.vue';
 import TextInput from '@/components/TextInput.vue';
 import { basicErrorToast } from '@/helpers/errorToast';
 import UrlBuilder from '@/helpers/urlBuilder';
