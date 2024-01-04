@@ -30,6 +30,7 @@ use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Controllers\BaseConfigController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\ApiModule\Version0\RequestAttributes;
+use App\Entities\MailerConfiguration;
 use App\Exceptions\InvalidSmtpConfigException;
 use App\Models\Mail\ConfigurationManager;
 use App\Models\Mail\Senders\MailerConfigurationTestMailSender;
@@ -110,7 +111,7 @@ class MailerController extends BaseConfigController {
 		self::checkScopes($request, ['mailer']);
 		$this->validator->validateRequest('mailer', $request);
 		try {
-			$configuration = $request->getJsonBody();
+			$configuration = MailerConfiguration::jsonDeserialize($request->getJsonBody());
 			$this->manager->test($configuration);
 			$this->manager->write($configuration);
 			$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
@@ -149,7 +150,7 @@ class MailerController extends BaseConfigController {
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
 		try {
 			$configuration = $request->getJsonBodyCopy();
-			$this->manager->test($configuration);
+			$this->manager->test(MailerConfiguration::jsonDeserialize($configuration));
 			$this->sender->send($user, $configuration);
 		} catch (IOException | InvalidSmtpConfigException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
