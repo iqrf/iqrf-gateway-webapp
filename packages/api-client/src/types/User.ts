@@ -56,12 +56,8 @@ export enum UserSessionExpiration {
 	Day = 'day',
 	/// Default expiration (90 min)
 	Default = 'default',
-	/// Month
-	Month = 'month',
 	/// Week
 	Week = 'week',
-	/// Year
-	Year = 'year'
 }
 
 /**

@@ -52,7 +52,7 @@ const localeStore = useLocaleStore();
 function signOut(): void {
 	userStore.signOut();
 	toast.success(
-		i18n.t('core.sign.out.message').toString(),
+		i18n.t('auth.sign.out.message').toString(),
 	);
 }
 
@@ -62,7 +62,7 @@ function setLocale(locale: string): void {
 	}
 	localeStore.setLocale(locale);
 	toast.success(
-		i18n.t('core.locale.messages.set', {locale: i18n.t(`core.locale.languages.${locale}`)}),
+		i18n.t('components.status.locale.messages.set', {locale: i18n.t(`omponents.status.locale.languages.${locale}`)}),
 	);
 }
 

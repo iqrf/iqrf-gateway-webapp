@@ -24,7 +24,7 @@ const userStore = useUserStore();
 function signOut(): void {
 	userStore.signOut();
 	toast.success(
-		i18n.t('core.sign.out.message').toString(),
+		i18n.t('auth.sign.out.message').toString(),
 	);
 }
 </script>

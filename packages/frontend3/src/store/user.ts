@@ -73,7 +73,7 @@ export const useUserStore = defineStore('user', {
 				.then(async (user: UserSignedIn): Promise<void> => {
 					await this.processJwt(user.token);
 					this.setUserInfo(user);
-					this.setRequestedExpiration(credentials.expiration);
+					this.setRequestedExpiration(credentials.expiration ?? UserSessionExpiration.Default);
 					const localeStore = useLocaleStore();
 					localeStore.setLocale(user.language);
 				})

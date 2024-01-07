@@ -33,11 +33,7 @@ export class AuthenticationService extends BaseService {
 	 * @return {Promise<UserSignedIn>} Signed in user
 	 */
 	public signIn(credentials: UserCredentials): Promise<UserSignedIn> {
-		const creds = {
-			username: credentials.username,
-			password: credentials.password,
-		};
-		return this.axiosInstance.post('/user/signIn', creds)
+		return this.axiosInstance.post('/user/signIn', credentials)
 			.then((response: AxiosResponse<UserSignedIn>) => UserUtils.deserialize(response.data));
 	}
 
