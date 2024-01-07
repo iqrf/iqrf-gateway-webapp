@@ -45,7 +45,7 @@ export function getFilteredRoleOptions(role: UserRole): ComputedRef<SelectItem[]
 
 export function getExpirationOptions(): ComputedRef<SelectItem[]> {
 	return computed(() => {
-		const expirations = Object.values(UserSessionExpiration);
+		const expirations = [UserSessionExpiration.Default, UserSessionExpiration.Day, UserSessionExpiration.Week];
 		return expirations.map((item: UserSessionExpiration): SelectItem => {
 			return {
 				title: i18n.global.t(`auth.sign.in.expirations.${item}`).toString(),

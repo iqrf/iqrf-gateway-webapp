@@ -7,9 +7,9 @@
 	>
 		<Card>
 			<template #title>
-				{{ $t('status.sessionExpiration.title') }}
+				{{ $t('components.status.sessionExpiration.title') }}
 			</template>
-			{{ $t('status.sessionExpiration.prompt') }}
+			{{ $t('components.status.sessionExpiration.prompt') }}
 			<template #actions>
 				<v-spacer />
 				<v-btn
@@ -17,7 +17,7 @@
 					variant='elevated'
 					@click='renewSession'
 				>
-					{{ `${$t('status.sessionExpiration.renew')} (${countdown})` }}
+					{{ `${$t('components.status.sessionExpiration.renew')} (${countdown})` }}
 				</v-btn>
 			</template>
 		</Card>
@@ -74,7 +74,7 @@ async function setup(): Promise<void> {
 			.then(async () => {
 				await router.push({path: '/sign/in', query: {redirect: router.currentRoute.value.path}});
 				toast.warning(
-					i18n.t('core.sign.out.expired').toString(),
+					i18n.t('auth.sign.out.expired').toString(),
 				);
 			});
 	}, timeout);
@@ -89,9 +89,9 @@ async function renewSession(): Promise<void> {
 					clear();
 					setup();
 				})
-				.catch(() => toast.error(i18n.t('core.sessionExpiration.failed').toString()));
+				.catch(() => toast.error(i18n.t('components.status.sessionExpiration.failed').toString()));
 		})
-		.catch(() => (toast.error(i18n.t('core.sessionExpiration.failed').toString())));
+		.catch(() => (toast.error(i18n.t('components.status.sessionExpiration.failed').toString())));
 }
 
 function clear(): void {

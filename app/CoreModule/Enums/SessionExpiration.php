@@ -41,16 +41,6 @@ enum SessionExpiration: string {
 	case Week = 'week';
 
 	/**
-	 * Expiration: month
-	 */
-	case Month = 'month';
-
-	/**
-	 * Expiration: year
-	 */
-	case Year = 'year';
-
-	/**
 	 * Returns a PHP date modification string
 	 * @return string PHP date modification string
 	 */
@@ -59,8 +49,6 @@ enum SessionExpiration: string {
 			self::Default => '+90 min',
 			self::Day => '+1 day',
 			self::Week => '+1 week',
-			self::Month => '+1 month',
-			self::Year => '+1 year',
 		};
 	}
 
