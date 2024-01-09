@@ -23,7 +23,6 @@ console:
 	catchExceptions: true
 	autoExit: true
 	url: http://localhost/
-	lazy: true
 	#helperSet: @customHelperSet
 
 console.extra:
