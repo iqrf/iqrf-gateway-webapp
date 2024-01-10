@@ -15,16 +15,16 @@ Package: iqrf-gateway-webapp
 Architecture: all
 Depends: ${misc:Depends}, apt, gawk, iproute2,
  iqrf-gateway-daemon, iqrf-journal-reader, net-tools, openssl, passwd,
- php8.1-common | php8.2-common,
- php8.1-cli | php8.2-cli,
- php8.1-curl | php8.2-curl,
- php8.1-fpm | php8.2-fpm,
- php8.1-intl | php8.2-intl,
- php8.1-json | php8.2-json,
- php8.1-mbstring | php8.2-mbstring,
- php8.1-sqlite3 | php8.2-sqlite3,
- php8.1-xml | php8.2-xml,
- php8.1-zip | php8.2-zip,
+ php8.1-common | php8.2-common | php8.3-common,
+ php8.1-cli | php8.2-cli | php8.3-cli,
+ php8.1-curl | php8.2-curl | php8.3-curl,
+ php8.1-fpm | php8.2-fpm | php8.3-fpm,
+ php8.1-intl | php8.2-intl | php8.3-intl,
+ php8.1-json | php8.2-json | php8.3-json,
+ php8.1-mbstring | php8.2-mbstring | php8.3-mbstring,
+ php8.1-sqlite3 | php8.2-sqlite3 | php8.3-sqlite3,
+ php8.1-xml | php8.2-xml | php8.3-xml,
+ php8.1-zip | php8.2-zip | php8.3-zip,
  procps, nginx | apache2, sudo, systemd, systemd-sysv
 Description: Web user interface for IQRF Gateway Daemon
  IQRF Gateway webapp is an PHP web application for IQRF Gateway configuration.

@@ -7,5 +7,5 @@
 - mender-client, mender-connect, modemmanager, monit, net-tools, network-manager,
 + mender-client, mender-connect, modemmanager, net-tools, network-manager,
   openssh-client, openssl, passwd,
-  php8.1-common | php8.2-common,
-  php8.1-cli | php8.2-cli,
+  php8.1-common | php8.2-common | php8.3-common,
+  php8.1-cli | php8.2-cli | php8.3-cli,
