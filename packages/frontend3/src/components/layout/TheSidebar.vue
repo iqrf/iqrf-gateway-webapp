@@ -144,6 +144,10 @@ function items(): SidebarLink[] {
 										to: '/config/daemon/connections/mqtt',
 									},
 									{
+										title: i18n.t('pages.configuration.daemon.connections.ws.title'),
+										to: '/config/daemon/connections/websocket',
+									},
+									{
 										title: i18n.t('pages.configuration.daemon.connections.udp.title'),
 										to: '/config/daemon/connections/udp',
 									},

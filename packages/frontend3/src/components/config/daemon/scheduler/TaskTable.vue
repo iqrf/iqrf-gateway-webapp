@@ -56,11 +56,9 @@
 					type='text'
 				>
 					<v-responsive>
-						<v-icon
+						<BooleanCheckMarker
 							v-if='item.active !== undefined'
-							size='x-large'
-							:icon='activeIcon(item.active)'
-							:color='activeIconColor(item.active)'
+							:value='item.active'
 						/>
 					</v-responsive>
 				</v-skeleton-loader>
@@ -134,6 +132,7 @@ import { onMounted, type Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
+import BooleanCheckMarker from '@/components/BooleanCheckMarker.vue';
 import Card from '@/components/Card.vue';
 import TaskDeleteDialog from '@/components/config/daemon/scheduler/TaskDeleteDialog.vue';
 import TaskForm from '@/components/config/daemon/scheduler/TaskForm.vue';

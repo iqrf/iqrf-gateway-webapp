@@ -42,8 +42,27 @@ export enum IqrfGatewayDaemonComponentName {
 	IqrfUart = 'iqrf::IqrfUart',
 	/// UDP messaging component
 	IqrfUdpMessaging = 'iqrf::UdpMessaging',
+	/// WebSocket messaging component
+	IqrfWsMessaging = 'iqrf::WebsocketMessaging',
 	/// Shape Trace file service component
 	ShapeTraceFile = 'shape::TraceFileService',
+	/// Shape Websocket service component
+	ShapeWebsocketService = 'shape::WebsocketCppService',
+}
+
+/**
+ * Shape required interface instance
+ */
+export interface RequiredInstance {
+	instance: string;
+}
+
+/**
+ * Shape required interface interface
+ */
+export interface RequiredInterface {
+	name: string;
+	target: RequiredInstance;
 }
 
 /**
@@ -288,6 +307,16 @@ export interface IqrfGatewayDaemonUdpMessaging extends IqrfGatewayDaemonComponen
 }
 
 /**
+ * IQRF Gateway Daemon WebSocketMessaging component configuration
+ */
+export interface IqrfGatewayDaemonWsMessaging extends IqrfGatewayDaemonComponentInstanceBase<IqrfGatewayDaemonComponentName.IqrfWsMessaging> {
+	/// Required interfaces
+	RequiredInterfaces: RequiredInterface[];
+	/// Accept asynchronous messages
+	acceptAsyncMsg: boolean;
+}
+
+/**
  * Shape trace verbosity
  */
 export enum ShapeTraceVerbosity {
@@ -332,6 +361,34 @@ export interface ShapeTraceFileService extends IqrfGatewayDaemonComponentInstanc
 }
 
 /**
+ * Shape websocket service interface
+ */
+export interface ShapeWebsocketService extends IqrfGatewayDaemonComponentInstanceBase<IqrfGatewayDaemonComponentName.ShapeWebsocketService> {
+	/// Port
+	WebsocketPort: number;
+	/// Accept only localhost connections
+	acceptOnlyLocalhost: boolean;
+	/// Path to certificate
+	certificate?: string;
+	/// Path to private key
+	privateKey?: string;
+	/// TLS enabled
+	tlsEnabled?: boolean;
+	/// TLS mode
+	tlsMode?: string;
+}
+
+/**
+ * IQRF Gateway Daemon Websocket interface instance configuration
+ */
+export interface IqrfGatewayDaemonWebsocketInterface {
+	/// Daemon messaging instance
+	messaging: IqrfGatewayDaemonWsMessaging;
+	/// Shape websocket service
+	service: ShapeWebsocketService;
+}
+
+/**
  * IQRF Gateway Daemon component instance configurations
  */
 export interface IqrfGatewayDaemonComponentInstanceConfigurations {
@@ -346,11 +403,13 @@ export interface IqrfGatewayDaemonComponentInstanceConfigurations {
 	[IqrfGatewayDaemonComponentName.IqrfSpi]: IqrfGatewayDaemonSpi;
 	[IqrfGatewayDaemonComponentName.IqrfUart]: IqrfGatewayDaemonUart;
 	[IqrfGatewayDaemonComponentName.IqrfUdpMessaging]: IqrfGatewayDaemonUdpMessaging;
+	[IqrfGatewayDaemonComponentName.IqrfWsMessaging]: IqrfGatewayDaemonWsMessaging;
 	[IqrfGatewayDaemonComponentName.ShapeTraceFile]: ShapeTraceFileService;
+	[IqrfGatewayDaemonComponentName.ShapeWebsocketService]: ShapeWebsocketService;
 }
 
 /**
- * IQRF Gateway Daemon component instance configuration
+ * IQRF Gateway Daemon component instance generic
  */
 export type IqrfGatewayDaemonComponentInstanceConfiguration<C extends IqrfGatewayDaemonComponentName> = IqrfGatewayDaemonComponentInstanceConfigurations[C];
 

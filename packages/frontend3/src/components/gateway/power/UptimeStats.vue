@@ -46,15 +46,13 @@ limitations under the License.
 				</span>
 			</template>
 			<template #item.graceful='{ item }'>
-				<v-icon
+				<BooleanCheckMarker
 					v-if='item.graceful'
-					color='green'
-					:icon='mdiCheckCircleOutline'
+					:value='true'
 				/>
-				<v-icon
+				<BooleanCheckMarker
 					v-else-if='item.shutdown !== null'
-					color='red'
-					:icon='mdiCloseCircleOutline'
+					:value='false'
 				/>
 			</template>
 		</DataTable>
@@ -64,13 +62,13 @@ limitations under the License.
 <script lang='ts' setup>
 import { type PowerService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
 import { type GatewayUptime } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
-import { mdiCheckCircleOutline, mdiCloseCircleOutline } from '@mdi/js';
 import { type AxiosError } from 'axios';
 import humanizeDuration from 'humanize-duration';
 import { onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
+import BooleanCheckMarker from '@/components/BooleanCheckMarker.vue';
 import Card from '@/components/Card.vue';
 import DataTable from '@/components/DataTable.vue';
 import { useApiClient } from '@/services/ApiClient';

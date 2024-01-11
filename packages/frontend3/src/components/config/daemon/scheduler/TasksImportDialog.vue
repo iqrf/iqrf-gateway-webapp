@@ -57,11 +57,9 @@
 						>
 							<td>{{ record.taskId }}</td>
 							<td>
-								<v-icon
+								<BooleanCheckMarker
 									v-if='record.imported !== undefined'
-									size='large'
-									:icon='record.imported ? mdiCheckCircleOutline : mdiCloseCircleOutline'
-									:color='record.imported ? "success": "error"'
+									:value='record.imported'
 								/>
 							</td>
 							<td>{{ record.reason }}</td>
@@ -96,13 +94,14 @@ import { SchedulerMessages } from '@iqrf/iqrf-gateway-daemon-utils/enums';
 import { SchedulerService } from '@iqrf/iqrf-gateway-daemon-utils/services';
 import { type DaemonApiResponse, type SchedulerRecord } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
-import { mdiCheckCircleOutline, mdiCloseCircleOutline, mdiFileOutline, mdiImport } from '@mdi/js';
+import { mdiFileOutline, mdiImport } from '@mdi/js';
 import { BlobReader, TextWriter, ZipReader } from '@zip.js/zip.js';
 import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
+import BooleanCheckMarker from '@/components/BooleanCheckMarker.vue';
 import Card from '@/components/Card.vue';
 import { getModalWidth } from '@/helpers/modal';
 import { validateForm } from '@/helpers/validateForm';

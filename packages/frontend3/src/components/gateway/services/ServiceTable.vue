@@ -33,18 +33,10 @@
 				{{ $t(`components.gateway.services.service.${item.name}.description`) }}
 			</template>
 			<template #item.enabled='{ item }'>
-				<v-icon
-					:icon='statusIcon(item.enabled)'
-					:color='iconColor(item.enabled)'
-					size='large'
-				/>
+				<BooleanCheckMarker :value='item.enabled' />
 			</template>
 			<template #item.active='{ item }'>
-				<v-icon
-					:icon='statusIcon(item.active)'
-					:color='iconColor(item.active)'
-					size='large'
-				/>
+				<BooleanCheckMarker :value='item.active' />
 			</template>
 			<template #item.actions='{ item, index, internalItem, toggleExpand }'>
 				<span>
@@ -111,7 +103,7 @@
 					<v-icon
 						color='primary'
 						size='large'
-						:icon='mdiInformation'
+						:icon='mdiInformationOutline'
 						@click='toggleExpand(internalItem)'
 					/>
 					<v-tooltip
@@ -136,11 +128,11 @@
 <script lang='ts' setup>
 import { type ServiceService } from '@iqrf/iqrf-gateway-webapp-client/services';
 import { type ServiceState, type ServiceStatus } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { mdiCheckCircle, mdiCloseCircle, mdiInformation, mdiPlay, mdiPlayCircleOutline, mdiReload, mdiRestart, mdiStop, mdiStopCircleOutline } from '@mdi/js';
+import { mdiCheckCircle, mdiCloseCircle, mdiInformationOutline, mdiPlay, mdiPlayCircleOutline, mdiReload, mdiRestart, mdiStop, mdiStopCircleOutline } from '@mdi/js';
 import { onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-
+import BooleanCheckMarker from '@/components/BooleanCheckMarker.vue';
 import Card from '@/components/Card.vue';
 import DataTable from '@/components/DataTable.vue';
 import { useApiClient } from '@/services/ApiClient';

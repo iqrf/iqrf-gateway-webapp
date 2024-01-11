@@ -531,6 +531,7 @@
 					"profile": "Connection profile",
 					"profileFile": "Connection profile file",
 					"acceptAsyncMessages": "Accept asynchronous messages",
+					"acceptOnlyLocalhost": "Accept only localhost connections",
 					"actions": {
 						"add": "Create connection profile",
 						"edit": "Edit connection profile",
@@ -546,6 +547,7 @@
 					"messages": {
 						"profileFileInvalid": "Selected file is not a valid connection profile file."
 					},
+					"tls": "TLS",
 					"trustStore": "Trust store",
 					"keyStore": "Key store",
 					"enableTls": "Enable TLS",
@@ -1594,6 +1596,10 @@
 					"udp": {
 						"title": "UDP",
 						"description": "Configure UDP connections."
+					},
+					"ws": {
+						"title": "WebSocket",
+						"description": "Configure WebSocket connections."
 					}
 				},
 				"scheduler": {

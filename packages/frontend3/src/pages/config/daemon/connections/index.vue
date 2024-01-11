@@ -25,6 +25,11 @@ const links: Ref<DisambiguationLink[]> = ref([
 		to: '/config/daemon/connections/mqtt',
 	},
 	{
+		title: i18n.t('pages.configuration.daemon.connections.ws.title'),
+		description: i18n.t('pages.configuration.daemon.connections.ws.description'),
+		to: '/config/daemon/connections/websocket',
+	},
+	{
 		title: i18n.t('pages.configuration.daemon.connections.udp.title'),
 		description: i18n.t('pages.configuration.daemon.connections.udp.description'),
 		to: '/config/daemon/connections/udp',
