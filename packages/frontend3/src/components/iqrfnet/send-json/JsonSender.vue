@@ -37,6 +37,7 @@
 				:disabled='!isValid.value || componentState === ComponentState.Saving'
 				@click='onSubmit'
 			>
+				<v-icon :icon='mdiSend' />
 				{{ $t('common.buttons.send') }}
 			</v-btn>
 		</v-form>
@@ -51,6 +52,7 @@
 <script lang='ts' setup>
 import { type DaemonApiResponse, type DaemonApiRequest, type JsonMessage } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
+import { mdiSend } from '@mdi/js';
 import { type Ref, ref } from 'vue';
 import { VForm } from 'vuetify/components';
 
