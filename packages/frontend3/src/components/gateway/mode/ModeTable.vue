@@ -106,7 +106,7 @@ const startupModeOptions = [
 ];
 const currentMode: Ref<DaemonMode> = ref(DaemonMode.Unknown);
 const startupMode: Ref<IqrfGatewayDaemonIdeCounterpartMode> = ref(IqrfGatewayDaemonIdeCounterpartMode.Operational);
-const componentName: IqrfGatewayDaemonComponentName = IqrfGatewayDaemonComponentName.IqrfIdeCounterpart;
+const componentName = IqrfGatewayDaemonComponentName.IqrfIdeCounterpart;
 const instance: Ref<IqrfGatewayDaemonIdeCounterpart | null> = ref(null);
 
 daemonStore.$onAction(

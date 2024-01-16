@@ -29,7 +29,7 @@
 						:items='timezones'
 						:label='$t("components.configuration.time.timezone")'
 						item-value='name'
-						:item-props='(e) => itemProps(e as Timezone)'
+						:item-props='(e: Timezone) => itemProps(e)'
 						return-object
 					/>
 					<v-checkbox

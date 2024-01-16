@@ -35,4 +35,8 @@ export enum ComponentState {
 	FetchFailed = 'fetchFailed',
 	/// Data not found
 	NotFound = 'notFound',
+	/// Data has expired
+	Expired = 'expired',
+	/// Success
+	Success = 'success',
 }
