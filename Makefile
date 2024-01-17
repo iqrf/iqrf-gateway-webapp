@@ -27,7 +27,7 @@ SYSTEMD_DIR=${DESTDIR}/lib/systemd/system
 WEBAPP_USER ?= www-data
 WEBAPP_GROUP ?= www-data
 
-.PHONY: build coverage cc fix-cc cs deb-package deps qa install lint phpstan rector test
+.PHONY: build clean coverage cc fix-cc cs deb-package deps qa install lint phpstan rector test
 
 build:
 	$(COMPOSER) install --no-dev
@@ -35,6 +35,9 @@ build:
 	npm run build
 
 all: qa phpstan cc test
+
+clean:
+	rm -rf log/*.html log/*.log temp/cache/ tests/tmp/
 
 behat:
 	vendor/bin/behat
