@@ -33,6 +33,8 @@ use Nette\Utils\FileSystem;
 use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
 use Psr\Http\Message\UploadedFileInterface;
+use z4kn4fein\SemVer\SemverException;
+use z4kn4fein\SemVer\Version;
 
 /**
  * Mender client configuration manager
@@ -99,6 +101,11 @@ class MenderManager {
 	private ServiceManager $serviceManager;
 
 	/**
+	 * @var Version $menderVersion Mender client version
+	 */
+	private Version $menderVersion;
+
+	/**
 	 * Constructior
 	 * @param CommandManager $commandManager Command manager
 	 * @param PrivilegedFileManager $fileManager Privileged file manager
@@ -108,6 +115,7 @@ class MenderManager {
 		$this->commandManager = $commandManager;
 		$this->fileManager = $fileManager;
 		$this->serviceManager = $serviceManager;
+		$this->menderVersion = $this->getMenderVersion();
 	}
 
 	/**
@@ -220,8 +228,12 @@ class MenderManager {
 	 * @throws MenderMissingException
 	 */
 	public function installArtifact(string $filePath): string {
-		$this->checkMender();
-		$result = $this->commandManager->run('mender -install ' . escapeshellarg($filePath) . ' 2>&1', true, 1800);
+		$this->stopService();
+		$result = $this->commandManager->run(
+			sprintf('mender %s %s 2>&1', $this->getCommandOption('install'), escapeshellarg($filePath)),
+			true,
+			1800
+		);
 		return $this->handleCommandResult($result->getExitCode(), $result->getStdout(), $filePath);
 	}
 
@@ -235,8 +247,11 @@ class MenderManager {
 	 * @throws UnsupportedInitSystemException
 	 */
 	public function commitUpdate(): string {
-		$this->checkMender();
-		$result = $this->commandManager->run('mender -commit 2>&1', true);
+		$this->stopService();
+		$result = $this->commandManager->run(
+			sprintf('mender %s 2>&1', $this->getCommandOption('commit')),
+			true
+		);
 		return $this->handleCommandResult($result->getExitCode(), $result->getStdout());
 	}
 
@@ -250,8 +265,11 @@ class MenderManager {
 	 * @throws UnsupportedInitSystemException
 	 */
 	public function rollbackUpdate(): string {
-		$this->checkMender();
-		$result = $this->commandManager->run('mender -rollback 2>&1', true);
+		$this->stopService();
+		$result = $this->commandManager->run(
+			sprintf('mender %s 2>&1', $this->getCommandOption('rollback')),
+			true
+		);
 		return $this->handleCommandResult($result->getExitCode(), $result->getStdout());
 	}
 
@@ -295,18 +313,55 @@ class MenderManager {
 	}
 
 	/**
-	 * Checks if Mender utility is installed, stops mender-client if active
-	 * @throws MenderMissingException
-	 * @throws NonexistentServiceException
-	 * @throws UnsupportedInitSystemException
+	 * Checks if Mender utility is installed
+	 * @throws MenderMissingException If mender is not installed
 	 */
 	private function checkMender(): void {
 		if (!$this->commandManager->commandExist('mender')) {
 			throw new MenderMissingException('Mender utility is not installed.');
 		}
+	}
+
+	/**
+	 * Stops mender-client service if active
+	 */
+	private function stopService(): void {
+		$this->checkMender();
 		if ($this->serviceManager->isActive('mender-client')) {
 			$this->serviceManager->stop('mender-client');
 		}
+	}
+
+	/**
+	 * Stores mender-client version
+	 * @throws MenderFailedException If mender-client version command fails
+	 * @throws SemverException If version parsing fails
+	 */
+	private function getMenderVersion(): Version {
+		$this->checkMender();
+		$command = $this->commandManager->run('mender --version');
+		if ($command->getExitCode() !== 0) {
+			throw new MenderFailedException($command->getStderr());
+		}
+		$versionString = Strings::trim($command->getStdout());
+		$pattern = '/^(?\'version\'\d+\.\d+\.\d+).*$/';
+		$matches = Strings::match($versionString, $pattern);
+		if ($matches === null || $matches['version'] === null) {
+			throw new MenderFailedException('Failed to parse Mender client version string: ' . $versionString);
+		}
+		return Version::parse($matches['version']);
+	}
+
+	/**
+	 * Construct command option string
+	 * @param string $option Command option
+	 * @return string Processed command option
+	 */
+	private function getCommandOption(string $option): string {
+		if ($this->menderVersion->getMajor() >= 3) {
+			return $option;
+		}
+		return '-' . $option;
 	}
 
 }
