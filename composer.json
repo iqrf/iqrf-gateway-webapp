@@ -70,7 +70,8 @@
 		"ratchet/pawl": "^v0.4.1",
 		"spatie/ssl-certificate": "^2.6.2",
 		"symfony/process": "^v6.4.2",
-		"tracy/tracy": "^v2.10.5"
+		"tracy/tracy": "^v2.10.5",
+		"z4kn4fein/php-semver": "^2.0"
 	},
 	"require-dev": {
 		"contributte/qa": "^v0.3.1",
