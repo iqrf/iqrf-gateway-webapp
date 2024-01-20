@@ -226,6 +226,10 @@ function items(): SidebarLink[] {
 						title: i18n.t('pages.iqrfnet.upload.title'),
 						to: '/iqrfnet/upload',
 					},
+					{
+						title: i18n.t('pages.iqrfnet.tr-config.title'),
+						to: '/iqrfnet/tr-config',
+					},
 				],
 			},
 			{

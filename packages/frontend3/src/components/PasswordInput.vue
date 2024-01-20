@@ -1,6 +1,5 @@
 <template>
 	<v-text-field
-		:model-value='modelValue'
 		v-bind='$attrs'
 		:label='label'
 		:hint='description'
@@ -36,11 +35,6 @@ import { VTextField } from 'vuetify/components';
 
 const show: Ref<boolean> = ref(false);
 const props = defineProps({
-	modelValue: {
-		type: String,
-		default: '',
-		required: true,
-	},
 	label: {
 		type: String,
 		default: '',

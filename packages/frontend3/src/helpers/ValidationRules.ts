@@ -98,7 +98,7 @@ export default class ValidationRules {
 	 * @return {boolean|string} Validation result
 	 */
 	public static maxLength(value: string | unknown[], length: number, error: string): boolean | string {
-		return (value.length <= length) || error;
+		return value === undefined || (value.length <= length) || error;
 	}
 
 	/**
@@ -180,6 +180,20 @@ export default class ValidationRules {
 		} catch (e) {
 			return error;
 		}
+	}
+
+	/**
+	 * Regular expression
+	 * @param {string | null} value Field value
+	 * @param {RegExp} pattern Regular expression pattern
+	 * @param {string} error Error message
+	 * @returns {boolean|string} Validation result
+	 */
+	public static regex(value: string | null, pattern: RegExp, error: string): boolean | string {
+		if (value === null) {
+			return true;
+		}
+		return pattern.test(value) || error;
 	}
 
 }

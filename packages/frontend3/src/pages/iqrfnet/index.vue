@@ -34,5 +34,10 @@ const links: Ref<DisambiguationLink[]> = ref([
 		description: i18n.t('pages.iqrfnet.upload.description'),
 		to: '/iqrfnet/upload',
 	},
+	{
+		title: i18n.t('pages.iqrfnet.tr-config.title'),
+		description: i18n.t('pages.iqrfnet.tr-config.description'),
+		to: '/iqrfnet/tr-config',
+	},
 ]);
 </script>
