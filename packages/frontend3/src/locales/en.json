@@ -311,7 +311,10 @@
 			"returnVerbose": "Verbose response",
 			"none": "None",
 			"request": "Request",
-			"response": "Response"
+			"response": "Response",
+			"other": "Other",
+			"format": "Format",
+			"value": "Value"
 		},
 		"states": {
 			"active": "Active",
@@ -1298,6 +1301,31 @@
 			}
 		},
 		"iqrfnet": {
+			"common": {
+				"os": "OS",
+				"dpa": "DPA",
+				"rf": "RF",
+				"rfpgm": "RFPGM",
+				"trPeripherals": "TR Peripherals",
+				"embedPeripherals": "Embedded Peripherals",
+				"txPower": "TX power",
+				"rxFilter": "RX filter",
+				"peripherals": {
+					"coordinator": "Coordinator",
+					"node": "Node",
+					"os": "OS",
+					"eeprom": "EEPROM",
+					"eeeprom": "EEEPROM",
+					"externalEeprom": "External EEPROM",
+					"ram": "RAM",
+					"ledr": "LEDR",
+					"ledg": "LEDG",
+					"spi": "SPI",
+					"io": "IO",
+					"thermometer": "Thermometer",
+					"uart": "UART"
+				}
+			},
 			"inProgress": "Request handling in progress.",
 			"products": {
 				"title": "Product browser",
@@ -1364,6 +1392,71 @@
 					},
 					"messages": {
 						"success": "Custom DPA handler has been successfully uploaded."
+					}
+				}
+			},
+			"tr-config": {
+				"os": {
+					"rf": {
+						"rfBand": "RF band",
+						"rfChannelA": "RF channel A",
+						"rfChannelB": "RF channel B"
+					},
+					"rfpgm": {
+						"enableAfterReset": "Enable after reset",
+						"terminateAfterMin": "Terminate after ~1 minute",
+						"terminateByMcuPin": "Terminate by MCU pin",
+						"dualChannel": "Dual channel",
+						"lpMode": "LP mode",
+						"incorrectUpload": "Incorrect upload"
+					}
+				},
+				"dpa": {
+					"rf": {
+						"networkType": "Network type",
+						"networkTypes": {
+							"std": "STD",
+							"stdLp": "STD+LP"
+						},
+						"lpRxTimeout": "LP RX timeout",
+						"altDsmChannel": "Alternative DSM channel"
+					},
+					"other": {
+						"customDpaHandler": "Custom DPA Handler",
+						"dp2p": "DPA Peer-to-Peer",
+						"up2p": "User Peer-to-Peer",
+						"localFrc": "Local FRC",
+						"ioSetup": "IO Setup",
+						"autoexec": "Autoexec",
+						"routingOff": "Routing off",
+						"neverSleep": "Stay awake when not bonded",
+						"baudRate": "UART interface baud rate"
+					}
+				},
+				"security": {
+					"title": "Security",
+					"ascii": "ASCII",
+					"asciiChange": "Change to ASCII",
+					"hex": "HEX",
+					"hexChange": "Change to HEX",
+					"accessPassword": "Access password",
+					"userKey": "User key",
+					"allowedCharactersAscii": "Allowed characters: Digits and letters, \"#$%&()*+,-./:;?{'@'}[\\]^_`{'{'}{'}'}~ and space.",
+					"allowedCharactersHex": "Allowed characters: Digits and letters a-f.",
+					"empty": "Blank field sets default value.",
+					"errors": {
+						"accessPasswordInvalidAsciiLen": "ASCII access password should be 0-16 characters long.",
+						"accessPasswordInvalidAsciiChar": "ASCII access password contains invalid characters.",
+						"accessPasswordInvalidHexLen": "Hexadecimal access password should be 0-32 characters long.",
+						"accessPasswordInvalidHexChar": "Hexadecimal access password contains invalid characters.",
+						"userKeyInvalidAsciiLen": "ASCII user key should be 0-16 characters long.",
+						"userKeyInvalidAsciiChar": "ASCII user key contains invalid characters.",
+						"userKeyInvalidHexLen": "Hexadecimal user key should be 0-32 characters long.",
+						"userKeyInvalidHexChar": "Hexadecimal user key contains invalid characters."
+					},
+					"messages": {
+						"asciiToHexConversionInvalid": "ASCII value contained disallowed characters during conversion, input cleared.",
+						"hexToAsciiConversionInvalid": "Hexadecimal value contained disallowed ASCII characters during conversion, input cleared."
 					}
 				}
 			}
@@ -1666,6 +1759,10 @@
 			"upload": {
 				"title": "Coordinator upload",
 				"description": "Upload custom DPA handlers and change DPA version."
+			},
+			"tr-config": {
+				"title": "TR configuration",
+				"description": "Configure TR modules."
 			}
 		},
 		"maintenance": {
