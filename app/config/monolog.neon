@@ -24,7 +24,7 @@ services:
 monolog:
 	hook:
 		fromTracy: false
-		toTracy: true
+		toTracy: false
 	channel:
 		default:
 			handlers:

@@ -20,6 +20,8 @@ declare(strict_types = 1);
 
 namespace App\ApiModule\Version0\Models;
 
+use Apitte\Core\Exception\Api\ClientErrorException;
+use Apitte\Core\Exception\Api\ServerErrorException;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LoggerTrait;
 use Psr\Log\LogLevel;
@@ -37,6 +39,38 @@ class SentryPsrLogger implements LoggerInterface {
 	use LoggerTrait;
 
 	/**
+	 * @var bool Is capturing messages enabled?
+	 */
+	protected bool $captureMessages = true;
+
+	/**
+	 * @var array<string> Log levels to capture
+	 */
+	protected array $captureLevels = [
+		LogLevel::WARNING,
+		LogLevel::ERROR,
+		LogLevel::CRITICAL,
+		LogLevel::ALERT,
+		LogLevel::EMERGENCY,
+	];
+
+	/**
+	 * Sets message capturing
+	 * @param bool $capture Is capturing messages enabled?
+	 */
+	public function setCaptureMessages(bool $capture): void {
+		$this->captureMessages = $capture;
+	}
+
+	/**
+	 * Sets log levels to capture
+	 * @param array<string> $levels Log levels to capture
+	 */
+	public function setCaptureLevels(array $levels): void {
+		$this->captureLevels = $levels;
+	}
+
+	/**
 	 * Logs with an arbitrary level
 	 * @param mixed $level Log level
 	 * @param string|Stringable $message Log message
@@ -45,8 +79,18 @@ class SentryPsrLogger implements LoggerInterface {
 	 */
 	public function log($level, string|Stringable $message, array $context = []): void {
 		if (array_key_exists('exception', $context) && $context['exception'] instanceof Throwable) {
-			SentrySdk::getCurrentHub()->captureException($context['exception']);
-		} else {
+			$exception = $context['exception'];
+			if (
+				$exception instanceof ClientErrorException ||
+				$exception instanceof ServerErrorException && $exception->getMessage() !== ServerErrorException::$defaultMessage
+			) {
+				return;
+			}
+			SentrySdk::getCurrentHub()->captureException($exception);
+		} elseif (
+			$this->captureMessages &&
+			in_array($level, $this->captureLevels, true)
+		) {
 			$event = Event::createEvent();
 			$event->setMessage($message);
 			if ($context !== []) {

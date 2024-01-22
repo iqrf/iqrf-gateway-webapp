@@ -21,15 +21,44 @@ declare(strict_types = 1);
 namespace App\ApiModule\Version0;
 
 use Apitte\Core\Dispatcher\DispatchError;
-use Apitte\Core\ErrorHandler\PsrLogErrorHandler;
+use Apitte\Core\ErrorHandler\SimpleErrorHandler;
+use Apitte\Core\Exception\ApiException;
+use Apitte\Core\Exception\Runtime\SnapshotException;
 use Apitte\Core\Http\ApiResponse;
+use Psr\Log\LoggerInterface;
 
 /**
  * REST API error handler
  */
-class ErrorHandler extends PsrLogErrorHandler {
+class ErrorHandler extends SimpleErrorHandler {
 
+	/**
+	 * Constructor
+	 * @param LoggerInterface $logger Logger
+	 */
+	public function __construct(
+		private readonly LoggerInterface $logger,
+	) {
+	}
+
+	/**
+	 * Handles dispatch error
+	 * @param DispatchError $dispatchError Dispatch error
+	 * @return ApiResponse HTTP response
+	 */
 	public function handle(DispatchError $dispatchError): ApiResponse {
+		$error = $dispatchError->getError();
+
+		if ($error instanceof SnapshotException) {
+			$error = $error->getPrevious();
+			$dispatchError = new DispatchError($error, $dispatchError->getRequest());
+		}
+
+		// Log exception only if it's not designed to be displayed
+		if (!$error instanceof ApiException) {
+			$this->logger->error($error->getMessage(), ['exception' => $error]);
+		}
+
 		$response = parent::handle($dispatchError);
 		$request = $dispatchError->getRequest();
 		if ($request->getMethod() === 'OPTIONS') {
