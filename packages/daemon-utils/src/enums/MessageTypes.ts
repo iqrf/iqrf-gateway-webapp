@@ -43,3 +43,11 @@ export enum ManagementMessages {
 	/// Get version
 	Version = 'mngDaemon_Version',
 }
+
+/**
+ * IQMESH service message types
+ */
+export enum IqmeshServiceMessages {
+	/// Sensor Data service
+	SensorData = 'iqmeshNetwork_SensorData',
+}
