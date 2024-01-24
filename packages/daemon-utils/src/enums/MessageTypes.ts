@@ -48,6 +48,10 @@ export enum ManagementMessages {
  * IQMESH service message types
  */
 export enum IqmeshServiceMessages {
-	/// Sensor Data service
+	/// Unbond device(s) from network
+	RemoveBond = 'iqmeshNetwork_RemoveBond',
+	/// Unbond device(s) in coordinator memory
+	RemoveBondCoordinator = 'iqmeshNetwork_RemoveBondOnlyInC',
+	/// Manager SensorData service
 	SensorData = 'iqmeshNetwork_SensorData',
 }
