@@ -54,6 +54,11 @@ class ConnectionDetail implements INetworkManagerEntity {
 	private ?SerialLink $serial = null;
 
 	/**
+	 * @var VlanConfiguration|null VLAN configuration entity
+	 */
+	private ?VlanConfiguration $vlan = null;
+
+	/**
 	 * Network connection entity constructor
 	 * @param string $name Network connection name
 	 * @param UuidInterface $uuid Network connection UUID
@@ -95,6 +100,9 @@ class ConnectionDetail implements INetworkManagerEntity {
 					$connection->setSerial(SerialLink::jsonDeserialize($json->serial));
 				}
 				break;
+			case ConnectionTypes::VLAN:
+				$connection->setVlan(VlanConfiguration::jsonDeserialize($json->vlan));
+				break;
 		}
 		return $connection;
 	}
@@ -131,6 +139,9 @@ class ConnectionDetail implements INetworkManagerEntity {
 					array_key_exists(SerialLink::NMCLI_PREFIX, $nmCli)) {
 					$connection->setSerial(SerialLink::nmCliDeserialize($nmCli));
 				}
+				break;
+			case ConnectionTypes::VLAN:
+				$connection->setVlan(VlanConfiguration::nmCliDeserialize($nmCli));
 				break;
 		}
 		return $connection;
@@ -185,6 +196,14 @@ class ConnectionDetail implements INetworkManagerEntity {
 	}
 
 	/**
+	 * Sets the VLAN configuration
+	 * @param VlanConfiguration|null $vlan VLAN configuration entity
+	 */
+	public function setVlan(?VlanConfiguration $vlan): void {
+		$this->vlan = $vlan;
+	}
+
+	/**
 	 * Sets the Wi-Fi connection entity
 	 * @param WifiConnection|null $wifi Wi-Fi connection entity
 	 */
@@ -215,6 +234,9 @@ class ConnectionDetail implements INetworkManagerEntity {
 		if ($this->serial !== null) {
 			$json['serial'] = $this->serial->jsonSerialize();
 		}
+		if ($this->vlan !== null) {
+			$json['vlan'] = $this->vlan->jsonSerialize();
+		}
 		return $json;
 	}
 
@@ -241,6 +263,9 @@ class ConnectionDetail implements INetworkManagerEntity {
 				if ($this->serial !== null) {
 					$nmcli .= $this->serial->nmCliSerialize();
 				}
+				break;
+			case ConnectionTypes::VLAN:
+				$nmcli .= $this->vlan->nmCliSerialize();
 				break;
 		}
 		return $nmcli;
