@@ -678,6 +678,80 @@
 					]
 				}
 			}
+		},
+		"vlan": {
+			"$id": "#/properties/vlan",
+			"title": "VLAN configuration",
+			"type": "object",
+			"example": {
+				"parentInterface": "eth0",
+				"id": 10,
+				"flags": {
+					"reorderHeaders": true,
+					"gvrp": false,
+					"looseBinding": false,
+					"mvrp": false
+				}
+			},
+			"required": [
+				"parentInterface",
+				"id",
+				"flags"
+			],
+			"additionalProperties": false,
+			"properties": {
+				"parentInterface": {
+					"$id": "#/properties/serial/properties/parentInterface",
+					"title": "Parent Ethernet interface",
+					"type": "string",
+					"example": "eth0"
+				},
+				"id": {
+					"$id": "#/properties/serial/properties/id",
+					"title": "VLAN ID",
+					"type": "integer",
+					"minimum": 1,
+					"example": 10
+				},
+				"flags": {
+					"$id": "#/properties/serial/properties/flags",
+					"title": "VLAN flags",
+					"type": "object",
+					"additionalProperties": false,
+					"properties": {
+						"reorderHeaders": {
+							"$id": "#/properties/serial/properties/flags/reorderHeaders",
+							"title": "Reorder headers",
+							"type": "boolean",
+							"example": true
+						},
+						"gvrp": {
+							"$id": "#/properties/serial/properties/flags/gvrp",
+							"title": "GVRP",
+							"type": "boolean",
+							"example": false
+						},
+						"looseBinding": {
+							"$id": "#/properties/serial/properties/flags/looseBinding",
+							"title": "Loose binding",
+							"type": "boolean",
+							"example": false
+						},
+						"mvrp": {
+							"$id": "#/properties/serial/properties/flags/mvrp",
+							"title": "MVRP",
+							"type": "boolean",
+							"example": false
+						}
+					},
+					"example": {
+						"reorderHeaders": true,
+						"gvrp": false,
+						"looseBinding": false,
+						"mvrp": false
+					}
+				}
+			}
 		}
 	},
 	"allOf": [
@@ -718,6 +792,26 @@
 					"ipv4",
 					"ipv6",
 					"gsm"
+				]
+			}
+		},
+		{
+			"if": {
+				"properties": {
+					"type": {
+						"const": "vlan"
+					}
+				}
+			},
+			"then": {
+				"required": [
+					"name",
+					"uuid",
+					"type",
+					"interface",
+					"ipv4",
+					"ipv6",
+					"vlan"
 				]
 			}
 		}
