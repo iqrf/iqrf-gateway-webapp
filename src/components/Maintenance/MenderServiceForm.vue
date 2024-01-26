@@ -16,7 +16,7 @@ limitations under the License.
 -->
 <template>
 	<CCard body-wrapper>
-		<ValidationObserver v-slot='{invalid}'>
+		<ValidationObserver v-if='config !== null' v-slot='{invalid}'>
 			<CForm @submit.prevent='processSubmit'>
 				<h5>{{ $t('maintenance.mender.service.form.connection') }}</h5>
 				<ValidationProvider
@@ -28,7 +28,9 @@ limitations under the License.
 					}'
 				>
 					<CInput
-						v-model='config.client.ServerURL'
+						v-for='index in config.client.config.Servers.keys()'
+						:key='"MenderServerUrl" + index'
+						v-model='config.client.config.Servers[index]'
 						:label='$t("maintenance.mender.service.form.client.server")'
 						:is-valid='touched ? valid : null'
 						:invalid-feedback='errors.join(", ")'
@@ -36,7 +38,7 @@ limitations under the License.
 					/>
 				</ValidationProvider>
 				<CInput
-					v-model='config.client.ServerCertificate'
+					v-model='config.client.config.ServerCertificate'
 					:label='$t("maintenance.mender.service.form.client.cert")'
 					:disabled='uploadCert'
 				/>
@@ -72,7 +74,7 @@ limitations under the License.
 					}'
 				>
 					<CInput
-						v-model='config.client.TenantToken'
+						v-model='config.client.config.TenantToken'
 						:label='$t("maintenance.mender.service.form.client.tenantToken")'
 						:placeholder='$t("maintenance.mender.service.form.placeholders.tenantToken")'
 						:is-valid='touched ? valid : null'
@@ -90,7 +92,7 @@ limitations under the License.
 				>
 					<CInput
 						id='inventoryPoll'
-						v-model.number='config.client.InventoryPollIntervalSeconds'
+						v-model.number='config.client.config.InventoryPollIntervalSeconds'
 						type='number'
 						min='0'
 						:label='$t("maintenance.mender.service.form.client.inventoryPollInterval")'
@@ -115,7 +117,7 @@ limitations under the License.
 				>
 					<CInput
 						id='retryPoll'
-						v-model.number='config.client.RetryPollIntervalSeconds'
+						v-model.number='config.client.config.RetryPollIntervalSeconds'
 						type='number'
 						min='0'
 						:label='$t("maintenance.mender.service.form.client.retryPollInterval")'
@@ -139,7 +141,7 @@ limitations under the License.
 					}'
 				>
 					<CInput
-						v-model.number='config.client.UpdatePollIntervalSeconds'
+						v-model.number='config.client.config.UpdatePollIntervalSeconds'
 						type='number'
 						min='0'
 						:label='$t("maintenance.mender.service.form.client.updatePollInterval")'
@@ -156,11 +158,11 @@ limitations under the License.
 				<hr>
 				<h5>{{ $t('maintenance.mender.service.form.features') }}</h5>
 				<CInputCheckbox
-					:checked.sync='config.connect.FileTransfer'
+					:checked.sync='config.connect.config.FileTransfer'
 					:label='$t("maintenance.mender.service.form.connect.fileTransfer")'
 				/>
 				<CInputCheckbox
-					:checked.sync='config.connect.PortForward'
+					:checked.sync='config.connect.config.PortForward'
 					:label='$t("maintenance.mender.service.form.connect.portForward")'
 				/>
 				<CButton
@@ -177,7 +179,17 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CBadge, CButton, CForm, CInput, CInputCheckbox, CInputFile, CSelect} from '@coreui/vue/src';
+import {
+	CBadge,
+	CButton,
+	CCard,
+	CForm,
+	CInput,
+	CInputCheckbox,
+	CInputFile,
+	CSelect,
+	CSwitch,
+} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {Duration} from 'luxon';
@@ -188,18 +200,20 @@ import {menderServerUrl} from '@/helpers/validationRules/Maintenance';
 import FeatureConfigService from '@/services/FeatureConfigService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {IMenderConfig} from '@/interfaces/Maintenance/Mender';
+import {MenderConfig} from '@/interfaces/Maintenance/Mender';
 import MenderService from '@/services/MenderService';
 
 @Component({
 	components: {
 		CBadge,
 		CButton,
+		CCard,
 		CForm,
 		CInput,
 		CInputCheckbox,
 		CInputFile,
 		CSelect,
+		CSwitch,
 		ValidationObserver,
 		ValidationProvider,
 	}
@@ -216,22 +230,9 @@ export default class MenderForm extends Vue {
 	private featureName = 'mender';
 
 	/**
-	 * @var {IMenderConfig} configuration Mender configuration
+	 * @var {MenderConfig|null} configuration Mender configuration
 	 */
-	private config: IMenderConfig = {
-		client: {
-			ServerURL: 'https://hosted.mender.io',
-			ServerCertificate: '',
-			TenantToken: 'dummy',
-			InventoryPollIntervalSeconds: 28800,
-			RetryPollIntervalSeconds: 300,
-			UpdatePollIntervalSeconds: 1800,
-		},
-		connect: {
-			FileTransfer: true,
-			PortForward: true,
-		},
-	};
+	private config: MenderConfig|null = null;
 
 	/**
 	 * @var {boolean} uploadCert Controls Mender form
@@ -265,7 +266,7 @@ export default class MenderForm extends Vue {
 	 * @return {string} Inventory poll interval string
 	 */
 	get inventoryPollTime(): string {
-		return this.periodString(this.config.client.InventoryPollIntervalSeconds);
+		return this.periodString(this.config!.client.config.InventoryPollIntervalSeconds);
 	}
 
 	/**
@@ -273,7 +274,7 @@ export default class MenderForm extends Vue {
 	 * @return {string} Retry poll interval string
 	 */
 	get retryPollTime(): string {
-		return this.periodString(this.config.client.RetryPollIntervalSeconds);
+		return this.periodString(this.config!.client.config.RetryPollIntervalSeconds);
 	}
 
 	/**
@@ -281,7 +282,7 @@ export default class MenderForm extends Vue {
 	 * @return {string} Retry update interval string
 	 */
 	get updatePollTime(): string {
-		return this.periodString(this.config.client.UpdatePollIntervalSeconds);
+		return this.periodString(this.config!.client.config.UpdatePollIntervalSeconds);
 	}
 
 	/**
@@ -306,11 +307,12 @@ export default class MenderForm extends Vue {
 			this.$store.commit('spinner/SHOW');
 		}
 		return FeatureConfigService.getConfig(this.featureName)
-			.then((response: AxiosResponse) => {
+			.then((response: AxiosResponse<MenderConfig>) => {
 				if (this.uploadCert) {
 					this.uploadCert = false;
 				}
 				this.config = response.data;
+				console.warn(this.config.client);
 				this.$store.commit('spinner/HIDE');
 			})
 			.catch((error: AxiosError) => extendedErrorToast(error, 'maintenance.mender.service.messages.fetchFailed'));
@@ -341,8 +343,8 @@ export default class MenderForm extends Vue {
 			const formData = new FormData();
 			formData.append('certificate', this.getInputFiles()[0]);
 			MenderService.uploadCertificate(formData)
-				.then((response: AxiosResponse) => {
-					this.config.client.ServerCertificate = response.data;
+				.then((response: AxiosResponse<string>) => {
+					this.config!.client.config.ServerCertificate = response.data;
 					this.saveConfig();
 				})
 				.catch((error: AxiosError) => extendedErrorToast(
@@ -358,7 +360,7 @@ export default class MenderForm extends Vue {
 	 * Saves Mender client configuration
 	 */
 	private saveConfig(): void {
-		const config: IMenderConfig = JSON.parse(JSON.stringify(this.config));
+		const config: MenderConfig = JSON.parse(JSON.stringify(this.config));
 		FeatureConfigService.saveConfig(this.featureName, config)
 			.then(() => this.getConfig().then(() => this.$toast.success(
 				this.$t('maintenance.mender.service.messages.saveSuccess').toString()
@@ -392,10 +394,9 @@ export default class MenderForm extends Vue {
 	}
 
 	private serverUrlFixup(): void {
-		const server = this.config.client.ServerURL;
-		if (!/^https?:\/\//i.test(server)) {
-			this.config.client.ServerURL = `https://${server}`;
-		}
+		this.config!.client.config.Servers.map((server: string): string => {
+			return (/^https?:\/\//i.test(server)) ? server : `https://${server}`;
+		});
 	}
 }
 </script>

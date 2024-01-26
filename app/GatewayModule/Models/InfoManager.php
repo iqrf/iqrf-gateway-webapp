@@ -84,6 +84,8 @@ class InfoManager {
 				'cloudProvisioning' => $this->versionManager->getCloudProvisioning(),
 				'controller' => $this->versionManager->getController(),
 				'daemon' => $this->versionManager->getDaemon($verbose),
+				'menderClient' => $this->versionManager->getMenderClient(),
+				'menderConnect' => $this->versionManager->getMenderConnect(),
 				'setter' => $this->versionManager->getSetter(),
 				'uploader' => $this->versionManager->getUploader(),
 				'webapp' => $this->versionManager->getWebapp($verbose),

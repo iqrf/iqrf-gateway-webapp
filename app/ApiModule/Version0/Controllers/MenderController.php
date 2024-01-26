@@ -35,6 +35,7 @@ use App\MaintenanceModule\Exceptions\MenderFailedException;
 use App\MaintenanceModule\Exceptions\MenderInvalidArtifactException;
 use App\MaintenanceModule\Exceptions\MenderMissingException;
 use App\MaintenanceModule\Exceptions\MenderNoUpdateInProgressException;
+use App\MaintenanceModule\Exceptions\MenderUnsupportedVersionException;
 use App\MaintenanceModule\Exceptions\MountErrorException;
 use App\MaintenanceModule\Models\MenderManager;
 use Nette\IOException;
@@ -86,6 +87,8 @@ class MenderController extends BaseController {
 	 *          $ref: '#/components/responses/Forbidden'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
+	 *      '501':
+	 *          description: Unsupported Mender client version
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -98,8 +101,10 @@ class MenderController extends BaseController {
 			return $response->writeJsonBody($config);
 		} catch (JsonException $e) {
 			throw new ServerErrorException('Invalid JSON Syntax', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
-		} catch (IOException $e) {
+		} catch (IOException | MenderMissingException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		} catch (MenderUnsupportedVersionException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S501_NOT_IMPLEMENTED, $e);
 		}
 	}
 
@@ -123,6 +128,8 @@ class MenderController extends BaseController {
 	 *          $ref: '#/components/responses/Forbidden'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
+	 *      '501':
+	 *          description: Unsupported Mender client version
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -134,8 +141,10 @@ class MenderController extends BaseController {
 		try {
 			$this->manager->saveConfig($request->getJsonBody());
 			return $response->writeBody('Workaround');
-		} catch (IOException | JsonException $e) {
+		} catch (IOException | JsonException | MenderMissingException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		} catch (MenderUnsupportedVersionException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S501_NOT_IMPLEMENTED, $e);
 		}
 	}
 

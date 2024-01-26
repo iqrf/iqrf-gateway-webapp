@@ -1,6 +1,6 @@
 /**
- * Copyright 2017-2023 IQRF Tech s.r.o.
- * Copyright 2019-2023 MICRORISC s.r.o.
+ * Copyright 2017-2024 IQRF Tech s.r.o.
+ * Copyright 2019-2024 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,76 +14,69 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {MountModes} from '@/enums/Maintenance/Mender';
 
 /**
- * Mender configuration interface
+ * Mender client configuration interface
  */
-export interface IMenderConfig {
-	/**
-	 * mender-client configuration
-	 */
-	client: IMenderClientConfig
-
-	/**
-	 * mender-connect configuration
-	 */
-	connect: IMenderConnectConfig
-}
-
-export interface IMenderClientConfig {
-	/**
-	 * Mender service server address
-	 */
-	ServerURL: string
-
-	/**
-	 * Path to certificate
-	 */
-	ServerCertificate: string
-
-	/**
-	 * Tenant ownership token
-	 */
-	TenantToken: string
-
-	/**
-	 * Inventory poll interval in seconds
-	 */
-	InventoryPollIntervalSeconds: number
-
-	/**
-	 * Retry poll interval in seconds
-	 */
-	RetryPollIntervalSeconds: number
-
-	/**
-	 * Update poll interval in seconds
-	 */
-	UpdatePollIntervalSeconds: number
+export interface MenderClientConfig {
+	/// Inventory poll interval in seconds
+	InventoryPollIntervalSeconds: number;
+	/// Retry poll interval in seconds
+	RetryPollIntervalSeconds: number;
+	/// Path to certificate
+	ServerCertificate: string;
+	/// Mender server addresses
+	Servers: string[];
+	/// Tenant ownership token
+	TenantToken: string;
+	/// Update poll interval in seconds
+	UpdatePollIntervalSeconds: number;
 }
 
 /**
  * Mender connect configuration interface
  */
-export interface IMenderConnectConfig {
-	/**
-	 * File transfer feature enabled
-	 */
-	FileTransfer: boolean
+export interface MenderConnectConfig {
+	/// File transfer feature enabled
+	FileTransfer: boolean;
+	/// Port forwarding feature enabled
+	PortForward: boolean;
+}
 
-	/**
-	 * Port forwarding feature enabled
-	 */
-	PortForward: boolean
+/**
+ * Mender configuration interface
+ */
+export interface MenderConfig {
+	/// Mender client
+	client: {
+		/// Mender client configuration
+		config: MenderClientConfig;
+		/// Mender client version
+		version: number;
+	};
+	/// Mender connect
+	connect: {
+		/// Mender connect configuration
+		config: MenderConnectConfig;
+		/// Mender connect version
+		version: number;
+	};
+}
+
+/**
+ * Filesystem mount modes
+ */
+export enum MenderMountMode {
+	/// Read-only
+	RO = 'ro',
+	/// Read-write
+	RW = 'rw'
 }
 
 /**
  * Filesystem remount interface
  */
-export interface IRemount {
-	/**
-	 * Mode to remount filesystem with
-	 */
-	mode: MountModes
+export interface MenderRemount {
+	/// mountMode
+	mode: MenderMountMode;
 }

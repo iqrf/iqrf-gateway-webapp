@@ -60,23 +60,23 @@
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CInputFile} from '@coreui/vue/src';
-
-import MenderService from '@/services/MenderService';
-
+import {CButton, CCard, CCardBody, CForm, CInputFile} from '@coreui/vue/src';
 import {AxiosError, AxiosResponse} from 'axios';
-import GatewayService from '@/services/GatewayService';
-import { MountModes } from '@/enums/Maintenance/Mender';
-import { extendedErrorToast } from '@/helpers/errorToast';
-import {ErrorResponse} from '@/types';
 import {TranslateResult} from 'vue-i18n';
+import {Component, Vue} from 'vue-property-decorator';
+
+import { extendedErrorToast } from '@/helpers/errorToast';
+import {MenderMountMode} from '@/interfaces/Maintenance/Mender';
+import GatewayService from '@/services/GatewayService';
+import MenderService from '@/services/MenderService';
+import {ErrorResponse} from '@/types';
 
 @Component({
 	components: {
 		CButton,
 		CCard,
 		CCardBody,
+		CForm,
 		CInputFile,
 	},
 })
@@ -189,7 +189,7 @@ export default class MenderUpdateControl extends Vue {
 	 */
 	private remount(writable: boolean): void {
 		const conf = {
-			mode: writable ? MountModes.RW : MountModes.RO
+			mode: writable ? MenderMountMode.RW : MenderMountMode.RO
 		};
 		this.$store.commit('spinner/SHOW');
 		MenderService.remount(conf)

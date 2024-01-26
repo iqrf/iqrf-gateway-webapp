@@ -45,7 +45,7 @@ class DependencyManager {
 	private array $features = [];
 
 	/**
-	 * @var array<Dependency> Dependencies
+	 * @var array<Dependency|array<Dependency>> Dependencies
 	 */
 	private array $dependencies;
 
@@ -77,7 +77,10 @@ class DependencyManager {
 			new Dependency('iqrf-journal-reader', true, 'iqrf-journal-reader'),
 			new Dependency('journalctl', true, 'systemd'),
 			new Dependency('lsusb', false, 'usbutils'),
-			new Dependency('mender', false, 'mender-client', 'mender'),
+			[
+				new Dependency('mender', false, 'mender-client', 'mender'),
+				new Dependency('mender-update', false, 'mender-client', 'mender'),
+			],
 			new Dependency('mender-connect', false, 'mender-connect', 'mender'),
 			new Dependency('mmcli', true, 'modemmanager', 'networkManager'),
 			new Dependency('nmcli', false, 'network-manager', 'networkManager'),
@@ -106,12 +109,41 @@ class DependencyManager {
 	}
 
 	/**
+	 * Filters missing dependencies
+	 * @param array<Dependency>|Dependency $dependencies Dependencies to check
+	 * @return bool Dependencies are missing
+	 */
+	public function filterDependencies($dependencies): bool {
+		if ($dependencies instanceof Dependency) {
+			return $this->filterMissing($dependencies);
+		}
+		$notFound = true;
+		foreach ($dependencies as $dependency) {
+			if (!$this->filterMissing($dependency)) {
+				$notFound = false;
+				break;
+			}
+		}
+		return $notFound;
+	}
+
+	/**
 	 * Returns missing dependencies
 	 * @return array<Dependency> Missing dependencies
 	 */
 	public function listMissing(): array {
 		$this->features = $this->featureManager->listEnabled();
-		return array_values(array_filter($this->dependencies, [$this, 'filterMissing']));
+		$array = [];
+		foreach (array_filter($this->dependencies, [$this, 'filterDependencies']) as $dependency) {
+			if ($dependency instanceof Dependency) {
+				$array[] = $dependency;
+				continue;
+			}
+			foreach ($dependency as $item) {
+				$array[] = $item;
+			}
+		}
+		return $array;
 	}
 
 }

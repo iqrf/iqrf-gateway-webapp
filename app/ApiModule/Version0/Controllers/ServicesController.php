@@ -63,6 +63,7 @@ class ServicesController extends BaseController {
 		'iqrf-gateway-daemon' => null,
 		'iqrf-gateway-translator' => 'iqrfGatewayTranslator',
 		'mender-client' => 'mender',
+		'mender-updated' => 'mender',
 		'monit' => 'monit',
 		'ModemManager' => 'networkManager',
 		'nodered' => 'nodeRed',
