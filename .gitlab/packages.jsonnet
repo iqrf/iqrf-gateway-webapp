@@ -120,7 +120,7 @@ local deployPackageJob(variant, stability) = image + {
 if stability == 'devel' then {
 	except: ['tags'],
 	only: {
-		refs: ['master'],
+		refs: [options.mainBranch],
 	},
 	script: [
 		stabilityEnvironmentVars(stability),
@@ -151,4 +151,3 @@ if stability == 'devel' then {
 		for variant in variants
 		for stability in ['devel', 'release']
 }
-

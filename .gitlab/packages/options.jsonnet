@@ -24,4 +24,6 @@
 	deployServer: 'www-deploy@icinga.iqrf.org',
 	// Deployment base URL
 	deployBaseUrl: 'https://dl.iqrf.org/iqrf-gateway-webapp/',
+	// Main branch
+	mainBranch: 'master',
 }
