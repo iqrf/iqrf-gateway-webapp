@@ -196,4 +196,18 @@ export default class ValidationRules {
 		return pattern.test(value) || error;
 	}
 
+	/**
+	 * URL validator
+	 * @param {string | null} value Field value
+	 * @param {string} error Error message
+	 * @returns {boolean|string} Validation result
+	 */
+	public static url(value: string | null, error: string): boolean | string {
+		if (value === null) {
+			return error;
+		}
+		const urlValidator: z.ZodString = z.string().url();
+		return urlValidator.safeParse(value).success || error;
+	}
+
 }
