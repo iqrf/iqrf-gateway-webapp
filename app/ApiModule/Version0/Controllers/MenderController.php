@@ -35,6 +35,7 @@ use App\MaintenanceModule\Exceptions\MenderFailedException;
 use App\MaintenanceModule\Exceptions\MenderInvalidArtifactException;
 use App\MaintenanceModule\Exceptions\MenderMissingException;
 use App\MaintenanceModule\Exceptions\MenderNoUpdateInProgressException;
+use App\MaintenanceModule\Exceptions\MenderUnsupportedVersionException;
 use App\MaintenanceModule\Exceptions\MountErrorException;
 use App\MaintenanceModule\Models\MenderManager;
 use Nette\IOException;
@@ -76,6 +77,8 @@ class MenderController extends BaseController {
 				$ref: \'#/components/responses/Forbidden\'
 			\'500\':
 				$ref: \'#/components/responses/ServerError\'
+			\'501\':
+				description: Unsupported Mender client version
 	')]
 	public function getConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['maintenance:mender']);
@@ -86,6 +89,8 @@ class MenderController extends BaseController {
 			throw new ServerErrorException('Invalid JSON Syntax', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		} catch (MenderUnsupportedVersionException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S501_NOT_IMPLEMENTED, $e);
 		}
 	}
 
@@ -108,6 +113,8 @@ class MenderController extends BaseController {
 				$ref: \'#/components/responses/Forbidden\'
 			\'500\':
 				$ref: \'#/components/responses/ServerError\'
+			\'501\':
+				description: Unsupported Mender client version
 	')]
 	public function setConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['maintenance:mender']);
@@ -117,6 +124,8 @@ class MenderController extends BaseController {
 			return $response->writeBody('Workaround');
 		} catch (IOException | JsonException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		} catch (MenderUnsupportedVersionException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S501_NOT_IMPLEMENTED, $e);
 		}
 	}
 

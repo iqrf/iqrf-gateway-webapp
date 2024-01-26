@@ -34,17 +34,21 @@
 							{{ $t('components.configuration.mender.connection') }}
 						</legend>
 						<TextInput
-							v-model='config.client.ServerURL'
+							v-for='index in config.client.config.Servers.keys()'
+							:key='"MenderServerUrl" + index'
+							v-model='config.client.config.Servers[index]'
 							:label='$t("components.configuration.mender.client.server")'
 							:rules='[
 								(v: string|null) => ValidationRules.required(v, $t("components.configuration.mender.validation.serverMissing")),
-								(v: string) => ValidationRules.server(v, $t("components.configuration.mender.validation.serverInvalid")),
+								(v: string) => ValidationRules.url(v, $t("components.configuration.mender.validation.serverInvalid")),
 							]'
+							:prepend-inner-icon='mdiServerNetwork'
 							required
 						/>
 						<TextInput
-							v-model='config.client.ServerCertificate'
+							v-model='config.client.config.ServerCertificate'
 							:label='$t("components.configuration.mender.client.cert")'
+							:prepend-inner-icon='mdiFileCertificate'
 						>
 							<template #append>
 								<MenderCertificateUploadDialog />
@@ -54,15 +58,16 @@
 							{{ $t('components.configuration.mender.inventory') }}
 						</legend>
 						<TextInput
-							v-model='config.client.TenantToken'
+							v-model='config.client.config.TenantToken'
 							:label='$t("components.configuration.mender.client.tenantToken")'
 							:rules='[
 								(v: string|null) => ValidationRules.required(v, $t("components.configuration.mender.validation.tenantTokenMissing")),
 							]'
+							:prepend-inner-icon='mdiKeyVariant'
 							required
 						/>
 						<TextInput
-							v-model.number='config.client.InventoryPollIntervalSeconds'
+							v-model.number='config.client.config.InventoryPollIntervalSeconds'
 							type='number'
 							:label='$t("components.configuration.mender.client.inventoryPollInterval")'
 							:rules='[
@@ -70,19 +75,20 @@
 								(v: number) => ValidationRules.integer(v, $t("components.configuration.mender.validation.inventoryPollIntervalInvalid")),
 								(v: number) => ValidationRules.min(v, 0, $t("components.configuration.mender.validation.inventoryPollIntervalInvalid")),
 							]'
+							:prepend-inner-icon='mdiTimerMarker'
 							required
 						>
 							<template #append-inner>
 								<v-chip
 									label
-									:color='intervalColor(config.client.InventoryPollIntervalSeconds)'
+									:color='intervalColor(config.client.config.InventoryPollIntervalSeconds)'
 								>
-									{{ intervalLabel(config.client.InventoryPollIntervalSeconds) }}
+									{{ intervalLabel(config.client.config.InventoryPollIntervalSeconds) }}
 								</v-chip>
 							</template>
 						</TextInput>
 						<TextInput
-							v-model.number='config.client.RetryPollIntervalSeconds'
+							v-model.number='config.client.config.RetryPollIntervalSeconds'
 							type='number'
 							:label='$t("components.configuration.mender.client.retryPollInterval")'
 							:rules='[
@@ -90,19 +96,20 @@
 								(v: number) => ValidationRules.integer(v, $t("components.configuration.mender.validation.retryPollIntervalInvalid")),
 								(v: number) => ValidationRules.min(v, 0, $t("components.configuration.mender.validation.retryPollIntervalInvalid")),
 							]'
+							:prepend-inner-icon='mdiTimerRefresh'
 							required
 						>
 							<template #append-inner>
 								<v-chip
 									label
-									:color='intervalColor(config.client.RetryPollIntervalSeconds)'
+									:color='intervalColor(config.client.config.RetryPollIntervalSeconds)'
 								>
-									{{ intervalLabel(config.client.RetryPollIntervalSeconds) }}
+									{{ intervalLabel(config.client.config.RetryPollIntervalSeconds) }}
 								</v-chip>
 							</template>
 						</TextInput>
 						<TextInput
-							v-model.number='config.client.UpdatePollIntervalSeconds'
+							v-model.number='config.client.config.UpdatePollIntervalSeconds'
 							type='number'
 							:label='$t("components.configuration.mender.client.updatePollInterval")'
 							:rules='[
@@ -110,14 +117,15 @@
 								(v: number) => ValidationRules.integer(v, $t("components.configuration.mender.validation.updatePollIntervalInvalid")),
 								(v: number) => ValidationRules.min(v, 0, $t("components.configuration.mender.validation.updatePollIntervalInvalid")),
 							]'
+							:prepend-inner-icon='mdiTimerSync'
 							required
 						>
 							<template #append-inner>
 								<v-chip
 									label
-									:color='intervalColor(config.client.UpdatePollIntervalSeconds)'
+									:color='intervalColor(config.client.config.UpdatePollIntervalSeconds)'
 								>
-									{{ intervalLabel(config.client.UpdatePollIntervalSeconds) }}
+									{{ intervalLabel(config.client.config.UpdatePollIntervalSeconds) }}
 								</v-chip>
 							</template>
 						</TextInput>
@@ -125,13 +133,13 @@
 							{{ $t('components.configuration.mender.features') }}
 						</legend>
 						<v-checkbox
-							v-model='config.connect.FileTransfer'
+							v-model='config.connect.config.FileTransfer'
 							:label='$t("components.configuration.mender.connect.fileTransfer")'
 							density='compact'
 							hide-details
 						/>
 						<v-checkbox
-							v-model='config.connect.PortForward'
+							v-model='config.connect.config.PortForward'
 							:label='$t("components.configuration.mender.connect.portForward")'
 							density='compact'
 							hide-details
@@ -146,6 +154,7 @@
 					:disabled='!isValid.value || [ComponentState.Loading, ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
 					@click='onSubmit'
 				>
+					<v-icon :icon='mdiContentSave' />
 					{{ $t('common.buttons.save') }}
 				</v-btn>
 			</template>
@@ -156,7 +165,16 @@
 <script lang='ts' setup>
 import { type MenderService } from '@iqrf/iqrf-gateway-webapp-client/services';
 import { type MenderConfig } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { mdiReload } from '@mdi/js';
+import {
+	mdiContentSave,
+	mdiFileCertificate,
+	mdiKeyVariant,
+	mdiReload,
+	mdiServerNetwork,
+	mdiTimerMarker,
+	mdiTimerRefresh,
+	mdiTimerSync,
+} from '@mdi/js';
 import { Duration } from 'luxon';
 import {
 	onMounted,

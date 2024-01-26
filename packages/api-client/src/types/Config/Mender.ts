@@ -24,8 +24,8 @@ export interface MenderClientConfig {
 	RetryPollIntervalSeconds: number;
 	/// Path to certificate
 	ServerCertificate: string;
-	/// Mender service server address
-	ServerURL: string;
+	/// Mender server addresses
+	Servers: string[];
 	/// Tenant ownership token
 	TenantToken: string;
 	/// Update poll interval in seconds
@@ -46,10 +46,20 @@ export interface MenderConnectConfig {
  * Mender configuration interface
  */
 export interface MenderConfig {
-	/// mender-client configuration
-	client: MenderClientConfig;
-	/// mender-connect configuration
-	connect: MenderConnectConfig;
+	/// Mender client
+	client: {
+		/// Mender client configuration
+		config: MenderClientConfig;
+		/// Mender client version
+		version: number;
+	};
+	/// Mender connect
+	connect: {
+		/// Mender connect configuration
+		config: MenderConnectConfig;
+		/// Mender connect version
+		version: number;
+	};
 }
 
 /**

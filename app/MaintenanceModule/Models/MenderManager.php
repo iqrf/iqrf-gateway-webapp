@@ -22,6 +22,10 @@ namespace App\MaintenanceModule\Models;
 
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\PrivilegedFileManager;
+use App\GatewayModule\Models\VersionManager;
+use App\MaintenanceModule\Entities\MenderClientConfiguration;
+use App\MaintenanceModule\Entities\MenderConnectConfiguration;
+use App\MaintenanceModule\Enums\MenderClientActions;
 use App\MaintenanceModule\Exceptions\MenderFailedException;
 use App\MaintenanceModule\Exceptions\MenderMissingException;
 use App\MaintenanceModule\Exceptions\MenderNoUpdateInProgressException;
@@ -33,7 +37,6 @@ use Nette\Utils\FileSystem;
 use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
 use Psr\Http\Message\UploadedFileInterface;
-use z4kn4fein\SemVer\SemverException;
 use z4kn4fein\SemVer\Version;
 
 /**
@@ -62,104 +65,88 @@ class MenderManager {
 	private const UPLOAD_PATH = '/tmp/';
 
 	/**
-	 * Default client configuration
+	 * @var Version|null $clientVersion Mender client version
 	 */
-	private const DEFAULT_CLIENT_CONFIG = [
-		'ServerURL' => 'https://hosted.mender.io',
-		'ServerCertificate' => '',
-		'TenantToken' => 'dummy',
-		'InventoryPollIntervalSeconds' => 28800,
-		'RetryPollIntervalSeconds' => 300,
-		'UpdatePollIntervalSeconds' => 1800,
-	];
+	private readonly ?Version $clientVersion;
 
 	/**
-	 * Default connect configuration
+	 * @var Version|null $connectVersion Mender connect version
 	 */
-	private const DEFAULT_CONNECT_CONFIG = [
-		'FileTransfer' => [
-			'Disable' => false,
-		],
-		'PortForward' => [
-			'Disable' => false,
-		],
-	];
-
-	/**
-	 * @var Version $menderVersion Mender client version
-	 */
-	private Version $menderVersion;
+	private readonly ?Version $connectVersion;
 
 	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
 	 * @param PrivilegedFileManager $fileManager Privileged file manager
 	 * @param ServiceManager $serviceManager Service manager
+	 * @param VersionManager $versionManager Version manager
 	 */
 	public function __construct(
 		private readonly CommandManager $commandManager,
 		private readonly PrivilegedFileManager $fileManager,
 		private readonly ServiceManager $serviceManager,
+		VersionManager $versionManager,
 	) {
-		$this->menderVersion = $this->getMenderVersion();
+		$clientVersion = $versionManager->getMenderClient();
+		$connectVersion = $versionManager->getMenderConnect();
+		$this->clientVersion = ($clientVersion !== null) ? Version::parseOrNull($clientVersion) : null;
+		$this->connectVersion = ($connectVersion !== null) ? Version::parseOrNull($connectVersion) : null;
 	}
 
 	/**
-	 * Returns mender configuration
-	 * @return array<string, array<string, mixed>> current mender configuration
+	 * Returns Mender configuration
+	 * @return array<string, array{version: int, config: array<string, mixed>}> current Mender configuration
 	 * @throws JsonException
 	 */
 	public function getConfig(): array {
-		$client = array_replace_recursive(self::DEFAULT_CLIENT_CONFIG, $this->getClientConfig());
-		$connect = array_replace_recursive(self::DEFAULT_CONNECT_CONFIG, $this->getConnectConfig());
+		$this->checkMender();
 		return [
-			'client' => [
-				'ServerURL' => $client['ServerURL'],
-				'ServerCertificate' => $client['ServerCertificate'],
-				'TenantToken' => $client['TenantToken'],
-				'InventoryPollIntervalSeconds' => $client['InventoryPollIntervalSeconds'],
-				'RetryPollIntervalSeconds' => $client['RetryPollIntervalSeconds'],
-				'UpdatePollIntervalSeconds' => $client['UpdatePollIntervalSeconds'],
-			],
-			'connect' => [
-				'FileTransfer' => !$connect['FileTransfer']['Disable'],
-				'PortForward' => !$connect['PortForward']['Disable'],
-			],
+			'client' => $this->getClientConfig(),
+			'connect' => $this->getConnectConfig(),
 		];
 	}
 
 	/**
-	 * Reads mender-client config file
-	 * @return array<string, mixed> current mender-client configuration
+	 * Reads Mender client config file
+	 * @param bool $raw Return raw configuration?
+	 * @return array{config: array<string, mixed>, version: int} Mender client configuration
 	 * @throws JsonException
 	 */
-	public function getClientConfig(): array {
-		return $this->fileManager->readJson(self::CLIENT_CONF);
+	public function getClientConfig(bool $raw = false): array {
+		$this->checkMender();
+		$config = $this->fileManager->readJson(self::CLIENT_CONF);
+		if ($raw) {
+			return $config;
+		}
+		return MenderClientConfiguration::configDeserialize($this->clientVersion->getMajor(), $config)->jsonSerialize();
 	}
 
 	/**
-	 * Reads mender-connect config file
-	 * @return array<string, mixed> current mender-connect configuration
+	 * Reads Mender connect config file
+	 * @param bool $raw Return raw configuration?
+	 * @return array{config: array<string, mixed>, version: int} Mender connect configuration
 	 * @throws JsonException
 	 */
-	public function getConnectConfig(): array {
-		return $this->fileManager->readJson(self::CONNECT_CONF);
+	public function getConnectConfig(bool $raw = false): array {
+		$this->checkMender();
+		$config = $this->fileManager->readJson(self::CONNECT_CONF);
+		if ($raw) {
+			return $config;
+		}
+		return MenderConnectConfiguration::configDeserialize($this->connectVersion->getMajor(), $config)->jsonSerialize();
 	}
 
 	/**
 	 * Saves updated mender-client configuration file
-	 * @param array<string, array<string, bool|int|string>> $config Mender configuration
+	 * @param array{client: array{config: array<string, mixed>, version: int}, connect: array{config: array<string, mixed>, version: int}} $config Mender configuration
 	 * @throws JsonException
 	 */
 	public function saveConfig(array $config): void {
-		$client = $this->getClientConfig();
-		$connect = $this->getConnectConfig();
-		$this->fileManager->writeJson(self::CLIENT_CONF, array_replace_recursive($client, $config['client']));
-		$config['connect'] = [
-			'FileTransfer' => ['Disable' => !$config['connect']['FileTransfer']],
-			'PortForward' => ['Disable' => !$config['connect']['PortForward']],
-		];
-		$this->fileManager->writeJson(self::CONNECT_CONF, array_replace_recursive($connect, $config['connect']));
+		$this->checkMender();
+		$client = array_replace_recursive($this->getClientConfig(true), MenderClientConfiguration::jsonDeserialize($config['client'])->configSerialize());
+		$connect = array_replace_recursive($this->getConnectConfig(true), MenderConnectConfiguration::jsonDeserialize($config['connect'])->configSerialize());
+		$this->fileManager->writeJson(self::CLIENT_CONF, $client);
+		$this->fileManager->writeJson(self::CONNECT_CONF, $connect);
 	}
 
 	/**
@@ -169,6 +156,7 @@ class MenderManager {
 	 * @return string Path to uploaded certificate
 	 */
 	public function saveCertFile(string $fileName, string $content): string {
+		$this->checkMender();
 		$filePath = self::CERT_PATH . $fileName;
 		FileSystem::write($filePath, $content);
 		return $filePath;
@@ -192,6 +180,7 @@ class MenderManager {
 	 * @return string Path to uploaded file artifact
 	 */
 	public function saveArtifactFile(UploadedFileInterface $file): string {
+		$this->checkMender();
 		$filePath = self::UPLOAD_PATH . $file->getClientFilename();
 		$file->moveTo($filePath);
 		return $filePath;
@@ -202,21 +191,23 @@ class MenderManager {
 	 * @param string $filePath Path to uploaded file
 	 */
 	public function removeArtifactFile(string $filePath): void {
+		$this->checkMender();
 		FileSystem::delete($filePath);
 	}
 
 	/**
 	 * Installs update from artifact and returns output
-	 * @param string $filePath Path to mender artifact file
+	 * @param string $filePath Path to Mender artifact file
 	 * @return string Output log
 	 * @throws MenderFailedException
 	 * @throws MenderNoUpdateInProgressException
 	 * @throws MenderMissingException
 	 */
 	public function installArtifact(string $filePath): string {
+		$this->checkMender();
 		$this->stopService();
 		$result = $this->commandManager->run(
-			sprintf('mender %s %s 2>&1', $this->getCommandOption('install'), escapeshellarg($filePath)),
+			$this->getCommand(MenderClientActions::Install, $filePath),
 			true,
 			1800
 		);
@@ -224,7 +215,7 @@ class MenderManager {
 	}
 
 	/**
-	 * Commits installed mender artifact
+	 * Commits installed Mender artifact
 	 * @return string Output log
 	 * @throws MenderFailedException
 	 * @throws MenderMissingException
@@ -233,16 +224,17 @@ class MenderManager {
 	 * @throws UnsupportedInitSystemException
 	 */
 	public function commitUpdate(): string {
+		$this->checkMender();
 		$this->stopService();
 		$result = $this->commandManager->run(
-			sprintf('mender %s 2>&1', $this->getCommandOption('commit')),
+			$this->getCommand(MenderClientActions::Commit),
 			true
 		);
 		return $this->handleCommandResult($result->getExitCode(), $result->getStdout());
 	}
 
 	/**
-	 * Rolls installed mender artifact back
+	 * Rolls installed Mender artifact back
 	 * @return string Output log
 	 * @throws MenderFailedException
 	 * @throws MenderMissingException
@@ -251,11 +243,9 @@ class MenderManager {
 	 * @throws UnsupportedInitSystemException
 	 */
 	public function rollbackUpdate(): string {
+		$this->checkMender();
 		$this->stopService();
-		$result = $this->commandManager->run(
-			sprintf('mender %s 2>&1', $this->getCommandOption('rollback')),
-			true
-		);
+		$result = $this->commandManager->run($this->getCommand(MenderClientActions::Rollback), true);
 		return $this->handleCommandResult($result->getExitCode(), $result->getStdout());
 	}
 
@@ -300,54 +290,41 @@ class MenderManager {
 
 	/**
 	 * Checks if Mender utility is installed
-	 * @throws MenderMissingException If mender is not installed
+	 * @throws MenderMissingException If Mender is not installed
 	 */
 	private function checkMender(): void {
-		if (!$this->commandManager->commandExist('mender')) {
+		if ($this->clientVersion === null) {
 			throw new MenderMissingException('Mender utility is not installed.');
 		}
 	}
 
 	/**
-	 * Stops mender-client service if active
+	 * Stops Mender client service if active
+	 * @throws NonexistentServiceException
+	 * @throws UnsupportedInitSystemException
 	 */
 	private function stopService(): void {
-		$this->checkMender();
-		if ($this->serviceManager->isActive('mender-client')) {
-			$this->serviceManager->stop('mender-client');
+		$service = ($this->clientVersion->getMajor() >= 4) ? 'mender-updated' : 'mender-client';
+		if ($this->serviceManager->isActive($service)) {
+			$this->serviceManager->stop($service);
 		}
 	}
 
 	/**
-	 * Stores mender-client version
-	 * @throws MenderFailedException If mender-client version command fails
-	 * @throws SemverException If version parsing fails
+	 * Constructs Mender client command to execute
+	 * @param MenderClientActions $action Action to execute
+	 * @param string|null $arg Optional argument
+	 * @return string Constructed command
 	 */
-	private function getMenderVersion(): Version {
-		$this->checkMender();
-		$command = $this->commandManager->run('mender --version');
-		if ($command->getExitCode() !== 0) {
-			throw new MenderFailedException($command->getStderr());
+	private function getCommand(MenderClientActions $action, ?string $arg = null): string {
+		$args = [
+			($this->clientVersion->getMajor() >= 4) ? 'mender-update' : 'mender',
+			($this->clientVersion->getMajor() < 3 ? '-' : '') . $action->value,
+		];
+		if ($arg !== null) {
+			$args[] = escapeshellarg($arg);
 		}
-		$versionString = Strings::trim($command->getStdout());
-		$pattern = '/^(?\'version\'\d+\.\d+\.\d+).*$/';
-		$matches = Strings::match($versionString, $pattern);
-		if ($matches === null || $matches['version'] === null) {
-			throw new MenderFailedException('Failed to parse Mender client version string: ' . $versionString);
-		}
-		return Version::parse($matches['version']);
-	}
-
-	/**
-	 * Construct command option string
-	 * @param string $option Command option
-	 * @return string Processed command option
-	 */
-	private function getCommandOption(string $option): string {
-		if ($this->menderVersion->getMajor() >= 3) {
-			return $option;
-		}
-		return '-' . $option;
+		return implode(' ', $args) . ' 2>&1';
 	}
 
 }

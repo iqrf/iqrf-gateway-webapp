@@ -115,6 +115,50 @@ class VersionManager {
 	}
 
 	/**
+	 * Returns Mender client version
+	 * @return string|null Mender client version
+	 */
+	public function getMenderClient(): ?string {
+		if ($this->commandManager->commandExist('mender-update')) {
+			$command = $this->commandManager->run('mender-update --version');
+			if ($command->getExitCode() === 0) {
+				return $command->getStdout();
+			}
+		}
+		if ($this->commandManager->commandExist('mender')) {
+			$command = $this->commandManager->run('mender --version');
+			if ($command->getExitCode() === 0) {
+				$versionString = Strings::trim($command->getStdout());
+				$pattern = '/^(?\'version\'\d+\.\d+\.\d+).*$/';
+				$matches = Strings::match($versionString, $pattern);
+				return $matches['version'];
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Returns Mender Connect version
+	 * @return string|null Mender Connect version
+	 */
+	public function getMenderConnect(): ?string {
+		if (!$this->commandManager->commandExist('mender-connect')) {
+			return null;
+		}
+		$result = $this->commandManager->run('mender-connect --version')->getStdout();
+		if ($result !== '') {
+			$command = $this->commandManager->run('mender-connect --version');
+			if ($command->getExitCode() === 0) {
+				$versionString = Strings::trim($command->getStdout());
+				$pattern = '/^mender-connect version (?\'version\'\d+\.\d+\.\d+).*$/';
+				$matches = Strings::match($versionString, $pattern);
+				return $matches['version'];
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * Returns IQRF Gateway Setter's version
 	 * @return string|null IQRF Gateway Setter's version
 	 */
