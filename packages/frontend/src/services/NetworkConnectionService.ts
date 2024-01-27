@@ -16,10 +16,8 @@
  */
 import axios, {AxiosResponse} from 'axios';
 
-import {ConnectionType} from '@/enums/Network/ConnectionType';
 import {authorizationHeader} from '@/helpers/authorizationHeader';
-import {IConnection, NetworkConnection} from '@/interfaces/Network/Connection';
-import {IAccessPoint} from '@/interfaces/Network/Wifi';
+import {AccessPoint} from '@iqrf/iqrf-gateway-webapp-client/types/Network/Wifi';
 
 /**
  * Network connection service
@@ -27,86 +25,12 @@ import {IAccessPoint} from '@/interfaces/Network/Wifi';
 class NetworkConnectionService {
 
 	/**
-	 * Connects the network connection
-	 * @param uuid Network connection UUID
-	 * @param interfaceName Network interface name
-	 */
-	public connect(uuid: string, interfaceName: string|null = null): Promise<AxiosResponse> {
-		const config = {headers: authorizationHeader()};
-		if (interfaceName !== null) {
-			Object.assign(config, {params: {'interface': interfaceName}});
-		}
-		return axios.post('network/connections/' + uuid + '/connect', null, config);
-	}
-
-	/**
-	 * Disconnects the network connection
-	 * @param uuid Network connection UUID
-	 */
-	public disconnect(uuid: string): Promise<AxiosResponse> {
-		const config = {headers: authorizationHeader()};
-		return axios.post('network/connections/' + uuid + '/disconnect', null, config);
-	}
-
-	/**
-	 * Adds a new network connection
-	 * @param configuration Network connection configuration
-	 */
-	public add(configuration: IConnection): Promise<AxiosResponse> {
-		return axios.post('network/connections/', configuration, {headers: authorizationHeader()});
-	}
-
-	/**
-	 * Edits the network configuration
-	 * @param uuid Network configuration UUID
-	 * @param configuration Network connection configuration
-	 */
-	public edit(uuid: string, configuration: IConnection): Promise<AxiosResponse> {
-		const config = {headers: authorizationHeader()};
-		return axios.put('network/connections/' + uuid, configuration, config);
-	}
-
-	/**
-	 * Retrieves the network connection configuration
-	 * @param uuid Network connection UUID
-	 * @return {IConnection} Network connection configuration
-	 */
-	public get(uuid: string): Promise<IConnection> {
-		return axios.get('network/connections/' + uuid, {headers: authorizationHeader()})
-			.then((response: AxiosResponse) => {
-				return response.data as IConnection;
-			});
-	}
-
-	/**
-	 * Removes an existing network connection configuration
-	 * @param uuid Network connection UUID
-	 */
-	public remove(uuid: string): Promise<AxiosResponse> {
-		return axios.delete('network/connections/' + uuid, {headers: authorizationHeader()});
-	}
-
-	/**
-	 * Lists available network connections
-	 * @param {ConnectionType|null} type Network connection type
-	 * @return {Promise<NetworkConnection[]>} Network connections
-	 */
-	public list(type: ConnectionType|null = null): Promise<NetworkConnection[]> {
-		const config = {headers: authorizationHeader()};
-		if (type !== null) {
-			Object.assign(config, {params: {type: type}});
-		}
-		return axios.get('network/connections', config)
-			.then((response: AxiosResponse) => (response.data as NetworkConnection[]));
-	}
-
-	/**
 	 * Lists available wifi access points
-	 * @return {Promise<IAccessPoint[]>} WiFi access points
+	 * @return {Promise<AccessPoint[]>} WiFi access points
 	 */
-	public listWifiAccessPoints(): Promise<IAccessPoint[]> {
+	public listWifiAccessPoints(): Promise<AccessPoint[]> {
 		return axios.get('network/wifi/list', {headers: authorizationHeader()})
-			.then((response: AxiosResponse) => (response.data as IAccessPoint[]));
+			.then((response: AxiosResponse<AccessPoint[]>) => (response.data));
 	}
 
 }

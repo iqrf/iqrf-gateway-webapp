@@ -70,14 +70,16 @@ class InterfaceManager {
 	 * @return array<InterfaceStatus> Network interfaces
 	 */
 	public function list(?InterfaceTypes $type = null): array {
-		$output = $this->commandManager->run('nmcli -t -f GENERAL device show', true)->getStdout();
-		$array = explode(PHP_EOL . PHP_EOL, trim($output));
+		$output = $this->commandManager->run('nmcli -t -f DEVICE,TYPE device status', true)->getStdout();
+		$array = explode(PHP_EOL, trim($output));
 		$interfaces = [];
 		foreach ($array as $row) {
-			$interface = InterfaceStatus::nmCliDeserialize($row);
-			if ($type === null || $type === $interface->getType()) {
-				$interfaces[] = $interface;
+			$parts = preg_split('~(?<!\\\)' . preg_quote(':', '~') . '~', $row);
+			if ($type !== null && $type !== InterfaceTypes::from($parts[1])) {
+				continue;
 			}
+			$interfaceOutput = $this->commandManager->run('nmcli -t -f GENERAL,CONNECTIONS.AVAILABLE-CONNECTIONS device show ' . $parts[0], true)->getStdout();
+			$interfaces[] = InterfaceStatus::nmCliDeserialize($interfaceOutput);
 		}
 		return $interfaces;
 	}

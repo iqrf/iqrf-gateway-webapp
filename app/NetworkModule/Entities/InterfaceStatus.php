@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\NetworkModule\Entities;
 
+use App\NetworkModule\Enums\ConnectivityState;
 use App\NetworkModule\Enums\InterfaceStates;
 use App\NetworkModule\Enums\InterfaceTypes;
 use App\NetworkModule\Utils\NmCliConnection;
@@ -35,17 +36,17 @@ final class InterfaceStatus implements JsonSerializable {
 	/**
 	 * @var string|null MAC address
 	 */
-	protected readonly ?string $macAddress;
+	private readonly ?string $macAddress;
 
 	/**
 	 * @var string|null Manufacturer
 	 */
-	protected readonly ?string $manufacturer;
+	private readonly ?string $manufacturer;
 
 	/**
 	 * @var string|null Model
 	 */
-	protected readonly ?string $model;
+	private readonly ?string $model;
 
 	/**
 	 * Network interface entity constructor
@@ -56,6 +57,9 @@ final class InterfaceStatus implements JsonSerializable {
 	 * @param InterfaceTypes $type Network interface type
 	 * @param InterfaceStates $state Network interface state
 	 * @param UuidInterface|null $connection Network connection UUID
+	 * @param ConnectivityState|null $ipv4Connectivity IPv4 connectivity state
+	 * @param ConnectivityState|null $ipv6Connectivity IPv6 connectivity state
+	 * @param array<AvailableConnection> $availableConnections Available network connections
 	 */
 	public function __construct(
 		private readonly string $name,
@@ -65,6 +69,9 @@ final class InterfaceStatus implements JsonSerializable {
 		private readonly InterfaceTypes $type,
 		private readonly InterfaceStates $state,
 		private readonly ?UuidInterface $connection,
+		private readonly ?ConnectivityState $ipv4Connectivity,
+		private readonly ?ConnectivityState $ipv6Connectivity,
+		private readonly array $availableConnections = [],
 	) {
 		$this->macAddress = $macAddress === '' ? null : $macAddress;
 		$this->manufacturer = $manufacturer === '' ? null : $manufacturer;
@@ -78,15 +85,22 @@ final class InterfaceStatus implements JsonSerializable {
 	 */
 	public static function nmCliDeserialize(string $string): self {
 		$array = NmCliConnection::decode($string);
-		$name = $array['GENERAL']['DEVICE'];
-		$macAddress = $array['GENERAL']['HWADDR'];
-		$manufacturer = $array['GENERAL']['VENDOR'];
-		$model = $array['GENERAL']['PRODUCT'];
-		$type = InterfaceTypes::from($array['GENERAL']['TYPE']);
-		$state = InterfaceStates::fromNmCli($array['GENERAL']['STATE']);
 		$connection = $array['GENERAL']['CON-UUID'];
-		$connection = $connection === '' ? null : Uuid::fromString($connection);
-		return new self($name, $macAddress, $manufacturer, $model, $type, $state, $connection);
+		return new self(
+			name: $array['GENERAL']['DEVICE'],
+			macAddress: $array['GENERAL']['HWADDR'],
+			manufacturer: $array['GENERAL']['VENDOR'],
+			model: $array['GENERAL']['PRODUCT'],
+			type: InterfaceTypes::from($array['GENERAL']['TYPE']),
+			state: InterfaceStates::fromNmCli($array['GENERAL']['STATE']),
+			connection: $connection === '' ? null : Uuid::fromString($connection),
+			ipv4Connectivity: array_key_exists('IP4-CONNECTIVITY', $array['GENERAL']) ? ConnectivityState::fromNmCli($array['GENERAL']['IP4-CONNECTIVITY']) : null,
+			ipv6Connectivity: array_key_exists('IP6-CONNECTIVITY', $array['GENERAL']) ? ConnectivityState::fromNmCli($array['GENERAL']['IP6-CONNECTIVITY']) : null,
+			availableConnections: array_map(
+				static fn (string $value): AvailableConnection => AvailableConnection::nmCliDeserialize($value),
+				$array['CONNECTIONS']['AVAILABLE-CONNECTIONS'] ?? [],
+			),
+		);
 	}
 
 	/**
@@ -99,10 +113,10 @@ final class InterfaceStatus implements JsonSerializable {
 
 	/**
 	 * Serializes network interface status entity into JSON
-	 * @return array{name: string, type: string, state: string, connection: string|null} JSON serialized data
+	 * @return array{name: string, type: string, state: string, connection: string|null, availableConnections: array<array{name: string, uuid: string}>, connectivity?: array{ipv4: string, ipv6: string}} JSON serialized data
 	 */
 	public function jsonSerialize(): array {
-		return [
+		$array = [
 			'name' => $this->name,
 			'macAddress' => $this->macAddress,
 			'manufacturer' => $this->manufacturer,
@@ -110,7 +124,18 @@ final class InterfaceStatus implements JsonSerializable {
 			'type' => $this->type->value,
 			'state' => $this->state->value,
 			'connection' => $this->connection?->toString(),
+			'availableConnections' => array_map(
+				static fn (AvailableConnection $connection): array => $connection->jsonSerialize(),
+				$this->availableConnections,
+			),
 		];
+		if ($this->ipv4Connectivity !== null && $this->ipv6Connectivity !== null) {
+			$array['connectivity'] = [
+				'ipv4' => $this->ipv4Connectivity->value,
+				'ipv6' => $this->ipv6Connectivity->value,
+			];
+		}
+		return $array;
 	}
 
 }

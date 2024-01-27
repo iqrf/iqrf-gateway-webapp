@@ -80,7 +80,7 @@ limitations under the License.
 								class='mr-1'
 								color='info'
 								small
-								@click='operatorFormModel = item.toObject()'
+								@click='operatorFormModel = item'
 							>
 								<v-icon small>
 									mdi-pencil
@@ -129,16 +129,12 @@ import NetworkOperatorForm from '@/components/Network/NetworkOperatorForm.vue';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 
-import NetworkOperator from '@/entities/NetworkOperator';
-
-import NetworkOperatorService from '@/services/NetworkOperatorService';
-
-
-import {IOperator} from '@/interfaces/Network/Mobile';
-
-
-import {AxiosError, AxiosResponse} from 'axios';
+import {AxiosError} from 'axios';
 import {DataTableHeader} from 'vuetify';
+import {
+	MobileOperator
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network/MobileOperator';
+import {useApiClient} from '@/services/ApiClient';
 
 /**
  * Network operators components
@@ -162,19 +158,24 @@ export default class NetworkOperators extends ModalBase {
 	private loading = false;
 
 	/**
-	 * @var {Array<IOperator>} operators Array of network operators
+	 * @var {Array<MobileOperator>} operators Array of network operators
 	 */
-	private operators: Array<NetworkOperator> = [];
+	private operators: Array<MobileOperator> = [];
 
 	/**
-	 * @var {IOperator|null} operatorFormModel Operator add/edit form model
+	 * @var {MobileOperator|null} operatorFormModel Operator add/edit form model
 	 */
-	private operatorFormModel: IOperator|null = null;
+	private operatorFormModel: MobileOperator|null = null;
 
 	/**
-	 * @var {NetworkOperator|null} operatorDeleteModel Operator to delete model
+	 * @var {MobileOperator|null} operatorDeleteModel Operator to delete model
 	 */
-	private operatorDeleteModel: NetworkOperator|null = null;
+	private operatorDeleteModel: MobileOperator|null = null;
+
+	/**
+	 * @property {NetworkOperatorService} service Network operator service
+	 */
+	private service = useApiClient().getNetworkServices().getMobileOperatorService();
 
 	/**
 	 * @constant {Array<DataTableHeader>}
@@ -205,12 +206,8 @@ export default class NetworkOperators extends ModalBase {
 	 */
 	private getOperators(): Promise<void> {
 		this.loading = true;
-		return NetworkOperatorService.getOperators()
-			.then((rsp: AxiosResponse) => {
-				const operators: Array<NetworkOperator> = [];
-				rsp.data.forEach((operator: IOperator) => {
-					operators.push(new NetworkOperator(operator));
-				});
+		return this.service.list()
+			.then((operators: MobileOperator[]) => {
 				this.operators = operators;
 				this.loading = false;
 			})
@@ -223,7 +220,7 @@ export default class NetworkOperators extends ModalBase {
 	/**
 	 * Sets network operator to configuration form
 	 */
-	private setOperator(operator: NetworkOperator): void {
+	private setOperator(operator: MobileOperator): void {
 		this.closeModal();
 		this.$emit('set-operator', operator);
 	}

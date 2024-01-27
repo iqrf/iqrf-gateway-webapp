@@ -16,7 +16,7 @@
 
 import { type AxiosResponse } from 'axios';
 
-import { type MonitCheckWithDefinition, type MonitConfig } from '../../types/Config/Monit';
+import { type MonitCheck, type MonitConfig } from '../../types/Config/Monit';
 import { BaseService } from '../BaseService';
 
 /**
@@ -45,11 +45,11 @@ export class MonitService extends BaseService {
 	/**
 	 * Fetches monit check
 	 * @param {string} name Check name
-	 * @return {Promise<MonitCheckWithDefinition>} Monit check
+	 * @return {Promise<MonitCheck>} Monit check
 	 */
-	public getCheck(name: string): Promise<MonitCheckWithDefinition> {
+	public getCheck(name: string): Promise<MonitCheck> {
 		return this.axiosInstance.get(`/config/monit/checks/${name}`)
-			.then((response: AxiosResponse<MonitCheckWithDefinition>): MonitCheckWithDefinition => response.data);
+			.then((response: AxiosResponse<MonitCheck>): MonitCheck => response.data);
 	}
 
 	/**

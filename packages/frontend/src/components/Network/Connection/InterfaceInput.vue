@@ -39,13 +39,13 @@ import {extend, ValidationProvider} from 'vee-validate';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
-import {InterfaceType} from '@/enums/Network/InterfaceType';
-
-import NetworkInterfaceService from '@/services/NetworkInterfaceService';
 
 import {AxiosError} from 'axios';
 import {ISelectItem} from '@/interfaces/Vuetify';
-import {NetworkInterface} from '@/interfaces/Network/Connection';
+import {
+	NetworkInterface, NetworkInterfaceType
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkInterface';
+import {useApiClient} from '@/services/ApiClient';
 
 /**
  * Network interface select field
@@ -58,9 +58,9 @@ import {NetworkInterface} from '@/interfaces/Network/Connection';
 export default class InterfaceInput extends Vue {
 
 	/**
-	 * @property {InterfaceType} type Network interface type
+	 * @property {NetworkInterfaceType} type Network interface type
 	 */
-	@Prop({required: true}) type!: InterfaceType;
+	@Prop({required: true}) type!: NetworkInterfaceType;
 
 	/**
 	 * @property {string} interface Edited interface
@@ -80,7 +80,7 @@ export default class InterfaceInput extends Vue {
 	}
 
 	protected mounted(): void {
-		NetworkInterfaceService.list(this.type)
+		useApiClient().getNetworkServices().getNetworkInterfaceService().list(this.type)
 			.then((interfaces: Array<NetworkInterface>) => {
 				interfaces.forEach((item: NetworkInterface) => {
 					let label = item.name;
@@ -92,9 +92,9 @@ export default class InterfaceInput extends Vue {
 			})
 			.catch((error: AxiosError) => {
 				extendedErrorToast(error, 'network.connection.messages.interfacesFetchFailed');
-				if (this.type === InterfaceType.ETHERNET) {
+				if (this.type === NetworkInterfaceType.ETHERNET) {
 					this.$router.push('/ip-network/ethernet');
-				} else if (this.type === InterfaceType.WIFI) {
+				} else if (this.type === NetworkInterfaceType.WIFI) {
 					this.$router.push('/ip-network/wireless');
 				}
 			});

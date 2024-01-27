@@ -125,8 +125,8 @@ limitations under the License.
 								</v-text-field>
 							</v-col>
 						</v-row>
-						<IpStackSelector v-model='stack' />
-						<v-row v-if='[WireguardStack.IPV4, WireguardStack.DUAL].includes(stack)'>
+						<IpStackSelector v-model='tunnel.stack' />
+						<v-row v-if='[WireGuardIpStack.IPV4, WireGuardIpStack.DUAL].includes(tunnel.stack)'>
 							<v-col cols='12' lg='6'>
 								<IpAddressInput v-model='tunnel.ipv4.address' :version='4' />
 							</v-col>
@@ -134,7 +134,7 @@ limitations under the License.
 								<IpAddressPrefixInput v-model='tunnel.ipv4.prefix' :version='4' />
 							</v-col>
 						</v-row>
-						<v-row v-if='[WireguardStack.IPV6, WireguardStack.DUAL].includes(stack)'>
+						<v-row v-if='[WireGuardIpStack.IPV6, WireGuardIpStack.DUAL].includes(tunnel.stack)'>
 							<v-col cols='12' lg='6'>
 								<IpAddressInput v-model='tunnel.ipv6.address' :version='6' :multiple='false' />
 							</v-col>
@@ -162,7 +162,7 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {AxiosError, AxiosResponse} from 'axios';
+import {AxiosError} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
 import {wgBase64Key} from '@/helpers/validationRules/Network';
@@ -172,10 +172,12 @@ import IpAddressPrefixInput from '@/components/Network/WireGuard/IpAddressPrefix
 import IpAddressInput from '@/components/Network/WireGuard/IpAddressInput.vue';
 import IpStackSelector from '@/components/Network/WireGuard/IpStackSelector.vue';
 import WireGuardPeers from '@/components/Network/WireGuard/WireGuardPeers.vue';
-import {WireguardStack} from '@/enums/Network/Wireguard';
 import {extendedErrorToast} from '@/helpers/errorToast';
-import {IWGTunnel} from '@/interfaces/Network/Wireguard';
-import WireguardService from '@/services/WireguardService';
+import {useApiClient} from '@/services/ApiClient';
+import {
+	WireGuardIpStack,
+	WireGuardKeyPair, WireGuardTunnelConfig
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network/WireGuard';
 
 @Component({
 	components: {
@@ -187,7 +189,7 @@ import WireguardService from '@/services/WireguardService';
 		ValidationProvider,
 	},
 	data: () => ({
-		WireguardStack,
+		WireGuardIpStack,
 	}),
 	metaInfo(): MetaInfo {
 		return {
@@ -202,9 +204,9 @@ import WireguardService from '@/services/WireguardService';
 export default class WireguardTunnel extends Vue {
 
 	/**
-	 * @var {IWGTunnel} tunnel WireGuard VPN tunnel configuration
+	 * @var {WireGuardTunnelConfig} tunnel WireGuard VPN tunnel configuration
 	 */
-	private tunnel: IWGTunnel = {
+	private tunnel: WireGuardTunnelConfig = {
 		name: '',
 		privateKey: '',
 		publicKey: '',
@@ -217,7 +219,7 @@ export default class WireguardTunnel extends Vue {
 			address: '',
 			prefix: 64,
 		},
-		stack: WireguardStack.DUAL,
+		stack: WireGuardIpStack.DUAL,
 		peers: [
 			{
 				publicKey: '',
@@ -238,21 +240,21 @@ export default class WireguardTunnel extends Vue {
 							prefix: 64
 						}
 					],
-					stack: WireguardStack.DUAL,
+					stack: WireGuardIpStack.DUAL,
 				},
 			},
 		],
 	};
 
 	/**
-	 * @var {WireguardStack} stack Interface stack
-	 */
-	private stack = WireguardStack.DUAL;
-
-	/**
 	 * @var {boolean} optionalPort Controls visibility of interface listen port input
 	 */
 	private optionalPort = false;
+
+	/**
+	 * @var {WireguardService} service WireGuard service
+	 */
+	private service = useApiClient().getNetworkServices().getWireGuardService();
 
 	/**
 	 * @property {number|null} id WireGuard tunnel id
@@ -313,8 +315,8 @@ export default class WireguardTunnel extends Vue {
 	 */
 	private getTunnel(): void {
 		this.$store.commit('spinner/SHOW');
-		WireguardService.getTunnel(this.id)
-			.then((response: IWGTunnel) => {
+		this.service.fetchTunnel(this.id)
+			.then((response: WireGuardTunnelConfig) => {
 				this.tunnel = response;
 				this.$store.commit('spinner/HIDE');
 			})
@@ -332,10 +334,10 @@ export default class WireguardTunnel extends Vue {
 	 * Generates a key pair and populates the tunnel fields
 	 */
 	private generateKeys(): void {
-		WireguardService.createKeys()
-			.then((response: AxiosResponse) => {
-				this.tunnel.privateKey = response.data.privateKey;
-				this.tunnel.publicKey = response.data.publicKey;
+		this.service.generateKeyPair()
+			.then((response: WireGuardKeyPair) => {
+				this.tunnel.privateKey = response.privateKey;
+				this.tunnel.publicKey = response.publicKey;
 			})
 			.catch((error: AxiosError) => extendedErrorToast(error, 'network.wireguard.tunnels.messages.keyPairFailed'));
 	}
@@ -344,35 +346,17 @@ export default class WireguardTunnel extends Vue {
 	 * Creates new WireGuard tunnel
 	 */
 	private saveTunnel(): void {
-		const tunnel: IWGTunnel = JSON.parse(JSON.stringify(this.tunnel));
+		const tunnel: WireGuardTunnelConfig = JSON.parse(JSON.stringify(this.tunnel));
 		this.$store.commit('spinner/SHOW');
-		if (this.stack === WireguardStack.IPV4) {
-			delete tunnel.ipv6;
-		} else if (this.stack === WireguardStack.IPV6) {
-			delete tunnel.ipv4;
-		}
-		delete tunnel.stack;
-		for (const idx in tunnel.peers) {
-			if (tunnel.peers[idx].psk === '' || tunnel.peers[idx].psk === null) {
-				delete tunnel.peers[idx].psk;
-			}
-			if (tunnel.peers[idx].allowedIPs.stack === WireguardStack.IPV4) {
-				tunnel.peers[idx].allowedIPs.ipv6 = [];
-			} else if (tunnel.peers[idx].allowedIPs.stack === WireguardStack.IPV6) {
-				tunnel.peers[idx].allowedIPs.ipv4 = [];
-			}
-			delete tunnel.peers[idx].allowedIPs.stack;
-		}
 		if (!this.optionalPort) {
 			delete tunnel.port;
 		}
-		delete tunnel.publicKey;
 		if (this.$route.path === '/ip-network/vpn/add') {
-			WireguardService.createTunnel(tunnel)
+			this.service.createTunnel(tunnel)
 				.then(this.handleSuccess)
 				.catch(this.handleError);
 		} else {
-			WireguardService.editTunnel(this.id, tunnel)
+			this.service.editTunnel(this.id, tunnel)
 				.then(this.handleSuccess)
 				.catch(this.handleError);
 		}

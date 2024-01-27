@@ -40,11 +40,10 @@ import {extend, ValidationProvider} from 'vee-validate';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
 
-import NetworkInterfaceService from '@/services/NetworkInterfaceService';
-
 import {AxiosError} from 'axios';
-import {IModem} from '@/interfaces/Network/Mobile';
 import {ISelectItem} from '@/interfaces/Vuetify';
+import {Modem} from '@iqrf/iqrf-gateway-webapp-client/types/Network/Modem';
+import {useApiClient} from '@/services/ApiClient';
 
 /**
  * GSM modem select field
@@ -74,9 +73,9 @@ export default class GsmModemInput extends Vue {
 	}
 
 	protected mounted(): void {
-		NetworkInterfaceService.listModems()
-			.then((modems: Array<IModem>) => {
-				modems.forEach((item: IModem) => {
+		useApiClient().getNetworkServices().getModemService().list()
+			.then((modems: Array<Modem>) => {
+				modems.forEach((item: Modem) => {
 					let label = item.interface;
 					if (item.manufacturer !== null && item.model !== null) {
 						label += ' (' + item.manufacturer + ' ' + item.model + ')';

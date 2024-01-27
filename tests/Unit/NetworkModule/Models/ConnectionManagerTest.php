@@ -33,6 +33,7 @@ use App\NetworkModule\Entities\IPv4Address;
 use App\NetworkModule\Entities\IPv4Connection;
 use App\NetworkModule\Entities\IPv6Address;
 use App\NetworkModule\Entities\IPv6Connection;
+use App\NetworkModule\Enums\ConnectionStates;
 use App\NetworkModule\Enums\ConnectionTypes;
 use App\NetworkModule\Enums\IPv4Methods;
 use App\NetworkModule\Enums\IPv6Methods;
@@ -60,7 +61,7 @@ final class ConnectionManagerTest extends CommandTestCase {
 		'delete' => 'nmcli -t connection delete ',
 		'down' => 'nmcli -t connection down ',
 		'get' => 'nmcli -t -s connection show ',
-		'list' => 'nmcli -t -f NAME,UUID,TYPE,DEVICE connection show',
+		'list' => 'nmcli -t -f NAME,UUID,TYPE,DEVICE,ACTIVE,STATE connection show',
 		'up' => 'nmcli -t connection up ',
 	];
 
@@ -151,12 +152,12 @@ final class ConnectionManagerTest extends CommandTestCase {
 	 * Tests the function to list network connections
 	 */
 	public function testList(): void {
-		$output = 'eth0:25ab1b06-2a86-40a9-950f-1c576ddcd35a:802-3-ethernet:eth0' . PHP_EOL
-			. 'wlan0:dd1c59ea-6f5d-471c-8fe7-e066761b9764:802-11-wireless:' . PHP_EOL;
+		$output = 'eth0:25ab1b06-2a86-40a9-950f-1c576ddcd35a:802-3-ethernet:eth0:yes:activated' . PHP_EOL
+			. 'wlan0:dd1c59ea-6f5d-471c-8fe7-e066761b9764:802-11-wireless::no:' . PHP_EOL;
 		$this->receiveCommand(self::COMMANDS['list'], true, $output);
 		$expected = [
-			new Connection('eth0', Uuid::fromString('25ab1b06-2a86-40a9-950f-1c576ddcd35a'), ConnectionTypes::ETHERNET, 'eth0'),
-			new Connection('wlan0', Uuid::fromString('dd1c59ea-6f5d-471c-8fe7-e066761b9764'), ConnectionTypes::WIFI, ''),
+			new Connection('eth0', Uuid::fromString('25ab1b06-2a86-40a9-950f-1c576ddcd35a'), ConnectionTypes::ETHERNET, 'eth0', true, ConnectionStates::ACTIVATED),
+			new Connection('wlan0', Uuid::fromString('dd1c59ea-6f5d-471c-8fe7-e066761b9764'), ConnectionTypes::WIFI, '', false, ConnectionStates::DEACTIVATED),
 		];
 		Assert::equal($expected, $this->manager->list());
 	}

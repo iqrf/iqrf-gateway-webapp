@@ -117,10 +117,11 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {digits, required} from 'vee-validate/dist/rules';
 import {extendedErrorToast} from '@/helpers/errorToast';
 
-import NetworkOperatorService from '@/services/NetworkOperatorService';
-
 import {AxiosError} from 'axios';
-import {IOperator} from '@/interfaces/Network/Mobile';
+import {
+	MobileOperator
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network/MobileOperator';
+import {useApiClient} from '@/services/ApiClient';
 
 @Component({
 	components: {
@@ -134,7 +135,12 @@ import {IOperator} from '@/interfaces/Network/Mobile';
  */
 export default class NetworkOperatorForm extends Vue {
 
-	@VModel({required: true}) operator!: IOperator|null;
+	@VModel({required: true}) operator!: MobileOperator|null;
+
+	/**
+	 * @property {NetworkOperatorService} service Network operator service
+	 */
+	private service = useApiClient().getNetworkServices().getMobileOperatorService();
 
 	/**
 	 * Computes modal visibility condition
@@ -189,13 +195,12 @@ export default class NetworkOperatorForm extends Vue {
 		if (this.operator === null) {
 			return;
 		}
-		const operator = this.filterOperator(this.operator);
 		this.$store.commit('spinner/SHOW');
-		NetworkOperatorService.addOperator(operator)
+		this.service.create(this.operator)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
-					this.$t('network.operators.messages.addSuccess', {operator: operator.name}).toString()
+					this.$t('network.operators.messages.addSuccess', {operator: this.operator.name}).toString()
 				);
 				this.hideModal();
 				this.$emit('saved');
@@ -211,35 +216,18 @@ export default class NetworkOperatorForm extends Vue {
 			return;
 		}
 		const id = this.operator.id;
-		const operator = this.filterOperator(this.operator);
 		this.$store.commit('spinner/SHOW');
-		NetworkOperatorService.editOperator(id, operator)
+		this.service.edit(id, operator)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 
 				this.$toast.success(
-					this.$t('network.operators.messages.editSuccess', {operator: operator.name}).toString()
+					this.$t('network.operators.messages.editSuccess', {operator: this.operator.name}).toString()
 				);
 				this.hideModal();
 				this.$emit('saved');
 			})
 			.catch((err: AxiosError) => extendedErrorToast(err, 'network.operators.messages.editFailed'));
-	}
-
-	/**
-	 * Filters operator configuration
-	 * @param {IOperator} operator Operator
-	 * @return {IOperator} Filtered operator
-	 */
-	private filterOperator(operator: IOperator): IOperator {
-		delete operator.id;
-		if (operator.username?.length === 0) {
-			delete operator.username;
-		}
-		if (operator.password?.length === 0) {
-			delete operator.password;
-		}
-		return operator;
 	}
 
 	/**

@@ -120,11 +120,12 @@ import WireGuardDeleteModal from '@/components/Network/WireGuardDeleteModal.vue'
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 
-import WireguardService from '@/services/WireguardService';
-
-import {AxiosError, AxiosResponse} from 'axios';
+import {AxiosError} from 'axios';
 import {DataTableHeader} from 'vuetify';
-import {IWG} from '@/interfaces/Network/Wireguard';
+import {
+	WireGuardTunnelListEntry
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network/WireGuard';
+import {useApiClient} from '@/services/ApiClient';
 
 @Component({
 	components: {
@@ -146,14 +147,14 @@ export default class WireguardTunnels extends Vue {
 	private loading = false;
 
 	/**
-	 * @var {Array<IWG>} tunnels Array of existing tunnels
+	 * @var {Array<WireGuardTunnelListEntry>} tunnels Array of existing tunnels
 	 */
-	private tunnels: Array<IWG> = [];
+	private tunnels: Array<WireGuardTunnelListEntry> = [];
 
 	/**
-	 * @var {IWG} tunnelToDelete Tunnel information used in delete modal window
+	 * @var {WireGuardTunnelListEntry} tunnelToDelete Tunnel information used in delete modal window
 	 */
-	private tunnelDeleteModel: IWG|null = null;
+	private tunnelDeleteModel: WireGuardTunnelListEntry|null = null;
 
 	/**
 	 * @constant {Array<DataTableHeader>} headers Vuetify data table headers
@@ -178,6 +179,8 @@ export default class WireguardTunnels extends Vue {
 		},
 	];
 
+	private service = useApiClient().getNetworkServices().getWireGuardService();
+
 	/**
 	 * Retrieves existing WireGuard tunnels
 	 */
@@ -190,9 +193,9 @@ export default class WireguardTunnels extends Vue {
 	 */
 	private getTunnels(): Promise<void> {
 		this.loading = true;
-		return WireguardService.listTunnels()
-			.then((response: AxiosResponse) => {
-				this.tunnels = response.data;
+		return this.service.listTunnels()
+			.then((response: WireGuardTunnelListEntry[]) => {
+				this.tunnels = response;
 				this.loading = false;
 			})
 			.catch((error: AxiosError) => {
@@ -210,7 +213,7 @@ export default class WireguardTunnels extends Vue {
 	private changeActiveState(id: number, name: string, state: boolean): void {
 		this.loading = true;
 		if (state) {
-			WireguardService.activateTunnel(id)
+			this.service.activateTunnel(id)
 				.then(() => this.handleActiveSuccess(name, state))
 				.catch((error: AxiosError) => {
 					this.loading = false;
@@ -221,7 +224,7 @@ export default class WireguardTunnels extends Vue {
 					);
 				});
 		} else {
-			WireguardService.deactivateTunnel(id)
+			this.service.deactivateTunnel(id)
 				.then(() => this.handleActiveSuccess(name, state))
 				.catch((error: AxiosError) => {
 					this.loading = false;
@@ -257,7 +260,7 @@ export default class WireguardTunnels extends Vue {
 	private changeEnabledState(id: number, name: string, state: boolean): void {
 		this.loading = true;
 		if (state) {
-			WireguardService.enableTunnel(id)
+			this.service.enableTunnel(id)
 				.then(() => this.handleEnableSuccess(name, state))
 				.catch((error: AxiosError) => {
 					this.loading = false;
@@ -268,7 +271,7 @@ export default class WireguardTunnels extends Vue {
 					);
 				});
 		} else {
-			WireguardService.disableTunnel(id)
+			this.service.disableTunnel(id)
 				.then(() => this.handleEnableSuccess(name, state))
 				.catch((error: AxiosError) => {
 					this.loading = false;

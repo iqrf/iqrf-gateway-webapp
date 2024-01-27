@@ -38,6 +38,7 @@ import { ConfigServices } from './services/Config';
 import { GatewayServices } from './services/Gateway';
 import { IqrfServices } from './services/Iqrf';
 import { MaintenanceServices } from './services/MaintenanceService';
+import { NetworkServices } from './services/Network';
 
 /**
  * IQRF Gateway Webapp API client options
@@ -224,6 +225,14 @@ export class Client {
 	 */
 	public getIqrfServices(): IqrfServices {
 		return new IqrfServices(this);
+	}
+
+	/**
+	 * Returns Network services
+	 * @return {NetworkServices} Network services
+	 */
+	public getNetworkServices(): NetworkServices {
+		return new NetworkServices(this);
 	}
 
 	/**

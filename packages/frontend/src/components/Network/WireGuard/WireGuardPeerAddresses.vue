@@ -40,9 +40,11 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Prop, VModel, Vue} from 'vue-property-decorator';
 
-import {IWGAllowedIP} from '@/interfaces/Network/Wireguard';
 import IpAddressInput from '@/components/Network/WireGuard/IpAddressInput.vue';
 import IpAddressPrefixInput from '@/components/Network/WireGuard/IpAddressPrefixInput.vue';
+import {
+	WireGuardIpAddress
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network/WireGuard';
 
 /**
  * WireGuard peers
@@ -58,7 +60,7 @@ export default class WireGuardPeerAddresses extends Vue {
 	/**
 	 * Edited WireGuard peer addresses
 	 */
-	@VModel({required: true}) addresses!: IWGAllowedIP[];
+	@VModel({required: true}) addresses!: WireGuardIpAddress[];
 
 	/**
 	 * @property {4|6} version IP address version
