@@ -35,7 +35,7 @@ const color = computed(() => {
 		props.usage.usage.replace('%', ''),
 	);
 	if (percentage >= 90) {
-		return 'danger';
+		return 'error';
 	} else if (percentage >= 80) {
 		return 'warning';
 	} else {
