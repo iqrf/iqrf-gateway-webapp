@@ -26,7 +26,9 @@ declare(strict_types = 1);
 
 namespace Tests\Unit\NetworkModule\Entities;
 
+use App\NetworkModule\Entities\AvailableConnection;
 use App\NetworkModule\Entities\InterfaceStatus;
+use App\NetworkModule\Enums\ConnectivityState;
 use App\NetworkModule\Enums\InterfaceStates;
 use App\NetworkModule\Enums\InterfaceTypes;
 use Ramsey\Uuid\Uuid;
@@ -77,6 +79,21 @@ final class InterfaceStatusTest extends TestCase {
 	private const STATE = InterfaceStates::CONNECTED;
 
 	/**
+	 * IPv4 connectivity state
+	 */
+	private const IPv4_CONNECTIVITY = ConnectivityState::FULL;
+
+	/**
+	 * IPv6 connectivity state
+	 */
+	private const IPv6_CONNECTIVITY = ConnectivityState::NONE;
+
+	/**
+	 * @var array<AvailableConnection> Available connections
+	 */
+	private readonly array $availableConnections;
+
+	/**
 	 * @var InterfaceStatus Network interface entity
 	 */
 	private readonly InterfaceStatus $entity;
@@ -91,7 +108,21 @@ final class InterfaceStatusTest extends TestCase {
 	 */
 	public function __construct() {
 		$this->connection = Uuid::fromString(self::CONNECTION);
-		$this->entity = new InterfaceStatus(self::NAME, self::MAC_ADDRESS, self::MANUFACTURER, self::MODEL, self::TYPE, self::STATE, $this->connection);
+		$this->availableConnections = [
+			new AvailableConnection('eth0', Uuid::fromString('25ab1b06-2a86-40a9-950f-1c576ddcd35a')),
+		];
+		$this->entity = new InterfaceStatus(
+			name: self::NAME,
+			macAddress: self::MAC_ADDRESS,
+			manufacturer: self::MANUFACTURER,
+			model: self::MODEL,
+			type: self::TYPE,
+			state: self::STATE,
+			connection: $this->connection,
+			ipv4Connectivity: self::IPv4_CONNECTIVITY,
+			ipv6Connectivity: self::IPv6_CONNECTIVITY,
+			availableConnections: $this->availableConnections,
+		);
 	}
 
 	/**
@@ -106,6 +137,9 @@ GENERAL.HWADDR:00:00:00:00:00:00
 GENERAL.MTU:1500
 GENERAL.STATE:100 (connected)
 GENERAL.CON-UUID:f61b25c9-66d7-400e-add0-d2a30c57b65c
+GENERAL.IP4-CONNECTIVITY:4 (full)
+GENERAL.IP6-CONNECTIVITY:0 (none)
+CONNECTIONS.AVAILABLE-CONNECTIONS[1]:25ab1b06-2a86-40a9-950f-1c576ddcd35a | eth0
 ';
 		Assert::equal($this->entity, InterfaceStatus::nmCliDeserialize($string));
 	}
@@ -129,6 +163,13 @@ GENERAL.CON-UUID:f61b25c9-66d7-400e-add0-d2a30c57b65c
 			'type' => self::TYPE->value,
 			'state' => self::STATE->value,
 			'connection' => self::CONNECTION,
+			'availableConnections' => [
+				['uuid' => '25ab1b06-2a86-40a9-950f-1c576ddcd35a', 'name' => 'eth0'],
+			],
+			'connectivity' => [
+				'ipv4' => self::IPv4_CONNECTIVITY->value,
+				'ipv6' => self::IPv6_CONNECTIVITY->value,
+			],
 		];
 		Assert::same($expected, $this->entity->jsonSerialize());
 	}

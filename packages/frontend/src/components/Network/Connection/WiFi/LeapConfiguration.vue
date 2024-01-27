@@ -31,8 +31,10 @@ limitations under the License.
 import {Component, VModel, Vue} from 'vue-property-decorator';
 
 import PasswordInput from '@/components/Core/PasswordInput.vue';
+import {
+	NetworkConnectionConfiguration
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkConnection';
 
-import {IConnection} from '@/interfaces/Network/Connection';
 
 /**
  * LEAP configuration options
@@ -47,7 +49,7 @@ export default class LeapConfiguration extends Vue {
 	/**
 	 * Edited connection.
 	 */
-	@VModel({required: true}) connection!: IConnection;
+	@VModel({required: true}) connection!: NetworkConnectionConfiguration;
 
 }
 </script>

@@ -91,7 +91,7 @@ class ConnectionManager {
 	 * @return array<Connection> Network connections
 	 */
 	public function list(?ConnectionTypes $type = null): array {
-		$fields = ['NAME', 'UUID', 'TYPE', 'DEVICE'];
+		$fields = ['NAME', 'UUID', 'TYPE', 'DEVICE', 'ACTIVE', 'STATE'];
 		$command = sprintf('nmcli -t -f %s connection show', implode(',', $fields));
 		$output = $this->commandManager->run($command, true)->getStdout();
 		if ($output === '') {

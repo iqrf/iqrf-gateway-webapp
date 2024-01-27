@@ -25,6 +25,13 @@
 			<template #title>
 				<slot name='title' />
 			</template>
+			<template #titleActions>
+				<v-btn
+					color='white'
+					:icon='mdiWindowClose'
+					@click='close'
+				/>
+			</template>
 			<slot />
 			<template #actions>
 				<v-btn

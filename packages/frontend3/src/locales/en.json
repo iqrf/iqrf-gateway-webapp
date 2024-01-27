@@ -1305,6 +1305,209 @@
 				}
 			}
 		},
+		"ipNetwork": {
+			"connections": {
+				"titles": {
+					"802-3-ethernet": "Ethernet connections",
+					"802-11-wireless": "WiFi connections",
+					"gsm": "Mobile connections",
+					"vlan": "VLAN connections"
+				},
+				"actions": {
+					"add": "Create a new connection",
+					"delete": "Delete connection",
+					"edit": "Edit connection"
+				},
+				"add": {
+					"titles": {
+						"802-3-ethernet": "Create a new Ethernet connection",
+						"802-11-wireless": "Create a new WiFi connection",
+						"gsm": "Create a new Mobile connection",
+						"vlan": "Create a new VLAN connection"
+					}
+				},
+				"delete": {
+					"title": "Network connection deletion confirmation",
+					"prompt": "Are you sure you want to delete network connection {name}?",
+					"messages": {
+						"failure": "Failed to delete network connection {name}.",
+						"success": "Network connection {name} has been successfully deleted."
+					}
+				},
+				"edit": {
+					"title": "Edit connection configuration",
+					"titles": {
+						"802-3-ethernet": "Edit Ethernet connection",
+						"802-11-wireless": "Edit WiFi connection",
+						"gsm": "Edit Mobile connection",
+						"vlan": "Edit VLAN connection"
+					}
+				},
+				"fields": {
+					"autoConnect": {
+						"enabled": "Establish connection automatically"
+					},
+					"generic": {
+						"name": "Connection name",
+						"interface": "Network interface"
+					},
+					"ip": {
+						"title": "IP configuration"
+					},
+					"ipv4": {
+						"title": "IPv4 configuration"
+					},
+					"ipv6": {
+						"title": "IPv6 configuration"
+					},
+					"vlan": {
+						"title": "VLAN configuration",
+						"id": "VLAN ID"
+					},
+					"wifi": {
+						"title": "Wi-Fi configuration",
+						"ssid": "SSID",
+						"security": {
+							"psk": "Pre-shared key",
+							"type": "Security type",
+							"types":{
+								"leap": "Cisco LEAP (Lightweight Extensible Authentication Protocol)",
+								"open": "Open network",
+								"wep": "WEP",
+								"wpa-eap": "WPA-Enterprise",
+								"wpa-psk": "WPA-Personal"
+							}
+						}
+					}
+				},
+				"columns": {
+					"name": "Connection name",
+					"interfaceName": "Interface name",
+					"state": "State",
+					"states": {
+						"activated": "Activated",
+						"activating": "Activating",
+						"deactivated": "Deactivated",
+						"deactivating": "Deactivating",
+						"unknown": "Unknown"
+					}
+				},
+				"validations": {
+					"generic":{
+						"name": {
+							"required": "Please enter the connection name."
+						},
+						"interface": {
+							"required": "Please select the network interface."
+						}
+					},
+					"vlan": {
+						"id": {
+							"required": "Please enter the VLAN ID.",
+							"invalid": "VLAN ID should be an integer between 0 and 4094."
+						}
+					},
+					"wifi": {
+						"security": {
+							"psk": {
+								"required": "Please enter the pre-shared key.",
+								"invalid": "Pre-shared key should be 8-63 characters long ASCII string, or 64 characters long hex string."
+							},
+							"type": {
+								"required": "Please select Wi-Fi security type."
+							}
+						}
+					}
+				}
+			},
+			"interfaces": {
+				"titles": {
+					"ethernet": "Ethernet interfaces",
+					"vlan": "VLAN interfaces",
+					"wifi": "WiFi interfaces"
+				},
+				"columns": {
+					"name": "Name",
+					"manufacturer": "Manufacturer",
+					"model": "Model",
+					"macAddress": "MAC address",
+					"state": "State",
+					"states": {
+						"connected": "Connected",
+						"connecting": "Connecting",
+						"connecting (checking IP connectivity)": "Checking IP connectivity",
+						"connecting (configuring)": "Configuring",
+						"connecting (getting IP configuration)": "Getting IP configuration",
+						"connecting (prepare)": "Prepare",
+						"connecting (need authentication)": "Need authentication",
+						"connecting (starting secondary connections)": "Starting secondary connections",
+						"connection failed": "Failed",
+						"deactivating": "Deactivating",
+						"disconnected": "Disconnected",
+						"unavailable": "Unavailable",
+						"unmanaged": "Unmanaged",
+						"unknown": "Unknown"
+					}
+				}
+			},
+			"modems":{
+				"title": "Modems",
+				"columns": {
+					"interface": "Interface name",
+					"manufacturer": "Manufacturer",
+					"model": "Model",
+					"imei": "IMEI",
+					"state": "State",
+					"states": {
+						"failed": "Modem is unusable",
+						"unknown": "Unknown",
+						"initializing": "Initializing",
+						"locked": "Locked",
+						"disabled": "Disabled",
+						"disabling": "Disabling",
+						"enabling": "Enabling",
+						"enabled": "Enabled",
+						"searching": "Searching network",
+						"registered": "Registered to network",
+						"disconnecting": "Disconnecting",
+						"connecting": "Connecting",
+						"connected": "Connected"
+					},
+					"failedReasons": {
+						"esim-without-profiles": "eSIM without profiles",
+						"none": "No error",
+						"sim-error": "SIM card unusable",
+						"sim-missing": "SIM card missing",
+						"unknown": "Unknown error",
+						"unknown-capabilities": "Unknown capabilities"
+					},
+					"signal": "Signal strength",
+					"rssi": "RSSI"
+				}
+			},
+			"wireGuard": {
+				"tunnels": {
+					"title": "WireGuard tunnels",
+					"delete": {
+						"title": "WireGuard tunnel deletion confirmation",
+						"prompt": "Are you sure you want to delete WireGuard tunnel {name}?",
+						"messages": {
+							"failure": "Failed to delete WireGuard tunnel {name}.",
+							"success": "WireGuard tunnel {name} has been successfully deleted."
+						}
+					},
+					"columns": {
+						"name": "Name",
+						"active": "Active",
+						"enabled": "Enabled",
+						"action": {
+							"activate": "Activate",
+							"deactivate": "Deactivate"
+						}
+					}
+				}
+			}
+		},
 		"iqrfnet": {
 			"common": {
 				"os": "OS",
@@ -1759,6 +1962,39 @@
 			"mender": {
 				"title": "Mender",
 				"description": "Configure Mender client for remote and features."
+			}
+		},
+		"ipNetwork": {
+			"title": "IP network",
+			"description": "IP network management.",
+			"ethernet": {
+				"title": "Ethernet connections",
+				"description": "Ethernet connections management.",
+				"edit": {
+					"title": "Edit Ethernet connection"
+				}
+			},
+			"mobile": {
+				"title": "Mobile connections",
+				"description": "Mobile connections management."
+			},
+			"vlan": {
+				"title": "VLAN connections",
+				"description": "VLAN connections management.",
+				"edit": {
+					"title": "Edit VLAN connection"
+				}
+			},
+			"wireGuard": {
+				"title": "WireGuard VPN",
+				"description": "WireGuard VPN management."
+			},
+			"wireless": {
+				"title": "Wireless connections",
+				"description": "Wireless connections management.",
+				"edit": {
+					"title": "Edit Wireless connection"
+				}
 			}
 		},
 		"iqrfnet": {

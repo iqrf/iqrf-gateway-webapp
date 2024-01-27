@@ -27,6 +27,7 @@ declare(strict_types = 1);
 namespace Tests\Unit\NetworkModule\Entities;
 
 use App\NetworkModule\Entities\Connection;
+use App\NetworkModule\Enums\ConnectionStates;
 use App\NetworkModule\Enums\ConnectionTypes;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -51,6 +52,16 @@ final class ConnectionTest extends TestCase {
 	private const INTERFACE = 'eth0';
 
 	/**
+	 * Is the network connection active?
+	 */
+	private const IS_ACTIVE = true;
+
+	/**
+	 * Network connection state
+	 */
+	private const STATE = ConnectionStates::ACTIVATED;
+
+	/**
 	 * @var UuidInterface Network connection UUID
 	 */
 	private readonly UuidInterface $uuid;
@@ -71,14 +82,14 @@ final class ConnectionTest extends TestCase {
 	public function __construct() {
 		$this->uuid = Uuid::fromString('25ab1b06-2a86-40a9-950f-1c576ddcd35a');
 		$this->type = ConnectionTypes::ETHERNET;
-		$this->entity = new Connection(self::NAME, $this->uuid, $this->type, self::INTERFACE);
+		$this->entity = new Connection(self::NAME, $this->uuid, $this->type, self::INTERFACE, self::IS_ACTIVE, self::STATE);
 	}
 
 	/**
 	 * Tests the function to deserialize network connection entity from nmcli row
 	 */
 	public function testNmCliDeserialize(): void {
-		$string = 'eth0:25ab1b06-2a86-40a9-950f-1c576ddcd35a:802-3-ethernet:eth0';
+		$string = 'eth0:25ab1b06-2a86-40a9-950f-1c576ddcd35a:802-3-ethernet:eth0:yes:activated';
 		Assert::equal($this->entity, Connection::nmCliDeserialize($string));
 	}
 
@@ -105,6 +116,8 @@ final class ConnectionTest extends TestCase {
 			'uuid' => $this->uuid->toString(),
 			'type' => $this->type->value,
 			'interfaceName' => self::INTERFACE,
+			'isActive' => self::IS_ACTIVE,
+			'state' => self::STATE->value,
 		];
 		Assert::same($expected, $this->entity->jsonSerialize());
 	}

@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 MICRORISC s.r.o.
+ * Copyright 2023-2023 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,51 +15,51 @@
  */
 
 /**
- * Monit check with definition
+ * Monit check interface
  */
-export interface MonitCheckWithDefinition {
-	/// Check definition
-	content: string;
-}
-
-/**
- * Monit check
- */
-export interface MonitCheck {
-	/// Check status
-	enabled: boolean;
+export interface MonitCheckEnablement {
+	/// Check enablement
+	enabled: boolean,
 	/// Check name
-	name: string;
+	name: string
 }
 
 /**
- * MMonit client credentials
+ * Monit check interface
+ */
+export interface MonitCheck extends MonitCheckEnablement {
+	/// Check content
+	content: string
+}
+
+/**
+ * M/Monit credentials interface
  */
 export interface MMonitCredentials {
-	/// Password
-	password: string;
-	/// Username
-	username: string;
+	/// M/Monit password
+	password: string,
+	/// M/Monit username
+	username: string
 }
 
 /**
- * MMonit client configuration
+ * M/Monit configuration interface
  */
 export interface MMonitConfig {
-	/// Credentials
-	credentials: MMonitCredentials;
-	/// Status
-	enabled: boolean;
-	/// Server address
-	server: string;
+	/// M/Monit credentials
+	credentials: MMonitCredentials,
+	/// M/Monit connection enablement
+	enabled: boolean,
+	/// M/Monit server address
+	server: string
 }
 
 /**
- * Monit configuration
+ * Monit configuration interface
  */
 export interface MonitConfig {
-	/// Monit checks
-	checks: MonitCheck[]
-	/// MMonit client configuration
+	/// Monit check enablement
+	checks: MonitCheckEnablement[]
+	/// M/Monit connection configuration
 	mmonit: MMonitConfig
 }

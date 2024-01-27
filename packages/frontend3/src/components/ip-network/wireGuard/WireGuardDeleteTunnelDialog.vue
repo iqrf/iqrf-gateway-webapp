@@ -1,0 +1,78 @@
+<template>
+	<DeleteModalWindow
+		ref='dialog'
+		:component-state='componentState'
+		:tooltip='$t("components.ipNetwork.wireGuard.tunnels.actions.delete")'
+		@submit='onSubmit'
+	>
+		<template #title>
+			{{ $t('components.ipNetwork.wireGuard.tunnels.delete.title') }}
+		</template>
+		{{ $t('components.ipNetwork.wireGuard.tunnels.delete.prompt', {name: tunnel.name}) }}
+	</DeleteModalWindow>
+</template>
+<script setup lang='ts'>
+import {
+	type WireGuardService,
+} from '@iqrf/iqrf-gateway-webapp-client/services/Network/WireGuardService';
+import {
+	type WireGuardTunnelListEntry,
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network/WireGuard';
+import { type PropType, ref, type Ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { toast } from 'vue3-toastify';
+
+import DeleteModalWindow from '@/components/DeleteModalWindow.vue';
+import { useApiClient } from '@/services/ApiClient';
+import { ComponentState } from '@/types/ComponentState';
+
+/// Component state
+const componentState: Ref<ComponentState> = ref(ComponentState.Created);
+/// Component properties
+const componentProps = defineProps({
+	tunnel: {
+		type: Object as PropType<WireGuardTunnelListEntry>,
+		required: true,
+	},
+});
+/// Define emit events
+const emit = defineEmits(['deleted']);
+/// Modal dialog reference
+const dialog: Ref<typeof DeleteModalWindow | null> = ref(null);
+/// Internationalization instance
+const i18n = useI18n();
+/// WireGuard service
+const service: WireGuardService = useApiClient().getNetworkServices().getWireGuardService();
+
+/**
+ * Closes modal dialog
+ */
+function close(): void {
+	dialog.value?.close();
+}
+
+/**
+ * Handles submit event
+ */
+function onSubmit(): void {
+	if (componentProps.tunnel === undefined || componentProps.tunnel === null) {
+		return;
+	}
+	componentState.value = ComponentState.Saving;
+	service.deleteTunnel(componentProps.tunnel?.id)
+		.then(() => {
+			componentState.value = ComponentState.Ready;
+			toast.success(
+				i18n.t('components.ipNetwork.wireGuard.tunnels.delete.messages.success', { name: componentProps.tunnel.name }),
+			);
+			close();
+			emit('deleted');
+		})
+		.catch(() => {
+			componentState.value = ComponentState.Error;
+			toast.error(
+				i18n.t('components.ipNetwork.wireGuard.tunnels.delete.messages.failure', { name: componentProps.tunnel.name }),
+			);
+		});
+}
+</script>

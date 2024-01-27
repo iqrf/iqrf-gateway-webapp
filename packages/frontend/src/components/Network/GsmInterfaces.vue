@@ -157,17 +157,17 @@ limitations under the License.
 import {Component, PropSync, Vue, Watch} from 'vue-property-decorator';
 import SignalIndicator from '@/components/Network/SignalIndicator.vue';
 
-import {ModemState} from '@/enums/Network/ModemState';
-
 import {useApiClient} from '@/services/ApiClient';
-import MonitService from '@/services/MonitService';
-import NetworkInterfaceService from '@/services/NetworkInterfaceService';
 
-import {AxiosResponse} from 'axios';
 import {DataTableHeader} from 'vuetify';
-import {IModem} from '@/interfaces/Network/Mobile';
-import {MonitCheck} from '@/interfaces/Maintenance/Monit';
-import {NetworkConnection} from '@/interfaces/Network/Connection';
+import {
+	Modem,
+	ModemState
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network/Modem';
+import {MonitCheck} from '@iqrf/iqrf-gateway-webapp-client/types/Config/Monit';
+import {
+	NetworkConnectionListEntry
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkConnection';
 
 /**
  * GSM modem interface list
@@ -183,9 +183,9 @@ import {NetworkConnection} from '@/interfaces/Network/Connection';
 export default class GsmInterfaces extends Vue {
 
 	/**
-	 * @property {Array<IConnection>} _connections Array of connections
+	 * @property {Array<NetworkConnectionListEntry>} _connections Array of connections
 	 */
-	@PropSync('connections', {type: Array, required: true}) _connections!: Array<NetworkConnection>;
+	@PropSync('connections', {type: Array, required: true}) _connections!: Array<NetworkConnectionListEntry>;
 
 	/**
 	 * @property {Array<IField>} fields Array of CoreUI data table fields
@@ -200,9 +200,9 @@ export default class GsmInterfaces extends Vue {
 	}
 
 	/**
-	 * @property {Array<IModem>} modems Array of modems
+	 * @property {Array<Modem>} modems Array of modems
 	 */
-	private modems: Array<IModem> = [];
+	private modems: Array<Modem> = [];
 
 	/**
 	 * @property {MonitCheck | null} monit Monit check
@@ -213,6 +213,11 @@ export default class GsmInterfaces extends Vue {
 	 * @property {string} monitCheckName Monit check name
 	 */
 	private monitCheckName = 'network_ppp0';
+
+	/**
+	 * @property {MonitService} monitService Monit service
+	 */
+	private monitService = useApiClient().getConfigServices().getMonitService();
 
 	/**
 	 * @property {boolean} showMonitWithoutConnectionModal Show Monit without connection modal
@@ -259,6 +264,11 @@ export default class GsmInterfaces extends Vue {
 	];
 
 	/**
+	 * @property {ModemService} service Modem service
+	 */
+	private service = useApiClient().getNetworkServices().getModemService();
+
+	/**
 	 * @property {boolean} hasConnection Checks if there is no connection
 	 */
 	get hasConnections(): boolean {
@@ -269,7 +279,7 @@ export default class GsmInterfaces extends Vue {
 	 * @property {boolean} hasActiveConnection Checks if there is an active connection
 	 */
 	get hasActiveConnection(): boolean {
-		return this._connections.some((connection: NetworkConnection) => connection.interfaceName !== null);
+		return this._connections.some((connection: NetworkConnectionListEntry) => connection.interfaceName !== null);
 	}
 
 	/**
@@ -284,8 +294,8 @@ export default class GsmInterfaces extends Vue {
 	 */
 	public async getData(buttonInvoked = false): Promise<void> {
 		this.loading = true;
-		NetworkInterfaceService.listModems()
-			.then((modems: Array<IModem>) => {
+		this.service.list()
+			.then((modems: Array<Modem>) => {
 				this.modems = modems;
 				this.loading = false;
 				if (buttonInvoked) {
@@ -300,9 +310,9 @@ export default class GsmInterfaces extends Vue {
 		if (!this.$store.getters['features/isEnabled']('monit') || !this.hasBrokenGsmModem) {
 			return;
 		}
-		await MonitService.getCheck(this.monitCheckName)
-			.then((response: AxiosResponse<MonitCheck>) => {
-				this.monit = response.data;
+		await this.monitService.getCheck(this.monitCheckName)
+			.then((response: MonitCheck) => {
+				this.monit = response;
 			})
 			.catch(() => {
 				this.monit = null;
@@ -314,7 +324,7 @@ export default class GsmInterfaces extends Vue {
 	 */
 	public scan(): void {
 		this.loading = true;
-		NetworkInterfaceService.scanModems()
+		this.service.scan()
 			.then(async () => {
 				await new Promise((resolve) => setTimeout(resolve, 5_000));
 				await this.getData();
@@ -396,8 +406,8 @@ export default class GsmInterfaces extends Vue {
 
 		this.loading = true;
 		(enabled
-			? MonitService.disableCheck(this.monitCheckName)
-			: MonitService.enableCheck(this.monitCheckName))
+			? this.monitService.disableCheck(this.monitCheckName)
+			: this.monitService.enableCheck(this.monitCheckName))
 			.then(async () => {
 				await useApiClient().getServiceService().restart('monit');
 				await this.getData();

@@ -40,8 +40,10 @@ import {Component, VModel, Vue} from 'vue-property-decorator';
 import {extend, ValidationProvider} from 'vee-validate';
 
 import {required} from 'vee-validate/dist/rules';
-import {IConnection} from '@/interfaces/Network/Connection';
 import PasswordInput from '@/components/Core/PasswordInput.vue';
+import {
+	NetworkConnectionConfiguration
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkConnection';
 
 /**
  * GSM modem connection configuration
@@ -57,7 +59,7 @@ export default class SerialConfiguration extends Vue {
 	/**
 	 * Edited connection.
 	 */
-	@VModel({required: true}) connection!: IConnection;
+	@VModel({required: true}) connection!: NetworkConnectionConfiguration;
 
 	/**
 	 * Initializes validation rules

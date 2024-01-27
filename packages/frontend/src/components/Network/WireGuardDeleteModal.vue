@@ -50,10 +50,12 @@ limitations under the License.
 import {Component, VModel, Vue} from 'vue-property-decorator';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
-import WireguardService from '@/services/WireguardService';
 
 import {AxiosError} from 'axios';
-import {IWG} from '@/interfaces/Network/Wireguard';
+import {
+	WireGuardTunnelListEntry
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network/WireGuard';
+import {useApiClient} from '@/services/ApiClient';
 
 /**
  * WireGuard connections component
@@ -62,9 +64,9 @@ import {IWG} from '@/interfaces/Network/Wireguard';
 export default class WireguardTunnels extends Vue {
 
 	/**
-	 * @property {IWG|null} tunnel Tunnel information used in delete modal window
+	 * @property {WireGuardTunnelListEntry|null} tunnel Tunnel information used in delete modal window
 	 */
-	@VModel({required: true, default: null}) tunnel!: IWG|null;
+	@VModel({required: true, default: null}) tunnel!: WireGuardTunnelListEntry|null;
 
 	/**
 	 * Computes modal display condition
@@ -81,7 +83,7 @@ export default class WireguardTunnels extends Vue {
 	private removeTunnel(id: number, name: string): void {
 		this.tunnel = null;
 		this.$store.commit('spinner/SHOW');
-		WireguardService.removeTunnel(id)
+		useApiClient().getNetworkServices().getWireGuardService().deleteTunnel(id)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$emit('deleted');

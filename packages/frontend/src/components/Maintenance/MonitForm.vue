@@ -121,10 +121,9 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required, alpha_num} from 'vee-validate/dist/rules';
 import {z} from 'zod';
 
-import {AxiosError, AxiosResponse} from 'axios';
-import {IMonitConfig} from '@/interfaces/Maintenance/Monit';
-import MonitService from '@/services/MonitService';
+import {AxiosError} from 'axios';
 import { useApiClient } from '@/services/ApiClient';
+import {MonitConfig} from '@iqrf/iqrf-gateway-webapp-client/types/Config/Monit';
 
 @Component({
 	components: {
@@ -145,9 +144,14 @@ export default class MonitForm extends Vue {
 	private featureName = 'monit';
 
 	/**
-	 * @var {IMonitConfig|null} configuration Monit configuration
+	 * @var {MonitConfig|null} configuration Monit configuration
 	 */
-	private configuration: IMonitConfig|null = null;
+	private configuration: MonitConfig|null = null;
+
+	/**
+	 * @var {MonitService} service Monit service
+	 */
+	private service = useApiClient().getConfigServices().getMonitService();
 
 	/**
 	 * Initializes validation rules
@@ -183,9 +187,9 @@ export default class MonitForm extends Vue {
 		if (!this.$store.getters['spinner/isEnabled']) {
 			this.$store.commit('spinner/SHOW');
 		}
-		return MonitService.getConfig()
-			.then((response: AxiosResponse<IMonitConfig>) => {
-				this.configuration = response.data;
+		return this.service.getConfig()
+			.then((response: MonitConfig) => {
+				this.configuration = response;
 				this.$store.commit('spinner/HIDE');
 			})
 			.catch((error: AxiosError) => extendedErrorToast(error, 'maintenance.monit.messages.fetchFailed'));
@@ -199,7 +203,7 @@ export default class MonitForm extends Vue {
 			return;
 		}
 		this.$store.commit('spinner/SHOW');
-		MonitService.saveConfig(this.configuration)
+		this.service.editConfig(this.configuration)
 			.then(async () => {
 				await useApiClient().getServiceService().restart('monit');
 				await this.getConfig().then(() => this.$toast.success(

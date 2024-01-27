@@ -27,7 +27,7 @@ import {
 	mdiChevronLeft,
 	mdiChevronRight,
 	mdiCog,
-	mdiDesktopTower,
+	mdiDesktopTower, mdiIpNetwork,
 	mdiLogin,
 	mdiSecurity,
 	mdiWrenchClock,
@@ -233,6 +233,34 @@ function items(): SidebarLink[] {
 						to: '/iqrfnet/tr-config',
 					},
 				],
+			},
+			{
+				title: i18n.t('pages.ipNetwork.title'),
+				icon: mdiIpNetwork,
+				children: [
+					{
+						title: i18n.t('pages.ipNetwork.ethernet.title'),
+						to: '/ip-network/ethernet',
+					},
+					{
+						title: i18n.t('pages.ipNetwork.wireless.title'),
+						to: '/ip-network/wireless',
+					},
+					{
+						title: i18n.t('pages.ipNetwork.mobile.title'),
+						to: '/ip-network/mobile',
+					},
+					{
+						title: i18n.t('pages.ipNetwork.vlan.title'),
+						to: '/ip-network/vlan',
+					},
+					{
+						title: i18n.t('pages.ipNetwork.wireGuard.title'),
+						to: '/ip-network/wireguard',
+					},
+				],
+				roles: [UserRole.Admin],
+				feature: Feature.networkManager,
 			},
 			{
 				title: i18n.t('pages.maintenance.title'),

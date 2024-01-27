@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\NetworkModule\Entities;
 
+use App\NetworkModule\Enums\ConnectionStates;
 use App\NetworkModule\Enums\ConnectionTypes;
 use JsonSerializable;
 use Ramsey\Uuid\Uuid;
@@ -41,12 +42,16 @@ final class Connection implements JsonSerializable {
 	 * @param UuidInterface $uuid Network connection UUID
 	 * @param ConnectionTypes $type Network connection type
 	 * @param string|null $interfaceName Network interface name
+	 * @param bool $isActive Is the network connection active?
+	 * @param ConnectionStates $state Network connection state
 	 */
 	public function __construct(
 		private readonly string $name,
 		private readonly UuidInterface $uuid,
 		private readonly ConnectionTypes $type,
 		?string $interfaceName,
+		private readonly bool $isActive,
+		private readonly ConnectionStates $state,
 	) {
 		$this->interfaceName = $interfaceName === '' ? null : $interfaceName;
 	}
@@ -60,7 +65,9 @@ final class Connection implements JsonSerializable {
 		$array = explode(':', $string);
 		$uuid = Uuid::fromString($array[1]);
 		$type = ConnectionTypes::from($array[2]);
-		return new self($array[0], $uuid, $type, $array[3]);
+		$isActive = $array[4] === 'yes';
+		$state = ConnectionStates::tryFrom($array[5]) ?? ConnectionStates::DEACTIVATED;
+		return new self($array[0], $uuid, $type, $array[3], $isActive, $state);
 	}
 
 	/**
@@ -80,8 +87,8 @@ final class Connection implements JsonSerializable {
 	}
 
 	/**
-	 * Serializes nwteork connection entity into JSON
-	 * @return array{name: string, uuid: string, type: string, interfaceName: string|null} JSON serialized data
+	 * Serializes network connection entity into JSON
+	 * @return array{name: string, uuid: string, type: string, interfaceName: string|null, isActive: bool, state: string|null} JSON serialized data
 	 */
 	public function jsonSerialize(): array {
 		return [
@@ -89,6 +96,8 @@ final class Connection implements JsonSerializable {
 			'uuid' => $this->uuid->toString(),
 			'type' => $this->type->jsonSerialize(),
 			'interfaceName' => $this->interfaceName,
+			'isActive' => $this->isActive,
+			'state' => $this->state->value,
 		];
 	}
 

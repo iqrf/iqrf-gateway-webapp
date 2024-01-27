@@ -88,10 +88,15 @@ import {extend, ValidationProvider} from 'vee-validate';
 import PasswordInput from '@/components/Core/PasswordInput.vue';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
-import {WepKeyLen, WepKeyType} from '@/enums/Network/WifiSecurity';
 
-import {IConnection} from '@/interfaces/Network/Connection';
 import {ISelectItem} from '@/interfaces/Vuetify';
+import {
+	NetworkConnectionConfiguration
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkConnection';
+import {
+	WepKeyLen,
+	WepKeyType
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network/Wifi';
 
 /**
  * WEP configuration options
@@ -111,7 +116,7 @@ export default class WepConfiguration extends Vue {
 	/**
 	 * Edited connection.
 	 */
-	@VModel({required: true}) connection!: IConnection;
+	@VModel({required: true}) connection!: NetworkConnectionConfiguration;
 
 	/**
 	 * @constant {Array<ISelectItem>} keyOptions Wep key type select options

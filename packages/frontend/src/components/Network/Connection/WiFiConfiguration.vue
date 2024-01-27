@@ -52,7 +52,9 @@ import WepConfiguration from '@/components/Network/Connection/WiFi/WepConfigurat
 import WpaEapConfiguration from '@/components/Network/Connection/WiFi/WpaEapConfiguration.vue';
 import WpaPskConfiguration from '@/components/Network/Connection/WiFi/WpaPskConfiguration.vue';
 
-import {IConnection} from '@/interfaces/Network/Connection';
+import {
+	NetworkConnectionConfiguration
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkConnection';
 
 /**
  * Wi-Fi configuration options
@@ -71,7 +73,7 @@ export default class WiFiConfiguration extends Vue {
 	/**
 	 * Edited connection.
 	 */
-	@VModel({required: true}) connection!: IConnection;
+	@VModel({required: true}) connection!: NetworkConnectionConfiguration;
 
 }
 </script>

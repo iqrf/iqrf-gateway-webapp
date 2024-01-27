@@ -15,7 +15,9 @@
  * limitations under the License.
  */
 import ip from 'ip-regex';
-import {IConnection} from '@/interfaces/Network/Connection';
+import {
+	NetworkConnectionConfiguration
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkConnection';
 
 export default class IpAddressHelper {
 
@@ -52,10 +54,10 @@ export default class IpAddressHelper {
 
 	/**
 	 * Checks if passed IP is in subnet with gateway
-	 * @param {IConnection} connection Connection to check
+	 * @param {NetworkConnectionConfiguration} connection Connection to check
 	 * @returns {boolean} Is address in the same subnet as gateway?
 	 */
-	public static ipv4ConnectionSubnetCheck(connection: IConnection): boolean {
+	public static ipv4ConnectionSubnetCheck(connection: NetworkConnectionConfiguration): boolean {
 		if (connection.ipv4.method === 'auto') {
 			return true;
 		}

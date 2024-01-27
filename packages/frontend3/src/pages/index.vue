@@ -9,7 +9,7 @@
 </route>
 
 <script lang='ts' setup>
-import { Feature } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { Feature, UserRole } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -34,6 +34,13 @@ const links: Ref<DisambiguationLink[]> = ref([
 		title: i18n.t('pages.iqrfnet.title'),
 		description: i18n.t('pages.iqrfnet.description'),
 		to: '/iqrfnet',
+	},
+	{
+		title: i18n.t('pages.ipNetwork.title'),
+		description: i18n.t('pages.ipNetwork.description'),
+		to: '/ip-network',
+		roles: [UserRole.Admin],
+		feature: Feature.networkManager,
 	},
 	{
 		title: i18n.t('pages.maintenance.title'),

@@ -184,17 +184,17 @@ import {Component, Ref, Vue, Watch} from 'vue-property-decorator';
 import GsmInterfaces from '@/components/Network/GsmInterfaces.vue';
 import NetworkOperators from '@/components/Network/NetworkOperators.vue';
 
-import {ConnectionType} from '@/enums/Network/ConnectionType';
 import {extendedErrorToast} from '@/helpers/errorToast';
-
-import MonitService from '@/services/MonitService';
-import NetworkConnectionService from '@/services/NetworkConnectionService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {DataTableHeader} from 'vuetify';
-import {IModem} from '@/interfaces/Network/Mobile';
-import {MonitCheck} from '@/interfaces/Maintenance/Monit';
-import {NetworkConnection} from '@/interfaces/Network/Connection';
+import {
+	NetworkConnectionListEntry,
+	NetworkConnectionType
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkConnection';
+import {Modem} from '@iqrf/iqrf-gateway-webapp-client/types/Network/Modem';
+import {MonitCheck} from '@iqrf/iqrf-gateway-webapp-client/types/Config/Monit';
+import {useApiClient} from '@/services/ApiClient';
 
 @Component({
 	components: {
@@ -222,24 +222,24 @@ export default class MobileConnections extends Vue {
 	private loading = true;
 
 	/**
-	 * @var {Array<NetworkConnections>} connections Existing mobile connections
+	 * @var {Array<NetworkConnectionListEntry>} connections Existing mobile connections
 	 */
-	private connections: Array<NetworkConnection> = [];
+	private connections: Array<NetworkConnectionListEntry> = [];
 
 	/**
-	 * @property {NetworkConnection|null} connectionToDisconnect Connection to disconnect
+	 * @property {NetworkConnectionListEntry|null} connectionToDisconnect Connection to disconnect
 	 */
-	private connectionToDisconnect: NetworkConnection|null = null;
+	private connectionToDisconnect: NetworkConnectionListEntry|null = null;
 
 	/**
-	 * @property {NetworkConnection|null} connectionToDelete Connection to delete
+	 * @property {NetworkConnectionListEntry|null} connectionToDelete Connection to delete
 	 */
-	private connectionToDelete: NetworkConnection|null = null;
+	private connectionToDelete: NetworkConnectionListEntry|null = null;
 
 	/**
-	 * @var {Array<IModem>} modems Available modems
+	 * @var {Array<Modem>} modems Available modems
 	 */
-	private modems: Array<IModem> = [];
+	private modems: Array<Modem> = [];
 
 	/**
 	 * @constant {Array<DataTableHeader>} fields GSM connections table fields
@@ -275,6 +275,16 @@ export default class MobileConnections extends Vue {
 	private monitCheckName = 'network_ppp0';
 
 	/**
+	 * @property {MonitService} monitService Monit service
+	 */
+	private monitService = useApiClient().getConfigServices().getMonitService();
+
+	/**
+	 * @property {NetworkConnectionService} service Network connection service
+	 */
+	private service = useApiClient().getNetworkServices().getNetworkConnectionService();
+
+	/**
 	 * Builds connections table
 	 */
 	mounted(): void {
@@ -294,10 +304,10 @@ export default class MobileConnections extends Vue {
 	 */
 	private getConnections(): void {
 		this.loading = true;
-		NetworkConnectionService.list(ConnectionType.GSM)
-			.then((connections: NetworkConnection[]) => {
+		this.service.list(NetworkConnectionType.GSM)
+			.then((connections: NetworkConnectionListEntry[]) => {
 				for (const i in connections) {
-					const idx = this.modems.findIndex((modem: IModem) => connections[i].interfaceName === modem.interface);
+					const idx = this.modems.findIndex((modem: Modem) => connections[i].interfaceName === modem.interface);
 					if (idx !== -1) {
 						connections[i]['signal'] = this.modems[idx].signal;
 						connections[i]['rssi'] = this.modems[idx].rssi;
@@ -314,7 +324,7 @@ export default class MobileConnections extends Vue {
 		if (!this.$store.getters['features/isEnabled']('monit') || this.$store.getters['gateway/board'] !== 'MICRORISC s.r.o. IQD-GW04') {
 			return;
 		}
-		await MonitService.getCheck(this.monitCheckName)
+		await this.monitService.getCheck(this.monitCheckName)
 			.then((response: AxiosResponse<MonitCheck>) => {
 				this.monit = response.data;
 			})
@@ -325,11 +335,11 @@ export default class MobileConnections extends Vue {
 
 	/**
 	 * Establishes a GSM connection
-	 * @param {NetworkConnection} connection GSM connection
+	 * @param {NetworkConnectionListEntry} connection GSM connection
 	 */
-	private connect(connection: NetworkConnection): void {
+	private connect(connection: NetworkConnectionListEntry): void {
 		this.$store.commit('spinner/SHOW');
-		NetworkConnectionService.connect(connection.uuid, connection.interfaceName)
+		this.service.connect(connection.uuid, connection.interfaceName)
 			.then(() => {
 				this.getConnections();
 				this.interfaces.getData();
@@ -350,16 +360,16 @@ export default class MobileConnections extends Vue {
 
 	/**
 	 * Terminates a GSM connection
-	 * @param {NetworkConnection} connection GSM connection
+	 * @param {NetworkConnectionListEntry} connection GSM connection
 	 * @param {boolean} confirmed Confirmed termination
 	 */
-	private async disconnect(connection: NetworkConnection, confirmed: boolean): Promise<void> {
+	private async disconnect(connection: NetworkConnectionListEntry, confirmed: boolean): Promise<void> {
 		if (this.$store.getters['features/isEnabled']('monit') &&
         this.$store.getters['gateway/board'] === 'MICRORISC s.r.o. IQD-GW04' &&
         connection.interfaceName === 'ttyAMA2'
 		) {
 			if (confirmed) {
-				await MonitService.disableCheck(this.monitCheckName);
+				await this.monitService.disableCheck(this.monitCheckName);
 			} else {
 				this.connectionToDisconnect = connection;
 				return Promise.resolve();
@@ -367,7 +377,7 @@ export default class MobileConnections extends Vue {
 		}
 		this.connectionToDisconnect = null;
 		this.$store.commit('spinner/SHOW');
-		return NetworkConnectionService.disconnect(connection.uuid)
+		return this.service.disconnect(connection.uuid)
 			.then(() => {
 				this.getConnections();
 				this.interfaces.getData();
@@ -388,19 +398,19 @@ export default class MobileConnections extends Vue {
 
 	/**
 	 * Removes a GSM connection
-	 * @param {NetworkConnection} connection GSM connection
+	 * @param {NetworkConnectionListEntry} connection GSM connection
 	 */
-	private async remove(connection: NetworkConnection): Promise<void> {
+	private async remove(connection: NetworkConnectionListEntry): Promise<void> {
 		this.$store.commit('spinner/SHOW');
 		if (this.$store.getters['features/isEnabled']('monit') &&
         this.$store.getters['gateway/board'] === 'MICRORISC s.r.o. IQD-GW04' &&
         connection.interfaceName === 'ttyAMA2'
 		) {
-			await MonitService.disableCheck(this.monitCheckName);
+			await this.monitService.disableCheck(this.monitCheckName);
 		}
 		this.connectionToDelete = null;
 		if (connection.interfaceName !== null) {
-			const result = await NetworkConnectionService.disconnect(connection.uuid)
+			const result = await this.service.disconnect(connection.uuid)
 				.then(() => true)
 				.catch(() => false);
 			if (!result) {
@@ -414,7 +424,7 @@ export default class MobileConnections extends Vue {
 				return;
 			}
 		}
-		NetworkConnectionService.remove(connection.uuid)
+		this.service.delete(connection.uuid)
 			.then(() => {
 				this.getConnections();
 				this.interfaces.getData();

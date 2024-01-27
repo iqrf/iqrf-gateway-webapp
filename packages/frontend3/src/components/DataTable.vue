@@ -13,10 +13,11 @@
 		<template #bottom>
 			<div
 				v-if='items.length > 0 && !hidePagination'
-				class='text-center pt-2'
+				class='text-center pt-1'
 			>
 				<v-pagination
 					v-model='page'
+					density='comfortable'
 					:length='pageCount'
 				/>
 			</div>
@@ -64,7 +65,7 @@ const componentProps = defineProps({
 	hidePagination: {
 		type: Boolean,
 		default: false,
-		requierd: false,
+		required: false,
 	},
 });
 

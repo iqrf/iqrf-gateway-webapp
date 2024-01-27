@@ -24,8 +24,10 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, VModel, Vue} from 'vue-property-decorator';
-import {WireguardStack} from '@/enums/Network/Wireguard';
 import {ISelectItem} from '@/interfaces/Vuetify';
+import {
+	WireGuardIpStack
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network/WireGuard';
 
 /**
  * IP stack selector
@@ -36,7 +38,7 @@ export default class IpStackSelector extends Vue {
 	/**
 	 * Selected stack
 	 */
-	@VModel({required: true}) stack!: WireguardStack;
+	@VModel({required: true}) stack!: WireGuardIpStack;
 
 	/**
 	 * @constant {Array<IOption>} stackOptions Stack select options
@@ -44,15 +46,15 @@ export default class IpStackSelector extends Vue {
 	private readonly stackOptions: Array<ISelectItem> = [
 		{
 			text: this.$t('network.wireguard.tunnels.form.stackTypes.ipv4'),
-			value: WireguardStack.IPV4
+			value: WireGuardIpStack.IPV4
 		},
 		{
 			text: this.$t('network.wireguard.tunnels.form.stackTypes.ipv6'),
-			value: WireguardStack.IPV6
+			value: WireGuardIpStack.IPV6
 		},
 		{
 			text: this.$t('network.wireguard.tunnels.form.stackTypes.both'),
-			value: WireguardStack.DUAL
+			value: WireGuardIpStack.DUAL
 		},
 	];
 
