@@ -1,11 +1,5 @@
 <template>
-	<v-dialog
-		:model-value='show'
-		scrollable
-		persistent
-		no-click-animation
-		:width='width'
-	>
+	<ModalWindow v-model='show'>
 		<v-form
 			ref='form'
 			v-slot='{ isValid }'
@@ -68,11 +62,10 @@
 				</template>
 			</Card>
 		</v-form>
-	</v-dialog>
+	</ModalWindow>
 </template>
 
 <script lang='ts' setup>
-
 import { type AwsService } from '@iqrf/iqrf-gateway-webapp-client/services/Cloud';
 import { type AwsMqttConfig } from '@iqrf/iqrf-gateway-webapp-client/types/Cloud';
 import { mdiFileOutline } from '@mdi/js';
@@ -82,23 +75,19 @@ import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
 
 import Card from '@/components/Card.vue';
+import ModalWindow from '@/components/ModalWindow.vue';
 import TextInput from '@/components/TextInput.vue';
-import { getModalWidth } from '@/helpers/modal';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
 import { ComponentState } from '@/types/ComponentState';
 
-defineProps({
-	show: {
-		type: Boolean,
-		required: false,
-		default: false,
-	},
+const show = defineModel({
+	required: true,
+	type: Boolean,
 });
-const emit = defineEmits(['saved', 'close']);
+const emit = defineEmits(['saved']);
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
-const width = getModalWidth();
 const i18n = useI18n();
 const service: AwsService = useApiClient().getCloudServices().getAwsService();
 const form: Ref<typeof VForm | null> = ref(null);
@@ -118,12 +107,12 @@ async function onSubmit(): Promise<void> {
 		certificate: (config.value.certificate as unknown as File[]|Blob[])[0],
 		privateKey: (config.value.privateKey as unknown as File[]|Blob[])[0],
 	};
-	console.warn(params);
 	service.createMqttInstance(params)
 		.then(() => {
 			toast.success(
 				i18n.t('components.configuration.daemon.connections.mqtt.clouds.messages.save.success'),
 			);
+			show.value = false;
 			emit('saved');
 			clear();
 		})
@@ -135,7 +124,7 @@ function clear(): void {
 }
 
 function close(): void {
-	emit('close');
+	show.value = false;
 	clear();
 }
 </script>

@@ -1,11 +1,5 @@
 <template>
-	<v-dialog
-		v-model='show'
-		scrollable
-		persistent
-		no-click-animation
-		:width='width'
-	>
+	<ModalWindow v-model='show'>
 		<template #activator='{ props }'>
 			<v-btn
 				v-bind='props'
@@ -72,7 +66,7 @@
 				</template>
 			</Card>
 		</v-form>
-	</v-dialog>
+	</ModalWindow>
 </template>
 
 <script lang='ts' setup>
@@ -81,10 +75,10 @@ import { watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import Card from '@/components/Card.vue';
+import ModalWindow from '@/components/ModalWindow.vue';
 import SelectInput from '@/components/SelectInput.vue';
 import TextInput from '@/components/TextInput.vue';
 import { WebsocketProtocol } from '@/enums/websocket';
-import { getModalWidth } from '@/helpers/modal';
 import ValidationRules from '@/helpers/ValidationRules';
 
 
@@ -101,7 +95,6 @@ const componentProps = defineProps({
 });
 const emit = defineEmits(['edited']);
 const i18n = useI18n();
-const width = getModalWidth();
 const show: Ref<boolean> = ref(false);
 const regexCapture = new RegExp(/(?<protocol>ws|wss):\/\/(?<host>.+):(?<port>\d+)(\/(?<path>.*))?/);
 const protocol: Ref<WebsocketProtocol> = ref(WebsocketProtocol.WS);
@@ -138,6 +131,7 @@ watchEffect(async (): Promise<void> => {
 async function onSubmit(): Promise<void> {
 	const url = `${protocol.value}://${hostname.value}:${port.value}/${path.value}`;
 	emit('edited', url);
+	close();
 }
 
 function close(): void {

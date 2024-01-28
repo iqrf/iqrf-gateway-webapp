@@ -1,9 +1,6 @@
 <template>
-	<v-dialog
+	<ModalWindow
 		v-model='show'
-		persistent
-		width='60%'
-		no-click-animation
 	>
 		<Card>
 			<template #title>
@@ -21,7 +18,7 @@
 				</v-btn>
 			</template>
 		</Card>
-	</v-dialog>
+	</ModalWindow>
 </template>
 
 <script lang='ts' setup>
@@ -32,9 +29,9 @@ import { useRouter } from 'vue-router';
 import { toast } from 'vue3-toastify';
 
 import Card from '@/components/Card.vue';
+import ModalWindow from '@/components/ModalWindow.vue';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
-
 
 const i18n = useI18n();
 const userStore = useUserStore();

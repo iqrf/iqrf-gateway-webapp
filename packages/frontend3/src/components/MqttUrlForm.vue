@@ -1,10 +1,6 @@
 <template>
-	<v-dialog
+	<ModalWindow
 		v-model='show'
-		scrollable
-		persistent
-		no-click-animation
-		:width='width'
 	>
 		<template #activator='{ props }'>
 			<v-btn
@@ -73,7 +69,7 @@
 				</template>
 			</Card>
 		</v-form>
-	</v-dialog>
+	</ModalWindow>
 </template>
 
 <script lang='ts' setup>
@@ -82,10 +78,10 @@ import { watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import Card from '@/components/Card.vue';
+import ModalWindow from '@/components/ModalWindow.vue';
 import SelectInput from '@/components/SelectInput.vue';
 import TextInput from '@/components/TextInput.vue';
 import { MqttProtocol } from '@/enums/mqtt';
-import { getModalWidth } from '@/helpers/modal';
 import ValidationRules from '@/helpers/ValidationRules';
 
 const componentProps = defineProps({
@@ -101,7 +97,6 @@ const componentProps = defineProps({
 });
 const emit = defineEmits(['edited']);
 const i18n = useI18n();
-const width = getModalWidth();
 const show: Ref<boolean> = ref(false);
 const regexCapture = new RegExp(/(?<protocol>tcp|ssl|ws|wss|mqtt|mqtts):\/\/(?<host>.+):(?<port>\d+)(\/(?<path>.*))?/);
 const protocol: Ref<MqttProtocol> = ref(MqttProtocol.TCP);

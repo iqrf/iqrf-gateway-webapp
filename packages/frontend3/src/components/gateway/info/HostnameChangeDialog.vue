@@ -1,10 +1,6 @@
 <template>
-	<v-dialog
+	<ModalWindow
 		v-model='show'
-		persistent
-		scrollable
-		no-click-animation
-		:width='width'
 	>
 		<template #activator='{ props }'>
 			<v-btn
@@ -58,7 +54,7 @@
 				</v-btn>
 			</template>
 		</Card>
-	</v-dialog>
+	</ModalWindow>
 </template>
 
 <script lang='ts' setup>
@@ -77,8 +73,8 @@ import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
 import Card from '@/components/Card.vue';
+import ModalWindow from '@/components/ModalWindow.vue';
 import TextInput from '@/components/TextInput.vue';
-import { getModalWidth } from '@/helpers/modal';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
@@ -93,7 +89,6 @@ const componentProps = defineProps({
 const i18n = useI18n();
 const hostnameService: HostnameService = useApiClient().getGatewayServices().getHostnameService();
 const daemonConfigurationService: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
-const width = getModalWidth();
 const show: Ref<boolean> = ref(false);
 const form: Ref<typeof VForm | null> = ref(null);
 const hostname: Ref<string> = ref('');

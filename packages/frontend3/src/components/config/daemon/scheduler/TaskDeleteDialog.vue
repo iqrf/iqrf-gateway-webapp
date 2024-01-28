@@ -1,11 +1,5 @@
 <template>
-	<v-dialog
-		v-model='show'
-		scrollable
-		persistent
-		no-click-animation
-		:width='width'
-	>
+	<ModalWindow v-model='show'>
 		<template #activator='{ props }'>
 			<v-icon
 				v-bind='props'
@@ -39,7 +33,7 @@
 				</v-btn>
 			</template>
 		</Card>
-	</v-dialog>
+	</ModalWindow>
 </template>
 
 <script lang='ts' setup>
@@ -53,7 +47,7 @@ import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import Card from '@/components/Card.vue';
-import { getModalWidth } from '@/helpers/modal';
+import ModalWindow from '@/components/ModalWindow.vue';
 import { useDaemonStore } from '@/store/daemonSocket';
 import { ComponentState } from '@/types/ComponentState';
 
@@ -67,7 +61,6 @@ const componentProps = defineProps({
 const emit = defineEmits(['deleted']);
 const i18n = useI18n();
 const daemonStore = useDaemonStore();
-const width = getModalWidth();
 const show: Ref<boolean> = ref(false);
 const msgId: Ref<string | null> = ref(null);
 

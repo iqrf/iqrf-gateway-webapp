@@ -1,10 +1,6 @@
 <template>
-	<v-dialog
+	<ModalWindow
 		v-model='show'
-		scrollable
-		persistent
-		no-click-animation
-		:width='width'
 	>
 		<template #activator='{ props }'>
 			<v-btn
@@ -62,7 +58,7 @@
 				</template>
 			</Card>
 		</v-form>
-	</v-dialog>
+	</ModalWindow>
 </template>
 
 <script lang='ts' setup>
@@ -74,7 +70,7 @@ import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
 import Card from '@/components/Card.vue';
-import { getModalWidth } from '@/helpers/modal';
+import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { ComponentState } from '@/types/ComponentState';
@@ -82,7 +78,6 @@ import { ComponentState } from '@/types/ComponentState';
 const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
 const emit = defineEmits(['import']);
 const i18n = useI18n();
-const width = getModalWidth();
 const show: Ref<boolean> = ref(false);
 const form: Ref<typeof VForm | null> = ref(null);
 const files: Ref<File[]> = ref([]);

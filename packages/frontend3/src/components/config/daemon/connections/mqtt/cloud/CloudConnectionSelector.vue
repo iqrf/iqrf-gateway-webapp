@@ -35,24 +35,20 @@
 		</v-list>
 	</v-menu>
 	<AwsCloudConnectionForm
-		:show='showAws'
-		@saved='{onSaved(); showAws = false}'
-		@close='showAws = false'
+		v-model='showAws'
+		@saved='onSaved()'
 	/>
 	<AzureCloudConnectionForm
-		:show='showAzure'
-		@saved='{onSaved(); showAzure = false}'
-		@close='showAzure = false'
+		v-model='showAzure'
+		@saved='onSaved()'
 	/>
 	<IbmCloudConnectionForm
-		:show='showIbm'
-		@saved='{onSaved(); showIbm = false}'
-		@close='showIbm = false'
+		v-model='showIbm'
+		@saved='onSaved()'
 	/>
 </template>
 
 <script lang='ts' setup>
-
 import { mdiCloudPlusOutline } from '@mdi/js';
 import { type Ref, ref } from 'vue';
 

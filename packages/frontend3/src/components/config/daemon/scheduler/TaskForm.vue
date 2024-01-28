@@ -1,11 +1,5 @@
 <template>
-	<v-dialog
-		v-model='show'
-		persistent
-		scrollable
-		no-click-animation
-		:width='width'
-	>
+	<ModalWindow v-model='show'>
 		<template #activator='{ props }'>
 			<v-btn
 				v-if='action === FormAction.Add'
@@ -201,7 +195,7 @@
 				</template>
 			</Card>
 		</v-form>
-	</v-dialog>
+	</ModalWindow>
 </template>
 
 <script lang='ts' setup>
@@ -227,10 +221,10 @@ import { type VForm } from 'vuetify/components';
 import Card from '@/components/Card.vue';
 import TaskMessageForm from '@/components/config/daemon/scheduler/TaskMessageForm.vue';
 import DataTable from '@/components/DataTable.vue';
+import ModalWindow from '@/components/ModalWindow.vue';
 import SelectInput from '@/components/SelectInput.vue';
 import TextInput from '@/components/TextInput.vue';
 import { FormAction } from '@/enums/controls';
-import { getModalWidth } from '@/helpers/modal';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useDaemonStore } from '@/store/daemonSocket';
@@ -256,7 +250,6 @@ const componentProps = defineProps({
 const emit = defineEmits(['saved']);
 const i18n = useI18n();
 const daemonStore = useDaemonStore();
-const width = getModalWidth();
 const show: Ref<boolean> = ref(false);
 const form: Ref<typeof VForm | null> = ref(null);
 const defaultTask: SchedulerRecord = {

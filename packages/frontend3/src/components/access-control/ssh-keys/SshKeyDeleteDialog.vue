@@ -1,11 +1,5 @@
 <template>
-	<v-dialog
-		v-model='show'
-		scrollable
-		persistent
-		no-click-animation
-		:width='width'
-	>
+	<ModalWindow v-model='show'>
 		<template #activator='{ props }'>
 			<v-icon
 				v-bind='props'
@@ -37,7 +31,7 @@
 				</v-btn>
 			</template>
 		</Card>
-	</v-dialog>
+	</ModalWindow>
 </template>
 
 <script lang='ts' setup>
@@ -48,7 +42,7 @@ import { ref, type Ref , type PropType } from 'vue';
 import { toast } from 'vue3-toastify';
 
 import Card from '@/components/Card.vue';
-import { getModalWidth } from '@/helpers/modal';
+import ModalWindow from '@/components/ModalWindow.vue';
 import { useApiClient } from '@/services/ApiClient';
 
 const emit = defineEmits(['refresh']);
@@ -59,7 +53,6 @@ const componentProps = defineProps({
 	},
 });
 const show: Ref<boolean> = ref(false);
-const width = getModalWidth();
 const service: SshKeyService = useApiClient().getGatewayServices().getSshKeyService();
 
 async function onSubmit(): Promise<void> {

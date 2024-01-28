@@ -15,12 +15,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-dialog
+	<ModalWindow
 		v-model='show'
-		scrollable
-		persistent
-		no-click-animation
-		:width='width'
 	>
 		<template #activator='{ props }'>
 			<v-btn
@@ -55,7 +51,7 @@ limitations under the License.
 				</v-btn>
 			</template>
 		</Card>
-	</v-dialog>
+	</ModalWindow>
 </template>
 
 <script lang='ts' setup>
@@ -63,11 +59,10 @@ import { mdiPower } from '@mdi/js';
 import { type Ref, ref } from 'vue';
 
 import Card from '@/components/Card.vue';
-import { getModalWidth } from '@/helpers/modal';
+import ModalWindow from '@/components/ModalWindow.vue';
 
 const emit = defineEmits(['confirm']);
 const show: Ref<boolean> = ref(false);
-const width = getModalWidth();
 
 function powerOff(): void {
 	emit('confirm');
