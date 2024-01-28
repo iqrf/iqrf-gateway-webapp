@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {describe, expect, it} from 'vitest';
 
-import {mockedAxios, mockedClient} from '../mocks/axios';
+import { describe, expect, it } from 'vitest';
 
-import {UserService} from '../../src/services';
+import { UserService } from '../../src/services';
 import {
 	AccountState,
 	type EmailSentResponse,
@@ -25,6 +24,7 @@ import {
 	UserLanguage,
 	UserRole,
 } from '../../src/types';
+import { mockedAxios, mockedClient } from '../mocks/axios';
 
 describe('UserService', (): void => {
 

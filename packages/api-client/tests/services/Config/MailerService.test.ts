@@ -13,12 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {beforeEach, describe, expect, it} from 'vitest';
 
-import {mockedAxios, mockedClient} from '../../mocks/axios';
+import { beforeEach, describe, expect, it } from 'vitest';
 
-import {MailerService} from '../../../src/services/Config';
-import {type MailerGetConfigResponse, type MailerConfig, MailerSmtpSecurity} from '../../../src/types/Config';
+import { MailerService } from '../../../src/services/Config';
+import {
+	type MailerGetConfigResponse,
+	type MailerConfig,
+	MailerSmtpSecurity,
+} from '../../../src/types/Config';
+import { mockedAxios, mockedClient } from '../../mocks/axios';
 
 describe('MailerService', (): void => {
 

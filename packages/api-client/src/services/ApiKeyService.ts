@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import type {AxiosResponse} from 'axios';
+import { type AxiosResponse } from 'axios';
 
-import {BaseService} from './BaseService';
+import { type ApiKeyConfig, type ApiKeyCreated, type ApiKeyInfo } from '../types';
+import { DateTimeUtils } from '../utils';
 
-import type {ApiKeyConfig, ApiKeyCreated, ApiKeyInfo} from '../types';
-import {DateTimeUtils} from '../utils';
+import { BaseService } from './BaseService';
 
 /**
  * API key service

@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
+import { type Hostname } from '../../types/Gateway/Hostname';
 import { BaseService } from '../BaseService';
-
-import type { Hostname } from '../../types/Gateway/Hostname';
 
 /**
  * Hostname service

@@ -19,6 +19,9 @@ import { BackupService } from './Maintenance/BackupService';
 
 export * from './Maintenance/BackupService';
 
+/**
+ * Maintenance services
+ */
 export class MaintenanceServices extends BaseService {
 
 	/**

@@ -15,7 +15,6 @@
  */
 
 import { BaseService } from './BaseService';
-
 import { AwsService } from './Cloud/AwsService';
 import { AzureService } from './Cloud/AzureService';
 import { IbmService } from './Cloud/IbmService';

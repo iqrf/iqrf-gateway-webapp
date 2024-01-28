@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-import {BaseService} from '../BaseService';
-
-import type {AzureIotHubConfig} from '../../types/Cloud';
+import { type AzureIotHubConfig } from '../../types/Cloud';
+import { BaseService } from '../BaseService';
 
 /**
  * Azure IoT Hub service

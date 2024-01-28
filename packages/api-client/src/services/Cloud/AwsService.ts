@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-import {BaseService} from '../BaseService';
-
-import type {AwsMqttConfig} from '../../types/Cloud';
+import { type AwsMqttConfig } from '../../types/Cloud';
+import { BaseService } from '../BaseService';
 
 /**
  * Amazon Web Services IoT service

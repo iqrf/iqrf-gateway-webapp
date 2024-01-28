@@ -35,8 +35,21 @@ module.exports = {
 	},
 	plugins: [
 		'@typescript-eslint',
+		'@stylistic',
 	],
 	rules: {
+		'@stylistic/comma-dangle': [
+			'error',
+			'always-multiline',
+		],
+		'@stylistic/eol-last': [
+			'error',
+			'always',
+		],
+		'@stylistic/object-curly-spacing': [
+			'error',
+			'always',
+		],
 		'@typescript-eslint/ban-ts-comment': 'off',
 		'@typescript-eslint/consistent-type-imports': [
 			'error',
@@ -62,6 +75,27 @@ module.exports = {
 				'SwitchCase': 1
 			}
 		],
+		'import/consistent-type-specifier-style': [
+			'error',
+			'prefer-inline',
+		],
+		'import/order': [
+			'error',
+			{
+				'alphabetize': {
+					'order': 'asc',
+					'caseInsensitive': true,
+				},
+				'pathGroups': [
+					{
+						'pattern': '@/**',
+						'group': 'internal',
+					},
+				],
+				'groups': ['builtin', 'external', 'internal', 'parent', 'sibling', 'index', 'object', 'type'],
+				'newlines-between': 'always',
+			},
+		],
 		'linebreak-style': [
 			'error',
 			'unix'
@@ -85,4 +119,16 @@ module.exports = {
 			}
 		},
 	],
+	settings: {
+		'import/parsers': {
+			'@typescript-eslint/parser': ['.ts', '.tsx'],
+		},
+		'import/resolver': {
+			'node': true,
+			'typescript': {
+				'alwaysTryTypes': true,
+				'project': './tsconfig.json',
+			},
+		},
+	},
 };

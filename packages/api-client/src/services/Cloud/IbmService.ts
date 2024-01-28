@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
+import { type IbmCloudConfig } from '../../types/Cloud';
 import { BaseService } from '../BaseService';
-
-import type { IbmCloudConfig } from '../../types/Cloud';
 
 /**
  * IBM cloud service

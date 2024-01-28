@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
-import { type AptConfig, type AptConfigRaw } from '../../types/Config/Apt';
-import { BaseService } from '../BaseService';
 import { type AxiosResponse } from 'axios';
 
+import { type AptConfig, type AptConfigRaw } from '../../types/Config/Apt';
+import { BaseService } from '../BaseService';
+
+/**
+ * APT configuration service
+ */
 export class AptService extends BaseService {
 
 	/**

@@ -33,11 +33,11 @@ import {
 	UserService,
 	VersionService,
 } from './services';
-import {CloudServices} from './services/Cloud';
-import {ConfigServices} from './services/Config';
-import {GatewayServices} from './services/Gateway';
-import {IqrfServices} from './services/Iqrf';
-import {MaintenanceServices} from './services/MaintenanceService';
+import { CloudServices } from './services/Cloud';
+import { ConfigServices } from './services/Config';
+import { GatewayServices } from './services/Gateway';
+import { IqrfServices } from './services/Iqrf';
+import { MaintenanceServices } from './services/MaintenanceService';
 
 /**
  * IQRF Gateway Webapp API client options
@@ -125,7 +125,7 @@ export class Client {
 	 * @param {AxiosRequestConfig} __namedParameters.config Axios instance configuration
 	 * @param {string|null} __namedParameters.token API key or JWT token
 	 */
-	public constructor({axiosInstance, config, token}: ClientOptions = {}) {
+	public constructor({ axiosInstance, config, token }: ClientOptions = {}) {
 		if (axiosInstance && config) {
 			throw new Error('Cannot instantiate Client with both axiosInstance and config.');
 		}

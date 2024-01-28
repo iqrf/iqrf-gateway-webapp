@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
+import { type AxiosResponse } from 'axios';
+
 import { type PowerActionResponse } from '../../types/Gateway/Power';
 import { type GatewayBackup } from '../../types/Maintenance/Backup';
 import { BaseService } from '../BaseService';
-import { type AxiosResponse } from 'axios';
 
 /**
  * Gateway backup and restore service
@@ -25,7 +26,7 @@ import { type AxiosResponse } from 'axios';
 export class BackupService extends BaseService {
 
 	public backup(params: GatewayBackup): Promise<ArrayBuffer> {
-		return this.axiosInstance.post('/maintenance/backup', params, {responseType: 'arraybuffer'})
+		return this.axiosInstance.post('/maintenance/backup', params, { responseType: 'arraybuffer' })
 			.then((response: AxiosResponse<ArrayBuffer>) => response.data);
 	}
 
@@ -35,7 +36,7 @@ export class BackupService extends BaseService {
 	 * @return {Promise<PowerActionResponse>}
 	 */
 	public restore(archive: File): Promise<PowerActionResponse> {
-		return this.axiosInstance.post('/maintenance/restore', archive, {headers: {'Content-Type': archive.type}, timeout: 120000})
+		return this.axiosInstance.post('/maintenance/restore', archive, { headers: { 'Content-Type': archive.type }, timeout: 120000 })
 			.then((response: AxiosResponse<PowerActionResponse>): PowerActionResponse => response.data);
 	}
 

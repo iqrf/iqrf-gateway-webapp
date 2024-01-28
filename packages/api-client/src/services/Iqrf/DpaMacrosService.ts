@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import type {AxiosResponse} from 'axios';
+import { type AxiosResponse } from 'axios';
 
-import {BaseService} from '../BaseService';
-import type {DpaMacroGroup} from '../../types/Iqrf';
+import { type DpaMacroGroup } from '../../types/Iqrf';
+import { BaseService } from '../BaseService';
 
 /**
  * DPA macro service

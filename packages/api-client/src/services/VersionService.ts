@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-import type {AxiosResponse} from 'axios';
+import { type AxiosResponse } from 'axios';
 
-import {BaseService} from './BaseService';
-import type {VersionBase, VersionIqrfGatewayWebapp} from '../types';
+import { type VersionBase, type VersionIqrfGatewayWebapp } from '../types';
+
+import { BaseService } from './BaseService';
 
 /**
  * Version service

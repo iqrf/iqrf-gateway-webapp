@@ -15,10 +15,10 @@
  */
 
 import { describe, expect, it } from 'vitest';
-import { mockedAxios, mockedClient } from '../../mocks/axios';
 
 import { HostnameService } from '../../../src/services/Gateway';
-import type { Hostname } from '../../../src/types/Gateway/Hostname';
+import { type Hostname } from '../../../src/types/Gateway/Hostname';
+import { mockedAxios, mockedClient } from '../../mocks/axios';
 
 describe('HostnameService', (): void => {
 

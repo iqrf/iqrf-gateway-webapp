@@ -13,10 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { AxiosResponse } from 'axios';
 
+import { type AxiosResponse } from 'axios';
+
+import {
+	type TimeConfig,
+	type TimeSet,
+	type Timezone,
+} from '../../types/Gateway/Time';
 import { BaseService } from '../BaseService';
-import type { TimeConfig, TimeSet, Timezone } from '../../types/Gateway/Time';
 
 /**
  * Time service

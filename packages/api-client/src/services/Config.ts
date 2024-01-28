@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-import {BaseService} from './BaseService';
+import { BaseService } from './BaseService';
 import { AptService } from './Config/AptService';
-
 import { IqrfGatewayControllerService } from './Config/IqrfGatewayControllerService';
 import { IqrfGatewayDaemonService } from './Config/IqrfGatewayDaemonService';
 import { IqrfGatewayInfluxdbBridgeService } from './Config/IqrfGatewayInfluxdbBridgeService';

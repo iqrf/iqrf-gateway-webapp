@@ -69,7 +69,7 @@ export enum MenderMountMode {
 	/// Read-only
 	RO = 'ro',
 	/// Read-write
-	RW = 'rw'
+	RW = 'rw',
 }
 
 /**

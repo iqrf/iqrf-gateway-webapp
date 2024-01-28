@@ -15,10 +15,14 @@
  */
 
 import { describe, expect, it } from 'vitest';
-import { mockedAxios, mockedClient } from '../../mocks/axios';
 
 import { TimeService } from '../../../src/services/Gateway';
-import type { TimeConfig, TimeSet, Timezone } from '../../../src/types/Gateway';
+import {
+	type TimeConfig,
+	type TimeSet,
+	type Timezone,
+} from '../../../src/types/Gateway';
+import { mockedAxios, mockedClient } from '../../mocks/axios';
 
 describe('TimeService', (): void => {
 

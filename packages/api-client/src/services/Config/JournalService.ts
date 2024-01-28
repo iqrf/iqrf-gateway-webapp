@@ -14,9 +14,13 @@
  * limitations under the License.
  */
 
-import { type JournalRecords, type JournalConfig } from '../../types/Config/Journal';
-import { BaseService } from '../BaseService';
 import { type AxiosResponse } from 'axios';
+
+import {
+	type JournalRecords,
+	type JournalConfig,
+} from '../../types/Config/Journal';
+import { BaseService } from '../BaseService';
 
 /**
  * Journal service
@@ -54,7 +58,7 @@ export class JournalService extends BaseService {
 		if (cursor) {
 			params.cursor = cursor;
 		}
-		return this.axiosInstance.get('/gateway/journal', {params: params})
+		return this.axiosInstance.get('/gateway/journal', { params: params })
 			.then((response: AxiosResponse<JournalRecords>): JournalRecords => response.data);
 	}
 }

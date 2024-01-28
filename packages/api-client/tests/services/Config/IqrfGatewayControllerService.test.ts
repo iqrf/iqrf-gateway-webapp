@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {describe, expect, it} from 'vitest';
 
-import {mockedAxios, mockedClient} from '../../mocks/axios';
+import { describe, expect, it } from 'vitest';
 
-import {IqrfGatewayControllerService} from '../../../src/services/Config';
+import { IqrfGatewayControllerService } from '../../../src/services/Config';
 import {
 	type IqrfGatewayControllerConfig,
 	IqrfGatewayControllerLoggingSeverity,
@@ -25,6 +24,7 @@ import {
 	type IqrfGatewayControllerMapping,
 } from '../../../src/types/Config';
 import { MappingDeviceType } from '../../../src/types/Config/Mapping';
+import { mockedAxios, mockedClient } from '../../mocks/axios';
 
 describe('IqrfGatewayControllerService', (): void => {
 
@@ -150,7 +150,7 @@ describe('IqrfGatewayControllerService', (): void => {
 
 	it('create IQRF Gateway Controller mapping', async (): Promise<void> => {
 		expect.assertions(1);
-		const expected = {...profile};
+		const expected = { ...profile };
 		delete expected.id;
 		mockedAxios.onPost('/config/controller/pins', profile)
 			.reply(function (config) {
@@ -169,7 +169,7 @@ describe('IqrfGatewayControllerService', (): void => {
 
 	it('edit IQRF Gateway Controller mapping', async(): Promise<void> => {
 		expect.assertions(0);
-		const data = {...profile};
+		const data = { ...profile };
 		data.deviceType = MappingDeviceType.Adapter;
 		mockedAxios.onPut('/config/controller/pins/1', data)
 			.reply(200);

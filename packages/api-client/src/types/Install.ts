@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {type Feature} from './Feature';
+import { type Feature } from './Feature';
 
 /**
  * Missing dependency

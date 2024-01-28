@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-import type {AxiosResponse} from 'axios';
+import { type AxiosResponse } from 'axios';
 
-import {BaseService} from '../BaseService';
 import {
 	type FileFormat,
 	type FileType,
 	type FileUploadResult,
 	type UploaderFileData,
-} from '../../types/Iqrf/Upgrade';
+} from '../../types/Iqrf';
+import { BaseService } from '../BaseService';
 
 /**
  * IQRF Upgrade service
@@ -54,6 +54,6 @@ export class UpgradeService extends BaseService {
 			type: type,
 		};
 		return this.axiosInstance.post('/iqrf/uploader', data).
-			then(() => {return;});
+			then((): void => {return;});
 	}
 }

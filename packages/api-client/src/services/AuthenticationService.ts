@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import type {AxiosResponse} from 'axios';
+import { type AxiosResponse } from 'axios';
 import * as uuid from 'uuid';
 
-import {BaseService} from './BaseService';
+import { type UserCredentials, type UserSignedIn } from '../types';
+import { UserUtils } from '../utils';
 
-import type {UserCredentials, UserSignedIn} from '../types';
-import {UserUtils} from '../utils';
+import { BaseService } from './BaseService';
 
 /**
  * Authentication service

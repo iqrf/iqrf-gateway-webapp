@@ -13,11 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {type AxiosResponse} from 'axios';
 
-import {BaseService} from '../BaseService';
-import type {SshKeyCreate, SshKeyInfo, SshKeyInfoRaw} from '../../types/Gateway';
-import {DateTimeUtils} from '../../utils';
+import { type AxiosResponse } from 'axios';
+
+import {
+	type SshKeyCreate,
+	type SshKeyInfo,
+	type SshKeyInfoRaw,
+} from '../../types/Gateway';
+import { DateTimeUtils } from '../../utils';
+import { BaseService } from '../BaseService';
 
 /**
  * SSH key service

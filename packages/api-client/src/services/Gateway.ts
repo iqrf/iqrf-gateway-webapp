@@ -15,7 +15,6 @@
  */
 
 import { BaseService } from './BaseService';
-
 import { HostnameService } from './Gateway/HostnameService';
 import { InfoService } from './Gateway/InfoService';
 import { LogService } from './Gateway/LogService';
