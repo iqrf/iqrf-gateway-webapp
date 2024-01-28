@@ -1,11 +1,5 @@
 <template>
-	<v-dialog
-		v-model='showDialog'
-		persistent
-		scrollable
-		no-click-animation
-		:width='width'
-	>
+	<ModalWindow v-model='showDialog'>
 		<template #activator='{ props }'>
 			<v-icon
 				v-bind='props'
@@ -38,7 +32,7 @@
 				</v-btn>
 			</template>
 		</Card>
-	</v-dialog>
+	</ModalWindow>
 </template>
 
 <script lang='ts' setup>
@@ -50,10 +44,9 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { toast } from 'vue3-toastify';
 
-
 import Card from '@/components/Card.vue';
+import ModalWindow from '@/components/ModalWindow.vue';
 import { basicErrorToast } from '@/helpers/errorToast';
-import { getModalWidth } from '@/helpers/modal';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
 
@@ -68,7 +61,6 @@ const router = useRouter();
 const emit = defineEmits(['refresh']);
 const componentProps = defineProps<Props>();
 const showDialog: Ref<boolean> = ref(false);
-const width = getModalWidth();
 
 function onSubmit(): void {
 	useApiClient().getUserService().delete(componentProps.user.id)

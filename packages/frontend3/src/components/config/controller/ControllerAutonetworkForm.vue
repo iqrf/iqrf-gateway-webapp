@@ -1,11 +1,5 @@
 <template>
-	<v-dialog
-		v-model='show'
-		:persistent='true'
-		scrollable
-		no-click-animation
-		:width='width'
-	>
+	<ModalWindow v-model='show'>
 		<template #activator='{ props }'>
 			<v-btn
 				v-bind='props'
@@ -88,7 +82,7 @@
 				</template>
 			</Card>
 		</v-form>
-	</v-dialog>
+	</ModalWindow>
 </template>
 
 <script lang='ts' setup>
@@ -97,8 +91,8 @@ import { type Ref, ref , watchEffect , type PropType } from 'vue';
 import { VForm } from 'vuetify/components';
 
 import Card from '@/components/Card.vue';
+import ModalWindow from '@/components/ModalWindow.vue';
 import TextInput from '@/components/TextInput.vue';
-import { getModalWidth } from '@/helpers/modal';
 import { validateForm } from '@/helpers/validateForm';
 
 const emit = defineEmits(['saved']);
@@ -109,7 +103,6 @@ const componentProps = defineProps({
 	},
 });
 const show: Ref<boolean> = ref(false);
-const width = getModalWidth();
 const form: Ref<typeof VForm | null> = ref(null);
 const config: Ref<IqrfGatewayControllerApiAutonetworkConfig | null> = ref(null);
 

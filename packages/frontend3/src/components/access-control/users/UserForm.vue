@@ -1,11 +1,5 @@
 <template>
-	<v-dialog
-		v-model='showDialog'
-		persistent
-		scrollable
-		no-click-animation
-		:width='width'
-	>
+	<ModalWindow v-model='showDialog'>
 		<template #activator='{ props }'>
 			<v-btn
 				v-if='action === FormAction.Add'
@@ -87,7 +81,7 @@
 				</template>
 			</Card>
 		</v-form>
-	</v-dialog>
+	</ModalWindow>
 </template>
 
 <script lang='ts' setup>
@@ -100,12 +94,12 @@ import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
 import Card from '@/components/Card.vue';
+import ModalWindow from '@/components/ModalWindow.vue';
 import PasswordInput from '@/components/PasswordInput.vue';
 import SelectInput from '@/components/SelectInput.vue';
 import TextInput from '@/components/TextInput.vue';
 import { FormAction } from '@/enums/controls';
 import { basicErrorToast } from '@/helpers/errorToast';
-import { getModalWidth } from '@/helpers/modal';
 import { getFilteredRoleOptions, getLanguageOptions } from '@/helpers/userData';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
@@ -121,7 +115,6 @@ const i18n = useI18n();
 const emit = defineEmits(['refresh']);
 const componentProps = defineProps<Props>();
 const showDialog: Ref<boolean> = ref(false);
-const width = getModalWidth();
 const form: Ref<typeof VForm | null> = ref(null);
 const userStore = useUserStore();
 const defaultUser: UserCreate | UserEdit = {

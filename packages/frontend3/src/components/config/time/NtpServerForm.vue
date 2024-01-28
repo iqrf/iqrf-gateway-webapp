@@ -1,10 +1,6 @@
 <template>
-	<v-dialog
+	<ModalWindow
 		v-model='show'
-		persistent
-		scrollable
-		no-click-animation
-		:width='width'
 	>
 		<template #activator='{ props }'>
 			<v-btn
@@ -56,7 +52,7 @@
 				</template>
 			</Card>
 		</v-form>
-	</v-dialog>
+	</ModalWindow>
 </template>
 
 <script lang='ts' setup>
@@ -65,9 +61,9 @@ import { ref, type Ref, watchEffect } from 'vue';
 import { VForm } from 'vuetify/components';
 
 import Card from '@/components/Card.vue';
+import ModalWindow from '@/components/ModalWindow.vue';
 import TextInput from '@/components/TextInput.vue';
 import { FormAction } from '@/enums/controls';
-import { getModalWidth } from '@/helpers/modal';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 
@@ -80,7 +76,6 @@ interface Props {
 const emit = defineEmits(['save']);
 const componentProps = defineProps<Props>();
 const show: Ref<boolean> = ref(false);
-const width = getModalWidth();
 const form: Ref<typeof VForm | null> = ref(null);
 const ntpServer: Ref<string> = ref('');
 

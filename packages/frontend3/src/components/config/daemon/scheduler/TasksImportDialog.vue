@@ -1,10 +1,6 @@
 <template>
-	<v-dialog
+	<ModalWindow
 		v-model='show'
-		scrollable
-		persistent
-		no-click-animation
-		:width='width'
 	>
 		<template #activator='{ props }'>
 			<v-btn
@@ -86,7 +82,7 @@
 				</template>
 			</Card>
 		</v-form>
-	</v-dialog>
+	</ModalWindow>
 </template>
 
 <script lang='ts' setup>
@@ -103,7 +99,7 @@ import { VForm } from 'vuetify/components';
 
 import BooleanCheckMarker from '@/components/BooleanCheckMarker.vue';
 import Card from '@/components/Card.vue';
-import { getModalWidth } from '@/helpers/modal';
+import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useDaemonStore } from '@/store/daemonSocket';
@@ -117,7 +113,6 @@ interface TaskImportResult {
 const emit = defineEmits(['imported']);
 const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
 const show: Ref<boolean> = ref(false);
-const width = getModalWidth();
 const daemonStore = useDaemonStore();
 const i18n = useI18n();
 const form: Ref<typeof VForm | null> = ref(null);

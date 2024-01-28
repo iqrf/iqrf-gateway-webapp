@@ -1,10 +1,6 @@
 <template>
-	<v-dialog
+	<ModalWindow
 		v-model='show'
-		scrollable
-		persistent
-		no-click-animation
-		:width='width'
 	>
 		<template #activator='{ props }'>
 			<v-list-item
@@ -66,7 +62,7 @@
 				</v-btn>
 			</template>
 		</Card>
-	</v-dialog>
+	</ModalWindow>
 </template>
 
 <script lang='ts' setup>
@@ -77,8 +73,8 @@ import { useI18n } from 'vue-i18n';
 
 import Card from '@/components/Card.vue';
 import DataTable from '@/components/DataTable.vue';
+import ModalWindow from '@/components/ModalWindow.vue';
 import TextInput from '@/components/TextInput.vue';
-import { getModalWidth } from '@/helpers/modal';
 import { useRepositoryClient } from '@/services/RepositoryClient';
 
 defineProps({
@@ -90,7 +86,6 @@ defineProps({
 });
 const emit = defineEmits(['apply', 'close']);
 const i18n = useI18n();
-const width = getModalWidth();
 const show: Ref<boolean> = ref(false);
 let service: ProductService;
 const headers = [
