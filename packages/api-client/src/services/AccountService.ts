@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { type AxiosResponse } from 'axios';
 
-import {BaseService} from './BaseService';
+import { type AxiosResponse } from 'axios';
 
 import {
 	type EmailSentResponse,
@@ -25,7 +24,9 @@ import {
 	type UserPasswordChange,
 	type UserSignedIn,
 } from '../types';
-import {UserUtils} from '../utils';
+import { UserUtils } from '../utils';
+
+import { BaseService } from './BaseService';
 
 /**
  * Account service

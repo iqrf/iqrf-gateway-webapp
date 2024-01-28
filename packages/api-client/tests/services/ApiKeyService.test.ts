@@ -13,14 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {describe, expect, it} from 'vitest';
 
-import {DateTime} from 'luxon';
+import { DateTime } from 'luxon';
+import { describe, expect, it } from 'vitest';
 
-import {mockedAxios, mockedClient} from '../mocks/axios';
-
-import {ApiKeyService} from '../../src/services';
-import type {ApiKeyConfig, ApiKeyCreated, ApiKeyInfo} from '../../src/types';
+import { ApiKeyService } from '../../src/services';
+import {
+	type ApiKeyConfig,
+	type ApiKeyCreated,
+	type ApiKeyInfo,
+} from '../../src/types';
+import { mockedAxios, mockedClient } from '../mocks/axios';
 
 describe('ApiKeyService', (): void => {
 
@@ -77,7 +80,7 @@ describe('ApiKeyService', (): void => {
 			description: 'Test',
 			expiration: expiration.toISO(),
 		})
-			.reply(201, {...rawApiKeys[0], key});
+			.reply(201, { ...rawApiKeys[0], key });
 		const config: ApiKeyConfig = {
 			description: 'Test',
 			expiration: expiration,

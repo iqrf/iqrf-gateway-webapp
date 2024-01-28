@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-import type {AxiosResponse} from 'axios';
+import { type AxiosResponse } from 'axios';
 
-import {BaseService} from '../BaseService';
-
-import type {IqrfGatewayControllerConfig, IqrfGatewayControllerMapping} from '../../types/Config';
+import {
+	type IqrfGatewayControllerConfig,
+	type IqrfGatewayControllerMapping,
+} from '../../types/Config';
+import { BaseService } from '../BaseService';
 
 /**
  * IQRF Gateway Controller configuration service

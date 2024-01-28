@@ -14,15 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type {AxiosResponse} from 'axios';
 
+import { type AxiosResponse } from 'axios';
+
+/**
+ * File downloader
+ */
 export class FileDownloader {
 
+	/**
+	 * Downloads file from Axios response
+	 * @param {AxiosResponse} response Axios response
+	 * @param {string} contentType MIME content type
+	 * @param {string} fileName Name of downloaded file
+	 */
 	public static downloadFromAxiosResponse(response: AxiosResponse, contentType: string, fileName: string): void {
 		const element = this.getDownloadElementFromAxiosResponse(response, contentType, fileName);
 		element.click();
 	}
 
+	/**
+	 * Creates a new file download element from Axios response
+	 * @param {AxiosResponse} response Axios response
+	 * @param {string} contentType MIME content type
+	 * @param {string} fileName Name of downloaded file
+	 */
 	public static getDownloadElementFromAxiosResponse(response: AxiosResponse, contentType: string, fileName: string): HTMLAnchorElement {
 		const contentDisposition = response.headers['content-disposition'];
 		if (contentDisposition) {
@@ -34,11 +50,23 @@ export class FileDownloader {
 		return this.getDownloadElement(response.data, contentType, fileName);
 	}
 
+	/**
+	 * Downloads file from data
+	 * @param {object|string} data Data to download
+	 * @param {string} contentType MIME content type
+	 * @param {string} fileName Name of downloaded file
+	 */
 	public static downloadFromData(data: object|string, contentType: string, fileName: string): void {
 		const element = this.getDownloadElementFromData(data, contentType, fileName);
 		element.click();
 	}
 
+	/**
+	 * Creates a new file download element from data
+	 * @param {object|string} data Data to download
+	 * @param {string} contentType MIME content type
+	 * @param {string} fileName Name of downloaded file
+	 */
 	public static getDownloadElementFromData(data: object|string, contentType: string, fileName: string): HTMLAnchorElement {
 		return this.getDownloadElement(data, contentType, fileName);
 	}
@@ -52,7 +80,7 @@ export class FileDownloader {
 	 */
 	private static getDownloadElement(rawData: object|string, contentType: string, fileName: string): HTMLAnchorElement {
 		const data = contentType === 'application/json' && typeof rawData === 'object' ? JSON.stringify(rawData, null,  '\t') : (rawData as string);
-		const blob: Blob = new Blob([data], {type: contentType});
+		const blob: Blob = new Blob([data], { type: contentType });
 		const fileUrl: string = window.URL.createObjectURL(blob);
 		const element: HTMLAnchorElement = document.createElement('a');
 		element.href = fileUrl;
@@ -60,4 +88,5 @@ export class FileDownloader {
 		document.body.appendChild(element);
 		return element;
 	}
+
 }

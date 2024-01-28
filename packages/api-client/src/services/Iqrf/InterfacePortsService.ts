@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import type {AxiosResponse} from 'axios';
+import { type AxiosResponse } from 'axios';
 
-import {BaseService} from '../BaseService';
 import {
 	type InterfacePorts,
 	type IqrfInterfaceType,
 } from '../../types/Iqrf';
+import { BaseService } from '../BaseService';
 
 /**
  * Interface ports service
@@ -30,7 +30,7 @@ export class InterfacePortsService extends BaseService {
 	/**
 	 * Fetch interface ports
 	 * @param {IqrfInterfaceType} interfaceType Interface type
-	 * @return {Promise<string>} Inteface ports
+	 * @return {Promise<string>} Interface ports
 	 */
 	public getInterfacePorts(interfaceType: IqrfInterfaceType): Promise<string[]> {
 		return this.axiosInstance.get('iqrf/interfaces/')

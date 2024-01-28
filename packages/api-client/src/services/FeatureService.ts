@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-import type {AxiosResponse} from 'axios';
+import { type AxiosResponse } from 'axios';
 
-import {BaseService} from './BaseService';
-import type {Feature, FeatureConfig, Features} from '../types';
+import { type Feature, type FeatureConfig, type Features } from '../types';
+
+import { BaseService } from './BaseService';
 
 /**
  * Feature service

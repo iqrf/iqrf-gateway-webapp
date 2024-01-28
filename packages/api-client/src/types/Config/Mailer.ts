@@ -50,7 +50,7 @@ export enum MailerSmtpSecurity {
 	/**
 	 * TLS
 	 */
-	TLS = 'ssl'
+	TLS = 'ssl',
 
 }
 

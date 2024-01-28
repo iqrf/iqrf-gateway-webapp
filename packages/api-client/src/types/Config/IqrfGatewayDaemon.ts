@@ -327,7 +327,7 @@ export enum ShapeTraceVerbosity {
 	/// Information
 	Info = 'INF',
 	/// Warning
-	Warning = 'WAR'
+	Warning = 'WAR',
 }
 
 /**

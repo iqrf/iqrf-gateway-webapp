@@ -16,8 +16,9 @@
 
 import { type AxiosResponse } from 'axios';
 
-import { BaseService } from './BaseService';
 import { type MenderRemount, type MenderConfig } from '../types/Config';
+
+import { BaseService } from './BaseService';
 
 /**
  * Mender service

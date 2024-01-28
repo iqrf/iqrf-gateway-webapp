@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {type DateTime, type Duration} from 'luxon';
+import { type DateTime, type Duration } from 'luxon';
 
 /**
  * Power action response

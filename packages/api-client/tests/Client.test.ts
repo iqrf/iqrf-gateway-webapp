@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-import axios, {type AxiosInstance, type AxiosRequestConfig} from 'axios';
-import {beforeEach, describe, expect, it} from 'vitest';
+import axios, { type AxiosInstance, type AxiosRequestConfig } from 'axios';
+import { beforeEach, describe, expect, it } from 'vitest';
 
-import {Client} from '../src';
-
+import { Client } from '../src';
 import {
 	AccountService,
 	ApiKeyService,
@@ -29,10 +28,10 @@ import {
 	UserService,
 	VersionService,
 } from '../src/services';
-import {CloudServices} from '../src/services/Cloud';
-import {ConfigServices} from '../src/services/Config';
-import {GatewayServices} from '../src/services/Gateway';
-import {IqrfServices} from '../src/services/Iqrf';
+import { CloudServices } from '../src/services/Cloud';
+import { ConfigServices } from '../src/services/Config';
+import { GatewayServices } from '../src/services/Gateway';
+import { IqrfServices } from '../src/services/Iqrf';
 
 describe('Client', (): void => {
 
@@ -64,7 +63,7 @@ describe('Client', (): void => {
 			timeout: 5_000,
 		};
 		const axiosInstance: AxiosInstance = axios.create(config);
-		client = new Client({axiosInstance: axiosInstance});
+		client = new Client({ axiosInstance: axiosInstance });
 		expect(client.getAxiosInstance())
 			.toBeDefined();
 		expect(client.getAxiosInstance().defaults.auth)
@@ -81,7 +80,7 @@ describe('Client', (): void => {
 			baseURL: 'https://iqrf-gw.exaple.com/api/',
 			timeout: 5_000,
 		};
-		client = new Client({config: config});
+		client = new Client({ config: config });
 		expect(client.getAxiosInstance())
 			.toBeDefined();
 		expect(client.getAxiosInstance().defaults.auth)
@@ -99,7 +98,7 @@ describe('Client', (): void => {
 			timeout: 5_000,
 		};
 		const axiosInstance: AxiosInstance = axios.create(config);
-		expect(() => (new Client({axiosInstance: axiosInstance, config: config})))
+		expect(() => (new Client({ axiosInstance: axiosInstance, config: config })))
 			.toThrow('Cannot instantiate Client with both axiosInstance and config.');
 	});
 

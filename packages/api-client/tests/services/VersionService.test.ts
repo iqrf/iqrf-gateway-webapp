@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {describe, expect, it} from 'vitest';
 
-import {mockedAxios, mockedClient} from '../mocks/axios';
+import { describe, expect, it } from 'vitest';
 
-import {VersionService} from '../../src/services';
-import type {VersionBase, VersionIqrfGatewayWebapp} from '../../src/types';
+import { VersionService } from '../../src/services';
+import { type VersionBase, type VersionIqrfGatewayWebapp } from '../../src/types';
+import { mockedAxios, mockedClient } from '../mocks/axios';
 
 describe('VersionService', (): void => {
 

@@ -96,6 +96,7 @@
 		"uuid": "^9.0.1"
 	},
 	"devDependencies": {
+		"@stylistic/eslint-plugin": "^1.5.4",
 		"@types/luxon": "^3.4.2",
 		"@types/node": "^20.12.8",
 		"@types/punycode": "^2.1.4",

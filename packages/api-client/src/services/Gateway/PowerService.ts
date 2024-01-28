@@ -13,12 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { AxiosResponse } from 'axios';
-import {DateTime, Duration} from 'luxon';
 
+import { type AxiosResponse } from 'axios';
+import { DateTime, Duration } from 'luxon';
+
+import {
+	type GatewayUptime,
+	type GatewayUptimeRaw,
+	type PowerActionResponse,
+} from '../../types/Gateway';
 import { BaseService } from '../BaseService';
-import { type GatewayUptime, type GatewayUptimeRaw, type PowerActionResponse } from '../../types/Gateway';
 
+/**
+ * Gateway power service
+ */
 export class PowerService extends BaseService {
 
 	/**

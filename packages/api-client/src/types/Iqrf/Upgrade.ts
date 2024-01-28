@@ -24,7 +24,7 @@ export enum FileFormat {
 	/// IQRF Plugin
 	IQRF = 'iqrf',
 	/// TR configuration
-	TRCNFG = 'trcnfg'
+	TRCNFG = 'trcnfg',
 }
 
 export enum FileType {

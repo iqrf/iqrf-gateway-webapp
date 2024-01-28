@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import type {AxiosResponse} from 'axios';
+import { type AxiosResponse } from 'axios';
 
-import {BaseService} from '../BaseService';
-import type {IqrfRepositoryConfig} from '../../types/Config';
+import { type IqrfRepositoryConfig } from '../../types/Config';
+import { BaseService } from '../BaseService';
 
 /**
  * IQRF repository configuration service

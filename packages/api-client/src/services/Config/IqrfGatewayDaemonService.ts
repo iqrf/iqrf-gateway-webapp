@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-import type { AxiosResponse } from 'axios';
+import { type AxiosResponse } from 'axios';
 
-import { BaseService } from '../BaseService';
 import {
 	type IqrfGatewayDaemonConfig,
 	type IqrfGatewayDaemonComponent,
@@ -27,6 +26,7 @@ import {
 	type IqrfGatewayDaemonSchedulerMessagings,
 } from '../../types/Config';
 import { type MappingType } from '../../types/Config/Mapping';
+import { BaseService } from '../BaseService';
 
 /**
  * IQRF Gateway Daemon configuration service
@@ -113,8 +113,8 @@ export class IqrfGatewayDaemonService extends BaseService {
 	 * @return {Promise<IqrfGatewayDaemonMapping[]>} IQRF Gateway Daemon mappings
 	 */
 	public listMappings(interfaceType: MappingType | null = null): Promise<IqrfGatewayDaemonMapping[]> {
-		const params = interfaceType ? {interface: interfaceType} : {};
-		return this.axiosInstance.get('/mappings', {params: params})
+		const params = interfaceType ? { interface: interfaceType } : {};
+		return this.axiosInstance.get('/mappings', { params: params })
 			.then((response: AxiosResponse<IqrfGatewayDaemonMapping[]>) => response.data);
 	}
 
@@ -163,7 +163,7 @@ export class IqrfGatewayDaemonService extends BaseService {
 	 * @param {File} data Scheduler task JSON file or ZIP archive
 	 */
 	public schedulerImport(data: File): Promise<void> {
-		return this.axiosInstance.post('/scheduler/import', data, {headers: {'Content-Type': data.type}})
+		return this.axiosInstance.post('/scheduler/import', data, { headers: { 'Content-Type': data.type } })
 			.then((): void => {return;});
 	}
 
@@ -172,7 +172,7 @@ export class IqrfGatewayDaemonService extends BaseService {
 	 * @return {Promise<ArrayBuffer>} Scheduler task ZIP archive
 	 */
 	public schedulerExport(): Promise<ArrayBuffer> {
-		return this.axiosInstance.get('/scheduler/export', {responseType: 'arraybuffer'})
+		return this.axiosInstance.get('/scheduler/export', { responseType: 'arraybuffer' })
 			.then((response: AxiosResponse<ArrayBuffer>) => response.data);
 	}
 

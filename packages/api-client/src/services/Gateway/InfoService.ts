@@ -14,11 +14,17 @@
  * limitations under the License.
  */
 
-import type { AxiosResponse } from 'axios';
+import { type AxiosResponse } from 'axios';
 
+import {
+	type GatewayBriefInformation,
+	type GatewayInformation,
+} from '../../types/Gateway';
 import { BaseService } from '../BaseService';
-import {type GatewayBriefInformation, type GatewayInformation} from '../../types/Gateway';
 
+/**
+ * Gateway information service
+ */
 export class InfoService extends BaseService {
 
 	/**

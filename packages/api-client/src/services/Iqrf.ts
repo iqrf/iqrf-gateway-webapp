@@ -15,7 +15,6 @@
  */
 
 import { BaseService } from './BaseService';
-
 import { DpaMacrosService } from './Iqrf/DpaMacrosService';
 import { InterfacePortsService } from './Iqrf/InterfacePortsService';
 import { UpgradeService } from './Iqrf/UpgradeService';

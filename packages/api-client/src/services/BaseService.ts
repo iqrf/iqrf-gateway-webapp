@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import type{AxiosInstance} from 'axios';
+import { type AxiosInstance } from 'axios';
 
-import type {Client} from '../client';
+import { type Client } from '../client';
 
 /**
  * Base service

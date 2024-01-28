@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 
-import type { AxiosResponse } from 'axios';
+import { type AxiosResponse } from 'axios';
 
 import { BaseService } from '../BaseService';
 
+/**
+ * Log service
+ */
 export class LogService extends BaseService {
 
 	/**
@@ -44,7 +47,7 @@ export class LogService extends BaseService {
 	 * @returns {Promise<ArrayBuffer>} Logs archive
 	 */
 	public exportLogs(): Promise<ArrayBuffer> {
-		return this.apiClient.getAxiosInstance().get('/gateway/logs/export', {responseType: 'arraybuffer'})
+		return this.apiClient.getAxiosInstance().get('/gateway/logs/export', { responseType: 'arraybuffer' })
 			.then((response: AxiosResponse<ArrayBuffer>): ArrayBuffer => response.data);
 	}
 

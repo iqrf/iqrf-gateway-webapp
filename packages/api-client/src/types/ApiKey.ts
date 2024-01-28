@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import type {DateTime} from 'luxon';
+import { type DateTime } from 'luxon';
 
 /**
  * API key configuration
