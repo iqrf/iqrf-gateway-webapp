@@ -1,39 +1,15 @@
 <template>
-	<ModalWindow v-model='show'>
-		<template #activator='{ props }'>
-			<v-icon
-				v-bind='props'
-				color='error'
-				size='large'
-				:icon='mdiDelete'
-			/>
+	<DeleteModalWindow
+		ref='dialog'
+		:component-state='componentState'
+		:tooltip='$t("components.configuration.daemon.scheduler.actions.delete")'
+		@submit='removeTask'
+	>
+		<template #title>
+			{{ $t('components.configuration.daemon.scheduler.delete.title') }}
 		</template>
-		<Card>
-			<template #title>
-				{{ $t('components.configuration.daemon.scheduler.delete.title') }}
-			</template>
-			{{ $t('components.configuration.daemon.scheduler.delete.prompt', {id: componentProps.taskId}) }}
-			<template #actions>
-				<v-btn
-					color='primary'
-					variant='elevated'
-					:disabled='componentState === ComponentState.Saving'
-					@click='removeTask'
-				>
-					{{ $t('common.buttons.delete') }}
-				</v-btn>
-				<v-spacer />
-				<v-btn
-					color='grey-darken-2'
-					variant='elevated'
-					:disabled='componentState === ComponentState.Saving'
-					@click='close'
-				>
-					{{ $t('common.buttons.close') }}
-				</v-btn>
-			</template>
-		</Card>
-	</ModalWindow>
+		{{ $t('components.configuration.daemon.scheduler.delete.prompt', {id: componentProps.taskId}) }}
+	</DeleteModalWindow>
 </template>
 
 <script lang='ts' setup>
@@ -41,13 +17,11 @@ import { SchedulerMessages } from '@iqrf/iqrf-gateway-daemon-utils/enums';
 import { SchedulerService } from '@iqrf/iqrf-gateway-daemon-utils/services';
 import { type DaemonApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
-import { mdiDelete } from '@mdi/js';
 import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
-import Card from '@/components/Card.vue';
-import ModalWindow from '@/components/ModalWindow.vue';
+import DeleteModalWindow from '@/components/DeleteModalWindow.vue';
 import { useDaemonStore } from '@/store/daemonSocket';
 import { ComponentState } from '@/types/ComponentState';
 
@@ -59,9 +33,9 @@ const componentProps = defineProps({
 	},
 });
 const emit = defineEmits(['deleted']);
+const dialog: Ref<typeof DeleteModalWindow | null> = ref(null);
 const i18n = useI18n();
 const daemonStore = useDaemonStore();
-const show: Ref<boolean> = ref(false);
 const msgId: Ref<string | null> = ref(null);
 
 daemonStore.$onAction(
@@ -103,11 +77,7 @@ function handleRemoveTask(rsp: DaemonApiResponse): void {
 		i18n.t('components.configuration.daemon.scheduler.messages.delete.success', {id: componentProps.taskId}),
 	);
 	componentState.value = ComponentState.Ready;
-	close();
+	dialog.value?.close();
 	emit('deleted');
-}
-
-function close(): void {
-	show.value = false;
 }
 </script>

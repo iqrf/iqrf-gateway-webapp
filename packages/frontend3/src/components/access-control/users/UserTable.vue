@@ -37,15 +37,7 @@
 						{{ $t('components.accessControl.users.actions.edit') }}
 					</v-tooltip>
 				</span>
-				<span>
-					<UserDeleteDialog :user='toRaw(item)' :only-user='users.length === 1' @refresh='getUsers' />
-					<v-tooltip
-						activator='parent'
-						location='bottom'
-					>
-						{{ $t('components.accessControl.users.actions.delete') }}
-					</v-tooltip>
-				</span>
+				<UserDeleteDialog :user='toRaw(item)' :only-user='users.length === 1' @refresh='getUsers' />
 			</template>
 		</DataTable>
 	</Card>

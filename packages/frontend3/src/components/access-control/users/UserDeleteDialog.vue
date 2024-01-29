@@ -1,51 +1,25 @@
 <template>
-	<ModalWindow v-model='showDialog'>
-		<template #activator='{ props }'>
-			<v-icon
-				v-bind='props'
-				color='error'
-				size='large'
-			>
-				{{ mdiDelete }}
-			</v-icon>
+	<DeleteModalWindow
+		ref='dialog'
+		:tooltip='$t("components.accessControl.users.actions.delete")'
+		@submit='onSubmit'
+	>
+		<template #title>
+			{{ $t('components.accessControl.users.delete.title') }}
 		</template>
-		<Card header-color='primary'>
-			<template #title>
-				{{ $t('components.accessControl.users.delete.title') }}
-			</template>
-			{{ $t('components.accessControl.users.delete.prompt', {user: user.username}) }}
-			<template #actions>
-				<v-btn
-					color='primary'
-					variant='elevated'
-					@click='onSubmit'
-				>
-					{{ $t('common.buttons.delete') }}
-				</v-btn>
-				<v-spacer />
-				<v-btn
-					color='grey-darken-2'
-					variant='elevated'
-					@click='close'
-				>
-					{{ $t('common.buttons.cancel') }}
-				</v-btn>
-			</template>
-		</Card>
-	</ModalWindow>
+		{{ $t('components.accessControl.users.delete.prompt', {user: user.username}) }}
+	</DeleteModalWindow>
 </template>
 
 <script lang='ts' setup>
 import { type UserInfo } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { mdiDelete } from '@mdi/js';
 import { type AxiosError } from 'axios';
 import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { toast } from 'vue3-toastify';
 
-import Card from '@/components/Card.vue';
-import ModalWindow from '@/components/ModalWindow.vue';
+import DeleteModalWindow from '@/components/DeleteModalWindow.vue';
 import { basicErrorToast } from '@/helpers/errorToast';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
@@ -59,8 +33,8 @@ const userStore = useUserStore();
 const i18n = useI18n();
 const router = useRouter();
 const emit = defineEmits(['refresh']);
+const dialog: Ref<typeof DeleteModalWindow | null> = ref(null);
 const componentProps = defineProps<Props>();
-const showDialog: Ref<boolean> = ref(false);
 
 function onSubmit(): void {
 	useApiClient().getUserService().delete(componentProps.user.id)
@@ -85,7 +59,7 @@ function onSubmit(): void {
 }
 
 function close(): void {
-	showDialog.value = false;
+	dialog.value?.close();
 }
 
 </script>

@@ -98,18 +98,10 @@
 								{{ $t('components.configuration.daemon.scheduler.actions.edit') }}
 							</v-tooltip>
 						</span>
-						<span>
-							<TaskDeleteDialog
-								:task-id='item.taskId'
-								@deleted='listTasks'
-							/>
-							<v-tooltip
-								activator='parent'
-								location='bottom'
-							>
-								{{ $t('components.configuration.daemon.scheduler.actions.delete') }}
-							</v-tooltip>
-						</span>
+						<TaskDeleteDialog
+							:task-id='item.taskId'
+							@deleted='listTasks'
+						/>
 					</v-responsive>
 				</v-skeleton-loader>
 			</template>

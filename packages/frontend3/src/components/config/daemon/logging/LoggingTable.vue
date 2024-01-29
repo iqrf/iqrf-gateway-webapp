@@ -48,18 +48,10 @@
 								{{ $t('components.configuration.daemon.logging.actions.edit') }}
 							</v-tooltip>
 						</span>
-						<span>
-							<LoggingDeleteDialog
-								:logging-instance='item'
-								@deleted='getConfigs'
-							/>
-							<v-tooltip
-								activator='parent'
-								location='bottom'
-							>
-								{{ $t('components.configuration.daemon.logging.actions.delete') }}
-							</v-tooltip>
-						</span>
+						<LoggingDeleteDialog
+							:logging-instance='item'
+							@deleted='getConfigs'
+						/>
 					</template>
 				</DataTable>
 			</v-responsive>

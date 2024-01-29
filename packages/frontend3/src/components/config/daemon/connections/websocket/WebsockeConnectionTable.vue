@@ -1,7 +1,7 @@
 <template>
 	<Card>
 		<template #title>
-			{{ $t('pages.configuration.daemon.connections.mqtt.title') }}
+			{{ $t('pages.configuration.daemon.connections.ws.title') }}
 		</template>
 		<DataTable
 			:headers='headers'
