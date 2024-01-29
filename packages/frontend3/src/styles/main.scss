@@ -32,6 +32,14 @@ a {
 	text-transform: none !important;
 }
 
+.v-table > .v-table__wrapper > table {
+	> tbody > tr > th,
+	> thead > tr > th,
+	> tfoot > tr > th {
+		font-weight: 600 !important;
+	}
+}
+
 .table-paddings {
 	td,
 	th {
