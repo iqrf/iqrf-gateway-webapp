@@ -53,18 +53,10 @@
 						{{ $t('components.configuration.profiles.actions.edit') }}
 					</v-tooltip>
 				</span>
-				<span>
-					<DeviceProfileDeleteDialog
-						:profile='item'
-						@deleted='getProfiles'
-					/>
-					<v-tooltip
-						activator='parent'
-						location='bottom'
-					>
-						{{ $t('components.configuration.profiles.actions.delete') }}
-					</v-tooltip>
-				</span>
+				<DeviceProfileDeleteDialog
+					:profile='item'
+					@deleted='getProfiles'
+				/>
 			</template>
 		</DataTable>
 	</Card>

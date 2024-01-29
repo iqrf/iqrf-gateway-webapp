@@ -1,58 +1,33 @@
 <template>
-	<ModalWindow v-model='show'>
-		<template #activator='{ props }'>
-			<v-icon
-				v-bind='props'
-				color='error'
-				size='large'
-				:icon='mdiDelete'
-			/>
+	<DeleteModalWindow
+		ref='dialog'
+		:tooltip='$t("components.accessControl.sshKeys.actions.delete")'
+		@submit='onSubmit'
+	>
+		<template #title>
+			{{ $t('components.accessControl.sshKeys.delete.title') }}
 		</template>
-		<Card>
-			<template #title>
-				{{ $t('components.accessControl.sshKeys.delete.title') }}
-			</template>
-			{{ $t('components.accessControl.sshKeys.delete.prompt', {id: sshKey.id}) }}
-			<template #actions>
-				<v-btn
-					color='primary'
-					variant='elevated'
-					@click='onSubmit'
-				>
-					{{ $t('common.buttons.delete') }}
-				</v-btn>
-				<v-spacer />
-				<v-btn
-					color='grey-darken-2'
-					variant='elevated'
-					@click='close'
-				>
-					{{ $t('common.buttons.close') }}
-				</v-btn>
-			</template>
-		</Card>
-	</ModalWindow>
+		{{ $t('components.accessControl.sshKeys.delete.prompt', {id: sshKey.id}) }}
+	</DeleteModalWindow>
 </template>
 
 <script lang='ts' setup>
 import { type SshKeyService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
 import { type SshKeyInfo } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
-import { mdiDelete } from '@mdi/js';
 import { ref, type Ref , type PropType } from 'vue';
 import { toast } from 'vue3-toastify';
 
-import Card from '@/components/Card.vue';
-import ModalWindow from '@/components/ModalWindow.vue';
+import DeleteModalWindow from '@/components/DeleteModalWindow.vue';
 import { useApiClient } from '@/services/ApiClient';
 
 const emit = defineEmits(['refresh']);
+const dialog: Ref<typeof DeleteModalWindow | null> = ref(null);
 const componentProps = defineProps({
 	sshKey: {
 		type: Object as PropType<SshKeyInfo>,
 		required: true,
 	},
 });
-const show: Ref<boolean> = ref(false);
 const service: SshKeyService = useApiClient().getGatewayServices().getSshKeyService();
 
 async function onSubmit(): Promise<void> {
@@ -65,6 +40,6 @@ async function onSubmit(): Promise<void> {
 }
 
 function close(): void {
-	show.value = false;
+	dialog.value?.close();
 }
 </script>

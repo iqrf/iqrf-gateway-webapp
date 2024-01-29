@@ -35,26 +35,16 @@
 						{{ $t('components.accessControl.apiKeys.actions.edit') }}
 					</v-tooltip>
 				</span>
-				<span>
-					<ApiKeyDeleteDialog
-						:api-key='toRaw(item)'
-						@refresh='getKeys'
-					/>
-					<v-tooltip
-						activator='parent'
-						location='bottom'
-					>
-						{{ $t('components.accessControl.apiKeys.actions.delete') }}
-					</v-tooltip>
-				</span>
+				<ApiKeyDeleteDialog
+					:api-key='toRaw(item)'
+					@refresh='getKeys'
+				/>
 			</template>
 		</DataTable>
 	</Card>
 </template>
 
 <script lang='ts' setup>
-
-
 import { type ApiKeyService } from '@iqrf/iqrf-gateway-webapp-client/services';
 import { type ApiKeyInfo } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { mdiReload } from '@mdi/js';

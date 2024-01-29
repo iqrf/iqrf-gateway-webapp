@@ -42,15 +42,7 @@
 						{{ $t('components.accessControl.sshKeys.actions.edit') }}
 					</v-tooltip>
 				</span>
-				<span>
-					<SshKeyDeleteDialog :ssh-key='toRaw(item)' @refresh='getKeys' />
-					<v-tooltip
-						activator='parent'
-						location='bottom'
-					>
-						{{ $t('components.accessControl.sshKeys.actions.delete') }}
-					</v-tooltip>
-				</span>
+				<SshKeyDeleteDialog :ssh-key='toRaw(item)' @refresh='getKeys' />
 			</template>
 			<template #expanded-row='{ columns, item }'>
 				<td :colspan='columns.length'>
