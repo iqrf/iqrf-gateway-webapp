@@ -1,5 +1,5 @@
 import { type DaemonMode, ManagementMessages } from '../enums';
-import type { DaemonMessageOptions } from '../utils';
+import { type DaemonMessageOptions } from '../utils';
 
 /**
  * Daemon Management API service
@@ -44,18 +44,14 @@ export class ManagementService {
 	}
 
 	/**
-	 * Sets new Daemon mode
-	 * @param {DaemonMode} mode Daemon mode to set
+	 * Fetches Daemon version
 	 * @param {DaemonMessageOptions} options Message options
 	 * @return {DaemonMessageOptions} Message options with request
 	 */
-	public static setMode(mode: DaemonMode, options: DaemonMessageOptions): DaemonMessageOptions {
+	public static getVersion(options: DaemonMessageOptions): DaemonMessageOptions {
 		options.request = {
-			mType: ManagementMessages.Mode,
+			mType: ManagementMessages.Version,
 			data: {
-				req: {
-					operMode: mode,
-				},
 				returnVerbose: true,
 			},
 		};
@@ -78,14 +74,18 @@ export class ManagementService {
 	}
 
 	/**
-	 * Updates IQRF repository cache
+	 * Sets new Daemon mode
+	 * @param {DaemonMode} mode Daemon mode to set
 	 * @param {DaemonMessageOptions} options Message options
 	 * @return {DaemonMessageOptions} Message options with request
 	 */
-	public static updateCache(options: DaemonMessageOptions): DaemonMessageOptions {
+	public static setMode(mode: DaemonMode, options: DaemonMessageOptions): DaemonMessageOptions {
 		options.request = {
-			mType: ManagementMessages.UpdateCache,
+			mType: ManagementMessages.Mode,
 			data: {
+				req: {
+					operMode: mode,
+				},
 				returnVerbose: true,
 			},
 		};
@@ -93,13 +93,13 @@ export class ManagementService {
 	}
 
 	/**
-	 * Fetches Daemon version
+	 * Updates IQRF repository cache
 	 * @param {DaemonMessageOptions} options Message options
 	 * @return {DaemonMessageOptions} Message options with request
 	 */
-	public static getVersion(options: DaemonMessageOptions): DaemonMessageOptions {
+	public static updateCache(options: DaemonMessageOptions): DaemonMessageOptions {
 		options.request = {
-			mType: ManagementMessages.Version,
+			mType: ManagementMessages.UpdateCache,
 			data: {
 				returnVerbose: true,
 			},

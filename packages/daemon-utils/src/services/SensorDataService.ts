@@ -1,6 +1,6 @@
-import { IqmeshServiceMessages, SensorDataServiceCommands } from '../../enums';
-import { type SensorDataServiceConfig } from '../../types';
-import { type DaemonMessageOptions } from '../../utils';
+import { SensorDataMessages } from '../enums';
+import { type SensorDataConfig } from '../types';
+import { type DaemonMessageOptions } from '../utils';
 
 /**
  * IQMESH SensorData API service
@@ -8,40 +8,15 @@ import { type DaemonMessageOptions } from '../../utils';
 export class SensorDataService {
 
 	/**
-	 * Fetch service configuration
+	 * Fetch configuration
 	 * @param {DaemonMessageOptions} options Message options
 	 * @return {DaemonMessageOptions} Message options with request
 	 */
 	public static getConfig(options: DaemonMessageOptions): DaemonMessageOptions {
 		options.request = {
-			mType: IqmeshServiceMessages.SensorData,
+			mType: SensorDataMessages.GetConfig,
 			data: {
-				req: {
-					command: SensorDataServiceCommands.GetConfig,
-				},
-				returnVerbose: true,
-			},
-		};
-		return options;
-	}
-
-	/**
-	 * Set service configuration
-	 * @param {SensorDataServiceConfig} config
-	 * @param {DaemonMessageOptions} options Message options
-	 * @return {DaemonMessageOptions} Message options with request
-	 */
-	public static setConfig(config: SensorDataServiceConfig, options: DaemonMessageOptions): DaemonMessageOptions {
-		options.request = {
-			mType: IqmeshServiceMessages.SensorData,
-			data: {
-				req: {
-					command: SensorDataServiceCommands.SetConfig,
-					autoRun: config.autoRun,
-					asyncReports: config.asyncReports,
-					period: config.period,
-					messagingList: config.messagingList,
-				},
+				req: {},
 				returnVerbose: true,
 			},
 		};
@@ -55,10 +30,31 @@ export class SensorDataService {
 	 */
 	public static invoke(options: DaemonMessageOptions): DaemonMessageOptions {
 		options.request = {
-			mType: IqmeshServiceMessages.SensorData,
+			mType: SensorDataMessages.Invoke,
+			data: {
+				req: {},
+				returnVerbose: true,
+			},
+		};
+		return options;
+	}
+
+	/**
+	 * Set configuration
+	 * @param {SensorDataConfig} config
+	 * @param {DaemonMessageOptions} options Message options
+	 * @return {DaemonMessageOptions} Message options with request
+	 */
+	public static setConfig(config: SensorDataConfig, options: DaemonMessageOptions): DaemonMessageOptions {
+		options.request = {
+			mType: SensorDataMessages.SetConfig,
 			data: {
 				req: {
-					command: SensorDataServiceCommands.Invoke,
+					autoRun: config.autoRun,
+					asyncReports: config.asyncReports,
+					period: config.period,
+					retryPeriod: config.retryPeriod,
+					messagingList: config.messagingList,
 				},
 				returnVerbose: true,
 			},
@@ -73,11 +69,9 @@ export class SensorDataService {
 	 */
 	public static start(options: DaemonMessageOptions): DaemonMessageOptions {
 		options.request = {
-			mType: IqmeshServiceMessages.SensorData,
+			mType: SensorDataMessages.Start,
 			data: {
-				req: {
-					command: SensorDataServiceCommands.Start,
-				},
+				req: {},
 				returnVerbose: true,
 			},
 		};
@@ -91,11 +85,9 @@ export class SensorDataService {
 	 */
 	public static stop(options: DaemonMessageOptions): DaemonMessageOptions {
 		options.request = {
-			mType: IqmeshServiceMessages.SensorData,
+			mType: SensorDataMessages.Stop,
 			data: {
-				req: {
-					command: SensorDataServiceCommands.Stop,
-				},
+				req: {},
 				returnVerbose: true,
 			},
 		};

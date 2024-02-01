@@ -2,18 +2,26 @@
  * Daemon Mode enum
  */
 export enum DaemonMode {
-	Unknown = 'unknown',
-	Operational = 'operational',
+	/// Forwarding mode
 	Forwarding = 'forwarding',
-	Service = 'service'
+	/// Operational mode
+	Operational = 'operational',
+	/// Service mode
+	Service = 'service',
+	/// Unknown mode (used before Daemon components are fully initialized)
+	Unknown = 'unknown',
 }
 
 /**
  * Channel state enum
  */
 export enum ChannelState {
-	Ready = 'Ready',
-	NotReady = 'NotReady',
+	/// Exclusive access assigned
 	ExclusiveAccess = 'ExclusiveAccess',
-	Unknown = 'unknown'
+	/// Not ready
+	NotReady = 'NotReady',
+	/// Ready
+	Ready = 'Ready',
+	/// Unknown mode (used before Daemon components are fully initialized)
+	Unknown = 'unknown',
 }
