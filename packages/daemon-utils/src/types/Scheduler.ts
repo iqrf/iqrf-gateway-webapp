@@ -47,24 +47,24 @@ export interface SchedulerRecordTask {
  * Scheduler record interface
  */
 export interface SchedulerRecord {
-	/// Client ID
-	clientId: string;
-	/// Task ID
-	taskId: string;
-	/// New task ID
-	newTaskId?: string;
-	/// Description
-	description: string;
-	/// Task jobs
-	task: SchedulerRecordTask[];
-	/// Time specification
-	timeSpec: SchedulerRecordTimeSpec;
-	/// Persistent record
-	persist: boolean;
-	/// Enabled
-	enabled: boolean;
 	/// Active
 	active?: boolean;
+	/// Client ID
+	clientId: string;
+	/// Description
+	description: string;
+	/// Enabled
+	enabled: boolean;
+	/// New task ID
+	newTaskId?: string;
+	/// Persistent record
+	persist: boolean;
+	/// Task jobs
+	task: SchedulerRecordTask[];
+	/// Task ID
+	taskId: string;
+	/// Time specification
+	timeSpec: SchedulerRecordTimeSpec;
 }
 
 /**
@@ -76,5 +76,5 @@ export enum SchedulerTaskType {
 	/// datetime iso8601 string
 	ONESHOT = 'oneshot',
 	/// seconds
-	PERIODIC = 'periodic'
+	PERIODIC = 'periodic',
 }

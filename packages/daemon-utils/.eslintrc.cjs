@@ -22,8 +22,11 @@ module.exports = {
 	},
 	extends: [
 		'eslint:recommended',
-		'plugin:@typescript-eslint/recommended',
-		'plugin:@typescript-eslint/recommended-requiring-type-checking',
+		'plugin:@typescript-eslint/stylistic-type-checked',
+		'plugin:import/recommended',
+		'plugin:import/typescript',
+		'plugin:promise/recommended',
+		'plugin:typescript-sort-keys/recommended',
 	],
 	parser: '@typescript-eslint/parser',
 	parserOptions: {
@@ -32,8 +35,21 @@ module.exports = {
 	},
 	plugins: [
 		'@typescript-eslint',
+		'@stylistic',
 	],
 	rules: {
+		'@stylistic/comma-dangle': [
+			'error',
+			'always-multiline',
+		],
+		'@stylistic/eol-last': [
+			'error',
+			'always',
+		],
+		'@stylistic/object-curly-spacing': [
+			'error',
+			'always',
+		],
 		'@typescript-eslint/ban-ts-comment': 'off',
 		'@typescript-eslint/consistent-type-imports': [
 			'error',
@@ -59,10 +75,32 @@ module.exports = {
 				'SwitchCase': 1
 			}
 		],
+		'import/consistent-type-specifier-style': [
+			'error',
+			'prefer-inline',
+		],
+		'import/order': [
+			'error',
+			{
+				'alphabetize': {
+					'order': 'asc',
+					'caseInsensitive': true,
+				},
+				'pathGroups': [
+					{
+						'pattern': '@/**',
+						'group': 'internal',
+					},
+				],
+				'groups': ['builtin', 'external', 'internal', 'parent', 'sibling', 'index', 'object', 'type'],
+				'newlines-between': 'always',
+			},
+		],
 		'linebreak-style': [
 			'error',
 			'unix'
 		],
+		'no-unused-vars': 'off',
 		'no-use-before-define': 'error',
 		'quotes': [
 			'error',
@@ -72,5 +110,17 @@ module.exports = {
 			'error',
 			'always'
 		],
+	},
+	settings: {
+		'import/parsers': {
+			'@typescript-eslint/parser': ['.ts', '.tsx'],
+		},
+		'import/resolver': {
+			'node': true,
+			'typescript': {
+				'alwaysTryTypes': true,
+				'project': './tsconfig.json',
+			},
+		},
 	},
 };

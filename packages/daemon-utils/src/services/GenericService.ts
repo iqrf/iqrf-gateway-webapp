@@ -1,5 +1,5 @@
 import { GenericMessages } from '../enums';
-import type { DaemonMessageOptions } from '../utils';
+import  { type DaemonMessageOptions } from '../utils';
 
 /**
  * Daemon Generic API service

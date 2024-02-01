@@ -1,6 +1,6 @@
 import { SchedulerMessages } from '../enums';
 import { type SchedulerRecord } from '../types';
-import type { DaemonMessageOptions } from '../utils';
+import { type DaemonMessageOptions } from '../utils';
 
 /**
  * Scheduler API service
@@ -9,46 +9,6 @@ export class SchedulerService {
 
 	/// Client ID
 	public static readonly ClientID = 'SchedulerMessaging';
-
-	/**
-	 * Fetches list of scheduler tasks
-	 * @param {boolean} details Include full task details in response
-	 * @param {DaemonMessageOptions} options Message options
-	 * @return {DaemonMessageOptions} Message options with request
-	 */
-	public static listTasks(details: boolean, options: DaemonMessageOptions): DaemonMessageOptions {
-		options.request = {
-			mType: SchedulerMessages.ListTasks,
-			data: {
-				req: {
-					clientId: SchedulerService.ClientID,
-					details: details,
-				},
-				returnVerbose: true,
-			},
-		};
-		return options;
-	}
-
-	/**
-	 * Fetches task by ID
-	 * @param {string} taskId Task ID
-	 * @param {DaemonMessageOptions} options Message options
-	 * @return {DaemonMessageOptions} Message options with request
-	 */
-	public static getTask(taskId: string, options: DaemonMessageOptions): DaemonMessageOptions {
-		options.request = {
-			mType: SchedulerMessages.GetTask,
-			data: {
-				req: {
-					clientId: SchedulerService.ClientID,
-					taskId: taskId,
-				},
-				returnVerbose: true,
-			},
-		};
-		return options;
-	}
 
 	/**
 	 * Add new scheduler task
@@ -85,18 +45,38 @@ export class SchedulerService {
 	}
 
 	/**
-	 * Remove scheduler task by ID
+	 * Fetches task by ID
 	 * @param {string} taskId Task ID
 	 * @param {DaemonMessageOptions} options Message options
 	 * @return {DaemonMessageOptions} Message options with request
 	 */
-	public static removeTask(taskId: string, options: DaemonMessageOptions): DaemonMessageOptions {
+	public static getTask(taskId: string, options: DaemonMessageOptions): DaemonMessageOptions {
 		options.request = {
-			mType: SchedulerMessages.RemoveTask,
+			mType: SchedulerMessages.GetTask,
 			data: {
 				req: {
 					clientId: SchedulerService.ClientID,
 					taskId: taskId,
+				},
+				returnVerbose: true,
+			},
+		};
+		return options;
+	}
+
+	/**
+	 * Fetches list of scheduler tasks
+	 * @param {boolean} details Include full task details in response
+	 * @param {DaemonMessageOptions} options Message options
+	 * @return {DaemonMessageOptions} Message options with request
+	 */
+	public static listTasks(details: boolean, options: DaemonMessageOptions): DaemonMessageOptions {
+		options.request = {
+			mType: SchedulerMessages.ListTasks,
+			data: {
+				req: {
+					clientId: SchedulerService.ClientID,
+					details: details,
 				},
 				returnVerbose: true,
 			},
@@ -115,6 +95,26 @@ export class SchedulerService {
 			data: {
 				req: {
 					clientId: SchedulerService.ClientID,
+				},
+				returnVerbose: true,
+			},
+		};
+		return options;
+	}
+
+	/**
+	 * Remove scheduler task by ID
+	 * @param {string} taskId Task ID
+	 * @param {DaemonMessageOptions} options Message options
+	 * @return {DaemonMessageOptions} Message options with request
+	 */
+	public static removeTask(taskId: string, options: DaemonMessageOptions): DaemonMessageOptions {
+		options.request = {
+			mType: SchedulerMessages.RemoveTask,
+			data: {
+				req: {
+					clientId: SchedulerService.ClientID,
+					taskId: taskId,
 				},
 				returnVerbose: true,
 			},
@@ -161,5 +161,4 @@ export class SchedulerService {
 		};
 		return options;
 	}
-
 }

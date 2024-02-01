@@ -56,9 +56,9 @@ export class SchedulerCron {
 	]);
 
 	/**
-	 * @constant {Array<string>} dayAliases Day of week field aliases
+	 * @constant {string[]} dayAliases Day of week field aliases
 	 */
-	private static dayAliases: Array<string> = [
+	private static dayAliases: string[] = [
 		'sun',
 		'mon',
 		'tue',
@@ -69,9 +69,9 @@ export class SchedulerCron {
 	];
 
 	/**
-	 * @constant {Array<string>} monthAliases Months fields aliases
+	 * @constant {string[]} monthAliases Months fields aliases
 	 */
-	private static monthAliases: Array<string> = [
+	private static monthAliases: string[] = [
 		'jan',
 		'feb',
 		'mar',
