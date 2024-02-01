@@ -5,10 +5,13 @@
 	<AptConfig />
 </template>
 
-<route lang='yaml'>
-name: AptConfiguration
-meta:
-  feature: 'unattendedUpgrades'
+<route>
+{
+	"name": "AptConfiguration",
+	"meta": {
+		"feature": "unattendedUpgrades",
+	},
+}
 </route>
 
 <script lang='ts' setup>

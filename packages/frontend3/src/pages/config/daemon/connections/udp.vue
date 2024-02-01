@@ -5,8 +5,10 @@
 	<UdpConnectionTable />
 </template>
 
-<route lang='yaml'>
-name: UdpConnectionsConfiguration
+<route>
+{
+	"name": "UdpConnectionsConfiguration",
+}
 </route>
 
 <script lang='ts' setup>

@@ -5,10 +5,13 @@
 	<AccountRecoveryConfirmForm :uuid='uuid' />
 </template>
 
-<route lang='yaml'>
-name: AccountRecoveryConfirmation
-meta:
-  requiresAuth: false
+<route>
+{
+	"name": "AccountRecoveryConfirmation",
+	"meta": {
+		"requiresAuth": false,
+	},
+}
 </route>
 
 <script lang='ts' setup>

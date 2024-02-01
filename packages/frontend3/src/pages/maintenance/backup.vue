@@ -6,8 +6,10 @@
 	<GatewayRestore />
 </template>
 
-<route lang='yaml'>
-name: 'BackupMaintenance'
+<route>
+{
+	"name": "BackupMaintenance",
+}
 </route>
 
 <script lang='ts' setup>

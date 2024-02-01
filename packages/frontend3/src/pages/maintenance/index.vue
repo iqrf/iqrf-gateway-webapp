@@ -5,8 +5,10 @@
 	<Disambiguation :links='links' />
 </template>
 
-<route lang='yaml'>
-name: 'Maintenance'
+<route>
+{
+	"name": "Maintenance",
+}
 </route>
 
 <script lang='ts' setup>

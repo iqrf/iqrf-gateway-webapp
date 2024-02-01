@@ -5,8 +5,10 @@
 	<SmtpForm />
 </template>
 
-<route lang='yaml'>
-name: SmtpConfiguration
+<route>
+{
+	"name": "SmtpConfiguration",
+}
 </route>
 
 <script lang='ts' setup>

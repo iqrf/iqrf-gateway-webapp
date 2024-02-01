@@ -5,8 +5,10 @@
 	<PacketSender />
 </template>
 
-<route lang='yaml'>
-name: 'SendDpaPacket'
+<route>
+{
+	"name": "SendDpaPacket",
+}
 </route>
 
 <script lang='ts' setup>

@@ -5,8 +5,13 @@
 	<MonitConfig />
 </template>
 
-<route lang='yaml'>
-name: MonitConfiguration
+<route>
+{
+	"name": "MonitConfiguration",
+	"meta": {
+		"feature": "monit",
+	},
+}
 </route>
 
 <script lang='ts' setup>

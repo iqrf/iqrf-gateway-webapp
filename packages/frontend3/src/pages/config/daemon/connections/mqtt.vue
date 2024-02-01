@@ -5,8 +5,10 @@
 	<MqttConnectionTable />
 </template>
 
-<route lang='yaml'>
-name: MqttConnectionsConfiguration
+<route>
+{
+	"name": "MqttConnectionsConfiguration",
+}
 </route>
 
 <script lang='ts' setup>

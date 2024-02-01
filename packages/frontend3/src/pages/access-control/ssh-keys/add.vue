@@ -5,8 +5,13 @@
 	<SshKeyTable />
 </template>
 
-<route lang='yaml'>
-name: SshKeysAdd
+<route>
+{
+	"name": "SshKeysAdd",
+	"meta": {
+		"roles": ["admin"],
+	},
+}
 </route>
 
 <script lang='ts' setup>

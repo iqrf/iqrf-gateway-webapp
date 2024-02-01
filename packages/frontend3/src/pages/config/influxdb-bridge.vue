@@ -5,8 +5,13 @@
 	<InfluxdbBridgeConfig />
 </template>
 
-<route lang='yaml'>
-name: InfluxdbBridgeConfiguration
+<route>
+{
+	"name": "InfluxdbBridgeConfiguration",
+	"meta": {
+		"feature": "iqrfGatewayInfluxdbBridge",
+	},
+}
 </route>
 
 <script lang='ts' setup>

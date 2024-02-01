@@ -5,8 +5,10 @@
 	<LogSelector />
 </template>
 
-<route lang='yaml'>
-name: 'GatewayLogs'
+<route>
+{
+	"name": "GatewayLogs",
+}
 </route>
 
 <script lang='ts' setup>

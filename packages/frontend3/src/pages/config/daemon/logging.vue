@@ -5,8 +5,10 @@
 	<LoggingTable />
 </template>
 
-<route lang='yaml'>
-name: LoggingConfiguration
+<route>
+{
+	"name": "LoggingConfiguration",
+}
 </route>
 
 <script lang='ts' setup>

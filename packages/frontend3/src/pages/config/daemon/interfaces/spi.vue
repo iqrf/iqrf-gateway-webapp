@@ -5,8 +5,10 @@
 	<SpiConfig />
 </template>
 
-<route lang='yaml'>
-name: SpiConfiguration
+<route>
+{
+	"name": "SpiConfiguration",
+}
 </route>
 
 <script lang='ts' setup>

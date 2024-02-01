@@ -22,8 +22,10 @@ limitations under the License.
 	<UptimeStats class='mt-3' />
 </template>
 
-<route lang='yaml'>
-name: PowerControl
+<route>
+{
+	"name": "PowerControl",
+}
 </route>
 
 <script lang='ts' setup>

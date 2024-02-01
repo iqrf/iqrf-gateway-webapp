@@ -5,10 +5,13 @@
 	<JournalConfig />
 </template>
 
-<route lang='yaml'>
-name: JournalConfiguration
-meta:
-  feature: 'journal'
+<route>
+{
+	"name": "JournalConfiguration",
+	"meta": {
+		"feature": "journal",
+	},
+}
 </route>
 
 <script lang='ts' setup>

@@ -5,12 +5,15 @@
 	<SshKeyTable :install='true' />
 </template>
 
-<route lang='yaml'>
-name: InstallSshKeys
-meta:
-  layout: Install
-  requiresAuth: false
-  installWizard: true
+<route>
+{
+	"name": "InstallSshKeys",
+	"meta": {
+		"layout": "Install",
+		"requiresAuth": false,
+		"installWizard": true,
+	},
+}
 </route>
 
 <script lang='ts' setup>

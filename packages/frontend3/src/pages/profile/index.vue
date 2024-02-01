@@ -6,8 +6,10 @@
 	<PasswordChangeForm />
 </template>
 
-<route lang='yaml'>
-name: Profile
+<route>
+{
+	"name": "Profile",
+}
 </route>
 
 <script lang='ts' setup>

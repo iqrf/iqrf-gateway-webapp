@@ -5,8 +5,10 @@
 	<Disambiguation :links='links' />
 </template>
 
-<route lang='yaml'>
-name: DaemonConnectionsConfiguration
+<route>
+{
+	"name": "DaemonConnectionsConfiguration",
+}
 </route>
 
 <script lang='ts' setup>

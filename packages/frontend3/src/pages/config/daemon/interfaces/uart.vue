@@ -5,8 +5,10 @@
 	<UartConfig />
 </template>
 
-<route lang='yaml'>
-name: UartConfiguration
+<route>
+{
+	"name": "UartConfiguration",
+}
 </route>
 
 <script lang='ts' setup>

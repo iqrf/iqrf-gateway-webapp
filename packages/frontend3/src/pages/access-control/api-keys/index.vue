@@ -5,6 +5,15 @@
 	<ApiKeyTable />
 </template>
 
+<route>
+{
+	"name": "ApiKeys",
+	"meta": {
+		"roles": ["admin"],
+	},
+}
+</route>
+
 <script lang='ts' setup>
 import { Head } from '@unhead/vue/components';
 

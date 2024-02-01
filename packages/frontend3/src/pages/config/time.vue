@@ -5,8 +5,10 @@
 	<TimeConfig />
 </template>
 
-<route lang='yaml'>
-name: TimeConfiguration
+<route>
+{
+	"name": "TimeConfiguration",
+}
 </route>
 
 <script lang='ts' setup>

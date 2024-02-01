@@ -5,8 +5,10 @@
 	<GatewayInfoTable />
 </template>
 
-<route lang='yaml'>
-name: 'GatewayInformation'
+<route>
+{
+	"name": "GatewayInformation",
+}
 </route>
 
 <script lang='ts' setup>

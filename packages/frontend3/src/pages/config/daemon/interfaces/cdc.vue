@@ -5,8 +5,10 @@
 	<CdcConfig />
 </template>
 
-<route lang='yaml'>
-name: CdcConfiguration
+<route>
+{
+	"name": "CdcConfiguration",
+}
 </route>
 
 <script lang='ts' setup>

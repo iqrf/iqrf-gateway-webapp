@@ -5,12 +5,15 @@
 	<SmtpForm :install='true' />
 </template>
 
-<route lang='yaml'>
-name: InstallSmtp
-meta:
-  layout: Install
-  requiresAuth: false
-  installWizard: true
+<route>
+{
+	"name": "InstallSmtp",
+	"meta": {
+		"layout": "Install",
+		"requiresAuth": false,
+		"installWizard": true,
+	},
+}
 </route>
 
 <script lang='ts' setup>

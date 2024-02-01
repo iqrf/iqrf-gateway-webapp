@@ -10,10 +10,13 @@
 	</Card>
 </template>
 
-<route lang='yaml'>
-name: NotFound
-meta:
-  requiresAuth: false
+<route>
+{
+	"name": "NotFound",
+	"meta": {
+		"requiresAuth": false,
+	},
+}
 </route>
 
 <script lang='ts' setup>

@@ -5,12 +5,15 @@
 	<InstallGatewayInfo />
 </template>
 
-<route lang='yaml'>
-name: InstallGwInfo
-meta:
-  layout: Install
-  requiresAuth: false
-  installWizard: true
+<route>
+{
+	"name": "InstallGwInfo",
+	"meta": {
+		"layout": "Install",
+		"requiresAuth": false,
+		"installWizard": true,
+	},
+}
 </route>
 
 <script lang='ts' setup>
