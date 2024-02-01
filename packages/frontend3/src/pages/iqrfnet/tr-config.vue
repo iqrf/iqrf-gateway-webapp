@@ -5,8 +5,10 @@
 	<TrConfigTabs />
 </template>
 
-<route lang='yaml'>
-name: 'TrConfig'
+<route>
+{
+	"name": "TrConfig",
+}
 </route>
 
 <script lang='ts' setup>

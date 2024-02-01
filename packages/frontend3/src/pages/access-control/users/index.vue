@@ -5,8 +5,13 @@
 	<UserTable />
 </template>
 
-<route lang='yaml'>
-name: Users
+<route>
+{
+	"name": "Users",
+	"meta": {
+		"roles": ["admin", "basicadmin"],
+	},
+}
 </route>
 
 <script lang='ts' setup>

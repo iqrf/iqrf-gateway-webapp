@@ -5,8 +5,13 @@
 	<ControllerConfig />
 </template>
 
-<route lang='yaml'>
-name: ControllerConfiguration
+<route>
+{
+	"name": "ControllerConfiguration",
+	"meta": {
+		"feature": "iqrfGatewayController",
+	},
+}
 </route>
 
 <script lang='ts' setup>

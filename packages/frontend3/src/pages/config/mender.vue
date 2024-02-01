@@ -5,8 +5,13 @@
 	<MenderConfig />
 </template>
 
-<route lang='yaml'>
-name: MenderConfiguration
+<route>
+{
+	"name": "MenderConfiguration",
+	"meta": {
+		"feature": "mender",
+	},
+}
 </route>
 
 <script lang='ts' setup>

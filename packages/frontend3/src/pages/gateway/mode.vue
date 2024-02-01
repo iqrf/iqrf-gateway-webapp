@@ -5,8 +5,10 @@
 	<ModeTable />
 </template>
 
-<route lang='yaml'>
-name: 'GatewayMode'
+<route>
+{
+	"name": "GatewayMode",
+}
 </route>
 
 <script lang='ts' setup>

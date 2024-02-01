@@ -5,8 +5,10 @@
 	<Disambiguation :links='links' />
 </template>
 
-<route lang='yaml'>
-name: 'Iqrfnet'
+<route>
+{
+	"name": "Iqrfnet",
+}
 </route>
 
 <script lang='ts' setup>

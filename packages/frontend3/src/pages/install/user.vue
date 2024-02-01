@@ -5,12 +5,15 @@
 	<CreateUserForm />
 </template>
 
-<route lang='yaml'>
-name: InstallUser
-meta:
-  layout: Install
-  requiresAuth: false
-  installWizard: true
+<route>
+{
+  "name": "InstallUser",
+  "meta": {
+		"layout": "Install",
+		"requiresAuth": false,
+		"installWizard": true,
+	},
+}
 </route>
 
 <script lang='ts' setup>

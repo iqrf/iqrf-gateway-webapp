@@ -5,8 +5,10 @@
 	<JsonSender />
 </template>
 
-<route lang='yaml'>
-name: 'SendJsonRequest'
+<route>
+{
+	"name": "SendJsonRequest",
+}
 </route>
 
 <script lang='ts' setup>

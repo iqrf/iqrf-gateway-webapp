@@ -6,8 +6,13 @@
 	<RemountControls v-if='featureStore.isEnabled(Feature.remount)' class='my-4' />
 </template>
 
-<route lang='yaml'>
-name: 'BackupMender'
+<route>
+{
+	"name": "BackupMender",
+	"meta": {
+		"feature": "mender",
+	},
+}
 </route>
 
 <script lang='ts' setup>

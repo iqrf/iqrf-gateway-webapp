@@ -5,10 +5,13 @@
 	<SignInForm />
 </template>
 
-<route lang='yaml'>
-name: SignIn
-meta:
-  requiresAuth: false
+<route>
+{
+  "name": "SignIn",
+  "meta": {
+		"requiresAuth": false,
+  },
+}
 </route>
 
 <script lang='ts' setup>

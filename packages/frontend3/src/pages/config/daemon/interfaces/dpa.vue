@@ -6,8 +6,10 @@
 	<ActiveInterface />
 </template>
 
-<route lang='yaml'>
-name: DpaConfiguration
+<route>
+{
+	"name": "DpaConfiguration",
+}
 </route>
 
 <script lang='ts' setup>

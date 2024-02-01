@@ -23,10 +23,13 @@
 	</Card>
 </template>
 
-<route lang='yaml'>
-name: AccountVerification
-meta:
-  requiresAuth: false
+<route>
+{
+	"name": "AccountVerification",
+	"meta": {
+		"requiresAuth": false,
+	},
+}
 </route>
 
 <script lang='ts' setup>

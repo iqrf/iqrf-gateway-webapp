@@ -2,8 +2,10 @@
 	<Disambiguation :links='links' />
 </template>
 
-<route lang='yaml'>
-name: Dashboard
+<route>
+{
+	"name": "Dashboard",
+}
 </route>
 
 <script lang='ts' setup>

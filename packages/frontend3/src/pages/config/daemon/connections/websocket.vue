@@ -5,8 +5,10 @@
 	<WebsocketConnectionTable />
 </template>
 
-<route lang='yaml'>
-name: WebsocketConnectionsConfiguration
+<route>
+{
+	"name": "WebsocketConnectionsConfiguration",
+}
 </route>
 
 <script lang='ts' setup>

@@ -5,12 +5,15 @@
 	<Dashboard />
 </template>
 
-<route lang='yaml'>
-name: InstallDisambiguation
-meta:
-  layout: Install
-  requiresAuth: false
-  installWizard: true
+<route>
+{
+	"name": "InstallDisambiguation",
+	"meta": {
+		"layout": "Install",
+		"requiresAuth": false,
+		"installWizard": true,
+	},
+}
 </route>
 
 <script lang='ts' setup>

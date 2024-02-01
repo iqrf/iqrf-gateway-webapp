@@ -21,8 +21,10 @@ limitations under the License.
 	<ServiceTable />
 </template>
 
-<route lang='yaml'>
-name: Services
+<route>
+{
+	"name": "Services",
+}
 </route>
 
 <script lang='ts' setup>

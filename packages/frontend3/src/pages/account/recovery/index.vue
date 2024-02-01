@@ -5,10 +5,13 @@
 	<AccountRecoveryForm />
 </template>
 
-<route lang='yaml'>
-name: AccountRecovery
-meta:
-  requiresAuth: false
+<route>
+{
+  "name": "AccountRecovery",
+  "meta": {
+		"requiresAuth": false,
+  },
+}
 </route>
 
 <script lang='ts' setup>

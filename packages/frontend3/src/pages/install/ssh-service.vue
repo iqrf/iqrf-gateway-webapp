@@ -5,12 +5,15 @@
 	<SshService />
 </template>
 
-<route lang='yaml'>
-name: InstallSshService
-meta:
-  layout: Install
-  requiresAuth: false
-  installWizard: true
+<route>
+{
+	"name": "InstallSshService",
+	"meta": {
+		"layout": "Install",
+		"requiresAuth": false,
+		"installWizard": true,
+	},
+}
 </route>
 
 <script lang='ts' setup>

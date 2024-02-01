@@ -5,8 +5,10 @@
 	<Disambiguation :links='links' />
 </template>
 
-<route lang='yaml'>
-name: 'Gateway'
+<route>
+{
+	"name": "Gateway",
+}
 </route>
 
 <script lang='ts' setup>

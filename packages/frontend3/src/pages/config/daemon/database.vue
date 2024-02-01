@@ -5,8 +5,10 @@
 	<IqrfDbConfig />
 </template>
 
-<route lang='yaml'>
-name: DatabaseConfiguration
+<route>
+{
+	"name": "DatabaseConfiguration",
+}
 </route>
 
 <script lang='ts' setup>

@@ -5,8 +5,10 @@
 	<TaskTable />
 </template>
 
-<route lang='yaml'>
-name: SchedulerConfiguration
+<route>
+{
+	"name": "SchedulerConfiguration",
+}
 </route>
 
 <script lang='ts' setup>

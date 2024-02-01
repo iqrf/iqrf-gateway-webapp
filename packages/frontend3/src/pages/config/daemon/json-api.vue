@@ -5,8 +5,10 @@
 	<JsonApiConfig />
 </template>
 
-<route lang='yaml'>
-name: JsonApiConfiguration
+<route>
+{
+	"name": "JsonApiConfiguration",
+}
 </route>
 
 <script lang='ts' setup>

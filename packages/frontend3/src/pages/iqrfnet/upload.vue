@@ -5,8 +5,10 @@
 	<HandlerUploader />
 </template>
 
-<route lang='yaml'>
-name: 'CoordinatorUpload'
+<route>
+{
+	"name": "CoordinatorUpload",
+}
 </route>
 
 <script lang='ts' setup>

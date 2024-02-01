@@ -5,8 +5,10 @@
 	<IqrfRepositoryConfig />
 </template>
 
-<route lang='yaml'>
-name: RepositoryConfiguration
+<route>
+{
+	"name": "RepositoryConfiguration",
+}
 </route>
 
 <script lang='ts' setup>
