@@ -28,41 +28,17 @@ use Rector\CodingStyle\Rector\PostInc\PostIncDecToPreIncDecRector;
 use Rector\CodingStyle\Rector\Stmt\NewlineAfterStatementRector;
 use Rector\CodingStyle\Rector\String_\SymplifyQuoteEscapeRector;
 use Rector\Config\RectorConfig;
-use Rector\Core\ValueObject\PhpVersion;
 use Rector\Doctrine\Set\DoctrineSetList;
-use Rector\Set\ValueObject\SetList;
 use Rector\Symfony\Set\SymfonySetList;
 use Rector\Transform\Rector\Attribute\AttributeKeyToClassConstFetchRector;
 
-return static function (RectorConfig $rectorConfig): void {
-	$rectorConfig->paths([
+return RectorConfig::configure()
+	->withPaths([
 		__DIR__ . '/app',
 		__DIR__ . '/bin',
 		__DIR__ . '/tests',
-	]);
-
-	$rectorConfig->phpVersion(PhpVersion::PHP_81);
-
-	// register a single rule
-	$rectorConfig->rule(InlineConstructorDefaultToPropertyRector::class);
-
-	// define sets of rules
-	$rectorConfig->sets([
-		DoctrineSetList::DOCTRINE_CODE_QUALITY,
-		DoctrineSetList::DOCTRINE_COMMON_20,
-		DoctrineSetList::DOCTRINE_DBAL_30,
-		DoctrineSetList::DOCTRINE_ORM_214,
-		SetList::CODE_QUALITY,
-		SetList::CODING_STYLE,
-		SetList::DEAD_CODE,
-		SetList::PHP_81,
-		SetList::TYPE_DECLARATION,
-		SetList::INSTANCEOF,
-		SymfonySetList::SYMFONY_63,
-		SymfonySetList::SYMFONY_CODE_QUALITY,
-	]);
-
-	$rectorConfig->skip([
+	])
+	->withSkip([
 		AttributeKeyToClassConstFetchRector::class,
 		CallableThisArrayToAnonymousFunctionRector::class,
 		CatchExceptionNameMatchingTypeRector::class,
@@ -73,6 +49,28 @@ return static function (RectorConfig $rectorConfig): void {
 		SplitDoubleAssignRector::class,
 		SymplifyQuoteEscapeRector::class,
 		__DIR__ . '/tests/tmp',
-	]);
-
-};
+	])
+	->withPHPStanConfigs([
+		__DIR__ . '/phpstan.neon',
+	])
+	->withPhpVersion(80100)
+	->withPhpSets(php81: true)
+	->withPreparedSets(
+		deadCode: true,
+		codeQuality: true,
+		codingStyle: true,
+		typeDeclarations: true,
+		instanceOf: true,
+	)
+	->withSets([
+		DoctrineSetList::DOCTRINE_CODE_QUALITY,
+		DoctrineSetList::DOCTRINE_COMMON_20,
+		DoctrineSetList::DOCTRINE_DBAL_30,
+		DoctrineSetList::DOCTRINE_ORM_214,
+		SymfonySetList::SYMFONY_63,
+		SymfonySetList::SYMFONY_CODE_QUALITY,
+	])
+	->withRules([
+		InlineConstructorDefaultToPropertyRector::class,
+	])
+	->withIndent("\t");
