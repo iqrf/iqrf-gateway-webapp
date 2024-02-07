@@ -67,13 +67,19 @@ limitations under the License.
 				</ValidationObserver>
 			</CCardBody>
 		</CCard>
+		<ApiKeyDisplayModal
+			ref='displayModal'
+			:api-key='generatedKey'
+			@closed='redirectToList'
+		/>
 	</div>
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
+import {Component, Prop, Ref, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import ApiKeyDisplayModal from '@/components/Core/ApiKeyDisplayModal.vue';
 
 import ApiKeyService from '@/services/ApiKeyService';
 import {Datetime} from 'vue-datetime';
@@ -85,6 +91,7 @@ import {MetaInfo} from 'vue-meta';
 
 @Component({
 	components: {
+		ApiKeyDisplayModal,
 		CButton,
 		CCard,
 		CCardBody,
@@ -136,6 +143,16 @@ export default class ApiKeyForm extends Vue {
 	 * @property {number} keyId API key id
 	 */
 	@Prop({required: false, default: null}) keyId!: number;
+
+	/**
+	 * @var {ApiKeyDisplayModal} displayModal Display modal reference
+	 */
+	@Ref('displayModal') readonly displayModal!: ApiKeyDisplayModal;
+
+	/**
+	 * @var {string|null} generatedKey Generated API key
+	 */
+	private generatedKey: string|null = null;
 
 	/**
 	 * Computes page title depending on the action (add, edit)
@@ -203,31 +220,39 @@ export default class ApiKeyForm extends Vue {
 		this.$store.commit('spinner/SHOW');
 		if (this.keyId !== null) {
 			ApiKeyService.editApiKey(this.keyId, this.metadata)
-				.then(() => this.successfulSave())
+				.then(this.editSuccess)
 				.catch(this.handleSaveError);
 		} else {
 			ApiKeyService.addApiKey(this.metadata)
-				.then(() => this.successfulSave())
+				.then((rsp: AxiosResponse) => {
+					this.generatedKey = rsp.data.key;
+					this.addSuccess();
+				})
 				.catch(this.handleSaveError);
 		}
 	}
 
 	/**
-	 * Handles successful REST API response
+	 * Handles API key add success
 	 */
-	private successfulSave(): void {
+	private addSuccess(): void {
 		this.$store.commit('spinner/HIDE');
-		if (this.$route.path === '/security/api-key/add') {
-			this.$toast.success(
-				this.$t('core.security.apiKey.messages.addSuccess')
-					.toString()
-			);
-		} else {
-			this.$toast.success(
-				this.$t('core.security.apiKey.messages.editSuccess', {key: this.keyId})
-					.toString()
-			);
-		}
+		this.$toast.success(
+			this.$t('core.security.apiKey.messages.addSuccess')
+				.toString()
+		);
+		this.displayModal.showModal();
+	}
+
+	/**
+	 * Handles API key edit success
+	 */
+	private editSuccess(): void {
+		this.$store.commit('spinner/HIDE');
+		this.$toast.success(
+			this.$t('core.security.apiKey.messages.editSuccess', {key: this.keyId})
+				.toString()
+		);
 		this.$router.push('/security/api-key/');
 	}
 
@@ -241,6 +266,13 @@ export default class ApiKeyForm extends Vue {
 			'core.security.apiKey.messages.' + (this.$route.path === '/security/api-key/add' ? 'add' : 'edit') + 'Failed',
 			{key: this.keyId}
 		);
+	}
+
+	/**
+	 * Redirect to API key list following API key display modal closed
+	 */
+	private redirectToList(): void {
+		this.$router.push('/security/api-key/');
 	}
 }
 </script>
