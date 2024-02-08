@@ -19,6 +19,7 @@ limitations under the License.
 		:show.sync='show'
 		color='success'
 		size='lg'
+		:centered='true'
 		:close-on-backdrop='false'
 		:fade='false'
 	>
