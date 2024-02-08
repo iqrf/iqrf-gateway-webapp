@@ -1,10 +1,18 @@
-iqrf-gateway-webapp (2.5.17~alpha~1.gbp1356da) UNRELEASED; urgency=medium
+iqrf-gateway-webapp (2.5.18) stable; urgency=medium
 
-  ** SNAPSHOT build @1356da24dd1bb9aede5b9a39c2223678232d304f **
+  [ Karel Hanák ]
+  * Prepare for version 2.5.17-alpha
 
-  * UNRELEASED
+  [ Roman Ondráček ]
+  * Debian packaging: disallow Mender client v4.0.0+
 
- -- Karel Hanák <karel.hanak@iqrf.org>  Thu, 18 Jan 2024 09:38:56 +0100
+  [ Karel Hanák ]
+  * API key: added one time display modal for newly generated key
+
+  [ Roman Ondráček ]
+  * Security: center vertically API key display modal
+
+ -- Roman Ondráček <roman.ondracek@iqrf.com>  Thu, 08 Feb 2024 07:53:30 +0100
 
 iqrf-gateway-webapp (2.5.16) stable; urgency=medium
 
