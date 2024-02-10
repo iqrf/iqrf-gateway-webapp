@@ -79,6 +79,22 @@ export class SensorDataService {
 	}
 
 	/**
+	 * Get worker status
+	 * @param {DaemonMessageOptions} options Message options
+	 * @return {DaemonMessageOptions} Message options with request
+	 */
+	public static status(options: DaemonMessageOptions): DaemonMessageOptions {
+		options.request = {
+			mType: SensorDataMessages.Status,
+			data: {
+				req: {},
+				returnVerbose: true,
+			},
+		};
+		return options;
+	}
+
+	/**
 	 * Stop service worker
 	 * @param {DaemonMessageOptions} options Message options
 	 * @return {DaemonMessageOptions} Message options with request
