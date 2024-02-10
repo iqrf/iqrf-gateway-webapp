@@ -16,7 +16,6 @@ export class SensorDataService {
 		options.request = {
 			mType: SensorDataMessages.GetConfig,
 			data: {
-				req: {},
 				returnVerbose: true,
 			},
 		};
@@ -32,7 +31,6 @@ export class SensorDataService {
 		options.request = {
 			mType: SensorDataMessages.Invoke,
 			data: {
-				req: {},
 				returnVerbose: true,
 			},
 		};
@@ -71,7 +69,6 @@ export class SensorDataService {
 		options.request = {
 			mType: SensorDataMessages.Start,
 			data: {
-				req: {},
 				returnVerbose: true,
 			},
 		};
@@ -87,7 +84,6 @@ export class SensorDataService {
 		options.request = {
 			mType: SensorDataMessages.Status,
 			data: {
-				req: {},
 				returnVerbose: true,
 			},
 		};
@@ -103,7 +99,6 @@ export class SensorDataService {
 		options.request = {
 			mType: SensorDataMessages.Stop,
 			data: {
-				req: {},
 				returnVerbose: true,
 			},
 		};
