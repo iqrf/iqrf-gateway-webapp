@@ -282,6 +282,8 @@ export enum SensorDataMessages {
 	SetConfig = 'iqrfSensorData_SetConfig',
 	/// Start worker
 	Start = 'iqrfSensorData_Start',
+	/// Worker status
+	Status = 'iqrfSensorData_Status',
 	/// Stop worker
 	Stop = 'iqrfSensorData_Stop',
 }

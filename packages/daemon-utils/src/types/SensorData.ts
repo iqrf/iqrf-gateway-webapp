@@ -1,5 +1,5 @@
 /**
- * IQMESH SensorData configuration interface
+ * SensorData configuration interface
  */
 export interface SensorDataConfig {
 	/// Report collected data asynchronously
@@ -12,4 +12,14 @@ export interface SensorDataConfig {
 	period: number;
 	/// Worker retry period following failure
 	retryPeriod: number;
+}
+
+/**
+ * SensorData status interface
+ */
+export interface SensorDataStatus {
+	/// Is data reading in progress?
+	reading: boolean;
+	/// Is worker running?
+	running: boolean;
 }
