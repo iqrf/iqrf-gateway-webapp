@@ -89,7 +89,7 @@ class UploadController extends IqrfController {
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'415\':
-				description: Unsupported media file
+				$ref: \'#/components/responses/UnsupportedContentType\'
 			\'500\':
 				$ref: \'#/components/responses/ServerError\'
 	')]
@@ -137,7 +137,7 @@ class UploadController extends IqrfController {
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'404\':
-				description: Not found
+				$ref: \'#/components/responses/NotFound\'
 			\'500\':
 				$ref: \'#/components/responses/ServerError\'
 	')]
@@ -183,7 +183,7 @@ class UploadController extends IqrfController {
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'404\':
-				description: Not found
+				$ref: \'#/components/responses/NotFound\'
 			\'500\':
 				$ref: \'#/components/responses/ServerError\'
 	')]

@@ -91,7 +91,9 @@ class SshController extends GatewayController {
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/SshKeyList\'
+							type: array
+							items:
+								$ref: \'#/components/schemas/SshKeyDetail\'
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'500\':
@@ -116,7 +118,7 @@ class SshController extends GatewayController {
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'404\':
-				description: Not found
+				$ref: \'#/components/responses/NotFound\'
 			\'500\':
 				$ref: \'#/components/responses/ServerError\'
 	')]
@@ -154,6 +156,10 @@ class SshController extends GatewayController {
 				$ref: \'#/components/responses/Forbidden\'
 			\'409\':
 				description: SSH public key already exists
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/Error\'
 			\'500\':
 				$ref: \'#/components/responses/ServerError\'
 	')]
@@ -186,7 +192,7 @@ class SshController extends GatewayController {
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'404\':
-				description: Not found
+				$ref: \'#/components/responses/NotFound\'
 	')]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'SSH public key ID')]
 	public function deleteKey(ApiRequest $request, ApiResponse $response): ApiResponse {

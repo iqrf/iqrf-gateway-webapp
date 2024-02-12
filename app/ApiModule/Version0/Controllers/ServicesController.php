@@ -106,9 +106,9 @@ class ServicesController extends BaseController {
 			\'400\':
 				$ref: \'#/components/responses/BadRequest\'
 			\'404\':
-				description: Not found
+				$ref: \'#/components/responses/NotFound\'
 			\'500\':
-				description: Unsupported init system
+				$ref: \'#/components/responses/UnsupportedInitSystem\'
 	')]
 	#[RequestParameter(name: 'name', type: 'string', description: 'Service name')]
 	public function getService(ApiRequest $request, ApiResponse $response): ApiResponse {
@@ -156,9 +156,9 @@ class ServicesController extends BaseController {
 			\'400\':
 				$ref: \'#/components/responses/BadRequest\'
 			\'404\':
-				description: Not found
+				$ref: \'#/components/responses/NotFound\'
 			\'500\':
-				description: Unsupported init system
+				$ref: \'#/components/responses/UnsupportedInitSystem\'
 	')]
 	#[RequestParameter(name: 'name', type: 'string', description: 'Service name')]
 	public function enableService(ApiRequest $request, ApiResponse $response): ApiResponse {
@@ -189,9 +189,9 @@ class ServicesController extends BaseController {
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'404\':
-				description: Not found
+				$ref: \'#/components/responses/NotFound\'
 			\'500\':
-				description: Unsupported init system
+				$ref: \'#/components/responses/UnsupportedInitSystem\'
 	')]
 	#[RequestParameter(name: 'name', type: 'string', description: 'Service name')]
 	public function disableService(ApiRequest $request, ApiResponse $response): ApiResponse {
@@ -222,9 +222,9 @@ class ServicesController extends BaseController {
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'404\':
-				description: Not found
+				$ref: \'#/components/responses/NotFound\'
 			\'500\':
-				description: Unsupported init system
+				$ref: \'#/components/responses/UnsupportedInitSystem\'
 	')]
 	#[RequestParameter(name: 'name', type: 'string', description: 'Service name')]
 	public function startService(ApiRequest $request, ApiResponse $response): ApiResponse {
@@ -252,9 +252,9 @@ class ServicesController extends BaseController {
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'404\':
-				description: Not found
+				$ref: \'#/components/responses/NotFound\'
 			\'500\':
-				description: Unsupported init system
+				$ref: \'#/components/responses/UnsupportedInitSystem\'
 	')]
 	#[RequestParameter(name: 'name', type: 'string', description: 'Service name')]
 	public function stopService(ApiRequest $request, ApiResponse $response): ApiResponse {
@@ -282,9 +282,9 @@ class ServicesController extends BaseController {
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'404\':
-				description: Service not found
+				$ref: \'#/components/responses/NotFound\'
 			\'500\':
-				description: Unsupported init system
+				$ref: \'#/components/responses/UnsupportedInitSystem\'
 	')]
 	#[RequestParameter(name: 'name', type: 'string', description: 'Service name')]
 	public function restartService(ApiRequest $request, ApiResponse $response): ApiResponse {

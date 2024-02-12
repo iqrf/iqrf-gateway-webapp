@@ -91,6 +91,10 @@ class LogController extends GatewayController {
 				$ref: \'#/components/responses/Forbidden\'
 			\'404\':
 				description: \'Service not found or log not found\'
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/Error\'
 			\'500\':
 				$ref: \'#/components/responses/ServerError\'
 	')]

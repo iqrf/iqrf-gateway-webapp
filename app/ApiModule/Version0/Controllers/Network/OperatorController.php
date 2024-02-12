@@ -94,7 +94,7 @@ class OperatorController extends NetworkController {
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'404\':
-				description: \'Network operator not found\'
+				$ref: \'#/components/responses/NotFound\'
 	')]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Operator ID')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
@@ -168,7 +168,7 @@ class OperatorController extends NetworkController {
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'404\':
-				description: \'Network operator not found\'
+				$ref: \'#/components/responses/NotFound\'
 	')]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Operator ID')]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
@@ -198,7 +198,7 @@ class OperatorController extends NetworkController {
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'404\':
-				description: \'Network operator not found\'
+				$ref: \'#/components/responses/NotFound\'
 	')]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Operator ID')]
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {

@@ -108,7 +108,7 @@ class DaemonController extends BaseConfigController {
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'404\':
-				description: Not found
+				$ref: \'#/components/responses/NotFound\'
 			\'500\':
 				$ref: \'#/components/responses/ServerError\'
 	')]
@@ -163,7 +163,7 @@ class DaemonController extends BaseConfigController {
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'404\':
-				description: Not found
+				$ref: \'#/components/responses/NotFound\'
 			\'500\':
 				$ref: \'#/components/responses/ServerError\'
 	')]
@@ -203,7 +203,7 @@ class DaemonController extends BaseConfigController {
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'404\':
-				description: Not found
+				$ref: \'#/components/responses/NotFound\'
 			\'500\':
 				$ref: \'#/components/responses/ServerError\'
 	')]
@@ -238,7 +238,7 @@ class DaemonController extends BaseConfigController {
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'404\':
-				description: Not found
+				$ref: \'#/components/responses/NotFound\'
 			\'500\':
 				$ref: \'#/components/responses/ServerError\'
 	')]
@@ -286,9 +286,13 @@ class DaemonController extends BaseConfigController {
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'404\':
-				description: Not found
+				$ref: \'#/components/responses/NotFound\'
 			\'409\':
 				description: Instance already exists
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/Error\'
 	')]
 	#[RequestParameter(name: 'component', type: 'string', description: 'Component name')]
 	public function createInstance(ApiRequest $request, ApiResponse $response): ApiResponse {
@@ -329,7 +333,7 @@ class DaemonController extends BaseConfigController {
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'404\':
-				description: Not found
+				$ref: \'#/components/responses/NotFound\'
 	')]
 	#[RequestParameter(name: 'component', type: 'string', description: 'Component name')]
 	#[RequestParameter(name: 'instance', type: 'string', description: 'Instance name')]
@@ -358,13 +362,13 @@ class DaemonController extends BaseConfigController {
 						$ref: \'#/components/schemas/DaemonConfiguration\'
 		responses:
 			\'200\':
-				description: Succcess
+				description: Success
 			\'400\':
 				$ref: \'#/components/responses/BadRequest\'
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'404\':
-				description: Not found
+				$ref: \'#/components/responses/NotFound\'
 	')]
 	#[RequestParameter(name: 'component', type: 'string', description: 'Component name')]
 	#[RequestParameter(name: 'instance', type: 'string', description: 'Instance name')]
@@ -406,7 +410,7 @@ class DaemonController extends BaseConfigController {
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'404\':
-				description: Not found
+				$ref: \'#/components/responses/NotFound\'
 			\'500\':
 				$ref: \'#/components/responses/ServerError\'
 	')]
@@ -448,7 +452,7 @@ class DaemonController extends BaseConfigController {
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'404\':
-				description: Not found
+				$ref: \'#/components/responses/NotFound\'
 			\'500\':
 				$ref: \'#/components/responses/ServerError\'
 	')]

@@ -181,7 +181,7 @@ class MenderController extends BaseController {
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'415\':
-				description: Unsupported media file
+				$ref: \'#/components/responses/InvalidContentType\'
 			\'500\':
 				$ref: \'#/components/responses/ServerError\'
 	')]

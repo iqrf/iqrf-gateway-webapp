@@ -43,6 +43,26 @@ components:
 						$ref: '#/components/schemas/Error'
 		Forbidden:
 			description: Do not have appropriate permissions
+		ForbiddenApiKey:
+			description: Forbidden - API key is used
+		InvalidContentType:
+			description: Invalid content type
+			content:
+				'application/json':
+					schema:
+						$ref: '#/components/schemas/Error'
+		NotFound:
+			description: Requested resource was not found
+			content:
+				'application/json':
+					schema:
+						$ref: '#/components/schemas/Error'
+		MailerError:
+			description:  Unable to send the e-mail
+			content:
+				'application/json':
+					schema:
+						$ref: '#/components/schemas/Error'
 		ServerError:
 			description: Server error
 			content:
@@ -55,6 +75,12 @@ components:
 				WWW-Authenticate:
 					schema:
 						type: string
+		UnsupportedInitSystem:
+			description: Unsupported init system
+			content:
+				application/json:
+					schema:
+						$ref: '#/components/schemas/Error'
 	schemas:
 		ApiKeyCreated:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/apiKeyCreated.json
@@ -121,7 +147,7 @@ components:
 		InstallationCheck:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/installationCheck.json
 		Journal:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/Journal.json
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/journal.json
 		LogServices:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/logServices.json
 		MailerConfiguration:
@@ -170,8 +196,6 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/serviceStatus.json
 		SshKeyDetail:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/sshKeyDetail.json
-		SshKeyList:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/sshKeyList.json
 		SshKeysAdd:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/sshKeysAdd.json
 		SshKeyTypes:

@@ -89,7 +89,7 @@ class WireGuardController extends NetworkController {
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'404\':
-				description: Not found
+				$ref: \'#/components/responses/NotFound\'
 			\'500\':
 				$ref: \'#/components/responses/ServerError\'
 	')]
@@ -161,7 +161,7 @@ class WireGuardController extends NetworkController {
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'404\':
-				description: Not found
+				$ref: \'#/components/responses/NotFound\'
 			\'500\':
 				$ref: \'#/components/responses/ServerError\'
 	')]
@@ -192,7 +192,7 @@ class WireGuardController extends NetworkController {
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'404\':
-				description: Not found
+				$ref: \'#/components/responses/NotFound\'
 			\'500\':
 				$ref: \'#/components/responses/ServerError\'
 	')]
@@ -226,7 +226,7 @@ class WireGuardController extends NetworkController {
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'404\':
-				description: Not found
+				$ref: \'#/components/responses/NotFound\'
 			\'500\':
 				$ref: \'#/components/responses/ServerError\'
 	')]
@@ -256,7 +256,7 @@ class WireGuardController extends NetworkController {
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'404\':
-				description: Not found
+				$ref: \'#/components/responses/NotFound\'
 			\'500\':
 				$ref: \'#/components/responses/ServerError\'
 	')]
@@ -286,7 +286,7 @@ class WireGuardController extends NetworkController {
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'404\':
-				description: Not found
+				$ref: \'#/components/responses/NotFound\'
 			\'500\':
 				$ref: \'#/components/responses/ServerError\'
 	')]
@@ -316,7 +316,7 @@ class WireGuardController extends NetworkController {
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'404\':
-				description: Not found
+				$ref: \'#/components/responses/NotFound\'
 			\'500\':
 				$ref: \'#/components/responses/ServerError\'
 	')]

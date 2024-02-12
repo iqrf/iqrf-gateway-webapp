@@ -100,6 +100,10 @@ class SchedulerController extends BaseController {
 				$ref: \'#/components/responses/Forbidden\'
 			\'409\':
 				description: Task already exists
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/Error\'
 	')]
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['config:daemon']);
@@ -151,7 +155,7 @@ class SchedulerController extends BaseController {
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'404\':
-				description: Not found
+				$ref: \'#/components/responses/NotFound\'
 	')]
 	#[RequestParameter(name: 'taskId', type: 'integer', description: 'Task ID')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
@@ -175,7 +179,7 @@ class SchedulerController extends BaseController {
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'404\':
-				description: Task not found
+				$ref: \'#/components/responses/NotFound\'
 	')]
 	#[RequestParameter(name: 'taskId', type: 'integer', description: 'Task ID')]
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
@@ -207,7 +211,7 @@ class SchedulerController extends BaseController {
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'404\':
-				description: Task not found
+				$ref: \'#/components/responses/NotFound\'
 	')]
 	#[RequestParameter(name: 'taskId', type: 'integer', description: 'Task ID')]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
@@ -246,6 +250,10 @@ class SchedulerController extends BaseController {
 				$ref: \'#/components/responses/Forbidden\'
 			\'404\':
 				description: No tasks to export
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/Error\'
 	')]
 	public function export(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['config:daemon']);
@@ -281,7 +289,7 @@ class SchedulerController extends BaseController {
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'415\':
-				description: Unsupported media type
+				$ref: \'#/components/responses/InvalidContentType\'
 	')]
 	public function import(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['config:daemon']);

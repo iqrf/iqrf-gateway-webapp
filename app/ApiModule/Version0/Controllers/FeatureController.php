@@ -88,7 +88,7 @@ class FeatureController extends BaseController {
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'404\':
-				description: Feature not found
+				$ref: \'#/components/responses/NotFound\'
 			\'500\':
 				$ref: \'#/components/responses/ServerError\'
 	')]
@@ -120,7 +120,7 @@ class FeatureController extends BaseController {
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'404\':
-				description: Feature not found
+				$ref: \'#/components/responses/NotFound\'
 			\'500\':
 				$ref: \'#/components/responses/ServerError\'
 	')]

@@ -83,7 +83,7 @@ class UserController extends BaseController {
 						schema:
 							$ref: \'#/components/schemas/UserDetail\'
 			\'403\':
-				description: Forbidden - API key is used
+				$ref: \'#/components/responses/ForbiddenApiKey\'
 	')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
@@ -109,9 +109,13 @@ class UserController extends BaseController {
 			\'400\':
 				$ref: \'#/components/responses/BadRequest\'
 			\'403\':
-				description: Forbidden - API key is used
+				$ref: \'#/components/responses/ForbiddenApiKey\'
 			\'409\':
 				description: Username or e-mail address is already used
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/Error\'
 	')]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
@@ -177,7 +181,7 @@ class UserController extends BaseController {
 			\'200\':
 				description: Success
 			\'403\':
-				description: Forbidden - API key is used
+				$ref: \'#/components/responses/ForbiddenApiKey\'
 	')]
 	public function changePassword(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
@@ -219,10 +223,18 @@ class UserController extends BaseController {
 				description: Success
 			\'403\':
 				description: E-mail address is not verified
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/Error\'
 			\'404\':
 				description: User not found
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/Error\'
 			\'500\':
-				description: Unable to send the e-mail
+				$ref: \'#/components/responses/MailerError\'
 	')]
 	public function requestPasswordRecovery(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validator->validateRequest('passwordRecoveryRequest', $request);
@@ -275,9 +287,13 @@ class UserController extends BaseController {
 						schema:
 							$ref: \'#/components/schemas/UserToken\'
 			\'404\':
-				description: Password recovery not found
+				$ref: \'#/components/responses/NotFound\'
 			\'410\':
 				description: Password recovery request is expired
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/Error\'
 	')]
 	#[RequestParameter(name: 'uuid', type: 'string', description: 'Password recovery request UUID')]
 	public function recoverPassword(ApiRequest $request, ApiResponse $response): ApiResponse {
@@ -320,8 +336,12 @@ class UserController extends BaseController {
 				description: Success
 			\'400\':
 				description: User is already verified
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/Error\'
 			\'500\':
-				description: Unable to send the e-mail
+				$ref: \'#/components/responses/MailerError\'
 	')]
 	public function resendVerification(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
@@ -352,7 +372,7 @@ class UserController extends BaseController {
 						schema:
 							$ref: \'#/components/schemas/UserSignIn\'
 			\'403\':
-				description: Forbidden - API key is used
+				$ref: \'#/components/responses/ForbiddenApiKey\'
 	')]
 	public function refreshToken(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
@@ -415,7 +435,7 @@ class UserController extends BaseController {
 						schema:
 							$ref: \'#/components/schemas/UserToken\'
 			\'404\':
-				description: Not found
+				$ref: \'#/components/responses/NotFound\'
 	')]
 	#[RequestParameter(name: 'uuid', type: 'string', description: 'User verification UUID')]
 	public function verify(ApiRequest $request, ApiResponse $response): ApiResponse {

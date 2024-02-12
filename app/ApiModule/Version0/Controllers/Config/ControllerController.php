@@ -151,7 +151,7 @@ class ControllerController extends BaseConfigController {
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'404\':
-				description: Pin configuration profile not found
+				$ref: \'#/components/responses/NotFound\'
 	')]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Controller pin configuration profile ID')]
 	public function getPins(ApiRequest $request, ApiResponse $response): ApiResponse {
@@ -218,7 +218,7 @@ class ControllerController extends BaseConfigController {
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'404\':
-				description: Controller pin configuration profile not found
+				$ref: \'#/components/responses/NotFound\'
 			\'500\':
 				$ref: \'#/components/responses/ServerError\'
 	')]
@@ -245,7 +245,7 @@ class ControllerController extends BaseConfigController {
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'404\':
-				description: Controller pin configuration profile not found
+				$ref: \'#/components/responses/NotFound\'
 	')]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Controller pin configuration profile ID')]
 	public function removePins(ApiRequest $request, ApiResponse $response): ApiResponse {

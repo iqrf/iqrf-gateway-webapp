@@ -120,6 +120,10 @@ class UsersController extends BaseController {
 				$ref: \'#/components/responses/Forbidden\'
 			\'409\':
 				description: E-mail address or username is already used
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/Error\'
 	')]
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		if ($this->repository->count([]) !== 0) {
@@ -175,7 +179,7 @@ class UsersController extends BaseController {
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'404\':
-				description: Not found
+				$ref: \'#/components/responses/NotFound\'
 	')]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'User ID')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
@@ -198,7 +202,7 @@ class UsersController extends BaseController {
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'404\':
-				description: Not found
+				$ref: \'#/components/responses/NotFound\'
 	')]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'User ID')]
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
@@ -235,9 +239,13 @@ class UsersController extends BaseController {
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'404\':
-				description: Not found
+				$ref: \'#/components/responses/NotFound\'
 			\'409\':
 				description: Username is already used
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/Error\'
 	')]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'User ID')]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
@@ -318,10 +326,14 @@ class UsersController extends BaseController {
 				description: Success
 			\'400\':
 				description: User is already verified
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/Error\'
 			\'404\':
-				description: Not found
+				$ref: \'#/components/responses/NotFound\'
 			\'500\':
-				description: Unable to send the e-mail
+				$ref: \'#/components/responses/MailerError\'
 	')]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'User ID')]
 	public function resendVerification(ApiRequest $request, ApiResponse $response): ApiResponse {

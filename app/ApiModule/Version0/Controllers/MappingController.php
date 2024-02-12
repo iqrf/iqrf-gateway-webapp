@@ -163,7 +163,7 @@ class MappingController extends BaseController {
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'404\':
-				description: Mapping not found
+				$ref: \'#/components/responses/NotFound\'
 	')]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Mapping ID')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
@@ -183,7 +183,7 @@ class MappingController extends BaseController {
 			\'200\':
 				description: Success
 			\'404\':
-				description: Mapping not found
+				$ref: \'#/components/responses/NotFound\'
 	')]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Mapping ID')]
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
@@ -215,7 +215,7 @@ class MappingController extends BaseController {
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'404\':
-				description: Mapping not found
+				$ref: \'#/components/responses/NotFound\'
 	')]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Mapping ID')]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {

@@ -143,6 +143,10 @@ class MailerController extends BaseConfigController {
 				$ref: \'#/components/responses/Forbidden\'
 			\'500\':
 				description: Unable to send the e-mail
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/Error\'
 	')]
 	public function testConfiguration(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['mailer']);

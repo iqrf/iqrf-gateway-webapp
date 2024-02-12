@@ -138,7 +138,7 @@ class ApiKeyController extends BaseController {
 						schema:
 							$ref: \'#/components/schemas/ApiKeyDetail\'
 			\'404\':
-				description: Not found
+				$ref: \'#/components/responses/NotFound\'
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 	')]
@@ -163,7 +163,7 @@ class ApiKeyController extends BaseController {
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'404\':
-				description: Not found
+				$ref: \'#/components/responses/NotFound\'
 	')]
 	#[RequestParameter('id', type: 'integer', description: 'API key ID')]
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
@@ -196,7 +196,7 @@ class ApiKeyController extends BaseController {
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'404\':
-				description: \'API key not found\'
+				$ref: \'#/components/responses/NotFound\'
 	')]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'API key ID')]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
