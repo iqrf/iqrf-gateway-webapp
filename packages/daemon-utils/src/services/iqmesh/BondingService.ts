@@ -26,7 +26,7 @@ export class BondingService extends BaseIqmeshService {
 	 */
 	public static autonetwork(shared: IqmeshSharedParams, params: IqmeshAutonetworkParams, options: DaemonMessageOptions): DaemonMessageOptions {
 		return this.buildOptionsWithRequest(
-			IqmeshServiceMessages.BondNode,
+			IqmeshServiceMessages.Autonetwork,
 			shared,
 			params,
 			options,
