@@ -14,13 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *}
-{varType App\Models\Database\Entities\User $user}
+{varType App\Models\Database\Entities\User $userInfo}
 {varType App\GatewayModule\Models\InfoManager $gatewayInfo}
 {layout '@layout.latte'}
 {block title}{_mail_generic.mailerConfigurationTest.title}{/block}
 {block body}
 	<p>
-		{_mail_generic.greeting, [username => $user->getUserName()]|breakLines}
+		{_mail_generic.greeting, [username => $userInfo->getUserName()]|breakLines}
 	</p>
 
 	<p>

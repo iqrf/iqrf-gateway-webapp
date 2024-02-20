@@ -54,7 +54,7 @@ abstract class BaseMailSender {
 	protected function createMessage(string $fileName, array $params = [], ?User $user = null): Message {
 		$defaultParams = [
 			'gatewayInfo' => $this->gatewayInfo,
-			'user' => $user,
+			'userInfo' => $user,
 		];
 		$html = $this->renderTemplate($fileName, array_merge($defaultParams, $params));
 		$mail = new Message();
