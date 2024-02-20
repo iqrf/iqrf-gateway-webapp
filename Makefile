@@ -33,9 +33,9 @@ WEBAPP_GROUP ?= www-data
 
 build:
 	$(COMPOSER) install --no-dev
-	npm --prefix packages/api-client/ install
+	npm --prefix packages/api-client/ install --legacy-peer-deps
 	npm --prefix packages/api-client/ run build
-	npm --prefix packages/daemon-utils/ install
+	npm --prefix packages/daemon-utils/ install --legacy-peer-deps
 	npm --prefix packages/daemon-utils/ run build
 	npm --prefix packages/frontend3/ install --legacy-peer-deps
 	npm --prefix packages/frontend3/ run build
