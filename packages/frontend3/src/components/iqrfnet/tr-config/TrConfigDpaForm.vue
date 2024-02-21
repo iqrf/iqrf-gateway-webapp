@@ -169,7 +169,7 @@ import TextInput from '@/components/TextInput.vue';
 
 const i18n = useI18n();
 const display = useDisplay();
-const config = defineModel<TrConfig>('config', {required: true});
+const config = defineModel<TrConfig>('config', { required: true });
 
 const baudRateOptions = computed(() => {
 	const items: number[] = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400];

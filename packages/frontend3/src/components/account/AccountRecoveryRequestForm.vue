@@ -43,7 +43,7 @@ import Card from '@/components/Card.vue';
 import TextInput from '@/components/TextInput.vue';
 import { basicErrorToast } from '@/helpers/errorToast';
 import UrlBuilder from '@/helpers/urlBuilder';
-import {validateForm} from '@/helpers/validateForm';
+import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
 

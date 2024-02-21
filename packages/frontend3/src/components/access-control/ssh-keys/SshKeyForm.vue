@@ -153,12 +153,12 @@ const dialogTitle = computed(() => {
 
 watchEffect(async(): Promise<void> => {
 	if (componentProps.action === FormAction.Add) {
-		localKey.value = {...defaultKey};
+		localKey.value = { ...defaultKey };
 	} else if (componentProps.action === FormAction.Edit) {
 		if (componentProps.sshKey) {
-			localKey.value = {...componentProps.sshKey};
+			localKey.value = { ...componentProps.sshKey };
 		} else {
-			localKey.value = {...defaultKey};
+			localKey.value = { ...defaultKey };
 		}
 	}
 });
@@ -190,7 +190,7 @@ function updateDescription(): void {
 
 function close(): void {
 	show.value = false;
-	localKey.value = {...defaultKey};
+	localKey.value = { ...defaultKey };
 }
 
 </script>

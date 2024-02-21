@@ -17,5 +17,5 @@ import { type TrConfig } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import Card from '@/components/Card.vue';
 import TrConfigSecurityInput from '@/components/iqrfnet/tr-config/TrConfigSecurityInput.vue';
 
-const config = defineModel<TrConfig>('config', {required: true});
+const config = defineModel<TrConfig>('config', { required: true });
 </script>

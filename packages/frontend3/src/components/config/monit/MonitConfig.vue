@@ -130,8 +130,8 @@ const service: MonitService = useApiClient().getConfigServices().getMonitService
 const form: Ref<typeof VForm | null> = ref(null);
 const config: Ref<MonitConfig | null> = ref(null);
 const headers = [
-	{key: 'name', title: i18n.t('components.configuration.monit.checks.name')},
-	{key: 'enabled', title: i18n.t('common.states.enabled'), align: 'end'},
+	{ key: 'name', title: i18n.t('components.configuration.monit.checks.name') },
+	{ key: 'enabled', title: i18n.t('common.states.enabled'), align: 'end' },
 ];
 
 function mmonitServerValidation(value: string, error: string): boolean|string {
@@ -168,7 +168,7 @@ async function onSubmit(): Promise<void> {
 		return;
 	}
 	componentState.value = ComponentState.Saving;
-	const params = {...config.value};
+	const params = { ...config.value };
 	service.editConfig(params)
 		.then(() => {
 			getConfig().then(() => {

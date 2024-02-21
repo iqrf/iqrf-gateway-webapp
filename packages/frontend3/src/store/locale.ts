@@ -21,13 +21,13 @@ interface LocaleState {
 
 
 const locales: Locale[] = [
-	{code: 'en', flag: Base64.encode(GB)},
+	{ code: 'en', flag: Base64.encode(GB) },
 	//{code: 'cs', flag: Base64.encode(CZ)},
 ];
 
 export const useLocaleStore = defineStore('locale', {
 	state: (): LocaleState => ({
-		locale: preferredLocale('en', ['en'], {languageOnly: true}),
+		locale: preferredLocale('en', ['en'], { languageOnly: true }),
 	}),
 	actions: {
 		/**

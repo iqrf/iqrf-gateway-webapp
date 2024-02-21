@@ -141,11 +141,11 @@ const i18n = useI18n();
 const daemonStore = useDaemonStore();
 const webappSchedulerService: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
 const headers = [
-	{key: 'taskId', title: i18n.t('components.configuration.daemon.scheduler.taskId')},
-	{key: 'description', title: i18n.t('common.labels.description')},
-	{key: 'time', title: i18n.t('components.configuration.daemon.scheduler.time')},
-	{key: 'active', title: i18n.t('common.states.active')},
-	{key: 'actions', title: i18n.t('common.columns.actions'), align: 'end'},
+	{ key: 'taskId', title: i18n.t('components.configuration.daemon.scheduler.taskId') },
+	{ key: 'description', title: i18n.t('common.labels.description') },
+	{ key: 'time', title: i18n.t('components.configuration.daemon.scheduler.time') },
+	{ key: 'active', title: i18n.t('common.states.active') },
+	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end' },
 ];
 const msgId: Ref<string | null> = ref(null);
 const tasks: Ref<SchedulerRecord[]> = ref([]);
@@ -200,7 +200,7 @@ function timeString(timespec: SchedulerRecordTimeSpec): string {
 	}
 	if (timespec.periodic) {
 		const duration = Duration.fromMillis(timespec.period * 1000).normalize().rescale();
-		return `Every ${duration.toHuman({listStyle: 'long'})}`;
+		return `Every ${duration.toHuman({ listStyle: 'long' })}`;
 	}
 	return cronstrue.toString(timespec.cronTime);
 }
@@ -310,7 +310,7 @@ function handleStartTask(rsp: DaemonApiResponse): void {
 	}
 	const taskId = rsp.data.rsp.taskId;
 	toast.success(
-		i18n.t('components.configuration.daemon.scheduler.messages.start.success', {id: taskId}),
+		i18n.t('components.configuration.daemon.scheduler.messages.start.success', { id: taskId }),
 	);
 	getTask(taskId);
 }
@@ -337,7 +337,7 @@ function handleStopTask(rsp: DaemonApiResponse): void {
 	}
 	const taskId = rsp.data.rsp.taskId;
 	toast.success(
-		i18n.t('components.configuration.daemon.scheduler.messages.stop.success', {id: taskId}),
+		i18n.t('components.configuration.daemon.scheduler.messages.stop.success', { id: taskId }),
 	);
 	getTask(taskId);
 }

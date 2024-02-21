@@ -55,7 +55,7 @@ const componentProps = defineProps({
 		required: false,
 	},
 });
-const modelValue = defineModel<string | undefined>('modelValue', {required: true});
+const modelValue = defineModel<string | undefined>('modelValue', { required: true });
 const asciiPattern = /^[0-9A-Za-z"#$%&()*+,\-./:;?@[\\\]^_`{}~\s]{0,16}$/;
 const hexPattern = /^[0-9A-Fa-f]{0,32}$/;
 const useHex: Ref<boolean> = ref(false);

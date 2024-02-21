@@ -121,7 +121,7 @@ async function onSubmit(): Promise<void> {
 						router.push('/');
 						return;
 					}
-					router.push({name: nextStep.route});
+					router.push({ name: nextStep.route });
 				});
 		})
 		.catch((error: AxiosError) => {

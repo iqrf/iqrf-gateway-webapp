@@ -89,10 +89,10 @@ const i18n = useI18n();
 const show: Ref<boolean> = ref(false);
 let service: ProductService;
 const headers = [
-	{key: 'companyName', title: i18n.t('components.iqrfnet.products.manufacturer')},
-	{key: 'name', title: i18n.t('components.iqrfnet.products.name')},
-	{key: 'hwpid', title: i18n.t('components.iqrfnet.products.hwpid')},
-	{key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false},
+	{ key: 'companyName', title: i18n.t('components.iqrfnet.products.manufacturer') },
+	{ key: 'name', title: i18n.t('components.iqrfnet.products.name') },
+	{ key: 'hwpid', title: i18n.t('components.iqrfnet.products.hwpid') },
+	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false },
 ];
 const products: Ref<Product[]> = ref([]);
 const search: Ref<string> = ref('');

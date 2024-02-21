@@ -44,24 +44,24 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import {type AccountService} from '@iqrf/iqrf-gateway-webapp-client/services';
-import {UserRole, type UserSignedIn} from '@iqrf/iqrf-gateway-webapp-client/types';
-import {mdiAccountKey, mdiKey} from '@mdi/js';
-import {type AxiosError} from 'axios';
-import {validate as uuidValidate, version as uuidVersion} from 'uuid';
-import {ref, type Ref} from 'vue';
-import {useI18n} from 'vue-i18n';
-import {useRouter} from 'vue-router';
-import {toast} from 'vue3-toastify';
-import {VForm} from 'vuetify/components';
+import { type AccountService } from '@iqrf/iqrf-gateway-webapp-client/services';
+import { UserRole, type UserSignedIn } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { mdiAccountKey, mdiKey } from '@mdi/js';
+import { type AxiosError } from 'axios';
+import { validate as uuidValidate, version as uuidVersion } from 'uuid';
+import { ref, type Ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import { toast } from 'vue3-toastify';
+import { VForm } from 'vuetify/components';
 
 import Card from '@/components/Card.vue';
 import PasswordInput from '@/components/PasswordInput.vue';
-import {validateForm} from '@/helpers/validateForm';
+import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
-import {useApiClient} from '@/services/ApiClient';
-import {useUserStore} from '@/store/user';
-import {ComponentState} from '@/types/ComponentState';
+import { useApiClient } from '@/services/ApiClient';
+import { useUserStore } from '@/store/user';
+import { ComponentState } from '@/types/ComponentState';
 
 const componentProps = defineProps({
 	uuid: {

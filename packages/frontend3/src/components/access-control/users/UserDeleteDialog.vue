@@ -40,7 +40,7 @@ function onSubmit(): void {
 	useApiClient().getUserService().delete(componentProps.user.id)
 		.then(async () => {
 			toast.success(
-				i18n.t('components.accessControl.users.messages.delete.success', {user: componentProps.user.username}),
+				i18n.t('components.accessControl.users.messages.delete.success', { user: componentProps.user.username }),
 			);
 			if (componentProps.user.id === userStore.getId) {
 				close();
@@ -54,7 +54,7 @@ function onSubmit(): void {
 			}
 		})
 		.catch((error: AxiosError) => {
-			basicErrorToast(error, 'components.accessControl.users.messages.delete.failure', {user: componentProps.user.username});
+			basicErrorToast(error, 'components.accessControl.users.messages.delete.failure', { user: componentProps.user.username });
 		});
 }
 

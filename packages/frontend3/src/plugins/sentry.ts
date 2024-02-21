@@ -1,7 +1,7 @@
-import {BrowserTracing} from '@sentry/tracing';
+import { BrowserTracing } from '@sentry/tracing';
 import * as Sentry from '@sentry/vue';
-import {type App} from 'vue';
-import {type Router} from 'vue-router';
+import { type App } from 'vue';
+import { type Router } from 'vue-router';
 
 
 export default function registerSentry(app: App, router: Router) {

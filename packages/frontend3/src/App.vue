@@ -29,18 +29,18 @@ const i18n = useI18n();
 const theme = useTheme();
 
 const daemonStore = useDaemonStore();
-const {isConnected} = storeToRefs(daemonStore);
+const { isConnected } = storeToRefs(daemonStore);
 
 const featureStore = useFeatureStore();
 
 const installStore = useInstallStore();
-const {isChecked} = storeToRefs(installStore);
+const { isChecked } = storeToRefs(installStore);
 
 const userStore = useUserStore();
-const {isLoggedIn} = storeToRefs(userStore);
+const { isLoggedIn } = storeToRefs(userStore);
 
 const localeStore = useLocaleStore();
-const {getLocale: locale} = storeToRefs(localeStore);
+const { getLocale: locale } = storeToRefs(localeStore);
 
 function setHeadOptions(newLocale: string): void {
 	useHead({
@@ -89,10 +89,10 @@ onBeforeMount(async () => {
 				// TODO: sudo error
 			} else if (!check.allMigrationsExecuted) {
 				installStore.setChecked();
-				router.push({name: 'MissingMigration'});
+				router.push({ name: 'MissingMigration' });
 			} else if (!check.hasUsers && !isInstallUrl) {
 				installStore.setChecked();
-				router.push({name: 'InstallDisambiguation'});
+				router.push({ name: 'InstallDisambiguation' });
 			} else if (check.hasUsers && (isInstallUrl || errorUrl)) {
 				installStore.setChecked();
 				router.push('/sign/in');

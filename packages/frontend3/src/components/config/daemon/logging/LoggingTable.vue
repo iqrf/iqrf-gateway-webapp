@@ -86,8 +86,8 @@ import { ComponentState } from '@/types/ComponentState';
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
 const headers = [
-	{key: 'instance', title: i18n.t('components.configuration.daemon.logging.profile')},
-	{key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false},
+	{ key: 'instance', title: i18n.t('components.configuration.daemon.logging.profile') },
+	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false },
 ];
 const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
 const instances: Ref<ShapeTraceFileService[]> = ref([]);

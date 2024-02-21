@@ -80,12 +80,12 @@ const localeStore = useLocaleStore();
 const service: PowerService = useApiClient().getGatewayServices().getPowerService();
 
 const headers = [
-	{key: 'id', title: i18n.t('common.columns.id')},
-	{key: 'start', title: i18n.t('components.gateway.power.stats.columns.start')},
-	{key: 'shutdown', title: i18n.t('components.gateway.power.stats.columns.shutdown')},
-	{key: 'graceful', title: i18n.t('components.gateway.power.stats.columns.graceful')},
-	{key: 'running', title: i18n.t('components.gateway.power.stats.columns.uptime')},
-	{key: 'downtime', title: i18n.t('components.gateway.power.stats.columns.downtime')},
+	{ key: 'id', title: i18n.t('common.columns.id') },
+	{ key: 'start', title: i18n.t('components.gateway.power.stats.columns.start') },
+	{ key: 'shutdown', title: i18n.t('components.gateway.power.stats.columns.shutdown') },
+	{ key: 'graceful', title: i18n.t('components.gateway.power.stats.columns.graceful') },
+	{ key: 'running', title: i18n.t('components.gateway.power.stats.columns.uptime') },
+	{ key: 'downtime', title: i18n.t('components.gateway.power.stats.columns.downtime') },
 ];
 /// Component state
 const state: Ref<ComponentState> = ref(ComponentState.Created);

@@ -73,8 +73,8 @@ const i18n = useI18n();
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const service: InterfacePortsService = useApiClient().getIqrfServices().getInterfacePortsService();
 const headers = [
-	{key: 'interface', title: i18n.t('components.configuration.daemon.interfaces.interface')},
-	{key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false},
+	{ key: 'interface', title: i18n.t('components.configuration.daemon.interfaces.interface') },
+	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false },
 ];
 const ports: Ref<string[]> = ref([]);
 

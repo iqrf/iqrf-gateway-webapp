@@ -63,12 +63,12 @@ const i18n = useI18n();
 
 const loading: Ref<boolean> = ref(false);
 const headers = [
-	{key: 'username', title: i18n.t('components.accessControl.users.username')},
-	{key: 'email', title: i18n.t('components.accessControl.users.email')},
-	{key: 'role', title: i18n.t('components.accessControl.users.role')},
-	{key: 'language', title: i18n.t('components.accessControl.users.language')},
-	{key: 'state', title: i18n.t('components.accessControl.users.state')},
-	{key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false},
+	{ key: 'username', title: i18n.t('components.accessControl.users.username') },
+	{ key: 'email', title: i18n.t('components.accessControl.users.email') },
+	{ key: 'role', title: i18n.t('components.accessControl.users.role') },
+	{ key: 'language', title: i18n.t('components.accessControl.users.language') },
+	{ key: 'state', title: i18n.t('components.accessControl.users.state') },
+	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false },
 ];
 const users: Ref<UserInfo[]> = ref([]);
 

@@ -18,7 +18,7 @@
 <script lang='ts' setup>
 import SidebarGroup from '@/components/layout/sidebar/SidebarGroup.vue';
 import SidebarItem from '@/components/layout/sidebar/SidebarItem.vue';
-import {type SidebarLink} from '@/types/sidebar';
+import { type SidebarLink } from '@/types/sidebar';
 /**
  * Sidebar item component props
  */

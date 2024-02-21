@@ -18,11 +18,11 @@ router.beforeEach((to: RouteLocationNormalized, _from: RouteLocationNormalized, 
 	const requiresAuth: boolean = (to.meta.requiresAuth ?? true) === true;
 	const install: boolean = (to.meta.installWizard ?? false) === true;
 	if (!install && requiresAuth && !userStore.isLoggedIn) {
-		let query = {...to.query};
+		let query = { ...to.query };
 		if (to.path !== '/' && to.path !== '/sign/in') {
-			query = {...query, redirect: to.path};
+			query = { ...query, redirect: to.path };
 		}
-		return next({name: 'SignIn', query: query});
+		return next({ name: 'SignIn', query: query });
 	}
 	if(to.name === 'SignIn' && userStore.isLoggedIn) {
 		return next((to.query.redirect as string|undefined) ?? '/');

@@ -45,7 +45,7 @@ function powerOff(): void {
 	service.powerOff()
 		.then((response: PowerActionResponse) =>
 			toast.success(
-				i18n.t('components.gateway.power.messages.powerOffSuccess', {time: parseActionTime(response.timestamp)}).toString(),
+				i18n.t('components.gateway.power.messages.powerOffSuccess', { time: parseActionTime(response.timestamp) }).toString(),
 			),
 		).catch((error: AxiosError) =>
 			basicErrorToast(error, 'components.gateway.power.messages.powerOffFailed'),
@@ -56,7 +56,7 @@ function reboot(): void {
 	service.reboot()
 		.then((response: PowerActionResponse) =>
 			toast.success(
-				i18n.t('components.gateway.power.messages.rebootSuccess', {time: parseActionTime(response.timestamp)}).toString(),
+				i18n.t('components.gateway.power.messages.rebootSuccess', { time: parseActionTime(response.timestamp) }).toString(),
 			),
 		).catch((error: AxiosError) =>
 			basicErrorToast(error, 'components.gateway.power.messages.rebootFailed'),

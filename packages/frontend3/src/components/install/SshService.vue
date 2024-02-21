@@ -96,7 +96,7 @@ function toNextStep(): void {
 		router.push('/');
 		return;
 	}
-	router.push({name: nextStep.route});
+	router.push({ name: nextStep.route });
 }
 
 </script>

@@ -55,7 +55,7 @@ import TrConfigDpaForm from '@/components/iqrfnet/tr-config/TrConfigDpaForm.vue'
 import TrConfigOsForm from '@/components/iqrfnet/tr-config/TrConfigOsForm.vue';
 import TrConfigSecurityForm from '@/components/iqrfnet/tr-config/TrConfigSecurityForm.vue';
 import { validateForm } from '@/helpers/validateForm';
-import {ComponentState} from '@/types/ComponentState';
+import { ComponentState } from '@/types/ComponentState';
 
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);

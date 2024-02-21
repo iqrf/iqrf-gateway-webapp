@@ -422,7 +422,7 @@ async function onSubmit(): Promise<void> {
 	if (configuration.value === null) {
 		return;
 	}
-	const params = {...configuration.value};
+	const params = { ...configuration.value };
 	if (!watchdogPins.value) {
 		params.powerOff.sck = -1;
 		params.powerOff.sda = -1;
@@ -457,12 +457,12 @@ function applyProfile(profile: IqrfGatewayControllerMapping): void {
 		return;
 	}
 	configuration.value.resetButton.button = profile.button;
-	configuration.value.statusLed = {greenLed: profile.greenLed, redLed: profile.redLed};
+	configuration.value.statusLed = { greenLed: profile.greenLed, redLed: profile.redLed };
 	if (profile.sck !== undefined && profile.sck !== -1 && profile.sda !== undefined && profile.sda !== -1) {
-		configuration.value.powerOff = {sck: profile.sck, sda: profile.sda};
+		configuration.value.powerOff = { sck: profile.sck, sda: profile.sda };
 		watchdogPins.value = true;
 	} else {
-		configuration.value.powerOff = {sck: -1, sda: -1};
+		configuration.value.powerOff = { sck: -1, sda: -1 };
 		watchdogPins.value = false;
 	}
 	showProfileMenu.value = false;

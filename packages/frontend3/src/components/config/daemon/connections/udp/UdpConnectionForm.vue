@@ -157,7 +157,7 @@ const defaultProfile: IqrfGatewayDaemonUdpMessaging = {
 	RemotePort: 55300,
 	deviceRecordExpiration: 300,
 };
-const profile: Ref<IqrfGatewayDaemonUdpMessaging> = ref({...defaultProfile});
+const profile: Ref<IqrfGatewayDaemonUdpMessaging> = ref({ ...defaultProfile });
 let instance = '';
 const iconColor = computed(() => {
 	if (componentProps.action === FormAction.Add) {
@@ -180,10 +180,10 @@ const dialogTitle = computed(() => {
 
 watchEffect(async(): Promise<void> => {
 	if (componentProps.action === FormAction.Edit && componentProps.connectionProfile) {
-		profile.value = {...componentProps.connectionProfile};
+		profile.value = { ...componentProps.connectionProfile };
 		instance = componentProps.connectionProfile.instance;
 	} else {
-		profile.value = {...defaultProfile};
+		profile.value = { ...defaultProfile };
 		instance = defaultProfile.instance;
 	}
 	componentState.value = ComponentState.Ready;
@@ -194,7 +194,7 @@ async function onSubmit(): Promise<void> {
 		return;
 	}
 	componentState.value = ComponentState.Saving;
-	const params = {...profile.value};
+	const params = { ...profile.value };
 	if (componentProps.action === FormAction.Add) {
 		service.createInstance(IqrfGatewayDaemonComponentName.IqrfUdpMessaging, params)
 			.then(() => handleSuccess(instance))
@@ -209,7 +209,7 @@ async function onSubmit(): Promise<void> {
 function handleSuccess(name: string): void {
 	componentState.value = ComponentState.Ready;
 	toast.success(
-		i18n.t('components.configuration.daemon.connections.udp.messages.save.success', {name: name}),
+		i18n.t('components.configuration.daemon.connections.udp.messages.save.success', { name: name }),
 	);
 	close();
 	emit('saved');
@@ -221,7 +221,7 @@ function handleError(): void {
 }
 
 function importFromConfig(config: IqrfGatewayDaemonUdpMessaging): void {
-	profile.value = {...config};
+	profile.value = { ...config };
 	show.value = true;
 }
 
@@ -231,6 +231,6 @@ defineExpose({
 
 function close(): void {
 	show.value = false;
-	profile.value = {...defaultProfile};
+	profile.value = { ...defaultProfile };
 }
 </script>

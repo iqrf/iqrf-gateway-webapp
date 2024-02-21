@@ -161,7 +161,7 @@ async function onSubmit(): Promise<void> {
 		return;
 	}
 	componentState.value === ComponentState.Saving;
-	const params = {...config.value};
+	const params = { ...config.value };
 	service.editConfig(params)
 		.then(() => {
 			getConfig().then(() => {

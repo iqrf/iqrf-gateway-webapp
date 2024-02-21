@@ -69,7 +69,7 @@ async function setup(): Promise<void> {
 		show.value = false;
 		await userStore.signOut()
 			.then(async () => {
-				await router.push({path: '/sign/in', query: {redirect: router.currentRoute.value.path}});
+				await router.push({ path: '/sign/in', query: { redirect: router.currentRoute.value.path } });
 				toast.warning(
 					i18n.t('auth.sign.out.expired').toString(),
 				);

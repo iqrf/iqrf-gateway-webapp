@@ -38,7 +38,7 @@ import { mdiKey } from '@mdi/js';
 import  { type AxiosError } from 'axios';
 import { ref, type Ref } from 'vue';
 import { toast } from 'vue3-toastify';
-import {VForm} from 'vuetify/components';
+import { VForm } from 'vuetify/components';
 
 import Card from '@/components/Card.vue';
 import PasswordInput from '@/components/PasswordInput.vue';

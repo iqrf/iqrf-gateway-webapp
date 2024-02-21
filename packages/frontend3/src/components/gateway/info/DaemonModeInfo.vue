@@ -18,6 +18,6 @@ import { storeToRefs } from 'pinia';
 import { useMonitorStore } from '@/store/monitorSocket';
 
 const monitorStore = useMonitorStore();
-const {isConnected: connected, getMode: mode} = storeToRefs(monitorStore);
+const { isConnected: connected, getMode: mode } = storeToRefs(monitorStore);
 
 </script>

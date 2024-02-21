@@ -69,13 +69,13 @@ const form: Ref<typeof VForm | null> = ref(null);
 const defaultConfig: AzureIotHubConfig = {
 	connectionString: '',
 };
-const config: Ref<AzureIotHubConfig> = ref({...defaultConfig});
+const config: Ref<AzureIotHubConfig> = ref({ ...defaultConfig });
 
 async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
 	}
-	const params = {...config.value};
+	const params = { ...config.value };
 	service.createMqttInstance(params)
 		.then(() => {
 			toast.success(
@@ -89,7 +89,7 @@ async function onSubmit(): Promise<void> {
 }
 
 function clear(): void {
-	config.value = {...defaultConfig};
+	config.value = { ...defaultConfig };
 }
 
 function close(): void {

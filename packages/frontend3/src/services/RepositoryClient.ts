@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import {type IqrfRepositoryConfig} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import {Client, type ClientCredentials} from '@iqrf/iqrf-repository-client';
+import { type IqrfRepositoryConfig } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import { Client, type ClientCredentials } from '@iqrf/iqrf-repository-client';
 
 import { useApiClient } from '@/services/ApiClient';
 import { useRepositoryStore } from '@/store/repository';

@@ -77,7 +77,7 @@ const form: Ref<typeof VForm | null> = ref(null);
 const config: Ref<IqrfGatewayControllerApiDiscoveryConfig | null> = ref(null);
 
 watchEffect(() => {
-	config.value = {...componentProps.discoveryConfig};
+	config.value = { ...componentProps.discoveryConfig };
 });
 
 async function onSubmit(): Promise<void> {

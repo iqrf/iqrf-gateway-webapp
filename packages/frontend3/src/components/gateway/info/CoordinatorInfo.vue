@@ -67,7 +67,7 @@ const trMcuType: Ref<TrMcuType |null> = ref(null);
 let msgId = '';
 
 daemonStore.$onAction(
-	({ name, after}) => {
+	({ name, after }) => {
 		if (name === 'onMessage') {
 			after((rsp: DaemonApiResponse) => {
 				if (rsp.data.msgId !== msgId) {

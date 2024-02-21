@@ -102,5 +102,5 @@ import Card from '@/components/Card.vue';
 import TextInput from '@/components/TextInput.vue';
 
 const display = useDisplay();
-const config = defineModel<TrConfig>('config', {required: true});
+const config = defineModel<TrConfig>('config', { required: true });
 </script>

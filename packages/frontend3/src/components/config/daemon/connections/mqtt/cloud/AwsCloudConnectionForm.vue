@@ -96,7 +96,7 @@ const defaultConfig: AwsMqttConfig = {
 	certificate: null,
 	privateKey: null,
 };
-const config: Ref<AwsMqttConfig> = ref({...defaultConfig});
+const config: Ref<AwsMqttConfig> = ref({ ...defaultConfig });
 
 async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {
@@ -120,7 +120,7 @@ async function onSubmit(): Promise<void> {
 }
 
 function clear(): void {
-	config.value = {...defaultConfig};
+	config.value = { ...defaultConfig };
 }
 
 function close(): void {

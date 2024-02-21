@@ -177,7 +177,7 @@ const defaultProfile: IqrfGatewayControllerMapping = {
 	sck: -1,
 	sda: -1,
 };
-const profile: Ref<IqrfGatewayControllerMapping> = ref({...defaultProfile});
+const profile: Ref<IqrfGatewayControllerMapping> = ref({ ...defaultProfile });
 const watchdogPins: Ref<boolean> = ref(false);
 const typeOptions = [
 	{
@@ -210,10 +210,10 @@ const dialogTitle = computed(() => {
 
 watchEffect(async(): Promise<void> => {
 	if (componentProps.action === FormAction.Edit && componentProps.deviceProfile) {
-		profile.value = {...componentProps.deviceProfile};
+		profile.value = { ...componentProps.deviceProfile };
 		watchdogPins.value = (componentProps.deviceProfile.sck !== -1 && componentProps.deviceProfile.sda !== -1);
 	} else {
-		profile.value = {...defaultProfile};
+		profile.value = { ...defaultProfile };
 		watchdogPins.value = (defaultProfile.sck !== -1 && defaultProfile.sda !== -1);
 	}
 });
@@ -222,7 +222,7 @@ async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
 	}
-	const params = {...profile.value};
+	const params = { ...profile.value };
 	if (!watchdogPins.value) {
 		delete params.sck;
 		delete params.sda;
@@ -240,7 +240,7 @@ async function onSubmit(): Promise<void> {
 
 function handleSuccess(name: string): void {
 	toast.success(
-		i18n.t('components.configuration.profiles.messages.save.success', {name: name}),
+		i18n.t('components.configuration.profiles.messages.save.success', { name: name }),
 	);
 	close();
 	emit('saved');

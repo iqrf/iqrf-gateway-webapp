@@ -154,7 +154,7 @@ function handleSetMode(rsp: DaemonApiResponse): void {
 	}
 	monitorStore.setMode(rsp.data.rsp.operMode);
 	toast.success(
-		i18n.t('components.gateway.mode.messages.setSuccess', {mode: rsp.data.rsp.operMode}),
+		i18n.t('components.gateway.mode.messages.setSuccess', { mode: rsp.data.rsp.operMode }),
 	);
 }
 

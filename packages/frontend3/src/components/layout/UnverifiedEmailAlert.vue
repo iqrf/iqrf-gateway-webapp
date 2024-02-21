@@ -44,7 +44,7 @@ import { useUserStore } from '@/store/user';
 
 const i18n = useI18n();
 const userStore = useUserStore();
-const {hasEmail, isLoggedIn, isVerified, getEmail: userEmail} = storeToRefs(userStore);
+const { hasEmail, isLoggedIn, isVerified, getEmail: userEmail } = storeToRefs(userStore);
 
 function resend(): void {
 	const userId = userStore.getId;

@@ -128,7 +128,15 @@
 <script lang='ts' setup>
 import { type ServiceService } from '@iqrf/iqrf-gateway-webapp-client/services';
 import { type ServiceState, type ServiceStatus } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { mdiCheckCircle, mdiCloseCircle, mdiInformationOutline, mdiPlay, mdiPlayCircleOutline, mdiReload, mdiRestart, mdiStop, mdiStopCircleOutline } from '@mdi/js';
+import {
+	mdiInformationOutline,
+	mdiPlay,
+	mdiPlayCircleOutline,
+	mdiReload,
+	mdiRestart,
+	mdiStop,
+	mdiStopCircleOutline,
+} from '@mdi/js';
 import { onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -141,11 +149,11 @@ import { ComponentState } from '@/types/ComponentState';
 const i18n = useI18n();
 const service: ServiceService = useApiClient().getServiceService();
 const headers = [
-	{key: 'name', title: i18n.t('components.gateway.services.table.service')},
-	{key: 'description', title: i18n.t('common.columns.description')},
-	{key: 'enabled', title: i18n.t('common.states.enabled')},
-	{key: 'active', title: i18n.t('common.states.active')},
-	{key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false},
+	{ key: 'name', title: i18n.t('components.gateway.services.table.service') },
+	{ key: 'description', title: i18n.t('common.columns.description') },
+	{ key: 'enabled', title: i18n.t('common.states.enabled') },
+	{ key: 'active', title: i18n.t('common.states.active') },
+	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false },
 ];
 /// Component state
 const state: Ref<ComponentState> = ref(ComponentState.Created);
@@ -203,20 +211,6 @@ function refreshService(name: string, index: number): void {
 			};
 			state.value = ComponentState.Ready;
 		});
-}
-
-function iconColor(state: boolean): string {
-	if (state) {
-		return 'success';
-	}
-	return 'error';
-}
-
-function statusIcon(state: boolean): string {
-	if (state) {
-		return mdiCheckCircle;
-	}
-	return mdiCloseCircle;
 }
 
 function enabledActionIcon(state: boolean): string {

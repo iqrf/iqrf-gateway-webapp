@@ -1,4 +1,4 @@
-import {createPinia} from 'pinia';
+import { createPinia } from 'pinia';
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
 
 // Creates a new Pinia instance
