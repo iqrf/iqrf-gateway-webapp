@@ -105,13 +105,13 @@ const defaultConfig: IbmCloudConfig = {
 	organizationId: '',
 	token: '',
 };
-const config: Ref<IbmCloudConfig> = ref({...defaultConfig});
+const config: Ref<IbmCloudConfig> = ref({ ...defaultConfig });
 
 async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
 	}
-	const params = {...config.value};
+	const params = { ...config.value };
 	service.createMqttInstance(params)
 		.then(() => {
 			toast.success(
@@ -125,7 +125,7 @@ async function onSubmit(): Promise<void> {
 }
 
 function clear(): void {
-	config.value = {...defaultConfig};
+	config.value = { ...defaultConfig };
 }
 
 function close(): void {

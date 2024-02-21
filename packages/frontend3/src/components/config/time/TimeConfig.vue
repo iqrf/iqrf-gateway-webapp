@@ -144,8 +144,8 @@ const timeSet: Ref<TimeSet> = ref({
 });
 const datetime = ref(new Date(0));
 const headers = [
-	{key: 'server', title: i18n.t('components.configuration.time.ntpServers.address')},
-	{key: 'actions', title: i18n.t('common.columns.actions'), align: 'end'},
+	{ key: 'server', title: i18n.t('components.configuration.time.ntpServers.address') },
+	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end' },
 ];
 
 async function getTime(): Promise<void> {
@@ -163,7 +163,7 @@ async function getTime(): Promise<void> {
 				ntpServers: gatewayTime.value.ntpServers,
 				zoneName: gatewayTime.value.zoneName,
 			};
-			datetime.value = datetime.value = DateTime.fromSeconds(gatewayTime.value.utcTimestamp, {zone: gatewayTime.value.zoneName}).toJSDate();
+			datetime.value = datetime.value = DateTime.fromSeconds(gatewayTime.value.utcTimestamp, { zone: gatewayTime.value.zoneName }).toJSDate();
 			componentState.value = ComponentState.Ready;
 		})
 		.catch(() => {
@@ -179,7 +179,7 @@ async function onSubmit(): Promise<void> {
 		delete params.datetime;
 	} else {
 		delete params.ntpServers;
-		const luxonDate = DateTime.fromJSDate(datetime.value, {zone: (timezone.value.name)});
+		const luxonDate = DateTime.fromJSDate(datetime.value, { zone: (timezone.value.name) });
 		params.datetime = luxonDate.toISO()!;
 	}
 	service.setTime(params)

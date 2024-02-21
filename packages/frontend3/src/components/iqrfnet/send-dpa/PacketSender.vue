@@ -482,10 +482,10 @@ const useHexNadr: Ref<boolean> = ref(true);
 const nadr: Ref<number> = ref(0);
 const nadrHex: Ref<string> = ref('00');
 const nadrPresets = [
-	{title: 'Coordinator', value: 0},
-	{title: 'Local device', value: 252},
-	{title: 'Temporary', value: 254},
-	{title: 'Broadcast', value: 255},
+	{ title: 'Coordinator', value: 0 },
+	{ title: 'Local device', value: 252 },
+	{ title: 'Temporary', value: 254 },
+	{ title: 'Broadcast', value: 255 },
 ];
 // pnum
 const useHexPnum: Ref<boolean> = ref(true);
@@ -500,14 +500,14 @@ const useHexHwpid: Ref<boolean> = ref(true);
 const hwpid: Ref<number> = ref(0);
 const hwpidHex: Ref<string> = ref('ffff');
 const hwpidPresets = [
-	{title: 'DPA Plugin without handler', value: 0},
-	{title: 'Any device', value: 65535},
+	{ title: 'DPA Plugin without handler', value: 0 },
+	{ title: 'Any device', value: 65535 },
 ];
 // pdata
 const pdata: Ref<string> = ref('');
 const maskaOptions = {
 	mask: 'HH.'.repeat(56) + 'HH',
-	tokens: {'H': {pattern: /[0-9a-fA-F]/}},
+	tokens: { 'H': { pattern: /[0-9a-fA-F]/ } },
 };
 // timeout
 const useCustomTimeout: Ref<boolean> = ref(false);

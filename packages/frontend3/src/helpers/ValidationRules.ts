@@ -145,8 +145,8 @@ export default class ValidationRules {
 		if (value === null) {
 			return error;
 		}
-		const ipv4Validator: z.ZodString = z.string().ip({version: 'v4'});
-		const ipv6Validator: z.ZodString = z.string().ip({version: 'v6'});
+		const ipv4Validator: z.ZodString = z.string().ip({ version: 'v4' });
+		const ipv6Validator: z.ZodString = z.string().ip({ version: 'v6' });
 		return (ipv4Validator.safeParse(value).success || ipv6Validator.safeParse(value).success || value === 'localhost' || isFQDN(value)) || error;
 	}
 

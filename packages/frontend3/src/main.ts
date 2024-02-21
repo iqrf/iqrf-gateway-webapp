@@ -1,11 +1,11 @@
-import {createApp} from 'vue';
+import { createApp } from 'vue';
 
 import App from '@/App.vue';
-import {registerPlugins} from '@/plugins';
+import { registerPlugins } from '@/plugins';
 
 const app = createApp(App);
 registerPlugins(app);
 
 app.mount('#app');
 
-export {app};
+export { app };

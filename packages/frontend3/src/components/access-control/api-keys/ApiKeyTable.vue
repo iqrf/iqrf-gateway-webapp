@@ -65,10 +65,10 @@ const localeStore = useLocaleStore();
 const service: ApiKeyService = useApiClient().getApiKeyService();
 const loading: Ref<boolean> = ref(false);
 const headers = [
-	{key: 'id', title: i18n.t('common.columns.id')},
-	{key: 'description', title: i18n.t('common.columns.description')},
-	{key: 'expiration', title: i18n.t('components.accessControl.apiKeys.table.expiration')},
-	{key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false},
+	{ key: 'id', title: i18n.t('common.columns.id') },
+	{ key: 'description', title: i18n.t('common.columns.description') },
+	{ key: 'expiration', title: i18n.t('components.accessControl.apiKeys.table.expiration') },
+	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false },
 ];
 const keys: Ref<ApiKeyInfo[]> = ref([]);
 

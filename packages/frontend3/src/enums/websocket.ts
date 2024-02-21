@@ -1,4 +1,4 @@
 export enum WebsocketProtocol {
 	WS = 'ws',
-	WSS = 'wss'
+	WSS = 'wss',
 }

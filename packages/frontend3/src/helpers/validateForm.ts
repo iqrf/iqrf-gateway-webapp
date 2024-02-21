@@ -1,4 +1,4 @@
-import {type VForm} from 'vuetify/components';
+import { type VForm } from 'vuetify/components';
 
 /**
  * Validate Vuetify form

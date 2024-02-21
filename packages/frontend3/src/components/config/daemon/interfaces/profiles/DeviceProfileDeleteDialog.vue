@@ -39,7 +39,7 @@ async function onSubmit(): Promise<void> {
 	service.deleteMapping(componentProps.profile.id)
 		.then(() => {
 			toast.success(
-				i18n.t('components.configuration.profiles.messages.delete.success', {name: componentProps.profile.name}),
+				i18n.t('components.configuration.profiles.messages.delete.success', { name: componentProps.profile.name }),
 			);
 			close();
 			emit('deleted');

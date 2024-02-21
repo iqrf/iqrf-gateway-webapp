@@ -52,13 +52,13 @@
 </template>
 
 <script setup lang='ts'>
-import {mdiDelete, mdiWindowClose} from '@mdi/js';
-import {type PropType, ref, type Ref} from 'vue';
-import {VIcon} from 'vuetify/components';
+import { mdiDelete, mdiWindowClose } from '@mdi/js';
+import { type PropType, ref, type Ref } from 'vue';
+import { VIcon } from 'vuetify/components';
 
 import Card from '@/components/Card.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
-import {ComponentState} from '@/types/ComponentState';
+import { ComponentState } from '@/types/ComponentState';
 
 /// Exposed component functions
 defineExpose({

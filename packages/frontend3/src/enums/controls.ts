@@ -1,11 +1,11 @@
 export enum FormAction {
 	Add = 'add',
 	Edit = 'edit',
-	Delete = 'delete'
+	Delete = 'delete',
 }
 
 export enum ServiceAction {
 	Enable = 'enable',
 	Start = 'start',
-	Disable = 'disable'
+	Disable = 'disable',
 }

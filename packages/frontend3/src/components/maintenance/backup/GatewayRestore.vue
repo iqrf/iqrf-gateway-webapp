@@ -67,7 +67,7 @@ async function onSubmit(): Promise<void> {
 		.then((response: PowerActionResponse) => {
 			const time = new Date(response.timestamp * 1000).toLocaleTimeString();
 			toast.success(
-				i18n.t('components.maintenance.backup.restore.messages.save.success', {time: time}),
+				i18n.t('components.maintenance.backup.restore.messages.save.success', { time: time }),
 			);
 			componentState.value = ComponentState.Ready;
 		})

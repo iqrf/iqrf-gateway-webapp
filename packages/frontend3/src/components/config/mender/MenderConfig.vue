@@ -212,7 +212,7 @@ function intervalLabel(value: number|null): string {
 		return 'N/A';
 	}
 	const duration = Duration.fromMillis(value * 1000).shiftTo('days', 'hours', 'minutes', 'seconds');
-	return duration.toHuman({listStyle: 'long'});
+	return duration.toHuman({ listStyle: 'long' });
 }
 
 async function getConfig(): Promise<void> {
@@ -234,7 +234,7 @@ async function onSubmit(): Promise<void> {
 		return;
 	}
 	componentState.value = ComponentState.Saving;
-	const params = {...config.value};
+	const params = { ...config.value };
 	service.editConfig(params)
 		.then(() => {
 			getConfig().then(() => {

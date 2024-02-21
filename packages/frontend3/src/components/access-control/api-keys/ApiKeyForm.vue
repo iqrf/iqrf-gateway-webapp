@@ -81,7 +81,6 @@ import Card from '@/components/Card.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import TextInput from '@/components/TextInput.vue';
 import { FormAction } from '@/enums/controls';
-import { getModalWidth } from '@/helpers/modal';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
@@ -104,7 +103,6 @@ const componentProps = defineProps({
 });
 const i18n = useI18n();
 const show: Ref<boolean> = ref(false);
-const width = getModalWidth();
 const service: ApiKeyService = useApiClient().getApiKeyService();
 const form: Ref<typeof VForm | null> = ref(null);
 const defaultKey: ApiKeyConfig = {
@@ -145,12 +143,12 @@ const datePickerState = computed((): false|null => {
 
 watchEffect(async(): Promise<void> => {
 	if (componentProps.action === FormAction.Add) {
-		key.value = {...defaultKey};
+		key.value = { ...defaultKey };
 	} else if (componentProps.action === FormAction.Edit) {
 		if (componentProps.apiKey) {
-			key.value = {...componentProps.apiKey};
+			key.value = { ...componentProps.apiKey };
 		} else {
-			key.value = {...defaultKey};
+			key.value = { ...defaultKey };
 		}
 	}
 	if (key.value.expiration !== null) {
@@ -196,6 +194,6 @@ async function onSubmit(): Promise<void> {
 
 function close(): void {
 	show.value = false;
-	key.value = {...defaultKey};
+	key.value = { ...defaultKey };
 }
 </script>

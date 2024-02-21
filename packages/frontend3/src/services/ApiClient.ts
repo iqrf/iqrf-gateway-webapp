@@ -36,7 +36,7 @@ export const useApiClient = (): Client => {
 				userStore.signOut();
 				// Prevent duplicate redirect to sign in page
 				if (router.currentRoute.value.name !== 'signIn') {
-					router.push({name: 'signIn', query: {redirect: router.currentRoute.value.path}});
+					router.push({ name: 'signIn', query: { redirect: router.currentRoute.value.path } });
 				}
 				const i18n = useI18n();
 				toast.warning(i18n.t('auth.sign.out.expired').toString());

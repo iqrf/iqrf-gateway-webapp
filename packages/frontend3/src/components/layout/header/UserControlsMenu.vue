@@ -62,7 +62,7 @@ function setLocale(locale: string): void {
 	}
 	localeStore.setLocale(locale);
 	toast.success(
-		i18n.t('components.status.locale.messages.set', {locale: i18n.t(`omponents.status.locale.languages.${locale}`)}),
+		i18n.t('components.status.locale.messages.set', { locale: i18n.t(`omponents.status.locale.languages.${locale}`) }),
 	);
 }
 

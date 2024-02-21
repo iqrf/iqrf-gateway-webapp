@@ -28,7 +28,7 @@ import { useInstallStore } from '@/store/install';
 
 
 const installStore = useInstallStore();
-const {hasUsers} = storeToRefs(installStore);
+const { hasUsers } = storeToRefs(installStore);
 </script>
 
 <style lang='scss' scoped>

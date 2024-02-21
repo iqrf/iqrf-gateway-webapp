@@ -16,6 +16,7 @@ module.exports = {
 	],
 	plugins: [
 		'@typescript-eslint',
+		'@stylistic',
 	],
 	parser: 'vue-eslint-parser',
 	parserOptions: {
@@ -27,6 +28,18 @@ module.exports = {
 		extraFileExtensions: ['.vue'],
 	},
 	rules: {
+		'@stylistic/comma-dangle': [
+			'error',
+			'always-multiline',
+		],
+		'@stylistic/eol-last': [
+			'error',
+			'always',
+		],
+		'@stylistic/object-curly-spacing': [
+			'error',
+			'always',
+		],
 		'@typescript-eslint/ban-ts-comment': 'off',
 		'@typescript-eslint/consistent-type-imports': [
 			'error',

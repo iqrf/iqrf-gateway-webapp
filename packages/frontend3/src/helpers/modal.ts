@@ -1,6 +1,6 @@
 
-import {computed, type ComputedRef} from 'vue';
-import {useDisplay} from 'vuetify';
+import { computed, type ComputedRef } from 'vue';
+import { useDisplay } from 'vuetify';
 
 export function getModalWidth(): ComputedRef<string> {
 	return computed(() => {

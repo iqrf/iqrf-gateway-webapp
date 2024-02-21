@@ -95,10 +95,10 @@ const i18n = useI18n();
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
 const headers = [
-	{key: 'name', title: i18n.t('components.configuration.profiles.name')},
-	{key: 'type', title: i18n.t('components.configuration.profiles.profileType')},
-	{key: 'deviceType', title: i18n.t('components.configuration.profiles.deviceType')},
-	{key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false},
+	{ key: 'name', title: i18n.t('components.configuration.profiles.name') },
+	{ key: 'type', title: i18n.t('components.configuration.profiles.profileType') },
+	{ key: 'deviceType', title: i18n.t('components.configuration.profiles.deviceType') },
+	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false },
 ];
 const profiles: Ref<IqrfGatewayDaemonMapping[]> = ref([]);
 

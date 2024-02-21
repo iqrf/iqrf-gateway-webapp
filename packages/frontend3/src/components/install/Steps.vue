@@ -33,6 +33,6 @@ import { useInstallStore } from '@/store/install';
 
 const display = useDisplay();
 const installStore = useInstallStore();
-const {getCurrentStep: currentStep, getSteps: steps} = storeToRefs(installStore);
+const { getCurrentStep: currentStep, getSteps: steps } = storeToRefs(installStore);
 
 </script>

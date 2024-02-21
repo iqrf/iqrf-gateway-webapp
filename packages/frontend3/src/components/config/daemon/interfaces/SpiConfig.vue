@@ -277,7 +277,7 @@ async function onSubmit(): Promise<void> {
 		return;
 	}
 	componentState.value = ComponentState.Saving;
-	const params = {...config.value};
+	const params = { ...config.value };
 	if (!interfacePins.value) {
 		delete params.i2cEnableGpioPin;
 		delete params.spiEnableGpioPin;

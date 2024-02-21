@@ -223,7 +223,7 @@ const defaultProfile: IqrfGatewayDaemonMapping = {
 	uartEnableGpioPin: -1,
 	baudRate: 9600,
 };
-const profile: Ref<IqrfGatewayDaemonMapping> = ref({...defaultProfile});
+const profile: Ref<IqrfGatewayDaemonMapping> = ref({ ...defaultProfile });
 const interfacePins: Ref<boolean> = ref(false);
 const typeOptions = [
 	{
@@ -295,7 +295,7 @@ async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
 	}
-	const params = {...profile.value};
+	const params = { ...profile.value };
 	if (!interfacePins.value) {
 		delete params.i2cEnableGpioPin;
 		delete params.spiEnableGpioPin;
@@ -317,7 +317,7 @@ async function onSubmit(): Promise<void> {
 
 function handleSuccess(name: string): void {
 	toast.success(
-		i18n.t('components.configuration.profiles.messages.save.success', {name: name}),
+		i18n.t('components.configuration.profiles.messages.save.success', { name: name }),
 	);
 	close();
 	emit('saved');

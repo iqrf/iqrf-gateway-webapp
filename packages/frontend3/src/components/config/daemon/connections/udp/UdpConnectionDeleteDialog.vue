@@ -48,7 +48,7 @@ function onSubmit(): void {
 		.then(() => {
 			componentState.value = ComponentState.Ready;
 			toast.success(
-				i18n.t('components.configuration.daemon.connections.udp.messages.delete.success', {name: componentProps.connectionProfile.instance}),
+				i18n.t('components.configuration.daemon.connections.udp.messages.delete.success', { name: componentProps.connectionProfile.instance }),
 			);
 			close();
 			emit('deleted');

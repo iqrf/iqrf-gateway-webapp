@@ -115,7 +115,7 @@ async function onSubmit(): Promise<void> {
 		return;
 	}
 	componentState.value = ComponentState.Saving;
-	const params = {...config.value};
+	const params = { ...config.value };
 	service.updateInstance(IqrfGatewayDaemonComponentName.IqrfDpa, instance, params)
 		.then(() => {
 			getConfig().then(() => {

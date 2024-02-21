@@ -83,9 +83,9 @@ const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const service: IqrfGatewayControllerService = useApiClient().getConfigServices().getIqrfGatewayControllerService();
 const profiles: Ref<IqrfGatewayControllerMapping[]> = ref([]);
 const headers = [
-	{key: 'name', title: i18n.t('components.configuration.profiles.name')},
-	{key: 'deviceType', title: i18n.t('components.configuration.profiles.deviceType')},
-	{key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false},
+	{ key: 'name', title: i18n.t('components.configuration.profiles.name') },
+	{ key: 'deviceType', title: i18n.t('components.configuration.profiles.deviceType') },
+	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false },
 ];
 async function getProfiles(): Promise<void> {
 	componentState.value = ComponentState.Loading;

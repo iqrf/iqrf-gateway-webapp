@@ -48,7 +48,7 @@ function onSubmit(): void {
 		.then(() => {
 			componentState.value = ComponentState.Ready;
 			toast.success(
-				i18n.t('components.configuration.daemon.logging.messages.delete.success', {name: componentProps.loggingInstance.instance}),
+				i18n.t('components.configuration.daemon.logging.messages.delete.success', { name: componentProps.loggingInstance.instance }),
 			);
 			close();
 			emit('deleted');

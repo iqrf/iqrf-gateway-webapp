@@ -15,7 +15,7 @@
 </route>
 
 <script lang='ts' setup>
-import {UserRole} from '@iqrf/iqrf-gateway-webapp-client/types';
+import { UserRole } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { Head } from '@unhead/vue/components';
 import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';

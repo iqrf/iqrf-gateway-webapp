@@ -150,7 +150,7 @@ function headerIcon(): string {
 
 watchEffect(async (): Promise<void> => {
 	if (componentProps.action === FormAction.Add) {
-		user.value = {...defaultUser, password: ''} as UserCreate;
+		user.value = { ...defaultUser, password: '' } as UserCreate;
 	} else if (componentProps.action === FormAction.Edit) {
 		if (componentProps.userInfo) {
 			user.value = {
@@ -160,7 +160,7 @@ watchEffect(async (): Promise<void> => {
 				language: componentProps.userInfo.language,
 			};
 		} else {
-			user.value = {...defaultUser};
+			user.value = { ...defaultUser };
 		}
 	}
 });
@@ -191,14 +191,14 @@ async function onSubmit(): Promise<void> {
 
 function onSuccess(entity: UserCreate | UserEdit): void {
 	toast.success(
-		i18n.t(`components.accessControl.users.messages.${componentProps.action}.success`, {user: entity.username}),
+		i18n.t(`components.accessControl.users.messages.${componentProps.action}.success`, { user: entity.username }),
 	);
 	close();
 	emit('refresh');
 }
 
 function onFailure(error: AxiosError, entity: UserCreate | UserEdit): void {
-	basicErrorToast(error, `components.accessControl.users.messages.${componentProps.action}.failure`, {user: entity.username});
+	basicErrorToast(error, `components.accessControl.users.messages.${componentProps.action}.failure`, { user: entity.username });
 }
 
 function close(): void {

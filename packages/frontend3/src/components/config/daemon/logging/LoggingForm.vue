@@ -239,7 +239,7 @@ const componentProps = defineProps({
 			maxAgeMinutes: 0,
 			timestampFiles: false,
 			VerbosityLevels: [
-				{channel: 0, level: ShapeTraceVerbosity.Info},
+				{ channel: 0, level: ShapeTraceVerbosity.Info },
 			],
 		}),
 		required: false,
@@ -259,15 +259,15 @@ const defaultProfile: ShapeTraceFileService = {
 	maxAgeMinutes: 0,
 	timestampFiles: false,
 	VerbosityLevels: [
-		{channel: 0, level: ShapeTraceVerbosity.Info},
+		{ channel: 0, level: ShapeTraceVerbosity.Info },
 	],
 };
-const profile: Ref<ShapeTraceFileService> = ref({...defaultProfile});
+const profile: Ref<ShapeTraceFileService> = ref({ ...defaultProfile });
 let instance = '';
 const headers = [
-	{key: 'channel', title: i18n.t('components.configuration.daemon.logging.channel')},
-	{key: 'level', title: i18n.t('components.configuration.daemon.logging.severity')},
-	{key: 'actions', title: i18n.t('common.columns.actions'), align: 'end'},
+	{ key: 'channel', title: i18n.t('components.configuration.daemon.logging.channel') },
+	{ key: 'level', title: i18n.t('components.configuration.daemon.logging.severity') },
+	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end' },
 ];
 const iconColor = computed(() => {
 	if (componentProps.action === FormAction.Add) {
@@ -290,7 +290,7 @@ const dialogTitle = computed(() => {
 
 watchEffect(async(): Promise<void> => {
 	if (componentProps.action === FormAction.Edit && componentProps.loggingProfile) {
-		profile.value = {...componentProps.loggingProfile};
+		profile.value = { ...componentProps.loggingProfile };
 		if (profile.value.maxAgeMinutes === undefined) {
 			profile.value.maxAgeMinutes = 0;
 		}
@@ -299,7 +299,7 @@ watchEffect(async(): Promise<void> => {
 		}
 		instance = componentProps.loggingProfile.instance;
 	} else {
-		profile.value = {...defaultProfile};
+		profile.value = { ...defaultProfile };
 		instance = defaultProfile.instance;
 	}
 	componentState.value = ComponentState.Ready;
@@ -310,7 +310,7 @@ async function onSubmit(): Promise<void> {
 		return;
 	}
 	componentState.value = ComponentState.Saving;
-	const params = {...profile.value};
+	const params = { ...profile.value };
 	if (componentProps.action === FormAction.Add) {
 		service.createInstance(IqrfGatewayDaemonComponentName.ShapeTraceFile, params)
 			.then(() => handleSuccess(params.instance))
@@ -325,7 +325,7 @@ async function onSubmit(): Promise<void> {
 function handleSuccess(name: string): void {
 	componentState.value = ComponentState.Ready;
 	toast.success(
-		i18n.t('components.configuration.daemon.logging.messages.save.success', {name: name}),
+		i18n.t('components.configuration.daemon.logging.messages.save.success', { name: name }),
 	);
 	close();
 	emit('saved');
@@ -365,6 +365,6 @@ function clearLevels(): void {
 
 function close(): void {
 	show.value = false;
-	profile.value = {...defaultProfile};
+	profile.value = { ...defaultProfile };
 }
 </script>

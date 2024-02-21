@@ -74,7 +74,7 @@ function handleRemoveTask(rsp: DaemonApiResponse): void {
 		componentState.value = ComponentState.Error;
 	}
 	toast.success(
-		i18n.t('components.configuration.daemon.scheduler.messages.delete.success', {id: componentProps.taskId}),
+		i18n.t('components.configuration.daemon.scheduler.messages.delete.success', { id: componentProps.taskId }),
 	);
 	componentState.value = ComponentState.Ready;
 	dialog.value?.close();

@@ -268,7 +268,7 @@ const defaultTask: SchedulerRecord = {
 	enabled: true,
 };
 const msgId: Ref<string | null> = ref(null);
-const task: Ref<SchedulerRecord> = ref({...defaultTask});
+const task: Ref<SchedulerRecord> = ref({ ...defaultTask });
 const taskType: Ref<SchedulerTaskType> = ref(SchedulerTaskType.ONESHOT);
 const humanCron: Ref<string | null> = ref(null);
 
@@ -316,9 +316,9 @@ const taskTypeOptions = [
 ];
 
 const headers = [
-	{key: 'message', title: i18n.t('components.configuration.daemon.scheduler.task.mType')},
-	{key: 'messaging', title: i18n.t('components.configuration.daemon.scheduler.task.messaging')},
-	{key: 'actions', title: i18n.t('common.columns.actions'), align: 'end'},
+	{ key: 'message', title: i18n.t('components.configuration.daemon.scheduler.task.mType') },
+	{ key: 'messaging', title: i18n.t('components.configuration.daemon.scheduler.task.messaging') },
+	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end' },
 ];
 
 const datePickerState = computed((): boolean => {
@@ -360,7 +360,7 @@ watch(show, (newVal: boolean) => {
 		}
 		setTaskType();
 	} else {
-		task.value = {...defaultTask};
+		task.value = { ...defaultTask };
 		task.value.taskId = uuidv4();
 		setTaskType();
 	}
@@ -449,7 +449,7 @@ function validateCron(expression: string): boolean | string {
 		}
 		expression = expr;
 	}
-	const cronobj = cron(expression, {preset: SchedulerCron.cronTraits});
+	const cronobj = cron(expression, { preset: SchedulerCron.cronTraits });
 	if (cronobj.isValid()) {
 		humanCron.value = SchedulerCron.toHumanString(expression);
 		return true;
@@ -463,7 +463,7 @@ async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
 	}
-	const record = {...task.value};
+	const record = { ...task.value };
 	delete record.active;
 	if (taskType.value === SchedulerTaskType.ONESHOT) {
 		record.timeSpec.exactTime = true;
@@ -487,6 +487,6 @@ async function onSubmit(): Promise<void> {
 
 function close(): void {
 	show.value = false;
-	task.value = {...defaultTask};
+	task.value = { ...defaultTask };
 }
 </script>

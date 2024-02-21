@@ -111,7 +111,7 @@ const defaultLevel: ShapeTraceChannelVerbosity = {
 	level: ShapeTraceVerbosity.Info,
 };
 const form: Ref<typeof VForm | null> = ref(null);
-const level: Ref<ShapeTraceChannelVerbosity> = ref({...defaultLevel});
+const level: Ref<ShapeTraceChannelVerbosity> = ref({ ...defaultLevel });
 const severityOptions = [
 	{
 		title: i18n.t('common.labels.severity.debug'),
@@ -133,9 +133,9 @@ const severityOptions = [
 
 watchEffect(async (): Promise<void> => {
 	if (componentProps.action === FormAction.Edit && componentProps.loggingLevel) {
-		level.value = {...componentProps.loggingLevel};
+		level.value = { ...componentProps.loggingLevel };
 	} else {
-		level.value = {...defaultLevel};
+		level.value = { ...defaultLevel };
 	}
 });
 

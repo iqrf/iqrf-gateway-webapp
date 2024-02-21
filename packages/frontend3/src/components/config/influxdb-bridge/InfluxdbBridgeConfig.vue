@@ -317,8 +317,8 @@ const service: IqrfGatewayInfluxdbBridgeService = useApiClient().getConfigServic
 const form: Ref<typeof VForm | null> = ref(null);
 const config: Ref<BridgeConfig | null> = ref(null);
 const headers = [
-	{key: 'topic', title: i18n.t('components.configuration.influxdb-bridge.topic')},
-	{key: 'actions', title: i18n.t('common.columns.actions'), align: 'end'},
+	{ key: 'topic', title: i18n.t('components.configuration.influxdb-bridge.topic') },
+	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end' },
 ];
 
 async function getConfig(): Promise<void> {
@@ -343,7 +343,7 @@ async function onSubmit(): Promise<void> {
 		return;
 	}
 	componentState.value = ComponentState.Saving;
-	const params = {...config.value};
+	const params = { ...config.value };
 	service.editConfig(params)
 		.then(() => getConfig().then(() => {
 			toast.success(

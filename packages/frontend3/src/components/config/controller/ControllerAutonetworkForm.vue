@@ -107,7 +107,7 @@ const form: Ref<typeof VForm | null> = ref(null);
 const config: Ref<IqrfGatewayControllerApiAutonetworkConfig | null> = ref(null);
 
 watchEffect(() => {
-	config.value = {...componentProps.autonetworkConfig};
+	config.value = { ...componentProps.autonetworkConfig };
 });
 
 async function onSubmit(): Promise<void> {
