@@ -21,8 +21,10 @@ import router from '@/router';
 import { useApiClient } from '@/services/ApiClient';
 import { useDaemonStore } from '@/store/daemonSocket';
 import { useFeatureStore } from '@/store/features';
+import { useGatewayStore } from '@/store/gateway';
 import { useInstallStore } from '@/store/install';
 import { useLocaleStore } from '@/store/locale';
+import { useRepositoryStore } from '@/store/repository';
 import { useUserStore } from '@/store/user';
 
 const i18n = useI18n();
@@ -32,9 +34,12 @@ const daemonStore = useDaemonStore();
 const { isConnected } = storeToRefs(daemonStore);
 
 const featureStore = useFeatureStore();
+const gatewayStore = useGatewayStore();
 
 const installStore = useInstallStore();
 const { isChecked } = storeToRefs(installStore);
+
+const repositoryStore = useRepositoryStore();
 
 const userStore = useUserStore();
 const { isLoggedIn } = storeToRefs(userStore);
@@ -64,7 +69,7 @@ onBeforeMount(async () => {
 	setHeadOptions(locale.value);
 	await featureStore.fetch();
 	await useApiClient().getInstallationService().check()
-		.then((check: InstallationChecks): void => {
+		.then(async (check: InstallationChecks): Promise<void> => {
 			const isInstallUrl: boolean = router.currentRoute.value.path.startsWith('/install/');
 			const errorUrl: boolean = router.currentRoute.value.path.startsWith('/install/error/');
 			installStore.populateSteps();
@@ -74,7 +79,7 @@ onBeforeMount(async () => {
 			if (check.dependencies.length !== 0) {
 				installStore.setMissingDependencies(check.dependencies);
 				installStore.setChecked();
-				router.push({
+				await router.push({
 					name: 'MissingDependency',
 				});
 			} else if (!check.phpModules.allExtensionsLoaded) {
@@ -82,24 +87,24 @@ onBeforeMount(async () => {
 					installStore.setMissingExtensions(check.phpModules.missing);
 				}
 				installStore.setChecked();
-				router.push({
+				await router.push({
 					name: 'MissingExtension',
 				});
 			} else if (check.sudo !== undefined && (!check.sudo.exists || !check.sudo.userSudo)) {
 				// TODO: sudo error
 			} else if (!check.allMigrationsExecuted) {
 				installStore.setChecked();
-				router.push({ name: 'MissingMigration' });
+				await router.push({ name: 'MissingMigration' });
 			} else if (!check.hasUsers && !isInstallUrl) {
 				installStore.setChecked();
-				router.push({ name: 'InstallDisambiguation' });
+				await router.push({ name: 'InstallDisambiguation' });
 			} else if (check.hasUsers && (isInstallUrl || errorUrl)) {
 				installStore.setChecked();
-				router.push('/sign/in');
+				await router.push('/sign/in');
 			}
 			if (isLoggedIn.value) {
-				// TODO: GET REPOSITORY
-				// TODO: GET GATEWAY INFO
+				await repositoryStore.fetch();
+				await gatewayStore.fetchInfo();
 			}
 			installStore.setChecked();
 		})

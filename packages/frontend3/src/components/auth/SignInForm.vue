@@ -66,11 +66,15 @@ import { basicErrorToast } from '@/helpers/errorToast';
 import { getExpirationOptions } from '@/helpers/userData';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
+import { useGatewayStore } from '@/store/gateway';
+import { useRepositoryStore } from '@/store/repository';
 import { useUserStore } from '@/store/user';
 
 const i18n = useI18n();
 const route = useRoute();
 const router = useRouter();
+const gatewayStore = useGatewayStore();
+const repositoryStore = useRepositoryStore();
 const userStore = useUserStore();
 const expirationOptions = getExpirationOptions();
 const credentials: Ref<UserCredentials> = ref({
@@ -89,15 +93,17 @@ async function onSubmit(): Promise<void> {
 		return;
 	}
 	await userStore.signIn(credentials.value)
-		.then(() => {
+		.then(async () => {
 			let destination = (route?.query?.redirect as string | undefined) ?? '/';
 			if (destination.startsWith('/sign/in')) {
 				destination = '/';
 			}
-			router.push(destination);
+			await router.push(destination);
 			toast.success(
 				i18n.t('auth.sign.in.messages.success').toString(),
 			);
+			await gatewayStore.fetchInfo();
+			await repositoryStore.fetch();
 		})
 		.catch((error: AxiosError) => {
 			basicErrorToast(error, 'auth.sign.in.messages.incorrectUsernameOrPassword');
