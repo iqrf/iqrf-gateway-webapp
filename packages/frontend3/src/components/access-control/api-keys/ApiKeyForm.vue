@@ -66,17 +66,24 @@
 			</Card>
 		</v-form>
 	</ModalWindow>
+	<ApiKeyDisplayDialog
+		ref='displayDialog'
+		:api-key='generatedKey'
+		@closed='clear'
+	/>
 </template>
 
 <script lang='ts' setup>
 import { type ApiKeyService } from '@iqrf/iqrf-gateway-webapp-client/services';
-import { type ApiKeyConfig, type ApiKeyInfo } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { type ApiKeyCreated, type ApiKeyConfig, type ApiKeyInfo } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { DateTimeUtils } from '@iqrf/iqrf-gateway-webapp-client/utils';
 import { mdiPencil, mdiPlus } from '@mdi/js';
 import { computed, type PropType, ref, type Ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
+import ApiKeyDisplayDialog from '@/components/access-control/api-keys/ApiKeyDisplayDialog.vue';
 import Card from '@/components/Card.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import TextInput from '@/components/TextInput.vue';
@@ -112,6 +119,8 @@ const defaultKey: ApiKeyConfig = {
 const setExpiration: Ref<boolean> = ref(false);
 const expiration: Ref<Date | null> = ref(null);
 const key: Ref<ApiKeyInfo> = ref(defaultKey);
+const generatedKey: Ref<string | null> = ref(null);
+const displayDialog: Ref<typeof ApiKeyDisplayDialog | null> = ref(null);
 
 const iconColor = computed(() => {
 	if (componentProps.action === FormAction.Add) {
@@ -171,9 +180,9 @@ async function onSubmit(): Promise<void> {
 	}
 	if (componentProps.action === FormAction.Add) {
 		service.create(keyToSave)
-			.then(() => {
-				close();
-				emit('refresh');
+			.then((rsp: ApiKeyCreated) => {
+				generatedKey.value = rsp.key;
+				addSuccess();
 			})
 			.catch(() => {
 				// TODO ERROR
@@ -190,6 +199,17 @@ async function onSubmit(): Promise<void> {
 				// TODO ERROR
 			});
 	}
+}
+
+function addSuccess(): void {
+	toast.success('TODO SAVE SUCCESS MESSAGE');
+	close();
+	emit('refresh');
+	displayDialog.value?.open();
+}
+
+function clear(): void {
+	generatedKey.value = null;
 }
 
 function close(): void {

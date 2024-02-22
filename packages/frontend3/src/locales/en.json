@@ -1578,6 +1578,11 @@
 				"table": {
 					"expiration": "Expiration"
 				},
+				"display": {
+					"title": "Generated API key",
+					"prompt": "Before closing this dialog, copy and store the new API key below in a safe place. For security reasons, you will not be able to view it again at a later time.",
+					"copyMessage": "API key has been copied to clipboard."
+				},
 				"delete": {
 					"title": "API key delete confirmation",
 					"prompt": "Are you sure you want to delete API key ID {id}?"
