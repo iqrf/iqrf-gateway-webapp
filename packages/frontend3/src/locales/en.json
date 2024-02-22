@@ -155,7 +155,7 @@
 				"redirect": "You will be redirected to the dashboard in {countdown}.",
 				"failure": "Account verification failed, {error}.",
 				"requestSuccess": "Verification e-mail successfully sent.",
-				"requestFailure": "An error has occured while sending verification e-mail."
+				"requestFailure": "An error has occurred while sending verification e-mail."
 			}
 		}
 	},
@@ -194,13 +194,6 @@
 		},
 		"messages": {
 			"set": "Locale changed to: {locale}."
-		}
-	},
-	"errors": {
-		"404": {
-			"title": "Page not found",
-			"header": "Error 404",
-			"text": "The page you requested could not be found. The address may be incorrect, or the page no longer exists."
 		}
 	},
 	"install": {
@@ -340,6 +333,18 @@
 		}
 	},
 	"components": {
+		"errors": {
+			"403": {
+				"title": "Access denied",
+				"header": "Error 403",
+				"text": "You do not have permission to view this page. Please try contact the web site administrator if you believe you should be able to view this page."
+			},
+			"404": {
+				"title": "Page not found",
+				"header": "Error 404",
+				"text": "The page you requested could not be found. The address may be incorrect, or the page no longer exists."
+			}
+		},
 		"status": {
 			"monitor": {
 				"mode": "Daemon mode",
@@ -567,7 +572,7 @@
 								"certificate": "Certificate",
 								"privateKey": "Private key",
 								"validation": {
-									"endpointMissing": "Please enter enpoint.",
+									"endpointMissing": "Please enter endpoint.",
 									"certificateMissing": "Please select certificate file.",
 									"privateKeyMissing": "Please select private key file."
 								}
@@ -770,10 +775,10 @@
 							"success": "Scheduler tasks have been successfully imported."
 						},
 						"start": {
-							"success": "Task {id} sucessfully started."
+							"success": "Task {id} successfully started."
 						},
 						"stop": {
-							"success": "Task {id} sucessfully stopped."
+							"success": "Task {id} successfully stopped."
 						}
 					}
 				},
@@ -1509,10 +1514,10 @@
 							"success": "Mender artifact update has been successfully installed."
 						},
 						"commit": {
-							"success": "Update has been succesfully commited."
+							"success": "Update has been successfully committed."
 						},
 						"rollback": {
-							"success": "Update has been succesfully rolled back."
+							"success": "Update has been successfully rolled back."
 						}
 					}
 				},

@@ -5,7 +5,8 @@
 		<v-main>
 			<UnverifiedEmailAlert />
 			<v-container fluid>
-				<router-view />
+				<router-view v-if='isAllowed' />
+				<Forbidden v-else />
 			</v-container>
 		</v-main>
 		<TheFooter />
@@ -13,9 +14,36 @@
 </template>
 
 <script lang='ts' setup>
+import { type Feature, type UserRole } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { storeToRefs } from 'pinia';
+import { computed, type Ref } from 'vue';
+import { useRoute } from 'vue-router';
+
+import Forbidden from '@/components/errors/Forbidden.vue';
 import TheFooter from '@/components/layout/TheFooter.vue';
 import TheHeader from '@/components/layout/TheHeader.vue';
 import TheSidebar from '@/components/layout/TheSidebar.vue';
 import UnverifiedEmailAlert from '@/components/layout/UnverifiedEmailAlert.vue';
-</script>
+import { useFeatureStore } from '@/store/features';
+import { useUserStore } from '@/store/user';
 
+const route = useRoute();
+const featureStore = useFeatureStore();
+const userStore = useUserStore();
+
+const { getRole: role } = storeToRefs(userStore);
+const { isLoggedIn } = storeToRefs(userStore);
+const requiresAuth: Ref<boolean> = computed((): boolean => (route.meta.requiresAuth ?? true) as boolean);
+const requiredFeature: Ref<Feature | null> = computed((): Feature | null => (route.meta.feature ?? null) as Feature | null);
+const requiredRoles: Ref<UserRole[]> = computed((): UserRole[] => (route.meta.roles ?? []) as UserRole[]);
+const isAllowed: Ref<boolean> = computed((): boolean => {
+	if (
+		(requiredFeature.value !== null && !featureStore.isEnabled(requiredFeature.value)) ||
+		requiresAuth.value && !isLoggedIn.value
+	) {
+		return false;
+	}
+	return !requiresAuth.value || requiredRoles.value.length === 0 ||
+		role.value !== null && requiredRoles.value.includes(role.value);
+});
+</script>
