@@ -52,5 +52,3 @@ parameters:
 			message: '#Left side of \&\& is always (true|false)\.#'
 			path: app/Models/Database/Entities/User.php
 			count: 1
-	parallel:
-		maximumNumberOfProcesses: 1
