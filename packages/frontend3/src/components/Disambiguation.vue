@@ -38,7 +38,8 @@ const props = defineProps({
 
 const filteredLinks: ComputedRef<DisambiguationLink[]> = computed(() => {
 	return props.links.filter((link: DisambiguationLink) => {
-		if (link.roles !== undefined && !link.roles.includes(userStore.getRole!)) {
+		if ((link.developmentOnly ?? false) && import.meta.env.PROD ||
+			link.roles !== undefined && !link.roles.includes(userStore.getRole!)) {
 			return false;
 		}
 		return !(link.feature !== undefined && !featureStore.isEnabled(link.feature));

@@ -89,7 +89,7 @@ class UploadController extends IqrfController {
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'415\':
-				$ref: \'#/components/responses/UnsupportedContentType\'
+				$ref: \'#/components/responses/InvalidContentType\'
 			\'500\':
 				$ref: \'#/components/responses/ServerError\'
 	')]

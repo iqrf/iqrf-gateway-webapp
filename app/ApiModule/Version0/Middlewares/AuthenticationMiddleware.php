@@ -78,7 +78,8 @@ class AuthenticationMiddleware implements IMiddleware {
 		$requestUrl = rtrim($request->getUri()->getPath(), '/');
 		if (in_array($requestUrl, self::WHITELISTED_PATHS, true) ||
 			Strings::match($requestUrl, '#^/api/v0/user/verify/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$#') !== null ||
-			Strings::match($requestUrl, '#^/api/v0/user/password/recovery/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$#') !== null) {
+			Strings::match($requestUrl, '#^/api/v0/user/password/recovery/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$#') !== null ||
+			Strings::match($requestUrl, '~^/api/v0/openapi/schemas/.*$~') !== null) {
 			return true;
 		}
 		return ($this->entityManager->getUserRepository()->count([]) === 0) &&

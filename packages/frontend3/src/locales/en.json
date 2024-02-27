@@ -1622,6 +1622,12 @@
 				"fetchFailed": "Failed to retrieve list of supported SSH key types."
 			}
 		},
+		"openApi": {
+			"title": "OpenAPI specification",
+			"messages":  {
+				"fetchFailed": "An error occurred during OpenAPI specification loading."
+			}
+		},
 		"sshService": {
 			"note": "Set SSH service status.",
 			"enable": "Start SSH service on every boot.",
@@ -1817,6 +1823,10 @@
 				"title": "SSH keys",
 				"description": "Manage SSH keys."
 			}
+		},
+		"openApi": {
+			"title": "OpenAPI specification",
+			"description": "Opens OpenAPI specification of REST API."
 		},
 		"docs": {
 			"title": "Documentation",

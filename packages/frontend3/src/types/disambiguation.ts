@@ -26,4 +26,6 @@ export interface DisambiguationLink {
 	roles?: UserRole[];
 	/// Link target
 	target?: LinkTarget;
+	/// Development build only
+	developmentOnly?: boolean
 }
