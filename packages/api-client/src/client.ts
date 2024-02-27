@@ -28,7 +28,7 @@ import {
 	AuthenticationService,
 	FeatureService,
 	InstallationService,
-	MenderService,
+	MenderService, OpenApiService,
 	ServiceService,
 	UserService,
 	VersionService,
@@ -256,6 +256,14 @@ export class Client {
 	 */
 	public getMenderService(): MenderService {
 		return new MenderService(this);
+	}
+
+	/**
+	 * Returns OpenAPI specification service
+	 * @return {OpenApiService} OpenAPI specification service
+	 */
+	public getOpenApiService(): OpenApiService {
+		return new OpenApiService(this);
 	}
 
 	/**

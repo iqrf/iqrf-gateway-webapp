@@ -23,4 +23,6 @@ export interface SidebarLink {
 	roles?: UserRole[];
 	/// Feature enabled
 	feature?: Feature;
+	/// Development build only?
+	developmentOnly?: boolean
 }

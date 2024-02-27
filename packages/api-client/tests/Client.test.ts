@@ -24,6 +24,7 @@ import {
 	AuthenticationService,
 	FeatureService,
 	InstallationService,
+	OpenApiService,
 	ServiceService,
 	UserService,
 	VersionService,
@@ -147,7 +148,12 @@ describe('Client', (): void => {
 		expect(client.getInstallationService()).toBeInstanceOf(InstallationService);
 	});
 
-	it('returns ServiceService instance', (): void  => {
+	it('returns OpenApiService instance', (): void => {
+		expect.assertions(1);
+		expect(client.getOpenApiService()).toBeInstanceOf(OpenApiService);
+	});
+
+	it('returns ServiceService instance', (): void => {
 		expect.assertions(1);
 		expect(client.getServiceService()).toBeInstanceOf(ServiceService);
 	});

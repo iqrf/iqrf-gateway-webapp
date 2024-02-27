@@ -46,6 +46,12 @@ const links: Ref<DisambiguationLink[]> = ref([
 		to: '/access-control',
 	},
 	{
+		title: i18n.t('pages.openApi.title'),
+		description: i18n.t('pages.openApi.description'),
+		to: '/openApi',
+		developmentOnly: true,
+	},
+	{
 		title: i18n.t('pages.docs.title'),
 		description: i18n.t('pages.docs.description'),
 		href: featureStore.getConfiguration(Feature.docs)?.url,

@@ -21,6 +21,7 @@
 import { Feature, UserRole } from '@iqrf/iqrf-gateway-webapp-client/types';
 import {
 	mdiAccountKey,
+	mdiApi,
 	mdiBook,
 	mdiBroadcast,
 	mdiChevronLeft,
@@ -64,7 +65,8 @@ function filter(item: SidebarLink): boolean {
 			return false;
 		}
 	}
-	if (item.feature !== undefined && !featureStore.isEnabled(item.feature)) {
+	if ((item.developmentOnly ?? false) && import.meta.env.PROD ||
+		item.feature !== undefined && !featureStore.isEnabled(item.feature)) {
 		return false;
 	}
 	return !(item.roles !== undefined && role !== null && (Array.isArray(item.roles) && !item.roles.includes(role)));
@@ -283,6 +285,12 @@ function items(): SidebarLink[] {
 			},
 		];
 	}
+	links.push({
+		title: i18n.t('pages.openApi.title'),
+		to: '/openApi',
+		icon: mdiApi,
+		developmentOnly: true,
+	});
 	links.push({
 		title: i18n.t('pages.docs.title'),
 		href: featureStore.getConfiguration(Feature.docs)?.url,

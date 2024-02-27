@@ -33,10 +33,14 @@ const userStore = useUserStore();
 
 const { getRole: role } = storeToRefs(userStore);
 const { isLoggedIn } = storeToRefs(userStore);
+const developmentOnly: Ref<boolean> = computed((): boolean => (route.meta.developmentOnly ?? false) as boolean);
 const requiresAuth: Ref<boolean> = computed((): boolean => (route.meta.requiresAuth ?? true) as boolean);
 const requiredFeature: Ref<Feature | null> = computed((): Feature | null => (route.meta.feature ?? null) as Feature | null);
 const requiredRoles: Ref<UserRole[]> = computed((): UserRole[] => (route.meta.roles ?? []) as UserRole[]);
 const isAllowed: Ref<boolean> = computed((): boolean => {
+	if (developmentOnly.value && import.meta.env.PROD) {
+		return false;
+	}
 	if (
 		(requiredFeature.value !== null && !featureStore.isEnabled(requiredFeature.value)) ||
 		requiresAuth.value && !isLoggedIn.value
