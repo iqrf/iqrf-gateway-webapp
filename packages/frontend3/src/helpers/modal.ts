@@ -1,7 +1,10 @@
-
 import { computed, type ComputedRef } from 'vue';
 import { useDisplay } from 'vuetify';
 
+/**
+ * Computes modal window width
+ * @return {ComputedRef<string>} Computed modal window width
+ */
 export function getModalWidth(): ComputedRef<string> {
 	return computed(() => {
 		const display = useDisplay();

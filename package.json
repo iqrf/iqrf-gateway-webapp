@@ -30,6 +30,7 @@
 		"coverage:unit": "vitest --run --coverage",
 		"lint": "pnpm -r lint",
 		"publish": "pnpm -r publish",
+		"newman": "newman run tests/iqrf-gateway-webapp.postman_collection.json",
 		"test": "vitest --run"
 	},
 	"workspaces": [

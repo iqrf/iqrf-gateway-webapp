@@ -48,7 +48,7 @@ export default class UrlBuilder {
 		this.hostname = window.location.hostname;
 		this.port = window.location.port;
 		this.wsProtocol = (isHttps ? 'wss://' : 'ws://');
-		this.isDev = import.meta.env.DEV;
+		this.isDev = import.meta.env.MODE !== 'production';
 		if (this.port !== '') {
 			this.port = ':' + this.port;
 		}
@@ -73,45 +73,52 @@ export default class UrlBuilder {
 	 */
 	getBaseUrl(): string {
 		return window.location.protocol + '//' + this.hostname + (this.isDev ? ':8081' : this.port) + import.meta.env.VITE_BASE_URL;
-		//return 'http://10.11.14.156/' + import.meta.env.VITE_BASE_URL;
 	}
 
 	/**
 	 * Returns REST API URL
 	 */
 	getRestApiUrl(): string {
+		if (import.meta.env.VITE_URL_REST_API?.length) {
+			return import.meta.env.VITE_URL_REST_API;
+		}
 		return '//' + this.hostname + (this.isDev ? ':8080' : this.port) + import.meta.env.VITE_BASE_URL + 'api/v0/';
-		//return 'http://10.11.14.156/' + import.meta.env.VITE_BASE_URL + '/api/v0/';
 	}
 
 	/**
 	 * Returns WebSocket API URL
 	 */
 	getDaemonApiUrl(): string {
+		if (import.meta.env.VITE_URL_DAEMON_API?.length) {
+			return import.meta.env.VITE_URL_DAEMON_API;
+		}
 		return this.wsProtocol + this.hostname + (this.isDev ? ':1338': this.port + '/ws');
-		//return 'ws://10.11.14.156/ws';
 	}
 
 	/**
 	 * Returns WebSocket Monitor URL
 	 */
 	getDaemonMonitorUrl(): string {
+		if (import.meta.env.VITE_URL_DAEMON_MONITOR?.length) {
+			return import.meta.env.VITE_URL_DAEMON_MONITOR;
+		}
 		return this.wsProtocol + this.hostname + (this.isDev ? ':1438': this.port + '/wsMonitor');
-		//return 'ws://10.11.14.156/wsMonitor';
 	}
 
 	/**
-	 * Returns WebSocket Iqrfnet sync URL
+	 * Returns WebSocket IQRF network sync URL
 	 */
 	getIqrfnetSyncUrl(): string {
+		if (import.meta.env.VITE_URL_IQRF_SYNC?.length) {
+			return import.meta.env.VITE_URL_IQRF_SYNC;
+		}
 		return this.wsProtocol + this.hostname + (this.isDev ? ':8881': this.port) + '/sync';
-		//return 'ws://10.11.14.156/sync';
 	}
 
 	/**
 	 * Returns REST API URL from passed hostname
 	 */
-	getRestApiUrlFromAddr(hostname: string): string {
+	getRestApiUrlFromHostname(hostname: string): string {
 		return '//' + hostname + (this.isDev ? ':8080' : this.port) + import.meta.env.VITE_BASE_URL + 'api/v0/';
 	}
 

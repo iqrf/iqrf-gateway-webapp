@@ -105,6 +105,7 @@ export default defineConfig(({mode}) => {
 				provider: 'istanbul',
 				reporter: ['text', 'html', 'clover'],
 			},
+			environment: 'happy-dom',
 			outputFile: {
 				junit: 'junit.xml',
 			},

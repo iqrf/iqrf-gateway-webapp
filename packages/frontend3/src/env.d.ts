@@ -14,6 +14,14 @@ interface ImportMetaEnv {
 	VITE_SENTRY_ENABLED: boolean
 	/// Sentry DSN
 	VITE_SENTRY_DSN: string
+	/// IQRF Gateway Daemon JSON API URL
+	VITE_URL_DAEMON_API: string
+	/// IQRF Gateway Daemon Monitor URL
+	VITE_URL_DAEMON_MONITOR: string
+	/// IQRF network sync URL
+	VITE_URL_IQRF_SYNC: string
+	/// REST API URL
+	VITE_URL_REST_API: string
 }
 
 interface ImportMeta {
