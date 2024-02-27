@@ -176,6 +176,7 @@ coverage:js:
       - PACKAGE:
           - api-client
           - frontend
+          - frontend3
   <<: *test_template
   <<: *npm_template
 
