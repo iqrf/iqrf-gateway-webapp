@@ -72,12 +72,14 @@ export default class PowerControl extends Vue {
 	 * Performs power off
 	 */
 	private powerOff(): void {
+		this.$store.commit('spinner/SHOW');
 		GatewayService.performPowerOff()
-			.then((response: AxiosResponse) =>
+			.then((response: AxiosResponse) => {
+				this.$store.commit('spinner/HIDE');
 				this.$toast.info(
 					this.$t('gateway.power.messages.powerOffSuccess', {time: this.parseActionTime(response.data.timestamp)}).toString()
-				)
-			).catch((error: AxiosError) =>
+				);
+			}).catch((error: AxiosError) =>
 				extendedErrorToast(error, 'gateway.power.messages.powerOffFailed')
 			);
 	}
@@ -86,12 +88,14 @@ export default class PowerControl extends Vue {
 	 * Performs reboot
 	 */
 	private reboot(): void {
+		this.$store.commit('spinner/SHOW');
 		GatewayService.performReboot()
-			.then((response: AxiosResponse) =>
+			.then((response: AxiosResponse) => {
+				this.$store.commit('spinner/HIDE');
 				this.$toast.info(
 					this.$t('gateway.power.messages.rebootSuccess', {time: this.parseActionTime(response.data.timestamp)}).toString()
-				)
-			).catch((error: AxiosError) =>
+				);
+			}).catch((error: AxiosError) =>
 				extendedErrorToast(error, 'gateway.power.messages.rebootFailed')
 			);
 	}
