@@ -58,14 +58,15 @@ final class ServiceManagerTest extends CommandTestCase {
 	 */
 	public function testDisableSystemD(): void {
 		$commands = [
+			'systemctl disable --now \'' . self::SERVICE_NAME . '.service\'',
 			'systemctl disable \'' . self::SERVICE_NAME . '.service\'',
-			'systemctl stop \'' . self::SERVICE_NAME . '.service\'',
 		];
 		foreach ($commands as $command) {
 			$this->receiveCommand($command, true);
 		}
 		Assert::noError(function (): void {
 			$this->managerSystemD->disable(self::SERVICE_NAME);
+			$this->managerSystemD->disable(self::SERVICE_NAME, false);
 		});
 	}
 
@@ -74,7 +75,7 @@ final class ServiceManagerTest extends CommandTestCase {
 	 */
 	public function testDisableUnknown(): void {
 		Assert::exception(function (): void {
-			$this->managerUnknown->disable(self::SERVICE_NAME);
+			$this->managerUnknown->disable(self::SERVICE_NAME, false);
 		}, UnsupportedInitSystemException::class);
 	}
 
@@ -83,14 +84,15 @@ final class ServiceManagerTest extends CommandTestCase {
 	 */
 	public function testEnableSystemD(): void {
 		$commands = [
+			'systemctl enable --now \'' . self::SERVICE_NAME . '.service\'',
 			'systemctl enable \'' . self::SERVICE_NAME . '.service\'',
-			'systemctl start \'' . self::SERVICE_NAME . '.service\'',
 		];
 		foreach ($commands as $command) {
 			$this->receiveCommand($command, true);
 		}
 		Assert::noError(function (): void {
 			$this->managerSystemD->enable(self::SERVICE_NAME);
+			$this->managerSystemD->enable(self::SERVICE_NAME, false);
 		});
 	}
 
@@ -99,7 +101,7 @@ final class ServiceManagerTest extends CommandTestCase {
 	 */
 	public function testEnableUnknown(): void {
 		Assert::exception(function (): void {
-			$this->managerUnknown->enable(self::SERVICE_NAME);
+			$this->managerUnknown->enable(self::SERVICE_NAME, false);
 		}, UnsupportedInitSystemException::class);
 	}
 

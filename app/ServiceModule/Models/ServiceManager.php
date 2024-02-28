@@ -59,23 +59,25 @@ class ServiceManager {
 	/**
 	 * Disables the service
 	 * @param string $serviceName Service name
+	 * @param bool $stop Stop service after disabling
 	 * @throws NonexistentServiceException
 	 * @throws NotImplementedException
 	 * @throws UnsupportedInitSystemException
 	 */
-	public function disable(string $serviceName): void {
-		$this->initDaemon->disable($serviceName);
+	public function disable(string $serviceName, bool $stop = true): void {
+		$this->initDaemon->disable($serviceName, $stop);
 	}
 
 	/**
 	 * Enables the service
 	 * @param string $serviceName Service name
+	 * @param bool $start Start service after enable
 	 * @throws NonexistentServiceException
 	 * @throws NotImplementedException
 	 * @throws UnsupportedInitSystemException
 	 */
-	public function enable(string $serviceName): void {
-		$this->initDaemon->enable($serviceName);
+	public function enable(string $serviceName, bool $start = true): void {
+		$this->initDaemon->enable($serviceName, $start);
 	}
 
 	/**

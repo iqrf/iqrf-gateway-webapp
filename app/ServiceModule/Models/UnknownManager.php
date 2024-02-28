@@ -30,18 +30,20 @@ class UnknownManager implements IServiceManager {
 	/**
 	 * Disables the service
 	 * @param string $serviceName Service name
+	 * @param bool $stop Stop service after disabling
 	 * @throws UnsupportedInitSystemException
 	 */
-	public function disable(string $serviceName): void {
+	public function disable(string $serviceName, bool $stop = true): void {
 		throw new UnsupportedInitSystemException();
 	}
 
 	/**
 	 * Enables the service
 	 * @param string $serviceName Service name
+	 * @param bool $start Start service after enable
 	 * @throws UnsupportedInitSystemException
 	 */
-	public function enable(string $serviceName): void {
+	public function enable(string $serviceName, bool $start = true): void {
 		throw new UnsupportedInitSystemException();
 	}
 

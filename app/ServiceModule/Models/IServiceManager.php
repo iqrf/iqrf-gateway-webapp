@@ -28,14 +28,16 @@ interface IServiceManager {
 	/**
 	 * Disables the service
 	 * @param string $serviceName Service name
+	 * @param bool $stop Stop service after disabling
 	 */
-	public function disable(string $serviceName): void;
+	public function disable(string $serviceName, bool $stop = true): void;
 
 	/**
 	 * Enables the service
 	 * @param string $serviceName Service name
+	 * @param bool $start Start service after enable
 	 */
-	public function enable(string $serviceName): void;
+	public function enable(string $serviceName, bool $start = true): void;
 
 	/**
 	 * Checks if the service is active

@@ -45,29 +45,29 @@ class SystemDManager implements IServiceManager {
 	/**
 	 * Disables the service
 	 * @param string $serviceName Service name
+	 * @param bool $stop Stop service after disabling
 	 * @throws NonexistentServiceException
 	 */
-	public function disable(string $serviceName): void {
-		$cmd = 'systemctl disable ' . $this->formatServiceName($serviceName);
+	public function disable(string $serviceName, bool $stop = true): void {
+		$cmd = sprintf('systemctl disable%s %s', $stop ? ' --now' : '', $this->formatServiceName($serviceName));
 		$command = $this->commandManager->run($cmd, true);
 		if ($command->getExitCode() !== 0) {
 			throw new NonexistentServiceException($command->getStderr());
 		}
-		$this->stop($serviceName);
 	}
 
 	/**
 	 * Enables the service
 	 * @param string $serviceName Service name
+	 * @param bool $start Start service after enable
 	 * @throws NonexistentServiceException
 	 */
-	public function enable(string $serviceName): void {
-		$cmd = 'systemctl enable ' . $this->formatServiceName($serviceName);
+	public function enable(string $serviceName, bool $start = true): void {
+		$cmd = sprintf('systemctl enable%s %s', $start ? ' --now' : '', $this->formatServiceName($serviceName));
 		$command = $this->commandManager->run($cmd, true);
 		if ($command->getExitCode() !== 0) {
 			throw new NonexistentServiceException($command->getStderr());
 		}
-		$this->start($serviceName);
 	}
 
 	/**

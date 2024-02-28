@@ -44,16 +44,18 @@ class SupervisordManager implements IServiceManager {
 	/**
 	 * Disables the service
 	 * @param string $serviceName Service name
+	 * @param bool $stop Stop service after disabling
 	 */
-	public function disable(string $serviceName): void {
+	public function disable(string $serviceName, bool $stop = true): void {
 		throw new NotImplementedException();
 	}
 
 	/**
 	 * Enables the service
 	 * @param string $serviceName Service name
+	 * @param bool $start Start service after enabling
 	 */
-	public function enable(string $serviceName): void {
+	public function enable(string $serviceName, bool $start = true): void {
 		throw new NotImplementedException();
 	}
 

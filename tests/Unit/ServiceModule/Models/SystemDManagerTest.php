@@ -58,7 +58,7 @@ final class SystemDManagerTest extends CommandTestCase {
 	 */
 	public function testDisable(): void {
 		$commands = [
-			'systemctl stop \'' . self::DAEMON_SERVICE_NAME . '.service\'',
+			'systemctl disable --now \'' . self::DAEMON_SERVICE_NAME . '.service\'',
 			'systemctl disable \'' . self::DAEMON_SERVICE_NAME . '.service\'',
 		];
 		foreach ($commands as $command) {
@@ -66,6 +66,7 @@ final class SystemDManagerTest extends CommandTestCase {
 		}
 		Assert::noError(function (): void {
 			$this->manager->disable(self::DAEMON_SERVICE_NAME);
+			$this->manager->disable(self::DAEMON_SERVICE_NAME, false);
 		});
 	}
 
@@ -77,7 +78,7 @@ final class SystemDManagerTest extends CommandTestCase {
 		$stderr = 'Failed to disable unit: Unit file unknown.service does not exist.';
 		$this->receiveCommand($command, true, '', $stderr, 1);
 		Assert::throws(function (): void {
-			$this->manager->disable(self::UNKNOWN_SERVICE_NAME);
+			$this->manager->disable(self::UNKNOWN_SERVICE_NAME, false);
 		}, NonexistentServiceException::class, $stderr);
 	}
 
@@ -86,14 +87,15 @@ final class SystemDManagerTest extends CommandTestCase {
 	 */
 	public function testEnable(): void {
 		$commands = [
+			'systemctl enable --now \'' . self::DAEMON_SERVICE_NAME . '.service\'',
 			'systemctl enable \'' . self::DAEMON_SERVICE_NAME . '.service\'',
-			'systemctl start \'' . self::DAEMON_SERVICE_NAME . '.service\'',
 		];
 		foreach ($commands as $command) {
 			$this->receiveCommand($command, true);
 		}
 		Assert::noError(function (): void {
 			$this->manager->enable(self::DAEMON_SERVICE_NAME);
+			$this->manager->enable(self::DAEMON_SERVICE_NAME, false);
 		});
 	}
 
@@ -105,7 +107,7 @@ final class SystemDManagerTest extends CommandTestCase {
 		$stderr = 'Failed to enable unit: Unit file unknown.service does not exist.';
 		$this->receiveCommand($command, true, '', $stderr, 1);
 		Assert::throws(function (): void {
-			$this->manager->enable(self::UNKNOWN_SERVICE_NAME);
+			$this->manager->enable(self::UNKNOWN_SERVICE_NAME, false);
 		}, NonexistentServiceException::class, $stderr);
 	}
 
