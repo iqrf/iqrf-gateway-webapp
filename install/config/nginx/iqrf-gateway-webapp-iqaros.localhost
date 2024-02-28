@@ -13,7 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-upstream backend {
+upstream php-fpm {
+	server unix:/run/php/php8.3-fpm.sock weight=4;
 	server unix:/run/php/php8.2-fpm.sock weight=2;
 	server unix:/run/php/php8.1-fpm.sock;
 }
@@ -138,7 +139,7 @@ server {
 		fastcgi_param REQUEST_METHOD $request_method;
 		fastcgi_param BASE_URI "/system/";
 		fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-		fastcgi_pass backend;
+		fastcgi_pass php-fpm;
 		fastcgi_index index.php;
 	}
 
