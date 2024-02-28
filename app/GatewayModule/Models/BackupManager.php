@@ -218,9 +218,13 @@ class BackupManager {
 		foreach ($services as $service => $enabled) {
 			try {
 				if ($enabled === true) {
-					$this->serviceManager->enable($service);
+					if (!$this->serviceManager->isEnabled($service)) {
+						$this->serviceManager->enable($service, false);
+					}
 				} else {
-					$this->serviceManager->disable($service);
+					if ($this->serviceManager->isEnabled($service)) {
+						$this->serviceManager->disable($service, false);
+					}
 				}
 			} catch (NonexistentServiceException $e) {
 				continue;
