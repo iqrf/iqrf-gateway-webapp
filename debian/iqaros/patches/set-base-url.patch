@@ -9,3 +9,11 @@ Sets base URL for IQAROS
 +VITE_BASE_URL=/system/
  VITE_CYPRESS_ENABLED=0
  VITE_THEME=generic
+--- a/packages/frontend3/.env
++++ b/packages/frontend3/.env
+@@ -1,4 +1,4 @@
+-VITE_BASE_URL=/
++VITE_BASE_URL=/system
+ VITE_I18N_LOCALE=en
+ VITE_I18N_FALLBACK_LOCALE=en
+ VITE_CYPRESS_ENABLED=0
