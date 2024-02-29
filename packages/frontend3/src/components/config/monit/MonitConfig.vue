@@ -69,18 +69,18 @@
 						/>
 						<TextInput
 							v-model='config.mmonit.credentials.username'
-							:label='$t("common.labels.username")'
+							:label='$t("components.common.fields.username")'
 							:rules='[
-								(v: string|null) => ValidationRules.required(v, $t("common.validation.usernameMissing")),
+								(v: string|null) => ValidationRules.required(v, $t("components.common.validations.username.required")),
 							]'
 							:disabled='!config.mmonit.enabled'
 							required
 						/>
 						<TextInput
 							v-model='config.mmonit.credentials.password'
-							:label='$t("common.labels.password")'
+							:label='$t("components.common.fields.password")'
 							:rules='[
-								(v: string|null) => ValidationRules.required(v, $t("common.validation.passwordMissing")),
+								(v: string|null) => ValidationRules.required(v, $t("components.common.validations.password.required")),
 							]'
 							:disabled='!config.mmonit.enabled'
 							required

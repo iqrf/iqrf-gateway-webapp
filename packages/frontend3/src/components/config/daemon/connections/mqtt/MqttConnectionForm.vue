@@ -206,23 +206,17 @@
 					/>
 				</span>
 				<template #actions>
-					<v-btn
-						color='primary'
-						type='submit'
-						variant='elevated'
+					<FormActionButton
+						:action='action'
 						:disabled='!isValid.value || componentState === ComponentState.Saving'
-					>
-						{{ $t(`common.buttons.${action}`) }}
-					</v-btn>
+						type='submit'
+					/>
 					<v-spacer />
-					<v-btn
-						color='grey-darken-2'
-						variant='elevated'
+					<FormActionButton
+						:action='FormAction.Cancel'
 						:disabled='componentState === ComponentState.Saving'
 						@click='close'
-					>
-						{{ $t('common.buttons.cancel') }}
-					</v-btn>
+					/>
 				</template>
 			</Card>
 		</v-form>
@@ -239,6 +233,7 @@ import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
 import Card from '@/components/Card.vue';
+import FormActionButton from '@/components/FormActionButton.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import MqttUrlForm from '@/components/MqttUrlForm.vue';
 import PasswordInput from '@/components/PasswordInput.vue';

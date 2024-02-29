@@ -17,7 +17,7 @@
 				{{ activatorIcon() }}
 			</v-icon>
 		</template>
-		<v-form ref='form' @submit.prevent='onSubmit'>
+		<v-form ref='form' v-slot='{ isValid }' @submit.prevent='onSubmit'>
 			<Card>
 				<template #title>
 					<v-icon>{{ headerIcon() }}</v-icon>
@@ -25,9 +25,9 @@
 				</template>
 				<TextInput
 					v-model='user.username'
-					:label='$t("components.accessControl.users.username")'
+					:label='$t("components.common.fields.username")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.accessControl.users.validation.username")),
+						(v: string|null) => ValidationRules.required(v, $t("components.common.validations.username.required")),
 					]'
 					required
 					:prepend-inner-icon='mdiAccount'
@@ -36,7 +36,7 @@
 					v-model='user.email'
 					:label='$t("components.accessControl.users.email")'
 					:rules='[
-						(v: string) => v !== null && v.length > 0 ? ValidationRules.email(v, $t("components.accessControl.users.validation.emailInvalid")) : true,
+						(v: string) => v !== null && v.length > 0 ? ValidationRules.email(v, $t("components.accessControl.users.validations.email.email")) : true,
 					]'
 					:prepend-inner-icon='mdiEmail'
 				/>
@@ -45,7 +45,7 @@
 					v-model='(user as UserEdit).password'
 					:label='$t("components.accessControl.users.password")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.accessControl.users.validation.password")),
+						(v: string|null) => ValidationRules.required(v, $t("components.accessControl.users.validations.password.required")),
 					]'
 					required
 					:prepend-inner-icon='mdiKey'
@@ -56,28 +56,15 @@
 					:label='$t("components.accessControl.users.role")'
 					:prepend-inner-icon='mdiAccountBadge'
 				/>
-				<SelectInput
-					v-model='user.language'
-					:items='languages'
-					:label='$t("components.accessControl.users.language")'
-					:prepend-inner-icon='mdiTranslate'
-				/>
+				<LanguageInput v-model='user.language' />
 				<template #actions>
-					<v-btn
-						color='primary'
+					<FormActionButton
+						:action='action'
+						:disabled='!isValid.value'
 						type='submit'
-						variant='elevated'
-					>
-						{{ $t(`common.buttons.${action}`) }}
-					</v-btn>
+					/>
 					<v-spacer />
-					<v-btn
-						color='grey-darken-2'
-						variant='elevated'
-						@click='close'
-					>
-						{{ $t('common.buttons.cancel') }}
-					</v-btn>
+					<FormActionButton :action='FormAction.Cancel' @click='close' />
 				</template>
 			</Card>
 		</v-form>
@@ -85,22 +72,38 @@
 </template>
 
 <script lang='ts' setup>
-import { type UserCreate, type UserEdit, type UserInfo, UserLanguage, UserRole } from '@iqrf/iqrf-gateway-webapp-client/types/User';
-import { mdiAccount, mdiAccountBadge, mdiAccountEdit, mdiAccountPlus, mdiEmail, mdiKey, mdiPencil, mdiTranslate } from '@mdi/js';
+import {
+	type UserCreate,
+	type UserEdit,
+	type UserInfo,
+	UserLanguage,
+	UserRole,
+} from '@iqrf/iqrf-gateway-webapp-client/types/User';
+import {
+	mdiAccount,
+	mdiAccountBadge,
+	mdiAccountEdit,
+	mdiAccountPlus,
+	mdiEmail,
+	mdiKey,
+	mdiPencil,
+} from '@mdi/js';
 import { type AxiosError } from 'axios';
 import { ref, type Ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
+import LanguageInput from '@/components/account/LanguageInput.vue';
 import Card from '@/components/Card.vue';
+import FormActionButton from '@/components/FormActionButton.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import PasswordInput from '@/components/PasswordInput.vue';
 import SelectInput from '@/components/SelectInput.vue';
 import TextInput from '@/components/TextInput.vue';
 import { FormAction } from '@/enums/controls';
 import { basicErrorToast } from '@/helpers/errorToast';
-import { getFilteredRoleOptions, getLanguageOptions } from '@/helpers/userData';
+import { getFilteredRoleOptions } from '@/helpers/userData';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
@@ -124,7 +127,6 @@ const defaultUser: UserCreate | UserEdit = {
 	language: UserLanguage.English,
 };
 const user: Ref<UserCreate | UserEdit> = ref(defaultUser);
-const languages = getLanguageOptions();
 const roles = getFilteredRoleOptions(userStore.getRole!);
 
 function iconColor(): string {

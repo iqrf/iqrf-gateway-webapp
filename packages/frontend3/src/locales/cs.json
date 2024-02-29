@@ -1,11 +1,102 @@
 {
-	"locale": {
-		"languages": {
-			"cs": "Čeština",
-			"en": "Angličtina"
+	"$vuetify": {
+		"badge": "Odznak",
+		"calendar": {
+			"moreEvents": "{0} dalších",
+			"today": "Today"
 		},
-		"messages": {
-			"set": "Lokalizace byla změněna na: {locale}."
+		"carousel": {
+			"prev": "Předchozí obrázek",
+			"next": "Další obrázek",
+			"ariaLabel": {
+				"delimiter": "Obrázek {0} z {1}"
+			}
+		},
+		"close": "Zavřít",
+		"confirmEdit": {
+			"ok": "OK",
+			"cancel": "Zrušit"
+		},
+		"dataFooter": {
+			"itemsPerPageText": "Položek na stránku:",
+			"itemsPerPageAll": "Vše",
+			"nextPage": "Další strana",
+			"prevPage": "Předchozí strana",
+			"firstPage": "První strana",
+			"lastPage": "Poslední strana",
+			"pageText": "{0}-{1} z {2}"
+		},
+		"dataIterator": {
+			"noResultsText": "Nenalezeny žádné záznamy",
+			"loadingText": "Načítám položky..."
+		},
+		"dataTable": {
+			"itemsPerPageText": "Řádků na stránku:",
+			"ariaLabel": {
+				"sortDescending": "Řazeno sestupně.",
+				"sortAscending": "Řazeno vzestupně.",
+				"sortNone": "Neseřazeno.",
+				"activateNone": "Aktivováním vypnete řazení.",
+				"activateDescending": "Aktivováním se bude řadit sestupně.",
+				"activateAscending": "Aktivováním se bude řadit vzestupně."
+			},
+			"sortBy": "Řadit dle"
+		},
+		"datePicker": {
+			"itemsSelected": "{0} vybrán",
+			"range": {
+				"title": "Vyberte datumy",
+				"header": "Zadejte datumy"
+			},
+			"title": "Vyberte datum",
+			"header": "Zadejte datum",
+			"input": {
+				"placeholder": "Zadejte datum"
+			}
+		},
+		"dateRangeInput": {
+			"divider": "do"
+		},
+		"fileInput": {
+			"counter": "{0} souborů",
+			"counterSize": "{0} souborů ({1} celkem)"
+		},
+		"infiniteScroll": {
+			"loadMore": "Načíst více",
+			"empty": "Žádné další"
+		},
+		"input": {
+			"clear": "Vymazat {0}",
+			"prependAction": "{0} prepended action",
+			"appendAction": "{0} appended action",
+			"otp": "Vložte výhradně OTP znaky {0}"
+		},
+		"loading": "Načítám...",
+		"noDataText": "Nejsou dostupná žádná data",
+		"open": "Otevřiť",
+		"pagination": {
+			"ariaLabel": {
+				"root": "Navigace po stránkách",
+				"next": "Další strana",
+				"previous": "Předchozí strana",
+				"page": "Přejít na stránku {0}",
+				"currentPage": "Aktuální stránka, stránka {0}",
+				"first": "První stránka",
+				"last": "Poslední stránka"
+			}
+		},
+		"rating": {
+			"ariaLabel": {
+				"item": "Hodnocení {0} z {1}"
+			}
+		},
+		"stepper": {
+			"next": "Další",
+			"prev": "Předchozí"
+		},
+		"timePicker": {
+			"am": "dop.",
+			"pm": "odp."
 		}
 	},
 	"install": {
@@ -43,12 +134,51 @@
 		"validation": {
 			"portMissing": "Zadejte prosím číslo portu.",
 			"portInvalid": "Číslo portu musí být celé číslo mezi 1 a 65535.",
-			"usernameMissing": "Zadejte prosím uživatelské jméno.",
-			"passwordMissing": "Zadejte prosím heslo.",
 			"credentialsMissing": "Zadejte prosím jak uživatelské jméno, tak i heslo, nebo nechte obě pole prázdná."
 		}
 	},
 	"components": {
+		"common": {
+			"actions": {
+				"add": "Přidat",
+				"cancel": "Zrušit",
+				"delete": "Smazat",
+				"edit": "Změnit"
+			},
+			"fields": {
+				"actions": "Akce",
+				"description": "Popis",
+				"email": "E-mailová adresa",
+				"id": "ID",
+				"password": "Heslo",
+				"username": "Uživatelské jméno"
+			},
+			"locale": {
+				"languages": {
+					"cs": "Čeština",
+					"en": "Angličtina"
+				},
+				"messages": {
+					"set": "Lokalizace byla změněna na: {locale}."
+				}
+			},
+			"validations": {
+				"email": {
+					"required": "Zadejte prosím e-mailovou adresu.",
+					"email": "Špatný formát e-mailové adresy."
+				},
+				"password": {
+					"required": "Zadejte prosím heslo."
+				},
+				"port": {
+					"required": "Zadejte prosím číslo portu.",
+					"between": "Číslo portu musí být celé číslo mezi 1 a 65535."
+				},
+				"username": {
+					"required": "Zadejte prosím uživatelské jméno."
+				}
+			}
+		},
 		"errors": {
 			"403": {
 				"title": "Přístup odepřen",
@@ -62,13 +192,21 @@
 			}
 		},
 		"status": {
-			"locale": {
-				"languages": {
-					"cs": "Čeština",
-					"en": "Angličtina"
+			"monitor": {
+				"mode": "Mód daemona",
+				"modes": {
+					"operational": "Provozní",
+					"forwarding": "Přeposílání",
+					"service": "Servisní",
+					"unknown": "Neznámý"
 				},
-				"messages": {
-					"set": "Lokalizace byla změněna na: {locale}."
+				"notified": "Poslední oznámení",
+				"queue": "Délka fronty",
+				"version": "Verze daemona",
+				"enumeration": {
+					"running": "Enumerace probíhá.",
+					"notRunning": "Enumerace neběží.",
+					"unavailable": "Stav enumerace není dostupný."
 				}
 			}
 		},
@@ -198,6 +336,14 @@
 				"description": "Konfigurace TR modulů."
 			}
 		},
+		"maintenance": {
+			"title": "Údržba",
+			"description": "Nástroje pro údržbu brány.",
+			"backup": {
+				"title": "Zálohování a obnova",
+				"description": "Zálohování nebo obnovení zílohy brány."
+			}
+		},
 		"install": {
 			"title": "Instalační průvodce",
 			"user": {
@@ -227,6 +373,10 @@
 				"title": "SSH klíče",
 				"description": "Správa SSH klíčů."
 			}
+		},
+		"openApi": {
+			"title": "OpenAPI specifikace",
+			"description": "Otevře OpenAPI dokumentaci REST API."
 		},
 		"docs": {
 			"title": "Dokumentace",

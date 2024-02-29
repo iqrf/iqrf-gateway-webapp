@@ -19,7 +19,7 @@
 				{{ activatorIcon() }}
 			</v-icon>
 		</template>
-		<v-form ref='form' @submit.prevent='onSubmit'>
+		<v-form ref='form' v-slot='{ isValid }' @submit.prevent='onSubmit'>
 			<Card>
 				<template #title>
 					{{ $t(`components.configuration.time.ntpServers.${action}`) }}
@@ -34,21 +34,13 @@
 					required
 				/>
 				<template #actions>
-					<v-btn
-						color='primary'
+					<FormActionButton
+						:action='action'
+						:disabled='!isValid.value'
 						type='submit'
-						variant='elevated'
-					>
-						{{ $t(`common.buttons.${action}`) }}
-					</v-btn>
+					/>
 					<v-spacer />
-					<v-btn
-						color='grey-darken-2'
-						variant='elevated'
-						@click='close'
-					>
-						{{ $t('common.buttons.cancel') }}
-					</v-btn>
+					<FormActionButton :action='FormAction.Cancel' @click='close' />
 				</template>
 			</Card>
 		</v-form>
@@ -61,6 +53,7 @@ import { ref, type Ref, watchEffect } from 'vue';
 import { VForm } from 'vuetify/components';
 
 import Card from '@/components/Card.vue';
+import FormActionButton from '@/components/FormActionButton.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import TextInput from '@/components/TextInput.vue';
 import { FormAction } from '@/enums/controls';

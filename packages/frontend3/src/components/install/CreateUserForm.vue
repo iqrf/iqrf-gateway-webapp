@@ -6,28 +6,28 @@
 		<v-form ref='form' @submit.prevent='onSubmit'>
 			<TextInput
 				v-model='user.username'
-				:label='$t("user.username")'
+				:label='$t("components.common.fields.username")'
 				:rules='[
-					(v: string|null) => ValidationRules.required(v, $t("user.validation.username")),
+					(v: string|null) => ValidationRules.required(v, $t("components.common.validations.username.required")),
 				]'
 				required
 				:prepend-inner-icon='mdiAccount'
 			/>
 			<TextInput
 				v-model='user.email'
-				:label='$t("user.email")'
+				:label='$t("components.common.fields.email")'
 				:rules='[
-					(v: string|null) => ValidationRules.required(v, $t("user.validation.missingEmail")),
-					(v: string) => ValidationRules.email(v, $t("user.validation.invalidEmail")),
+					(v: string|null) => ValidationRules.required(v, $t("components.common.validations.email.required")),
+					(v: string) => ValidationRules.email(v, $t("components.common.validations.email.email")),
 				]'
 				required
 				:prepend-inner-icon='mdiEmail'
 			/>
 			<PasswordInput
 				v-model='user.password'
-				:label='$t("user.password")'
+				:label='$t("components.common.fields.password")'
 				:rules='[
-					(v: string|null) => ValidationRules.required(v, $t("user.validation.password")),
+					(v: string|null) => ValidationRules.required(v, $t("components.common.validations.password.required")),
 				]'
 				required
 				:prepend-inner-icon='mdiKey'
@@ -38,12 +38,7 @@
 				:label='$t("user.language")'
 				:prepend-inner-icon='mdiTranslate'
 			/>
-			<SelectInput
-				v-model='expiration'
-				:items='expirationOptions'
-				:label='$t("auth.sign.in.expiration")'
-				:prepend-inner-icon='mdiAccountClock'
-			/>
+			<SessionExpirationInput v-model='expiration' />
 			<v-btn
 				color='primary'
 				variant='elevated'
@@ -56,8 +51,15 @@
 </template>
 
 <script lang='ts' setup>
-import { type EmailSentResponse, type UserCreate, type UserCredentials, UserLanguage, UserRole, UserSessionExpiration } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { mdiAccount, mdiAccountClock, mdiEmail, mdiKey, mdiTranslate } from '@mdi/js';
+import {
+	type EmailSentResponse,
+	type UserCreate,
+	type UserCredentials,
+	UserLanguage,
+	UserRole,
+	UserSessionExpiration,
+} from '@iqrf/iqrf-gateway-webapp-client/types';
+import { mdiAccount, mdiEmail, mdiKey, mdiTranslate } from '@mdi/js';
 import { type AxiosError } from 'axios';
 import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -65,13 +67,15 @@ import { useRouter } from 'vue-router';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
+import SessionExpirationInput
+	from '@/components/auth/SessionExpirationInput.vue';
 import Card from '@/components/Card.vue';
 import PasswordInput from '@/components/PasswordInput.vue';
 import SelectInput from '@/components/SelectInput.vue';
 import TextInput from '@/components/TextInput.vue';
 import { basicErrorToast } from '@/helpers/errorToast';
 import UrlBuilder from '@/helpers/urlBuilder';
-import { getExpirationOptions, getLanguageOptions } from '@/helpers/userData';
+import { getLanguageOptions } from '@/helpers/userData';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
@@ -94,7 +98,6 @@ const user: Ref<UserCreate> = ref({
 });
 const languageOptions = getLanguageOptions();
 const expiration = ref(UserSessionExpiration.Default);
-const expirationOptions = getExpirationOptions();
 const form: Ref<typeof VForm | null> = ref(null);
 
 async function onSubmit(): Promise<void> {

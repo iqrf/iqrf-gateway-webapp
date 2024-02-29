@@ -22,15 +22,15 @@
 		/>
 		<v-text-field
 			v-model='configuration.username'
-			:label='$t("common.labels.username")'
+			:label='$t("components.common.fields.username")'
 			:rules='[
-				(v: string|null) => ValidationRules.required(v, $t("components.configuration.smtp.validation.usernameMissing")),
+				(v: string|null) => ValidationRules.required(v, $t("components.common.validations.username.required")),
 			]'
 			:disabled='loading || !configuration.enabled'
 		/>
 		<PasswordInput
 			v-model='configuration.password'
-			:label='$t("common.labels.password")'
+			:label='$t("components.common.fields.password")'
 			:rules='[
 				(v: string|null) => ValidationRules.required(v, $t("components.configuration.smtp.validation.passwordMissing")),
 			]'

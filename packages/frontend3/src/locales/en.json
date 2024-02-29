@@ -1,76 +1,98 @@
 {
 	"$vuetify": {
 		"badge": "Badge",
-		"loading": "Loading",
 		"calendar": {
-			"moreEvents": "{0} more"
+			"moreEvents": "{0} more",
+			"today": "Today"
 		},
 		"carousel": {
+			"prev": "Previous visual",
+			"next": "Next visual",
 			"ariaLabel": {
 				"delimiter": "Carousel slide {0} of {1}"
-			},
-			"next": "Next visual",
-			"prev": "Previous visual"
+			}
 		},
-		"open": "Open",
 		"close": "Close",
+		"confirmEdit": {
+			"ok": "OK",
+			"cancel": "Cancel"
+		},
 		"dataFooter": {
-			"firstPage": "First page",
-			"itemsPerPageAll": "All",
 			"itemsPerPageText": "Items per page:",
-			"lastPage": "Last page",
+			"itemsPerPageAll": "All",
 			"nextPage": "Next page",
-			"pageText": "{0}-{1} of {2}",
-			"prevPage": "Previous page"
+			"prevPage": "Previous page",
+			"firstPage": "First page",
+			"lastPage": "Last page",
+			"pageText": "{0}-{1} of {2}"
 		},
 		"dataIterator": {
-			"loadingText": "Loading items...",
-			"noResultsText": "No matching records found"
+			"noResultsText": "No matching records found",
+			"loadingText": "Loading items..."
 		},
 		"dataTable": {
-			"ariaLabel": {
-				"activateAscending": "Activate to sort ascending.",
-				"activateDescending": "Activate to sort descending.",
-				"activateNone": "Activate to remove sorting.",
-				"sortAscending": "Sorted ascending.",
-				"sortDescending": "Sorted descending.",
-				"sortNone": "Not sorted."
-			},
 			"itemsPerPageText": "Rows per page:",
+			"ariaLabel": {
+				"sortDescending": "Sorted descending.",
+				"sortAscending": "Sorted ascending.",
+				"sortNone": "Not sorted.",
+				"activateNone": "Activate to remove sorting.",
+				"activateDescending": "Activate to sort descending.",
+				"activateAscending": "Activate to sort ascending."
+			},
 			"sortBy": "Sort by"
 		},
 		"datePicker": {
 			"itemsSelected": "{0} selected",
-			"nextMonthAriaLabel": "Next month",
-			"nextYearAriaLabel": "Next year",
-			"prevMonthAriaLabel": "Previous month",
-			"prevYearAriaLabel": "Previous year"
+			"range": {
+				"title": "Select dates",
+				"header": "Enter dates"
+			},
+			"title": "Select date",
+			"header": "Enter date",
+			"input": {
+				"placeholder": "Enter date"
+			}
+		},
+		"dateRangeInput": {
+			"divider": "to"
 		},
 		"fileInput": {
 			"counter": "{0} files",
 			"counterSize": "{0} files ({1} in total)"
 		},
-		"input": {
-			"appendAction": "{0} appended action",
-			"clear": "Clear {0}",
-			"prependAction": "{0} prepended action"
+		"infiniteScroll": {
+			"loadMore": "Load more",
+			"empty": "No more"
 		},
+		"input": {
+			"clear": "Clear {0}",
+			"prependAction": "{0} prepended action",
+			"appendAction": "{0} appended action",
+			"otp": "Please enter OTP character {0}"
+		},
+		"loading": "Loading...",
 		"noDataText": "No data available",
+		"open": "Open",
 		"pagination": {
 			"ariaLabel": {
+				"root": "Pagination Navigation",
+				"next": "Next page",
+				"previous": "Previous page",
+				"page": "Go to page {0}",
 				"currentPage": "Page {0}, Current page",
 				"first": "First page",
-				"last": "Last page",
-				"next": "Next page",
-				"page": "Go to page {0}",
-				"previous": "Previous page",
-				"root": "Pagination Navigation"
+				"last": "Last page"
 			}
 		},
 		"rating": {
 			"ariaLabel": {
 				"item": "Rating {0} of {1}"
 			}
+		},
+		"stepper": {
+			"next": "Next",
+			"prev": "Previous"
 		},
 		"timePicker": {
 			"am": "AM",
@@ -81,15 +103,6 @@
 		"sign": {
 			"in": {
 				"title": "Sign in",
-				"expiration": "Session expiration",
-				"expirations": {
-					"default": "90 minutes",
-					"day": "1 day",
-					"week": "1 week",
-					"month": "1 month",
-					"year": "1 year"
-				},
-				"recoverPassword": "Forgot password?",
 				"messages": {
 					"incorrectUsernameOrPassword": "The username or password you entered is incorrect.",
 					"success": "You have been signed in successfully."
@@ -185,15 +198,6 @@
 		"messages": {
 			"createFailure": "Failed to create new user: {error}",
 			"verificationSent": "An email containing instructions to verify your account was sent to your address."
-		}
-	},
-	"locale": {
-		"languages": {
-			"cs": "Czech",
-			"en": "English"
-		},
-		"messages": {
-			"set": "Locale changed to: {locale}."
 		}
 	},
 	"install": {
@@ -327,41 +331,157 @@
 			"hostnameInvalid": "Hostname should be IPv4, IPv6, localhost or fully-qualified domain name.",
 			"portMissing": "Please enter port.",
 			"portInvalid": "Port should be an integer between 1 and 65535.",
-			"usernameMissing": "Please enter username.",
-			"passwordMissing": "Please enter password.",
 			"credentialsMissing": "Please enter both username and password, or leave both fields empty."
 		}
 	},
 	"components": {
-		"errors": {
-			"403": {
-				"title": "Access denied",
-				"header": "Error 403",
-				"text": "You do not have permission to view this page. Please try contact the web site administrator if you believe you should be able to view this page."
+		"accessControl": {
+			"users": {
+				"actions": {
+					"add": "Add user",
+					"edit": "Edit user",
+					"delete": "Delete user"
+				},
+				"delete": {
+					"title": "User delete confirmation",
+					"prompt": "Are you sure you want to delete user {user}?"
+				},
+				"username": "Username",
+				"email": "E-mail address",
+				"password": "Password",
+				"language": "Language",
+				"role": "Role",
+				"roles": {
+					"admin": "Administrator",
+					"normal": "Normal user",
+					"basicadmin": "Basic admin",
+					"basic": "Basic user"
+				},
+				"state": "State",
+				"states": {
+					"unverified": "Unverified",
+					"verified": "Verified"
+				},
+				"validations": {
+					"email": {
+						"email": "Invalid e-mail address format."
+					},
+					"username": {
+						"required": "Please enter the username."
+					},
+					"password": {
+						"required": "Please enter the password."
+					}
+				},
+				"messages": {
+					"delete": {
+						"success": "User {user} has been deleted successfully."
+					}
+				}
 			},
-			"404": {
-				"title": "Page not found",
-				"header": "Error 404",
-				"text": "The page you requested could not be found. The address may be incorrect, or the page no longer exists."
+			"apiKeys": {
+				"actions": {
+					"add": "Add API key",
+					"edit": "Edit API key",
+					"delete": "Delete API key"
+				},
+				"form": {
+					"addTitle": "Add API key",
+					"editTitle": "Edit API key",
+					"expiration": "Set expiration"
+				},
+				"table": {
+					"expiration": "Expiration"
+				},
+				"display": {
+					"title": "Generated API key",
+					"prompt": "Before closing this dialog, copy and store the new API key below in a safe place. For security reasons, you will not be able to view it again at a later time.",
+					"copyMessage": "API key has been copied to clipboard."
+				},
+				"delete": {
+					"title": "API key delete confirmation",
+					"prompt": "Are you sure you want to delete API key ID {id}?"
+				},
+				"validations": {
+					"description": {
+						"required": "Please enter API key description."
+					}
+				}
+			},
+			"sshKeys": {
+				"actions": {
+					"add": "Add SSH key",
+					"edit": "Edit SSH key",
+					"delete": "Delete SSH key"
+				},
+				"form": {
+					"addTitle": "Add SSH key",
+					"editTitle": "Edit SSH key"
+				},
+				"table": {
+					"createdAt": "Date created",
+					"type": "Key type",
+					"hash": "Hash",
+					"key": "Public key"
+				},
+				"delete": {
+					"title": "SSH public key delete confirmation",
+					"prompt": "Are you sure you want to delete SSH public key ID {id}?"
+				},
+				"installNote": "Add SSH public keys to be used for key-based authorization when accessing the device.",
+				"supported": "The following SSH key types are supported.",
+				"noneSupported": "No SSH key type supported.",
+				"fetchFailed": "Failed to retrieve list of supported SSH key types."
 			}
 		},
-		"status": {
-			"monitor": {
-				"mode": "Daemon mode",
-				"modes": {
-					"operational": "Operational",
-					"forwarding": "Forwarding",
-					"service": "Service",
-					"unknown": "Unknown"
+		"account": {
+			"language": {
+				"label": "Language"
+			}
+		},
+		"auth": {
+			"expiration": {
+				"expirations": {
+					"default": "90 minutes",
+					"day": "1 day",
+					"week": "1 week",
+					"month": "1 month",
+					"year": "1 year"
 				},
-				"notified": "Last notified",
-				"queue": "Queue length",
-				"version": "Daemon version",
-				"enumeration": {
-					"running": "Enumeration in progress.",
-					"notRunning": "Enumeration not running.",
-					"unavailable": "Enumeration status not available."
-				}
+				"label": "Session expiration"
+			},
+			"signIn": {
+				"actions": {
+					"signIn": "Sign in",
+					"recoverPassword": "Forgot password?"
+				},
+				"fields": {
+					"expiration": "Session expiration",
+					"expirations": {
+						"default": "90 minutes",
+						"day": "1 day",
+						"week": "1 week",
+						"month": "1 month",
+						"year": "1 year"
+					}
+				},
+				"title": "Sign in"
+			}
+		},
+		"common": {
+			"actions": {
+				"add": "Add",
+				"cancel": "Cancel",
+				"delete": "Delete",
+				"edit": "Edit"
+			},
+			"fields": {
+				"actions": "Actions",
+				"description": "Description",
+				"email": "E-mail address",
+				"id": "ID",
+				"password": "Password",
+				"username": "Username"
 			},
 			"locale": {
 				"languages": {
@@ -372,13 +492,22 @@
 					"set": "Locale changed to: {locale}."
 				}
 			},
-			"sessionExpiration": {
-				"title": "Session expiration warning",
-				"prompt": "Your session is about to expire and you will be logged out. Click the renew session button to renew the session and dismiss this windows.",
-				"renew": "Renew session",
-				"success": "Your session has been successfully renewed.",
-				"failed": "Failed to renew session.",
-				"indicator": "Session will expire in: "
+			"validations": {
+				"email": {
+					"required": "Please enter e-mail address.",
+					"email": "Invalid e-mail address format."
+				},
+				"password": {
+					"email": "Invalid e-mail address format.",
+					"required": "Please enter password."
+				},
+				"port": {
+					"required": "Please enter port",
+					"between": "Port should be an integer between 1 and 65535."
+				},
+				"username": {
+					"required": "Please enter username."
+				}
 			}
 		},
 		"configuration": {
@@ -793,7 +922,7 @@
 					},
 					"messages": {
 						"save": {
-							"success": "IQRF repository configuration sucessfully saved."
+							"success": "IQRF repository configuration successfully saved."
 						}
 					}
 				},
@@ -850,17 +979,27 @@
 						"prompt": "Are you sure you want to delete logging profile {name}?"
 					},
 					"validation": {
-						"profileMissing": "Please enter logging profile name.",
-						"logDirMissing": "Please enter path to log directory.",
-						"filenameMissing": "Please enter file name.",
-						"maxSizeMissing": "Please enter maximum file size.",
-						"maxSizeInvalid": "Maximum file size should be an integer greater or equal to 1.",
 						"maxAgeMissing": "Please enter maximum lifespan of log files.",
 						"maxAgeInvalid": "Maximum lifespan of log files should greater or equal to 0.",
 						"maxNumberMissing": "Please enter maximum number of log files to keep.",
 						"maxNumberInvalid": "Maximum number of log files to keep should be an integer greater or equal to 0.",
 						"channelMissing": "Please enter logging channel.",
 						"channelInvalid": "Logging channel should be an integer greater or equal to 0."
+					},
+					"validations": {
+						"filename": {
+							"required": "Please enter file name."
+						},
+						"profile": {
+							"required": "Please enter logging profile name."
+						},
+						"maxSize": {
+							"min": "Maximum file size should be an integer greater or equal to 1.",
+							"required": "Please enter maximum file size."
+						},
+						"logDir": {
+							"required": "Please enter path to log directory."
+						}
 					},
 					"notes": {
 						"timestampsDisabled": "Setting value to 0 disables this feature."
@@ -873,7 +1012,6 @@
 							"success": "Logging profile {name} has been successfully deleted."
 						}
 					}
-
 				},
 				"validation": {
 					"instanceMissing": "Please enter instance name."
@@ -1111,7 +1249,7 @@
 					"inventoryPollIntervalMissing": "Please enter inventory poll interval.",
 					"inventoryPollIntervalInvalid": "Inventory poll interval should be an integer greater or equal to 0.",
 					"retryPollIntervalMissing": "Please enter connection retry interval.",
-					"retryPollIntervalInvalid": "Connnection retry interval should be an integer greater or equal to 0.",
+					"retryPollIntervalInvalid": "Connection retry interval should be an integer greater or equal to 0.",
 					"updatePollIntervalMissing": "Please enter update check interval.",
 					"updatePollIntervalInvalid": "Update check interval should be an integer greater or equal to 0.",
 					"tenantTokenMissing": "Please enter Tenant token.",
@@ -1125,6 +1263,18 @@
 						"success": "Certificate has been successfully uploaded."
 					}
 				}
+			}
+		},
+		"errors": {
+			"403": {
+				"title": "Access denied",
+				"header": "Error 403",
+				"text": "You do not have permission to view this page. Please try contact the web site administrator if you believe you should be able to view this page."
+			},
+			"404": {
+				"title": "Page not found",
+				"header": "Error 404",
+				"text": "The page you requested could not be found. The address may be incorrect, or the page no longer exists."
 			}
 		},
 		"gateway": {
@@ -1222,7 +1372,7 @@
 				},
 				"stats": {
 					"title": "Power statistics",
-					"columns":{
+					"columns": {
 						"start": "Startup time",
 						"shutdown": "Shutdown time",
 						"graceful": "Graceful shutdown",
@@ -1370,7 +1520,7 @@
 						"security": {
 							"psk": "Pre-shared key",
 							"type": "Security type",
-							"types":{
+							"types": {
 								"leap": "Cisco LEAP (Lightweight Extensible Authentication Protocol)",
 								"open": "Open network",
 								"wep": "WEP",
@@ -1393,7 +1543,7 @@
 					}
 				},
 				"validations": {
-					"generic":{
+					"generic": {
 						"name": {
 							"required": "Please enter the connection name."
 						},
@@ -1450,7 +1600,7 @@
 					}
 				}
 			},
-			"modems":{
+			"modems": {
 				"title": "Modems",
 				"columns": {
 					"interface": "Interface name",
@@ -1709,8 +1859,10 @@
 						"title": "Mender log",
 						"button": "Show log"
 					},
-					"validation": {
-						"artifactMissing": "Please select mender artifact file."
+					"validations": {
+						"artifact": {
+							"required": "Please select mender artifact file."
+						}
 					},
 					"messages": {
 						"install": {
@@ -1734,100 +1886,9 @@
 				}
 			}
 		},
-		"accessControl": {
-			"users": {
-				"actions": {
-					"add": "Add user",
-					"edit": "Edit user",
-					"delete": "Delete user"
-				},
-				"delete": {
-					"title": "User delete confirmation",
-					"prompt": "Are you sure you want to delete user {user}?"
-				},
-				"username": "Username",
-				"email": "E-mail address",
-				"password": "Password",
-				"language": "Language",
-				"role": "Role",
-				"roles": {
-					"admin": "Administrator",
-					"normal": "Normal user",
-					"basicadmin": "Basic admin",
-					"basic": "Basic user"
-				},
-				"state": "State",
-				"states": {
-					"unverified": "Unverified",
-					"verified": "Verified"
-				},
-				"validation": {
-					"username": "Please enter the username.",
-					"password": "Please enter the password.",
-					"emailInvalid": "Invalid e-mail address format."
-				},
-				"messages": {
-					"delete": {
-						"success": "User {user} has been deleted successfully."
-					}
-				}
-			},
-			"apiKeys": {
-				"actions": {
-					"add": "Add API key",
-					"edit": "Edit API key",
-					"delete": "Delete API key"
-				},
-				"form": {
-					"addTitle": "Add API key",
-					"editTitle": "Edit API key",
-					"expiration": "Set expiration"
-				},
-				"table": {
-					"expiration": "Expiration"
-				},
-				"display": {
-					"title": "Generated API key",
-					"prompt": "Before closing this dialog, copy and store the new API key below in a safe place. For security reasons, you will not be able to view it again at a later time.",
-					"copyMessage": "API key has been copied to clipboard."
-				},
-				"delete": {
-					"title": "API key delete confirmation",
-					"prompt": "Are you sure you want to delete API key ID {id}?"
-				},
-				"validation": {
-					"descriptionMissing": "Please enter API key description."
-				}
-			},
-			"sshKeys": {
-				"actions": {
-					"add": "Add SSH key",
-					"edit": "Edit SSH key",
-					"delete": "Delete SSH key"
-				},
-				"form": {
-					"addTitle": "Add SSH key",
-					"editTitle": "Edit SSH key"
-				},
-				"table": {
-					"createdAt": "Date created",
-					"type": "Key type",
-					"hash": "Hash",
-					"key": "Public key"
-				},
-				"delete": {
-					"title": "SSH public key delete confirmation",
-					"prompt": "Are you sure you want to delete SSH public key ID {id}?"
-				},
-				"installNote": "Add SSH public keys to be used for key-based authorization when accessing the device.",
-				"supported": "The following SSH key types are supported.",
-				"noneSupported": "No SSH key type supported.",
-				"fetchFailed": "Failed to retrieve list of supported SSH key types."
-			}
-		},
 		"openApi": {
 			"title": "OpenAPI specification",
-			"messages":  {
+			"messages": {
 				"fetchFailed": "An error occurred during OpenAPI specification loading."
 			}
 		},
@@ -1836,6 +1897,33 @@
 			"enable": "Start SSH service on every boot.",
 			"start": "Start SSH service now, once.",
 			"disable": "Do not start SSH service."
+		},
+		"status": {
+			"monitor": {
+				"mode": "Daemon mode",
+				"modes": {
+					"operational": "Operational",
+					"forwarding": "Forwarding",
+					"service": "Service",
+					"unknown": "Unknown"
+				},
+				"notified": "Last notified",
+				"queue": "Queue length",
+				"version": "Daemon version",
+				"enumeration": {
+					"running": "Enumeration in progress.",
+					"notRunning": "Enumeration not running.",
+					"unavailable": "Enumeration status not available."
+				}
+			},
+			"sessionExpiration": {
+				"title": "Session expiration warning",
+				"prompt": "Your session is about to expire and you will be logged out. Click the renew session button to renew the session and dismiss this windows.",
+				"renew": "Renew session",
+				"success": "Your session has been successfully renewed.",
+				"failed": "Failed to renew session.",
+				"indicator": "Session will expire in: "
+			}
 		}
 	},
 	"pages": {
