@@ -8,9 +8,9 @@
 			<v-form ref='form' class='mt-4' @submit.prevent='onSubmit'>
 				<TextInput
 					v-model='request.username'
-					:label='$t("user.username")'
+					:label='$t("components.common.fields.username")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("user.validation.username")),
+						(v: string|null) => ValidationRules.required(v, $t("components.common.validations.username.required")),
 					]'
 					required
 					:prepend-inner-icon='mdiAccount'

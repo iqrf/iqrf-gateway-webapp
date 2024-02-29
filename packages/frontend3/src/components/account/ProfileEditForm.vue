@@ -6,29 +6,24 @@
 		<v-form ref='form' @submit.prevent='onSubmit'>
 			<TextInput
 				v-model='user.username'
-				:label='$t("user.username")'
+				:label='$t("components.common.fields.username")'
 				:rules='[
-					(v: string|null) => ValidationRules.required(v, $t("user.validation.username")),
+					(v: string|null) => ValidationRules.required(v, $t("components.common.validations.username.required")),
 				]'
 				required
 				:prepend-inner-icon='mdiAccount'
 			/>
 			<TextInput
 				v-model='user.email'
-				:label='$t("user.email")'
+				:label='$t("components.common.fields.email")'
 				:rules='[
-					(v: string|null) => ValidationRules.required(v, $t("user.validation.missingEmail")),
-					(v: string) => ValidationRules.email(v, $t("user.validation.invalidEmail")),
+					(v: string|null) => ValidationRules.required(v, $t("components.common.validations.email.required")),
+					(v: string) => ValidationRules.email(v, $t("components.common.validations.email.email")),
 				]'
 				required
 				:prepend-inner-icon='mdiEmail'
 			/>
-			<SelectInput
-				v-model='user.language'
-				:items='languageOptions'
-				:label='$t("user.language")'
-				:prepend-inner-icon='mdiTranslate'
-			/>
+			<LanguageInput v-model='user.language' />
 			<v-btn
 				color='primary'
 				type='submit'
@@ -42,22 +37,20 @@
 <script lang='ts' setup>
 import { type AccountService } from '@iqrf/iqrf-gateway-webapp-client/services';
 import { type UserEdit, type UserInfo, UserLanguage, UserRole } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { mdiAccount, mdiEmail, mdiTranslate } from '@mdi/js';
+import { mdiAccount, mdiEmail } from '@mdi/js';
 import { type AxiosError } from 'axios';
 import { onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
+import LanguageInput from '@/components/account/LanguageInput.vue';
 import Card from '@/components/Card.vue';
-import SelectInput from '@/components/SelectInput.vue';
 import TextInput from '@/components/TextInput.vue';
 import { basicErrorToast } from '@/helpers/errorToast';
 import UrlBuilder from '@/helpers/urlBuilder';
-import { getLanguageOptions } from '@/helpers/userData';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
-
 
 const i18n = useI18n();
 const userStore = useUserStore();
@@ -67,7 +60,6 @@ const user: Ref<UserEdit> = ref({
 	language: UserLanguage.English,
 	role: UserRole.Basic,
 });
-const languageOptions = getLanguageOptions();
 
 const accountService: AccountService = useApiClient().getAccountService();
 

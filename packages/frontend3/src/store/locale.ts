@@ -1,4 +1,4 @@
-import { GB } from 'country-flag-icons/string/3x2';
+import { CZ, GB } from 'country-flag-icons/string/3x2';
 import { Base64 } from 'js-base64';
 import { defineStore } from 'pinia';
 import { preferredLocale } from 'preferred-locale';
@@ -10,6 +10,8 @@ export interface Locale {
 	code: string;
 	/// Locale Unicode flag
 	flag: string;
+	/// Development build only?
+	developmentOnly?: boolean;
 }
 
 /**
@@ -22,12 +24,14 @@ interface LocaleState {
 
 const locales: Locale[] = [
 	{ code: 'en', flag: Base64.encode(GB) },
-	//{code: 'cs', flag: Base64.encode(CZ)},
+	{ code: 'cs', flag: Base64.encode(CZ), developmentOnly: true },
 ];
+
+const filteredLocales: Locale[] = locales.filter((locale: Locale): boolean => (import.meta.env.DEV || !(locale.developmentOnly ?? false)));
 
 export const useLocaleStore = defineStore('locale', {
 	state: (): LocaleState => ({
-		locale: preferredLocale('en', ['en'], { languageOnly: true }),
+		locale: preferredLocale('en', filteredLocales.map((locale: Locale): string => locale.code), { languageOnly: true }),
 	}),
 	actions: {
 		/**
@@ -46,7 +50,7 @@ export const useLocaleStore = defineStore('locale', {
 		 * @return {Locale[]} Available locales
 		 */
 		getAvailableLocales(): Locale[] {
-			return locales;
+			return filteredLocales;
 		},
 		/**
 		 * Returns current locale code

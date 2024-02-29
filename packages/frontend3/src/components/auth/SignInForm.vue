@@ -1,56 +1,57 @@
 <template>
-	<Card>
-		<template #title>
-			{{ $t('auth.sign.in.title') }}
-		</template>
-		<v-form ref='form' @submit.prevent='onSubmit'>
+	<v-form ref='form' @submit.prevent='onSubmit'>
+		<Card actions-color='white'>
+			<template #title>
+				{{ $t('components.auth.signIn.title') }}
+			</template>
 			<TextInput
 				v-model='credentials.username'
-				:label='$t("user.username")'
+				:label='$t("components.common.fields.username")'
 				:rules='[
-					(v: string|null) => ValidationRules.required(v, $t("user.validation.username")),
+					(v: string|null) => ValidationRules.required(v, $t("components.common.validations.username.required")),
 				]'
 				required
 				:prepend-inner-icon='mdiAccount'
 			/>
 			<PasswordInput
 				v-model='credentials.password'
-				:label='$t("user.password")'
+				:label='$t("components.common.fields.password")'
 				:rules='[
-					(v: string|null) => ValidationRules.required(v, $t("user.validation.password")),
+					(v: string|null) => ValidationRules.required(v, $t("components.common.validations.password.required")),
 				]'
 				required
 				:prepend-inner-icon='mdiKey'
 			/>
-			<SelectInput
-				v-model='credentials.expiration'
-				:items='expirationOptions'
-				:label='$t("auth.sign.in.expiration")'
-				:prepend-inner-icon='mdiAccountClock'
-			/>
-			<div style='display: flex; justify-content: space-between;'>
+			<SessionExpirationInput v-model='credentials.expiration' />
+			<template #actions>
 				<v-btn
+					variant='elevated'
 					color='primary'
 					type='submit'
 					:prepend-icon='mdiLogin'
 				>
-					{{ $t('auth.sign.in.title') }}
+					{{ $t('components.auth.signIn.actions.signIn') }}
 				</v-btn>
+				<v-spacer />
 				<v-btn
-					variant='text'
-					color='primary'
+					variant='elevated'
+					color='grey'
 					to='/account/recovery'
+					:prepend-icon='mdiAccountKey'
 				>
-					{{ $t('auth.sign.in.recoverPassword') }}
+					{{ $t('components.auth.signIn.actions.recoverPassword') }}
 				</v-btn>
-			</div>
-		</v-form>
-	</Card>
+			</template>
+		</Card>
+	</v-form>
 </template>
 
 <script lang='ts' setup>
-import { type UserCredentials, UserSessionExpiration } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { mdiAccount, mdiAccountClock, mdiKey, mdiLogin } from '@mdi/js';
+import {
+	type UserCredentials,
+	UserSessionExpiration,
+} from '@iqrf/iqrf-gateway-webapp-client/types';
+import { mdiAccount, mdiAccountKey, mdiKey, mdiLogin } from '@mdi/js';
 import { type AxiosError } from 'axios';
 import { onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -58,12 +59,12 @@ import { useRoute, useRouter } from 'vue-router';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
+import SessionExpirationInput
+	from '@/components/auth/SessionExpirationInput.vue';
 import Card from '@/components/Card.vue';
 import PasswordInput from '@/components/PasswordInput.vue';
-import SelectInput from '@/components/SelectInput.vue';
 import TextInput from '@/components/TextInput.vue';
 import { basicErrorToast } from '@/helpers/errorToast';
-import { getExpirationOptions } from '@/helpers/userData';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useGatewayStore } from '@/store/gateway';
@@ -76,7 +77,6 @@ const router = useRouter();
 const gatewayStore = useGatewayStore();
 const repositoryStore = useRepositoryStore();
 const userStore = useUserStore();
-const expirationOptions = getExpirationOptions();
 const credentials: Ref<UserCredentials> = ref({
 	username: '',
 	password: '',

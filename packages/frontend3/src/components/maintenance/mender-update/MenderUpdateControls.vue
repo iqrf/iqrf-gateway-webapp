@@ -13,7 +13,7 @@
 				accept='.mender'
 				:label='$t("components.maintenance.mender.update.artifact")'
 				:rules='[
-					(v: File|Blob|null) => ValidationRules.required(v, $t("components.maintenance.mender.update.validation.artifactMissing")),
+					(v: File|Blob|null) => ValidationRules.required(v, $t("components.maintenance.mender.update.validations.artifact.required")),
 				]'
 				:prepend-inner-icon='mdiFileOutline'
 				:prepend-icon='null'

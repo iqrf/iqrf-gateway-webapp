@@ -102,22 +102,13 @@
 					:required='watchdogPins'
 				/>
 				<template #actions>
-					<v-btn
-						color='primary'
-						type='submit'
-						variant='elevated'
+					<FormActionButton
+						:action='action'
 						:disabled='!isValid.value'
-					>
-						{{ $t(`common.buttons.${action}`) }}
-					</v-btn>
+						type='submit'
+					/>
 					<v-spacer />
-					<v-btn
-						color='grey-darken-2'
-						variant='elevated'
-						@click='close'
-					>
-						{{ $t('common.buttons.cancel') }}
-					</v-btn>
+					<FormActionButton :action='FormAction.Cancel' @click='close' />
 				</template>
 			</Card>
 		</v-form>
@@ -135,6 +126,7 @@ import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
 import Card from '@/components/Card.vue';
+import FormActionButton from '@/components/FormActionButton.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import SelectInput from '@/components/SelectInput.vue';
 import TextInput from '@/components/TextInput.vue';

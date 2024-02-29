@@ -39,7 +39,7 @@
 					v-model='profile.instance'
 					:label='$t("components.configuration.daemon.logging.profile")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.configuration.daemon.logging.validation.profileMissing")),
+						(v: string|null) => ValidationRules.required(v, $t("components.configuration.daemon.logging.validations.profile.required")),
 					]'
 					required
 				/>
@@ -47,7 +47,7 @@
 					v-model='profile.path'
 					:label='$t("components.configuration.daemon.logging.logDir")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.configuration.daemon.logging.validation.logDirMissing")),
+						(v: string|null) => ValidationRules.required(v, $t("components.configuration.daemon.logging.validations.logDir.required")),
 					]'
 					required
 				/>
@@ -55,7 +55,7 @@
 					v-model='profile.filename'
 					:label='$t("components.configuration.daemon.logging.filename")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.configuration.daemon.logging.validation.filenameMissing")),
+						(v: string|null) => ValidationRules.required(v, $t("components.configuration.daemon.logging.validations.filename.required")),
 					]'
 					required
 				/>
@@ -64,9 +64,9 @@
 					type='number'
 					:label='$t("components.configuration.daemon.logging.maxSize")'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("components.configuration.daemon.logging.validation.maxSizeMissing")),
-						(v: number) => ValidationRules.integer(v, $t("components.configuration.daemon.logging.validation.maxSizeInvalid")),
-						(v: number) => ValidationRules.min(v, 1, $t("components.configuration.daemon.logging.validation.maxSizeInvalid")),
+						(v: number|null) => ValidationRules.required(v, $t("components.configuration.daemon.logging.validations.maxSize.required")),
+						(v: number) => ValidationRules.integer(v, $t("components.configuration.daemon.logging.validations.maxSize.min")),
+						(v: number) => ValidationRules.min(v, 1, $t("components.configuration.daemon.logging.validations.maxSize.min")),
 					]'
 					required
 				/>

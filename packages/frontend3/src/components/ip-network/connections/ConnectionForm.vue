@@ -48,15 +48,11 @@
 				v-model='configuration'
 			/>
 			<template #actions>
-				<v-btn
-					:color='actionColor'
-					variant='elevated'
-					:disabled='!isValid || componentState === ComponentState.Saving'
+				<FormActionButton
+					:action='action'
+					:disabled='!isValid.value || componentState === ComponentState.Saving'
 					@click='saveConfiguration()'
-				>
-					<v-icon :icon='actionIcon' />
-					{{ $t(`common.buttons.${action}`) }}
-				</v-btn>
+				/>
 			</template>
 		</Card>
 	</v-form>
@@ -70,12 +66,13 @@ import {
 	type NetworkInterfaceType,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkInterface';
 import { IpNetworkUtils } from '@iqrf/iqrf-gateway-webapp-client/utils';
-import { mdiContentSave, mdiHelpCircle, mdiPlus, mdiTextShort } from '@mdi/js';
+import { mdiTextShort } from '@mdi/js';
 import { computed, onBeforeMount, type PropType, ref, type Ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { VForm, VIcon } from 'vuetify/components';
+import { VForm } from 'vuetify/components';
 
 import Card from '@/components/Card.vue';
+import FormActionButton from '@/components/FormActionButton.vue';
 import IpConfiguration
 	from '@/components/ip-network/connections/ip/IpConfiguration.vue';
 import VlanConfiguration
@@ -106,17 +103,6 @@ const actionColor: Ref<string> = computed((): string => {
 			return 'primary';
 		default:
 			return 'grey';
-	}
-});
-/// Form action icon
-const actionIcon: Ref<string> = computed((): string => {
-	switch (action.value) {
-		case FormAction.Add:
-			return mdiPlus;
-		case FormAction.Edit:
-			return mdiContentSave;
-		default:
-			return mdiHelpCircle;
 	}
 });
 /// Connection configuration
