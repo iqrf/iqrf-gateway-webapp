@@ -1,6 +1,6 @@
 {
 	"name": "@iqrf/iqrf-gateway-webapp-client",
-	"version": "0.1.11",
+	"version": "0.1.12",
 	"description": "IQRF Gateway Webapp JavaScript client library",
 	"exports": {
 		".": {
