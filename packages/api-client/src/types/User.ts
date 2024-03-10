@@ -125,6 +125,16 @@ export interface UserPasswordChange {
 }
 
 /**
+ * User password reset interface
+ */
+export interface UserPasswordReset {
+	/// Base URL
+	baseUrl?: string;
+	/// New user password
+	password: string;
+}
+
+/**
  * User account recovery interface
  */
 export interface UserAccountRecovery {
@@ -132,4 +142,12 @@ export interface UserAccountRecovery {
 	baseUrl?: string;
 	/// Username
 	username: string;
+}
+
+/**
+ * E-mail address verification resend request interface
+ */
+export interface EmailVerificationResendRequest {
+	/// Base URL
+	baseUrl?: string;
 }

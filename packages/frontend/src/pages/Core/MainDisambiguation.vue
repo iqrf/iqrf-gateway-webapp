@@ -71,6 +71,7 @@ import {Link, LinkTarget} from '@/helpers/DisambiguationHelper';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {UserRoleIndex} from '@/services/AuthenticationService';
 import {useApiClient} from '@/services/ApiClient';
+import UrlBuilder from '@/helpers/urlBuilder';
 
 @Component({
 	components: {
@@ -186,7 +187,9 @@ export default class MainDisambiguation extends Vue {
 	 */
 	private resendVerification(): void {
 		this.$store.commit('spinner/SHOW');
-		useApiClient().getAccountService().resendVerificationEmail()
+		useApiClient().getAccountService().resendVerificationEmail({
+			baseUrl: (new UrlBuilder()).getBaseUrl(),
+		})
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(

@@ -17,11 +17,11 @@
 import { type AxiosResponse } from 'axios';
 
 import {
-	type EmailSentResponse,
+	type EmailSentResponse, EmailVerificationResendRequest,
 	type UserAccountRecovery,
 	type UserEdit,
 	type UserInfo,
-	type UserPasswordChange,
+	type UserPasswordChange, UserPasswordReset,
 	type UserSignedIn,
 } from '../types';
 import { UserUtils } from '../utils';
@@ -34,7 +34,7 @@ import { BaseService } from './BaseService';
 export class AccountService extends BaseService {
 
 	/**
-	 * Fetches information about the logged in user
+	 * Fetches information about the logged-in user
 	 * @return {Promise<UserInfo>} User information
 	 */
 	public fetchInfo(): Promise<UserInfo> {
@@ -63,15 +63,12 @@ export class AccountService extends BaseService {
 	}
 
 	/**
-	 * Sets the new user's password
+	 * Resets the new user's password
 	 * @param {string} uuid Password recovery request UUID
-	 * @param {string} password New password
+	 * @param {UserPasswordReset} request Password reset request
 	 */
-	public confirmPasswordRecovery(uuid: string, password: string): Promise<UserSignedIn> {
-		const body = {
-			password: password,
-		};
-		return this.axiosInstance.post(`/user/password/recovery/${uuid}`, body)
+	public confirmPasswordRecovery(uuid: string, request: UserPasswordReset): Promise<UserSignedIn> {
+		return this.axiosInstance.post(`/user/password/recovery/${uuid}`, request)
 			.then((response: AxiosResponse<UserSignedIn>) => UserUtils.deserialize(response.data));
 	}
 
@@ -80,15 +77,16 @@ export class AccountService extends BaseService {
 	 * @param {UserAccountRecovery} recovery Account recovery request
 	 */
 	public requestPasswordRecovery(recovery: UserAccountRecovery): Promise<void> {
-		return this.axiosInstance.post('/user/password/recovery/', recovery)
+		return this.axiosInstance.post('/user/password/recovery', recovery)
 			.then((): void => {return;});
 	}
 
 	/**
 	 * Resends the verification email
+	 * @param {EmailVerificationResendRequest} request Verification e-mail resend request
 	 */
-	public resendVerificationEmail(): Promise<void> {
-		return this.axiosInstance.post('`/user/resendVerification')
+	public resendVerificationEmail(request: EmailVerificationResendRequest): Promise<void> {
+		return this.axiosInstance.post('/user/resendVerification', request)
 			.then((): void => {return;});
 	}
 }

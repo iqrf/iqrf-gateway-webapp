@@ -57,6 +57,7 @@ import { VForm } from 'vuetify/components';
 
 import Card from '@/components/Card.vue';
 import PasswordInput from '@/components/PasswordInput.vue';
+import UrlBuilder from '@/helpers/urlBuilder';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
@@ -85,7 +86,10 @@ async function onSubmit(): Promise<void> {
 		return;
 	}
 	componentState.value = ComponentState.Loading;
-	service.confirmPasswordRecovery(componentProps.uuid, password.value)
+	service.confirmPasswordRecovery(componentProps.uuid, {
+		password: password.value,
+		baseUrl: new UrlBuilder().getBaseUrl(),
+	})
 		.then((user: UserSignedIn): UserSignedIn => {
 			componentState.value = ComponentState.Success;
 			if (user.role === UserRole.Basic) {

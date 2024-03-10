@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 import {
-	GatewayBriefInformation,
 	GatewayInformation
 } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
 
