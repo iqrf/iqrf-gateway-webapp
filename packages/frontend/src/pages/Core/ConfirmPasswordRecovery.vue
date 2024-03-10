@@ -70,6 +70,7 @@ import TheWizard from '@/components/TheWizard.vue';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {UserRole, UserSignedIn} from '@iqrf/iqrf-gateway-webapp-client/types';
 import {useApiClient} from '@/services/ApiClient';
+import UrlBuilder from '@/helpers/urlBuilder';
 
 @Component({
 	components: {
@@ -119,7 +120,10 @@ export default class ConfirmPasswordRecovery extends Vue {
 	 */
 	private confirmRecovery(): void {
 		this.requestInProgress = true;
-		useApiClient().getAccountService().confirmPasswordRecovery(this.recoveryId, this.password)
+		useApiClient().getAccountService().confirmPasswordRecovery(this.recoveryId, {
+			password: this.password,
+			baseUrl: (new UrlBuilder()).getBaseUrl(),
+		})
 			.then((user: UserSignedIn) => {
 				this.requestInProgress = false;
 				if (user.role === UserRole.Basic) {
