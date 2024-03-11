@@ -85,7 +85,7 @@ class JournalController extends GatewayController {
 	}
 
 	#[Path('/config')]
-	#[Method('POST')]
+	#[Method('PUT')]
 	#[OpenApi('
 		summary: Updates journal configuration
 		requestBody:
@@ -113,6 +113,31 @@ class JournalController extends GatewayController {
 		} catch (ConfNotFoundException | InvalidConfFormatException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
+	}
+
+	#[Path('/config')]
+	#[Method('POST')]
+	#[OpenApi('
+		summary: Updates journal configuration
+		deprecated: true
+		requestBody:
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: \'#/components/schemas/Journal\'
+		responses:
+			\'200\':
+				description: Success
+			\'400\':
+				$ref: \'#/components/responses/BadRequest\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	')]
+	public function saveConfigOld(ApiRequest $request, ApiResponse $response): ApiResponse {
+		return $this->saveConfig($request, $response);
 	}
 
 	#[Path('/')]

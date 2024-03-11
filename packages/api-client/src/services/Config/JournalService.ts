@@ -41,7 +41,7 @@ export class JournalService extends BaseService {
 	 * @param {JournalConfig} config Journal configuration
 	 */
 	public editConfig(config: JournalConfig): Promise<void> {
-		return this.axiosInstance.post('/gateway/journal/config', config)
+		return this.axiosInstance.put('/gateway/journal/config', config)
 			.then((): void => {return;});
 	}
 
