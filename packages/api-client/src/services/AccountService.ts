@@ -17,11 +17,13 @@
 import { type AxiosResponse } from 'axios';
 
 import {
-	type EmailSentResponse, EmailVerificationResendRequest,
+	type EmailSentResponse,
+	type EmailVerificationResendRequest,
 	type UserAccountRecovery,
 	type UserEdit,
 	type UserInfo,
-	type UserPasswordChange, UserPasswordReset,
+	type UserPasswordChange,
+	type UserPasswordReset,
 	type UserSignedIn,
 } from '../types';
 import { UserUtils } from '../utils';
