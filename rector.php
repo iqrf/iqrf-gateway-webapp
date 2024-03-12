@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Copyright 2017-2023 IQRF Tech s.r.o.
- * Copyright 2019-2023 MICRORISC s.r.o.
+ * Copyright 2017-2024 IQRF Tech s.r.o.
+ * Copyright 2019-2024 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,55 +21,58 @@ declare(strict_types = 1);
 use Rector\CodeQuality\Rector\Array_\CallableThisArrayToAnonymousFunctionRector;
 use Rector\CodeQuality\Rector\Class_\InlineConstructorDefaultToPropertyRector;
 use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
+use Rector\CodingStyle\Rector\Assign\SplitDoubleAssignRector;
 use Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector;
 use Rector\CodingStyle\Rector\ClassMethod\NewlineBeforeNewAssignSetRector;
 use Rector\CodingStyle\Rector\PostInc\PostIncDecToPreIncDecRector;
 use Rector\CodingStyle\Rector\Stmt\NewlineAfterStatementRector;
 use Rector\CodingStyle\Rector\String_\SymplifyQuoteEscapeRector;
 use Rector\Config\RectorConfig;
-use Rector\Core\ValueObject\PhpVersion;
 use Rector\Doctrine\Set\DoctrineSetList;
-use Rector\Set\ValueObject\SetList;
 use Rector\Symfony\Set\SymfonySetList;
+use Rector\Transform\Rector\Attribute\AttributeKeyToClassConstFetchRector;
 
-return static function (RectorConfig $rectorConfig): void {
-	$rectorConfig->paths([
+return RectorConfig::configure()
+	->withPaths([
 		__DIR__ . '/app',
 		__DIR__ . '/bin',
 		__DIR__ . '/tests',
-	]);
-
-	$rectorConfig->phpVersion(PhpVersion::PHP_74);
-
-	// register a single rule
-	$rectorConfig->rule(InlineConstructorDefaultToPropertyRector::class);
-
-	// define sets of rules
-	$rectorConfig->sets([
-		DoctrineSetList::DOCTRINE_CODE_QUALITY,
-		DoctrineSetList::DOCTRINE_COMMON_20,
-		DoctrineSetList::DOCTRINE_DBAL_30,
-		DoctrineSetList::DOCTRINE_ORM_29,
-		SetList::CODE_QUALITY,
-		SetList::CODING_STYLE,
-		SetList::DEAD_CODE,
-		SetList::PHP_74,
-		SetList::TYPE_DECLARATION,
-		SetList::TYPE_DECLARATION_STRICT,
-		SymfonySetList::SYMFONY_60,
-		SymfonySetList::SYMFONY_CODE_QUALITY,
-		SymfonySetList::SYMFONY_STRICT,
-	]);
-
-	$rectorConfig->skip([
+	])
+	->withSkip([
+		AttributeKeyToClassConstFetchRector::class,
 		CallableThisArrayToAnonymousFunctionRector::class,
 		CatchExceptionNameMatchingTypeRector::class,
 		FlipTypeControlToUseExclusiveTypeRector::class,
 		NewlineAfterStatementRector::class,
 		NewlineBeforeNewAssignSetRector::class,
 		PostIncDecToPreIncDecRector::class,
+		SplitDoubleAssignRector::class,
 		SymplifyQuoteEscapeRector::class,
 		__DIR__ . '/tests/tmp',
-	]);
-
-};
+	])
+	->withPHPStanConfigs([
+		__DIR__ . '/phpstan.neon',
+	])
+	->withPhpVersion(80100)
+	->withPhpSets(false, false, false, false, true)
+	->withPreparedSets(
+		true,
+		true,
+		true,
+		true,
+		false,
+		false,
+		true
+	)
+	->withSets([
+		DoctrineSetList::DOCTRINE_CODE_QUALITY,
+		DoctrineSetList::DOCTRINE_COMMON_20,
+		DoctrineSetList::DOCTRINE_DBAL_30,
+		DoctrineSetList::DOCTRINE_ORM_214,
+		SymfonySetList::SYMFONY_54,
+		SymfonySetList::SYMFONY_CODE_QUALITY,
+	])
+	->withRules([
+		InlineConstructorDefaultToPropertyRector::class,
+	])
+	->withIndent("\t");
