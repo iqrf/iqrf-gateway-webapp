@@ -52,3 +52,4 @@ parameters:
 			message: '#Left side of \&\& is always (true|false)\.#'
 			path: app/Models/Database/Entities/User.php
 			count: 1
+		- '#Parameter \#2 \.\.\.\$args of static method Mockery::mock\(\) expects .*, .* given.#'
