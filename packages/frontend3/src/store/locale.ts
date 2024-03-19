@@ -23,8 +23,15 @@ interface LocaleState {
 
 
 const locales: Locale[] = [
-	{ code: 'en', flag: Base64.encode(GB) },
-	{ code: 'cs', flag: Base64.encode(CZ), developmentOnly: true },
+	{
+		code: 'en',
+		flag: Base64.encode(GB),
+	},
+	{
+		code: 'cs',
+		flag: Base64.encode(CZ),
+		developmentOnly: true,
+	},
 ];
 
 const filteredLocales: Locale[] = locales.filter((locale: Locale): boolean => (import.meta.env.DEV || !(locale.developmentOnly ?? false)));

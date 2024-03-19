@@ -28,7 +28,8 @@ import {
 	AuthenticationService,
 	FeatureService,
 	InstallationService,
-	MenderService, OpenApiService,
+	MenderService,
+	OpenApiService,
 	ServiceService,
 	UserService,
 	VersionService,
@@ -37,7 +38,7 @@ import { CloudServices } from './services/Cloud';
 import { ConfigServices } from './services/Config';
 import { GatewayServices } from './services/Gateway';
 import { IqrfServices } from './services/Iqrf';
-import { MaintenanceServices } from './services/MaintenanceService';
+import { MaintenanceServices } from './services/Maintenance';
 import { NetworkServices } from './services/Network';
 
 /**

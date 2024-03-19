@@ -33,7 +33,7 @@ import { CloudServices } from '../src/services/Cloud';
 import { ConfigServices } from '../src/services/Config';
 import { GatewayServices } from '../src/services/Gateway';
 import { IqrfServices } from '../src/services/Iqrf';
-import { MaintenanceServices } from '../src/services/MaintenanceService';
+import { MaintenanceServices } from '../src/services/Maintenance';
 import { NetworkServices } from '../src/services/Network';
 
 describe('Client', (): void => {

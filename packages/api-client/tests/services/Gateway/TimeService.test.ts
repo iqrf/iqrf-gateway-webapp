@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 import { TimeService } from '../../../src/services/Gateway';
 import {
@@ -30,6 +30,10 @@ describe('TimeService', (): void => {
 	 * @var {TimeService} service Time service
 	 */
 	const service: TimeService = new TimeService(mockedClient);
+
+	beforeEach((): void => {
+		mockedAxios.reset();
+	});
 
 	it('fetch Time and NTP config', async(): Promise<void> => {
 		expect.assertions(1);

@@ -15,6 +15,7 @@
  */
 
 import { type AxiosResponse } from 'axios';
+import * as uuid from 'uuid';
 
 import {
 	type EmailSentResponse,
@@ -66,11 +67,17 @@ export class AccountService extends BaseService {
 
 	/**
 	 * Resets the new user's password
-	 * @param {string} uuid Password recovery request UUID
+	 * @param {string} requestUuid Password recovery request UUID
 	 * @param {UserPasswordReset} request Password reset request
 	 */
-	public confirmPasswordRecovery(uuid: string, request: UserPasswordReset): Promise<UserSignedIn> {
-		return this.axiosInstance.post(`/user/password/recovery/${uuid}`, request)
+	public confirmPasswordRecovery(requestUuid: string, request: UserPasswordReset): Promise<UserSignedIn> {
+		if (!uuid.validate(requestUuid)) {
+			throw new Error('Invalid password recovery request UUID.');
+		}
+		if (uuid.version(requestUuid) !== 4) {
+			throw new Error('Invalid password recovery request UUID version.');
+		}
+		return this.axiosInstance.post(`/user/password/recovery/${requestUuid}`, request)
 			.then((response: AxiosResponse<UserSignedIn>) => UserUtils.deserialize(response.data));
 	}
 

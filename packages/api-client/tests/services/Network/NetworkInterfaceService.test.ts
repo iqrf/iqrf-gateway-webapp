@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 import {
 	NetworkInterfaceService,
@@ -33,33 +33,56 @@ describe('NetworkInterfaceService', (): void => {
 	 */
 	const service: NetworkInterfaceService = new NetworkInterfaceService(mockedClient);
 
+	/**
+	 * @var {NetworkInterface[]} interfaces List of network interfaces
+	 */
+	const interfaces: NetworkInterface[] = [
+		{
+			name: 'br0',
+			type: NetworkInterfaceType.BRIDGE,
+			state: NetworkInterfaceState.Connected,
+			connection: '',
+			macAddress: '',
+			manufacturer: null,
+			model: null,
+		},
+		{
+			name: 'eth0',
+			type: NetworkInterfaceType.ETHERNET,
+			state: NetworkInterfaceState.Connected,
+			connection: 'f61b25c9-66d7-400e-add0-d2a30c57b65c',
+			macAddress: '00:00:00:00:00:00',
+			manufacturer: 'Manufacturer',
+			model: 'Model',
+		},
+	];
+
+	beforeEach((): void => {
+		mockedAxios.reset();
+	});
+
 	it('fetch list of all network interfaces', async(): Promise<void> => {
 		expect.assertions(1);
-		const interfaces: NetworkInterface[] = [
-			{
-				name: 'br0',
-				type: NetworkInterfaceType.BRIDGE,
-				state: NetworkInterfaceState.Connected,
-				connection: '',
-				macAddress: '',
-				manufacturer: null,
-				model: null,
-			},
-			{
-				name: 'eth0',
-				type: NetworkInterfaceType.ETHERNET,
-				state: NetworkInterfaceState.Connected,
-				connection: 'f61b25c9-66d7-400e-add0-d2a30c57b65c',
-				macAddress: '00:00:00:00:00:00',
-				manufacturer: 'Manufacturer',
-				model: 'Model',
-			},
-		];
 		mockedAxios.onGet('/network/interfaces')
 			.reply(200, interfaces);
 		await service.list()
 			.then((actual: NetworkInterface[]): void => {
 				expect(actual).toStrictEqual(interfaces);
+			});
+	});
+
+	it('fetch list of Ethernet network interfaces', async(): Promise<void> => {
+		expect.assertions(1);
+		const ethernetInterfaces: NetworkInterface[] = [interfaces[1]];
+		mockedAxios.onGet('/network/interfaces', {
+			params: {
+				type: NetworkInterfaceType.ETHERNET,
+			},
+		})
+			.reply(200, ethernetInterfaces);
+		await service.list(NetworkInterfaceType.ETHERNET)
+			.then((actual: NetworkInterface[]): void => {
+				expect(actual).toStrictEqual(ethernetInterfaces);
 			});
 	});
 

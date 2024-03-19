@@ -34,7 +34,7 @@
 </template>
 
 <script lang='ts' setup>
-import { type BackupService } from '@iqrf/iqrf-gateway-webapp-client/services/MaintenanceService';
+import { type BackupService } from '@iqrf/iqrf-gateway-webapp-client/services/Maintenance';
 import { type PowerActionResponse } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway/Power';
 import { mdiFileOutline } from '@mdi/js';
 import {
