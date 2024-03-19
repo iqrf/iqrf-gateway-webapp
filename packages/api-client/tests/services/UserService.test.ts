@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 import { UserService } from '../../src/services';
 import {
@@ -60,6 +60,10 @@ describe('UserService', (): void => {
 			'state': AccountState.Unverified,
 		},
 	];
+
+	beforeEach((): void => {
+		mockedAxios.reset();
+	});
 
 	it('fetch the list of users', async (): Promise<void> => {
 		expect.assertions(1);

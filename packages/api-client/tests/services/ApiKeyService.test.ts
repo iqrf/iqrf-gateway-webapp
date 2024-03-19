@@ -15,7 +15,7 @@
  */
 
 import { DateTime } from 'luxon';
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 import { ApiKeyService } from '../../src/services';
 import {
@@ -61,6 +61,10 @@ describe('ApiKeyService', (): void => {
 			expiration: null,
 		},
 	];
+
+	beforeEach((): void => {
+		mockedAxios.reset();
+	});
 
 	it('fetch list of API keys', async (): Promise<void> => {
 		expect.assertions(1);

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 import { VersionService } from '../../src/services';
 import { type VersionBase, type VersionIqrfGatewayWebapp } from '../../src/types';
@@ -26,6 +26,10 @@ describe('VersionService', (): void => {
 	 * @var {VersionService} service Version service
 	 */
 	const service: VersionService = new VersionService(mockedClient);
+
+	beforeEach((): void => {
+		mockedAxios.reset();
+	});
 
 	it('fetch IQRF Gateway Daemon version', async (): Promise<void> => {
 		expect.assertions(1);

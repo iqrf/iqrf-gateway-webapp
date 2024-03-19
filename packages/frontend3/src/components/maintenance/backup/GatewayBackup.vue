@@ -111,7 +111,7 @@
 </template>
 
 <script lang='ts' setup>
-import { type BackupService } from '@iqrf/iqrf-gateway-webapp-client/services/MaintenanceService';
+import { type BackupService } from '@iqrf/iqrf-gateway-webapp-client/services/Maintenance';
 import { Feature } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { type GatewayBackup } from '@iqrf/iqrf-gateway-webapp-client/types/Maintenance/Backup';
 import { FileDownloader } from  '@iqrf/iqrf-gateway-webapp-client/utils/FileDownloader';

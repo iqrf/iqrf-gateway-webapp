@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 import { FeatureService } from '../../src/services';
 import { Feature, type FeatureConfig, type Features } from '../../src/types';
@@ -26,6 +26,10 @@ describe('FeatureService', (): void => {
 	 * @var {FeatureService} service Feature service
 	 */
 	const service: FeatureService = new FeatureService(mockedClient);
+
+	beforeEach((): void => {
+		mockedAxios.reset();
+	});
 
 	it('fetch all features', async (): Promise<void> => {
 		expect.assertions(1);

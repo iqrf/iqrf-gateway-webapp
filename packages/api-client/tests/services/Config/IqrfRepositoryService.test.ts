@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 import { IqrfRepositoryService } from '../../../src/services/Config';
 import { type IqrfRepositoryConfig } from '../../../src/types/Config';
@@ -26,6 +26,10 @@ describe('IqrfRepositoryService', (): void => {
 	 * @var {IqrfRepositoryService} service IQRF Repository service
 	 */
 	const service: IqrfRepositoryService = new IqrfRepositoryService(mockedClient);
+
+	beforeEach((): void => {
+		mockedAxios.reset();
+	});
 
 	it('fetch IQRF Repository config', async (): Promise<void> => {
 		expect.assertions(1);

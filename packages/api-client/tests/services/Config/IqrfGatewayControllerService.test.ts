@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 import { IqrfGatewayControllerService } from '../../../src/services/Config';
 import {
@@ -102,6 +102,10 @@ describe('IqrfGatewayControllerService', (): void => {
 		sck: -1,
 		sda: -1,
 	};
+
+	beforeEach((): void => {
+		mockedAxios.reset();
+	});
 
 	it('fetch IQRF Gateway Controller config', async (): Promise<void> => {
 		expect.assertions(1);
