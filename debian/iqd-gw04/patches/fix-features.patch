@@ -1,7 +1,7 @@
 --- a/app/config/features.neon
 +++ b/app/config/features.neon
-@@ -15,11 +15,11 @@
-
+@@ -15,14 +15,14 @@
+ 
  # apcupsd service
  apcupsd:
 -	enabled: false
@@ -13,7 +13,11 @@
 +	url: https://docs.iqrf.org/industrial/
  # Default gateway user password change
  gatewayPass:
- 	enabled: false
+-	enabled: false
++	enabled: true
+ 	user: root
+ # Grafana dashboard
+ grafana:
 @@ -30,7 +30,7 @@
  	url: /grafana/
  # IQRF Gateway Controller configuration
