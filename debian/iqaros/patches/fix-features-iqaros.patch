@@ -8,7 +8,7 @@
 +	url: https://www.iqaros.eu/installation.html
  # Default gateway user password change
  gatewayPass:
- 	enabled: false
+ 	enabled: true
  	user: root
  # Grafana dashboard
  grafana:
