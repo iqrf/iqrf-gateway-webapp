@@ -38,6 +38,8 @@ nginx_default_site() {
 			industrial*)
 				ln -sf "${WEBAPP_CONFIG_DIR}/iqrf-gateway-webapp-industrial.localhost" "${SITE_AVAILABLE_PATH}"
 				ln -sf "${WEBAPP_CONFIG_DIR}/iqrf-gateway-webapp-industrial-https.localhost" "${SITE_AVAILABLE_PATH_HTTPS}" ;;
+			iqaros-*-v2*)
+				: ;;
 			iqaros*|nakit*)
 				ln -sf "${WEBAPP_CONFIG_DIR}/iqrf-gateway-webapp-iqaros.localhost" "${SITE_AVAILABLE_PATH}"
 				ln -sf "${WEBAPP_CONFIG_DIR}/iqrf-gateway-webapp-iqaros-https.localhost" "${SITE_AVAILABLE_PATH_HTTPS}" ;;
@@ -51,6 +53,17 @@ nginx_default_site() {
 	else
 		ln -sf "${WEBAPP_CONFIG_DIR}/iqrf-gateway-webapp.localhost" "${SITE_AVAILABLE_PATH}"
 		ln -sf "${WEBAPP_CONFIG_DIR}/iqrf-gateway-webapp-https.localhost" "${SITE_AVAILABLE_PATH_HTTPS}"
+	fi
+}
+
+nginx_virtualhost_enable() {
+	if [ -f "${GATEWAY_FILE}" ] ; then
+		image=$(jq -r '.gwImage' "${GATEWAY_FILE}")
+		if [[ "${image}" != iqaros-*-v2* ]] ; then
+			ln -s "${SITES_AVAILABLE}/${DEFAULT_CONFIG}" "${SITES_ENABLED}/${DEFAULT_CONFIG}"
+		fi
+	else
+		ln -s "${SITES_AVAILABLE}/${DEFAULT_CONFIG}" "${SITES_ENABLED}/${DEFAULT_CONFIG}"
 	fi
 }
 
@@ -86,7 +99,7 @@ nginx_virtualhost_install() {
 
 	# Enable default virtualhost when no other virtualhost is enabled
 	if [ ! -L "${SITES_ENABLED}/${DEFAULT_CONFIG}" ] && [ ! -L "${SITES_ENABLED}/${HTTPS_CONFIG}" ] ; then
-		ln -s "${SITES_AVAILABLE}/${DEFAULT_CONFIG}" "${SITES_ENABLED}/${DEFAULT_CONFIG}"
+		nginx_virtualhost_enable
 	fi
 
 	# Reload nginx
