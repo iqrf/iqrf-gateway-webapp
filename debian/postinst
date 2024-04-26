@@ -59,7 +59,7 @@ nginx_default_site() {
 nginx_virtualhost_enable() {
 	if [ -f "${GATEWAY_FILE}" ] ; then
 		image=$(jq -r '.gwImage' "${GATEWAY_FILE}")
-		if [[ "${image}" != iqaros-*-v2* ]] ; then
+		if [[ ! "${image}" =~ iqaros-.*-v2.* ]] ; then
 			ln -s "${SITES_AVAILABLE}/${DEFAULT_CONFIG}" "${SITES_ENABLED}/${DEFAULT_CONFIG}"
 		fi
 	else
