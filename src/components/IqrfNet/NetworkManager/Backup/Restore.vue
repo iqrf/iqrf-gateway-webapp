@@ -28,6 +28,11 @@ limitations under the License.
 							@input='fileInputTouched'
 							@click='isEmpty'
 						/>
+						<CInputCheckbox
+							:checked.sync='restartOnRestore'
+							:label='$t("iqrfnet.networkManager.backupRestore.restore.form.restartCoordinator")'
+							:description='$t("iqrfnet.networkManager.backupRestore.restore.messages.restartCoordinatorNote")'
+						/>
 						<em>{{ $t('iqrfnet.networkManager.backupRestore.restore.messages.accessPasswordNote') }}</em>
 					</div>
 					<CButton
@@ -45,7 +50,7 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardHeader, CCardBody, CForm, CInput, CInputFile, CSelect} from '@coreui/vue/src';
+import {CButton, CCard, CCardHeader, CCardBody, CForm, CInput, CInputCheckbox, CInputFile, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
@@ -66,6 +71,7 @@ import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 		CCardHeader,
 		CForm,
 		CInput,
+		CInputCheckbox,
 		CInputFile,
 		CSelect,
 		ValidationObserver,
@@ -165,6 +171,7 @@ export default class Restore extends Vue {
 			this.$toast.success(
 				this.$t('iqrfnet.networkManager.backupRestore.restore.messages.coordinatorSuccess').toString()
 			);
+			this.$emit('update-devices');
 			return;
 		}
 

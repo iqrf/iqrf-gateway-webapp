@@ -33,7 +33,7 @@ limitations under the License.
 						</CTab>
 						<CTab :title='$t("iqrfnet.networkManager.backupRestore.title")'>
 							<Backup />
-							<Restore />
+							<Restore @update-devices='updateDevices' />
 						</CTab>
 						<CTab :title='$t("iqrfnet.networkManager.otaUpload.title")'>
 							<OtaUpload />
