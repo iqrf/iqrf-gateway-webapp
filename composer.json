@@ -45,7 +45,7 @@
 		"latte/latte": "^v3.0.13",
 		"lcobucci/jwt": "^5.2.0",
 		"nette/application": "^v3.2.0",
-		"nette/bootstrap": "^v3.2.1",
+		"nette/bootstrap": "v3.2.2",
 		"nette/caching": "^v3.2.3",
 		"nette/di": "^v3.2.0",
 		"nette/finder": "^v3.0.0",
