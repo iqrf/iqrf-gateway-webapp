@@ -105,7 +105,7 @@ import {
 	UserInfo,
 	UserLanguage,
 	UserRole,
-} from '@iqrf/iqrf-gateway-webapp-client/types';
+} from '@iqrf/iqrf-gateway-webapp-client/types/User';
 import {AxiosError} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {Component, Prop, Vue} from 'vue-property-decorator';

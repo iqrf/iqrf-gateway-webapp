@@ -61,7 +61,7 @@ import JsonRawApi from '@/components/Config/Misc/JsonRawApi.vue';
 import JsonSplitter from '@/components/Config/Misc/JsonSplitter.vue';
 import MonitorList from '@/components/Config/Misc/MonitorList.vue';
 import TracerList from '@/components/Config/Misc/TracerList.vue';
-import {UserRole} from '@iqrf/iqrf-gateway-webapp-client/types';
+import {UserRole} from '@iqrf/iqrf-gateway-webapp-client/types/User';
 
 
 @Component({

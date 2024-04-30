@@ -69,7 +69,7 @@ import {required} from 'vee-validate/dist/rules';
 import TheWizard from '@/components/TheWizard.vue';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import UserService from '@/services/UserService';
-import {UserRole, UserSignedIn} from '@iqrf/iqrf-gateway-webapp-client/types';
+import {UserRole, UserSignedIn} from '@iqrf/iqrf-gateway-webapp-client/types/User';
 
 @Component({
 	components: {

@@ -46,7 +46,7 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 
 import {useApiClient} from '@/services/ApiClient';
-import {SshKeyUtils} from '@iqrf/iqrf-gateway-webapp-client/utils';
+import {SshKeyUtils} from '@iqrf/iqrf-gateway-webapp-client/utils/SshKeyUtils';
 
 @Component({})
 

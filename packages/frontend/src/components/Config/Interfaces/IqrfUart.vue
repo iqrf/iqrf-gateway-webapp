@@ -250,7 +250,7 @@ import {AxiosError, AxiosResponse} from 'axios';
 import {IIqrfUart} from '@/interfaces/Config/IqrfInterfaces';
 import {IMapping} from '@/interfaces/Config/Mapping';
 import {ISelectItem} from '@/interfaces/Vuetify';
-import {UserRole} from '@iqrf/iqrf-gateway-webapp-client/types';
+import {UserRole} from '@iqrf/iqrf-gateway-webapp-client/types/User';
 
 @Component({
 	components: {

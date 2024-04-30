@@ -114,7 +114,7 @@ import {integer, min_value, required} from 'vee-validate/dist/rules';
 import AptService, {AptConfiguration} from '@/services/AptService';
 
 import {AxiosError} from 'axios';
-import {UserRole} from '@iqrf/iqrf-gateway-webapp-client/types';
+import {UserRole} from '@iqrf/iqrf-gateway-webapp-client/types/User';
 
 @Component({
 	components: {

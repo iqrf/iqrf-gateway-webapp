@@ -154,7 +154,7 @@ import {
 	UserEdit,
 	UserInfo,
 	UserRole,
-} from '@iqrf/iqrf-gateway-webapp-client/types';
+} from '@iqrf/iqrf-gateway-webapp-client/types/User';
 import {AxiosError} from 'axios';
 import {Component, Vue} from 'vue-property-decorator';
 import {DataTableHeader} from 'vuetify';

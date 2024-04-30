@@ -115,7 +115,7 @@ import {
 	UserCreate,
 	UserLanguage,
 	UserRole
-} from '@iqrf/iqrf-gateway-webapp-client/types';
+} from '@iqrf/iqrf-gateway-webapp-client/types/User';
 import {AxiosError} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';

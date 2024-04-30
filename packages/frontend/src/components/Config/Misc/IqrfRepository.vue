@@ -118,7 +118,7 @@ import ManagementService from '@/services/DaemonApi/ManagementService';
 import {AxiosError, AxiosResponse} from 'axios';
 import {IIqrfRepository} from '@/interfaces/Config/Misc';
 import {MutationPayload} from 'vuex';
-import {UserRole} from '@iqrf/iqrf-gateway-webapp-client/types';
+import {UserRole} from '@iqrf/iqrf-gateway-webapp-client/types/User';
 
 /**
  * IQRF Repository component configuration

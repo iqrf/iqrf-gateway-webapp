@@ -84,7 +84,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {UserRole} from '@iqrf/iqrf-gateway-webapp-client/types';
+import {UserRole} from '@iqrf/iqrf-gateway-webapp-client/types/User';
 import {AxiosError, AxiosResponse} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';

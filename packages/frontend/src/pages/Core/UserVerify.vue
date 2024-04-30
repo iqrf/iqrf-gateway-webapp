@@ -43,7 +43,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {UserRole, UserSignedIn} from '@iqrf/iqrf-gateway-webapp-client/types';
+import {UserRole, UserSignedIn} from '@iqrf/iqrf-gateway-webapp-client/types/User';
 import {AxiosError} from 'axios';
 import VueCountdown from '@chenfengyuan/vue-countdown';
 import {Component, Prop, Vue} from 'vue-property-decorator';

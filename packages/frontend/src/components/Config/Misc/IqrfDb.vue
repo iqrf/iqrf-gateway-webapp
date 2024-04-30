@@ -79,7 +79,7 @@ import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import { AxiosError, AxiosResponse } from 'axios';
 import { IIqrfDb } from '@/interfaces/Config/Misc';
-import {UserRole} from '@iqrf/iqrf-gateway-webapp-client/types';
+import {UserRole} from '@iqrf/iqrf-gateway-webapp-client/types/User';
 
 @Component({
 	components: {

@@ -235,7 +235,7 @@ import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 import {AxiosError, AxiosResponse} from 'axios';
 import {IIqrfSpi} from '@/interfaces/Config/IqrfInterfaces';
 import {IMapping} from '@/interfaces/Config/Mapping';
-import {UserRole} from '@iqrf/iqrf-gateway-webapp-client/types';
+import {UserRole} from '@iqrf/iqrf-gateway-webapp-client/types/User';
 
 @Component({
 	components: {

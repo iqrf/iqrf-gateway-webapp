@@ -164,10 +164,8 @@ limitations under the License.
 
 <script lang='ts'>
 import {IqrfGatewayControllerService} from '@iqrf/iqrf-gateway-webapp-client/services/Config';
-import {
-	IqrfGatewayControllerMapping,
-	IqrfGatewayControllerMappingDevice,
-} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import {IqrfGatewayControllerMapping} from '@iqrf/iqrf-gateway-webapp-client/types/Config/IqrfGatewayController';
+import {MappingDeviceType} from '@iqrf/iqrf-gateway-webapp-client/types/Config/Mapping';
 import {AxiosError} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {integer, required} from 'vee-validate/dist/rules';
@@ -218,11 +216,11 @@ export default class ControllerPinConfigFormModal extends Vue {
 	 * @return {Array<ISelectItem>} Device type options
 	 */
 	get deviceTypeOptions(): Array<ISelectItem> {
-		const types: Array<IqrfGatewayControllerMappingDevice> = [
-			IqrfGatewayControllerMappingDevice.Adapter,
-			IqrfGatewayControllerMappingDevice.Board,
+		const types: Array<MappingDeviceType> = [
+			MappingDeviceType.Adapter,
+			MappingDeviceType.Board,
 		];
-		return types.map((item: IqrfGatewayControllerMappingDevice): ISelectItem => ({
+		return types.map((item: MappingDeviceType): ISelectItem => ({
 			text: this.$t(`config.controller.pins.form.deviceTypes.${item}`).toString(),
 			value: item,
 		}));
