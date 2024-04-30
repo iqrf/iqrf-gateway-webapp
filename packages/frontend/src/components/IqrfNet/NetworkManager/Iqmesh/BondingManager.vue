@@ -113,9 +113,7 @@ limitations under the License.
 								:auto-address='autoAddress'
 								@unbond='unbond'
 							/>
-							<ClearAllModal
-								@clear='clearAll'
-							/>
+							<ClearAllModal @clear='clearAll' />
 						</div>
 						<div v-else>
 							<v-select

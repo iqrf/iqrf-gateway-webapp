@@ -58,7 +58,7 @@ limitations under the License.
 						<v-tab-item :transition='false'>
 							<Backup />
 							<v-divider />
-							<Restore />
+							<Restore @update-devices='updateDevices' />
 						</v-tab-item>
 						<v-tab-item :transition='false'>
 							<OtaUpload />
