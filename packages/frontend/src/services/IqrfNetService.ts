@@ -18,6 +18,7 @@
 import store from '@/store';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 import {IOtaUploadParams} from '@/interfaces/DaemonApi/Iqmesh/OtaUpload';
+import { mType } from '@/helpers/validationRules/Daemon';
 
 /**
  * IQRF Network service
@@ -133,21 +134,18 @@ class IqrfNetService {
 	 * @return {Promise<string>} Message ID
 	 */
 	clearAllBonds(coordinatorOnly: boolean, options: DaemonMessageOptions): Promise<string> {
-		if (coordinatorOnly) {
-			options.request = {
-				'mType': 'iqmeshNetwork_RemoveBondOnlyInC',
-				'data': {
-					'req': {
-						'deviceAddr': [],
-						'clearAllBonds': true,
-					},
-					'returnVerbose': true,
+		options.request = {
+			mType: 'iqmeshNetwork_RemoveBond',
+			data: {
+				req: {
+					allNodes: true,
+					coordinatorOnly: coordinatorOnly,
 				},
-			};
-			return store.dispatch('daemonClient/sendRequest', options);
-		} else {
-			return this.removeBond(255, false, options);
-		}
+				repeat: 1,
+				returnVerbose: true,
+			},
+		};
+		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
 	/**
@@ -316,29 +314,17 @@ class IqrfNetService {
 	 * @return {Promise<string>} Message ID
 	 */
 	removeBond(addr: number, coordinatorOnly: boolean, options: DaemonMessageOptions): Promise<string> {
-		if (coordinatorOnly) {
-			options.request = {
-				'mType': 'iqmeshNetwork_RemoveBondOnlyInC',
-				'data': {
-					'repeat': 1,
-					'req': {
-						'deviceAddr': [addr],
-					},
-					'returnVerbose': true,
+		options.request = {
+			mType: 'iqmeshNetwork_RemoveBond',
+			data: {
+				req: {
+					deviceAddr: addr,
+					coordinatorOnly: coordinatorOnly,
 				},
-			};
-		} else {
-			options.request = {
-				'mType': 'iqmeshNetwork_RemoveBond',
-				'data': {
-					'repeat': 1,
-					'req': {
-						'deviceAddr': addr,
-					},
-					'returnVerbose': true,
-				},
-			};
-		}
+				repeat: 1,
+				returnVerbose: true,
+			},
+		};
 		return store.dispatch('daemonClient/sendRequest', options);
 	}
 

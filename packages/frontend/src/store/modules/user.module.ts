@@ -20,7 +20,7 @@ import {
 	UserInfo,
 	UserRole,
 	UserSignedIn
-} from '@iqrf/iqrf-gateway-webapp-client/types';
+} from '@iqrf/iqrf-gateway-webapp-client/types/User';
 import * as Sentry from '@sentry/vue';
 import {AxiosError} from 'axios';
 import {jwtDecode, JwtPayload} from 'jwt-decode';

@@ -53,13 +53,13 @@ export default defineConfig(({mode}) => {
 		resolve: {
 			alias: {
 				'@': path.resolve(__dirname, './src'),
-				'@iqrf/iqrf-gateway-webapp-client/services/*': path.resolve(__dirname, '../api-client/src/services/*'),
+				/*'@iqrf/iqrf-gateway-webapp-client/services/*': path.resolve(__dirname, '../api-client/src/services/*'),
 				'@iqrf/iqrf-gateway-webapp-client/services': path.resolve(__dirname, '../api-client/src/services'),
 				'@iqrf/iqrf-gateway-webapp-client/types/*': path.resolve(__dirname, '../api-client/src/types/*'),
 				'@iqrf/iqrf-gateway-webapp-client/types': path.resolve(__dirname, '../api-client/src/types'),
 				'@iqrf/iqrf-gateway-webapp-client/utils/*': path.resolve(__dirname, '../api-client/src/utils/*'),
 				'@iqrf/iqrf-gateway-webapp-client/utils': path.resolve(__dirname, '../api-client/src/utils'),
-				'@iqrf/iqrf-gateway-webapp-client': path.resolve(__dirname, '../api-client'),
+				'@iqrf/iqrf-gateway-webapp-client': path.resolve(__dirname, '../api-client'),*/
 			},
 		},
 	};
