@@ -6,6 +6,7 @@ import { aliases, mdi } from 'vuetify/iconsets/mdi-svg';
 import * as labs from 'vuetify/labs/components';
 import { createVueI18nAdapter } from 'vuetify/locale/adapters/vue-i18n';
 
+import ThemeManager from '@/helpers/ThemeManager';
 import i18n from '@/plugins/i18n';
 
 /**
@@ -28,18 +29,8 @@ export default createVuetify({
 	},
 	theme: {
 		themes: {
-			dark: {
-				colors: {
-					primary: '#367fa9',
-					background: '#ebedef',
-				},
-			},
-			light: {
-				colors: {
-					primary: '#367fa9',
-					background: '#ebedef',
-				},
-			},
+			dark: ThemeManager.getDarkTheme(),
+			light: ThemeManager.getLightTheme(),
 		},
 	},
 });

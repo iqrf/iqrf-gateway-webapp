@@ -1,5 +1,7 @@
 /// <reference types='vite/client' />
 
+import { type AppTheme } from '@/types/vuetify';
+
 /**
  * Environment variables
  */
@@ -22,6 +24,8 @@ interface ImportMetaEnv {
 	VITE_URL_IQRF_SYNC: string
 	/// REST API URL
 	VITE_URL_REST_API: string
+	/// Theme
+	VITE_THEME: AppTheme
 }
 
 interface ImportMeta {
