@@ -464,17 +464,10 @@ export default class BondingManager extends Vue {
 						type: 'success',
 					});
 				} else {
-					if (response.rsp.removeBondFailedNodes) { //clear all, but some were offline
-						this.$emit('update-devices', {
-							message: this.$t('iqrfnet.networkManager.bondingManager.messages.clearAllPartialSuccess', {nodes: response.rsp.removeBondFailedNodes.join(', ')}).toString(),
-							type: 'info',
-						});
-					} else {
-						this.$emit('update-devices', {
-							message: this.$t('iqrfnet.networkManager.bondingManager.messages.unbondSuccess', {address: this.address}).toString(),
-							type: 'success',
-						});
-					}
+					this.$emit('update-devices', {
+						message: this.$t('iqrfnet.networkManager.bondingManager.messages.unbondSuccess', {address: this.address}).toString(),
+						type: 'success',
+					});
 				}
 			}
 			return;
@@ -493,16 +486,18 @@ export default class BondingManager extends Vue {
 			);
 			return;
 		}
-		if (response.status === 8) {
+		if (response.status === 1003) {
 			this.$toast.error(
 				this.$t('forms.messages.noDevice', {address: this.address}).toString()
 			);
 			return;
 		}
-		if (response.statusStr === 'Bad FRC status: (int)status="255" ') {
-			this.$toast.error(
-				this.$t('iqrfnet.networkManager.bondingManager.messages.noDevices').toString()
-			);
+		if (response.status === 1004) {
+			const nodes: number[] = response.rsp.result.filter(item => item.bonded && !item.removed).map(item => item.address);
+			this.$emit('update-devices', {
+				message: this.$t('iqrfnet.networkManager.bondingManager.messages.clearAllPartialSuccess', {nodes: nodes}),
+				type: 'error',
+			});
 			return;
 		}
 		this.$toast.error(
