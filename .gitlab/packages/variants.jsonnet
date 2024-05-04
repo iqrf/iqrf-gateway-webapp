@@ -19,5 +19,5 @@
 	{ name: 'all', patches: [], },
 	{ name: 'iqd-gw-01', patches: ['iqd-gw-01'], },
 	{ name: 'iqd-gw04', patches: ['iqd-gw04'], },
-	{ name: 'iqaros', patches: ['iqd-gw-01', 'iqaros'], },
+	{ name: 'iqaros', patches: ['iqaros'], },
 ]
