@@ -28,6 +28,9 @@ gatewayPass:
 grafana:
 	enabled: false
 	url: /grafana/
+# IQAROS application
+iqaros:
+	enabled: false
 # IQRF Gateway Controller configuration
 iqrfGatewayController:
 	enabled: false
