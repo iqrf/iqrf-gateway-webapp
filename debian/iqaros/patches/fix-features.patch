@@ -1,0 +1,81 @@
+--- a/app/config/features.neon
++++ b/app/config/features.neon
+@@ -15,28 +15,28 @@
+
+ # apcupsd service
+ apcupsd:
+-	enabled: false
++	enabled: true
+ # Show documentation
+ docs:
+ 	enabled: true
+-	url: https://docs.iqrf.org/iqrf-gateway/
++	url: https://www.iqaros.eu/installation.html
+ # Default gateway user password change
+ gatewayPass:
+-	enabled: false
++	enabled: true
+ 	user: root
+ # Grafana dashboard
+ grafana:
+-	enabled: false
++	enabled: true
+ 	url: /grafana/
+ # IQAROS application
+ iqaros:
+-	enabled: false
++	enabled: true
+ # IQRF Gateway Controller configuration
+ iqrfGatewayController:
+-	enabled: false
++	enabled: true
+ # IQRF Gateway InfluxDB Bridge configuration
+ iqrfGatewayInfluxdbBridge:
+-	enabled: false
++	enabled: true
+ # IQRF Gateway Translator configuration
+ iqrfGatewayTranslator:
+ 	enabled: false
+@@ -49,36 +49,36 @@ journal:
+ 	path: /etc/systemd/journald.conf
+ # Mender client configuration
+ mender:
+-	enabled: false
++	enabled: true
+ # Monitoring service
+ monit:
+ 	enabled: false
+ # Network manager
+ networkManager:
+-	enabled: false
++	enabled: true
+ # Node-RED
+ nodeRed:
+-	enabled: false
++	enabled: true
+ 	url: /node-red/
+ # Remount endpoints
+ remount:
+ 	enabled: false
+ # SSH daemon manager
+ ssh:
+-	enabled: false
++	enabled: true
+ # Supervisord dashboard
+ supervisord:
+ 	enabled: false
+ 	url: /supervisord/
+ # IQRF TR native upload
+ trUpload:
+-	enabled: false
++	enabled: true
+ # System updater
+ updater:
+ 	enabled: false
+ # Unattended upgrades
+ unattendedUpgrades:
+-	enabled: false
++	enabled: true
+ # IQRF Gateway Webapp version checker
+ versionChecker:
+ 	enabled: false
