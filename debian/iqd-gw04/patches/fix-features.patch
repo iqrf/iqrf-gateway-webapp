@@ -1,6 +1,6 @@
 --- a/app/config/features.neon
 +++ b/app/config/features.neon
-@@ -15,11 +15,11 @@
+@@ -15,14 +15,14 @@
 
  # apcupsd service
  apcupsd:
@@ -18,8 +18,8 @@
  	user: root
  # Grafana dashboard
  grafana:
-@@ -30,7 +30,7 @@
- 	url: /grafana/
+@@ -33,7 +33,7 @@ iqaros:
+ 	enabled: false
  # IQRF Gateway Controller configuration
  iqrfGatewayController:
 -	enabled: false
@@ -27,7 +27,7 @@
  # IQRF Gateway InfluxDB Bridge configuration
  iqrfGatewayInfluxdbBridge:
  	enabled: false
-@@ -46,36 +46,36 @@
+@@ -49,36 +49,36 @@ journal:
  	path: /etc/systemd/journald.conf
  # Mender client configuration
  mender:
