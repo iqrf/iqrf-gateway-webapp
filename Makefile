@@ -37,9 +37,9 @@ build:
 	npm --prefix packages/api-client/ run build
 	npm --prefix packages/daemon-utils/ install --legacy-peer-deps
 	npm --prefix packages/daemon-utils/ run build
-	npm --prefix packages/frontend3/ install --legacy-peer-deps
-	npm --prefix packages/frontend3/ run build
-	cp -ru packages/frontend3/dist www/
+	npm --prefix packages/frontend/ install --legacy-peer-deps
+	npm --prefix packages/frontend/ run build
+	cp -ru packages/frontend/dist www/
 
 all: qa phpstan cc test
 
