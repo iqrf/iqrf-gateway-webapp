@@ -39,8 +39,9 @@ local image = {
  *
  * @param variant Variant
  * @param stability Stability
+ * @param v3 Frontend v3
  */
-local buildPackageJob(variant, stability) = image + {
+local buildPackageJob(variant, stability, v3) = image + {
 	stage: 'build',
 	before_script: [
 		'git checkout -B "$CI_COMMIT_REF_NAME" "$CI_COMMIT_SHA"'
@@ -143,8 +144,15 @@ if stability == 'devel' then {
 		'deploy',
 	],
 } + {
-	['build-package_' + stability + '/' + variant.name]: buildPackageJob(variant, stability)
+	['build-package_' + stability + '/' + variant.name]: buildPackageJob(variant, stability, false)
 		for variant in variants
+		for stability in ['devel', 'release']
+} + {
+	['build-package_' + stability + '/' + variant.name + '-v3']: buildPackageJob(variant, stability, true)
+		for variant in std.map(function(item) {
+			name: item.name,
+			patches: item.patches + ['frontend-v3'],
+		}, variants)
 		for stability in ['devel', 'release']
 } + {
 	['deploy-package_' + stability + '/' + variant.name]: deployPackageJob(variant, stability)
