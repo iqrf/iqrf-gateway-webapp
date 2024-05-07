@@ -20,6 +20,8 @@ declare(strict_types = 1);
 
 namespace App\NetworkModule\Enums;
 
+use Nette\Utils\Strings;
+
 /**
  * Network connectivity state
  */
@@ -35,5 +37,16 @@ enum ConnectivityState: string {
 	case FULL = 'full';
 	/// The connectivity status cannot be found out
 	case UNKNOWN = 'unknown';
+
+	/**
+	 * Creates a new network connectivity state enum from nmcli
+	 * @param string $nmCli nmcli network connectivity state string
+	 * @return static Network connectivity state
+	 */
+	public static function fromNmCli(string $nmCli): self {
+		$state = Strings::match($nmCli, '~^\d+ \((?\'state\'.+)\)$~')['state'];
+		$state = Strings::replace($state, '# \(externally\)#', '');
+		return self::tryFrom($state) ?? self::UNKNOWN;
+	}
 
 }

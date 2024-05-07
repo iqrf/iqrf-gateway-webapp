@@ -97,7 +97,7 @@ final class TimeManagerTest extends CommandTestCase {
 			[
 				'name' => 'UTC',
 				'code' => 'UTC',
-				'offset' => '+0000',
+				'offset' => '+00:00',
 			],
 		];
 		Assert::same($expected, $this->manager->availableTimezones());
@@ -110,7 +110,7 @@ final class TimeManagerTest extends CommandTestCase {
 		$expected = [
 			'name' => 'UTC',
 			'code' => 'UTC',
-			'offset' => '+0000',
+			'offset' => '+00:00',
 		];
 		Assert::same($expected, $this->manager->timezoneInfo('UTC'));
 	}

@@ -14,26 +14,27 @@
  * limitations under the License.
  */
 
-import axios, {type AxiosInstance, type AxiosRequestConfig} from 'axios';
-import {beforeEach, describe, expect, it} from 'vitest';
+import axios, { type AxiosInstance, type AxiosRequestConfig } from 'axios';
+import { beforeEach, describe, expect, it } from 'vitest';
 
-import {Client} from '../src';
-
-import {version} from '../package.json';
+import { Client } from '../src';
 import {
 	AccountService,
 	ApiKeyService,
 	AuthenticationService,
 	FeatureService,
 	InstallationService,
+	OpenApiService,
 	ServiceService,
 	UserService,
 	VersionService,
 } from '../src/services';
-import {CloudServices} from '../src/services/Cloud';
-import {ConfigServices} from '../src/services/Config';
-import {GatewayServices} from '../src/services/Gateway';
-import {IqrfServices} from '../src/services/Iqrf';
+import { CloudServices } from '../src/services/Cloud';
+import { ConfigServices } from '../src/services/Config';
+import { GatewayServices } from '../src/services/Gateway';
+import { IqrfServices } from '../src/services/Iqrf';
+import { MaintenanceServices } from '../src/services/Maintenance';
+import { NetworkServices } from '../src/services/Network';
 
 describe('Client', (): void => {
 
@@ -42,135 +43,139 @@ describe('Client', (): void => {
 	 */
 	let client: Client;
 
-	/**
-	 * @var {string} userAgent User agent
-	 */
-	const userAgent = `iqrf-gateway-webapp-js-client_v${version}`;
-
 	beforeEach((): void => {
 		client = new Client();
 	});
 
-	it('can be instantiated', (): void  => {
-		expect.assertions(5);
-		expect(client['axiosInstance'])
+	it('can be instantiated', (): void => {
+		expect.assertions(4);
+		expect(client.getAxiosInstance())
 			.toBeDefined();
-		expect(client['axiosInstance'].defaults.auth)
+		expect(client.getAxiosInstance().defaults.auth)
 			.toBeUndefined();
-		expect(client['axiosInstance'].defaults.baseURL)
+		expect(client.getAxiosInstance().defaults.baseURL)
 			.toBe('/api/');
-		expect(client['axiosInstance'].defaults.headers['User-Agent'])
-			.toStrictEqual(userAgent);
-		expect(client['axiosInstance'].defaults.timeout)
+		expect(client.getAxiosInstance().defaults.timeout)
 			.toBe(30_000);
 	});
 
-	it('can be instantiated with custom Axios instance', (): void  => {
-		expect.assertions(5);
+	it('can be instantiated with custom Axios instance', (): void => {
+		expect.assertions(4);
 		const config: AxiosRequestConfig = {
 			baseURL: 'https://iqrf-gw.exaple.com/api/',
 			timeout: 5_000,
 		};
 		const axiosInstance: AxiosInstance = axios.create(config);
-		client = new Client({axiosInstance: axiosInstance});
-		expect(client['axiosInstance'])
+		client = new Client({ axiosInstance: axiosInstance });
+		expect(client.getAxiosInstance())
 			.toBeDefined();
-		expect(client['axiosInstance'].defaults.auth)
+		expect(client.getAxiosInstance().defaults.auth)
 			.toBeUndefined();
-		expect(client['axiosInstance'].defaults.baseURL)
+		expect(client.getAxiosInstance().defaults.baseURL)
 			.toBe('https://iqrf-gw.exaple.com/api/');
-		expect(client['axiosInstance'].defaults.headers['User-Agent'])
-			.toBe(userAgent);
-		expect(client['axiosInstance'].defaults.timeout)
+		expect(client.getAxiosInstance().defaults.timeout)
 			.toBe(5_000);
 	});
 
-	it('can be instantiated with custom Axios instance configuration', (): void  => {
-		expect.assertions(5);
+	it('can be instantiated with custom Axios instance configuration', (): void => {
+		expect.assertions(4);
 		const config: AxiosRequestConfig = {
 			baseURL: 'https://iqrf-gw.exaple.com/api/',
 			timeout: 5_000,
 		};
-		client = new Client({config: config});
-		expect(client['axiosInstance'])
+		client = new Client({ config: config });
+		expect(client.getAxiosInstance())
 			.toBeDefined();
-		expect(client['axiosInstance'].defaults.auth)
+		expect(client.getAxiosInstance().defaults.auth)
 			.toBeUndefined();
-		expect(client['axiosInstance'].defaults.baseURL)
+		expect(client.getAxiosInstance().defaults.baseURL)
 			.toBe('https://iqrf-gw.exaple.com/api/');
-		expect(client['axiosInstance'].defaults.headers['User-Agent'])
-			.toBe(userAgent);
-		expect(client['axiosInstance'].defaults.timeout)
+		expect(client.getAxiosInstance().defaults.timeout)
 			.toBe(5_000);
 	});
 
-	it('cannot be instantiated with custom Axios instance and custom Axios instance configuration', (): void  => {
+	it('cannot be instantiated with custom Axios instance and custom Axios instance configuration', (): void => {
 		expect.assertions(1);
 		const config: AxiosRequestConfig = {
 			baseURL: 'https://iqrf-gw.exaple.com/api/',
 			timeout: 5_000,
 		};
 		const axiosInstance: AxiosInstance = axios.create(config);
-		expect(() => (new Client({axiosInstance: axiosInstance, config: config})))
+		expect(() => (new Client({ axiosInstance: axiosInstance, config: config })))
 			.toThrow('Cannot instantiate Client with both axiosInstance and config.');
 	});
 
-	it('returns CloudServices instance', (): void  => {
+	it('returns CloudServices instance', (): void => {
 		expect.assertions(1);
 		expect(client.getCloudServices()).toBeInstanceOf(CloudServices);
 	});
 
-	it('returns ConfigServices instance', (): void  => {
+	it('returns ConfigServices instance', (): void => {
 		expect.assertions(1);
 		expect(client.getConfigServices()).toBeInstanceOf(ConfigServices);
 	});
 
-	it('returns GatewayServices instance', (): void  => {
+	it('returns GatewayServices instance', (): void => {
 		expect.assertions(1);
 		expect(client.getGatewayServices()).toBeInstanceOf(GatewayServices);
 	});
 
-	it('returns IqrfServices instance', (): void  => {
+	it('returns IqrfServices instance', (): void => {
 		expect.assertions(1);
 		expect(client.getIqrfServices()).toBeInstanceOf(IqrfServices);
 	});
 
-	it('returns AccountService instance', (): void  => {
+	it('returns MaintenanceServices instance', (): void => {
+		expect.assertions(1);
+		expect(client.getMaintenanceServices()).toBeInstanceOf(MaintenanceServices);
+	});
+
+	it('returns NetworkServices instance', (): void => {
+		expect.assertions(1);
+		expect(client.getNetworkServices()).toBeInstanceOf(NetworkServices);
+	});
+
+	it('returns AccountService instance', (): void => {
 		expect.assertions(1);
 		expect(client.getAccountService()).toBeInstanceOf(AccountService);
 	});
 
-	it('returns API key service instance', (): void  => {
+	it('returns API key service instance', (): void => {
 		expect.assertions(1);
 		expect(client.getApiKeyService()).toBeInstanceOf(ApiKeyService);
 	});
 
-	it('returns AuthenticationService instance', (): void  => {
+	it('returns AuthenticationService instance', (): void => {
 		expect.assertions(1);
 		expect(client.getAuthenticationService()).toBeInstanceOf(AuthenticationService);
 	});
 
-	it('returns FeatureService instance', (): void  => {
+	it('returns FeatureService instance', (): void => {
 		expect.assertions(1);
 		expect(client.getFeatureService()).toBeInstanceOf(FeatureService);
 	});
 
-	it('returns InstallationService instance', (): void  => {
+	it('returns InstallationService instance', (): void => {
 		expect.assertions(1);
 		expect(client.getInstallationService()).toBeInstanceOf(InstallationService);
 	});
 
-	it('returns ServiceService instance', (): void  => {
+	it('returns OpenApiService instance', (): void => {
+		expect.assertions(1);
+		expect(client.getOpenApiService()).toBeInstanceOf(OpenApiService);
+	});
+
+	it('returns ServiceService instance', (): void => {
 		expect.assertions(1);
 		expect(client.getServiceService()).toBeInstanceOf(ServiceService);
 	});
 
-	it('returns UserService instance', (): void  => {
+	it('returns UserService instance', (): void => {
 		expect.assertions(1);
 		expect(client.getUserService()).toBeInstanceOf(UserService);
 	});
 
-	it('returns VersionService instance', (): void  => {
+	it('returns VersionService instance', (): void => {
 		expect.assertions(1);
 		expect(client.getVersionService()).toBeInstanceOf(VersionService);
 	});

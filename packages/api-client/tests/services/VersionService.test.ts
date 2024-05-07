@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {describe, expect, it} from 'vitest';
 
-import {mockedAxios, mockedClient} from '../mocks/axios';
+import { beforeEach, describe, expect, it } from 'vitest';
 
-import {VersionService} from '../../src/services';
-import type {VersionBase, VersionIqrfGatewayWebapp} from '../../src/types';
+import { VersionService } from '../../src/services';
+import { type VersionBase, type VersionIqrfGatewayWebapp } from '../../src/types';
+import { mockedAxios, mockedClient } from '../mocks/axios';
 
 describe('VersionService', (): void => {
 
@@ -27,6 +27,10 @@ describe('VersionService', (): void => {
 	 */
 	const service: VersionService = new VersionService(mockedClient);
 
+	beforeEach((): void => {
+		mockedAxios.reset();
+	});
+
 	it('fetch IQRF Gateway Daemon version', async (): Promise<void> => {
 		expect.assertions(1);
 		const version: VersionBase = {
@@ -34,7 +38,7 @@ describe('VersionService', (): void => {
 		};
 		mockedAxios.onGet('/version/daemon')
 			.reply(200, version);
-		await service.getDaemon().then((actual: VersionBase) => {
+		await service.getDaemon().then((actual: VersionBase): void => {
 			expect(actual).toStrictEqual(version);
 		});
 	});
@@ -47,7 +51,7 @@ describe('VersionService', (): void => {
 		};
 		mockedAxios.onGet('/version/webapp')
 			.reply(200, version);
-		await service.getWebapp().then((actual: VersionIqrfGatewayWebapp) => {
+		await service.getWebapp().then((actual: VersionIqrfGatewayWebapp): void => {
 			expect(actual).toStrictEqual(version);
 		});
 	});

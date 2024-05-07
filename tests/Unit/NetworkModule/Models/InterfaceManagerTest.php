@@ -26,7 +26,9 @@ declare(strict_types = 1);
 
 namespace Tests\Unit\NetworkModule\Models;
 
+use App\NetworkModule\Entities\AvailableConnection;
 use App\NetworkModule\Entities\InterfaceStatus;
+use App\NetworkModule\Enums\ConnectivityState;
 use App\NetworkModule\Enums\InterfaceStates;
 use App\NetworkModule\Enums\InterfaceTypes;
 use App\NetworkModule\Exceptions\NonexistentDeviceException;
@@ -96,12 +98,51 @@ final class InterfaceManagerTest extends CommandTestCase {
 	 * Tests the function to list network interfaces
 	 */
 	public function testList(): void {
-		$output = FileSystem::read(TESTER_DIR . '/data/networkManager/interfaces.txt');
-		$this->receiveCommand('nmcli -t -f GENERAL device show', true, $output);
+		$this->receiveCommand('nmcli -t -f DEVICE,TYPE device status', true, FileSystem::read(TESTER_DIR . '/data/networkManager/interfaces.txt'));
+		foreach (['eth0', 'wlan0', 'lo'] as $interface) {
+			$this->receiveCommand('nmcli -t -f GENERAL,CONNECTIONS.AVAILABLE-CONNECTIONS device show ' . $interface, true, FileSystem::read(TESTER_DIR . '/data/networkManager/interfaces/' . $interface . '.conf'));
+		}
 		$expected = [
-			new InterfaceStatus('eth0', '02:42:A7:2C:5C:98', null, null, InterfaceTypes::ETHERNET, InterfaceStates::CONNECTED, Uuid::fromString('38708e8a-d842-38ae-9e66-3718361ac0b7')),
-			new InterfaceStatus('wlan0', '12:42:A7:2C:5C:98', 'ST-Ericsson', null, InterfaceTypes::WIFI, InterfaceStates::DISCONNECTED, null),
-			new InterfaceStatus('lo', '00:00:00:00:00:00', null, null, InterfaceTypes::LOOPBACK, InterfaceStates::UNMANAGED, null),
+			new InterfaceStatus(
+				name: 'eth0',
+				macAddress: 'E4:5F:01:53:0A:E3',
+				manufacturer: null,
+				model: null,
+				type: InterfaceTypes::ETHERNET,
+				state: InterfaceStates::CONNECTED,
+				connection: Uuid::fromString('81fb4b68-ca29-3f53-914f-6368428c9a4b'),
+				ipv4Connectivity: ConnectivityState::FULL,
+				ipv6Connectivity: ConnectivityState::FULL,
+				availableConnections: [
+					new AvailableConnection(
+						name: 'Wired connection 1',
+						uuid: Uuid::fromString('81fb4b68-ca29-3f53-914f-6368428c9a4b'),
+					),
+				],
+			),
+			new InterfaceStatus(
+				name: 'wlan0',
+				macAddress: 'E4:5F:01:53:0A:E6',
+				manufacturer: 'Broadcom Corp.',
+				model: 'BCM43438 combo WLAN and Bluetooth Low Energy (BLE)',
+				type: InterfaceTypes::WIFI,
+				state: InterfaceStates::DISCONNECTED,
+				connection: null,
+				ipv4Connectivity: ConnectivityState::NONE,
+				ipv6Connectivity: ConnectivityState::NONE,
+				availableConnections: [],
+			),
+			new InterfaceStatus(
+				name: 'lo',
+				macAddress: '00:00:00:00:00:00',
+				manufacturer: null,
+				model: null,
+				type: InterfaceTypes::LOOPBACK,
+				state: InterfaceStates::UNMANAGED,
+				connection: null,
+				ipv4Connectivity: ConnectivityState::UNKNOWN,
+				ipv6Connectivity: ConnectivityState::UNKNOWN,
+			),
 		];
 		Assert::equal($expected, $this->manager->list());
 	}

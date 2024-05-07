@@ -63,14 +63,12 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-
-import {InterfaceState} from '@/enums/Network/InterfaceState';
-import {InterfaceType} from '@/enums/Network/InterfaceType';
-
-import NetworkInterfaceService from '@/services/NetworkInterfaceService';
-
 import {DataTableHeader} from 'vuetify';
-import {NetworkInterface} from '@/interfaces/Network/Connection';
+import {
+	NetworkInterface,
+	NetworkInterfaceState, NetworkInterfaceType
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkInterface';
+import {useApiClient} from '@/services/ApiClient';
 
 /**
  * Network interface list
@@ -81,7 +79,7 @@ export default class NetworkInterfaces extends Vue {
 	/**
 	 * @property {NetworkInterface} type Network interface type
 	 */
-	@Prop({required: true}) type!: InterfaceType;
+	@Prop({required: true}) type!: NetworkInterfaceType;
 
 	/**
 	 * @property {boolean} loading Loading state
@@ -132,7 +130,7 @@ export default class NetworkInterfaces extends Vue {
 	 */
 	public getInterfaces(): void {
 		this.loading = true;
-		NetworkInterfaceService.list(this.type)
+		useApiClient().getNetworkServices().getNetworkInterfaceService().list(this.type)
 			.then((interfaces: Array<NetworkInterface>) => {
 				this.interfaces = interfaces;
 				this.loading = false;
@@ -141,9 +139,9 @@ export default class NetworkInterfaces extends Vue {
 
 	/**
 	 * Returns badge color based on interface state
-	 * @param {InterfaceState} state Interface state
+	 * @param {NetworkInterfaceState} state Interface state
 	 */
-	private stateColor(state: InterfaceState): string {
+	private stateColor(state: NetworkInterfaceState): string {
 		const match = state.match(/^(?<state>\w+)( (.*))?$/);
 		switch (match?.groups?.state) {
 			case 'connected':

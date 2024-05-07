@@ -14,16 +14,37 @@
  * limitations under the License.
  */
 
-import type {AxiosResponse} from 'axios';
+import { type AxiosResponse } from 'axios';
 
-import {BaseService} from '../BaseService';
-
-import type {IqrfGatewayControllerMapping} from '../../types/Config';
+import {
+	type IqrfGatewayControllerConfig,
+	type IqrfGatewayControllerMapping,
+} from '../../types/Config';
+import { BaseService } from '../BaseService';
 
 /**
  * IQRF Gateway Controller configuration service
  */
 export class IqrfGatewayControllerService extends BaseService {
+
+	/**
+	 * Fetch IQRF Gateway Controller configuration
+	 * @return {Promise<IqrfGatewayControllerConfig>} IQRF Gateway Controller configuration
+	 */
+	public fetchConfig(): Promise<IqrfGatewayControllerConfig> {
+		return this.axiosInstance.get('/config/controller')
+			.then((response: AxiosResponse<IqrfGatewayControllerConfig>) => response.data);
+	}
+
+	/**
+	 * Saves IQRF Gateway Controller configuration
+	 * @param {IqrfGatewayControllerConfig} config IQRF Gateway Controller configuration
+	 * @returns
+	 */
+	public saveConfig(config: IqrfGatewayControllerConfig): Promise<void> {
+		return this.axiosInstance.put('/config/controller', config)
+			.then((): void => {return;});
+	}
 
 	/**
 	 * List IQRF Gateway Controller mappings
@@ -49,6 +70,7 @@ export class IqrfGatewayControllerService extends BaseService {
 	 * @param {IqrfGatewayControllerMapping} mapping IQRF Gateway Controller mapping to create
 	 */
 	public createMapping(mapping: IqrfGatewayControllerMapping): Promise<void> {
+		delete mapping.id;
 		return this.axiosInstance.post('/config/controller/pins', mapping)
 			.then((): void => {return;});
 	}

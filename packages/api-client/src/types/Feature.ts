@@ -25,6 +25,11 @@ export interface FeatureConfig {
 	enabled: boolean;
 
 	/**
+	 * Path related to the feature
+	 */
+	path?: string;
+
+	/**
 	 * Feature URL
 	 */
 	url?: string;
@@ -33,11 +38,6 @@ export interface FeatureConfig {
 	 * Gateway user name
 	 */
 	user?: string;
-
-	/**
-	 * Path related to the feature
-	 */
-	path?: string;
 }
 
 /**
@@ -66,9 +66,19 @@ export enum Feature {
 	grafana = 'grafana',
 
 	/**
+	 * iTemp service feature
+	 */
+	iTemp = 'iTemp',
+
+	/**
 	 * IQRF Gateway Controller feature
 	 */
 	iqrfGatewayController = 'iqrfGatewayController',
+
+	/**
+	 * IQRF Gateway InfluxDB Bridge feature
+	 */
+	iqrfGatewayInfluxdbBridge = 'iqrfGatewayInfluxdbBridge',
 
 	/**
 	 * IQRF Gateway Translator feature
@@ -79,11 +89,6 @@ export enum Feature {
 	 * IQRF Repository Extension configuration feature
 	 */
 	iqrfRepository = 'iqrfRepository',
-
-	/**
-	 * iTemp service feature
-	 */
-	iTemp = 'iTemp',
 
 	/**
 	 * Systemd journald configuration feature
@@ -131,14 +136,14 @@ export enum Feature {
 	trUpload = 'trUpload',
 
 	/**
-	 * System updater feature
-	 */
-	updater = 'updater',
-
-	/**
 	 * Unattended upgrades feature
 	 */
 	unattendedUpgrades = 'unattendedUpgrades',
+
+	/**
+	 * System updater feature
+	 */
+	updater = 'updater',
 
 	/**
 	 * IQRF Gateway Webapp version checker feature

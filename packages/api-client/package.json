@@ -1,23 +1,61 @@
 {
 	"name": "@iqrf/iqrf-gateway-webapp-client",
-	"version": "0.0.24",
+	"version": "0.1.12",
 	"description": "IQRF Gateway Webapp JavaScript client library",
-	"main": "./dist/src/index.js",
-	"types": "./dist/src/index.d.ts",
 	"exports": {
-		".": "./dist/src/index.js",
-		"./services/": "./dist/src/services/index.js",
-		"./types/": "./dist/src/types/index.js",
-		"./utils/": "./dist/src/utils/index.js"
+		".": {
+			"import": "./dist/src/index.js",
+			"require": "./dist/src/index.js",
+			"types": "./dist/src/index.d.ts"
+		},
+		"./services": {
+			"import": "./dist/src/services.js",
+			"require": "./dist/src/services.js",
+			"types": "./dist/src/services.d.ts"
+		},
+		"./services/*": {
+			"import": "./dist/src/services/*.js",
+			"require": "./dist/src/services/*.js",
+			"types": "./dist/src/services/*.d.ts"
+		},
+		"./types": {
+			"import": "./dist/src/types.js",
+			"require": "./dist/src/types.js",
+			"types": "./dist/src/types.d.ts"
+		},
+		"./types/*": {
+			"import": "./dist/src/types/*.js",
+			"require": "./dist/src/types/*.js",
+			"types": "./dist/src/types/*.d.ts"
+		},
+		"./utils": {
+			"import": "./dist/src/utils.js",
+			"require": "./dist/src/utils.js",
+			"types": "./dist/src/utils.d.ts"
+		},
+		"./utils/*": {
+			"import": "./dist/src/utils/*.js",
+			"require": "./dist/src/utils/*.js",
+			"types": "./dist/src/utils/*.d.ts"
+		}
+	},
+	"typesVersions": {
+		"*": {
+			"*": [
+				"./dist/src/*"
+			]
+		}
 	},
 	"scripts": {
 		"build": "rm -rf dist/ && tsc --build",
 		"coverage:unit": "vitest --run --coverage",
+		"dev": "tsc --watch",
 		"docs": "rm -rf docs/ && typedoc src/index.ts",
 		"prepublish": "rm -rf dist/ && tsc",
 		"lint": "npm run lint:js",
 		"lint:js": "eslint --ext .js,.vue,.ts --cache --cache-location node_modules/.cache/eslint/ .",
-		"test:unit": "vitest --run"
+		"test:unit": "vitest --run",
+		"reload": "tsc --watch"
 	},
 	"homepage": "https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp/-/tree/master/packages/api-client",
 	"bugs": {
@@ -50,6 +88,7 @@
 		}
 	],
 	"license": "Apache-2.0",
+	"type": "module",
 	"dependencies": {
 		"axios": "^1.6.8",
 		"luxon": "^3.4.4",
@@ -57,6 +96,7 @@
 		"uuid": "^9.0.1"
 	},
 	"devDependencies": {
+		"@stylistic/eslint-plugin": "^1.8.0",
 		"@types/luxon": "^3.4.2",
 		"@types/node": "^20.12.8",
 		"@types/punycode": "^2.1.4",
@@ -67,7 +107,10 @@
 		"@vitest/spy": "^1.6.0",
 		"axios-mock-adapter": "^1.22.0",
 		"eslint": "^8.57.0",
+		"eslint-import-resolver-typescript": "^3.6.1",
 		"eslint-plugin-import": "^2.29.1",
+		"eslint-plugin-promise": "^6.1.1",
+		"eslint-plugin-typescript-sort-keys": "^3.2.0",
 		"ts-node": "^10.9.2",
 		"typedoc": "^0.25.13",
 		"typescript": "^5.4.5",

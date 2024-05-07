@@ -1,0 +1,156 @@
+@use 'vuetify' with (
+	$font-size-root: 0.875rem,
+	$typography: (
+		'button': (
+			'text-transform': none,
+		),
+	),
+);
+@import '@fontsource/roboto/latin-ext.css';
+
+a {
+	text-decoration: none;
+}
+
+.input-skeleton-loader {
+	.v-skeleton-loader__heading {
+		border-radius: 12px;
+		margin: 11px !important;
+		height: 56px !important;
+	}
+}
+
+.table-row-skeleton-loader {
+	.v-skeleton-loader__text {
+		border-radius: 10px;
+		margin: 0 !important;
+		padding: 0 !important;
+	}
+}
+
+.v-btn {
+	text-transform: none !important;
+}
+
+.v-table > .v-table__wrapper > table {
+	> tbody > tr > th,
+	> thead > tr > th,
+	> tfoot > tr > th {
+		font-weight: 600 !important;
+	}
+}
+
+.table-paddings {
+	td,
+	th {
+		padding: 0.75rem !important;
+	}
+}
+
+.extended-input-error {
+	line-height: 14px;
+	font-size: 12px;
+	word-break: break-word;
+	word-wrap: break-word;
+	hyphens: auto;
+	letter-spacing: normal;
+}
+
+.extended-input-description {
+	line-height: 14px;
+	font-size: 12px;
+	word-break: break-word;
+	word-wrap: break-word;
+	hyphens: auto;
+	letter-spacing: normal;
+	color: #3c4b64;
+}
+
+.section-legend {
+	font-size: large;
+	font-weight: 300;
+	padding-bottom: 1em;
+}
+
+.flex--item {
+	flex: 1 0 auto;
+}
+
+.heading-size {
+	font-size: 1rem;
+}
+
+.switch-group {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
+.sweep {
+	color: white;
+	background: rgb(var(--v-theme-primary));
+
+	&:hover {
+		color: black;
+		background: linear-gradient(to right, rgb(var(--v-theme-warning)), rgb(var(--v-theme-warning))) no-repeat;
+		background-size: 0 100%;
+	}
+
+	&:active {
+		background-size: 100% 100%;
+		transition: background-size 2s 0s linear;
+	}
+}
+
+.log {
+	max-height: 75vh;
+	white-space: pre-wrap;
+	word-wrap: break-word;
+	overflow-y: scroll;
+}
+
+html {
+	overflow-y: auto;
+}
+
+.v-theme--light {
+	::-webkit-scrollbar {
+		width: 12px;
+	}
+
+	::-webkit-scrollbar-track {
+		background: #e6e6e6;
+		border-left: 1px solid #dadada;
+	}
+
+	::-webkit-scrollbar-thumb {
+		background: #b0b0b0;
+		border: solid 3px #e6e6e6;
+		border-radius: 7px;
+
+		&:hover {
+			background: black;
+		}
+	}
+}
+
+.v-theme--dark {
+	::-webkit-scrollbar {
+		width: 12px;
+	}
+
+	::-webkit-scrollbar-track {
+		background: #202020;
+		border-left: 1px solid #2c2c2c;
+	}
+
+	::-webkit-scrollbar-thumb {
+		background: #3e3e3e;
+		border: solid 3px #202020;
+		border-radius: 7px;
+
+		&:hover {
+			background: white;
+		}
+	}
+}

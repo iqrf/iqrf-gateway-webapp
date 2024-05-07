@@ -76,10 +76,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {
-	IqrfGatewayControllerMapping,
-	IqrfGatewayControllerMappingDevice
-} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import { IqrfGatewayControllerMapping } from '@iqrf/iqrf-gateway-webapp-client/types/Config/IqrfGatewayController';
+import { MappingDeviceType } from '@iqrf/iqrf-gateway-webapp-client/types/Config/Mapping';
 import {AxiosError} from 'axios';
 import {Component} from 'vue-property-decorator';
 
@@ -118,7 +116,7 @@ export default class ControllerPinConfigs extends ModalBase {
 	 * @return {Array<IControllerPinConfig>} Adapter controller profile options
 	 */
 	get adapterProfiles(): Array<IqrfGatewayControllerMapping> {
-		return this.profiles.filter((profile: IqrfGatewayControllerMapping): boolean => profile.deviceType === IqrfGatewayControllerMappingDevice.Adapter);
+		return this.profiles.filter((profile: IqrfGatewayControllerMapping): boolean => profile.deviceType === MappingDeviceType.Adapter);
 	}
 
 	/**
@@ -126,7 +124,7 @@ export default class ControllerPinConfigs extends ModalBase {
 	 * @return {Array<IqrfGatewayControllerMapping>} Board controller profile options
 	 */
 	get boardProfiles(): Array<IqrfGatewayControllerMapping> {
-		return this.profiles.filter((profile: IqrfGatewayControllerMapping): boolean => profile.deviceType === IqrfGatewayControllerMappingDevice.Board);
+		return this.profiles.filter((profile: IqrfGatewayControllerMapping): boolean => profile.deviceType === MappingDeviceType.Board);
 	}
 
 	/**

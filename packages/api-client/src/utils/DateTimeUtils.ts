@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {DateTime} from 'luxon';
+import { DateTime } from 'luxon';
 
 /**
  * Date & time utilities

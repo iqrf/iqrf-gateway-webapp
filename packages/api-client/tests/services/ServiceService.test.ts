@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {describe, expect, it} from 'vitest';
 
-import {mockedAxios, mockedClient} from '../mocks/axios';
+import { beforeEach, describe, expect, it } from 'vitest';
 
-import {ServiceService} from '../../src/services';
-import {type ServiceStatus} from '../../src/types';
+import { ServiceService } from '../../src/services';
+import { type ServiceState, type ServiceStatus } from '../../src/types';
+import { mockedAxios, mockedClient } from '../mocks/axios';
 
 describe('ServiceService', (): void => {
 
@@ -32,13 +32,50 @@ describe('ServiceService', (): void => {
 	 */
 	const serviceName = 'iqrf-gateway-daemon';
 
+	beforeEach((): void => {
+		mockedAxios.reset();
+	});
+
 	it('fetch list of supported system services', async (): Promise<void> => {
 		expect.assertions(1);
-		const services: string[] = ['iqrf-gateway-daemon'];
-		mockedAxios.onGet('/services')
-			.reply(200, {services: services});
+		const services: ServiceState[] = [
+			{
+				active: true,
+				enabled: true,
+				name: 'iqrf-gateway-daemon',
+				status: null,
+			},
+		];
+		mockedAxios.onGet('/services', {
+			params: {
+				withStatus: false,
+			},
+		})
+			.reply(200, services);
 		await service.list()
-			.then((actual: string[]): void => {
+			.then((actual: ServiceState[]): void => {
+				expect(actual).toStrictEqual(services);
+			});
+	});
+
+	it('fetch list of supported system services - with status', async (): Promise<void> => {
+		expect.assertions(1);
+		const services: ServiceState[] = [
+			{
+				active: true,
+				enabled: true,
+				name: 'iqrf-gateway-daemon',
+				status: '● iqrf-gateway-daemon.service - IQRF Gateway Daemon\n     Loaded: loaded (/etc/systemd/system/iqrf-gateway-daemon.service; enabled; preset: enabled)\n     Active: active (running) since Sat 2023-07-08 01:14:30 CEST; 2 days ago\n       Docs: man:iqrfgd2(1)\n             https://docs.iqrf.org/iqrf-gateway/\n   Main PID: 1252755 (iqrfgd2)\n      Tasks: 17 (limit: 76968)\n     Memory: 6.1M\n        CPU: 15.050s\n     CGroup: /system.slice/iqrf-gateway-daemon.service\n             └─1252755 /usr/bin/iqrfgd2 /etc/iqrf-gateway-daemon/config.json\n\nJul 08 01:14:41 ASRock-X570-Extreme4 iqrfgd2[1252755]: clibspi_gpio_setup() setDir failed wait for 100 ms to next try: 10\nJul 08 01:14:41 ASRock-X570-Extreme4 iqrfgd2[1252755]: Error during opening file: No such file or directory\nJul 08 01:14:41 ASRock-X570-Extreme4 iqrfgd2[1252755]: Error during opening file: No such file or directory\nJul 08 01:14:41 ASRock-X570-Extreme4 iqrfgd2[1252755]: Error: Cannot get TR reset msg => interface to DPA coordinator is not working - verify (CDC or SPI or UART) configuration\nJul 08 01:14:43 ASRock-X570-Extreme4 iqrfgd2[1252755]: Error: Cannot get TR parameters msg => interface to DPA coordinator is not working - verify (CDC or SPI or UART) configuration\nJul 08 01:14:43 ASRock-X570-Extreme4 iqrfgd2[1252755]: Error: Interface to DPA coordinator is not ready - verify (CDC or SPI or UART) configuration\nJul 08 01:14:43 ASRock-X570-Extreme4 iqrfgd2[1252755]: Loading IqrfRepo cache ...\nJul 08 01:14:44 ASRock-X570-Extreme4 iqrfgd2[1252755]: Loading IqrfRepo cache success\nJul 08 01:14:44 ASRock-X570-Extreme4 iqrfgd2[1252755]: Cannot load required package for: os="0000" dpa="0000"\nJul 08 01:14:44 ASRock-X570-Extreme4 iqrfgd2[1252755]: Loaded package for: os="08B1" dpa="0300"',
+			},
+		];
+		mockedAxios.onGet('/services', {
+			params: {
+				withStatus: true,
+			},
+		})
+			.reply(200, services);
+		await service.list(true)
+			.then((actual: ServiceState[]): void => {
 				expect(actual).toStrictEqual(services);
 			});
 	});

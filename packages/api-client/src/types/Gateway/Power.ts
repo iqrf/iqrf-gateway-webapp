@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import { type DateTime, type Duration } from 'luxon';
+
 /**
  * Power action response
  */
@@ -23,4 +25,49 @@ export interface PowerActionResponse {
 	 * Restart timestamp
 	 */
 	timestamp: number
+}
+
+/**
+ * Gateway uptime - raw response
+ */
+export interface GatewayUptimeRaw {
+	/// Downtime in seconds
+	downtime: number,
+	/// Was the shutdown graceful?
+	graceful: boolean,
+	/// ID
+	id: number,
+	/// Kernel version
+	kernel: string,
+	/// Run time in seconds
+	running: number,
+	/// Shutdown time
+	shutdown: string | null,
+	/// Sleep time in seconds
+	sleeping: number,
+	/// Start time
+	start: string,
+}
+
+
+/**
+ * Gateway uptime
+ */
+export interface GatewayUptime {
+	/// Downtime in seconds
+	downtime: Duration,
+	/// Was the shutdown graceful?
+	graceful: boolean,
+	/// ID
+	id: number,
+	/// Kernel version
+	kernel: string,
+	/// Run time in seconds
+	running: Duration,
+	/// Shutdown time
+	shutdown: DateTime | null,
+	/// Sleep time in seconds
+	sleeping: Duration,
+	/// Start time
+	start: DateTime
 }

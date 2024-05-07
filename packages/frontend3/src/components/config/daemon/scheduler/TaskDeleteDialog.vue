@@ -1,0 +1,83 @@
+<template>
+	<DeleteModalWindow
+		ref='dialog'
+		:component-state='componentState'
+		:tooltip='$t("components.configuration.daemon.scheduler.actions.delete")'
+		@submit='removeTask'
+	>
+		<template #title>
+			{{ $t('components.configuration.daemon.scheduler.delete.title') }}
+		</template>
+		{{ $t('components.configuration.daemon.scheduler.delete.prompt', {id: componentProps.taskId}) }}
+	</DeleteModalWindow>
+</template>
+
+<script lang='ts' setup>
+import { SchedulerMessages } from '@iqrf/iqrf-gateway-daemon-utils/enums';
+import { SchedulerService } from '@iqrf/iqrf-gateway-daemon-utils/services';
+import { type DaemonApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
+import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
+import { ref, type Ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { toast } from 'vue3-toastify';
+
+import DeleteModalWindow from '@/components/DeleteModalWindow.vue';
+import { useDaemonStore } from '@/store/daemonSocket';
+import { ComponentState } from '@/types/ComponentState';
+
+const componentState: Ref<ComponentState> = ref(ComponentState.Created);
+const componentProps = defineProps({
+	taskId: {
+		type: String,
+		required: true,
+	},
+});
+const emit = defineEmits(['deleted']);
+const dialog: Ref<typeof DeleteModalWindow | null> = ref(null);
+const i18n = useI18n();
+const daemonStore = useDaemonStore();
+const msgId: Ref<string | null> = ref(null);
+
+daemonStore.$onAction(
+	({ name, after }) => {
+		if (name !== 'onMessage') {
+			return;
+		}
+		after((rsp: DaemonApiResponse) => {
+			if (rsp.data.msgId !== msgId.value) {
+				return;
+			}
+			daemonStore.removeMessage(msgId.value);
+			if (rsp.mType === SchedulerMessages.RemoveTask) {
+				handleRemoveTask(rsp);
+			}
+		});
+	},
+);
+
+function removeTask(): void {
+	componentState.value = ComponentState.Saving;
+	const options = new DaemonMessageOptions(
+		null,
+		30000,
+		null,
+		() => {msgId.value = null;},
+	);
+	daemonStore.sendMessage(
+		SchedulerService.removeTask(componentProps.taskId, options),
+	).then((val: string) => msgId.value = val);
+}
+
+function handleRemoveTask(rsp: DaemonApiResponse): void {
+	if (rsp.data.status !== 0) {
+		toast.error('TODO ERROR HANDLING');
+		componentState.value = ComponentState.Error;
+	}
+	toast.success(
+		i18n.t('components.configuration.daemon.scheduler.messages.delete.success', { id: componentProps.taskId }),
+	);
+	componentState.value = ComponentState.Ready;
+	dialog.value?.close();
+	emit('deleted');
+}
+</script>

@@ -38,6 +38,7 @@ use App\ConfigModule\Models\SchedulerManager;
 use App\ConfigModule\Models\SchedulerMigrationManager;
 use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\ZipEmptyException;
+use Nette\IOException;
 use Nette\Utils\FileSystem;
 use Nette\Utils\JsonException;
 
@@ -313,6 +314,31 @@ class SchedulerController extends BaseController {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
 		}
 		return $response->writeBody('Workaround');
+	}
+
+	#[Path('/messagings')]
+	#[Method('GET')]
+	#[OpenApi('
+		summary: Returns all messagings suitable for scheduler tasks
+		response:
+			\'200\':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/SchedulerMessagings\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	')]
+	public function getMessagings(ApiRequest $request, ApiResponse $response): ApiResponse {
+		self::checkScopes($request, ['config:daemon']);
+		try {
+			return $response->writeJsonBody($this->manager->getMessagings());
+		} catch (IOException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		}
 	}
 
 	/**

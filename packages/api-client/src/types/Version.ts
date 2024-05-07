@@ -18,27 +18,16 @@
  * Version
  */
 export interface VersionBase {
-
-	/**
-	 * Version
-	 */
+	/// Version
 	version: string;
-
 }
 
 /**
  * Version of IQRF Gateway Webapp
  */
 export interface VersionIqrfGatewayWebapp extends VersionBase {
-
-	/**
-	 * Commit hash
-	 */
+	/// Git commit hash
 	commit: string;
-
-	/**
-	 * GitLab pipeline ID
-	 */
+	/// GitLab pipeline ID
 	pipeline: string;
-
 }

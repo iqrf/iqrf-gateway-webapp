@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import type {AxiosResponse} from 'axios';
+import { type AxiosResponse } from 'axios';
 
-import {BaseService} from './BaseService';
+import { type EmailSentResponse, type UserCreate, type UserEdit, type UserInfo } from '../types';
+import { UserUtils } from '../utils';
 
-import type {EmailSentResponse, UserCreate, UserEdit, UserInfo} from '../types';
-import {UserUtils} from '../utils';
+import { BaseService } from './BaseService';
 
 /**
  * User service

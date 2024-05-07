@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-import type {AxiosResponse} from 'axios';
+import { type AxiosResponse } from 'axios';
 import * as punycode from 'punycode/';
 
-import {BaseService} from '../BaseService';
-import type {MailerConfig} from '../../types/Config';
-import {MailerSmtpSecurity} from '../../types/Config';
+import { MailerSmtpSecurity } from '../../types/Config';
+import {
+	type MailerGetConfigResponse,
+	type MailerConfig,
+} from '../../types/Config';
+import { BaseService } from '../BaseService';
 
 /**
  * Mailer configuration service
@@ -28,11 +31,17 @@ export class MailerService extends BaseService {
 
 	/**
 	 * Fetches mailer configuration
-	 * @return {Promise<MailerConfig>} Mailer configuration
+	 * @return {Promise<MailerGetConfigResponse>} Mailer data
 	 */
-	public getConfig(): Promise<MailerConfig> {
+	public getConfig(): Promise<MailerGetConfigResponse> {
 		return this.axiosInstance.get('/config/mailer')
-			.then((response: AxiosResponse<MailerConfig>): MailerConfig => this.deserializeConfig(response.data));
+			.then((response: AxiosResponse<MailerConfig>): MailerGetConfigResponse => {
+				const defaultConfig = response.headers['x-smtp-default-config'];
+				return {
+					headers: (defaultConfig !== undefined && defaultConfig !== null) ? { defaultConfig: defaultConfig === '1' } : null,
+					config: this.deserializeConfig(response.data),
+				};
+			});
 	}
 
 	/**

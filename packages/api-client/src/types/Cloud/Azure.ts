@@ -18,10 +18,6 @@
  * Azure IoT Hub configuration
  */
 export interface AzureIotHubConfig {
-
-	/**
-	 * Azure IoT Hub connection string
-	 */
+	/// Azure IoT Hub connection string
 	connectionString: string;
-
 }

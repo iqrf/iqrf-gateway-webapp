@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ServiceModule\Models;
 
+use App\ServiceModule\Entities\ServiceState;
 use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
 
 /**
@@ -96,6 +97,16 @@ class UnknownManager implements IServiceManager {
 	 * @throws UnsupportedInitSystemException
 	 */
 	public function getStatus(string $serviceName): string {
+		throw new UnsupportedInitSystemException();
+	}
+
+	/**
+	 * Returns state of the service
+	 * @param string $serviceName Service name
+	 * @param bool $withStatus Include service status?
+	 * @throws UnsupportedInitSystemException
+	 */
+	public function getState(string $serviceName, bool $withStatus = false): ServiceState {
 		throw new UnsupportedInitSystemException();
 	}
 

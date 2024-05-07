@@ -18,32 +18,18 @@
  * IQRF Repository credentials
  */
 export interface IqrfRepositoryCredentials {
-
-	/**
-	 * Username
-	 */
-	username: string|null;
-
-	/**
-	 * Password
-	 */
+	/// Password
 	password: string|null;
-
+	/// Username
+	username: string|null;
 }
 
 /**
  * IQRF Repository configuration
  */
 export interface IqrfRepositoryConfig {
-
-	/**
-	 * API endpoint
-	 */
+	/// API endpoint
 	apiEndpoint: string;
-
-	/**
-	 * Credentials
-	 */
+	/// Credentials
 	credentials: IqrfRepositoryCredentials;
-
 }

@@ -1,32 +1,43 @@
 {
 	"$schema": "http://json-schema.org/draft-07/schema",
 	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/serviceList.json",
-	"type": "object",
-	"title": "Supported service list",
-	"additionalProperties": false,
-	"required": [
-		"services"
-	],
-	"properties": {
-		"services": {
-			"$id": "#/properties/services",
-			"type": "array",
-			"title": "Supported services",
-			"example": [
-				"iqrf-gateway-daemon",
-				"unattended-upgrades",
-				"ssh"
-			],
-			"additionalItems": false,
-			"items": {
-				"$id": "#/properties/services/items",
+	"type": "array",
+	"title": "Supported service states",
+	"additionalItems": false,
+	"items": {
+		"$id": "#/items",
+		"type": "object",
+		"title": "Service state",
+		"required": [
+			"name",
+			"enabled",
+			"active",
+			"status"
+		],
+		"properties": {
+			"name": {
 				"type": "string",
-				"title": "Supported service",
-				"examples": [
-					"iqrf-gateway-daemon",
-					"unattended-upgrades",
-					"ssh"
-				]
+				"title": "Service name",
+				"description": "Service name",
+				"example": "iqrf-gateway-daemon"
+			},
+			"enabled": {
+				"type": ["boolean", "null"],
+				"title": "Service enabled",
+				"description": "Is service enabled?",
+				"example": true
+			},
+			"active": {
+				"type": ["boolean", "null"],
+				"title": "Service active",
+				"description": "Service active",
+				"example": true
+			},
+			"status": {
+				"type": ["string", "null"],
+				"title": "Service status",
+				"description": "Service status",
+				"example": null
 			}
 		}
 	}

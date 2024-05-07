@@ -47,6 +47,7 @@ class OpenApiSchemaBuilder {
 		$schema['paths']['/api/v0/installation']['get']['security'] = [new stdClass()];
 		$schema['paths']['/api/v0/features']['get']['security'] = [new stdClass()];
 		$schema['paths']['/api/v0/openapi']['get']['security'] = [new stdClass()];
+		$schema['paths']['/api/v0/openapi/schemas/{name}']['get']['security'] = [new stdClass()];
 		$schema['paths']['/api/v0/user/password/recovery']['post']['security'] = [new stdClass()];
 		$schema['paths']['/api/v0/user/signIn']['post']['security'] = [new stdClass()];
 		$schema['paths']['/api/v0/user/verify/{uuid}']['get']['security'] = [new stdClass()];

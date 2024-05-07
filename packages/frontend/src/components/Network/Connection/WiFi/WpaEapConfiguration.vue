@@ -72,8 +72,10 @@ import PasswordInput from '@/components/Core/PasswordInput.vue';
 import {extend, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 
-import {IConnection} from '@/interfaces/Network/Connection';
 import {ISelectItem} from '@/interfaces/Vuetify';
+import {
+	NetworkConnectionConfiguration
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkConnection';
 
 /**
  * WPA-EAP configuration options
@@ -89,7 +91,7 @@ export default class WpaEapConfiguration extends Vue {
 	/**
 	 * Edited connection.
 	 */
-	@VModel({required: true}) connection!: IConnection;
+	@VModel({required: true}) connection!: NetworkConnectionConfiguration;
 
 	/**
 	 * @constant {Array<ISelectItem>} authOneOptions EAP phase one authentication options

@@ -72,6 +72,8 @@ final class InfoManagerTest extends CommandTestCase {
 			'controller' => 'v1.0.0',
 			'daemon' => 'v2.3.0',
 			'influxdbBridge' => 'v1.0.0',
+			'menderClient' => '3.5.2',
+			'menderConnect' => 'v2.2.0',
 			'setter' => 'v1.0.0',
 			'uploader' => 'v1.0.0',
 			'webapp' => 'v2.0.0',
@@ -324,6 +326,10 @@ final class InfoManagerTest extends CommandTestCase {
 			->andReturn(self::EXPECTED['versions']['daemon']);
 		$this->versionManager->shouldReceive('getInfluxdbBridge')
 			->andReturn(self::EXPECTED['versions']['influxdbBridge']);
+		$this->versionManager->shouldReceive('getMenderClient')
+			->andReturn(self::EXPECTED['versions']['menderClient']);
+		$this->versionManager->shouldReceive('getMenderConnect')
+			->andReturn(self::EXPECTED['versions']['menderConnect']);
 		$this->versionManager->shouldReceive('getSetter')
 			->andReturn(self::EXPECTED['versions']['setter']);
 		$this->versionManager->shouldReceive('getUploader')

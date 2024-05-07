@@ -148,6 +148,8 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/installationCheck.json
 		Journal:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/journal.json
+		JsonSchema:
+			$ref: https://json-schema.org/draft-07/schema
 		LogServices:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/logServices.json
 		MailerConfiguration:
@@ -190,6 +192,8 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/powerControl.json
 		Remount:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/remount.json
+		SchedulerMessagings:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/schedulerMessagings.json
 		ServiceList:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/serviceList.json
 		ServiceStatus:
@@ -214,6 +218,8 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/timezoneSet.json
 		TranslatorConfig:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/translatorConfig.json
+		TuptimeStats:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/tuptimeStats.json
 		UploaderFile:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/uploaderFile.json
 		UserCreate:

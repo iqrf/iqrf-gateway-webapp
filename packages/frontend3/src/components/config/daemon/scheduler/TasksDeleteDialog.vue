@@ -1,0 +1,92 @@
+<template>
+	<DeleteModalWindow
+		ref='dialog'
+		:component-state='componentState'
+		@submit='removeTasks'
+	>
+		<template #activator='{ props }'>
+			<v-btn
+				v-bind='props'
+				id='tasks-delete-activator'
+				color='white'
+				size='large'
+				:icon='mdiDelete'
+			/>
+			<v-tooltip
+				activator='#tasks-delete-activator'
+				location='bottom'
+			>
+				{{ $t('components.configuration.daemon.scheduler.actions.deleteAll') }}
+			</v-tooltip>
+		</template>
+		<template #title>
+			{{ $t('components.configuration.daemon.scheduler.deleteAll.title') }}
+		</template>
+		{{ $t('components.configuration.daemon.scheduler.deleteAll.prompt') }}
+	</DeleteModalWindow>
+</template>
+
+<script lang='ts' setup>
+import { SchedulerMessages } from '@iqrf/iqrf-gateway-daemon-utils/enums';
+import { SchedulerService } from '@iqrf/iqrf-gateway-daemon-utils/services';
+import { type DaemonApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
+import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
+import { mdiDelete } from '@mdi/js';
+import { ref, type Ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { toast } from 'vue3-toastify';
+
+import DeleteModalWindow from '@/components/DeleteModalWindow.vue';
+import { useDaemonStore } from '@/store/daemonSocket';
+import { ComponentState } from '@/types/ComponentState';
+
+const componentState: Ref<ComponentState> = ref(ComponentState.Created);
+const emit = defineEmits(['deleted']);
+const dialog: Ref<typeof DeleteModalWindow | null> = ref(null);
+const i18n = useI18n();
+const daemonStore = useDaemonStore();
+const msgId: Ref<string | null> = ref(null);
+
+daemonStore.$onAction(
+	({ name, after }) => {
+		if (name !== 'onMessage') {
+			return;
+		}
+		after((rsp: DaemonApiResponse) => {
+			if (rsp.data.msgId !== msgId.value) {
+				return;
+			}
+			daemonStore.removeMessage(msgId.value);
+			if (rsp.mType === SchedulerMessages.RemoveAll) {
+				handleRemoveTasks(rsp);
+			}
+		});
+	},
+);
+
+function removeTasks(): void {
+	componentState.value = ComponentState.Saving;
+	const options = new DaemonMessageOptions(
+		null,
+		30000,
+		null,
+		() => {msgId.value = null;},
+	);
+	daemonStore.sendMessage(
+		SchedulerService.removeAllTasks(options),
+	).then((val: string) => msgId.value = val);
+}
+
+function handleRemoveTasks(rsp: DaemonApiResponse): void {
+	if (rsp.data.status !== 0) {
+		toast.error('TODO ERROR HANDLING');
+		componentState.value = ComponentState.Error;
+	}
+	toast.success(
+		i18n.t('components.configuration.daemon.scheduler.messages.deleteAll.success'),
+	);
+	componentState.value = ComponentState.Ready;
+	dialog.value?.close();
+	emit('deleted');
+}
+</script>

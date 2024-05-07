@@ -132,13 +132,16 @@ newman:
 
 build:js:
   script:
-    - 'if [[ "${PACKAGE}" != "api-client" ]]; then pnpm --dir packages/api-client build; fi'
+    - 'if [[ "${PACKAGE}" == "frontend" || "${PACKAGE}" == "frontend3" ]]; then pnpm --dir packages/api-client build; fi'
+    - 'if [[ "${PACKAGE}" == "frontend" || "${PACKAGE}" == "frontend3" ]]; then pnpm --dir packages/daemon-utils build; fi'
     - pnpm --dir packages/${PACKAGE} run build
   parallel:
     matrix:
       - PACKAGE:
           - api-client
+          - daemon-utils
           - frontend
+          - frontend3
   <<: *test_template
   <<: *npm_template
 
@@ -173,6 +176,7 @@ coverage:js:
       - PACKAGE:
           - api-client
           - frontend
+          - frontend3
   <<: *test_template
   <<: *npm_template
 
@@ -203,7 +207,9 @@ eslint:
     matrix:
       - PACKAGE:
           - api-client
+          - daemon-utils
           - frontend
+          - frontend3
   <<: *coding-style_template
   <<: *npm_template
 
@@ -214,6 +220,7 @@ stylelint:
     matrix:
       - PACKAGE:
           - frontend
+          - frontend3
   <<: *coding-style_template
   <<: *npm_template
 
@@ -262,7 +269,7 @@ jsonnet-trigger-packages:
         job: jsonnet-build
     strategy: depend
 
-deploy-apidocs:
+deploy:docs:openapi:
   stage: deploy-docs
   environment:
     name: apidocs
@@ -275,6 +282,31 @@ deploy-apidocs:
     - ssh www-deploy@icinga.iqrf.org "rm -rf /data/nginx/apidocs/iqrf-gateway-webapp-api/api.json /data/nginx/apidocs/iqrf-gateway-webapp-api/schemas/"
     - rsync -hrvz --delete -e ssh api.json www-deploy@icinga.iqrf.org:/data/nginx/apidocs/iqrf-gateway-webapp-api/api.json
     - rsync -hrvz --delete -e ssh api/schemas/* www-deploy@icinga.iqrf.org:/data/nginx/apidocs/iqrf-gateway-webapp-api/schemas/
+  <<: *ssh_template
+
+deploy-docs:typedoc:
+  stage: deploy-docs
+  environment:
+    name: apidocs
+    url: https://apidocs.iqrf.org/${DEPLOY_DIR}/
+  only:
+    - master
+  before_script:
+    - !reference [.npm-template, before_script]
+    - !reference [.ssh-template, before_script]
+  script:
+    - pnpm --dir packages/${PACKAGE} docs
+    - ssh www-deploy@icinga.iqrf.org "rm -rf /data/nginx/apidocs/${DEPLOY_DIR}/*"
+    - rsync -hrvz --delete -e ssh packages/${PACKAGE}/docs/* www-deploy@icinga.iqrf.org:/data/nginx/apidocs/${DEPLOY_DIR}/
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - .pnpm-store
+  parallel:
+    matrix:
+      - PACKAGE: api-client
+        DEPLOY_DIR: iqrf-gateway-webapp-js-client
+  <<: *npm_template
   <<: *ssh_template
 
 include:

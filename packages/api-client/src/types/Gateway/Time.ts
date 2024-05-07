@@ -15,28 +15,53 @@
  */
 
 /**
+ * Current gateway time configuration
+ */
+export interface TimeConfig {
+	/// Time zone code
+	abbrevation: string;
+	/// Formatted time string
+	formattedTime: string;
+	/// Formatted zone string
+	formattedZone: string;
+	/// UTC/GMT offset
+	gmtOffset: string;
+	/// UTC/GMT offset in seconds
+	gmtOffsetSec: number;
+	/// Local timestamp
+	localTimestamp: number;
+	/// NTP synchronization servers
+	ntpServers: string[];
+	/// NTP synchronization enabled
+	ntpSync: boolean;
+	/// UTC timestamp
+	utcTimestamp: number;
+	/// Time zone name
+	zoneName: string;
+}
+
+/**
  * Gateway time set interface
  */
 export interface TimeSet {
+	/// Datetime to set ntp synchronization is disabled
+	datetime?: string;
+	/// NTP servers
+	ntpServers?: string[];
+	/// Enable NTP synchronization
+	ntpSync: boolean;
+	/// Timezone to set
+	zoneName?: string;
+}
 
-	/**
-	 * Synchronize using NTP?
-	 */
-	ntpSync: boolean
-
-	/**
-	 * Timezone to set
-	 */
-	zoneName?: string
-
-	/**
-	 * Time to set if not synchronized
-	 */
-	datetime?: string
-
-	/**
-	 * NTP servers
-	 */
-	ntpServers?: string[]
-
+/**
+ * Gateway time zone
+ */
+export interface Timezone {
+	/// Time zone code
+	code: string;
+	/// Time zone name
+	name: string;
+	/// UTC/GMT offset
+	offset: string;
 }

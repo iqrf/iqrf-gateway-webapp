@@ -20,6 +20,9 @@ declare(strict_types = 1);
 
 namespace App\ServiceModule\Models;
 
+use App\ServiceModule\Entities\ServiceState;
+use App\ServiceModule\Exceptions\NonexistentServiceException;
+
 /**
  * Interface for tools for managing service
  */
@@ -28,12 +31,14 @@ interface IServiceManager {
 	/**
 	 * Disables the service
 	 * @param string $serviceName Service name
+	 * @throws NonexistentServiceException
 	 */
 	public function disable(string $serviceName): void;
 
 	/**
 	 * Enables the service
 	 * @param string $serviceName Service name
+	 * @throws NonexistentServiceException
 	 */
 	public function enable(string $serviceName): void;
 
@@ -41,6 +46,7 @@ interface IServiceManager {
 	 * Checks if the service is active
 	 * @param string $serviceName Service name
 	 * @return bool Is service active?
+	 * @throws NonexistentServiceException
 	 */
 	public function isActive(string $serviceName): bool;
 
@@ -48,24 +54,28 @@ interface IServiceManager {
 	 * Checks if the service is enabled
 	 * @param string $serviceName Service name
 	 * @return bool Is service enabled?
+	 * @throws NonexistentServiceException
 	 */
 	public function isEnabled(string $serviceName): bool;
 
 	/**
 	 * Starts the service
 	 * @param string $serviceName Service name
+	 * @throws NonexistentServiceException
 	 */
 	public function start(string $serviceName): void;
 
 	/**
 	 * Stops the service
 	 * @param string $serviceName Service name
+	 * @throws NonexistentServiceException
 	 */
 	public function stop(string $serviceName): void;
 
 	/**
 	 * Restarts the service
 	 * @param string $serviceName Service name
+	 * @throws NonexistentServiceException
 	 */
 	public function restart(string $serviceName): void;
 
@@ -73,7 +83,17 @@ interface IServiceManager {
 	 * Returns status of the service
 	 * @param string $serviceName Service name
 	 * @return string Service status
+	 * @throws NonexistentServiceException
 	 */
 	public function getStatus(string $serviceName): string;
+
+	/**
+	 * Returns state of the service
+	 * @param string $serviceName Service name
+	 * @param bool $withStatus Include service status?
+	 * @return ServiceState Service state
+	 * @throws NonexistentServiceException
+	 */
+	public function getState(string $serviceName, bool $withStatus = false): ServiceState;
 
 }

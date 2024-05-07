@@ -20,7 +20,7 @@ limitations under the License.
 		<NetworkInterfaces
 			ref='interfaces'
 			class='mb-5'
-			:type='InterfaceType.ETHERNET'
+			:type='NetworkInterfaceType.ETHERNET'
 		/>
 		<v-card>
 			<v-card-text>
@@ -137,21 +137,23 @@ import {DataTableHeader} from 'vuetify';
 
 import NetworkInterfaces from '@/components/Network/NetworkInterfaces.vue';
 
-import {ConnectionType} from '@/enums/Network/ConnectionType';
-import {InterfaceType} from '@/enums/Network/InterfaceType';
 import {extendedErrorToast} from '@/helpers/errorToast';
 
-import NetworkConnectionService from '@/services/NetworkConnectionService';
-
-import {NetworkConnection} from '@/interfaces/Network/Connection';
 import {useApiClient} from '@/services/ApiClient';
+import {
+	NetworkConnectionListEntry,
+	NetworkConnectionType
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkConnection';
+import {
+	NetworkInterfaceType
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkInterface';
 
 @Component({
 	components: {
 		NetworkInterfaces,
 	},
 	data: () => ({
-		InterfaceType,
+		NetworkInterfaceType,
 	}),
 	metaInfo: {
 		title: 'network.ethernet.title',
@@ -176,14 +178,14 @@ export default class EthernetConnections extends Vue {
 	private hostname = '';
 
 	/**
-	 * @var {Array<NetworkConnection>} connections Array of existing network connections
+	 * @var {Array<NetworkConnectionListEntry>} connections Array of existing network connections
 	 */
-	private connections: Array<NetworkConnection> = [];
+	private connections: Array<NetworkConnectionListEntry> = [];
 
 	/**
-	 * @var {NetworkConnection|null} connectionModal Auxiliary connection variable for disconnect modal
+	 * @var {NetworkConnectionListEntry|null} connectionModal Auxiliary connection variable for disconnect modal
 	 */
-	private connectionModal: NetworkConnection|null = null;
+	private connectionModal: NetworkConnectionListEntry|null = null;
 
 	/**
 	 * @constant {Array<DataTableHeader>} headers Data table headers
@@ -209,6 +211,11 @@ export default class EthernetConnections extends Vue {
 	];
 
 	/**
+	 * @property {NetworkConnectionService} service Network connection service
+	 */
+	private service = useApiClient().getNetworkServices().getNetworkConnectionService();
+
+	/**
 	 * Retrieves interfaces and connections
 	 */
 	mounted(): void {
@@ -221,8 +228,8 @@ export default class EthernetConnections extends Vue {
 	 */
 	private getConnections(): void {
 		this.loading = true;
-		NetworkConnectionService.list(ConnectionType.Ethernet)
-			.then((connections: NetworkConnection[]) => {
+		this.service.list(NetworkConnectionType.Ethernet)
+			.then((connections: NetworkConnectionListEntry[]) => {
 				this.connections = connections;
 				this.loading = false;
 			})
@@ -231,11 +238,11 @@ export default class EthernetConnections extends Vue {
 
 	/**
 	 * Establishes a connection using the specified configuration
-	 * @param {NetworkConnection} connection Network connection configuration
+	 * @param {NetworkConnectionListEntry} connection Network connection configuration
 	 */
-	private connect(connection: NetworkConnection): void {
+	private connect(connection: NetworkConnectionListEntry): void {
 		this.$store.commit('spinner/SHOW');
-		NetworkConnectionService.connect(connection.uuid, connection.interfaceName)
+		this.service.connect(connection.uuid, connection.interfaceName)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
@@ -255,12 +262,12 @@ export default class EthernetConnections extends Vue {
 
 	/**
 	 * Terminates a connection
-	 * @param {NetworkConnection} connection Network connection configuration
+	 * @param {NetworkConnectionListEntry} connection Network connection configuration
 	 */
-	private disconnect(connection: NetworkConnection): void {
+	private disconnect(connection: NetworkConnectionListEntry): void {
 		this.connectionModal = null;
 		this.$store.commit('spinner/SHOW');
-		NetworkConnectionService.disconnect(connection.uuid)
+		this.service.disconnect(connection.uuid)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(

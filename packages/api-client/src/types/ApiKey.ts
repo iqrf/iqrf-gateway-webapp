@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import type {DateTime} from 'luxon';
+import { type DateTime } from 'luxon';
 
 /**
  * API key configuration
@@ -41,7 +41,7 @@ export interface ApiKeyInfo extends ApiKeyConfig {
 	/**
 	 * API key ID
 	 */
-	id: number,
+	id?: number,
 
 }
 

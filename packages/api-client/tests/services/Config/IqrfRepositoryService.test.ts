@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {describe, expect, it} from 'vitest';
 
-import {mockedAxios, mockedClient} from '../../mocks/axios';
+import { beforeEach, describe, expect, it } from 'vitest';
 
-import {IqrfRepositoryService} from '../../../src/services/Config';
-import type {IqrfRepositoryConfig} from '../../../src/types/Config';
+import { IqrfRepositoryService } from '../../../src/services/Config';
+import { type IqrfRepositoryConfig } from '../../../src/types/Config';
+import { mockedAxios, mockedClient } from '../../mocks/axios';
 
 describe('IqrfRepositoryService', (): void => {
 
@@ -26,6 +26,10 @@ describe('IqrfRepositoryService', (): void => {
 	 * @var {IqrfRepositoryService} service IQRF Repository service
 	 */
 	const service: IqrfRepositoryService = new IqrfRepositoryService(mockedClient);
+
+	beforeEach((): void => {
+		mockedAxios.reset();
+	});
 
 	it('fetch IQRF Repository config', async (): Promise<void> => {
 		expect.assertions(1);

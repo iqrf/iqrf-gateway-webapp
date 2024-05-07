@@ -50,6 +50,9 @@ class FeatureManager {
 			'enabled' => false,
 			'url' => '/grafana/',
 		],
+		'iqaros' => [
+			'enabled' => false,
+		],
 		'iqrfGatewayController' => [
 			'enabled' => false,
 		],

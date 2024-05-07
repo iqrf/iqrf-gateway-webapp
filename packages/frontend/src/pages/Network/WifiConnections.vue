@@ -20,7 +20,7 @@ limitations under the License.
 		<NetworkInterfaces
 			ref='interfaces'
 			class='mb-5'
-			:type='InterfaceType.WIFI'
+			:type='NetworkInterfaceType.WIFI'
 		/>
 		<v-card>
 			<v-card-text>
@@ -230,14 +230,20 @@ import SignalIndicator from '@/components/Network/SignalIndicator.vue';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 
-import {ConnectionType} from '@/enums/Network/ConnectionType';
-import {InterfaceType} from '@/enums/Network/InterfaceType';
-
 import NetworkConnectionService from '@/services/NetworkConnectionService';
 
-import {IAccessPoint, IAccessPoints} from '@/interfaces/Network/Wifi';
-import {NetworkConnection} from '@/interfaces/Network/Connection';
 import {useApiClient} from '@/services/ApiClient';
+import {
+	NetworkConnectionListEntry,
+	NetworkConnectionType
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkConnection';
+import {
+	AccessPoint,
+	WifiNetwork
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network/Wifi';
+import {
+	NetworkInterfaceType
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkInterface';
 
 @Component({
 	components: {
@@ -245,7 +251,7 @@ import {useApiClient} from '@/services/ApiClient';
 		SignalIndicator,
 	},
 	data: () => ({
-		InterfaceType,
+		NetworkInterfaceType,
 	}),
 	metaInfo: {
 		title: 'network.wireless.title',
@@ -268,14 +274,14 @@ export default class WifiConnections extends Vue {
 	private loading = true;
 
 	/**
-	 * @var {Array<IAccessPoint>} accessPoints Array of available access points
+	 * @var {Array<WifiNetwork>} accessPoints Array of available access points
 	 */
-	private accessPoints: Array<IAccessPoints> = [];
+	private accessPoints: Array<WifiNetwork> = [];
 
 	/**
-	 * @var {Array<IAccessPointArray>} expanded Expanded table rows
+	 * @var {Array<WifiNetwork>} expanded Expanded table rows
 	 */
-	private expanded: Array<IAccessPoints> = [];
+	private expanded: Array<WifiNetwork> = [];
 
 	/**
 	 * @constant {Array<DataTableHeader>} headers Data table headers
@@ -316,14 +322,14 @@ export default class WifiConnections extends Vue {
 	];
 
 	/**
-	 * @var {IAccessPoint|null} disconnectAp Access point used in disconnect modal
+	 * @var {AccessPoint|null} disconnectAp Access point used in disconnect modal
 	 */
-	private disconnectAp: IAccessPoint|null = null;
+	private disconnectAp: AccessPoint|null = null;
 
 	/**
-	 * @var {IAccessPoint|null} deleteAp Access point used in delete modal
+	 * @var {AccessPoint|null} deleteAp Access point used in delete modal
 	 */
-	private deleteAp: IAccessPoint|null = null;
+	private deleteAp: AccessPoint|null = null;
 
 	/**
 	 * @var {boolean} deletedAP Indicates that AP has just been deleted
@@ -334,6 +340,11 @@ export default class WifiConnections extends Vue {
 	 * @var {string} Hostname Window hostname
 	 */
 	private hostname = '';
+
+	/**
+	 * @property {NetworkConnectionService} service Network connection service
+	 */
+	private service = useApiClient().getNetworkServices().getNetworkConnectionService();
 
 	/**
 	 * Retrieves data for table
@@ -349,7 +360,7 @@ export default class WifiConnections extends Vue {
 	private getAccessPoints(): void {
 		this.loading = true;
 		NetworkConnectionService.listWifiAccessPoints()
-			.then((response: IAccessPoint[]) => this.findConnections(response))
+			.then((response: AccessPoint[]) => this.findConnections(response))
 			.catch((error: AxiosError) => {
 				if (!this.deletedAp) {
 					extendedErrorToast(
@@ -372,12 +383,12 @@ export default class WifiConnections extends Vue {
 
 	/**
 	 * Retrieves list of existing Wi-Fi connections and adds UUID to matching access points
-	 * @param {Array<IAccessPoint>} accessPoints Array of available access points
+	 * @param {Array<AccessPoint>} accessPoints Array of available access points
 	 */
-	private findConnections(accessPoints: Array<IAccessPoint>): Promise<void> {
-		return NetworkConnectionService.list(ConnectionType.WiFi)
-			.then((connections: NetworkConnection[]) => {
-				const apArray: Array<IAccessPoints> = [];
+	private findConnections(accessPoints: Array<AccessPoint>): Promise<void> {
+		return this.service.list(NetworkConnectionType.WiFi)
+			.then((connections: NetworkConnectionListEntry[]) => {
+				const apArray: Array<WifiNetwork> = [];
 				for (const ap of accessPoints) {
 					const idx = apArray.findIndex(item => item.ssid === ap.ssid);
 					if (idx !== -1) {
@@ -396,7 +407,7 @@ export default class WifiConnections extends Vue {
 				}
 				for (const i in apArray) {
 					const re = new RegExp('^' + apArray[i].ssid + '(\\s\\d+)?$');
-					const filteredConnections = connections.filter((item: NetworkConnection) => re.test(item.name));
+					const filteredConnections = connections.filter((item: NetworkConnectionListEntry) => re.test(item.name));
 					if (filteredConnections.length === 0) {
 						continue;
 					}
@@ -419,14 +430,14 @@ export default class WifiConnections extends Vue {
 
 	/**
 	 * Connects to Wi-Fi access point
-	 * @param {IAccessPoint} ap Access point to connect to
+	 * @param {AccessPoint} ap Access point to connect to
 	 */
-	private connect(ap: IAccessPoint): void {
+	private connect(ap: AccessPoint): void {
 		if (ap.uuid === undefined) {
 			return;
 		}
 		this.$store.commit('spinner/SHOW');
-		NetworkConnectionService.connect(ap.uuid, ap.interfaceName)
+		this.service.connect(ap.uuid, ap.interfaceName)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
@@ -446,15 +457,15 @@ export default class WifiConnections extends Vue {
 
 	/**
 	 * Disconnects from Wi-Fi access point
-	 * @param {IAccessPoint} ap Access point to disconnect from
+	 * @param {AccessPoint} ap Access point to disconnect from
 	 */
-	private disconnect(ap: IAccessPoint): void {
+	private disconnect(ap: AccessPoint): void {
 		if (ap.uuid === undefined) {
 			return;
 		}
 		this.disconnectAp = null;
 		this.$store.commit('spinner/SHOW');
-		NetworkConnectionService.disconnect(ap.uuid)
+		this.service.disconnect(ap.uuid)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
@@ -509,9 +520,9 @@ export default class WifiConnections extends Vue {
 
 	/**
 	 * Redirects to connection form with required properties
-	 * @param {IAccessPoint} ap Access point meta
+	 * @param {AccessPoint} ap Access point meta
 	 */
-	private addConnection(ap: IAccessPoint) {
+	private addConnection(ap: AccessPoint) {
 		this.$router.push({
 			name: 'add-wireless-connection',
 			params: {ap: JSON.stringify(ap)},
@@ -521,15 +532,15 @@ export default class WifiConnections extends Vue {
 
 	/**
 	 * Removes Wi-Fi access point connection
-	 * @param {IAccessPoint} ap Access point to remove
+	 * @param {AccessPoint} ap Access point to remove
 	 */
-	private removeConnection(ap: IAccessPoint): void {
+	private removeConnection(ap: AccessPoint): void {
 		if (ap.uuid === undefined) {
 			return;
 		}
 		this.deleteAp = null;
 		this.$store.commit('spinner/SHOW');
-		NetworkConnectionService.remove(ap.uuid)
+		this.service.delete(ap.uuid)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(

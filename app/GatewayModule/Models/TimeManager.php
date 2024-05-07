@@ -82,13 +82,13 @@ class TimeManager {
 		$date = new DateTime('now', new DateTimeZone($timezone));
 		$status = $this->getStatus();
 		$timesyncConf = $this->readTimesyncd();
-		$tokens = explode(';', $date->format('e;T;O;Z;U;Y-m-d H:i:s'));
+		$tokens = explode(';', $date->format('e;T;P;Z;U;Y-m-d H:i:s'));
 		$array = [
 			'zoneName' => $tokens[0],
 			'abbrevation' => $tokens[1],
 			'gmtOffset' => $tokens[2],
 			'gmtOffsetSec' => intval($tokens[3]),
-			'formattedZone' => sprintf('%s (%s, %s)', $tokens[0], $tokens[1], $tokens[2]),
+			'formattedZone' => sprintf('(UTC%s) %s (%s)', $tokens[2], $tokens[0], $tokens[1]),
 			'utcTimestamp' => intval($tokens[4]),
 			'localTimestamp' => intval($tokens[4]) + intval($tokens[3]),
 			'formattedTime' => $tokens[5],
@@ -153,7 +153,7 @@ class TimeManager {
 	 */
 	public function timezoneInfo(string $timezone): array {
 		$time = new DateTime('now', new DateTimeZone($timezone));
-		$timezoneInfo = explode(' ', $time->format('T O'));
+		$timezoneInfo = explode(' ', $time->format('T P'));
 		return [
 			'name' => $timezone,
 			'code' => $timezoneInfo[0],

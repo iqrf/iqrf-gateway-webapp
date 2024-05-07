@@ -22,21 +22,24 @@ import axios, {
 	type InternalAxiosRequestConfig,
 } from 'axios';
 
-import {version as clientVersion} from '../package.json';
 import {
 	AccountService,
 	ApiKeyService,
 	AuthenticationService,
 	FeatureService,
 	InstallationService,
+	MenderService,
+	OpenApiService,
 	ServiceService,
 	UserService,
 	VersionService,
 } from './services';
-import {CloudServices} from './services/Cloud';
-import {ConfigServices} from './services/Config';
-import {GatewayServices} from './services/Gateway';
-import {IqrfServices} from './services/Iqrf';
+import { CloudServices } from './services/Cloud';
+import { ConfigServices } from './services/Config';
+import { GatewayServices } from './services/Gateway';
+import { IqrfServices } from './services/Iqrf';
+import { MaintenanceServices } from './services/Maintenance';
+import { NetworkServices } from './services/Network';
 
 /**
  * IQRF Gateway Webapp API client options
@@ -103,11 +106,6 @@ export class Client {
 		baseURL: '/api/',
 		/** Timeout in milliseconds */
 		timeout: 30_000,
-		/** Headers */
-		headers: {
-			/** User agent */
-			'User-Agent': `iqrf-gateway-webapp-js-client_v${clientVersion}`,
-		},
 	};
 
 	/**
@@ -129,7 +127,7 @@ export class Client {
 	 * @param {AxiosRequestConfig} __namedParameters.config Axios instance configuration
 	 * @param {string|null} __namedParameters.token API key or JWT token
 	 */
-	public constructor({axiosInstance, config, token}: ClientOptions = {}) {
+	public constructor({ axiosInstance, config, token }: ClientOptions = {}) {
 		if (axiosInstance && config) {
 			throw new Error('Cannot instantiate Client with both axiosInstance and config.');
 		}
@@ -231,6 +229,14 @@ export class Client {
 	}
 
 	/**
+	 * Returns Network services
+	 * @return {NetworkServices} Network services
+	 */
+	public getNetworkServices(): NetworkServices {
+		return new NetworkServices(this);
+	}
+
+	/**
 	 * Returns Feature service
 	 * @return {FeatureService} Feature service
 	 */
@@ -244,6 +250,30 @@ export class Client {
 	 */
 	public getInstallationService(): InstallationService {
 		return new InstallationService(this);
+	}
+
+	/**
+	 * Returns Maintenance services
+	 * @return {MaintenanceServices} Maintenance services
+	 */
+	public getMaintenanceServices(): MaintenanceServices {
+		return new MaintenanceServices(this);
+	}
+
+	/**
+	 * Returns Mender service
+	 * @return {MenderService} Mender service
+	 */
+	public getMenderService(): MenderService {
+		return new MenderService(this);
+	}
+
+	/**
+	 * Returns OpenAPI specification service
+	 * @return {OpenApiService} OpenAPI specification service
+	 */
+	public getOpenApiService(): OpenApiService {
+		return new OpenApiService(this);
 	}
 
 	/**

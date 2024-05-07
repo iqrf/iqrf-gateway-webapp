@@ -43,14 +43,14 @@ export enum MailerSmtpSecurity {
 	PlainText = 'null',
 
 	/**
-	 * TLS
-	 */
-	TLS = 'ssl',
-
-	/**
 	 * STARTTLS
 	 */
 	STARTTLS = 'tls',
+
+	/**
+	 * TLS
+	 */
+	TLS = 'ssl',
 
 }
 
@@ -60,9 +60,24 @@ export enum MailerSmtpSecurity {
 export interface MailerConfig {
 
 	/**
+	 * SMTP client hostname
+	 */
+	clientHost: string|null;
+
+	/**
+	 * Context for connecting to the SMTP server
+	 */
+	context?: any[];
+
+	/**
 	 * SMTP server enablement
 	 */
 	enabled: boolean;
+
+	/**
+	 * SMTP server sender email address
+	 */
+	from: string;
 
 	/**
 	 * SMTP server host
@@ -70,29 +85,24 @@ export interface MailerConfig {
 	host: string;
 
 	/**
-	 * SMTP server port
-	 */
-	port: number;
-
-	/**
-	 * SMTP server username
-	 */
-	username: string;
-
-	/**
 	 * SMTP server password
 	 */
 	password: string;
 
 	/**
+	 * Persistent connection to the SMTP server
+	 */
+	persistent?: boolean;
+
+	/**
+	 * SMTP server port
+	 */
+	port: number;
+
+	/**
 	 * SMTP server security - `null` means plain-text connection
 	 */
 	secure: MailerSmtpSecurity|null;
-
-	/**
-	 * SMTP server sender email address
-	 */
-	from: string;
 
 	/**
 	 * Mailer theme
@@ -102,21 +112,38 @@ export interface MailerConfig {
 	/**
 	 * SMTP server timeout
 	 */
-	timeout: number;
+	timeout?: number;
 
 	/**
-	 * Context for connecting to the SMTP server
+	 * SMTP server username
 	 */
-	context: Array<any>;
+	username: string;
+
+}
+
+/**
+ * Mailer headers
+ */
+export interface MailerHeaders {
 
 	/**
-	 * SMTP client hostname
+	 * Default SMTP configuration
 	 */
-	clientHost: string|null;
+	defaultConfig: boolean;
+}
+
+/**
+ * Mailer
+ */
+export interface MailerGetConfigResponse {
 
 	/**
-	 * Persistent connection to the SMTP server
+	 * Mailer configuration
 	 */
-	persistent: boolean;
+	config: MailerConfig;
 
+	/**
+	 * Mailer headers
+	 */
+	headers: MailerHeaders | null;
 }

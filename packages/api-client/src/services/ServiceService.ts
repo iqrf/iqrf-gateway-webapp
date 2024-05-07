@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-import type {AxiosResponse} from 'axios';
+import { type AxiosResponse } from 'axios';
 
-import {BaseService} from './BaseService';
-import type {ServiceStatus} from '../types';
+import { type ServiceState, type ServiceStatus } from '../types';
+
+import { BaseService } from './BaseService';
 
 /**
  * System service service
@@ -25,12 +26,17 @@ import type {ServiceStatus} from '../types';
 export class ServiceService extends BaseService {
 
 	/**
-	 * Retrieves the supported service list
-	 * @returns {Promise<string[]>} Service list
+	 * Retrieves the state of supported services
+	 * @param {boolean} withStatus Include service status
+	 * @returns {Promise<ServiceState[]>} State of supported services
 	 */
-	public list(): Promise<string[]> {
-		return this.axiosInstance.get('/services')
-			.then((response: AxiosResponse<{services: string[]}>): string[] => response.data.services);
+	public list(withStatus = false): Promise<ServiceState[]> {
+		return this.axiosInstance.get('/services', {
+			params: {
+				withStatus: withStatus,
+			},
+		})
+			.then((response: AxiosResponse<ServiceState[]>): ServiceState[] => response.data);
 	}
 
 	/**

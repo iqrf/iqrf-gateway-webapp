@@ -18,20 +18,10 @@
  * Amazon Web Services IoT configuration
  */
 export interface AwsMqttConfig {
-
-	/**
-	 * AWS IoT endpoint
-	 */
-	endpoint: string;
-
-	/**
-	 * AWS IoT certificate
-	 */
+	/// AWS IoT certificate
 	certificate: File|Blob|null;
-
-	/**
-	 * AWS IoT private key
-	 */
+	/// AWS IoT endpoint
+	endpoint: string;
+	/// AWS IoT private key
 	privateKey: File|Blob|null;
-
 }

@@ -13,11 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {type AxiosResponse} from 'axios';
 
-import {BaseService} from '../BaseService';
-import type {SshKeyInfo, SshKeyInfoRaw} from '../../types/Gateway';
-import {DateTimeUtils} from '../../utils';
+import { type AxiosResponse } from 'axios';
+
+import {
+	type SshKeyCreate,
+	type SshKeyInfo,
+	type SshKeyInfoRaw,
+} from '../../types/Gateway';
+import { DateTimeUtils } from '../../utils';
+import { BaseService } from '../BaseService';
 
 /**
  * SSH key service
@@ -40,8 +45,38 @@ export class SshKeyService extends BaseService {
 	public list(): Promise<SshKeyInfo[]> {
 		return this.axiosInstance.get('/gateway/ssh/keys')
 			.then((response: AxiosResponse<SshKeyInfoRaw[]>): SshKeyInfo[] =>
-				response.data.map((key: SshKeyInfoRaw): SshKeyInfo => this.deserializeInfo(key))
+				response.data.map((key: SshKeyInfoRaw): SshKeyInfo => this.deserializeInfo(key)),
 			);
+	}
+
+	/**
+	 * Retrieves SSH public key
+	 * @param {number} id Key ID
+	 * @return {Promise<SshKeyInfo>} SSH key
+	 */
+	public getKey(id: number): Promise<SshKeyInfo> {
+		return this.axiosInstance.get('gateway/ssh/keys/' + id)
+			.then((response: AxiosResponse<SshKeyInfoRaw>): SshKeyInfo =>
+				this.deserializeInfo(response.data),
+			);
+	}
+
+	/**
+	 * Removes SSH public key
+	 * @param {number} id Key ID
+	 */
+	public deleteKey(id: number): Promise<void> {
+		return this.axiosInstance.get('gateway/ssh/keys/' + id)
+			.then((): void => {return;});
+	}
+
+	/**
+	 * Saves SSH keys
+	 * @param {SshKeyCreate[]} keys SSh keys
+	 */
+	public createSshKeys(keys: SshKeyCreate[]): Promise<void> {
+		return this.axiosInstance.post('gateway/ssh/keys', keys)
+			.then((): void => {return;});
 	}
 
 	/**

@@ -1121,11 +1121,14 @@
 									"            'enabled': false,",
 									"            'url': '/grafana/',",
 									"        },",
+									"        'iqaros': {",
+									"            'enabled': false,",
+									"        },",
 									"        'iqrfGatewayController': {",
 									"            'enabled': false,",
 									"        },",
 									"        'iqrfGatewayInfluxdbBridge': {",
-									"            'enabled': false, ",
+									"            'enabled': false,",
 									"        },",
 									"        'iqrfGatewayTranslator': {",
 									"            'enabled': false,",
@@ -1552,55 +1555,6 @@
 							"response": []
 						}
 					]
-				}
-			]
-		},
-		{
-			"name": "Services",
-			"item": [
-				{
-					"name": "Get supported services",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test('Status code is 200', function () {",
-									"    pm.response.to.have.status(200);",
-									"});",
-									"pm.test('Content-Type is \\'application/json\\'', function () {",
-									"    pm.response.to.have.header('Content-Type');",
-									"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
-									"});",
-									"pm.test('Supported services', function () {",
-									"    var jsonData = pm.response.json();",
-									"    const services = [",
-									"        'iqrf-gateway-daemon',",
-									"    ];",
-									"    pm.expect(jsonData.services).to.eql(services);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/api/v0/services/",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"api",
-								"v0",
-								"services",
-								""
-							]
-						}
-					},
-					"response": []
 				}
 			]
 		}

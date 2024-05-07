@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type {DateTime} from 'luxon';
+
+import { type DateTime } from 'luxon';
 
 /**
  * Base SSH key info interface
@@ -21,29 +22,29 @@ import type {DateTime} from 'luxon';
 export interface SshKeyInfoBase {
 
 	/**
-	 * SSH key ID
-	 */
-	id: number
-
-	/**
 	 * SSH key description
 	 */
-	description: string
+	description: string,
+
+	/**
+	 * SSH key hash
+	 */
+	hash: string,
+
+	/**
+	 * SSH key ID
+	 */
+	id: number,
+
+	/**
+	 * SSH public key
+	 */
+	key: string,
 
 	/**
 	 * SSH key type
 	 */
 	type: string
-
-	/**
-	 * SSH key hash
-	 */
-	hash: string
-
-	/**
-	 * SSH public key
-	 */
-	key: string
 
 }
 

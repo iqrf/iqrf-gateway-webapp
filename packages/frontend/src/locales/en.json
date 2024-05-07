@@ -1747,12 +1747,14 @@
 					"title": "Coordinator restore",
 					"form": {
 						"backupFile": "Backup file",
+						"restartCoordinator": "Restart coordinator",
 						"errors": {
 							"file": "Please select a backup file.",
 							"invalidFile": "Selected file should be a .iqrfbkp file."
 						}
 					},
 					"messages": {
+						"restartCoordinatorNote": "It is recommended to restart the coordinator device after completing the restoration process.",
 						"accessPasswordNote": "Note: The access password of backed up and restored TR module must be the same for the restore process to finish successfully. Access password can be changed in TR configuration.",
 						"invalidDevice": "Device property of entry {entry} should be Coordinator or Node, but is {device}.",
 						"invalidAddr": "Address property of entry {entry} should be between 0 and 239, but is {address}.",

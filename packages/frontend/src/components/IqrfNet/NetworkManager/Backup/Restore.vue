@@ -40,6 +40,14 @@ limitations under the License.
 							@change='fileInputTouched'
 						/>
 					</ValidationProvider>
+					<v-checkbox
+						v-model='restartOnRestore'
+						:label='$t("iqrfnet.networkManager.backupRestore.restore.form.restartCoordinator")'
+						:hint='$t("iqrfnet.networkManager.backupRestore.restore.messages.restartCoordinatorNote")'
+						persistent-hint
+						dense
+						class='mb-4'
+					/>
 					<p>
 						<em>{{ $t('iqrfnet.networkManager.backupRestore.restore.messages.accessPasswordNote') }}</em>
 					</p>
@@ -161,6 +169,7 @@ export default class Restore extends Vue {
 			this.$toast.success(
 				this.$t('iqrfnet.networkManager.backupRestore.restore.messages.coordinatorSuccess').toString()
 			);
+			this.$emit('update-devices');
 			return;
 		}
 		if (data.status === -1) { // coordinator device is offline

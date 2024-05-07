@@ -13,12 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type {AxiosResponse} from 'axios';
 
-import {BaseService} from './BaseService';
+import { type AxiosResponse } from 'axios';
+import * as uuid from 'uuid';
 
-import type {EmailSentResponse, UserEdit, UserInfo, UserPasswordChange} from '../types';
-import {UserUtils} from '../utils';
+import {
+	type EmailSentResponse,
+	type EmailVerificationResendRequest,
+	type UserAccountRecovery,
+	type UserEdit,
+	type UserInfo,
+	type UserPasswordChange,
+	type UserPasswordReset,
+	type UserSignedIn,
+} from '../types';
+import { UserUtils } from '../utils';
+
+import { BaseService } from './BaseService';
 
 /**
  * Account service
@@ -26,7 +37,7 @@ import {UserUtils} from '../utils';
 export class AccountService extends BaseService {
 
 	/**
-	 * Fetches information about the logged in user
+	 * Fetches information about the logged-in user
 	 * @return {Promise<UserInfo>} User information
 	 */
 	public fetchInfo(): Promise<UserInfo> {
@@ -55,11 +66,36 @@ export class AccountService extends BaseService {
 	}
 
 	/**
-	 * Resends the verification email
+	 * Resets the new user's password
+	 * @param {string} requestUuid Password recovery request UUID
+	 * @param {UserPasswordReset} request Password reset request
 	 */
-	public resendVerificationEmail(): Promise<void> {
-		return this.axiosInstance.post('`/user/resendVerification')
+	public confirmPasswordRecovery(requestUuid: string, request: UserPasswordReset): Promise<UserSignedIn> {
+		if (!uuid.validate(requestUuid)) {
+			throw new Error('Invalid password recovery request UUID.');
+		}
+		if (uuid.version(requestUuid) !== 4) {
+			throw new Error('Invalid password recovery request UUID version.');
+		}
+		return this.axiosInstance.post(`/user/password/recovery/${requestUuid}`, request)
+			.then((response: AxiosResponse<UserSignedIn>) => UserUtils.deserialize(response.data));
+	}
+
+	/**
+	 * Request user account recovery
+	 * @param {UserAccountRecovery} recovery Account recovery request
+	 */
+	public requestPasswordRecovery(recovery: UserAccountRecovery): Promise<void> {
+		return this.axiosInstance.post('/user/password/recovery', recovery)
 			.then((): void => {return;});
 	}
 
+	/**
+	 * Resends the verification email
+	 * @param {EmailVerificationResendRequest} request Verification e-mail resend request
+	 */
+	public resendVerificationEmail(request: EmailVerificationResendRequest): Promise<void> {
+		return this.axiosInstance.post('/user/resendVerification', request)
+			.then((): void => {return;});
+	}
 }

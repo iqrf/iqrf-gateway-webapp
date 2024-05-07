@@ -138,12 +138,12 @@ limitations under the License.
 					</v-row>
 					<IpStackSelector v-model='tunnel.peers[index].allowedIPs.stack' />
 					<WireGuardPeerAddressFamily
-						v-if='[WireguardStack.IPV4, WireguardStack.DUAL].includes(tunnel.peers[index].allowedIPs.stack)'
+						v-if='[WireGuardIpStack.IPV4, WireGuardIpStack.DUAL].includes(tunnel.peers[index].allowedIPs.stack)'
 						v-model='tunnel.peers[index].allowedIPs.ipv4'
 						:version='4'
 					/>
 					<WireGuardPeerAddressFamily
-						v-if='[WireguardStack.IPV6, WireguardStack.DUAL].includes(tunnel.peers[index].allowedIPs.stack)'
+						v-if='[WireGuardIpStack.IPV6, WireGuardIpStack.DUAL].includes(tunnel.peers[index].allowedIPs.stack)'
 						v-model='tunnel.peers[index].allowedIPs.ipv6'
 						:version='6'
 					/>
@@ -159,10 +159,11 @@ import {extend, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
 import {wgBase64Key} from '@/helpers/validationRules/Network';
 
-import {WireguardStack} from '@/enums/Network/Wireguard';
-import {IWGTunnel} from '@/interfaces/Network/Wireguard';
 import IpStackSelector from '@/components/Network/WireGuard/IpStackSelector.vue';
 import WireGuardPeerAddresses from '@/components/Network/WireGuard/WireGuardPeerAddresses.vue';
+import {
+	WireGuardIpStack, WireGuardTunnelConfig
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network/WireGuard';
 
 /**
  * WireGuard peers
@@ -174,7 +175,7 @@ import WireGuardPeerAddresses from '@/components/Network/WireGuard/WireGuardPeer
 		WireGuardPeerAddressFamily: WireGuardPeerAddresses,
 	},
 	data: () => ({
-		WireguardStack,
+		WireGuardIpStack,
 	}),
 })
 export default class WireGuardPeers extends Vue {
@@ -182,7 +183,7 @@ export default class WireGuardPeers extends Vue {
 	/**
 	 * Edited WireGuard tunnel
 	 */
-	@VModel({required: true}) tunnel!: IWGTunnel;
+	@VModel({required: true}) tunnel!: WireGuardTunnelConfig;
 
 	/**
 	 * Initializes form validation rules
@@ -217,7 +218,7 @@ export default class WireGuardPeers extends Vue {
 						prefix: 64
 					}
 				],
-				stack: WireguardStack.DUAL,
+				stack: WireGuardIpStack.DUAL,
 			},
 		});
 	}

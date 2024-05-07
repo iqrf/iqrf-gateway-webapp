@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import * as punycode from 'punycode/';
 
-import type {UserCreate, UserEdit, UserInfo, UserSignedIn} from '../types';
+import { type UserCreate, type UserEdit, type UserInfo, type UserSignedIn } from '../types';
 
 /**
  * User utilities

@@ -39,7 +39,9 @@ import PasswordInput from '@/components/Core/PasswordInput.vue';
 
 import {required} from 'vee-validate/dist/rules';
 
-import {IConnection} from '@/interfaces/Network/Connection';
+import {
+	NetworkConnectionConfiguration
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkConnection';
 
 /**
  * WPA-PSK configuration options
@@ -55,7 +57,7 @@ export default class WpaPskConfiguration extends Vue {
 	/**
 	 * Edited connection.
 	 */
-	@VModel({required: true}) connection!: IConnection;
+	@VModel({required: true}) connection!: NetworkConnectionConfiguration;
 
 	/**
 	 * Initializes validation rules

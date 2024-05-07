@@ -144,11 +144,12 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {daemonErrorToast, extendedErrorToast} from '@/helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
-import CloudService from '@/services/CloudService';
 
 import {AxiosError} from 'axios';
-import {IIbmCloud} from '@/interfaces/Clouds';
 import {useApiClient} from '@/services/ApiClient';
+import type {
+	IbmCloudConfig
+} from '@iqrf/iqrf-gateway-webapp-client/types/Cloud/Ibm';
 
 @Component({
 	components: {
@@ -164,15 +165,11 @@ import {useApiClient} from '@/services/ApiClient';
  * Ibm cloud mqtt connection configuration creator card
  */
 export default class IbmCreator extends Vue {
-	/**
-	 * @constant {string} serviceName Ibm cloud service name
-	 */
-	private serviceName = 'ibmCloud';
 
 	/**
 	 * @var {IIbmCloud} config Ibm cloud connection configuration
 	 */
-	private config: IIbmCloud = {
+	private config: IbmCloudConfig = {
 		organizationId: '',
 		deviceType: '',
 		deviceId: '',
@@ -193,7 +190,7 @@ export default class IbmCreator extends Vue {
 	 */
 	private save(restart: boolean): void {
 		this.$store.commit('spinner/SHOW');
-		CloudService.create(this.serviceName, this.config)
+		useApiClient().getCloudServices().getIbmService().createMqttInstance(this.config)
 			.then(async () => {
 				if (restart) {
 					await useApiClient().getServiceService().restart('iqrf-gateway-daemon')

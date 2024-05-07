@@ -1,0 +1,386 @@
+{
+	"$vuetify": {
+		"badge": "Odznak",
+		"calendar": {
+			"moreEvents": "{0} dalších",
+			"today": "Today"
+		},
+		"carousel": {
+			"prev": "Předchozí obrázek",
+			"next": "Další obrázek",
+			"ariaLabel": {
+				"delimiter": "Obrázek {0} z {1}"
+			}
+		},
+		"close": "Zavřít",
+		"confirmEdit": {
+			"ok": "OK",
+			"cancel": "Zrušit"
+		},
+		"dataFooter": {
+			"itemsPerPageText": "Položek na stránku:",
+			"itemsPerPageAll": "Vše",
+			"nextPage": "Další strana",
+			"prevPage": "Předchozí strana",
+			"firstPage": "První strana",
+			"lastPage": "Poslední strana",
+			"pageText": "{0}-{1} z {2}"
+		},
+		"dataIterator": {
+			"noResultsText": "Nenalezeny žádné záznamy",
+			"loadingText": "Načítám položky..."
+		},
+		"dataTable": {
+			"itemsPerPageText": "Řádků na stránku:",
+			"ariaLabel": {
+				"sortDescending": "Řazeno sestupně.",
+				"sortAscending": "Řazeno vzestupně.",
+				"sortNone": "Neseřazeno.",
+				"activateNone": "Aktivováním vypnete řazení.",
+				"activateDescending": "Aktivováním se bude řadit sestupně.",
+				"activateAscending": "Aktivováním se bude řadit vzestupně."
+			},
+			"sortBy": "Řadit dle"
+		},
+		"datePicker": {
+			"itemsSelected": "{0} vybrán",
+			"range": {
+				"title": "Vyberte datumy",
+				"header": "Zadejte datumy"
+			},
+			"title": "Vyberte datum",
+			"header": "Zadejte datum",
+			"input": {
+				"placeholder": "Zadejte datum"
+			}
+		},
+		"dateRangeInput": {
+			"divider": "do"
+		},
+		"fileInput": {
+			"counter": "{0} souborů",
+			"counterSize": "{0} souborů ({1} celkem)"
+		},
+		"infiniteScroll": {
+			"loadMore": "Načíst více",
+			"empty": "Žádné další"
+		},
+		"input": {
+			"clear": "Vymazat {0}",
+			"prependAction": "{0} prepended action",
+			"appendAction": "{0} appended action",
+			"otp": "Vložte výhradně OTP znaky {0}"
+		},
+		"loading": "Načítám...",
+		"noDataText": "Nejsou dostupná žádná data",
+		"open": "Otevřiť",
+		"pagination": {
+			"ariaLabel": {
+				"root": "Navigace po stránkách",
+				"next": "Další strana",
+				"previous": "Předchozí strana",
+				"page": "Přejít na stránku {0}",
+				"currentPage": "Aktuální stránka, stránka {0}",
+				"first": "První stránka",
+				"last": "Poslední stránka"
+			}
+		},
+		"rating": {
+			"ariaLabel": {
+				"item": "Hodnocení {0} z {1}"
+			}
+		},
+		"stepper": {
+			"next": "Další",
+			"prev": "Předchozí"
+		},
+		"timePicker": {
+			"am": "dop.",
+			"pm": "odp."
+		}
+	},
+	"install": {
+		"title": "Instalační průvodce",
+		"invitation": "Vítejte v IQRF Gateway Webapp. Než začnete webovou aplikaci používat je nejdříve potřeba vytvořit uživatelský účet.",
+		"steps": {
+			"introduction": "Úvod",
+			"smtp": "Konfigurace SMTP serveru",
+			"webappUser": "Vytvoření uživatelského účtu",
+			"gatewayUser": "Nastavení systémového účtu",
+			"sshKeys": "Přidání SSH klíčů",
+			"sshService": "SSH služa"
+		},
+		"createUser": {
+			"title": "vytvoření nového uživatelského účtu",
+			"failure": "Vytvoření uživatelského účtu selhalo z důvodu: {error}",
+			"note": "Vytvoření nového uživatelského účtu pro přístup do webové aplikace.",
+			"createButton": "Vytvoř uživatele"
+		}
+	},
+	"common": {
+		"states": {
+			"active": "Aktivní",
+			"inactive": "Neaktivní",
+			"enabled": "Povoleno",
+			"disabled": "Zakázáno",
+			"valid": "Validní",
+			"invalid": "Nevalidní"
+		},
+		"columns": {
+			"id": "ID",
+			"description": "Popis",
+			"actions": "Akce"
+		},
+		"validation": {
+			"portMissing": "Zadejte prosím číslo portu.",
+			"portInvalid": "Číslo portu musí být celé číslo mezi 1 a 65535.",
+			"credentialsMissing": "Zadejte prosím jak uživatelské jméno, tak i heslo, nebo nechte obě pole prázdná."
+		}
+	},
+	"components": {
+		"common": {
+			"actions": {
+				"add": "Přidat",
+				"cancel": "Zrušit",
+				"delete": "Smazat",
+				"edit": "Změnit"
+			},
+			"fields": {
+				"actions": "Akce",
+				"description": "Popis",
+				"email": "E-mailová adresa",
+				"id": "ID",
+				"password": "Heslo",
+				"username": "Uživatelské jméno"
+			},
+			"locale": {
+				"languages": {
+					"cs": "Čeština",
+					"en": "Angličtina"
+				},
+				"messages": {
+					"set": "Lokalizace byla změněna na: {locale}."
+				}
+			},
+			"validations": {
+				"email": {
+					"required": "Zadejte prosím e-mailovou adresu.",
+					"email": "Špatný formát e-mailové adresy."
+				},
+				"password": {
+					"required": "Zadejte prosím heslo."
+				},
+				"port": {
+					"required": "Zadejte prosím číslo portu.",
+					"between": "Číslo portu musí být celé číslo mezi 1 a 65535."
+				},
+				"username": {
+					"required": "Zadejte prosím uživatelské jméno."
+				}
+			}
+		},
+		"errors": {
+			"403": {
+				"title": "Přístup odepřen",
+				"header": "Chyba 403",
+				"text": "K zobrazení této stránky nemáte oprávnění. Pokud se domníváte, že byste měli mít možnost tuto stránku zobrazit, zkuste prosím kontaktovat správce webové aplikace."
+			},
+			"404": {
+				"title": "Stránka nenalezena",
+				"header": "Chyba 404",
+				"text": "Požadovanou stránku se nepodařilo najít. Adresa může být nesprávná nebo stránka již neexistuje."
+			}
+		},
+		"status": {
+			"monitor": {
+				"mode": "Mód daemona",
+				"modes": {
+					"operational": "Provozní",
+					"forwarding": "Přeposílání",
+					"service": "Servisní",
+					"unknown": "Neznámý"
+				},
+				"notified": "Poslední oznámení",
+				"queue": "Délka fronty",
+				"version": "Verze daemona",
+				"enumeration": {
+					"running": "Enumerace probíhá.",
+					"notRunning": "Enumerace neběží.",
+					"unavailable": "Stav enumerace není dostupný."
+				}
+			}
+		},
+		"configuration": {
+			"daemon": {
+				"component": "Jméno komponenty",
+				"instance": "Jméno instance",
+				"interfaces": {
+					"interface": "Jméno rozhraní",
+					"active": {
+						"title": "Aktivní IQRF rozhraní",
+						"interface": "IQRF rozhraní",
+						"messages": {
+							"save": {
+								"success": "IQRF rozhraní bylo úšpěšně změněno."
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"pages": {
+		"title": "IQRF Gateway Webapp",
+		"gateway": {
+			"title": "Brána",
+			"description": "Zobrazení informací o bráně, službách a správa napájení.",
+			"information": {
+				"title": "Informace",
+				"description": "Informace o této bráně."
+			},
+			"power": {
+				"title": "Napájení",
+				"description": "Vypnutí nebo restartování této brány."
+			},
+			"services": {
+				"title": "Služby",
+				"description": "Správa služeb a zobrazení jejich stavu."
+			}
+		},
+		"configuration": {
+			"title": "Konfigurace",
+			"controller": {
+				"title": "IQRF GW Controller",
+				"description": "Konfigurace IQRF Gateway Controlleru."
+			},
+			"daemon": {
+				"title": "IQRF GW Daemon",
+				"description": "Konfigurace IQRF Gateway Daemona.",
+				"interfaces": {
+					"title": "Rozhraní",
+					"description": "Konfigurace IQRF komunikačního rozhraní.",
+					"dpa": {
+						"title": "DPA"
+					},
+					"uart": {
+						"title": "UART",
+						"description": "Konfigurace UART rozhraní."
+					},
+					"spi": {
+						"title": "SPI",
+						"description": "Konfigurace SPI rozhraní."
+					},
+					"cdc": {
+						"title": "USB CDC",
+						"description": "Konfigurace USB CDC rozhraní."
+					}
+				},
+				"connections": {
+					"title": "Připojení",
+					"description": "Konfigurace připojení pomocí protokolů WebSocket, MQTT, MQ a UDP.",
+					"mqtt": {
+						"title": "MQTT",
+						"description": "Konfigurace MQTT připojení."
+					},
+					"udp": {
+						"title": "UDP",
+						"description": "Konfigurace UDP připojení."
+					},
+					"ws": {
+						"title": "WebSocket",
+						"description": "Konfigurace WebSocket připojení."
+					}
+				},
+				"scheduler": {
+					"title": "Plánovač",
+					"description": "Správa úkolů plánovače."
+				},
+				"repository": {
+					"title": "IQRF Repository",
+					"description": "Konfigurace IQRF Repository."
+				},
+				"json-api": {
+					"title": "JSON API",
+					"description": "Konfigurace JSON API."
+				}
+			},
+			"influxdb-bridge": {
+				"title": "IQRF GW InfluxDB Bridge"
+			},
+			"smtp": {
+				"title": "SMTP",
+				"description": "Konfigurace SMTP serveru."
+			},
+			"time": {
+				"title": "Datum a čas",
+				"description": "Konfigurace času, časové zóny a síťová synchronizace času."
+			},
+			"unattendedUpgrades": {
+				"title": "Automatické aktualizace",
+				"description": "Konfigurace služby automatických aktualizací."
+			},
+			"monit": {
+				"title": "Monit",
+				"description": "Konfigurace Monit klientů a kontroly zdraví systému."
+			},
+			"mender": {
+				"title": "Mender",
+				"description": "Konfigurace Mender klienta pro vzdálený přístup."
+			}
+		},
+		"iqrfnet": {
+			"title": "IQRF síť",
+			"description": "Správa IQRF sítě a zařízení.",
+			"tr-config": {
+				"title": "TR konfigurace",
+				"description": "Konfigurace TR modulů."
+			}
+		},
+		"maintenance": {
+			"title": "Údržba",
+			"description": "Nástroje pro údržbu brány.",
+			"backup": {
+				"title": "Zálohování a obnova",
+				"description": "Zálohování nebo obnovení zílohy brány."
+			}
+		},
+		"install": {
+			"title": "Instalační průvodce",
+			"user": {
+				"title": "Vytvoření nového uživatele"
+			},
+			"smtp": {
+				"title": "Konfigurace SMTP serveru"
+			},
+			"sshKeys": {
+				"title": "Přidání SSH klíčů"
+			},
+			"sshService": {
+				"title": "SSH služba"
+			}
+		},
+		"accessControl": {
+			"title": "Řízení přístupu",
+			"users": {
+				"title": "Uživatelé",
+				"description": "Sparáva uživatelů webové aplikace."
+			},
+			"apiKeys": {
+				"title": "API klíče",
+				"description": "Správa API klíčů."
+			},
+			"sshKeys": {
+				"title": "SSH klíče",
+				"description": "Správa SSH klíčů."
+			}
+		},
+		"openApi": {
+			"title": "OpenAPI specifikace",
+			"description": "Otevře OpenAPI dokumentaci REST API."
+		},
+		"docs": {
+			"title": "Dokumentace",
+			"description": "Otevře dokumentaci v novém panelu."
+		}
+	}
+}

@@ -48,11 +48,15 @@ class ServicesController extends BaseController {
 	 */
 	private const WHITELISTED_SERVICES = [
 		'apcupsd' => 'apcupsd',
+		'iqaros-influxdb-poll' => 'iqaros',
+		'iqaros-network-sync' => 'iqaros',
+		'iqaros-webapp-wsserver' => 'iqaros',
 		'iqrf-gateway-controller' => 'iqrfGatewayController',
 		'iqrf-gateway-daemon' => null,
 		'iqrf-gateway-influxdb-bridge' => 'iqrfGatewayInfluxdbBridge',
 		'iqrf-gateway-translator' => 'iqrfGatewayTranslator',
 		'mender-client' => 'mender',
+		'mender-updated' => 'mender',
 		'monit' => 'monit',
 		'ModemManager' => 'networkManager',
 		'nodered' => 'nodeRed',
@@ -87,9 +91,19 @@ class ServicesController extends BaseController {
 						schema:
 							$ref: \'#/components/schemas/ServiceList\'
 	')]
+	#[RequestParameter(name: 'withStatus', type: 'bool', in: 'query', description: 'Include service status')]
 	public function listServices(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$services = ['services' => $this->getWhitelistedServices()];
-		return $response->writeJsonBody($services);
+		$array = [];
+		foreach ($this->getWhitelistedServices() as $service) {
+			try {
+				$array[] = $this->manager->getState($service, boolval($request->getQueryParam('withStatus', false)));
+			} catch (UnsupportedInitSystemException $e) {
+				throw new ServerErrorException('Unsupported init system', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+			} catch (NonexistentServiceException) {
+				continue;
+			}
+		}
+		return $response->writeJsonBody($array);
 	}
 
 	#[Path('/{name}')]
@@ -165,9 +179,6 @@ class ServicesController extends BaseController {
 		$name = $request->getParameter('name');
 		$this->isServiceWhitelisted($name);
 		try {
-			if ($name === 'mender-client') {
-				$this->manager->enable('mender-connect');
-			}
 			$this->manager->enable($name);
 			return $response->writeBody('Workaround');
 		} catch (UnsupportedInitSystemException $e) {
@@ -198,9 +209,6 @@ class ServicesController extends BaseController {
 		$name = $request->getParameter('name');
 		$this->isServiceWhitelisted($name);
 		try {
-			if ($name === 'mender-client') {
-				$this->manager->disable('mender-connect');
-			}
 			$this->manager->disable($name);
 			return $response->writeBody('Workaround');
 		} catch (UnsupportedInitSystemException $e) {

@@ -51,10 +51,11 @@ import {Component, VModel, Vue} from 'vue-property-decorator';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 
-import NetworkOperatorService from '@/services/NetworkOperatorService';
-
 import {AxiosError} from 'axios';
-import NetworkOperator from '@/entities/NetworkOperator';
+import {
+	MobileOperator
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network/MobileOperator';
+import {useApiClient} from '@/services/ApiClient';
 
 /**
  * Network operator delete modal component
@@ -63,9 +64,14 @@ import NetworkOperator from '@/entities/NetworkOperator';
 export default class NetworkOperatorDeleteModal extends Vue {
 
 	/**
-	 * @property {NetworkOperator|null} operator Operator to delete
+	 * @property {MobileOperator|null} operator Operator to delete
 	 */
-	@VModel({required: true}) operator!: NetworkOperator|null;
+	@VModel({required: true}) operator!: MobileOperator|null;
+
+	/**
+	 * @property {NetworkOperatorService} service Network operator service
+	 */
+	private service = useApiClient().getNetworkServices().getMobileOperatorService();
 
 	/**
 	 * Computes modal display condition
@@ -78,12 +84,12 @@ export default class NetworkOperatorDeleteModal extends Vue {
 	 * Deletes operator
 	 */
 	private remove(): void {
-		if (this.operator === null) {
+		if (this.operator === null || this.operator.id === undefined) {
 			return;
 		}
-		const name = this.operator.getName();
+		const name = this.operator.name;
 		this.$store.commit('spinner/SHOW');
-		NetworkOperatorService.deleteOperator(this.operator.getId())
+		this.service.delete(this.operator.id)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(

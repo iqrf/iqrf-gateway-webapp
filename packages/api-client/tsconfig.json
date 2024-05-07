@@ -31,12 +31,6 @@
 	"exclude": [
 		"dist",
 		"docs",
-		"node_modules",
-		"typedoc.config.js"
-	],
-	"ts-node": {
-		"moduleTypes": {
-			"typedoc.config.ts": "commonjs"
-		}
-	}
+		"node_modules"
+	]
 }

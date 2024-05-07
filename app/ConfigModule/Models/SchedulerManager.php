@@ -53,6 +53,7 @@ class SchedulerManager {
 		private readonly TaskTimeManager $timeManager,
 		CommandManager $commandManager,
 		private readonly SchedulerSchemaManager $schemaManager,
+		private readonly GenericManager $genericManager,
 	) {
 		$cacheDir = $mainManager->getCacheDir();
 		if (!is_readable($cacheDir) || !is_writable($cacheDir)) {
@@ -180,6 +181,30 @@ class SchedulerManager {
 		}
 		$this->schemaManager->validate($config);
 		$this->fileManager->writeJson($fileName, $config);
+	}
+
+	/**
+	 * Returns messaging instances
+	 * @return array<string, array<string>> Messaging instances
+	 */
+	public function getMessagings(): array {
+		$searched = [
+			'mqtt' => 'iqrf::MqttMessaging',
+			'ws' => 'iqrf::WebsocketMessaging',
+		];
+		$found = [
+			'mqtt' => [],
+			'ws' => [],
+		];
+		foreach ($searched as $k => $v) {
+			try {
+				$this->genericManager->setComponent($v);
+			} catch (NonexistentJsonSchemaException $e) {
+				continue;
+			}
+			$found[$k] = array_map(static fn (array $component): string => $component['instance'], $this->genericManager->list());
+		}
+		return $found;
 	}
 
 	/**
