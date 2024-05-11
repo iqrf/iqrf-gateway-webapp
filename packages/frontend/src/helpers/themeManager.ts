@@ -15,13 +15,8 @@
  * limitations under the License.
  */
 
-import GenericBlueLogo from '@/assets/themes/generic/logo-blue.svg';
-import GenericSmallLogo from '@/assets/themes/generic/logo-small.svg';
-import GenericWhiteLogo from '@/assets/themes/generic/logo-white.svg';
-
-import IqarosRedLogo from '@/assets/themes/iqaros/logo-red.svg';
-import IqarosSmallLogo from '@/assets/themes/iqaros/logo-small.svg';
-import IqarosWhiteLogo from '@/assets/themes/iqaros/logo-white.svg';
+import BlueLogo from '@/assets/themes/generic/logo-blue.svg';
+import RedLogo from '@/assets/themes/generic/logo-red.svg';
 
 /**
  * URL builder
@@ -39,14 +34,6 @@ export default class ThemeManager {
 	}
 
 	/**
-	 * Returns the title translation key
-	 * @return {string} Title translation key
-	 */
-	static getTitleKey(): string {
-		return 'core.title.' + ThemeManager.getName();
-	}
-
-	/**
 	 * Returns the primary color
 	 * @return {string} Primary color
 	 */
@@ -55,33 +42,7 @@ export default class ThemeManager {
 			case 'iqaros':
 				return '#e31e24';
 			default:
-				return '#337ab7';
-		}
-	}
-
-	/**
-	 * Returns small logo for the sidebar
-	 * @return {string} Small logo for the sidebar
-	 */
-	static getSidebarSmallLogo(): string {
-		switch (ThemeManager.getName()) {
-			case 'iqaros':
-				return IqarosSmallLogo;
-			default:
-				return GenericSmallLogo;
-		}
-	}
-
-	/**
-	 * Returns logo for the sidebar
-	 * @return {string} Logo for the sidebar
-	 */
-	static getSidebarLogo(): string {
-		switch (ThemeManager.getName()) {
-			case 'iqaros':
-				return IqarosWhiteLogo;
-			default:
-				return GenericWhiteLogo;
+				return '#367fa9';
 		}
 	}
 
@@ -92,9 +53,9 @@ export default class ThemeManager {
 	static getWizardLogo(): string {
 		switch (ThemeManager.getName()) {
 			case 'iqaros':
-				return IqarosRedLogo;
+				return RedLogo;
 			default:
-				return GenericBlueLogo;
+				return BlueLogo;
 		}
 	}
 

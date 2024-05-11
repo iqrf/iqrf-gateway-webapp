@@ -16,8 +16,8 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<TheSidebar />
 		<TheHeader />
+		<TheSidebar />
 		<v-main>
 			<v-container fluid>
 				<router-view />

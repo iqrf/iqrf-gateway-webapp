@@ -141,7 +141,7 @@ export default class SidebarIndication extends Vue {
 
 <style scoped lang='scss'>
 tbody {
-	background-color: rgb(60 75 100 / 60%);
+	background-color: rgb(54 54 54 / 66%);
 
 	tr:hover {
 		background-color: transparent !important;

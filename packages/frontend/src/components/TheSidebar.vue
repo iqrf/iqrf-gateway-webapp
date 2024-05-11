@@ -18,29 +18,18 @@ limitations under the License.
 	<v-navigation-drawer
 		v-model='show'
 		:mini-variant='minimized'
-		fixed
 		app
+		clipped
 		dark
-		color='#3c4b64'
 	>
-		<template #prepend>
-			<v-list-item class='logo'>
-				<router-link to='/'>
-					<v-img
-						:alt='title'
-						:src='logo'
-						contain
-						height='48px'
-					/>
-				</router-link>
-			</v-list-item>
-		</template>
-		<v-divider />
 		<SidebarItems :items='items' />
 		<template #append>
 			<SidebarIndication />
 			<v-list dense>
-				<v-list-item style='margin-top: auto;' @click.stop='$store.commit("sidebar/toggleSize")'>
+				<v-list-item
+					style='margin-top: auto;'
+					@click.stop='$store.commit("sidebar/toggleSize")'
+				>
 					<v-list-item-action>
 						<v-icon dense>
 							mdi-{{ `chevron-${minimized ? 'right' : 'left'}` }}
@@ -56,7 +45,6 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import SidebarIndication from './SidebarIndication.vue';
 import SidebarItems, {NavigationItem} from '@/components/SidebarItems.vue';
-import ThemeManager from '@/helpers/themeManager';
 import {UserRoleIndex} from '@/services/AuthenticationService';
 import {LinkTarget} from '@/helpers/DisambiguationHelper';
 
@@ -65,9 +53,6 @@ import {LinkTarget} from '@/helpers/DisambiguationHelper';
 		SidebarItems,
 		SidebarIndication,
 	},
-	data: () => ({
-		ThemeManager,
-	}),
 })
 
 /**
@@ -97,14 +82,6 @@ export default class TheSidebar extends Vue {
 	 */
 	get minimized(): boolean {
 		return this.$store.getters['sidebar/isMinimized'];
-	}
-
-	/**
-	 * Returns the logo URL
-	 * @returns {string} Log URL
-	 */
-	get logo(): string {
-		return this.minimized ? ThemeManager.getSidebarSmallLogo() : ThemeManager.getSidebarLogo();
 	}
 
 	/**
@@ -501,19 +478,5 @@ export default class TheSidebar extends Vue {
 		},
 	];
 
-	/**
-	 * Returns the app title
-	 * @return {string} App title
-	 */
-	get title(): string {
-		return this.$t(ThemeManager.getTitleKey()).toString();
-	}
-
 }
 </script>
-
-<style lang='scss'>
-.logo {
-	justify-content: center;
-}
-</style>

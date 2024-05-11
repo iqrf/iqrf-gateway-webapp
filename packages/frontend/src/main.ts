@@ -18,7 +18,6 @@
 import Vue from 'vue';
 import store from './store';
 import router from './router';
-import ThemeManager from './helpers/themeManager';
 import App from '@/App.vue';
 
 import './styles/themes/generic.scss';
@@ -45,7 +44,7 @@ const app = new Vue({
 	vuetify,
 	metaInfo: {
 		titleTemplate: (titleChunk: string): string => {
-			const title = i18n.t(ThemeManager.getTitleKey()).toString();
+			const title = i18n.t('core.title.generic').toString();
 			return (titleChunk ? `${i18n.t(titleChunk).toString()} | ` : '') + title;
 		}
 	},

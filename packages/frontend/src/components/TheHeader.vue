@@ -16,13 +16,22 @@ limitations under the License.
 -->
 <template>
 	<v-app-bar
-		fixed
 		app
+		clipped-left
 		dark
-		color='#3c4b64'
+		:color='ThemeManager.getPrimaryColor()'
 		height='60'
 	>
 		<v-app-bar-nav-icon @click.stop='$store.commit("sidebar/toggleVisibility")' />
+		<v-spacer />
+		<v-app-bar-title class='logo'>
+			<router-link to='/'>
+				<img
+					:alt='$t("core.title.generic").toString()'
+					:src='logo'
+				>
+			</router-link>
+		</v-app-bar-title>
 		<v-spacer />
 		<v-menu
 			v-if='$store.getters["user/isLoggedIn"]'
@@ -70,34 +79,42 @@ limitations under the License.
 	</v-app-bar>
 </template>
 
-<script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+<script lang='ts' setup>
+import LogoSmall from '@/assets/themes/generic/logo-small.svg';
+import Logo from '@/assets/themes/generic/logo-white.svg';
 import ThemeManager from '@/helpers/themeManager';
+import Vue, {computed, getCurrentInstance, Ref} from 'vue';
+import {useBreakpoints} from '@/helpers/displayBreakpoints';
 
-@Component({})
+const display = useBreakpoints();
+const { proxy } = getCurrentInstance() as { proxy: Vue };
 
-/**
- * Header component
- */
-export default class TheHeader extends Vue {
+const logo: Ref<string> = computed((): string => {
+	return display.width.value < 1280 ? LogoSmall : Logo;
+});
 
-	/**
-	 * Returns the app title
-	 * @return {string} App title
-	 */
-	get title(): string {
-		return this.$t(ThemeManager.getTitleKey()).toString();
-	}
-
-	/**
-	 * User signout method, redirects to the signin page
-	 */
-	private signOut(): void {
-		this.$store.dispatch('user/signOut')
-			.then(() => {
-				this.$router.push('/sign/in');
-				this.$toast.success(this.$t('core.sign.out.message').toString());
-			});
-	}
+function signOut(): void {
+	proxy.$store.dispatch('user/signOut')
+		.then(() => {
+			proxy.$router.push('/sign/in');
+			proxy.$toast.success(proxy.$t('core.sign.out.message').toString());
+		});
 }
 </script>
+
+<style lang='scss' scoped>
+.logo {
+	img {
+		max-width: 100%;
+		max-height: 100%;
+		vertical-align: middle;
+	}
+
+	justify-content: center;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	margin-inline-start: 0 !important;
+}
+</style>

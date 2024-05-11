@@ -25,8 +25,8 @@ limitations under the License.
 					lg='4'
 				>
 					<v-img
-						:alt='title'
-						:src='logo'
+						:alt='$t("core.title.generic")'
+						:src='ThemeManager.getWizardLogo()'
 						max-height='32pt'
 						contain
 						class='mb-6'
@@ -38,29 +38,6 @@ limitations under the License.
 	</v-main>
 </template>
 
-<script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+<script lang='ts' setup>
 import ThemeManager from '@/helpers/themeManager';
-
-/**
- * Installation base page component
- */
-@Component
-export default class TheWizard extends Vue {
-
-	/**
-	 * Returns the logo URL
-	 * @returns {string} Log URL
-	 */
-	private logo = ThemeManager.getWizardLogo();
-
-	/**
-	 * Returns the app title
-	 * @return {string} App title
-	 */
-	get title(): string {
-		return this.$t(ThemeManager.getTitleKey()).toString();
-	}
-
-}
 </script>
