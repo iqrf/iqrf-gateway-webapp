@@ -9,8 +9,8 @@ Set theme for the IQAROS
 +VITE_THEME=iqaros
 --- a/packages/frontend/src/main.ts
 +++ b/packages/frontend/src/main.ts
-@@ -21,7 +21,7 @@
- import ThemeManager from './helpers/themeManager';
+@@ -20,7 +20,7 @@
+ import router from './router';
  import App from '@/App.vue';
  
 -import './styles/themes/generic.scss';
