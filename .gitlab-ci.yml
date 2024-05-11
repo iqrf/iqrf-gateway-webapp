@@ -285,6 +285,8 @@ deploy:docs:openapi:
   <<: *ssh_template
 
 deploy-docs:typedoc:
+  <<: *npm_template
+  <<: *ssh_template
   stage: deploy-docs
   environment:
     name: apidocs
@@ -292,8 +294,8 @@ deploy-docs:typedoc:
   only:
     - master
   before_script:
-    - !reference [.npm-template, before_script]
-    - !reference [.ssh-template, before_script]
+    - !reference [.npm_template, before_script]
+    - !reference [.ssh_template, before_script]
   script:
     - pnpm --dir packages/${PACKAGE} docs
     - ssh www-deploy@icinga.iqrf.org "rm -rf /data/nginx/apidocs/${DEPLOY_DIR}/*"
@@ -306,8 +308,6 @@ deploy-docs:typedoc:
     matrix:
       - PACKAGE: api-client
         DEPLOY_DIR: iqrf-gateway-webapp-js-client
-  <<: *npm_template
-  <<: *ssh_template
 
 include:
   - template: Code-Quality.gitlab-ci.yml
