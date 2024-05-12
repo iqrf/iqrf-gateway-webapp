@@ -25,56 +25,38 @@ limitations under the License.
 				<v-checkbox
 					v-model='config.embPers.eeprom'
 					:label='$t("components.iqrfnet.common.peripherals.eeprom")'
-					density='compact'
-					hide-details
 				/>
 				<v-checkbox
 					v-model='config.embPers.eeeprom'
 					:label='$t("components.iqrfnet.common.peripherals.eeeprom")'
-					density='compact'
-					hide-details
 				/>
 				<v-checkbox
 					v-model='config.embPers.ram'
 					:label='$t("components.iqrfnet.common.peripherals.ram")'
-					density='compact'
-					hide-details
 				/>
 				<v-checkbox
 					v-model='config.embPers.ledr'
 					:label='$t("components.iqrfnet.common.peripherals.ledr")'
-					density='compact'
-					hide-details
 				/>
 				<v-checkbox
 					v-model='config.embPers.ledg'
 					:label='$t("components.iqrfnet.common.peripherals.ledg")'
-					density='compact'
-					hide-details
 				/>
 				<v-checkbox
 					v-model='config.embPers.spi'
 					:label='$t("components.iqrfnet.common.peripherals.spi")'
-					density='compact'
-					hide-details
 				/>
 				<v-checkbox
 					v-model='config.embPers.io'
 					:label='$t("components.iqrfnet.common.peripherals.io")'
-					density='compact'
-					hide-details
 				/>
 				<v-checkbox
 					v-model='config.embPers.thermometer'
 					:label='$t("components.iqrfnet.common.peripherals.thermometer")'
-					density='compact'
-					hide-details
 				/>
 				<v-checkbox
 					v-model='config.embPers.uart'
 					:label='$t("components.iqrfnet.common.peripherals.uart")'
-					density='compact'
-					hide-details
 				/>
 			</v-col>
 			<v-divider :vertical='!display.mobile.value' />
@@ -85,50 +67,34 @@ limitations under the License.
 				<v-checkbox
 					v-model='config.customDpaHandler'
 					:label='$t("components.iqrfnet.tr-config.dpa.other.customDpaHandler")'
-					density='compact'
-					hide-details
 				/>
 				<v-checkbox
 					v-model='config.dpaPeerToPeer'
 					:label='$t("components.iqrfnet.tr-config.dpa.other.dp2p")'
-					density='compact'
-					hide-details
 				/>
 				<v-checkbox
 					v-model='config.peerToPeer'
 					:label='$t("components.iqrfnet.tr-config.dpa.other.up2p")'
-					density='compact'
-					hide-details
 				/>
 				<v-checkbox
 					v-model='config.localFrcReception'
 					:label='$t("components.iqrfnet.tr-config.dpa.other.localFrc")'
-					density='compact'
-					hide-details
 				/>
 				<v-checkbox
 					v-model='config.ioSetup'
 					:label='$t("components.iqrfnet.tr-config.dpa.other.ioSetup")'
-					density='compact'
-					hide-details
 				/>
 				<v-checkbox
 					v-model='config.dpaAutoexec'
 					:label='$t("components.iqrfnet.tr-config.dpa.other.autoexec")'
-					density='compact'
-					hide-details
 				/>
 				<v-checkbox
 					v-model='config.routingOff'
 					:label='$t("components.iqrfnet.tr-config.dpa.other.routingOff")'
-					density='compact'
-					hide-details
 				/>
 				<v-checkbox
 					v-model='config.neverSleep'
 					:label='$t("components.iqrfnet.tr-config.dpa.other.neverSleep")'
-					density='compact'
-					hide-details
 				/>
 				<SelectInput
 					v-model='config.uartBaudrate'

@@ -44,40 +44,28 @@ limitations under the License.
 				<v-checkbox
 					v-model='config.rfPgmEnableAfterReset'
 					:label='$t("components.iqrfnet.tr-config.os.rfpgm.enableAfterReset")'
-					density='compact'
-					hide-details
 				/>
 				<v-checkbox
 					v-model='config.rfPgmEnableAfterReset'
 					:label='$t("components.iqrfnet.tr-config.os.rfpgm.terminateAfterMin")'
-					density='compact'
-					hide-details
 				/>
 				<v-checkbox
 					v-model='config.rfPgmEnableAfterReset'
 					:label='$t("components.iqrfnet.tr-config.os.rfpgm.terminateByMcuPin")'
-					density='compact'
-					hide-details
 				/>
 				<v-checkbox
 					v-model='config.rfPgmEnableAfterReset'
 					:label='$t("components.iqrfnet.tr-config.os.rfpgm.dualChannel")'
-					density='compact'
-					hide-details
 				/>
 				<v-checkbox
 					v-model='config.rfPgmEnableAfterReset'
 					:label='$t("components.iqrfnet.tr-config.os.rfpgm.lpMode")'
-					density='compact'
-					hide-details
 				/>
 				<v-checkbox
 					v-model='config.rfPgmEnableAfterReset'
 					:label='$t("components.iqrfnet.tr-config.os.rfpgm.incorrectUpload")'
-					density='compact'
 					readonly
 					disabled
-					hide-details
 				/>
 			</v-col>
 		</v-row>
@@ -90,18 +78,14 @@ limitations under the License.
 				<v-checkbox
 					v-model='config.rfPgmEnableAfterReset'
 					:label='$t("components.iqrfnet.common.peripherals.thermometer")'
-					density='compact'
 					readonly
 					disabled
-					hide-details
 				/>
 				<v-checkbox
 					v-model='config.rfPgmEnableAfterReset'
 					:label='$t("components.iqrfnet.common.peripherals.externalEeprom")'
-					density='compact'
 					readonly
 					disabled
-					hide-details
 				/>
 			</v-col>
 			<v-divider :vertical='!display.mobile.value' />

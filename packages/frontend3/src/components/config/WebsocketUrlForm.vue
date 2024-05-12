@@ -21,8 +21,9 @@ limitations under the License.
 			<v-btn
 				v-bind='props'
 				color='primary'
+				:prepend-icon='mdiPencil'
 			>
-				{{ $t("common.buttons.edit") }}
+				{{ $t("components.common.actions.edit") }}
 			</v-btn>
 		</template>
 		<v-form
@@ -35,12 +36,12 @@ limitations under the License.
 					{{ cardTitle }}
 				</template>
 				<SelectInput
-					v-model='protocol'
+					v-model='data.protocol'
 					:label='$t("common.labels.protocol")'
 					:items='protocolOptions'
 				/>
 				<TextInput
-					v-model='hostname'
+					v-model='data.hostname'
 					:label='$t("common.labels.hostname")'
 					:rules='[
 						(v: string|null) => ValidationRules.required(v, $t("common.validation.hostnameMissing")),
@@ -49,8 +50,10 @@ limitations under the License.
 					required
 				/>
 				<NumberInput
-					v-model.number='port'
+					v-model.number='data.port'
 					:label='$t("common.labels.port")'
+					:min='1'
+					:max='65535'
 					:rules='[
 						(v: number|null) => ValidationRules.required(v, $t("common.validation.portMissing")),
 						(v: number) => ValidationRules.integer(v, $t("common.validation.portInvalid")),
@@ -59,26 +62,20 @@ limitations under the License.
 					required
 				/>
 				<TextInput
-					v-model='path'
+					v-model='data.path'
 					:label='$t("common.labels.path")'
 				/>
 				<template #actions>
-					<v-btn
-						color='primary'
-						type='submit'
-						variant='elevated'
+					<CardActionBtn
+						:action='Action.Edit'
 						:disabled='!isValid.value'
-					>
-						{{ $t('common.buttons.save') }}
-					</v-btn>
+						type='submit'
+					/>
 					<v-spacer />
-					<v-btn
-						color='grey-darken-2'
-						variant='elevated'
+					<CardActionBtn
+						:action='Action.Cancel'
 						@click='close'
-					>
-						{{ $t('common.buttons.cancel') }}
-					</v-btn>
+					/>
 				</template>
 			</Card>
 		</v-form>
@@ -86,18 +83,20 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
+import { mdiPencil } from '@mdi/js';
 import { type Ref, ref } from 'vue';
 import { watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import Card from '@/components/layout/card/Card.vue';
+import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import NumberInput from '@/components/layout/form/NumberInput.vue';
 import SelectInput from '@/components/layout/form/SelectInput.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
-import { WebsocketProtocol } from '@/enums/websocket';
 import ValidationRules from '@/helpers/ValidationRules';
-
+import { Action } from '@/types/Action';
+import { Protocol, type ParsedUrl, UrlHelper } from '@/types/Url';
 
 const componentProps = defineProps({
 	cardTitle: {
@@ -113,41 +112,35 @@ const componentProps = defineProps({
 const emit = defineEmits(['edited']);
 const i18n = useI18n();
 const show: Ref<boolean> = ref(false);
-const regexCapture = new RegExp(/(?<protocol>ws|wss):\/\/(?<host>.+):(?<port>\d+)(\/(?<path>.*))?/);
-const protocol: Ref<WebsocketProtocol> = ref(WebsocketProtocol.WS);
 const protocolOptions = [
 	{
 		title: i18n.t('common.labels.protocols.ws'),
-		value: WebsocketProtocol.WS,
+		value: Protocol.WS,
 	},
 	{
 		title: i18n.t('common.labels.protocols.wss'),
-		value: WebsocketProtocol.WSS,
+		value: Protocol.WSS,
 	},
 ];
-const hostname: Ref<string> = ref('');
-const port: Ref<number> = ref(80);
-const path: Ref<string> = ref('');
+const data: Ref<ParsedUrl> = ref({
+	protocol: Protocol.WS,
+	hostname: '',
+	port: null,
+	path: null,
+});
 
 watchEffect(async (): Promise<void> => {
 	if (show.value) {
-		const parsed = componentProps.url.match(regexCapture);
-		if (parsed?.groups === undefined) {
-			return;
+		try {
+			data.value = UrlHelper.fromString(componentProps.url);
+		} catch (error) {
+			console.error(error);
 		}
-		protocol.value = parsed.groups.protocol as WebsocketProtocol;
-		hostname.value = parsed.groups.host;
-		const portVal = Number.parseInt(parsed.groups.port);
-		if (!Number.isNaN(portVal)) {
-			port.value = portVal;
-		}
-		path.value = parsed.groups.path ?? '';
 	}
 });
 
 async function onSubmit(): Promise<void> {
-	const url = `${protocol.value}://${hostname.value}:${port.value}/${path.value}`;
-	emit('edited', url);
+	emit('edited', UrlHelper.toString(data.value));
 	close();
 }
 

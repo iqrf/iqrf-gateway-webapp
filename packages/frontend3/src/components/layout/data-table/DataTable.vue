@@ -29,7 +29,7 @@ limitations under the License.
 	>
 		<template #bottom>
 			<div
-				v-if='items.length > 0 && !hidePagination'
+				v-if='items.length > 0 && !hidePagination && pageCount > 1'
 				class='text-center pt-1'
 			>
 				<v-pagination

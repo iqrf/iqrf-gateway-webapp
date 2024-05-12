@@ -32,6 +32,12 @@ export default createVuetify({
 	components: {
 		...labs,
 	},
+	defaults: {
+		VCheckbox: {
+			density: 'comfortable',
+			hideDetails: true,
+		},
+	},
 	icons: {
 		defaultSet: 'mdi',
 		aliases,

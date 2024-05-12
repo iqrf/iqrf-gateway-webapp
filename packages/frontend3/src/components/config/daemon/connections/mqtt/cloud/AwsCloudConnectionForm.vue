@@ -17,18 +17,27 @@ limitations under the License.
 
 <template>
 	<ModalWindow v-model='show'>
+		<template #activator='{ props }'>
+			<v-list-item v-bind='props'>
+				<v-list-item-title>
+					{{ $t('components.configuration.daemon.connections.mqtt.clouds.aws.title') }}
+				</v-list-item-title>
+			</v-list-item>
+		</template>
 		<v-form
 			ref='form'
 			v-slot='{ isValid }'
 			:disabled='componentState === ComponentState.Saving'
+			@submit.prevent='onSubmit'
 		>
-			<Card>
+			<Card :action='Action.Add'>
 				<template #title>
 					{{ $t('components.configuration.daemon.connections.mqtt.clouds.aws.title') }}
 				</template>
 				<TextInput
 					v-model='config.endpoint'
 					:label='$t("components.configuration.daemon.connections.mqtt.clouds.aws.endpoint")'
+					:prepend-inner-icon='mdiLink'
 					:rules='[
 						(v: string|null) => ValidationRules.required(v, $t("components.configuration.daemon.connections.mqtt.clouds.aws.validation.endpointMissing")),
 					]'
@@ -41,7 +50,7 @@ limitations under the License.
 					:rules='[
 						(v: File|Blob|null) => ValidationRules.required(v, $t("components.configuration.daemon.connections.mqtt.clouds.aws.validation.certificateMissing")),
 					]'
-					:prepend-inner-icon='mdiFileOutline'
+					:prepend-inner-icon='mdiFileCertificateOutline'
 					:prepend-icon='null'
 					show-size
 					required
@@ -53,29 +62,23 @@ limitations under the License.
 					:rules='[
 						(v: File|Blob|null) => ValidationRules.required(v, $t("components.configuration.daemon.connections.mqtt.clouds.aws.validation.privateKeyMissing")),
 					]'
-					:prepend-inner-icon='mdiFileOutline'
+					:prepend-inner-icon='mdiFileKeyOutline'
 					:prepend-icon='null'
 					show-size
 					required
 				/>
 				<template #actions>
-					<v-btn
-						color='primary'
-						variant='elevated'
+					<CardActionBtn
+						:action='Action.Add'
 						:disabled='!isValid.value || componentState === ComponentState.Saving'
-						@click='onSubmit'
-					>
-						{{ $t('common.buttons.save') }}
-					</v-btn>
+						type='submit'
+					/>
 					<v-spacer />
-					<v-btn
-						color='grey-darken-2'
-						variant='elevated'
+					<CardActionBtn
+						:action='Action.Cancel'
 						:disabled='componentState === ComponentState.Saving'
 						@click='close'
-					>
-						{{ $t('common.buttons.close') }}
-					</v-btn>
+					/>
 				</template>
 			</Card>
 		</v-form>
@@ -85,25 +88,28 @@ limitations under the License.
 <script lang='ts' setup>
 import { type AwsService } from '@iqrf/iqrf-gateway-webapp-client/services/Cloud';
 import { type AwsMqttConfig } from '@iqrf/iqrf-gateway-webapp-client/types/Cloud';
-import { mdiFileOutline } from '@mdi/js';
+import {
+	mdiFileCertificateOutline,
+	mdiFileKeyOutline,
+	mdiLink,
+} from '@mdi/js';
 import { type Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
 
 import Card from '@/components/layout/card/Card.vue';
+import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
+import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
-const show = defineModel({
-	required: true,
-	type: Boolean,
-});
-const emit = defineEmits(['saved']);
+const show: Ref<boolean> = ref(false);
+const emit = defineEmits(['close', 'saved']);
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
 const service: AwsService = useApiClient().getCloudServices().getAwsService();
@@ -142,6 +148,7 @@ function clear(): void {
 
 function close(): void {
 	show.value = false;
+	emit('close');
 	clear();
 }
 </script>

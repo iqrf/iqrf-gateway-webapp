@@ -265,23 +265,15 @@
 	},
 	"common": {
 		"buttons": {
-			"add": "Add",
-			"edit": "Edit",
-			"delete": "Delete",
 			"save": "Save",
-			"cancel": "Cancel",
-			"close": "Close",
 			"skip": "Skip",
-			"reload": "Reload",
 			"refresh": "Refresh",
 			"backup": "Backup",
 			"restore": "Restore",
 			"selectAll": "Select all",
 			"deselectAll": "Deselect all",
-			"upload": "Upload",
 			"clipboard": "Copy to clipboard",
-			"send": "Send",
-			"import": "Import"
+			"send": "Send"
 		},
 		"labels": {
 			"general": "General",
@@ -1346,6 +1338,9 @@
 				"diagnostics": "Download diagnostics"
 			},
 			"logs": {
+				"actions": {
+					"download": "Download logs"
+				},
 				"journal": {
 					"oldestRecords": "No older Journal records available."
 				}

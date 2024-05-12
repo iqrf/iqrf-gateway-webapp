@@ -31,10 +31,7 @@ export default class ValidationRules {
 	 * @return {boolean|string} Validation result
 	 */
 	public static required(value: unknown, error: string): boolean | string {
-		if (value === null || value === undefined || (Array.isArray(value) && value.length === 0) || value === false) {
-			return error;
-		}
-		return String(value).trim().length > 0 || error;
+		return !ValidationRules.isEmpty(value) || error;
 	}
 
 	/**
@@ -59,6 +56,9 @@ export default class ValidationRules {
 	 * @return {boolean|string} Validation result
 	 */
 	public static min(value: number, min: number, error: string): boolean | string {
+		if (ValidationRules.isEmpty(value)) {
+			return true;
+		}
 		return (value >= min) || error;
 	}
 
@@ -70,6 +70,9 @@ export default class ValidationRules {
 	 * @return {boolean|string} Validation result
 	 */
 	public static max(value: number, max: number, error: string): boolean | string {
+		if (ValidationRules.isEmpty(value)) {
+			return true;
+		}
 		return (value <= max) || error;
 	}
 
@@ -82,6 +85,9 @@ export default class ValidationRules {
 	 * @return {boolean|string} Validation result
 	 */
 	public static between(value: number, min: number, max: number, error: string): boolean | string {
+		if (ValidationRules.isEmpty(value)) {
+			return true;
+		}
 		return (value >= min && value <= max) || error;
 	}
 
@@ -93,6 +99,9 @@ export default class ValidationRules {
 	 * @return {boolean|string} Validation result
 	 */
 	public static len(value: string | unknown[], length: number, error: string): boolean | string {
+		if (ValidationRules.isEmpty(value)) {
+			return true;
+		}
 		return (value.length === length) || error;
 	}
 
@@ -104,6 +113,9 @@ export default class ValidationRules {
 	 * @return {boolean|string} Validation result
 	 */
 	public static minLength(value: string | unknown[], length: number, error: string): boolean | string {
+		if (ValidationRules.isEmpty(value)) {
+			return true;
+		}
 		return (value.length >= length) || error;
 	}
 
@@ -115,6 +127,9 @@ export default class ValidationRules {
 	 * @return {boolean|string} Validation result
 	 */
 	public static maxLength(value: string | unknown[], length: number, error: string): boolean | string {
+		if (ValidationRules.isEmpty(value)) {
+			return true;
+		}
 		return value === undefined || (value.length <= length) || error;
 	}
 
@@ -125,6 +140,9 @@ export default class ValidationRules {
 	 * @return {boolean|string} Validation result
 	 */
 	public static email(value: string, errorMessage: string): boolean | string {
+		if (ValidationRules.isEmpty(value)) {
+			return true;
+		}
 		const validator: z.ZodString = z.string().email();
 		return validator.safeParse(punycodeToASCII(value)).success || errorMessage;
 	}
@@ -136,6 +154,9 @@ export default class ValidationRules {
 	 * @return {boolean|string} Validation result
 	 */
 	public static integer(value: number, error: string): boolean | string {
+		if (ValidationRules.isEmpty(value)) {
+			return true;
+		}
 		return Number.isInteger(value) || error;
 	}
 
@@ -146,6 +167,9 @@ export default class ValidationRules {
 	 * @return {boolean|string} Validation result
 	 */
 	public static numerical(value: unknown, error: string): boolean | string {
+		if (ValidationRules.isEmpty(value)) {
+			return true;
+		}
 		if (typeof value === 'number' && !Number.isNaN(value)) {
 			return true;
 		}
@@ -159,8 +183,8 @@ export default class ValidationRules {
 	 * @return {boolean|string} Validation result
 	 */
 	public static server(value: string | null, error: string): boolean | string {
-		if (value === null) {
-			return error;
+		if (ValidationRules.isEmpty(value)) {
+			return true;
 		}
 		const ipv4Validator: z.ZodString = z.string().ip({ version: 'v4' });
 		const ipv6Validator: z.ZodString = z.string().ip({ version: 'v6' });
@@ -174,8 +198,8 @@ export default class ValidationRules {
 	 * @return {boolean|string} Validation result
 	 */
 	public static uuid(value: string | null, error: string): boolean | string {
-		if (value === null) {
-			return error;
+		if (ValidationRules.isEmpty(value)) {
+			return true;
 		}
 		const uuidValidator: z.ZodString = z.string().uuid();
 		return uuidValidator.safeParse(value).success || error;
@@ -188,11 +212,11 @@ export default class ValidationRules {
 	 * @return {boolean|string} Validation result
 	 */
 	public static json(value: string | null, error: string): boolean | string {
-		if (value === null) {
-			return error;
+		if (ValidationRules.isEmpty(value)) {
+			return true;
 		}
 		try {
-			JSON.parse(value);
+			JSON.parse(value!);
 			return true;
 		} catch (e) {
 			return error;
@@ -207,10 +231,10 @@ export default class ValidationRules {
 	 * @returns {boolean|string} Validation result
 	 */
 	public static regex(value: string | null, pattern: RegExp, error: string): boolean | string {
-		if (value === null) {
+		if (ValidationRules.isEmpty(value)) {
 			return true;
 		}
-		return pattern.test(value) || error;
+		return pattern.test(value!) || error;
 	}
 
 	/**
@@ -220,11 +244,24 @@ export default class ValidationRules {
 	 * @returns {boolean|string} Validation result
 	 */
 	public static url(value: string | null, error: string): boolean | string {
-		if (value === null) {
-			return error;
+		if (ValidationRules.isEmpty(value)) {
+			return true;
 		}
 		const urlValidator: z.ZodString = z.string().url();
 		return urlValidator.safeParse(value).success || error;
 	}
+
+	/**
+	 * Empty value
+	 * @param {unknown} value Value to check
+	 * @returns {boolean} Validation result
+	 */
+	private static isEmpty(value: unknown): boolean {
+		if (value === null || value === undefined || (Array.isArray(value) && value.length === 0) || value === false) {
+			return true;
+		}
+		return String(value).trim().length === 0;
+	}
+
 
 }

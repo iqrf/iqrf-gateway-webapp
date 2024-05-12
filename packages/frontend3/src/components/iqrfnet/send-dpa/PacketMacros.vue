@@ -93,7 +93,7 @@ onMounted(() => {
 <style lang='scss' scoped>
 .v-item-group {
 	.v-btn {
-		border-radius: 0%;
+		border-radius: 0;
 	}
 
 	.v-btn:first-child {

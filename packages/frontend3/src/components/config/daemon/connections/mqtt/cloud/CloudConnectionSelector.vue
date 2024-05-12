@@ -17,67 +17,46 @@ limitations under the License.
 
 <template>
 	<v-menu
+		v-model='show'
 		location='start'
-		:close-on-content-click='true'
 	>
 		<template #activator='{ props }'>
-			<v-btn
-				id='tooltip-activator'
+			<CardTitleActionBtn
 				v-bind='props'
 				:icon='mdiCloudPlusOutline'
+				:tooltip='$t("components.configuration.daemon.connections.mqtt.clouds.add")'
 			/>
-			<v-tooltip
-				activator='#tooltip-activator'
-				location='bottom'
-			>
-				{{ $t('components.configuration.daemon.connections.mqtt.clouds.add') }}
-			</v-tooltip>
 		</template>
 		<v-list density='compact'>
-			<v-list-item @click='showAws = true'>
-				<v-list-item-title>
-					{{ $t('components.configuration.daemon.connections.mqtt.clouds.aws.title') }}
-				</v-list-item-title>
-			</v-list-item>
-			<v-list-item @click='showAzure = true'>
-				<v-list-item-title>
-					{{ $t('components.configuration.daemon.connections.mqtt.clouds.azure.title') }}
-				</v-list-item-title>
-			</v-list-item>
-			<v-list-item @click='showIbm = true'>
-				<v-list-item-title>
-					{{ $t('components.configuration.daemon.connections.mqtt.clouds.ibm.title') }}
-				</v-list-item-title>
-			</v-list-item>
+			<AwsCloudConnectionForm @close='close()' @saved='onSaved()' />
+			<AzureCloudConnectionForm @close='close()' @saved='onSaved()' />
+			<IbmCloudConnectionForm @close='close()' @saved='onSaved()' />
 		</v-list>
 	</v-menu>
-	<AwsCloudConnectionForm
-		v-model='showAws'
-		@saved='onSaved()'
-	/>
-	<AzureCloudConnectionForm
-		v-model='showAzure'
-		@saved='onSaved()'
-	/>
-	<IbmCloudConnectionForm
-		v-model='showIbm'
-		@saved='onSaved()'
-	/>
 </template>
 
 <script lang='ts' setup>
 import { mdiCloudPlusOutline } from '@mdi/js';
-import { type Ref, ref } from 'vue';
+import { ref, type Ref } from 'vue';
 
 import AwsCloudConnectionForm from '@/components/config/daemon/connections/mqtt/cloud/AwsCloudConnectionForm.vue';
 import AzureCloudConnectionForm from '@/components/config/daemon/connections/mqtt/cloud/AzureCloudConnectionForm.vue';
 import IbmCloudConnectionForm from '@/components/config/daemon/connections/mqtt/cloud/IbmCloudConnectionForm.vue';
+import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
 
 const emit = defineEmits(['saved']);
-const showAws: Ref<boolean> = ref(false);
-const showAzure: Ref<boolean> = ref(false);
-const showIbm: Ref<boolean> = ref(false);
+const show: Ref<boolean> = ref(false);
 
+/**
+ * Closes the dialog
+ */
+function close(): void {
+	show.value = false;
+}
+
+/**
+ * Handles the saved event
+ */
 function onSaved(): void {
 	close();
 	emit('saved');

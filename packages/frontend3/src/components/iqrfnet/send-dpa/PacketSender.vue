@@ -415,8 +415,6 @@ limitations under the License.
 			<v-checkbox
 				v-model='useCustomTimeout'
 				:label='$t("components.iqrfnet.send-dpa.useCustomTimeout")'
-				density='compact'
-				hide-details
 			/>
 			<NumberInput
 				v-model.number='customTimeout'
