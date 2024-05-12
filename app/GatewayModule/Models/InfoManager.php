@@ -93,6 +93,7 @@ class InfoManager {
 	public function getBrief(): array {
 		return [
 			'board' => $this->getBoard(),
+			'gwId' => $this->getId(),
 		];
 	}
 

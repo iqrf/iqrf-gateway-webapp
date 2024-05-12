@@ -359,8 +359,11 @@ final class InfoManagerTest extends CommandTestCase {
 		$manager = Mockery::mock(InfoManager::class, [$this->commandManager, $this->networkManager, $this->versionManager])->makePartial();
 		$manager->shouldReceive('getBoard')
 			->andReturn(self::EXPECTED['board']);
+		$manager->shouldReceive('getId')
+			->andReturn(self::EXPECTED['gwId']);
 		$expected = [
 			'board' => self::EXPECTED['board'],
+			'gwId' => self::EXPECTED['gwId'],
 		];
 		Assert::same($expected, $manager->getBrief());
 	}

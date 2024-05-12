@@ -112,16 +112,16 @@ export interface SoftwareVersions {
 export interface GatewayBriefInformation {
 	/// Gateway board manufacturer and model
 	board: string;
+	/// Gateway ID
+	gwId: string | null;
 }
 
 /**
  * Information about IQRF Gateway
  */
-export interface GatewayInformation extends GatewayBriefInformation{
+export interface GatewayInformation extends GatewayBriefInformation {
 	/// Disk usages
 	diskUsages: FileSystemUsage[];
-	/// Gateway ID
-	gwId: string | null;
 	/// Gateway OS image version
 	gwImage: string | null;
 	/// Gateway hostname
