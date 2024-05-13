@@ -17,7 +17,7 @@ limitations under the License.
 <template>
 	<div v-if='enabled' class='loading'>
 		<div class='loading-group'>
-			<div class='spinner' :style='{"--color": color}' />
+			<div class='spinner' />
 			<div class='loading-text'>
 				{{ text }}
 			</div>
@@ -28,7 +28,6 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {mapGetters} from 'vuex';
-import ThemeManager from '@/helpers/themeManager';
 
 @Component({
 	computed: {
@@ -43,14 +42,6 @@ import ThemeManager from '@/helpers/themeManager';
  * Loading spinner component
  */
 export default class LoadingSpinner extends Vue {
-
-	/**
-	 * Returns the spinner color
-	 */
-	get color(): string {
-		return ThemeManager.getPrimaryColor();
-	}
-
 }
 </script>
 
@@ -97,7 +88,7 @@ export default class LoadingSpinner extends Vue {
 	margin: auto;
 	border: 16px solid #f3f3f3;
 	border-radius: 50%;
-	border-top: 16px solid var(--color);
+	border-top: 16px solid #367fa9;
 	animation: spin 2s linear infinite;
 }
 

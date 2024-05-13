@@ -39,7 +39,7 @@
 	"devDependencies": {
 		"@types/node": "^20.12.11",
 		"@vitest/coverage-istanbul": "^1.6.0",
-		"pnpm": "^9.1.0",
+		"pnpm": "^9.1.1",
 		"ts-node": "^10.9.2",
 		"typescript": "^5.4.5",
 		"vite-tsconfig-paths": "^4.3.2",

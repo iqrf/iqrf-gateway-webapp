@@ -15,14 +15,13 @@
  * limitations under the License.
  */
 import * as proc from 'child_process';
-import {fileURLToPath, URL} from 'node:url';
+import { fileURLToPath, URL } from 'node:url';
 import path from 'path';
 
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite';
 import UnheadVite from '@unhead/addons/vite';
 import vue from '@vitejs/plugin-vue';
-import {defineConfig, loadEnv} from 'vite';
-import {ViteEjsPlugin} from 'vite-plugin-ejs';
+import { type ConfigEnv, defineConfig, loadEnv, type UserConfig } from 'vite';
 import Pages from 'vite-plugin-pages';
 import VueDevTools from 'vite-plugin-vue-devtools';
 import Layouts from 'vite-plugin-vue-layouts';
@@ -31,7 +30,7 @@ import svgLoader from 'vite-svg-loader';
 
 const gitCommitHash = proc.execSync('git rev-parse --short HEAD').toString().trim();
 
-export default defineConfig(({mode}) => {
+export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
 	const env: Record<string, string> = loadEnv(mode, process.cwd(), '');
 	return {
 		base: env.VITE_BASE_URL,
@@ -53,9 +52,6 @@ export default defineConfig(({mode}) => {
 				styles: {
 					configFile: 'src/styles/vuetify-settings.scss',
 				},
-			}),
-			ViteEjsPlugin({
-				theme: env.VITE_THEME,
 			}),
 			UnheadVite(),
 			VueI18nPlugin({
@@ -109,7 +105,7 @@ export default defineConfig(({mode}) => {
 			outputFile: {
 				junit: 'junit.xml',
 			},
-			reporters: ['default', 'junit'],
+			reporters: ['verbose', 'junit'],
 		},
 	};
 });

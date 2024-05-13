@@ -19,7 +19,7 @@ limitations under the License.
 		app
 		clipped-left
 		dark
-		:color='ThemeManager.getPrimaryColor()'
+		color='primary'
 		height='60'
 	>
 		<v-app-bar-nav-icon @click.stop='$store.commit("sidebar/toggleVisibility")' />
@@ -80,9 +80,8 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import LogoSmall from '@/assets/themes/generic/logo-small.svg';
-import Logo from '@/assets/themes/generic/logo-white.svg';
-import ThemeManager from '@/helpers/themeManager';
+import LogoSmall from '@/assets/logo-white-small.svg?url';
+import Logo from '@/assets/logo-white.svg?url';
 import Vue, {computed, getCurrentInstance, Ref} from 'vue';
 import {useBreakpoints} from '@/helpers/displayBreakpoints';
 

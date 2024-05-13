@@ -26,6 +26,9 @@
 
 <script lang='ts' setup>
 import { computed } from 'vue';
+import { useTheme } from 'vuetify';
+
+const theme = useTheme();
 const props = defineProps({
 	headerColor: {
 		type: String,
@@ -34,7 +37,7 @@ const props = defineProps({
 	},
 	actionsColor: {
 		type: String,
-		default: 'grey-lighten-2',
+		default: 'default',
 		required: false,
 	},
 	bottomMargin: {
@@ -43,7 +46,14 @@ const props = defineProps({
 		required: false,
 	},
 });
-const actionsClass = computed(() => `bg-${props.actionsColor}`);
+const actionsClass = computed(() => {
+	let actionsColor = props.actionsColor;
+	const isLight = theme.global.name.value === 'light';
+	if (actionsColor === 'default') {
+		actionsColor = isLight ? 'grey-lighten-2' : 'grey-darken-3';
+	}
+	return `bg-${actionsColor}`;
+});
 const headerClass = computed(() => `bg-${props.headerColor}`);
 </script>
 

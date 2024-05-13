@@ -22,7 +22,7 @@
 <script lang='ts' setup>
 import { storeToRefs } from 'pinia';
 
-import Logo from '@/assets/themes/generic/gateway-logo-light-blue.svg?url';
+import Logo from '@/assets/logo-blue.svg?url';
 import Steps from '@/components/install/Steps.vue';
 import { useInstallStore } from '@/store/install';
 

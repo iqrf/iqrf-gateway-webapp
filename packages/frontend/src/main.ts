@@ -20,7 +20,6 @@ import store from './store';
 import router from './router';
 import App from '@/App.vue';
 
-import './styles/themes/generic.scss';
 import './styles/app.scss';
 import 'vue-datetime/dist/vue-datetime.css';
 import 'vue-select/dist/vue-select.css';

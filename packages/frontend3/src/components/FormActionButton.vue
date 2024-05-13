@@ -21,7 +21,7 @@ const i18n = useI18n();
 /** @const componentProps Component properties */
 const componentProps = defineProps({
 	action: {
-		require: true,
+		required: true,
 		type: String as PropType<FormAction>,
 	},
 	disabled: {

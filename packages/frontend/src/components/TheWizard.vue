@@ -26,7 +26,7 @@ limitations under the License.
 				>
 					<v-img
 						:alt='$t("core.title.generic")'
-						:src='ThemeManager.getWizardLogo()'
+						:src='Logo'
 						max-height='32pt'
 						contain
 						class='mb-6'
@@ -39,5 +39,5 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import ThemeManager from '@/helpers/themeManager';
+import Logo from '@/assets/logo-blue.svg';
 </script>

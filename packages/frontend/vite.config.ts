@@ -19,7 +19,6 @@ import path from 'path';
 import Components from 'unplugin-vue-components/vite';
 import {VuetifyResolver} from 'unplugin-vue-components/resolvers';
 import {defineConfig, loadEnv} from 'vite';
-import {ViteEjsPlugin} from 'vite-plugin-ejs';
 import svgLoader from 'vite-svg-loader';
 
 export default defineConfig(({mode}) => {
@@ -34,7 +33,6 @@ export default defineConfig(({mode}) => {
 			preprocessorOptions: {
 				sass: {
 					additionalData: [
-						'@import "@/styles/themes/' + theme + '.scss"',
 						'@import "@/styles/variables.scss"',
 						'@import "vuetify/src/styles/settings/_variables"',
 						'',
@@ -43,9 +41,6 @@ export default defineConfig(({mode}) => {
 			},
 		},
 		plugins: [
-			ViteEjsPlugin({
-				theme: env.VITE_THEME,
-			}),
 			vue(),
 			svgLoader({defaultImport: 'url'}),
 			Components({resolvers: [VuetifyResolver()]}),

@@ -1,16 +1,18 @@
 <template>
-	<v-app>
-		<TheHeader />
-		<TheSidebar />
-		<v-main>
-			<UnverifiedEmailAlert />
-			<v-container fluid>
-				<router-view v-if='isAllowed' />
-				<Forbidden v-else />
-			</v-container>
-		</v-main>
-		<TheFooter />
-	</v-app>
+	<v-theme-provider :theme='theme.global.name.value'>
+		<v-app>
+			<TheHeader />
+			<TheSidebar />
+			<v-main>
+				<UnverifiedEmailAlert />
+				<v-container fluid>
+					<router-view v-if='isAllowed' />
+					<Forbidden v-else />
+				</v-container>
+			</v-main>
+			<TheFooter />
+		</v-app>
+	</v-theme-provider>
 </template>
 
 <script lang='ts' setup>
@@ -18,6 +20,7 @@ import { type Feature, type UserRole } from '@iqrf/iqrf-gateway-webapp-client/ty
 import { storeToRefs } from 'pinia';
 import { computed, type Ref } from 'vue';
 import { useRoute } from 'vue-router';
+import { useTheme } from 'vuetify';
 
 import Forbidden from '@/components/errors/Forbidden.vue';
 import TheFooter from '@/components/layout/TheFooter.vue';
@@ -27,8 +30,9 @@ import UnverifiedEmailAlert from '@/components/layout/UnverifiedEmailAlert.vue';
 import { useFeatureStore } from '@/store/features';
 import { useUserStore } from '@/store/user';
 
-const route = useRoute();
 const featureStore = useFeatureStore();
+const route = useRoute();
+const theme = useTheme();
 const userStore = useUserStore();
 
 const { getRole: role } = storeToRefs(userStore);

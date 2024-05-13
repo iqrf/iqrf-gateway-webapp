@@ -9,6 +9,7 @@
 				</router-link>
 			</v-app-bar-title>
 			<v-spacer />
+			<ThemeSelect v-if='!display.mobile.value' />
 			<LocaleSelect v-if='!display.mobile.value' />
 			<UserControlsMenu v-if='userStore.isLoggedIn && display.mobile.value' />
 			<UserControls v-else-if='userStore.isLoggedIn' />
@@ -19,9 +20,10 @@
 <script lang='ts' setup>
 import { useDisplay } from 'vuetify';
 
-import LogoSmall from '@/assets/themes/generic/gateway-logo-white-small.svg?url';
-import Logo from '@/assets/themes/generic/gateway-logo-white.svg?url';
+import LogoSmall from '@/assets/logo-white-small.svg?url';
+import Logo from '@/assets/logo-white.svg?url';
 import LocaleSelect from '@/components/layout/header/LocaleSelect.vue';
+import ThemeSelect from '@/components/layout/header/ThemeSelect.vue';
 import UserControls from '@/components/layout/header/UserControls.vue';
 import UserControlsMenu from '@/components/layout/header/UserControlsMenu.vue';
 import { useSidebarStore } from '@/store/sidebar';

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
-Copyright 2017-2024 IQRF Tech s.r.o.
-Copyright 2019-2024 MICRORISC s.r.o.
+Copyright 2017-2023 IQRF Tech s.r.o.
+Copyright 2019-2023 MICRORISC s.r.o.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -24,21 +24,20 @@ limitations under the License.
 	<meta name='author' content='IQRF Tech.r.o.'>
 	<link rel='icon' href='/favicon.ico'>
 	<title>IQRF Gateway Webapp</title>
-	<link rel='apple-touch-icon' sizes='180x180' href='/favicon/<%= theme %>/apple-touch-icon.png'>
-	<link rel='icon' type='image/png' sizes='32x32' href='/favicon/<%= theme %>/favicon-32x32.png'>
-	<link rel='icon' type='image/png' sizes='16x16' href='/favicon/<%= theme %>/favicon-16x16.png'>
-	<link rel='manifest' href='/favicon/<%= theme %>/site.webmanifest'>
-	<link rel='mask-icon' href='/favicon/<%= theme %>/safari-pinned-tab.svg' color='#367fa9'>
-	<link rel='shortcut icon' href='/favicon/<%= theme %>/favicon.ico'>
-	<meta name='msapplication-TileColor' content='#367fa9'>
-	<meta name='msapplication-config' content='/favicon/<%= theme %>/browserconfig.xml'>
-	<meta name='theme-color' content='#ffffff'>
+	<meta name='theme-color' content='#367fa9'>
+	<link rel='apple-touch-icon' href='/apple-touch-icon.png' sizes='180x180'>
+	<link rel='icon' href='/favicon.svg' type='image/svg+xml'>
+	<link rel='icon' type='image/png' href='/favicon-32x32.png' sizes='32x32'>
+	<link rel='icon' type='image/png' href='/favicon-16x16.png' sizes='16x16'>
+	<link rel='alternate icon' href='/favicon.ico'>
+	<link rel='mask-icon' href='/favicon.svg' color='#367fa9'>
+	<link rel='mask-icon' href='/safari-pinned-tab.svg' color='#367fa9'>
 </head>
 <body>
 <noscript>
 	<strong>We're sorry but IQRF Gateway Webapp doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
 </noscript>
 <div id='app'></div>
-<script type="module" src='/src/main.ts'></script>
+<script type='module' src='/src/main.ts'></script>
 </body>
 </html>

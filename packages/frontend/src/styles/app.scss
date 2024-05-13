@@ -15,6 +15,65 @@
  * limitations under the License.
  */
 
+// scrollbar
+::-webkit-scrollbar {
+	width: 12px;
+}
+
+/* stylelint-disable no-descending-specificity */
+html,
+.theme--light {
+	::-webkit-scrollbar-track {
+		background: #e6e6e6;
+		border-left: 1px solid #dadada;
+	}
+
+	::-webkit-scrollbar-thumb {
+		&:hover {
+			background: black;
+		}
+
+		background: #b0b0b0;
+		border: solid 3px #e6e6e6;
+		border-radius: 7px;
+	}
+}
+
+.theme--dark {
+	::-webkit-scrollbar-track {
+		background: #202020;
+		border-left: 1px solid #2c2c2c;
+	}
+
+	::-webkit-scrollbar-thumb {
+		&:hover {
+			background: white;
+		}
+
+		background: #3e3e3e;
+		border: solid 3px #202020;
+		border-radius: 7px;
+	}
+}
+
+.v-navigation-drawer {
+	::-webkit-scrollbar-track {
+		background: rgb(54 54 54);
+		border-left: 1px solid rgb(54 54 54);
+	}
+
+	::-webkit-scrollbar-thumb {
+		background: #b0b0b0;
+		border: solid 3px rgb(54 54 54);
+		border-radius: 7px;
+	}
+
+	::-webkit-scrollbar-thumb:hover {
+		background: white;
+	}
+}
+/* stylelint-enable no-descending-specificity */
+
 // vuetify
 .v-application {
 	background-color: #ebedef !important;

@@ -27,8 +27,6 @@ import Color from 'color';
 import {Component, Vue} from 'vue-property-decorator';
 import VueStepProgressIndicator from 'vue-step-progress-indicator';
 
-import ThemeManager from '@/helpers/themeManager';
-
 @Component({
 	components: {
 		VueStepProgressIndicator,
@@ -55,18 +53,13 @@ export default class InstallWizardStepProgress extends Vue {
 	};
 
 	/**
-	 * @type {Color} Color for the active step
-	 */
-	private activeColor = ThemeManager.getPrimaryColor();
-
-	/**
 	 * Vue step progress indicator color configuration
 	 */
 	private colorConfig = {
 		progress__bubble: {
 			active: {
-				backgroundColor: this.activeColor,
-				borderColor: this.activeColor,
+				backgroundColor: '#367fa9',
+				borderColor: '#367fa9',
 				color: '#fff',
 			},
 			completed: {
@@ -82,7 +75,7 @@ export default class InstallWizardStepProgress extends Vue {
 		},
 		progress__bridge: {
 			active: {
-				backgroundColor: this.activeColor,
+				backgroundColor: '#367fa9',
 			},
 			completed: {
 				backgroundColor: InstallWizardStepProgress.getCompletedColor().hex(),
@@ -93,7 +86,7 @@ export default class InstallWizardStepProgress extends Vue {
 		},
 		progress__label: {
 			active: {
-				color: this.activeColor,
+				color: '#367fa9',
 			},
 			completed: {
 				color: InstallWizardStepProgress.getCompletedColor().hex(),

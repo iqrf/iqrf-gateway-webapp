@@ -1,6 +1,6 @@
 <template>
 	<v-form ref='form' @submit.prevent='onSubmit'>
-		<Card actions-color='white'>
+		<Card>
 			<template #title>
 				{{ $t('components.auth.signIn.title') }}
 			</template>

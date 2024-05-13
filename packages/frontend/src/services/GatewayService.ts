@@ -15,9 +15,6 @@
  * limitations under the License.
  */
 
-import {
-	GatewayBriefInformation
-} from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '@/helpers/authorizationHeader';
 
@@ -39,13 +36,6 @@ class GatewayService {
 	 */
 	getDiagnosticsArchive(): Promise<AxiosResponse> {
 		return axios.get('diagnostics', {headers: authorizationHeader(), responseType: 'blob'});
-	}
-
-	/**
-	 * Retrieves information about the gateway
-	 */
-	getInfo(): Promise<AxiosResponse> {
-		return axios.get('gateway/info', {headers: authorizationHeader()});
 	}
 
 	/**
@@ -98,14 +88,6 @@ class GatewayService {
 	 */
 	setHostname(config: IHostname): Promise<AxiosResponse> {
 		return axios.post('gateway/hostname', config, {headers: authorizationHeader()});
-	}
-
-	/**
-	 * Saves SSH keys
-	 * @param {Array<string>} keys SSh keys
-	 */
-	saveSshKeys(keys: Array<string>): Promise<AxiosResponse> {
-		return axios.post('gateway/ssh/keys', keys, {headers: authorizationHeader()});
 	}
 
 }
