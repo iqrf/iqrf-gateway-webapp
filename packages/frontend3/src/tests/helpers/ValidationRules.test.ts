@@ -1,5 +1,6 @@
 /**
- * Copyright 2023-2024 MICRORISC s.r.o.
+ * Copyright 2017-2024 IQRF Tech s.r.o.
+ * Copyright 2019-2024 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
