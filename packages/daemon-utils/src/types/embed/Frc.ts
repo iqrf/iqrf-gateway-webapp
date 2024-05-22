@@ -15,7 +15,7 @@ export interface FrcSendParams {
  */
 export interface FrcSendSelectiveParams extends FrcSendParams {
 	/// Selected node addresses
-	selectedNodes: [];
+	selectedNodes: number[];
 }
 
 /**

@@ -1,6 +1,6 @@
 {
 	"name": "@iqrf/iqrf-gateway-daemon-utils",
-	"version": "0.0.9",
+	"version": "0.0.10",
 	"description": "IQRF Gateway Daemon JavaScript utilities",
 	"exports": {
 		".": {
