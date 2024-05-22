@@ -13,7 +13,7 @@ export interface FrcSendParams {
 /**
  * Embedded FRC Send Selective parameters interface
  */
-export interface FrcSendSelectiveParams {
+export interface FrcSendSelectiveParams extends FrcSendParams {
 	/// Selected node addresses
 	selectedNodes: [];
 }
