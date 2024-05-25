@@ -213,6 +213,7 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
+import ExtendedTextField from '@/components/ExtendedTextField.vue';
 import PasswordInput from '@/components/Core/PasswordInput.vue';
 import { extend, ValidationObserver, ValidationProvider } from 'vee-validate';
 
@@ -226,6 +227,7 @@ import { extendedErrorToast } from '@/helpers/errorToast';
 
 @Component({
 	components: {
+		ExtendedTextField,
 		PasswordInput,
 		ValidationObserver,
 		ValidationProvider,

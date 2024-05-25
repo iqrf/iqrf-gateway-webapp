@@ -21,7 +21,7 @@ limitations under the License.
 		v-bind='$attrs'
 		:label='label'
 		:success='success'
-		:error-count='errors.length'
+		:error-count='errors ? errors.length : 0'
 		:error-messages='errors'
 		:hint='description'
 		:persistent-hint='showHint ?? false'
@@ -78,7 +78,7 @@ export default class ExtendedTextField extends Vue {
 	/**
 	 * @property {Array<string>} errors Input validation error messages
 	 */
-	@Prop({required: false}) errors!: Array<string>|null;
+	@Prop({required: false, default: null}) errors!: Array<string>|null;
 
 	/**
 	 * Computes whether hint should be shown
