@@ -1,6 +1,6 @@
 --- a/app/config/features.neon
 +++ b/app/config/features.neon
-@@ -15,70 +15,70 @@
+@@ -15,14 +15,14 @@
  
  # apcupsd service
  apcupsd:
@@ -18,8 +18,7 @@
  	user: root
  # Grafana dashboard
  grafana:
--	enabled: false
-+	enabled: true
+@@ -30,55 +30,55 @@
  	url: /grafana/
  # IQAROS application
  iqaros:
