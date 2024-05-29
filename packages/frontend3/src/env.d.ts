@@ -23,6 +23,8 @@
 interface ImportMetaEnv {
 	/// REST API base URL
 	VITE_BASE_URL: string
+	/// IDE
+	VITE_EDITOR: 'appcode' | 'atom' | 'atom-beta' | 'brackets' | 'clion' | 'code' | 'code-insiders' | 'codium' | 'emacs' | 'idea' | 'notepad++' | 'pycharm' | 'phpstorm' | 'rubymine' | 'sublime' | 'vim' | 'visualstudio' | 'webstorm'
 	/// Default language
 	VITE_I18N_LOCALE: string
 	/// Fallback language

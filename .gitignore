@@ -37,6 +37,7 @@ packages/*/junit.xml
 .vscode/
 # Vue.js build
 dist/
+packages/*/.env.local
 packages/*/dist/
 packages/*/components.d.ts
 www/dist/

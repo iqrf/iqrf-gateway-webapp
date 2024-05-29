@@ -32,7 +32,7 @@ import svgLoader from 'vite-svg-loader';
 const gitCommitHash = proc.execSync('git rev-parse --short HEAD').toString().trim();
 
 export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
-	const env: Record<string, string> = loadEnv(mode, process.cwd(), '');
+	const env = loadEnv(mode, process.cwd(), '') as ImportMetaEnv & Record<string, string>;
 	return {
 		base: env.VITE_BASE_URL,
 		build: {
@@ -44,7 +44,10 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
 				layoutsDirs: 'src/layouts',
 				defaultLayout: 'DefaultLayout',
 			}),
-			VueDevTools(),
+			VueDevTools({
+				componentInspector: true,
+				launchEditor: env.VITE_EDITOR,
+			}),
 			vue({
 				template: { transformAssetUrls },
 			}),
