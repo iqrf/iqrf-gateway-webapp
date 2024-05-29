@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import * as Sentry from '@sentry/vue';
-import {BrowserTracing} from '@sentry/browser';
+import { browserTracingIntegration } from '@sentry/vue';
 import Vue from 'vue';
 
 import * as version from '@/../../../version.json';
@@ -30,13 +30,15 @@ if (import.meta.env.PROD) {
 	Sentry.init({
 		dsn: 'https://435ee2b55f994e5f85e21a9ca93ea7a7@sentry.iqrf.org/5',
 		integrations: [
-			new BrowserTracing({
-				routingInstrumentation: Sentry.vueRouterInstrumentation(router),
-				tracePropagationTargets: ['localhost', window.location.hostname, /^\//],
+			browserTracingIntegration({
+				router: router,
+				routeLabel: 'path',
 			}),
 		],
 		release: release,
+		tracePropagationTargets: ['localhost', window.location.hostname, /^\//],
 		tracesSampleRate: 1.0,
+		trackComponents: true,
 		Vue,
 	});
 }
