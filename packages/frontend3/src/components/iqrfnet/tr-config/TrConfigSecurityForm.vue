@@ -31,8 +31,8 @@ limitations under the License.
 <script lang='ts' setup>
 import { type TrConfig } from '@iqrf/iqrf-gateway-daemon-utils/types';
 
-import Card from '@/components/Card.vue';
 import TrConfigSecurityInput from '@/components/iqrfnet/tr-config/TrConfigSecurityInput.vue';
+import Card from '@/components/layout/card/Card.vue';
 
 const config = defineModel<TrConfig>('config', { required: true });
 </script>

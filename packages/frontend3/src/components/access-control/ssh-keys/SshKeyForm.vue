@@ -18,11 +18,10 @@ limitations under the License.
 <template>
 	<ModalWindow v-model='show'>
 		<template #activator='{ props }'>
-			<v-btn
-				v-if='action === FormAction.Add'
+			<CardTitleActionBtn
+				v-if='action === Action.Add'
 				v-bind='props'
-				:color='iconColor'
-				:icon='activatorIcon'
+				:action='action'
 			/>
 			<v-icon
 				v-else
@@ -34,7 +33,7 @@ limitations under the License.
 			/>
 		</template>
 		<v-form ref='form' v-slot='{ isValid }' @submit.prevent='onSubmit'>
-			<Card>
+			<Card :action='action'>
 				<template #title>
 					{{ dialogTitle }}
 				</template>
@@ -61,6 +60,7 @@ limitations under the License.
 				<TextInput
 					v-model='localKey.key'
 					label='SSH key'
+					:prepend-inner-icon='mdiKey'
 					:rules='[
 						(v: string|null) => ValidationRules.required(v, "waaaah need key"),
 						(v: string) => validateKey(v),
@@ -71,15 +71,19 @@ limitations under the License.
 				<TextInput
 					v-model='localKey.description'
 					label='Description'
+					:prepend-inner-icon='mdiTextShort'
 				/>
 				<template #actions>
-					<FormActionButton
+					<CardActionBtn
 						:action='action'
 						:disabled='!isValid.value'
 						type='submit'
 					/>
 					<v-spacer />
-					<FormActionButton :action='FormAction.Cancel' @click='close' />
+					<CardActionBtn
+						:action='Action.Cancel'
+						@click='close'
+					/>
 				</template>
 			</Card>
 		</v-form>
@@ -90,21 +94,22 @@ limitations under the License.
 import { type SshKeyService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
 import { type SshKeyCreate } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
 import { SshKeyUtils } from '@iqrf/iqrf-gateway-webapp-client/utils';
-import { mdiPencil, mdiPlus } from '@mdi/js';
+import { mdiKey, mdiPencil, mdiPlus, mdiTextShort } from '@mdi/js';
 import { type AxiosError } from 'axios';
 import { type PropType, ref, type Ref, watchEffect , computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { VForm } from 'vuetify/components';
 
-import Card from '@/components/Card.vue';
-import FormActionButton from '@/components/FormActionButton.vue';
+import Card from '@/components/layout/card/Card.vue';
+import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
+import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
-import { FormAction } from '@/enums/controls';
 import { basicErrorToast } from '@/helpers/errorToast';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
+import { Action } from '@/types/Action';
 
 const emit = defineEmits(['refresh']);
 const componentProps = defineProps({
@@ -114,8 +119,8 @@ const componentProps = defineProps({
 		required: false,
 	},
 	action: {
-		type: String as PropType<FormAction>,
-		default: FormAction.Add,
+		type: String as PropType<Action>,
+		default: Action.Add,
 		required: true,
 	},
 	sshKey: {
@@ -143,28 +148,28 @@ const localKey: Ref<SshKeyCreate> = ref(defaultKey);
 const service: SshKeyService = useApiClient().getGatewayServices().getSshKeyService();
 
 const iconColor = computed(() => {
-	if (componentProps.action === FormAction.Add) {
+	if (componentProps.action === Action.Add) {
 		return 'white';
 	}
 	return 'info';
 });
 const activatorIcon = computed(() => {
-	if (componentProps.action === FormAction.Add) {
+	if (componentProps.action === Action.Add) {
 		return mdiPlus;
 	}
 	return mdiPencil;
 });
 const dialogTitle = computed(() => {
-	if (componentProps.action === FormAction.Add) {
+	if (componentProps.action === Action.Add) {
 		return i18n.t('components.accessControl.sshKeys.form.addTitle').toString();
 	}
 	return i18n.t('components.accessControl.sshKeys.form.editTitle').toString();
 });
 
 watchEffect(async(): Promise<void> => {
-	if (componentProps.action === FormAction.Add) {
+	if (componentProps.action === Action.Add) {
 		localKey.value = { ...defaultKey };
-	} else if (componentProps.action === FormAction.Edit) {
+	} else if (componentProps.action === Action.Edit) {
 		if (componentProps.sshKey) {
 			localKey.value = { ...componentProps.sshKey };
 		} else {

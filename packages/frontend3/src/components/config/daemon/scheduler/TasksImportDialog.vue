@@ -20,24 +20,17 @@ limitations under the License.
 		v-model='show'
 	>
 		<template #activator='{ props }'>
-			<v-btn
+			<CardTitleActionBtn
 				v-bind='props'
-				id='tasks-import-activator'
-				color='white'
-				size='large'
-				:icon='mdiImport'
+				:action='Action.Import'
+				:tooltip='$t("components.configuration.daemon.scheduler.actions.import")'
 			/>
-			<v-tooltip
-				activator='#tasks-import-activator'
-				location='bottom'
-			>
-				{{ $t('components.configuration.daemon.scheduler.actions.import') }}
-			</v-tooltip>
 		</template>
 		<v-form
 			ref='form'
 			v-slot='{ isValid }'
 			:disabled='componentState === ComponentState.Saving'
+			@submit.prevent='onSubmit'
 		>
 			<Card>
 				<template #title>
@@ -80,22 +73,16 @@ limitations under the License.
 					</tbody>
 				</v-table>
 				<template #actions>
-					<v-btn
-						color='primary'
-						variant='elevated'
+					<CardActionBtn
+						:action='Action.Import'
 						:disabled='!isValid.value || componentState !== ComponentState.Ready'
-						@click='onSubmit'
-					>
-						{{ $t('common.buttons.upload') }}
-					</v-btn>
+						type='submit'
+					/>
 					<v-spacer />
-					<v-btn
-						color='grey-darken-2'
-						variant='elevated'
+					<CardActionBtn
+						:action='Action.Cancel'
 						@click='close'
-					>
-						{{ $t('common.buttons.close') }}
-					</v-btn>
+					/>
 				</template>
 			</Card>
 		</v-form>
@@ -107,7 +94,7 @@ import { SchedulerMessages } from '@iqrf/iqrf-gateway-daemon-utils/enums';
 import { SchedulerService } from '@iqrf/iqrf-gateway-daemon-utils/services';
 import { type DaemonApiResponse, type SchedulerRecord } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
-import { mdiFileOutline, mdiImport } from '@mdi/js';
+import { mdiFileOutline } from '@mdi/js';
 import { BlobReader, TextWriter, ZipReader } from '@zip.js/zip.js';
 import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -115,11 +102,14 @@ import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
 import BooleanCheckMarker from '@/components/BooleanCheckMarker.vue';
-import Card from '@/components/Card.vue';
+import Card from '@/components/layout/card/Card.vue';
+import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
+import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useDaemonStore } from '@/store/daemonSocket';
+import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 interface TaskImportResult {

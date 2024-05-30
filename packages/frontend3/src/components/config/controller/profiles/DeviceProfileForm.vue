@@ -18,19 +18,16 @@ limitations under the License.
 <template>
 	<ModalWindow v-model='show'>
 		<template #activator='{ props }'>
-			<v-btn
-				v-if='action === FormAction.Add'
+			<CardTitleActionBtn
+				v-if='action === Action.Add'
 				v-bind='props'
-				:color='iconColor'
-				:icon='activatorIcon'
+				:action='action'
 			/>
-			<v-icon
+			<DataTableAction
 				v-else
 				v-bind='props'
-				:color='iconColor'
-				:icon='activatorIcon'
-				size='large'
-				class='me-2'
+				:action='action'
+				:tooltip='$t("components.configuration.profiles.actions.edit")'
 			/>
 		</template>
 		<v-form
@@ -39,7 +36,7 @@ limitations under the License.
 			validate-on='input'
 			@submit.prevent='onSubmit'
 		>
-			<Card>
+			<Card :action='action'>
 				<template #title>
 					{{ dialogTitle }}
 				</template>
@@ -87,7 +84,7 @@ limitations under the License.
 				<v-checkbox
 					v-model='watchdogPins'
 					:label='$t("components.configuration.controller.form.pins.useWatchdogPins")'
-					density='compact'
+					:hide-details='false'
 				/>
 				<NumberInput
 					v-model.number='profile.sck'
@@ -114,13 +111,13 @@ limitations under the License.
 					:required='watchdogPins'
 				/>
 				<template #actions>
-					<FormActionButton
+					<CardActionBtn
 						:action='action'
 						:disabled='!isValid.value'
 						type='submit'
 					/>
 					<v-spacer />
-					<FormActionButton :action='FormAction.Cancel' @click='close' />
+					<CardActionBtn :action='Action.Cancel' @click='close' />
 				</template>
 			</Card>
 		</v-form>
@@ -131,28 +128,29 @@ limitations under the License.
 import { type IqrfGatewayControllerService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import { type IqrfGatewayControllerMapping } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { MappingDeviceType } from '@iqrf/iqrf-gateway-webapp-client/types/Config/Mapping';
-import { mdiPencil, mdiPlus } from '@mdi/js';
-import { computed, type PropType, type Ref, ref , watchEffect } from 'vue';
+import { computed, type PropType, type Ref, ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
-import Card from '@/components/Card.vue';
-import FormActionButton from '@/components/FormActionButton.vue';
+import Card from '@/components/layout/card/Card.vue';
+import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
+import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
+import DataTableAction from '@/components/layout/data-table/DataTableAction.vue';
 import NumberInput from '@/components/layout/form/NumberInput.vue';
 import SelectInput from '@/components/layout/form/SelectInput.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
-import { FormAction } from '@/enums/controls';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
+import { Action } from '@/types/Action';
 
 const emit = defineEmits(['saved']);
 const componentProps = defineProps({
 	action: {
-		type: String as PropType<FormAction>,
-		default: FormAction.Add,
+		type: String as PropType<Action>,
+		default: Action.Add,
 		required: false,
 	},
 	deviceProfile: {
@@ -194,27 +192,15 @@ const typeOptions = [
 		value: MappingDeviceType.Board,
 	},
 ];
-const iconColor = computed(() => {
-	if (componentProps.action === FormAction.Add) {
-		return 'white';
-	}
-	return 'info';
-});
-const activatorIcon = computed(() => {
-	if (componentProps.action === FormAction.Add) {
-		return mdiPlus;
-	}
-	return mdiPencil;
-});
 const dialogTitle = computed(() => {
-	if (componentProps.action === FormAction.Add) {
+	if (componentProps.action === Action.Add) {
 		return i18n.t('components.configuration.profiles.actions.add').toString();
 	}
 	return i18n.t('components.configuration.profiles.actions.edit').toString();
 });
 
 watchEffect(async(): Promise<void> => {
-	if (componentProps.action === FormAction.Edit && componentProps.deviceProfile) {
+	if (componentProps.action === Action.Edit && componentProps.deviceProfile) {
 		profile.value = { ...componentProps.deviceProfile };
 		watchdogPins.value = (componentProps.deviceProfile.sck !== -1 && componentProps.deviceProfile.sda !== -1);
 	} else {

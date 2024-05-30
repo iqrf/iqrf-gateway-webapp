@@ -21,10 +21,9 @@ limitations under the License.
 			{{ $t('pages.accessControl.apiKeys.title') }}
 		</template>
 		<template #titleActions>
-			<ApiKeyForm :action='FormAction.Add' @refresh='getKeys' />
-			<v-btn
-				color='white'
-				:icon='mdiReload'
+			<ApiKeyForm :action='Action.Add' @refresh='getKeys' />
+			<CardTitleActionBtn
+				:action='Action.Reload'
 				@click='getKeys'
 			/>
 		</template>
@@ -39,19 +38,11 @@ limitations under the License.
 				{{ formatTime(item.expiration) }}
 			</template>
 			<template #item.actions='{ item }'>
-				<span>
-					<ApiKeyForm
-						:action='FormAction.Edit'
-						:api-key='toRaw(item)'
-						@refresh='getKeys'
-					/>
-					<v-tooltip
-						activator='parent'
-						location='bottom'
-					>
-						{{ $t('components.accessControl.apiKeys.actions.edit') }}
-					</v-tooltip>
-				</span>
+				<ApiKeyForm
+					:action='Action.Edit'
+					:api-key='toRaw(item)'
+					@refresh='getKeys'
+				/>
 				<ApiKeyDeleteDialog
 					:api-key='toRaw(item)'
 					@refresh='getKeys'
@@ -64,18 +55,18 @@ limitations under the License.
 <script lang='ts' setup>
 import { type ApiKeyService } from '@iqrf/iqrf-gateway-webapp-client/services';
 import { type ApiKeyInfo } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { mdiReload } from '@mdi/js';
 import { DateTime } from 'luxon';
 import { onMounted, ref, type Ref, toRaw } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import ApiKeyDeleteDialog from '@/components/access-control/api-keys/ApiKeyDeleteDialog.vue';
 import ApiKeyForm from '@/components/access-control/api-keys/ApiKeyForm.vue';
-import Card from '@/components/Card.vue';
-import DataTable from '@/components/DataTable.vue';
-import { FormAction } from '@/enums/controls';
+import Card from '@/components/layout/card/Card.vue';
+import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
+import DataTable from '@/components/layout/data-table/DataTable.vue';
 import { useApiClient } from '@/services/ApiClient';
 import { useLocaleStore } from '@/store/locale';
+import { Action } from '@/types/Action';
 
 const i18n = useI18n();
 const localeStore = useLocaleStore();

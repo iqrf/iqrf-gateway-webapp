@@ -73,8 +73,8 @@ import { mdiSend } from '@mdi/js';
 import { type Ref, ref } from 'vue';
 import { VForm } from 'vuetify/components';
 
-import Card from '@/components/Card.vue';
 import RequestHistory from '@/components/iqrfnet/send-json/RequestHistory.vue';
+import Card from '@/components/layout/card/Card.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useDaemonStore } from '@/store/daemonSocket';
 import { ComponentState } from '@/types/ComponentState';

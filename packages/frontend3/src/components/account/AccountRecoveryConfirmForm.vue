@@ -56,7 +56,7 @@ import { useRouter } from 'vue-router';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
-import Card from '@/components/Card.vue';
+import Card from '@/components/layout/card/Card.vue';
 import PasswordInput from '@/components/layout/form/PasswordInput.vue';
 import UrlBuilder from '@/helpers/urlBuilder';
 import { validateForm } from '@/helpers/validateForm';

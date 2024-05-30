@@ -471,9 +471,21 @@
 		"common": {
 			"actions": {
 				"add": "Add",
+				"apply": "Apply",
 				"cancel": "Cancel",
 				"delete": "Delete",
-				"edit": "Edit"
+				"disable": "Disable",
+				"download": "Download",
+				"edit": "Edit",
+				"enable": "Enable",
+				"export": "Export",
+				"import": "Import",
+				"reload": "Reload",
+				"restart": "Restart",
+				"showDetails": "Show details",
+				"start": "Start",
+				"stop": "Stop",
+				"upload": "Upload"
 			},
 			"fields": {
 				"actions": "Actions",

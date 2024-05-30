@@ -30,5 +30,5 @@ limitations under the License.
 <script setup lang='ts'>
 import { Head } from '@unhead/vue/components';
 
-import Card from '@/components/Card.vue';
+import Card from '@/components/layout/card/Card.vue';
 </script>

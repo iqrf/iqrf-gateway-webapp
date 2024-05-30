@@ -20,25 +20,17 @@ limitations under the License.
 		ref='form'
 		v-slot='{ isValid }'
 		:disabled='[ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
+		@submit.prevent='onSubmit'
 	>
 		<Card>
 			<template #title>
 				{{ $t('pages.configuration.daemon.db.title') }}
 			</template>
 			<template #titleActions>
-				<v-tooltip
-					location='bottom'
-				>
-					<template #activator='{ props }'>
-						<v-btn
-							v-bind='props'
-							color='white'
-							:icon='mdiReload'
-							@click='getConfig'
-						/>
-					</template>
-					{{ $t('common.buttons.reload') }}
-				</v-tooltip>
+				<CardTitleActionBtn
+					:action='Action.Reload'
+					@click='getConfig'
+				/>
 			</template>
 			<v-skeleton-loader
 				class='input-skeleton-loader'
@@ -50,58 +42,49 @@ limitations under the License.
 						<v-checkbox
 							v-model='config.autoEnumerateBeforeInvoked'
 							:label='$t("components.configuration.daemon.db.autoEnumerate")'
-							density='compact'
-							hide-details
 						/>
 						<v-checkbox
 							v-model='config.enumerateOnLaunch'
 							:label='$t("components.configuration.daemon.db.enumerateOnLaunch")'
-							density='compact'
-							hide-details
 						/>
 						<v-checkbox
 							v-model='config.metadataToMessages'
 							:label='$t("components.configuration.daemon.db.includeMetadata")'
-							density='compact'
-							hide-details
 						/>
 					</section>
 				</v-responsive>
 			</v-skeleton-loader>
 			<template #actions>
-				<v-btn
-					color='primary'
-					variant='elevated'
+				<CardActionBtn
+					:action='Action.Edit'
 					:disabled='!isValid.value || [ComponentState.Loading, ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
-					@click='onSubmit'
-				>
-					{{ $t('common.buttons.save') }}
-				</v-btn>
+					type='submit'
+				/>
 			</template>
 		</Card>
 	</v-form>
 </template>
 
 <script lang='ts' setup>
-import { type IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
+import {
+	type IqrfGatewayDaemonService,
+} from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import {
 	type IqrfGatewayDaemonComponent,
 	IqrfGatewayDaemonComponentName,
 	type IqrfGatewayDaemonDb,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { mdiReload } from '@mdi/js';
-import {
-	onMounted,
-	ref,
-	type Ref,
-} from 'vue';
+import { onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
-import Card from '@/components/Card.vue';
+import Card from '@/components/layout/card/Card.vue';
+import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
+import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
+import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 const i18n = useI18n();

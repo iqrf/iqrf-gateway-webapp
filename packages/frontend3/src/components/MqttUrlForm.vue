@@ -23,8 +23,9 @@ limitations under the License.
 			<v-btn
 				v-bind='props'
 				color='primary'
+				:prepend-icon='mdiPencil'
 			>
-				{{ $t("common.buttons.edit") }}
+				{{ $t("components.common.actions.edit") }}
 			</v-btn>
 		</template>
 		<v-form
@@ -53,6 +54,8 @@ limitations under the License.
 				<NumberInput
 					v-model.number='port'
 					:label='$t("common.labels.port")'
+					:min='1'
+					:max='65535'
 					:rules='[
 						(v: number|null) => ValidationRules.required(v, $t("common.validation.portMissing")),
 						(v: number) => ValidationRules.integer(v, $t("common.validation.portInvalid")),
@@ -66,22 +69,16 @@ limitations under the License.
 					:label='$t("common.labels.path")'
 				/>
 				<template #actions>
-					<v-btn
-						color='primary'
-						type='submit'
-						variant='elevated'
+					<CardActionBtn
+						:action='Action.Edit'
 						:disabled='!isValid.value'
-					>
-						{{ $t('common.buttons.save') }}
-					</v-btn>
+						type='submit'
+					/>
 					<v-spacer />
-					<v-btn
-						color='grey-darken-2'
-						variant='elevated'
+					<CardActionBtn
+						:action='Action.Cancel'
 						@click='close'
-					>
-						{{ $t('common.buttons.cancel') }}
-					</v-btn>
+					/>
 				</template>
 			</Card>
 		</v-form>
@@ -89,17 +86,20 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
+import { mdiPencil } from '@mdi/js';
 import { type Ref, ref } from 'vue';
 import { watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import Card from '@/components/Card.vue';
+import Card from '@/components/layout/card/Card.vue';
+import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import NumberInput from '@/components/layout/form/NumberInput.vue';
 import SelectInput from '@/components/layout/form/SelectInput.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import { MqttProtocol } from '@/enums/mqtt';
 import ValidationRules from '@/helpers/ValidationRules';
+import { Action } from '@/types/Action';
 
 const componentProps = defineProps({
 	cardTitle: {

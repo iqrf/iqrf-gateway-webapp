@@ -24,13 +24,14 @@ limitations under the License.
 				v-bind='props'
 				color='primary'
 			>
-				{{ $t('common.buttons.upload') }}
+				{{ $t('components.common.actions.upload') }}
 			</v-btn>
 		</template>
 		<v-form
 			ref='form'
 			v-slot='{ isValid }'
 			:disabled='componentState === ComponentState.Saving'
+			@submit.prevent='onSubmit'
 		>
 			<Card>
 				<template #title>
@@ -65,22 +66,16 @@ limitations under the License.
 					</template>
 				</TextInput>
 				<template #actions>
-					<v-btn
-						color='primary'
-						variant='elevated'
+					<CardActionBtn
+						:action='Action.Upload'
 						:disabled='!isValid.value || componentState === ComponentState.Saving'
-						@click='onSubmit'
-					>
-						{{ $t('common.buttons.upload') }}
-					</v-btn>
+						type='submit'
+					/>
 					<v-spacer />
-					<v-btn
-						color='grey-darken-2'
-						variant='elevated'
+					<CardActionBtn
+						:action='Action.Cancel'
 						@click='close'
-					>
-						{{ $t('common.buttons.close') }}
-					</v-btn>
+					/>
 				</template>
 			</Card>
 		</v-form>
@@ -95,12 +90,14 @@ import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
-import Card from '@/components/Card.vue';
+import Card from '@/components/layout/card/Card.vue';
+import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
+import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);

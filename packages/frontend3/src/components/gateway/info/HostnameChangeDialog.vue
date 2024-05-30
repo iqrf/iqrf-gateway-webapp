@@ -26,7 +26,7 @@ limitations under the License.
 				v-bind='props'
 			>
 				<v-icon :icon='mdiPencil' />
-				{{ $t('common.buttons.edit') }}
+				{{ $t('components.common.actions.edit') }}
 			</v-btn>
 		</template>
 		<Card>
@@ -37,6 +37,7 @@ limitations under the License.
 				<TextInput
 					v-model='hostname'
 					:label='$t("components.gateway.information.hostname")'
+					:prepend-inner-icon='mdiTextShort'
 					:rules='[
 						(v: string|null) => ValidationRules.required(v, $t("components.gateway.information.hostnameChange.validation.hostname")),
 					]'
@@ -45,30 +46,22 @@ limitations under the License.
 				<v-checkbox
 					v-model='setSplitterId'
 					:label='$t("components.gateway.information.hostnameChange.setSplitterId")'
-					density='compact'
 				/>
 				<v-checkbox
 					v-model='setIdeHostname'
 					:label='$t("components.gateway.information.hostnameChange.setIdeHostname")'
-					density='compact'
 				/>
 			</v-form>
 			<template #actions>
-				<v-btn
-					color='primary'
-					variant='elevated'
+				<CardActionBtn
+					:action='Action.Edit'
 					@click='onSubmit'
-				>
-					{{ $t('common.buttons.save') }}
-				</v-btn>
+				/>
 				<v-spacer />
-				<v-btn
-					color='grey-darken-2'
-					variant='elevated'
+				<CardActionBtn
+					:action='Action.Cancel'
 					@click='close'
-				>
-					{{ $t('common.buttons.cancel') }}
-				</v-btn>
+				/>
 			</template>
 		</Card>
 	</ModalWindow>
@@ -83,18 +76,20 @@ import {
 	type IqrfGatewayDaemonIdeCounterpart,
 	type IqrfGatewayDaemonJsonSplitter,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { mdiPencil } from '@mdi/js';
+import { mdiPencil, mdiTextShort } from '@mdi/js';
 import { type PropType, ref, type Ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
-import Card from '@/components/Card.vue';
+import Card from '@/components/layout/card/Card.vue';
+import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
+import { Action } from '@/types/Action';
 
 const emit = defineEmits(['saved']);
 const componentProps = defineProps({

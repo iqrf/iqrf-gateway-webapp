@@ -67,10 +67,10 @@ import { mdiContentSave } from '@mdi/js';
 import { ref, type Ref } from 'vue';
 import { VForm } from 'vuetify/components';
 
-import Card from '@/components/Card.vue';
 import TrConfigDpaForm from '@/components/iqrfnet/tr-config/TrConfigDpaForm.vue';
 import TrConfigOsForm from '@/components/iqrfnet/tr-config/TrConfigOsForm.vue';
 import TrConfigSecurityForm from '@/components/iqrfnet/tr-config/TrConfigSecurityForm.vue';
+import Card from '@/components/layout/card/Card.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { ComponentState } from '@/types/ComponentState';
 

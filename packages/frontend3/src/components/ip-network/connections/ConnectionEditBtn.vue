@@ -16,15 +16,9 @@ limitations under the License.
 -->
 
 <template>
-	<v-tooltip
-		:activator='activator'
-		location='bottom'
-	>
-		{{ $t("components.ipNetwork.connections.actions.edit") }}
-	</v-tooltip>
 	<router-link :to>
 		<v-icon
-			ref='activator'
+			v-tooltip:bottom='$t("components.ipNetwork.connections.actions.edit")'
 			color='info'
 			size='large'
 			:icon='mdiPencil'
@@ -37,7 +31,7 @@ import {
 	type NetworkConnectionListEntry, NetworkConnectionType,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkConnection';
 import { mdiPencil } from '@mdi/js';
-import { computed, type PropType, ref, type Ref } from 'vue';
+import { computed, type PropType, type Ref } from 'vue';
 import { VIcon } from 'vuetify/components';
 
 
@@ -48,8 +42,6 @@ const componentProps = defineProps({
 		required: true,
 	},
 });
-/// Activator ref
-const activator: Ref<typeof VIcon | null> = ref(null);
 /// Edit connection page URL
 const to: Ref<string> = computed((): string => {
 	switch (componentProps.connection.type) {

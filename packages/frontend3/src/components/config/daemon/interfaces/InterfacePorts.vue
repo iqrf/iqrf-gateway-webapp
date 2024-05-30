@@ -21,19 +21,10 @@ limitations under the License.
 			{{ $t(`components.configuration.daemon.interfaces.${interfaceType}.devices`) }}
 		</template>
 		<template #titleActions>
-			<v-tooltip
-				location='bottom'
-			>
-				<template #activator='{ props }'>
-					<v-btn
-						v-bind='props'
-						color='white'
-						:icon='mdiReload'
-						@click='getPorts'
-					/>
-				</template>
-				{{ $t('common.buttons.reload') }}
-			</v-tooltip>
+			<CardTitleActionBtn
+				:action='Action.Reload'
+				@click='getPorts'
+			/>
 		</template>
 		<DataTable
 			:headers='headers'
@@ -47,19 +38,11 @@ limitations under the License.
 				{{ item }}
 			</template>
 			<template #item.actions='{ item }'>
-				<v-icon
-					color='success'
-					size='large'
-					class='me-2'
-					:icon='mdiCheckboxMarkedOutline'
+				<DataTableAction
+					:action='Action.Apply'
+					:tooltip='$t("components.configuration.daemon.interfaces.apply")'
 					@click='applyInterface(item)'
 				/>
-				<v-tooltip
-					activator='parent'
-					location='bottom'
-				>
-					{{ $t('components.configuration.daemon.interfaces.apply') }}
-				</v-tooltip>
 			</template>
 		</DataTable>
 	</Card>
@@ -68,15 +51,17 @@ limitations under the License.
 <script lang='ts' setup>
 import { type InterfacePortsService } from '@iqrf/iqrf-gateway-webapp-client/services/Iqrf';
 import { type IqrfInterfaceType } from '@iqrf/iqrf-gateway-webapp-client/types/Iqrf';
-import { mdiCheckboxMarkedOutline, mdiReload } from '@mdi/js';
 import { type PropType, type Ref, ref } from 'vue';
 import { onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
-import Card from '@/components/Card.vue';
-import DataTable from '@/components/DataTable.vue';
+import Card from '@/components/layout/card/Card.vue';
+import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
+import DataTable from '@/components/layout/data-table/DataTable.vue';
+import DataTableAction from '@/components/layout/data-table/DataTableAction.vue';
 import { useApiClient } from '@/services/ApiClient';
+import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 const componentProps = defineProps({

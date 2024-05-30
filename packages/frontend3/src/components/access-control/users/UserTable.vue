@@ -21,10 +21,9 @@ limitations under the License.
 			{{ $t('pages.accessControl.users.title') }}
 		</template>
 		<template #titleActions>
-			<UserForm :action='FormAction.Add' @refresh='getUsers' />
-			<v-btn
-				color='white'
-				:icon='mdiReload'
+			<UserForm :action='Action.Add' @refresh='getUsers' />
+			<CardTitleActionBtn
+				:action='Action.Reload'
 				@click='getUsers'
 			/>
 		</template>
@@ -45,7 +44,7 @@ limitations under the License.
 				<UserStateColumn :state='item.state' />
 			</template>
 			<template #item.actions='{ item }'>
-				<UserForm :action='FormAction.Edit' :user-info='toRaw(item)' @refresh='getUsers' />
+				<UserForm :action='Action.Edit' :user-info='toRaw(item)' @refresh='getUsers' />
 				<UserDeleteDialog :user='toRaw(item)' :only-user='users.length === 1' @refresh='getUsers' />
 			</template>
 		</DataTable>
@@ -54,7 +53,6 @@ limitations under the License.
 
 <script lang='ts' setup>
 import { type UserInfo } from '@iqrf/iqrf-gateway-webapp-client/types/User';
-import { mdiReload } from '@mdi/js';
 import { onMounted, ref, type Ref, toRaw } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -63,10 +61,11 @@ import UserForm from '@/components/access-control/users/UserForm.vue';
 import UserLanguageColumn from '@/components/access-control/users/UserLanguageColumn.vue';
 import UserRoleColumn from '@/components/access-control/users/UserRoleColumn.vue';
 import UserStateColumn from '@/components/access-control/users/UserStateColumn.vue';
-import Card from '@/components/Card.vue';
-import DataTable from '@/components/DataTable.vue';
-import { FormAction } from '@/enums/controls';
+import Card from '@/components/layout/card/Card.vue';
+import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
+import DataTable from '@/components/layout/data-table/DataTable.vue';
 import { useApiClient } from '@/services/ApiClient';
+import { Action } from '@/types/Action';
 
 const i18n = useI18n();
 

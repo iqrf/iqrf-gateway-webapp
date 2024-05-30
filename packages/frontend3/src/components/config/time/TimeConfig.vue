@@ -21,9 +21,8 @@ limitations under the License.
 			{{ $t('pages.configuration.time.title') }}
 		</template>
 		<template #titleActions>
-			<v-btn
-				color='white'
-				:icon='mdiReload'
+			<CardTitleActionBtn
+				:action='Action.Reload'
 				@click='getTime'
 			/>
 		</template>
@@ -33,7 +32,7 @@ limitations under the License.
 			type='heading@2, text, table-heading, table-row-divider@2, table-row'
 		>
 			<v-responsive>
-				<v-form ref='form'>
+				<v-form ref='form' @submit.prevent='onSubmit'>
 					<v-alert
 						class='mb-4'
 						type='info'
@@ -47,12 +46,13 @@ limitations under the License.
 						:label='$t("components.configuration.time.timezone")'
 						item-value='name'
 						:item-props='(e: Timezone) => itemProps(e)'
+						:prepend-inner-icon='mdiMapClock'
 						return-object
 					/>
 					<v-checkbox
 						v-model='timeSet.ntpSync'
 						:label='$t("components.configuration.time.ntpSync")'
-						density='compact'
+						:hide-details='false'
 					/>
 					<DataTable
 						v-if='timeSet.ntpSync'
@@ -69,11 +69,11 @@ limitations under the License.
 								</v-toolbar-title>
 								<v-toolbar-items>
 									<NtpServerForm
-										:action='FormAction.Add'
+										:action='Action.Add'
 										@save='saveServer'
 									/>
 									<v-btn
-										color='error'
+										color='red'
 										:icon='mdiDelete'
 										@click='clearServers'
 									/>
@@ -85,18 +85,15 @@ limitations under the License.
 						</template>
 						<template #item.actions='{ item, index }'>
 							<NtpServerForm
-								:action='FormAction.Edit'
+								:action='Action.Edit'
 								:index='index'
 								:server='item'
 								@save='saveServer'
 							/>
-							<v-icon
-								color='error'
-								size='large'
+							<DataTableAction
+								:action='Action.Delete'
 								@click='removeServer(index)'
-							>
-								{{ mdiDelete }}
-							</v-icon>
+							/>
 						</template>
 					</DataTable>
 					<div v-else>
@@ -116,33 +113,38 @@ limitations under the License.
 			</v-responsive>
 		</v-skeleton-loader>
 		<template #actions>
-			<v-btn
-				color='primary'
-				variant='elevated'
+			<CardActionBtn
+				:action='Action.Edit'
 				:disabled='componentState === ComponentState.Loading'
-				@click='onSubmit'
-			>
-				{{ $t('common.buttons.save') }}
-			</v-btn>
+				type='submit'
+			/>
 		</template>
 	</Card>
 </template>
 
 <script lang='ts' setup>
-import { type TimeService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway/TimeService';
-import { type TimeConfig, type TimeSet, type Timezone } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
-import { mdiDelete, mdiReload } from '@mdi/js';
+import {
+	type TimeService,
+} from '@iqrf/iqrf-gateway-webapp-client/services/Gateway/TimeService';
+import {
+	type TimeConfig,
+	type TimeSet,
+	type Timezone,
+} from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
+import { mdiDelete, mdiMapClock } from '@mdi/js';
 import { DateTime } from 'luxon';
-import { onMounted } from 'vue';
-import { type Ref, computed, ref } from 'vue';
+import { computed, onMounted, type Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
-import Card from '@/components/Card.vue';
 import NtpServerForm from '@/components/config/time/NtpServerForm.vue';
-import DataTable from '@/components/DataTable.vue';
-import { FormAction } from '@/enums/controls';
+import Card from '@/components/layout/card/Card.vue';
+import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
+import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
+import DataTable from '@/components/layout/data-table/DataTable.vue';
+import DataTableAction from '@/components/layout/data-table/DataTableAction.vue';
 import { useApiClient } from '@/services/ApiClient';
+import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);

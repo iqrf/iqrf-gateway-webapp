@@ -21,14 +21,13 @@ limitations under the License.
 			{{ $t('pages.gateway.logs.title') }}
 		</template>
 		<template #titleActions>
-			<v-btn
-				color='white'
+			<CardTitleActionBtn
 				:icon='mdiFolderDownloadOutline'
+				:tooltip='$t("components.gateway.logs.actions.download")'
 				@click='exportLogs'
 			/>
-			<v-btn
-				color='white'
-				:icon='mdiReload'
+			<CardTitleActionBtn
+				:action='Action.Reload'
 				@click='listServices'
 			/>
 		</template>
@@ -62,14 +61,16 @@ limitations under the License.
 <script lang='ts' setup>
 import { type LogService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
 import { FileDownloader } from '@iqrf/iqrf-gateway-webapp-client/utils/FileDownloader';
-import { mdiFolderDownloadOutline, mdiReload } from '@mdi/js';
+import { mdiFolderDownloadOutline } from '@mdi/js';
 import { onMounted, type Ref, ref } from 'vue';
 import { toast } from 'vue3-toastify';
 
-import Card from '@/components/Card.vue';
 import JournalViewer from '@/components/gateway/logs/JournalViewer.vue';
 import LogViewer from '@/components/gateway/logs/LogViewer.vue';
+import Card from '@/components/layout/card/Card.vue';
+import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
 import { useApiClient } from '@/services/ApiClient';
+import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);

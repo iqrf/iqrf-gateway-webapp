@@ -18,12 +18,7 @@ limitations under the License.
 <template>
 	<ModalWindow v-model='show'>
 		<template #activator='{ props }'>
-			<v-btn
-				v-bind='props'
-				color='primary'
-			>
-				{{ $t('components.configuration.controller.form.button.configure') }}
-			</v-btn>
+			<ControllerActionConfigureBtn v-bind='props' />
 		</template>
 		<v-form
 			v-if='config !== null'
@@ -48,17 +43,14 @@ limitations under the License.
 				<v-checkbox
 					v-model='config.discoveryBeforeStart'
 					:label='$t("components.configuration.controller.form.autonetwork.discoveryBeforeStart")'
-					density='compact'
 				/>
 				<v-checkbox
 					v-model='config.skipDiscoveryEachWave'
 					:label='$t("components.configuration.controller.form.autonetwork.skipDiscoveryEachWave")'
-					density='compact'
 				/>
 				<v-checkbox
 					v-model='config.returnVerbose'
 					:label='$t("common.labels.returnVerbose")'
-					density='compact'
 				/>
 				<legend>{{ $t("components.configuration.controller.form.autonetwork.stopConditions") }}</legend>
 				<NumberInput
@@ -74,24 +66,17 @@ limitations under the License.
 				<v-checkbox
 					v-model='config.stopConditions.abortOnTooManyNodesFound'
 					:label='$t("components.configuration.controller.form.autonetwork.abortOnTooManyNodesFound")'
-					density='compact'
 				/>
 				<template #actions>
-					<v-btn
-						color='primary'
-						variant='elevated'
-						@click='onSubmit'
-					>
-						{{ $t('common.buttons.save') }}
-					</v-btn>
+					<CardActionBtn
+						:action='Action.Edit'
+						type='submit'
+					/>
 					<v-spacer />
-					<v-btn
-						color='grey-darken-2'
-						variant='elevated'
+					<CardActionBtn
+						:action='Action.Cancel'
 						@click='close'
-					>
-						{{ $t('common.buttons.close') }}
-					</v-btn>
+					/>
 				</template>
 			</Card>
 		</v-form>
@@ -103,10 +88,13 @@ import { type IqrfGatewayControllerApiAutonetworkConfig } from '@iqrf/iqrf-gatew
 import { type Ref, ref , watchEffect , type PropType } from 'vue';
 import { VForm } from 'vuetify/components';
 
-import Card from '@/components/Card.vue';
+import ControllerActionConfigureBtn from '@/components/config/controller/ControllerActionConfigureBtn.vue';
+import Card from '@/components/layout/card/Card.vue';
+import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import NumberInput from '@/components/layout/form/NumberInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';
+import { Action } from '@/types/Action';
 
 const emit = defineEmits(['saved']);
 const componentProps = defineProps({

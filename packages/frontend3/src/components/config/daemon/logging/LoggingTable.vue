@@ -22,21 +22,14 @@ limitations under the License.
 		</template>
 		<template #titleActions>
 			<LoggingForm
-				:action='FormAction.Add'
+				:action='Action.Add'
 				@saved='getConfigs'
 			/>
-			<v-btn
-				id='reload-activator'
-				color='white'
-				:icon='mdiReload'
+			<CardTitleActionBtn
+				:action='Action.Reload'
+				:tooltip='$t("components.configuration.daemon.logging.actions.reload")'
 				@click='getConfigs'
 			/>
-			<v-tooltip
-				activator='#reload-activator'
-				location='bottom'
-			>
-				{{ $t('components.configuration.daemon.logging.actions.reload') }}
-			</v-tooltip>
 		</template>
 		<v-skeleton-loader
 			class='input-skeleton-loader'
@@ -52,19 +45,11 @@ limitations under the License.
 					:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
 				>
 					<template #item.actions='{ item }'>
-						<span>
-							<LoggingForm
-								:action='FormAction.Edit'
-								:logging-profile='item'
-								@saved='getConfigs'
-							/>
-							<v-tooltip
-								activator='parent'
-								location='bottom'
-							>
-								{{ $t('components.configuration.daemon.logging.actions.edit') }}
-							</v-tooltip>
-						</span>
+						<LoggingForm
+							:action='Action.Edit'
+							:logging-profile='item'
+							@saved='getConfigs'
+						/>
 						<LoggingDeleteDialog
 							:logging-instance='item'
 							@deleted='getConfigs'
@@ -83,21 +68,17 @@ import {
 	IqrfGatewayDaemonComponentName,
 	type ShapeTraceFileService,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { mdiReload } from '@mdi/js';
-import {
-	onMounted,
-	type Ref,
-	ref,
-} from 'vue';
+import { onMounted, type Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
-import Card from '@/components/Card.vue';
 import LoggingDeleteDialog from '@/components/config/daemon/logging/LoggingDeleteDialog.vue';
 import LoggingForm from '@/components/config/daemon/logging/LoggingForm.vue';
-import DataTable from '@/components/DataTable.vue';
-import { FormAction } from '@/enums/controls';
+import Card from '@/components/layout/card/Card.vue';
+import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
+import DataTable from '@/components/layout/data-table/DataTable.vue';
 import { useApiClient } from '@/services/ApiClient';
+import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);

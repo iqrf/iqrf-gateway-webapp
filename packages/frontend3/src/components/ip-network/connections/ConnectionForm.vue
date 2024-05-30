@@ -24,10 +24,10 @@ limitations under the License.
 	>
 		<Card :header-color='actionColor'>
 			<template #title>
-				<span v-if='action === FormAction.Add'>
+				<span v-if='action === Action.Add'>
 					{{ $t(`components.ipNetwork.connections.add.titles.${configuration.type}`) }}
 				</span>
-				<span v-else-if='action === FormAction.Edit'>
+				<span v-else-if='action === Action.Edit'>
 					{{ $t(`components.ipNetwork.connections.edit.titles.${configuration.type}`) }}
 				</span>
 			</template>
@@ -65,7 +65,7 @@ limitations under the License.
 				v-model='configuration'
 			/>
 			<template #actions>
-				<FormActionButton
+				<CardActionBtn
 					:action='action'
 					:disabled='!isValid.value || componentState === ComponentState.Saving'
 					@click='saveConfiguration()'
@@ -88,8 +88,6 @@ import { computed, onBeforeMount, type PropType, ref, type Ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { VForm } from 'vuetify/components';
 
-import Card from '@/components/Card.vue';
-import FormActionButton from '@/components/FormActionButton.vue';
 import IpConfiguration
 	from '@/components/ip-network/connections/ip/IpConfiguration.vue';
 import VlanConfiguration
@@ -98,25 +96,27 @@ import WiFiConfiguration
 	from '@/components/ip-network/connections/wifi/WiFiConfiguration.vue';
 import InterfaceInput
 	from '@/components/ip-network/interfaces/InterfaceInput.vue';
+import Card from '@/components/layout/card/Card.vue';
+import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
-import { FormAction } from '@/enums/controls';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
+import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 /// Form action
-const action: Ref<FormAction> = computed((): FormAction => {
+const action: Ref<Action> = computed((): Action => {
 	if (componentProps.uuid === null) {
-		return FormAction.Add;
+		return Action.Add;
 	}
-	return FormAction.Edit;
+	return Action.Edit;
 });
 /// Form action color
 const actionColor: Ref<string> = computed((): string => {
 	switch (action.value) {
-		case FormAction.Add:
+		case Action.Add:
 			return 'success';
-		case FormAction.Edit:
+		case Action.Edit:
 			return 'primary';
 		default:
 			return 'grey';
@@ -147,7 +147,7 @@ const service = useApiClient().getNetworkServices().getNetworkConnectionService(
  * Fetches network connection configuration
  */
 function fetchConfiguration(): void {
-	if (action.value === FormAction.Add || componentProps.uuid === null) {
+	if (action.value === Action.Add || componentProps.uuid === null) {
 		return;
 	}
 	componentState.value = ComponentState.Loading;

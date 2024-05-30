@@ -15,8 +15,42 @@
  * limitations under the License.
  */
 
-export enum ServiceAction {
-	Enable = 'enable',
-	Start = 'start',
+/**
+ * Card actions
+ */
+export enum Action {
+	/// Add
+	Add = 'add',
+	/// Apply
+	Apply = 'apply',
+	/// Cancel
+	Cancel = 'cancel',
+	/// Custom
+	Custom = 'custom',
+	/// Delete
+	Delete = 'delete',
+	/// Disable
 	Disable = 'disable',
+	/// Download
+	Download = 'download',
+	/// Edit
+	Edit = 'edit',
+	/// Enable
+	Enable = 'enable',
+	/// Export
+	Export = 'export',
+	/// Import
+	Import = 'import',
+	/// Reload
+	Reload = 'reload',
+	/// Restart
+	Restart = 'restart',
+	/// Show details
+	ShowDetails = 'show-details',
+	/// Start
+	Start = 'start',
+	/// Stop
+	Stop = 'stop',
+	/// Upload
+	Upload = 'upload',
 }

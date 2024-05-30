@@ -22,34 +22,29 @@ limitations under the License.
 		<template #activator='{ props }'>
 			<v-btn
 				v-bind='props'
-				class='mr-1'
-				color='error'
+				color='red'
 			>
 				<v-icon :icon='mdiPower' />
 				{{ $t('components.gateway.power.powerOff.action') }}
 			</v-btn>
 		</template>
-		<Card header-color='error'>
+		<Card header-color='red'>
 			<template #title>
 				{{ $t('components.gateway.power.powerOff.title') }}
 			</template>
 			{{ $t('components.gateway.power.powerOff.prompt') }}
 			<template #actions>
-				<v-btn
-					color='error'
-					variant='elevated'
+				<CardActionBtn
+					color='red'
+					:icon='mdiPower'
+					:text='$t("components.gateway.power.powerOff.action")'
 					@click='powerOff'
-				>
-					{{ $t(`components.gateway.power.powerOff.action`) }}
-				</v-btn>
+				/>
 				<v-spacer />
-				<v-btn
-					color='grey-darken-2'
-					variant='elevated'
+				<CardActionBtn
+					:action='Action.Cancel'
 					@click='close'
-				>
-					{{ $t('common.buttons.cancel') }}
-				</v-btn>
+				/>
 			</template>
 		</Card>
 	</ModalWindow>
@@ -59,8 +54,10 @@ limitations under the License.
 import { mdiPower } from '@mdi/js';
 import { type Ref, ref } from 'vue';
 
-import Card from '@/components/Card.vue';
+import Card from '@/components/layout/card/Card.vue';
+import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
+import { Action } from '@/types/Action';
 
 const emit = defineEmits(['confirm']);
 const show: Ref<boolean> = ref(false);

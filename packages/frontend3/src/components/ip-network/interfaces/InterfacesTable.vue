@@ -21,10 +21,8 @@ limitations under the License.
 			{{ $t(`components.ipNetwork.interfaces.titles.${type}`) }}
 		</template>
 		<template #titleActions>
-			<v-btn
-				color='primary'
-				:icon='mdiRefresh'
-				variant='elevated'
+			<CardTitleActionBtn
+				:action='Action.Reload'
 				@click='fetchData'
 			/>
 		</template>
@@ -54,15 +52,16 @@ import {
 	type NetworkInterface,
 	type NetworkInterfaceType,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkInterface';
-import { mdiRefresh } from '@mdi/js';
 import { onBeforeMount, type PropType, type Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import Card from '@/components/Card.vue';
-import DataTable from '@/components/DataTable.vue';
 import InterfaceStateBadge
 	from '@/components/ip-network/interfaces/InterfaceStateBadge.vue';
+import Card from '@/components/layout/card/Card.vue';
+import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
+import DataTable from '@/components/layout/data-table/DataTable.vue';
 import { useApiClient } from '@/services/ApiClient';
+import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 const componentProps = defineProps({

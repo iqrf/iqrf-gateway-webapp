@@ -20,25 +20,17 @@ limitations under the License.
 		ref='form'
 		v-slot='{ isValid }'
 		:disabled='[ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
+		@submit.prevent='onSubmit'
 	>
 		<Card>
 			<template #title>
 				{{ $t('pages.configuration.daemon.json-api.title') }}
 			</template>
 			<template #titleActions>
-				<v-tooltip
-					location='bottom'
-				>
-					<template #activator='{ props }'>
-						<v-btn
-							v-bind='props'
-							color='white'
-							:icon='mdiReload'
-							@click='getConfig'
-						/>
-					</template>
-					{{ $t('common.buttons.reload') }}
-				</v-tooltip>
+				<CardTitleActionBtn
+					:action='Action.Reload'
+					@click='getConfig'
+				/>
 			</template>
 			<v-skeleton-loader
 				class='input-skeleton-loader'
@@ -50,6 +42,7 @@ limitations under the License.
 						<TextInput
 							v-model='config.insId'
 							:label='$t("components.configuration.daemon.json-api.instanceId")'
+							:prepend-inner-icon='mdiIdentifier'
 							:rules='[
 								(v: string|null) => ValidationRules.required(v, $t("components.configuration.daemon.json-api.validation.instanceIdMissing")),
 							]'
@@ -58,21 +51,16 @@ limitations under the License.
 						<v-checkbox
 							v-model='config.validateJsonResponse'
 							:label='$t("components.configuration.daemon.json-api.validateResponses")'
-							density='compact'
-							hide-details
 						/>
 					</section>
 				</v-responsive>
 			</v-skeleton-loader>
 			<template #actions>
-				<v-btn
-					color='primary'
-					variant='elevated'
+				<CardActionBtn
+					:action='Action.Edit'
 					:disabled='!isValid.value || [ComponentState.Loading, ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
-					@click='onSubmit'
-				>
-					{{ $t('common.buttons.save') }}
-				</v-btn>
+					type='submit'
+				/>
 			</template>
 		</Card>
 	</v-form>
@@ -85,21 +73,20 @@ import {
 	IqrfGatewayDaemonComponentName,
 	type IqrfGatewayDaemonJsonSplitter,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { mdiReload } from '@mdi/js';
-import {
-	onMounted,
-	ref,
-	type Ref,
-} from 'vue';
+import { mdiIdentifier } from '@mdi/js';
+import { onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
-import Card from '@/components/Card.vue';
+import Card from '@/components/layout/card/Card.vue';
+import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
+import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
+import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 const i18n = useI18n();

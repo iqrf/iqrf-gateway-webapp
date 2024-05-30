@@ -239,22 +239,15 @@ limitations under the License.
 									</v-toolbar-title>
 									<v-toolbar-items>
 										<SubscriptionTopicForm
-											:action='FormAction.Add'
+											:action='Action.Add'
 											@save='saveTopic'
 										/>
-										<v-tooltip
-											location='bottom'
-										>
-											<template #activator='{ props }'>
-												<v-btn
-													v-bind='props'
-													color='error'
-													:icon='mdiDelete'
-													@click='clearTopics'
-												/>
-											</template>
-											{{ $t('components.configuration.influxdb-bridge.actions.deleteAll') }}
-										</v-tooltip>
+										<v-btn
+											v-tooltip:bottom='$t("components.configuration.influxdb-bridge.actions.deleteAll")'
+											color='red'
+											:icon='mdiDelete'
+											@click='clearTopics'
+										/>
 									</v-toolbar-items>
 								</v-toolbar>
 							</template>
@@ -263,26 +256,16 @@ limitations under the License.
 							</template>
 							<template #item.actions='{ item, index }'>
 								<SubscriptionTopicForm
-									:action='FormAction.Edit'
+									:action='Action.Edit'
 									:index='index'
 									:topic='item'
 									@save='saveTopic'
 								/>
-								<v-tooltip
-									location='bottom'
-								>
-									<template #activator='{ props }'>
-										<v-icon
-											v-bind='props'
-											color='error'
-											size='large'
-											@click='removeTopic(index)'
-										>
-											{{ mdiDelete }}
-										</v-icon>
-									</template>
-									{{ $t('components.configuration.influxdb-bridge.actions.delete') }}
-								</v-tooltip>
+								<DataTableAction
+									:action='Action.Delete'
+									:tooltip='$t("components.configuration.influxdb-bridge.actions.delete")'
+									@click='removeTopic(index)'
+								/>
 							</template>
 						</DataTable>
 					</section>
@@ -315,16 +298,17 @@ import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
-import Card from '@/components/Card.vue';
 import SubscriptionTopicForm from '@/components/config/influxdb-bridge/SubscriptionTopicForm.vue';
-import DataTable from '@/components/DataTable.vue';
+import Card from '@/components/layout/card/Card.vue';
+import DataTable from '@/components/layout/data-table/DataTable.vue';
+import DataTableAction from '@/components/layout/data-table/DataTableAction.vue';
 import NumberInput from '@/components/layout/form/NumberInput.vue';
 import PasswordInput from '@/components/layout/form/PasswordInput.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
-import { FormAction } from '@/enums/controls';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
+import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);

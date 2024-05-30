@@ -20,7 +20,11 @@ limitations under the License.
 		<template #title>
 			{{ $t('account.profile.details.title') }}
 		</template>
-		<v-form ref='form' @submit.prevent='onSubmit'>
+		<v-form
+			ref='form'
+			v-slot='{ isValid }'
+			@submit.prevent='onSubmit'
+		>
 			<TextInput
 				v-model='user.username'
 				:label='$t("components.common.fields.username")'
@@ -41,12 +45,11 @@ limitations under the License.
 				:prepend-inner-icon='mdiEmail'
 			/>
 			<LanguageInput v-model='user.language' />
-			<v-btn
-				color='primary'
+			<CardActionBtn
+				:action='Action.Edit'
+				:disabled='!isValid.value'
 				type='submit'
-			>
-				{{ $t('common.buttons.edit') }}
-			</v-btn>
+			/>
 		</v-form>
 	</Card>
 </template>
@@ -61,13 +64,15 @@ import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import LanguageInput from '@/components/account/LanguageInput.vue';
-import Card from '@/components/Card.vue';
+import Card from '@/components/layout/card/Card.vue';
+import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import { basicErrorToast } from '@/helpers/errorToast';
 import UrlBuilder from '@/helpers/urlBuilder';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
+import { Action } from '@/types/Action';
 
 const i18n = useI18n();
 const userStore = useUserStore();

@@ -42,14 +42,22 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { computed } from 'vue';
+import { computed, type PropType } from 'vue';
 import { useTheme } from 'vuetify';
+
+import { ActionUtils } from '@/helpers/ActionUtils';
+import { type Action } from '@/types/Action';
 
 const theme = useTheme();
 const props = defineProps({
+	action: {
+		type: [String, null] as PropType<Action | null>,
+		required: false,
+		default: null,
+	},
 	headerColor: {
 		type: String,
-		default: 'primary',
+		default: 'default',
 		required: false,
 	},
 	actionsColor: {
@@ -63,6 +71,8 @@ const props = defineProps({
 		required: false,
 	},
 });
+
+/// Card actions class
 const actionsClass = computed(() => {
 	let actionsColor = props.actionsColor;
 	const isLight = theme.global.name.value === 'light';
@@ -71,7 +81,15 @@ const actionsClass = computed(() => {
 	}
 	return `bg-${actionsColor}`;
 });
-const headerClass = computed(() => `bg-${props.headerColor}`);
+
+/// Card header class
+const headerClass = computed((): string => {
+	let color = props.headerColor;
+	if (props.action !== null && color === 'default') {
+		color = ActionUtils.getColor(props.action);
+	}
+	return `bg-${color === 'default' ? 'primary' : color}`;
+});
 </script>
 
 <style>

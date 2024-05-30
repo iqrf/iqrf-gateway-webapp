@@ -70,8 +70,8 @@ import { type JsonMessage } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { mdiDelete } from '@mdi/js';
 import { computed, type PropType, type Ref, ref } from 'vue';
 
-import Card from '@/components/Card.vue';
 import JsonMessageViewer from '@/components/iqrfnet/send-json/JsonMessageViewer.vue';
+import Card from '@/components/layout/card/Card.vue';
 import SelectInput from '@/components/layout/form/SelectInput.vue';
 const componentProps = defineProps({
 	messages: {

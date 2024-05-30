@@ -38,30 +38,24 @@ limitations under the License.
 				required
 			/>
 			<template #actions>
-				<v-btn
+				<CardActionBtn
 					color='primary'
-					variant='elevated'
 					:disabled='!isValid.value || componentState === ComponentState.Saving'
+					:text='$t("components.maintenance.mender.update.install")'
 					@click='installArtifact'
-				>
-					{{ $t('components.maintenance.mender.update.install') }}
-				</v-btn>
-				<v-btn
+				/>
+				<CardActionBtn
 					color='primary'
-					variant='elevated'
 					:disabled='componentState === ComponentState.Saving'
+					:text='$t("components.maintenance.mender.update.commit")'
 					@click='commitUpdate'
-				>
-					{{ $t('components.maintenance.mender.update.commit') }}
-				</v-btn>
-				<v-btn
+				/>
+				<CardActionBtn
 					color='primary'
-					variant='elevated'
 					:disabled='componentState === ComponentState.Saving'
+					:text='$t("components.maintenance.mender.update.rollback")'
 					@click='rollbackUpdate'
-				>
-					{{ $t('components.maintenance.mender.update.rollback') }}
-				</v-btn>
+				/>
 				<MenderUpdateLog :log='log' />
 			</template>
 		</Card>
@@ -77,7 +71,8 @@ import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
-import Card from '@/components/Card.vue';
+import Card from '@/components/layout/card/Card.vue';
+import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import MenderUpdateLog from '@/components/maintenance/mender-update/MenderUpdateLog.vue';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';

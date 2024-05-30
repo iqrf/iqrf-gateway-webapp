@@ -21,29 +21,25 @@ limitations under the License.
 	>
 		<template #activator='{ props }'>
 			<v-btn
-				v-if='action === FormAction.Add'
+				v-if='action === Action.Add'
 				v-bind='props'
-				:color='iconColor()'
-				:icon='activatorIcon()'
+				color='green'
+				:icon='mdiPlus'
 			/>
-			<v-icon
+			<DataTableAction
 				v-else
-				v-bind='props'
-				:color='iconColor()'
-				class='me-2'
-				size='large'
-			>
-				{{ activatorIcon() }}
-			</v-icon>
+				:action='action'
+			/>
 		</template>
 		<v-form ref='form' v-slot='{ isValid }' @submit.prevent='onSubmit'>
-			<Card>
+			<Card :action='action'>
 				<template #title>
 					{{ $t(`components.configuration.time.ntpServers.${action}`) }}
 				</template>
 				<TextInput
 					v-model='ntpServer'
 					label='NTP server address'
+					:prepend-inner-icon='mdiServerNetwork'
 					:rules='[
 						(v: string|null) => ValidationRules.required(v, $t("components.configuration.time.ntpServers.validation.serverMissing")),
 						(v: string|null) => ValidationRules.server(v, $t("components.configuration.time.ntpServers.validation.serverInvalid")),
@@ -51,13 +47,13 @@ limitations under the License.
 					required
 				/>
 				<template #actions>
-					<FormActionButton
+					<CardActionBtn
 						:action='action'
 						:disabled='!isValid.value'
 						type='submit'
 					/>
 					<v-spacer />
-					<FormActionButton :action='FormAction.Cancel' @click='close' />
+					<CardActionBtn :action='Action.Cancel' @click='close' />
 				</template>
 			</Card>
 		</v-form>
@@ -65,20 +61,21 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { mdiPencil, mdiPlus } from '@mdi/js';
+import { mdiPlus, mdiServerNetwork } from '@mdi/js';
 import { ref, type Ref, watchEffect } from 'vue';
 import { VForm } from 'vuetify/components';
 
-import Card from '@/components/Card.vue';
-import FormActionButton from '@/components/FormActionButton.vue';
+import Card from '@/components/layout/card/Card.vue';
+import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
+import DataTableAction from '@/components/layout/data-table/DataTableAction.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
-import { FormAction } from '@/enums/controls';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
+import { Action } from '@/types/Action';
 
 interface Props {
-	action: FormAction;
+	action: Action;
 	index?: number;
 	server?: string;
 }
@@ -90,7 +87,7 @@ const form: Ref<typeof VForm | null> = ref(null);
 const ntpServer: Ref<string> = ref('');
 
 watchEffect(async (): Promise<void> => {
-	if (componentProps.action === FormAction.Add) {
+	if (componentProps.action === Action.Add) {
 		ntpServer.value = '';
 	} else {
 		if (componentProps.server !== undefined) {
@@ -98,20 +95,6 @@ watchEffect(async (): Promise<void> => {
 		}
 	}
 });
-
-function activatorIcon(): string {
-	if (componentProps.action === FormAction.Add) {
-		return mdiPlus;
-	}
-	return mdiPencil;
-}
-
-function iconColor(): string {
-	if (componentProps.action === FormAction.Add) {
-		return 'black';
-	}
-	return 'info';
-}
 
 async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {

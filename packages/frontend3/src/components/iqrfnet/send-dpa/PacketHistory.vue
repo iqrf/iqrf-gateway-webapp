@@ -47,7 +47,7 @@ import { mdiDelete } from '@mdi/js';
 import { type PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import Card from '@/components/Card.vue';
+import Card from '@/components/layout/card/Card.vue';
 
 defineProps({
 	messages: {

@@ -16,19 +16,14 @@ limitations under the License.
 -->
 
 <template>
-	<Head>
-		<title>{{ $t('components.errors.403.title') }}</title>
-	</Head>
-	<Card>
-		<template #title>
-			{{ $t('components.errors.403.header') }} - {{ $t('components.errors.403.title') }}
-		</template>
-		<p>{{ $t('components.errors.403.text') }}</p>
-	</Card>
+	<v-btn
+		color='primary'
+		:prepend-icon='mdiWrench'
+	>
+		{{ $t('components.configuration.controller.form.button.configure') }}
+	</v-btn>
 </template>
 
-<script setup lang='ts'>
-import { Head } from '@unhead/vue/components';
-
-import Card from '@/components/layout/card/Card.vue';
+<script lang='ts' setup>
+import { mdiWrench } from '@mdi/js';
 </script>

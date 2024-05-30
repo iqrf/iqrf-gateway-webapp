@@ -18,26 +18,20 @@ limitations under the License.
 <template>
 	<ModalWindow v-model='showDialog'>
 		<template #activator='{ props }'>
-			<v-btn
-				v-if='action === FormAction.Add'
+			<CardTitleActionBtn
+				v-if='action === Action.Add'
 				v-bind='props'
-				:color='iconColor()'
-				:icon='activatorIcon()'
+				:action='action'
 			/>
-			<v-icon
+			<DataTableAction
 				v-else
 				v-bind='props'
-				:color='iconColor()'
-				class='me-2'
-				size='large'
-			>
-				{{ activatorIcon() }}
-			</v-icon>
+				:action='action'
+			/>
 		</template>
 		<v-form ref='form' v-slot='{ isValid }' @submit.prevent='onSubmit'>
 			<Card>
 				<template #title>
-					<v-icon>{{ headerIcon() }}</v-icon>
 					{{ $t(`components.accessControl.users.actions.${action}`) }}
 				</template>
 				<TextInput
@@ -58,7 +52,7 @@ limitations under the License.
 					:prepend-inner-icon='mdiEmail'
 				/>
 				<PasswordInput
-					v-if='action === FormAction.Add'
+					v-if='action === Action.Add'
 					v-model='(user as UserEdit).password'
 					:label='$t("components.accessControl.users.password")'
 					:rules='[
@@ -75,13 +69,13 @@ limitations under the License.
 				/>
 				<LanguageInput v-model='user.language' />
 				<template #actions>
-					<FormActionButton
+					<CardActionBtn
 						:action='action'
 						:disabled='!isValid.value'
 						type='submit'
 					/>
 					<v-spacer />
-					<FormActionButton :action='FormAction.Cancel' @click='close' />
+					<CardActionBtn :action='Action.Cancel' @click='close' />
 				</template>
 			</Card>
 		</v-form>
@@ -99,11 +93,8 @@ import {
 import {
 	mdiAccount,
 	mdiAccountBadge,
-	mdiAccountEdit,
-	mdiAccountPlus,
 	mdiEmail,
 	mdiKey,
-	mdiPencil,
 } from '@mdi/js';
 import { type AxiosError } from 'axios';
 import { ref, type Ref, watchEffect } from 'vue';
@@ -112,22 +103,24 @@ import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
 import LanguageInput from '@/components/account/LanguageInput.vue';
-import Card from '@/components/Card.vue';
-import FormActionButton from '@/components/FormActionButton.vue';
+import Card from '@/components/layout/card/Card.vue';
+import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
+import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
+import DataTableAction from '@/components/layout/data-table/DataTableAction.vue';
 import PasswordInput from '@/components/layout/form/PasswordInput.vue';
 import SelectInput from '@/components/layout/form/SelectInput.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
-import { FormAction } from '@/enums/controls';
 import { basicErrorToast } from '@/helpers/errorToast';
 import { getFilteredRoleOptions } from '@/helpers/userData';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
+import { Action } from '@/types/Action';
 
 interface Props {
-	action: FormAction;
+	action: Action;
 	userInfo?: UserInfo
 }
 
@@ -146,31 +139,11 @@ const defaultUser: UserCreate | UserEdit = {
 const user: Ref<UserCreate | UserEdit> = ref(defaultUser);
 const roles = getFilteredRoleOptions(userStore.getRole!);
 
-function iconColor(): string {
-	if (componentProps.action === FormAction.Add) {
-		return 'white';
-	}
-	return 'info';
-}
-
-function activatorIcon(): string {
-	if (componentProps.action === FormAction.Add) {
-		return mdiAccountPlus;
-	}
-	return mdiPencil;
-}
-
-function headerIcon(): string {
-	if (componentProps.action === FormAction.Add) {
-		return mdiAccountPlus;
-	}
-	return mdiAccountEdit;
-}
 
 watchEffect(async (): Promise<void> => {
-	if (componentProps.action === FormAction.Add) {
+	if (componentProps.action === Action.Add) {
 		user.value = { ...defaultUser, password: '' } as UserCreate;
-	} else if (componentProps.action === FormAction.Edit) {
+	} else if (componentProps.action === Action.Edit) {
 		if (componentProps.userInfo) {
 			user.value = {
 				username: componentProps.userInfo.username,
@@ -189,7 +162,7 @@ async function onSubmit(): Promise<void> {
 		return;
 	}
 	const service = useApiClient().getUserService();
-	if (componentProps.action === FormAction.Add) {
+	if (componentProps.action === Action.Add) {
 		service.create(user.value as UserCreate)
 			.then(() => onSuccess(user.value))
 			.catch((error: AxiosError) => onFailure(error, user.value));

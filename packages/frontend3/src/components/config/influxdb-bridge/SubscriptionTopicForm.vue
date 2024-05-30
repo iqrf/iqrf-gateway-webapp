@@ -21,43 +21,25 @@ limitations under the License.
 	>
 		<template #activator='{ props }'>
 			<v-btn
-				v-if='action === FormAction.Add'
-				id='add-activator'
+				v-if='action === Action.Add'
+				v-tooltip:bottom='$t("components.configuration.influxdb-bridge.actions.add")'
 				v-bind='props'
-				:color='iconColor()'
-				:icon='activatorIcon()'
+				color='green'
+				:icon='mdiPlus'
 			/>
-			<v-tooltip
-				v-if='action === FormAction.Add'
-				activator='#add-activator'
-				location='bottom'
-			>
-				{{ $t('components.configuration.influxdb-bridge.actions.add') }}
-			</v-tooltip>
-			<v-icon
-				v-if='action === FormAction.Edit'
-				id='edit-activator'
+			<DataTableAction
+				v-if='action === Action.Edit'
 				v-bind='props'
-				:color='iconColor()'
-				class='me-2'
-				size='large'
-			>
-				{{ activatorIcon() }}
-			</v-icon>
-			<v-tooltip
-				v-if='action === FormAction.Edit'
-				activator='#edit-activator'
-				location='bottom'
-			>
-				{{ $t('components.configuration.influxdb-bridge.actions.edit') }}
-			</v-tooltip>
+				:action='action'
+				:tooltip='$t("components.configuration.influxdb-bridge.actions.edit")'
+			/>
 		</template>
 		<v-form
 			ref='form'
 			v-slot='{ isValid }'
 			@submit.prevent='onSubmit'
 		>
-			<Card>
+			<Card :action='action'>
 				<template #title>
 					{{ $t(`components.configuration.influxdb-bridge.actions.${action}`) }}
 				</template>
@@ -70,22 +52,16 @@ limitations under the License.
 					required
 				/>
 				<template #actions>
-					<v-btn
-						color='primary'
-						type='submit'
-						variant='elevated'
+					<CardActionBtn
+						:action='action'
 						:disabled='!isValid.value'
-					>
-						{{ $t(`common.buttons.${action}`) }}
-					</v-btn>
+						type='submit'
+					/>
 					<v-spacer />
-					<v-btn
-						color='grey-darken-2'
-						variant='elevated'
+					<CardActionBtn
+						:action='Action.Cancel'
 						@click='close'
-					>
-						{{ $t('common.buttons.cancel') }}
-					</v-btn>
+					/>
 				</template>
 			</Card>
 		</v-form>
@@ -93,19 +69,21 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { mdiPencil, mdiPlus } from '@mdi/js';
+import { mdiPlus } from '@mdi/js';
 import { ref, type Ref, watchEffect } from 'vue';
 import { VForm } from 'vuetify/components';
 
-import Card from '@/components/Card.vue';
+import Card from '@/components/layout/card/Card.vue';
+import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
+import DataTableAction from '@/components/layout/data-table/DataTableAction.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
-import { FormAction } from '@/enums/controls';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
+import { Action } from '@/types/Action';
 
 interface Props {
-	action: FormAction;
+	action: Action;
 	index?: number;
 	topic?: string;
 }
@@ -117,7 +95,7 @@ const form: Ref<typeof VForm | null> = ref(null);
 const subscriptionTopic: Ref<string> = ref('');
 
 watchEffect(async (): Promise<void> => {
-	if (componentProps.action === FormAction.Add) {
+	if (componentProps.action === Action.Add) {
 		subscriptionTopic.value = '';
 	} else {
 		if (componentProps.topic !== undefined) {
@@ -125,21 +103,6 @@ watchEffect(async (): Promise<void> => {
 		}
 	}
 });
-
-function activatorIcon(): string {
-	if (componentProps.action === FormAction.Add) {
-		return mdiPlus;
-	}
-	return mdiPencil;
-}
-
-function iconColor(): string {
-	if (componentProps.action === FormAction.Add) {
-		return 'primary';
-	}
-	return 'info';
-}
-
 async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;

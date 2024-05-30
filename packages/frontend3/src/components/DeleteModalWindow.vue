@@ -22,19 +22,11 @@ limitations under the License.
 				<slot name='activator' v-bind='scope || {}' />
 			</template>
 			<template v-else>
-				<v-tooltip
-					v-if='tooltip !== null'
-					:activator='activator'
-					location='bottom'
-				>
-					{{ tooltip }}
-				</v-tooltip>
-				<v-icon
+				<DataTableAction
 					v-bind='scope.props'
-					ref='activator'
-					color='error'
-					size='large'
-					:icon='mdiDelete'
+					:action='Action.Delete'
+					:tooltip='tooltip'
+					last
 				/>
 			</template>
 		</template>
@@ -42,46 +34,32 @@ limitations under the License.
 			<template #title>
 				<slot name='title' />
 			</template>
-			<template #titleActions>
-				<v-btn
-					color='white'
-					:icon='mdiWindowClose'
-					@click='close'
-				/>
-			</template>
 			<slot />
 			<template #actions>
-				<v-btn
-					color='red'
-					variant='elevated'
+				<CardActionBtn
+					:action='Action.Delete'
 					:disabled='componentState === ComponentState.Saving'
 					@click='submit()'
-				>
-					<v-icon :icon='mdiDelete' />
-					{{ $t('common.buttons.delete') }}
-				</v-btn>
+				/>
 				<v-spacer />
-				<v-btn
-					color='grey-darken-2'
-					variant='elevated'
+				<CardActionBtn
+					:action='Action.Cancel'
 					:disabled='componentState === ComponentState.Saving'
 					@click='close()'
-				>
-					<v-icon :icon='mdiWindowClose' />
-					{{ $t('common.buttons.close') }}
-				</v-btn>
+				/>
 			</template>
 		</Card>
 	</ModalWindow>
 </template>
 
 <script setup lang='ts'>
-import { mdiDelete, mdiWindowClose } from '@mdi/js';
 import { type PropType, ref, type Ref } from 'vue';
-import { VIcon } from 'vuetify/components';
 
-import Card from '@/components/Card.vue';
+import Card from '@/components/layout/card/Card.vue';
+import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
+import DataTableAction from '@/components/layout/data-table/DataTableAction.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
+import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 /// Exposed component functions
@@ -104,8 +82,6 @@ defineProps({
 		default: null,
 	},
 });
-/// Activator ref
-const activator: Ref<typeof VIcon | null> = ref(null);
 /// Emit event
 const emit = defineEmits(['close', 'submit']);
 /// Show dialog window

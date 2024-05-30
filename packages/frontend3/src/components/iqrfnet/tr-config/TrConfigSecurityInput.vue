@@ -26,31 +26,21 @@ limitations under the License.
 		]'
 	>
 		<template #prepend-inner>
-			<v-tooltip location='bottom'>
-				<template #activator='{ props }'>
-					<v-icon
-						v-bind='props'
-						:icon='formatSwitchIcon'
-						color='primary'
-						size='x-large'
-						@click='changeAccessPasswordFormat'
-					/>
-				</template>
-				{{ formatSwitchMessage }}
-			</v-tooltip>
+			<v-icon
+				v-tooltip:bottom='formatSwitchMessage'
+				:icon='formatSwitchIcon'
+				color='primary'
+				size='x-large'
+				@click='changeAccessPasswordFormat'
+			/>
 		</template>
 		<template #append-inner>
-			<v-tooltip location='left'>
-				<template #activator='{ props }'>
-					<v-icon
-						v-bind='props'
-						:icon='mdiInformationBox'
-						color='info'
-						size='x-large'
-					/>
-				</template>
-				{{ formatHint }}
-			</v-tooltip>
+			<v-icon
+				v-tooltip:left='formatHint'
+				:icon='mdiInformationBox'
+				color='info'
+				size='x-large'
+			/>
 		</template>
 	</PasswordInput>
 </template>
@@ -116,12 +106,10 @@ const regexRule = computed(() => {
 });
 
 function changeAccessPasswordFormat(): void {
-	if (useHex.value) {
-		if (modelValue.value) {
+	if (modelValue.value) {
+		if (useHex.value) {
 			modelValue.value = hexToAscii(modelValue.value);
-		}
-	} else {
-		if (modelValue.value) {
+		} else {
 			modelValue.value = asciiToHex(modelValue.value);
 		}
 	}

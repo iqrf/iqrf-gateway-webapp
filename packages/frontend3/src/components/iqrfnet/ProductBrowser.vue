@@ -70,13 +70,10 @@ limitations under the License.
 			</DataTable>
 			<template #actions>
 				<v-spacer />
-				<v-btn
-					color='grey-darken-2'
-					variant='elevated'
+				<CardActionBtn
+					:action='Action.Cancel'
 					@click='close'
-				>
-					{{ $t('common.buttons.close') }}
-				</v-btn>
+				/>
 			</template>
 		</Card>
 	</ModalWindow>
@@ -88,11 +85,13 @@ import { mdiImport, mdiMagnify } from '@mdi/js';
 import { onMounted, type Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import Card from '@/components/Card.vue';
-import DataTable from '@/components/DataTable.vue';
+import Card from '@/components/layout/card/Card.vue';
+import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
+import DataTable from '@/components/layout/data-table/DataTable.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import { useRepositoryClient } from '@/services/RepositoryClient';
+import { Action } from '@/types/Action';
 
 defineProps({
 	listActivator: {

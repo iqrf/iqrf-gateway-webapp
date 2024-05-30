@@ -18,19 +18,16 @@ limitations under the License.
 <template>
 	<ModalWindow v-model='show'>
 		<template #activator='{ props }'>
-			<v-btn
-				v-if='action === FormAction.Add'
+			<CardTitleActionBtn
+				v-if='action === Action.Add'
 				v-bind='props'
-				:color='iconColor'
-				:icon='activatorIcon'
+				:action='action'
 			/>
-			<v-icon
+			<DataTableAction
 				v-else
 				v-bind='props'
-				:color='iconColor'
-				:icon='activatorIcon'
-				size='large'
-				class='me-2'
+				:action='action'
+				:tooltip='$t("components.configuration.profiles.actions.edit")'
 			/>
 		</template>
 		<v-form
@@ -95,7 +92,7 @@ limitations under the License.
 				<v-checkbox
 					v-model='interfacePins'
 					:label='$t("components.configuration.daemon.interfaces.interfacePins")'
-					density='compact'
+					:hide-details='false'
 				/>
 				<NumberInput
 					v-model.number='profile.i2cEnableGpioPin'
@@ -141,22 +138,16 @@ limitations under the License.
 					required
 				/>
 				<template #actions>
-					<v-btn
-						color='primary'
-						type='submit'
-						variant='elevated'
+					<CardActionBtn
+						:action='action'
 						:disabled='!isValid.value'
-					>
-						{{ $t(`common.buttons.${action}`) }}
-					</v-btn>
+						type='submit'
+					/>
 					<v-spacer />
-					<v-btn
-						color='grey-darken-2'
-						variant='elevated'
+					<CardActionBtn
+						:action='Action.Cancel'
 						@click='close'
-					>
-						{{ $t('common.buttons.cancel') }}
-					</v-btn>
+					/>
 				</template>
 			</Card>
 		</v-form>
@@ -167,7 +158,6 @@ limitations under the License.
 import { type IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import { type IqrfGatewayDaemonMapping } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { MappingDeviceType, MappingType } from '@iqrf/iqrf-gateway-webapp-client/types/Config/Mapping';
-import { mdiPencil, mdiPlus } from '@mdi/js';
 import {
 	computed,
 	type Ref,
@@ -179,20 +169,23 @@ import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
-import Card from '@/components/Card.vue';
+import Card from '@/components/layout/card/Card.vue';
+import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
+import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
+import DataTableAction from '@/components/layout/data-table/DataTableAction.vue';
 import NumberInput from '@/components/layout/form/NumberInput.vue';
 import SelectInput from '@/components/layout/form/SelectInput.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
-import { FormAction } from '@/enums/controls';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
+import { Action } from '@/types/Action';
 
 const componentProps = defineProps({
 	action: {
-		type: String as PropType<FormAction>,
-		default: FormAction.Add,
+		type: String as PropType<Action>,
+		default: Action.Add,
 		required: false,
 	},
 	mappingType: {
@@ -254,27 +247,15 @@ const baudRateOptions = computed(() => {
 		value: item,
 	}));
 });
-const iconColor = computed(() => {
-	if (componentProps.action === FormAction.Add) {
-		return 'white';
-	}
-	return 'info';
-});
-const activatorIcon = computed(() => {
-	if (componentProps.action === FormAction.Add) {
-		return mdiPlus;
-	}
-	return mdiPencil;
-});
 const dialogTitle = computed(() => {
-	if (componentProps.action === FormAction.Add) {
+	if (componentProps.action === Action.Add) {
 		return i18n.t('components.configuration.profiles.actions.add').toString();
 	}
 	return i18n.t('components.configuration.profiles.actions.edit').toString();
 });
 
 watchEffect(async (): Promise<void> => {
-	if (componentProps.action === FormAction.Edit && componentProps.deviceProfile) {
+	if (componentProps.action === Action.Edit && componentProps.deviceProfile) {
 		profile.value = {
 			...componentProps.deviceProfile,
 			type: componentProps.mappingType,

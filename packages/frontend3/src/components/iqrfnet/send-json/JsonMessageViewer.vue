@@ -44,7 +44,7 @@ import { PrismEditor } from 'vue-prism-editor';
 import 'vue-prism-editor/dist/prismeditor.min.css';
 import 'prismjs/themes/prism.css';
 import 'prismjs/components/prism-json';
-import Card from '@/components/Card.vue';
+import Card from '@/components/layout/card/Card.vue';
 
 const componentProps = defineProps({
 	message: {

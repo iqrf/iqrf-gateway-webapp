@@ -19,6 +19,7 @@ limitations under the License.
 	<v-form
 		ref='form'
 		v-slot='{ isValid }'
+		@submit.prevent='onSubmit'
 	>
 		<Card>
 			<template #title>
@@ -35,7 +36,7 @@ limitations under the License.
 							<TextInput
 								v-model='configuration.wsServers.api'
 								:label='$t("components.configuration.controller.form.websocket.api")'
-								readonly
+								:prepend-inner-icon='mdiLinkVariant'
 							>
 								<template #append-inner>
 									<WebsocketUrlForm
@@ -53,7 +54,7 @@ limitations under the License.
 							<TextInput
 								v-model='configuration.wsServers.monitor'
 								:label='$t("components.configuration.controller.form.websocket.monitor")'
-								readonly
+								:prepend-inner-icon='mdiLinkVariant'
 							>
 								<template #append-inner>
 									<WebsocketUrlForm
@@ -76,6 +77,7 @@ limitations under the License.
 							<TextInput
 								v-model='configuration.logger.filePath'
 								:label='$t("components.configuration.controller.form.logging.path")'
+								:prepend-inner-icon='mdiFileDocument'
 								:rules='[
 									(v: string|null) => ValidationRules.required(v, $t("components.configuration.controller.validation.logPath")),
 								]'
@@ -90,6 +92,7 @@ limitations under the License.
 								v-model='configuration.logger.severity'
 								:items='severityOptions'
 								:label='$t("components.configuration.controller.form.logging.severity")'
+								:prepend-inner-icon='mdiAlert'
 							/>
 						</v-col>
 					</v-row>
@@ -194,6 +197,7 @@ limitations under the License.
 						v-model='configuration.resetButton.api'
 						:items='actionOptions'
 						:label='$t("components.configuration.controller.form.button.action")'
+						:prepend-inner-icon='mdiGestureTapHold'
 					>
 						<template #append>
 							<ControllerAutonetworkForm
@@ -206,13 +210,10 @@ limitations under the License.
 								:discovery-config='configuration.daemonApi.discovery'
 								@saved='onDiscoverySave'
 							/>
-							<v-btn
+							<ControllerActionConfigureBtn
 								v-else
-								color='primary'
 								:disabled='true'
-							>
-								{{ $t('components.configuration.controller.form.button.configure') }}
-							</v-btn>
+							/>
 						</template>
 					</SelectInput>
 				</section>
@@ -265,7 +266,6 @@ limitations under the License.
 					<v-checkbox
 						v-model='watchdogPins'
 						:label='$t("components.configuration.controller.form.pins.useWatchdogPins")'
-						density='compact'
 					/>
 					<v-row :no-gutters='display.mobile.value'>
 						<v-col
@@ -327,21 +327,20 @@ limitations under the License.
 				</span>
 			</span>
 			<template #actions>
-				<v-btn
-					color='primary'
-					variant='elevated'
+				<CardActionBtn
+					:action='Action.Edit'
 					:disabled='componentState !== ComponentState.Ready || !isValid.value'
-					@click='onSubmit'
-				>
-					{{ $t('common.buttons.save') }}
-				</v-btn>
+					type='submit'
+				/>
 			</template>
 		</Card>
 	</v-form>
 </template>
 
 <script lang='ts' setup>
-import { type IqrfGatewayControllerService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
+import {
+	type IqrfGatewayControllerService,
+} from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import {
 	IqrfGatewayControllerAction,
 	type IqrfGatewayControllerApiAutonetworkConfig,
@@ -350,23 +349,32 @@ import {
 	IqrfGatewayControllerLoggingSeverity,
 	type IqrfGatewayControllerMapping,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import {
+	mdiAlert,
+	mdiFileDocument,
+	mdiGestureTapHold,
+	mdiLinkVariant,
+} from '@mdi/js';
 import { onMounted, type Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { useDisplay } from 'vuetify';
 import { VForm } from 'vuetify/components';
 
-import Card from '@/components/Card.vue';
+import ControllerActionConfigureBtn from '@/components/config/controller/ControllerActionConfigureBtn.vue';
 import ControllerAutonetworkForm from '@/components/config/controller/ControllerAutonetworkForm.vue';
 import ControllerDiscoveryForm from '@/components/config/controller/ControllerDiscoveryForm.vue';
 import DeviceProfilesTable from '@/components/config/controller/profiles/DeviceProfilesTable.vue';
 import WebsocketUrlForm from '@/components/config/WebsocketUrlForm.vue';
+import Card from '@/components/layout/card/Card.vue';
+import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import NumberInput from '@/components/layout/form/NumberInput.vue';
 import SelectInput from '@/components/layout/form/SelectInput.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
+import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);

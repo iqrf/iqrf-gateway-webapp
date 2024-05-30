@@ -19,27 +19,28 @@ limitations under the License.
 	<ModalWindow v-model='show'>
 		<template #activator='{ props }'>
 			<v-btn
-				v-if='action === FormAction.Add'
+				v-if='action === Action.Add'
 				v-bind='props'
-				:color='iconColor()'
-				:icon='activatorIcon()'
+				color='success'
+				:icon='mdiPlus'
 			/>
 			<v-icon
 				v-else
 				v-bind='props'
-				:color='iconColor()'
+				color='info'
 				class='me-2'
+				:icon='mdiPencil'
 				size='large'
-			>
-				{{ activatorIcon() }}
-			</v-icon>
+			/>
 		</template>
 		<v-form
 			v-slot='{ isValid }'
 			ref='form'
 			@submit.prevent='onSubmit'
 		>
-			<Card>
+			<Card
+				:header-color='action === Action.Add ? "success" : "primary"'
+			>
 				<template #title>
 					{{ $t(`components.configuration.daemon.scheduler.task.actions.${action}`) }}
 				</template>
@@ -63,22 +64,16 @@ limitations under the License.
 					multiple
 				/>
 				<template #actions>
-					<v-btn
-						color='primary'
-						type='submit'
-						variant='elevated'
+					<CardActionBtn
+						:action='action'
 						:disabled='!isValid.value'
-					>
-						{{ $t(`common.buttons.${action}`) }}
-					</v-btn>
+						type='submit'
+					/>
 					<v-spacer />
-					<v-btn
-						color='grey-darken-2'
-						variant='elevated'
+					<CardActionBtn
+						:action='Action.Cancel'
 						@click='close'
-					>
-						{{ $t('common.buttons.cancel') }}
-					</v-btn>
+					/>
 				</template>
 			</Card>
 		</v-form>
@@ -92,17 +87,18 @@ import { mdiPencil, mdiPlus } from '@mdi/js';
 import { ref, type Ref, watchEffect , type PropType, computed } from 'vue';
 import { VForm } from 'vuetify/components';
 
-import Card from '@/components/Card.vue';
+import Card from '@/components/layout/card/Card.vue';
+import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import SelectInput from '@/components/layout/form/SelectInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
-import { FormAction } from '@/enums/controls';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
+import { Action } from '@/types/Action';
 
 const componentProps = defineProps({
 	action: {
-		type: String as PropType<FormAction>,
-		default: FormAction.Add,
+		type: String as PropType<Action>,
+		default: Action.Add,
 		required: false,
 	},
 	index: {
@@ -143,25 +139,11 @@ const messagingOptions = computed(() => {
 });
 
 watchEffect(async (): Promise<void> => {
-	if (componentProps.action === FormAction.Edit && componentProps.task !== null) {
+	if (componentProps.action === Action.Edit && componentProps.task !== null) {
 		message.value = JSON.stringify(componentProps.task.message, null, 4);
 		selected.value = componentProps.task.messaging;
 	}
 });
-
-function activatorIcon(): string {
-	if (componentProps.action === FormAction.Add) {
-		return mdiPlus;
-	}
-	return mdiPencil;
-}
-
-function iconColor(): string {
-	if (componentProps.action === FormAction.Add) {
-		return 'black';
-	}
-	return 'info';
-}
 
 function isDaemonApiRequest(value: object): value is DaemonApiRequest {
 	if (!('mType' in value) || !('data' in value)) {

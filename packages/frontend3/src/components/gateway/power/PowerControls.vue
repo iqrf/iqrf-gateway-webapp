@@ -20,7 +20,7 @@ limitations under the License.
 		<template #title>
 			{{ $t('pages.gateway.power.title') }}
 		</template>
-		<PowerOffDialog @confirm='powerOff' />
+		<PowerOffDialog class='mr-2' @confirm='powerOff' />
 		<RebootDialog @confirm='reboot' />
 	</Card>
 </template>
@@ -32,9 +32,9 @@ import { type AxiosError } from 'axios';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
-import Card from '@/components/Card.vue';
 import PowerOffDialog from '@/components/gateway/power/PowerOffDialog.vue';
 import RebootDialog from '@/components/gateway/power/RebootDialog.vue';
+import Card from '@/components/layout/card/Card.vue';
 import { basicErrorToast } from '@/helpers/errorToast';
 import { useApiClient } from '@/services/ApiClient';
 

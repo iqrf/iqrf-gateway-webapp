@@ -16,7 +16,7 @@ limitations under the License.
 -->
 
 <template>
-	<v-form ref='form' @submit.prevent='onSubmit'>
+	<v-form ref='form' v-slot='{ isValid }' @submit.prevent='onSubmit'>
 		<Card>
 			<template #title>
 				{{ $t('components.auth.signIn.title') }}
@@ -41,23 +41,20 @@ limitations under the License.
 			/>
 			<SessionExpirationInput v-model='credentials.expiration' />
 			<template #actions>
-				<v-btn
-					variant='elevated'
+				<CardActionBtn
 					color='primary'
+					:disabled='!isValid.value'
+					:text='$t("components.auth.signIn.actions.signIn")'
 					type='submit'
-					:prepend-icon='mdiLogin'
-				>
-					{{ $t('components.auth.signIn.actions.signIn') }}
-				</v-btn>
+					:icon='mdiLogin'
+				/>
 				<v-spacer />
-				<v-btn
-					variant='elevated'
+				<CardActionBtn
 					color='grey'
+					:icon='mdiAccountKey'
+					:text='$t("components.auth.signIn.actions.recoverPassword")'
 					to='/account/recovery'
-					:prepend-icon='mdiAccountKey'
-				>
-					{{ $t('components.auth.signIn.actions.recoverPassword') }}
-				</v-btn>
+				/>
 			</template>
 		</Card>
 	</v-form>
@@ -78,7 +75,8 @@ import { VForm } from 'vuetify/components';
 
 import SessionExpirationInput
 	from '@/components/auth/SessionExpirationInput.vue';
-import Card from '@/components/Card.vue';
+import Card from '@/components/layout/card/Card.vue';
+import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import PasswordInput from '@/components/layout/form/PasswordInput.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import { basicErrorToast } from '@/helpers/errorToast';

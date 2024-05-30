@@ -16,7 +16,10 @@ limitations under the License.
 -->
 
 <template>
-	<v-form :disabled='componentState === ComponentState.Loading'>
+	<v-form
+		:disabled='componentState === ComponentState.Loading'
+		@submit.prevent='onSubmit'
+	>
 		<Card>
 			<template #title>
 				{{ $t('components.maintenance.backup.backup.title') }}
@@ -114,14 +117,12 @@ limitations under the License.
 				</tbody>
 			</v-table>
 			<template #actions>
-				<v-btn
-					color='primary'
-					variant='elevated'
+				<CardActionBtn
+					:action='Action.Download'
 					:disabled='componentState === ComponentState.Loading'
-					@click='onSubmit'
-				>
-					{{ $t('common.buttons.backup') }}
-				</v-btn>
+					:text='$t("common.buttons.backup")'
+					type='submit'
+				/>
 			</template>
 		</Card>
 	</v-form>
@@ -131,16 +132,15 @@ limitations under the License.
 import { type BackupService } from '@iqrf/iqrf-gateway-webapp-client/services/Maintenance';
 import { Feature } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { type GatewayBackup } from '@iqrf/iqrf-gateway-webapp-client/types/Maintenance/Backup';
-import { FileDownloader } from  '@iqrf/iqrf-gateway-webapp-client/utils/FileDownloader';
-import {
-	type Ref,
-	ref,
-} from 'vue';
+import { FileDownloader } from '@iqrf/iqrf-gateway-webapp-client/utils/FileDownloader';
+import { type Ref, ref } from 'vue';
 import { toast } from 'vue3-toastify';
 
-import Card from '@/components/Card.vue';
+import Card from '@/components/layout/card/Card.vue';
+import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import { useApiClient } from '@/services/ApiClient';
 import { useFeatureStore } from '@/store/features';
+import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Ready);

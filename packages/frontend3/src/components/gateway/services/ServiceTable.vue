@@ -21,19 +21,11 @@ limitations under the License.
 			{{ $t('pages.gateway.services.title') }}
 		</template>
 		<template #titleActions>
-			<v-tooltip
-				location='bottom'
-			>
-				<template #activator='{ props }'>
-					<v-btn
-						v-bind='props'
-						color='white'
-						:icon='mdiReload'
-						@click='getServices'
-					/>
-				</template>
-				{{ $t('components.gateway.services.actions.refreshAll') }}
-			</v-tooltip>
+			<CardTitleActionBtn
+				:action='Action.Reload'
+				:tooltip='$t("components.gateway.services.actions.refreshAll")'
+				@click='getServices'
+			/>
 		</template>
 		<DataTable
 			:headers='headers'
@@ -56,80 +48,45 @@ limitations under the License.
 				<BooleanCheckMarker :value='item.active' />
 			</template>
 			<template #item.actions='{ item, index, internalItem, toggleExpand }'>
-				<span>
-					<v-icon
-						color='primary'
-						size='large'
-						class='me-1'
-						:icon='enabledActionIcon(item.enabled)'
-						@click='item.enabled ? disableService(item.name, index) : enableService(item.name, index)'
-					/>
-					<v-tooltip
-						activator='parent'
-						location='bottom'
-					>
-						{{ enabledTooltip(item.enabled) }}
-					</v-tooltip>
-				</span>
-				<span>
-					<v-icon
-						color='primary'
-						size='large'
-						class='me-1'
-						:icon='activeActionIcon(item.active)'
-						@click='item.active ? stopService(item.name, index) : startService(item.name, index)'
-					/>
-					<v-tooltip
-						activator='parent'
-						location='bottom'
-					>
-						{{ activeTooltip(item.active) }}
-					</v-tooltip>
-				</span>
-				<span>
-					<v-icon
-						color='primary'
-						size='large'
-						class='me-1'
-						:icon='mdiRestart'
-						@click='restartService(item.name, index)'
-					/>
-					<v-tooltip
-						activator='parent'
-						location='bottom'
-					>
-						{{ $t('components.gateway.services.actions.restart') }}
-					</v-tooltip>
-				</span>
-				<span>
-					<v-icon
-						color='primary'
-						size='large'
-						class='me-1'
-						:icon='mdiReload'
-						@click='refreshService(item.name, index)'
-					/>
-					<v-tooltip
-						activator='parent'
-						location='bottom'
-					>
-						{{ $t('components.gateway.services.actions.refresh') }}
-					</v-tooltip>
-				</span>
-				<span>
-					<v-icon
-						color='primary'
-						size='large'
-						:icon='mdiInformationOutline'
-						@click='toggleExpand(internalItem)'
-					/>
-					<v-tooltip
-						activator='parent'
-						location='bottom'
-					>
-						{{ $t('components.gateway.services.actions.status') }}
-					</v-tooltip>
-				</span>
+				<DataTableAction
+					v-if='item.enabled'
+					:action='Action.Disable'
+					:tooltip='$t("components.gateway.services.actions.disable")'
+					@click='disableService(item.name, index)'
+				/>
+				<DataTableAction
+					v-else
+					:action='Action.Enable'
+					:tooltip='$t("components.gateway.services.actions.enable")'
+					@click='enableService(item.name, index)'
+				/>
+				<DataTableAction
+					v-if='item.active'
+					:action='Action.Stop'
+					:tooltip='$t("components.gateway.services.actions.stop")'
+					@click='stopService(item.name, index)'
+				/>
+				<DataTableAction
+					v-else
+					:action='Action.Start'
+					:tooltip='$t("components.gateway.services.actions.start")'
+					@click='startService(item.name, index)'
+				/>
+				<DataTableAction
+					:action='Action.Restart'
+					:tooltip='$t("components.gateway.services.actions.restart")'
+					@click='restartService(item.name, index)'
+				/>
+				<DataTableAction
+					:action='Action.Reload'
+					:tooltip='$t("components.gateway.services.actions.refresh")'
+					@click='refreshService(item.name, index)'
+				/>
+				<DataTableAction
+					:action='Action.ShowDetails'
+					:tooltip='$t("components.gateway.services.actions.status")'
+					@click='toggleExpand(internalItem)'
+				/>
 			</template>
 			<template #expanded-row='{ columns, item }'>
 				<tr>
@@ -145,22 +102,16 @@ limitations under the License.
 <script lang='ts' setup>
 import { type ServiceService } from '@iqrf/iqrf-gateway-webapp-client/services';
 import { type ServiceState, type ServiceStatus } from '@iqrf/iqrf-gateway-webapp-client/types';
-import {
-	mdiInformationOutline,
-	mdiPlay,
-	mdiPlayCircleOutline,
-	mdiReload,
-	mdiRestart,
-	mdiStop,
-	mdiStopCircleOutline,
-} from '@mdi/js';
 import { onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import BooleanCheckMarker from '@/components/BooleanCheckMarker.vue';
-import Card from '@/components/Card.vue';
-import DataTable from '@/components/DataTable.vue';
+import Card from '@/components/layout/card/Card.vue';
+import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
+import DataTable from '@/components/layout/data-table/DataTable.vue';
+import DataTableAction from '@/components/layout/data-table/DataTableAction.vue';
 import { useApiClient } from '@/services/ApiClient';
+import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 const i18n = useI18n();
@@ -228,34 +179,6 @@ function refreshService(name: string, index: number): void {
 			};
 			state.value = ComponentState.Ready;
 		});
-}
-
-function enabledActionIcon(state: boolean): string {
-	if (state) {
-		return mdiStopCircleOutline;
-	}
-	return mdiPlayCircleOutline;
-}
-
-function enabledTooltip(state: boolean): string {
-	if (state) {
-		return i18n.t('components.gateway.services.actions.disable');
-	}
-	return i18n.t('components.gateway.services.actions.enable');
-}
-
-function activeActionIcon(state: boolean): string {
-	if (state) {
-		return mdiStop;
-	}
-	return mdiPlay;
-}
-
-function activeTooltip(state: boolean): string {
-	if (state) {
-		return i18n.t('components.gateway.services.actions.stop');
-	}
-	return i18n.t('components.gateway.services.actions.start');
 }
 
 onMounted(() => {

@@ -43,7 +43,7 @@ limitations under the License.
 <script lang='ts' setup>
 import { type PropType } from 'vue';
 
-import Card from '@/components/Card.vue';
+import Card from '@/components/layout/card/Card.vue';
 import { getModalWidth } from '@/helpers/modal';
 
 defineProps({

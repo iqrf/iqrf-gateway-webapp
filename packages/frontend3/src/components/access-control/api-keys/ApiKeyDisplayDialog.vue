@@ -40,29 +40,26 @@ limitations under the License.
 				</template>
 			</TextInput>
 			<template #actions>
-				<v-spacer />
-				<v-btn
-					color='grey-darken-2'
-					variant='elevated'
+				<CardActionBtn
+					:action='Action.Cancel'
 					@click='close'
-				>
-					<v-icon :icon='mdiWindowClose' />
-					{{ $t('common.buttons.close') }}
-				</v-btn>
+				/>
 			</template>
 		</Card>
 	</ModalWindow>
 </template>
 
 <script lang='ts' setup>
-import { mdiClipboard, mdiWindowClose } from '@mdi/js';
+import { mdiClipboard } from '@mdi/js';
 import { type PropType, type Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
-import Card from '@/components/Card.vue';
+import Card from '@/components/layout/card/Card.vue';
+import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
+import { Action } from '@/types/Action';
 
 const componentProps = defineProps({
 	apiKey: {

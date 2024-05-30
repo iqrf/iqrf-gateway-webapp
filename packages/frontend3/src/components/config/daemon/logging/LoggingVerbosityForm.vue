@@ -19,31 +19,21 @@ limitations under the License.
 	<ModalWindow v-model='show'>
 		<template #activator='{ props }'>
 			<v-btn
-				v-if='action === FormAction.Add'
-				id='channel-add-activator'
+				v-if='action === Action.Add'
+				v-tooltip:bottom='$t("components.configuration.daemon.logging.channels.actions.add")'
 				v-bind='props'
-				:color='iconColor()'
-				:icon='activatorIcon()'
+				color='success'
+				:icon='mdiPlus'
 			/>
-			<v-tooltip
-				v-if='action === FormAction.Add'
-				activator='#channel-add-activator'
-				location='bottom'
-			>
-				{{ $t('components.configuration.daemon.logging.channels.actions.add') }}
-			</v-tooltip>
-			<v-icon
+			<DataTableAction
 				v-else
 				v-bind='props'
-				:color='iconColor()'
-				class='me-2'
-				size='large'
-			>
-				{{ activatorIcon() }}
-			</v-icon>
+				:action='action'
+				:tooltip='$t("components.configuration.daemon.logging.channels.actions.edit")'
+			/>
 		</template>
-		<v-form ref='form' @submit.prevent='onSubmit'>
-			<Card>
+		<v-form ref='form' v-slot='{ isValid }' @submit.prevent='onSubmit'>
+			<Card :action='action'>
 				<template #title>
 					{{ $t(`components.configuration.daemon.logging.channels.actions.${action}`) }}
 				</template>
@@ -63,21 +53,16 @@ limitations under the License.
 					:items='severityOptions'
 				/>
 				<template #actions>
-					<v-btn
-						color='primary'
+					<CardActionBtn
+						:action='action'
+						:disabled='!isValid.value'
 						type='submit'
-						variant='elevated'
-					>
-						{{ $t(`common.buttons.${action}`) }}
-					</v-btn>
+					/>
 					<v-spacer />
-					<v-btn
-						color='grey-darken-2'
-						variant='elevated'
+					<CardActionBtn
+						:action='Action.Cancel'
 						@click='close'
-					>
-						{{ $t('common.buttons.cancel') }}
-					</v-btn>
+					/>
 				</template>
 			</Card>
 		</v-form>
@@ -86,28 +71,30 @@ limitations under the License.
 
 <script lang='ts' setup>
 import { ShapeTraceVerbosity, type ShapeTraceChannelVerbosity } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { mdiPencil, mdiPlus } from '@mdi/js';
+import { mdiPlus } from '@mdi/js';
 import { ref, type Ref, watchEffect, type PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { VForm } from 'vuetify/components';
 
-import Card from '@/components/Card.vue';
+import Card from '@/components/layout/card/Card.vue';
+import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
+import DataTableAction from '@/components/layout/data-table/DataTableAction.vue';
 import NumberInput from '@/components/layout/form/NumberInput.vue';
 import SelectInput from '@/components/layout/form/SelectInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
-import { FormAction } from '@/enums/controls';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
+import { Action } from '@/types/Action';
 
 const emit = defineEmits(['save']);
 const componentProps = defineProps({
 	action: {
-		type: String as PropType<FormAction>,
+		type: String as PropType<Action>,
 		required: false,
-		default: FormAction.Add,
+		default: Action.Add,
 	},
 	index: {
-		type: [Number, null] as PropType<Number|null>,
+		type: [Number, null] as PropType<number|null>,
 		required: false,
 		default: null,
 	},
@@ -148,26 +135,12 @@ const severityOptions = [
 ];
 
 watchEffect(async (): Promise<void> => {
-	if (componentProps.action === FormAction.Edit && componentProps.loggingLevel) {
+	if (componentProps.action === Action.Edit && componentProps.loggingLevel) {
 		level.value = { ...componentProps.loggingLevel };
 	} else {
 		level.value = { ...defaultLevel };
 	}
 });
-
-function activatorIcon(): string {
-	if (componentProps.action === FormAction.Add) {
-		return mdiPlus;
-	}
-	return mdiPencil;
-}
-
-function iconColor(): string {
-	if (componentProps.action === FormAction.Add) {
-		return 'black';
-	}
-	return 'info';
-}
 
 async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {

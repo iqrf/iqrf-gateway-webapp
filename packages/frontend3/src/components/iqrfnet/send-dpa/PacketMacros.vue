@@ -64,7 +64,7 @@ import { type DpaMacro, type DpaMacroGroup } from '@iqrf/iqrf-gateway-webapp-cli
 import { mdiMenuUp } from '@mdi/js';
 import { type Ref, onMounted, ref } from 'vue';
 
-import Card from '@/components/Card.vue';
+import Card from '@/components/layout/card/Card.vue';
 import { useApiClient } from '@/services/ApiClient';
 import { ComponentState } from '@/types/ComponentState';
 

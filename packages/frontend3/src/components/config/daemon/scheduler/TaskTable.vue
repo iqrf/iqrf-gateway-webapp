@@ -34,7 +34,7 @@ limitations under the License.
 				{{ $t('components.configuration.daemon.scheduler.actions.reload') }}
 			</v-tooltip>
 			<TaskForm
-				:action='FormAction.Add'
+				:action='Action.Add'
 				:messagings='messagings'
 				@saved='listTasks'
 			/>
@@ -103,7 +103,7 @@ limitations under the License.
 						</span>
 						<span>
 							<TaskForm
-								:action='FormAction.Edit'
+								:action='Action.Edit'
 								:messagings='messagings'
 								:scheduler-task='item'
 								@saved='listTasks'
@@ -134,7 +134,7 @@ import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { type IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import { type IqrfGatewayDaemonSchedulerMessagings } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { FileDownloader } from '@iqrf/iqrf-gateway-webapp-client/utils';
-import { mdiCheckCircle, mdiCloseCircle, mdiExport, mdiPlay, mdiReload, mdiStop } from '@mdi/js';
+import { mdiExport, mdiPlay, mdiReload, mdiStop } from '@mdi/js';
 import cronstrue from 'cronstrue';
 import { DateTime, Duration } from 'luxon';
 import { onMounted, type Ref, ref } from 'vue';
@@ -142,15 +142,15 @@ import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import BooleanCheckMarker from '@/components/BooleanCheckMarker.vue';
-import Card from '@/components/Card.vue';
 import TaskDeleteDialog from '@/components/config/daemon/scheduler/TaskDeleteDialog.vue';
 import TaskForm from '@/components/config/daemon/scheduler/TaskForm.vue';
 import TasksDeleteDialog from '@/components/config/daemon/scheduler/TasksDeleteDialog.vue';
 import TasksImportDialog from '@/components/config/daemon/scheduler/TasksImportDialog.vue';
-import DataTable from '@/components/DataTable.vue';
-import { FormAction } from '@/enums/controls';
+import Card from '@/components/layout/card/Card.vue';
+import DataTable from '@/components/layout/data-table/DataTable.vue';
 import { useApiClient } from '@/services/ApiClient';
 import { useDaemonStore } from '@/store/daemonSocket';
+import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
@@ -193,19 +193,11 @@ daemonStore.$onAction(
 					handleStopTask(rsp);
 					break;
 				default:
-					//
+				//
 			}
 		});
 	},
 );
-
-function activeIcon(active: boolean): string {
-	return active ? mdiCheckCircle: mdiCloseCircle;
-}
-
-function activeIconColor(active: boolean): string {
-	return active ? 'success' : 'error';
-}
 
 function activateIcon(active: boolean): string {
 	return active ? mdiStop : mdiPlay;

@@ -57,7 +57,7 @@ import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
-import Card from '@/components/Card.vue';
+import Card from '@/components/layout/card/Card.vue';
 import { ServiceAction } from '@/enums/controls';
 import { useApiClient } from '@/services/ApiClient';
 import { useInstallStore } from '@/store/install';

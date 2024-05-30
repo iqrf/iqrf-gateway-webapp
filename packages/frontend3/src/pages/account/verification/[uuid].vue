@@ -58,7 +58,7 @@ import { validate as uuidValidate, version as uuidVersion } from 'uuid';
 import { onMounted, ref, type Ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import Card from '@/components/Card.vue';
+import Card from '@/components/layout/card/Card.vue';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
 

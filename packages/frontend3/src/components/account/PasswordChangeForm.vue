@@ -16,11 +16,11 @@ limitations under the License.
 -->
 
 <template>
-	<Card>
-		<template #title>
-			{{ $t('account.profile.password.title') }}
-		</template>
-		<v-form ref='form' @submit.prevent='onSubmit'>
+	<v-form ref='form' v-slot='{ isValid }' @submit.prevent='onSubmit'>
+		<Card>
+			<template #title>
+				{{ $t('account.profile.password.title') }}
+			</template>
 			<PasswordInput
 				v-model='passwordChange.old'
 				:label='$t("account.profile.password.current")'
@@ -39,32 +39,33 @@ limitations under the License.
 				required
 				:prepend-inner-icon='mdiKey'
 			/>
-			<v-btn
-				color='primary'
-				type='submit'
-			>
-				{{ $t('common.buttons.change') }}
-			</v-btn>
-		</v-form>
-	</Card>
+			<template #actions>
+				<CardActionBtn
+					:action='Action.Edit'
+					:disabled='!isValid.value'
+					type='submit'
+				/>
+			</template>
+		</Card>
+	</v-form>
 </template>
 
 <script lang='ts' setup>
 import { type UserPasswordChange } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { mdiKey } from '@mdi/js';
-import  { type AxiosError } from 'axios';
+import { type AxiosError } from 'axios';
 import { ref, type Ref } from 'vue';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
-import Card from '@/components/Card.vue';
+import Card from '@/components/layout/card/Card.vue';
+import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import PasswordInput from '@/components/layout/form/PasswordInput.vue';
 import UrlBuilder from '@/helpers/urlBuilder';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
-
-
+import { Action } from '@/types/Action';
 
 const form: Ref<typeof VForm | null> = ref(null);
 const passwordChange: Ref<UserPasswordChange> = ref<UserPasswordChange>({

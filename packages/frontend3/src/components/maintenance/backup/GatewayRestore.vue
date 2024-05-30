@@ -19,6 +19,7 @@ limitations under the License.
 	<v-form
 		v-slot='{ isValid }'
 		:disabled='componentState === ComponentState.Saving'
+		@submit.prevent='onSubmit'
 	>
 		<Card>
 			<template #title>
@@ -37,14 +38,12 @@ limitations under the License.
 				required
 			/>
 			<template #actions>
-				<v-btn
-					color='primary'
-					variant='elevated'
+				<CardActionBtn
+					:action='Action.Upload'
 					:disabled='!isValid.value || componentState === ComponentState.Saving'
-					@click='onSubmit'
-				>
-					{{ $t('common.buttons.restore') }}
-				</v-btn>
+					:text='$t("common.buttons.restore")'
+					type='submit'
+				/>
 			</template>
 		</Card>
 	</v-form>
@@ -54,18 +53,17 @@ limitations under the License.
 import { type BackupService } from '@iqrf/iqrf-gateway-webapp-client/services/Maintenance';
 import { type PowerActionResponse } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway/Power';
 import { mdiFileOutline } from '@mdi/js';
-import {
-	type Ref,
-	ref,
-} from 'vue';
+import { type Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
-import Card from '@/components/Card.vue';
+import Card from '@/components/layout/card/Card.vue';
+import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
+import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Ready);

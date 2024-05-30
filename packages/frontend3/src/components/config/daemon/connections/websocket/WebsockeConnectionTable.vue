@@ -20,6 +20,13 @@ limitations under the License.
 		<template #title>
 			{{ $t('pages.configuration.daemon.connections.ws.title') }}
 		</template>
+		<template #titleActions>
+			<CardTitleActionBtn
+				:action='Action.Reload'
+				:tooltip='$t("components.configuration.daemon.connections.actions.reload")'
+				@click='getConfigs'
+			/>
+		</template>
 		<DataTable
 			:headers='headers'
 			:items='ifaces'
@@ -43,19 +50,11 @@ limitations under the License.
 				<BooleanCheckMarker :value='item.service.tlsEnabled' />
 			</template>
 			<template #item.actions='{ item }'>
-				<v-tooltip location='bottom'>
-					<template #activator='{ props }'>
-						<v-icon
-							v-bind='props'
-							color='info'
-							size='large'
-							:icon='mdiExport'
-							class='me-2'
-							@click='exportConfig(item)'
-						/>
-					</template>
-					{{ $t('components.configuration.daemon.connections.actions.export') }}
-				</v-tooltip>
+				<DataTableAction
+					:action='Action.Export'
+					:tooltip='$t("components.configuration.daemon.connections.actions.export")'
+					@click='exportConfig(item)'
+				/>
 			</template>
 		</DataTable>
 	</Card>
@@ -70,16 +69,18 @@ import {
 	type ShapeWebsocketService,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { FileDownloader } from '@iqrf/iqrf-gateway-webapp-client/utils/FileDownloader';
-import { mdiExport } from '@mdi/js';
 import { type Ref, ref } from 'vue';
 import { onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import BooleanCheckMarker from '@/components/BooleanCheckMarker.vue';
-import Card from '@/components/Card.vue';
-import DataTable from '@/components/DataTable.vue';
+import Card from '@/components/layout/card/Card.vue';
+import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
+import DataTable from '@/components/layout/data-table/DataTable.vue';
+import DataTableAction from '@/components/layout/data-table/DataTableAction.vue';
 import { useApiClient } from '@/services/ApiClient';
+import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);

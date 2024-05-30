@@ -86,7 +86,7 @@ import { VForm } from 'vuetify/components';
 
 import SessionExpirationInput
 	from '@/components/auth/SessionExpirationInput.vue';
-import Card from '@/components/Card.vue';
+import Card from '@/components/layout/card/Card.vue';
 import PasswordInput from '@/components/layout/form/PasswordInput.vue';
 import SelectInput from '@/components/layout/form/SelectInput.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';

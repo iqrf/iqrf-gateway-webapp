@@ -34,21 +34,17 @@ limitations under the License.
 			</template>
 			{{ $t('components.gateway.power.reboot.prompt') }}
 			<template #actions>
-				<v-btn
+				<CardActionBtn
 					color='primary'
-					variant='elevated'
+					:icon='mdiReload'
+					:text='$t("components.gateway.power.reboot.action")'
 					@click='reboot'
-				>
-					{{ $t(`components.gateway.power.reboot.action`) }}
-				</v-btn>
+				/>
 				<v-spacer />
-				<v-btn
-					color='grey-darken-2'
-					variant='elevated'
+				<CardActionBtn
+					:action='Action.Cancel'
 					@click='close'
-				>
-					{{ $t('common.buttons.cancel') }}
-				</v-btn>
+				/>
 			</template>
 		</Card>
 	</ModalWindow>
@@ -58,8 +54,10 @@ limitations under the License.
 import { mdiReload } from '@mdi/js';
 import { type Ref, ref } from 'vue';
 
-import Card from '@/components/Card.vue';
+import Card from '@/components/layout/card/Card.vue';
+import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
+import { Action } from '@/types/Action';
 
 const emit = defineEmits(['confirm']);
 const show: Ref<boolean> = ref(false);

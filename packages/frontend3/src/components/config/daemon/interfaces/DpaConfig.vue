@@ -20,25 +20,17 @@ limitations under the License.
 		ref='form'
 		v-slot='{ isValid }'
 		:disabled='[ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
+		@submit.prevent='onSubmit'
 	>
 		<Card>
 			<template #title>
 				{{ $t('pages.configuration.daemon.interfaces.dpa.title') }}
 			</template>
 			<template #titleActions>
-				<v-tooltip
-					location='bottom'
-				>
-					<template #activator='{ props }'>
-						<v-btn
-							v-bind='props'
-							color='white'
-							:icon='mdiReload'
-							@click='getConfig'
-						/>
-					</template>
-					{{ $t('common.buttons.reload') }}
-				</v-tooltip>
+				<CardTitleActionBtn
+					:action='Action.Reload'
+					@click='getConfig'
+				/>
 			</template>
 			<v-skeleton-loader
 				class='input-skeleton-loader'
@@ -50,6 +42,7 @@ limitations under the License.
 						<TextInput
 							v-model='config.instance'
 							:label='$t("components.configuration.daemon.instance")'
+							:prepend-inner-icon='mdiTextShort'
 							:rules='[
 								(v: string|null) => ValidationRules.required(v, $t("components.configuration.daemon.validation.instanceMissing")),
 							]'
@@ -58,6 +51,7 @@ limitations under the License.
 						<NumberInput
 							v-model.number='config.DpaHandlerTimeout'
 							:label='$t("components.configuration.daemon.interfaces.dpa.timeout")'
+							:prepend-inner-icon='mdiTimerCancel'
 							:rules='[
 								(v: number|null) => ValidationRules.required(v, $t("components.configuration.daemon.interfaces.dpa.validation.timeoutMissing")),
 								(v: number) => ValidationRules.integer(v, $t("components.configuration.daemon.interfaces.dpa.validation.timeoutInvalid")),
@@ -69,14 +63,11 @@ limitations under the License.
 				</v-responsive>
 			</v-skeleton-loader>
 			<template #actions>
-				<v-btn
-					color='primary'
-					variant='elevated'
+				<CardActionBtn
+					:action='Action.Edit'
 					:disabled='!isValid.value || [ComponentState.Loading, ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
-					@click='onSubmit'
-				>
-					{{ $t('common.buttons.save') }}
-				</v-btn>
+					type='submit'
+				/>
 			</template>
 		</Card>
 	</v-form>
@@ -89,18 +80,21 @@ import {
 	type IqrfGatewayDaemonDpa,
 	type IqrfGatewayDaemonComponent,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { mdiReload } from '@mdi/js';
+import { mdiTextShort, mdiTimerCancel } from '@mdi/js';
 import { onMounted, type Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
-import Card from '@/components/Card.vue';
+import Card from '@/components/layout/card/Card.vue';
+import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
+import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
 import NumberInput from '@/components/layout/form/NumberInput.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
+import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 const i18n = useI18n();

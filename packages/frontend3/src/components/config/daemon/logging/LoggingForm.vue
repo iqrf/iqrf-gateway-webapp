@@ -18,27 +18,17 @@ limitations under the License.
 <template>
 	<ModalWindow v-model='show'>
 		<template #activator='{ props }'>
-			<v-btn
-				v-if='action === FormAction.Add'
-				id='add-activator'
+			<CardTitleActionBtn
+				v-if='action === Action.Add'
 				v-bind='props'
-				:color='iconColor'
-				:icon='activatorIcon'
+				:action='action'
+				:tooltip='$t("components.configuration.daemon.logging.actions.add")'
 			/>
-			<v-tooltip
-				v-if='action === FormAction.Add'
-				activator='#add-activator'
-				location='bottom'
-			>
-				{{ $t('components.configuration.daemon.logging.actions.add') }}
-			</v-tooltip>
-			<v-icon
-				v-if='action === FormAction.Edit'
+			<DataTableAction
+				v-if='action === Action.Edit'
 				v-bind='props'
-				:color='iconColor'
-				:icon='activatorIcon'
-				size='large'
-				class='me-2'
+				:action='action'
+				:tooltip='$t("components.configuration.daemon.logging.actions.edit")'
 			/>
 		</template>
 		<v-form
@@ -48,7 +38,7 @@ limitations under the License.
 			:disabled='componentState === ComponentState.Saving'
 			@submit.prevent='onSubmit'
 		>
-			<Card>
+			<Card :action='action'>
 				<template #title>
 					{{ dialogTitle }}
 				</template>
@@ -89,8 +79,6 @@ limitations under the License.
 				<v-checkbox
 					v-model='profile.timestampFiles'
 					:label='$t("components.configuration.daemon.logging.timestamps")'
-					density='compact'
-					hide-details
 				/>
 				<NumberInput
 					v-model.number='profile.maxAgeMinutes'
@@ -130,22 +118,15 @@ limitations under the License.
 							</v-toolbar-title>
 							<v-toolbar-items>
 								<LoggingVerbosityForm
-									:action='FormAction.Add'
+									:action='Action.Add'
 									@save='saveLevel'
 								/>
-								<v-tooltip
-									location='bottom'
-								>
-									<template #activator='{ props }'>
-										<v-btn
-											v-bind='props'
-											color='error'
-											:icon='mdiDelete'
-											@click='clearLevels'
-										/>
-									</template>
-									{{ $t('components.configuration.daemon.logging.channels.actions.deleteAll') }}
-								</v-tooltip>
+								<v-btn
+									v-tooltip:bottom='$t("components.configuration.daemon.logging.channels.actions.deleteAll")'
+									color='red'
+									:icon='mdiDelete'
+									@click='clearLevels'
+								/>
 							</v-toolbar-items>
 						</v-toolbar>
 					</template>
@@ -153,20 +134,12 @@ limitations under the License.
 						{{ severityLabel(item.level) }}
 					</template>
 					<template #item.actions='{ item, index }'>
-						<span>
-							<LoggingVerbosityForm
-								:action='FormAction.Edit'
-								:index='index'
-								:logging-level='item'
-								@save='saveLevel'
-							/>
-							<v-tooltip
-								activator='parent'
-								location='bottom'
-							>
-								{{ $t('components.configuration.daemon.logging.channels.actions.edit') }}
-							</v-tooltip>
-						</span>
+						<LoggingVerbosityForm
+							:action='Action.Edit'
+							:index='index'
+							:logging-level='item'
+							@save='saveLevel'
+						/>
 						<v-tooltip
 							location='bottom'
 						>
@@ -185,23 +158,17 @@ limitations under the License.
 					</template>
 				</DataTable>
 				<template #actions>
-					<v-btn
-						color='primary'
-						type='submit'
-						variant='elevated'
+					<CardActionBtn
+						:action='action'
 						:disabled='!isValid.value || componentState === ComponentState.Saving'
-					>
-						{{ $t(`common.buttons.${action}`) }}
-					</v-btn>
+						type='submit'
+					/>
 					<v-spacer />
-					<v-btn
-						color='grey-darken-2'
-						variant='elevated'
+					<CardActionBtn
+						:action='Action.Cancel'
 						:disabled='componentState === ComponentState.Saving'
 						@click='close'
-					>
-						{{ $t('common.buttons.cancel') }}
-					</v-btn>
+					/>
 				</template>
 			</Card>
 		</v-form>
@@ -216,30 +183,33 @@ import {
 	type ShapeTraceFileService,
 	type ShapeTraceChannelVerbosity,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { mdiDelete, mdiPencil, mdiPlus } from '@mdi/js';
+import { mdiDelete } from '@mdi/js';
 import { computed, type PropType, type Ref, ref , watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
-import Card from '@/components/Card.vue';
 import LoggingVerbosityForm from '@/components/config/daemon/logging/LoggingVerbosityForm.vue';
-import DataTable from '@/components/DataTable.vue';
+import Card from '@/components/layout/card/Card.vue';
+import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
+import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
+import DataTable from '@/components/layout/data-table/DataTable.vue';
+import DataTableAction from '@/components/layout/data-table/DataTableAction.vue';
 import NumberInput from '@/components/layout/form/NumberInput.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
-import { FormAction } from '@/enums/controls';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
+import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const emit = defineEmits(['saved']);
 const componentProps = defineProps({
 	action: {
-		type: String as PropType<FormAction>,
-		default: FormAction.Add,
+		type: String as PropType<Action>,
+		default: Action.Add,
 		required: false,
 	},
 	loggingProfile: {
@@ -284,27 +254,15 @@ const headers = [
 	{ key: 'level', title: i18n.t('components.configuration.daemon.logging.severity') },
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end' },
 ];
-const iconColor = computed(() => {
-	if (componentProps.action === FormAction.Add) {
-		return 'white';
-	}
-	return 'info';
-});
-const activatorIcon = computed(() => {
-	if (componentProps.action === FormAction.Add) {
-		return mdiPlus;
-	}
-	return mdiPencil;
-});
 const dialogTitle = computed(() => {
-	if (componentProps.action === FormAction.Add) {
+	if (componentProps.action === Action.Add) {
 		return i18n.t('components.configuration.daemon.logging.actions.add').toString();
 	}
 	return i18n.t('components.configuration.daemon.logging.actions.edit').toString();
 });
 
 watchEffect(async(): Promise<void> => {
-	if (componentProps.action === FormAction.Edit && componentProps.loggingProfile) {
+	if (componentProps.action === Action.Edit && componentProps.loggingProfile) {
 		profile.value = { ...componentProps.loggingProfile };
 		if (profile.value.maxAgeMinutes === undefined) {
 			profile.value.maxAgeMinutes = 0;
@@ -326,7 +284,7 @@ async function onSubmit(): Promise<void> {
 	}
 	componentState.value = ComponentState.Saving;
 	const params = { ...profile.value };
-	if (componentProps.action === FormAction.Add) {
+	if (componentProps.action === Action.Add) {
 		service.createInstance(IqrfGatewayDaemonComponentName.ShapeTraceFile, params)
 			.then(() => handleSuccess(params.instance))
 			.catch(handleError);

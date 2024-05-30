@@ -46,7 +46,7 @@ import { toast } from 'vue3-toastify';
 
 import 'swagger-ui/dist/swagger-ui.css';
 
-import Card from '@/components/Card.vue';
+import Card from '@/components/layout/card/Card.vue';
 import UrlBuilder from '@/helpers/urlBuilder';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';

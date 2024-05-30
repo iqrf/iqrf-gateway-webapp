@@ -36,7 +36,7 @@ limitations under the License.
 						<strong>{{ $t('components.gateway.information.os') }}</strong>
 					</td>
 					<td>
-						<a v-if='info?.os.homePage !== null' :href='info?.os.homePage'>{{ info?.os.name }}</a>
+						<a v-if='info?.os.homePage !== null' :href='info?.os.homePage' class='text-primary'>{{ info?.os.name }}</a>
 						<span v-else>{{ info?.os.name }}</span>
 					</td>
 				</tr>
@@ -98,7 +98,7 @@ limitations under the License.
 					<td>
 						<strong>{{ $t('components.gateway.information.hostname') }}</strong>
 					</td>
-					<td>
+					<td class='d-flex justify-space-between align-center'>
 						{{ info.hostname }}
 						<HostnameChangeDialog
 							:current-hostname='info.hostname'
@@ -195,14 +195,12 @@ limitations under the License.
 			</tbody>
 		</v-table>
 		<template #actions>
-			<v-btn
+			<CardActionBtn
 				color='primary'
-				variant='elevated'
+				:icon='mdiDownload'
+				:text='$t("components.gateway.information.diagnostics")'
 				@click='getDiagnostics'
-			>
-				<v-icon :icon='mdiDownload' />
-				{{ $t('components.gateway.information.diagnostics') }}
-			</v-btn>
+			/>
 		</template>
 	</Card>
 </template>
@@ -214,12 +212,13 @@ import { mdiDownload } from '@mdi/js';
 import { computed, onMounted, ref, type Ref } from 'vue';
 import { toast } from 'vue3-toastify';
 
-import Card from '@/components/Card.vue';
 import CoordinatorInfo from '@/components/gateway/info/CoordinatorInfo.vue';
 import DaemonModeInfo from '@/components/gateway/info/DaemonModeInfo.vue';
 import DiskResourceUsage from '@/components/gateway/info/DiskResourceUsage.vue';
 import HostnameChangeDialog from '@/components/gateway/info/HostnameChangeDialog.vue';
 import ResourceUsage from '@/components/gateway/info/ResourceUsage.vue';
+import Card from '@/components/layout/card/Card.vue';
+import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import { useApiClient } from '@/services/ApiClient';
 
 

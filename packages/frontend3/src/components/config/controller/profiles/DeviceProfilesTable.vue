@@ -22,12 +22,11 @@ limitations under the License.
 		</template>
 		<template #titleActions>
 			<DeviceProfileForm
-				:action='FormAction.Add'
+				:action='Action.Add'
 				@saved='getProfiles'
 			/>
-			<v-btn
-				color='white'
-				:icon='mdiReload'
+			<CardTitleActionBtn
+				:action='Action.Reload'
 				@click='getProfiles'
 			/>
 		</template>
@@ -40,34 +39,16 @@ limitations under the License.
 			:items-per-page='5'
 		>
 			<template #item.actions='{ item }'>
-				<span>
-					<v-icon
-						color='success'
-						size='large'
-						class='me-2'
-						:icon='mdiCheckboxMarkedOutline'
-						@click='applyProfile(item)'
-					/>
-					<v-tooltip
-						activator='parent'
-						location='bottom'
-					>
-						{{ $t('components.configuration.profiles.actions.apply') }}
-					</v-tooltip>
-				</span>
-				<span>
-					<DeviceProfileForm
-						:action='FormAction.Edit'
-						:device-profile='item'
-						@saved='getProfiles'
-					/>
-					<v-tooltip
-						activator='parent'
-						location='bottom'
-					>
-						{{ $t('components.configuration.profiles.actions.edit') }}
-					</v-tooltip>
-				</span>
+				<DataTableAction
+					:action='Action.Apply'
+					:tooltip='$t("components.configuration.profiles.actions.apply")'
+					@click='applyProfile(item)'
+				/>
+				<DeviceProfileForm
+					:action='Action.Edit'
+					:device-profile='item'
+					@saved='getProfiles'
+				/>
 				<DeviceProfileDeleteDialog
 					:profile='item'
 					@deleted='getProfiles'
@@ -80,18 +61,18 @@ limitations under the License.
 <script lang='ts' setup>
 import { type IqrfGatewayControllerService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import { type IqrfGatewayControllerMapping } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { mdiCheckboxMarkedOutline, mdiReload } from '@mdi/js';
 import { onMounted, type Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
-
-import Card from '@/components/Card.vue';
 import DeviceProfileDeleteDialog from '@/components/config/controller/profiles/DeviceProfileDeleteDialog.vue';
 import DeviceProfileForm from '@/components/config/controller/profiles/DeviceProfileForm.vue';
-import DataTable from '@/components/DataTable.vue';
-import { FormAction } from '@/enums/controls';
+import Card from '@/components/layout/card/Card.vue';
+import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
+import DataTable from '@/components/layout/data-table/DataTable.vue';
+import DataTableAction from '@/components/layout/data-table/DataTableAction.vue';
 import { useApiClient } from '@/services/ApiClient';
+import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 const emit = defineEmits(['apply']);

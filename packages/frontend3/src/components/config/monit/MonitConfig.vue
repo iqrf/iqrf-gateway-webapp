@@ -20,25 +20,17 @@ limitations under the License.
 		ref='form'
 		v-slot='{ isValid }'
 		:disabled='[ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
+		@submit.prevent='onSubmit'
 	>
 		<Card>
 			<template #title>
 				{{ $t('pages.configuration.monit.title') }}
 			</template>
 			<template #titleActions>
-				<v-tooltip
-					location='bottom'
-				>
-					<template #activator='{ props }'>
-						<v-btn
-							v-bind='props'
-							color='white'
-							:icon='mdiReload'
-							@click='getConfig'
-						/>
-					</template>
-					{{ $t('common.buttons.reload') }}
-				</v-tooltip>
+				<CardTitleActionBtn
+					:action='Action.Reload'
+					@click='getConfig'
+				/>
 			</template>
 			<v-skeleton-loader
 				class='input-skeleton-loader'
@@ -72,11 +64,11 @@ limitations under the License.
 						<v-checkbox
 							v-model='config.mmonit.enabled'
 							:label='$t("components.configuration.monit.mmonit.enable")'
-							density='compact'
 						/>
 						<TextInput
 							v-model='config.mmonit.server'
 							:label='$t("components.configuration.monit.mmonit.server")'
+							:prepend-inner-icon='mdiServerNetwork'
 							:rules='[
 								(v: string|null) => ValidationRules.required(v, $t("components.configuration.monit.validation.serverMissing")),
 								(v: string) => mmonitServerValidation(v, $t("components.configuration.monit.validation.serverInvalid")),
@@ -87,6 +79,7 @@ limitations under the License.
 						<TextInput
 							v-model='config.mmonit.credentials.username'
 							:label='$t("components.common.fields.username")'
+							:prepend-inner-icon='mdiAccount'
 							:rules='[
 								(v: string|null) => ValidationRules.required(v, $t("components.common.validations.username.required")),
 							]'
@@ -96,6 +89,7 @@ limitations under the License.
 						<TextInput
 							v-model='config.mmonit.credentials.password'
 							:label='$t("components.common.fields.password")'
+							:prepend-inner-icon='mdiKey'
 							:rules='[
 								(v: string|null) => ValidationRules.required(v, $t("components.common.validations.password.required")),
 							]'
@@ -106,14 +100,11 @@ limitations under the License.
 				</v-responsive>
 			</v-skeleton-loader>
 			<template #actions>
-				<v-btn
-					color='primary'
-					variant='elevated'
+				<CardActionBtn
+					:action='Action.Edit'
 					:disabled='!isValid.value || [ComponentState.Loading, ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
-					@click='onSubmit'
-				>
-					{{ $t('common.buttons.save') }}
-				</v-btn>
+					type='submit'
+				/>
 			</template>
 		</Card>
 	</v-form>
@@ -122,23 +113,22 @@ limitations under the License.
 <script lang='ts' setup>
 import { type MonitService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import { type MonitConfig } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { mdiReload } from '@mdi/js';
-import {
-	onMounted,
-	type Ref,
-	ref,
-} from 'vue';
+import { mdiAccount, mdiKey, mdiServerNetwork } from '@mdi/js';
+import { onMounted, type Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
 import { z } from 'zod';
 
-import Card from '@/components/Card.vue';
-import DataTable from '@/components/DataTable.vue';
+import Card from '@/components/layout/card/Card.vue';
+import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
+import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
+import DataTable from '@/components/layout/data-table/DataTable.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
+import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);

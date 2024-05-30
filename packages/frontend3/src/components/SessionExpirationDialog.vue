@@ -19,20 +19,23 @@ limitations under the License.
 	<ModalWindow
 		v-model='show'
 	>
-		<Card>
+		<Card header-color='warning'>
 			<template #title>
 				{{ $t('components.status.sessionExpiration.title') }}
 			</template>
 			{{ $t('components.status.sessionExpiration.prompt') }}
 			<template #actions>
-				<v-spacer />
-				<v-btn
+				<CardActionBtn
 					color='primary'
-					variant='elevated'
+					:icon='mdiRefresh'
+					:text='$t("components.status.sessionExpiration.renew") + " (" + countdown + ")"'
 					@click='renewSession'
-				>
-					{{ `${$t('components.status.sessionExpiration.renew')} (${countdown})` }}
-				</v-btn>
+				/>
+				<v-spacer />
+				<CardActionBtn
+					:action='Action.Cancel'
+					@click='close'
+				/>
 			</template>
 		</Card>
 	</ModalWindow>
@@ -40,15 +43,18 @@ limitations under the License.
 
 <script lang='ts' setup>
 import { type UserSignedIn } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { onBeforeUnmount, onMounted, ref, type Ref  } from 'vue';
+import { mdiRefresh } from '@mdi/js';
+import { onBeforeUnmount, onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { toast } from 'vue3-toastify';
 
-import Card from '@/components/Card.vue';
+import Card from '@/components/layout/card/Card.vue';
+import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
+import { Action } from '@/types/Action';
 
 const i18n = useI18n();
 const userStore = useUserStore();
@@ -67,6 +73,10 @@ onBeforeUnmount(() => {
 	clear();
 });
 
+function close(): void {
+	show.value = false;
+}
+
 async function setup(): Promise<void> {
 	let expiration: number = userStore.getExpiration * 1000;
 	const now = new Date().getTime();
@@ -83,7 +93,7 @@ async function setup(): Promise<void> {
 		show.value = true;
 	}, warning);
 	logoutTimeout.value = window.setTimeout(async () => {
-		show.value = false;
+		close();
 		await userStore.signOut()
 			.then(async () => {
 				await router.push({ path: '/sign/in', query: { redirect: router.currentRoute.value.path } });
@@ -99,7 +109,7 @@ async function renewSession(): Promise<void> {
 		.then((rsp: UserSignedIn) => {
 			userStore.processJwt(rsp.token)
 				.then(() => {
-					show.value = false;
+					close();
 					clear();
 					setup();
 				})

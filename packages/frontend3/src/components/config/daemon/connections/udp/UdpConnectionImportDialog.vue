@@ -18,24 +18,17 @@ limitations under the License.
 <template>
 	<ModalWindow v-model='show'>
 		<template #activator='{ props }'>
-			<v-btn
-				id='import-activator'
+			<CardTitleActionBtn
 				v-bind='props'
-				color='white'
-				size='large'
-				:icon='mdiImport'
+				:action='Action.Import'
+				:tooltip='$t("components.configuration.daemon.connections.actions.import")'
 			/>
-			<v-tooltip
-				activator='#import-activator'
-				location='bottom'
-			>
-				{{ $t('components.configuration.daemon.connections.actions.import') }}
-			</v-tooltip>
 		</template>
 		<v-form
 			ref='form'
 			v-slot='{ isValid }'
 			:disabled='componentState === ComponentState.Saving'
+			@submit.prevent='onSubmit'
 		>
 			<Card>
 				<template #title>
@@ -54,22 +47,16 @@ limitations under the License.
 					required
 				/>
 				<template #actions>
-					<v-btn
-						color='primary'
-						variant='elevated'
+					<CardActionBtn
+						:action='Action.Import'
 						:disabled='!isValid.value || componentState === ComponentState.Saving'
-						@click='onSubmit'
-					>
-						{{ $t('common.buttons.import') }}
-					</v-btn>
+						type='submit'
+					/>
 					<v-spacer />
-					<v-btn
-						color='grey-darken-2'
-						variant='elevated'
+					<CardActionBtn
+						:action='Action.Cancel'
 						@click='close'
-					>
-						{{ $t('common.buttons.close') }}
-					</v-btn>
+					/>
 				</template>
 			</Card>
 		</v-form>
@@ -78,16 +65,19 @@ limitations under the License.
 
 <script lang='ts' setup>
 import { IqrfGatewayDaemonComponentName, type IqrfGatewayDaemonUdpMessaging } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { mdiFileOutline, mdiImport } from '@mdi/js';
+import { mdiFileOutline } from '@mdi/js';
 import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
-import Card from '@/components/Card.vue';
+import Card from '@/components/layout/card/Card.vue';
+import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
+import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
+import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Ready);

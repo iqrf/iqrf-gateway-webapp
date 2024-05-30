@@ -18,36 +18,18 @@ limitations under the License.
 <template>
 	<ModalWindow v-model='show'>
 		<template #activator='{ props }'>
-			<v-btn
-				v-if='action === FormAction.Add'
-				id='add-activator'
+			<CardTitleActionBtn
+				v-if='action === Action.Add'
 				v-bind='props'
-				:color='iconColor'
-				:icon='activatorIcon'
+				:action='action'
+				:tooltip='$t("components.configuration.daemon.connections.actions.add")'
 			/>
-			<v-tooltip
-				v-if='action === FormAction.Add'
-				activator='#add-activator'
-				location='bottom'
-			>
-				{{ $t('components.configuration.daemon.connections.actions.add') }}
-			</v-tooltip>
-			<v-icon
-				v-if='action === FormAction.Edit'
-				id='edit-activator'
+			<DataTableAction
+				v-if='action === Action.Edit'
 				v-bind='props'
-				:color='iconColor'
-				:icon='activatorIcon'
-				size='large'
-				class='me-2'
+				:action='Action.Edit'
+				:tooltip='$t("components.configuration.daemon.connections.actions.edit")'
 			/>
-			<v-tooltip
-				v-if='action === FormAction.Edit'
-				activator='#edit-activator'
-				location='bottom'
-			>
-				{{ $t('components.configuration.daemon.connections.actions.edit') }}
-			</v-tooltip>
 		</template>
 		<v-form
 			ref='form'
@@ -56,7 +38,7 @@ limitations under the License.
 			:disabled='componentState === ComponentState.Saving'
 			@submit.prevent='onSubmit'
 		>
-			<Card>
+			<Card :action='action'>
 				<template #title>
 					{{ dialogTitle }}
 				</template>
@@ -99,14 +81,14 @@ limitations under the License.
 					required
 				/>
 				<template #actions>
-					<FormActionButton
+					<CardActionBtn
 						:action='action'
 						:disabled='!isValid.value || componentState === ComponentState.Saving'
 						type='submit'
 					/>
 					<v-spacer />
-					<FormActionButton
-						:action='FormAction.Cancel'
+					<CardActionBtn
+						:action='Action.Cancel'
 						:disabled='componentState === ComponentState.Saving'
 						@click='close'
 					/>
@@ -119,29 +101,30 @@ limitations under the License.
 <script lang='ts' setup>
 import { type IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import { IqrfGatewayDaemonComponentName, type IqrfGatewayDaemonUdpMessaging } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { mdiPencil, mdiPlus } from '@mdi/js';
-import { computed, type PropType, type Ref, ref , watchEffect } from 'vue';
+import { computed, type PropType, type Ref, ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
-import Card from '@/components/Card.vue';
-import FormActionButton from '@/components/FormActionButton.vue';
+import Card from '@/components/layout/card/Card.vue';
+import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
+import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
+import DataTableAction from '@/components/layout/data-table/DataTableAction.vue';
 import NumberInput from '@/components/layout/form/NumberInput.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
-import { FormAction } from '@/enums/controls';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
+import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const emit = defineEmits(['saved']);
 const componentProps = defineProps({
 	action: {
-		type: String as PropType<FormAction>,
-		default: FormAction.Add,
+		type: String as PropType<Action>,
+		default: Action.Add,
 		required: false,
 	},
 	connectionProfile: {
@@ -169,27 +152,15 @@ const defaultProfile: IqrfGatewayDaemonUdpMessaging = {
 };
 const profile: Ref<IqrfGatewayDaemonUdpMessaging> = ref({ ...defaultProfile });
 let instance = '';
-const iconColor = computed(() => {
-	if (componentProps.action === FormAction.Add) {
-		return 'white';
-	}
-	return 'info';
-});
-const activatorIcon = computed(() => {
-	if (componentProps.action === FormAction.Add) {
-		return mdiPlus;
-	}
-	return mdiPencil;
-});
 const dialogTitle = computed(() => {
-	if (componentProps.action === FormAction.Add) {
+	if (componentProps.action === Action.Add) {
 		return i18n.t('components.configuration.daemon.connections.actions.add').toString();
 	}
 	return i18n.t('components.configuration.daemon.connections.actions.edit').toString();
 });
 
 watchEffect(async(): Promise<void> => {
-	if (componentProps.action === FormAction.Edit && componentProps.connectionProfile) {
+	if (componentProps.action === Action.Edit && componentProps.connectionProfile) {
 		profile.value = { ...componentProps.connectionProfile };
 		instance = componentProps.connectionProfile.instance;
 	} else {
@@ -205,7 +176,7 @@ async function onSubmit(): Promise<void> {
 	}
 	componentState.value = ComponentState.Saving;
 	const params = { ...profile.value };
-	if (componentProps.action === FormAction.Add) {
+	if (componentProps.action === Action.Add) {
 		service.createInstance(IqrfGatewayDaemonComponentName.IqrfUdpMessaging, params)
 			.then(() => handleSuccess(instance))
 			.catch(handleError);

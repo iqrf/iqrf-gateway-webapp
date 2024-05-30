@@ -141,9 +141,21 @@
 		"common": {
 			"actions": {
 				"add": "Přidat",
+				"apply": "Použít",
 				"cancel": "Zrušit",
 				"delete": "Smazat",
-				"edit": "Změnit"
+				"disable": "Zakázat",
+				"download": "Stáhnout",
+				"edit": "Změnit",
+				"enable": "Povolit",
+				"export": "Exportovat",
+				"import": "Importovat",
+				"reload": "Obnovit",
+				"restart": "Restartovat",
+				"showDetails": "Zobrazit detaily",
+				"start": "Spustit",
+				"stop": "Zastavit",
+				"upload": "Nahrát"
 			},
 			"fields": {
 				"actions": "Akce",

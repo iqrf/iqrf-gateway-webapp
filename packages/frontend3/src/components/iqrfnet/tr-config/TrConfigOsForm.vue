@@ -113,7 +113,7 @@ limitations under the License.
 import { type TrConfig } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { useDisplay } from 'vuetify';
 
-import Card from '@/components/Card.vue';
+import Card from '@/components/layout/card/Card.vue';
 import NumberInput from '@/components/layout/form/NumberInput.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 

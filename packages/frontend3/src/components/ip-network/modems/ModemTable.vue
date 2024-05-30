@@ -69,8 +69,6 @@ import { mdiMagnify, mdiRefresh } from '@mdi/js';
 import { onBeforeMount, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import Card from '@/components/Card.vue';
-import DataTable from '@/components/DataTable.vue';
 import ModemMonitButton
 	from '@/components/ip-network/modems/ModemMonitButton.vue';
 import ModemRestartButton
@@ -78,6 +76,8 @@ import ModemRestartButton
 import ModemStateBadge
 	from '@/components/ip-network/modems/ModemStateBadge.vue';
 import SignalIndicator from '@/components/ip-network/SignalIndicator.vue';
+import Card from '@/components/layout/card/Card.vue';
+import DataTable from '@/components/layout/data-table/DataTable.vue';
 import { useApiClient } from '@/services/ApiClient';
 import { ComponentState } from '@/types/ComponentState';
 
