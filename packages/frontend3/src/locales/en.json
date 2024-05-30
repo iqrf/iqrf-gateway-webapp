@@ -1658,6 +1658,11 @@
 				}
 			}
 		},
+		"layout": {
+			"loadingScreen": {
+				"message": "IQRF Gateway Webapp is loading…"
+			}
+		},
 		"iqrfnet": {
 			"common": {
 				"os": "OS",

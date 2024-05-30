@@ -191,6 +191,11 @@
 				"text": "Požadovanou stránku se nepodařilo najít. Adresa může být nesprávná nebo stránka již neexistuje."
 			}
 		},
+		"layout": {
+			"loadingScreen": {
+				"message": "IQRF Gateway Webapp se načítá…"
+			}
+		},
 		"status": {
 			"monitor": {
 				"mode": "Mód daemona",

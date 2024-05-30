@@ -32,11 +32,7 @@ const theme = useTheme();
 const themeSwitch: Ref<boolean> = ref(false);
 
 onBeforeMount((): void => {
-	/// Autodetect dark mode
-	if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-		theme.global.name.value = 'dark';
-		themeSwitch.value = true;
-	}
+	themeSwitch.value = theme.global.name.value === 'dark';
 });
 
 /**

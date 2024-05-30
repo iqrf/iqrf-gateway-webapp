@@ -16,10 +16,13 @@ limitations under the License.
 -->
 
 <template>
-	<v-theme-provider theme='light'>
-		<v-app dark>
-			<router-view v-if='isChecked' />
-			<SessionExpirationDialog v-if='isLoggedIn' />
+	<v-theme-provider :theme='theme.global.name.value'>
+		<v-app>
+			<div v-if='componentState === ComponentState.Ready'>
+				<router-view v-if='isChecked' />
+				<SessionExpirationDialog v-if='isLoggedIn' />
+			</div>
+			<LoadingScreen v-else-if='componentState === ComponentState.Loading' />
 		</v-app>
 	</v-theme-provider>
 </template>
@@ -29,10 +32,11 @@ import { type InstallationChecks } from '@iqrf/iqrf-gateway-webapp-client/types'
 import { type AxiosError } from 'axios';
 import { storeToRefs } from 'pinia';
 import { useHead } from 'unhead';
-import { onBeforeMount, watch } from 'vue';
+import { onBeforeMount, type Ref, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useTheme } from 'vuetify';
 
+import LoadingScreen from '@/components/layout/LoadingScreen.vue';
 import SessionExpirationDialog from '@/components/SessionExpirationDialog.vue';
 import router from '@/router';
 import { useApiClient } from '@/services/ApiClient';
@@ -43,6 +47,7 @@ import { useInstallStore } from '@/store/install';
 import { useLocaleStore } from '@/store/locale';
 import { useRepositoryStore } from '@/store/repository';
 import { useUserStore } from '@/store/user';
+import { ComponentState } from '@/types/ComponentState';
 
 const i18n = useI18n();
 const theme = useTheme();
@@ -64,6 +69,8 @@ const { isLoggedIn } = storeToRefs(userStore);
 const localeStore = useLocaleStore();
 const { getLocale: locale } = storeToRefs(localeStore);
 
+const componentState: Ref<ComponentState> = ref(ComponentState.Created);
+
 function setHeadOptions(newLocale: string): void {
 	useHead({
 		htmlAttrs: {
@@ -82,11 +89,17 @@ function setHeadOptions(newLocale: string): void {
 }
 
 onBeforeMount(async () => {
-	theme.global.name.value = 'light';
+	componentState.value = ComponentState.Loading;
+	if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+		theme.global.name.value = 'dark';
+	} else {
+		theme.global.name.value = 'light';
+	}
 	setHeadOptions(locale.value);
 	await featureStore.fetch();
 	await useApiClient().getInstallationService().check()
 		.then(async (check: InstallationChecks): Promise<void> => {
+			componentState.value = ComponentState.Ready;
 			const isInstallUrl: boolean = router.currentRoute.value.path.startsWith('/install/');
 			const errorUrl: boolean = router.currentRoute.value.path.startsWith('/install/error/');
 			installStore.populateSteps();
@@ -138,5 +151,4 @@ watch(isConnected, (newVal) => {
 });
 
 watch(locale, setHeadOptions);
-
 </script>

@@ -16,20 +16,16 @@ limitations under the License.
 -->
 
 <template>
-	<v-theme-provider :theme='theme.global.name.value'>
-		<v-app>
-			<TheHeader />
-			<TheSidebar />
-			<v-main>
-				<UnverifiedEmailAlert />
-				<v-container fluid>
-					<router-view v-if='isAllowed' />
-					<Forbidden v-else />
-				</v-container>
-			</v-main>
-			<TheFooter />
-		</v-app>
-	</v-theme-provider>
+	<TheHeader />
+	<TheSidebar />
+	<v-main>
+		<UnverifiedEmailAlert />
+		<v-container fluid>
+			<router-view v-if='isAllowed' />
+			<Forbidden v-else />
+		</v-container>
+	</v-main>
+	<TheFooter />
 </template>
 
 <script lang='ts' setup>
@@ -37,7 +33,6 @@ import { type Feature, type UserRole } from '@iqrf/iqrf-gateway-webapp-client/ty
 import { storeToRefs } from 'pinia';
 import { computed, type Ref } from 'vue';
 import { useRoute } from 'vue-router';
-import { useTheme } from 'vuetify';
 
 import Forbidden from '@/components/errors/Forbidden.vue';
 import TheFooter from '@/components/layout/TheFooter.vue';
@@ -49,7 +44,6 @@ import { useUserStore } from '@/store/user';
 
 const featureStore = useFeatureStore();
 const route = useRoute();
-const theme = useTheme();
 const userStore = useUserStore();
 
 const { getRole: role } = storeToRefs(userStore);
