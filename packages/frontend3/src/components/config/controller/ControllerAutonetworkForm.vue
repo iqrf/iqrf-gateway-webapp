@@ -35,15 +35,13 @@ limitations under the License.
 					{{ $t('components.configuration.controller.form.button.actions.autonetwork') }}
 				</template>
 				<legend>{{ $t("common.labels.general") }}</legend>
-				<TextInput
+				<NumberInput
 					v-model.number='config.actionRetries'
-					type='number'
 					:label='$t("components.configuration.controller.form.autonetwork.actionRetries")'
 					required
 				/>
-				<TextInput
+				<NumberInput
 					v-model.number='config.discoveryTxPower'
-					type='number'
 					:label='$t("components.configuration.controller.form.autonetwork.discoveryTxPower")'
 					required
 				/>
@@ -63,15 +61,13 @@ limitations under the License.
 					density='compact'
 				/>
 				<legend>{{ $t("components.configuration.controller.form.autonetwork.stopConditions") }}</legend>
-				<TextInput
+				<NumberInput
 					v-model.number='config.stopConditions.emptyWaves'
-					type='number'
 					:label='$t("components.configuration.controller.form.autonetwork.emptyWaves")'
 					required
 				/>
-				<TextInput
+				<NumberInput
 					v-model.number='config.stopConditions.waves'
-					type='number'
 					:label='$t("components.configuration.controller.form.autonetwork.waves")'
 					required
 				/>
@@ -108,8 +104,8 @@ import { type Ref, ref , watchEffect , type PropType } from 'vue';
 import { VForm } from 'vuetify/components';
 
 import Card from '@/components/Card.vue';
+import NumberInput from '@/components/layout/form/NumberInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
-import TextInput from '@/components/TextInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 
 const emit = defineEmits(['saved']);

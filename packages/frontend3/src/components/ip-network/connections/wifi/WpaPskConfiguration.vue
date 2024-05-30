@@ -39,7 +39,7 @@ import {
 import { mdiKey } from '@mdi/js';
 import { type PropType } from 'vue';
 
-import PasswordInput from '@/components/PasswordInput.vue';
+import PasswordInput from '@/components/layout/form/PasswordInput.vue';
 import ValidationRules from '@/helpers/ValidationRules';
 
 /// Connection configuration

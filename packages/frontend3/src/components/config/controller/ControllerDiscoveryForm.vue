@@ -34,15 +34,13 @@ limitations under the License.
 				<template #title>
 					{{ $t('components.configuration.controller.form.button.actions.discovery') }}
 				</template>
-				<TextInput
+				<NumberInput
 					v-model.number='config.maxAddr'
-					type='number'
 					:label='$t("components.configuration.controller.form.discovery.maxAddr")'
 					required
 				/>
-				<TextInput
+				<NumberInput
 					v-model.number='config.txPower'
-					type='number'
 					:label='$t("components.configuration.controller.form.discovery.txPower")'
 				/>
 				<v-checkbox
@@ -78,8 +76,8 @@ import { type Ref, ref , watchEffect , type PropType } from 'vue';
 import { VForm } from 'vuetify/components';
 
 import Card from '@/components/Card.vue';
+import NumberInput from '@/components/layout/form/NumberInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
-import TextInput from '@/components/TextInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 
 const emit = defineEmits(['saved']);

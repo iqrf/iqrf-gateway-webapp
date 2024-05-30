@@ -68,9 +68,8 @@ limitations under the License.
 					]'
 					required
 				/>
-				<TextInput
+				<NumberInput
 					v-model.number='profile.LocalPort'
-					type='number'
 					:label='$t("components.configuration.daemon.connections.udp.localPort")'
 					:rules='[
 						(v: number|null) => ValidationRules.required(v, $t("components.configuration.daemon.connections.udp.validation.localPortMissing")),
@@ -79,9 +78,8 @@ limitations under the License.
 					]'
 					required
 				/>
-				<TextInput
+				<NumberInput
 					v-model.number='profile.RemotePort'
-					type='number'
 					:label='$t("components.configuration.daemon.connections.udp.remotePort")'
 					:rules='[
 						(v: number|null) => ValidationRules.required(v, $t("components.configuration.daemon.connections.udp.validation.remotePortMissing")),
@@ -90,9 +88,8 @@ limitations under the License.
 					]'
 					required
 				/>
-				<TextInput
+				<NumberInput
 					v-model.number='profile.deviceRecordExpiration'
-					type='number'
 					:label='$t("components.configuration.daemon.connections.udp.expiration")'
 					:rules='[
 						(v: number|null) => ValidationRules.required(v, $t("components.configuration.daemon.connections.udp.validation.expirationMissing")),
@@ -130,8 +127,9 @@ import { VForm } from 'vuetify/components';
 
 import Card from '@/components/Card.vue';
 import FormActionButton from '@/components/FormActionButton.vue';
+import NumberInput from '@/components/layout/form/NumberInput.vue';
+import TextInput from '@/components/layout/form/TextInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
-import TextInput from '@/components/TextInput.vue';
 import { FormAction } from '@/enums/controls';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';

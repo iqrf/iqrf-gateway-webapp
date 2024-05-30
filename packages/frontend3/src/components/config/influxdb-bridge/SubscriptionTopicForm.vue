@@ -98,8 +98,8 @@ import { ref, type Ref, watchEffect } from 'vue';
 import { VForm } from 'vuetify/components';
 
 import Card from '@/components/Card.vue';
+import TextInput from '@/components/layout/form/TextInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
-import TextInput from '@/components/TextInput.vue';
 import { FormAction } from '@/enums/controls';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';

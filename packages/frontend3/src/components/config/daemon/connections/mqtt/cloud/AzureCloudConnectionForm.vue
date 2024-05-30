@@ -67,8 +67,8 @@ import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
 
 import Card from '@/components/Card.vue';
+import TextInput from '@/components/layout/form/TextInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
-import TextInput from '@/components/TextInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';

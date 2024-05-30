@@ -61,7 +61,7 @@ import { computed, type Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
-import PasswordInput from '@/components/PasswordInput.vue';
+import PasswordInput from '@/components/layout/form/PasswordInput.vue';
 import ValidationRules from '@/helpers/ValidationRules';
 
 const i18n = useI18n();

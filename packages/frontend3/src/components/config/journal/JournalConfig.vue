@@ -57,9 +57,8 @@ limitations under the License.
 							:label='$t("components.configuration.journal.storage")'
 							:items='storageOptions'
 						/>
-						<TextInput
+						<NumberInput
 							v-model.number='config.maxDiskSize'
-							type='number'
 							:label='$t("components.configuration.journal.maxSize")'
 							:description='$t("components.configuration.journal.notes.systemDefault")'
 							:rules='[
@@ -69,9 +68,8 @@ limitations under the License.
 							]'
 							required
 						/>
-						<TextInput
+						<NumberInput
 							v-model.number='config.maxFiles'
-							type='number'
 							:label='$t("components.configuration.journal.maxFiles")'
 							:description='$t("components.configuration.journal.notes.maxFiles")'
 							:rules='[
@@ -87,10 +85,9 @@ limitations under the License.
 							density='compact'
 							:hide-details='!sizeRotation'
 						/>
-						<TextInput
+						<NumberInput
 							v-if='sizeRotation'
 							v-model.number='config.sizeRotation.maxFileSize'
-							type='number'
 							:label='$t("components.configuration.journal.maxFileSize")'
 							:description='$t("components.configuration.journal.notes.systemDefault")'
 							:rules='[
@@ -112,9 +109,8 @@ limitations under the License.
 								:label='$t("components.configuration.journal.timeUnit")'
 								:items='unitOptions'
 							/>
-							<TextInput
+							<NumberInput
 								v-model.number='config.timeRotation.count'
-								type='number'
 								:label='$t("components.configuration.journal.unitCount")'
 								:rules='[
 									(v: number|null) => ValidationRules.required(v, $t("components.configuration.journal.validation.unitCountMissing")),
@@ -151,8 +147,8 @@ import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
 import Card from '@/components/Card.vue';
-import SelectInput from '@/components/SelectInput.vue';
-import TextInput from '@/components/TextInput.vue';
+import NumberInput from '@/components/layout/form/NumberInput.vue';
+import SelectInput from '@/components/layout/form/SelectInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';

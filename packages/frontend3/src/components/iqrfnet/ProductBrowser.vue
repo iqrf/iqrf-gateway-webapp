@@ -90,8 +90,8 @@ import { useI18n } from 'vue-i18n';
 
 import Card from '@/components/Card.vue';
 import DataTable from '@/components/DataTable.vue';
+import TextInput from '@/components/layout/form/TextInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
-import TextInput from '@/components/TextInput.vue';
 import { useRepositoryClient } from '@/services/RepositoryClient';
 
 defineProps({

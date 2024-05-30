@@ -43,7 +43,7 @@ import { type PropType } from 'vue';
 
 import InterfaceInput
 	from '@/components/ip-network/interfaces/InterfaceInput.vue';
-import TextInput from '@/components/TextInput.vue';
+import TextInput from '@/components/layout/form/TextInput.vue';
 import ValidationRules from '@/helpers/ValidationRules';
 
 const configuration = defineModel({

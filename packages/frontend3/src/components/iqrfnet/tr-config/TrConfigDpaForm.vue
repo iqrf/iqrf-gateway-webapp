@@ -148,24 +148,20 @@ limitations under the License.
 					:label='$t("components.iqrfnet.tr-config.dpa.rf.networkType")'
 					:items='networkTypeOptions'
 				/>
-				<TextInput
+				<NumberInput
 					v-model='config.txPower'
-					type='number'
 					:label='$t("components.iqrfnet.common.txPower")'
 				/>
-				<TextInput
+				<NumberInput
 					v-model='config.rxFilter'
-					type='number'
 					:label='$t("components.iqrfnet.common.rxFilter")'
 				/>
-				<TextInput
+				<NumberInput
 					v-model='config.lpRxTimeout'
-					type='number'
 					:label='$t("components.iqrfnet.tr-config.dpa.rf.lpRxTimeout")'
 				/>
-				<TextInput
+				<NumberInput
 					v-model='config.rfAltDsmChannel'
-					type='number'
 					:label='$t("components.iqrfnet.tr-config.dpa.rf.altDsmChannel")'
 				/>
 			</v-col>
@@ -181,8 +177,8 @@ import { useI18n } from 'vue-i18n';
 import { useDisplay } from 'vuetify';
 
 import Card from '@/components/Card.vue';
-import SelectInput from '@/components/SelectInput.vue';
-import TextInput from '@/components/TextInput.vue';
+import NumberInput from '@/components/layout/form/NumberInput.vue';
+import SelectInput from '@/components/layout/form/SelectInput.vue';
 
 const i18n = useI18n();
 const display = useDisplay();

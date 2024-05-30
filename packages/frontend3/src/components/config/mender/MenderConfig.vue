@@ -83,9 +83,8 @@ limitations under the License.
 							:prepend-inner-icon='mdiKeyVariant'
 							required
 						/>
-						<TextInput
+						<NumberInput
 							v-model.number='config.client.config.InventoryPollIntervalSeconds'
-							type='number'
 							:label='$t("components.configuration.mender.client.inventoryPollInterval")'
 							:rules='[
 								(v: number|null) => ValidationRules.required(v, $t("components.configuration.mender.validation.inventoryPollIntervalMissing")),
@@ -103,10 +102,9 @@ limitations under the License.
 									{{ intervalLabel(config.client.config.InventoryPollIntervalSeconds) }}
 								</v-chip>
 							</template>
-						</TextInput>
-						<TextInput
+						</NumberInput>
+						<NumberInput
 							v-model.number='config.client.config.RetryPollIntervalSeconds'
-							type='number'
 							:label='$t("components.configuration.mender.client.retryPollInterval")'
 							:rules='[
 								(v: number|null) => ValidationRules.required(v, $t("components.configuration.mender.validation.retryPollIntervalMissing")),
@@ -124,10 +122,9 @@ limitations under the License.
 									{{ intervalLabel(config.client.config.RetryPollIntervalSeconds) }}
 								</v-chip>
 							</template>
-						</TextInput>
-						<TextInput
+						</NumberInput>
+						<NumberInput
 							v-model.number='config.client.config.UpdatePollIntervalSeconds'
-							type='number'
 							:label='$t("components.configuration.mender.client.updatePollInterval")'
 							:rules='[
 								(v: number|null) => ValidationRules.required(v, $t("components.configuration.mender.validation.updatePollIntervalMissing")),
@@ -145,7 +142,7 @@ limitations under the License.
 									{{ intervalLabel(config.client.config.UpdatePollIntervalSeconds) }}
 								</v-chip>
 							</template>
-						</TextInput>
+						</NumberInput>
 						<legend class='section-legend'>
 							{{ $t('components.configuration.mender.features') }}
 						</legend>
@@ -204,7 +201,8 @@ import { type VForm } from 'vuetify/components';
 
 import Card from '@/components/Card.vue';
 import MenderCertificateUploadDialog from '@/components/config/mender/MenderCertificateUploadDialog.vue';
-import TextInput from '@/components/TextInput.vue';
+import NumberInput from '@/components/layout/form/NumberInput.vue';
+import TextInput from '@/components/layout/form/TextInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';

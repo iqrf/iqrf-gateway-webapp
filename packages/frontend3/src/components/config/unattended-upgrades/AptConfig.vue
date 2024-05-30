@@ -47,9 +47,8 @@ limitations under the License.
 			>
 				<v-responsive>
 					<section v-if='config'>
-						<TextInput
+						<NumberInput
 							v-model.number='config.packageListUpdateInterval'
-							type='number'
 							:label='$t("components.configuration.unattendedUpgrades.packageListUpdateInterval")'
 							:rules='[
 								(v: number|null) => ValidationRules.required(v, $t("components.configuration.unattendedUpgrades.validation.packageListUpdateIntervalMissing")),
@@ -66,10 +65,9 @@ limitations under the License.
 									{{ $t('components.configuration.unattendedUpgrades.interval') }}
 								</v-chip>
 							</template>
-						</TextInput>
-						<TextInput
+						</NumberInput>
+						<NumberInput
 							v-model.number='config.packageUpdateInterval'
-							type='number'
 							:label='$t("components.configuration.unattendedUpgrades.packageUpdateInterval")'
 							:rules='[
 								(v: number|null) => ValidationRules.required(v, $t("components.configuration.unattendedUpgrades.validation.packageUpdateIntervalMissing")),
@@ -86,10 +84,9 @@ limitations under the License.
 									{{ $t('components.configuration.unattendedUpgrades.interval') }}
 								</v-chip>
 							</template>
-						</TextInput>
-						<TextInput
+						</NumberInput>
+						<NumberInput
 							v-model.number='config.packageRemovalInterval'
-							type='number'
 							:label='$t("components.configuration.unattendedUpgrades.packageRemovalInterval")'
 							:rules='[
 								(v: number|null) => ValidationRules.required(v, $t("components.configuration.unattendedUpgrades.validation.packageRemovalIntervalMissing")),
@@ -106,7 +103,7 @@ limitations under the License.
 									{{ $t('components.configuration.unattendedUpgrades.interval') }}
 								</v-chip>
 							</template>
-						</TextInput>
+						</NumberInput>
 						<v-checkbox
 							v-model='config.rebootOnKernelUpdate'
 							:label='$t("components.configuration.unattendedUpgrades.rebootOnKernelUpdate")'
@@ -140,7 +137,7 @@ import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
 import Card from '@/components/Card.vue';
-import TextInput from '@/components/TextInput.vue';
+import NumberInput from '@/components/layout/form/NumberInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';

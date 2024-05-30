@@ -28,7 +28,7 @@ limitations under the License.
 import { mdiTranslate } from '@mdi/js';
 import { defineModel, type PropType, type Ref } from 'vue';
 
-import SelectInput from '@/components/SelectInput.vue';
+import SelectInput from '@/components/layout/form/SelectInput.vue';
 import { getLanguageOptions } from '@/helpers/userData';
 import { type SelectItem } from '@/types/vuetify';
 

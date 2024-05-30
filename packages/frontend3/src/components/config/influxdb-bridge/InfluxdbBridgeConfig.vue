@@ -62,9 +62,8 @@ limitations under the License.
 								cols='12'
 								md='6'
 							>
-								<TextInput
+								<NumberInput
 									v-model.number='config.influx.port'
-									type='number'
 									:label='$t("common.labels.port")'
 									:rules='[
 										(v: number|null) => ValidationRules.required(v, $t("common.validation.portMissing")),
@@ -172,9 +171,8 @@ limitations under the License.
 								cols='12'
 								md='6'
 							>
-								<TextInput
+								<NumberInput
 									v-model.number='config.mqtt.port'
-									type='number'
 									:label='$t("common.labels.port")'
 									:rules='[
 										(v: number|null) => ValidationRules.required(v, $t("common.validation.portMissing")),
@@ -320,8 +318,9 @@ import { VForm } from 'vuetify/components';
 import Card from '@/components/Card.vue';
 import SubscriptionTopicForm from '@/components/config/influxdb-bridge/SubscriptionTopicForm.vue';
 import DataTable from '@/components/DataTable.vue';
-import PasswordInput from '@/components/PasswordInput.vue';
-import TextInput from '@/components/TextInput.vue';
+import NumberInput from '@/components/layout/form/NumberInput.vue';
+import PasswordInput from '@/components/layout/form/PasswordInput.vue';
+import TextInput from '@/components/layout/form/TextInput.vue';
 import { FormAction } from '@/enums/controls';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';

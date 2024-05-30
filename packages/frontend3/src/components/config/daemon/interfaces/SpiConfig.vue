@@ -73,9 +73,8 @@ limitations under the License.
 								cols='12'
 								md='4'
 							>
-								<TextInput
+								<NumberInput
 									v-model.number='config.powerEnableGpioPin'
-									type='number'
 									:label='$t("components.configuration.daemon.interfaces.powerPin")'
 									:rules='[
 										(v: number|null) => ValidationRules.required(v, $t("components.configuration.daemon.interfaces.validation.powerPinMissing")),
@@ -88,9 +87,8 @@ limitations under the License.
 								cols='12'
 								md='4'
 							>
-								<TextInput
+								<NumberInput
 									v-model.number='config.busEnableGpioPin'
-									type='number'
 									:label='$t("components.configuration.daemon.interfaces.busPin")'
 									:rules='[
 										(v: number|null) => ValidationRules.required(v, $t("components.configuration.daemon.interfaces.validation.busPinMissing")),
@@ -103,9 +101,8 @@ limitations under the License.
 								cols='12'
 								md='4'
 							>
-								<TextInput
+								<NumberInput
 									v-model.number='config.pgmSwitchGpioPin'
-									type='number'
 									:label='$t("components.configuration.daemon.interfaces.pgmPin")'
 									:rules='[
 										(v: number|null) => ValidationRules.required(v, $t("components.configuration.daemon.interfaces.validation.pgmPinMissing")),
@@ -125,9 +122,8 @@ limitations under the License.
 								cols='12'
 								md='4'
 							>
-								<TextInput
+								<NumberInput
 									v-model.number='config.i2cEnableGpioPin'
-									type='number'
 									:label='$t("components.configuration.daemon.interfaces.i2cPin")'
 									:rules='interfacePins ?
 										[
@@ -143,9 +139,8 @@ limitations under the License.
 								cols='12'
 								md='4'
 							>
-								<TextInput
+								<NumberInput
 									v-model.number='config.spiEnableGpioPin'
-									type='number'
 									:label='$t("components.configuration.daemon.interfaces.spiPin")'
 									:rules='interfacePins ?
 										[
@@ -161,9 +156,8 @@ limitations under the License.
 								cols='12'
 								md='4'
 							>
-								<TextInput
+								<NumberInput
 									v-model.number='config.uartEnableGpioPin'
-									type='number'
 									:label='$t("components.configuration.daemon.interfaces.uartPin")'
 									:rules='interfacePins ?
 										[
@@ -255,7 +249,8 @@ import { VForm } from 'vuetify/components';
 import Card from '@/components/Card.vue';
 import InterfacePorts from '@/components/config/daemon/interfaces/InterfacePorts.vue';
 import DeviceProfileTable from '@/components/config/daemon/interfaces/profiles/DeviceProfileTable.vue';
-import TextInput from '@/components/TextInput.vue';
+import NumberInput from '@/components/layout/form/NumberInput.vue';
+import TextInput from '@/components/layout/form/TextInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';

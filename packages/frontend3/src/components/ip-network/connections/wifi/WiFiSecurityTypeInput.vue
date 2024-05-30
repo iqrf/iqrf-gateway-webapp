@@ -35,7 +35,7 @@ import { mdiWifiLock } from '@mdi/js';
 import { type PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import SelectInput from '@/components/SelectInput.vue';
+import SelectInput from '@/components/layout/form/SelectInput.vue';
 import ValidationRules from '@/helpers/ValidationRules';
 import { type SelectItem } from '@/types/vuetify';
 

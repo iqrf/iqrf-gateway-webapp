@@ -47,9 +47,8 @@ limitations under the License.
 				<template #title>
 					{{ $t(`components.configuration.daemon.logging.channels.actions.${action}`) }}
 				</template>
-				<TextInput
+				<NumberInput
 					v-model.number='level.channel'
-					type='number'
 					:label='$t("components.configuration.daemon.logging.channel")'
 					:rules='[
 						(v: number|null) => ValidationRules.required(v, $t("components.configuration.daemon.logging.validation.channelMissing")),
@@ -93,9 +92,9 @@ import { useI18n } from 'vue-i18n';
 import { VForm } from 'vuetify/components';
 
 import Card from '@/components/Card.vue';
+import NumberInput from '@/components/layout/form/NumberInput.vue';
+import SelectInput from '@/components/layout/form/SelectInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
-import SelectInput from '@/components/SelectInput.vue';
-import TextInput from '@/components/TextInput.vue';
 import { FormAction } from '@/enums/controls';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';

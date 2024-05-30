@@ -57,9 +57,8 @@ limitations under the License.
 					:label='$t("components.configuration.profiles.deviceType")'
 					required
 				/>
-				<TextInput
+				<NumberInput
 					v-model.number='profile.button'
-					type='number'
 					:label='$t("components.configuration.controller.form.pins.button")'
 					:rules='[
 						(v: number|null) => ValidationRules.required(v, $t("components.configuration.controller.validation.buttonPin")),
@@ -67,9 +66,8 @@ limitations under the License.
 					]'
 					required
 				/>
-				<TextInput
+				<NumberInput
 					v-model.number='profile.greenLed'
-					type='number'
 					:label='$t("components.configuration.controller.form.pins.greenLed")'
 					:rules='[
 						(v: number|null) => ValidationRules.required(v, $t("components.configuration.controller.validation.greenLed")),
@@ -77,9 +75,8 @@ limitations under the License.
 					]'
 					required
 				/>
-				<TextInput
+				<NumberInput
 					v-model.number='profile.redLed'
-					type='number'
 					:label='$t("components.configuration.controller.form.pins.redLed")'
 					:rules='[
 						(v: number|null) => ValidationRules.required(v, $t("components.configuration.controller.validation.redLed")),
@@ -92,9 +89,8 @@ limitations under the License.
 					:label='$t("components.configuration.controller.form.pins.useWatchdogPins")'
 					density='compact'
 				/>
-				<TextInput
+				<NumberInput
 					v-model.number='profile.sck'
-					type='number'
 					:label='$t("components.configuration.controller.form.pins.sck")'
 					:rules='watchdogPins ?
 						[
@@ -105,9 +101,8 @@ limitations under the License.
 					:disabled='!watchdogPins'
 					:required='watchdogPins'
 				/>
-				<TextInput
+				<NumberInput
 					v-model.number='profile.sda'
-					type='number'
 					:label='$t("components.configuration.controller.form.pins.sda")'
 					:rules='watchdogPins ?
 						[
@@ -144,9 +139,10 @@ import { VForm } from 'vuetify/components';
 
 import Card from '@/components/Card.vue';
 import FormActionButton from '@/components/FormActionButton.vue';
+import NumberInput from '@/components/layout/form/NumberInput.vue';
+import SelectInput from '@/components/layout/form/SelectInput.vue';
+import TextInput from '@/components/layout/form/TextInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
-import SelectInput from '@/components/SelectInput.vue';
-import TextInput from '@/components/TextInput.vue';
 import { FormAction } from '@/enums/controls';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';

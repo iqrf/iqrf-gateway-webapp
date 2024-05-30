@@ -27,14 +27,12 @@ limitations under the License.
 					:label='$t("components.iqrfnet.tr-config.os.rf.rfBand")'
 					readonly
 				/>
-				<TextInput
+				<NumberInput
 					v-model='config.rfChannelA'
-					type='number'
 					:label='$t("components.iqrfnet.tr-config.os.rf.rfChannelA")'
 				/>
-				<TextInput
+				<NumberInput
 					v-model='config.rfChannelB'
-					type='number'
 					:label='$t("components.iqrfnet.tr-config.os.rf.rfChannelB")'
 				/>
 			</v-col>
@@ -116,7 +114,8 @@ import { type TrConfig } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { useDisplay } from 'vuetify';
 
 import Card from '@/components/Card.vue';
-import TextInput from '@/components/TextInput.vue';
+import NumberInput from '@/components/layout/form/NumberInput.vue';
+import TextInput from '@/components/layout/form/TextInput.vue';
 
 const display = useDisplay();
 const config = defineModel<TrConfig>('config', { required: true });

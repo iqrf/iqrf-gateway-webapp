@@ -96,7 +96,7 @@ import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
 import Card from '@/components/Card.vue';
-import TextInput from '@/components/TextInput.vue';
+import TextInput from '@/components/layout/form/TextInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';

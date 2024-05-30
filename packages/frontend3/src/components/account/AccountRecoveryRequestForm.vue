@@ -57,7 +57,7 @@ import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
 import Card from '@/components/Card.vue';
-import TextInput from '@/components/TextInput.vue';
+import TextInput from '@/components/layout/form/TextInput.vue';
 import { basicErrorToast } from '@/helpers/errorToast';
 import UrlBuilder from '@/helpers/urlBuilder';
 import { validateForm } from '@/helpers/validateForm';

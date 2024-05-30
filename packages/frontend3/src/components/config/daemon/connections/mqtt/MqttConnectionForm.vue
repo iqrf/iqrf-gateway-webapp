@@ -136,9 +136,8 @@ limitations under the License.
 					:hint='persistenceDescription'
 					persistent-hint
 				/>
-				<TextInput
+				<NumberInput
 					v-model.number='profile.KeepAliveInterval'
-					type='number'
 					:label='$t("components.configuration.daemon.connections.mqtt.keepAlive")'
 					:rules='[
 						(v: number) => ValidationRules.required(v, $t("components.configuration.daemon.connections.mqtt.validation.keepAliveMissing")),
@@ -147,9 +146,8 @@ limitations under the License.
 					]'
 					required
 				/>
-				<TextInput
+				<NumberInput
 					v-model.number='profile.ConnectTimeout'
-					type='number'
 					:label='$t("components.configuration.daemon.connections.mqtt.timeout")'
 					:rules='[
 						(v: number) => ValidationRules.required(v, $t("components.configuration.daemon.connections.mqtt.validation.timeoutMissing")),
@@ -158,9 +156,8 @@ limitations under the License.
 					]'
 					required
 				/>
-				<TextInput
+				<NumberInput
 					v-model.number='profile.MinReconnect'
-					type='number'
 					:label='$t("components.configuration.daemon.connections.mqtt.minReconnect")'
 					:rules='[
 						(v: number) => ValidationRules.required(v, $t("components.configuration.daemon.connections.mqtt.validation.minReconnectMissing")),
@@ -170,9 +167,8 @@ limitations under the License.
 					]'
 					required
 				/>
-				<TextInput
+				<NumberInput
 					v-model.number='profile.MaxReconnect'
-					type='number'
 					:label='$t("components.configuration.daemon.connections.mqtt.maxReconnect")'
 					:rules='[
 						(v: number) => ValidationRules.required(v, $t("components.configuration.daemon.connections.mqtt.validation.maxReconnectMissing")),
@@ -251,11 +247,12 @@ import { VForm } from 'vuetify/components';
 
 import Card from '@/components/Card.vue';
 import FormActionButton from '@/components/FormActionButton.vue';
+import NumberInput from '@/components/layout/form/NumberInput.vue';
+import PasswordInput from '@/components/layout/form/PasswordInput.vue';
+import SelectInput from '@/components/layout/form/SelectInput.vue';
+import TextInput from '@/components/layout/form/TextInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import MqttUrlForm from '@/components/MqttUrlForm.vue';
-import PasswordInput from '@/components/PasswordInput.vue';
-import SelectInput from '@/components/SelectInput.vue';
-import TextInput from '@/components/TextInput.vue';
 import { FormAction } from '@/enums/controls';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';

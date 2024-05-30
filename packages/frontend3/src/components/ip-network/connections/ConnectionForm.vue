@@ -98,7 +98,7 @@ import WiFiConfiguration
 	from '@/components/ip-network/connections/wifi/WiFiConfiguration.vue';
 import InterfaceInput
 	from '@/components/ip-network/interfaces/InterfaceInput.vue';
-import TextInput from '@/components/TextInput.vue';
+import TextInput from '@/components/layout/form/TextInput.vue';
 import { FormAction } from '@/enums/controls';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';

@@ -34,12 +34,11 @@ limitations under the License.
 		>
 			<v-row>
 				<v-col>
-					<TextInput
+					<NumberInput
 						v-if='!useHexNadr'
 						v-model.number='nadr'
-						type='number'
-						min='0'
-						max='255'
+						:min='0'
+						:max='255'
 						:label='$t("components.iqrfnet.send-dpa.nadr")'
 						:rules='[
 							(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.nadrMissing")),
@@ -102,7 +101,7 @@ limitations under the License.
 								</v-list>
 							</v-menu>
 						</template>
-					</TextInput>
+					</NumberInput>
 					<TextInput
 						v-else
 						v-model='nadrHex'
@@ -170,12 +169,11 @@ limitations under the License.
 					</TextInput>
 				</v-col>
 				<v-col>
-					<TextInput
+					<NumberInput
 						v-if='!useHexPnum'
 						v-model.number='pnum'
-						type='number'
-						min='0'
-						max='255'
+						:min='0'
+						:max='255'
 						:label='$t("components.iqrfnet.send-dpa.pnum")'
 						:rules='[
 							(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.pnumMissing")),
@@ -198,7 +196,7 @@ limitations under the License.
 								{{ $t('components.iqrfnet.send-dpa.hexadecimal') }}
 							</v-tooltip>
 						</template>
-					</TextInput>
+					</NumberInput>
 					<TextInput
 						v-else
 						v-model='pnumHex'
@@ -226,12 +224,11 @@ limitations under the License.
 					</TextInput>
 				</v-col>
 				<v-col>
-					<TextInput
+					<NumberInput
 						v-if='!useHexPcmd'
 						v-model.number='pcmd'
-						type='number'
-						min='0'
-						max='127'
+						:min='0'
+						:max='127'
 						:label='$t("components.iqrfnet.send-dpa.pcmd")'
 						:rules='[
 							(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.pcmdMissing")),
@@ -254,7 +251,7 @@ limitations under the License.
 								{{ $t('components.iqrfnet.send-dpa.hexadecimal') }}
 							</v-tooltip>
 						</template>
-					</TextInput>
+					</NumberInput>
 					<TextInput
 						v-else
 						v-model='pcmdHex'
@@ -282,12 +279,11 @@ limitations under the License.
 					</TextInput>
 				</v-col>
 				<v-col>
-					<TextInput
+					<NumberInput
 						v-if='!useHexHwpid'
 						v-model.number='hwpid'
-						type='number'
-						min='0'
-						max='65535'
+						:min='0'
+						:max='65535'
 						:label='$t("components.iqrfnet.send-dpa.hwpid")'
 						:rules='[
 							(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.hwpidMissing")),
@@ -344,7 +340,7 @@ limitations under the License.
 								</v-list>
 							</v-menu>
 						</template>
-					</TextInput>
+					</NumberInput>
 					<TextInput
 						v-else
 						v-model='hwpidHex'
@@ -422,10 +418,9 @@ limitations under the License.
 				density='compact'
 				hide-details
 			/>
-			<TextInput
+			<NumberInput
 				v-model.number='customTimeout'
-				type='number'
-				min='1000'
+				´:min='1000'
 				:label='$t("components.iqrfnet.send-dpa.customTimeout")'
 				:disabled='!useCustomTimeout'
 				required
@@ -463,7 +458,8 @@ import Card from '@/components/Card.vue';
 import ProductBrowser from '@/components/iqrfnet/ProductBrowser.vue';
 import PacketHistory from '@/components/iqrfnet/send-dpa/PacketHistory.vue';
 import PacketMacros from '@/components/iqrfnet/send-dpa/PacketMacros.vue';
-import TextInput from '@/components/TextInput.vue';
+import NumberInput from '@/components/layout/form/NumberInput.vue';
+import TextInput from '@/components/layout/form/TextInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useDaemonStore } from '@/store/daemonSocket';

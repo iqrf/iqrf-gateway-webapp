@@ -72,7 +72,7 @@ import { computed, type PropType, type Ref, ref } from 'vue';
 
 import Card from '@/components/Card.vue';
 import JsonMessageViewer from '@/components/iqrfnet/send-json/JsonMessageViewer.vue';
-import SelectInput from '@/components/SelectInput.vue';
+import SelectInput from '@/components/layout/form/SelectInput.vue';
 const componentProps = defineProps({
 	messages: {
 		type: Array as PropType<JsonMessage[]>,

@@ -87,9 +87,9 @@ import { VForm } from 'vuetify/components';
 import SessionExpirationInput
 	from '@/components/auth/SessionExpirationInput.vue';
 import Card from '@/components/Card.vue';
-import PasswordInput from '@/components/PasswordInput.vue';
-import SelectInput from '@/components/SelectInput.vue';
-import TextInput from '@/components/TextInput.vue';
+import PasswordInput from '@/components/layout/form/PasswordInput.vue';
+import SelectInput from '@/components/layout/form/SelectInput.vue';
+import TextInput from '@/components/layout/form/TextInput.vue';
 import { basicErrorToast } from '@/helpers/errorToast';
 import UrlBuilder from '@/helpers/urlBuilder';
 import { getLanguageOptions } from '@/helpers/userData';

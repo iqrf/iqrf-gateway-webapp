@@ -61,8 +61,8 @@ import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import Card from '@/components/Card.vue';
+import TextInput from '@/components/layout/form/TextInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
-import TextInput from '@/components/TextInput.vue';
 
 const componentProps = defineProps({
 	apiKey: {

@@ -223,9 +223,8 @@ limitations under the License.
 							cols='12'
 							md='4'
 						>
-							<TextInput
+							<NumberInput
 								v-model.number='configuration.resetButton.button'
-								type='number'
 								:label='$t("components.configuration.controller.form.pins.button")'
 								:rules='[
 									(v: number|null) => ValidationRules.required(v, $t("components.configuration.controller.validation.buttonPin")),
@@ -238,9 +237,8 @@ limitations under the License.
 							cols='12'
 							md='4'
 						>
-							<TextInput
+							<NumberInput
 								v-model.number='configuration.statusLed.greenLed'
-								type='number'
 								:label='$t("components.configuration.controller.form.pins.greenLed")'
 								:rules='[
 									(v: number|null) => ValidationRules.required(v, $t("components.configuration.controller.validation.greenLed")),
@@ -253,9 +251,8 @@ limitations under the License.
 							cols='12'
 							md='4'
 						>
-							<TextInput
+							<NumberInput
 								v-model.number='configuration.statusLed.redLed'
-								type='number'
 								:label='$t("components.configuration.controller.form.pins.redLed")'
 								:rules='[
 									(v: number|null) => ValidationRules.required(v, $t("components.configuration.controller.validation.redLed")),
@@ -275,9 +272,8 @@ limitations under the License.
 							cols='12'
 							md='4'
 						>
-							<TextInput
+							<NumberInput
 								v-model.number='configuration.powerOff.sck'
-								type='number'
 								:label='$t("components.configuration.controller.form.pins.sck")'
 								:rules='watchdogPins ?
 									[
@@ -293,9 +289,8 @@ limitations under the License.
 							cols='12'
 							md='4'
 						>
-							<TextInput
+							<NumberInput
 								v-model.number='configuration.powerOff.sda'
-								type='number'
 								:label='$t("components.configuration.controller.form.pins.sda")'
 								:rules='watchdogPins ?
 									[
@@ -366,8 +361,9 @@ import ControllerAutonetworkForm from '@/components/config/controller/Controller
 import ControllerDiscoveryForm from '@/components/config/controller/ControllerDiscoveryForm.vue';
 import DeviceProfilesTable from '@/components/config/controller/profiles/DeviceProfilesTable.vue';
 import WebsocketUrlForm from '@/components/config/WebsocketUrlForm.vue';
-import SelectInput from '@/components/SelectInput.vue';
-import TextInput from '@/components/TextInput.vue';
+import NumberInput from '@/components/layout/form/NumberInput.vue';
+import SelectInput from '@/components/layout/form/SelectInput.vue';
+import TextInput from '@/components/layout/form/TextInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';

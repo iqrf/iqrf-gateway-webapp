@@ -43,7 +43,7 @@ import WiFiSecurityTypeInput
 	from '@/components/ip-network/connections/wifi/WiFiSecurityTypeInput.vue';
 import WpaPskConfiguration
 	from '@/components/ip-network/connections/wifi/WpaPskConfiguration.vue';
-import TextInput from '@/components/TextInput.vue';
+import TextInput from '@/components/layout/form/TextInput.vue';
 import ValidationRules from '@/helpers/ValidationRules';
 
 const configuration = defineModel({

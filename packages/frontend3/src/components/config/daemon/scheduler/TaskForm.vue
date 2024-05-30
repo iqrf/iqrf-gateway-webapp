@@ -84,10 +84,9 @@ limitations under the License.
 						:utc='true'
 					/>
 				</div>
-				<TextInput
+				<NumberInput
 					v-if='taskType === SchedulerTaskType.PERIODIC'
 					v-model.number='task.timeSpec.period'
-					type='number'
 					:label='$t("components.configuration.daemon.scheduler.period")'
 					:rules='[
 						(v: number|null) => ValidationRules.required(v, $t("components.configuration.daemon.scheduler.validation.periodMissing")),
@@ -229,9 +228,10 @@ import Card from '@/components/Card.vue';
 import TaskMessageForm from '@/components/config/daemon/scheduler/TaskMessageForm.vue';
 import DataTable from '@/components/DataTable.vue';
 import FormActionButton from '@/components/FormActionButton.vue';
+import NumberInput from '@/components/layout/form/NumberInput.vue';
+import SelectInput from '@/components/layout/form/SelectInput.vue';
+import TextInput from '@/components/layout/form/TextInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
-import SelectInput from '@/components/SelectInput.vue';
-import TextInput from '@/components/TextInput.vue';
 import { FormAction } from '@/enums/controls';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';

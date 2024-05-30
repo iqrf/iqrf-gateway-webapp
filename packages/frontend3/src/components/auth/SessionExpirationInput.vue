@@ -29,7 +29,7 @@ import { UserSessionExpiration } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { mdiAccountClock } from '@mdi/js';
 import { computed, defineModel, type PropType, type Ref } from 'vue';
 
-import SelectInput from '@/components/SelectInput.vue';
+import SelectInput from '@/components/layout/form/SelectInput.vue';
 import i18n from '@/plugins/i18n';
 import { type SelectItem } from '@/types/vuetify';
 

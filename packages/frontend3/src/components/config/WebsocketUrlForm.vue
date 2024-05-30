@@ -48,9 +48,8 @@ limitations under the License.
 					]'
 					required
 				/>
-				<TextInput
+				<NumberInput
 					v-model.number='port'
-					type='number'
 					:label='$t("common.labels.port")'
 					:rules='[
 						(v: number|null) => ValidationRules.required(v, $t("common.validation.portMissing")),
@@ -92,9 +91,10 @@ import { watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import Card from '@/components/Card.vue';
+import NumberInput from '@/components/layout/form/NumberInput.vue';
+import SelectInput from '@/components/layout/form/SelectInput.vue';
+import TextInput from '@/components/layout/form/TextInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
-import SelectInput from '@/components/SelectInput.vue';
-import TextInput from '@/components/TextInput.vue';
 import { WebsocketProtocol } from '@/enums/websocket';
 import ValidationRules from '@/helpers/ValidationRules';
 

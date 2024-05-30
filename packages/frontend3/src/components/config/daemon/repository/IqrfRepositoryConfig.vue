@@ -61,10 +61,9 @@ limitations under the License.
 							density='compact'
 							:hide-details='!updateCachePeriodically'
 						/>
-						<TextInput
+						<NumberInput
 							v-if='updateCachePeriodically'
 							v-model.number='config.checkPeriodInMinutes'
-							type='number'
 							:label='$t("components.configuration.daemon.repository.updatePeriod")'
 							:rules='updateCachePeriodically ? [
 								(v: number|null) => ValidationRules.required(v, "components.configuration.daemon.repository.validation.updatePeriodMissing"),
@@ -108,7 +107,8 @@ import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
 import Card from '@/components/Card.vue';
-import TextInput from '@/components/TextInput.vue';
+import NumberInput from '@/components/layout/form/NumberInput.vue';
+import TextInput from '@/components/layout/form/TextInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';

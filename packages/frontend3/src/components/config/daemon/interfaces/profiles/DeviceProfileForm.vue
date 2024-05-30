@@ -65,9 +65,8 @@ limitations under the License.
 					]'
 					required
 				/>
-				<TextInput
+				<NumberInput
 					v-model.number='profile.powerEnableGpioPin'
-					type='number'
 					:label='$t("components.configuration.daemon.interfaces.powerPin")'
 					:rules='[
 						(v: number|null) => ValidationRules.required(v, $t("components.configuration.daemon.interfaces.validation.powerPinMissing")),
@@ -75,9 +74,8 @@ limitations under the License.
 					]'
 					required
 				/>
-				<TextInput
+				<NumberInput
 					v-model.number='profile.busEnableGpioPin'
-					type='number'
 					:label='$t("components.configuration.daemon.interfaces.busPin")'
 					:rules='[
 						(v: number|null) => ValidationRules.required(v, $t("components.configuration.daemon.interfaces.validation.busPinMissing")),
@@ -85,9 +83,8 @@ limitations under the License.
 					]'
 					required
 				/>
-				<TextInput
+				<NumberInput
 					v-model.number='profile.pgmSwitchGpioPin'
-					type='number'
 					:label='$t("components.configuration.daemon.interfaces.pgmPin")'
 					:rules='[
 						(v: number|null) => ValidationRules.required(v, $t("components.configuration.daemon.interfaces.validation.pgmPinMissing")),
@@ -100,9 +97,8 @@ limitations under the License.
 					:label='$t("components.configuration.daemon.interfaces.interfacePins")'
 					density='compact'
 				/>
-				<TextInput
+				<NumberInput
 					v-model.number='profile.i2cEnableGpioPin'
-					type='number'
 					:label='$t("components.configuration.daemon.interfaces.i2cPin")'
 					:rules='interfacePins ?
 						[
@@ -113,9 +109,8 @@ limitations under the License.
 					:disabled='!interfacePins'
 					:required='interfacePins'
 				/>
-				<TextInput
+				<NumberInput
 					v-model.number='profile.spiEnableGpioPin'
-					type='number'
 					:label='$t("components.configuration.daemon.interfaces.spiPin")'
 					:rules='interfacePins ?
 						[
@@ -126,9 +121,8 @@ limitations under the License.
 					:disabled='!interfacePins'
 					:required='interfacePins'
 				/>
-				<TextInput
+				<NumberInput
 					v-model.number='profile.uartEnableGpioPin'
-					type='number'
 					:label='$t("components.configuration.daemon.interfaces.uartPin")'
 					:rules='interfacePins ?
 						[
@@ -186,9 +180,10 @@ import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
 import Card from '@/components/Card.vue';
+import NumberInput from '@/components/layout/form/NumberInput.vue';
+import SelectInput from '@/components/layout/form/SelectInput.vue';
+import TextInput from '@/components/layout/form/TextInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
-import SelectInput from '@/components/SelectInput.vue';
-import TextInput from '@/components/TextInput.vue';
 import { FormAction } from '@/enums/controls';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';

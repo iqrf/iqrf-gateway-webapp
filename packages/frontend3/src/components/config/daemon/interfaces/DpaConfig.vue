@@ -55,9 +55,8 @@ limitations under the License.
 							]'
 							required
 						/>
-						<TextInput
+						<NumberInput
 							v-model.number='config.DpaHandlerTimeout'
-							type='number'
 							:label='$t("components.configuration.daemon.interfaces.dpa.timeout")'
 							:rules='[
 								(v: number|null) => ValidationRules.required(v, $t("components.configuration.daemon.interfaces.dpa.validation.timeoutMissing")),
@@ -97,7 +96,8 @@ import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
 import Card from '@/components/Card.vue';
-import TextInput from '@/components/TextInput.vue';
+import NumberInput from '@/components/layout/form/NumberInput.vue';
+import TextInput from '@/components/layout/form/TextInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';

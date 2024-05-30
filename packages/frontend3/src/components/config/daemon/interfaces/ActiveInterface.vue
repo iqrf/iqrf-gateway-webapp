@@ -82,7 +82,7 @@ import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
 import Card from '@/components/Card.vue';
-import SelectInput from '@/components/SelectInput.vue';
+import SelectInput from '@/components/layout/form/SelectInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 import { ComponentState } from '@/types/ComponentState';

@@ -35,7 +35,7 @@ import {
 import { mdiExpansionCardVariant } from '@mdi/js';
 import { onBeforeMount, type PropType, type Ref, ref } from 'vue';
 
-import SelectInput from '@/components/SelectInput.vue';
+import SelectInput from '@/components/layout/form/SelectInput.vue';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
 import { ComponentState } from '@/types/ComponentState';

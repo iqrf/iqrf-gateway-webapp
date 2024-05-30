@@ -76,7 +76,7 @@ import { type MailerConfig, MailerSmtpSecurity } from '@iqrf/iqrf-gateway-webapp
 import { computed, type PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import PasswordInput from '@/components/PasswordInput.vue';
+import PasswordInput from '@/components/layout/form/PasswordInput.vue';
 import ValidationRules from '@/helpers/ValidationRules';
 
 

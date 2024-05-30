@@ -76,9 +76,8 @@ limitations under the License.
 					]'
 					required
 				/>
-				<TextInput
+				<NumberInput
 					v-model.number='profile.maxSizeMB'
-					type='number'
 					:label='$t("components.configuration.daemon.logging.maxSize")'
 					:rules='[
 						(v: number|null) => ValidationRules.required(v, $t("components.configuration.daemon.logging.validations.maxSize.required")),
@@ -93,9 +92,8 @@ limitations under the License.
 					density='compact'
 					hide-details
 				/>
-				<TextInput
+				<NumberInput
 					v-model.number='profile.maxAgeMinutes'
-					type='number'
 					:label='$t("components.configuration.daemon.logging.maxAge")'
 					:description='$t("components.configuration.daemon.logging.notes.timestampsDisabled")'
 					:rules='[
@@ -106,9 +104,8 @@ limitations under the License.
 					:disabled='!profile.timestampFiles'
 					required
 				/>
-				<TextInput
+				<NumberInput
 					v-model.number='profile.maxNumber'
-					type='number'
 					:label='$t("components.configuration.daemon.logging.maxNumber")'
 					:description='$t("components.configuration.daemon.logging.notes.timestampsDisabled")'
 					:rules='[
@@ -228,8 +225,9 @@ import { VForm } from 'vuetify/components';
 import Card from '@/components/Card.vue';
 import LoggingVerbosityForm from '@/components/config/daemon/logging/LoggingVerbosityForm.vue';
 import DataTable from '@/components/DataTable.vue';
+import NumberInput from '@/components/layout/form/NumberInput.vue';
+import TextInput from '@/components/layout/form/TextInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
-import TextInput from '@/components/TextInput.vue';
 import { FormAction } from '@/enums/controls';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
