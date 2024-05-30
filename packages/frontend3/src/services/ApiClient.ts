@@ -18,10 +18,10 @@
 import { Client } from '@iqrf/iqrf-gateway-webapp-client';
 import { type AxiosError, type AxiosResponse } from 'axios';
 import { storeToRefs } from 'pinia';
-import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import UrlBuilder from '@/helpers/urlBuilder';
+import i18n from '@/plugins/i18n';
 import router from '@/router';
 import { useUserStore } from '@/store/user';
 
@@ -52,11 +52,10 @@ export const useApiClient = (): Client => {
 				const userStore = useUserStore();
 				userStore.signOut();
 				// Prevent duplicate redirect to sign in page
-				if (router.currentRoute.value.name !== 'signIn') {
-					router.push({ name: 'signIn', query: { redirect: router.currentRoute.value.path } });
+				if (router.currentRoute.value.name !== 'SignIn') {
+					router.push({ name: 'SignIn', query: { redirect: router.currentRoute.value.path } });
 				}
-				const i18n = useI18n();
-				toast.warning(i18n.t('auth.sign.out.expired').toString());
+				toast.warning(i18n.global.t('auth.sign.out.expired').toString());
 			}
 			// Handle other HTTP errors
 			return Promise.reject(error);
