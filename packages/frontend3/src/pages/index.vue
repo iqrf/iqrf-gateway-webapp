@@ -70,9 +70,9 @@ const links: Ref<DisambiguationLink[]> = ref([
 		to: '/access-control',
 	},
 	{
-		title: i18n.t('pages.openApi.title'),
-		description: i18n.t('pages.openApi.description'),
-		to: '/openApi',
+		title: i18n.t('pages.dev.title'),
+		description: i18n.t('pages.dev.description'),
+		to: '/dev',
 		developmentOnly: true,
 	},
 	{

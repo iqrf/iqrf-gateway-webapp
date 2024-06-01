@@ -38,15 +38,16 @@ limitations under the License.
 import { Feature, UserRole } from '@iqrf/iqrf-gateway-webapp-client/types';
 import {
 	mdiAccountKey,
-	mdiApi,
 	mdiBook,
 	mdiBroadcast,
 	mdiChevronLeft,
 	mdiChevronRight,
 	mdiCog,
-	mdiDesktopTower, mdiIpNetwork,
+	mdiDesktopTower,
+	mdiIpNetwork,
 	mdiLogin,
 	mdiSecurity,
+	mdiTools,
 	mdiWrenchClock,
 } from '@mdi/js';
 import { storeToRefs } from 'pinia';
@@ -331,9 +332,16 @@ function items(): SidebarLink[] {
 		];
 	}
 	links.push({
-		title: i18n.t('pages.openApi.title'),
-		to: '/openApi',
-		icon: mdiApi,
+		title: i18n.t('pages.dev.title'),
+		to: '/dev',
+		icon: mdiTools,
+		children: [
+			{
+				title: i18n.t('pages.dev.openApi.title'),
+				to: '/dev/openApi',
+				developmentOnly: true,
+			},
+		],
 		developmentOnly: true,
 	});
 	links.push({

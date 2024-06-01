@@ -199,6 +199,14 @@
 				}
 			}
 		},
+		"dev": {
+			"openApi": {
+				"title": "OpenAPI specifikace",
+				"messages": {
+					"fetchFailed": "Nastala chyba při získávání OpenAPI specifikace."
+				}
+			}
+		},
 		"errors": {
 			"403": {
 				"title": "Přístup odepřen",
@@ -441,13 +449,17 @@
 				"description": "Správa SSH klíčů."
 			}
 		},
-		"openApi": {
-			"title": "OpenAPI specifikace",
-			"description": "Otevře OpenAPI dokumentaci REST API."
-		},
 		"docs": {
 			"title": "Dokumentace",
 			"description": "Otevře dokumentaci v novém panelu."
+		},
+		"dev": {
+			"title": "Vývojářské nástroje",
+			"description": "Nástroje pro vývoj a testování.",
+			"openApi": {
+				"title": "OpenAPI specifikace",
+				"description": "Otevře OpenAPI dokumentaci REST API."
+			}
 		}
 	},
 	"title": "IQRF Gateway Webapp"

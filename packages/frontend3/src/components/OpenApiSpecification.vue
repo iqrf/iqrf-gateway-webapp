@@ -18,7 +18,7 @@ limitations under the License.
 <template>
 	<Card>
 		<template #title>
-			{{ $t('components.openApi.title') }}
+			{{ $t('components.dev.openApi.title') }}
 		</template>
 		<div
 			id='swagger'
@@ -29,7 +29,7 @@ limitations under the License.
 			variant='tonal'
 			type='error'
 		>
-			{{ $t('components.openApi.messages.fetchFailed') }}
+			{{ $t('components.dev.openApi.messages.fetchFailed') }}
 		</v-alert>
 	</Card>
 </template>
@@ -82,9 +82,21 @@ function fetch(): void {
 		})
 		.catch(() => {
 			componentState.value = ComponentState.FetchFailed;
-			toast.error(i18n.t('components.openApi.messages.fetchFailed').toString());
+			toast.error(i18n.t('components.dev.openApi.messages.fetchFailed').toString());
 		});
 }
 
 onMounted(fetch);
 </script>
+
+<style lang='scss'>
+.v-theme--dark {
+	.swagger-ui {
+		filter: invert(88%) hue-rotate(180deg);
+
+		.highlight-code {
+			filter: invert(100%) hue-rotate(180deg) contrast(150%);
+		}
+	}
+}
+</style>

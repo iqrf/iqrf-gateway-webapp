@@ -1276,6 +1276,14 @@
 				}
 			}
 		},
+		"dev": {
+			"openApi": {
+				"title": "OpenAPI specification",
+				"messages": {
+					"fetchFailed": "An error occurred during OpenAPI specification loading."
+				}
+			}
+		},
 		"errors": {
 			"403": {
 				"title": "Access denied",
@@ -1902,12 +1910,6 @@
 				}
 			}
 		},
-		"openApi": {
-			"title": "OpenAPI specification",
-			"messages": {
-				"fetchFailed": "An error occurred during OpenAPI specification loading."
-			}
-		},
 		"sshService": {
 			"note": "Set SSH service status.",
 			"enable": "Start SSH service on every boot.",
@@ -2168,13 +2170,17 @@
 				"description": "Manage SSH keys."
 			}
 		},
-		"openApi": {
-			"title": "OpenAPI specification",
-			"description": "Opens OpenAPI specification of REST API."
-		},
 		"docs": {
 			"title": "Documentation",
 			"description": "Opens documentation in a new tab."
+		},
+		"dev": {
+			"title": "Development tools",
+			"description": "Development tools and utilities.",
+			"openApi": {
+				"title": "OpenAPI specification",
+				"description": "Opens OpenAPI specification of REST API."
+			}
 		}
 	},
 	"title": "IQRF Gateway Webapp"

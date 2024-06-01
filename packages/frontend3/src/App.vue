@@ -74,10 +74,6 @@ const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 function setHeadOptions(newLocale: string): void {
 	useHead({
 		htmlAttrs: {
-			class: {
-				'v-theme--light': theme.global.name.value === 'light',
-				'v-theme--dark': theme.global.name.value === 'dark',
-			},
 			lang: newLocale,
 		},
 		titleTemplate: '%s %separator %siteName',
