@@ -17,7 +17,7 @@ limitations under the License.
 
 <template>
 	<Head>
-		<title>{{ $t('auth.sign.in.title') }}</title>
+		<title>{{ $t('pages.auth.signIn.title') }}</title>
 	</Head>
 	<SignInForm />
 </template>

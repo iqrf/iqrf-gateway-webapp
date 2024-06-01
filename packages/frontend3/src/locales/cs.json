@@ -3,7 +3,7 @@
 		"badge": "Odznak",
 		"calendar": {
 			"moreEvents": "{0} dalších",
-			"today": "Today"
+			"today": "Dnes"
 		},
 		"carousel": {
 			"prev": "Předchozí obrázek",
@@ -138,6 +138,14 @@
 		}
 	},
 	"components": {
+		"auth": {
+			"signIn": {
+				"actions": {
+					"signIn": "Přihlásit se",
+					"recoverPassword": "Zapomenuté heslo?"
+				}
+			}
+		},
 		"common": {
 			"actions": {
 				"add": "Přidat",
@@ -203,6 +211,49 @@
 				"text": "Požadovanou stránku se nepodařilo najít. Adresa může být nesprávná nebo stránka již neexistuje."
 			}
 		},
+		"gateway": {
+			"information": {
+				"addresses": {
+					"ip": "IP adresy",
+					"mac": "MAC adresy"
+				},
+				"board": "Deska",
+				"diagnostics": "Stáhnout diagnostická data",
+				"hostname": "Jméno hostitele",
+				"hostnameChange": {
+					"title": "Změna jména hostitele"
+				},
+				"os": "Operační systém",
+				"gwId": "IQRF Gateway ID",
+				"tr": {
+					"error": "Nelze získat informace o koordinátoru.",
+					"moduleType": "Typ modulu",
+					"mcuType": "Typ MCU",
+					"moduleId": "MID",
+					"os": "OS",
+					"dpa": "DPA",
+					"hwpid": "HWPID",
+					"hwpidVersion": "HWPID ver.",
+					"voltage": "Nalájecí napětí"
+				},
+				"uptime": "Doba běhu systému",
+				"usages": {
+					"memory": "Využití operační paměti",
+					"disks": "Využití disku",
+					"swap": "Využití swapu",
+					"used": "Využito"
+				},
+				"version": {
+					"iqrfCloudProvisioning": "IQRF Cloud Provisioning",
+					"iqrfGatewayController": "IQRF Gateway Controller",
+					"iqrfGatewayDaemon": "IQRF Gateway Daemon",
+					"iqrfGatewayInfluxdbBridge": "IQRF Gateway InfluxDB Bridge",
+					"iqrfGatewaySetter": "IQRF Gateway Setter",
+					"iqrfGatewayUploader": "IQRF Gateway Uploader",
+					"iqrfGatewayWebapp": "IQRF Gateway Webapp"
+				}
+			}
+		},
 		"layout": {
 			"loadingScreen": {
 				"message": "IQRF Gateway Webapp se načítá…"
@@ -247,7 +298,6 @@
 		}
 	},
 	"pages": {
-		"title": "IQRF Gateway Webapp",
 		"gateway": {
 			"title": "Brána",
 			"description": "Zobrazení informací o bráně, službách a správa napájení.",
@@ -399,5 +449,6 @@
 			"title": "Dokumentace",
 			"description": "Otevře dokumentaci v novém panelu."
 		}
-	}
+	},
+	"title": "IQRF Gateway Webapp"
 }

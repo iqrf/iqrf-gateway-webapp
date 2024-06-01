@@ -319,7 +319,7 @@ function items(): SidebarLink[] {
 	} else {
 		links = [
 			{
-				title: i18n.t('auth.sign.in.title'),
+				title: i18n.t('pages.auth.signIn.title'),
 				icon: mdiLogin,
 				to: '/sign/in',
 			},

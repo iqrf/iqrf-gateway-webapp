@@ -82,7 +82,7 @@ function setHeadOptions(newLocale: string): void {
 		},
 		titleTemplate: '%s %separator %siteName',
 		templateParams: {
-			siteName: i18n.t('pages.title').toString(),
+			siteName: i18n.t('title').toString(),
 			separator: '|',
 		},
 	});
@@ -95,6 +95,7 @@ onBeforeMount(async () => {
 	} else {
 		theme.global.name.value = 'light';
 	}
+	localeStore.setLocale(locale.value);
 	setHeadOptions(locale.value);
 	await featureStore.fetch();
 	await useApiClient().getInstallationService().check()

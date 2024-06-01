@@ -102,7 +102,6 @@
 	"auth": {
 		"sign": {
 			"in": {
-				"title": "Sign in",
 				"messages": {
 					"incorrectUsernameOrPassword": "The username or password you entered is incorrect.",
 					"success": "You have been signed in successfully."
@@ -1944,7 +1943,11 @@
 		}
 	},
 	"pages": {
-		"title": "IQRF Gateway Webapp",
+		"auth": {
+			"signIn":{
+				"title": "Sign in",
+			}
+		},
 		"gateway": {
 			"title": "Gateway",
 			"description": "Display gateway information, services and power controls.",
@@ -2173,5 +2176,6 @@
 			"title": "Documentation",
 			"description": "Opens documentation in a new tab."
 		}
-	}
+	},
+	"title": "IQRF Gateway Webapp"
 }
