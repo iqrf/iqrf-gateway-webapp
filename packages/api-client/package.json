@@ -1,6 +1,6 @@
 {
 	"name": "@iqrf/iqrf-gateway-webapp-client",
-	"version": "0.1.12",
+	"version": "0.1.13",
 	"description": "IQRF Gateway Webapp JavaScript client library",
 	"exports": {
 		".": {
@@ -98,7 +98,7 @@
 	"devDependencies": {
 		"@stylistic/eslint-plugin": "^2.1.0",
 		"@types/luxon": "^3.4.2",
-		"@types/node": "^20.12.13",
+		"@types/node": "^20.13.0",
 		"@types/punycode": "^2.1.4",
 		"@types/uuid": "^9.0.8",
 		"@typescript-eslint/eslint-plugin": "^7.11.0",

@@ -66,6 +66,34 @@ export interface RequiredInterface {
 }
 
 /**
+ * Messaging types
+ */
+export enum MessagingType {
+	/// Buffered MQTT
+	BufferedMqtt = 'bmqtt',
+	/// Message Queue
+	Mq = 'mq',
+	/// MQTT
+	Mqtt = 'mqtt',
+	/// Scheduler
+	Scheduler = 'scheduler',
+	/// UDP
+	Udp = 'udp',
+	/// WebSocket
+	Websocket = 'ws',
+}
+
+/**
+ * Messaging instance interface
+ */
+export interface MessagingInstance {
+	/// Instance name
+	instance: string;
+	/// Messaging type
+	type: MessagingType;
+}
+
+/**
  * IQRF Gateway Daemon component configuration
  */
 export interface IqrfGatewayDaemonComponentConfiguration<C extends IqrfGatewayDaemonComponentName> {
@@ -174,6 +202,15 @@ export interface IqrfGatewayDaemonJsonSplitter extends IqrfGatewayDaemonComponen
 	insId: string;
 	/// List of messaging service instances
 	messagingList: string[];
+	/// Validate outgoing responses
+	validateJsonResponse: boolean;
+}
+
+export interface IqrfGatewayDaemonJsonSplitterV3 extends IqrfGatewayDaemonComponentInstanceBase<IqrfGatewayDaemonComponentName.IqrfJsonSplitter> {
+	/// Instance ID
+	insId: string;
+	/// List of messaging service instances
+	messagingList: MessagingInstance[];
 	/// Validate outgoing responses
 	validateJsonResponse: boolean;
 }
@@ -398,7 +435,7 @@ export interface IqrfGatewayDaemonComponentInstanceConfigurations {
 	[IqrfGatewayDaemonComponentName.IqrfIdeCounterpart]: IqrfGatewayDaemonIdeCounterpart;
 	[IqrfGatewayDaemonComponentName.IqrfJsCache]: IqrfGatewayDaemonJsCache;
 	[IqrfGatewayDaemonComponentName.IqrfJsonDpaApiRaw]: IqrfGatewayDaemonJsonDpaApiRaw;
-	[IqrfGatewayDaemonComponentName.IqrfJsonSplitter]: IqrfGatewayDaemonJsonSplitter;
+	[IqrfGatewayDaemonComponentName.IqrfJsonSplitter]: IqrfGatewayDaemonJsonSplitter | IqrfGatewayDaemonJsonSplitterV3;
 	[IqrfGatewayDaemonComponentName.IqrfMqttMessaging]: IqrfGatewayDaemonMqttMessaging;
 	[IqrfGatewayDaemonComponentName.IqrfSpi]: IqrfGatewayDaemonSpi;
 	[IqrfGatewayDaemonComponentName.IqrfUart]: IqrfGatewayDaemonUart;
