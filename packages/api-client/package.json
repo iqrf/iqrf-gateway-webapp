@@ -1,6 +1,6 @@
 {
 	"name": "@iqrf/iqrf-gateway-webapp-client",
-	"version": "0.1.13",
+	"version": "0.1.14",
 	"description": "IQRF Gateway Webapp JavaScript client library",
 	"exports": {
 		".": {
@@ -90,6 +90,7 @@
 	"license": "Apache-2.0",
 	"type": "module",
 	"dependencies": {
+		"@iqrf/iqrf-gateway-daemon-utils": "^0.0.12",
 		"axios": "^1.7.2",
 		"luxon": "^3.4.4",
 		"punycode": "^2.3.1",

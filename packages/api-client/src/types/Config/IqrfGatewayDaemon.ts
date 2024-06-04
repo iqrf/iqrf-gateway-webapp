@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import { type MessagingInstance } from '@iqrf/iqrf-gateway-daemon-utils/types/Messaging';
+
 import { type MappingDeviceType, type MappingType } from './Mapping';
 
 /**
@@ -63,34 +65,6 @@ export interface RequiredInstance {
 export interface RequiredInterface {
 	name: string;
 	target: RequiredInstance;
-}
-
-/**
- * Messaging types
- */
-export enum MessagingType {
-	/// Buffered MQTT
-	BufferedMqtt = 'bmqtt',
-	/// Message Queue
-	Mq = 'mq',
-	/// MQTT
-	Mqtt = 'mqtt',
-	/// Scheduler
-	Scheduler = 'scheduler',
-	/// UDP
-	Udp = 'udp',
-	/// WebSocket
-	Websocket = 'ws',
-}
-
-/**
- * Messaging instance interface
- */
-export interface MessagingInstance {
-	/// Instance name
-	instance: string;
-	/// Messaging type
-	type: MessagingType;
 }
 
 /**
