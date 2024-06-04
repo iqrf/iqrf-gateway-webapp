@@ -35,7 +35,7 @@ const localeStore = useLocaleStore();
 const availableLocales = localeStore.getAvailableLocales;
 
 const languageFlag = computed(() => {
-	const idx = availableLocales.findIndex((item: Locale): boolean => (item.code === props.language));
+	const idx = availableLocales.findIndex((item: Locale): boolean => item.code === props.language);
 	if (idx === -1) {
 		return '🏴‍☠️';
 	}

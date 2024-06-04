@@ -83,8 +83,10 @@ function filter(item: SidebarLink): boolean {
 			return false;
 		}
 	}
-	if ((item.developmentOnly ?? false) && import.meta.env.PROD ||
-		item.feature !== undefined && !featureStore.isEnabled(item.feature)) {
+	if (
+		((item.developmentOnly ?? false) && import.meta.env.PROD) ||
+		(item.feature !== undefined && !featureStore.isEnabled(item.feature))
+	) {
 		return false;
 	}
 	return !(item.roles !== undefined && role !== null && (Array.isArray(item.roles) && !item.roles.includes(role)));

@@ -44,7 +44,7 @@ limitations under the License.
 						(v: File|Blob|null) => ValidationRules.required(v, $t("components.configuration.daemon.connections.validation.profileFileMissing")),
 					]'
 					:prepend-inner-icon='mdiFileOutline'
-					:prepend-icon='null'
+					:prepend-icon='undefined'
 					show-size
 					required
 				/>
@@ -113,28 +113,28 @@ async function onSubmit(): Promise<void> {
 }
 
 function isMqttConnectionProfile(obj: any): obj is IqrfGatewayDaemonMqttMessaging {
-	return obj.component !== undefined && typeof(obj.component) === 'string' && obj.component === IqrfGatewayDaemonComponentName.IqrfMqttMessaging &&
-		obj.instance !== undefined && typeof(obj.instance) === 'string' &&
-		obj.BrokerAddr !== undefined && typeof(obj.BrokerAddr) === 'string' &&
-		obj.ClientId !== undefined && typeof(obj.ClientId) === 'string' &&
-		obj.ConnectTimeout !== undefined && typeof(obj.ConnectTimeout) === 'number' &&
-		obj.EnableServerCertAuth !== undefined && typeof(obj.EnableServerCertAuth) === 'boolean' &&
-		obj.EnabledCipherSuites !== undefined && typeof(obj.EnabledCipherSuites) === 'string' &&
-		obj.EnabledSSL !== undefined && typeof(obj.EnabledSSL) === 'boolean' &&
-		obj.KeepAliveInterval !== undefined && typeof(obj.KeepAliveInterval) === 'number' &&
-		obj.KeyStore !== undefined && typeof(obj.KeyStore) === 'string' &&
-		obj.MaxReconnect !== undefined && typeof(obj.MaxReconnect) === 'number' &&
-		obj.MinReconnect !== undefined && typeof(obj.MinReconnect) === 'number' &&
-		obj.Password !== undefined && typeof(obj.Password) === 'string' &&
-		obj.Persistence !== undefined && typeof(obj.Persistence) === 'number' &&
-		obj.PrivateKey !== undefined && typeof(obj.PrivateKey) === 'string' &&
-		obj.PrivateKeyPassword !== undefined && typeof(obj.PrivateKeyPassword) === 'string' &&
-		obj.Qos !== undefined && typeof(obj.Qos) === 'number' &&
-		obj.TopicRequest !== undefined && typeof(obj.TopicRequest) === 'string' &&
-		obj.TopicResponse !== undefined && typeof(obj.TopicResponse) === 'string' &&
-		obj.TrustStore !== undefined && typeof(obj.TrustStore) === 'string' &&
-		obj.User !== undefined && typeof(obj.User) === 'string' &&
-		obj.acceptAsyncMsg !== undefined && typeof(obj.acceptAsyncMsg) === 'boolean';
+	return obj.component !== undefined && typeof obj.component === 'string' && obj.component === IqrfGatewayDaemonComponentName.IqrfMqttMessaging &&
+		obj.instance !== undefined && typeof obj.instance === 'string' &&
+		obj.BrokerAddr !== undefined && typeof obj.BrokerAddr === 'string' &&
+		obj.ClientId !== undefined && typeof obj.ClientId === 'string' &&
+		obj.ConnectTimeout !== undefined && typeof obj.ConnectTimeout === 'number' &&
+		obj.EnableServerCertAuth !== undefined && typeof obj.EnableServerCertAuth === 'boolean' &&
+		obj.EnabledCipherSuites !== undefined && typeof obj.EnabledCipherSuites === 'string' &&
+		obj.EnabledSSL !== undefined && typeof obj.EnabledSSL === 'boolean' &&
+		obj.KeepAliveInterval !== undefined && typeof obj.KeepAliveInterval === 'number' &&
+		obj.KeyStore !== undefined && typeof obj.KeyStore === 'string' &&
+		obj.MaxReconnect !== undefined && typeof obj.MaxReconnect === 'number' &&
+		obj.MinReconnect !== undefined && typeof obj.MinReconnect === 'number' &&
+		obj.Password !== undefined && typeof obj.Password === 'string' &&
+		obj.Persistence !== undefined && typeof obj.Persistence === 'number' &&
+		obj.PrivateKey !== undefined && typeof obj.PrivateKey === 'string' &&
+		obj.PrivateKeyPassword !== undefined && typeof obj.PrivateKeyPassword === 'string' &&
+		obj.Qos !== undefined && typeof obj.Qos === 'number' &&
+		obj.TopicRequest !== undefined && typeof obj.TopicRequest === 'string' &&
+		obj.TopicResponse !== undefined && typeof obj.TopicResponse === 'string' &&
+		obj.TrustStore !== undefined && typeof obj.TrustStore === 'string' &&
+		obj.User !== undefined && typeof obj.User === 'string' &&
+		obj.acceptAsyncMsg !== undefined && typeof obj.acceptAsyncMsg === 'boolean';
 }
 
 function close(): void {

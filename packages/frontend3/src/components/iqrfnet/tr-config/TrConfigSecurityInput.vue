@@ -92,17 +92,23 @@ const formatSwitchMessage = computed(() => {
 });
 const lengthRule = computed(() => {
 	const len = useHex.value ? 32 : 16;
-	const message = componentProps.accessPassword ?
-		(useHex.value ? 'components.iqrfnet.tr-config.security.errors.accessPasswordInvalidHexLen' : 'components.iqrfnet.tr-config.security.errors.accessPasswordInvalidAsciiLen') :
-		(useHex.value ? 'components.iqrfnet.tr-config.security.errors.userKeyInvalidHexLen' : 'components.iqrfnet.tr-config.security.errors.userKeyInvalidAsciiLen');
-	return (v: string) => ValidationRules.maxLength(v, len, i18n.t(message));
+	let message: string;
+	if (componentProps.accessPassword) {
+		message = i18n.t(useHex.value ? 'components.iqrfnet.tr-config.security.errors.accessPasswordInvalidHexLen' : 'components.iqrfnet.tr-config.security.errors.accessPasswordInvalidAsciiLen');
+	} else {
+		message = i18n.t(useHex.value ? 'components.iqrfnet.tr-config.security.errors.userKeyInvalidHexLen' : 'components.iqrfnet.tr-config.security.errors.userKeyInvalidAsciiLen');
+	}
+	return (v: string) => ValidationRules.maxLength(v, len, message);
 });
 const regexRule = computed(() => {
 	const pattern = useHex.value ? hexPattern : asciiPattern;
-	const message = componentProps.accessPassword ?
-		(useHex.value ? 'components.iqrfnet.tr-config.security.errors.accessPasswordInvalidHexChar' : 'components.iqrfnet.tr-config.security.errors.accessPasswordInvalidAsciiChar') :
-		(useHex.value ? 'components.iqrfnet.tr-config.security.errors.userKeyInvalidHexChar' : 'components.iqrfnet.tr-config.security.errors.userKeyInvalidAsciiChar');
-	return (v: string) => ValidationRules.regex(v, pattern, i18n.t(message) + ' ' + formatHint.value);
+	let message: string;
+	if (componentProps.accessPassword) {
+		message = i18n.t(useHex.value ? 'components.iqrfnet.tr-config.security.errors.accessPasswordInvalidHexChar' : 'components.iqrfnet.tr-config.security.errors.accessPasswordInvalidAsciiChar');
+	} else {
+		message = i18n.t(useHex.value ? 'components.iqrfnet.tr-config.security.errors.userKeyInvalidHexChar' : 'components.iqrfnet.tr-config.security.errors.userKeyInvalidAsciiChar');
+	}
+	return (v: string) => ValidationRules.regex(v, pattern, message + ' ' + formatHint.value);
 });
 
 function changeAccessPasswordFormat(): void {

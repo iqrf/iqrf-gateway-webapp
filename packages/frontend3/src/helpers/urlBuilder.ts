@@ -48,7 +48,7 @@ export default class UrlBuilder {
 		const isHttps: boolean = window.location.protocol === 'https:';
 		this.hostname = window.location.hostname;
 		this.port = window.location.port;
-		this.wsProtocol = (isHttps ? 'wss://' : 'ws://');
+		this.wsProtocol = isHttps ? 'wss://' : 'ws://';
 		this.isDev = import.meta.env.MODE !== 'production';
 		if (this.port !== '') {
 			this.port = ':' + this.port;

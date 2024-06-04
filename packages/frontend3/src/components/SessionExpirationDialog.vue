@@ -82,7 +82,7 @@ async function setup(): Promise<void> {
 	const now = new Date().getTime();
 	if ((expiration - now) < 300000) {
 		await renewSession();
-		expiration = (userStore.getExpiration * 1000);
+		expiration = userStore.getExpiration * 1000;
 	}
 	const timeout = expiration - now;
 	const warning = timeout - 60000;
@@ -115,7 +115,7 @@ async function renewSession(): Promise<void> {
 				})
 				.catch(() => toast.error(i18n.t('components.status.sessionExpiration.failed').toString()));
 		})
-		.catch(() => (toast.error(i18n.t('components.status.sessionExpiration.failed').toString())));
+		.catch(() => toast.error(i18n.t('components.status.sessionExpiration.failed').toString()));
 }
 
 function clear(): void {

@@ -427,7 +427,7 @@ async function getConfig(): Promise<void> {
 	service.fetchConfig()
 		.then((data: IqrfGatewayControllerConfig) => {
 			configuration.value = data;
-			watchdogPins.value = (data.powerOff.sck !== -1 && data.powerOff.sck !== -1);
+			watchdogPins.value = data.powerOff.sck !== -1 && data.powerOff.sck !== -1;
 			componentState.value = ComponentState.Ready;
 		})
 		.catch(() => {

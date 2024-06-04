@@ -117,7 +117,7 @@ export const useUserStore = defineStore('user', {
 			return state.expiration > epoch;
 		},
 		isVerified(state: UserState): boolean {
-			if (state.user === null)  {
+			if (state.user === null) {
 				return false;
 			}
 			return state.user.state === AccountState.Verified;

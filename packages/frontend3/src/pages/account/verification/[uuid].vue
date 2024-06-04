@@ -75,7 +75,7 @@ const props = defineProps({
 const userStore = useUserStore();
 
 const router = useRouter();
-const finished: Ref<boolean>  = ref(false);
+const finished: Ref<boolean> = ref(false);
 const success: Ref<boolean> = ref(false);
 const userData: Ref<UserSignedIn | null> = ref(null);
 const errorMsg: Ref<string> = ref('');

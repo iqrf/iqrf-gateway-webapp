@@ -101,7 +101,7 @@ describe('Client', (): void => {
 			timeout: 5_000,
 		};
 		const axiosInstance: AxiosInstance = axios.create(config);
-		expect(() => (new Client({ axiosInstance: axiosInstance, config: config })))
+		expect(() => new Client({ axiosInstance: axiosInstance, config: config }))
 			.toThrow('Cannot instantiate Client with both axiosInstance and config.');
 	});
 

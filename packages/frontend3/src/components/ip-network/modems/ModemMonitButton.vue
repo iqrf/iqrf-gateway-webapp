@@ -65,7 +65,7 @@ async function fetchMonitCheck(): Promise<void> {
 		return;
 	}
 	await monitService.getCheck(monitCheckName)
-		.then((response: MonitCheck): MonitCheck => (monitCheck.value = response));
+		.then((response: MonitCheck): MonitCheck => monitCheck.value = response);
 }
 
 /**

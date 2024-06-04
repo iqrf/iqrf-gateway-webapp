@@ -171,7 +171,7 @@ import {
 	mdiTimerRefresh,
 	mdiTimerSync,
 } from '@mdi/js';
-import { Duration } from 'luxon';
+import humanizeDuration from 'humanize-duration';
 import { onMounted, type Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
@@ -206,8 +206,7 @@ function intervalLabel(value: number|null): string {
 	if (value === null || (typeof value === 'number' && value < 0)) {
 		return 'N/A';
 	}
-	const duration = Duration.fromMillis(value * 1000).shiftTo('days', 'hours', 'minutes', 'seconds');
-	return duration.toHuman({ listStyle: 'long' });
+	return humanizeDuration(value * 1000, { language: i18n.locale.value });
 }
 
 async function getConfig(): Promise<void> {

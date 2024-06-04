@@ -108,11 +108,11 @@ async function onSubmit(): Promise<void> {
 }
 
 function isUdpConnectionProfile(obj: any): obj is IqrfGatewayDaemonUdpMessaging {
-	return obj.component !== undefined && typeof(obj.component) === 'string' && obj.component === IqrfGatewayDaemonComponentName.IqrfUdpMessaging &&
-		obj.instance !== undefined && typeof(obj.instance) === 'string' &&
-		obj.LocalPort !== undefined && typeof(obj.LocalPort) === 'number' &&
-		obj.RemotePort !== undefined && typeof(obj.RemotePort) === 'number' &&
-		obj.deviceRecordExpiration !== undefined && typeof(obj.deviceRecordExpiration) === 'number';
+	return obj.component !== undefined && typeof obj.component === 'string' && obj.component === IqrfGatewayDaemonComponentName.IqrfUdpMessaging &&
+		obj.instance !== undefined && typeof obj.instance === 'string' &&
+		obj.LocalPort !== undefined && typeof obj.LocalPort === 'number' &&
+		obj.RemotePort !== undefined && typeof obj.RemotePort === 'number' &&
+		obj.deviceRecordExpiration !== undefined && typeof obj.deviceRecordExpiration === 'number';
 }
 
 function close(): void {

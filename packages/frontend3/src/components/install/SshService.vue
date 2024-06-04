@@ -66,7 +66,7 @@ const i18n = useI18n();
 const installStore = useInstallStore();
 const router = useRouter();
 const service: ServiceService = useApiClient().getServiceService();
-const status:  Ref<ServiceAction> = ref(ServiceAction.Disable);
+const status: Ref<ServiceAction> = ref(ServiceAction.Disable);
 const options = [
 	{
 		value: ServiceAction.Enable,

@@ -198,7 +198,7 @@ async function onSubmit(): Promise<void> {
 		delete params.datetime;
 	} else {
 		delete params.ntpServers;
-		const luxonDate = DateTime.fromJSDate(datetime.value, { zone: (timezone.value.name) });
+		const luxonDate = DateTime.fromJSDate(datetime.value, { zone: timezone.value.name });
 		params.datetime = luxonDate.toISO()!;
 	}
 	service.setTime(params)

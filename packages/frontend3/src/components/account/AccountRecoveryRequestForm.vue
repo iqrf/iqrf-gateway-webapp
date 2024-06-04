@@ -66,7 +66,7 @@ import { useApiClient } from '@/services/ApiClient';
 
 const i18n = useI18n();
 const request: Ref<UserAccountRecovery> = ref({
-	baseUrl: (new UrlBuilder()).getBaseUrl(),
+	baseUrl: new UrlBuilder().getBaseUrl(),
 	username: '',
 });
 const success: Ref<boolean> = ref(false);

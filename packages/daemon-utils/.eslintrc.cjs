@@ -46,10 +46,32 @@ module.exports = {
 			'error',
 			'always',
 		],
+		'@stylistic/no-extra-parens': [
+			'error',
+			'all',
+			{
+				'nestedBinaryExpressions': false,
+				'ternaryOperandBinaryExpressions': false,
+			},
+		],
+		'@stylistic/no-extra-semi': 'error',
+		'@stylistic/no-floating-decimal': 'error',
+		'@stylistic/no-mixed-operators': 'error',
+		'@stylistic/no-multiple-empty-lines': 'error',
+		'@stylistic/no-multi-spaces': 'error',
 		'@stylistic/object-curly-spacing': [
 			'error',
 			'always',
 		],
+		'@stylistic/switch-colon-spacing': [
+			'error',
+			{
+				'before': false,
+				'after': true,
+			},
+		],
+		'@stylistic/type-annotation-spacing': 'error',
+		'@stylistic/type-generic-spacing': 'error',
 		'@typescript-eslint/ban-ts-comment': 'off',
 		'@typescript-eslint/consistent-type-imports': [
 			'error',

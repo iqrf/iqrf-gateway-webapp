@@ -109,7 +109,6 @@ import DaemonModeInfo from '@/components/gateway/info/DaemonModeInfo.vue';
 import { useApiClient } from '@/services/ApiClient';
 
 
-
 const service: InfoService = useApiClient().getGatewayServices().getInfoService();
 const info: Ref<GatewayInformation | null> = ref(null);
 const ipAddrs = computed(() => {

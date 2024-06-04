@@ -79,7 +79,7 @@ export class FileDownloader {
 	 * @returns {HTMLAnchorElement} New file download element
 	 */
 	private static getDownloadElement(rawData: object|string, contentType: string, fileName: string): HTMLAnchorElement {
-		const data = contentType === 'application/json' && typeof rawData === 'object' ? JSON.stringify(rawData, null,  '\t') : (rawData as string);
+		const data = contentType === 'application/json' && typeof rawData === 'object' ? JSON.stringify(rawData, null, '\t') : (rawData as string);
 		const blob: Blob = new Blob([data], { type: contentType });
 		const fileUrl: string = window.URL.createObjectURL(blob);
 		const element: HTMLAnchorElement = document.createElement('a');

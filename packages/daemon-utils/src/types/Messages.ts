@@ -51,7 +51,7 @@ export interface ResponseData {
 	/// Message ID
 	msgId: string;
 	/// Raw DPA message data
-	raw?:ResponseRaw[];
+	raw?: ResponseRaw[];
 	/// Response object
 	rsp: Record<string, any>;
 	/// Status code

@@ -202,10 +202,10 @@ const dialogTitle = computed(() => {
 watchEffect(async(): Promise<void> => {
 	if (componentProps.action === Action.Edit && componentProps.deviceProfile) {
 		profile.value = { ...componentProps.deviceProfile };
-		watchdogPins.value = (componentProps.deviceProfile.sck !== -1 && componentProps.deviceProfile.sda !== -1);
+		watchdogPins.value = componentProps.deviceProfile.sck !== -1 && componentProps.deviceProfile.sda !== -1;
 	} else {
 		profile.value = { ...defaultProfile };
-		watchdogPins.value = (defaultProfile.sck !== -1 && defaultProfile.sda !== -1);
+		watchdogPins.value = defaultProfile.sck !== -1 && defaultProfile.sda !== -1;
 	}
 });
 

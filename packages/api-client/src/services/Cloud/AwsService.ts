@@ -35,7 +35,7 @@ export class AwsService extends BaseService {
 		formData.append('certificate', config.certificate as Blob);
 		formData.append('privateKey', config.privateKey as Blob);
 		return this.axiosInstance.post('/clouds/aws', formData)
-			.then(():void => {return;});
+			.then((): void => {return;});
 	}
 
 }

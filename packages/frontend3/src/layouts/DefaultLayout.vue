@@ -58,11 +58,11 @@ const isAllowed: Ref<boolean> = computed((): boolean => {
 	}
 	if (
 		(requiredFeature.value !== null && !featureStore.isEnabled(requiredFeature.value)) ||
-		requiresAuth.value && !isLoggedIn.value
+		(requiresAuth.value && !isLoggedIn.value)
 	) {
 		return false;
 	}
 	return !requiresAuth.value || requiredRoles.value.length === 0 ||
-		role.value !== null && requiredRoles.value.includes(role.value);
+		(role.value !== null && requiredRoles.value.includes(role.value));
 });
 </script>

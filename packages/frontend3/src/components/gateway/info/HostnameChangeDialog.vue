@@ -150,7 +150,7 @@ async function updateSplitterConfig(): Promise<void> {
 	}
 	const instance: IqrfGatewayDaemonJsonSplitter|null = await daemonConfigurationService.getComponent(splitterComponent)
 		.then((response: IqrfGatewayDaemonComponent<IqrfGatewayDaemonComponentName.IqrfJsonSplitter>): IqrfGatewayDaemonJsonSplitter|null =>
-			(response.instances[0] ?? null));
+			response.instances[0] ?? null);
 	if (instance === null) {
 		return;
 	}
@@ -164,7 +164,7 @@ async function updateIdeCounterpartConfig(): Promise<void> {
 	}
 	const instance: IqrfGatewayDaemonIdeCounterpart|null = await daemonConfigurationService.getComponent(ideComponentComponent)
 		.then((response: IqrfGatewayDaemonComponent<IqrfGatewayDaemonComponentName.IqrfIdeCounterpart>): IqrfGatewayDaemonIdeCounterpart|null =>
-			(response.instances[0] ?? null));
+			response.instances[0] ?? null);
 	if (instance === null) {
 		return;
 	}

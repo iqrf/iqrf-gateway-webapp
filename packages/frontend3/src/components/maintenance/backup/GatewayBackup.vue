@@ -36,12 +36,14 @@ limitations under the License.
 							>
 								<v-btn
 									color='primary'
+									:prepend-icon='mdiCheckboxMultipleMarked'
 									@click='setAll(true)'
 								>
 									{{ $t('common.buttons.selectAll') }}
 								</v-btn>
 								<v-btn
 									color='grey-darken-2'
+									:prepend-icon='mdiCheckboxMultipleBlank'
 									@click='setAll(false)'
 								>
 									{{ $t('common.buttons.deselectAll') }}
@@ -133,6 +135,10 @@ import { type BackupService } from '@iqrf/iqrf-gateway-webapp-client/services/Ma
 import { Feature } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { type GatewayBackup } from '@iqrf/iqrf-gateway-webapp-client/types/Maintenance/Backup';
 import { FileDownloader } from '@iqrf/iqrf-gateway-webapp-client/utils/FileDownloader';
+import {
+	mdiCheckboxMultipleBlank,
+	mdiCheckboxMultipleMarked,
+} from '@mdi/js';
 import { type Ref, ref } from 'vue';
 import { toast } from 'vue3-toastify';
 

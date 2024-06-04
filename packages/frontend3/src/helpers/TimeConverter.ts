@@ -43,6 +43,6 @@ export default class TimeConverter {
 	}
 
 	static hoursToMillis(hours = 0, minutes = 0, seconds = 0): number {
-		return (hours * 60 * 60 + minutes * 60 + seconds) * 1000;
+		return ((hours * 60 * 60) + (minutes * 60) + seconds) * 1000;
 	}
 }

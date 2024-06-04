@@ -51,7 +51,7 @@ const locales: Locale[] = [
 	},
 ];
 
-const filteredLocales: Locale[] = locales.filter((locale: Locale): boolean => (import.meta.env.DEV || !(locale.developmentOnly ?? false)));
+const filteredLocales: Locale[] = locales.filter((locale: Locale): boolean => import.meta.env.DEV || !(locale.developmentOnly ?? false));
 
 export const useLocaleStore = defineStore('locale', {
 	state: (): LocaleState => ({
@@ -90,7 +90,7 @@ export const useLocaleStore = defineStore('locale', {
 		 * @return {string} Current locale flag
 		 */
 		getLocaleFlag(state: LocaleState): string {
-			const idx = locales.findIndex((item: Locale): boolean => (item.code === state.locale));
+			const idx = locales.findIndex((item: Locale): boolean => item.code === state.locale);
 			if (idx === -1) {
 				return '🏴‍☠️';
 			}

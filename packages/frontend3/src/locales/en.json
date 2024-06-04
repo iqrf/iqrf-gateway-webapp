@@ -1947,7 +1947,7 @@
 	"pages": {
 		"auth": {
 			"signIn":{
-				"title": "Sign in",
+				"title": "Sign in"
 			}
 		},
 		"gateway": {
