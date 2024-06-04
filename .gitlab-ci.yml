@@ -132,8 +132,8 @@ newman:
 
 build:js:
   script:
-    - 'if [[ "${PACKAGE}" == "frontend" || "${PACKAGE}" == "frontend3" ]]; then pnpm --dir packages/api-client build; fi'
     - 'if [[ "${PACKAGE}" == "frontend" || "${PACKAGE}" == "frontend3" ]]; then pnpm --dir packages/daemon-utils build; fi'
+    - 'if [[ "${PACKAGE}" == "frontend" || "${PACKAGE}" == "frontend3" ]]; then pnpm --dir packages/api-client build; fi'
     - pnpm --dir packages/${PACKAGE} run build
   parallel:
     matrix:
@@ -163,8 +163,8 @@ coverage:js:
   <<: *npm_template
   before_script:
     - !reference [.npm_template, before_script]
-    - 'if [[ "${PACKAGE}" == "frontend" || "${PACKAGE}" == "frontend3" ]]; then pnpm --dir packages/api-client build; fi'
     - 'if [[ "${PACKAGE}" == "frontend" || "${PACKAGE}" == "frontend3" ]]; then pnpm --dir packages/daemon-utils build; fi'
+    - 'if [[ "${PACKAGE}" == "frontend" || "${PACKAGE}" == "frontend3" ]]; then pnpm --dir packages/api-client build; fi'
   script:
     - pnpm --dir packages/${PACKAGE} coverage:unit
   allow_failure: true
