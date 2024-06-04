@@ -14,9 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { type MessagingInstance } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 
 import { type DaemonApiRequest } from './Messages';
+import { type MessagingInstance } from './Messaging';
 
 /**
  * Scheduler record time specification interface
