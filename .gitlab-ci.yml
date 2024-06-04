@@ -38,6 +38,7 @@ cache:
 .npm_template: &npm_template
   before_script:
     - pnpm config set store-dir .pnpm-store
+    - pnpm config set registry http://nexus.iqrf.internal/repository/npmjs.org-proxy/
     - pnpm install
   cache:
     key: ${CI_COMMIT_REF_SLUG}
@@ -132,7 +133,7 @@ newman:
 
 build:js:
   script:
-    - 'if [[ "${PACKAGE}" == "frontend" || "${PACKAGE}" == "frontend3" ]]; then pnpm --dir packages/daemon-utils build; fi'
+    - 'if [[ "${PACKAGE}" == "api-client" || "${PACKAGE}" == "frontend" || "${PACKAGE}" == "frontend3" ]]; then pnpm --dir packages/daemon-utils build; fi'
     - 'if [[ "${PACKAGE}" == "frontend" || "${PACKAGE}" == "frontend3" ]]; then pnpm --dir packages/api-client build; fi'
     - pnpm --dir packages/${PACKAGE} run build
   parallel:
