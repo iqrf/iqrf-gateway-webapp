@@ -57,10 +57,11 @@ limitations under the License.
 					rows='1'
 					required
 				/>
-				<SelectInput
+				<v-select
 					v-model='selected'
-					:items='messagingOptions'
+					:items='messagings'
 					:label='$t("components.configuration.daemon.scheduler.task.messaging")'
+					:item-props='(item: MessagingInstance) => ({title: `[${item.type.toUpperCase()}] ${item.instance}`})'
 					multiple
 				/>
 				<template #actions>
@@ -82,14 +83,13 @@ limitations under the License.
 
 <script lang='ts' setup>
 import { type DaemonApiRequest, type SchedulerRecordTask } from '@iqrf/iqrf-gateway-daemon-utils/types';
-import { type IqrfGatewayDaemonSchedulerMessagings } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import { type MessagingInstance } from '@iqrf/iqrf-gateway-daemon-utils/types/Messaging';
 import { mdiPencil, mdiPlus } from '@mdi/js';
-import { ref, type Ref, watchEffect , type PropType, computed } from 'vue';
+import { ref, type Ref, watchEffect , type PropType } from 'vue';
 import { VForm } from 'vuetify/components';
 
 import Card from '@/components/layout/card/Card.vue';
 import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
-import SelectInput from '@/components/layout/form/SelectInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
@@ -112,8 +112,8 @@ const componentProps = defineProps({
 		required: false,
 	},
 	messagings: {
-		type: [Object, null] as PropType<IqrfGatewayDaemonSchedulerMessagings | null>,
-		default: null,
+		type: Array as PropType<MessagingInstance[]>,
+		default: () => [],
 		required: false,
 	},
 });
@@ -121,22 +121,7 @@ const emit = defineEmits(['save']);
 const show: Ref<boolean> = ref(false);
 const form: Ref<typeof VForm | null> = ref(null);
 const message: Ref<string | null> = ref(null);
-const selected: Ref<string[]> = ref([]);
-
-const messagingOptions = computed(() => {
-	if (componentProps.messagings === null) {
-		return [];
-	}
-	const mqttOptions = componentProps.messagings.mqtt.map((item: string) => ({
-		title: `[MQTT] ${item}`,
-		value: item,
-	}));
-	const wsOptions = componentProps.messagings.ws.map((item: string) => ({
-		title: `[WS] ${item}`,
-		value: item,
-	}));
-	return mqttOptions.concat(wsOptions);
-});
+const selected: Ref<MessagingInstance[]> = ref([]);
 
 watchEffect(async (): Promise<void> => {
 	if (componentProps.action === Action.Edit && componentProps.task !== null) {

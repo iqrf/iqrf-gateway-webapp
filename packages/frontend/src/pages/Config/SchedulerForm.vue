@@ -181,8 +181,6 @@ limitations under the License.
 										/>
 									</ValidationProvider>
 									<ValidationProvider
-										v-for='(messaging, j) of record.task[i-1].messaging'
-										:key='j'
 										v-slot='{errors, touched, valid}'
 										rules='required'
 										:custom-messages='{
@@ -190,36 +188,16 @@ limitations under the License.
 										}'
 									>
 										<v-select
-											v-model='record.task[i-1].messaging[j]'
+											v-model='record.task[i-1].messaging'
 											:label='$t("config.daemon.scheduler.form.messages.messaging")'
 											:placeholder='$t("config.daemon.scheduler.form.messages.messagingPlaceholder")'
 											:items='messagings'
+											:item-text='item => `[${item.type.toUpperCase()}] ${item.instance}`'
 											:success='touched ? valid : null'
 											:error-messages='errors'
-										>
-											<template #append-outer>
-												<v-btn
-													v-if='record.task[i-1].messaging.length > 1'
-													color='error'
-													small
-													@click='removeTaskMessaging(i-1, j)'
-												>
-													<v-icon small>
-														mdi-delete
-													</v-icon>
-												</v-btn> <v-btn
-													v-if='j === (record.task[i-1].messaging.length - 1)'
-													class='ml-1'
-													color='success'
-													small
-													@click='addTaskMessaging(i-1)'
-												>
-													<v-icon small>
-														mdi-plus
-													</v-icon>
-												</v-btn>
-											</template>
-										</v-select>
+											return-object
+											multiple
+										/>
 									</ValidationProvider>
 								</v-expansion-panel-content>
 							</v-expansion-panel>
@@ -261,10 +239,13 @@ import SchedulerService from '@/services/SchedulerService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {ISchedulerRecord, ISchedulerRecordTask} from '@/interfaces/DaemonApi/Scheduler';
-import {IWsMessaging} from '@/interfaces/Config/Messaging';
+import {IMqInstance, IMqttInstance, IWsMessaging} from '@/interfaces/Config/Messaging';
 import {MetaInfo} from 'vue-meta';
 import {MutationPayload} from 'vuex';
 import { ISelectItem } from '@/interfaces/Vuetify';
+
+import { type MessagingInstance } from '@iqrf/iqrf-gateway-daemon-utils/types/Messaging';
+import { MessagingType } from '@iqrf/iqrf-gateway-daemon-utils/enums/Messaging';
 
 @Component({
 	components: {
@@ -313,7 +294,7 @@ export default class SchedulerForm extends Vue {
 		description: '',
 		task: [{
 			message: '',
-			messaging: [''],
+			messaging: [],
 		}],
 		timeSpec: {
 			cronTime: '',
@@ -334,7 +315,7 @@ export default class SchedulerForm extends Vue {
 	/**
 	 * @var {Array<ISelectItem>} messagings Array of available messaging component instances
 	 */
-	private messagings: Array<ISelectItem> = [];
+	private messagings: Array<MessagingInstance> = [];
 
 	/**
 	 * @var {TimeSpecTypes} timeSpecSelected Selected task time specification type
@@ -510,9 +491,18 @@ export default class SchedulerForm extends Vue {
 				this.$store.commit('spinner/HIDE');
 				responses.forEach((item: AxiosResponse) => {
 					if (item.data.instances) {
-						item.data.instances.forEach((messaging: IWsMessaging) => {
+						item.data.instances.forEach((messaging: IMqInstance|IMqttInstance|IWsMessaging) => {
+							let type = MessagingType.Mq;
+							if (messaging.component === this.components.mq) {
+								type = MessagingType.Mq;
+							} else if (messaging.component === this.components.mqtt) {
+								type = MessagingType.Mqtt;
+							} else {
+								type = MessagingType.Websocket;
+							}
 							this.messagings.push({
-								value: messaging.instance, text: messaging.instance,
+								type: type,
+								instance: messaging.instance,
 							});
 						});
 					}
@@ -661,16 +651,8 @@ export default class SchedulerForm extends Vue {
 	 * Adds another scheduler task message object
 	 */
 	private addMessage(): void {
-		this.record.task.push({message: '', messaging: ['']});
+		this.record.task.push({message: '', messaging: []});
 		this.validatorErrors.push([]);
-	}
-
-	/**
-	 * Adds another scheduler task messaging
-	 * @param {number} index Task index
-	 */
-	private addTaskMessaging(index: number): void {
-		(this.record.task[index].messaging as Array<string>).push('');
 	}
 
 	/**
@@ -680,15 +662,6 @@ export default class SchedulerForm extends Vue {
 	private removeMessage(index: number): void {
 		this.record.task.splice(index, 1);
 		this.validatorErrors.splice(index, 1);
-	}
-
-	/**
-	 * Removes a scheduler task messaging specified
-	 * @param {number} tIndex Task index
-	 * @param {number} mIndex Messaging index
-	 */
-	private removeTaskMessaging(tIndex: number, mIndex: number): void {
-		(this.record.task[tIndex].messaging as Array<string>).splice(mIndex, 1);
 	}
 }
 </script>

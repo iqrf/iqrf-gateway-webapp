@@ -128,8 +128,9 @@ limitations under the License.
 
 <script lang='ts' setup>
 import { SchedulerMessages } from '@iqrf/iqrf-gateway-daemon-utils/enums';
+import { MessagingType } from '@iqrf/iqrf-gateway-daemon-utils/enums/Messaging';
 import { SchedulerService } from '@iqrf/iqrf-gateway-daemon-utils/services';
-import { type DaemonApiResponse, type SchedulerRecord, type SchedulerRecordTimeSpec } from '@iqrf/iqrf-gateway-daemon-utils/types';
+import { type DaemonApiResponse, type SchedulerRecord, type SchedulerRecordTimeSpec, type MessagingInstance } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { type IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import { type IqrfGatewayDaemonSchedulerMessagings } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
@@ -167,7 +168,7 @@ const headers = [
 const msgId: Ref<string | null> = ref(null);
 const tasks: Ref<SchedulerRecord[]> = ref([]);
 const loadingTasks: Ref<string[]> = ref([]);
-const messagings: Ref<IqrfGatewayDaemonSchedulerMessagings | null> = ref(null);
+const messagings: Ref<MessagingInstance[]> = ref([]);
 
 daemonStore.$onAction(
 	({ name, after }) => {
@@ -231,7 +232,20 @@ function exportTasks(): void {
 function getMessagings(): void {
 	webappSchedulerService.schedulerMessagings()
 		.then((response: IqrfGatewayDaemonSchedulerMessagings) => {
-			messagings.value = response;
+			const availableMessagings: MessagingInstance[] = [];
+			for (const item of response.mqtt) {
+				availableMessagings.push({
+					type: MessagingType.Mqtt,
+					instance: item,
+				});
+			}
+			for (const item of response.ws) {
+				availableMessagings.push({
+					type: MessagingType.Websocket,
+					instance: item,
+				});
+			}
+			messagings.value = availableMessagings;
 		});
 }
 

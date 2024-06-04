@@ -150,7 +150,7 @@ limitations under the License.
 						{{ item.message.mType }}
 					</template>
 					<template #item.messaging='{ item }'>
-						{{ item.messaging.join(', ') }}
+						{{ getConnectionProfileList(item.messaging) }}
 					</template>
 					<template #item.actions='{ item, index }'>
 						<TaskMessageForm
@@ -201,7 +201,7 @@ import {
 	SchedulerTaskType,
 } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { DaemonMessageOptions, SchedulerCron } from '@iqrf/iqrf-gateway-daemon-utils/utils';
-import { type IqrfGatewayDaemonSchedulerMessagings } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import { type MessagingInstance } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { mdiDelete, mdiHelpBox } from '@mdi/js';
 import cron from 'cron-validate';
 import { v4 as uuidv4 } from 'uuid';
@@ -235,7 +235,8 @@ const componentProps = defineProps({
 		required: false,
 	},
 	messagings: {
-		type: [Object, null] as PropType<IqrfGatewayDaemonSchedulerMessagings | null>,
+		type: Array as PropType<MessagingInstance[]>,
+		default: () => [],
 		required: true,
 	},
 	schedulerTask: {
@@ -332,8 +333,8 @@ const dialogTitle = computed(() => {
 	return i18n.t('components.configuration.daemon.scheduler.actions.edit').toString();
 });
 
-watch(show, (newVal: boolean) => {
-	if (!newVal) {
+watch(show, (newVal: boolean, oldVal: boolean) => {
+	if (newVal && !oldVal) {
 		return;
 	}
 	if (componentProps.action === Action.Edit && componentProps.schedulerTask) {
@@ -349,6 +350,10 @@ watch(show, (newVal: boolean) => {
 	}
 	componentState.value = ComponentState.Ready;
 });
+
+function getConnectionProfileList(list: MessagingInstance[]): string {
+	return list.map((value: MessagingInstance) => `[${value.type.toUpperCase()}] ${value.instance}`).join(', ');
+}
 
 function setTaskType(): void {
 	if (task.value.timeSpec.periodic) {
