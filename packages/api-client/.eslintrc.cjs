@@ -101,6 +101,12 @@ module.exports = {
 			'error',
 			'prefer-inline',
 		],
+		'import/no-unresolved': [
+			'error',
+			{
+				ignore: ['^@iqrf/iqrf-gateway-daemon-utils/'],
+			},
+		],
 		'import/order': [
 			'error',
 			{
@@ -149,7 +155,7 @@ module.exports = {
 			'node': true,
 			'typescript': {
 				'alwaysTryTypes': true,
-				'project': './tsconfig.json',
+				'project': ['./tsconfig.json', '../daemon-utils/tsconfig.json'],
 			},
 		},
 	},
