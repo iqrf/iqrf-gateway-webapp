@@ -155,7 +155,7 @@ module.exports = {
 			'node': true,
 			'typescript': {
 				'alwaysTryTypes': true,
-				'project': ['./tsconfig.json', '../daemon-utils/tsconfig.json'],
+				'project': './tsconfig.json',
 			},
 		},
 	},
