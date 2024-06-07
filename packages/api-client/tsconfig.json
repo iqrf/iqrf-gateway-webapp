@@ -1,26 +1,15 @@
 {
+	"$schema": "https://json.schemastore.org/tsconfig",
+	"extends": "../../tsconfig.base.json",
 	"compilerOptions": {
-		"allowJs": false,
 		"baseUrl": "./",
-		"composite": true,
-		"declaration": true,
 		"declarationDir": "./dist",
-		"esModuleInterop": true,
-		"forceConsistentCasingInFileNames": true,
-		"incremental": true,
 		"lib": [
-			"ESNext",
-			"DOM"
+			"DOM",
+			"ESNext"
 		],
-		"module": "ESNext",
-		"moduleResolution": "Bundler",
 		"outDir": "./dist",
-		"resolveJsonModule": true,
-		"rootDir": "./",
-		"sourceMap": true,
-		"strict": true,
-		"strictNullChecks": true,
-		"target": "ES2020"
+		"rootDir": "./"
 	},
 	"include": [
 		"src/**/*",

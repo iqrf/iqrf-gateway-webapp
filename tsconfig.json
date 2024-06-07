@@ -1,33 +1,13 @@
 {
-	"compilerOptions": {
-		"allowJs": false,
-		"composite": true,
-		"declaration": true,
-		"declarationDir": "./dist",
-		"esModuleInterop": true,
-		"forceConsistentCasingInFileNames": true,
-		"incremental": true,
-		"lib": [
-			"ESNext",
-			"DOM"
-		],
-		"module": "ESNext",
-		"moduleResolution": "Bundler",
-		"outDir": "./dist",
-		"resolveJsonModule": true,
-		"sourceMap": true,
-		"strict": true,
-		"strictNullChecks": true,
-		"target": "ES2020"
-	},
-	"exclude": [
-		"docs",
-		"dist",
-		"node_modules"
-	],
+	"$schema": "https://json.schemastore.org/tsconfig",
+	"extends": "./tsconfig.base.json",
+	"files": [],
 	"references": [
 		{
 			"path": "./packages/api-client/"
+		},
+		{
+			"path": "./packages/daemon-utils/"
 		},
 		{
 			"path": "./packages/frontend/"

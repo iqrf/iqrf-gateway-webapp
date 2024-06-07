@@ -1,0 +1,24 @@
+{
+	"$schema": "https://json.schemastore.org/tsconfig",
+	"compilerOptions": {
+		"allowJs": false,
+		"composite": true,
+		"declaration": true,
+		"declarationMap": true,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"incremental": true,
+		"lib": [
+			"ESNext"
+		],
+		"module": "ESNext",
+		"moduleResolution": "Bundler",
+		"noEmitOnError": true,
+		"resolveJsonModule": true,
+		"skipLibCheck": true,
+		"sourceMap": true,
+		"strict": true,
+		"strictNullChecks": true,
+		"target": "ESNext"
+	}
+}
