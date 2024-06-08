@@ -37,18 +37,6 @@ class InfoService {
 		return store.dispatch('daemonClient/sendRequest', options);
 	}
 
-	dalis(timeout: number|null = null, message: TranslateResult|null = null, callback: CallableFunction = () => {return;}): Promise<string> {
-		const request = {
-			'mType': 'infoDaemon_GetDalis',
-			'data': {
-				'req': {},
-				'returnVerbose': true,
-			},
-		};
-		const options = new DaemonMessageOptions(request, timeout, message, callback);
-		return store.dispatch('daemonClient/sendRequest', options);
-	}
-
 	/**
 	 * Sends network enumerate request
 	 * @param command Enumeration command to execute
