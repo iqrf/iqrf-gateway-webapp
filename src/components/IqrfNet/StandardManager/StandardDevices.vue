@@ -205,15 +205,6 @@ limitations under the License.
 							/>
 						</td>
 					</template>
-					<template #dali='{item}'>
-						<td>
-							<CIcon
-								size='xl'
-								:class='item.hasDali() ? "text-success" : "text-danger"'
-								:content='item.getDaliIcon()'
-							/>
-						</td>
-					</template>
 					<template #show_details='{item}'>
 						<td class='py-2'>
 							<CButton
@@ -317,7 +308,7 @@ import ProductService from '@/services/IqrfRepository/ProductService';
 
 import {AxiosResponse} from 'axios';
 import {IField} from '@/interfaces/Coreui';
-import {IInfoBinout, IInfoDevice, IInfoLight, IInfoNode, IInfoSensor} from '@/interfaces/DaemonApi/IqrfInfo';
+import {IInfoBinout, IInfoDevice, IInfoNode, IInfoSensor} from '@/interfaces/DaemonApi/IqrfInfo';
 import {MutationPayload} from 'vuex';
 import DpaService, {OsDpaVersion} from '@/services/IqrfRepository/OsDpaService';
 
@@ -416,12 +407,6 @@ export default class StandardDevices extends Vue {
 			sorter: false,
 		},
 		{
-			key: 'dali',
-			label: this.$t('iqrfnet.standard.table.fields.dali'),
-			filter: false,
-			sorter: false,
-		},
-		{
 			key: 'show_details',
 			label: '',
 			_style: 'width: 1%',
@@ -488,8 +473,6 @@ export default class StandardDevices extends Vue {
 				this.handleGetDevices(mutation.payload.data);
 			} else if (mutation.payload.mType === 'infoDaemon_GetBinaryOutputs') {
 				this.handleGetBinouts(mutation.payload.data);
-			} else if (mutation.payload.mType === 'infoDaemon_GetDalis') {
-				this.handleGetDalis(mutation.payload.data);
 			} else if (mutation.payload.mType === 'infoDaemon_GetLights') {
 				this.handleGetLights(mutation.payload.data);
 			} else if (mutation.payload.mType === 'infoDaemon_GetSensors') {
@@ -633,40 +616,6 @@ export default class StandardDevices extends Vue {
 				this.auxDevices[idx]?.setBinouts(device.binOuts);
 			}
 		});
-		this.getDalis();
-	}
-
-	/**
-	 * Retrieves information about dali devices stored in database
-	 */
-	private getDalis(): void {
-		this.$store.commit(
-			'spinner/UPDATE_TEXT',
-			this.$t('iqrfnet.standard.table.messages.dali.fetch').toString()
-		);
-		InfoService.dalis(11000, this.$t('iqrfnet.standard.table.messages.dali.fetchTimeout'), () => this.msgId = null)
-			.then((msgId: string) => this.msgId = msgId);
-	}
-
-	/**
-	 * Handles GetDalis Daemon API response
-	 * @param response Daemon API response
-	 */
-	private handleGetDalis(response): void {
-		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
-		if (response.status !== 0) {
-			this.$store.commit('spinner/HIDE');
-			this.$toast.error(
-				this.$t('iqrfnet.standard.table.messages.dali.fetchFailed').toString()
-			);
-			return;
-		}
-		response.rsp.daliDevices.forEach((device: IInfoDevice) => {
-			const idx = this.getDeviceIndex(device.nAdr);
-			if (idx !== -1) {
-				this.auxDevices[idx]?.setDali(true);
-			}
-		});
 		this.getLights();
 	}
 
@@ -695,10 +644,10 @@ export default class StandardDevices extends Vue {
 			);
 			return;
 		}
-		response.rsp.lightDevices.forEach((device: IInfoLight) => {
+		response.rsp.lightDevices.forEach((device: IInfoDevice) => {
 			const idx = this.getDeviceIndex(device.nAdr);
 			if (idx !== -1) {
-				this.auxDevices[idx]?.setLights(device.lights);
+				this.auxDevices[idx]?.setLight(true);
 			}
 		});
 		this.getSensors();

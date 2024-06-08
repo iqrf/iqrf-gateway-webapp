@@ -17,70 +17,26 @@
 import store from '@/store';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
-export class StandardLight {
-
-	/**
-	 * Index of the light
-	 */
-	public index: number;
-
-	/**
-	 * Power level of the light from range <0;100>
-	 */
-	public power: number;
-
-	/**
-	 * Constructor
-	 * @param index Index of the light
-	 * @param power Power level of the light from range <0;100>
-	 */
-	public constructor(index: number, power: number) {
-		this.index = index;
-		this.power = power;
-	}
-
-}
-
 /**
  * IQRF Standard light service
  */
 class StandardLightService {
 
 	/**
-	 * Performs Light enumeration on device specified by address.
-	 * @param address Node address
-	 * @param options WebSocket request option
-	 * @return Message ID
+	 * Send LDI commands and return answers synchronously
+	 * @param {number} address Node address
+	 * @param {number[]} commands Commands to send
+	 * @param {DaemonMessageOptions} options WebSocket request option
+	 * @return {Promise<string>} Message ID
 	 */
-	enumerate(address: number, options: DaemonMessageOptions): Promise<string> {
+	sendLdiCommands(address: number, commands: number[], options: DaemonMessageOptions): Promise<string> {
 		options.request = {
-			'mType': 'iqrfLight_Enumerate',
-			'data': {
-				'req': {
-					'nAdr': address,
-					'param': {},
-				},
-				'returnVerbose': true,
-			},
-		};
-		return store.dispatch('daemonClient/sendRequest', options);
-	}
-
-	/**
-	 * Decrements power of light at a device specified by address.
-	 * @param address Node address
-	 * @param lights Object containing light settings
-	 * @param options WebSocket request option
-	 * @return Message ID
-	 */
-	decrementPower(address: number, lights: StandardLight[], options: DaemonMessageOptions): Promise<string> {
-		options.request = {
-			'mType': 'iqrfLight_DecrementPower',
-			'data': {
-				'req': {
-					'nAdr': address,
-					'param': {
-						'lights': lights,
+			mType: 'iqrfLight_SendLdiCommands',
+			data: {
+				req: {
+					nAdr: address,
+					param: {
+						commands: commands,
 					},
 				},
 				'returnVerbose': true,
@@ -90,62 +46,27 @@ class StandardLightService {
 	}
 
 	/**
-	 * Increments power of light at a device specified by address.
-	 * @param address Node address
-	 * @param lights Object containing light settings
-	 * @param options WebSocket request option
-	 * @return Message ID
+	 * Set LAI voltage
+	 * @param {number} address Node address
+	 * @param {number} voltage Voltage to set
+	 * @param {DaemonMessageOptions} options WebSocket request option
+	 * @return {Promise<string>} Message ID
 	 */
-	incrementPower(address: number, lights: StandardLight[], options: DaemonMessageOptions): Promise<string> {
+	setLaiVoltage(address: number, voltage: number, options: DaemonMessageOptions): Promise<string> {
 		options.request = {
-			'mType': 'iqrfLight_IncrementPower',
-			'data': {
-				'req': {
-					'nAdr': address,
-					'param': {
-						'lights': lights,
+			mType: 'iqrfLight_SetLai',
+			data: {
+				req: {
+					nAdr: address,
+					param: {
+						voltage: voltage,
 					},
 				},
-				'returnVerbose': true,
+				returnVerbose: true,
 			},
 		};
 		return store.dispatch('daemonClient/sendRequest', options);
 	}
-
-	/**
-	 * Retrieves current power of a light specified by index.
-	 * @param address Node address
-	 * @param light Light index
-	 * @param options WebSocket request option
-	 * @return Message ID
-	 */
-	getPower(address: number, light: number, options: DaemonMessageOptions): Promise<string> {
-		return this.setPower(address, [new StandardLight(light, 127)], options);
-	}
-
-	/**
-	 * Sets power of lights at a device specified by address.
-	 * @param address Node address
-	 * @param lights Object containing light settings
-	 * @param options WebSocket request option
-	 * @return Message ID
-	 */
-	setPower(address: number, lights: StandardLight[], options: DaemonMessageOptions): Promise<string> {
-		options.request = {
-			'mType': 'iqrfLight_SetPower',
-			'data': {
-				'req': {
-					'nAdr': address,
-					'param': {
-						'lights': lights,
-					},
-				},
-				'returnVerbose': true,
-			},
-		};
-		return store.dispatch('daemonClient/sendRequest', options);
-	}
-
 }
 
 export default new StandardLightService();

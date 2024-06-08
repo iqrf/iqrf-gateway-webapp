@@ -23,3 +23,11 @@ export enum StandardResponses {
 	ENUMERATE,
 	READ,
 }
+
+/**
+ * IQRF Standard Light DPA commands
+ */
+export enum StandardLightDpaCommands {
+	SendLdi = 'send-ldi',
+	SetLai = 'set-lai',
+}

@@ -129,6 +129,7 @@
 	},
 	"forms": {
 		"fields": {
+			"deviceAddr": "Device address",
 			"address": "Address",
 			"id": "ID",
 			"email": "E-mail address",
@@ -159,7 +160,11 @@
 			"requestTopic": "Please enter the topic for requests.",
 			"responseTopic": "Please enter the topic for responses.",
 			"integer": "This parameter should be an integer.",
-			"credentials": "Please enter both username and password, or leave both fields empty."
+			"credentials": "Please enter both username and password, or leave both fields empty.",
+			"deviceAddr": {
+				"required": "Please enter device address.",
+				"between": "Device address should be an integer between 1 and 239."
+			}
 		},
 		"import": "Import",
 		"export": "Export",
@@ -210,6 +215,7 @@
 		"start": "Start",
 		"stop": "Stop",
 		"notAvailable": "N/A",
+		"showLast": "Show last result",
 		"messages": {
 			"getConfTimeout": "The request to retrieve current configuration timed out.",
 			"saveConfTimeout": "The request to save new configuration timed out.",
@@ -2255,50 +2261,59 @@
 					"pnum": "Device does not support the Binary Output standard."
 				}
 			},
-			"dali": {
-				"title": "IQRF DALI",
-				"answers": "Answers",
-				"status": "Status",
-				"value": "Value",
-				"form": {
-					"command": "DALI command",
-					"addCommand": "Add command",
-					"removeCommand": "Remove command",
-					"sendCommand": "Send commands",
-					"messages": {
-						"command": "DALI command has to be an integer between 0 and 65535."
-					}
-				},
-				"messages": {
-					"timeout": "DALI request timed out. The device may be offline",
-					"success": "DALI request has been sent successfully.",
-					"failure": "An error occurred during the DALI request.",
-					"pnum": "Device does not support the DALI standard."
-				}
-			},
 			"light": {
 				"title": "IQRF Light",
-				"lights": "Lights",
-				"index": "Index",
-				"power": "Previous power",
-				"enum": "Light enumeration",
-				"powerInfo": "Power info",
 				"form": {
-					"index": "Index of the light",
-					"power": "Power of the light",
-					"getPower": "Get power",
-					"setPower": "Set power",
-					"increment": "Increment power",
-					"decrement": "Decrement power",
-					"messages": {
-						"index": "Light index has to be an integer between 0 and 31.",
-						"power": "Light power has to be an integer between 0 and 100."
+					"dpaCommand": {
+						"title": "DPA command",
+						"options": {
+							"send-ldi": "Send LDI command(s)",
+							"set-lai": "Set LAI voltage"
+						}
+					},
+					"ldiCommand": {
+						"title": "LDI (DALI) command",
+						"add": "Add command",
+						"remove": "Remove command",
+						"result": "Show previous"
+					},
+					"voltage": "Voltage"
+				},
+				"result": {
+					"ldiCommand": {
+						"title": "LDI command(s) result",
+						"status": "Status",
+						"statuses": {
+							"received": "Answer received",
+							"notReceived": "No answer received",
+							"error": "Error receiving answer"
+						},
+						"value": "Value"
+					},
+					"voltage": {
+						"title": "Set LAI voltage result",
+						"old": "Previous voltage",
+						"new": "New voltage",
+						"unit": "V"
+					}
+				},
+				"errors": {
+					"ldiCommand": {
+						"between": "LDI (DALI) command should be an integer between 0 and 65535.",
+						"required": "Please enter LDI (DALI) command."
+					},
+					"voltage": {
+						"between": "LAI Voltage should be a number between 0 and 10.",
+						"required": "Please enter voltage to set."
 					}
 				},
 				"messages": {
-					"timeout": "Light request timed out. The device may be offline.",
-					"success": "Light request has been sent successfully.",
-					"failure": "An error occurred during the Light request.",
+					"ldiCommand": {
+						"timeout": "LDI commands request timed out. The device may be offline.",
+						"failure": "An error occurred during the LDI commands request."
+					},
+					"failure": "An error has ocurred during LDI request.",
+					"timeout": "LDI request timed out. The device may be offline.",
 					"pnum": "Device does not support the Light standard."
 				}
 			},
@@ -2345,7 +2360,6 @@
 					"sensor": "Sensor",
 					"binout": "Binary Output",
 					"light": "Light",
-					"dali": "DALI",
 					"noDevices": "No devices implementing standards detected."
 				},
 				"sensor": {
@@ -2369,18 +2383,11 @@
 						"implemented": "Binary outputs implemented: {binouts}",
 						"notImplemented": "Device does not implement the Binary Output standard."
 					},
-					"dali": {
-						"fetch": "Retrieving devices implementing DALI standard...",
-						"fetchFailed": "Failed to retrieve devices implementing DALI standard.",
-						"fetchTimeout": "Request to retrieve DALI devices timed out.",
-						"implemented": "Device implements DALI standard.",
-						"notImplemented": "Device does not implement the DALI standard."
-					},
 					"light": {
 						"fetch": "Retrieving devices implementing Light standard...",
 						"fetchFailed": "Failed to retrieve devices implementing Light standard.",
 						"fetchTimeout": "Request to retrieve Light devices timed out.",
-						"implemented": "Lights implemented: {lights}",
+						"implemented": "Device implements Light standard.",
 						"notImplemented": "Device does not implement the Light standard."
 					},
 					"sensor": {

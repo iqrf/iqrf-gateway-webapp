@@ -71,16 +71,6 @@ export interface IInfoBinout extends IInfoDevice {
 }
 
 /**
- * IQRF Info lights interface
- */
-export interface IInfoLight extends IInfoDevice {
-	/**
-	 * Number of lights implemented by device
-	 */
-	lights: number
-}
-
-/**
  * IQRF Info sensors interface
  */
 export interface IInfoSensor extends IInfoDevice {

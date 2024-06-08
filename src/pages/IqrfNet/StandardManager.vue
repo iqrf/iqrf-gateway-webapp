@@ -28,9 +28,6 @@ limitations under the License.
 				<CTab :title='$t("iqrfnet.standard.light.title")'>
 					<LightManager />
 				</CTab>
-				<CTab :title='$t("iqrfnet.standard.dali.title")'>
-					<DaliManager />
-				</CTab>
 			</CTabs>
 		</CCard>
 		<StandardDevices />
@@ -41,7 +38,6 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import {CTab, CTabs} from '@coreui/vue/src';
 import BinaryOutputManager from '@/components/IqrfNet/StandardManager/BinaryOutputManager.vue';
-import DaliManager from '@/components/IqrfNet/StandardManager/DaliManager.vue';
 import LightManager from '@/components/IqrfNet/StandardManager/LightManager.vue';
 import SensorManager from '@/components/IqrfNet/StandardManager/SensorManager.vue';
 import StandardDevices from '@/components/IqrfNet/StandardManager/StandardDevices.vue';
@@ -51,7 +47,6 @@ import StandardDevices from '@/components/IqrfNet/StandardManager/StandardDevice
 		CTab,
 		CTabs,
 		BinaryOutputManager,
-		DaliManager,
 		LightManager,
 		SensorManager,
 		StandardDevices,
