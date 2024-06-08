@@ -90,9 +90,20 @@ export interface IStandardSensor {
 }
 
 /**
- * DALI standard answer object
+ * Light standard answer object
  */
-export interface IDaliAnswer {
-	status: number
-	value: number
+export interface LightAnswer {
+	status: number;
+	value: number;
+}
+
+export interface LightAnswerResult extends LightAnswer {
+	address: number;
+	command: number;
+}
+
+export interface SetLaiResult {
+	address: number;
+	previousVoltage: number;
+	currentVoltage: number;
 }
