@@ -15,88 +15,17 @@
  */
 
 module.exports = {
-	root: true,
-	env: {
-		browser: true,
-		node: true,
-	},
 	extends: [
-		'eslint:recommended',
-		'plugin:@typescript-eslint/stylistic-type-checked',
+		'plugin:@iqrf/base',
 		'plugin:import/recommended',
 		'plugin:import/typescript',
 		'plugin:promise/recommended',
 		"plugin:typescript-sort-keys/recommended",
 	],
-	parser: '@typescript-eslint/parser',
 	parserOptions: {
 		project: './tsconfig.json',
-		sourceType: 'module',
 	},
-	plugins: [
-		'@typescript-eslint',
-		'@stylistic',
-	],
 	rules: {
-		'@stylistic/comma-dangle': [
-			'error',
-			'always-multiline',
-		],
-		'@stylistic/eol-last': [
-			'error',
-			'always',
-		],
-		'@stylistic/no-extra-parens': [
-			'error',
-			'all',
-			{
-				'nestedBinaryExpressions': false,
-				'ternaryOperandBinaryExpressions': false,
-			},
-		],
-		'@stylistic/no-extra-semi': 'error',
-		'@stylistic/no-floating-decimal': 'error',
-		'@stylistic/no-mixed-operators': 'error',
-		'@stylistic/no-multiple-empty-lines': 'error',
-		'@stylistic/no-multi-spaces': 'error',
-		'@stylistic/object-curly-spacing': [
-			'error',
-			'always',
-		],
-		'@stylistic/switch-colon-spacing': [
-			'error',
-			{
-				'before': false,
-				'after': true,
-			},
-		],
-		'@stylistic/type-annotation-spacing': 'error',
-		'@stylistic/type-generic-spacing': 'error',
-		'@typescript-eslint/ban-ts-comment': 'off',
-		'@typescript-eslint/consistent-type-imports': [
-			'error',
-			{
-				prefer: 'type-imports',
-				fixStyle: 'inline-type-imports',
-			},
-		],
-		'@typescript-eslint/explicit-member-accessibility': 'error',
-		'@typescript-eslint/no-explicit-any': 'warn',
-		'comma-dangle': [
-			'error',
-			'always-multiline',
-		],
-		'eqeqeq': [
-			'error',
-			'always',
-		],
-		'indent': [
-			'error',
-			'tab',
-			{
-				'SwitchCase': 1
-			}
-		],
 		'import/consistent-type-specifier-style': [
 			'error',
 			'prefer-inline',
@@ -123,20 +52,6 @@ module.exports = {
 				'groups': ['builtin', 'external', 'internal', 'parent', 'sibling', 'index', 'object', 'type'],
 				'newlines-between': 'always',
 			},
-		],
-		'linebreak-style': [
-			'error',
-			'unix'
-		],
-		'no-unused-vars': 'warn',
-		'no-use-before-define': 'error',
-		'quotes': [
-			'error',
-			'single'
-		],
-		'semi': [
-			'error',
-			'always'
 		],
 	},
 	overrides: [
