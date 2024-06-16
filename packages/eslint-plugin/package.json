@@ -1,0 +1,55 @@
+{
+	"name": "@iqrf/eslint-plugin",
+	"version": "0.0.2",
+	"description": "IQRF ESLint plugin",
+	"scripts": {
+		"coverage:unit": "vitest --run --coverage",
+		"lint": "true",
+		"test:unit": "vitest --run"
+	},
+	"files": [
+		"src",
+		"README.md"
+	],
+	"main": "src/index.js",
+	"keywords": [
+		"iqrf",
+		"eslint-plugin"
+	],
+	"author": {
+		"name": "MICRORISC s.r.o.",
+		"url": "https://www.microrisc.com/"
+	},
+	"contributors": [
+		{
+			"name": "Roman Ondráček",
+			"email": "roman.ondracek@iqrf.com"
+		}
+	],
+	"license": "Apache-2.0",
+	"dependencies": {
+		"globals": "^15.5.0"
+	},
+	"devDependencies": {
+		"@eslint/eslintrc": "^3.1.0",
+		"@eslint/js": "^8.57.0",
+		"@stylistic/eslint-plugin": "^2.2.0",
+		"@types/eslint__js": "^8.42.3",
+		"@types/node": "^20.14.2",
+		"@typescript-eslint/parser": "^7.13.0",
+		"@typescript-eslint/rule-tester": "^7.13.0",
+		"@typescript-eslint/utils": "^7.13.0",
+		"eslint": "^8.57.0",
+		"eslint-plugin-eslint-plugin": "^6.1.0",
+		"typescript": "^5.4.5",
+		"typescript-eslint": "^7.13.0",
+		"vitest": "^1.6.0"
+	},
+	"peerDependencies": {
+		"@stylistic/eslint-plugin": "^2.2.0",
+		"@typescript-eslint/eslint-plugin": "^7.13.0",
+		"@typescript-eslint/parser": "^7.13.0",
+		"eslint": ">=7",
+		"typescript-eslint": "^7.13.0"
+	}
+}

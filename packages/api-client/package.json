@@ -97,13 +97,11 @@
 		"uuid": "^9.0.1"
 	},
 	"devDependencies": {
-		"@stylistic/eslint-plugin": "^2.1.0",
+		"@iqrf/eslint-plugin": "latest",
 		"@types/luxon": "^3.4.2",
-		"@types/node": "^20.14.1",
+		"@types/node": "^20.14.2",
 		"@types/punycode": "^2.1.4",
 		"@types/uuid": "^9.0.8",
-		"@typescript-eslint/eslint-plugin": "^7.12.0",
-		"@typescript-eslint/parser": "^7.12.0",
 		"@vitest/coverage-istanbul": "^1.6.0",
 		"@vitest/spy": "^1.6.0",
 		"axios-mock-adapter": "^1.22.0",
