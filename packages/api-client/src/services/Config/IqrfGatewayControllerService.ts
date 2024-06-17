@@ -61,7 +61,7 @@ export class IqrfGatewayControllerService extends BaseService {
 	 * @return {Promise<IqrfGatewayControllerMapping>} IQRF Gateway Controller mapping
 	 */
 	public fetchMapping(id: number): Promise<IqrfGatewayControllerMapping> {
-		return this.axiosInstance.get(`/config/controller/pins/${id}`)
+		return this.axiosInstance.get(`/config/controller/pins/${id.toString()}`)
 			.then((response: AxiosResponse<IqrfGatewayControllerMapping>) => response.data);
 	}
 
@@ -80,7 +80,7 @@ export class IqrfGatewayControllerService extends BaseService {
 	 * @param {number} id IQRF Gateway Controller mapping ID
 	 */
 	public deleteMapping(id: number): Promise<void> {
-		return this.axiosInstance.delete(`/config/controller/pins/${id}`)
+		return this.axiosInstance.delete(`/config/controller/pins/${id.toString()}`)
 			.then((): void => {return;});
 	}
 
@@ -90,7 +90,7 @@ export class IqrfGatewayControllerService extends BaseService {
 	 * @param {IqrfGatewayControllerMapping} mapping IQRF Gateway Controller mapping to edit
 	 */
 	public editMapping(id: number, mapping: IqrfGatewayControllerMapping): Promise<void> {
-		return this.axiosInstance.put(`/config/controller/pins/${id}`, mapping)
+		return this.axiosInstance.put(`/config/controller/pins/${id.toString()}`, mapping)
 			.then((): void => {return;});
 	}
 

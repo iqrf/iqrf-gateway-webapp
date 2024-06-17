@@ -16,7 +16,7 @@
 
 module.exports = require('typescript-eslint').config(
 	require('@eslint/js').configs.recommended,
-	...require('typescript-eslint').configs.recommended,
+	...require('typescript-eslint').configs.recommendedTypeChecked,
 	...require('typescript-eslint').configs.stylisticTypeChecked,
 	{
 		plugins: {
@@ -67,6 +67,17 @@ module.exports = require('typescript-eslint').config(
 			],
 			'@stylistic/type-annotation-spacing': 'error',
 			'@stylistic/type-generic-spacing': 'error',
+			'@typescript-eslint/ban-ts-comment': 'off',
+			'@typescript-eslint/consistent-type-imports': [
+				'error',
+				{
+					prefer: 'type-imports',
+					fixStyle: 'inline-type-imports',
+				},
+			],
+			'@typescript-eslint/explicit-member-accessibility': 'error',
+			'@typescript-eslint/no-explicit-any': 'warn',
+			'@typescript-eslint/no-extraneous-class': 'off',
 			'comma-dangle': [
 				'error',
 				'always-multiline',
@@ -88,6 +99,7 @@ module.exports = require('typescript-eslint').config(
 			],
 			'no-unused-vars': 'warn',
 			'no-use-before-define': 'error',
+			'prefer-const': 'error',
 			'quotes': [
 				'error',
 				'single'

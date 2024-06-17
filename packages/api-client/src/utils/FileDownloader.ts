@@ -24,23 +24,23 @@ export class FileDownloader {
 
 	/**
 	 * Downloads file from Axios response
-	 * @param {AxiosResponse} response Axios response
+	 * @param {AxiosResponse<object|string>} response Axios response
 	 * @param {string} contentType MIME content type
 	 * @param {string} fileName Name of downloaded file
 	 */
-	public static downloadFromAxiosResponse(response: AxiosResponse, contentType: string, fileName: string): void {
+	public static downloadFromAxiosResponse(response: AxiosResponse<object|string>, contentType: string, fileName: string): void {
 		const element = this.getDownloadElementFromAxiosResponse(response, contentType, fileName);
 		element.click();
 	}
 
 	/**
 	 * Creates a new file download element from Axios response
-	 * @param {AxiosResponse} response Axios response
+	 * @param {AxiosResponse<object|string>} response Axios response
 	 * @param {string} contentType MIME content type
 	 * @param {string} fileName Name of downloaded file
 	 */
-	public static getDownloadElementFromAxiosResponse(response: AxiosResponse, contentType: string, fileName: string): HTMLAnchorElement {
-		const contentDisposition = response.headers['content-disposition'];
+	public static getDownloadElementFromAxiosResponse(response: AxiosResponse<object|string>, contentType: string, fileName: string): HTMLAnchorElement {
+		const contentDisposition = response.headers['content-disposition'] as string;
 		if (contentDisposition) {
 			const fileNameMatch = contentDisposition.match(/filename="(.+)"/);
 			if (fileNameMatch !== null && fileNameMatch.length === 2) {

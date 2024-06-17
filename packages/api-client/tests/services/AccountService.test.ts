@@ -80,7 +80,7 @@ describe('AccountService', (): void => {
 				expect(actual).toStrictEqual(userInfo);
 			});
 	});
-	
+
 	it('edit the user', async (): Promise<void> => {
 		expect.assertions(1);
 		const request: UserEdit = {
@@ -114,13 +114,13 @@ describe('AccountService', (): void => {
 		await expect(service.changePassword(request)).resolves.not.toThrow();
 	});
 
-	it('confirm password recovery - invalid UUID format', async (): Promise<void> => {
+	it('confirm password recovery - invalid UUID format', (): void => {
 		expect.assertions(1);
 		expect(() => service.confirmPasswordRecovery('invalid-uuid', passwordResetRequest))
 			.toThrow(new Error('Invalid password recovery request UUID.'));
 	});
 
-	it('confirm password recovery - invalid UUID version', async (): Promise<void> => {
+	it('confirm password recovery - invalid UUID version', (): void => {
 		expect.assertions(1);
 		expect(() => service.confirmPasswordRecovery('60045219-7cbf-321e-a762-c90382cd8723', passwordResetRequest))
 			.toThrow(new Error('Invalid password recovery request UUID version.'));

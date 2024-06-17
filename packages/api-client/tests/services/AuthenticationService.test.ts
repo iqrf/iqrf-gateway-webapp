@@ -99,13 +99,13 @@ describe('AuthenticationService', (): void => {
 			});
 	});
 
-	it('verify the user - invalid UUID format', async (): Promise<void> => {
+	it('verify the user - invalid UUID format', (): void => {
 		expect.assertions(1);
 		expect(() => service.verify('invalid-uuid'))
 			.toThrow(new Error('Invalid verification UUID.'));
 	});
 
-	it('verify the user - invalid UUID version', async (): Promise<void> => {
+	it('verify the user - invalid UUID version', (): void => {
 		expect.assertions(1);
 		expect(() => service.verify('60045219-7cbf-321e-a762-c90382cd8723'))
 			.toThrow(new Error('Invalid verification UUID version.'));

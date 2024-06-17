@@ -48,7 +48,7 @@ export class MobileOperatorService extends BaseService {
 	 * @return {Promise<MobileOperator>} Mobile operator
 	 */
 	public fetch(id: number): Promise<MobileOperator> {
-		return this.axiosInstance.get(`/network/operators/${id}`)
+		return this.axiosInstance.get(`/network/operators/${id.toString()}`)
 			.then((response: AxiosResponse<MobileOperator>): MobileOperator => this.deserialize(response.data));
 	}
 
@@ -58,7 +58,7 @@ export class MobileOperatorService extends BaseService {
 	 * @param {MobileOperator} operator Mobile operator to edit
 	 */
 	public edit(id: number, operator: MobileOperator): Promise<void> {
-		return this.axiosInstance.put(`/network/operators/${id}`, this.serialize(operator))
+		return this.axiosInstance.put(`/network/operators/${id.toString()}`, this.serialize(operator))
 			.then((): void => {return;});
 	}
 
@@ -67,7 +67,7 @@ export class MobileOperatorService extends BaseService {
 	 * @param {number} id Mobile operator ID
 	 */
 	public delete(id: number): Promise<void> {
-		return this.axiosInstance.delete(`/network/operators/${id}`)
+		return this.axiosInstance.delete(`/network/operators/${id.toString()}`)
 			.then((): void => {return;});
 	}
 

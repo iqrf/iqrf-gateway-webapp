@@ -39,14 +39,16 @@ describe('SshKeyUtils', (): void => {
 
 	it('validate supported and invalid SSH public key', (): void => {
 		expect.assertions(1);
-		expect((): void => SshKeyUtils.validatePublicKey('ssh-rsa ', supportedKeyTypes))
-			.toThrowError('Invalid SSH key - invalid number of parts');
+		expect((): void => {
+			SshKeyUtils.validatePublicKey('ssh-rsa ', supportedKeyTypes);
+		}).toThrowError('Invalid SSH key - invalid number of parts');
 	});
 
 	it('validate unsupported and valid SSH public key', (): void => {
 		expect.assertions(1);
-		expect((): void => SshKeyUtils.validatePublicKey(key, ['sha-rsa']))
-			.toThrowError('Invalid SSH key - invalid key type');
+		expect((): void => {
+			SshKeyUtils.validatePublicKey(key, ['sha-rsa']);
+		}).toThrowError('Invalid SSH key - invalid key type');
 	});
 
 });

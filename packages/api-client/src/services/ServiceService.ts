@@ -45,7 +45,7 @@ export class ServiceService extends BaseService {
 	 * @returns {Promise<ServiceStatus>} Service status
 	 */
 	public getStatus(name: string): Promise<ServiceStatus> {
-		return this.axiosInstance.get('/services/' + name)
+		return this.axiosInstance.get(`/services/${name}`)
 			.then((response: AxiosResponse<ServiceStatus>): ServiceStatus => response.data);
 	}
 
@@ -54,7 +54,7 @@ export class ServiceService extends BaseService {
 	 * @param {string} name Service name
 	 */
 	public enable(name: string): Promise<void> {
-		return this.axiosInstance.post('/services/' + name + '/enable')
+		return this.axiosInstance.post(`/services/${name}/enable`)
 			.then((): void => {return;});
 	}
 
@@ -63,7 +63,7 @@ export class ServiceService extends BaseService {
 	 * @param {string} name Service name
 	 */
 	public disable(name: string): Promise<void> {
-		return this.axiosInstance.post('/services/' + name + '/disable')
+		return this.axiosInstance.post(`/services/${name}/disable`)
 			.then((): void => {return;});
 	}
 
@@ -72,7 +72,7 @@ export class ServiceService extends BaseService {
 	 * @param {string} name Service name
 	 */
 	public start(name: string): Promise<void> {
-		return this.axiosInstance.post('/services/' + name + '/start')
+		return this.axiosInstance.post(`/services/${name}/start`)
 			.then((): void => {return;});
 	}
 
@@ -81,7 +81,7 @@ export class ServiceService extends BaseService {
 	 * @param {string} name Service name
 	 */
 	public stop(name: string): Promise<void> {
-		return this.axiosInstance.post('/services/' + name + '/stop')
+		return this.axiosInstance.post(`/services/${name}/stop`)
 			.then((): void => {return;});
 	}
 
@@ -90,7 +90,7 @@ export class ServiceService extends BaseService {
 	 * @param {string} name Service name
 	 */
 	public restart(name: string): Promise<void> {
-		return this.axiosInstance.post('/services/' + name + '/restart')
+		return this.axiosInstance.post(`/services/${name}/restart`)
 			.then((): void => {return;});
 	}
 

@@ -51,7 +51,7 @@ export class UserService extends BaseService {
 	 * @return {Promise<UserInfo>} User information
 	 */
 	public fetch(id: number): Promise<UserInfo> {
-		return this.axiosInstance.get(`/users/${id}`)
+		return this.axiosInstance.get(`/users/${id.toString()}`)
 			.then((response: AxiosResponse<UserInfo>) => UserUtils.deserialize(response.data));
 	}
 
@@ -62,7 +62,7 @@ export class UserService extends BaseService {
 	 * @return {Promise<EmailSentResponse>} Email sent response
 	 */
 	public edit(id: number, user: UserEdit): Promise<EmailSentResponse> {
-		return this.axiosInstance.put(`/users/${id}`, UserUtils.serialize(user))
+		return this.axiosInstance.put(`/users/${id.toString()}`, UserUtils.serialize(user))
 			.then((response: AxiosResponse<EmailSentResponse>) => response.data);
 	}
 
@@ -71,7 +71,7 @@ export class UserService extends BaseService {
 	 * @param {number} id User ID
 	 */
 	public delete(id: number): Promise<void> {
-		return this.axiosInstance.delete(`/users/${id}`)
+		return this.axiosInstance.delete(`/users/${id.toString()}`)
 			.then((): void => {return;});
 	}
 
@@ -80,7 +80,7 @@ export class UserService extends BaseService {
 	 * @param {number} id User ID
 	 */
 	public resendVerificationEmail(id: number): Promise<void> {
-		return this.axiosInstance.post(`/users/${id}/resendVerification`)
+		return this.axiosInstance.post(`/users/${id.toString()}/resendVerification`)
 			.then((): void => {return;});
 	}
 

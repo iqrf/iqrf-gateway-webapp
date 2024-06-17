@@ -51,7 +51,7 @@ export class ApiKeyService extends BaseService {
 	 * @return {Promise<ApiKeyInfo>} API key information
 	 */
 	public fetch(id: number): Promise<ApiKeyInfo> {
-		return this.axiosInstance.get(`/apiKeys/${id}`)
+		return this.axiosInstance.get(`/apiKeys/${id.toString()}`)
 			.then((response: AxiosResponse<ApiKeyInfo>): ApiKeyInfo => this.deserialize(response.data));
 	}
 
@@ -61,7 +61,7 @@ export class ApiKeyService extends BaseService {
 	 * @param {ApiKeyConfig} config API key configuration to edit
 	 */
 	public edit(id: number, config: ApiKeyConfig): Promise<void> {
-		return this.axiosInstance.put(`/apiKeys/${id}`, this.serialize(config))
+		return this.axiosInstance.put(`/apiKeys/${id.toString()}`, this.serialize(config))
 			.then((): void => {return;});
 	}
 
@@ -70,7 +70,7 @@ export class ApiKeyService extends BaseService {
 	 * @param {number} id API key ID
 	 */
 	public delete(id: number): Promise<void> {
-		return this.axiosInstance.delete(`/apiKeys/${id}`)
+		return this.axiosInstance.delete(`/apiKeys/${id.toString()}`)
 			.then((): void => {return;});
 	}
 

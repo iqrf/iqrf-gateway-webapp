@@ -124,7 +124,7 @@ export class IqrfGatewayDaemonService extends BaseService {
 	 * @return {Promise<IqrfGatewayDaemonMapping>} IQRF Gateway Daemon mapping
 	 */
 	public fetchMapping(id: number): Promise<IqrfGatewayDaemonMapping> {
-		return this.axiosInstance.get(`/mappings/${id}`)
+		return this.axiosInstance.get(`/mappings/${id.toString()}`)
 			.then((response: AxiosResponse<IqrfGatewayDaemonMapping>) => response.data);
 	}
 
@@ -145,7 +145,7 @@ export class IqrfGatewayDaemonService extends BaseService {
 	 */
 	public editMapping(id: number, mapping: IqrfGatewayDaemonMapping): Promise<void> {
 		delete mapping.id;
-		return this.axiosInstance.put(`/mappings/${id}`, mapping)
+		return this.axiosInstance.put(`/mappings/${id.toString()}`, mapping)
 			.then((): void => {return;});
 	}
 
@@ -154,7 +154,7 @@ export class IqrfGatewayDaemonService extends BaseService {
 	 * @param {number} id IQRF Gateway Daemon mapping ID
 	 */
 	public deleteMapping(id: number): Promise<void> {
-		return this.axiosInstance.delete(`/mappings/${id}`)
+		return this.axiosInstance.delete(`/mappings/${id.toString()}`)
 			.then((): void => {return;});
 	}
 

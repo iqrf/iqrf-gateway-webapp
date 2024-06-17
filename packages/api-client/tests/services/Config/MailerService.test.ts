@@ -137,7 +137,7 @@ describe('MailerService', (): void => {
 		await service.editConfig(config);
 		expect(mockedAxios.history.put).toBeDefined();
 		expect(mockedAxios.history.put.length).toStrictEqual(1);
-		expect(JSON.parse(mockedAxios.history.put[0].data)).toStrictEqual(expected);
+		expect(JSON.parse(mockedAxios.history.put[0].data as string)).toStrictEqual(expected);
 	});
 
 	it('update mailer config with IDN', async (): Promise<void> => {

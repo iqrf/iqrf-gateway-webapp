@@ -33,7 +33,7 @@ export class InterfacePortsService extends BaseService {
 	 * @return {Promise<string>} Interface ports
 	 */
 	public getInterfacePorts(interfaceType: IqrfInterfaceType): Promise<string[]> {
-		return this.axiosInstance.get('iqrf/interfaces/')
+		return this.axiosInstance.get('/iqrf/interfaces/')
 			.then((response: AxiosResponse<InterfacePorts>): string[] => {
 				return response.data[interfaceType];
 			});

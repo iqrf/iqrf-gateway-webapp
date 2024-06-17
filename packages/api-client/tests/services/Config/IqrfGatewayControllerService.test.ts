@@ -158,7 +158,7 @@ describe('IqrfGatewayControllerService', (): void => {
 		delete expected.id;
 		mockedAxios.onPost('/config/controller/pins', profile)
 			.reply(function (config) {
-				expect(expected).toEqual(JSON.parse(config.data));
+				expect(expected).toEqual(JSON.parse(config.data as string));
 				return Promise.resolve([201]);
 			});
 		await service.createMapping(profile);

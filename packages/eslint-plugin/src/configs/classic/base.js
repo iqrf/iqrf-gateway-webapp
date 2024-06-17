@@ -17,7 +17,7 @@
 module.exports = {
 	extends: [
 		'eslint:recommended',
-		'plugin:@typescript-eslint/recommended',
+		'plugin:@typescript-eslint/recommended-type-checked',
 		'plugin:@typescript-eslint/stylistic-type-checked',
 	],
 	parser: '@typescript-eslint/parser',
@@ -78,6 +78,7 @@ module.exports = {
 		],
 		'@typescript-eslint/explicit-member-accessibility': 'error',
 		'@typescript-eslint/no-explicit-any': 'warn',
+		'@typescript-eslint/no-extraneous-class': 'off',
 		'comma-dangle': [
 			'error',
 			'always-multiline',

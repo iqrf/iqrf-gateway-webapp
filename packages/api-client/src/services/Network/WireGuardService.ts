@@ -63,7 +63,7 @@ export class WireGuardService extends BaseService {
 	 * @param config WireGuard tunnel configuration
 	 */
 	public editTunnel(id: number, config: WireGuardTunnelConfig): Promise<void> {
-		return this.axiosInstance.put(`/network/wireguard/${id}`, this.serializeTunnel(config))
+		return this.axiosInstance.put(`/network/wireguard/${id.toString()}`, this.serializeTunnel(config))
 			.then((): void => {return;});
 	}
 
@@ -72,7 +72,7 @@ export class WireGuardService extends BaseService {
 	 * @param {number} id WireGuard tunnel ID
 	 */
 	public deleteTunnel(id: number): Promise<void> {
-		return this.axiosInstance.delete(`/network/wireguard/${id}`)
+		return this.axiosInstance.delete(`/network/wireguard/${id.toString()}`)
 			.then((): void => {return;});
 	}
 
@@ -82,7 +82,7 @@ export class WireGuardService extends BaseService {
 	 * @return {Promise<WireGuardTunnelConfig>} WireGuard tunnel configuration
 	 */
 	public fetchTunnel(id: number): Promise<WireGuardTunnelConfig> {
-		return this.axiosInstance.get(`/network/wireguard/${id}`)
+		return this.axiosInstance.get(`/network/wireguard/${id.toString()}`)
 			.then((response: AxiosResponse<WireGuardTunnelConfig>): WireGuardTunnelConfig => this.deserializeTunnel(response.data));
 	}
 
@@ -91,7 +91,7 @@ export class WireGuardService extends BaseService {
 	 * @param {number} id WireGuard tunnel ID
 	 */
 	public activateTunnel(id: number): Promise<void> {
-		return this.axiosInstance.post(`/network/wireguard/${id}/activate`)
+		return this.axiosInstance.post(`/network/wireguard/${id.toString()}/activate`)
 			.then((): void => {return;});
 	}
 
@@ -100,7 +100,7 @@ export class WireGuardService extends BaseService {
 	 * @param {number} id WireGuard tunnel ID
 	 */
 	public deactivateTunnel(id: number): Promise<void> {
-		return this.axiosInstance.post(`/network/wireguard/${id}/deactivate`)
+		return this.axiosInstance.post(`/network/wireguard/${id.toString()}/deactivate`)
 			.then((): void => {return;});
 	}
 
@@ -109,7 +109,7 @@ export class WireGuardService extends BaseService {
 	 * @param {number} id WireGuard tunnel ID
 	 */
 	public enableTunnel(id: number): Promise<void> {
-		return this.axiosInstance.post(`/network/wireguard/${id}/enable`)
+		return this.axiosInstance.post(`/network/wireguard/${id.toString()}/enable`)
 			.then((): void => {return;});
 	}
 
@@ -118,7 +118,7 @@ export class WireGuardService extends BaseService {
 	 * @param {number} id WireGuard tunnel ID
 	 */
 	public disableTunnel(id: number): Promise<void> {
-		return this.axiosInstance.post(`/network/wireguard/${id}/disable`)
+		return this.axiosInstance.post(`/network/wireguard/${id.toString()}/disable`)
 			.then((): void => {return;});
 	}
 
@@ -137,8 +137,8 @@ export class WireGuardService extends BaseService {
 		} else {
 			tunnel.stack = WireGuardIpStack.DUAL;
 		}
-		for (const idx in tunnel.peers) {
-			tunnel.peers[idx] = this.deserializePeer(tunnel.peers[idx]);
+		for (const [idx, value] of tunnel.peers.entries()) {
+			tunnel.peers[idx] = this.deserializePeer(value);
 		}
 		return tunnel;
 	}
@@ -158,8 +158,8 @@ export class WireGuardService extends BaseService {
 				break;
 		}
 		delete tunnel.stack;
-		for (const idx in tunnel.peers) {
-			tunnel.peers[idx] = this.serializePeer(tunnel.peers[idx]);
+		for (const [idx, value] of tunnel.peers.entries()) {
+			tunnel.peers[idx] = this.serializePeer(value);
 		}
 		delete tunnel.publicKey;
 		return tunnel;
@@ -189,7 +189,7 @@ export class WireGuardService extends BaseService {
 	 * @return {WireGuardPeer} Serialized WireGuard peer configuration
 	 */
 	private serializePeer(peer: WireGuardPeer): WireGuardPeer {
-		if(peer.psk === '' || peer.psk === null) {
+		if(peer.psk === '' || peer.psk === undefined) {
 			delete peer.psk;
 		}
 		if (peer.allowedIPs.stack === WireGuardIpStack.IPV4) {

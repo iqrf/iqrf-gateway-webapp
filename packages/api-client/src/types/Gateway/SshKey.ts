@@ -56,7 +56,7 @@ export interface SshKeyInfo extends SshKeyInfoBase {
 	/**
 	 * SSH key creation date
 	 */
-	createdAt: DateTime
+	createdAt: DateTime | null
 
 }
 

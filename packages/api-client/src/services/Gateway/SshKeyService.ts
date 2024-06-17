@@ -55,7 +55,7 @@ export class SshKeyService extends BaseService {
 	 * @return {Promise<SshKeyInfo>} SSH key
 	 */
 	public getKey(id: number): Promise<SshKeyInfo> {
-		return this.axiosInstance.get('gateway/ssh/keys/' + id)
+		return this.axiosInstance.get(`/gateway/ssh/keys/${id.toString()}`)
 			.then((response: AxiosResponse<SshKeyInfoRaw>): SshKeyInfo =>
 				this.deserializeInfo(response.data),
 			);
@@ -66,7 +66,7 @@ export class SshKeyService extends BaseService {
 	 * @param {number} id Key ID
 	 */
 	public deleteKey(id: number): Promise<void> {
-		return this.axiosInstance.get('gateway/ssh/keys/' + id)
+		return this.axiosInstance.get(`/gateway/ssh/keys/${id.toString()}`)
 			.then((): void => {return;});
 	}
 
@@ -75,7 +75,7 @@ export class SshKeyService extends BaseService {
 	 * @param {SshKeyCreate[]} keys SSh keys
 	 */
 	public createSshKeys(keys: SshKeyCreate[]): Promise<void> {
-		return this.axiosInstance.post('gateway/ssh/keys', keys)
+		return this.axiosInstance.post('/gateway/ssh/keys', keys)
 			.then((): void => {return;});
 	}
 
@@ -87,7 +87,7 @@ export class SshKeyService extends BaseService {
 	private deserializeInfo(raw: SshKeyInfoRaw): SshKeyInfo {
 		return {
 			...raw,
-			createdAt: DateTimeUtils.deserialize(raw.createdAt)!,
+			createdAt: DateTimeUtils.deserialize(raw.createdAt),
 		};
 	}
 

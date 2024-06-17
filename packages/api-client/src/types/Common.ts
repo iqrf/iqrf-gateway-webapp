@@ -48,3 +48,15 @@ export interface EmailSentResponse {
 	emailSent: boolean;
 
 }
+
+/**
+ * JSON value
+ */
+type JsonValue = string | number | null;
+
+/**
+ * JSON object
+ */
+export interface Json {
+	[propName: string]: JsonValue | JsonValue[] | Json
+}

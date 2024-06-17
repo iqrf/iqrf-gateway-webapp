@@ -63,14 +63,13 @@ export class AptService extends BaseService {
 	 * @return {AptConfig} APT configuration
 	 */
 	private fromRaw(config: AptConfigRaw): AptConfig {
-		const data: AptConfig = {
+		return {
 			enabled: config['APT::Periodic::Enable'] === '1',
 			packageListUpdateInterval: parseInt(config['APT::Periodic::Update-Package-Lists']),
 			packageUpdateInterval: parseInt(config['APT::Periodic::Unattended-Upgrade']),
 			packageRemovalInterval: parseInt(config['APT::Periodic::AutocleanInterval']),
 			rebootOnKernelUpdate: config['Unattended-Upgrade::Automatic-Reboot'] === 'true',
 		};
-		return data;
 	}
 
 	/**
@@ -79,13 +78,12 @@ export class AptService extends BaseService {
 	 * @return {AptConfigRaw} Raw APT configuration
 	 */
 	private toRaw(config: AptConfig): AptConfigRaw {
-		const data: AptConfigRaw = {
+		return {
 			'APT::Periodic::Enable': config.enabled ? '1' : '0',
 			'APT::Periodic::Update-Package-Lists': config.packageListUpdateInterval.toString(),
 			'APT::Periodic::Unattended-Upgrade': config.packageUpdateInterval.toString(),
 			'APT::Periodic::AutocleanInterval': config.packageRemovalInterval.toString(),
 			'Unattended-Upgrade::Automatic-Reboot': config.rebootOnKernelUpdate ? 'true' : 'false',
 		};
-		return data;
 	}
 }
