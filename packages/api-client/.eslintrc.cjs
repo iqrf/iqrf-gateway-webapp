@@ -17,42 +17,12 @@
 module.exports = {
 	extends: [
 		'plugin:@iqrf/base',
-		'plugin:import/recommended',
-		'plugin:import/typescript',
+		'plugin:@iqrf/import',
 		'plugin:promise/recommended',
 		"plugin:typescript-sort-keys/recommended",
 	],
 	parserOptions: {
 		project: './tsconfig.json',
-	},
-	rules: {
-		'import/consistent-type-specifier-style': [
-			'error',
-			'prefer-inline',
-		],
-		'import/no-unresolved': [
-			'error',
-			{
-				ignore: ['^@iqrf/iqrf-gateway-daemon-utils/'],
-			},
-		],
-		'import/order': [
-			'error',
-			{
-				'alphabetize': {
-					'order': 'asc',
-					'caseInsensitive': true,
-				},
-				'pathGroups': [
-					{
-						'pattern': '@/**',
-						'group': 'internal',
-					},
-				],
-				'groups': ['builtin', 'external', 'internal', 'parent', 'sibling', 'index', 'object', 'type'],
-				'newlines-between': 'always',
-			},
-		],
 	},
 	overrides: [
 		{
@@ -63,13 +33,8 @@ module.exports = {
 		},
 	],
 	settings: {
-		'import/parsers': {
-			'@typescript-eslint/parser': ['.ts', '.tsx'],
-		},
 		'import/resolver': {
-			'node': true,
 			'typescript': {
-				'alwaysTryTypes': true,
 				'project': './tsconfig.json',
 			},
 		},

@@ -381,7 +381,7 @@ const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const display = useDisplay();
 const i18n = useI18n();
 const service: IqrfGatewayControllerService = useApiClient().getConfigServices().getIqrfGatewayControllerService();
-const form: Ref<typeof VForm | null> = ref(null);
+const form: Ref<VForm | null> = ref(null);
 const configuration: Ref<IqrfGatewayControllerConfig | null> = ref(null);
 const severityOptions = [
 	{

@@ -75,6 +75,7 @@ import {
 	IqrfGatewayDaemonComponentName,
 	type IqrfGatewayDaemonIdeCounterpart,
 	type IqrfGatewayDaemonJsonSplitter,
+	type IqrfGatewayDaemonJsonSplitterV3,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { mdiPencil, mdiTextShort } from '@mdi/js';
 import { type PropType, ref, type Ref, watchEffect } from 'vue';
@@ -102,7 +103,7 @@ const i18n = useI18n();
 const hostnameService: HostnameService = useApiClient().getGatewayServices().getHostnameService();
 const daemonConfigurationService: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
 const show: Ref<boolean> = ref(false);
-const form: Ref<typeof VForm | null> = ref(null);
+const form: Ref<VForm | null> = ref(null);
 const hostname: Ref<string> = ref('');
 const setSplitterId: Ref<boolean> = ref(false);
 const setIdeHostname: Ref<boolean> = ref(false);
@@ -148,8 +149,8 @@ async function updateSplitterConfig(): Promise<void> {
 	if (!setSplitterId.value) {
 		return;
 	}
-	const instance: IqrfGatewayDaemonJsonSplitter|null = await daemonConfigurationService.getComponent(splitterComponent)
-		.then((response: IqrfGatewayDaemonComponent<IqrfGatewayDaemonComponentName.IqrfJsonSplitter>): IqrfGatewayDaemonJsonSplitter|null =>
+	const instance: IqrfGatewayDaemonJsonSplitter | IqrfGatewayDaemonJsonSplitterV3 | null = await daemonConfigurationService.getComponent(splitterComponent)
+		.then((response: IqrfGatewayDaemonComponent<IqrfGatewayDaemonComponentName.IqrfJsonSplitter>): IqrfGatewayDaemonJsonSplitter | IqrfGatewayDaemonJsonSplitterV3 | null =>
 			response.instances[0] ?? null);
 	if (instance === null) {
 		return;

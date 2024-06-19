@@ -286,7 +286,7 @@ export interface NetworkConnectionListEntry {
 	/// Network connection name
 	name: string;
 	/// Network connection type
-	type: string;
+	type: NetworkConnectionType;
 	/// Network connection UUID
 	uuid: string;
 }

@@ -129,7 +129,7 @@ const hostname: Ref<string> = ref('');
 const port: Ref<number> = ref(80);
 const path: Ref<string> = ref('');
 
-watchEffect(async (): Promise<void> => {
+watchEffect((): void => {
 	if (show.value) {
 		const parsed = componentProps.url.match(regexCapture);
 		if (parsed?.groups === undefined) {

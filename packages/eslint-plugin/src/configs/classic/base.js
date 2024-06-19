@@ -55,10 +55,24 @@ module.exports = {
 		'@stylistic/no-mixed-operators': 'error',
 		'@stylistic/no-multiple-empty-lines': 'error',
 		'@stylistic/no-multi-spaces': 'error',
+		'@stylistic/no-trailing-spaces': 'error',
 		'@stylistic/object-curly-spacing': [
 			'error',
 			'always',
 		],
+		'@stylistic/space-before-blocks': [
+			'error',
+			'always',
+		],
+		'@stylistic/space-before-function-paren': [
+			'error',
+			{
+				'anonymous': 'always',
+				'named': 'never',
+				'asyncArrow': 'always',
+			},
+		],
+		'@stylistic/space-unary-ops': 'error',
 		'@stylistic/switch-colon-spacing': [
 			'error',
 			{
@@ -79,10 +93,7 @@ module.exports = {
 		'@typescript-eslint/explicit-member-accessibility': 'error',
 		'@typescript-eslint/no-explicit-any': 'warn',
 		'@typescript-eslint/no-extraneous-class': 'off',
-		'comma-dangle': [
-			'error',
-			'always-multiline',
-		],
+		'comma-dangle': 'off',
 		'eqeqeq': [
 			'error',
 			'always',

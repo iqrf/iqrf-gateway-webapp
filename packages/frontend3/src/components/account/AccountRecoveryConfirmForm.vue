@@ -75,7 +75,7 @@ const componentProps = defineProps({
 	},
 });
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
-const form: Ref<typeof VForm | null> = ref(null);
+const form: Ref<VForm | null> = ref(null);
 const i18n = useI18n();
 const password: Ref<string> = ref('');
 const router = useRouter();

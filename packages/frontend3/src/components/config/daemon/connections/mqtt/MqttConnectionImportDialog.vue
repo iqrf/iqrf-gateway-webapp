@@ -89,7 +89,7 @@ const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
 const emit = defineEmits(['import']);
 const i18n = useI18n();
 const show: Ref<boolean> = ref(false);
-const form: Ref<typeof VForm | null> = ref(null);
+const form: Ref<VForm | null> = ref(null);
 const files: Ref<File[]> = ref([]);
 
 async function onSubmit(): Promise<void> {
@@ -99,7 +99,7 @@ async function onSubmit(): Promise<void> {
 	componentState.value = ComponentState.Saving;
 	const file = files.value[0];
 	const content = await file.text();
-	const obj = JSON.parse(content);
+	const obj = JSON.parse(content) as unknown;
 	if (!isMqttConnectionProfile(obj)) {
 		toast.error(
 			i18n.t('components.configuration.daemon.connections.messages.profileFileInvalid'),

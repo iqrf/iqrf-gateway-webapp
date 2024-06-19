@@ -134,7 +134,7 @@ daemonStore.$onAction(
 					return;
 				}
 				daemonStore.removeMessage(msgId.value);
-				if (rsp.mType === ManagementMessages.Mode) {
+				if (rsp.mType === ManagementMessages.Mode.toString()) {
 					handleSetMode(rsp);
 				}
 			});
@@ -169,7 +169,7 @@ function handleSetMode(rsp: DaemonApiResponse): void {
 		);
 		return;
 	}
-	monitorStore.setMode(rsp.data.rsp.operMode);
+	monitorStore.setMode(rsp.data.rsp.operMode as DaemonMode);
 	toast.success(
 		i18n.t('components.gateway.mode.messages.setSuccess', { mode: rsp.data.rsp.operMode }),
 	);

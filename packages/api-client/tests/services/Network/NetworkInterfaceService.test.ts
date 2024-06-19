@@ -61,7 +61,7 @@ describe('NetworkInterfaceService', (): void => {
 		mockedAxios.reset();
 	});
 
-	it('fetch list of all network interfaces', async(): Promise<void> => {
+	it('fetch list of all network interfaces', async (): Promise<void> => {
 		expect.assertions(1);
 		mockedAxios.onGet('/network/interfaces')
 			.reply(200, interfaces);
@@ -71,7 +71,7 @@ describe('NetworkInterfaceService', (): void => {
 			});
 	});
 
-	it('fetch list of Ethernet network interfaces', async(): Promise<void> => {
+	it('fetch list of Ethernet network interfaces', async (): Promise<void> => {
 		expect.assertions(1);
 		const ethernetInterfaces: NetworkInterface[] = [interfaces[1]];
 		mockedAxios.onGet('/network/interfaces', {

@@ -35,7 +35,7 @@ describe('TimeService', (): void => {
 		mockedAxios.reset();
 	});
 
-	it('fetch Time and NTP config', async(): Promise<void> => {
+	it('fetch Time and NTP config', async (): Promise<void> => {
 		expect.assertions(1);
 		const config: TimeConfig = {
 			abbrevation: 'CEST',
@@ -57,7 +57,7 @@ describe('TimeService', (): void => {
 			});
 	});
 
-	it('set Time and NTP config', async(): Promise<void> => {
+	it('set Time and NTP config', async (): Promise<void> => {
 		expect.assertions(0);
 		const config: TimeSet = {
 			ntpSync: true,
@@ -68,7 +68,7 @@ describe('TimeService', (): void => {
 		await service.setTime(config);
 	});
 
-	it('fetch available time zones', async(): Promise<void> => {
+	it('fetch available time zones', async (): Promise<void> => {
 		expect.assertions(1);
 		const timezones: Timezone[] = [
 			{

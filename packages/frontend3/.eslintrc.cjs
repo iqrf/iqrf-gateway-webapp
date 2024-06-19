@@ -37,6 +37,12 @@ module.exports = {
 	},
 	rules: {
 		'@typescript-eslint/explicit-member-accessibility': 'off',
+		'@typescript-eslint/no-floating-promises': 'warn',
+		'@typescript-eslint/no-misused-promises': 'warn',
+		'@typescript-eslint/no-unsafe-call': 'warn',
+		'@typescript-eslint/no-unsafe-member-access': 'warn',
+		'@typescript-eslint/no-unsafe-return': 'warn',
+		'@typescript-eslint/require-await': 'warn',
 		'import/consistent-type-specifier-style': [
 			'error',
 			'prefer-inline',
@@ -84,6 +90,16 @@ module.exports = {
 		],
 		'vue/multi-word-component-names': 'off',
 	},
+	overrides: [
+		{
+			files: [
+				'src/store/**/*.ts',
+			],
+			rules: {
+				'@typescript-eslint/unbound-method': 'off',
+			}
+		}
+	],
 	settings: {
 		'import/parsers': {
 			'@typescript-eslint/parser': ['.ts', '.tsx'],

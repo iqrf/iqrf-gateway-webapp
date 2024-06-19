@@ -115,7 +115,7 @@ const user: Ref<UserCreate> = ref({
 });
 const languageOptions = getLanguageOptions();
 const expiration = ref(UserSessionExpiration.Default);
-const form: Ref<typeof VForm | null> = ref(null);
+const form: Ref<VForm | null> = ref(null);
 
 async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {

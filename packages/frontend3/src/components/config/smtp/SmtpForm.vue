@@ -133,7 +133,7 @@ const configuration: Ref<MailerConfig> = ref({
 	clientHost: null,
 });
 
-const form: Ref<typeof VForm | null> = ref(null);
+const form: Ref<VForm | null> = ref(null);
 const stateButtonLabel = computed(() => {
 	if (configuration.value.enabled) {
 		return i18n.t('common.states.enabled');

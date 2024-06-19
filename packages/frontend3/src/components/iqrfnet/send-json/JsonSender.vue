@@ -82,7 +82,7 @@ import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
 const daemonStore = useDaemonStore();
-const form: Ref<typeof VForm | null> = ref(null);
+const form: Ref<VForm | null> = ref(null);
 const msgId: Ref<string | null> = ref(null);
 const json: Ref<string | null> = ref(null);
 const messages: Ref<JsonMessage[]> = ref([]);
@@ -114,7 +114,7 @@ async function onSubmit(): Promise<void> {
 		return;
 	}
 	componentState.value = ComponentState.Saving;
-	const request: DaemonApiRequest = JSON.parse(json.value);
+	const request: DaemonApiRequest = JSON.parse(json.value) as DaemonApiRequest;
 	const options = new DaemonMessageOptions(request, null, null, () => {
 		msgId.value = null;
 		componentState.value = ComponentState.Ready;

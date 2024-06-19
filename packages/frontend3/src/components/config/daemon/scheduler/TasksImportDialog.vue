@@ -122,7 +122,7 @@ const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
 const show: Ref<boolean> = ref(false);
 const daemonStore = useDaemonStore();
 const i18n = useI18n();
-const form: Ref<typeof VForm | null> = ref(null);
+const form: Ref<VForm | null> = ref(null);
 const files: Ref<File[]> = ref([]);
 const msgIds: Ref<string[]> = ref([]);
 const importRecords: Ref<SchedulerRecord[]> = ref([]);
@@ -143,7 +143,7 @@ daemonStore.$onAction(
 			daemonStore.removeMessage(msgId);
 
 			switch (rsp.mType) {
-				case SchedulerMessages.AddTask:
+				case SchedulerMessages.AddTask.toString():
 					handleAddTask(rsp);
 					break;
 				default:
@@ -168,7 +168,7 @@ async function extractZip(archive: File): Promise<SchedulerRecord[]> {
 			continue;
 		}
 		const content = await file.getData(textWriter);
-		const record: SchedulerRecord = JSON.parse(content);
+		const record: SchedulerRecord = JSON.parse(content) as SchedulerRecord;
 		tasks.push(record);
 	}
 	return tasks;
@@ -191,7 +191,7 @@ async function onSubmit(): Promise<void> {
 	} else if (file.type === 'application/json') {
 		const content = await file.text();
 		try {
-			importRecords.value.push(JSON.parse(content));
+			importRecords.value.push(JSON.parse(content) as SchedulerRecord);
 		} catch (e) {
 			toast.error(
 				i18n.t('components.configuration.daemon.scheduler.messages.import.jsonInvalid'),
@@ -220,7 +220,7 @@ function uploadRecords(): void {
 }
 
 function handleAddTask(rsp: DaemonApiResponse): void {
-	const taskId = rsp.data.rsp.taskId;
+	const taskId = rsp.data.rsp.taskId as string;
 	const idx = processedRecords.value.findIndex((item: TaskImportResult) => item.taskId === taskId);
 	if (idx !== -1) {
 		if (rsp.data.status !== 0) {

@@ -69,7 +69,7 @@ import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
 const i18n = useI18n();
-const form: Ref<typeof VForm | null> = ref(null);
+const form: Ref<VForm | null> = ref(null);
 const handler: Ref<File[] | null> = ref(null);
 const serviceService: ServiceService = useApiClient().getServiceService();
 const upgradeService: UpgradeService = useApiClient().getIqrfServices().getUpgradeService();

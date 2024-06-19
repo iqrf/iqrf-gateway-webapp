@@ -248,7 +248,7 @@ const emit = defineEmits(['saved']);
 const i18n = useI18n();
 const daemonStore = useDaemonStore();
 const show: Ref<boolean> = ref(false);
-const form: Ref<typeof VForm | null> = ref(null);
+const form: Ref<VForm | null> = ref(null);
 const defaultTask: SchedulerRecord = {
 	clientId: SchedulerService.ClientID,
 	taskId: '',
@@ -281,13 +281,13 @@ daemonStore.$onAction(
 			daemonStore.removeMessage(msgId.value);
 			componentState.value = ComponentState.Ready;
 			switch (rsp.mType) {
-				case SchedulerMessages.GetTask:
+				case SchedulerMessages.GetTask.toString():
 					handleGetTask(rsp);
 					break;
-				case SchedulerMessages.AddTask:
+				case SchedulerMessages.AddTask.toString():
 					handleSaveTask(rsp);
 					break;
-				case SchedulerMessages.EditTask:
+				case SchedulerMessages.EditTask.toString():
 					handleSaveTask(rsp);
 					break;
 				default:
@@ -337,7 +337,7 @@ watch(show, (newVal: boolean) => {
 		return;
 	}
 	if (componentProps.action === Action.Edit && componentProps.schedulerTask) {
-		task.value = JSON.parse(JSON.stringify(componentProps.schedulerTask));
+		task.value = JSON.parse(JSON.stringify(componentProps.schedulerTask)) as SchedulerRecord;
 		if (Array.isArray(task.value.timeSpec.cronTime)) {
 			task.value.timeSpec.cronTime = task.value.timeSpec.cronTime.join(' ').trim();
 		}

@@ -103,7 +103,7 @@ import { ComponentState } from '@/types/ComponentState';
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const show: Ref<boolean> = ref(false);
 const i18n = useI18n();
-const form: Ref<typeof VForm | null> = ref(null);
+const form: Ref<VForm | null> = ref(null);
 const service: MenderService = useApiClient().getMenderService();
 const certificates: Ref<File[]> = ref([]);
 const certPath: Ref<string> = ref('');

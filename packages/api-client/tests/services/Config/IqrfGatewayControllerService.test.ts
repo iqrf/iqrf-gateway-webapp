@@ -171,7 +171,7 @@ describe('IqrfGatewayControllerService', (): void => {
 		await service.deleteMapping(1);
 	});
 
-	it('edit IQRF Gateway Controller mapping', async(): Promise<void> => {
+	it('edit IQRF Gateway Controller mapping', async (): Promise<void> => {
 		expect.assertions(0);
 		const data = { ...profile };
 		data.deviceType = MappingDeviceType.Adapter;

@@ -135,7 +135,7 @@ import { ComponentState } from '@/types/ComponentState';
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
 const service: AptService = useApiClient().getConfigServices().getAptService();
-const form: Ref<typeof VForm | null> = ref(null);
+const form: Ref<VForm | null> = ref(null);
 const config: Ref<AptConfig | null> = ref(null);
 
 function intervalColor(value: number|string|null): string {

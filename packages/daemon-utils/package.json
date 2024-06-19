@@ -62,8 +62,9 @@
 		"dev": "tsc --watch",
 		"docs": "rm -rf docs/ && typedoc src/index.ts",
 		"prepublish": "rm -rf dist/ && tsc",
-		"lint": "npm run lint:js",
+		"lint": "npm run lint:js && npm run lint:ts",
 		"lint:js": "eslint --ext .js,.vue,.ts --cache --cache-location node_modules/.cache/eslint/ .",
+		"lint:ts": "tsc --noEmit",
 		"test:unit": "vitest --run",
 		"reload": "tsc --watch"
 	},
@@ -94,12 +95,12 @@
 		"cronstrue": "^2.50.0",
 		"luxon": "^3.4.4",
 		"punycode": "^2.3.1",
-		"uuid": "^9.0.1"
+		"uuid": "^10.0.0"
 	},
 	"devDependencies": {
 		"@iqrf/eslint-plugin": "latest",
 		"@types/luxon": "^3.4.2",
-		"@types/node": "^20.14.2",
+		"@types/node": "^20.14.6",
 		"@types/punycode": "^2.1.4",
 		"@types/uuid": "^9.0.8",
 		"@vitest/coverage-istanbul": "^1.6.0",

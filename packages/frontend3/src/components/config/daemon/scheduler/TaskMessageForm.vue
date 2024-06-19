@@ -81,7 +81,11 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { type DaemonApiRequest, type SchedulerRecordTask } from '@iqrf/iqrf-gateway-daemon-utils/types';
+import {
+	type DaemonApiRequest,
+	type MessagingInstance,
+	type SchedulerRecordTask,
+} from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { type IqrfGatewayDaemonSchedulerMessagings } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { mdiPencil, mdiPlus } from '@mdi/js';
 import { ref, type Ref, watchEffect , type PropType, computed } from 'vue';
@@ -119,9 +123,9 @@ const componentProps = defineProps({
 });
 const emit = defineEmits(['save']);
 const show: Ref<boolean> = ref(false);
-const form: Ref<typeof VForm | null> = ref(null);
+const form: Ref<VForm | null> = ref(null);
 const message: Ref<string | null> = ref(null);
-const selected: Ref<string[]> = ref([]);
+const selected: Ref<string[] | MessagingInstance[]> = ref([]);
 
 const messagingOptions = computed(() => {
 	if (componentProps.messagings === null) {
@@ -138,7 +142,7 @@ const messagingOptions = computed(() => {
 	return mqttOptions.concat(wsOptions);
 });
 
-watchEffect(async (): Promise<void> => {
+watchEffect((): void => {
 	if (componentProps.action === Action.Edit && componentProps.task !== null) {
 		message.value = JSON.stringify(componentProps.task.message, null, 4);
 		selected.value = componentProps.task.messaging;

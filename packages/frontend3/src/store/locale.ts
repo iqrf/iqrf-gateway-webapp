@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+import { UserLanguage } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { CZ, GB } from 'country-flag-icons/string/3x2';
 import { Base64 } from 'js-base64';
 import { defineStore } from 'pinia';
@@ -24,7 +25,7 @@ import i18n from '@/plugins/i18n';
 
 export interface Locale {
 	/// Locale code
-	code: string;
+	code: UserLanguage;
 	/// Locale Unicode flag
 	flag: string;
 	/// Development build only?
@@ -35,17 +36,17 @@ export interface Locale {
  * Locale store state
  */
 interface LocaleState {
-	locale: string;
+	locale: UserLanguage;
 }
 
 
 const locales: Locale[] = [
 	{
-		code: 'en',
+		code: UserLanguage.English,
 		flag: Base64.encode(GB),
 	},
 	{
-		code: 'cs',
+		code: UserLanguage.Czech,
 		flag: Base64.encode(CZ),
 		developmentOnly: true,
 	},
@@ -55,14 +56,14 @@ const filteredLocales: Locale[] = locales.filter((locale: Locale): boolean => im
 
 export const useLocaleStore = defineStore('locale', {
 	state: (): LocaleState => ({
-		locale: preferredLocale('en', filteredLocales.map((locale: Locale): string => locale.code), { languageOnly: true }),
+		locale: preferredLocale('en', filteredLocales.map((locale: Locale): string => locale.code), { languageOnly: true }) as UserLanguage,
 	}),
 	actions: {
 		/**
 		 * Sets a new locale
-		 * @param locale Locale to set
+		 * @param {UserLanguage} locale Locale to set
 		 */
-		setLocale(locale: string): void {
+		setLocale(locale: UserLanguage): void {
 			// @ts-ignore
 			i18n.global.locale.value = locale;
 			this.locale = locale;
@@ -79,9 +80,9 @@ export const useLocaleStore = defineStore('locale', {
 		/**
 		 * Returns current locale code
 		 * @param {LocaleState} state Current state
-		 * @return {string} Current locale code
+		 * @return {UserLanguage} Current locale code
 		 */
-		getLocale(state: LocaleState): string {
+		getLocale(state: LocaleState): UserLanguage {
 			return state.locale;
 		},
 		/**
@@ -90,7 +91,7 @@ export const useLocaleStore = defineStore('locale', {
 		 * @return {string} Current locale flag
 		 */
 		getLocaleFlag(state: LocaleState): string {
-			const idx = locales.findIndex((item: Locale): boolean => item.code === state.locale);
+			const idx: number = locales.findIndex((item: Locale): boolean => item.code === state.locale);
 			if (idx === -1) {
 				return '🏴‍☠️';
 			}

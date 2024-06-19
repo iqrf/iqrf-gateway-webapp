@@ -26,7 +26,7 @@ limitations under the License.
 
 <script lang='ts' setup>
 import { mdiTranslate } from '@mdi/js';
-import { defineModel, type PropType, type Ref } from 'vue';
+import { type PropType, type Ref } from 'vue';
 
 import SelectInput from '@/components/layout/form/SelectInput.vue';
 import { getLanguageOptions } from '@/helpers/userData';

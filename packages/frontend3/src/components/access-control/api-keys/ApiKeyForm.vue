@@ -126,7 +126,7 @@ const componentProps = defineProps({
 const i18n = useI18n();
 const show: Ref<boolean> = ref(false);
 const service: ApiKeyService = useApiClient().getApiKeyService();
-const form: Ref<typeof VForm | null> = ref(null);
+const form: Ref<VForm | null> = ref(null);
 const defaultKey: ApiKeyConfig = {
 	description: '',
 	expiration: null,
@@ -153,7 +153,7 @@ const datePickerState = computed((): false|null => {
 	return false;
 });
 
-watchEffect(async(): Promise<void> => {
+watchEffect((): void => {
 	if (componentProps.action === Action.Add) {
 		key.value = { ...defaultKey };
 	} else if (componentProps.action === Action.Edit) {

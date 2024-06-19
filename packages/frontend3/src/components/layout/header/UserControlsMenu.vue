@@ -55,6 +55,7 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
+import { type UserLanguage } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { mdiAccountDetails, mdiLogout } from '@mdi/js';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
@@ -73,7 +74,7 @@ function signOut(): void {
 	);
 }
 
-function setLocale(locale: string): void {
+function setLocale(locale: UserLanguage): void {
 	if (localeStore.getLocale === locale) {
 		return;
 	}

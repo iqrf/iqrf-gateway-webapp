@@ -97,7 +97,7 @@ const credentials: Ref<UserCredentials> = ref({
 	password: '',
 	expiration: UserSessionExpiration.Default,
 });
-const form: Ref<typeof VForm | null> = ref(null);
+const form: Ref<VForm | null> = ref(null);
 
 onMounted(() => {
 	credentials.value.expiration = userStore.getLastRequestedExpiration;

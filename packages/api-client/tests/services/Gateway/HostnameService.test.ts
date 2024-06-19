@@ -31,7 +31,7 @@ describe('HostnameService', (): void => {
 		mockedAxios.reset();
 	});
 
-	it('set hostname', async(): Promise<void> => {
+	it('set hostname', async (): Promise<void> => {
 		expect.assertions(0);
 		const hostname = 'testHostname';
 		const data: Hostname = {

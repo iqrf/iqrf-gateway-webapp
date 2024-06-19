@@ -104,7 +104,7 @@ const componentProps = defineProps({
 	},
 });
 const show: Ref<boolean> = ref(false);
-const form: Ref<typeof VForm | null> = ref(null);
+const form: Ref<VForm | null> = ref(null);
 const config: Ref<IqrfGatewayControllerApiAutonetworkConfig | null> = ref(null);
 
 watchEffect(() => {

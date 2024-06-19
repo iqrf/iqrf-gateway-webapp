@@ -82,7 +82,7 @@ const emit = defineEmits(['saved']);
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
 const service: AzureService = useApiClient().getCloudServices().getAzureService();
-const form: Ref<typeof VForm | null> = ref(null);
+const form: Ref<VForm | null> = ref(null);
 const defaultConfig: AzureIotHubConfig = {
 	connectionString: '',
 };

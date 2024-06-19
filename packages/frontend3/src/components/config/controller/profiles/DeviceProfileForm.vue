@@ -170,7 +170,7 @@ const componentProps = defineProps({
 const i18n = useI18n();
 const service: IqrfGatewayControllerService = useApiClient().getConfigServices().getIqrfGatewayControllerService();
 const show: Ref<boolean> = ref(false);
-const form: Ref<typeof VForm | null> = ref(null);
+const form: Ref<VForm | null> = ref(null);
 const defaultProfile: IqrfGatewayControllerMapping = {
 	name: '',
 	deviceType: MappingDeviceType.Board,
@@ -199,7 +199,7 @@ const dialogTitle = computed(() => {
 	return i18n.t('components.configuration.profiles.actions.edit').toString();
 });
 
-watchEffect(async(): Promise<void> => {
+watchEffect((): void => {
 	if (componentProps.action === Action.Edit && componentProps.deviceProfile) {
 		profile.value = { ...componentProps.deviceProfile };
 		watchdogPins.value = componentProps.deviceProfile.sck !== -1 && componentProps.deviceProfile.sda !== -1;

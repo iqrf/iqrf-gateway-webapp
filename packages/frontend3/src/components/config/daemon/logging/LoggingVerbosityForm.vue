@@ -113,7 +113,7 @@ const defaultLevel: ShapeTraceChannelVerbosity = {
 	channel: 0,
 	level: ShapeTraceVerbosity.Info,
 };
-const form: Ref<typeof VForm | null> = ref(null);
+const form: Ref<VForm | null> = ref(null);
 const level: Ref<ShapeTraceChannelVerbosity> = ref({ ...defaultLevel });
 const severityOptions = [
 	{
@@ -134,7 +134,7 @@ const severityOptions = [
 	},
 ];
 
-watchEffect(async (): Promise<void> => {
+watchEffect((): void => {
 	if (componentProps.action === Action.Edit && componentProps.loggingLevel) {
 		level.value = { ...componentProps.loggingLevel };
 	} else {

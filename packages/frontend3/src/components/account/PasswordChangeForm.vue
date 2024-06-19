@@ -67,7 +67,7 @@ import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
 import { Action } from '@/types/Action';
 
-const form: Ref<typeof VForm | null> = ref(null);
+const form: Ref<VForm | null> = ref(null);
 const passwordChange: Ref<UserPasswordChange> = ref<UserPasswordChange>({
 	old: '',
 	new: '',

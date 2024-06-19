@@ -118,7 +118,7 @@ import { ComponentState } from '@/types/ComponentState';
 const i18n = useI18n();
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
-const form: Ref<typeof VForm | null> = ref(null);
+const form: Ref<VForm | null> = ref(null);
 const config: Ref<IqrfGatewayDaemonCdc | null> = ref(null);
 let instance = '';
 const showIntefaceMenu: Ref<boolean> = ref(false);

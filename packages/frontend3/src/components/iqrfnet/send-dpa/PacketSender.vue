@@ -467,7 +467,7 @@ import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
 const daemonStore = useDaemonStore();
-const form: Ref<typeof VForm | null> = ref(null);
+const form: Ref<VForm | null> = ref(null);
 const msgId: Ref<string | null> = ref(null);
 const messages: Ref<DpaPacketMessage[]> = ref([]);
 const hwpidMenu: Ref<boolean> = ref(false);
@@ -481,7 +481,7 @@ daemonStore.$onAction(
 				}
 				daemonStore.removeMessage(msgId.value);
 				componentState.value = ComponentState.Ready;
-				if (rsp.mType === GenericMessages.Raw) {
+				if (rsp.mType === GenericMessages.Raw.toString()) {
 					handleResponse(rsp);
 				}
 			});

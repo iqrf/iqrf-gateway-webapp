@@ -114,7 +114,7 @@ const emit = defineEmits(['saved']);
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
 const service: IbmService = useApiClient().getCloudServices().getIbmService();
-const form: Ref<typeof VForm | null> = ref(null);
+const form: Ref<VForm | null> = ref(null);
 const defaultConfig: IbmCloudConfig = {
 	deviceId: '',
 	deviceType: '',

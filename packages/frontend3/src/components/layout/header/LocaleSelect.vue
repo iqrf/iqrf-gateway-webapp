@@ -48,6 +48,7 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
+import { type UserLanguage } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
@@ -56,7 +57,7 @@ import { useLocaleStore } from '@/store/locale';
 const i18n = useI18n();
 const localeStore = useLocaleStore();
 
-function setLocale(locale: string): void {
+function setLocale(locale: UserLanguage): void {
 	if (localeStore.getLocale === locale) {
 		return;
 	}

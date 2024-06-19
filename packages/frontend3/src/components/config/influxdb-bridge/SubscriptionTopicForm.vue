@@ -91,10 +91,10 @@ interface Props {
 const emit = defineEmits(['save']);
 const componentProps = defineProps<Props>();
 const show: Ref<boolean> = ref(false);
-const form: Ref<typeof VForm | null> = ref(null);
+const form: Ref<VForm | null> = ref(null);
 const subscriptionTopic: Ref<string> = ref('');
 
-watchEffect(async (): Promise<void> => {
+watchEffect((): void => {
 	if (componentProps.action === Action.Add) {
 		subscriptionTopic.value = '';
 	} else {

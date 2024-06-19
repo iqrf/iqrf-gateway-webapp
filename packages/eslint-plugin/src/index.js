@@ -23,6 +23,7 @@ module.exports = {
 	},
 	configs: {
 		base: require('./configs/classic/base'),
+		import: require('./configs/classic/import'),
 		'flat/base': require('./configs/flat/base'),
 	}
 }

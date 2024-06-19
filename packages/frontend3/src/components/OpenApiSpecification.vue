@@ -60,6 +60,15 @@ const service = useApiClient().getOpenApiService();
 const urlBuilder: UrlBuilder = new UrlBuilder();
 
 /**
+ * Extended Swagger request interface
+ */
+interface Request extends SwaggerRequest {
+	headers: {
+		Authorization?: string;
+	};
+}
+
+/**
  * Fetch OpenAPI specification
  */
 function fetch(): void {
@@ -71,7 +80,8 @@ function fetch(): void {
 				spec: specification,
 				dom_id: '#swagger',
 				deepLinking: true,
-				requestInterceptor: (request: SwaggerRequest) => {
+				requestInterceptor: (swaggerRequest: SwaggerRequest): SwaggerRequest => {
+					const request = swaggerRequest as Request;
 					if (token.value && !request.headers.Authorization) {
 						request.headers.Authorization = `Bearer ${token.value}`;
 					}

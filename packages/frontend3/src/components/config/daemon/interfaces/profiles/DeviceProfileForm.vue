@@ -213,7 +213,7 @@ const componentProps = defineProps({
 const emit = defineEmits(['saved']);
 const i18n = useI18n();
 const show: Ref<boolean> = ref(false);
-const form: Ref<typeof VForm | null> = ref(null);
+const form: Ref<VForm | null> = ref(null);
 const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
 const defaultProfile: IqrfGatewayDaemonMapping = {
 	busEnableGpioPin: 0,
@@ -254,7 +254,7 @@ const dialogTitle = computed(() => {
 	return i18n.t('components.configuration.profiles.actions.edit').toString();
 });
 
-watchEffect(async (): Promise<void> => {
+watchEffect((): void => {
 	if (componentProps.action === Action.Edit && componentProps.deviceProfile) {
 		profile.value = {
 			...componentProps.deviceProfile,

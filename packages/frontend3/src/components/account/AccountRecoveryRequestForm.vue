@@ -51,6 +51,7 @@ limitations under the License.
 import { type AccountService } from '@iqrf/iqrf-gateway-webapp-client/services';
 import { type UserAccountRecovery } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { mdiAccount, mdiAccountKey } from '@mdi/js';
+import { type AxiosError } from 'axios';
 import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
@@ -70,7 +71,7 @@ const request: Ref<UserAccountRecovery> = ref({
 	username: '',
 });
 const success: Ref<boolean> = ref(false);
-const form: Ref<typeof VForm | null> = ref(null);
+const form: Ref<VForm | null> = ref(null);
 const service: AccountService = useApiClient().getAccountService();
 
 async function onSubmit(): Promise<void> {
@@ -84,7 +85,7 @@ async function onSubmit(): Promise<void> {
 			);
 			success.value = true;
 		})
-		.catch((error) => {
+		.catch((error: AxiosError) => {
 			basicErrorToast(error, 'account.recovery.messages.failure');
 		});
 }

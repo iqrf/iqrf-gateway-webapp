@@ -36,6 +36,14 @@
 		"vite-plugin-vue-layouts/client",
 		"vite-plugin-pages/client"
 	],
+	"references": [
+		{
+			"path": "../api-client/tsconfig.json"
+		},
+		{
+			"path": "../daemon-utils/tsconfig.json"
+		}
+	],
 	"include": [
 		"src/**/*.ts",
 		"src/**/*.d.ts",

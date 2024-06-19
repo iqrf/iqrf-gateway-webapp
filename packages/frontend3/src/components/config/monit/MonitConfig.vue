@@ -134,7 +134,7 @@ import { ComponentState } from '@/types/ComponentState';
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
 const service: MonitService = useApiClient().getConfigServices().getMonitService();
-const form: Ref<typeof VForm | null> = ref(null);
+const form: Ref<VForm | null> = ref(null);
 const config: Ref<MonitConfig | null> = ref(null);
 const headers = [
 	{ key: 'name', title: i18n.t('components.configuration.monit.checks.name') },

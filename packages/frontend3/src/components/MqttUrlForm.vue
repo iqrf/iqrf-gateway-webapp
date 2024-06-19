@@ -139,7 +139,7 @@ const hostname: Ref<string> = ref('');
 const port: Ref<number> = ref(1883);
 const path: Ref<string> = ref('');
 
-watchEffect(async (): Promise<void> => {
+watchEffect((): void => {
 	if (show.value) {
 		const parsed = componentProps.url.match(regexCapture);
 		if (parsed?.groups === undefined) {
@@ -155,7 +155,7 @@ watchEffect(async (): Promise<void> => {
 	}
 });
 
-async function onSubmit(): Promise<void> {
+function onSubmit(): void {
 	let url = `${protocol.value}://${hostname.value}:${port.value}`;
 	if (protocol.value === MqttProtocol.WS || protocol.value === MqttProtocol.WSS) {
 		url += '/' + path.value;

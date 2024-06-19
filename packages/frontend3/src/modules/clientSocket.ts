@@ -108,7 +108,7 @@ export default class ClientSocket {
 		}
 		this.onOpenCallback = callback;
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		this.socket.onopen = function(_) {
+		this.socket.onopen = function (_): void {
 			callback();
 		};
 	}
@@ -139,7 +139,7 @@ export default class ClientSocket {
 			return;
 		}
 		this.onErrorCallback = callback;
-		this.socket.onerror = function(event: Event) {
+		this.socket.onerror = function (event: Event) {
 			callback(event);
 		};
 	}
@@ -164,7 +164,7 @@ export default class ClientSocket {
 			return;
 		}
 		this.onMessageCallback = callback;
-		this.socket.onmessage = function(event: MessageEvent) {
+		this.socket.onmessage = function (event: MessageEvent) {
 			callback(event);
 		};
 	}

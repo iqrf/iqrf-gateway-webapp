@@ -287,7 +287,7 @@ const componentProps = defineProps({
 const i18n = useI18n();
 const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
 const show: Ref<boolean> = ref(false);
-const form: Ref<typeof VForm | null> = ref(null);
+const form: Ref<VForm | null> = ref(null);
 const defaultProfile: IqrfGatewayDaemonMqttMessaging = {
 	component: IqrfGatewayDaemonComponentName.IqrfMqttMessaging,
 	instance: '',
@@ -351,9 +351,9 @@ const persistenceOptions = [
 	},
 ];
 const persistenceDescription = computed(() => {
-	if (profile.value.Persistence === 0) {
+	if (profile.value.Persistence === IqrfGatewayDaemonMqttMessagingPersistence.MEMORY) {
 		return i18n.t('components.configuration.daemon.connections.mqtt.messages.persistence.memory').toString();
-	} else if (profile.value.Persistence === 1) {
+	} else if (profile.value.Persistence === IqrfGatewayDaemonMqttMessagingPersistence.FILESYSTEM) {
 		return i18n.t('components.configuration.daemon.connections.mqtt.messages.persistence.filesystem').toString();
 	}
 	return i18n.t('components.configuration.daemon.connections.mqtt.messages.persistence.application').toString();
@@ -366,7 +366,7 @@ const dialogTitle = computed(() => {
 	return i18n.t('components.configuration.daemon.connections.actions.edit').toString();
 });
 
-watchEffect(async(): Promise<void> => {
+watchEffect((): void => {
 	if (componentProps.action === Action.Edit && componentProps.connectionProfile) {
 		profile.value = { ...componentProps.connectionProfile };
 		instance = componentProps.connectionProfile.instance;

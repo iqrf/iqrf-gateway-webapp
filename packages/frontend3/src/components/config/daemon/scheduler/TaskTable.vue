@@ -180,16 +180,16 @@ daemonStore.$onAction(
 			}
 			daemonStore.removeMessage(msgId.value);
 			switch (rsp.mType) {
-				case SchedulerMessages.ListTasks:
+				case SchedulerMessages.ListTasks.toString():
 					handleListTasks(rsp);
 					break;
-				case SchedulerMessages.GetTask:
+				case SchedulerMessages.GetTask.toString():
 					handleGetTask(rsp);
 					break;
-				case SchedulerMessages.StartTask:
+				case SchedulerMessages.StartTask.toString():
 					handleStartTask(rsp);
 					break;
-				case SchedulerMessages.StopTask:
+				case SchedulerMessages.StopTask.toString():
 					handleStopTask(rsp);
 					break;
 				default:
@@ -260,7 +260,7 @@ function handleListTasks(rsp: DaemonApiResponse): void {
 		);
 		return;
 	}
-	tasks.value = rsp.data.rsp.tasks;
+	tasks.value = rsp.data.rsp.tasks as SchedulerRecord[];
 	componentState.value = ComponentState.Ready;
 }
 
@@ -286,7 +286,7 @@ function handleGetTask(rsp: DaemonApiResponse): void {
 		);
 		return;
 	}
-	const taskId = rsp.data.rsp.taskId;
+	const taskId = rsp.data.rsp.taskId as string;
 	let idx = tasks.value.findIndex((item: SchedulerRecord) => item.taskId === taskId);
 	if (idx !== -1) {
 		tasks.value[idx] = rsp.data.rsp as SchedulerRecord;
@@ -317,7 +317,7 @@ function handleStartTask(rsp: DaemonApiResponse): void {
 		);
 		return;
 	}
-	const taskId = rsp.data.rsp.taskId;
+	const taskId = rsp.data.rsp.taskId as string;
 	toast.success(
 		i18n.t('components.configuration.daemon.scheduler.messages.start.success', { id: taskId }),
 	);
@@ -344,7 +344,7 @@ function handleStopTask(rsp: DaemonApiResponse): void {
 		);
 		return;
 	}
-	const taskId = rsp.data.rsp.taskId;
+	const taskId = rsp.data.rsp.taskId as string;
 	toast.success(
 		i18n.t('components.configuration.daemon.scheduler.messages.stop.success', { id: taskId }),
 	);

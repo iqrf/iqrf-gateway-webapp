@@ -15,7 +15,10 @@
  */
 
 import { type AxiosResponse } from 'axios';
-import * as uuid from 'uuid';
+import {
+	validate as uuidValidate,
+	version as uuidVersion,
+} from 'uuid';
 
 import { type UserCredentials, type UserSignedIn } from '../types';
 import { UserUtils } from '../utils';
@@ -52,10 +55,10 @@ export class AuthenticationService extends BaseService {
 	 * @return {Promise<UserSignedIn>} Signed in user
 	 */
 	public verify(verificationUuid: string): Promise<UserSignedIn> {
-		if (!uuid.validate(verificationUuid)) {
+		if (!uuidValidate(verificationUuid)) {
 			throw new Error('Invalid verification UUID.');
 		}
-		if (uuid.version(verificationUuid) !== 4) {
+		if (uuidVersion(verificationUuid) !== 4) {
 			throw new Error('Invalid verification UUID version.');
 		}
 		return this.axiosInstance.get(`/user/verify/${verificationUuid}`)

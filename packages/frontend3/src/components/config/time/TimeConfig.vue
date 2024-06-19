@@ -192,7 +192,7 @@ async function getTime(): Promise<void> {
 }
 
 async function onSubmit(): Promise<void> {
-	const params: TimeSet = JSON.parse(JSON.stringify(timeSet.value));
+	const params: TimeSet = JSON.parse(JSON.stringify(timeSet.value)) as TimeSet;
 	params.zoneName = timezone.value.name;
 	if (params.ntpSync) {
 		delete params.datetime;

@@ -128,7 +128,7 @@ const i18n = useI18n();
 const emit = defineEmits(['refresh']);
 const componentProps = defineProps<Props>();
 const showDialog: Ref<boolean> = ref(false);
-const form: Ref<typeof VForm | null> = ref(null);
+const form: Ref<VForm | null> = ref(null);
 const userStore = useUserStore();
 const defaultUser: UserCreate | UserEdit = {
 	username: '',
@@ -140,7 +140,7 @@ const user: Ref<UserCreate | UserEdit> = ref(defaultUser);
 const roles = getFilteredRoleOptions(userStore.getRole!);
 
 
-watchEffect(async (): Promise<void> => {
+watchEffect((): void => {
 	if (componentProps.action === Action.Add) {
 		user.value = { ...defaultUser, password: '' } as UserCreate;
 	} else if (componentProps.action === Action.Edit) {

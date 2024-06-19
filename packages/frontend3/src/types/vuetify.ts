@@ -15,9 +15,7 @@
  * limitations under the License.
  */
 
-import type VueI18n from 'vue-i18n';
-
 export interface SelectItem {
-	title: string|VueI18n.TranslateResult
+	title: string
 	value: string|number|boolean|null
 }

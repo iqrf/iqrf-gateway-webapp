@@ -159,12 +159,12 @@ export const useDaemonStore = defineStore('daemon', {
 		},
 		/**
 		 * On socket message action (used as callback)
-		 * @param {MessageEvent} event Message event
+		 * @param {MessageEvent<string>} event Message event
 		 */
-		onMessage(event: MessageEvent): DaemonApiResponse {
-			const message: DaemonApiResponse = JSON.parse(event.data);
+		onMessage(event: MessageEvent<string>): DaemonApiResponse {
+			const message: DaemonApiResponse = JSON.parse(event.data) as DaemonApiResponse;
 			if (message.mType === 'mngDaemon_Version' && message.data.msgId === this.versionMsgId) {
-				const tokens = RegExp(/v\d+\.\d+\.\d+/g).exec(message.data.rsp.version);
+				const tokens = RegExp(/v\d+\.\d+\.\d+/g).exec(message.data.rsp.version as string);
 				if (tokens !== null && tokens.length > 0) {
 					this.version = tokens[0];
 				}
@@ -176,7 +176,7 @@ export const useDaemonStore = defineStore('daemon', {
 					this.enum = false;
 				}
 			}
-			this.responses[message.data.msgId as string] = message;
+			this.responses[message.data.msgId] = message;
 			return message;
 		},
 		onSend(message: DaemonApiRequest): void {

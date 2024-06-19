@@ -44,5 +44,5 @@ export class IpNetworkUtils {
 				return null;
 		}
 	}
-	
+
 }

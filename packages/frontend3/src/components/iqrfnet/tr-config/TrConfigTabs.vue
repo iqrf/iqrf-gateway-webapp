@@ -77,7 +77,7 @@ import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const tab: Ref<number> = ref(0);
-const form: Ref<typeof VForm | null> = ref(null);
+const form: Ref<VForm | null> = ref(null);
 const config: Ref<TrConfig> = ref({
 	rfBand: '868', // OS RF
 	rfChannelA: 52,

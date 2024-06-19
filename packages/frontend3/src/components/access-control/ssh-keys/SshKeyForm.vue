@@ -139,7 +139,7 @@ const componentProps = defineProps({
 });
 const i18n = useI18n();
 const show: Ref<boolean> = ref(false);
-const form: Ref<typeof VForm | null> = ref(null);
+const form: Ref<VForm | null> = ref(null);
 const defaultKey: SshKeyCreate = {
 	key: '',
 	description: '',
@@ -166,7 +166,7 @@ const dialogTitle = computed(() => {
 	return i18n.t('components.accessControl.sshKeys.form.editTitle').toString();
 });
 
-watchEffect(async(): Promise<void> => {
+watchEffect((): void => {
 	if (componentProps.action === Action.Add) {
 		localKey.value = { ...defaultKey };
 	} else if (componentProps.action === Action.Edit) {

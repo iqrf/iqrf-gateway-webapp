@@ -74,7 +74,7 @@ daemonStore.$onAction(
 				return;
 			}
 			daemonStore.removeMessage(msgId.value);
-			if (rsp.mType === SchedulerMessages.RemoveAll) {
+			if (rsp.mType === SchedulerMessages.RemoveAll.toString()) {
 				handleRemoveTasks(rsp);
 			}
 		});

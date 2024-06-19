@@ -145,7 +145,7 @@ import { ComponentState } from '@/types/ComponentState';
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
 const service: JournalService = useApiClient().getConfigServices().getJournalService();
-const form: Ref<typeof VForm | null> = ref(null);
+const form: Ref<VForm | null> = ref(null);
 const config: Ref<JournalConfig | null> = ref(null);
 const storageOptions = [
 	{

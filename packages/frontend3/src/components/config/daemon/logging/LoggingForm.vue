@@ -233,7 +233,7 @@ const componentProps = defineProps({
 const i18n = useI18n();
 const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
 const show: Ref<boolean> = ref(false);
-const form: Ref<typeof VForm | null> = ref(null);
+const form: Ref<VForm | null> = ref(null);
 const defaultProfile: ShapeTraceFileService = {
 	component: IqrfGatewayDaemonComponentName.ShapeTraceFile,
 	instance: '',
@@ -261,7 +261,7 @@ const dialogTitle = computed(() => {
 	return i18n.t('components.configuration.daemon.logging.actions.edit').toString();
 });
 
-watchEffect(async(): Promise<void> => {
+watchEffect((): void => {
 	if (componentProps.action === Action.Edit && componentProps.loggingProfile) {
 		profile.value = { ...componentProps.loggingProfile };
 		if (profile.value.maxAgeMinutes === undefined) {

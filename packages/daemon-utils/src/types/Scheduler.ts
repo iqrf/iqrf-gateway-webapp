@@ -41,7 +41,7 @@ export interface SchedulerRecordTask {
 	/// Request to send
 	message: DaemonApiRequest;
 	/// Communication profiles
-	messaging: MessagingInstance[];
+	messaging: MessagingInstance[] | string[];
 }
 
 /**

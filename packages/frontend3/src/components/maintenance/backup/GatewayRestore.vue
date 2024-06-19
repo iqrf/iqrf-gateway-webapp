@@ -69,7 +69,7 @@ import { ComponentState } from '@/types/ComponentState';
 const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
 const i18n = useI18n();
 const service: BackupService = useApiClient().getMaintenanceServices().getBackupService();
-const form: Ref<typeof VForm | null> = ref(null);
+const form: Ref<VForm | null> = ref(null);
 const archive: Ref<File[] | null> = ref(null);
 
 async function onSubmit(): Promise<void> {

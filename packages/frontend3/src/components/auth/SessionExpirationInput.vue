@@ -27,7 +27,7 @@ limitations under the License.
 <script lang='ts' setup>
 import { UserSessionExpiration } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { mdiAccountClock } from '@mdi/js';
-import { computed, defineModel, type PropType, type Ref } from 'vue';
+import { computed, type PropType, type Ref } from 'vue';
 
 import SelectInput from '@/components/layout/form/SelectInput.vue';
 import i18n from '@/plugins/i18n';

@@ -89,10 +89,10 @@ export const useMonitorStore = defineStore('monitor', {
 		},
 		/**
 		 * On socket message action (used as callback)
-		 * @param {MessageEvent} event Message event
+		 * @param {MessageEvent<string>} event Message event
 		 */
-		onMessage(event: MessageEvent): void {
-			const message: MonitorMessage = JSON.parse(event.data);
+		onMessage(event: MessageEvent<string>): void {
+			const message: MonitorMessage = JSON.parse(event.data) as MonitorMessage;
 			this.queueLength = message.data.msgQueueLen;
 			this.mode = message.data.operMode;
 			this.lastTimestamp = message.data.timestamp;

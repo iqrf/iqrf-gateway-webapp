@@ -1,5 +1,5 @@
 /**
- * Copyright 2023-2024 MICRORISC s.r.o.
+ * Copyright 2024 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,26 +15,45 @@
  */
 
 module.exports = {
+	extends: [
+		'plugin:import/recommended',
+		'plugin:import/typescript',
+	],
 	env: {
 		browser: true,
 		node: true,
 	},
-	extends: [
-		'plugin:@iqrf/base',
-		'plugin:@iqrf/import',
-		'plugin:promise/recommended',
-		'plugin:typescript-sort-keys/recommended',
-	],
-	parserOptions: {
-		project: './tsconfig.json',
-	},
 	rules: {
-		'@typescript-eslint/no-duplicate-enum-values': 'warn',
+		'import/consistent-type-specifier-style': [
+			'error',
+			'prefer-inline',
+		],
+		'import/order': [
+			'error',
+			{
+				'alphabetize': {
+					'order': 'asc',
+					'caseInsensitive': true,
+				},
+				'pathGroups': [
+					{
+						'pattern': '@/**',
+						'group': 'internal',
+					},
+				],
+				'groups': ['builtin', 'external', 'internal', 'parent', 'sibling', 'index', 'object', 'type'],
+				'newlines-between': 'always',
+			},
+		],
 	},
 	settings: {
+		'import/parsers': {
+			'@typescript-eslint/parser': ['.ts', '.tsx'],
+		},
 		'import/resolver': {
+			'node': true,
 			'typescript': {
-				'project': './tsconfig.json',
+				'alwaysTryTypes': true,
 			},
 		},
 	},

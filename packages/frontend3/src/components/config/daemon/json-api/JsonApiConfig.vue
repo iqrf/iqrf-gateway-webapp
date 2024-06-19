@@ -72,6 +72,7 @@ import {
 	type IqrfGatewayDaemonComponent,
 	IqrfGatewayDaemonComponentName,
 	type IqrfGatewayDaemonJsonSplitter,
+	type IqrfGatewayDaemonJsonSplitterV3,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { mdiIdentifier } from '@mdi/js';
 import { onMounted, ref, type Ref } from 'vue';
@@ -92,9 +93,9 @@ import { ComponentState } from '@/types/ComponentState';
 const i18n = useI18n();
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
-const form: Ref<typeof VForm | null> = ref(null);
+const form: Ref<VForm | null> = ref(null);
 let instance = '';
-const config: Ref<IqrfGatewayDaemonJsonSplitter | null> = ref(null);
+const config: Ref<IqrfGatewayDaemonJsonSplitter | IqrfGatewayDaemonJsonSplitterV3 | null> = ref(null);
 
 async function getConfig(): Promise<void> {
 	if (componentState.value === ComponentState.Created) {
