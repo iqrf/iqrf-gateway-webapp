@@ -35,11 +35,8 @@ export class OpenApiService extends BaseService {
 				const regExp = /https:\/\/apidocs\.iqrf\.org\/iqrf-gateway-webapp-api\/schemas\/(\w*)\.json/g;
 				const replacement: string = baseUrl + '/openapi/schemas/$1';
 				const spec = JSON.parse(JSON.stringify(response.data).replaceAll(regExp, replacement)) as OpenAPI3;
-				spec.servers = [{
-					description: '',
-					variables: {},
-					url: baseUrl,
-				}];
+				// @ts-ignore Ignore missing description and variable properties in OpenAPI v3.x server object
+				spec.servers = [{ url: baseUrl }];
 				return spec;
 			});
 	}

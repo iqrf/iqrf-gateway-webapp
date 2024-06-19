@@ -206,6 +206,12 @@ phpstan:
   <<: *coding-style_template
 
 eslint:
+  <<: *coding-style_template
+  <<: *npm_template
+  before_script:
+    - !reference [.npm_template, before_script]
+    - 'if [[ "${PACKAGE}" == "api-client" || "${PACKAGE}" == "frontend" || "${PACKAGE}" == "frontend3" ]]; then pnpm --dir packages/daemon-utils build; fi'
+    - 'if [[ "${PACKAGE}" == "frontend" || "${PACKAGE}" == "frontend3" ]]; then pnpm --dir packages/api-client build; fi'
   script:
     - pnpm --dir packages/${PACKAGE} run lint:js
   parallel:
@@ -215,8 +221,6 @@ eslint:
           - daemon-utils
           - frontend
           - frontend3
-  <<: *coding-style_template
-  <<: *npm_template
 
 stylelint:
   script:
