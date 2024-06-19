@@ -23,15 +23,19 @@ includes:
 
 parameters:
 	level: 6
+	additionalConstructors:
+		- Tester\TestCase::setUp
 	bootstrapFiles:
 		- tests/phpstanBootstrap.php
-	checkGenericClassInNonGenericObjectType: false
 	paths:
 		- app
 		- bin
 		- tests
 	excludePaths:
-		- tests/tmp/*
+		analyse:
+			- tests/Unit/InstallModule/Models/SudoManagerTest.php
+		analyseAndScan:
+			- tests/tmp/*
 	fileExtensions:
 		- php
 		- phpt
@@ -43,7 +47,6 @@ parameters:
 			message: '#Variable property access on mixed.#'
 			path: app/NetworkModule/Entities/Modem.php
 		- '#Call to an undefined method Symfony\\Component\\Console\\Helper\\HelperInterface::ask\(\).#'
-		- '#Call to deprecated method forUnsecuredSigner\(\) of class Lcobucci\\JWT\\Configuration\:\s*Deprecated since v4.3#'
 		-
 			message: "#^Negated boolean expression is always false\\.$#"
 			path: app/Models/Mail/ConfigurationManager.php
@@ -52,4 +55,3 @@ parameters:
 			message: '#Left side of \&\& is always (true|false)\.#'
 			path: app/Models/Database/Entities/User.php
 			count: 1
-		- '#Parameter \#2 \.\.\.\$args of static method Mockery::mock\(\) expects .*, .* given.#'
