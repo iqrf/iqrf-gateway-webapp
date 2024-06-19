@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM iqrftech/iqrf-gateway-webapp:tests-bullseye AS builder
+FROM iqrftech/iqrf-gateway-webapp:tests-bookworm AS builder
 
 LABEL maintainer="roman.ondracek@iqrf.com"
 
@@ -22,7 +22,7 @@ WORKDIR /var/www
 
 RUN composer install --ignore-platform-req=ext-intl
 
-FROM ppc64le/php:8.2-fpm
+FROM ppc64le/php:8.3-fpm
 
 LABEL maintainer="roman.ondracek@iqrf.com"
 
