@@ -26,7 +26,7 @@ export class AwsService extends BaseService {
 	 * Creates a new AWS IoT MQTT instance
 	 * @param {AwsMqttConfig} config AWS IoT configuration
 	 */
-	public createMqttInstance(config: AwsMqttConfig): Promise<void> {
+	public async createMqttInstance(config: AwsMqttConfig): Promise<void> {
 		if (!config.certificate || !config.privateKey) {
 			throw new Error('Certificate and private key must be set');
 		}
@@ -34,8 +34,7 @@ export class AwsService extends BaseService {
 		formData.append('endpoint', config.endpoint);
 		formData.append('certificate', config.certificate as Blob);
 		formData.append('privateKey', config.privateKey as Blob);
-		return this.axiosInstance.post('/clouds/aws', formData)
-			.then((): void => {return;});
+		await this.axiosInstance.post('/clouds/aws', formData);
 	}
 
 }

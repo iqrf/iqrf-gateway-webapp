@@ -33,36 +33,36 @@ export class PowerService extends BaseService {
 	 * Performs shutdown
 	 * @returns {Promise<PowerActionResponse>} Gateway shutdown time
 	 */
-	public powerOff(): Promise<PowerActionResponse> {
-		return this.axiosInstance.post('/gateway/power/poweroff')
-			.then((response: AxiosResponse<PowerActionResponse>): PowerActionResponse => response.data);
+	public async powerOff(): Promise<PowerActionResponse> {
+		const response: AxiosResponse<PowerActionResponse> =
+			await this.axiosInstance.post('/gateway/power/poweroff');
+		return response.data;
 	}
 
 	/**
 	 * Performs reboot
 	 * @returns {Promise<PowerActionResponse>} Gateway reboot time
 	 */
-	public reboot(): Promise<PowerActionResponse> {
-		return this.axiosInstance.post('/gateway/power/reboot')
-			.then((response: AxiosResponse<PowerActionResponse>): PowerActionResponse => response.data);
+	public async reboot(): Promise<PowerActionResponse> {
+		const response: AxiosResponse<PowerActionResponse> =
+			await this.axiosInstance.post('/gateway/power/reboot');
+		return response.data;
 	}
 
 	/**
 	 * Retrieves gateway uptime stats
 	 * @returns {Promise<GatewayUptime[]>} Gateway uptime stats
 	 */
-	public fetchStats(): Promise<GatewayUptime[]> {
-		return this.axiosInstance.get('/gateway/power/stats')
-			.then((response: AxiosResponse<GatewayUptimeRaw[]>): GatewayUptime[] =>
-				response.data.map((uptime: GatewayUptimeRaw): GatewayUptime => ({
-					...uptime,
-					downtime: Duration.fromObject({ seconds: uptime.downtime }),
-					running: Duration.fromObject({ seconds: uptime.running }),
-					sleeping: Duration.fromObject({ seconds: uptime.sleeping }),
-					shutdown: uptime.shutdown ? DateTime.fromISO(uptime.shutdown) : null,
-					start: DateTime.fromISO(uptime.start),
-				}))
-					.sort((a: GatewayUptime, b: GatewayUptime): number => b.id - a.id),
-			);
+	public async fetchStats(): Promise<GatewayUptime[]> {
+		const response: AxiosResponse<GatewayUptimeRaw[]> =
+			await this.axiosInstance.get('/gateway/power/stats');
+		return response.data.map((uptime: GatewayUptimeRaw): GatewayUptime => ({
+			...uptime,
+			downtime: Duration.fromObject({ seconds: uptime.downtime }),
+			running: Duration.fromObject({ seconds: uptime.running }),
+			sleeping: Duration.fromObject({ seconds: uptime.sleeping }),
+			shutdown: uptime.shutdown ? DateTime.fromISO(uptime.shutdown) : null,
+			start: DateTime.fromISO(uptime.start),
+		})).sort((a: GatewayUptime, b: GatewayUptime): number => b.id - a.id);
 	}
 }

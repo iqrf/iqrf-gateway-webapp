@@ -23,6 +23,11 @@ export interface VersionBase {
 }
 
 /**
+ * Version of IQRF Gateway Daemon
+ */
+export type VersionIqrfGatewayDaemon = VersionBase;
+
+/**
  * Version of IQRF Gateway Webapp
  */
 export interface VersionIqrfGatewayWebapp extends VersionBase {

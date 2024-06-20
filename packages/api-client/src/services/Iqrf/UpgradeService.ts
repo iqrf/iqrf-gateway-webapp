@@ -35,12 +35,13 @@ export class UpgradeService extends BaseService {
 	 * @param {FileType} type File type
 	 * @return {Promise<string>} Path to uploaded file
 	 */
-	public uploadToFs(file: File, type: FileFormat): Promise<FileUploadResult> {
-		const formData = new FormData();
+	public async uploadToFs(file: File, type: FileFormat): Promise<FileUploadResult> {
+		const formData: FormData = new FormData();
 		formData.append('format', type);
 		formData.append('file', file);
-		return this.axiosInstance.post('/iqrf/upload', formData)
-			.then((response: AxiosResponse<FileUploadResult>): FileUploadResult => response.data);
+		const response: AxiosResponse<FileUploadResult> =
+			await this.axiosInstance.post('/iqrf/upload', formData);
+		return response.data;
 	}
 
 	/**
@@ -48,12 +49,11 @@ export class UpgradeService extends BaseService {
 	 * @param {string} path Path to uploaded file
 	 * @param {FileType} type File type
 	 */
-	public uploadToTr(path: string, type: FileType): Promise<void> {
+	public async uploadToTr(path: string, type: FileType): Promise<void> {
 		const data: UploaderFileData = {
 			name: path,
 			type: type,
 		};
-		return this.axiosInstance.post('/iqrf/uploader', data).
-			then((): void => {return;});
+		await this.axiosInstance.post('/iqrf/uploader', data);
 	}
 }

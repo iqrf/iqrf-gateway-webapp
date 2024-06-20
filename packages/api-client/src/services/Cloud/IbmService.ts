@@ -26,8 +26,7 @@ export class IbmService extends BaseService {
 	 * Creates a new IBM cloud MQTT instance
 	 * @param {IbmCloudConfig} config IBM cloud configuration
 	 */
-	public createMqttInstance(config: IbmCloudConfig): Promise<void> {
-		return this.axiosInstance.post('/clouds/ibmCloud', config)
-			.then((): void => {return;});
+	public async createMqttInstance(config: IbmCloudConfig): Promise<void> {
+		await this.axiosInstance.post('/clouds/ibmCloud', config);
 	}
 }

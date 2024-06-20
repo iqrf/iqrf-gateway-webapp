@@ -28,18 +28,18 @@ export class MobileOperatorService extends BaseService {
 	 * Fetches list of mobile operators
 	 * @return {Promise<MobileOperator[]>} List of mobile operators
 	 */
-	public list(): Promise<MobileOperator[]> {
-		return this.axiosInstance.get('/network/operators')
-			.then((response: AxiosResponse<MobileOperator[]>): MobileOperator[] => response.data.map((operator: MobileOperator): MobileOperator => this.deserialize(operator)));
+	public async list(): Promise<MobileOperator[]> {
+		const response: AxiosResponse<MobileOperator[]> =
+			await this.axiosInstance.get('/network/operators');
+		return response.data.map((operator: MobileOperator): MobileOperator => this.deserialize(operator));
 	}
 
 	/**
 	 * Creates a new mobile operator
 	 * @param {MobileOperator} operator Mobile operator to create
 	 */
-	public create(operator: MobileOperator): Promise<void> {
-		return this.axiosInstance.post('/network/operators', this.create(operator))
-			.then((): void => {return;});
+	public async create(operator: MobileOperator): Promise<void> {
+		await this.axiosInstance.post('/network/operators', this.deserialize(operator));
 	}
 
 	/**
@@ -47,9 +47,10 @@ export class MobileOperatorService extends BaseService {
 	 * @param {number} id Mobile operator ID
 	 * @return {Promise<MobileOperator>} Mobile operator
 	 */
-	public fetch(id: number): Promise<MobileOperator> {
-		return this.axiosInstance.get(`/network/operators/${id.toString()}`)
-			.then((response: AxiosResponse<MobileOperator>): MobileOperator => this.deserialize(response.data));
+	public async fetch(id: number): Promise<MobileOperator> {
+		const response: AxiosResponse<MobileOperator> =
+			await this.axiosInstance.get(`/network/operators/${id.toString()}`);
+		return this.deserialize(response.data);
 	}
 
 	/**
@@ -57,18 +58,16 @@ export class MobileOperatorService extends BaseService {
 	 * @param {number} id Mobile operator ID
 	 * @param {MobileOperator} operator Mobile operator to edit
 	 */
-	public edit(id: number, operator: MobileOperator): Promise<void> {
-		return this.axiosInstance.put(`/network/operators/${id.toString()}`, this.serialize(operator))
-			.then((): void => {return;});
+	public async edit(id: number, operator: MobileOperator): Promise<void> {
+		await this.axiosInstance.put(`/network/operators/${id.toString()}`, this.serialize(operator));
 	}
 
 	/**
 	 * Deletes the mobile operator
 	 * @param {number} id Mobile operator ID
 	 */
-	public delete(id: number): Promise<void> {
-		return this.axiosInstance.delete(`/network/operators/${id.toString()}`)
-			.then((): void => {return;});
+	public async delete(id: number): Promise<void> {
+		await this.axiosInstance.delete(`/network/operators/${id.toString()}`);
 	}
 
 	/**

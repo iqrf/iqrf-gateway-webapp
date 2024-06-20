@@ -26,9 +26,8 @@ export class AzureService extends BaseService {
 	 * Creates a new Azure IoT Hub MQTT instance
 	 * @param {AzureIotHubConfig} config Azure IoT Hub configuration
 	 */
-	public createMqttInstance(config: AzureIotHubConfig): Promise<void> {
-		return this.axiosInstance.post('/clouds/azure', config)
-			.then((): void => {return;});
+	public async createMqttInstance(config: AzureIotHubConfig): Promise<void> {
+		await this.axiosInstance.post('/clouds/azure', config);
 	}
 
 }

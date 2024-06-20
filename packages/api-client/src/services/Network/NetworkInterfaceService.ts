@@ -32,13 +32,14 @@ export class NetworkInterfaceService extends BaseService {
 	 * @param {NetworkInterfaceType} type Network interface type
 	 * @return {Promise<NetworkInterface[]>} List of network interfaces
 	 */
-	public list(type: NetworkInterfaceType|null = null): Promise<NetworkInterface[]> {
+	public async list(type: NetworkInterfaceType | null = null): Promise<NetworkInterface[]> {
 		const config: AxiosRequestConfig = {};
 		if (type !== null) {
 			Object.assign(config, { params: { type: type } });
 		}
-		return this.axiosInstance.get('/network/interfaces', config)
-			.then((response: AxiosResponse<NetworkInterface[]>): NetworkInterface[] => response.data);
+		const response: AxiosResponse<NetworkInterface[]> =
+			await this.axiosInstance.get('/network/interfaces', config);
+		return response.data;
 	}
 
 }

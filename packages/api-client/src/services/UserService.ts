@@ -30,9 +30,10 @@ export class UserService extends BaseService {
 	 * Fetches a list of all users
 	 * @return {Promise<UserInfo[]>} List of all users
 	 */
-	public list(): Promise<UserInfo[]> {
-		return this.axiosInstance.get('/users')
-			.then((response: AxiosResponse<UserInfo[]>) => response.data.map((user: UserInfo) => UserUtils.deserialize(user)));
+	public async list(): Promise<UserInfo[]> {
+		const response: AxiosResponse<UserInfo[]> =
+			await this.axiosInstance.get('/users');
+		return response.data.map((user: UserInfo) => UserUtils.deserialize(user));
 	}
 
 	/**
@@ -40,9 +41,10 @@ export class UserService extends BaseService {
 	 * @param {UserCreate} user User to create
 	 * @return {Promise<EmailSentResponse>} Email sent response
 	 */
-	public create(user: UserCreate): Promise<EmailSentResponse> {
-		return this.axiosInstance.post('/users', UserUtils.serialize(user))
-			.then((response: AxiosResponse<EmailSentResponse>) => response.data);
+	public async create(user: UserCreate): Promise<EmailSentResponse> {
+		const response: AxiosResponse<EmailSentResponse> =
+			await this.axiosInstance.post('/users', UserUtils.serialize(user));
+		return response.data;
 	}
 
 	/**
@@ -50,9 +52,10 @@ export class UserService extends BaseService {
 	 * @param {number} id User ID
 	 * @return {Promise<UserInfo>} User information
 	 */
-	public fetch(id: number): Promise<UserInfo> {
-		return this.axiosInstance.get(`/users/${id.toString()}`)
-			.then((response: AxiosResponse<UserInfo>) => UserUtils.deserialize(response.data));
+	public async fetch(id: number): Promise<UserInfo> {
+		const response: AxiosResponse<UserInfo> =
+			await this.axiosInstance.get(`/users/${id.toString()}`);
+		return UserUtils.deserialize(response.data);
 	}
 
 	/**
@@ -61,27 +64,26 @@ export class UserService extends BaseService {
 	 * @param {UserEdit} user User to edit
 	 * @return {Promise<EmailSentResponse>} Email sent response
 	 */
-	public edit(id: number, user: UserEdit): Promise<EmailSentResponse> {
-		return this.axiosInstance.put(`/users/${id.toString()}`, UserUtils.serialize(user))
-			.then((response: AxiosResponse<EmailSentResponse>) => response.data);
+	public async edit(id: number, user: UserEdit): Promise<EmailSentResponse> {
+		const response: AxiosResponse<EmailSentResponse> =
+			await this.axiosInstance.put(`/users/${id.toString()}`, UserUtils.serialize(user));
+		return response.data;
 	}
 
 	/**
 	 * Deletes the user
 	 * @param {number} id User ID
 	 */
-	public delete(id: number): Promise<void> {
-		return this.axiosInstance.delete(`/users/${id.toString()}`)
-			.then((): void => {return;});
+	public async delete(id: number): Promise<void> {
+		await this.axiosInstance.delete(`/users/${id.toString()}`);
 	}
 
 	/**
 	 * Resends the verification email
 	 * @param {number} id User ID
 	 */
-	public resendVerificationEmail(id: number): Promise<void> {
-		return this.axiosInstance.post(`/users/${id.toString()}/resendVerification`)
-			.then((): void => {return;});
+	public async resendVerificationEmail(id: number): Promise<void> {
+		await this.axiosInstance.post(`/users/${id.toString()}/resendVerification`);
 	}
 
 }

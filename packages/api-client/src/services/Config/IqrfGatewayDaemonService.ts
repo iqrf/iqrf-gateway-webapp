@@ -37,9 +37,9 @@ export class IqrfGatewayDaemonService extends BaseService {
 	 * Retrieves IQRF Gateway Daemon main configuration
 	 * @return {Promise<IqrfGatewayDaemonConfig>} IQRF Gateway Daemon main configuration
 	 */
-	public getConfig(): Promise<IqrfGatewayDaemonConfig> {
-		return this.axiosInstance.get('/config/daemon')
-			.then((response: AxiosResponse<IqrfGatewayDaemonConfig>): IqrfGatewayDaemonConfig => response.data);
+	public async getConfig(): Promise<IqrfGatewayDaemonConfig> {
+		const response: AxiosResponse<IqrfGatewayDaemonConfig> = await this.axiosInstance.get('/config/daemon');
+		return response.data;
 	}
 
 	/**
@@ -48,11 +48,12 @@ export class IqrfGatewayDaemonService extends BaseService {
 	 * @param {C} component Component name
 	 * @return {Promise<IqrfGatewayDaemonComponent<C>>} IQRF Gateway Daemon component configuration with instances
 	 */
-	public getComponent<C extends IqrfGatewayDaemonComponentName>(
+	public async getComponent<C extends IqrfGatewayDaemonComponentName>(
 		component: C,
 	): Promise<IqrfGatewayDaemonComponent<C>> {
-		return this.axiosInstance.get(`/config/daemon/${encodeURIComponent(component)}`)
-			.then((response: AxiosResponse<IqrfGatewayDaemonComponent<C>>): IqrfGatewayDaemonComponent<C> => response.data);
+		const response: AxiosResponse<IqrfGatewayDaemonComponent<C>> =
+			await this.axiosInstance.get(`/config/daemon/${encodeURIComponent(component)}`);
+		return response.data;
 	}
 
 	/**

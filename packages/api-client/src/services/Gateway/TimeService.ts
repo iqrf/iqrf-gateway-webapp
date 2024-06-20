@@ -32,26 +32,27 @@ export class TimeService extends BaseService {
 	 * Fetches current gateway time
 	 * @return {Promise<TimeConfig>} Current gateway time
 	 */
-	public getTime(): Promise<TimeConfig> {
-		return this.axiosInstance.get('/gateway/time')
-			.then((response: AxiosResponse<TimeConfig>): TimeConfig => response.data);
+	public async getTime(): Promise<TimeConfig> {
+		const response: AxiosResponse<TimeConfig> =
+			await this.axiosInstance.get('/gateway/time');
+		return response.data;
 	}
 
 	/**
 	 * Fetches available time zones
 	 * @return {Promise<Timezone[]>} Available time zones
 	 */
-	public getTimezones(): Promise<Timezone[]> {
-		return this.axiosInstance.get('/gateway/time/timezones')
-			.then((response: AxiosResponse<Timezone[]>): Timezone[] => response.data);
+	public async getTimezones(): Promise<Timezone[]> {
+		const response: AxiosResponse<Timezone[]> =
+			await this.axiosInstance.get('/gateway/time/timezones');
+		return response.data;
 	}
 
 	/**
 	 * Updates gateway time and ntp configuration
 	 * @param {TimeSet} data Time and NTP configuration
 	 */
-	public setTime(data: TimeSet): Promise<void> {
-		return this.axiosInstance.post('/gateway/time', data)
-			.then((): void => {return;});
+	public async setTime(data: TimeSet): Promise<void> {
+		await this.axiosInstance.post('/gateway/time', data);
 	}
 }

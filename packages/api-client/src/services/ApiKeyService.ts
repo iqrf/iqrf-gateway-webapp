@@ -30,9 +30,10 @@ export class ApiKeyService extends BaseService {
 	 * Fetches list of API keys
 	 * @return {Promise<ApiKeyInfo[]>} List of API keys
 	 */
-	public list(): Promise<ApiKeyInfo[]> {
-		return this.axiosInstance.get('/apiKeys')
-			.then((response: AxiosResponse<ApiKeyInfo[]>): ApiKeyInfo[] => response.data.map((key: ApiKeyInfo): ApiKeyInfo => this.deserialize(key)));
+	public async list(): Promise<ApiKeyInfo[]> {
+		const response: AxiosResponse<ApiKeyInfo[]> =
+			await this.axiosInstance.get('/apiKeys');
+		return response.data.map((key: ApiKeyInfo): ApiKeyInfo => this.deserialize(key));
 	}
 
 	/**
@@ -40,9 +41,10 @@ export class ApiKeyService extends BaseService {
 	 * @param {ApiKeyConfig} key API key configuration to create
 	 * @return {Promise<ApiKeyCreated>} Created API key
 	 */
-	public create(key: ApiKeyConfig): Promise<ApiKeyCreated> {
-		return this.axiosInstance.post('/apiKeys', this.serialize(key))
-			.then((response: AxiosResponse<ApiKeyCreated>): ApiKeyCreated => this.deserialize(response.data));
+	public async create(key: ApiKeyConfig): Promise<ApiKeyCreated> {
+		const response: AxiosResponse<ApiKeyCreated> =
+			await this.axiosInstance.post('/apiKeys', this.serialize(key));
+		return this.deserialize(response.data);
 	}
 
 	/**
@@ -50,9 +52,10 @@ export class ApiKeyService extends BaseService {
 	 * @param {number} id API key ID
 	 * @return {Promise<ApiKeyInfo>} API key information
 	 */
-	public fetch(id: number): Promise<ApiKeyInfo> {
-		return this.axiosInstance.get(`/apiKeys/${id.toString()}`)
-			.then((response: AxiosResponse<ApiKeyInfo>): ApiKeyInfo => this.deserialize(response.data));
+	public async fetch(id: number): Promise<ApiKeyInfo> {
+		const response: AxiosResponse<ApiKeyInfo> =
+			await this.axiosInstance.get(`/apiKeys/${id.toString()}`);
+		return this.deserialize(response.data);
 	}
 
 	/**
@@ -60,18 +63,16 @@ export class ApiKeyService extends BaseService {
 	 * @param {number} id API key ID
 	 * @param {ApiKeyConfig} config API key configuration to edit
 	 */
-	public edit(id: number, config: ApiKeyConfig): Promise<void> {
-		return this.axiosInstance.put(`/apiKeys/${id.toString()}`, this.serialize(config))
-			.then((): void => {return;});
+	public async edit(id: number, config: ApiKeyConfig): Promise<void> {
+		await this.axiosInstance.put(`/apiKeys/${id.toString()}`, this.serialize(config));
 	}
 
 	/**
 	 * Deletes the API key
 	 * @param {number} id API key ID
 	 */
-	public delete(id: number): Promise<void> {
-		return this.axiosInstance.delete(`/apiKeys/${id.toString()}`)
-			.then((): void => {return;});
+	public async delete(id: number): Promise<void> {
+		await this.axiosInstance.delete(`/apiKeys/${id.toString()}`);
 	}
 
 	/**

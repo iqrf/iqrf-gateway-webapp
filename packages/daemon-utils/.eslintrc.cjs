@@ -30,6 +30,7 @@ module.exports = {
 	},
 	rules: {
 		'@typescript-eslint/no-duplicate-enum-values': 'warn',
+		'no-unused-vars': 'off',
 	},
 	settings: {
 		'import/resolver': {

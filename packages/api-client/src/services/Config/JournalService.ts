@@ -31,18 +31,18 @@ export class JournalService extends BaseService {
 	 * Fetches journal configuration
 	 * @return {Promise<JournalConfig>} Journal configuration
 	 */
-	public getConfig(): Promise<JournalConfig> {
-		return this.axiosInstance.get('/gateway/journal/config')
-			.then((response: AxiosResponse<JournalConfig>): JournalConfig => response.data);
+	public async getConfig(): Promise<JournalConfig> {
+		const response: AxiosResponse<JournalConfig> =
+			await this.axiosInstance.get('/gateway/journal/config');
+		return response.data;
 	}
 
 	/**
 	 * Edits journal configuration
 	 * @param {JournalConfig} config Journal configuration
 	 */
-	public editConfig(config: JournalConfig): Promise<void> {
-		return this.axiosInstance.put('/gateway/journal/config', config)
-			.then((): void => {return;});
+	public async editConfig(config: JournalConfig): Promise<void> {
+		await this.axiosInstance.put('/gateway/journal/config', config);
 	}
 
 	/**
@@ -51,14 +51,15 @@ export class JournalService extends BaseService {
 	 * @param {string|null} cursor Cursor of first record
 	 * @return {Promise<JournalRecords>} Journal records
 	 */
-	public getRecords(count: number, cursor: string|null = null): Promise<JournalRecords> {
-		const params: Record<string, number|string> = {
+	public async getRecords(count: number, cursor: string | null = null): Promise<JournalRecords> {
+		const params: Record<string, number | string> = {
 			count: count,
 		};
 		if (cursor) {
 			params.cursor = cursor;
 		}
-		return this.axiosInstance.get('/gateway/journal', { params: params })
-			.then((response: AxiosResponse<JournalRecords>): JournalRecords => response.data);
+		const response: AxiosResponse<JournalRecords> =
+			await this.axiosInstance.get('/gateway/journal', { params: params });
+		return response.data;
 	}
 }

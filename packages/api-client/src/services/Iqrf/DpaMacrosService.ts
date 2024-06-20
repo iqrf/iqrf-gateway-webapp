@@ -28,9 +28,9 @@ export class DpaMacrosService extends BaseService {
 	 * Fetches all DPA macros
 	 * @return {Promise<DpaMacroGroup[]>} DPA macros
 	 */
-	public fetch(): Promise<DpaMacroGroup[]> {
-		return this.axiosInstance.get('/iqrf/macros')
-			.then((response: AxiosResponse<DpaMacroGroup[]>): DpaMacroGroup[] => response.data);
+	public async fetch(): Promise<DpaMacroGroup[]> {
+		const response: AxiosResponse<DpaMacroGroup[]> = await this.axiosInstance.get('/iqrf/macros');
+		return response.data;
 	}
 
 }

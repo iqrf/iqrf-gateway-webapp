@@ -28,9 +28,10 @@ export class IqrfGatewayInfluxdbBridgeService extends BaseService {
 	 * Fetches IQRF Gateway InfluxDB Bridge configuration
 	 * @return {Promise<BridgeConfig>} IQRF Gateway InfluxDB Bridge configuration
 	 */
-	public fetchConfig(): Promise<BridgeConfig> {
-		return this.axiosInstance.get('/config/bridge')
-			.then((response: AxiosResponse<BridgeConfig>): BridgeConfig => response.data);
+	public async fetchConfig(): Promise<BridgeConfig> {
+		const response: AxiosResponse<BridgeConfig> =
+			await this.axiosInstance.get('/config/bridge');
+		return response.data;
 	}
 
 	/**
@@ -38,9 +39,8 @@ export class IqrfGatewayInfluxdbBridgeService extends BaseService {
 	 * @param {BridgeConfig} config IQRF Gateway InfluxDB Bridge configuration
 	 * @returns
 	 */
-	public editConfig(config: BridgeConfig): Promise<void> {
-		return this.axiosInstance.put('/config/bridge', config)
-			.then((): void => {return;});
+	public async editConfig(config: BridgeConfig): Promise<void> {
+		await this.axiosInstance.put('/config/bridge', config);
 	}
 
 }

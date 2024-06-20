@@ -26,12 +26,11 @@ export class HostnameService extends BaseService {
 	 * Sets gateway hostname
 	 * @param {string} hostname Hostname
 	 */
-	public setHostname(hostname: string): Promise<void> {
+	public async setHostname(hostname: string): Promise<void> {
 		const data: Hostname = {
 			hostname: hostname,
 		};
-		return this.axiosInstance.post('/gateway/hostname', data)
-			.then((): void => {return;});
+		await this.axiosInstance.post('/gateway/hostname', data);
 	}
 
 }

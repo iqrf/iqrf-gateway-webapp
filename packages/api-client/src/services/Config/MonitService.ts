@@ -28,18 +28,18 @@ export class MonitService extends BaseService {
 	 * Fetches monit configuration
 	 * @return {Promise<MonitConfig>} Monit configuration
 	 */
-	public getConfig(): Promise<MonitConfig> {
-		return this.axiosInstance.get('/config/monit')
-			.then((response: AxiosResponse<MonitConfig>): MonitConfig => response.data);
+	public async getConfig(): Promise<MonitConfig> {
+		const response: AxiosResponse<MonitConfig> =
+			await this.axiosInstance.get('/config/monit');
+		return response.data;
 	}
 
 	/**
 	 * Edits monit configuration
 	 * @param {MonitConfig} config Monit configuration
 	 */
-	public editConfig(config: MonitConfig): Promise<void> {
-		return this.axiosInstance.put('/config/monit', config)
-			.then((): void => {return;});
+	public async editConfig(config: MonitConfig): Promise<void> {
+		await this.axiosInstance.put('/config/monit', config);
 	}
 
 	/**
@@ -47,27 +47,25 @@ export class MonitService extends BaseService {
 	 * @param {string} name Check name
 	 * @return {Promise<MonitCheck>} Monit check
 	 */
-	public getCheck(name: string): Promise<MonitCheck> {
-		return this.axiosInstance.get(`/config/monit/checks/${name}`)
-			.then((response: AxiosResponse<MonitCheck>): MonitCheck => response.data);
+	public async getCheck(name: string): Promise<MonitCheck> {
+		const response: AxiosResponse<MonitCheck> = await this.axiosInstance.get(`/config/monit/checks/${name}`);
+		return response.data;
 	}
 
 	/**
 	 * Enables monit check
 	 * @param {string} name Check name
 	 */
-	public enableCheck(name: string): Promise<void> {
-		return this.axiosInstance.post(`/config/monit/checks/${name}/enable`)
-			.then((): void => {return;});
+	public async enableCheck(name: string): Promise<void> {
+		await this.axiosInstance.post(`/config/monit/checks/${name}/enable`);
 	}
 
 	/**
 	 * Disables monit check
 	 * @param {string} name Check name
 	 */
-	public disableCheck(name: string): Promise<void> {
-		return this.axiosInstance.post(`/config/monit/checks/${name}/disable`)
-			.then((): void => {return;});
+	public async disableCheck(name: string): Promise<void> {
+		await this.axiosInstance.post(`/config/monit/checks/${name}/disable`);
 	}
 
 }

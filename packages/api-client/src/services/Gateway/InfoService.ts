@@ -31,18 +31,18 @@ export class InfoService extends BaseService {
 	 * Fetches brief information about the gateway
 	 * @return {Promise<GatewayBriefInformation>} Brief information about the gateway
 	 */
-	public fetchBrief(): Promise<GatewayBriefInformation> {
-		return this.apiClient.getAxiosInstance().get('/gateway/info/brief')
-			.then((response: AxiosResponse<GatewayBriefInformation>): GatewayBriefInformation => response.data);
+	public async fetchBrief(): Promise<GatewayBriefInformation> {
+		const response: AxiosResponse<GatewayBriefInformation> = await this.apiClient.getAxiosInstance().get('/gateway/info/brief');
+		return response.data;
 	}
 
 	/**
 	 * Fetches detailed information about the gateway
 	 * @return {Promise<GatewayInformation>} Detailed information about the gateway
 	 */
-	public fetchDetailed(): Promise<GatewayInformation> {
-		return this.apiClient.getAxiosInstance().get('/gateway/info')
-			.then((response: AxiosResponse<GatewayInformation>): GatewayInformation => response.data);
+	public async fetchDetailed(): Promise<GatewayInformation> {
+		const response: AxiosResponse<GatewayInformation> = await this.apiClient.getAxiosInstance().get('/gateway/info');
+		return response.data;
 	}
 
 }

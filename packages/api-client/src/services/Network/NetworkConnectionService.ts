@@ -33,22 +33,22 @@ export class NetworkConnectionService extends BaseService {
 	 * @param {NetworkConnectionType | null} type Network connection type
 	 * @return {Promise<NetworkConnectionListEntry[]>} List of network connections
 	 */
-	public list(type: NetworkConnectionType|null = null): Promise<NetworkConnectionListEntry[]> {
+	public async list(type: NetworkConnectionType | null = null): Promise<NetworkConnectionListEntry[]> {
 		const config: AxiosRequestConfig = {};
 		if (type !== null) {
 			Object.assign(config, { params: { type: type } });
 		}
-		return this.axiosInstance.get('/network/connections', config)
-			.then((response: AxiosResponse<NetworkConnectionListEntry[]>): NetworkConnectionListEntry[] => response.data);
+		const response: AxiosResponse<NetworkConnectionListEntry[]> =
+			await this.axiosInstance.get('/network/connections', config);
+		return response.data;
 	}
 
 	/**
 	 * Creates a new network connection
 	 * @param {NetworkConnectionConfiguration} configuration Network connection configuration
 	 */
-	public create(configuration: NetworkConnectionConfiguration): Promise<void> {
-		return this.axiosInstance.post('/network/connections', configuration)
-			.then((): void => {return;});
+	public async create(configuration: NetworkConnectionConfiguration): Promise<void> {
+		await this.axiosInstance.post('/network/connections', configuration);
 	}
 
 	/**
@@ -56,9 +56,10 @@ export class NetworkConnectionService extends BaseService {
 	 * @param {string} uuid Network connection UUID
 	 * @return {Promise<NetworkConnectionConfiguration>} Network connection configuration
 	 */
-	public fetch(uuid: string): Promise<NetworkConnectionConfiguration> {
-		return this.axiosInstance.get(`/network/connections/${uuid}`)
-			.then((response: AxiosResponse<NetworkConnectionConfiguration>): NetworkConnectionConfiguration => response.data);
+	public async fetch(uuid: string): Promise<NetworkConnectionConfiguration> {
+		const response: AxiosResponse<NetworkConnectionConfiguration> =
+			await this.axiosInstance.get(`/network/connections/${uuid}`);
+		return response.data;
 	}
 
 	/**
@@ -66,18 +67,16 @@ export class NetworkConnectionService extends BaseService {
 	 * @param {string} uuid Network connection UUID
 	 * @param {NetworkConnectionConfiguration} configuration Network connection configuration
 	 */
-	public edit(uuid: string, configuration: NetworkConnectionConfiguration): Promise<void> {
-		return this.axiosInstance.put(`/network/connections/${uuid}`, configuration)
-			.then((): void => {return;});
+	public async edit(uuid: string, configuration: NetworkConnectionConfiguration): Promise<void> {
+		await this.axiosInstance.put(`/network/connections/${uuid}`, configuration);
 	}
 
 	/**
 	 * Deletes the network connection configuration
 	 * @param {string} uuid Network connection UUID
 	 */
-	public delete(uuid: string): Promise<void> {
-		return this.axiosInstance.delete(`/network/connections/${uuid}`)
-			.then((): void => {return;});
+	public async delete(uuid: string): Promise<void> {
+		await this.axiosInstance.delete(`/network/connections/${uuid}`);
 	}
 
 	/**
@@ -85,22 +84,20 @@ export class NetworkConnectionService extends BaseService {
 	 * @param {string} uuid Network connection UUID
 	 * @param {string | null} interfaceName Network interface name
 	 */
-	public connect(uuid: string, interfaceName: string|null = null): Promise<void> {
+	public async connect(uuid: string, interfaceName: string | null = null): Promise<void> {
 		const config: AxiosRequestConfig = {};
 		if (interfaceName !== null) {
 			Object.assign(config, { params: { 'interface': interfaceName } });
 		}
-		return this.axiosInstance.post(`/network/connections/${uuid}/connect`, null, config)
-			.then((): void => {return;});
+		await this.axiosInstance.post(`/network/connections/${uuid}/connect`, null, config);
 	}
 
 	/**
 	 * Disconnects from the network connection
 	 * @param {string} uuid Network connection UUID
 	 */
-	public disconnect(uuid: string): Promise<void> {
-		return this.axiosInstance.post(`/network/connections/${uuid}/disconnect`)
-			.then((): void => {return;});
+	public async disconnect(uuid: string): Promise<void> {
+		await this.axiosInstance.post(`/network/connections/${uuid}/disconnect`);
 	}
 
 }

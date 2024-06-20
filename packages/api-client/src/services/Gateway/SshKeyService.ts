@@ -33,20 +33,20 @@ export class SshKeyService extends BaseService {
 	 * Fetches all supported SSH key types
 	 * @return {Promise<string[]>} Supported SSH key types
 	 */
-	public fetchKeyTypes(): Promise<string[]> {
-		return this.axiosInstance.get('/gateway/ssh/keyTypes')
-			.then((response: AxiosResponse<string[]>): string[] => response.data);
+	public async fetchKeyTypes(): Promise<string[]> {
+		const response: AxiosResponse<string[]> =
+			await this.axiosInstance.get('/gateway/ssh/keyTypes');
+		return response.data;
 	}
 
 	/**
 	 * Fetches all SSH keys
 	 * @return {Promise<SshKeyInfo[]>} List of SSH keys
 	 */
-	public list(): Promise<SshKeyInfo[]> {
-		return this.axiosInstance.get('/gateway/ssh/keys')
-			.then((response: AxiosResponse<SshKeyInfoRaw[]>): SshKeyInfo[] =>
-				response.data.map((key: SshKeyInfoRaw): SshKeyInfo => this.deserializeInfo(key)),
-			);
+	public async list(): Promise<SshKeyInfo[]> {
+		const response: AxiosResponse<SshKeyInfoRaw[]> =
+			await this.axiosInstance.get('/gateway/ssh/keys');
+		return response.data.map((key: SshKeyInfoRaw): SshKeyInfo => this.deserializeInfo(key));
 	}
 
 	/**
@@ -54,29 +54,26 @@ export class SshKeyService extends BaseService {
 	 * @param {number} id Key ID
 	 * @return {Promise<SshKeyInfo>} SSH key
 	 */
-	public getKey(id: number): Promise<SshKeyInfo> {
-		return this.axiosInstance.get(`/gateway/ssh/keys/${id.toString()}`)
-			.then((response: AxiosResponse<SshKeyInfoRaw>): SshKeyInfo =>
-				this.deserializeInfo(response.data),
-			);
+	public async getKey(id: number): Promise<SshKeyInfo> {
+		const response: AxiosResponse<SshKeyInfoRaw> =
+			await this.axiosInstance.get(`/gateway/ssh/keys/${id.toString()}`);
+		return this.deserializeInfo(response.data);
 	}
 
 	/**
 	 * Removes SSH public key
 	 * @param {number} id Key ID
 	 */
-	public deleteKey(id: number): Promise<void> {
-		return this.axiosInstance.get(`/gateway/ssh/keys/${id.toString()}`)
-			.then((): void => {return;});
+	public async deleteKey(id: number): Promise<void> {
+		await this.axiosInstance.get(`/gateway/ssh/keys/${id.toString()}`);
 	}
 
 	/**
 	 * Saves SSH keys
 	 * @param {SshKeyCreate[]} keys SSh keys
 	 */
-	public createSshKeys(keys: SshKeyCreate[]): Promise<void> {
-		return this.axiosInstance.post('/gateway/ssh/keys', keys)
-			.then((): void => {return;});
+	public async createSshKeys(keys: SshKeyCreate[]): Promise<void> {
+		await this.axiosInstance.post('/gateway/ssh/keys', keys);
 	}
 
 	/**

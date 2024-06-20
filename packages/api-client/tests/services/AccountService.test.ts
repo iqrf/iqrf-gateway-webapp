@@ -114,15 +114,15 @@ describe('AccountService', (): void => {
 		await expect(service.changePassword(request)).resolves.not.toThrow();
 	});
 
-	it('confirm password recovery - invalid UUID format', (): void => {
+	it('confirm password recovery - invalid UUID format', async (): Promise<void> => {
 		expect.assertions(1);
-		expect(() => service.confirmPasswordRecovery('invalid-uuid', passwordResetRequest))
+		await expect(service.confirmPasswordRecovery('invalid-uuid', passwordResetRequest)).rejects
 			.toThrow(new Error('Invalid password recovery request UUID.'));
 	});
 
-	it('confirm password recovery - invalid UUID version', (): void => {
+	it('confirm password recovery - invalid UUID version', async (): Promise<void> => {
 		expect.assertions(1);
-		expect(() => service.confirmPasswordRecovery('60045219-7cbf-321e-a762-c90382cd8723', passwordResetRequest))
+		await expect(service.confirmPasswordRecovery('60045219-7cbf-321e-a762-c90382cd8723', passwordResetRequest)).rejects
 			.toThrow(new Error('Invalid password recovery request UUID version.'));
 	});
 

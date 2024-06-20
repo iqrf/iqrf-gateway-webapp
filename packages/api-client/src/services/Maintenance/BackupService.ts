@@ -25,9 +25,15 @@ import { BaseService } from '../BaseService';
  */
 export class BackupService extends BaseService {
 
-	public backup(params: GatewayBackup): Promise<ArrayBuffer> {
-		return this.axiosInstance.post('/maintenance/backup', params, { responseType: 'arraybuffer' })
-			.then((response: AxiosResponse<ArrayBuffer>) => response.data);
+	/**
+	 * Backup gateway to archive
+	 * @param {GatewayBackup} params Backup parameters
+	 * @return {Promise<ArrayBuffer>} Backup archive
+	 */
+	public async backup(params: GatewayBackup): Promise<ArrayBuffer> {
+		const response: AxiosResponse<ArrayBuffer> =
+			await this.axiosInstance.post('/maintenance/backup', params, { responseType: 'arraybuffer' });
+		return response.data;
 	}
 
 	/**
@@ -35,9 +41,13 @@ export class BackupService extends BaseService {
 	 * @param {File} archive Backup archive
 	 * @return {Promise<PowerActionResponse>}
 	 */
-	public restore(archive: File): Promise<PowerActionResponse> {
-		return this.axiosInstance.post('/maintenance/restore', archive, { headers: { 'Content-Type': archive.type }, timeout: 120000 })
-			.then((response: AxiosResponse<PowerActionResponse>): PowerActionResponse => response.data);
+	public async restore(archive: File): Promise<PowerActionResponse> {
+		const response: AxiosResponse<PowerActionResponse> =
+			await this.axiosInstance.post('/maintenance/restore', archive, {
+				headers: { 'Content-Type': archive.type },
+				timeout: 120_000,
+			});
+		return response.data;
 	}
 
 }

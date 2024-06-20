@@ -43,9 +43,9 @@ export class AccountService extends BaseService {
 	 * Fetches information about the logged-in user
 	 * @return {Promise<UserInfo>} User information
 	 */
-	public fetchInfo(): Promise<UserInfo> {
-		return this.axiosInstance.get('/user')
-			.then((response: AxiosResponse<UserInfo>) => response.data);
+	public async fetchInfo(): Promise<UserInfo> {
+		const response: AxiosResponse<UserInfo> = await this.axiosInstance.get('/user');
+		return UserUtils.deserialize(response.data);
 	}
 
 	/**
@@ -53,19 +53,18 @@ export class AccountService extends BaseService {
 	 * @param {UserEdit} user User to edit
 	 * @return {Promise<EmailSentResponse>} Email sent response
 	 */
-	public edit(user: UserEdit): Promise<EmailSentResponse> {
-		return this.axiosInstance.put('/user', UserUtils.serialize(user))
-			.then((response: AxiosResponse<EmailSentResponse>) => response.data);
+	public async edit(user: UserEdit): Promise<EmailSentResponse> {
+		const response: AxiosResponse<EmailSentResponse> =
+			await this.axiosInstance.put('/user', UserUtils.serialize(user));
+		return response.data;
 	}
 
 	/**
 	 * Changes the user's password
 	 * @param {UserPasswordChange} change Password change request
 	 */
-	public changePassword(change: UserPasswordChange): Promise<void> {
-		return this.axiosInstance.put('/user/password', change)
-			.then((): void => {return;});
-
+	public async changePassword(change: UserPasswordChange): Promise<void> {
+		await this.axiosInstance.put('/user/password', change);
 	}
 
 	/**
@@ -73,32 +72,31 @@ export class AccountService extends BaseService {
 	 * @param {string} requestUuid Password recovery request UUID
 	 * @param {UserPasswordReset} request Password reset request
 	 */
-	public confirmPasswordRecovery(requestUuid: string, request: UserPasswordReset): Promise<UserSignedIn> {
+	public async confirmPasswordRecovery(requestUuid: string, request: UserPasswordReset): Promise<UserSignedIn> {
 		if (!uuidValidate(requestUuid)) {
 			throw new Error('Invalid password recovery request UUID.');
 		}
 		if (uuidVersion(requestUuid) !== 4) {
 			throw new Error('Invalid password recovery request UUID version.');
 		}
-		return this.axiosInstance.post(`/user/password/recovery/${requestUuid}`, request)
-			.then((response: AxiosResponse<UserSignedIn>) => UserUtils.deserialize(response.data));
+		const response: AxiosResponse<UserSignedIn> =
+			await this.axiosInstance.post(`/user/password/recovery/${requestUuid}`, request);
+		return UserUtils.deserialize(response.data);
 	}
 
 	/**
 	 * Request user account recovery
 	 * @param {UserAccountRecovery} recovery Account recovery request
 	 */
-	public requestPasswordRecovery(recovery: UserAccountRecovery): Promise<void> {
-		return this.axiosInstance.post('/user/password/recovery', recovery)
-			.then((): void => {return;});
+	public async requestPasswordRecovery(recovery: UserAccountRecovery): Promise<void> {
+		await this.axiosInstance.post('/user/password/recovery', recovery);
 	}
 
 	/**
 	 * Resends the verification email
 	 * @param {EmailVerificationResendRequest} request Verification e-mail resend request
 	 */
-	public resendVerificationEmail(request: EmailVerificationResendRequest): Promise<void> {
-		return this.axiosInstance.post('/user/resendVerification', request)
-			.then((): void => {return;});
+	public async resendVerificationEmail(request: EmailVerificationResendRequest): Promise<void> {
+		await this.axiosInstance.post('/user/resendVerification', request);
 	}
 }

@@ -27,18 +27,18 @@ export class ModemService extends BaseService {
 	/**
 	 * Lists available modems
 	 * @return {Promise<Modem[]>} List of modems
- 	 */
-	public list(): Promise<Modem[]> {
-		return this.axiosInstance.get('/network/gsm/modems')
-			.then((response: AxiosResponse<Modem[]>): Modem[] => response.data);
+	 */
+	public async list(): Promise<Modem[]> {
+		const response: AxiosResponse<Modem[]> =
+			await this.axiosInstance.get('/network/gsm/modems');
+		return response.data;
 	}
 
 	/**
 	 * Scans for available modems
 	 */
-	public scan(): Promise<void> {
-		return this.axiosInstance.post('/network/gsm/modems/scan')
-			.then((): void => {return;});
+	public async scan(): Promise<void> {
+		await this.axiosInstance.post('/network/gsm/modems/scan');
 	}
 
 }

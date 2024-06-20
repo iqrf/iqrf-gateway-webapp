@@ -16,7 +16,10 @@
 
 import { type AxiosResponse } from 'axios';
 
-import { type VersionBase, type VersionIqrfGatewayWebapp } from '../types';
+import {
+	type VersionIqrfGatewayDaemon,
+	type VersionIqrfGatewayWebapp,
+} from '../types';
 
 import { BaseService } from './BaseService';
 
@@ -27,20 +30,22 @@ export class VersionService extends BaseService {
 
 	/**
 	 * Fetches IQRF Gateway Daemon version
-	 * @return {Promise<VersionBase>} IQRF Gateway Daemon version
+	 * @return {Promise<VersionIqrfGatewayDaemon>} IQRF Gateway Daemon version
 	 */
-	public getDaemon(): Promise<VersionBase> {
-		return this.axiosInstance.get('/version/daemon')
-			.then((response: AxiosResponse<VersionBase>): VersionBase => response.data);
+	public async getDaemon(): Promise<VersionIqrfGatewayDaemon> {
+		const response: AxiosResponse<VersionIqrfGatewayDaemon> =
+			await this.axiosInstance.get('/version/daemon');
+		return response.data;
 	}
 
 	/**
 	 * Fetches IQRF Gateway Webapp version
 	 * @return {Promise<VersionIqrfGatewayWebapp>} IQRF Gateway Webapp version
 	 */
-	public getWebapp(): Promise<VersionIqrfGatewayWebapp> {
-		return this.axiosInstance.get('/version/webapp')
-			.then((response: AxiosResponse<VersionIqrfGatewayWebapp>): VersionIqrfGatewayWebapp => response.data);
+	public async getWebapp(): Promise<VersionIqrfGatewayWebapp> {
+		const response: AxiosResponse<VersionIqrfGatewayWebapp> =
+			await this.axiosInstance.get('/version/webapp');
+		return response.data;
 	}
 
 }

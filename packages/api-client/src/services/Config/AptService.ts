@@ -28,33 +28,29 @@ export class AptService extends BaseService {
 	 * Fetches APT configuration
 	 * @return {Promise<AptConfig>} APT configuration
 	 */
-	public getConfig(): Promise<AptConfig> {
-		return this.axiosInstance.get('/config/apt')
-			.then((response: AxiosResponse<AptConfigRaw>): AptConfig => {
-				return this.fromRaw(response.data);
-			});
+	public async getConfig(): Promise<AptConfig> {
+		const response: AxiosResponse<AptConfigRaw> = await this.axiosInstance.get('/config/apt');
+		return this.fromRaw(response.data);
 	}
 
 	/**
 	 * Edits APT configuration
 	 * @param {AptConfig} config APT configuration
 	 */
-	public editConfig(config: AptConfig): Promise<void> {
-		const data = this.toRaw(config);
-		return this.axiosInstance.put('/config/apt', data)
-			.then((): void => {return;});
+	public async editConfig(config: AptConfig): Promise<void> {
+		const data: AptConfigRaw = this.toRaw(config);
+		await this.axiosInstance.put('/config/apt', data);
 	}
 
 	/**
 	 * Changes service state of unattended upgrades service
 	 * @param {boolean} enabled Service state
 	 */
-	public setServiceState(enabled: boolean): Promise<void> {
+	public async setServiceState(enabled: boolean): Promise<void> {
 		const data = {
-			'APT::Periodic::Enable': enabled ? '1': '0',
+			'APT::Periodic::Enable': enabled ? '1' : '0',
 		};
-		return this.axiosInstance.put('/config/apt', data)
-			.then((): void => {return;});
+		await this.axiosInstance.put('/config/apt', data);
 	}
 
 	/**

@@ -28,18 +28,18 @@ export class IqrfRepositoryService extends BaseService {
 	 * Fetches IQRF repository configuration
 	 * @return {Promise<IqrfRepositoryConfig>} IQRF repository configuration
 	 */
-	public fetch(): Promise<IqrfRepositoryConfig> {
-		return this.axiosInstance.get('/config/iqrf-repository')
-			.then((response: AxiosResponse<IqrfRepositoryConfig>): IqrfRepositoryConfig => response.data);
+	public async fetch(): Promise<IqrfRepositoryConfig> {
+		const response: AxiosResponse<IqrfRepositoryConfig> =
+			await this.axiosInstance.get('/config/iqrf-repository');
+		return response.data;
 	}
 
 	/**
 	 * Sets IQRF repository configuration
 	 * @param {IqrfRepositoryConfig} config IQRF repository configuration
 	 */
-	public edit(config: IqrfRepositoryConfig): Promise<void> {
-		return this.axiosInstance.put('/config/iqrf-repository', config)
-			.then((): void => {return;});
+	public async edit(config: IqrfRepositoryConfig): Promise<void> {
+		await this.axiosInstance.put('/config/iqrf-repository', config);
 	}
 
 }

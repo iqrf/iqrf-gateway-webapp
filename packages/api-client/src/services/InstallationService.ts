@@ -29,9 +29,10 @@ export class InstallationService extends BaseService {
 	 * Checks the installation
 	 * @return {Promise<InstallationChecks>} Installation checks
 	 */
-	public check(): Promise<InstallationChecks> {
-		return this.axiosInstance.get('/installation')
-			.then((response: AxiosResponse<InstallationChecks>): InstallationChecks => response.data);
+	public async check(): Promise<InstallationChecks> {
+		const response: AxiosResponse<InstallationChecks> =
+			await this.axiosInstance.get('/installation');
+		return response.data;
 	}
 
 }

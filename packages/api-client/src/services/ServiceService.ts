@@ -30,13 +30,14 @@ export class ServiceService extends BaseService {
 	 * @param {boolean} withStatus Include service status
 	 * @returns {Promise<ServiceState[]>} State of supported services
 	 */
-	public list(withStatus = false): Promise<ServiceState[]> {
-		return this.axiosInstance.get('/services', {
-			params: {
-				withStatus: withStatus,
-			},
-		})
-			.then((response: AxiosResponse<ServiceState[]>): ServiceState[] => response.data);
+	public async list(withStatus: boolean = false): Promise<ServiceState[]> {
+		const response: AxiosResponse<ServiceState[]> =
+			await this.axiosInstance.get('/services', {
+				params: {
+					withStatus: withStatus,
+				},
+			});
+		return response.data;
 	}
 
 	/**
@@ -44,54 +45,50 @@ export class ServiceService extends BaseService {
 	 * @param {string} name Service name
 	 * @returns {Promise<ServiceStatus>} Service status
 	 */
-	public getStatus(name: string): Promise<ServiceStatus> {
-		return this.axiosInstance.get(`/services/${name}`)
-			.then((response: AxiosResponse<ServiceStatus>): ServiceStatus => response.data);
+	public async getStatus(name: string): Promise<ServiceStatus> {
+		const response: AxiosResponse<ServiceStatus> =
+			await this.axiosInstance.get(`/services/${name}`);
+		return response.data;
 	}
 
 	/**
 	 * Enables the service
 	 * @param {string} name Service name
 	 */
-	public enable(name: string): Promise<void> {
-		return this.axiosInstance.post(`/services/${name}/enable`)
-			.then((): void => {return;});
+	public async enable(name: string): Promise<void> {
+		await this.axiosInstance.post(`/services/${name}/enable`);
 	}
 
 	/**
 	 * Disables the service
 	 * @param {string} name Service name
 	 */
-	public disable(name: string): Promise<void> {
-		return this.axiosInstance.post(`/services/${name}/disable`)
-			.then((): void => {return;});
+	public async disable(name: string): Promise<void> {
+		await this.axiosInstance.post(`/services/${name}/disable`);
 	}
 
 	/**
 	 * Starts the service
 	 * @param {string} name Service name
 	 */
-	public start(name: string): Promise<void> {
-		return this.axiosInstance.post(`/services/${name}/start`)
-			.then((): void => {return;});
+	public async start(name: string): Promise<void> {
+		await this.axiosInstance.post(`/services/${name}/start`);
 	}
 
 	/**
 	 * Stops the service
 	 * @param {string} name Service name
 	 */
-	public stop(name: string): Promise<void> {
-		return this.axiosInstance.post(`/services/${name}/stop`)
-			.then((): void => {return;});
+	public async stop(name: string): Promise<void> {
+		await this.axiosInstance.post(`/services/${name}/stop`);
 	}
 
 	/**
 	 * Restarts the service
 	 * @param {string} name Service name
 	 */
-	public restart(name: string): Promise<void> {
-		return this.axiosInstance.post(`/services/${name}/restart`)
-			.then((): void => {return;});
+	public async restart(name: string): Promise<void> {
+		await this.axiosInstance.post(`/services/${name}/restart`);
 	}
 
 }

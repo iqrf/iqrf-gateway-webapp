@@ -93,6 +93,7 @@ module.exports = {
 		'@typescript-eslint/explicit-member-accessibility': 'error',
 		'@typescript-eslint/no-explicit-any': 'warn',
 		'@typescript-eslint/no-extraneous-class': 'off',
+		'@typescript-eslint/no-inferrable-types': 'off',
 		'comma-dangle': 'off',
 		'eqeqeq': [
 			'error',

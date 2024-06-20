@@ -29,9 +29,10 @@ export class MenderService extends BaseService {
 	 * Fetches Mender configuration
 	 * @return {Promise<MenderConfig>} Mender configuration
 	 */
-	public getConfig(): Promise<MenderConfig> {
-		return this.axiosInstance.get('/config/mender')
-			.then((response: AxiosResponse<MenderConfig>): MenderConfig => response.data);
+	public async getConfig(): Promise<MenderConfig> {
+		const response: AxiosResponse<MenderConfig> =
+			await this.axiosInstance.get('/config/mender');
+		return response.data;
 	}
 
 	/**

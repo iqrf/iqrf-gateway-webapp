@@ -33,33 +33,29 @@ export class MailerService extends BaseService {
 	 * Fetches mailer configuration
 	 * @return {Promise<MailerGetConfigResponse>} Mailer data
 	 */
-	public getConfig(): Promise<MailerGetConfigResponse> {
-		return this.axiosInstance.get('/config/mailer')
-			.then((response: AxiosResponse<MailerConfig>): MailerGetConfigResponse => {
-				const defaultConfig = response.headers['x-smtp-default-config'] as string | null | undefined;
-				return {
-					headers: (defaultConfig !== undefined && defaultConfig !== null) ? { defaultConfig: defaultConfig === '1' } : null,
-					config: this.deserializeConfig(response.data),
-				};
-			});
+	public async getConfig(): Promise<MailerGetConfigResponse> {
+		const response: AxiosResponse<MailerConfig> = await this.axiosInstance.get('/config/mailer');
+		const defaultConfig = response.headers['x-smtp-default-config'] as string | null | undefined;
+		return {
+			headers: (defaultConfig !== undefined && defaultConfig !== null) ? { defaultConfig: defaultConfig === '1' } : null,
+			config: this.deserializeConfig(response.data),
+		};
 	}
 
 	/**
 	 * Edits mailer configuration
 	 * @param {MailerConfig} config Mailer configuration
 	 */
-	public editConfig(config: MailerConfig): Promise<void> {
-		return this.axiosInstance.put('/config/mailer', this.serializeConfig(config))
-			.then((): void => {return;});
+	public async editConfig(config: MailerConfig): Promise<void> {
+		await this.axiosInstance.put('/config/mailer', this.serializeConfig(config));
 	}
 
 	/**
 	 * Tests mailer configuration
 	 * @param {MailerConfig} config Mailer configuration
 	 */
-	public testConfig(config: MailerConfig): Promise<void> {
-		return this.axiosInstance.post('/config/mailer/test', this.serializeConfig(config))
-			.then((): void => {return;});
+	public async testConfig(config: MailerConfig): Promise<void> {
+		await this.axiosInstance.post('/config/mailer/test', this.serializeConfig(config));
 	}
 
 	/**

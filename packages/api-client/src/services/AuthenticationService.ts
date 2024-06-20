@@ -35,18 +35,20 @@ export class AuthenticationService extends BaseService {
 	 * @param {UserCredentials} credentials User credentials
 	 * @return {Promise<UserSignedIn>} Signed in user
 	 */
-	public signIn(credentials: UserCredentials): Promise<UserSignedIn> {
-		return this.axiosInstance.post('/user/signIn', credentials)
-			.then((response: AxiosResponse<UserSignedIn>) => UserUtils.deserialize(response.data));
+	public async signIn(credentials: UserCredentials): Promise<UserSignedIn> {
+		const response: AxiosResponse<UserSignedIn> =
+			await this.axiosInstance.post('/user/signIn', credentials);
+		return UserUtils.deserialize(response.data);
 	}
 
 	/**
 	 * Refreshes the user token
 	 * @return {Promise<UserSignedIn>} Signed in user
 	 */
-	public refreshToken(): Promise<UserSignedIn> {
-		return this.axiosInstance.post('/user/refreshToken')
-			.then((response: AxiosResponse<UserSignedIn>) => UserUtils.deserialize(response.data));
+	public async refreshToken(): Promise<UserSignedIn> {
+		const response: AxiosResponse<UserSignedIn> =
+			await this.axiosInstance.post('/user/refreshToken');
+		return UserUtils.deserialize(response.data);
 	}
 
 	/**
@@ -54,15 +56,16 @@ export class AuthenticationService extends BaseService {
 	 * @param {string} verificationUuid Verification UUID
 	 * @return {Promise<UserSignedIn>} Signed in user
 	 */
-	public verify(verificationUuid: string): Promise<UserSignedIn> {
+	public async verify(verificationUuid: string): Promise<UserSignedIn> {
 		if (!uuidValidate(verificationUuid)) {
 			throw new Error('Invalid verification UUID.');
 		}
 		if (uuidVersion(verificationUuid) !== 4) {
 			throw new Error('Invalid verification UUID version.');
 		}
-		return this.axiosInstance.get(`/user/verify/${verificationUuid}`)
-			.then((response: AxiosResponse<UserSignedIn>) => UserUtils.deserialize(response.data));
+		const response: AxiosResponse<UserSignedIn> =
+			await this.axiosInstance.get(`/user/verify/${verificationUuid}`);
+		return UserUtils.deserialize(response.data);
 	}
 
 }

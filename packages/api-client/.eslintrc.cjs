@@ -24,6 +24,9 @@ module.exports = {
 	parserOptions: {
 		project: './tsconfig.json',
 	},
+	rules: {
+		'no-unused-vars': 'off',
+	},
 	overrides: [
 		{
 			files: ['tests/**'],

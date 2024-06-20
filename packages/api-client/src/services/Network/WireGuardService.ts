@@ -34,27 +34,28 @@ export class WireGuardService extends BaseService {
 	 * Generates a new WireGuard key-pair
 	 * @return {Promise<WireGuardKeyPair>} WireGuard key-pair
 	 */
-	public generateKeyPair(): Promise<WireGuardKeyPair> {
-		return this.axiosInstance.post('/network/wireguard/keypair')
-			.then((response: AxiosResponse<WireGuardKeyPair>): WireGuardKeyPair => response.data);
+	public async generateKeyPair(): Promise<WireGuardKeyPair> {
+		const response: AxiosResponse<WireGuardKeyPair> =
+			await this.axiosInstance.post('/network/wireguard/keypair');
+		return response.data;
 	}
 
 	/**
 	 * Fetches a list of existing WireGuard tunnels
 	 * @return {Promise<WireGuardTunnelListEntry[]>} List of existing WireGuard tunnels
 	 */
-	public listTunnels(): Promise<WireGuardTunnelListEntry[]> {
-		return this.axiosInstance.get('/network/wireguard')
-			.then((response: AxiosResponse<WireGuardTunnelListEntry[]>): WireGuardTunnelListEntry[] => response.data);
+	public async listTunnels(): Promise<WireGuardTunnelListEntry[]> {
+		const response: AxiosResponse<WireGuardTunnelListEntry[]> =
+			await this.axiosInstance.get('/network/wireguard');
+		return response.data;
 	}
 
 	/**
 	 * Creates a new WireGuard tunnel
 	 * @param {WireGuardTunnelConfig} config WireGuard tunnel configuration
 	 */
-	public createTunnel(config: WireGuardTunnelConfig): Promise<void> {
-		return this.axiosInstance.post('/network/wireguard', this.serializeTunnel(config))
-			.then((): void => {return;});
+	public async createTunnel(config: WireGuardTunnelConfig): Promise<void> {
+		await this.axiosInstance.post('/network/wireguard', this.serializeTunnel(config));
 	}
 
 	/**
@@ -62,18 +63,16 @@ export class WireGuardService extends BaseService {
 	 * @param id WireGuard tunnel ID
 	 * @param config WireGuard tunnel configuration
 	 */
-	public editTunnel(id: number, config: WireGuardTunnelConfig): Promise<void> {
-		return this.axiosInstance.put(`/network/wireguard/${id.toString()}`, this.serializeTunnel(config))
-			.then((): void => {return;});
+	public async editTunnel(id: number, config: WireGuardTunnelConfig): Promise<void> {
+		await this.axiosInstance.put(`/network/wireguard/${id.toString()}`, this.serializeTunnel(config));
 	}
 
 	/**
 	 * Deletes an existing WireGuard tunnel
 	 * @param {number} id WireGuard tunnel ID
 	 */
-	public deleteTunnel(id: number): Promise<void> {
-		return this.axiosInstance.delete(`/network/wireguard/${id.toString()}`)
-			.then((): void => {return;});
+	public async deleteTunnel(id: number): Promise<void> {
+		await this.axiosInstance.delete(`/network/wireguard/${id.toString()}`);
 	}
 
 	/**
@@ -81,45 +80,42 @@ export class WireGuardService extends BaseService {
 	 * @param {number} id WireGuard tunnel ID
 	 * @return {Promise<WireGuardTunnelConfig>} WireGuard tunnel configuration
 	 */
-	public fetchTunnel(id: number): Promise<WireGuardTunnelConfig> {
-		return this.axiosInstance.get(`/network/wireguard/${id.toString()}`)
-			.then((response: AxiosResponse<WireGuardTunnelConfig>): WireGuardTunnelConfig => this.deserializeTunnel(response.data));
+	public async fetchTunnel(id: number): Promise<WireGuardTunnelConfig> {
+		const response: AxiosResponse<WireGuardTunnelConfig> =
+			await this.axiosInstance.get(`/network/wireguard/${id.toString()}`);
+		return this.deserializeTunnel(response.data);
 	}
 
 	/**
 	 * Activates an existing WireGuard tunnel
 	 * @param {number} id WireGuard tunnel ID
 	 */
-	public activateTunnel(id: number): Promise<void> {
-		return this.axiosInstance.post(`/network/wireguard/${id.toString()}/activate`)
-			.then((): void => {return;});
+	public async activateTunnel(id: number): Promise<void> {
+		await this.axiosInstance.post(`/network/wireguard/${id.toString()}/activate`);
 	}
 
 	/**
 	 * Deactivates an existing WireGuard tunnel
 	 * @param {number} id WireGuard tunnel ID
 	 */
-	public deactivateTunnel(id: number): Promise<void> {
-		return this.axiosInstance.post(`/network/wireguard/${id.toString()}/deactivate`)
-			.then((): void => {return;});
+	public async deactivateTunnel(id: number): Promise<void> {
+		await this.axiosInstance.post(`/network/wireguard/${id.toString()}/deactivate`);
 	}
 
 	/**
 	 * Enables an existing WireGuard tunnel
 	 * @param {number} id WireGuard tunnel ID
 	 */
-	public enableTunnel(id: number): Promise<void> {
-		return this.axiosInstance.post(`/network/wireguard/${id.toString()}/enable`)
-			.then((): void => {return;});
+	public async enableTunnel(id: number): Promise<void> {
+		await this.axiosInstance.post(`/network/wireguard/${id.toString()}/enable`);
 	}
 
 	/**
 	 * Disables an existing WireGuard tunnel
 	 * @param {number} id WireGuard tunnel ID
 	 */
-	public disableTunnel(id: number): Promise<void> {
-		return this.axiosInstance.post(`/network/wireguard/${id.toString()}/disable`)
-			.then((): void => {return;});
+	public async disableTunnel(id: number): Promise<void> {
+		await this.axiosInstance.post(`/network/wireguard/${id.toString()}/disable`);
 	}
 
 	/**
