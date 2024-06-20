@@ -17,6 +17,7 @@
 module.exports = {
 	extends: [
 		'eslint:recommended',
+		'plugin:regexp/recommended',
 		'plugin:@typescript-eslint/recommended-type-checked',
 		'plugin:@typescript-eslint/stylistic-type-checked',
 	],
@@ -25,6 +26,7 @@ module.exports = {
 		'@iqrf',
 		'@stylistic',
 		'@typescript-eslint',
+		'regexp',
 	],
 	parserOptions: {
 		sourceType: 'module',

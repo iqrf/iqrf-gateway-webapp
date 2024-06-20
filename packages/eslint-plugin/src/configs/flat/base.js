@@ -14,22 +14,28 @@
  * limitations under the License.
  */
 
-module.exports = require('typescript-eslint').config(
+const globals = require('globals');
+const regexpPlugin = require('eslint-plugin-regexp');
+const tsEslint = require('typescript-eslint');
+
+module.exports = tsEslint.config(
 	require('@eslint/js').configs.recommended,
-	...require('typescript-eslint').configs.recommendedTypeChecked,
-	...require('typescript-eslint').configs.stylisticTypeChecked,
+	regexpPlugin.configs['flat/recommended'],
+	...tsEslint.configs.recommendedTypeChecked,
+	...tsEslint.configs.stylisticTypeChecked,
 	{
 		plugins: {
 			get '@iqrf'() {
 				return require('../../index')
 			},
 			'@stylistic': require('@stylistic/eslint-plugin'),
+			'regexp': regexpPlugin,
 		},
 		languageOptions: {
 			sourceType: 'module',
 			globals: {
-				browser: require('globals').browser,
-				node: require('globals').node,
+				browser: globals.browser,
+				node: globals.node,
 			}
 		},
 		rules: {

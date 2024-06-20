@@ -76,6 +76,7 @@ module.exports = {
 		],
 		'no-use-before-define': 'off',
 //		'promise/always-return': 'warn',
+		'regexp/no-unused-capturing-group': 'warn',
 		'vue/html-indent': [
 			'warn',
 			'tab'
