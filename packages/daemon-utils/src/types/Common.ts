@@ -1,4 +1,3 @@
-
 import {
 	type AuthorizeBondParams,
 	type CoordinatorRestoreParams,
@@ -6,16 +5,13 @@ import {
 	type EmbedBondNodeParams,
 	type EmbedSetDpaParams,
 	type EmbedSetHopsParams,
-} from './embed/Coordinator';
-import { type PeripheralInformationParams } from './embed/Exploration';
-import {
+	type PeripheralInformationParams ,
+	type EmbedFrcSetParamsRaw,
 	type FrcSendParams,
 	type FrcSendSelectiveParams,
-	type EmbedFrcSetParamsRaw,
-} from './embed/Frc';
-import { type IoParams } from './embed/Io';
-import { type NodeRestoreParams, type ValidateBondsParams } from './embed/Node';
-import {
+	type IoParams,
+	type NodeRestoreParams,
+	type ValidateBondsParams ,
 	type BatchParamsRaw,
 	type EmbedTrConfigByteParams,
 	type EmbedTrConfigParams,
@@ -25,25 +21,34 @@ import {
 	type SetSecurityParams,
 	type SleepParams,
 	type TestRfSignalParams,
-} from './embed/Os';
-import { type UartOpenParams } from './embed/Uart';
-import { type IqmeshBackupParams, type IqmeshRestoreParams } from './iqmesh/Backup';
+	type UartOpenParams,
+} from './embed';
 import {
+	type IqmeshBackupParams,
+	type IqmeshRestoreParams,
 	type IqmeshAutonetworkParams,
 	type IqmeshBondNodeParams,
 	type IqmeshRemoveBondCoordinatorParams,
 	type IqmeshRemoveBondParams,
 	type IqmeshSmartConnectParams,
-} from './iqmesh/Bonding';
-import { type IqmeshDpaHopsParams, type IqmeshDpaValueParams, type IqmeshFrcParams } from './iqmesh/DpaParameters';
-import { type IqmeshEnumerateParams } from './iqmesh/Enumeration';
-import { type IqmeshFrcResponseTimeParams, type IqmeshTestRfSignalParams } from './iqmesh/Maintenance';
-import { type IqmeshOtaUploadParams } from './iqmesh/OtaUpload';
-import { type IqmeshReadTrConfigParams, type IqmeshWriteTrConfigParams } from './iqmesh/TrConfiguration';
-import { type SetOutputParams } from './standard/BinaryOutput';
-import { type SendDaliCommandsParams, type SendDaliFrcCommandParams } from './standard/Dali';
-import { type LightPowerParams } from './standard/Light';
-import { type ReadSensorsFrcParams, type ReadSensorsParams } from './standard/Sensor';
+	type IqmeshDpaHopsParams,
+	type IqmeshDpaValueParams,
+	type IqmeshFrcParams,
+	type IqmeshEnumerateParams,
+	type IqmeshFrcResponseTimeParams,
+	type IqmeshTestRfSignalParams,
+	type IqmeshOtaUploadParams,
+	type IqmeshReadTrConfigParams,
+	type IqmeshWriteTrConfigParams,
+} from './iqmesh';
+import {
+	type SetOutputParams,
+	type SendDaliCommandsParams,
+	type SendDaliFrcCommandParams,
+	type LightPowerParams,
+	type ReadSensorsFrcParams,
+	type ReadSensorsParams,
+} from './standard';
 
 /**
  * Generic embedded peripheral request parameters interface
@@ -53,7 +58,7 @@ export interface EmbedSharedParams {
 	addr: number;
 	/// HWPID filter
 	hwpid?: number;
-	/// Versbose response
+	/// Verbose response
 	returnVerbose?: boolean;
 }
 

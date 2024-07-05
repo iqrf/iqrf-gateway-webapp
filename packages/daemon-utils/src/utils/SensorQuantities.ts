@@ -1,4 +1,4 @@
-import { Quantities, Units } from '../enums';
+import { Quantities, Units } from '../enums/standard';
 
 /**
  * Standard sensor quantities utility class

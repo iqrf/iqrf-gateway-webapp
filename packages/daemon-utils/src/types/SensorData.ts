@@ -9,7 +9,7 @@ export interface SensorDataConfig {
 	/// Run service worker on startup
 	autoRun: boolean;
 	/// List of messaging service instances to use for reporting
-	messagingList: string|MessagingInstance[];
+	messagingList: MessagingInstance[];
 	/// Service worker period
 	period: number;
 	/// Worker retry period following failure

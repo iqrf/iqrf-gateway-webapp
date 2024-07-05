@@ -1,4 +1,4 @@
-import { type MessagingType } from '../enums/Messaging';
+import { type MessagingType } from '../enums';
 
 /**
  * Messaging service instance interface

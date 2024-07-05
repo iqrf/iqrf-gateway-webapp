@@ -1,10 +1,12 @@
 import { IqmeshServiceMessages } from '../../enums';
 import {
+	type IqmeshSharedParams,
+} from '../../types';
+import {
 	type IqmeshDpaHopsParams,
 	type IqmeshDpaValueParams,
 	type IqmeshFrcParams,
-	type IqmeshSharedParams,
-} from '../../types';
+} from '../../types/iqmesh';
 import { type DaemonMessageOptions } from '../../utils';
 
 import { BaseIqmeshService } from './BaseIqmeshService';

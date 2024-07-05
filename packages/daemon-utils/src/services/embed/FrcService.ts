@@ -1,11 +1,13 @@
 import { EmbedFrcMessages } from '../../enums';
 import {
+	type EmbedSharedParams,
+} from '../../types';
+import {
 	type EmbedFrcSetParams,
 	type EmbedFrcSetParamsRaw,
-	type EmbedSharedParams,
 	type FrcSendParams,
 	type FrcSendSelectiveParams,
-} from '../../types';
+} from '../../types/embed';
 import { type DaemonMessageOptions } from '../../utils';
 import { BaseEmbedService } from '../BaseEmbedService';
 
@@ -80,7 +82,7 @@ export class FrcService extends BaseEmbedService {
 	/**
 	 * Convert user-friendly FRC parameters to single value
 	 * @param {EmbedFrcSetParams} params FRC parameters
-	 * @returns {EmbedFrcSetParamsRaw} Convert FRC params
+	 * @return {EmbedFrcSetParamsRaw} Convert FRC params
 	 */
 	private static convertFrcParams(params: EmbedFrcSetParams): EmbedFrcSetParamsRaw {
 		return {

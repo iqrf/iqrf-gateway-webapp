@@ -14,29 +14,6 @@
  * limitations under the License.
  */
 
-module.exports = {
-	env: {
-		browser: true,
-		node: true,
-	},
-	extends: [
-		'plugin:@iqrf/base',
-		'plugin:@iqrf/import',
-		'plugin:promise/recommended',
-		'plugin:typescript-sort-keys/recommended',
-	],
-	parserOptions: {
-		project: './tsconfig.json',
-	},
-	rules: {
-		'@typescript-eslint/no-duplicate-enum-values': 'warn',
-		'no-unused-vars': 'off',
-	},
-	settings: {
-		'import/resolver': {
-			'typescript': {
-				'project': './tsconfig.json',
-			},
-		},
-	},
-};
+import { iqrfEslint } from '@iqrf/eslint-config';
+
+export default iqrfEslint();

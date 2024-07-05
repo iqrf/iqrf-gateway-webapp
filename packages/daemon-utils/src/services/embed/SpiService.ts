@@ -11,6 +11,7 @@ export class SpiService extends BaseEmbedService {
 	/**
 	 * Write to and read from SPI
 	 * @param {EmbedSharedParams} shared Shared request parameters
+	 * @param {WriteReadParams} params SPI write and read request parameters
 	 * @param {DaemonMessageOptions} options Message options
 	 * @return {DaemonMessageOptions} Message options with request
 	 */

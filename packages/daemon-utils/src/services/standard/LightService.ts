@@ -1,5 +1,6 @@
 import { StandardLightMessages } from '../../enums';
-import { type EmbedSharedParams, type LightPowerParams } from '../../types';
+import { type EmbedSharedParams } from '../../types';
+import { type LightPowerParams } from '../../types/standard';
 import { type DaemonMessageOptions } from '../../utils';
 import { BaseEmbedService } from '../BaseEmbedService';
 

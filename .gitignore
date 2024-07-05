@@ -28,6 +28,8 @@ tests/*/*/*/*/output/
 tests/tmp/
 coverage.html
 coverage.xml
+# TypeScript
+*.tsbuildinfo
 # Vitest
 coverage/
 junit.xml

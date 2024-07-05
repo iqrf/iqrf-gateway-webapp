@@ -14,8 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {configDefaults, defineConfig} from 'vitest/config';
+
 import tsconfigPaths from 'vite-tsconfig-paths';
+import { configDefaults, defineConfig } from 'vitest/config';
 
 export default defineConfig({
 	test: {

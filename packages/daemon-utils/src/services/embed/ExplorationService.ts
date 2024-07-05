@@ -1,5 +1,6 @@
 import { EmbedExplorationMessages } from '../../enums';
-import { type EmbedSharedParams, type PeripheralInformationParams } from '../../types';
+import { type EmbedSharedParams } from '../../types';
+import { type PeripheralInformationParams } from '../../types/embed';
 import { type DaemonMessageOptions } from '../../utils';
 import { BaseEmbedService } from '../BaseEmbedService';
 

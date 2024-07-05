@@ -1,5 +1,6 @@
 import { IqmeshServiceMessages } from '../../enums';
-import { type IqmeshFrcResponseTimeParams, type IqmeshSharedParams, type IqmeshTestRfSignalParams } from '../../types';
+import { type IqmeshSharedParams } from '../../types';
+import { type IqmeshFrcResponseTimeParams, type IqmeshTestRfSignalParams } from '../../types/iqmesh';
 import { type DaemonMessageOptions } from '../../utils';
 
 import { BaseIqmeshService } from './BaseIqmeshService';

@@ -1,4 +1,5 @@
-import { type DpaParam, type FrcResponseTime, type IqmeshConfigAction } from '../../enums';
+import { type DpaParam, type FrcResponseTime } from '../../enums/embed';
+import { type IqmeshConfigAction } from '../../enums/iqmesh';
 
 /**
  * IQMESH DpaHops parameters interface

@@ -1,5 +1,5 @@
 /**
- * IQMESH Autonetwork MID list entry interface
+ * IQMESH AutoNetwork MID list entry interface
  */
 export interface AutonetworkMidList {
 	/// address to assign to device
@@ -9,7 +9,7 @@ export interface AutonetworkMidList {
 }
 
 /**
- * IQMESH Autonework overlapping networks interface
+ * IQMESH AutoNetwork overlapping networks interface
  */
 export interface AutonetworkOverlappingNetworks {
 	/// Number of network that will be built
@@ -19,7 +19,7 @@ export interface AutonetworkOverlappingNetworks {
 }
 
 /**
- * IQMESH Autonetwork stop conditions interface
+ * IQMESH AutoNetwork stop conditions interface
  */
 export interface AutonetworkStopConditions {
 	/// Too many nodes found
@@ -35,7 +35,7 @@ export interface AutonetworkStopConditions {
 }
 
 /**
- * IQMESH Autonetwork request parameters interface
+ * IQMESH AutoNetwork request parameters interface
  */
 export interface IqmeshAutonetworkParams {
 	/// Number of DPA retry transactions

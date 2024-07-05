@@ -1,12 +1,14 @@
 import { EmbedOsMessages } from '../../enums';
 import {
+	type EmbedSharedParams,
+} from '../../types';
+import {
 	type BatchParams,
 	type BatchParamsRaw,
 	type BatchRequest,
 	type BatchRequestRaw,
-	type EmbedSharedParams,
-	type EmbedTrConfigParams,
 	type EmbedTrConfigByteParams,
+	type EmbedTrConfigParams,
 	type IndicateParams,
 	type LoadCodeParams,
 	type SelectiveBatchParams,
@@ -14,7 +16,7 @@ import {
 	type SetSecurityParams,
 	type SleepParams,
 	type TestRfSignalParams,
-} from '../../types';
+} from '../../types/embed';
 import { type DaemonMessageOptions } from '../../utils';
 import { BaseEmbedService } from '../BaseEmbedService';
 
@@ -266,7 +268,8 @@ export class OsService extends BaseEmbedService {
 
 	/**
 	 * Convert batch request data to API suitable format
-	 * @param {BatchRequest} request Request
+	 * @param {BatchRequest} request Batch request data
+	 * @return {BatchRequestRaw} Batch request in API suitable format
 	 */
 	private static convertBatch(request: BatchRequest): BatchRequestRaw {
 		const data = {

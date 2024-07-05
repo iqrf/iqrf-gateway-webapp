@@ -15,4 +15,3 @@
 coverage/
 dist/
 docs/
-vitest.config.ts

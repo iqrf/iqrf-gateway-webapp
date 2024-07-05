@@ -1,5 +1,6 @@
 import { EmbedSpiMessages, EmbedUartMessages } from '../../enums';
-import { type EmbedSharedParams, type UartOpenParams, type WriteReadParams } from '../../types';
+import { type EmbedSharedParams, type WriteReadParams } from '../../types';
+import { type UartOpenParams } from '../../types/embed';
 import { type DaemonMessageOptions } from '../../utils';
 import { BaseEmbedService } from '../BaseEmbedService';
 

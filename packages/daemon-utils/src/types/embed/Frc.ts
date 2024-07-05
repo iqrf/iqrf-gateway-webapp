@@ -1,4 +1,4 @@
-import { type FrcResponseTime } from '../../';
+import { type FrcResponseTime } from '../../enums/embed';
 
 /**
  * Embedded FRC Send parameters interface

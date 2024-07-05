@@ -1,4 +1,4 @@
-import cronstrue from 'cronstrue';
+import { toString as cronToString } from 'cronstrue';
 
 export class SchedulerCron {
 
@@ -89,8 +89,7 @@ export class SchedulerCron {
 	/**
 	 * Resolves cron expression alias
 	 * @param {string} alias CRON expression alias
-	 * @returns Resolved CRON expression alias string
-	 * @returns Undefined if alias is not supported
+	 * @return {string | undefined} Resolved CRON expression alias string, undefined if alias is not supported
 	 */
 	public static resolveExpressionAlias(alias: string): string|undefined {
 		return this.aliases.get(alias);
@@ -99,7 +98,7 @@ export class SchedulerCron {
 	/**
 	 * Converts cron expression to human-readable string
 	 * @param {string} expression CRON expression
-	 * @returns Human-readable cron expression
+	 * @return {string} Human-readable cron expression
 	 */
 	public static toHumanString(expression: string): string {
 		const expr = expression.trim().split(' ');
@@ -108,9 +107,9 @@ export class SchedulerCron {
 			if (alias === undefined) {
 				return '';
 			}
-			return cronstrue.toString(alias);
+			return cronToString(alias);
 		} else if (expr.length >= 5 && expr.length <= 7) {
-			return cronstrue.toString(expression);
+			return cronToString(expression);
 		} else {
 			return '';
 		}
@@ -119,7 +118,7 @@ export class SchedulerCron {
 	/**
 	 * Convert cron expression to Daemon scheduler suitable format
 	 * @param {string} expression CRON expression
-	 * @returns Daemon API cron expression
+	 * @return {string} Daemon API cron expression
 	 */
 	public static convertCron(expression: string): string {
 		let cron = expression.replace('?', '*').split(' ');

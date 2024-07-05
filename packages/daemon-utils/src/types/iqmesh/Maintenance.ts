@@ -1,4 +1,5 @@
-import { type FrcCommand, type IqmeshTestRfMeasurementTime } from '../../enums';
+import { type FrcCommand } from '../../enums/embed';
+import { type IqmeshTestRfMeasurementTime } from '../../enums/iqmesh';
 
 /**
  * IQMESH Frc command response time test parameters interface

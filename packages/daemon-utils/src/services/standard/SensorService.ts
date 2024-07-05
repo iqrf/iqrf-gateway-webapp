@@ -1,5 +1,6 @@
 import { StandardSensorMessages } from '../../enums';
-import { type EmbedSharedParams, type ReadSensorsFrcParams, type ReadSensorsParams } from '../../types';
+import { type EmbedSharedParams } from '../../types';
+import { type ReadSensorsFrcParams, type ReadSensorsParams } from '../../types/standard';
 import { type DaemonMessageOptions } from '../../utils';
 import { BaseEmbedService } from '../BaseEmbedService';
 

@@ -1,4 +1,4 @@
-import { type DpaParam } from '../../enums';
+import { type DpaParam } from '../../enums/embed';
 
 /**
  * Embedded Coordinator authorize bonds parameters interface
