@@ -70,10 +70,8 @@ describe('ApiKeyService', (): void => {
 		expect.assertions(1);
 		mockedAxios.onGet('/apiKeys')
 			.reply(200, rawApiKeys);
-		await service.list()
-			.then((actual: ApiKeyInfo[]): void => {
-				expect(actual).toStrictEqual(apiKeys);
-			});
+		const actual: ApiKeyInfo[] = await service.list();
+		expect(actual).toStrictEqual(apiKeys);
 	});
 
 	it('create API key', async (): Promise<void> => {
@@ -89,24 +87,20 @@ describe('ApiKeyService', (): void => {
 			description: 'Test',
 			expiration: expiration,
 		};
-		await service.create(config)
-			.then((actual: ApiKeyCreated): void => {
-				const expected: ApiKeyCreated = {
-					...apiKeys[0],
-					key: key,
-				};
-				expect(actual).toStrictEqual(expected);
-			});
+		const actual: ApiKeyCreated = await service.create(config);
+		const expected: ApiKeyCreated = {
+			...apiKeys[0],
+			key: key,
+		};
+		expect(actual).toStrictEqual(expected);
 	});
 
 	it('fetch API key with ID 1', async (): Promise<void> => {
 		expect.assertions(1);
 		mockedAxios.onGet('/apiKeys/1')
 			.reply(200, rawApiKeys[0]);
-		await service.fetch(1)
-			.then((actual: ApiKeyInfo): void => {
-				expect(actual).toStrictEqual(apiKeys[0]);
-			});
+		const actual: ApiKeyInfo = await service.fetch(1);
+		expect(actual).toStrictEqual(apiKeys[0]);
 	});
 
 	it('update API key with ID 1', async (): Promise<void> => {

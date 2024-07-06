@@ -39,7 +39,6 @@ export class IqrfGatewayControllerService extends BaseService {
 	/**
 	 * Saves IQRF Gateway Controller configuration
 	 * @param {IqrfGatewayControllerConfig} config IQRF Gateway Controller configuration
-	 * @returns
 	 */
 	public async saveConfig(config: IqrfGatewayControllerConfig): Promise<void> {
 		await this.axiosInstance.put('/config/controller', config);

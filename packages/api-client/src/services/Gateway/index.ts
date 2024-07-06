@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-import { BaseService } from './BaseService';
-import { HostnameService } from './Gateway/HostnameService';
-import { InfoService } from './Gateway/InfoService';
-import { LogService } from './Gateway/LogService';
-import { PowerService } from './Gateway/PowerService';
-import { SshKeyService } from './Gateway/SshKeyService';
-import { TimeService } from './Gateway/TimeService';
+import { BaseService } from '../BaseService';
 
-export * from './Gateway/HostnameService';
-export * from './Gateway/InfoService';
-export * from './Gateway/LogService';
-export * from './Gateway/PowerService';
-export * from './Gateway/SshKeyService';
-export * from './Gateway/TimeService';
+import { HostnameService } from './HostnameService';
+import { InfoService } from './InfoService';
+import { LogService } from './LogService';
+import { PowerService } from './PowerService';
+import { SshKeyService } from './SshKeyService';
+import { TimeService } from './TimeService';
+
+export * from './HostnameService';
+export * from './InfoService';
+export * from './LogService';
+export * from './PowerService';
+export * from './SshKeyService';
+export * from './TimeService';
 
 /**
  * IQRF Gateway services
@@ -36,7 +37,7 @@ export class GatewayServices extends BaseService {
 
 	/**
 	 * Returns hostname service
-	 * @returns {HostnameService} Hostname service
+	 * @return {HostnameService} Hostname service
 	 */
 	public getHostnameService(): HostnameService {
 		return new HostnameService(this.apiClient);
@@ -44,7 +45,7 @@ export class GatewayServices extends BaseService {
 
 	/**
 	 * Returns info service
-	 * @returns {InfoService} Info service
+	 * @return {InfoService} Info service
 	 */
 	public getInfoService(): InfoService {
 		return new InfoService(this.apiClient);
@@ -52,7 +53,7 @@ export class GatewayServices extends BaseService {
 
 	/**
 	 * Returns log service
-	 * @returns {LogService} Log service
+	 * @return {LogService} Log service
 	 */
 	public getLogService(): LogService {
 		return new LogService(this.apiClient);
@@ -60,7 +61,7 @@ export class GatewayServices extends BaseService {
 
 	/**
 	 * Returns power service
-	 * @returns {PowerService} Power service
+	 * @return {PowerService} Power service
 	 */
 	public getPowerService(): PowerService {
 		return new PowerService(this.apiClient);
@@ -76,7 +77,7 @@ export class GatewayServices extends BaseService {
 
 	/**
 	 * Returns time service
-	 * @returns {TimeService} Time service
+	 * @return {TimeService} Time service
 	 */
 	public getTimeService(): TimeService {
 		return new TimeService(this.apiClient);

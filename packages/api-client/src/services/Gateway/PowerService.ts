@@ -31,7 +31,7 @@ export class PowerService extends BaseService {
 
 	/**
 	 * Performs shutdown
-	 * @returns {Promise<PowerActionResponse>} Gateway shutdown time
+	 * @return {Promise<PowerActionResponse>} Gateway shutdown time
 	 */
 	public async powerOff(): Promise<PowerActionResponse> {
 		const response: AxiosResponse<PowerActionResponse> =
@@ -41,7 +41,7 @@ export class PowerService extends BaseService {
 
 	/**
 	 * Performs reboot
-	 * @returns {Promise<PowerActionResponse>} Gateway reboot time
+	 * @return {Promise<PowerActionResponse>} Gateway reboot time
 	 */
 	public async reboot(): Promise<PowerActionResponse> {
 		const response: AxiosResponse<PowerActionResponse> =
@@ -51,7 +51,7 @@ export class PowerService extends BaseService {
 
 	/**
 	 * Retrieves gateway uptime stats
-	 * @returns {Promise<GatewayUptime[]>} Gateway uptime stats
+	 * @return {Promise<GatewayUptime[]>} Gateway uptime stats
 	 */
 	public async fetchStats(): Promise<GatewayUptime[]> {
 		const response: AxiosResponse<GatewayUptimeRaw[]> =

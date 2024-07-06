@@ -22,7 +22,7 @@ import {
 	type WireGuardPeer,
 	type WireGuardTunnelConfig,
 	type WireGuardTunnelListEntry,
-} from '../../types/Network/WireGuard';
+} from '../../types/Network';
 import { BaseService } from '../BaseService';
 
 /**
@@ -60,8 +60,8 @@ export class WireGuardService extends BaseService {
 
 	/**
 	 * Edits an existing WireGuard tunnel
-	 * @param id WireGuard tunnel ID
-	 * @param config WireGuard tunnel configuration
+	 * @param {number} id WireGuard tunnel ID
+	 * @param {WireGuardTunnelConfig} config WireGuard tunnel configuration
 	 */
 	public async editTunnel(id: number, config: WireGuardTunnelConfig): Promise<void> {
 		await this.axiosInstance.put(`/network/wireguard/${id.toString()}`, this.serializeTunnel(config));

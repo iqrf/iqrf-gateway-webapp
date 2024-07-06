@@ -16,7 +16,10 @@
 
 import { type AxiosResponse } from 'axios';
 
-import { type MonitCheck, type MonitConfig } from '../../types/Config/Monit';
+import {
+	type MonitConfig,
+	type MonitCheck,
+} from '../../types/Config';
 import { BaseService } from '../BaseService';
 
 /**

@@ -20,7 +20,7 @@ import {
 	type NetworkConnectionConfiguration,
 	type NetworkConnectionListEntry,
 	type NetworkConnectionType,
-} from '../../types/Network/NetworkConnection';
+} from '../../types/Network';
 import { BaseService } from '../BaseService';
 
 /**

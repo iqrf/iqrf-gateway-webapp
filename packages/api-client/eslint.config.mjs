@@ -14,12 +14,6 @@
  * limitations under the License.
  */
 
-export * from './Config/Apt';
-export * from './Config/IqrfGatewayController';
-export * from './Config/IqrfGatewayDaemon';
-export * from './Config/IqrfGatewayInfluxdbBridge';
-export * from './Config/IqrfRepository';
-export * from './Config/Journal';
-export * from './Config/Mailer';
-export * from './Config/Mender';
-export * from './Config/Monit';
+import { iqrfEslint } from '@iqrf/eslint-config';
+
+export default iqrfEslint();

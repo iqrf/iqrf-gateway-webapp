@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
-export * from './Network/MobileOperator';
-export * from './Network/Modem';
-export * from './Network/NetworkConnection';
-export * from './Network/NetworkInterface';
-export * from './Network/Wifi';
-export * from './Network/WireGuard';
+export * from './Apt';
+export * from './IqrfGatewayController';
+export * from './IqrfGatewayDaemon';
+export * from './IqrfGatewayInfluxdbBridge';
+export * from './IqrfRepository';
+export * from './Journal';
+export * from './Mailer';
+export * from './Mender';
+export * from './Monit';

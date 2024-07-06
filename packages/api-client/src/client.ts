@@ -48,7 +48,7 @@ export interface ClientOptions {
 
 	/**
 	 * Axios instance
- 	 */
+	 */
 	axiosInstance?: AxiosInstance;
 
 	/**
@@ -315,8 +315,8 @@ export class Client {
 
 	/**
 	 * Adds a request interceptor
-	 * @param {function} onFulfilled Fulfilled callback
-	 * @param {function} onRejected Rejected callback
+	 * @param {Function} onFulfilled Fulfilled callback
+	 * @param {Function} onRejected Rejected callback
 	 * @param {AxiosInterceptorOptions} options Interceptor options
 	 * @return {number} Interceptor ID
 	 */
@@ -326,8 +326,8 @@ export class Client {
 
 	/**
 	 * Adds a response interceptor
-	 * @param {function} onFulfilled Fulfilled callback
-	 * @param {function} onRejected Rejected callback
+	 * @param {Function} onFulfilled Fulfilled callback
+	 * @param {Function} onRejected Rejected callback
 	 * @param {AxiosInterceptorOptions} options Interceptor options
 	 * @return {number} Interceptor ID
 	 */

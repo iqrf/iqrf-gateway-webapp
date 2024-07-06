@@ -17,11 +17,14 @@
 import { type AxiosResponse } from 'axios';
 
 import {
-	type IqrfGatewayDaemonConfig,
+	FileResponse,
+} from '../../types';
+import {
 	type IqrfGatewayDaemonComponent,
 	type IqrfGatewayDaemonComponentInstanceConfiguration,
 	type IqrfGatewayDaemonComponentName,
 	type IqrfGatewayDaemonComponentState,
+	type IqrfGatewayDaemonConfig,
 	type IqrfGatewayDaemonMapping,
 	type IqrfGatewayDaemonSchedulerMessagings,
 } from '../../types/Config';
@@ -62,12 +65,11 @@ export class IqrfGatewayDaemonService extends BaseService {
 	 * @param {C} component Daemon component name
 	 * @param {IqrfGatewayDaemonComponentInstanceConfiguration<C>} configuration Daemon component instance configuration
 	 */
-	public createInstance<C extends IqrfGatewayDaemonComponentName>(
+	public async createInstance<C extends IqrfGatewayDaemonComponentName>(
 		component: C,
 		configuration: IqrfGatewayDaemonComponentInstanceConfiguration<C>,
 	): Promise<void> {
-		return this.axiosInstance.post(`/config/daemon/${encodeURIComponent(component)}`, configuration)
-			.then((): void => {return;});
+		await this.axiosInstance.post(`/config/daemon/${encodeURIComponent(component)}`, configuration);
 	}
 
 	/**
@@ -77,13 +79,12 @@ export class IqrfGatewayDaemonService extends BaseService {
 	 * @param {string} instance Daemon component instance name
 	 * @param {IqrfGatewayDaemonComponentInstanceConfiguration<C>} configuration Daemon component instance configuration
 	 */
-	public updateInstance<C extends IqrfGatewayDaemonComponentName>(
+	public async updateInstance<C extends IqrfGatewayDaemonComponentName>(
 		component: C,
 		instance: string,
 		configuration: IqrfGatewayDaemonComponentInstanceConfiguration<C>,
 	): Promise<void> {
-		return this.axiosInstance.put(`/config/daemon/${encodeURIComponent(component)}/${encodeURIComponent(instance)}`, configuration)
-			.then((): void => {return;});
+		await this.axiosInstance.put(`/config/daemon/${encodeURIComponent(component)}/${encodeURIComponent(instance)}`, configuration);
 	}
 
 	/**
@@ -92,31 +93,31 @@ export class IqrfGatewayDaemonService extends BaseService {
 	 * @param {C} component Daemon component name
 	 * @param {string} instance Daemon component instance name
 	 */
-	public deleteInstance<C extends IqrfGatewayDaemonComponentName>(
+	public async deleteInstance<C extends IqrfGatewayDaemonComponentName>(
 		component: C,
 		instance: string,
 	): Promise<void> {
-		return this.axiosInstance.delete(`/config/daemon/${encodeURIComponent(component)}/${encodeURIComponent(instance)}`)
-			.then((): void => {return;});
+		await this.axiosInstance.delete(`/config/daemon/${encodeURIComponent(component)}/${encodeURIComponent(instance)}`);
 	}
 
 	/**
 	 * Changed component(s) state
 	 * @param {IqrfGatewayDaemonComponentState[]} components Component state configuration
 	 */
-	public changeEnabledComponents(components: IqrfGatewayDaemonComponentState[]): Promise<void> {
-		return this.axiosInstance.patch('/config/daemon/components', components)
-			.then((): void => {return;});
+	public async changeEnabledComponents(components: IqrfGatewayDaemonComponentState[]): Promise<void> {
+		await this.axiosInstance.patch('/config/daemon/components', components);
 	}
 
 	/**
 	 * List IQRF Gateway Daemon mappings
+	 * @param {MappingType | null} interfaceType Mapping interface type
 	 * @return {Promise<IqrfGatewayDaemonMapping[]>} IQRF Gateway Daemon mappings
 	 */
-	public listMappings(interfaceType: MappingType | null = null): Promise<IqrfGatewayDaemonMapping[]> {
+	public async listMappings(interfaceType: MappingType | null = null): Promise<IqrfGatewayDaemonMapping[]> {
 		const params = interfaceType ? { interface: interfaceType } : {};
-		return this.axiosInstance.get('/mappings', { params: params })
-			.then((response: AxiosResponse<IqrfGatewayDaemonMapping[]>) => response.data);
+		const response: AxiosResponse<IqrfGatewayDaemonMapping[]> =
+			await this.axiosInstance.get('/mappings', { params: params });
+		return response.data;
 	}
 
 	/**
@@ -124,19 +125,19 @@ export class IqrfGatewayDaemonService extends BaseService {
 	 * @param {number} id IQRF Gateway Daemon mapping ID
 	 * @return {Promise<IqrfGatewayDaemonMapping>} IQRF Gateway Daemon mapping
 	 */
-	public fetchMapping(id: number): Promise<IqrfGatewayDaemonMapping> {
-		return this.axiosInstance.get(`/mappings/${id.toString()}`)
-			.then((response: AxiosResponse<IqrfGatewayDaemonMapping>) => response.data);
+	public async fetchMapping(id: number): Promise<IqrfGatewayDaemonMapping> {
+		const response: AxiosResponse<IqrfGatewayDaemonMapping> =
+			await this.axiosInstance.get(`/mappings/${id.toString()}`);
+		return response.data;
 	}
 
 	/**
 	 * Create IQRF Gateway Daemon mapping
 	 * @param {IqrfGatewayDaemonMapping} mapping IQRF Gateway Daemon mapping
 	 */
-	public createMapping(mapping: IqrfGatewayDaemonMapping): Promise<void> {
+	public async createMapping(mapping: IqrfGatewayDaemonMapping): Promise<void> {
 		delete mapping.id;
-		return this.axiosInstance.post('/mappings', mapping)
-			.then((): void => {return;});
+		await this.axiosInstance.post('/mappings', mapping);
 	}
 
 	/**
@@ -144,46 +145,45 @@ export class IqrfGatewayDaemonService extends BaseService {
 	 * @param {number} id IQRF Gateway Daemon mapping ID
 	 * @param {IqrfGatewayDaemonMapping} mapping IQRF Gateway Daemon mapping
 	 */
-	public editMapping(id: number, mapping: IqrfGatewayDaemonMapping): Promise<void> {
+	public async editMapping(id: number, mapping: IqrfGatewayDaemonMapping): Promise<void> {
 		delete mapping.id;
-		return this.axiosInstance.put(`/mappings/${id.toString()}`, mapping)
-			.then((): void => {return;});
+		await this.axiosInstance.put(`/mappings/${id.toString()}`, mapping);
 	}
 
 	/**
 	 * Delete IQRF Gateway Daemon mapping
 	 * @param {number} id IQRF Gateway Daemon mapping ID
 	 */
-	public deleteMapping(id: number): Promise<void> {
-		return this.axiosInstance.delete(`/mappings/${id.toString()}`)
-			.then((): void => {return;});
+	public async deleteMapping(id: number): Promise<void> {
+		await this.axiosInstance.delete(`/mappings/${id.toString()}`);
 	}
 
 	/**
 	 * Import scheduler tasks
 	 * @param {File} data Scheduler task JSON file or ZIP archive
 	 */
-	public schedulerImport(data: File): Promise<void> {
-		return this.axiosInstance.post('/scheduler/import', data, { headers: { 'Content-Type': data.type } })
-			.then((): void => {return;});
+	public async schedulerImport(data: File): Promise<void> {
+		await this.axiosInstance.post('/scheduler/import', data, { headers: { 'Content-Type': data.type } });
 	}
 
 	/**
 	 * Export scheduler tasks
-	 * @return {Promise<ArrayBuffer>} Scheduler task ZIP archive
+	 * @return {Promise<FileResponse<Blob>>} Scheduler task ZIP archive
 	 */
-	public schedulerExport(): Promise<ArrayBuffer> {
-		return this.axiosInstance.get('/scheduler/export', { responseType: 'arraybuffer' })
-			.then((response: AxiosResponse<ArrayBuffer>) => response.data);
+	public async schedulerExport(): Promise<FileResponse<Blob>> {
+		const response: AxiosResponse<Blob> =
+			await this.axiosInstance.get('/scheduler/export', { responseType: 'blob' });
+		return FileResponse.fromAxiosResponse(response, 'iqrf-gateway-scheduler.zip');
 	}
 
 	/**
 	 * Fetch scheduler messaging instances
-	 * @return {Promise<>} Scheduler task suitable messaging instances
+	 * @return {Promise<IqrfGatewayDaemonSchedulerMessagings>} Scheduler task suitable messaging instances
 	 */
-	public schedulerMessagings(): Promise<IqrfGatewayDaemonSchedulerMessagings> {
-		return this.axiosInstance.get('/scheduler/messagings')
-			.then((response: AxiosResponse<IqrfGatewayDaemonSchedulerMessagings>): IqrfGatewayDaemonSchedulerMessagings => response.data);
+	public async schedulerMessagings(): Promise<IqrfGatewayDaemonSchedulerMessagings> {
+		const response: AxiosResponse<IqrfGatewayDaemonSchedulerMessagings> =
+			await this.axiosInstance.get('/scheduler/messagings');
+		return response.data;
 	}
 
 }

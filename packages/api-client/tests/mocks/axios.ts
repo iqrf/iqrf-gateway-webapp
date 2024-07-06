@@ -20,11 +20,11 @@ import MockAdapter from 'axios-mock-adapter';
 import { Client } from '../../src';
 
 /**
- * @const {MockAdapter} mockedAxios Mocked axios module
+ * @constant {MockAdapter} mockedAxios Mocked axios module
  */
 export const mockedAxios: MockAdapter = new MockAdapter(axios);
 
 /**
- * @const {Client} mockedClient Client with mocked axios instance
+ * @constant {Client} mockedClient Client with mocked axios instance
  */
 export const mockedClient: Client = new Client({ axiosInstance: axios });

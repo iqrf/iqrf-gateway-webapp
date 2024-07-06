@@ -66,13 +66,11 @@ describe('AuthenticationService', (): void => {
 				...userSignedIn,
 				email: 'admin@xn--rksmrgs-5wao1o.josefsson.org',
 			});
-		await service.signIn(credentials)
-			.then((actual: UserSignedIn): void => {
-				expect(actual).toStrictEqual({
-					...userSignedIn,
-					email: 'admin@räksmörgås.josefsson.org',
-				});
-			});
+		const actual: UserSignedIn = await service.signIn(credentials);
+		expect(actual).toStrictEqual({
+			...userSignedIn,
+			email: 'admin@räksmörgås.josefsson.org',
+		});
 	});
 
 	it('sign in the user with expiration', async (): Promise<void> => {
@@ -83,20 +81,16 @@ describe('AuthenticationService', (): void => {
 		};
 		mockedAxios.onPost('/user/signIn', credentialsWithExpiration)
 			.reply(200, userSignedIn);
-		await service.signIn(credentialsWithExpiration)
-			.then((actual: UserSignedIn): void => {
-				expect(actual).toStrictEqual(userSignedIn);
-			});
+		const actual: UserSignedIn = await service.signIn(credentialsWithExpiration);
+		expect(actual).toStrictEqual(userSignedIn);
 	});
 
 	it('refresh JWT token', async (): Promise<void> => {
 		expect.assertions(1);
 		mockedAxios.onPost('/user/refreshToken')
 			.reply(200, userSignedIn);
-		await service.refreshToken()
-			.then((actual: UserSignedIn): void => {
-				expect(actual).toStrictEqual(userSignedIn);
-			});
+		const actual: UserSignedIn = await service.refreshToken();
+		expect(actual).toStrictEqual(userSignedIn);
 	});
 
 	it('verify the user - invalid UUID format', async (): Promise<void> => {
@@ -116,10 +110,8 @@ describe('AuthenticationService', (): void => {
 		const uuid = '95b7edac-f3de-4dab-9cef-35a509b88f57';
 		mockedAxios.onGet(`/user/verify/${uuid}`)
 			.reply(200, userSignedIn);
-		await service.verify(uuid)
-			.then((actual: UserSignedIn): void => {
-				expect(actual).toStrictEqual(userSignedIn);
-			});
+		const actual: UserSignedIn = await service.verify(uuid);
+		expect(actual).toStrictEqual(userSignedIn);
 	});
 
 });

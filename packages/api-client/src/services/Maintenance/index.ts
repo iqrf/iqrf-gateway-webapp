@@ -1,5 +1,5 @@
 /**
- * Copyright 2023-2024 MICRORISC s.r.o.
+ * Copyright 2023 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,32 +14,23 @@
  * limitations under the License.
  */
 
-module.exports = {
-	extends: [
-		'plugin:@iqrf/base',
-		'plugin:@iqrf/import',
-		'plugin:promise/recommended',
-		"plugin:typescript-sort-keys/recommended",
-	],
-	parserOptions: {
-		project: './tsconfig.json',
-	},
-	rules: {
-		'no-unused-vars': 'off',
-	},
-	overrides: [
-		{
-			files: ['tests/**'],
-			rules: {
-				'promise/always-return': 'off',
-			}
-		},
-	],
-	settings: {
-		'import/resolver': {
-			'typescript': {
-				'project': './tsconfig.json',
-			},
-		},
-	},
-};
+import { BaseService } from '../BaseService';
+
+import { BackupService } from './BackupService';
+
+export * from './BackupService';
+
+/**
+ * Maintenance services
+ */
+export class MaintenanceServices extends BaseService {
+
+	/**
+	 * Returns backup service
+	 * @return {BackupService} Backup service
+	 */
+	public getBackupService(): BackupService {
+		return new BackupService(this.apiClient);
+	}
+
+}

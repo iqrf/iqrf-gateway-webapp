@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-import { BaseService } from './BaseService';
-import { DpaMacrosService } from './Iqrf/DpaMacrosService';
-import { InterfacePortsService } from './Iqrf/InterfacePortsService';
-import { UpgradeService } from './Iqrf/UpgradeService';
+import { BaseService } from '../BaseService';
 
-export * from './Iqrf/DpaMacrosService';
-export * from './Iqrf/InterfacePortsService';
-export * from './Iqrf/UpgradeService';
+import { DpaMacrosService } from './DpaMacrosService';
+import { InterfacePortsService } from './InterfacePortsService';
+import { UpgradeService } from './UpgradeService';
+
+export * from './DpaMacrosService';
+export * from './InterfacePortsService';
+export * from './UpgradeService';
 
 /**
  * IQRF services

@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-import { BaseService } from './BaseService';
-import { AwsService } from './Cloud/AwsService';
-import { AzureService } from './Cloud/AzureService';
-import { IbmService } from './Cloud/IbmService';
+import { BaseService } from '../BaseService';
 
-export * from './Cloud/AwsService';
-export * from './Cloud/AzureService';
-export * from './Cloud/IbmService';
+import { AwsService } from './AwsService';
+import { AzureService } from './AzureService';
+import { IbmService } from './IbmService';
+
+export * from './AwsService';
+export * from './AzureService';
+export * from './IbmService';
 
 /**
  * Cloud services

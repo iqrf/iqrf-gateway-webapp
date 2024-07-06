@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
-export * from './Cloud/Aws';
-export * from './Cloud/Azure';
-export * from './Cloud/Ibm';
+export * from './Info';
+export * from './Power';
+export * from './SshKey';
+export * from './Time';

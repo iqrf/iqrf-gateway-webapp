@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-import { BaseService } from './BaseService';
-import { MobileOperatorService } from './Network/MobileOperatorService';
-import { ModemService } from './Network/ModemService';
-import { NetworkConnectionService } from './Network/NetworkConnectionService';
-import { NetworkInterfaceService } from './Network/NetworkInterfaceService';
-import { WireGuardService } from './Network/WireGuardService';
+import { BaseService } from '../BaseService';
 
-export * from './Network/MobileOperatorService';
-export * from './Network/ModemService';
-export * from './Network/NetworkConnectionService';
-export * from './Network/NetworkInterfaceService';
-export * from './Network/WireGuardService';
+import { MobileOperatorService } from './MobileOperatorService';
+import { ModemService } from './ModemService';
+import { NetworkConnectionService } from './NetworkConnectionService';
+import { NetworkInterfaceService } from './NetworkInterfaceService';
+import { WireGuardService } from './WireGuardService';
+
+export * from './MobileOperatorService';
+export * from './ModemService';
+export * from './NetworkConnectionService';
+export * from './NetworkInterfaceService';
+export * from './WireGuardService';
 
 /**
  * Network services

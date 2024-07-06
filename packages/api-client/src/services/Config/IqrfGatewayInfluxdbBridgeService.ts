@@ -37,7 +37,6 @@ export class IqrfGatewayInfluxdbBridgeService extends BaseService {
 	/**
 	 * Edits IQRF Gateway InfluxDB Bridge configuration
 	 * @param {BridgeConfig} config IQRF Gateway InfluxDB Bridge configuration
-	 * @returns
 	 */
 	public async editConfig(config: BridgeConfig): Promise<void> {
 		await this.axiosInstance.put('/config/bridge', config);

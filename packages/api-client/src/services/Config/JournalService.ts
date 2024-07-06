@@ -17,9 +17,9 @@
 import { type AxiosResponse } from 'axios';
 
 import {
-	type JournalRecords,
 	type JournalConfig,
-} from '../../types/Config/Journal';
+	type JournalRecords,
+} from '../../types/Config';
 import { BaseService } from '../BaseService';
 
 /**

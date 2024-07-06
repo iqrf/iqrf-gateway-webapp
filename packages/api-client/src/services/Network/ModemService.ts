@@ -16,7 +16,7 @@
 
 import { type AxiosResponse } from 'axios';
 
-import { type Modem } from '../../types/Network/Modem';
+import { type Modem } from '../../types/Network';
 import { BaseService } from '../BaseService';
 
 /**

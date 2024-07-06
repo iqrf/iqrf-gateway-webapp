@@ -14,4 +14,4 @@
  * limitations under the License.
  */
 
-export * from './Maintenance/Backup';
+export * from './Backup';

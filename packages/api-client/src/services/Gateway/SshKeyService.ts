@@ -65,7 +65,7 @@ export class SshKeyService extends BaseService {
 	 * @param {number} id Key ID
 	 */
 	public async deleteKey(id: number): Promise<void> {
-		await this.axiosInstance.get(`/gateway/ssh/keys/${id.toString()}`);
+		await this.axiosInstance.delete(`/gateway/ssh/keys/${id.toString()}`);
 	}
 
 	/**

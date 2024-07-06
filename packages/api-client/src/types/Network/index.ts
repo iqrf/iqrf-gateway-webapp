@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-export * from './Gateway/Info';
-export * from './Gateway/Power';
-export * from './Gateway/SshKey';
-export * from './Gateway/Time';
+export * from './MobileOperator';
+export * from './Modem';
+export * from './NetworkConnection';
+export * from './NetworkInterface';
+export * from './Wifi';
+export * from './WireGuard';

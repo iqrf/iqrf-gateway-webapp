@@ -19,7 +19,7 @@ import { type AxiosRequestConfig, type AxiosResponse } from 'axios';
 import {
 	type NetworkInterface,
 	type NetworkInterfaceType,
-} from '../../types/Network/NetworkInterface';
+} from '../../types/Network';
 import { BaseService } from '../BaseService';
 
 /**

@@ -28,7 +28,7 @@ export class ServiceService extends BaseService {
 	/**
 	 * Retrieves the state of supported services
 	 * @param {boolean} withStatus Include service status
-	 * @returns {Promise<ServiceState[]>} State of supported services
+	 * @return {Promise<ServiceState[]>} State of supported services
 	 */
 	public async list(withStatus: boolean = false): Promise<ServiceState[]> {
 		const response: AxiosResponse<ServiceState[]> =
@@ -43,7 +43,7 @@ export class ServiceService extends BaseService {
 	/**
 	 * Retrieves the service status
 	 * @param {string} name Service name
-	 * @returns {Promise<ServiceStatus>} Service status
+	 * @return {Promise<ServiceStatus>} Service status
 	 */
 	public async getStatus(name: string): Promise<ServiceStatus> {
 		const response: AxiosResponse<ServiceStatus> =

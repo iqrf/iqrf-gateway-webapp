@@ -71,6 +71,7 @@ export class AccountService extends BaseService {
 	 * Resets the new user's password
 	 * @param {string} requestUuid Password recovery request UUID
 	 * @param {UserPasswordReset} request Password reset request
+	 * @return {Promise<UserSignedIn>} Signed-in user
 	 */
 	public async confirmPasswordRecovery(requestUuid: string, request: UserPasswordReset): Promise<UserSignedIn> {
 		if (!uuidValidate(requestUuid)) {

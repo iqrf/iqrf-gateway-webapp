@@ -19,8 +19,8 @@ import * as punycode from 'punycode/';
 
 import { MailerSmtpSecurity } from '../../types/Config';
 import {
-	type MailerGetConfigResponse,
 	type MailerConfig,
+	type MailerGetConfigResponse,
 } from '../../types/Config';
 import { BaseService } from '../BaseService';
 

@@ -20,7 +20,7 @@ import {
 	type TimeConfig,
 	type TimeSet,
 	type Timezone,
-} from '../../types/Gateway/Time';
+} from '../../types/Gateway';
 import { BaseService } from '../BaseService';
 
 /**

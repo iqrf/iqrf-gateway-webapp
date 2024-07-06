@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { type MessagingInstance } from '@iqrf/iqrf-gateway-daemon-utils/types/Messaging';
+import { type MessagingInstance } from '@iqrf/iqrf-gateway-daemon-utils/types';
 
 import { type MappingDeviceType, type MappingType } from './Mapping';
 

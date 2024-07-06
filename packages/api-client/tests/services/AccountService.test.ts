@@ -75,10 +75,8 @@ describe('AccountService', (): void => {
 		expect.assertions(1);
 		mockedAxios.onGet('/user')
 			.reply(200, userInfo);
-		await service.fetchInfo()
-			.then((actual: UserInfo): void => {
-				expect(actual).toStrictEqual(userInfo);
-			});
+		const actual: UserInfo = await service.fetchInfo();
+		expect(actual).toStrictEqual(userInfo);
 	});
 
 	it('edit the user', async (): Promise<void> => {
@@ -96,10 +94,8 @@ describe('AccountService', (): void => {
 		};
 		mockedAxios.onPut('/user', request)
 			.reply(200, response);
-		await service.edit(request)
-			.then((actual: EmailSentResponse): void => {
-				expect(actual).toStrictEqual(response);
-			});
+		const actual: EmailSentResponse = await service.edit(request);
+		expect(actual).toStrictEqual(response);
 	});
 
 	it('change user\' password', async (): Promise<void> => {
@@ -131,10 +127,8 @@ describe('AccountService', (): void => {
 		const uuid = '95b7edac-f3de-4dab-9cef-35a509b88f57';
 		mockedAxios.onPost(`/user/password/recovery/${uuid}`, passwordResetRequest)
 			.reply(200, userSignedIn);
-		await service.confirmPasswordRecovery(uuid, passwordResetRequest)
-			.then((actual: UserSignedIn): void => {
-				expect(actual).toStrictEqual(userSignedIn);
-			});
+		const actual: UserSignedIn = await service.confirmPasswordRecovery(uuid, passwordResetRequest);
+		expect(actual).toStrictEqual(userSignedIn);
 	});
 
 	it('request password recovery', async (): Promise<void> => {

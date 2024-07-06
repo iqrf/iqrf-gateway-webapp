@@ -16,7 +16,10 @@
 
 import { type AxiosResponse } from 'axios';
 
-import { type MenderRemount, type MenderConfig } from '../types/Config';
+import {
+	type MenderConfig,
+	type MenderRemount,
+} from '../types/Config';
 
 import { BaseService } from './BaseService';
 
@@ -39,9 +42,8 @@ export class MenderService extends BaseService {
 	 * Edits Mender configuration
 	 * @param {MenderConfig} config Mender configuration
 	 */
-	public editConfig(config: MenderConfig): Promise<void> {
-		return this.axiosInstance.put('/config/mender', config)
-			.then((): void => {return;});
+	public async editConfig(config: MenderConfig): Promise<void> {
+		await this.axiosInstance.put('/config/mender', config);
 	}
 
 	/**
@@ -49,11 +51,11 @@ export class MenderService extends BaseService {
 	 * @param {File} certificate Certificate
 	 * @return {Promise<string>} Path to uploaded certificate
 	 */
-	public uploadCert(certificate: File): Promise<string> {
+	public async uploadCert(certificate: File): Promise<string> {
 		const formData = new FormData();
 		formData.append('certificate', certificate);
-		return this.axiosInstance.post('/config/mender/cert', formData)
-			.then((response: AxiosResponse<string>): string => response.data);
+		const response: AxiosResponse<string> = await this.axiosInstance.post('/config/mender/cert', formData);
+		return response.data;
 	}
 
 	/**
@@ -61,37 +63,36 @@ export class MenderService extends BaseService {
 	 * @param {File} artifact Mender artifact file
 	 * @return {Promise<string>} Mender update output log
 	 */
-	public install(artifact: File): Promise<string> {
+	public async install(artifact: File): Promise<string> {
 		const formData = new FormData();
 		formData.append('file', artifact);
-		return this.axiosInstance.post('/mender/install')
-			.then((response: AxiosResponse<string>): string => response.data);
+		const response: AxiosResponse<string> = await this.axiosInstance.post('/mender/install');
+		return response.data;
 	}
 
 	/**
 	 * Commits installed artifact update
 	 * @return {Promise<string>} Mender update output log
 	 */
-	public commit(): Promise<string> {
-		return this.axiosInstance.post('/mender/commit')
-			.then((response: AxiosResponse<string>): string => response.data);
+	public async commit(): Promise<string> {
+		const response: AxiosResponse<string> = await this.axiosInstance.post('/mender/commit');
+		return response.data;
 	}
 
 	/**
 	 * Rolls installed artifact update back
 	 * @return {Promise<string>} Mender update output log
 	 */
-	public rollback(): Promise<string> {
-		return this.axiosInstance.post('/mender/rollback')
-			.then((response: AxiosResponse<string>): string => response.data);
+	public async rollback(): Promise<string> {
+		const response: AxiosResponse<string> = await this.axiosInstance.post('/mender/rollback');
+		return response.data;
 	}
 
 	/**
 	 * Remounts filesystem
 	 * @param {MenderRemount} mode Mount mode
 	 */
-	public remount(mode: MenderRemount): Promise<void> {
-		return this.axiosInstance.post('/mender/remount', mode)
-			.then((): void => {return;});
+	public async remount(mode: MenderRemount): Promise<void> {
+		await this.axiosInstance.post('/mender/remount', mode);
 	}
 }

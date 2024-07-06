@@ -16,8 +16,9 @@
 
 import { type AxiosResponse } from 'axios';
 
-import { type PowerActionResponse } from '../../types/Gateway/Power';
-import { type GatewayBackup } from '../../types/Maintenance/Backup';
+import { FileResponse } from '../../types';
+import { type PowerActionResponse } from '../../types/Gateway';
+import { type GatewayBackup } from '../../types/Maintenance';
 import { BaseService } from '../BaseService';
 
 /**
@@ -28,18 +29,18 @@ export class BackupService extends BaseService {
 	/**
 	 * Backup gateway to archive
 	 * @param {GatewayBackup} params Backup parameters
-	 * @return {Promise<ArrayBuffer>} Backup archive
+	 * @return {Promise<FileResponse<Blob>>} Backup archive
 	 */
-	public async backup(params: GatewayBackup): Promise<ArrayBuffer> {
-		const response: AxiosResponse<ArrayBuffer> =
-			await this.axiosInstance.post('/maintenance/backup', params, { responseType: 'arraybuffer' });
-		return response.data;
+	public async backup(params: GatewayBackup): Promise<FileResponse<Blob>> {
+		const response: AxiosResponse<Blob> =
+			await this.axiosInstance.post('/maintenance/backup', params, { responseType: 'blob' });
+		return FileResponse.fromAxiosResponse(response);
 	}
 
 	/**
 	 * Restore gateway from archive
 	 * @param {File} archive Backup archive
-	 * @return {Promise<PowerActionResponse>}
+	 * @return {Promise<PowerActionResponse>} Power action response
 	 */
 	public async restore(archive: File): Promise<PowerActionResponse> {
 		const response: AxiosResponse<PowerActionResponse> =

@@ -16,7 +16,12 @@
 
 import { type AxiosResponse } from 'axios';
 
-import { type EmailSentResponse, type UserCreate, type UserEdit, type UserInfo } from '../types';
+import {
+	type EmailSentResponse,
+	type UserCreate,
+	type UserEdit,
+	type UserInfo,
+} from '../types';
 import { UserUtils } from '../utils';
 
 import { BaseService } from './BaseService';

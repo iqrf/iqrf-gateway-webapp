@@ -16,7 +16,7 @@
 
 import { type AxiosResponse } from 'axios';
 
-import { type AptConfig, type AptConfigRaw } from '../../types/Config/Apt';
+import { type AptConfig, type AptConfigRaw } from '../../types/Config';
 import { BaseService } from '../BaseService';
 
 /**

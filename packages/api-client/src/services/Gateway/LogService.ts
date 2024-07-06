@@ -16,6 +16,7 @@
 
 import { type AxiosResponse } from 'axios';
 
+import { FileResponse } from '../../types';
 import { BaseService } from '../BaseService';
 
 /**
@@ -36,7 +37,7 @@ export class LogService extends BaseService {
 	/**
 	 * Fetches service log
 	 * @param {string} service Service name
-	 * @returns {Promise<string>} Service log
+	 * @return {Promise<string>} Service log
 	 */
 	public async getServiceLog(service: string): Promise<string> {
 		const response: AxiosResponse<string> =
@@ -46,12 +47,12 @@ export class LogService extends BaseService {
 
 	/**
 	 * Exports logs archive
-	 * @returns {Promise<ArrayBuffer>} Logs archive
+	 * @return {Promise<FileResponse<Blob>>} Logs archive
 	 */
-	public async exportLogs(): Promise<ArrayBuffer> {
-		const response: AxiosResponse<ArrayBuffer> =
-			await this.apiClient.getAxiosInstance().get('/gateway/logs/export', { responseType: 'arraybuffer' });
-		return response.data;
+	public async exportLogs(): Promise<FileResponse<Blob>> {
+		const response: AxiosResponse<Blob> =
+			await this.apiClient.getAxiosInstance().get('/gateway/logs/export', { responseType: 'blob' });
+		return FileResponse.fromAxiosResponse(response);
 	}
 
 }

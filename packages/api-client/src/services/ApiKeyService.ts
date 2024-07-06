@@ -16,7 +16,11 @@
 
 import { type AxiosResponse } from 'axios';
 
-import { type ApiKeyConfig, type ApiKeyCreated, type ApiKeyInfo } from '../types';
+import {
+	type ApiKeyConfig,
+	type ApiKeyCreated,
+	type ApiKeyInfo,
+} from '../types';
 import { DateTimeUtils } from '../utils';
 
 import { BaseService } from './BaseService';

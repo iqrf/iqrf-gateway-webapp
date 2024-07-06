@@ -51,26 +51,24 @@ describe('FeatureService', (): void => {
 					'url': '/grafana/',
 				},
 			});
-		await service.fetchAll()
-			.then((actual: Features): void => {
-				expect(actual).toStrictEqual({
-					'apcupsd': {
-						'enabled': false,
-					},
-					'docs': {
-						'enabled': true,
-						'url': 'https://docs.iqrf.org/iqrf-gateway',
-					},
-					'gatewayPass': {
-						'enabled': false,
-						'user': 'root',
-					},
-					'grafana': {
-						'enabled': false,
-						'url': '/grafana/',
-					},
-				});
-			});
+		const actual: Features = await service.fetchAll();
+		expect(actual).toStrictEqual({
+			'apcupsd': {
+				'enabled': false,
+			},
+			'docs': {
+				'enabled': true,
+				'url': 'https://docs.iqrf.org/iqrf-gateway',
+			},
+			'gatewayPass': {
+				'enabled': false,
+				'user': 'root',
+			},
+			'grafana': {
+				'enabled': false,
+				'url': '/grafana/',
+			},
+		});
 	});
 
 	it('fetch feature config by its name', async (): Promise<void> => {
@@ -80,13 +78,11 @@ describe('FeatureService', (): void => {
 				'enabled': true,
 				'url': 'https://docs.iqrf.org/iqrf-gateway',
 			});
-		await service.getConfig(Feature.docs)
-			.then((actual: FeatureConfig): void => {
-				expect(actual).toStrictEqual({
-					'enabled': true,
-					'url': 'https://docs.iqrf.org/iqrf-gateway',
-				});
-			});
+		const actual: FeatureConfig = await service.getConfig(Feature.docs);
+		expect(actual).toStrictEqual({
+			'enabled': true,
+			'url': 'https://docs.iqrf.org/iqrf-gateway',
+		});
 	});
 
 	it('set feature config', async (): Promise<void> => {

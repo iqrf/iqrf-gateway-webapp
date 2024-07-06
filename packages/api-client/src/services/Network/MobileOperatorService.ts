@@ -16,7 +16,7 @@
 
 import { type AxiosResponse } from 'axios';
 
-import { type MobileOperator } from '../../types/Network/MobileOperator';
+import { type MobileOperator } from '../../types/Network';
 import { BaseService } from '../BaseService';
 
 /**

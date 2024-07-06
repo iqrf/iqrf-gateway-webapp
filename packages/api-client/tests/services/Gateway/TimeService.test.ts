@@ -51,10 +51,8 @@ describe('TimeService', (): void => {
 		};
 		mockedAxios.onGet('/gateway/time')
 			.reply(200, config);
-		await service.getTime()
-			.then((actual: TimeConfig): void => {
-				expect(actual).toStrictEqual(config);
-			});
+		const actual: TimeConfig = await service.getTime();
+		expect(actual).toStrictEqual(config);
 	});
 
 	it('set Time and NTP config', async (): Promise<void> => {
@@ -79,10 +77,8 @@ describe('TimeService', (): void => {
 		];
 		mockedAxios.onGet('/gateway/time/timezones')
 			.reply(200, timezones);
-		await service.getTimezones()
-			.then((actual: Timezone[]): void => {
-				expect(actual).toStrictEqual(timezones);
-			});
+		const actual: Timezone[] = await service.getTimezones();
+		expect(actual).toStrictEqual(timezones);
 	});
 
 });

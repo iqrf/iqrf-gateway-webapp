@@ -17,7 +17,10 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import { VersionService } from '../../src/services';
-import { type VersionBase, type VersionIqrfGatewayWebapp } from '../../src/types';
+import {
+	type VersionIqrfGatewayDaemon,
+	type VersionIqrfGatewayWebapp,
+} from '../../src/types';
 import { mockedAxios, mockedClient } from '../mocks/axios';
 
 describe('VersionService', (): void => {
@@ -33,14 +36,13 @@ describe('VersionService', (): void => {
 
 	it('fetch IQRF Gateway Daemon version', async (): Promise<void> => {
 		expect.assertions(1);
-		const version: VersionBase = {
+		const version: VersionIqrfGatewayDaemon = {
 			version: 'v2.3.0',
 		};
 		mockedAxios.onGet('/version/daemon')
 			.reply(200, version);
-		await service.getDaemon().then((actual: VersionBase): void => {
-			expect(actual).toStrictEqual(version);
-		});
+		const actual: VersionIqrfGatewayDaemon = await service.getDaemon();
+		expect(actual).toStrictEqual(version);
 	});
 
 	it('fetch IQRF Gateway Webapp version', async (): Promise<void> => {
@@ -51,9 +53,8 @@ describe('VersionService', (): void => {
 		};
 		mockedAxios.onGet('/version/webapp')
 			.reply(200, version);
-		await service.getWebapp().then((actual: VersionIqrfGatewayWebapp): void => {
-			expect(actual).toStrictEqual(version);
-		});
+		const actual: VersionIqrfGatewayWebapp = await service.getWebapp();
+		expect(actual).toStrictEqual(version);
 	});
 
 });

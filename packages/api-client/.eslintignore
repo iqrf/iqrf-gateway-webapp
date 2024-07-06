@@ -15,6 +15,3 @@
 coverage/
 dist/
 docs/
-.eslintrc.cjs
-typedoc.config.ts
-vitest.config.ts

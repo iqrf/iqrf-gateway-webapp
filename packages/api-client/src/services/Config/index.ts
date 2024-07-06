@@ -14,24 +14,25 @@
  * limitations under the License.
  */
 
-import { BaseService } from './BaseService';
-import { AptService } from './Config/AptService';
-import { IqrfGatewayControllerService } from './Config/IqrfGatewayControllerService';
-import { IqrfGatewayDaemonService } from './Config/IqrfGatewayDaemonService';
-import { IqrfGatewayInfluxdbBridgeService } from './Config/IqrfGatewayInfluxdbBridgeService';
-import { IqrfRepositoryService } from './Config/IqrfRepositoryService';
-import { JournalService } from './Config/JournalService';
-import { MailerService } from './Config/MailerService';
-import { MonitService } from './Config/MonitService';
+import { BaseService } from '../BaseService';
 
-export * from './Config/AptService';
-export * from './Config/IqrfGatewayControllerService';
-export * from './Config/IqrfGatewayDaemonService';
-export * from './Config/IqrfGatewayInfluxdbBridgeService';
-export * from './Config/IqrfRepositoryService';
-export * from './Config/JournalService';
-export * from './Config/MailerService';
-export * from './Config/MonitService';
+import { AptService } from './AptService';
+import { IqrfGatewayControllerService } from './IqrfGatewayControllerService';
+import { IqrfGatewayDaemonService } from './IqrfGatewayDaemonService';
+import { IqrfGatewayInfluxdbBridgeService } from './IqrfGatewayInfluxdbBridgeService';
+import { IqrfRepositoryService } from './IqrfRepositoryService';
+import { JournalService } from './JournalService';
+import { MailerService } from './MailerService';
+import { MonitService } from './MonitService';
+
+export * from './AptService';
+export * from './IqrfGatewayControllerService';
+export * from './IqrfGatewayDaemonService';
+export * from './IqrfGatewayInfluxdbBridgeService';
+export * from './IqrfRepositoryService';
+export * from './JournalService';
+export * from './MailerService';
+export * from './MonitService';
 
 /**
  * Configuration services

@@ -18,8 +18,8 @@ import { beforeEach, describe, expect, it } from 'vitest';
 
 import { MailerService } from '../../../src/services/Config';
 import {
-	type MailerGetConfigResponse,
 	type MailerConfig,
+	type MailerGetConfigResponse,
 	MailerSmtpSecurity,
 } from '../../../src/types/Config';
 import { mockedAxios, mockedClient } from '../../mocks/axios';
@@ -77,10 +77,8 @@ describe('MailerService', (): void => {
 		expect.assertions(1);
 		mockedAxios.onGet('/config/mailer')
 			.reply(200, defaultConfig.config);
-		await service.getConfig()
-			.then((actual: MailerGetConfigResponse): void => {
-				expect(actual).toStrictEqual(defaultConfig);
-			});
+		const actual: MailerGetConfigResponse = await service.getConfig();
+		expect(actual).toStrictEqual(defaultConfig);
 	});
 
 	it('fetch mailer config with IDN', async (): Promise<void> => {
@@ -103,10 +101,8 @@ describe('MailerService', (): void => {
 		};
 		mockedAxios.onGet('/config/mailer')
 			.reply(200, config.config);
-		await service.getConfig()
-			.then((actual: MailerGetConfigResponse): void => {
-				expect(actual).toStrictEqual(expected);
-			});
+		const actual: MailerGetConfigResponse = await service.getConfig();
+		expect(actual).toStrictEqual(expected);
 	});
 
 	it('update mailer config', async (): Promise<void> => {
