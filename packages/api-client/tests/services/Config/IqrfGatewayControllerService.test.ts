@@ -22,8 +22,8 @@ import {
 	type IqrfGatewayControllerConfig,
 	IqrfGatewayControllerLoggingSeverity,
 	type IqrfGatewayControllerMapping,
+	MappingDeviceType,
 } from '../../../src/types/Config';
-import { MappingDeviceType } from '../../../src/types/Config/Mapping';
 import { mockedAxios, mockedClient } from '../../mocks/axios';
 
 describe('IqrfGatewayControllerService', (): void => {

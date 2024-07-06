@@ -95,7 +95,7 @@ export class Client {
 	 * @property {AxiosInstance} axiosInstance Axios instance
 	 * @private
 	 */
-	private axiosInstance: AxiosInstance;
+	private readonly axiosInstance: AxiosInstance;
 
 	/**
 	 * @property {AxiosRequestConfig} defaultAxiosConfig Default Axios instance configuration

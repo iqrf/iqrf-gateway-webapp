@@ -27,6 +27,7 @@ export default defineConfig({
 	splitting: false,
 	bundle: true,
 	skipNodeModulesBundle: true,
+	keepNames: true,
 	target: 'es2022',
 	tsconfig: 'tsconfig.build.json',
 });

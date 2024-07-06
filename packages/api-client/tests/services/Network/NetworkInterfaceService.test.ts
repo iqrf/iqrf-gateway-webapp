@@ -18,12 +18,12 @@ import { beforeEach, describe, expect, it } from 'vitest';
 
 import {
 	NetworkInterfaceService,
-} from '../../../src/services/Network/NetworkInterfaceService';
+} from '../../../src/services/Network';
 import {
 	type NetworkInterface,
 	NetworkInterfaceState,
 	NetworkInterfaceType,
-} from '../../../src/types/Network/NetworkInterface';
+} from '../../../src/types/Network';
 import { mockedAxios, mockedClient } from '../../mocks/axios';
 
 describe('NetworkInterfaceService', (): void => {

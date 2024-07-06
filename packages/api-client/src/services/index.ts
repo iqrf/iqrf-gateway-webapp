@@ -17,6 +17,7 @@
 export * from './AccountService';
 export * from './ApiKeyService';
 export * from './AuthenticationService';
+export * from './BaseService';
 export * from './FeatureService';
 export * from './InstallationService';
 export * from './MenderService';

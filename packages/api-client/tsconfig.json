@@ -9,11 +9,6 @@
 		],
 		"outDir": "dist"
 	},
-	"references": [
-		{
-			"path": "../daemon-utils/tsconfig.json"
-		}
-	],
 	"include": [
 		"src/**/*",
 		"tests/**/*",

@@ -1,6 +1,6 @@
 {
 	"name": "@iqrf/iqrf-gateway-webapp-client",
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"description": "IQRF Gateway Webapp JavaScript client library",
 	"exports": {
 		".": {
@@ -34,9 +34,9 @@
 			"types": "./dist/utils/index.d.ts"
 		}
 	},
-	"main": "dist/index.cjs",
-	"module": "dist/index.js",
-	"types": "dist/index.d.ts",
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
 	"scripts": {
 		"build": "tsup",
 		"coverage:unit": "vitest --run --coverage",
@@ -89,7 +89,7 @@
 		"uuid": "^10.0.0"
 	},
 	"devDependencies": {
-		"@iqrf/eslint-config": "^0.0.5",
+		"@iqrf/eslint-config": "^0.0.6",
 		"@types/luxon": "^3.4.2",
 		"@types/node": "^20.14.10",
 		"@types/punycode": "^2.1.4",
