@@ -17,11 +17,23 @@
 
 /// <reference types="vite/client" />
 
+/**
+ * Environment variables
+ */
 interface ImportMetaEnv {
-	readonly VITE_BASE_URL: string
+	/// REST API base URL
+	VITE_BASE_URL: string
 	readonly VITE_CYPRESS_ENABLED: string
-	readonly VITE_THEME: string
-	// more env variables...
+	/// Sentry enablement
+	VITE_SENTRY_ENABLED: boolean
+	/// Sentry DSN
+	VITE_SENTRY_DSN: string
+	/// IQRF Gateway Daemon JSON API URL
+	VITE_URL_DAEMON_API: string
+	/// IQRF Gateway Daemon Monitor URL
+	VITE_URL_DAEMON_MONITOR: string
+	/// REST API URL
+	VITE_URL_REST_API: string
 }
 
 interface ImportMeta {

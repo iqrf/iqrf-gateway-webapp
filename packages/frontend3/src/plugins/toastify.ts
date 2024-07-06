@@ -16,12 +16,12 @@
  */
 
 import 'vue3-toastify/dist/index.css';
-import Vue3Toastify, { type ToastContainerOptions } from 'vue3-toastify';
+import { type ToastContainerOptions } from 'vue3-toastify';
 
 export const ToastOptions: ToastContainerOptions = {
 	/// base options
 	position: 'top-right',
-	autoClose: 5000,
+	autoClose: 5_000,
 	closeButton: true,
 	pauseOnHover: true,
 	pauseOnFocusLoss: true,
@@ -33,4 +33,5 @@ export const ToastOptions: ToastContainerOptions = {
 	newestOnTop: true,
 };
 
-export default Vue3Toastify;
+
+export { default } from 'vue3-toastify';

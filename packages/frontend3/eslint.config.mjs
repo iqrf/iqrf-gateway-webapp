@@ -14,57 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * SSH key list intreface
- */
-export interface ISshKey {
-	/**
-	 * SSH key ID
-	 */
-	id: number
 
-	/**
-	 * SSH key description
-	 */
-	description: string
+import { iqrfEslint } from '@iqrf/eslint-config';
 
-	/**
-	 * SSH key type
-	 */
-	type: string
-
-	/**
-	 * SSH key hash
-	 */
-	hash: string
-
-	/**
-	 * SSH key
-	 */
-	key: string
-
-	/**
-	 * SSH key description
-	 */
-	createdAt: string
-
-	/**
-	 * Datatable aux
-	 */
-	showDetails?: boolean
-}
-
-/**
- * Form ssh key interface
- */
-export interface ISshInput {
-	/**
-	 * SSH key description
-	 */
-	description: string
-
-	/**
-	 * SSH public key
-	 */
-	key: string
-}
+export default iqrfEslint({}, [
+	{
+		rules: {
+			'promise/catch-or-return': 'warn',
+		},
+	},
+	{
+		files: ['src/modules/clientSocket.ts'],
+		rules: {
+			'@typescript-eslint/no-unsafe-return': 'warn',
+		},
+	},
+]);

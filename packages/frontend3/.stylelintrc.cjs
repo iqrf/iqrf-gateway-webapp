@@ -16,13 +16,13 @@
  */
 
 module.exports = {
-	"extends": [
-		"stylelint-config-standard-scss",
-		"stylelint-config-standard-vue"
+	'extends': [
+		'stylelint-config-standard-scss',
+		'stylelint-config-standard-vue',
 	],
-	"rules": {
-		"color-hex-length": "long",
-		"no-descending-specificity": null,
-		"selector-class-pattern": "^[a-z][a-z0-9_-]+$",
-	}
+	'rules': {
+		'color-hex-length': 'long',
+		'no-descending-specificity': null,
+		'selector-class-pattern': '^[a-z][a-z0-9_-]+$',
+	},
 };

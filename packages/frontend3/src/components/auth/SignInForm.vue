@@ -66,7 +66,7 @@ import {
 	UserSessionExpiration,
 } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { mdiAccount, mdiAccountKey, mdiKey, mdiLogin } from '@mdi/js';
-import { type AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 import { onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
@@ -107,21 +107,20 @@ async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
 	}
-	await userStore.signIn(credentials.value)
-		.then(async () => {
-			let destination = (route?.query?.redirect as string | undefined) ?? '/';
-			if (destination.startsWith('/sign/in')) {
-				destination = '/';
-			}
-			await router.push(destination);
-			toast.success(
-				i18n.t('auth.sign.in.messages.success').toString(),
-			);
-			await gatewayStore.fetchInfo();
-			await repositoryStore.fetch();
-		})
-		.catch((error: AxiosError) => {
+	try {
+		await userStore.signIn(credentials.value);
+		let destination = (route?.query?.redirect as string | undefined) ?? '/';
+		if (destination.startsWith('/sign/in')) {
+			destination = '/';
+		}
+		await router.push(destination);
+		toast.success(i18n.t('auth.sign.in.messages.success'));
+		await gatewayStore.fetchInfo();
+		await repositoryStore.fetch();
+	} catch (error) {
+		if (error instanceof AxiosError) {
 			basicErrorToast(error, 'auth.sign.in.messages.incorrectUsernameOrPassword');
-		});
+		}
+	}
 }
 </script>

@@ -194,7 +194,7 @@ export default class ValidationRules {
 		try {
 			JSON.parse(value);
 			return true;
-		} catch (e) {
+		} catch {
 			return error;
 		}
 	}
@@ -204,7 +204,7 @@ export default class ValidationRules {
 	 * @param {string | null} value Field value
 	 * @param {RegExp} pattern Regular expression pattern
 	 * @param {string} error Error message
-	 * @returns {boolean|string} Validation result
+	 * @return {boolean|string} Validation result
 	 */
 	public static regex(value: string | null, pattern: RegExp, error: string): boolean | string {
 		if (value === null) {
@@ -217,7 +217,7 @@ export default class ValidationRules {
 	 * URL validator
 	 * @param {string | null} value Field value
 	 * @param {string} error Error message
-	 * @returns {boolean|string} Validation result
+	 * @return {boolean|string} Validation result
 	 */
 	public static url(value: string | null, error: string): boolean | string {
 		if (value === null) {

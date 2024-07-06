@@ -44,7 +44,7 @@ import {AxiosError} from 'axios';
 import {ISelectItem} from '@/interfaces/Vuetify';
 import {
 	NetworkInterface, NetworkInterfaceType
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkInterface';
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import {useApiClient} from '@/services/ApiClient';
 
 /**

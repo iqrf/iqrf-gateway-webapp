@@ -78,10 +78,8 @@ limitations under the License.
 import {
 	type NetworkConnectionConfiguration,
 	NetworkConnectionType,
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkConnection';
-import {
 	type NetworkInterfaceType,
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkInterface';
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import { IpNetworkUtils } from '@iqrf/iqrf-gateway-webapp-client/utils';
 import { mdiTextShort } from '@mdi/js';
 import { computed, onBeforeMount, type PropType, ref, type Ref } from 'vue';

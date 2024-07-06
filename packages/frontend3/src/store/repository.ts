@@ -30,9 +30,11 @@ export const useRepositoryStore = defineStore('repository', {
 	}),
 	actions: {
 		async fetch(): Promise<void> {
-			useApiClient().getConfigServices().getIqrfRepositoryService().fetch()
-				.then((config: IqrfRepositoryConfig) => this.config = config)
-				.catch(() => {return;});
+			try {
+				this.config = await useApiClient().getConfigServices().getIqrfRepositoryService().fetch();
+			} catch (error) {
+				console.error(error);
+			}
 		},
 	},
 	getters: {

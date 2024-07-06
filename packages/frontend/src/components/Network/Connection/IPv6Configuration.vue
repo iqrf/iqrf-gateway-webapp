@@ -195,7 +195,7 @@ import {ipv6} from '@/helpers/validators';
 import {ISelectItem} from '@/interfaces/Vuetify';
 import {
 	IPV6ConfigurationMethod, NetworkConnectionConfiguration, NetworkConnectionType
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkConnection';
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 
 /**
  * IPv6 configuration options

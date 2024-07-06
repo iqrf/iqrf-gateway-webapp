@@ -235,15 +235,11 @@ import NetworkConnectionService from '@/services/NetworkConnectionService';
 import {useApiClient} from '@/services/ApiClient';
 import {
 	NetworkConnectionListEntry,
-	NetworkConnectionType
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkConnection';
-import {
+	NetworkConnectionType,
 	AccessPoint,
-	WifiNetwork
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/Wifi';
-import {
-	NetworkInterfaceType
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkInterface';
+	WifiNetwork,
+	NetworkInterfaceType,
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 
 @Component({
 	components: {

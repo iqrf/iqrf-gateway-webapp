@@ -32,7 +32,7 @@ limitations under the License.
 <script setup lang='ts'>
 import {
 	type NetworkConnectionConfiguration,
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkConnection';
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import { type PropType } from 'vue';
 
 import Ipv4Configuration

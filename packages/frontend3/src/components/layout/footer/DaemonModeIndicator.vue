@@ -26,7 +26,7 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { DaemonMode } from '@iqrf/iqrf-gateway-daemon-utils';
+import { DaemonMode } from '@iqrf/iqrf-gateway-daemon-utils/enums';
 import {
 	mdiCheckCircleOutline, mdiForward, mdiHelp, mdiWrench,
 } from '@mdi/js';

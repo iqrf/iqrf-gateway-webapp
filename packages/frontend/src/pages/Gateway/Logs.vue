@@ -103,13 +103,13 @@ import JournalViewer from '@/components/Gateway/JournalViewer.vue';
 import LogViewer from '@/components/Gateway/LogViewer.vue';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
-import {fileDownloader} from '@/helpers/fileDownloader';
 
 import GatewayService from '@/services/GatewayService';
 
 import {AxiosError, AxiosResponse} from 'axios';
 import {ILog} from '@/interfaces/Gateway/Log';
 import {MetaInfo} from 'vue-meta';
+import {FileDownloader} from '@iqrf/iqrf-gateway-webapp-client/utils';
 
 @Component({
 	components: {
@@ -233,9 +233,8 @@ export default class Logs extends Vue {
 		this.$store.commit('spinner/SHOW');
 		GatewayService.getLogArchive().then(
 			(response: AxiosResponse) => {
-				const file = fileDownloader(response, 'application/zip', 'iqrf-gateway-logs.zip');
+				FileDownloader.downloadFromAxiosResponse(response, 'application/zip', 'iqrf-gateway-logs.zip');
 				this.$store.commit('spinner/HIDE');
-				file.click();
 			}
 		).catch(() => (this.$store.commit('spinner/HIDE')));
 	}

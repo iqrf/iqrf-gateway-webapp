@@ -120,7 +120,7 @@ import {extendedErrorToast} from '@/helpers/errorToast';
 import {AxiosError} from 'axios';
 import {
 	MobileOperator
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/MobileOperator';
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import {useApiClient} from '@/services/ApiClient';
 
 @Component({

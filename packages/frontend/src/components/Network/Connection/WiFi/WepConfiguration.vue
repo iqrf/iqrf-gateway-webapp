@@ -92,11 +92,11 @@ import {between, integer, required} from 'vee-validate/dist/rules';
 import {ISelectItem} from '@/interfaces/Vuetify';
 import {
 	NetworkConnectionConfiguration
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkConnection';
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import {
 	WepKeyLen,
 	WepKeyType
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/Wifi';
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 
 /**
  * WEP configuration options

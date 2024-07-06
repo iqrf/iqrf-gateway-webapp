@@ -182,8 +182,8 @@ function validateKey(key: string): boolean|string {
 	try {
 		SshKeyUtils.validatePublicKey(key, componentProps.keyTypes);
 		return true;
-	} catch (e) {
-		return (e as Error).message;
+	} catch (error) {
+		return (error as Error).message;
 	}
 }
 

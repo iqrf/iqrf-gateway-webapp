@@ -171,7 +171,9 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { type TrConfig } from '@iqrf/iqrf-gateway-daemon-utils/types';
+import {
+	IqmeshTrConfigParams,
+} from '@iqrf/iqrf-gateway-daemon-utils/types/iqmesh';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useDisplay } from 'vuetify';
@@ -182,10 +184,10 @@ import SelectInput from '@/components/layout/form/SelectInput.vue';
 
 const i18n = useI18n();
 const display = useDisplay();
-const config = defineModel<TrConfig>('config', { required: true });
+const config = defineModel<IqmeshTrConfigParams>('config', { required: true });
 
 const baudRateOptions = computed(() => {
-	const items: number[] = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400];
+	const items: number[] = [1_200, 2_400, 4_800, 9_600, 19_200, 38_400, 57_600, 115_200, 230_400];
 	return items.map((item: number) => ({
 		title: `${item} Bd`,
 		value: item,

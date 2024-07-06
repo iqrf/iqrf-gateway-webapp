@@ -96,25 +96,24 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
+import {FileDownloader} from '@iqrf/iqrf-gateway-webapp-client/utils';
+import {FileResponse} from '@iqrf/iqrf-gateway-webapp-client/types';
+import type {GatewayBackup} from '@iqrf/iqrf-gateway-webapp-client/types/Maintenance';
+import {AxiosError} from 'axios';
 import {Component, Vue} from 'vue-property-decorator';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
-import {fileDownloader} from '@/helpers/fileDownloader';
-
-import BackupService from '@/services/BackupService';
-
-import {AxiosError, AxiosResponse} from 'axios';
-import {IBackup} from '@/interfaces/Maintenance/Backup';
+import {useApiClient} from '@/services/ApiClient';
 
 /**
  * Gateway backup component
  */
 @Component
-export default class GatewayBackup extends Vue {
+export default class GwBackup extends Vue {
 	/**
-	 * @var {IBackup} migration Gateway migration request
+	 * @var {GatewayBackup} migration Gateway migration request
 	 */
-	private migration: IBackup = {
+	private migration: GatewayBackup = {
 		software: {
 			iqrf: false,
 			monit: false,
@@ -134,10 +133,10 @@ export default class GatewayBackup extends Vue {
 	 */
 	private setAll(checked: boolean): void {
 		Object.keys(this.migration.software).forEach((key: string) => {
-			return this.migration.software[key] = checked;
+			this.migration.software[key] = checked;
 		});
 		Object.keys(this.migration.system).forEach((key: string) => {
-			return this.migration.system[key] = checked;
+			this.migration.system[key] = checked;
 		});
 	}
 
@@ -147,13 +146,12 @@ export default class GatewayBackup extends Vue {
 	private backup(): void {
 		this.$store.commit('spinner/SHOW');
 		this.$store.commit('spinner/UPDATE_TEXT', this.$t('maintenance.backup.messages.backup').toString());
-		const params: IBackup = this.filterFeatures(JSON.parse(JSON.stringify(this.migration)));
-		BackupService.backup(params)
-			.then((response: AxiosResponse) => {
-				const fileName = 'iqrf-gateway-backup_' + new Date().toISOString();
-				const file = fileDownloader(response, 'application/zip', fileName);
+		const params: GatewayBackup = this.filterFeatures(JSON.parse(JSON.stringify(this.migration)));
+		useApiClient().getMaintenanceServices().getBackupService().backup(params)
+			.then((response: FileResponse<Blob>) => {
+				const fileName = `iqrf-gateway-backup_${new Date().toISOString()}.zip`;
+				FileDownloader.downloadFileResponse(response, fileName);
 				this.$store.commit('spinner/HIDE');
-				file.click();
 			})
 			.catch((error: AxiosError) => extendedErrorToast(error, 'maintenance.backup.messages.backupFailed'));
 	}
@@ -161,7 +159,7 @@ export default class GatewayBackup extends Vue {
 	/**
 	 * Uploads backup archive and attempts to restore gw
 	 */
-	private filterFeatures(params: IBackup): IBackup {
+	private filterFeatures(params: GatewayBackup): GatewayBackup {
 		if (!this.$store.getters['features/isEnabled']('monit')) {
 			params.software.monit = false;
 		}

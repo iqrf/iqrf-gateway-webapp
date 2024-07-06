@@ -36,21 +36,12 @@
 		"vite-plugin-vue-layouts/client",
 		"vite-plugin-pages/client"
 	],
-	"references": [
-		{
-			"path": "../api-client/tsconfig.json"
-		},
-		{
-			"path": "../daemon-utils/tsconfig.json"
-		}
-	],
 	"include": [
 		"src/**/*.ts",
 		"src/**/*.d.ts",
 		"src/**/*.vue",
-		".eslintrc.cjs",
-		"vite.config.ts",
-		"vue-i18n-extract.config.js"
+		"shims.d.ts",
+		"vite.config.ts"
 	],
 	"exclude": [
 		"dist",

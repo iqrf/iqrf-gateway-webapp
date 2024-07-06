@@ -44,7 +44,7 @@ export default class UrlBuilder {
 	 */
 	private readonly wsProtocol: string;
 
-	constructor() {
+	public constructor() {
 		const isHttps: boolean = window.location.protocol === 'https:';
 		this.hostname = window.location.hostname;
 		this.port = window.location.port;
@@ -58,28 +58,28 @@ export default class UrlBuilder {
 	/**
 	 * Returns hostname
 	 */
-	getHostname(): string {
+	public getHostname(): string {
 		return this.hostname;
 	}
 
 	/**
 	 * Returns port
 	 */
-	getPort(): string {
+	public getPort(): string {
 		return this.port;
 	}
 
 	/**
 	 * Returns base URL
 	 */
-	getBaseUrl(): string {
+	public getBaseUrl(): string {
 		return window.location.protocol + '//' + this.hostname + (this.isDev ? ':8081' : this.port) + import.meta.env.VITE_BASE_URL;
 	}
 
 	/**
 	 * Returns REST API URL
 	 */
-	getRestApiUrl(): string {
+	public getRestApiUrl(): string {
 		if (import.meta.env.VITE_URL_REST_API?.length) {
 			return import.meta.env.VITE_URL_REST_API;
 		}
@@ -89,7 +89,7 @@ export default class UrlBuilder {
 	/**
 	 * Returns WebSocket API URL
 	 */
-	getDaemonApiUrl(): string {
+	public getDaemonApiUrl(): string {
 		if (import.meta.env.VITE_URL_DAEMON_API?.length) {
 			return import.meta.env.VITE_URL_DAEMON_API;
 		}
@@ -99,7 +99,7 @@ export default class UrlBuilder {
 	/**
 	 * Returns WebSocket Monitor URL
 	 */
-	getDaemonMonitorUrl(): string {
+	public getDaemonMonitorUrl(): string {
 		if (import.meta.env.VITE_URL_DAEMON_MONITOR?.length) {
 			return import.meta.env.VITE_URL_DAEMON_MONITOR;
 		}
@@ -109,7 +109,7 @@ export default class UrlBuilder {
 	/**
 	 * Returns WebSocket IQRF network sync URL
 	 */
-	getIqrfnetSyncUrl(): string {
+	public getIqrfnetSyncUrl(): string {
 		if (import.meta.env.VITE_URL_IQRF_SYNC?.length) {
 			return import.meta.env.VITE_URL_IQRF_SYNC;
 		}
@@ -119,7 +119,7 @@ export default class UrlBuilder {
 	/**
 	 * Returns REST API URL from passed hostname
 	 */
-	getRestApiUrlFromHostname(hostname: string): string {
+	public getRestApiUrlFromHostname(hostname: string): string {
 		return '//' + hostname + (this.isDev ? ':8080' : this.port) + import.meta.env.VITE_BASE_URL + 'api/v0/';
 	}
 

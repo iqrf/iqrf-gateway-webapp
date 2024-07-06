@@ -48,12 +48,13 @@ const componentProps = defineProps({
 const service: ApiKeyService = useApiClient().getApiKeyService();
 
 async function onSubmit(): Promise<void> {
-	service.delete(componentProps.apiKey.id!)
-		.then(() => {
-			close();
-			emit('refresh');
-		})
-		.catch(() => toast.error('TODO ERROR HANDLING'));
+	try {
+		await service.delete(componentProps.apiKey.id!);
+		close();
+		emit('refresh');
+	} catch {
+		toast.error('TODO ERROR HANDLING');
+	}
 }
 
 function close(): void {

@@ -1,6 +1,6 @@
 /**
- * Copyright 2017-2024 IQRF Tech s.r.o.
- * Copyright 2019-2024 MICRORISC s.r.o.
+ * Copyright 2023-2024 IQRF Tech s.r.o.
+ * Copyright 2023-2024 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * SMTP security protocols
- */
-export enum SmtpSecurity {
-	PLAINTEXT = 'null',
-	STARTTLS = 'tls',
-	TLS = 'ssl'
+
+declare module 'is-fqdn' {
+
+	export interface isFQDNOptions {
+		allowTrailingDot?: boolean;
+		allowUnderscores?: boolean;
+		requireTld?: boolean;
+	}
+
+	export default function isFQDN(input: string, options: Partial<isFQDNOptions> = {}): boolean;
+
 }

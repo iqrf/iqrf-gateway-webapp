@@ -190,10 +190,10 @@ import {AxiosError, AxiosResponse} from 'axios';
 import {DataTableHeader} from 'vuetify';
 import {
 	NetworkConnectionListEntry,
-	NetworkConnectionType
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkConnection';
-import {Modem} from '@iqrf/iqrf-gateway-webapp-client/types/Network/Modem';
-import {MonitCheck} from '@iqrf/iqrf-gateway-webapp-client/types/Config/Monit';
+	NetworkConnectionType,
+	Modem,
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
+import {MonitCheck} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import {useApiClient} from '@/services/ApiClient';
 
 @Component({

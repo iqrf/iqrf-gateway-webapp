@@ -99,12 +99,11 @@ import type {InfoService} from '@iqrf/iqrf-gateway-webapp-client/services/Gatewa
 import {
 	GatewayInformation
 } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
+import {FileDownloader} from '@iqrf/iqrf-gateway-webapp-client/utils';
 import {Component, Vue} from 'vue-property-decorator';
+
 import CoordinatorInfo from '@/components/Gateway/Information/CoordinatorInfo.vue';
 import DaemonModeInfo from '@/components/Gateway/Information/DaemonModeInfo.vue';
-
-import {dataDownloader} from '@/helpers/fileDownloader';
-
 import {IpAddress, MacAddress} from '@/interfaces/Gateway/Information';
 import {useApiClient} from '@/services/ApiClient';
 
@@ -206,9 +205,8 @@ export default class InstallGatewayInfo extends Vue {
 					if (this.info?.gwId) {
 						fileName += '_' + this.info.gwId.toLowerCase();
 					}
-					const file = dataDownloader(response, 'application/json', fileName + '.json');
+					FileDownloader.downloadFromData(response, 'application/json', `${fileName}.json`);
 					this.$store.commit('spinner/HIDE');
-					file.click();
 				}
 			)
 			.catch(() => (this.$store.commit('spinner/HIDE')));

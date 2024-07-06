@@ -51,7 +51,7 @@ limitations under the License.
 import {
 	type NetworkInterface,
 	type NetworkInterfaceType,
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkInterface';
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import { onBeforeMount, type PropType, type Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 

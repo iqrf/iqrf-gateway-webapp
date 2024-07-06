@@ -60,7 +60,8 @@ limitations under the License.
 
 <script lang='ts' setup>
 import { type LogService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
-import { FileDownloader } from '@iqrf/iqrf-gateway-webapp-client/utils/FileDownloader';
+import { FileResponse } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { FileDownloader } from '@iqrf/iqrf-gateway-webapp-client/utils';
 import { mdiFolderDownloadOutline } from '@mdi/js';
 import { onMounted, type Ref, ref } from 'vue';
 import { toast } from 'vue3-toastify';
@@ -93,9 +94,9 @@ function listServices(): void {
 
 function exportLogs(): void {
 	service.exportLogs()
-		.then((response: ArrayBuffer) => {
+		.then((response: FileResponse<Blob>) => {
 			const filename = `iqrf-gateway-logs_${new Date().toISOString()}.zip`;
-			FileDownloader.downloadFromData(response, 'application/zip', filename);
+			FileDownloader.downloadFileResponse(response, filename);
 		})
 		.catch(() => toast.error('TODO EXPORT ERROR HANDLING'));
 }

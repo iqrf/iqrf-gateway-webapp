@@ -15,9 +15,15 @@
  * limitations under the License.
  */
 
-import { AccountState, type UserCredentials, type UserInfo, type UserRole, UserSessionExpiration, type UserSignedIn } from '@iqrf/iqrf-gateway-webapp-client/types';
+import {
+	AccountState,
+	type UserCredentials,
+	type UserInfo, type UserLanguage,
+	type UserRole,
+	UserSessionExpiration,
+	type UserSignedIn,
+} from '@iqrf/iqrf-gateway-webapp-client/types';
 import { setUser, type User as SentryUser } from '@sentry/vue';
-import { type AxiosError } from 'axios';
 import { jwtDecode, type JwtPayload } from 'jwt-decode';
 import { defineStore } from 'pinia';
 
@@ -39,22 +45,20 @@ export const useUserStore = defineStore('user', {
 	}),
 	actions: {
 		async refreshUserInfo(): Promise<void> {
-			return useApiClient().getAccountService().fetchInfo()
-				.then((user: UserInfo): void => {
-					if (this.user === null) {
-						return;
-					}
-					this.user.id = user.id;
-					this.user.username = user.username;
-					this.user.email = user.email;
-					if (this.user.language !== user.language) {
-						const localeStore = useLocaleStore();
-						this.user.language = user.language;
-						localeStore.setLocale(user.language);
-					}
-					this.user.role = user.role;
-					this.user.state = user.state;
-				});
+			const user: UserInfo = await useApiClient().getAccountService().fetchInfo();
+			if (this.user === null) {
+				return;
+			}
+			this.user.id = user.id;
+			this.user.username = user.username;
+			this.user.email = user.email;
+			if (this.user.language !== user.language) {
+				const localeStore = useLocaleStore();
+				this.user.language = user.language;
+				localeStore.setLocale(user.language);
+			}
+			this.user.role = user.role;
+			this.user.state = user.state;
 		},
 		setUserInfo(user: UserSignedIn): void {
 			this.user = user;
@@ -77,7 +81,7 @@ export const useUserStore = defineStore('user', {
 				return Promise.reject(new Error('Token issue timestamp missing in JWT token.'));
 			}
 			const now = new Date();
-			const epoch = Math.round(now.getTime() / 1000);
+			const epoch = Math.round(now.getTime() / 1_000);
 			const diff = epoch - jwt.iat;
 			this.expiration = jwt.exp + diff;
 			return Promise.resolve();
@@ -85,26 +89,24 @@ export const useUserStore = defineStore('user', {
 		setRequestedExpiration(expiration: UserSessionExpiration): void {
 			this.requestedSessionExpiration = expiration;
 		},
-		signIn(credentials: UserCredentials): Promise<void> {
-			return useApiClient().getAuthenticationService().signIn(credentials)
-				.then(async (user: UserSignedIn): Promise<void> => {
-					await this.processJwt(user.token);
-					this.setUserInfo(user);
-					this.setRequestedExpiration(credentials.expiration ?? UserSessionExpiration.Default);
-					const localeStore = useLocaleStore();
-					localeStore.setLocale(user.language);
-				})
-				.catch((error: AxiosError) => {
-					console.error(error);
-					return Promise.reject(error);
-				});
+		async signIn(credentials: UserCredentials): Promise<void> {
+			try {
+				const user: UserSignedIn = await useApiClient().getAuthenticationService().signIn(credentials);
+				await this.processJwt(user.token);
+				this.setUserInfo(user);
+				this.setRequestedExpiration(credentials.expiration ?? UserSessionExpiration.Default);
+				const localeStore = useLocaleStore();
+				localeStore.setLocale(user.language);
+			} catch (error) {
+				console.error(error);
+				throw error;
+			}
 		},
-		signOut(): Promise<void> {
+		async signOut(): Promise<void> {
 			this.expiration = 0;
 			this.user = null;
 			setUser(null);
-			router.push('/sign/in');
-			return Promise.resolve();
+			await router.push('/sign/in');
 		},
 	},
 	getters: {
@@ -113,7 +115,7 @@ export const useUserStore = defineStore('user', {
 				return false;
 			}
 			const now = new Date();
-			const epoch = Math.round(now.getTime() / 1000);
+			const epoch = Math.round(now.getTime() / 1_000);
 			return state.expiration > epoch;
 		},
 		isVerified(state: UserState): boolean {
@@ -146,17 +148,14 @@ export const useUserStore = defineStore('user', {
 			}
 			return state.user.email;
 		},
+		getLanguage(state: UserState): UserLanguage | null {
+			return state.user?.language ?? null;
+		},
 		getRole(state: UserState): UserRole | null {
-			if (state.user === null) {
-				return null;
-			}
-			return state.user.role;
+			return state.user?.role ?? null;
 		},
 		getToken(state: UserState): string | null {
-			if (state.user === null) {
-				return null;
-			}
-			return state.user.token;
+			return state.user?.token ?? null;
 		},
 		getExpiration(state: UserState): number {
 			return state.expiration;

@@ -78,44 +78,41 @@ function close(): void {
 }
 
 async function setup(): Promise<void> {
-	let expiration: number = userStore.getExpiration * 1000;
-	const now = new Date().getTime();
-	if ((expiration - now) < 300000) {
+	let expiration: number = userStore.getExpiration * 1_000;
+	const now = Date.now();
+	if ((expiration - now) < 300_000) {
 		await renewSession();
-		expiration = userStore.getExpiration * 1000;
+		expiration = userStore.getExpiration * 1_000;
 	}
 	const timeout = expiration - now;
-	const warning = timeout - 60000;
+	const warning = timeout - 60_000;
 	expirationWarningTimeout.value = window.setTimeout(() => {
 		logoutTimerInterval.value = window.setInterval((expiration: number) => {
-			countdown.value = Math.floor((expiration - Date.now()) / 1000);
+			countdown.value = Math.floor((expiration - Date.now()) / 1_000);
 		}, 300, expiration);
 		show.value = true;
 	}, warning);
 	logoutTimeout.value = window.setTimeout(async () => {
 		close();
-		await userStore.signOut()
-			.then(async () => {
-				await router.push({ path: '/sign/in', query: { redirect: router.currentRoute.value.path } });
-				toast.warning(
-					i18n.t('auth.sign.out.expired').toString(),
-				);
-			});
+		await userStore.signOut();
+		await router.push({ path: '/sign/in', query: { redirect: router.currentRoute.value.path } });
+		toast.warning(
+			i18n.t('auth.sign.out.expired').toString(),
+		);
 	}, timeout);
 }
 
 async function renewSession(): Promise<void> {
-	await useApiClient().getAuthenticationService().refreshToken()
-		.then((rsp: UserSignedIn) => {
-			userStore.processJwt(rsp.token)
-				.then(() => {
-					close();
-					clear();
-					setup();
-				})
-				.catch(() => toast.error(i18n.t('components.status.sessionExpiration.failed').toString()));
-		})
-		.catch(() => toast.error(i18n.t('components.status.sessionExpiration.failed').toString()));
+	try {
+		const rsp: UserSignedIn = await useApiClient().getAuthenticationService().refreshToken();
+		await userStore.processJwt(rsp.token);
+		close();
+		clear();
+		setup();
+	} catch (error) {
+		console.error(error);
+		toast.error(i18n.t('components.status.sessionExpiration.failed').toString());
+	}
 }
 
 function clear(): void {

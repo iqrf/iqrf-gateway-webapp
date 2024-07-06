@@ -182,25 +182,15 @@ async function onSubmit(): Promise<void> {
 		keyToSave.expiration = null;
 	}
 	if (componentProps.action === Action.Add) {
-		service.create(keyToSave)
-			.then((rsp: ApiKeyCreated) => {
-				generatedKey.value = rsp.key;
-				addSuccess();
-			})
-			.catch(() => {
-				// TODO ERROR
-			});
+		const createdKey: ApiKeyCreated = await service.create(keyToSave);
+		generatedKey.value = createdKey.key;
+		addSuccess();
 	} else if (componentProps.action === Action.Edit) {
 		const id = keyToSave.id!;
 		delete keyToSave.id;
-		service.edit(id, keyToSave)
-			.then(() => {
-				close();
-				emit('refresh');
-			})
-			.catch(() => {
-				// TODO ERROR
-			});
+		await service.edit(id, keyToSave);
+		close();
+		emit('refresh');
 	}
 }
 

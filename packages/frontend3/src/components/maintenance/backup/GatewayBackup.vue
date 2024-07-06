@@ -132,9 +132,9 @@ limitations under the License.
 
 <script lang='ts' setup>
 import { type BackupService } from '@iqrf/iqrf-gateway-webapp-client/services/Maintenance';
-import { Feature } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { type GatewayBackup } from '@iqrf/iqrf-gateway-webapp-client/types/Maintenance/Backup';
-import { FileDownloader } from '@iqrf/iqrf-gateway-webapp-client/utils/FileDownloader';
+import { Feature, FileResponse } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { type GatewayBackup } from '@iqrf/iqrf-gateway-webapp-client/types/Maintenance';
+import { FileDownloader } from '@iqrf/iqrf-gateway-webapp-client/utils';
 import {
 	mdiCheckboxMultipleBlank,
 	mdiCheckboxMultipleMarked,
@@ -183,9 +183,9 @@ function setAll(selected: boolean): void {
 function onSubmit(): void {
 	componentState.value = ComponentState.Loading;
 	service.backup(params.value)
-		.then((response: ArrayBuffer) => {
+		.then((response: FileResponse<Blob>) => {
 			const filename = `iqrf-gateway-backup_${new Date().toISOString()}.zip`;
-			FileDownloader.downloadFromData(response, 'application/zip', filename);
+			FileDownloader.downloadFileResponse(response, filename);
 			componentState.value = ComponentState.Ready;
 		})
 		.catch(() => toast.error('TODO ERROR HANDLING'));

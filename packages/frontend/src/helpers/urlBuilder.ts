@@ -79,6 +79,9 @@ export default class UrlBuilder {
 	 * Returns REST API URL
 	 */
 	getRestApiUrl(): string {
+		if (import.meta.env.VITE_URL_REST_API?.length) {
+			return import.meta.env.VITE_URL_REST_API;
+		}
 		return '//' + this.hostname + (this.isDev ? ':8080' : this.port) + import.meta.env.VITE_BASE_URL + 'api/v0/';
 	}
 
@@ -86,6 +89,9 @@ export default class UrlBuilder {
 	 * Returns WebSocket API URL
 	 */
 	getWsApiUrl(): string {
+		if (import.meta.env.VITE_URL_DAEMON_API?.length) {
+			return import.meta.env.VITE_URL_DAEMON_API;
+		}
 		return this.wsProtocol + this.hostname + (this.isDev ? ':1338': this.port + '/ws');
 	}
 
@@ -93,6 +99,9 @@ export default class UrlBuilder {
 	 * Returns WebSocket Monitor URL
 	 */
 	getWsMonitorUrl(): string {
+		if (import.meta.env.VITE_URL_DAEMON_MONITOR?.length) {
+			return import.meta.env.VITE_URL_DAEMON_MONITOR;
+		}
 		return this.wsProtocol + this.hostname + (this.isDev ? ':1438': this.port + '/wsMonitor');
 	}
 

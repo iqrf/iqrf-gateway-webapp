@@ -14,12 +14,6 @@
 		"paths": {
 			"@/*": [
 				"./src/*"
-			],
-			"@iqrf/iqrf-gateway-webapp-client": [
-				"../api-client/src"
-			],
-			"@iqrf/iqrf-gateway-webapp-client/*": [
-				"../api-client/src/*"
 			]
 		},
 		"rootDir": "./"

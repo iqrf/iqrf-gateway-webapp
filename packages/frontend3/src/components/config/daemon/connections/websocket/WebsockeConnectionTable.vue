@@ -68,7 +68,7 @@ import {
 	type IqrfGatewayDaemonWebsocketInterface,
 	type ShapeWebsocketService,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { FileDownloader } from '@iqrf/iqrf-gateway-webapp-client/utils/FileDownloader';
+import { FileDownloader } from '@iqrf/iqrf-gateway-webapp-client/utils';
 import { type Ref, ref } from 'vue';
 import { onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -100,14 +100,14 @@ async function getConfigs(): Promise<void> {
 	const instances: IqrfGatewayDaemonWebsocketInterface[] = [];
 	const services = await service.getComponent(IqrfGatewayDaemonComponentName.ShapeWebsocketService)
 		.then((data: IqrfGatewayDaemonComponent<IqrfGatewayDaemonComponentName.ShapeWebsocketService>) => {
-			return Promise.resolve(data.instances);
+			return data.instances;
 		})
-		.catch(() => Promise.resolve(undefined));
+		.catch(() => undefined);
 	const messagings = await service.getComponent(IqrfGatewayDaemonComponentName.IqrfWsMessaging)
 		.then((data: IqrfGatewayDaemonComponent<IqrfGatewayDaemonComponentName.IqrfWsMessaging>) => {
-			return Promise.resolve(data.instances);
+			return data.instances;
 		})
-		.catch(() => Promise.resolve(undefined));
+		.catch(() => undefined);
 	if (services === undefined || messagings === undefined) {
 		toast.error('TODO ERROR FETCH CONFIG');
 		return;

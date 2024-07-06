@@ -52,7 +52,7 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { type UserInfo } from '@iqrf/iqrf-gateway-webapp-client/types/User';
+import { type UserInfo } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { onMounted, ref, type Ref, toRaw } from 'vue';
 import { useI18n } from 'vue-i18n';
 

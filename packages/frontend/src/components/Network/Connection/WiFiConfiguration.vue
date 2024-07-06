@@ -54,7 +54,7 @@ import WpaPskConfiguration from '@/components/Network/Connection/WiFi/WpaPskConf
 
 import {
 	NetworkConnectionConfiguration
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkConnection';
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 
 /**
  * Wi-Fi configuration options

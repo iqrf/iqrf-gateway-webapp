@@ -31,7 +31,7 @@ limitations under the License.
 <script setup lang='ts'>
 import {
 	type NetworkInterface, type NetworkInterfaceType,
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkInterface';
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import { mdiExpansionCardVariant } from '@mdi/js';
 import { onBeforeMount, type PropType, type Ref, ref } from 'vue';
 
@@ -68,17 +68,15 @@ const service = useApiClient().getNetworkServices().getNetworkInterfaceService()
 async function fetchInterfaces(): Promise<void> {
 	componentState.value = ComponentState.Loading;
 	/// @todo Add error handling
-	await service.list(componentProps.type)
-		.then((interfaces: NetworkInterface[]) => {
-			interfaces.forEach((item: NetworkInterface) => {
-				let label = item.name;
-				if (item.manufacturer !== null && item.model !== null) {
-					label = item.name + ' (' + item.manufacturer + ' ' + item.model + ')';
-				}
-				items.value.push({ title: label, value: item.name });
-			});
-			componentState.value = ComponentState.Ready;
-		});
+	const interfaces: NetworkInterface[] = await service.list(componentProps.type);
+	for (const item of interfaces) {
+		let label = item.name;
+		if (item.manufacturer !== null && item.model !== null) {
+			label = item.name + ' (' + item.manufacturer + ' ' + item.model + ')';
+		}
+		items.value.push({ title: label, value: item.name });
+	}
+	componentState.value = ComponentState.Ready;
 }
 
 onBeforeMount(async (): Promise<void> => {

@@ -31,10 +31,10 @@ limitations under the License.
 <script setup lang='ts'>
 import {
 	type WireGuardService,
-} from '@iqrf/iqrf-gateway-webapp-client/services/Network/WireGuardService';
+} from '@iqrf/iqrf-gateway-webapp-client/services/Network';
 import {
 	type WireGuardTunnelListEntry,
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/WireGuard';
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import { type PropType, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';

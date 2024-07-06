@@ -151,7 +151,7 @@ function mmonitServerValidation(value: string, error: string): boolean|string {
 		} else {
 			return error;
 		}
-	} catch (e) {
+	} catch {
 		return error;
 	}
 }

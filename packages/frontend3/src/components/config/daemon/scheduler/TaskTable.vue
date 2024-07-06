@@ -132,6 +132,7 @@ import { SchedulerService } from '@iqrf/iqrf-gateway-daemon-utils/services';
 import { type DaemonApiResponse, type SchedulerRecord, type SchedulerRecordTimeSpec } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { type IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
+import { FileResponse } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { type IqrfGatewayDaemonSchedulerMessagings } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { FileDownloader } from '@iqrf/iqrf-gateway-webapp-client/utils';
 import { mdiExport, mdiPlay, mdiReload, mdiStop } from '@mdi/js';
@@ -208,7 +209,7 @@ function timeString(timespec: SchedulerRecordTimeSpec): string {
 		return `At ${DateTime.fromISO(timespec.startTime).toLocaleString(DateTime.DATETIME_FULL)}`;
 	}
 	if (timespec.periodic) {
-		const duration = Duration.fromMillis(timespec.period * 1000).normalize().rescale();
+		const duration = Duration.fromMillis(timespec.period * 1_000).normalize().rescale();
 		return `Every ${duration.toHuman({ listStyle: 'long' })}`;
 	}
 	return cronstrue.toString(timespec.cronTime);
@@ -217,9 +218,9 @@ function timeString(timespec: SchedulerRecordTimeSpec): string {
 function exportTasks(): void {
 	componentState.value = ComponentState.Loading;
 	webappSchedulerService.schedulerExport()
-		.then((response: ArrayBuffer) => {
-			const filename = `scheduler_${new Date().toISOString()}.zip`;
-			FileDownloader.downloadFromData(response, 'application/zip', filename);
+		.then((response: FileResponse<Blob>) => {
+			const filename = `iqrf-gateway-scheduler_${new Date().toISOString()}.zip`;
+			FileDownloader.downloadFileResponse(response, filename);
 			componentState.value = ComponentState.Ready;
 		})
 		.catch(() => {
@@ -244,7 +245,7 @@ function listTasks(): void {
 	loadingTasks.value = [];
 	const options = new DaemonMessageOptions(
 		null,
-		30000,
+		30_000,
 		null,
 		() => {msgId.value = null;},
 	);
@@ -270,7 +271,7 @@ function getTask(taskId: string): void {
 	}
 	const options = new DaemonMessageOptions(
 		null,
-		30000,
+		30_000,
 		null,
 		() => {msgId.value = null;},
 	);
@@ -301,7 +302,7 @@ function startTask(taskId: string): void {
 	loadingTasks.value.push(taskId);
 	const options = new DaemonMessageOptions(
 		null,
-		30000,
+		30_000,
 		null,
 		() => {msgId.value = null;},
 	);
@@ -328,7 +329,7 @@ function stopTask(taskId: string): void {
 	loadingTasks.value.push(taskId);
 	const options = new DaemonMessageOptions(
 		null,
-		30000,
+		30_000,
 		null,
 		() => {msgId.value = null;},
 	);

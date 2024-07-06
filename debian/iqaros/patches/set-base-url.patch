@@ -1,13 +1,15 @@
 Sets base URL for IQAROS
 --- a/packages/frontend/.env
 +++ b/packages/frontend/.env
-@@ -13,5 +13,5 @@
+@@ -13,7 +13,7 @@
  # See the License for the specific language governing permissions and
  # limitations under the License.
  
 -VITE_BASE_URL=/
 +VITE_BASE_URL=/system/
  VITE_CYPRESS_ENABLED=0
+ VITE_URL_DAEMON_API=
+ VITE_URL_DAEMON_MONITOR=
 --- a/packages/frontend3/.env
 +++ b/packages/frontend3/.env
 @@ -13,7 +13,7 @@

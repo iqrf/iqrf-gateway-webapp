@@ -163,11 +163,11 @@ import {DataTableHeader} from 'vuetify';
 import {
 	Modem,
 	ModemState
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/Modem';
-import {MonitCheck} from '@iqrf/iqrf-gateway-webapp-client/types/Config/Monit';
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
+import {MonitCheck} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import {
 	NetworkConnectionListEntry
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkConnection';
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 
 /**
  * GSM modem interface list

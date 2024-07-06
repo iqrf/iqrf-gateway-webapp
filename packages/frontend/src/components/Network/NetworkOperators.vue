@@ -133,7 +133,7 @@ import {AxiosError} from 'axios';
 import {DataTableHeader} from 'vuetify';
 import {
 	MobileOperator
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/MobileOperator';
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import {useApiClient} from '@/services/ApiClient';
 
 /**

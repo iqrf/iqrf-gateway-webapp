@@ -30,7 +30,7 @@ limitations under the License.
 <script setup lang='ts'>
 import {
 	WifiSecurityType,
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/Wifi';
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import { mdiWifiLock } from '@mdi/js';
 import { type PropType } from 'vue';
 import { useI18n } from 'vue-i18n';

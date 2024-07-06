@@ -74,7 +74,7 @@ export const useDaemonStore = defineStore('daemon', {
 					url: urlBuilder.getDaemonApiUrl(),
 					autoConnect: true,
 					reconnect: true,
-					reconnectDelay: 5000,
+					reconnectDelay: 5_000,
 				},
 				this.onOpen,
 				this.onClose,
@@ -121,7 +121,7 @@ export const useDaemonStore = defineStore('daemon', {
 					if (options.message === null) {
 						return;
 					}
-					toast.error(i18n.global.t(options.message).toString());
+					toast.error(i18n.global.t(options.message));
 				}, options.timeout);
 			}
 			this.messages.push(new DaemonMessage(msgId, timeout));
@@ -136,7 +136,7 @@ export const useDaemonStore = defineStore('daemon', {
 				setTimeout(() => {
 					this.reconnecting = false;
 					this.connected = true;
-				}, 1000);
+				}, 1_000);
 			} else {
 				this.connected = true;
 			}
@@ -164,7 +164,7 @@ export const useDaemonStore = defineStore('daemon', {
 		onMessage(event: MessageEvent<string>): DaemonApiResponse {
 			const message: DaemonApiResponse = JSON.parse(event.data) as DaemonApiResponse;
 			if (message.mType === 'mngDaemon_Version' && message.data.msgId === this.versionMsgId) {
-				const tokens = RegExp(/v\d+\.\d+\.\d+/g).exec(message.data.rsp.version as string);
+				const tokens = RegExp(/v\d+\.\d+\.\d+/).exec(message.data.rsp.version as string);
 				if (tokens !== null && tokens.length > 0) {
 					this.version = tokens[0];
 				}
@@ -196,16 +196,16 @@ export const useDaemonStore = defineStore('daemon', {
 			this.messages.splice(idx, 1);
 		},
 		trimMessageQueue(): void {
-			const overload = this.messages.slice(32, this.messages.length - 1);
+			const overload: DaemonMessage[] = this.messages.slice(32, this.messages.length - 1);
 			this.messages.splice(32, this.messages.length - 1);
-			overload.forEach((message: DaemonMessage) => {
+			for (const message of overload) {
 				if (message.msgId in this.requests) {
 					delete this.requests[message.msgId];
 				}
 				if (message.msgId in this.responses) {
 					delete this.responses[message.msgId];
 				}
-			});
+			}
 		},
 	},
 	getters: {

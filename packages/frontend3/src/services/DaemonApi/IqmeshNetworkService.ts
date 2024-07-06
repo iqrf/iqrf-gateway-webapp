@@ -23,11 +23,11 @@ export class IqmeshNetworkService {
 
 	private store;
 
-	constructor() {
+	public constructor() {
 		this.store = useDaemonStore();
 	}
 
-	deviceEnumeration(address: number, options: DaemonMessageOptions): Promise<string> {
+	public deviceEnumeration(address: number, options: DaemonMessageOptions): Promise<string> {
 		options.request = {
 			mType: 'iqmeshNetwork_EnumerateDevice',
 			data: {

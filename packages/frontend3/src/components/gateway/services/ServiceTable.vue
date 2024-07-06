@@ -128,61 +128,54 @@ const state: Ref<ComponentState> = ref(ComponentState.Created);
 /// Gateway services
 const services: Ref<ServiceState[]> = ref([]);
 
-function getServices(): void {
+async function getServices(): Promise<void> {
 	state.value = ComponentState.Loading;
-	service.list(true)
-		.then((states: ServiceState[]) => {
-			services.value = states;
-			state.value = ComponentState.Ready;
-		});
+	services.value = await service.list(true);
+	state.value = ComponentState.Ready;
 }
 
-function enableService(name: string, index: number): void {
+async function enableService(name: string, index: number): Promise<void> {
 	state.value = ComponentState.Loading;
-	service.enable(name)
-		.then(() => refreshService(name, index));
+	await service.enable(name);
+	await refreshService(name, index);
 }
 
-function disableService(name: string, index: number): void {
+async function disableService(name: string, index: number): Promise<void> {
 	state.value = ComponentState.Loading;
-	service.disable(name)
-		.then(() => refreshService(name, index));
+	await service.disable(name);
+	await refreshService(name, index);
 }
 
-function startService(name: string, index: number): void {
+async function startService(name: string, index: number): Promise<void> {
 	state.value = ComponentState.Loading;
-	service.start(name)
-		.then(() => refreshService(name, index));
+	await service.start(name);
+	await refreshService(name, index);
 }
 
-function stopService(name: string, index: number): void {
+async function stopService(name: string, index: number): Promise<void> {
 	state.value = ComponentState.Loading;
-	service.stop(name)
-		.then(() => refreshService(name, index));
+	await service.stop(name);
+	await refreshService(name, index);
 }
 
-function restartService(name: string, index: number): void {
+async function restartService(name: string, index: number): Promise<void> {
 	state.value = ComponentState.Loading;
-	service.restart(name)
-		.then(() => refreshService(name, index));
+	await service.restart(name);
+	await refreshService(name, index);
 }
 
-function refreshService(name: string, index: number): void {
+async function refreshService(name: string, index: number): Promise<void> {
 	state.value = ComponentState.Loading;
-	service.getStatus(name)
-		.then((status: ServiceStatus) => {
-			services.value[index] = {
-				...services.value[index],
-				active: status.active ?? null,
-				enabled: status.enabled ?? null,
-				status: status.status,
-			};
-			state.value = ComponentState.Ready;
-		});
+	const status: ServiceStatus = await service.getStatus(name);
+	services.value[index] = {
+		...services.value[index],
+		active: status.active ?? null,
+		enabled: status.enabled ?? null,
+		status: status.status,
+	};
+	state.value = ComponentState.Ready;
 }
 
-onMounted(() => {
-	getServices();
-});
+onMounted(async () => await getServices());
 
 </script>

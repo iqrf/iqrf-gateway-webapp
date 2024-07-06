@@ -230,7 +230,7 @@ import {
 	type IqrfGatewayDaemonComponent,
 	type IqrfGatewayDaemonMapping,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { MappingType } from '@iqrf/iqrf-gateway-webapp-client/types/Config/Mapping';
+import { MappingType } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { IqrfInterfaceType } from '@iqrf/iqrf-gateway-webapp-client/types/Iqrf';
 import { computed, onMounted, type Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -263,7 +263,7 @@ const interfacePins: Ref<boolean> = ref(false);
 const showIntefaceMenu: Ref<boolean> = ref(false);
 const showProfileMenu: Ref<boolean> = ref(false);
 const baudRateOptions = computed(() => {
-	const items: number[] = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400];
+	const items: number[] = [1_200, 2_400, 4_800, 9_600, 19_200, 38_400, 57_600, 115_200, 230_400];
 	return items.map((item: number) => ({
 		title: `${item} Bd`,
 		value: item,

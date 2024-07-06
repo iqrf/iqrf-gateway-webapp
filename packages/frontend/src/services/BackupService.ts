@@ -17,17 +17,7 @@
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '@/helpers/authorizationHeader';
 
-import {IBackup} from '@/interfaces/Maintenance/Backup';
-
 class BackupService {
-
-	/**
-	 * Retrieves gateway backup data
-	 * @param params Backup parameters
-	 */
-	backup(params: IBackup): Promise<AxiosResponse> {
-		return axios.post('maintenance/backup', params, {headers: authorizationHeader(), responseType: 'arraybuffer'});
-	}
 
 	/**
 	 * Restores gateway from backup data

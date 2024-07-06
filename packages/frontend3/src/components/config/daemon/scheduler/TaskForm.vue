@@ -337,7 +337,7 @@ watch(show, (newVal: boolean) => {
 		return;
 	}
 	if (componentProps.action === Action.Edit && componentProps.schedulerTask) {
-		task.value = JSON.parse(JSON.stringify(componentProps.schedulerTask)) as SchedulerRecord;
+		task.value = structuredClone(componentProps.schedulerTask);
 		if (Array.isArray(task.value.timeSpec.cronTime)) {
 			task.value.timeSpec.cronTime = task.value.timeSpec.cronTime.join(' ').trim();
 		}
@@ -389,7 +389,7 @@ function handleGetTask(rsp: DaemonApiResponse): void {
 function addTask(record: SchedulerRecord): void {
 	const options = new DaemonMessageOptions(
 		null,
-		30000,
+		30_000,
 		null,
 		() => {msgId.value = null;},
 	);
@@ -402,7 +402,7 @@ function addTask(record: SchedulerRecord): void {
 function editTask(record: SchedulerRecord): void {
 	const options = new DaemonMessageOptions(
 		null,
-		30000,
+		30_000,
 		null,
 		() => {msgId.value = null;},
 	);

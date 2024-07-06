@@ -36,10 +36,8 @@ limitations under the License.
 <script lang='ts' setup>
 import {
 	NetworkConnectionType,
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkConnection';
-import {
 	NetworkInterfaceType,
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkInterface';
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import { Head } from '@unhead/vue/components';
 
 import ConnectionsTable

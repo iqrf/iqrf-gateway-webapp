@@ -20,10 +20,7 @@ limitations under the License.
 		<template #title>
 			{{ $t('components.dev.openApi.title') }}
 		</template>
-		<div
-			id='swagger'
-			class='swagger'
-		/>
+		<div id='swagger' />
 		<v-alert
 			v-if='componentState == ComponentState.FetchFailed'
 			variant='tonal'
@@ -43,8 +40,6 @@ import {
 import { onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
-
-import 'swagger-ui/dist/swagger-ui.css';
 
 import Card from '@/components/layout/card/Card.vue';
 import UrlBuilder from '@/helpers/urlBuilder';
@@ -100,6 +95,8 @@ onMounted(fetch);
 </script>
 
 <style lang='scss'>
+@import url('swagger-ui/dist/swagger-ui.css');
+
 .v-theme--dark {
 	.swagger-ui {
 		filter: invert(88%) hue-rotate(180deg);

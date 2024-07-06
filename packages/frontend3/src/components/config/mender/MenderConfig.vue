@@ -206,7 +206,7 @@ function intervalLabel(value: number|null): string {
 	if (value === null || (typeof value === 'number' && value < 0)) {
 		return 'N/A';
 	}
-	return humanizeDuration(value * 1000, { language: i18n.locale.value });
+	return humanizeDuration(value * 1_000, { language: i18n.locale.value });
 }
 
 async function getConfig(): Promise<void> {

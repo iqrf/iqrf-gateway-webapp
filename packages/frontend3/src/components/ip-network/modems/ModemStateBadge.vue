@@ -26,7 +26,7 @@ limitations under the License.
 </template>
 
 <script setup lang='ts'>
-import { ModemState } from '@iqrf/iqrf-gateway-webapp-client/types/Network/Modem';
+import { ModemState } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import { computed, type PropType } from 'vue';
 
 /// Component props

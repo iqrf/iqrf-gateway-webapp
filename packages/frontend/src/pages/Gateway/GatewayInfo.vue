@@ -149,12 +149,11 @@ import DaemonModeInfo from '@/components/Gateway/Information/DaemonModeInfo.vue'
 import HostnameChange from '@/components/Gateway/Information/HostnameChange.vue';
 import ResourceUsage from '@/components/Gateway/Information/ResourceUsage.vue';
 
-import {fileDownloader} from '@/helpers/fileDownloader';
-
 import GatewayService from '@/services/GatewayService';
 
 import {IpAddress, MacAddress} from '@/interfaces/Gateway/Information';
 import {useApiClient} from '@/services/ApiClient';
+import {FileDownloader} from '@iqrf/iqrf-gateway-webapp-client/utils';
 
 
 @Component({
@@ -254,9 +253,8 @@ export default class GatewayInfo extends Vue {
 		this.$store.commit('spinner/SHOW');
 		GatewayService.getDiagnosticsArchive().then(
 			(response: AxiosResponse) => {
-				const file = fileDownloader(response, 'application/zip', 'iqrf-gateway-diagnostics.zip');
+				FileDownloader.downloadFromAxiosResponse(response, 'application/zip', 'iqrf-gateway-diagnostics.zip');
 				this.$store.commit('spinner/HIDE');
-				file.click();
 			}
 		).catch(() => (this.$store.commit('spinner/HIDE')));
 	}

@@ -26,21 +26,24 @@ limitations under the License.
 
 <script lang='ts' setup>
 import { mdiTimerSand } from '@mdi/js';
+import humanizeDuration from 'humanize-duration';
 import { storeToRefs } from 'pinia';
 import { computed, onMounted, ref, type Ref , onBeforeUnmount } from 'vue';
 
-import TimeConverter from '@/helpers/TimeConverter';
 import { useUserStore } from '@/store/user';
 
 const userStore = useUserStore();
-const { getExpiration: expiration } = storeToRefs(userStore);
+const {
+	getExpiration: expiration,
+	getLanguage: locale,
+} = storeToRefs(userStore);
 const now: Ref<number> = ref(0);
 let interval = 0;
 
 onMounted(() => {
 	interval = window.setInterval(() => {
 		now.value = Date.now();
-	}, 1000);
+	}, 1_000);
 });
 
 onBeforeUnmount(() => {
@@ -49,13 +52,15 @@ onBeforeUnmount(() => {
 
 /// Remaining time of the session
 const remaining = computed((): string => {
-	const minutes = Math.ceil(expiration.value - (now.value / 1000));
-	return TimeConverter.secondsToDuration(minutes);
+	const seconds = Math.ceil(expiration.value - (now.value / 1_000));
+	return humanizeDuration(seconds, {
+		language: locale.toString(),
+	});
 });
 
 /// Color of the icon
 const color = computed((): string => {
-	if (expiration.value - (now.value / 1000) > 5) {
+	if (expiration.value - (now.value / 1_000) > 5) {
 		return 'light-green-accent-3';
 	}
 	return 'warning';

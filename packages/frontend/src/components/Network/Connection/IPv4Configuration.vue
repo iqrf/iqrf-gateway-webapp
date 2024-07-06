@@ -163,7 +163,7 @@ import {
 	IPV4ConfigurationMethod,
 	NetworkConnectionConfiguration,
 	NetworkConnectionType,
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkConnection';
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 
 /**
  * IPv4 configuration options

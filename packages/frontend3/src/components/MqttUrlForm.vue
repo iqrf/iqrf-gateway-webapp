@@ -136,7 +136,7 @@ const protocolOptions = [
 	},
 ];
 const hostname: Ref<string> = ref('');
-const port: Ref<number> = ref(1883);
+const port: Ref<number> = ref(1_883);
 const path: Ref<string> = ref('');
 
 watchEffect((): void => {

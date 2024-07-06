@@ -177,7 +177,7 @@ import {useApiClient} from '@/services/ApiClient';
 import {
 	WireGuardIpStack,
 	WireGuardKeyPair, WireGuardTunnelConfig
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/WireGuard';
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 
 @Component({
 	components: {

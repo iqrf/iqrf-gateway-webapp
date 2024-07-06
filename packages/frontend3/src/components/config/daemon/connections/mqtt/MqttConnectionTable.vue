@@ -65,7 +65,11 @@ limitations under the License.
 
 <script lang='ts' setup>
 import { type IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
-import { type IqrfGatewayDaemonComponent, IqrfGatewayDaemonComponentName, type IqrfGatewayDaemonMqttMessaging } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import {
+	type IqrfGatewayDaemonComponent,
+	IqrfGatewayDaemonComponentName,
+	type IqrfGatewayDaemonMqttMessaging,
+} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { FileDownloader } from '@iqrf/iqrf-gateway-webapp-client/utils';
 import { type Ref, ref } from 'vue';
 import { onMounted } from 'vue';

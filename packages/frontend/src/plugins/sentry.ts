@@ -18,24 +18,18 @@ import * as Sentry from '@sentry/vue';
 import { browserTracingIntegration } from '@sentry/vue';
 import Vue from 'vue';
 
-import * as version from '@/../../../version.json';
 import router from '@/router';
-
-let release = version.version;
-if (version.pipeline !== '') {
-	release += '~' + version.pipeline;
-}
 
 if (import.meta.env.PROD) {
 	Sentry.init({
-		dsn: 'https://435ee2b55f994e5f85e21a9ca93ea7a7@sentry.iqrf.org/5',
+		dsn: import.meta.env.VITE_SENTRY_DSN,
 		integrations: [
 			browserTracingIntegration({
 				router: router,
 				routeLabel: 'path',
 			}),
 		],
-		release: release,
+		release: __GIT_COMMIT_HASH__,
 		tracePropagationTargets: ['localhost', window.location.hostname, /^\//],
 		tracesSampleRate: 1.0,
 		trackComponents: true,

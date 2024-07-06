@@ -64,7 +64,7 @@ limitations under the License.
 </template>
 
 <script setup lang='ts'>
-import { type Modem } from '@iqrf/iqrf-gateway-webapp-client/types/Network/Modem';
+import { type Modem } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import { mdiMagnify, mdiRefresh } from '@mdi/js';
 import { onBeforeMount, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';

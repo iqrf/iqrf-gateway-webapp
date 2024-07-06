@@ -123,7 +123,7 @@ import {z} from 'zod';
 
 import {AxiosError} from 'axios';
 import { useApiClient } from '@/services/ApiClient';
-import {MonitConfig} from '@iqrf/iqrf-gateway-webapp-client/types/Config/Monit';
+import {MonitConfig} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 
 @Component({
 	components: {

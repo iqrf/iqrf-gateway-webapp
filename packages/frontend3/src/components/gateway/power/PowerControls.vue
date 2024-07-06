@@ -68,6 +68,6 @@ function reboot(): void {
  * Converts timestamp to time string
  */
 function parseActionTime(timestamp: number): string {
-	return new Date(timestamp * 1000).toLocaleTimeString();
+	return new Date(timestamp * 1_000).toLocaleTimeString();
 }
 </script>

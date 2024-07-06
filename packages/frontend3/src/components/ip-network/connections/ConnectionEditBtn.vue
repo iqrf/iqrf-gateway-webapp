@@ -29,7 +29,7 @@ limitations under the License.
 <script setup lang='ts'>
 import {
 	type NetworkConnectionListEntry, NetworkConnectionType,
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkConnection';
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import { mdiPencil } from '@mdi/js';
 import { computed, type PropType, type Ref } from 'vue';
 import { VIcon } from 'vuetify/components';

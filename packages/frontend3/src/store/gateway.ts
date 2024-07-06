@@ -17,7 +17,7 @@
 
 import {
 	type GatewayBriefInformation,
-} from '@iqrf/iqrf-gateway-webapp-client/types/Gateway/Info';
+} from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
 import { defineStore } from 'pinia';
 
 import { useApiClient } from '@/services/ApiClient';

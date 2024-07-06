@@ -73,20 +73,21 @@ const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const service: DpaMacrosService = useApiClient().getIqrfServices().getDpaMacrosService();
 const macros: Ref<DpaMacroGroup[]> = ref([]);
 
-onMounted(() => {
+onMounted(async (): Promise<void> => {
 	componentState.value = ComponentState.Loading;
-	service.fetch()
-		.then((response: DpaMacroGroup[]) => {
-			macros.value = response.filter((group: DpaMacroGroup): boolean => {
-				if (!group.enabled) {
-					return false;
-				}
-				group.macros = group.macros.filter((packet: DpaMacro): boolean => packet.enabled);
-				return true;
-			});
-			componentState.value = ComponentState.Ready;
-		})
-		.catch(() => componentState.value = ComponentState.FetchFailed);
+	try {
+		const response: DpaMacroGroup[] = await service.fetch();
+		macros.value = response.filter((group: DpaMacroGroup): boolean => {
+			if (!group.enabled) {
+				return false;
+			}
+			group.macros = group.macros.filter((packet: DpaMacro): boolean => packet.enabled);
+			return true;
+		});
+		componentState.value = ComponentState.Ready;
+	} catch {
+		componentState.value = ComponentState.FetchFailed;
+	}
 });
 </script>
 

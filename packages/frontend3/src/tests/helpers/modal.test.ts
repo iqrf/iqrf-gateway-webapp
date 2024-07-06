@@ -35,7 +35,7 @@ describe('Modal helper', (): void => {
 	it('get modal window width for large screens', async (): Promise<void> => {
 		expect.assertions(1);
 		const vuetify = await import('vuetify');
-		vuetify.useDisplay = vi.fn().mockReturnValueOnce({
+		vi.spyOn(vuetify, 'useDisplay').mockImplementation().mockReturnValueOnce({
 			lgAndUp: ref(true),
 			md: ref(false),
 		});
@@ -45,7 +45,7 @@ describe('Modal helper', (): void => {
 	it('get modal window width for medium screens', async (): Promise<void> => {
 		expect.assertions(1);
 		const vuetify = await import('vuetify');
-		vuetify.useDisplay = vi.fn().mockReturnValueOnce({
+		vi.spyOn(vuetify, 'useDisplay').mockImplementation().mockReturnValueOnce({
 			lgAndUp: ref(false),
 			md: ref(true),
 		});
@@ -55,7 +55,7 @@ describe('Modal helper', (): void => {
 	it('get modal window width for small screens', async (): Promise<void> => {
 		expect.assertions(1);
 		const vuetify = await import('vuetify');
-		vuetify.useDisplay = vi.fn().mockReturnValueOnce({
+		vi.spyOn(vuetify, 'useDisplay').mockImplementation().mockReturnValueOnce({
 			lgAndUp: ref(false),
 			md: ref(false),
 		});

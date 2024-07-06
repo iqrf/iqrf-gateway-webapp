@@ -15,15 +15,19 @@
  * limitations under the License.
  */
 import vue from '@vitejs/plugin-vue2';
+import * as proc from 'child_process';
 import path from 'path';
 import Components from 'unplugin-vue-components/vite';
 import {VuetifyResolver} from 'unplugin-vue-components/resolvers';
-import {defineConfig, loadEnv} from 'vite';
+import {ConfigEnv, defineConfig, loadEnv} from 'vite';
 import svgLoader from 'vite-svg-loader';
+import {UserConfig} from 'vitest/config';
+import tsconfigPaths from 'vite-tsconfig-paths';
 
-export default defineConfig(({mode}) => {
+const gitCommitHash = proc.execSync('git rev-parse --short HEAD').toString().trim();
+
+export default defineConfig(({mode}: ConfigEnv): UserConfig => {
 	const env: Record<string, string> = loadEnv(mode, process.cwd(), '');
-	const theme: string = env.VITE_THEME || 'generic';
 	return {
 		base: env.VITE_BASE_URL,
 		build: {
@@ -41,20 +45,17 @@ export default defineConfig(({mode}) => {
 			},
 		},
 		plugins: [
+			tsconfigPaths(),
 			vue(),
 			svgLoader({defaultImport: 'url'}),
 			Components({resolvers: [VuetifyResolver()]}),
 		],
+		define: {
+			__GIT_COMMIT_HASH__: JSON.stringify(gitCommitHash),
+		},
 		resolve: {
 			alias: {
 				'@': path.resolve(__dirname, './src'),
-				'@iqrf/iqrf-gateway-webapp-client/services/*': path.resolve(__dirname, '../api-client/src/services/*'),
-				'@iqrf/iqrf-gateway-webapp-client/services': path.resolve(__dirname, '../api-client/src/services'),
-				'@iqrf/iqrf-gateway-webapp-client/types/*': path.resolve(__dirname, '../api-client/src/types/*'),
-				'@iqrf/iqrf-gateway-webapp-client/types': path.resolve(__dirname, '../api-client/src/types'),
-				'@iqrf/iqrf-gateway-webapp-client/utils/*': path.resolve(__dirname, '../api-client/src/utils/*'),
-				'@iqrf/iqrf-gateway-webapp-client/utils': path.resolve(__dirname, '../api-client/src/utils'),
-				'@iqrf/iqrf-gateway-webapp-client': path.resolve(__dirname, '../api-client'),
 			},
 		},
 	};

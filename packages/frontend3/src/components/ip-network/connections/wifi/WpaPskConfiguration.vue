@@ -32,10 +32,8 @@ limitations under the License.
 <script setup lang="ts">
 import {
 	type NetworkConnectionConfiguration,
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkConnection';
-import {
 	WifiSecurityType,
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/Wifi';
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import { mdiKey } from '@mdi/js';
 import { type PropType } from 'vue';
 
@@ -55,7 +53,7 @@ const configuration = defineModel({
  * @return {boolean|string} Validation result
  */
 function validatePsk(value: string|null, error: string): boolean | string {
-	const regex = /^([\u0020-\u007e\u0080-\u00ff]{8,63}|[\da-fA-F]{64})$/;
+	const regex = /^([\u0020-\u007e\u0080-\u00ff]{8,63}|[\dA-Fa-f]{64})$/;
 	return (value !== null && regex.test(value)) ? true : error;
 }
 </script>

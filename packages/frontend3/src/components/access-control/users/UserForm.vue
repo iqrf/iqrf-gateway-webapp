@@ -89,7 +89,7 @@ import {
 	type UserInfo,
 	UserLanguage,
 	UserRole,
-} from '@iqrf/iqrf-gateway-webapp-client/types/User';
+} from '@iqrf/iqrf-gateway-webapp-client/types';
 import {
 	mdiAccount,
 	mdiAccountBadge,

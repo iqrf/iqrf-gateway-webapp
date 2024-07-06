@@ -75,7 +75,7 @@ import {required} from 'vee-validate/dist/rules';
 import {ISelectItem} from '@/interfaces/Vuetify';
 import {
 	NetworkConnectionConfiguration
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkConnection';
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 
 /**
  * WPA-EAP configuration options

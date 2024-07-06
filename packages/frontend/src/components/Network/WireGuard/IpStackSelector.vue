@@ -27,7 +27,7 @@ import {Component, VModel, Vue} from 'vue-property-decorator';
 import {ISelectItem} from '@/interfaces/Vuetify';
 import {
 	WireGuardIpStack
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/WireGuard';
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 
 /**
  * IP stack selector

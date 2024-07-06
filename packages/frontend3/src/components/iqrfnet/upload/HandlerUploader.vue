@@ -53,8 +53,8 @@ limitations under the License.
 
 <script lang='ts' setup>
 import { type ServiceService } from '@iqrf/iqrf-gateway-webapp-client/services';
-import { type UpgradeService } from '@iqrf/iqrf-gateway-webapp-client/services/Iqrf/UpgradeService';
-import { FileFormat, FileType, type FileUploadResult } from '@iqrf/iqrf-gateway-webapp-client/types/Iqrf/Upgrade';
+import { type UpgradeService } from '@iqrf/iqrf-gateway-webapp-client/services/Iqrf';
+import { FileFormat, FileType, type FileUploadResult } from '@iqrf/iqrf-gateway-webapp-client/types/Iqrf';
 import { mdiFileOutline } from '@mdi/js';
 import { type Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -82,22 +82,22 @@ async function onSubmit(): Promise<void> {
 	componentState.value = ComponentState.Saving;
 	let success = await stopDaemon();
 	if (!success) {
-		handleError('TODO DAEMON STOP ERROR HANDLING');
+		await handleError('TODO DAEMON STOP ERROR HANDLING');
 		return;
 	}
 	const path = await uploadFile(file);
 	if (path === null) {
-		handleError('TODO UPLOAD TO FS ERROR HANDLING');
+		await handleError('TODO UPLOAD TO FS ERROR HANDLING');
 		return;
 	}
 	success = await runUploader(path);
 	if (!success) {
-		handleError('TODO UPLOAD TO TR ERROR HANDLING');
+		await handleError('TODO UPLOAD TO TR ERROR HANDLING');
 		return;
 	}
 	success = await startDaemon();
 	if (!success) {
-		handleError('TODO DAEMON START ERROR HANDLING');
+		await handleError('TODO DAEMON START ERROR HANDLING');
 		return;
 	}
 	toast.success(
@@ -108,26 +108,26 @@ async function onSubmit(): Promise<void> {
 
 async function uploadFile(file: File): Promise<string | null> {
 	return upgradeService.uploadToFs(file, FileFormat.HEX)
-		.then((result: FileUploadResult) => Promise.resolve(result.fileName))
-		.catch(() => Promise.resolve(null));
+		.then((result: FileUploadResult) => result.fileName)
+		.catch(() => null);
 }
 
 async function runUploader(path: string): Promise<boolean> {
 	return upgradeService.uploadToTr(path, FileType.HEX)
-		.then(() => Promise.resolve(true))
-		.catch(() => Promise.resolve(false));
+		.then(() => true)
+		.catch(() => false);
 }
 
 async function stopDaemon(): Promise<boolean> {
 	return serviceService.stop('iqrf-gateway-daemon')
-		.then(() => Promise.resolve(true))
-		.catch(() => Promise.resolve(false));
+		.then(() => true)
+		.catch(() => false);
 }
 
 async function startDaemon(): Promise<boolean> {
 	return serviceService.start('iqrf-gateway-daemon')
-		.then(() => Promise.resolve(true))
-		.catch(() => Promise.resolve(false));
+		.then(() => true)
+		.catch(() => false);
 }
 
 async function handleError(message: string): Promise<void> {

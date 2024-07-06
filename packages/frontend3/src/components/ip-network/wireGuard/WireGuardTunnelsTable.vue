@@ -58,7 +58,7 @@ limitations under the License.
 <script setup lang='ts'>
 import {
 	type WireGuardTunnelListEntry,
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/WireGuard';
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import { mdiRefresh } from '@mdi/js';
 import { onBeforeMount, type Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';

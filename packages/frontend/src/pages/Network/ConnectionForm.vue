@@ -246,19 +246,15 @@ import {
 
 import {useApiClient} from '@/services/ApiClient';
 import {
-	MobileOperator
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/MobileOperator';
-import {
+	MobileOperator,
 	IPV4ConfigurationMethod,
-	IPV6ConfigurationMethod, NetworkConnectionConfiguration, NetworkConnectionType
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkConnection';
-import {
+	IPV6ConfigurationMethod,
+	NetworkConnectionConfiguration,
+	NetworkConnectionType,
 	AccessPoint,
-	WepKeyType
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/Wifi';
-import {
+	WepKeyType,
 	NetworkInterfaceType
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkInterface';
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 
 @Component({
 	components: {

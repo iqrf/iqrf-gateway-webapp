@@ -84,7 +84,7 @@
 		"coverage:unit": "vitest --run --coverage",
 		"dev": "tsup --watch",
 		"docs": "rm -rf docs/ && typedoc src/index.ts",
-		"prepublish": "tsup",
+		"prepublishOnly": "npm run build",
 		"lint": "npm run lint:js && npm run lint:ts",
 		"lint:js": "eslint --cache --cache-location node_modules/.cache/eslint/ .",
 		"lint:ts": "tsc --noEmit",

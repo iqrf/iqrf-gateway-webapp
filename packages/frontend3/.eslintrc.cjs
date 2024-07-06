@@ -20,10 +20,11 @@ module.exports = {
 		'plugin:@iqrf/base',
 		'plugin:vue/vue3-recommended',
 		'plugin:vuetify/recommended',
+		'plugin:@intlify/vue-i18n/recommended',
 		'plugin:import/recommended',
 		'plugin:import/typescript',
-//		'plugin:promise/recommended',
-//		"plugin:typescript-sort-keys/recommended",
+		//		'plugin:promise/recommended',
+		//		"plugin:typescript-sort-keys/recommended",
 		'@vue/eslint-config-typescript',
 	],
 	parser: 'vue-eslint-parser',
@@ -39,6 +40,7 @@ module.exports = {
 		'@typescript-eslint/explicit-member-accessibility': 'off',
 		'@typescript-eslint/no-floating-promises': 'warn',
 		'@typescript-eslint/no-misused-promises': 'warn',
+		'@typescript-eslint/no-unsafe-argument': 'warn',
 		'@typescript-eslint/no-unsafe-call': 'warn',
 		'@typescript-eslint/no-unsafe-member-access': 'warn',
 		'@typescript-eslint/no-unsafe-return': 'warn',
@@ -72,35 +74,25 @@ module.exports = {
 		],
 		'linebreak-style': [
 			'error',
-			'unix'
+			'unix',
 		],
 		'no-use-before-define': 'off',
-//		'promise/always-return': 'warn',
+		//		'promise/always-return': 'warn',
 		'regexp/no-unused-capturing-group': 'warn',
 		'vue/html-indent': [
 			'warn',
-			'tab'
+			'tab',
 		],
 		'vue/html-quotes': [
 			'warn',
-			'single'
+			'single',
 		],
 		'vue/max-attributes-per-line': [
 			'warn',
-			{singleline: 3}
+			{ singleline: 3 },
 		],
 		'vue/multi-word-component-names': 'off',
 	},
-	overrides: [
-		{
-			files: [
-				'src/store/**/*.ts',
-			],
-			rules: {
-				'@typescript-eslint/unbound-method': 'off',
-			}
-		}
-	],
 	settings: {
 		'import/parsers': {
 			'@typescript-eslint/parser': ['.ts', '.tsx'],
@@ -111,6 +103,10 @@ module.exports = {
 				'alwaysTryTypes': true,
 				'project': './tsconfig.json',
 			},
+		},
+		'vue-i18n': {
+			localeDir: './src/locales/*.json',
+			messageSyntaxVersion: '^9.0.0',
 		},
 	},
 };
