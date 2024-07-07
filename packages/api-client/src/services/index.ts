@@ -25,3 +25,10 @@ export * from './OpenApiService';
 export * from './ServiceService';
 export * from './UserService';
 export * from './VersionService';
+
+export * as Cloud from './Cloud';
+export * as Config from './Config';
+export * as Gateway from './Gateway';
+export * as Iqrf from './Iqrf';
+export * as Maintenance from './Maintenance';
+export * as Network from './Network';

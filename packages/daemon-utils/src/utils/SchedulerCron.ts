@@ -3,7 +3,7 @@ import { toString as cronToString } from 'cronstrue';
 export class SchedulerCron {
 
 	/**
-	 * @constant cronTraits Cron expression traits
+	 * @property cronTraits Cron expression traits
 	 */
 	public static cronTraits = {
 		presetId: 'schedulerCron',
@@ -37,13 +37,13 @@ export class SchedulerCron {
 			maxValue: 6,
 		},
 		years: {
-			minValue: 1970,
-			maxValue: 2099,
+			minValue: 1_970,
+			maxValue: 2_099,
 		},
 	};
 
 	/**
-	 * @constant {Map<string, string>} aliases Supported general cron expression aliases
+	 * @property {Map<string, string>} aliases Supported general cron expression aliases
 	 */
 	private static aliases: Map<string, string> = new Map<string, string>([
 		['@yearly', '0 0 0 1 1 * *'],
@@ -56,7 +56,7 @@ export class SchedulerCron {
 	]);
 
 	/**
-	 * @constant {string[]} dayAliases Day of week field aliases
+	 * @property {string[]} dayAliases Day of week field aliases
 	 */
 	private static dayAliases: string[] = [
 		'sun',
@@ -69,7 +69,7 @@ export class SchedulerCron {
 	];
 
 	/**
-	 * @constant {string[]} monthAliases Months fields aliases
+	 * @property {string[]} monthAliases Months fields aliases
 	 */
 	private static monthAliases: string[] = [
 		'jan',

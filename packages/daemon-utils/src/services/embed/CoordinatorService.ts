@@ -81,7 +81,7 @@ export class CoordinatorService extends BaseEmbedService {
 					rData: '00.00.00.04.ff.ff.f0.00',
 				},
 				returnVerbose: true,
-				timeout: 11000,
+				timeout: 11_000,
 			},
 		};
 		return options;

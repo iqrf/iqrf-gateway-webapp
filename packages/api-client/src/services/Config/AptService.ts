@@ -61,9 +61,9 @@ export class AptService extends BaseService {
 	private fromRaw(config: AptConfigRaw): AptConfig {
 		return {
 			enabled: config['APT::Periodic::Enable'] === '1',
-			packageListUpdateInterval: parseInt(config['APT::Periodic::Update-Package-Lists']),
-			packageUpdateInterval: parseInt(config['APT::Periodic::Unattended-Upgrade']),
-			packageRemovalInterval: parseInt(config['APT::Periodic::AutocleanInterval']),
+			packageListUpdateInterval: Number.parseInt(config['APT::Periodic::Update-Package-Lists']),
+			packageUpdateInterval: Number.parseInt(config['APT::Periodic::Unattended-Upgrade']),
+			packageRemovalInterval: Number.parseInt(config['APT::Periodic::AutocleanInterval']),
 			rebootOnKernelUpdate: config['Unattended-Upgrade::Automatic-Reboot'] === 'true',
 		};
 	}

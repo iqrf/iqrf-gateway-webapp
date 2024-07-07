@@ -78,7 +78,7 @@ export interface ClientOptions {
  * const config: AxiosRequestConfig = {
  * 	baseURL: 'https://iqrf-gw.exaple.org/api/',
  * };
- * const client = new Client({config});
+ * const client = new Client({ config });
  * ```
  *
  * ## Instantiate with custom Axios instance **advanced**
@@ -87,7 +87,7 @@ export interface ClientOptions {
  * 	baseURL: 'https://iqrf-gw.exaple.org/api/',
  * }
  * const axiosInstance = axios.create(config);
- * const client = new Client({axiosInstance});
+ * const client = new Client({ axiosInstance });
  */
 export class Client {
 
@@ -133,19 +133,10 @@ export class Client {
 		}
 		if (axiosInstance) {
 			this.axiosInstance = axiosInstance;
-			// @ts-ignore
-			this.axiosInstance.defaults.headers = {
-				...this.defaultAxiosConfig.headers,
-				...this.axiosInstance.defaults.headers,
-			};
 		} else if (config) {
 			config = {
 				...this.defaultAxiosConfig,
 				...config,
-			};
-			config.headers = {
-				...this.defaultAxiosConfig.headers,
-				...config.headers,
 			};
 			this.axiosInstance = axios.create(config);
 		} else {

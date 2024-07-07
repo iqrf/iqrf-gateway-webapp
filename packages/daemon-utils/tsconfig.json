@@ -10,7 +10,6 @@
 		"tests/**/*",
 		"package.json",
 		"tsup.config.ts",
-		"typedoc.config.ts",
 		"vitest.config.ts"
 	],
 	"exclude": [

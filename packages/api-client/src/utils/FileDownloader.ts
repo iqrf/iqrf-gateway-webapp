@@ -32,9 +32,9 @@ export class FileDownloader {
 	 */
 	public static downloadFromAxiosResponse(response: AxiosResponse<object|string>, contentType: string, fileName: string): void {
 		const element = this.getDownloadElementFromAxiosResponse(response, contentType, fileName);
-		document.body.appendChild(element);
+		document.body.append(element);
 		element.click();
-		document.body.removeChild(element);
+		element.remove();
 	}
 
 	/**
@@ -63,9 +63,9 @@ export class FileDownloader {
 	 */
 	public static downloadFileResponse<T extends FileResponseType>(response: FileResponse<T>, fileName: string | null = null): void {
 		const element = response.toDownloadElement(fileName);
-		document.body.appendChild(element);
+		document.body.append(element);
 		element.click();
-		document.body.removeChild(element);
+		element.remove();
 	}
 
 	/**
@@ -76,9 +76,9 @@ export class FileDownloader {
 	 */
 	public static downloadFromData(data: object|string, contentType: string, fileName: string): void {
 		const element = this.getDownloadElementFromData(data, contentType, fileName);
-		document.body.appendChild(element);
+		document.body.append(element);
 		element.click();
-		document.body.removeChild(element);
+		element.remove();
 	}
 
 	/**

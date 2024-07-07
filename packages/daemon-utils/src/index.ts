@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-export * as enums from './enums';
-export * as services from './services';
-export * as types from './types';
-export * as utils from './utils';
+export * as Enums from './enums';
+export * as Services from './services';
+export * as Types from './types';
+export * as Utils from './utils';

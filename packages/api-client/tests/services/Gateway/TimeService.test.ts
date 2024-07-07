@@ -42,11 +42,11 @@ describe('TimeService', (): void => {
 			formattedTime: '2023-10-26 13:06:11',
 			formattedZone: '(UTC+0200) Europe/Prague (CEST)',
 			gmtOffset: '+0200',
-			gmtOffsetSec: 7200,
+			gmtOffsetSec: 7_200,
 			ntpSync: true,
 			ntpServers: [],
-			localTimestamp: 1698325571,
-			utcTimestamp: 1698318371,
+			localTimestamp: 1_698_325_571,
+			utcTimestamp: 1_698_318_371,
 			zoneName :'Europe/Prague',
 		};
 		mockedAxios.onGet('/gateway/time')

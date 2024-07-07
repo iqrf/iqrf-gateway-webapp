@@ -15,3 +15,6 @@
  */
 
 export * from './client';
+export * as Services from './services';
+export * as Types from './types';
+export * as Utils from './utils';

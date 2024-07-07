@@ -9,7 +9,7 @@ interface DaemonApiMessage {
 /**
  * JSON API request data interface
  */
-interface RequestData {
+export interface RequestData {
 	/// Message ID
 	msgId?: string;
 	/// Maximum number of repeat transactions

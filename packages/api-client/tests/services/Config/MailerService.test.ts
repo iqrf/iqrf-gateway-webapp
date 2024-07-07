@@ -132,7 +132,7 @@ describe('MailerService', (): void => {
 			.reply(200, config);
 		await service.editConfig(config);
 		expect(mockedAxios.history.put).toBeDefined();
-		expect(mockedAxios.history.put.length).toStrictEqual(1);
+		expect(mockedAxios.history.put).toHaveLength(1);
 		expect(JSON.parse(mockedAxios.history.put[0].data as string)).toStrictEqual(expected);
 	});
 

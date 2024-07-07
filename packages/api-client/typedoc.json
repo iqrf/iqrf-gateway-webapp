@@ -1,0 +1,38 @@
+{
+	"$schema": "https://typedoc.org/schema.json",
+	"customFooterHtml": "<p class='tsd-generator'>Copyright &copy; 2023-2024 <a href='https://www.microrisc.com' target='_blank' rel='noreferrer'>MICRORISC s.r.o.</a></p>",
+	"customFooterHtmlDisableWrapper": true,
+	"disableGit": false,
+	"disableSources": false,
+	"entryPoints": [
+		"./src/index.ts"
+	],
+	"exclude": [
+		"./tests/**/*",
+		"./**/node_modules/**/*",
+		"./dist/"
+	],
+	"externalSymbolLinkMappings": {
+		"@iqrf/iqrf-gateway-daemon-utils/types": {
+			"MessagingInstance": "https://apidocs.iqrf.org/iqrf-gateway-daemon-js-utils/interfaces/MessagingInstance.html"
+		},
+		"axios": {
+			"AxiosInstance": "https://axios-http.com/docs/instance",
+			"AxiosRequestConfig": "https://axios-http.com/docs/req_config",
+			"AxiosInterceptorOptions": "https://axios-http.com/docs/interceptors",
+			"AxiosResponse": "https://axios-http.com/docs/res_schema"
+		}
+	},
+	"includeVersion": true,
+	"jsDocCompatibility": true,
+	"name": "IQRF Gateway Webapp JavaScript client",
+	"out": "./docs",
+	"plugin": [
+		"typedoc-plugin-mdn-links",
+		"typedoc-material-theme"
+	],
+	"readme": "./README.md",
+	"sourceLinkExternal": true,
+	"sourceLinkTemplate": "https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp/-/blob/{gitRevision}/{path}#L{line}",
+	"themeColor": "#367fa9"
+}

@@ -59,17 +59,17 @@ export type FileResponseType = Blob | object | string | unknown[];
 export class FileResponse<T extends FileResponseType> {
 
 	/**
-	 * @var {T} content File content
+	 * @property {T} content File content
 	 */
 	public content: T;
 
 	/**
-	 * @var {string} contentType Content MIME type
+	 * @property {string} contentType Content MIME type
 	 */
 	public contentType: string;
 
 	/**
-	 * @var {string} name File name
+	 * @property {string} name File name
 	 */
 	public name: string;
 
@@ -131,7 +131,7 @@ export class FileResponse<T extends FileResponseType> {
 /**
  * JSON value
  */
-type JsonValue = string | number | null;
+export type JsonValue = string | number | null;
 
 /**
  * JSON object

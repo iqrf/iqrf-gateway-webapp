@@ -41,7 +41,7 @@
 		"build": "tsup",
 		"coverage:unit": "vitest --run --coverage",
 		"dev": "tsup --watch",
-		"docs": "rm -rf docs/ && typedoc index.ts",
+		"docs": "rm -rf docs/ && typedoc",
 		"prepublishOnly": "npm run build",
 		"lint": "npm run lint:js && npm run lint:ts",
 		"lint:js": "eslint --cache --cache-location node_modules/.cache/eslint/ .",
@@ -89,7 +89,7 @@
 		"uuid": "^10.0.0"
 	},
 	"devDependencies": {
-		"@iqrf/eslint-config": "^0.0.6",
+		"@iqrf/eslint-config": "^0.0.9",
 		"@types/luxon": "^3.4.2",
 		"@types/node": "^20.14.10",
 		"@types/punycode": "^2.1.4",
@@ -102,6 +102,8 @@
 		"ts-node": "^10.9.2",
 		"tsup": "^8.1.0",
 		"typedoc": "^0.26.3",
+		"typedoc-material-theme": "^1.1.0",
+		"typedoc-plugin-mdn-links": "^3.2.3",
 		"typescript": "^5.5.3",
 		"vite-tsconfig-paths": "^4.3.2",
 		"vitest": "^1.6.0"

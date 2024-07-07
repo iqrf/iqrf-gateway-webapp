@@ -46,6 +46,7 @@ describe('VersionService', (): void => {
 	});
 
 	it('fetch IQRF Gateway Webapp version', async (): Promise<void> => {
+		expect.assertions(1);
 		const version: VersionIqrfGatewayWebapp = {
 			version: 'v2.1.0-alpha',
 			commit: 'b5e6ab29b192bc027615b5d4a712eebcbbe35eb9',

@@ -23,3 +23,9 @@ export * from './Service';
 export * from './User';
 export * from './Version';
 
+export * as Cloud from './Cloud';
+export * as Config from './Config';
+export * as Gateway from './Gateway';
+export * as Iqrf from './Iqrf';
+export * as Maintenance from './Maintenance';
+export * as Network from './Network';
