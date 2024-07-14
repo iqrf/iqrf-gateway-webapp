@@ -48,6 +48,7 @@ class ServicesController extends BaseController {
 	 */
 	private const WHITELISTED_SERVICES = [
 		'apcupsd' => 'apcupsd',
+		'influxdb' => 'iqaros',
 		'iqaros-data-availability' => 'iqaros',
 		'iqaros-influxdb-poll' => 'iqaros',
 		'iqaros-network-sync' => 'iqaros',
