@@ -68,17 +68,16 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import { MenderService } from '@iqrf/iqrf-gateway-webapp-client/services/Maintenance';
+import { ErrorResponse } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { AxiosError } from 'axios';
+import { extend, ValidationObserver, ValidationProvider } from 'vee-validate';
+import { required } from 'vee-validate/dist/rules';
+import { Component, Vue } from 'vue-property-decorator';
+import { TranslateResult } from 'vue-i18n';
 
-import {extendedErrorToast} from '@/helpers/errorToast';
-import {required} from 'vee-validate/dist/rules';
-
-import MenderService from '@/services/MenderService';
-
-import {AxiosError, AxiosResponse} from 'axios';
-import {ErrorResponse} from '@/types';
-import {TranslateResult} from 'vue-i18n';
+import { extendedErrorToast } from '@/helpers/errorToast';
+import { useApiClient } from '@/services/ApiClient';
 
 @Component({
 	components: {
@@ -94,12 +93,17 @@ export default class MenderUpdateControl extends Vue {
 	/**
 	 * @var {File|null} file Artifact input file
 	 */
-	private file: File|null = null;
+	public file: File|null = null;
 
 	/**
 	 * @var {boolean} installSuccess Indicates that mender artifact has been installed
 	 */
-	private installSuccess = false;
+	public installSuccess = false;
+
+	/**
+	 * @var {MenderService} service Mender service
+	 */
+	private service: MenderService = useApiClient().getMaintenanceServices().getMenderService();
 
 	/**
 	 * Initializes validation rules
@@ -122,13 +126,11 @@ export default class MenderUpdateControl extends Vue {
 			return;
 		}
 		this.installSuccess = false;
-		const formData = new FormData();
-		formData.append('file', this.file);
 		this.$store.commit('spinner/SHOW');
 		this.$store.commit('spinner/UPDATE_TEXT', this.$t('maintenance.mender.update.messages.update').toString());
-		MenderService.install(formData)
-			.then((response: AxiosResponse) => {
-				this.handleResponse(this.$t('maintenance.mender.update.messages.installSuccess'), response.data);
+		this.service.install(this.file)
+			.then((response: string) => {
+				this.handleResponse(this.$t('maintenance.mender.update.messages.installSuccess'), response);
 				this.installSuccess = true;
 			})
 			.catch((error: AxiosError) => {
@@ -140,12 +142,12 @@ export default class MenderUpdateControl extends Vue {
 	/**
 	 * Performs mender commit task
 	 */
-	private commit(): void {
+	public commit(): void {
 		this.$store.commit('spinner/SHOW');
-		MenderService.commit()
-			.then((response: AxiosResponse) => this.handleResponse(
+		this.service.commit()
+			.then((response: string) => this.handleResponse(
 				this.$t('maintenance.mender.update.messages.commitSuccess'),
-				response.data
+				response
 			))
 			.catch((error: AxiosError) => {
 				extendedErrorToast(error, 'maintenance.mender.update.messages.commitFailed');
@@ -156,12 +158,12 @@ export default class MenderUpdateControl extends Vue {
 	/**
 	 * Performs mender rollback task
 	 */
-	private rollback(): void {
+	public rollback(): void {
 		this.$store.commit('spinner/SHOW');
-		MenderService.rollback()
-			.then((response: AxiosResponse) => this.handleResponse(
+		this.service.rollback()
+			.then((response: string) => this.handleResponse(
 				this.$t('maintenance.mender.update.messages.rollbackSuccess'),
-				response.data
+				response
 			))
 			.catch((error: AxiosError) =>{
 				extendedErrorToast(error, 'maintenance.mender.update.messages.rollbackFailed');
@@ -174,7 +176,7 @@ export default class MenderUpdateControl extends Vue {
 	 * @param {TranslateResult} message Toast message to project
 	 * @param {string} output Output log
 	 */
-	private handleResponse(message: TranslateResult, output: string): void {
+	public handleResponse(message: TranslateResult, output: string): void {
 		this.$store.commit('spinner/HIDE');
 		this.$toast.success(message.toString());
 		this.updateLog(output);

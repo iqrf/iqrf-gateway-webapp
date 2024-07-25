@@ -543,7 +543,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Product} from '@iqrf/iqrf-repository-client';
+import {Product} from '@iqrf/iqrf-repository-client/types';
 import {compare, CompareOperator} from 'compare-versions';
 import {Component, Vue} from 'vue-property-decorator';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
@@ -766,9 +766,9 @@ export default class TrConfiguration extends Vue {
 
 	/**
 	 * Computes rules for validation of RF channel input field
-	 * @returns {Record<string, string|number>|undefined} Dictionary of rules if rfBand in configuration is valid
+	 * @returns {Record<string, string|number|undefined>} Dictionary of rules if rfBand in configuration is valid
 	 */
-	get rfChannelRules(): Record<string, string|number>|undefined {
+	get rfChannelRules(): Record<string, string|number|undefined> {
 		switch (this.config.rfBand) {
 			case '433':
 				return {rule:'integer|between:0,16|required', min: 0, max: 16};
@@ -777,7 +777,7 @@ export default class TrConfiguration extends Vue {
 			case '916':
 				return {rule: 'integer|between:0,255|required', min: 0, max: 255};
 		}
-		return undefined;
+		return {rule: '', min: undefined, max: undefined };
 	}
 
 	/**

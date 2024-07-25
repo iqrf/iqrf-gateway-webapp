@@ -30,7 +30,7 @@ import { BaseService } from '../BaseService';
 export class MailerService extends BaseService {
 
 	/**
-	 * Fetches mailer configuration
+	 * Retrieves mailer configuration
 	 * @return {Promise<MailerGetConfigResponse>} Mailer data
 	 */
 	public async getConfig(): Promise<MailerGetConfigResponse> {
@@ -43,10 +43,10 @@ export class MailerService extends BaseService {
 	}
 
 	/**
-	 * Edits mailer configuration
+	 * Updates mailer configuration
 	 * @param {MailerConfig} config Mailer configuration
 	 */
-	public async editConfig(config: MailerConfig): Promise<void> {
+	public async updateConfig(config: MailerConfig): Promise<void> {
 		await this.axiosInstance.put('/config/mailer', this.serializeConfig(config));
 	}
 
@@ -62,11 +62,11 @@ export class MailerService extends BaseService {
 	 * Deserializes mailer configuration
 	 * @param {MailerConfig} config Mailer configuration to deserialize
 	 * @return {MailerConfig} Mailer configuration
-	 * @private
 	 */
 	private deserializeConfig(config: MailerConfig): MailerConfig {
 		config.host = punycode.toUnicode(config.host);
 		config.from = punycode.toUnicode(config.from);
+		// eslint-disable-next-line deprecation/deprecation
 		if (config.secure === MailerSmtpSecurity.PlainText) {
 			config.secure = null;
 		}
@@ -77,11 +77,11 @@ export class MailerService extends BaseService {
 	 * Serializes mailer configuration
 	 * @param {MailerConfig} config Mailer configuration to serialize
 	 * @return {MailerConfig} Mailer configuration
-	 * @private
 	 */
 	private serializeConfig(config: MailerConfig): MailerConfig {
 		config.host = punycode.toASCII(config.host);
 		config.from = punycode.toASCII(config.from);
+		// eslint-disable-next-line deprecation/deprecation
 		if (config.secure === MailerSmtpSecurity.PlainText) {
 			config.secure = null;
 		}

@@ -111,7 +111,7 @@ describe('IqrfGatewayControllerService', (): void => {
 		expect.assertions(1);
 		mockedAxios.onGet('/config/controller')
 			.reply(200, configuration);
-		const actual: IqrfGatewayControllerConfig = await service.fetchConfig();
+		const actual: IqrfGatewayControllerConfig = await service.getConfig();
 		expect(actual).toStrictEqual(configuration);
 	});
 
@@ -126,7 +126,7 @@ describe('IqrfGatewayControllerService', (): void => {
 		};
 		mockedAxios.onPut('/config/controller', config)
 			.reply(200);
-		await service.saveConfig(config);
+		await service.updateConfig(config);
 	});
 
 	it('list IQRF Gateway Controller mappings', async (): Promise<void> => {
@@ -142,7 +142,7 @@ describe('IqrfGatewayControllerService', (): void => {
 		expect.assertions(1);
 		mockedAxios.onGet('/config/controller/pins/1')
 			.reply(200, profile);
-		const actual: IqrfGatewayControllerMapping = await service.fetchMapping(1);
+		const actual: IqrfGatewayControllerMapping = await service.getMapping(1);
 		expect(actual).toStrictEqual(profile);
 	});
 
@@ -171,6 +171,6 @@ describe('IqrfGatewayControllerService', (): void => {
 		data.deviceType = MappingDeviceType.Adapter;
 		mockedAxios.onPut('/config/controller/pins/1', data)
 			.reply(200);
-		await service.editMapping(1, data);
+		await service.updateMapping(1, data);
 	});
 });

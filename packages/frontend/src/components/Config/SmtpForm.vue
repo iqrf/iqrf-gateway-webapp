@@ -153,7 +153,11 @@ limitations under the License.
 
 <script lang='ts'>
 import {MailerService} from '@iqrf/iqrf-gateway-webapp-client/services/Config';
-import {MailerConfig,	MailerSmtpSecurity} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import {
+	MailerConfig,
+	MailerGetConfigResponse,
+	MailerSmtpSecurity,
+} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import {AxiosError} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
@@ -246,7 +250,7 @@ export default class SmtpForm extends Vue {
 	private getConfig(): void {
 		this.showBlockingElement();
 		this.service.getConfig()
-			.then((config: MailerConfig) => {
+			.then((config: MailerGetConfigResponse) => {
 				this.configuration = config.config;
 				this.hideBlockingElement();
 			})
@@ -261,7 +265,7 @@ export default class SmtpForm extends Vue {
 	 */
 	private saveConfig(): void {
 		this.showBlockingElement();
-		this.service.editConfig(this.configuration)
+		this.service.updateConfig(this.configuration)
 			.then(() => {
 				this.hideBlockingElement();
 				this.$toast.success(

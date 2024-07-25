@@ -201,7 +201,7 @@ async function onSubmit(): Promise<void> {
 		const luxonDate = DateTime.fromJSDate(datetime.value, { zone: timezone.value.name });
 		params.datetime = luxonDate.toISO()!;
 	}
-	service.setTime(params)
+	service.updateTime(params)
 		.then(() => {
 			getTime().then(() => {
 				toast.success(
@@ -213,7 +213,7 @@ async function onSubmit(): Promise<void> {
 }
 
 async function getTimezones(): Promise<void> {
-	timezones.value = await service.getTimezones();
+	timezones.value = await service.listTimezones();
 }
 
 function itemProps(item: Timezone) {

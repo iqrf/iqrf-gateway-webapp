@@ -129,13 +129,13 @@ onMounted(() => {
 });
 
 function getInfo(): void {
-	service.fetchDetailed()
+	service.getDetailed()
 		.then((rsp: GatewayInformation) => info.value = rsp)
 		.catch(() => toast.error('TODO ERROR HANDLING'));
 }
 
 function downloadDiagnostics(): void {
-	service.fetchDetailed()
+	service.getDetailed()
 		.then((rsp: GatewayInformation) => {
 			let fileName = 'iqrf-gateway-info';
 			if (info.value?.gwId) {

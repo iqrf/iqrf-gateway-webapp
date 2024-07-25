@@ -14,8 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {Product} from '@iqrf/iqrf-repository-client';
-import {IIqrfDbDeviceFull, IIqrfDbSensorDetails} from '@/interfaces/DaemonApi/IqrfDb';
+import { Product } from '@iqrf/iqrf-repository-client/types';
+import {
+	IIqrfDbDeviceFull,
+	IIqrfDbSensorDetails,
+} from '@/interfaces/DaemonApi/IqrfDb';
 import i18n from '@/plugins/i18n';
 
 /**
@@ -144,7 +147,7 @@ class StandardDevice {
 				STD: false,
 				LP: false,
 			},
-			pictureOriginal: '',
+			metadata: null,
 		};
 	}
 

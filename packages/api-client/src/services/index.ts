@@ -15,12 +15,10 @@
  */
 
 export * from './AccountService';
-export * from './ApiKeyService';
 export * from './AuthenticationService';
 export * from './BaseService';
 export * from './FeatureService';
 export * from './InstallationService';
-export * from './MenderService';
 export * from './OpenApiService';
 export * from './ServiceService';
 export * from './UserService';
@@ -32,3 +30,4 @@ export * as Gateway from './Gateway';
 export * as Iqrf from './Iqrf';
 export * as Maintenance from './Maintenance';
 export * as Network from './Network';
+export * as Security from './Security';

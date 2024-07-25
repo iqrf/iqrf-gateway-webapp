@@ -38,7 +38,7 @@ export class IqrfServices extends BaseService {
 	}
 
 	/**
-	 * Returns inteface ports service
+	 * Returns interface ports service
 	 * @return {InterfacePortsService} Interface ports service
 	 */
 	public getInterfacePortsService(): InterfacePortsService {

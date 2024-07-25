@@ -82,12 +82,12 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { type ApiKeyService } from '@iqrf/iqrf-gateway-webapp-client/services';
+import { type ApiKeyService } from '@iqrf/iqrf-gateway-webapp-client/services/Security';
 import {
 	type ApiKeyCreated,
 	type ApiKeyConfig,
 	type ApiKeyInfo,
-} from '@iqrf/iqrf-gateway-webapp-client/types';
+} from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import { DateTimeUtils } from '@iqrf/iqrf-gateway-webapp-client/utils';
 import { mdiTextShort } from '@mdi/js';
 import { computed, type PropType, ref, type Ref, watchEffect } from 'vue';
@@ -125,7 +125,7 @@ const componentProps = defineProps({
 });
 const i18n = useI18n();
 const show: Ref<boolean> = ref(false);
-const service: ApiKeyService = useApiClient().getApiKeyService();
+const service: ApiKeyService = useApiClient().getSecurityServices().getApiKeyService();
 const form: Ref<VForm | null> = ref(null);
 const defaultKey: ApiKeyConfig = {
 	description: '',
@@ -188,7 +188,7 @@ async function onSubmit(): Promise<void> {
 	} else if (componentProps.action === Action.Edit) {
 		const id = keyToSave.id!;
 		delete keyToSave.id;
-		await service.edit(id, keyToSave);
+		await service.update(id, keyToSave);
 		close();
 		emit('refresh');
 	}

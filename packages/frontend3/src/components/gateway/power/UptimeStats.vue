@@ -98,7 +98,7 @@ const stats: Ref<GatewayUptime[]> = ref([]);
  */
 async function fetchData() {
 	state.value = ComponentState.Loading;
-	await service.fetchStats()
+	await service.getStats()
 		.then((response: GatewayUptime[]) => {
 			stats.value = response;
 			state.value = ComponentState.Ready;

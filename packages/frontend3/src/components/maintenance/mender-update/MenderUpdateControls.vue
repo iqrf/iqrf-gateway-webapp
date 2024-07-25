@@ -63,7 +63,7 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { type MenderService } from '@iqrf/iqrf-gateway-webapp-client/services';
+import { type MenderService } from '@iqrf/iqrf-gateway-webapp-client/services/Maintenance';
 import { mdiFileOutline } from '@mdi/js';
 import { type AxiosError } from 'axios';
 import { type Ref, ref } from 'vue';
@@ -81,7 +81,7 @@ import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
 const i18n = useI18n();
-const service: MenderService = useApiClient().getMenderService();
+const service: MenderService = useApiClient().getMaintenanceServices().getMenderService();
 const form: Ref<VForm | null> = ref(null);
 const artifacts: Ref<File[]> = ref([]);
 const log: Ref<string|null> = ref(null);

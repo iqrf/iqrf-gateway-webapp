@@ -17,36 +17,29 @@
 import { describe, expect, it } from 'vitest';
 
 import {
-	AwsService,
-	AzureService,
-	CloudServices,
-	IbmService,
-} from '../../src/services/Cloud';
-import { mockedClient } from '../mocks/axios';
+	ApiKeyService,
+	SecurityServices,
+	SshKeyService,
+} from '../../../src/services/Security';
+import { mockedClient } from '../../mocks/axios';
 
-describe('CloudServices', (): void => {
+describe('SecurityServices', (): void => {
 
 	/**
-	 * @var {CloudServices} services Cloud services
+	 * @var {SecurityServices} services Security services
 	 */
-	const services: CloudServices = new CloudServices(mockedClient);
+	const services: SecurityServices = new SecurityServices(mockedClient);
 
-	it('returns AWS IoT service instance', (): void => {
+	it('returns API key service instance', (): void => {
 		expect.assertions(1);
-		expect(services.getAwsService())
-			.toBeInstanceOf(AwsService);
+		expect(services.getApiKeyService())
+			.toBeInstanceOf(ApiKeyService);
 	});
 
-	it('returns Azure IoT Hub service instance', (): void => {
+	it('returns SSH key service instance', (): void => {
 		expect.assertions(1);
-		expect(services.getAzureService())
-			.toBeInstanceOf(AzureService);
-	});
-
-	it('returns IBM cloud service instance', (): void => {
-		expect.assertions(1);
-		expect(services.getIbmService())
-			.toBeInstanceOf(IbmService);
+		expect(services.getSshKeyService())
+			.toBeInstanceOf(SshKeyService);
 	});
 
 });

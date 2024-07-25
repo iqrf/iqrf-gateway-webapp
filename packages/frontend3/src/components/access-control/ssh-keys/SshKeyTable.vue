@@ -94,7 +94,8 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { type SshKeyInfo } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
+import { SshKeyService } from '@iqrf/iqrf-gateway-webapp-client/services/Security';
+import { type SshKeyInfo } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import { mdiContentCopy, mdiInformation } from '@mdi/js';
 import { onMounted, ref, type Ref, toRaw } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -110,7 +111,7 @@ import { useApiClient } from '@/services/ApiClient';
 import { Action } from '@/types/Action';
 
 const i18n = useI18n();
-const service = useApiClient().getGatewayServices().getSshKeyService();
+const service: SshKeyService = useApiClient().getSecurityServices().getSshKeyService();
 const loading: Ref<boolean> = ref(false);
 const headers = [
 	{ key: 'id', title: i18n.t('common.columns.id') },
@@ -122,27 +123,27 @@ const headers = [
 const types: Ref<string[]> = ref([]);
 const keys: Ref<SshKeyInfo[]> = ref([]);
 
-onMounted(() => {
-	getKeys();
-	getKeyTypes();
+onMounted(async (): Promise<void> => {
+	await getKeys();
+	await getKeyTypes();
 });
 
-function getKeys(): void {
+async function getKeys(): Promise<void> {
 	loading.value = true;
-	service.list()
-		.then((rsp: SshKeyInfo[]) => {
-			keys.value = rsp;
-			loading.value = false;
-		})
-		.catch(() => loading.value = false);
+	try {
+		keys.value = await service.list();
+		loading.value = false;
+	} catch {
+		loading.value = false;
+	}
 }
 
-function getKeyTypes(): void {
-	service.fetchKeyTypes()
-		.then((rsp: string[]) => {
-			types.value = rsp;
-		})
-		.catch(() => toast.error('TODO ERROR HANDLING'));
+async function getKeyTypes(): Promise<void> {
+	try {
+		types.value = await service.listKeyTypes();
+	} catch {
+		toast.error('TODO ERROR HANDLING');
+	}
 }
 
 function copyToClipboard(content: string): void {

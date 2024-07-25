@@ -24,6 +24,10 @@ export default defineConfig({
 		coverage: {
 			provider: 'istanbul',
 			reporter: ['text', 'html', 'clover'],
+			exclude: [
+				...(configDefaults.coverage.exclude!),
+				'./docs/**',
+			],
 		},
 		outputFile: {
 			junit: 'junit.xml',

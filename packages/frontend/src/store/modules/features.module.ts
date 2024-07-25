@@ -26,7 +26,7 @@ interface FeatureState {
 	/**
 	 * Features
 	 */
-	features: Features,
+	features: Features | object,
 
 }
 
@@ -36,7 +36,7 @@ const state: FeatureState = {
 
 const actions: ActionTree<FeatureState, any> = {
 	fetch({commit}) {
-		return useApiClient().getFeatureService().fetchAll()
+		return useApiClient().getFeatureService().list()
 			.then((features: Features) => {
 				commit('SET', features);
 			});

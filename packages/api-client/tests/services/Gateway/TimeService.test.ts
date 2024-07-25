@@ -63,7 +63,7 @@ describe('TimeService', (): void => {
 		};
 		mockedAxios.onPost('/gateway/time', config)
 			.reply(200);
-		await service.setTime(config);
+		await service.updateTime(config);
 	});
 
 	it('fetch available time zones', async (): Promise<void> => {
@@ -77,7 +77,7 @@ describe('TimeService', (): void => {
 		];
 		mockedAxios.onGet('/gateway/time/timezones')
 			.reply(200, timezones);
-		const actual: Timezone[] = await service.getTimezones();
+		const actual: Timezone[] = await service.listTimezones();
 		expect(actual).toStrictEqual(timezones);
 	});
 

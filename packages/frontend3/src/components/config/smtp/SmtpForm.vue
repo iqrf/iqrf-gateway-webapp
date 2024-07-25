@@ -165,7 +165,7 @@ async function onSubmit(): Promise<void> {
 		return;
 	}
 	loading.value = true;
-	service.editConfig(configuration.value)
+	service.updateConfig(configuration.value)
 		.then(() => {
 			loading.value = false;
 			toast.success(

@@ -17,13 +17,13 @@
 import { DateTime } from 'luxon';
 import { beforeEach, describe, expect, it } from 'vitest';
 
-import { ApiKeyService } from '../../src/services';
+import { ApiKeyService } from '../../../src/services/Security';
 import {
 	type ApiKeyConfig,
 	type ApiKeyCreated,
 	type ApiKeyInfo,
-} from '../../src/types';
-import { mockedAxios, mockedClient } from '../mocks/axios';
+} from '../../../src/types/Security';
+import { mockedAxios, mockedClient } from '../../mocks/axios';
 
 describe('ApiKeyService', (): void => {
 
@@ -99,7 +99,7 @@ describe('ApiKeyService', (): void => {
 		expect.assertions(1);
 		mockedAxios.onGet('/apiKeys/1')
 			.reply(200, rawApiKeys[0]);
-		const actual: ApiKeyInfo = await service.fetch(1);
+		const actual: ApiKeyInfo = await service.get(1);
 		expect(actual).toStrictEqual(apiKeys[0]);
 	});
 
@@ -111,7 +111,7 @@ describe('ApiKeyService', (): void => {
 		};
 		mockedAxios.onPut('/apiKeys/1', config)
 			.reply(200);
-		await service.edit(1, config);
+		await service.update(1, config);
 	});
 
 	it('delete API key with ID 1', async (): Promise<void> => {

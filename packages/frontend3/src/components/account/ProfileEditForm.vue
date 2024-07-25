@@ -86,7 +86,7 @@ const user: Ref<UserEdit> = ref({
 const accountService: AccountService = useApiClient().getAccountService();
 
 onMounted(() => {
-	accountService.fetchInfo()
+	accountService.getInfo()
 		.then((data: UserInfo) => {
 			user.value = {
 				username: data.username,
@@ -99,7 +99,7 @@ onMounted(() => {
 });
 
 async function onSubmit(): Promise<void> {
-	accountService.edit(user.value)
+	accountService.update(user.value)
 		.then(() => {
 			toast.success(
 				i18n.t('account.profile.details.messages.success').toString(),

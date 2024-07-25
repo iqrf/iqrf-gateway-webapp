@@ -17,7 +17,7 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('iqrfnet.enumeration.title') }}</h1>
-		<div v-if='response !== null'>
+		<div v-if='response !== null && osData !== null && peripheralData !== null'>
 			<v-card class='mb-5'>
 				<v-card-title>{{ $t('iqrfnet.enumeration.deviceInfo') }}</v-card-title>
 				<v-card-text>
@@ -123,10 +123,10 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {ProductService} from '@iqrf/iqrf-repository-client';
+import {ProductService} from '@iqrf/iqrf-repository-client/services';
 import {AxiosError} from 'axios';
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {NavigationGuardNext, Route} from 'vue-router/types/router';
+import {NavigationGuardNext, Route} from 'vue-router';
 import {MutationPayload} from 'vuex';
 
 import IqrfNetService from '@/services/IqrfNetService';
@@ -179,24 +179,24 @@ export default class DeviceEnumeration extends Vue {
 	private msgId = '';
 
 	/**
-	 * @var {OsData|null} osData Device OS information
+	 * @var {OsInfo|null} osData Device OS information
 	 */
-	private osData: OsInfo|null = null;
+	public osData: OsInfo|null = null;
 
 	/**
 	 * @var {PeripheralEnumeration|null} peripheralData Device peripheral information
 	 */
-	private peripheralData: PeripheralEnumeration|null = null;
+	public peripheralData: PeripheralEnumeration|null = null;
 
 	/**
 	 * @var {Product|null} product Device product information
 	 */
-	private product: Product|null = null;
+	public product: Product|null = null;
 
 	/**
 	 * @var {IDeviceEnumeration} response Device enumeration data
 	 */
-	private response: IDeviceEnumeration|null = null;
+	public response: IDeviceEnumeration|null = null;
 
 	/**
 	 * Component unsubscribe function

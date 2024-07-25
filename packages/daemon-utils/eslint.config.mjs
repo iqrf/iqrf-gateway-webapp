@@ -16,4 +16,10 @@
 
 import { iqrfEslint } from '@iqrf/eslint-config';
 
-export default iqrfEslint();
+export default iqrfEslint({
+	ignores: [
+		'coverage/',
+		'dist/',
+		'docs/',
+	],
+});

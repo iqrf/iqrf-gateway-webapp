@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 MICRORISC s.r.o.
+ * Copyright 2023-2024 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,10 @@
 import { BaseService } from '../BaseService';
 
 import { BackupService } from './BackupService';
+import { MenderService } from './MenderService';
 
 export * from './BackupService';
+export * from './MenderService';
 
 /**
  * Maintenance services
@@ -31,6 +33,14 @@ export class MaintenanceServices extends BaseService {
 	 */
 	public getBackupService(): BackupService {
 		return new BackupService(this.apiClient);
+	}
+
+	/**
+	 * Returns Mender service
+	 * @return {MenderService} Mender service
+	 */
+	public getMenderService(): MenderService {
+		return new MenderService(this.apiClient);
 	}
 
 }

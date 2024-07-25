@@ -20,12 +20,14 @@ import { MobileOperatorService } from './MobileOperatorService';
 import { ModemService } from './ModemService';
 import { NetworkConnectionService } from './NetworkConnectionService';
 import { NetworkInterfaceService } from './NetworkInterfaceService';
+import { WiFiService } from './WiFiService';
 import { WireGuardService } from './WireGuardService';
 
 export * from './MobileOperatorService';
 export * from './ModemService';
 export * from './NetworkConnectionService';
 export * from './NetworkInterfaceService';
+export * from './WiFiService';
 export * from './WireGuardService';
 
 /**
@@ -63,6 +65,14 @@ export class NetworkServices extends BaseService {
 	 */
 	public getNetworkInterfaceService(): NetworkInterfaceService {
 		return new NetworkInterfaceService(this.apiClient);
+	}
+
+	/**
+	 * Returns Wi-Fi service
+	 * @return {WiFiService} Wi-Fi service
+	 */
+	public getWiFiService(): WiFiService {
+		return new WiFiService(this.apiClient);
 	}
 
 	/**

@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 MICRORISC s.r.o.
+ * Copyright 2023-2024 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,8 +27,8 @@ import {
 	type IqrfGatewayDaemonConfig,
 	type IqrfGatewayDaemonMapping,
 	type IqrfGatewayDaemonSchedulerMessagings,
+	type MappingType,
 } from '../../types/Config';
-import { type MappingType } from '../../types/Config/Mapping';
 import { BaseService } from '../BaseService';
 
 /**
@@ -60,7 +60,7 @@ export class IqrfGatewayDaemonService extends BaseService {
 	}
 
 	/**
-	 * Create new component instance
+	 * Creates new component instance
 	 * @template C Component name
 	 * @param {C} component Daemon component name
 	 * @param {IqrfGatewayDaemonComponentInstanceConfiguration<C>} configuration Daemon component instance configuration
@@ -101,15 +101,15 @@ export class IqrfGatewayDaemonService extends BaseService {
 	}
 
 	/**
-	 * Changed component(s) state
+	 * Updates component(s) state
 	 * @param {IqrfGatewayDaemonComponentState[]} components Component state configuration
 	 */
-	public async changeEnabledComponents(components: IqrfGatewayDaemonComponentState[]): Promise<void> {
+	public async updateEnabledComponents(components: IqrfGatewayDaemonComponentState[]): Promise<void> {
 		await this.axiosInstance.patch('/config/daemon/components', components);
 	}
 
 	/**
-	 * List IQRF Gateway Daemon mappings
+	 * Lists IQRF Gateway Daemon mappings
 	 * @param {MappingType | null} interfaceType Mapping interface type
 	 * @return {Promise<IqrfGatewayDaemonMapping[]>} IQRF Gateway Daemon mappings
 	 */
@@ -121,18 +121,18 @@ export class IqrfGatewayDaemonService extends BaseService {
 	}
 
 	/**
-	 * Fetch IQRF Gateway Daemon mapping
+	 * Retrieves IQRF Gateway Daemon mapping
 	 * @param {number} id IQRF Gateway Daemon mapping ID
 	 * @return {Promise<IqrfGatewayDaemonMapping>} IQRF Gateway Daemon mapping
 	 */
-	public async fetchMapping(id: number): Promise<IqrfGatewayDaemonMapping> {
+	public async getMapping(id: number): Promise<IqrfGatewayDaemonMapping> {
 		const response: AxiosResponse<IqrfGatewayDaemonMapping> =
 			await this.axiosInstance.get(`/mappings/${id.toString()}`);
 		return response.data;
 	}
 
 	/**
-	 * Create IQRF Gateway Daemon mapping
+	 * Creates IQRF Gateway Daemon mapping
 	 * @param {IqrfGatewayDaemonMapping} mapping IQRF Gateway Daemon mapping
 	 */
 	public async createMapping(mapping: IqrfGatewayDaemonMapping): Promise<void> {
@@ -141,17 +141,17 @@ export class IqrfGatewayDaemonService extends BaseService {
 	}
 
 	/**
-	 * Edit IQRF Gateway Daemon mapping
+	 * Updates IQRF Gateway Daemon mapping
 	 * @param {number} id IQRF Gateway Daemon mapping ID
 	 * @param {IqrfGatewayDaemonMapping} mapping IQRF Gateway Daemon mapping
 	 */
-	public async editMapping(id: number, mapping: IqrfGatewayDaemonMapping): Promise<void> {
+	public async updateMapping(id: number, mapping: IqrfGatewayDaemonMapping): Promise<void> {
 		delete mapping.id;
 		await this.axiosInstance.put(`/mappings/${id.toString()}`, mapping);
 	}
 
 	/**
-	 * Delete IQRF Gateway Daemon mapping
+	 * Deletes IQRF Gateway Daemon mapping
 	 * @param {number} id IQRF Gateway Daemon mapping ID
 	 */
 	public async deleteMapping(id: number): Promise<void> {
@@ -159,28 +159,28 @@ export class IqrfGatewayDaemonService extends BaseService {
 	}
 
 	/**
-	 * Import scheduler tasks
+	 * Imports scheduler tasks
 	 * @param {File} data Scheduler task JSON file or ZIP archive
 	 */
-	public async schedulerImport(data: File): Promise<void> {
+	public async importScheduler(data: File): Promise<void> {
 		await this.axiosInstance.post('/scheduler/import', data, { headers: { 'Content-Type': data.type } });
 	}
 
 	/**
-	 * Export scheduler tasks
+	 * Exports scheduler tasks
 	 * @return {Promise<FileResponse<Blob>>} Scheduler task ZIP archive
 	 */
-	public async schedulerExport(): Promise<FileResponse<Blob>> {
+	public async exportScheduler(): Promise<FileResponse<Blob>> {
 		const response: AxiosResponse<Blob> =
 			await this.axiosInstance.get('/scheduler/export', { responseType: 'blob' });
 		return FileResponse.fromAxiosResponse(response, 'iqrf-gateway-scheduler.zip');
 	}
 
 	/**
-	 * Fetch scheduler messaging instances
+	 * Retrieves scheduler messaging instances
 	 * @return {Promise<IqrfGatewayDaemonSchedulerMessagings>} Scheduler task suitable messaging instances
 	 */
-	public async schedulerMessagings(): Promise<IqrfGatewayDaemonSchedulerMessagings> {
+	public async getSchedulerMessagings(): Promise<IqrfGatewayDaemonSchedulerMessagings> {
 		const response: AxiosResponse<IqrfGatewayDaemonSchedulerMessagings> =
 			await this.axiosInstance.get('/scheduler/messagings');
 		return response.data;

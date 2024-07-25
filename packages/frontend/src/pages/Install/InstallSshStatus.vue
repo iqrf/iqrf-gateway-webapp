@@ -63,12 +63,12 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
+import {ServiceService} from '@iqrf/iqrf-gateway-webapp-client/services';
 import {AxiosError} from 'axios';
 import {Component, Vue} from 'vue-property-decorator';
 
-import {extendedErrorToast} from '@/helpers/errorToast';
 import {SSHStatus} from '@/enums/Install/ssh';
-
+import {extendedErrorToast} from '@/helpers/errorToast';
 import {useApiClient} from '@/services/ApiClient';
 
 @Component({

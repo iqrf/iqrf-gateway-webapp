@@ -45,7 +45,7 @@ export const useUserStore = defineStore('user', {
 	}),
 	actions: {
 		async refreshUserInfo(): Promise<void> {
-			const user: UserInfo = await useApiClient().getAccountService().fetchInfo();
+			const user: UserInfo = await useApiClient().getAccountService().getInfo();
 			if (this.user === null) {
 				return;
 			}
@@ -158,7 +158,7 @@ export const useUserStore = defineStore('user', {
 			return state.user?.token ?? null;
 		},
 		getExpiration(state: UserState): number {
-			return state.expiration;
+			return state.expiration * 1_000;
 		},
 		getLastRequestedExpiration(state: UserState): UserSessionExpiration {
 			if (state.requestedSessionExpiration === null) {

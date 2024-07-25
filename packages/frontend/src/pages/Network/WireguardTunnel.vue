@@ -176,7 +176,8 @@ import {extendedErrorToast} from '@/helpers/errorToast';
 import {useApiClient} from '@/services/ApiClient';
 import {
 	WireGuardIpStack,
-	WireGuardKeyPair, WireGuardTunnelConfig
+	WireGuardKeyPair,
+	WireGuardTunnelConfig,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 
 @Component({
@@ -315,7 +316,7 @@ export default class WireguardTunnel extends Vue {
 	 */
 	private getTunnel(): void {
 		this.$store.commit('spinner/SHOW');
-		this.service.fetchTunnel(this.id)
+		this.service.getTunnel(this.id)
 			.then((response: WireGuardTunnelConfig) => {
 				this.tunnel = response;
 				this.$store.commit('spinner/HIDE');
@@ -356,7 +357,7 @@ export default class WireguardTunnel extends Vue {
 				.then(this.handleSuccess)
 				.catch(this.handleError);
 		} else {
-			this.service.editTunnel(this.id, tunnel)
+			this.service.updateTunnel(this.id, tunnel)
 				.then(this.handleSuccess)
 				.catch(this.handleError);
 		}

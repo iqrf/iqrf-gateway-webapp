@@ -130,8 +130,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {SshKeyService} from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
-import {SshKeyInfo} from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
+import {SshKeyService} from '@iqrf/iqrf-gateway-webapp-client/services/Security';
+import {SshKeyInfo} from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import {AxiosError} from 'axios';
 import {DateTime} from 'luxon';
 import {Component, Vue} from 'vue-property-decorator';
@@ -215,7 +215,7 @@ export default class SshKeyList extends Vue {
 	/**
    * @property {SshKeyService} sshKeyService SSH key service
    */
-	private sshKeyService: SshKeyService = useApiClient().getGatewayServices().getSshKeyService();
+	private sshKeyService: SshKeyService = useApiClient().getSecurityServices().getSshKeyService();
 
 	/**
 	 * Retrieves list of authorized SSH public keys

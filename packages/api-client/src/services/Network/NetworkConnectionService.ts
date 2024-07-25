@@ -52,22 +52,22 @@ export class NetworkConnectionService extends BaseService {
 	}
 
 	/**
-	 * Fetches the network connection configuration
+	 * Retrieves the network connection configuration
 	 * @param {string} uuid Network connection UUID
 	 * @return {Promise<NetworkConnectionConfiguration>} Network connection configuration
 	 */
-	public async fetch(uuid: string): Promise<NetworkConnectionConfiguration> {
+	public async get(uuid: string): Promise<NetworkConnectionConfiguration> {
 		const response: AxiosResponse<NetworkConnectionConfiguration> =
 			await this.axiosInstance.get(`/network/connections/${uuid}`);
 		return response.data;
 	}
 
 	/**
-	 * Edits the network connection configuration
+	 * Updates the network connection configuration
 	 * @param {string} uuid Network connection UUID
 	 * @param {NetworkConnectionConfiguration} configuration Network connection configuration
 	 */
-	public async edit(uuid: string, configuration: NetworkConnectionConfiguration): Promise<void> {
+	public async update(uuid: string, configuration: NetworkConnectionConfiguration): Promise<void> {
 		await this.axiosInstance.put(`/network/connections/${uuid}`, configuration);
 	}
 

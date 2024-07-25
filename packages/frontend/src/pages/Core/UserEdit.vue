@@ -211,7 +211,7 @@ export default class UserEditForm extends Vue {
 	 */
 	private getUser(): void {
 		this.$store.commit('spinner/SHOW');
-		this.service.fetch(this.userId)
+		this.service.get(this.userId)
 			.then((user: UserInfo) => {
 				this.user = {
 					username: user.username,
@@ -237,7 +237,7 @@ export default class UserEditForm extends Vue {
 		if (this.password !== '') {
 			user.password = this.password;
 		}
-		this.service.edit(this.userId, this.user)
+		this.service.update(this.userId, this.user)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(

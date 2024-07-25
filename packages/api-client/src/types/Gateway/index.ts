@@ -17,5 +17,4 @@
 export * from './Hostname';
 export * from './Info';
 export * from './Power';
-export * from './SshKey';
 export * from './Time';

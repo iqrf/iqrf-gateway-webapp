@@ -20,7 +20,7 @@ import {
 	type SshKeyCreate,
 	type SshKeyInfo,
 	type SshKeyInfoRaw,
-} from '../../types/Gateway';
+} from '../../types/Security';
 import { DateTimeUtils } from '../../utils';
 import { BaseService } from '../BaseService';
 
@@ -30,17 +30,17 @@ import { BaseService } from '../BaseService';
 export class SshKeyService extends BaseService {
 
 	/**
-	 * Fetches all supported SSH key types
+	 * Retrieves all supported SSH key types
 	 * @return {Promise<string[]>} Supported SSH key types
 	 */
-	public async fetchKeyTypes(): Promise<string[]> {
+	public async listKeyTypes(): Promise<string[]> {
 		const response: AxiosResponse<string[]> =
 			await this.axiosInstance.get('/gateway/ssh/keyTypes');
 		return response.data;
 	}
 
 	/**
-	 * Fetches all SSH keys
+	 * Retrieves all SSH keys
 	 * @return {Promise<SshKeyInfo[]>} List of SSH keys
 	 */
 	public async list(): Promise<SshKeyInfo[]> {
@@ -69,7 +69,7 @@ export class SshKeyService extends BaseService {
 	}
 
 	/**
-	 * Saves SSH keys
+	 * Creates SSH keys
 	 * @param {SshKeyCreate[]} keys SSh keys
 	 */
 	public async createSshKeys(keys: SshKeyCreate[]): Promise<void> {

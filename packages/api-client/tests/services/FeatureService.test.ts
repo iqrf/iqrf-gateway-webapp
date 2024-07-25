@@ -51,7 +51,7 @@ describe('FeatureService', (): void => {
 					'url': '/grafana/',
 				},
 			});
-		const actual: Features = await service.fetchAll();
+		const actual: Features = await service.list();
 		expect(actual).toStrictEqual({
 			'apcupsd': {
 				'enabled': false,
@@ -92,7 +92,7 @@ describe('FeatureService', (): void => {
 			'url': 'https://docs.iqrf.org/iqrf-gateway',
 		})
 			.reply(200);
-		await service.setConfig(Feature.docs, {
+		await service.updateConfig(Feature.docs, {
 			'enabled': true,
 			'url': 'https://docs.iqrf.org/iqrf-gateway',
 		});

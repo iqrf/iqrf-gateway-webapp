@@ -76,7 +76,7 @@ const macros: Ref<DpaMacroGroup[]> = ref([]);
 onMounted(async (): Promise<void> => {
 	componentState.value = ComponentState.Loading;
 	try {
-		const response: DpaMacroGroup[] = await service.fetch();
+		const response: DpaMacroGroup[] = await service.get();
 		macros.value = response.filter((group: DpaMacroGroup): boolean => {
 			if (!group.enabled) {
 				return false;

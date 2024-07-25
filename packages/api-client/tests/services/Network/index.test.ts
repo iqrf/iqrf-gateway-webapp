@@ -23,8 +23,8 @@ import {
 	NetworkInterfaceService,
 	NetworkServices,
 	WireGuardService,
-} from '../../src/services/Network';
-import { mockedClient } from '../mocks/axios';
+} from '../../../src/services/Network';
+import { mockedClient } from '../../mocks/axios';
 
 describe('NetworkServices', (): void => {
 

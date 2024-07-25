@@ -146,7 +146,7 @@ export default class TheSidebar extends Vue {
 					],
 				},
 				{
-					title: this.$t('service.system.title'),
+					title: this.$t('service.system.title').toString(),
 					to: '/gateway/system-services/',
 					role: UserRoleIndex.NORMAL,
 					children: [

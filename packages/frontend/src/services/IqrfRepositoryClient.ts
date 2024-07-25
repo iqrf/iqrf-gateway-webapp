@@ -32,12 +32,11 @@ export const useRepositoryClient = async (): Promise<Client> => {
 		username: null,
 		password: null,
 	};
-	let config = store.getters['repository/configuration'];
-	if (!config) {
-		config = await useApiClient().getConfigServices().getIqrfRepositoryService().fetch()
-			.then((repositoryConfig: IqrfRepositoryConfig) => repositoryConfig);
+	let config: IqrfRepositoryConfig | null = store.getters['repository/configuration'];
+	if (config === null) {
+		config = await useApiClient().getConfigServices().getIqrfRepositoryService().getConfig();
 	}
-	if (!config) {
+	if (config !== null) {
 		baseUrl = config.apiEndpoint;
 		credentials = config.credentials;
 	}

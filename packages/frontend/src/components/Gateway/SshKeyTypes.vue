@@ -69,7 +69,7 @@ export default class SshKeyTypes extends Vue {
 	 * Retrieves key types
 	 */
 	created(): void {
-		useApiClient().getGatewayServices().getSshKeyService().fetchKeyTypes()
+		useApiClient().getSecurityServices().getSshKeyService().listKeyTypes()
 			.then((response: string[]) => {
 				this.types = response;
 				this.fetched = true;

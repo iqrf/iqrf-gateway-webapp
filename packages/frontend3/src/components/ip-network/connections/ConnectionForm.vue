@@ -144,18 +144,22 @@ const service = useApiClient().getNetworkServices().getNetworkConnectionService(
 /**
  * Fetches network connection configuration
  */
-function fetchConfiguration(): void {
+async function fetchConfiguration(): Promise<void> {
 	if (action.value === Action.Add || componentProps.uuid === null) {
 		return;
 	}
 	componentState.value = ComponentState.Loading;
-	service.fetch(componentProps.uuid)
-		.then((connection: NetworkConnectionConfiguration): NetworkConnectionConfiguration => {
-			configuration.value = connection;
-			return connection;
-		});
+	try {
+		configuration.value = await service.get(componentProps.uuid);
+		componentState.value = ComponentState.Ready;
+	} catch {
+		componentState.value = ComponentState.FetchFailed;
+	}
 }
 
+/**
+ * Redirects to the correct network connection configuration page
+ */
 function redirect(): void {
 	switch (configuration.value?.type) {
 		case NetworkConnectionType.Ethernet:
@@ -173,11 +177,12 @@ function redirect(): void {
 	}
 }
 
+/**
+ * Saves the network connection configuration
+ */
 function saveConfiguration(): void {
 	redirect();
 }
 
-onBeforeMount((): void => {
-	fetchConfiguration();
-});
+onBeforeMount(async (): Promise<void> => await fetchConfiguration());
 </script>

@@ -25,10 +25,10 @@ import { BaseService } from '../BaseService';
 export class DpaMacrosService extends BaseService {
 
 	/**
-	 * Fetches all DPA macros
+	 * Retrieves all DPA macros
 	 * @return {Promise<DpaMacroGroup[]>} DPA macros
 	 */
-	public async fetch(): Promise<DpaMacroGroup[]> {
+	public async get(): Promise<DpaMacroGroup[]> {
 		const response: AxiosResponse<DpaMacroGroup[]> = await this.axiosInstance.get('/iqrf/macros');
 		return response.data;
 	}

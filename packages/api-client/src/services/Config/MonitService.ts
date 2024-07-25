@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 MICRORISC s.r.o.
+ * Copyright 2023-2024 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import { BaseService } from '../BaseService';
 export class MonitService extends BaseService {
 
 	/**
-	 * Fetches monit configuration
+	 * Retrieves Monit configuration
 	 * @return {Promise<MonitConfig>} Monit configuration
 	 */
 	public async getConfig(): Promise<MonitConfig> {
@@ -38,20 +38,21 @@ export class MonitService extends BaseService {
 	}
 
 	/**
-	 * Edits monit configuration
+	 * Updates Monit configuration
 	 * @param {MonitConfig} config Monit configuration
 	 */
-	public async editConfig(config: MonitConfig): Promise<void> {
+	public async updateConfig(config: MonitConfig): Promise<void> {
 		await this.axiosInstance.put('/config/monit', config);
 	}
 
 	/**
-	 * Fetches monit check
+	 * Retrieves Monit check
 	 * @param {string} name Check name
 	 * @return {Promise<MonitCheck>} Monit check
 	 */
 	public async getCheck(name: string): Promise<MonitCheck> {
-		const response: AxiosResponse<MonitCheck> = await this.axiosInstance.get(`/config/monit/checks/${name}`);
+		const response: AxiosResponse<MonitCheck> =
+			await this.axiosInstance.get(`/config/monit/checks/${name}`);
 		return response.data;
 	}
 

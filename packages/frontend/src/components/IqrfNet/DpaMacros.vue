@@ -74,7 +74,7 @@ export default class DpaMacros extends Vue {
 	 * Retrieves raw DPA message macros
 	 */
 	created(): void {
-		useApiClient().getIqrfServices().getDpaMacrosService().fetch()
+		useApiClient().getIqrfServices().getDpaMacrosService().get()
 			.then((response: Array<DpaMacroGroup>) => {
 				this.macros = response.filter((group: DpaMacroGroup): boolean => {
 					if (!group.enabled) {

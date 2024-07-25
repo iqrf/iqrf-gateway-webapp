@@ -236,7 +236,7 @@ export default class GatewayInfo extends Vue {
 	 */
 	private getInformation(): void {
 		this.$store.commit('spinner/SHOW');
-		useApiClient().getGatewayServices().getInfoService().fetchDetailed()
+		useApiClient().getGatewayServices().getInfoService().getDetailed()
 			.then(
 				(response: GatewayInformation): void => {
 					this.info = response;

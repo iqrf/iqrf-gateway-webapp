@@ -448,7 +448,7 @@ export default class SchedulerList extends Vue {
 	 */
 	private exportScheduler(): void {
 		this.$store.commit('spinner/SHOW');
-		this.service.schedulerExport()
+		this.service.exportScheduler()
 			.then((response: FileResponse<Blob>) => {
 				this.$store.commit('spinner/HIDE');
 				const fileName = `iqrf-gateway-scheduler_${new Date().toISOString()}.zip`;

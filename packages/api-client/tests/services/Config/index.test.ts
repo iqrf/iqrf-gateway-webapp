@@ -25,9 +25,10 @@ import {
 	IqrfRepositoryService,
 	JournalService,
 	MailerService,
+	MenderService,
 	MonitService,
-} from '../../src/services/Config';
-import { mockedClient } from '../mocks/axios';
+} from '../../../src/services/Config';
+import { mockedClient } from '../../mocks/axios';
 
 describe('ConfigServices', (): void => {
 
@@ -76,6 +77,12 @@ describe('ConfigServices', (): void => {
 		expect.assertions(1);
 		expect(services.getMailerService())
 			.toBeInstanceOf(MailerService);
+	});
+
+	it('returns Mender config service instance', (): void => {
+		expect.assertions(1);
+		expect(services.getMenderService())
+			.toBeInstanceOf(MenderService);
 	});
 
 	it('returns Monit config service instance', (): void => {

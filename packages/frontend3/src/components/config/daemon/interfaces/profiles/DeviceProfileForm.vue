@@ -302,7 +302,7 @@ async function onSubmit(): Promise<void> {
 			.then(() => handleSuccess(params.name))
 			.catch(handleError);
 	} else {
-		service.editMapping(componentProps.deviceProfile.id, params)
+		service.updateMapping(componentProps.deviceProfile.id, params)
 			.then(() => handleSuccess(params.name))
 			.catch(handleError);
 	}

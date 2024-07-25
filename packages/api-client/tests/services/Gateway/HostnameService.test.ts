@@ -39,7 +39,7 @@ describe('HostnameService', (): void => {
 		};
 		mockedAxios.onPost('/gateway/hostname', data)
 			.reply(200);
-		await service.setHostname(hostname);
+		await service.updateHostname(hostname);
 	});
 
 });

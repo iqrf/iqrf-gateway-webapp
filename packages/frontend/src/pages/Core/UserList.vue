@@ -152,7 +152,7 @@ limitations under the License.
 import {UserService} from '@iqrf/iqrf-gateway-webapp-client/services';
 import {
 	UserEdit,
-	UserInfo,
+	UserInfo, UserLanguage,
 	UserRole,
 } from '@iqrf/iqrf-gateway-webapp-client/types';
 import {AxiosError} from 'axios';
@@ -286,7 +286,7 @@ export default class UserList extends Vue {
 		if (user.language === newLanguage) {
 			return;
 		}
-		user.language = newLanguage;
+		user.language = newLanguage as UserLanguage;
 		this.edit(user);
 	}
 
@@ -305,7 +305,7 @@ export default class UserList extends Vue {
 			role: user.role,
 			language: user.language,
 		};
-		return this.service.edit(user.id, config)
+		return this.service.update(user.id, config)
 			.then(() => {
 				this.getUsers().then(() => {
 					this.$toast.success(

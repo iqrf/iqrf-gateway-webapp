@@ -53,7 +53,7 @@ export class PowerService extends BaseService {
 	 * Retrieves gateway uptime stats
 	 * @return {Promise<GatewayUptime[]>} Gateway uptime stats
 	 */
-	public async fetchStats(): Promise<GatewayUptime[]> {
+	public async getStats(): Promise<GatewayUptime[]> {
 		const response: AxiosResponse<GatewayUptimeRaw[]> =
 			await this.axiosInstance.get('/gateway/power/stats');
 		return response.data.map((uptime: GatewayUptimeRaw): GatewayUptime => ({

@@ -31,7 +31,7 @@ export const useRepositoryStore = defineStore('repository', {
 	actions: {
 		async fetch(): Promise<void> {
 			try {
-				this.config = await useApiClient().getConfigServices().getIqrfRepositoryService().fetch();
+				this.config = await useApiClient().getConfigServices().getIqrfRepositoryService().getConfig();
 			} catch (error) {
 				console.error(error);
 			}

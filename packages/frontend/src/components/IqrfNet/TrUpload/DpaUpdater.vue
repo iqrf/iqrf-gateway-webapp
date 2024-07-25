@@ -74,11 +74,9 @@ limitations under the License.
 
 <script lang='ts'>
 import {ServiceService} from '@iqrf/iqrf-gateway-webapp-client/services';
-import {
-	Client as RepositoryClient,
-	OsDpa,
-	OsDpaService
-} from '@iqrf/iqrf-repository-client';
+import { Client as RepositoryClient } from '@iqrf/iqrf-repository-client';
+import { OsDpaService } from '@iqrf/iqrf-repository-client/services';
+import { OsDpa } from '@iqrf/iqrf-repository-client/types';
 import {AxiosError, AxiosResponse} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';

@@ -125,7 +125,7 @@ async function onSubmit(): Promise<void> {
 	Promise.all([
 		updateSplitterConfig(),
 		updateIdeCounterpartConfig(),
-		hostnameService.setHostname(hostname.value),
+		hostnameService.updateHostname(hostname.value),
 	])
 		.then(() => {
 			toast.success(

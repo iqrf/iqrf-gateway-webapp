@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 MICRORISC s.r.o.
+ * Copyright 2023-2024 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import {
+	type MenderMountMode as MenderMountModeNew,
+	type MenderRemount as MenderRemountNew,
+} from '../Maintenance';
 
 /**
  * Mender client configuration interface
@@ -63,19 +68,11 @@ export interface MenderConfig {
 }
 
 /**
- * Filesystem mount modes
+ * @deprecated Use MenderRemount from module @iqrf/iqrf-gateway-webapp-client/types/Maintenance instead
  */
-export enum MenderMountMode {
-	/// Read-only
-	RO = 'ro',
-	/// Read-write
-	RW = 'rw',
-}
+export type MenderRemount = MenderRemountNew;
 
 /**
- * Filesystem remount interface
+ * @deprecated Use MenderMountMode from module @iqrf/iqrf-gateway-webapp-client/types/Maintenance instead
  */
-export interface MenderRemount {
-	/// mountMode
-	mode: MenderMountMode;
-}
+export type MenderMountMode = MenderMountModeNew;

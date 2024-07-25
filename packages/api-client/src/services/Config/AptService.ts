@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 MICRORISC s.r.o.
+ * Copyright 2023-2024 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,28 +25,28 @@ import { BaseService } from '../BaseService';
 export class AptService extends BaseService {
 
 	/**
-	 * Fetches APT configuration
+	 * Retrieves APT configuration
 	 * @return {Promise<AptConfig>} APT configuration
 	 */
 	public async getConfig(): Promise<AptConfig> {
 		const response: AxiosResponse<AptConfigRaw> = await this.axiosInstance.get('/config/apt');
-		return this.fromRaw(response.data);
+		return this.deserializeConfig(response.data);
 	}
 
 	/**
-	 * Edits APT configuration
-	 * @param {AptConfig} config APT configuration
+	 * Updates APT configuration
+	 * @param {AptConfig} config New APT configuration
 	 */
-	public async editConfig(config: AptConfig): Promise<void> {
-		const data: AptConfigRaw = this.toRaw(config);
+	public async updateConfig(config: AptConfig): Promise<void> {
+		const data: AptConfigRaw = this.serializeConfig(config);
 		await this.axiosInstance.put('/config/apt', data);
 	}
 
 	/**
-	 * Changes service state of unattended upgrades service
+	 * Updates service state of unattended upgrades service
 	 * @param {boolean} enabled Service state
 	 */
-	public async setServiceState(enabled: boolean): Promise<void> {
+	public async updateServiceState(enabled: boolean): Promise<void> {
 		const data = {
 			'APT::Periodic::Enable': enabled ? '1' : '0',
 		};
@@ -54,11 +54,11 @@ export class AptService extends BaseService {
 	}
 
 	/**
-	 * Get APT configuration from raw APT configuration
+	 * Deserializes APT configuration from raw APT configuration
 	 * @param {AptConfigRaw} config Raw APT configuration
 	 * @return {AptConfig} APT configuration
 	 */
-	private fromRaw(config: AptConfigRaw): AptConfig {
+	private deserializeConfig(config: AptConfigRaw): AptConfig {
 		return {
 			enabled: config['APT::Periodic::Enable'] === '1',
 			packageListUpdateInterval: Number.parseInt(config['APT::Periodic::Update-Package-Lists']),
@@ -69,11 +69,11 @@ export class AptService extends BaseService {
 	}
 
 	/**
-	 * Get raw APT configuration from APT configuration
+	 * Serializes raw APT configuration from APT configuration
 	 * @param {AptConfig} config APT configuration
 	 * @return {AptConfigRaw} Raw APT configuration
 	 */
-	private toRaw(config: AptConfig): AptConfigRaw {
+	private serializeConfig(config: AptConfig): AptConfigRaw {
 		return {
 			'APT::Periodic::Enable': config.enabled ? '1' : '0',
 			'APT::Periodic::Update-Package-Lists': config.packageListUpdateInterval.toString(),
@@ -82,4 +82,5 @@ export class AptService extends BaseService {
 			'Unattended-Upgrade::Automatic-Reboot': config.rebootOnKernelUpdate ? 'true' : 'false',
 		};
 	}
+
 }

@@ -20,7 +20,13 @@ limitations under the License.
 		<template #title>
 			{{ $t('components.dev.openApi.title') }}
 		</template>
-		<div id='swagger' />
+		<template #titleActions>
+			<CardTitleActionBtn
+				:action='Action.Reload'
+				@click='fetch'
+			/>
+		</template>
+		<div id='swagger' ref='swagger' />
 		<v-alert
 			v-if='componentState == ComponentState.FetchFailed'
 			variant='tonal'
@@ -32,6 +38,7 @@ limitations under the License.
 </template>
 
 <script setup lang='ts'>
+import { OpenAPI3 } from 'openapi-typescript';
 import { storeToRefs } from 'pinia';
 import {
 	type SwaggerRequest,
@@ -42,9 +49,11 @@ import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import Card from '@/components/layout/card/Card.vue';
+import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
 import UrlBuilder from '@/helpers/urlBuilder';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
+import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
@@ -66,29 +75,35 @@ interface Request extends SwaggerRequest {
 /**
  * Fetch OpenAPI specification
  */
-function fetch(): void {
+async function fetch(): Promise<void> {
 	componentState.value = ComponentState.Loading;
-	service.fetchSpecification(urlBuilder.getRestApiUrl())
-		.then((specification: object): object => {
-			componentState.value = ComponentState.Ready;
-			SwaggerUIBundle({
-				spec: specification,
-				dom_id: '#swagger',
-				deepLinking: true,
-				requestInterceptor: (swaggerRequest: SwaggerRequest): SwaggerRequest => {
-					const request = swaggerRequest as Request;
-					if (token.value && !request.headers.Authorization) {
-						request.headers.Authorization = `Bearer ${token.value}`;
-					}
-					return request;
-				},
-			});
-			return specification;
-		})
-		.catch(() => {
-			componentState.value = ComponentState.FetchFailed;
-			toast.error(i18n.t('components.dev.openApi.messages.fetchFailed').toString());
+	try {
+		const specification: OpenAPI3 = await service.getSpecification(urlBuilder.getRestApiUrl());
+		componentState.value = ComponentState.Ready;
+		SwaggerUIBundle({
+			spec: specification,
+			dom_id: '#swagger',
+			deepLinking: true,
+			plugins: [
+				SwaggerUIBundle.plugins.DownloadUrl,
+			],
+			presets: [
+				SwaggerUIBundle.presets.apis,
+			],
+			requestInterceptor: (swaggerRequest: SwaggerRequest): SwaggerRequest => {
+				const request = swaggerRequest as Request;
+				if (token.value && !request.headers.Authorization) {
+					request.headers.Authorization = `Bearer ${token.value}`;
+				}
+				return request;
+			},
+			operationsSorter: 'alpha',
+			tagsSorter: 'alpha',
 		});
+	} catch {
+		componentState.value = ComponentState.FetchFailed;
+		toast.error(i18n.t('components.dev.openApi.messages.fetchFailed').toString());
+	}
 }
 
 onMounted(fetch);

@@ -21,7 +21,13 @@ import { toast } from 'vue3-toastify';
 
 import i18n from '@/plugins/i18n';
 
-/// @deprecated
+/**
+ * Error toast
+ * @deprecated
+ * @param {AxiosError} error Axios error
+ * @param {string} message Message
+ * @param {Record<string, string|number>|undefined} params Parameters
+ */
 export function basicErrorToast(error: AxiosError, message: string, params: Record<string, string|number>|undefined = undefined): void {
 	const translations = {
 		error: error.response ? (error.response.data as ErrorResponse).message : error.message,
@@ -30,6 +36,6 @@ export function basicErrorToast(error: AxiosError, message: string, params: Reco
 		Object.assign(translations, params);
 	}
 	toast.error(
-		i18n.global.t(message, translations).toString(),
+		i18n.global.t(message, translations),
 	);
 }

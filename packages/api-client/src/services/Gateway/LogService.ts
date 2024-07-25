@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 MICRORISC s.r.o.
+ * Copyright 2023-2024 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import { BaseService } from '../BaseService';
 export class LogService extends BaseService {
 
 	/**
-	 * Fetches list of services with available logs
+	 * Retrieves list of services with available logs
 	 * @return {Promise<string[]>} List of services with available logs
 	 */
 	public async listAvailable(): Promise<string[]> {
@@ -35,7 +35,7 @@ export class LogService extends BaseService {
 	}
 
 	/**
-	 * Fetches service log
+	 * Retrieves service log
 	 * @param {string} service Service name
 	 * @return {Promise<string>} Service log
 	 */

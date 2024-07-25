@@ -19,6 +19,10 @@ import VueDatePicker from '@vuepic/vue-datepicker';
 import { type App } from 'vue';
 import '@vuepic/vue-datepicker/dist/main.css';
 
-export default function registerDatetime(app: App) {
+/**
+ * Register datetime picker component
+ * @param {App} app Vue.js app instance
+ */
+export default function registerDatetime(app: App): void {
 	app.component('VueDatePicker', VueDatePicker);
 }

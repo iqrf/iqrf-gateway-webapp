@@ -100,7 +100,7 @@ describe('UserService', (): void => {
 		expect.assertions(1);
 		mockedAxios.onGet('/users/2')
 			.reply(200, rawUsers[0]);
-		const actual: UserInfo = await service.fetch(2);
+		const actual: UserInfo = await service.get(2);
 		expect(actual).toStrictEqual(users[0]);
 	});
 
@@ -116,7 +116,7 @@ describe('UserService', (): void => {
 			role: 'admin',
 		})
 			.reply(200, response);
-		const actual: EmailSentResponse = await service.edit(2, {
+		const actual: EmailSentResponse = await service.update(2, {
 			username: 'roman',
 			email: 'roman@ondráček.eu',
 			language: UserLanguage.English,

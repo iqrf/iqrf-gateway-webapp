@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 MICRORISC s.r.o.
+ * Copyright 2023-2024 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import { BaseService } from '../BaseService';
 export class BackupService extends BaseService {
 
 	/**
-	 * Backup gateway to archive
+	 * Backups gateway to archive
 	 * @param {GatewayBackup} params Backup parameters
 	 * @return {Promise<FileResponse<Blob>>} Backup archive
 	 */
@@ -38,7 +38,7 @@ export class BackupService extends BaseService {
 	}
 
 	/**
-	 * Restore gateway from archive
+	 * Restores gateway from archive
 	 * @param {File} archive Backup archive
 	 * @return {Promise<PowerActionResponse>} Power action response
 	 */

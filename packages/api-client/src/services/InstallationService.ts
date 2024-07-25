@@ -26,7 +26,7 @@ import { BaseService } from './BaseService';
 export class InstallationService extends BaseService {
 
 	/**
-	 * Checks the installation
+	 * Check the installation
 	 * @return {Promise<InstallationChecks>} Installation checks
 	 */
 	public async check(): Promise<InstallationChecks> {

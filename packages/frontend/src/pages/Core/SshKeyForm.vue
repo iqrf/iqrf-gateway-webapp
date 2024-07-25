@@ -120,17 +120,16 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import { SshKeyService } from '@iqrf/iqrf-gateway-webapp-client/services/Security';
+import {SshKeyCreate} from '@iqrf/iqrf-gateway-webapp-client/types/Security';
+import {AxiosError, AxiosResponse} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import SshKeyTypes from '@/components/Gateway/SshKeyTypes.vue';
-
-import {extendedErrorToast} from '@/helpers/errorToast';
+import {Component, Vue} from 'vue-property-decorator';
 import {required} from 'vee-validate/dist/rules';
 
-import SshService from '@/services/SshService';
-
-import {AxiosError, AxiosResponse} from 'axios';
-import {ISshInput} from '@/interfaces/Core/SshKey';
+import SshKeyTypes from '@/components/Gateway/SshKeyTypes.vue';
+import {extendedErrorToast} from '@/helpers/errorToast';
+import {useApiClient} from '@/services/ApiClient';
 
 @Component({
 	components: {
@@ -143,15 +142,12 @@ import {ISshInput} from '@/interfaces/Core/SshKey';
 	},
 })
 
-/**
- *
- */
 export default class SshKeyForm extends Vue {
 
 	/**
-	 * @var {Array<string>} keys Array of SSH keys for key-based authentication
+	 * @var {Array<SshKeyCreate>} keys Array of SSH keys for key-based authentication
 	 */
-	private keys: Array<ISshInput> = [
+	private keys: Array<SshKeyCreate> = [
 		{
 			description: '',
 			key: '',
@@ -162,6 +158,11 @@ export default class SshKeyForm extends Vue {
 	 * @var {boolean} running Indicates whether an axios request is being processed
 	 */
 	private running = false;
+
+	/**
+	 * @var {SshKeyService} service SSH key service
+	 */
+	private service: SshKeyService = useApiClient().getSecurityServices().getSshKeyService();
 
 	/**
 	 * Initializes validation rules
@@ -199,7 +200,7 @@ export default class SshKeyForm extends Vue {
 	private saveKeys(): void {
 		if (this.$route.path.includes('/install')) {
 			this.running = true;
-			SshService.saveSshKeys(this.keys)
+			this.service.createSshKeys(this.keys)
 				.then((response: AxiosResponse) => {
 					this.running = false;
 					if (response.status === 200) {
@@ -215,7 +216,7 @@ export default class SshKeyForm extends Vue {
 				});
 		} else {
 			this.$store.commit('spinner/SHOW');
-			SshService.saveSshKeys(this.keys)
+			this.service.createSshKeys(this.keys)
 				.then((response: AxiosResponse) => {
 					this.$store.commit('spinner/HIDE');
 					if (response.status === 201) {

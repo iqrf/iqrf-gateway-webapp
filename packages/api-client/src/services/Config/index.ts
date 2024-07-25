@@ -23,6 +23,7 @@ import { IqrfGatewayInfluxdbBridgeService } from './IqrfGatewayInfluxdbBridgeSer
 import { IqrfRepositoryService } from './IqrfRepositoryService';
 import { JournalService } from './JournalService';
 import { MailerService } from './MailerService';
+import { MenderService } from './MenderService';
 import { MonitService } from './MonitService';
 
 export * from './AptService';
@@ -32,6 +33,7 @@ export * from './IqrfGatewayInfluxdbBridgeService';
 export * from './IqrfRepositoryService';
 export * from './JournalService';
 export * from './MailerService';
+export * from './MenderService';
 export * from './MonitService';
 
 /**
@@ -93,6 +95,14 @@ export class ConfigServices extends BaseService {
 	 */
 	public getMailerService(): MailerService {
 		return new MailerService(this.apiClient);
+	}
+
+	/**
+	 * Returns Mender service
+	 * @return {MenderService} Mender service
+	 */
+	public getMenderService(): MenderService {
+		return new MenderService(this.apiClient);
 	}
 
 	/**

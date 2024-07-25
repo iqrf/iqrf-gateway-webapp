@@ -79,7 +79,7 @@ async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
 	}
-	useApiClient().getAccountService().changePassword(passwordChange.value)
+	useApiClient().getAccountService().updatePassword(passwordChange.value)
 		.then(() => {
 			toast.success('Success');
 		})

@@ -43,7 +43,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {SshKeyInfo} from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
+import {SshKeyInfo} from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import {AxiosError} from 'axios';
 import {Component, VModel, Vue} from 'vue-property-decorator';
 
@@ -77,7 +77,7 @@ export default class SshKeyDeleteModal extends Vue {
 		}
 		const id = this.key.id;
 		this.$store.commit('spinner/SHOW');
-		useApiClient().getGatewayServices().getSshKeyService().deleteKey(id)
+		useApiClient().getSecurityServices().getSshKeyService().deleteKey(id)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(

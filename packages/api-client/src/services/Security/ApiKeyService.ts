@@ -20,10 +20,9 @@ import {
 	type ApiKeyConfig,
 	type ApiKeyCreated,
 	type ApiKeyInfo,
-} from '../types';
-import { DateTimeUtils } from '../utils';
-
-import { BaseService } from './BaseService';
+} from '../../types/Security';
+import { DateTimeUtils } from '../../utils';
+import { BaseService } from '../BaseService';
 
 /**
  * API key service
@@ -31,7 +30,7 @@ import { BaseService } from './BaseService';
 export class ApiKeyService extends BaseService {
 
 	/**
-	 * Fetches list of API keys
+	 * Retrieves list of API keys
 	 * @return {Promise<ApiKeyInfo[]>} List of API keys
 	 */
 	public async list(): Promise<ApiKeyInfo[]> {
@@ -52,22 +51,22 @@ export class ApiKeyService extends BaseService {
 	}
 
 	/**
-	 * Fetches information about the API key
+	 * Retrieves information about the API key
 	 * @param {number} id API key ID
 	 * @return {Promise<ApiKeyInfo>} API key information
 	 */
-	public async fetch(id: number): Promise<ApiKeyInfo> {
+	public async get(id: number): Promise<ApiKeyInfo> {
 		const response: AxiosResponse<ApiKeyInfo> =
 			await this.axiosInstance.get(`/apiKeys/${id.toString()}`);
 		return this.deserialize(response.data);
 	}
 
 	/**
-	 * Edits the API key
+	 * Updates the API key
 	 * @param {number} id API key ID
 	 * @param {ApiKeyConfig} config API key configuration to edit
 	 */
-	public async edit(id: number, config: ApiKeyConfig): Promise<void> {
+	public async update(id: number, config: ApiKeyConfig): Promise<void> {
 		await this.axiosInstance.put(`/apiKeys/${id.toString()}`, this.serialize(config));
 	}
 
@@ -84,7 +83,6 @@ export class ApiKeyService extends BaseService {
 	 * @template {ApiKeyConfig|ApiKeyInfo|ApiKeyCreated} T API key type
 	 * @param {T} key API key to deserialize
 	 * @return {T} Deserialized API key
-	 * @private
 	 */
 	private deserialize<T extends ApiKeyConfig|ApiKeyInfo|ApiKeyCreated>(key: T): T {
 		const expiration: unknown = key.expiration;
@@ -96,7 +94,6 @@ export class ApiKeyService extends BaseService {
 	 * Serializes API key
 	 * @param {ApiKeyConfig} key API key to serialize
 	 * @return {ApiKeyConfig} Serialized API key
-	 * @private
 	 */
 	private serialize(key: ApiKeyConfig): ApiKeyConfig {
 		// @ts-ignore

@@ -18,6 +18,9 @@
 import { useDaemonStore } from '@/store/daemonSocket';
 import { useMonitorStore } from '@/store/monitorSocket';
 
+/**
+ * Register WebSocket sockets
+ */
 export default function registerSockets(): void {
 	const daemonStore = useDaemonStore();
 	daemonStore.initSocket();

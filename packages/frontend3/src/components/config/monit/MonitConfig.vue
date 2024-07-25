@@ -176,7 +176,7 @@ async function onSubmit(): Promise<void> {
 	}
 	componentState.value = ComponentState.Saving;
 	const params = { ...config.value };
-	service.editConfig(params)
+	service.updateConfig(params)
 		.then(() => {
 			getConfig().then(() => {
 				toast.success(

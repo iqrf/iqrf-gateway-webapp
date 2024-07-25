@@ -21,7 +21,7 @@ import Components from 'unplugin-vue-components/vite';
 import {VuetifyResolver} from 'unplugin-vue-components/resolvers';
 import {ConfigEnv, defineConfig, loadEnv} from 'vite';
 import svgLoader from 'vite-svg-loader';
-import {UserConfig} from 'vitest/config';
+import {configDefaults, UserConfig} from 'vitest/config';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
 const gitCommitHash = proc.execSync('git rev-parse --short HEAD').toString().trim();
@@ -57,6 +57,17 @@ export default defineConfig(({mode}: ConfigEnv): UserConfig => {
 			alias: {
 				'@': path.resolve(__dirname, './src'),
 			},
+		},
+		test: {
+			...configDefaults,
+			coverage: {
+				provider: 'istanbul',
+				reporter: ['text', 'html', 'clover'],
+			},
+			outputFile: {
+				junit: 'junit.xml',
+			},
+			reporters: ['default', 'junit'],
 		},
 	};
 });

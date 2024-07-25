@@ -71,25 +71,24 @@ function close(): void {
 /**
  * Handles submit event
  */
-function onSubmit(): void {
+async function onSubmit(): Promise<void> {
 	if (componentProps.connection === undefined || componentProps.connection === null) {
 		return;
 	}
 	componentState.value = ComponentState.Saving;
-	service.delete(componentProps.connection.uuid)
-		.then(() => {
-			componentState.value = ComponentState.Ready;
-			toast.success(
-				i18n.t('components.ipNetwork.connections.delete.messages.success', { name: componentProps.connection.name }),
-			);
-			close();
-			emit('deleted');
-		})
-		.catch(() => {
-			componentState.value = ComponentState.Error;
-			toast.error(
-				i18n.t('components.ipNetwork.connections.delete.messages.failure', { name: componentProps.connection.name }),
-			);
-		});
+	try {
+		await service.delete(componentProps.connection.uuid);
+		componentState.value = ComponentState.Ready;
+		toast.success(
+			i18n.t('components.ipNetwork.connections.delete.messages.success', { name: componentProps.connection.name }),
+		);
+		close();
+		emit('deleted');
+	} catch {
+		componentState.value = ComponentState.Error;
+		toast.error(
+			i18n.t('components.ipNetwork.connections.delete.messages.failure', { name: componentProps.connection.name }),
+		);
+	}
 }
 </script>

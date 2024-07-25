@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-export * from './ApiKey';
 export * from './Authentication';
 export * from './Common';
 export * from './Feature';
@@ -29,3 +28,4 @@ export * as Gateway from './Gateway';
 export * as Iqrf from './Iqrf';
 export * as Maintenance from './Maintenance';
 export * as Network from './Network';
+export * as Security from './Security';

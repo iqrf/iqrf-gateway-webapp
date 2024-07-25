@@ -22,10 +22,9 @@ import {
 	InfoService,
 	LogService,
 	PowerService,
-	SshKeyService,
 	TimeService,
-} from '../../src/services/Gateway';
-import { mockedClient } from '../mocks/axios';
+} from '../../../src/services/Gateway';
+import { mockedClient } from '../../mocks/axios';
 
 describe('GatewayServices', (): void => {
 
@@ -56,12 +55,6 @@ describe('GatewayServices', (): void => {
 		expect.assertions(1);
 		expect(services.getPowerService())
 			.toBeInstanceOf(PowerService);
-	});
-
-	it('returns gateway SSK key service instance', (): void => {
-		expect.assertions(1);
-		expect(services.getSshKeyService())
-			.toBeInstanceOf(SshKeyService);
 	});
 
 	it('returns gateway time service instance', (): void => {

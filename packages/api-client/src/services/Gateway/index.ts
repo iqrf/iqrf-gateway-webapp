@@ -20,14 +20,12 @@ import { HostnameService } from './HostnameService';
 import { InfoService } from './InfoService';
 import { LogService } from './LogService';
 import { PowerService } from './PowerService';
-import { SshKeyService } from './SshKeyService';
 import { TimeService } from './TimeService';
 
 export * from './HostnameService';
 export * from './InfoService';
 export * from './LogService';
 export * from './PowerService';
-export * from './SshKeyService';
 export * from './TimeService';
 
 /**
@@ -65,14 +63,6 @@ export class GatewayServices extends BaseService {
 	 */
 	public getPowerService(): PowerService {
 		return new PowerService(this.apiClient);
-	}
-
-	/**
-	 * Returns SSH key service
-	 * @return {SshKeyService} SSH key service
-	 */
-	public getSshKeyService(): SshKeyService {
-		return new SshKeyService(this.apiClient);
 	}
 
 	/**

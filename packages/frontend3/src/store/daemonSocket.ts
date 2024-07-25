@@ -160,6 +160,7 @@ export const useDaemonStore = defineStore('daemon', {
 		/**
 		 * On socket message action (used as callback)
 		 * @param {MessageEvent<string>} event Message event
+		 * @return {DaemonApiResponse} IQRF Gateway Daemon API response
 		 */
 		onMessage(event: MessageEvent<string>): DaemonApiResponse {
 			const message: DaemonApiResponse = JSON.parse(event.data) as DaemonApiResponse;

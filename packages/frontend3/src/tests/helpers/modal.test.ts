@@ -35,30 +35,30 @@ describe('Modal helper', (): void => {
 	it('get modal window width for large screens', async (): Promise<void> => {
 		expect.assertions(1);
 		const vuetify = await import('vuetify');
-		vi.spyOn(vuetify, 'useDisplay').mockImplementation().mockReturnValueOnce({
+		vi.spyOn(vuetify, 'useDisplay').mockReturnValueOnce({
 			lgAndUp: ref(true),
 			md: ref(false),
-		});
+		} as unknown as ReturnType<typeof vuetify.useDisplay>);
 		expect(getModalWidth().value).toStrictEqual('50%');
 	});
 
 	it('get modal window width for medium screens', async (): Promise<void> => {
 		expect.assertions(1);
 		const vuetify = await import('vuetify');
-		vi.spyOn(vuetify, 'useDisplay').mockImplementation().mockReturnValueOnce({
+		vi.spyOn(vuetify, 'useDisplay').mockReturnValueOnce({
 			lgAndUp: ref(false),
 			md: ref(true),
-		});
+		} as unknown as ReturnType<typeof vuetify.useDisplay>);
 		expect(getModalWidth().value).toStrictEqual('75%');
 	});
 
 	it('get modal window width for small screens', async (): Promise<void> => {
 		expect.assertions(1);
 		const vuetify = await import('vuetify');
-		vi.spyOn(vuetify, 'useDisplay').mockImplementation().mockReturnValueOnce({
+		vi.spyOn(vuetify, 'useDisplay').mockReturnValueOnce({
 			lgAndUp: ref(false),
 			md: ref(false),
-		});
+		} as unknown as ReturnType<typeof vuetify.useDisplay>);
 		expect(getModalWidth().value).toStrictEqual('100%');
 	});
 

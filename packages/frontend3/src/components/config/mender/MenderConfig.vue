@@ -161,7 +161,7 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { type MenderService } from '@iqrf/iqrf-gateway-webapp-client/services';
+import { type MenderService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import { type MenderConfig } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import {
 	mdiFileCertificate,
@@ -191,19 +191,19 @@ import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
-const service: MenderService = useApiClient().getMenderService();
+const service: MenderService = useApiClient().getConfigServices().getMenderService();
 const form: Ref<VForm | null> = ref(null);
 const config: Ref<MenderConfig | null> = ref(null);
 
 function intervalColor(value: number|null): string {
-	if (value === null || (typeof value === 'number' && value < 0)) {
+	if (value === null || value < 0) {
 		return 'error';
 	}
 	return 'info';
 }
 
 function intervalLabel(value: number|null): string {
-	if (value === null || (typeof value === 'number' && value < 0)) {
+	if (value === null || value < 0) {
 		return 'N/A';
 	}
 	return humanizeDuration(value * 1_000, { language: i18n.locale.value });
@@ -215,12 +215,12 @@ async function getConfig(): Promise<void> {
 	} else {
 		componentState.value = ComponentState.Reloading;
 	}
-	service.getConfig()
-		.then((response: MenderConfig) => {
-			config.value = response;
-			componentState.value = ComponentState.Ready;
-		})
-		.catch(() => toast.error('TODO FETCH ERROR HANDLING'));
+	try {
+		config.value = await service.getConfig();
+		componentState.value = ComponentState.Ready;
+	} catch {
+		toast.error('TODO FETCH ERROR HANDLING');
+	}
 }
 
 async function onSubmit(): Promise<void> {
@@ -228,20 +228,17 @@ async function onSubmit(): Promise<void> {
 		return;
 	}
 	componentState.value = ComponentState.Saving;
-	const params = { ...config.value };
-	service.editConfig(params)
-		.then(() => {
-			getConfig().then(() => {
-				toast.success(
-					i18n.t('components.configuration.monit.messages.save.success'),
-				);
-			});
-		})
-		.catch(() => toast.error('TODO SAVE ERROR HANDLING'));
+	try {
+		const params = { ...config.value };
+		await service.updateConfig(params);
+		await getConfig();
+		toast.success(
+			i18n.t('components.configuration.monit.messages.save.success'),
+		);
+	} catch {
+		toast.error('TODO SAVE ERROR HANDLING');
+	}
 }
 
-onMounted(() => {
-	getConfig();
-});
-
+onMounted(async (): Promise<void> => await getConfig());
 </script>

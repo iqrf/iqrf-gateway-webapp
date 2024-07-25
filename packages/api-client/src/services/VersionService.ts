@@ -29,7 +29,7 @@ import { BaseService } from './BaseService';
 export class VersionService extends BaseService {
 
 	/**
-	 * Fetches IQRF Gateway Daemon version
+	 * Retrieve IQRF Gateway Daemon version
 	 * @return {Promise<VersionIqrfGatewayDaemon>} IQRF Gateway Daemon version
 	 */
 	public async getDaemon(): Promise<VersionIqrfGatewayDaemon> {
@@ -39,7 +39,7 @@ export class VersionService extends BaseService {
 	}
 
 	/**
-	 * Fetches IQRF Gateway Webapp version
+	 * Retrieve IQRF Gateway Webapp version
 	 * @return {Promise<VersionIqrfGatewayWebapp>} IQRF Gateway Webapp version
 	 */
 	public async getWebapp(): Promise<VersionIqrfGatewayWebapp> {

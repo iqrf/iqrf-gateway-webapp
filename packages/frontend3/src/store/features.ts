@@ -34,7 +34,7 @@ export const useFeatureStore = defineStore('features', {
 	}),
 	actions: {
 		async fetch(): Promise<void> {
-			this.features = await useApiClient().getFeatureService().fetchAll();
+			this.features = await useApiClient().getFeatureService().list();
 		},
 	},
 	getters: {

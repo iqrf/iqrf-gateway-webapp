@@ -325,8 +325,8 @@ export default class MobileConnections extends Vue {
 			return;
 		}
 		await this.monitService.getCheck(this.monitCheckName)
-			.then((response: AxiosResponse<MonitCheck>) => {
-				this.monit = response.data;
+			.then((response: MonitCheck) => {
+				this.monit = response;
 			})
 			.catch(() => {
 				this.monit = null;

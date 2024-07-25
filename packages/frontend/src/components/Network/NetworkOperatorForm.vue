@@ -111,16 +111,13 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, VModel, Vue} from 'vue-property-decorator';
-import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-
-import {digits, required} from 'vee-validate/dist/rules';
-import {extendedErrorToast} from '@/helpers/errorToast';
-
+import { MobileOperator } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import {AxiosError} from 'axios';
-import {
-	MobileOperator
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
+import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import {digits, required} from 'vee-validate/dist/rules';
+import {Component, VModel, Vue} from 'vue-property-decorator';
+
+import {extendedErrorToast} from '@/helpers/errorToast';
 import {useApiClient} from '@/services/ApiClient';
 
 @Component({
@@ -217,12 +214,12 @@ export default class NetworkOperatorForm extends Vue {
 		}
 		const id = this.operator.id;
 		this.$store.commit('spinner/SHOW');
-		this.service.edit(id, operator)
+		this.service.update(id, this.operator)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 
 				this.$toast.success(
-					this.$t('network.operators.messages.editSuccess', {operator: this.operator.name}).toString()
+					this.$t('network.operators.messages.editSuccess', {operator: this.operator!.name}).toString()
 				);
 				this.hideModal();
 				this.$emit('saved');

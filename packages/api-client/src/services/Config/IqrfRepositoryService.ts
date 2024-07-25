@@ -25,20 +25,20 @@ import { BaseService } from '../BaseService';
 export class IqrfRepositoryService extends BaseService {
 
 	/**
-	 * Fetches IQRF repository configuration
+	 * Retrieves IQRF repository configuration
 	 * @return {Promise<IqrfRepositoryConfig>} IQRF repository configuration
 	 */
-	public async fetch(): Promise<IqrfRepositoryConfig> {
+	public async getConfig(): Promise<IqrfRepositoryConfig> {
 		const response: AxiosResponse<IqrfRepositoryConfig> =
 			await this.axiosInstance.get('/config/iqrf-repository');
 		return response.data;
 	}
 
 	/**
-	 * Sets IQRF repository configuration
+	 * Updates IQRF repository configuration
 	 * @param {IqrfRepositoryConfig} config IQRF repository configuration
 	 */
-	public async edit(config: IqrfRepositoryConfig): Promise<void> {
+	public async updateConfig(config: IqrfRepositoryConfig): Promise<void> {
 		await this.axiosInstance.put('/config/iqrf-repository', config);
 	}
 

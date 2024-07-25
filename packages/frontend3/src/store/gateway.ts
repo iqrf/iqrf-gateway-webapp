@@ -38,14 +38,11 @@ export const useGatewayStore = defineStore('gateway', {
 		 * @return {Promise<void>}
 		 */
 		async fetchInfo(): Promise<void> {
-			await useApiClient().getGatewayServices().getInfoService().fetchBrief()
-				.then((info: GatewayBriefInformation): GatewayBriefInformation => {
-					this.info = info;
-					return info;
-				})
-				.catch((): void => {
-					this.info = null;
-				});
+			try {
+				this.info = await useApiClient().getGatewayServices().getInfoService().getBrief();
+			} catch {
+				this.info = null;
+			}
 		},
 	},
 	getters: {

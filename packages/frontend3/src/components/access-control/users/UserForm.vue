@@ -170,7 +170,7 @@ async function onSubmit(): Promise<void> {
 		if (componentProps.userInfo?.id === undefined) {
 			return;
 		}
-		service.edit(componentProps.userInfo.id, user.value as UserEdit)
+		service.update(componentProps.userInfo.id, user.value as UserEdit)
 			.then(() => {
 				onSuccess(user.value);
 				if (componentProps.userInfo?.id === userStore.getId) {

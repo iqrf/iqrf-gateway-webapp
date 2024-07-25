@@ -217,7 +217,7 @@ function timeString(timespec: SchedulerRecordTimeSpec): string {
 
 function exportTasks(): void {
 	componentState.value = ComponentState.Loading;
-	webappSchedulerService.schedulerExport()
+	webappSchedulerService.exportScheduler()
 		.then((response: FileResponse<Blob>) => {
 			const filename = `iqrf-gateway-scheduler_${new Date().toISOString()}.zip`;
 			FileDownloader.downloadFileResponse(response, filename);
@@ -230,7 +230,7 @@ function exportTasks(): void {
 }
 
 function getMessagings(): void {
-	webappSchedulerService.schedulerMessagings()
+	webappSchedulerService.getSchedulerMessagings()
 		.then((response: IqrfGatewayDaemonSchedulerMessagings) => {
 			messagings.value = response;
 		});

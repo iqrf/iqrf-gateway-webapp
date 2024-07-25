@@ -173,7 +173,7 @@ export default class IqrfRepositoryConfiguration extends Vue {
 	 */
 	private getConfig(): Promise<void> {
 		this.$store.commit('spinner/SHOW');
-		return this.repositoryService.fetch()
+		return this.repositoryService.getConfig()
 			.then((config: IqrfRepositoryConfig) => {
 				this.storeConfig(config);
 				this.$store.commit('spinner/HIDE');
@@ -200,7 +200,7 @@ export default class IqrfRepositoryConfiguration extends Vue {
 		if (!this.credentials) {
 			config.credentials = {username: null, password: null};
 		}
-		this.repositoryService.edit(config)
+		this.repositoryService.updateConfig(config)
 			.then(() => {
 				this.$store.commit('repository/SET', config);
 				this.getConfig().then(() => {

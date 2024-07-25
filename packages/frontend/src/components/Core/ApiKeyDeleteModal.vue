@@ -43,7 +43,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {ApiKeyInfo} from '@iqrf/iqrf-gateway-webapp-client/types';
+import {ApiKeyInfo} from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import {AxiosError} from 'axios';
 import {Component, VModel, Vue} from 'vue-property-decorator';
 
@@ -77,7 +77,7 @@ export default class ApiKeyDeleteModal extends Vue {
 		}
 		const id = this.key.id;
 		this.$store.commit('spinner/SHOW');
-		useApiClient().getApiKeyService().delete(id)
+		useApiClient().getSecurityServices().getApiKeyService().delete(id)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(this.$t('core.security.apiKey.messages.deleteSuccess', {key: id}).toString());

@@ -38,7 +38,7 @@ import { validate as uuidValidate, version as uuidVersion } from 'uuid';
 import AccountRecoveryConfirmForm
 	from '@/components/account/AccountRecoveryConfirmForm.vue';
 
-const componentProps = defineProps({
+defineProps({
 	uuid: {
 		type: String,
 		required: true,

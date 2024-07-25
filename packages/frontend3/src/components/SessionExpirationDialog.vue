@@ -26,7 +26,7 @@ limitations under the License.
 			{{ $t('components.status.sessionExpiration.prompt') }}
 			<template #actions>
 				<CardActionBtn
-					color='primary'
+					color='warning'
 					:icon='mdiRefresh'
 					:text='$t("components.status.sessionExpiration.renew") + " (" + countdown + ")"'
 					@click='renewSession'
@@ -44,6 +44,7 @@ limitations under the License.
 <script lang='ts' setup>
 import { type UserSignedIn } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { mdiRefresh } from '@mdi/js';
+import { storeToRefs } from 'pinia';
 import { onBeforeUnmount, onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
@@ -63,32 +64,34 @@ const expirationWarningTimeout: Ref<number> = ref(0);
 const logoutTimeout: Ref<number> = ref(0);
 const logoutTimerInterval: Ref<number> = ref(0);
 const countdown: Ref<number> = ref(0);
+const { getExpiration: expiration } = storeToRefs(userStore);
 const router = useRouter();
 
-onMounted(() => {
-	setup();
-});
+onMounted(async () => await setup());
 
-onBeforeUnmount(() => {
-	clear();
-});
+onBeforeUnmount(() => clear());
 
+/**
+ * Close the dialog
+ */
 function close(): void {
 	show.value = false;
 }
 
+/**
+ * Set-up the session expiration dialog
+ */
 async function setup(): Promise<void> {
-	let expiration: number = userStore.getExpiration * 1_000;
 	const now = Date.now();
-	if ((expiration - now) < 300_000) {
+	let timeout = expiration.value - now;
+	if (timeout > 0 && timeout < 300_000) {
 		await renewSession();
-		expiration = userStore.getExpiration * 1_000;
+		timeout = expiration.value - now;
 	}
-	const timeout = expiration - now;
-	const warning = timeout - 60_000;
+	const warning = timeout - 300_000;
 	expirationWarningTimeout.value = window.setTimeout(() => {
-		logoutTimerInterval.value = window.setInterval((expiration: number) => {
-			countdown.value = Math.floor((expiration - Date.now()) / 1_000);
+		logoutTimerInterval.value = window.setInterval(() => {
+			countdown.value = Math.floor((expiration.value - Date.now()) / 1_000);
 		}, 300, expiration);
 		show.value = true;
 	}, warning);
@@ -96,25 +99,29 @@ async function setup(): Promise<void> {
 		close();
 		await userStore.signOut();
 		await router.push({ path: '/sign/in', query: { redirect: router.currentRoute.value.path } });
-		toast.warning(
-			i18n.t('auth.sign.out.expired').toString(),
-		);
+		toast.warning(i18n.t('auth.sign.out.expired'));
 	}, timeout);
 }
 
+/**
+ * Renew the session
+ */
 async function renewSession(): Promise<void> {
 	try {
 		const rsp: UserSignedIn = await useApiClient().getAuthenticationService().refreshToken();
 		await userStore.processJwt(rsp.token);
 		close();
 		clear();
-		setup();
+		await setup();
 	} catch (error) {
 		console.error(error);
 		toast.error(i18n.t('components.status.sessionExpiration.failed').toString());
 	}
 }
 
+/**
+ * Clear all timeouts and intervals
+ */
 function clear(): void {
 	window.clearTimeout(logoutTimeout.value);
 	window.clearTimeout(expirationWarningTimeout.value);

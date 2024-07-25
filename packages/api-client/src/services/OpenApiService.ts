@@ -25,12 +25,13 @@ import { BaseService } from './BaseService';
 export class OpenApiService extends BaseService {
 
 	/**
-	 * Fetches OpenAPI specification
+	 * Retrieve OpenAPI specification
 	 * @param {string} baseUrl REST API base URL
 	 * @return {Promise<OpenAPI3>} OpenAPI specification
 	 */
-	public async fetchSpecification(baseUrl: string = ''): Promise<OpenAPI3> {
-		const response: AxiosResponse<OpenAPI3> = await this.axiosInstance.get('/openapi');
+	public async getSpecification(baseUrl: string = ''): Promise<OpenAPI3> {
+		const response: AxiosResponse<OpenAPI3> =
+			await this.axiosInstance.get('/openapi');
 		const regExp: RegExp = /https:\/\/apidocs\.iqrf\.org\/iqrf-gateway-webapp-api\/schemas\/(\w*)\.json/g;
 		const replacement: string = baseUrl + '/openapi/schemas/$1';
 		const spec: OpenAPI3 = JSON.parse(JSON.stringify(response.data).replaceAll(regExp, replacement)) as OpenAPI3;

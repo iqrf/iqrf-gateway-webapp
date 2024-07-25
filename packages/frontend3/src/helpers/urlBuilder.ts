@@ -22,28 +22,27 @@ export default class UrlBuilder {
 
 	/**
 	 * Is development mode detected?
-	 * @private
 	 */
 	private readonly isDev: boolean;
 
 	/**
 	 * Hostname
-	 * @private
 	 */
 	private readonly hostname: string;
 
 	/**
 	 * Port
-	 * @private
 	 */
 	private readonly port: string;
 
 	/**
 	 * Protocol for WebSocket - ws or wss
-	 * @private
 	 */
 	private readonly wsProtocol: string;
 
+	/**
+	 * Constructor
+	 */
 	public constructor() {
 		const isHttps: boolean = window.location.protocol === 'https:';
 		this.hostname = window.location.hostname;
@@ -57,6 +56,7 @@ export default class UrlBuilder {
 
 	/**
 	 * Returns hostname
+	 * @return {string} Hostname
 	 */
 	public getHostname(): string {
 		return this.hostname;
@@ -64,6 +64,7 @@ export default class UrlBuilder {
 
 	/**
 	 * Returns port
+	 * @return {string} Port
 	 */
 	public getPort(): string {
 		return this.port;
@@ -71,6 +72,7 @@ export default class UrlBuilder {
 
 	/**
 	 * Returns base URL
+	 * @return {string} Base URL
 	 */
 	public getBaseUrl(): string {
 		return window.location.protocol + '//' + this.hostname + (this.isDev ? ':8081' : this.port) + import.meta.env.VITE_BASE_URL;
@@ -78,6 +80,7 @@ export default class UrlBuilder {
 
 	/**
 	 * Returns REST API URL
+	 * @return {string} REST API URL
 	 */
 	public getRestApiUrl(): string {
 		if (import.meta.env.VITE_URL_REST_API?.length) {
@@ -87,7 +90,8 @@ export default class UrlBuilder {
 	}
 
 	/**
-	 * Returns WebSocket API URL
+	 * Returns IQRF Gateway Daemon WebSocket API URL
+	 * @return {string} IQRF Gateway DaemonWebSocket API URL
 	 */
 	public getDaemonApiUrl(): string {
 		if (import.meta.env.VITE_URL_DAEMON_API?.length) {
@@ -97,7 +101,8 @@ export default class UrlBuilder {
 	}
 
 	/**
-	 * Returns WebSocket Monitor URL
+	 * Returns IQRF Gateway Daemon WebSocket Monitor URL
+	 * @return {string} IQRF Gateway Daemon WebSocket Monitor URL
 	 */
 	public getDaemonMonitorUrl(): string {
 		if (import.meta.env.VITE_URL_DAEMON_MONITOR?.length) {
@@ -108,6 +113,7 @@ export default class UrlBuilder {
 
 	/**
 	 * Returns WebSocket IQRF network sync URL
+	 * @return {string} WebSocket IQRF network sync URL
 	 */
 	public getIqrfnetSyncUrl(): string {
 		if (import.meta.env.VITE_URL_IQRF_SYNC?.length) {
@@ -118,6 +124,8 @@ export default class UrlBuilder {
 
 	/**
 	 * Returns REST API URL from passed hostname
+	 * @param {string} hostname Hostname
+	 * @return {string} REST API URL
 	 */
 	public getRestApiUrlFromHostname(hostname: string): string {
 		return '//' + hostname + (this.isDev ? ':8080' : this.port) + import.meta.env.VITE_BASE_URL + 'api/v0/';

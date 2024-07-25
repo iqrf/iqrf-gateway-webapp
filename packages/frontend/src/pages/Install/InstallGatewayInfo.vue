@@ -183,7 +183,7 @@ export default class InstallGatewayInfo extends Vue {
 	 */
 	protected created(): void {
 		this.$store.commit('spinner/SHOW');
-		this.service.fetchDetailed()
+		this.service.getDetailed()
 			.then(
 				(response: GatewayInformation) => {
 					this.info = response;
@@ -198,7 +198,7 @@ export default class InstallGatewayInfo extends Vue {
 	 */
 	private downloadDiagnostics(): void {
 		this.$store.commit('spinner/SHOW');
-		this.service.fetchDetailed()
+		this.service.getDetailed()
 			.then(
 				(response: GatewayInformation) => {
 					let fileName = 'iqrf-gateway-info';

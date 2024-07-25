@@ -107,17 +107,15 @@ const headers = [
 /**
  * Fetches network interfaces
  */
-function fetchData() {
+async function fetchData(): Promise<void> {
 	componentState.value = ComponentState.Loading;
-	service.list(componentProps.type)
-		.then((response: NetworkConnectionListEntry[]): NetworkConnectionListEntry[] => {
-			connections.value = response;
-			componentState.value = ComponentState.Ready;
-			return response;
-		});
+	try {
+		connections.value = await service.list(componentProps.type);
+		componentState.value = ComponentState.Ready;
+	} catch {
+		componentState.value = ComponentState.FetchFailed;
+	}
 }
 
-onBeforeMount(() => {
-	fetchData();
-});
+onBeforeMount(async (): Promise<void> => await fetchData());
 </script>

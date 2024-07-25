@@ -92,7 +92,7 @@ const headerClass = computed((): string => {
 });
 </script>
 
-<style>
+<style scoped>
 .card-text {
 	padding: 1rem !important;
 }

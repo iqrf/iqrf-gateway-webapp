@@ -75,7 +75,7 @@ describe('AccountService', (): void => {
 		expect.assertions(1);
 		mockedAxios.onGet('/user')
 			.reply(200, userInfo);
-		const actual: UserInfo = await service.fetchInfo();
+		const actual: UserInfo = await service.getInfo();
 		expect(actual).toStrictEqual(userInfo);
 	});
 
@@ -94,7 +94,7 @@ describe('AccountService', (): void => {
 		};
 		mockedAxios.onPut('/user', request)
 			.reply(200, response);
-		const actual: EmailSentResponse = await service.edit(request);
+		const actual: EmailSentResponse = await service.update(request);
 		expect(actual).toStrictEqual(response);
 	});
 
@@ -107,7 +107,7 @@ describe('AccountService', (): void => {
 		};
 		mockedAxios.onPut('/user/password', request)
 			.reply(200);
-		await expect(service.changePassword(request)).resolves.not.toThrow();
+		await expect(service.updatePassword(request)).resolves.not.toThrow();
 	});
 
 	it('confirm password recovery - invalid UUID format', async (): Promise<void> => {

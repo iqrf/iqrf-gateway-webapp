@@ -18,6 +18,7 @@ export * from './Apt';
 export * from './IqrfGatewayController';
 export * from './IqrfGatewayDaemon';
 export * from './IqrfGatewayInfluxdbBridge';
+export * from './IqrfGatewayTranslator';
 export * from './IqrfRepository';
 export * from './Journal';
 export * from './Mailer';

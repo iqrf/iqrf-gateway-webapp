@@ -478,7 +478,7 @@ export default class ConnectionForm extends Vue {
 			return;
 		}
 		this.$store.commit('spinner/SHOW');
-		this.service.fetch(this.uuid)
+		this.service.get(this.uuid)
 			.then((response: NetworkConnectionConfiguration) => {
 				this.$store.commit('spinner/HIDE');
 				this.storeConnectionData(response);
@@ -651,7 +651,7 @@ export default class ConnectionForm extends Vue {
 					);
 				});
 		} else {
-			this.service.edit(this.uuid, connection)
+			this.service.update(this.uuid, connection)
 				.then(async () => {
 					if (connect) {
 						if (this.interfaceType === NetworkInterfaceType.GSM && this.hasBrokenGsmModem) {
@@ -704,7 +704,7 @@ export default class ConnectionForm extends Vue {
 					if (added) {
 						await this.service.delete(uuid);
 					} else if (this.backupConfig !== null) {
-						await this.service.edit(uuid, this.prepareConnectionToSave(this.backupConfig));
+						await this.service.update(uuid, this.prepareConnectionToSave(this.backupConfig));
 					}
 					extendedErrorToast(error, 'network.connection.messages.connect.failed', {connection: name});
 					return;

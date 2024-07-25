@@ -24,11 +24,9 @@ import axios, {
 
 import {
 	AccountService,
-	ApiKeyService,
 	AuthenticationService,
 	FeatureService,
 	InstallationService,
-	MenderService,
 	OpenApiService,
 	ServiceService,
 	UserService,
@@ -40,6 +38,7 @@ import { GatewayServices } from './services/Gateway';
 import { IqrfServices } from './services/Iqrf';
 import { MaintenanceServices } from './services/Maintenance';
 import { NetworkServices } from './services/Network';
+import { SecurityServices } from './services/Security';
 
 /**
  * IQRF Gateway Webapp API client options
@@ -172,14 +171,6 @@ export class Client {
 	}
 
 	/**
-	 * Returns API key service
-	 * @return {ApiKeyService} API key service
-	 */
-	public getApiKeyService(): ApiKeyService {
-		return new ApiKeyService(this);
-	}
-
-	/**
 	 * Returns Authentication service
 	 * @return {AuthenticationService} Authentication service
 	 */
@@ -252,19 +243,19 @@ export class Client {
 	}
 
 	/**
-	 * Returns Mender service
-	 * @return {MenderService} Mender service
-	 */
-	public getMenderService(): MenderService {
-		return new MenderService(this);
-	}
-
-	/**
 	 * Returns OpenAPI specification service
 	 * @return {OpenApiService} OpenAPI specification service
 	 */
 	public getOpenApiService(): OpenApiService {
 		return new OpenApiService(this);
+	}
+
+	/**
+	 * Returns Security services
+	 * @return {SecurityServices} Security services
+	 */
+	public getSecurityServices(): SecurityServices {
+		return new SecurityServices(this);
 	}
 
 	/**
@@ -292,8 +283,7 @@ export class Client {
 	}
 
 	/**
-	 * Registers a request interceptor that adds an Authorization header with API key or JWT token
-	 * @private
+	 * Register a request interceptor that adds an Authorization header with API key or JWT token
 	 */
 	private registerRequestInterceptor(): void {
 		this.axiosInstance.interceptors.request.use((config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
@@ -305,7 +295,7 @@ export class Client {
 	}
 
 	/**
-	 * Adds a request interceptor
+	 * Add a request interceptor
 	 * @param {Function} onFulfilled Fulfilled callback
 	 * @param {Function} onRejected Rejected callback
 	 * @param {AxiosInterceptorOptions} options Interceptor options
@@ -316,7 +306,7 @@ export class Client {
 	}
 
 	/**
-	 * Adds a response interceptor
+	 * Add a response interceptor
 	 * @param {Function} onFulfilled Fulfilled callback
 	 * @param {Function} onRejected Rejected callback
 	 * @param {AxiosInterceptorOptions} options Interceptor options
@@ -327,7 +317,7 @@ export class Client {
 	}
 
 	/**
-	 * Ejects a request interceptor
+	 * Eject a request interceptor
 	 * @param {number} interceptorId Interceptor ID
 	 */
 	public ejectRequestInterceptor(interceptorId: number): void {
@@ -338,7 +328,7 @@ export class Client {
 	}
 
 	/**
-	 * Ejects a response interceptor
+	 * Eject a response interceptor
 	 * @param {number} interceptorId Interceptor ID
 	 */
 	public ejectResponseInterceptor(interceptorId: number): void {
@@ -346,7 +336,7 @@ export class Client {
 	}
 
 	/**
-	 * Clears all request interceptors
+	 * Clear all request interceptors
 	 */
 	public clearRequestInterceptors(): void {
 		this.axiosInstance.interceptors.request.clear();
@@ -354,7 +344,7 @@ export class Client {
 	}
 
 	/**
-	 * Clears all response interceptors
+	 * Clear all response interceptors
 	 */
 	public clearResponseInterceptors(): void {
 		this.axiosInstance.interceptors.response.clear();

@@ -223,7 +223,7 @@ async function onSubmit(): Promise<void> {
 		params.timeRotation.unit = JournalTimeUnit.Months;
 		params.timeRotation.count = 1;
 	}
-	service.editConfig(params)
+	service.updateConfig(params)
 		.then(() => {
 			getConfig().then(() => {
 				toast.success(

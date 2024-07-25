@@ -203,7 +203,7 @@ export default class MonitForm extends Vue {
 			return;
 		}
 		this.$store.commit('spinner/SHOW');
-		this.service.editConfig(this.configuration)
+		this.service.updateConfig(this.configuration)
 			.then(async () => {
 				await useApiClient().getServiceService().restart('monit');
 				await this.getConfig().then(() => this.$toast.success(

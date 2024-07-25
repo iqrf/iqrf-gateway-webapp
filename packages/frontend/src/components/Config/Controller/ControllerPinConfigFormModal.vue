@@ -277,7 +277,7 @@ export default class ControllerPinConfigFormModal extends Vue {
 				.then(() => this.handleSuccess(name))
 				.catch((error: AxiosError) => this.handleFailure(error, name));
 		} else {
-			this.service.editMapping(id, profile)
+			this.service.updateMapping(id, profile)
 				.then(() => this.handleSuccess(name))
 				.catch((error: AxiosError) => this.handleFailure(error, name));
 		}

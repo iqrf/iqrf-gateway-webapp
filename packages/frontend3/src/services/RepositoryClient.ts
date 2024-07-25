@@ -16,7 +16,11 @@
  */
 
 import { type IqrfRepositoryConfig } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { Client, type ClientCredentials } from '@iqrf/iqrf-repository-client';
+import {
+	Client,
+	type ClientCredentials,
+	type ClientOptions,
+} from '@iqrf/iqrf-repository-client';
 
 import { useApiClient } from '@/services/ApiClient';
 import { useRepositoryStore } from '@/store/repository';
@@ -33,19 +37,19 @@ export const useRepositoryClient = async (): Promise<Client> => {
 		password: null,
 	};
 	const store = useRepositoryStore();
-	let config = store.configuration;
+	let config: IqrfRepositoryConfig | null = store.configuration;
 	if (config === null) {
-		config = await useApiClient().getConfigServices().getIqrfRepositoryService().fetch()
-			.then((repositoryConfig: IqrfRepositoryConfig) => repositoryConfig);
+		config = await useApiClient().getConfigServices().getIqrfRepositoryService().getConfig();
 	}
 	if (config !== null) {
 		baseUrl = config.apiEndpoint;
 		credentials = config.credentials;
 	}
-	return new Client({
+	const options: ClientOptions = {
 		config: {
 			baseURL: baseUrl,
 		},
 		credentials: credentials,
-	});
+	};
+	return new Client(options);
 };

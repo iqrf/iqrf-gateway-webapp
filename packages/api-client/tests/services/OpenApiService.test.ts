@@ -88,7 +88,7 @@ describe('OpenApiService', (): void => {
 		expect.assertions(1);
 		mockedAxios.onGet('/openapi')
 			.reply(200, specification);
-		const actual: OpenAPI3 = await service.fetchSpecification('http://localhost:8080/api/v0/');
+		const actual: OpenAPI3 = await service.getSpecification('http://localhost:8080/api/v0/');
 		expect(actual).toStrictEqual({
 			...specification,
 			servers: [

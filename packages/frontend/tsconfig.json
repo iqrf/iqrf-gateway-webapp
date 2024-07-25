@@ -18,8 +18,16 @@
 		},
 		"rootDir": "./"
 	},
+	"include": [
+		"src/**/*.ts",
+		"src/**/*.d.ts",
+		"src/**/*.vue",
+		"vite.config.ts"
+	],
 	"exclude": [
 		"cypress",
-		"cypress.config.ts"
+		"cypress.config.ts",
+		"dist",
+		"node_modules"
 	]
 }

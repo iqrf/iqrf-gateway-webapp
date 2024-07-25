@@ -28,7 +28,11 @@ import router from '@/router';
 import pinia from '@/store';
 
 
-export function registerPlugins(app: App) {
+/**
+ * Register plugins
+ * @param {App} app Vue.js app instance
+ */
+export function registerPlugins(app: App): void {
 	app
 		.use(pinia)
 		.use(router)
