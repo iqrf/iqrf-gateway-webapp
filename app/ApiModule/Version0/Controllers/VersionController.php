@@ -27,7 +27,7 @@ use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\ApiModule\Version0\Models\ControllerValidators;
 use App\GatewayModule\Models\VersionManager;
 use Nette\IOException;
 use Nette\Utils\JsonException;
@@ -41,14 +41,14 @@ class VersionController extends BaseController {
 
 	/**
 	 * Constructor
-	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 * @param VersionManager $manager Version manager
+	 * @param ControllerValidators $validators Controller validators
 	 */
 	public function __construct(
-		RestApiSchemaValidator $validator,
 		private readonly VersionManager $manager,
+		ControllerValidators $validators,
 	) {
-		parent::__construct($validator);
+		parent::__construct($validators);
 	}
 
 	#[Path('/daemon')]
@@ -70,7 +70,8 @@ class VersionController extends BaseController {
 	public function daemonVersion(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$version = $this->manager->getDaemon();
 		if ($version !== 'none' && $version !== 'unknown') {
-			return $response->writeJsonBody(['version' => $version]);
+			$response = $response->writeJsonBody(['version' => $version]);
+			return $this->validators->validateResponse('versionDaemon', $response);
 		}
 		throw new ServerErrorException('IQRF Gateway Daemon not installed', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 	}
@@ -93,7 +94,8 @@ class VersionController extends BaseController {
 	')]
 	public function webappVersion(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
-			return $response->writeJsonBody($this->manager->getWebappJson());
+			$response = $response->writeJsonBody($this->manager->getWebappJson());
+			return $this->validators->validateResponse('versionWebapp', $response);
 		} catch (IOException | JsonException $e) {
 			throw new ServerErrorException('Invalid JSON syntax', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}

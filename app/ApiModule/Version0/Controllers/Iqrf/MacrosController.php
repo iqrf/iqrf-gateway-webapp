@@ -25,26 +25,25 @@ use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use App\ApiModule\Version0\Controllers\IqrfController;
-use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\ApiModule\Version0\Models\ControllerValidators;
 use Iqrf\IdeMacros\MacroFileParser;
 
 /**
  * IQRF IDE Macros controller
  */
 #[Path('/macros')]
-class MacrosController extends IqrfController {
+class MacrosController extends BaseIqrfController {
 
 	/**
 	 * Constructor
 	 * @param MacroFileParser $macroParser IQRF IDE Macros parser
-	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
+	 * @param ControllerValidators $validators Controller validators
 	 */
 	public function __construct(
 		private readonly MacroFileParser $macroParser,
-		RestApiSchemaValidator $validator,
+		ControllerValidators $validators,
 	) {
-		parent::__construct($validator);
+		parent::__construct($validators);
 	}
 
 	#[Path('/')]
@@ -62,8 +61,9 @@ class MacrosController extends IqrfController {
 				$ref: \'#/components/responses/Forbidden\'
 	')]
 	public function macros(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['iqrf:macros']);
-		return $response->writeJsonBody($this->macroParser->read());
+		$this->validators->checkScopes($request, ['iqrf:macros']);
+		$response = $response->writeJsonBody($this->macroParser->read());
+		return $this->validators->validateResponse('iqrfIdeMacros', $response);
 	}
 
 }

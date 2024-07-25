@@ -23,6 +23,8 @@ namespace App\CoreModule\Models;
 use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use JsonSchema\Constraints\Constraint;
+use JsonSchema\Constraints\Factory;
+use JsonSchema\SchemaStorage;
 use JsonSchema\Validator;
 use Nette\Utils\JsonException;
 use stdClass;
@@ -38,6 +40,11 @@ class JsonSchemaManager extends FileManager {
 	private string $schema;
 
 	/**
+	 * @var SchemaStorage|null JSON schema storage
+	 */
+	private ?SchemaStorage $storage = null;
+
+	/**
 	 * Sets the JSON schema file name
 	 * @param string $schema JSON schema file name
 	 * @throws NonexistentJsonSchemaException
@@ -48,6 +55,22 @@ class JsonSchemaManager extends FileManager {
 			throw new NonexistentJsonSchemaException($message);
 		}
 		$this->schema = $schema;
+	}
+
+	/**
+	 * Returns the JSON schema storage
+	 * @return SchemaStorage|null JSON schema storage
+	 */
+	public function getStorage(): ?SchemaStorage {
+		return $this->storage;
+	}
+
+	/**
+	 * Sets the JSON schema storage
+	 * @param SchemaStorage|null $storage JSON schema storage
+	 */
+	public function setStorage(?SchemaStorage $storage): void {
+		$this->storage = $storage;
 	}
 
 	/**
@@ -63,7 +86,7 @@ class JsonSchemaManager extends FileManager {
 			throw new InvalidJsonException($message);
 		}
 		$schema = parent::readJson($this->schema . '.json');
-		$validator = new Validator();
+		$validator = new Validator(new Factory($this->storage));
 		$checkMode = null;
 		if ($tryFix) {
 			$checkMode = Constraint::CHECK_MODE_TYPE_CAST | Constraint::CHECK_MODE_COERCE_TYPES | Constraint::CHECK_MODE_APPLY_DEFAULTS | Constraint::CHECK_MODE_ONLY_REQUIRED_DEFAULTS;

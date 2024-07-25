@@ -27,8 +27,7 @@ use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use App\ApiModule\Version0\Controllers\BaseConfigController;
-use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\ApiModule\Version0\Models\ControllerValidators;
 use App\ConfigModule\Models\IqrfConfigManager;
 use Nette\IOException;
 use Nette\Utils\JsonException;
@@ -37,26 +36,25 @@ use Nette\Utils\JsonException;
  * IQRF Gateway InfluxDB Bridge configuration controller
  */
 #[Path('/bridge')]
-#[Tag('IQRF Gateway InfluxDB Bridge configuration')]
+#[Tag('Configuration - IQRF Gateway InfluxDB Bridge')]
 class BridgeController extends BaseConfigController {
 
 	/**
 	 * Constructor
 	 * @param IqrfConfigManager $configManager IQRF software configuration manager
-	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
+	 * @param ControllerValidators $validators Controller validators
 	 */
 	public function __construct(
 		private readonly IqrfConfigManager $configManager,
-		RestApiSchemaValidator $validator,
-	)
-	{
-		parent::__construct($validator);
+		ControllerValidators $validators,
+	) {
+		parent::__construct($validators);
 	}
 
 	#[Path('/')]
 	#[Method('GET')]
 	#[OpenApi('
-		summary: Returns current configuration of IQRF Gateway InfluxDB Bridge
+		summary: Returns the current configuration of IQRF Gateway InfluxDB Bridge
 		responses:
 			\'200\':
 				description: Success
@@ -70,10 +68,11 @@ class BridgeController extends BaseConfigController {
 				$ref: \'#/components/responses/ServerError\'
 	')]
 	public function getConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['config:bridge']);
+		$this->validators->checkScopes($request, ['config:bridge']);
 		try {
 			$config = $this->configManager->getConfig();
-			return $response->writeJsonBody($config);
+			$response = $response->writeJsonBody($config);
+			return $this->validators->validateResponse('bridgeConfig', $response);
 		} catch (JsonException $e) {
 			throw new ServerErrorException('Invalid JSON syntax', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (IOException $e) {
@@ -84,7 +83,7 @@ class BridgeController extends BaseConfigController {
 	#[Path('/')]
 	#[Method('PUT')]
 	#[OpenApi('
-		summary: Saves new configuration of IQRF Gateway InfluxDB Bridge
+		summary: Updates the configuration of IQRF Gateway InfluxDB Bridge
 		requestBody:
 			required: true
 			content:
@@ -102,11 +101,11 @@ class BridgeController extends BaseConfigController {
 				$ref: \'#/components/responses/ServerError\'
 	')]
 	public function setConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['config:bridge']);
-		$this->validator->validateRequest('bridgeConfig', $request);
+		$this->validators->checkScopes($request, ['config:bridge']);
+		$this->validators->validateRequest('bridgeConfig', $request);
 		try {
 			$this->configManager->saveConfig($request->getJsonBodyCopy());
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}

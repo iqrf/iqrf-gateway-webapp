@@ -18,6 +18,7 @@ import { type AxiosRequestConfig, type AxiosResponse } from 'axios';
 
 import {
 	type NetworkConnectionConfiguration,
+	type NetworkConnectionCreated,
 	type NetworkConnectionListEntry,
 	type NetworkConnectionType,
 } from '../../types/Network';
@@ -46,9 +47,12 @@ export class NetworkConnectionService extends BaseService {
 	/**
 	 * Creates a new network connection
 	 * @param {NetworkConnectionConfiguration} configuration Network connection configuration
+	 * @return {Promise<NetworkConnectionCreated>} Created network connection
 	 */
-	public async create(configuration: NetworkConnectionConfiguration): Promise<void> {
-		await this.axiosInstance.post('/network/connections', configuration);
+	public async create(configuration: NetworkConnectionConfiguration): Promise<NetworkConnectionCreated> {
+		const response: AxiosResponse<NetworkConnectionCreated> =
+			await this.axiosInstance.post('/network/connections', configuration);
+		return response.data;
 	}
 
 	/**

@@ -3,7 +3,6 @@
 	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/daemonConfiguration.json",
 	"type": "object",
 	"title": "IQRF Gateway Daemon configuration",
-	"additionalProperties": false,
 	"oneOf": [
 		{
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__AutonetworkService.json",

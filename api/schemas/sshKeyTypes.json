@@ -4,11 +4,9 @@
 	"title": "Available SSH key types",
 	"type": "array",
 	"additionalItems": false,
-	"items": [
-		{
-			"$id": "#/items",
-			"type": "string",
-			"example": "ssh-rsa"
-		}
-	]
+	"items": {
+		"$id": "#/items",
+		"type": "string",
+		"example": "ssh-rsa"
+	}
 }

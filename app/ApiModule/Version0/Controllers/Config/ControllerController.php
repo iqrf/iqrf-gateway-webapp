@@ -29,8 +29,7 @@ use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use App\ApiModule\Version0\Controllers\BaseConfigController;
-use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\ApiModule\Version0\Models\ControllerValidators;
 use App\ConfigModule\Exceptions\ControllerPinConfigNotFoundException;
 use App\ConfigModule\Models\ControllerConfigManager;
 use App\ConfigModule\Models\ControllerPinConfigManager;
@@ -41,27 +40,27 @@ use Nette\Utils\JsonException;
  * IQRF Gateway Controller configuration controller
  */
 #[Path('/controller')]
-#[Tag('IQRF Gateway Controller configuration')]
+#[Tag('Configuration - IQRF Gateway Controller')]
 class ControllerController extends BaseConfigController {
 
 	/**
 	 * Constructor
 	 * @param ControllerConfigManager $configManager IQRF Gateway Controller configuration manager
 	 * @param ControllerPinConfigManager $pinManager IQRF Gateway Controller pin configuration manager
-	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
+	 * @param ControllerValidators $validators Controller validators
 	 */
 	public function __construct(
 		private readonly ControllerConfigManager $configManager,
 		private readonly ControllerPinConfigManager $pinManager,
-		RestApiSchemaValidator $validator,
+		ControllerValidators $validators,
 	) {
-		parent::__construct($validator);
+		parent::__construct($validators);
 	}
 
 	#[Path('/')]
 	#[Method('GET')]
 	#[OpenApi('
-		summary: Returns current configuration of IQRF Gateway Controller
+		summary: Returns the current configuration of IQRF Gateway Controller
 		responses:
 			\'200\':
 				description: Success
@@ -75,10 +74,11 @@ class ControllerController extends BaseConfigController {
 				$ref: \'#/components/responses/ServerError\'
 	')]
 	public function getConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['config:controller']);
+		$this->validators->checkScopes($request, ['config:controller']);
 		try {
 			$config = $this->configManager->getConfig();
-			return $response->writeJsonBody($config);
+			$response = $response->writeJsonBody($config);
+			return $this->validators->validateResponse('controllerConfig', $response);
 		} catch (JsonException $e) {
 			throw new ServerErrorException('Invalid JSON syntax', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (IOException $e) {
@@ -89,7 +89,7 @@ class ControllerController extends BaseConfigController {
 	#[Path('/')]
 	#[Method('PUT')]
 	#[OpenApi('
-		summary: Saves new configuration of IQRF Gateway Controller
+		summary: Updates the configuration of IQRF Gateway Controller
 		requestBody:
 			required: true
 			content:
@@ -107,11 +107,11 @@ class ControllerController extends BaseConfigController {
 				$ref: \'#/components/responses/ServerError\'
 	')]
 	public function setConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['config:controller']);
-		$this->validator->validateRequest('controllerConfig', $request);
+		$this->validators->checkScopes($request, ['config:controller']);
+		$this->validators->validateRequest('controllerConfig', $request);
 		try {
 			$this->configManager->saveConfig($request->getJsonBodyCopy());
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
@@ -120,27 +120,26 @@ class ControllerController extends BaseConfigController {
 	#[Path('/pins')]
 	#[Method('GET')]
 	#[OpenApi('
-		summary: List all pin configurations
+		summary: Lists all pin configurations
 		responses:
 			\'200\':
 				description: Success
 				content:
 					application/json:
 						schema:
-							type: array
-							items:
-								$ref: \'#/components/schemas/ControllerPinConfig\'
+							$ref: \'#/components/schemas/ControllerPinConfigList\'
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 	')]
 	public function listPins(ApiRequest $request, ApiResponse $response): ApiResponse {
-		return $response->writeJsonBody($this->pinManager->listPinConfigs());
+		$response = $response->writeJsonBody($this->pinManager->listPinConfigs());
+		return $this->validators->validateResponse('controllerPinConfigList', $response);
 	}
 
 	#[Path('/pins/{id}')]
 	#[Method('GET')]
 	#[OpenApi('
-		summary: Returns a pin configuration profile
+		summary: Returns the pin configuration profile
 		responses:
 			\'200\':
 				description: Success
@@ -158,7 +157,8 @@ class ControllerController extends BaseConfigController {
 		$id = (int) $request->getParameter('id');
 		try {
 			$entity = $this->pinManager->getPinConfig($id);
-			return $response->writeJsonObject($entity);
+			$response = $response->writeJsonObject($entity);
+			return $this->validators->validateResponse('controllerPinConfig', $response);
 		} catch (ControllerPinConfigNotFoundException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
 		}
@@ -192,18 +192,19 @@ class ControllerController extends BaseConfigController {
 				$ref: \'#/components/responses/Forbidden\'
 	')]
 	public function addPins(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validator->validateRequest('controllerPinConfig', $request);
+		$this->validators->validateRequest('controllerPinConfig', $request);
 		$json = $request->getJsonBodyCopy(false);
 		$entity = $this->pinManager->addPinConfig($json);
-		return $response->writeJsonObject($entity)
+		$response = $response->writeJsonObject($entity)
 			->withHeader('Location', '/api/v0/config/controller/pins/' . $entity->getId())
 			->withStatus(ApiResponse::S201_CREATED);
+		return $this->validators->validateResponse('controllerPinConfig', $response);
 	}
 
 	#[Path('/pins/{id}')]
 	#[Method('PUT')]
 	#[OpenApi('
-		summary: Edits a pin configuration profile
+		summary: Updates the pin configuration profile
 		requestBody:
 			required: true
 			content:
@@ -224,12 +225,12 @@ class ControllerController extends BaseConfigController {
 	')]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Controller pin configuration profile ID')]
 	public function editPins(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validator->validateRequest('controllerPinConfig', $request);
+		$this->validators->validateRequest('controllerPinConfig', $request);
 		$id = (int) $request->getParameter('id');
 		$json = $request->getJsonBodyCopy(false);
 		try {
 			$this->pinManager->editPinConfig($id, $json);
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (ControllerPinConfigNotFoundException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
 		}
@@ -238,7 +239,7 @@ class ControllerController extends BaseConfigController {
 	#[Path('/pins/{id}')]
 	#[Method('DELETE')]
 	#[OpenApi('
-		summary: Removes a pin configuration profile
+		summary: Deletes the pin configuration profile
 		responses:
 			\'200\':
 				description: Success
@@ -252,7 +253,7 @@ class ControllerController extends BaseConfigController {
 		$id = (int) $request->getParameter('id');
 		try {
 			$this->pinManager->removePinConfig($id);
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (ControllerPinConfigNotFoundException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
 		}

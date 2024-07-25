@@ -23,11 +23,11 @@ namespace App\ApiModule\Version0\Controllers\Network;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
+use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use App\ApiModule\Version0\Controllers\NetworkController;
-use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\ApiModule\Version0\Models\ControllerValidators;
 use App\NetworkModule\Exceptions\NetworkManagerException;
 use App\NetworkModule\Models\ConnectivityManager;
 
@@ -35,18 +35,19 @@ use App\NetworkModule\Models\ConnectivityManager;
  * Network connectivity controller
  */
 #[Path('/connectivity')]
-class ConnectivityController extends NetworkController {
+#[Tag('IP network - Network connectivity')]
+class ConnectivityController extends BaseNetworkController {
 
 	/**
 	 * Constructor
 	 * @param ConnectivityManager $manager Network connectivity manager
-	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
+	 * @param ControllerValidators $validators Controller validators
 	 */
 	public function __construct(
 		private readonly ConnectivityManager $manager,
-		RestApiSchemaValidator $validator,
+		ControllerValidators $validators,
 	) {
-		parent::__construct($validator);
+		parent::__construct($validators);
 	}
 
 	#[Path('/')]
@@ -66,10 +67,11 @@ class ConnectivityController extends NetworkController {
 				$ref: \'#/components/responses/ServerError\'
 	')]
 	public function check(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['network']);
+		$this->validators->checkScopes($request, ['network']);
 		try {
 			$state = $this->manager->check()->value;
-			return $response->writeJsonBody(['state' => $state]);
+			$response = $response->writeJsonBody(['state' => $state]);
+			return $this->validators->validateResponse('networkConnectivityState', $response);
 		} catch (NetworkManagerException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}

@@ -29,7 +29,7 @@ use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\ApiModule\Version0\Models\ControllerValidators;
 use App\CoreModule\Models\FeatureManager;
 use App\ServiceModule\Exceptions\NonexistentServiceException;
 use App\ServiceModule\Exceptions\NotImplementedException;
@@ -72,14 +72,14 @@ class ServicesController extends BaseController {
 	 * Constructor
 	 * @param ServiceManager $manager Service manager
 	 * @param FeatureManager $featureManager Optional features manager
-	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
+	 * @param ControllerValidators $validators Controller validators
 	 */
 	public function __construct(
 		private readonly ServiceManager $manager,
 		private readonly FeatureManager $featureManager,
-		RestApiSchemaValidator $validator,
+		ControllerValidators $validators,
 	) {
-		parent::__construct($validator);
+		parent::__construct($validators);
 	}
 
 	#[Path('/')]
@@ -106,7 +106,8 @@ class ServicesController extends BaseController {
 				continue;
 			}
 		}
-		return $response->writeJsonBody($array);
+		$response = $response->writeJsonBody($array);
+		return $this->validators->validateResponse('serviceList', $response);
 	}
 
 	#[Path('/{name}')]
@@ -141,7 +142,8 @@ class ServicesController extends BaseController {
 				unset($status['active'], $status['enabled']);
 			}
 			$status['status'] = $this->manager->getStatus($name);
-			return $response->writeJsonBody($status);
+			$response = $response->writeJsonBody($status);
+			return $this->validators->validateResponse('serviceStatus', $response);
 		} catch (UnsupportedInitSystemException $e) {
 			throw new ServerErrorException('Unsupported init system', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (NonexistentServiceException $e) {
@@ -183,7 +185,7 @@ class ServicesController extends BaseController {
 		$this->isServiceWhitelisted($name);
 		try {
 			$this->manager->enable($name);
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (UnsupportedInitSystemException $e) {
 			throw new ServerErrorException('Unsupported init system', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (NonexistentServiceException $e) {
@@ -213,7 +215,7 @@ class ServicesController extends BaseController {
 		$this->isServiceWhitelisted($name);
 		try {
 			$this->manager->disable($name);
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (UnsupportedInitSystemException $e) {
 			throw new ServerErrorException('Unsupported init system', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (NonexistentServiceException $e) {
@@ -243,7 +245,7 @@ class ServicesController extends BaseController {
 		$this->isServiceWhitelisted($name);
 		try {
 			$this->manager->start($name);
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (UnsupportedInitSystemException $e) {
 			throw new ServerErrorException('Unsupported init system', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (NonexistentServiceException $e) {
@@ -273,7 +275,7 @@ class ServicesController extends BaseController {
 		$this->isServiceWhitelisted($name);
 		try {
 			$this->manager->stop($name);
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (UnsupportedInitSystemException $e) {
 			throw new ServerErrorException('Unsupported init system', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (NonexistentServiceException $e) {
@@ -303,7 +305,7 @@ class ServicesController extends BaseController {
 		$this->isServiceWhitelisted($name);
 		try {
 			$this->manager->restart($name);
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (UnsupportedInitSystemException $e) {
 			throw new ServerErrorException('Unsupported init system', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (NonexistentServiceException $e) {

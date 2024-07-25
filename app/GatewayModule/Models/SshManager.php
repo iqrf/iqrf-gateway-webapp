@@ -121,8 +121,8 @@ class SshManager {
 
 	/**
 	 * Adds SSH public keys to authorized keys
-	 * @param array<int, array<string, string>> $items SSH public keys
-	 * @return array<int, string> Array of keys that could not be created
+	 * @param array<int, array{key: string, description: string}> $items SSH public keys
+	 * @return array<int, array{key: string, description: string}> Array of keys that could not be created
 	 * @throws SshDirectoryException
 	 * @throws SshInvalidKeyException
 	 * @throws SshKeyExistsException
@@ -133,7 +133,7 @@ class SshManager {
 			$entity = $this->createKeyEntity($item);
 			$dbEntity = $this->sshKeyRepository->findByHash($entity->getHash());
 			if ($dbEntity !== null) {
-				$failedKeys[] = $item['description'];
+				$failedKeys[] = $item;
 				continue;
 			}
 			$this->entityManager->persist($entity);
@@ -199,9 +199,10 @@ class SshManager {
 
 	/**
 	 * Validates SSH key and returns key entity
-	 * @param array<string, string> $item SSH key string
+	 * @param array{key: string, description: string} $item SSH key string
 	 * @return SshKey SSH key entity
-	 * @throws SshInvalidKeyException
+	 * @throws SshInvalidKeyException Submitted key is not a valid SSH public key.
+	 * @throws SshKeyExistsException SSH key already exists.
 	 */
 	private function createKeyEntity(array $item): SshKey {
 		$tokens = explode(' ', $item['key'], 3);

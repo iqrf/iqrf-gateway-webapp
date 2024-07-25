@@ -27,8 +27,7 @@ use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use App\ApiModule\Version0\Controllers\BaseConfigController;
-use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\ApiModule\Version0\Models\ControllerValidators;
 use App\ConfigModule\Models\TranslatorConfigManager;
 use Nette\IOException;
 use Nette\Utils\JsonException;
@@ -37,25 +36,25 @@ use Nette\Utils\JsonException;
  * IQRF Gateway Translator configuration controller
  */
 #[Path('/translator')]
-#[Tag('IQRF Gateway Translator configuration')]
+#[Tag('Configuration - IQRF Gateway Translator')]
 class TranslatorController extends BaseConfigController {
 
 	/**
 	 * Constructor
 	 * @param TranslatorConfigManager $manager IQRF Gateway Translator configuration manager
-	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
+	 * @param ControllerValidators $validators Controller validators
 	 */
 	public function __construct(
 		private readonly TranslatorConfigManager $manager,
-		RestApiSchemaValidator $validator,
+		ControllerValidators $validators,
 	) {
-		parent::__construct($validator);
+		parent::__construct($validators);
 	}
 
 	#[Path('/')]
 	#[Method('GET')]
 	#[OpenApi('
-		summary: Returns current configuration of IQRF Gateway Translator
+		summary: Returns the current configuration of IQRF Gateway Translator
 		responses:
 			\'200\':
 				description: Success
@@ -69,10 +68,11 @@ class TranslatorController extends BaseConfigController {
 				$ref: \'#/components/responses/ServerError\'
 	')]
 	public function getConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['config:translator']);
+		$this->validators->checkScopes($request, ['config:translator']);
 		try {
 			$config = $this->manager->getConfig();
-			return $response->writeJsonBody($config);
+			$response = $response->writeJsonBody($config);
+			return $this->validators->validateResponse('translatorConfig', $response);
 		} catch (JsonException $e) {
 			throw new ServerErrorException('Invalid JSON syntax', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (IOException $e) {
@@ -83,7 +83,7 @@ class TranslatorController extends BaseConfigController {
 	#[Path('/')]
 	#[Method('PUT')]
 	#[OpenApi('
-		summary: Saves new configuration of IQRF Gateway Translator
+		summary: Updates the configuration of IQRF Gateway Translator
 		requestBody:
 			required: true
 			content:
@@ -101,11 +101,11 @@ class TranslatorController extends BaseConfigController {
 				$ref: \'#/components/responses/ServerError\'
 	')]
 	public function setConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['config:translator']);
-		$this->validator->validateRequest('translatorConfig', $request);
+		$this->validators->checkScopes($request, ['config:translator']);
+		$this->validators->validateRequest('translatorConfig', $request);
 		try {
 			$this->manager->saveConfig($request->getJsonBodyCopy());
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}

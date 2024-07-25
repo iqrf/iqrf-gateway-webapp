@@ -253,7 +253,7 @@ import {
 	NetworkConnectionType,
 	AccessPoint,
 	WepKeyType,
-	NetworkInterfaceType
+	NetworkInterfaceType, NetworkConnectionCreated
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 
 @Component({
@@ -634,12 +634,12 @@ export default class ConnectionForm extends Vue {
 		if (this.uuid === null || connection.uuid === undefined) {
 			connection.uuid = uuidv4();
 			this.service.create(connection)
-				.then(async (response: AxiosResponse) => {
+				.then(async (response: NetworkConnectionCreated) => {
 					if (connect) {
 						if (this.interfaceType === NetworkInterfaceType.GSM && this.hasBrokenGsmModem) {
 							await this.restartModemManager();
 						}
-						await this.connect(response.data, connection.name, true);
+						await this.connect(response.uuid, connection.name, true);
 					} else {
 						this.onSuccess();
 					}

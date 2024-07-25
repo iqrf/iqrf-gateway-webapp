@@ -55,6 +55,8 @@ export default defineConfig(({mode}: ConfigEnv): UserConfig => {
 		},
 		resolve: {
 			alias: {
+				'@iqrf/iqrf-gateway-webapp-client': path.resolve(__dirname, '../api-client/src'),
+				'@iqrf/iqrf-gateway-daemon-utils': path.resolve(__dirname, '../daemon-utils/src'),
 				'@': path.resolve(__dirname, './src'),
 			},
 		},

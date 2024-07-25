@@ -1,0 +1,38 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/mappingList.json",
+	"type": "array",
+	"title": "Mapping list schema",
+	"additionalItems": false,
+	"examples": [
+		[
+			{
+				"id": 2,
+				"type": "uart",
+				"name": "Raspberry Pi",
+				"deviceType": "board",
+				"IqrfInterface": "/dev/ttyS0",
+				"busEnableGpioPin": 7,
+				"pgmSwitchGpioPin": 22,
+				"powerEnableGpioPin": 23,
+				"baudRate": 57600
+			},
+			{
+				"id": 6,
+				"type": "spi",
+				"name": "IQD-GW-02A",
+				"deviceType": "board",
+				"IqrfInterface": "/dev/spidev1.0",
+				"busEnableGpioPin": -1,
+				"pgmSwitchGpioPin": 3,
+				"powerEnableGpioPin": 19,
+				"i2cEnableGpioPin": 7,
+				"spiEnableGpioPin": 10,
+				"uartEnableGpioPin": 6
+			}
+		]
+	],
+	"items": {
+		"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/mappingDetail.json"
+	}
+}

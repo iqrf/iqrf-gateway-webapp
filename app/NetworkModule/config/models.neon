@@ -16,7 +16,7 @@
 services:
 	- App\NetworkModule\Models\ConnectionManager
 	- App\NetworkModule\Models\ConnectivityManager
-	- App\NetworkModule\Models\GsmManager
+	- App\NetworkModule\Models\CellularManager
 	- App\NetworkModule\Models\InterfaceManager
 	- App\NetworkModule\Models\WifiManager
 	- App\NetworkModule\Models\WireguardManager

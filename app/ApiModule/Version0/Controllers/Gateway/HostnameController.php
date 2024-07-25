@@ -23,11 +23,11 @@ namespace App\ApiModule\Version0\Controllers\Gateway;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
+use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use App\ApiModule\Version0\Controllers\GatewayController;
-use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\ApiModule\Version0\Models\ControllerValidators;
 use App\GatewayModule\Exceptions\HostnameException;
 use App\GatewayModule\Models\HostnameManager;
 
@@ -35,18 +35,19 @@ use App\GatewayModule\Models\HostnameManager;
  * Hostname controller
  */
 #[Path('/hostname')]
-class HostnameController extends GatewayController {
+#[Tag('Gateway - Hostname')]
+class HostnameController extends BaseGatewayController {
 
 	/**
 	 * Constructor
 	 * @param HostnameManager $manager Hostname manager
-	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
+	 * @param ControllerValidators $validators Controller validators
 	 */
 	public function __construct(
 		private readonly HostnameManager $manager,
-		RestApiSchemaValidator $validator,
+		ControllerValidators $validators,
 	) {
-		parent::__construct($validator);
+		parent::__construct($validators);
 	}
 
 	#[Path('/')]
@@ -70,11 +71,11 @@ class HostnameController extends GatewayController {
 				$ref: \'#/components/responses/ServerError\'
 	')]
 	public function set(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validator->validateRequest('hostname', $request);
+		$this->validators->validateRequest('hostname', $request);
 		try {
 			$config = $request->getJsonBodyCopy(true);
 			$this->manager->setHostname($config['hostname']);
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (HostnameException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}

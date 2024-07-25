@@ -29,8 +29,7 @@ use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use App\ApiModule\Version0\Controllers\BaseConfigController;
-use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\ApiModule\Version0\Models\ControllerValidators;
 use App\MaintenanceModule\Exceptions\MonitConfigErrorException;
 use App\MaintenanceModule\Models\MonitManager;
 use Nette\IOException;
@@ -39,25 +38,25 @@ use Nette\IOException;
  * Monit controller
  */
 #[Path('/monit')]
-#[Tag('Monit configuration')]
+#[Tag('Configuration - Monit')]
 class MonitController extends BaseConfigController {
 
 	/**
 	 * Constructor
 	 * @param MonitManager $manager Monit manager
-	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
+	 * @param ControllerValidators $validators Controller validators
 	 */
 	public function __construct(
 		private readonly MonitManager $manager,
-		RestApiSchemaValidator $validator,
+		ControllerValidators $validators,
 	) {
-		parent::__construct($validator);
+		parent::__construct($validators);
 	}
 
 	#[Path('/')]
 	#[Method('GET')]
 	#[OpenApi('
-		summary: Returns current monit configuration
+		summary: Returns the current Monit configuration
 		responses:
 			\'200\':
 				description: Success
@@ -67,12 +66,15 @@ class MonitController extends BaseConfigController {
 							$ref: \'#/components/schemas/MonitConfig\'
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
 	 ')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['maintenance:monit']);
+		$this->validators->checkScopes($request, ['maintenance:monit']);
 		try {
 			$config = $this->manager->getConfig();
-			return $response->writeJsonBody($config);
+			$response = $response->writeJsonBody($config);
+			return $this->validators->validateResponse('monitConfig', $response);
 		} catch (MonitConfigErrorException | IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
@@ -81,7 +83,7 @@ class MonitController extends BaseConfigController {
 	#[Path('/')]
 	#[Method('PUT')]
 	#[OpenApi('
-		summary: Saves updated monit configuration
+		summary: Updates the Monit configuration
 		requestBody:
 			required: true
 			content:
@@ -99,11 +101,11 @@ class MonitController extends BaseConfigController {
 				$ref: \'#/components/responses/ServerError\'
 	')]
 	public function save(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['maintenance:monit']);
-		$this->validator->validateRequest('monitConfig', $request);
+		$this->validators->checkScopes($request, ['maintenance:monit']);
+		$this->validators->validateRequest('monitConfig', $request);
 		try {
 			$this->manager->saveConfig($request->getJsonBodyCopy());
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (MonitConfigErrorException | IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
@@ -112,7 +114,7 @@ class MonitController extends BaseConfigController {
 	#[Path('/checks/{name}')]
 	#[Method('GET')]
 	#[OpenApi('
-		summary: Returns Monit check configuration
+		summary: Returns the Monit check configuration
 		responses:
 			\'200\':
 				description: Success
@@ -127,10 +129,11 @@ class MonitController extends BaseConfigController {
 	')]
 	#[RequestParameter(name: 'name', type: 'string', in: 'path', description: 'Check name')]
 	public function getCheck(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['maintenance:monit']);
+		$this->validators->checkScopes($request, ['maintenance:monit']);
 		try {
 			$config = $this->manager->getCheck($request->getParameter('name'));
-			return $response->writeJsonBody($config);
+			$response = $response->writeJsonBody($config);
+			return $this->validators->validateResponse('monitCheckConfig', $response);
 		} catch (IOException $e) {
 			throw new ClientErrorException('Not found', ApiResponse::S404_NOT_FOUND, $e);
 		}
@@ -150,10 +153,10 @@ class MonitController extends BaseConfigController {
 	')]
 	#[RequestParameter(name: 'name', type: 'string', in: 'path', description: 'Check name')]
 	public function enableCheck(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['maintenance:monit']);
+		$this->validators->checkScopes($request, ['maintenance:monit']);
 		try {
 			$this->manager->enableCheck($request->getParameter('name'));
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (IOException $e) {
 			throw new ClientErrorException('Not found', ApiResponse::S404_NOT_FOUND, $e);
 		}
@@ -173,10 +176,10 @@ class MonitController extends BaseConfigController {
 	')]
 	#[RequestParameter(name: 'name', type: 'string', in: 'path', description: 'Check name')]
 	public function disableCheck(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['maintenance:monit']);
+		$this->validators->checkScopes($request, ['maintenance:monit']);
 		try {
 			$this->manager->disableCheck($request->getParameter('name'));
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (IOException $e) {
 			throw new ClientErrorException('Not found', ApiResponse::S404_NOT_FOUND, $e);
 		}

@@ -23,11 +23,11 @@ namespace App\ApiModule\Version0\Controllers\Network;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
+use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use App\ApiModule\Version0\Controllers\NetworkController;
-use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\ApiModule\Version0\Models\ControllerValidators;
 use App\NetworkModule\Exceptions\NetworkManagerException;
 use App\NetworkModule\Models\WifiManager;
 
@@ -35,18 +35,19 @@ use App\NetworkModule\Models\WifiManager;
  * WiFi controller
  */
 #[Path('/wifi')]
-class WifiController extends NetworkController {
+#[Tag('IP network - WiFi')]
+class WifiController extends BaseNetworkController {
 
 	/**
 	 * Constructor
 	 * @param WifiManager $manager WiFi network manager
-	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
+	 * @param ControllerValidators $validators Controller validators
 	 */
 	public function __construct(
 		private readonly WifiManager $manager,
-		RestApiSchemaValidator $validator,
+		ControllerValidators $validators,
 	) {
-		parent::__construct($validator);
+		parent::__construct($validators);
 	}
 
 	#[Path('/list')]
@@ -66,9 +67,10 @@ class WifiController extends NetworkController {
 				$ref: \'#/components/responses/ServerError\'
 	')]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['network']);
+		$this->validators->checkScopes($request, ['network']);
 		try {
-			return $response->writeJsonBody($this->manager->list());
+			$response = $response->writeJsonBody($this->manager->list());
+			return $this->validators->validateResponse('networkWifiList', $response);
 		} catch (NetworkManagerException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}

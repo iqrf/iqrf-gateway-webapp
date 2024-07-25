@@ -15,7 +15,17 @@
 			"model": "I211 Gigabit Network Connection",
 			"name": "eno1",
 			"state": "connected",
-			"connection": "1a27a6e7-dd9c-49a2-9932-2ed4cd7ac716"
+			"connection": "1a27a6e7-dd9c-49a2-9932-2ed4cd7ac716",
+			"availableConnections": [
+				{
+					"uuid": "1a27a6e7-dd9c-49a2-9932-2ed4cd7ac716",
+					"name": "Wired connection 1"
+				}
+			],
+			"connectivity": {
+				"ipv4": "full",
+				"ipv6": "full"
+			}
 		},
 		"additionalProperties": false,
 		"required": [
@@ -25,7 +35,9 @@
 			"model",
 			"type",
 			"state",
-			"connection"
+			"connection",
+			"availableConnections",
+			"connectivity"
 		],
 		"properties": {
 			"name": {
@@ -36,19 +48,41 @@
 			},
 			"macAddress": {
 				"$id": "#/items/properties/macAddress",
-				"type": "string",
+				"oneOf": [
+					{
+						"type": "string",
+						"pattern": "^(?:[0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$"
+					},
+					{
+						"type": "null"
+					}
+				],
 				"title": "MAC address",
 				"example": "00:00:00:00:00:00"
 			},
 			"manufacturer": {
 				"$id": "#/items/properties/manufacturer",
-				"type": "string",
+				"oneOf": [
+					{
+						"type": "string"
+					},
+					{
+						"type": "null"
+					}
+				],
 				"title": "Manufacturer",
 				"example": "Intel Corporation"
 			},
 			"model": {
 				"$id": "#/items/properties/model",
-				"type": "string",
+				"oneOf": [
+					{
+						"type": "string"
+					},
+					{
+						"type": "null"
+					}
+				],
 				"title": "Model",
 				"example": "I211 Gigabit Network Connection"
 			},
@@ -103,6 +137,59 @@
 				],
 				"title": "Connection UUID",
 				"example": "1a27a6e7-dd9c-49a2-9932-2ed4cd7ac716"
+			},
+			"availableConnections": {
+				"$id": "#/items/properties/availableConnections",
+				"type": "array",
+				"title": "Available connections",
+				"items": {
+					"$id": "#/items/properties/availableConnections/items",
+					"type": "object",
+					"title": "Available connection",
+					"additionalProperties": false,
+					"required": [
+						"uuid",
+						"name"
+					],
+					"properties": {
+						"uuid": {
+							"$id": "#/items/properties/availableConnections/items/properties/uuid",
+							"type": "string",
+							"title": "Connection UUID",
+							"example": "1a27a6e7-dd9c-49a2-9932-2ed4cd7ac716"
+						},
+						"name": {
+							"$id": "#/items/properties/availableConnections/items/properties/name",
+							"type": "string",
+							"title": "Connection name",
+							"example": "Wired connection 1"
+						}
+					}
+				}
+			},
+			"connectivity": {
+				"$id": "#/items/properties/connectivity",
+				"type": "object",
+				"title": "Connectivity state",
+				"additionalProperties": false,
+				"required": [
+					"ipv4",
+					"ipv6"
+				],
+				"properties": {
+					"ipv4": {
+						"$id": "#/items/properties/connectivity/properties/ipv4",
+						"type": "string",
+						"enum": ["full", "limited", "portal", "none", "unknown"],
+						"title": "IPv4 connectivity"
+					},
+					"ipv6": {
+						"$id": "#/items/properties/connectivity/properties/ipv6",
+						"type": "string",
+						"enum": ["full", "limited", "portal", "none", "unknown"],
+						"title": "IPv6 connectivity"
+					}
+				}
 			}
 		}
 	}

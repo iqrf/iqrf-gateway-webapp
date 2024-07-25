@@ -1,0 +1,39 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/sshKeysCreated.json",
+	"title": "Created SSH keys",
+	"type": "object",
+	"properties": {
+		"failedKeys": {
+			"$id": "#/properties/failedKeys",
+			"type": "array",
+			"title": "Failed keys",
+			"items": {
+				"$id": "#/properties/failedKeys/items",
+				"title": "SSH key item",
+				"type": "object",
+				"required": [
+					"description",
+					"key"
+				],
+				"additionalProperties": false,
+				"properties": {
+					"description": {
+						"$id": "#/properties/failedKeys/items/properties/description",
+						"title": "SSH key description",
+						"type": "string",
+						"example": "example_key"
+					},
+					"key": {
+						"$id": "#/properties/failedKeys/items/properties/key",
+						"title": "SSH public key",
+						"type": "string",
+						"example": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCqql6MzstZYh1TmWWv11q5O3pISj2ZFl9HgH1JLknLLx44+tXfJ7mIrKNxOOwxIxvcBF8PXSYvobFYEZjGIVCEAjrUzLiIxbyCoxVyle7Q+bqgZ8SeeM8wzytsY+dVGcBxF6N4JS+zVk5eMcV385gG3Y6ON3EG112n6d+SMXY0OEBIcO6x+PnUSGHrSgpBgX7Ks1r7xqFa7heJLLt2wWwkARptX7udSq05paBhcpB0pHtA1Rfz3K2B+ZVIpSDfki9UVKzT8JUmwW6NNzSgxUfQHGwnW7kj4jp4AT0VZk3ADw497M2G/12N0PPB5CnhHf7ovgy6nL1ikrygTKRFmNZISvAcywB9GVqNAVE+ZHDSCuURNsAInVzgYo9xgJDW8wUw2o8U77+xiFxgI5QSZX3Iq7YLMgeksaO4rBJEa54k8m5wEiEE1nUhLuJ0X/vh2xPff6SQ1BL/zkOhvJCACK6Vb15mDOeCSq54Cr7kvS46itMosi/uS66+PujOO+xt/2FWYepz6ZlN70bRly57Q06J+ZJoc9FfBCbCyYH7U/ASsmY095ywPsBo1XQ9PqhnN1/YOorJ068foQDNVpm146mUpILVxmq41Cj55YKHEazXGsdBIbXWhcrRf4G2fJLRcGUr9q8/lERo9oxRm5JFX6TCmj6kmiFqv+Ow9gI0x8GvaQ=="
+					}
+				}
+			},
+			"additionalItems": false
+		}
+	},
+	"additionalProperties": false
+}

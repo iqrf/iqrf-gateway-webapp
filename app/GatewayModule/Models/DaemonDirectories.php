@@ -53,6 +53,14 @@ class DaemonDirectories {
 	}
 
 	/**
+	 * Returns the path of JSON API JSON schema directory
+	 * @return string JSON API JSON schema directory path
+	 */
+	public function getApiSchemaDir(): string {
+		return $this->dataDir . '/apiSchemas/';
+	}
+
+	/**
 	 * Returns the path of cache directory
 	 * @return string Cache directory path
 	 */
@@ -74,6 +82,17 @@ class DaemonDirectories {
 	 */
 	public function getConfigurationDir(): string {
 		return $this->configurationDir;
+	}
+
+	/**
+	 * Returns the path of configuration JSON schema directory
+	 * @return string Configuration JSON schema directory path
+	 */
+	public function getConfigurationSchemaDir(): string {
+		if (is_dir($this->dataDir . '/cfgSchemas/')) {
+			return $this->dataDir . '/cfgSchemas/';
+		}
+		return $this->configurationDir . '/cfgSchemas/';
 	}
 
 	/**

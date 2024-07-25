@@ -44,6 +44,7 @@ class AuthenticationMiddleware implements IMiddleware {
 	private const INSTALLER_PATHS = [
 		'/api/v0/gateway/info',
 		'/api/v0/users',
+		'/api/v0/security/users',
 		'/api/v0/maintenance/restore',
 	];
 
@@ -93,7 +94,11 @@ class AuthenticationMiddleware implements IMiddleware {
 	 * @return ResponseInterface Response
 	 */
 	private function createUnauthorizedResponse(ResponseInterface $response, string $message): ResponseInterface {
-		$json = Json::encode(['error' => $message]);
+		$json = Json::encode([
+			'status' => 'error',
+			'code' => 401,
+			'message' => $message,
+		]);
 		$response->getBody()->write($json);
 		return $response->withStatus(ApiResponse::S401_UNAUTHORIZED)
 			->withHeader('WWW-Authenticate', 'Bearer')

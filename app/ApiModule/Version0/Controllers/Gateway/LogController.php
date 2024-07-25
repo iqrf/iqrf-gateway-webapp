@@ -25,12 +25,12 @@ use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\RequestParameter;
+use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use App\ApiModule\Version0\Controllers\GatewayController;
-use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\ApiModule\Version0\Models\ControllerValidators;
 use App\GatewayModule\Exceptions\LogEmptyException;
 use App\GatewayModule\Exceptions\LogNotFoundException;
 use App\GatewayModule\Exceptions\ServiceLogNotAvailableException;
@@ -43,18 +43,19 @@ use Throwable;
  * Log controller
  */
 #[Path('/logs')]
-class LogController extends GatewayController {
+#[Tag('Gateway - Logs')]
+class LogController extends BaseGatewayController {
 
 	/**
 	 * Constructor
 	 * @param LogManager $logManager Log manager
-	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
+	 * @param ControllerValidators $validators Controller validators
 	 */
 	public function __construct(
 		private readonly LogManager $logManager,
-		RestApiSchemaValidator $validator,
+		ControllerValidators $validators,
 	) {
-		parent::__construct($validator);
+		parent::__construct($validators);
 	}
 
 	#[Path('/')]
@@ -72,8 +73,9 @@ class LogController extends GatewayController {
 				$ref: \'#/components/responses/Forbidden\'
 	')]
 	public function logServices(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['gateway:log']);
-		return $response->writeJsonBody($this->logManager->getAvailableServices());
+		$this->validators->checkScopes($request, ['gateway:log']);
+		$response = $response->writeJsonBody($this->logManager->getAvailableServices());
+		return $this->validators->validateResponse('logServices', $response);
 	}
 
 	#[Path('/{service}')]
@@ -100,7 +102,7 @@ class LogController extends GatewayController {
 	')]
 	#[RequestParameter(name: 'service', type: 'string', description: 'Service name')]
 	public function log(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['gateway:log']);
+		$this->validators->checkScopes($request, ['gateway:log']);
 		$service = $request->getParameter('service');
 		try {
 			return $response->withHeader('Content-Type', 'text/plain')
@@ -130,7 +132,7 @@ class LogController extends GatewayController {
 				$ref: \'#/components/responses/Forbidden\'
 	')]
 	public function logArchive(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['gateway:log']);
+		$this->validators->checkScopes($request, ['gateway:log']);
 		$path = $this->logManager->createArchive();
 		try {
 			$now = new DateTime();

@@ -3,7 +3,6 @@
 	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/feature.json",
 	"type": "object",
 	"title": "Optional feature configuration",
-	"additionalProperties": false,
 	"oneOf": [
 		{
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/docs.json"

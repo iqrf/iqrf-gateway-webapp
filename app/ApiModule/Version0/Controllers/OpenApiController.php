@@ -28,11 +28,12 @@ use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
+use App\ApiModule\Version0\Models\ControllerValidators;
 use App\ApiModule\Version0\Models\OpenApiSchemaBuilder;
-use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use Nette\IOException;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
+use Nette\Utils\Strings;
 
 /**
  * OpenAPI controller
@@ -44,13 +45,13 @@ class OpenApiController extends BaseController {
 	/**
 	 * Constructor
 	 * @param OpenApiSchemaBuilder $schemaBuilder OpenAPI schema builder
-	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
+	 * @param ControllerValidators $validators Controller validators
 	 */
 	public function __construct(
 		private readonly OpenApiSchemaBuilder $schemaBuilder,
-		RestApiSchemaValidator $validator,
+		ControllerValidators $validators,
 	) {
-		parent::__construct($validator);
+		parent::__construct($validators);
 	}
 
 	#[Path('/')]
@@ -91,8 +92,22 @@ class OpenApiController extends BaseController {
 	public function getSchema(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$name = $request->getParameter('name');
 		$path = __DIR__ . '/../../../../api/schemas/' . $name . '.json';
+		$baseUrl = Strings::replace((string) $request->getUri(), '~' . $name . '$~');
 		try {
 			$json = Json::decode(FileSystem::read($path));
+			array_walk_recursive(
+				$json,
+				function (mixed &$value, string $key) use ($baseUrl): void {
+					if (!in_array($key, ['$id', '$ref'], true)) {
+						return;
+					}
+					$matches = Strings::match($value, '~^https://apidocs\.iqrf\.org/iqrf-gateway-webapp-api/schemas/(?<name>.*)\.json$~');
+					if ($matches === null) {
+						return;
+					}
+					$value = $baseUrl . $matches['name'];
+				}
+			);
 			return $response->writeBody(Json::encode($json))
 				->withHeader('Content-Type', 'application/json')
 				->withStatus(ApiResponse::S200_OK);

@@ -26,7 +26,7 @@ use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\ApiModule\Version0\Models\ControllerValidators;
 use App\InstallModule\Models\DependencyManager;
 use App\InstallModule\Models\PhpModuleManager;
 use App\InstallModule\Models\SudoManager;
@@ -46,18 +46,18 @@ class InstallationController extends BaseController {
 	 * @param EntityManager $entityManager Database entity manager
 	 * @param MigrationsDependencyFactory $migrationsDependencyFactory Doctrine migrations dependency factory
 	 * @param PhpModuleManager $phpModuleManager Php module manager
-	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 * @param SudoManager $sudoManager Sudo manager
+	 * @param ControllerValidators $validators Controller validators
 	 */
 	public function __construct(
 		private readonly DependencyManager $dependencyManager,
 		private readonly EntityManager $entityManager,
 		private readonly MigrationsDependencyFactory $migrationsDependencyFactory,
 		private readonly PhpModuleManager $phpModuleManager,
-		RestApiSchemaValidator $validator,
 		private readonly SudoManager $sudoManager,
+		ControllerValidators $validators,
 	) {
-		parent::__construct($validator);
+		parent::__construct($validators);
 	}
 
 	#[Path('/')]
@@ -82,11 +82,13 @@ class InstallationController extends BaseController {
 		}
 		$status['dependencies'] = $this->dependencyManager->listMissing();
 		if (!$status['allMigrationsExecuted']) {
-			return $response->writeJsonBody($status);
+			$response = $response->writeJsonBody($status);
+			return $this->validators->validateResponse('installationCheck', $response);
 		}
 		$users = $this->entityManager->getUserRepository()->count([]);
 		$status['hasUsers'] = $users !== 0;
-		return $response->writeJsonBody($status);
+		$response = $response->writeJsonBody($status);
+		return $this->validators->validateResponse('installationCheck', $response);
 	}
 
 }

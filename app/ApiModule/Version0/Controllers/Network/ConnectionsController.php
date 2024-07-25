@@ -24,12 +24,12 @@ use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\RequestParameter;
+use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use App\ApiModule\Version0\Controllers\NetworkController;
-use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\ApiModule\Version0\Models\ControllerValidators;
 use App\NetworkModule\Enums\ConnectionTypes;
 use App\NetworkModule\Exceptions\NetworkManagerException;
 use App\NetworkModule\Exceptions\NonexistentConnectionException;
@@ -42,18 +42,19 @@ use Ramsey\Uuid\UuidInterface;
  * Network connections controller
  */
 #[Path('/connections')]
-class ConnectionsController extends NetworkController {
+#[Tag('IP network - Network connections')]
+class ConnectionsController extends BaseNetworkController {
 
 	/**
 	 * Constructor
 	 * @param ConnectionManager $manager Network connection manager
-	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
+	 * @param ControllerValidators $validators Controller validators
 	 */
 	public function __construct(
 		private readonly ConnectionManager $manager,
-		RestApiSchemaValidator $validator,
+		ControllerValidators $validators,
 	) {
-		parent::__construct($validator);
+		parent::__construct($validators);
 	}
 
 	#[Path('/')]
@@ -95,11 +96,12 @@ class ConnectionsController extends NetworkController {
 				$ref: \'#/components/responses/Forbidden\'
 	')]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['network']);
+		$this->validators->checkScopes($request, ['network']);
 		$typeParam = $request->getQueryParam('type', null);
 		$type = $typeParam === null ? null : ConnectionTypes::tryFrom($typeParam);
 		$list = $this->manager->list($type);
-		return $response->writeJsonBody($list);
+		$response = $response->writeJsonBody($list);
+		return $this->validators->validateResponse('networkConnections', $response);
 	}
 
 	#[Path('/{uuid}')]
@@ -120,7 +122,7 @@ class ConnectionsController extends NetworkController {
 	')]
 	#[RequestParameter(name: 'uuid', type: 'string', description: 'Connection UUID')]
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['network']);
+		$this->validators->checkScopes($request, ['network']);
 		try {
 			$uuid = $this->getUuid($request);
 			$this->manager->delete($uuid);
@@ -129,7 +131,7 @@ class ConnectionsController extends NetworkController {
 		} catch (NetworkManagerException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
-		return $response->writeBody('Workaround');
+		return $response;
 	}
 
 	#[Path('/')]
@@ -146,6 +148,10 @@ class ConnectionsController extends NetworkController {
 		responses:
 			\'200\':
 				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/NetworkConnectionCreated\'
 			\'400\':
 				$ref: \'#/components/responses/BadRequest\'
 			\'403\':
@@ -154,12 +160,13 @@ class ConnectionsController extends NetworkController {
 				$ref: \'#/components/responses/ServerError\'
 	')]
 	public function add(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['network']);
-		$this->validator->validateRequest('networkConnection', $request);
+		$this->validators->checkScopes($request, ['network']);
+		$this->validators->validateRequest('networkConnection', $request);
 		try {
 			$json = $request->getJsonBodyCopy(false);
 			$uuid = $this->manager->add($json);
-			return $response->writeBody($uuid);
+			$response = $response->writeJsonBody(['uuid' => $uuid]);
+			return $this->validators->validateResponse('networkConnectionCreated', $response);
 		} catch (NetworkManagerException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
@@ -190,10 +197,10 @@ class ConnectionsController extends NetworkController {
 	')]
 	#[RequestParameter(name: 'uuid', type: 'string', description: 'Connection UUID')]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['network']);
+		$this->validators->checkScopes($request, ['network']);
 		try {
 			$uuid = $this->getUuid($request);
-			$this->validator->validateRequest('networkConnection', $request);
+			$this->validators->validateRequest('networkConnection', $request);
 			$json = $request->getJsonBodyCopy(false);
 			$this->manager->edit($uuid, $json);
 		} catch (NonexistentConnectionException $e) {
@@ -201,7 +208,7 @@ class ConnectionsController extends NetworkController {
 		} catch (NetworkManagerException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
-		return $response->writeBody('Workaround');
+		return $response;
 	}
 
 	#[Path('/{uuid}')]
@@ -226,10 +233,11 @@ class ConnectionsController extends NetworkController {
 	')]
 	#[RequestParameter(name: 'uuid', type: 'string', description: 'Connection UUID')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['network']);
+		$this->validators->checkScopes($request, ['network']);
 		try {
 			$uuid = $this->getUuid($request);
-			return $response->writeJsonBody($this->manager->get($uuid)->jsonSerialize());
+			$response = $response->writeJsonBody($this->manager->get($uuid)->jsonSerialize());
+			return $this->validators->validateResponse('networkConnection', $response);
 		} catch (NonexistentConnectionException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
 		} catch (NetworkManagerException $e) {
@@ -263,12 +271,12 @@ class ConnectionsController extends NetworkController {
 	')]
 	#[RequestParameter(name: 'uuid', type: 'string', description: 'Connection UUID')]
 	public function connect(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['network']);
+		$this->validators->checkScopes($request, ['network']);
 		$interface = $request->getQueryParam('interface', null);
 		try {
 			$uuid = $this->getUuid($request);
 			$this->manager->up($uuid, $interface);
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (NonexistentConnectionException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
 		} catch (NetworkManagerException $e) {
@@ -294,11 +302,11 @@ class ConnectionsController extends NetworkController {
 	')]
 	#[RequestParameter(name: 'uuid', type: 'string', description: 'Connection UUID')]
 	public function disconnect(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['network']);
+		$this->validators->checkScopes($request, ['network']);
 		try {
 			$uuid = $this->getUuid($request);
 			$this->manager->down($uuid);
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (NonexistentConnectionException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
 		} catch (NetworkManagerException $e) {

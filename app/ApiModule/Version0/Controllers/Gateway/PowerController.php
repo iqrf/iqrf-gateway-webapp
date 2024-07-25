@@ -23,12 +23,12 @@ namespace App\ApiModule\Version0\Controllers\Gateway;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
+use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use App\ApiModule\Version0\Controllers\GatewayController;
-use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\ApiModule\Version0\Models\ControllerValidators;
 use App\GatewayModule\Exceptions\TuptimeErrorException;
 use App\GatewayModule\Exceptions\TuptimeNotFoundException;
 use App\GatewayModule\Models\PowerManager;
@@ -38,20 +38,21 @@ use App\GatewayModule\Models\TuptimeManager;
  * Gateway power controller
  */
 #[Path('/power')]
-class PowerController extends GatewayController {
+#[Tag('Gateway - Power management')]
+class PowerController extends BaseGatewayController {
 
 	/**
 	 * Constructor
 	 * @param PowerManager $powerManager Gateway power manager
 	 * @param TuptimeManager $tuptimeManager Gateway uptime stats manager
-	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
+	 * @param ControllerValidators $validators Controller validators
 	 */
 	public function __construct(
 		private readonly PowerManager $powerManager,
 		private readonly TuptimeManager $tuptimeManager,
-		RestApiSchemaValidator $validator,
+		ControllerValidators $validators,
 	) {
-		parent::__construct($validator);
+		parent::__construct($validators);
 	}
 
 	#[Path('/poweroff')]
@@ -69,8 +70,9 @@ class PowerController extends GatewayController {
 				$ref: \'#/components/responses/Forbidden\'
 	')]
 	public function powerOff(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['gateway:power']);
-		return $response->writeJsonBody($this->powerManager->powerOff());
+		$this->validators->checkScopes($request, ['gateway:power']);
+		$response = $response->writeJsonBody($this->powerManager->powerOff());
+		return $this->validators->validateResponse('powerControl', $response);
 	}
 
 	#[Path('/reboot')]
@@ -88,8 +90,9 @@ class PowerController extends GatewayController {
 				$ref: \'#/components/responses/Forbidden\'
 	')]
 	public function reboot(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['gateway:power']);
-		return $response->writeJsonBody($this->powerManager->reboot());
+		$this->validators->checkScopes($request, ['gateway:power']);
+		$response = $response->writeJsonBody($this->powerManager->reboot());
+		return $this->validators->validateResponse('powerControl', $response);
 	}
 
 	#[Path('/stats')]
@@ -105,11 +108,20 @@ class PowerController extends GatewayController {
 							$ref: \'#/components/schemas/TuptimeStats\'
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
+			\'424\':
+				description: tuptime not found
+				content:
+					\'application/json\':
+						schema:
+							$ref: \'#/components/schemas/Error\'
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
 	')]
 	public function stats(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['gateway:power']);
+		$this->validators->checkScopes($request, ['gateway:power']);
 		try {
-			return $response->writeJsonBody($this->tuptimeManager->list());
+			$response = $response->writeJsonBody($this->tuptimeManager->list());
+			return $this->validators->validateResponse('tuptimeStats', $response);
 		} catch (TuptimeNotFoundException $e) {
 			throw new ClientErrorException('tuptime not found', ApiResponse::S424_FAILED_DEPENDENCY, $e);
 		} catch (TuptimeErrorException $e) {

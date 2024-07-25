@@ -14,6 +14,7 @@
 # limitations under the License.
 
 extensions:
+	resource: Contributte\DI\Extension\ResourceExtension
 	api: Apitte\Core\DI\ApiExtension
 
 api:
@@ -23,7 +24,7 @@ api:
 		Apitte\Core\DI\Plugin\CoreServicesPlugin:
 		Apitte\Debug\DI\DebugPlugin:
 			debug:
-				panel: %debugMode%
+				panel: false
 				negotiation: %debugMode%
 		Apitte\Middlewares\DI\MiddlewaresPlugin:
 			tracy: false
@@ -36,3 +37,9 @@ api:
 				expansion: list # list|full|none
 				filter: true # true|false|string
 				panel: true
+
+resource:
+	resources:
+		App\ApiModule\Version0\Controllers\:
+			paths:
+				- %appDir%/ApiModule/Version0/Controllers

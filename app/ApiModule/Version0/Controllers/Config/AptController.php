@@ -27,8 +27,7 @@ use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use App\ApiModule\Version0\Controllers\BaseConfigController;
-use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\ApiModule\Version0\Models\ControllerValidators;
 use App\ConfigModule\Exceptions\AptErrorException;
 use App\ConfigModule\Exceptions\AptNotFoundException;
 use App\ConfigModule\Models\AptManager;
@@ -38,25 +37,25 @@ use Nette\IOException;
  * APT configuration controller
  */
 #[Path('/apt')]
-#[Tag('APT configuration')]
+#[Tag('Configuration - APT package manager')]
 class AptController extends BaseConfigController {
 
 	/**
 	 * Constructor
 	 * @param AptManager $manager APT manager
-	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
+	 * @param ControllerValidators $validators Controller validators
 	 */
 	public function __construct(
 		private readonly AptManager $manager,
-		RestApiSchemaValidator $validator,
+		ControllerValidators $validators,
 	) {
-		parent::__construct($validator);
+		parent::__construct($validators);
 	}
 
 	#[Path('/')]
 	#[Method('GET')]
 	#[OpenApi('
-		summary: Retrieves APT configuration
+		summary: Returns APT configuration
 		responses:
 			\'200\':
 				description: Success
@@ -71,7 +70,8 @@ class AptController extends BaseConfigController {
 	')]
 	public function read(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
-			return $response->writeJsonBody($this->manager->read());
+			$response = $response->writeJsonBody($this->manager->read());
+			return $this->validators->validateResponse('aptConfiguration', $response);
 		} catch (AptErrorException | AptNotFoundException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
@@ -98,10 +98,10 @@ class AptController extends BaseConfigController {
 				$ref: \'#/components/responses/ServerError\'
 	')]
 	public function changeEnableUnattendedUpgrades(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validator->validateRequest('aptConfiguration', $request);
+		$this->validators->validateRequest('aptConfiguration', $request);
 		try {
 			$this->manager->write($request->getJsonBodyCopy());
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (AptErrorException | AptNotFoundException | IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}

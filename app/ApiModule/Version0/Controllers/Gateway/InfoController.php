@@ -23,28 +23,29 @@ namespace App\ApiModule\Version0\Controllers\Gateway;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
+use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use App\ApiModule\Version0\Controllers\GatewayController;
-use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\ApiModule\Version0\Models\ControllerValidators;
 use App\GatewayModule\Models\InfoManager;
 
 /**
  * Gateway information controller
  */
 #[Path('/info')]
-class InfoController extends GatewayController {
+#[Tag('Gateway - Information')]
+class InfoController extends BaseGatewayController {
 
 	/**
 	 * Constructor
 	 * @param InfoManager $infoManager Gateway info manager
-	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
+	 * @param ControllerValidators $validators Controller validators
 	 */
 	public function __construct(
 		private readonly InfoManager $infoManager,
-		RestApiSchemaValidator $validator,
+		ControllerValidators $validators,
 	) {
-		parent::__construct($validator);
+		parent::__construct($validators);
 	}
 
 	#[Path('/')]
@@ -63,7 +64,8 @@ class InfoController extends GatewayController {
 	')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$info = $this->infoManager->get();
-		return $response->writeJsonBody($info);
+		$response = $response->writeJsonBody($info);
+		return $this->validators->validateResponse('gatewayInfo', $response);
 	}
 
 	#[Path('/brief')]
@@ -82,7 +84,8 @@ class InfoController extends GatewayController {
 	')]
 	public function getBrief(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$info = $this->infoManager->getBrief();
-		return $response->writeJsonBody($info);
+		$response = $response->writeJsonBody($info);
+		return $this->validators->validateResponse('gatewayBriefInfo', $response);
 	}
 
 }

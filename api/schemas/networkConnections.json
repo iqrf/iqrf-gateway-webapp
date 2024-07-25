@@ -12,7 +12,9 @@
 			"type": "802-3-ethernet",
 			"name": "Wired connection 1",
 			"uuid": "c8fb6f29-ec85-4ff5-b1bb-1d1761196d16",
-			"interfaceName": "eth0"
+			"interfaceName": "eth0",
+			"isActive": true,
+			"state": "activated"
 		},
 		"additionalProperties": false,
 		"required": [
@@ -63,6 +65,36 @@
 				],
 				"title": "Network interface name",
 				"example": "eth0"
+			},
+			"isActive": {
+				"$id": "#/items/properties/isActive",
+				"type": "boolean",
+				"title": "Is the connection active?",
+				"example": true
+			},
+			"state": {
+				"$id": "#/items/properties/state",
+				"type": "string",
+				"enum": [
+					"activated",
+					"activating",
+					"deactivating",
+					"deactivated",
+					"unknown"
+				],
+				"title": "Connection state",
+				"example": "activated"
+			},
+			"bssids": {
+				"$id": "#/items/properties/bssids",
+				"type": "array",
+				"title": "BSSIDs",
+				"items": {
+					"$id": "#/items/properties/bssids/items",
+					"type": "string",
+					"title": "BSSID",
+					"example": "00:11:22:33:44:55"
+				}
 			}
 		}
 	}
