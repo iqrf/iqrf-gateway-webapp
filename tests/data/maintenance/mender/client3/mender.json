@@ -1,0 +1,13 @@
+{
+	"version": 3,
+	"config": {
+		"Servers": [
+			"https://generic.mender.iqrf.org"
+		],
+		"ServerCertificate": "",
+		"TenantToken": "dummy",
+		"UpdatePollIntervalSeconds": 1800,
+		"InventoryPollIntervalSeconds": 28800,
+		"RetryPollIntervalSeconds": 300
+	}
+}

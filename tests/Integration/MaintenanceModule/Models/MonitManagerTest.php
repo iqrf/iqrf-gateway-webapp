@@ -151,8 +151,8 @@ final class MonitManagerTest extends CommandTestCase {
 	protected function setUp(): void {
 		Environment::lock('monit', TMP_DIR);
 		parent::setUp();
-		$monitDir = realpath(TESTER_DIR . '/data/maintenance/');
-		$monitTempDir = realpath(TMP_DIR) . '/maintenance/';
+		$monitDir = realpath(TESTER_DIR . '/data/maintenance/monit/');
+		$monitTempDir = realpath(TMP_DIR) . '/maintenance/monit/';
 		foreach ([$monitDir, $monitTempDir] as $dir) {
 			$this->receiveCommand('chmod 777 ' . escapeshellarg($dir), true, '', '', 0, null);
 			$this->receiveCommand('chmod 666 ' . escapeshellarg($dir . '/conf-available/check_system'), true, '', '', 0, null);

@@ -56,7 +56,17 @@ class MenderClientConfiguration implements IMenderConfiguration {
 	 */
 	public static function configDeserialize(int $version, array $config): self {
 		if (in_array($version, [2, 3], true)) {
-			$servers = [$config['ServerURL'] ?? 'https://hosted.mender.io'];
+			if (array_key_exists('ServerURL', $config)) {
+				$servers = [$config['ServerURL']];
+			} elseif (
+				array_key_exists('Servers', $config) &&
+				is_array($config['Servers']) &&
+				count($config['Servers']) !== 0
+			) {
+				$servers = [$config['Servers'][0]['ServerURL']];
+			} else {
+				$servers = ['https://hosted.mender.io'];
+			}
 		} elseif ($version === 4) {
 			if (array_key_exists('Servers', $config)) {
 				$servers = array_map(static fn (array $server): string => $server['ServerURL'], $config['Servers']);
@@ -67,7 +77,7 @@ class MenderClientConfiguration implements IMenderConfiguration {
 			throw new InvalidArgumentException('Unsupported Mender client configuration version.');
 		}
 		return new self(
-			version: 4,
+			version: $version,
 			servers: $servers,
 			serverCertificate: $config['ServerCertificate'] ?? '',
 			tenantToken: $config['TenantToken'] ?? 'dummy',
@@ -92,6 +102,29 @@ class MenderClientConfiguration implements IMenderConfiguration {
 			inventoryPollIntervalSeconds: $json['config']['InventoryPollIntervalSeconds'],
 			retryPollIntervalSeconds: $json['config']['RetryPollIntervalSeconds'],
 		);
+	}
+
+	/**
+	 * Fixes up Mender client configuration
+	 * @param int $version Mender client major version
+	 * @param array<string, mixed> $config Mender client configuration
+	 * @return array<string, mixed> Fixed up Mender client configuration
+	 */
+	public static function configFixUp(int $version, array $config): array {
+		if (in_array($version, [2, 3], true)) {
+			if (array_key_exists('Servers', $config) && !array_key_exists('ServerURL', $config)) {
+				$config['ServerURL'] = $config['Servers'][0]['ServerURL'];
+			}
+			unset($config['Servers']);
+		} elseif ($version === 4) {
+			if (array_key_exists('ServerURL', $config) && !array_key_exists('Servers', $config)) {
+				$config['Servers'] = [['ServerURL' => $config['ServerURL']]];
+			}
+			unset($config['ServerURL']);
+		} else {
+			throw new InvalidArgumentException('Unsupported Mender client configuration version.');
+		}
+		return $config;
 	}
 
 	/**
