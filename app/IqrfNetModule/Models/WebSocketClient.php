@@ -98,7 +98,7 @@ class WebSocketClient {
 	/**
 	 * Creates a connection to WebSocket server
 	 * @param int $timeout WebSocket client timeout
-	 * @return PromiseInterface React promise
+	 * @return PromiseInterface<WsClient> React promise
 	 */
 	private function createConnection(int $timeout): PromiseInterface {
 		$options = ['timeout' => $timeout];
