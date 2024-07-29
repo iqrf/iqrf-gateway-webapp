@@ -130,7 +130,7 @@ import RfModeStd from '@/assets/std-black.svg';
 import {AxiosError, AxiosResponse} from 'axios';
 import {IDeviceEnumeration, OsInfo, PeripheralEnumeration} from '@/interfaces/DaemonApi/Dpa';
 import {DaemonClientState} from '@/interfaces/wsClient';
-import {NavigationGuardNext, Route} from 'vue-router/types/router';
+import {NavigationGuardNext, Route} from 'vue-router';
 
 interface Product {
 	companyName: string

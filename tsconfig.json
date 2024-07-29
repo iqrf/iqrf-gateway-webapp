@@ -1,16 +1,21 @@
 {
+	"$schema": "https://json.schemastore.org/tsconfig",
 	"compilerOptions": {
-		"target": "es5",
+		"target": "ES2020",
 		"strict": true,
-		"module": "es2020",
-		"moduleResolution": "node",
+		"module": "ES2020",
+		"moduleResolution": "Bundler",
 		"noImplicitAny": false,
 		"allowSyntheticDefaultImports": true,
 		"sourceMap": true,
 		"baseUrl": ".",
 		"experimentalDecorators": true,
 		"resolveJsonModule": true,
-		"types": ["jest", "node"],
+		"types": [
+			"jest",
+			"node",
+			"vuex/types/vue.d.ts"
+		],
 		"lib": ["ES2020", "DOM"],
 		"paths": {
 			"@/*": ["src/*"]

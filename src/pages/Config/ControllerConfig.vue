@@ -468,7 +468,7 @@ import ServiceService from '@/services/ServiceService';
 import {AxiosError, AxiosResponse} from 'axios';
 import {IController, IControllerPinConfig} from '@/interfaces/Config/Controller';
 import {IOption} from '@/interfaces/Coreui';
-import {NavigationGuardNext, Route} from 'vue-router/types/router';
+import {NavigationGuardNext, Route} from 'vue-router';
 
 @Component({
 	components: {
