@@ -145,14 +145,6 @@ limitations under the License.
 							{{ item.getLightIcon() }}
 						</v-icon>
 					</template>
-					<template #[`item.dali`]='{item}'>
-						<v-icon
-							:color='item.hasDali() ? "success" : "error"'
-							size='xl'
-						>
-							{{ item.getDaliIcon() }}
-						</v-icon>
-					</template>
 					<template #expanded-item='{headers, item}'>
 						<td :colspan='headers.length'>
 							<v-container fluid>
@@ -238,7 +230,7 @@ import IqmeshNetworkService from '@/services/DaemonApi/IqmeshNetworkService';
 import StandardDevice from '@/entities/StandardDevice';
 
 import {DataTableHeader} from 'vuetify';
-import {IIqrfDbBoLight, IIqrfDbDeviceFull, IIqrfDbSensor} from '@/interfaces/DaemonApi/IqrfDb';
+import {IIqrfDbBo, IIqrfDbDeviceFull, IIqrfDbSensor} from '@/interfaces/DaemonApi/IqrfDb';
 import {MutationPayload} from 'vuex';
 import {useRepositoryClient} from '@/services/IqrfRepositoryClient';
 import {Product, ProductService} from '@iqrf/iqrf-repository-client';
@@ -318,12 +310,6 @@ export default class StandardDevices extends Vue {
 			sortable: false,
 		},
 		{
-			value: 'dali',
-			text: this.$t('iqrfnet.standard.table.fields.dali').toString(),
-			filterable: false,
-			sortable: false,
-		},
-		{
 			value: 'data-table-expand',
 			text: '',
 		},
@@ -353,14 +339,13 @@ export default class StandardDevices extends Vue {
 			if (mutation.payload.data.msgId !== this.msgId) {
 				return;
 			}
+			this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 			if (mutation.payload.mType === 'messageError') {
 				this.handleMessageError(mutation.payload.data);
 			} else if (mutation.payload.mType === 'iqrfDb_GetDevices') {
 				this.handleGetDevices(mutation.payload.data);
 			} else if (mutation.payload.mType === 'iqrfDb_GetBinaryOutputs') {
 				this.handleGetBinaryOutputs(mutation.payload.data);
-			} else if (mutation.payload.mType === 'iqrfDb_GetDalis') {
-				this.handleGetDalis(mutation.payload.data);
 			} else if (mutation.payload.mType === 'iqrfDb_GetLights') {
 				this.handleGetLights(mutation.payload.data);
 			} else if (mutation.payload.mType === 'iqrfDb_GetSensors') {
@@ -407,7 +392,6 @@ export default class StandardDevices extends Vue {
 	 * @param response Daemon API response
 	 */
 	private handleGetDevices(response): void {
-		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		if (response.status !== 0) {
 			this.$store.dispatch('spinner/hide');
 			this.$toast.error(
@@ -445,7 +429,6 @@ export default class StandardDevices extends Vue {
 	 * @param response Daemon API response
 	 */
 	private handleGetBinaryOutputs(response): void {
-		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		if (response.status !== 0) {
 			this.$store.dispatch('spinner/hide');
 			this.$toast.error(
@@ -453,45 +436,10 @@ export default class StandardDevices extends Vue {
 			);
 			return;
 		}
-		response.rsp.binoutDevices.forEach((device: IIqrfDbBoLight) => {
+		response.rsp.binoutDevices.forEach((device: IIqrfDbBo) => {
 			const idx = this.getDeviceIndex(device.address);
 			if (idx !== -1) {
 				this.auxDevices[idx].setBinouts(device.count);
-			}
-		});
-		this.getDalis();
-	}
-
-	/**
-	 * Retrieves information about devices implementing dali standard
-	 */
-	private getDalis(): void {
-		this.$store.commit(
-			'spinner/UPDATE_TEXT',
-			this.$t('iqrfnet.standard.table.messages.dali.fetch').toString()
-		);
-		const options = new DaemonMessageOptions(null, 10000, 'iqrfnet.standard.table.messages.dali.fetchTimeout', () => this.msgId = null);
-		DbService.getDalis(options)
-			.then((msgId: string) => this.msgId = msgId);
-	}
-
-	/**
-	 * Handles GetDalis Daemon API response
-	 * @param response Daemon API response
-	 */
-	private handleGetDalis(response): void {
-		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
-		if (response.status !== 0) {
-			this.$store.dispatch('spinner/hide');
-			this.$toast.error(
-				this.$t('iqrfnet.standard.table.messages.dali.fetchFailed').toString()
-			);
-			return;
-		}
-		response.rsp.daliDevices.forEach((device: number) => {
-			const idx = this.getDeviceIndex(device);
-			if (idx !== -1) {
-				this.auxDevices[idx].setDali(true);
 			}
 		});
 		this.getLights();
@@ -515,7 +463,6 @@ export default class StandardDevices extends Vue {
 	 * @param response Daemon API response
 	 */
 	private handleGetLights(response): void {
-		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		if (response.status !== 0) {
 			this.$store.dispatch('spinner/hide');
 			this.$toast.error(
@@ -523,10 +470,10 @@ export default class StandardDevices extends Vue {
 			);
 			return;
 		}
-		response.rsp.lightDevices.forEach((device: IIqrfDbBoLight) => {
-			const idx = this.getDeviceIndex(device.address);
+		response.rsp.lightDevices.forEach((device: number) => {
+			const idx = this.getDeviceIndex(device);
 			if (idx !== -1) {
-				this.auxDevices[idx].setLights(device.count);
+				this.auxDevices[idx].setLight(true);
 			}
 		});
 		this.getSensors();
@@ -550,7 +497,6 @@ export default class StandardDevices extends Vue {
 	 * @param response Daemon API response
 	 */
 	private async handleGetSensors(response): Promise<void> {
-		await this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		if (response.status !== 0) {
 			this.$store.dispatch('spinner/hide');
 			this.$toast.error(
@@ -619,7 +565,6 @@ export default class StandardDevices extends Vue {
 	 * @param response Daemon API response
 	 */
 	private handlePingDevices(response): void {
-		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		if (response.status !== 0) {
 			this.$store.dispatch('spinner/hide');
 			this.$toast.error(
@@ -647,7 +592,6 @@ export default class StandardDevices extends Vue {
 	 * @param response Daemon API response
 	 */
 	private handleMessageError(response): void {
-		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		this.$store.dispatch('spinner/hide');
 		this.$toast.error(
 			this.$t('messageError', {error: response.rsp.errorStr}).toString()

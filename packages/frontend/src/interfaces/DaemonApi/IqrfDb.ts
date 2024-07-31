@@ -92,9 +92,9 @@ export interface IIqrfDbDeviceFull extends IIqrfDbDeviceBrief {
 }
 
 /**
- * Database binary output or light record interface
+ * Database binary output record interface
  */
-export interface IIqrfDbBoLight {
+export interface IIqrfDbBo {
 	/**
 	 * Device address
 	 */

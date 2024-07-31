@@ -83,11 +83,6 @@ class StandardDevice {
 	private online = false;
 
 	/**
-	 * Indicates that device implements the DALI standard
-	 */
-	private dali = false;
-
-	/**
 	 * Array of implemented standard sensors
 	 */
 	private sensors: Array<IIqrfDbSensorDetails> = [];
@@ -98,9 +93,9 @@ class StandardDevice {
 	private binouts = 0;
 
 	/**
-	 * Array of implemented lights
+	 * Device implements light
 	 */
-	private lights = 0;
+	private light = false;
 
 	/**
 	 * Show device details
@@ -299,27 +294,11 @@ class StandardDevice {
 	}
 
 	/**
-	 * Sets indication of dali implementation
-	 * @param {boolean} dali Does device implement dali?
+	 * Sets Light implemented
+	 * @param {boolean} light Light implemented
 	 */
-	setDali(dali: boolean): void {
-		this.dali = dali;
-	}
-
-	/**
-	 * Returns number of implemented lights
-	 * @returns Implemented lights
-	 */
-	getLights(): number {
-		return this.lights;
-	}
-
-	/**
-	 * Sets number of implemented lights
-	 * @param {number} lights Number of implemented lights
-	 */
-	setLights(lights: number): void {
-		this.lights = lights;
+	setLight(light: boolean): void {
+		this.light = light;
 	}
 
 	/**
@@ -355,19 +334,11 @@ class StandardDevice {
 	}
 
 	/**
-	 * Checks if device implements the DALI standard
-	 * @returns Does device implement dali?
-	 */
-	hasDali(): boolean {
-		return this.dali;
-	}
-
-	/**
 	 * Checks if device implements the light standard
 	 * @returns Does device implement light?
 	 */
 	hasLight(): boolean {
-		return this.lights > 0;
+		return this.light;
 	}
 
 	/**
@@ -383,7 +354,7 @@ class StandardDevice {
 	 * @returns Does device implement any standard?
 	 */
 	hasStandard(): boolean {
-		return (this.hasBinout() || this.hasDali() || this.hasLight() || this.hasSensor());
+		return (this.hasBinout() || this.hasLight() || this.hasSensor());
 	}
 
 	/**
@@ -417,17 +388,6 @@ class StandardDevice {
 	 */
 	getBinoutIcon(): string {
 		if (this.hasBinout()) {
-			return this.standardSupported;
-		}
-		return this.standardUnsupported;
-	}
-
-	/**
-	 * Returns dali icon
-	 * @returns Dali icon
-	 */
-	getDaliIcon(): string {
-		if (this.hasDali()) {
 			return this.standardSupported;
 		}
 		return this.standardUnsupported;

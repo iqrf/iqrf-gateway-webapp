@@ -97,23 +97,6 @@ class DbService {
 	}
 
 	/**
-	 * Retrieves information about devices implementing DALI standard from database
-	 * @param options Daemon message options
-	 * @returns Message ID
-	 */
-	getDalis(options: DaemonMessageOptions): Promise<string> {
-		const request = {
-			mType: 'iqrfDb_GetDalis',
-			data: {
-				req: {},
-				returnVerbose: true,
-			},
-		};
-		options.request = request;
-		return store.dispatch('daemonClient/sendRequest', options);
-	}
-
-	/**
 	 * Retrieves information about devices implementing Light standard from database
 	 * @param options Daemon message options
 	 * @returns Message ID

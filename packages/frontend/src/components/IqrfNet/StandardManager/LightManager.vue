@@ -18,7 +18,12 @@ limitations under the License.
 	<v-card>
 		<v-card-text>
 			<ValidationObserver v-slot='{invalid}'>
-				<form>
+				<v-form>
+					<v-select
+						v-model='dpaCommand'
+						:items='dpaCommandOptions'
+						:label='$t("iqrfnet.standard.light.form.dpaCommand.title")'
+					/>
 					<ValidationProvider
 						v-slot='{errors, touched, valid}'
 						rules='required|integer|between:1,239'
@@ -38,123 +43,132 @@ limitations under the License.
 							:error-messages='errors'
 						/>
 					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{errors, touched, valid}'
-						rules='required|integer|between:0,31'
-						:custom-messages='{
-							between: $t("iqrfnet.standard.light.form.messages.index"),
-							integer: $t("forms.errors.integer"),
-							required: $t("iqrfnet.standard.light.form.messages.index"),
-						}'
-					>
-						<v-text-field
-							v-model.number='index'
-							type='number'
-							min='0'
-							max='31'
-							:label='$t("iqrfnet.standard.light.form.index")'
-							:success='touched ? valid : null'
-							:error-messages='errors'
-						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{errors, touched, valid}'
-						rules='required|integer|between:0,100'
-						:custom-messages='{
-							between: $t("iqrfnet.standard.light.form.messages.power"),
-							integer: $t("forms.errors.integer"),
-							required: $t("iqrfnet.standard.light.form.messages.power"),
-						}'
-					>
-						<v-text-field
-							v-model.number='power'
-							type='number'
-							min='0'
-							max='100'
-							:label='$t("iqrfnet.standard.light.form.power")'
-							:success='touched ? valid : null'
-							:error-messages='errors'
-						/>
-					</ValidationProvider>
-					<v-btn
-						class='mr-1'
-						color='primary'
-						:disabled='invalid'
-						@click.prevent='enumerate'
-					>
-						{{ $t('forms.enumerate') }}
-					</v-btn>
-					<v-btn
-						class='mr-1'
-						color='primary'
-						:disabled='invalid'
-						@click.prevent='getPower'
-					>
-						{{ $t('iqrfnet.standard.light.form.getPower') }}
-					</v-btn>
-					<v-btn
-						class='mr-1'
-						color='primary'
-						:disabled='invalid'
-						@click.prevent='setPower'
-					>
-						{{ $t('iqrfnet.standard.light.form.setPower') }}
-					</v-btn>
-					<v-btn
-						class='mr-1'
-						color='primary'
-						:disabled='invalid'
-						@click.prevent='incrementPower'
-					>
-						{{ $t('iqrfnet.standard.light.form.increment') }}
-					</v-btn>
-					<v-btn
-						color='primary'
-						:disabled='invalid'
-						@click.prevent='decrementPower'
-					>
-						{{ $t('iqrfnet.standard.light.form.decrement') }}
-					</v-btn>
-				</form>
+					<div v-if='dpaCommand === StandardLightDpaCommands.SendLdi'>
+						<ValidationProvider
+							v-for='i of commands.length'
+							:key='i'
+							v-slot='{errors, touched, valid}'
+							rules='integer|required|between:0,65535'
+							:custom-messages='{
+								between: $t("iqrfnet.standard.light.errors.ldiCommand.between"),
+								integer: $t("iqrfnet.standard.light.errors.ldiCommand.between"),
+								required: $t("iqrfnet.standard.light.errors.ldiCommand.required"),
+							}'
+						>
+							<v-text-field
+								v-model.number='commands[i-1]'
+								type='number'
+								min='0'
+								max='65535'
+								:label='$t("iqrfnet.standard.light.form.ldiCommand.title")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
+							>
+								<template #append-outer>
+									<v-btn
+										v-if='i === commands.length'
+										:class='{
+											"mr-1": i > 1
+										}'
+										small
+										color='success'
+										@click='addLdiCommand'
+									>
+										<v-icon>mdi-plus</v-icon>
+									</v-btn>
+									<v-btn
+										v-if='commands.length > 1'
+										small
+										color='error'
+										@click='removeLdiCommand(i-1)'
+									>
+										<v-icon size='xl'>mdi-minus</v-icon>
+									</v-btn>
+								</template>
+							</v-text-field>
+						</ValidationProvider>
+						<v-btn
+							class='mr-1'
+							color='primary'
+							:disabled='invalid'
+							@click='sendLdiCommands'
+						>
+							{{ $t('forms.send') }}
+						</v-btn>
+						<v-btn
+							color='primary'
+							:disabled='answers.length === 0'
+							@click='showLdiCommandsResult'
+						>
+							{{ $t('forms.showLast') }}
+						</v-btn>
+					</div>
+					<div v-else-if='dpaCommand === StandardLightDpaCommands.SetLai'>
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							rules='double|required|between:0,10'
+							:custom-messages='{
+								between: $t("iqrfnet.standard.light.errors.voltage.between"),
+								double: $t("iqrfnet.standard.light.errors.voltage.between"),
+								required: $t("iqrfnet.standard.light.errors.voltage.required"),
+							}'
+						>
+							<v-text-field
+								v-model.number='voltage'
+								type='number'
+								min='0'
+								max='10'
+								step='.001'
+								:label='$t("iqrfnet.standard.light.form.voltage")'
+								:success='touched ? valid : null'
+								:error-messages='errors'
+							/>
+						</ValidationProvider>
+						<v-btn
+							class='mr-1'
+							color='primary'
+							:disabled='invalid'
+							@click='setLai'
+						>
+							{{ $t('forms.set') }}
+						</v-btn>
+						<v-btn
+							color='primary'
+							:disabled='voltageResult === null'
+							@click='showSetLaiResult'
+						>
+							{{ $t('forms.showLast') }}
+						</v-btn>
+					</div>
+				</v-form>
 			</ValidationObserver>
 		</v-card-text>
-		<v-card-text v-if='responseType !== StandardResponses.NONE'>
-			<v-simple-table>
-				<caption class='simpletable-caption'>
-					{{ $t(`iqrfnet.standard.light.${responseType === StandardResponses.ENUMERATE ? 'enum' : 'powerInfo'}`) }}
-				</caption>
-				<tbody v-if='responseType === StandardResponses.ENUMERATE'>
-					<tr>
-						<th>{{ $t('iqrfnet.standard.light.lights') }}</th>
-						<td>{{ numLights }}</td>
-					</tr>
-				</tbody>
-				<tbody v-else>
-					<tr>
-						<th>{{ $t('iqrfnet.standard.light.index') }}</th>
-						<td>{{ responseIndex }}</td>
-					</tr>
-					<tr>
-						<th>{{ $t('iqrfnet.standard.light.power') }}</th>
-						<td>{{ prevPower }}</td>
-					</tr>
-				</tbody>
-			</v-simple-table>
-		</v-card-text>
+		<LdiCommandsResultModal
+			ref='ldiCommandsResult'
+			:result='answers'
+		/>
+		<SetVoltageResultModal
+			ref='setLaiResult'
+			:result='voltageResult'
+		/>
 	</v-card>
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Component, Ref, Vue} from 'vue-property-decorator';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import LdiCommandsResultModal from '@/components/IqrfNet/StandardManager/LdiCommandsResultModal.vue';
+import SetVoltageResultModal from '@/components/IqrfNet/StandardManager/SetVoltageResultModal.vue';
 
-import {between, integer, required} from 'vee-validate/dist/rules';
-import {StandardResponses} from '@/enums/IqrfNet/Standard';
+import {between, double, integer, required} from 'vee-validate/dist/rules';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
-import StandardLightService, {StandardLight} from '@/services/DaemonApi/StandardLightService';
+import StandardLightService from '@/services/DaemonApi/StandardLightService';
 
+import { SetLaiResult, type LightAnswer, type LightAnswerResult} from '@/interfaces/DaemonApi/Standard';
+import { StandardLightDpaCommands } from '@/enums/IqrfNet/Standard';
 import {MutationPayload} from 'vuex';
+import { ISelectItem } from '@/interfaces/Vuetify';
 
 @Component({
 	components: {
@@ -162,7 +176,7 @@ import {MutationPayload} from 'vuex';
 		ValidationProvider,
 	},
 	data: () => ({
-		StandardResponses,
+		StandardLightDpaCommands,
 	}),
 })
 
@@ -170,62 +184,86 @@ import {MutationPayload} from 'vuex';
  * Light manager card for Standard Manager
  */
 export default class LightManager extends Vue {
+
 	/**
-	 * @var {string} msgId Daemon API message ID
+	 * @property {LdiCommandsResultModal} ldiCommandResults LDI commands result component
+	 */
+	@Ref('ldiCommandsResult') readonly ldiCommandResults!: LdiCommandsResultModal;
+
+	/**
+	 * @property {SetVoltageResultModal} setLaiResult Set LAI voltage result
+	 */
+	@Ref('setLaiResult') readonly setLaiResult!: SetVoltageResultModal;
+
+	/**
+	 * @var {string} msgId Daemon API msg ID
 	 */
 	private msgId = '';
 
 	/**
-	 * @var {number} address Address of device implementing the light standard
+	 * @var {number} address Device address
 	 */
 	private address = 1;
 
 	/**
-	 * @var {number} index Index of light to manage
+	 * @var {LightAnswerResult[]} answers Array of LDI standard answers
 	 */
-	private index = 0;
+	private answers: LightAnswerResult[] = [];
 
 	/**
-	 * @var {number} responseIndex Index of light in responses
+	 * @var {number[]} commands Array of LDI commands to be sent
 	 */
-	private responseIndex = 0;
+	private commands: number[] = [0];
 
 	/**
-	 * @var {number} numLights Number of lights implemented by the device
+	 * @var {StandardLightDpaCommands} dpaCommand DPA command
 	 */
-	private numLights = 0;
+	private dpaCommand = StandardLightDpaCommands.SendLdi;
 
 	/**
-	 * @var {number} power Power to set the light to
+	 * @var {ISelectItem[]} dpaCommandOptions DPA command options
 	 */
-	private power = 0;
+	private dpaCommandOptions: ISelectItem[] = [
+		{
+			text: this.$t('iqrfnet.standard.light.form.dpaCommand.options.send-ldi'),
+			value: StandardLightDpaCommands.SendLdi,
+		},
+		{
+			text: this.$t('iqrfnet.standard.light.form.dpaCommand.options.set-lai'),
+			value: StandardLightDpaCommands.SetLai,
+		}
+	];
 
 	/**
-	 * @var {number} prevPower Previous power setting of the light
+	 * @var {number} voltage Voltage to set
 	 */
-	private prevPower = 0;
+	private voltage: number = 0;
 
 	/**
-	 * @var {StandardResponses} responseType Type of Light standard message
+	 * @var {SetLaiResult | null} voltageResult Set voltage result
 	 */
-	private responseType: StandardResponses = StandardResponses.NONE;
+	private voltageResult: SetLaiResult|null = null;
 
 	/**
-	 * Component unsubscribe function
+	 * Component unsubscribe functin
 	 */
 	private unsubscribe: CallableFunction = () => {return;};
 
 	/**
-	 * vue lifecycle hook created
+	 * Vue lifecycle hook created
 	 */
 	created(): void {
 		extend('between', between);
+		extend('double', double);
 		extend('integer', integer);
 		extend('required', required);
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type === 'daemonClient/SOCKET_ONSEND') {
-				this.responseType = StandardResponses.NONE;
-				this.responseIndex = this.index;
+				if (mutation.payload.mType === 'iqrfLight_SendLdiCommands') {
+					this.answers = [];
+				} else if (mutation.payload.mType === 'iqrfLight_SetLai') {
+					this.voltageResult = null;
+				}
 				return;
 			}
 			if (mutation.type === 'daemonClient/SOCKET_ONMESSAGE') {
@@ -234,14 +272,18 @@ export default class LightManager extends Vue {
 				}
 				this.$store.dispatch('spinner/hide');
 				this.$store.dispatch('daemonClient/removeMessage', this.msgId);
-				if (mutation.payload.mType === 'messageError') {
-					this.$toast.error(
-						this.$t('messageError', {error: mutation.payload.data.rsp.errorStr}).toString()
-					);
-				} else if (mutation.payload.mType === 'iqrfLight_Enumerate') {
-					this.handleEnumerateResponse(mutation.payload);
-				} else if (['iqrfLight_SetPower', 'iqrfLight_IncrementPower', 'iqrfLight_DecrementPower'].includes(mutation.payload.mType)) {
-					this.handlePowerResponse(mutation.payload);
+				switch (mutation.payload.mType) {
+					case 'iqrfLight_SendLdiCommands':
+						this.handleSendLdiCommandsResponse(mutation.payload.data);
+						break;
+					case 'iqrfLight_SetLai':
+						this.handleSetLaiResponse(mutation.payload.data);
+						break;
+					case 'messageError':
+						this.$toast.error(
+							this.$t('messageError', {error: mutation.payload.data.rsp.errorStr}).toString()
+						);
+						break;
 				}
 			}
 		});
@@ -256,96 +298,104 @@ export default class LightManager extends Vue {
 	}
 
 	/**
-	 * Creates WebSocket request options object
-	 * @returns {DaemonMessageOptions} WebSocket request options
+	 * Creates a new LDI command field
 	 */
-	private buildOptions(): DaemonMessageOptions {
-		return new DaemonMessageOptions(null, 30000, 'iqrfnet.standard.light.messages.timeout', () => this.msgId = '');
+	private addLdiCommand(): void {
+		this.commands.push(0);
 	}
 
 	/**
-	 * Performs Light standard enumeration on a device
+	 * Removes a LDI command
 	 */
-	private enumerate(): void {
+	private removeLdiCommand(index: number): void {
+		this.commands.splice(index, 1);
+	}
+
+	/**
+	 * Sends LDI commands to device
+	 */
+	private sendLdiCommands(): void {
 		this.$store.dispatch('spinner/show', {timeout: 30000});
-		StandardLightService.enumerate(this.address, this.buildOptions())
+		StandardLightService.sendLdiCommands(
+			this.address,
+			this.commands,
+			new DaemonMessageOptions(null, 30000, 'iqrfnet.standard.light.messages.ldiCommand.timeout', () => this.msgId = '')
+		)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
 	/**
-	 * Handles Enumerate response
+	 * Handles send LDI commands response
 	 * @param response Daemon API response
 	 */
-	private handleEnumerateResponse(response): void {
-		if (response.data.status === 0) {
-			this.numLights = response.data.rsp.result.lights;
-			this.$toast.success(
-				this.$t('iqrfnet.standard.light.messages.success').toString()
-			);
-			this.responseType = StandardResponses.ENUMERATE;
+	private handleSendLdiCommandsResponse(response): void {
+		if (response.status === 0) {
+			const res = response.rsp.result.answers as LightAnswer[];
+			const results: LightAnswerResult[] = [];
+			for (let i = 0; i < res.length; ++i) {
+				results.push({
+					address: this.address,
+					command: this.commands[i],
+					...res[i],
+				});
+			}
+			this.answers = results;
+			this.showLdiCommandsResult();
 		} else {
 			this.handleError(response);
 		}
 	}
 
 	/**
-	 * Retrieves power setting of a light
+	 * Show LDI commands result modal
 	 */
-	private getPower(): void {
+	private showLdiCommandsResult(): void {
+		this.ldiCommandResults.open();
+	}
+
+	/**
+	 * Set LAI voltage
+	 */
+	private setLai(): void {
 		this.$store.dispatch('spinner/show', {timeout: 30000});
-		StandardLightService.getPower(this.address, this.index, this.buildOptions())
+		StandardLightService.setLaiVoltage(
+			this.address,
+			(Math.round(this.voltage * 1000) / 1000) * 1000,
+			new DaemonMessageOptions(null, 30000, 'iqrf.standard.light.messages.voltage.timeout', () => this.msgId = ''),
+		)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
 	/**
-	 * Changes power setting of a light to a specific value
-	 */
-	private setPower(): void {
-		this.$store.dispatch('spinner/show', {timeout: 30000});
-		StandardLightService.setPower(this.address, [new StandardLight(this.index, this.power)], this.buildOptions())
-			.then((msgId: string) => this.msgId = msgId);
-	}
-
-	/**
-	 * Increments light power according to the Light standard
-	 */
-	private incrementPower(): void {
-		this.$store.dispatch('spinner/show', {timeout: 30000});
-		StandardLightService.incrementPower(this.address, [new StandardLight(this.index, this.power)], this.buildOptions())
-			.then((msgId: string) => this.msgId = msgId);
-	}
-
-	/**
-	 * Decrements light power according to the Light standard
-	 */
-	private decrementPower(): void {
-		this.$store.dispatch('spinner/show', {timeout: 30000});
-		StandardLightService.decrementPower(this.address, [new StandardLight(this.index, this.power)], this.buildOptions())
-			.then((msgId: string) => this.msgId = msgId);
-	}
-
-	/**
-	 * Handles power response
+	 * Handles set LAI voltage response
 	 * @param response Daemon API response
 	 */
-	private handlePowerResponse(response): void {
-		if (response.data.status === 0) {
-			this.prevPower = response.data.rsp.result.prevVals[0];
-			this.$toast.success(
-				this.$t('iqrfnet.standard.light.messages.success').toString()
-			);
-			this.responseType = StandardResponses.READ;
+	private handleSetLaiResponse(response): void {
+		if (response.status === 0) {
+			this.voltageResult = {
+				address: this.address,
+				currentVoltage: (Math.round(this.voltage * 1000) / 1000),
+				previousVoltage: response.rsp.result.prevVoltage / 1000,
+			};
+			this.showSetLaiResult();
 		} else {
 			this.handleError(response);
 		}
 	}
 
 	/**
-	 * Handles error response
+	 * Show set LAI voltage result modal
+	 */
+	private showSetLaiResult(): void {
+		this.setLaiResult.open();
+	}
+
+	/**
+	 * Handles generic errors
 	 * @param response Daemon API response
 	 */
 	private handleError(response): void {
-		switch(response.data.status) {
+		switch(response.status) {
 			case -1:
 				this.$toast.error(
 					this.$t('iqrfnet.standard.light.messages.timeout').toString()
@@ -368,6 +418,7 @@ export default class LightManager extends Vue {
 				break;
 		}
 	}
+
 }
 </script>
 
