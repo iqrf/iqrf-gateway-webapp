@@ -24,7 +24,7 @@ VENDOR_DIR=${DATA_DIR}/vendor
 SBIN_DIR=${DESTDIR}/usr/sbin
 SYSTEMD_DIR=${DESTDIR}/lib/systemd/system
 
-CC_IGNORE=-i "coverage.*" -i "docs/" -i "tests/temp/" -i "www/dist/" -i ".vscode/" -i "packages/api-client/dist/" -i "packages/frontend/dist/" -i "packages/frontend3/dist/" -i "tests/iqrf-gateway-webapp.postman_collection.json" -i "tests/data/gatewayInfo/syntax_error/iqrf-gateway.json"
+CC_IGNORE=-i "coverage.*" -i "docs/*" -i "tests/temp/*" -i "www/dist/*" -i ".vscode/*" -i "packages/*/coverage/*" -i "packages/*/dist/*" -i "packages/*/docs/*" -i "tests/iqrf-gateway-webapp.postman_collection.json" -i "tests/data/gatewayInfo/syntax_error/iqrf-gateway.json"
 
 WEBAPP_USER ?= www-data
 WEBAPP_GROUP ?= www-data
