@@ -64,6 +64,7 @@ const show: Ref<boolean> = ref(false);
 
 function powerOff(): void {
 	emit('confirm');
+	close();
 }
 
 function close(): void {

@@ -21,6 +21,7 @@ import {
 	type GatewayUptime,
 	type GatewayUptimeRaw,
 	type PowerActionResponse,
+	type PowerActionResponseRaw,
 } from '../../types/Gateway';
 import { BaseService } from '../BaseService';
 
@@ -34,9 +35,11 @@ export class PowerService extends BaseService {
 	 * @return {Promise<PowerActionResponse>} Gateway shutdown time
 	 */
 	public async powerOff(): Promise<PowerActionResponse> {
-		const response: AxiosResponse<PowerActionResponse> =
+		const response: AxiosResponse<PowerActionResponseRaw> =
 			await this.axiosInstance.post('/gateway/power/poweroff');
-		return response.data;
+		return {
+			timestamp: DateTime.fromSeconds(response.data.timestamp),
+		};
 	}
 
 	/**
@@ -44,9 +47,11 @@ export class PowerService extends BaseService {
 	 * @return {Promise<PowerActionResponse>} Gateway reboot time
 	 */
 	public async reboot(): Promise<PowerActionResponse> {
-		const response: AxiosResponse<PowerActionResponse> =
+		const response: AxiosResponse<PowerActionResponseRaw> =
 			await this.axiosInstance.post('/gateway/power/reboot');
-		return response.data;
+		return {
+			timestamp: DateTime.fromSeconds(response.data.timestamp),
+		};
 	}
 
 	/**

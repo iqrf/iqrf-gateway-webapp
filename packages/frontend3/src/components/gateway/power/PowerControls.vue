@@ -46,7 +46,7 @@ function powerOff(): void {
 	service.powerOff()
 		.then((response: PowerActionResponse) =>
 			toast.success(
-				i18n.t('components.gateway.power.messages.powerOffSuccess', { time: parseActionTime(response.timestamp) }).toString(),
+				i18n.t('components.gateway.power.messages.powerOffSuccess', { time: i18n.d(response.timestamp.toJSDate(), 'time') }),
 			),
 		).catch((error: AxiosError) =>
 			basicErrorToast(error, 'components.gateway.power.messages.powerOffFailed'),
@@ -57,17 +57,10 @@ function reboot(): void {
 	service.reboot()
 		.then((response: PowerActionResponse) =>
 			toast.success(
-				i18n.t('components.gateway.power.messages.rebootSuccess', { time: parseActionTime(response.timestamp) }).toString(),
+				i18n.t('components.gateway.power.messages.rebootSuccess', { time: i18n.d(response.timestamp.toJSDate(), 'time') }),
 			),
 		).catch((error: AxiosError) =>
 			basicErrorToast(error, 'components.gateway.power.messages.rebootFailed'),
 		);
-}
-
-/**
- * Converts timestamp to time string
- */
-function parseActionTime(timestamp: number): string {
-	return new Date(timestamp * 1_000).toLocaleTimeString();
 }
 </script>

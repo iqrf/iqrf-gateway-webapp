@@ -100,7 +100,7 @@ export class FileResponse<T extends FileResponseType> {
 		const contentType: string = (response.headers['content-type'] as string | undefined) ?? 'application/octet-stream';
 		let fileName: string | null = name;
 		if (fileName === null && contentDisposition) {
-			const fileNameMatch: RegExpMatchArray | null = contentDisposition.match(/filename="(.+)"/);
+			const fileNameMatch: RegExpMatchArray | null = /filename="(.+)"/.exec(contentDisposition);
 			if (fileNameMatch !== null && fileNameMatch.length === 2) {
 				fileName = fileNameMatch[1];
 			}

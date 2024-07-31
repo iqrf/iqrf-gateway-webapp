@@ -66,7 +66,7 @@ export const useMonitorStore = defineStore('monitor', {
 		 */
 		onOpen(): void {
 			if (this.reconnecting) {
-				this.reconnected;
+				this.reconnected = true;
 			}
 			this.connected = true;
 		},

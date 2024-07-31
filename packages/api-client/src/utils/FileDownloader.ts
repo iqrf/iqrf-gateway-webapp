@@ -47,7 +47,7 @@ export class FileDownloader {
 	public static getDownloadElementFromAxiosResponse(response: AxiosResponse<object|string>, contentType: string, fileName: string): HTMLAnchorElement {
 		const contentDisposition = response.headers['content-disposition'] as string;
 		if (contentDisposition) {
-			const fileNameMatch = contentDisposition.match(/filename="(.+)"/);
+			const fileNameMatch = /filename="(.+)"/.exec(contentDisposition);
 			if (fileNameMatch !== null && fileNameMatch.length === 2) {
 				fileName = fileNameMatch[1];
 			}

@@ -30,10 +30,3 @@ export interface MacAddress {
 	address: string
 	iface: string
 }
-
-/**
- * Hostnamectl interface
- */
-export interface IHostname {
-	hostname: string
-}

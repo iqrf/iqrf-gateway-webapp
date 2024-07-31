@@ -98,7 +98,7 @@ export const useDaemonStore = defineStore('daemon', {
 		sendMessage(options: DaemonMessageOptions): Promise<string> {
 			const message = options.request;
 			if (message === null) {
-				return Promise.reject();
+				throw new Error('No message to send, message is null.');
 			}
 			const monitorStore = useMonitorStore();
 			if (monitorStore.mode === DaemonMode.Service && !serviceModeWhitelist.includes(message.mType)) {

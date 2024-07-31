@@ -15,9 +15,13 @@
  */
 
 import { type AxiosResponse } from 'axios';
+import { DateTime } from 'luxon';
 
 import { FileResponse } from '../../types';
-import { type PowerActionResponse } from '../../types/Gateway';
+import {
+	type PowerActionResponse,
+	type PowerActionResponseRaw,
+} from '../../types/Gateway';
 import { type GatewayBackup } from '../../types/Maintenance';
 import { BaseService } from '../BaseService';
 
@@ -43,12 +47,14 @@ export class BackupService extends BaseService {
 	 * @return {Promise<PowerActionResponse>} Power action response
 	 */
 	public async restore(archive: File): Promise<PowerActionResponse> {
-		const response: AxiosResponse<PowerActionResponse> =
+		const response: AxiosResponse<PowerActionResponseRaw> =
 			await this.axiosInstance.post('/maintenance/restore', archive, {
 				headers: { 'Content-Type': archive.type },
 				timeout: 120_000,
 			});
-		return response.data;
+		return {
+			timestamp: DateTime.fromSeconds(response.data.timestamp),
+		};
 	}
 
 }
