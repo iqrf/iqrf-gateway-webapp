@@ -19,12 +19,12 @@ limitations under the License.
 		<CCard class='border-0 card-margin-bottom'>
 			<CCardHeader class='border-0'>
 				<span class='h4 mb-0 pt-5'>
-					{{ $t('config.daemon.misc.tracer.title') }}
+					{{ $t('config.daemon.misc.syslog.title') }}
 				</span>
 				<CButton
 					color='success'
 					size='sm'
-					to='/config/daemon/misc/tracer/add'
+					to='/config/daemon/misc/syslog/add'
 					class='float-right'
 				>
 					<CIcon :content='cilPlus' size='sm' />
@@ -51,7 +51,7 @@ limitations under the License.
 								class='mr-1'
 								color='info'
 								size='sm'
-								:to='"/config/daemon/misc/tracer/edit/" + item.instance'
+								:to='"/config/daemon/misc/syslog/edit/" + item.instance'
 							>
 								<CIcon :content='cilPencil' size='sm' />
 								{{ $t('table.actions.edit') }}
@@ -69,14 +69,14 @@ limitations under the License.
 				</CDataTable>
 			</CCardBody>
 		</CCard>
-		<TracerDeleteModal ref='deleteModal' @deleted='getConfig' />
+		<SyslogDeleteModal ref='deleteModal' @deleted='getConfig' />
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CIcon} from '@coreui/vue/src';
-import TracerDeleteModal from './TracerDeleteModal.vue';
+import SyslogDeleteModal from '@/components/Config/Misc/SyslogDeleteModal.vue';
 
 import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 
@@ -93,7 +93,7 @@ import {IField} from '@/interfaces/Coreui';
 		CCardHeader,
 		CDataTable,
 		CIcon,
-		TracerDeleteModal,
+		SyslogDeleteModal,
 	},
 	data: () => ({
 		cilPencil,
@@ -109,7 +109,7 @@ export default class TracerList extends Vue {
 	/**
 	 * @constant {string} componentName Logging service component name
 	 */
-	private readonly componentName = 'shape::TraceFileService';
+	private readonly componentName = 'iqrf::SyslogLogger';
 
 	/**
 	 * @constant {Array<IField>} fields Array of CoreUI data table columns
@@ -118,14 +118,6 @@ export default class TracerList extends Vue {
 		{
 			key: 'instance',
 			label: this.$t('forms.fields.instanceName')
-		},
-		{
-			key: 'path',
-			label: this.$t('config.daemon.misc.tracer.form.path')
-		},
-		{
-			key: 'filename',
-			label: this.$t('config.daemon.misc.tracer.form.filename')
 		},
 		{
 			key: 'actions',
@@ -170,11 +162,11 @@ export default class TracerList extends Vue {
 	}
 
 	/**
-	 * Removes tracer instance
-	 * @param {string} instance Tracer instance
+	 * Removes syslog instance
+	 * @param {string} instance Syslog instance
 	 */
 	private removeInstance(instance: string): void {
-		(this.$refs.deleteModal as TracerDeleteModal).showModal(instance);
+		(this.$refs.deleteModal as SyslogDeleteModal).showModal(instance);
 	}
 }
 </script>

@@ -880,13 +880,39 @@
 						"WebsocketPort": "Please enter the port of monitoring WebSocket server."
 					}
 				},
-				"tracer": {
-					"title": "Logging service",
-					"description": "Logging service settings.",
-					"add": "Add logging service configuration",
-					"edit": "Edit logging service configuration",
+				"logging": {
+					"title": "Logging services",
+					"description": "Logging services settings."
+				},
+				"syslog": {
+					"title": "Syslog logging service",
+					"description": "Syslog logging service settings.",
+					"add": "Add syslog logging service configuration",
+					"edit": "Edit syslog logging service configuration",
 					"form": {
-						"title": "Logging instance",
+						"title": "Syslog logging instance"
+					},
+					"modal": {
+						"title": "Syslog logging delete confirmation",
+						"prompt": "Are you sure you want to delete syslog logging instance {instance}?"
+					},
+					"messages": {
+						"addFailed": "Failed to create new syslog logging instance: {error}",
+						"addSuccess": "Syslog logging instance {instance} has been added.",
+						"deleteFailed": "Failed to delete syslog logging instance {instance}: {error}",
+						"deleteSuccess": "Syslog logging instance {instance} has been deleted.",
+						"editFailed": "Failed to edit syslog logging instance {instance}: {error}",
+						"editSuccess": "Syslog logging instance {instance} has been edited.",
+						"fetchFailed": "Failed to retrieve syslog logging instance {instance} configuration: {error}"
+					}
+				},
+				"tracer": {
+					"title": "File logging service",
+					"description": "File logging service settings.",
+					"add": "Add file logging service configuration",
+					"edit": "Edit file logging service configuration",
+					"form": {
+						"title": "File logging instance",
 						"path": "Path to directory with logs",
 						"filename": "File name",
 						"maxSize": "Maximum size in bytes",
@@ -902,8 +928,8 @@
 						"level": "Verbosity level"
 					},
 					"modal": {
-						"title": "Logging delete confirmation",
-						"prompt": "Are you sure you want to delete Logging instance {instance}?"
+						"title": "File logging delete confirmation",
+						"prompt": "Are you sure you want to delete file logging instance {instance}?"
 					},
 					"messages": {
 						"zeroValues": "Disabled if value is set to 0.",

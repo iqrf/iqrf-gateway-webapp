@@ -38,8 +38,9 @@ limitations under the License.
 				<CTab :title='$t("config.daemon.misc.monitor.title")'>
 					<MonitorList @fetched='configFetch' />
 				</CTab>
-				<CTab :title='$t("config.daemon.misc.tracer.title")'>
+				<CTab :title='$t("config.daemon.misc.logging.title")'>
 					<TracerList @fetched='configFetch' />
+					<SyslogList @fetched='configFetch' />
 				</CTab>
 			</CTabs>
 		</CCard>
@@ -55,6 +56,7 @@ import JsonApi from '@/components/Config/Misc/JsonApi.vue';
 import JsonRawApi from '@/components/Config/Misc/JsonRawApi.vue';
 import JsonSplitter from '@/components/Config/Misc/JsonSplitter.vue';
 import MonitorList from '@/components/Config/Misc/MonitorList.vue';
+import SyslogList from '@/components/Config/Misc/SyslogList.vue';
 import TracerList from '@/components/Config/Misc/TracerList.vue';
 
 import {UserRole} from '@/services/AuthenticationService';
@@ -74,6 +76,7 @@ import {IConfigFetch} from '@/interfaces/Config/Daemon';
 		JsonRawApi,
 		JsonSplitter,
 		MonitorList,
+		SyslogList,
 		TracerList,
 	},
 	metaInfo: {

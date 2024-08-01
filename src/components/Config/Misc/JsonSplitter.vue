@@ -17,7 +17,9 @@ limitations under the License.
 <template>
 	<CCard class='border-0 card-margin-bottom'>
 		<CCardHeader>
-			{{ $t('config.daemon.misc.jsonSplitter.title') }}
+			<span class='h4 mb-0 pt-5'>
+				{{ $t('config.daemon.misc.jsonSplitter.title') }}
+			</span>
 		</CCardHeader>
 		<CCardBody>
 			<CElementCover
@@ -78,7 +80,16 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
+import {
+	CButton,
+	CCard,
+	CCardBody,
+	CCardHeader,
+	CElementCover,
+	CForm,
+	CInput,
+	CInputCheckbox
+} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
@@ -95,6 +106,7 @@ import {IJsonSplitter} from '@/interfaces/Config/JsonApi';
 		CCard,
 		CCardBody,
 		CCardHeader,
+		CElementCover,
 		CForm,
 		CInput,
 		CInputCheckbox,

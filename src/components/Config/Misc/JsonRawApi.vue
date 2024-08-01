@@ -17,7 +17,9 @@ limitations under the License.
 <template>
 	<CCard class='border-0 card-margin-bottom'>
 		<CCardHeader>
-			{{ $t('config.daemon.misc.jsonRawApi.title') }}
+			<span class='h4 mb-0 pt-5'>
+				{{ $t('config.daemon.misc.jsonRawApi.title') }}
+			</span>
 		</CCardHeader>
 		<CCardBody>
 			<CElementCover

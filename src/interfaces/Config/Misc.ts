@@ -140,6 +140,18 @@ export interface IIqrfRepositoryCredentials {
 }
 
 /**
+ * Syslog logging service component instance interface
+ */
+export interface ISyslogLogger extends ComponentInstanceBase {
+
+	/**
+	 * Array of verbosity levels for different channels
+	 */
+	VerbosityLevels: Array<ITraceVerbosityLevel>
+
+}
+
+/**
  * Logging service component instance interface
  */
 export interface ITraceService extends ComponentInstanceBase {
@@ -202,7 +214,7 @@ export interface IOtaUploadConfig {
 	 * Component name
 	 */
 	component: string
-	
+
 	/**
 	 * Component instance name
 	 */
@@ -227,22 +239,22 @@ export interface IIqrfInfo {
 	 * Component name
 	 */
 	component: string
-	
+
 	/**
 	 * Component instance name
 	 */
 	instance: string
-	
+
 	/**
 	 * Enumerate network after startup?
 	 */
 	enumAtStartUp: boolean
-	
+
 	/**
 	 * Enumeration period in minutes
 	 */
 	enumPeriod: number
-	
+
 	/**
 	 * Uniform DPA version and OS build according to coordinator?
 	 */

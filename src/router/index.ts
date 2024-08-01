@@ -90,6 +90,7 @@ const MqttMessagingTable = () => import(/* webpackChunkName: "config" */ '@/page
 const MqttMessagingForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/MqttMessagingForm.vue');
 const UdpMessagingTable = () => import(/* webpackChunkName: "config" */ '@/pages/Config/UdpMessagingTable.vue');
 const UdpMessagingForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/UdpMessagingForm.vue');
+const SyslogForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/SyslogForm.vue');
 const TracerForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/TracerForm.vue');
 const WebsocketList = () => import(/* webpackChunkName: "config" */ '@/pages/Config/WebsocketList.vue');
 const WebsocketInterfaceForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/WebsocketInterfaceForm.vue');
@@ -555,6 +556,31 @@ const routes: Array<RouteConfig> = [
 											},
 											{
 												component: MonitorForm,
+												path: 'edit/:instance',
+												props: true,
+												meta: {
+													role: UserRole.NORMAL,
+												},
+											},
+										],
+									},
+									{
+										path: 'syslog',
+										component: {
+											render(c) {
+												return c('router-view');
+											}
+										},
+										children: [
+											{
+												component: SyslogForm,
+												path: 'add',
+												meta: {
+													role: UserRole.NORMAL,
+												},
+											},
+											{
+												component: SyslogForm,
 												path: 'edit/:instance',
 												props: true,
 												meta: {
