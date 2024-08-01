@@ -70,7 +70,7 @@ export default class DaemonApiValidator {
 				errors = this.buildViolationString(this.validator.errors);
 				return false;
 			}
-		} catch (error) {
+		} catch {
 			return false;
 		} finally {
 			callback(errors);

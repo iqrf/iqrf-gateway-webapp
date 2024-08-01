@@ -512,7 +512,7 @@ export default class SchedulerList extends Vue {
 				cron = cron.join(' ');
 			}
 			return SchedulerRecord.expressionToString(cron);
-		} catch (err) {
+		} catch {
 			return '';
 		}
 	}

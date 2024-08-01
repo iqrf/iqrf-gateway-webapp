@@ -127,7 +127,7 @@ class ManagementService {
 		try {
 			const mode = response.data.rsp.operMode;
 			return mode as DaemonModeEnum;
-		} catch (e) {
+		} catch {
 			return DaemonModeEnum.unknown;
 		}
 	}

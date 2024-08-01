@@ -46,14 +46,14 @@ const getters: GetterTree<FeatureState, any> = {
 	isEnabled: (state: FeatureState) => (name: string): boolean|undefined => {
 		try {
 			return state.features[name].enabled;
-		} catch (e) {
+		} catch {
 			return undefined;
 		}
 	},
 	configuration: (state: FeatureState) => (name: string): Feature|undefined => {
 		try {
 			return state.features[name];
-		} catch (e) {
+		} catch {
 			return undefined;
 		}
 	},
