@@ -19,6 +19,12 @@
 			"role": "developer"
 		}
 	],
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp-utils/ip-php-library.git"
+		}
+	],
 	"require": {
 		"php": ">=7.4.0",
 		"ext-json": "*",
@@ -36,13 +42,14 @@
 		"contributte/sentry": "^0.1.2",
 		"contributte/translation": "^v1.1.0",
 		"cweagans/composer-patches": "^1.7.3",
-		"darsyn/ip": "^4.1.0",
+		"darsyn/ip": "dev-develop as 5.0.0",
+		"darsyn/ip-doctrine": "^5.0.0",
 		"egulias/email-validator": "^3.2.6",
 		"grifart/enum": "^0.2.1",
 		"guzzlehttp/guzzle": "^7.8.1",
 		"iqrf/iqrf-ide-macros-parser": "^v1.2.0",
 		"iqrf/iqrf-repository": "dev-master",
-		"justinrainbow/json-schema": "^5.2.13",
+		"justinrainbow/json-schema": "^6.0.0",
 		"latte/latte": "^v2.11.7",
 		"lcobucci/jwt": "^4.3.0",
 		"nette/application": "^v3.1.14",
