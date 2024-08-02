@@ -25,7 +25,7 @@ RUN sed -i "s/\t\"commit\"\: .*/\t\"commit\"\: \"`git rev-parse --verify HEAD`\"
 RUN pnpm install
 RUN pnpm run build
 
-FROM amd64/nginx:stable
+FROM --platform=linux/amd64 amd64/nginx:stable
 
 LABEL maintainer="roman.ondracek@iqrf.com"
 
