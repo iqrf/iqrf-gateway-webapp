@@ -229,7 +229,7 @@ export default class LightManager extends Vue {
 	 * @var {StandardLightDpaCommands} dpaCommand DPA command
 	 */
 	private dpaCommand = StandardLightDpaCommands.SendLdi;
-	
+
 	/**
 	 * @var {IOption[]} dpaCommandOptions DPA command options
 	 */
@@ -339,21 +339,43 @@ export default class LightManager extends Vue {
 	 * @param response Daemon API response
 	 */
 	private handleSendLdiCommandsResponse(response): void {
-		if (response.status === 0) {
-			const res = response.rsp.result.answers as LightAnswer[];
-			const results: LightAnswerResult[] = [];
-			for (let i = 0; i < res.length; ++i) {
-				results.push({
-					address: this.address,
-					command: this.commands[i],
-					...res[i],
-				});
+		switch(response.status) {
+			case 0: {
+				const res = response.rsp.result.answers as LightAnswer[];
+				const results: LightAnswerResult[] = [];
+				for (let i = 0; i < res.length; ++i) {
+					results.push({
+						address: this.address,
+						command: this.commands[i],
+						...res[i],
+					});
+				}
+				this.answers = results;
+				this.showLdiCommandsResult();
+				break;
 			}
-			this.answers = results;
-			this.showLdiCommandsResult();
-		} else {
-			this.handleError(response);
+			case -1:
+				this.$toast.error(
+					this.$t('iqrfnet.standard.light.messages.ldiCommand.timeout').toString()
+				);
+				break;
+			case 3:
+				this.$toast.error(
+					this.$t('iqrfnet.standard.light.messages.pnum').toString()
+				);
+				break;
+			case 8:
+				this.$toast.error(
+					this.$t('forms.messages.noDevice', {address: this.address}).toString()
+				);
+				break;
+			default:
+				this.$toast.error(
+					this.$t('iqrfnet.standard.light.messages.ldiCommand.failure').toString()
+				);
+				break;
 		}
+
 	}
 
 	/**
@@ -370,7 +392,7 @@ export default class LightManager extends Vue {
 		this.$store.dispatch('spinner/show', {timeout: 30000});
 		StandardLightService.setLaiVoltage(
 			this.address,
-			(Math.round(this.voltage * 1000) / 1000) * 1000,
+			this.voltage,
 			new DaemonMessageOptions(null, 30000, 'iqrf.standard.light.messages.voltage.timeout', () => this.msgId = ''),
 		)
 			.then((msgId: string) => this.msgId = msgId);
@@ -381,34 +403,18 @@ export default class LightManager extends Vue {
 	 * @param response Daemon API response
 	 */
 	private handleSetLaiResponse(response): void {
-		if (response.status === 0) {
-			this.voltageResult = {
-				address: this.address,
-				currentVoltage: (Math.round(this.voltage * 1000) / 1000),
-				previousVoltage: response.rsp.result.prevVoltage / 1000,
-			};
-			this.showSetLaiResult();
-		} else {
-			this.handleError(response);
-		}
-	}
-
-	/**
-	 * Show set LAI voltage result modal
-	 */
-	private showSetLaiResult(): void {
-		this.setLaiResult.open();
-	}
-
-	/**
-	 * Handles generic errors
-	 * @param response Daemon API response
-	 */
-	private handleError(response): void {
 		switch(response.status) {
+			case 0:
+				this.voltageResult = {
+					address: this.address,
+					currentVoltage: this.voltage,
+					previousVoltage: response.rsp.result.prevVoltage,
+				};
+				this.showSetLaiResult();
+				break;
 			case -1:
 				this.$toast.error(
-					this.$t('iqrfnet.standard.light.messages.timeout').toString()
+					this.$t('iqrfnet.standard.light.messages.voltage.timeout').toString()
 				);
 				break;
 			case 3:
@@ -423,10 +429,18 @@ export default class LightManager extends Vue {
 				break;
 			default:
 				this.$toast.error(
-					this.$t('iqrfnet.standard.light.messages.failure').toString()
+					this.$t('iqrfnet.standard.light.messages.voltage.failure').toString()
 				);
 				break;
 		}
 	}
+
+	/**
+	 * Show set LAI voltage result modal
+	 */
+	private showSetLaiResult(): void {
+		this.setLaiResult.open();
+	}
+
 }
 </script>

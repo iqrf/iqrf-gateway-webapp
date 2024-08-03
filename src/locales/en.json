@@ -2338,8 +2338,10 @@
 						"timeout": "LDI commands request timed out. The device may be offline.",
 						"failure": "An error occurred during the LDI commands request."
 					},
-					"failure": "An error has ocurred during LDI request.",
-					"timeout": "LDI request timed out. The device may be offline.",
+					"voltage": {
+						"failure": "An error occurred during the set voltage request.",
+						"timeout": "Set voltage request timed out. The device may be offline."
+					},
 					"pnum": "Device does not support the Light standard."
 				}
 			},
