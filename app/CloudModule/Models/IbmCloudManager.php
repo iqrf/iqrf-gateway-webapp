@@ -71,7 +71,6 @@ class IbmCloudManager implements IManager {
 			'TopicResponse' => 'iot-2/evt/' . $values['eventId'] . '/fmt/json',
 			'User' => 'use-token-auth',
 			'Password' => $values['token'],
-			'EnabledSSL' => true,
 			'KeepAliveInterval' => 20,
 			'ConnectTimeout' => 5,
 			'MinReconnect' => 1,

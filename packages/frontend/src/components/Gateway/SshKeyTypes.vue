@@ -90,7 +90,7 @@ export default class SshKeyTypes extends Vue {
 		try {
 			SshKeyUtils.validatePublicKey(key, this.types);
 			return true;
-		} catch (e: Error) {
+		} catch {
 			return false;
 		}
 	}

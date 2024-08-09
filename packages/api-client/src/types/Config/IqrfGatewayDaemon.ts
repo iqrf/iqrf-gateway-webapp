@@ -227,8 +227,6 @@ export interface IqrfGatewayDaemonMqttMessaging extends IqrfGatewayDaemonCompone
 	EnableServerCertAuth: boolean;
 	/// Cipher suites
 	EnabledCipherSuites: string;
-	/// TLS enabled
-	EnabledSSL: boolean;
 	/// Keep-alive interval
 	KeepAliveInterval: number;
 	/// Path to key store

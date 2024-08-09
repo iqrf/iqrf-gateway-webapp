@@ -161,6 +161,7 @@ function onSubmit(): void {
 		url += '/' + path.value;
 	}
 	emit('edited', url);
+	close();
 }
 
 function close(): void {

@@ -404,7 +404,7 @@ limitations under the License.
 				<v-col cols='5'>
 					<v-text-field
 						v-model='pdata'
-						v-maska:[maskaOptions]
+						v-maska='maskaOptions'
 						:label='$t("components.iqrfnet.send-dpa.pdata")'
 						:rules='[
 							(v: string) => validatePdata(v) || $t("components.iqrfnet.send-dpa.validation.pdataInvalid"),
@@ -450,7 +450,7 @@ import { GenericService } from '@iqrf/iqrf-gateway-daemon-utils/services';
 import { type DaemonApiResponse, type DpaPacketMessage } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { mdiHexadecimal, mdiMenu, mdiNumeric, mdiLock, mdiLockOpen } from '@mdi/js';
-import { vMaska } from 'maska';
+import { vMaska } from 'maska/vue';
 import { type Ref, ref } from 'vue';
 import { VForm } from 'vuetify/components';
 

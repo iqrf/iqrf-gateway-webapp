@@ -166,7 +166,7 @@ export default class MonitForm extends Vue {
 					validator.parse(value);
 					const url: URL = new URL(value);
 					return (url.protocol === 'http:' || url.protocol === 'https:') && url.username === '' && url.password === '' && url.search === '' && url.hash === '';
-				} catch (error) {
+				} catch {
 					return false;
 				}
 			},

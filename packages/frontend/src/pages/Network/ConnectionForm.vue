@@ -218,7 +218,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import axios, {AxiosError, AxiosResponse} from 'axios';
+import axios, {AxiosError} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 import {MetaInfo} from 'vue-meta';

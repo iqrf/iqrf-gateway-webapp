@@ -169,12 +169,7 @@ limitations under the License.
 					v-model='profile.acceptAsyncMsg'
 					:label='$t("components.configuration.daemon.connections.acceptAsyncMessages")'
 				/>
-				<v-checkbox
-					v-model='profile.EnabledSSL'
-					:label='$t("components.configuration.daemon.connections.enableTls")'
-					:hide-details='!profile.EnabledSSL'
-				/>
-				<span v-if='profile.EnabledSSL'>
+				<span v-if='hasTls'>
 					<TextInput
 						v-model='profile.TrustStore'
 						:label='$t("components.configuration.daemon.connections.trustStore")'
@@ -268,7 +263,6 @@ const componentProps = defineProps({
 			Password: '',
 			Persistence: IqrfGatewayDaemonMqttMessagingPersistence.FILESYSTEM,
 			Qos: IqrfGatewayDaemonMqttMessagingQos.AT_LEAST_ONCE,
-			EnabledSSL: false,
 			KeepAliveInterval: 20,
 			ConnectTimeout: 5,
 			MinReconnect: 1,
@@ -299,7 +293,6 @@ const defaultProfile: IqrfGatewayDaemonMqttMessaging = {
 	Password: '',
 	Persistence: IqrfGatewayDaemonMqttMessagingPersistence.FILESYSTEM,
 	Qos: IqrfGatewayDaemonMqttMessagingQos.AT_LEAST_ONCE,
-	EnabledSSL: false,
 	KeepAliveInterval: 20,
 	ConnectTimeout: 5,
 	MinReconnect: 1,
@@ -314,6 +307,11 @@ const defaultProfile: IqrfGatewayDaemonMqttMessaging = {
 };
 const profile: Ref<IqrfGatewayDaemonMqttMessaging> = ref({ ...defaultProfile });
 let instance = '';
+const hasTls = computed((): boolean =>
+	profile.value.BrokerAddr.startsWith('ssl://') ||
+	profile.value.BrokerAddr.startsWith('mqtts://') ||
+	profile.value.BrokerAddr.startsWith('wss://'),
+);
 const qosOptions = [
 	{
 		title: i18n.t('components.configuration.daemon.connections.mqtt.qosLevels.atMostOnce').toString(),

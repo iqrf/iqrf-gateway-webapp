@@ -186,7 +186,7 @@ import NetworkOperators from '@/components/Network/NetworkOperators.vue';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 
-import {AxiosError, AxiosResponse} from 'axios';
+import {AxiosError} from 'axios';
 import {DataTableHeader} from 'vuetify';
 import {
 	NetworkConnectionListEntry,

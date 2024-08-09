@@ -55,33 +55,11 @@ limitations under the License.
 						</v-toolbar>
 					</template>
 					<template #[`item.EnabledSSL`]='{item}'>
-						<v-menu offset-y>
-							<template #activator='{on, attrs}'>
-								<v-btn
-									:color='item.EnabledSSL ? "success" : "error"'
-									small
-									v-bind='attrs'
-									v-on='on'
-								>
-									{{ $t(`states.${item.EnabledSSL ? "enabled" : "disabled"}`) }}
-									<v-icon>mdi-menu-down</v-icon>
-								</v-btn>
-							</template>
-							<v-list dense>
-								<v-list-item
-									dense
-									@click='changeEnabledSSL(item, true)'
-								>
-									{{ $t('states.enabled') }}
-								</v-list-item>
-								<v-list-item
-									dense
-									@click='changeEnabledSSL(item, false)'
-								>
-									{{ $t('states.disabled') }}
-								</v-list-item>
-							</v-list>
-						</v-menu>
+						<v-icon
+							:color='hasTls(item) ? "success" : "error"'
+						>
+							{{ hasTls(item) ? 'mdi-check-circle-outline' : 'mdi-close-circle-outline' }}
+						</v-icon>
 					</template>
 					<template #[`item.acceptAsyncMsg`]='{item}'>
 						<v-menu offset-y>
@@ -301,15 +279,13 @@ export default class MqttMessagingTable extends Vue {
 	}
 
 	/**
-	 * Updates SSL configuration of MQTT messaging component instance
+	 * Checks if MQTT messaging instance uses TLS
 	 * @param {IMqttInstance} instance MQTT messaging instance
-	 * @param {boolean} enabledSsl SSL setting
 	 */
-	private changeEnabledSSL(instance: IMqttInstance, enabledSsl: boolean) : void{
-		if (instance.EnabledSSL === enabledSsl) {
-			return;
-		}
-		this.edit(instance, {EnabledSSL: enabledSsl});
+	private hasTls(instance: IMqttInstance): boolean {
+		return instance.BrokerAddr.startsWith('ssl://') ||
+			instance.BrokerAddr.startsWith('mqtts://') ||
+			instance.BrokerAddr.startsWith('wss://');
 	}
 
 	/**

@@ -129,7 +129,7 @@ export default class CoordinatorInfo extends Vue {
 							return;
 						}
 						this.trMcuType = this.osInfo.trMcuType;
-					} catch (e) {
+					} catch {
 						this.hasData = false;
 					}
 				}

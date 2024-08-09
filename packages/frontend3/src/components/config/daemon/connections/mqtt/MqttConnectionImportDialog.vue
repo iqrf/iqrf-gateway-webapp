@@ -120,7 +120,6 @@ function isMqttConnectionProfile(obj: any): obj is IqrfGatewayDaemonMqttMessagin
 		obj.ConnectTimeout !== undefined && typeof obj.ConnectTimeout === 'number' &&
 		obj.EnableServerCertAuth !== undefined && typeof obj.EnableServerCertAuth === 'boolean' &&
 		obj.EnabledCipherSuites !== undefined && typeof obj.EnabledCipherSuites === 'string' &&
-		obj.EnabledSSL !== undefined && typeof obj.EnabledSSL === 'boolean' &&
 		obj.KeepAliveInterval !== undefined && typeof obj.KeepAliveInterval === 'number' &&
 		obj.KeyStore !== undefined && typeof obj.KeyStore === 'string' &&
 		obj.MaxReconnect !== undefined && typeof obj.MaxReconnect === 'number' &&
