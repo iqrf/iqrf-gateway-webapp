@@ -152,7 +152,7 @@ watchEffect(() => {
 function setMode(mode: DaemonMode): void {
 	const options = new DaemonMessageOptions(
 		null,
-		5000,
+		5_000,
 		'components.gateway.mode.messages.setTimeout',
 		() => {msgId.value = null;},
 	);

@@ -1,4 +1,4 @@
-import { type UartBaudRates } from '../../enums';
+import { type UartBaudRates } from '../../enums/embed';
 
 /**
  * Embedded OS Batch raw parameters interface

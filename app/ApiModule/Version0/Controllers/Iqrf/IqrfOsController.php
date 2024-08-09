@@ -27,8 +27,7 @@ use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use App\ApiModule\Version0\Controllers\IqrfController;
-use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\ApiModule\Version0\Models\ControllerValidators;
 use App\IqrfNetModule\Exceptions\DpaFileNotFoundException;
 use App\IqrfNetModule\Exceptions\DpaRfMissingException;
 use App\IqrfNetModule\Exceptions\UploaderFileException;
@@ -42,18 +41,18 @@ use Nette\IOException;
  * IQRF OS controller
  */
 #[Path('/')]
-class IqrfOsController extends IqrfController {
+class IqrfOsController extends BaseIqrfController {
 
 	/**
 	 * Constructor
 	 * @param IqrfOsManager $iqrfOsManager IQRF OS manager
-	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
+	 * @param ControllerValidators $validators Controller validators
 	 */
 	public function __construct(
 		private readonly IqrfOsManager $iqrfOsManager,
-		RestApiSchemaValidator $validator,
+		ControllerValidators $validators,
 	) {
-		parent::__construct($validator);
+		parent::__construct($validators);
 	}
 
 	#[Path('/osPatches')]
@@ -73,9 +72,10 @@ class IqrfOsController extends IqrfController {
 				$ref: \'#/components/responses/Forbidden\'
 	')]
 	public function listOsPatches(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['iqrf:upload']);
+		$this->validators->checkScopes($request, ['iqrf:upload']);
 		$patches = $this->iqrfOsManager->listOsPatches();
-		return $response->writeJsonBody($patches);
+		$response = $response->writeJsonBody($patches);
+		return $this->validators->validateResponse('iqrfOsPatchDetail', $response);
 	}
 
 	#[Path('/osUpgrades')]
@@ -99,11 +99,12 @@ class IqrfOsController extends IqrfController {
 				$ref: \'#/components/responses/Forbidden\'
 	')]
 	public function listOsUpgrades(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['iqrf:upload']);
-		$this->validator->validateRequest('iqrfOsPatchUpgrade', $request);
+		$this->validators->checkScopes($request, ['iqrf:upload']);
+		$this->validators->validateRequest('iqrfOsPatchUpgrade', $request);
 		$data = $request->getJsonBodyCopy(false);
 		$upgrades = $this->iqrfOsManager->listOsUpgrades($data->build, $data->mcuType);
-		return $response->writeJsonBody($upgrades);
+		$response = $response->writeJsonBody($upgrades);
+		return $this->validators->validateResponse('iqrfOsUpgradeList', $response);
 	}
 
 	#[Path('/upgradeOs')]
@@ -129,11 +130,11 @@ class IqrfOsController extends IqrfController {
 				$ref: \'#/components/responses/ServerError\'
 	')]
 	public function upgradeOs(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['iqrf:upload']);
-		$this->validator->validateRequest('iqrfOsDpaUpgrade', $request);
+		$this->validators->checkScopes($request, ['iqrf:upload']);
+		$this->validators->validateRequest('iqrfOsDpaUpgrade', $request);
 		try {
 			$this->iqrfOsManager->upgradeOs($request->getJsonBodyCopy(false));
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (DpaRfMissingException | DpaFileNotFoundException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
 		} catch (UploaderFileException $e) {

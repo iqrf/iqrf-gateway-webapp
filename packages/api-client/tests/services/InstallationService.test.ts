@@ -47,22 +47,20 @@ describe('InstallationService', (): void => {
 				'dependencies': [],
 				'hasUsers': true,
 			});
-		await service.check()
-			.then((actual: InstallationChecks): void => {
-				expect(actual).toStrictEqual({
-					allMigrationsExecuted: true,
-					phpModules: {
-						allExtensionsLoaded: true,
-					},
-					sudo: {
-						user: 'www-data',
-						exists: true,
-						userSudo: true,
-					},
-					dependencies: [],
-					hasUsers: true,
-				});
-			});
+		const actual: InstallationChecks = await service.check();
+		expect(actual).toStrictEqual({
+			allMigrationsExecuted: true,
+			phpModules: {
+				allExtensionsLoaded: true,
+			},
+			sudo: {
+				user: 'www-data',
+				exists: true,
+				userSudo: true,
+			},
+			dependencies: [],
+			hasUsers: true,
+		});
 	});
 
 });

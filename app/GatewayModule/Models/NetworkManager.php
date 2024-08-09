@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Models;
 
 use App\CoreModule\Models\CommandManager;
+use App\NetworkModule\Entities\MultiAddress;
 
 /**
  * Network manager
@@ -82,7 +83,7 @@ class NetworkManager {
 			$cmd = 'ip a s ' . escapeshellarg($interface) . ' | grep inet | grep global | grep -v temporary | awk \'{print $2}\' | grep \'/\'';
 			$output = $this->commandManager->run($cmd, true)->getStdout();
 			if ($output !== '') {
-				$addresses[$interface] = explode(PHP_EOL, $output);
+				$addresses[$interface] = array_map(static fn (string $address): string => MultiAddress::fromPrefix($address)->getAddress()->getProtocolAppropriateAddress(), explode(PHP_EOL, $output));
 			}
 		}
 		return $addresses;

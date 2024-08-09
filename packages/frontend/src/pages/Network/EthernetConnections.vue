@@ -142,11 +142,9 @@ import {extendedErrorToast} from '@/helpers/errorToast';
 import {useApiClient} from '@/services/ApiClient';
 import {
 	NetworkConnectionListEntry,
-	NetworkConnectionType
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkConnection';
-import {
-	NetworkInterfaceType
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkInterface';
+	NetworkConnectionType,
+	NetworkInterfaceType,
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 
 @Component({
 	components: {
@@ -159,7 +157,6 @@ import {
 		title: 'network.ethernet.title',
 	},
 })
-
 export default class EthernetConnections extends Vue {
 
 	/**

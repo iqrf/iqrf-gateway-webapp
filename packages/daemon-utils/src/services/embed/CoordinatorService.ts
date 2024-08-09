@@ -1,16 +1,18 @@
 import { EmbedCoordinatorMessages, GenericMessages } from '../../enums';
 import {
 	type AddrMidPairParams,
+	type EmbedBackupParams,
+	type EmbedSharedParams,
+} from '../../types';
+import {
 	type AuthorizeBondParams,
 	type CoordinatorRestoreParams,
 	type DiscoveryParams,
-	type EmbedBackupParams,
 	type EmbedBondNodeParams,
 	type EmbedSetDpaParams,
 	type EmbedSetHopsParams,
-	type EmbedSharedParams,
 	type EmbedSmartConnectParams,
-} from '../../types';
+} from '../../types/embed';
 import { type DaemonMessageOptions } from '../../utils';
 import { BaseEmbedService } from '../BaseEmbedService';
 
@@ -79,7 +81,7 @@ export class CoordinatorService extends BaseEmbedService {
 					rData: '00.00.00.04.ff.ff.f0.00',
 				},
 				returnVerbose: true,
-				timeout: 11000,
+				timeout: 11_000,
 			},
 		};
 		return options;

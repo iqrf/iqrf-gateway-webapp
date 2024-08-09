@@ -132,8 +132,8 @@ const componentProps = defineProps({
 		default: () => ({
 			component: IqrfGatewayDaemonComponentName.IqrfUdpMessaging,
 			instance: '',
-			LocalPort: 55000,
-			RemotePort: 55300,
+			LocalPort: 55_000,
+			RemotePort: 55_300,
 			deviceRecordExpiration: 300,
 		}),
 		required: false,
@@ -146,8 +146,8 @@ const form: Ref<VForm | null> = ref(null);
 const defaultProfile: IqrfGatewayDaemonUdpMessaging = {
 	component: IqrfGatewayDaemonComponentName.IqrfUdpMessaging,
 	instance: '',
-	LocalPort: 55000,
-	RemotePort: 55300,
+	LocalPort: 55_000,
+	RemotePort: 55_300,
 	deviceRecordExpiration: 300,
 };
 const profile: Ref<IqrfGatewayDaemonUdpMessaging> = ref({ ...defaultProfile });

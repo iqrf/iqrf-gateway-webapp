@@ -18,9 +18,10 @@ import { type AxiosRequestConfig, type AxiosResponse } from 'axios';
 
 import {
 	type NetworkConnectionConfiguration,
+	type NetworkConnectionCreated,
 	type NetworkConnectionListEntry,
 	type NetworkConnectionType,
-} from '../../types/Network/NetworkConnection';
+} from '../../types/Network';
 import { BaseService } from '../BaseService';
 
 /**
@@ -46,28 +47,31 @@ export class NetworkConnectionService extends BaseService {
 	/**
 	 * Creates a new network connection
 	 * @param {NetworkConnectionConfiguration} configuration Network connection configuration
+	 * @return {Promise<NetworkConnectionCreated>} Created network connection
 	 */
-	public async create(configuration: NetworkConnectionConfiguration): Promise<void> {
-		await this.axiosInstance.post('/network/connections', configuration);
+	public async create(configuration: NetworkConnectionConfiguration): Promise<NetworkConnectionCreated> {
+		const response: AxiosResponse<NetworkConnectionCreated> =
+			await this.axiosInstance.post('/network/connections', configuration);
+		return response.data;
 	}
 
 	/**
-	 * Fetches the network connection configuration
+	 * Retrieves the network connection configuration
 	 * @param {string} uuid Network connection UUID
 	 * @return {Promise<NetworkConnectionConfiguration>} Network connection configuration
 	 */
-	public async fetch(uuid: string): Promise<NetworkConnectionConfiguration> {
+	public async get(uuid: string): Promise<NetworkConnectionConfiguration> {
 		const response: AxiosResponse<NetworkConnectionConfiguration> =
 			await this.axiosInstance.get(`/network/connections/${uuid}`);
 		return response.data;
 	}
 
 	/**
-	 * Edits the network connection configuration
+	 * Updates the network connection configuration
 	 * @param {string} uuid Network connection UUID
 	 * @param {NetworkConnectionConfiguration} configuration Network connection configuration
 	 */
-	public async edit(uuid: string, configuration: NetworkConnectionConfiguration): Promise<void> {
+	public async update(uuid: string, configuration: NetworkConnectionConfiguration): Promise<void> {
 		await this.axiosInstance.put(`/network/connections/${uuid}`, configuration);
 	}
 

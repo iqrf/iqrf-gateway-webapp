@@ -28,44 +28,46 @@ import { BaseService } from '../BaseService';
 export class IqrfGatewayControllerService extends BaseService {
 
 	/**
-	 * Fetch IQRF Gateway Controller configuration
+	 * Retrieves IQRF Gateway Controller configuration
 	 * @return {Promise<IqrfGatewayControllerConfig>} IQRF Gateway Controller configuration
 	 */
-	public async fetchConfig(): Promise<IqrfGatewayControllerConfig> {
-		const response: AxiosResponse<IqrfGatewayControllerConfig> = await this.axiosInstance.get('/config/controller');
+	public async getConfig(): Promise<IqrfGatewayControllerConfig> {
+		const response: AxiosResponse<IqrfGatewayControllerConfig> =
+			await this.axiosInstance.get('/config/controller');
 		return response.data;
 	}
 
 	/**
-	 * Saves IQRF Gateway Controller configuration
+	 * Updates IQRF Gateway Controller configuration
 	 * @param {IqrfGatewayControllerConfig} config IQRF Gateway Controller configuration
-	 * @returns
 	 */
-	public async saveConfig(config: IqrfGatewayControllerConfig): Promise<void> {
+	public async updateConfig(config: IqrfGatewayControllerConfig): Promise<void> {
 		await this.axiosInstance.put('/config/controller', config);
 	}
 
 	/**
-	 * List IQRF Gateway Controller mappings
+	 * Lists IQRF Gateway Controller mappings
 	 * @return {Promise<IqrfGatewayControllerMapping[]>} IQRF Gateway Controller mappings
 	 */
 	public async listMappings(): Promise<IqrfGatewayControllerMapping[]> {
-		const response: AxiosResponse<IqrfGatewayControllerMapping[]> = await this.axiosInstance.get('/config/controller/pins');
+		const response: AxiosResponse<IqrfGatewayControllerMapping[]> =
+			await this.axiosInstance.get('/config/controller/pins');
 		return response.data;
 	}
 
 	/**
-	 * Fetch IQRF Gateway Controller mapping
+	 * Retrieves IQRF Gateway Controller mapping
 	 * @param {number} id IQRF Gateway Controller mapping ID
 	 * @return {Promise<IqrfGatewayControllerMapping>} IQRF Gateway Controller mapping
 	 */
-	public async fetchMapping(id: number): Promise<IqrfGatewayControllerMapping> {
-		const response: AxiosResponse<IqrfGatewayControllerMapping> = await this.axiosInstance.get(`/config/controller/pins/${id.toString()}`);
+	public async getMapping(id: number): Promise<IqrfGatewayControllerMapping> {
+		const response: AxiosResponse<IqrfGatewayControllerMapping> =
+			await this.axiosInstance.get(`/config/controller/pins/${id.toString()}`);
 		return response.data;
 	}
 
 	/**
-	 * Create IQRF Gateway Controller mapping
+	 * Creates IQRF Gateway Controller mapping
 	 * @param {IqrfGatewayControllerMapping} mapping IQRF Gateway Controller mapping to create
 	 */
 	public async createMapping(mapping: IqrfGatewayControllerMapping): Promise<void> {
@@ -74,7 +76,7 @@ export class IqrfGatewayControllerService extends BaseService {
 	}
 
 	/**
-	 * Delete IQRF Gateway Controller mapping
+	 * Deletes IQRF Gateway Controller mapping
 	 * @param {number} id IQRF Gateway Controller mapping ID
 	 */
 	public async deleteMapping(id: number): Promise<void> {
@@ -82,11 +84,11 @@ export class IqrfGatewayControllerService extends BaseService {
 	}
 
 	/**
-	 * Edit IQRF Gateway Controller mapping
+	 * Updates IQRF Gateway Controller mapping
 	 * @param {number} id IQRF Gateway Controller mapping ID
 	 * @param {IqrfGatewayControllerMapping} mapping IQRF Gateway Controller mapping to edit
 	 */
-	public async editMapping(id: number, mapping: IqrfGatewayControllerMapping): Promise<void> {
+	public async updateMapping(id: number, mapping: IqrfGatewayControllerMapping): Promise<void> {
 		await this.axiosInstance.put(`/config/controller/pins/${id.toString()}`, mapping);
 	}
 

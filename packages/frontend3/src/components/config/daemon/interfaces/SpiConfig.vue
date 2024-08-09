@@ -223,8 +223,8 @@ import {
 	type IqrfGatewayDaemonSpi,
 	type IqrfGatewayDaemonComponent,
 	type IqrfGatewayDaemonMapping,
+	MappingType,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { MappingType } from '@iqrf/iqrf-gateway-webapp-client/types/Config/Mapping';
 import { IqrfInterfaceType } from '@iqrf/iqrf-gateway-webapp-client/types/Iqrf';
 import { onMounted, type Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';

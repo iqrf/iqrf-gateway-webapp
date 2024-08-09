@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import {configDefaults, defineConfig} from 'vitest/config';
 import tsconfigPaths from 'vite-tsconfig-paths';
+import { configDefaults, defineConfig } from 'vitest/config';
 
 export default defineConfig({
 	test: {
@@ -24,6 +24,10 @@ export default defineConfig({
 		coverage: {
 			provider: 'istanbul',
 			reporter: ['text', 'html', 'clover'],
+			exclude: [
+				...(configDefaults.coverage.exclude!),
+				'./docs/**',
+			],
 		},
 		outputFile: {
 			junit: 'junit.xml',

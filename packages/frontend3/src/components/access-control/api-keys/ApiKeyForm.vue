@@ -82,12 +82,12 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { type ApiKeyService } from '@iqrf/iqrf-gateway-webapp-client/services';
+import { type ApiKeyService } from '@iqrf/iqrf-gateway-webapp-client/services/Security';
 import {
 	type ApiKeyCreated,
 	type ApiKeyConfig,
 	type ApiKeyInfo,
-} from '@iqrf/iqrf-gateway-webapp-client/types';
+} from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import { DateTimeUtils } from '@iqrf/iqrf-gateway-webapp-client/utils';
 import { mdiTextShort } from '@mdi/js';
 import { computed, type PropType, ref, type Ref, watchEffect } from 'vue';
@@ -125,7 +125,7 @@ const componentProps = defineProps({
 });
 const i18n = useI18n();
 const show: Ref<boolean> = ref(false);
-const service: ApiKeyService = useApiClient().getApiKeyService();
+const service: ApiKeyService = useApiClient().getSecurityServices().getApiKeyService();
 const form: Ref<VForm | null> = ref(null);
 const defaultKey: ApiKeyConfig = {
 	description: '',
@@ -182,25 +182,15 @@ async function onSubmit(): Promise<void> {
 		keyToSave.expiration = null;
 	}
 	if (componentProps.action === Action.Add) {
-		service.create(keyToSave)
-			.then((rsp: ApiKeyCreated) => {
-				generatedKey.value = rsp.key;
-				addSuccess();
-			})
-			.catch(() => {
-				// TODO ERROR
-			});
+		const createdKey: ApiKeyCreated = await service.create(keyToSave);
+		generatedKey.value = createdKey.key;
+		addSuccess();
 	} else if (componentProps.action === Action.Edit) {
 		const id = keyToSave.id!;
 		delete keyToSave.id;
-		service.edit(id, keyToSave)
-			.then(() => {
-				close();
-				emit('refresh');
-			})
-			.catch(() => {
-				// TODO ERROR
-			});
+		await service.update(id, keyToSave);
+		close();
+		emit('refresh');
 	}
 }
 

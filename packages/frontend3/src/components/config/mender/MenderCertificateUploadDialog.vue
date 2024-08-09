@@ -83,7 +83,7 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { type MenderService } from '@iqrf/iqrf-gateway-webapp-client/services';
+import { type MenderService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import { mdiClipboard, mdiFileOutline } from '@mdi/js';
 import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -104,7 +104,7 @@ const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const show: Ref<boolean> = ref(false);
 const i18n = useI18n();
 const form: Ref<VForm | null> = ref(null);
-const service: MenderService = useApiClient().getMenderService();
+const service: MenderService = useApiClient().getConfigServices().getMenderService();
 const certificates: Ref<File[]> = ref([]);
 const certPath: Ref<string> = ref('');
 
@@ -118,15 +118,15 @@ async function onSubmit(): Promise<void> {
 	}
 	componentState.value = ComponentState.Saving;
 	const certificate = certificates.value[0];
-	service.uploadCert(certificate)
-		.then((response: string) => {
-			certPath.value = response;
-			toast.success(
-				i18n.t('components.configuration.mender.messages.upload.success'),
-			);
-			componentState.value = ComponentState.Ready;
-		})
-		.catch(() => toast.error('TODO SAVE ERROR HANDLING'));
+	try {
+		certPath.value = await service.uploadCert(certificate);
+		toast.success(
+			i18n.t('components.configuration.mender.messages.upload.success'),
+		);
+		componentState.value = ComponentState.Ready;
+	} catch {
+		toast.error('TODO SAVE ERROR HANDLING');
+	}
 }
 
 function close(): void {

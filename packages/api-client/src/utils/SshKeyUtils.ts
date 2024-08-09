@@ -20,10 +20,10 @@
 export class SshKeyUtils {
 
 	/**
-     * Validate SSH key
-     * @param {string} key SSH key to validate
-     * @param {string[]} keyTypes Supported SSH key types
-     */
+	 * Validate SSH key
+	 * @param {string} key SSH key to validate
+	 * @param {string[]} keyTypes Supported SSH key types
+	 */
 	public static validatePublicKey(key: string, keyTypes: string[]): void {
 		const keyParts: string[] = key.trim().split(' ');
 		if (keyParts.length < 2) {

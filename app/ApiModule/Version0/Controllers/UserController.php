@@ -26,57 +26,35 @@ use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\RequestParameter;
 use Apitte\Core\Annotation\Controller\Tag;
-use Apitte\Core\Exception\Api\ClientErrorException;
-use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use App\ApiModule\Version0\Models\JwtConfigurator;
-use App\ApiModule\Version0\Models\RestApiSchemaValidator;
-use App\ApiModule\Version0\RequestAttributes;
-use App\CoreModule\Enums\SessionExpiration;
-use App\CoreModule\Models\UserManager;
-use App\Exceptions\InvalidEmailAddressException;
-use App\Exceptions\InvalidPasswordException;
-use App\Models\Database\Entities\PasswordRecovery;
-use App\Models\Database\Entities\User;
-use App\Models\Database\EntityManager;
-use App\Models\Database\Enums\UserLanguage;
-use App\Models\Mail\Senders\PasswordRecoveryMailSender;
-use DateTimeImmutable;
-use Nette\Mail\SendException;
-use Throwable;
-use ValueError;
-use function gethostname;
+use App\ApiModule\Version0\Models\ControllerValidators;
 
 /**
  * User manager API controller
  */
 #[Path('/user')]
-#[Tag('User manager')]
+#[Tag('Account')]
 class UserController extends BaseController {
 
 	/**
 	 * Constructor
-	 * @param JwtConfigurator $jwtConfigurator JWT configurator
-	 * @param EntityManager $entityManager Entity manager
-	 * @param UserManager $manager User manager
-	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
-	 * @param PasswordRecoveryMailSender $passwordRecoverySender Forgotten password recovery e-mail sender
+	 * @param AccountController $newAccountController New account controller
+	 * @param ControllerValidators $validators Controller validators
 	 */
 	public function __construct(
-		private readonly JwtConfigurator $jwtConfigurator,
-		private readonly EntityManager $entityManager,
-		private readonly UserManager $manager,
-		RestApiSchemaValidator $validator,
-		private readonly PasswordRecoveryMailSender $passwordRecoverySender,
+		private readonly AccountController $newAccountController,
+		ControllerValidators $validators,
 	) {
-		parent::__construct($validator);
+		parent::__construct($validators);
 	}
 
 	#[Path('/')]
 	#[Method('GET')]
 	#[OpenApi('
 		summary: Returns information about logged in user
+		deprecated: true
+		description: "Deprecated in favor of the new account controller, use `GET` `/account` instead. Will be removed in the version 3.1.0."
 		responses:
 			\'200\':
 				description: Success
@@ -88,17 +66,15 @@ class UserController extends BaseController {
 				$ref: \'#/components/responses/ForbiddenApiKey\'
 	')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
-		if ($user instanceof User) {
-			return $response->writeJsonObject($user);
-		}
-		throw new ClientErrorException('API key is used.', ApiResponse::S403_FORBIDDEN);
+		return $this->newAccountController->get($request, $response);
 	}
 
 	#[Path('/')]
 	#[Method('PUT')]
 	#[OpenApi('
-		summary: Edits user
+		summary: Updates the user account information
+		deprecated: true
+		description: "Deprecated in favor of the new account controller, use `PUT` `/account` instead. Will be removed in the version 3.1.0."
 		requestBody:
 			required: true
 			content:
@@ -120,59 +96,15 @@ class UserController extends BaseController {
 							$ref: \'#/components/schemas/Error\'
 	')]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
-		if (!($user instanceof User)) {
-			throw new ClientErrorException('API key is used.', ApiResponse::S403_FORBIDDEN);
-		}
-		$sendVerification = false;
-		$this->validator->validateRequest('userEdit', $request);
-		$json = $request->getJsonBodyCopy();
-		if (array_key_exists('username', $json)) {
-			if ($this->manager->checkUsernameUniqueness($json['username'], $user->getId())) {
-				throw new ClientErrorException('Username is already used', ApiResponse::S409_CONFLICT);
-			}
-			$user->setUserName($json['username']);
-		}
-		if (array_key_exists('language', $json)) {
-			try {
-				$user->setLanguage(UserLanguage::from($json['language']));
-			} catch (ValueError $e) {
-				throw new ClientErrorException('Invalid language', ApiResponse::S400_BAD_REQUEST, $e);
-			}
-		}
-		if (array_key_exists('email', $json)) {
-			$email = $json['email'];
-			if ($email !== null && $email !== '') {
-				if ($this->manager->checkEmailUniqueness($email, $user->getId())) {
-					throw new ClientErrorException('E-main address is already used', ApiResponse::S409_CONFLICT);
-				}
-				if ($email !== $user->getEmail()) {
-					$sendVerification = true;
-				}
-			}
-			try {
-				$user->setEmail($email);
-			} catch (InvalidEmailAddressException $e) {
-				throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
-			}
-		}
-		$this->entityManager->persist($user);
-		if ($sendVerification) {
-			try {
-				$this->manager->sendVerificationEmail($request, $user);
-			} catch (SendException $e) {
-				// Ignore failure
-			}
-		}
-		$this->entityManager->flush();
-		return $response->withStatus(ApiResponse::S200_OK)
-			->writeBody('Workaround');
+		return $this->newAccountController->edit($request, $response);
 	}
 
 	#[Path('/password')]
 	#[Method('PUT')]
 	#[OpenApi('
-		summary: Changes the password
+		summary: "Updates user\'s password"
+		deprecated: true
+		description: "Deprecated in favor of the new account controller, use `PUT` `/account/password` instead. Will be removed in the version 3.1.0."
 		requestBody:
 			required: true
 			content:
@@ -186,34 +118,15 @@ class UserController extends BaseController {
 				$ref: \'#/components/responses/ForbiddenApiKey\'
 	')]
 	public function changePassword(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
-		if (!($user instanceof User)) {
-			throw new ClientErrorException('API key is used.', ApiResponse::S403_FORBIDDEN);
-		}
-		$this->validator->validateRequest('passwordChange', $request);
-		$body = $request->getJsonBodyCopy();
-		if (!$user->verifyPassword($body['old'])) {
-			throw new ClientErrorException('Old password is incorrect', ApiResponse::S400_BAD_REQUEST);
-		}
-		try {
-			$user->setPassword($body['new']);
-		} catch (InvalidPasswordException $e) {
-			throw new ClientErrorException('Invalid password', ApiResponse::S400_BAD_REQUEST, $e);
-		}
-		$this->entityManager->persist($user);
-		$this->entityManager->flush();
-		try {
-			$this->manager->sendPasswordChangeConfirmationEmail($request, $user);
-		} catch (SendException $e) {
-			// ignore
-		}
-		return $response->writeBody('Workaround');
+		return $this->newAccountController->changePassword($request, $response);
 	}
 
 	#[Path('/password/recovery')]
 	#[Method('POST')]
 	#[OpenApi('
 		summary: Requests the password recovery
+		deprecated: true
+		description: "Deprecated in favor of the new account controller, use `POST` `/account/passwordRecovery` instead. Will be removed in the version 3.1.0."
 		requestBody:
 			required: true
 			content:
@@ -239,42 +152,15 @@ class UserController extends BaseController {
 				$ref: \'#/components/responses/MailerError\'
 	')]
 	public function requestPasswordRecovery(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validator->validateRequest('passwordRecoveryRequest', $request);
-		$body = $request->getJsonBodyCopy();
-		$userRepository = $this->entityManager->getUserRepository();
-		if (array_key_exists('username', $body)) {
-			$user = $userRepository->findOneByUserName($body['username']);
-		} elseif (array_key_exists('email', $body)) {
-			$user = $userRepository->findOneByEmail($body['email']);
-		} else {
-			throw new ClientErrorException('E-mail address or username is required', ApiResponse::S400_BAD_REQUEST);
-		}
-		if ($user === null) {
-			throw new ClientErrorException('User not found', ApiResponse::S404_NOT_FOUND);
-		}
-		if ($user->getState() !== User::STATE_VERIFIED) {
-			throw new ClientErrorException('E-mail address is not verified', ApiResponse::S403_FORBIDDEN);
-		}
-		$recovery = new PasswordRecovery($user);
-		$this->entityManager->persist($recovery);
-		if (array_key_exists('baseUrl', $body)) {
-			$baseUrl = trim($body['baseUrl'], '/');
-		} else {
-			$baseUrl = explode('/api/v0/user/password/recovery', (string) $request->getUri(), 2)[0];
-		}
-		try {
-			$this->passwordRecoverySender->send($recovery, $baseUrl);
-		} catch (SendException $e) {
-			throw new ServerErrorException('Unable to send the e-mail', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
-		}
-		$this->entityManager->flush();
-		return $response->writeBody('Workaround');
+		return $this->newAccountController->requestPasswordRecovery($request, $response);
 	}
 
 	#[Path('/password/recovery/{uuid}')]
 	#[Method('POST')]
 	#[OpenApi('
 		summary: Recovers the forgotten password
+		deprecated: true
+		description: "Deprecated in favor of the new account controller, use `POST` `/account/passwordRecovery/{uuid}` instead. Will be removed in the version 3.1.0."
 		requestBody:
 			required: true
 			content:
@@ -299,40 +185,15 @@ class UserController extends BaseController {
 	')]
 	#[RequestParameter(name: 'uuid', type: 'string', description: 'Password recovery request UUID')]
 	public function recoverPassword(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validator->validateRequest('passwordRecovery', $request);
-		$body = $request->getJsonBodyCopy();
-		$recoveryRequest = $this->entityManager->getPasswordRecoveryRepository()->findOneByUuid($request->getParameter('uuid'));
-		if ($recoveryRequest === null) {
-			throw new ClientErrorException('Password recovery request not found', ApiResponse::S404_NOT_FOUND);
-		}
-		if ($recoveryRequest->isExpired()) {
-			$this->entityManager->remove($recoveryRequest);
-			$this->entityManager->flush();
-			throw new ClientErrorException('Password recovery request is expired', ApiResponse::S410_GONE);
-		}
-		$user = $recoveryRequest->getUser();
-		try {
-			$user->setPassword($body['password']);
-		} catch (InvalidPasswordException $e) {
-			throw new ClientErrorException('Invalid password', ApiResponse::S400_BAD_REQUEST, $e);
-		}
-		$this->entityManager->persist($user);
-		$this->entityManager->remove($recoveryRequest);
-		$this->entityManager->flush();
-		$json = $user->jsonSerialize();
-		$json['token'] = $this->createToken($user);
-		try {
-			$this->manager->sendPasswordChangeConfirmationEmail($request, $user);
-		} catch (SendException $e) {
-			// ignore
-		}
-		return $response->writeJsonBody($json);
+		return $this->newAccountController->recoverPassword($request, $response);
 	}
 
 	#[Path('/resendVerification')]
 	#[Method('POST')]
 	#[OpenApi('
 		summary: Resends the verification e-mail
+		deprecated: true
+		description: "Deprecated in favor of the new account controller, use `POST` `/account/emailVerification/resend` instead. Will be removed in the version 3.1.0."
 		responses:
 			\'200\':
 				description: Success
@@ -346,50 +207,35 @@ class UserController extends BaseController {
 				$ref: \'#/components/responses/MailerError\'
 	')]
 	public function resendVerification(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
-		if (!($user instanceof User)) {
-			throw new ClientErrorException('API key is used.', ApiResponse::S403_FORBIDDEN);
-		}
-		if ($user->getState() === User::STATE_VERIFIED) {
-			throw new ClientErrorException('User is already verified', ApiResponse::S400_BAD_REQUEST);
-		}
-		try {
-			$this->manager->sendVerificationEmail($request, $user);
-		} catch (SendException $e) {
-			throw new ServerErrorException('Unable to send the e-mail', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
-		}
-		return $response->withStatus(ApiResponse::S200_OK)
-			->writeBody('Workaround');
+		return $this->newAccountController->resendVerification($request, $response);
 	}
 
 	#[Path('/refreshToken')]
 	#[Method('POST')]
 	#[OpenApi('
 		summary: Refreshes user access token
+		deprecated: true
+		description: "Deprecated in favor of the new account controller, use `POST` `/account/tokenRefresh` instead. Will be removed in the version 3.1.0."
 		responses:
 			\'201\':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/UserSignIn\'
+							$ref: \'#/components/schemas/UserToken\'
 			\'403\':
 				$ref: \'#/components/responses/ForbiddenApiKey\'
 	')]
 	public function refreshToken(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
-		if (!($user instanceof User)) {
-			throw new ClientErrorException('API key is used.', ApiResponse::S403_FORBIDDEN);
-		}
-		$json = $user->jsonSerialize();
-		$json['token'] = $this->createToken($user);
-		return $response->writeJsonBody($json);
+		return $this->newAccountController->refreshToken($request, $response);
 	}
 
 	#[Path('/signIn')]
 	#[Method('POST')]
 	#[OpenApi('
 		summary: Signs in the user
+		deprecated: true
+		description: "Deprecated in favor of the new account controller, use `POST` `/account/signIn` instead. Will be removed in the version 3.1.0."
 		security:
 			- []
 		requestBody:
@@ -411,29 +257,15 @@ class UserController extends BaseController {
 				$ref: \'#/components/responses/ServerError\'
 	')]
 	public function signIn(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validator->validateRequest('userSignIn', $request);
-		$credentials = $request->getJsonBodyCopy();
-		$user = $this->entityManager->getUserRepository()->findOneByUserName($credentials['username']);
-		if (!($user instanceof User)) {
-			throw new ClientErrorException('Invalid credentials', ApiResponse::S400_BAD_REQUEST);
-		}
-		if (!$user->verifyPassword($credentials['password'])) {
-			throw new ClientErrorException('Invalid credentials', ApiResponse::S400_BAD_REQUEST);
-		}
-		if (array_key_exists('expiration', $credentials)) {
-			$expiration = SessionExpiration::from($credentials['expiration']);
-		} else {
-			$expiration = SessionExpiration::Default;
-		}
-		$json = $user->jsonSerialize();
-		$json['token'] = $this->createToken($user, $expiration);
-		return $response->writeJsonBody($json);
+		return $this->newAccountController->signIn($request, $response);
 	}
 
 	#[Path('/verify/{uuid}')]
 	#[Method('GET')]
 	#[OpenApi('
 		summary: Verifies the user
+		deprecated: true
+		description: "Deprecated in favor of the new account controller, use `GET` `/account/emailVerification/{uuid}` instead. Will be removed in the version 3.1.0."
 		responses:
 			\'200\':
 				description: Success
@@ -446,60 +278,7 @@ class UserController extends BaseController {
 	')]
 	#[RequestParameter(name: 'uuid', type: 'string', description: 'User verification UUID')]
 	public function verify(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$repository = $this->entityManager->getUserVerificationRepository();
-		$verification = $repository->findOneByUuid($request->getParameter('uuid'));
-		if ($verification === null) {
-			throw new ClientErrorException('User verification not found', ApiResponse::S404_NOT_FOUND);
-		}
-		$user = $verification->user;
-		$state = $user->getState();
-		if ($state === User::STATE_VERIFIED) {
-			throw new ClientErrorException('User is already verified', ApiResponse::S400_BAD_REQUEST);
-		}
-		if ($state === User::STATE_UNVERIFIED) {
-			if ($verification->isExpired()) {
-				throw new ClientErrorException('Verification link expired', ApiResponse::S410_GONE);
-			}
-			$user->setState(User::STATE_VERIFIED);
-			$this->entityManager->persist($user);
-		}
-		$this->entityManager->flush();
-		$json = $user->jsonSerialize();
-		$json['token'] = $this->createToken($user);
-		return $response->writeJsonBody($json);
-	}
-
-	/**
-	 * Creates a new JWT token
-	 * @param User $user User
-	 * @param SessionExpiration|null $expiration Session expiration
-	 * @return string JWT token
-	 */
-	private function createToken(User $user, ?SessionExpiration $expiration = null): string {
-		try {
-			$now = new DateTimeImmutable();
-			$us = $now->format('u');
-			$now = $now->modify('-' . $us . ' usec');
-		} catch (Throwable $e) {
-			throw new ServerErrorException('Date creation error', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
-		}
-		if ($expiration === null) {
-			$expiration = SessionExpiration::Default;
-		}
-		$configuration = $this->jwtConfigurator->create();
-		$hostname = gethostname();
-		$builder = $configuration->builder();
-		$builder = $builder->issuedAt($now);
-		$builder = $builder->canOnlyBeUsedAfter($now);
-		$builder = $builder->expiresAt($now->modify($expiration->toDateModify()));
-		$builder = $builder->withClaim('uid', $user->getId());
-		if ($hostname !== false) {
-			$builder = $builder->issuedBy($hostname);
-			$builder = $builder->identifiedBy($hostname);
-		}
-		$signer = $configuration->signer();
-		$signingKey = $configuration->signingKey();
-		return $builder->getToken($signer, $signingKey)->toString();
+		return $this->newAccountController->verify($request, $response);
 	}
 
 }

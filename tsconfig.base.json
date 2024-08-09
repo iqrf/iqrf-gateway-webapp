@@ -7,13 +7,27 @@
 		"declarationMap": true,
 		"esModuleInterop": true,
 		"forceConsistentCasingInFileNames": true,
-		"incremental": true,
+		"isolatedModules": true,
 		"lib": [
 			"ESNext"
 		],
 		"module": "ESNext",
 		"moduleResolution": "Bundler",
 		"noEmitOnError": true,
+		"paths": {
+			"@iqrf/iqrf-gateway-daemon-utils": [
+				"./packages/daemon-utils"
+			],
+			"@iqrf/iqrf-gateway-webapp": [
+				"./packages/frontend"
+			],
+			"@iqrf/iqrf-gateway-webapp-client": [
+				"./packages/api-client"
+			],
+			"@iqrf/iqrf-gateway-webapp-next": [
+				"./packages/frontend3"
+			]
+		},
 		"resolveJsonModule": true,
 		"skipLibCheck": true,
 		"sourceMap": true,

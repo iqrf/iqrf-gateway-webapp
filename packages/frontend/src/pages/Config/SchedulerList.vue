@@ -128,23 +128,24 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
+import {FileResponse} from '@iqrf/iqrf-gateway-webapp-client/types';
+import {IqrfGatewayDaemonService} from '@iqrf/iqrf-gateway-webapp-client/services/Config';
+import {FileDownloader} from '@iqrf/iqrf-gateway-webapp-client/utils';
+import {AxiosError, AxiosResponse} from 'axios';
+import {DateTime, Duration} from 'luxon';
 import {Component, Vue} from 'vue-property-decorator';
+import {DataTableHeader} from 'vuetify';
+import {MutationPayload} from 'vuex';
+
 import TaskDeleteModal from '@/components/Config/Scheduler/TaskDeleteModal.vue';
 import TasksDeleteModal from '@/components/Config/Scheduler/TasksDeleteModal.vue';
 import TaskImportModal from '@/components/Config/Scheduler/TaskImportModal.vue';
-
-import {DateTime, Duration} from 'luxon';
 import {extendedErrorToast} from '@/helpers/errorToast';
-import {fileDownloader} from '@/helpers/fileDownloader';
 import SchedulerRecord from '@/helpers/SchedulerRecord';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
-
 import SchedulerService from '@/services/SchedulerService';
-
-import {AxiosError, AxiosResponse} from 'axios';
-import {DataTableHeader} from 'vuetify';
 import {ISchedulerRecord, ISchedulerRecordTimeSpec} from '@/interfaces/DaemonApi/Scheduler';
-import {MutationPayload} from 'vuex';
+import {useApiClient} from '@/services/ApiClient';
 
 @Component({
 	components: {
@@ -248,6 +249,8 @@ export default class SchedulerList extends Vue {
 	 * Watch function callback
 	 */
 	private unwatch: CallableFunction = () => {return;};
+
+	private service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
 
 	/**
 	 * Vue lifecycle hook created
@@ -445,12 +448,11 @@ export default class SchedulerList extends Vue {
 	 */
 	private exportScheduler(): void {
 		this.$store.commit('spinner/SHOW');
-		SchedulerService.exportConfig()
-			.then((response: AxiosResponse) => {
+		this.service.exportScheduler()
+			.then((response: FileResponse<Blob>) => {
 				this.$store.commit('spinner/HIDE');
-				const fileName = 'iqrf-gateway-scheduler_' + + new Date().toISOString();
-				const file = fileDownloader(response, 'application/zip', fileName);
-				file.click();
+				const fileName = `iqrf-gateway-scheduler_${new Date().toISOString()}.zip`;
+				FileDownloader.downloadFileResponse(response, fileName);
 			})
 			.catch((error: AxiosError) => {
 				if (error.response === undefined || error.response.status !== 404) {
@@ -491,7 +493,7 @@ export default class SchedulerList extends Vue {
 				cron = cron.join(' ');
 			}
 			return SchedulerRecord.expressionToString(cron);
-		} catch (err) {
+		} catch {
 			return '';
 		}
 	}

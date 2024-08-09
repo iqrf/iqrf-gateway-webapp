@@ -31,7 +31,7 @@ const state: RepositoryState = {
 
 const actions: ActionTree<RepositoryState, any> = {
 	get({commit}) {
-		return useApiClient().getConfigServices().getIqrfRepositoryService().fetch()
+		return useApiClient().getConfigServices().getIqrfRepositoryService().getConfig()
 			.then((config: IqrfRepositoryConfig) => {
 				commit('SET', config);
 			})

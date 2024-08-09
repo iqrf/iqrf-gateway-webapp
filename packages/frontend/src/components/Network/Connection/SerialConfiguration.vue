@@ -43,7 +43,7 @@ import {required} from 'vee-validate/dist/rules';
 import PasswordInput from '@/components/Core/PasswordInput.vue';
 import {
 	NetworkConnectionConfiguration
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkConnection';
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 
 /**
  * GSM modem connection configuration

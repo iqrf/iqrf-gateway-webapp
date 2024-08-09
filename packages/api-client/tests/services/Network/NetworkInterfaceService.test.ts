@@ -18,12 +18,12 @@ import { beforeEach, describe, expect, it } from 'vitest';
 
 import {
 	NetworkInterfaceService,
-} from '../../../src/services/Network/NetworkInterfaceService';
+} from '../../../src/services/Network';
 import {
 	type NetworkInterface,
 	NetworkInterfaceState,
 	NetworkInterfaceType,
-} from '../../../src/types/Network/NetworkInterface';
+} from '../../../src/types/Network';
 import { mockedAxios, mockedClient } from '../../mocks/axios';
 
 describe('NetworkInterfaceService', (): void => {
@@ -65,10 +65,8 @@ describe('NetworkInterfaceService', (): void => {
 		expect.assertions(1);
 		mockedAxios.onGet('/network/interfaces')
 			.reply(200, interfaces);
-		await service.list()
-			.then((actual: NetworkInterface[]): void => {
-				expect(actual).toStrictEqual(interfaces);
-			});
+		const actual: NetworkInterface[] = await service.list();
+		expect(actual).toStrictEqual(interfaces);
 	});
 
 	it('fetch list of Ethernet network interfaces', async (): Promise<void> => {
@@ -80,10 +78,8 @@ describe('NetworkInterfaceService', (): void => {
 			},
 		})
 			.reply(200, ethernetInterfaces);
-		await service.list(NetworkInterfaceType.ETHERNET)
-			.then((actual: NetworkInterface[]): void => {
-				expect(actual).toStrictEqual(ethernetInterfaces);
-			});
+		const actual: NetworkInterface[] = await service.list(NetworkInterfaceType.ETHERNET);
+		expect(actual).toStrictEqual(ethernetInterfaces);
 	});
 
 });

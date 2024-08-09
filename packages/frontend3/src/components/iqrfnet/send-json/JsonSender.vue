@@ -123,7 +123,7 @@ async function onSubmit(): Promise<void> {
 		(request.data.req !== undefined && {}.hasOwnProperty.call(request.data.req, 'nAdr') && request.data.req.nAdr === 255) ||
 		['iqrfEmbedOs_Batch', 'iqrfEmbedOs_SelectiveBatch'].includes(request.mType)
 	) {
-		options.timeout = 1000;
+		options.timeout = 1_000;
 	} else if ([
 		'iqmeshNetwork_AutoNetwork',
 		'iqmeshNetwork_Backup',
@@ -133,7 +133,7 @@ async function onSubmit(): Promise<void> {
 		options.timeout = null;
 		options.message = null;
 	} else {
-		options.timeout = 60000;
+		options.timeout = 60_000;
 	}
 	daemonStore.sendMessage(options)
 		.then((val: string) => {

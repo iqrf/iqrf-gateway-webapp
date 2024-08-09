@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 MICRORISC s.r.o.
+ * Copyright 2023-2024 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,9 @@
 import { type AxiosResponse } from 'axios';
 
 import {
-	type JournalRecords,
 	type JournalConfig,
-} from '../../types/Config/Journal';
+	type JournalRecords,
+} from '../../types/Config';
 import { BaseService } from '../BaseService';
 
 /**
@@ -28,7 +28,7 @@ import { BaseService } from '../BaseService';
 export class JournalService extends BaseService {
 
 	/**
-	 * Fetches journal configuration
+	 * Retrieves journal configuration
 	 * @return {Promise<JournalConfig>} Journal configuration
 	 */
 	public async getConfig(): Promise<JournalConfig> {
@@ -38,15 +38,15 @@ export class JournalService extends BaseService {
 	}
 
 	/**
-	 * Edits journal configuration
+	 * Updates journal configuration
 	 * @param {JournalConfig} config Journal configuration
 	 */
-	public async editConfig(config: JournalConfig): Promise<void> {
+	public async updateConfig(config: JournalConfig): Promise<void> {
 		await this.axiosInstance.put('/gateway/journal/config', config);
 	}
 
 	/**
-	 * Fetches journal records
+	 * Retrieves journal records
 	 * @param {number} count Number of records to retrieve
 	 * @param {string|null} cursor Cursor of first record
 	 * @return {Promise<JournalRecords>} Journal records

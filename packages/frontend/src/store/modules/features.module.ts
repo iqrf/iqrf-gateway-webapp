@@ -26,7 +26,7 @@ interface FeatureState {
 	/**
 	 * Features
 	 */
-	features: Features,
+	features: Features | object,
 
 }
 
@@ -36,7 +36,7 @@ const state: FeatureState = {
 
 const actions: ActionTree<FeatureState, any> = {
 	fetch({commit}) {
-		return useApiClient().getFeatureService().fetchAll()
+		return useApiClient().getFeatureService().list()
 			.then((features: Features) => {
 				commit('SET', features);
 			});
@@ -47,14 +47,14 @@ const getters: GetterTree<FeatureState, any> = {
 	isEnabled: (state: FeatureState) => (name: string): boolean|undefined => {
 		try {
 			return state.features[name].enabled;
-		} catch (e) {
+		} catch {
 			return undefined;
 		}
 	},
 	configuration: (state: FeatureState) => (name: string): FeatureConfig|undefined => {
 		try {
 			return state.features[name];
-		} catch (e) {
+		} catch {
 			return undefined;
 		}
 	},

@@ -124,7 +124,7 @@ import {AxiosError} from 'axios';
 import {DataTableHeader} from 'vuetify';
 import {
 	WireGuardTunnelListEntry
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/WireGuard';
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import {useApiClient} from '@/services/ApiClient';
 
 @Component({

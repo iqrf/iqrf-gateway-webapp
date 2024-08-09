@@ -1,0 +1,19 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/apiKeyList.json",
+	"type": "array",
+	"title": "API key list",
+	"additionalItems": false,
+	"examples": [
+		[
+			{
+				"id": 1,
+				"description": "My awesome app",
+				"expiration": null
+			}
+		]
+	],
+	"items": {
+		"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/apiKeyDetail.json"
+	}
+}

@@ -1,5 +1,11 @@
 import { StandardDaliMessages } from '../../enums';
-import { type EmbedSharedParams, type SendDaliFrcCommandParams, type SendDaliCommandsParams } from '../../types';
+import {
+	type EmbedSharedParams,
+} from '../../types';
+import {
+	type SendDaliCommandsParams,
+	type SendDaliFrcCommandParams,
+} from '../../types/standard';
 import { type DaemonMessageOptions } from '../../utils';
 import { BaseEmbedService } from '../BaseEmbedService';
 

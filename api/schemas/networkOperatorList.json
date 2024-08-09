@@ -1,0 +1,21 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/networkOperatorListnetworkOperator.json",
+	"type": "array",
+	"title": "Network operator list schema",
+	"additionalItems": false,
+	"examples": [
+		[
+			{
+				"id": 1,
+				"name": "T-Mobile CZ",
+				"apn": "internet.t-mobile.cz",
+				"username": "gprs",
+				"password": "gprs"
+			}
+		]
+	],
+	"items": {
+		"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/networkOperator.json"
+	}
+}

@@ -76,8 +76,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import { IqrfGatewayControllerMapping } from '@iqrf/iqrf-gateway-webapp-client/types/Config/IqrfGatewayController';
-import { MappingDeviceType } from '@iqrf/iqrf-gateway-webapp-client/types/Config/Mapping';
+import { IqrfGatewayControllerMapping } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import { MappingDeviceType } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import {AxiosError} from 'axios';
 import {Component} from 'vue-property-decorator';
 

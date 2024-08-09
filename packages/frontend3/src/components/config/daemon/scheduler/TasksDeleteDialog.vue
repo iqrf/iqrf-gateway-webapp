@@ -85,7 +85,7 @@ function removeTasks(): void {
 	componentState.value = ComponentState.Saving;
 	const options = new DaemonMessageOptions(
 		null,
-		30000,
+		30_000,
 		null,
 		() => {msgId.value = null;},
 	);

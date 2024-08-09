@@ -39,7 +39,7 @@ export class SensorDataService {
 
 	/**
 	 * Set configuration
-	 * @param {SensorDataConfig} config
+	 * @param {SensorDataConfig} config Configuration to set
 	 * @param {DaemonMessageOptions} options Message options
 	 * @return {DaemonMessageOptions} Message options with request
 	 */

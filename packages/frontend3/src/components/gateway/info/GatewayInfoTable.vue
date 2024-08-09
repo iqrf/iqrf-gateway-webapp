@@ -242,7 +242,7 @@ onMounted(() => {
 });
 
 function getInformation(): void {
-	service.fetchDetailed()
+	service.getDetailed()
 		.then((rsp: GatewayInformation) => info.value = rsp)
 		.catch(() => toast.error('TODO ERROR HANDLING'));
 }

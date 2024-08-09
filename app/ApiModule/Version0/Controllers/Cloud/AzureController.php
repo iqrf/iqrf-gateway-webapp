@@ -26,8 +26,7 @@ use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use App\ApiModule\Version0\Controllers\CloudsController;
-use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\ApiModule\Version0\Models\ControllerValidators;
 use App\CloudModule\Exceptions\InvalidConnectionStringException;
 use App\CloudModule\Models\AzureManager;
 
@@ -35,16 +34,19 @@ use App\CloudModule\Models\AzureManager;
  * Microsoft Azure IoT Hub connection controller
  */
 #[Path('/azure')]
-class AzureController extends CloudsController {
+class AzureController extends BaseCloudController {
 
 	/**
 	 * Constructor
 	 * @param AzureManager $manager Microsoft Azure IoT Hub connection manager
-	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
+	 * @param ControllerValidators $validators Controller validators
 	 */
-	public function __construct(AzureManager $manager, RestApiSchemaValidator $validator) {
+	public function __construct(
+		AzureManager $manager,
+		ControllerValidators $validators,
+	) {
+		parent::__construct($validators);
 		$this->manager = $manager;
-		parent::__construct($validator);
 	}
 
 	#[Path('/')]

@@ -48,7 +48,7 @@ limitations under the License.
 							}'
 						>
 							<v-text-field
-								v-model='config.hostname'
+								v-model='hostname'
 								:label='$t("gateway.info.hostname")'
 								:success='touched ? valid : null'
 								:error-messages='errors'
@@ -79,21 +79,17 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
+import {AxiosError, AxiosResponse} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import {required} from 'vee-validate/dist/rules';
+import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {machineHostname} from '@/helpers/validationRules/Gateway';
-import {required} from 'vee-validate/dist/rules';
-
-import GatewayService from '@/services/GatewayService';
-
-import {IHostname} from '@/interfaces/Gateway/Information';
-import {AxiosError, AxiosResponse} from 'axios';
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 import {IJsonSplitter} from '@/interfaces/Config/JsonApi';
 import {IIdeCounterpart} from '@/interfaces/Config/IdeCounterpart';
-
+import {useApiClient} from '@/services/ApiClient';
 
 @Component({
 	components: {
@@ -128,11 +124,9 @@ export default class HostnameChange extends Vue {
 	private setIdeCounterpart: boolean = false;
 
 	/**
-	 * @var {IHostname} config Hostnamectl configuration
+	 * @property {string} hostname Hostname to set
 	 */
-	private config: IHostname = {
-		hostname: ''
-	};
+	private hostname: string = '';
 
 	/**
 	 * Initializes validation rules
@@ -144,7 +138,7 @@ export default class HostnameChange extends Vue {
 
 	@Watch('current')
 	private loadCurrent(newVal: string|null): void {
-		this.config.hostname = newVal?.split('.', 1)[0] ?? '';
+		this.hostname = newVal?.split('.', 1)[0] ?? '';
 	}
 
 	/**
@@ -155,7 +149,7 @@ export default class HostnameChange extends Vue {
 		Promise.all([
 			this.setJsonSplitterConfig(),
 			this.setIdeCounterpartConfig(),
-			GatewayService.setHostname(this.config)
+			useApiClient().getGatewayServices().getHostnameService().updateHostname(this.hostname)
 		])
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
@@ -187,7 +181,7 @@ export default class HostnameChange extends Vue {
 		if (componentConfig === null) {
 			return;
 		}
-		componentConfig.gwIdentName = this.config.hostname;
+		componentConfig.gwIdentName = this.hostname;
 		await DaemonConfigurationService.updateInstance('iqrf::IdeCounterpart', componentConfig.instance, componentConfig);
 	}
 
@@ -203,7 +197,7 @@ export default class HostnameChange extends Vue {
 		if (componentConfig === null) {
 			return;
 		}
-		componentConfig.insId = this.config.hostname;
+		componentConfig.insId = this.hostname;
 		await DaemonConfigurationService.updateInstance('iqrf::JsonSplitter', componentConfig.instance, componentConfig);
 	}
 

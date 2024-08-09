@@ -327,7 +327,7 @@ async function getConfig(): Promise<void> {
 	} else {
 		componentState.value = ComponentState.Reloading;
 	}
-	service.fetchConfig()
+	service.getConfig()
 		.then((response: BridgeConfig) => {
 			config.value = response;
 			componentState.value = ComponentState.Ready;
@@ -344,7 +344,7 @@ async function onSubmit(): Promise<void> {
 	}
 	componentState.value = ComponentState.Saving;
 	const params = { ...config.value };
-	service.editConfig(params)
+	service.updateConfig(params)
 		.then(() => getConfig().then(() => {
 			toast.success(
 				i18n.t('components.configuration.influxdb-bridge.messages.save.success'),

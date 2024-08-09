@@ -28,8 +28,10 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { type InstallationChecks } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { type AxiosError } from 'axios';
+import {
+	type UserLanguage,
+	type InstallationChecks,
+} from '@iqrf/iqrf-gateway-webapp-client/types';
 import { storeToRefs } from 'pinia';
 import { useHead } from 'unhead';
 import { onBeforeMount, type Ref, ref, watch } from 'vue';
@@ -71,10 +73,14 @@ const { getLocale: locale } = storeToRefs(localeStore);
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 
-function setHeadOptions(newLocale: string): void {
+/**
+ * Set HTML head options
+ * @param {UserLanguage} newLocale New locale to set
+ */
+function setHeadOptions(newLocale: UserLanguage): void {
 	useHead({
 		htmlAttrs: {
-			lang: newLocale,
+			lang: newLocale.toString(),
 		},
 		titleTemplate: '%s %separator %siteName',
 		templateParams: {
@@ -94,51 +100,50 @@ onBeforeMount(async () => {
 	localeStore.setLocale(locale.value);
 	setHeadOptions(locale.value);
 	await featureStore.fetch();
-	await useApiClient().getInstallationService().check()
-		.then(async (check: InstallationChecks): Promise<void> => {
-			componentState.value = ComponentState.Ready;
-			const isInstallUrl: boolean = router.currentRoute.value.path.startsWith('/install/');
-			const errorUrl: boolean = router.currentRoute.value.path.startsWith('/install/error/');
-			installStore.populateSteps();
-			if (check.hasUsers !== undefined) {
-				installStore.setUsers(check.hasUsers);
-			}
-			if (check.dependencies.length !== 0) {
-				installStore.setMissingDependencies(check.dependencies);
-				installStore.setChecked();
-				await router.push({
-					name: 'MissingDependency',
-				});
-			} else if (!check.phpModules.allExtensionsLoaded) {
-				if (check.phpModules.missing !== undefined) {
-					installStore.setMissingExtensions(check.phpModules.missing);
-				}
-				installStore.setChecked();
-				await router.push({
-					name: 'MissingExtension',
-				});
-			} else if (check.sudo !== undefined && (!check.sudo.exists || !check.sudo.userSudo)) {
-				// TODO: sudo error
-			} else if (!check.allMigrationsExecuted) {
-				installStore.setChecked();
-				await router.push({ name: 'MissingMigration' });
-			} else if (!check.hasUsers && !isInstallUrl) {
-				installStore.setChecked();
-				await router.push({ name: 'InstallDisambiguation' });
-			} else if (check.hasUsers && (isInstallUrl || errorUrl)) {
-				installStore.setChecked();
-				await router.push('/sign/in');
-			}
-			if (isLoggedIn.value) {
-				await repositoryStore.fetch();
-				await gatewayStore.fetchInfo();
+	try {
+		const check: InstallationChecks = await useApiClient().getInstallationService().check();
+		componentState.value = ComponentState.Ready;
+		const isInstallUrl: boolean = router.currentRoute.value.path.startsWith('/install/');
+		const errorUrl: boolean = router.currentRoute.value.path.startsWith('/install/error/');
+		installStore.populateSteps();
+		if (check.hasUsers !== undefined) {
+			installStore.setUsers(check.hasUsers);
+		}
+		if (check.dependencies.length !== 0) {
+			installStore.setMissingDependencies(check.dependencies);
+			installStore.setChecked();
+			await router.push({
+				name: 'MissingDependency',
+			});
+		} else if (!check.phpModules.allExtensionsLoaded) {
+			if (check.phpModules.missing !== undefined) {
+				installStore.setMissingExtensions(check.phpModules.missing);
 			}
 			installStore.setChecked();
-		})
-		.catch((error: AxiosError) => {
-			// SPINNER HIDE
-			console.error(error);
-		});
+			await router.push({
+				name: 'MissingExtension',
+			});
+		} else if (check.sudo !== undefined && (!check.sudo.exists || !check.sudo.userSudo)) {
+			// TODO: sudo error
+		} else if (!check.allMigrationsExecuted) {
+			installStore.setChecked();
+			await router.push({ name: 'MissingMigration' });
+		} else if (!check.hasUsers && !isInstallUrl) {
+			installStore.setChecked();
+			await router.push({ name: 'InstallDisambiguation' });
+		} else if (check.hasUsers && (isInstallUrl || errorUrl)) {
+			installStore.setChecked();
+			await router.push('/sign/in');
+		}
+		if (isLoggedIn.value) {
+			await repositoryStore.fetch();
+			await gatewayStore.fetchInfo();
+		}
+		installStore.setChecked();
+	} catch (error) {
+		// SPINNER HIDE
+		console.error(error);
+	}
 });
 
 watch(isConnected, (newVal) => {

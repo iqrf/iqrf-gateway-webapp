@@ -23,12 +23,12 @@ namespace App\ApiModule\Version0\Controllers\Gateway;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
+use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use App\ApiModule\Version0\Controllers\GatewayController;
-use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\ApiModule\Version0\Models\ControllerValidators;
 use App\GatewayModule\Exceptions\NonexistentTimezoneException;
 use App\GatewayModule\Exceptions\TimeDateException;
 use App\GatewayModule\Models\TimeManager;
@@ -37,18 +37,19 @@ use App\GatewayModule\Models\TimeManager;
  * Time controller
  */
 #[Path('/time')]
-class TimeController extends GatewayController {
+#[Tag('Gateway - Date & time')]
+class TimeController extends BaseGatewayController {
 
 	/**
 	 * Constructor
 	 * @param TimeManager $manager Time manager
-	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
+	 * @param ControllerValidators $validators Controller validators
 	 */
 	public function __construct(
 		private readonly TimeManager $manager,
-		RestApiSchemaValidator $validator,
+		ControllerValidators $validators,
 	) {
-		parent::__construct($validator);
+		parent::__construct($validators);
 	}
 
 	#[Path('/')]
@@ -70,7 +71,8 @@ class TimeController extends GatewayController {
 	public function getTime(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
 			$time = $this->manager->getTime();
-			return $response->writeJsonBody($time);
+			$response = $response->writeJsonBody($time);
+			return $this->validators->validateResponse('timeGet', $response);
 		} catch (TimeDateException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
@@ -91,11 +93,11 @@ class TimeController extends GatewayController {
 				$ref: \'#/components/responses/ServerError\'
 	')]
 	public function setTime(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validator->validateRequest('timeSet', $request);
+		$this->validators->validateRequest('timeSet', $request);
 		try {
 			$time = $request->getJsonBodyCopy(true);
 			$this->manager->setTime($time);
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (NonexistentTimezoneException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
 		}
@@ -117,7 +119,8 @@ class TimeController extends GatewayController {
 	')]
 	public function getTimezones(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$timezones = $this->manager->availableTimezones();
-		return $response->writeJsonBody($timezones);
+		$response = $response->writeJsonBody($timezones);
+		return $this->validators->validateResponse('timezoneList', $response);
 	}
 
 }

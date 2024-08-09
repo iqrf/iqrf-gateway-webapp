@@ -2,16 +2,14 @@
 	"$schema": "https://json.schemastore.org/tsconfig",
 	"extends": "../../tsconfig.base.json",
 	"compilerOptions": {
-		"baseUrl": "./",
 		"declarationDir": "./dist",
-		"outDir": "./dist",
-		"rootDir": "./"
+		"outDir": "./dist"
 	},
 	"include": [
 		"src/**/*",
 		"tests/**/*",
 		"package.json",
-		"typedoc.config.ts",
+		"tsup.config.ts",
 		"vitest.config.ts"
 	],
 	"exclude": [

@@ -42,7 +42,7 @@ import {required} from 'vee-validate/dist/rules';
 
 import {AxiosError} from 'axios';
 import {ISelectItem} from '@/interfaces/Vuetify';
-import {Modem} from '@iqrf/iqrf-gateway-webapp-client/types/Network/Modem';
+import {Modem} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import {useApiClient} from '@/services/ApiClient';
 
 /**

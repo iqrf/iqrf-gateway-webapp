@@ -91,8 +91,8 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { type SshKeyService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
-import { type SshKeyCreate } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
+import { type SshKeyService } from '@iqrf/iqrf-gateway-webapp-client/services/Security';
+import { type SshKeyCreate } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import { SshKeyUtils } from '@iqrf/iqrf-gateway-webapp-client/utils';
 import { mdiKey, mdiPencil, mdiPlus, mdiTextShort } from '@mdi/js';
 import { type AxiosError } from 'axios';
@@ -145,7 +145,7 @@ const defaultKey: SshKeyCreate = {
 	description: '',
 };
 const localKey: Ref<SshKeyCreate> = ref(defaultKey);
-const service: SshKeyService = useApiClient().getGatewayServices().getSshKeyService();
+const service: SshKeyService = useApiClient().getSecurityServices().getSshKeyService();
 
 const iconColor = computed(() => {
 	if (componentProps.action === Action.Add) {
@@ -182,8 +182,8 @@ function validateKey(key: string): boolean|string {
 	try {
 		SshKeyUtils.validatePublicKey(key, componentProps.keyTypes);
 		return true;
-	} catch (e) {
-		return (e as Error).message;
+	} catch (error) {
+		return (error as Error).message;
 	}
 }
 

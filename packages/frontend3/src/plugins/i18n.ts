@@ -34,6 +34,9 @@ export default createI18n<MessageSchema, Locales>({
 				year: 'numeric', month: 'short', day: 'numeric',
 				weekday: 'short', hour: 'numeric', minute: 'numeric', second: 'numeric',
 			},
+			time: {
+				hour: 'numeric', minute: 'numeric', second: 'numeric',
+			},
 		},
 		en: {
 			short: {
@@ -42,6 +45,9 @@ export default createI18n<MessageSchema, Locales>({
 			long: {
 				year: 'numeric', month: 'short', day: 'numeric',
 				weekday: 'short', hour: 'numeric', minute: 'numeric', second: 'numeric',
+			},
+			time: {
+				hour: 'numeric', minute: 'numeric', second: 'numeric',
 			},
 		},
 	},

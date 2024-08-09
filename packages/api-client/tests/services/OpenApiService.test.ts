@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { type OpenAPI3, type ServerObject } from 'openapi-typescript';
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import { OpenApiService } from '../../src/services';
@@ -27,9 +28,9 @@ describe('OpenApiService', (): void => {
 	const service: OpenApiService = new OpenApiService(mockedClient);
 
 	/**
-	 * @var {object} specification OpenAPI specification
+	 * @var {OpenAPI3} specification OpenAPI specification
 	 */
-	const specification = {
+	const specification: OpenAPI3 = {
 		'openapi': '3.0.2',
 		'info': {
 			'title': 'IQRF Gateway Webapp API specification',
@@ -38,6 +39,7 @@ describe('OpenApiService', (): void => {
 				'email': 'roman.ondracek@iqrf.com',
 			},
 			'license': {
+				'identifier': 'Apache-2.0',
 				'name': 'Apache 2.0',
 				'url': 'https://www.apache.org/licenses/LICENSE-2.0.html',
 			},
@@ -74,7 +76,7 @@ describe('OpenApiService', (): void => {
 						'default':'localhost:8080',
 					},
 				},
-			},
+			} as unknown as ServerObject,
 		],
 	};
 
@@ -86,17 +88,15 @@ describe('OpenApiService', (): void => {
 		expect.assertions(1);
 		mockedAxios.onGet('/openapi')
 			.reply(200, specification);
-		await service.fetchSpecification('http://localhost:8080/api/v0/')
-			.then((actual: object): void => {
-				expect(actual).toStrictEqual({
-					...specification,
-					servers: [
-						{
-							'url': 'http://localhost:8080/api/v0/',
-						},
-					],
-				});
-			});
+		const actual: OpenAPI3 = await service.getSpecification('http://localhost:8080/api/v0/');
+		expect(actual).toStrictEqual({
+			...specification,
+			servers: [
+				{
+					'url': 'http://localhost:8080/api/v0/',
+				},
+			],
+		});
 	});
 
 });

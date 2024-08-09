@@ -51,7 +51,7 @@ limitations under the License.
 
 <script lang='ts' setup>
 import { type BackupService } from '@iqrf/iqrf-gateway-webapp-client/services/Maintenance';
-import { type PowerActionResponse } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway/Power';
+import { type PowerActionResponse } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
 import { mdiFileOutline } from '@mdi/js';
 import { type Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -80,7 +80,7 @@ async function onSubmit(): Promise<void> {
 	componentState.value = ComponentState.Saving;
 	service.restore(file)
 		.then((response: PowerActionResponse) => {
-			const time = new Date(response.timestamp * 1000).toLocaleTimeString();
+			const time = new Date(response.timestamp * 1_000).toLocaleTimeString();
 			toast.success(
 				i18n.t('components.maintenance.backup.restore.messages.save.success', { time: time }),
 			);

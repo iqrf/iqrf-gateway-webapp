@@ -60,8 +60,8 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {ApiKeyService} from '@iqrf/iqrf-gateway-webapp-client/services';
-import {ApiKeyInfo} from '@iqrf/iqrf-gateway-webapp-client/types';
+import {ApiKeyService} from '@iqrf/iqrf-gateway-webapp-client/services/Security';
+import {ApiKeyInfo} from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import {AxiosError} from 'axios';
 import {DateTime} from 'luxon';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
@@ -113,7 +113,7 @@ export default class ApiKeyForm extends Vue {
 	 * @property {ApiKeyService} service API key service
    * @private
    */
-	private service: ApiKeyService = useApiClient().getApiKeyService();
+	private service: ApiKeyService = useApiClient().getSecurityServices().getApiKeyService();
 
 	/**
 	 * @property {number} keyId API key id

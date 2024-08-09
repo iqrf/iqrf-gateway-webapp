@@ -1,4 +1,4 @@
-import { type IndicateControl } from '../../enums';
+import { type IndicateControl } from '../../enums/embed';
 
 /**
  * Embedded OS Batch request interface

@@ -29,7 +29,7 @@ limitations under the License.
 <script setup lang='ts'>
 import {
 	NetworkConnectionState,
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkConnection';
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import { computed, type PropType } from 'vue';
 
 /// Component props

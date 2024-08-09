@@ -5,7 +5,7 @@
 	"title": "Installation check",
 	"required": [
 		"allMigrationsExecuted",
-		"hasUsers",
+		"dependencies",
 		"phpModules"
 	],
 	"properties": {
@@ -13,15 +13,64 @@
 			"$id": "#/properties/allMigrationsExecuted",
 			"type": "boolean",
 			"title": "Have all the database migrations been executed?",
-			"example":
-				true
+			"example": true
+		},
+		"dependencies": {
+			"$id": "#/properties/dependencies",
+			"type": "array",
+			"title": "Missing dependencies",
+			"additionalItems": false,
+			"items": {
+				"$id": "#/properties/dependencies/items",
+				"type": "object",
+				"title": "Missing dependency info",
+				"required": [
+					"command",
+					"critical",
+					"package",
+					"feature"
+				],
+				"properties": {
+					"command": {
+						"$id": "#/properties/dependencies/items/properties/command",
+						"type": "string",
+						"title": "Command name",
+						"example": "mender-connect"
+					},
+					"critical": {
+						"$id": "#/properties/dependencies/items/properties/critical",
+						"type": "boolean",
+						"title": "Is the dependency critical?",
+						"example": true
+					},
+					"package": {
+						"$id": "#/properties/dependencies/items/properties/package",
+						"type": "string",
+						"title": "Package name",
+						"example": "mender-connect"
+					},
+					"feature": {
+						"$id": "#/properties/dependencies/items/properties/feature",
+						"oneOf": [
+							{
+								"type": "string"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"title": "Feature name",
+						"example": "mender"
+					}
+				},
+				"additionalProperties": false
+			}
 		},
 		"hasUsers": {
 			"$id": "#/properties/hasUsers",
 			"type": "boolean",
 			"title": "Has the webapp created users?",
-			"example":
-				true
+			"example": true
 		},
 		"phpModules": {
 			"$id": "#/properties/phpModules",
@@ -31,7 +80,7 @@
 				"allExtensionsLoaded"
 			],
 			"properties": {
-				"allExtensionsRequired": {
+				"allExtensionsLoaded": {
 					"$id": "#/properties/phpModules/properties/allExtensionsLoaded",
 					"type": "boolean",
 					"title": "Have all the required PHP extensions been loaded?",

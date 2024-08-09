@@ -20,7 +20,7 @@ export class BaseEmbedService {
 			data: {
 				req: {
 					nAdr: shared.addr,
-					hwpId: shared.hwpid ?? 65535,
+					hwpId: shared.hwpid ?? 0xFF_FF,
 					param: params ?? {},
 				},
 				returnVerbose: shared.returnVerbose ?? true,

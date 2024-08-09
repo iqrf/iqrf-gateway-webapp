@@ -29,14 +29,14 @@ limitations under the License.
 				v-if='$store.getters["features/isEnabled"]("remount")'
 				class='mr-1'
 				color='primary'
-				@click='remount(MountModes.RO)'
+				@click='remount(MenderMountMode.RO)'
 			>
 				{{ $t('maintenance.mender.update.remountRo') }}
 			</v-btn>
 			<v-btn
 				v-if='$store.getters["features/isEnabled"]("remount")'
 				color='primary'
-				@click='remount(MountModes.RW)'
+				@click='remount(MenderMountMode.RW)'
 			>
 				{{ $t('maintenance.mender.update.remountRw') }}
 			</v-btn>
@@ -45,23 +45,25 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-
+import {
+	PowerActionResponse
+} from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
+import {
+	MenderMountMode,
+	MenderRemount
+} from '@iqrf/iqrf-gateway-webapp-client/types/Maintenance';
+import { AxiosError } from 'axios';
 import {Component, Vue} from 'vue-property-decorator';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
-import {MountModes} from '@/enums/Maintenance/Mender';
-
-import GatewayService from '@/services/GatewayService';
-import MenderService from '@/services/MenderService';
-
-import {AxiosError, AxiosResponse} from 'axios';
+import { useApiClient } from '@/services/ApiClient';
 
 /**
  * Mender filesystem control component
  */
 @Component({
 	data: () => ({
-		MountModes,
+		MenderMountMode,
 	}),
 })
 export default class MenderFilesystemControl extends Vue {
@@ -70,9 +72,9 @@ export default class MenderFilesystemControl extends Vue {
 	 */
 	private reboot(): void {
 		this.$store.commit('spinner/SHOW');
-		GatewayService.performReboot()
-			.then((response: AxiosResponse) => {
-				const time = new Date(response.data.timestamp * 1000).toLocaleTimeString();
+		useApiClient().getGatewayServices().getPowerService().reboot()
+			.then((response: PowerActionResponse) => {
+				const time = new Date(response.timestamp * 1000).toLocaleTimeString();
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
 					this.$t(
@@ -86,12 +88,12 @@ export default class MenderFilesystemControl extends Vue {
 
 	/**
 	 * Remounts filesystem
-	 * @param {MountModes} mode Filesystem mount mode
+	 * @param {MenderMountMode} mode Filesystem mount mode
 	 */
-	private remount(mode: MountModes): void {
-		const conf = {mode: mode};
+	private remount(mode: MenderMountMode): void {
+		const conf: MenderRemount = {mode: mode};
 		this.$store.commit('spinner/SHOW');
-		MenderService.remount(conf)
+		useApiClient().getMaintenanceServices().getMenderService().remount(conf)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(

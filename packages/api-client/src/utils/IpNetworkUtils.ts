@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import { NetworkConnectionType } from '../types/Network/NetworkConnection';
-import { NetworkInterfaceType } from '../types/Network/NetworkInterface';
+import { NetworkConnectionType, NetworkInterfaceType } from '../types/Network';
 
 /**
  * IP network utilities
@@ -25,7 +24,7 @@ export class IpNetworkUtils {
 	/**
 	 * Converts connection type to interface type
 	 * @param {NetworkConnectionType | null} connectionType Network connection type
-	 * @returns {NetworkInterfaceType | null} Network interface type
+	 * @return {NetworkInterfaceType | null} Network interface type
 	 */
 	public static connectionTypeToInterfaceType(connectionType: NetworkConnectionType | null): NetworkInterfaceType | null {
 		if (connectionType === null) {

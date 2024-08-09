@@ -52,10 +52,8 @@ describe('ServiceService', (): void => {
 			},
 		})
 			.reply(200, services);
-		await service.list()
-			.then((actual: ServiceState[]): void => {
-				expect(actual).toStrictEqual(services);
-			});
+		const actual: ServiceState[] = await service.list();
+		expect(actual).toStrictEqual(services);
 	});
 
 	it('fetch list of supported system services - with status', async (): Promise<void> => {
@@ -74,10 +72,8 @@ describe('ServiceService', (): void => {
 			},
 		})
 			.reply(200, services);
-		await service.list(true)
-			.then((actual: ServiceState[]): void => {
-				expect(actual).toStrictEqual(services);
-			});
+		const actual: ServiceState[] = await service.list(true);
+		expect(actual).toStrictEqual(services);
 	});
 
 	it('fetch status of `iqrf-gateway-daemon` service', async (): Promise<void> => {
@@ -89,10 +85,8 @@ describe('ServiceService', (): void => {
 		};
 		mockedAxios.onGet('/services/' + serviceName)
 			.reply(200, status);
-		await service.getStatus(serviceName)
-			.then((actual: ServiceStatus): void => {
-				expect(actual).toStrictEqual(status);
-			});
+		const actual: ServiceStatus = await service.getStatus(serviceName);
+		expect(actual).toStrictEqual(status);
 	});
 
 	it('enable `iqrf-gateway-daemon` service', async (): Promise<void> => {

@@ -72,7 +72,6 @@ final class IbmCloudManagerTest extends CloudIntegrationTestCase {
 			'TopicResponse' => 'iot-2/evt/event1234/fmt/json',
 			'User' => 'use-token-auth',
 			'Password' => 'token1234',
-			'EnabledSSL' => true,
 			'KeepAliveInterval' => 20,
 			'ConnectTimeout' => 5,
 			'MinReconnect' => 1,

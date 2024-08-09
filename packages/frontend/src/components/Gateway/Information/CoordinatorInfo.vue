@@ -22,7 +22,7 @@ limitations under the License.
 		/>
 	</span>
 	<span v-else>
-		<span v-if='hasData'>
+		<span v-if='hasData && enumeration !== null && trMcuType !== null && osInfo !== null'>
 			<strong>{{ $t('gateway.info.tr.moduleType') }}: </strong>
 			{{ trMcuType.trType }}<br>
 			<strong>{{ $t('gateway.info.tr.mcuType') }}: </strong>
@@ -71,12 +71,12 @@ export default class CoordinatorInfo extends Vue {
 	/**
 	 * @var {boolean} hasData Indicates whether data has been fetched successfully
 	 */
-	private hasData = false;
+	public hasData = false;
 
 	/**
 	 * @var {PeripheralEnumeration|null} enumeration Peripheral enumeration of a device
 	 */
-	private enumeration: PeripheralEnumeration|null = null;
+	public enumeration: PeripheralEnumeration|null = null;
 
 	/**
 	 * @var {string|null} msgId Daemon api message id
@@ -86,17 +86,17 @@ export default class CoordinatorInfo extends Vue {
 	/**
 	 * @var {OsInfo|null} osInfo Information about OS of a device
 	 */
-	private osInfo: OsInfo|null = null;
+	public osInfo: OsInfo|null = null;
 
 	/**
 	 * @var {boolean} requestRunning Indicates whether a daemon api request has been completed
 	 */
-	private requestRunning = false;
+	public requestRunning = false;
 
 	/**
-	 * @var {TrMcu|null} trMcuType Information about transciever type
+	 * @var {TrMcu|null} trMcuType Information about transceiver type
 	 */
-	private trMcuType: TrMcu|null = null;
+	public trMcuType: TrMcu|null = null;
 
 	/**
 	 * Component unwatch function
@@ -129,7 +129,7 @@ export default class CoordinatorInfo extends Vue {
 							return;
 						}
 						this.trMcuType = this.osInfo.trMcuType;
-					} catch (e) {
+					} catch {
 						this.hasData = false;
 					}
 				}

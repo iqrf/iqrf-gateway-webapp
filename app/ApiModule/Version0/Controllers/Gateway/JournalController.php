@@ -23,46 +23,44 @@ namespace App\ApiModule\Version0\Controllers\Gateway;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
+use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use App\ApiModule\Version0\Controllers\GatewayController;
-use App\ApiModule\Version0\Models\RestApiSchemaValidator;
-use App\CoreModule\Models\FeatureManager;
-use App\GatewayModule\Exceptions\ConfNotFoundException;
-use App\GatewayModule\Exceptions\InvalidConfFormatException;
+use App\ApiModule\Version0\Controllers\Config\JournalController as JournalConfigController;
+use App\ApiModule\Version0\Models\ControllerValidators;
 use App\GatewayModule\Exceptions\JournalReaderArgumentException;
 use App\GatewayModule\Exceptions\JournalReaderInternalException;
-use App\GatewayModule\Models\JournalConfigManager;
 use App\GatewayModule\Models\JournalReaderManager;
 
 /**
  * Journal controller
  */
 #[Path('/journal')]
-class JournalController extends GatewayController {
+class JournalController extends BaseGatewayController {
 
 	/**
 	 * Constructor
-	 * @param FeatureManager $featureManager Feature manager
-	 * @param JournalConfigManager $configManager Journal config manager
+	 * @param JournalConfigController $configController New Journal config controller
 	 * @param JournalReaderManager $readerManager Journal reader manager
-	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
+	 * @param ControllerValidators $validators Controller validators
 	 */
 	public function __construct(
-		private readonly FeatureManager $featureManager,
-		private readonly JournalConfigManager $configManager,
+		private readonly JournalConfigController $configController,
 		private readonly JournalReaderManager $readerManager,
-		RestApiSchemaValidator $validator,
+		ControllerValidators $validators,
 	) {
-		parent::__construct($validator);
+		parent::__construct($validators);
 	}
 
 	#[Path('/config')]
+	#[Tag('Configuration - Logs')]
 	#[Method('GET')]
 	#[OpenApi('
 		summary: Returns journal configuration
+		deprecated: true
+		description: "Deprecated in favor of the new Journal config controller, use `GET` `/config/journal` instead. Will be removed in the version 3.1.0."
 		responses:
 			\'200\':
 				description: Success
@@ -76,18 +74,16 @@ class JournalController extends GatewayController {
 				$ref: \'#/components/responses/ServerError\'
 	')]
 	public function getConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->featureEnabled();
-		try {
-			return $response->writeJsonBody($this->configManager->getConfig());
-		} catch (ConfNotFoundException | InvalidConfFormatException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
-		}
+		return $this->configController->getConfig($request, $response);
 	}
 
 	#[Path('/config')]
+	#[Tag('Configuration - Logs')]
 	#[Method('PUT')]
 	#[OpenApi('
 		summary: Updates journal configuration
+		deprecated: true
+		description: "Deprecated in favor of the new Journal config controller, use `PUT` `/config/journal` instead. Will be removed in the version 3.1.0."
 		requestBody:
 			required: true
 			content:
@@ -105,21 +101,16 @@ class JournalController extends GatewayController {
 				$ref: \'#/components/responses/ServerError\'
 	')]
 	public function saveConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->featureEnabled();
-		$this->validator->validateRequest('journal', $request);
-		try {
-			$this->configManager->saveConfig($request->getJsonBodyCopy(false));
-			return $response->writeBody('Workaround');
-		} catch (ConfNotFoundException | InvalidConfFormatException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
-		}
+		return $this->configController->saveConfig($request, $response);
 	}
 
 	#[Path('/config')]
+	#[Tag('Configuration - Logs')]
 	#[Method('POST')]
 	#[OpenApi('
 		summary: Updates journal configuration
 		deprecated: true
+		description: "Deprecated in favor of the new Journal config controller, use `PUT` `/config/journal` instead. Will be removed in the version 3.1.0."
 		requestBody:
 			required: true
 			content:
@@ -137,11 +128,12 @@ class JournalController extends GatewayController {
 				$ref: \'#/components/responses/ServerError\'
 	')]
 	public function saveConfigOld(ApiRequest $request, ApiResponse $response): ApiResponse {
-		return $this->saveConfig($request, $response);
+		return $this->configController->saveConfig($request, $response);
 	}
 
 	#[Path('/')]
 	#[Method('GET')]
+	#[Tag('Gateway - Logs')]
 	#[OpenApi('
 		summary: Returns journal records
 		parameters:
@@ -165,6 +157,10 @@ class JournalController extends GatewayController {
 		responses:
 			\'200\':
 				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/JournalRecords\'
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'500\':
@@ -174,20 +170,12 @@ class JournalController extends GatewayController {
 		$count = (int) $request->getQueryParam('count', 500);
 		$cursor = $request->getQueryParam('cursor', null);
 		try {
-			return $response->writeJsonBody($this->readerManager->getRecords($count, $cursor));
+			$response = $response->writeJsonBody($this->readerManager->getRecords($count, $cursor));
+			return $this->validators->validateResponse('journalRecords', $response);
 		} catch (JournalReaderArgumentException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
 		} catch (JournalReaderInternalException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
-		}
-	}
-
-	/**
-	 * Checks if journal feature is enabled, and returns bad request if it is not
-	 */
-	private function featureEnabled(): void {
-		if (!$this->featureManager->isEnabled('journal')) {
-			throw new ClientErrorException('Journal feature is not enabled', ApiResponse::S400_BAD_REQUEST);
 		}
 	}
 

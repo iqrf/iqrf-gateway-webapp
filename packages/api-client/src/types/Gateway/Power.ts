@@ -18,17 +18,24 @@ import { type DateTime, type Duration } from 'luxon';
 
 /**
  * Power action response
+ * @internal
  */
-export interface PowerActionResponse {
-
-	/**
-	 * Restart timestamp
-	 */
+export interface PowerActionResponseRaw {
+	/// Restart timestamp
 	timestamp: number
 }
 
 /**
+ * Power action response
+ */
+export interface PowerActionResponse {
+	/// Restart timestamp
+	timestamp: DateTime
+}
+
+/**
  * Gateway uptime - raw response
+ * @internal
  */
 export interface GatewayUptimeRaw {
 	/// Downtime in seconds

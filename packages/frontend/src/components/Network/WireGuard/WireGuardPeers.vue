@@ -163,7 +163,7 @@ import IpStackSelector from '@/components/Network/WireGuard/IpStackSelector.vue'
 import WireGuardPeerAddresses from '@/components/Network/WireGuard/WireGuardPeerAddresses.vue';
 import {
 	WireGuardIpStack, WireGuardTunnelConfig
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/WireGuard';
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 
 /**
  * WireGuard peers

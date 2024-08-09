@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 MICRORISC s.r.o.
+ * Copyright 2023-2024 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { type Hostname } from '../../types/Gateway/Hostname';
+import { type Hostname } from '../../types/Gateway';
 import { BaseService } from '../BaseService';
 
 /**
@@ -23,10 +23,10 @@ import { BaseService } from '../BaseService';
 export class HostnameService extends BaseService {
 
 	/**
-	 * Sets gateway hostname
+	 * Updates gateway hostname
 	 * @param {string} hostname Hostname
 	 */
-	public async setHostname(hostname: string): Promise<void> {
+	public async updateHostname(hostname: string): Promise<void> {
 		const data: Hostname = {
 			hostname: hostname,
 		};

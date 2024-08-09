@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 MICRORISC s.r.o.
+ * Copyright 2023-2024 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,14 @@
  */
 
 import { type AxiosResponse } from 'axios';
+import { DateTime } from 'luxon';
 
-import { type PowerActionResponse } from '../../types/Gateway/Power';
-import { type GatewayBackup } from '../../types/Maintenance/Backup';
+import { FileResponse } from '../../types';
+import {
+	type PowerActionResponse,
+	type PowerActionResponseRaw,
+} from '../../types/Gateway';
+import { type GatewayBackup } from '../../types/Maintenance';
 import { BaseService } from '../BaseService';
 
 /**
@@ -26,28 +31,30 @@ import { BaseService } from '../BaseService';
 export class BackupService extends BaseService {
 
 	/**
-	 * Backup gateway to archive
+	 * Backups gateway to archive
 	 * @param {GatewayBackup} params Backup parameters
-	 * @return {Promise<ArrayBuffer>} Backup archive
+	 * @return {Promise<FileResponse<Blob>>} Backup archive
 	 */
-	public async backup(params: GatewayBackup): Promise<ArrayBuffer> {
-		const response: AxiosResponse<ArrayBuffer> =
-			await this.axiosInstance.post('/maintenance/backup', params, { responseType: 'arraybuffer' });
-		return response.data;
+	public async backup(params: GatewayBackup): Promise<FileResponse<Blob>> {
+		const response: AxiosResponse<Blob> =
+			await this.axiosInstance.post('/maintenance/backup', params, { responseType: 'blob' });
+		return FileResponse.fromAxiosResponse(response);
 	}
 
 	/**
-	 * Restore gateway from archive
+	 * Restores gateway from archive
 	 * @param {File} archive Backup archive
-	 * @return {Promise<PowerActionResponse>}
+	 * @return {Promise<PowerActionResponse>} Power action response
 	 */
 	public async restore(archive: File): Promise<PowerActionResponse> {
-		const response: AxiosResponse<PowerActionResponse> =
+		const response: AxiosResponse<PowerActionResponseRaw> =
 			await this.axiosInstance.post('/maintenance/restore', archive, {
 				headers: { 'Content-Type': archive.type },
 				timeout: 120_000,
 			});
-		return response.data;
+		return {
+			timestamp: DateTime.fromSeconds(response.data.timestamp),
+		};
 	}
 
 }

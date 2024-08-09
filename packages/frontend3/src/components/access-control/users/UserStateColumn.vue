@@ -25,7 +25,7 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { AccountState } from '@iqrf/iqrf-gateway-webapp-client/types/User';
+import { AccountState } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { mdiCheck, mdiHelp } from '@mdi/js';
 import { computed } from 'vue';
 

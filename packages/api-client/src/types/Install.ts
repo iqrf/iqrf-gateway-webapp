@@ -55,7 +55,7 @@ export interface InstallationCheckPhpMissingExtensions {
 
 	/**
 	 * Missing PHP packages
- 	 */
+	 */
 	packages?: string[],
 
 }

@@ -24,12 +24,12 @@ use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\RequestParameter;
+use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use App\ApiModule\Version0\Controllers\NetworkController;
-use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\ApiModule\Version0\Models\ControllerValidators;
 use App\Models\Database\Entities\WireguardInterface;
 use App\NetworkModule\Exceptions\InterfaceExistsException;
 use App\NetworkModule\Exceptions\NonexistentWireguardTunnelException;
@@ -44,20 +44,21 @@ use App\ServiceModule\Models\ServiceManager;
  * WireGuard VPN controller
  */
 #[Path('/wireguard')]
-class WireGuardController extends NetworkController {
+#[Tag('IP network - WireGuard')]
+class WireGuardController extends BaseNetworkController {
 
 	/**
 	 * Constructor
 	 * @param ServiceManager $serviceManager Service manager
 	 * @param WireguardManager $manager WireGuard VPN manager
-	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
+	 * @param ControllerValidators $validators Controller validators
 	 */
 	public function __construct(
 		private readonly ServiceManager $serviceManager,
 		private readonly WireguardManager $manager,
-		RestApiSchemaValidator $validator,
+		ControllerValidators $validators,
 	) {
-		parent::__construct($validator);
+		parent::__construct($validators);
 	}
 
 	#[Path('/')]
@@ -67,25 +68,31 @@ class WireGuardController extends NetworkController {
 		responses:
 			\'200\':
 				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/NetworkWireGuardTunnels\'
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 	')]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['network']);
+		$this->validators->checkScopes($request, ['network']);
 		$tunnels = $this->manager->listInterfaces();
-		return $response->writeJsonBody($tunnels);
+		$response = $response->writeJsonBody($tunnels);
+		return $this->validators->validateResponse('networkWireGuardTunnels', $response);
 	}
+
 	#[Path('/{id}')]
 	#[Method('GET')]
 	#[OpenApi('
-		summary: Retrieves configuration of WireGuard tunnel
+		summary: Returns configuration of WireGuard tunnel
 		responses:
 			\'200\':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/WireguardTunnel\'
+							$ref: \'#/components/schemas/NetworkWireGuardTunnel\'
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'404\':
@@ -95,12 +102,13 @@ class WireGuardController extends NetworkController {
 	')]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'WireGuard tunnel ID')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['network']);
+		$this->validators->checkScopes($request, ['network']);
 		try {
 			$id = (int) $request->getParameter('id');
 			$tunnel = $this->manager->getInterface($id)->jsonSerialize();
 			$tunnel['publicKey'] = $this->manager->generatePublicKey($tunnel['privateKey']);
-			return $response->writeJsonBody($tunnel);
+			$response = $response->writeJsonBody($tunnel);
+			return $this->validators->validateResponse('wireguardTunnel', $response);
 		} catch (NonexistentWireguardTunnelException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND);
 		} catch (WireguardKeyErrorException $e) {
@@ -118,7 +126,7 @@ class WireGuardController extends NetworkController {
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/WireguardTunnel\'
+						$ref: \'#/components/schemas/NetworkWireGuardTunnel\'
 		responses:
 			\'200\':
 				description: Success
@@ -130,11 +138,11 @@ class WireGuardController extends NetworkController {
 				$ref: \'#/components/responses/ServerError\'
 	')]
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['network']);
-		$this->validator->validateRequest('wireguardTunnel', $request);
+		$this->validators->checkScopes($request, ['network']);
+		$this->validators->validateRequest('wireguardTunnel', $request);
 		try {
 			$this->manager->createInterface($request->getJsonBody(false));
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (InterfaceExistsException | WireguardInvalidEndpointException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
 		} catch (WireguardKeyErrorException $e) {
@@ -145,14 +153,14 @@ class WireGuardController extends NetworkController {
 	#[Path('/{id}')]
 	#[Method('PUT')]
 	#[OpenApi('
-		summary: Edits an existing WireGuard VPN tunnel
+		summary: Updates the existing WireGuard VPN tunnel
 		requestBody:
 			description: WireGuard tunnel configuration
 			required: true
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/WireguardTunnel\'
+						$ref: \'#/components/schemas/NetworkWireGuardTunnel\'
 		responses:
 			\'200\':
 				description: Success
@@ -166,13 +174,13 @@ class WireGuardController extends NetworkController {
 				$ref: \'#/components/responses/ServerError\'
 	')]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'WireGuard tunnel ID')]
-	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['network']);
-		$this->validator->validateRequest('wireguardTunnel', $request);
+	public function update(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validators->checkScopes($request, ['network']);
+		$this->validators->validateRequest('wireguardTunnel', $request);
 		try {
 			$id = (int) $request->getParameter('id');
 			$this->manager->editInterface($id, $request->getJsonBody(false));
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (NonexistentWireguardTunnelException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND);
 		} catch (InterfaceExistsException | WireguardInvalidEndpointException $e) {
@@ -185,7 +193,7 @@ class WireGuardController extends NetworkController {
 	#[Path('/{id}')]
 	#[Method('DELETE')]
 	#[OpenApi('
-		summary: Removes an existing WireGuard VPN tunnel
+		summary: Removes the existing WireGuard VPN tunnel
 		responses:
 			\'200\':
 				description: Success
@@ -198,7 +206,7 @@ class WireGuardController extends NetworkController {
 	')]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'WireGuard tunnel ID')]
 	public function remove(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['network']);
+		$this->validators->checkScopes($request, ['network']);
 		try {
 			$id = (int) $request->getParameter('id');
 			$service = $this->tunnelService($this->manager->getInterface($id));
@@ -206,7 +214,7 @@ class WireGuardController extends NetworkController {
 				$this->serviceManager->disable($service);
 			}
 			$this->manager->removeInterface($id);
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (NonexistentWireguardTunnelException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
 		} catch (NonexistentServiceException $e) {
@@ -232,11 +240,11 @@ class WireGuardController extends NetworkController {
 	')]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'WireGuard tunnel ID')]
 	public function activate(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['network']);
+		$this->validators->checkScopes($request, ['network']);
 		try {
 			$tunnel = $this->manager->getInterface((int) $request->getParameter('id'));
 			$this->serviceManager->start($this->tunnelService($tunnel));
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (NonexistentWireguardTunnelException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND);
 		} catch (NonexistentServiceException $e) {
@@ -262,11 +270,11 @@ class WireGuardController extends NetworkController {
 	')]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'WireGuard tunnel ID')]
 	public function deactivate(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['network']);
+		$this->validators->checkScopes($request, ['network']);
 		try {
 			$tunnel = $this->manager->getInterface((int) $request->getParameter('id'));
 			$this->serviceManager->stop($this->tunnelService($tunnel));
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (NonexistentWireguardTunnelException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND);
 		} catch (NonexistentServiceException $e) {
@@ -292,11 +300,11 @@ class WireGuardController extends NetworkController {
 	')]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'WireGuard tunnel ID')]
 	public function enable(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['network']);
+		$this->validators->checkScopes($request, ['network']);
 		try {
 			$tunnel = $this->manager->getInterface((int) $request->getParameter('id'));
 			$this->serviceManager->enable($this->tunnelService($tunnel));
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (NonexistentWireguardTunnelException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND);
 		} catch (NonexistentServiceException $e) {
@@ -322,11 +330,11 @@ class WireGuardController extends NetworkController {
 	')]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'WireGuard tunnel ID')]
 	public function disable(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['network']);
+		$this->validators->checkScopes($request, ['network']);
 		try {
 			$tunnel = $this->manager->getInterface((int) $request->getParameter('id'));
 			$this->serviceManager->disable($this->tunnelService($tunnel));
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (NonexistentWireguardTunnelException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND);
 		} catch (NonexistentServiceException $e) {
@@ -343,16 +351,21 @@ class WireGuardController extends NetworkController {
 		responses:
 			\'200\':
 				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/NetworkWireGuardKeys\'
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 			\'500\':
 				$ref: \'#/components/responses/ServerError\'
 	 ')]
 	public function generateKeys(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['network']);
+		$this->validators->checkScopes($request, ['network']);
 		try {
 			$result = $this->manager->generateKeys();
-			return $response->writeJsonBody($result);
+			$response = $response->writeJsonBody($result);
+			return $this->validators->validateResponse('networkWireGuardKeys', $response);
 		} catch (WireguardKeyErrorException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}

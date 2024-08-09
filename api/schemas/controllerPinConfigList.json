@@ -1,0 +1,24 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/controllerPinConfigList.json",
+	"type": "array",
+	"title": "API key list",
+	"additionalItems": false,
+	"examples": [
+		[
+			{
+				"id": 1,
+				"name": "IQD-GW-02",
+				"deviceType": "board",
+				"greenLed": 0,
+				"redLed": 1,
+				"button": 2,
+				"sck": 11,
+				"sda": 12
+			}
+		]
+	],
+	"items": {
+		"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/controllerPinConfig.json"
+	}
+}

@@ -32,7 +32,7 @@ const state: GatewayState = {
 
 const actions: ActionTree<GatewayState, any> = {
 	getInfo({commit}) {
-		return useApiClient().getGatewayServices().getInfoService().fetchBrief()
+		return useApiClient().getGatewayServices().getInfoService().getBrief()
 			.then((info: GatewayBriefInformation) => commit('SET', info))
 			.catch((): void => {return;});
 	}

@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 MICRORISC s.r.o.
+ * Copyright 2023-2024 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 import { type AxiosResponse } from 'axios';
 
+import { FileResponse } from '../../types';
 import {
 	type GatewayBriefInformation,
 	type GatewayInformation,
@@ -28,21 +29,33 @@ import { BaseService } from '../BaseService';
 export class InfoService extends BaseService {
 
 	/**
-	 * Fetches brief information about the gateway
+	 * Retrieves brief information about the gateway
 	 * @return {Promise<GatewayBriefInformation>} Brief information about the gateway
 	 */
-	public async fetchBrief(): Promise<GatewayBriefInformation> {
-		const response: AxiosResponse<GatewayBriefInformation> = await this.apiClient.getAxiosInstance().get('/gateway/info/brief');
+	public async getBrief(): Promise<GatewayBriefInformation> {
+		const response: AxiosResponse<GatewayBriefInformation> =
+			await this.apiClient.getAxiosInstance().get('/gateway/info/brief');
 		return response.data;
 	}
 
 	/**
-	 * Fetches detailed information about the gateway
+	 * Retrieves detailed information about the gateway
 	 * @return {Promise<GatewayInformation>} Detailed information about the gateway
 	 */
-	public async fetchDetailed(): Promise<GatewayInformation> {
-		const response: AxiosResponse<GatewayInformation> = await this.apiClient.getAxiosInstance().get('/gateway/info');
+	public async getDetailed(): Promise<GatewayInformation> {
+		const response: AxiosResponse<GatewayInformation> =
+			await this.apiClient.getAxiosInstance().get('/gateway/info');
 		return response.data;
+	}
+
+	/**
+	 * Retrieves diagnostics archive
+	 * @return {Promise<FileResponse<Blob>>} Diagnostics archive
+	 */
+	public async getDiagnostics(): Promise<FileResponse<Blob>> {
+		const response: AxiosResponse<Blob> =
+			await this.apiClient.getAxiosInstance().get('/diagnostics', { responseType: 'blob' });
+		return FileResponse.fromAxiosResponse(response);
 	}
 
 }

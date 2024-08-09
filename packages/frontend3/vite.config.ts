@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-import * as proc from 'child_process';
+import proc from 'node:child_process';
+import path from 'node:path';
 import { fileURLToPath, URL } from 'node:url';
-import path from 'path';
 
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite';
 import UnheadVite from '@unhead/addons/vite';
@@ -28,17 +28,19 @@ import VueDevTools from 'vite-plugin-vue-devtools';
 import Layouts from 'vite-plugin-vue-layouts';
 import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify';
 import svgLoader from 'vite-svg-loader';
+import tsconfigPaths from 'vite-tsconfig-paths';
 
 const gitCommitHash = proc.execSync('git rev-parse --short HEAD').toString().trim();
 
 export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
-	const env = loadEnv(mode, process.cwd(), '') as ImportMetaEnv & Record<string, string>;
+	const environment = loadEnv(mode, process.cwd(), '') as ImportMetaEnv & Record<string, string>;
 	return {
-		base: env.VITE_BASE_URL,
+		base: environment.VITE_BASE_URL,
 		build: {
 			outDir: path.resolve(__dirname, './dist'),
 		},
 		plugins: [
+			tsconfigPaths(),
 			Pages(),
 			Layouts({
 				layoutsDirs: 'src/layouts',
@@ -46,7 +48,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
 			}),
 			VueDevTools({
 				componentInspector: true,
-				launchEditor: env.VITE_EDITOR,
+				launchEditor: environment.VITE_EDITOR,
 			}),
 			vue({
 				template: { transformAssetUrls },
@@ -68,27 +70,21 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
 		define: {
 			__GIT_COMMIT_HASH__: JSON.stringify(gitCommitHash),
 		},
+		optimizeDeps: {
+			entries: [
+				'./src/components/**/*.{js,ts,vue}',
+				'./src/layouts/**/*.{js,ts,vue}',
+				'./src/pages/**/*.{js,ts,vue}',
+				'./src/App.vue',
+				'./src/main.ts',
+			],
+			exclude: ['vuetify'],
+		},
 		resolve: {
 			alias: {
-				'@': fileURLToPath(new URL('./src', import.meta.url)),
-				// webapp api client
-				'@iqrf/iqrf-gateway-webapp-client/services/*': path.resolve(__dirname, '../api-client/src/services/*'),
-				'@iqrf/iqrf-gateway-webapp-client/services': path.resolve(__dirname, '../api-client/src/services'),
-				'@iqrf/iqrf-gateway-webapp-client/types/*': path.resolve(__dirname, '../api-client/src/types/*'),
-				'@iqrf/iqrf-gateway-webapp-client/types': path.resolve(__dirname, '../api-client/src/types'),
-				'@iqrf/iqrf-gateway-webapp-client/utils/*': path.resolve(__dirname, '../api-client/src/utils/*'),
-				'@iqrf/iqrf-gateway-webapp-client/utils': path.resolve(__dirname, '../api-client/src/utils'),
-				'@iqrf/iqrf-gateway-webapp-client': path.resolve(__dirname, '../api-client'),
-				// daemon utils
-				'@iqrf/iqrf-gateway-daemon-utils/enums/*': path.resolve(__dirname, '../daemon-utils/src/enums/*'),
-				'@iqrf/iqrf-gateway-daemon-utils/enums': path.resolve(__dirname, '../daemon-utils/src/enums'),
-				'@iqrf/iqrf-gateway-daemon-utils/services/*': path.resolve(__dirname, '../daemon-utils/src/services/*'),
-				'@iqrf/iqrf-gateway-daemon-utils/services': path.resolve(__dirname, '../daemon-utils/src/services'),
-				'@iqrf/iqrf-gateway-daemon-utils/types/*': path.resolve(__dirname, '../daemon-utils/src/types/*'),
-				'@iqrf/iqrf-gateway-daemon-utils/types': path.resolve(__dirname, '../daemon-utils/src/types'),
-				'@iqrf/iqrf-gateway-daemon-utils/utils/*': path.resolve(__dirname, '../daemon-utils/src/utils/*'),
-				'@iqrf/iqrf-gateway-daemon-utils/utils': path.resolve(__dirname, '../daemon-utils/src/utils'),
-				'@iqrf/iqrf-gateway-daemon-utils': path.resolve(__dirname, '../daemon-utils'),
+				'@iqrf/iqrf-gateway-webapp-client': path.resolve(__dirname, '../api-client/src'),
+				'@iqrf/iqrf-gateway-daemon-utils': path.resolve(__dirname, '../daemon-utils/src'),
+				'@': fileURLToPath(new URL('src', import.meta.url)),
 			},
 			extensions: [
 				'.js',

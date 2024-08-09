@@ -119,7 +119,7 @@ export default class UserProfilePassword extends Vue {
 	 */
 	private changePassword(): void {
 		this.$store.commit('spinner/SHOW');
-		useApiClient().getAccountService().changePassword(this.passwordChange)
+		useApiClient().getAccountService().updatePassword(this.passwordChange)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(

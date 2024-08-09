@@ -22,7 +22,7 @@ import {
 	type WireGuardPeer,
 	type WireGuardTunnelConfig,
 	type WireGuardTunnelListEntry,
-} from '../../types/Network/WireGuard';
+} from '../../types/Network';
 import { BaseService } from '../BaseService';
 
 /**
@@ -41,7 +41,7 @@ export class WireGuardService extends BaseService {
 	}
 
 	/**
-	 * Fetches a list of existing WireGuard tunnels
+	 * Retrieves a list of existing WireGuard tunnels
 	 * @return {Promise<WireGuardTunnelListEntry[]>} List of existing WireGuard tunnels
 	 */
 	public async listTunnels(): Promise<WireGuardTunnelListEntry[]> {
@@ -59,11 +59,11 @@ export class WireGuardService extends BaseService {
 	}
 
 	/**
-	 * Edits an existing WireGuard tunnel
-	 * @param id WireGuard tunnel ID
-	 * @param config WireGuard tunnel configuration
+	 * Updates an existing WireGuard tunnel
+	 * @param {number} id WireGuard tunnel ID
+	 * @param {WireGuardTunnelConfig} config WireGuard tunnel configuration
 	 */
-	public async editTunnel(id: number, config: WireGuardTunnelConfig): Promise<void> {
+	public async updateTunnel(id: number, config: WireGuardTunnelConfig): Promise<void> {
 		await this.axiosInstance.put(`/network/wireguard/${id.toString()}`, this.serializeTunnel(config));
 	}
 
@@ -76,11 +76,11 @@ export class WireGuardService extends BaseService {
 	}
 
 	/**
-	 * Fetches an existing WireGuard tunnel configuration
+	 * Retrieves an existing WireGuard tunnel configuration
 	 * @param {number} id WireGuard tunnel ID
 	 * @return {Promise<WireGuardTunnelConfig>} WireGuard tunnel configuration
 	 */
-	public async fetchTunnel(id: number): Promise<WireGuardTunnelConfig> {
+	public async getTunnel(id: number): Promise<WireGuardTunnelConfig> {
 		const response: AxiosResponse<WireGuardTunnelConfig> =
 			await this.axiosInstance.get(`/network/wireguard/${id.toString()}`);
 		return this.deserializeTunnel(response.data);

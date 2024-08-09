@@ -151,7 +151,7 @@ function mmonitServerValidation(value: string, error: string): boolean|string {
 		} else {
 			return error;
 		}
-	} catch (e) {
+	} catch {
 		return error;
 	}
 }
@@ -176,7 +176,7 @@ async function onSubmit(): Promise<void> {
 	}
 	componentState.value = ComponentState.Saving;
 	const params = { ...config.value };
-	service.editConfig(params)
+	service.updateConfig(params)
 		.then(() => {
 			getConfig().then(() => {
 				toast.success(

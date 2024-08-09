@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 MICRORISC s.r.o.
+ * Copyright 2023-2024 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import {
 	type TimeConfig,
 	type TimeSet,
 	type Timezone,
-} from '../../types/Gateway/Time';
+} from '../../types/Gateway';
 import { BaseService } from '../BaseService';
 
 /**
@@ -29,7 +29,7 @@ import { BaseService } from '../BaseService';
 export class TimeService extends BaseService {
 
 	/**
-	 * Fetches current gateway time
+	 * Retrieves current gateway time
 	 * @return {Promise<TimeConfig>} Current gateway time
 	 */
 	public async getTime(): Promise<TimeConfig> {
@@ -39,20 +39,20 @@ export class TimeService extends BaseService {
 	}
 
 	/**
-	 * Fetches available time zones
+	 * Retrieves available time zones
 	 * @return {Promise<Timezone[]>} Available time zones
 	 */
-	public async getTimezones(): Promise<Timezone[]> {
+	public async listTimezones(): Promise<Timezone[]> {
 		const response: AxiosResponse<Timezone[]> =
 			await this.axiosInstance.get('/gateway/time/timezones');
 		return response.data;
 	}
 
 	/**
-	 * Updates gateway time and ntp configuration
+	 * Updates gateway time and NTP configuration
 	 * @param {TimeSet} data Time and NTP configuration
 	 */
-	public async setTime(data: TimeSet): Promise<void> {
+	public async updateTime(data: TimeSet): Promise<void> {
 		await this.axiosInstance.post('/gateway/time', data);
 	}
 }

@@ -29,8 +29,8 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { type SshKeyService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
-import { type SshKeyInfo } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
+import { type SshKeyService } from '@iqrf/iqrf-gateway-webapp-client/services/Security';
+import { type SshKeyInfo } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import { ref, type Ref , type PropType } from 'vue';
 import { toast } from 'vue3-toastify';
 
@@ -45,7 +45,7 @@ const componentProps = defineProps({
 		required: true,
 	},
 });
-const service: SshKeyService = useApiClient().getGatewayServices().getSshKeyService();
+const service: SshKeyService = useApiClient().getSecurityServices().getSshKeyService();
 
 async function onSubmit(): Promise<void> {
 	service.deleteKey(componentProps.sshKey.id)

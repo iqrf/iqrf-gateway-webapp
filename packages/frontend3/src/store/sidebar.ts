@@ -51,14 +51,14 @@ export const useSidebarStore = defineStore('sidebar', {
 	getters: {
 		/**
 		 * Is the sidebar minimized?
-		 * @returns {boolean} True if the sidebar is minimized, false otherwise
+		 * @return {boolean} True if the sidebar is minimized, false otherwise
 		 */
 		isMinimized(): boolean {
 			return this.minimized;
 		},
 		/**
 		 * Is the sidebar visible?
-		 * @returns {boolean} True if the sidebar is visible, false otherwise
+		 * @return {boolean} True if the sidebar is visible, false otherwise
 		 */
 		isVisible(): boolean {
 			return this.visible;

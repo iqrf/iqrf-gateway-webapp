@@ -34,10 +34,7 @@ export const useFeatureStore = defineStore('features', {
 	}),
 	actions: {
 		async fetch(): Promise<void> {
-			return useApiClient().getFeatureService().fetchAll()
-				.then((features: Features): void => {
-					this.features = features;
-				});
+			this.features = await useApiClient().getFeatureService().list();
 		},
 	},
 	getters: {
@@ -47,7 +44,7 @@ export const useFeatureStore = defineStore('features', {
 			}
 			try {
 				return state.features[name].enabled;
-			} catch (e) {
+			} catch {
 				return undefined;
 			}
 		},
@@ -57,7 +54,7 @@ export const useFeatureStore = defineStore('features', {
 			}
 			try {
 				return state.features[name];
-			} catch (e) {
+			} catch {
 				return undefined;
 			}
 		},

@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 MICRORISC s.r.o.
+ * Copyright 2023-2024 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { type MessagingInstance } from '@iqrf/iqrf-gateway-daemon-utils/types/Messaging';
+import { type MessagingInstance } from '@iqrf/iqrf-gateway-daemon-utils/types';
 
 import { type MappingDeviceType, type MappingType } from './Mapping';
 
@@ -227,8 +227,6 @@ export interface IqrfGatewayDaemonMqttMessaging extends IqrfGatewayDaemonCompone
 	EnableServerCertAuth: boolean;
 	/// Cipher suites
 	EnabledCipherSuites: string;
-	/// TLS enabled
-	EnabledSSL: boolean;
 	/// Keep-alive interval
 	KeepAliveInterval: number;
 	/// Path to key store

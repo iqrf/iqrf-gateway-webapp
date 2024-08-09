@@ -38,13 +38,14 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import { PowerService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
+import { PowerActionResponse } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
+import { AxiosError } from 'axios';
+import { MetaInfo } from 'vue-meta';
+import { Component, Vue } from 'vue-property-decorator';
+
 import {extendedErrorToast} from '@/helpers/errorToast';
-
-import GatewayService from '@/services/GatewayService';
-
-import {AxiosError, AxiosResponse} from 'axios';
-import {MetaInfo} from 'vue-meta';
+import {useApiClient} from '@/services/ApiClient';
 
 @Component({
 	metaInfo(): MetaInfo {
@@ -58,14 +59,22 @@ import {MetaInfo} from 'vue-meta';
  * Power control component
  */
 export default class PowerControl extends Vue {
+
+	/**
+	 * @property {PowerService} service Power service
+	 */
+	private service: PowerService = useApiClient().getGatewayServices().getPowerService();
+
 	/**
 	 * Performs power off
 	 */
 	private powerOff(): void {
-		GatewayService.performPowerOff()
-			.then((response: AxiosResponse) =>
+		this.service.powerOff()
+			.then((response: PowerActionResponse) =>
 				this.$toast.info(
-					this.$t('gateway.power.messages.powerOffSuccess', {time: this.parseActionTime(response.data.timestamp)}).toString()
+					this.$t('gateway.power.messages.powerOffSuccess', {
+						time: response.timestamp.toJSDate().toLocaleTimeString()
+					}).toString()
 				)
 			).catch((error: AxiosError) =>
 				extendedErrorToast(error, 'gateway.power.messages.powerOffFailed')
@@ -76,21 +85,17 @@ export default class PowerControl extends Vue {
 	 * Performs reboot
 	 */
 	private reboot(): void {
-		GatewayService.performReboot()
-			.then((response: AxiosResponse) =>
+		this.service.reboot()
+			.then((response: PowerActionResponse) =>
 				this.$toast.info(
-					this.$t('gateway.power.messages.rebootSuccess', {time: this.parseActionTime(response.data.timestamp)}).toString()
+					this.$t('gateway.power.messages.rebootSuccess', {
+						time: response.timestamp.toJSDate().toLocaleTimeString()
+					}).toString()
 				)
 			).catch((error: AxiosError) =>
 				extendedErrorToast(error, 'gateway.power.messages.rebootFailed')
 			);
 	}
 
-	/**
-	 * Converts timestamp to time string
-	 */
-	private parseActionTime(timestamp: number): string {
-		return new Date(timestamp * 1000).toLocaleTimeString();
-	}
 }
 </script>

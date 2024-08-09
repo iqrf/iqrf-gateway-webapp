@@ -75,7 +75,7 @@ final class NetworkManagerTest extends CommandTestCase {
 	 */
 	public function testGetInterfaces(): void {
 		$this->receiveCommand(self::COMMANDS['networkAdapters'], true, 'eth0' . PHP_EOL . 'lo');
-		$this->receiveCommand(self::COMMANDS['ipAddressesEth0'], true, '192.168.1.100' . PHP_EOL . 'fda9:d95:d5b1::64');
+		$this->receiveCommand(self::COMMANDS['ipAddressesEth0'], true, '192.168.1.100/24' . PHP_EOL . 'fda9:d95:d5b1::64/64');
 		$this->receiveCommand(self::COMMANDS['macAddresses'], true, '01:02:03:04:05:06');
 		$expected = [
 			[

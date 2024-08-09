@@ -22,29 +22,28 @@ export default class UrlBuilder {
 
 	/**
 	 * Is development mode detected?
-	 * @private
 	 */
 	private readonly isDev: boolean;
 
 	/**
 	 * Hostname
-	 * @private
 	 */
 	private readonly hostname: string;
 
 	/**
 	 * Port
-	 * @private
 	 */
 	private readonly port: string;
 
 	/**
 	 * Protocol for WebSocket - ws or wss
-	 * @private
 	 */
 	private readonly wsProtocol: string;
 
-	constructor() {
+	/**
+	 * Constructor
+	 */
+	public constructor() {
 		const isHttps: boolean = window.location.protocol === 'https:';
 		this.hostname = window.location.hostname;
 		this.port = window.location.port;
@@ -57,29 +56,33 @@ export default class UrlBuilder {
 
 	/**
 	 * Returns hostname
+	 * @return {string} Hostname
 	 */
-	getHostname(): string {
+	public getHostname(): string {
 		return this.hostname;
 	}
 
 	/**
 	 * Returns port
+	 * @return {string} Port
 	 */
-	getPort(): string {
+	public getPort(): string {
 		return this.port;
 	}
 
 	/**
 	 * Returns base URL
+	 * @return {string} Base URL
 	 */
-	getBaseUrl(): string {
+	public getBaseUrl(): string {
 		return window.location.protocol + '//' + this.hostname + (this.isDev ? ':8081' : this.port) + import.meta.env.VITE_BASE_URL;
 	}
 
 	/**
 	 * Returns REST API URL
+	 * @return {string} REST API URL
 	 */
-	getRestApiUrl(): string {
+	public getRestApiUrl(): string {
 		if (import.meta.env.VITE_URL_REST_API?.length) {
 			return import.meta.env.VITE_URL_REST_API;
 		}
@@ -87,9 +90,10 @@ export default class UrlBuilder {
 	}
 
 	/**
-	 * Returns WebSocket API URL
+	 * Returns IQRF Gateway Daemon WebSocket API URL
+	 * @return {string} IQRF Gateway DaemonWebSocket API URL
 	 */
-	getDaemonApiUrl(): string {
+	public getDaemonApiUrl(): string {
 		if (import.meta.env.VITE_URL_DAEMON_API?.length) {
 			return import.meta.env.VITE_URL_DAEMON_API;
 		}
@@ -97,9 +101,10 @@ export default class UrlBuilder {
 	}
 
 	/**
-	 * Returns WebSocket Monitor URL
+	 * Returns IQRF Gateway Daemon WebSocket Monitor URL
+	 * @return {string} IQRF Gateway Daemon WebSocket Monitor URL
 	 */
-	getDaemonMonitorUrl(): string {
+	public getDaemonMonitorUrl(): string {
 		if (import.meta.env.VITE_URL_DAEMON_MONITOR?.length) {
 			return import.meta.env.VITE_URL_DAEMON_MONITOR;
 		}
@@ -108,8 +113,9 @@ export default class UrlBuilder {
 
 	/**
 	 * Returns WebSocket IQRF network sync URL
+	 * @return {string} WebSocket IQRF network sync URL
 	 */
-	getIqrfnetSyncUrl(): string {
+	public getIqrfnetSyncUrl(): string {
 		if (import.meta.env.VITE_URL_IQRF_SYNC?.length) {
 			return import.meta.env.VITE_URL_IQRF_SYNC;
 		}
@@ -118,8 +124,10 @@ export default class UrlBuilder {
 
 	/**
 	 * Returns REST API URL from passed hostname
+	 * @param {string} hostname Hostname
+	 * @return {string} REST API URL
 	 */
-	getRestApiUrlFromHostname(hostname: string): string {
+	public getRestApiUrlFromHostname(hostname: string): string {
 		return '//' + hostname + (this.isDev ? ':8080' : this.port) + import.meta.env.VITE_BASE_URL + 'api/v0/';
 	}
 

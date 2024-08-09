@@ -41,24 +41,27 @@ export const useApiClient = (): Client => {
 	client.setToken(token.value);
 	client.useResponseInterceptor(
 		(response: AxiosResponse): AxiosResponse => response,
-		(error: AxiosError) => {
+		async (error: AxiosError) => {
 			console.error(error);
 			// Handle network error
 			if (error.response === undefined) {
-				return Promise.reject(error);
+				throw error;
 			}
 			// Handle HTTP Error 401 Unauthorized response
 			if (error.response.status === 401) {
 				const userStore = useUserStore();
-				userStore.signOut();
+				await userStore.signOut();
 				// Prevent duplicate redirect to sign in page
 				if (router.currentRoute.value.name !== 'SignIn') {
-					router.push({ name: 'SignIn', query: { redirect: router.currentRoute.value.path } });
+					await router.push({
+						name: 'SignIn',
+						query: { redirect: router.currentRoute.value.path },
+					});
 				}
 				toast.warning(i18n.global.t('auth.sign.out.expired').toString());
 			}
 			// Handle other HTTP errors
-			return Promise.reject(error);
+			throw error;
 		});
 	return client;
 };

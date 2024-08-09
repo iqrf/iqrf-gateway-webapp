@@ -65,9 +65,9 @@ class DiagnosticsManager {
 	public function createArchive(): string {
 		try {
 			$date = new DateTime();
-			$gwId = $this->gwInfo->getId();
-			$gwId = strtolower($gwId) . '_';
-			$path = sprintf('/tmp/iqrf-gateway-diagnostics_%s_%s.zip', strtolower($gwId), $date->format('c'));
+			$gwId = strtolower($this->gwInfo->getId());
+			$gwId = $gwId !== 'ffffffffffffffff' ? $gwId . '_' : '';
+			$path = sprintf('/tmp/iqrf-gateway-diagnostics_%s%s.zip', $gwId, $date->format('c'));
 		} catch (Throwable $e) {
 			$path = '/tmp/iqrf-gateway-diagnostics.zip';
 		}

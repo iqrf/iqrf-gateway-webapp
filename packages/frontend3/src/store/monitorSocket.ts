@@ -46,7 +46,7 @@ export const useMonitorStore = defineStore('monitor', {
 					url: urlBuilder.getDaemonMonitorUrl(),
 					autoConnect: true,
 					reconnect: true,
-					reconnectDelay: 5000,
+					reconnectDelay: 5_000,
 				},
 			);
 			this.socket.setOnOpenCallback(this.onOpen);
@@ -66,7 +66,7 @@ export const useMonitorStore = defineStore('monitor', {
 		 */
 		onOpen(): void {
 			if (this.reconnecting) {
-				this.reconnected;
+				this.reconnected = true;
 			}
 			this.connected = true;
 		},
@@ -104,21 +104,21 @@ export const useMonitorStore = defineStore('monitor', {
 		},
 		/**
 		 * Returns current Daemon mode
-		 * @returns {DaemonMode} Daemon mode
+		 * @return {DaemonMode} Daemon mode
 		 */
 		getMode(): DaemonMode {
 			return this.mode;
 		},
 		/**
 		 * Returns current queue length
-		 * @returns {number} Queue length
+		 * @return {number} Queue length
 		 */
 		getQueueLength(): number {
 			return this.queueLength;
 		},
 		/**
 		 * Returns timestamp of last monitor notification
-		 * @returns {number} Last notification timestamp
+		 * @return {number} Last notification timestamp
 		 */
 		getLastTimestamp(): number {
 			return this.lastTimestamp;

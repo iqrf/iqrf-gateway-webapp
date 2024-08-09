@@ -62,7 +62,9 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { type TrConfig } from '@iqrf/iqrf-gateway-daemon-utils/types';
+import {
+	IqmeshTrConfigParams,
+} from '@iqrf/iqrf-gateway-daemon-utils/types/iqmesh';
 import { mdiContentSave } from '@mdi/js';
 import { ref, type Ref } from 'vue';
 import { VForm } from 'vuetify/components';
@@ -78,7 +80,7 @@ import { ComponentState } from '@/types/ComponentState';
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const tab: Ref<number> = ref(0);
 const form: Ref<VForm | null> = ref(null);
-const config: Ref<TrConfig> = ref({
+const config: Ref<IqmeshTrConfigParams> = ref({
 	rfBand: '868', // OS RF
 	rfChannelA: 52,
 	rfChannelB: 2,
@@ -119,7 +121,7 @@ const config: Ref<TrConfig> = ref({
 	routingOff: false,
 	nodeDpaInterface: false,
 	neverSleep: false,
-	uartBaudrate: 9600,
+	uartBaudrate: 9_600,
 	accessPassword: '', // Security
 	securityUserKey: '',
 });

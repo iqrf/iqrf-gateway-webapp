@@ -1,0 +1,18 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/networkConnectionCreated.json",
+	"type": "object",
+	"title": "Network connection created",
+	"additionalProperties": false,
+	"required": [
+		"uuid"
+	],
+	"properties": {
+		"uuid": {
+			"$id": "#/properties/uuid",
+			"type": "string",
+			"title": "Connection UUID",
+			"example": "c8fb6f29-ec85-4ff5-b1bb-1d1761196d16"
+		}
+	}
+}

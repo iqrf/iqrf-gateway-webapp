@@ -1,13 +1,15 @@
 import { IqmeshServiceMessages } from '../../enums';
 import {
+	type IqmeshSharedParams,
+} from '../../types';
+import {
 	type IqmeshAutonetworkParams,
 	type IqmeshBondNodeParams,
-	type IqmeshSharedParams,
-	type IqmeshRemoveBondParams,
-	type IqmeshRemoveBondCoordinatorParams,
 	type IqmeshRemoveBond3Params,
+	type IqmeshRemoveBondCoordinatorParams,
+	type IqmeshRemoveBondParams,
 	type IqmeshSmartConnectParams,
-} from '../../types';
+} from '../../types/iqmesh';
 import { type DaemonMessageOptions } from '../../utils';
 
 import { BaseIqmeshService } from './BaseIqmeshService';
@@ -18,7 +20,7 @@ import { BaseIqmeshService } from './BaseIqmeshService';
 export class BondingService extends BaseIqmeshService {
 
 	/**
-	 * Perform autonetwork
+	 * Perform AutoNetwork
 	 * @param {IqmeshSharedParams} shared Shared IQMESH request parameters
 	 * @param {IqmeshAutonetworkParams} params IQMESH BondNode request parameters
 	 * @param {DaemonMessageOptions} options Message options
@@ -83,6 +85,7 @@ export class BondingService extends BaseIqmeshService {
 
 	/**
 	 * Unbond device(s) from network
+	 * @param {IqmeshSharedParams} shared Shared IQMESH request parameters
 	 * @param {IqmeshRemoveBond3Params} params RemoveBond service request parameters
 	 * @param {DaemonMessageOptions} options Message options
 	 * @return {DaemonMessageOptions} Message options with request
@@ -108,7 +111,7 @@ export class BondingService extends BaseIqmeshService {
 	}
 
 	/**
-	 *
+	 * Bond a device via IQMESH SmartConnect
 	 * @param {IqmeshSharedParams} shared Shared IQMESH request parameters
 	 * @param {IqmeshSmartConnectParams} params IQMESH SmartConnect request parameters
 	 * @param {DaemonMessageOptions} options Message options

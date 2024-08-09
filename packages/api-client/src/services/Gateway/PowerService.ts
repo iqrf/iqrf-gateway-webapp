@@ -21,6 +21,7 @@ import {
 	type GatewayUptime,
 	type GatewayUptimeRaw,
 	type PowerActionResponse,
+	type PowerActionResponseRaw,
 } from '../../types/Gateway';
 import { BaseService } from '../BaseService';
 
@@ -31,29 +32,33 @@ export class PowerService extends BaseService {
 
 	/**
 	 * Performs shutdown
-	 * @returns {Promise<PowerActionResponse>} Gateway shutdown time
+	 * @return {Promise<PowerActionResponse>} Gateway shutdown time
 	 */
 	public async powerOff(): Promise<PowerActionResponse> {
-		const response: AxiosResponse<PowerActionResponse> =
+		const response: AxiosResponse<PowerActionResponseRaw> =
 			await this.axiosInstance.post('/gateway/power/poweroff');
-		return response.data;
+		return {
+			timestamp: DateTime.fromSeconds(response.data.timestamp),
+		};
 	}
 
 	/**
 	 * Performs reboot
-	 * @returns {Promise<PowerActionResponse>} Gateway reboot time
+	 * @return {Promise<PowerActionResponse>} Gateway reboot time
 	 */
 	public async reboot(): Promise<PowerActionResponse> {
-		const response: AxiosResponse<PowerActionResponse> =
+		const response: AxiosResponse<PowerActionResponseRaw> =
 			await this.axiosInstance.post('/gateway/power/reboot');
-		return response.data;
+		return {
+			timestamp: DateTime.fromSeconds(response.data.timestamp),
+		};
 	}
 
 	/**
 	 * Retrieves gateway uptime stats
-	 * @returns {Promise<GatewayUptime[]>} Gateway uptime stats
+	 * @return {Promise<GatewayUptime[]>} Gateway uptime stats
 	 */
-	public async fetchStats(): Promise<GatewayUptime[]> {
+	public async getStats(): Promise<GatewayUptime[]> {
 		const response: AxiosResponse<GatewayUptimeRaw[]> =
 			await this.axiosInstance.get('/gateway/power/stats');
 		return response.data.map((uptime: GatewayUptimeRaw): GatewayUptime => ({

@@ -53,7 +53,7 @@ limitations under the License.
 import VueCountdown from '@chenfengyuan/vue-countdown';
 import { type ErrorResponse, type UserSignedIn } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { Head } from '@unhead/vue/components';
-import { type AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 import { validate as uuidValidate, version as uuidVersion } from 'uuid';
 import { onMounted, ref, type Ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -80,20 +80,22 @@ const success: Ref<boolean> = ref(false);
 const userData: Ref<UserSignedIn | null> = ref(null);
 const errorMsg: Ref<string> = ref('');
 
-onMounted(() => {
-	useApiClient().getAuthenticationService().verify(props.uuid)
-		.then((user: UserSignedIn) => {
-			userStore.setUserInfo(user);
-			userStore.processJwt(user.token);
-			userData.value = user;
-			finished.value = true;
-			success.value = true;
-		})
-		.catch((error: AxiosError) => {
+onMounted(async (): Promise<void> => {
+	try {
+		const user: UserSignedIn = await useApiClient().getAuthenticationService().verify(props.uuid);
+		userStore.setUserInfo(user);
+		await userStore.processJwt(user.token);
+		userData.value = user;
+		finished.value = true;
+		success.value = true;
+	} catch (error) {
+		console.error(error);
+		if (error instanceof AxiosError) {
 			errorMsg.value = error.response ? (error.response.data as ErrorResponse).message : error.message;
-			finished.value = true;
-			success.value = false;
-		});
+		}
+		finished.value = true;
+		success.value = false;
+	}
 });
 
 function signIn(): void {

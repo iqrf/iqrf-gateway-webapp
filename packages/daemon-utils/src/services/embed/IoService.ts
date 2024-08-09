@@ -1,5 +1,6 @@
 import { EmbedIoMessages } from '../../enums';
-import { type EmbedSharedParams, type IoParams } from '../../types';
+import { type EmbedSharedParams } from '../../types';
+import { type IoParams } from '../../types/embed';
 import { type DaemonMessageOptions } from '../../utils';
 import { BaseEmbedService } from '../BaseEmbedService';
 

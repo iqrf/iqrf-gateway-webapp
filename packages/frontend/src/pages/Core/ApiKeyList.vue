@@ -77,7 +77,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {ApiKeyInfo} from '@iqrf/iqrf-gateway-webapp-client/types';
+import {ApiKeyInfo} from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import {AxiosError} from 'axios';
 import {DateTime} from 'luxon';
 import {Component, Vue} from 'vue-property-decorator';
@@ -155,7 +155,7 @@ export default class ApiKeyList extends Vue {
 	 */
 	private getKeys(): Promise<void> {
 		this.loading = true;
-		return useApiClient().getApiKeyService().list()
+		return useApiClient().getSecurityServices().getApiKeyService().list()
 			.then((response: ApiKeyInfo[]) => {
 				this.keys = response;
 				this.loading = false;

@@ -8,18 +8,19 @@
 		"docs",
 		"gatewayPass",
 		"grafana",
+		"iqaros",
 		"iqrfGatewayController",
+		"iqrfGatewayInfluxdbBridge",
 		"iqrfGatewayTranslator",
 		"iqrfRepository",
+		"journal",
 		"mender",
 		"monit",
 		"networkManager",
 		"nodeRed",
-		"ntp",
 		"remount",
 		"ssh",
 		"supervisord",
-		"systemdJournal",
 		"trUpload",
 		"updater",
 		"unattendedUpgrades",
@@ -39,14 +40,23 @@
 		"grafana": {
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/grafana.json"
 		},
+		"iqaros": {
+			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/iqaros.json"
+		},
 		"iqrfGatewayController": {
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/iqrfGatewayController.json"
+		},
+		"iqrfGatewayInfluxdbBridge": {
+			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/iqrfGatewayInfluxdbBridge.json"
 		},
 		"iqrfGatewayTranslator": {
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/iqrfGatewayTranslator.json"
 		},
 		"iqrfRepository": {
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/iqrfRepository.json"
+		},
+		"journal": {
+			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/journal.json"
 		},
 		"mender": {
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/mender.json"
@@ -60,9 +70,6 @@
 		"nodeRed": {
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/nodeRed.json"
 		},
-		"ntp": {
-			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/ntp.json"
-		},
 		"remount": {
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/remount.json"
 		},
@@ -72,17 +79,14 @@
 		"supervisord": {
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/supervisord.json"
 		},
-		"systemdJournal": {
-			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/systemdJournal.json"
-		},
 		"trUpload": {
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/trUpload.json"
 		},
-		"updater": {
-			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/updater.json"
-		},
 		"unattendedUpgrades": {
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/unattendedUpgrades.json"
+		},
+		"updater": {
+			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/updater.json"
 		},
 		"versionChecker": {
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/versionChecker.json"

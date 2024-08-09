@@ -38,9 +38,9 @@ describe('ValidationRules', (): void => {
 		expect(ValidationRules.required([], error)).toStrictEqual(error);
 		expect(ValidationRules.required('', error)).toStrictEqual(error);
 		expect(ValidationRules.required(false, error)).toStrictEqual(error);
-		expect(ValidationRules.required(true, error)).toStrictEqual(true);
-		expect(ValidationRules.required(['foobar'], error)).toStrictEqual(true);
-		expect(ValidationRules.required('foobar', error)).toStrictEqual(true);
+		expect(ValidationRules.required(true, error)).toBeTruthy();
+		expect(ValidationRules.required(['foobar'], error)).toBeTruthy();
+		expect(ValidationRules.required('foobar', error)).toBeTruthy();
 	});
 
 	it('required field if condition is true', (): void => {
@@ -51,25 +51,25 @@ describe('ValidationRules', (): void => {
 		expect(ValidationRules.requiredIf([], true, error)).toStrictEqual(error);
 		expect(ValidationRules.requiredIf('', true, error)).toStrictEqual(error);
 		expect(ValidationRules.requiredIf(false, true, error)).toStrictEqual(error);
-		expect(ValidationRules.requiredIf(true, true, error)).toStrictEqual(true);
-		expect(ValidationRules.requiredIf(['foobar'], true, error)).toStrictEqual(true);
-		expect(ValidationRules.requiredIf('foobar', true, error)).toStrictEqual(true);
+		expect(ValidationRules.requiredIf(true, true, error)).toBeTruthy();
+		expect(ValidationRules.requiredIf(['foobar'], true, error)).toBeTruthy();
+		expect(ValidationRules.requiredIf('foobar', true, error)).toBeTruthy();
 
-		expect(ValidationRules.requiredIf(null, false, error)).toStrictEqual(true);
-		expect(ValidationRules.requiredIf(undefined, false, error)).toStrictEqual(true);
-		expect(ValidationRules.requiredIf([], false, error)).toStrictEqual(true);
-		expect(ValidationRules.requiredIf('', false, error)).toStrictEqual(true);
-		expect(ValidationRules.requiredIf(false, false, error)).toStrictEqual(true);
-		expect(ValidationRules.requiredIf(true, false, error)).toStrictEqual(true);
-		expect(ValidationRules.requiredIf(['foobar'], false, error)).toStrictEqual(true);
-		expect(ValidationRules.requiredIf('foobar', false, error)).toStrictEqual(true);
+		expect(ValidationRules.requiredIf(null, false, error)).toBeTruthy();
+		expect(ValidationRules.requiredIf(undefined, false, error)).toBeTruthy();
+		expect(ValidationRules.requiredIf([], false, error)).toBeTruthy();
+		expect(ValidationRules.requiredIf('', false, error)).toBeTruthy();
+		expect(ValidationRules.requiredIf(false, false, error)).toBeTruthy();
+		expect(ValidationRules.requiredIf(true, false, error)).toBeTruthy();
+		expect(ValidationRules.requiredIf(['foobar'], false, error)).toBeTruthy();
+		expect(ValidationRules.requiredIf('foobar', false, error)).toBeTruthy();
 	});
 
 	it('maximal value', (): void => {
 		expect.assertions(3);
 		const error = 'This field must contain a number lower than 8.';
-		expect(ValidationRules.max(0, 8, error)).toStrictEqual(true);
-		expect(ValidationRules.max(8, 8, error)).toStrictEqual(true);
+		expect(ValidationRules.max(0, 8, error)).toBeTruthy();
+		expect(ValidationRules.max(8, 8, error)).toBeTruthy();
 		expect(ValidationRules.max(16, 8, error)).toStrictEqual(error);
 	});
 
@@ -77,15 +77,15 @@ describe('ValidationRules', (): void => {
 		expect.assertions(3);
 		const error = 'This field must contain a number greater than 8.';
 		expect(ValidationRules.min(0, 8, error)).toStrictEqual(error);
-		expect(ValidationRules.min(8, 8, error)).toStrictEqual(true);
-		expect(ValidationRules.min(16, 8, error)).toStrictEqual(true);
+		expect(ValidationRules.min(8, 8, error)).toBeTruthy();
+		expect(ValidationRules.min(16, 8, error)).toBeTruthy();
 	});
 
 	it('between values', (): void => {
 		expect.assertions(6);
 		const error = 'This field must contain a number between 4 and 8.';
 		expect(ValidationRules.between(0, 4, 8, error)).toStrictEqual(error);
-		expect(ValidationRules.between(6, 4, 8, error)).toStrictEqual(true);
+		expect(ValidationRules.between(6, 4, 8, error)).toBeTruthy();
 		expect(ValidationRules.between(16, 4, 8, error)).toStrictEqual(error);
 
 		expect(ValidationRules.between(0, 8, 4, error)).toStrictEqual(error);

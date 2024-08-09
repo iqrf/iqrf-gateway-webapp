@@ -248,6 +248,14 @@ export enum NetworkConnectionType {
 }
 
 /**
+ * Network connection created
+ */
+export interface NetworkConnectionCreated {
+	/// Network connection UUID
+	uuid: string;
+}
+
+/**
  * Network connection configuration
  */
 export interface NetworkConnectionConfiguration {

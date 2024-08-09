@@ -18,12 +18,12 @@ import { beforeEach, describe, expect, it } from 'vitest';
 
 import { IqrfGatewayControllerService } from '../../../src/services/Config';
 import {
+	IqrfGatewayControllerAction,
 	type IqrfGatewayControllerConfig,
 	IqrfGatewayControllerLoggingSeverity,
-	IqrfGatewayControllerAction,
 	type IqrfGatewayControllerMapping,
+	MappingDeviceType,
 } from '../../../src/types/Config';
-import { MappingDeviceType } from '../../../src/types/Config/Mapping';
 import { mockedAxios, mockedClient } from '../../mocks/axios';
 
 describe('IqrfGatewayControllerService', (): void => {
@@ -111,10 +111,8 @@ describe('IqrfGatewayControllerService', (): void => {
 		expect.assertions(1);
 		mockedAxios.onGet('/config/controller')
 			.reply(200, configuration);
-		await service.fetchConfig()
-			.then((actual: IqrfGatewayControllerConfig): void => {
-				expect(actual).toStrictEqual(configuration);
-			});
+		const actual: IqrfGatewayControllerConfig = await service.getConfig();
+		expect(actual).toStrictEqual(configuration);
 	});
 
 	it('update IQRF Gateway Controller config', async (): Promise<void> => {
@@ -128,7 +126,7 @@ describe('IqrfGatewayControllerService', (): void => {
 		};
 		mockedAxios.onPut('/config/controller', config)
 			.reply(200);
-		await service.saveConfig(config);
+		await service.updateConfig(config);
 	});
 
 	it('list IQRF Gateway Controller mappings', async (): Promise<void> => {
@@ -136,20 +134,16 @@ describe('IqrfGatewayControllerService', (): void => {
 		const profiles: IqrfGatewayControllerMapping[] = [profile];
 		mockedAxios.onGet('/config/controller/pins')
 			.reply(200, profiles);
-		await service.listMappings()
-			.then((actual: IqrfGatewayControllerMapping[]): void => {
-				expect(actual).toStrictEqual(profiles);
-			});
+		const actual: IqrfGatewayControllerMapping[] = await service.listMappings();
+		expect(actual).toStrictEqual(profiles);
 	});
 
 	it('fetch IQRF Gateway Controller mapping', async (): Promise<void> => {
 		expect.assertions(1);
 		mockedAxios.onGet('/config/controller/pins/1')
 			.reply(200, profile);
-		await service.fetchMapping(1)
-			.then((actual: IqrfGatewayControllerMapping): void => {
-				expect(actual).toStrictEqual(profile);
-			});
+		const actual: IqrfGatewayControllerMapping = await service.getMapping(1);
+		expect(actual).toStrictEqual(profile);
 	});
 
 	it('create IQRF Gateway Controller mapping', async (): Promise<void> => {
@@ -177,6 +171,6 @@ describe('IqrfGatewayControllerService', (): void => {
 		data.deviceType = MappingDeviceType.Adapter;
 		mockedAxios.onPut('/config/controller/pins/1', data)
 			.reply(200);
-		await service.editMapping(1, data);
+		await service.updateMapping(1, data);
 	});
 });

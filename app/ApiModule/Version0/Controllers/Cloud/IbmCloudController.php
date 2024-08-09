@@ -25,24 +25,26 @@ use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use App\ApiModule\Version0\Controllers\CloudsController;
-use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\ApiModule\Version0\Models\ControllerValidators;
 use App\CloudModule\Models\IbmCloudManager;
 
 /**
  * IBM Cloud IoT connection controller
  */
 #[Path('/ibmCloud')]
-class IbmCloudController extends CloudsController {
+class IbmCloudController extends BaseCloudController {
 
 	/**
 	 * Constructor
 	 * @param IbmCloudManager $manager IBM Cloud IoT connection manager
-	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
+	 * @param ControllerValidators $validators Controller validators
 	 */
-	public function __construct(IbmCloudManager $manager, RestApiSchemaValidator $validator) {
+	public function __construct(
+		IbmCloudManager $manager,
+		ControllerValidators $validators,
+	) {
+		parent::__construct($validators);
 		$this->manager = $manager;
-		parent::__construct($validator);
 	}
 
 	#[Path('/')]

@@ -125,7 +125,7 @@ limitations under the License.
 <script lang='ts' setup>
 import {
 	type TimeService,
-} from '@iqrf/iqrf-gateway-webapp-client/services/Gateway/TimeService';
+} from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
 import {
 	type TimeConfig,
 	type TimeSet,
@@ -192,7 +192,7 @@ async function getTime(): Promise<void> {
 }
 
 async function onSubmit(): Promise<void> {
-	const params: TimeSet = JSON.parse(JSON.stringify(timeSet.value)) as TimeSet;
+	const params: TimeSet = structuredClone(timeSet.value);
 	params.zoneName = timezone.value.name;
 	if (params.ntpSync) {
 		delete params.datetime;
@@ -201,7 +201,7 @@ async function onSubmit(): Promise<void> {
 		const luxonDate = DateTime.fromJSDate(datetime.value, { zone: timezone.value.name });
 		params.datetime = luxonDate.toISO()!;
 	}
-	service.setTime(params)
+	service.updateTime(params)
 		.then(() => {
 			getTime().then(() => {
 				toast.success(
@@ -213,8 +213,7 @@ async function onSubmit(): Promise<void> {
 }
 
 async function getTimezones(): Promise<void> {
-	service.getTimezones()
-		.then((data: Timezone[]) => timezones.value = data);
+	timezones.value = await service.listTimezones();
 }
 
 function itemProps(item: Timezone) {

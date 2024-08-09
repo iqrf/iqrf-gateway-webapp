@@ -101,7 +101,6 @@ import AptConfig from '@/components/Gateway/Services/AptConfig.vue';
 import GatewayUserPassword from '@/components/Gateway/Services/GatewayUserPassword.vue';
 import SystemdJournaldConfig from '@/components/Gateway/Services/JournalConfig.vue';
 
-import AptService from '@/services/AptService';
 import {ErrorResponse} from '@/types';
 
 import {AxiosError} from 'axios';
@@ -233,7 +232,7 @@ export default class ServiceControl extends Vue {
 	 * Write APT configuration
 	 */
 	private setUnattendedUpgrades(enable: boolean): void {
-		AptService.setUnattendedUpgrades(enable)
+		useApiClient().getConfigServices().getAptService().updateServiceState(enable)
 			.then(() => this.handleSuccess(enable ? 'enable' : 'disable'))
 			.catch(this.handleError);
 	}

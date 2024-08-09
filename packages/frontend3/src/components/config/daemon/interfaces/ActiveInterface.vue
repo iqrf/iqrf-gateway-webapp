@@ -136,7 +136,7 @@ async function onSubmit(): Promise<void> {
 			name: value,
 		};
 	});
-	service.changeEnabledComponents(components)
+	service.updateEnabledComponents(components)
 		.then(() => {
 			getConfig().then(() => {
 				toast.success(

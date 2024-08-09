@@ -27,8 +27,7 @@ use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use App\ApiModule\Version0\Controllers\BaseConfigController;
-use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\ApiModule\Version0\Models\ControllerValidators;
 use App\ApiModule\Version0\RequestAttributes;
 use App\Entities\MailerConfiguration;
 use App\Exceptions\InvalidSmtpConfigException;
@@ -42,27 +41,27 @@ use Nette\Utils\JsonException;
  * Mailer configuration controller
  */
 #[Path('/mailer')]
-#[Tag('Mailer configuration')]
+#[Tag('Configuration - Mailer')]
 class MailerController extends BaseConfigController {
 
 	/**
 	 * Constructor
 	 * @param ConfigurationManager $manager Mailer configuration manager
 	 * @param MailerConfigurationTestMailSender $sender Mailer configuration test mail sender
-	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
+	 * @param ControllerValidators $validators Controller validators
 	 */
 	public function __construct(
 		private readonly ConfigurationManager $manager,
 		private readonly MailerConfigurationTestMailSender $sender,
-		RestApiSchemaValidator $validator,
+		ControllerValidators $validators,
 	) {
-		parent::__construct($validator);
+		parent::__construct($validators);
 	}
 
 	#[Path('/')]
 	#[Method('GET')]
 	#[OpenApi('
-		summary: Returns current configuration of the mailer
+		summary: Returns the current configuration of the mailer
 		responses:
 			\'200\':
 				description: Success
@@ -76,10 +75,11 @@ class MailerController extends BaseConfigController {
 				$ref: \'#/components/responses/ServerError\'
 	')]
 	public function getConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['mailer']);
+		$this->validators->checkScopes($request, ['mailer']);
 		try {
 			$config = $this->manager->read();
-			return $response->writeJsonObject($config);
+			$response = $response->writeJsonObject($config);
+			return $this->validators->validateResponse('mailer', $response);
 		} catch (JsonException $e) {
 			throw new ServerErrorException('Invalid JSON syntax', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (IOException $e) {
@@ -90,7 +90,7 @@ class MailerController extends BaseConfigController {
 	#[Path('/')]
 	#[Method('PUT')]
 	#[OpenApi('
-		summary: Saves new configuration of the mailer
+		summary: Updates the configuration of the mailer
 		requestBody:
 			required: true
 			content:
@@ -108,8 +108,8 @@ class MailerController extends BaseConfigController {
 				$ref: \'#/components/responses/ServerError\'
 	')]
 	public function setConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['mailer']);
-		$this->validator->validateRequest('mailer', $request);
+		$this->validators->checkScopes($request, ['mailer']);
+		$this->validators->validateRequest('mailer', $request);
 		try {
 			$configuration = MailerConfiguration::jsonDeserialize($request->getJsonBody());
 			$this->manager->test($configuration);
@@ -118,7 +118,7 @@ class MailerController extends BaseConfigController {
 			if ($user->getEmail() !== null) {
 				$this->sender->send($user);
 			}
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (IOException | InvalidSmtpConfigException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (SendException $e) {
@@ -149,8 +149,8 @@ class MailerController extends BaseConfigController {
 							$ref: \'#/components/schemas/Error\'
 	')]
 	public function testConfiguration(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['mailer']);
-		$this->validator->validateRequest('mailer', $request);
+		$this->validators->checkScopes($request, ['mailer']);
+		$this->validators->validateRequest('mailer', $request);
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
 		try {
 			$configuration = $request->getJsonBodyCopy();
@@ -161,7 +161,7 @@ class MailerController extends BaseConfigController {
 		} catch (SendException $e) {
 			throw new ServerErrorException('Unable to send the e-mail', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
-		return $response->writeBody('Workaround');
+		return $response;
 	}
 
 }

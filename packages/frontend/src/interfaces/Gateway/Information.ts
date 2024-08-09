@@ -14,9 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-	GatewayInformation
-} from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
 
 /**
  * GatewayInfo ip address interface
@@ -32,16 +29,4 @@ export interface IpAddress {
 export interface MacAddress {
 	address: string
 	iface: string
-}
-
-/**
- * GatewayInfo interface
- */
-export interface IGatewayInfo extends GatewayInformation {}
-
-/**
- * Hostnamectl interface
- */
-export interface IHostname {
-	hostname: string
 }

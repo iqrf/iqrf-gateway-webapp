@@ -44,7 +44,7 @@ import IpAddressInput from '@/components/Network/WireGuard/IpAddressInput.vue';
 import IpAddressPrefixInput from '@/components/Network/WireGuard/IpAddressPrefixInput.vue';
 import {
 	WireGuardIpAddress
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/WireGuard';
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 
 /**
  * WireGuard peers

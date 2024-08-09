@@ -63,8 +63,8 @@ const componentProps = defineProps({
 	},
 });
 const modelValue = defineModel<string | undefined>('modelValue', { required: true });
-const asciiPattern = /^[\w"#$%&()*+,\-./:;?@[\\\]^`{}~\s]{0,16}$/;
-const hexPattern = /^[0-9a-f]{0,32}$/i;
+const asciiPattern = /^[\s\w"#$%&()*+,./:;?@[\\\]^`{}~-]{0,16}$/;
+const hexPattern = /^[\da-f]{0,32}$/i;
 const useHex: Ref<boolean> = ref(false);
 const label = computed(() => {
 	if (componentProps.accessPassword) {
@@ -123,7 +123,7 @@ function changeAccessPasswordFormat(): void {
 }
 
 function hexToAscii(value: string): string {
-	const converted = (value.toString().match(/.{1,2}/g) ?? []).map((item: string) => String.fromCharCode(parseInt(item, 16))).join('');
+	const converted = (value.toString().match(/.{1,2}/g) ?? []).map((item: string) => String.fromCharCode(Number.parseInt(item, 16))).join('');
 	if (asciiPattern.test(converted)) {
 		return converted;
 	}

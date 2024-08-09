@@ -186,14 +186,14 @@ import NetworkOperators from '@/components/Network/NetworkOperators.vue';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 
-import {AxiosError, AxiosResponse} from 'axios';
+import {AxiosError} from 'axios';
 import {DataTableHeader} from 'vuetify';
 import {
 	NetworkConnectionListEntry,
-	NetworkConnectionType
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkConnection';
-import {Modem} from '@iqrf/iqrf-gateway-webapp-client/types/Network/Modem';
-import {MonitCheck} from '@iqrf/iqrf-gateway-webapp-client/types/Config/Monit';
+	NetworkConnectionType,
+	Modem,
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
+import {MonitCheck} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import {useApiClient} from '@/services/ApiClient';
 
 @Component({
@@ -325,8 +325,8 @@ export default class MobileConnections extends Vue {
 			return;
 		}
 		await this.monitService.getCheck(this.monitCheckName)
-			.then((response: AxiosResponse<MonitCheck>) => {
-				this.monit = response.data;
+			.then((response: MonitCheck) => {
+				this.monit = response;
 			})
 			.catch(() => {
 				this.monit = null;

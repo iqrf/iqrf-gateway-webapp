@@ -1,0 +1,28 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/iqrfUploadedFile.json",
+	"type": "object",
+	"title": "IQRF Gateway Updater uploaded file",
+	"additionalProperties": false,
+	"required": [
+		"fileName",
+		"format"
+	],
+	"properties": {
+		"fileName": {
+			"$id": "#/properties/fileName",
+			"type": "string",
+			"title": "Uploaded file name",
+			"description": "File name of the uploaded file.",
+			"example": "/var/cache/iqrf-gateway-daemon/upload/DPA-Coordinator-SPI-7xD-V414-200403.iqrf"
+		},
+		"format": {
+			"$id": "#/properties/format",
+			"type": "string",
+			"title": "Uploaded file format",
+			"description": "Format of the uploaded file.",
+			"enum": ["hex", "iqrf", "trcnfg"],
+			"example":  "iqrf"
+		}
+	}
+}

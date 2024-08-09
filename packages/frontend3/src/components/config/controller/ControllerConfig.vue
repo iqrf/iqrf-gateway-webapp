@@ -424,7 +424,7 @@ const showProfileMenu: Ref<boolean> = ref(false);
 
 async function getConfig(): Promise<void> {
 	componentState.value = ComponentState.Loading;
-	service.fetchConfig()
+	service.getConfig()
 		.then((data: IqrfGatewayControllerConfig) => {
 			configuration.value = data;
 			watchdogPins.value = data.powerOff.sck !== -1 && data.powerOff.sck !== -1;
@@ -448,7 +448,7 @@ async function onSubmit(): Promise<void> {
 		params.powerOff.sck = -1;
 		params.powerOff.sda = -1;
 	}
-	service.saveConfig(configuration.value)
+	service.updateConfig(configuration.value)
 		.then(() => {
 			getConfig().then(() => {
 				toast.success(

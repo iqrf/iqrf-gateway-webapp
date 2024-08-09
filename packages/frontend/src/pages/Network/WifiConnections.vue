@@ -221,29 +221,25 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
+import {
+	NetworkConnectionService,
+	WiFiService
+} from '@iqrf/iqrf-gateway-webapp-client/services/Network';
+import {
+	NetworkConnectionListEntry,
+	NetworkConnectionType,
+	AccessPoint,
+	WifiNetwork,
+	NetworkInterfaceType,
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import {AxiosError} from 'axios';
 import {Component, Ref, Vue} from 'vue-property-decorator';
 import {DataTableHeader} from 'vuetify';
 
 import NetworkInterfaces from '@/components/Network/NetworkInterfaces.vue';
 import SignalIndicator from '@/components/Network/SignalIndicator.vue';
-
 import {extendedErrorToast} from '@/helpers/errorToast';
-
-import NetworkConnectionService from '@/services/NetworkConnectionService';
-
 import {useApiClient} from '@/services/ApiClient';
-import {
-	NetworkConnectionListEntry,
-	NetworkConnectionType
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkConnection';
-import {
-	AccessPoint,
-	WifiNetwork
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/Wifi';
-import {
-	NetworkInterfaceType
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkInterface';
 
 @Component({
 	components: {
@@ -332,7 +328,7 @@ export default class WifiConnections extends Vue {
 	private deleteAp: AccessPoint|null = null;
 
 	/**
-	 * @var {boolean} deletedAP Indicates that AP has just been deleted
+	 * @var {boolean} deletedAp Indicates that AP has just been deleted
 	 */
 	private deletedAp = false;
 
@@ -342,9 +338,14 @@ export default class WifiConnections extends Vue {
 	private hostname = '';
 
 	/**
-	 * @property {NetworkConnectionService} service Network connection service
+	 * @property {NetworkConnectionService} connectionService Network connection service
 	 */
-	private service = useApiClient().getNetworkServices().getNetworkConnectionService();
+	private connectionService: NetworkConnectionService = useApiClient().getNetworkServices().getNetworkConnectionService();
+
+	/**
+	 * @property {WiFiService} wifiService Wi-Fi service
+	 */
+	private wifiService: WiFiService = useApiClient().getNetworkServices().getWiFiService();
 
 	/**
 	 * Retrieves data for table
@@ -359,7 +360,7 @@ export default class WifiConnections extends Vue {
 	 */
 	private getAccessPoints(): void {
 		this.loading = true;
-		NetworkConnectionService.listWifiAccessPoints()
+		this.wifiService.listAccessPoints()
 			.then((response: AccessPoint[]) => this.findConnections(response))
 			.catch((error: AxiosError) => {
 				if (!this.deletedAp) {
@@ -386,7 +387,7 @@ export default class WifiConnections extends Vue {
 	 * @param {Array<AccessPoint>} accessPoints Array of available access points
 	 */
 	private findConnections(accessPoints: Array<AccessPoint>): Promise<void> {
-		return this.service.list(NetworkConnectionType.WiFi)
+		return this.connectionService.list(NetworkConnectionType.WiFi)
 			.then((connections: NetworkConnectionListEntry[]) => {
 				const apArray: Array<WifiNetwork> = [];
 				for (const ap of accessPoints) {
@@ -437,7 +438,7 @@ export default class WifiConnections extends Vue {
 			return;
 		}
 		this.$store.commit('spinner/SHOW');
-		this.service.connect(ap.uuid, ap.interfaceName)
+		this.connectionService.connect(ap.uuid, ap.interfaceName)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
@@ -465,7 +466,7 @@ export default class WifiConnections extends Vue {
 		}
 		this.disconnectAp = null;
 		this.$store.commit('spinner/SHOW');
-		this.service.disconnect(ap.uuid)
+		this.connectionService.disconnect(ap.uuid)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
@@ -540,7 +541,7 @@ export default class WifiConnections extends Vue {
 		}
 		this.deleteAp = null;
 		this.$store.commit('spinner/SHOW');
-		this.service.delete(ap.uuid)
+		this.connectionService.delete(ap.uuid)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(

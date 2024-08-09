@@ -24,10 +24,10 @@ limitations under the License.
 <script setup lang='ts'>
 import {
 	type NetworkConnectionConfiguration,
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkConnection';
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import { type PropType } from 'vue';
 
-const configuration = defineModel({
+defineModel({
 	type: Object as PropType<NetworkConnectionConfiguration>,
 	required: true,
 });

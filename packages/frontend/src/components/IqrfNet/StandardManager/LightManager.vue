@@ -82,7 +82,9 @@ limitations under the License.
 										color='error'
 										@click='removeLdiCommand(i-1)'
 									>
-										<v-icon size='xl'>mdi-minus</v-icon>
+										<v-icon size='xl'>
+											mdi-minus
+										</v-icon>
 									</v-btn>
 								</template>
 							</v-text-field>

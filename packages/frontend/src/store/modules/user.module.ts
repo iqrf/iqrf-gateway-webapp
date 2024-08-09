@@ -44,7 +44,7 @@ const state: UserState = {
 
 const actions: ActionTree<UserState, any> = {
 	updateInfo({commit}) {
-		return useApiClient().getAccountService().fetchInfo()
+		return useApiClient().getAccountService().getInfo()
 			.then((user: UserInfo) => {
 				commit('SET_INFO', user);
 			})

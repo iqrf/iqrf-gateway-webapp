@@ -29,7 +29,7 @@ use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\ApiModule\Version0\Models\ControllerValidators;
 use App\CoreModule\Exceptions\FeatureNotFoundException;
 use App\CoreModule\Models\FeatureManager;
 use Nette\IOException;
@@ -44,13 +44,13 @@ class FeatureController extends BaseController {
 	/**
 	 * Constructor
 	 * @param FeatureManager $manager Optional feature manager
-	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
+	 * @param ControllerValidators $validators Controller validators
 	 */
 	public function __construct(
 		private readonly FeatureManager $manager,
-		RestApiSchemaValidator $validator,
+		ControllerValidators $validators,
 	) {
-		parent::__construct($validator);
+		parent::__construct($validators);
 	}
 
 	#[Path('/')]
@@ -71,7 +71,8 @@ class FeatureController extends BaseController {
 	')]
 	public function getAll(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$config = $this->manager->read();
-		return $response->writeJsonBody($config);
+		$response = $response->writeJsonBody($config);
+		return $this->validators->validateResponse('featureList', $response);
 	}
 
 	#[Path('/{feature}')]
@@ -96,7 +97,8 @@ class FeatureController extends BaseController {
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$name = urldecode($request->getParameter('feature'));
 		try {
-			return $response->writeJsonBody($this->manager->get($name));
+			$response = $response->writeJsonBody($this->manager->get($name));
+			return $this->validators->validateResponse('features/' . $name, $response);
 		} catch (FeatureNotFoundException $e) {
 			throw new ClientErrorException('Feature not found', ApiResponse::S404_NOT_FOUND, $e);
 		}
@@ -130,10 +132,10 @@ class FeatureController extends BaseController {
 		if (!$this->manager->existsDefault($name)) {
 			throw new ClientErrorException('Feature not found', ApiResponse::S404_NOT_FOUND);
 		}
-		$this->validator->validateRequest('features/' . $name, $request);
+		$this->validators->validateRequest('features/' . $name, $request);
 		try {
 			$this->manager->edit($name, $request->getJsonBodyCopy());
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (FeatureNotFoundException $e) {
 			throw new ClientErrorException('Feature not found', ApiResponse::S404_NOT_FOUND, $e);
 		} catch (IOException $e) {

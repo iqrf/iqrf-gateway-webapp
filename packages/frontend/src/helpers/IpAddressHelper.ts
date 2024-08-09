@@ -17,7 +17,7 @@
 import ip from 'ip-regex';
 import {
 	NetworkConnectionConfiguration
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkConnection';
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 
 export default class IpAddressHelper {
 

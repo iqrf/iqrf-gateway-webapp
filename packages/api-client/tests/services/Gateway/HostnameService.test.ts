@@ -17,7 +17,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import { HostnameService } from '../../../src/services/Gateway';
-import { type Hostname } from '../../../src/types/Gateway/Hostname';
+import { type Hostname } from '../../../src/types/Gateway';
 import { mockedAxios, mockedClient } from '../../mocks/axios';
 
 describe('HostnameService', (): void => {
@@ -39,7 +39,7 @@ describe('HostnameService', (): void => {
 		};
 		mockedAxios.onPost('/gateway/hostname', data)
 			.reply(200);
-		await service.setHostname(hostname);
+		await service.updateHostname(hostname);
 	});
 
 });

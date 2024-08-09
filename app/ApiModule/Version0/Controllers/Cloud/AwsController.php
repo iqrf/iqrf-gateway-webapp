@@ -27,8 +27,7 @@ use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use App\ApiModule\Version0\Controllers\CloudsController;
-use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\ApiModule\Version0\Models\ControllerValidators;
 use App\ApiModule\Version0\Utils\ContentTypeUtil;
 use App\CloudModule\Exceptions\CannotCreateCertificateDirectoryException;
 use App\CloudModule\Exceptions\InvalidPrivateKeyForCertificateException;
@@ -42,16 +41,19 @@ use RuntimeException;
  * Amazon AWS IoT connection controller
  */
 #[Path('/aws')]
-class AwsController extends CloudsController {
+class AwsController extends BaseCloudController {
 
 	/**
 	 * Constructor
 	 * @param AwsManager $manager Amazon AWS IoT connection manager
-	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
+	 * @param ControllerValidators $validators Controller validators
 	 */
-	public function __construct(AwsManager $manager, RestApiSchemaValidator $validator) {
+	public function __construct(
+		AwsManager $manager,
+		ControllerValidators $validators,
+	) {
+		parent::__construct($validators);
 		$this->manager = $manager;
-		parent::__construct($validator);
 	}
 
 	#[Path('/')]
@@ -88,12 +90,11 @@ class AwsController extends CloudsController {
 				$ref: \'#/components/responses/ServerError\'
 	')]
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['clouds']);
+		$this->validators->checkScopes($request, ['clouds']);
 		try {
 			$configuration = $this->getConfiguration($request);
 			$this->manager->createMqttInterface($configuration);
-			return $response->withStatus(ApiResponse::S201_CREATED)
-				->writeBody('Workaround');
+			return $response->withStatus(ApiResponse::S201_CREATED);
 		} catch (NonexistentJsonSchemaException $e) {
 			throw new ServerErrorException('Missing JSON schema', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (IOException $e) {
@@ -117,7 +118,7 @@ class AwsController extends CloudsController {
 	private function getConfiguration(ApiRequest $request): array {
 		$contentType = ContentTypeUtil::validContentType($request, ['application/json', 'multipart/form-data']);
 		if ($contentType === 'application/json') {
-			$this->validator->validateRequest('cloudAws', $request);
+			$this->validators->validateRequest('cloudAws', $request);
 			return $request->getJsonBodyCopy();
 		}
 		$data = $request->getParsedBody();

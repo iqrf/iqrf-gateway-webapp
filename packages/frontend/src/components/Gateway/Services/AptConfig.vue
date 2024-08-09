@@ -35,7 +35,7 @@ limitations under the License.
 								}'
 							>
 								<v-text-field
-									v-model='config["APT::Periodic::Update-Package-Lists"]'
+									v-model='config.packageListUpdateInterval'
 									type='number'
 									min='0'
 									:label='$t("service.unattended-upgrades.form.listUpdateInterval")'
@@ -55,7 +55,7 @@ limitations under the License.
 								}'
 							>
 								<v-text-field
-									v-model='config["APT::Periodic::Unattended-Upgrade"]'
+									v-model='config.packageUpdateInterval'
 									type='number'
 									min='0'
 									:label='$t("service.unattended-upgrades.form.upgradeInterval")'
@@ -75,7 +75,7 @@ limitations under the License.
 								}'
 							>
 								<v-text-field
-									v-model='config["APT::Periodic::AutocleanInterval"]'
+									v-model='config.packageRemovalInterval'
 									type='number'
 									min='0'
 									:label='$t("service.unattended-upgrades.form.removeInterval")'
@@ -86,7 +86,7 @@ limitations under the License.
 						</v-col>
 					</v-row>
 					<v-checkbox
-						v-model='config["Unattended-Upgrade::Automatic-Reboot"]'
+						v-model='config.rebootOnKernelUpdate'
 						:label='$t("service.unattended-upgrades.form.rebootOnKernelUpdate")'
 						dense
 					/>
@@ -111,10 +111,11 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {integer, min_value, required} from 'vee-validate/dist/rules';
 
-import AptService, {AptConfiguration} from '@/services/AptService';
-
 import {AxiosError} from 'axios';
 import {UserRole} from '@iqrf/iqrf-gateway-webapp-client/types';
+import {useApiClient} from '@/services/ApiClient';
+import {AptService} from '@iqrf/iqrf-gateway-webapp-client/services/Config';
+import {AptConfig} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 
 @Component({
 	components: {
@@ -126,14 +127,17 @@ import {UserRole} from '@iqrf/iqrf-gateway-webapp-client/types';
 /**
  * Gateway APT configuration component for service control
  */
-export default class AptConfig extends Vue {
+export default class AptConfiguration extends Vue {
 
-	private config: AptConfiguration = {
-		'APT::Periodic::AutocleanInterval': 0,
-		'APT::Periodic::Update-Package-Lists': 1,
-		'APT::Periodic::Unattended-Upgrade': 1,
-		'Unattended-Upgrade::Automatic-Reboot': false,
+	private config: AptConfig = {
+		enabled: false,
+		packageRemovalInterval: 0,
+		packageListUpdateInterval: 1,
+		packageUpdateInterval: 1,
+		rebootOnKernelUpdate: false,
 	};
+
+	private service: AptService = useApiClient().getConfigServices().getAptService();
 
 	/**
 	 * Checks if user is an administrator
@@ -165,8 +169,8 @@ export default class AptConfig extends Vue {
 	 * Retrieves unattended upgrades configuration
 	 */
 	private getConfig(): Promise<void> {
-		return AptService.read()
-			.then((config: AptConfiguration) => {this.config = config;})
+		return this.service.getConfig()
+			.then((config: AptConfig) => {this.config = config;})
 			.catch((error: AxiosError) => extendedErrorToast(error, 'service.unattended-upgrades.messages.getFailed'));
 	}
 
@@ -175,7 +179,7 @@ export default class AptConfig extends Vue {
 	 */
 	private updateConfig(): void {
 		this.$store.commit('spinner/SHOW');
-		AptService.write(this.config)
+		this.service.updateConfig(this.config)
 			.then(() => {
 				this.getConfig().then(() => {
 					this.$store.commit('spinner/HIDE');

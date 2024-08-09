@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 MICRORISC s.r.o.
+ * Copyright 2023-2024 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ import { BaseService } from '../BaseService';
 export class UpgradeService extends BaseService {
 
 	/**
-	 * Upload file to filesystem and return upload path
+	 * Uploads file to filesystem and return upload path
 	 * @param {File} file File to upload
 	 * @param {FileType} type File type
 	 * @return {Promise<string>} Path to uploaded file
@@ -45,7 +45,7 @@ export class UpgradeService extends BaseService {
 	}
 
 	/**
-	 * Upload file from path to TR
+	 * Uploads file from path to TR
 	 * @param {string} path Path to uploaded file
 	 * @param {FileType} type File type
 	 */

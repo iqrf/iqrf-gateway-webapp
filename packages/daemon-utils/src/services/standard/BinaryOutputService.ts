@@ -1,6 +1,6 @@
-
 import { StandardBinaryOutputMessages } from '../../enums';
-import { type EmbedSharedParams, type SetOutputParams } from '../../types';
+import { type EmbedSharedParams } from '../../types';
+import { type SetOutputParams } from '../../types/standard';
 import { type DaemonMessageOptions } from '../../utils';
 import { BaseEmbedService } from '../BaseEmbedService';
 

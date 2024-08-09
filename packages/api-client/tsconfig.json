@@ -2,24 +2,18 @@
 	"$schema": "https://json.schemastore.org/tsconfig",
 	"extends": "../../tsconfig.base.json",
 	"compilerOptions": {
-		"baseUrl": "./",
-		"declarationDir": "./dist",
+		"declarationDir": "dist",
 		"lib": [
 			"DOM",
 			"ESNext"
 		],
-		"outDir": "./dist",
-		"rootDir": "./"
+		"outDir": "dist"
 	},
-	"references": [
-		{
-			"path": "../daemon-utils/tsconfig.json"
-		}
-	],
 	"include": [
 		"src/**/*",
 		"tests/**/*",
 		"package.json",
+		"tsup.config.ts",
 		"vitest.config.ts"
 	],
 	"exclude": [

@@ -164,8 +164,8 @@ limitations under the License.
 
 <script lang='ts'>
 import {IqrfGatewayControllerService} from '@iqrf/iqrf-gateway-webapp-client/services/Config';
-import { IqrfGatewayControllerMapping } from '@iqrf/iqrf-gateway-webapp-client/types/Config/IqrfGatewayController';
-import { MappingDeviceType } from '@iqrf/iqrf-gateway-webapp-client/types/Config/Mapping';
+import { IqrfGatewayControllerMapping } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import { MappingDeviceType } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import {AxiosError} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {integer, required} from 'vee-validate/dist/rules';
@@ -277,7 +277,7 @@ export default class ControllerPinConfigFormModal extends Vue {
 				.then(() => this.handleSuccess(name))
 				.catch((error: AxiosError) => this.handleFailure(error, name));
 		} else {
-			this.service.editMapping(id, profile)
+			this.service.updateMapping(id, profile)
 				.then(() => this.handleSuccess(name))
 				.catch((error: AxiosError) => this.handleFailure(error, name));
 		}

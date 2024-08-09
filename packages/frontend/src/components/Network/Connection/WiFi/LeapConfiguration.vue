@@ -33,7 +33,7 @@ import {Component, VModel, Vue} from 'vue-property-decorator';
 import PasswordInput from '@/components/Core/PasswordInput.vue';
 import {
 	NetworkConnectionConfiguration
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkConnection';
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 
 
 /**

@@ -16,7 +16,7 @@
 
 import { type AxiosResponse } from 'axios';
 
-import { type MobileOperator } from '../../types/Network/MobileOperator';
+import { type MobileOperator } from '../../types/Network';
 import { BaseService } from '../BaseService';
 
 /**
@@ -25,7 +25,7 @@ import { BaseService } from '../BaseService';
 export class MobileOperatorService extends BaseService {
 
 	/**
-	 * Fetches list of mobile operators
+	 * Retrieves list of mobile operators
 	 * @return {Promise<MobileOperator[]>} List of mobile operators
 	 */
 	public async list(): Promise<MobileOperator[]> {
@@ -43,22 +43,22 @@ export class MobileOperatorService extends BaseService {
 	}
 
 	/**
-	 * Fetches the mobile operator
+	 * Retrieves the mobile operator
 	 * @param {number} id Mobile operator ID
 	 * @return {Promise<MobileOperator>} Mobile operator
 	 */
-	public async fetch(id: number): Promise<MobileOperator> {
+	public async get(id: number): Promise<MobileOperator> {
 		const response: AxiosResponse<MobileOperator> =
 			await this.axiosInstance.get(`/network/operators/${id.toString()}`);
 		return this.deserialize(response.data);
 	}
 
 	/**
-	 * Edits the mobile operator
+	 * Updates the mobile operator
 	 * @param {number} id Mobile operator ID
 	 * @param {MobileOperator} operator Mobile operator to edit
 	 */
-	public async edit(id: number, operator: MobileOperator): Promise<void> {
+	public async update(id: number, operator: MobileOperator): Promise<void> {
 		await this.axiosInstance.put(`/network/operators/${id.toString()}`, this.serialize(operator));
 	}
 

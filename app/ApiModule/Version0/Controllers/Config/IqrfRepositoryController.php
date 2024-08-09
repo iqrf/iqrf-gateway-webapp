@@ -27,8 +27,7 @@ use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use App\ApiModule\Version0\Controllers\BaseConfigController;
-use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\ApiModule\Version0\Models\ControllerValidators;
 use App\ConfigModule\Models\IqrfRepositoryManager;
 use Nette\IOException;
 use Nette\Neon\Exception as NeonException;
@@ -36,26 +35,26 @@ use Nette\Neon\Exception as NeonException;
 /**
  * IQRF Repository controller
  */
-#[Path('/iqrf-repository')]
-#[Tag('IQRF Repository configuration')]
+#[Path('/iqrfRepository')]
+#[Tag('Configuration - IQRF Repository')]
 class IqrfRepositoryController extends BaseConfigController {
 
 	/**
 	 * Constructor
 	 * @param IqrfRepositoryManager $manager IQRF Repository manager
-	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
+	 * @param ControllerValidators $validators Controller validators
 	 */
 	public function __construct(
 		private readonly IqrfRepositoryManager $manager,
-		RestApiSchemaValidator $validator,
+		ControllerValidators $validators,
 	) {
-		parent::__construct($validator);
+		parent::__construct($validators);
 	}
 
 	#[Path('/')]
 	#[Method('GET')]
 	#[OpenApi('
-		summary: Returns current configuration of IQRF Gateway Translator
+		summary: Returns the current configuration of IQRF Repository
 		responses:
 			\'200\':
 				description: Success
@@ -67,8 +66,9 @@ class IqrfRepositoryController extends BaseConfigController {
 				$ref: \'#/components/responses/Forbidden\'
 	')]
 	public function readConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['config:iqrfRepository']);
-		return $response->writeJsonBody($this->manager->readConfig());
+		$this->validators->checkScopes($request, ['config:iqrfRepository']);
+		$response = $response->writeJsonBody($this->manager->readConfig());
+		return $this->validators->validateResponse('iqrfRepositoryConfig', $response);
 	}
 
 	#[Path('/')]
@@ -92,12 +92,12 @@ class IqrfRepositoryController extends BaseConfigController {
 				$ref: \'#/components/responses/ServerError\'
 	')]
 	public function saveConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['config:iqrfRepository']);
-		$this->validator->validateRequest('iqrfRepositoryConfig', $request);
+		$this->validators->checkScopes($request, ['config:iqrfRepository']);
+		$this->validators->validateRequest('iqrfRepositoryConfig', $request);
 		try {
 			$config = $request->getJsonBodyCopy(true);
 			$this->manager->saveConfig($config);
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (NeonException | IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}

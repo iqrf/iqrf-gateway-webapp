@@ -16,7 +16,12 @@
 
 import * as punycode from 'punycode/';
 
-import { type UserCreate, type UserEdit, type UserInfo, type UserSignedIn } from '../types';
+import {
+	type UserCreate,
+	type UserEdit,
+	type UserInfo,
+	type UserSignedIn,
+} from '../types';
 
 /**
  * User utilities

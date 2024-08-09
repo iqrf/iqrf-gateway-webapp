@@ -54,7 +54,7 @@ import {extendedErrorToast} from '@/helpers/errorToast';
 import {AxiosError} from 'axios';
 import {
 	WireGuardTunnelListEntry
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/WireGuard';
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import {useApiClient} from '@/services/ApiClient';
 
 /**

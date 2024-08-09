@@ -80,7 +80,8 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { type Product, type ProductService } from '@iqrf/iqrf-repository-client';
+import { type ProductService } from '@iqrf/iqrf-repository-client/services';
+import { type Product } from '@iqrf/iqrf-repository-client/types';
 import { mdiImport, mdiMagnify } from '@mdi/js';
 import { onMounted, type Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -113,11 +114,8 @@ const headers = [
 const products: Ref<Product[]> = ref([]);
 const search: Ref<string> = ref('');
 
-function list(): void {
-	service.list()
-		.then((data: Product[]) => {
-			products.value = data;
-		});
+async function list(): Promise<void> {
+	products.value = await service.list();
 }
 
 function applyProduct(product: Product): void {
@@ -133,6 +131,6 @@ function close(): void {
 onMounted(async () => {
 	const client = await useRepositoryClient();
 	service = client.getProductService();
-	list();
+	await list();
 });
 </script>

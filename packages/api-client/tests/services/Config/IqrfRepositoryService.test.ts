@@ -42,10 +42,8 @@ describe('IqrfRepositoryService', (): void => {
 		};
 		mockedAxios.onGet('/config/iqrf-repository')
 			.reply(200, config);
-		await service.fetch()
-			.then((actual: IqrfRepositoryConfig): void => {
-				expect(actual).toStrictEqual(config);
-			});
+		const actual: IqrfRepositoryConfig = await service.getConfig();
+		expect(actual).toStrictEqual(config);
 	});
 
 	it('update IQRF Repository config', async (): Promise<void> => {
@@ -59,7 +57,7 @@ describe('IqrfRepositoryService', (): void => {
 		};
 		mockedAxios.onPut('/config/iqrf-repository', config)
 			.reply(200);
-		await service.edit(config);
+		await service.updateConfig(config);
 	});
 
 });

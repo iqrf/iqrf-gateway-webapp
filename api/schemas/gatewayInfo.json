@@ -26,7 +26,14 @@
 		},
 		"gwId": {
 			"$id": "#/properties/gwId",
-			"type": "string",
+			"oneOf": [
+				{
+					"type": "string"
+				},
+				{
+					"type": "null"
+				}
+			],
 			"title": "IQRF Gateway ID",
 			"example": "02424D1D2D2E7580"
 		},
@@ -149,6 +156,32 @@
 					],
 					"title": "IQRF Gateway InfluxDB Bridge version",
 					"example": "v1.0.0"
+				},
+				"menderClient": {
+					"$id": "#/properties/versions/properties/menderClient",
+					"oneOf": [
+						{
+							"type": "string"
+						},
+						{
+							"type": "null"
+						}
+					],
+					"title": "Mender client version",
+					"example": "4.0.0"
+				},
+				"menderConnect": {
+					"$id": "#/properties/versions/properties/menderConnect",
+					"oneOf": [
+						{
+							"type": "string"
+						},
+						{
+							"type": "null"
+						}
+					],
+					"title": "Mender connect version",
+					"example": "2.2.0"
 				},
 				"setter": {
 					"$id": "#/properties/versions/properties/setter",

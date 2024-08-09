@@ -1,5 +1,6 @@
 import { IqmeshServiceMessages } from '../../enums';
-import { type IqmeshEnumerateParams, type IqmeshSharedParams } from '../../types';
+import { type IqmeshSharedParams } from '../../types';
+import { type IqmeshEnumerateParams } from '../../types/iqmesh';
 import { type DaemonMessageOptions } from '../../utils';
 
 import { BaseIqmeshService } from './BaseIqmeshService';

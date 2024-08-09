@@ -69,10 +69,8 @@ describe('UserService', (): void => {
 		expect.assertions(1);
 		mockedAxios.onGet('/users')
 			.reply(200, rawUsers);
-		await service.list()
-			.then((actual: UserInfo[]): void => {
-				expect(actual).toStrictEqual(users);
-			});
+		const actual: UserInfo[] = await service.list();
+		expect(actual).toStrictEqual(users);
 	});
 
 	it('create a new user', async (): Promise<void> => {
@@ -88,25 +86,22 @@ describe('UserService', (): void => {
 			role: 'admin',
 		})
 			.reply(200, response);
-		await service.create({
+		const actual: EmailSentResponse = await service.create({
 			username: 'roman',
 			email: null,
 			password: 'password',
 			language: UserLanguage.English,
 			role: UserRole.Admin,
-		})
-			.then((actual: EmailSentResponse): void => {
-				expect(actual).toStrictEqual(response);
-			});
+		});
+		expect(actual).toStrictEqual(response);
 	});
 
 	it('fetch the user with ID `2`', async (): Promise<void> => {
 		expect.assertions(1);
 		mockedAxios.onGet('/users/2')
 			.reply(200, rawUsers[0]);
-		await service.fetch(2).then((actual: UserInfo): void => {
-			expect(actual).toStrictEqual(users[0]);
-		});
+		const actual: UserInfo = await service.get(2);
+		expect(actual).toStrictEqual(users[0]);
 	});
 
 	it('update the user with ID `2`', async (): Promise<void> => {
@@ -121,15 +116,13 @@ describe('UserService', (): void => {
 			role: 'admin',
 		})
 			.reply(200, response);
-		await service.edit(2, {
+		const actual: EmailSentResponse = await service.update(2, {
 			username: 'roman',
 			email: 'roman@ondráček.eu',
 			language: UserLanguage.English,
 			role: UserRole.Admin,
-		})
-			.then((actual: EmailSentResponse): void => {
-				expect(actual).toStrictEqual(response);
-			});
+		});
+		expect(actual).toStrictEqual(response);
 	});
 
 	it('delete the user with ID `2`', async (): Promise<void> => {

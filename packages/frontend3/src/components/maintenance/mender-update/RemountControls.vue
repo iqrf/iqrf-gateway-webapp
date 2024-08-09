@@ -39,8 +39,8 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { type MenderService } from '@iqrf/iqrf-gateway-webapp-client/services';
-import { MenderMountMode, type MenderRemount } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import { type MenderService } from '@iqrf/iqrf-gateway-webapp-client/services/Maintenance';
+import { MenderMountMode, type MenderRemount } from '@iqrf/iqrf-gateway-webapp-client/types/Maintenance';
 import { type Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
@@ -51,23 +51,22 @@ import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
 const i18n = useI18n();
-const service: MenderService = useApiClient().getMenderService();
+const service: MenderService = useApiClient().getMaintenanceServices().getMenderService();
 
-function onSubmit(mode: MenderMountMode): void {
+async function onSubmit(mode: MenderMountMode): Promise<void> {
 	const data: MenderRemount = {
 		mode: mode,
 	};
 	componentState.value = ComponentState.Saving;
-	service.remount(data)
-		.then(() => {
-			toast.success(
-				i18n.t('components.maintenance.mender.remount.messages.success'),
-			);
-			componentState.value = ComponentState.Ready;
-		})
-		.catch(() => {
-			componentState.value = ComponentState.Ready;
-			toast.error('TODO REMOUNT ERROR HANDLING');
-		});
+	try {
+		await service.remount(data);
+		toast.success(
+			i18n.t('components.maintenance.mender.remount.messages.success'),
+		);
+		componentState.value = ComponentState.Ready;
+	} catch {
+		componentState.value = ComponentState.Ready;
+		toast.error('TODO REMOUNT ERROR HANDLING');
+	}
 }
 </script>

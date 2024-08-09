@@ -26,9 +26,7 @@ limitations under the License.
 </template>
 <script setup lang='ts'>
 import { Feature } from '@iqrf/iqrf-gateway-webapp-client/types';
-import {
-	type MonitCheck,
-} from '@iqrf/iqrf-gateway-webapp-client/types/Config/Monit';
+import { type MonitCheck } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { mdiPlay, mdiStop } from '@mdi/js';
 import { computed, onBeforeMount, ref, type Ref } from 'vue';
 

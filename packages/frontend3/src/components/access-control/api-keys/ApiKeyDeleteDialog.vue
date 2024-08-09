@@ -29,8 +29,8 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { type ApiKeyService } from '@iqrf/iqrf-gateway-webapp-client/services';
-import { type ApiKeyInfo } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { type ApiKeyService } from '@iqrf/iqrf-gateway-webapp-client/services/Security';
+import { type ApiKeyInfo } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import { ref, type Ref , type PropType } from 'vue';
 import { toast } from 'vue3-toastify';
 
@@ -45,15 +45,16 @@ const componentProps = defineProps({
 		required: true,
 	},
 });
-const service: ApiKeyService = useApiClient().getApiKeyService();
+const service: ApiKeyService = useApiClient().getSecurityServices().getApiKeyService();
 
 async function onSubmit(): Promise<void> {
-	service.delete(componentProps.apiKey.id!)
-		.then(() => {
-			close();
-			emit('refresh');
-		})
-		.catch(() => toast.error('TODO ERROR HANDLING'));
+	try {
+		await service.delete(componentProps.apiKey.id!);
+		close();
+		emit('refresh');
+	} catch {
+		toast.error('TODO ERROR HANDLING');
+	}
 }
 
 function close(): void {

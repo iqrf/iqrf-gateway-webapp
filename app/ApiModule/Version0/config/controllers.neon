@@ -14,51 +14,8 @@
 # limitations under the License.
 
 services:
-	- App\ApiModule\Version0\Controllers\ApiKeyController
-	- App\ApiModule\Version0\Controllers\BackupController
-	- App\ApiModule\Version0\Controllers\CertificateController
-	- App\ApiModule\Version0\Controllers\Cloud\AwsController
-	- App\ApiModule\Version0\Controllers\Cloud\AzureController
-	- App\ApiModule\Version0\Controllers\Cloud\IbmCloudController
-	- App\ApiModule\Version0\Controllers\Config\AptController
 	bridge.fileManager:
 		factory: App\CoreModule\Models\FileManager(%paths.iqrfGatewayInfluxdbBridge.configDir%)
 		autowired: false
 	bridge.configManager: App\ConfigModule\Models\IqrfConfigManager(@bridge.fileManager)
 	- App\ApiModule\Version0\Controllers\Config\BridgeController(@bridge.configManager)
-	- App\ApiModule\Version0\Controllers\Config\ControllerController
-	- App\ApiModule\Version0\Controllers\Config\DaemonController
-	- App\ApiModule\Version0\Controllers\Config\IqrfRepositoryController
-	- App\ApiModule\Version0\Controllers\Config\MailerController
-	- App\ApiModule\Version0\Controllers\Config\MonitController
-	- App\ApiModule\Version0\Controllers\Config\TranslatorController
-	- App\ApiModule\Version0\Controllers\DiagnosticsController
-	- App\ApiModule\Version0\Controllers\FeatureController
-	- App\ApiModule\Version0\Controllers\Gateway\HostnameController
-	- App\ApiModule\Version0\Controllers\Gateway\InfoController
-	- App\ApiModule\Version0\Controllers\Gateway\JournalController
-	- App\ApiModule\Version0\Controllers\Gateway\LogController
-	- App\ApiModule\Version0\Controllers\Gateway\PasswordController
-	- App\ApiModule\Version0\Controllers\Gateway\PowerController
-	- App\ApiModule\Version0\Controllers\Gateway\SshController
-	- App\ApiModule\Version0\Controllers\Gateway\TimeController
-	- App\ApiModule\Version0\Controllers\InstallationController
-	- App\ApiModule\Version0\Controllers\Iqrf\InterfacesController
-	- App\ApiModule\Version0\Controllers\Iqrf\IqrfOsController
-	- App\ApiModule\Version0\Controllers\Iqrf\MacrosController
-	- App\ApiModule\Version0\Controllers\Iqrf\UploadController
-	- App\ApiModule\Version0\Controllers\MappingController
-	- App\ApiModule\Version0\Controllers\MenderController
-	- App\ApiModule\Version0\Controllers\Network\ConnectionsController
-	- App\ApiModule\Version0\Controllers\Network\ConnectivityController
-	- App\ApiModule\Version0\Controllers\Network\GsmController
-	- App\ApiModule\Version0\Controllers\Network\InterfacesController
-	- App\ApiModule\Version0\Controllers\Network\OperatorController
-	- App\ApiModule\Version0\Controllers\Network\WifiController
-	- App\ApiModule\Version0\Controllers\Network\WireGuardController
-	- App\ApiModule\Version0\Controllers\OpenApiController
-	- App\ApiModule\Version0\Controllers\SchedulerController
-	- App\ApiModule\Version0\Controllers\ServicesController
-	- App\ApiModule\Version0\Controllers\UserController
-	- App\ApiModule\Version0\Controllers\UsersController
-	- App\ApiModule\Version0\Controllers\VersionController

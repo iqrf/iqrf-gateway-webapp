@@ -157,7 +157,7 @@ limitations under the License.
 <script lang='ts' setup>
 import { type IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import { type IqrfGatewayDaemonMapping } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { MappingDeviceType, MappingType } from '@iqrf/iqrf-gateway-webapp-client/types/Config/Mapping';
+import { MappingDeviceType, MappingType } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import {
 	computed,
 	type Ref,
@@ -205,7 +205,7 @@ const componentProps = defineProps({
 			i2cEnableGpioPin: -1,
 			spiEnableGpioPin: -1,
 			uartEnableGpioPin: -1,
-			baudRate: 9600,
+			baudRate: 9_600,
 		}),
 		required: false,
 	},
@@ -226,7 +226,7 @@ const defaultProfile: IqrfGatewayDaemonMapping = {
 	i2cEnableGpioPin: -1,
 	spiEnableGpioPin: -1,
 	uartEnableGpioPin: -1,
-	baudRate: 9600,
+	baudRate: 9_600,
 };
 const profile: Ref<IqrfGatewayDaemonMapping> = ref({ ...defaultProfile });
 const interfacePins: Ref<boolean> = ref(false);
@@ -241,7 +241,7 @@ const typeOptions = [
 	},
 ];
 const baudRateOptions = computed(() => {
-	const items: number[] = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400];
+	const items: number[] = [1_200, 2_400, 4_800, 9_600, 19_200, 38_400, 57_600, 115_200, 230_400];
 	return items.map((item: number) => ({
 		title: `${item} Bd`,
 		value: item,
@@ -302,7 +302,7 @@ async function onSubmit(): Promise<void> {
 			.then(() => handleSuccess(params.name))
 			.catch(handleError);
 	} else {
-		service.editMapping(componentProps.deviceProfile.id, params)
+		service.updateMapping(componentProps.deviceProfile.id, params)
 			.then(() => handleSuccess(params.name))
 			.catch(handleError);
 	}

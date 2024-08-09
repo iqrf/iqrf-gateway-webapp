@@ -404,7 +404,7 @@ limitations under the License.
 				<v-col cols='5'>
 					<v-text-field
 						v-model='pdata'
-						v-maska:[maskaOptions]
+						v-maska='maskaOptions'
 						:label='$t("components.iqrfnet.send-dpa.pdata")'
 						:rules='[
 							(v: string) => validatePdata(v) || $t("components.iqrfnet.send-dpa.validation.pdataInvalid"),
@@ -420,7 +420,7 @@ limitations under the License.
 			/>
 			<NumberInput
 				v-model.number='customTimeout'
-				´:min='1000'
+				:min='1000'
 				:label='$t("components.iqrfnet.send-dpa.customTimeout")'
 				:disabled='!useCustomTimeout'
 				required
@@ -450,7 +450,7 @@ import { GenericService } from '@iqrf/iqrf-gateway-daemon-utils/services';
 import { type DaemonApiResponse, type DpaPacketMessage } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { mdiHexadecimal, mdiMenu, mdiNumeric, mdiLock, mdiLockOpen } from '@mdi/js';
-import { vMaska } from 'maska';
+import { vMaska } from 'maska/vue';
 import { type Ref, ref } from 'vue';
 import { VForm } from 'vuetify/components';
 
@@ -514,17 +514,17 @@ const hwpid: Ref<number> = ref(0);
 const hwpidHex: Ref<string> = ref('ffff');
 const hwpidPresets = [
 	{ title: 'DPA Plugin without handler', value: 0 },
-	{ title: 'Any device', value: 65535 },
+	{ title: 'Any device', value: 65_535 },
 ];
 // pdata
 const pdata: Ref<string> = ref('');
 const maskaOptions = {
 	mask: 'HH.'.repeat(56) + 'HH',
-	tokens: { 'H': { pattern: /[0-9a-f]/i } },
+	tokens: { 'H': { pattern: /[\da-f]/i } },
 };
 // timeout
 const useCustomTimeout: Ref<boolean> = ref(false);
-const customTimeout: Ref<number> = ref(1000);
+const customTimeout: Ref<number> = ref(1_000);
 
 // nadr functions
 function changeNadrBase(): void {
@@ -533,7 +533,7 @@ function changeNadrBase(): void {
 	}
 	if (useHexNadr.value) {
 		const val = Number.parseInt(nadrHex.value, 16);
-		nadr.value = isNaN(val) ? 0 : val;
+		nadr.value = Number.isNaN(val) ? 0 : val;
 	} else {
 		nadrHex.value = numberToHexString(nadr.value, 2);
 	}
@@ -555,7 +555,7 @@ function applyNadrPreset(value: number): void {
 function changePnumBase(): void {
 	if (useHexPnum.value) {
 		const val = Number.parseInt(pnumHex.value, 16);
-		pnum.value = isNaN(val) ? 0 : val;
+		pnum.value = Number.isNaN(val) ? 0 : val;
 	} else {
 		pnumHex.value = numberToHexString(pnum.value, 2);
 	}
@@ -566,7 +566,7 @@ function changePnumBase(): void {
 function changePcmdBase(): void {
 	if (useHexPcmd.value) {
 		const val = Number.parseInt(pcmdHex.value, 16);
-		pcmd.value = isNaN(val) ? 0 : val;
+		pcmd.value = Number.isNaN(val) ? 0 : val;
 	} else {
 		pcmdHex.value = numberToHexString(pcmd.value, 2);
 	}
@@ -577,7 +577,7 @@ function changePcmdBase(): void {
 function changeHwpidBase(): void {
 	if (useHexHwpid.value) {
 		const val = Number.parseInt(hwpidHex.value, 16);
-		hwpid.value = isNaN(val) ? 0 : val;
+		hwpid.value = Number.isNaN(val) ? 0 : val;
 	} else {
 		hwpidHex.value = numberToHexString(hwpid.value, 4);
 	}
@@ -594,17 +594,17 @@ function applyHwpidPreset(value: number): void {
 
 // validation
 function validateHexNibble(value: string): boolean {
-	const re = /^[0-7][0-9a-f]$/i;
+	const re = /^[0-7][\da-f]$/i;
 	return re.test(value);
 }
 
 function validateHexByte(value: string): boolean {
-	const re = /^[0-9a-f]{2}$/i;
+	const re = /^[\da-f]{2}$/i;
 	return re.test(value);
 }
 
 function validateHexWord(value: string): boolean {
-	const re = /^[0-9a-f]{4}$/i;
+	const re = /^[\da-f]{4}$/i;
 	return re.test(value);
 }
 
@@ -612,7 +612,7 @@ function validatePdata(value: string): boolean {
 	if (value.length === 0) {
 		return true;
 	}
-	const re = /^([0-9a-f]{2}.){0,56}[0-9a-f]{2}(.|)$/i;
+	const re = /^([\da-f]{2}.){0,56}[\da-f]{2}(.|)$/i;
 	return re.test(value);
 }
 
@@ -683,7 +683,7 @@ function applyPacket(value: string): void {
 	} else {
 		pdata.value = '';
 	}
-	value = value.replace(/\./g, '');
+	value = value.replaceAll('.', '');
 	if (!lockNadr.value) {
 		nadr.value = Number.parseInt(value.substring(0, 2), 16);
 		nadrHex.value = value.substring(0, 2);

@@ -2,9 +2,11 @@ import { EmbedNodeMessages } from '../../enums';
 import {
 	type EmbedBackupParams,
 	type EmbedSharedParams,
+} from '../../types';
+import {
 	type NodeRestoreParams,
 	type ValidateBondsParams,
-} from '../../types';
+} from '../../types/embed';
 import { type DaemonMessageOptions } from '../../utils';
 import { BaseEmbedService } from '../BaseEmbedService';
 
@@ -16,7 +18,7 @@ export class NodeService extends BaseEmbedService {
 	/**
 	 * Backup Node data
 	 * @param {EmbedSharedParams} shared Shared request parameters
-	 * @param {BackupParams} params Node backup parameters
+	 * @param {EmbedBackupParams} params Node backup parameters
 	 * @param {DaemonMessageOptions} options Message options
 	 * @return {DaemonMessageOptions} Message options with request
 	 */

@@ -1,0 +1,46 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/networkWireGuardTunnels.json",
+	"type": "array",
+	"title": "WireGuard tunnels",
+	"description": "List of WireGuard VPN tunnels.",
+	"additionalItems": false,
+	"items": {
+		"$id": "#/items",
+		"type": "object",
+		"title": "WireGuard tunnel",
+		"additionalProperties": false,
+		"required": [
+			"id",
+			"name",
+			"active",
+			"enabled"
+		],
+		"properties": {
+			"id": {
+				"$id": "#/items/properties/id",
+				"type": "integer",
+				"title": "WireGuard Tunnel ID",
+				"example": 1
+			},
+			"name": {
+				"$id": "#/items/properties/name",
+				"type": "string",
+				"title": "WireGuard Tunnel name",
+				"example": "wg0"
+			},
+			"active": {
+				"$id": "#/items/properties/active",
+				"type": "boolean",
+				"title": "WireGuard Tunnel active",
+				"example": true
+			},
+			"enabled": {
+				"$id": "#/items/properties/enabled",
+				"type": "boolean",
+				"title": "WireGuard Tunnel enabled",
+				"example": true
+			}
+		}
+	}
+}

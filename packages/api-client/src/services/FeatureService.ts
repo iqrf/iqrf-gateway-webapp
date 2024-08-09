@@ -26,10 +26,10 @@ import { BaseService } from './BaseService';
 export class FeatureService extends BaseService {
 
 	/**
-	 * Fetches all features
+	 * Retrieve all features
 	 * @return {Promise<Features>} Features
 	 */
-	public async fetchAll(): Promise<Features> {
+	public async list(): Promise<Features> {
 		const response: AxiosResponse<Features> =
 			await this.axiosInstance.get('/features');
 		return response.data;
@@ -37,7 +37,7 @@ export class FeatureService extends BaseService {
 
 
 	/**
-	 * Fetches feature configuration
+	 * Retrieve feature configuration
 	 * @param {Feature} feature Feature
 	 * @return {Promise<FeatureConfig>} Feature configuration
 	 */
@@ -48,11 +48,11 @@ export class FeatureService extends BaseService {
 	}
 
 	/**
-	 * Sets feature configuration
+	 * Update feature configuration
 	 * @param {Feature} feature Feature
 	 * @param {FeatureConfig} config Feature configuration
 	 */
-	public async setConfig(feature: Feature, config: FeatureConfig): Promise<void> {
+	public async updateConfig(feature: Feature, config: FeatureConfig): Promise<void> {
 		await this.axiosInstance.put(`/features/${feature.toString()}`, config);
 	}
 

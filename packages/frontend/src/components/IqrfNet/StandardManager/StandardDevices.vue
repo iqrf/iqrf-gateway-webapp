@@ -233,7 +233,8 @@ import {DataTableHeader} from 'vuetify';
 import {IIqrfDbBo, IIqrfDbDeviceFull, IIqrfDbSensor} from '@/interfaces/DaemonApi/IqrfDb';
 import {MutationPayload} from 'vuex';
 import {useRepositoryClient} from '@/services/IqrfRepositoryClient';
-import {Product, ProductService} from '@iqrf/iqrf-repository-client';
+import {ProductService} from '@iqrf/iqrf-repository-client/services';
+import {Product} from '@iqrf/iqrf-repository-client/types';
 
 @Component({
 	components: {

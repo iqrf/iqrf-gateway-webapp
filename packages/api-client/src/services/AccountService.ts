@@ -40,37 +40,39 @@ import { BaseService } from './BaseService';
 export class AccountService extends BaseService {
 
 	/**
-	 * Fetches information about the logged-in user
+	 * Retrieve information about the logged-in user
 	 * @return {Promise<UserInfo>} User information
 	 */
-	public async fetchInfo(): Promise<UserInfo> {
-		const response: AxiosResponse<UserInfo> = await this.axiosInstance.get('/user');
+	public async getInfo(): Promise<UserInfo> {
+		const response: AxiosResponse<UserInfo> =
+			await this.axiosInstance.get('/user');
 		return UserUtils.deserialize(response.data);
 	}
 
 	/**
-	 * Edits the user
+	 * Update the user
 	 * @param {UserEdit} user User to edit
 	 * @return {Promise<EmailSentResponse>} Email sent response
 	 */
-	public async edit(user: UserEdit): Promise<EmailSentResponse> {
+	public async update(user: UserEdit): Promise<EmailSentResponse> {
 		const response: AxiosResponse<EmailSentResponse> =
 			await this.axiosInstance.put('/user', UserUtils.serialize(user));
 		return response.data;
 	}
 
 	/**
-	 * Changes the user's password
+	 * Update the user's password
 	 * @param {UserPasswordChange} change Password change request
 	 */
-	public async changePassword(change: UserPasswordChange): Promise<void> {
+	public async updatePassword(change: UserPasswordChange): Promise<void> {
 		await this.axiosInstance.put('/user/password', change);
 	}
 
 	/**
-	 * Resets the new user's password
+	 * Reset the new user's password
 	 * @param {string} requestUuid Password recovery request UUID
 	 * @param {UserPasswordReset} request Password reset request
+	 * @return {Promise<UserSignedIn>} Signed-in user
 	 */
 	public async confirmPasswordRecovery(requestUuid: string, request: UserPasswordReset): Promise<UserSignedIn> {
 		if (!uuidValidate(requestUuid)) {
@@ -99,4 +101,5 @@ export class AccountService extends BaseService {
 	public async resendVerificationEmail(request: EmailVerificationResendRequest): Promise<void> {
 		await this.axiosInstance.post('/user/resendVerification', request);
 	}
+
 }

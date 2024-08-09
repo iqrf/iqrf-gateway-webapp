@@ -41,7 +41,7 @@ import {required} from 'vee-validate/dist/rules';
 
 import {
 	NetworkConnectionConfiguration
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkConnection';
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 
 /**
  * WPA-PSK configuration options

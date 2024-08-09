@@ -20,7 +20,6 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { Client } from '../src';
 import {
 	AccountService,
-	ApiKeyService,
 	AuthenticationService,
 	FeatureService,
 	InstallationService,
@@ -35,6 +34,7 @@ import { GatewayServices } from '../src/services/Gateway';
 import { IqrfServices } from '../src/services/Iqrf';
 import { MaintenanceServices } from '../src/services/Maintenance';
 import { NetworkServices } from '../src/services/Network';
+import { SecurityServices } from '../src/services/Security';
 
 describe('Client', (): void => {
 
@@ -140,11 +140,6 @@ describe('Client', (): void => {
 		expect(client.getAccountService()).toBeInstanceOf(AccountService);
 	});
 
-	it('returns API key service instance', (): void => {
-		expect.assertions(1);
-		expect(client.getApiKeyService()).toBeInstanceOf(ApiKeyService);
-	});
-
 	it('returns AuthenticationService instance', (): void => {
 		expect.assertions(1);
 		expect(client.getAuthenticationService()).toBeInstanceOf(AuthenticationService);
@@ -163,6 +158,11 @@ describe('Client', (): void => {
 	it('returns OpenApiService instance', (): void => {
 		expect.assertions(1);
 		expect(client.getOpenApiService()).toBeInstanceOf(OpenApiService);
+	});
+
+	it('returns SecurityServices instance', (): void => {
+		expect.assertions(1);
+		expect(client.getSecurityServices()).toBeInstanceOf(SecurityServices);
 	});
 
 	it('returns ServiceService instance', (): void => {

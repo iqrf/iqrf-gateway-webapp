@@ -218,7 +218,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import axios, {AxiosError, AxiosResponse} from 'axios';
+import axios, {AxiosError} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 import {MetaInfo} from 'vue-meta';
@@ -246,19 +246,15 @@ import {
 
 import {useApiClient} from '@/services/ApiClient';
 import {
-	MobileOperator
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/MobileOperator';
-import {
+	MobileOperator,
 	IPV4ConfigurationMethod,
-	IPV6ConfigurationMethod, NetworkConnectionConfiguration, NetworkConnectionType
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkConnection';
-import {
+	IPV6ConfigurationMethod,
+	NetworkConnectionConfiguration,
+	NetworkConnectionType,
 	AccessPoint,
-	WepKeyType
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/Wifi';
-import {
-	NetworkInterfaceType
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkInterface';
+	WepKeyType,
+	NetworkInterfaceType, NetworkConnectionCreated
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 
 @Component({
 	components: {
@@ -482,7 +478,7 @@ export default class ConnectionForm extends Vue {
 			return;
 		}
 		this.$store.commit('spinner/SHOW');
-		this.service.fetch(this.uuid)
+		this.service.get(this.uuid)
 			.then((response: NetworkConnectionConfiguration) => {
 				this.$store.commit('spinner/HIDE');
 				this.storeConnectionData(response);
@@ -638,12 +634,12 @@ export default class ConnectionForm extends Vue {
 		if (this.uuid === null || connection.uuid === undefined) {
 			connection.uuid = uuidv4();
 			this.service.create(connection)
-				.then(async (response: AxiosResponse) => {
+				.then(async (response: NetworkConnectionCreated) => {
 					if (connect) {
 						if (this.interfaceType === NetworkInterfaceType.GSM && this.hasBrokenGsmModem) {
 							await this.restartModemManager();
 						}
-						await this.connect(response.data, connection.name, true);
+						await this.connect(response.uuid, connection.name, true);
 					} else {
 						this.onSuccess();
 					}
@@ -655,7 +651,7 @@ export default class ConnectionForm extends Vue {
 					);
 				});
 		} else {
-			this.service.edit(this.uuid, connection)
+			this.service.update(this.uuid, connection)
 				.then(async () => {
 					if (connect) {
 						if (this.interfaceType === NetworkInterfaceType.GSM && this.hasBrokenGsmModem) {
@@ -708,7 +704,7 @@ export default class ConnectionForm extends Vue {
 					if (added) {
 						await this.service.delete(uuid);
 					} else if (this.backupConfig !== null) {
-						await this.service.edit(uuid, this.prepareConnectionToSave(this.backupConfig));
+						await this.service.update(uuid, this.prepareConnectionToSave(this.backupConfig));
 					}
 					extendedErrorToast(error, 'network.connection.messages.connect.failed', {connection: name});
 					return;

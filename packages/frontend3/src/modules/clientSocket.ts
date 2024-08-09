@@ -34,7 +34,7 @@ export interface ClientSocketOptions {
 export default class ClientSocket {
 
 	/**
-	 * @var {ClientSocketOptions} options Websocket client options
+	 * @property {ClientSocketOptions} options Websocket client options
 	 */
 	private options: ClientSocketOptions = {
 		url: 'localhost',
@@ -53,39 +53,44 @@ export default class ClientSocket {
 	/**
 	 * @var {CallableFunction} onOpenCallback OnOpen callback
 	 */
-	private onOpenCallback: CallableFunction = () => {return;};
+	private onOpenCallback: CallableFunction = (): void => {return;};
 
 	/**
 	 * @var {CallableFunction} onCloseCallback OnClose callback
 	 */
-	private onCloseCallback: CallableFunction = () => {return;};
+	private onCloseCallback: CallableFunction = (): void => {return;};
 
 	/**
 	 * @var {CallableFunction} onErrorCallback OnError callback
 	 */
-	private onErrorCallback: CallableFunction = () => {return;};
+	private onErrorCallback: CallableFunction = (): void => {return;};
 
 	/**
 	 * @var {CallableFunction} onMessageCallback OnMessage callback
 	 */
-	private onMessageCallback: CallableFunction = () => {return;};
+	private onMessageCallback: CallableFunction = (): void => {return;};
 
 	/**
 	 * @var {CallableFunction} onSendCallback OnSend callback
 	 */
-	private onSendCallback: CallableFunction = () => {return;};
+	private onSendCallback: CallableFunction = (): void => {return;};
 
 	/**
 	 * Constructor
 	 * @param {ClientSocketOptions} options WebSocket client options
-	 * @param store Store
+	 * @param {CallableFunction} onOpen On open callback
+	 * @param {CallableFunction} onClose On close callback
+	 * @param {CallableFunction} onError On error callback
+	 * @param {CallableFunction} onMessage On message callback
+	 * @param {CallableFunction} onSend On send callback
 	 */
-	constructor(options: ClientSocketOptions,
-		onOpen: CallableFunction = () => {return;},
-		onClose: CallableFunction = () => {return;},
-		onError: CallableFunction = () => {return;},
-		onMessage: CallableFunction = () => {return;},
-		onSend: CallableFunction = () => {return;},
+	public constructor(
+		options: ClientSocketOptions,
+		onOpen: CallableFunction = (): void => {return;},
+		onClose: CallableFunction = (): void => {return;},
+		onError: CallableFunction = (): void => {return;},
+		onMessage: CallableFunction = (): void => {return;},
+		onSend: CallableFunction = (): void => {return;},
 	) {
 		this.options = options;
 		this.onOpenCallback = onOpen;
@@ -102,7 +107,7 @@ export default class ClientSocket {
 	 * Sets onopen callback
 	 * @param {CallableFunction} callback Callback
 	 */
-	setOnOpenCallback(callback: CallableFunction): void {
+	public setOnOpenCallback(callback: CallableFunction): void {
 		if (this.socket === null) {
 			return;
 		}
@@ -117,7 +122,7 @@ export default class ClientSocket {
 	 * Sets onclose callback
 	 * @param {CallableFunction} callback Callback
 	 */
-	setOnCloseCallback(callback: CallableFunction): void {
+	public setOnCloseCallback(callback: CallableFunction): void {
 		if (this.socket === null) {
 			return;
 		}
@@ -134,7 +139,7 @@ export default class ClientSocket {
 	 * Sets onerror callback
 	 * @param {CallableFunction} callback Callback
 	 */
-	setOnErrorCallback(callback: CallableFunction): void {
+	public setOnErrorCallback(callback: CallableFunction): void {
 		if (this.socket === null) {
 			return;
 		}
@@ -148,7 +153,7 @@ export default class ClientSocket {
 	 * Sets onsend callback
 	 * @param {CallableFunction} callback Callback
 	 */
-	setOnSendCallback(callback: CallableFunction): void {
+	public setOnSendCallback(callback: CallableFunction): void {
 		if (this.socket === null) {
 			return;
 		}
@@ -159,7 +164,7 @@ export default class ClientSocket {
 	 * Sets onmessage callback
 	 * @param {CallableFunction} callback Callback
 	 */
-	setOnMessageCallback(callback: CallableFunction): void {
+	public setOnMessageCallback(callback: CallableFunction): void {
 		if (this.socket === null) {
 			return;
 		}
@@ -171,18 +176,20 @@ export default class ClientSocket {
 
 	/**
 	 * Checks if socket is connected and open
+	 * @return {boolean} Is connected
 	 */
-	isConnected(): boolean {
+	public isConnected(): boolean {
 		return this.socket?.readyState === WebSocket.OPEN;
 	}
 
 	/**
 	 * Connects client to server
+	 * @return {WebSocket} WebSocket socket
 	 */
-	connect(): WebSocket {
+	public connect(): WebSocket {
 		this.socket = new WebSocket(this.options.url);
 		this.socket.onopen = () => this.onOpenCallback();
-		this.socket.onclose = (event: CloseEvent) => {
+		this.socket.onclose = (event: CloseEvent): void => {
 			this.onCloseCallback(event);
 			if (this.options.reconnect) {
 				this.reconnect();
@@ -196,7 +203,7 @@ export default class ClientSocket {
 	/**
 	 * Reconnects after a failure
 	 */
-	reconnect(): void {
+	public reconnect(): void {
 		clearTimeout(this.reconnectTimeout);
 		this.reconnectTimeout = window.setTimeout(() => {
 			this.connect();
@@ -206,20 +213,20 @@ export default class ClientSocket {
 	/**
 	 * Closes connection
 	 */
-	close(): void {
+	public close(): void {
 		this.socket?.close();
 	}
 
 	/**
 	 * Sends a message
-	 * @param data Message data
+	 * @param {DaemonApiRequest} data Message data
 	 */
-	send(data: DaemonApiRequest): void {
+	public send(data: DaemonApiRequest): void {
 		try {
-			const message = JSON.stringify(data);
+			const message: string = JSON.stringify(data);
 			this.socket?.send(message);
 			this.onSendCallback(data);
-		} catch (e) {
+		} catch {
 			//
 		}
 	}

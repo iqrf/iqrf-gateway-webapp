@@ -98,18 +98,18 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue, Watch} from 'vue-property-decorator';
+import { LogService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
+import { FileResponse } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { FileDownloader } from '@iqrf/iqrf-gateway-webapp-client/utils';
+import { AxiosError } from 'axios';
+import { Component, Vue, Watch } from 'vue-property-decorator';
+import { MetaInfo } from 'vue-meta';
+
 import JournalViewer from '@/components/Gateway/JournalViewer.vue';
 import LogViewer from '@/components/Gateway/LogViewer.vue';
-
-import {extendedErrorToast} from '@/helpers/errorToast';
-import {fileDownloader} from '@/helpers/fileDownloader';
-
-import GatewayService from '@/services/GatewayService';
-
-import {AxiosError, AxiosResponse} from 'axios';
-import {ILog} from '@/interfaces/Gateway/Log';
-import {MetaInfo} from 'vue-meta';
+import { extendedErrorToast } from '@/helpers/errorToast';
+import { ILog } from '@/interfaces/Gateway/Log';
+import { useApiClient } from '@/services/ApiClient';
 
 @Component({
 	components: {
@@ -158,6 +158,11 @@ export default class Logs extends Vue {
 		},
 	};
 
+	/**
+	 * @property {LogService} service Log service
+	 */
+	private service: LogService = useApiClient().getGatewayServices().getLogService();
+
 	@Watch('tab')
 	private onTabChanged(): void {
 		this.getServiceLog();
@@ -175,16 +180,13 @@ export default class Logs extends Vue {
 	 */
 	private getAvailableLogs(): void {
 		this.$store.commit('spinner/SHOW');
-		GatewayService.getAvailableLogs()
-			.then((response: AxiosResponse) => {
-				if (response.data.length === 0) {
+		this.service.listAvailable()
+			.then((response: string[]) => {
+				if (response.length === 0) {
 					this.$store.commit('spinner/HIDE');
 					return;
 				}
-				response.data.forEach((item: string) => {
-					if (this.logs[item] === undefined) {
-						return;
-					}
+				response.forEach((item: string) => {
 					this.logs[item].available = true;
 				});
 				this.$store.commit('spinner/HIDE');
@@ -210,9 +212,9 @@ export default class Logs extends Vue {
 		if (!this.$store.getters['spinner/isEnabled']) {
 			this.$store.commit('spinner/SHOW');
 		}
-		GatewayService.getServiceLog(service)
-			.then((response: AxiosResponse) => {
-				this.logs[service].log = response.data;
+		this.service.getServiceLog(service)
+			.then((response: string) => {
+				this.logs[service].log = response;
 				this.logs[service].loaded = true;
 				this.$store.commit('spinner/HIDE');
 			})
@@ -231,13 +233,12 @@ export default class Logs extends Vue {
 	 */
 	private downloadArchive(): void {
 		this.$store.commit('spinner/SHOW');
-		GatewayService.getLogArchive().then(
-			(response: AxiosResponse) => {
-				const file = fileDownloader(response, 'application/zip', 'iqrf-gateway-logs.zip');
+		this.service.exportLogs()
+			.then((response: FileResponse<Blob>) => {
+				FileDownloader.downloadFileResponse(response);
 				this.$store.commit('spinner/HIDE');
-				file.click();
-			}
-		).catch(() => (this.$store.commit('spinner/HIDE')));
+			})
+			.catch(() => (this.$store.commit('spinner/HIDE')));
 	}
 }
 </script>

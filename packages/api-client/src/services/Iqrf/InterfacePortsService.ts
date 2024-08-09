@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 MICRORISC s.r.o.
+ * Copyright 2023-2024 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import { BaseService } from '../BaseService';
 export class InterfacePortsService extends BaseService {
 
 	/**
-	 * Fetch interface ports
+	 * Retrieves interface ports
 	 * @param {IqrfInterfaceType} interfaceType Interface type
 	 * @return {Promise<string>} Interface ports
 	 */

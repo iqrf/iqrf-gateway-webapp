@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 MICRORISC s.r.o.
+ * Copyright 2023-2024 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 import { type AxiosResponse } from 'axios';
 
+import { FileResponse } from '../../types';
 import { BaseService } from '../BaseService';
 
 /**
@@ -24,7 +25,7 @@ import { BaseService } from '../BaseService';
 export class LogService extends BaseService {
 
 	/**
-	 * Fetches list of services with available logs
+	 * Retrieves list of services with available logs
 	 * @return {Promise<string[]>} List of services with available logs
 	 */
 	public async listAvailable(): Promise<string[]> {
@@ -34,9 +35,9 @@ export class LogService extends BaseService {
 	}
 
 	/**
-	 * Fetches service log
+	 * Retrieves service log
 	 * @param {string} service Service name
-	 * @returns {Promise<string>} Service log
+	 * @return {Promise<string>} Service log
 	 */
 	public async getServiceLog(service: string): Promise<string> {
 		const response: AxiosResponse<string> =
@@ -46,12 +47,12 @@ export class LogService extends BaseService {
 
 	/**
 	 * Exports logs archive
-	 * @returns {Promise<ArrayBuffer>} Logs archive
+	 * @return {Promise<FileResponse<Blob>>} Logs archive
 	 */
-	public async exportLogs(): Promise<ArrayBuffer> {
-		const response: AxiosResponse<ArrayBuffer> =
-			await this.apiClient.getAxiosInstance().get('/gateway/logs/export', { responseType: 'arraybuffer' });
-		return response.data;
+	public async exportLogs(): Promise<FileResponse<Blob>> {
+		const response: AxiosResponse<Blob> =
+			await this.apiClient.getAxiosInstance().get('/gateway/logs/export', { responseType: 'blob' });
+		return FileResponse.fromAxiosResponse(response);
 	}
 
 }

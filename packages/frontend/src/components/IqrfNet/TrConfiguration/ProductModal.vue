@@ -92,7 +92,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Product} from '@iqrf/iqrf-repository-client';
+import {Product} from '@iqrf/iqrf-repository-client/types';
 import {Component} from 'vue-property-decorator';
 import {DataTableHeader} from 'vuetify';
 
@@ -183,9 +183,9 @@ export default class ProductModal extends ModalBase {
 	/**
 	 * Retrieves products from repository
 	 */
-	private getProducts(): void {
+	private async getProducts(): Promise<void> {
 		this.loading = true;
-		useRepositoryClient().getProductService().list()
+		(await useRepositoryClient()).getProductService().list()
 			.then((response: Product[]) => {
 				this.products = response;
 				this.loading = false;

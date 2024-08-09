@@ -123,7 +123,7 @@ import {z} from 'zod';
 
 import {AxiosError} from 'axios';
 import { useApiClient } from '@/services/ApiClient';
-import {MonitConfig} from '@iqrf/iqrf-gateway-webapp-client/types/Config/Monit';
+import {MonitConfig} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 
 @Component({
 	components: {
@@ -166,7 +166,7 @@ export default class MonitForm extends Vue {
 					validator.parse(value);
 					const url: URL = new URL(value);
 					return (url.protocol === 'http:' || url.protocol === 'https:') && url.username === '' && url.password === '' && url.search === '' && url.hash === '';
-				} catch (error) {
+				} catch {
 					return false;
 				}
 			},
@@ -203,7 +203,7 @@ export default class MonitForm extends Vue {
 			return;
 		}
 		this.$store.commit('spinner/SHOW');
-		this.service.editConfig(this.configuration)
+		this.service.updateConfig(this.configuration)
 			.then(async () => {
 				await useApiClient().getServiceService().restart('monit');
 				await this.getConfig().then(() => this.$toast.success(

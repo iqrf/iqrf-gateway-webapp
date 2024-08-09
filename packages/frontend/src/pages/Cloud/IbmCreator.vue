@@ -149,7 +149,7 @@ import {AxiosError} from 'axios';
 import {useApiClient} from '@/services/ApiClient';
 import type {
 	IbmCloudConfig
-} from '@iqrf/iqrf-gateway-webapp-client/types/Cloud/Ibm';
+} from '@iqrf/iqrf-gateway-webapp-client/types/Cloud';
 
 @Component({
 	components: {
@@ -167,7 +167,7 @@ import type {
 export default class IbmCreator extends Vue {
 
 	/**
-	 * @var {IIbmCloud} config Ibm cloud connection configuration
+	 * @var {IbmCloudConfig} config Ibm cloud connection configuration
 	 */
 	private config: IbmCloudConfig = {
 		organizationId: '',

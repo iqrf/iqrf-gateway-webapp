@@ -26,9 +26,9 @@ import { BaseService } from './BaseService';
 export class ServiceService extends BaseService {
 
 	/**
-	 * Retrieves the state of supported services
+	 * Retrieve the state of supported services
 	 * @param {boolean} withStatus Include service status
-	 * @returns {Promise<ServiceState[]>} State of supported services
+	 * @return {Promise<ServiceState[]>} State of supported services
 	 */
 	public async list(withStatus: boolean = false): Promise<ServiceState[]> {
 		const response: AxiosResponse<ServiceState[]> =
@@ -41,9 +41,9 @@ export class ServiceService extends BaseService {
 	}
 
 	/**
-	 * Retrieves the service status
+	 * Retrieve the service status
 	 * @param {string} name Service name
-	 * @returns {Promise<ServiceStatus>} Service status
+	 * @return {Promise<ServiceStatus>} Service status
 	 */
 	public async getStatus(name: string): Promise<ServiceStatus> {
 		const response: AxiosResponse<ServiceStatus> =
@@ -52,7 +52,7 @@ export class ServiceService extends BaseService {
 	}
 
 	/**
-	 * Enables the service
+	 * Enable the service
 	 * @param {string} name Service name
 	 */
 	public async enable(name: string): Promise<void> {
@@ -60,7 +60,7 @@ export class ServiceService extends BaseService {
 	}
 
 	/**
-	 * Disables the service
+	 * Disable the service
 	 * @param {string} name Service name
 	 */
 	public async disable(name: string): Promise<void> {
@@ -68,7 +68,7 @@ export class ServiceService extends BaseService {
 	}
 
 	/**
-	 * Starts the service
+	 * Start the service
 	 * @param {string} name Service name
 	 */
 	public async start(name: string): Promise<void> {
@@ -76,7 +76,7 @@ export class ServiceService extends BaseService {
 	}
 
 	/**
-	 * Stops the service
+	 * Stop the service
 	 * @param {string} name Service name
 	 */
 	public async stop(name: string): Promise<void> {
@@ -84,7 +84,7 @@ export class ServiceService extends BaseService {
 	}
 
 	/**
-	 * Restarts the service
+	 * Restart the service
 	 * @param {string} name Service name
 	 */
 	public async restart(name: string): Promise<void> {

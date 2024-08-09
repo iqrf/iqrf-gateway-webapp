@@ -144,6 +144,7 @@ class MenderManager {
 	public function saveConfig(array $config): void {
 		$this->checkMender();
 		$client = array_replace_recursive($this->getClientConfig(true), MenderClientConfiguration::jsonDeserialize($config['client'])->configSerialize());
+		$client = MenderClientConfiguration::configFixUp($this->clientVersion->getMajor(), $client);
 		$connect = array_replace_recursive($this->getConnectConfig(true), MenderConnectConfiguration::jsonDeserialize($config['connect'])->configSerialize());
 		$this->fileManager->writeJson(self::CLIENT_CONF, $client);
 		$this->fileManager->writeJson(self::CONNECT_CONF, $connect);

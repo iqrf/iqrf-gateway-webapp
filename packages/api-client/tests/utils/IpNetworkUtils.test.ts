@@ -16,8 +16,10 @@
 
 import { describe, expect, it } from 'vitest';
 
-import { NetworkConnectionType } from '../../src/types/Network/NetworkConnection';
-import { NetworkInterfaceType } from '../../src/types/Network/NetworkInterface';
+import {
+	NetworkConnectionType,
+	NetworkInterfaceType,
+} from '../../src/types/Network';
 import { IpNetworkUtils } from '../../src/utils';
 
 describe('IpNetworkUtils', (): void => {

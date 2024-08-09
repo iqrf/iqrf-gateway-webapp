@@ -157,7 +157,7 @@ export default class UserProfileForm extends Vue {
 	 */
 	private save(): void {
 		this.$store.commit('spinner/SHOW');
-		useApiClient().getAccountService().edit(this.user)
+		useApiClient().getAccountService().update(this.user)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(

@@ -27,8 +27,7 @@ use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use App\ApiModule\Version0\Controllers\IqrfController;
-use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\ApiModule\Version0\Models\ControllerValidators;
 use App\ApiModule\Version0\Utils\ContentTypeUtil;
 use App\GatewayModule\Exceptions\UnknownFileFormatExceptions;
 use App\IqrfNetModule\Entities\Dpa;
@@ -48,20 +47,20 @@ use Nette\IOException;
  * Upload controller
  */
 #[Path('/')]
-class UploadController extends IqrfController {
+class UploadController extends BaseIqrfController {
 
 	/**
 	 * Constructor
 	 * @param DpaManager $dpaManager IQRF DPA Manager
 	 * @param UploadManager $uploadManager Upload manager
-	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
+	 * @param ControllerValidators $validators Controller validators
 	 */
 	public function __construct(
 		private readonly DpaManager $dpaManager,
 		private readonly UploadManager $uploadManager,
-		RestApiSchemaValidator $validator,
+		ControllerValidators $validators,
 	) {
-		parent::__construct($validator);
+		parent::__construct($validators);
 	}
 
 	#[Path('/upload')]
@@ -84,6 +83,10 @@ class UploadController extends IqrfController {
 		responses:
 			\'200\':
 				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/IqrfUploadedFile\'
 			\'400\':
 				$ref: \'#/components/responses/BadRequest\'
 			\'403\':
@@ -94,7 +97,7 @@ class UploadController extends IqrfController {
 				$ref: \'#/components/responses/ServerError\'
 	')]
 	public function upload(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['iqrf:upload']);
+		$this->validators->checkScopes($request, ['iqrf:upload']);
 		ContentTypeUtil::validContentType($request, ['multipart/form-data']);
 		try {
 			$format = $request->getParsedBody()['format'] ?? null;
@@ -102,7 +105,8 @@ class UploadController extends IqrfController {
 				$format = UploadFormats::from($format);
 			}
 			$file = $request->getUploadedFiles()[0];
-			return $response->writeJsonBody($this->uploadManager->uploadToFs($file->getClientFilename(), $file->getStream()->getContents(), $format));
+			$response = $response->writeJsonBody($this->uploadManager->uploadToFs($file->getClientFilename(), $file->getStream()->getContents(), $format));
+			return $this->validators->validateResponse('iqrfUploadedFile', $response);
 		} catch (UnknownFileFormatExceptions $e) {
 			throw new ClientErrorException('Invalid file format', ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (IOException $e) {
@@ -113,7 +117,7 @@ class UploadController extends IqrfController {
 	#[Path('/dpaFile')]
 	#[Method('POST')]
 	#[OpenApi('
-		summary: Retrieves DPA file
+		summary: Returns DPA file
 		requestBody:
 			required: true
 			content:
@@ -126,12 +130,7 @@ class UploadController extends IqrfController {
 				content:
 					application/json:
 						schema:
-							type: object
-							example:
-								fileName: DPA-Coordinator-SPI-7xD-V414-200403.iqrf
-							properties:
-								fileName:
-									type: string
+							$ref: \'#/components/schemas/DpaFileName\'
 			\'400\':
 				$ref: \'#/components/responses/BadRequest\'
 			\'403\':
@@ -142,8 +141,8 @@ class UploadController extends IqrfController {
 				$ref: \'#/components/responses/ServerError\'
 	')]
 	public function getDpaFile(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['iqrf:upload']);
-		$this->validator->validateRequest('dpaFile', $request);
+		$this->validators->checkScopes($request, ['iqrf:upload']);
+		$this->validators->validateRequest('dpaFile', $request);
 		try {
 			$data = $request->getJsonBodyCopy(false);
 			$interface = DpaInterfaces::from($data->interfaceType);
@@ -157,7 +156,8 @@ class UploadController extends IqrfController {
 			if ($fileName === null) {
 				throw new ClientErrorException('DPA file not found, or repository credentials are incorrect', ApiResponse::S404_NOT_FOUND);
 			}
-			return $response->writeJsonBody(['fileName' => $fileName]);
+			$response = $response->writeJsonBody(['fileName' => $fileName]);
+			return $this->validators->validateResponse('dpaFileName', $response);
 		} catch (IOException $e) {
 			throw new ServerErrorException('Filesystem failure', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (ClientException $e) {
@@ -188,12 +188,12 @@ class UploadController extends IqrfController {
 				$ref: \'#/components/responses/ServerError\'
 	')]
 	public function uploader(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['iqrf:upload']);
-		$this->validator->validateRequest('uploaderFile', $request);
+		$this->validators->checkScopes($request, ['iqrf:upload']);
+		$this->validators->validateRequest('uploaderFile', $request);
 		try {
 			$data = $request->getJsonBodyCopy(false);
 			$this->uploadManager->uploadToTr($data->name, $data->type === 'OS');
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (UploaderFileException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (UploaderMissingException | UploaderSpiException $e) {

@@ -1,72 +1,94 @@
 {
+	"$schema": "https://json.schemastore.org/package",
 	"name": "@iqrf/iqrf-gateway-daemon-utils",
-	"version": "0.0.12",
+	"version": "0.1.4",
 	"description": "IQRF Gateway Daemon JavaScript utilities",
 	"exports": {
 		".": {
-			"import": "./dist/src/index.js",
-			"require": "./dist/src/index.js",
-			"types": "./dist/src/index.d.ts"
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs",
+			"types": "./dist/index.d.ts"
 		},
 		"./enums": {
-			"import": "./dist/src/enums.js",
-			"require": "./dist/src/enums.js",
-			"types": "./dist/src/enums.d.ts"
+			"import": "./dist/enums/index.js",
+			"require": "./dist/enums/index.cjs",
+			"types": "./dist/enums/index.d.ts"
 		},
-		"./enums/*": {
-			"import": "./dist/src/enums/*.js",
-			"require": "./dist/src/enums/*.js",
-			"types": "./dist/src/enums/*.d.ts"
+		"./enums/embed": {
+			"import": "./dist/enums/embed/index.js",
+			"require": "./dist/enums/embed/index.cjs",
+			"types": "./dist/enums/embed/index.d.ts"
+		},
+		"./enums/iqmesh": {
+			"import": "./dist/enums/iqmesh/index.js",
+			"require": "./dist/enums/iqmesh/index.cjs",
+			"types": "./dist/enums/iqmesh/index.d.ts"
+		},
+		"./enums/standard": {
+			"import": "./dist/enums/standard/index.js",
+			"require": "./dist/enums/standard/index.cjs",
+			"types": "./dist/enums/standard/index.d.ts"
 		},
 		"./services": {
-			"import": "./dist/src/services.js",
-			"require": "./dist/src/services.js",
-			"types": "./dist/src/services.d.ts"
+			"import": "./dist/services/index.js",
+			"require": "./dist/services/index.cjs",
+			"types": "./dist/services/index.d.ts"
 		},
-		"./services/*": {
-			"import": "./dist/src/services/*.js",
-			"require": "./dist/src/services/*.js",
-			"types": "./dist/src/services/*.d.ts"
+		"./services/embed": {
+			"import": "./dist/services/embed/index.js",
+			"require": "./dist/services/embed/index.cjs",
+			"types": "./dist/services/embed/index.d.ts"
+		},
+		"./services/iqmesh": {
+			"import": "./dist/services/iqmesh/index.js",
+			"require": "./dist/services/iqmesh/index.cjs",
+			"types": "./dist/services/iqmesh/index.d.ts"
+		},
+		"./services/standard": {
+			"import": "./dist/services/standard/index.js",
+			"require": "./dist/services/standard/index.cjs",
+			"types": "./dist/services/standard/index.d.ts"
 		},
 		"./types": {
-			"import": "./dist/src/types.js",
-			"require": "./dist/src/types.js",
-			"types": "./dist/src/types.d.ts"
+			"import": "./dist/types/index.js",
+			"require": "./dist/types/index.cjs",
+			"types": "./dist/types/index.d.ts"
 		},
-		"./types/*": {
-			"import": "./dist/src/types/*.js",
-			"require": "./dist/src/types/*.js",
-			"types": "./dist/src/types/*.d.ts"
+		"./types/embed": {
+			"import": "./dist/types/embed/index.js",
+			"require": "./dist/types/embed/index.cjs",
+			"types": "./dist/types/embed/index.d.ts"
+		},
+		"./types/iqmesh": {
+			"import": "./dist/types/iqmesh/index.js",
+			"require": "./dist/types/iqmesh/index.cjs",
+			"types": "./dist/types/iqmesh/index.d.ts"
+		},
+		"./types/standard": {
+			"import": "./dist/types/standard/index.js",
+			"require": "./dist/types/standard/index.cjs",
+			"types": "./dist/types/standard/index.d.ts"
 		},
 		"./utils": {
-			"import": "./dist/src/utils.js",
-			"require": "./dist/src/utils.js",
-			"types": "./dist/src/utils.d.ts"
-		},
-		"./utils/*": {
-			"import": "./dist/src/utils/*.js",
-			"require": "./dist/src/utils/*.js",
-			"types": "./dist/src/utils/*.d.ts"
+			"import": "./dist/utils/index.js",
+			"require": "./dist/utils/index.cjs",
+			"types": "./dist/utils/index.d.ts"
 		}
 	},
-	"typesVersions": {
-		"*": {
-			"*": [
-				"./dist/src/*"
-			]
-		}
-	},
+	"main": "dist/index.cjs",
+	"module": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"type": "module",
 	"scripts": {
-		"build": "rm -rf dist/ && tsc --build",
+		"build": "tsup",
 		"coverage:unit": "vitest --run --coverage",
-		"dev": "tsc --watch",
+		"dev": "tsup --watch",
 		"docs": "rm -rf docs/ && typedoc src/index.ts",
-		"prepublish": "rm -rf dist/ && tsc",
+		"prepublish": "npm run build",
 		"lint": "npm run lint:js && npm run lint:ts",
-		"lint:js": "eslint --ext .js,.vue,.ts --cache --cache-location node_modules/.cache/eslint/ .",
+		"lint:js": "eslint --cache --cache-location node_modules/.cache/eslint/ .",
 		"lint:ts": "tsc --noEmit",
-		"test:unit": "vitest --run",
-		"reload": "tsc --watch"
+		"test:unit": "vitest --run"
 	},
 	"files": [
 		"dist",
@@ -91,30 +113,29 @@
 	],
 	"license": "Apache-2.0",
 	"dependencies": {
-		"axios": "^1.7.2",
+		"axios": "^1.7.3",
 		"cronstrue": "^2.50.0",
-		"luxon": "^3.4.4",
+		"luxon": "^3.5.0",
 		"punycode": "^2.3.1",
 		"uuid": "^10.0.0"
 	},
 	"devDependencies": {
-		"@iqrf/eslint-plugin": "latest",
+		"@iqrf/eslint-config": "^0.1.3",
 		"@types/luxon": "^3.4.2",
-		"@types/node": "^20.14.6",
+		"@types/node": "^22.1.0",
 		"@types/punycode": "^2.1.4",
-		"@types/uuid": "^9.0.8",
-		"@vitest/coverage-istanbul": "^1.6.0",
-		"@vitest/spy": "^1.6.0",
-		"axios-mock-adapter": "^1.22.0",
-		"eslint": "^8.57.0",
-		"eslint-import-resolver-typescript": "^3.6.1",
-		"eslint-plugin-import": "^2.29.1",
-		"eslint-plugin-promise": "^6.2.0",
-		"eslint-plugin-typescript-sort-keys": "^3.2.0",
+		"@types/uuid": "^10.0.0",
+		"@vitest/coverage-istanbul": "^2.0.5",
+		"@vitest/spy": "^2.0.5",
+		"axios-mock-adapter": "^2.0.0",
+		"eslint": "^9.8.0",
 		"ts-node": "^10.9.2",
-		"typedoc": "^0.25.13",
-		"typescript": "^5.4.5",
-		"vite-tsconfig-paths": "^4.3.2",
-		"vitest": "^1.6.0"
+		"tsup": "^8.2.4",
+		"typedoc": "^0.26.5",
+		"typedoc-material-theme": "^1.1.0",
+		"typedoc-plugin-mdn-links": "^3.2.7",
+		"typescript": "^5.5.4",
+		"vite-tsconfig-paths": "^5.0.1",
+		"vitest": "^2.0.5"
 	}
 }

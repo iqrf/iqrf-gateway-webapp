@@ -25,65 +25,55 @@ use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\RequestParameter;
 use Apitte\Core\Annotation\Controller\Tag;
-use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use App\ApiModule\Version0\Controllers\NetworkController;
-use App\ApiModule\Version0\Models\RestApiSchemaValidator;
-use App\Models\Database\Entities\NetworkOperator;
-use App\Models\Database\EntityManager;
-use App\Models\Database\Repositories\NetworkOperatorRepository;
+use App\ApiModule\Version0\Models\ControllerValidators;
 
 /**
  * Network operator controller
  */
 #[Path('/operators')]
-#[Tag(name: 'Network operators')]
-class OperatorController extends NetworkController {
-
-	/**
-	 * @var NetworkOperatorRepository Network operator repository
-	 */
-	private readonly NetworkOperatorRepository $repository;
+#[Tag('IP network - Cellular operators')]
+class OperatorController extends BaseNetworkController {
 
 	/**
 	 * Constructor
-	 * @param EntityManager $entityManager Entity manager
-	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
+	 * @param CellularOperatorsController $newController New Cellular operators controller
+	 * @param ControllerValidators $validators Controller validators
 	 */
 	public function __construct(
-		private readonly EntityManager $entityManager,
-		RestApiSchemaValidator $validator,
+		private readonly CellularOperatorsController $newController,
+		ControllerValidators $validators,
 	) {
-		$this->repository = $entityManager->getNetworkOperatorRepository();
-		parent::__construct($validator);
+		parent::__construct($validators);
 	}
 
 	#[Path('/')]
 	#[Method('GET')]
 	#[OpenApi('
 		summary: Lists all network operators
+		deprecated: true
+		description: "Deprecated in favor of the new Cellular operators controller, use `GET` `/network/cellular/operators` instead. Will be removed in the version 3.1.0."
 		responses:
 			\'200\':
 				description: Success
 				content:
 					application/json:
 						schema:
-							type: array
-							items:
-								$ref: \'#/components/schemas/NetworkOperator\'
+							$ref: \'#/components/schemas/NetworkOperatorList\'
 			\'403\':
 				$ref: \'#/components/responses/Forbidden\'
 	')]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$operators = $this->repository->findAll();
-		return $response->writeJsonBody($operators);
+		return $this->newController->list($request, $response);
 	}
 
 	#[Path('/{id}')]
 	#[Method('GET')]
 	#[OpenApi('
-		summary: Retrieves a network operator configuration
+		summary: Returns a network operator configuration
+		deprecated: true
+		description: "Deprecated in favor of the new Cellular operators controller, use `GET` `/network/cellular/operators/{id}` instead. Will be removed in the version 3.1.0."
 		responses:
 			\'200\':
 				description: Success
@@ -98,18 +88,15 @@ class OperatorController extends NetworkController {
 	')]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Operator ID')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$id = (int) $request->getParameter('id');
-		$operator = $this->repository->find($id);
-		if ($operator === null) {
-			throw new ClientErrorException('Network operator not found', ApiResponse::S404_NOT_FOUND);
-		}
-		return $response->writeJsonObject($operator);
+		return $this->newController->get($request, $response);
 	}
 
 	#[Path('/')]
 	#[Method('POST')]
 	#[OpenApi('
 		summary: Creates a new network operator
+		deprecated: true
+		description: "Deprecated in favor of the new Cellular operators controller, use `POST` `/network/cellular/operators` instead. Will be removed in the version 3.1.0."
 		requestBody:
 			required: true
 			content:
@@ -134,26 +121,15 @@ class OperatorController extends NetworkController {
 				$ref: \'#/components/responses/Forbidden\'
 	')]
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validator->validateRequest('networkOperator', $request);
-		$json = $request->getJsonBodyCopy(false);
-		$operator = new NetworkOperator($json->name, $json->apn);
-		if (property_exists($json, 'username')) {
-			$operator->setUsername($json->username);
-		}
-		if (property_exists($json, 'password')) {
-			$operator->setPassword($json->password);
-		}
-		$this->entityManager->persist($operator);
-		$this->entityManager->flush();
-		return $response->writeJsonObject($operator)
-			->withHeader('Location', '/api/v0/operators/' . $operator->getId())
-			->withStatus(ApiResponse::S201_CREATED);
+		return $this->newController->create($request, $response);
 	}
 
 	#[Path('/{id}')]
 	#[Method('PUT')]
 	#[OpenApi('
 		summary: Edits a network operator
+		deprecated: true
+		description: "Deprecated in favor of the new Cellular operators controller, use `PUT` `/network/cellular/operators/{id}` instead. Will be removed in the version 3.1.0."
 		requestBody:
 			required: true
 			content:
@@ -172,26 +148,15 @@ class OperatorController extends NetworkController {
 	')]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Operator ID')]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$id = (int) $request->getParameter('id');
-		$operator = $this->repository->find($id);
-		if ($operator === null) {
-			throw new ClientErrorException('Network operator not found', ApiResponse::S404_NOT_FOUND);
-		}
-		$this->validator->validateRequest('networkOperator', $request);
-		$json = $request->getJsonBodyCopy(false);
-		$operator->setName($json->name);
-		$operator->setApn($json->apn);
-		$operator->setUsername($json->username ?? null);
-		$operator->setPassword($json->password ?? null);
-		$this->entityManager->persist($operator);
-		$this->entityManager->flush();
-		return $response->writeBody('Workaround');
+		return $this->newController->edit($request, $response);
 	}
 
 	#[Path('/{id}')]
 	#[Method('DELETE')]
 	#[OpenApi('
 		summary: Removes a network operator
+		deprecated: true
+		description: "Deprecated in favor of the new Cellular operators controller, use `DELETE` `/network/cellular/operators/{id}` instead. Will be removed in the version 3.1.0."
 		responses:
 			\'200\':
 				description: Success
@@ -202,14 +167,7 @@ class OperatorController extends NetworkController {
 	')]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Operator ID')]
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$id = (int) $request->getParameter('id');
-		$operator = $this->repository->find($id);
-		if ($operator === null) {
-			throw new ClientErrorException('Network operator not found', ApiResponse::S404_NOT_FOUND);
-		}
-		$this->entityManager->remove($operator);
-		$this->entityManager->flush();
-		return $response->writeBody('Workaround');
+		return $this->newController->delete($request, $response);
 	}
 
 }

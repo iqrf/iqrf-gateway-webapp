@@ -1,0 +1,27 @@
+{
+	"$schema": "https://typedoc.org/schema.json",
+	"customFooterHtml": "<p class='tsd-generator'>Copyright &copy; 2023-2024 <a href='https://www.microrisc.com' target='_blank' rel='noreferrer'>MICRORISC s.r.o.</a></p>",
+	"customFooterHtmlDisableWrapper": true,
+	"disableGit": false,
+	"disableSources": false,
+	"entryPoints": [
+		"./src/index.ts"
+	],
+	"exclude": [
+		"./tests/**/*",
+		"./**/node_modules/**/*",
+		"./dist/"
+	],
+	"includeVersion": true,
+	"jsDocCompatibility": true,
+	"name": "IQRF Gateway Daemon JavaScript Utilities",
+	"out": "./docs",
+	"plugin": [
+		"typedoc-plugin-mdn-links",
+		"typedoc-material-theme"
+	],
+	"readme": "./README.md",
+	"sourceLinkExternal": true,
+	"sourceLinkTemplate": "https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp/-/blob/{gitRevision}/{path}#L{line}",
+	"themeColor": "#367fa9"
+}

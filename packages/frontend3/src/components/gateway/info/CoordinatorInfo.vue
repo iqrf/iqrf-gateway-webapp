@@ -82,7 +82,7 @@ daemonStore.$onAction(
 					trMcuType.value = data.osRead.trMcuType;
 					loaded.value = true;
 					loading.value = false;
-				} catch (e) {
+				} catch {
 					loaded.value = false;
 					loading.value = false;
 				}
@@ -98,7 +98,7 @@ onMounted(() => {
 function enumerate(): void {
 	const options = new DaemonMessageOptions(
 		null,
-		5000,
+		5_000,
 		'todo',
 		() => {
 			msgId = '';

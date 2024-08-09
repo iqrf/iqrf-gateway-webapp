@@ -24,12 +24,12 @@ use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\RequestParameter;
+use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use App\ApiModule\Version0\Controllers\NetworkController;
-use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\ApiModule\Version0\Models\ControllerValidators;
 use App\NetworkModule\Enums\InterfaceTypes;
 use App\NetworkModule\Exceptions\NetworkManagerException;
 use App\NetworkModule\Exceptions\NonexistentDeviceException;
@@ -39,18 +39,19 @@ use App\NetworkModule\Models\InterfaceManager;
  * Network interfaces controller
  */
 #[Path('/interfaces')]
-class InterfacesController extends NetworkController {
+#[Tag('IP network - Network interfaces')]
+class InterfacesController extends BaseNetworkController {
 
 	/**
 	 * Constructor
 	 * @param InterfaceManager $manager Network interface manager
-	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
+	 * @param ControllerValidators $validators Controller validators
 	 */
 	public function __construct(
 		private readonly InterfaceManager $manager,
-		RestApiSchemaValidator $validator,
+		ControllerValidators $validators,
 	) {
-		parent::__construct($validator);
+		parent::__construct($validators);
 	}
 
 	#[Path('/')]
@@ -88,11 +89,12 @@ class InterfacesController extends NetworkController {
 				$ref: \'#/components/responses/ServerError\'
 	')]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['network']);
+		$this->validators->checkScopes($request, ['network']);
 		$typeParam = $request->getQueryParam('type', null);
 		$type = $typeParam === null ? null : InterfaceTypes::tryFrom($typeParam);
 		$list = $this->manager->list($type);
-		return $response->writeJsonBody($list);
+		$response = $response->writeJsonBody($list);
+		return $this->validators->validateResponse('networkInterfaces', $response);
 	}
 
 	#[Path('/{name}/connect')]
@@ -111,10 +113,10 @@ class InterfacesController extends NetworkController {
 	')]
 	#[RequestParameter(name: 'name', type: 'string', description: 'Network interface name')]
 	public function connect(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['network']);
+		$this->validators->checkScopes($request, ['network']);
 		try {
 			$this->manager->connect($request->getParameter('name'));
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (NonexistentDeviceException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
 		} catch (NetworkManagerException $e) {
@@ -140,10 +142,10 @@ class InterfacesController extends NetworkController {
 	')]
 	#[RequestParameter(name: 'name', type: 'string', description: 'Network interface name')]
 	public function disconnect(ApiRequest $request, ApiResponse $response): ApiResponse {
-		self::checkScopes($request, ['network']);
+		$this->validators->checkScopes($request, ['network']);
 		try {
 			$this->manager->disconnect($request->getParameter('name'));
-			return $response->writeBody('Workaround');
+			return $response;
 		} catch (NonexistentDeviceException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND, $e);
 		} catch (NetworkManagerException $e) {

@@ -14,18 +14,20 @@
 		"paths": {
 			"@/*": [
 				"./src/*"
-			],
-			"@iqrf/iqrf-gateway-webapp-client": [
-				"../api-client/src"
-			],
-			"@iqrf/iqrf-gateway-webapp-client/*": [
-				"../api-client/src/*"
 			]
 		},
 		"rootDir": "./"
 	},
+	"include": [
+		"src/**/*.ts",
+		"src/**/*.d.ts",
+		"src/**/*.vue",
+		"vite.config.mts"
+	],
 	"exclude": [
 		"cypress",
-		"cypress.config.ts"
+		"cypress.config.ts",
+		"dist",
+		"node_modules"
 	]
 }

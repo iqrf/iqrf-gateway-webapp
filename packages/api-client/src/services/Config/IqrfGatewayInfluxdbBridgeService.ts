@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 MICRORISC s.r.o.
+ * Copyright 2023-2024 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,21 +25,20 @@ import { BaseService } from '../BaseService';
 export class IqrfGatewayInfluxdbBridgeService extends BaseService {
 
 	/**
-	 * Fetches IQRF Gateway InfluxDB Bridge configuration
+	 * Retrieves IQRF Gateway InfluxDB Bridge configuration
 	 * @return {Promise<BridgeConfig>} IQRF Gateway InfluxDB Bridge configuration
 	 */
-	public async fetchConfig(): Promise<BridgeConfig> {
+	public async getConfig(): Promise<BridgeConfig> {
 		const response: AxiosResponse<BridgeConfig> =
 			await this.axiosInstance.get('/config/bridge');
 		return response.data;
 	}
 
 	/**
-	 * Edits IQRF Gateway InfluxDB Bridge configuration
+	 * Updates IQRF Gateway InfluxDB Bridge configuration
 	 * @param {BridgeConfig} config IQRF Gateway InfluxDB Bridge configuration
-	 * @returns
 	 */
-	public async editConfig(config: BridgeConfig): Promise<void> {
+	public async updateConfig(config: BridgeConfig): Promise<void> {
 		await this.axiosInstance.put('/config/bridge', config);
 	}
 

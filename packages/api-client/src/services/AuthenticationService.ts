@@ -31,7 +31,7 @@ import { BaseService } from './BaseService';
 export class AuthenticationService extends BaseService {
 
 	/**
-	 * Signs in the user
+	 * Sign in the user
 	 * @param {UserCredentials} credentials User credentials
 	 * @return {Promise<UserSignedIn>} Signed in user
 	 */
@@ -42,7 +42,7 @@ export class AuthenticationService extends BaseService {
 	}
 
 	/**
-	 * Refreshes the user token
+	 * Refresh the user token
 	 * @return {Promise<UserSignedIn>} Signed in user
 	 */
 	public async refreshToken(): Promise<UserSignedIn> {
@@ -52,7 +52,7 @@ export class AuthenticationService extends BaseService {
 	}
 
 	/**
-	 * Verifies the user
+	 * Verify the user
 	 * @param {string} verificationUuid Verification UUID
 	 * @return {Promise<UserSignedIn>} Signed in user
 	 */

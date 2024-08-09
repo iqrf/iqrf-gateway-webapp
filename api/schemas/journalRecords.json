@@ -1,0 +1,44 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/journalRecords.json",
+	"type": "object",
+	"title": "Journal records",
+	"examples": [
+		{
+			"records": ["Record"],
+			"startCursor": "s=c6d245ac966e45dc8cb7892e43c25112;i=19b0c69;b=8afc91f4683c45f9a4f64520fda182c1;m=22f4508478;t=61e064b3fb7f9;x=b44dc653a932e577",
+			"endCursor": "s=c6d245ac966e45dc8cb7892e43c25112;i=19b0d94;b=8afc91f4683c45f9a4f64520fda182c1;m=2318efeba7;t=61e066fdf1f28;x=f1d5191fe1e32224"
+		}
+	],
+	"required": [
+		"records",
+		"startCursor",
+		"endCursor"
+	],
+	"additionalProperties": false,
+	"properties": {
+		"records": {
+			"$id": "#/properties/records",
+			"title": "Journal records",
+			"type": "array",
+			"example": ["Record"],
+			"items": {
+				"$id": "#/properties/records/items",
+				"type": "string",
+				"example": "Record"
+			}
+		},
+		"startCursor": {
+			"$id": "#/properties/startCursor",
+			"title": "Journal start cursor",
+			"type": "string",
+			"example": "s=c6d245ac966e45dc8cb7892e43c25112;i=19b0c69;b=8afc91f4683c45f9a4f64520fda182c1;m=22f4508478;t=61e064b3fb7f9;x=b44dc653a932e577"
+		},
+		"endCursor": {
+			"$id": "#/properties/endCursor",
+			"title": "Journal end cursor",
+			"type": "string",
+			"example": "s=c6d245ac966e45dc8cb7892e43c25112;i=19b0d94;b=8afc91f4683c45f9a4f64520fda182c1;m=2318efeba7;t=61e066fdf1f28;x=f1d5191fe1e32224"
+		}
+	}
+}

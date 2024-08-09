@@ -48,6 +48,8 @@ class ConnectionManager {
 	/**
 	 * Deletes the network connection
 	 * @param UuidInterface $uuid Network connection UUID
+	 * @throws NetworkManagerException
+	 * @throws NonexistentConnectionException
 	 */
 	public function delete(UuidInterface $uuid): void {
 		$output = $this->commandManager->run('nmcli -t connection delete ' . $uuid->toString(), true);
@@ -60,6 +62,8 @@ class ConnectionManager {
 	/**
 	 * Deactivates the connection on the interface
 	 * @param UuidInterface $uuid Network connection UUID
+	 * @throws NetworkManagerException
+	 * @throws NonexistentConnectionException
 	 */
 	public function down(UuidInterface $uuid): void {
 		$command = sprintf('nmcli -t connection down %s', $uuid->toString());
@@ -74,6 +78,8 @@ class ConnectionManager {
 	 * Returns the detailed network connection entity
 	 * @param UuidInterface $uuid Network connection UUID
 	 * @return ConnectionDetail Detailed network connection entity
+	 * @throws NetworkManagerException
+	 * @throws NonexistentConnectionException
 	 */
 	public function get(UuidInterface $uuid): ConnectionDetail {
 		$output = $this->commandManager->run('nmcli -t -s connection show ' . $uuid->toString(), true);
@@ -118,6 +124,7 @@ class ConnectionManager {
 	 * Adds a new network connection configuration
 	 * @param stdClass $values Network connection configuration from values
 	 * @return string UUID of the new connection
+	 * @throws NetworkManagerException
 	 */
 	public function add(stdClass $values): string {
 		$newConnection = ConnectionDetail::jsonDeserialize($values);
@@ -137,6 +144,8 @@ class ConnectionManager {
 	 * Edits the network connection's configuration
 	 * @param UuidInterface $uuid Network connection UUID
 	 * @param stdClass $values Network connection configuration form values
+	 * @throws NetworkManagerException
+	 * @throws NonexistentConnectionException
 	 */
 	public function edit(UuidInterface $uuid, stdClass $values): void {
 		$currentConnection = $this->get($uuid);
@@ -159,6 +168,7 @@ class ConnectionManager {
 	 * @param UuidInterface $uuid Network connection UUID
 	 * @param string|null $interface Network interface
 	 * @throws NetworkManagerException
+	 * @throws NonexistentConnectionException
 	 */
 	public function up(UuidInterface $uuid, ?string $interface = null): void {
 		$command = sprintf('nmcli -t connection up %s', $uuid->toString());

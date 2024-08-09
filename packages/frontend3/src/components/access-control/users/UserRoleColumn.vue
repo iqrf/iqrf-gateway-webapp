@@ -25,7 +25,7 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { UserRole } from '@iqrf/iqrf-gateway-webapp-client/types/User';
+import { UserRole } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { mdiAccount, mdiAccountBadge, mdiAccountSearch, mdiShieldAccount } from '@mdi/js';
 import { computed } from 'vue';
 

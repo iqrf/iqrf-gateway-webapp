@@ -135,7 +135,7 @@ daemonStore.$onAction(
 		}
 		after((rsp: DaemonApiResponse) => {
 			const msgId = rsp.data.msgId;
-			const idx = msgIds.value.findIndex((item: string) => msgId === item);
+			const idx = msgIds.value.indexOf(msgId);
 			if (idx === -1) {
 				return;
 			}
@@ -192,7 +192,7 @@ async function onSubmit(): Promise<void> {
 		const content = await file.text();
 		try {
 			importRecords.value.push(JSON.parse(content) as SchedulerRecord);
-		} catch (e) {
+		} catch {
 			toast.error(
 				i18n.t('components.configuration.daemon.scheduler.messages.import.jsonInvalid'),
 			);
@@ -208,7 +208,7 @@ async function onSubmit(): Promise<void> {
 }
 
 function uploadRecords(): void {
-	const options = new DaemonMessageOptions(null, 30000);
+	const options = new DaemonMessageOptions(null, 30_000);
 	for (const record of importRecords.value) {
 		processedRecords.value.push({
 			taskId: record.taskId,

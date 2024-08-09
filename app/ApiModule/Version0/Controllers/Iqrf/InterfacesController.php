@@ -25,26 +25,25 @@ use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use App\ApiModule\Version0\Controllers\IqrfController;
-use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\ApiModule\Version0\Models\ControllerValidators;
 use App\ConfigModule\Models\IqrfManager;
 
 /**
  * IQRF physical interface controller
  */
 #[Path('/interfaces')]
-class InterfacesController extends IqrfController {
+class InterfacesController extends BaseIqrfController {
 
 	/**
 	 * Constructor
 	 * @param IqrfManager $manager IQRF interfaces manager
-	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
+	 * @param ControllerValidators $validators Controller validators
 	 */
 	public function __construct(
 		private readonly IqrfManager $manager,
-		RestApiSchemaValidator $validator,
+		ControllerValidators $validators,
 	) {
-		parent::__construct($validator);
+		parent::__construct($validators);
 	}
 
 	#[Path('/')]
@@ -67,7 +66,8 @@ class InterfacesController extends IqrfController {
 			'spi' => $this->manager->getSpiInterfaces(),
 			'uart' => $this->manager->getUartInterfaces(),
 		];
-		return $response->writeJsonBody($interfaces);
+		$response = $response->writeJsonBody($interfaces);
+		return $this->validators->validateResponse('iqrfInterfaces', $response);
 	}
 
 }

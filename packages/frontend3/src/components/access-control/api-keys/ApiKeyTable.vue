@@ -53,8 +53,8 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { type ApiKeyService } from '@iqrf/iqrf-gateway-webapp-client/services';
-import { type ApiKeyInfo } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { type ApiKeyService } from '@iqrf/iqrf-gateway-webapp-client/services/Security';
+import { type ApiKeyInfo } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import { DateTime } from 'luxon';
 import { onMounted, ref, type Ref, toRaw } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -70,7 +70,7 @@ import { Action } from '@/types/Action';
 
 const i18n = useI18n();
 const localeStore = useLocaleStore();
-const service: ApiKeyService = useApiClient().getApiKeyService();
+const service: ApiKeyService = useApiClient().getSecurityServices().getApiKeyService();
 const loading: Ref<boolean> = ref(false);
 const headers = [
 	{ key: 'id', title: i18n.t('common.columns.id') },

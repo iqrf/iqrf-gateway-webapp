@@ -37,7 +37,7 @@ limitations under the License.
 <script setup lang='ts'>
 import {
 	type NetworkConnectionConfiguration,
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network/NetworkConnection';
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import { mdiTag } from '@mdi/js';
 import { type PropType } from 'vue';
 
