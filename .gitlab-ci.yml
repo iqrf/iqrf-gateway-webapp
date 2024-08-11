@@ -288,15 +288,15 @@ deploy:docs:openapi:
   stage: deploy-docs
   environment:
     name: apidocs
-    url: https://apidocs.iqrf.org/openapi/iqrf-gateway-weabpp/
+    url: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/
   only:
     - master
   script:
     - composer install --no-progress
     - bin/manager open-api:specification > api.json
-    - ssh www-deploy@icinga.iqrf.org "rm -rf /data/nginx/apidocs/openapi/iqrf-gateway-weabpp/api.json /data/nginx/apidocs/openapi/iqrf-gateway-weabpp/schemas/"
-    - rsync -hrvz --delete -e ssh api.json www-deploy@icinga.iqrf.org:/data/nginx/apidocs/openapi/iqrf-gateway-weabpp/api.json
-    - rsync -hrvz --delete -e ssh api/schemas/* www-deploy@icinga.iqrf.org:/data/nginx/apidocs/openapi/iqrf-gateway-weabpp/schemas/
+    - ssh www-deploy@icinga.iqrf.org "rm -rf /data/nginx/apidocs/openapi/iqrf-gateway-webapp/api.json /data/nginx/apidocs/openapi/iqrf-gateway-webapp/schemas/"
+    - rsync -hrvz --delete -e ssh api.json www-deploy@icinga.iqrf.org:/data/nginx/apidocs/openapi/iqrf-gateway-webapp/api.json
+    - rsync -hrvz --delete -e ssh api/schemas/* www-deploy@icinga.iqrf.org:/data/nginx/apidocs/openapi/iqrf-gateway-webapp/schemas/
   <<: *ssh_template
 
 deploy-docs:typedoc:
@@ -324,7 +324,7 @@ deploy-docs:typedoc:
   parallel:
     matrix:
       - PACKAGE: api-client
-        DEPLOY_DIR: js/iqrf-gateway-weabpp-client
+        DEPLOY_DIR: js/iqrf-gateway-webapp-client
       - PACKAGE: daemon-utils
         DEPLOY_DIR: js/iqrf-gateway-daemon-utils
 
