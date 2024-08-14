@@ -21,18 +21,26 @@ import {
 	AccountState,
 	type EmailSentResponse,
 	type EmailVerificationResendRequest,
-	type UserAccountRecovery,
+	type UserAccountRecovery, type UserCredentials,
 	type UserEdit,
 	type UserInfo,
 	UserLanguage,
 	type UserPasswordChange,
 	type UserPasswordReset,
-	UserRole,
+	UserRole, UserSessionExpiration,
 	type UserSignedIn,
 } from '../../src/types';
 import { mockedAxios, mockedClient } from '../mocks/axios';
 
 describe('AccountService', (): void => {
+
+	/**
+	 * @var {UserCredentials} credentials User credentials
+	 */
+	const credentials: UserCredentials = {
+		username: 'admin',
+		password: 'iqrf',
+	};
 
 	/**
 	 * @var {UserPasswordReset} passwordResetRequest Password reset request
@@ -73,7 +81,7 @@ describe('AccountService', (): void => {
 
 	it('fetch information about the logged-in user', async (): Promise<void> => {
 		expect.assertions(1);
-		mockedAxios.onGet('/user')
+		mockedAxios.onGet('/account')
 			.reply(200, userInfo);
 		const actual: UserInfo = await service.getInfo();
 		expect(actual).toStrictEqual(userInfo);
@@ -92,7 +100,7 @@ describe('AccountService', (): void => {
 		const response: EmailSentResponse = {
 			emailSent: true,
 		};
-		mockedAxios.onPut('/user', request)
+		mockedAxios.onPut('/account', request)
 			.reply(200, response);
 		const actual: EmailSentResponse = await service.update(request);
 		expect(actual).toStrictEqual(response);
@@ -105,7 +113,7 @@ describe('AccountService', (): void => {
 			new: 'new-password',
 			baseUrl: 'http://iqaros.local/',
 		};
-		mockedAxios.onPut('/user/password', request)
+		mockedAxios.onPut('/account/password', request)
 			.reply(200);
 		await expect(service.updatePassword(request)).resolves.not.toThrow();
 	});
@@ -125,7 +133,7 @@ describe('AccountService', (): void => {
 	it('confirm password recovery', async (): Promise<void> => {
 		expect.assertions(1);
 		const uuid = '95b7edac-f3de-4dab-9cef-35a509b88f57';
-		mockedAxios.onPost(`/user/password/recovery/${uuid}`, passwordResetRequest)
+		mockedAxios.onPost(`/account/passwordRecovery/${uuid}`, passwordResetRequest)
 			.reply(200, userSignedIn);
 		const actual: UserSignedIn = await service.confirmPasswordRecovery(uuid, passwordResetRequest);
 		expect(actual).toStrictEqual(userSignedIn);
@@ -137,9 +145,30 @@ describe('AccountService', (): void => {
 			username: 'admin',
 			baseUrl: 'http://iqaros.local/',
 		};
-		mockedAxios.onPost('/user/password/recovery', request)
+		mockedAxios.onPost('/account/passwordRecovery', request)
 			.reply(200);
 		await expect(service.requestPasswordRecovery(request)).resolves.not.toThrow();
+	});
+
+	it('verify e-mail address - invalid UUID format', async (): Promise<void> => {
+		expect.assertions(1);
+		await expect(service.verifyEmail('invalid-uuid')).rejects
+			.toThrow(new Error('Invalid e-mail verification UUID.'));
+	});
+
+	it('verify e-mail address - invalid UUID version', async (): Promise<void> => {
+		expect.assertions(1);
+		await expect(service.verifyEmail('60045219-7cbf-321e-a762-c90382cd8723')).rejects
+			.toThrow(new Error('Invalid e-mail verification UUID version.'));
+	});
+
+	it('verify e-mail address', async (): Promise<void> => {
+		expect.assertions(1);
+		const uuid = '95b7edac-f3de-4dab-9cef-35a509b88f57';
+		mockedAxios.onPost(`/account/emailVerification/${uuid}`)
+			.reply(200, userSignedIn);
+		const actual: UserSignedIn = await service.verifyEmail(uuid);
+		expect(actual).toStrictEqual(userSignedIn);
 	});
 
 	it('resend the verification e-mail', async (): Promise<void> => {
@@ -147,9 +176,43 @@ describe('AccountService', (): void => {
 		const request: EmailVerificationResendRequest = {
 			baseUrl: 'http://iqaros.local/',
 		};
-		mockedAxios.onPost('/user/resendVerification', request)
+		mockedAxios.onPost('/account/emailVerification/resend', request)
 			.reply(200);
 		await expect(service.resendVerificationEmail(request)).resolves.not.toThrow();
+	});
+
+	it('sign in the user', async (): Promise<void> => {
+		expect.assertions(1);
+		mockedAxios.onPost('/account/signIn', credentials)
+			.reply(200, {
+				...userSignedIn,
+				email: 'admin@xn--rksmrgs-5wao1o.josefsson.org',
+			});
+		const actual: UserSignedIn = await service.signIn(credentials);
+		expect(actual).toStrictEqual({
+			...userSignedIn,
+			email: 'admin@räksmörgås.josefsson.org',
+		});
+	});
+
+	it('sign in the user with expiration', async (): Promise<void> => {
+		expect.assertions(1);
+		const credentialsWithExpiration: UserCredentials = {
+			...credentials,
+			expiration: UserSessionExpiration.Week,
+		};
+		mockedAxios.onPost('/account/signIn', credentialsWithExpiration)
+			.reply(200, userSignedIn);
+		const actual: UserSignedIn = await service.signIn(credentialsWithExpiration);
+		expect(actual).toStrictEqual(userSignedIn);
+	});
+
+	it('refresh JWT token', async (): Promise<void> => {
+		expect.assertions(1);
+		mockedAxios.onPost('/account/refreshToken')
+			.reply(200, userSignedIn);
+		const actual: UserSignedIn = await service.refreshToken();
+		expect(actual).toStrictEqual(userSignedIn);
 	});
 
 });

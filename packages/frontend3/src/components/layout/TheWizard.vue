@@ -17,16 +17,18 @@ limitations under the License.
 
 <template>
 	<v-main>
-		<v-container fluid class='fill-height'>
+		<v-container fluid class='fill-height py-16'>
 			<v-row align='center' justify='center'>
 				<v-col
+					align-self='center'
 					cols='12'
-					sm='8'
-					md='6'
-					lg='4'
+					sm='12'
+					md='10'
+					lg='8'
+					xl='6'
 				>
 					<div class='logo'>
-						<img :src='Logo' height='40'>
+						<v-img :src='Logo' max-height='32pt' />
 					</div>
 					<Steps v-if='!hasUsers' class='mb-4' />
 					<slot />
@@ -43,14 +45,12 @@ import Logo from '@/assets/logo-blue.svg?url';
 import Steps from '@/components/install/Steps.vue';
 import { useInstallStore } from '@/store/install';
 
-
 const installStore = useInstallStore();
 const { hasUsers } = storeToRefs(installStore);
 </script>
 
 <style lang='scss' scoped>
 .logo {
-	padding-bottom: 2rem;
-	text-align: center;
+	padding-bottom: 4rem;
 }
 </style>

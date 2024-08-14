@@ -120,7 +120,7 @@ export default class SessionExpirationModal extends ModalBase {
 	 * Renews the session by refreshing jwt token and setting up new expiration
 	 */
 	private async renewSession(): Promise<void> {
-		await useApiClient().getAuthenticationService().refreshToken()
+		await useApiClient().getAccountService().refreshToken()
 			.then((rsp: UserSignedIn) => {
 				this.$store.dispatch('user/setJwt', rsp)
 					.then(() => {

@@ -24,7 +24,6 @@ import axios, {
 
 import {
 	AccountService,
-	AuthenticationService,
 	FeatureService,
 	InstallationService,
 	OpenApiService,
@@ -168,14 +167,6 @@ export class Client {
 	 */
 	public getAccountService(): AccountService {
 		return new AccountService(this);
-	}
-
-	/**
-	 * Returns Authentication service
-	 * @return {AuthenticationService} Authentication service
-	 */
-	public getAuthenticationService(): AuthenticationService {
-		return new AuthenticationService(this);
 	}
 
 	/**

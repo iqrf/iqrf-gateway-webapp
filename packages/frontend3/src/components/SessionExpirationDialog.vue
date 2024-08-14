@@ -108,7 +108,7 @@ async function setup(): Promise<void> {
  */
 async function renewSession(): Promise<void> {
 	try {
-		const rsp: UserSignedIn = await useApiClient().getAuthenticationService().refreshToken();
+		const rsp: UserSignedIn = await useApiClient().getAccountService().refreshToken();
 		await userStore.processJwt(rsp.token);
 		close();
 		clear();

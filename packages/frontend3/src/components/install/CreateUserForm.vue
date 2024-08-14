@@ -134,15 +134,13 @@ async function onSubmit(): Promise<void> {
 				password: user.value.password,
 				expiration: expiration.value,
 			};
-			await userStore.signIn(credentials)
-				.then(() => {
-					const nextStep = installStore.getNextStep;
-					if (nextStep === null) {
-						router.push('/');
-						return;
-					}
-					router.push({ name: nextStep.route });
-				});
+			await userStore.signIn(credentials);
+			const nextStep = installStore.getNextStep;
+			if (nextStep === null) {
+				router.push('/');
+				return;
+			}
+			await router.push({ name: nextStep.route });
 		})
 		.catch((error: AxiosError) => {
 			basicErrorToast(error, 'core.user.messages.createFailure');

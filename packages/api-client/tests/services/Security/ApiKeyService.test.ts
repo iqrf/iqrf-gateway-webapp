@@ -68,7 +68,7 @@ describe('ApiKeyService', (): void => {
 
 	it('fetch list of API keys', async (): Promise<void> => {
 		expect.assertions(1);
-		mockedAxios.onGet('/apiKeys')
+		mockedAxios.onGet('/security/apiKeys')
 			.reply(200, rawApiKeys);
 		const actual: ApiKeyInfo[] = await service.list();
 		expect(actual).toStrictEqual(apiKeys);
@@ -78,7 +78,7 @@ describe('ApiKeyService', (): void => {
 		expect.assertions(1);
 		const key = 'ZJqlYCuPMSqGTRGuzpkLOu.nqkbk8VzEGpRgdpBvZkXxR8oZmQQ8C8J/Au61+L+JIQ=';
 		const expiration: DateTime = DateTime.fromISO('2023-07-13T12:00:00+02:00');
-		mockedAxios.onPost('/apiKeys', {
+		mockedAxios.onPost('/security/apiKeys', {
 			description: 'Test',
 			expiration: expiration.toISO(),
 		})
@@ -97,7 +97,7 @@ describe('ApiKeyService', (): void => {
 
 	it('fetch API key with ID 1', async (): Promise<void> => {
 		expect.assertions(1);
-		mockedAxios.onGet('/apiKeys/1')
+		mockedAxios.onGet('/security/apiKeys/1')
 			.reply(200, rawApiKeys[0]);
 		const actual: ApiKeyInfo = await service.get(1);
 		expect(actual).toStrictEqual(apiKeys[0]);
@@ -109,14 +109,14 @@ describe('ApiKeyService', (): void => {
 			description: 'Test',
 			expiration: null,
 		};
-		mockedAxios.onPut('/apiKeys/1', config)
+		mockedAxios.onPut('/security/apiKeys/1', config)
 			.reply(200);
 		await service.update(1, config);
 	});
 
 	it('delete API key with ID 1', async (): Promise<void> => {
 		expect.assertions(0);
-		mockedAxios.onDelete('/apiKeys/1')
+		mockedAxios.onDelete('/security/apiKeys/1')
 			.reply(200);
 		await service.delete(1);
 	});

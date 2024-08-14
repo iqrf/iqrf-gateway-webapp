@@ -20,7 +20,6 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { Client } from '../src';
 import {
 	AccountService,
-	AuthenticationService,
 	FeatureService,
 	InstallationService,
 	OpenApiService,
@@ -138,11 +137,6 @@ describe('Client', (): void => {
 	it('returns AccountService instance', (): void => {
 		expect.assertions(1);
 		expect(client.getAccountService()).toBeInstanceOf(AccountService);
-	});
-
-	it('returns AuthenticationService instance', (): void => {
-		expect.assertions(1);
-		expect(client.getAuthenticationService()).toBeInstanceOf(AuthenticationService);
 	});
 
 	it('returns FeatureService instance', (): void => {

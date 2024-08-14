@@ -21,7 +21,8 @@ import {
 	type InstallationCheckPhpMissingExtensions,
 } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { defineStore } from 'pinia';
-import { useRoute } from 'vue-router';
+
+import router from '@/router';
 
 import { useFeatureStore } from './features';
 
@@ -108,13 +109,13 @@ export const useInstallStore = defineStore('install', {
 			return this.checked;
 		},
 		hasUsers(): boolean {
-			return this.hasUsers;
+			return this.users;
 		},
 		getSteps(): InstallStep[] {
 			return this.steps;
 		},
 		getCurrentStep(): InstallStep|null {
-			const route = useRoute();
+			const route = router.currentRoute.value;
 			if (route === undefined) {
 				return null;
 			}

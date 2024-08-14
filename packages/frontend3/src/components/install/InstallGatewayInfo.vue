@@ -24,39 +24,39 @@ limitations under the License.
 			<v-table v-if='info !== null'>
 				<tbody class='table-paddings'>
 					<tr>
-						<th>{{ $t('gateway.info.board') }}</th>
+						<th>{{ $t('components.gateway.information.board') }}</th>
 						<td>{{ info.board }}</td>
 					</tr>
 					<tr v-if='info.gwId'>
-						<th>{{ $t('gateway.info.gwId') }}</th>
+						<th>{{ $t('components.gateway.information.gwId') }}</th>
 						<td>{{ info.gwId }}</td>
 					</tr>
 					<tr v-if='info.versions.controller'>
-						<th>{{ $t('gateway.info.version.iqrfGatewayController') }}</th>
+						<th>{{ $t('components.gateway.information.version.iqrfGatewayController') }}</th>
 						<td>{{ info.versions.controller }}</td>
 					</tr>
 					<tr>
-						<th>{{ $t('gateway.info.version.iqrfGatewayDaemon') }}</th>
+						<th>{{ $t('components.gateway.information.version.iqrfGatewayDaemon') }}</th>
 						<td>{{ info.versions.daemon }}</td>
 					</tr>
 					<tr v-if='info.versions.setter'>
-						<th>{{ $t('gateway.info.version.iqrfGatewaySetter') }}</th>
+						<th>{{ $t('components.gateway.information.version.iqrfGatewaySetter') }}</th>
 						<td>{{ info.versions.setter }}</td>
 					</tr>
 					<tr v-if='info.versions.uploader'>
-						<th>{{ $t('gateway.info.version.iqrfGatewayUploader') }}</th>
+						<th>{{ $t('components.gateway.information.version.iqrfGatewayUploader') }}</th>
 						<td>{{ info.versions.uploader }}</td>
 					</tr>
 					<tr>
-						<th>{{ $t('gateway.info.version.iqrfGatewayWebapp') }}</th>
+						<th>{{ $t('components.gateway.information.version.iqrfGatewayWebapp') }}</th>
 						<td>{{ info.versions.webapp }}</td>
 					</tr>
 					<tr>
-						<th>{{ $t('gateway.info.hostname') }}</th>
+						<th>{{ $t('components.gateway.information.hostname') }}</th>
 						<td>{{ info.hostname }}</td>
 					</tr>
 					<tr>
-						<th>{{ $t('gateway.info.addresses.ip') }}</th>
+						<th>{{ $t('components.gateway.information.addresses.ip') }}</th>
 						<td>
 							<span v-for='{name, ipAddresses} of ipAddrs' :key='name'>
 								<strong>{{ name }}: </strong> {{ ipAddresses?.join(', ') }}<br>
@@ -64,7 +64,7 @@ limitations under the License.
 						</td>
 					</tr>
 					<tr>
-						<th>{{ $t('gateway.info.addresses.mac') }}</th>
+						<th>{{ $t('components.gateway.information.addresses.mac') }}</th>
 						<td>
 							<span v-for='{name, macAddress} of macAddrs' :key='name'>
 								<strong>{{ name }}: </strong> {{ macAddress }}<br>
@@ -72,13 +72,13 @@ limitations under the License.
 						</td>
 					</tr>
 					<tr>
-						<th>{{ $t('gateway.info.tr.title') }}</th>
+						<th>{{ $t('components.gateway.information.tr.title') }}</th>
 						<td>
 							<CoordinatorInfo />
 						</td>
 					</tr>
 					<tr>
-						<th>{{ $t('gateway.info.gwMode') }}</th>
+						<th>{{ $t('components.gateway.information.gwMode') }}</th>
 						<td>
 							<DaemonModeInfo />
 						</td>

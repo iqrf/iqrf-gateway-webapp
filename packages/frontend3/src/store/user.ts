@@ -91,7 +91,7 @@ export const useUserStore = defineStore('user', {
 		},
 		async signIn(credentials: UserCredentials): Promise<void> {
 			try {
-				const user: UserSignedIn = await useApiClient().getAuthenticationService().signIn(credentials);
+				const user: UserSignedIn = await useApiClient().getAccountService().signIn(credentials);
 				await this.processJwt(user.token);
 				this.setUserInfo(user);
 				this.setRequestedExpiration(credentials.expiration ?? UserSessionExpiration.Default);

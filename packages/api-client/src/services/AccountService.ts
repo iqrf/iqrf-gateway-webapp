@@ -23,7 +23,7 @@ import {
 import {
 	type EmailSentResponse,
 	type EmailVerificationResendRequest,
-	type UserAccountRecovery,
+	type UserAccountRecovery, type UserCredentials,
 	type UserEdit,
 	type UserInfo,
 	type UserPasswordChange,
@@ -45,7 +45,7 @@ export class AccountService extends BaseService {
 	 */
 	public async getInfo(): Promise<UserInfo> {
 		const response: AxiosResponse<UserInfo> =
-			await this.axiosInstance.get('/user');
+			await this.axiosInstance.get('/account');
 		return UserUtils.deserialize(response.data);
 	}
 
@@ -56,7 +56,7 @@ export class AccountService extends BaseService {
 	 */
 	public async update(user: UserEdit): Promise<EmailSentResponse> {
 		const response: AxiosResponse<EmailSentResponse> =
-			await this.axiosInstance.put('/user', UserUtils.serialize(user));
+			await this.axiosInstance.put('/account', UserUtils.serialize(user));
 		return response.data;
 	}
 
@@ -65,7 +65,7 @@ export class AccountService extends BaseService {
 	 * @param {UserPasswordChange} change Password change request
 	 */
 	public async updatePassword(change: UserPasswordChange): Promise<void> {
-		await this.axiosInstance.put('/user/password', change);
+		await this.axiosInstance.put('/account/password', change);
 	}
 
 	/**
@@ -82,7 +82,7 @@ export class AccountService extends BaseService {
 			throw new Error('Invalid password recovery request UUID version.');
 		}
 		const response: AxiosResponse<UserSignedIn> =
-			await this.axiosInstance.post(`/user/password/recovery/${requestUuid}`, request);
+			await this.axiosInstance.post(`/account/passwordRecovery/${requestUuid}`, request);
 		return UserUtils.deserialize(response.data);
 	}
 
@@ -91,7 +91,24 @@ export class AccountService extends BaseService {
 	 * @param {UserAccountRecovery} recovery Account recovery request
 	 */
 	public async requestPasswordRecovery(recovery: UserAccountRecovery): Promise<void> {
-		await this.axiosInstance.post('/user/password/recovery', recovery);
+		await this.axiosInstance.post('/account/passwordRecovery', recovery);
+	}
+
+	/**
+	 * Verify the e-mail address
+	 * @param {string} uuid E-mail verification UUID
+	 * @return {Promise<UserSignedIn>} Signed-in user
+	 */
+	public async verifyEmail(uuid: string): Promise<UserSignedIn> {
+		if (!uuidValidate(uuid)) {
+			throw new Error('Invalid e-mail verification UUID.');
+		}
+		if (uuidVersion(uuid) !== 4) {
+			throw new Error('Invalid e-mail verification UUID version.');
+		}
+		const response: AxiosResponse<UserSignedIn> =
+			await this.axiosInstance.post(`/account/emailVerification/${uuid}`);
+		return UserUtils.deserialize(response.data);
 	}
 
 	/**
@@ -99,7 +116,29 @@ export class AccountService extends BaseService {
 	 * @param {EmailVerificationResendRequest} request Verification e-mail resend request
 	 */
 	public async resendVerificationEmail(request: EmailVerificationResendRequest): Promise<void> {
-		await this.axiosInstance.post('/user/resendVerification', request);
+		await this.axiosInstance.post('/account/emailVerification/resend', request);
 	}
+
+	/**
+	 * Sign in the user
+	 * @param {UserCredentials} credentials User credentials
+	 * @return {Promise<UserSignedIn>} Signed in user
+	 */
+	public async signIn(credentials: UserCredentials): Promise<UserSignedIn> {
+		const response: AxiosResponse<UserSignedIn> =
+			await this.axiosInstance.post('/account/signIn', credentials);
+		return UserUtils.deserialize(response.data);
+	}
+
+	/**
+	 * Refresh the user token
+	 * @return {Promise<UserSignedIn>} Signed in user
+	 */
+	public async refreshToken(): Promise<UserSignedIn> {
+		const response: AxiosResponse<UserSignedIn> =
+			await this.axiosInstance.post('/account/refreshToken');
+		return UserUtils.deserialize(response.data);
+	}
+
 
 }

@@ -82,7 +82,7 @@ const errorMsg: Ref<string> = ref('');
 
 onMounted(async (): Promise<void> => {
 	try {
-		const user: UserSignedIn = await useApiClient().getAuthenticationService().verify(props.uuid);
+		const user: UserSignedIn = await useApiClient().getAccountService().verifyEmail(props.uuid);
 		userStore.setUserInfo(user);
 		await userStore.processJwt(user.token);
 		userData.value = user;

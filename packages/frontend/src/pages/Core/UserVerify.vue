@@ -87,7 +87,7 @@ export default class UserVerify extends Vue {
 	 */
 	created(): void {
 		this.$store.commit('spinner/SHOW');
-		useApiClient().getAuthenticationService().verify(this.uuid)
+		useApiClient().getAccountService().verifyEmail(this.uuid)
 			.then((user: UserSignedIn) => {
 				this.success = true;
 				this.user = user;

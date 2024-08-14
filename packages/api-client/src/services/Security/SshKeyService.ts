@@ -35,7 +35,7 @@ export class SshKeyService extends BaseService {
 	 */
 	public async listKeyTypes(): Promise<string[]> {
 		const response: AxiosResponse<string[]> =
-			await this.axiosInstance.get('/gateway/ssh/keyTypes');
+			await this.axiosInstance.get('/security/sshKeys/types');
 		return response.data;
 	}
 
@@ -45,7 +45,7 @@ export class SshKeyService extends BaseService {
 	 */
 	public async list(): Promise<SshKeyInfo[]> {
 		const response: AxiosResponse<SshKeyInfoRaw[]> =
-			await this.axiosInstance.get('/gateway/ssh/keys');
+			await this.axiosInstance.get('/security/sshKeys');
 		return response.data.map((key: SshKeyInfoRaw): SshKeyInfo => this.deserializeInfo(key));
 	}
 
@@ -56,7 +56,7 @@ export class SshKeyService extends BaseService {
 	 */
 	public async getKey(id: number): Promise<SshKeyInfo> {
 		const response: AxiosResponse<SshKeyInfoRaw> =
-			await this.axiosInstance.get(`/gateway/ssh/keys/${id.toString()}`);
+			await this.axiosInstance.get(`/security/sshKeys/${id.toString()}`);
 		return this.deserializeInfo(response.data);
 	}
 
@@ -65,7 +65,7 @@ export class SshKeyService extends BaseService {
 	 * @param {number} id Key ID
 	 */
 	public async deleteKey(id: number): Promise<void> {
-		await this.axiosInstance.delete(`/gateway/ssh/keys/${id.toString()}`);
+		await this.axiosInstance.delete(`/security/sshKeys/${id.toString()}`);
 	}
 
 	/**
@@ -73,7 +73,7 @@ export class SshKeyService extends BaseService {
 	 * @param {SshKeyCreate[]} keys SSh keys
 	 */
 	public async createSshKeys(keys: SshKeyCreate[]): Promise<void> {
-		await this.axiosInstance.post('/gateway/ssh/keys', keys);
+		await this.axiosInstance.post('/security/sshKeys', keys);
 	}
 
 	/**

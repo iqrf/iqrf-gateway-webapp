@@ -16,13 +16,12 @@
  */
 import {
 	AccountState,
-	UserBase,
+	UserBase, UserCredentials,
 	UserInfo,
 	UserRole,
 	UserSignedIn
 } from '@iqrf/iqrf-gateway-webapp-client/types';
 import * as Sentry from '@sentry/vue';
-import {AxiosError} from 'axios';
 import {jwtDecode, JwtPayload} from 'jwt-decode';
 import {ActionTree, GetterTree, MutationTree} from 'vuex';
 
@@ -43,15 +42,9 @@ const state: UserState = {
 };
 
 const actions: ActionTree<UserState, any> = {
-	updateInfo({commit}) {
-		return useApiClient().getAccountService().getInfo()
-			.then((user: UserInfo) => {
-				commit('SET_INFO', user);
-			})
-			.catch((error: AxiosError) => {
-				console.error(error);
-				return Promise.reject(error);
-			});
+	async updateInfo({commit}): Promise<void> {
+		const user: UserInfo = await useApiClient().getAccountService().getInfo();
+		commit('SET_INFO', user);
 	},
 	setJwt({commit}, user: UserSignedIn) {
 		const now = new Date();
@@ -67,25 +60,19 @@ const actions: ActionTree<UserState, any> = {
 		commit('SET_EXPIRATION', jwt.exp + diff);
 		commit('SIGN_IN', user);
 	},
-	signIn({dispatch}, credentials) {
-		return useApiClient().getAuthenticationService().signIn(credentials)
-			.then((user: UserSignedIn) => {
-				dispatch('setJwt', user);
-				const sentryUser: Sentry.User = {
-					username: user.username,
-					ip_address: '{{auto}}',
-				};
-				if (user.email !== null) {
-					sentryUser.email = user.email;
-				}
-				Sentry.setUser(sentryUser);
-			})
-			.catch((error: AxiosError) => {
-				console.error(error);
-				return Promise.reject(error);
-			});
+	async signIn({dispatch}, credentials: UserCredentials): Promise<void> {
+		const user: UserInfo = await useApiClient().getAccountService().signIn(credentials);
+		dispatch('setJwt', user);
+		const sentryUser: Sentry.User = {
+			username: user.username,
+			ip_address: '{{auto}}',
+		};
+		if (user.email !== null) {
+			sentryUser.email = user.email;
+		}
+		Sentry.setUser(sentryUser);
 	},
-	signOut({commit}) {
+	signOut({commit}): void {
 		Sentry.setUser(null);
 		commit('SIGN_OUT');
 	},

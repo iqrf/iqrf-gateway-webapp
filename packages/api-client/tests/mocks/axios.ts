@@ -22,7 +22,7 @@ import { Client } from '../../src';
 /**
  * @const {MockAdapter} mockedAxios Mocked axios module
  */
-export const mockedAxios: MockAdapter = new MockAdapter(axios);
+export const mockedAxios: MockAdapter = new MockAdapter(axios, { onNoMatch: 'throwException' });
 
 /**
  * @const {Client} mockedClient Client with mocked axios instance

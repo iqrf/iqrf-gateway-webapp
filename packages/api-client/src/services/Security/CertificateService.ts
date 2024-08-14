@@ -27,6 +27,7 @@ export class CertificateService extends BaseService {
 	/**
 	 * Retrieves certificate information
 	 * @return {Promise<CertificateInfo>} Certificate information
+	 * @deprecated
 	 */
 	public async getInfo(): Promise<CertificateInfo> {
 		const response: AxiosResponse<CertificateInfo> =
