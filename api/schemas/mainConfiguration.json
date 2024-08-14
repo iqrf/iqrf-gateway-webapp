@@ -1,6 +1,6 @@
 {
 	"$schema": "http://json-schema.org/draft-07/schema",
-	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/mainConfiguration.json",
+	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/mainConfiguration.json",
 	"type": "object",
 	"title": "Main IQRF GW Daemon configuration",
 	"additionalProperties": false,
@@ -61,7 +61,7 @@
 			"$id": "#/properties/components",
 			"type": "array",
 			"items": {
-				"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/daemonComponent.json"
+				"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/daemonComponent.json"
 			}
 		}
 	}

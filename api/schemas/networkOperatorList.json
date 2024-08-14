@@ -1,6 +1,6 @@
 {
 	"$schema": "http://json-schema.org/draft-07/schema",
-	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/networkOperatorListnetworkOperator.json",
+	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/networkOperatorListnetworkOperator.json",
 	"type": "array",
 	"title": "Network operator list schema",
 	"additionalItems": false,
@@ -16,6 +16,6 @@
 		]
 	],
 	"items": {
-		"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/networkOperator.json"
+		"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/networkOperator.json"
 	}
 }

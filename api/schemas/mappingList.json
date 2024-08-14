@@ -1,6 +1,6 @@
 {
 	"$schema": "http://json-schema.org/draft-07/schema",
-	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/mappingList.json",
+	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/mappingList.json",
 	"type": "array",
 	"title": "Mapping list schema",
 	"additionalItems": false,
@@ -33,6 +33,6 @@
 		]
 	],
 	"items": {
-		"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/mappingDetail.json"
+		"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/mappingDetail.json"
 	}
 }

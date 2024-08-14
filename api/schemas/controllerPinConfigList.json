@@ -1,6 +1,6 @@
 {
 	"$schema": "http://json-schema.org/draft-07/schema",
-	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/controllerPinConfigList.json",
+	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/controllerPinConfigList.json",
 	"type": "array",
 	"title": "API key list",
 	"additionalItems": false,
@@ -19,6 +19,6 @@
 		]
 	],
 	"items": {
-		"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/controllerPinConfig.json"
+		"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/controllerPinConfig.json"
 	}
 }

@@ -1,6 +1,6 @@
 {
 	"$schema": "http://json-schema.org/draft-07/schema",
-	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/daemonComponentDetail.json",
+	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/daemonComponentDetail.json",
 	"type": "object",
 	"title": "IQRF Gateway Daemon component detailed information",
 	"required": [
@@ -10,7 +10,7 @@
 	"properties": {
 		"configuration": {
 			"$id": "#/properties/configuration",
-			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/daemonComponent.json"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/daemonComponent.json"
 		},
 		"instances": {
 			"$id": "#/properties/instances",
@@ -30,7 +30,7 @@
 			"additionalItems": false,
 			"items": {
 				"$id": "#/properties/instances/items",
-				"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/daemonConfiguration.json"
+				"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/daemonConfiguration.json"
 			}
 		}
 	},

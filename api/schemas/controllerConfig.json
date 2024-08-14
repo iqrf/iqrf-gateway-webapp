@@ -1,6 +1,6 @@
 {
 	"$schema": "http://json-schema.org/draft-04/schema",
-	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/controllerConfig.json",
+	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/controllerConfig.json",
 	"type": "object",
 	"title": "IQRF Gateway Controller configuration",
 	"description": "Schema of the Controller configuration file.",

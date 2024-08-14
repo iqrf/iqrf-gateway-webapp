@@ -117,7 +117,7 @@ class RestApiSchemaValidator extends JsonSchemaManager {
 				'dir' => $this->daemonDirectories->getConfigurationSchemaDir(),
 			],
 			[
-				'baseUrl' => 'https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/',
+				'baseUrl' => 'https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/',
 				'dir' => $this->getBasePath(),
 			],
 		];

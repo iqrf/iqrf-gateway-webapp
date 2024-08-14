@@ -1,6 +1,6 @@
 {
 	"$schema": "http://json-schema.org/draft-07/schema",
-	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/controllerPinConfig.json",
+	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/controllerPinConfig.json",
 	"title": "Controller pin configuration",
 	"description": "IQRF Gateway Controller pin configuration for specific boards",
 	"type": "object",

@@ -95,233 +95,233 @@ components:
 						$ref: '#/components/schemas/Error'
 	schemas:
 		ApiKeyCreated:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/apiKeyCreated.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/apiKeyCreated.json
 			title: Security - Created API key
 		ApiKeyDetail:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/apiKeyDetail.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/apiKeyDetail.json
 			title: Security - API key detail
 		ApiKeyList:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/apiKeyList.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/apiKeyList.json
 			title: Security - API key list
 		ApiKeyModify:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/apiKeyModify.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/apiKeyModify.json
 			title: Security - Modify API key
 		AptConfiguration:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/aptConfiguration.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/aptConfiguration.json
 			title: Configuration - APT package manager
 		BridgeConfig:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/bridgeConfig.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/bridgeConfig.json
 			title: Configuration - IQRF Gateway InfluxDB bridge
 		CertificateDetail:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/certificate.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/certificate.json
 			title: Security - Certificate detail
 		CloudAws:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/cloudAws.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/cloudAws.json
 			title: Cloud services - AWS IoT configuration
 		CloudAzure:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/cloudAzure.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/cloudAzure.json
 			title: Cloud services - Azure IoT Hub configuration
 		CloudIbm:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/cloudIbm.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/cloudIbm.json
 			title: Cloud services - IBM Cloud IoT configuration
 		ControllerConfig:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/controllerConfig.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/controllerConfig.json
 			title: Configuration - IQRF Gateway Controller
 		ControllerPinConfig:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/controllerPinConfig.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/controllerPinConfig.json
 			title: Configuration - IQRF Gateway Controller - pin configuration
 		ControllerPinConfigList:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/controllerPinConfigList.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/controllerPinConfigList.json
 			title: Configuration - IQRF Gateway Controller - pin configuration list
 		DaemonComponent:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/daemonComponent.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/daemonComponent.json
 			title: Configuration - IQRF Gateway Daemon - component
 		DaemonComponentDetail:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/daemonComponentDetail.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/daemonComponentDetail.json
 			title: Configuration - IQRF Gateway Daemon - component detail
 		DaemonComponentEnabled:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/daemonComponentEnabled.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/daemonComponentEnabled.json
 			title: Configuration - IQRF Gateway Daemon - component enabled
 		DaemonConfiguration:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/daemonConfiguration.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/daemonConfiguration.json
 			title: Configuration - IQRF Gateway Daemon - configuration
 		DpaFile:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/dpaFile.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/dpaFile.json
 		DpaFileName:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/dpaFileName.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/dpaFileName.json
 		Error:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/error.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/error.json
 		Feature:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/feature.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/feature.json
 		FeatureList:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/featureList.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/featureList.json
 		GatewayBackup:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/gatewayBackup.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/gatewayBackup.json
 		GatewayBriefInfo:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/gatewayBriefInfo.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/gatewayBriefInfo.json
 			title: Gateway - Information - brief
 		GatewayInfo:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/gatewayInfo.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/gatewayInfo.json
 			title: Gateway - Information
 		GatewayPassword:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/gatewayPassword.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/gatewayPassword.json
 		Hostname:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/hostname.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/hostname.json
 			title: Gateway - Hostname
 		IqrfIdeMacros:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/iqrfIdeMacros.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/iqrfIdeMacros.json
 		IqrfInterfaces:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/iqrfInterfaces.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/iqrfInterfaces.json
 		IqrfOsDpaUpgrade:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/iqrfOsDpaUpgrade.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/iqrfOsDpaUpgrade.json
 		IqrfOsPatchDetail:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/iqrfOsPatchDetail.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/iqrfOsPatchDetail.json
 		IqrfOsPatchUpgrade:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/iqrfOsPatchUpgrade.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/iqrfOsPatchUpgrade.json
 		IqrfOsUpgradeList:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/iqrfOsUpgradeList.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/iqrfOsUpgradeList.json
 		IqrfRepositoryConfig:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/iqrfRepositoryConfig.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/iqrfRepositoryConfig.json
 		IqrfUploadedFile:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/iqrfUploadedFile.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/iqrfUploadedFile.json
 		InstallationCheck:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/installationCheck.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/installationCheck.json
 		Journal:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/journal.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/journal.json
 		JournalRecords:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/journalRecords.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/journalRecords.json
 		JsonSchema:
 			$ref: https://json-schema.org/draft-07/schema
 		LogServices:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/logServices.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/logServices.json
 		MailerConfiguration:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/mailer.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/mailer.json
 			title: Confuguration - Mailer
 		MainConfiguration:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/mainConfiguration.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/mainConfiguration.json
 		Mapping:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/mapping.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/mapping.json
 		MappingDetail:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/mappingDetail.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/mappingDetail.json
 		MappingList:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/mappingList.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/mappingList.json
 		MenderConfig:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/menderConfig.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/menderConfig.json
 		ModemList:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/modemList.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/modemList.json
 			title: Network - Cellular modem list
 		MonitConfig:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/monitConfig.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/monitConfig.json
 			title: Configuration - Monit
 		MonitCheckConfig:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/monitCheckConfig.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/monitCheckConfig.json
 			title: Configuration - Monit - check
 		NetworkConnection:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/networkConnection.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/networkConnection.json
 			title: Network - Connection
 		NetworkConnectionCreated:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/networkConnectionCreated.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/networkConnectionCreated.json
 			title: Network - Connection - created
 		NetworkConnections:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/networkConnections.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/networkConnections.json
 			title: Network - Connections
 		NetworkInterfaces:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/networkInterfaces.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/networkInterfaces.json
 			title: Network - Interfaces
 		NetworkConnectivityState:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/networkConnectivityState.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/networkConnectivityState.json
 			title: Network - Connectivity state
 		NetworkOperator:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/networkOperator.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/networkOperator.json
 			title: Network - Cellular operator
 		NetworkOperatorList:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/networkOperatorList.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/networkOperatorList.json
 			title: Network - Cellular operator list
 		NetworkWifiList:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/networkWifiList.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/networkWifiList.json
 			title: Network - Wi-Fi list
 		NetworkWireGuardKeys:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/networkWireGuardKeys.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/networkWireGuardKeys.json
 			title: Network - WireGuard - key pair
 		NetworkWireGuardTunnel:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/wireguardTunnel.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/wireguardTunnel.json
 			title: Network - WireGuard - tunnel configuration
 		NetworkWireGuardTunnels:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/networkWireGuardTunnels.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/networkWireGuardTunnels.json
 			title: Network - WireGuard - tunnels
 		OpenApiSpecification:
 			$ref: https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/schemas/v3.1/schema.json
 			title: OpenAPI 3.1 Specification
 		PasswordChange:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/passwordChange.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/passwordChange.json
 		PasswordRecovery:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/passwordRecovery.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/passwordRecovery.json
 		PasswordRecoveryRequest:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/passwordRecoveryRequest.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/passwordRecoveryRequest.json
 		PowerControl:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/powerControl.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/powerControl.json
 		Remount:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/remount.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/remount.json
 		SchedulerMessagings:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/schedulerMessagings.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/schedulerMessagings.json
 		ServiceList:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/serviceList.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/serviceList.json
 			title: Services - list
 		ServiceStatus:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/serviceStatus.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/serviceStatus.json
 			title: Services - status
 		SshKeyCreated:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/sshKeyCreated.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/sshKeyCreated.json
 			title: Security - SSH key - created
 		SshKeyDetail:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/sshKeyDetail.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/sshKeyDetail.json
 			title: Security - SSH key - detail
 		SshKeyList:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/sshKeyList.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/sshKeyList.json
 			title: Security - SSH key - list
 		SshKeysAdd:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/sshKeysAdd.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/sshKeysAdd.json
 			title: Security - SSH key - add
 		SshKeyTypes:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/sshKeyTypes.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/sshKeyTypes.json
 			title: Security - SSH key - types
 		Task:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/task.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/task.json
 			title: Configuration - IQRF Gateway Daemon - scheduled task
 		TaskList:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/taskList.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/taskList.json
 			title: Configuration - IQRF Gateway Daemon - scheduled task list
 		TimeGet:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/timeGet.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/timeGet.json
 		TimeSet:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/timeSet.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/timeSet.json
 		TimezoneList:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/timezoneList.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/timezoneList.json
 		TimezoneSet:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/timezoneSet.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/timezoneSet.json
 		TranslatorConfig:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/translatorConfig.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/translatorConfig.json
 		TuptimeStats:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/tuptimeStats.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/tuptimeStats.json
 		UploaderFile:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/uploaderFile.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/uploaderFile.json
 		UserCreate:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/userCreate.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/userCreate.json
 		UserDetail:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/userDetail.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/userDetail.json
 		UserEdit:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/userEdit.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/userEdit.json
 		UserList:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/userList.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/userList.json
 		UserSignIn:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/userSignIn.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/userSignIn.json
 		UserToken:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/userToken.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/userToken.json
 		VersionDaemon:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/versionDaemon.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/versionDaemon.json
 			title: Version - IQRF Gateway Daemon
 		VersionWebapp:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/versionWebapp.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/versionWebapp.json
 			title: Version - IQRF Gateway Webapp
 	securitySchemes:
 		bearerAuth:

@@ -1,6 +1,6 @@
 {
 	"$schema": "http://json-schema.org/draft-04/schema",
-	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/translatorConfig.json",
+	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/translatorConfig.json",
 	"type": "object",
 	"title": "IQRF Gateway Translator configuration",
 	"description": "Schema of the Translator configuration file.",

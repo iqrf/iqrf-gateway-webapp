@@ -1,6 +1,6 @@
 {
 	"$schema": "http://json-schema.org/draft-07/schema",
-	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/featureList.json",
+	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/featureList.json",
 	"type": "object",
 	"title": "Optional features configuration",
 	"required": [
@@ -29,67 +29,67 @@
 	"additionalProperties": false,
 	"properties": {
 		"apcupsd": {
-			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/apcupsd.json"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/apcupsd.json"
 		},
 		"docs": {
-			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/docs.json"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/docs.json"
 		},
 		"gatewayPass": {
-			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/gatewayPass.json"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/gatewayPass.json"
 		},
 		"grafana": {
-			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/grafana.json"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/grafana.json"
 		},
 		"iqaros": {
-			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/iqaros.json"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/iqaros.json"
 		},
 		"iqrfGatewayController": {
-			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/iqrfGatewayController.json"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/iqrfGatewayController.json"
 		},
 		"iqrfGatewayInfluxdbBridge": {
-			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/iqrfGatewayInfluxdbBridge.json"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/iqrfGatewayInfluxdbBridge.json"
 		},
 		"iqrfGatewayTranslator": {
-			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/iqrfGatewayTranslator.json"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/iqrfGatewayTranslator.json"
 		},
 		"iqrfRepository": {
-			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/iqrfRepository.json"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/iqrfRepository.json"
 		},
 		"journal": {
-			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/journal.json"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/journal.json"
 		},
 		"mender": {
-			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/mender.json"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/mender.json"
 		},
 		"monit": {
-			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/monit.json"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/monit.json"
 		},
 		"networkManager": {
-			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/networkManager.json"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/networkManager.json"
 		},
 		"nodeRed": {
-			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/nodeRed.json"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/nodeRed.json"
 		},
 		"remount": {
-			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/remount.json"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/remount.json"
 		},
 		"ssh": {
-			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/ssh.json"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/ssh.json"
 		},
 		"supervisord": {
-			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/supervisord.json"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/supervisord.json"
 		},
 		"trUpload": {
-			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/trUpload.json"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/trUpload.json"
 		},
 		"unattendedUpgrades": {
-			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/unattendedUpgrades.json"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/unattendedUpgrades.json"
 		},
 		"updater": {
-			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/updater.json"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/updater.json"
 		},
 		"versionChecker": {
-			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/versionChecker.json"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/versionChecker.json"
 		}
 	}
 }

@@ -1,6 +1,6 @@
 {
 	"$schema": "http://json-schema.org/draft-07/schema",
-	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/dpaFile.json",
+	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/dpaFile.json",
 	"type": "object",
 	"title": "DPA plug-in file schema",
 	"description": "Meta information used to retrieve corresponding DPA file.",

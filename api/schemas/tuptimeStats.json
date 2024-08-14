@@ -1,6 +1,6 @@
 {
 	"$schema": "http://json-schema.org/draft-07/schema",
-	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/tuptimeStats.json",
+	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/tuptimeStats.json",
 	"type": "array",
 	"title": "Gateway uptime statistics",
 	"additionalItems": false,
