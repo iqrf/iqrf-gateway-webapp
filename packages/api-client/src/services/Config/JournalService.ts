@@ -16,10 +16,7 @@
 
 import { type AxiosResponse } from 'axios';
 
-import {
-	type JournalConfig,
-	type JournalRecords,
-} from '../../types/Config';
+import { type JournalConfig } from '../../types/Config';
 import { BaseService } from '../BaseService';
 
 /**
@@ -33,7 +30,7 @@ export class JournalService extends BaseService {
 	 */
 	public async getConfig(): Promise<JournalConfig> {
 		const response: AxiosResponse<JournalConfig> =
-			await this.axiosInstance.get('/gateway/journal/config');
+			await this.axiosInstance.get('/config/journal');
 		return response.data;
 	}
 
@@ -42,24 +39,7 @@ export class JournalService extends BaseService {
 	 * @param {JournalConfig} config Journal configuration
 	 */
 	public async updateConfig(config: JournalConfig): Promise<void> {
-		await this.axiosInstance.put('/gateway/journal/config', config);
+		await this.axiosInstance.put('/config/journal', config);
 	}
 
-	/**
-	 * Retrieves journal records
-	 * @param {number} count Number of records to retrieve
-	 * @param {string|null} cursor Cursor of first record
-	 * @return {Promise<JournalRecords>} Journal records
-	 */
-	public async getRecords(count: number, cursor: string | null = null): Promise<JournalRecords> {
-		const params: Record<string, number | string> = {
-			count: count,
-		};
-		if (cursor) {
-			params.cursor = cursor;
-		}
-		const response: AxiosResponse<JournalRecords> =
-			await this.axiosInstance.get('/gateway/journal', { params: params });
-		return response.data;
-	}
 }

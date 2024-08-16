@@ -17,6 +17,7 @@
 import { type AxiosResponse } from 'axios';
 
 import { FileResponse } from '../../types';
+import { type JournalRecords } from '../../types/Gateway';
 import { BaseService } from '../BaseService';
 
 /**
@@ -53,6 +54,24 @@ export class LogService extends BaseService {
 		const response: AxiosResponse<Blob> =
 			await this.apiClient.getAxiosInstance().get('/gateway/logs/export', { responseType: 'blob' });
 		return FileResponse.fromAxiosResponse(response);
+	}
+
+	/**
+	 * Retrieves journal records
+	 * @param {number} count Number of records to retrieve
+	 * @param {string|null} cursor Cursor of first record
+	 * @return {Promise<JournalRecords>} Journal records
+	 */
+	public async getJournalRecords(count: number, cursor: string | null = null): Promise<JournalRecords> {
+		const params: Record<string, number | string> = {
+			count: count,
+		};
+		if (cursor) {
+			params.cursor = cursor;
+		}
+		const response: AxiosResponse<JournalRecords> =
+			await this.axiosInstance.get('/gateway/journal', { params: params });
+		return response.data;
 	}
 
 }

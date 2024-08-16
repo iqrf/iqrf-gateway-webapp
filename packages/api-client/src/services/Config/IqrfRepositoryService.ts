@@ -30,7 +30,7 @@ export class IqrfRepositoryService extends BaseService {
 	 */
 	public async getConfig(): Promise<IqrfRepositoryConfig> {
 		const response: AxiosResponse<IqrfRepositoryConfig> =
-			await this.axiosInstance.get('/config/iqrf-repository');
+			await this.axiosInstance.get('/config/iqrfRepository');
 		return response.data;
 	}
 
@@ -39,7 +39,7 @@ export class IqrfRepositoryService extends BaseService {
 	 * @param {IqrfRepositoryConfig} config IQRF repository configuration
 	 */
 	public async updateConfig(config: IqrfRepositoryConfig): Promise<void> {
-		await this.axiosInstance.put('/config/iqrf-repository', config);
+		await this.axiosInstance.put('/config/iqrfRepository', config);
 	}
 
 }

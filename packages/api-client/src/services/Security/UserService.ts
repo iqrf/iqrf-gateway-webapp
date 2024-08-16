@@ -21,10 +21,9 @@ import {
 	type UserCreate,
 	type UserEdit,
 	type UserInfo,
-} from '../types';
-import { UserUtils } from '../utils';
-
-import { BaseService } from './BaseService';
+} from '../../types';
+import { UserUtils } from '../../utils';
+import { BaseService } from '../BaseService';
 
 /**
  * User service

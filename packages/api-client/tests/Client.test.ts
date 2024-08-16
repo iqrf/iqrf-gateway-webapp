@@ -24,7 +24,6 @@ import {
 	InstallationService,
 	OpenApiService,
 	ServiceService,
-	UserService,
 	VersionService,
 } from '../src/services';
 import { CloudServices } from '../src/services/Cloud';
@@ -162,11 +161,6 @@ describe('Client', (): void => {
 	it('returns ServiceService instance', (): void => {
 		expect.assertions(1);
 		expect(client.getServiceService()).toBeInstanceOf(ServiceService);
-	});
-
-	it('returns UserService instance', (): void => {
-		expect.assertions(1);
-		expect(client.getUserService()).toBeInstanceOf(UserService);
 	});
 
 	it('returns VersionService instance', (): void => {

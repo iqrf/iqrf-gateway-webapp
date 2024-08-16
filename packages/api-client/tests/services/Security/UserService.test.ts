@@ -16,15 +16,15 @@
 
 import { beforeEach, describe, expect, it } from 'vitest';
 
-import { UserService } from '../../src/services';
+import { UserService } from '../../../src/services/Security';
 import {
 	AccountState,
 	type EmailSentResponse,
 	type UserInfo,
 	UserLanguage,
 	UserRole,
-} from '../../src/types';
-import { mockedAxios, mockedClient } from '../mocks/axios';
+} from '../../../src/types';
+import { mockedAxios, mockedClient } from '../../mocks/axios';
 
 describe('UserService', (): void => {
 

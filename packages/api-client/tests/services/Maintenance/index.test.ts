@@ -14,18 +14,25 @@
  * limitations under the License.
  */
 
-export * from './AccountService';
-export * from './BaseService';
-export * from './FeatureService';
-export * from './InstallationService';
-export * from './OpenApiService';
-export * from './ServiceService';
-export * from './VersionService';
+import { describe, expect, it } from 'vitest';
 
-export * as Cloud from './Cloud';
-export * as Config from './Config';
-export * as Gateway from './Gateway';
-export * as Iqrf from './Iqrf';
-export * as Maintenance from './Maintenance';
-export * as Network from './Network';
-export * as Security from './Security';
+import {
+	BackupService,
+	MaintenanceServices,
+} from '../../../src/services/Maintenance';
+import { mockedClient } from '../../mocks/axios';
+
+describe('MaintenanceServices', (): void => {
+
+	/**
+	 * @var {MaintenanceServices} services Maintenance services
+	 */
+	const services: MaintenanceServices = new MaintenanceServices(mockedClient);
+
+	it('returns backup service instance', (): void => {
+		expect.assertions(1);
+		expect(services.getBackupService())
+			.toBeInstanceOf(BackupService);
+	});
+
+});

@@ -28,7 +28,6 @@ import {
 	InstallationService,
 	OpenApiService,
 	ServiceService,
-	UserService,
 	VersionService,
 } from './services';
 import { CloudServices } from './services/Cloud';
@@ -255,14 +254,6 @@ export class Client {
 	 */
 	public getServiceService(): ServiceService {
 		return new ServiceService(this);
-	}
-
-	/**
-	 * Returns User service
-	 * @return {UserService} User service
-	 */
-	public getUserService(): UserService {
-		return new UserService(this);
 	}
 
 	/**

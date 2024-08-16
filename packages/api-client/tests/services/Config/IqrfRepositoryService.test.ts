@@ -40,7 +40,7 @@ describe('IqrfRepositoryService', (): void => {
 				'password': 'password',
 			},
 		};
-		mockedAxios.onGet('/config/iqrf-repository')
+		mockedAxios.onGet('/config/iqrfRepository')
 			.reply(200, config);
 		const actual: IqrfRepositoryConfig = await service.getConfig();
 		expect(actual).toStrictEqual(config);
@@ -55,7 +55,7 @@ describe('IqrfRepositoryService', (): void => {
 				'password': null,
 			},
 		};
-		mockedAxios.onPut('/config/iqrf-repository', config)
+		mockedAxios.onPut('/config/iqrfRepository', config)
 			.reply(200);
 		await service.updateConfig(config);
 	});

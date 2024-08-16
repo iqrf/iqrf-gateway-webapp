@@ -18,8 +18,10 @@ import { describe, expect, it } from 'vitest';
 
 import {
 	ApiKeyService,
+	CertificateService,
 	SecurityServices,
 	SshKeyService,
+	UserService,
 } from '../../../src/services/Security';
 import { mockedClient } from '../../mocks/axios';
 
@@ -36,10 +38,22 @@ describe('SecurityServices', (): void => {
 			.toBeInstanceOf(ApiKeyService);
 	});
 
+	it('returns TLS certificate service instance', (): void => {
+		expect.assertions(1);
+		expect(services.getCertificateService())
+			.toBeInstanceOf(CertificateService);
+	});
+
 	it('returns SSH key service instance', (): void => {
 		expect.assertions(1);
 		expect(services.getSshKeyService())
 			.toBeInstanceOf(SshKeyService);
+	});
+
+	it('returns user management service instance', (): void => {
+		expect.assertions(1);
+		expect(services.getUserService())
+			.toBeInstanceOf(UserService);
 	});
 
 });

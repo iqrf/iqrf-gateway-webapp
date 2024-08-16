@@ -14,25 +14,11 @@
  * limitations under the License.
  */
 
-import { describe, expect, it } from 'vitest';
-
-import {
-	BackupService,
-	MaintenanceServices,
-} from '../../src/services/Maintenance';
-import { mockedClient } from '../mocks/axios';
-
-describe('MaintenanceServices', (): void => {
-
-	/**
-	 * @var {MaintenanceServices} services Maintenance services
-	 */
-	const services: MaintenanceServices = new MaintenanceServices(mockedClient);
-
-	it('returns backup service instance', (): void => {
-		expect.assertions(1);
-		expect(services.getBackupService())
-			.toBeInstanceOf(BackupService);
-	});
-
-});
+export interface JournalRecords {
+	/// Cursor of the last record
+	endCursor: string,
+	/// Journal records
+	records: string[];
+	/// Cursor of the first record
+	startCursor: string
+}

@@ -54,7 +54,7 @@ export class InfoService extends BaseService {
 	 */
 	public async getDiagnostics(): Promise<FileResponse<Blob>> {
 		const response: AxiosResponse<Blob> =
-			await this.apiClient.getAxiosInstance().get('/diagnostics', { responseType: 'blob' });
+			await this.apiClient.getAxiosInstance().get('/gateway/diagnostics', { responseType: 'blob' });
 		return FileResponse.fromAxiosResponse(response);
 	}
 

@@ -19,10 +19,12 @@ import { BaseService } from '../BaseService';
 import { ApiKeyService } from './ApiKeyService';
 import { CertificateService } from './CertificateService';
 import { SshKeyService } from './SshKeyService';
+import { UserService } from './UserService';
 
 export * from './ApiKeyService';
 export * from './CertificateService';
 export * from './SshKeyService';
+export * from './UserService';
 
 /**
  * Security services
@@ -51,6 +53,14 @@ export class SecurityServices extends BaseService {
 	 */
 	public getSshKeyService(): SshKeyService {
 		return new SshKeyService(this.apiClient);
+	}
+
+	/**
+	 * Returns user management service
+	 * @return {UserService} User management service
+	 */
+	public getUserService(): UserService {
+		return new UserService(this.apiClient);
 	}
 
 }

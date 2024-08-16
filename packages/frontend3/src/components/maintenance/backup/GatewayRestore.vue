@@ -80,7 +80,7 @@ async function onSubmit(): Promise<void> {
 	componentState.value = ComponentState.Saving;
 	service.restore(file)
 		.then((response: PowerActionResponse) => {
-			const time = new Date(response.timestamp * 1_000).toLocaleTimeString();
+			const time = response.timestamp.toJSDate().toLocaleTimeString();
 			toast.success(
 				i18n.t('components.maintenance.backup.restore.messages.save.success', { time: time }),
 			);

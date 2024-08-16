@@ -16,5 +16,6 @@
 
 export * from './Hostname';
 export * from './Info';
+export * from './Log';
 export * from './Power';
 export * from './Time';

@@ -21,8 +21,8 @@ import {
 	InterfacePortsService,
 	IqrfServices,
 	UpgradeService,
-} from '../../src/services/Iqrf';
-import { mockedClient } from '../mocks/axios';
+} from '../../../src/services/Iqrf';
+import { mockedClient } from '../../mocks/axios';
 
 describe('IqrfServices', (): void => {
 

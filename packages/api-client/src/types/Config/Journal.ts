@@ -79,13 +79,3 @@ export interface JournalConfig {
 	/// Time-based log rotation
 	timeRotation: JournalTimeRotation;
 }
-
-export interface JournalRecords {
-	/// Cursor of the last record
-	endCursor: string,
-	/// Journal records
-	records: string[];
-	/// Cursor of the first record
-	startCursor: string
-}
-

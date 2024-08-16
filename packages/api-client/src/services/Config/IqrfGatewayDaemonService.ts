@@ -116,7 +116,7 @@ export class IqrfGatewayDaemonService extends BaseService {
 	public async listMappings(interfaceType: MappingType | null = null): Promise<IqrfGatewayDaemonMapping[]> {
 		const params = interfaceType ? { interface: interfaceType } : {};
 		const response: AxiosResponse<IqrfGatewayDaemonMapping[]> =
-			await this.axiosInstance.get('/mappings', { params: params });
+			await this.axiosInstance.get('/config/daemon/mappings', { params: params });
 		return response.data;
 	}
 
@@ -127,7 +127,7 @@ export class IqrfGatewayDaemonService extends BaseService {
 	 */
 	public async getMapping(id: number): Promise<IqrfGatewayDaemonMapping> {
 		const response: AxiosResponse<IqrfGatewayDaemonMapping> =
-			await this.axiosInstance.get(`/mappings/${id.toString()}`);
+			await this.axiosInstance.get(`/config/daemon/mappings/${id.toString()}`);
 		return response.data;
 	}
 
@@ -137,7 +137,7 @@ export class IqrfGatewayDaemonService extends BaseService {
 	 */
 	public async createMapping(mapping: IqrfGatewayDaemonMapping): Promise<void> {
 		delete mapping.id;
-		await this.axiosInstance.post('/mappings', mapping);
+		await this.axiosInstance.post('/config/daemon/mappings', mapping);
 	}
 
 	/**
@@ -147,7 +147,7 @@ export class IqrfGatewayDaemonService extends BaseService {
 	 */
 	public async updateMapping(id: number, mapping: IqrfGatewayDaemonMapping): Promise<void> {
 		delete mapping.id;
-		await this.axiosInstance.put(`/mappings/${id.toString()}`, mapping);
+		await this.axiosInstance.put(`/config/daemon/mappings/${id.toString()}`, mapping);
 	}
 
 	/**
@@ -155,7 +155,7 @@ export class IqrfGatewayDaemonService extends BaseService {
 	 * @param {number} id IQRF Gateway Daemon mapping ID
 	 */
 	public async deleteMapping(id: number): Promise<void> {
-		await this.axiosInstance.delete(`/mappings/${id.toString()}`);
+		await this.axiosInstance.delete(`/config/daemon/mappings/${id.toString()}`);
 	}
 
 	/**
@@ -163,7 +163,7 @@ export class IqrfGatewayDaemonService extends BaseService {
 	 * @param {File} data Scheduler task JSON file or ZIP archive
 	 */
 	public async importScheduler(data: File): Promise<void> {
-		await this.axiosInstance.post('/scheduler/import', data, { headers: { 'Content-Type': data.type } });
+		await this.axiosInstance.post('/config/daemon/scheduler/import', data, { headers: { 'Content-Type': data.type } });
 	}
 
 	/**
@@ -172,7 +172,7 @@ export class IqrfGatewayDaemonService extends BaseService {
 	 */
 	public async exportScheduler(): Promise<FileResponse<Blob>> {
 		const response: AxiosResponse<Blob> =
-			await this.axiosInstance.get('/scheduler/export', { responseType: 'blob' });
+			await this.axiosInstance.get('/config/daemon/scheduler/export', { responseType: 'blob' });
 		return FileResponse.fromAxiosResponse(response, 'iqrf-gateway-scheduler.zip');
 	}
 
@@ -182,7 +182,7 @@ export class IqrfGatewayDaemonService extends BaseService {
 	 */
 	public async getSchedulerMessagings(): Promise<IqrfGatewayDaemonSchedulerMessagings> {
 		const response: AxiosResponse<IqrfGatewayDaemonSchedulerMessagings> =
-			await this.axiosInstance.get('/scheduler/messagings');
+			await this.axiosInstance.get('/config/daemon/scheduler/messagings');
 		return response.data;
 	}
 
