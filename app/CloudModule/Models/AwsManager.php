@@ -94,7 +94,6 @@ class AwsManager implements IManager {
 			'TopicResponse' => 'Iqrf/DpaResponse',
 			'User' => '',
 			'Password' => '',
-			'EnabledSSL' => true,
 			'KeepAliveInterval' => 20,
 			'ConnectTimeout' => 5,
 			'MinReconnect' => 1,

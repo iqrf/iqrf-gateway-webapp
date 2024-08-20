@@ -48,7 +48,6 @@ export interface IMqttInstance extends ComponentInstanceBase {
 	ConnectTimeout: number;
 	EnableServerCertAuth: boolean;
 	EnabledCipherSuites: string;
-	EnabledSSL: boolean;
 	KeepAliveInterval: number;
 	KeyStore: string;
 	MaxReconnect: number;

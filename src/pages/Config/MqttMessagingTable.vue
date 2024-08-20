@@ -47,19 +47,9 @@ limitations under the License.
 					</template>
 					<template #EnabledSSL='{item}'>
 						<td>
-							<CDropdown
-								:color='item.EnabledSSL ? "success" : "danger"'
-								:toggler-text='$t(`states.${item.EnabledSSL ? "enabled" : "disabled"}`)'
-								placement='top-start'
-								size='sm'
-							>
-								<CDropdownItem @click='changeEnabledSSL(item, true)'>
-									{{ $t('states.enabled') }}
-								</CDropdownItem>
-								<CDropdownItem @click='changeEnabledSSL(item, false)'>
-									{{ $t('states.disabled') }}
-								</CDropdownItem>
-							</CDropdown>
+							<CButton :color='hasTls(item) ? "success" : "danger"' size='sm'>
+								{{ hasTls(item) ? $t('states.enabled') : $t('states.disabled') }}
+							</CButton>
 						</td>
 					</template>
 					<template #acceptAsyncMsg='{item}'>
@@ -122,7 +112,13 @@ import {
 } from '@coreui/vue/src';
 import MessagingDeleteModal from '@/components/Config/Messagings/MessagingDeleteModal.vue';
 
-import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
+import {
+	cilCheckCircle,
+	cilPencil,
+	cilPlus,
+	cilTrash,
+	cilXCircle
+} from '@coreui/icons';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {MessagingTypes} from '@/enums/Config/Messagings';
 
@@ -146,9 +142,11 @@ import {IMqttInstance} from '@/interfaces/Config/Messaging';
 		MessagingDeleteModal,
 	},
 	data: () => ({
+		cilCheckCircle,
 		cilPencil,
 		cilPlus,
 		cilTrash,
+		cilXCircle,
 		MessagingTypes,
 	}),
 	metaInfo: {
@@ -237,15 +235,14 @@ export default class MqttMessagingTable extends Vue {
 	}
 
 	/**
-	 * Updates SSL configuration of MQTT messaging component instance
+	 * Checks if MQTT messaging instance uses TLS
 	 * @param {IMqttInstance} instance MQTT messaging instance
-	 * @param {boolean} enabledSsl SSL setting
+	 * @return {boolean} True if instance uses TLS, otherwise false
 	 */
-	private changeEnabledSSL(instance: IMqttInstance, enabledSsl: boolean) : void{
-		if (instance.EnabledSSL === enabledSsl) {
-			return;
-		}
-		this.edit(instance, {EnabledSSL: enabledSsl});
+	private hasTls(instance: IMqttInstance): boolean {
+		return instance.BrokerAddr.startsWith('ssl://') ||
+			instance.BrokerAddr.startsWith('mqtts://') ||
+			instance.BrokerAddr.startsWith('wss://');
 	}
 
 	/**

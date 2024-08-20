@@ -241,20 +241,7 @@ limitations under the License.
 								/>
 							</CCol>
 						</CRow>
-						<div class='form-group'>
-							<legend>
-								{{ $t('config.daemon.messagings.tlsTitle') }}
-							</legend>
-							<CSwitch
-								color='primary'
-								size='lg'
-								shape='pill'
-								label-on='ON'
-								label-off='OFF'
-								:checked.sync='configuration.EnabledSSL'
-							/>
-						</div>
-						<CRow v-if='configuration.EnabledSSL'>
+						<CRow v-if='hasTls'>
 							<CCol md='6'>
 								<CInput
 									v-model='configuration.TrustStore'
@@ -370,7 +357,6 @@ export default class MqttMessagingForm extends Vue {
 		TopicResponse: '',
 		User: '',
 		Password: '',
-		EnabledSSL: false,
 		KeepAliveInterval: 20,
 		ConnectTimeout: 5,
 		MinReconnect: 1,
@@ -433,6 +419,15 @@ export default class MqttMessagingForm extends Vue {
 	get submitButton(): string {
 		return this.$route.path === '/config/daemon/messagings/mqtt/add' ?
 			this.$t('forms.add').toString() : this.$t('forms.edit').toString();
+	}
+
+	/**
+	 * Checks if MQTT messaging instance uses TLS
+	 */
+	get hasTls(): boolean {
+		return this.configuration.BrokerAddr.startsWith('ssl://') ||
+			this.configuration.BrokerAddr.startsWith('mqtts://') ||
+			this.configuration.BrokerAddr.startsWith('wss://');
 	}
 
 	/**

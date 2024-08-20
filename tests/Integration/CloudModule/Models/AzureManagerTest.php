@@ -66,7 +66,6 @@ final class AzureManagerTest extends CloudIntegrationTestCase {
 			'TopicResponse' => 'devices/IQRFGW/messages/events/',
 			'User' => 'iqrf.azure-devices.net/IQRFGW',
 			'Password' => 'generatedSasToken',
-			'EnabledSSL' => true,
 			'KeepAliveInterval' => 20,
 			'ConnectTimeout' => 5,
 			'MinReconnect' => 1,

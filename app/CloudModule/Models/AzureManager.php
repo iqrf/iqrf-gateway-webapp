@@ -67,7 +67,6 @@ class AzureManager implements IManager {
 			'TopicResponse' => 'devices/' . $data['DeviceId'] . '/messages/events/',
 			'User' => $data['HostName'] . '/' . $data['DeviceId'],
 			'Password' => $token,
-			'EnabledSSL' => true,
 			'KeepAliveInterval' => 20,
 			'ConnectTimeout' => 5,
 			'MinReconnect' => 1,

@@ -180,7 +180,6 @@ final class GenericManagerTest extends JsonConfigTestCase {
 			'TopicResponse' => 'Iqrf/DpaResponse',
 			'User' => '',
 			'Password' => '',
-			'EnabledSSL' => false,
 			'KeepAliveInterval' => 20,
 			'ConnectTimeout' => 5,
 			'MinReconnect' => 1,
