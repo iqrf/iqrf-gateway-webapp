@@ -10,16 +10,44 @@
 			"title": "iqrf::AutonetworkService"
 		},
 		{
+			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__BackupService.json",
+			"title": "iqrf::BackupService"
+		},
+		{
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__BondNodeLocalService.json",
 			"title": "iqrf::BondNodeLocalService"
+		},
+		{
+			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__BufferedMqttMessaging.json",
+			"title": "iqrf::BufferedMqttMessaging"
+		},
+		{
+			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__DpaHopsService.json",
+			"title": "iqrf::DpaHopsService"
+		},
+		{
+			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__DpaValueService.json",
+			"title": "iqrf::DpaValueService"
 		},
 		{
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__EnumerateDeviceService.json",
 			"title": "iqrf::EnumerateDeviceService"
 		},
 		{
+			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__FrcParamsService.json",
+			"title": "iqrf::FrcParamsService"
+		},
+		{
+			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__FrcResponseTime.json",
+			"title": "iqrf::FrcResponseTime"
+		},
+		{
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__IdeCounterpart.json",
 			"title": "iqrf::IdeCounterpart"
+		},
+		{
+			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__IqrfBackup.json",
+			"title": "iqrf::IqrfBackup"
 		},
 		{
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__IqrfCdc.json",
@@ -34,8 +62,16 @@
 			"title": "iqrf::IqrfInfo"
 		},
 		{
+			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__IqrfRestore.json",
+			"title": "iqrf::IqrfRestore"
+		},
+		{
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__IqrfSpi.json",
 			"title": "iqrf::IqrfSpi"
+		},
+		{
+			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__IqrfTcp.json",
+			"title": "iqrf::IqrfTcp"
 		},
 		{
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__IqrfUart.json",
@@ -74,6 +110,10 @@
 			"title": "iqrf::JsonSplitter"
 		},
 		{
+			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__MaintenanceService.json",
+			"title": "iqrf::MaintenanceService"
+		},
+		{
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__MonitorService.json",
 			"title": "iqrf::MonitorService"
 		},
@@ -90,20 +130,40 @@
 			"title": "iqrf::OtaUploadService"
 		},
 		{
+			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__PingService.json",
+			"title": "iqrf::PingService"
+		},
+		{
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__ReadTrConfService.json",
 			"title": "iqrf::ReadTrConfService"
 		},
 		{
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__RemoveBondService.json",
-			"title": "iqrf::RemoveBond"
+			"title": "iqrf::RemoveBondService"
+		},
+		{
+			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__RemoveBondService.json",
+			"title": "iqrf::RestartService"
+		},
+		{
+			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__Restore.json",
+			"title": "iqrf::RestoreService"
 		},
 		{
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__Scheduler.json",
 			"title": "iqrf::Scheduler"
 		},
 		{
+			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__SchedulerMessaging.json",
+			"title": "iqrf::SchedulerMessaging"
+		},
+		{
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__SmartConnectService.json",
 			"title": "iqrf::SmartConnectService"
+		},
+		{
+			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__SyslogLogger.json",
+			"title": "iqrf::SyslogLogger"
 		},
 		{
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__UdpMessaging.json",
@@ -128,6 +188,10 @@
 		{
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__shape__LauncherService.json",
 			"title": "shape::LauncherService"
+		},
+		{
+			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__shape__MqttService.json",
+			"title": "shape::MqttService"
 		},
 		{
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__shape__TraceFileService.json",

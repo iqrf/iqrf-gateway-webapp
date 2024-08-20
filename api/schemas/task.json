@@ -206,6 +206,9 @@
 					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/infoDaemon_OrphanedMids-request-1-0-0.json"
 				},
 				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/infoDaemon_Reset-request-1-0-0.json"
+				},
+				{
 					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/infoDaemon_SetMidMetaData-request-1-0-0.json"
 				},
 				{
@@ -215,19 +218,58 @@
 					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqmeshNetwork_AutoNetwork-request-1-0-0.json"
 				},
 				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqmeshNetwork_Backup-request-1-0-0.json"
+				},
+				{
 					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqmeshNetwork_BondNodeLocal-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqmeshNetwork_DpaHops-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqmeshNetwork_DpaValue-request-1-0-0.json"
 				},
 				{
 					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqmeshNetwork_EnumerateDevice-request-1-0-0.json"
 				},
 				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqmeshNetwork_FrcParams-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqmeshNetwork_MaintenanceDuplicatedAddresses-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqmeshNetwork_MaintenanceFrcResponseTime-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqmeshNetwork_MaintenanceInconsistentMIDsInCoord-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqmeshNetwork_MaintenanceTestRF-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqmeshNetwork_MaintenanceUselessPrebondedNodes-request-1-0-0.json"
+				},
+				{
 					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqmeshNetwork_OtaUpload-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqmeshNetwork_Ping-request-1-0-0.json"
 				},
 				{
 					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqmeshNetwork_ReadTrConf-request-1-0-0.json"
 				},
 				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqmeshNetwork_RemoveBondOnlyInC-request-1-0-0.json"
+				},
+				{
 					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqmeshNetwork_RemoveBond-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqmeshNetwork_Restart-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqmeshNetwork_Restore-request-1-0-0.json"
 				},
 				{
 					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqmeshNetwork_SmartConnect-request-1-0-0.json"
@@ -302,7 +344,7 @@
 					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedCoordinator_SetHops-request-1-0-0.json"
 				},
 				{
-					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedCoordinator_SetMid-request-1-0-0.json"
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedCoordinator_SetMID-request-1-0-0.json"
 				},
 				{
 					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedCoordinator_SmartConnect-request-1-0-0.json"
@@ -359,6 +401,12 @@
 					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedLedg_Pulse-request-1-0-0.json"
 				},
 				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedLedg_SetOff-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedLedg_SetOn-request-1-0-0.json"
+				},
+				{
 					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedLedg_Set-request-1-0-0.json"
 				},
 				{
@@ -369,6 +417,12 @@
 				},
 				{
 					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedLedr_Pulse-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedLedr_SetOff-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedLedr_SetOn-request-1-0-0.json"
 				},
 				{
 					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedLedr_Set-request-1-0-0.json"
@@ -473,7 +527,22 @@
 					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfLight_Enumerate-request-1-0-0.json"
 				},
 				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfLight_FrcLaiRead-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfLight_FrcLdiSend-request-1-0-0.json"
+				},
+				{
 					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfLight_IncrementPower-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfLight_SendLdiCommandsAsync-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfLight_SendLdiCommands-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfLight_SetLai-request-1-0-0.json"
 				},
 				{
 					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfLight_SetPower-request-1-0-0.json"
