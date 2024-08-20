@@ -1,10 +1,30 @@
-iqrf-gateway-webapp (2.6.0~alpha~1.gbp459461) UNRELEASED; urgency=medium
+iqrf-gateway-webapp (2.6.0~beta1) stable; urgency=medium
 
-  ** SNAPSHOT build @4594614e4f49ec7e634af95c8d9d0642bb3c301c **
+  [ Roman Ondráček ]
+  * Maintenance: fix Mender client configuration
+  * NPM: update dependencies, fix TypeScript config
+  * PHPStan: update configuration
+  * API: load JSON schemas from the filesystem
+  * Config: add Syslog logging configuration
+  * NPM: update dependencies
+  * Composer: update dependencies
 
-	* UNRELEASED
+  [ Karel Hanák ]
+  * Prepare for version 2.6.0-alpha
+  * support for new Light standard, removed DALI components
 
- -- Karel Hanák <karel.hanak@iqrf.org>  Wed, 12 Jun 2024 11:49:42 +0200
+  [ Roman Ondráček ]
+  * Docker: fix build of frontend images
+
+  [ Karel Hanák ]
+  * LightManager: update set voltage request params and error handling
+
+  [ Roman Ondráček ]
+  * API: update iqrf-gateway-daemon JSON schemas
+  * Cloud services: remove Inteliments InteliGlue MQTT connection creator
+  * Config: update MQTT configuration to use autodetection for TLS usage
+
+ -- Roman Ondráček <mail@romanondracek.cz>  Tue, 20 Aug 2024 02:53:23 +0200
 
 iqrf-gateway-webapp (2.5.20) stable; urgency=medium
 
