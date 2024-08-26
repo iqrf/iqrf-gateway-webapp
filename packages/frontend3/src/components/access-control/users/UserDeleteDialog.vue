@@ -54,7 +54,7 @@ const dialog: Ref<typeof DeleteModalWindow | null> = ref(null);
 const componentProps = defineProps<Props>();
 
 function onSubmit(): void {
-	useApiClient().getUserService().delete(componentProps.user.id)
+	useApiClient().getSecurityServices().getUserService().delete(componentProps.user.id)
 		.then(async () => {
 			toast.success(
 				i18n.t('components.accessControl.users.messages.delete.success', { user: componentProps.user.username }),

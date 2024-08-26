@@ -133,7 +133,6 @@ limitations under the License.
 import {SshKeyService} from '@iqrf/iqrf-gateway-webapp-client/services/Security';
 import {SshKeyInfo} from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import {AxiosError} from 'axios';
-import {DateTime} from 'luxon';
 import {Component, Vue} from 'vue-property-decorator';
 import {DataTableHeader} from 'vuetify';
 
@@ -289,7 +288,7 @@ export default class SshKeyList extends Vue {
 	 * @returns {string} Expiration date and time in locale format
 	 */
 	private timeString(item: SshKeyInfo): string {
-		return DateTime.fromISO(item.createdAt).toLocaleString(this.dateFormat);
+		return item.createdAt!.toLocaleString(this.dateFormat);
 	}
 
 }

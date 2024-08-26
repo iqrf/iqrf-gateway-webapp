@@ -17,9 +17,23 @@
 
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
+import {
+	cs as csVuetify,
+	en as enVuetify,
+} from 'vuetify/lib/locale';
 
-import cs from '@/locales/cs.json';
-import en from '@/locales/en.json';
+import csWebapp from '@/locales/cs.json';
+import enWebapp from '@/locales/en.json';
+
+const cs = {
+	'$vuetify': csVuetify,
+	...csWebapp,
+};
+
+const en = {
+	'$vuetify': enVuetify,
+	...enWebapp,
+};
 
 Vue.use(VueI18n);
 

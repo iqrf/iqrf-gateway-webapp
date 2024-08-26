@@ -37,8 +37,8 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { type JournalService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
-import { type JournalRecords } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import { LogService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
+import { type JournalRecords } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
 import { nextTick, type Ref, ref, watch } from 'vue';
 import { toast } from 'vue3-toastify';
 
@@ -46,7 +46,7 @@ import { useApiClient } from '@/services/ApiClient';
 import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
-const service: JournalService = useApiClient().getConfigServices().getJournalService();
+const service: LogService = useApiClient().getGatewayServices().getLogService();
 let allowUpdate = false;
 let lastCursor: string | null = null;
 const log: Ref<string | null> = ref(null);
@@ -69,7 +69,7 @@ function getJournalRecords(count: number, cursor: string|null = null): void {
 	} else {
 		componentState.value = ComponentState.Reloading;
 	}
-	service.getRecords(count, cursor)
+	service.getJournalRecords(count, cursor)
 		.then(async (response: JournalRecords) => {
 			if (response.records.length === 0) {
 				componentState.value = ComponentState.Ready;

@@ -86,7 +86,7 @@ onMounted(() => {
 
 function getUsers(): void {
 	loading.value = true;
-	useApiClient().getUserService().list().then((rsp: UserInfo[]) => {
+	useApiClient().getSecurityServices().getUserService().list().then((rsp: UserInfo[]) => {
 		users.value = rsp;
 		loading.value = false;
 	});

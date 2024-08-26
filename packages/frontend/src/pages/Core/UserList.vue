@@ -149,7 +149,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {UserService} from '@iqrf/iqrf-gateway-webapp-client/services';
+import {UserService} from '@iqrf/iqrf-gateway-webapp-client/services/Security';
 import {
 	UserEdit,
 	UserInfo, UserLanguage,
@@ -234,7 +234,7 @@ export default class UserList extends Vue {
    * @property {UserService} service User service
    * @private
    */
-	private service: UserService = useApiClient().getUserService();
+	private service: UserService = useApiClient().getSecurityServices().getUserService();
 
 	/**
 	 * Retrieves list of existing user
@@ -267,9 +267,9 @@ export default class UserList extends Vue {
 	/**
 	 * Changes user's role from table
 	 * @param {UserInfo} user User object
-	 * @param {string} newRole New user role
+	 * @param {UserRole} newRole New user role
 	 */
-	private changeRole(user: UserInfo, newRole: string): void {
+	private changeRole(user: UserInfo, newRole: UserRole): void {
 		if (user.role === newRole) {
 			return;
 		}

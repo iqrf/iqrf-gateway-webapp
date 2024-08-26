@@ -124,6 +124,7 @@ limitations under the License.
 
 <script lang='ts'>
 import {ProductService} from '@iqrf/iqrf-repository-client/services';
+import {Product} from '@iqrf/iqrf-repository-client/types';
 import {AxiosError} from 'axios';
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import {NavigationGuardNext, Route} from 'vue-router';
@@ -135,17 +136,6 @@ import RfModeStd from '@/assets/std-black.svg';
 import {IDeviceEnumeration, OsInfo, PeripheralEnumeration} from '@/interfaces/DaemonApi/Dpa';
 import {DaemonClientState} from '@/interfaces/wsClient';
 import {useRepositoryClient} from '@/services/IqrfRepositoryClient';
-
-interface Product {
-	companyName: string
-	homePage: string
-	hwpid: number
-	manufacturerID: number
-	name: string
-	picture: string
-	pictureOriginal: string
-	rfMode: number
-}
 
 @Component({
 	data: () => {

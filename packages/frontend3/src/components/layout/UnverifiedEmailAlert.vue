@@ -50,33 +50,34 @@ limitations under the License.
 
 <script lang='ts' setup>
 import { mdiEmailFast } from '@mdi/js';
-import { type AxiosError } from 'axios';
 import { storeToRefs } from 'pinia';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
-import { basicErrorToast } from '@/helpers/errorToast';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
+import UrlBuilder from '@/helpers/urlBuilder';
 
 const i18n = useI18n();
 const userStore = useUserStore();
 const { hasEmail, isLoggedIn, isVerified, getEmail: userEmail } = storeToRefs(userStore);
 
-function resend(): void {
-	const userId = userStore.getId;
-	if (userId === null) {
-		return;
-	}
-	useApiClient().getUserService().resendVerificationEmail(userId)
-		.then(() => {
-			toast.success(
-				i18n.t('core.account.verification.messages.requestSuccess').toString(),
-			);
-		})
-		.catch((error: AxiosError) => {
-			basicErrorToast(error, 'core.account.verification.messages.requestFailure');
+/**
+ * Resends the verification email
+ */
+async function resend(): Promise<void> {
+	try {
+		await useApiClient().getAccountService().resendVerificationEmail({
+			baseUrl: new UrlBuilder().getBaseUrl(),
 		});
+		toast.success(
+			i18n.t('core.account.verification.messages.requestSuccess'),
+		);
+	} catch {
+		toast.error(
+			i18n.t('core.account.verification.messages.requestFailure'),
+		);
+	}
 }
 
 </script>

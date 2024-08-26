@@ -165,7 +165,7 @@ export default class ApiKeyForm extends Vue {
 			return;
 		}
 		this.$store.commit('spinner/SHOW');
-		this.service.fetch(this.keyId)
+		this.service.get(this.keyId)
 			.then((response: ApiKeyInfo) => {
 				this.$store.commit('spinner/HIDE');
 				this.metadata = response;
@@ -189,7 +189,7 @@ export default class ApiKeyForm extends Vue {
 		delete config.id;
 		config.expiration = this.useExpiration ? DateTime.fromJSDate(this.datetime) : null;
 		if (this.keyId !== null) {
-			this.service.edit(this.keyId, config)
+			this.service.update(this.keyId, config)
 				.then(() => this.successfulSave())
 				.catch(this.handleSaveError);
 		} else {

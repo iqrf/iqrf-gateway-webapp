@@ -198,7 +198,7 @@ export default class UserAdd extends Vue {
 	 */
 	private saveUser(): void {
 		this.$store.commit('spinner/SHOW');
-		useApiClient().getUserService().create(this.user)
+		useApiClient().getSecurityServices().getUserService().create(this.user)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(

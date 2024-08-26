@@ -77,7 +77,7 @@ import {
 	UserSessionExpiration,
 } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { mdiAccount, mdiEmail, mdiKey, mdiTranslate } from '@mdi/js';
-import { type AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
@@ -99,7 +99,6 @@ import { useApiClient } from '@/services/ApiClient';
 import { useInstallStore } from '@/store/install';
 import { useUserStore } from '@/store/user';
 
-
 const i18n = useI18n();
 
 const urlBuilder = new UrlBuilder();
@@ -117,34 +116,39 @@ const languageOptions = getLanguageOptions();
 const expiration = ref(UserSessionExpiration.Default);
 const form: Ref<VForm | null> = ref(null);
 
+/**
+ * Creates a new user
+ */
 async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
 	}
 	user.value.baseUrl = urlBuilder.getBaseUrl();
-	useApiClient().getUserService().create(user.value)
-		.then(async (response: EmailSentResponse) => {
-			if (response.emailSent) {
-				toast.success(
-					i18n.t('core.user.messages.verificationSent').toString(),
-				);
-			}
-			const credentials: UserCredentials = {
-				username: user.value.username,
-				password: user.value.password,
-				expiration: expiration.value,
-			};
-			await userStore.signIn(credentials);
-			const nextStep = installStore.getNextStep;
-			if (nextStep === null) {
-				router.push('/');
-				return;
-			}
-			await router.push({ name: nextStep.route });
-		})
-		.catch((error: AxiosError) => {
+	try {
+		const response: EmailSentResponse =
+			await useApiClient().getSecurityServices().getUserService().create(user.value);
+		if (response.emailSent) {
+			toast.success(
+				i18n.t('core.user.messages.verificationSent').toString(),
+			);
+		}
+		const credentials: UserCredentials = {
+			username: user.value.username,
+			password: user.value.password,
+			expiration: expiration.value,
+		};
+		await userStore.signIn(credentials);
+		const nextStep = installStore.getNextStep;
+		if (nextStep === null) {
+			router.push('/');
+			return;
+		}
+		await router.push({ name: nextStep.route });
+	} catch (error) {
+		if (error instanceof AxiosError) {
 			basicErrorToast(error, 'core.user.messages.createFailure');
-		});
+		}
+	}
 }
 
 </script>

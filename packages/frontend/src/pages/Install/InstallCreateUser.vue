@@ -156,7 +156,7 @@ export default class InstallCreateUser extends Vue {
 	 */
 	private handleSubmit(): void {
 		this.running = true;
-		useApiClient().getUserService().create(this.user)
+		useApiClient().getSecurityServices().getUserService().create(this.user)
 			.then((response: EmailSentResponse) => {
 				if (response.emailSent) {
 					this.$toast.success(

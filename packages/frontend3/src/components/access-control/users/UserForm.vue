@@ -161,7 +161,7 @@ async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
 	}
-	const service = useApiClient().getUserService();
+	const service = useApiClient().getSecurityServices().getUserService();
 	if (componentProps.action === Action.Add) {
 		service.create(user.value as UserCreate)
 			.then(() => onSuccess(user.value))

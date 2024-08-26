@@ -83,7 +83,7 @@ export default class UserDeleteModal extends Vue {
 		const id = this.user.id;
 		const username = this.user.username;
 		this.$store.commit('spinner/SHOW');
-		useApiClient().getUserService().delete(id)
+		useApiClient().getSecurityServices().getUserService().delete(id)
 			.then(async () => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(

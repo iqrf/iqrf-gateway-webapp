@@ -16,13 +16,27 @@
  */
 
 import { createI18n } from 'vue-i18n';
+import {
+	cs as csVuetify,
+	en as enVuetify,
+} from 'vuetify/locale';
 
-import cs from '@/locales/cs.json';
-import en from '@/locales/en.json';
+import csWebapp from '@/locales/cs.json';
+import enWebapp from '@/locales/en.json';
+
+const cs = {
+	'$vuetify': csVuetify,
+	...csWebapp,
+};
+
+const en = {
+	'$vuetify': enVuetify,
+	...enWebapp,
+};
 
 type MessageSchema = typeof en;
 
-type Locales = 'en' | 'cs';
+export type Locales = 'en' | 'cs';
 
 export default createI18n<MessageSchema, Locales>({
 	datetimeFormats: {

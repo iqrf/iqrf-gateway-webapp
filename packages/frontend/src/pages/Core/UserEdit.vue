@@ -99,7 +99,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {UserService} from '@iqrf/iqrf-gateway-webapp-client/services';
+import {UserService} from '@iqrf/iqrf-gateway-webapp-client/services/Security';
 import {
 	UserEdit,
 	UserInfo,
@@ -176,7 +176,7 @@ export default class UserEditForm extends Vue {
 	 * @property {UserService} service User service
    * @private
    */
-	private service: UserService = useApiClient().getUserService();
+	private service: UserService = useApiClient().getSecurityServices().getUserService();
 
 	/**
 	 * Initialize validation rules and build user roles
