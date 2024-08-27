@@ -54,9 +54,9 @@ import { storeToRefs } from 'pinia';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
+import UrlBuilder from '@/helpers/urlBuilder';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
-import UrlBuilder from '@/helpers/urlBuilder';
 
 const i18n = useI18n();
 const userStore = useUserStore();

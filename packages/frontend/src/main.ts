@@ -22,7 +22,6 @@ import App from '@/App.vue';
 
 import './styles/app.scss';
 import 'vue-datetime/dist/vue-datetime.css';
-import 'vue-select/dist/vue-select.css';
 import 'vue-toast-notification/dist/theme-sugar.css';
 import 'vue2-datepicker/index.css';
 
