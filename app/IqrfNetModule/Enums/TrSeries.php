@@ -49,7 +49,6 @@ enum TrSeries: string {
 			return match ($module) {
 				'D' => self::TR_7XD,
 				'G' => self::TR_7XG,
-				default => throw new DomainException(),
 			};
 		}
 		throw new DomainException();
