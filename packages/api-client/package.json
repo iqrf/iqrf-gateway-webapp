@@ -82,16 +82,16 @@
 	"type": "module",
 	"dependencies": {
 		"@iqrf/iqrf-gateway-daemon-utils": "latest",
-		"axios": "^1.7.5",
+		"axios": "^1.7.7",
 		"luxon": "^3.5.0",
-		"openapi-typescript": "^7.3.0",
+		"openapi-typescript": "^7.3.3",
 		"punycode": "^2.3.1",
 		"uuid": "^10.0.0"
 	},
 	"devDependencies": {
-		"@iqrf/eslint-config": "^0.1.9",
+		"@iqrf/eslint-config": "^0.1.10",
 		"@types/luxon": "^3.4.2",
-		"@types/node": "^22.5.0",
+		"@types/node": "^22.5.2",
 		"@types/punycode": "^2.1.4",
 		"@types/uuid": "^10.0.0",
 		"@vitest/coverage-istanbul": "^2.0.5",
@@ -102,7 +102,7 @@
 		"tsup": "^8.2.4",
 		"typedoc": "^0.26.6",
 		"typedoc-material-theme": "^1.1.0",
-		"typedoc-plugin-mdn-links": "^3.2.10",
+		"typedoc-plugin-mdn-links": "^3.2.11",
 		"typescript": "^5.5.4",
 		"vite-tsconfig-paths": "^5.0.1",
 		"vitest": "^2.0.5"

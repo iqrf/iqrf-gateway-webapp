@@ -75,6 +75,11 @@ const sidebarToggleIcon = computed(() => {
 	return isMinimized.value ? mdiChevronRight : mdiChevronLeft;
 });
 
+/**
+ * Filters sidebar items based on user roles and feature flags
+ * @param {SidebarLink} item Sidebar item
+ * @return {boolean} True if the item should be displayed
+ */
 function filter(item: SidebarLink): boolean {
 	const role: UserRole | null = userStore.getRole;
 	if (item.children !== undefined) {
