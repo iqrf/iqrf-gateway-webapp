@@ -18,8 +18,9 @@
  */
 declare(strict_types = 1);
 
-namespace App\ApiModule\Version0\Models;
+namespace App\Models\Sentry\Integrations;
 
+use App\ApiModule\Version0\Models\BearerAuthenticator;
 use App\Models\Database\Entities\User;
 use Contributte\Sentry\Integration\BaseIntegration;
 use Nette\DI\Container;

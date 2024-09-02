@@ -18,7 +18,7 @@ extensions:
 
 services:
 	monolog.sentryLogger:
-		factory: App\ApiModule\Version0\Models\SentryPsrLogger
+		factory: App\Models\Sentry\Loggers\SentryPsrLogger
 		autowired: false
 
 monolog:
