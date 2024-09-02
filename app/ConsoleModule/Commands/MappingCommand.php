@@ -62,7 +62,7 @@ abstract class MappingCommand extends EntityManagerCommand {
 		$types = array_column(MappingType::cases(), 'value');
 		while ($type === null) {
 			$helper = $this->getHelper('question');
-			$question = new ChoiceQuestion('Please select mapping type: ', $types, $current);
+			$question = new ChoiceQuestion('Please select mapping type: ', $types, $current->value);
 			$type = MappingType::tryFrom($helper->ask($input, $output, $question));
 		}
 		return $type;
@@ -99,7 +99,7 @@ abstract class MappingCommand extends EntityManagerCommand {
 		$types = array_column(MappingDeviceType::cases(), 'value');
 		while ($type === null) {
 			$helper = $this->getHelper('question');
-			$question = new ChoiceQuestion('Please select device type: ', $types, $current);
+			$question = new ChoiceQuestion('Please select device type: ', $types, $current->value);
 			$type = MappingDeviceType::tryFrom($helper->ask($input, $output, $question));
 		}
 		return $type;
@@ -186,7 +186,7 @@ abstract class MappingCommand extends EntityManagerCommand {
 		$baudRates = array_column(MappingBaudRate::cases(), 'value');
 		while ($baudRate === null) {
 			$helper = $this->getHelper('question');
-			$question = new ChoiceQuestion('Please select the mapping UART baud rate: ', $baudRates, $current);
+			$question = new ChoiceQuestion('Please select the mapping UART baud rate: ', $baudRates, $current->value);
 			$baudRate = MappingBaudRate::tryFrom(intval($helper->ask($input, $output, $question)));
 		}
 		return $baudRate;

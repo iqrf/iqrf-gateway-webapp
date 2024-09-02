@@ -30,7 +30,6 @@ parameters:
 	paths:
 		- app
 		- bin
-		- tests
 	excludePaths:
 		analyse:
 			- tests/Unit/InstallModule/Models/SudoManagerTest.php
