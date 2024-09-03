@@ -317,6 +317,9 @@ components:
 			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/userSignIn.json
 		UserToken:
 			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/userToken.json
+		Versions:
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/versions.json
+			title: Versions - IQRF Gateway software
 		VersionDaemon:
 			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/versionDaemon.json
 			title: Version - IQRF Gateway Daemon

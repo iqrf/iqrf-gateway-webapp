@@ -1,0 +1,123 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/versions.json",
+	"type": "object",
+	"title": "IQRF Gateway Software versions",
+	"required": [
+		"iqrf-cloud-provisioning",
+		"iqrf-gateway-controller",
+		"iqrf-gateway-daemon",
+		"iqrf-gateway-influxdb-bridge",
+		"iqrf-gateway-setter",
+		"iqrf-gateway-uploader",
+		"iqrf-gateway-webapp",
+		"mender-client",
+		"mender-connect"
+	],
+	"properties": {
+		"iqrf-cloud-provisioning": {
+			"$id": "#/properties/iqrf-cloud-provisioning",
+			"oneOf": [
+				{
+					"type": "string"
+				},
+				{
+					"type": "null"
+				}
+			],
+			"title": "IQRF Cloud provisioning version",
+			"example": "v0.1.1"
+		},
+		"iqrf-gateway-controller": {
+			"$id": "#/properties/iqrf-gateway-controller",
+			"oneOf": [
+				{
+					"type": "string"
+				},
+				{
+					"type": "null"
+				}
+			],
+			"title": "IQRF Gateway Controller version",
+			"example": "v1.5.0"
+		},
+		"iqrf-gateway-daemon": {
+			"$id": "#/properties/iqrf-gateway-daemon",
+			"type": "string",
+			"title": "IQRF Gateway Daemon version",
+			"example": "v2.5.7"
+		},
+		"iqrf-gateway-influxdb-bridge": {
+			"$id": "#/properties/iqrf-gateway-influxdb-bridge",
+			"oneOf": [
+				{
+					"type": "string"
+				},
+				{
+					"type": "null"
+				}
+			],
+			"title": "IQRF Gateway MQTT-InfluxDB bridge version",
+			"example": "v1.1.1"
+		},
+		"iqrf-gateway-setter": {
+			"$id": "#/properties/iqrf-gateway-setter",
+			"oneOf": [
+				{
+					"type": "string"
+				},
+				{
+					"type": "null"
+				}
+			],
+			"title": "IQRF Gateway Setter version",
+			"example": "v1.4.1"
+		},
+		"iqrf-gateway-uploader": {
+			"$id": "#/properties/iqrf-gateway-uploader",
+			"oneOf": [
+				{
+					"type": "string"
+				},
+				{
+					"type": "null"
+				}
+			],
+			"title": "IQRF Gateway Uploader version",
+			"example": "v1.0.7"
+		},
+		"iqrf-gateway-webapp": {
+			"$id": "#/properties/iqrf-gateway-webapp",
+			"type": "string",
+			"title": "IQRF Gateway Webapp version",
+			"example": "v2.5.21"
+		},
+		"mender-client": {
+			"$id": "#/properties/mender-client",
+			"oneOf": [
+				{
+					"type": "string"
+				},
+				{
+					"type": "null"
+				}
+			],
+			"title": "Mender Client version",
+			"example": "v3.5.3"
+		},
+		"mender-connect": {
+			"$id": "#/properties/mender-connect",
+			"oneOf": [
+				{
+					"type": "string"
+				},
+				{
+					"type": "null"
+				}
+			],
+			"title": "Mender Connect version",
+			"example": "v2.2.1"
+		}
+	},
+	"additionalProperties": false
+}

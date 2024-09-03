@@ -51,6 +51,28 @@ class VersionController extends BaseController {
 		parent::__construct($validators);
 	}
 
+	#[Path('/')]
+	#[Method('GET')]
+	#[OpenApi('
+		summary: Returns IQRF Gateway software versions
+		responses:
+			\'200\':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/Versions\'
+			\'403\':
+				$ref: \'#/components/responses/Forbidden\'
+			\'500\':
+				$ref: \'#/components/responses/ServerError\'
+	')]
+	public function all(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$versions = $this->manager->getAll();
+		$response = $response->writeJsonBody($versions);
+		return $this->validators->validateResponse('versions', $response);
+	}
+
 	#[Path('/daemon')]
 	#[Method('GET')]
 	#[OpenApi('

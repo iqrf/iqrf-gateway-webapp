@@ -101,7 +101,7 @@ class OpenApiController extends BaseController {
 					if (!in_array($key, ['$id', '$ref'], true)) {
 						return;
 					}
-					$matches = Strings::match($value, '~^https://apidocs\.iqrf\.org/iqrf-gateway-webapp-api/schemas/(?<name>.*)\.json$~');
+					$matches = Strings::match($value, '~^https://apidocs\.iqrf\.org/openapi/iqrf-gateway-webapp/schemas/(?<name>.*)\.json$~');
 					if ($matches === null) {
 						return;
 					}

@@ -84,7 +84,7 @@
 		"@iqrf/iqrf-gateway-daemon-utils": "latest",
 		"axios": "^1.7.7",
 		"luxon": "^3.5.0",
-		"openapi-typescript": "^7.3.3",
+		"openapi-typescript": "^7.4.0",
 		"punycode": "^2.3.1",
 		"uuid": "^10.0.0"
 	},

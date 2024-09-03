@@ -50,6 +50,25 @@ class VersionManager {
 	}
 
 	/**
+	 * Returns versions of all software components
+	 * @param bool $verbose Verbose output
+	 * @return array<string, string> List of versions of all software components
+	 */
+	public function getAll(bool $verbose = false): array {
+		return [
+			'iqrf-cloud-provisioning' => $this->getCloudProvisioning(),
+			'iqrf-gateway-controller' => $this->getController(),
+			'iqrf-gateway-daemon' => $this->getDaemon($verbose),
+			'iqrf-gateway-influxdb-bridge' => $this->getInfluxdbBridge(),
+			'iqrf-gateway-setter' => $this->getSetter(),
+			'iqrf-gateway-uploader' => $this->getUploader(),
+			'iqrf-gateway-webapp' => $this->getWebapp($verbose),
+			'mender-client' => $this->getMenderClient(),
+			'mender-connect' => $this->getMenderConnect(),
+		];
+	}
+
+	/**
 	 * Returns IQRF Cloud Provisioning's version
 	 * @return string|null IQRF Cloud Provisioning's version
 	 */

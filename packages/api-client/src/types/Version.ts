@@ -15,6 +15,30 @@
  */
 
 /**
+ * IQRF Gateway software versions
+ */
+export interface Versions {
+	/// IQRF Cloud Provisioning version
+	'iqrf-cloud-provisioning': string | null;
+	/// IQRF Gateway Controller version
+	'iqrf-gateway-controller': string | null;
+	/// IQRF Gateway Daemon version
+	'iqrf-gateway-daemon': string;
+	/// IQRF Gateway MQTT-InfluxDB Bridge version
+	'iqrf-gateway-influxdb-bridge': string | null;
+	/// IQRF Gateway Setter version
+	'iqrf-gateway-setter': string | null;
+	/// IQRF Gateway Uploader version
+	'iqrf-gateway-uploader': string | null;
+	/// IQRF Gateway Webapp version
+	'iqrf-gateway-webapp': string;
+	/// Mender Client version
+	'mender-client': string | null;
+	/// Mender Connect version
+	'mender-connect': string | null;
+}
+
+/**
  * Version
  */
 export interface VersionBase {

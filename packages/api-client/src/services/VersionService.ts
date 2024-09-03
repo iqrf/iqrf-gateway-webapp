@@ -19,6 +19,7 @@ import { type AxiosResponse } from 'axios';
 import {
 	type VersionIqrfGatewayDaemon,
 	type VersionIqrfGatewayWebapp,
+	type Versions,
 } from '../types';
 
 import { BaseService } from './BaseService';
@@ -27,6 +28,16 @@ import { BaseService } from './BaseService';
  * Version service
  */
 export class VersionService extends BaseService {
+
+	/**
+	 * Retrieve IQRF Gateway software versions
+	 * @return {Promise<Versions>} IQRF Gateway Daemon version
+	 */
+	public async list(): Promise<Versions> {
+		const response: AxiosResponse<Versions> =
+			await this.axiosInstance.get('/version');
+		return response.data;
+	}
 
 	/**
 	 * Retrieve IQRF Gateway Daemon version
