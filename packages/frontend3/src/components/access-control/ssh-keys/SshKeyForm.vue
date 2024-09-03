@@ -23,13 +23,10 @@ limitations under the License.
 				v-bind='props'
 				:action='action'
 			/>
-			<v-icon
+			<DataTableAction
 				v-else
 				v-bind='props'
-				:color='iconColor'
-				:icon='activatorIcon'
-				size='large'
-				class='me-2'
+				:action='action'
 			/>
 		</template>
 		<v-form ref='form' v-slot='{ isValid }' @submit.prevent='onSubmit'>
@@ -92,10 +89,13 @@ limitations under the License.
 
 <script lang='ts' setup>
 import { type SshKeyService } from '@iqrf/iqrf-gateway-webapp-client/services/Security';
-import { type SshKeyCreate } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
+import {
+	type SshKeyCreate,
+	type SshKeyCreated,
+} from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import { SshKeyUtils } from '@iqrf/iqrf-gateway-webapp-client/utils';
 import { mdiKey, mdiPencil, mdiPlus, mdiTextShort } from '@mdi/js';
-import { type AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 import { type PropType, ref, type Ref, watchEffect , computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { VForm } from 'vuetify/components';
@@ -103,6 +103,7 @@ import { VForm } from 'vuetify/components';
 import Card from '@/components/layout/card/Card.vue';
 import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
+import DataTableAction from '@/components/layout/data-table/DataTableAction.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import { basicErrorToast } from '@/helpers/errorToast';
@@ -147,18 +148,6 @@ const defaultKey: SshKeyCreate = {
 const localKey: Ref<SshKeyCreate> = ref(defaultKey);
 const service: SshKeyService = useApiClient().getSecurityServices().getSshKeyService();
 
-const iconColor = computed(() => {
-	if (componentProps.action === Action.Add) {
-		return 'white';
-	}
-	return 'info';
-});
-const activatorIcon = computed(() => {
-	if (componentProps.action === Action.Add) {
-		return mdiPlus;
-	}
-	return mdiPencil;
-});
 const dialogTitle = computed(() => {
 	if (componentProps.action === Action.Add) {
 		return i18n.t('components.accessControl.sshKeys.form.addTitle').toString();
@@ -178,6 +167,11 @@ watchEffect((): void => {
 	}
 });
 
+/**
+ * Validates the SSH key
+ * @param {string} key SSH key to validate
+ * @return {boolean|string} Validation result, true if the key is valid, error message otherwise
+ */
 function validateKey(key: string): boolean|string {
 	try {
 		SshKeyUtils.validatePublicKey(key, componentProps.keyTypes);
@@ -187,22 +181,34 @@ function validateKey(key: string): boolean|string {
 	}
 }
 
+/**
+ * Handles the form submission
+ */
 async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
 	}
-	service.createSshKeys([localKey.value])
-		.then(() => {
-			close();
-			emit('refresh');
-		})
-		.catch((error: AxiosError) => basicErrorToast(error, 'core.security.ssh.messages.saveFailed'));
+	try {
+		await service.createSshKeys([localKey.value]);
+		close();
+		emit('refresh');
+	} catch (error) {
+		if (error instanceof AxiosError) {
+			basicErrorToast(error, 'core.security.ssh.messages.saveFailed');
+		}
+	}
 }
 
+/**
+ * Updates the description of the SSH key
+ */
 function updateDescription(): void {
 	localKey.value.description = localKey.value.key.split(' ').slice(2).join(' ');
 }
 
+/**
+ * Closes the dialog window
+ */
 function close(): void {
 	show.value = false;
 	localKey.value = { ...defaultKey };

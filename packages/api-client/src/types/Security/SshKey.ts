@@ -88,3 +88,15 @@ export interface SshKeyCreate {
 	key: string
 
 }
+
+/**
+ * SSH key created interface
+ */
+export interface SshKeyCreated {
+
+	/**
+	 * Failed to create SSH keys
+	 */
+	failedKeys: SshKeyCreate[]
+
+}

@@ -154,6 +154,10 @@ class SshKeysController extends BaseSecurityController {
 							$ref: \'#/components/schemas/SshKeyCreated\'
 			\'201\':
 				description: Created
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/SshKeyCreated\'
 			\'400\':
 				$ref: \'#/components/responses/BadRequest\'
 			\'403\':
@@ -172,12 +176,9 @@ class SshKeysController extends BaseSecurityController {
 		$this->validators->validateRequest('sshKeysAdd', $request);
 		try {
 			$failed = $this->manager->addKeys($request->getJsonBodyCopy(true));
-			if ($failed !== []) {
-				$response = $response->withStatus(ApiResponse::S200_OK)
-					->writeJsonBody(['failedKeys' => $failed]);
-				return $this->validators->validateResponse('sshKeyCreated', $response);
-			}
-			return $response->withStatus(ApiResponse::S201_CREATED);
+			$response = $response->writeJsonBody(['failedKeys' => $failed])
+				->withStatus($failed === [] ? ApiResponse::S201_CREATED : ApiResponse::S200_OK);
+			return $this->validators->validateResponse('sshKeyCreated', $response);
 		} catch (SshInvalidKeyException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (SshKeyExistsException $e) {

@@ -121,7 +121,10 @@ limitations under the License.
 
 <script lang='ts'>
 import { SshKeyService } from '@iqrf/iqrf-gateway-webapp-client/services/Security';
-import {SshKeyCreate} from '@iqrf/iqrf-gateway-webapp-client/types/Security';
+import {
+	SshKeyCreate,
+	SshKeyCreated
+} from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import {AxiosError, AxiosResponse} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {Component, Vue} from 'vue-property-decorator';
@@ -201,11 +204,11 @@ export default class SshKeyForm extends Vue {
 		if (this.$route.path.includes('/install')) {
 			this.running = true;
 			this.service.createSshKeys(this.keys)
-				.then((response: AxiosResponse) => {
+				.then((response: SshKeyCreated) => {
 					this.running = false;
-					if (response.status === 200) {
+					if (response.failedKeys.length !== 0) {
 						this.$toast.info(
-							this.$t('core.security.ssh.messages.savePartialSuccess', {keys: response.data.failedKeys.join(', ')}).toString()
+							this.$t('core.security.ssh.messages.savePartialSuccess', {keys: response.failedKeys.join(', ')}).toString()
 						);
 					}
 					this.nextStep();
@@ -217,13 +220,13 @@ export default class SshKeyForm extends Vue {
 		} else {
 			this.$store.commit('spinner/SHOW');
 			this.service.createSshKeys(this.keys)
-				.then((response: AxiosResponse) => {
+				.then((response: SshKeyCreated) => {
 					this.$store.commit('spinner/HIDE');
-					if (response.status === 201) {
+					if (response.failedKeys.length === 0) {
 						this.$toast.success(this.$t('core.security.ssh.messages.saveSuccess').toString());
-					} else if (response.status === 200) {
+					} else {
 						this.$toast.info(
-							this.$t('core.security.ssh.messages.savePartialSuccess', {keys: response.data.failedKeys.join(', ')}).toString()
+							this.$t('core.security.ssh.messages.savePartialSuccess', {keys: response.failedKeys.join(', ')}).toString()
 						);
 					}
 					this.$router.push('/security/ssh-key/');

@@ -18,6 +18,7 @@ import { type AxiosResponse } from 'axios';
 
 import {
 	type SshKeyCreate,
+	type SshKeyCreated,
 	type SshKeyInfo,
 	type SshKeyInfoRaw,
 } from '../../types/Security';
@@ -71,9 +72,12 @@ export class SshKeyService extends BaseService {
 	/**
 	 * Creates SSH keys
 	 * @param {SshKeyCreate[]} keys SSh keys
+	 * @return {Promise<SshKeyCreated>} Created SSH keys info
 	 */
-	public async createSshKeys(keys: SshKeyCreate[]): Promise<void> {
-		await this.axiosInstance.post('/security/sshKeys', keys);
+	public async createSshKeys(keys: SshKeyCreate[]): Promise<SshKeyCreated> {
+		const response: AxiosResponse<SshKeyCreated> =
+			await this.axiosInstance.post('/security/sshKeys', keys);
+		return response.data;
 	}
 
 	/**
