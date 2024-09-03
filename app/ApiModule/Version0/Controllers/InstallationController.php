@@ -27,11 +27,13 @@ use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\ControllerValidators;
+use App\GatewayModule\Models\InfoManager;
 use App\InstallModule\Models\DependencyManager;
 use App\InstallModule\Models\PhpModuleManager;
 use App\InstallModule\Models\SudoManager;
 use App\Models\Database\EntityManager;
 use Doctrine\Migrations\DependencyFactory as MigrationsDependencyFactory;
+use Nette\Utils\Strings;
 
 /**
  * Installation controller
@@ -47,6 +49,7 @@ class InstallationController extends BaseController {
 	 * @param MigrationsDependencyFactory $migrationsDependencyFactory Doctrine migrations dependency factory
 	 * @param PhpModuleManager $phpModuleManager Php module manager
 	 * @param SudoManager $sudoManager Sudo manager
+	 * @param InfoManager $infoManager Info manager
 	 * @param ControllerValidators $validators Controller validators
 	 */
 	public function __construct(
@@ -55,6 +58,7 @@ class InstallationController extends BaseController {
 		private readonly MigrationsDependencyFactory $migrationsDependencyFactory,
 		private readonly PhpModuleManager $phpModuleManager,
 		private readonly SudoManager $sudoManager,
+		private readonly InfoManager $infoManager,
 		ControllerValidators $validators,
 	) {
 		parent::__construct($validators);
@@ -73,7 +77,10 @@ class InstallationController extends BaseController {
 							$ref: \'#/components/schemas/InstallationCheck\'
 	')]
 	public function check(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$status = [];
+		$gwId = $this->infoManager->getId();
+		$status = [
+			'gwId' => $gwId === null ? null : Strings::lower($gwId),
+		];
 		$status['allMigrationsExecuted'] = $this->migrationsDependencyFactory->getMigrationStatusCalculator()->getNewMigrations()->count() === 0;
 		$status['phpModules'] = $this->phpModuleManager::checkModules();
 		$sudo = $this->sudoManager->checkSudo();

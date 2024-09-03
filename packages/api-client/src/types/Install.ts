@@ -20,83 +20,46 @@ import { type Feature } from './Feature';
  * Missing dependency
  */
 export interface InstallationCheckDependency {
-
-	/**
-	 * Required command from the dependency
-	 */
+	/// Required command from the dependency
 	command: string,
-
-	/**
-	 * Is the dependency critical?
-	 */
+	/// Is the dependency critical?
 	critical: boolean,
-
-	/**
-	 * Name of the feature that requires the missing command
-	 */
+	/// Name of the feature that requires the missing command
 	feature?: Feature,
-
-	/**
-	 * Name of the package from which the missing dependency comes
-	 */
-	package: string
-
+	/// Name of the package from which the missing dependency comes
+	package: string,
 }
 
 /**
  * Missing PHP extensions
  */
 export interface InstallationCheckPhpMissingExtensions {
-
-	/**
-	 * Missing PHP extensions
-	 */
+	/// Missing PHP extensions
 	extensions: string[],
-
-	/**
-	 * Missing PHP packages
-	 */
+	/// Missing PHP packages
 	packages?: string[],
-
 }
 
 /**
  * PHP extensions check
  */
 export interface InstallationCheckPhpExtensions {
-
-	/**
-	 * Are all required PHP extensions loaded?
-	 */
+	/// Are all required PHP extensions loaded?
 	allExtensionsLoaded: boolean,
-
-	/**
-	 * Missing PHP extensions
-	 */
+	/// Missing PHP extensions
 	missing?: InstallationCheckPhpMissingExtensions,
-
 }
 
 /**
  * sudo check
  */
 export interface InstallationCheckSudo {
-
-	/**
-	 * Does the sudo command exist?
-	 */
+	///Does the sudo command exist?
 	exists: boolean,
-
-	/**
-	 * Name of the user that is used to run the application
-	 */
+	///Name of the user that is used to run the application
 	user: string,
-
-	/**
-	 * Is the user allowed to run sudo commands?
-	 */
+	/// Is the user allowed to run sudo commands?
 	userSudo: boolean,
-
 }
 
 
@@ -104,30 +67,16 @@ export interface InstallationCheckSudo {
  * Installation checks
  */
 export interface InstallationChecks {
-
-	/**
-	 * Are all database migrations executed?
-	 */
+	/// Are all database migrations executed?
 	allMigrationsExecuted: boolean,
-
-	/**
-	 * Missing dependencies
-	 */
+	/// Missing dependencies
 	dependencies: InstallationCheckDependency[],
-
-	/**
-	 * Are there any users in the database?
-	 */
+	/// Are there any users in the database?
 	hasUsers?: boolean,
-
-	/**
-	 * PHP extensions check
-	 */
+	/// IQRF Gateway ID
+	gwId: string | null,
+	/// PHP extensions check
 	phpModules: InstallationCheckPhpExtensions,
-
-	/**
-	 * sudo check
-	 */
+	/// sudo check
 	sudo?: InstallationCheckSudo,
-
 }
