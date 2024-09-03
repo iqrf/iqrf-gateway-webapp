@@ -51,19 +51,26 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
+import {
+	IqrfGatewayDaemonService
+} from '@iqrf/iqrf-gateway-webapp-client/services/Config';
+import {
+	IqrfGatewayDaemonComponentConfiguration,
+	IqrfGatewayDaemonComponentName,
+	IqrfGatewayDaemonComponentState,
+	type IqrfGatewayDaemonConfig
+} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import {Component, Vue} from 'vue-property-decorator';
+import {AxiosError} from 'axios';
+
 import IqrfSpi from '@/components/Config/Interfaces/IqrfSpi.vue';
 import IqrfCdc from '@/components/Config/Interfaces/IqrfCdc.vue';
 import IqrfUart from '@/components/Config/Interfaces/IqrfUart.vue';
 import IqrfDpa from '@/components/Config/Interfaces/IqrfDpa.vue';
-
 import {extendedErrorToast} from '@/helpers/errorToast';
-
-import DaemonConfigurationService from '@/services/DaemonConfigurationService';
-
-import {AxiosError, AxiosResponse} from 'axios';
-import {IChangeComponent, IComponent, IConfigFetch} from '@/interfaces/Config/Daemon';
+import {IConfigFetch} from '@/interfaces/Config/Daemon';
 import {ISelectItem} from '@/interfaces/Vuetify';
+import {useApiClient} from '@/services/ApiClient';
 
 @Component({
 	components: {
@@ -82,7 +89,7 @@ import {ISelectItem} from '@/interfaces/Vuetify';
  */
 export default class Interfaces extends Vue {
 	/**
-	 * @constant {Array<IOption>} interfaceSelect Interface select options
+	 * @constant {Array<ISelectItem>} interfaceSelect Interface select options
 	 */
 	private interfaceSelect: Array<ISelectItem> = [
 		{
@@ -105,17 +112,17 @@ export default class Interfaces extends Vue {
 	private iqrfInterface = '';
 
 	/**
-	 * @var {Array<IComponent>} iqrfInterfaces Array of IQRF communication interfaces
+	 * @var {IqrfGatewayDaemonComponentConfiguration<IqrfGatewayDaemonComponentName>[]} iqrfInterfaces Array of IQRF communication interfaces
 	 */
-	private iqrfInterfaces: Array<IComponent> = [];
+	private iqrfInterfaces: IqrfGatewayDaemonComponentConfiguration<IqrfGatewayDaemonComponentName>[] = [];
 
 	/**
-	 * @constant {Array<string>} whitelist Array of IQRF communication component names
+	 * @constant {Array<IqrfGatewayDaemonComponentName>} whitelist Array of IQRF communication component names
 	 */
-	private whitelist: Array<string> = [
-		'iqrf::IqrfCdc',
-		'iqrf::IqrfSpi',
-		'iqrf::IqrfUart',
+	private whitelist: Array<IqrfGatewayDaemonComponentName> = [
+		IqrfGatewayDaemonComponentName.IqrfCdc,
+		IqrfGatewayDaemonComponentName.IqrfSpi,
+		IqrfGatewayDaemonComponentName.IqrfUart,
 	];
 
 	/**
@@ -137,6 +144,11 @@ export default class Interfaces extends Vue {
 	private loadFailed = false;
 
 	/**
+	 * @property {IqrfGatewayDaemonService} service IQRF Gateway Daemon configuration service
+	 */
+	private readonly service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
+
+	/**
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
@@ -150,9 +162,9 @@ export default class Interfaces extends Vue {
 		if (!this.$store.getters['spinner/isActive']) {
 			this.$store.commit('spinner/SHOW');
 		}
-		return DaemonConfigurationService.getComponent('')
-			.then((response: AxiosResponse) => {
-				this.storeInterfaces(response.data.components);
+		return this.service.getConfig()
+			.then((response: IqrfGatewayDaemonConfig) => {
+				this.storeInterfaces(response.components);
 				this.findActiveInterface();
 			})
 			.catch((error: AxiosError) => {
@@ -163,10 +175,10 @@ export default class Interfaces extends Vue {
 
 	/**
 	 * Stores IQRF communication interfaces
-	 * @param {Array<IComponent>} components Array of all daemon components
+	 * @param {IqrfGatewayDaemonComponentConfiguration<IqrfGatewayDaemonComponentName>[]} components Array of all daemon components
 	 */
-	private storeInterfaces(components: Array<IComponent>): void {
-		this.iqrfInterfaces = components.filter((component: IComponent) => (this.whitelist.includes(component.name)));
+	private storeInterfaces(components: IqrfGatewayDaemonComponentConfiguration<IqrfGatewayDaemonComponentName>[]): void {
+		this.iqrfInterfaces = components.filter((component: IqrfGatewayDaemonComponentConfiguration<IqrfGatewayDaemonComponentName>) => (this.whitelist.includes(component.name)));
 	}
 
 	/**
@@ -186,7 +198,7 @@ export default class Interfaces extends Vue {
 	 * Disables all enabled communication interfaces and enables interface selected by user
 	 */
 	private changeInterface(): void {
-		const updateInterfaces: Array<IChangeComponent> = [];
+		const updateInterfaces: Array<IqrfGatewayDaemonComponentState> = [];
 		for (const component of this.iqrfInterfaces) {
 			if (component.name !== this.iqrfInterface && component.enabled) {
 				updateInterfaces.push({name: component.name, enabled: false});
@@ -195,7 +207,7 @@ export default class Interfaces extends Vue {
 			}
 		}
 		this.$store.commit('spinner/SHOW');
-		DaemonConfigurationService.changeComponent(updateInterfaces)
+		this.service.updateEnabledComponents(updateInterfaces)
 			.then(() => {
 				this.getConfig().then(() =>
 					this.$toast.success(

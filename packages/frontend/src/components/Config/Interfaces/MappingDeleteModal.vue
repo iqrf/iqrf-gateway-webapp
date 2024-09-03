@@ -47,14 +47,14 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
+import {
+	IqrfGatewayDaemonMapping
+} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import {AxiosError} from 'axios';
 import {Component, VModel, Vue} from 'vue-property-decorator';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
-
-import MappingService from '@/services/MappingService';
-
-import {AxiosError} from 'axios';
-import {IMapping} from '@/interfaces/Config/Mapping';
+import {useApiClient} from '@/services/ApiClient';
 
 /**
  * Mapping delete modal window component
@@ -63,9 +63,9 @@ import {IMapping} from '@/interfaces/Config/Mapping';
 export default class MappingDeleteModal extends Vue {
 
 	/**
-	 * @property {IMapping|null} mapping Mapping to delete
+	 * @property {IqrfGatewayDaemonMapping|null} mapping Mapping to delete
 	 */
-	@VModel({required: true, default: null}) mapping!: IMapping|null;
+	@VModel({required: true, default: null}) mapping!: IqrfGatewayDaemonMapping|null;
 
 	/**
 	 * Computes modal display condition
@@ -84,7 +84,7 @@ export default class MappingDeleteModal extends Vue {
 		const id = this.mapping.id;
 		const name = this.mapping.name;
 		this.$store.commit('spinner/SHOW');
-		MappingService.removeMapping(id)
+		useApiClient().getConfigServices().getIqrfGatewayDaemonService().deleteMapping(id)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(

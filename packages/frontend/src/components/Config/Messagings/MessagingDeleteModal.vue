@@ -47,14 +47,18 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
+import {
+	IqrfGatewayDaemonService
+} from '@iqrf/iqrf-gateway-webapp-client/services/Config';
+import {
+	IqrfGatewayDaemonComponentName
+} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import {AxiosError} from 'axios';
 import {Component, VModel, Prop, Vue} from 'vue-property-decorator';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {MessagingTypes} from '@/enums/Config/Messagings';
-
-import DaemonConfigurationService from '@/services/DaemonConfigurationService';
-
-import {AxiosError} from 'axios';
+import {useApiClient} from '@/services/ApiClient';
 
 /**
  * Messaging delete dialog component
@@ -75,11 +79,16 @@ export default class MessagignDeleteModal extends Vue {
 	/**
 	 * @constant {Record<MessagingTypes, string>} componentNames Component names
 	 */
-	private readonly componentNames: Record<MessagingTypes, string> = {
-		MQ: 'iqrf::MqMessaging',
-		MQTT: 'iqrf::MqttMessaging',
-		UDP: 'iqrf::UdpMessaging',
+	private readonly componentNames: Record<MessagingTypes, IqrfGatewayDaemonComponentName> = {
+		MQ: IqrfGatewayDaemonComponentName.IqrfMqMessaging,
+		MQTT: IqrfGatewayDaemonComponentName.IqrfMqttMessaging,
+		UDP: IqrfGatewayDaemonComponentName.IqrfUdpMessaging,
 	};
+
+	/**
+	 * @property {IqrfGatewayDaemonService} service IQRF Gateway Daemon service
+	 */
+	private readonly service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
 
 	/**
 	 * Computes modal display condition
@@ -98,7 +107,7 @@ export default class MessagignDeleteModal extends Vue {
 		const instance = this.instance;
 		const type = this.messagingType;
 		this.$store.commit('spinner/SHOW');
-		DaemonConfigurationService.deleteInstance(this.componentNames[type], instance)
+		this.service.deleteInstance(this.componentNames[type], instance)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(

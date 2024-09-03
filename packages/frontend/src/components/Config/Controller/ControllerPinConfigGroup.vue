@@ -96,14 +96,14 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
+import {
+	IqrfGatewayControllerMapping, MappingDeviceType
+} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import {Component, Prop, PropSync, Vue} from 'vue-property-decorator';
+import {DataTableHeader} from 'vuetify';
+
 import ControllerPinConfigDeleteModal from './ControllerPinConfigDeleteModal.vue';
 import ControllerPinConfigFormModal from './ControllerPinConfigFormModal.vue';
-
-import {ConfigDeviceType} from '@/enums/Config/ConfigurationProfiles';
-
-import {DataTableHeader} from 'vuetify';
-import {IControllerPinConfig} from '@/interfaces/Config/Controller';
 
 @Component({
 	components: {
@@ -117,9 +117,9 @@ import {IControllerPinConfig} from '@/interfaces/Config/Controller';
  */
 export default class ControllerPinConfigGroup extends Vue {
 	/**
-	 * @property {Array<IControllerPinConfig>} _profiles Controller config profiles
+	 * @property {Array<IqrfGatewayControllerMapping>} _profiles Controller config profiles
 	 */
-	@PropSync('profiles', {type: Array, default: []}) _profiles!: Array<IControllerPinConfig>;
+	@PropSync('profiles', {type: Array, default: []}) _profiles!: Array<IqrfGatewayControllerMapping>;
 
 	/**
 	 * @property {boolean} loading Data table loading status
@@ -127,21 +127,21 @@ export default class ControllerPinConfigGroup extends Vue {
 	@Prop({required: false, default: false}) loading!: boolean;
 
 	/**
-	 * @var {IControllerPinConfig|null} profileFormModel Form profile model
+	 * @var {IqrfGatewayControllerMapping|null} profileFormModel Form profile model
 	 */
-	private profileFormModel: IControllerPinConfig|null = null;
+	private profileFormModel: IqrfGatewayControllerMapping|null = null;
 
 	/**
-	 * @var {IControllerPinConfig|null} profileDeleteModel Profile to delete
+	 * @var {IqrfGatewayControllerMapping|null} profileDeleteModel Profile to delete
 	 */
-	private profileDeleteModel: IControllerPinConfig|null = null;
+	private profileDeleteModel: IqrfGatewayControllerMapping|null = null;
 
 	/**
-	 * @constant {IControllerPinConfig} defaultProfile Default profile values
+	 * @constant {IqrfGatewayControllerMapping} defaultProfile Default profile values
 	 */
-	private readonly defaultProfile: IControllerPinConfig = {
+	private readonly defaultProfile: IqrfGatewayControllerMapping = {
 		name: '',
-		deviceType: ConfigDeviceType.ADAPTER,
+		deviceType: MappingDeviceType.Adapter,
 		greenLed: 0,
 		redLed: 0,
 		button: 0,

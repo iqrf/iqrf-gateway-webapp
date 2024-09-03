@@ -4,11 +4,21 @@
 	"type": "object",
 	"title": "Scheduler messagings",
 	"required": [
+		"mq",
 		"mqtt",
 		"ws"
 	],
 	"additionalProperties": false,
 	"properties": {
+		"mq": {
+			"title": "MQ messagings",
+			"type": "array",
+			"additionalItems": false,
+			"items": {
+				"title": "MQ messaging instance",
+				"type": "string"
+			}
+		},
 		"mqtt": {
 			"title": "MQTT messagings",
 			"type": "array",

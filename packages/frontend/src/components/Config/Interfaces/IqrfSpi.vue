@@ -221,21 +221,26 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
+import {
+	IqrfGatewayDaemonService
+} from '@iqrf/iqrf-gateway-webapp-client/services/Config';
+import {UserRole} from '@iqrf/iqrf-gateway-webapp-client/types';
+import {
+	IqrfGatewayDaemonComponent,
+	IqrfGatewayDaemonComponentName,
+	IqrfGatewayDaemonMapping,
+	IqrfGatewayDaemonSpi,
+	MappingType
+} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import {AxiosError} from 'axios';
+import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import {integer, required} from 'vee-validate/dist/rules';
 import {Component, Vue} from 'vue-property-decorator';
+
 import InterfaceMappings from '@/components/Config/Interfaces/InterfaceMappings.vue';
 import InterfacePorts from '@/components/Config/Interfaces/InterfacePorts.vue';
-import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-
 import {extendedErrorToast} from '@/helpers/errorToast';
-import {integer, required} from 'vee-validate/dist/rules';
-import {MappingType} from '@/enums/Config/ConfigurationProfiles';
-
-import DaemonConfigurationService from '@/services/DaemonConfigurationService';
-
-import {AxiosError, AxiosResponse} from 'axios';
-import {IIqrfSpi} from '@/interfaces/Config/IqrfInterfaces';
-import {IMapping} from '@/interfaces/Config/Mapping';
-import {UserRole} from '@iqrf/iqrf-gateway-webapp-client/types';
+import {useApiClient} from '@/services/ApiClient';
 
 @Component({
 	components: {
@@ -254,10 +259,10 @@ import {UserRole} from '@iqrf/iqrf-gateway-webapp-client/types';
  */
 export default class IqrfSpi extends Vue {
 	/**
-	 * @var {IIqrfSpi} configuration SPI component instance configuration
+	 * @var {IqrfGatewayDaemonSpi} configuration SPI component instance configuration
 	 */
-	private configuration: IIqrfSpi = {
-		component: 'iqrf::IqrfSpi',
+	private configuration: IqrfGatewayDaemonSpi = {
+		component: IqrfGatewayDaemonComponentName.IqrfSpi,
 		instance: '',
 		IqrfInterface: '',
 		powerEnableGpioPin: 0,
@@ -275,9 +280,9 @@ export default class IqrfSpi extends Vue {
 	private useAdditionalPins = false;
 
 	/**
-	 * @constant {string} componentName SPI component name, used for REST API communication
+	 * @constant {IqrfGatewayDaemonComponentName} componentName SPI component name, used for REST API communication
 	 */
-	private componentName = 'iqrf::IqrfSpi';
+	private componentName = IqrfGatewayDaemonComponentName.IqrfSpi;
 
 	/**
 	 * @var {string} instance SPI component instance name, used for REST API communication
@@ -288,6 +293,11 @@ export default class IqrfSpi extends Vue {
 	 * @var {boolean} loadFailed Indicates whether configuration fetch failed
 	 */
 	private loadFailed = false;
+
+	/**
+	 * @property {IqrfGatewayDaemonService} service IQRF Gateway Daemon configuration service
+	 */
+	private readonly service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
 
 	/**
 	 * Vue lifecycle hook created
@@ -316,11 +326,11 @@ export default class IqrfSpi extends Vue {
 	 * Retrieves configuration of IQRF SPI interface component
 	 */
 	private getConfig(): Promise<void> {
-		return DaemonConfigurationService.getComponent(this.componentName)
-			.then((response: AxiosResponse) => {
-				if (response.data.instances.length > 0) {
-					this.instance = response.data.instances[0].instance;
-					const config: IIqrfSpi = response.data.instances[0];
+		return this.service.getComponent(IqrfGatewayDaemonComponentName.IqrfSpi)
+			.then((response: IqrfGatewayDaemonComponent<IqrfGatewayDaemonComponentName.IqrfSpi>) => {
+				if (response.instances.length > 0) {
+					this.instance = response.instances[0].instance;
+					const config: IqrfGatewayDaemonSpi = response.instances[0];
 					this.useAdditionalPins = !(config.i2cEnableGpioPin === undefined && config.spiEnableGpioPin === undefined && config.uartEnableGpioPin === undefined);
 					this.configuration = config;
 				}
@@ -336,7 +346,7 @@ export default class IqrfSpi extends Vue {
 	 * Saves new or updates existing configuration of IQRF SPI interface component instance
 	 */
 	private saveConfig(): void {
-		const config: IIqrfSpi = JSON.parse(JSON.stringify(this.configuration));
+		const config: IqrfGatewayDaemonSpi = JSON.parse(JSON.stringify(this.configuration));
 		if (!this.useAdditionalPins) {
 			delete config.i2cEnableGpioPin;
 			delete config.spiEnableGpioPin;
@@ -344,11 +354,11 @@ export default class IqrfSpi extends Vue {
 		}
 		this.$store.commit('spinner/SHOW');
 		if (this.instance !== '') {
-			DaemonConfigurationService.updateInstance(this.componentName, this.instance, config)
+			this.service.updateInstance(this.componentName, this.instance, config)
 				.then(this.handleSuccess)
 				.catch(this.handleFailure);
 		} else {
-			DaemonConfigurationService.createInstance(this.componentName, config)
+			this.service.createInstance(this.componentName, config)
 				.then(this.handleSuccess)
 				.catch(this.handleFailure);
 		}
@@ -375,9 +385,9 @@ export default class IqrfSpi extends Vue {
 
 	/**
 	 * Updates pin configuration from mapping
-	 * @param {IMapping} mapping Board mapping
+	 * @param {IqrfGatewayDaemonMapping} mapping Board mapping
 	 */
-	private updateMapping(mapping: IMapping): void {
+	private updateMapping(mapping: IqrfGatewayDaemonMapping): void {
 		this.configuration.IqrfInterface = mapping.IqrfInterface;
 		this.configuration.powerEnableGpioPin = mapping.powerEnableGpioPin;
 		this.configuration.pgmSwitchGpioPin = mapping.pgmSwitchGpioPin;

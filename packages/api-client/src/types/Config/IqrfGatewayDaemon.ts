@@ -36,6 +36,8 @@ export enum IqrfGatewayDaemonComponentName {
 	IqrfJsonDpaApiRaw = 'iqrf::JsonDpaApiRaw',
 	/// JSON splitter component
 	IqrfJsonSplitter = 'iqrf::JsonSplitter',
+	/// MQ messaging component
+	IqrfMqMessaging = 'iqrf::MqMessaging',
 	/// MQTT messaging component
 	IqrfMqttMessaging = 'iqrf::MqttMessaging',
 	/// IQRF SPI component
@@ -187,6 +189,18 @@ export interface IqrfGatewayDaemonJsonSplitterV3 extends IqrfGatewayDaemonCompon
 	messagingList: MessagingInstance[];
 	/// Validate outgoing responses
 	validateJsonResponse: boolean;
+}
+
+/**
+ * IQRF Gateway Daemon MqMessaging component configuration
+ */
+export interface IqrfGatewayDaemonMqMessaging extends IqrfGatewayDaemonComponentInstanceBase<IqrfGatewayDaemonComponentName.IqrfMqMessaging> {
+	/// Accept asynchronous messages
+	acceptAsyncMsg: boolean,
+	/// Server message queue
+	LocalMqName: string,
+	/// Client message queue
+	RemoteMqName: string,
 }
 
 /**
@@ -408,6 +422,7 @@ export interface IqrfGatewayDaemonComponentInstanceConfigurations {
 	[IqrfGatewayDaemonComponentName.IqrfJsCache]: IqrfGatewayDaemonJsCache;
 	[IqrfGatewayDaemonComponentName.IqrfJsonDpaApiRaw]: IqrfGatewayDaemonJsonDpaApiRaw;
 	[IqrfGatewayDaemonComponentName.IqrfJsonSplitter]: IqrfGatewayDaemonJsonSplitter | IqrfGatewayDaemonJsonSplitterV3;
+	[IqrfGatewayDaemonComponentName.IqrfMqMessaging]: IqrfGatewayDaemonMqMessaging;
 	[IqrfGatewayDaemonComponentName.IqrfMqttMessaging]: IqrfGatewayDaemonMqttMessaging;
 	[IqrfGatewayDaemonComponentName.IqrfSpi]: IqrfGatewayDaemonSpi;
 	[IqrfGatewayDaemonComponentName.IqrfUart]: IqrfGatewayDaemonUart;
@@ -496,6 +511,8 @@ export interface IqrfGatewayDaemonMapping {
  * IQRF Gateway Daemon scheduler messaging instances
  */
 export interface IqrfGatewayDaemonSchedulerMessagings {
+	/// MQ messaging instances
+	mq: string[],
 	/// MQTT messaging instances
 	mqtt: string[],
 	/// WS messaging instances

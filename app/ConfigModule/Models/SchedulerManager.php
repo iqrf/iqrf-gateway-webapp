@@ -185,14 +185,16 @@ class SchedulerManager {
 
 	/**
 	 * Returns messaging instances
-	 * @return array<string, array<string>> Messaging instances
+	 * @return array{mq: array<string>, mqtt: array<string>, ws: array<string>} Messaging instances
 	 */
 	public function getMessagings(): array {
 		$searched = [
+			'mq' => 'iqrf::MqMessaging',
 			'mqtt' => 'iqrf::MqttMessaging',
 			'ws' => 'iqrf::WebsocketMessaging',
 		];
 		$found = [
+			'mq' => [],
 			'mqtt' => [],
 			'ws' => [],
 		];

@@ -84,19 +84,24 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
+import {
+	IqrfGatewayDaemonService
+} from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import {UserRole} from '@iqrf/iqrf-gateway-webapp-client/types';
-import {AxiosError, AxiosResponse} from 'axios';
+import {
+	IqrfGatewayDaemonCdc,
+	IqrfGatewayDaemonComponent,
+	IqrfGatewayDaemonComponentName,
+	MappingType,
+} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import {AxiosError} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 import {Component, Vue} from 'vue-property-decorator';
 
 import InterfacePorts from '@/components/Config/Interfaces/InterfacePorts.vue';
-
 import {extendedErrorToast} from '@/helpers/errorToast';
-import {MappingType} from '@/enums/Config/ConfigurationProfiles';
-
-import DaemonConfigurationService from '@/services/DaemonConfigurationService';
-import {IIqrfCdc} from '@/interfaces/Config/IqrfInterfaces';
+import {useApiClient} from '@/services/ApiClient';
 
 @Component({
 	components: {
@@ -114,15 +119,15 @@ import {IIqrfCdc} from '@/interfaces/Config/IqrfInterfaces';
  */
 export default class IqrfCdc extends Vue {
 	/**
-	 * @constant {string} componentName IQRF CDC interface component name
+	 * @constant {IqrfGatewayDaemonComponentName.IqrfCdc} componentName IQRF CDC interface component name
 	 */
-	private componentName = 'iqrf::IqrfCdc';
+	private componentName = IqrfGatewayDaemonComponentName.IqrfCdc;
 
 	/**
-	 * @var {IIqrfCdc} configuration IQRF CDC interface instance configuration
+	 * @var {IqrfGatewayDaemonCdc} configuration IQRF CDC interface instance configuration
 	 */
-	private configuration: IIqrfCdc = {
-		component: '',
+	private configuration: IqrfGatewayDaemonCdc = {
+		component: IqrfGatewayDaemonComponentName.IqrfCdc,
 		instance: '',
 		IqrfInterface: '',
 	};
@@ -136,6 +141,11 @@ export default class IqrfCdc extends Vue {
 	 * @var {boolean} loadFailed Indicates whether configuration fetch failed
 	 */
 	private loadFailed = false;
+
+	/**
+	 * @property {IqrfGatewayDaemonService} service IQRF Gateway Daemon configuration service
+	 */
+	private readonly service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
 
 	/**
 	 * Checks if user is an administrator
@@ -163,10 +173,10 @@ export default class IqrfCdc extends Vue {
 	 * Retrieves configuration of IQRF CDC interface component
 	 */
 	private getConfig(): Promise<void> {
-		return DaemonConfigurationService.getComponent(this.componentName)
-			.then((response: AxiosResponse) => {
-				if (response.data.instances.length > 0) {
-					this.configuration = response.data.instances[0];
+		return this.service.getComponent(IqrfGatewayDaemonComponentName.IqrfCdc)
+			.then((response: IqrfGatewayDaemonComponent<IqrfGatewayDaemonComponentName.IqrfCdc>): void => {
+				if (response.instances.length > 0) {
+					this.configuration = response.instances[0];
 					this.instance = this.configuration.instance;
 				}
 				this.$emit('fetched', {name: 'iqrfCdc', success: true});
@@ -183,11 +193,11 @@ export default class IqrfCdc extends Vue {
 	private saveConfig(): void {
 		this.$store.commit('spinner/SHOW');
 		if (this.instance !== '') {
-			DaemonConfigurationService.updateInstance(this.componentName, this.instance, this.configuration)
+			this.service.updateInstance(this.componentName, this.instance, this.configuration)
 				.then(this.handleSuccess)
 				.catch(this.handleFailure);
 		} else {
-			DaemonConfigurationService.createInstance(this.componentName, this.configuration)
+			this.service.createInstance(this.componentName, this.configuration)
 				.then(this.handleSuccess)
 				.catch(this.handleFailure);
 		}

@@ -90,17 +90,23 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
-import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import {
+	IqrfGatewayDaemonService,
+} from '@iqrf/iqrf-gateway-webapp-client/services/Config';
+import {
+	IqrfGatewayDaemonComponentInstanceConfiguration,
+	IqrfGatewayDaemonComponentName,
+	IqrfGatewayDaemonMqMessaging,
+} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import { AxiosError } from 'axios';
+import { extend, ValidationObserver, ValidationProvider } from 'vee-validate';
+import { required } from 'vee-validate/dist/rules';
+import { MetaInfo } from 'vue-meta';
+import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import {daemonInstanceName} from '@/helpers/validators';
-import {extendedErrorToast} from '@/helpers/errorToast';
-import {required} from 'vee-validate/dist/rules';
-import DaemonConfigurationService from '@/services/DaemonConfigurationService';
-
-import {AxiosError, AxiosResponse} from 'axios';
-import {IMqInstance} from '@/interfaces/Config/Messaging';
-import {MetaInfo} from 'vue-meta';
+import { daemonInstanceName } from '@/helpers/validators';
+import { extendedErrorToast } from '@/helpers/errorToast';
+import { useApiClient } from '@/services/ApiClient';
 
 @Component({
 	components: {
@@ -119,20 +125,25 @@ import {MetaInfo} from 'vue-meta';
  */
 export default class MqMessagingForm extends Vue {
 	/**
-	 * @constant {string} componentName MQ messaging component name
+	 * @constant {IqrfGatewayDaemonComponentName} componentName MQ messaging component name
 	 */
-	private componentName = 'iqrf::MqMessaging';
+	private componentName = IqrfGatewayDaemonComponentName.IqrfMqMessaging;
 
 	/**
-	 * @var {MqInstance} configuration MQ messaging component instance configuration
+	 * @var {IqrfGatewayDaemonMqMessaging} configuration MQ messaging component instance configuration
 	 */
-	private configuration: IMqInstance = {
-		component: '',
+	private configuration: IqrfGatewayDaemonMqMessaging = {
+		component: IqrfGatewayDaemonComponentName.IqrfMqMessaging,
 		instance: '',
 		LocalMqName: '',
 		RemoteMqName: '',
 		acceptAsyncMsg: false,
 	};
+
+	/**
+	 * @property {IqrfGatewayDaemonService} service IQRF Gateway Daemon service
+	 */
+	private readonly service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
 
 	/**
 	 * @property {string} instance MQ messaging component instance name
@@ -177,10 +188,10 @@ export default class MqMessagingForm extends Vue {
 	 */
 	private getConfig(): void  {
 		this.$store.commit('spinner/SHOW');
-		DaemonConfigurationService.getInstance(this.componentName, this.instance)
-			.then((response: AxiosResponse) => {
+		this.service.getInstance(IqrfGatewayDaemonComponentName.IqrfMqMessaging, this.instance)
+			.then((response: IqrfGatewayDaemonComponentInstanceConfiguration<IqrfGatewayDaemonComponentName.IqrfMqMessaging>) => {
 				this.$store.commit('spinner/HIDE');
-				this.configuration = response.data;
+				this.configuration = response;
 			})
 			.catch((error: AxiosError) => {
 				extendedErrorToast(error, 'config.daemon.messagings.mq.messages.fetchFailed', {instance: this.instance});
@@ -194,11 +205,11 @@ export default class MqMessagingForm extends Vue {
 	private saveConfig(): void  {
 		this.$store.commit('spinner/SHOW');
 		if (this.instance !== '') {
-			DaemonConfigurationService.updateInstance(this.componentName, this.instance, this.configuration)
+			this.service.updateInstance(this.componentName, this.instance, this.configuration)
 				.then(() => this.successfulSave())
 				.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.messagings.mq.messages.editFailed', {instance: this.instance}));
 		} else {
-			DaemonConfigurationService.createInstance(this.componentName, this.configuration)
+			this.service.createInstance(this.componentName, this.configuration)
 				.then(() => this.successfulSave())
 				.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.messagings.mq.messages.addFailed'));
 		}

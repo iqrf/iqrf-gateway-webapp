@@ -76,17 +76,21 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
+import {
+	IqrfGatewayDaemonMapping,
+	MappingDeviceType,
+	MappingType,
+} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import {AxiosError} from 'axios';
 import {Component, Prop} from 'vue-property-decorator';
+
 import InterfaceMappingGroup from '@/components/Config/Interfaces/InterfaceMappingGroup.vue';
 import ModalBase from '@/components/ModalBase.vue';
-
 import {extendedErrorToast} from '@/helpers/errorToast';
-import {ConfigDeviceType, MappingType} from '@/enums/Config/ConfigurationProfiles';
-
-import MappingService from '@/services/MappingService';
-
-import {AxiosError} from 'axios';
-import {IMapping} from '@/interfaces/Config/Mapping';
+import {useApiClient} from '@/services/ApiClient';
+import {
+	IqrfGatewayDaemonService
+} from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 
 @Component({
 	components: {
@@ -110,9 +114,9 @@ export default class InterfaceMappings extends ModalBase {
 	private loading = false;
 
 	/**
-	 * @var {Array<IMapping>} mappings Array of mappings
+	 * @var {Array<IqrfGatewayDaemonMapping>} mappings Array of mappings
 	 */
-	private mappings: Array<IMapping> = [];
+	private mappings: Array<IqrfGatewayDaemonMapping> = [];
 
 	/**
 	 * @var {number} activeTab Currently selected tab
@@ -120,19 +124,24 @@ export default class InterfaceMappings extends ModalBase {
 	private activeTab = 0;
 
 	/**
-	 * Computes adapter mapping options
-	 * @return {Array<IMapping>} Adapter mappings
+	 * @property {IqrfGatewayDaemonService} service IQRF Gateway Daemon configuration service
 	 */
-	get adapterMappings(): Array<IMapping> {
-		return this.mappings.filter((mapping: IMapping): boolean => mapping.deviceType === ConfigDeviceType.ADAPTER);
+	private readonly service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
+
+	/**
+	 * Computes adapter mapping options
+	 * @return {Array<IqrfGatewayDaemonMapping>} Adapter mappings
+	 */
+	get adapterMappings(): Array<IqrfGatewayDaemonMapping> {
+		return this.mappings.filter((mapping: IqrfGatewayDaemonMapping): boolean => mapping.deviceType === MappingDeviceType.Adapter);
 	}
 
 	/**
 	 * Computes board mapping options
-	 * @return {Array<IMapping>} Board mappings
+	 * @return {Array<IqrfGatewayDaemonMapping>} Board mappings
 	 */
-	get boardMappings(): Array<IMapping> {
-		return this.mappings.filter((mapping: IMapping): boolean => mapping.deviceType === ConfigDeviceType.BOARD);
+	get boardMappings(): Array<IqrfGatewayDaemonMapping> {
+		return this.mappings.filter((mapping: IqrfGatewayDaemonMapping): boolean => mapping.deviceType === MappingDeviceType.Board);
 	}
 
 	/**
@@ -147,8 +156,8 @@ export default class InterfaceMappings extends ModalBase {
 	 */
 	private getMappings(): Promise<void> {
 		this.loading = true;
-		return MappingService.getMappings(this.interfaceType)
-			.then((mappings: Array<IMapping>) => {
+		return this.service.listMappings(this.interfaceType)
+			.then((mappings: Array<IqrfGatewayDaemonMapping>) => {
 				this.mappings = mappings;
 				this.loading = false;
 			})
@@ -163,7 +172,7 @@ export default class InterfaceMappings extends ModalBase {
 	 * @param {number} id Mapping profile ID
 	 */
 	private setMapping(id: number): void {
-		const mapping = this.mappings.find((mapping: IMapping) => mapping.id === id);
+		const mapping = this.mappings.find((mapping: IqrfGatewayDaemonMapping) => mapping.id === id);
 		if (mapping !== undefined) {
 			this.$emit('update-mapping', mapping);
 		}

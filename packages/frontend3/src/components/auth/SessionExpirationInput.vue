@@ -34,7 +34,7 @@ import i18n from '@/plugins/i18n';
 import { type SelectItem } from '@/types/vuetify';
 
 const modelValue = defineModel({
-	type: [String, null] as PropType<string|null>,
+	type: String as PropType<UserSessionExpiration>,
 	required: true,
 });
 const options: Ref<SelectItem[]> = computed((): SelectItem[] => {

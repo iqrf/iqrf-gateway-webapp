@@ -70,16 +70,22 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import { Component, Vue } from 'vue-property-decorator';
+import {
+	IqrfGatewayDaemonService
+} from '@iqrf/iqrf-gateway-webapp-client/services/Config';
+import { UserRole } from '@iqrf/iqrf-gateway-webapp-client/types';
+import {
+	IqrfGatewayDaemonComponent,
+	IqrfGatewayDaemonComponentName,
+	IqrfGatewayDaemonDb
+} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import { AxiosError } from 'axios';
 import { extend, ValidationObserver, ValidationProvider } from 'vee-validate';
+import { required } from 'vee-validate/dist/rules';
+import { Component, Vue } from 'vue-property-decorator';
 
 import { extendedErrorToast } from '@/helpers/errorToast';
-import { required } from 'vee-validate/dist/rules';
-import DaemonConfigurationService from '@/services/DaemonConfigurationService';
-
-import { AxiosError, AxiosResponse } from 'axios';
-import { IIqrfDb } from '@/interfaces/Config/Misc';
-import {UserRole} from '@iqrf/iqrf-gateway-webapp-client/types';
+import { useApiClient } from '@/services/ApiClient';
 
 @Component({
 	components: {
@@ -92,7 +98,7 @@ export default class IqrfDb extends Vue {
 	/**
 	 * @constant {string} name IQRF DB component name
 	 */
-	private name = 'iqrf::IqrfDb';
+	private name = IqrfGatewayDaemonComponentName.IqrfDb;
 
 	/**
 	 * @var {string} instance IQRF DB component instance name
@@ -100,10 +106,10 @@ export default class IqrfDb extends Vue {
 	private instance = '';
 
 	/**
-	 * @var {IIqrfDb} config IQRF DB component configuration
+	 * @var {IqrfGatewayDaemonDb} config IQRF DB component configuration
 	 */
-	private config: IIqrfDb = {
-		component: '',
+	private config: IqrfGatewayDaemonDb = {
+		component: IqrfGatewayDaemonComponentName.IqrfDb,
 		instance: '',
 		autoEnumerateBeforeInvoked: false,
 		enumerateOnLaunch: false,
@@ -119,6 +125,11 @@ export default class IqrfDb extends Vue {
 	 * @var {boolean} loading Flag for loading state
 	 */
 	private loading = false;
+
+	/**
+	 * @property {IqrfGatewayDaemonService} service IQRF Gateway Daemon service
+	 */
+	private readonly service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
 
 	/**
 	 * Checks if user is an administrator
@@ -147,10 +158,10 @@ export default class IqrfDb extends Vue {
 	 * Retrieves IQRF DB component configuration
 	 */
 	private getConfig(): Promise<void> {
-		return DaemonConfigurationService.getComponent(this.name)
-			.then((response: AxiosResponse) => {
-				if (response.data.instances.length > 0) {
-					this.config = response.data.instances[0];
+		return this.service.getComponent(IqrfGatewayDaemonComponentName.IqrfDb)
+			.then((response: IqrfGatewayDaemonComponent<IqrfGatewayDaemonComponentName.IqrfDb>) => {
+				if (response.instances.length > 0) {
+					this.config = response.instances[0];
 					this.instance = this.config.instance;
 				}
 				this.loading = false;
@@ -172,11 +183,11 @@ export default class IqrfDb extends Vue {
 	private saveConfig(): void {
 		this.$store.commit('spinner/SHOW');
 		if (this.instance.length > 0) {
-			DaemonConfigurationService.updateInstance(this.name, this.instance, this.config)
+			this.service.updateInstance(this.name, this.instance, this.config)
 				.then(this.handleSuccess)
 				.catch(this.handleFailure);
 		} else {
-			DaemonConfigurationService.createInstance(this.name, this.config)
+			this.service.createInstance(this.name, this.config)
 				.then(this.handleSuccess)
 				.catch(this.handleFailure);
 		}

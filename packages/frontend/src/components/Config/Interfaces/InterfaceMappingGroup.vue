@@ -93,14 +93,14 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
+import {
+	IqrfGatewayDaemonMapping, MappingDeviceType, MappingType
+} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import {Component, Prop, PropSync, Vue} from 'vue-property-decorator';
+import {DataTableHeader} from 'vuetify';
+
 import MappingDeleteModal from '@/components/Config/Interfaces/MappingDeleteModal.vue';
 import MappingFormModal from '@/components/Config/Interfaces/MappingFormModal.vue';
-
-import {ConfigDeviceType, MappingType} from '@/enums/Config/ConfigurationProfiles';
-
-import {DataTableHeader} from 'vuetify';
-import {IMapping} from '@/interfaces/Config/Mapping';
 
 @Component({
 	components: {
@@ -114,9 +114,9 @@ import {IMapping} from '@/interfaces/Config/Mapping';
  */
 export default class InterfaceMappingGroup extends Vue {
 	/**
-	 * @property {Array<IMapping>} _mappings Mapping profiles
+	 * @property {Array<IqrfGatewayDaemonMapping>} _mappings Mapping profiles
 	 */
-	@PropSync('mappings', {type: Array, default: []}) _mappings!: Array<IMapping>;
+	@PropSync('mappings', {type: Array, default: []}) _mappings!: Array<IqrfGatewayDaemonMapping>;
 
 	/**
 	 * @property {boolean} loading Data table loading status
@@ -124,22 +124,22 @@ export default class InterfaceMappingGroup extends Vue {
 	@Prop({required: false, default: false}) loading!: boolean;
 
 	/**
-	 * @var {IMapping|null} mappingFormModel Form mapping model
+	 * @var {IqrfGatewayDaemonMapping|null} mappingFormModel Form mapping model
 	 */
-	private mappingFormModel: IMapping|null = null;
+	private mappingFormModel: IqrfGatewayDaemonMapping|null = null;
 
 	/**
-	 * @var {IMapping|null} mappingDeleteModel Mapping to delete
+	 * @var {IqrfGatewayDaemonMapping|null} mappingDeleteModel Mapping to delete
 	 */
-	private mappingDeleteModel: IMapping|null = null;
+	private mappingDeleteModel: IqrfGatewayDaemonMapping|null = null;
 
 	/**
-	 * @constant {IMapping} defaultMapping Default mapping values
+	 * @constant {IqrfGatewayDaemonMapping} defaultMapping Default mapping values
 	 */
-	private readonly defaultMapping: IMapping = {
+	private readonly defaultMapping: IqrfGatewayDaemonMapping = {
 		name: '',
 		type: MappingType.SPI,
-		deviceType: ConfigDeviceType.ADAPTER,
+		deviceType: MappingDeviceType.Adapter,
 		IqrfInterface: '',
 		powerEnableGpioPin: 0,
 		busEnableGpioPin: 0,

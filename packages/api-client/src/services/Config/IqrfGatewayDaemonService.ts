@@ -73,6 +73,22 @@ export class IqrfGatewayDaemonService extends BaseService {
 	}
 
 	/**
+	 * Retrieves IQRF Gateway Daemon component instance configuration
+	 * @template C Component name
+	 * @param {C} component Component name
+	 * @param {string} instance Daemon component instance name
+	 * @return {Promise<IqrfGatewayDaemonComponentInstanceConfiguration<C>>} IQRF Gateway Daemon component configuration with instances
+	 */
+	public async getInstance<C extends IqrfGatewayDaemonComponentName>(
+		component: C,
+		instance: string,
+	): Promise<IqrfGatewayDaemonComponentInstanceConfiguration<C>> {
+		const response: AxiosResponse<IqrfGatewayDaemonComponentInstanceConfiguration<C>> =
+			await this.axiosInstance.get(`/config/daemon/${encodeURIComponent(component)}/${encodeURIComponent(instance)}`);
+		return response.data;
+	}
+
+	/**
 	 * Updates the component instance configuration
 	 * @template C Component name
 	 * @param {C} component Daemon component name

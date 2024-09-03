@@ -110,7 +110,7 @@ onMounted(fetch);
 </script>
 
 <style lang='scss'>
-@import url('swagger-ui/dist/swagger-ui.css');
+@import url('swagger-ui-dist/swagger-ui.css');
 
 .v-theme--dark {
 	.swagger-ui {

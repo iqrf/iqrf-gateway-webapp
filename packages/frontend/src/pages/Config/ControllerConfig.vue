@@ -468,17 +468,20 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
+import {
+	IqrfGatewayControllerService
+} from '@iqrf/iqrf-gateway-webapp-client/services/Config';
+import {
+	IqrfGatewayControllerConfig
+} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import {AxiosError} from 'axios';
 import {Component, Vue} from 'vue-property-decorator';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import ControllerPinConfigs from '@/components/Config/Controller/ControllerPinConfigs.vue';
-
 import {between, integer, required} from 'vee-validate/dist/rules';
-import {controllerErrorToast, extendedErrorToast} from '@/helpers/errorToast';
-import FeatureConfigService from '@/services/FeatureConfigService';
-
-import {AxiosError, AxiosResponse} from 'axios';
-import {IController, IControllerPinConfig} from '@/interfaces/Config/Controller';
 import {NavigationGuardNext, Route} from 'vue-router';
+
+import ControllerPinConfigs from '@/components/Config/Controller/ControllerPinConfigs.vue';
+import {controllerErrorToast, extendedErrorToast} from '@/helpers/errorToast';
 import { ISelectItem } from '@/interfaces/Vuetify';
 import {useApiClient} from '@/services/ApiClient';
 
@@ -514,9 +517,9 @@ export default class ControllerConfig extends Vue {
 	private readonly name = 'controller';
 
 	/**
-	 * @var {IController} config IQRF Gateway Controller configuration
+	 * @var {IqrfGatewayControllerConfig} config IQRF Gateway Controller configuration
 	 */
-	private config: IController = {
+	private config: IqrfGatewayControllerConfig = {
 		daemonApi: {
 			autoNetwork: {
 				actionRetries: 1,
@@ -574,7 +577,7 @@ export default class ControllerConfig extends Vue {
 	private useI2cPins = false;
 
 	/**
-	 * @constant {Array<IOption>} apiCallOptions API call options
+	 * @constant {Array<ISelectItem>} apiCallOptions API call options
 	 */
 	private readonly apiCallOptions: Array<ISelectItem> = [
 		{
@@ -590,6 +593,11 @@ export default class ControllerConfig extends Vue {
 			text: this.$t('iqrfnet.networkManager.discovery.title').toString(),
 		}
 	];
+
+	/**
+	 * @property {IqrfGatewayControllerService} service IQRF Gateway Controller service
+	 */
+	private readonly service: IqrfGatewayControllerService = useApiClient().getConfigServices().getIqrfGatewayControllerService();
 
 	/**
 	 * Computes severity options
@@ -630,11 +638,11 @@ export default class ControllerConfig extends Vue {
 			this.$store.commit('spinner/SHOW');
 		}
 		this.$store.commit('spinner/SHOW');
-		FeatureConfigService.getConfig(this.name)
-			.then((response: AxiosResponse) => {
+		this.service.getConfig()
+			.then((response: IqrfGatewayControllerConfig) => {
 				this.$store.commit('spinner/HIDE');
-				this.config = response.data;
-				if (response.data.powerOff !== undefined) {
+				this.config = response;
+				if (response.powerOff.sck !== -1 && response.powerOff.sda !== -1) {
 					this.useI2cPins = true;
 				}
 			})
@@ -648,12 +656,13 @@ export default class ControllerConfig extends Vue {
 	 * Updates the configuration of IQRF Gateway Controller
 	 */
 	private save(): void {
-		const config: IController = JSON.parse(JSON.stringify(this.config));
+		const config: IqrfGatewayControllerConfig = JSON.parse(JSON.stringify(this.config));
 		if (!this.useI2cPins) {
-			delete config.powerOff;
+			config.powerOff.sck = -1;
+			config.powerOff.sda = -1;
 		}
 		this.$store.commit('spinner/SHOW');
-		FeatureConfigService.saveConfig(this.name, config)
+		this.service.updateConfig(config)
 			.then(() => {
 				this.restartController();
 			})
@@ -676,9 +685,9 @@ export default class ControllerConfig extends Vue {
 
 	/**
 	 * Updates Controller pin configuration
-	 * @param {IControllerPinConfig} profile Controller pin configuration profile
+	 * @param {IqrfGatewayControllerMapping} profile Controller pin configuration profile
 	 */
-	private updatePinConfig(profile: IControllerPinConfig): void {
+	private updatePinConfig(profile: IqrfGatewayControllerMapping): void {
 		this.config.statusLed = {
 			greenLed: profile.greenLed,
 			redLed: profile.redLed,

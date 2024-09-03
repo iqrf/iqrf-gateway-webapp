@@ -239,32 +239,33 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
+import {
+	IqrfGatewayDaemonComponentName,
+	IqrfGatewayDaemonSchedulerMessagings,
+} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import {AxiosError, AxiosResponse} from 'axios';
+import cron from 'cron-validate';
+import {v4 as uuidv4} from 'uuid';
+import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import {integer, required, min_value} from 'vee-validate/dist/rules';
+import {MetaInfo} from 'vue-meta';
 import {Component, Prop, Vue} from 'vue-property-decorator';
+import {MutationPayload} from 'vuex';
+
 import DateTimePicker from '@/components/DateTimePicker.vue';
 import JsonEditor from '@/components/Config/JsonEditor.vue';
 import JsonSchemaErrors from '@/components/Config/JsonSchemaErrors.vue';
-import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-
-import cron from 'cron-validate';
 import DaemonApiValidator from '@/helpers/DaemonApiValidator';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 import {extendedErrorToast} from '@/helpers/errorToast';
-import {integer, required, min_value} from 'vee-validate/dist/rules';
 import {uuid_v4} from '@/helpers/validators';
 import {mType} from '@/helpers/validationRules/Daemon';
-import {v4 as uuidv4} from 'uuid';
 import SchedulerRecord from '@/helpers/SchedulerRecord';
 import {TimeSpecTypes} from '@/enums/Config/Scheduler';
-
-import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 import SchedulerService from '@/services/SchedulerService';
-
-import {AxiosError, AxiosResponse} from 'axios';
 import {ISchedulerRecord, ISchedulerRecordTask} from '@/interfaces/DaemonApi/Scheduler';
-import {IWsMessaging} from '@/interfaces/Config/Messaging';
-import {MetaInfo} from 'vue-meta';
-import {MutationPayload} from 'vuex';
 import { ISelectItem } from '@/interfaces/Vuetify';
+import {useApiClient} from '@/services/ApiClient';
 
 @Component({
 	components: {
@@ -370,12 +371,12 @@ export default class SchedulerForm extends Vue {
 	private useRest = true;
 
 	/**
-	 * @constant {Record<string, string>} components Names of messaging components
+	 * @constant {Record<string, IqrfGatewayDaemonComponentName>} components Names of messaging components
 	 */
-	private components: Record<string, string> = {
-		mq: 'iqrf::MqMessaging',
-		mqtt: 'iqrf::MqttMessaging',
-		websocket: 'iqrf::WebsocketMessaging'
+	private components: Record<string, IqrfGatewayDaemonComponentName> = {
+		mq: IqrfGatewayDaemonComponentName.IqrfMqMessaging,
+		mqtt: IqrfGatewayDaemonComponentName.IqrfMqttMessaging,
+		websocket: IqrfGatewayDaemonComponentName.IqrfWsMessaging,
 	};
 
 	/**
@@ -501,24 +502,30 @@ export default class SchedulerForm extends Vue {
 	 */
 	private getMessagings(): void {
 		this.$store.commit('spinner/SHOW');
-		Promise.all([
-			DaemonConfigurationService.getComponent(this.components.mq),
-			DaemonConfigurationService.getComponent(this.components.mqtt),
-			DaemonConfigurationService.getComponent(this.components.websocket),
-		])
-			.then((responses: Array<AxiosResponse>) => {
-				this.$store.commit('spinner/HIDE');
-				responses.forEach((item: AxiosResponse) => {
-					if (item.data.instances) {
-						item.data.instances.forEach((messaging: IWsMessaging) => {
-							this.messagings.push({
-								value: messaging.instance, text: messaging.instance,
-							});
-						});
-					}
-				});
+		useApiClient().getConfigServices().getIqrfGatewayDaemonService().getSchedulerMessagings()
+			.then((messagings: IqrfGatewayDaemonSchedulerMessagings): void => {
+				const mqOptions = messagings.mq.map((item: string): ISelectItem => ({
+					text: `[MQ] ${item}`,
+					value: item,
+				}));
+				const mqttOptions = messagings.mqtt.map((item: string): ISelectItem => ({
+					text: `[MQTT] ${item}`,
+					value: item,
+				}));
+				const wsOptions = messagings.ws.map((item: string): ISelectItem => ({
+					text: `[WS] ${item}`,
+					value: item,
+				}));
+				this.messagings = [
+					...mqOptions,
+					...mqttOptions,
+					...wsOptions,
+				];
+				console.warn(this.messagings);
 			})
 			.catch((error: AxiosError) => {
+				this.$store.commit('spinner/HIDE');
+				console.error(error);
 				extendedErrorToast(error, 'config.daemon.scheduler.messages.messagingFailed');
 				this.$router.push('/config/daemon/scheduler/');
 			});

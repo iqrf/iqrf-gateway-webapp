@@ -130,22 +130,25 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import DateTimePicker from '@/components/DateTimePicker.vue';
-
-import ip from 'ip-regex';
-import isFQDN from 'is-fqdn';
+import {TimeService} from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
+import {
+	TimeConfig,
+	TimeSet,
+	Timezone
+} from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
+import {AxiosError} from 'axios';
 import {DateTime} from 'luxon';
-import {extendedErrorToast} from '@/helpers/errorToast';
+import isFQDN from 'is-fqdn';
+import ip from 'ip-regex';
+import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
+import {Component, Vue} from 'vue-property-decorator';
+
+import DateTimePicker from '@/components/DateTimePicker.vue';
+import {extendedErrorToast} from '@/helpers/errorToast';
 import {TimeSetOptions} from '@/enums/Gateway/Time';
-
-import TimeService from '@/services/TimeService';
-
-import {AxiosError, AxiosResponse} from 'axios';
 import {ISelectItem} from '@/interfaces/Vuetify';
-import {ITime, ITimezone, ITimeSet} from '@/interfaces/Gateway/Time';
+import {useApiClient} from '@/services/ApiClient';
 
 @Component({
 	components: {
@@ -171,9 +174,9 @@ export default class GatewayTime extends Vue {
 	private loading = false;
 
 	/**
-	 * @var {ITime|null} time Gateway time and location information
+	 * @var {TimeConfig|null} time Gateway time and location information
 	 */
-	private time: ITime|null = null;
+	private time: TimeConfig|null = null;
 
 	/**
 	 * @var {ISelectItem} timezone Currently selected timezone
@@ -218,6 +221,11 @@ export default class GatewayTime extends Vue {
 	private datetime: Date = new Date(0);
 
 	/**
+	 * @property {TimeService} service Time service
+	 */
+	private readonly service: TimeService = useApiClient().getGatewayServices().getTimeService();
+
+	/**
 	 * Initializes validation rules
 	 */
 	created(): void {
@@ -240,12 +248,9 @@ export default class GatewayTime extends Vue {
 	public getTime(): Promise<void> {
 		this.$store.commit('spinner/SHOW');
 		this.loading = true;
-		return TimeService.getTime()
-			.then((response: AxiosResponse) => {
-				this.time = response.data;
-				if (this.time === null) {
-					return;
-				}
+		return this.service.getTime()
+			.then((response: TimeConfig) => {
+				this.time = response;
 				if (this.time.ntpSync) {
 					if (this.time.ntpServers.length === 0) {
 						this.time.ntpServers.push('');
@@ -270,10 +275,10 @@ export default class GatewayTime extends Vue {
 	 * Retrieve list of available timezones
 	 */
 	private getTimezones(): void {
-		TimeService.getTimezones()
-			.then((response: AxiosResponse) => {
+		this.service.listTimezones()
+			.then((response: Timezone[]) => {
 				this.$store.commit('spinner/HIDE');
-				this.parseTimezones(response.data);
+				this.parseTimezones(response);
 				this.loading = false;
 			})
 			.catch((error: AxiosError) => {
@@ -284,9 +289,9 @@ export default class GatewayTime extends Vue {
 
 	/**
 	 * Reads timezones information and creates select options
-	 * @param {Array<ITimezone>} timezones Array of timezones information from REST API
+	 * @param {Array<Timezone>} timezones Array of timezones information from REST API
 	 */
-	private parseTimezones(timezones: Array<ITimezone>): void {
+	private parseTimezones(timezones: Array<Timezone>): void {
 		const timezoneArray: ISelectItem[] = [];
 		for (const timezone of timezones) {
 			timezoneArray.push({
@@ -301,7 +306,7 @@ export default class GatewayTime extends Vue {
 	 * Builds time set request parameters and sets time configuration
 	 */
 	private setTime(): void {
-		const params: ITimeSet = {
+		const params: TimeSet = {
 			ntpSync: this.timeSet === TimeSetOptions.NTP,
 		};
 		if (this.timezone.value !== this.time?.zoneName) {
@@ -314,7 +319,7 @@ export default class GatewayTime extends Vue {
 			params.datetime = luxonDate.toISO();
 		}
 		this.$store.commit('spinner/SHOW');
-		TimeService.setTime(params)
+		this.service.updateTime(params)
 			.then(() => {
 				this.getTime().then(() => {
 					this.$toast.success(

@@ -76,6 +76,7 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
+import { IqrfGatewayControllerService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import { IqrfGatewayControllerMapping } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { MappingDeviceType } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import {AxiosError} from 'axios';
@@ -112,8 +113,13 @@ export default class ControllerPinConfigs extends ModalBase {
 	private profiles: IqrfGatewayControllerMapping[] = [];
 
 	/**
+	 * @property {IqrfGatewayControllerService} service IQRF Gateway Controller service
+	 */
+	private readonly service: IqrfGatewayControllerService = useApiClient().getConfigServices().getIqrfGatewayControllerService();
+
+	/**
 	 * Computes adapter controller profile options
-	 * @return {Array<IControllerPinConfig>} Adapter controller profile options
+	 * @return {Array<IqrfGatewayControllerMapping>} Adapter controller profile options
 	 */
 	get adapterProfiles(): Array<IqrfGatewayControllerMapping> {
 		return this.profiles.filter((profile: IqrfGatewayControllerMapping): boolean => profile.deviceType === MappingDeviceType.Adapter);
@@ -139,7 +145,7 @@ export default class ControllerPinConfigs extends ModalBase {
 	 */
 	private listConfigs(): Promise<void> {
 		this.loading = true;
-		return useApiClient().getConfigServices().getIqrfGatewayControllerService().listMappings()
+		return this.service.listMappings()
 			.then((rsp: IqrfGatewayControllerMapping[]) => {
 				this.profiles = rsp;
 				this.loading = false;
@@ -151,7 +157,7 @@ export default class ControllerPinConfigs extends ModalBase {
 	}
 
 	/**
-	 * Emites pin config update event
+	 * Emits pin config update event
 	 * @param {number} id Config profile ID
 	 */
 	private setProfile(id: number): void {

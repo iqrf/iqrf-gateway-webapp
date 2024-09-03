@@ -72,16 +72,22 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {
+	IqrfGatewayDaemonService
+} from '@iqrf/iqrf-gateway-webapp-client/services/Config';
+import {UserRole} from '@iqrf/iqrf-gateway-webapp-client/types';
+import {
+	IqrfGatewayDaemonComponent,
+	IqrfGatewayDaemonComponentName,
+	IqrfGatewayDaemonDpa
+} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import {AxiosError} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import {integer, min_value, required} from 'vee-validate/dist/rules';
+import {Component, Vue} from 'vue-property-decorator';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
-import {integer, min_value, required} from 'vee-validate/dist/rules';
-import DaemonConfigurationService from '@/services/DaemonConfigurationService';
-
-import {AxiosError, AxiosResponse} from 'axios';
-import {IIqrfDpa} from '@/interfaces/Config/IqrfInterfaces';
-import {UserRole} from '@iqrf/iqrf-gateway-webapp-client/types';
+import {useApiClient} from '@/services/ApiClient';
 
 @Component({
 	components: {
@@ -97,13 +103,13 @@ export default class IqrfDpa extends Vue {
 	/**
 	 * @constant {string} componentName IQRF DPA component name
 	 */
-	private componentName = 'iqrf::IqrfDpa';
+	private componentName = IqrfGatewayDaemonComponentName.IqrfDpa;
 
 	/**
-	 * @var {IIqrfDpa} configuration IQRF DPA component instance configuration
+	 * @var {IqrfGatewayDaemonDpa} configuration IQRF DPA component instance configuration
 	 */
-	private configuration: IIqrfDpa = {
-		component: '',
+	private configuration: IqrfGatewayDaemonDpa = {
+		component: IqrfGatewayDaemonComponentName.IqrfDpa,
 		instance: '',
 		DpaHandlerTimeout: 500,
 	};
@@ -117,6 +123,11 @@ export default class IqrfDpa extends Vue {
 	 * @var {boolean} loadFailed Indicates whether configuration fetch failed
 	 */
 	private loadFailed = false;
+
+	/**
+	 * @property {IqrfGatewayDaemonService} service IQRF Gateway Daemon configuration service
+	 */
+	private readonly service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
 
 	/**
 	 * Checks if user is an administrator
@@ -146,10 +157,10 @@ export default class IqrfDpa extends Vue {
 	 * Retrieves configuration of IQRF DPA component
 	 */
 	private getConfig(): Promise<void> {
-		return DaemonConfigurationService.getComponent(this.componentName)
-			.then((response: AxiosResponse) => {
-				if (response.data.instances.length > 0) {
-					this.configuration = response.data.instances[0];
+		return this.service.getComponent(IqrfGatewayDaemonComponentName.IqrfDpa)
+			.then((response: IqrfGatewayDaemonComponent<IqrfGatewayDaemonComponentName.IqrfDpa>) => {
+				if (response.instances.length > 0) {
+					this.configuration = response.instances[0];
 					this.instance = this.configuration.instance;
 				}
 				this.$emit('fetched', {name: 'iqrfDpa', success: true});
@@ -166,11 +177,11 @@ export default class IqrfDpa extends Vue {
 	private saveConfig(): void {
 		this.$store.commit('spinner/SHOW');
 		if (this.instance !== '') {
-			DaemonConfigurationService.updateInstance(this.componentName, this.instance, this.configuration)
+			this.service.updateInstance(this.componentName, this.instance, this.configuration)
 				.then(this.handleSuccess)
 				.catch(this.handleFailure);
 		} else {
-			DaemonConfigurationService.createInstance(this.componentName, this.configuration)
+			this.service.createInstance(this.componentName, this.configuration)
 				.then(this.handleSuccess)
 				.catch(this.handleFailure);
 		}

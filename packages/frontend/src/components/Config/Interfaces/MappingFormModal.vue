@@ -209,18 +209,21 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, VModel, Vue} from 'vue-property-decorator';
+import {
+	IqrfGatewayDaemonService
+} from '@iqrf/iqrf-gateway-webapp-client/services/Config';
+import {
+	IqrfGatewayDaemonMapping, MappingDeviceType,
+	MappingType
+} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import {AxiosError} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import {integer, required} from 'vee-validate/dist/rules';
+import {Component, VModel, Vue} from 'vue-property-decorator';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
-import {integer, required} from 'vee-validate/dist/rules';
-import {ConfigDeviceType, MappingType} from '@/enums/Config/ConfigurationProfiles';
-
-import MappingService from '@/services/MappingService';
-
-import {AxiosError} from 'axios';
-import {IMapping} from '@/interfaces/Config/Mapping';
 import {ISelectItem} from '@/interfaces/Vuetify';
+import {useApiClient} from '@/services/ApiClient';
 
 @Component({
 	components: {
@@ -238,14 +241,19 @@ import {ISelectItem} from '@/interfaces/Vuetify';
 export default class MappingFormModal extends Vue {
 
 	/**
-	 * @property {IMapping|null} mapping Edited mapping
+	 * @property {IqrfGatewayDaemonMapping|null} mapping Edited mapping
 	 */
-	@VModel({required: true, default: null}) mapping!: IMapping|null;
+	@VModel({required: true, default: null}) mapping!: IqrfGatewayDaemonMapping|null;
 
 	/**
 	 * @var {boolean} useAdditionalPins Use additional pins
 	 */
 	private useAdditionalPins = false;
+
+	/**
+	 * @property {IqrfGatewayDaemonService} service IQRF Gateway Daemon configuration service
+	 */
+	private readonly service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
 
 	/**
 	 * Computes modal display condition
@@ -271,8 +279,8 @@ export default class MappingFormModal extends Vue {
 	 * @return {Array<ISelectItem>} Device type options
 	 */
 	get deviceTypeOptions(): Array<ISelectItem> {
-		const types: Array<ConfigDeviceType> = [ConfigDeviceType.ADAPTER, ConfigDeviceType.BOARD];
-		return types.map((item: ConfigDeviceType): ISelectItem => ({
+		const types: Array<MappingDeviceType> = [MappingDeviceType.Adapter, MappingDeviceType.Board];
+		return types.map((item: MappingDeviceType): ISelectItem => ({
 			text: this.$t(`config.daemon.interfaces.interfaceMapping.form.deviceTypes.${item}`).toString(),
 			value: item,
 		}));
@@ -341,12 +349,12 @@ export default class MappingFormModal extends Vue {
 		delete mapping.id;
 		this.$store.commit('spinner/SHOW');
 		if (id === undefined) {
-			MappingService.addMapping(mapping)
+			this.service.createMapping(mapping)
 				.then(() => this.handleSuccess(name))
 				.catch((error: AxiosError) => this.handleFailure(error, name));
 
 		} else {
-			MappingService.editMapping(id, mapping)
+			this.service.updateMapping(id, mapping)
 				.then(() => this.handleSuccess(name))
 				.catch((error: AxiosError) => this.handleFailure(error, name));
 		}

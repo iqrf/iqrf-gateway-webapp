@@ -53,17 +53,17 @@ const display = useDisplay();
 
 <style lang='scss' scoped>
 .logo {
-	img {
-		max-width: 100%;
-		max-height: 100%;
-		vertical-align: middle;
-	}
-
 	justify-content: center;
 	position: absolute;
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
 	margin-inline-start: 0 !important;
+
+	img {
+		max-width: 100%;
+		max-height: 100%;
+		vertical-align: middle;
+	}
 }
 </style>
