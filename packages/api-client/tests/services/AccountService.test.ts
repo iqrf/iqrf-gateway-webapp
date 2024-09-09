@@ -209,7 +209,7 @@ describe('AccountService', (): void => {
 
 	it('refresh JWT token', async (): Promise<void> => {
 		expect.assertions(1);
-		mockedAxios.onPost('/account/refreshToken')
+		mockedAxios.onPost('/account/tokenRefresh')
 			.reply(200, userSignedIn);
 		const actual: UserSignedIn = await service.refreshToken();
 		expect(actual).toStrictEqual(userSignedIn);

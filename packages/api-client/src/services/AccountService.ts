@@ -136,7 +136,7 @@ export class AccountService extends BaseService {
 	 */
 	public async refreshToken(): Promise<UserSignedIn> {
 		const response: AxiosResponse<UserSignedIn> =
-			await this.axiosInstance.post('/account/refreshToken');
+			await this.axiosInstance.post('/account/tokenRefresh');
 		return UserUtils.deserialize(response.data);
 	}
 
