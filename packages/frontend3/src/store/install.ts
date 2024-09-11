@@ -17,49 +17,56 @@
 
 import {
 	Feature,
-	type InstallationCheckDependency,
-	type InstallationCheckPhpMissingExtensions,
+	type InstallationChecks,
 } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { defineStore } from 'pinia';
 
 import router from '@/router';
+import { useApiClient } from '@/services/ApiClient';
+import { useFeatureStore } from '@/store/features';
+import { type InstallationErrors } from '@/types/install';
 
-import { useFeatureStore } from './features';
-
+/**
+ * Installation store state
+ */
 interface InstallState {
+	/// Is the installation checked?
 	checked: boolean;
-	users: boolean;
-	missingDependencies: InstallationCheckDependency[];
-	missingExtensions: InstallationCheckPhpMissingExtensions | null;
+	/// Installation checks
+	checks: InstallationChecks | null;
 	steps: InstallStep[];
 }
 
+/**
+ * Installation step
+ */
 interface InstallStep {
+	/// Step index
 	index: number
+	/// Step route
 	route: string
+	/// Step title
 	title: string
 }
 
 export const useInstallStore = defineStore('install', {
 	state: (): InstallState => ({
 		checked: false,
-		users: false,
-		missingDependencies: [],
-		missingExtensions: null,
+		checks: null,
 		steps: [],
 	}),
 	actions: {
+		/**
+		 * Checks the installation
+		 */
+		async check(): Promise<void> {
+			this.checks = await useApiClient().getInstallationService().check();
+		},
+		/**
+		 * Sets the installation as checked
+		 */
 		setChecked(): void {
 			this.checked = true;
-		},
-		setUsers(hasUsers: boolean): void {
-			this.users = hasUsers;
-		},
-		setMissingDependencies(dependencies: InstallationCheckDependency[]): void {
-			this.missingDependencies = dependencies;
-		},
-		setMissingExtensions(extensions: InstallationCheckPhpMissingExtensions): void {
-			this.missingExtensions = extensions;
 		},
 		populateSteps(): void {
 			const featureStore = useFeatureStore();
@@ -105,11 +112,63 @@ export const useInstallStore = defineStore('install', {
 		},
 	},
 	getters: {
+		/**
+		 * Returns the installation checks
+		 * @return {InstallationChecks | null} Installation checks
+		 */
+		getChecks(): InstallationChecks | null {
+			return this.checks;
+		},
+		/**
+		 * Returns the IQRF gateway ID
+		 * @return {string | null} IQRF Gateway ID
+		 */
+		getGatewayId(): string | null {
+			if (this.checks === null) {
+				return null;
+			}
+			return this.checks.gwId;
+		},
+		/**
+		 * Returns the installation errors
+		 * @return {InstallationErrors | null} Installation errors
+		 */
+		getErrors(): InstallationErrors | null {
+			if (this.checks === null) {
+				return null;
+			}
+			return {
+				missingDependencies: this.checks.dependencies.length !== 0,
+				missingPhpExtensions: !this.checks.phpModules.allExtensionsLoaded,
+				missingMigrations: !this.checks.allMigrationsExecuted,
+				misconfiguredSudo: this.checks.sudo !== undefined && (!this.checks.sudo.exists || !this.checks.sudo.userSudo),
+			} as InstallationErrors;
+		},
+		/**
+		 * Checks if the installation has any errors
+		 * @return {boolean} Is the installation without any errors?
+		 */
+		hasErrors(): boolean {
+			if (this.checks === null) {
+				return true;
+			}
+			return this.checks.dependencies.length !== 0 ||
+				!this.checks.phpModules.allExtensionsLoaded ||
+				!this.checks.allMigrationsExecuted;
+		},
+		/**
+		 * Checks if the installation has no users
+		 * @return {boolean} Is the installation without users?
+		 */
+		hasNoUsers(): boolean {
+			return !(this.checks?.hasUsers ?? true);
+		},
+		/**
+		 * Checks if the installation is checked
+		 * @return {boolean} Is the installation checked?
+		 */
 		isChecked(): boolean {
 			return this.checked;
-		},
-		hasUsers(): boolean {
-			return this.users;
 		},
 		getSteps(): InstallStep[] {
 			return this.steps;

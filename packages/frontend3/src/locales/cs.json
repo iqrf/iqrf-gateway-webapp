@@ -162,9 +162,41 @@
 				}
 			}
 		},
-		"layout": {
-			"loadingScreen": {
-				"message": "IQRF Gateway Webapp se načítá…"
+		"install": {
+			"errors": {
+				"misconfiguredSudo": {
+					"title": "Nesprávně nakonfigurované sudo",
+					"texts": {
+						"missing": "IQRF Gateway Webapp nedetekovala příkaz sudo ve vašem systému, který jej vyžaduje ke správnému fungování.",
+						"invalid": "IQRF Gateway Webapp zjistila ve vašem systému neplatnou konfiguraci sudo, takže některé příkazy nelze spustit."
+					},
+					"fixes": {
+						"missing": "Vstupte do interaktivního příkazového řádku jako root a nainstalujte nástroj sudo pomocí následujících příkazů:",
+						"invalid": "Umožněte uživateli {user} spouštět příkazy sudo pomocí následujících příkazů:"
+					}
+				},
+				"missingDependencies": {
+					"title": "Chybějící závislosti",
+					"text": "IQRF Gateway Webapp detekovala následující chybějící závislosti: {dependencies}.",
+					"command": "Příkaz",
+					"package": "Balíček"
+				},
+				"missingPhpExtensions": {
+					"title": "Chybějící PHP rozšíření",
+					"text": "IQRF Gateway Webapp detekovala následující chybějící PHP rozšíření: {extensions}.",
+					"fix": "Pro instalaci chybějících rozššíření v terminálu následující příkaz:"
+				},
+				"missingMigrations": {
+					"title": "Chybějící databázové migrace",
+					"text": "IQRF Gateway Webapp detekovala chybějící databázové migrace.",
+					"fix": "Pro opravu spusťte v terminálu následující příkaz:"
+				}
+			},
+			"checks": {
+				"loading": "IQRF Gateway Webapp se načítá…",
+				"messages": {
+					"failed": "Při načítání aplikace IQAROS došlo k chybě. Zkuste znovu načíst stránku."
+				}
 			}
 		},
 		"status": {
@@ -321,6 +353,17 @@
 		},
 		"install": {
 			"title": "Instalační průvodce",
+			"errors": {
+				"title": "Chyby instalace",
+				"text": "IQRF Gateway Webapp detekovala následující problémy s instalací. Prosím opravte je abyste mohli aplikaci používat.",
+				"messages": {
+					"reload": {
+						"success": "Kontrola instalace byla znovu spuštěna.",
+						"successNoErrors": "Kontrola instalace byla znovu spuštěna a v instalaci již nebyla nalezena žádná chyba.",
+						"failed": "Nepodařilo se znovu spustit kontrolu instalace."
+					}
+				}
+			},
 			"user": {
 				"title": "Vytvoření nového uživatele"
 			},

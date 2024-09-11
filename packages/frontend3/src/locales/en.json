@@ -1374,6 +1374,43 @@
 				}
 			}
 		},
+		"install": {
+			"errors": {
+				"misconfiguredSudo": {
+					"title": "Misconfigured sudo",
+					"texts": {
+						"missing": "IQRF Gateway Webapp did not detect the sudo command on your system which requires it to run properly.",
+						"invalid": "IQRF Gateway Webapp detected an invalid sudo configuration on your system so some commands cannot be executed."
+					},
+					"fixes": {
+						"missing": "Enter interactive shell as root and install sudo utility using the following commands:",
+						"invalid": "Allow user {user} to execute commands with sudo using the following commands:"
+					}
+				},
+				"missingDependencies": {
+					"title": "Missing dependencies",
+					"text": "IQRF Gateway Webapp detected the following missing dependencies: {dependencies}.",
+					"command": "Missing command",
+					"package": "Package"
+				},
+				"missingPhpExtensions": {
+					"title": "Missing PHP extensions",
+					"text": "IQRF Gateway Webapp detected the following missing PHP extensions: {extensions}.",
+					"fix": "Run the following commands in terminal to install missing extensions:"
+				},
+				"missingMigrations": {
+					"title": "Missing database migration",
+					"text": "IQRF Gateway Webapp detected missing database migrations.",
+					"fix": "To fix it, run the following command in terminal:"
+				}
+			},
+			"checks": {
+				"loading": "IQRF Gateway Webapp is loading…",
+				"messages": {
+					"failed": "Failed to load IQRF Gateway Webapp. Please try to reload the page."
+				}
+			}
+		},
 		"ipNetwork": {
 			"connections": {
 				"titles": {
@@ -1575,11 +1612,6 @@
 						}
 					}
 				}
-			}
-		},
-		"layout": {
-			"loadingScreen": {
-				"message": "IQRF Gateway Webapp is loading…"
 			}
 		},
 		"iqrfnet": {
@@ -2041,6 +2073,17 @@
 		},
 		"install": {
 			"title": "Installation wizard",
+			"errors": {
+				"title": "Installation errors",
+				"text": "IQRF Gateway Webapp detected the following problems with the installation. Please resolve them before continuing using the app.",
+				"messages": {
+					"reload": {
+						"success": "Installation check has been successfully reloaded.",
+						"successNoErrors": "Installation check has been successfully reloaded. No more",
+						"failed": "Failed to reload installation check."
+					}
+				}
+			},
 			"user": {
 				"title": "Create a new user"
 			},

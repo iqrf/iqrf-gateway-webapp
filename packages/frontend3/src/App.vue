@@ -18,60 +18,42 @@ limitations under the License.
 <template>
 	<v-theme-provider :theme='theme.global.name.value'>
 		<v-app>
-			<div v-if='componentState === ComponentState.Ready'>
-				<router-view v-if='isChecked' />
+			<div v-if='isChecked'>
+				<router-view />
 				<SessionExpirationDialog v-if='isLoggedIn' />
 			</div>
-			<LoadingScreen v-else-if='componentState === ComponentState.Loading' />
+			<InstallationChecker v-else />
 		</v-app>
 	</v-theme-provider>
 </template>
 
 <script lang='ts' setup>
-import {
-	type UserLanguage,
-	type InstallationChecks,
-} from '@iqrf/iqrf-gateway-webapp-client/types';
+import { type UserLanguage } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { storeToRefs } from 'pinia';
 import { useHead } from 'unhead';
-import { onBeforeMount, type Ref, ref, watch } from 'vue';
+import { onBeforeMount, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useTheme } from 'vuetify';
 
-import LoadingScreen from '@/components/layout/LoadingScreen.vue';
+import InstallationChecker from '@/components/layout/InstallationChecker.vue';
 import SessionExpirationDialog from '@/components/SessionExpirationDialog.vue';
-import router from '@/router';
-import { useApiClient } from '@/services/ApiClient';
 import { useDaemonStore } from '@/store/daemonSocket';
-import { useFeatureStore } from '@/store/features';
-import { useGatewayStore } from '@/store/gateway';
 import { useInstallStore } from '@/store/install';
 import { useLocaleStore } from '@/store/locale';
-import { useRepositoryStore } from '@/store/repository';
 import { useUserStore } from '@/store/user';
-import { ComponentState } from '@/types/ComponentState';
 
 const i18n = useI18n();
 const theme = useTheme();
 
 const daemonStore = useDaemonStore();
-const { isConnected } = storeToRefs(daemonStore);
-
-const featureStore = useFeatureStore();
-const gatewayStore = useGatewayStore();
-
 const installStore = useInstallStore();
-const { isChecked } = storeToRefs(installStore);
-
-const repositoryStore = useRepositoryStore();
-
-const userStore = useUserStore();
-const { isLoggedIn } = storeToRefs(userStore);
-
 const localeStore = useLocaleStore();
-const { getLocale: locale } = storeToRefs(localeStore);
+const userStore = useUserStore();
 
-const componentState: Ref<ComponentState> = ref(ComponentState.Created);
+const { isConnected } = storeToRefs(daemonStore);
+const { isChecked } = storeToRefs(installStore);
+const { getLocale: locale } = storeToRefs(localeStore);
+const { isLoggedIn } = storeToRefs(userStore);
 
 /**
  * Set HTML head options
@@ -91,7 +73,6 @@ function setHeadOptions(newLocale: UserLanguage): void {
 }
 
 onBeforeMount(async () => {
-	componentState.value = ComponentState.Loading;
 	if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
 		theme.global.name.value = 'dark';
 	} else {
@@ -99,51 +80,6 @@ onBeforeMount(async () => {
 	}
 	localeStore.setLocale(locale.value);
 	setHeadOptions(locale.value);
-	await featureStore.fetch();
-	try {
-		const check: InstallationChecks = await useApiClient().getInstallationService().check();
-		componentState.value = ComponentState.Ready;
-		const isInstallUrl: boolean = router.currentRoute.value.path.startsWith('/install/');
-		const errorUrl: boolean = router.currentRoute.value.path.startsWith('/install/error/');
-		installStore.populateSteps();
-		if (check.hasUsers !== undefined) {
-			installStore.setUsers(check.hasUsers);
-		}
-		if (check.dependencies.length !== 0) {
-			installStore.setMissingDependencies(check.dependencies);
-			installStore.setChecked();
-			await router.push({
-				name: 'MissingDependency',
-			});
-		} else if (!check.phpModules.allExtensionsLoaded) {
-			if (check.phpModules.missing !== undefined) {
-				installStore.setMissingExtensions(check.phpModules.missing);
-			}
-			installStore.setChecked();
-			await router.push({
-				name: 'MissingExtension',
-			});
-		} else if (check.sudo !== undefined && (!check.sudo.exists || !check.sudo.userSudo)) {
-			// TODO: sudo error
-		} else if (!check.allMigrationsExecuted) {
-			installStore.setChecked();
-			await router.push({ name: 'MissingMigration' });
-		} else if (!check.hasUsers && !isInstallUrl) {
-			installStore.setChecked();
-			await router.push({ name: 'InstallDisambiguation' });
-		} else if (check.hasUsers && (isInstallUrl || errorUrl)) {
-			installStore.setChecked();
-			await router.push('/sign/in');
-		}
-		if (isLoggedIn.value) {
-			await repositoryStore.fetch();
-			await gatewayStore.fetchInfo();
-		}
-		installStore.setChecked();
-	} catch (error) {
-		// SPINNER HIDE
-		console.error(error);
-	}
 });
 
 watch(isConnected, (newVal) => {
