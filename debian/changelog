@@ -1,3 +1,11 @@
+iqrf-gateway-webapp (2.5.23~alpha~1.gbpa77186) UNRELEASED; urgency=medium
+
+  ** SNAPSHOT build @a771865f1bbc791915ef0485f96eabf01288aa80 **
+
+  * UNRELEASED
+
+ -- Roman Ondráček <mail@romanondracek.cz>  Thu, 26 Sep 2024 00:44:58 +0200
+
 iqrf-gateway-webapp (2.5.22) stable; urgency=medium
 
   * Prepare for version v2.5.22-alpha
