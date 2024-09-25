@@ -144,7 +144,7 @@ class JournalConfigManager {
 	 */
 	public function getTimeRotation(array $conf): array {
 		$duration = $this->getPropertyDefault('MaxFileSec', $conf);
-		$matches = Strings::match($duration, '#^(\d+)(\w*$)#');
+		$matches = Strings::match($duration, '#^(\d+)(\w*)$#');
 		return [
 			'unit' => $matches[2] === '' ? 's' : $matches[2],
 			'count' => (int) $matches[1],
