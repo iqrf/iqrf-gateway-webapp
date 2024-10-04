@@ -286,6 +286,8 @@ export enum SensorDataMessages {
 	Status = 'iqrfSensorData_Status',
 	/// Stop worker
 	Stop = 'iqrfSensorData_Stop',
+	/// Asynchronous report
+	ReportAsync = 'iqrfSensorData_ReportAsync',
 }
 
 /**
