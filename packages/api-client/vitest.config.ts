@@ -25,7 +25,7 @@ export default defineConfig({
 			provider: 'istanbul',
 			reporter: ['text', 'html', 'clover'],
 			exclude: [
-				...(configDefaults.coverage.exclude!),
+				...configDefaults.coverage.exclude ?? [],
 				'./docs/**',
 			],
 		},

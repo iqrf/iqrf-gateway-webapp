@@ -44,7 +44,7 @@ limitations under the License.
 						</legend>
 						<TextInput
 							v-for='index in config.client.config.Servers.keys()'
-							:key='"MenderServerUrl" + index'
+							:key='`MenderServerUrl${ index}`'
 							v-model='config.client.config.Servers[index]'
 							:label='$t("components.configuration.mender.client.server")'
 							:rules='[

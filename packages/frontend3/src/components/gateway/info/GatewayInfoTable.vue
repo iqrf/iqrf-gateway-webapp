@@ -112,7 +112,7 @@ limitations under the License.
 					</td>
 					<td>
 						<div class='py-2'>
-							<span v-for='{name, ipAddresses} of ipAddrs' :key='name'>
+							<span v-for='{ name, ipAddresses } of ipAddrs' :key='name'>
 								<strong>{{ name }}: </strong> {{ ipAddresses?.join(', ') }}<br>
 							</span>
 						</div>
@@ -127,7 +127,7 @@ limitations under the License.
 					<td>
 						<div class='py-2'>
 							<span
-								v-for='{name, macAddress} of macAddrs'
+								v-for='{ name, macAddress } of macAddrs'
 								:key='name'
 							>
 								<strong>{{ name }}: </strong> {{ macAddress }}<br>

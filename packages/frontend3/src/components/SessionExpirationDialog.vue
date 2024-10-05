@@ -28,7 +28,7 @@ limitations under the License.
 				<CardActionBtn
 					color='warning'
 					:icon='mdiRefresh'
-					:text='$t("components.status.sessionExpiration.renew") + " (" + countdown + ")"'
+					:text='`${$t("components.status.sessionExpiration.renew") } (${ countdown })`'
 					@click='renewSession'
 				/>
 				<v-spacer />

@@ -26,6 +26,7 @@ export default iqrfEslint({
 }, [
 	{
 		rules: {
+			'jsdoc/require-jsdoc': 'off',
 			'promise/catch-or-return': 'warn',
 		},
 	},

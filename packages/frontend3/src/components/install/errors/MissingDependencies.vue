@@ -3,7 +3,7 @@
 		:value='componentProps.index'
 		:title='$t("components.install.errors.missingDependencies.title")'
 	>
-		{{ $t('components.install.errors.missingDependencies.text', {dependencies: packages}) }}
+		{{ $t('components.install.errors.missingDependencies.text', { dependencies: packages }) }}
 		<v-table :hover='true'>
 			<thead>
 				<tr>

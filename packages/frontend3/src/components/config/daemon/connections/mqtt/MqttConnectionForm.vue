@@ -46,7 +46,7 @@ limitations under the License.
 					v-model='profile.instance'
 					:label='$t("components.configuration.daemon.connections.profile")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.configuration.daemon.connections.validation.profileMissing"))
+						(v: string|null) => ValidationRules.required(v, $t("components.configuration.daemon.connections.validation.profileMissing")),
 					]'
 					required
 				/>
@@ -68,7 +68,7 @@ limitations under the License.
 					v-model='profile.ClientId'
 					:label='$t("components.configuration.daemon.connections.mqtt.clientId")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.configuration.daemon.connections.mqtt.validation.clientIdMissing"))
+						(v: string|null) => ValidationRules.required(v, $t("components.configuration.daemon.connections.mqtt.validation.clientIdMissing")),
 					]'
 					required
 				/>
@@ -76,7 +76,7 @@ limitations under the License.
 					v-model='profile.TopicRequest'
 					:label='$t("components.configuration.daemon.connections.mqtt.requestTopic")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.configuration.daemon.connections.mqtt.validation.requestTopicMissing"))
+						(v: string|null) => ValidationRules.required(v, $t("components.configuration.daemon.connections.mqtt.validation.requestTopicMissing")),
 					]'
 					required
 				/>
@@ -84,7 +84,7 @@ limitations under the License.
 					v-model='profile.TopicResponse'
 					:label='$t("components.configuration.daemon.connections.mqtt.responseTopic")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.configuration.daemon.connections.mqtt.validation.responseTopicMissing"))
+						(v: string|null) => ValidationRules.required(v, $t("components.configuration.daemon.connections.mqtt.validation.responseTopicMissing")),
 					]'
 					required
 				/>
@@ -92,7 +92,7 @@ limitations under the License.
 					v-model='profile.User'
 					:label='$t("common.labels.username")'
 					:rules='[
-						(v: string|null) => ValidationRules.requiredIf(v, profile.Password.length > 0, $t("common.validation.credentialsMissing"))
+						(v: string|null) => ValidationRules.requiredIf(v, profile.Password.length > 0, $t("common.validation.credentialsMissing")),
 					]'
 					:required='profile.Password.length > 0'
 				/>

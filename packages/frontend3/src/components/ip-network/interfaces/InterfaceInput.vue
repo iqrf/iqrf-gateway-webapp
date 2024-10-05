@@ -72,7 +72,7 @@ async function fetchInterfaces(): Promise<void> {
 	for (const item of interfaces) {
 		let label = item.name;
 		if (item.manufacturer !== null && item.model !== null) {
-			label = item.name + ' (' + item.manufacturer + ' ' + item.model + ')';
+			label = `${item.name } (${ item.manufacturer } ${ item.model })`;
 		}
 		items.value.push({ title: label, value: item.name });
 	}

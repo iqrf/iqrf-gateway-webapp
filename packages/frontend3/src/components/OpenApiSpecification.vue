@@ -28,7 +28,7 @@ limitations under the License.
 		</template>
 		<div id='swagger' ref='swagger' />
 		<v-alert
-			v-if='componentState == ComponentState.FetchFailed'
+			v-if='componentState === ComponentState.FetchFailed'
 			variant='tonal'
 			type='error'
 		>
@@ -109,6 +109,7 @@ async function fetch(): Promise<void> {
 onMounted(fetch);
 </script>
 
+<!-- eslint-disable-next-line vue-scoped-css/enforce-style-type -->
 <style lang='scss'>
 @import url('swagger-ui-dist/swagger-ui.css');
 

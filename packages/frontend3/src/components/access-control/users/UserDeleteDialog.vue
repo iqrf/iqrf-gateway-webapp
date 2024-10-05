@@ -24,7 +24,7 @@ limitations under the License.
 		<template #title>
 			{{ $t('components.accessControl.users.delete.title') }}
 		</template>
-		{{ $t('components.accessControl.users.delete.prompt', {user: user.username}) }}
+		{{ $t('components.accessControl.users.delete.prompt', { user: user.username }) }}
 	</DeleteModalWindow>
 </template>
 

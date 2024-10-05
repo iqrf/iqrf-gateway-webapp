@@ -31,7 +31,7 @@ limitations under the License.
 						v-bind='props'
 						density='compact'
 					>
-						<img height='16' :src='"data:image/svg+xml;charset=utf-8;base64," + localeStore.getLocaleFlag'>
+						<img height='16' :src='`data:image/svg+xml;charset=utf-8;base64,${ localeStore.getLocaleFlag}`'>
 					</v-list-item>
 				</template>
 				<v-list density='compact'>
@@ -41,7 +41,7 @@ limitations under the License.
 						density='compact'
 						@click='setLocale(locale.code)'
 					>
-						<img height='16' :src='"data:image/svg+xml;charset=utf-8;base64," + locale.flag'>
+						<img height='16' :src='`data:image/svg+xml;charset=utf-8;base64,${ locale.flag}`'>
 					</v-list-item>
 				</v-list>
 			</v-menu>

@@ -13,7 +13,7 @@
 		<div v-if='!model.userSudo'>
 			{{ $t('components.install.errors.misconfiguredSudo.texts.invalid') }}
 			<v-divider class='my-2' />
-			{{ $t('components.install.errors.misconfiguredSudo.fixes.invalid', {user: model.user}) }}
+			{{ $t('components.install.errors.misconfiguredSudo.fixes.invalid', { user: model.user }) }}
 			<br>
 			<pre>{{ invalidCommand }}</pre>
 		</div>

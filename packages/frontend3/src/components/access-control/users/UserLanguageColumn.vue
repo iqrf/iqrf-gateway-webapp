@@ -16,7 +16,7 @@ limitations under the License.
 -->
 
 <template>
-	<img height='16' :src='"data:image/svg+xml;charset=utf-8;base64," + languageFlag'>
+	<img height='16' :src='`data:image/svg+xml;charset=utf-8;base64,${languageFlag}`'>
 </template>
 
 <script lang='ts' setup>

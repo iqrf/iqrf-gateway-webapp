@@ -55,7 +55,7 @@ limitations under the License.
 							:rules='[
 								(v: number|null) => ValidationRules.required(v, $t("components.configuration.daemon.interfaces.dpa.validation.timeoutMissing")),
 								(v: number) => ValidationRules.integer(v, $t("components.configuration.daemon.interfaces.dpa.validation.timeoutInvalid")),
-								(v: number) => ValidationRules.min(v, 0, $t("components.configuration.daemon.interfaces.dpa.validation.timeoutInvalid"))
+								(v: number) => ValidationRules.min(v, 0, $t("components.configuration.daemon.interfaces.dpa.validation.timeoutInvalid")),
 							]'
 							required
 						/>

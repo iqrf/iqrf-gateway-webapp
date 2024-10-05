@@ -519,7 +519,7 @@ const hwpidPresets = [
 // pdata
 const pdata: Ref<string> = ref('');
 const maskaOptions = {
-	mask: 'HH.'.repeat(56) + 'HH',
+	mask: `${'HH.'.repeat(56) }HH`,
 	tokens: { 'H': { pattern: /[\da-f]/i } },
 };
 // timeout

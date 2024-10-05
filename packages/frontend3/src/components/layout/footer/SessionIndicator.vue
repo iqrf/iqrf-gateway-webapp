@@ -17,7 +17,7 @@ limitations under the License.
 
 <template>
 	<v-icon
-		v-tooltip:bottom='$t("components.status.sessionExpiration.indicator") + ": " + remaining'
+		v-tooltip:bottom='`${$t("components.status.sessionExpiration.indicator") }: ${ remaining}`'
 		:color='color'
 		:icon='mdiTimerSand'
 		size='small'

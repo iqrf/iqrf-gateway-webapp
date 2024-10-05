@@ -17,7 +17,7 @@ limitations under the License.
 
 <template>
 	<v-icon
-		v-tooltip:bottom='$t("components.status.monitor.queue") + ": " + (daemonStore.isConnected ? monitorStore.queueLength : "N/A")'
+		v-tooltip:bottom='`${$t("components.status.monitor.queue") }: ${ daemonStore.isConnected ? monitorStore.queueLength : "N/A"}`'
 		class='me-2'
 		:color='color'
 		:icon='icon'

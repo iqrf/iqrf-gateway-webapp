@@ -4,7 +4,7 @@
 		:value='componentProps.index'
 		:title='$t("components.install.errors.missingPhpExtensions.title")'
 	>
-		{{ $t('components.install.errors.missingPhpExtensions.text', {extensions: extensions}) }}
+		{{ $t('components.install.errors.missingPhpExtensions.text', { extensions: extensions }) }}
 		<v-divider class='my-2' />
 		{{ $t('components.install.errors.missingPhpExtensions.fix') }}
 		<br>
@@ -32,6 +32,6 @@ const extensions: ComputedRef<string> = computed((): string => {
 	return model.value?.extensions.join(', ') ?? '';
 });
 const command: ComputedRef<string> = computed((): string => {
-	return 'sudo apt-get update\nsudo apt-get install ' + model.value?.packages?.join(' ');
+	return `sudo apt-get update\nsudo apt-get install ${ model.value?.packages?.join(' ')}`;
 });
 </script>

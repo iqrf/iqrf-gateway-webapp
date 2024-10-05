@@ -115,7 +115,7 @@ export default class ValidationRules {
 	 * @return {boolean|string} Validation result
 	 */
 	public static maxLength(value: string | unknown[], length: number, error: string): boolean | string {
-		return value === undefined || (value.length <= length) || error;
+		return (value.length <= length) || error;
 	}
 
 	/**

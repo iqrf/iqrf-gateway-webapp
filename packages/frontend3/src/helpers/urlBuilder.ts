@@ -50,7 +50,7 @@ export default class UrlBuilder {
 		this.wsProtocol = isHttps ? 'wss://' : 'ws://';
 		this.isDev = import.meta.env.MODE !== 'production';
 		if (this.port !== '') {
-			this.port = ':' + this.port;
+			this.port = `:${ this.port}`;
 		}
 	}
 
@@ -75,7 +75,7 @@ export default class UrlBuilder {
 	 * @return {string} Base URL
 	 */
 	public getBaseUrl(): string {
-		return window.location.protocol + '//' + this.hostname + (this.isDev ? ':8081' : this.port) + import.meta.env.VITE_BASE_URL;
+		return `${window.location.protocol }//${ this.hostname }${this.isDev ? ':8081' : this.port }${import.meta.env.VITE_BASE_URL}`;
 	}
 
 	/**
@@ -83,10 +83,10 @@ export default class UrlBuilder {
 	 * @return {string} REST API URL
 	 */
 	public getRestApiUrl(): string {
-		if (import.meta.env.VITE_URL_REST_API?.length) {
+		if (import.meta.env.VITE_URL_REST_API.length) {
 			return import.meta.env.VITE_URL_REST_API;
 		}
-		return '//' + this.hostname + (this.isDev ? ':8080' : this.port) + import.meta.env.VITE_BASE_URL + 'api/v0/';
+		return `//${ this.hostname }${this.isDev ? ':8080' : this.port }${import.meta.env.VITE_BASE_URL }api/v0/`;
 	}
 
 	/**
@@ -94,10 +94,10 @@ export default class UrlBuilder {
 	 * @return {string} IQRF Gateway DaemonWebSocket API URL
 	 */
 	public getDaemonApiUrl(): string {
-		if (import.meta.env.VITE_URL_DAEMON_API?.length) {
+		if (import.meta.env.VITE_URL_DAEMON_API.length) {
 			return import.meta.env.VITE_URL_DAEMON_API;
 		}
-		return this.wsProtocol + this.hostname + (this.isDev ? ':1338': this.port + '/ws');
+		return this.wsProtocol + this.hostname + (this.isDev ? ':1338': `${this.port }/ws`);
 	}
 
 	/**
@@ -105,10 +105,10 @@ export default class UrlBuilder {
 	 * @return {string} IQRF Gateway Daemon WebSocket Monitor URL
 	 */
 	public getDaemonMonitorUrl(): string {
-		if (import.meta.env.VITE_URL_DAEMON_MONITOR?.length) {
+		if (import.meta.env.VITE_URL_DAEMON_MONITOR.length) {
 			return import.meta.env.VITE_URL_DAEMON_MONITOR;
 		}
-		return this.wsProtocol + this.hostname + (this.isDev ? ':1438': this.port + '/wsMonitor');
+		return this.wsProtocol + this.hostname + (this.isDev ? ':1438': `${this.port }/wsMonitor`);
 	}
 
 	/**
@@ -116,10 +116,10 @@ export default class UrlBuilder {
 	 * @return {string} WebSocket IQRF network sync URL
 	 */
 	public getIqrfnetSyncUrl(): string {
-		if (import.meta.env.VITE_URL_IQRF_SYNC?.length) {
+		if (import.meta.env.VITE_URL_IQRF_SYNC.length) {
 			return import.meta.env.VITE_URL_IQRF_SYNC;
 		}
-		return this.wsProtocol + this.hostname + (this.isDev ? ':8881': this.port) + '/sync';
+		return `${this.wsProtocol + this.hostname + (this.isDev ? ':8881': this.port) }/sync`;
 	}
 
 	/**
@@ -128,7 +128,7 @@ export default class UrlBuilder {
 	 * @return {string} REST API URL
 	 */
 	public getRestApiUrlFromHostname(hostname: string): string {
-		return '//' + hostname + (this.isDev ? ':8080' : this.port) + import.meta.env.VITE_BASE_URL + 'api/v0/';
+		return `//${ hostname }${this.isDev ? ':8080' : this.port }${import.meta.env.VITE_BASE_URL }api/v0/`;
 	}
 
 }

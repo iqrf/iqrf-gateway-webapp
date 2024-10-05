@@ -25,7 +25,7 @@ limitations under the License.
 		<template #title>
 			{{ $t('components.configuration.daemon.scheduler.delete.title') }}
 		</template>
-		{{ $t('components.configuration.daemon.scheduler.delete.prompt', {id: componentProps.taskId}) }}
+		{{ $t('components.configuration.daemon.scheduler.delete.prompt', { id: componentProps.taskId }) }}
 	</DeleteModalWindow>
 </template>
 

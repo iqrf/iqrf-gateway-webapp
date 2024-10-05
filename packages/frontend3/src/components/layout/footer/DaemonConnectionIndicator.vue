@@ -17,7 +17,7 @@ limitations under the License.
 
 <template>
 	<v-icon
-		v-tooltip:bottom='$t("components.status.monitor.notified") + ": " + $d(date, "long")'
+		v-tooltip:bottom='`${$t("components.status.monitor.notified") }: ${ $d(date, "long")}`'
 		class='me-2'
 		:color='color'
 		:icon='mdiConnection'

@@ -17,7 +17,7 @@ limitations under the License.
 
 <template>
 	<v-icon
-		v-tooltip:bottom='$t("components.status.monitor.version") + ": " + daemonVersion'
+		v-tooltip:bottom='`${$t("components.status.monitor.version") }: ${ daemonVersion}`'
 		class='me-2'
 		color='info'
 		:icon='mdiInformation'

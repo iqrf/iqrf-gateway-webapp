@@ -48,14 +48,14 @@ limitations under the License.
 					hide-pagination
 					dense
 				>
-					<template #item.signal='{item}'>
+					<template #item.signal='{ item }'>
 						<SignalIndicator :signal='item.signal' />
 					</template>
-					<template #item.state='{item}'>
+					<template #item.state='{ item }'>
 						<ModemStateBadge :state='item.state' />
 					</template>
-					<template #item.rssi='{item}'>
-						{{ item.rssi !== null ? item.rssi + ' dBm' : '-' }}
+					<template #item.rssi='{ item }'>
+						{{ item.rssi !== null ? `${item.rssi } dBm` : '-' }}
 					</template>
 				</DataTable>
 			</v-responsive>

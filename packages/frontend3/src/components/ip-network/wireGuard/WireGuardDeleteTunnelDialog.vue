@@ -25,7 +25,7 @@ limitations under the License.
 		<template #title>
 			{{ $t('components.ipNetwork.wireGuard.tunnels.delete.title') }}
 		</template>
-		{{ $t('components.ipNetwork.wireGuard.tunnels.delete.prompt', {name: tunnel.name}) }}
+		{{ $t('components.ipNetwork.wireGuard.tunnels.delete.prompt', { name: tunnel.name }) }}
 	</DeleteModalWindow>
 </template>
 <script setup lang='ts'>

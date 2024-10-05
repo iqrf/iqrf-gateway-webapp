@@ -175,9 +175,6 @@ export const useInstallStore = defineStore('install', {
 		},
 		getCurrentStep(): InstallStep|null {
 			const route = router.currentRoute.value;
-			if (route === undefined) {
-				return null;
-			}
 			const step = this.steps.find((item: InstallStep): boolean => item.route === route.name);
 			if (step === undefined) {
 				return null;

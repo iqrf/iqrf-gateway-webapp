@@ -39,7 +39,11 @@ export const useRepositoryClient = async (): Promise<Client> => {
 	const store = useRepositoryStore();
 	let config: IqrfRepositoryConfig | null = store.configuration;
 	if (config === null) {
-		config = await useApiClient().getConfigServices().getIqrfRepositoryService().getConfig();
+		try {
+			config = await useApiClient().getConfigServices().getIqrfRepositoryService().getConfig();
+		} catch (error) {
+			console.error(error);
+		}
 	}
 	if (config !== null) {
 		baseUrl = config.apiEndpoint;

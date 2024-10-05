@@ -24,7 +24,7 @@ limitations under the License.
 		<template #title>
 			{{ $t('components.accessControl.apiKeys.delete.title') }}
 		</template>
-		{{ $t('components.accessControl.apiKeys.delete.prompt', {id: apiKey.id}) }}
+		{{ $t('components.accessControl.apiKeys.delete.prompt', { id: apiKey.id }) }}
 	</DeleteModalWindow>
 </template>
 

@@ -39,7 +39,7 @@ limitations under the License.
 					accept='.pem'
 					:label='$t("components.configuration.daemon.connections.mqtt.clouds.aws.certificate")'
 					:rules='[
-						(v: File|Blob|null) => ValidationRules.required(v, $t("components.configuration.daemon.connections.mqtt.clouds.aws.validation.certificateMissing")),
+						(v: File|null) => ValidationRules.required(v, $t("components.configuration.daemon.connections.mqtt.clouds.aws.validation.certificateMissing")),
 					]'
 					:prepend-inner-icon='mdiFileOutline'
 					:prepend-icon='null'

@@ -108,7 +108,7 @@ const regexRule = computed(() => {
 	} else {
 		message = i18n.t(useHex.value ? 'components.iqrfnet.tr-config.security.errors.userKeyInvalidHexChar' : 'components.iqrfnet.tr-config.security.errors.userKeyInvalidAsciiChar');
 	}
-	return (v: string) => ValidationRules.regex(v, pattern, message + ' ' + formatHint.value);
+	return (v: string) => ValidationRules.regex(v, pattern, `${message } ${ formatHint.value}`);
 });
 
 function changeAccessPasswordFormat(): void {

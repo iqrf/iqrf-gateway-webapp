@@ -58,7 +58,7 @@ limitations under the License.
 					<tr>
 						<th>{{ $t('components.gateway.information.addresses.ip') }}</th>
 						<td>
-							<span v-for='{name, ipAddresses} of ipAddrs' :key='name'>
+							<span v-for='{ name, ipAddresses } of ipAddrs' :key='name'>
 								<strong>{{ name }}: </strong> {{ ipAddresses?.join(', ') }}<br>
 							</span>
 						</td>
@@ -66,7 +66,7 @@ limitations under the License.
 					<tr>
 						<th>{{ $t('components.gateway.information.addresses.mac') }}</th>
 						<td>
-							<span v-for='{name, macAddress} of macAddrs' :key='name'>
+							<span v-for='{ name, macAddress } of macAddrs' :key='name'>
 								<strong>{{ name }}: </strong> {{ macAddress }}<br>
 							</span>
 						</td>
@@ -139,9 +139,9 @@ function downloadDiagnostics(): void {
 		.then((rsp: GatewayInformation) => {
 			let fileName = 'iqrf-gateway-info';
 			if (info.value?.gwId) {
-				fileName += '_' + info.value.gwId.toLowerCase();
+				fileName += `_${ info.value.gwId.toLowerCase()}`;
 			}
-			FileDownloader.downloadFromData(rsp, 'application/json', fileName + '.json');
+			FileDownloader.downloadFromData(rsp, 'application/json', `${fileName }.json`);
 		})
 		.catch(() => toast.error('TODO ERROR HANDLING'));
 }

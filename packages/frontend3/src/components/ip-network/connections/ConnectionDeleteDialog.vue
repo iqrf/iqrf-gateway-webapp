@@ -25,7 +25,7 @@ limitations under the License.
 		<template #title>
 			{{ $t('components.ipNetwork.connections.delete.title') }}
 		</template>
-		{{ $t('components.ipNetwork.connections.delete.prompt', {name: connection.name}) }}
+		{{ $t('components.ipNetwork.connections.delete.prompt', { name: connection.name }) }}
 	</DeleteModalWindow>
 </template>
 <script setup lang='ts'>

@@ -109,8 +109,8 @@ export class IqrfGatewayDaemonService extends BaseService {
 	 * @param {C} component Daemon component name
 	 * @param {string} instance Daemon component instance name
 	 */
-	public async deleteInstance<C extends IqrfGatewayDaemonComponentName>(
-		component: C,
+	public async deleteInstance(
+		component: IqrfGatewayDaemonComponentName,
 		instance: string,
 	): Promise<void> {
 		await this.axiosInstance.delete(`/config/daemon/${encodeURIComponent(component)}/${encodeURIComponent(instance)}`);

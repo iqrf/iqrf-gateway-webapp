@@ -28,7 +28,7 @@ limitations under the License.
 				width='55'
 				height='36'
 			>
-				<img height='16' :src='"data:image/svg+xml;charset=utf-8;base64," + localeStore.getLocaleFlag'>
+				<img height='16' :src='`data:image/svg+xml;charset=utf-8;base64,${ localeStore.getLocaleFlag}`'>
 			</v-btn>
 		</template>
 		<v-list
@@ -41,7 +41,7 @@ limitations under the License.
 				density='compact'
 				@click='setLocale(locale.code)'
 			>
-				<img height='16' :src='"data:image/svg+xml;charset=utf-8;base64," + locale.flag'>
+				<img height='16' :src='`data:image/svg+xml;charset=utf-8;base64,${ locale.flag}`'>
 			</v-list-item>
 		</v-list>
 	</v-menu>

@@ -158,7 +158,7 @@ watchEffect((): void => {
 function onSubmit(): void {
 	let url = `${protocol.value}://${hostname.value}:${port.value}`;
 	if (protocol.value === MqttProtocol.WS || protocol.value === MqttProtocol.WSS) {
-		url += '/' + path.value;
+		url += `/${path.value}`;
 	}
 	emit('edited', url);
 	close();

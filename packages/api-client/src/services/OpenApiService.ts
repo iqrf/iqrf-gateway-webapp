@@ -33,7 +33,7 @@ export class OpenApiService extends BaseService {
 		const response: AxiosResponse<OpenAPI3> =
 			await this.axiosInstance.get('/openapi');
 		const regExp: RegExp = /https:\/\/apidocs\.iqrf\.org\/iqrf-gateway-webapp-api\/schemas\/(\w*)\.json/g;
-		const replacement: string = baseUrl + '/openapi/schemas/$1';
+		const replacement: string = `${baseUrl}/openapi/schemas/$1`;
 		const spec: OpenAPI3 = JSON.parse(JSON.stringify(response.data).replaceAll(regExp, replacement)) as OpenAPI3;
 		// @ts-ignore Ignore missing description and variable properties in OpenAPI v3.x server object
 		spec.servers = [{ url: baseUrl }];

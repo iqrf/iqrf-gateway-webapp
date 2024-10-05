@@ -24,7 +24,7 @@ limitations under the License.
 		<template #title>
 			{{ $t('components.configuration.daemon.connections.mqtt.delete.title') }}
 		</template>
-		{{ $t('components.configuration.daemon.connections.mqtt.delete.prompt', {name: connectionProfile.instance}) }}
+		{{ $t('components.configuration.daemon.connections.mqtt.delete.prompt', { name: connectionProfile.instance }) }}
 	</DeleteModalWindow>
 </template>
 

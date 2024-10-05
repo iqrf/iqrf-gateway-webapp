@@ -24,7 +24,7 @@ limitations under the License.
 		<template #title>
 			{{ $t('components.configuration.profiles.delete.title') }}
 		</template>
-		{{ $t('components.configuration.profiles.delete.prompt', {name: profile.name}) }}
+		{{ $t('components.configuration.profiles.delete.prompt', { name: profile.name }) }}
 	</DeleteModalWindow>
 </template>
 

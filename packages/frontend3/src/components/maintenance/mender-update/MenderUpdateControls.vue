@@ -151,7 +151,7 @@ function updateLog(data: string|null): void {
 	if (log.value === null) {
 		log.value = data;
 	} else {
-		log.value += '\n' + data;
+		log.value += `\n${ data}`;
 	}
 }
 

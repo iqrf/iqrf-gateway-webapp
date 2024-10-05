@@ -20,12 +20,12 @@ limitations under the License.
 		<template v-for='navItem in props.items'>
 			<SidebarGroup
 				v-if='navItem.children !== undefined && navItem.children.length > 0'
-				:key='navItem.title + "_group"'
+				:key='`${navItem.title }_group`'
 				:item='navItem'
 			/>
 			<SidebarItem
 				v-else
-				:key='navItem.title + "_item"'
+				:key='`${navItem.title }_item`'
 				:item='navItem'
 			/>
 		</template>

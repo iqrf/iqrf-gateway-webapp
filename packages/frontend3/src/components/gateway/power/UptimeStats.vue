@@ -39,11 +39,11 @@ limitations under the License.
 				</span>
 			</template>
 			<template #item.running='{ item }'>
-				{{ humanizeDuration(item.running.valueOf(), {round: true, language: localeStore.getLocale, units: ["d", "h", "m"]}) }}
+				{{ humanizeDuration(item.running.valueOf(), { round: true, language: localeStore.getLocale, units: ["d", "h", "m"] }) }}
 			</template>
 			<template #item.downtime='{ item }'>
 				<span v-if='item.shutdown !== null'>
-					{{ humanizeDuration(item.downtime.valueOf(), {round: true, language: localeStore.getLocale, units: ["d", "h", "m"]}) }}
+					{{ humanizeDuration(item.downtime.valueOf(), { round: true, language: localeStore.getLocale, units: ["d", "h", "m"] }) }}
 				</span>
 			</template>
 			<template #item.graceful='{ item }'>

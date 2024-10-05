@@ -25,7 +25,7 @@ limitations under the License.
 		<template #title>
 			{{ $t('components.configuration.daemon.connections.udp.delete.title') }}
 		</template>
-		{{ $t('components.configuration.daemon.connections.udp.delete.prompt', {name: connectionProfile.instance}) }}
+		{{ $t('components.configuration.daemon.connections.udp.delete.prompt', { name: connectionProfile.instance }) }}
 	</DeleteModalWindow>
 </template>
 

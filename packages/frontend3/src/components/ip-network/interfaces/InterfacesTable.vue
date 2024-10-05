@@ -38,7 +38,7 @@ limitations under the License.
 					hide-pagination
 					dense
 				>
-					<template #item.state='{item}'>
+					<template #item.state='{ item }'>
 						<InterfaceStateBadge :state='item.state' />
 					</template>
 				</DataTable>

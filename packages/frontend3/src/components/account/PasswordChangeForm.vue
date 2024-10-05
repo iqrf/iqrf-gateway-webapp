@@ -84,7 +84,7 @@ async function onSubmit(): Promise<void> {
 			toast.success('Success');
 		})
 		.catch((error: AxiosError) => {
-			toast.error('Error: ' + error.message);
+			toast.error(`Error: ${ error.message}`);
 		});
 }
 </script>

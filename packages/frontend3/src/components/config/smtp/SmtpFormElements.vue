@@ -64,7 +64,7 @@ limitations under the License.
 			:label='$t("components.configuration.smtp.form.sender")'
 			:rules='[
 				(v: string|null) => ValidationRules.required(v, $t("components.configuration.smtp.validation.senderMissing")),
-				(v: string) => ValidationRules.email(v, $t("components.configuration.smtp.validation.senderInvalid"))
+				(v: string) => ValidationRules.email(v, $t("components.configuration.smtp.validation.senderInvalid")),
 			]'
 			:disabled='loading || !configuration.enabled'
 		/>

@@ -24,7 +24,7 @@ limitations under the License.
 		<template #title>
 			{{ $t('components.accessControl.sshKeys.delete.title') }}
 		</template>
-		{{ $t('components.accessControl.sshKeys.delete.prompt', {id: sshKey.id}) }}
+		{{ $t('components.accessControl.sshKeys.delete.prompt', { id: sshKey.id }) }}
 	</DeleteModalWindow>
 </template>
 

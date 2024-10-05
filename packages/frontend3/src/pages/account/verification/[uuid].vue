@@ -31,11 +31,11 @@ limitations under the License.
 				:time='10_000'
 				@end='signIn'
 			>
-				{{ $t('core.account.verification.messages.redirect', {countdown: seconds}) }}
+				{{ $t('core.account.verification.messages.redirect', { countdown: seconds }) }}
 			</vue-countdown>
 		</div>
 		<div v-else-if='finished && !success'>
-			{{ $t('core.account.verification.messages.failure', {error: errorMsg}) }}
+			{{ $t('core.account.verification.messages.failure', { error: errorMsg }) }}
 		</div>
 	</Card>
 </template>

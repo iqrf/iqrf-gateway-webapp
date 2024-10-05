@@ -22,7 +22,7 @@ limitations under the License.
 		variant='tonal'
 	>
 		<div v-if='hasEmail' style='display: flex; justify-content: space-between; align-items: center;'>
-			{{ $t('account.verification.unverified', {email: userEmail}) }}
+			{{ $t('account.verification.unverified', { email: userEmail }) }}
 			<v-btn
 				color='warning'
 				size='small'

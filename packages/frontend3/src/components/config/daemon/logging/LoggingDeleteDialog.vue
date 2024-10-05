@@ -25,7 +25,7 @@ limitations under the License.
 		<template #title>
 			{{ $t('components.configuration.daemon.logging.delete.title') }}
 		</template>
-		{{ $t('components.configuration.daemon.logging.delete.prompt', {name: loggingInstance.instance}) }}
+		{{ $t('components.configuration.daemon.logging.delete.prompt', { name: loggingInstance.instance }) }}
 	</DeleteModalWindow>
 </template>
 

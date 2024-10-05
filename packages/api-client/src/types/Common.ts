@@ -93,9 +93,6 @@ export class FileResponse<T extends FileResponseType> {
 	 * @return {File<T>} New file entity
 	 */
 	public static fromAxiosResponse<T extends FileResponseType>(response: AxiosResponse<T>, name: string | null = null): FileResponse<T> {
-		if (response.headers === undefined) {
-			throw new Error('Response headers are not specified.');
-		}
 		const contentDisposition: string | undefined = response.headers['content-disposition'] as string | undefined;
 		const contentType: string = (response.headers['content-type'] as string | undefined) ?? 'application/octet-stream';
 		let fileName: string | null = name;
