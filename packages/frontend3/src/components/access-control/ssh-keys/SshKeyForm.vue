@@ -91,10 +91,9 @@ limitations under the License.
 import { type SshKeyService } from '@iqrf/iqrf-gateway-webapp-client/services/Security';
 import {
 	type SshKeyCreate,
-	type SshKeyCreated,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import { SshKeyUtils } from '@iqrf/iqrf-gateway-webapp-client/utils';
-import { mdiKey, mdiPencil, mdiPlus, mdiTextShort } from '@mdi/js';
+import { mdiKey, mdiTextShort } from '@mdi/js';
 import { AxiosError } from 'axios';
 import { type PropType, ref, type Ref, watchEffect , computed } from 'vue';
 import { useI18n } from 'vue-i18n';

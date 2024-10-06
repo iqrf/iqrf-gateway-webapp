@@ -1,4 +1,38 @@
 {
+	"$iqrf": {
+		"common": {
+			"actions": {
+				"add": "Add",
+				"apply": "Apply",
+				"cancel": "Cancel",
+				"close": "Close",
+				"confirm": "Confirm",
+				"delete": "Delete",
+				"disable": "Disable",
+				"download": "Download",
+				"edit": "Edit",
+				"enable": "Enable",
+				"export": "Export",
+				"import": "Import",
+				"next": "Next",
+				"previous": "Previous",
+				"reload": "Reload",
+				"reset": "Reset",
+				"restart": "Restart",
+				"save": "Save",
+				"showDetails": "Show details",
+				"skip": "Skip",
+				"start": "Start",
+				"stop": "Stop",
+				"upload": "Upload"
+			},
+			"components": {
+				"datatable": {
+					"filterColumns": "Filter columns"
+				}
+			}
+		}
+	},
 	"auth": {
 		"sign": {
 			"in": {
@@ -211,6 +245,9 @@
 			"other": "Other",
 			"format": "Format",
 			"value": "Value"
+		},
+		"messages": {
+			"fetchFailed": "An error has occurred while fetching data."
 		},
 		"states": {
 			"active": "Active",
@@ -999,30 +1036,39 @@
 				}
 			},
 			"smtp": {
-				"test": "Test configuration",
+				"defaultConfig": "The default configuration for IQAROS system is currently in use.",
+				"errors": {
+					"host": "Please enter server address.",
+					"hostInvalid": "Server address should be an IP address, fully-qualified domain name or localhost.",
+					"password": "Please enter password.",
+					"port": "Please enter port number.",
+					"portInvalid": "Port number should be an integer between 1 and 65535.",
+					"sender": "Please enter sender email.",
+					"username": "Please enter username."
+				},
 				"form": {
+					"customConfig": "Use the custom mail server configuration",
+					"enabled": "Enable sending e-mails",
+					"host": "Server address",
+					"password": "Password",
+					"port": "Port",
 					"security": "Connection security",
 					"securityLevels": {
 						"none": "None",
-						"starttls": "STARTTLS",
-						"tls": "TLS"
+						"ssl": "TLS",
+						"tls": "StartTLS"
 					},
-					"sender": "Sender"
-				},
-				"validation": {
-					"hostMissing": "Please enter SMTP host.",
-					"hostInvalid": "Invalid SMTP host address.",
-					"portMissing": "Please enter SMTP port.",
-					"portInvalid": "Invalid SMTP port number.",
-					"usernameMissing": "Please enter SMTP username.",
-					"passwordMissing": "Please enter SMTP password.",
-					"senderMissing": "Please enter sender email.",
-					"senderInvalid": "Invalid e-mail address."
+					"sender": "Sender",
+					"test": "Test configuration",
+					"title": "Mail server configuration",
+					"username": "Username"
 				},
 				"messages": {
-					"save": {
-						"success": "SMTP configuration successfully saved."
-					}
+					"fetchFailed": "Failed to retrieve mail server configuration: {error}",
+					"saveFailed": "Failed to save mail server configuration: {error}",
+					"saveSuccess": "Mail server configuration has been successfully saved.",
+					"testFailed": "Failed to send mail server configuration test email: {error}",
+					"testSuccess": "Mail server configuration test email has been successfully sent."
 				}
 			},
 			"time": {
@@ -1408,6 +1454,42 @@
 				"loading": "IQRF Gateway Webapp is loading…",
 				"messages": {
 					"failed": "Failed to load IQRF Gateway Webapp. Please try to reload the page."
+				}
+			},
+			"wizard": {
+				"adminUserCreation": {
+					"button": "Create user",
+					"text": "Create a new user to access web interface of IQRF gateway and configure it.",
+					"title": "Create a new user"
+				},
+				"adminUserPreferences": {
+					"title": "Set your preferences"
+				},
+				"dateTimeConfiguration": {
+					"text": "Configure date, time and timezone settings for your IQRF gatewaym.",
+					"title": "Date and time configuration"
+				},
+				"installationCompleted": {
+					"button": "Go to the application",
+					"text": "Congratulations, you have finished setting up your new IQRF gateway.",
+					"title": "Installation completed"
+				},
+				"mailServerConfiguration": {
+					"text": "Configure a mail server to send emails.",
+					"title": "Mail server configuration"
+				},
+				"sshServerConfiguration": {
+					"text": "Configure SSH server to access terminal of your IQRF gateway via SSH protocol.",
+					"title": "SSH server configuration",
+					"messages": {
+						"fetchFailed": "Failed to retrieve SSH server service state.",
+						"saveFailed": "Failed to save SSH server service state."
+					},
+					"service": {
+						"enable": "Start SSH service on every boot.",
+						"start": "Start SSH service now, once.",
+						"disable": "Do not start SSH service."
+					}
 				}
 			}
 		},
@@ -1842,12 +1924,6 @@
 				}
 			}
 		},
-		"sshService": {
-			"note": "Set SSH service status.",
-			"enable": "Start SSH service on every boot.",
-			"start": "Start SSH service now, once.",
-			"disable": "Do not start SSH service."
-		},
 		"status": {
 			"monitor": {
 				"mode": "Daemon mode",
@@ -2083,6 +2159,10 @@
 						"failed": "Failed to reload installation check."
 					}
 				}
+			},
+			"wizard": {
+				"text": "Welcome to your new IQRF gateway.",
+				"title": "IQRF Gateway installation wizard"
 			},
 			"user": {
 				"title": "Create a new user"

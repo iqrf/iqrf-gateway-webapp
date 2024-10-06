@@ -1,4 +1,38 @@
 {
+	"$iqrf": {
+		"common": {
+			"actions": {
+				"add": "Přidat",
+				"apply": "Použít",
+				"cancel": "Zrušit",
+				"close": "Zavřít",
+				"confirm": "Potvrdit",
+				"delete": "Smazat",
+				"disable": "Zakázat",
+				"download": "Stáhnout",
+				"edit": "Změnit",
+				"enable": "Povolit",
+				"export": "Exportovat",
+				"import": "Importovat",
+				"next": "Další",
+				"previous": "Předchozí",
+				"reload": "Obnovit",
+				"reset": "Resetovat",
+				"restart": "Restartovat",
+				"save": "Uložit",
+				"showDetails": "Zobrazit detaily",
+				"skip": "Přeskočit",
+				"start": "Spustit",
+				"stop": "Zastavit",
+				"upload": "Nahrát"
+			},
+			"components": {
+				"datatable": {
+					"filterColumns": "Filtrovat sloupce"
+				}
+			}
+		}
+	},
 	"install": {
 		"title": "Instalační průvodce",
 		"invitation": "Vítejte v IQRF Gateway Webapp. Než začnete webovou aplikaci používat je nejdříve potřeba vytvořit uživatelský účet.",
@@ -30,6 +64,9 @@
 			"id": "ID",
 			"description": "Popis",
 			"actions": "Akce"
+		},
+		"messages": {
+			"fetchFailed": "Při načítání dat došlo k chybě."
 		},
 		"validation": {
 			"portMissing": "Zadejte prosím číslo portu.",
@@ -197,6 +234,42 @@
 				"messages": {
 					"failed": "Při načítání aplikace IQAROS došlo k chybě. Zkuste znovu načíst stránku."
 				}
+			},
+			"wizard": {
+				"adminUserCreation": {
+					"button": "Vytvoř uživatele",
+					"text": "Vytvoření nového uživatele pro přístup k webovému rozhraní brány IQRF a konfiguraci systému.",
+					"title": "Vytvoření nového uživatelského účtu"
+				},
+				"adminUserPreferences": {
+					"title": "Nastavte si své preference"
+				},
+				"dateTimeConfiguration": {
+					"text": "Nastavení datumu, času a časové zóny brány IQRF.",
+					"title": "Konfigurace datumu a času"
+				},
+				"installationCompleted": {
+					"button": "Přejít do aplikace",
+					"text": "Gratulujeme, dokončili jste nastavení Vaší nové brány IQRF.",
+					"title": "Instalace dokončena"
+				},
+				"mailServerConfiguration": {
+					"text": "Nastavení poštovního serveru pro odesílání e-mailů.",
+					"title": "Konfigurace poštovního serveru"
+				},
+				"sshServerConfiguration": {
+					"text": "Nastavení SSH serveru pro vzdálený přístup k terminálu Vaší brány IQRF.",
+					"title": "Konfigurace SSH serveru",
+					"messages": {
+						"fetchFailed": "Nepodařilo se získat stav služby SSH serveru.",
+						"saveFailed": "Nepodařilo se uložit nový stav služby SSH serveru."
+					},
+					"service": {
+						"enable": "Službu SSH spusťte při každém spuštění systému.",
+						"start": "Službu SSH spusťte nyní, jednou.",
+						"disable": "Službu SSH nespouštějte."
+					}
+				}
 			}
 		},
 		"status": {
@@ -233,6 +306,42 @@
 							}
 						}
 					}
+				}
+			},
+			"smtp": {
+				"defaultConfig": "V současné době se používá výchozí konfigurace systému IQAROS.",
+				"validation": {
+					"host": "Prosím zadejte hostitele poštovního serveru.",
+					"hostInvalid": "Adresa hostitele poštovního serveru by měla být IP adresa, plně kvalifikovaný název domény nebo localhost.",
+					"password": "Prosím zadejte heslo pro přihlášení k poštovnímu serveru.",
+					"port": "Prosím zadejte port poštovního serveru.",
+					"portInvalid": "Port poštovního serveru by měl být celé číslo mezi 1 a 65535.",
+					"sender": "Prosím zadejte e-mailovou adresu odesílatele.",
+					"username": "Prosím zadejte uživatelské jméno pro přihlášení k poštovnímu serveru."
+				},
+				"form": {
+					"customConfig": "Použít vlastní konfiguraci pro poštovní server",
+					"enabled": "Povolit odesílání e-mailů",
+					"host": "Adresa hostitele",
+					"password": "Heslo",
+					"port": "Port",
+					"security": "Zabezpečení spojení",
+					"securityLevels": {
+						"none": "Žádné",
+						"ssl": "TLS",
+						"tls": "StartTLS"
+					},
+					"sender": "Odesílatel",
+					"test": "Odeslat testovací e-mail",
+					"title": "Konfigurace poštovního serveru",
+					"username": "Uživatelské jméno"
+				},
+				"messages": {
+					"fetchFailed": "Nepodařilo se načíst konfiguraci poštovního serveru: {error}",
+					"saveFailed": "Nepodařilo se uložit konfiguraci poštovního serveru: {error}",
+					"saveSuccess": "Konfigurace poštovního serveru byla úspěšně uložena.",
+					"testFailed": "Nepodařilo se odeslat testovací e-mail: {error}",
+					"testSuccess": "Testovací e-mail byl úspěšně odeslán."
 				}
 			}
 		}
@@ -363,6 +472,10 @@
 						"failed": "Nepodařilo se znovu spustit kontrolu instalace."
 					}
 				}
+			},
+			"wizard": {
+				"text": "Vítejte ve Vašem nové bráně IQRF.",
+				"title": "Instalační průvodce brány IQRF"
 			},
 			"user": {
 				"title": "Vytvoření nového uživatele"

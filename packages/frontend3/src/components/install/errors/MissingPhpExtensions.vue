@@ -9,6 +9,9 @@
 		{{ $t('components.install.errors.missingPhpExtensions.fix') }}
 		<br>
 		<pre>{{ command }}</pre>
+		<template #actions='{ prev, next }'>
+			<ErrorStepperActions :index='componentProps.index' :prev='prev' :next='next' />
+		</template>
 	</v-stepper-vertical-item>
 </template>
 
@@ -16,7 +19,10 @@
 import {
 	type InstallationCheckPhpMissingExtensions,
 } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { computed, ComputedRef, PropType } from 'vue';
+import { computed, type ComputedRef, PropType } from 'vue';
+
+import ErrorStepperActions
+	from '@/components/install/errors/ErrorStepperActions.vue';
 
 const model = defineModel({
 	required: true,
@@ -32,6 +38,6 @@ const extensions: ComputedRef<string> = computed((): string => {
 	return model.value?.extensions.join(', ') ?? '';
 });
 const command: ComputedRef<string> = computed((): string => {
-	return `sudo apt-get update\nsudo apt-get install ${ model.value?.packages?.join(' ')}`;
+	return `sudo apt-get update\nsudo apt-get install ${model.value?.packages?.join(' ')}`;
 });
 </script>

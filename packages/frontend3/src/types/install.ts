@@ -42,3 +42,17 @@ export interface InstallationErrors {
 	/// Has misconfigured sudo?
 	misconfiguredSudo: boolean,
 }
+
+/**
+ * Installation step
+ */
+export enum InstallationStep {
+	/// Admin user creation
+	UserCreation = 'userCreation',
+	/// Mail server configuration
+	MailServerConfiguration = 'mailServerConfiguration',
+	/// SSH server configuration
+	SshServerConfiguration = 'sshServerConfiguration',
+	/// Installation completed
+	InstallationCompleted = 'installationCompleted',
+}

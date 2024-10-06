@@ -8,11 +8,17 @@
 		{{ $t('components.install.errors.missingMigrations.fix') }}
 		<br>
 		<pre>{{ command }}</pre>
+		<template #actions='{ prev, next }'>
+			<ErrorStepperActions :index='componentProps.index' :prev='prev' :next='next' />
+		</template>
 	</v-stepper-vertical-item>
 </template>
 
 <script setup lang='ts'>
 import { ref, Ref } from 'vue';
+
+import ErrorStepperActions
+	from '@/components/install/errors/ErrorStepperActions.vue';
 
 const componentProps = defineProps({
 	index: {

@@ -17,12 +17,18 @@
 			<br>
 			<pre>{{ invalidCommand }}</pre>
 		</div>
+		<template #actions='{ prev, next }'>
+			<ErrorStepperActions :index='componentProps.index' :prev='prev' :next='next' />
+		</template>
 	</v-stepper-vertical-item>
 </template>
 
 <script setup lang='ts'>
 import { InstallationCheckSudo } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { computed, ComputedRef, PropType } from 'vue';
+
+import ErrorStepperActions
+	from '@/components/install/errors/ErrorStepperActions.vue';
 
 const model = defineModel({
 	required: true,

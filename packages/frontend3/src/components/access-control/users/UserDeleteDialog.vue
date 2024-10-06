@@ -30,51 +30,68 @@ limitations under the License.
 
 <script lang='ts' setup>
 import { type UserInfo } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { type AxiosError } from 'axios';
-import { ref, type Ref } from 'vue';
+import { PropType, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { toast } from 'vue3-toastify';
 
 import DeleteModalWindow from '@/components/DeleteModalWindow.vue';
-import { basicErrorToast } from '@/helpers/errorToast';
 import { useApiClient } from '@/services/ApiClient';
+import { useInstallStore } from '@/store/install';
 import { useUserStore } from '@/store/user';
+import { ComponentState } from '@/types/ComponentState';
 
-interface Props {
-	user: UserInfo
-	onlyUser: boolean
-}
-
+const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
+const componentProps = defineProps({
+	user: {
+		type: Object as PropType<UserInfo>,
+		required: true,
+	},
+	onlyUser: {
+		type: Boolean,
+		required: true,
+	},
+});
+const emit = defineEmits(['refresh']);
+const installStore = useInstallStore();
 const userStore = useUserStore();
 const i18n = useI18n();
 const router = useRouter();
-const emit = defineEmits(['refresh']);
 const dialog: Ref<typeof DeleteModalWindow | null> = ref(null);
-const componentProps = defineProps<Props>();
 
-function onSubmit(): void {
-	useApiClient().getSecurityServices().getUserService().delete(componentProps.user.id)
-		.then(async () => {
-			toast.success(
-				i18n.t('components.accessControl.users.messages.delete.success', { user: componentProps.user.username }),
-			);
-			if (componentProps.user.id === userStore.getId) {
-				close();
-				await userStore.signOut();
-				if (componentProps.onlyUser) {
-					await router.push('/install/');
-				}
-			} else {
-				close();
-				emit('refresh');
+/**
+ * Confirm user deletion
+ */
+async function onSubmit(): Promise<void> {
+	componentState.value = ComponentState.Saving;
+	try {
+		await useApiClient().getSecurityServices().getUserService().delete(componentProps.user.id);
+		componentState.value = ComponentState.Ready;
+		toast.success(
+			i18n.t('components.accessControl.users.messages.delete.success', { user: componentProps.user.username }),
+		);
+		if (componentProps.user.id === userStore.getId) {
+			close();
+			await userStore.signOut();
+			if (componentProps.onlyUser) {
+				installStore.setHasUsers(false);
+				await router.push({ name: 'InstallationWizard' });
 			}
-		})
-		.catch((error: AxiosError) => {
-			basicErrorToast(error, 'components.accessControl.users.messages.delete.failure', { user: componentProps.user.username });
-		});
+		} else {
+			close();
+			emit('refresh');
+		}
+	} catch {
+		componentState.value = ComponentState.Ready;
+		toast.error(
+			i18n.t('components.accessControl.users.messages.delete.failure', { user: componentProps.user.username }),
+		);
+	}
 }
 
+/**
+ * Closes the dialog window
+ */
 function close(): void {
 	dialog.value?.close();
 }

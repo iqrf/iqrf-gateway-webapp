@@ -30,7 +30,6 @@ limitations under the License.
 					<div class='logo'>
 						<v-img :src='Logo' max-height='32pt' />
 					</div>
-					<Steps v-if='!hasUsers' class='mb-4' />
 					<slot />
 				</v-col>
 			</v-row>
@@ -39,14 +38,7 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { storeToRefs } from 'pinia';
-
 import Logo from '@/assets/logo-blue.svg?url';
-import Steps from '@/components/install/Steps.vue';
-import { useInstallStore } from '@/store/install';
-
-const installStore = useInstallStore();
-const { hasUsers } = storeToRefs(installStore);
 </script>
 
 <style lang='scss' scoped>

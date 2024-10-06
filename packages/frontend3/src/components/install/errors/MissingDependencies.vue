@@ -21,12 +21,18 @@
 				</tr>
 			</tbody>
 		</v-table>
+		<template #actions='{ prev, next }'>
+			<ErrorStepperActions :index='componentProps.index' :prev='prev' :next='next' />
+		</template>
 	</v-stepper-vertical-item>
 </template>
 
 <script setup lang='ts'>
 import { InstallationCheckDependency } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { computed, PropType } from 'vue';
+import { computed, type ComputedRef, PropType } from 'vue';
+
+import ErrorStepperActions
+	from '@/components/install/errors/ErrorStepperActions.vue';
 
 const model = defineModel({
 	required: true,
@@ -38,7 +44,7 @@ const componentProps = defineProps({
 		required: true,
 	},
 });
-const packages = computed(() => {
+const packages: ComputedRef<string> = computed((): string => {
 	const dependencies = model.value.map((item: InstallationCheckDependency): string => item.package);
 	return dependencies.filter((value: string, index: number, array: string[]) => array.indexOf(value) === index).join(', ');
 });

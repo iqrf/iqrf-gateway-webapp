@@ -49,7 +49,7 @@ limitations under the License.
 	</v-empty-state>
 </template>
 
-<script setup lang='ts'>
+<script lang='ts' setup>
 import { storeToRefs } from 'pinia';
 import { onMounted, ref, Ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
@@ -86,19 +86,25 @@ async function checkInstallation(): Promise<void> {
 		const {
 			hasErrors,
 			hasNoUsers,
+			isRunning,
 		} = storeToRefs(installStore);
-		const isInstallUrl: boolean = route.path.startsWith('/install/');
-		const errorUrl: boolean = route.path.startsWith('/install/error');
-		installStore.populateSteps();
+		const isInstallUrl: boolean = [
+			'InstallationErrors',
+			'InstallationWizard',
+		].includes(route.name as string);
 		if (hasErrors.value) {
 			installStore.setChecked();
 			await router.push({ name: 'InstallationErrors' });
-		} else if (hasNoUsers.value && !isInstallUrl) {
+		} else if (isRunning.value && !isInstallUrl) {
 			installStore.setChecked();
-			await router.push('/install/');
-		} else if (!hasNoUsers.value && (isInstallUrl || errorUrl)) {
+			if (hasNoUsers.value || isLoggedIn.value) {
+				await router.push({ name: 'InstallationWizard' });
+			} else {
+				await router.push({ name: 'SignIn', query: { redirect: '/install/' } });
+			}
+		} else if (!isRunning.value && isInstallUrl) {
 			installStore.setChecked();
-			await router.push('/sign/in');
+			await router.push(isLoggedIn.value ? '/' : { name: 'SignIn' });
 		}
 		if (isLoggedIn.value) {
 			await repositoryStore.fetch();

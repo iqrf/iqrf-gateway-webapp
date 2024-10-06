@@ -39,7 +39,10 @@ limitations under the License.
 				required
 				:prepend-inner-icon='mdiKey'
 			/>
-			<SessionExpirationInput v-model='credentials.expiration' />
+			<SessionExpirationInput
+				v-if='credentials.expiration !== undefined'
+				v-model='credentials.expiration'
+			/>
 			<template #actions>
 				<CardActionBtn
 					color='primary'

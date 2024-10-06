@@ -48,6 +48,7 @@ import {
 	mdiLogin,
 	mdiSecurity,
 	mdiTools,
+	mdiWizardHat,
 	mdiWrenchClock,
 } from '@mdi/js';
 import { storeToRefs } from 'pinia';
@@ -59,7 +60,6 @@ import { useFeatureStore } from '@/store/features';
 import { useSidebarStore } from '@/store/sidebar';
 import { useUserStore } from '@/store/user';
 import { type SidebarLink } from '@/types/sidebar';
-
 
 const i18n = useI18n();
 
@@ -322,6 +322,13 @@ function items(): SidebarLink[] {
 						roles: [UserRole.Admin],
 					},
 				],
+			},
+			{
+				title: i18n.t('pages.install.title'),
+				icon: mdiWizardHat,
+				to: '/install',
+				roles: [UserRole.Admin],
+				developmentOnly: true,
 			},
 		];
 	} else {

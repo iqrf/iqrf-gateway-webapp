@@ -75,6 +75,7 @@ const {
 	getChecks: checks,
 	getErrors: errors,
 	hasErrors,
+	isRunning: isInstallationRunning,
 } = storeToRefs(installStore);
 
 const items: ComputedRef<InstallationError[]> = computed((): InstallationError[] => {
@@ -108,7 +109,7 @@ async function reload(): Promise<void> {
 		await installStore.check();
 		if (!hasErrors.value) {
 			toast.success(i18n.t('pages.install.errors.messages.reload.successNoErrors'));
-			await router.push('/');
+			await router.push(isInstallationRunning.value ? { name: 'InstallationWizard' } : '/');
 		} else {
 			toast.success(i18n.t('pages.install.errors.messages.reload.success'));
 		}

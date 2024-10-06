@@ -25,6 +25,10 @@ export enum Action {
 	Apply = 'apply',
 	/// Cancel
 	Cancel = 'cancel',
+	/// Close
+	Close = 'close',
+	/// Confirm
+	Confirm = 'confirm',
 	/// Custom
 	Custom = 'custom',
 	/// Delete
@@ -41,12 +45,22 @@ export enum Action {
 	Export = 'export',
 	/// Import
 	Import = 'import',
+	/// Next
+	Next = 'next',
+	/// Previous
+	Previous = 'previous',
 	/// Reload
 	Reload = 'reload',
+	/// Reset
+	Reset = 'reset',
 	/// Restart
 	Restart = 'restart',
+	/// Save
+	Save = 'save',
 	/// Show details
 	ShowDetails = 'show-details',
+	/// Skip
+	Skip = 'skip',
 	/// Start
 	Start = 'start',
 	/// Stop

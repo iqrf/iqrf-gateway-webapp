@@ -18,109 +18,155 @@ limitations under the License.
 <template>
 	<v-form
 		ref='form'
-		:disabled='loading || !configuration.enabled'
+		:disabled='[ComponentState.Loading, ComponentState.Reloading].includes(componentState) || !configuration.enabled'
 		@submit.prevent='onSubmit'
 	>
-		<Card v-if='install'>
+		<Card>
 			<template #title>
-				{{ $t('pages.install.smtp.title') }}
+				{{ $t('components.configuration.smtp.form.title') }}
 			</template>
 			<template #titleActions>
 				<v-btn
-					size='small'
+					color='white'
+					variant='tonal'
 					@click='configuration.enabled = !configuration.enabled'
 				>
 					{{ stateButtonLabel }}
 				</v-btn>
+				<CardTitleActionBtn
+					:action='Action.Reload'
+					:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+					@click='getConfig'
+				/>
 			</template>
-			<SmtpFormElements :config='configuration' :loading='loading' />
-			<v-btn
-				class='mr-1'
-				color='primary'
-				variant='elevated'
-				:disabled='loading'
-				@click='onSubmit'
+			<v-alert
+				v-if='componentState === ComponentState.FetchFailed'
+				type='error'
+				variant='tonal'
+				:text='$t("common.messages.fetchFailed")'
+			/>
+			<v-skeleton-loader
+				class='input-skeleton-loader'
+				:loading='componentState === ComponentState.Loading'
+				type='heading@6, button@2'
 			>
-				{{ $t('common.buttons.save') }}
-			</v-btn>
-			<v-btn
-				class='mr-1'
-				color='info'
-				variant='elevated'
-				:disabled='!configuration.enabled || loading'
-				@click='testConfiguration'
-			>
-				{{ $t('components.configuration.smtp.test') }}
-			</v-btn>
-			<v-btn
-				v-if='install'
-				color='grey'
-				variant='elevated'
-				@click='toNextStep'
-			>
-				{{ $t('common.buttons.skip') }}
-			</v-btn>
-		</Card>
-		<Card v-else header-color='primary'>
-			<template #title>
-				{{ $t('pages.configuration.smtp.title') }}
-			</template>
-			<template #titleActions>
-				<v-btn
-					size='small'
-					@click='configuration.enabled = !configuration.enabled'
-				>
-					{{ stateButtonLabel }}
-				</v-btn>
-			</template>
-			<SmtpFormElements :config='configuration' :loading='loading' />
-			<template #actions>
-				<v-btn
-					color='primary'
-					variant='elevated'
-					:disabled='loading'
-					@click='onSubmit'
-				>
-					{{ $t('common.buttons.save') }}
-				</v-btn>
-				<v-btn
-					color='info'
-					variant='elevated'
-					:disabled='!configuration.enabled || loading'
-					@click='testConfiguration'
-				>
-					{{ $t('components.configuration.smtp.test') }}
-				</v-btn>
-			</template>
+				<v-responsive>
+					<v-alert
+						v-if='defaultConfig'
+						class='mb-4'
+						type='warning'
+						variant='tonal'
+						:text='$t("components.configuration.smtp.defaultConfig")'
+					/>
+					<v-text-field
+						v-model='configuration.host'
+						:label='$t("components.configuration.smtp.form.host")'
+						:rules='[
+							(v: string|null) => ValidationRules.required(v, $t("components.configuration.smtp.errors.host")),
+							(v: string) => ValidationRules.server(v, $t("components.configuration.smtp.errors.hostInvalid")),
+						]'
+						:disabled='[ComponentState.Loading, ComponentState.Reloading].includes(componentState) || !configuration.enabled'
+						:prepend-inner-icon='mdiServer'
+						required
+					/>
+					<v-text-field
+						v-model.number='configuration.port'
+						:label='$t("components.configuration.smtp.form.port")'
+						:rules='[
+							(v: number|null) => ValidationRules.required(v, $t("components.configuration.smtp.errors.port")),
+							(v: number) => ValidationRules.integer(v, $t("components.configuration.smtp.errors.port")),
+							(v: number) => ValidationRules.between(v, 1, 65535, $t("components.configuration.smtp.errors.portInvalid")),
+						]'
+						:disabled='[ComponentState.Loading, ComponentState.Reloading].includes(componentState) || !configuration.enabled'
+						:prepend-inner-icon='mdiNumeric'
+						required
+					/>
+					<v-text-field
+						v-model='configuration.username'
+						:label='$t("components.configuration.smtp.form.username")'
+						:rules='[
+							(v: string|null) => ValidationRules.required(v, $t("components.configuration.smtp.errors.username")),
+						]'
+						:disabled='[ComponentState.Loading, ComponentState.Reloading].includes(componentState) || !configuration.enabled'
+						:prepend-inner-icon='mdiAccount'
+					/>
+					<PasswordInput
+						v-model='configuration.password'
+						:label='$t("components.configuration.smtp.form.password")'
+						:rules='[
+							(v: string|null) => ValidationRules.required(v, $t("components.configuration.smtp.errors.password")),
+						]'
+						:disabled='[ComponentState.Loading, ComponentState.Reloading].includes(componentState) || !configuration.enabled'
+						:prepend-inner-icon='mdiKey'
+					/>
+					<SmtpSecurityInput
+						v-model='configuration.secure'
+						:disabled='[ComponentState.Loading, ComponentState.Reloading].includes(componentState) || !configuration.enabled'
+					/>
+					<v-text-field
+						v-model='configuration.from'
+						:label='$t("components.configuration.smtp.form.sender")'
+						:rules='[
+							(v: string|null) => ValidationRules.required(v, $t("components.configuration.smtp.errors.sender")),
+						]'
+						:disabled='[ComponentState.Loading, ComponentState.Reloading].includes(componentState) || !configuration.enabled'
+						:prepend-inner-icon='mdiEmail'
+					/>
+					<CardActionBtn
+						:action='Action.Save'
+						class='mr-1'
+						:disabled='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+						type='submit'
+					/>
+					<CardActionBtn
+						color='info'
+						:icon='mdiEmailFast'
+						:text='$t("components.configuration.smtp.form.test")'
+						:disabled='!configuration.enabled || [ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+						@click='testConfiguration'
+					/>
+				</v-responsive>
+			</v-skeleton-loader>
 		</Card>
 	</v-form>
 </template>
 
 <script lang='ts' setup>
-import { type MailerService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
-import { type MailerConfig, type MailerGetConfigResponse } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import { MailerService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
+import { ErrorResponse } from '@iqrf/iqrf-gateway-webapp-client/types';
+import {
+	type MailerConfig,
+	type MailerGetConfigResponse, MailerTheme,
+} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import {
+	mdiAccount,
+	mdiEmail,
+	mdiEmailFast,
+	mdiKey,
+	mdiNumeric,
+	mdiServer,
+} from '@mdi/js';
+import { AxiosError } from 'axios';
 import { computed, onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
-import { VForm } from 'vuetify/components';
+import { type VForm } from 'vuetify/components';
 
-import SmtpFormElements from '@/components/config/smtp/SmtpFormElements.vue';
+import SmtpSecurityInput
+	from '@/components/config/smtp/SmtpSecurityInput.vue';
 import Card from '@/components/layout/card/Card.vue';
+import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
+import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
+import PasswordInput from '@/components/layout/form/PasswordInput.vue';
 import { validateForm } from '@/helpers/validateForm';
-import router from '@/router';
+import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
-import { useInstallStore } from '@/store/install';
+import { Action } from '@/types/Action';
+import { ComponentState } from '@/types/ComponentState';
 
-const installStore = useInstallStore();
-const props = defineProps({
-	install: {
-		type: Boolean,
-		default: false,
-		required: false,
-	},
-});
+const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
-const loading: Ref<boolean> = ref(false);
+const form: Ref<VForm | null> = ref(null);
 const configuration: Ref<MailerConfig> = ref({
 	enabled: false,
 	host: '',
@@ -129,83 +175,85 @@ const configuration: Ref<MailerConfig> = ref({
 	password: '',
 	secure: null,
 	from: '',
-	theme: 'generic',
+	timeout: 20,
+	context: [],
 	clientHost: null,
+	persistent: false,
+	theme: MailerTheme.Generic,
 });
+const defaultConfig: Ref<boolean> = ref(false);
 
-const form: Ref<VForm | null> = ref(null);
 const stateButtonLabel = computed(() => {
 	if (configuration.value.enabled) {
-		return i18n.t('common.states.enabled');
+		return i18n.t('$iqrf.common.actions.disable');
 	}
-	return i18n.t('common.states.disabled');
+	return i18n.t('$iqrf.common.actions.enable');
 });
 
 const service: MailerService = useApiClient().getConfigServices().getMailerService();
 
-onMounted(() => {
-	getConfig();
-});
+onMounted(async () => await getConfig());
 
-function getConfig(): void {
-	loading.value = true;
-	service.getConfig()
-		.then((response: MailerGetConfigResponse) => {
-			configuration.value = response.config;
-			loading.value = false;
-		})
-		.catch(() => {
-			loading.value = false;
-			toast.error('TODO FETCH ERROR HANDLING');
-		});
+/**
+ * Retrieves the SMTP configuration
+ */
+async function getConfig(): Promise<void> {
+	componentState.value = componentState.value === ComponentState.Created ? ComponentState.Loading : ComponentState.Reloading;
+	try {
+		const response: MailerGetConfigResponse = await service.getConfig();
+		configuration.value = response.config;
+		if (response.headers) {
+			defaultConfig.value = response.headers.defaultConfig;
+		}
+		componentState.value = ComponentState.Ready;
+	} catch (error) {
+		componentState.value = ComponentState.FetchFailed;
+		if (error instanceof AxiosError) {
+			const message = (error.response?.data as ErrorResponse | undefined)?.message ?? error.message;
+			toast.error(i18n.t('components.configuration.smtp.messages.fetchFailed', { error: message }));
+		}
+	}
 }
 
+/**
+ * Saves the new SMTP configuration
+ */
 async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
 	}
-	loading.value = true;
-	service.updateConfig(configuration.value)
-		.then(() => {
-			loading.value = false;
-			toast.success(
-				i18n.t('components.configuration.smtp.messages.save.success'),
-			);
-			if (props.install) {
-				toNextStep();
-			}
-		})
-		.catch(() => {
-			loading.value = false;
-			toast.error('TODO SAVE ERROR HANDLING');
-		});
+	componentState.value = ComponentState.Reloading;
+	try {
+		await service.updateConfig(configuration.value);
+		componentState.value = ComponentState.Ready;
+		toast.success(i18n.t('components.configuration.smtp.messages.saveSuccess'));
+	} catch (error) {
+		if (error instanceof AxiosError) {
+			componentState.value = ComponentState.Ready;
+			const message = (error.response?.data as ErrorResponse | undefined)?.message ?? error.message;
+			toast.error(i18n.t('components.configuration.smtp.messages.saveFailed', { error: message }));
+		}
+	}
 }
 
+/**
+ * Tests the SMTP configuration
+ */
 async function testConfiguration(): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
 	}
-	loading.value = true;
-	service.testConfig(configuration.value)
-		.then(() => {
-			loading.value = false;
-			toast.success(
-				i18n.t('configuration.smtp.messages.test.success'),
-			);
-		})
-		.catch(() => {
-			loading.value = false;
-			toast.error('TODO TEST ERROR HANDLING');
-		});
-}
-
-function toNextStep(): void {
-	const nextStep = installStore.getNextStep;
-	if (nextStep === null) {
-		router.push('/');
-		return;
+	componentState.value = ComponentState.Reloading;
+	try {
+		await service.testConfig(configuration.value);
+		componentState.value = ComponentState.Ready;
+		toast.success(i18n.t('components.configuration.smtp.messages.testSuccess'));
+	} catch (error) {
+		if (error instanceof AxiosError) {
+			componentState.value = ComponentState.Ready;
+			const message = (error.response?.data as ErrorResponse | undefined)?.message ?? error.message;
+			toast.error(i18n.t('components.configuration.smtp.messages.testFailed', { error: message }));
+		}
 	}
-	router.push({ name: nextStep.route });
 }
-
 </script>

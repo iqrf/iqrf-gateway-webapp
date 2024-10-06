@@ -16,7 +16,12 @@
  */
 
 import {
+	mdiArrowLeftThick,
+	mdiArrowRightThick,
+	mdiCancel,
 	mdiCheckboxMarkedOutline,
+	mdiCheckCircleOutline,
+	mdiContentSave,
 	mdiDelete,
 	mdiDownload,
 	mdiExport,
@@ -29,6 +34,8 @@ import {
 	mdiPlus,
 	mdiReload,
 	mdiRestart,
+	mdiRestore,
+	mdiSkipNext,
 	mdiStop,
 	mdiStopCircleOutline,
 	mdiUpload,
@@ -52,17 +59,23 @@ export class ActionUtils {
 		switch (action) {
 			case Action.Add:
 			case Action.Apply:
+			case Action.Confirm:
 			case Action.Enable:
 			case Action.Start:
 				return 'green';
 			case Action.Cancel:
+			case Action.Close:
+			case Action.Previous:
+			case Action.Reset:
+			case Action.Skip:
 				return 'grey-darken-2';
 			case Action.Disable:
 			case Action.Delete:
 			case Action.Stop:
 				return 'red';
 			case Action.Edit:
-				return 'primary';
+			case Action.Export:
+				return 'info';
 			default:
 				return 'primary';
 		}
@@ -80,7 +93,11 @@ export class ActionUtils {
 			case Action.Apply:
 				return mdiCheckboxMarkedOutline;
 			case Action.Cancel:
+				return mdiCancel;
+			case Action.Close:
 				return mdiWindowClose;
+			case Action.Confirm:
+				return mdiCheckCircleOutline;
 			case Action.Delete:
 				return mdiDelete;
 			case Action.Disable:
@@ -95,12 +112,22 @@ export class ActionUtils {
 				return mdiExport;
 			case Action.Import:
 				return mdiImport;
+			case Action.Next:
+				return mdiArrowRightThick;
+			case Action.Previous:
+				return mdiArrowLeftThick;
 			case Action.Reload:
 				return mdiReload;
+			case Action.Reset:
+				return mdiRestore;
 			case Action.Restart:
 				return mdiRestart;
+			case Action.Save:
+				return mdiContentSave;
 			case Action.ShowDetails:
 				return mdiInformationBox;
+			case Action.Skip:
+				return mdiSkipNext;
 			case Action.Start:
 				return mdiPlay;
 			case Action.Stop:
@@ -120,37 +147,51 @@ export class ActionUtils {
 	public static getText(action: Action): string {
 		switch (action) {
 			case Action.Add:
-				return i18n.global.t('components.common.actions.add').toString();
+				return i18n.global.t('$iqrf.common.actions.add');
 			case Action.Apply:
-				return i18n.global.t('components.common.actions.apply').toString();
+				return i18n.global.t('$iqrf.common.actions.apply');
 			case Action.Cancel:
-				return i18n.global.t('components.common.actions.cancel').toString();
+				return i18n.global.t('$iqrf.common.actions.cancel');
+			case Action.Close:
+				return i18n.global.t('$iqrf.common.actions.close');
+			case Action.Confirm:
+				return i18n.global.t('$iqrf.common.actions.confirm');
 			case Action.Delete:
-				return i18n.global.t('components.common.actions.delete').toString();
+				return i18n.global.t('$iqrf.common.actions.delete');
 			case Action.Disable:
-				return i18n.global.t('components.common.actions.disable').toString();
+				return i18n.global.t('$iqrf.common.actions.disable');
 			case Action.Download:
-				return i18n.global.t('components.common.actions.download').toString();
+				return i18n.global.t('$iqrf.common.actions.download');
 			case Action.Enable:
-				return i18n.global.t('components.common.actions.enable').toString();
+				return i18n.global.t('$iqrf.common.actions.enable');
 			case Action.Edit:
-				return i18n.global.t('components.common.actions.edit').toString();
+				return i18n.global.t('$iqrf.common.actions.edit');
 			case Action.Export:
-				return i18n.global.t('components.common.actions.export').toString();
+				return i18n.global.t('$iqrf.common.actions.export');
 			case Action.Import:
-				return i18n.global.t('components.common.actions.import').toString();
+				return i18n.global.t('$iqrf.common.actions.import');
+			case Action.Next:
+				return i18n.global.t('$iqrf.common.actions.next');
+			case Action.Previous:
+				return i18n.global.t('$iqrf.common.actions.previous');
 			case Action.Reload:
-				return i18n.global.t('components.common.actions.reload').toString();
+				return i18n.global.t('$iqrf.common.actions.reload');
+			case Action.Reset:
+				return i18n.global.t('$iqrf.common.actions.reset');
 			case Action.Restart:
-				return i18n.global.t('components.common.actions.restart').toString();
+				return i18n.global.t('$iqrf.common.actions.restart');
+			case Action.Save:
+				return i18n.global.t('$iqrf.common.actions.save');
 			case Action.ShowDetails:
-				return i18n.global.t('components.common.actions.showDetails').toString();
+				return i18n.global.t('$iqrf.common.actions.showDetails');
+			case Action.Skip:
+				return i18n.global.t('$iqrf.common.actions.skip');
 			case Action.Start:
-				return i18n.global.t('components.common.actions.start').toString();
+				return i18n.global.t('$iqrf.common.actions.start');
 			case Action.Stop:
-				return i18n.global.t('components.common.actions.stop').toString();
+				return i18n.global.t('$iqrf.common.actions.stop');
 			case Action.Upload:
-				return i18n.global.t('components.common.actions.upload').toString();
+				return i18n.global.t('$iqrf.common.actions.upload');
 			default:
 				return '';
 		}
