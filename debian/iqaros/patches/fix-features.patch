@@ -18,12 +18,15 @@
  	user: root
  # Grafana dashboard
  grafana:
-@@ -30,55 +30,55 @@
+@@ -30,58 +30,58 @@ grafana:
  	url: /grafana/
  # IQAROS application
  iqaros:
 -	enabled: false
 +	enabled: true
+ # IQRF Cloud Provisioning configuration
+ iqrfCloudProvisioning:
+ 	enabled: false
  # IQRF Gateway Controller configuration
  iqrfGatewayController:
 -	enabled: false

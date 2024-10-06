@@ -25,6 +25,9 @@ parameters:
 		apt:
 			# Path to a directory containing APT configuration
 			configDir: '/etc/apt/apt.conf.d/'
+		# IQRF Cloud Provisioning paths
+		iqrfCloudProvisioning:
+			configDir: '/etc/iqrf-cloud-provisioning/'
 		# IQRF Gateway Controller paths
 		iqrfGatewayController:
 			# Path to directory containing IQRF Gateway Controller's configuration
