@@ -1279,6 +1279,10 @@
 						"description": "",
 						"name": "APC UPS Daemon"
 					},
+					"iqrf-cloud-provisioning": {
+						"description": "Provisioning tool for IQRF Cloud.",
+						"name": "IQRF Cloud Provisioning."
+					},
 					"iqrf-gateway-controller": {
 						"description": "",
 						"name": "IQRF Gateway Controller"

@@ -9,6 +9,7 @@
 		"gatewayPass",
 		"grafana",
 		"iqaros",
+		"iqrfCloudProvisioning",
 		"iqrfGatewayController",
 		"iqrfGatewayInfluxdbBridge",
 		"iqrfGatewayTranslator",
@@ -42,6 +43,9 @@
 		},
 		"iqaros": {
 			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/iqaros.json"
+		},
+		"iqrfCloudProvisioning": {
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/iqrfCloudProvisioning.json"
 		},
 		"iqrfGatewayController": {
 			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/iqrfGatewayController.json"

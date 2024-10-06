@@ -53,6 +53,7 @@ class ServicesController extends BaseController {
 		'iqaros-influxdb-poll' => 'iqaros',
 		'iqaros-network-sync' => 'iqaros',
 		'iqaros-webapp-wsserver' => 'iqaros',
+		'iqrf-cloud-provisioning' => 'iqrfCloudProvisioning',
 		'iqrf-gateway-controller' => 'iqrfGatewayController',
 		'iqrf-gateway-daemon' => null,
 		'iqrf-gateway-influxdb-bridge' => 'iqrfGatewayInfluxdbBridge',

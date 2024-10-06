@@ -64,14 +64,6 @@ class BackupManager {
 	private const TMP_PATH = '/tmp/backup/';
 
 	/**
-	 * Services to include in backup
-	 */
-	private const SERVICES = [
-		'apcupsd',
-		'ssh',
-	];
-
-	/**
 	 * @var ZipArchiveManager ZIP archive manager
 	 */
 	private ZipArchiveManager $zipManager;
@@ -162,7 +154,6 @@ class BackupManager {
 	 * @throws JsonException
 	 */
 	private function backupServices(array $services): void {
-		$services = array_merge($services, self::SERVICES);
 		$enabledServices = [];
 		foreach ($services as $service) {
 			try {
@@ -186,16 +177,36 @@ class BackupManager {
 		}
 		$this->zipManager->extract(self::TMP_PATH, 'services/enabled_services.json');
 		$services = Json::decode(FileSystem::read(self::TMP_PATH . 'services/enabled_services.json'));
+		$toEnable = [];
+		$toDisable = [];
 		foreach ($services as $service => $enabled) {
 			try {
 				if ($enabled === true) {
-					$this->serviceManager->enable($service);
+					if (!$this->serviceManager->isEnabled($service)) {
+						$toEnable[] = $service;
+					}
 				} else {
-					$this->serviceManager->disable($service);
+					if ($this->serviceManager->isEnabled($service)) {
+						$toDisable[] = $service;
+					}
 				}
 			} catch (NonexistentServiceException $e) {
 				continue;
 			}
+		}
+		try {
+			if ($toEnable !== []) {
+				$this->serviceManager->enable($toEnable, false);
+			}
+		} catch (NonexistentServiceException $e) {
+			// noop
+		}
+		try {
+			if ($toDisable !== []) {
+				$this->serviceManager->disable($toDisable, false);
+			}
+		} catch (NonexistentServiceException $e) {
+			// noop
 		}
 	}
 
@@ -205,6 +216,7 @@ class BackupManager {
 	 */
 	private function validate(): void {
 		$whitelistDirs = [
+			'cloudProv/',
 			'controller/',
 			'daemon/',
 			'daemon/certs/',
@@ -226,21 +238,33 @@ class BackupManager {
 			'webapp/',
 			'nginx/',
 		];
-		$files = $this->zipManager->listFiles();
-		foreach ($files as $file) {
+		foreach ($this->zipManager->listFiles() as $file) {
 			$valid = false;
 			foreach ($whitelistDirs as $dir) {
 				if (str_starts_with($file, $dir)) {
 					$valid = true;
+					break;
 				}
 			}
 			if (!$valid) {
 				throw new InvalidBackupContentException('Unexpected file found in backup archive: ' . $file);
 			}
-			if (str_starts_with($file, 'controller/')) {
+			if (str_starts_with($file, 'cloudProv/')) {
+				$matches = Strings::match(basename($file), '#^[0-9a-zA-Z_-]+.json$#');
+				if (!is_array($matches)) {
+					throw new InvalidBackupContentException('Unexpected file found in backup archive: ' . $file);
+				}
+				try {
+					Json::decode($this->zipManager->openFile($file));
+				} catch (Throwable $e) {
+					$this->zipManager->close();
+					$this->cleanup();
+					throw new InvalidBackupContentException('Invalid JSON file content: ' . $file);
+				}
+			} elseif (str_starts_with($file, 'controller/')) {
 				$this->isWhitelisted(ControllerBackup::WHITELIST, $file);
 			} elseif (str_starts_with($file, 'daemon/')) {
-				$matches = Strings::match($file, '#^\w+\_\_\w+\.json$#');
+				$matches = Strings::match(basename($file), '#^\w+\_\_\w+(-\w+)?\.json$#');
 				if (!is_array($matches)) {
 					continue;
 				}

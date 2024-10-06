@@ -110,6 +110,7 @@ import {useApiClient} from '@/services/ApiClient';
 
 const whitelisted = [
 	'apcupsd',
+	'iqrf-cloud-provisioning',
 	'iqrf-gateway-controller',
 	'iqrf-gateway-daemon',
 	'iqrf-gateway-influxdb-bridge',
@@ -122,6 +123,7 @@ const whitelisted = [
 
 const features = {
 	'apcupsd': 'apcupsd',
+	'iqrf-cloud-provisioning': 'iqrfCloudProvisioning',
 	'iqrf-gateway-controller': 'iqrfGatewayController',
 	'iqrf-gateway-influxdb-bridge': 'iqrfGatewayInfluxdbBridge',
 	'iqrf-gateway-translator': 'iqrfGatewayTranslator',

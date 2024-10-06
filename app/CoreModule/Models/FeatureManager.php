@@ -53,6 +53,9 @@ class FeatureManager {
 		'iqaros' => [
 			'enabled' => false,
 		],
+		'iqrfCloudProvisioning' => [
+			'enabled' => false,
+		],
 		'iqrfGatewayController' => [
 			'enabled' => false,
 		],
