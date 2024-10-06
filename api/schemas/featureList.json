@@ -8,6 +8,7 @@
 		"docs",
 		"gatewayPass",
 		"grafana",
+		"iqrfCloudProvisioning",
 		"iqrfGatewayController",
 		"iqrfGatewayTranslator",
 		"iqrfRepository",
@@ -38,6 +39,9 @@
 		},
 		"grafana": {
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/grafana.json"
+		},
+		"iqrfCloudProvisioning": {
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/iqrfCloudProvisioning.json"
 		},
 		"iqrfGatewayController": {
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/iqrfGatewayController.json"
