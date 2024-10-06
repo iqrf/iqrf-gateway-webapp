@@ -22,13 +22,13 @@ limitations under the License.
 				v-if='action === Action.Add'
 				v-bind='props'
 				:action='action'
-				:tooltip='$t("components.configuration.daemon.scheduler.actions.add")'
+				:tooltip='$t("components.config.daemon.scheduler.actions.add")'
 			/>
 			<DataTableAction
 				v-if='action === Action.Edit'
 				v-bind='props'
 				:action='action'
-				:tooltip='$t("components.configuration.daemon.scheduler.actions.edit")'
+				:tooltip='$t("components.config.daemon.scheduler.actions.edit")'
 			/>
 		</template>
 		<v-form
@@ -43,10 +43,10 @@ limitations under the License.
 				</template>
 				<TextInput
 					v-model='task.taskId'
-					:label='$t("components.configuration.daemon.scheduler.taskId")'
+					:label='$t("components.config.daemon.scheduler.taskId")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.configuration.daemon.scheduler.validation.taskIdMissing")),
-						(v: string) => ValidationRules.uuid(v, $t("components.configuration.daemon.scheduler.validation.taskIdInvalid")),
+						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.scheduler.validation.taskIdMissing")),
+						(v: string) => ValidationRules.uuid(v, $t("components.config.daemon.scheduler.validation.taskIdInvalid")),
 					]'
 					required
 				/>
@@ -57,11 +57,11 @@ limitations under the License.
 				<SelectInput
 					v-model='taskType'
 					:items='taskTypeOptions'
-					:label='$t("components.configuration.daemon.scheduler.type")'
+					:label='$t("components.config.daemon.scheduler.type")'
 				/>
 				<div v-if='taskType === SchedulerTaskType.ONESHOT'>
 					<label for='datetimeinput' class='v-label'>
-						{{ $t('components.configuration.daemon.scheduler.oneshot') }}
+						{{ $t('components.config.daemon.scheduler.oneshot') }}
 					</label>
 					<VueDatePicker
 						id='datetimeinput'
@@ -77,20 +77,20 @@ limitations under the License.
 				<NumberInput
 					v-if='taskType === SchedulerTaskType.PERIODIC'
 					v-model.number='task.timeSpec.period'
-					:label='$t("components.configuration.daemon.scheduler.period")'
+					:label='$t("components.config.daemon.scheduler.period")'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("components.configuration.daemon.scheduler.validation.periodMissing")),
-						(v: number) => ValidationRules.integer(v, $t("components.configuration.daemon.scheduler.validation.periodInvalid")),
-						(v: number) => ValidationRules.min(v, 1, $t("components.configuration.daemon.scheduler.validation.periodInvalid")),
+						(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.scheduler.validation.periodMissing")),
+						(v: number) => ValidationRules.integer(v, $t("components.config.daemon.scheduler.validation.periodInvalid")),
+						(v: number) => ValidationRules.min(v, 1, $t("components.config.daemon.scheduler.validation.periodInvalid")),
 					]'
 					required
 				/>
 				<TextInput
 					v-if='taskType === SchedulerTaskType.CRON'
 					v-model='task.timeSpec.cronTime'
-					:label='$t("components.configuration.daemon.scheduler.cron")'
+					:label='$t("components.config.daemon.scheduler.cron")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.configuration.daemon.scheduler.validation.cronMissing")),
+						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.scheduler.validation.cronMissing")),
 						(v: string) => validateCron(v),
 					]'
 					:description='humanCron'
@@ -115,23 +115,23 @@ limitations under the License.
 				</TextInput>
 				<v-checkbox
 					v-model='task.persist'
-					:label='$t("components.configuration.daemon.scheduler.persist")'
+					:label='$t("components.config.daemon.scheduler.persist")'
 				/>
 				<v-checkbox
 					v-model='task.enabled'
-					:label='$t("components.configuration.daemon.scheduler.enabled")'
+					:label='$t("components.config.daemon.scheduler.enabled")'
 				/>
 				<DataTable
 					:headers='headers'
 					:items='task.task'
 					:hover='true'
 					:dense='true'
-					no-data-text='components.configuration.daemon.scheduler.noMessages'
+					no-data-text='components.config.daemon.scheduler.noMessages'
 				>
 					<template #top>
 						<v-toolbar color='gray' density='compact' rounded>
 							<v-toolbar-title>
-								{{ $t('components.configuration.daemon.scheduler.task.title') }}
+								{{ $t('components.config.daemon.scheduler.task.title') }}
 							</v-toolbar-title>
 							<v-toolbar-items>
 								<TaskMessageForm
@@ -173,7 +173,7 @@ limitations under the License.
 									{{ mdiDelete }}
 								</v-icon>
 							</template>
-							{{ $t('components.configuration.daemon.scheduler.task.actions.delete') }}
+							{{ $t('components.config.daemon.scheduler.task.actions.delete') }}
 						</v-tooltip>
 					</template>
 				</DataTable>
@@ -300,21 +300,21 @@ daemonStore.$onAction(
 const taskTypeOptions = [
 	{
 		value: SchedulerTaskType.ONESHOT,
-		title: i18n.t('components.configuration.daemon.scheduler.types.oneshot'),
+		title: i18n.t('components.config.daemon.scheduler.types.oneshot'),
 	},
 	{
 		value: SchedulerTaskType.PERIODIC,
-		title: i18n.t('components.configuration.daemon.scheduler.types.periodic'),
+		title: i18n.t('components.config.daemon.scheduler.types.periodic'),
 	},
 	{
 		value: SchedulerTaskType.CRON,
-		title: i18n.t('components.configuration.daemon.scheduler.types.cron'),
+		title: i18n.t('components.config.daemon.scheduler.types.cron'),
 	},
 ];
 
 const headers = [
-	{ key: 'message', title: i18n.t('components.configuration.daemon.scheduler.task.mType') },
-	{ key: 'messaging', title: i18n.t('components.configuration.daemon.scheduler.task.messaging') },
+	{ key: 'message', title: i18n.t('components.config.daemon.scheduler.task.mType') },
+	{ key: 'messaging', title: i18n.t('components.config.daemon.scheduler.task.messaging') },
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end' },
 ];
 
@@ -327,9 +327,9 @@ const datePickerState = computed((): boolean => {
 
 const dialogTitle = computed(() => {
 	if (componentProps.action === Action.Add) {
-		return i18n.t('components.configuration.daemon.scheduler.actions.add').toString();
+		return i18n.t('components.config.daemon.scheduler.actions.add').toString();
 	}
-	return i18n.t('components.configuration.daemon.scheduler.actions.edit').toString();
+	return i18n.t('components.config.daemon.scheduler.actions.edit').toString();
 });
 
 watch(show, (newVal: boolean) => {

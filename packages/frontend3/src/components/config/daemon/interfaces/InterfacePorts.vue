@@ -18,7 +18,7 @@ limitations under the License.
 <template>
 	<Card>
 		<template #title>
-			{{ $t(`components.configuration.daemon.interfaces.${interfaceType}.devices`) }}
+			{{ $t(`components.config.daemon.interfaces.${interfaceType}.devices`) }}
 		</template>
 		<template #titleActions>
 			<CardTitleActionBtn
@@ -40,7 +40,7 @@ limitations under the License.
 			<template #item.actions='{ item }'>
 				<DataTableAction
 					:action='Action.Apply'
-					:tooltip='$t("components.configuration.daemon.interfaces.apply")'
+					:tooltip='$t("components.config.daemon.interfaces.apply")'
 					@click='applyInterface(item)'
 				/>
 			</template>
@@ -75,7 +75,7 @@ const i18n = useI18n();
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const service: InterfacePortsService = useApiClient().getIqrfServices().getInterfacePortsService();
 const headers = [
-	{ key: 'interface', title: i18n.t('components.configuration.daemon.interfaces.interface') },
+	{ key: 'interface', title: i18n.t('components.config.daemon.interfaces.interface') },
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false },
 ];
 const ports: Ref<string[]> = ref([]);

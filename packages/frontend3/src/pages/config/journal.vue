@@ -17,7 +17,7 @@ limitations under the License.
 
 <template>
 	<Head>
-		<title>{{ $t('pages.configuration.journal.title') }}</title>
+		<title>{{ $t('pages.config.journal.title') }}</title>
 	</Head>
 	<JournalConfig />
 </template>

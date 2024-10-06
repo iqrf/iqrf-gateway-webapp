@@ -19,13 +19,13 @@ limitations under the License.
 	<DeleteModalWindow
 		ref='dialog'
 		:component-state='componentState'
-		:tooltip='$t("components.configuration.daemon.scheduler.actions.delete")'
+		:tooltip='$t("components.config.daemon.scheduler.actions.delete")'
 		@submit='removeTask'
 	>
 		<template #title>
-			{{ $t('components.configuration.daemon.scheduler.delete.title') }}
+			{{ $t('components.config.daemon.scheduler.delete.title') }}
 		</template>
-		{{ $t('components.configuration.daemon.scheduler.delete.prompt', { id: componentProps.taskId }) }}
+		{{ $t('components.config.daemon.scheduler.delete.prompt', { id: componentProps.taskId }) }}
 	</DeleteModalWindow>
 </template>
 
@@ -91,7 +91,7 @@ function handleRemoveTask(rsp: DaemonApiResponse): void {
 		componentState.value = ComponentState.Error;
 	}
 	toast.success(
-		i18n.t('components.configuration.daemon.scheduler.messages.delete.success', { id: componentProps.taskId }),
+		i18n.t('components.config.daemon.scheduler.messages.delete.success', { id: componentProps.taskId }),
 	);
 	componentState.value = ComponentState.Ready;
 	dialog.value?.close();

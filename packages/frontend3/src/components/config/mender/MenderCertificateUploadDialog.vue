@@ -35,14 +35,14 @@ limitations under the License.
 		>
 			<Card>
 				<template #title>
-					{{ $t('components.configuration.mender.upload.title') }}
+					{{ $t('components.config.mender.upload.title') }}
 				</template>
 				<v-file-input
 					v-model='certificates'
 					accept='.pem'
-					:label='$t("components.configuration.mender.upload.cert")'
+					:label='$t("components.config.mender.upload.cert")'
 					:rules='[
-						(v: File|Blob|null) => ValidationRules.required(v, $t("components.configuration.mender.validation.certificateMissing")),
+						(v: File|Blob|null) => ValidationRules.required(v, $t("components.config.mender.validation.certificateMissing")),
 					]'
 					:prepend-inner-icon='mdiFileOutline'
 					:prepend-icon='null'
@@ -52,7 +52,7 @@ limitations under the License.
 				<TextInput
 					v-if='certPath.length > 0'
 					v-model='certPath'
-					:label='$t("components.configuration.mender.upload.certPath")'
+					:label='$t("components.config.mender.upload.certPath")'
 					readonly
 				>
 					<template #append-inner>
@@ -121,7 +121,7 @@ async function onSubmit(): Promise<void> {
 	try {
 		certPath.value = await service.uploadCert(certificate);
 		toast.success(
-			i18n.t('components.configuration.mender.messages.upload.success'),
+			i18n.t('components.config.mender.messages.upload.success'),
 		);
 		componentState.value = ComponentState.Ready;
 	} catch {

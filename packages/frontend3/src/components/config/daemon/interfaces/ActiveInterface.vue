@@ -24,7 +24,7 @@ limitations under the License.
 	>
 		<Card>
 			<template #title>
-				{{ $t('components.configuration.daemon.interfaces.active.title') }}
+				{{ $t('components.config.daemon.interfaces.active.title') }}
 			</template>
 			<template #titleActions>
 				<CardTitleActionBtn
@@ -40,7 +40,7 @@ limitations under the License.
 				<v-responsive>
 					<SelectInput
 						v-model='active'
-						:label='$t("components.configuration.daemon.interfaces.active.interface")'
+						:label='$t("components.config.daemon.interfaces.active.interface")'
 						:items='activeOptions'
 						:prepend-inner-icon='mdiConnection'
 					/>
@@ -87,15 +87,15 @@ const form: Ref<VForm | null> = ref(null);
 const active: Ref<IqrfGatewayDaemonComponentName | null> = ref(null);
 const activeOptions = [
 	{
-		title: i18n.t('pages.configuration.daemon.interfaces.uart.title'),
+		title: i18n.t('pages.config.daemon.interfaces.uart.title'),
 		value: IqrfGatewayDaemonComponentName.IqrfUart,
 	},
 	{
-		title: i18n.t('pages.configuration.daemon.interfaces.spi.title'),
+		title: i18n.t('pages.config.daemon.interfaces.spi.title'),
 		value: IqrfGatewayDaemonComponentName.IqrfSpi,
 	},
 	{
-		title: i18n.t('pages.configuration.daemon.interfaces.cdc.title'),
+		title: i18n.t('pages.config.daemon.interfaces.cdc.title'),
 		value: IqrfGatewayDaemonComponentName.IqrfCdc,
 	},
 ];
@@ -140,7 +140,7 @@ async function onSubmit(): Promise<void> {
 		.then(() => {
 			getConfig().then(() => {
 				toast.success(
-					i18n.t('components.configuration.daemon.interfaces.active.messages.save.success'),
+					i18n.t('components.config.daemon.interfaces.active.messages.save.success'),
 				);
 			});
 		})

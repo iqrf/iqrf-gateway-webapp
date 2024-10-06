@@ -24,7 +24,7 @@ limitations under the License.
 	>
 		<Card>
 			<template #title>
-				{{ $t('pages.configuration.monit.title') }}
+				{{ $t('pages.config.monit.title') }}
 			</template>
 			<template #titleActions>
 				<CardTitleActionBtn
@@ -40,7 +40,7 @@ limitations under the License.
 				<v-responsive>
 					<section v-if='config'>
 						<legend class='section-legend'>
-							{{ $t('components.configuration.monit.checks.title') }}
+							{{ $t('components.config.monit.checks.title') }}
 						</legend>
 						<DataTable
 							class='mb-4'
@@ -49,7 +49,7 @@ limitations under the License.
 							:dense='true'
 							:hover='true'
 							:hide-pagination='true'
-							:no-data-text='$t("components.configuration.monit.checks.noRecords")'
+							:no-data-text='$t("components.config.monit.checks.noRecords")'
 						>
 							<template #item.enabled='{ item }'>
 								<v-checkbox-btn
@@ -59,19 +59,19 @@ limitations under the License.
 							</template>
 						</DataTable>
 						<legend class='section-legend'>
-							{{ $t('components.configuration.monit.mmonit.title') }}
+							{{ $t('components.config.monit.mmonit.title') }}
 						</legend>
 						<v-checkbox
 							v-model='config.mmonit.enabled'
-							:label='$t("components.configuration.monit.mmonit.enable")'
+							:label='$t("components.config.monit.mmonit.enable")'
 						/>
 						<TextInput
 							v-model='config.mmonit.server'
-							:label='$t("components.configuration.monit.mmonit.server")'
+							:label='$t("components.config.monit.mmonit.server")'
 							:prepend-inner-icon='mdiServerNetwork'
 							:rules='[
-								(v: string|null) => ValidationRules.required(v, $t("components.configuration.monit.validation.serverMissing")),
-								(v: string) => mmonitServerValidation(v, $t("components.configuration.monit.validation.serverInvalid")),
+								(v: string|null) => ValidationRules.required(v, $t("components.config.monit.validation.serverMissing")),
+								(v: string) => mmonitServerValidation(v, $t("components.config.monit.validation.serverInvalid")),
 							]'
 							:disabled='!config.mmonit.enabled'
 							required
@@ -137,7 +137,7 @@ const service: MonitService = useApiClient().getConfigServices().getMonitService
 const form: Ref<VForm | null> = ref(null);
 const config: Ref<MonitConfig | null> = ref(null);
 const headers = [
-	{ key: 'name', title: i18n.t('components.configuration.monit.checks.name') },
+	{ key: 'name', title: i18n.t('components.config.monit.checks.name') },
 	{ key: 'enabled', title: i18n.t('common.states.enabled'), align: 'end' },
 ];
 
@@ -180,7 +180,7 @@ async function onSubmit(): Promise<void> {
 		.then(() => {
 			getConfig().then(() => {
 				toast.success(
-					i18n.t('components.configuration.monit.messages.save.success'),
+					i18n.t('components.config.monit.messages.save.success'),
 				);
 			});
 		})

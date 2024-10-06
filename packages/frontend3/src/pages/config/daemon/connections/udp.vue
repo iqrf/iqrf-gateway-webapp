@@ -17,7 +17,7 @@ limitations under the License.
 
 <template>
 	<Head>
-		<title>{{ $t('pages.configuration.daemon.connections.udp.title') }}</title>
+		<title>{{ $t('pages.config.daemon.connections.udp.title') }}</title>
 	</Head>
 	<UdpConnectionTable />
 </template>

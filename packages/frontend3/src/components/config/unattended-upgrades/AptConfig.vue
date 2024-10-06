@@ -24,7 +24,7 @@ limitations under the License.
 	>
 		<Card>
 			<template #title>
-				{{ $t('pages.configuration.unattendedUpgrades.title') }}
+				{{ $t('pages.config.unattendedUpgrades.title') }}
 			</template>
 			<template #titleActions>
 				<CardTitleActionBtn
@@ -41,11 +41,11 @@ limitations under the License.
 					<section v-if='config'>
 						<NumberInput
 							v-model.number='config.packageListUpdateInterval'
-							:label='$t("components.configuration.unattendedUpgrades.packageListUpdateInterval")'
+							:label='$t("components.config.unattendedUpgrades.packageListUpdateInterval")'
 							:rules='[
-								(v: number|null) => ValidationRules.required(v, $t("components.configuration.unattendedUpgrades.validation.packageListUpdateIntervalMissing")),
-								(v: number) => ValidationRules.integer(v, $t("components.configuration.unattendedUpgrades.validation.packageListUpdateIntervalInvalid")),
-								(v: number) => ValidationRules.min(v, 0, $t("components.configuration.unattendedUpgrades.validation.packageListUpdateIntervalInvalid")),
+								(v: number|null) => ValidationRules.required(v, $t("components.config.unattendedUpgrades.validation.packageListUpdateIntervalMissing")),
+								(v: number) => ValidationRules.integer(v, $t("components.config.unattendedUpgrades.validation.packageListUpdateIntervalInvalid")),
+								(v: number) => ValidationRules.min(v, 0, $t("components.config.unattendedUpgrades.validation.packageListUpdateIntervalInvalid")),
 							]'
 							required
 						>
@@ -54,17 +54,17 @@ limitations under the License.
 									label
 									:color='intervalColor(config.packageListUpdateInterval)'
 								>
-									{{ $t('components.configuration.unattendedUpgrades.interval') }}
+									{{ $t('components.config.unattendedUpgrades.interval') }}
 								</v-chip>
 							</template>
 						</NumberInput>
 						<NumberInput
 							v-model.number='config.packageUpdateInterval'
-							:label='$t("components.configuration.unattendedUpgrades.packageUpdateInterval")'
+							:label='$t("components.config.unattendedUpgrades.packageUpdateInterval")'
 							:rules='[
-								(v: number|null) => ValidationRules.required(v, $t("components.configuration.unattendedUpgrades.validation.packageUpdateIntervalMissing")),
-								(v: number) => ValidationRules.integer(v, $t("components.configuration.unattendedUpgrades.validation.packageUpdateIntervalInvalid")),
-								(v: number) => ValidationRules.min(v, 0, $t("components.configuration.unattendedUpgrades.validation.packageUpdateIntervalInvalid")),
+								(v: number|null) => ValidationRules.required(v, $t("components.config.unattendedUpgrades.validation.packageUpdateIntervalMissing")),
+								(v: number) => ValidationRules.integer(v, $t("components.config.unattendedUpgrades.validation.packageUpdateIntervalInvalid")),
+								(v: number) => ValidationRules.min(v, 0, $t("components.config.unattendedUpgrades.validation.packageUpdateIntervalInvalid")),
 							]'
 							required
 						>
@@ -73,17 +73,17 @@ limitations under the License.
 									label
 									:color='intervalColor(config.packageUpdateInterval)'
 								>
-									{{ $t('components.configuration.unattendedUpgrades.interval') }}
+									{{ $t('components.config.unattendedUpgrades.interval') }}
 								</v-chip>
 							</template>
 						</NumberInput>
 						<NumberInput
 							v-model.number='config.packageRemovalInterval'
-							:label='$t("components.configuration.unattendedUpgrades.packageRemovalInterval")'
+							:label='$t("components.config.unattendedUpgrades.packageRemovalInterval")'
 							:rules='[
-								(v: number|null) => ValidationRules.required(v, $t("components.configuration.unattendedUpgrades.validation.packageRemovalIntervalMissing")),
-								(v: number) => ValidationRules.integer(v, $t("components.configuration.unattendedUpgrades.validation.packageRemovalIntervalInvalid")),
-								(v: number) => ValidationRules.min(v, 0, $t("components.configuration.unattendedUpgrades.validation.packageRemovalIntervalInvalid")),
+								(v: number|null) => ValidationRules.required(v, $t("components.config.unattendedUpgrades.validation.packageRemovalIntervalMissing")),
+								(v: number) => ValidationRules.integer(v, $t("components.config.unattendedUpgrades.validation.packageRemovalIntervalInvalid")),
+								(v: number) => ValidationRules.min(v, 0, $t("components.config.unattendedUpgrades.validation.packageRemovalIntervalInvalid")),
 							]'
 							required
 						>
@@ -92,13 +92,13 @@ limitations under the License.
 									label
 									:color='intervalColor(config.packageRemovalInterval)'
 								>
-									{{ $t('components.configuration.unattendedUpgrades.interval') }}
+									{{ $t('components.config.unattendedUpgrades.interval') }}
 								</v-chip>
 							</template>
 						</NumberInput>
 						<v-checkbox
 							v-model='config.rebootOnKernelUpdate'
-							:label='$t("components.configuration.unattendedUpgrades.rebootOnKernelUpdate")'
+							:label='$t("components.config.unattendedUpgrades.rebootOnKernelUpdate")'
 						/>
 					</section>
 				</v-responsive>
@@ -169,7 +169,7 @@ async function onSubmit(): Promise<void> {
 		.then(() => {
 			getConfig().then(() => {
 				toast.success(
-					i18n.t('components.configuration.journal.messages.save.success'),
+					i18n.t('components.config.journal.messages.save.success'),
 				);
 			});
 		})

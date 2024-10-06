@@ -18,7 +18,7 @@ limitations under the License.
 <template>
 	<Card>
 		<template #title>
-			{{ $t(`components.configuration.daemon.interfaces.profiles.${mappingType}`) }}
+			{{ $t(`components.config.daemon.interfaces.profiles.${mappingType}`) }}
 		</template>
 		<template #titleActions>
 			<DeviceProfileForm
@@ -42,7 +42,7 @@ limitations under the License.
 			<template #item.actions='{ item }'>
 				<DataTableAction
 					:action='Action.Apply'
-					:tooltip='$t("components.configuration.profiles.actions.apply")'
+					:tooltip='$t("components.config.profiles.actions.apply")'
 					@click='applyProfile(item)'
 				/>
 				<DeviceProfileForm
@@ -89,9 +89,9 @@ const i18n = useI18n();
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
 const headers = [
-	{ key: 'name', title: i18n.t('components.configuration.profiles.name') },
-	{ key: 'type', title: i18n.t('components.configuration.profiles.profileType') },
-	{ key: 'deviceType', title: i18n.t('components.configuration.profiles.deviceType') },
+	{ key: 'name', title: i18n.t('components.config.profiles.name') },
+	{ key: 'type', title: i18n.t('components.config.profiles.profileType') },
+	{ key: 'deviceType', title: i18n.t('components.config.profiles.deviceType') },
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false },
 ];
 const profiles: Ref<IqrfGatewayDaemonMapping[]> = ref([]);

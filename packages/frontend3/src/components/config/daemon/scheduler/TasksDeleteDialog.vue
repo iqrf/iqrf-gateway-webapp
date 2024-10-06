@@ -33,13 +33,13 @@ limitations under the License.
 				activator='#tasks-delete-activator'
 				location='bottom'
 			>
-				{{ $t('components.configuration.daemon.scheduler.actions.deleteAll') }}
+				{{ $t('components.config.daemon.scheduler.actions.deleteAll') }}
 			</v-tooltip>
 		</template>
 		<template #title>
-			{{ $t('components.configuration.daemon.scheduler.deleteAll.title') }}
+			{{ $t('components.config.daemon.scheduler.deleteAll.title') }}
 		</template>
-		{{ $t('components.configuration.daemon.scheduler.deleteAll.prompt') }}
+		{{ $t('components.config.daemon.scheduler.deleteAll.prompt') }}
 	</DeleteModalWindow>
 </template>
 
@@ -100,7 +100,7 @@ function handleRemoveTasks(rsp: DaemonApiResponse): void {
 		componentState.value = ComponentState.Error;
 	}
 	toast.success(
-		i18n.t('components.configuration.daemon.scheduler.messages.deleteAll.success'),
+		i18n.t('components.config.daemon.scheduler.messages.deleteAll.success'),
 	);
 	componentState.value = ComponentState.Ready;
 	dialog.value?.close();

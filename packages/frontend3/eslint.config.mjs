@@ -17,13 +17,8 @@
 
 import { iqrfEslint } from '@iqrf/eslint-config';
 
-export default iqrfEslint({
-	ignores: [
-		'coverage/',
-		'dist/',
-		'src/schemas/functions/*.js',
-	],
-}, [
+/** @type {import('eslint').Linter.Config[]} */
+const config = [
 	{
 		rules: {
 			'jsdoc/require-jsdoc': 'off',
@@ -36,4 +31,27 @@ export default iqrfEslint({
 			'@typescript-eslint/no-unsafe-return': 'warn',
 		},
 	},
-]);
+	{
+		files: ['src/locales/*.json'],
+		rules: {
+			'jsonc/sort-keys': [
+				'error',
+				'asc',
+				{
+					caseSensitive: true,
+				},
+			],
+		},
+	},
+];
+
+/** @type {Partial<import('@iqrf/eslint-config').IqrfEslintOptions>} */
+const options = {
+	ignores: [
+		'coverage/',
+		'dist/',
+		'src/schemas/functions/*.js',
+	],
+};
+
+export default iqrfEslint(options, config);

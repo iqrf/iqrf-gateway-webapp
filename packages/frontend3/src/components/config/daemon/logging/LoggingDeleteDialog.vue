@@ -19,13 +19,13 @@ limitations under the License.
 	<DeleteModalWindow
 		ref='dialog'
 		:component-state='componentState'
-		:tooltip='$t("components.configuration.daemon.logging.actions.delete")'
+		:tooltip='$t("components.config.daemon.logging.actions.delete")'
 		@submit='onSubmit'
 	>
 		<template #title>
-			{{ $t('components.configuration.daemon.logging.delete.title') }}
+			{{ $t('components.config.daemon.logging.delete.title') }}
 		</template>
-		{{ $t('components.configuration.daemon.logging.delete.prompt', { name: loggingInstance.instance }) }}
+		{{ $t('components.config.daemon.logging.delete.prompt', { name: loggingInstance.instance }) }}
 	</DeleteModalWindow>
 </template>
 
@@ -65,7 +65,7 @@ function onSubmit(): void {
 		.then(() => {
 			componentState.value = ComponentState.Ready;
 			toast.success(
-				i18n.t('components.configuration.daemon.logging.messages.delete.success', { name: componentProps.loggingInstance.instance }),
+				i18n.t('components.config.daemon.logging.messages.delete.success', { name: componentProps.loggingInstance.instance }),
 			);
 			close();
 			emit('deleted');

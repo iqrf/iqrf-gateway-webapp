@@ -24,13 +24,13 @@ limitations under the License.
 		>
 			<Card>
 				<template #title>
-					{{ $t('components.configuration.daemon.connections.mqtt.clouds.azure.title') }}
+					{{ $t('components.config.daemon.connections.mqtt.clouds.azure.title') }}
 				</template>
 				<TextInput
 					v-model='config.connectionString'
-					:label='$t("components.configuration.daemon.connections.mqtt.clouds.azure.connectionString")'
+					:label='$t("components.config.daemon.connections.mqtt.clouds.azure.connectionString")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.configuration.daemon.connections.mqtt.clouds.azure.validation.connectionStringMissing")),
+						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.clouds.azure.validation.connectionStringMissing")),
 					]'
 					required
 				/>
@@ -96,7 +96,7 @@ async function onSubmit(): Promise<void> {
 	service.createMqttInstance(params)
 		.then(() => {
 			toast.success(
-				i18n.t('components.configuration.daemon.connections.mqtt.clouds.messages.save.success'),
+				i18n.t('components.config.daemon.connections.mqtt.clouds.messages.save.success'),
 			);
 			show.value = false;
 			emit('saved');

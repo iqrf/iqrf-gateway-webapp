@@ -18,7 +18,7 @@ limitations under the License.
 <template>
 	<Card>
 		<template #title>
-			{{ $t('pages.configuration.daemon.connections.mqtt.title') }}
+			{{ $t('pages.config.daemon.connections.mqtt.title') }}
 		</template>
 		<template #titleActions>
 			<MqttConnectionForm
@@ -32,7 +32,7 @@ limitations under the License.
 			<MqttConnectionImportDialog @import='importFromConfig' />
 			<CardTitleActionBtn
 				:action='Action.Reload'
-				:tooltip='$t("components.configuration.daemon.connections.actions.reload")'
+				:tooltip='$t("components.config.daemon.connections.actions.reload")'
 				@click='getConfigs'
 			/>
 		</template>
@@ -46,7 +46,7 @@ limitations under the License.
 			<template #item.actions='{ item }'>
 				<DataTableAction
 					:action='Action.Export'
-					:tooltip='$t("components.configuration.daemon.connections.actions.export")'
+					:tooltip='$t("components.config.daemon.connections.actions.export")'
 					@click='exportConfig(item)'
 				/>
 				<MqttConnectionForm
@@ -91,10 +91,10 @@ import { ComponentState } from '@/types/ComponentState';
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
 const headers = [
-	{ key: 'instance', title: i18n.t('components.configuration.daemon.connections.profile') },
-	{ key: 'BrokerAddr', title: i18n.t('components.configuration.daemon.connections.mqtt.broker') },
-	{ key: 'TopicRequest', title: i18n.t('components.configuration.daemon.connections.mqtt.requestTopic') },
-	{ key: 'TopicResponse', title: i18n.t('components.configuration.daemon.connections.mqtt.responseTopic') },
+	{ key: 'instance', title: i18n.t('components.config.daemon.connections.profile') },
+	{ key: 'BrokerAddr', title: i18n.t('components.config.daemon.connections.mqtt.broker') },
+	{ key: 'TopicRequest', title: i18n.t('components.config.daemon.connections.mqtt.requestTopic') },
+	{ key: 'TopicResponse', title: i18n.t('components.config.daemon.connections.mqtt.responseTopic') },
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false },
 ];
 const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();

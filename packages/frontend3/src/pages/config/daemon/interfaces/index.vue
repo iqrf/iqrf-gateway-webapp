@@ -17,7 +17,7 @@ limitations under the License.
 
 <template>
 	<Head>
-		<title>{{ $t('pages.configuration.daemon.interfaces.title') }}</title>
+		<title>{{ $t('pages.config.daemon.interfaces.title') }}</title>
 	</Head>
 	<Disambiguation :links='links' />
 </template>
@@ -39,23 +39,23 @@ import { type DisambiguationLink } from '@/types/disambiguation';
 const i18n = useI18n();
 const links: Ref<DisambiguationLink[]> = ref([
 	{
-		title: i18n.t('pages.configuration.daemon.interfaces.dpa.title'),
-		description: i18n.t('pages.configuration.daemon.interfaces.dpa.description'),
+		title: i18n.t('pages.config.daemon.interfaces.dpa.title'),
+		description: i18n.t('pages.config.daemon.interfaces.dpa.description'),
 		to: '/config/daemon/interfaces/dpa',
 	},
 	{
-		title: i18n.t('pages.configuration.daemon.interfaces.uart.title'),
-		description: i18n.t('pages.configuration.daemon.interfaces.uart.description'),
+		title: i18n.t('pages.config.daemon.interfaces.uart.title'),
+		description: i18n.t('pages.config.daemon.interfaces.uart.description'),
 		to: '/config/daemon/interfaces/uart',
 	},
 	{
-		title: i18n.t('pages.configuration.daemon.interfaces.spi.title'),
-		description: i18n.t('pages.configuration.daemon.interfaces.spi.description'),
+		title: i18n.t('pages.config.daemon.interfaces.spi.title'),
+		description: i18n.t('pages.config.daemon.interfaces.spi.description'),
 		to: '/config/daemon/interfaces/spi',
 	},
 	{
-		title: i18n.t('pages.configuration.daemon.interfaces.cdc.title'),
-		description: i18n.t('pages.configuration.daemon.interfaces.cdc.description'),
+		title: i18n.t('pages.config.daemon.interfaces.cdc.title'),
+		description: i18n.t('pages.config.daemon.interfaces.cdc.description'),
 		to: '/config/daemon/interfaces/cdc',
 	},
 ]);

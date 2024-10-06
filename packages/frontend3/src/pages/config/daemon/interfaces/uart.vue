@@ -17,7 +17,7 @@ limitations under the License.
 
 <template>
 	<Head>
-		<title>{{ $t('pages.configuration.daemon.interfaces.uart.title') }}</title>
+		<title>{{ $t('pages.config.daemon.interfaces.uart.title') }}</title>
 	</Head>
 	<UartConfig />
 </template>

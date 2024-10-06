@@ -34,15 +34,15 @@ limitations under the License.
 		<v-form ref='form' v-slot='{ isValid }' @submit.prevent='onSubmit'>
 			<Card :action='action'>
 				<template #title>
-					{{ $t(`components.configuration.time.ntpServers.${action}`) }}
+					{{ $t(`components.config.time.ntpServers.${action}`) }}
 				</template>
 				<TextInput
 					v-model='ntpServer'
 					label='NTP server address'
 					:prepend-inner-icon='mdiServerNetwork'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.configuration.time.ntpServers.validation.serverMissing")),
-						(v: string|null) => ValidationRules.server(v, $t("components.configuration.time.ntpServers.validation.serverInvalid")),
+						(v: string|null) => ValidationRules.required(v, $t("components.config.time.ntpServers.validation.serverMissing")),
+						(v: string|null) => ValidationRules.server(v, $t("components.config.time.ntpServers.validation.serverInvalid")),
 					]'
 					required
 				/>

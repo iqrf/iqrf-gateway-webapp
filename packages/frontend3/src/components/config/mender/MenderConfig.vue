@@ -24,7 +24,7 @@ limitations under the License.
 	>
 		<Card>
 			<template #title>
-				{{ $t('pages.configuration.mender.title') }}
+				{{ $t('pages.config.mender.title') }}
 			</template>
 			<template #titleActions>
 				<CardTitleActionBtn
@@ -40,23 +40,23 @@ limitations under the License.
 				<v-responsive>
 					<section v-if='config'>
 						<legend class='section-legend'>
-							{{ $t('components.configuration.mender.connection') }}
+							{{ $t('components.config.mender.connection') }}
 						</legend>
 						<TextInput
 							v-for='index in config.client.config.Servers.keys()'
 							:key='`MenderServerUrl${ index}`'
 							v-model='config.client.config.Servers[index]'
-							:label='$t("components.configuration.mender.client.server")'
+							:label='$t("components.config.mender.client.server")'
 							:rules='[
-								(v: string|null) => ValidationRules.required(v, $t("components.configuration.mender.validation.serverMissing")),
-								(v: string) => ValidationRules.url(v, $t("components.configuration.mender.validation.serverInvalid")),
+								(v: string|null) => ValidationRules.required(v, $t("components.config.mender.validation.serverMissing")),
+								(v: string) => ValidationRules.url(v, $t("components.config.mender.validation.serverInvalid")),
 							]'
 							:prepend-inner-icon='mdiServerNetwork'
 							required
 						/>
 						<TextInput
 							v-model='config.client.config.ServerCertificate'
-							:label='$t("components.configuration.mender.client.cert")'
+							:label='$t("components.config.mender.client.cert")'
 							:prepend-inner-icon='mdiFileCertificate'
 						>
 							<template #append>
@@ -64,24 +64,24 @@ limitations under the License.
 							</template>
 						</TextInput>
 						<legend class='section-legend'>
-							{{ $t('components.configuration.mender.inventory') }}
+							{{ $t('components.config.mender.inventory') }}
 						</legend>
 						<TextInput
 							v-model='config.client.config.TenantToken'
-							:label='$t("components.configuration.mender.client.tenantToken")'
+							:label='$t("components.config.mender.client.tenantToken")'
 							:rules='[
-								(v: string|null) => ValidationRules.required(v, $t("components.configuration.mender.validation.tenantTokenMissing")),
+								(v: string|null) => ValidationRules.required(v, $t("components.config.mender.validation.tenantTokenMissing")),
 							]'
 							:prepend-inner-icon='mdiKeyVariant'
 							required
 						/>
 						<NumberInput
 							v-model.number='config.client.config.InventoryPollIntervalSeconds'
-							:label='$t("components.configuration.mender.client.inventoryPollInterval")'
+							:label='$t("components.config.mender.client.inventoryPollInterval")'
 							:rules='[
-								(v: number|null) => ValidationRules.required(v, $t("components.configuration.mender.validation.inventoryPollIntervalMissing")),
-								(v: number) => ValidationRules.integer(v, $t("components.configuration.mender.validation.inventoryPollIntervalInvalid")),
-								(v: number) => ValidationRules.min(v, 0, $t("components.configuration.mender.validation.inventoryPollIntervalInvalid")),
+								(v: number|null) => ValidationRules.required(v, $t("components.config.mender.validation.inventoryPollIntervalMissing")),
+								(v: number) => ValidationRules.integer(v, $t("components.config.mender.validation.inventoryPollIntervalInvalid")),
+								(v: number) => ValidationRules.min(v, 0, $t("components.config.mender.validation.inventoryPollIntervalInvalid")),
 							]'
 							:prepend-inner-icon='mdiTimerMarker'
 							required
@@ -97,11 +97,11 @@ limitations under the License.
 						</NumberInput>
 						<NumberInput
 							v-model.number='config.client.config.RetryPollIntervalSeconds'
-							:label='$t("components.configuration.mender.client.retryPollInterval")'
+							:label='$t("components.config.mender.client.retryPollInterval")'
 							:rules='[
-								(v: number|null) => ValidationRules.required(v, $t("components.configuration.mender.validation.retryPollIntervalMissing")),
-								(v: number) => ValidationRules.integer(v, $t("components.configuration.mender.validation.retryPollIntervalInvalid")),
-								(v: number) => ValidationRules.min(v, 0, $t("components.configuration.mender.validation.retryPollIntervalInvalid")),
+								(v: number|null) => ValidationRules.required(v, $t("components.config.mender.validation.retryPollIntervalMissing")),
+								(v: number) => ValidationRules.integer(v, $t("components.config.mender.validation.retryPollIntervalInvalid")),
+								(v: number) => ValidationRules.min(v, 0, $t("components.config.mender.validation.retryPollIntervalInvalid")),
 							]'
 							:prepend-inner-icon='mdiTimerRefresh'
 							required
@@ -117,11 +117,11 @@ limitations under the License.
 						</NumberInput>
 						<NumberInput
 							v-model.number='config.client.config.UpdatePollIntervalSeconds'
-							:label='$t("components.configuration.mender.client.updatePollInterval")'
+							:label='$t("components.config.mender.client.updatePollInterval")'
 							:rules='[
-								(v: number|null) => ValidationRules.required(v, $t("components.configuration.mender.validation.updatePollIntervalMissing")),
-								(v: number) => ValidationRules.integer(v, $t("components.configuration.mender.validation.updatePollIntervalInvalid")),
-								(v: number) => ValidationRules.min(v, 0, $t("components.configuration.mender.validation.updatePollIntervalInvalid")),
+								(v: number|null) => ValidationRules.required(v, $t("components.config.mender.validation.updatePollIntervalMissing")),
+								(v: number) => ValidationRules.integer(v, $t("components.config.mender.validation.updatePollIntervalInvalid")),
+								(v: number) => ValidationRules.min(v, 0, $t("components.config.mender.validation.updatePollIntervalInvalid")),
 							]'
 							:prepend-inner-icon='mdiTimerSync'
 							required
@@ -136,15 +136,15 @@ limitations under the License.
 							</template>
 						</NumberInput>
 						<legend class='section-legend'>
-							{{ $t('components.configuration.mender.features') }}
+							{{ $t('components.config.mender.features') }}
 						</legend>
 						<v-checkbox
 							v-model='config.connect.config.FileTransfer'
-							:label='$t("components.configuration.mender.connect.fileTransfer")'
+							:label='$t("components.config.mender.connect.fileTransfer")'
 						/>
 						<v-checkbox
 							v-model='config.connect.config.PortForward'
-							:label='$t("components.configuration.mender.connect.portForward")'
+							:label='$t("components.config.mender.connect.portForward")'
 						/>
 					</section>
 				</v-responsive>
@@ -233,7 +233,7 @@ async function onSubmit(): Promise<void> {
 		await service.updateConfig(params);
 		await getConfig();
 		toast.success(
-			i18n.t('components.configuration.monit.messages.save.success'),
+			i18n.t('components.config.monit.messages.save.success'),
 		);
 	} catch {
 		toast.error('TODO SAVE ERROR HANDLING');

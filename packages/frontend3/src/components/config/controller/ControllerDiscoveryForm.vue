@@ -27,16 +27,16 @@ limitations under the License.
 		>
 			<Card>
 				<template #title>
-					{{ $t('components.configuration.controller.form.button.actions.discovery') }}
+					{{ $t('components.config.controller.form.button.actions.discovery') }}
 				</template>
 				<NumberInput
 					v-model.number='config.maxAddr'
-					:label='$t("components.configuration.controller.form.discovery.maxAddr")'
+					:label='$t("components.config.controller.form.discovery.maxAddr")'
 					required
 				/>
 				<NumberInput
 					v-model.number='config.txPower'
-					:label='$t("components.configuration.controller.form.discovery.txPower")'
+					:label='$t("components.config.controller.form.discovery.txPower")'
 				/>
 				<v-checkbox
 					v-model='config.returnVerbose'

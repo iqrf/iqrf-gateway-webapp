@@ -24,7 +24,7 @@ limitations under the License.
 	>
 		<Card>
 			<template #title>
-				{{ $t('pages.configuration.daemon.repository.title') }}
+				{{ $t('pages.config.daemon.repository.title') }}
 			</template>
 			<template #titleActions>
 				<CardTitleActionBtn
@@ -41,26 +41,26 @@ limitations under the License.
 					<section v-if='config'>
 						<TextInput
 							v-model='config.urlRepo'
-							:label='$t("components.configuration.daemon.repository.url")'
+							:label='$t("components.config.daemon.repository.url")'
 							:prepend-inner-icon='mdiServerNetwork'
 							:rules='[
-								(v: string|null) => ValidationRules.required(v, "components.configuration.daemon.repository.validation.urlMissing"),
+								(v: string|null) => ValidationRules.required(v, "components.config.daemon.repository.validation.urlMissing"),
 							]'
 							required
 						/>
 						<v-checkbox
 							v-model='updateCachePeriodically'
-							:label='$t("components.configuration.daemon.repository.update")'
+							:label='$t("components.config.daemon.repository.update")'
 							:hide-details='!updateCachePeriodically'
 						/>
 						<NumberInput
 							v-if='updateCachePeriodically'
 							v-model.number='config.checkPeriodInMinutes'
-							:label='$t("components.configuration.daemon.repository.updatePeriod")'
+							:label='$t("components.config.daemon.repository.updatePeriod")'
 							:rules='updateCachePeriodically ? [
-								(v: number|null) => ValidationRules.required(v, "components.configuration.daemon.repository.validation.updatePeriodMissing"),
-								(v: number) => ValidationRules.integer(v, "components.configuration.daemon.repository.validation.updatePeriodInvalid"),
-								(v: number) => ValidationRules.min(v, 0, "components.configuration.daemon.repository.validation.updatePeriodInvalid"),
+								(v: number|null) => ValidationRules.required(v, "components.config.daemon.repository.validation.updatePeriodMissing"),
+								(v: number) => ValidationRules.integer(v, "components.config.daemon.repository.validation.updatePeriodInvalid"),
+								(v: number) => ValidationRules.min(v, 0, "components.config.daemon.repository.validation.updatePeriodInvalid"),
 							] : []'
 							:required='updateCachePeriodically'
 						/>
@@ -138,7 +138,7 @@ async function onSubmit(): Promise<void> {
 		.then(() => {
 			getConfig().then(() => {
 				toast.success(
-					i18n.t('components.configuration.daemon.repository.messages.save.success'),
+					i18n.t('components.config.daemon.repository.messages.save.success'),
 				);
 			});
 		})

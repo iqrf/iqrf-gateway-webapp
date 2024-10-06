@@ -18,7 +18,7 @@ limitations under the License.
 <template>
 	<Card>
 		<template #title>
-			{{ $t('pages.configuration.daemon.logging.title') }}
+			{{ $t('pages.config.daemon.logging.title') }}
 		</template>
 		<template #titleActions>
 			<LoggingForm
@@ -27,7 +27,7 @@ limitations under the License.
 			/>
 			<CardTitleActionBtn
 				:action='Action.Reload'
-				:tooltip='$t("components.configuration.daemon.logging.actions.reload")'
+				:tooltip='$t("components.config.daemon.logging.actions.reload")'
 				@click='getConfigs'
 			/>
 		</template>
@@ -84,7 +84,7 @@ import { ComponentState } from '@/types/ComponentState';
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
 const headers = [
-	{ key: 'instance', title: i18n.t('components.configuration.daemon.logging.profile') },
+	{ key: 'instance', title: i18n.t('components.config.daemon.logging.profile') },
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false },
 ];
 const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();

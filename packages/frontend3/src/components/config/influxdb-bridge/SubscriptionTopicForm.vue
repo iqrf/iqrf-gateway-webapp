@@ -22,7 +22,7 @@ limitations under the License.
 		<template #activator='{ props }'>
 			<v-btn
 				v-if='action === Action.Add'
-				v-tooltip:bottom='$t("components.configuration.influxdb-bridge.actions.add")'
+				v-tooltip:bottom='$t("components.config.influxdb-bridge.actions.add")'
 				v-bind='props'
 				color='green'
 				:icon='mdiPlus'
@@ -31,7 +31,7 @@ limitations under the License.
 				v-if='action === Action.Edit'
 				v-bind='props'
 				:action='action'
-				:tooltip='$t("components.configuration.influxdb-bridge.actions.edit")'
+				:tooltip='$t("components.config.influxdb-bridge.actions.edit")'
 			/>
 		</template>
 		<v-form
@@ -41,13 +41,13 @@ limitations under the License.
 		>
 			<Card :action='action'>
 				<template #title>
-					{{ $t(`components.configuration.influxdb-bridge.actions.${action}`) }}
+					{{ $t(`components.config.influxdb-bridge.actions.${action}`) }}
 				</template>
 				<TextInput
 					v-model='subscriptionTopic'
-					:label='$t("components.configuration.influxdb-bridge.topic")'
+					:label='$t("components.config.influxdb-bridge.topic")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.configuration.influxdb-bridge.validation.topic")),
+						(v: string|null) => ValidationRules.required(v, $t("components.config.influxdb-bridge.validation.topic")),
 					]'
 					required
 				/>

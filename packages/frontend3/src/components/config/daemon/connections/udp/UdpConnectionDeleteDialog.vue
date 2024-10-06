@@ -19,13 +19,13 @@ limitations under the License.
 	<DeleteModalWindow
 		ref='dialog'
 		:component-state='componentState'
-		:tooltip='$t("components.configuration.daemon.connections.actions.delete")'
+		:tooltip='$t("components.config.daemon.connections.actions.delete")'
 		@submit='onSubmit'
 	>
 		<template #title>
-			{{ $t('components.configuration.daemon.connections.udp.delete.title') }}
+			{{ $t('components.config.daemon.connections.udp.delete.title') }}
 		</template>
-		{{ $t('components.configuration.daemon.connections.udp.delete.prompt', { name: connectionProfile.instance }) }}
+		{{ $t('components.config.daemon.connections.udp.delete.prompt', { name: connectionProfile.instance }) }}
 	</DeleteModalWindow>
 </template>
 
@@ -65,7 +65,7 @@ function onSubmit(): void {
 		.then(() => {
 			componentState.value = ComponentState.Ready;
 			toast.success(
-				i18n.t('components.configuration.daemon.connections.udp.messages.delete.success', { name: componentProps.connectionProfile.instance }),
+				i18n.t('components.config.daemon.connections.udp.messages.delete.success', { name: componentProps.connectionProfile.instance }),
 			);
 			close();
 			emit('deleted');

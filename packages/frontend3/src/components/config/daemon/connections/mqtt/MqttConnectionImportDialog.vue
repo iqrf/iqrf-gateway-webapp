@@ -23,7 +23,7 @@ limitations under the License.
 			<CardTitleActionBtn
 				v-bind='props'
 				:action='Action.Import'
-				:tooltip='$t("components.configuration.daemon.connections.actions.import")'
+				:tooltip='$t("components.config.daemon.connections.actions.import")'
 			/>
 		</template>
 		<v-form
@@ -34,14 +34,14 @@ limitations under the License.
 		>
 			<Card>
 				<template #title>
-					{{ $t('components.configuration.daemon.connections.mqtt.import.title') }}
+					{{ $t('components.config.daemon.connections.mqtt.import.title') }}
 				</template>
 				<v-file-input
 					v-model='files'
 					accept='.json'
-					:label='$t("components.configuration.daemon.connections.profileFile")'
+					:label='$t("components.config.daemon.connections.profileFile")'
 					:rules='[
-						(v: File|Blob|null) => ValidationRules.required(v, $t("components.configuration.daemon.connections.validation.profileFileMissing")),
+						(v: File|Blob|null) => ValidationRules.required(v, $t("components.config.daemon.connections.validation.profileFileMissing")),
 					]'
 					:prepend-inner-icon='mdiFileOutline'
 					:prepend-icon='undefined'
@@ -102,7 +102,7 @@ async function onSubmit(): Promise<void> {
 	const obj = JSON.parse(content) as unknown;
 	if (!isMqttConnectionProfile(obj)) {
 		toast.error(
-			i18n.t('components.configuration.daemon.connections.messages.profileFileInvalid'),
+			i18n.t('components.config.daemon.connections.messages.profileFileInvalid'),
 		);
 		componentState.value = ComponentState.Ready;
 		return;

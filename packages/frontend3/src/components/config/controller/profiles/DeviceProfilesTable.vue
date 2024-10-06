@@ -18,7 +18,7 @@ limitations under the License.
 <template>
 	<Card>
 		<template #title>
-			{{ $t('components.configuration.profiles.title') }}
+			{{ $t('components.config.profiles.title') }}
 		</template>
 		<template #titleActions>
 			<DeviceProfileForm
@@ -41,7 +41,7 @@ limitations under the License.
 			<template #item.actions='{ item }'>
 				<DataTableAction
 					:action='Action.Apply'
-					:tooltip='$t("components.configuration.profiles.actions.apply")'
+					:tooltip='$t("components.config.profiles.actions.apply")'
 					@click='applyProfile(item)'
 				/>
 				<DeviceProfileForm
@@ -81,8 +81,8 @@ const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const service: IqrfGatewayControllerService = useApiClient().getConfigServices().getIqrfGatewayControllerService();
 const profiles: Ref<IqrfGatewayControllerMapping[]> = ref([]);
 const headers = [
-	{ key: 'name', title: i18n.t('components.configuration.profiles.name') },
-	{ key: 'deviceType', title: i18n.t('components.configuration.profiles.deviceType') },
+	{ key: 'name', title: i18n.t('components.config.profiles.name') },
+	{ key: 'deviceType', title: i18n.t('components.config.profiles.deviceType') },
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false },
 ];
 async function getProfiles(): Promise<void> {

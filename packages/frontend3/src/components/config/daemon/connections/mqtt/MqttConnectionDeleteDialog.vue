@@ -18,13 +18,13 @@ limitations under the License.
 <template>
 	<DeleteModalWindow
 		ref='dialog'
-		:tooltip='$t("components.configuration.daemon.connections.actions.delete")'
+		:tooltip='$t("components.config.daemon.connections.actions.delete")'
 		@submit='onSubmit'
 	>
 		<template #title>
-			{{ $t('components.configuration.daemon.connections.mqtt.delete.title') }}
+			{{ $t('components.config.daemon.connections.mqtt.delete.title') }}
 		</template>
-		{{ $t('components.configuration.daemon.connections.mqtt.delete.prompt', { name: connectionProfile.instance }) }}
+		{{ $t('components.config.daemon.connections.mqtt.delete.prompt', { name: connectionProfile.instance }) }}
 	</DeleteModalWindow>
 </template>
 
@@ -64,7 +64,7 @@ function onSubmit(): void {
 		.then(() => {
 			componentState.value = ComponentState.Ready;
 			toast.success(
-				i18n.t('components.configuration.daemon.connections.mqtt.messages.delete.success', { name: componentProps.connectionProfile.instance }),
+				i18n.t('components.config.daemon.connections.mqtt.messages.delete.success', { name: componentProps.connectionProfile.instance }),
 			);
 			close();
 			emit('deleted');

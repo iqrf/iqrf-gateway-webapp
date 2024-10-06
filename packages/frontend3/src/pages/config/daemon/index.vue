@@ -17,7 +17,7 @@ limitations under the License.
 
 <template>
 	<Head>
-		<title>{{ $t('pages.configuration.daemon.title') }}</title>
+		<title>{{ $t('pages.config.daemon.title') }}</title>
 	</Head>
 	<Disambiguation :links='links' />
 </template>
@@ -39,38 +39,38 @@ import { type DisambiguationLink } from '@/types/disambiguation';
 const i18n = useI18n();
 const links: Ref<DisambiguationLink[]> = ref([
 	{
-		title: i18n.t('pages.configuration.daemon.interfaces.title'),
-		description: i18n.t('pages.configuration.daemon.interfaces.description'),
+		title: i18n.t('pages.config.daemon.interfaces.title'),
+		description: i18n.t('pages.config.daemon.interfaces.description'),
 		to: '/config/daemon/interfaces',
 	},
 	{
-		title: i18n.t('pages.configuration.daemon.connections.title'),
-		description: i18n.t('pages.configuration.daemon.connections.description'),
+		title: i18n.t('pages.config.daemon.connections.title'),
+		description: i18n.t('pages.config.daemon.connections.description'),
 		to: '/config/daemon/connections',
 	},
 	{
-		title: i18n.t('pages.configuration.daemon.scheduler.title'),
-		description: i18n.t('pages.configuration.daemon.scheduler.description'),
+		title: i18n.t('pages.config.daemon.scheduler.title'),
+		description: i18n.t('pages.config.daemon.scheduler.description'),
 		to: '/config/daemon/scheduler',
 	},
 	{
-		title: i18n.t('pages.configuration.daemon.json-api.title'),
-		description: i18n.t('pages.configuration.daemon.json-api.description'),
+		title: i18n.t('pages.config.daemon.json-api.title'),
+		description: i18n.t('pages.config.daemon.json-api.description'),
 		to: '/config/daemon/json-api',
 	},
 	{
-		title: i18n.t('pages.configuration.daemon.repository.title'),
-		description: i18n.t('pages.configuration.daemon.repository.description'),
+		title: i18n.t('pages.config.daemon.repository.title'),
+		description: i18n.t('pages.config.daemon.repository.description'),
 		to: '/config/daemon/repository',
 	},
 	{
-		title: i18n.t('pages.configuration.daemon.db.title'),
-		description: i18n.t('pages.configuration.daemon.db.description'),
+		title: i18n.t('pages.config.daemon.db.title'),
+		description: i18n.t('pages.config.daemon.db.description'),
 		to: '/config/daemon/database',
 	},
 	{
-		title: i18n.t('pages.configuration.daemon.logging.title'),
-		description: i18n.t('pages.configuration.daemon.logging.description'),
+		title: i18n.t('pages.config.daemon.logging.title'),
+		description: i18n.t('pages.config.daemon.logging.description'),
 		to: '/config/daemon/logging',
 	},
 ]);

@@ -17,7 +17,7 @@ limitations under the License.
 
 <template>
 	<Head>
-		<title>{{ $t('pages.configuration.daemon.connections.mqtt.title') }}</title>
+		<title>{{ $t('pages.config.daemon.connections.mqtt.title') }}</title>
 	</Head>
 	<MqttConnectionTable />
 </template>

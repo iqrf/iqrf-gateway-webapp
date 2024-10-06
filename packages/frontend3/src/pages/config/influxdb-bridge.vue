@@ -17,7 +17,7 @@ limitations under the License.
 
 <template>
 	<Head>
-		<title>{{ $t('pages.configuration.influxdb-bridge.title') }}</title>
+		<title>{{ $t('pages.config.influxdb-bridge.title') }}</title>
 	</Head>
 	<InfluxdbBridgeConfig />
 </template>

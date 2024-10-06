@@ -23,7 +23,7 @@ limitations under the License.
 	>
 		<Card>
 			<template #title>
-				{{ $t('pages.configuration.influxdb-bridge.title') }}
+				{{ $t('pages.config.influxdb-bridge.title') }}
 			</template>
 			<template #titleActions>
 				<v-btn
@@ -41,7 +41,7 @@ limitations under the License.
 				<v-responsive>
 					<section v-if='config'>
 						<legend class='section-legend'>
-							{{ $t('components.configuration.influxdb-bridge.influx') }}
+							{{ $t('components.config.influxdb-bridge.influx') }}
 						</legend>
 						<v-row>
 							<v-col
@@ -76,8 +76,8 @@ limitations under the License.
 						</v-row>
 						<TextInput
 							v-model='config.influx.token'
-							:label='$t("components.configuration.influxdb-bridge.token")'
-							:description='$t("components.configuration.influxdb-bridge.notes.newAuth")'
+							:label='$t("components.config.influxdb-bridge.token")'
+							:description='$t("components.config.influxdb-bridge.notes.newAuth")'
 						/>
 						<v-row>
 							<v-col
@@ -87,7 +87,7 @@ limitations under the License.
 								<TextInput
 									v-model='config.influx.user'
 									:label='$t("common.labels.username")'
-									:description='$t("components.configuration.influxdb-bridge.notes.oldAuth")'
+									:description='$t("components.config.influxdb-bridge.notes.oldAuth")'
 								/>
 							</v-col>
 							<v-col
@@ -102,9 +102,9 @@ limitations under the License.
 						</v-row>
 						<TextInput
 							v-model='config.influx.org'
-							:label='$t("components.configuration.influxdb-bridge.org")'
+							:label='$t("components.config.influxdb-bridge.org")'
 							:rules='[
-								(v: number|null) => ValidationRules.required(v, $t("components.configuration.influxdb-bridge.validation.orgMissing")),
+								(v: number|null) => ValidationRules.required(v, $t("components.config.influxdb-bridge.validation.orgMissing")),
 							]'
 							required
 						/>
@@ -115,9 +115,9 @@ limitations under the License.
 							>
 								<TextInput
 									v-model='config.influx.buckets.gateway'
-									:label='$t("components.configuration.influxdb-bridge.gatewayBucket")'
+									:label='$t("components.config.influxdb-bridge.gatewayBucket")'
 									:rules='[
-										(v: string|null) => ValidationRules.required(v, $t("components.configuration.influxdb-bridge.validation.gatewayBucketMissing")),
+										(v: string|null) => ValidationRules.required(v, $t("components.config.influxdb-bridge.validation.gatewayBucketMissing")),
 									]'
 									required
 								/>
@@ -128,9 +128,9 @@ limitations under the License.
 							>
 								<TextInput
 									v-model='config.influx.buckets.devices'
-									:label='$t("components.configuration.influxdb-bridge.devicesBucket")'
+									:label='$t("components.config.influxdb-bridge.devicesBucket")'
 									:rules='[
-										(v: string|null) => ValidationRules.required(v, $t("components.configuration.influxdb-bridge.validation.devicesBucketMissing")),
+										(v: string|null) => ValidationRules.required(v, $t("components.config.influxdb-bridge.validation.devicesBucketMissing")),
 									]'
 									required
 								/>
@@ -141,16 +141,16 @@ limitations under the License.
 							>
 								<TextInput
 									v-model='config.influx.buckets.sensors'
-									:label='$t("components.configuration.influxdb-bridge.sensorsBucket")'
+									:label='$t("components.config.influxdb-bridge.sensorsBucket")'
 									:rules='[
-										(v: string|null) => ValidationRules.required(v, $t("components.configuration.influxdb-bridge.validation.sensorsBucketMissing")),
+										(v: string|null) => ValidationRules.required(v, $t("components.config.influxdb-bridge.validation.sensorsBucketMissing")),
 									]'
 									required
 								/>
 							</v-col>
 						</v-row>
 						<legend class='section-legend'>
-							{{ $t('components.configuration.influxdb-bridge.mqtt') }}
+							{{ $t('components.config.influxdb-bridge.mqtt') }}
 						</legend>
 						<v-row>
 							<v-col
@@ -185,9 +185,9 @@ limitations under the License.
 						</v-row>
 						<TextInput
 							v-model='config.mqtt.client'
-							:label='$t("components.configuration.daemon.connections.mqtt.clientId")'
+							:label='$t("components.config.daemon.connections.mqtt.clientId")'
 							:rules='[
-								(v: number|null) => ValidationRules.required(v, $t("components.configuration.daemon.connections.mqtt.validation.clientIdMissing")),
+								(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.validation.clientIdMissing")),
 							]'
 							required
 						/>
@@ -228,14 +228,14 @@ limitations under the License.
 						<DataTable
 							:headers='headers'
 							:items='config.mqtt.topics'
-							no-data-text='components.configuration.influxdb-bridge.noTopics'
+							no-data-text='components.config.influxdb-bridge.noTopics'
 							:dense='true'
 							:hover='true'
 						>
 							<template #top>
 								<v-toolbar density='compact' rounded>
 									<v-toolbar-title>
-										{{ $t('components.configuration.influxdb-bridge.topicTitle') }}
+										{{ $t('components.config.influxdb-bridge.topicTitle') }}
 									</v-toolbar-title>
 									<v-toolbar-items>
 										<SubscriptionTopicForm
@@ -243,7 +243,7 @@ limitations under the License.
 											@save='saveTopic'
 										/>
 										<v-btn
-											v-tooltip:bottom='$t("components.configuration.influxdb-bridge.actions.deleteAll")'
+											v-tooltip:bottom='$t("components.config.influxdb-bridge.actions.deleteAll")'
 											color='red'
 											:icon='mdiDelete'
 											@click='clearTopics'
@@ -263,7 +263,7 @@ limitations under the License.
 								/>
 								<DataTableAction
 									:action='Action.Delete'
-									:tooltip='$t("components.configuration.influxdb-bridge.actions.delete")'
+									:tooltip='$t("components.config.influxdb-bridge.actions.delete")'
 									@click='removeTopic(index)'
 								/>
 							</template>
@@ -317,7 +317,7 @@ const service: IqrfGatewayInfluxdbBridgeService = useApiClient().getConfigServic
 const form: Ref<VForm | null> = ref(null);
 const config: Ref<BridgeConfig | null> = ref(null);
 const headers = [
-	{ key: 'topic', title: i18n.t('components.configuration.influxdb-bridge.topic') },
+	{ key: 'topic', title: i18n.t('components.config.influxdb-bridge.topic') },
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end' },
 ];
 
@@ -347,7 +347,7 @@ async function onSubmit(): Promise<void> {
 	service.updateConfig(params)
 		.then(() => getConfig().then(() => {
 			toast.success(
-				i18n.t('components.configuration.influxdb-bridge.messages.save.success'),
+				i18n.t('components.config.influxdb-bridge.messages.save.success'),
 			);
 		}))
 		.catch(() => toast.error('TODO SAVE ERROR HANDLING'));

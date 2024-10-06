@@ -17,7 +17,7 @@ limitations under the License.
 
 <template>
 	<Head>
-		<title>{{ $t('pages.configuration.daemon.db.title') }}</title>
+		<title>{{ $t('pages.config.daemon.db.title') }}</title>
 	</Head>
 	<IqrfDbConfig />
 </template>

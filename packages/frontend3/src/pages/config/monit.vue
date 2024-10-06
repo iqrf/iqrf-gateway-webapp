@@ -17,7 +17,7 @@ limitations under the License.
 
 <template>
 	<Head>
-		<title>{{ $t('pages.configuration.monit.title') }}</title>
+		<title>{{ $t('pages.config.monit.title') }}</title>
 	</Head>
 	<MonitConfig />
 </template>

@@ -17,7 +17,7 @@ limitations under the License.
 
 <template>
 	<Head>
-		<title>{{ $t('pages.configuration.daemon.connections.title') }}</title>
+		<title>{{ $t('pages.config.daemon.connections.title') }}</title>
 	</Head>
 	<Disambiguation :links='links' />
 </template>
@@ -39,18 +39,18 @@ import { type DisambiguationLink } from '@/types/disambiguation';
 const i18n = useI18n();
 const links: Ref<DisambiguationLink[]> = ref([
 	{
-		title: i18n.t('pages.configuration.daemon.connections.mqtt.title'),
-		description: i18n.t('pages.configuration.daemon.connections.mqtt.description'),
+		title: i18n.t('pages.config.daemon.connections.mqtt.title'),
+		description: i18n.t('pages.config.daemon.connections.mqtt.description'),
 		to: '/config/daemon/connections/mqtt',
 	},
 	{
-		title: i18n.t('pages.configuration.daemon.connections.ws.title'),
-		description: i18n.t('pages.configuration.daemon.connections.ws.description'),
+		title: i18n.t('pages.config.daemon.connections.ws.title'),
+		description: i18n.t('pages.config.daemon.connections.ws.description'),
 		to: '/config/daemon/connections/websocket',
 	},
 	{
-		title: i18n.t('pages.configuration.daemon.connections.udp.title'),
-		description: i18n.t('pages.configuration.daemon.connections.udp.description'),
+		title: i18n.t('pages.config.daemon.connections.udp.title'),
+		description: i18n.t('pages.config.daemon.connections.udp.description'),
 		to: '/config/daemon/connections/udp',
 	},
 ]);

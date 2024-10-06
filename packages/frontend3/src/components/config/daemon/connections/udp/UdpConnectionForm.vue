@@ -22,13 +22,13 @@ limitations under the License.
 				v-if='action === Action.Add'
 				v-bind='props'
 				:action='action'
-				:tooltip='$t("components.configuration.daemon.connections.actions.add")'
+				:tooltip='$t("components.config.daemon.connections.actions.add")'
 			/>
 			<DataTableAction
 				v-if='action === Action.Edit'
 				v-bind='props'
 				:action='Action.Edit'
-				:tooltip='$t("components.configuration.daemon.connections.actions.edit")'
+				:tooltip='$t("components.config.daemon.connections.actions.edit")'
 			/>
 		</template>
 		<v-form
@@ -44,39 +44,39 @@ limitations under the License.
 				</template>
 				<TextInput
 					v-model='profile.instance'
-					:label='$t("components.configuration.daemon.connections.profile")'
+					:label='$t("components.config.daemon.connections.profile")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.configuration.daemon.connections.validation.profileMissing")),
+						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.connections.validation.profileMissing")),
 					]'
 					required
 				/>
 				<NumberInput
 					v-model.number='profile.LocalPort'
-					:label='$t("components.configuration.daemon.connections.udp.localPort")'
+					:label='$t("components.config.daemon.connections.udp.localPort")'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("components.configuration.daemon.connections.udp.validation.localPortMissing")),
-						(v: number) => ValidationRules.integer(v, $t("components.configuration.daemon.connections.udp.validation.localPortInvalid")),
-						(v: number) => ValidationRules.between(v, 1, 65535, $t("components.configuration.daemon.connections.udp.validation.localPortInvalid")),
+						(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.connections.udp.validation.localPortMissing")),
+						(v: number) => ValidationRules.integer(v, $t("components.config.daemon.connections.udp.validation.localPortInvalid")),
+						(v: number) => ValidationRules.between(v, 1, 65535, $t("components.config.daemon.connections.udp.validation.localPortInvalid")),
 					]'
 					required
 				/>
 				<NumberInput
 					v-model.number='profile.RemotePort'
-					:label='$t("components.configuration.daemon.connections.udp.remotePort")'
+					:label='$t("components.config.daemon.connections.udp.remotePort")'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("components.configuration.daemon.connections.udp.validation.remotePortMissing")),
-						(v: number) => ValidationRules.integer(v, $t("components.configuration.daemon.connections.udp.validation.remotePortInvalid")),
-						(v: number) => ValidationRules.between(v, 1, 65535, $t("components.configuration.daemon.connections.udp.validation.remotePortInvalid")),
+						(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.connections.udp.validation.remotePortMissing")),
+						(v: number) => ValidationRules.integer(v, $t("components.config.daemon.connections.udp.validation.remotePortInvalid")),
+						(v: number) => ValidationRules.between(v, 1, 65535, $t("components.config.daemon.connections.udp.validation.remotePortInvalid")),
 					]'
 					required
 				/>
 				<NumberInput
 					v-model.number='profile.deviceRecordExpiration'
-					:label='$t("components.configuration.daemon.connections.udp.expiration")'
+					:label='$t("components.config.daemon.connections.udp.expiration")'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("components.configuration.daemon.connections.udp.validation.expirationMissing")),
-						(v: number) => ValidationRules.integer(v, $t("components.configuration.daemon.connections.udp.validation.expirationInvalid")),
-						(v: number) => ValidationRules.min(v, 0, $t("components.configuration.daemon.connections.udp.validation.expirationInvalid")),
+						(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.connections.udp.validation.expirationMissing")),
+						(v: number) => ValidationRules.integer(v, $t("components.config.daemon.connections.udp.validation.expirationInvalid")),
+						(v: number) => ValidationRules.min(v, 0, $t("components.config.daemon.connections.udp.validation.expirationInvalid")),
 					]'
 					required
 				/>
@@ -154,9 +154,9 @@ const profile: Ref<IqrfGatewayDaemonUdpMessaging> = ref({ ...defaultProfile });
 let instance = '';
 const dialogTitle = computed(() => {
 	if (componentProps.action === Action.Add) {
-		return i18n.t('components.configuration.daemon.connections.actions.add').toString();
+		return i18n.t('components.config.daemon.connections.actions.add').toString();
 	}
-	return i18n.t('components.configuration.daemon.connections.actions.edit').toString();
+	return i18n.t('components.config.daemon.connections.actions.edit').toString();
 });
 
 watchEffect((): void => {
@@ -190,7 +190,7 @@ async function onSubmit(): Promise<void> {
 function handleSuccess(name: string): void {
 	componentState.value = ComponentState.Ready;
 	toast.success(
-		i18n.t('components.configuration.daemon.connections.udp.messages.save.success', { name: name }),
+		i18n.t('components.config.daemon.connections.udp.messages.save.success', { name: name }),
 	);
 	close();
 	emit('saved');

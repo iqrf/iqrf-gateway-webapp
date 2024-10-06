@@ -17,7 +17,7 @@ limitations under the License.
 
 <template>
 	<Head>
-		<title>{{ $t('pages.configuration.time.title') }}</title>
+		<title>{{ $t('pages.config.time.title') }}</title>
 	</Head>
 	<TimeConfig />
 </template>

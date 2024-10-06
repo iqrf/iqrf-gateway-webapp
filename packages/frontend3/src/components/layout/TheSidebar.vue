@@ -128,110 +128,110 @@ function items(): SidebarLink[] {
 				],
 			},
 			{
-				title: i18n.t('pages.configuration.title'),
+				title: i18n.t('pages.config.title'),
 				icon: mdiCog,
 				children: [
 					{
-						title: i18n.t('pages.configuration.controller.title'),
+						title: i18n.t('pages.config.controller.title'),
 						to: '/config/controller',
 						feature: Feature.iqrfGatewayController,
 					},
 					{
-						title: i18n.t('pages.configuration.daemon.title'),
+						title: i18n.t('pages.config.daemon.title'),
 						to: '/config/daemon',
 						children: [
 							{
-								title: i18n.t('pages.configuration.daemon.interfaces.title'),
+								title: i18n.t('pages.config.daemon.interfaces.title'),
 								to: '/config/daemon/interfaces',
 								children: [
 									{
-										title: i18n.t('pages.configuration.daemon.interfaces.dpa.title'),
+										title: i18n.t('pages.config.daemon.interfaces.dpa.title'),
 										to: '/config/daemon/interfaces/dpa',
 									},
 									{
-										title: i18n.t('pages.configuration.daemon.interfaces.uart.title'),
+										title: i18n.t('pages.config.daemon.interfaces.uart.title'),
 										to: '/config/daemon/interfaces/uart',
 									},
 									{
-										title: i18n.t('pages.configuration.daemon.interfaces.spi.title'),
+										title: i18n.t('pages.config.daemon.interfaces.spi.title'),
 										to: '/config/daemon/interfaces/spi',
 									},
 									{
-										title: i18n.t('pages.configuration.daemon.interfaces.cdc.title'),
+										title: i18n.t('pages.config.daemon.interfaces.cdc.title'),
 										to: '/config/daemon/interfaces/cdc',
 									},
 								],
 							},
 							{
-								title: i18n.t('pages.configuration.daemon.connections.title'),
+								title: i18n.t('pages.config.daemon.connections.title'),
 								to: '/config/daemon/connections',
 								children: [
 									{
-										title: i18n.t('pages.configuration.daemon.connections.mqtt.title'),
+										title: i18n.t('pages.config.daemon.connections.mqtt.title'),
 										to: '/config/daemon/connections/mqtt',
 									},
 									{
-										title: i18n.t('pages.configuration.daemon.connections.ws.title'),
+										title: i18n.t('pages.config.daemon.connections.ws.title'),
 										to: '/config/daemon/connections/websocket',
 									},
 									{
-										title: i18n.t('pages.configuration.daemon.connections.udp.title'),
+										title: i18n.t('pages.config.daemon.connections.udp.title'),
 										to: '/config/daemon/connections/udp',
 									},
 								],
 							},
 							{
-								title: i18n.t('pages.configuration.daemon.scheduler.title'),
+								title: i18n.t('pages.config.daemon.scheduler.title'),
 								to: '/config/daemon/scheduler',
 							},
 							{
-								title: i18n.t('pages.configuration.daemon.json-api.title'),
+								title: i18n.t('pages.config.daemon.json-api.title'),
 								to: '/config/daemon/json-api',
 							},
 							{
-								title: i18n.t('pages.configuration.daemon.repository.title'),
+								title: i18n.t('pages.config.daemon.repository.title'),
 								to: '/config/daemon/repository',
 							},
 							{
-								title: i18n.t('pages.configuration.daemon.db.title'),
+								title: i18n.t('pages.config.daemon.db.title'),
 								to: '/config/daemon/database',
 							},
 							{
-								title: i18n.t('pages.configuration.daemon.logging.title'),
+								title: i18n.t('pages.config.daemon.logging.title'),
 								to: '/config/daemon/logging',
 							},
 						],
 					},
 					{
-						title: i18n.t('pages.configuration.influxdb-bridge.title'),
+						title: i18n.t('pages.config.influxdb-bridge.title'),
 						to: '/config/influxdb-bridge',
 						feature: Feature.iqrfGatewayInfluxdbBridge,
 					},
 					{
-						title: i18n.t('pages.configuration.smtp.title'),
+						title: i18n.t('pages.config.smtp.title'),
 						to: '/config/smtp',
 					},
 					{
-						title: i18n.t('pages.configuration.time.title'),
+						title: i18n.t('pages.config.time.title'),
 						to: '/config/time',
 					},
 					{
-						title: i18n.t('pages.configuration.journal.title'),
+						title: i18n.t('pages.config.journal.title'),
 						to: '/config/journal',
 						feature: Feature.journal,
 					},
 					{
-						title: i18n.t('pages.configuration.unattendedUpgrades.title'),
+						title: i18n.t('pages.config.unattendedUpgrades.title'),
 						to: '/config/unattended-upgrades',
 						feature: Feature.unattendedUpgrades,
 					},
 					{
-						title: i18n.t('pages.configuration.mender.title'),
+						title: i18n.t('pages.config.mender.title'),
 						to: '/config/mender',
 						feature: Feature.mender,
 					},
 					{
-						title: i18n.t('pages.configuration.monit.title'),
+						title: i18n.t('pages.config.monit.title'),
 						to: '/config/monit',
 						feature: Feature.monit,
 					},

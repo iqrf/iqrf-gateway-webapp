@@ -17,7 +17,7 @@ limitations under the License.
 
 <template>
 	<Head>
-		<title>{{ $t('pages.configuration.daemon.interfaces.dpa.title') }}</title>
+		<title>{{ $t('pages.config.daemon.interfaces.dpa.title') }}</title>
 	</Head>
 	<DpaConfig class='mb-4' />
 	<ActiveInterface />

@@ -27,45 +27,45 @@ limitations under the License.
 		>
 			<Card>
 				<template #title>
-					{{ $t('components.configuration.controller.form.button.actions.autonetwork') }}
+					{{ $t('components.config.controller.form.button.actions.autonetwork') }}
 				</template>
 				<legend>{{ $t("common.labels.general") }}</legend>
 				<NumberInput
 					v-model.number='config.actionRetries'
-					:label='$t("components.configuration.controller.form.autonetwork.actionRetries")'
+					:label='$t("components.config.controller.form.autonetwork.actionRetries")'
 					required
 				/>
 				<NumberInput
 					v-model.number='config.discoveryTxPower'
-					:label='$t("components.configuration.controller.form.autonetwork.discoveryTxPower")'
+					:label='$t("components.config.controller.form.autonetwork.discoveryTxPower")'
 					required
 				/>
 				<v-checkbox
 					v-model='config.discoveryBeforeStart'
-					:label='$t("components.configuration.controller.form.autonetwork.discoveryBeforeStart")'
+					:label='$t("components.config.controller.form.autonetwork.discoveryBeforeStart")'
 				/>
 				<v-checkbox
 					v-model='config.skipDiscoveryEachWave'
-					:label='$t("components.configuration.controller.form.autonetwork.skipDiscoveryEachWave")'
+					:label='$t("components.config.controller.form.autonetwork.skipDiscoveryEachWave")'
 				/>
 				<v-checkbox
 					v-model='config.returnVerbose'
 					:label='$t("common.labels.returnVerbose")'
 				/>
-				<legend>{{ $t("components.configuration.controller.form.autonetwork.stopConditions") }}</legend>
+				<legend>{{ $t("components.config.controller.form.autonetwork.stopConditions") }}</legend>
 				<NumberInput
 					v-model.number='config.stopConditions.emptyWaves'
-					:label='$t("components.configuration.controller.form.autonetwork.emptyWaves")'
+					:label='$t("components.config.controller.form.autonetwork.emptyWaves")'
 					required
 				/>
 				<NumberInput
 					v-model.number='config.stopConditions.waves'
-					:label='$t("components.configuration.controller.form.autonetwork.waves")'
+					:label='$t("components.config.controller.form.autonetwork.waves")'
 					required
 				/>
 				<v-checkbox
 					v-model='config.stopConditions.abortOnTooManyNodesFound'
-					:label='$t("components.configuration.controller.form.autonetwork.abortOnTooManyNodesFound")'
+					:label='$t("components.config.controller.form.autonetwork.abortOnTooManyNodesFound")'
 				/>
 				<template #actions>
 					<CardActionBtn

@@ -23,7 +23,7 @@ limitations under the License.
 	>
 		<Card>
 			<template #title>
-				{{ $t('components.configuration.smtp.form.title') }}
+				{{ $t('components.config.smtp.form.title') }}
 			</template>
 			<template #titleActions>
 				<v-btn
@@ -56,14 +56,14 @@ limitations under the License.
 						class='mb-4'
 						type='warning'
 						variant='tonal'
-						:text='$t("components.configuration.smtp.defaultConfig")'
+						:text='$t("components.config.smtp.defaultConfig")'
 					/>
 					<v-text-field
 						v-model='configuration.host'
-						:label='$t("components.configuration.smtp.form.host")'
+						:label='$t("components.config.smtp.form.host")'
 						:rules='[
-							(v: string|null) => ValidationRules.required(v, $t("components.configuration.smtp.errors.host")),
-							(v: string) => ValidationRules.server(v, $t("components.configuration.smtp.errors.hostInvalid")),
+							(v: string|null) => ValidationRules.required(v, $t("components.config.smtp.errors.host")),
+							(v: string) => ValidationRules.server(v, $t("components.config.smtp.errors.hostInvalid")),
 						]'
 						:disabled='[ComponentState.Loading, ComponentState.Reloading].includes(componentState) || !configuration.enabled'
 						:prepend-inner-icon='mdiServer'
@@ -71,11 +71,11 @@ limitations under the License.
 					/>
 					<v-text-field
 						v-model.number='configuration.port'
-						:label='$t("components.configuration.smtp.form.port")'
+						:label='$t("components.config.smtp.form.port")'
 						:rules='[
-							(v: number|null) => ValidationRules.required(v, $t("components.configuration.smtp.errors.port")),
-							(v: number) => ValidationRules.integer(v, $t("components.configuration.smtp.errors.port")),
-							(v: number) => ValidationRules.between(v, 1, 65535, $t("components.configuration.smtp.errors.portInvalid")),
+							(v: number|null) => ValidationRules.required(v, $t("components.config.smtp.errors.port")),
+							(v: number) => ValidationRules.integer(v, $t("components.config.smtp.errors.port")),
+							(v: number) => ValidationRules.between(v, 1, 65535, $t("components.config.smtp.errors.portInvalid")),
 						]'
 						:disabled='[ComponentState.Loading, ComponentState.Reloading].includes(componentState) || !configuration.enabled'
 						:prepend-inner-icon='mdiNumeric'
@@ -83,18 +83,18 @@ limitations under the License.
 					/>
 					<v-text-field
 						v-model='configuration.username'
-						:label='$t("components.configuration.smtp.form.username")'
+						:label='$t("components.config.smtp.form.username")'
 						:rules='[
-							(v: string|null) => ValidationRules.required(v, $t("components.configuration.smtp.errors.username")),
+							(v: string|null) => ValidationRules.required(v, $t("components.config.smtp.errors.username")),
 						]'
 						:disabled='[ComponentState.Loading, ComponentState.Reloading].includes(componentState) || !configuration.enabled'
 						:prepend-inner-icon='mdiAccount'
 					/>
 					<PasswordInput
 						v-model='configuration.password'
-						:label='$t("components.configuration.smtp.form.password")'
+						:label='$t("components.config.smtp.form.password")'
 						:rules='[
-							(v: string|null) => ValidationRules.required(v, $t("components.configuration.smtp.errors.password")),
+							(v: string|null) => ValidationRules.required(v, $t("components.config.smtp.errors.password")),
 						]'
 						:disabled='[ComponentState.Loading, ComponentState.Reloading].includes(componentState) || !configuration.enabled'
 						:prepend-inner-icon='mdiKey'
@@ -105,9 +105,9 @@ limitations under the License.
 					/>
 					<v-text-field
 						v-model='configuration.from'
-						:label='$t("components.configuration.smtp.form.sender")'
+						:label='$t("components.config.smtp.form.sender")'
 						:rules='[
-							(v: string|null) => ValidationRules.required(v, $t("components.configuration.smtp.errors.sender")),
+							(v: string|null) => ValidationRules.required(v, $t("components.config.smtp.errors.sender")),
 						]'
 						:disabled='[ComponentState.Loading, ComponentState.Reloading].includes(componentState) || !configuration.enabled'
 						:prepend-inner-icon='mdiEmail'
@@ -121,7 +121,7 @@ limitations under the License.
 					<CardActionBtn
 						color='info'
 						:icon='mdiEmailFast'
-						:text='$t("components.configuration.smtp.form.test")'
+						:text='$t("components.config.smtp.form.test")'
 						:disabled='!configuration.enabled || [ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
 						@click='testConfiguration'
 					/>
@@ -210,7 +210,7 @@ async function getConfig(): Promise<void> {
 		componentState.value = ComponentState.FetchFailed;
 		if (error instanceof AxiosError) {
 			const message = (error.response?.data as ErrorResponse | undefined)?.message ?? error.message;
-			toast.error(i18n.t('components.configuration.smtp.messages.fetchFailed', { error: message }));
+			toast.error(i18n.t('components.config.smtp.messages.fetchFailed', { error: message }));
 		}
 	}
 }
@@ -226,12 +226,12 @@ async function onSubmit(): Promise<void> {
 	try {
 		await service.updateConfig(configuration.value);
 		componentState.value = ComponentState.Ready;
-		toast.success(i18n.t('components.configuration.smtp.messages.saveSuccess'));
+		toast.success(i18n.t('components.config.smtp.messages.saveSuccess'));
 	} catch (error) {
 		if (error instanceof AxiosError) {
 			componentState.value = ComponentState.Ready;
 			const message = (error.response?.data as ErrorResponse | undefined)?.message ?? error.message;
-			toast.error(i18n.t('components.configuration.smtp.messages.saveFailed', { error: message }));
+			toast.error(i18n.t('components.config.smtp.messages.saveFailed', { error: message }));
 		}
 	}
 }
@@ -247,12 +247,12 @@ async function testConfiguration(): Promise<void> {
 	try {
 		await service.testConfig(configuration.value);
 		componentState.value = ComponentState.Ready;
-		toast.success(i18n.t('components.configuration.smtp.messages.testSuccess'));
+		toast.success(i18n.t('components.config.smtp.messages.testSuccess'));
 	} catch (error) {
 		if (error instanceof AxiosError) {
 			componentState.value = ComponentState.Ready;
 			const message = (error.response?.data as ErrorResponse | undefined)?.message ?? error.message;
-			toast.error(i18n.t('components.configuration.smtp.messages.testFailed', { error: message }));
+			toast.error(i18n.t('components.config.smtp.messages.testFailed', { error: message }));
 		}
 	}
 }

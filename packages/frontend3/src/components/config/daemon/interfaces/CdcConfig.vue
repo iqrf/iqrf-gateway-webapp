@@ -24,7 +24,7 @@ limitations under the License.
 	>
 		<Card>
 			<template #title>
-				{{ $t('pages.configuration.daemon.interfaces.cdc.title') }}
+				{{ $t('pages.config.daemon.interfaces.cdc.title') }}
 			</template>
 			<template #titleActions>
 				<CardTitleActionBtn
@@ -41,17 +41,17 @@ limitations under the License.
 					<section v-if='config'>
 						<TextInput
 							v-model='config.instance'
-							:label='$t("components.configuration.daemon.instance")'
+							:label='$t("components.config.daemon.instance")'
 							:rules='[
-								(v: string|null) => ValidationRules.required(v, $t("components.configuration.daemon.validation.instanceMissing")),
+								(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.validation.instanceMissing")),
 							]'
 							required
 						/>
 						<TextInput
 							v-model='config.IqrfInterface'
-							:label='$t("components.configuration.daemon.interfaces.interface")'
+							:label='$t("components.config.daemon.interfaces.interface")'
 							:rules='[
-								(v: string|null) => ValidationRules.required(v, $t("components.configuration.daemon.interfaces.validation.interfaceMissing")),
+								(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.interfaceMissing")),
 							]'
 							required
 						/>
@@ -71,7 +71,7 @@ limitations under the License.
 							v-bind='props'
 							color='primary'
 						>
-							{{ $t('components.configuration.daemon.interfaces.cdc.devices') }}
+							{{ $t('components.config.daemon.interfaces.cdc.devices') }}
 						</v-btn>
 					</template>
 					<InterfacePorts
@@ -150,7 +150,7 @@ async function onSubmit(): Promise<void> {
 		.then(() => {
 			getConfig().then(() => {
 				toast.success(
-					i18n.t('components.configuration.daemon.interfaces.cdc.messages.save.success'),
+					i18n.t('components.config.daemon.interfaces.cdc.messages.save.success'),
 				);
 			});
 		})

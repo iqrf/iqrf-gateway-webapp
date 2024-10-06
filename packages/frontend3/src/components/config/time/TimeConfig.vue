@@ -18,7 +18,7 @@ limitations under the License.
 <template>
 	<Card>
 		<template #title>
-			{{ $t('pages.configuration.time.title') }}
+			{{ $t('pages.config.time.title') }}
 		</template>
 		<template #titleActions>
 			<CardTitleActionBtn
@@ -38,12 +38,12 @@ limitations under the License.
 						type='info'
 						variant='tonal'
 					>
-						{{ $t('components.configuration.time.gatewayDateTime') }} {{ gatewayTime?.formattedTime }} {{ gatewayTime?.abbrevation }} (UTC{{ gatewayTime?.gmtOffset }})
+						{{ $t('components.config.time.gatewayDateTime') }} {{ gatewayTime?.formattedTime }} {{ gatewayTime?.abbrevation }} (UTC{{ gatewayTime?.gmtOffset }})
 					</v-alert>
 					<v-autocomplete
 						v-model='timezone'
 						:items='timezones'
-						:label='$t("components.configuration.time.timezone")'
+						:label='$t("components.config.time.timezone")'
 						item-value='name'
 						:item-props='(e: Timezone) => itemProps(e)'
 						:prepend-inner-icon='mdiMapClock'
@@ -51,7 +51,7 @@ limitations under the License.
 					/>
 					<v-checkbox
 						v-model='timeSet.ntpSync'
-						:label='$t("components.configuration.time.ntpSync")'
+						:label='$t("components.config.time.ntpSync")'
 						:hide-details='false'
 					/>
 					<DataTable
@@ -60,12 +60,12 @@ limitations under the License.
 						:items='timeSet.ntpServers'
 						:hover='true'
 						:dense='true'
-						no-data-text='components.configuration.time.ntpServers.noRecords'
+						no-data-text='components.config.time.ntpServers.noRecords'
 					>
 						<template #top>
 							<v-toolbar color='gray' density='compact' rounded>
 								<v-toolbar-title>
-									{{ $t('components.configuration.time.ntpServers.title') }}
+									{{ $t('components.config.time.ntpServers.title') }}
 								</v-toolbar-title>
 								<v-toolbar-items>
 									<NtpServerForm
@@ -98,7 +98,7 @@ limitations under the License.
 					</DataTable>
 					<div v-else>
 						<label for='datetimeinput'>
-							{{ $t('components.configuration.time.datetime') }}
+							{{ $t('components.config.time.datetime') }}
 						</label>
 						<VueDatePicker
 							id='datetimeinput'
@@ -163,7 +163,7 @@ const timeSet: Ref<TimeSet> = ref({
 });
 const datetime = ref(new Date(0));
 const headers = [
-	{ key: 'server', title: i18n.t('components.configuration.time.ntpServers.address') },
+	{ key: 'server', title: i18n.t('components.config.time.ntpServers.address') },
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end' },
 ];
 
@@ -205,7 +205,7 @@ async function onSubmit(): Promise<void> {
 		.then(() => {
 			getTime().then(() => {
 				toast.success(
-					i18n.t('components.configuration.time.messages.save.success'),
+					i18n.t('components.config.time.messages.save.success'),
 				);
 			});
 		})

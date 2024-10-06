@@ -18,7 +18,7 @@ limitations under the License.
 <template>
 	<Card>
 		<template #title>
-			{{ $t('pages.configuration.daemon.connections.udp.title') }}
+			{{ $t('pages.config.daemon.connections.udp.title') }}
 		</template>
 		<template #titleActions>
 			<UdpConnectionForm
@@ -29,7 +29,7 @@ limitations under the License.
 			<UdpConnectionImportDialog @import='importFromConfig' />
 			<CardTitleActionBtn
 				:action='Action.Reload'
-				:tooltip='$t("components.configuration.daemon.connections.actions.reload")'
+				:tooltip='$t("components.config.daemon.connections.actions.reload")'
 				@click='getConfigs'
 			/>
 		</template>
@@ -43,7 +43,7 @@ limitations under the License.
 			<template #item.actions='{ item }'>
 				<DataTableAction
 					:action='Action.Export'
-					:tooltip='$t("components.configuration.daemon.connections.actions.export")'
+					:tooltip='$t("components.config.daemon.connections.actions.export")'
 					@click='exportConfig(item)'
 				/>
 				<UdpConnectionForm
@@ -87,7 +87,7 @@ import { ComponentState } from '@/types/ComponentState';
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
 const headers = [
-	{ key: 'instance', title: i18n.t('components.configuration.daemon.connections.profile') },
+	{ key: 'instance', title: i18n.t('components.config.daemon.connections.profile') },
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false },
 ];
 const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();

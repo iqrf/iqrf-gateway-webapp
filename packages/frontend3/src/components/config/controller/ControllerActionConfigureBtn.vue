@@ -20,7 +20,7 @@ limitations under the License.
 		color='primary'
 		:prepend-icon='mdiWrench'
 	>
-		{{ $t('components.configuration.controller.form.button.configure') }}
+		{{ $t('components.config.controller.form.button.configure') }}
 	</v-btn>
 </template>
 

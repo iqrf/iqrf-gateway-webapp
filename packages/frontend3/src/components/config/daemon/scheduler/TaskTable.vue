@@ -18,7 +18,7 @@ limitations under the License.
 <template>
 	<Card>
 		<template #title>
-			{{ $t('pages.configuration.daemon.scheduler.title') }}
+			{{ $t('pages.config.daemon.scheduler.title') }}
 		</template>
 		<template #titleActions>
 			<v-tooltip location='bottom'>
@@ -31,7 +31,7 @@ limitations under the License.
 						@click='listTasks'
 					/>
 				</template>
-				{{ $t('components.configuration.daemon.scheduler.actions.reload') }}
+				{{ $t('components.config.daemon.scheduler.actions.reload') }}
 			</v-tooltip>
 			<TaskForm
 				:action='Action.Add'
@@ -49,7 +49,7 @@ limitations under the License.
 						@click='exportTasks'
 					/>
 				</template>
-				{{ $t('components.configuration.daemon.scheduler.actions.export') }}
+				{{ $t('components.config.daemon.scheduler.actions.export') }}
 			</v-tooltip>
 			<TasksDeleteDialog
 				@deleted='listTasks'
@@ -61,7 +61,7 @@ limitations under the License.
 			:hover='true'
 			:dense='true'
 			:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
-			no-data-text='components.configuration.daemon.scheduler.noTasks'
+			no-data-text='components.config.daemon.scheduler.noTasks'
 		>
 			<template #item.time='{ item }'>
 				{{ timeString(item.timeSpec) }}
@@ -98,7 +98,7 @@ limitations under the License.
 								activator='parent'
 								location='bottom'
 							>
-								{{ $t(`components.configuration.daemon.scheduler.actions.${item.active ? 'stop' : 'start'}`) }}
+								{{ $t(`components.config.daemon.scheduler.actions.${item.active ? 'stop' : 'start'}`) }}
 							</v-tooltip>
 						</span>
 						<span>
@@ -112,7 +112,7 @@ limitations under the License.
 								activator='parent'
 								location='bottom'
 							>
-								{{ $t('components.configuration.daemon.scheduler.actions.edit') }}
+								{{ $t('components.config.daemon.scheduler.actions.edit') }}
 							</v-tooltip>
 						</span>
 						<TaskDeleteDialog
@@ -159,9 +159,9 @@ const i18n = useI18n();
 const daemonStore = useDaemonStore();
 const webappSchedulerService: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
 const headers = [
-	{ key: 'taskId', title: i18n.t('components.configuration.daemon.scheduler.taskId') },
+	{ key: 'taskId', title: i18n.t('components.config.daemon.scheduler.taskId') },
 	{ key: 'description', title: i18n.t('common.labels.description') },
-	{ key: 'time', title: i18n.t('components.configuration.daemon.scheduler.time') },
+	{ key: 'time', title: i18n.t('components.config.daemon.scheduler.time') },
 	{ key: 'active', title: i18n.t('common.states.active') },
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end' },
 ];
@@ -320,7 +320,7 @@ function handleStartTask(rsp: DaemonApiResponse): void {
 	}
 	const taskId = rsp.data.rsp.taskId as string;
 	toast.success(
-		i18n.t('components.configuration.daemon.scheduler.messages.start.success', { id: taskId }),
+		i18n.t('components.config.daemon.scheduler.messages.start.success', { id: taskId }),
 	);
 	getTask(taskId);
 }
@@ -347,7 +347,7 @@ function handleStopTask(rsp: DaemonApiResponse): void {
 	}
 	const taskId = rsp.data.rsp.taskId as string;
 	toast.success(
-		i18n.t('components.configuration.daemon.scheduler.messages.stop.success', { id: taskId }),
+		i18n.t('components.config.daemon.scheduler.messages.stop.success', { id: taskId }),
 	);
 	getTask(taskId);
 }

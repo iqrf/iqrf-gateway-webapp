@@ -17,7 +17,7 @@ limitations under the License.
 
 <template>
 	<Head>
-		<title>{{ $t('pages.configuration.daemon.logging.title') }}</title>
+		<title>{{ $t('pages.config.daemon.logging.title') }}</title>
 	</Head>
 	<LoggingTable />
 </template>

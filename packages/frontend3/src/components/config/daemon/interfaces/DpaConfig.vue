@@ -24,7 +24,7 @@ limitations under the License.
 	>
 		<Card>
 			<template #title>
-				{{ $t('pages.configuration.daemon.interfaces.dpa.title') }}
+				{{ $t('pages.config.daemon.interfaces.dpa.title') }}
 			</template>
 			<template #titleActions>
 				<CardTitleActionBtn
@@ -41,21 +41,21 @@ limitations under the License.
 					<section v-if='config'>
 						<TextInput
 							v-model='config.instance'
-							:label='$t("components.configuration.daemon.instance")'
+							:label='$t("components.config.daemon.instance")'
 							:prepend-inner-icon='mdiTextShort'
 							:rules='[
-								(v: string|null) => ValidationRules.required(v, $t("components.configuration.daemon.validation.instanceMissing")),
+								(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.validation.instanceMissing")),
 							]'
 							required
 						/>
 						<NumberInput
 							v-model.number='config.DpaHandlerTimeout'
-							:label='$t("components.configuration.daemon.interfaces.dpa.timeout")'
+							:label='$t("components.config.daemon.interfaces.dpa.timeout")'
 							:prepend-inner-icon='mdiTimerCancel'
 							:rules='[
-								(v: number|null) => ValidationRules.required(v, $t("components.configuration.daemon.interfaces.dpa.validation.timeoutMissing")),
-								(v: number) => ValidationRules.integer(v, $t("components.configuration.daemon.interfaces.dpa.validation.timeoutInvalid")),
-								(v: number) => ValidationRules.min(v, 0, $t("components.configuration.daemon.interfaces.dpa.validation.timeoutInvalid")),
+								(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.dpa.validation.timeoutMissing")),
+								(v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.dpa.validation.timeoutInvalid")),
+								(v: number) => ValidationRules.min(v, 0, $t("components.config.daemon.interfaces.dpa.validation.timeoutInvalid")),
 							]'
 							required
 						/>
@@ -131,7 +131,7 @@ async function onSubmit(): Promise<void> {
 		.then(() => {
 			getConfig().then(() => {
 				toast.success(
-					i18n.t('components.configuration.daemon.interfaces.dpa.messages.save.success'),
+					i18n.t('components.config.daemon.interfaces.dpa.messages.save.success'),
 				);
 			});
 		})

@@ -30,23 +30,23 @@ limitations under the License.
 				activator='#tooltip-activator'
 				location='bottom'
 			>
-				{{ $t('components.configuration.daemon.connections.mqtt.clouds.add') }}
+				{{ $t('components.config.daemon.connections.mqtt.clouds.add') }}
 			</v-tooltip>
 		</template>
 		<v-list density='compact'>
 			<v-list-item @click='showAws = true'>
 				<v-list-item-title>
-					{{ $t('components.configuration.daemon.connections.mqtt.clouds.aws.title') }}
+					{{ $t('components.config.daemon.connections.mqtt.clouds.aws.title') }}
 				</v-list-item-title>
 			</v-list-item>
 			<v-list-item @click='showAzure = true'>
 				<v-list-item-title>
-					{{ $t('components.configuration.daemon.connections.mqtt.clouds.azure.title') }}
+					{{ $t('components.config.daemon.connections.mqtt.clouds.azure.title') }}
 				</v-list-item-title>
 			</v-list-item>
 			<v-list-item @click='showIbm = true'>
 				<v-list-item-title>
-					{{ $t('components.configuration.daemon.connections.mqtt.clouds.ibm.title') }}
+					{{ $t('components.config.daemon.connections.mqtt.clouds.ibm.title') }}
 				</v-list-item-title>
 			</v-list-item>
 		</v-list>

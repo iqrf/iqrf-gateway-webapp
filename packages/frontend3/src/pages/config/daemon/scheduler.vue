@@ -17,7 +17,7 @@ limitations under the License.
 
 <template>
 	<Head>
-		<title>{{ $t('pages.configuration.daemon.scheduler.title') }}</title>
+		<title>{{ $t('pages.config.daemon.scheduler.title') }}</title>
 	</Head>
 	<TaskTable />
 </template>

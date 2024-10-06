@@ -18,13 +18,13 @@ limitations under the License.
 <template>
 	<DeleteModalWindow
 		ref='dialog'
-		:tooltip='$t("components.configuration.profiles.actions.delete")'
+		:tooltip='$t("components.config.profiles.actions.delete")'
 		@submit='onSubmit'
 	>
 		<template #title>
-			{{ $t('components.configuration.profiles.delete.title') }}
+			{{ $t('components.config.profiles.delete.title') }}
 		</template>
-		{{ $t('components.configuration.profiles.delete.prompt', { name: profile.name }) }}
+		{{ $t('components.config.profiles.delete.prompt', { name: profile.name }) }}
 	</DeleteModalWindow>
 </template>
 
@@ -56,7 +56,7 @@ async function onSubmit(): Promise<void> {
 	service.deleteMapping(componentProps.profile.id)
 		.then(() => {
 			toast.success(
-				i18n.t('components.configuration.profiles.messages.delete.success', { name: componentProps.profile.name }),
+				i18n.t('components.config.profiles.messages.delete.success', { name: componentProps.profile.name }),
 			);
 			close();
 			emit('deleted');

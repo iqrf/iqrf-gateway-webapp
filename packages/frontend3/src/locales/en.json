@@ -33,6 +33,63 @@
 			}
 		}
 	},
+	"account": {
+		"profile": {
+			"details": {
+				"messages": {
+					"failure": "Failed to update user profile: {error}",
+					"success": "User profile has been successfully updated."
+				},
+				"title": "Profile details"
+			},
+			"password": {
+				"current": "Current password",
+				"new": "New password",
+				"title": "Change password",
+				"validation": {
+					"current": "Please enter current password.",
+					"new": "Please enter new password."
+				}
+			},
+			"title": "User profile"
+		},
+		"recovery": {
+			"confirmation": {
+				"button": "Set new password",
+				"messages": {
+					"expired": "Password recovery request has expired.",
+					"failure": "An error has occurred during password change.",
+					"notFound": "Password recovery request not found.",
+					"success": "Password successfully changed."
+				},
+				"prompt": "Please enter new password."
+			},
+			"request": {
+				"button": "Submit request",
+				"messages": {
+					"failure": "An error has occurred during password recovery request.",
+					"success": "Password recovery request successfully sent."
+				},
+				"prompt": "Please enter username and a password recovery email will be sent to the associated address.",
+				"success": "An email containing further instructions to reset your password was sent to the address associated with the account."
+			},
+			"title": "Account recovery"
+		},
+		"verification": {
+			"addEmail": "Add e-mail address",
+			"messages": {
+				"failure": "Account verification failed, {error}.",
+				"redirect": "You will be redirected to the dashboard in {countdown}.",
+				"requestFailure": "An error has occurred while sending verification e-mail.",
+				"requestSuccess": "Verification e-mail successfully sent.",
+				"success": "Your account has been successfully verified."
+			},
+			"missing": "Your account does not have an e-mail address set up. Without the verified e-mail address, you can not reset your password if it is forgotten.",
+			"resend": "Resend verification e-mail",
+			"title": "Account verification",
+			"unverified": "Your e-mail address ({email}) is not verified. Without the verified e-mail address, you can not reset your password if it is forgotten."
+		}
+	},
 	"auth": {
 		"sign": {
 			"in": {
@@ -42,208 +99,65 @@
 				}
 			},
 			"out": {
-				"title": "Sign out",
+				"expired": "Your sign-in session has expired. Please sign in again.",
 				"message": "You have been signed out.",
-				"expired": "Your sign-in session has expired. Please sign in again."
+				"title": "Sign out"
 			}
-		}
-	},
-	"account": {
-		"profile": {
-			"title": "User profile",
-			"details": {
-				"title": "Profile details",
-				"messages": {
-					"success": "User profile has been successfully updated.",
-					"failure": "Failed to update user profile: {error}"
-				}
-			},
-			"password": {
-				"title": "Change password",
-				"current": "Current password",
-				"new": "New password",
-				"validation": {
-					"current": "Please enter current password.",
-					"new": "Please enter new password."
-				}
-			}
-		},
-		"recovery": {
-			"title": "Account recovery",
-			"confirmation": {
-				"button": "Set new password",
-				"prompt": "Please enter new password.",
-				"messages": {
-					"failure": "An error has occurred during password change.",
-					"expired": "Password recovery request has expired.",
-					"notFound": "Password recovery request not found.",
-					"success": "Password successfully changed."
-				}
-			},
-			"request": {
-				"prompt": "Please enter username and a password recovery email will be sent to the associated address.",
-				"success": "An email containing further instructions to reset your password was sent to the address associated with the account.",
-				"button": "Submit request",
-				"messages": {
-					"success": "Password recovery request successfully sent.",
-					"failure": "An error has occurred during password recovery request."
-				}
-			}
-		},
-		"verification": {
-			"title": "Account verification",
-			"missing": "Your account does not have an e-mail address set up. Without the verified e-mail address, you can not reset your password if it is forgotten.",
-			"unverified": "Your e-mail address ({email}) is not verified. Without the verified e-mail address, you can not reset your password if it is forgotten.",
-			"addEmail": "Add e-mail address",
-			"resend": "Resend verification e-mail",
-			"messages": {
-				"success": "Your account has been successfully verified.",
-				"redirect": "You will be redirected to the dashboard in {countdown}.",
-				"failure": "Account verification failed, {error}.",
-				"requestSuccess": "Verification e-mail successfully sent.",
-				"requestFailure": "An error has occurred while sending verification e-mail."
-			}
-		}
-	},
-	"user": {
-		"username": "Username",
-		"email": "E-mail address",
-		"password": "Password",
-		"language": "Language",
-		"role": "Role",
-		"roles": {
-			"admin": "Administrator",
-			"normal": "Normal user",
-			"basicadmin": "Basic admin",
-			"basic": "Basic user"
-		},
-		"state": "State",
-		"states": {
-			"unverified": "Unverified",
-			"verified": "Verified"
-		},
-		"validation": {
-			"username": "Please enter your username.",
-			"missingEmail": "Please enter your e-mail address.",
-			"invalidEmail": "Invalid e-mail address format.",
-			"password": "Please enter your password."
-		},
-		"messages": {
-			"createFailure": "Failed to create new user: {error}",
-			"verificationSent": "An email containing instructions to verify your account was sent to your address."
-		}
-	},
-	"install": {
-		"title": "Installation wizard",
-		"invitation": "Welcome to IQRF Gateway Webapp. Before getting started, you have to create the webapp's first user.",
-		"steps": {
-			"introduction": "Introduction",
-			"smtp": "Configure SMTP server",
-			"webappUser": "Create webapp user",
-			"gatewayUser": "Set gateway user",
-			"sshKeys": "Add SSH keys",
-			"sshService": "SSH service"
-		},
-		"createUser": {
-			"title": "Create a new user",
-			"failure": "Failed to create new webapp user: {error}",
-			"note": "Create a new Webapp user to access the web interface.",
-			"createButton": "Create user"
-		},
-		"gwUser": {
-			"title": "Set gateway user password",
-			"note": "Set gateway user password to access the device via login shell."
-		},
-		"error": {
-			"howToFix": "How to fix it",
-			"missingDependency": {
-				"title": "One or more dependencies are missing",
-				"description": "IQRF Gateway Webapp did not detect the following dependencies: {dependencies}.",
-				"details": "Details",
-				"command": "Missing command",
-				"package": "Package"
-			},
-			"missingExtension": {
-				"title": "One or more PHP extensions are missing",
-				"description": "IQRF Gateway Webapp did not detect the following required extensions: {extensions}.",
-				"fixDescription": "Install packages containing missing PHP extensions.",
-				"fixDescriptionDebian": "Use the following commands to install packages containing the required PHP extensions:"
-			},
-			"missingMigration": {
-				"title": "Some database table is missing",
-				"description": "IQRF Gateway Webapp cannot find some table in the SQLite3 database.",
-				"fixDescription": "Run these commands in terminal:"
-			},
-			"sudo": {
-				"title": "Sudo error",
-				"missing": "IQRF Gateway Webapp did not detect the sudo utility.",
-				"invalid": "IQRF Gateway Webapp cannot execute commands with sudo.",
-				"fixMissing": "Enter interactive shell as root and install sudo utility using the following commands:",
-				"fixInvalid": "Allow user www-data to execute commands with sudo using the following commands:"
-			}
-		},
-		"gwInfo": {
-			"title": "Some information about this gateway",
-			"button": "Show GW info",
-			"download": "Download as JSON"
-		},
-		"restore": {
-			"title": "Restore gateway from backup",
-			"button": "Restore gateway"
-		},
-		"messages": {
-			"check": "Running installation check…",
-			"finished": "Installation process successfully completed."
 		}
 	},
 	"common": {
 		"buttons": {
 			"add": "Add",
-			"edit": "Edit",
-			"delete": "Delete",
-			"save": "Save",
-			"cancel": "Cancel",
-			"close": "Close",
-			"skip": "Skip",
-			"reload": "Reload",
-			"refresh": "Refresh",
 			"backup": "Backup",
-			"restore": "Restore",
-			"selectAll": "Select all",
-			"deselectAll": "Deselect all",
-			"upload": "Upload",
+			"cancel": "Cancel",
 			"clipboard": "Copy to clipboard",
+			"close": "Close",
+			"delete": "Delete",
+			"deselectAll": "Deselect all",
+			"edit": "Edit",
+			"import": "Import",
+			"refresh": "Refresh",
+			"reload": "Reload",
+			"restore": "Restore",
+			"save": "Save",
+			"selectAll": "Select all",
 			"send": "Send",
-			"import": "Import"
+			"skip": "Skip",
+			"upload": "Upload"
+		},
+		"columns": {
+			"actions": "Actions",
+			"description": "Description",
+			"id": "ID"
 		},
 		"labels": {
+			"description": "Description",
+			"format": "Format",
 			"general": "General",
+			"hostname": "Hostname",
+			"none": "None",
+			"other": "Other",
+			"password": "Password",
+			"path": "Path",
+			"port": "Port",
 			"protocol": "Protocol",
 			"protocols": {
-				"tcp": "Insecure TCP",
 				"ssl": "Encrypted SSL/TLS",
+				"tcp": "Insecure TCP",
 				"ws": "Insecure websocket",
 				"wss": "Secure websocket"
 			},
-			"hostname": "Hostname",
-			"port": "Port",
-			"path": "Path",
-			"username": "Username",
-			"password": "Password",
-			"description": "Description",
-			"severity": {
-				"debug": "Debug",
-				"info": "Information",
-				"error": "Error",
-				"warning": "Warning",
-				"trace": "Trace"
-			},
-			"returnVerbose": "Verbose response",
-			"none": "None",
 			"request": "Request",
 			"response": "Response",
-			"other": "Other",
-			"format": "Format",
+			"returnVerbose": "Verbose response",
+			"severity": {
+				"debug": "Debug",
+				"error": "Error",
+				"info": "Information",
+				"trace": "Trace",
+				"warning": "Warning"
+			},
+			"username": "Username",
 			"value": "Value"
 		},
 		"messages": {
@@ -251,75 +165,36 @@
 		},
 		"states": {
 			"active": "Active",
-			"inactive": "Inactive",
-			"enabled": "Enabled",
 			"disabled": "Disabled",
-			"valid": "Valid",
-			"invalid": "Invalid"
-		},
-		"columns": {
-			"id": "ID",
-			"description": "Description",
-			"actions": "Actions"
+			"enabled": "Enabled",
+			"inactive": "Inactive",
+			"invalid": "Invalid",
+			"valid": "Valid"
 		},
 		"validation": {
-			"hostnameMissing": "Please enter hostname.",
+			"credentialsMissing": "Please enter both username and password, or leave both fields empty.",
 			"hostnameInvalid": "Hostname should be IPv4, IPv6, localhost or fully-qualified domain name.",
-			"portMissing": "Please enter port.",
+			"hostnameMissing": "Please enter hostname.",
 			"portInvalid": "Port should be an integer between 1 and 65535.",
-			"credentialsMissing": "Please enter both username and password, or leave both fields empty."
+			"portMissing": "Please enter port."
 		}
 	},
 	"components": {
 		"accessControl": {
-			"users": {
-				"actions": {
-					"add": "Add user",
-					"edit": "Edit user",
-					"delete": "Delete user"
-				},
-				"delete": {
-					"title": "User delete confirmation",
-					"prompt": "Are you sure you want to delete user {user}?"
-				},
-				"username": "Username",
-				"email": "E-mail address",
-				"password": "Password",
-				"language": "Language",
-				"role": "Role",
-				"roles": {
-					"admin": "Administrator",
-					"normal": "Normal user",
-					"basicadmin": "Basic admin",
-					"basic": "Basic user"
-				},
-				"state": "State",
-				"states": {
-					"unverified": "Unverified",
-					"verified": "Verified"
-				},
-				"validations": {
-					"email": {
-						"email": "Invalid e-mail address format."
-					},
-					"username": {
-						"required": "Please enter the username."
-					},
-					"password": {
-						"required": "Please enter the password."
-					}
-				},
-				"messages": {
-					"delete": {
-						"success": "User {user} has been deleted successfully."
-					}
-				}
-			},
 			"apiKeys": {
 				"actions": {
 					"add": "Add API key",
-					"edit": "Edit API key",
-					"delete": "Delete API key"
+					"delete": "Delete API key",
+					"edit": "Edit API key"
+				},
+				"delete": {
+					"prompt": "Are you sure you want to delete API key ID {id}?",
+					"title": "API key delete confirmation"
+				},
+				"display": {
+					"copyMessage": "API key has been copied to clipboard.",
+					"prompt": "Before closing this dialog, copy and store the new API key below in a safe place. For security reasons, you will not be able to view it again at a later time.",
+					"title": "Generated API key"
 				},
 				"form": {
 					"addTitle": "Add API key",
@@ -328,15 +203,6 @@
 				},
 				"table": {
 					"expiration": "Expiration"
-				},
-				"display": {
-					"title": "Generated API key",
-					"prompt": "Before closing this dialog, copy and store the new API key below in a safe place. For security reasons, you will not be able to view it again at a later time.",
-					"copyMessage": "API key has been copied to clipboard."
-				},
-				"delete": {
-					"title": "API key delete confirmation",
-					"prompt": "Are you sure you want to delete API key ID {id}?"
 				},
 				"validations": {
 					"description": {
@@ -347,27 +213,70 @@
 			"sshKeys": {
 				"actions": {
 					"add": "Add SSH key",
-					"edit": "Edit SSH key",
-					"delete": "Delete SSH key"
+					"delete": "Delete SSH key",
+					"edit": "Edit SSH key"
 				},
+				"delete": {
+					"prompt": "Are you sure you want to delete SSH public key ID {id}?",
+					"title": "SSH public key delete confirmation"
+				},
+				"fetchFailed": "Failed to retrieve list of supported SSH key types.",
 				"form": {
 					"addTitle": "Add SSH key",
 					"editTitle": "Edit SSH key"
 				},
+				"installNote": "Add SSH public keys to be used for key-based authorization when accessing the device.",
+				"noneSupported": "No SSH key type supported.",
+				"supported": "The following SSH key types are supported.",
 				"table": {
 					"createdAt": "Date created",
-					"type": "Key type",
 					"hash": "Hash",
-					"key": "Public key"
+					"key": "Public key",
+					"type": "Key type"
+				}
+			},
+			"users": {
+				"actions": {
+					"add": "Add user",
+					"delete": "Delete user",
+					"edit": "Edit user"
 				},
 				"delete": {
-					"title": "SSH public key delete confirmation",
-					"prompt": "Are you sure you want to delete SSH public key ID {id}?"
+					"prompt": "Are you sure you want to delete user {user}?",
+					"title": "User delete confirmation"
 				},
-				"installNote": "Add SSH public keys to be used for key-based authorization when accessing the device.",
-				"supported": "The following SSH key types are supported.",
-				"noneSupported": "No SSH key type supported.",
-				"fetchFailed": "Failed to retrieve list of supported SSH key types."
+				"email": "E-mail address",
+				"language": "Language",
+				"messages": {
+					"delete": {
+						"success": "User {user} has been deleted successfully."
+					}
+				},
+				"password": "Password",
+				"role": "Role",
+				"roles": {
+					"admin": "Administrator",
+					"basic": "Basic user",
+					"basicadmin": "Basic admin",
+					"normal": "Normal user"
+				},
+				"state": "State",
+				"states": {
+					"unverified": "Unverified",
+					"verified": "Verified"
+				},
+				"username": "Username",
+				"validations": {
+					"email": {
+						"email": "Invalid e-mail address format."
+					},
+					"password": {
+						"required": "Please enter the password."
+					},
+					"username": {
+						"required": "Please enter the username."
+					}
+				}
 			}
 		},
 		"account": {
@@ -378,26 +287,26 @@
 		"auth": {
 			"expiration": {
 				"expirations": {
-					"default": "90 minutes",
 					"day": "1 day",
-					"week": "1 week",
+					"default": "90 minutes",
 					"month": "1 month",
+					"week": "1 week",
 					"year": "1 year"
 				},
 				"label": "Session expiration"
 			},
 			"signIn": {
 				"actions": {
-					"signIn": "Sign in",
-					"recoverPassword": "Forgot password?"
+					"recoverPassword": "Forgot password?",
+					"signIn": "Sign in"
 				},
 				"fields": {
 					"expiration": "Session expiration",
 					"expirations": {
-						"default": "90 minutes",
 						"day": "1 day",
-						"week": "1 week",
+						"default": "90 minutes",
 						"month": "1 month",
+						"week": "1 week",
 						"year": "1 year"
 					}
 				},
@@ -442,35 +351,52 @@
 			},
 			"validations": {
 				"email": {
-					"required": "Please enter e-mail address.",
-					"email": "Invalid e-mail address format."
+					"email": "Invalid e-mail address format.",
+					"required": "Please enter e-mail address."
 				},
 				"password": {
 					"email": "Invalid e-mail address format.",
 					"required": "Please enter password."
 				},
 				"port": {
-					"required": "Please enter port",
-					"between": "Port should be an integer between 1 and 65535."
+					"between": "Port should be an integer between 1 and 65535.",
+					"required": "Please enter port"
 				},
 				"username": {
 					"required": "Please enter username."
 				}
 			}
 		},
-		"configuration": {
+		"config": {
 			"controller": {
 				"form": {
-					"sections": {
-						"websocket": "Websocket",
-						"logging": "Logging",
-						"factoryReset": "Factory reset",
-						"button": "Action button",
-						"pins": "Pin configuration"
+					"autonetwork": {
+						"abortOnTooManyNodesFound": "Abort Autonetwork if more nodes than the network can contain are found",
+						"actionRetries": "Action retries",
+						"discoveryBeforeStart": "Run discovery before starting autonetwork",
+						"discoveryTxPower": "Discovery TX power",
+						"emptyWaves": "Maximum number of empty waves",
+						"skipDiscoveryEachWave": "Skip discovery in each wave",
+						"stopConditions": "Stop conditions",
+						"waves": "Maximum number of waves"
 					},
-					"websocket": {
-						"api": "Daemon API",
-						"monitor": "Monitor"
+					"button": {
+						"action": "Action",
+						"actions": {
+							"autonetwork": "Autonetwork",
+							"discovery": "Discovery",
+							"none": "None"
+						},
+						"configure": "Configure"
+					},
+					"discovery": {
+						"maxAddr": "Maximum node address",
+						"txPower": "TX power"
+					},
+					"factoryReset": {
+						"coordinator": "Coordinator",
+						"iqaros": "IQAROS",
+						"network": "IP network"
 					},
 					"logging": {
 						"path": "Path to log file",
@@ -480,200 +406,95 @@
 							"syslog": "Log to syslog"
 						}
 					},
-					"factoryReset": {
-						"coordinator": "Coordinator",
-						"iqaros": "IQAROS",
-						"network": "IP network"
-					},
-					"button": {
-						"action": "Action",
-						"actions": {
-							"none": "None",
-							"autonetwork": "Autonetwork",
-							"discovery": "Discovery"
-						},
-						"configure": "Configure"
-					},
 					"pins": {
+						"button": "Action button GPIO pin",
 						"greenLed": "Green LED GPIO pin",
 						"redLed": "Red LED GPIO pin",
-						"button": "Action button GPIO pin",
-						"useWatchdogPins": "Use hardware Watchdog Timer pins",
 						"sck": "I2C clock GPIO pin",
-						"sda": "I2C data GPIO pin"
+						"sda": "I2C data GPIO pin",
+						"useWatchdogPins": "Use hardware Watchdog Timer pins"
 					},
-					"autonetwork": {
-						"actionRetries": "Action retries",
-						"discoveryTxPower": "Discovery TX power",
-						"discoveryBeforeStart": "Run discovery before starting autonetwork",
-						"skipDiscoveryEachWave": "Skip discovery in each wave",
-						"stopConditions": "Stop conditions",
-						"waves": "Maximum number of waves",
-						"emptyWaves": "Maximum number of empty waves",
-						"abortOnTooManyNodesFound": "Abort Autonetwork if more nodes than the network can contain are found"
+					"sections": {
+						"button": "Action button",
+						"factoryReset": "Factory reset",
+						"logging": "Logging",
+						"pins": "Pin configuration",
+						"websocket": "Websocket"
 					},
-					"discovery": {
-						"maxAddr": "Maximum node address",
-						"txPower": "TX power"
+					"websocket": {
+						"api": "Daemon API",
+						"monitor": "Monitor"
 					}
-				},
-				"validation": {
-					"logPath": "Please enter path to log file.",
-					"buttonPin": "Please enter action button GPIO pin as an integer.",
-					"greenLed": "Please enter green LED GPIO pin as an integer.",
-					"redLed": "Please enter red LED GPIO pin as an integer.",
-					"sck": "Please enter I2C clock GPIO pin as an integer.",
-					"sda": "Please enter I2C data GPIO pin as an integer."
 				},
 				"messages": {
 					"save": {
 						"success": "IQRF Gateway Controller configuration was successfully saved. Restart the service for changes to take effect."
 					}
+				},
+				"validation": {
+					"buttonPin": "Please enter action button GPIO pin as an integer.",
+					"greenLed": "Please enter green LED GPIO pin as an integer.",
+					"logPath": "Please enter path to log file.",
+					"redLed": "Please enter red LED GPIO pin as an integer.",
+					"sck": "Please enter I2C clock GPIO pin as an integer.",
+					"sda": "Please enter I2C data GPIO pin as an integer."
 				}
 			},
 			"daemon": {
 				"component": "Component name",
-				"instance": "Instance name",
-				"interfaces": {
-					"profiles": {
-						"spi": "SPI device profiles",
-						"uart": "UART device profiles"
-					},
-					"apply": "Apply interface",
-					"interface": "Interface name",
-					"active": {
-						"title": "Active IQRF interface",
-						"interface": "IQRF interface",
-						"messages": {
-							"save": {
-								"success": "IQRF interface successfully changed."
-							}
-						}
-					},
-					"cdc": {
-						"devices": "CDC interfaces",
-						"messages": {
-							"save": {
-								"success": "IQRF USB CDC configuration successfully saved."
-							}
-						}
-					},
-					"busPin": "Bus enable GPIO pin",
-					"powerPin": "Power enable GPIO pin",
-					"pgmPin": "Programming mode switch GPIO pin",
-					"interfacePins": "Use communication interface pins",
-					"i2cPin": "I2C enable GPIO pin",
-					"spiPin": "SPI enable GPIO pin",
-					"uartPin": "UART enable GPIO pin",
-					"spi": {
-						"devices": "SPI interfaces",
-						"spiReset": "Enable SPI reset",
-						"messages": {
-							"save": {
-								"success": "IQRF SPI configuration successfully saved."
-							}
-						}
-					},
-					"uart": {
-						"devices": "UART interfaces",
-						"baudRate": "Baud rate",
-						"uartReset": "Enable UART reset",
-						"messages": {
-							"save": {
-								"success": "IQRF UART configuration successfully saved."
-							}
-						}
-					},
-					"dpa": {
-						"timeout": "DPA handler timeout",
-						"validation": {
-							"timeoutMissing": "Please enter DPA handler timeout",
-							"timeoutInvalid": "DPA handler timeout should be an integer greater or equal to 0."
-						},
-						"messages": {
-							"save": {
-								"success": "IQRF DPA configuration successfully saved."
-							}
-						}
-					},
-					"validation": {
-						"interfaceMissing": "Please enter interface name.",
-						"busPinMissing": "Please enter bus enable GPIO pin",
-						"busPinInvalid": "Bus enable GPIO pin should be an integer.",
-						"powerPinMissing": "Please enter power enable GPIO pin.",
-						"powerPinInvalid": "Power enable GPIO pin should be an integer.",
-						"pgmPinMissing": "Please enter programming mode switch GPIO pin.",
-						"pgmPinInvalid": "Programming mode switch GPIO pin should be an integer.",
-						"i2cPinMissing": "Please enter I2C enable GPIO pin.",
-						"i2cPinInvalid": "I2C enable GPIO pin should be an integer.",
-						"spiPinMissing": "Please enter SPI enable GPIO pin.",
-						"spiPinInvalid": "SPI enable GPIO pin should be an integer.",
-						"uartPinMissing": "Please enter UART enable GPIO pin.",
-						"uartPinInvalid": "UART enable GPIO pin should be an integer."
-					}
-				},
 				"connections": {
-					"profile": "Connection profile",
-					"profileFile": "Connection profile file",
 					"acceptAsyncMessages": "Accept asynchronous messages",
 					"acceptOnlyLocalhost": "Accept only localhost connections",
 					"actions": {
 						"add": "Create connection profile",
-						"edit": "Edit connection profile",
 						"delete": "Delete connection profile",
-						"reload": "Reload connection profiles",
+						"edit": "Edit connection profile",
+						"export": "Export connection profile",
 						"import": "Import connection profile",
-						"export": "Export connection profile"
+						"reload": "Reload connection profiles"
 					},
-					"validation": {
-						"profileMissing": "Please enter connection profile name.",
-						"profileFileMissing": "Please select connection profile file."
-					},
+					"cipherSuites": "Cipher suites",
+					"enableTls": "Enable TLS",
+					"keyStore": "Key store",
 					"messages": {
 						"profileFileInvalid": "Selected file is not a valid connection profile file."
 					},
-					"tls": "TLS",
-					"trustStore": "Trust store",
-					"keyStore": "Key store",
-					"enableTls": "Enable TLS",
-					"privateKey": "Private key",
-					"privateKeyPassword": "Private key password",
-					"cipherSuites": "Cipher suites",
-					"serverCertAuth": "Enable server certificate authentication",
 					"mqtt": {
+						"broker": "Broker URL",
+						"clientId": "Client ID",
 						"clouds": {
 							"add": "Create cloud connection profile",
 							"aws": {
-								"title": "Amazon AWS IoT",
-								"endpoint": "Endpoint",
 								"certificate": "Certificate",
+								"endpoint": "Endpoint",
 								"privateKey": "Private key",
+								"title": "Amazon AWS IoT",
 								"validation": {
-									"endpointMissing": "Please enter endpoint.",
 									"certificateMissing": "Please select certificate file.",
+									"endpointMissing": "Please enter endpoint.",
 									"privateKeyMissing": "Please select private key file."
 								}
 							},
 							"azure": {
-								"title": "Microsoft Azure IoT Hub",
 								"connectionString": "IoT Hub device connection string",
+								"title": "Microsoft Azure IoT Hub",
 								"validation": {
 									"connectionStringMissing": "Please enter IoT Hub device connection string."
 								}
 							},
 							"ibm": {
-								"title": "IBM Cloud",
-								"orgId": "Organization ID",
-								"deviceType": "Device type",
 								"deviceId": "Device ID",
-								"token": "Authentication token",
+								"deviceType": "Device type",
 								"eventId": "Command and event ID",
+								"orgId": "Organization ID",
+								"title": "IBM Cloud",
+								"token": "Authentication token",
 								"validation": {
-									"orgIdMissing": "Please enter organization ID.",
-									"deviceTypeMissing": "Please enter device type.",
 									"deviceIdMissing": "Please enter device ID.",
-									"tokenMissing": "Please enter authentication token.",
-									"eventIdMissing": "Please enter command and event ID."
+									"deviceTypeMissing": "Please enter device type.",
+									"eventIdMissing": "Please enter command and event ID.",
+									"orgIdMissing": "Please enter organization ID.",
+									"tokenMissing": "Please enter authentication token."
 								}
 							},
 							"messages": {
@@ -682,158 +503,313 @@
 								}
 							}
 						},
-						"broker": "Broker URL",
-						"clientId": "Client ID",
-						"requestTopic": "Request topic",
-						"responseTopic": "Response topic",
-						"qos": "Quality of Service",
-						"qosLevels": {
-							"atMostOnce": "QoS 0 - At most once",
-							"atLeastOnce": "QoS 1 - At least once",
-							"exactlyOnce": "QoS 2 - Exactly once"
+						"delete": {
+							"prompt": "Are you sure you want to delete MQTT connection profile {name}?",
+							"title": "MQTT connection profile delete confirmation"
 						},
-						"persistence": "Persistence",
-						"persistenceLevels": {
-							"memory": "In-memory",
-							"filesystem": "File system-based",
-							"application": "Application-specific"
-						},
-						"keepAlive": "Keep-alive interval",
-						"timeout": "Connection timeout",
-						"minReconnect": "Minimum reconnect period",
-						"maxReconnect": "Maximum reconnect period",
 						"import": {
 							"title": "MQTT connection profile import"
 						},
-						"delete": {
-							"title": "MQTT connection profile delete confirmation",
-							"prompt": "Are you sure you want to delete MQTT connection profile {name}?"
-						},
-						"validation": {
-							"clientIdMissing": "Please enter MQTT client ID.",
-							"requestTopicMissing": "Please enter request topic.",
-							"responseTopicMissing": "Please enter response topic.",
-							"keepAliveMissing": "Please enter keep alive interval.",
-							"keepAliveInvalid": "Keep alive interval should be a positive integer.",
-							"timeoutMissing": "Please enter connection timeout.",
-							"timeoutInvalid": "Connection timeout should be a positive integer.",
-							"minReconnectMissing": "Please enter minimum reconnect period.",
-							"minReconnectInvalid": "Minimum reconnect period should be an integer greater or equal to 1 second.",
-							"minReconnectHigh": "Minimum reconnect period should be less or equal to maximum reconnect period.",
-							"maxReconnectMissing": "Please enter maximum reconnect period.",
-							"maxReconnectInvalid": "Maximum reconnect period should be at integer greater or equal to 1 second.",
-							"maxReconnectLow": "Maximum reconnect period should be greater or equal to minimum reconnect period."
-						},
+						"keepAlive": "Keep-alive interval",
+						"maxReconnect": "Maximum reconnect period",
 						"messages": {
-							"qos": {
-								"atMostOnce": "Fastest method, but the delivery of a message is not guaranteed.",
-								"atLeastOnce": "Messages are guaranteed to be delivered at least once by acknowledging receipt of a message.",
-								"exactlyOnce": "Safest but slowest method. Message is guaranteed to be delivered exactly once utilizing a 4-part handshake."
+							"delete": {
+								"success": "MQTT connection profile {name} successfully deleted."
 							},
 							"persistence": {
-								"memory": "State of in-flight messages is lost in case of a client shutdown or failure. Some messages may not be delivered even with QoS 1 or higher.",
+								"application": "Persistence control is delegated to the application.",
 								"filesystem": "State of in-flight messages is held in persistent storage and prevents loss of messages to some degree in case of a client failure.",
-								"application": "Persistence control is delegated to the application."
+								"memory": "State of in-flight messages is lost in case of a client shutdown or failure. Some messages may not be delivered even with QoS 1 or higher."
+							},
+							"qos": {
+								"atLeastOnce": "Messages are guaranteed to be delivered at least once by acknowledging receipt of a message.",
+								"atMostOnce": "Fastest method, but the delivery of a message is not guaranteed.",
+								"exactlyOnce": "Safest but slowest method. Message is guaranteed to be delivered exactly once utilizing a 4-part handshake."
 							},
 							"save": {
 								"success": "MQTT connection profile {name} successfully saved."
-							},
-							"delete": {
-								"success": "MQTT connection profile {name} successfully deleted."
 							}
+						},
+						"minReconnect": "Minimum reconnect period",
+						"persistence": "Persistence",
+						"persistenceLevels": {
+							"application": "Application-specific",
+							"filesystem": "File system-based",
+							"memory": "In-memory"
+						},
+						"qos": "Quality of Service",
+						"qosLevels": {
+							"atLeastOnce": "QoS 1 - At least once",
+							"atMostOnce": "QoS 0 - At most once",
+							"exactlyOnce": "QoS 2 - Exactly once"
+						},
+						"requestTopic": "Request topic",
+						"responseTopic": "Response topic",
+						"timeout": "Connection timeout",
+						"validation": {
+							"clientIdMissing": "Please enter MQTT client ID.",
+							"keepAliveInvalid": "Keep alive interval should be a positive integer.",
+							"keepAliveMissing": "Please enter keep alive interval.",
+							"maxReconnectInvalid": "Maximum reconnect period should be at integer greater or equal to 1 second.",
+							"maxReconnectLow": "Maximum reconnect period should be greater or equal to minimum reconnect period.",
+							"maxReconnectMissing": "Please enter maximum reconnect period.",
+							"minReconnectHigh": "Minimum reconnect period should be less or equal to maximum reconnect period.",
+							"minReconnectInvalid": "Minimum reconnect period should be an integer greater or equal to 1 second.",
+							"minReconnectMissing": "Please enter minimum reconnect period.",
+							"requestTopicMissing": "Please enter request topic.",
+							"responseTopicMissing": "Please enter response topic.",
+							"timeoutInvalid": "Connection timeout should be a positive integer.",
+							"timeoutMissing": "Please enter connection timeout."
 						}
 					},
+					"privateKey": "Private key",
+					"privateKeyPassword": "Private key password",
+					"profile": "Connection profile",
+					"profileFile": "Connection profile file",
+					"serverCertAuth": "Enable server certificate authentication",
+					"tls": "TLS",
+					"trustStore": "Trust store",
 					"udp": {
-						"localPort": "Local port",
-						"remotePort": "Remote port",
+						"delete": {
+							"prompt": "Are you sure you want to delete UDP connection profile {name}?",
+							"title": "UDP connection profile delete confirmation"
+						},
 						"expiration": "UDP client records expiration (in seconds)",
 						"import": {
 							"title": "UDP connection profile import"
 						},
-						"delete": {
-							"title": "UDP connection profile delete confirmation",
-							"prompt": "Are you sure you want to delete UDP connection profile {name}?"
-						},
-						"validation": {
-							"localPortMissing": "Please enter local port.",
-							"localPortInvalid": "Local port should be an integer between 1 and 65535.",
-							"remotePortMissing": "Please enter remote port.",
-							"remotePortInvalid": "Remote port should be an integer between 1 and 65535.",
-							"expirationMissing": "Please enter client records expiration.",
-							"expirationInvalid": "Client records expiration should be an integer greater or equal to 0."
-						},
+						"localPort": "Local port",
 						"messages": {
-							"save": {
-								"success": "UDP connection profile {name} successfully saved."
-							},
 							"delete": {
 								"success": "UDP connection profile {name} successfully deleted."
+							},
+							"save": {
+								"success": "UDP connection profile {name} successfully saved."
+							}
+						},
+						"remotePort": "Remote port",
+						"validation": {
+							"expirationInvalid": "Client records expiration should be an integer greater or equal to 0.",
+							"expirationMissing": "Please enter client records expiration.",
+							"localPortInvalid": "Local port should be an integer between 1 and 65535.",
+							"localPortMissing": "Please enter local port.",
+							"remotePortInvalid": "Remote port should be an integer between 1 and 65535.",
+							"remotePortMissing": "Please enter remote port."
+						}
+					},
+					"validation": {
+						"profileFileMissing": "Please select connection profile file.",
+						"profileMissing": "Please enter connection profile name."
+					}
+				},
+				"db": {
+					"autoEnumerate": "Run enumeration automatically without manual invocation",
+					"enumerateOnLaunch": "Run enumeration on Daemon launch",
+					"includeMetadata": "Include device metadata in response messages",
+					"messages": {
+						"save": {
+							"success": "Database configuration successfully saved."
+						}
+					}
+				},
+				"instance": "Instance name",
+				"interfaces": {
+					"active": {
+						"interface": "IQRF interface",
+						"messages": {
+							"save": {
+								"success": "IQRF interface successfully changed."
+							}
+						},
+						"title": "Active IQRF interface"
+					},
+					"apply": "Apply interface",
+					"busPin": "Bus enable GPIO pin",
+					"cdc": {
+						"devices": "CDC interfaces",
+						"messages": {
+							"save": {
+								"success": "IQRF USB CDC configuration successfully saved."
 							}
 						}
+					},
+					"dpa": {
+						"messages": {
+							"save": {
+								"success": "IQRF DPA configuration successfully saved."
+							}
+						},
+						"timeout": "DPA handler timeout",
+						"validation": {
+							"timeoutInvalid": "DPA handler timeout should be an integer greater or equal to 0.",
+							"timeoutMissing": "Please enter DPA handler timeout"
+						}
+					},
+					"i2cPin": "I2C enable GPIO pin",
+					"interface": "Interface name",
+					"interfacePins": "Use communication interface pins",
+					"pgmPin": "Programming mode switch GPIO pin",
+					"powerPin": "Power enable GPIO pin",
+					"profiles": {
+						"spi": "SPI device profiles",
+						"uart": "UART device profiles"
+					},
+					"spi": {
+						"devices": "SPI interfaces",
+						"messages": {
+							"save": {
+								"success": "IQRF SPI configuration successfully saved."
+							}
+						},
+						"spiReset": "Enable SPI reset"
+					},
+					"spiPin": "SPI enable GPIO pin",
+					"uart": {
+						"baudRate": "Baud rate",
+						"devices": "UART interfaces",
+						"messages": {
+							"save": {
+								"success": "IQRF UART configuration successfully saved."
+							}
+						},
+						"uartReset": "Enable UART reset"
+					},
+					"uartPin": "UART enable GPIO pin",
+					"validation": {
+						"busPinInvalid": "Bus enable GPIO pin should be an integer.",
+						"busPinMissing": "Please enter bus enable GPIO pin",
+						"i2cPinInvalid": "I2C enable GPIO pin should be an integer.",
+						"i2cPinMissing": "Please enter I2C enable GPIO pin.",
+						"interfaceMissing": "Please enter interface name.",
+						"pgmPinInvalid": "Programming mode switch GPIO pin should be an integer.",
+						"pgmPinMissing": "Please enter programming mode switch GPIO pin.",
+						"powerPinInvalid": "Power enable GPIO pin should be an integer.",
+						"powerPinMissing": "Please enter power enable GPIO pin.",
+						"spiPinInvalid": "SPI enable GPIO pin should be an integer.",
+						"spiPinMissing": "Please enter SPI enable GPIO pin.",
+						"uartPinInvalid": "UART enable GPIO pin should be an integer.",
+						"uartPinMissing": "Please enter UART enable GPIO pin."
+					}
+				},
+				"json-api": {
+					"instanceId": "Instance ID",
+					"messages": {
+						"save": {
+							"success": "JSON API configuration successfully saved."
+						}
+					},
+					"validateResponses": "Validate JSON responses",
+					"validation": {
+						"instanceIdMissing": "Please enter instance ID."
+					}
+				},
+				"logging": {
+					"actions": {
+						"add": "Add logging profile",
+						"delete": "Delete logging profile",
+						"edit": "Edit logging profile",
+						"reload": "Reload logging profiles"
+					},
+					"channel": "Logging channel",
+					"channels": {
+						"actions": {
+							"add": "Add logging channel",
+							"delete": "Delete logging channel",
+							"deleteAll": "Delete all logging channels",
+							"edit": "Edit logging channel"
+						},
+						"noChannels": "No logging channels specified.",
+						"title": "Logging channels"
+					},
+					"delete": {
+						"prompt": "Are you sure you want to delete logging profile {name}?",
+						"title": "Logging profile delete confirmation"
+					},
+					"filename": "File name",
+					"logDir": "Path to log directory",
+					"maxAge": "Maximum lifespan of log files to keep",
+					"maxNumber": "Maximum number of log files to keep",
+					"maxSize": "Maximum file size in bytes",
+					"messages": {
+						"delete": {
+							"success": "Logging profile {name} has been successfully deleted."
+						},
+						"save": {
+							"success": "Logging profile {name} has been successfully saved."
+						}
+					},
+					"notes": {
+						"timestampsDisabled": "Setting value to 0 disables this feature."
+					},
+					"profile": "Logging profile",
+					"severity": "Logging severity",
+					"timestamps": "Split and rotate log files",
+					"validation": {
+						"channelInvalid": "Logging channel should be an integer greater or equal to 0.",
+						"channelMissing": "Please enter logging channel.",
+						"maxAgeInvalid": "Maximum lifespan of log files should greater or equal to 0.",
+						"maxAgeMissing": "Please enter maximum lifespan of log files.",
+						"maxNumberInvalid": "Maximum number of log files to keep should be an integer greater or equal to 0.",
+						"maxNumberMissing": "Please enter maximum number of log files to keep."
+					},
+					"validations": {
+						"filename": {
+							"required": "Please enter file name."
+						},
+						"logDir": {
+							"required": "Please enter path to log directory."
+						},
+						"maxSize": {
+							"min": "Maximum file size should be an integer greater or equal to 1.",
+							"required": "Please enter maximum file size."
+						},
+						"profile": {
+							"required": "Please enter logging profile name."
+						}
+					}
+				},
+				"repository": {
+					"messages": {
+						"save": {
+							"success": "IQRF repository configuration successfully saved."
+						}
+					},
+					"update": "Update repository cache periodically",
+					"updatePeriod": "Repository cache update period (in minutes)",
+					"url": "Repository URL",
+					"validation": {
+						"updatePeriodInvalid": "Repository cache update period should be an integer greater or equal to 0.",
+						"updatePeriodMissing": "Please enter repository cache update period.",
+						"urlMissing": "Please enter repository url."
 					}
 				},
 				"scheduler": {
 					"actions": {
 						"add": "Add task",
-						"edit": "Edit task",
 						"delete": "Delete task",
 						"deleteAll": "Delete all tasks",
+						"edit": "Edit task",
+						"export": "Export tasks",
+						"import": "Import tasks",
 						"reload": "Reload tasks",
 						"start": "Start task",
-						"stop": "Stop task",
-						"import": "Import tasks",
-						"export": "Export tasks"
-					},
-					"noTasks": "No tasks defined.",
-					"taskId": "Task ID",
-					"time": "Time",
-					"type": "Task execution condition",
-					"types": {
-						"oneshot": "Oneshot - execute task once at specified time",
-						"periodic": "Periodic - frequency of task execution in seconds",
-						"cron": "Cron time expression - specifies when and how frequently a task is executed"
+						"stop": "Stop task"
 					},
 					"cron": "Time in cron format",
-					"period": "Period in seconds",
-					"oneshot": "Execution time",
-					"persist": "Persistent task",
-					"enabled": "Start task automatically",
-					"task": {
-						"actions": {
-							"add": "Add message",
-							"edit": "Edit message",
-							"delete": "Delete message",
-							"deleteAll": "Delete all messages"
-						},
-						"title": "Task messages",
-						"mType": "Message type",
-						"message": "Message (JSON API request)",
-						"messaging": "Connection profiles"
-					},
-					"noMessages": "No task messages specified.",
 					"delete": {
-						"title": "Task delete confirmation",
-						"prompt": "Are you sure you want to delete task {id}?"
+						"prompt": "Are you sure you want to delete task {id}?",
+						"title": "Task delete confirmation"
 					},
 					"deleteAll": {
-						"title": "Tasks delete confirmation",
-						"prompt": "Are you sure you want to delete all tasks?"
+						"prompt": "Are you sure you want to delete all tasks?",
+						"title": "Tasks delete confirmation"
 					},
+					"enabled": "Start task automatically",
 					"import": {
-						"title": "Import task(s)",
 						"file": "Task JSON file or ZIP archive",
 						"imported": "Imported",
-						"reason": "Reason"
-					},
-					"validation": {
-						"importFileMissing": "Please select a task JSON file or ZIP archive.",
-						"taskIdMissing": "Please enter task ID.",
-						"taskIdInvalid": "Task ID should be UUID version 4 string.",
-						"cronMissing": "Please enter a valid 7 field cron time expression.",
-						"periodMissing": "Please enter task execution period in seconds.",
-						"periodInvalid": "Task execution period should be an integer greater than 0.",
-						"messageMissing": "Please enter task message.",
-						"messageInvalid": "Task message should be a valid Daemon JSON API request."
+						"reason": "Reason",
+						"title": "Import task(s)"
 					},
 					"messages": {
 						"add": {
@@ -847,8 +823,8 @@
 						},
 						"import": {
 							"archiveInvalid": "",
-							"jsonInvalid": "",
 							"fileInvalid": "",
+							"jsonInvalid": "",
 							"success": "Scheduler tasks have been successfully imported."
 						},
 						"start": {
@@ -857,182 +833,221 @@
 						"stop": {
 							"success": "Task {id} successfully stopped."
 						}
-					}
-				},
-				"repository": {
-					"url": "Repository URL",
-					"update": "Update repository cache periodically",
-					"updatePeriod": "Repository cache update period (in minutes)",
-					"validation": {
-						"urlMissing": "Please enter repository url.",
-						"updatePeriodMissing": "Please enter repository cache update period.",
-						"updatePeriodInvalid": "Repository cache update period should be an integer greater or equal to 0."
 					},
-					"messages": {
-						"save": {
-							"success": "IQRF repository configuration successfully saved."
-						}
-					}
-				},
-				"db": {
-					"autoEnumerate": "Run enumeration automatically without manual invocation",
-					"enumerateOnLaunch": "Run enumeration on Daemon launch",
-					"includeMetadata": "Include device metadata in response messages",
-					"messages": {
-						"save": {
-							"success": "Database configuration successfully saved."
-						}
-					}
-				},
-				"json-api": {
-					"instanceId": "Instance ID",
-					"validateResponses": "Validate JSON responses",
-					"validation": {
-						"instanceIdMissing": "Please enter instance ID."
-					},
-					"messages": {
-						"save": {
-							"success": "JSON API configuration successfully saved."
-						}
-					}
-				},
-				"logging": {
-					"actions": {
-						"add": "Add logging profile",
-						"edit": "Edit logging profile",
-						"delete": "Delete logging profile",
-						"reload": "Reload logging profiles"
-					},
-					"profile": "Logging profile",
-					"logDir": "Path to log directory",
-					"filename": "File name",
-					"maxSize": "Maximum file size in bytes",
-					"timestamps": "Split and rotate log files",
-					"maxAge": "Maximum lifespan of log files to keep",
-					"maxNumber": "Maximum number of log files to keep",
-					"channels": {
-						"title": "Logging channels",
+					"noMessages": "No task messages specified.",
+					"noTasks": "No tasks defined.",
+					"oneshot": "Execution time",
+					"period": "Period in seconds",
+					"persist": "Persistent task",
+					"task": {
 						"actions": {
-							"add": "Add logging channel",
-							"edit": "Edit logging channel",
-							"delete": "Delete logging channel",
-							"deleteAll": "Delete all logging channels"
+							"add": "Add message",
+							"delete": "Delete message",
+							"deleteAll": "Delete all messages",
+							"edit": "Edit message"
 						},
-						"noChannels": "No logging channels specified."
+						"mType": "Message type",
+						"message": "Message (JSON API request)",
+						"messaging": "Connection profiles",
+						"title": "Task messages"
 					},
-					"channel": "Logging channel",
-					"severity": "Logging severity",
-					"delete": {
-						"title": "Logging profile delete confirmation",
-						"prompt": "Are you sure you want to delete logging profile {name}?"
+					"taskId": "Task ID",
+					"time": "Time",
+					"type": "Task execution condition",
+					"types": {
+						"cron": "Cron time expression - specifies when and how frequently a task is executed",
+						"oneshot": "Oneshot - execute task once at specified time",
+						"periodic": "Periodic - frequency of task execution in seconds"
 					},
 					"validation": {
-						"maxAgeMissing": "Please enter maximum lifespan of log files.",
-						"maxAgeInvalid": "Maximum lifespan of log files should greater or equal to 0.",
-						"maxNumberMissing": "Please enter maximum number of log files to keep.",
-						"maxNumberInvalid": "Maximum number of log files to keep should be an integer greater or equal to 0.",
-						"channelMissing": "Please enter logging channel.",
-						"channelInvalid": "Logging channel should be an integer greater or equal to 0."
-					},
-					"validations": {
-						"filename": {
-							"required": "Please enter file name."
-						},
-						"profile": {
-							"required": "Please enter logging profile name."
-						},
-						"maxSize": {
-							"min": "Maximum file size should be an integer greater or equal to 1.",
-							"required": "Please enter maximum file size."
-						},
-						"logDir": {
-							"required": "Please enter path to log directory."
-						}
-					},
-					"notes": {
-						"timestampsDisabled": "Setting value to 0 disables this feature."
-					},
-					"messages": {
-						"save": {
-							"success": "Logging profile {name} has been successfully saved."
-						},
-						"delete": {
-							"success": "Logging profile {name} has been successfully deleted."
-						}
+						"cronMissing": "Please enter a valid 7 field cron time expression.",
+						"importFileMissing": "Please select a task JSON file or ZIP archive.",
+						"messageInvalid": "Task message should be a valid Daemon JSON API request.",
+						"messageMissing": "Please enter task message.",
+						"periodInvalid": "Task execution period should be an integer greater than 0.",
+						"periodMissing": "Please enter task execution period in seconds.",
+						"taskIdInvalid": "Task ID should be UUID version 4 string.",
+						"taskIdMissing": "Please enter task ID."
 					}
 				},
 				"validation": {
 					"instanceMissing": "Please enter instance name."
 				}
 			},
-			"profiles": {
-				"title": "Device profiles",
-				"actions": {
-					"apply": "Apply device profile",
-					"add": "Add device profile",
-					"edit": "Edit device profile",
-					"delete": "Delete device profile"
-				},
-				"id": "Profile ID",
-				"name": "Profile name",
-				"deviceType": "Device type",
-				"deviceTypes": {
-					"adapter": "Adapter",
-					"board": "Board"
-				},
-				"profileType": "Profile type",
-				"profileTypes": {
-					"spi": "SPI",
-					"uart": "UART"
-				},
-				"delete": {
-					"title": "Device configuration profile delete confirmation",
-					"prompt": "Are you sure you want to delete device configuration profile {name}?"
-				},
-				"validation": {
-					"nameMissing": "Please enter device profile name."
-				},
-				"messages": {
-					"save": {
-						"success": "Device configuration profile {name} successfully saved."
-					},
-					"delete": {
-						"success": "Device configuration profile {name} successfully deleted."
-					}
-				}
-			},
 			"influxdb-bridge": {
-				"influx": "InfluxDB client",
-				"mqtt": "MQTT client",
-				"org": "Organization",
-				"token": "Authentication token",
-				"devicesBucket": "Devices bucket name",
-				"gatewayBucket": "Gateway bucket name",
-				"sensorsBucket": "Sensor bucket name",
-				"topicTitle": "Subscriptions",
-				"topic": "Topic",
 				"actions": {
 					"add": "Add subscription topic",
-					"edit": "Edit subscription topic",
 					"delete": "Delete subscription topic",
-					"deleteAll": "Delete all subscription topics"
+					"deleteAll": "Delete all subscription topics",
+					"edit": "Edit subscription topic"
 				},
-				"noTopics": "No subscription topics specified.",
-				"validation": {
-					"orgMissing": "Please enter organization name.",
-					"devicesBucketMissing": "Please enter devices bucket name.",
-					"gatewayBucketMissing": "Please enter gateway bucket name.",
-					"sensorsBucketMissing": "Please enter sensors bucket name.",
-					"topic": "Please enter subscription topic."
-				},
+				"devicesBucket": "Devices bucket name",
+				"gatewayBucket": "Gateway bucket name",
+				"influx": "InfluxDB client",
 				"messages": {
 					"save": {
 						"success": "IQRF Gateway InfluxDB Bridge configuration successfully saved."
 					}
 				},
+				"mqtt": "MQTT client",
+				"noTopics": "No subscription topics specified.",
 				"notes": {
-					"oldAuth": "User and password are used for v1.x authentication.",
-					"newAuth": "Token is used for v2+ authentication. A token can be used for authentication in version 1.8 with the format <user:password>."
+					"newAuth": "Token is used for v2+ authentication. A token can be used for authentication in version 1.8 with the format <user:password>.",
+					"oldAuth": "User and password are used for v1.x authentication."
+				},
+				"org": "Organization",
+				"sensorsBucket": "Sensor bucket name",
+				"token": "Authentication token",
+				"topic": "Topic",
+				"topicTitle": "Subscriptions",
+				"validation": {
+					"devicesBucketMissing": "Please enter devices bucket name.",
+					"gatewayBucketMissing": "Please enter gateway bucket name.",
+					"orgMissing": "Please enter organization name.",
+					"sensorsBucketMissing": "Please enter sensors bucket name.",
+					"topic": "Please enter subscription topic."
+				}
+			},
+			"journal": {
+				"forwardToSyslog": "Forward journal to syslog",
+				"maxFileSize": "Maximum log size in MB",
+				"maxFiles": "Maximum number of log files to keep",
+				"maxSize": "Maximum disk space used by journal in MB",
+				"messages": {
+					"save": {
+						"success": "Journal configuration successfully saved."
+					}
+				},
+				"notes": {
+					"maxFiles": "Systemd default value is 100 files.",
+					"systemDefault": "Set value to 0 to use systemd default."
+				},
+				"sizeRotation": "File-size based log rotation",
+				"storage": "Storage method",
+				"storages": {
+					"persistent": "Filesystem persistence",
+					"volatile": "In-memory persistence"
+				},
+				"timeRotation": "Time-based log rotation",
+				"timeUnit": "Time unit",
+				"timeUnits": {
+					"days": "Days",
+					"hours": "Hours",
+					"minutes": "Minutes",
+					"months": "Months",
+					"seconds": "Seconds",
+					"weeks": "Weeks",
+					"years": "Years"
+				},
+				"unitCount": "Unit count",
+				"validation": {
+					"maxFileSizeInvalid": "Maximum log file size should be an integer greater or equal to 0.",
+					"maxFileSizeMissing": "Please enter maximum log file size.",
+					"maxFilesInvalid": "Maximum number of files to keep should be an integer greater or equal to 1.",
+					"maxFilesMissing": "Please enter maximum number of log files to keep.",
+					"maxSizeInvalid": "Maximum disk space used should be an integer greater or equal to 0.",
+					"maxSizeMissing": "Please enter maximum disk space usable by journal.",
+					"unitCountInvalid": "Unit count should be an integer greater or equal to 1.",
+					"unitCountMissing": "Please enter unit count."
+				}
+			},
+			"mender": {
+				"client": {
+					"cert": "Path to certificate",
+					"inventoryPollInterval": "Inventory update interval (seconds)",
+					"retryPollInterval": "Connection retry interval (seconds)",
+					"server": "Mender server URL",
+					"tenantToken": "Tenant token",
+					"updatePollInterval": "Update check interval (seconds)"
+				},
+				"connect": {
+					"fileTransfer": "File Transfer",
+					"portForward": "Port Forwarding"
+				},
+				"connection": "Connection",
+				"features": "Enabled features",
+				"inventory": "Inventory",
+				"messages": {
+					"save": {
+						"success": "Mender configuration has been successfully saved."
+					},
+					"upload": {
+						"success": "Certificate has been successfully uploaded."
+					}
+				},
+				"upload": {
+					"cert": "Certificate to upload",
+					"certPath": "Path to uploaded certificate",
+					"title": "Mender certificate upload"
+				},
+				"validation": {
+					"certificateMissing": "Please select certificate file to upload.",
+					"inventoryPollIntervalInvalid": "Inventory poll interval should be an integer greater or equal to 0.",
+					"inventoryPollIntervalMissing": "Please enter inventory poll interval.",
+					"retryPollIntervalInvalid": "Connection retry interval should be an integer greater or equal to 0.",
+					"retryPollIntervalMissing": "Please enter connection retry interval.",
+					"serverInvalid": "Mender server URL should be IPv4, IPv6, localhost or fully-qualified domain name.",
+					"serverMissing": "Please enter Mender server URL.",
+					"tenantTokenMissing": "Please enter Tenant token.",
+					"updatePollIntervalInvalid": "Update check interval should be an integer greater or equal to 0.",
+					"updatePollIntervalMissing": "Please enter update check interval."
+				}
+			},
+			"monit": {
+				"checks": {
+					"name": "Check name",
+					"noRecords": "No checks detected.",
+					"title": "System checks"
+				},
+				"messages": {
+					"save": {
+						"success": "Monit configuration has been successfully saved."
+					}
+				},
+				"mmonit": {
+					"enable": "Enable M/Monit server connection",
+					"server": "M/Monit server URL",
+					"title": "M/Monit connection"
+				},
+				"validation": {
+					"serverInvalid": "M/Monit server URL should be IPv4, IPv6, localhost or fully-qualified domain name.",
+					"serverMissing": "Please enter M/Monit server URL."
+				}
+			},
+			"profiles": {
+				"actions": {
+					"add": "Add device profile",
+					"apply": "Apply device profile",
+					"delete": "Delete device profile",
+					"edit": "Edit device profile"
+				},
+				"delete": {
+					"prompt": "Are you sure you want to delete device configuration profile {name}?",
+					"title": "Device configuration profile delete confirmation"
+				},
+				"deviceType": "Device type",
+				"deviceTypes": {
+					"adapter": "Adapter",
+					"board": "Board"
+				},
+				"id": "Profile ID",
+				"messages": {
+					"delete": {
+						"success": "Device configuration profile {name} successfully deleted."
+					},
+					"save": {
+						"success": "Device configuration profile {name} successfully saved."
+					}
+				},
+				"name": "Profile name",
+				"profileType": "Profile type",
+				"profileTypes": {
+					"spi": "SPI",
+					"uart": "UART"
+				},
+				"title": "Device profiles",
+				"validation": {
+					"nameMissing": "Please enter device profile name."
 				}
 			},
 			"smtp": {
@@ -1072,182 +1087,116 @@
 				}
 			},
 			"time": {
-				"gatewayDateTime": "Gateway date and time: ",
-				"timezone": "Time zone",
 				"datetime": "Date and time",
-				"ntpSync": "Synchronize time automatically",
-				"ntpServers": {
-					"title": "NTP servers",
-					"address": "NTP server address",
-					"add": "Add NTP server",
-					"edit": "Edit NTP server",
-					"delete": "Delete NTP server",
-					"deleteAll": "Delete all NTP servers",
-					"noRecords": "No custom NTP server defined. Default NTP servers will be used for time synchronization.",
-					"validation": {
-						"serverMissing": "Please enter NTP server address.",
-						"serverInvalid": "NTP server address should be a valid IP or fully qualified domain name."
-					}
-				},
+				"gatewayDateTime": "Gateway date and time: ",
 				"messages": {
 					"save": {
 						"success": "Time and NTP configuration successfully saved."
 					}
-				}
-			},
-			"journal": {
-				"forwardToSyslog": "Forward journal to syslog",
-				"storage": "Storage method",
-				"storages": {
-					"volatile": "In-memory persistence",
-					"persistent": "Filesystem persistence"
 				},
-				"maxSize": "Maximum disk space used by journal in MB",
-				"maxFiles": "Maximum number of log files to keep",
-				"maxFileSize": "Maximum log size in MB",
-				"sizeRotation": "File-size based log rotation",
-				"timeRotation": "Time-based log rotation",
-				"timeUnit": "Time unit",
-				"timeUnits": {
-					"seconds": "Seconds",
-					"minutes": "Minutes",
-					"hours": "Hours",
-					"days": "Days",
-					"weeks": "Weeks",
-					"months": "Months",
-					"years": "Years"
-				},
-				"unitCount": "Unit count",
-				"notes": {
-					"systemDefault": "Set value to 0 to use systemd default.",
-					"maxFiles": "Systemd default value is 100 files."
-				},
-				"validation": {
-					"maxSizeMissing": "Please enter maximum disk space usable by journal.",
-					"maxSizeInvalid": "Maximum disk space used should be an integer greater or equal to 0.",
-					"maxFilesMissing": "Please enter maximum number of log files to keep.",
-					"maxFilesInvalid": "Maximum number of files to keep should be an integer greater or equal to 1.",
-					"maxFileSizeMissing": "Please enter maximum log file size.",
-					"maxFileSizeInvalid": "Maximum log file size should be an integer greater or equal to 0.",
-					"unitCountMissing": "Please enter unit count.",
-					"unitCountInvalid": "Unit count should be an integer greater or equal to 1."
-				},
-				"messages": {
-					"save": {
-						"success": "Journal configuration successfully saved."
+				"ntpServers": {
+					"add": "Add NTP server",
+					"address": "NTP server address",
+					"delete": "Delete NTP server",
+					"deleteAll": "Delete all NTP servers",
+					"edit": "Edit NTP server",
+					"noRecords": "No custom NTP server defined. Default NTP servers will be used for time synchronization.",
+					"title": "NTP servers",
+					"validation": {
+						"serverInvalid": "NTP server address should be a valid IP or fully qualified domain name.",
+						"serverMissing": "Please enter NTP server address."
 					}
-				}
+				},
+				"ntpSync": "Synchronize time automatically",
+				"timezone": "Time zone"
 			},
 			"unattendedUpgrades": {
 				"interval": "Day(s)",
-				"packageListUpdateInterval": "Package list update interval",
-				"packageUpdateInterval": "Package update interval",
-				"packageRemovalInterval": "Unnecessary package removal interval",
-				"rebootOnKernelUpdate": "Reboot on kernel update",
 				"notes": {
 					"packageListUpdateInterval": "Set value 0 to disable automatic package list updates.",
-					"packageUpdateInterval": "Set value 0 to disable automatic package updates.",
-					"packageRemovalInterval": "Set value 0 to disable automatic package removal."
+					"packageRemovalInterval": "Set value 0 to disable automatic package removal.",
+					"packageUpdateInterval": "Set value 0 to disable automatic package updates."
 				},
+				"packageListUpdateInterval": "Package list update interval",
+				"packageRemovalInterval": "Unnecessary package removal interval",
+				"packageUpdateInterval": "Package update interval",
+				"rebootOnKernelUpdate": "Reboot on kernel update",
 				"validation": {
-					"packageListUpdateIntervalMissing": "Please enter package list update interval.",
 					"packageListUpdateIntervalInvalid": "Package list update interval should be an integer greater or equal to 0.",
-					"packageUpdateIntervalMissing": "Please enter package update interval.",
-					"packageUpdateIntervalInvalid": "Package update interval should be an integer greater or equal to 0.",
+					"packageListUpdateIntervalMissing": "Please enter package list update interval.",
+					"packageRemovalIntervalInvalid": "Package removal interval should be an integer greater or equal to 0.",
 					"packageRemovalIntervalMissing": "Please enter package removal interval.",
-					"packageRemovalIntervalInvalid": "Package removal interval should be an integer greater or equal to 0."
-				}
-			},
-			"monit": {
-				"checks": {
-					"title": "System checks",
-					"name": "Check name",
-					"noRecords": "No checks detected."
-				},
-				"mmonit": {
-					"title": "M/Monit connection",
-					"enable": "Enable M/Monit server connection",
-					"server": "M/Monit server URL"
-				},
-				"validation": {
-					"serverMissing": "Please enter M/Monit server URL.",
-					"serverInvalid": "M/Monit server URL should be IPv4, IPv6, localhost or fully-qualified domain name."
-				},
-				"messages": {
-					"save": {
-						"success": "Monit configuration has been successfully saved."
-					}
-				}
-			},
-			"mender": {
-				"connection": "Connection",
-				"inventory": "Inventory",
-				"features": "Enabled features",
-				"client": {
-					"server": "Mender server URL",
-					"cert": "Path to certificate",
-					"tenantToken": "Tenant token",
-					"inventoryPollInterval": "Inventory update interval (seconds)",
-					"retryPollInterval": "Connection retry interval (seconds)",
-					"updatePollInterval": "Update check interval (seconds)"
-				},
-				"connect": {
-					"fileTransfer": "File Transfer",
-					"portForward": "Port Forwarding"
-				},
-				"upload": {
-					"title": "Mender certificate upload",
-					"cert": "Certificate to upload",
-					"certPath": "Path to uploaded certificate"
-				},
-				"validation": {
-					"serverMissing": "Please enter Mender server URL.",
-					"serverInvalid": "Mender server URL should be IPv4, IPv6, localhost or fully-qualified domain name.",
-					"inventoryPollIntervalMissing": "Please enter inventory poll interval.",
-					"inventoryPollIntervalInvalid": "Inventory poll interval should be an integer greater or equal to 0.",
-					"retryPollIntervalMissing": "Please enter connection retry interval.",
-					"retryPollIntervalInvalid": "Connection retry interval should be an integer greater or equal to 0.",
-					"updatePollIntervalMissing": "Please enter update check interval.",
-					"updatePollIntervalInvalid": "Update check interval should be an integer greater or equal to 0.",
-					"tenantTokenMissing": "Please enter Tenant token.",
-					"certificateMissing": "Please select certificate file to upload."
-				},
-				"messages": {
-					"save": {
-						"success": "Mender configuration has been successfully saved."
-					},
-					"upload": {
-						"success": "Certificate has been successfully uploaded."
-					}
+					"packageUpdateIntervalInvalid": "Package update interval should be an integer greater or equal to 0.",
+					"packageUpdateIntervalMissing": "Please enter package update interval."
 				}
 			}
 		},
 		"dev": {
 			"openApi": {
-				"title": "OpenAPI specification",
 				"messages": {
 					"fetchFailed": "An error occurred during OpenAPI specification loading."
-				}
+				},
+				"title": "OpenAPI specification"
 			}
 		},
 		"errors": {
 			"403": {
-				"title": "Access denied",
 				"header": "Error 403",
-				"text": "You do not have permission to view this page. Please try contact the web site administrator if you believe you should be able to view this page."
+				"text": "You do not have permission to view this page. Please try contact the web site administrator if you believe you should be able to view this page.",
+				"title": "Access denied"
 			},
 			"404": {
-				"title": "Page not found",
 				"header": "Error 404",
-				"text": "The page you requested could not be found. The address may be incorrect, or the page no longer exists."
+				"text": "The page you requested could not be found. The address may be incorrect, or the page no longer exists.",
+				"title": "Page not found"
 			}
 		},
 		"gateway": {
 			"information": {
+				"addresses": {
+					"ip": "IP addresses",
+					"mac": "MAC addresses"
+				},
 				"board": "Board",
-				"os": "Operating system",
+				"diagnostics": "Download diagnostics",
 				"gwId": "IQRF Gateway ID",
 				"gwImage": "IQRF Gateway Image",
+				"gwMode": "Daemon mode",
+				"hostname": "Hostname",
+				"hostnameChange": {
+					"messages": {
+						"daemonRestart": "IQRF Gateway Daemon restart is required to apply the changes.",
+						"save": {
+							"success": "Hostname has been successfully changed."
+						}
+					},
+					"setIdeHostname": "Set hostname as IQRF IDE GW hostname",
+					"setSplitterId": "Set hostname as IQRF Gateway Daemon instance ID",
+					"title": "Change hostname",
+					"validation": {
+						"hostname": "Please enter hostname."
+					}
+				},
+				"os": "Operating system",
+				"tr": {
+					"dpa": "DPA",
+					"error": "Cannot get information about the Coordinator.",
+					"hwpid": "HWPID",
+					"hwpidVersion": "HWPID ver.",
+					"mcuType": "MCU type",
+					"moduleId": "MID",
+					"moduleType": "Module type",
+					"os": "OS",
+					"title": "TR info",
+					"voltage": "Supply voltage"
+				},
+				"uptime": "Uptime",
+				"usages": {
+					"disks": "Disk usages",
+					"memory": "Memory usage",
+					"swap": "Swap usage",
+					"used": "Used"
+				},
 				"version": {
 					"iqrfCloudProvisioning": "IQRF Cloud Provisioning",
 					"iqrfGatewayController": "IQRF Gateway Controller",
@@ -1256,47 +1205,7 @@
 					"iqrfGatewaySetter": "IQRF Gateway Setter",
 					"iqrfGatewayUploader": "IQRF Gateway Uploader",
 					"iqrfGatewayWebapp": "IQRF Gateway Webapp"
-				},
-				"hostname": "Hostname",
-				"hostnameChange": {
-					"title": "Change hostname",
-					"setSplitterId": "Set hostname as IQRF Gateway Daemon instance ID",
-					"setIdeHostname": "Set hostname as IQRF IDE GW hostname",
-					"validation": {
-						"hostname": "Please enter hostname."
-					},
-					"messages": {
-						"daemonRestart": "IQRF Gateway Daemon restart is required to apply the changes.",
-						"save": {
-							"success": "Hostname has been successfully changed."
-						}
-					}
-				},
-				"uptime": "Uptime",
-				"addresses": {
-					"ip": "IP addresses",
-					"mac": "MAC addresses"
-				},
-				"tr": {
-					"title": "TR info",
-					"error": "Cannot get information about the Coordinator.",
-					"moduleType": "Module type",
-					"mcuType": "MCU type",
-					"moduleId": "MID",
-					"os": "OS",
-					"dpa": "DPA",
-					"hwpid": "HWPID",
-					"hwpidVersion": "HWPID ver.",
-					"voltage": "Supply voltage"
-				},
-				"usages": {
-					"memory": "Memory usage",
-					"disks": "Disk usages",
-					"swap": "Swap usage",
-					"used": "Used"
-				},
-				"gwMode": "Daemon mode",
-				"diagnostics": "Download diagnostics"
+				}
 			},
 			"logs": {
 				"journal": {
@@ -1305,114 +1214,114 @@
 			},
 			"mode": {
 				"current": "Current mode",
-				"startup": "Startup mode",
+				"messages": {
+					"setFailed": "Mode change request failed.",
+					"setSuccess": "Mode successfully changed to {mode}.",
+					"setTimeout": "Mode change request timed out."
+				},
 				"modes": {
 					"forwarding": "Forwarding mode",
 					"operational": "Operational mode",
 					"service": "Service mode",
 					"unknown": "Unknown"
 				},
-				"messages": {
-					"setFailed": "Mode change request failed.",
-					"setSuccess": "Mode successfully changed to {mode}.",
-					"setTimeout": "Mode change request timed out."
-				}
+				"startup": "Startup mode"
 			},
 			"power": {
+				"messages": {
+					"powerOffFailed": "Failed to schedule gateway poweroff: {error}.",
+					"powerOffSuccess": "Your device will be powered off at {time}.",
+					"rebootFailed": "Failed to schedule gateway reboot: {error}.",
+					"rebootSuccess": "Your device will be rebooted at {time}, the reboot may take tens of seconds."
+				},
 				"powerOff": {
 					"action": "Power off",
-					"title": "Power off confirmation",
-					"prompt": "The gateway will power off within 60 seconds."
+					"prompt": "The gateway will power off within 60 seconds.",
+					"title": "Power off confirmation"
 				},
 				"reboot": {
 					"action": "Reboot",
-					"title": "Reboot confirmation",
-					"prompt": "The gateway will reboot within 60 seconds."
-				},
-				"messages": {
-					"powerOffSuccess": "Your device will be powered off at {time}.",
-					"powerOffFailed": "Failed to schedule gateway poweroff: {error}.",
-					"rebootSuccess": "Your device will be rebooted at {time}, the reboot may take tens of seconds.",
-					"rebootFailed": "Failed to schedule gateway reboot: {error}."
+					"prompt": "The gateway will reboot within 60 seconds.",
+					"title": "Reboot confirmation"
 				},
 				"stats": {
-					"title": "Power statistics",
 					"columns": {
-						"start": "Startup time",
-						"shutdown": "Shutdown time",
+						"downtime": "Downtime",
 						"graceful": "Graceful shutdown",
-						"uptime": "Uptime",
-						"downtime": "Downtime"
+						"shutdown": "Shutdown time",
+						"start": "Startup time",
+						"uptime": "Uptime"
 					},
 					"messages": {
-						"tuptimeMissing": "Tuptime utility is not installed. Please install it to see power statistics.",
-						"fetchFailed": "Failed to retrieve power statistics."
-					}
+						"fetchFailed": "Failed to retrieve power statistics.",
+						"tuptimeMissing": "Tuptime utility is not installed. Please install it to see power statistics."
+					},
+					"title": "Power statistics"
 				}
 			},
 			"services": {
 				"actions": {
-					"enable": "Enable service",
 					"disable": "Disable service",
-					"start": "Start service",
-					"stop": "Stop service",
-					"restart": "Restart service",
+					"enable": "Enable service",
 					"refresh": "Refresh service",
 					"refreshAll": "Refresh services",
-					"status": "Toggle status"
+					"restart": "Restart service",
+					"start": "Start service",
+					"status": "Toggle status",
+					"stop": "Stop service"
 				},
 				"service": {
+					"ModemManager": {
+						"description": "Modem Manager is used to manage GSM modems.",
+						"name": "Modem Manager"
+					},
 					"apcupsd": {
-						"name": "APC UPS Daemon",
-						"description": ""
+						"description": "",
+						"name": "APC UPS Daemon"
 					},
 					"iqrf-gateway-controller": {
-						"name": "IQRF Gateway Controller",
-						"description": ""
+						"description": "",
+						"name": "IQRF Gateway Controller"
 					},
 					"iqrf-gateway-daemon": {
-						"name": "IQRF Gateway Daemon",
-						"description": "IQRF Gateway Daemon is a core component of the IQRF Gateway."
+						"description": "IQRF Gateway Daemon is a core component of the IQRF Gateway.",
+						"name": "IQRF Gateway Daemon"
 					},
 					"iqrf-gateway-influxdb-bridge": {
-						"name": "IQRF Gateway InfluxDB Bridge",
-						"description": "Stores sensor measurement data in InfluxDB."
+						"description": "Stores sensor measurement data in InfluxDB.",
+						"name": "IQRF Gateway InfluxDB Bridge"
 					},
 					"iqrf-gateway-translator": {
-						"name": "IQRF Gateway Translator",
-						"description": ""
+						"description": "",
+						"name": "IQRF Gateway Translator"
 					},
 					"mender-client": {
-						"name": "Mender",
-						"description": "Mender is an over-the-air update manager for IoT and embedded devices."
+						"description": "Mender is an over-the-air update manager for IoT and embedded devices.",
+						"name": "Mender"
 					},
 					"monit": {
-						"name": "Monit",
-						"description": "Monit is a utility for management and monitoring of Unix systems."
-					},
-					"ModemManager": {
-						"name": "Modem Manager",
-						"description": "Modem Manager is used to manage GSM modems."
+						"description": "Monit is a utility for management and monitoring of Unix systems.",
+						"name": "Monit"
 					},
 					"nodered": {
-						"name": "Node-RED",
-						"description": ""
+						"description": "",
+						"name": "Node-RED"
 					},
 					"ssh": {
-						"name": "SSH daemon",
-						"description": "SSH daemon is used to access the device via SSH protocol."
+						"description": "SSH daemon is used to access the device via SSH protocol.",
+						"name": "SSH daemon"
 					},
 					"systemd-journald": {
-						"name": "Systemd Journal",
-						"description": "Systemd Journal collects and stores logging data from services and processes."
+						"description": "Systemd Journal collects and stores logging data from services and processes.",
+						"name": "Systemd Journal"
 					},
 					"systemd-timesyncd": {
-						"name": "Systemd Time Sync Service",
-						"description": ""
+						"description": "",
+						"name": "Systemd Time Sync Service"
 					},
 					"unattended-upgrades": {
-						"name": "Unattended Upgrades",
-						"description": "Unattended upgrades is a service used to keep device software up-to-date automatically."
+						"description": "Unattended upgrades is a service used to keep device software up-to-date automatically.",
+						"name": "Unattended Upgrades"
 					}
 				},
 				"table": {
@@ -1421,39 +1330,39 @@
 			}
 		},
 		"install": {
-			"errors": {
-				"misconfiguredSudo": {
-					"title": "Misconfigured sudo",
-					"texts": {
-						"missing": "IQRF Gateway Webapp did not detect the sudo command on your system which requires it to run properly.",
-						"invalid": "IQRF Gateway Webapp detected an invalid sudo configuration on your system so some commands cannot be executed."
-					},
-					"fixes": {
-						"missing": "Enter interactive shell as root and install sudo utility using the following commands:",
-						"invalid": "Allow user {user} to execute commands with sudo using the following commands:"
-					}
-				},
-				"missingDependencies": {
-					"title": "Missing dependencies",
-					"text": "IQRF Gateway Webapp detected the following missing dependencies: {dependencies}.",
-					"command": "Missing command",
-					"package": "Package"
-				},
-				"missingPhpExtensions": {
-					"title": "Missing PHP extensions",
-					"text": "IQRF Gateway Webapp detected the following missing PHP extensions: {extensions}.",
-					"fix": "Run the following commands in terminal to install missing extensions:"
-				},
-				"missingMigrations": {
-					"title": "Missing database migration",
-					"text": "IQRF Gateway Webapp detected missing database migrations.",
-					"fix": "To fix it, run the following command in terminal:"
-				}
-			},
 			"checks": {
 				"loading": "IQRF Gateway Webapp is loading…",
 				"messages": {
 					"failed": "Failed to load IQRF Gateway Webapp. Please try to reload the page."
+				}
+			},
+			"errors": {
+				"misconfiguredSudo": {
+					"fixes": {
+						"invalid": "Allow user {user} to execute commands with sudo using the following commands:",
+						"missing": "Enter interactive shell as root and install sudo utility using the following commands:"
+					},
+					"texts": {
+						"invalid": "IQRF Gateway Webapp detected an invalid sudo configuration on your system so some commands cannot be executed.",
+						"missing": "IQRF Gateway Webapp did not detect the sudo command on your system which requires it to run properly."
+					},
+					"title": "Misconfigured sudo"
+				},
+				"missingDependencies": {
+					"command": "Missing command",
+					"package": "Package",
+					"text": "IQRF Gateway Webapp detected the following missing dependencies: {dependencies}.",
+					"title": "Missing dependencies"
+				},
+				"missingMigrations": {
+					"fix": "To fix it, run the following command in terminal:",
+					"text": "IQRF Gateway Webapp detected missing database migrations.",
+					"title": "Missing database migration"
+				},
+				"missingPhpExtensions": {
+					"fix": "Run the following commands in terminal to install missing extensions:",
+					"text": "IQRF Gateway Webapp detected the following missing PHP extensions: {extensions}.",
+					"title": "Missing PHP extensions"
 				}
 			},
 			"wizard": {
@@ -1479,28 +1388,22 @@
 					"title": "Mail server configuration"
 				},
 				"sshServerConfiguration": {
-					"text": "Configure SSH server to access terminal of your IQRF gateway via SSH protocol.",
-					"title": "SSH server configuration",
 					"messages": {
 						"fetchFailed": "Failed to retrieve SSH server service state.",
 						"saveFailed": "Failed to save SSH server service state."
 					},
 					"service": {
+						"disable": "Do not start SSH service.",
 						"enable": "Start SSH service on every boot.",
-						"start": "Start SSH service now, once.",
-						"disable": "Do not start SSH service."
-					}
+						"start": "Start SSH service now, once."
+					},
+					"text": "Configure SSH server to access terminal of your IQRF gateway via SSH protocol.",
+					"title": "SSH server configuration"
 				}
 			}
 		},
 		"ipNetwork": {
 			"connections": {
-				"titles": {
-					"802-3-ethernet": "Ethernet connections",
-					"802-11-wireless": "WiFi connections",
-					"gsm": "Mobile connections",
-					"vlan": "VLAN connections"
-				},
 				"actions": {
 					"add": "Create a new connection",
 					"delete": "Delete connection",
@@ -1508,25 +1411,37 @@
 				},
 				"add": {
 					"titles": {
-						"802-3-ethernet": "Create a new Ethernet connection",
 						"802-11-wireless": "Create a new WiFi connection",
+						"802-3-ethernet": "Create a new Ethernet connection",
 						"gsm": "Create a new Mobile connection",
 						"vlan": "Create a new VLAN connection"
 					}
 				},
+				"columns": {
+					"interfaceName": "Interface name",
+					"name": "Connection name",
+					"state": "State",
+					"states": {
+						"activated": "Activated",
+						"activating": "Activating",
+						"deactivated": "Deactivated",
+						"deactivating": "Deactivating",
+						"unknown": "Unknown"
+					}
+				},
 				"delete": {
-					"title": "Network connection deletion confirmation",
-					"prompt": "Are you sure you want to delete network connection {name}?",
 					"messages": {
 						"failure": "Failed to delete network connection {name}.",
 						"success": "Network connection {name} has been successfully deleted."
-					}
+					},
+					"prompt": "Are you sure you want to delete network connection {name}?",
+					"title": "Network connection deletion confirmation"
 				},
 				"edit": {
 					"title": "Edit connection configuration",
 					"titles": {
-						"802-3-ethernet": "Edit Ethernet connection",
 						"802-11-wireless": "Edit WiFi connection",
+						"802-3-ethernet": "Edit Ethernet connection",
 						"gsm": "Edit Mobile connection",
 						"vlan": "Edit VLAN connection"
 					}
@@ -1536,8 +1451,8 @@
 						"enabled": "Establish connection automatically"
 					},
 					"generic": {
-						"name": "Connection name",
-						"interface": "Network interface"
+						"interface": "Network interface",
+						"name": "Connection name"
 					},
 					"ip": {
 						"title": "IP configuration"
@@ -1549,12 +1464,10 @@
 						"title": "IPv6 configuration"
 					},
 					"vlan": {
-						"title": "VLAN configuration",
-						"id": "VLAN ID"
+						"id": "VLAN ID",
+						"title": "VLAN configuration"
 					},
 					"wifi": {
-						"title": "Wi-Fi configuration",
-						"ssid": "SSID",
 						"security": {
 							"psk": "Pre-shared key",
 							"type": "Security type",
@@ -1565,41 +1478,37 @@
 								"wpa-eap": "WPA-Enterprise",
 								"wpa-psk": "WPA-Personal"
 							}
-						}
+						},
+						"ssid": "SSID",
+						"title": "Wi-Fi configuration"
 					}
 				},
-				"columns": {
-					"name": "Connection name",
-					"interfaceName": "Interface name",
-					"state": "State",
-					"states": {
-						"activated": "Activated",
-						"activating": "Activating",
-						"deactivated": "Deactivated",
-						"deactivating": "Deactivating",
-						"unknown": "Unknown"
-					}
+				"titles": {
+					"802-11-wireless": "WiFi connections",
+					"802-3-ethernet": "Ethernet connections",
+					"gsm": "Mobile connections",
+					"vlan": "VLAN connections"
 				},
 				"validations": {
 					"generic": {
-						"name": {
-							"required": "Please enter the connection name."
-						},
 						"interface": {
 							"required": "Please select the network interface."
+						},
+						"name": {
+							"required": "Please enter the connection name."
 						}
 					},
 					"vlan": {
 						"id": {
-							"required": "Please enter the VLAN ID.",
-							"invalid": "VLAN ID should be an integer between 0 and 4094."
+							"invalid": "VLAN ID should be an integer between 0 and 4094.",
+							"required": "Please enter the VLAN ID."
 						}
 					},
 					"wifi": {
 						"security": {
 							"psk": {
-								"required": "Please enter the pre-shared key.",
-								"invalid": "Pre-shared key should be 8-63 characters long ASCII string, or 64 characters long hex string."
+								"invalid": "Pre-shared key should be 8-63 characters long ASCII string, or 64 characters long hex string.",
+								"required": "Please enter the pre-shared key."
 							},
 							"type": {
 								"required": "Please select Wi-Fi security type."
@@ -1609,16 +1518,11 @@
 				}
 			},
 			"interfaces": {
-				"titles": {
-					"ethernet": "Ethernet interfaces",
-					"vlan": "VLAN interfaces",
-					"wifi": "WiFi interfaces"
-				},
 				"columns": {
-					"name": "Name",
+					"macAddress": "MAC address",
 					"manufacturer": "Manufacturer",
 					"model": "Model",
-					"macAddress": "MAC address",
+					"name": "Name",
 					"state": "State",
 					"states": {
 						"connected": "Connected",
@@ -1626,41 +1530,25 @@
 						"connecting (checking IP connectivity)": "Checking IP connectivity",
 						"connecting (configuring)": "Configuring",
 						"connecting (getting IP configuration)": "Getting IP configuration",
-						"connecting (prepare)": "Prepare",
 						"connecting (need authentication)": "Need authentication",
+						"connecting (prepare)": "Prepare",
 						"connecting (starting secondary connections)": "Starting secondary connections",
 						"connection failed": "Failed",
 						"deactivating": "Deactivating",
 						"disconnected": "Disconnected",
 						"unavailable": "Unavailable",
-						"unmanaged": "Unmanaged",
-						"unknown": "Unknown"
+						"unknown": "Unknown",
+						"unmanaged": "Unmanaged"
 					}
+				},
+				"titles": {
+					"ethernet": "Ethernet interfaces",
+					"vlan": "VLAN interfaces",
+					"wifi": "WiFi interfaces"
 				}
 			},
 			"modems": {
-				"title": "Modems",
 				"columns": {
-					"interface": "Interface name",
-					"manufacturer": "Manufacturer",
-					"model": "Model",
-					"imei": "IMEI",
-					"state": "State",
-					"states": {
-						"failed": "Modem is unusable",
-						"unknown": "Unknown",
-						"initializing": "Initializing",
-						"locked": "Locked",
-						"disabled": "Disabled",
-						"disabling": "Disabling",
-						"enabling": "Enabling",
-						"enabled": "Enabled",
-						"searching": "Searching network",
-						"registered": "Registered to network",
-						"disconnecting": "Disconnecting",
-						"connecting": "Connecting",
-						"connected": "Connected"
-					},
 					"failedReasons": {
 						"esim-without-profiles": "eSIM without profiles",
 						"none": "No error",
@@ -1669,129 +1557,160 @@
 						"unknown": "Unknown error",
 						"unknown-capabilities": "Unknown capabilities"
 					},
+					"imei": "IMEI",
+					"interface": "Interface name",
+					"manufacturer": "Manufacturer",
+					"model": "Model",
+					"rssi": "RSSI",
 					"signal": "Signal strength",
-					"rssi": "RSSI"
-				}
+					"state": "State",
+					"states": {
+						"connected": "Connected",
+						"connecting": "Connecting",
+						"disabled": "Disabled",
+						"disabling": "Disabling",
+						"disconnecting": "Disconnecting",
+						"enabled": "Enabled",
+						"enabling": "Enabling",
+						"failed": "Modem is unusable",
+						"initializing": "Initializing",
+						"locked": "Locked",
+						"registered": "Registered to network",
+						"searching": "Searching network",
+						"unknown": "Unknown"
+					}
+				},
+				"title": "Modems"
 			},
 			"wireGuard": {
 				"tunnels": {
-					"title": "WireGuard tunnels",
-					"delete": {
-						"title": "WireGuard tunnel deletion confirmation",
-						"prompt": "Are you sure you want to delete WireGuard tunnel {name}?",
-						"messages": {
-							"failure": "Failed to delete WireGuard tunnel {name}.",
-							"success": "WireGuard tunnel {name} has been successfully deleted."
-						}
-					},
 					"columns": {
-						"name": "Name",
-						"active": "Active",
-						"enabled": "Enabled",
 						"action": {
 							"activate": "Activate",
 							"deactivate": "Deactivate"
-						}
-					}
+						},
+						"active": "Active",
+						"enabled": "Enabled",
+						"name": "Name"
+					},
+					"delete": {
+						"messages": {
+							"failure": "Failed to delete WireGuard tunnel {name}.",
+							"success": "WireGuard tunnel {name} has been successfully deleted."
+						},
+						"prompt": "Are you sure you want to delete WireGuard tunnel {name}?",
+						"title": "WireGuard tunnel deletion confirmation"
+					},
+					"title": "WireGuard tunnels"
 				}
 			}
 		},
 		"iqrfnet": {
 			"common": {
-				"os": "OS",
 				"dpa": "DPA",
-				"rf": "RF",
-				"rfpgm": "RFPGM",
-				"trPeripherals": "TR Peripherals",
 				"embedPeripherals": "Embedded Peripherals",
-				"txPower": "TX power",
-				"rxFilter": "RX filter",
+				"os": "OS",
 				"peripherals": {
 					"coordinator": "Coordinator",
+					"eeeprom": "EEEPROM",
+					"eeprom": "EEPROM",
+					"externalEeprom": "External EEPROM",
+					"io": "IO",
+					"ledg": "LEDG",
+					"ledr": "LEDR",
 					"node": "Node",
 					"os": "OS",
-					"eeprom": "EEPROM",
-					"eeeprom": "EEEPROM",
-					"externalEeprom": "External EEPROM",
 					"ram": "RAM",
-					"ledr": "LEDR",
-					"ledg": "LEDG",
 					"spi": "SPI",
-					"io": "IO",
 					"thermometer": "Thermometer",
 					"uart": "UART"
-				}
+				},
+				"rf": "RF",
+				"rfpgm": "RFPGM",
+				"rxFilter": "RX filter",
+				"trPeripherals": "TR Peripherals",
+				"txPower": "TX power"
 			},
 			"inProgress": "Request handling in progress.",
 			"products": {
-				"title": "Product browser",
 				"button": "Browse products",
+				"hwpid": "Product HWPID",
 				"manufacturer": "Manufacturer",
 				"name": "Product name",
-				"hwpid": "Product HWPID"
+				"title": "Product browser"
 			},
 			"send-dpa": {
-				"presets": "Presets",
+				"customTimeout": "Custom DPA timeout",
 				"decimal": "Change to decimal",
 				"hexadecimal": "Change to hexadecimal",
-				"lock": "Lock NADR",
-				"unlock": "Unlock NADR",
-				"nadr": "NADR",
-				"pnum": "PNUM",
-				"pcmd": "PCMD",
-				"hwpid": "HWPID",
-				"pdata": "PDATA",
-				"useCustomTimeout": "Use custom DPA timeout",
-				"customTimeout": "Custom DPA timeout",
 				"history": {
-					"title": "Packet history",
+					"confirmation": "Confirmation",
 					"time": "Time",
-					"confirmation": "Confirmation"
+					"title": "Packet history"
 				},
+				"hwpid": "HWPID",
+				"lock": "Lock NADR",
 				"macros": {
 					"title": "Macros"
 				},
+				"nadr": "NADR",
+				"pcmd": "PCMD",
+				"pdata": "PDATA",
+				"pnum": "PNUM",
+				"presets": "Presets",
+				"unlock": "Unlock NADR",
+				"useCustomTimeout": "Use custom DPA timeout",
 				"validation": {
-					"nadrMissing": "Please enter decimal NADR.",
-					"nadrInvalid": "Decimal NADR should be an integer between 0 and 255.",
-					"nadrHexMissing": "Please enter hexadecimal NADR.",
-					"nadrHexInvalid": "Hexadecimal NADR should be a 2 characters long string between 00 and ff.",
-					"pnumMissing": "Please enter decimal PNUM.",
-					"pnumInvalid": "Decimal PNUM should be an integer between 0 and 255.",
-					"pnumHexMissing": "Please enter hexadecimal PNUM.",
-					"pnumHexInvalid": "Hexadecimal PNUM should be a 2 characters long string between 00 and ff.",
-					"pcmdMissing": "Please enter decimal PCMD.",
-					"pcmdInvalid": "Decimal PCMD should be an integer between 0 and 127.",
-					"pcmdHexMissing": "Please enter hexadecimal PCMD.",
-					"pcmdHexInvalid": "Hexadecimal PCMD should be a 2 characters long string between 00 and 7f.",
-					"hwpidMissing": "Please enter decimal HWPID.",
-					"hwpidInvalid": "Decimal HWPID should be an integer between 0 and 65535.",
-					"hwpidHexMissing": "Please enter hexadecimal HWPID.",
 					"hwpidHexInvalid": "Hexadecimal HWPID should be a 4 characters long string between 0000 and ffff.",
-					"pdataInvalid": "PDATA should be at most 57 hexadecimal bytes separated by a dot."
+					"hwpidHexMissing": "Please enter hexadecimal HWPID.",
+					"hwpidInvalid": "Decimal HWPID should be an integer between 0 and 65535.",
+					"hwpidMissing": "Please enter decimal HWPID.",
+					"nadrHexInvalid": "Hexadecimal NADR should be a 2 characters long string between 00 and ff.",
+					"nadrHexMissing": "Please enter hexadecimal NADR.",
+					"nadrInvalid": "Decimal NADR should be an integer between 0 and 255.",
+					"nadrMissing": "Please enter decimal NADR.",
+					"pcmdHexInvalid": "Hexadecimal PCMD should be a 2 characters long string between 00 and 7f.",
+					"pcmdHexMissing": "Please enter hexadecimal PCMD.",
+					"pcmdInvalid": "Decimal PCMD should be an integer between 0 and 127.",
+					"pcmdMissing": "Please enter decimal PCMD.",
+					"pdataInvalid": "PDATA should be at most 57 hexadecimal bytes separated by a dot.",
+					"pnumHexInvalid": "Hexadecimal PNUM should be a 2 characters long string between 00 and ff.",
+					"pnumHexMissing": "Please enter hexadecimal PNUM.",
+					"pnumInvalid": "Decimal PNUM should be an integer between 0 and 255.",
+					"pnumMissing": "Please enter decimal PNUM."
 				}
 			},
 			"send-json": {
 				"api": "API documentation",
-				"json": "Request message",
 				"history": {
-					"title": "Request history",
-					"noMessages": "No recorded JSON messages."
-				}
-			},
-			"upload": {
-				"dpa-handler": {
-					"title": "Custom DPA handler",
-					"file": "Hex file to upload",
-					"validation": {
-						"fileMissing": "Please select custom DPA handler hex file."
-					},
-					"messages": {
-						"success": "Custom DPA handler has been successfully uploaded."
-					}
-				}
+					"noMessages": "No recorded JSON messages.",
+					"title": "Request history"
+				},
+				"json": "Request message"
 			},
 			"tr-config": {
+				"dpa": {
+					"other": {
+						"autoexec": "Autoexec",
+						"baudRate": "UART interface baud rate",
+						"customDpaHandler": "Custom DPA Handler",
+						"dp2p": "DPA Peer-to-Peer",
+						"ioSetup": "IO Setup",
+						"localFrc": "Local FRC",
+						"neverSleep": "Stay awake when not bonded",
+						"routingOff": "Routing off",
+						"up2p": "User Peer-to-Peer"
+					},
+					"rf": {
+						"altDsmChannel": "Alternative DSM channel",
+						"lpRxTimeout": "LP RX timeout",
+						"networkType": "Network type",
+						"networkTypes": {
+							"std": "STD",
+							"stdLp": "STD+LP"
+						}
+					}
+				},
 				"os": {
 					"rf": {
 						"rfBand": "RF band",
@@ -1799,60 +1718,50 @@
 						"rfChannelB": "RF channel B"
 					},
 					"rfpgm": {
-						"enableAfterReset": "Enable after reset",
-						"terminateAfterMin": "Terminate after ~1 minute",
-						"terminateByMcuPin": "Terminate by MCU pin",
 						"dualChannel": "Dual channel",
+						"enableAfterReset": "Enable after reset",
+						"incorrectUpload": "Incorrect upload",
 						"lpMode": "LP mode",
-						"incorrectUpload": "Incorrect upload"
-					}
-				},
-				"dpa": {
-					"rf": {
-						"networkType": "Network type",
-						"networkTypes": {
-							"std": "STD",
-							"stdLp": "STD+LP"
-						},
-						"lpRxTimeout": "LP RX timeout",
-						"altDsmChannel": "Alternative DSM channel"
-					},
-					"other": {
-						"customDpaHandler": "Custom DPA Handler",
-						"dp2p": "DPA Peer-to-Peer",
-						"up2p": "User Peer-to-Peer",
-						"localFrc": "Local FRC",
-						"ioSetup": "IO Setup",
-						"autoexec": "Autoexec",
-						"routingOff": "Routing off",
-						"neverSleep": "Stay awake when not bonded",
-						"baudRate": "UART interface baud rate"
+						"terminateAfterMin": "Terminate after ~1 minute",
+						"terminateByMcuPin": "Terminate by MCU pin"
 					}
 				},
 				"security": {
-					"title": "Security",
-					"ascii": "ASCII",
-					"asciiChange": "Change to ASCII",
-					"hex": "HEX",
-					"hexChange": "Change to HEX",
 					"accessPassword": "Access password",
-					"userKey": "User key",
 					"allowedCharactersAscii": "Allowed characters: Digits and letters, \"#$%&()*+,-./:;?{'@'}[\\]^_`{'{'}{'}'}~ and space.",
 					"allowedCharactersHex": "Allowed characters: Digits and letters a-f.",
+					"ascii": "ASCII",
+					"asciiChange": "Change to ASCII",
 					"empty": "Blank field sets default value.",
 					"errors": {
-						"accessPasswordInvalidAsciiLen": "ASCII access password should be 0-16 characters long.",
 						"accessPasswordInvalidAsciiChar": "ASCII access password contains invalid characters.",
-						"accessPasswordInvalidHexLen": "Hexadecimal access password should be 0-32 characters long.",
+						"accessPasswordInvalidAsciiLen": "ASCII access password should be 0-16 characters long.",
 						"accessPasswordInvalidHexChar": "Hexadecimal access password contains invalid characters.",
-						"userKeyInvalidAsciiLen": "ASCII user key should be 0-16 characters long.",
+						"accessPasswordInvalidHexLen": "Hexadecimal access password should be 0-32 characters long.",
 						"userKeyInvalidAsciiChar": "ASCII user key contains invalid characters.",
-						"userKeyInvalidHexLen": "Hexadecimal user key should be 0-32 characters long.",
-						"userKeyInvalidHexChar": "Hexadecimal user key contains invalid characters."
+						"userKeyInvalidAsciiLen": "ASCII user key should be 0-16 characters long.",
+						"userKeyInvalidHexChar": "Hexadecimal user key contains invalid characters.",
+						"userKeyInvalidHexLen": "Hexadecimal user key should be 0-32 characters long."
 					},
+					"hex": "HEX",
+					"hexChange": "Change to HEX",
 					"messages": {
 						"asciiToHexConversionInvalid": "ASCII value contained disallowed characters during conversion, input cleared.",
 						"hexToAsciiConversionInvalid": "Hexadecimal value contained disallowed ASCII characters during conversion, input cleared."
+					},
+					"title": "Security",
+					"userKey": "User key"
+				}
+			},
+			"upload": {
+				"dpa-handler": {
+					"file": "Hex file to upload",
+					"messages": {
+						"success": "Custom DPA handler has been successfully uploaded."
+					},
+					"title": "Custom DPA handler",
+					"validation": {
+						"fileMissing": "Please select custom DPA handler hex file."
 					}
 				}
 			}
@@ -1860,7 +1769,6 @@
 		"maintenance": {
 			"backup": {
 				"backup": {
-					"title": "Gateway backup",
 					"item": "Software and system configuration",
 					"software": {
 						"iqrf": "IQRF Gateway Software",
@@ -1869,303 +1777,322 @@
 					},
 					"system": {
 						"hostname": "Hostname",
+						"journal": "Journal",
 						"network": "Network manager",
-						"time": "Time synchronization",
-						"journal": "Journal"
-					}
+						"time": "Time synchronization"
+					},
+					"title": "Gateway backup"
 				},
 				"restore": {
-					"title": "Gateway restore",
 					"archive": "Backup archive",
-					"validation": {
-						"archiveMissing": "Please select gateway backup archive."
-					},
 					"messages": {
 						"save": {
 							"success": "Gateway successfully restored from backup archive and will reboot at {time}."
 						}
+					},
+					"title": "Gateway restore",
+					"validation": {
+						"archiveMissing": "Please select gateway backup archive."
 					}
 				}
 			},
 			"mender": {
+				"remount": {
+					"messages": {
+						"success": "Filesystem has been successfully re-mounted."
+					},
+					"readonly": "Read-only",
+					"readwrite": "Read-write",
+					"title": "Re-mount filesystem"
+				},
 				"update": {
 					"artifact": "Mender artifact",
-					"install": "Install artifact",
 					"commit": "Commit update",
-					"rollback": "Rollback update",
+					"install": "Install artifact",
 					"log": {
-						"title": "Mender log",
-						"button": "Show log"
-					},
-					"validations": {
-						"artifact": {
-							"required": "Please select mender artifact file."
-						}
+						"button": "Show log",
+						"title": "Mender log"
 					},
 					"messages": {
-						"install": {
-							"success": "Mender artifact update has been successfully installed."
-						},
 						"commit": {
 							"success": "Update has been successfully committed."
+						},
+						"install": {
+							"success": "Mender artifact update has been successfully installed."
 						},
 						"rollback": {
 							"success": "Update has been successfully rolled back."
 						}
-					}
-				},
-				"remount": {
-					"title": "Re-mount filesystem",
-					"readonly": "Read-only",
-					"readwrite": "Read-write",
-					"messages": {
-						"success": "Filesystem has been successfully re-mounted."
+					},
+					"rollback": "Rollback update",
+					"validations": {
+						"artifact": {
+							"required": "Please select mender artifact file."
+						}
 					}
 				}
 			}
 		},
 		"status": {
 			"monitor": {
+				"enumeration": {
+					"notRunning": "Enumeration not running.",
+					"running": "Enumeration in progress.",
+					"unavailable": "Enumeration status not available."
+				},
 				"mode": "Daemon mode",
 				"modes": {
-					"operational": "Operational",
 					"forwarding": "Forwarding",
+					"operational": "Operational",
 					"service": "Service",
 					"unknown": "Unknown"
 				},
 				"notified": "Last notified",
 				"queue": "Queue length",
-				"version": "Daemon version",
-				"enumeration": {
-					"running": "Enumeration in progress.",
-					"notRunning": "Enumeration not running.",
-					"unavailable": "Enumeration status not available."
-				}
+				"version": "Daemon version"
 			},
 			"sessionExpiration": {
-				"title": "Session expiration warning",
+				"failed": "Failed to renew session.",
+				"indicator": "Session will expire in: ",
 				"prompt": "Your session is about to expire and you will be logged out. Click the renew session button to renew the session and dismiss this windows.",
 				"renew": "Renew session",
 				"success": "Your session has been successfully renewed.",
-				"failed": "Failed to renew session.",
-				"indicator": "Session will expire in: "
+				"title": "Session expiration warning"
 			}
 		}
 	},
+	"install": {
+		"createUser": {
+			"createButton": "Create user",
+			"failure": "Failed to create new webapp user: {error}",
+			"note": "Create a new Webapp user to access the web interface.",
+			"title": "Create a new user"
+		},
+		"error": {
+			"howToFix": "How to fix it",
+			"missingDependency": {
+				"command": "Missing command",
+				"description": "IQRF Gateway Webapp did not detect the following dependencies: {dependencies}.",
+				"details": "Details",
+				"package": "Package",
+				"title": "One or more dependencies are missing"
+			},
+			"missingExtension": {
+				"description": "IQRF Gateway Webapp did not detect the following required extensions: {extensions}.",
+				"fixDescription": "Install packages containing missing PHP extensions.",
+				"fixDescriptionDebian": "Use the following commands to install packages containing the required PHP extensions:",
+				"title": "One or more PHP extensions are missing"
+			},
+			"missingMigration": {
+				"description": "IQRF Gateway Webapp cannot find some table in the SQLite3 database.",
+				"fixDescription": "Run these commands in terminal:",
+				"title": "Some database table is missing"
+			},
+			"sudo": {
+				"fixInvalid": "Allow user www-data to execute commands with sudo using the following commands:",
+				"fixMissing": "Enter interactive shell as root and install sudo utility using the following commands:",
+				"invalid": "IQRF Gateway Webapp cannot execute commands with sudo.",
+				"missing": "IQRF Gateway Webapp did not detect the sudo utility.",
+				"title": "Sudo error"
+			}
+		},
+		"gwInfo": {
+			"button": "Show GW info",
+			"download": "Download as JSON",
+			"title": "Some information about this gateway"
+		},
+		"gwUser": {
+			"note": "Set gateway user password to access the device via login shell.",
+			"title": "Set gateway user password"
+		},
+		"invitation": "Welcome to IQRF Gateway Webapp. Before getting started, you have to create the webapp's first user.",
+		"messages": {
+			"check": "Running installation check…",
+			"finished": "Installation process successfully completed."
+		},
+		"restore": {
+			"button": "Restore gateway",
+			"title": "Restore gateway from backup"
+		},
+		"steps": {
+			"gatewayUser": "Set gateway user",
+			"introduction": "Introduction",
+			"smtp": "Configure SMTP server",
+			"sshKeys": "Add SSH keys",
+			"sshService": "SSH service",
+			"webappUser": "Create webapp user"
+		},
+		"title": "Installation wizard"
+	},
 	"pages": {
+		"accessControl": {
+			"apiKeys": {
+				"description": "Manage API keys.",
+				"title": "API keys"
+			},
+			"description": "Manage access via users, API or SSH keys.",
+			"sshKeys": {
+				"description": "Manage SSH keys.",
+				"title": "SSH keys"
+			},
+			"title": "Access control",
+			"users": {
+				"description": "Manager Webapp users.",
+				"title": "Users"
+			}
+		},
 		"auth": {
 			"signIn": {
 				"title": "Sign in"
 			}
 		},
-		"gateway": {
-			"title": "Gateway",
-			"description": "Display gateway information, services and power controls.",
-			"information": {
-				"title": "Information",
-				"description": "Information about this gateway."
-			},
-			"logs": {
-				"title": "Logs",
-				"description": "Display gateway logs."
-			},
-			"mode": {
-				"title": "Mode",
-				"description": "Change gateway mode."
-			},
-			"power": {
-				"title": "Power control",
-				"description": "Powers off or reboots this gateway."
-			},
-			"services": {
-				"title": "Services",
-				"description": "Control services and display their status."
-			}
-		},
-		"configuration": {
-			"title": "Configuration",
-			"description": "Configure gateway, IQRF software and other services.",
+		"config": {
 			"controller": {
-				"title": "IQRF GW Controller",
 				"description": "Configure IQRF Gateway Controller.",
 				"settings": {
-					"title": "Settings",
-					"description": "Update IQRF Gateway Controller settings."
-				}
+					"description": "Update IQRF Gateway Controller settings.",
+					"title": "Settings"
+				},
+				"title": "IQRF GW Controller"
 			},
 			"daemon": {
-				"title": "IQRF GW Daemon",
-				"description": "Configure IQRF Gateway Daemon.",
-				"interfaces": {
-					"title": "Interfaces",
-					"description": "Configure IQRF communication interfaces.",
-					"dpa": {
-						"title": "DPA",
-						"description": "Configure DPA channel and active IQRF interface."
-					},
-					"uart": {
-						"title": "UART",
-						"description": "Configure UART interface."
-					},
-					"spi": {
-						"title": "SPI",
-						"description": "Configure SPI interface."
-					},
-					"cdc": {
-						"title": "USB CDC",
-						"description": "Configure USB CDC interface."
-					}
-				},
 				"connections": {
-					"title": "Connections",
 					"description": "Configure WebSocket, MQTT, MQ and UDP connections.",
 					"mqtt": {
-						"title": "MQTT",
-						"description": "Configure MQTT connections."
+						"description": "Configure MQTT connections.",
+						"title": "MQTT"
 					},
+					"title": "Connections",
 					"udp": {
-						"title": "UDP",
-						"description": "Configure UDP connections."
+						"description": "Configure UDP connections.",
+						"title": "UDP"
 					},
 					"ws": {
-						"title": "WebSocket",
-						"description": "Configure WebSocket connections."
+						"description": "Configure WebSocket connections.",
+						"title": "WebSocket"
 					}
-				},
-				"scheduler": {
-					"title": "Scheduler",
-					"description": "Manage scheduler tasks."
-				},
-				"repository": {
-					"title": "IQRF Repository",
-					"description": "Configure IQRF repository."
 				},
 				"db": {
-					"title": "Device database",
-					"description": "Configure device database."
+					"description": "Configure device database.",
+					"title": "Device database"
+				},
+				"description": "Configure IQRF Gateway Daemon.",
+				"interfaces": {
+					"cdc": {
+						"description": "Configure USB CDC interface.",
+						"title": "USB CDC"
+					},
+					"description": "Configure IQRF communication interfaces.",
+					"dpa": {
+						"description": "Configure DPA channel and active IQRF interface.",
+						"title": "DPA"
+					},
+					"spi": {
+						"description": "Configure SPI interface.",
+						"title": "SPI"
+					},
+					"title": "Interfaces",
+					"uart": {
+						"description": "Configure UART interface.",
+						"title": "UART"
+					}
 				},
 				"json-api": {
-					"title": "JSON API",
-					"description": "Configure JSON API."
+					"description": "Configure JSON API.",
+					"title": "JSON API"
 				},
 				"logging": {
-					"title": "Logging",
-					"description": "Configure logging service."
-				}
+					"description": "Configure logging service.",
+					"title": "Logging"
+				},
+				"repository": {
+					"description": "Configure IQRF repository.",
+					"title": "IQRF Repository"
+				},
+				"scheduler": {
+					"description": "Manage scheduler tasks.",
+					"title": "Scheduler"
+				},
+				"title": "IQRF GW Daemon"
 			},
+			"description": "Configure gateway, IQRF software and other services.",
 			"influxdb-bridge": {
-				"title": "IQRF GW InfluxDB Bridge",
-				"description": "Configure IQRF Gateway InfluxDB Bridge."
-			},
-			"smtp": {
-				"title": "SMTP",
-				"description": "Configure SMTP server."
-			},
-			"time": {
-				"title": "Time",
-				"description": "Configure time, timezone and NTP synchronization."
+				"description": "Configure IQRF Gateway InfluxDB Bridge.",
+				"title": "IQRF GW InfluxDB Bridge"
 			},
 			"journal": {
-				"title": "Journal",
-				"description": "Configure systemd Journal logging."
+				"description": "Configure systemd Journal logging.",
+				"title": "Journal"
 			},
-			"unattendedUpgrades": {
-				"title": "Automatic upgrades",
-				"description": "Configure automatic unattended upgrades service."
+			"mender": {
+				"description": "Configure Mender client for remote and features.",
+				"title": "Mender"
 			},
 			"monit": {
-				"title": "Monit",
-				"description": "Configure Monit client and system health checks."
+				"description": "Configure Monit client and system health checks.",
+				"title": "Monit"
 			},
-			"mender": {
-				"title": "Mender",
-				"description": "Configure Mender client for remote and features."
+			"smtp": {
+				"description": "Configure SMTP server.",
+				"title": "SMTP"
+			},
+			"time": {
+				"description": "Configure time, timezone and NTP synchronization.",
+				"title": "Time"
+			},
+			"title": "Configuration",
+			"unattendedUpgrades": {
+				"description": "Configure automatic unattended upgrades service.",
+				"title": "Automatic upgrades"
 			}
 		},
-		"ipNetwork": {
-			"title": "IP network",
-			"description": "IP network management.",
-			"ethernet": {
-				"title": "Ethernet connections",
-				"description": "Ethernet connections management.",
-				"edit": {
-					"title": "Edit Ethernet connection"
-				}
+		"dev": {
+			"description": "Development tools and utilities.",
+			"openApi": {
+				"description": "Opens OpenAPI specification of REST API.",
+				"title": "OpenAPI specification"
 			},
-			"mobile": {
-				"title": "Mobile connections",
-				"description": "Mobile connections management."
-			},
-			"vlan": {
-				"title": "VLAN connections",
-				"description": "VLAN connections management.",
-				"edit": {
-					"title": "Edit VLAN connection"
-				}
-			},
-			"wireGuard": {
-				"title": "WireGuard VPN",
-				"description": "WireGuard VPN management."
-			},
-			"wireless": {
-				"title": "Wireless connections",
-				"description": "Wireless connections management.",
-				"edit": {
-					"title": "Edit Wireless connection"
-				}
-			}
+			"title": "Development tools"
 		},
-		"iqrfnet": {
-			"title": "IQRF Network",
-			"description": "Manager IQRF network and devices.",
-			"send-dpa": {
-				"title": "Send DPA packet",
-				"description": "Send raw DPA packets into the IQRF network."
-			},
-			"send-json": {
-				"title": "Send JSON request",
-				"description": "Send JSON requests into the IQRF network."
-			},
-			"upload": {
-				"title": "Coordinator upload",
-				"description": "Upload custom DPA handlers and change DPA version."
-			},
-			"tr-config": {
-				"title": "TR configuration",
-				"description": "Configure TR modules."
-			}
+		"docs": {
+			"description": "Opens documentation in a new tab.",
+			"title": "Documentation"
 		},
-		"maintenance": {
-			"title": "Maintenance",
-			"description": "Gateway maintenance tools and utilities.",
-			"backup": {
-				"title": "Backup and restore",
-				"description": "Backup or restore gateway."
+		"gateway": {
+			"description": "Display gateway information, services and power controls.",
+			"information": {
+				"description": "Information about this gateway.",
+				"title": "Information"
 			},
-			"mender": {
-				"title": "Mender update",
-				"description": "Update gateway using Mender artifacts."
-			}
+			"logs": {
+				"description": "Display gateway logs.",
+				"title": "Logs"
+			},
+			"mode": {
+				"description": "Change gateway mode.",
+				"title": "Mode"
+			},
+			"power": {
+				"description": "Powers off or reboots this gateway.",
+				"title": "Power control"
+			},
+			"services": {
+				"description": "Control services and display their status.",
+				"title": "Services"
+			},
+			"title": "Gateway"
 		},
 		"install": {
-			"title": "Installation wizard",
 			"errors": {
-				"title": "Installation errors",
-				"text": "IQRF Gateway Webapp detected the following problems with the installation. Please resolve them before continuing using the app.",
 				"messages": {
 					"reload": {
+						"failed": "Failed to reload installation check.",
 						"success": "Installation check has been successfully reloaded.",
-						"successNoErrors": "Installation check has been successfully reloaded. No more",
-						"failed": "Failed to reload installation check."
+						"successNoErrors": "Installation check has been successfully reloaded. No more"
 					}
-				}
-			},
-			"wizard": {
-				"text": "Welcome to your new IQRF gateway.",
-				"title": "IQRF Gateway installation wizard"
-			},
-			"user": {
-				"title": "Create a new user"
+				},
+				"text": "IQRF Gateway Webapp detected the following problems with the installation. Please resolve them before continuing using the app.",
+				"title": "Installation errors"
 			},
 			"smtp": {
 				"title": "Configure SMTP server"
@@ -2175,36 +2102,109 @@
 			},
 			"sshService": {
 				"title": "SSH service"
-			}
-		},
-		"accessControl": {
-			"title": "Access control",
-			"description": "Manage access via users, API or SSH keys.",
-			"users": {
-				"title": "Users",
-				"description": "Manager Webapp users."
 			},
-			"apiKeys": {
-				"title": "API keys",
-				"description": "Manage API keys."
+			"title": "Installation wizard",
+			"user": {
+				"title": "Create a new user"
 			},
-			"sshKeys": {
-				"title": "SSH keys",
-				"description": "Manage SSH keys."
+			"wizard": {
+				"text": "Welcome to your new IQRF gateway.",
+				"title": "IQRF Gateway installation wizard"
 			}
 		},
-		"docs": {
-			"title": "Documentation",
-			"description": "Opens documentation in a new tab."
-		},
-		"dev": {
-			"title": "Development tools",
-			"description": "Development tools and utilities.",
-			"openApi": {
-				"title": "OpenAPI specification",
-				"description": "Opens OpenAPI specification of REST API."
+		"ipNetwork": {
+			"description": "IP network management.",
+			"ethernet": {
+				"description": "Ethernet connections management.",
+				"edit": {
+					"title": "Edit Ethernet connection"
+				},
+				"title": "Ethernet connections"
+			},
+			"mobile": {
+				"description": "Mobile connections management.",
+				"title": "Mobile connections"
+			},
+			"title": "IP network",
+			"vlan": {
+				"description": "VLAN connections management.",
+				"edit": {
+					"title": "Edit VLAN connection"
+				},
+				"title": "VLAN connections"
+			},
+			"wireGuard": {
+				"description": "WireGuard VPN management.",
+				"title": "WireGuard VPN"
+			},
+			"wireless": {
+				"description": "Wireless connections management.",
+				"edit": {
+					"title": "Edit Wireless connection"
+				},
+				"title": "Wireless connections"
 			}
+		},
+		"iqrfnet": {
+			"description": "Manager IQRF network and devices.",
+			"send-dpa": {
+				"description": "Send raw DPA packets into the IQRF network.",
+				"title": "Send DPA packet"
+			},
+			"send-json": {
+				"description": "Send JSON requests into the IQRF network.",
+				"title": "Send JSON request"
+			},
+			"title": "IQRF Network",
+			"tr-config": {
+				"description": "Configure TR modules.",
+				"title": "TR configuration"
+			},
+			"upload": {
+				"description": "Upload custom DPA handlers and change DPA version.",
+				"title": "Coordinator upload"
+			}
+		},
+		"maintenance": {
+			"backup": {
+				"description": "Backup or restore gateway.",
+				"title": "Backup and restore"
+			},
+			"description": "Gateway maintenance tools and utilities.",
+			"mender": {
+				"description": "Update gateway using Mender artifacts.",
+				"title": "Mender update"
+			},
+			"title": "Maintenance"
 		}
 	},
-	"title": "IQRF Gateway Webapp"
+	"title": "IQRF Gateway Webapp",
+	"user": {
+		"email": "E-mail address",
+		"language": "Language",
+		"messages": {
+			"createFailure": "Failed to create new user: {error}",
+			"verificationSent": "An email containing instructions to verify your account was sent to your address."
+		},
+		"password": "Password",
+		"role": "Role",
+		"roles": {
+			"admin": "Administrator",
+			"basic": "Basic user",
+			"basicadmin": "Basic admin",
+			"normal": "Normal user"
+		},
+		"state": "State",
+		"states": {
+			"unverified": "Unverified",
+			"verified": "Verified"
+		},
+		"username": "Username",
+		"validation": {
+			"invalidEmail": "Invalid e-mail address format.",
+			"missingEmail": "Please enter your e-mail address.",
+			"password": "Please enter your password.",
+			"username": "Please enter your username."
+		}
+	}
 }

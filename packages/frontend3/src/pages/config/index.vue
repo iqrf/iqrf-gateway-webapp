@@ -17,7 +17,7 @@ limitations under the License.
 
 <template>
 	<Head>
-		<title>{{ $t('pages.configuration.title') }}</title>
+		<title>{{ $t('pages.config.title') }}</title>
 	</Head>
 	<Disambiguation :links='links' />
 </template>
@@ -40,47 +40,47 @@ import { type DisambiguationLink } from '@/types/disambiguation';
 const i18n = useI18n();
 const links: Ref<DisambiguationLink[]> = ref([
 	{
-		title: i18n.t('pages.configuration.controller.title'),
-		description: i18n.t('pages.configuration.controller.description'),
+		title: i18n.t('pages.config.controller.title'),
+		description: i18n.t('pages.config.controller.description'),
 		to: '/config/controller',
 		feature: Feature.iqrfGatewayController,
 	},
 	{
-		title: i18n.t('pages.configuration.daemon.title'),
-		description: i18n.t('pages.configuration.daemon.description'),
+		title: i18n.t('pages.config.daemon.title'),
+		description: i18n.t('pages.config.daemon.description'),
 		to: '/config/daemon',
 	},
 	{
-		title: i18n.t('pages.configuration.influxdb-bridge.title'),
-		description: i18n.t('pages.configuration.influxdb-bridge.description'),
+		title: i18n.t('pages.config.influxdb-bridge.title'),
+		description: i18n.t('pages.config.influxdb-bridge.description'),
 		to: '/config/influxdb-bridge',
 		feature: Feature.iqrfGatewayInfluxdbBridge,
 	},
 	{
-		title: i18n.t('pages.configuration.smtp.title'),
-		description: i18n.t('pages.configuration.smtp.description'),
+		title: i18n.t('pages.config.smtp.title'),
+		description: i18n.t('pages.config.smtp.description'),
 		to: '/config/smtp',
 	},
 	{
-		title: i18n.t('pages.configuration.time.title'),
-		description: i18n.t('pages.configuration.time.description'),
+		title: i18n.t('pages.config.time.title'),
+		description: i18n.t('pages.config.time.description'),
 		to: '/config/time',
 	},
 	{
-		title: i18n.t('pages.configuration.journal.title'),
-		description: i18n.t('pages.configuration.journal.description'),
+		title: i18n.t('pages.config.journal.title'),
+		description: i18n.t('pages.config.journal.description'),
 		to: '/config/journal',
 		feature: Feature.journal,
 	},
 	{
-		title: i18n.t('pages.configuration.unattendedUpgrades.title'),
-		description: i18n.t('pages.configuration.unattendedUpgrades.description'),
+		title: i18n.t('pages.config.unattendedUpgrades.title'),
+		description: i18n.t('pages.config.unattendedUpgrades.description'),
 		to: '/config/unattended-upgrades',
 		feature: Feature.unattendedUpgrades,
 	},
 	{
-		title: i18n.t('pages.configuration.monit.title'),
-		description: i18n.t('pages.configuration.monit.description'),
+		title: i18n.t('pages.config.monit.title'),
+		description: i18n.t('pages.config.monit.description'),
 		to: '/config/monit',
 		feature: Feature.monit,
 	},

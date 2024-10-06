@@ -19,7 +19,7 @@ limitations under the License.
 	<v-select
 		v-model='modelValue'
 		:items='options'
-		:label='$t("components.configuration.smtp.form.security")'
+		:label='$t("components.config.smtp.form.security")'
 		:disabled='componentProps.disabled'
 		:prepend-inner-icon='mdiSecurity'
 	/>
@@ -51,15 +51,15 @@ const modelValue = defineModel({
 /// SMTP Security type options
 const options = computed(() => [
 	{
-		title: i18n.t('components.configuration.smtp.form.securityLevels.none'),
+		title: i18n.t('components.config.smtp.form.securityLevels.none'),
 		value: null,
 	},
 	{
-		title: i18n.t('components.configuration.smtp.form.securityLevels.tls'),
+		title: i18n.t('components.config.smtp.form.securityLevels.tls'),
 		value: MailerSmtpSecurity.STARTTLS,
 	},
 	{
-		title: i18n.t('components.configuration.smtp.form.securityLevels.ssl'),
+		title: i18n.t('components.config.smtp.form.securityLevels.ssl'),
 		value: MailerSmtpSecurity.TLS,
 	},
 ]);

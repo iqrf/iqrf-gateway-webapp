@@ -17,7 +17,7 @@ limitations under the License.
 
 <template>
 	<Head>
-		<title>{{ $t('pages.configuration.daemon.connections.ws.title') }}</title>
+		<title>{{ $t('pages.config.daemon.connections.ws.title') }}</title>
 	</Head>
 	<WebsocketConnectionTable />
 </template>

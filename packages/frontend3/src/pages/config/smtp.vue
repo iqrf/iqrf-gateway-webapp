@@ -17,7 +17,7 @@ limitations under the License.
 
 <template>
 	<Head>
-		<title>{{ $t('pages.configuration.smtp.title') }}</title>
+		<title>{{ $t('pages.config.smtp.title') }}</title>
 	</Head>
 	<SmtpForm />
 </template>

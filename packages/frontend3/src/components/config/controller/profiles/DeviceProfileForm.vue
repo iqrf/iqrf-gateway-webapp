@@ -27,7 +27,7 @@ limitations under the License.
 				v-else
 				v-bind='props'
 				:action='action'
-				:tooltip='$t("components.configuration.profiles.actions.edit")'
+				:tooltip='$t("components.config.profiles.actions.edit")'
 			/>
 		</template>
 		<v-form
@@ -42,57 +42,57 @@ limitations under the License.
 				</template>
 				<TextInput
 					v-model='profile.name'
-					:label='$t("components.configuration.profiles.name")'
+					:label='$t("components.config.profiles.name")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.configuration.profiles.validation.nameMissing")),
+						(v: string|null) => ValidationRules.required(v, $t("components.config.profiles.validation.nameMissing")),
 					]'
 					required
 				/>
 				<SelectInput
 					v-model='profile.deviceType'
 					:items='typeOptions'
-					:label='$t("components.configuration.profiles.deviceType")'
+					:label='$t("components.config.profiles.deviceType")'
 					required
 				/>
 				<NumberInput
 					v-model.number='profile.button'
-					:label='$t("components.configuration.controller.form.pins.button")'
+					:label='$t("components.config.controller.form.pins.button")'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("components.configuration.controller.validation.buttonPin")),
-						(v: number) => ValidationRules.integer(v, $t("components.configuration.controller.validation.buttonPin")),
+						(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.buttonPin")),
+						(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.buttonPin")),
 					]'
 					required
 				/>
 				<NumberInput
 					v-model.number='profile.greenLed'
-					:label='$t("components.configuration.controller.form.pins.greenLed")'
+					:label='$t("components.config.controller.form.pins.greenLed")'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("components.configuration.controller.validation.greenLed")),
-						(v: number) => ValidationRules.integer(v, $t("components.configuration.controller.validation.greenLed")),
+						(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.greenLed")),
+						(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.greenLed")),
 					]'
 					required
 				/>
 				<NumberInput
 					v-model.number='profile.redLed'
-					:label='$t("components.configuration.controller.form.pins.redLed")'
+					:label='$t("components.config.controller.form.pins.redLed")'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("components.configuration.controller.validation.redLed")),
-						(v: number) => ValidationRules.integer(v, $t("components.configuration.controller.validation.redLed")),
+						(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.redLed")),
+						(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.redLed")),
 					]'
 					required
 				/>
 				<v-checkbox
 					v-model='watchdogPins'
-					:label='$t("components.configuration.controller.form.pins.useWatchdogPins")'
+					:label='$t("components.config.controller.form.pins.useWatchdogPins")'
 					:hide-details='false'
 				/>
 				<NumberInput
 					v-model.number='profile.sck'
-					:label='$t("components.configuration.controller.form.pins.sck")'
+					:label='$t("components.config.controller.form.pins.sck")'
 					:rules='watchdogPins ?
 						[
-							(v: number|null) => ValidationRules.required(v, $t("components.configuration.controller.validation.sck")),
-							(v: number) => ValidationRules.integer(v, $t("components.configuration.controller.validation.sck")),
+							(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.sck")),
+							(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.sck")),
 						] : []
 					'
 					:disabled='!watchdogPins'
@@ -100,11 +100,11 @@ limitations under the License.
 				/>
 				<NumberInput
 					v-model.number='profile.sda'
-					:label='$t("components.configuration.controller.form.pins.sda")'
+					:label='$t("components.config.controller.form.pins.sda")'
 					:rules='watchdogPins ?
 						[
-							(v: number|null) => ValidationRules.required(v, $t("components.configuration.controller.validation.sda")),
-							(v: number) => ValidationRules.integer(v, $t("components.configuration.controller.validation.sda")),
+							(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.sda")),
+							(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.sda")),
 						] : []
 					'
 					:disabled='!watchdogPins'
@@ -184,19 +184,19 @@ const profile: Ref<IqrfGatewayControllerMapping> = ref({ ...defaultProfile });
 const watchdogPins: Ref<boolean> = ref(false);
 const typeOptions = [
 	{
-		title: i18n.t('components.configuration.profiles.deviceTypes.adapter'),
+		title: i18n.t('components.config.profiles.deviceTypes.adapter'),
 		value: MappingDeviceType.Adapter,
 	},
 	{
-		title: i18n.t('components.configuration.profiles.deviceTypes.board'),
+		title: i18n.t('components.config.profiles.deviceTypes.board'),
 		value: MappingDeviceType.Board,
 	},
 ];
 const dialogTitle = computed(() => {
 	if (componentProps.action === Action.Add) {
-		return i18n.t('components.configuration.profiles.actions.add').toString();
+		return i18n.t('components.config.profiles.actions.add').toString();
 	}
-	return i18n.t('components.configuration.profiles.actions.edit').toString();
+	return i18n.t('components.config.profiles.actions.edit').toString();
 });
 
 watchEffect((): void => {
@@ -231,7 +231,7 @@ async function onSubmit(): Promise<void> {
 
 function handleSuccess(name: string): void {
 	toast.success(
-		i18n.t('components.configuration.profiles.messages.save.success', { name: name }),
+		i18n.t('components.config.profiles.messages.save.success', { name: name }),
 	);
 	close();
 	emit('saved');

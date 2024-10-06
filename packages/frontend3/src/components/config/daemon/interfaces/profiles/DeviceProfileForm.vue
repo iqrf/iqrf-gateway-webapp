@@ -27,7 +27,7 @@ limitations under the License.
 				v-else
 				v-bind='props'
 				:action='action'
-				:tooltip='$t("components.configuration.profiles.actions.edit")'
+				:tooltip='$t("components.config.profiles.actions.edit")'
 			/>
 		</template>
 		<v-form
@@ -42,65 +42,65 @@ limitations under the License.
 				</template>
 				<TextInput
 					v-model='profile.name'
-					:label='$t("components.configuration.profiles.name")'
+					:label='$t("components.config.profiles.name")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.configuration.profiles.validation.nameMissing")),
+						(v: string|null) => ValidationRules.required(v, $t("components.config.profiles.validation.nameMissing")),
 					]'
 					required
 				/>
 				<SelectInput
 					v-model='profile.deviceType'
 					:items='typeOptions'
-					:label='$t("components.configuration.profiles.deviceType")'
+					:label='$t("components.config.profiles.deviceType")'
 					required
 				/>
 				<TextInput
 					v-model='profile.IqrfInterface'
-					:label='$t("components.configuration.daemon.interfaces.interface")'
+					:label='$t("components.config.daemon.interfaces.interface")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.configuration.daemon.interfaces.validation.interfaceMissing")),
+						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.interfaceMissing")),
 					]'
 					required
 				/>
 				<NumberInput
 					v-model.number='profile.powerEnableGpioPin'
-					:label='$t("components.configuration.daemon.interfaces.powerPin")'
+					:label='$t("components.config.daemon.interfaces.powerPin")'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("components.configuration.daemon.interfaces.validation.powerPinMissing")),
-						(v: number) => ValidationRules.integer(v, $t("components.configuration.daemon.interfaces.validation.powerPinInvalid")),
+						(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.powerPinMissing")),
+						(v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.powerPinInvalid")),
 					]'
 					required
 				/>
 				<NumberInput
 					v-model.number='profile.busEnableGpioPin'
-					:label='$t("components.configuration.daemon.interfaces.busPin")'
+					:label='$t("components.config.daemon.interfaces.busPin")'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("components.configuration.daemon.interfaces.validation.busPinMissing")),
-						(v: number) => ValidationRules.integer(v, $t("components.configuration.daemon.interfaces.validation.busPinInvalid")),
+						(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.busPinMissing")),
+						(v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.busPinInvalid")),
 					]'
 					required
 				/>
 				<NumberInput
 					v-model.number='profile.pgmSwitchGpioPin'
-					:label='$t("components.configuration.daemon.interfaces.pgmPin")'
+					:label='$t("components.config.daemon.interfaces.pgmPin")'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("components.configuration.daemon.interfaces.validation.pgmPinMissing")),
-						(v: number) => ValidationRules.integer(v, $t("components.configuration.daemon.interfaces.validation.pgmPinInvalid")),
+						(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.pgmPinMissing")),
+						(v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.pgmPinInvalid")),
 					]'
 					required
 				/>
 				<v-checkbox
 					v-model='interfacePins'
-					:label='$t("components.configuration.daemon.interfaces.interfacePins")'
+					:label='$t("components.config.daemon.interfaces.interfacePins")'
 					:hide-details='false'
 				/>
 				<NumberInput
 					v-model.number='profile.i2cEnableGpioPin'
-					:label='$t("components.configuration.daemon.interfaces.i2cPin")'
+					:label='$t("components.config.daemon.interfaces.i2cPin")'
 					:rules='interfacePins ?
 						[
-							(v: number|null) => ValidationRules.required(v, $t("components.configuration.daemon.interfaces.validation.i2cPinMissing")),
-							(v: number) => ValidationRules.integer(v, $t("components.configuration.daemon.interfaces.validation.i2cPinInvalid")),
+							(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.i2cPinMissing")),
+							(v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.i2cPinInvalid")),
 						] : []
 					'
 					:disabled='!interfacePins'
@@ -108,11 +108,11 @@ limitations under the License.
 				/>
 				<NumberInput
 					v-model.number='profile.spiEnableGpioPin'
-					:label='$t("components.configuration.daemon.interfaces.spiPin")'
+					:label='$t("components.config.daemon.interfaces.spiPin")'
 					:rules='interfacePins ?
 						[
-							(v: number|null) => ValidationRules.required(v, $t("components.configuration.daemon.interfaces.validation.spiPinMissing")),
-							(v: number) => ValidationRules.integer(v, $t("components.configuration.daemon.interfaces.validation.spiPinInvalid")),
+							(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.spiPinMissing")),
+							(v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.spiPinInvalid")),
 						] : []
 					'
 					:disabled='!interfacePins'
@@ -120,11 +120,11 @@ limitations under the License.
 				/>
 				<NumberInput
 					v-model.number='profile.uartEnableGpioPin'
-					:label='$t("components.configuration.daemon.interfaces.uartPin")'
+					:label='$t("components.config.daemon.interfaces.uartPin")'
 					:rules='interfacePins ?
 						[
-							(v: number|null) => ValidationRules.required(v, $t("components.configuration.daemon.interfaces.validation.uartPinMissing")),
-							(v: number) => ValidationRules.integer(v, $t("components.configuration.daemon.interfaces.validation.uartPinInvalid")),
+							(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.uartPinMissing")),
+							(v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.uartPinInvalid")),
 						] : []
 					'
 					:disabled='!interfacePins'
@@ -134,7 +134,7 @@ limitations under the License.
 					v-if='profile.type === MappingType.UART'
 					v-model='profile.baudRate'
 					:items='baudRateOptions'
-					:label='$t("components.configuration.daemon.interfaces.uart.baudRate")'
+					:label='$t("components.config.daemon.interfaces.uart.baudRate")'
 					required
 				/>
 				<template #actions>
@@ -232,11 +232,11 @@ const profile: Ref<IqrfGatewayDaemonMapping> = ref({ ...defaultProfile });
 const interfacePins: Ref<boolean> = ref(false);
 const typeOptions = [
 	{
-		title: i18n.t('components.configuration.profiles.deviceTypes.adapter'),
+		title: i18n.t('components.config.profiles.deviceTypes.adapter'),
 		value: MappingDeviceType.Adapter,
 	},
 	{
-		title: i18n.t('components.configuration.profiles.deviceTypes.board'),
+		title: i18n.t('components.config.profiles.deviceTypes.board'),
 		value: MappingDeviceType.Board,
 	},
 ];
@@ -249,9 +249,9 @@ const baudRateOptions = computed(() => {
 });
 const dialogTitle = computed(() => {
 	if (componentProps.action === Action.Add) {
-		return i18n.t('components.configuration.profiles.actions.add').toString();
+		return i18n.t('components.config.profiles.actions.add').toString();
 	}
-	return i18n.t('components.configuration.profiles.actions.edit').toString();
+	return i18n.t('components.config.profiles.actions.edit').toString();
 });
 
 watchEffect((): void => {
@@ -310,7 +310,7 @@ async function onSubmit(): Promise<void> {
 
 function handleSuccess(name: string): void {
 	toast.success(
-		i18n.t('components.configuration.profiles.messages.save.success', { name: name }),
+		i18n.t('components.config.profiles.messages.save.success', { name: name }),
 	);
 	close();
 	emit('saved');

@@ -24,7 +24,7 @@ limitations under the License.
 	>
 		<Card>
 			<template #title>
-				{{ $t('pages.configuration.daemon.json-api.title') }}
+				{{ $t('pages.config.daemon.json-api.title') }}
 			</template>
 			<template #titleActions>
 				<CardTitleActionBtn
@@ -41,16 +41,16 @@ limitations under the License.
 					<section v-if='config'>
 						<TextInput
 							v-model='config.insId'
-							:label='$t("components.configuration.daemon.json-api.instanceId")'
+							:label='$t("components.config.daemon.json-api.instanceId")'
 							:prepend-inner-icon='mdiIdentifier'
 							:rules='[
-								(v: string|null) => ValidationRules.required(v, $t("components.configuration.daemon.json-api.validation.instanceIdMissing")),
+								(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.json-api.validation.instanceIdMissing")),
 							]'
 							required
 						/>
 						<v-checkbox
 							v-model='config.validateJsonResponse'
-							:label='$t("components.configuration.daemon.json-api.validateResponses")'
+							:label='$t("components.config.daemon.json-api.validateResponses")'
 						/>
 					</section>
 				</v-responsive>
@@ -124,7 +124,7 @@ async function onSubmit(): Promise<void> {
 		.then(() => {
 			getConfig().then(() => {
 				toast.success(
-					i18n.t('components.configuration.daemon.json-api.messages.save.success'),
+					i18n.t('components.config.daemon.json-api.messages.save.success'),
 				);
 			});
 		})

@@ -43,8 +43,8 @@ const links: Ref<DisambiguationLink[]> = ref([
 		to: '/gateway',
 	},
 	{
-		title: i18n.t('pages.configuration.title'),
-		description: i18n.t('pages.configuration.description'),
+		title: i18n.t('pages.config.title'),
+		description: i18n.t('pages.config.description'),
 		to: '/config',
 	},
 	{

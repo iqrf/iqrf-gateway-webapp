@@ -24,7 +24,7 @@ limitations under the License.
 	>
 		<Card>
 			<template #title>
-				{{ $t('pages.configuration.daemon.interfaces.spi.title') }}
+				{{ $t('pages.config.daemon.interfaces.spi.title') }}
 			</template>
 			<template #titleActions>
 				<CardTitleActionBtn
@@ -41,23 +41,23 @@ limitations under the License.
 					<section v-if='config'>
 						<TextInput
 							v-model='config.instance'
-							:label='$t("components.configuration.daemon.instance")'
+							:label='$t("components.config.daemon.instance")'
 							:rules='[
-								(v: string|null) => ValidationRules.required(v, $t("components.configuration.daemon.validation.instanceMissing")),
+								(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.validation.instanceMissing")),
 							]'
 							required
 						/>
 						<TextInput
 							v-model='config.IqrfInterface'
-							:label='$t("components.configuration.daemon.interfaces.interface")'
+							:label='$t("components.config.daemon.interfaces.interface")'
 							:rules='[
-								(v: string|null) => ValidationRules.required(v, $t("components.configuration.daemon.interfaces.validation.interfaceMissing")),
+								(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.interfaceMissing")),
 							]'
 							required
 						/>
 						<v-checkbox
 							v-model='config.spiReset'
-							:label='$t("components.configuration.daemon.interfaces.spi.spiReset")'
+							:label='$t("components.config.daemon.interfaces.spi.spiReset")'
 						/>
 						<v-row :no-gutters='display.mobile.value'>
 							<v-col
@@ -66,10 +66,10 @@ limitations under the License.
 							>
 								<NumberInput
 									v-model.number='config.powerEnableGpioPin'
-									:label='$t("components.configuration.daemon.interfaces.powerPin")'
+									:label='$t("components.config.daemon.interfaces.powerPin")'
 									:rules='[
-										(v: number|null) => ValidationRules.required(v, $t("components.configuration.daemon.interfaces.validation.powerPinMissing")),
-										(v: number) => ValidationRules.integer(v, $t("components.configuration.daemon.interfaces.validation.powerPinInvalid")),
+										(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.powerPinMissing")),
+										(v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.powerPinInvalid")),
 									]'
 									required
 								/>
@@ -80,10 +80,10 @@ limitations under the License.
 							>
 								<NumberInput
 									v-model.number='config.busEnableGpioPin'
-									:label='$t("components.configuration.daemon.interfaces.busPin")'
+									:label='$t("components.config.daemon.interfaces.busPin")'
 									:rules='[
-										(v: number|null) => ValidationRules.required(v, $t("components.configuration.daemon.interfaces.validation.busPinMissing")),
-										(v: number) => ValidationRules.integer(v, $t("components.configuration.daemon.interfaces.validation.busPinInvalid")),
+										(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.busPinMissing")),
+										(v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.busPinInvalid")),
 									]'
 									required
 								/>
@@ -94,10 +94,10 @@ limitations under the License.
 							>
 								<NumberInput
 									v-model.number='config.pgmSwitchGpioPin'
-									:label='$t("components.configuration.daemon.interfaces.pgmPin")'
+									:label='$t("components.config.daemon.interfaces.pgmPin")'
 									:rules='[
-										(v: number|null) => ValidationRules.required(v, $t("components.configuration.daemon.interfaces.validation.pgmPinMissing")),
-										(v: number) => ValidationRules.integer(v, $t("components.configuration.daemon.interfaces.validation.pgmPinInvalid")),
+										(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.pgmPinMissing")),
+										(v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.pgmPinInvalid")),
 									]'
 									required
 								/>
@@ -105,7 +105,7 @@ limitations under the License.
 						</v-row>
 						<v-checkbox
 							v-model='interfacePins'
-							:label='$t("components.configuration.daemon.interfaces.interfacePins")'
+							:label='$t("components.config.daemon.interfaces.interfacePins")'
 						/>
 						<v-row :no-gutters='display.mobile.value'>
 							<v-col
@@ -114,11 +114,11 @@ limitations under the License.
 							>
 								<NumberInput
 									v-model.number='config.i2cEnableGpioPin'
-									:label='$t("components.configuration.daemon.interfaces.i2cPin")'
+									:label='$t("components.config.daemon.interfaces.i2cPin")'
 									:rules='interfacePins ?
 										[
-											(v: number|null) => ValidationRules.required(v, $t("components.configuration.daemon.interfaces.validation.i2cPinMissing")),
-											(v: number) => ValidationRules.integer(v, $t("components.configuration.daemon.interfaces.validation.i2cPinInvalid")),
+											(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.i2cPinMissing")),
+											(v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.i2cPinInvalid")),
 										] : []
 									'
 									:disabled='!interfacePins'
@@ -131,11 +131,11 @@ limitations under the License.
 							>
 								<NumberInput
 									v-model.number='config.spiEnableGpioPin'
-									:label='$t("components.configuration.daemon.interfaces.spiPin")'
+									:label='$t("components.config.daemon.interfaces.spiPin")'
 									:rules='interfacePins ?
 										[
-											(v: number|null) => ValidationRules.required(v, $t("components.configuration.daemon.interfaces.validation.spiPinMissing")),
-											(v: number) => ValidationRules.integer(v, $t("components.configuration.daemon.interfaces.validation.spiPinInvalid")),
+											(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.spiPinMissing")),
+											(v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.spiPinInvalid")),
 										] : []
 									'
 									:disabled='!interfacePins'
@@ -148,11 +148,11 @@ limitations under the License.
 							>
 								<NumberInput
 									v-model.number='config.uartEnableGpioPin'
-									:label='$t("components.configuration.daemon.interfaces.uartPin")'
+									:label='$t("components.config.daemon.interfaces.uartPin")'
 									:rules='interfacePins ?
 										[
-											(v: number|null) => ValidationRules.required(v, $t("components.configuration.daemon.interfaces.validation.uartPinMissing")),
-											(v: number) => ValidationRules.integer(v, $t("components.configuration.daemon.interfaces.validation.uartPinInvalid")),
+											(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.uartPinMissing")),
+											(v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.uartPinInvalid")),
 										] : []
 									'
 									:disabled='!interfacePins'
@@ -176,7 +176,7 @@ limitations under the License.
 							v-bind='props'
 							color='primary'
 						>
-							{{ $t('components.configuration.daemon.interfaces.profiles.spi') }}
+							{{ $t('components.config.daemon.interfaces.profiles.spi') }}
 						</v-btn>
 					</template>
 					<DeviceProfileTable
@@ -196,7 +196,7 @@ limitations under the License.
 							v-bind='props'
 							color='primary'
 						>
-							{{ $t('components.configuration.daemon.interfaces.spi.devices') }}
+							{{ $t('components.config.daemon.interfaces.spi.devices') }}
 						</v-btn>
 					</template>
 					<InterfacePorts
@@ -288,7 +288,7 @@ async function onSubmit(): Promise<void> {
 		.then(() => {
 			getConfig().then(() => {
 				toast.success(
-					i18n.t('components.configuration.daemon.interfaces.spi.messages.save.success'),
+					i18n.t('components.config.daemon.interfaces.spi.messages.save.success'),
 				);
 			});
 		})

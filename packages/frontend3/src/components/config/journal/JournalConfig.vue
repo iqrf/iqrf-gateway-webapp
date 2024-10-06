@@ -24,7 +24,7 @@ limitations under the License.
 	>
 		<Card>
 			<template #title>
-				{{ $t('pages.configuration.journal.title') }}
+				{{ $t('pages.config.journal.title') }}
 			</template>
 			<template #titleActions>
 				<CardTitleActionBtn
@@ -41,70 +41,70 @@ limitations under the License.
 					<section v-if='config'>
 						<v-checkbox
 							v-model='config.forwardToSyslog'
-							:label='$t("components.configuration.journal.forwardToSyslog")'
+							:label='$t("components.config.journal.forwardToSyslog")'
 						/>
 						<SelectInput
 							v-model='config.persistence'
-							:label='$t("components.configuration.journal.storage")'
+							:label='$t("components.config.journal.storage")'
 							:items='storageOptions'
 						/>
 						<NumberInput
 							v-model.number='config.maxDiskSize'
-							:label='$t("components.configuration.journal.maxSize")'
-							:description='$t("components.configuration.journal.notes.systemDefault")'
+							:label='$t("components.config.journal.maxSize")'
+							:description='$t("components.config.journal.notes.systemDefault")'
 							:rules='[
-								(v: number|null) => ValidationRules.required(v, $t("components.configuration.journal.validation.maxSizeMissing")),
-								(v: number) => ValidationRules.integer(v, $t("components.configuration.journal.validation.maxSizeInvalid")),
-								(v: number) => ValidationRules.min(v, 0, $t("components.configuration.journal.validation.maxSizeInvalid")),
+								(v: number|null) => ValidationRules.required(v, $t("components.config.journal.validation.maxSizeMissing")),
+								(v: number) => ValidationRules.integer(v, $t("components.config.journal.validation.maxSizeInvalid")),
+								(v: number) => ValidationRules.min(v, 0, $t("components.config.journal.validation.maxSizeInvalid")),
 							]'
 							required
 						/>
 						<NumberInput
 							v-model.number='config.maxFiles'
-							:label='$t("components.configuration.journal.maxFiles")'
-							:description='$t("components.configuration.journal.notes.maxFiles")'
+							:label='$t("components.config.journal.maxFiles")'
+							:description='$t("components.config.journal.notes.maxFiles")'
 							:rules='[
-								(v: number|null) => ValidationRules.required(v, $t("components.configuration.journal.validation.maxFilesMissing")),
-								(v: number) => ValidationRules.integer(v, $t("components.configuration.journal.validation.maxFilesInvalid")),
-								(v: number) => ValidationRules.min(v, 1, $t("components.configuration.journal.validation.maxFilesInvalid")),
+								(v: number|null) => ValidationRules.required(v, $t("components.config.journal.validation.maxFilesMissing")),
+								(v: number) => ValidationRules.integer(v, $t("components.config.journal.validation.maxFilesInvalid")),
+								(v: number) => ValidationRules.min(v, 1, $t("components.config.journal.validation.maxFilesInvalid")),
 							]'
 							required
 						/>
 						<v-checkbox
 							v-model='sizeRotation'
-							:label='$t("components.configuration.journal.sizeRotation")'
+							:label='$t("components.config.journal.sizeRotation")'
 							:hide-details='!sizeRotation'
 						/>
 						<NumberInput
 							v-if='sizeRotation'
 							v-model.number='config.sizeRotation.maxFileSize'
-							:label='$t("components.configuration.journal.maxFileSize")'
-							:description='$t("components.configuration.journal.notes.systemDefault")'
+							:label='$t("components.config.journal.maxFileSize")'
+							:description='$t("components.config.journal.notes.systemDefault")'
 							:rules='[
-								(v: number|null) => ValidationRules.required(v, $t("components.configuration.journal.validation.maxFileSizeMissing")),
-								(v: number) => ValidationRules.integer(v, $t("components.configuration.journal.validation.maxFileSizeInvalid")),
-								(v: number) => ValidationRules.min(v, 0, $t("components.configuration.journal.validation.maxFileSizeInvalid")),
+								(v: number|null) => ValidationRules.required(v, $t("components.config.journal.validation.maxFileSizeMissing")),
+								(v: number) => ValidationRules.integer(v, $t("components.config.journal.validation.maxFileSizeInvalid")),
+								(v: number) => ValidationRules.min(v, 0, $t("components.config.journal.validation.maxFileSizeInvalid")),
 							]'
 							required
 						/>
 						<v-checkbox
 							v-model='timeRotation'
-							:label='$t("components.configuration.journal.timeRotation")'
+							:label='$t("components.config.journal.timeRotation")'
 							:hide-details='!timeRotation'
 						/>
 						<div v-if='timeRotation'>
 							<SelectInput
 								v-model='config.timeRotation.unit'
-								:label='$t("components.configuration.journal.timeUnit")'
+								:label='$t("components.config.journal.timeUnit")'
 								:items='unitOptions'
 							/>
 							<NumberInput
 								v-model.number='config.timeRotation.count'
-								:label='$t("components.configuration.journal.unitCount")'
+								:label='$t("components.config.journal.unitCount")'
 								:rules='[
-									(v: number|null) => ValidationRules.required(v, $t("components.configuration.journal.validation.unitCountMissing")),
-									(v: number) => ValidationRules.integer(v, $t("components.configuration.journal.validation.unitCountInvalid")),
-									(v: number) => ValidationRules.min(v, 1, $t("components.configuration.journal.validation.unitCountInvalid")),
+									(v: number|null) => ValidationRules.required(v, $t("components.config.journal.validation.unitCountMissing")),
+									(v: number) => ValidationRules.integer(v, $t("components.config.journal.validation.unitCountInvalid")),
+									(v: number) => ValidationRules.min(v, 1, $t("components.config.journal.validation.unitCountInvalid")),
 								]'
 								required
 							/>
@@ -149,11 +149,11 @@ const form: Ref<VForm | null> = ref(null);
 const config: Ref<JournalConfig | null> = ref(null);
 const storageOptions = [
 	{
-		title: i18n.t('components.configuration.journal.storages.volatile'),
+		title: i18n.t('components.config.journal.storages.volatile'),
 		value: JournalPersistence.Volatile,
 	},
 	{
-		title: i18n.t('components.configuration.journal.storages.persistent'),
+		title: i18n.t('components.config.journal.storages.persistent'),
 		value: JournalPersistence.Persistent,
 	},
 ];
@@ -161,31 +161,31 @@ const sizeRotation: Ref<boolean> = ref(false);
 const timeRotation: Ref<boolean> = ref(false);
 const unitOptions = [
 	{
-		title: i18n.t('components.configuration.journal.timeUnits.seconds'),
+		title: i18n.t('components.config.journal.timeUnits.seconds'),
 		value: JournalTimeUnit.Seconds,
 	},
 	{
-		title: i18n.t('components.configuration.journal.timeUnits.minutes'),
+		title: i18n.t('components.config.journal.timeUnits.minutes'),
 		value: JournalTimeUnit.Minutes,
 	},
 	{
-		title: i18n.t('components.configuration.journal.timeUnits.hours'),
+		title: i18n.t('components.config.journal.timeUnits.hours'),
 		value: JournalTimeUnit.Hours,
 	},
 	{
-		title: i18n.t('components.configuration.journal.timeUnits.days'),
+		title: i18n.t('components.config.journal.timeUnits.days'),
 		value: JournalTimeUnit.Days,
 	},
 	{
-		title: i18n.t('components.configuration.journal.timeUnits.weeks'),
+		title: i18n.t('components.config.journal.timeUnits.weeks'),
 		value: JournalTimeUnit.Weeks,
 	},
 	{
-		title: i18n.t('components.configuration.journal.timeUnits.months'),
+		title: i18n.t('components.config.journal.timeUnits.months'),
 		value: JournalTimeUnit.Months,
 	},
 	{
-		title: i18n.t('components.configuration.journal.timeUnits.years'),
+		title: i18n.t('components.config.journal.timeUnits.years'),
 		value: JournalTimeUnit.Years,
 	},
 ];
@@ -227,7 +227,7 @@ async function onSubmit(): Promise<void> {
 		.then(() => {
 			getConfig().then(() => {
 				toast.success(
-					i18n.t('components.configuration.journal.messages.save.success'),
+					i18n.t('components.config.journal.messages.save.success'),
 				);
 			});
 		})

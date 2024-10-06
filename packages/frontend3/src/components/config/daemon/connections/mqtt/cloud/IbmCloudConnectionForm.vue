@@ -24,45 +24,45 @@ limitations under the License.
 		>
 			<Card>
 				<template #title>
-					{{ $t('components.configuration.daemon.connections.mqtt.clouds.ibm.title') }}
+					{{ $t('components.config.daemon.connections.mqtt.clouds.ibm.title') }}
 				</template>
 				<TextInput
 					v-model='config.organizationId'
-					:label='$t("components.configuration.daemon.connections.mqtt.clouds.ibm.orgId")'
+					:label='$t("components.config.daemon.connections.mqtt.clouds.ibm.orgId")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.configuration.daemon.connections.mqtt.clouds.ibm.validation.orgIdMissing")),
+						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.clouds.ibm.validation.orgIdMissing")),
 					]'
 					required
 				/>
 				<TextInput
 					v-model='config.deviceType'
-					:label='$t("components.configuration.daemon.connections.mqtt.clouds.ibm.deviceType")'
+					:label='$t("components.config.daemon.connections.mqtt.clouds.ibm.deviceType")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.configuration.daemon.connections.mqtt.clouds.ibm.validation.deviceTypeMissing")),
+						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.clouds.ibm.validation.deviceTypeMissing")),
 					]'
 					required
 				/>
 				<TextInput
 					v-model='config.deviceId'
-					:label='$t("components.configuration.daemon.connections.mqtt.clouds.ibm.deviceId")'
+					:label='$t("components.config.daemon.connections.mqtt.clouds.ibm.deviceId")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.configuration.daemon.connections.mqtt.clouds.ibm.validation.deviceIdMissing")),
+						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.clouds.ibm.validation.deviceIdMissing")),
 					]'
 					required
 				/>
 				<TextInput
 					v-model='config.token'
-					:label='$t("components.configuration.daemon.connections.mqtt.clouds.ibm.token")'
+					:label='$t("components.config.daemon.connections.mqtt.clouds.ibm.token")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.configuration.daemon.connections.mqtt.clouds.ibm.validation.tokenMissing")),
+						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.clouds.ibm.validation.tokenMissing")),
 					]'
 					required
 				/>
 				<TextInput
 					v-model='config.eventId'
-					:label='$t("components.configuration.daemon.connections.mqtt.clouds.ibm.eventId")'
+					:label='$t("components.config.daemon.connections.mqtt.clouds.ibm.eventId")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.configuration.daemon.connections.mqtt.clouds.ibm.validation.eventIdMissing")),
+						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.clouds.ibm.validation.eventIdMissing")),
 					]'
 					required
 				/>
@@ -132,7 +132,7 @@ async function onSubmit(): Promise<void> {
 	service.createMqttInstance(params)
 		.then(() => {
 			toast.success(
-				i18n.t('components.configuration.daemon.connections.mqtt.clouds.messages.save.success'),
+				i18n.t('components.config.daemon.connections.mqtt.clouds.messages.save.success'),
 			);
 			show.value = false;
 			emit('saved');

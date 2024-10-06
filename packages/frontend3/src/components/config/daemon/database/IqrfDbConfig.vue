@@ -24,7 +24,7 @@ limitations under the License.
 	>
 		<Card>
 			<template #title>
-				{{ $t('pages.configuration.daemon.db.title') }}
+				{{ $t('pages.config.daemon.db.title') }}
 			</template>
 			<template #titleActions>
 				<CardTitleActionBtn
@@ -41,15 +41,15 @@ limitations under the License.
 					<section v-if='config'>
 						<v-checkbox
 							v-model='config.autoEnumerateBeforeInvoked'
-							:label='$t("components.configuration.daemon.db.autoEnumerate")'
+							:label='$t("components.config.daemon.db.autoEnumerate")'
 						/>
 						<v-checkbox
 							v-model='config.enumerateOnLaunch'
-							:label='$t("components.configuration.daemon.db.enumerateOnLaunch")'
+							:label='$t("components.config.daemon.db.enumerateOnLaunch")'
 						/>
 						<v-checkbox
 							v-model='config.metadataToMessages'
-							:label='$t("components.configuration.daemon.db.includeMetadata")'
+							:label='$t("components.config.daemon.db.includeMetadata")'
 						/>
 					</section>
 				</v-responsive>
@@ -121,7 +121,7 @@ async function onSubmit(): Promise<void> {
 		.then(() => {
 			getConfig().then(() => {
 				toast.success(
-					i18n.t('components.configuration.daemon.db.messages.save.success'),
+					i18n.t('components.config.daemon.db.messages.save.success'),
 				);
 			});
 		})

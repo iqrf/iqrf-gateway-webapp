@@ -17,7 +17,7 @@ limitations under the License.
 
 <template>
 	<Head>
-		<title>{{ $t('pages.configuration.daemon.interfaces.spi.title') }}</title>
+		<title>{{ $t('pages.config.daemon.interfaces.spi.title') }}</title>
 	</Head>
 	<SpiConfig />
 </template>

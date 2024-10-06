@@ -32,28 +32,28 @@ limitations under the License.
 				class='mb-4'
 				type='info'
 				variant='tonal'
-				:text='$t("components.configuration.smtp.defaultConfig")'
+				:text='$t("components.config.smtp.defaultConfig")'
 			/>
 			<v-switch
 				v-if='defaultConfig'
 				v-model='customConfig'
-				:label='$t("components.configuration.smtp.form.customConfig")'
+				:label='$t("components.config.smtp.form.customConfig")'
 				color='primary'
 			/>
 			<v-switch
 				v-if='customConfig'
 				v-model='configuration.enabled'
-				:label='$t("components.configuration.smtp.form.enabled")'
+				:label='$t("components.config.smtp.form.enabled")'
 				color='primary'
 			/>
 			<v-text-field
 				v-if='customConfig'
 				v-model='configuration.host'
 				:disabled='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Saving].includes(componentState) || !configuration.enabled'
-				:label='$t("components.configuration.smtp.form.host")'
+				:label='$t("components.config.smtp.form.host")'
 				:rules='[
-					(v: string|null) => ValidationRules.required(v, $t("components.configuration.smtp.errors.host")),
-					(v: string) => ValidationRules.server(v, $t("components.configuration.smtp.errors.hostInvalid")),
+					(v: string|null) => ValidationRules.required(v, $t("components.config.smtp.errors.host")),
+					(v: string) => ValidationRules.server(v, $t("components.config.smtp.errors.hostInvalid")),
 				]'
 				:prepend-inner-icon='mdiServer'
 				required
@@ -62,11 +62,11 @@ limitations under the License.
 				v-if='customConfig'
 				v-model.number='configuration.port'
 				:disabled='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Saving].includes(componentState) || !configuration.enabled'
-				:label='$t("components.configuration.smtp.form.port")'
+				:label='$t("components.config.smtp.form.port")'
 				:rules='[
-					(v: number|null) => ValidationRules.required(v, $t("components.configuration.smtp.errors.port")),
-					(v: number) => ValidationRules.integer(v, $t("components.configuration.smtp.errors.port")),
-					(v: number) => ValidationRules.between(v, 1, 65535, $t("components.configuration.smtp.errors.portInvalid")),
+					(v: number|null) => ValidationRules.required(v, $t("components.config.smtp.errors.port")),
+					(v: number) => ValidationRules.integer(v, $t("components.config.smtp.errors.port")),
+					(v: number) => ValidationRules.between(v, 1, 65535, $t("components.config.smtp.errors.portInvalid")),
 				]'
 				:prepend-inner-icon='mdiNumeric'
 				required
@@ -75,9 +75,9 @@ limitations under the License.
 				v-if='customConfig'
 				v-model='configuration.username'
 				:disabled='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Saving].includes(componentState) || !configuration.enabled'
-				:label='$t("components.configuration.smtp.form.username")'
+				:label='$t("components.config.smtp.form.username")'
 				:rules='[
-					(v: string|null) => ValidationRules.required(v, $t("components.configuration.smtp.errors.username")),
+					(v: string|null) => ValidationRules.required(v, $t("components.config.smtp.errors.username")),
 				]'
 				:prepend-inner-icon='mdiAccount'
 			/>
@@ -85,9 +85,9 @@ limitations under the License.
 				v-if='customConfig'
 				v-model='configuration.password'
 				:disabled='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Saving].includes(componentState) || !configuration.enabled'
-				:label='$t("components.configuration.smtp.form.password")'
+				:label='$t("components.config.smtp.form.password")'
 				:rules='[
-					(v: string|null) => ValidationRules.required(v, $t("components.configuration.smtp.errors.password")),
+					(v: string|null) => ValidationRules.required(v, $t("components.config.smtp.errors.password")),
 				]'
 				:prepend-inner-icon='mdiKey'
 			/>
@@ -100,9 +100,9 @@ limitations under the License.
 				v-if='customConfig'
 				v-model='configuration.from'
 				:disabled='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Saving].includes(componentState) || !configuration.enabled'
-				:label='$t("components.configuration.smtp.form.sender")'
+				:label='$t("components.config.smtp.form.sender")'
 				:rules='[
-					(v: string|null) => ValidationRules.required(v, $t("components.configuration.smtp.errors.sender")),
+					(v: string|null) => ValidationRules.required(v, $t("components.config.smtp.errors.sender")),
 				]'
 				:prepend-inner-icon='mdiEmail'
 			/>
@@ -125,7 +125,7 @@ limitations under the License.
 				class='ml-2'
 				:disabled='!formValidity || defaultConfig'
 				:icon='mdiEmailFast'
-				:text='$t("components.configuration.smtp.form.test")'
+				:text='$t("components.config.smtp.form.test")'
 				:loading='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
 				@click='testConfiguration'
 			/>
@@ -227,7 +227,7 @@ async function getConfig(): Promise<void> {
 		componentState.value = ComponentState.FetchFailed;
 		if (error instanceof AxiosError) {
 			const message = (error.response?.data as ErrorResponse | undefined)?.message ?? error.message;
-			toast.error(i18n.t('components.configuration.smtp.messages.fetchFailed', { error: message }));
+			toast.error(i18n.t('components.config.smtp.messages.fetchFailed', { error: message }));
 		}
 	}
 }
@@ -249,7 +249,7 @@ async function onSubmit(onClickNext: Function): Promise<void> {
 					baseUrl: new UrlBuilder().getBaseUrl(),
 				});
 			}
-			toast.success(i18n.t('components.configuration.smtp.messages.saveSuccess'));
+			toast.success(i18n.t('components.config.smtp.messages.saveSuccess'));
 		}
 		componentState.value = ComponentState.Ready;
 		onClickNext();
@@ -257,7 +257,7 @@ async function onSubmit(onClickNext: Function): Promise<void> {
 		if (error instanceof AxiosError) {
 			componentState.value = ComponentState.Ready;
 			const message = (error.response?.data as ErrorResponse | undefined)?.message ?? error.message;
-			toast.error(i18n.t('components.configuration.smtp.messages.saveFailed', { error: message }));
+			toast.error(i18n.t('components.config.smtp.messages.saveFailed', { error: message }));
 		}
 	}
 }
@@ -273,12 +273,12 @@ async function testConfiguration(): Promise<void> {
 	try {
 		await service.testConfig(configuration.value);
 		componentState.value = ComponentState.Ready;
-		toast.success(i18n.t('components.configuration.smtp.messages.testSuccess'));
+		toast.success(i18n.t('components.config.smtp.messages.testSuccess'));
 	} catch (error) {
 		if (error instanceof AxiosError) {
 			componentState.value = ComponentState.Ready;
 			const message = (error.response?.data as ErrorResponse | undefined)?.message ?? error.message;
-			toast.error(i18n.t('components.configuration.smtp.messages.testFailed', { error: message }));
+			toast.error(i18n.t('components.config.smtp.messages.testFailed', { error: message }));
 		}
 	}
 }

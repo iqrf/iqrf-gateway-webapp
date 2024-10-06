@@ -20,7 +20,7 @@ limitations under the License.
 		<template #activator='{ props }'>
 			<v-btn
 				v-if='action === Action.Add'
-				v-tooltip:bottom='$t("components.configuration.daemon.logging.channels.actions.add")'
+				v-tooltip:bottom='$t("components.config.daemon.logging.channels.actions.add")'
 				v-bind='props'
 				color='success'
 				:icon='mdiPlus'
@@ -29,27 +29,27 @@ limitations under the License.
 				v-else
 				v-bind='props'
 				:action='action'
-				:tooltip='$t("components.configuration.daemon.logging.channels.actions.edit")'
+				:tooltip='$t("components.config.daemon.logging.channels.actions.edit")'
 			/>
 		</template>
 		<v-form ref='form' v-slot='{ isValid }' @submit.prevent='onSubmit'>
 			<Card :action='action'>
 				<template #title>
-					{{ $t(`components.configuration.daemon.logging.channels.actions.${action}`) }}
+					{{ $t(`components.config.daemon.logging.channels.actions.${action}`) }}
 				</template>
 				<NumberInput
 					v-model.number='level.channel'
-					:label='$t("components.configuration.daemon.logging.channel")'
+					:label='$t("components.config.daemon.logging.channel")'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("components.configuration.daemon.logging.validation.channelMissing")),
-						(v: number) => ValidationRules.integer(v, $t("components.configuration.daemon.logging.validation.channelInvalid")),
-						(v: number) => ValidationRules.min(v, 0, $t("components.configuration.daemon.logging.validation.channelInvalid")),
+						(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.logging.validation.channelMissing")),
+						(v: number) => ValidationRules.integer(v, $t("components.config.daemon.logging.validation.channelInvalid")),
+						(v: number) => ValidationRules.min(v, 0, $t("components.config.daemon.logging.validation.channelInvalid")),
 					]'
 					required
 				/>
 				<SelectInput
 					v-model='level.level'
-					:label='$t("components.configuration.daemon.logging.severity")'
+					:label='$t("components.config.daemon.logging.severity")'
 					:items='severityOptions'
 				/>
 				<template #actions>

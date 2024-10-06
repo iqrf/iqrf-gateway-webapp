@@ -17,7 +17,7 @@ limitations under the License.
 
 <template>
 	<Head>
-		<title>{{ $t('pages.configuration.daemon.json-api.title') }}</title>
+		<title>{{ $t('pages.config.daemon.json-api.title') }}</title>
 	</Head>
 	<JsonApiConfig />
 </template>

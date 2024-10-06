@@ -23,7 +23,7 @@ limitations under the License.
 			<CardTitleActionBtn
 				v-bind='props'
 				:action='Action.Import'
-				:tooltip='$t("components.configuration.daemon.scheduler.actions.import")'
+				:tooltip='$t("components.config.daemon.scheduler.actions.import")'
 			/>
 		</template>
 		<v-form
@@ -34,14 +34,14 @@ limitations under the License.
 		>
 			<Card>
 				<template #title>
-					{{ $t('components.configuration.daemon.scheduler.import.title') }}
+					{{ $t('components.config.daemon.scheduler.import.title') }}
 				</template>
 				<v-file-input
 					v-model='files'
 					accept='.zip'
-					:label='$t("components.configuration.daemon.scheduler.import.file")'
+					:label='$t("components.config.daemon.scheduler.import.file")'
 					:rules='[
-						(v: File|Blob|null) => ValidationRules.required(v, $t("components.configuration.daemon.scheduler.validation.importFileMissing")),
+						(v: File|Blob|null) => ValidationRules.required(v, $t("components.config.daemon.scheduler.validation.importFileMissing")),
 					]'
 					:prepend-inner-icon='mdiFileOutline'
 					:prepend-icon='null'
@@ -51,9 +51,9 @@ limitations under the License.
 				<v-table v-if='processedRecords.length > 0'>
 					<thead>
 						<tr>
-							<th>{{ $t('components.configuration.daemon.scheduler.taskId') }}</th>
-							<th>{{ $t('components.configuration.daemon.scheduler.import.imported') }}</th>
-							<th>{{ $t('components.configuration.daemon.scheduler.import.reason') }}</th>
+							<th>{{ $t('components.config.daemon.scheduler.taskId') }}</th>
+							<th>{{ $t('components.config.daemon.scheduler.import.imported') }}</th>
+							<th>{{ $t('components.config.daemon.scheduler.import.reason') }}</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -186,7 +186,7 @@ async function onSubmit(): Promise<void> {
 		await extractZip(file)
 			.then((records: SchedulerRecord[]) => importRecords.value = records)
 			.catch(() => toast.error(
-				i18n.t('components.configuration.daemon.scheduler.messages.import.archiveInvalid'),
+				i18n.t('components.config.daemon.scheduler.messages.import.archiveInvalid'),
 			));
 	} else if (file.type === 'application/json') {
 		const content = await file.text();
@@ -194,13 +194,13 @@ async function onSubmit(): Promise<void> {
 			importRecords.value.push(JSON.parse(content) as SchedulerRecord);
 		} catch {
 			toast.error(
-				i18n.t('components.configuration.daemon.scheduler.messages.import.jsonInvalid'),
+				i18n.t('components.config.daemon.scheduler.messages.import.jsonInvalid'),
 			);
 			return;
 		}
 	} else {
 		toast.error(
-			i18n.t('components.configuration.daemon.scheduler.messages.import.fileInvalid'),
+			i18n.t('components.config.daemon.scheduler.messages.import.fileInvalid'),
 		);
 		return;
 	}

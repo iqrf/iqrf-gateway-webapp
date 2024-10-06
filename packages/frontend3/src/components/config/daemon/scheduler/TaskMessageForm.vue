@@ -42,15 +42,15 @@ limitations under the License.
 				:header-color='action === Action.Add ? "success" : "primary"'
 			>
 				<template #title>
-					{{ $t(`components.configuration.daemon.scheduler.task.actions.${action}`) }}
+					{{ $t(`components.config.daemon.scheduler.task.actions.${action}`) }}
 				</template>
 				<v-textarea
 					v-model='message'
-					:label='$t("components.configuration.daemon.scheduler.task.message")'
+					:label='$t("components.config.daemon.scheduler.task.message")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.configuration.daemon.scheduler.validation.messageMissing")),
-						(v: string) => ValidationRules.json(v, $t("components.configuration.daemon.scheduler.validation.messageInvalid")),
-						(v: string) => isDaemonApiRequest(JSON.parse(v)) || $t("components.configuration.daemon.scheduler.validation.messageInvalid"),
+						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.scheduler.validation.messageMissing")),
+						(v: string) => ValidationRules.json(v, $t("components.config.daemon.scheduler.validation.messageInvalid")),
+						(v: string) => isDaemonApiRequest(JSON.parse(v)) || $t("components.config.daemon.scheduler.validation.messageInvalid"),
 					]'
 					auto-grow
 					clearable
@@ -60,7 +60,7 @@ limitations under the License.
 				<SelectInput
 					v-model='selected'
 					:items='messagingOptions'
-					:label='$t("components.configuration.daemon.scheduler.task.messaging")'
+					:label='$t("components.config.daemon.scheduler.task.messaging")'
 					multiple
 				/>
 				<template #actions>

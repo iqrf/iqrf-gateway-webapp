@@ -24,22 +24,22 @@ limitations under the License.
 		>
 			<Card>
 				<template #title>
-					{{ $t('components.configuration.daemon.connections.mqtt.clouds.aws.title') }}
+					{{ $t('components.config.daemon.connections.mqtt.clouds.aws.title') }}
 				</template>
 				<TextInput
 					v-model='config.endpoint'
-					:label='$t("components.configuration.daemon.connections.mqtt.clouds.aws.endpoint")'
+					:label='$t("components.config.daemon.connections.mqtt.clouds.aws.endpoint")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.configuration.daemon.connections.mqtt.clouds.aws.validation.endpointMissing")),
+						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.clouds.aws.validation.endpointMissing")),
 					]'
 					required
 				/>
 				<v-file-input
 					v-model='config.certificate'
 					accept='.pem'
-					:label='$t("components.configuration.daemon.connections.mqtt.clouds.aws.certificate")'
+					:label='$t("components.config.daemon.connections.mqtt.clouds.aws.certificate")'
 					:rules='[
-						(v: File|null) => ValidationRules.required(v, $t("components.configuration.daemon.connections.mqtt.clouds.aws.validation.certificateMissing")),
+						(v: File|null) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.clouds.aws.validation.certificateMissing")),
 					]'
 					:prepend-inner-icon='mdiFileOutline'
 					:prepend-icon='null'
@@ -49,9 +49,9 @@ limitations under the License.
 				<v-file-input
 					v-model='config.privateKey'
 					accept='.pem,.key'
-					:label='$t("components.configuration.daemon.connections.mqtt.clouds.aws.privateKey")'
+					:label='$t("components.config.daemon.connections.mqtt.clouds.aws.privateKey")'
 					:rules='[
-						(v: File|Blob|null) => ValidationRules.required(v, $t("components.configuration.daemon.connections.mqtt.clouds.aws.validation.privateKeyMissing")),
+						(v: File|Blob|null) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.clouds.aws.validation.privateKeyMissing")),
 					]'
 					:prepend-inner-icon='mdiFileOutline'
 					:prepend-icon='null'
@@ -127,7 +127,7 @@ async function onSubmit(): Promise<void> {
 	service.createMqttInstance(params)
 		.then(() => {
 			toast.success(
-				i18n.t('components.configuration.daemon.connections.mqtt.clouds.messages.save.success'),
+				i18n.t('components.config.daemon.connections.mqtt.clouds.messages.save.success'),
 			);
 			show.value = false;
 			emit('saved');
