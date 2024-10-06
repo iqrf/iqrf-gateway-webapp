@@ -31,6 +31,9 @@ grafana:
 # IQAROS application
 iqaros:
 	enabled: false
+# IQRF Cloud Provisioning configuration
+iqrfCloudProvisioning:
+	enabled: false
 # IQRF Gateway Controller configuration
 iqrfGatewayController:
 	enabled: false
