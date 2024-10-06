@@ -1329,8 +1329,9 @@
 				"redirect": "You will be redirected to the dashboard in {countdown}.",
 				"failed": "Account verification failed, {error}."
 			},
-			"oldPassword": "Old password (only if you want change password)",
-			"newPassword": "New password (only if you want change password)",
+			"changePassword": "Change password",
+			"oldPassword": "Old password",
+			"newPassword": "New password",
 			"modal": {
 				"title": "User delete confirmation",
 				"prompt": "Are you sure you want to delete user {user}?"

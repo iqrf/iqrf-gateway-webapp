@@ -79,11 +79,28 @@ limitations under the License.
 								:error-messages='errors'
 							/>
 						</ValidationProvider>
-						<PasswordInput
-							v-model='password'
-							:label='$t("core.user.newPassword").toString()'
-							autocomplete='new-password'
+						<v-checkbox
+							v-model='changePassword'
+							:label='$t("core.user.changePassword")'
+							:hide-details='changePassword'
 						/>
+						<div v-if='changePassword'>
+							<ValidationProvider
+								v-slot='{ valid, touched, errors }'
+								rules='required'
+								:custom-messages='{
+									required: $t("core.user.errors.newPassword"),
+								}'
+							>
+								<PasswordInput
+									v-model='password'
+									:label='$t("core.user.newPassword").toString()'
+									autocomplete='new-password'
+									:success='touched ? valid : null'
+									:error-messages='errors'
+								/>
+							</ValidationProvider>
+						</div>
 						<v-btn
 							color='primary'
 							type='submit'
@@ -168,14 +185,18 @@ export default class UserEditForm extends Vue {
 	];
 
 	/**
+	 * @var {boolean} changePassword Change password
+	 */
+	private changePassword: boolean = false;
+
+	/**
 	 * @var {string} newPassword New user password
 	 */
 	private password = '';
 
 	/**
-	 * @property {UserService} service User service
-   * @private
-   */
+	 * @private {UserService} service User service
+	 */
 	private service: UserService = useApiClient().getSecurityServices().getUserService();
 
 	/**
@@ -234,7 +255,7 @@ export default class UserEditForm extends Vue {
 	private saveUser(): void {
 		this.$store.commit('spinner/SHOW');
 		const user: UserEdit = {...this.user};
-		if (this.password !== '') {
+		if (this.changePassword) {
 			user.password = this.password;
 		}
 		this.service.update(this.userId, this.user)
