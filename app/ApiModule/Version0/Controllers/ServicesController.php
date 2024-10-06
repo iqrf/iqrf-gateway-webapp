@@ -59,6 +59,7 @@ class ServicesController extends BaseController {
 	 */
 	private const WHITELISTED_SERVICES = [
 		'apcupsd' => 'apcupsd',
+		'iqrf-cloud-provisioning' => 'iqrfCloudProvisioning',
 		'iqrf-gateway-controller' => 'iqrfGatewayController',
 		'iqrf-gateway-daemon' => null,
 		'iqrf-gateway-translator' => 'iqrfGatewayTranslator',

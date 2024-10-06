@@ -245,6 +245,7 @@ class BackupManager {
 	 */
 	private function validate(): void {
 		$whitelistDirs = [
+			'cloudProv/',
 			'controller/',
 			'daemon/',
 			'daemon/certs/',
@@ -266,21 +267,33 @@ class BackupManager {
 			'webapp/',
 			'nginx/',
 		];
-		$files = $this->zipManager->listFiles();
-		foreach ($files as $file) {
+		foreach ($this->zipManager->listFiles() as $file) {
 			$valid = false;
 			foreach ($whitelistDirs as $dir) {
 				if (Strings::startsWith($file, $dir)) {
 					$valid = true;
+					break;
 				}
 			}
 			if (!$valid) {
 				throw new InvalidBackupContentException('Unexpected file found in backup archive: ' . $file);
 			}
-			if (Strings::startsWith($file, 'controller/')) {
+			if (str_starts_with($file, 'cloudProv/')) {
+				$matches = Strings::match(basename($file), '#^[0-9a-zA-Z_-]+.json$#');
+				if (!is_array($matches)) {
+					throw new InvalidBackupContentException('Unexpected file found in backup archive: ' . $file);
+				}
+				try {
+					Json::decode($this->zipManager->openFile($file));
+				} catch (Throwable $e) {
+					$this->zipManager->close();
+					$this->cleanup();
+					throw new InvalidBackupContentException('Invalid JSON file content: ' . $file);
+				}
+			} elseif (str_starts_with($file, 'controller/')) {
 				$this->isWhitelisted(ControllerBackup::WHITELIST, $file);
-			} elseif (Strings::startsWith($file, 'daemon/')) {
-				$matches = Strings::match($file, '#^\w+\_\_\w+\.json$#');
+			} elseif (str_starts_with($file, 'daemon/')) {
+				$matches = Strings::match(basename($file), '#^\w+\_\_\w+(-\w+)?\.json$#');
 				if (!is_array($matches)) {
 					continue;
 				}

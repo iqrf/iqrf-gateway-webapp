@@ -201,6 +201,13 @@ export default class TheSidebar extends Vue {
 										feature: 'iqrfGatewayTranslator',
 										role: UserRole.NORMAL,
 									},
+									{
+										_name: 'CSidebarNavItem',
+										name: this.$t('service.iqrf-cloud-provisioning.title'),
+										to: '/gateway/service/iqrf-cloud-provisioning/',
+										feature: 'iqrfCloudProvisioning',
+										role: UserRole.NORMAL,
+									},
 								],
 							},
 							{

@@ -16,6 +16,10 @@
 services:
 	- App\GatewayModule\Models\Backup\RestoreLogger
 	apcupsdBackup: App\GatewayModule\Models\Backup\ApcupsdBackup
+	cloudProvBackup.fileManager:
+		factory: App\CoreModule\Models\PrivilegedFileManager(%paths.iqrfCloudProvisioning.configDir%)
+		autowired: false
+	cloudProvBackup: App\GatewayModule\Models\Backup\CloudProvisioningBackup(@commandManager, @cloudProvBackup.fileManager)
 	controllerBackup: App\GatewayModule\Models\Backup\ControllerBackup(@controller.fileManager)
 	daemonBackup: App\GatewayModule\Models\Backup\DaemonBackup
 	gatewayFileBackup.fileManager:
@@ -41,6 +45,7 @@ services:
 	webappBackup: App\GatewayModule\Models\Backup\WebappBackup(%paths.iqrfGatewayWebapp%)
 	- App\GatewayModule\Models\BackupManager([
 		@apcupsdBackup,
+		@cloudProvBackup,
 		@controllerBackup,
 		@daemonBackup,
 		@hostBackup,

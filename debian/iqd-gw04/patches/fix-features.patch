@@ -18,8 +18,8 @@
  	user: root
  # Grafana dashboard
  grafana:
-@@ -30,7 +30,7 @@
- 	url: /grafana/
+@@ -36,7 +36,7 @@ iqrfCloudProvisioning:
+ 	enabled: false
  # IQRF Gateway Controller configuration
  iqrfGatewayController:
 -	enabled: false
@@ -27,7 +27,7 @@
  # IQRF Gateway Translator configuration
  iqrfGatewayTranslator:
  	enabled: false
-@@ -43,36 +43,36 @@
+@@ -52,36 +52,36 @@ journal:
  	path: /etc/systemd/journald.conf
  # Mender client configuration
  mender:

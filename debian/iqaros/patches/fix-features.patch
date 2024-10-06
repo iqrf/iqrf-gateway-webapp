@@ -1,6 +1,6 @@
 --- a/app/config/features.neon
 +++ b/app/config/features.neon
-@@ -15,14 +15,14 @@
+@@ -15,25 +15,25 @@
  
  # apcupsd service
  apcupsd:
@@ -10,7 +10,7 @@
  docs:
  	enabled: true
 -	url: https://docs.iqrf.org/iqrf-gateway/
-+	url: https://docs.iqrf.org/iqube/
++	url: https://www.iqaros.eu/installation.html
  # Default gateway user password change
  gatewayPass:
 -	enabled: false
@@ -18,7 +18,11 @@
  	user: root
  # Grafana dashboard
  grafana:
-@@ -36,7 +36,7 @@ iqrfCloudProvisioning:
+-	enabled: false
++	enabled: true
+ 	url: /grafana/
+ # IQRF Cloud Provisioning configuration
+ iqrfCloudProvisioning:
  	enabled: false
  # IQRF Gateway Controller configuration
  iqrfGatewayController:
@@ -27,7 +31,7 @@
  # IQRF Gateway Translator configuration
  iqrfGatewayTranslator:
  	enabled: false
-@@ -52,36 +52,36 @@ journal:
+@@ -46,36 +46,36 @@ journal:
  	path: /etc/systemd/journald.conf
  # Mender client configuration
  mender:
@@ -35,8 +39,7 @@
 +	enabled: true
  # Monitoring service
  monit:
--	enabled: false
-+	enabled: true
+ 	enabled: false
  # Network manager
  networkManager:
 -	enabled: false
