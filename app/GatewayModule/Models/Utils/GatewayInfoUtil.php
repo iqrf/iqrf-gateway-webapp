@@ -47,6 +47,7 @@ class GatewayInfoUtil {
 			'gwHost' => Expect::string('iqube-ffffffffffffffff.local'),
 			'gwImage' => Expect::string('iqube-os-vX.Y.Z'),
 			'gwInterface' => Expect::string('unknown'),
+			'gwHwpid' => Expect::string('FFFF'),
 		])->castTo('array');
 	}
 
@@ -104,6 +105,14 @@ class GatewayInfoUtil {
 	 */
 	public function getInterface(): string {
 		return $this->read()['gwInterface'];
+	}
+
+	/**
+	 * Returns gateway HWPID
+	 * @return string Gateway HWPID
+	 */
+	public function getHwpid(): string {
+		return $this->read()['gwHwpid'];
 	}
 
 	/**
