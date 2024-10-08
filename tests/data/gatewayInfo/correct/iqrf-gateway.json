@@ -4,5 +4,6 @@
 	"gwId": "0123456789ABCDEF",
 	"gwHost": "iqube-0123456789abcdef.local",
 	"gwImage": "iqube-armbian-v1.4.0",
-	"gwInterface": "spi"
+	"gwInterface": "spi",
+	"gwHwpid": "3004"
 }
