@@ -98,6 +98,16 @@ final class GatewayInfoUtilTest extends TestCase {
 	private const DEFAULT_GW_INTERFACE = 'unknown';
 
 	/**
+	 * Gateway HWPID
+	 */
+	private const GW_HWPID = '3004';
+
+	/**
+	 * Default gateway HWPID
+	 */
+	private const DEFAULT_GW_HWPID = 'FFFF';
+
+	/**
 	 * Gateway information
 	 */
 	private const GW_INFO = [
@@ -107,6 +117,7 @@ final class GatewayInfoUtilTest extends TestCase {
 		'gwHost' => self::GW_HOST,
 		'gwImage' => self::GW_IMAGE,
 		'gwInterface' => self::GW_INTERFACE,
+		'gwHwpid' => self::GW_HWPID,
 	];
 
 	/**
@@ -119,6 +130,7 @@ final class GatewayInfoUtilTest extends TestCase {
 		'gwHost' => self::GW_HOST,
 		'gwImage' => self::DEFAULT_GW_IMAGE,
 		'gwInterface' => self::GW_INTERFACE,
+		'gwHwpid' => self::DEFAULT_GW_HWPID,
 	];
 
 	/**
@@ -131,6 +143,7 @@ final class GatewayInfoUtilTest extends TestCase {
 		'gwHost' => self::DEFAULT_GW_HOST,
 		'gwImage' => self::DEFAULT_GW_IMAGE,
 		'gwInterface' => self::DEFAULT_GW_INTERFACE,
+		'gwHwpid' => self::DEFAULT_GW_HWPID,
 	];
 
 	/**
@@ -209,6 +222,15 @@ final class GatewayInfoUtilTest extends TestCase {
 		Assert::same(self::GW_INTERFACE, $this->gwInfo->getInterface());
 		Assert::same(self::GW_INTERFACE, $this->incompleteGwInfo->getInterface());
 		Assert::same(self::DEFAULT_GW_INTERFACE, $this->defaultGwInfo->getInterface());
+	}
+
+	/**
+	 * Tests the function to get hwpid
+	 */
+	public function testGetHwpid(): void {
+		Assert::same(self::GW_HWPID, $this->gwInfo->getHwpid());
+		Assert::same(self::DEFAULT_GW_HWPID, $this->incompleteGwInfo->getHwpid());
+		Assert::same(self::DEFAULT_GW_HWPID, $this->defaultGwInfo->getHwpid());
 	}
 
 	/**
