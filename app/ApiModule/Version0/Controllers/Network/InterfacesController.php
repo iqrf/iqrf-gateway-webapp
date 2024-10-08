@@ -66,14 +66,19 @@ class InterfacesController extends BaseNetworkController {
 					type: string
 					enum:
 						- \'bond\'
+						- \'bt\'
 						- \'bridge\'
 						- \'dummy\'
 						- \'ethernet\'
+						- \'gsm\'
+						- \'iptunnel\'
 						- \'loopback\'
+						- \'ppp\'
 						- \'tun\'
 						- \'vlan\'
 						- \'wifi\'
 						- \'wifi-p2p\'
+						- \'wireguard\'
 				required: false
 				description: Connection type
 		responses:
