@@ -117,125 +117,30 @@
 				"dns"
 			],
 			"properties": {
-				"method": {
-					"$id": "#/properties/ipv4/properties/method",
-					"type": "string",
-					"enum": [
-						"auto",
-						"disabled",
-						"link-local",
-						"manual",
-						"shared"
-					],
-					"title": "IPv4 connection method",
-					"example": "manual"
-				},
-				"addresses": {
-					"$id": "#/properties/ipv4/properties/addresses",
-					"type": "array",
-					"title": "IPv4 addresses",
-					"example": [
-						{
-							"prefix": 24,
-							"address": "192.168.1.198",
-							"mask": "255.255.255.0"
-						}
-					],
-					"additionalItems": false,
-					"items": {
-						"$id": "#/properties/ipv4/properties/addresses/items",
-						"type": "object",
-						"title": "IPv4 address",
-						"example": {
-							"address": "192.168.1.198",
-							"mask": "255.255.255.0",
-							"prefix": 24
-						},
-						"additionalProperties": false,
-						"anyOf": [
-							{
-								"required": [
-									"address",
-									"prefix"
-								]
-							},
-							{
-								"required": [
-									"address",
-									"mask"
-								]
-							}
-						],
-						"properties": {
-							"address": {
-								"$id": "#/properties/ipv4/properties/addresses/items/properties/address",
-								"type": "string",
-								"format": "ipv4",
-								"title": "IPv4 address",
-								"example": "192.168.1.198"
-							},
-							"prefix": {
-								"$id": "#/properties/ipv4/properties/addresses/items/properties/prefix",
-								"type": "integer",
-								"minimum": 1,
-								"maximum": 32,
-								"title": "IPv4 network prefix",
-								"example": 24
-							},
-							"mask": {
-								"$id": "#/properties/ipv4/properties/addresses/items/properties/mask",
-								"type": "string",
-								"format": "ipv4",
-								"title": "IPv4 network mask",
-								"example": "255.255.255.0"
-							}
-						}
-					}
-				},
+				"method": { "$ref": "#/definitions/ipv4/method" },
+				"addresses": { "$ref": "#/definitions/ipv4/addresses" },
 				"gateway": {
-					"$id": "#/properties/ipv4/properties/gateway",
 					"oneOf": [
-						{
-							"type": "string"
-						},
-						{
-							"type": "null"
-						}
-					],
-					"format": "ipv4",
-					"title": "IPv4 gateway address",
-					"example": "192.168.1.1"
+						{ "$ref": "#/definitions/ipv4/gateway" },
+						{ "type": "null" }
+					]
 				},
-				"dns": {
-					"$id": "#/properties/ipv4/properties/dns",
-					"type": "array",
-					"title": "DNS IPv4 addresses",
-					"example": [
-						{
-							"address": "192.168.1.1"
-						}
+				"dns": { "$ref": "#/definitions/ipv4/dns" },
+				"current": {
+					"title": "Current (in-use) IPv4 connection configuration",
+					"type": "object",
+					"required": [
+						"method",
+						"addresses",
+						"gateway",
+						"dns"
 					],
-					"additionalItems": false,
-					"items": {
-						"$id": "#/properties/ipv4/properties/dns/items",
-						"type": "object",
-						"title": "DNS IPv4 address",
-						"example": {
-							"address": "192.168.1.1"
-						},
-						"additionalProperties": false,
-						"required": [
-							"address"
-						],
-						"properties": {
-							"address": {
-								"$id": "#/properties/ipv4/properties/dns/items/properties/address",
-								"type": "string",
-								"format": "ipv4",
-								"title": "IPv4 address",
-								"example": "1.1.1.1"
-							}
-						}
+					"additionalProperties": false,
+					"properties": {
+						"method": { "$ref": "#/definitions/ipv4/method" },
+						"addresses": { "$ref": "#/definitions/ipv4/addresses" },
+						"gateway": { "$ref": "#/definitions/ipv4/gateway" },
+						"dns": { "$ref": "#/definitions/ipv4/dns" }
 					}
 				}
 			}
@@ -267,107 +172,25 @@
 				"dns"
 			],
 			"properties": {
-				"method": {
-					"$id": "#/properties/ipv6/properties/method",
-					"type": "string",
-					"enum": [
-						"auto",
-						"disabled",
-						"dhcp",
-						"ignore",
-						"link-local",
-						"manual",
-						"shared"
+				"method": { "$ref": "#/definitions/ipv6/method" },
+				"addresses": { "$ref": "#/definitions/ipv6/addresses" },
+				"gateway": { "$ref": "#/definitions/ipv6/gateway" },
+				"dns": { "$ref": "#/definitions/ipv6/dns" },
+				"current": {
+					"title": "Current (in-use) IPv6 connection configuration",
+					"type": "object",
+					"required": [
+						"method",
+						"addresses",
+						"gateway",
+						"dns"
 					],
-					"title": "IPv6 connection method",
-					"example": "manual"
-				},
-				"addresses": {
-					"$id": "#/properties/ipv6/properties/addresses",
-					"type": "array",
-					"title": "IPv6 addresses",
-					"example": [
-						{
-							"prefix": 64,
-							"address": "2001:470:5bb2::671"
-						}
-					],
-					"additionalItems": false,
-					"items": {
-						"$id": "#/properties/ipv6/properties/addresses/items",
-						"type": "object",
-						"title": "IPv6 address",
-						"examples": [
-							{
-								"prefix": 64,
-								"address": "2001:470:5bb2::671"
-							}
-						],
-						"additionalProperties": false,
-						"required": [
-							"address",
-							"prefix"
-						],
-						"properties": {
-							"address": {
-								"$id": "#/properties/ipv6/properties/addresses/items/properties/address",
-								"type": "string",
-								"title": "IPv6 address",
-								"example": "2001:470:5bb2::671"
-							},
-							"prefix": {
-								"$id": "#/properties/ipv6/properties/addresses/items/properties/prefix",
-								"type": "integer",
-								"title": "IPv6 network prefix",
-								"example": 64
-							}
-						}
-					}
-				},
-				"gateway": {
-					"$id": "#/properties/ipv6/properties/addresses/items/properties/gateway",
-					"oneOf": [
-						{
-							"type": "string"
-						},
-						{
-							"type": "null"
-						}
-					],
-					"format": "ipv6",
-					"title": "IPv6 gateway address",
-					"example": "fe80::6f0:21ff:fe24:1e53"
-				},
-				"dns": {
-					"$id": "#/properties/ipv6/properties/dns",
-					"type": "array",
-					"title": "DNS IPv6 addresses",
-					"examples": [
-						{
-							"address": "2606:4700:4700::1111"
-						}
-					],
-					"additionalItems": false,
-					"items": {
-						"$id": "#/properties/ipv6/properties/dns/items",
-						"type": "object",
-						"title": "DNS IPv6 address",
-						"example": {
-							"address": "2606:4700:4700::1111"
-						},
-						"additionalProperties": false,
-						"required": [
-							"address"
-						],
-						"properties": {
-							"address": {
-								"$id": "#/properties/ipv6/properties/dns/items/properties/address",
-								"type": "string",
-								"format": "ipv6",
-								"title": "IPv6 address",
-								"example": "2606:4700:4700::1111"
-							}
-						}
+					"additionalProperties": false,
+					"properties": {
+						"method": { "$ref": "#/definitions/ipv6/method" },
+						"addresses": { "$ref": "#/definitions/ipv6/addresses" },
+						"gateway": { "$ref": "#/definitions/ipv6/gateway" },
+						"dns": { "$ref": "#/definitions/ipv6/dns" }
 					}
 				}
 			}
@@ -815,5 +638,209 @@
 				]
 			}
 		}
-	]
+	],
+	"definitions": {
+		"ipv4": {
+			"method": {
+				"title": "IPv4 connection method",
+				"type": "string",
+				"example": "manual",
+				"enum": [
+					"auto",
+					"disabled",
+					"link-local",
+					"manual",
+					"shared"
+				]
+			},
+			"addresses": {
+				"title": "IPv4 addresses",
+				"type": "array",
+				"additionalItems": false,
+				"items": {
+					"title": "IPv4 address",
+					"type": "object",
+					"additionalProperties": false,
+					"anyOf": [
+						{
+							"required": [
+								"address",
+								"prefix"
+							]
+						},
+						{
+							"required": [
+								"address",
+								"mask"
+							]
+						}
+					],
+					"properties": {
+						"address": {
+							"title": "IPv4 address",
+							"type": "string",
+							"format": "ipv4",
+							"example": "192.168.1.198"
+						},
+						"prefix": {
+							"title": "IPv4 network prefix",
+							"type": "integer",
+							"minimum": 1,
+							"maximum": 32,
+							"example": 24
+						},
+						"mask": {
+							"title": "IPv4 network mask",
+							"type": "string",
+							"format": "ipv4",
+							"example": "255.255.255.0"
+						}
+					},
+					"example": {
+						"address": "192.168.1.198",
+						"mask": "255.255.255.0",
+						"prefix": 24
+					}
+				},
+				"example": [
+					{
+						"prefix": 24,
+						"address": "192.168.1.198",
+						"mask": "255.255.255.0"
+					}
+				]
+			},
+			"gateway": {
+				"title": "IPv4 gateway address",
+				"type": "string",
+				"format": "ipv4",
+				"example": "192.168.1.1"
+			},
+			"dns": {
+				"title": "DNS IPv4 addresses",
+				"type": "array",
+				"additionalItems": false,
+				"items": {
+					"title": "DNS IPv4 address",
+					"type": "object",
+					"additionalProperties": false,
+					"required": [
+						"address"
+					],
+					"properties": {
+						"address": {
+							"title": "IPv4 address",
+							"type": "string",
+							"format": "ipv4",
+							"example": "1.1.1.1"
+						}
+					},
+					"example": {
+						"address": "192.168.1.1"
+					}
+				},
+				"example": [
+					{
+						"address": "192.168.1.1"
+					}
+				]
+			}
+		},
+		"ipv6": {
+			"method": {
+				"title": "IPv6 connection method",
+				"type": "string",
+				"enum": [
+					"auto",
+					"disabled",
+					"dhcp",
+					"ignore",
+					"link-local",
+					"manual",
+					"shared"
+				],
+				"example": "manual"
+			},
+			"addresses": {
+				"title": "IPv6 addresses",
+				"type": "array",
+				"additionalItems": false,
+				"items": {
+					"title": "IPv6 address",
+					"type": "object",
+					"additionalProperties": false,
+					"required": [
+						"address",
+						"prefix"
+					],
+					"properties": {
+						"address": {
+							"title": "IPv6 address",
+							"type": "string",
+							"example": "2001:470:5bb2::671"
+						},
+						"prefix": {
+							"title": "IPv6 network prefix",
+							"type": "integer",
+							"example": 64
+						}
+					},
+					"examples": [
+						{
+							"prefix": 64,
+							"address": "2001:470:5bb2::671"
+						}
+					]
+				},
+				"example": [
+					{
+						"prefix": 64,
+						"address": "2001:470:5bb2::671"
+					}
+				]
+			},
+			"gateway": {
+				"title": "IPv6 gateway address",
+				"oneOf": [
+					{
+						"type": "string",
+						"format": "ipv6"
+					},
+					{
+						"type": "null"
+					}
+				],
+				"example": "fe80::6f0:21ff:fe24:1e53"
+			},
+			"dns": {
+				"title": "DNS IPv6 addresses",
+				"type": "array",
+				"additionalItems": false,
+				"items": {
+					"title": "DNS IPv6 address",
+					"type": "object",
+					"additionalProperties": false,
+					"required": [
+						"address"
+					],
+					"properties": {
+						"address": {
+							"title": "IPv6 address",
+							"type": "string",
+							"format": "ipv6",
+							"example": "2606:4700:4700::1111"
+						}
+					},
+					"example": {
+						"address": "2606:4700:4700::1111"
+					}
+				},
+				"examples": [
+					{
+						"address": "2606:4700:4700::1111"
+					}
+				]
+			}
+		}
+	}
 }
