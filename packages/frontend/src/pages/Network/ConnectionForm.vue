@@ -247,8 +247,8 @@ import {
 import {useApiClient} from '@/services/ApiClient';
 import {
 	MobileOperator,
-	Ipv4ConfigurationMethod,
-	Ipv6ConfigurationMethod,
+	IPv4ConfigurationMethod,
+	IPv6ConfigurationMethod,
 	NetworkConnectionConfiguration,
 	NetworkConnectionType,
 	AccessPoint,
@@ -297,24 +297,24 @@ export default class ConnectionForm extends Vue {
 			addresses: [],
 			dns: [],
 			gateway: '',
-			method: Ipv4ConfigurationMethod.AUTO,
+			method: IPv4ConfigurationMethod.AUTO,
 		},
 		ipv6: {
 			addresses: [],
 			dns: [],
 			gateway: '',
-			method: Ipv6ConfigurationMethod.AUTO,
+			method: IPv6ConfigurationMethod.AUTO,
 		}
 	};
 
 	private backupConfig: NetworkConnectionConfiguration|null = null;
 
 	/**
-	 * @var {Record<string, string|Ipv4ConfigurationMethod>} originalIPv4 IPv4 address and method before change
+	 * @var {Record<string, string|IPv4ConfigurationMethod>} originalIPv4 IPv4 address and method before change
 	 */
 	private originalIPv4 = {
 		address: '',
-		method: Ipv4ConfigurationMethod.AUTO,
+		method: IPv4ConfigurationMethod.AUTO,
 	};
 
 	/**
@@ -359,8 +359,8 @@ export default class ConnectionForm extends Vue {
 	 * @property {boolean} disabledBothIpStacks Are both IP stacks disabled?
 	 */
 	get disabledBothIpStacks(): boolean {
-		return this.connection.ipv4.method === Ipv4ConfigurationMethod.DISABLED
-			&& this.connection.ipv6.method === Ipv6ConfigurationMethod.DISABLED;
+		return this.connection.ipv4.method === IPv4ConfigurationMethod.DISABLED
+			&& this.connection.ipv6.method === IPv6ConfigurationMethod.DISABLED;
 	}
 
 	/**
@@ -524,12 +524,12 @@ export default class ConnectionForm extends Vue {
 	 */
 	private storeConnectionData(connection: NetworkConnectionConfiguration): void {
 		// initialize ipv4 configuration objects
-		if (connection.ipv4.method === Ipv4ConfigurationMethod.AUTO && connection.ipv4.current) {
+		if (connection.ipv4.method === IPv4ConfigurationMethod.AUTO && connection.ipv4.current) {
 			connection.ipv4 = connection.ipv4.current;
 			delete connection.ipv4.current;
 		}
 		this.originalIPv4.address = connection.ipv4.addresses[0]?.address ?? '';
-		this.originalIPv4.method = connection.ipv4.method ?? Ipv4ConfigurationMethod.AUTO;
+		this.originalIPv4.method = connection.ipv4.method ?? IPv4ConfigurationMethod.AUTO;
 		// initialize ipv6 configuration objects
 		if (['auto', 'dhcp'].includes(connection.ipv6.method) && connection.ipv6.current) {
 			connection.ipv6 = connection.ipv6.current;
@@ -550,10 +550,10 @@ export default class ConnectionForm extends Vue {
 			this.saveConnection(connect);
 			return;
 		}
-		if (this.originalIPv4.method === Ipv4ConfigurationMethod.AUTO && this.connection.ipv4.method === Ipv4ConfigurationMethod.AUTO) { // ipv4 method not changed from auto
+		if (this.originalIPv4.method === IPv4ConfigurationMethod.AUTO && this.connection.ipv4.method === IPv4ConfigurationMethod.AUTO) { // ipv4 method not changed from auto
 			this.saveConnection(connect);
 			return;
-		} else if (this.originalIPv4.method === Ipv4ConfigurationMethod.AUTO && this.connection.ipv4.method === Ipv4ConfigurationMethod.MANUAL) { // ipv4 method changed from auto to static
+		} else if (this.originalIPv4.method === IPv4ConfigurationMethod.AUTO && this.connection.ipv4.method === IPv4ConfigurationMethod.MANUAL) { // ipv4 method changed from auto to static
 			if (this.connection.ipv4.addresses[0].address === this.originalIPv4.address) { // auto to static, but IP hasn't changed
 				this.saveConnection(connect);
 				return;
@@ -561,11 +561,11 @@ export default class ConnectionForm extends Vue {
 			this.modalMessages.ipv4 = this.$t('network.connection.modal.ipv4.autoToStatic').toString();
 			this.modalMessages.ipv4Addr = window.location.protocol + '//' +
 				this.connection.ipv4.addresses[0].address + loc.getPort();
-		} else if (this.originalIPv4.method === Ipv4ConfigurationMethod.MANUAL && this.connection.ipv4.method === Ipv4ConfigurationMethod.MANUAL) {
+		} else if (this.originalIPv4.method === IPv4ConfigurationMethod.MANUAL && this.connection.ipv4.method === IPv4ConfigurationMethod.MANUAL) {
 			this.modalMessages.ipv4 = this.$t('network.connection.modal.ipv4.staticIpChange').toString();
 			this.modalMessages.ipv4Addr = window.location.protocol + '//' +
 				this.connection.ipv4.addresses[0].address + loc.getPort();
-		} else if (this.originalIPv4.method === Ipv4ConfigurationMethod.MANUAL && this.connection.ipv4.method === Ipv4ConfigurationMethod.AUTO) { // ipv4 method changed from static to auto
+		} else if (this.originalIPv4.method === IPv4ConfigurationMethod.MANUAL && this.connection.ipv4.method === IPv4ConfigurationMethod.AUTO) { // ipv4 method changed from static to auto
 			this.modalMessages.ipv4 = this.$t('network.connection.modal.ipv4.staticToAuto').toString();
 		}
 		this.handleIPChanged = true;
@@ -578,15 +578,15 @@ export default class ConnectionForm extends Vue {
 	 * @returns {NetworkConnectionConfiguration} Connection prepared for submission
 	 */
 	private prepareConnectionToSave(connection: NetworkConnectionConfiguration): NetworkConnectionConfiguration {
-		if (connection.ipv4.method === Ipv4ConfigurationMethod.MANUAL) {
+		if (connection.ipv4.method === IPv4ConfigurationMethod.MANUAL) {
 			for (const idx in connection.ipv4.addresses) {
 				delete connection.ipv4.addresses[idx].prefix;
 			}
-		} else if ([Ipv4ConfigurationMethod.AUTO, Ipv4ConfigurationMethod.DISABLED, Ipv4ConfigurationMethod.SHARED].includes(connection.ipv4.method)) {
+		} else if ([IPv4ConfigurationMethod.AUTO, IPv4ConfigurationMethod.DISABLED, IPv4ConfigurationMethod.SHARED].includes(connection.ipv4.method)) {
 			connection.ipv4.addresses = connection.ipv4.dns = [];
 			connection.ipv4.gateway = null;
 		}
-		if ([Ipv6ConfigurationMethod.AUTO, Ipv6ConfigurationMethod.DISABLED, Ipv6ConfigurationMethod.DHCP, Ipv6ConfigurationMethod.SHARED].includes(connection.ipv6.method)) {
+		if ([IPv6ConfigurationMethod.AUTO, IPv6ConfigurationMethod.DISABLED, IPv6ConfigurationMethod.DHCP, IPv6ConfigurationMethod.SHARED].includes(connection.ipv6.method)) {
 			connection.ipv6.addresses = connection.ipv6.dns = [];
 			connection.ipv6.gateway = null;
 		}
@@ -709,11 +709,11 @@ export default class ConnectionForm extends Vue {
 					extendedErrorToast(error, 'network.connection.messages.connect.failed', {connection: name});
 					return;
 				}
-				if (this.originalIPv4.method === Ipv4ConfigurationMethod.AUTO && this.connection.ipv4.method === Ipv4ConfigurationMethod.MANUAL) {
+				if (this.originalIPv4.method === IPv4ConfigurationMethod.AUTO && this.connection.ipv4.method === IPv4ConfigurationMethod.MANUAL) {
 					await this.tryRest('network.connection.messages.ipChange.autoToStatic');
-				} else if (this.originalIPv4.method === Ipv4ConfigurationMethod.MANUAL && this.connection.ipv4.method === Ipv4ConfigurationMethod.MANUAL) {
+				} else if (this.originalIPv4.method === IPv4ConfigurationMethod.MANUAL && this.connection.ipv4.method === IPv4ConfigurationMethod.MANUAL) {
 					await this.tryRest('network.connection.messages.ipChange.staticToStatic');
-				} else if (this.originalIPv4.method === Ipv4ConfigurationMethod.MANUAL && this.connection.ipv4.method === Ipv4ConfigurationMethod.AUTO) {
+				} else if (this.originalIPv4.method === IPv4ConfigurationMethod.MANUAL && this.connection.ipv4.method === IPv4ConfigurationMethod.AUTO) {
 					this.$store.commit('spinner/HIDE');
 					this.$store.commit('blocking/SHOW', this.$t('network.connection.messages.ipChange.staticToAuto').toString());
 				}
@@ -770,7 +770,7 @@ export default class ConnectionForm extends Vue {
 			Object.assign(this.connection, {serial: serial});
 		}
 		if (this.hasBrokenGsmModem) {
-			this.connection.ipv6.method = Ipv6ConfigurationMethod.DISABLED;
+			this.connection.ipv6.method = IPv6ConfigurationMethod.DISABLED;
 		}
 	}
 

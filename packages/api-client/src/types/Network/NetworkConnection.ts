@@ -67,7 +67,7 @@ export interface IPv4Address {
 /**
  * IPv4 configuration method
  */
-export enum Ipv4ConfigurationMethod {
+export enum IPv4ConfigurationMethod {
 	/// DHCPv4
 	AUTO = 'auto',
 	/// Disabled
@@ -92,7 +92,7 @@ export interface IPv4ConfigurationBase {
 	/// IPv4 gateway address
 	gateway: string|null;
 	/// IPv4 configuration method
-	method: Ipv4ConfigurationMethod;
+	method: IPv4ConfigurationMethod;
 }
 
 /**
@@ -116,7 +116,7 @@ export interface IPv6Address {
 /**
  * IPv6 configuration method
  */
-export enum Ipv6ConfigurationMethod {
+export enum IPv6ConfigurationMethod {
 	/// SLAAC
 	AUTO = 'auto',
 	/// DHCPv6 only
@@ -144,7 +144,7 @@ export interface IPv6ConfigurationBase {
 	/// IPv6 gateway address
 	gateway: string|null;
 	/// IPv6 configuration method
-	method: Ipv6ConfigurationMethod;
+	method: IPv6ConfigurationMethod;
 }
 
 /**
