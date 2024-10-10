@@ -318,7 +318,7 @@ class BackupManager {
 			throw new InvalidBackupContentException('Incompatible backup archive and target gateway.');
 		}
 		$restoreGwInfo = Json::decode($this->zipManager->openFile('gateway/iqrf-gateway.json'), forceArrays: true);
-		$pattern = '/^(?\'product\'[^-]*)-(?\'os\'[^-]*)-v(?\'major\'\d+)\.(?\'minor\'\d+)\.\d+(-(alpha|beta|rc\d+))?$/';
+		$pattern = '/^(?\'product\'[^-]*)-(?\'os\'[^-]*)-v(?\'major\'\d+)\.(?\'minor\'\d+)\.\d+(-(alpha|beta|rc)(\d+)?)?$/';
 		$restoreMatches = Strings::match($restoreGwInfo['gwImage'], $pattern);
 		if ($restoreMatches === null) {
 			throw new InvalidBackupContentException('Invalid backup archive gateway image version.');
