@@ -30,7 +30,7 @@ export class MobileOperatorService extends BaseService {
 	 */
 	public async list(): Promise<MobileOperator[]> {
 		const response: AxiosResponse<MobileOperator[]> =
-			await this.axiosInstance.get('/network/operators');
+			await this.axiosInstance.get('/network/cellular/operators');
 		return response.data.map((operator: MobileOperator): MobileOperator => this.deserialize(operator));
 	}
 
@@ -39,7 +39,7 @@ export class MobileOperatorService extends BaseService {
 	 * @param {MobileOperator} operator Mobile operator to create
 	 */
 	public async create(operator: MobileOperator): Promise<void> {
-		await this.axiosInstance.post('/network/operators', this.deserialize(operator));
+		await this.axiosInstance.post('/network/cellular/operators', this.deserialize(operator));
 	}
 
 	/**
@@ -49,7 +49,7 @@ export class MobileOperatorService extends BaseService {
 	 */
 	public async get(id: number): Promise<MobileOperator> {
 		const response: AxiosResponse<MobileOperator> =
-			await this.axiosInstance.get(`/network/operators/${id.toString()}`);
+			await this.axiosInstance.get(`/network/cellular/operators/${id.toString()}`);
 		return this.deserialize(response.data);
 	}
 
@@ -59,7 +59,7 @@ export class MobileOperatorService extends BaseService {
 	 * @param {MobileOperator} operator Mobile operator to edit
 	 */
 	public async update(id: number, operator: MobileOperator): Promise<void> {
-		await this.axiosInstance.put(`/network/operators/${id.toString()}`, this.serialize(operator));
+		await this.axiosInstance.put(`/network/cellular/operators/${id.toString()}`, this.serialize(operator));
 	}
 
 	/**
@@ -67,7 +67,7 @@ export class MobileOperatorService extends BaseService {
 	 * @param {number} id Mobile operator ID
 	 */
 	public async delete(id: number): Promise<void> {
-		await this.axiosInstance.delete(`/network/operators/${id.toString()}`);
+		await this.axiosInstance.delete(`/network/cellular/operators/${id.toString()}`);
 	}
 
 	/**

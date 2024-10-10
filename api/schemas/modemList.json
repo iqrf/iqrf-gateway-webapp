@@ -118,7 +118,14 @@
 				"$id": "#/items/properties/rssi",
 				"title": "RSSI",
 				"description": "RSSI dBm",
-				"type": "integer",
+				"oneOf": [
+					{
+						"type": "null"
+					},
+					{
+						"type": "number"
+					}
+				],
 				"example": -63
 			}
 		}

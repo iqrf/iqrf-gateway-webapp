@@ -67,7 +67,7 @@ export interface IPv4Address {
 /**
  * IPv4 configuration method
  */
-export enum IPV4ConfigurationMethod {
+export enum Ipv4ConfigurationMethod {
 	/// DHCPv4
 	AUTO = 'auto',
 	/// Disabled
@@ -82,19 +82,25 @@ export enum IPV4ConfigurationMethod {
 
 
 /**
- * IPv4 configuration
+ * IPv4 configuration -  base
  */
-export interface IPv4Configuration {
+export interface IPv4ConfigurationBase {
 	/// IPv4 addresses
 	addresses: IPv4Address[];
-	/// Current IPv4 configuration
-	current?: IPv4Configuration;
 	/// IPv4 DNS servers
 	dns: DnsServerConfiguration[];
 	/// IPv4 gateway address
 	gateway: string|null;
 	/// IPv4 configuration method
-	method: IPV4ConfigurationMethod;
+	method: Ipv4ConfigurationMethod;
+}
+
+/**
+ * IPv4 configuration
+ */
+export interface IPv4Configuration extends IPv4ConfigurationBase {
+	/// Current IPv4 configuration
+	current?: IPv4ConfigurationBase;
 }
 
 /**
@@ -110,7 +116,7 @@ export interface IPv6Address {
 /**
  * IPv6 configuration method
  */
-export enum IPV6ConfigurationMethod {
+export enum Ipv6ConfigurationMethod {
 	/// SLAAC
 	AUTO = 'auto',
 	/// DHCPv6 only
@@ -128,19 +134,25 @@ export enum IPV6ConfigurationMethod {
 }
 
 /**
- * IPv6 configuration
+ * IPv6 configuration - base
  */
-export interface IPv6Configuration {
+export interface IPv6ConfigurationBase {
 	/// IPv6 addresses
 	addresses: IPv6Address[];
-	/// Current IPv6 configuration
-	current?: IPv6Configuration;
 	/// IPv6 DNS servers
 	dns: DnsServerConfiguration[];
 	/// IPv6 gateway address
 	gateway: string|null;
 	/// IPv6 configuration method
-	method: IPV6ConfigurationMethod;
+	method: Ipv6ConfigurationMethod;
+}
+
+/**
+ * IPv6 configuration
+ */
+export interface IPv6Configuration extends IPv6ConfigurationBase {
+	/// Current IPv6 configuration
+	current?: IPv6ConfigurationBase;
 }
 
 /**

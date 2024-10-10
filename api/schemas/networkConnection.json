@@ -214,6 +214,17 @@
 				"security"
 			],
 			"properties": {
+				"bssids": {
+					"$id": "#/properties/wifi/properties/bssids",
+					"type": "array",
+					"title": "BSSIDs",
+					"items": {
+						"$id": "#/properties/wifi/properties/bssids/items",
+						"type": "string",
+						"title": "BSSID",
+						"example": "00:11:22:33:44:55"
+					}
+				},
 				"ssid": {
 					"$id": "#/properties/wifi/properties/ssid",
 					"type": "string",
