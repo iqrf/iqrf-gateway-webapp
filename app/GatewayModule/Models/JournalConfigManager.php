@@ -146,7 +146,7 @@ class JournalConfigManager {
 		$duration = $this->getPropertyDefault('MaxFileSec', $conf);
 		$matches = Strings::match($duration, '#^(\d+)(\w*$)#');
 		return [
-			'unit' => $matches[2] === '' ? 's' : $matches[2],
+			'unit' => strlen($matches[2]) === 0 ? 's' : $matches[2],
 			'count' => (int) $matches[1],
 		];
 	}
