@@ -30,7 +30,7 @@ export class ModemService extends BaseService {
 	 */
 	public async list(): Promise<Modem[]> {
 		const response: AxiosResponse<Modem[]> =
-			await this.axiosInstance.get('/network/mobile/modems');
+			await this.axiosInstance.get('/network/cellular/modems');
 		return response.data;
 	}
 
@@ -38,7 +38,7 @@ export class ModemService extends BaseService {
 	 * Scans for available modems
 	 */
 	public async scan(): Promise<void> {
-		await this.axiosInstance.post('/network/mobile/modems/scan');
+		await this.axiosInstance.post('/network/cellular/modems/scan');
 	}
 
 }
