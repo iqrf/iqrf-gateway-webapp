@@ -140,7 +140,7 @@ class JournalConfigManager {
 	/**
 	 * Parses log file duration before rotation
 	 * @param array<string, string> $conf Journal configuration
-	 * @return array{unit: mixed, count: int} Log file duration
+	 * @return array{unit: string, count: int} Log file duration
 	 */
 	public function getTimeRotation(array $conf): array {
 		$duration = $this->getPropertyDefault('MaxFileSec', $conf);
