@@ -51,3 +51,6 @@ parameters:
 			message: "#^Negated boolean expression is always false\\.$#"
 			path: app/Models/Mail/ConfigurationManager.php
 			count: 1
+		-
+			message: '#Strict comparison using === between int\<1, max\> and 0 will always evaluate to false.#'
+			path: app/GatewayModule/Models/JournalConfigManager.php
