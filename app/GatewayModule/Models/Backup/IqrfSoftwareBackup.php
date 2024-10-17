@@ -68,7 +68,7 @@ abstract class IqrfSoftwareBackup implements IBackupManager {
 	/**
 	 * @var bool Indicates whether feature is enabled
 	 */
-	private bool $featureEnabled;
+	protected bool $featureEnabled;
 
 	/**
 	 * @var CommandManager Command manager

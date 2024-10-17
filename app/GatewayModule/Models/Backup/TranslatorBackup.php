@@ -52,7 +52,7 @@ class TranslatorBackup extends IqrfSoftwareBackup {
 	 * @return array<string> Service names
 	 */
 	public function getServices(): array {
-		return ['iqrf-gateway-translator'];
+		return $this->featureEnabled ? ['iqrf-gateway-translator'] : [];
 	}
 
 }
