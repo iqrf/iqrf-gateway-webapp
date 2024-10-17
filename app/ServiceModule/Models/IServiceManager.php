@@ -26,18 +26,32 @@ namespace App\ServiceModule\Models;
 interface IServiceManager {
 
 	/**
-	 * Disables the service
-	 * @param string $serviceName Service name
+	 * Disables a service
+	 * @param string $service Service name
 	 * @param bool $stop Stop service after disabling
 	 */
-	public function disable(string $serviceName, bool $stop = true): void;
+	public function disable(string $service, bool $stop = true): void;
 
 	/**
-	 * Enables the service
-	 * @param string $serviceName Service name
+	 * Disables multiple services
+	 * @param array<string> $services Service names
+	 * @param bool $stop Stop services after disabling
+	 */
+	public function disableMultiple(array $services, bool $stop = true): void;
+
+	/**
+	 * Enables a service
+	 * @param string $service Service name
 	 * @param bool $start Start service after enable
 	 */
-	public function enable(string $serviceName, bool $start = true): void;
+	public function enable(string $service, bool $start = true): void;
+
+	/**
+	 * Enables multiple services
+	 * @param array<string> $services Service names
+	 * @param bool $start Start services after enabling
+	 */
+	public function enableMultiple(array $services, bool $start = true): void;
 
 	/**
 	 * Checks if the service is active
@@ -54,16 +68,28 @@ interface IServiceManager {
 	public function isEnabled(string $serviceName): bool;
 
 	/**
-	 * Starts the service
-	 * @param string $serviceName Service name
+	 * Starts a service
+	 * @param string $service Service name
 	 */
-	public function start(string $serviceName): void;
+	public function start(string $service): void;
+
+	/**
+	 * Starts multiple services
+	 * @param array<string> $services Service names
+	 */
+	public function startMultiple(array $services): void;
 
 	/**
 	 * Stops the service
-	 * @param string $serviceName Service name
+	 * @param string $service Service name
 	 */
-	public function stop(string $serviceName): void;
+	public function stop(string $service): void;
+
+	/**
+	 * Stops multiple services
+	 * @param array<string> $services Service names
+	 */
+	public function stopMultiple(array $services): void;
 
 	/**
 	 * Restarts the service

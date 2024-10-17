@@ -164,6 +164,8 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/powerControl.json
 		Remount:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/remount.json
+		ServiceControl:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/serviceControl.json
 		ServiceList:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/serviceList.json
 		ServiceStatus:

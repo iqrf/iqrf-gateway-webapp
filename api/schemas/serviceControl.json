@@ -1,0 +1,18 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/serviceControl.json",
+	"type": "object",
+	"title": "Service control parameters",
+	"additionalProperties": false,
+	"required": [
+		"now"
+	],
+	"properties": {
+		"now": {
+			"$id": "#/properties/now",
+			"title": "Start service when enabling / Stop service when disabling.",
+			"type": "boolean",
+			"example": true
+		}
+	}
+}
