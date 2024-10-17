@@ -26,18 +26,18 @@ namespace App\ServiceModule\Models;
 interface IServiceManager {
 
 	/**
-	 * Disables the service
-	 * @param string $serviceName Service name
+	 * Disables the service(s)
+	 * @param string|array<string> $service Service name(s)
 	 * @param bool $stop Stop service after disabling
 	 */
-	public function disable(string $serviceName, bool $stop = true): void;
+	public function disable(mixed $service, bool $stop = true): void;
 
 	/**
-	 * Enables the service
-	 * @param string $serviceName Service name
+	 * Enables the service(s)
+	 * @param string|array<string> $service Service name(s)
 	 * @param bool $start Start service after enable
 	 */
-	public function enable(string $serviceName, bool $start = true): void;
+	public function enable(mixed $service, bool $start = true): void;
 
 	/**
 	 * Checks if the service is active
@@ -54,16 +54,16 @@ interface IServiceManager {
 	public function isEnabled(string $serviceName): bool;
 
 	/**
-	 * Starts the service
-	 * @param string $serviceName Service name
+	 * Starts the service(s)
+	 * @param string|array<string> $service Service name(s)
 	 */
-	public function start(string $serviceName): void;
+	public function start(mixed $service): void;
 
 	/**
-	 * Stops the service
-	 * @param string $serviceName Service name
+	 * Stops the service(s)
+	 * @param string|array<string> $service Service name(s)
 	 */
-	public function stop(string $serviceName): void;
+	public function stop(mixed $service): void;
 
 	/**
 	 * Restarts the service

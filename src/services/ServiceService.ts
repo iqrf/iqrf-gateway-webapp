@@ -46,17 +46,30 @@ class ServiceService {
 	/**
 	 * Disables the service
 	 * @param name Service name
+	 * @param stop Stop after disabling
 	 */
-	disable(name: string): Promise<AxiosResponse> {
-		return axios.post('services/' + name + '/disable', null, {headers: authorizationHeader()});
+	disable(name: string, stop: boolean | undefined = undefined): Promise<AxiosResponse> {
+		const body = stop === undefined ? null : {now: stop};
+		return axios.post(
+			'services/' + name + '/disable',
+			body,
+			{headers: authorizationHeader()}
+		);
 	}
 
 	/**
 	 * Enables the service
 	 * @param name Service name
+	 * @param start Start after enabling
 	 */
-	enable(name: string): Promise<AxiosResponse> {
-		return axios.post('services/' + name + '/enable', null, {headers: authorizationHeader()});
+	enable(name: string, start: boolean | undefined = undefined): Promise<AxiosResponse> {
+		const body = start === undefined ? null : {now: start};
+		console.warn(body);
+		return axios.post(
+			'services/' + name + '/enable',
+			body,
+			{headers: authorizationHeader()}
+		);
 	}
 
 	/**

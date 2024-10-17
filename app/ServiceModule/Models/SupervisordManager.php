@@ -42,20 +42,20 @@ class SupervisordManager implements IServiceManager {
 	}
 
 	/**
-	 * Disables the service
-	 * @param string $serviceName Service name
+	 * Disables the service(s)
+	 * @param string|array<string> $service Service name(s)
 	 * @param bool $stop Stop service after disabling
 	 */
-	public function disable(string $serviceName, bool $stop = true): void {
+	public function disable(mixed $service, bool $stop = true): void {
 		throw new NotImplementedException();
 	}
 
 	/**
-	 * Enables the service
-	 * @param string $serviceName Service name
+	 * Enables the service(s)
+	 * @param string|array<string> $service Service name(s)
 	 * @param bool $start Start service after enabling
 	 */
-	public function enable(string $serviceName, bool $start = true): void {
+	public function enable(mixed $service, bool $start = true): void {
 		throw new NotImplementedException();
 	}
 
@@ -76,21 +76,31 @@ class SupervisordManager implements IServiceManager {
 	}
 
 	/**
-	 * Starts the service
-	 * @param string $serviceName Service name
+	 * Starts the service(s)
+	 * @param string|array<string> $service Service name(s)
 	 */
-	public function start(string $serviceName): void {
-		$cmd = 'supervisorctl start ' . escapeshellarg($serviceName);
-		$this->commandManager->run($cmd, true);
+	public function start(mixed $service): void {
+		if (!is_array($service)) {
+			$service = [$service];
+		}
+		foreach ($service as $serviceName) {
+			$cmd = 'supervisorctl start ' . escapeshellarg($serviceName);
+			$this->commandManager->run($cmd, true);
+		}
 	}
 
 	/**
-	 * Stops the service
-	 * @param string $serviceName Service name
+	 * Stops the service(s)
+	 * @param string|array<string> $service Service name(s)
 	 */
-	public function stop(string $serviceName): void {
-		$cmd = 'supervisorctl stop ' . escapeshellarg($serviceName);
-		$this->commandManager->run($cmd, true);
+	public function stop(mixed $service): void {
+		if (!is_array($service)) {
+			$service = [$service];
+		}
+		foreach ($service as $serviceName) {
+			$cmd = 'supervisorctl stop ' . escapeshellarg($serviceName);
+			$this->commandManager->run($cmd, true);
+		}
 	}
 
 	/**

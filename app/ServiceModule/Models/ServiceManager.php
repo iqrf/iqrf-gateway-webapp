@@ -57,27 +57,27 @@ class ServiceManager {
 	}
 
 	/**
-	 * Disables the service
-	 * @param string $serviceName Service name
+	 * Disables the service(s)
+	 * @param string|array<string> $service Service name(s)
 	 * @param bool $stop Stop service after disabling
 	 * @throws NonexistentServiceException
 	 * @throws NotImplementedException
 	 * @throws UnsupportedInitSystemException
 	 */
-	public function disable(string $serviceName, bool $stop = true): void {
-		$this->initDaemon->disable($serviceName, $stop);
+	public function disable(mixed $service, bool $stop = true): void {
+		$this->initDaemon->disable($service, $stop);
 	}
 
 	/**
-	 * Enables the service
-	 * @param string $serviceName Service name
+	 * Enables the service(s)
+	 * @param string|array<string> $service Service name(s)
 	 * @param bool $start Start service after enable
 	 * @throws NonexistentServiceException
 	 * @throws NotImplementedException
 	 * @throws UnsupportedInitSystemException
 	 */
-	public function enable(string $serviceName, bool $start = true): void {
-		$this->initDaemon->enable($serviceName, $start);
+	public function enable(mixed $service, bool $start = true): void {
+		$this->initDaemon->enable($service, $start);
 	}
 
 	/**
@@ -103,23 +103,23 @@ class ServiceManager {
 	}
 
 	/**
-	 * Starts the service
-	 * @param string $serviceName Service name
+	 * Starts the service(s)
+	 * @param string|array<string> $service Service name(s)
 	 * @throws NonexistentServiceException
 	 * @throws UnsupportedInitSystemException
 	 */
-	public function start(string $serviceName): void {
-		$this->initDaemon->start($serviceName);
+	public function start(mixed $service): void {
+		$this->initDaemon->start($service);
 	}
 
 	/**
-	 * Stops the service
-	 * @param string $serviceName Service name
+	 * Stops the service(s)
+	 * @param string|array<string> $service Service name(s)
 	 * @throws NonexistentServiceException
 	 * @throws UnsupportedInitSystemException
 	 */
-	public function stop(string $serviceName): void {
-		$this->initDaemon->stop($serviceName);
+	public function stop(mixed $service): void {
+		$this->initDaemon->stop($service);
 	}
 
 	/**
