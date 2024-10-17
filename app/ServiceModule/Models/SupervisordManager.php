@@ -42,20 +42,38 @@ class SupervisordManager implements IServiceManager {
 	}
 
 	/**
-	 * Disables the service
-	 * @param string $serviceName Service name
+	 * Disables multiple services
+	 * @param string $service Service names
 	 * @param bool $stop Stop service after disabling
 	 */
-	public function disable(string $serviceName, bool $stop = true): void {
+	public function disable(string $service, bool $stop = true): void {
 		throw new NotImplementedException();
 	}
 
 	/**
-	 * Enables the service
-	 * @param string $serviceName Service name
-	 * @param bool $start Start service after enabling
+	 * Disables multiple services
+	 * @param array<string> $services Service names
+	 * @param bool $stop Stop services after disabling
 	 */
-	public function enable(string $serviceName, bool $start = true): void {
+	public function disableMultiple(array $services, bool $stop = true): void {
+		throw new NotImplementedException();
+	}
+
+	/**
+	 * Enables a service
+	 * @param string $service Service name
+	 * @param bool $start Start service after enable
+	 */
+	public function enable(string $service, bool $start = true): void {
+		throw new NotImplementedException();
+	}
+
+	/**
+	 * Enables multiple services
+	 * @param array<string> $services Service names
+	 * @param bool $start Start services after enabling
+	 */
+	public function enableMultiple(array $services, bool $start = true): void {
 		throw new NotImplementedException();
 	}
 
@@ -76,21 +94,41 @@ class SupervisordManager implements IServiceManager {
 	}
 
 	/**
-	 * Starts the service
-	 * @param string $serviceName Service name
+	 * Starts a service
+	 * @param string $service Service name
 	 */
-	public function start(string $serviceName): void {
-		$cmd = 'supervisorctl start ' . escapeshellarg($serviceName);
+	public function start(string $service): void {
+		$cmd = 'supervisorctl start ' . escapeshellarg($service);
 		$this->commandManager->run($cmd, true);
 	}
 
 	/**
-	 * Stops the service
-	 * @param string $serviceName Service name
+	 * Starts multiple services
+	 * @param array<string> $services Service names
 	 */
-	public function stop(string $serviceName): void {
-		$cmd = 'supervisorctl stop ' . escapeshellarg($serviceName);
+	public function startMultiple(array $services): void {
+		foreach ($services as $service) {
+			$this->start($service);
+		}
+	}
+
+	/**
+	 * Stops a service
+	 * @param string $service Service name
+	 */
+	public function stop(string $service): void {
+		$cmd = 'supervisorctl stop ' . escapeshellarg($service);
 		$this->commandManager->run($cmd, true);
+	}
+
+	/**
+	 * Stops multiple services
+	 * @param array<string> $services Service names
+	 */
+	public function stopMultiple(array $services): void {
+		foreach ($services as $service) {
+			$this->stop($service);
+		}
 	}
 
 	/**

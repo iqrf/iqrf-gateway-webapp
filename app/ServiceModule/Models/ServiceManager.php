@@ -57,27 +57,51 @@ class ServiceManager {
 	}
 
 	/**
-	 * Disables the service
-	 * @param string $serviceName Service name
+	 * Disables a service
+	 * @param string $service Service name
 	 * @param bool $stop Stop service after disabling
 	 * @throws NonexistentServiceException
 	 * @throws NotImplementedException
 	 * @throws UnsupportedInitSystemException
 	 */
-	public function disable(string $serviceName, bool $stop = true): void {
-		$this->initDaemon->disable($serviceName, $stop);
+	public function disable(string $service, bool $stop = true): void {
+		$this->initDaemon->disable($service, $stop);
 	}
 
 	/**
-	 * Enables the service
-	 * @param string $serviceName Service name
-	 * @param bool $start Start service after enable
+	 * Disables multiple services
+	 * @param array<string> $services Service names
+	 * @param bool $stop Stop services after disabling
 	 * @throws NonexistentServiceException
 	 * @throws NotImplementedException
 	 * @throws UnsupportedInitSystemException
 	 */
-	public function enable(string $serviceName, bool $start = true): void {
-		$this->initDaemon->enable($serviceName, $start);
+	public function disableMultiple(array $services, bool $stop = true): void {
+		$this->initDaemon->disableMultiple($services, $stop);
+	}
+
+	/**
+	 * Enables a service
+	 * @param string $service Service name
+	 * @param bool $start Start service after enabling
+	 * @throws NonexistentServiceException
+	 * @throws NotImplementedException
+	 * @throws UnsupportedInitSystemException
+	 */
+	public function enable(string $service, bool $start = true): void {
+		$this->initDaemon->enable($service, $start);
+	}
+
+	/**
+	 * Enables multiple services
+	 * @param array<string> $services Service names
+	 * @param bool $start Starts services after enabling
+	 * @throws NonexistentServiceException
+	 * @throws NotImplementedException
+	 * @throws UnsupportedInitSystemException
+	 */
+	public function enableMultiple(array $services, bool $start = true): void {
+		$this->initDaemon->enableMultiple($services, $start);
 	}
 
 	/**
@@ -103,23 +127,43 @@ class ServiceManager {
 	}
 
 	/**
-	 * Starts the service
-	 * @param string $serviceName Service name
+	 * Starts a service
+	 * @param string $service Service name
 	 * @throws NonexistentServiceException
 	 * @throws UnsupportedInitSystemException
 	 */
-	public function start(string $serviceName): void {
-		$this->initDaemon->start($serviceName);
+	public function start(string $service): void {
+		$this->initDaemon->start($service);
 	}
 
 	/**
-	 * Stops the service
-	 * @param string $serviceName Service name
+	 * Starts multiple services
+	 * @param array<string> $services Service names
 	 * @throws NonexistentServiceException
 	 * @throws UnsupportedInitSystemException
 	 */
-	public function stop(string $serviceName): void {
-		$this->initDaemon->stop($serviceName);
+	public function startMultiple(array $services): void {
+		$this->initDaemon->startMultiple($services);
+	}
+
+	/**
+	 * Stops a service
+	 * @param string $service Service name
+	 * @throws NonexistentServiceException
+	 * @throws UnsupportedInitSystemException
+	 */
+	public function stop(string $service): void {
+		$this->initDaemon->stop($service);
+	}
+
+	/**
+	 * Stops multiple services
+	 * @param array<string> $services Service names
+	 * @throws NonexistentServiceException
+	 * @throws UnsupportedInitSystemException
+	 */
+	public function stopMultiple(array $services): void {
+		$this->initDaemon->stopMultiple($services);
 	}
 
 	/**

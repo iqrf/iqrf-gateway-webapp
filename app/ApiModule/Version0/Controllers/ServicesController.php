@@ -172,6 +172,12 @@ class ServicesController extends BaseController {
 	 * @Method("POST")
 	 * @OpenApi("
 	 *  summary: Enables the service
+	 *  requestBody:
+	 *      required: false
+	 *      content:
+	 *          application/json:
+	 *              schema:
+	 *                  $ref: '#/components/schemas/ServiceEnable'
 	 *  responses:
 	 *      '200':
 	 *          description: Success
@@ -192,11 +198,16 @@ class ServicesController extends BaseController {
 	public function enableService(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$name = $request->getParameter('name');
 		$this->isServiceWhitelisted($name);
+		$start = true;
+		if ($request->getContentsCopy() !== '') {
+			$this->validator->validateRequest('serviceEnable', $request);
+			$start = $request->getJsonBody()['start'];
+		}
 		try {
 			if ($name === 'mender-client') {
 				$this->manager->enable('mender-connect');
 			}
-			$this->manager->enable($name);
+			$this->manager->enable($name, $start);
 			return $response->writeBody('Workaround');
 		} catch (UnsupportedInitSystemException $e) {
 			throw new ServerErrorException('Unsupported init system', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
@@ -210,6 +221,12 @@ class ServicesController extends BaseController {
 	 * @Method("POST")
 	 * @OpenApi("
 	 *  summary: Disables the service
+	 *  requestBody:
+	 *      required: false
+	 *      content:
+	 *          application/json:
+	 *              schema:
+	 *                  $ref: '#/components/schemas/ServiceDisable'
 	 *  responses:
 	 *      '200':
 	 *          description: Success
@@ -230,11 +247,16 @@ class ServicesController extends BaseController {
 	public function disableService(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$name = $request->getParameter('name');
 		$this->isServiceWhitelisted($name);
+		$stop = true;
+		if ($request->getContentsCopy() !== '') {
+			$this->validator->validateRequest('serviceDisable', $request);
+			$stop = $request->getJsonBody()['stop'];
+		}
 		try {
 			if ($name === 'mender-client') {
 				$this->manager->disable('mender-connect');
 			}
-			$this->manager->disable($name);
+			$this->manager->disable($name, $stop);
 			return $response->writeBody('Workaround');
 		} catch (UnsupportedInitSystemException $e) {
 			throw new ServerErrorException('Unsupported init system', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);

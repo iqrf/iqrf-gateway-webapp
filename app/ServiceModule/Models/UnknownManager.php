@@ -28,22 +28,42 @@ use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
 class UnknownManager implements IServiceManager {
 
 	/**
-	 * Disables the service
-	 * @param string $serviceName Service name
+	 * Disables a service
+	 * @param string $service Service name
 	 * @param bool $stop Stop service after disabling
 	 * @throws UnsupportedInitSystemException
 	 */
-	public function disable(string $serviceName, bool $stop = true): void {
+	public function disable(string $service, bool $stop = true): void {
 		throw new UnsupportedInitSystemException();
 	}
 
 	/**
-	 * Enables the service
-	 * @param string $serviceName Service name
+	 * Disables multiple services
+	 * @param array<string> $services Service names
+	 * @param bool $stop Stop services after disabling
+	 * @throws UnsupportedInitSystemException
+	 */
+	public function disableMultiple(array $services, bool $stop = true): void {
+		throw new UnsupportedInitSystemException();
+	}
+
+	/**
+	 * Enables a service
+	 * @param string $service Service name
 	 * @param bool $start Start service after enable
 	 * @throws UnsupportedInitSystemException
 	 */
-	public function enable(string $serviceName, bool $start = true): void {
+	public function enable(string $service, bool $start = true): void {
+		throw new UnsupportedInitSystemException();
+	}
+
+	/**
+	 * Enables multiple services
+	 * @param array<string> $services Service names
+	 * @param bool $start Start services after enable
+	 * @throws UnsupportedInitSystemException
+	 */
+	public function enableMultiple(array $services, bool $start = true): void {
 		throw new UnsupportedInitSystemException();
 	}
 
@@ -66,20 +86,38 @@ class UnknownManager implements IServiceManager {
 	}
 
 	/**
-	 * Starts IQRF Gateway Daemon
-	 * @param string $serviceName Service name
+	 * Starts a service
+	 * @param string $service Service name
 	 * @throws UnsupportedInitSystemException
 	 */
-	public function start(string $serviceName): void {
+	public function start(string $service): void {
 		throw new UnsupportedInitSystemException();
 	}
 
 	/**
-	 * Stops the service
-	 * @param string $serviceName Service name
+	 * Starts multiple services
+	 * @param array<string> $services Service names
 	 * @throws UnsupportedInitSystemException
 	 */
-	public function stop(string $serviceName): void {
+	public function startMultiple(array $services): void {
+		throw new UnsupportedInitSystemException();
+	}
+
+	/**
+	 * Stops a service
+	 * @param string $service Service name
+	 * @throws UnsupportedInitSystemException
+	 */
+	public function stop(string $service): void {
+		throw new UnsupportedInitSystemException();
+	}
+
+	/**
+	 * Stops multiple services
+	 * @param array<string> $services Service names
+	 * @throws UnsupportedInitSystemException
+	 */
+	public function stopMultiple(array $services): void {
 		throw new UnsupportedInitSystemException();
 	}
 

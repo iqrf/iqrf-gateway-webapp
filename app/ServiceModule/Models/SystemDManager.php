@@ -43,13 +43,13 @@ class SystemDManager implements IServiceManager {
 	}
 
 	/**
-	 * Disables the service
-	 * @param string $serviceName Service name
+	 * Disables a service
+	 * @param string $service Service name
 	 * @param bool $stop Stop service after disabling
 	 * @throws NonexistentServiceException
 	 */
-	public function disable(string $serviceName, bool $stop = true): void {
-		$cmd = sprintf('systemctl disable%s %s', $stop ? ' --now' : '', $this->formatServiceName($serviceName));
+	public function disable(string $service, bool $stop = true): void {
+		$cmd = sprintf('systemctl disable%s %s', $stop ? ' --now' : '', $this->formatServiceName($service));
 		$command = $this->commandManager->run($cmd, true);
 		if ($command->getExitCode() !== 0) {
 			throw new NonexistentServiceException($command->getStderr());
@@ -57,13 +57,41 @@ class SystemDManager implements IServiceManager {
 	}
 
 	/**
-	 * Enables the service
-	 * @param string $serviceName Service name
+	 * Disables multiple services
+	 * @param array<string> $services Service names
+	 * @param bool $stop Stop services after disabling
+	 * @throws NonexistentServiceException
+	 */
+	public function disableMultiple(array $services, bool $stop = true): void {
+		$cmd = sprintf('systemctl disable%s %s', $stop ? ' --now' : '', $this->formatServiceNames($services));
+		$command = $this->commandManager->run($cmd, true);
+		if ($command->getExitCode() !== 0) {
+			throw new NonexistentServiceException($command->getStderr());
+		}
+	}
+
+	/**
+	 * Enables a service
+	 * @param string $service Service name
 	 * @param bool $start Start service after enable
 	 * @throws NonexistentServiceException
 	 */
-	public function enable(string $serviceName, bool $start = true): void {
-		$cmd = sprintf('systemctl enable%s %s', $start ? ' --now' : '', $this->formatServiceName($serviceName));
+	public function enable(string $service, bool $start = true): void {
+		$cmd = sprintf('systemctl enable%s %s', $start ? ' --now' : '', $this->formatServiceName($service));
+		$command = $this->commandManager->run($cmd, true);
+		if ($command->getExitCode() !== 0) {
+			throw new NonexistentServiceException($command->getStderr());
+		}
+	}
+
+	/**
+	 * Enables multiple services
+	 * @param array<string> $services Service names
+	 * @param bool $start Start services after enabling
+	 * @throws NonexistentServiceException
+	 */
+	public function enableMultiple(array $services, bool $start = true): void {
+		$cmd = sprintf('systemctl enable%s %s', $start ? ' --now' : '', $this->formatServiceNames($services));
 		$command = $this->commandManager->run($cmd, true);
 		if ($command->getExitCode() !== 0) {
 			throw new NonexistentServiceException($command->getStderr());
@@ -102,12 +130,12 @@ class SystemDManager implements IServiceManager {
 	}
 
 	/**
-	 * Starts the service
-	 * @param string $serviceName Service name
+	 * Starts a service
+	 * @param string $service Service name
 	 * @throws NonexistentServiceException
 	 */
-	public function start(string $serviceName): void {
-		$cmd = 'systemctl start ' . $this->formatServiceName($serviceName);
+	public function start(string $service): void {
+		$cmd = 'systemctl start ' . $this->formatServiceName($service);
 		$command = $this->commandManager->run($cmd, true);
 		if ($command->getExitCode() !== 0) {
 			throw new NonexistentServiceException($command->getStderr());
@@ -115,12 +143,38 @@ class SystemDManager implements IServiceManager {
 	}
 
 	/**
-	 * Stops the service
-	 * @param string $serviceName Service name
+	 * Starts multiple services
+	 * @param array<string> $services Service names
 	 * @throws NonexistentServiceException
 	 */
-	public function stop(string $serviceName): void {
-		$cmd = 'systemctl stop ' . $this->formatServiceName($serviceName);
+	public function startMultiple(array $services): void {
+		$cmd = 'systemctl start ' . $this->formatServiceNames($services);
+		$command = $this->commandManager->run($cmd, true);
+		if ($command->getExitCode() !== 0) {
+			throw new NonexistentServiceException($command->getStderr());
+		}
+	}
+
+	/**
+	 * Stops a service
+	 * @param string $service Service name
+	 * @throws NonexistentServiceException
+	 */
+	public function stop(string $service): void {
+		$cmd = 'systemctl stop ' . $this->formatServiceName($service);
+		$command = $this->commandManager->run($cmd, true);
+		if ($command->getExitCode() !== 0) {
+			throw new NonexistentServiceException($command->getStderr());
+		}
+	}
+
+	/**
+	 * Stops multiple services
+	 * @param array<string> $services Service names
+	 * @throws NonexistentServiceException
+	 */
+	public function stopMultiple(array $services): void {
+		$cmd = 'systemctl stop ' . $this->formatServiceNames($services);
 		$command = $this->commandManager->run($cmd, true);
 		if ($command->getExitCode() !== 0) {
 			throw new NonexistentServiceException($command->getStderr());
@@ -153,6 +207,15 @@ class SystemDManager implements IServiceManager {
 			throw new NonexistentServiceException($command->getStderr());
 		}
 		return $command->getStdout();
+	}
+
+	/**
+	 * Formats names of services
+	 * @param array<string> $services Service names
+	 * @return string Formatted service names
+	 */
+	private function formatServiceNames(array $services): string {
+		return implode(' ', array_map(fn (string $service): string => $this->formatServiceName($service), $services));
 	}
 
 	/**
