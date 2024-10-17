@@ -64,14 +64,6 @@ class BackupManager {
 	private const TMP_PATH = '/tmp/backup/';
 
 	/**
-	 * @var array<string> Services to include in backup
-	 */
-	private const SERVICES = [
-		'apcupsd',
-		'ssh',
-	];
-
-	/**
 	 * @var array<IBackupManager> Backup managers
 	 */
 	private array $backupManagers = [];
@@ -158,6 +150,7 @@ class BackupManager {
 	 */
 	public function restore(string $path): array {
 		$this->zipManager = new ZipArchiveManager($path, ZipArchive::CREATE);
+		$this->restoreServices();
 		$this->validate();
 		$this->checkImage();
 		foreach ($this->backupManagers as $manager) {
@@ -191,7 +184,6 @@ class BackupManager {
 	 * @throws JsonException
 	 */
 	private function backupServices(array $services): void {
-		$services = array_merge($services, self::SERVICES);
 		$enabledServices = [];
 		foreach ($services as $service) {
 			try {
@@ -215,20 +207,36 @@ class BackupManager {
 		}
 		$this->zipManager->extract(self::TMP_PATH, 'services/enabled_services.json');
 		$services = Json::decode(FileSystem::read(self::TMP_PATH . 'services/enabled_services.json'));
+		$toEnable = [];
+		$toDisable = [];
 		foreach ($services as $service => $enabled) {
 			try {
 				if ($enabled === true) {
 					if (!$this->serviceManager->isEnabled($service)) {
-						$this->serviceManager->enable($service, false);
+						$toEnable[] = $service;
 					}
 				} else {
 					if ($this->serviceManager->isEnabled($service)) {
-						$this->serviceManager->disable($service, false);
+						$toDisable[] = $service;
 					}
 				}
 			} catch (NonexistentServiceException $e) {
 				continue;
 			}
+		}
+		try {
+			if ($toEnable !== []) {
+				$this->serviceManager->enable($toEnable, false);
+			}
+		} catch (NonexistentServiceException $e) {
+			// noop
+		}
+		try {
+			if ($toDisable !== []) {
+				$this->serviceManager->disable($toDisable, false);
+			}
+		} catch (NonexistentServiceException $e) {
+			// noop
 		}
 	}
 
