@@ -54,17 +54,21 @@ export class ServiceService extends BaseService {
 	/**
 	 * Enable the service
 	 * @param {string} name Service name
+	 * @param {boolean | undefined} start Start service after enabling
 	 */
-	public async enable(name: string): Promise<void> {
-		await this.axiosInstance.post(`/services/${name}/enable`);
+	public async enable(name: string, start: boolean|undefined = undefined): Promise<void> {
+		const body = start !== undefined ? { now: start } : null;
+		await this.axiosInstance.post(`/services/${name}/enable`, body);
 	}
 
 	/**
 	 * Disable the service
 	 * @param {string} name Service name
+	 * @param {boolean | undefined} stop Stop service after disabling
 	 */
-	public async disable(name: string): Promise<void> {
-		await this.axiosInstance.post(`/services/${name}/disable`);
+	public async disable(name: string, stop: boolean|undefined = undefined): Promise<void> {
+		const body = stop !== undefined ? { now : stop } : null;
+		await this.axiosInstance.post(`/services/${name}/disable`, body);
 	}
 
 	/**

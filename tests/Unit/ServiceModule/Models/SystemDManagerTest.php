@@ -44,6 +44,11 @@ final class SystemDManagerTest extends CommandTestCase {
 	private const DAEMON_SERVICE_NAME = 'iqrf-gateway-daemon';
 
 	/**
+	 * IQRF Gateway Controller service name
+	 */
+	private const CONTROLLER_SERVICE_NAME = 'iqrf-gateway-controller';
+
+	/**
 	 * Unknown service name
 	 */
 	private const UNKNOWN_SERVICE_NAME = 'unknown';
@@ -58,14 +63,19 @@ final class SystemDManagerTest extends CommandTestCase {
 	 */
 	public function testDisable(): void {
 		$commands = [
-			'systemctl stop \'' . self::DAEMON_SERVICE_NAME . '.service\'',
+			'systemctl disable --now \'' . self::DAEMON_SERVICE_NAME . '.service\'',
 			'systemctl disable \'' . self::DAEMON_SERVICE_NAME . '.service\'',
+			'systemctl disable --now \'' . self::DAEMON_SERVICE_NAME . '.service\' \'' . self::CONTROLLER_SERVICE_NAME . '.service\'',
+			'systemctl disable \'' . self::DAEMON_SERVICE_NAME . '.service\' \'' . self::CONTROLLER_SERVICE_NAME . '.service\'',
 		];
 		foreach ($commands as $command) {
 			$this->receiveCommand($command, true);
 		}
 		Assert::noError(function (): void {
 			$this->manager->disable(self::DAEMON_SERVICE_NAME);
+			$this->manager->disable(self::DAEMON_SERVICE_NAME, false);
+			$this->manager->disable([self::DAEMON_SERVICE_NAME, self::CONTROLLER_SERVICE_NAME]);
+			$this->manager->disable([self::DAEMON_SERVICE_NAME, self::CONTROLLER_SERVICE_NAME], false);
 		});
 	}
 
@@ -77,7 +87,7 @@ final class SystemDManagerTest extends CommandTestCase {
 		$stderr = 'Failed to disable unit: Unit file unknown.service does not exist.';
 		$this->receiveCommand($command, true, '', $stderr, 1);
 		Assert::throws(function (): void {
-			$this->manager->disable(self::UNKNOWN_SERVICE_NAME);
+			$this->manager->disable(self::UNKNOWN_SERVICE_NAME, false);
 		}, NonexistentServiceException::class, $stderr);
 	}
 
@@ -86,14 +96,19 @@ final class SystemDManagerTest extends CommandTestCase {
 	 */
 	public function testEnable(): void {
 		$commands = [
+			'systemctl enable --now \'' . self::DAEMON_SERVICE_NAME . '.service\'',
 			'systemctl enable \'' . self::DAEMON_SERVICE_NAME . '.service\'',
-			'systemctl start \'' . self::DAEMON_SERVICE_NAME . '.service\'',
+			'systemctl enable --now \'' . self::DAEMON_SERVICE_NAME . '.service\' \'' . self::CONTROLLER_SERVICE_NAME . '.service\'',
+			'systemctl enable \'' . self::DAEMON_SERVICE_NAME . '.service\' \'' . self::CONTROLLER_SERVICE_NAME . '.service\'',
 		];
 		foreach ($commands as $command) {
 			$this->receiveCommand($command, true);
 		}
 		Assert::noError(function (): void {
 			$this->manager->enable(self::DAEMON_SERVICE_NAME);
+			$this->manager->enable(self::DAEMON_SERVICE_NAME, false);
+			$this->manager->enable([self::DAEMON_SERVICE_NAME, self::CONTROLLER_SERVICE_NAME]);
+			$this->manager->enable([self::DAEMON_SERVICE_NAME, self::CONTROLLER_SERVICE_NAME], false);
 		});
 	}
 
@@ -105,7 +120,7 @@ final class SystemDManagerTest extends CommandTestCase {
 		$stderr = 'Failed to enable unit: Unit file unknown.service does not exist.';
 		$this->receiveCommand($command, true, '', $stderr, 1);
 		Assert::throws(function (): void {
-			$this->manager->enable(self::UNKNOWN_SERVICE_NAME);
+			$this->manager->enable(self::UNKNOWN_SERVICE_NAME, false);
 		}, NonexistentServiceException::class, $stderr);
 	}
 
@@ -152,10 +167,16 @@ final class SystemDManagerTest extends CommandTestCase {
 	 * Tests the function to start the service via systemD
 	 */
 	public function testStart(): void {
-		$command = 'systemctl start \'' . self::DAEMON_SERVICE_NAME . '.service\'';
-		$this->receiveCommand($command, true);
+		$commands = [
+			'systemctl start \'' . self::DAEMON_SERVICE_NAME . '.service\'',
+			'systemctl start \'' . self::DAEMON_SERVICE_NAME . '.service\' \'' . self::CONTROLLER_SERVICE_NAME . '.service\'',
+		];
+		foreach ($commands as $command) {
+			$this->receiveCommand($command, true);
+		}
 		Assert::noError(function (): void {
 			$this->manager->start(self::DAEMON_SERVICE_NAME);
+			$this->manager->start([self::DAEMON_SERVICE_NAME, self::CONTROLLER_SERVICE_NAME]);
 		});
 	}
 
@@ -175,10 +196,16 @@ final class SystemDManagerTest extends CommandTestCase {
 	 * Tests the function to stop the service via systemD
 	 */
 	public function testStop(): void {
-		$command = 'systemctl stop \'' . self::DAEMON_SERVICE_NAME . '.service\'';
-		$this->receiveCommand($command, true);
+		$commands = [
+			'systemctl stop \'' . self::DAEMON_SERVICE_NAME . '.service\'',
+			'systemctl stop \'' . self::DAEMON_SERVICE_NAME . '.service\' \'' . self::CONTROLLER_SERVICE_NAME . '.service\'',
+		];
+		foreach ($commands as $command) {
+			$this->receiveCommand($command, true);
+		}
 		Assert::noError(function (): void {
 			$this->manager->stop(self::DAEMON_SERVICE_NAME);
+			$this->manager->stop([self::DAEMON_SERVICE_NAME, self::CONTROLLER_SERVICE_NAME]);
 		});
 	}
 

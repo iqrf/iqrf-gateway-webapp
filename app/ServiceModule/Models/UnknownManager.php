@@ -29,20 +29,22 @@ use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
 class UnknownManager implements IServiceManager {
 
 	/**
-	 * Disables the service
-	 * @param string $serviceName Service name
+	 * Disables service(s)
+	 * @param string|array<string> $services Service name(s)
+	 * @param bool $stop Stop service(s) after disabling
 	 * @throws UnsupportedInitSystemException
 	 */
-	public function disable(string $serviceName): void {
+	public function disable(string|array $services, bool $stop = true): void {
 		throw new UnsupportedInitSystemException();
 	}
 
 	/**
-	 * Enables the service
-	 * @param string $serviceName Service name
+	 * Enables service(s)
+	 * @param string|array<string> $services Service name(s)
+	 * @param bool $start Start service(s) after enabling
 	 * @throws UnsupportedInitSystemException
 	 */
-	public function enable(string $serviceName): void {
+	public function enable(string|array $services, bool $start = true): void {
 		throw new UnsupportedInitSystemException();
 	}
 
@@ -65,20 +67,20 @@ class UnknownManager implements IServiceManager {
 	}
 
 	/**
-	 * Starts IQRF Gateway Daemon
-	 * @param string $serviceName Service name
+	 * Starts service(s)
+	 * @param string|array<string> $services Service name(s)
 	 * @throws UnsupportedInitSystemException
 	 */
-	public function start(string $serviceName): void {
+	public function start(string|array $services): void {
 		throw new UnsupportedInitSystemException();
 	}
 
 	/**
-	 * Stops the service
-	 * @param string $serviceName Service name
+	 * Stops service(s)
+	 * @param string|array<string> $services Service name(s)
 	 * @throws UnsupportedInitSystemException
 	 */
-	public function stop(string $serviceName): void {
+	public function stop(string|array $services): void {
 		throw new UnsupportedInitSystemException();
 	}
 

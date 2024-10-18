@@ -29,18 +29,20 @@ use App\ServiceModule\Exceptions\NonexistentServiceException;
 interface IServiceManager {
 
 	/**
-	 * Disables the service
-	 * @param string $serviceName Service name
+	 * Disables service(s)
+	 * @param string|array<string> $services Service name(s)
+	 * @param bool $stop Stop service(s) after disabling
 	 * @throws NonexistentServiceException
 	 */
-	public function disable(string $serviceName): void;
+	public function disable(string|array $services, bool $stop = true): void;
 
 	/**
-	 * Enables the service
-	 * @param string $serviceName Service name
+	 * Enables service(s)
+	 * @param string|array<string> $services Service name(s)
+	 * @param bool $start Start service(s) after enabling
 	 * @throws NonexistentServiceException
 	 */
-	public function enable(string $serviceName): void;
+	public function enable(string|array $services, bool $start = true): void;
 
 	/**
 	 * Checks if the service is active
@@ -59,18 +61,18 @@ interface IServiceManager {
 	public function isEnabled(string $serviceName): bool;
 
 	/**
-	 * Starts the service
-	 * @param string $serviceName Service name
+	 * Starts service(s)
+	 * @param string|array<string> $services Service name(s)
 	 * @throws NonexistentServiceException
 	 */
-	public function start(string $serviceName): void;
+	public function start(string|array $services): void;
 
 	/**
-	 * Stops the service
-	 * @param string $serviceName Service name
+	 * Stops service(s)
+	 * @param string|array<string> $services Service name(s)
 	 * @throws NonexistentServiceException
 	 */
-	public function stop(string $serviceName): void;
+	public function stop(string|array $services): void;
 
 	/**
 	 * Restarts the service

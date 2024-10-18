@@ -39,18 +39,20 @@ class SupervisordManager implements IServiceManager {
 	}
 
 	/**
-	 * Disables the service
-	 * @param string $serviceName Service name
+	 * Disables service(s)
+	 * @param string|array<string> $services Service name(s)
+	 * @param bool $stop Stop service(s) after disabling
 	 */
-	public function disable(string $serviceName): void {
+	public function disable(string|array $services, bool $stop = true): void {
 		throw new NotImplementedException();
 	}
 
 	/**
-	 * Enables the service
-	 * @param string $serviceName Service name
+	 * Enables service(s)
+	 * @param string|array<string> $services Service name(s)
+	 * @param bool $start Start service(s) after enabling
 	 */
-	public function enable(string $serviceName): void {
+	public function enable(string|array $services, bool $start = true): void {
 		throw new NotImplementedException();
 	}
 
@@ -71,21 +73,31 @@ class SupervisordManager implements IServiceManager {
 	}
 
 	/**
-	 * Starts the service
-	 * @param string $serviceName Service name
+	 * Starts service(s)
+	 * @param string|array<string> $services Service name(s)
 	 */
-	public function start(string $serviceName): void {
-		$cmd = 'supervisorctl start ' . escapeshellarg($serviceName);
-		$this->commandManager->run($cmd, true);
+	public function start(string|array $services): void {
+		if (!is_array($services)) {
+			$services = [$services];
+		}
+		foreach ($services as $service) {
+			$cmd = 'supervisorctl start ' . escapeshellarg($service);
+			$this->commandManager->run($cmd, true);
+		}
 	}
 
 	/**
-	 * Stops the service
-	 * @param string $serviceName Service name
+	 * Stops service(s)
+	 * @param string|array<string> $services Service name(s)
 	 */
-	public function stop(string $serviceName): void {
-		$cmd = 'supervisorctl stop ' . escapeshellarg($serviceName);
-		$this->commandManager->run($cmd, true);
+	public function stop(string|array $services): void {
+		if (!is_array($services)) {
+			$services = [$services];
+		}
+		foreach ($services as $service) {
+			$cmd = 'supervisorctl stop ' . escapeshellarg($service);
+			$this->commandManager->run($cmd, true);
+		}
 	}
 
 	/**

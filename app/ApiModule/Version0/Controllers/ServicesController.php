@@ -169,6 +169,12 @@ class ServicesController extends BaseController {
 	#[Method('POST')]
 	#[OpenApi('
 		summary: Enables the service
+		requestBody:
+			required: false
+			content:
+				application/json:
+					schema:
+						$ref: \'#/components/schemas/ServiceControl\'
 		responses:
 			\'200\':
 				description: Success
@@ -183,8 +189,13 @@ class ServicesController extends BaseController {
 	public function enableService(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$name = $request->getParameter('name');
 		$this->isServiceWhitelisted($name);
+		$start = true;
+		if ($request->getContentsCopy() !== '') {
+			$this->validators->validateRequest('serviceControl', $request);
+			$start = $request->getJsonBody()['now'];
+		}
 		try {
-			$this->manager->enable($name);
+			$this->manager->enable($name, $start);
 			return $response;
 		} catch (UnsupportedInitSystemException $e) {
 			throw new ServerErrorException('Unsupported init system', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
@@ -197,6 +208,12 @@ class ServicesController extends BaseController {
 	#[Method('POST')]
 	#[OpenApi('
 		summary: Disables the service
+		requestBody:
+			required: false
+			content:
+				application/json:
+					schema:
+						$ref: \'#/components/schemas/ServiceControl\'
 		responses:
 			\'200\':
 				description: Success
@@ -213,8 +230,13 @@ class ServicesController extends BaseController {
 	public function disableService(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$name = $request->getParameter('name');
 		$this->isServiceWhitelisted($name);
+		$stop = true;
+		if ($request->getContentsCopy() !== '') {
+			$this->validators->validateRequest('serviceControl', $request);
+			$stop = $request->getJsonBody()['now'];
+		}
 		try {
-			$this->manager->disable($name);
+			$this->manager->disable($name, $stop);
 			return $response;
 		} catch (UnsupportedInitSystemException $e) {
 			throw new ServerErrorException('Unsupported init system', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
