@@ -257,6 +257,67 @@
 						"type"
 					],
 					"properties": {
+						"eap": {
+							"$id": "#/properties/wifi/properties/security/properties/eap",
+							"type": "object",
+							"title": "EAP",
+							"additionalProperties": false,
+							"required": [
+								"phaseOneMethod"
+							],
+							"properties": {
+								"anonymousIdentity": {
+									"$id": "#/properties/wifi/properties/security/properties/eap/anonymousIdentity",
+									"type": "string",
+									"title": "EAP anonymous identity",
+									"example": "anonymous"
+								},
+								"cert": {
+									"$id": "#/properties/wifi/properties/security/properties/eap/cert",
+									"type": "string",
+									"title": "EAP CA certificate",
+									"example": "/root/certificate.pem"
+								},
+								"identity": {
+									"$id": "#/properties/wifi/properties/security/properties/eap/identity",
+									"type": "string",
+									"title": "EAP identity",
+									"example": "username"
+								},
+								"password": {
+									"$id": "#/properties/wifi/properties/security/properties/eap/password",
+									"type": "string",
+									"title": "EAP password",
+									"example": "password"
+								},
+								"phaseOneMethod": {
+									"$id": "#/properties/wifi/properties/security/properties/eap/phaseOneMethod",
+									"type": "string",
+									"title": "EAP phase one method",
+									"enum": [
+										"fast",
+										"leap",
+										"md5",
+										"peap",
+										"pwd",
+										"tls",
+										"ttls"
+									],
+									"example": "peap"
+								},
+								"phaseTwoMethod": {
+									"$id": "#/properties/wifi/properties/security/properties/eap/phaseTwoMethod",
+									"type": "string",
+									"title": "EAP phase two method",
+									"enum": [
+										"gtc",
+										"md5",
+										"mschapv2"
+									],
+									"example": "mschapv2"
+								}
+							}
+						},
 						"type": {
 							"$id": "#/properties/wifi/properties/security/properties/type",
 							"type": "string",
@@ -348,6 +409,21 @@
 						}
 					},
 					"allOf": [
+						{
+							"if": {
+								"properties": {
+									"type": {
+										"const": "wpa-eap"
+									}
+								}
+							},
+							"then": {
+								"required": [
+									"type",
+									"eap"
+								]
+							}
+						},
 						{
 							"if": {
 								"properties": {
