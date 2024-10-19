@@ -49,7 +49,7 @@ class ServiceService {
 	 * @param stop Stop after disabling
 	 */
 	disable(name: string, stop: boolean | undefined = undefined): Promise<AxiosResponse> {
-		const body = stop === undefined ? null : {now: stop};
+		const body = stop === undefined ? null : {stop: stop};
 		return axios.post(
 			'services/' + name + '/disable',
 			body,
@@ -63,7 +63,7 @@ class ServiceService {
 	 * @param start Start after enabling
 	 */
 	enable(name: string, start: boolean | undefined = undefined): Promise<AxiosResponse> {
-		const body = start === undefined ? null : {now: start};
+		const body = start === undefined ? null : {start: start};
 		console.warn(body);
 		return axios.post(
 			'services/' + name + '/enable',
