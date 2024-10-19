@@ -15,6 +15,7 @@
 
 services:
 	- App\GatewayModule\Models\Backup\RestoreLogger
+	apcupsdBackup: App\GatewayModule\Models\Backup\ApcupsdBackup
 	controllerBackup: App\GatewayModule\Models\Backup\ControllerBackup(@controller.fileManager)
 	daemonBackup: App\GatewayModule\Models\Backup\DaemonBackup
 	gatewayFileBackup.fileManager:
@@ -29,6 +30,7 @@ services:
 		factory: App\CoreModule\Models\PrivilegedFileManager(%paths.networkManager.configDir%)
 		autowired: false
 	networkManagerBackup: App\GatewayModule\Models\Backup\NetworkManagerBackup(@networkManager.fileManager)
+	sshBackup: App\GatewayModule\Models\Backup\SshBackup
 	timeBackup: App\GatewayModule\Models\Backup\TimeBackup
 	timesyncdBackup: App\GatewayModule\Models\Backup\TimesyncdBackup(@commandManager, %paths.timesyncd.config%)
 	translatorBackup: App\GatewayModule\Models\Backup\TranslatorBackup(@translator.fileManager)
@@ -38,6 +40,7 @@ services:
 	uploaderBackup: App\GatewayModule\Models\Backup\UploaderBackup(@uploader.fileManager)
 	webappBackup: App\GatewayModule\Models\Backup\WebappBackup(%paths.iqrfGatewayWebapp%)
 	- App\GatewayModule\Models\BackupManager([
+		@apcupsdBackup,
 		@controllerBackup,
 		@daemonBackup,
 		@hostBackup,
@@ -45,6 +48,7 @@ services:
 		@menderBackup,
 		@monitBackup,
 		@networkManagerBackup,
+		@sshBackup,
 		@timeBackup,
 		@timesyncdBackup,
 		@translatorBackup,

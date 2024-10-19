@@ -44,6 +44,11 @@ final class SystemDManagerTest extends CommandTestCase {
 	private const DAEMON_SERVICE_NAME = 'iqrf-gateway-daemon';
 
 	/**
+	 * @var string IQRF Gateway Controller service name
+	 */
+	private const CONTROLLER_SERVICE_NAME = 'iqrf-gateway-controller';
+
+	/**
 	 * @var string Unknown service name
 	 */
 	private const UNKNOWN_SERVICE_NAME = 'unknown';
@@ -67,6 +72,23 @@ final class SystemDManagerTest extends CommandTestCase {
 		Assert::noError(function (): void {
 			$this->manager->disable(self::DAEMON_SERVICE_NAME);
 			$this->manager->disable(self::DAEMON_SERVICE_NAME, false);
+		});
+	}
+
+	/**
+	 * Tests function to disable multiple services at once via systemD
+	 */
+	public function testDisableMultiple(): void {
+		$commands = [
+			'systemctl disable --now \'' . self::DAEMON_SERVICE_NAME . '.service\' \'' . self::CONTROLLER_SERVICE_NAME . '.service\'',
+			'systemctl disable \'' . self::DAEMON_SERVICE_NAME . '.service\' \'' . self::CONTROLLER_SERVICE_NAME . '.service\'',
+		];
+		foreach ($commands as $command) {
+			$this->receiveCommand($command, true);
+		}
+		Assert::noError(function (): void {
+			$this->manager->disableMultiple([self::DAEMON_SERVICE_NAME, self::CONTROLLER_SERVICE_NAME]);
+			$this->manager->disableMultiple([self::DAEMON_SERVICE_NAME, self::CONTROLLER_SERVICE_NAME], false);
 		});
 	}
 
@@ -96,6 +118,23 @@ final class SystemDManagerTest extends CommandTestCase {
 		Assert::noError(function (): void {
 			$this->manager->enable(self::DAEMON_SERVICE_NAME);
 			$this->manager->enable(self::DAEMON_SERVICE_NAME, false);
+		});
+	}
+
+	/**
+	 * Tests function to enable multiple services at once via systemD
+	 */
+	public function testEnableMultiple(): void {
+		$commands = [
+			'systemctl enable --now \'' . self::DAEMON_SERVICE_NAME . '.service\' \'' . self::CONTROLLER_SERVICE_NAME . '.service\'',
+			'systemctl enable \'' . self::DAEMON_SERVICE_NAME . '.service\' \'' . self::CONTROLLER_SERVICE_NAME . '.service\'',
+		];
+		foreach ($commands as $command) {
+			$this->receiveCommand($command, true);
+		}
+		Assert::noError(function (): void {
+			$this->manager->enableMultiple([self::DAEMON_SERVICE_NAME, self::CONTROLLER_SERVICE_NAME]);
+			$this->manager->enableMultiple([self::DAEMON_SERVICE_NAME, self::CONTROLLER_SERVICE_NAME], false);
 		});
 	}
 
@@ -162,6 +201,17 @@ final class SystemDManagerTest extends CommandTestCase {
 	}
 
 	/**
+	 * Tests function to start multiple services at once via systemD
+	 */
+	public function testStartMultiple(): void {
+		$command = 'systemctl start \'' . self::DAEMON_SERVICE_NAME . '.service\' \'' . self::CONTROLLER_SERVICE_NAME . '.service\'';
+		$this->receiveCommand($command, true);
+		Assert::noError(function (): void {
+			$this->manager->startMultiple([self::DAEMON_SERVICE_NAME, self::CONTROLLER_SERVICE_NAME]);
+		});
+	}
+
+	/**
 	 * Tests the function to start the service via systemD - unknown service
 	 */
 	public function testStartUnknown(): void {
@@ -181,6 +231,17 @@ final class SystemDManagerTest extends CommandTestCase {
 		$this->receiveCommand($command, true);
 		Assert::noError(function (): void {
 			$this->manager->stop(self::DAEMON_SERVICE_NAME);
+		});
+	}
+
+	/**
+	 * Tests function to stop multiple services at once via systemD
+	 */
+	public function testStopMultiple(): void {
+		$command = 'systemctl stop \'' . self::DAEMON_SERVICE_NAME . '.service\' \'' . self::CONTROLLER_SERVICE_NAME . '.service\'';
+		$this->receiveCommand($command, true);
+		Assert::noError(function (): void {
+			$this->manager->stopMultiple([self::DAEMON_SERVICE_NAME, self::CONTROLLER_SERVICE_NAME]);
 		});
 	}
 

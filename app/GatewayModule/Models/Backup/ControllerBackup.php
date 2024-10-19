@@ -52,7 +52,7 @@ class ControllerBackup extends IqrfSoftwareBackup {
 	 * @return array<string> Service names
 	 */
 	public function getServices(): array {
-		return ['iqrf-gateway-controller'];
+		return $this->featureEnabled ? ['iqrf-gateway-controller'] : [];
 	}
 
 }
