@@ -1,0 +1,18 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/serviceDisable.json",
+	"type": "object",
+	"title": "Service disable control",
+	"additionalProperties": false,
+	"required": [
+		"stop"
+	],
+	"properties": {
+		"stop": {
+			"$id": "#/properties/stop",
+			"title": "Stop service when disabling.",
+			"type": "boolean",
+			"example": true
+		}
+	}
+}

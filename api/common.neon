@@ -264,8 +264,10 @@ components:
 			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/remount.json
 		SchedulerMessagings:
 			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/schedulerMessagings.json
-		ServiceControl:
-			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/serviceControl.json
+		ServiceDisable:
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/serviceDisable.json
+		ServiceEnable:
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/serviceEnable.json
 		ServiceList:
 			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/serviceList.json
 			title: Services - list

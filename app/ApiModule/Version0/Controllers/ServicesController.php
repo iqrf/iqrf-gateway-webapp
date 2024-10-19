@@ -174,7 +174,7 @@ class ServicesController extends BaseController {
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/ServiceControl\'
+						$ref: \'#/components/schemas/ServiceEnable\'
 		responses:
 			\'200\':
 				description: Success
@@ -191,8 +191,8 @@ class ServicesController extends BaseController {
 		$this->isServiceWhitelisted($name);
 		$start = true;
 		if ($request->getContentsCopy() !== '') {
-			$this->validators->validateRequest('serviceControl', $request);
-			$start = $request->getJsonBody()['now'];
+			$this->validators->validateRequest('serviceEnable', $request);
+			$start = $request->getJsonBody()['start'];
 		}
 		try {
 			$this->manager->enable($name, $start);
@@ -213,7 +213,7 @@ class ServicesController extends BaseController {
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/ServiceControl\'
+						$ref: \'#/components/schemas/ServiceDisable\'
 		responses:
 			\'200\':
 				description: Success
@@ -232,8 +232,8 @@ class ServicesController extends BaseController {
 		$this->isServiceWhitelisted($name);
 		$stop = true;
 		if ($request->getContentsCopy() !== '') {
-			$this->validators->validateRequest('serviceControl', $request);
-			$stop = $request->getJsonBody()['now'];
+			$this->validators->validateRequest('serviceDisable', $request);
+			$stop = $request->getJsonBody()['stop'];
 		}
 		try {
 			$this->manager->disable($name, $stop);
