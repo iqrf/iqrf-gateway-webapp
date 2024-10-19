@@ -66,6 +66,13 @@ export default class IqrfServiceDisambiguation extends Vue {
 			role: UserRoleIndex.NORMAL,
 			feature: 'iqrfGatewayTranslator',
 		},
+		{
+			title: this.$t('service.iqrf-cloud-provisioning.title').toString(),
+			description: this.$t('service.iqrf-cloud-provisioning.description').toString(),
+			to: '/gateway/service/iqrf-cloud-provisioning/',
+			role: UserRoleIndex.NORMAL,
+			feature: 'iqrfCloudProvisioning',
+		},
 	];
 
 }

@@ -3410,6 +3410,18 @@
 			"title": "IQRF services",
 			"description": "Control IQRF Gateway's services."
 		},
+		"iqrf-cloud-provisioning": {
+			"title": "Cloud Provisioning",
+			"description": "Control IQRF Cloud Provisioning's service.",
+			"messages": {
+				"disabled": "IQRF Cloud Provisioning is disabled.",
+				"disable": "IQRF Cloud Provisioning has been disabled.",
+				"enable": "IQRF Cloud Provisioning has been enabled.",
+				"start": "IQRF Cloud Provisioning has been started.",
+				"stop": "IQRF Cloud Provisioning has been stopped.",
+				"restart": "IQRF Cloud Provisioning has been restarted."
+			}
+		},
 		"iqrf-gateway-controller": {
 			"title": "Controller",
 			"description": "Control IQRF Gateway Controller's service.",

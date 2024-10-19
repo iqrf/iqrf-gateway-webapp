@@ -28,6 +28,9 @@ gatewayPass:
 grafana:
 	enabled: false
 	url: /grafana/
+# IQRF Cloud Provisioning configuration
+iqrfCloudProvisioning:
+	enabled: false
 # IQRF Gateway Controller configuration
 iqrfGatewayController:
 	enabled: false

@@ -337,9 +337,7 @@ build-package_iqaros:
     - git checkout -B "$CI_COMMIT_REF_NAME" "$CI_COMMIT_SHA"
   script:
     - mkdir -p debian/patches
-    - cp debian/iqd-gw-01/patches/* debian/patches/
     - cp debian/iqaros/patches/* debian/patches/
-    - ls --format=single-column debian/iqd-gw-01/patches/ >> debian/patches/series
     - ls --format=single-column debian/iqaros/patches/ >> debian/patches/series
     - gbp dch -a -S --ignore-branch --snapshot-number="$CI_PIPELINE_ID"
     - debuild -e CI_PIPELINE_ID -b -us -uc -tc
@@ -359,9 +357,7 @@ build-package_iqaros_release:
     - git checkout -B "$CI_COMMIT_REF_NAME" "$CI_COMMIT_SHA"
   script:
     - mkdir -p debian/patches
-    - cp debian/iqd-gw-01/patches/* debian/patches/
     - cp debian/iqaros/patches/* debian/patches/
-    - ls --format=single-column debian/iqd-gw-01/patches/ >> debian/patches/series
     - ls --format=single-column debian/iqaros/patches/ >> debian/patches/series
     - debuild -b -us -uc -tc
     - mv ../*.deb .
