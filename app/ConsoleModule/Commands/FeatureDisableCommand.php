@@ -71,7 +71,7 @@ class FeatureDisableCommand extends FeatureCommand {
 			$message = sprintf('Features %s have been successfully disabled.', implode(', ', $names));
 		}
 		$style->success($message);
-		$this->getApplication()->find('nette:cache:purge')->execute($input, $output);
+		$this->clearCache($output);
 		return 0;
 	}
 
