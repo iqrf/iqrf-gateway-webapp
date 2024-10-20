@@ -20,38 +20,47 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models\Backup;
 
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FeatureManager;
-use App\CoreModule\Models\FileManager;
+use App\CoreModule\Models\ZipArchiveManager;
 
 /**
- * Controller backup manager
+ * Apcupsd backup manager
  */
-class ControllerBackup extends IqrfSoftwareBackup {
+class ApcupsdBackup implements IBackupManager {
 
 	/**
-	 * List of whitelisted files
+	 * Service unit file
 	 */
-	final public const WHITELIST = [
-		'config.json',
-	];
+	final public const SERVICE = 'apcupsd';
 
 	/**
-	 * Service names
+	 * @var bool Feature enabled
 	 */
-	final public const SERVICES = [
-		'iqrf-gateway-controller',
-	];
+	private bool $featureEnabled;
 
 	/**
 	 * Constructor
-	 * @param FileManager $fileManager File manager
-	 * @param CommandManager $commandManager Command manager
 	 * @param FeatureManager $featureManager Feature manager
-	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
-	public function __construct(FileManager $fileManager, CommandManager $commandManager, FeatureManager $featureManager, RestoreLogger $restoreLogger) {
-		parent::__construct(self::IQRF_GATEWAY_CONTROLLER, $fileManager, $commandManager, $featureManager, $restoreLogger);
+	public function __construct(FeatureManager $featureManager) {
+		$this->featureEnabled = $featureManager->get('apcupsd')['enabled'];
+	}
+
+	/**
+	 * Performs apcupsd backup
+	 * @param array<string, array<string, bool>> $params Request parameters
+	 * @param ZipArchiveManager $zipManager ZIP archive manager
+	 */
+	public function backup(array $params, ZipArchiveManager $zipManager): void {
+		// nothing to backup
+	}
+
+	/**
+	 * Performs apcupsd restore
+	 * @param ZipArchiveManager $zipManager ZIP archive manager
+	 */
+	public function restore(ZipArchiveManager $zipManager): void {
+		// nothing to restore
 	}
 
 	/**
@@ -59,7 +68,7 @@ class ControllerBackup extends IqrfSoftwareBackup {
 	 * @return array<string> Service names
 	 */
 	public function getServices(): array {
-		return $this->featureEnabled ? self::SERVICES : [];
+		return $this->featureEnabled ? [self::SERVICE] : [];
 	}
 
 }

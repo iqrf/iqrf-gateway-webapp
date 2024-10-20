@@ -108,7 +108,7 @@ class NetworkManagerBackup implements IBackupManager {
 	 * @return array<string> Service names
 	 */
 	public function getServices(): array {
-		return self::SERVICES;
+		return $this->featureEnabled ? self::SERVICES : [];
 	}
 
 	/**

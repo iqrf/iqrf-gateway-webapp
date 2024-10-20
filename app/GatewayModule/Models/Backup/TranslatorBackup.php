@@ -37,6 +37,13 @@ class TranslatorBackup extends IqrfSoftwareBackup {
 	];
 
 	/**
+	 * Service names
+	 */
+	final public const SERVICES = [
+		'iqrf-gateway-translator',
+	];
+
+	/**
 	 * Constructor
 	 * @param FileManager $fileManager File manager
 	 * @param CommandManager $commandManager Command manager
@@ -52,7 +59,7 @@ class TranslatorBackup extends IqrfSoftwareBackup {
 	 * @return array<string> Service names
 	 */
 	public function getServices(): array {
-		return ['iqrf-gateway-translator'];
+		return $this->featureEnabled ? self::SERVICES : [];
 	}
 
 }
