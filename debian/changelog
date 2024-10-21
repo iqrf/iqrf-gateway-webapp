@@ -1,10 +1,42 @@
-iqrf-gateway-webapp (2.6.0~alpha~1.gbp459461) UNRELEASED; urgency=medium
+iqrf-gateway-webapp (2.6.0~rc1) testing; urgency=medium
 
-  ** SNAPSHOT build @4594614e4f49ec7e634af95c8d9d0642bb3c301c **
+  [ Roman Ondráček ]
+  * Maintenance: fix Mender client configuration
+  * NPM: update dependencies, fix TypeScript config
+  * PHPStan: update configuration
+  * API: load JSON schemas from the filesystem
+  * Config: add Syslog logging configuration
+  * NPM: update dependencies
+  * Composer: update dependencies
 
-	* UNRELEASED
+  [ Karel Hanák ]
+  * Prepare for version 2.6.0-alpha
+  * support for new Light standard, removed DALI components
 
- -- Karel Hanák <karel.hanak@iqrf.org>  Wed, 12 Jun 2024 11:49:42 +0200
+  [ Roman Ondráček ]
+  * Docker: fix build of frontend images
+
+  [ Karel Hanák ]
+  * LightManager: update set voltage request params and error handling
+
+  [ Roman Ondráček ]
+  * API: update iqrf-gateway-daemon JSON schemas
+  * Cloud services: remove Inteliments InteliGlue MQTT connection creator
+  * Config: update MQTT configuration to use autodetection for TLS usage
+
+  [ Karel Hanák ]
+  * GatewayInfoUtil: include gwHwpid property
+  * updated GatewayInfoUtil tests
+  * BackupManager: updated image version check regex pattern
+  * JournalConfigManager: fixed phpstan error
+  * JournalConfigManager: fixed return type in docstring
+  * phpstan: ignore preg_match comparison
+  * Services: enable, disable, start and stop multiple services, optionally start and stop services when enabling or disabling
+  * Backup: filter services based on enabled features
+  * added cloud provisioning feature, include cloud provisioning in backup archive, restore
+  * ServiceService: fixed disable and enable params
+
+ -- Karel Hanák <karel.hanak@iqrf.org>  Mon, 21 Oct 2024 12:15:00 +0200
 
 iqrf-gateway-webapp (2.5.20) stable; urgency=medium
 
