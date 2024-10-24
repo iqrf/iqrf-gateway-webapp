@@ -165,7 +165,7 @@ describe('AccountService', (): void => {
 	it('verify e-mail address', async (): Promise<void> => {
 		expect.assertions(1);
 		const uuid = '95b7edac-f3de-4dab-9cef-35a509b88f57';
-		mockedAxios.onPost(`/account/emailVerification/${uuid}`)
+		mockedAxios.onGet(`/account/emailVerification/${uuid}`)
 			.reply(200, userSignedIn);
 		const actual: UserSignedIn = await service.verifyEmail(uuid);
 		expect(actual).toStrictEqual(userSignedIn);
