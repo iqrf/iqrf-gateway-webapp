@@ -107,7 +107,7 @@ export class AccountService extends BaseService {
 			throw new Error('Invalid e-mail verification UUID version.');
 		}
 		const response: AxiosResponse<UserSignedIn> =
-			await this.axiosInstance.post(`/account/emailVerification/${uuid}`);
+			await this.axiosInstance.get(`/account/emailVerification/${uuid}`);
 		return UserUtils.deserialize(response.data);
 	}
 

@@ -122,20 +122,20 @@
 	"devDependencies": {
 		"@iqrf/eslint-config": "^0.2.1",
 		"@types/luxon": "^3.4.2",
-		"@types/node": "^22.7.5",
+		"@types/node": "^22.7.9",
 		"@types/punycode": "^2.1.4",
 		"@types/uuid": "^10.0.0",
-		"@vitest/coverage-istanbul": "^2.1.2",
-		"@vitest/spy": "^2.1.2",
+		"@vitest/coverage-istanbul": "^2.1.3",
+		"@vitest/spy": "^2.1.3",
 		"axios-mock-adapter": "^2.1.0",
-		"eslint": "^9.12.0",
+		"eslint": "^9.13.0",
 		"ts-node": "^10.9.2",
 		"tsup": "^8.3.0",
-		"typedoc": "^0.26.9",
+		"typedoc": "^0.26.10",
 		"typedoc-material-theme": "^1.1.0",
-		"typedoc-plugin-mdn-links": "^3.3.3",
+		"typedoc-plugin-mdn-links": "^3.3.4",
 		"typescript": "^5.6.3",
 		"vite-tsconfig-paths": "^5.0.1",
-		"vitest": "^2.1.2"
+		"vitest": "^2.1.3"
 	}
 }
