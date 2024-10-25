@@ -19,7 +19,7 @@ limitations under the License.
 	<v-form ref='form' v-slot='{ isValid }' @submit.prevent='onSubmit'>
 		<Card>
 			<template #title>
-				{{ $t('components.auth.signIn.title') }}
+				{{ $t('components.auth.sign.in.title') }}
 			</template>
 			<TextInput
 				v-model='credentials.username'
@@ -47,7 +47,7 @@ limitations under the License.
 				<CardActionBtn
 					color='primary'
 					:disabled='!isValid.value'
-					:text='$t("components.auth.signIn.actions.signIn")'
+					:text='$t("components.auth.sign.in.actions.signIn")'
 					type='submit'
 					:icon='mdiLogin'
 				/>
@@ -55,7 +55,7 @@ limitations under the License.
 				<CardActionBtn
 					color='grey'
 					:icon='mdiAccountKey'
-					:text='$t("components.auth.signIn.actions.recoverPassword")'
+					:text='$t("components.auth.sign.in.actions.recoverPassword")'
 					to='/account/recovery'
 				/>
 			</template>

@@ -58,7 +58,7 @@ export const useApiClient = (): Client => {
 						query: { redirect: router.currentRoute.value.path },
 					});
 				}
-				toast.warning(i18n.global.t('auth.sign.out.expired').toString());
+				toast.warning(i18n.global.t('components.auth.sign.out.expired'));
 			}
 			// Handle other HTTP errors
 			throw error;

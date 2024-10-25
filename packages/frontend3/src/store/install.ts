@@ -186,6 +186,6 @@ export const useInstallStore = defineStore('install', {
 		},
 	},
 	persist: {
-		paths: ['currentStep', 'running'],
+		pick: ['currentStep', 'running'],
 	},
 });

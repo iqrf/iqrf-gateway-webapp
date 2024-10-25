@@ -16,7 +16,7 @@ limitations under the License.
 -->
 
 <template>
-	<v-theme-provider :theme='theme.global.name.value'>
+	<v-theme-provider :theme='theme'>
 		<v-app>
 			<div v-if='isChecked'>
 				<router-view />
@@ -33,27 +33,31 @@ import { storeToRefs } from 'pinia';
 import { useHead } from 'unhead';
 import { onBeforeMount, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useTheme } from 'vuetify';
 
 import InstallationChecker from '@/components/layout/InstallationChecker.vue';
 import SessionExpirationDialog from '@/components/SessionExpirationDialog.vue';
 import { useDaemonStore } from '@/store/daemonSocket';
 import { useInstallStore } from '@/store/install';
 import { useLocaleStore } from '@/store/locale';
+import { useThemeStore } from '@/store/theme';
 import { useUserStore } from '@/store/user';
 
 const i18n = useI18n();
-const theme = useTheme();
 
 const daemonStore = useDaemonStore();
-const installStore = useInstallStore();
-const localeStore = useLocaleStore();
-const userStore = useUserStore();
-
 const { isConnected } = storeToRefs(daemonStore);
+
+const installStore = useInstallStore();
 const { isChecked } = storeToRefs(installStore);
-const { getLocale: locale } = storeToRefs(localeStore);
+
+const userStore = useUserStore();
 const { isLoggedIn } = storeToRefs(userStore);
+
+const localeStore = useLocaleStore();
+const { getLocale: locale } = storeToRefs(localeStore);
+
+const themeStore = useThemeStore();
+const { getTheme: theme } = storeToRefs(themeStore);
 
 /**
  * Set HTML head options
@@ -73,11 +77,6 @@ function setHeadOptions(newLocale: UserLanguage): void {
 }
 
 onBeforeMount(async () => {
-	if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-		theme.global.name.value = 'dark';
-	} else {
-		theme.global.name.value = 'light';
-	}
 	localeStore.setLocale(locale.value);
 	setHeadOptions(locale.value);
 });

@@ -125,7 +125,7 @@ export const useMonitorStore = defineStore('monitor', {
 		},
 	},
 	persist: {
-		paths: ['lastTimestamp'],
+		pick: ['lastTimestamp'],
 	},
 });
 

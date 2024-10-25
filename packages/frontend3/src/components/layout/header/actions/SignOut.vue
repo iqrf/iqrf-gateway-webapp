@@ -16,32 +16,43 @@ limitations under the License.
 -->
 
 <template>
+	<v-list-item
+		v-if='mobile'
+		:prepend-icon='mdiLogout'
+		:title='$t("components.auth.sign.out.title")'
+		@click='signOut'
+	/>
 	<v-btn
-		to='/profile'
-		:prepend-icon='mdiAccount'
-	>
-		{{ userStore.getName }}
-	</v-btn>
-	<v-btn
+		v-else
+		v-tooltip:bottom='$t("components.auth.sign.out.title")'
 		:icon='mdiLogout'
 		@click='signOut'
 	/>
 </template>
 
-<script lang='ts' setup>
-import { mdiAccount, mdiLogout } from '@mdi/js';
+<script setup lang='ts'>
+import { mdiLogout } from '@mdi/js';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import { useUserStore } from '@/store/user';
 
+/// Component props
+defineProps({
+	mobile: {
+		type: Boolean,
+		required: false,
+		default: false,
+	},
+});
 const i18n = useI18n();
 const userStore = useUserStore();
 
+/**
+ * Sign out the user
+ */
 function signOut(): void {
 	userStore.signOut();
-	toast.success(
-		i18n.t('auth.sign.out.message').toString(),
-	);
+	toast.success(i18n.t('components.auth.sign.out.message'));
 }
 </script>

@@ -42,13 +42,16 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
+import { storeToRefs } from 'pinia';
 import { computed, type PropType } from 'vue';
-import { useTheme } from 'vuetify';
 
 import { ActionUtils } from '@/helpers/ActionUtils';
+import { useThemeStore } from '@/store/theme';
 import { type Action } from '@/types/Action';
+import { Theme } from '@/types/theme';
 
-const theme = useTheme();
+const themeStore = useThemeStore();
+const { getTheme: theme } = storeToRefs(themeStore);
 const props = defineProps({
 	action: {
 		type: [String, null] as PropType<Action | null>,
@@ -75,7 +78,7 @@ const props = defineProps({
 /// Card actions class
 const actionsClass = computed(() => {
 	let actionsColor = props.actionsColor;
-	const isLight = theme.global.name.value === 'light';
+	const isLight = theme.value === Theme.Light;
 	if (actionsColor === 'default') {
 		actionsColor = isLight ? 'grey-lighten-2' : 'grey-darken-3';
 	}

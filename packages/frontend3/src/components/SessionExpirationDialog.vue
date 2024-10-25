@@ -99,7 +99,7 @@ async function setup(): Promise<void> {
 		close();
 		await userStore.signOut();
 		await router.push({ path: '/sign/in', query: { redirect: router.currentRoute.value.path } });
-		toast.warning(i18n.t('auth.sign.out.expired'));
+		toast.warning(i18n.t('components.auth.sign.out.expired'));
 	}, timeout);
 }
 
