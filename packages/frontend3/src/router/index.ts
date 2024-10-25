@@ -47,4 +47,26 @@ router.beforeEach((to: RouteLocationNormalized, _from: RouteLocationNormalized, 
 	next();
 });
 
+// Workaround for https://github.com/vitejs/vite/issues/11804
+router.onError((error: unknown, to: RouteLocationNormalized): void => {
+	if (error instanceof TypeError && error.message.includes('Failed to fetch dynamically imported module')) {
+		if (!localStorage.getItem('vuetify:dynamic-reload')) {
+			console.log('Reloading page to fix dynamic import error');
+			localStorage.setItem('vuetify:dynamic-reload', 'true');
+			location.assign(to.fullPath);
+		} else {
+			console.error('Dynamic import error, reloading page did not fix it', error);
+		}
+	} else {
+		console.error(error);
+	}
+});
+
+// eslint-disable-next-line promise/always-return
+router.isReady().then((): void => {
+	localStorage.removeItem('vuetify:dynamic-reload');
+}).catch((error: unknown): void => {
+	console.error(error);
+});
+
 export default router;
