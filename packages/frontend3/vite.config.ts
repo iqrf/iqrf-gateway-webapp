@@ -67,6 +67,13 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
 			}),
 			svgLoader(),
 		],
+		css: {
+			preprocessorOptions: {
+				sass: {
+					api: 'modern-compiler',
+				},
+			},
+		},
 		define: {
 			__GIT_COMMIT_HASH__: JSON.stringify(gitCommitHash),
 		},
