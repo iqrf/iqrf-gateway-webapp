@@ -17,19 +17,49 @@
 
 import { type DaemonApiRequest } from '@iqrf/iqrf-gateway-daemon-utils/types';
 
+/**
+ * Generic WebSocket state interface
+ */
 export interface GenericSocketState {
+	/// WebSocket instance
 	socket: InstanceType<typeof ClientSocket> | null;
+	/// Is WebSocket connected?
 	connected: boolean;
+	/// Is WebSocket reconnecting?
 	reconnecting: boolean;
+	/// Is WebSocket reconnected?
 	reconnected: boolean;
 }
 
+/**
+ * WebSocket client options interface
+ */
 export interface ClientSocketOptions {
+	/// WebSocket server URL
 	url: string
+	/// Auto-connect to server
 	autoConnect?: boolean
+	/// Reconnect to server
 	reconnect?: boolean
+	/// Reconnection delay
 	reconnectDelay?: number
 }
+
+/// WebSocket on socket open callback
+export type WsOnOpenCallback = () => void;
+
+/// WebSocket on socket close callback
+export type WsOnCloseCallback = (event: CloseEvent) => void;
+
+/// WebSocket on message receive callback
+export type WsOnMessageCallback = (event: MessageEvent) => void;
+
+/// WebSocket on message send callback
+export type WsOnSendCallback = (message: DaemonApiRequest) => void;
+
+/// WebSocket on error callback
+export type WsOnErrorCallback = (event: Event) => void;
+
 
 export default class ClientSocket {
 
@@ -51,46 +81,46 @@ export default class ClientSocket {
 	private socket: WebSocket | null = null;
 
 	/**
-	 * @var {CallableFunction} onOpenCallback OnOpen callback
+	 * @var {WsOnOpenCallback} onOpenCallback On open callback
 	 */
-	private onOpenCallback: CallableFunction = (): void => {return;};
+	private onOpenCallback: WsOnOpenCallback = (): void => { return; };
 
 	/**
-	 * @var {CallableFunction} onCloseCallback OnClose callback
+	 * @var {WsOnCloseCallback} onCloseCallback On close callback
 	 */
-	private onCloseCallback: CallableFunction = (): void => {return;};
+	private onCloseCallback: WsOnCloseCallback = (): void => { return; };
 
 	/**
-	 * @var {CallableFunction} onErrorCallback OnError callback
+	 * @var {WsOnErrorCallback} onErrorCallback On error callback
 	 */
-	private onErrorCallback: CallableFunction = (): void => {return;};
+	private onErrorCallback: WsOnErrorCallback = (): void => { return; };
 
 	/**
-	 * @var {CallableFunction} onMessageCallback OnMessage callback
+	 * @var {WsOnMessageCallback} onMessageCallback On message receive callback
 	 */
-	private onMessageCallback: CallableFunction = (): void => {return;};
+	private onMessageCallback: WsOnMessageCallback = (): void => { return; };
 
 	/**
-	 * @var {CallableFunction} onSendCallback OnSend callback
+	 * @var {WsOnSendCallback} onSendCallback On message send callback
 	 */
-	private onSendCallback: CallableFunction = (): void => {return;};
+	private onSendCallback: WsOnSendCallback = (): void => { return; };
 
 	/**
 	 * Constructor
 	 * @param {ClientSocketOptions} options WebSocket client options
-	 * @param {CallableFunction} onOpen On open callback
-	 * @param {CallableFunction} onClose On close callback
-	 * @param {CallableFunction} onError On error callback
-	 * @param {CallableFunction} onMessage On message callback
-	 * @param {CallableFunction} onSend On send callback
+	 * @param {WsOnOpenCallback} onOpen On open callback
+	 * @param {WsOnCloseCallback} onClose On close callback
+	 * @param {WsOnErrorCallback} onError On error callback
+	 * @param {WsOnMessageCallback} onMessage On message receive callback
+	 * @param {WsOnSendCallback} onSend On message send callback
 	 */
 	public constructor(
 		options: ClientSocketOptions,
-		onOpen: CallableFunction = (): void => {return;},
-		onClose: CallableFunction = (): void => {return;},
-		onError: CallableFunction = (): void => {return;},
-		onMessage: CallableFunction = (): void => {return;},
-		onSend: CallableFunction = (): void => {return;},
+		onOpen: WsOnOpenCallback = (): void => { return; },
+		onClose: WsOnCloseCallback = (): void => { return; },
+		onError: WsOnErrorCallback = (): void => { return; },
+		onMessage: WsOnMessageCallback = (): void => { return; },
+		onSend: WsOnSendCallback = (): void => { return; },
 	) {
 		this.options = options;
 		this.onOpenCallback = onOpen;
@@ -104,30 +134,29 @@ export default class ClientSocket {
 	}
 
 	/**
-	 * Sets onopen callback
-	 * @param {CallableFunction} callback Callback
+	 * Sets on open callback
+	 * @param {WsOnOpenCallback} callback Callback
 	 */
-	public setOnOpenCallback(callback: CallableFunction): void {
+	public setOnOpenCallback(callback: WsOnOpenCallback): void {
 		if (this.socket === null) {
 			return;
 		}
 		this.onOpenCallback = callback;
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		this.socket.onopen = function (_): void {
+		this.socket.onopen = function (): void {
 			callback();
 		};
 	}
 
 	/**
-	 * Sets onclose callback
-	 * @param {CallableFunction} callback Callback
+	 * Sets on close callback
+	 * @param {WsOnCloseCallback} callback Callback
 	 */
-	public setOnCloseCallback(callback: CallableFunction): void {
+	public setOnCloseCallback(callback: WsOnCloseCallback): void {
 		if (this.socket === null) {
 			return;
 		}
 		this.onCloseCallback = callback;
-		this.socket.onclose = (event: CloseEvent) => {
+		this.socket.onclose = (event: CloseEvent): void => {
 			callback(event);
 			if (this.options.reconnect) {
 				this.reconnect();
@@ -136,24 +165,24 @@ export default class ClientSocket {
 	}
 
 	/**
-	 * Sets onerror callback
-	 * @param {CallableFunction} callback Callback
+	 * Sets on error callback
+	 * @param {WsOnErrorCallback} callback Callback
 	 */
-	public setOnErrorCallback(callback: CallableFunction): void {
+	public setOnErrorCallback(callback: WsOnErrorCallback): void {
 		if (this.socket === null) {
 			return;
 		}
 		this.onErrorCallback = callback;
-		this.socket.onerror = function (event: Event) {
+		this.socket.onerror = function (event: Event): void {
 			callback(event);
 		};
 	}
 
 	/**
-	 * Sets onsend callback
-	 * @param {CallableFunction} callback Callback
+	 * Sets on message send callback
+	 * @param {WsOnSendCallback} callback Callback
 	 */
-	public setOnSendCallback(callback: CallableFunction): void {
+	public setOnSendCallback(callback: WsOnSendCallback): void {
 		if (this.socket === null) {
 			return;
 		}
@@ -161,15 +190,15 @@ export default class ClientSocket {
 	}
 
 	/**
-	 * Sets onmessage callback
-	 * @param {CallableFunction} callback Callback
+	 * Sets on message receive callback
+	 * @param {WsOnMessageCallback} callback Callback
 	 */
-	public setOnMessageCallback(callback: CallableFunction): void {
+	public setOnMessageCallback(callback: WsOnMessageCallback): void {
 		if (this.socket === null) {
 			return;
 		}
 		this.onMessageCallback = callback;
-		this.socket.onmessage = function (event: MessageEvent) {
+		this.socket.onmessage = function (event: MessageEvent): void {
 			callback(event);
 		};
 	}
@@ -188,15 +217,21 @@ export default class ClientSocket {
 	 */
 	public connect(): WebSocket {
 		this.socket = new WebSocket(this.options.url);
-		this.socket.onopen = () => this.onOpenCallback();
+		this.socket.onopen = (): void => {
+			this.onOpenCallback();
+		};
 		this.socket.onclose = (event: CloseEvent): void => {
 			this.onCloseCallback(event);
 			if (this.options.reconnect) {
 				this.reconnect();
 			}
 		};
-		this.socket.onerror = (event: Event) => this.onErrorCallback(event);
-		this.socket.onmessage = (event: MessageEvent) => this.onMessageCallback(event);
+		this.socket.onerror = (event: Event): void => {
+			this.onErrorCallback(event);
+		};
+		this.socket.onmessage = (event: MessageEvent): void => {
+			this.onMessageCallback(event);
+		};
 		return this.socket;
 	}
 
@@ -205,7 +240,7 @@ export default class ClientSocket {
 	 */
 	public reconnect(): void {
 		clearTimeout(this.reconnectTimeout);
-		this.reconnectTimeout = window.setTimeout(() => {
+		this.reconnectTimeout = window.setTimeout((): void => {
 			this.connect();
 		}, this.options.reconnectDelay);
 	}
