@@ -334,12 +334,12 @@ function items(): SidebarLink[] {
 	} else {
 		links = [
 			{
-				title: i18n.t('pages.auth.signIn.title'),
+				title: i18n.t('pages.auth.sign.in.title'),
 				icon: mdiLogin,
 				to: '/sign/in',
 			},
 			{
-				title: i18n.t('account.recovery.title'),
+				title: i18n.t('pages.account.recovery.title'),
 				icon: mdiAccountKey,
 				to: '/account/recovery',
 			},

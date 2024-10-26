@@ -16,77 +16,117 @@ limitations under the License.
 -->
 
 <template>
-	<Card>
-		<template #title>
-			{{ $t('account.recovery.title') }}
-		</template>
-		<div v-if='!success'>
-			{{ $t('account.recovery.request.prompt') }}
-			<v-form ref='form' class='mt-4' @submit.prevent='onSubmit'>
+	<v-form
+		ref='form'
+		v-slot='{ isValid }'
+		:disabled='componentState === ComponentState.Saving'
+		@submit.prevent='onSubmit'
+	>
+		<Card>
+			<template #title>
+				{{ $t('pages.account.recovery.title') }}
+			</template>
+			<v-alert
+				v-if='componentState === ComponentState.Success'
+				:text='$t("components.account.recovery.request.messages.success")'
+				type='success'
+			/>
+			<div v-else>
+				{{ $t('components.account.recovery.request.prompt') }}
 				<TextInput
-					v-model='request.username'
-					:label='$t("components.common.fields.username")'
+					v-model='data.username'
+					class='mt-4'
+					:label='$t("common.labels.username")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.common.validations.username.required")),
+						(v: string|null) => ValidationRules.required(v, $t("common.validation.username.required")),
 					]'
 					required
 					:prepend-inner-icon='mdiAccount'
 				/>
-				<v-btn
+				<CardActionBtn
 					color='primary'
+					:disabled='!isValid.value'
+					:loading='componentState === ComponentState.Saving'
+					:icon='mdiAccountKey'
+					:text='$t("components.account.recovery.request.button")'
 					type='submit'
-					:prepend-icon='mdiAccountKey'
-				>
-					{{ $t('account.recovery.request.button') }}
-				</v-btn>
-			</v-form>
-		</div>
-		<div v-else>
-			{{ $t('account.recovery.request.success') }}
-		</div>
-	</Card>
+				/>
+			</div>
+		</Card>
+	</v-form>
 </template>
 
 <script lang='ts' setup>
-import { type AccountService } from '@iqrf/iqrf-gateway-webapp-client/services';
-import { type UserAccountRecovery } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { AccountService } from '@iqrf/iqrf-gateway-webapp-client/services';
+import { UserAccountRecovery } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { mdiAccount, mdiAccountKey } from '@mdi/js';
-import { type AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
-import { VForm } from 'vuetify/components';
+import { type VForm } from 'vuetify/components';
 
 import Card from '@/components/layout/card/Card.vue';
+import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
-import { basicErrorToast } from '@/helpers/errorToast';
 import UrlBuilder from '@/helpers/urlBuilder';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
+import { ComponentState } from '@/types/ComponentState';
 
-const i18n = useI18n();
-const request: Ref<UserAccountRecovery> = ref({
-	baseUrl: new UrlBuilder().getBaseUrl(),
-	username: '',
-});
-const success: Ref<boolean> = ref(false);
-const form: Ref<VForm | null> = ref(null);
+/// Component state
+const componentState: Ref<ComponentState> = ref(ComponentState.Created);
+/// Account service
 const service: AccountService = useApiClient().getAccountService();
+/// Internationalization instance
+const i18n = useI18n();
+/// Form reference
+const form: Ref<VForm | null> = ref(null);
+/// Account recovery request
+const data: Ref<UserAccountRecovery> = ref({
+	username: '',
+	baseUrl: new UrlBuilder().getBaseUrl(),
+});
 
+/**
+ * Request password recovery
+ */
 async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
 	}
-	service.requestPasswordRecovery(request.value)
-		.then(() => {
-			toast.success(
-				i18n.t('account.recovery.messages.success').toString(),
+	componentState.value = ComponentState.Saving;
+	try {
+		await service.requestPasswordRecovery(data.value);
+		toast.success(
+			i18n.t('components.account.recovery.request.messages.success'),
+		);
+		componentState.value = ComponentState.Success;
+	} catch (error) {
+		componentState.value = ComponentState.Idle;
+		if (!(error instanceof AxiosError)) {
+			toast.error(
+				i18n.t('components.account.recovery.request.messages.failure'),
 			);
-			success.value = true;
-		})
-		.catch((error: AxiosError) => {
-			basicErrorToast(error, 'account.recovery.messages.failure');
-		});
+			return;
+		}
+		switch (error?.response?.status) {
+			case 403:
+				toast.error(
+					i18n.t('components.account.recovery.request.messages.notVerified'),
+				);
+				break;
+			case 404:
+				toast.error(
+					i18n.t('components.account.recovery.request.messages.notFound'),
+				);
+				break;
+			default:
+				toast.error(
+					i18n.t('components.account.recovery.request.messages.failure'),
+				);
+		}
+	}
 }
 </script>

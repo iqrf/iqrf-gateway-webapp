@@ -16,55 +16,77 @@ limitations under the License.
 -->
 
 <template>
-	<Card>
-		<template #title>
-			{{ $t('account.recovery.title') }}
-		</template>
-		<p>
-			{{ $t('account.recovery.confirmation.prompt') }}
-		</p>
-		<v-form ref='form' class='mt-4' @submit.prevent='onSubmit'>
+	<v-form
+		ref='form'
+		v-slot='{ isValid }'
+		:disabled='componentState === ComponentState.Saving'
+		@submit.prevent='onSubmit'
+	>
+		<Card>
+			<template #title>
+				{{ $t('pages.account.recovery.title') }}
+			</template>
+			<p>
+				{{ $t('components.account.recovery.confirmation.prompt') }}
+			</p>
 			<PasswordInput
-				v-model='password'
-				:label='$t("user.password")'
+				v-model='data.password'
+				class='mt-4'
+				:label='$t("components.account.password.new")'
 				:rules='[
-					(v: string|null) => ValidationRules.required(v, $t("user.validation.password")),
+					(v: string|null) => ValidationRules.required(v, $t("components.account.password.validation.new.required")),
+					(v: string) => ValidationRules.minLength(v, 8, $t("common.validation.password.minLength")),
 				]'
 				required
 				:prepend-inner-icon='mdiKey'
 			/>
-			<v-btn
+			<PasswordInput
+				v-model='passwordConfirmation'
+				:label='$t("components.account.password.confirmation")'
+				:rules='[
+					(v: string|null) => ValidationRules.required(v, $t("components.account.password.validation.confirmation.required")),
+					(v: string) => v.length !== 0 && v === data.password || $t("common.validation.passwordConfirm.match"),
+				]'
+				required
+				:prepend-inner-icon='mdiKey'
+			/>
+			<CardActionBtn
 				color='primary'
+				:disabled='!isValid.value || componentState === ComponentState.Saving'
+				:loading='componentState === ComponentState.Saving'
+				:icon='mdiAccountKey'
+				:text='$t("components.account.recovery.confirmation.button")'
 				type='submit'
-				:prepend-icon='mdiAccountKey'
-			>
-				{{ $t('account.recovery.confirmation.button') }}
-			</v-btn>
-		</v-form>
-	</Card>
+			/>
+		</Card>
+	</v-form>
 </template>
 
 <script lang='ts' setup>
-import { type AccountService } from '@iqrf/iqrf-gateway-webapp-client/services';
-import { UserRole, type UserSignedIn } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { AccountService } from '@iqrf/iqrf-gateway-webapp-client/services';
+import {
+	UserPasswordReset,
+	UserSignedIn,
+} from '@iqrf/iqrf-gateway-webapp-client/types';
 import { mdiAccountKey, mdiKey } from '@mdi/js';
-import { type AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 import { validate as uuidValidate, version as uuidVersion } from 'uuid';
 import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { toast } from 'vue3-toastify';
-import { VForm } from 'vuetify/components';
+import { type VForm } from 'vuetify/components';
 
 import Card from '@/components/layout/card/Card.vue';
+import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import PasswordInput from '@/components/layout/form/PasswordInput.vue';
-import UrlBuilder from '@/helpers/urlBuilder';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
 import { ComponentState } from '@/types/ComponentState';
 
+/// Component props
 const componentProps = defineProps({
 	uuid: {
 		type: String,
@@ -74,57 +96,69 @@ const componentProps = defineProps({
 		},
 	},
 });
+/// Component state
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
+/// Form reference
 const form: Ref<VForm | null> = ref(null);
+/// Internationalization instance
 const i18n = useI18n();
-const password: Ref<string> = ref('');
+/// Password reset request
+const data: Ref<UserPasswordReset> = ref({
+	password: '',
+});
+/// Password confirmation
+const passwordConfirmation: Ref<string> = ref('');
+/// Router instance
 const router = useRouter();
+/// Account service
 const service: AccountService = useApiClient().getAccountService();
+/// User store
 const store = useUserStore();
 
+/**
+ * Submit password change
+ */
 async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
 	}
-	componentState.value = ComponentState.Loading;
-	service.confirmPasswordRecovery(componentProps.uuid, {
-		password: password.value,
-		baseUrl: new UrlBuilder().getBaseUrl(),
-	})
-		.then((user: UserSignedIn): UserSignedIn => {
-			componentState.value = ComponentState.Success;
-			if (user.role === UserRole.Basic) {
-				location.pathname = '/';
-			}
-			store.setUserInfo(user);
-			router.push('/');
-			toast.success(
-				i18n.t('account.recovery.confirmation.messages.success').toString(),
+	componentState.value = ComponentState.Saving;
+	try {
+		const user: UserSignedIn = await service.confirmPasswordRecovery(componentProps.uuid, data.value);
+		componentState.value = ComponentState.Success;
+		store.processSignInResponse(user);
+		await router.push('/');
+		toast.success(
+			i18n.t('components.account.recovery.confirmation.messages.success'),
+		);
+	} catch (error) {
+		if (!(error instanceof AxiosError)) {
+			componentState.value = ComponentState.Error;
+			toast.error(
+				i18n.t('components.account.recovery.confirmation.messages.failure'),
 			);
-			return user;
-		})
-		.catch((error: AxiosError): AxiosError => {
-			switch (error?.response?.status) {
-				case 404:
-					componentState.value = ComponentState.NotFound;
-					toast.error(
-						i18n.t('account.recovery.confirmation.messages.notFound').toString(),
-					);
-					break;
-				case 410:
-					componentState.value = ComponentState.Expired;
-					toast.error(
-						i18n.t('account.recovery.confirmation.messages.expired').toString(),
-					);
-					break;
-				default:
-					componentState.value = ComponentState.Error;
-					toast.error(
-						i18n.t('account.recovery.confirmation.messages.failure').toString(),
-					);
-					break;
-			}
-			return error;
-		});
+			return;
+		}
+		switch (error?.response?.status) {
+			case 404:
+				componentState.value = ComponentState.NotFound;
+				toast.error(
+					i18n.t('components.account.recovery.confirmation.messages.notFound'),
+				);
+				break;
+			case 410:
+				componentState.value = ComponentState.Expired;
+				toast.error(
+					i18n.t('components.account.recovery.confirmation.messages.expired'),
+				);
+				break;
+			default:
+				componentState.value = ComponentState.Error;
+				toast.error(
+					i18n.t('components.account.recovery.confirmation.messages.failure'),
+				);
+				break;
+		}
+	}
 }
 </script>

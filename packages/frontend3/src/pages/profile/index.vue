@@ -17,7 +17,7 @@ limitations under the License.
 
 <template>
 	<Head>
-		<title>{{ $t('account.profile.title') }}</title>
+		<title>{{ $t('pages.profile.title') }}</title>
 	</Head>
 	<ProfileEditForm />
 	<PasswordChangeForm />

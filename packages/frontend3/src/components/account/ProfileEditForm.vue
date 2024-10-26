@@ -16,49 +16,72 @@ limitations under the License.
 -->
 
 <template>
-	<Card :bottom-margin='true'>
-		<template #title>
-			{{ $t('account.profile.details.title') }}
-		</template>
-		<v-form
-			ref='form'
-			v-slot='{ isValid }'
-			@submit.prevent='onSubmit'
-		>
-			<TextInput
-				v-model='user.username'
-				:label='$t("components.common.fields.username")'
-				:rules='[
-					(v: string|null) => ValidationRules.required(v, $t("components.common.validations.username.required")),
-				]'
-				required
-				:prepend-inner-icon='mdiAccount'
+	<v-form
+		ref='form'
+		v-slot='{ isValid }'
+		:disabled='componentState === ComponentState.Saving'
+		@submit.prevent='onSubmit'
+	>
+		<Card :bottom-margin='true'>
+			<template #title>
+				{{ $t('components.account.details.title') }}
+			</template>
+			<v-alert
+				v-if='componentState === ComponentState.FetchFailed'
+				type='error'
+				variant='tonal'
+				:text='$t("components.common.messages.fetchFailed")'
 			/>
-			<TextInput
-				v-model='user.email'
-				:label='$t("components.common.fields.email")'
-				:rules='[
-					(v: string|null) => ValidationRules.required(v, $t("components.common.validations.email.required")),
-					(v: string) => ValidationRules.email(v, $t("components.common.validations.email.email")),
-				]'
-				required
-				:prepend-inner-icon='mdiEmail'
-			/>
-			<LanguageInput v-model='user.language' />
-			<CardActionBtn
-				:action='Action.Edit'
-				:disabled='!isValid.value'
-				type='submit'
-			/>
-		</v-form>
-	</Card>
+			<v-skeleton-loader
+				class='input-skeleton-loader'
+				:loading='componentState === ComponentState.Loading'
+				type='heading@3, button'
+			>
+				<v-responsive>
+					<TextInput
+						v-model='user.username'
+						:label='$t("components.common.fields.username")'
+						:rules='[
+							(v: string|null) => ValidationRules.required(v, $t("components.common.validations.username.required")),
+						]'
+						required
+						:prepend-inner-icon='mdiAccount'
+					/>
+					<TextInput
+						v-model='user.email'
+						:label='$t("components.common.fields.email")'
+						:rules='[
+							(v: string|null) => ValidationRules.required(v, $t("components.common.validations.email.required")),
+							(v: string) => ValidationRules.email(v, $t("components.common.validations.email.email")),
+						]'
+						required
+						:prepend-inner-icon='mdiEmail'
+					/>
+					<LanguageInput v-model='user.language' />
+				</v-responsive>
+			</v-skeleton-loader>
+			<template #actions>
+				<CardActionBtn
+					v-if='componentState === ComponentState.Ready'
+					:action='Action.Edit'
+					:disabled='!isValid.value'
+					:loading='componentState === ComponentState.Saving'
+					type='submit'
+				/>
+			</template>
+		</Card>
+	</v-form>
 </template>
 
 <script lang='ts' setup>
 import { type AccountService } from '@iqrf/iqrf-gateway-webapp-client/services';
-import { type UserEdit, type UserInfo, UserLanguage, UserRole } from '@iqrf/iqrf-gateway-webapp-client/types';
+import {
+	type UserEdit,
+	type UserInfo,
+	UserLanguage,
+	UserRole,
+} from '@iqrf/iqrf-gateway-webapp-client/types';
 import { mdiAccount, mdiEmail } from '@mdi/js';
-import { type AxiosError } from 'axios';
 import { onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
@@ -67,45 +90,74 @@ import LanguageInput from '@/components/account/LanguageInput.vue';
 import Card from '@/components/layout/card/Card.vue';
 import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
-import { basicErrorToast } from '@/helpers/errorToast';
 import UrlBuilder from '@/helpers/urlBuilder';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
 import { Action } from '@/types/Action';
+import { ComponentState } from '@/types/ComponentState';
 
+/// Component state
+const componentState: Ref<ComponentState> = ref(ComponentState.Created);
+/// Internalization instance
 const i18n = useI18n();
+/// User store
 const userStore = useUserStore();
+/// User data
 const user: Ref<UserEdit> = ref({
 	username: '',
 	email: '',
 	language: UserLanguage.English,
 	role: UserRole.Basic,
 });
-
+/// Account service
 const accountService: AccountService = useApiClient().getAccountService();
 
-onMounted(() => {
-	accountService.getInfo()
-		.then((data: UserInfo) => {
-			user.value = {
-				username: data.username,
-				email: data.email,
-				language: data.language,
-				role: data.role,
-				baseUrl: new UrlBuilder().getBaseUrl(),
-			};
-		});
-});
+onMounted(async () => await getUserData());
 
+/**
+ * Retrieves user profile information
+ */
+async function getUserData(): Promise<void> {
+	componentState.value = [
+		ComponentState.Created,
+		ComponentState.FetchFailed,
+	].includes(componentState.value) ? ComponentState.Loading : ComponentState.Reloading;
+	try {
+		const data: UserInfo = await accountService.getInfo();
+		user.value = {
+			username: data.username,
+			email: data.email,
+			language: data.language,
+			role: data.role,
+			baseUrl: new UrlBuilder().getBaseUrl(),
+		};
+		componentState.value = ComponentState.Ready;
+	} catch {
+		toast.error(
+			i18n.t('components.account.details.messages.fetch.failed'),
+		);
+		componentState.value = componentState.value === ComponentState.Loading ? ComponentState.FetchFailed : ComponentState.Ready;
+	}
+}
+
+/**
+ * Updates the user profile
+ */
 async function onSubmit(): Promise<void> {
-	accountService.update(user.value)
-		.then(() => {
-			toast.success(
-				i18n.t('account.profile.details.messages.success').toString(),
-			);
-			userStore.refreshUserInfo();
-		})
-		.catch((error: AxiosError) => basicErrorToast(error, 'account.profile.details.messages.failure'));
+	componentState.value = ComponentState.Saving;
+	try {
+		await accountService.update(user.value);
+		componentState.value = ComponentState.Ready;
+		toast.success(
+			i18n.t('components.account.details.messages.save.success'),
+		);
+		await userStore.refreshUserInfo();
+	} catch {
+		toast.error(
+			i18n.t('components.account.details.messages.save.failed'),
+		);
+		componentState.value = ComponentState.Ready;
+	}
 }
 </script>

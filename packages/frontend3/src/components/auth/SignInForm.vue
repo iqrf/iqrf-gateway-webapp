@@ -16,7 +16,12 @@ limitations under the License.
 -->
 
 <template>
-	<v-form ref='form' v-slot='{ isValid }' @submit.prevent='onSubmit'>
+	<v-form
+		ref='form'
+		v-slot='{ isValid }'
+		:disabled='componentState === ComponentState.Saving'
+		@submit.prevent='onSubmit'
+	>
 		<Card>
 			<template #title>
 				{{ $t('components.auth.sign.in.title') }}
@@ -47,9 +52,10 @@ limitations under the License.
 				<CardActionBtn
 					color='primary'
 					:disabled='!isValid.value'
+					:loading='componentState === ComponentState.Saving'
+					:icon='mdiLogin'
 					:text='$t("components.auth.sign.in.actions.signIn")'
 					type='submit'
-					:icon='mdiLogin'
 				/>
 				<v-spacer />
 				<CardActionBtn
@@ -74,7 +80,7 @@ import { onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 import { toast } from 'vue3-toastify';
-import { VForm } from 'vuetify/components';
+import { type VForm } from 'vuetify/components';
 
 import SessionExpirationInput
 	from '@/components/auth/SessionExpirationInput.vue';
@@ -82,48 +88,77 @@ import Card from '@/components/layout/card/Card.vue';
 import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import PasswordInput from '@/components/layout/form/PasswordInput.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
-import { basicErrorToast } from '@/helpers/errorToast';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useGatewayStore } from '@/store/gateway';
 import { useRepositoryStore } from '@/store/repository';
 import { useUserStore } from '@/store/user';
+import { ComponentState } from '@/types/ComponentState';
 
+/// Component state
+const componentState: Ref<ComponentState> = ref(ComponentState.Created);
+/// Internationalization instance
 const i18n = useI18n();
+/// The current route
 const route = useRoute();
+/// Vue router
 const router = useRouter();
+/// Gateway information store
 const gatewayStore = useGatewayStore();
+/// IQRF Repository store
 const repositoryStore = useRepositoryStore();
+/// User store
 const userStore = useUserStore();
+/// User credentials
 const credentials: Ref<UserCredentials> = ref({
 	username: '',
 	password: '',
 	expiration: UserSessionExpiration.Default,
 });
+/// Form reference
 const form: Ref<VForm | null> = ref(null);
 
 onMounted(() => {
 	credentials.value.expiration = userStore.getLastRequestedExpiration;
 });
 
+/**
+ * Handles the sign in form submission
+ */
 async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
 	}
+	componentState.value = ComponentState.Saving;
 	try {
 		await userStore.signIn(credentials.value);
 		let destination = (route?.query?.redirect as string | undefined) ?? '/';
 		if (destination.startsWith('/sign/in')) {
 			destination = '/';
 		}
+		if (destination !== '/' && userStore.getRole !== null) {
+			const resolveRoute = router.resolve(destination);
+			if (resolveRoute.name === 'NotFound') {
+				destination = '/';
+			} else {
+				const roles = (resolveRoute.meta.roles as string[]) ?? [];
+				if (roles.length > 0 && !roles.includes(userStore.getRole)) {
+					destination = '/';
+				}
+			}
+		}
 		await router.push(destination);
-		toast.success(i18n.t('auth.sign.in.messages.success'));
+		componentState.value = ComponentState.Idle;
+		toast.success(i18n.t('components.auth.sign.in.messages.success'));
 		await gatewayStore.fetchInfo();
 		await repositoryStore.fetch();
 	} catch (error) {
-		if (error instanceof AxiosError) {
-			basicErrorToast(error, 'auth.sign.in.messages.incorrectUsernameOrPassword');
+		if (error instanceof AxiosError && error.response?.status === 400) {
+			toast.error(i18n.t('components.auth.sign.in.messages.incorrectUsernameOrPassword'));
+		} else {
+			toast.error(i18n.t('components.auth.sign.in.messages.failure'));
 		}
+		componentState.value = ComponentState.Idle;
 	}
 }
 </script>

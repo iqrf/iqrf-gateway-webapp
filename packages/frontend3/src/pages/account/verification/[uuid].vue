@@ -1,6 +1,6 @@
 <!--
-Copyright 2017-2024 IQRF Tech s.r.o.
-Copyright 2019-2024 MICRORISC s.r.o.
+Copyright 2023-2024 IQRF Tech s.r.o.
+Copyright 2023-2024 MICRORISC s.r.o.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,26 +17,49 @@ limitations under the License.
 
 <template>
 	<Head>
-		<title>{{ $t('core.account.verification.title') }}</title>
+		<title>{{ $t('components.account.verification.title') }}</title>
 	</Head>
 	<Card>
 		<template #title>
-			{{ $t('core.account.verification.title') }}
+			{{ $t('components.account.verification.title') }}
 		</template>
-		<div v-if='finished && success'>
-			{{ $t('core.account.verification.messages.success') }}
-			<vue-countdown
-				v-slot='{ seconds }'
-				:auto-start='true'
-				:time='10_000'
-				@end='signIn'
-			>
-				{{ $t('core.account.verification.messages.redirect', { countdown: seconds }) }}
-			</vue-countdown>
-		</div>
-		<div v-else-if='finished && !success'>
-			{{ $t('core.account.verification.messages.failure', { error: errorMsg }) }}
-		</div>
+		<v-skeleton-loader
+			class='input-skeleton-loader'
+			:loading='componentState === ComponentState.Loading'
+			type='heading, text'
+		>
+			<v-responsive>
+				<v-alert
+					v-if='componentState === ComponentState.Success'
+					type='success'
+				>
+					{{ $t('components.account.verification.messages.success') }}
+					<vue-countdown
+						v-slot='{ seconds }'
+						:auto-start='true'
+						:time='10_000'
+						@end='signIn'
+					>
+						{{ $t('components.account.verification.messages.redirect', { countdown: seconds }) }}
+					</vue-countdown>
+				</v-alert>
+				<v-alert
+					v-else-if='componentState === ComponentState.Error'
+					:text='$t("components.account.verification.messages.failure")'
+					type='error'
+				/>
+				<v-alert
+					v-else-if='componentState === ComponentState.Expired'
+					:text='$t("components.account.verification.messages.alreadyVerified")'
+					type='error'
+				/>
+				<v-alert
+					v-else-if='componentState === ComponentState.NotFound'
+					:text='$t("components.account.verification.messages.notFound")'
+					type='error'
+				/>
+			</v-responsive>
+		</v-skeleton-loader>
 	</Card>
 </template>
 
@@ -51,18 +74,22 @@ limitations under the License.
 
 <script lang='ts' setup>
 import VueCountdown from '@chenfengyuan/vue-countdown';
-import { type ErrorResponse, type UserSignedIn } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { UserSignedIn } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { Head } from '@unhead/vue/components';
 import { AxiosError } from 'axios';
 import { validate as uuidValidate, version as uuidVersion } from 'uuid';
 import { onMounted, ref, type Ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
+import { toast } from 'vue3-toastify';
 
 import Card from '@/components/layout/card/Card.vue';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
+import { ComponentState } from '@/types/ComponentState';
 
-const props = defineProps({
+/// Component props
+const componentProps = defineProps({
 	uuid: {
 		type: String,
 		required: true,
@@ -71,38 +98,56 @@ const props = defineProps({
 		},
 	},
 });
-
+/// Component state
+const componentState: Ref<ComponentState> = ref(ComponentState.Loading);
+/// User store
 const userStore = useUserStore();
-
+/// Router instance
 const router = useRouter();
-const finished: Ref<boolean> = ref(false);
-const success: Ref<boolean> = ref(false);
+/// User data
 const userData: Ref<UserSignedIn | null> = ref(null);
+/// Error message
 const errorMsg: Ref<string> = ref('');
+/// Internationalization instance
+const i18n = useI18n();
 
-onMounted(async (): Promise<void> => {
+onMounted(async () => {
+	componentState.value = ComponentState.Loading;
 	try {
-		const user: UserSignedIn = await useApiClient().getAccountService().verifyEmail(props.uuid);
-		userStore.setUserInfo(user);
-		await userStore.processJwt(user.token);
-		userData.value = user;
-		finished.value = true;
-		success.value = true;
+		userData.value = await useApiClient().getAccountService().verifyEmail(componentProps.uuid);
+		userStore.processSignInResponse(userData.value);
+		componentState.value = ComponentState.Success;
 	} catch (error) {
-		console.error(error);
-		if (error instanceof AxiosError) {
-			errorMsg.value = error.response ? (error.response.data as ErrorResponse).message : error.message;
+		if (!(error instanceof AxiosError)) {
+			componentState.value = ComponentState.Error;
+			errorMsg.value = i18n.t('components.account.verification.messages.failure');
+			return;
 		}
-		finished.value = true;
-		success.value = false;
+		switch (error?.response?.status) {
+			case 400:
+				componentState.value = ComponentState.Expired;
+				errorMsg.value = i18n.t('components.account.verification.messages.alreadyVerified');
+				break;
+			case 404:
+				componentState.value = ComponentState.NotFound;
+				errorMsg.value = i18n.t('components.account.verification.messages.notFound');
+				break;
+			default:
+				componentState.value = ComponentState.Error;
+				errorMsg.value = i18n.t('components.account.verification.messages.failure');
+				break;
+		}
+		toast.error(errorMsg.value);
 	}
 });
 
-function signIn(): void {
+/**
+ * Redirects the user to the home page
+ */
+async function signIn(): Promise<void> {
 	if (userData.value === null) {
 		return;
 	}
-	location.pathname = '/';
-	router.push('/');
+	await router.push('/');
 }
 </script>

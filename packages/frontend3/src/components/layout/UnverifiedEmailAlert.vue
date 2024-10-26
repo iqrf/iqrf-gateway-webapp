@@ -21,20 +21,21 @@ limitations under the License.
 		type='warning'
 		variant='tonal'
 	>
-		<div v-if='hasEmail' style='display: flex; justify-content: space-between; align-items: center;'>
-			{{ $t('account.verification.unverified', { email: userEmail }) }}
+		<div v-if='hasEmail' class='alert'>
+			{{ $t('components.account.verification.unverified', { email: userEmail }) }}
 			<v-btn
 				color='warning'
 				size='small'
 				dense
+				:loading='componentState === ComponentState.Loading'
 				:prepend-icon='mdiEmailFast'
 				@click='resend'
 			>
-				{{ $t('account.verification.resend') }}
+				{{ $t('components.account.verification.resend') }}
 			</v-btn>
 		</div>
-		<div v-else style='display: flex; justify-content: space-between; align-items: center;'>
-			{{ $t('account.verification.missing') }}
+		<div v-else class='alert'>
+			{{ $t('components.account.verification.missing') }}
 			<v-btn
 				color='warning'
 				size='small'
@@ -42,7 +43,7 @@ limitations under the License.
 				dense
 				:prepend-icon='mdiEmailFast'
 			>
-				{{ $t('account.verification.addEmail') }}
+				{{ $t('components.account.verification.addEmail') }}
 			</v-btn>
 		</div>
 	</v-alert>
@@ -51,33 +52,53 @@ limitations under the License.
 <script lang='ts' setup>
 import { mdiEmailFast } from '@mdi/js';
 import { storeToRefs } from 'pinia';
+import { ref, Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import UrlBuilder from '@/helpers/urlBuilder';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
+import { ComponentState } from '@/types/ComponentState';
 
+/// Component state
+const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
+/// Internationalization instance
 const i18n = useI18n();
+/// User store
 const userStore = useUserStore();
-const { hasEmail, isLoggedIn, isVerified, getEmail: userEmail } = storeToRefs(userStore);
+const {
+	hasEmail,
+	isLoggedIn,
+	isVerified,
+	getEmail: userEmail,
+} = storeToRefs(userStore);
 
 /**
- * Resends the verification email
+ * Resends the verification e-mail
  */
 async function resend(): Promise<void> {
+	componentState.value = ComponentState.Loading;
 	try {
 		await useApiClient().getAccountService().resendVerificationEmail({
 			baseUrl: new UrlBuilder().getBaseUrl(),
 		});
 		toast.success(
-			i18n.t('core.account.verification.messages.requestSuccess'),
+			i18n.t('components.account.verification.messages.requestSuccess'),
 		);
 	} catch {
-		toast.error(
-			i18n.t('core.account.verification.messages.requestFailure'),
-		);
+		toast.error(i18n.t('components.account.verification.messages.requestFailure'));
+	} finally {
+		componentState.value = ComponentState.Idle;
 	}
 }
 
 </script>
+
+<style scoped lang='scss'>
+.alert {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+</style>

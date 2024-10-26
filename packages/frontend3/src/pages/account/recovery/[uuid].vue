@@ -17,7 +17,7 @@ limitations under the License.
 
 <template>
 	<Head>
-		<title>{{ $t('account.recovery.title') }}</title>
+		<title>{{ $t('pages.account.recovery.title') }}</title>
 	</Head>
 	<AccountRecoveryConfirmForm :uuid='uuid' />
 </template>

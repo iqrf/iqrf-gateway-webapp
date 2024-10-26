@@ -33,78 +33,6 @@
 			}
 		}
 	},
-	"account": {
-		"profile": {
-			"details": {
-				"messages": {
-					"failure": "Failed to update user profile: {error}",
-					"success": "User profile has been successfully updated."
-				},
-				"title": "Profile details"
-			},
-			"password": {
-				"current": "Current password",
-				"new": "New password",
-				"title": "Change password",
-				"validation": {
-					"current": "Please enter current password.",
-					"new": "Please enter new password."
-				}
-			},
-			"title": "User profile"
-		},
-		"recovery": {
-			"confirmation": {
-				"button": "Set new password",
-				"messages": {
-					"expired": "Password recovery request has expired.",
-					"failure": "An error has occurred during password change.",
-					"notFound": "Password recovery request not found.",
-					"success": "Password successfully changed."
-				},
-				"prompt": "Please enter new password."
-			},
-			"request": {
-				"button": "Submit request",
-				"messages": {
-					"failure": "An error has occurred during password recovery request.",
-					"success": "Password recovery request successfully sent."
-				},
-				"prompt": "Please enter username and a password recovery email will be sent to the associated address.",
-				"success": "An email containing further instructions to reset your password was sent to the address associated with the account."
-			},
-			"title": "Account recovery"
-		},
-		"verification": {
-			"addEmail": "Add e-mail address",
-			"messages": {
-				"failure": "Account verification failed, {error}.",
-				"redirect": "You will be redirected to the dashboard in {countdown}.",
-				"requestFailure": "An error has occurred while sending verification e-mail.",
-				"requestSuccess": "Verification e-mail successfully sent.",
-				"success": "Your account has been successfully verified."
-			},
-			"missing": "Your account does not have an e-mail address set up. Without the verified e-mail address, you can not reset your password if it is forgotten.",
-			"resend": "Resend verification e-mail",
-			"title": "Account verification",
-			"unverified": "Your e-mail address ({email}) is not verified. Without the verified e-mail address, you can not reset your password if it is forgotten."
-		}
-	},
-	"auth": {
-		"sign": {
-			"in": {
-				"messages": {
-					"incorrectUsernameOrPassword": "The username or password you entered is incorrect.",
-					"success": "You have been signed in successfully."
-				}
-			},
-			"out": {
-				"expired": "Your sign-in session has expired. Please sign in again.",
-				"message": "You have been signed out.",
-				"title": "Sign out"
-			}
-		}
-	},
 	"common": {
 		"buttons": {
 			"add": "Add",
@@ -173,10 +101,25 @@
 		},
 		"validation": {
 			"credentialsMissing": "Please enter both username and password, or leave both fields empty.",
+			"email": {
+				"format": "Invalid email address format.",
+				"required": "Please enter email address."
+			},
 			"hostnameInvalid": "Hostname should be IPv4, IPv6, localhost or fully-qualified domain name.",
 			"hostnameMissing": "Please enter hostname.",
+			"password": {
+				"minLength": "Password should be at least 8 characters long.",
+				"required": "Please enter password."
+			},
+			"passwordConfirm": {
+				"match": "Password does not match.",
+				"required": "Please re-type password."
+			},
 			"portInvalid": "Port should be an integer between 1 and 65535.",
-			"portMissing": "Please enter port."
+			"portMissing": "Please enter port.",
+			"username": {
+				"required": "Please enter username."
+			}
 		}
 	},
 	"components": {
@@ -280,8 +223,81 @@
 			}
 		},
 		"account": {
+			"details": {
+				"messages": {
+					"fetch": {
+						"failed": "Failed to retrieve user account data."
+					},
+					"save": {
+						"failed": "Failed to update user account details: {error}",
+						"success": "User account details have been successfully updated."
+					}
+				},
+				"title": "Account details"
+			},
 			"language": {
 				"label": "Language"
+			},
+			"password": {
+				"confirmation": "Confirm password",
+				"current": "Current password",
+				"messages": {
+					"save": {
+						"failed": "Failed to change password.",
+						"success": "Your password has been successfully changed."
+					}
+				},
+				"new": "New password",
+				"title": "Change password",
+				"validation": {
+					"confirmation": {
+						"required": "Please re-type new password."
+					},
+					"current": {
+						"required": "Please enter current password."
+					},
+					"new": {
+						"required": "Please enter new password."
+					}
+				}
+			},
+			"recovery": {
+				"confirmation": {
+					"button": "Set new password",
+					"messages": {
+						"expired": "Password recovery request has expired.",
+						"failure": "An error has occurred during password change.",
+						"notFound": "Password recovery request not found.",
+						"success": "Password successfully changed."
+					},
+					"prompt": "Please enter new password."
+				},
+				"request": {
+					"button": "Submit request",
+					"messages": {
+						"failure": "An error has occurred during password recovery request.",
+						"notFound": "Unable to request password recovery, user does not exist.",
+						"notVerified": "Unable to request password recovery, user email address is not verified.",
+						"success": "An email containing further instructions to reset your password was sent to the address associated with the account."
+					},
+					"prompt": "Please enter username and a password recovery email will be sent to the associated address."
+				}
+			},
+			"verification": {
+				"addEmail": "Add e-mail address",
+				"messages": {
+					"alreadyVerified": "Your email address has already been verified.",
+					"failure": "An error has occurred during account verification.",
+					"notFound": "Account verification not found.",
+					"redirect": "You will be redirected to the dashboard in {countdown}.",
+					"requestFailure": "An error has occurred while sending verification email.",
+					"requestSuccess": "Verification email successfully sent.",
+					"success": "Your account has been successfully verified."
+				},
+				"missing": "Your account does not have an e-mail address set up. Without the verified e-mail address, you can not reset your password if it is forgotten.",
+				"resend": "Resend verification e-mail",
+				"title": "Account verification",
+				"unverified": "Your e-mail address ({email}) is not verified. Without the verified e-mail address, you can not reset your password if it is forgotten."
 			}
 		},
 		"auth": {
@@ -289,28 +305,23 @@
 				"expirations": {
 					"day": "1 day",
 					"default": "90 minutes",
-					"month": "1 month",
-					"week": "1 week",
-					"year": "1 year"
+					"week": "1 week"
 				},
 				"label": "Session expiration"
 			},
-			"signIn": {
-				"actions": {
-					"recoverPassword": "Forgot password?",
-					"signIn": "Sign in"
-				},
-				"fields": {
-					"expiration": "Session expiration",
-					"expirations": {
-						"day": "1 day",
-						"default": "90 minutes",
-						"month": "1 month",
-						"week": "1 week",
-						"year": "1 year"
-					}
-				},
-				"title": "Sign in"
+			"sign": {
+				"in": {
+					"actions": {
+						"recoverPassword": "Forgot password?",
+						"signIn": "Sign in"
+					},
+					"messages": {
+						"failure": "An error has occurred during sign in.",
+						"incorrectUsernameOrPassword": "The username or password you entered is incorrect.",
+						"success": "You have been signed in successfully."
+					},
+					"title": "Sign in"
+				}
 			}
 		},
 		"common": {
@@ -1945,9 +1956,16 @@
 				"title": "Users"
 			}
 		},
+		"account": {
+			"recovery": {
+				"title": "Account recovery"
+			}
+		},
 		"auth": {
-			"signIn": {
-				"title": "Sign in"
+			"sign": {
+				"in": {
+					"title": "Sign in"
+				}
 			}
 		},
 		"config": {

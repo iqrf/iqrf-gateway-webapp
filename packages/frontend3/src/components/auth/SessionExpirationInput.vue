@@ -27,23 +27,33 @@ limitations under the License.
 <script lang='ts' setup>
 import { UserSessionExpiration } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { mdiAccountClock } from '@mdi/js';
-import { computed, type PropType, type Ref } from 'vue';
+import { computed, ComputedRef, PropType } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import SelectInput from '@/components/layout/form/SelectInput.vue';
-import i18n from '@/plugins/i18n';
-import { type SelectItem } from '@/types/vuetify';
+import { SelectItem } from '@/types/vuetify';
 
+/// Internationalization instance
+const i18n = useI18n();
+/// Session expiration options
+const options: ComputedRef<SelectItem[]> = computed(() => [
+	{
+		value: UserSessionExpiration.Default,
+		title: i18n.t('components.auth.expiration.expirations.default'),
+	},
+	{
+		value: UserSessionExpiration.Day,
+		title: i18n.t('components.auth.expiration.expirations.day'),
+	},
+	{
+		value: UserSessionExpiration.Week,
+		title: i18n.t('components.auth.expiration.expirations.week'),
+	},
+]);
+/// Model value
 const modelValue = defineModel({
-	type: String as PropType<UserSessionExpiration>,
+	default: UserSessionExpiration.Default,
 	required: true,
-});
-const options: Ref<SelectItem[]> = computed((): SelectItem[] => {
-	const expirations = [UserSessionExpiration.Default, UserSessionExpiration.Day, UserSessionExpiration.Week];
-	return expirations.map((item: UserSessionExpiration): SelectItem => {
-		return {
-			title: i18n.global.t(`components.auth.expiration.expirations.${item}`).toString(),
-			value: item,
-		};
-	});
+	type: String as PropType<UserSessionExpiration>,
 });
 </script>

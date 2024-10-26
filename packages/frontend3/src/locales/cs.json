@@ -52,16 +52,129 @@
 		},
 		"validation": {
 			"credentialsMissing": "Zadejte prosím jak uživatelské jméno, tak i heslo, nebo nechte obě pole prázdná.",
+			"email": {
+				"format": "Prosím zadejte platnou e-mailovou adresu.",
+				"required": "Prosím zadejte e-mailovou adresu."
+			},
+			"password": {
+				"minLength": "Heslo musí být minimálně 8 znaků dlouhé.",
+				"required": "Prosím zadejte heslo."
+			},
+			"passwordConfirm": {
+				"match": "Hesla se neshodují.",
+				"required": "Prosím zadejte heslo znovu pro potvrzení."
+			},
 			"portInvalid": "Číslo portu musí být celé číslo mezi 1 a 65535.",
-			"portMissing": "Zadejte prosím číslo portu."
+			"portMissing": "Zadejte prosím číslo portu.",
+			"username": {
+				"required": "Prosím zadejte uživatelské jméno."
+			}
 		}
 	},
 	"components": {
+		"account": {
+			"details": {
+				"messages": {
+					"fetch": {
+						"failed": "Nepodařilo se načíst nastavení uživatelského účtu."
+					},
+					"save": {
+						"failed": "Nepodařilo se uložit nastavení uživatelského účtu: {error}",
+						"success": "Nastavení uživatelského účtu bylo úspěšně uloženo."
+					}
+				},
+				"title": "Nastavení uživatelského účtu"
+			},
+			"language": {
+				"label": "Jazyk"
+			},
+			"password": {
+				"confirmation": "Potvrzení nového hesla",
+				"current": "Současné heslo",
+				"messages": {
+					"save": {
+						"failed": "Nepodařilo se změnit Vaše heslo.",
+						"success": "Vaše heslo bylo úspěšně upraveno."
+					}
+				},
+				"new": "Nové heslo",
+				"title": "Změna hesla",
+				"validation": {
+					"confirmation": {
+						"required": "Prosím zadejte Vaše nové heslo znovu pro jeho potvrzení."
+					},
+					"current": {
+						"required": "Prosím zadejte Vaše aktuální heslo."
+					},
+					"new": {
+						"required": "Prosím zadejte Vaše nové heslo."
+					}
+				}
+			},
+			"recovery": {
+				"confirmation": {
+					"button": "Nastavit nové heslo",
+					"messages": {
+						"expired": "Platnost žádosti o obnovení hesla vypršela.",
+						"failure": "Při změně hesla došlo k chybě.",
+						"notFound": "Žádost na obnovení hesla nebyla nalezena.",
+						"success": "Heslo bylo úspěšně změněno."
+					},
+					"prompt": "Prosím zadejte nové heslo."
+				},
+				"request": {
+					"button": "Odeslat žádost",
+					"messages": {
+						"failure": "Při žádosti o obnovení hesla došlo k chybě.",
+						"notFound": "Nelze požádat o obnovení hesla, uživatel neexistuje.",
+						"notVerified": "Nelze požádat o obnovení hesla, e-mailová adresa uživatele není ověřena.",
+						"success": "Na e-mailovou adresu přidruženou k účtu byl odeslán e-mail s dalšími pokyny k obnovení hesla."
+					},
+					"prompt": "Zadejte prosím uživatelské jméno a na přidruženou e-mailovou adresu vám bude zaslán e-mail pro obnovení hesla."
+				}
+			},
+			"verification": {
+				"addEmail": "Přidat e-mailovou adresu",
+				"messages": {
+					"alreadyVerified": "E-mailová adresa je již ověřena.",
+					"failure": "Při ověření e-mailové adresy došlo k chybě.",
+					"notFound": "Neexistující ověřovací kód.",
+					"redirect": "Za {coutdown} budete přesměrováni na přehled systému.",
+					"requestFailure": "Při odesílání ověřovacího e-mailu došlo k chybě.",
+					"requestSuccess": "Ověřovací e-mail byl úspěšně odeslán.",
+					"success": "Váš účet byl úspěšně ověřen."
+				},
+				"resend": "Znovu zaslat ověřovací e-mail",
+				"title": "Ověření účtu",
+				"unverified": "Vaše e-mailová adresa není ověřena. Některé funkce (např. výstrahy, hlášení, obnovení účtu...) nebudou k dispozici."
+			}
+		},
 		"auth": {
-			"signIn": {
-				"actions": {
-					"recoverPassword": "Zapomenuté heslo?",
-					"signIn": "Přihlásit se"
+			"expiration": {
+				"expirations": {
+					"day": "1 den",
+					"default": "90 minut",
+					"week": "1 týden"
+				},
+				"label": "Platnost sezení"
+			},
+			"sign": {
+				"in": {
+					"actions": {
+						"recoverPassword": "Zapomenuté heslo?",
+						"signIn": "Přihlásit se"
+					},
+					"messages": {
+						"failure": "Při přihlašování došlo k chybě.",
+						"incorrectUsernameOrPassword": "Zadali jste špatné uživatelské jméno nebo heslo.",
+						"success": "Přihlášení proběhlo úspěšně."
+					},
+					"title": "Přihlášení"
+				},
+				"out": {
+					"expired": "Platnost Vašeho sezení vypršela. Prosím přihlašte se znovu.",
+					"message": "Byli jste odhlášeni.",
+					"title": "Odhlášení"
 				}
 			}
 		},
@@ -360,6 +473,18 @@
 			"users": {
 				"description": "Sparáva uživatelů webové aplikace.",
 				"title": "Uživatelé"
+			}
+		},
+		"account": {
+			"recovery": {
+				"title": "Obnova hesla"
+			}
+		},
+		"auth": {
+			"sign": {
+				"in": {
+					"title": "Přihlášení"
+				}
 			}
 		},
 		"config": {
