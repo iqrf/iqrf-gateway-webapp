@@ -16,22 +16,19 @@ limitations under the License.
 -->
 
 <template>
-	<div v-if='configuration.vlan'>
+	<div v-if='configuration.serial'>
 		<h2 class='mb-3 text-h6'>
-			{{ $t('components.ipNetwork.connections.form.vlan.title') }}
+			{{ $t("components.ipNetwork.connections.form.serial.title") }}
 		</h2>
-		<InterfaceInput v-model='configuration.vlan.parentInterface' />
-		<TextInput
-			v-model.number='configuration.vlan.id'
-			:label='$t("components.ipNetwork.connections.form.vlan.id")'
+		<v-text-field
+			v-model.number='configuration.serial.baudRate'
+			:label='$t("components.ipNetwork.connections.form.serial.baudRate")'
 			:rules='[
-				(v: string|null) => ValidationRules.required(v, $t("components.ipNetwork.connections.errors.vlan.id.required")),
-				(v: number) => ValidationRules.integer(v, $t("components.ipNetwork.connections.errors.vlan.id.invalid")),
-				(v: number) => ValidationRules.min(v, 1, $t("components.ipNetwork.connections.errors.vlan.id.invalid")),
-				(v: number) => ValidationRules.max(v, 4094, $t("components.ipNetwork.connections.errors.vlan.id.invalid")),
+				(v: unknown) => ValidationRules.required(v, $t("components.ipNetwork.connections.errors.serial.baudRate.required")),
+				(v: unknown) => ValidationRules.numerical(v, $t("components.ipNetwork.connections.errors.serial.baudRate.numerical")),
 			]'
 			required
-			:prepend-inner-icon='mdiTag'
+			:prepend-inner-icon='mdiSerialPort'
 		/>
 	</div>
 </template>
@@ -40,12 +37,9 @@ limitations under the License.
 import {
 	type NetworkConnectionConfiguration,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
-import { mdiTag } from '@mdi/js';
+import { mdiSerialPort } from '@mdi/js';
 import { type PropType } from 'vue';
 
-import InterfaceInput
-	from '@/components/ip-network/interfaces/InterfaceInput.vue';
-import TextInput from '@/components/layout/form/TextInput.vue';
 import ValidationRules from '@/helpers/ValidationRules';
 
 /// Network connection configuration

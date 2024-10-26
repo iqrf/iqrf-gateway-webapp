@@ -21,10 +21,8 @@ limitations under the License.
 			{{ $t('components.ipNetwork.wireGuard.tunnels.title') }}
 		</template>
 		<template #titleActions>
-			<v-btn
-				color='primary'
-				:icon='mdiRefresh'
-				variant='elevated'
+			<CardTitleActionBtn
+				:action='Action.Reload'
 				@click='fetchData'
 			/>
 		</template>
@@ -59,16 +57,18 @@ limitations under the License.
 import {
 	type WireGuardTunnelListEntry,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
-import { mdiRefresh } from '@mdi/js';
-import { onBeforeMount, type Ref, ref } from 'vue';
+import { computed, onBeforeMount, type Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import BooleanCheckMarker from '@/components/BooleanCheckMarker.vue';
 import WireGuardDeleteTunnelDialog
 	from '@/components/ip-network/wireGuard/WireGuardDeleteTunnelDialog.vue';
 import Card from '@/components/layout/card/Card.vue';
+import CardTitleActionBtn
+	from '@/components/layout/card/CardTitleActionBtn.vue';
 import DataTable from '@/components/layout/data-table/DataTable.vue';
 import { useApiClient } from '@/services/ApiClient';
+import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 const i18n = useI18n();
@@ -76,7 +76,7 @@ const service = useApiClient().getNetworkServices().getWireGuardService();
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const tunnels: Ref<WireGuardTunnelListEntry[]> = ref([]);
-const headers = [
+const headers = computed(() => [
 	{
 		key: 'name',
 		title: i18n.t('components.ipNetwork.wireGuard.tunnels.columns.name'),
@@ -95,22 +95,20 @@ const headers = [
 		title: i18n.t('common.columns.actions'),
 		sortable: false,
 	},
-];
+]);
 
 /**
  * Fetches WireGuard tunnels
  */
-function fetchData() {
+async function fetchData(): Promise<void> {
 	componentState.value = ComponentState.Loading;
-	service.listTunnels()
-		.then((response: WireGuardTunnelListEntry[]): WireGuardTunnelListEntry[] => {
-			tunnels.value = response;
-			componentState.value = ComponentState.Ready;
-			return response;
-		});
+	try {
+		tunnels.value = await service.listTunnels();
+		componentState.value = ComponentState.Ready;
+	} catch {
+		componentState.value = ComponentState.FetchFailed;
+	}
 }
 
-onBeforeMount(() => {
-	fetchData();
-});
+onBeforeMount(async () => await fetchData());
 </script>

@@ -16,19 +16,30 @@ limitations under the License.
 -->
 
 <template>
-	<h2 class='mb-3 text-h6 text-grey'>
-		{{ $t("components.ipNetwork.connections.fields.ipv4.title") }}
-	</h2>
+	<v-alert
+		v-if='bothIpStacksDisabled'
+		type='error'
+	>
+		{{ $t("components.ipNetwork.connections.errors.ip.disabledBothIpStacks") }}
+	</v-alert>
 </template>
 
 <script setup lang='ts'>
 import {
+	IPv4ConfigurationMethod,
+	IPv6ConfigurationMethod,
 	type NetworkConnectionConfiguration,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
-import { type PropType } from 'vue';
+import { computed, type ComputedRef, type PropType } from 'vue';
 
-defineModel({
+/// Network connection configuration
+const configuration = defineModel({
 	type: Object as PropType<NetworkConnectionConfiguration>,
 	required: true,
 });
+/// Are both IP stacks disabled?
+const bothIpStacksDisabled: ComputedRef<boolean> = computed(() =>
+	configuration.value.ipv4.method === IPv4ConfigurationMethod.DISABLED &&
+	configuration.value.ipv6.method === IPv6ConfigurationMethod.DISABLED,
+);
 </script>

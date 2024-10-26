@@ -16,44 +16,32 @@ limitations under the License.
 -->
 
 <template>
-	<div v-if='configuration.wifi!.security.type === WifiSecurityType.WPA_PSK'>
+	<div v-if='configuration?.wifi?.security'>
 		<PasswordInput
-			v-model='configuration.wifi!.security.psk'
-			:label='$t("components.ipNetwork.connections.fields.wifi.security.psk").toString()'
+			v-model='configuration.wifi.security.psk'
+			:label='$t("components.ipNetwork.connections.form.wifi.security.psk")'
 			:rules='[
-				(v: string|null) => ValidationRules.required(v, $t("components.ipNetwork.connections.validations.wifi.security.psk.required")),
-				(v: string|null) => validatePsk(v, $t("components.ipNetwork.connections.validations.wifi.security.psk.invalid")),
+				(v: unknown) => ValidationRules.required(v, $t("components.ipNetwork.connections.errors.wifi.security.psk.required")),
 			]'
 			required
-			:prepend-inner-icon='mdiKey'
+			:prepend-inner-icon='mdiKeyWireless'
 		/>
 	</div>
 </template>
-<script setup lang="ts">
+
+<script setup lang='ts'>
 import {
 	type NetworkConnectionConfiguration,
-	WifiSecurityType,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
-import { mdiKey } from '@mdi/js';
+import { mdiKeyWireless } from '@mdi/js';
 import { type PropType } from 'vue';
 
 import PasswordInput from '@/components/layout/form/PasswordInput.vue';
 import ValidationRules from '@/helpers/ValidationRules';
 
-/// Connection configuration
+/// Network connection configuration
 const configuration = defineModel({
 	type: Object as PropType<NetworkConnectionConfiguration>,
 	required: true,
 });
-
-/**
- * Validate WPA pre-shared key
- * @param {string|null} value Value to validate
- * @param {string} error Error message
- * @return {boolean|string} Validation result
- */
-function validatePsk(value: string|null, error: string): boolean | string {
-	const regex = /^([\u0020-\u007e\u0080-\u00ff]{8,63}|[\dA-Fa-f]{64})$/;
-	return (value !== null && regex.test(value)) ? true : error;
-}
 </script>

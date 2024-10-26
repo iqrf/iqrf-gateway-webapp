@@ -20,7 +20,8 @@ limitations under the License.
 		v-model='modelValue'
 		:items='items'
 		:loading='componentState === ComponentState.Loading'
-		:label='$t("components.ipNetwork.connections.form.generic.interface").toString()'
+		:disabled='componentState === ComponentState.Error'
+		:label='$t("components.ipNetwork.connections.form.generic.interface")'
 		:rules='[
 			(v: string|null) => ValidationRules.required(v, $t("components.ipNetwork.connections.errors.generic.interface.required")),
 		]'
@@ -30,7 +31,7 @@ limitations under the License.
 </template>
 <script setup lang='ts'>
 import {
-	type NetworkInterface, type NetworkInterfaceType,
+	Modem,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import { mdiExpansionCardVariant } from '@mdi/js';
 import { onBeforeMount, type PropType, type Ref, ref } from 'vue';
@@ -41,15 +42,6 @@ import { useApiClient } from '@/services/ApiClient';
 import { ComponentState } from '@/types/ComponentState';
 import { type SelectItem } from '@/types/vuetify';
 
-/// Component properties
-const componentProps = defineProps({
-	type: {
-		type: [String, null] as PropType<NetworkInterfaceType | null>,
-		required: false,
-		default: null,
-	},
-
-});
 /// Model value
 const modelValue = defineModel({
 	type: [String, null] as PropType<string | null>,
@@ -60,26 +52,27 @@ const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 /// Network interface items
 const items: Ref<SelectItem[]> = ref([]);
 /// Network interface service
-const service = useApiClient().getNetworkServices().getNetworkInterfaceService();
+const service = useApiClient().getNetworkServices().getModemService();
 
 /**
  * Fetches network interfaces
  */
 async function fetchInterfaces(): Promise<void> {
 	componentState.value = ComponentState.Loading;
-	/// @todo Add error handling
-	const interfaces: NetworkInterface[] = await service.list(componentProps.type);
-	for (const item of interfaces) {
-		let label = item.name;
-		if (item.manufacturer !== null && item.model !== null) {
-			label = `${item.name } (${ item.manufacturer } ${ item.model })`;
+	try {
+		const modems: Modem[] = await service.list();
+		for (const modem of modems) {
+			let label = modem.interface;
+			if (modem.manufacturer !== null && modem.model !== null) {
+				label = `${modem.interface} (${modem.manufacturer} ${modem.model})`;
+			}
+			items.value.push({ title: label, value: modem.interface });
 		}
-		items.value.push({ title: label, value: item.name });
+		componentState.value = ComponentState.Ready;
+	} catch {
+		componentState.value = ComponentState.Error;
 	}
-	componentState.value = ComponentState.Ready;
 }
 
-onBeforeMount(async (): Promise<void> => {
-	await fetchInterfaces();
-});
+onBeforeMount(async (): Promise<void> => await fetchInterfaces());
 </script>

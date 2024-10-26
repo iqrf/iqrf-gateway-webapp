@@ -91,9 +91,9 @@ export enum EapPhaseTwoMethod {
  */
 export interface EapConfiguration {
 	/// EAP (Extensible Authentication Protocol) anonymous identity
-	anonymousIdentity: string,
+	anonymousIdentity?: string,
 	/// EAP (Extensible Authentication Protocol) CA certificate path
-	cert: string,
+	cert?: string,
 	// EAP (Extensible Authentication Protocol) identity
 	identity: string,
 	/// EAP (Extensible Authentication Protocol) password
@@ -165,15 +165,29 @@ export enum WifiSecurityType {
  */
 export interface WifiSecurity {
 	/// EAP (Extensible Authentication Protocol) configuration
-	eap: EapConfiguration,
+	eap?: EapConfiguration,
 	/// Cisco LEAP (Lightweight Extensible Authentication Protocol) configuration
-	leap: LeapConfiguration,
+	leap?: LeapConfiguration,
 	/// Pre-shared key
-	psk: string,
+	psk?: string,
 	/// Type of WiFi security
 	type: WifiSecurityType,
 	/// WEP configuration
-	wep: WepConfiguration,
+	wep?: WepConfiguration,
+}
+
+/**
+ * WiFi mode
+ */
+export enum WifiMode {
+	/// Ad-hoc mode
+	AdHoc = 'adhoc',
+	/// Access point mode
+	AccessPoint = 'ap',
+	/// Infrastructure mode
+	Infrastructure = 'infrastructure',
+	/// Mesh mode
+	Mesh = 'mesh',
 }
 
 /**

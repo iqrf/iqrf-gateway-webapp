@@ -17,10 +17,13 @@
 import { type AxiosRequestConfig, type AxiosResponse } from 'axios';
 
 import {
+	IPv4ConfigurationMethod,
+	IPv6ConfigurationMethod,
 	type NetworkConnectionConfiguration,
 	type NetworkConnectionCreated,
 	type NetworkConnectionListEntry,
 	type NetworkConnectionType,
+	WifiSecurityType,
 } from '../../types/Network';
 import { BaseService } from '../BaseService';
 
@@ -51,7 +54,7 @@ export class NetworkConnectionService extends BaseService {
 	 */
 	public async create(configuration: NetworkConnectionConfiguration): Promise<NetworkConnectionCreated> {
 		const response: AxiosResponse<NetworkConnectionCreated> =
-			await this.axiosInstance.post('/network/connections', configuration);
+			await this.axiosInstance.post('/network/connections', this.prepareConfigurationForSave(configuration));
 		return response.data;
 	}
 
@@ -72,7 +75,7 @@ export class NetworkConnectionService extends BaseService {
 	 * @param {NetworkConnectionConfiguration} configuration Network connection configuration
 	 */
 	public async update(uuid: string, configuration: NetworkConnectionConfiguration): Promise<void> {
-		await this.axiosInstance.put(`/network/connections/${uuid}`, configuration);
+		await this.axiosInstance.put(`/network/connections/${uuid}`, this.prepareConfigurationForSave(configuration));
 	}
 
 	/**
@@ -102,6 +105,76 @@ export class NetworkConnectionService extends BaseService {
 	 */
 	public async disconnect(uuid: string): Promise<void> {
 		await this.axiosInstance.post(`/network/connections/${uuid}/disconnect`);
+	}
+
+	/**
+	 * Prepares the network connection configuration for saving (adding or updating)
+	 * @param {NetworkConnectionConfiguration} configuration Network connection configuration
+	 * @return {NetworkConnectionConfiguration} Prepared network connection configuration
+	 */
+	private prepareConfigurationForSave(configuration: NetworkConnectionConfiguration): NetworkConnectionConfiguration {
+		const preparedConfiguration: NetworkConnectionConfiguration = { ...configuration };
+		// Remove unnecessary serial configuration fields if not serial connection
+		if (
+			!/tty(?:AMA|AMC|S)\d+/.test(preparedConfiguration.interface ?? '') &&
+			preparedConfiguration.serial !== undefined
+		) {
+			delete preparedConfiguration.serial;
+		}
+		// Remove unnecessary IPv4 configuration fields
+		if (
+			[
+				IPv4ConfigurationMethod.AUTO,
+				IPv4ConfigurationMethod.DISABLED,
+			].includes(preparedConfiguration.ipv4.method)
+		) {
+			preparedConfiguration.ipv4.addresses = preparedConfiguration.ipv4.dns = [];
+			preparedConfiguration.ipv4.gateway = null;
+		}
+		// Remove unnecessary IPv6 configuration fields
+		if (
+			[
+				IPv6ConfigurationMethod.AUTO,
+				IPv6ConfigurationMethod.DISABLED,
+				IPv6ConfigurationMethod.DHCP,
+			].includes(preparedConfiguration.ipv6.method)
+		) {
+			preparedConfiguration.ipv6.addresses = preparedConfiguration.ipv6.dns = [];
+			preparedConfiguration.ipv6.gateway = null;
+		}
+		// Remove unnecessary Wi-Fi fields
+		if (preparedConfiguration.wifi !== undefined) {
+			delete preparedConfiguration.wifi.bssids;
+			switch (preparedConfiguration.wifi.security.type) {
+				case WifiSecurityType.Open:
+					delete preparedConfiguration.wifi.security.eap;
+					delete preparedConfiguration.wifi.security.leap;
+					delete preparedConfiguration.wifi.security.psk;
+					delete preparedConfiguration.wifi.security.wep;
+					break;
+				case WifiSecurityType.LEAP:
+					delete preparedConfiguration.wifi.security.eap;
+					delete preparedConfiguration.wifi.security.psk;
+					delete preparedConfiguration.wifi.security.wep;
+					break;
+				case WifiSecurityType.WEP:
+					delete preparedConfiguration.wifi.security.eap;
+					delete preparedConfiguration.wifi.security.leap;
+					delete preparedConfiguration.wifi.security.psk;
+					break;
+				case WifiSecurityType.WPA_EAP:
+					delete preparedConfiguration.wifi.security.leap;
+					delete preparedConfiguration.wifi.security.psk;
+					delete preparedConfiguration.wifi.security.wep;
+					break;
+				case WifiSecurityType.WPA_PSK:
+					delete preparedConfiguration.wifi.security.eap;
+					delete preparedConfiguration.wifi.security.leap;
+					delete preparedConfiguration.wifi.security.wep;
+					break;
+			}
+		}
+		return preparedConfiguration;
 	}
 
 }

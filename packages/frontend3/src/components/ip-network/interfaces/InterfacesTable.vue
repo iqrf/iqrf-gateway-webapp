@@ -52,7 +52,7 @@ import {
 	type NetworkInterface,
 	type NetworkInterfaceType,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
-import { onBeforeMount, type PropType, type Ref, ref } from 'vue';
+import { computed, onBeforeMount, type PropType, type Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import InterfaceStateBadge
@@ -64,6 +64,7 @@ import { useApiClient } from '@/services/ApiClient';
 import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
+/// Component props
 const componentProps = defineProps({
 	type: {
 		type: [String, null] as PropType<NetworkInterfaceType | null>,
@@ -74,9 +75,12 @@ const componentProps = defineProps({
 const i18n = useI18n();
 const service = useApiClient().getNetworkServices().getNetworkInterfaceService();
 
+/// Component state
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
+/// Network interfaces
 const interfaces: Ref<NetworkInterface[]> = ref([]);
-const headers = [
+/// Data table headers
+const headers = computed(() => [
 	{
 		key: 'name',
 		title: i18n.t('components.ipNetwork.interfaces.columns.name'),
@@ -98,7 +102,7 @@ const headers = [
 		key: 'state',
 		title: i18n.t('components.ipNetwork.interfaces.columns.state'),
 	},
-];
+]);
 
 /**
  * Fetches network interfaces

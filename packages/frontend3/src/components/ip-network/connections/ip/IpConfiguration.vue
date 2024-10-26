@@ -17,8 +17,9 @@ limitations under the License.
 
 <template>
 	<h2 class='mb-3 text-h6'>
-		{{ $t("components.ipNetwork.connections.fields.ip.title") }}
+		{{ $t("components.ipNetwork.connections.form.ip.title") }}
 	</h2>
+	<BothIPStacksDisabledAlert v-model='configuration' />
 	<v-row>
 		<v-col :cols='12' :md='6'>
 			<Ipv4Configuration v-model='configuration' />
@@ -35,11 +36,14 @@ import {
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import { type PropType } from 'vue';
 
+import BothIPStacksDisabledAlert
+	from '@/components/ip-network/connections/ip/BothIPStacksDisabledAlert.vue';
 import Ipv4Configuration
-	from '@/components/ip-network/connections/ip/Ipv4Configuration.vue';
+	from '@/components/ip-network/connections/ip/IPv4Configuration.vue';
 import Ipv6Configuration
-	from '@/components/ip-network/connections/ip/Ipv6Configuration.vue';
+	from '@/components/ip-network/connections/ip/IPv6Configuration.vue';
 
+/// Network connection configuration
 const configuration = defineModel({
 	type: Object as PropType<NetworkConnectionConfiguration>,
 	required: true,

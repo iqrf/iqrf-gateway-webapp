@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { type WifiSecurity } from './Wifi';
+import { type WifiMode, type WifiSecurity } from './Wifi';
 
 /**
  * Network connection states
@@ -218,7 +218,7 @@ export interface WifiConnection {
 	/// BSSIDs
 	bssids?: string[];
 	/// WiFi mode
-	mode: string;
+	mode: WifiMode;
 	/// WiFi security
 	security: WifiSecurity;
 	/// SSID
@@ -303,8 +303,12 @@ export interface NetworkConnectionListEntry {
 	bssids?: string[];
 	/// Interface name
 	interfaceName: string|null;
+	/// Is active?
+	isActive: boolean;
 	/// Network connection name
 	name: string;
+	/// Network connection state
+	state: NetworkConnectionState;
 	/// Network connection type
 	type: NetworkConnectionType;
 	/// Network connection UUID

@@ -23,50 +23,42 @@ limitations under the License.
 		<template #titleActions>
 			<ModemMonitButton ref='monit' />
 			<ModemRestartButton @restart='componentState = ComponentState.Loading' @reload='fetchData()' />
-			<v-btn
-				color='grey'
+			<CardTitleActionBtn
 				:icon='mdiMagnify'
-				variant='elevated'
+				:tooltip='$t("components.ipNetwork.modems.actions.scan")'
 				@click='scan'
 			/>
-			<v-btn
-				color='primary'
-				:icon='mdiRefresh'
-				variant='elevated'
+			<CardTitleActionBtn
+				:action='Action.Reload'
 				@click='fetchData'
 			/>
 		</template>
-		<v-skeleton-loader
-			class='input-skeleton-loader'
+		<DataTable
+			:items='modems'
+			:headers='headers'
 			:loading='componentState === ComponentState.Loading'
-			type='table-heading, table-row-divider@2, table-row'
+			disable-column-filtering
+			disable-search
+			hide-pagination
+			dense
 		>
-			<v-responsive>
-				<DataTable
-					:items='modems'
-					:headers='headers'
-					hide-pagination
-					dense
-				>
-					<template #item.signal='{ item }'>
-						<SignalIndicator :signal='item.signal' />
-					</template>
-					<template #item.state='{ item }'>
-						<ModemStateBadge :state='item.state' />
-					</template>
-					<template #item.rssi='{ item }'>
-						{{ item.rssi !== null ? `${item.rssi } dBm` : '-' }}
-					</template>
-				</DataTable>
-			</v-responsive>
-		</v-skeleton-loader>
+			<template #item.signal='{ item }'>
+				<SignalIndicator :signal='item.signal' />
+			</template>
+			<template #item.state='{ item }'>
+				<ModemStateBadge :state='item.state' />
+			</template>
+			<template #item.rssi='{ item }'>
+				{{ item.rssi !== null ? `${item.rssi } dBm` : '-' }}
+			</template>
+		</DataTable>
 	</Card>
 </template>
 
 <script setup lang='ts'>
 import { type Modem } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
-import { mdiMagnify, mdiRefresh } from '@mdi/js';
-import { onBeforeMount, ref, type Ref } from 'vue';
+import { mdiMagnify } from '@mdi/js';
+import { computed, onBeforeMount, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import ModemMonitButton
@@ -77,46 +69,52 @@ import ModemStateBadge
 	from '@/components/ip-network/modems/ModemStateBadge.vue';
 import SignalIndicator from '@/components/ip-network/SignalIndicator.vue';
 import Card from '@/components/layout/card/Card.vue';
+import CardTitleActionBtn
+	from '@/components/layout/card/CardTitleActionBtn.vue';
 import DataTable from '@/components/layout/data-table/DataTable.vue';
 import { useApiClient } from '@/services/ApiClient';
+import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
+/// Internationalization instance
 const i18n = useI18n();
+/// Modem service
 const service = useApiClient().getNetworkServices().getModemService();
 
 /// Component state
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 /// Data table headers
-const headers = [
+const headers = computed(() => [
 	{
 		key: 'interface',
-		title: i18n.t('components.ipNetwork.modems.columns.interface').toString(),
+		title: i18n.t('components.ipNetwork.modems.columns.interface'),
 	},
 	{
 		key: 'imei',
-		title: i18n.t('components.ipNetwork.modems.columns.imei').toString(),
+		title: i18n.t('components.ipNetwork.modems.columns.imei'),
 	},
 	{
 		key: 'manufacturer',
-		title: i18n.t('components.ipNetwork.modems.columns.manufacturer').toString(),
+		title: i18n.t('components.ipNetwork.modems.columns.manufacturer'),
 	},
 	{
 		key: 'model',
-		title: i18n.t('components.ipNetwork.modems.columns.model').toString(),
+		title: i18n.t('components.ipNetwork.modems.columns.model'),
 	},
 	{
 		key: 'state',
-		title: i18n.t('components.ipNetwork.modems.columns.state').toString(),
+		title: i18n.t('components.ipNetwork.modems.columns.state'),
 	},
 	{
 		key: 'signal',
-		title: i18n.t('components.ipNetwork.modems.columns.signal').toString(),
+		title: i18n.t('components.ipNetwork.modems.columns.signal'),
 	},
 	{
+		align: 'end',
 		key: 'rssi',
-		title: i18n.t('components.ipNetwork.modems.columns.rssi').toString(),
+		title: i18n.t('components.ipNetwork.modems.columns.rssi'),
 	},
-];
+]);
 /// Modems
 const modems: Ref<Modem[]> = ref([]);
 /// Monit button reference
@@ -127,34 +125,30 @@ const monitButton = ref<typeof ModemMonitButton | null>(null);
  */
 async function fetchData(): Promise<void> {
 	componentState.value = ComponentState.Loading;
-	await service.list()
-		.then((response: Modem[]): Modem[] => {
-			modems.value = response;
-			componentState.value = ComponentState.Ready;
-			return response;
-		})
-		.catch(() => {
-			componentState.value = ComponentState.FetchFailed;
-		});
+	try {
+		modems.value = await service.list();
+		componentState.value = ComponentState.Ready;
+	} catch {
+		componentState.value = ComponentState.FetchFailed;
+	}
 }
 
 /**
  * Scans for modems
  */
-function scan(): void {
+async function scan(): Promise<void> {
 	componentState.value = ComponentState.Loading;
-	service.scan()
-		.then(async () => {
-			await new Promise((resolve) => setTimeout(resolve, 5_000));
-			await fetchData();
-		})
-		.catch(() => {
-			componentState.value = ComponentState.Error;
-		});
+	try {
+		await service.scan();
+		await new Promise((resolve) => setTimeout(resolve, 5_000));
+		await fetchData();
+	} catch {
+		componentState.value = ComponentState.Error;
+	}
 }
 
-onBeforeMount(() => {
-	fetchData();
-	monitButton.value?.fetchData();
+onBeforeMount(async () => {
+	await fetchData();
+	await monitButton.value?.fetchData();
 });
 </script>

@@ -1,0 +1,72 @@
+<!--
+Copyright 2017-2024 IQRF Tech s.r.o.
+Copyright 2019-2024 MICRORISC s.r.o.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software,
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<template>
+	<div v-if='configuration?.wifi?.security?.eap'>
+		<EapPhase1MethodInput
+			v-model='configuration.wifi.security.eap.phaseOneMethod'
+			:rules='[
+				(v: unknown) => ValidationRules.required(v, $t("components.ipNetwork.connections.errors.eap.phaseOneMethod.required")),
+			]'
+			required
+		/>
+		<EapPhase2MethodInput
+			v-model='configuration.wifi.security.eap.phaseTwoMethod'
+			:phase-one-method='configuration.wifi.security.eap.phaseOneMethod'
+			:rules='[
+				(v: unknown) => ValidationRules.required(v, $t("components.ipNetwork.connections.errors.eap.phaseTwoMethod.required")),
+			]'
+			required
+		/>
+		<v-text-field
+			v-model='configuration.wifi.security.eap.anonymousIdentity'
+			:label='$t("components.ipNetwork.connections.form.eap.anonymousIdentity")'
+			:prepend-inner-icon='mdiAccountQuestion'
+		/>
+		<v-text-field
+			v-model='configuration.wifi.security.eap.identity'
+			:label='$t("components.ipNetwork.connections.form.eap.identity")'
+			:prepend-inner-icon='mdiAccount'
+		/>
+		<PasswordInput
+			v-model='configuration.wifi.security.eap.password'
+			:label='$t("components.ipNetwork.connections.form.eap.password")'
+			:prepend-inner-icon='mdiKey'
+		/>
+	</div>
+</template>
+
+<script setup lang='ts'>
+import {
+	type NetworkConnectionConfiguration,
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
+import { mdiAccount, mdiAccountQuestion, mdiKey } from '@mdi/js';
+import { type PropType } from 'vue';
+
+import EapPhase1MethodInput
+	from '@/components/ip-network/connections/eap/EapPhase1MethodInput.vue';
+import EapPhase2MethodInput
+	from '@/components/ip-network/connections/eap/EapPhase2MethodInput.vue';
+import PasswordInput from '@/components/layout/form/PasswordInput.vue';
+import ValidationRules from '@/helpers/ValidationRules';
+
+/// Network connection configuration
+const configuration = defineModel({
+	type: Object as PropType<NetworkConnectionConfiguration>,
+	required: true,
+});
+</script>

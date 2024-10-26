@@ -16,18 +16,31 @@ limitations under the License.
 -->
 
 <template>
-	<h2 class='mb-3 text-h6 text-grey'>
-		{{ $t("components.ipNetwork.connections.fields.ipv6.title") }}
-	</h2>
+	<div v-if='configuration?.wifi?.security?.leap'>
+		<v-text-field
+			v-model='configuration.wifi.security.leap.username'
+			:label='$t("components.ipNetwork.connections.form.wifi.security.leap.username")'
+			:prepend-inner-icon='mdiAccount'
+		/>
+		<PasswordInput
+			v-model='configuration.wifi.security.leap.password'
+			:label='$t("components.ipNetwork.connections.form.wifi.security.leap.password")'
+			:prepend-inner-icon='mdiKey'
+		/>
+	</div>
 </template>
 
 <script setup lang='ts'>
 import {
 	type NetworkConnectionConfiguration,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
+import { mdiAccount, mdiKey } from '@mdi/js';
 import { type PropType } from 'vue';
 
-defineModel({
+import PasswordInput from '@/components/layout/form/PasswordInput.vue';
+
+/// Network connection configuration
+const configuration = defineModel({
 	type: Object as PropType<NetworkConnectionConfiguration>,
 	required: true,
 });

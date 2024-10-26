@@ -16,38 +16,109 @@ limitations under the License.
 -->
 
 <template>
-	<h2 class='mb-3 text-h6'>
-		{{ $t("components.ipNetwork.connections.fields.wifi.title") }}
-	</h2>
-	<TextInput
-		v-model='configuration.wifi!.ssid'
-		:label='$t("components.ipNetwork.connections.fields.wifi.ssid").toString()'
-		:rules='[
-			(v: string|null) => ValidationRules.required(v, $t("components.ipNetwork.connections.validations.wifi.ssid.required")),
-		]'
-		required
-		:prepend-inner-icon='mdiWifi'
-	/>
-	<WiFiSecurityTypeInput v-model='configuration.wifi!.security.type' disabled />
-	<WpaPskConfiguration v-model='configuration' />
+	<div v-if='configuration.wifi'>
+		<h2 class='mb-3 text-h6'>
+			{{ $t("components.ipNetwork.connections.form.wifi.title") }}
+		</h2>
+		<TextInput
+			v-model='configuration.wifi.ssid'
+			:label='$t("components.ipNetwork.connections.form.wifi.ssid")'
+			:rules='[
+				(v: unknown) => ValidationRules.required(v, $t("components.ipNetwork.connections.errors.wifi.ssid.required")),
+			]'
+			required
+			:prepend-inner-icon='mdiWifi'
+		/>
+		<WiFiSecurityTypeInput
+			v-model='configuration.wifi.security.type'
+		/>
+		<LeapConfigurationFields
+			v-if='configuration.wifi.security.type === WifiSecurityType.LEAP'
+			v-model='configuration'
+		/>
+		<WpaEapConfiguration
+			v-if='configuration.wifi.security.type === WifiSecurityType.WPA_EAP'
+			v-model='configuration'
+		/>
+		<WpaPskConfiguration
+			v-if='configuration.wifi.security.type === WifiSecurityType.WPA_PSK'
+			v-model='configuration'
+		/>
+	</div>
 </template>
 
 <script setup lang='ts'>
 import {
+	EapConfiguration,
+	EapPhaseOneMethod,
+	EapPhaseTwoMethod,
+	LeapConfiguration,
 	type NetworkConnectionConfiguration,
+	WepConfiguration,
+	WepKeyLen,
+	WepKeyType,
+	WifiSecurityType,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import { mdiWifi } from '@mdi/js';
-import { type PropType } from 'vue';
+import { type PropType, watch } from 'vue';
 
+import LeapConfigurationFields
+	from '@/components/ip-network/connections/wifi/LeapConfiguration.vue';
 import WiFiSecurityTypeInput
 	from '@/components/ip-network/connections/wifi/WiFiSecurityTypeInput.vue';
+import WpaEapConfiguration
+	from '@/components/ip-network/connections/wifi/WpaEapConfiguration.vue';
 import WpaPskConfiguration
 	from '@/components/ip-network/connections/wifi/WpaPskConfiguration.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import ValidationRules from '@/helpers/ValidationRules';
 
+/// Network connection configuration
 const configuration = defineModel({
 	type: Object as PropType<NetworkConnectionConfiguration>,
 	required: true,
+});
+
+// Add specific security configuration if selected and is not present
+watch(configuration.value, (value: NetworkConnectionConfiguration): void => {
+	if (value.wifi?.security === undefined) {
+		return;
+	}
+	switch (value.wifi.security.type) {
+		case WifiSecurityType.LEAP:
+			Object.assign(value.wifi.security, {
+				leap: {
+					username: '',
+					password: '',
+				} as LeapConfiguration,
+			});
+			break;
+		case WifiSecurityType.WEP:
+			Object.assign(value.wifi.security, {
+				wep: {
+					keyLen: WepKeyLen.BIT128,
+					keyType: WepKeyType.KEY,
+					keys: ['', '', '', ''],
+				} as WepConfiguration,
+			});
+			break;
+		case WifiSecurityType.WPA_EAP:
+			Object.assign(value.wifi.security, {
+				eap: {
+					anonymousIdentity: '',
+					cert: '',
+					identity: '',
+					password: '',
+					phaseOneMethod: EapPhaseOneMethod.PEAP,
+					phaseTwoMethod: EapPhaseTwoMethod.MSCHAPV2,
+				} as EapConfiguration,
+			});
+			break;
+		case WifiSecurityType.WPA_PSK:
+			Object.assign(value.wifi.security, {
+				psk: '',
+			});
+			break;
+	}
 });
 </script>

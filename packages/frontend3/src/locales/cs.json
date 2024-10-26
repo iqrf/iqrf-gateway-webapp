@@ -471,6 +471,370 @@
 				}
 			}
 		},
+		"ipNetwork": {
+			"connections": {
+				"actions": {
+					"add": "Přidat nové připojení",
+					"connect": "Připojit připojení",
+					"delete": "Odstranit připojení",
+					"disconnect": "Odpojit připojení",
+					"edit": "Upravit připojení",
+					"saveAndConnect": "Uložit a připojit"
+				},
+				"add": {
+					"messages": {
+						"failure": "Nepodařilo se vytvořit nové síťové připojení {name}.",
+						"success": "Nové síťové připojení {name} bylo úspěšně vytvořeno."
+					},
+					"titles": {
+						"802-11-wireless": "Vytvoření nového WiFi připojení",
+						"802-3-ethernet": "Vytvoření nového drátového připojení",
+						"gsm": "Vytvoření nového mobilního připojení",
+						"vlan": "Vytvoření nového VLAN připojení"
+					}
+				},
+				"columns": {
+					"interfaceName": "Jméno rozhraní",
+					"name": "Jméno připojení",
+					"state": "Stav",
+					"states": {
+						"activated": "Aktivováno",
+						"activating": "Aktivuje se",
+						"deactivated": "Deaktivováno",
+						"deactivating": "Deaktivuje se",
+						"unknown": "Neznámý"
+					}
+				},
+				"connect": {
+					"messages": {
+						"failure": "Nepodařilo se spojit síťové připojení {name}.",
+						"success": "Síťové připojení {name} bylo úspěšně spojeno."
+					}
+				},
+				"delete": {
+					"messages": {
+						"failure": "Nepodařilo se odstranit síťové připojení {name}.",
+						"success": "Síťové připojení {name} bylo úspěšně odstraněno."
+					},
+					"prompt": "Pokud přistupujete k webovému rozhraní z adresy používané tímto profilem síťového připojení, jeho odstranění způsobí, že webové rozhraní již nebude na této adrese dostupné. Chcete opravdu odstranit síťové připojení {name}?",
+					"title": "Potvrzení odstranění síťového připojení"
+				},
+				"disconnect": {
+					"messages": {
+						"failure": "Nepodařilo se odpojit síťové připojení {name}.",
+						"success": "Síťové připojení {name} bylo úspěšně odpojeno."
+					},
+					"prompt": "Pokud přistupujete k webovému rozhraní z adresy používané tímto profilem síťového připojení, jeho odpojení způsobí, že webové rozhraní již nebude na této adrese dostupné. Chcete opravdu odpojit síťové připojení {name}?",
+					"title": "Potvrzení odpojení síťového připojení"
+				},
+				"edit": {
+					"messages": {
+						"failure": "Nepodařilo se upravit síťové připojení {name}.",
+						"success": "Síťové připojení {name} bylo úspěšně upraveno."
+					},
+					"title": "Úprava nastavení síťového připojení",
+					"titles": {
+						"802-11-wireless": "Úprava nastavení WiFi připojení",
+						"802-3-ethernet": "Úprava nastavení drátového připojení",
+						"gsm": "Úprava nastavení mobilního připojení",
+						"vlan": "Úprava nastavení VLAN připojení"
+					}
+				},
+				"errors": {
+					"generic": {
+						"interface": {
+							"required": "Vyberte prosím síťové rozhraní."
+						},
+						"name": {
+							"required": "Zadejte prosím jméno připojení."
+						}
+					},
+					"gsm": {
+						"apn": {
+							"apn": "Zadejte prosím platné jméno přístupového bodu.",
+							"required": "Zadejte prosím jméno přístupového bodu."
+						},
+						"password": {
+							"required": "Zadejte prosím heslo."
+						},
+						"pin": {
+							"pin": "Zadejte prosím platný PIN kód, který je složen ze 4-8 číslic.",
+							"required": "Zadejte prosím PIN kód."
+						},
+						"username": {
+							"required": "Zadejte prosím uživatelské jméno."
+						}
+					},
+					"ip": {
+						"disabledBothIpStacks": "Nelze nastavit aktuální IP konfiguraci, protože konfigurace obou IP zásobníků jsou zakázány."
+					},
+					"ipv4": {
+						"address": {
+							"ipv4Address": "Zadejte prosím platnou IPv4 adresu.",
+							"ipv4Subnet": "IPv4 adresy zařízení a brány nejsou v jedné podsíťi.",
+							"required": "Zadejte prosím IPv4 adresu."
+						},
+						"dns": {
+							"ipv4Address": "Zadejte prosím platnou IPv4 adresu DNS serveru.",
+							"required": "Zadejte prosím IPv4 adresu DNS serveru."
+						},
+						"gateway": {
+							"ipv4Address": "Zadejte prosím platnou IPv4 adresu brány.",
+							"ipv4Subnet": "IPv4 adresy zařízení a brány nejsou v jedné podsíťi.",
+							"required": "Zadejte prosím IPv4 adresu brány."
+						},
+						"mask": {
+							"ipv4Address": "Zadejte prosím platnou IPv4 masku podsítě.",
+							"required": "Zadejte prosím IPv4 masku podsítě."
+						},
+						"method": {
+							"required": "Vyberte prosím IPv4 konfigurační metodu."
+						},
+						"prefix": {
+							"between": "IPv4 prefix podsítě musí být celé číslo mezi 0 a 32.",
+							"required": "Zadejte prosím IPv4 prefix podsítě."
+						}
+					},
+					"ipv6": {
+						"address": {
+							"ipv6Address": "Zadejte prosím platnou IPv6 adresu.",
+							"ipv6Subnet": "IPv6 adresy zařízení a brány nejsou v jedné podsíťi.",
+							"required": "Zadejte prosím IPv6 adresu."
+						},
+						"dns": {
+							"ipv6Address": "Zadejte prosím platnou IPv6 adresu DNS serveru.",
+							"required": "Zadejte prosím IPv6 adresu DNS serveru."
+						},
+						"gateway": {
+							"ipv6Address": "Zadejte prosím platnou IPv4 adresu brány.",
+							"ipv6Subnet": "IPv6 adresy zařízení a brány nejsou v jedné podsíťi.",
+							"required": "Zadejte prosím IPv4 adresu brány."
+						},
+						"method": {
+							"required": "Vyberte prosím IPv6 konfigurační metodu."
+						},
+						"prefix": {
+							"between": "IPv6 prefix podsítě musí být celé číslo mezi 0 a 128.",
+							"required": "Zadejte prosím IPv6 prefix podsítě."
+						}
+					},
+					"serial": {
+						"baudRate": {
+							"numerical": "Baud rate musí být číselná hodnota.",
+							"required": "Zadejte prosím baud rate"
+						}
+					},
+					"vlan": {
+						"id": {
+							"invalid": "VLAN ID musí být celé číslo mezi 1 a 4094.",
+							"required": "Zadejte prosím VLAN ID."
+						}
+					},
+					"wifi": {
+						"security": {
+							"psk": {
+								"required": "Zadejte prosím předsdílený klíč."
+							},
+							"type": {
+								"required": "Vyberte prosím typ zabezpečení."
+							}
+						},
+						"ssid": {
+							"required": "Zadejte prosím SSID přístupového bodu."
+						}
+					}
+				},
+				"form": {
+					"autoConnect": {
+						"enabled": "Automatické navázání spojení"
+					},
+					"eap": {
+						"anonymousIdentity": "Anonymní identita",
+						"cert": "Certifikát certifikační autority",
+						"identity": "Identita",
+						"password": "Heslo"
+					},
+					"generic": {
+						"interface": "Síťové rozhraní",
+						"name": "Jméno připojení"
+					},
+					"gsm": {
+						"apn": "Jméno přístupového bodu",
+						"password": "Heslo",
+						"pin": "PIN kód",
+						"title": "Konfigurace mobilního připojení",
+						"username": "Uživatelské jméno"
+					},
+					"ip": {
+						"title": "IP konfigurace"
+					},
+					"ipv4": {
+						"address": "IPv4 adresa",
+						"dns": {
+							"address": "IPv4 adresa DNS serveru",
+							"title": "IPv4 DNS servery"
+						},
+						"gateway": "IPv4 adresa brány",
+						"mask": "IPv4 maska podsítě",
+						"method": "IPv4 konfigurační metoda",
+						"methods": {
+							"auto": "Automatická (DHCP)",
+							"disabled": "Zakázáno",
+							"link-local": "Linkově-lokální",
+							"manual": "Statická",
+							"null": "Vyberte prosím IPv4 konfigurační metodu",
+							"shared": "Sdílení s ostatními počítači"
+						},
+						"prefix": "IPv4 prefix podsítě",
+						"title": "IPv4 konfigurace"
+					},
+					"ipv6": {
+						"address": "IPv6 adresa",
+						"dns": {
+							"address": "IPv6 adresa DNS serveru",
+							"title": "IPv6 DNS servery"
+						},
+						"gateway": "IPv6 adresa brány",
+						"method": "IPv6 konfigurační metoda",
+						"methods": {
+							"auto": "Automatická (SLAAC)",
+							"dhcp": "Automatická (pouze DHCPv6)",
+							"disabled": "Zakázáno",
+							"ignore": "Ignorováno",
+							"link-local": "Linkově-lokální",
+							"manual": "Statická",
+							"null": "Vyberte prosím IPv4 konfigurační metodu",
+							"shared": "Sdílení s ostatními počítači"
+						},
+						"prefix": "IPv6 prefix podsítě",
+						"title": "IPv6 konfigurace"
+					},
+					"serial": {
+						"baudRate": "Baud rate",
+						"title": "Konfigurace sériové linky"
+					},
+					"vlan": {
+						"id": "VLAN ID",
+						"title": "Konfigurace VLAN připojení"
+					},
+					"wifi": {
+						"security": {
+							"leap": {
+								"password": "Heslo",
+								"username": "Uživatelské jméno"
+							},
+							"psk": "Předsdílený klíč",
+							"type": "Typ zabezpečení",
+							"types": {
+								"leap": "LEAP",
+								"null": "Prosím vyberte typ zabezpečení",
+								"open": "Otevřená síť",
+								"wep": "WEP",
+								"wpa-eap": "WPA-Enterprise",
+								"wpa-psk": "WPA-Personal"
+							},
+							"wep": {
+								"index": "Výchozí WEP klíč",
+								"keyNum": "WEP klíč {index}",
+								"length": "Délka WEP klíče",
+								"lengths": {
+									"128bit": "128 bitů (13 ASCII nebo 26 hexadecimálních znaků)",
+									"64bit": "64 bitů (5 ASCII nebo 10 hexadecimálních znaků)",
+									"null": "Prosím vyberte délku WEP klíče"
+								},
+								"type": "Formát WEP klíče",
+								"types": {
+									"key": "Klíč",
+									"null": "Prosím vyberte typ WEP klíče",
+									"passphrase": "Heslová fráze"
+								}
+							}
+						},
+						"ssid": "SSID",
+						"title": "Konfigurace WiFi připojení"
+					}
+				},
+				"titles": {
+					"802-11-wireless": "WiFi připojení",
+					"802-3-ethernet": "Drátová připojení",
+					"gsm": "Mobilní připojení",
+					"vlan": "VLAN připojení"
+				}
+			},
+			"interfaces": {
+				"columns": {
+					"macAddress": "MAC adresa",
+					"manufacturer": "Výrobce",
+					"model": "Model",
+					"name": "Jméno",
+					"state": "Stav",
+					"states": {
+						"connected": "Připojené",
+						"connecting": "Připojující se",
+						"connecting (checking IP connectivity)": "Kontrolující IP konektivitu",
+						"connecting (configuring)": "Konfigurující",
+						"connecting (getting IP configuration)": "Získávání IP konfigurace",
+						"connecting (need authentication)": "Potřebující autentizaci",
+						"connecting (prepare)": "Připravující se",
+						"connecting (starting secondary connections)": "Startující sekundární připojení",
+						"connection failed": "Selhalo připojení",
+						"deactivating": "Odpojuje se",
+						"disconnected": "Odpojené",
+						"unavailable": "Nedostupné",
+						"unknown": "Neznámé",
+						"unmanaged": "Nespravované"
+					}
+				},
+				"titles": {
+					"ethernet": "Drátové rozhraní",
+					"vlan": "VLAN rozhraní",
+					"wifi": "WiFi rozhraní"
+				}
+			},
+			"modems": {
+				"actions": {
+					"scan": "Vyhledat modemy"
+				},
+				"columns": {
+					"failedReasons": {
+						"esim-without-profiles": "eSIM bez profilů",
+						"none": "Žádná chyba",
+						"sim-error": "Nepoužitelná SIM karta",
+						"sim-missing": "Chybějící SIM karta",
+						"unknown": "Neznámá chyba",
+						"unknown-capabilities": "Neznámé schopnosti"
+					},
+					"imei": "IMEI",
+					"interface": "Jméno rozhraní",
+					"manufacturer": "Výrobce",
+					"model": "Model",
+					"rssi": "RSSI",
+					"signal": "Síla signálu",
+					"state": "Stav",
+					"states": {
+						"connected": "Připojený",
+						"connecting": "Připojující se",
+						"disabled": "Zakázaný",
+						"disabling": "Zakazující se",
+						"disconnecting": "Odpojující se",
+						"enabled": "Povolený",
+						"enabling": "Povolující se",
+						"failed": "Nepoužitelný",
+						"initializing": "Inicializující se",
+						"locked": "Uzamčený",
+						"registered": "Registrovaný do sítě",
+						"searching": "Hledající síť",
+						"unknown": "Neznámý"
+					}
+				},
+				"title": "Modemy"
+			}
+		},
+		"layout": {
+			"themeSwitch": {
+				"title": "Přepnout téma"
+			}
+		},
 		"status": {
 			"monitor": {
 				"enumeration": {
@@ -490,24 +854,6 @@
 				"version": "Verze daemona"
 			}
 		}
-	},
-	"install": {
-		"createUser": {
-			"createButton": "Vytvoř uživatele",
-			"failure": "Vytvoření uživatelského účtu selhalo z důvodu: {error}",
-			"note": "Vytvoření nového uživatelského účtu pro přístup do webové aplikace.",
-			"title": "vytvoření nového uživatelského účtu"
-		},
-		"invitation": "Vítejte v IQRF Gateway Webapp. Než začnete webovou aplikaci používat je nejdříve potřeba vytvořit uživatelský účet.",
-		"steps": {
-			"gatewayUser": "Nastavení systémového účtu",
-			"introduction": "Úvod",
-			"smtp": "Konfigurace SMTP serveru",
-			"sshKeys": "Přidání SSH klíčů",
-			"sshService": "SSH služa",
-			"webappUser": "Vytvoření uživatelského účtu"
-		},
-		"title": "Instalační průvodce"
 	},
 	"pages": {
 		"accessControl": {
@@ -676,12 +1022,43 @@
 				"title": "Instalační průvodce brány IQRF"
 			}
 		},
+		"ipNetwork": {
+			"ethernet": {
+				"description": "Správa drátových síťových připojení.",
+				"title": "Drátové připojení"
+			},
+			"mobile": {
+				"description": "Správa mobilních připojení.",
+				"title": "Mobilní připojení"
+			},
+			"title": "IP síť",
+			"vlan": {
+				"description": "Správa VLAN připojení.",
+				"title": "VLAN připojení"
+			},
+			"wireless": {
+				"description": "Správa bezdrátových připojení.",
+				"title": "Bezdrátové připojení"
+			}
+		},
 		"iqrfnet": {
 			"description": "Správa IQRF sítě a zařízení.",
+			"send-dpa": {
+				"description": "Odesílání surových DPA paketů do IQRF sítě.",
+				"title": "Odeslat DPA paket"
+			},
+			"send-json": {
+				"description": "Odesílání JSON požadavků do IQRF sítě.",
+				"title": "Odeslat JSON požadavek"
+			},
 			"title": "IQRF síť",
 			"tr-config": {
 				"description": "Konfigurace TR modulů.",
 				"title": "TR konfigurace"
+			},
+			"upload": {
+				"description": "Nahrání custom DPA handlerů a změna verze DPA.",
+				"title": "Nahrání do kooordinátoru"
 			}
 		},
 		"maintenance": {

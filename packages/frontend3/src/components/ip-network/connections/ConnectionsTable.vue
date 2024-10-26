@@ -21,6 +21,7 @@ limitations under the License.
 			{{ $t(`components.ipNetwork.connections.titles.${type}`) }}
 		</template>
 		<template #titleActions>
+			<ConnectionForm :action='Action.Add' :type='componentProps.type' />
 			<CardTitleActionBtn
 				:action='Action.Reload'
 				@click='fetchData'
@@ -41,7 +42,8 @@ limitations under the License.
 						<ConnectionStateBadge :state='item.state' />
 					</template>
 					<template #item.actions='{ item }'>
-						<ConnectionEditBtn :connection='item' />
+						<ConnectionActionButton :connection='item' @change='fetchData' />
+						<ConnectionForm :action='Action.Edit' :type='componentProps.type' :uuid='item.uuid' />
 						<ConnectionDeleteDialog :connection='item' @deleted='fetchData' />
 					</template>
 				</DataTable>
@@ -55,13 +57,15 @@ import {
 	type NetworkConnectionListEntry,
 	type NetworkConnectionType,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
-import { onBeforeMount, type PropType, type Ref, ref } from 'vue';
+import { computed, onBeforeMount, type PropType, type Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
+import ConnectionActionButton
+	from '@/components/ip-network/connections/ConnectionActionButton.vue';
 import ConnectionDeleteDialog
 	from '@/components/ip-network/connections/ConnectionDeleteDialog.vue';
-import ConnectionEditBtn
-	from '@/components/ip-network/connections/ConnectionEditBtn.vue';
+import ConnectionForm
+	from '@/components/ip-network/connections/ConnectionForm.vue';
 import ConnectionStateBadge
 	from '@/components/ip-network/connections/ConnectionStateBadge.vue';
 import Card from '@/components/layout/card/Card.vue';
@@ -71,6 +75,7 @@ import { useApiClient } from '@/services/ApiClient';
 import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
+/// Component props
 const componentProps = defineProps({
 	type: {
 		type: [String, null] as PropType<NetworkConnectionType | null>,
@@ -78,12 +83,17 @@ const componentProps = defineProps({
 		required: false,
 	},
 });
+/// Internationalization instance
 const i18n = useI18n();
+/// Network connection service
 const service = useApiClient().getNetworkServices().getNetworkConnectionService();
 
+/// Component state
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
+/// Network connections
 const connections: Ref<NetworkConnectionListEntry[]> = ref([]);
-const headers = [
+/// Data table headers
+const headers = computed(() => [
 	{
 		key: 'name',
 		title: i18n.t('components.ipNetwork.connections.columns.name'),
@@ -102,7 +112,7 @@ const headers = [
 		title: i18n.t('common.columns.actions'),
 		sortable: false,
 	},
-];
+]);
 
 /**
  * Fetches network interfaces

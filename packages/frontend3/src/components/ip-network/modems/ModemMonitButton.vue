@@ -16,40 +16,30 @@ limitations under the License.
 -->
 
 <template>
-	<v-btn
-		v-if='monitCheck !== null'
-		:color='color'
-		variant='elevated'
-		:icon='icon'
+	<CardTitleActionBtn
+		v-if='componentState === ComponentState.Ready && monitCheck !== null'
+		:action='monitCheck.enabled ? Action.Disable : Action.Enable'
+		:color='monitCheck.enabled ? "error" : "success"'
 		@click='toggleMonitCheck'
 	/>
 </template>
 <script setup lang='ts'>
 import { Feature } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { type MonitCheck } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { mdiPlay, mdiStop } from '@mdi/js';
-import { computed, onBeforeMount, ref, type Ref } from 'vue';
+import { onBeforeMount, ref, type Ref } from 'vue';
 
+import CardTitleActionBtn
+	from '@/components/layout/card/CardTitleActionBtn.vue';
 import { useApiClient } from '@/services/ApiClient';
 import { useFeatureStore } from '@/store/features';
+import { Action } from '@/types/Action';
+import { ComponentState } from '@/types/ComponentState';
 
 const featureStore = useFeatureStore();
 const monitService = useApiClient().getConfigServices().getMonitService();
 
-/// Button color
-const color = computed(() => {
-	if (monitCheck.value === null) {
-		return 'grey';
-	}
-	return monitCheck.value.enabled ? 'error' : 'success';
-});
-/// Button icon
-const icon = computed(() => {
-	if (monitCheck.value === null) {
-		return 'mdiLoading';
-	}
-	return monitCheck.value.enabled ? mdiStop : mdiPlay;
-});
+/// Component state
+const componentState = ref(ComponentState.Loading);
 /// Monit check configuration
 const monitCheck: Ref<MonitCheck | null> = ref(null);
 /// Monit check name
@@ -62,21 +52,25 @@ async function fetchMonitCheck(): Promise<void> {
 	if (!featureStore.isEnabled(Feature.monit)) {
 		return;
 	}
-	await monitService.getCheck(monitCheckName)
-		.then((response: MonitCheck): MonitCheck => monitCheck.value = response);
+	componentState.value = ComponentState.Loading;
+	try {
+		monitCheck.value = await monitService.getCheck(monitCheckName);
+		componentState.value = ComponentState.Ready;
+	} catch (error) {
+		console.error(error);
+		componentState.value = ComponentState.FetchFailed;
+	}
 }
 
 /**
  * Toggles Monit check enablement
- * @param confirmed
+ * @param {boolean} confirmed Confirmed action
  */
-function toggleMonitCheck(confirmed = false): void {
+function toggleMonitCheck(confirmed: boolean = false): void {
 	if (monitCheck.value === null) {
 		return;
 	}
 }
 
-onBeforeMount(() => {
-	fetchMonitCheck();
-});
+onBeforeMount(async () => await fetchMonitCheck());
 </script>

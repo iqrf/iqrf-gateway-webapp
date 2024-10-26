@@ -343,6 +343,11 @@
 						"success": "You have been signed in successfully."
 					},
 					"title": "Sign in"
+				},
+				"out": {
+					"expired": "Your sign-in session has expired. Please sign in again.",
+					"message": "You have been signed out.",
+					"title": "Sign out"
 				}
 			}
 		},
@@ -1453,14 +1458,21 @@
 			"connections": {
 				"actions": {
 					"add": "Create a new connection",
+					"connect": "Connect connection",
 					"delete": "Delete connection",
-					"edit": "Edit connection"
+					"disconnect": "Disconnect connection",
+					"edit": "Edit connection",
+					"saveAndConnect": "Save and connect"
 				},
 				"add": {
+					"messages": {
+						"failure": "Failed to create network connection {name}.",
+						"success": "Network connection {name} has been successfully created."
+					},
 					"titles": {
 						"802-11-wireless": "Create a new WiFi connection",
 						"802-3-ethernet": "Create a new Ethernet connection",
-						"gsm": "Create a new Mobile connection",
+						"gsm": "Create a new mobile connection",
 						"vlan": "Create a new VLAN connection"
 					}
 				},
@@ -1476,67 +1488,42 @@
 						"unknown": "Unknown"
 					}
 				},
+				"connect": {
+					"messages": {
+						"failure": "Failed to connect network connection {name}.",
+						"success": "Network connection {name} has been successfully connected."
+					}
+				},
 				"delete": {
 					"messages": {
 						"failure": "Failed to delete network connection {name}.",
 						"success": "Network connection {name} has been successfully deleted."
 					},
-					"prompt": "Are you sure you want to delete network connection {name}?",
+					"prompt": "If you're accessing the web interface from address used by this network connection profile, deleting it will result in web interface no longer being available at this address. Are you sure you want to delete network connection {name}?",
 					"title": "Network connection deletion confirmation"
 				},
+				"disconnect": {
+					"messages": {
+						"failure": "Failed to disconnect network connection {name}.",
+						"success": "Network connection {name} has been successfully disconnected."
+					},
+					"prompt": "If you're accessing the web interface from address used by this network connection profile, disconnect it will result in web interface no longer being available at this address. Are you sure you want to disconnect network connection {name}?",
+					"title": "Network connection disconnection confirmation"
+				},
 				"edit": {
+					"messages": {
+						"failure": "Failed to update network connection {name}.",
+						"success": "Network connection {name} has been successfully updated."
+					},
 					"title": "Edit connection configuration",
 					"titles": {
 						"802-11-wireless": "Edit WiFi connection",
 						"802-3-ethernet": "Edit Ethernet connection",
-						"gsm": "Edit Mobile connection",
+						"gsm": "Edit mobile connection",
 						"vlan": "Edit VLAN connection"
 					}
 				},
-				"fields": {
-					"autoConnect": {
-						"enabled": "Establish connection automatically"
-					},
-					"generic": {
-						"interface": "Network interface",
-						"name": "Connection name"
-					},
-					"ip": {
-						"title": "IP configuration"
-					},
-					"ipv4": {
-						"title": "IPv4 configuration"
-					},
-					"ipv6": {
-						"title": "IPv6 configuration"
-					},
-					"vlan": {
-						"id": "VLAN ID",
-						"title": "VLAN configuration"
-					},
-					"wifi": {
-						"security": {
-							"psk": "Pre-shared key",
-							"type": "Security type",
-							"types": {
-								"leap": "Cisco LEAP (Lightweight Extensible Authentication Protocol)",
-								"open": "Open network",
-								"wep": "WEP",
-								"wpa-eap": "WPA-Enterprise",
-								"wpa-psk": "WPA-Personal"
-							}
-						},
-						"ssid": "SSID",
-						"title": "Wi-Fi configuration"
-					}
-				},
-				"titles": {
-					"802-11-wireless": "WiFi connections",
-					"802-3-ethernet": "Ethernet connections",
-					"gsm": "Mobile connections",
-					"vlan": "VLAN connections"
-				},
-				"validations": {
+				"errors": {
 					"generic": {
 						"interface": {
 							"required": "Please select the network interface."
@@ -1545,23 +1532,234 @@
 							"required": "Please enter the connection name."
 						}
 					},
+					"gsm": {
+						"apn": {
+							"apn": "Please enter a valid APN.",
+							"required": "Please enter the APN."
+						},
+						"password": {
+							"required": "Please enter the password."
+						},
+						"pin": {
+							"pin": "PIN code must be a numerical value with 4-8 digits.",
+							"required": "Please enter the PIN code."
+						},
+						"username": {
+							"required": "Please enter the username."
+						}
+					},
+					"ip": {
+						"disabledBothIpStacks": "Current IP configuration cannot be set because both IP stacks are disabled."
+					},
+					"ipv4": {
+						"address": {
+							"ipv4Address": "Please enter a valid IPv4 address.",
+							"ipv4Subnet": "IPv4 address and IPv4 gateway address must be in the same subnet.",
+							"required": "Please enter the IPv4 address."
+						},
+						"dns": {
+							"ipv4Address": "Please enter a valid IPv4 DNS server address.",
+							"required": "Please enter the IPv4 DNS server address."
+						},
+						"gateway": {
+							"ipv4Address": "Please enter a valid IPv4 gateway address.",
+							"ipv4Subnet": "IPv4 address and IPv4 gateway address must be in the same subnet.",
+							"required": "Please enter the IPv4 gateway address."
+						},
+						"mask": {
+							"ipv4Address": "Please enter a valid IPv4 subnet mask.",
+							"required": "Please enter the IPv4 subnet mask."
+						},
+						"method": {
+							"required": "Please select the IPv4 configuration method."
+						},
+						"prefix": {
+							"between": "IPv4 subnet prefix should be an integer between 0 and 32.",
+							"required": "Please enter the IPv4 subnet prefix."
+						}
+					},
+					"ipv6": {
+						"address": {
+							"ipv6Address": "Please enter a valid IPv6 address.",
+							"ipv6Subnet": "IPv6 address and IPv6 gateway address must be in the same subnet.",
+							"required": "Please enter the IPv6 address."
+						},
+						"dns": {
+							"ipv6Address": "Please enter a valid IPv6 DNS server address.",
+							"required": "Please enter the IPv6 DNS server address."
+						},
+						"gateway": {
+							"ipv6Address": "Please enter a valid IPv6 gateway address.",
+							"ipv6Subnet": "IPv6 address and IPv6 gateway address must be in the same subnet.",
+							"required": "Please enter the IPv6 gateway address."
+						},
+						"method": {
+							"required": "Please select the IPv6 configuration method."
+						},
+						"prefix": {
+							"between": "IPv6 subnet prefix should be an integer between 0 and 128.",
+							"required": "Please enter the IPv6 subnet prefix."
+						}
+					},
+					"serial": {
+						"baudRate": {
+							"numerical": "Baud rate must be a numerical value.",
+							"required": "Please enter the baud rate."
+						}
+					},
 					"vlan": {
 						"id": {
-							"invalid": "VLAN ID should be an integer between 0 and 4094.",
+							"invalid": "VLAN ID must be a numerical value between 1 and 4094.",
 							"required": "Please enter the VLAN ID."
 						}
 					},
 					"wifi": {
 						"security": {
 							"psk": {
-								"invalid": "Pre-shared key should be 8-63 characters long ASCII string, or 64 characters long hex string.",
 								"required": "Please enter the pre-shared key."
 							},
 							"type": {
-								"required": "Please select Wi-Fi security type."
+								"required": "Please select the security type."
 							}
+						},
+						"ssid": {
+							"required": "Please enter the SSID of WiFi Access Point."
 						}
 					}
+				},
+				"form": {
+					"autoConnect": {
+						"enabled": "Establish connection automatically"
+					},
+					"eap": {
+						"anonymousIdentity": "Anonymous identity",
+						"cert": "CA certificate",
+						"identity": "Identity",
+						"password": "Password",
+						"phaseOneMethod": "Phase 1 authentication method",
+						"phaseOneMethods": {
+							"fast": "FAST",
+							"leap": "LEAP",
+							"md5": "MD5",
+							"null": "Please select Phase 1 authentication method",
+							"peap": "PEAP",
+							"pwd": "Password",
+							"tls": "TLS",
+							"ttls": "TTLS"
+						},
+						"phaseTwoMethod": "Phase 2 authentication method",
+						"phaseTwoMethods": {
+							"gtc": "GTC",
+							"md5": "MD5",
+							"mschapv2": "MSCHAPv2",
+							"null": "Please select Phase 2 authentication method"
+						}
+					},
+					"generic": {
+						"interface": "Network interface",
+						"name": "Connection name"
+					},
+					"gsm": {
+						"apn": "Access point name",
+						"password": "Password",
+						"pin": "PIN code",
+						"title": "Mobile connection configuration",
+						"username": "Username"
+					},
+					"ip": {
+						"title": "IP configuration"
+					},
+					"ipv4": {
+						"address": "IPv4 address",
+						"dns": {
+							"address": "DNS server IPv4 address",
+							"title": "IPv4 DNS servers"
+						},
+						"gateway": "IPv4 gateway address",
+						"mask": "IPv4 subnet mask",
+						"method": "IPv4 configuration method",
+						"methods": {
+							"auto": "Automatic (DHCP)",
+							"disabled": "Disabled",
+							"link-local": "Link-local",
+							"manual": "Static",
+							"null": "Please select IPv4 configuration method",
+							"shared": "Shared with other computers"
+						},
+						"prefix": "IPv4 subnet prefix",
+						"title": "IPv4 configuration"
+					},
+					"ipv6": {
+						"address": "IPv6 address",
+						"dns": {
+							"address": "DNS server IPv6 address",
+							"title": "IPv6 DNS servers"
+						},
+						"gateway": "IPv6 gateway address",
+						"method": "IPv6 configuration method",
+						"methods": {
+							"auto": "Automatic (SLAAC)",
+							"dhcp": "Automatic (DHCPv6 only)",
+							"disabled": "Disabled",
+							"ignore": "Ignore",
+							"link-local": "Link-local",
+							"manual": "Static",
+							"null": "Please select IPv6 configuration method",
+							"shared": "Shared with other computers"
+						},
+						"prefix": "IPv6 subnet prefix",
+						"title": "IPv6 configuration"
+					},
+					"serial": {
+						"baudRate": "Baud rate",
+						"title": "Serial link configuration"
+					},
+					"vlan": {
+						"id": "VLAN ID",
+						"title": "VLAN configuration"
+					},
+					"wifi": {
+						"security": {
+							"leap": {
+								"password": "Password",
+								"username": "Username"
+							},
+							"psk": "Pre-shared key",
+							"type": "Security type",
+							"types": {
+								"leap": "Cisco LEAP (Lightweight Extensible Authentication Protocol)",
+								"null": "Please select security type",
+								"open": "Open network",
+								"wep": "WEP",
+								"wpa-eap": "WPA-Enterprise",
+								"wpa-psk": "WPA-Personal"
+							},
+							"wep": {
+								"index": "Default WEP key",
+								"keyNum": "WEP Key {index}",
+								"length": "WEP key length",
+								"lengths": {
+									"128bit": "128 bit (13 ASCII / 26 hex)",
+									"64bit": "64 bit (5 ASCII / 10 hex)",
+									"null": "Please select WEP key length"
+								},
+								"type": "Type",
+								"types": {
+									"key": "Key",
+									"null": "Please select WEP key type",
+									"passphrase": "Passphrase"
+								}
+							}
+						},
+						"ssid": "SSID",
+						"title": "WiFi connection configuration"
+					}
+				},
+				"titles": {
+					"802-11-wireless": "WiFi connections",
+					"802-3-ethernet": "Ethernet connections",
+					"gsm": "Mobile connections",
+					"vlan": "VLAN connections"
 				}
 			},
 			"interfaces": {
@@ -1595,6 +1793,9 @@
 				}
 			},
 			"modems": {
+				"actions": {
+					"scan": "Scan for modems"
+				},
 				"columns": {
 					"failedReasons": {
 						"esim-without-profiles": "eSIM without profiles",
@@ -1813,6 +2014,11 @@
 				}
 			}
 		},
+		"layout": {
+			"themeSwitch": {
+				"title": "Switch theme"
+			}
+		},
 		"maintenance": {
 			"backup": {
 				"backup": {
@@ -1907,69 +2113,6 @@
 				"title": "Session expiration warning"
 			}
 		}
-	},
-	"install": {
-		"createUser": {
-			"createButton": "Create user",
-			"failure": "Failed to create new webapp user: {error}",
-			"note": "Create a new Webapp user to access the web interface.",
-			"title": "Create a new user"
-		},
-		"error": {
-			"howToFix": "How to fix it",
-			"missingDependency": {
-				"command": "Missing command",
-				"description": "IQRF Gateway Webapp did not detect the following dependencies: {dependencies}.",
-				"details": "Details",
-				"package": "Package",
-				"title": "One or more dependencies are missing"
-			},
-			"missingExtension": {
-				"description": "IQRF Gateway Webapp did not detect the following required extensions: {extensions}.",
-				"fixDescription": "Install packages containing missing PHP extensions.",
-				"fixDescriptionDebian": "Use the following commands to install packages containing the required PHP extensions:",
-				"title": "One or more PHP extensions are missing"
-			},
-			"missingMigration": {
-				"description": "IQRF Gateway Webapp cannot find some table in the SQLite3 database.",
-				"fixDescription": "Run these commands in terminal:",
-				"title": "Some database table is missing"
-			},
-			"sudo": {
-				"fixInvalid": "Allow user www-data to execute commands with sudo using the following commands:",
-				"fixMissing": "Enter interactive shell as root and install sudo utility using the following commands:",
-				"invalid": "IQRF Gateway Webapp cannot execute commands with sudo.",
-				"missing": "IQRF Gateway Webapp did not detect the sudo utility.",
-				"title": "Sudo error"
-			}
-		},
-		"gwInfo": {
-			"button": "Show GW info",
-			"download": "Download as JSON",
-			"title": "Some information about this gateway"
-		},
-		"gwUser": {
-			"note": "Set gateway user password to access the device via login shell.",
-			"title": "Set gateway user password"
-		},
-		"invitation": "Welcome to IQRF Gateway Webapp. Before getting started, you have to create the webapp's first user.",
-		"messages": {
-			"check": "Running installation check…",
-			"finished": "Installation process successfully completed."
-		},
-		"restore": {
-			"button": "Restore gateway",
-			"title": "Restore gateway from backup"
-		},
-		"steps": {
-			"gatewayUser": "Set gateway user",
-			"introduction": "Introduction",
-			"smtp": "Configure SMTP server",
-			"sshKeys": "Add SSH keys",
-			"sshService": "SSH service",
-			"webappUser": "Create webapp user"
-		},
-		"title": "Installation wizard"
 	},
 	"pages": {
 		"accessControl": {

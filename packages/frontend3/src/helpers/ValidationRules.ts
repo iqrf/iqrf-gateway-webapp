@@ -31,14 +31,7 @@ export default class ValidationRules {
 	 * @return {boolean|string} Validation result
 	 */
 	public static required(value: unknown, error: string): boolean | string {
-		return !(
-			value === null ||
-			value === undefined ||
-			value === false ||
-			(Array.isArray(value) && value.length === 0) ||
-			(typeof value === 'object' && Object.keys(value).length === 0) ||
-			(typeof value === 'string' && value.trim().length === 0)
-		) || error;
+		return (ValidationRules.isEmpty(value) || value === false) ? error : true;
 	}
 
 	/**
@@ -157,6 +150,40 @@ export default class ValidationRules {
 	}
 
 	/**
+	 * IPv4 address
+	 * @param {string} value Field value
+	 * @param {string} error Error message
+	 * @return {boolean|string} Validation result
+	 */
+	public static ipv4Address(value: string, error: string): boolean | string {
+		if (ValidationRules.isEmpty(value)) {
+			return true;
+		}
+		const ipv4Validator: z.ZodString = z.string().ip({ version: 'v4' });
+		if (ipv4Validator.safeParse(value).success) {
+			return true;
+		}
+		return error;
+	}
+
+	/**
+	 * IPv6 address
+	 * @param {string} value Field value
+	 * @param {string} error Error message
+	 * @return {boolean|string} Validation result
+	 */
+	public static ipv6Address(value: string, error: string): boolean | string {
+		if (ValidationRules.isEmpty(value)) {
+			return true;
+		}
+		const ipv4Validator: z.ZodString = z.string().ip({ version: 'v6' });
+		if (ipv4Validator.safeParse(value).success) {
+			return true;
+		}
+		return error;
+	}
+
+	/**
 	 * Server address
 	 * @param {string|null} value Field value
 	 * @param {string} error Error message
@@ -229,6 +256,22 @@ export default class ValidationRules {
 		}
 		const urlValidator: z.ZodString = z.string().url();
 		return urlValidator.safeParse(value).success || error;
+	}
+
+	/**
+	 * Checks if the value is empty
+	 * @param {unknown} value Field value
+	 * @return {boolean} Value emptiness
+	 */
+	private static isEmpty(value: unknown): boolean {
+		return (
+			value === null ||
+			value === undefined ||
+			value === false ||
+			(Array.isArray(value) && value.length === 0) ||
+			(typeof value === 'object' && Object.keys(value).length === 0) ||
+			(typeof value === 'string' && value.trim().length === 0)
+		);
 	}
 
 }
