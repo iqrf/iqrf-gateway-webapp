@@ -86,6 +86,12 @@ class User implements JsonSerializable {
 	public ?UserVerification $verification = null;
 
 	/**
+	 * @var UserPreferences|null User preferences
+	 */
+	#[ORM\OneToOne(mappedBy: 'user', targetEntity: UserPreferences::class, cascade: ['persist', 'refresh', 'remove'], orphanRemoval: true)]
+	public ?UserPreferences $preferences = null;
+
+	/**
 	 * @var string User name
 	 */
 	#[ORM\Column(type: Types::STRING, length: 255, unique: true)]

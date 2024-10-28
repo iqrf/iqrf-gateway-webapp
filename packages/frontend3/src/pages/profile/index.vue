@@ -20,6 +20,7 @@ limitations under the License.
 		<title>{{ $t('pages.profile.title') }}</title>
 	</Head>
 	<ProfileEditForm />
+	<PreferencesForm />
 	<PasswordChangeForm />
 </template>
 
@@ -33,5 +34,6 @@ limitations under the License.
 import { Head } from '@unhead/vue/components';
 
 import PasswordChangeForm from '@/components/account/PasswordChangeForm.vue';
+import PreferencesForm from '@/components/account/PreferencesForm.vue';
 import ProfileEditForm from '@/components/account/ProfileEditForm.vue';
 </script>

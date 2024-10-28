@@ -116,6 +116,7 @@ onMounted(async () => {
 	try {
 		userData.value = await useApiClient().getAccountService().verifyEmail(componentProps.uuid);
 		userStore.processSignInResponse(userData.value);
+		await userStore.refreshUserPreferences();
 		componentState.value = ComponentState.Success;
 	} catch (error) {
 		if (!(error instanceof AxiosError)) {

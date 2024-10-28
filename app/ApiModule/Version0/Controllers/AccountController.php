@@ -39,10 +39,14 @@ use App\Exceptions\InvalidEmailAddressException;
 use App\Exceptions\InvalidPasswordException;
 use App\Models\Database\Entities\PasswordRecovery;
 use App\Models\Database\Entities\User;
+use App\Models\Database\Entities\UserPreferences;
 use App\Models\Database\EntityManager;
+use App\Models\Database\Enums\ThemePreference;
+use App\Models\Database\Enums\TimeFormat;
 use App\Models\Database\Enums\UserLanguage;
 use App\Models\Mail\Senders\PasswordRecoveryMailSender;
 use DateTimeImmutable;
+use DomainException;
 use Nette\Mail\SendException;
 use Throwable;
 use ValueError;
@@ -161,6 +165,75 @@ class AccountController extends BaseController {
 				// Ignore failure
 			}
 		}
+		$this->entityManager->flush();
+		return $response->withStatus(ApiResponse::S200_OK);
+	}
+
+	#[Path('/preferences')]
+	#[Method('GET')]
+	#[OpenApi('
+		summary: Returns user preferences
+		responses:
+			\'200\':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: \'#/components/schemas/UserPreferences\'
+			\'403\':
+				description: Forbidden
+	')]
+	public function getPreferences(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validators->onlyForUsers($request);
+		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
+		if ($user->preferences === null) {
+			$user->preferences = new UserPreferences($user);
+		}
+		$response = $response->writeJsonObject($user->preferences);
+		return $this->validators->validateResponse('userPreferences', $response);
+	}
+
+	#[Path('/preferences')]
+	#[Method('PUT')]
+	#[OpenApi('
+		summary: Edit user preferences
+		requestBody:
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: \'#/components/schemas/UserPreferences\'
+		responses:
+			\'200\':
+				description: Success
+			\'400\':
+				description: Invalid time format or theme
+			\'403\':
+				description: Forbidden
+	')]
+	public function editPreferences(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validators->onlyForUsers($request);
+		$this->validators->validateRequest('userPreferences', $request);
+		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
+		$json = $request->getJsonBodyCopy(true);
+		$preferences = $user->preferences;
+		try {
+			$timeFormat = TimeFormat::fromString($json['timeFormat']);
+		} catch (DomainException $e) {
+			throw new ClientErrorException('Invalid time format', ApiResponse::S400_BAD_REQUEST, $e);
+		}
+		try {
+			$theme = ThemePreference::fromString($json['theme']);
+		} catch (DomainException $e) {
+			throw new ClientErrorException('Invalid theme', ApiResponse::S400_BAD_REQUEST, $e);
+		}
+		if ($user->preferences === null) {
+			$user->preferences = new UserPreferences($user, $timeFormat, $theme);
+		} else {
+			$user->preferences->setTimeFormat($timeFormat);
+			$user->preferences->setThemePreference($theme);
+		}
+		$this->entityManager->persist($user);
 		$this->entityManager->flush();
 		return $response->withStatus(ApiResponse::S200_OK);
 	}

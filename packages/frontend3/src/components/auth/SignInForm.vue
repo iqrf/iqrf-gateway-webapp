@@ -150,6 +150,7 @@ async function onSubmit(): Promise<void> {
 		await router.push(destination);
 		componentState.value = ComponentState.Idle;
 		toast.success(i18n.t('components.auth.sign.in.messages.success'));
+		await userStore.refreshUserPreferences();
 		await gatewayStore.fetchInfo();
 		await repositoryStore.fetch();
 	} catch (error) {

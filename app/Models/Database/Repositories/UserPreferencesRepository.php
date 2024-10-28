@@ -1,3 +1,5 @@
+<?php
+
 /**
  * Copyright 2017-2024 IQRF Tech s.r.o.
  * Copyright 2019-2024 MICRORISC s.r.o.
@@ -14,13 +16,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+declare(strict_types = 1);
+
+namespace App\Models\Database\Repositories;
+
+use App\Models\Database\Entities\UserPreferences;
+use Doctrine\ORM\EntityRepository;
 
 /**
- * Theme
+ * User preferences repository
+ * @extends EntityRepository<UserPreferences>
  */
-export enum Theme {
-	/// Light theme
-	Light = 'light',
-	/// Dark theme
-	Dark = 'dark',
+class UserPreferencesRepository extends EntityRepository {
+
 }

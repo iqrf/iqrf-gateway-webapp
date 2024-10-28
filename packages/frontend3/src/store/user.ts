@@ -17,20 +17,27 @@
 
 import {
 	AccountState,
+	TimeFormat,
 	type UserCredentials,
-	type UserInfo, type UserLanguage,
+	type UserInfo,
+	type UserLanguage,
+	type UserPreferences,
 	type UserRole,
 	UserSessionExpiration,
 	type UserSignedIn,
+	UserTimeFormatPreference,
 } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { setUser, type User as SentryUser } from '@sentry/vue';
 import { jwtDecode, type JwtPayload } from 'jwt-decode';
 import { defineStore } from 'pinia';
 import { type RouteLocationNormalizedLoaded } from 'vue-router';
 
+import { PreferenceDefaults } from '@/helpers/PreferenceDefaults';
 import router from '@/router';
 import { useApiClient } from '@/services/ApiClient';
 import { useLocaleStore } from '@/store/locale';
+import { useThemeStore } from '@/store/theme';
+import { DateTimeFormat } from '@/types/time';
 
 /**
  * User store state
@@ -42,6 +49,8 @@ interface UserState {
 	expiration: number;
 	/// Requested session expiration
 	requestedSessionExpiration: UserSessionExpiration | null;
+	/// User preferences
+	preferences: UserPreferences | null;
 }
 
 export const useUserStore = defineStore('user', {
@@ -49,6 +58,7 @@ export const useUserStore = defineStore('user', {
 		user: null,
 		expiration: 0,
 		requestedSessionExpiration: null,
+		preferences: null,
 	}),
 	actions: {
 		/**
@@ -123,6 +133,23 @@ export const useUserStore = defineStore('user', {
 				throw error;
 			}
 		},
+		/**
+		 * Refreshes the user preferences
+		 */
+		async refreshUserPreferences(): Promise<void> {
+			try {
+				this.preferences = await useApiClient().getAccountService().getPreferences();
+				const themeStore = useThemeStore();
+				themeStore.setTheme(this.preferences.theme);
+			} catch (error) {
+				console.error(error);
+				throw error;
+			}
+		},
+		/**
+		 * Signs in the user
+		 * @param {UserCredentials} credentials User credentials
+		 */
 		async signIn(credentials: UserCredentials): Promise<void> {
 			try {
 				const user: UserSignedIn = await useApiClient().getAccountService().signIn(credentials);
@@ -270,6 +297,34 @@ export const useUserStore = defineStore('user', {
 				return UserSessionExpiration.Default;
 			}
 			return state.requestedSessionExpiration;
+		},
+		/**
+		 * Returns the user preferences
+		 * @param {UserState} state User state
+		 * @return {UserPreferences|null} User preferences
+		 */
+		getUserPreferences(state: UserState): UserPreferences|null {
+			return state.preferences;
+		},
+		/**
+		 * Returns the preferred date and time format
+		 * @return {DateTimeFormat} Preferred date and time format
+		 */
+		getPreferredDateTimeHourFormat(): DateTimeFormat {
+			const timeFormat: TimeFormat = this.getTimeFormat;
+			return timeFormat === TimeFormat.Hour12 ? DateTimeFormat.Long12 : DateTimeFormat.Long24;
+		},
+		/**
+		 * Returns the preferred time format
+		 * @param {UserState} state User state
+		 * @return {TimeFormat} Preferred time format
+		 */
+		getTimeFormat(state: UserState): TimeFormat {
+			if (state.preferences === null || state.preferences.timeFormat === UserTimeFormatPreference.Auto) {
+				// Use browser format as default
+				return PreferenceDefaults.getSystemTimeFormat();
+			}
+			return state.preferences.timeFormat === UserTimeFormatPreference.Hour12 ? TimeFormat.Hour12 : TimeFormat.Hour24;
 		},
 	},
 	persist: true,

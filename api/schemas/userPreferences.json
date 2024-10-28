@@ -1,0 +1,35 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/userPreferences.json",
+	"type": "object",
+	"title": "User preferences",
+	"additionalProperties": false,
+	"required": [
+		"timeFormat",
+		"theme"
+	],
+	"properties": {
+		"timeFormat": {
+			"$id": "#/properties/timeFormat",
+			"title": "Time format",
+			"type": "string",
+			"enum": [
+				"auto",
+				"12h",
+				"24h"
+			],
+			"example": "auto"
+		},
+		"theme": {
+			"$id": "#/properties/theme",
+			"title": "Theme",
+			"type": "string",
+			"enum": [
+				"auto",
+				"light",
+				"dark"
+			],
+			"example": "auto"
+		}
+	}
+}

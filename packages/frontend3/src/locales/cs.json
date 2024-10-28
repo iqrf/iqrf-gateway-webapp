@@ -111,6 +111,27 @@
 					}
 				}
 			},
+			"preferences": {
+				"messages": {
+					"save": {
+						"failed": "Nepodařilo se upravit Vaše uživatelské preference.",
+						"success": "Vaše uživatelské preference byly úspěšně upraveny."
+					}
+				},
+				"theme": "Téma",
+				"themes": {
+					"auto": "Systémové",
+					"dark": "Tmavé",
+					"light": "Světlé"
+				},
+				"timeFormat": "Formát času",
+				"timeFormats": {
+					"auto": "Systémový",
+					"hour12": "12-hodinový",
+					"hour24": "24-hodinový"
+				},
+				"title": "Preference"
+			},
 			"recovery": {
 				"confirmation": {
 					"button": "Nastavit nové heslo",
@@ -203,6 +224,7 @@
 				"email": "E-mailová adresa",
 				"id": "ID",
 				"password": "Heslo",
+				"passwordConfirm": "Potvrzení hesla",
 				"username": "Uživatelské jméno"
 			},
 			"locale": {
@@ -214,13 +236,21 @@
 					"set": "Lokalizace byla změněna na: {locale}."
 				}
 			},
+			"messages": {
+				"fetchFailed": "Při načítání dat došlo k chybě."
+			},
 			"validations": {
 				"email": {
 					"email": "Špatný formát e-mailové adresy.",
 					"required": "Zadejte prosím e-mailovou adresu."
 				},
 				"password": {
+					"minLength": "Heslo musí být minimálně 8 znaků dlouhé.",
 					"required": "Zadejte prosím heslo."
+				},
+				"passwordConfirm": {
+					"match": "Hesla se neshodují.",
+					"required": "Prosím zadejte heslo znovu pro potvrzení."
 				},
 				"port": {
 					"between": "Číslo portu musí být celé číslo mezi 1 a 65535.",
@@ -661,6 +691,9 @@
 			},
 			"description": "Nástroje pro údržbu brány.",
 			"title": "Údržba"
+		},
+		"profile": {
+			"title": "Uživatelský profil"
 		}
 	},
 	"title": "IQRF Gateway Webapp"

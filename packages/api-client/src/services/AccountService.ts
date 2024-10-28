@@ -28,6 +28,7 @@ import {
 	type UserInfo,
 	type UserPasswordChange,
 	type UserPasswordReset,
+	type UserPreferences,
 	type UserSignedIn,
 } from '../types';
 import { UserUtils } from '../utils';
@@ -92,6 +93,24 @@ export class AccountService extends BaseService {
 	 */
 	public async requestPasswordRecovery(recovery: UserAccountRecovery): Promise<void> {
 		await this.axiosInstance.post('/account/passwordRecovery', recovery);
+	}
+
+	/**
+	 * Retrieve preferences of the logged-in user
+	 * @return {Promise<UserPreferences>} User preferences
+	 */
+	public async getPreferences(): Promise<UserPreferences> {
+		const response: AxiosResponse<UserPreferences> =
+			await this.axiosInstance.get('/account/preferences');
+		return response.data;
+	}
+
+	/**
+	 * Update the preferences of the logged-in user
+	 * @param {UserPreferences} preferences User preferences
+	 */
+	public async updatePreferences(preferences: UserPreferences): Promise<void> {
+		await this.axiosInstance.put('/account/preferences', preferences);
 	}
 
 	/**

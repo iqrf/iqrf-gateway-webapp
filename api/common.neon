@@ -317,6 +317,8 @@ components:
 			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/userEdit.json
 		UserList:
 			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/userList.json
+		UserPreferences:
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/userPreferences.json
 		UserSignIn:
 			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/userSignIn.json
 		UserToken:

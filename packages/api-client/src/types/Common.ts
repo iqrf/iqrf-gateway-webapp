@@ -136,3 +136,13 @@ export type JsonValue = string | number | null;
 export interface Json {
 	[propName: string]: JsonValue | JsonValue[] | Json
 }
+
+/**
+ * Time format (12h or 24h)
+ */
+export enum TimeFormat {
+	/// 12-hour format (AM/PM)
+	Hour12 = '12h',
+	/// 24-hour format
+	Hour24 = '24h',
+}

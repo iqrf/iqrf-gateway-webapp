@@ -63,7 +63,7 @@ limitations under the License.
 			<template #actions>
 				<CardActionBtn
 					v-if='componentState === ComponentState.Ready'
-					:action='Action.Edit'
+					:action='Action.Save'
 					:disabled='!isValid.value'
 					:loading='componentState === ComponentState.Saving'
 					type='submit'

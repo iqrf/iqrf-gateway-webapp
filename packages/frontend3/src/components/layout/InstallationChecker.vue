@@ -107,6 +107,7 @@ async function checkInstallation(): Promise<void> {
 			await router.push(isLoggedIn.value ? '/' : { name: 'SignIn' });
 		}
 		if (isLoggedIn.value) {
+			await userStore.refreshUserPreferences();
 			await repositoryStore.fetch();
 			await gatewayStore.fetchInfo();
 		}

@@ -192,6 +192,7 @@
 				"language": "Language",
 				"messages": {
 					"delete": {
+						"failure": "An error has occurred during user {user} deletion.",
 						"success": "User {user} has been deleted successfully."
 					}
 				},
@@ -260,6 +261,27 @@
 						"required": "Please enter new password."
 					}
 				}
+			},
+			"preferences": {
+				"messages": {
+					"save": {
+						"failed": "Failed to update your user preferences.",
+						"success": "Your user preferences have been successfully updated."
+					}
+				},
+				"theme": "Theme",
+				"themes": {
+					"auto": "System",
+					"dark": "Dark",
+					"light": "Light"
+				},
+				"timeFormat": "Time format",
+				"timeFormats": {
+					"auto": "System",
+					"hour12": "12-hour",
+					"hour24": "24-hour"
+				},
+				"title": "Preferences"
 			},
 			"recovery": {
 				"confirmation": {
@@ -349,6 +371,7 @@
 				"email": "E-mail address",
 				"id": "ID",
 				"password": "Password",
+				"passwordConfirm": "Confirm password",
 				"username": "Username"
 			},
 			"locale": {
@@ -360,14 +383,21 @@
 					"set": "Locale changed to: {locale}."
 				}
 			},
+			"messages": {
+				"fetchFailed": "An error has occurred while fetching data."
+			},
 			"validations": {
 				"email": {
 					"email": "Invalid e-mail address format.",
 					"required": "Please enter e-mail address."
 				},
 				"password": {
-					"email": "Invalid e-mail address format.",
+					"minLength": "Password should be at least 8 characters long.",
 					"required": "Please enter password."
+				},
+				"passwordConfirm": {
+					"match": "Password does not match.",
+					"required": "Please re-type password."
 				},
 				"port": {
 					"between": "Port should be an integer between 1 and 65535.",
@@ -2200,6 +2230,9 @@
 				"title": "Mender update"
 			},
 			"title": "Maintenance"
+		},
+		"profile": {
+			"title": "User profile"
 		}
 	},
 	"title": "IQRF Gateway Webapp",

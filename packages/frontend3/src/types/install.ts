@@ -49,6 +49,8 @@ export interface InstallationErrors {
 export enum InstallationStep {
 	/// Admin user creation
 	UserCreation = 'userCreation',
+	/// Admin user preferences
+	UserPreferences = 'userPreferences',
 	/// Mail server configuration
 	MailServerConfiguration = 'mailServerConfiguration',
 	/// SSH server configuration

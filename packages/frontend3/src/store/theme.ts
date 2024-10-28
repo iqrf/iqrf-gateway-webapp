@@ -15,10 +15,11 @@
  * limitations under the License.
  */
 
+import { UserThemePreference } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { defineStore } from 'pinia';
 
 import { PreferenceDefaults } from '@/helpers/PreferenceDefaults';
-import { Theme, ThemePreference } from '@/types/theme';
+import { Theme } from '@/types/theme';
 
 /**
  * Theme store state
@@ -38,17 +39,17 @@ export const useThemeStore = defineStore('theme', {
 	actions: {
 		/**
 		 * Sets the theme from preferences
-		 * @param {ThemePreference} preference Theme preference
+		 * @param {UserThemePreference} preference Theme preference
 		 */
-		setTheme(preference: ThemePreference): void {
-			if (preference === ThemePreference.Auto) {
+		setTheme(preference: UserThemePreference): void {
+			if (preference === UserThemePreference.Auto) {
 				if (this.toggled) {
 					return;
 				}
 				this.current = PreferenceDefaults.getSystemTheme();
 				return;
 			}
-			this.current = preference === ThemePreference.Dark ? Theme.Dark : Theme.Light;
+			this.current = preference === UserThemePreference.Dark ? Theme.Dark : Theme.Light;
 			this.toggled = false;
 		},
 		/**

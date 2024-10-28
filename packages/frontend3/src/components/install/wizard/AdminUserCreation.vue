@@ -162,6 +162,7 @@ async function onSubmit(onClickNext: Function): Promise<void> {
 			expiration: expiration.value,
 		};
 		await userStore.signIn(credentials);
+		await userStore.refreshUserPreferences();
 		installStore.setHasUsers(true);
 		componentState.value = ComponentState.Idle;
 		onClickNext();

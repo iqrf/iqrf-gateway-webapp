@@ -31,10 +31,14 @@ export default class ValidationRules {
 	 * @return {boolean|string} Validation result
 	 */
 	public static required(value: unknown, error: string): boolean | string {
-		if (value === null || value === undefined || (Array.isArray(value) && value.length === 0) || value === false) {
-			return error;
-		}
-		return String(value).trim().length > 0 || error;
+		return !(
+			value === null ||
+			value === undefined ||
+			value === false ||
+			(Array.isArray(value) && value.length === 0) ||
+			(typeof value === 'object' && Object.keys(value).length === 0) ||
+			(typeof value === 'string' && value.trim().length === 0)
+		) || error;
 	}
 
 	/**

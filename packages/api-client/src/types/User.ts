@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import {TimeFormat} from "./Common";
+
 /**
  * Account state enum
  */
@@ -32,6 +34,16 @@ export enum UserLanguage {
 	Czech = 'cs',
 	/// English
 	English = 'en',
+}
+
+/**
+ * User preferences
+ */
+export interface UserPreferences {
+	/// Time format
+	timeFormat: UserTimeFormatPreference;
+	/// Theme
+	theme: UserThemePreference;
 }
 
 /**
@@ -150,4 +162,28 @@ export interface UserAccountRecovery {
 export interface EmailVerificationResendRequest {
 	/// Base URL
 	baseUrl?: string;
+}
+
+/**
+ * User theme preference
+ */
+export enum UserThemePreference {
+	/// Automatic theme detection based on system settings
+	Auto = 'auto',
+	/// Light theme
+	Light = 'light',
+	/// Dark theme
+	Dark = 'dark',
+}
+
+/**
+ * User time format preference
+ */
+export enum UserTimeFormatPreference {
+	/// Automatic time format detection based on system settings
+	Auto = 'auto',
+	/// 12-hour format (AM/PM)
+	Hour12 = '12h',
+	/// 24-hour format
+	Hour24 = '24h',
 }

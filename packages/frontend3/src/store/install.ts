@@ -162,6 +162,7 @@ export const useInstallStore = defineStore('install', {
 				steps.push(InstallationStep.UserCreation);
 			}
 			steps.push(...[
+				InstallationStep.UserPreferences,
 				InstallationStep.MailServerConfiguration,
 			]);
 			if (featureStore.isEnabled(Feature.ssh)) {

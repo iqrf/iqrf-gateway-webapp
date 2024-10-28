@@ -127,6 +127,7 @@ async function onSubmit(): Promise<void> {
 		const user: UserSignedIn = await service.confirmPasswordRecovery(componentProps.uuid, data.value);
 		componentState.value = ComponentState.Success;
 		store.processSignInResponse(user);
+		await store.refreshUserPreferences();
 		await router.push('/');
 		toast.success(
 			i18n.t('components.account.recovery.confirmation.messages.success'),
