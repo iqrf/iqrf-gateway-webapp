@@ -20,22 +20,22 @@ limitations under the License.
 		v-model='show'
 	>
 		<template #activator='{ props }'>
-			<v-btn
+			<CardActionBtn
+				:action='Action.Custom'
+				color='warning'
+				:icon='mdiReload'
+				:text='$t("components.gateway.power.reboot.action")'
 				v-bind='props'
-				color='primary'
-			>
-				<v-icon :icon='mdiReload' />
-				{{ $t('components.gateway.power.reboot.action') }}
-			</v-btn>
+			/>
 		</template>
-		<Card>
+		<Card header-color='warning'>
 			<template #title>
 				{{ $t('components.gateway.power.reboot.title') }}
 			</template>
 			{{ $t('components.gateway.power.reboot.prompt') }}
 			<template #actions>
 				<CardActionBtn
-					color='primary'
+					color='warning'
 					:icon='mdiReload'
 					:text='$t("components.gateway.power.reboot.action")'
 					@click='reboot'
@@ -59,14 +59,22 @@ import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import { Action } from '@/types/Action';
 
+/// Event emitter definition
 const emit = defineEmits(['confirm']);
+/// Dialog visibility
 const show: Ref<boolean> = ref(false);
 
+/**
+ * Reboots the gateway
+ */
 function reboot(): void {
 	emit('confirm');
 	close();
 }
 
+/**
+ * Closes the dialog window
+ */
 function close(): void {
 	show.value = false;
 }

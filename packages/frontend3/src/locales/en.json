@@ -1239,19 +1239,21 @@
 				"startup": "Startup mode"
 			},
 			"power": {
-				"messages": {
-					"powerOffFailed": "Failed to schedule gateway poweroff: {error}.",
-					"powerOffSuccess": "Your device will be powered off at {time}.",
-					"rebootFailed": "Failed to schedule gateway reboot: {error}.",
-					"rebootSuccess": "Your device will be rebooted at {time}, the reboot may take tens of seconds."
-				},
 				"powerOff": {
 					"action": "Power off",
+					"messages": {
+						"failed": "Failed to schedule gateway power off.",
+						"success": "Your device will be powered off at {time}."
+					},
 					"prompt": "The gateway will power off within 60 seconds.",
 					"title": "Power off confirmation"
 				},
 				"reboot": {
 					"action": "Reboot",
+					"messages": {
+						"failed": "Failed to schedule gateway reboot.",
+						"success": "Your device will be rebooted at {time}, the reboot may take tens of seconds."
+					},
 					"prompt": "The gateway will reboot within 60 seconds.",
 					"title": "Reboot confirmation"
 				},

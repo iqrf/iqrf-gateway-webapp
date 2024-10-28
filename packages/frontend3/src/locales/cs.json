@@ -346,6 +346,26 @@
 					"iqrfGatewayUploader": "IQRF Gateway Uploader",
 					"iqrfGatewayWebapp": "IQRF Gateway Webapp"
 				}
+			},
+			"power": {
+				"powerOff": {
+					"action": "Vypnout",
+					"messages": {
+						"failed": "Nepodařilo se naplánovat vypnutí brány.",
+						"success": "Vaše zařízení se vypne v {time}."
+					},
+					"prompt": "Brána se vypne během 60 sekund.",
+					"title": "Potvrzení vypnutí brány"
+				},
+				"reboot": {
+					"action": "Restartovat",
+					"messages": {
+						"failed": "Nepodařilo se naplánovat restart brány.",
+						"success": "Vaše zařízení se restartuje v {time}, restart může trvat desítky sekund."
+					},
+					"prompt": "Brána se restartuje během 60 sekund.",
+					"title": "Potvrzení restartu brány"
+				}
 			}
 		},
 		"install": {

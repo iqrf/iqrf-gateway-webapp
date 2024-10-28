@@ -38,29 +38,36 @@ import Card from '@/components/layout/card/Card.vue';
 import { basicErrorToast } from '@/helpers/errorToast';
 import { useApiClient } from '@/services/ApiClient';
 
-
+/// Internalization instance
 const i18n = useI18n();
+/// Power service
 const service: PowerService = useApiClient().getGatewayServices().getPowerService();
 
-function powerOff(): void {
-	service.powerOff()
-		.then((response: PowerActionResponse) =>
-			toast.success(
-				i18n.t('components.gateway.power.messages.powerOffSuccess', { time: i18n.d(response.timestamp.toJSDate(), 'time') }),
-			),
-		).catch((error: AxiosError) =>
-			basicErrorToast(error, 'components.gateway.power.messages.powerOffFailed'),
+/**
+ * Powers off the gateway
+ */
+async function powerOff(): Promise<void> {
+	try {
+		const response: PowerActionResponse = await service.powerOff();
+		toast.success(
+			i18n.t('components.gateway.power.powerOff.messages.success', { time: i18n.d(response.timestamp.toJSDate(), 'time') }),
 		);
+	} catch {
+		toast.error(i18n.t('components.gateway.power.powerOff.messages.failed'));
+	}
 }
 
-function reboot(): void {
-	service.reboot()
-		.then((response: PowerActionResponse) =>
-			toast.success(
-				i18n.t('components.gateway.power.messages.rebootSuccess', { time: i18n.d(response.timestamp.toJSDate(), 'time') }),
-			),
-		).catch((error: AxiosError) =>
-			basicErrorToast(error, 'components.gateway.power.messages.rebootFailed'),
+/**
+ * Reboots the gateway
+ */
+async function reboot(): Promise<void> {
+	try {
+		const response: PowerActionResponse = await service.reboot();
+		toast.success(
+			i18n.t('components.gateway.power.reboot.messages.success', { time: i18n.d(response.timestamp.toJSDate(), 'time') }),
 		);
+	} catch {
+		toast.error(i18n.t('components.gateway.power.reboot.messages.failed'));
+	}
 }
 </script>

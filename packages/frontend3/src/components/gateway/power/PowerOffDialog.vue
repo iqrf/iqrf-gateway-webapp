@@ -20,13 +20,14 @@ limitations under the License.
 		v-model='show'
 	>
 		<template #activator='{ props }'>
-			<v-btn
-				v-bind='props'
+			<CardActionBtn
+				:action='Action.Custom'
+				class='mr-1'
 				color='red'
-			>
-				<v-icon :icon='mdiPower' />
-				{{ $t('components.gateway.power.powerOff.action') }}
-			</v-btn>
+				:icon='mdiPower'
+				:text='$t("components.gateway.power.powerOff.action")'
+				v-bind='props'
+			/>
 		</template>
 		<Card header-color='red'>
 			<template #title>
@@ -59,14 +60,22 @@ import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import { Action } from '@/types/Action';
 
+/// Event emitter definition
 const emit = defineEmits(['confirm']);
+/// Dialog visibility
 const show: Ref<boolean> = ref(false);
 
+/**
+ * Powers off the gateway
+ */
 function powerOff(): void {
 	emit('confirm');
 	close();
 }
 
+/**
+ * Closes the dialog window
+ */
 function close(): void {
 	show.value = false;
 }
