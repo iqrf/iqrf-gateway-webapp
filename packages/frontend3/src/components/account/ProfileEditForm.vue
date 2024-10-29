@@ -62,7 +62,7 @@ limitations under the License.
 			</v-skeleton-loader>
 			<template #actions>
 				<CardActionBtn
-					v-if='componentState === ComponentState.Ready'
+					v-if='[ComponentState.Ready, ComponentState.Saving].includes(componentState)'
 					:action='Action.Save'
 					:disabled='!isValid.value'
 					:loading='componentState === ComponentState.Saving'

@@ -34,6 +34,10 @@ limitations under the License.
 				v-if='steps.includes(InstallationStep.UserCreation)'
 				:index='getIndex(InstallationStep.UserCreation)'
 			/>
+			<AdminUserPreferences
+				v-if='steps.includes(InstallationStep.UserPreferences)'
+				:index='getIndex(InstallationStep.UserPreferences)'
+			/>
 			<MailServerConfiguration
 				v-if='steps.includes(InstallationStep.MailServerConfiguration)'
 				:index='getIndex(InstallationStep.MailServerConfiguration)'
@@ -68,6 +72,8 @@ import { onMounted, type Ref, ref } from 'vue';
 
 import AdminUserCreation
 	from '@/components/install/wizard/AdminUserCreation.vue';
+import AdminUserPreferences
+	from '@/components/install/wizard/AdminUserPreferences.vue';
 import InstallationCompleted
 	from '@/components/install/wizard/InstallationCompleted.vue';
 import MailServerConfiguration

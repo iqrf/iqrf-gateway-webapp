@@ -79,7 +79,7 @@ export const useInstallStore = defineStore('install', {
 		 * @param {boolean} isRunning Is the installation wizard running?
 		 */
 		setRunning(isRunning: boolean): void {
-			if (!isRunning) {
+			if (isRunning) {
 				this.currentStep = null;
 			}
 			this.running = isRunning;

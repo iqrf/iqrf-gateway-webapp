@@ -27,6 +27,12 @@ limitations under the License.
 			/>
 		</template>
 		<div id='swagger' ref='swagger' />
+		<v-skeleton-loader
+			v-if='componentState === ComponentState.Loading'
+			class='input-skeleton-loader'
+			:loading='componentState === ComponentState.Loading'
+			type='heading@10'
+		/>
 		<v-alert
 			v-if='componentState === ComponentState.FetchFailed'
 			variant='tonal'
@@ -56,11 +62,17 @@ import { useUserStore } from '@/store/user';
 import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
+/// Component state
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
+/// Internationalization instance
 const i18n = useI18n();
+/// User store
 const userStore = useUserStore();
+/// JWT token
 const { getToken: token } = storeToRefs(userStore);
+/// OpenAPI service
 const service = useApiClient().getOpenApiService();
+/// URL builder
 const urlBuilder: UrlBuilder = new UrlBuilder();
 
 /**
@@ -102,7 +114,7 @@ async function fetch(): Promise<void> {
 		});
 	} catch {
 		componentState.value = ComponentState.FetchFailed;
-		toast.error(i18n.t('components.dev.openApi.messages.fetchFailed').toString());
+		toast.error(i18n.t('components.dev.openApi.messages.fetchFailed'));
 	}
 }
 
@@ -119,6 +131,10 @@ onMounted(fetch);
 
 		.highlight-code {
 			filter: invert(100%) hue-rotate(180deg) contrast(150%);
+		}
+
+		input, select, textarea {
+			color: #000000 !important;
 		}
 	}
 }
