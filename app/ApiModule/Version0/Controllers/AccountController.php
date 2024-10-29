@@ -216,7 +216,6 @@ class AccountController extends BaseController {
 		$this->validators->validateRequest('userPreferences', $request);
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
 		$json = $request->getJsonBodyCopy(true);
-		$preferences = $user->preferences;
 		try {
 			$timeFormat = TimeFormat::fromString($json['timeFormat']);
 		} catch (DomainException $e) {
