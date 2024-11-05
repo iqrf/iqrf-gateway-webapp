@@ -1,4 +1,4 @@
-iqrf-gateway-webapp (2.6.0~rc1) testing; urgency=medium
+iqrf-gateway-webapp (2.6.0) stable; urgency=medium
 
   [ Roman Ondráček ]
   * Maintenance: fix Mender client configuration
@@ -36,7 +36,7 @@ iqrf-gateway-webapp (2.6.0~rc1) testing; urgency=medium
   * added cloud provisioning feature, include cloud provisioning in backup archive, restore
   * ServiceService: fixed disable and enable params
 
- -- Karel Hanák <karel.hanak@iqrf.org>  Mon, 21 Oct 2024 12:15:00 +0200
+ -- Karel Hanák <karel.hanak@iqrf.org>  Tue, 05 Nov 2024 06:38:07 -0500
 
 iqrf-gateway-webapp (2.5.20) stable; urgency=medium
 
