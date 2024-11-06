@@ -222,6 +222,7 @@ function onConfigurationMethodChange(): void {
 	if (configuration.value.ipv4.method === IPv4ConfigurationMethod.MANUAL) {
 		configuration.value.ipv4.addresses = configuration.value.ipv4.current?.addresses ?? [];
 		configuration.value.ipv4.dns = configuration.value.ipv4.current?.dns ?? [];
+		configuration.value.ipv4.gateway = configuration.value.ipv4.current?.gateway ?? '';
 	}
 	if (configuration.value.ipv4.addresses.length === 0) {
 		configuration.value.ipv4.addresses.push({ address: '', prefix: 32, mask: '' });

@@ -142,7 +142,7 @@ import {
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import { IpNetworkUtils } from '@iqrf/iqrf-gateway-webapp-client/utils';
 import { mdiContentSave, mdiTextShort } from '@mdi/js';
-import { computed, onBeforeMount, type PropType, ref, type Ref } from 'vue';
+import { computed, type PropType, ref, type Ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
@@ -181,27 +181,27 @@ const configuration: Ref<NetworkConnectionConfiguration | null> = ref(null);
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 /// Define props
 const componentProps = defineProps({
+	/// Action type - add or edit
 	action: {
 		type: String as PropType<Action>,
 		default: Action.Add,
 		required: true,
 	},
-	single: {
-		type: Boolean,
-		default: false,
-		required: false,
-	},
+	/// Network connection type
 	type: {
 		type: [String, null] as PropType<NetworkConnectionType | null>,
 		default: null,
 		required: false,
 	},
+	/// Network connection UUID
 	uuid: {
 		type: [String, null] as PropType<string | null>,
 		required: false,
 		default: null,
 	},
 });
+/// Define emits
+const emit = defineEmits(['change']);
 /// Interface type
 const interfaceType: Ref<NetworkInterfaceType | null> = computed((): NetworkInterfaceType | null => {
 	return IpNetworkUtils.connectionTypeToInterfaceType(configuration.value?.type ?? null);
@@ -321,6 +321,8 @@ async function onSubmit(connect: boolean): Promise<void> {
 		} else {
 			toast.success(i18n.t('components.ipNetwork.connections.edit.messages.success', translationParams));
 		}
+		emit('change');
+		componentState.value = ComponentState.Ready;
 		close();
 	} catch {
 		componentState.value = ComponentState.Error;
@@ -332,5 +334,9 @@ async function onSubmit(connect: boolean): Promise<void> {
 	}
 }
 
-onBeforeMount(async (): Promise<void> => await fetchConfiguration());
+watch(showDialog, async (value: boolean) => {
+	if (value) {
+		await fetchConfiguration();
+	}
+});
 </script>

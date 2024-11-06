@@ -213,6 +213,7 @@ function onConfigurationMethodChange(): void {
 	if (configuration.value.ipv6.method === IPv6ConfigurationMethod.MANUAL) {
 		configuration.value.ipv6.addresses = configuration.value.ipv6.current?.addresses ?? [];
 		configuration.value.ipv6.dns = configuration.value.ipv6.current?.dns ?? [];
+		configuration.value.ipv6.gateway = configuration.value.ipv6.current?.gateway ?? '';
 	}
 	if (configuration.value.ipv6.addresses.length === 0) {
 		addAddress();
