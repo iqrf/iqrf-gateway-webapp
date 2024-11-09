@@ -204,7 +204,7 @@ limitations under the License.
 												<tr v-for='(sensor, i) of item.getSensors()' :key='i'>
 													<td>{{ sensor.name }}</td>
 													<td>{{ sensor.type }}</td>
-													<td>{{ sensor.idx }}</td>
+													<td>{{ sensor.index }}</td>
 												</tr>
 											</table>
 										</div>
