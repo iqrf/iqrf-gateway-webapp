@@ -31,7 +31,7 @@ else
  */
 local image = {
 	image: options.baseImage,
-	tags: ['linux'],
+	tags: ['linux', 'amd64'],
 };
 
 /**
