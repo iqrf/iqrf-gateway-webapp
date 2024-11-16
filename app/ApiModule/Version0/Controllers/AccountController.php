@@ -318,7 +318,7 @@ class AccountController extends BaseController {
 		if ($user === null) {
 			throw new ClientErrorException('User not found', ApiResponse::S404_NOT_FOUND);
 		}
-		if ($user->getState() !== User::STATE_VERIFIED) {
+		if (!$user->getState()->isVerified()) {
 			throw new ClientErrorException('E-mail address is not verified', ApiResponse::S403_FORBIDDEN);
 		}
 		$recovery = new PasswordRecovery($user);
@@ -483,7 +483,7 @@ class AccountController extends BaseController {
 	public function resendVerification(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->onlyForUsers($request);
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
-		if ($user->getState() === User::STATE_VERIFIED) {
+		if ($user->getState()->isVerified()) {
 			throw new ClientErrorException('User is already verified', ApiResponse::S400_BAD_REQUEST);
 		}
 		try {
@@ -517,16 +517,14 @@ class AccountController extends BaseController {
 		}
 		$user = $verification->user;
 		$state = $user->getState();
-		if ($state === User::STATE_VERIFIED) {
+		if ($state->isVerified()) {
 			throw new ClientErrorException('User is already verified', ApiResponse::S400_BAD_REQUEST);
 		}
-		if ($state === User::STATE_UNVERIFIED) {
-			if ($verification->isExpired()) {
-				throw new ClientErrorException('Verification link expired', ApiResponse::S410_GONE);
-			}
-			$user->setState(User::STATE_VERIFIED);
-			$this->entityManager->persist($user);
+		if ($verification->isExpired()) {
+			throw new ClientErrorException('Verification link expired', ApiResponse::S410_GONE);
 		}
+		$user->setState($state->verify());
+		$this->entityManager->persist($user);
 		$this->entityManager->flush();
 		$json = $user->jsonSerialize();
 		$json['token'] = $this->createToken($user);

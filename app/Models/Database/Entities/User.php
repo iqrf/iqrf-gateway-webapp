@@ -23,10 +23,10 @@ namespace App\Models\Database\Entities;
 use App\Exceptions\IncorrectPasswordException;
 use App\Exceptions\InvalidEmailAddressException;
 use App\Exceptions\InvalidPasswordException;
-use App\Exceptions\InvalidUserStateException;
 use App\Models\Database\Attributes\TId;
 use App\Models\Database\Enums\UserLanguage;
 use App\Models\Database\Enums\UserRole;
+use App\Models\Database\Enums\UserState;
 use App\Models\Database\Repositories\UserRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -51,35 +51,6 @@ class User implements JsonSerializable {
 	use TId;
 
 	/**
-	 * Account state: unverified e-mail address
-	 */
-	final public const STATE_UNVERIFIED = 0;
-
-	/**
-	 * Account state: verified e-mail address
-	 */
-	final public const STATE_VERIFIED = 1;
-
-	/**
-	 * Account state: blocked account
-	 */
-	final public const STATE_BLOCKED = 2;
-
-	/**
-	 * Default account state
-	 */
-	final public const STATE_DEFAULT = self::STATE_UNVERIFIED;
-
-	/**
-	 * Supported account states
-	 */
-	final public const STATES = [
-		self::STATE_UNVERIFIED => 'unverified',
-		self::STATE_VERIFIED => 'verified',
-		self::STATE_BLOCKED => 'blocked',
-	];
-
-	/**
 	 * @var UserVerification|null User verification
 	 */
 	#[ORM\OneToOne(mappedBy: 'user', targetEntity: UserVerification::class, cascade: ['persist', 'refresh', 'remove'], orphanRemoval: true)]
@@ -92,12 +63,6 @@ class User implements JsonSerializable {
 	public ?UserPreferences $preferences = null;
 
 	/**
-	 * @var string User name
-	 */
-	#[ORM\Column(type: Types::STRING, length: 255, unique: true)]
-	private string $username;
-
-	/**
 	 * @var string|null User's email
 	 */
 	#[ORM\Column(type: Types::STRING, length: 255, unique: true, nullable: true)]
@@ -108,24 +73,6 @@ class User implements JsonSerializable {
 	 */
 	#[ORM\Column(type: 'string', length: 255, nullable: true)]
 	private ?string $password = null;
-
-	/**
-	 * @var UserRole User role
-	 */
-	#[ORM\Column(type: Types::STRING, length: 15, enumType: UserRole::class, options: ['default' => UserRole::Default])]
-	private UserRole $role;
-
-	/**
-	 * @var int Account state
-	 */
-	#[ORM\Column(type: Types::INTEGER, length: 10, options: ['default' => self::STATE_DEFAULT])]
-	private int $state = self::STATE_DEFAULT;
-
-	/**
-	 * @var UserLanguage User language
-	 */
-	#[ORM\Column(type: 'string', length: 7, enumType: UserLanguage::class, options: ['default' => UserLanguage::Default])]
-	private UserLanguage $language = UserLanguage::Default;
 
 	/**
 	 * @var bool Email changed
@@ -144,15 +91,22 @@ class User implements JsonSerializable {
 	 * @param string $password User password
 	 * @param UserRole|null $role User role
 	 * @param UserLanguage|null $language User language
-	 * @param int|null $state Account state
+	 * @param UserState|null $state Account state
 	 */
-	public function __construct(string $username, ?string $email, string $password, ?UserRole $role = null, ?UserLanguage $language = null, ?int $state = null) {
-		$this->username = $username;
+	public function __construct(
+		#[ORM\Column(type: Types::STRING, length: 255, unique: true)]
+		private string $username,
+		?string $email,
+		string $password,
+		#[ORM\Column(type: Types::STRING, length: 15, enumType: UserRole::class, options: ['default' => UserRole::Default])]
+		private ?UserRole $role = UserRole::Default,
+		#[ORM\Column(type: Types::STRING, length: 7, enumType: UserLanguage::class, options: ['default' => UserLanguage::Default])]
+		private ?UserLanguage $language = UserLanguage::Default,
+		#[ORM\Column(type: Types::INTEGER, length: 10, enumType: UserState::class, options: ['default' => UserState::Default])]
+		private ?UserState $state = UserState::Default,
+	) {
 		$this->setEmail($email);
 		$this->setPassword($password);
-		$this->setRole($role ?? UserRole::Default);
-		$this->setLanguage($language ?? UserLanguage::Default);
-		$this->setState($state ?? self::STATE_DEFAULT);
 		$this->emailChanged = false;
 		$this->passwordChanged = false;
 	}
@@ -286,9 +240,9 @@ class User implements JsonSerializable {
 
 	/**
 	 * Returns the user's account state
-	 * @return int User's account state
+	 * @return UserState User's account state
 	 */
-	public function getState(): int {
+	public function getState(): UserState {
 		return $this->state;
 	}
 
@@ -304,8 +258,8 @@ class User implements JsonSerializable {
 		if ($email !== null) {
 			$this->validateEmail($email);
 		}
-		if ($this->email !== $email && $this->getState() === self::STATE_VERIFIED) {
-			$this->setState(self::STATE_UNVERIFIED);
+		if ($this->email !== $email && $this->state->isVerified()) {
+			$this->setState($this->state->unverify());
 			$this->emailChanged = true;
 		}
 		$this->email = $email;
@@ -334,13 +288,9 @@ class User implements JsonSerializable {
 
 	/**
 	 * Sets the user's state
-	 * @param int $state User's state
-	 * @throws InvalidUserStateException
+	 * @param UserState $state User's state
 	 */
-	public function setState(int $state): void {
-		if (!array_key_exists($state, self::STATES)) {
-			throw new InvalidUserStateException();
-		}
+	public function setState(UserState $state): void {
 		$this->state = $state;
 	}
 
@@ -375,7 +325,7 @@ class User implements JsonSerializable {
 			'email' => $this->email,
 			'role' => $this->role->value,
 			'language' => $this->language->value,
-			'state' => self::STATES[$this->state],
+			'state' => $this->state->toString(),
 		];
 	}
 

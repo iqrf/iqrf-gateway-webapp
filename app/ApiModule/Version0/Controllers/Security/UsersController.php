@@ -341,7 +341,7 @@ class UsersController extends BaseSecurityController {
 		if (!($user instanceof User)) {
 			throw new ClientErrorException('User not found', ApiResponse::S404_NOT_FOUND);
 		}
-		if ($user->getState() === User::STATE_VERIFIED) {
+		if ($user->getState()->isVerified()) {
 			throw new ClientErrorException('User is already verified', ApiResponse::S400_BAD_REQUEST);
 		}
 		try {

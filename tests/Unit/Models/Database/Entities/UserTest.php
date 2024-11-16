@@ -31,6 +31,7 @@ use App\Exceptions\InvalidPasswordException;
 use App\Models\Database\Entities\User;
 use App\Models\Database\Enums\UserLanguage;
 use App\Models\Database\Enums\UserRole;
+use App\Models\Database\Enums\UserState;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -69,7 +70,7 @@ final class UserTest extends TestCase {
 	/**
 	 * User account state
 	 */
-	private const STATE = User::STATE_UNVERIFIED;
+	private const STATE = UserState::Unverified;
 
 	/**
 	 * @var User User entity
@@ -225,7 +226,7 @@ final class UserTest extends TestCase {
 			'email' => self::EMAIL,
 			'role' => self::ROLE->value,
 			'language' => self::LANGUAGE->value,
-			'state' => User::STATES[self::STATE],
+			'state' => self::STATE->toString(),
 		];
 		Assert::same($expected, $this->entity->jsonSerialize());
 	}
