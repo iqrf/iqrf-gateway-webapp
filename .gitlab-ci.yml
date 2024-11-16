@@ -24,13 +24,7 @@ stages:
   - build-docker
   - deploy-docs
 
-variables:
-  COMPOSER_CACHE_DIR: temp/composer/cache
-
-cache:
-  paths:
-    - temp/composer/cache
-
+# Templates
 .base_template: &base_template
   tags:
     - linux
@@ -40,6 +34,15 @@ cache:
   stage: coding-style
   needs: []
   <<: *base_template
+
+.composer_template: &composer_template
+  before_script:
+    - composer install --no-progress
+  cache:
+    paths:
+      - temp/composer/cache
+  variables:
+    COMPOSER_CACHE_DIR: temp/composer/cache
 
 .npm_template: &npm_template
   before_script:
@@ -108,9 +111,12 @@ build-docker:tests:
     DOCKER_FILE: docker/tests/bookworm.Dockerfile
     DOCKER_TAG: tests-bookworm
 
+# Tests
 test:
+  <<: *test_template
+  <<: *composer_template
   before_script:
-    - composer install --no-progress
+    - !reference [.composer_template, before_script]
     - update-alternatives --set php /usr/bin/php${PHP_VERSION}
   script:
     - vendor/bin/tester -p phpdbg${PHP_VERSION} -c ./tests/php.ini -s ./tests
@@ -122,39 +128,12 @@ test:
         - '8.1'
         - '8.2'
         - '8.3'
+
+coverage:php:
   <<: *test_template
-
-newman:
-  stage: test
-  image: docker:latest
-  needs: []
-  services:
-    - docker:dind
+  <<: *composer_template
   before_script:
-    - apk add  --no-cache docker-compose
-  script:
-    - docker-compose -f api-testing.docker-compose.yml up --build --abort-on-container-exit
-  tags:
-    - linux, docker, amd64
-
-build:js:
-  script:
-    - 'if [[ "${PACKAGE}" == "api-client" || "${PACKAGE}" == "frontend" || "${PACKAGE}" == "frontend3" ]]; then pnpm --dir packages/daemon-utils build; fi'
-    - 'if [[ "${PACKAGE}" == "frontend" || "${PACKAGE}" == "frontend3" ]]; then pnpm --dir packages/api-client build; fi'
-    - pnpm --dir packages/${PACKAGE} run build
-  parallel:
-    matrix:
-      - PACKAGE:
-          - api-client
-          - daemon-utils
-          - frontend
-          - frontend3
-  <<: *test_template
-  <<: *npm_template
-
-coverage:
-  before_script:
-    - composer install --no-progress
+    - !reference [.composer_template, before_script]
     - update-alternatives --set php /usr/bin/php8.1
     - vendor/bin/tester -c ./tests/php-coverage.ini --info
   script:
@@ -168,7 +147,21 @@ coverage:
     reports:
       junit:
         - junit.xml
+
+build:js:
   <<: *test_template
+  <<: *npm_template
+  script:
+    - 'if [[ "${PACKAGE}" == "api-client" || "${PACKAGE}" == "frontend" || "${PACKAGE}" == "frontend3" ]]; then pnpm --dir packages/daemon-utils build; fi'
+    - 'if [[ "${PACKAGE}" == "frontend" || "${PACKAGE}" == "frontend3" ]]; then pnpm --dir packages/api-client build; fi'
+    - pnpm --dir packages/${PACKAGE} run build
+  parallel:
+    matrix:
+      - PACKAGE:
+          - api-client
+          - daemon-utils
+          - frontend
+          - frontend3
 
 coverage:js:
   <<: *test_template
@@ -196,25 +189,43 @@ coverage:js:
           - frontend
           - frontend3
 
+newman:
+  <<: *test_template
+  image: docker:latest
+  services:
+    - docker:dind
+  before_script:
+    - apk add  --no-cache docker-compose
+  script:
+    - docker-compose -f api-testing.docker-compose.yml up --build --abort-on-container-exit
+  tags:
+    - linux, docker, amd64
+
+# Coding style
 coding-style:
+  <<: *coding-style_template
+  <<: *composer_template
   script:
     - make cc
+
+codesniffer:
   <<: *coding-style_template
+  <<: *composer_template
+  script:
+    - vendor/bin/codesniffer --runtime-set php_version 80100 app bin tests
 
 doctrine_mapping:
-  before_script:
-    - composer install --no-progress
+  <<: *coding-style_template
+  <<: *composer_template
   script:
     - bin/manager orm:validate-schema --skip-sync
-  <<: *coding-style_template
 
 phpstan:
+  <<: *coding-style_template
+  <<: *composer_template
   retry: 2
-  before_script:
-    - composer install --no-progress
   script:
     - NETTE_TESTER_RUNNER=1 php vendor/bin/phpstan analyse -c phpstan.neon
-  <<: *coding-style_template
 
 eslint:
   <<: *coding-style_template
@@ -234,6 +245,8 @@ eslint:
           - frontend3
 
 stylelint:
+  <<: *coding-style_template
+  <<: *npm_template
   script:
     - pnpm --dir packages/${PACKAGE} lint:css
   parallel:
@@ -241,32 +254,23 @@ stylelint:
       - PACKAGE:
           - frontend
           - frontend3
-  <<: *coding-style_template
-  <<: *npm_template
-
-qa:
-  before_script:
-    - composer install --no-progress
-  script:
-    - vendor/bin/codesniffer --runtime-set php_version 80100 app bin tests
-  <<: *coding-style_template
 
 # Sentry version
 sentry-version:
+  <<: *sentry-version_template
   before_script:
     - export VERSION=`jq -r .version version.json`"~${CI_PIPELINE_ID}"
   except:
     - tags
-  <<: *sentry-version_template
 
 sentry-version_release:
+  <<: *sentry-version_template
   before_script:
     - export VERSION=`jq -r .version version.json`
   only:
     - tags
-  <<: *sentry-version_template
 
-# Jsonnet
+# Package builds
 jsonnet-build:
   image: alpine:latest
   stage: jsonnet
@@ -289,20 +293,24 @@ jsonnet-trigger-packages:
         job: jsonnet-build
     strategy: depend
 
+# Documentation deployment
 deploy:docs:openapi:
+  <<: *ssh_template
+  <<: *composer_template
   stage: deploy-docs
   environment:
     name: apidocs
     url: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/
   only:
     - master
+  before_script:
+    - !reference [.ssh_template, before_script]
+    - !reference [.composer_template, before_script]
   script:
-    - composer install --no-progress
     - bin/manager open-api:specification > api.json
     - ssh www-deploy@icinga.iqrf.org "rm -rf /data/nginx/apidocs/openapi/iqrf-gateway-webapp/api.json /data/nginx/apidocs/openapi/iqrf-gateway-webapp/schemas/"
     - rsync -hrvz --delete -e ssh api.json www-deploy@icinga.iqrf.org:/data/nginx/apidocs/openapi/iqrf-gateway-webapp/api.json
     - rsync -hrvz --delete -e ssh api/schemas/* www-deploy@icinga.iqrf.org:/data/nginx/apidocs/openapi/iqrf-gateway-webapp/schemas/
-  <<: *ssh_template
 
 deploy-docs:typedoc:
   <<: *base_template
@@ -333,7 +341,3 @@ deploy-docs:typedoc:
         DEPLOY_DIR: js/iqrf-gateway-webapp-client
       - PACKAGE: daemon-utils
         DEPLOY_DIR: js/iqrf-gateway-daemon-utils
-
-include:
-  - template: Code-Quality.gitlab-ci.yml
-  - template: Security/SAST.gitlab-ci.yml
