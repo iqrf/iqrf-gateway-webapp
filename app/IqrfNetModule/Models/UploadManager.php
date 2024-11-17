@@ -82,7 +82,7 @@ class UploadManager {
 				$uploadDir .= '/';
 			}
 			$this->path = Strings::replace($cacheDir . $uploadDir, '~/+~', '/');
-		} catch (JsonException | NonexistentJsonSchemaException $e) {
+		} catch (JsonException | NonexistentJsonSchemaException) {
 			$this->path = '/var/cache/iqrf-gateway-daemon/upload/';
 		}
 	}

@@ -155,7 +155,7 @@ class UsersController extends BaseSecurityController {
 			try {
 				$this->manager->sendVerificationEmail($request, $user);
 				$responseBody['emailSent'] = true;
-			} catch (SendException $e) {
+			} catch (SendException) {
 				// Ignore failure
 			}
 		}
@@ -307,7 +307,7 @@ class UsersController extends BaseSecurityController {
 		if ($user->hasChangedEmail()) {
 			try {
 				$this->manager->sendVerificationEmail($request, $user);
-			} catch (SendException $e) {
+			} catch (SendException) {
 				// Ignore failure
 			}
 		}

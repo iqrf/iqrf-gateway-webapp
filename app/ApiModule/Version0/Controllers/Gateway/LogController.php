@@ -137,7 +137,7 @@ class LogController extends BaseGatewayController {
 		try {
 			$now = new DateTime();
 			$fileName = 'iqrf-gateway-logs_' . $now->format('c') . '.zip';
-		} catch (Throwable $e) {
+		} catch (Throwable) {
 			$fileName = 'iqrf-gateway-logs.zip';
 		}
 		$response->writeBody(FileSystem::read($path));

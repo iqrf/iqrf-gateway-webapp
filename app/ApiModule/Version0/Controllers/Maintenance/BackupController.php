@@ -85,7 +85,7 @@ class BackupController extends BaseMaintenanceController {
 		$this->validators->checkScopes($request, ['maintenance:backup']);
 		$this->validators->validateRequest('gatewayBackup', $request);
 		try {
-			$filePath = $this->manager->backup($request->getJsonBodyCopy(true));
+			$filePath = $this->manager->backup($request->getJsonBodyCopy());
 			$fileName = basename($filePath);
 			$response->writeBody(FileSystem::read($filePath));
 			return FileResponseAdjuster::adjust($response, $response->getBody(), $fileName, 'application/zip');

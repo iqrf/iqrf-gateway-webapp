@@ -58,7 +58,7 @@ class VersionManager {
 	 * @throws JsonException
 	 */
 	public function availableWebappUpdate(): bool {
-		$installedVersion = $this->versionManager->getWebapp(false);
+		$installedVersion = $this->versionManager->getWebapp();
 		$currentVersion = $this->getCurrentWebapp();
 		print_r([$installedVersion, $currentVersion]);
 		return version_compare($installedVersion, $currentVersion, '<');
@@ -76,7 +76,7 @@ class VersionManager {
 			try {
 				$url = $repoUrl . 'stable/version.json';
 				$file = $this->client->request('GET', $url)->getBody()->getContents();
-			} catch (BadResponseException $e) {
+			} catch (BadResponseException) {
 				$url = $repoUrl . 'master/version.json';
 				$file = $this->client->request('GET', $url)->getBody()->getContents();
 			}

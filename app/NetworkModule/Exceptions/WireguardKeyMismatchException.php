@@ -23,7 +23,7 @@ namespace App\NetworkModule\Exceptions;
 use RuntimeException;
 
 /**
- * The exception that indicates that Wireguard key pair does not match
+ * The exception that indicates that WireGuard key pair does not match
  */
 class WireguardKeyMismatchException extends RuntimeException {
 

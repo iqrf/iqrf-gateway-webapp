@@ -22,7 +22,6 @@ namespace App\ConsoleModule\Commands;
 
 use App\CoreModule\Exceptions\FeatureNotFoundException;
 use Nette\IOException;
-use Nette\Neon\Exception as NeonException;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -58,7 +57,7 @@ class FeatureDisableCommand extends FeatureCommand {
 		}
 		try {
 			$this->manager->setEnabled($names, false);
-		} catch (IOException | NeonException $e) {
+		} catch (IOException) {
 			$style->error('An error occurred while disabling features.');
 			return 1;
 		} catch (FeatureNotFoundException $e) {

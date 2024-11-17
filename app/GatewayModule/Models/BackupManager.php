@@ -141,7 +141,7 @@ class BackupManager {
 			$date = new DateTime();
 			$gwId = $this->gwInfo->getId();
 			$path = sprintf('/tmp/iqrf-gateway-backup_%s_%s.zip', strtolower($gwId), $date->format('c'));
-		} catch (Throwable $e) {
+		} catch (Throwable) {
 			$path = '/tmp/iqrf-gateway-backup.zip';
 		}
 		return $path;
@@ -158,7 +158,7 @@ class BackupManager {
 		foreach ($services as $service) {
 			try {
 				$enabledServices[$service] = $this->serviceManager->isEnabled($service);
-			} catch (NonexistentServiceException $e) {
+			} catch (NonexistentServiceException) {
 				continue;
 			}
 		}
@@ -190,7 +190,7 @@ class BackupManager {
 						$toDisable[] = $service;
 					}
 				}
-			} catch (NonexistentServiceException $e) {
+			} catch (NonexistentServiceException) {
 				continue;
 			}
 		}
@@ -198,14 +198,14 @@ class BackupManager {
 			if ($toEnable !== []) {
 				$this->serviceManager->enable($toEnable, false);
 			}
-		} catch (NonexistentServiceException $e) {
+		} catch (NonexistentServiceException) {
 			// noop
 		}
 		try {
 			if ($toDisable !== []) {
 				$this->serviceManager->disable($toDisable, false);
 			}
-		} catch (NonexistentServiceException $e) {
+		} catch (NonexistentServiceException) {
 			// noop
 		}
 	}
@@ -256,7 +256,7 @@ class BackupManager {
 				}
 				try {
 					Json::decode($this->zipManager->openFile($file));
-				} catch (Throwable $e) {
+				} catch (Throwable) {
 					$this->zipManager->close();
 					$this->cleanup();
 					throw new InvalidBackupContentException('Invalid JSON file content: ' . $file);
@@ -271,12 +271,12 @@ class BackupManager {
 				$json = Json::decode($this->zipManager->openFile($file));
 				try {
 					$this->schemaManager->setSchema($json->component);
-				} catch (NonexistentJsonSchemaException $e) {
+				} catch (NonexistentJsonSchemaException) {
 					continue;
 				}
 				try {
 					$this->schemaManager->validate($json);
-				} catch (InvalidJsonException $e) {
+				} catch (InvalidJsonException) {
 					$this->zipManager->close();
 					$this->cleanup();
 					throw new InvalidBackupContentException('Failed to validate file ' . $file . ' against JSON schema.');

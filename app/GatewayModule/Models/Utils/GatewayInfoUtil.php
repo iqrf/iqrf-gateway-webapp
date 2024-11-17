@@ -118,7 +118,7 @@ class GatewayInfoUtil {
 	public function read(): array {
 		try {
 			$content = Json::decode(FileSystem::read($this->path));
-		} catch (IOException | JsonException $e) {
+		} catch (IOException | JsonException) {
 			$content = [];
 		}
 		$processor = new Processor();

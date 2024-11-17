@@ -121,7 +121,7 @@ class InfoManager {
 		if ($output !== '') {
 			try {
 				return Json::decode($output, forceArrays: true);
-			} catch (JsonException $e) {
+			} catch (JsonException) {
 				// Skip IQRF GW info file parsing
 			}
 		}
@@ -152,7 +152,7 @@ class InfoManager {
 		$output = $this->commandManager->run($command)->getStdout();
 		$osInfo = [];
 		foreach (explode(PHP_EOL, $output) as $line) {
-			if (strpos($line, '=') !== false) {
+			if (str_contains($line, '=')) {
 				$line = explode('=', $line);
 				$osInfo[$line[0]] = Strings::trim($line[1], '"');
 			}

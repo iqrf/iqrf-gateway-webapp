@@ -52,7 +52,7 @@ class UpdaterManager {
 			try {
 				$this->packageManager = new $packageManager($commandManager);
 				break;
-			} catch (UnsupportedPackageManagerException $e) {
+			} catch (UnsupportedPackageManagerException) {
 				$this->packageManager = new UnsupportedPackageManager();
 			}
 		}

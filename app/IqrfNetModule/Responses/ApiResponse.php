@@ -62,7 +62,7 @@ class ApiResponse {
 	public function set(string $response): void {
 		try {
 			$this->response = Json::decode($response);
-		} catch (JsonException $e) {
+		} catch (JsonException) {
 			$this->response = (object) [];
 		}
 	}

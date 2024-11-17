@@ -57,7 +57,7 @@ class UserRemoveAllCommand extends UserCommand {
 		$style = new SymfonyStyle($input, $output);
 		try {
 			$role = $this->askUsersRole($input, $output);
-		} catch (InvalidUserRoleException $e) {
+		} catch (InvalidUserRoleException) {
 			$style->error('Role ' . $input->getOption('role') . ' does not exist.');
 			return 1;
 		}

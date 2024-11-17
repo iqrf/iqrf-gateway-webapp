@@ -46,7 +46,7 @@ use Tests\Toolkit\TestCases\CommandTestCase;
 require __DIR__ . '/../../../bootstrap.php';
 
 /**
- * Tests for Wireguard manager
+ * Tests for WireGuard manager
  */
 final class WireguardManagerTest extends CommandTestCase {
 
@@ -69,12 +69,12 @@ final class WireguardManagerTest extends CommandTestCase {
 	];
 
 	/**
-	 * @var WireguardInterface Wireguard interface entity
+	 * @var WireguardInterface WireGuard interface entity
 	 */
 	private WireguardInterface $interfaceEntity;
 
 	/**
-	 * @var WireguardPeer Wireguard peer entity
+	 * @var WireguardPeer WireGuard peer entity
 	 */
 	private WireguardPeer $peerEntity;
 
@@ -84,7 +84,7 @@ final class WireguardManagerTest extends CommandTestCase {
 	private EntityManager $entityManager;
 
 	/**
-	 * @var WireguardManager Wireguard manager
+	 * @var WireguardManager WireGuard manager
 	 */
 	private WireguardManager $manager;
 
@@ -144,7 +144,7 @@ final class WireguardManagerTest extends CommandTestCase {
 	}
 
 	/**
-	 * Tests the function to generate wireguard keypair
+	 * Tests the function to generate WireGuard keypair
 	 */
 	public function testGenerateKeys(): void {
 		$manager = Mockery::mock(WireguardManager::class, [$this->commandManager, $this->entityManager, $this->serviceManager])->makePartial();
@@ -157,27 +157,27 @@ final class WireguardManagerTest extends CommandTestCase {
 	}
 
 	/**
-	 * Tests the function to generate wireguard private key
+	 * Tests the function to generate WireGuard private key
 	 */
 	public function testGeneratePrivateKey(): void {
-		$this->receiveCommand(self::COMMANDS['privateKey'], false, self::WG_KEYPAIR['privateKey'], '', 0);
+		$this->receiveCommand(self::COMMANDS['privateKey'], null, self::WG_KEYPAIR['privateKey'], '', 0);
 		Assert::same(self::WG_KEYPAIR['privateKey'], $this->manager->generatePrivateKey());
 	}
 
 	/**
-	 * Tests the function to generate wireguard private key and throw exception
+	 * Tests the function to generate WireGuard private key and throw exception
 	 */
 	public function testGeneratePrivateKeyException(): void {
 		$command = new Command(self::COMMANDS['privateKey'], '', 'Usage: wg genkey', 1);
 		$this->commandManager->shouldReceive('run')
-			->withArgs([self::COMMANDS['privateKey'], false])->andReturn($command);
+			->withArgs([self::COMMANDS['privateKey']])->andReturn($command);
 		Assert::throws(function (): void {
 			$this->manager->generatePrivateKey();
 		}, WireguardKeyErrorException::class);
 	}
 
 	/**
-	 * Tests the function to generate wireguard public key
+	 * Tests the function to generate WireGuard public key
 	 */
 	public function testGeneratePublicKey(): void {
 		$command = new Command(self::COMMANDS['publicKey'], self::WG_KEYPAIR['publicKey'], '', 0);
@@ -187,7 +187,7 @@ final class WireguardManagerTest extends CommandTestCase {
 	}
 
 	/**
-	 * Tests the function to generate wireguard public key and throw exception
+	 * Tests the function to generate WireGuard public key and throw exception
 	 */
 	public function testGeneratePublicKeyException(): void {
 		$command = new Command(self::COMMANDS['publicKey'], '', 'Usage: wg pubkey', 1);

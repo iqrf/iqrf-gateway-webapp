@@ -45,7 +45,7 @@ enum ConnectivityState: string {
 	 */
 	public static function fromNmCli(string $nmCli): self {
 		$state = Strings::match($nmCli, '~^\d+ \((?\'state\'.+)\)$~')['state'];
-		$state = Strings::replace($state, '# \(externally\)#', '');
+		$state = Strings::replace($state, '# \(externally\)#');
 		return self::tryFrom($state) ?? self::UNKNOWN;
 	}
 

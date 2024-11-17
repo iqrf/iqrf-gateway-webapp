@@ -97,7 +97,7 @@ class SchedulerManager {
 				if ($task['taskId'] === $taskId) {
 					return $fileName;
 				}
-			} catch (JsonException $e) {
+			} catch (JsonException) {
 				continue;
 			}
 		}
@@ -113,7 +113,7 @@ class SchedulerManager {
 		try {
 			$this->getFileName($taskId);
 			return true;
-		} catch (TaskNotFoundException $e) {
+		} catch (TaskNotFoundException) {
 			return false;
 		}
 	}
@@ -133,7 +133,7 @@ class SchedulerManager {
 					$record->task = [$record->task];
 				}
 				$tasks[] = $record;
-			} catch (InvalidJsonException | InvalidTaskMessageException | IOException | JsonException | TaskNotFoundException $e) {
+			} catch (InvalidJsonException | InvalidTaskMessageException | IOException | JsonException | TaskNotFoundException) {
 				// Do nothing
 			}
 		}
@@ -165,7 +165,7 @@ class SchedulerManager {
 	 */
 	public function save(stdClass $config, ?string $fileName): void {
 		if ($fileName === null) {
-			$fileName = strval($config->taskId . '.json');
+			$fileName = $config->taskId . '.json';
 		}
 		foreach ($config->task as &$task) {
 			if (!isset($task->message->data->timeout)) {
@@ -201,7 +201,7 @@ class SchedulerManager {
 		foreach ($searched as $k => $v) {
 			try {
 				$this->genericManager->setComponent($v);
-			} catch (NonexistentJsonSchemaException $e) {
+			} catch (NonexistentJsonSchemaException) {
 				continue;
 			}
 			$found[$k] = array_map(static fn (array $component): string => $component['instance'], $this->genericManager->list());
@@ -217,7 +217,6 @@ class SchedulerManager {
 	 * @throws InvalidTaskMessageException
 	 * @throws JsonException
 	 * @throws NonexistentJsonSchemaException
-	 * @throws TaskNotFoundException
 	 */
 	private function readFile(string $fileName): stdClass {
 		$config = $this->fileManager->readJson($fileName, false);

@@ -20,11 +20,12 @@ declare(strict_types = 1);
 
 namespace App\ConsoleModule\Commands;
 
+use App\Exceptions\ApiKeyInvalidExpirationException;
 use App\Models\Database\Entities\ApiKey;
 use App\Models\Database\EntityManager;
 use App\Models\Database\Repositories\ApiKeyRepository;
+use DateMalformedStringException;
 use DateTime;
-use Exception;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
@@ -66,20 +67,29 @@ abstract class ApiKeyCommand extends EntityManagerCommand {
 	 * Asks for the API key expiration date
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
-	 * @return DateTime API key expiration date
+	 * @return DateTime|null API key expiration date
+	 * @throws ApiKeyInvalidExpirationException Date string is malformed
 	 */
 	protected function askExpiration(InputInterface $input, OutputInterface $output): ?DateTime {
 		$expiration = $input->getOption('expiration');
 		if ($expiration !== null) {
 			if ($expiration === '') {
-				throw new Exception();
+				throw new ApiKeyInvalidExpirationException();
 			}
-			return new DateTime($expiration);
+			try {
+				return new DateTime($expiration);
+			} catch (DateMalformedStringException $e) {
+				throw new ApiKeyInvalidExpirationException($e->getMessage());
+			}
 		}
 		$helper = $this->getHelper('question');
 		$question = new Question('Please enter the API key expiration date: ');
 		$expiration = $helper->ask($input, $output, $question);
-		return $expiration === null ? null : new DateTime($expiration);
+		try {
+			return $expiration === null ? null : new DateTime($expiration);
+		} catch (DateMalformedStringException $e) {
+			throw new ApiKeyInvalidExpirationException($e->getMessage());
+		}
 	}
 
 	/**

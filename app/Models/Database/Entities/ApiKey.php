@@ -150,7 +150,7 @@ class ApiKey implements JsonSerializable {
 		}
 		try {
 			$this->expiration = new DateTime($expiration);
-		} catch (Throwable $e) {
+		} catch (Throwable) {
 			throw new ApiKeyInvalidExpirationException('Invalid expiration date');
 		}
 		if ($this->isExpired()) {

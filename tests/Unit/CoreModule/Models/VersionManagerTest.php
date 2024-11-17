@@ -75,7 +75,7 @@ final class VersionManagerTest extends CommandTestCase {
 	 */
 	public function testAvailableWebappUpdateNo(): void {
 		$this->gwVersionManager->shouldReceive('getWebapp')
-			->withArgs([false])
+			->withNoArgs()
 			->andReturn(self::CURRENT_VERSION);
 		$this->manager->shouldReceive('getCurrentWebapp')
 			->withArgs([])->andReturn(self::CURRENT_VERSION);
@@ -87,10 +87,10 @@ final class VersionManagerTest extends CommandTestCase {
 	 */
 	public function testAvailableWebappUpdateYes(): void {
 		$this->gwVersionManager->shouldReceive('getWebapp')
-			->withArgs([false])
+			->withNoArgs()
 			->andReturn(self::STABLE_VERSION);
 		$this->manager->shouldReceive('getCurrentWebapp')
-			->withArgs([])->andReturn(self::CURRENT_VERSION);
+			->withNoArgs()->andReturn(self::CURRENT_VERSION);
 		Assert::true($this->manager->availableWebappUpdate());
 	}
 

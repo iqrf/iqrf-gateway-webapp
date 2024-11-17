@@ -136,7 +136,7 @@ class FeatureManager {
 			$content = FileSystem::read($this->path);
 			$configuration = Neon::decode($content) ?? [];
 			return array_merge(self::DEFAULTS, $configuration);
-		} catch (IOException | NeonException $e) {
+		} catch (IOException | NeonException) {
 			return self::DEFAULTS;
 		}
 	}

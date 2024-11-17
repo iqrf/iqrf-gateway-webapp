@@ -85,7 +85,7 @@ class JwtConfigurator {
 					return $this->createFallback();
 			}
 			return Configuration::forAsymmetricSigner($signer, InMemory::plainText($privateKey), InMemory::plainText($publicKey));
-		} catch (Throwable $e) {
+		} catch (Throwable) {
 			return $this->createFallback();
 		}
 	}

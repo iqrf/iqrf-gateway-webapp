@@ -175,7 +175,7 @@ class SshKeysController extends BaseSecurityController {
 		$this->validators->checkScopes($request, ['sshKeys']);
 		$this->validators->validateRequest('sshKeysAdd', $request);
 		try {
-			$failed = $this->manager->addKeys($request->getJsonBodyCopy(true));
+			$failed = $this->manager->addKeys($request->getJsonBodyCopy());
 			$response = $response->writeJsonBody(['failedKeys' => $failed])
 				->withStatus($failed === [] ? ApiResponse::S201_CREATED : ApiResponse::S200_OK);
 			return $this->validators->validateResponse('sshKeyCreated', $response);

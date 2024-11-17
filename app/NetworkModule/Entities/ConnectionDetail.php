@@ -22,7 +22,6 @@ namespace App\NetworkModule\Entities;
 
 use App\NetworkModule\Enums\ConnectionTypes;
 use App\NetworkModule\Utils\NmCliConnection;
-use Nette\Utils\ArrayHash;
 use Nette\Utils\Strings;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -81,7 +80,8 @@ class ConnectionDetail implements INetworkManagerEntity {
 
 	/**
 	 * Deserializes network connection entity from JSON
-	 * @param stdClass|ArrayHash $json Network connection configuration form values
+	 * @param stdClass $json Network connection configuration form values
+	 * @return INetworkManagerEntity Network connection entity
 	 */
 	public static function jsonDeserialize(stdClass $json): INetworkManagerEntity {
 		$uuid = Uuid::fromString($json->uuid);
@@ -125,7 +125,6 @@ class ConnectionDetail implements INetworkManagerEntity {
 		$autoConnect = AutoConnect::nmCliDeserialize($nmCli);
 		$uuid = Uuid::fromString($array['uuid']);
 		$type = ConnectionTypes::tryFrom($array['type']);
-		$interface = $array['interface-name'];
 		$ipv4 = IPv4Connection::nmCliDeserialize($nmCli);
 		$ipv6 = IPv6Connection::nmCliDeserialize($nmCli);
 		$connection = new self($name, $uuid, $type, $interface, $autoConnect, $ipv4, $ipv6);
@@ -213,7 +212,7 @@ class ConnectionDetail implements INetworkManagerEntity {
 
 	/**
 	 * Serializes network connection entity into JSON
-	 * @return array<string, array<string, array<array<array<int|string>|int|string>|string|null>|bool|int|string|null>|string> JSON serialized data
+	 * @return array<string, array<string, array<array<array<int|string>|int|string>|bool|string|null>|bool|int|string|null>|string> JSON serialized data
 	 */
 	public function jsonSerialize(): array {
 		$json = [

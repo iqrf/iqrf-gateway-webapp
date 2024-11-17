@@ -150,7 +150,7 @@ class AwsManager implements IManager {
 	private function createDirectory(): void {
 		try {
 			FileSystem::createDir($this->certPath);
-		} catch (IOException $e) {
+		} catch (IOException) {
 			throw new CannotCreateCertificateDirectoryException();
 		}
 		$realPath = realpath($this->certPath);

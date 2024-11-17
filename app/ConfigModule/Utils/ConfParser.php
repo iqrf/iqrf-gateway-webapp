@@ -56,7 +56,7 @@ class ConfParser {
 				if ($arrVal === null || $arrVal === '') {
 					$output[] = '#' . $arrKey . '=';
 				} else {
-					$output[] = $arrKey . '=' . strval($arrVal);
+					$output[] = $arrKey . '=' . $arrVal;
 				}
 			}
 			$output[] = PHP_EOL;

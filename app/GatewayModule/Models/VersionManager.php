@@ -108,14 +108,14 @@ class VersionManager {
 		if ($version === 'none' || $version === 'unknown') {
 			try {
 				$version = $this->getDaemonWs();
-			} catch (DpaErrorException | EmptyResponseException | JsonException $e) {
+			} catch (DpaErrorException | EmptyResponseException) {
 				// Use version from CLI
 			}
 		}
 		if ($verbose) {
 			return $version;
 		}
-		return explode(' ', $version)[0] ?? 'unknown';
+		return explode(' ', $version)[0];
 	}
 
 	/**
@@ -128,7 +128,7 @@ class VersionManager {
 		}
 		$result = $this->commandManager->run('iqrf-gateway-influxdb-bridge --version')->getStdout();
 		if ($result !== '') {
-			return Strings::replace($result, '#^IQRF\ Gateway\ InfluxDB\ Bridge\ #', '');
+			return Strings::replace($result, '#^IQRF Gateway InfluxDB Bridge #');
 		}
 		return null;
 	}
@@ -187,7 +187,7 @@ class VersionManager {
 		}
 		$result = $this->commandManager->run('iqrf-gateway-setter --version')->getStdout();
 		if ($result !== '') {
-			return Strings::replace($result, '#^IQRF\ Gateway\ Setter\ #', '');
+			return Strings::replace($result, '#^IQRF Gateway Setter #');
 		}
 		return null;
 	}
@@ -226,7 +226,7 @@ class VersionManager {
 	public function getWebapp(bool $verbose = false): string {
 		try {
 			$array = $this->getWebappJson();
-		} catch (IOException | JsonException $e) {
+		} catch (IOException | JsonException) {
 			return 'unknown';
 		}
 		$version = $array['version'] ?? 'unknown';
@@ -263,7 +263,7 @@ class VersionManager {
 		$command = $this->commandManager->run('iqrfgd2 --version');
 		$stdout = $command->getStdout();
 		if ($command->getExitCode() === 0 && $stdout !== '') {
-			return Strings::replace($stdout, '#^IQRF\ Gateway\ Daemon\ #', '');
+			return Strings::replace($stdout, '#^IQRF Gateway Daemon #');
 		}
 		return 'unknown';
 	}

@@ -39,11 +39,6 @@ class GenericManager {
 	private string $component;
 
 	/**
-	 * @var string|null File name (without .json)
-	 */
-	private ?string $fileName = null;
-
-	/**
 	 * Constructor
 	 * @param FileManager $fileManager JSON file manager
 	 * @param ComponentSchemaManager $schemaManager JSON schema manager
@@ -90,10 +85,10 @@ class GenericManager {
 		$dir = $this->fileManager->getBasePath();
 		$instances = [];
 		foreach (Finder::findFiles('*.json')->exclude('config.json')->in($dir) as $file) {
-			$fileName = Strings::replace($file->getRealPath(), ['~^' . realpath($dir) . '/~', '/.json$/'], '');
+			$fileName = Strings::replace($file->getRealPath(), ['~^' . realpath($dir) . '/~', '/.json$/']);
 			try {
 				$json = $this->fileManager->readJson($fileName . '.json');
-			} catch (IOException | JsonException $e) {
+			} catch (IOException | JsonException) {
 				continue;
 			}
 			if (array_key_exists('component', $json) && $json['component'] === $this->component) {
@@ -113,7 +108,7 @@ class GenericManager {
 		foreach ($this->getInstanceFiles() as $fileName) {
 			try {
 				$instances[] = $this->read($fileName);
-			} catch (IOException | JsonException $e) {
+			} catch (IOException | JsonException) {
 				continue;
 			}
 		}
@@ -170,10 +165,10 @@ class GenericManager {
 	public function getInstanceByProperty(string $type, mixed $value): ?string {
 		$dir = $this->fileManager->getBasePath();
 		foreach (Finder::findFiles('*.json')->exclude('config.json')->in($dir) as $file) {
-			$fileName = Strings::replace($file->getRealPath(), ['~^' . realpath($dir) . '/~', '/.json$/'], '');
+			$fileName = Strings::replace($file->getRealPath(), ['~^' . realpath($dir) . '/~', '/.json$/']);
 			try {
 				$json = $this->fileManager->readJson($fileName . '.json');
-			} catch (IOException | JsonException $e) {
+			} catch (IOException | JsonException) {
 				continue;
 			}
 			if (array_key_exists($type, $json) && $json[$type] === $value) {
@@ -191,11 +186,8 @@ class GenericManager {
 	 * @throws JsonException
 	 */
 	public function read(?string $fileName = null): array {
-		if ($fileName === null && $this->fileName === null) {
-			return [];
-		}
 		if ($fileName === null) {
-			$fileName = $this->fileName;
+			return [];
 		}
 		$configuration = $this->fileManager->readJson($fileName . '.json');
 		$this->fixRequiredInterfaces($configuration);
@@ -210,11 +202,8 @@ class GenericManager {
 	 * @throws JsonException
 	 */
 	public function save(array $array, ?string $fileName = null): void {
-		if ($fileName === null && $this->fileName === null) {
-			$fileName = $this->generateFileName($array);
-		}
 		if ($fileName === null) {
-			$fileName = $this->fileName;
+			$fileName = $this->generateFileName($array);
 		}
 		$component = ['component' => $this->component];
 		$configuration = Arrays::mergeTree($component, $array);

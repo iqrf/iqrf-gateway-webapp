@@ -19,7 +19,7 @@
 declare(strict_types = 1);
 
 use App\Kernel;
-use Ninjify\Nunjuck\Environment;
+use Contributte\Tester\Environment;
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -29,19 +29,23 @@ $configurator->setTempDirectory(__DIR__ . '/tmp');
 
 Environment::setupTester();
 Environment::setupTimezone('Etc/GMT-2');
-if (!defined('TESTER_DIR')) {
-	Environment::setupVariables(__DIR__);
-}
+Environment::setupFolders(__DIR__);
 if (basename(__DIR__) === 'tests') {
-	$tempDir = __DIR__ . '/tmp/';
-	@mkdir($tempDir);
-	@mkdir($tempDir . 'certificates/');
-	@mkdir($tempDir . 'configuration/');
-	@mkdir($tempDir . 'configuration/scheduler/');
-	@mkdir($tempDir . 'controller/');
-	@mkdir($tempDir . 'maintenance/');
-	@mkdir($tempDir . 'translator/');
-	@mkdir($tempDir . 'zip/');
+	define('TESTER_DIR', realpath(__DIR__));
+	define('TMP_DIR', TESTER_DIR . '/tmp');
+	@mkdir(TMP_DIR);
+	$dirs = [
+		'certificates/',
+		'configuration/',
+		'configuration/scheduler/',
+		'controller/',
+		'maintenance/',
+		'translator/',
+		'zip/',
+	];
+	foreach ($dirs as $dir) {
+		@mkdir(TMP_DIR . '/' . $dir);
+	}
 }
 
 return $configurator->createContainer();

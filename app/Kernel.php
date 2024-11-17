@@ -24,11 +24,11 @@ use App\ConfigModule\Models\IqrfRepositoryManager;
 use Nette\Bootstrap\Configurator;
 use Nette\IOException;
 use Nette\Neon\Exception;
+use Nette\Utils\FileInfo;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
-use SplFileInfo;
 
 /**
  * Application's kernel
@@ -57,18 +57,18 @@ class Kernel {
 					'release' => $version->version . ($version->pipeline !== '' ? '~' . $version->pipeline : ''),
 				],
 			]);
-		} catch (IOException | JsonException $e) {
+		} catch (IOException | JsonException) {
 			// Skip Sentry version settings
 		}
 		$configurator->addStaticParameters(['confDir' => $confDir]);
 		try {
 			$iqrfRepositoryManager = new IqrfRepositoryManager($confDir . '/iqrf-repository.neon');
 			$configurator->addDynamicParameters(['iqrfRepository' => $iqrfRepositoryManager->readConfig()]);
-		} catch (IOException | Exception $e) {
+		} catch (IOException | Exception) {
 			// File not found/is corrupted - do nothing
 		}
 		/**
-		 * @var SplFileInfo $file File info object
+		 * @var FileInfo $file File info object
 		 */
 		foreach (Finder::findFiles('*Module/config/config.neon')->from(__DIR__) as $file) {
 			$configurator->addConfig($file->getRealPath());

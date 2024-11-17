@@ -23,7 +23,7 @@ namespace App\NetworkModule\Exceptions;
 use RuntimeException;
 
 /**
- * The exception that indicates a modem manager error ocurred
+ * The exception that indicates a modem manager error occurred
  */
 class ModemManagerException extends RuntimeException {
 

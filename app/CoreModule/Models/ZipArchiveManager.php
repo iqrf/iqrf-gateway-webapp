@@ -89,7 +89,7 @@ class ZipArchiveManager {
 					$this->addFile($file->getRealPath(), $name . $file->getFilename());
 				}
 			}
-		} catch (UnexpectedValueException $e) {
+		} catch (UnexpectedValueException) {
 			// Does nothing - an empty folder
 		}
 		try {
@@ -99,7 +99,7 @@ class ZipArchiveManager {
 					$this->addFolder($directory->getRealPath(), $name . $directory->getBasename());
 				}
 			}
-		} catch (UnexpectedValueException $e) {
+		} catch (UnexpectedValueException) {
 			// Does nothing - an empty directory
 		}
 	}

@@ -164,13 +164,13 @@ class JournalConfigManager {
 			'Journal' => [
 				'ForwardToSyslog' => $newConf->forwardToSyslog ? 'yes' : 'no',
 				'Storage' => $newConf->persistence,
-				'MaxFileSec' => strval($newConf->timeRotation->count) . $newConf->timeRotation->unit,
-				'SystemMaxUse' => $newConf->maxDiskSize === 0 ? '' : strval($newConf->maxDiskSize) . 'M',
+				'MaxFileSec' => $newConf->timeRotation->count . $newConf->timeRotation->unit,
+				'SystemMaxUse' => $newConf->maxDiskSize === 0 ? '' : $newConf->maxDiskSize . 'M',
 				'SystemMaxFiles' => strval($newConf->maxFiles),
 			],
 		];
 		if ($newConf->sizeRotation->maxFileSize !== 0) {
-			$conf['Journal']['SystemMaxFileSize'] = strval($newConf->sizeRotation->maxFileSize) . 'M';
+			$conf['Journal']['SystemMaxFileSize'] = $newConf->sizeRotation->maxFileSize . 'M';
 		}
 		$this->fileManager->write($this->confFile, implode(PHP_EOL, $this->toIni($conf)) . PHP_EOL);
 	}

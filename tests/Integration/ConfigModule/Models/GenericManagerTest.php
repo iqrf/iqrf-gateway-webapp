@@ -194,7 +194,7 @@ final class GenericManagerTest extends JsonConfigTestCase {
 		$expected = $this->readFile(self::FILE_NAME . '.json');
 		$this->copyFile(self::FILE_NAME . '.json');
 		$expected['acceptAsyncMsg'] = true;
-		$this->managerTemp->save($array);
+		$this->managerTemp->save($array, self::FILE_NAME);
 		Assert::equal($expected, $this->fileManagerTemp->readJson(self::FILE_NAME . '.json'));
 	}
 

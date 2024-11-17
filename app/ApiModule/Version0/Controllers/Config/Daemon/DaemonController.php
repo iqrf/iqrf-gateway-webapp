@@ -116,7 +116,7 @@ class DaemonController extends BaseDaemonConfigController {
 		$this->validators->checkScopes($request, ['config:daemon']);
 		$this->validators->validateRequest('mainConfiguration', $request);
 		try {
-			$this->mainManager->save($request->getJsonBodyCopy(true));
+			$this->mainManager->save($request->getJsonBodyCopy());
 			return $response;
 		} catch (IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
@@ -145,7 +145,7 @@ class DaemonController extends BaseDaemonConfigController {
 		$this->validators->checkScopes($request, ['config:daemon']);
 		$this->validators->validateRequest('daemonComponent', $request);
 		try {
-			$this->componentManager->add($request->getJsonBodyCopy(true));
+			$this->componentManager->add($request->getJsonBodyCopy());
 			return $response->withStatus(ApiResponse::S201_CREATED);
 		} catch (IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
@@ -298,7 +298,7 @@ class DaemonController extends BaseDaemonConfigController {
 	public function createInstance(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['config:daemon']);
 		try {
-			$json = $request->getJsonBodyCopy(true);
+			$json = $request->getJsonBodyCopy();
 			$component = urldecode($request->getParameter('component'));
 			$this->manager->setComponent($component);
 			if (!isset($json['instance'])) {
@@ -374,7 +374,7 @@ class DaemonController extends BaseDaemonConfigController {
 	public function editInstance(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['config:daemon']);
 		try {
-			$json = $request->getJsonBodyCopy(true);
+			$json = $request->getJsonBodyCopy();
 			$component = urldecode($request->getParameter('component'));
 			$this->manager->setComponent($component);
 			if (!isset($json['instance'])) {
@@ -460,7 +460,7 @@ class DaemonController extends BaseDaemonConfigController {
 		$this->validators->checkScopes($request, ['config:daemon']);
 		$this->validators->validateRequest('daemonComponentEnabled', $request);
 		try {
-			$reqData = $request->getJsonBodyCopy(true);
+			$reqData = $request->getJsonBodyCopy();
 			$config = $this->mainManager->load();
 			foreach ($reqData as $component) {
 				$index = array_search($component['name'], array_column($config['components'], 'name'), true);

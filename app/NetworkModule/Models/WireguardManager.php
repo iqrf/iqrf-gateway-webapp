@@ -128,7 +128,7 @@ class WireguardManager {
 	 */
 	public function createInterface(stdClass $values): void {
 		if ($this->interfaceRepository->findInterfaceByName($values->name) !== null) {
-			throw new InterfaceExistsException(sprintf('Wireguard tunnel %s already exists.', $values->name));
+			throw new InterfaceExistsException(sprintf('WireGuard tunnel %s already exists.', $values->name));
 		}
 		$interface = new WireguardInterface($values->name, $values->privateKey, $values->port ?? null);
 		if (property_exists($values, 'ipv4')) {
@@ -156,7 +156,7 @@ class WireguardManager {
 		$tunnels = $this->interfaceRepository->findBy(['name' => $values->name]);
 		foreach ($tunnels as $tunnel) {
 			if ($tunnel !== $interface) {
-				throw new InterfaceExistsException(sprintf('Wireguard tunnel %s already exists.', $values->name));
+				throw new InterfaceExistsException(sprintf('WireGuard tunnel %s already exists.', $values->name));
 			}
 		}
 		$interface->setName($values->name);
@@ -233,11 +233,11 @@ class WireguardManager {
 
 	/**
 	 * Creates array of WireGuard peer addresses for new WireGuard peer entity
-	 * @param array<int, stdClass> $addrs WireGuard peer addresses
+	 * @param array<int, stdClass> $addresses WireGuard peer addresses
 	 * @param WireguardPeer $ifPeer WireGuard peer entity
 	 */
-	public function createPeerAddresses(array $addrs, WireguardPeer $ifPeer): void {
-		foreach ($addrs as $ip) {
+	public function createPeerAddresses(array $addresses, WireguardPeer $ifPeer): void {
+		foreach ($addresses as $ip) {
 			$address = new WireguardPeerAddress(new MultiAddress(Multi::factory($ip->address), $ip->prefix), $ifPeer);
 			$ifPeer->addAddress($address);
 		}
@@ -274,7 +274,7 @@ class WireguardManager {
 	 * @return string WireGuard private key
 	 */
 	public function generatePrivateKey(): string {
-		$output = $this->commandManager->run('umask 077 && wg genkey', false);
+		$output = $this->commandManager->run('umask 077 && wg genkey');
 		if ($output->getExitCode() !== 0) {
 			throw new WireguardKeyErrorException($output->getStderr());
 		}

@@ -71,8 +71,8 @@ class MultiAddress {
 	}
 
 	/**
-	 * Converts the Multi address address entity to a string
-	 * @return string IP address address with prefix
+	 * Converts the Multi address entity to a string
+	 * @return string IP address with prefix
 	 */
 	public function toString(): string {
 		if ($this->getVersion() === 4) {

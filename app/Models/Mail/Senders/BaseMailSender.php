@@ -22,7 +22,7 @@ abstract class BaseMailSender {
 	/**
 	 * Constructor
 	 * @param ConfigurationManager $configuration SMTP configuration manager
-	 * @param InfoManager $gatewayInfo Gareway information manager
+	 * @param InfoManager $gatewayInfo Gateway information manager
 	 * @param MailerFactory $mailerFactory Mailer factory
 	 * @param TemplateFactory $templateFactory Template factory
 	 * @param Translator $translator Translator

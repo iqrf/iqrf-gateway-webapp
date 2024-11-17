@@ -51,7 +51,6 @@ class IqrfRepositoryManager {
 	 * Saves IQRF repository configuration
 	 * @param array<string, array<string, string|null>|string> $config IQRF repository configuration to save
 	 * @throws IOException
-	 * @throws NeonException
 	 */
 	public function saveConfig(array $config): void {
 		FileSystem::write($this->confPath, Neon::encode([self::EXTENSION_NAME => $config], blockMode: true));
@@ -64,7 +63,7 @@ class IqrfRepositoryManager {
 	public function readConfig(): array {
 		try {
 			$content = Neon::decode(FileSystem::read($this->confPath))[self::EXTENSION_NAME] ?? [];
-		} catch (IOException | NeonException $e) {
+		} catch (IOException | NeonException) {
 			$content = [];
 		}
 		$processor = new Processor();

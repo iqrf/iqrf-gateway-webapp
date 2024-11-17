@@ -48,7 +48,7 @@ class MessageIdManager {
 	public function generate(): string {
 		try {
 			return Uuid::uuid4()->toString();
-		} catch (Throwable $e) {
+		} catch (Throwable) {
 			return strval($this->dateTime->getTimestamp());
 		}
 	}

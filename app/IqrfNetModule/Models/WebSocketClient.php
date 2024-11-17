@@ -110,7 +110,7 @@ class WebSocketClient {
 				$options['dns'] = $nameserver;
 				$reactConnector = new ReactSocket\Connector($this->loop, $options);
 				break;
-			} catch (InvalidArgumentException $e) {
+			} catch (InvalidArgumentException) {
 				continue;
 			}
 		}

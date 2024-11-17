@@ -76,7 +76,7 @@ class FileManager implements IFileManager {
 	public function delete(string $fileName): void {
 		try {
 			FileSystem::delete($this->directory . '/' . $fileName);
-		} catch (IOException $e) {
+		} catch (IOException) {
 			$this->fixPermissions($fileName);
 			FileSystem::delete($this->directory . '/' . $fileName);
 		}
@@ -161,7 +161,7 @@ class FileManager implements IFileManager {
 	public function read(string $fileName): string {
 		try {
 			return FileSystem::read($this->directory . '/' . $fileName);
-		} catch (IOException $e) {
+		} catch (IOException) {
 			$this->fixPermissions($fileName);
 			return FileSystem::read($this->directory . '/' . $fileName);
 		}
@@ -190,7 +190,7 @@ class FileManager implements IFileManager {
 		$path = 'nette.safe://' . $this->directory . '/' . $fileName;
 		try {
 			FileSystem::write($path, $content, null);
-		} catch (IOException $e) {
+		} catch (IOException) {
 			$this->fixPermissions($fileName);
 			FileSystem::write($path, $content, null);
 		}

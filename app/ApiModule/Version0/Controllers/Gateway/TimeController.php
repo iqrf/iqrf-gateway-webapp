@@ -95,7 +95,7 @@ class TimeController extends BaseGatewayController {
 	public function setTime(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->validateRequest('timeSet', $request);
 		try {
-			$time = $request->getJsonBodyCopy(true);
+			$time = $request->getJsonBodyCopy();
 			$this->manager->setTime($time);
 			return $response;
 		} catch (NonexistentTimezoneException $e) {

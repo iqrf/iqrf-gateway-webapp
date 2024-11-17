@@ -22,8 +22,9 @@ namespace App\NetworkModule\Entities;
 
 use App\NetworkModule\Enums\IPv6Methods;
 use App\NetworkModule\Utils\NmCliConnection;
+use Darsyn\IP\Exception\InvalidIpAddressException;
+use Darsyn\IP\Exception\WrongVersionException;
 use Darsyn\IP\Version\IPv6;
-use Nette\Utils\ArrayHash;
 use stdClass;
 
 /**
@@ -55,8 +56,10 @@ final class IPv6Connection implements INetworkManagerEntity {
 
 	/**
 	 * Deserializes IPv6 connection entity from JSON
-	 * @param stdClass|ArrayHash $json JSON serialized entity
+	 * @param stdClass $json JSON serialized entity
 	 * @return IPv6Connection IPv6 connection entity
+	 * @throws InvalidIpAddressException Invalid IP address
+	 * @throws WrongVersionException Invalid IP address version
 	 */
 	public static function jsonDeserialize(stdClass $json): INetworkManagerEntity {
 		$method = IPv6Methods::from($json->method);

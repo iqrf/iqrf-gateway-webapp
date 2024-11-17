@@ -70,7 +70,7 @@ class SchedulerMigrationManager {
 		try {
 			$now = new DateTime();
 			$path = '/tmp/iqrf-gateway-scheduler_' . $now->format('c') . '.zip';
-		} catch (Throwable $e) {
+		} catch (Throwable) {
 			$path = '/tmp/iqrf-gateway-scheduler.zip';
 		}
 		$zipManager = new ZipArchiveManager($path);

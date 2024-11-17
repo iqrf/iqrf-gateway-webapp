@@ -135,15 +135,13 @@ class IqrfOsController extends BaseIqrfController {
 		try {
 			$this->iqrfOsManager->upgradeOs($request->getJsonBodyCopy(false));
 			return $response;
-		} catch (DpaRfMissingException | DpaFileNotFoundException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
-		} catch (UploaderFileException $e) {
+		} catch (DpaRfMissingException | DpaFileNotFoundException | UploaderFileException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
 		} catch (UploaderMissingException | UploaderSpiException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
-		} catch (IOException $e) {
+		} catch (IOException) {
 			throw new ServerErrorException('Filesystem failure', ApiResponse::S500_INTERNAL_SERVER_ERROR);
-		} catch (ClientException $e) {
+		} catch (ClientException) {
 			throw new ServerErrorException('Failed to download upgrade file', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
 	}

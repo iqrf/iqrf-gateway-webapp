@@ -51,7 +51,7 @@ class MainManager {
 		try {
 			$dir = $this->load()['cacheDir'];
 			return str_ends_with($dir, '/') ? $dir : $dir . '/';
-		} catch (IOException | JsonException $e) {
+		} catch (IOException | JsonException) {
 			return '/var/cache/iqrf-gateway-daemon/';
 		}
 	}
@@ -64,7 +64,7 @@ class MainManager {
 		try {
 			$dir = $this->load()['dataDir'];
 			return str_ends_with($dir, '/') ? $dir : $dir . '/';
-		} catch (IOException | JsonException $e) {
+		} catch (IOException | JsonException) {
 			return '/usr/share/iqrf-gateway-daemon/';
 		}
 	}

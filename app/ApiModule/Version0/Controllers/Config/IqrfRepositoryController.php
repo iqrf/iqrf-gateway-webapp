@@ -95,7 +95,7 @@ class IqrfRepositoryController extends BaseConfigController {
 		$this->validators->checkScopes($request, ['config:iqrfRepository']);
 		$this->validators->validateRequest('iqrfRepositoryConfig', $request);
 		try {
-			$config = $request->getJsonBodyCopy(true);
+			$config = $request->getJsonBodyCopy();
 			$this->manager->saveConfig($config);
 			return $response;
 		} catch (NeonException | IOException $e) {

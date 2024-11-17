@@ -75,7 +75,7 @@ class CertificateManager {
 				throw new CertificateNotFoundException();
 			}
 			return new Certificate($certificate);
-		} catch (IOException $e) {
+		} catch (IOException) {
 			throw new CertificateNotFoundException();
 		}
 	}
@@ -92,7 +92,7 @@ class CertificateManager {
 				throw new PrivateKeyNotFoundException();
 			}
 			return new PrivateKey($privateKey);
-		} catch (IOException $e) {
+		} catch (IOException) {
 			throw new PrivateKeyNotFoundException();
 		}
 	}

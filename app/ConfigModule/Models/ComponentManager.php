@@ -77,7 +77,7 @@ class ComponentManager implements IConfigManager {
 	public function getId(string $name): ?int {
 		try {
 			$json = $this->fileManager->readJson($this->fileName);
-		} catch (JsonException $e) {
+		} catch (JsonException) {
 			return null;
 		}
 		$search = array_search($name, array_column($json['components'], 'name'), true);

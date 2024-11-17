@@ -155,7 +155,7 @@ class Mapping implements JsonSerializable {
 	}
 
 	/**
-	 * Sets new bus enable pin number number
+	 * Sets new bus enable pin number
 	 * @param int $busPin Mapping bus enable pin number
 	 */
 	public function setBusPin(int $busPin): void {

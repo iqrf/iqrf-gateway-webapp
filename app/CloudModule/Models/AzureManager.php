@@ -103,7 +103,7 @@ class AzureManager implements IManager {
 		$data = [];
 		foreach (explode(';', $connection) as $i) {
 			$j = explode('=', $i);
-			if (isset($j[0]) && isset($j[1])) {
+			if (count($j) === 2) {
 				$data[$j[0]] = $j[1];
 			} else {
 				throw new InvalidConnectionStringException();

@@ -64,7 +64,7 @@ class AptManager {
 		if (!$this->commandManager->commandExist('apt-config')) {
 			throw new AptNotFoundException('Apt package not installed.');
 		}
-		$command = $this->commandManager->run('apt-config dump', false);
+		$command = $this->commandManager->run('apt-config dump');
 		if ($command->getExitCode() !== 0) {
 			throw new AptErrorException('An error has occurred while retrieving apt configuration');
 		}

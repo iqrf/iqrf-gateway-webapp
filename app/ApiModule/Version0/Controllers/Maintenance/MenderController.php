@@ -201,7 +201,7 @@ class MenderController extends BaseMaintenanceController {
 		}
 		$this->validators->validateRequest('remount', $request);
 		try {
-			$conf = $request->getJsonBodyCopy(true);
+			$conf = $request->getJsonBodyCopy();
 			$this->manager->remount($conf['mode']);
 			return $response;
 		} catch (MountErrorException $e) {

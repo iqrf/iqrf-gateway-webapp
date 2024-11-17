@@ -59,7 +59,7 @@ class UserRepository extends EntityRepository {
 
 	/**
 	 * Lists user names
-	 * @return array<string> User names
+	 * @return array<string> Usernames
 	 */
 	public function listUserNames(): array {
 		return array_map(static fn (User $user): string => $user->getUserName(), $this->findAll());

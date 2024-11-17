@@ -72,7 +72,7 @@ final class WifiConnection implements INetworkManagerEntity {
 		$bssids = explode(',', $array['seen-bssids']);
 		try {
 			$security = WifiConnectionSecurity::nmCliDeserialize($nmCli);
-		} catch (Throwable $e) {
+		} catch (Throwable) {
 			$security = null;
 		}
 		return new self($array['ssid'], $mode, $bssids, $security);

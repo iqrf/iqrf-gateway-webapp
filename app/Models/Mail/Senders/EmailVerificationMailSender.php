@@ -29,7 +29,7 @@ use Nette\Mail\SendException;
 class EmailVerificationMailSender extends BaseMailSender {
 
 	/**
-	 * Sends e-mail to signed up user
+	 * Sends e-mail to signed-up user
 	 * @param UserVerification $verification User verification
 	 * @param string $baseUrl Base URL
 	 * @throws SendException

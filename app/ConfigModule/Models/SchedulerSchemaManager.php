@@ -55,7 +55,7 @@ class SchedulerSchemaManager extends JsonSchemaManager {
 	/**
 	 * Validates JSON
 	 * @param mixed $json JSON to validate
-	 * @param bool $tryFix Try fix JSON?
+	 * @param bool $tryFix Try to fix JSON?
 	 * @throws InvalidJsonException
 	 * @throws InvalidTaskMessageException
 	 * @throws JsonException

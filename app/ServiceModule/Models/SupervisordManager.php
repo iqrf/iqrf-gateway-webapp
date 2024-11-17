@@ -42,6 +42,7 @@ class SupervisordManager implements IServiceManager {
 	 * Disables service(s)
 	 * @param string|array<string> $services Service name(s)
 	 * @param bool $stop Stop service(s) after disabling
+	 * @throws NotImplementedException The method is not implemented
 	 */
 	public function disable(string|array $services, bool $stop = true): void {
 		throw new NotImplementedException();
@@ -51,6 +52,7 @@ class SupervisordManager implements IServiceManager {
 	 * Enables service(s)
 	 * @param string|array<string> $services Service name(s)
 	 * @param bool $start Start service(s) after enabling
+	 * @throws NotImplementedException The method is not implemented
 	 */
 	public function enable(string|array $services, bool $start = true): void {
 		throw new NotImplementedException();
@@ -59,6 +61,7 @@ class SupervisordManager implements IServiceManager {
 	/**
 	 * Checks if the service is active
 	 * @param string $serviceName Service name
+	 * @throws NotImplementedException The method is not implemented
 	 */
 	public function isActive(string $serviceName): bool {
 		throw new NotImplementedException();
@@ -67,6 +70,7 @@ class SupervisordManager implements IServiceManager {
 	/**
 	 * Checks if the service is enabled
 	 * @param string $serviceName Service name
+	 * @throws NotImplementedException The method is not implemented
 	 */
 	public function isEnabled(string $serviceName): bool {
 		throw new NotImplementedException();

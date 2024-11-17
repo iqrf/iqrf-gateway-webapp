@@ -23,7 +23,7 @@ namespace App\GatewayModule\Exceptions;
 use Exception;
 
 /**
- * The exception that indicates an nonexistent log file
+ * The exception that indicates a nonexistent log file
  */
 class LogNotFoundException extends Exception {
 

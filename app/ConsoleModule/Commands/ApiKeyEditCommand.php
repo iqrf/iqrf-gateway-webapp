@@ -62,10 +62,10 @@ class ApiKeyEditCommand extends ApiKeyCommand {
 		try {
 			$expiration = $this->askExpiration($input, $output);
 			$apiKey->setExpiration($expiration);
-		} catch (ApiKeyInvalidExpirationException $e) {
+		} catch (ApiKeyInvalidExpirationException) {
 			$style->error('Invalid time and date format.');
 			return Command::FAILURE;
-		} catch (ApiKeyExpirationPassedException $e) {
+		} catch (ApiKeyExpirationPassedException) {
 			$style->error('Expiration date has already passed.');
 			return Command::FAILURE;
 		}

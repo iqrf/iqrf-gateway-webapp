@@ -139,7 +139,7 @@ class TimeManager {
 		foreach ($timezones as $timezone) {
 			try {
 				$array[] = $this->timezoneInfo($timezone);
-			} catch (Throwable $e) {
+			} catch (Throwable) {
 				continue;
 			}
 		}

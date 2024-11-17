@@ -161,7 +161,7 @@ class AccountController extends BaseController {
 		if ($sendVerification) {
 			try {
 				$this->manager->sendVerificationEmail($request, $user);
-			} catch (SendException $e) {
+			} catch (SendException) {
 				// Ignore failure
 			}
 		}
@@ -215,7 +215,7 @@ class AccountController extends BaseController {
 		$this->validators->onlyForUsers($request);
 		$this->validators->validateRequest('userPreferences', $request);
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
-		$json = $request->getJsonBodyCopy(true);
+		$json = $request->getJsonBodyCopy();
 		try {
 			$timeFormat = TimeFormat::fromString($json['timeFormat']);
 		} catch (DomainException $e) {
@@ -270,7 +270,7 @@ class AccountController extends BaseController {
 		$this->entityManager->flush();
 		try {
 			$this->manager->sendPasswordChangeConfirmationEmail($request, $user);
-		} catch (SendException $e) {
+		} catch (SendException) {
 			// ignore
 		}
 		return $response;
@@ -389,7 +389,7 @@ class AccountController extends BaseController {
 		$json['token'] = $this->createToken($user);
 		try {
 			$this->manager->sendPasswordChangeConfirmationEmail($request, $user);
-		} catch (SendException $e) {
+		} catch (SendException) {
 			// ignore
 		}
 		$response = $response->writeJsonBody($json);

@@ -68,7 +68,7 @@ class DiagnosticsManager {
 			$gwId = strtolower($this->gwInfo->getId());
 			$gwId = $gwId !== 'ffffffffffffffff' ? $gwId . '_' : '';
 			$path = sprintf('/tmp/iqrf-gateway-diagnostics_%s%s.zip', $gwId, $date->format('c'));
-		} catch (Throwable $e) {
+		} catch (Throwable) {
 			$path = '/tmp/iqrf-gateway-diagnostics.zip';
 		}
 		$this->zipManager = new ZipArchiveManager($path);
@@ -140,14 +140,14 @@ class DiagnosticsManager {
 		$array = $this->infoManager->get();
 		try {
 			$array['coordinator'] = $this->enumerationManager->device(0);
-		} catch (DpaErrorException | EmptyResponseException | JsonException $e) {
+		} catch (DpaErrorException | EmptyResponseException) {
 			$array['coordinator'] = null;
 		}
 		$array['uname'] = $this->commandManager->run('uname -a', true)->getStdout();
 		$array['uptime'] = $this->commandManager->run('uptime -p', true)->getStdout();
 		try {
 			$this->zipManager->addJsonFromArray('info.json', $array);
-		} catch (JsonException $e) {
+		} catch (JsonException) {
 			return;
 		}
 	}

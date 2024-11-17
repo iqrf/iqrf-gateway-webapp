@@ -118,7 +118,7 @@ class AuthenticationMiddleware implements IMiddleware {
 		}
 		try {
 			$identity = $this->authenticator->authenticate($request);
-		} catch (InvalidArgumentException $e) {
+		} catch (InvalidArgumentException) {
 			return $this->createUnauthorizedResponse($response, 'Invalid JWT');
 		}
 		// If we have an identity, then go to next middleware, otherwise stop and return current response

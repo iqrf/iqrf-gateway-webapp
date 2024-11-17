@@ -273,7 +273,7 @@ class MenderManager {
 			$matchLen = strlen($matches[0]);
 			$lines[$idx] = sprintf('%s - [%s]: %s', $matches[1], $matches[2], $matches[3]);
 			if (strlen($line) !== $matchLen) {
-				$matchIdx = strpos($line, $matches[0], 0);
+				$matchIdx = strpos($line, $matches[0]);
 				$prefix = substr($line, 0, $matchIdx);
 				$suffix = substr($line, $matchIdx + $matchLen);
 				$lines[$idx] = trim($prefix . PHP_EOL . $lines[$idx] . PHP_EOL . $suffix);

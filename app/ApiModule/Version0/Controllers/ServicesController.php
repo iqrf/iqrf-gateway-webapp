@@ -139,7 +139,7 @@ class ServicesController extends BaseController {
 			try {
 				$status['active'] = $this->manager->isActive($name);
 				$status['enabled'] = $this->manager->isEnabled($name);
-			} catch (NotImplementedException $e) {
+			} catch (NotImplementedException) {
 				unset($status['active'], $status['enabled']);
 			}
 			$status['status'] = $this->manager->getStatus($name);

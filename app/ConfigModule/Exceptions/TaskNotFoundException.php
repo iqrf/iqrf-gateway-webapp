@@ -23,7 +23,7 @@ namespace App\ConfigModule\Exceptions;
 use DomainException;
 
 /**
- * The exception that indicates an nonexistent task
+ * The exception that indicates a nonexistent task
  */
 class TaskNotFoundException extends DomainException {
 

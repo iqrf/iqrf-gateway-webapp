@@ -90,7 +90,7 @@ class IqrfOs {
 			return $this->version;
 		}
 		$int = hexdec($this->version);
-		$version = strval($int >> 8) . '.';
+		$version = $int >> 8 . '.';
 		return $version . Strings::padLeft(dechex($int & 0xff), 2, '0') . 'D';
 	}
 

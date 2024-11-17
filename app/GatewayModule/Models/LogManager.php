@@ -24,9 +24,9 @@ use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use App\GatewayModule\Exceptions\LogNotFoundException;
 use App\GatewayModule\Exceptions\ServiceLogNotAvailableException;
+use Nette\Utils\FileInfo;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
-use SplFileInfo;
 
 /**
  * Tool for downloading and reading IQRF Gateway Daemon's log files
@@ -105,7 +105,7 @@ class LogManager {
 		$logFiles = [];
 		$emptyLogFound = false;
 		/**
-		 * @var SplFileInfo $file File info object
+		 * @var FileInfo $file File info object
 		 */
 		foreach (Finder::findFiles('*iqrf-gateway-daemon.log')->from($this->daemonLogDir) as $file) {
 			if ($file->getSize() === 0) {
@@ -155,28 +155,28 @@ class LogManager {
 		if ($this->commandManager->commandExist(self::CONTROLLER)) {
 			try {
 				$zipManager->addFileFromText(self::CONTROLLER_LOG, $this->getLogFromPath(self::CONTROLLER_LOG));
-			} catch (LogNotFoundException $e) {
+			} catch (LogNotFoundException) {
 				// not found, do not add
 			}
 		}
 		if ($this->commandManager->commandExist(self::SETTER)) {
 			try {
 				$zipManager->addFileFromText(self::SETTER_LOG, $this->getLogFromPath(self::SETTER_LOG));
-			} catch (LogNotFoundException $e) {
+			} catch (LogNotFoundException) {
 				// not found, do not add
 			}
 		}
 		if ($this->commandManager->commandExist(self::TRANSLATOR)) {
 			try {
 				$zipManager->addFileFromText(self::TRANSLATOR_LOG, $this->getLogFromPath(self::TRANSLATOR_LOG));
-			} catch (LogNotFoundException $e) {
+			} catch (LogNotFoundException) {
 				// not found, do not add
 			}
 		}
 		if ($this->commandManager->commandExist(self::UPLOADER)) {
 			try {
 				$zipManager->addFileFromText(self::UPLOADER_LOG, $this->getLogFromPath(self::UPLOADER_LOG));
-			} catch (LogNotFoundException $e) {
+			} catch (LogNotFoundException) {
 				// not found, do not add
 			}
 		}
@@ -216,23 +216,14 @@ class LogManager {
 	 * @return string Service log
 	 */
 	public function getServiceLog(string $service): string {
-		$services = $this->getAvailableServices();
-		if (!in_array($service, $services, true)) {
-			throw new ServiceLogNotAvailableException('Service not found');
-		}
-		if ($service === self::CONTROLLER) {
-			return $this->getLogFromPath(self::CONTROLLER_LOG);
-		}
-		if ($service === self::DAEMON) {
-			return $this->getLatestDaemonLog();
-		}
-		if ($service === self::SETTER) {
-			return $this->getLogFromPath(self::SETTER_LOG);
-		}
-		if ($service === self::TRANSLATOR) {
-			return $this->getLogFromPath(self::TRANSLATOR_LOG);
-		}
-		return $this->getLogFromPath(self::UPLOADER_LOG);
+		return match ($service) {
+			self::CONTROLLER => $this->getLogFromPath(self::CONTROLLER_LOG),
+			self::DAEMON => $this->getLatestDaemonLog(),
+			self::SETTER => $this->getLogFromPath(self::SETTER_LOG),
+			self::TRANSLATOR => $this->getLogFromPath(self::TRANSLATOR_LOG),
+			self::UPLOADER => $this->getLogFromPath(self::UPLOADER_LOG),
+			default => throw new ServiceLogNotAvailableException('Service not found'),
+		};
 	}
 
 }

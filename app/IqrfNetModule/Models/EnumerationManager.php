@@ -23,7 +23,6 @@ namespace App\IqrfNetModule\Models;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Requests\ApiRequest;
-use Nette\Utils\JsonException;
 
 /**
  * Tool for enumerate device in the IQMESH network
@@ -47,7 +46,6 @@ class EnumerationManager {
 	 * @return array<mixed> API request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
-	 * @throws JsonException
 	 */
 	public function device(int $address): array {
 		$array = [

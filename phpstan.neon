@@ -13,13 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 includes:
-	- vendor/phpstan/phpstan-deprecation-rules/rules.neon
-	- vendor/phpstan/phpstan-doctrine/extension.neon
-	- vendor/phpstan/phpstan-nette/extension.neon
-	- vendor/phpstan/phpstan-nette/rules.neon
-	- vendor/phpstan/phpstan-mockery/extension.neon
-	- vendor/phpstan/phpstan-strict-rules/rules.neon
-	- vendor/phpstan/phpstan-symfony/extension.neon
+	- vendor/iqrf/phpstan-config/phpstan.neon
 
 parameters:
 	level: 6
@@ -35,19 +29,17 @@ parameters:
 			- tests/Unit/InstallModule/Models/SudoManagerTest.php
 		analyseAndScan:
 			- tests/tmp/*
-	fileExtensions:
-		- php
-		- phpt
 	reportUnmatchedIgnoredErrors: false
 	ignoreErrors:
 		- '#Method App\\CoreModule\\Models\\CommandManager::run(Async|)\(\) has parameter \$input with no value type specified in iterable type Traversable.#'
 		- '#Method App\\IqrfNetModule\\Models\\WebSocketClient::[a-zA-Z]+\(\) has parameter \$[a-z]+ with no value type specified in iterable type Ratchet\\RFC6455\\Messaging\\MessageInterface\.#'
+		- '#Method App\\ServiceModule\\Models\\ServiceManager::[a-zA-Z]+\(\) has (App\\ServiceModule\\Exceptions\\NotImplementedException|App\\ServiceModule\\Exceptions\\UnsupportedInitSystemException) in PHPDoc @throws tag but it.s not thrown\.#'
 		-
 			message: '#Variable property access on mixed.#'
 			path: app/NetworkModule/Entities/Modem.php
 		- '#Call to an undefined method Symfony\\Component\\Console\\Helper\\HelperInterface::ask\(\).#'
 		-
-			message: "#^Negated boolean expression is always false\\.$#"
+			message: '#^Negated boolean expression is always false\.$#'
 			path: app/Models/Mail/ConfigurationManager.php
 			count: 1
 		-

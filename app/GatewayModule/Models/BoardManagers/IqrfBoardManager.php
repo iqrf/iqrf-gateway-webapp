@@ -50,7 +50,7 @@ class IqrfBoardManager implements IBoardManager {
 		try {
 			$gw = Json::decode($gwJson, forceArrays: true);
 			return $gw['gwManufacturer'] . ' ' . $gw['gwProduct'];
-		} catch (JsonException $e) {
+		} catch (JsonException) {
 			return null;
 		}
 	}

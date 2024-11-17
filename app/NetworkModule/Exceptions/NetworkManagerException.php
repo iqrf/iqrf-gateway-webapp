@@ -23,7 +23,7 @@ namespace App\NetworkModule\Exceptions;
 use RuntimeException;
 
 /**
- * The exception that indicates that an Network Manager error
+ * The exception that indicates that a Network Manager error
  */
 class NetworkManagerException extends RuntimeException {
 
