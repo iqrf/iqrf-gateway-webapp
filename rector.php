@@ -18,7 +18,6 @@
  */
 declare(strict_types = 1);
 
-use Rector\CodeQuality\Rector\Array_\CallableThisArrayToAnonymousFunctionRector;
 use Rector\CodeQuality\Rector\Class_\InlineConstructorDefaultToPropertyRector;
 use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
 use Rector\CodingStyle\Rector\Assign\SplitDoubleAssignRector;
@@ -40,7 +39,6 @@ return RectorConfig::configure()
 	])
 	->withSkip([
 		AttributeKeyToClassConstFetchRector::class,
-		CallableThisArrayToAnonymousFunctionRector::class,
 		CatchExceptionNameMatchingTypeRector::class,
 		FlipTypeControlToUseExclusiveTypeRector::class,
 		NewlineAfterStatementRector::class,

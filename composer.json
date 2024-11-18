@@ -48,7 +48,7 @@
 		"egulias/email-validator": "^4.0.2",
 		"guzzlehttp/guzzle": "^7.9.2",
 		"iqrf/iqrf-ide-macros-parser": "^v1.2.0",
-		"iqrf/iqrf-repository": "dev-master",
+		"iqrf/iqrf-repository": "^v0.2.0",
 		"justinrainbow/json-schema": "^6.0.0",
 		"latte/latte": "^v3.0.20",
 		"lcobucci/jwt": "^5.3.0",

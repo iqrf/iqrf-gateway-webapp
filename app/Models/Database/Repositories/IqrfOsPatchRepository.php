@@ -31,14 +31,23 @@ class IqrfOsPatchRepository extends EntityRepository {
 
 	/**
 	 * Retrieves list of all patch details
-	 * @return array<int, array<int|string>> Array of OS patch detail
+	 * @return list<array<int|string>> Array of OS patch detail
 	 */
 	public function getOsPatchDetails(): array {
-		$patches = [];
-		foreach ($this->findAll() as $patch) {
-			$patches[] = [$patch->getId(), $patch->getModuleType(), $patch->getFromVersion(), $patch->getFromBuild(), $patch->getToVersion(), $patch->getToBuild(), $patch->getPart(), $patch->getParts(), $patch->getFileName()];
-		}
-		return $patches;
+		return array_map(
+			static fn (IqrfOsPatch $patch): array => [
+				$patch->getId(),
+				$patch->moduleType,
+				$patch->fromVersion,
+				$patch->fromBuild,
+				$patch->toVersion,
+				$patch->toBuild,
+				$patch->part,
+				$patch->parts,
+				$patch->fileName,
+			],
+			$this->findAll(),
+		);
 	}
 
 }

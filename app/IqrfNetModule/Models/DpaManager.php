@@ -63,14 +63,14 @@ class DpaManager {
 		if ($files === []) {
 			return null;
 		}
-		$dpaVersion = $files[0]->getDpa();
-		$this->filesManager->setUseCredentials($dpaVersion->getAttributes()->isBeta());
-		$this->filesManager->setPath($dpaVersion->getDownloadPath());
-		foreach ($this->filesManager->list()->getFiles() as $file) {
+		$dpaVersion = $files[0]->dpa;
+		$this->filesManager->useCredentials = $dpaVersion->attributes->beta;
+		$this->filesManager->setPath($dpaVersion->downloadPath);
+		foreach ($this->filesManager->list()->files as $file) {
 			foreach ($dpa->getFilePrefixes() as $filePrefix) {
-				if (str_starts_with($file->getName(), $filePrefix)) {
-					$fileContent = $this->filesManager->download($file->getName());
-					$filePath = $file->getName();
+				if (str_starts_with($file->name, $filePrefix)) {
+					$fileContent = $this->filesManager->download($file->name);
+					$filePath = $file->name;
 					$this->uploadManager->uploadToFs($filePath, $fileContent);
 					return $filePath;
 				}

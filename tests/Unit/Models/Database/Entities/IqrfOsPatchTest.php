@@ -86,56 +86,56 @@ class IqrfOsPatchTest extends TestCase {
 	 * Tests the function to return module type of patch
 	 */
 	public function testGetModuleType(): void {
-		Assert::same(self::MODULE_TYPE, $this->iqrfOsPatch->getModuleType());
+		Assert::same(self::MODULE_TYPE, $this->iqrfOsPatch->moduleType);
 	}
 
 	/**
 	 * Tests the function to return patch from OS version
 	 */
 	public function testGetFromVersion(): void {
-		Assert::same(self::FROM_OS_VERSION, $this->iqrfOsPatch->getFromVersion());
+		Assert::same(self::FROM_OS_VERSION, $this->iqrfOsPatch->fromVersion);
 	}
 
 	/**
 	 * Tests the function to return patch from OS build
 	 */
 	public function testGetFromBuild(): void {
-		Assert::same(self::FROM_OS_BUILD, $this->iqrfOsPatch->getFromBuild());
+		Assert::same(self::FROM_OS_BUILD, $this->iqrfOsPatch->fromBuild);
 	}
 
 	/**
 	 * Tests the function to return patch target OS version
 	 */
 	public function testGetToVersion(): void {
-		Assert::same(self::TO_OS_VERSION, $this->iqrfOsPatch->getToVersion());
+		Assert::same(self::TO_OS_VERSION, $this->iqrfOsPatch->toVersion);
 	}
 
 	/**
 	 * Tests the function to return patch target OS version
 	 */
 	public function testGetToBuild(): void {
-		Assert::same(self::TO_OS_BUILD, $this->iqrfOsPatch->getToBuild());
+		Assert::same(self::TO_OS_BUILD, $this->iqrfOsPatch->toBuild);
 	}
 
 	/**
 	 * Tests the function to return patch part number
 	 */
 	public function testGetPart(): void {
-		Assert::same(self::PART_NUMBER, $this->iqrfOsPatch->getPart());
+		Assert::same(self::PART_NUMBER, $this->iqrfOsPatch->part);
 	}
 
 	/**
 	 * Tests the function to return number of patch parts
 	 */
 	public function testGetParts(): void {
-		Assert::same(self::PARTS, $this->iqrfOsPatch->getParts());
+		Assert::same(self::PARTS, $this->iqrfOsPatch->parts);
 	}
 
 	/**
 	 * Tests the function to return patch file name
 	 */
 	public function testGetFileName(): void {
-		Assert::same(self::FILE_NAME, $this->iqrfOsPatch->getFileName());
+		Assert::same(self::FILE_NAME, $this->iqrfOsPatch->fileName);
 	}
 
 	/**
@@ -161,7 +161,16 @@ class IqrfOsPatchTest extends TestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
-		$this->iqrfOsPatch = new IqrfOsPatch(self::MODULE_TYPE, self::FROM_OS_VERSION, self::FROM_OS_BUILD, self::TO_OS_VERSION, self::TO_OS_BUILD, self::PART_NUMBER, self::PARTS, self::FILE_NAME);
+		$this->iqrfOsPatch = new IqrfOsPatch(
+			moduleType: self::MODULE_TYPE,
+			fromVersion: self::FROM_OS_VERSION,
+			fromBuild: self::FROM_OS_BUILD,
+			toVersion: self::TO_OS_VERSION,
+			toBuild: self::TO_OS_BUILD,
+			part: self::PART_NUMBER,
+			parts: self::PARTS,
+			fileName: self::FILE_NAME,
+		);
 	}
 
 }

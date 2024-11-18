@@ -60,10 +60,10 @@ class IqrfOsPatchImportCommand extends Command {
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$repository = $this->entityManager->getIqrfOsPatchRepository();
 		foreach ($repository->findAll() as $patch) {
-			if (file_exists(self::DIR_PATH . $patch->getFileName())) {
+			if (file_exists(self::DIR_PATH . $patch->fileName)) {
 				continue;
 			}
-			$output->writeln('Deleting IQRF OS patch' . $patch->getFileName());
+			$output->writeln('Deleting IQRF OS patch' . $patch->fileName);
 			$this->entityManager->remove($patch);
 			$this->entityManager->flush();
 		}

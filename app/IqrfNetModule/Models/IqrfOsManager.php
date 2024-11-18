@@ -60,21 +60,50 @@ class IqrfOsManager {
 
 	/**
 	 * Lists all IQRF OS patches
-	 * @return array<int, array<string, int|string>> IQRF OS patches
+	 * @return list<array{
+	 *     id: int|null,
+	 *     moduleType: string,
+	 *     fromOsVersion: int,
+	 *     fromOsBuild: int,
+	 *     toOsVersion: int,
+	 *     toOsBuild: int,
+	 *     partNumber: int,
+	 *     parts: int,
+	 *     fileName: string,
+	 * }> IQRF OS patches
 	 */
 	public function listOsPatches(): array {
-		$patches = [];
-		foreach ($this->repository->findAll() as $patch) {
-			$patches[] = $patch->jsonSerialize();
-		}
-		return $patches;
+		return array_map(
+			static fn (IqrfOsPatch $patch): array => $patch->jsonSerialize(),
+			$this->repository->findAll()
+		);
 	}
 
 	/**
 	 * Lists available IQRF OS upgrades
 	 * @param string $build Current build of IQRF OS
 	 * @param int $mcuType Module MCU type
-	 * @return array<int, array<string, int|string>> Available IQRF OS upgrades
+	 * @return list<array{
+	 *     os: array{
+	 *         build: string,
+	 *         version: string,
+	 *         attributes: array{
+	 *             beta: bool|null,
+	 *             obsolete: bool|null,
+	 *         },
+	 *         downloadPath: string,
+	 *     },
+	 *     dpa: array{
+	 *         version: string,
+	 *         attributes: array{
+	 *             beta: bool|null,
+	 *             obsolete: bool|null,
+	 *         },
+	 *         downloadPath: string,
+	 *         rfMode?: 'LP'|'STD',
+	 *     },
+	 *     notes: string,
+	 * }> Available IQRF OS upgrades
 	 */
 	public function listOsUpgrades(string $build, int $mcuType): array {
 		$versions = [];
@@ -84,14 +113,14 @@ class IqrfOsManager {
 		$currentBuild = hexdec($build);
 		$patches = $this->repository->findBy(['fromBuild' => $currentBuild, 'part' => 1]);
 		foreach ($patches as $patch) {
-			$toBuild = $patch->getToBuild();
+			$toBuild = $patch->toBuild;
 			if ($toBuild <= $currentBuild) {
 				continue;
 			}
 			foreach ($this->osDpaManager->get(str_pad(dechex($toBuild), 4, '0', STR_PAD_LEFT)) as $dpa) {
 				$upgrade = $dpa->jsonSerialize();
-				if (hexdec($dpa->getDpa()->getVersion()) < 0x400) {
-					$upgrade['dpa'] = $dpa->getDpa()->jsonSerialize();
+				if (hexdec($dpa->dpa->version->getRaw()) < 0x400) {
+					$upgrade['dpa'] = $dpa->dpa->jsonSerialize();
 					$upgrade['dpa']['rfMode'] = 'LP';
 					$versions[] = $upgrade;
 					$upgrade['dpa']['rfMode'] = 'STD';
@@ -121,14 +150,14 @@ class IqrfOsManager {
 	/**
 	 * Retrieves OS upgrade files
 	 * @param stdClass $params OS upgrade parameters
-	 * @return array<int, string> OS upgrade file(s)
+	 * @return list<string> OS upgrade file(s)
 	 */
 	private function getOsUpgrade(stdClass $params): array {
 		$patches = $this->repository->findBy([
 			'fromBuild' => hexdec($params->fromBuild),
 			'toBuild' => hexdec($params->toBuild),
 		]);
-		$osUpgrades = array_map(static fn (IqrfOsPatch $patch): string => $patch->getFileName(), $patches);
+		$osUpgrades = array_map(static fn (IqrfOsPatch $patch): string => $patch->fileName, $patches);
 		sort($osUpgrades);
 		return $osUpgrades;
 	}
