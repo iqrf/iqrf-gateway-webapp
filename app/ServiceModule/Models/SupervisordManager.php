@@ -20,9 +20,9 @@ declare(strict_types = 1);
 
 namespace App\ServiceModule\Models;
 
-use App\CoreModule\Models\CommandManager;
 use App\ServiceModule\Entities\ServiceState;
 use App\ServiceModule\Exceptions\NotImplementedException;
+use Iqrf\CommandExecutor\CommandExecutor;
 
 /**
  * Tool for managing services (supervisord init daemon in a Docker container)
@@ -31,10 +31,10 @@ class SupervisordManager implements IServiceManager {
 
 	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandManager Command manager
 	 */
 	public function __construct(
-		private readonly CommandManager $commandManager,
+		private readonly CommandExecutor $commandManager,
 	) {
 	}
 

@@ -20,10 +20,10 @@ declare(strict_types = 1);
 
 namespace App\NetworkModule\Models;
 
-use App\CoreModule\Entities\ICommand;
-use App\CoreModule\Models\CommandManager;
 use App\NetworkModule\Entities\Modem;
 use App\NetworkModule\Exceptions\ModemManagerException;
+use Iqrf\CommandExecutor\CommandExecutor;
+use Iqrf\CommandExecutor\ICommand;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 use stdClass;
@@ -35,10 +35,10 @@ class CellularManager {
 
 	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandManager Command manager
 	 */
 	public function __construct(
-		private readonly CommandManager $commandManager,
+		private readonly CommandExecutor $commandManager,
 	) {
 	}
 

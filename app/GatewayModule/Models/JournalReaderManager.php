@@ -20,9 +20,9 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models;
 
-use App\CoreModule\Models\CommandManager;
 use App\GatewayModule\Exceptions\JournalReaderArgumentException;
 use App\GatewayModule\Exceptions\JournalReaderInternalException;
+use Iqrf\CommandExecutor\CommandExecutor;
 use Nette\Utils\Json;
 
 class JournalReaderManager {
@@ -34,10 +34,10 @@ class JournalReaderManager {
 
 	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandManager Command manager
 	 */
 	public function __construct(
-		private readonly CommandManager $commandManager,
+		private readonly CommandExecutor $commandManager,
 	) {
 	}
 

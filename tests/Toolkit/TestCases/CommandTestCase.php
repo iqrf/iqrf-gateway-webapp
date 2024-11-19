@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace Tests\Toolkit\TestCases;
 
-use App\CoreModule\Models\CommandManager;
+use Iqrf\CommandExecutor\CommandExecutor;
 use Mockery;
 use Mockery\MockInterface;
 use Tester\TestCase;
@@ -32,15 +32,15 @@ use Tests\Stubs\CoreModule\Models\Command;
 abstract class CommandTestCase extends TestCase {
 
 	/**
-	 * @var CommandManager|MockInterface Mocked command manager
+	 * @var CommandExecutor|MockInterface Mocked command manager
 	 */
-	protected CommandManager|MockInterface $commandManager;
+	protected CommandExecutor|MockInterface $commandManager;
 
 	/**
 	 * Sets up the test environment
 	 */
 	protected function setUp(): void {
-		$this->commandManager = Mockery::mock(CommandManager::class);
+		$this->commandManager = Mockery::mock(CommandExecutor::class);
 	}
 
 	/**

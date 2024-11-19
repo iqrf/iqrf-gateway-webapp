@@ -20,13 +20,13 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models;
 
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use App\GatewayModule\Models\Utils\GatewayInfoUtil;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Models\EnumerationManager;
 use DateTime;
+use Iqrf\CommandExecutor\CommandExecutor;
 use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
 use Throwable;
@@ -43,14 +43,14 @@ class DiagnosticsManager {
 
 	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandManager Command manager
 	 * @param DaemonDirectories $daemonDirectories IQRF Gateway Daemon's directory manager
 	 * @param EnumerationManager $enumerationManager IQMESH Enumeration manager
 	 * @param InfoManager $infoManager Gateway Info manager
 	 * @param GatewayInfoUtil $gwInfo Gateway information file manager
 	 */
 	public function __construct(
-		private readonly CommandManager $commandManager,
+		private readonly CommandExecutor $commandManager,
 		private readonly DaemonDirectories $daemonDirectories,
 		private readonly EnumerationManager $enumerationManager,
 		private readonly InfoManager $infoManager,

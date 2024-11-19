@@ -27,11 +27,11 @@ declare(strict_types = 1);
 namespace Tests\Integration\ConfigModule\Models;
 
 use App\ConfigModule\Models\ComponentSchemaManager;
-use App\CoreModule\Entities\CommandStack;
 use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FileManager;
+use Iqrf\CommandExecutor\CommandExecutor;
+use Iqrf\CommandExecutor\CommandStack;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -112,7 +112,7 @@ final class ComponentSchemaManagerTest extends TestCase {
 	 */
 	protected function setUp(): void {
 		$commandStack = new CommandStack();
-		$commandManager = new CommandManager(false, $commandStack);
+		$commandManager = new CommandExecutor(false, $commandStack);
 		$this->fileManager = new FileManager(self::FILE_PATH, $commandManager);
 		$this->manager = new ComponentSchemaManager(self::SCHEMA_PATH, $commandManager);
 	}

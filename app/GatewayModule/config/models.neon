@@ -19,7 +19,7 @@ services:
 	cloudProvBackup.fileManager:
 		factory: App\CoreModule\Models\PrivilegedFileManager(%paths.iqrfCloudProvisioning.configDir%)
 		autowired: false
-	cloudProvBackup: App\GatewayModule\Models\Backup\CloudProvisioningBackup(@commandManager, @cloudProvBackup.fileManager)
+	cloudProvBackup: App\GatewayModule\Models\Backup\CloudProvisioningBackup(@commandExecutor.commandExecutor, @cloudProvBackup.fileManager)
 	controllerBackup: App\GatewayModule\Models\Backup\ControllerBackup(@controller.fileManager)
 	daemonBackup: App\GatewayModule\Models\Backup\DaemonBackup
 	gatewayFileBackup.fileManager:
@@ -36,7 +36,7 @@ services:
 	networkManagerBackup: App\GatewayModule\Models\Backup\NetworkManagerBackup(@networkManager.fileManager)
 	sshBackup: App\GatewayModule\Models\Backup\SshBackup
 	timeBackup: App\GatewayModule\Models\Backup\TimeBackup
-	timesyncdBackup: App\GatewayModule\Models\Backup\TimesyncdBackup(@commandManager, %paths.timesyncd.config%)
+	timesyncdBackup: App\GatewayModule\Models\Backup\TimesyncdBackup(@commandExecutor.commandExecutor, %paths.timesyncd.config%)
 	translatorBackup: App\GatewayModule\Models\Backup\TranslatorBackup(@translator.fileManager)
 	uploader.fileManager:
 		factory: App\CoreModule\Models\FileManager(%paths.iqrfGatewayUploader.configDir%)
@@ -70,7 +70,7 @@ services:
 	etc.fileManager:
 		factory: App\CoreModule\Models\PrivilegedFileManager('/etc/')
 		autowired: false
-	- App\GatewayModule\Models\HostnameManager(@commandManager, @etc.fileManager)
+	- App\GatewayModule\Models\HostnameManager(@commandExecutor.commandExecutor, @etc.fileManager)
 	- App\GatewayModule\Models\InfoManager
 	- App\GatewayModule\Models\JournalConfigManager
 	- App\GatewayModule\Models\JournalReaderManager
@@ -79,7 +79,7 @@ services:
 	- App\GatewayModule\Models\PasswordManager
 	- App\GatewayModule\Models\PowerManager
 	- App\GatewayModule\Models\SshManager
-	- App\GatewayModule\Models\TimeManager(@commandManager, %paths.timesyncd.config%)
+	- App\GatewayModule\Models\TimeManager(@commandExecutor.commandExecutor, %paths.timesyncd.config%)
 	- App\GatewayModule\Models\TuptimeManager
 	- App\GatewayModule\Models\UpdaterManager
 	- App\GatewayModule\Models\Utils\GatewayInfoUtil('/etc/iqrf-gateway.json')

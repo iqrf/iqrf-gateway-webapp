@@ -26,10 +26,10 @@ declare(strict_types = 1);
 
 namespace Tests\Unit\GatewayModule\Models;
 
-use App\CoreModule\Models\CommandManager;
 use App\GatewayModule\Models\VersionManager;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Requests\ApiRequest;
+use Iqrf\CommandExecutor\CommandExecutor;
 use Mockery;
 use Mockery\MockInterface;
 use Nette\Utils\JsonException;
@@ -90,9 +90,9 @@ final class VersionManagerTest extends WebSocketTestCase {
 	];
 
 	/**
-	 * @var CommandManager|MockInterface Mocked command manager
+	 * @var CommandManager|CommandExecutor Mocked command manager
 	 */
-	private MockInterface|CommandManager $commandManager;
+	private MockInterface|CommandExecutor $commandManager;
 
 	/**
 	 * @var VersionManager|MockInterface Version manager
@@ -340,7 +340,7 @@ final class VersionManagerTest extends WebSocketTestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
-		$this->commandManager = Mockery::mock(CommandManager::class);
+		$this->commandManager = Mockery::mock(CommandExecutor::class);
 		$this->manager = Mockery::mock(VersionManager::class, [$this->commandManager, $this->request, $this->wsClient])->makePartial();
 	}
 

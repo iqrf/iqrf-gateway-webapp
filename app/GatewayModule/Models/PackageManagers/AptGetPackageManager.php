@@ -20,8 +20,8 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models\PackageManagers;
 
-use App\CoreModule\Models\CommandManager;
 use App\GatewayModule\Exceptions\UnsupportedPackageManagerException;
+use Iqrf\CommandExecutor\CommandExecutor;
 use Nette\Utils\Strings;
 
 /**
@@ -31,10 +31,10 @@ class AptGetPackageManager implements IPackageManager {
 
 	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandManager Command manager
 	 */
 	public function __construct(
-		private readonly CommandManager $commandManager,
+		private readonly CommandExecutor $commandManager,
 	) {
 		if (!$this->commandManager->commandExist('apt-get')) {
 			throw new UnsupportedPackageManagerException();

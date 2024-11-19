@@ -20,11 +20,11 @@ declare(strict_types = 1);
 
 namespace App\ServiceModule\Models;
 
-use App\CoreModule\Models\CommandManager;
 use App\ServiceModule\Entities\ServiceState;
 use App\ServiceModule\Exceptions\NonexistentServiceException;
 use App\ServiceModule\Exceptions\NotImplementedException;
 use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
+use Iqrf\CommandExecutor\CommandExecutor;
 
 /**
  * Tool for managing services
@@ -47,9 +47,9 @@ class ServiceManager implements IServiceManager {
 	/**
 	 * Constructor
 	 * @param string $initDaemon Init daemon
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandManager Command manager
 	 */
-	public function __construct(string $initDaemon, CommandManager $commandManager) {
+	public function __construct(string $initDaemon, CommandExecutor $commandManager) {
 		if (array_key_exists($initDaemon, $this->initDaemons)) {
 			$this->initDaemon = new $this->initDaemons[$initDaemon]($commandManager);
 		} else {

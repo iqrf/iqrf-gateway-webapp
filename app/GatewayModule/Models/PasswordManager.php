@@ -20,9 +20,9 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models;
 
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FeatureManager;
 use App\GatewayModule\Exceptions\ChpasswdErrorException;
+use Iqrf\CommandExecutor\CommandExecutor;
 
 /**
  * Gateway password manager
@@ -31,11 +31,11 @@ class PasswordManager {
 
 	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandManager Command manager
 	 * @param FeatureManager $featureManager Feature manager
 	 */
 	public function __construct(
-		private readonly CommandManager $commandManager,
+		private readonly CommandExecutor $commandManager,
 		private readonly FeatureManager $featureManager,
 	) {
 	}

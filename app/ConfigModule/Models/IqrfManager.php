@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Models;
 
-use App\CoreModule\Models\CommandManager;
+use Iqrf\CommandExecutor\CommandExecutor;
 
 /**
  * IQRF CDC/SPI/UART interface manager
@@ -29,10 +29,10 @@ class IqrfManager {
 
 	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandManager Command manager
 	 */
 	public function __construct(
-		private readonly CommandManager $commandManager,
+		private readonly CommandExecutor $commandManager,
 	) {
 	}
 

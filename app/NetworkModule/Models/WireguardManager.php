@@ -20,7 +20,6 @@ declare(strict_types = 1);
 
 namespace App\NetworkModule\Models;
 
-use App\CoreModule\Models\CommandManager;
 use App\Models\Database\Entities\WireguardInterface;
 use App\Models\Database\Entities\WireguardInterfaceIpv4;
 use App\Models\Database\Entities\WireguardInterfaceIpv6;
@@ -40,6 +39,7 @@ use App\NetworkModule\Exceptions\WireguardKeyErrorException;
 use App\ServiceModule\Models\ServiceManager;
 use Darsyn\IP\Version\Multi;
 use Exception;
+use Iqrf\CommandExecutor\CommandExecutor;
 use Nette\Utils\FileSystem;
 use stdClass;
 
@@ -80,12 +80,12 @@ class WireguardManager {
 
 	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandManager Command manager
 	 * @param EntityManager $entityManager Entity manager
 	 * @param ServiceManager $serviceManager Service manager
 	 */
 	public function __construct(
-		private readonly CommandManager $commandManager,
+		private readonly CommandExecutor $commandManager,
 		private readonly EntityManager $entityManager,
 		private readonly ServiceManager $serviceManager,
 	) {

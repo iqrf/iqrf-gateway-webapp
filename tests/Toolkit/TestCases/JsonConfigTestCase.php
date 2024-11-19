@@ -21,9 +21,9 @@ declare(strict_types = 1);
 namespace Tests\Toolkit\TestCases;
 
 use App\ConfigModule\Models\ComponentSchemaManager;
-use App\CoreModule\Entities\CommandStack;
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FileManager;
+use Iqrf\CommandExecutor\CommandExecutor;
+use Iqrf\CommandExecutor\CommandStack;
 use Mockery;
 use Nette\Utils\JsonException;
 use Tester\Environment;
@@ -94,7 +94,7 @@ abstract class JsonConfigTestCase extends TestCase {
 		$configTempPath = TMP_DIR . '/configuration/';
 		$schemaPath = TESTER_DIR . '/data/cfgSchemas/';
 		$commandStack = new CommandStack();
-		$commandManager = new CommandManager(false, $commandStack);
+		$commandManager = new CommandExecutor(false, $commandStack);
 		$this->fileManager = new FileManager($configPath, $commandManager);
 		$this->fileManagerTemp = new FileManager($configTempPath, $commandManager);
 		$this->schemaManager = new ComponentSchemaManager($schemaPath, $commandManager);

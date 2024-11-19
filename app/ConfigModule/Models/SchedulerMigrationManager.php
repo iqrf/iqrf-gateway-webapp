@@ -22,9 +22,9 @@ namespace App\ConfigModule\Models;
 
 use App\ConfigModule\Exceptions\InvalidTaskMessageException;
 use App\CoreModule\Exceptions\ZipEmptyException;
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use DateTime;
+use Iqrf\CommandExecutor\CommandExecutor;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 use Throwable;
@@ -44,12 +44,12 @@ class SchedulerMigrationManager {
 	 * Constructor
 	 * @param MainManager $mainManager Main configuration manager
 	 * @param SchedulerSchemaManager $schemaManager Scheduler JSON schema manager
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandManager Command manager
 	 */
 	public function __construct(
 		MainManager $mainManager,
 		private readonly SchedulerSchemaManager $schemaManager,
-		CommandManager $commandManager,
+		CommandExecutor $commandManager,
 	) {
 		$cacheDir = $mainManager->getCacheDir();
 		$dirs = [$cacheDir, $cacheDir . 'scheduler/'];

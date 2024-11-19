@@ -26,13 +26,13 @@ declare(strict_types = 1);
 
 namespace Tests\Integration\GatewayModule\Models;
 
-use App\CoreModule\Entities\CommandStack;
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FileManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use App\GatewayModule\Exceptions\LogNotFoundException;
 use App\GatewayModule\Exceptions\ServiceLogNotAvailableException;
 use App\GatewayModule\Models\LogManager;
+use Iqrf\CommandExecutor\CommandExecutor;
+use Iqrf\CommandExecutor\CommandStack;
 use Tester\Assert;
 use Tests\Toolkit\TestCases\CommandTestCase;
 use ZipArchive;
@@ -191,7 +191,7 @@ final class LogManagerTest extends CommandTestCase {
 		parent::setUp();
 		$logDir = realpath(TESTER_DIR . '/data/logs/');
 		$commandStack = new CommandStack();
-		$commandManager = new CommandManager(false, $commandStack);
+		$commandManager = new CommandExecutor(false, $commandStack);
 		$this->fileManager = new FileManager($logDir, $commandManager);
 		$this->manager = new LogManager($logDir . '/', $logDir . '/daemon/', $commandManager);
 		$this->managerMockCommand = new LogManager($logDir . '/', $logDir . '/daemon/', $this->commandManager);

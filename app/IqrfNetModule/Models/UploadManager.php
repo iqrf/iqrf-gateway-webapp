@@ -22,14 +22,14 @@ namespace App\IqrfNetModule\Models;
 
 use App\ConfigModule\Models\GenericManager;
 use App\ConfigModule\Models\MainManager;
-use App\CoreModule\Entities\ICommand;
 use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
-use App\CoreModule\Models\CommandManager;
 use App\GatewayModule\Exceptions\UnknownFileFormatExceptions;
 use App\IqrfNetModule\Enums\UploadFormats;
 use App\IqrfNetModule\Exceptions\UploaderFileException;
 use App\IqrfNetModule\Exceptions\UploaderMissingException;
 use App\IqrfNetModule\Exceptions\UploaderSpiException;
+use Iqrf\CommandExecutor\CommandExecutor;
+use Iqrf\CommandExecutor\ICommand;
 use Nette\Utils\FileSystem;
 use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
@@ -56,12 +56,12 @@ class UploadManager {
 
 	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandManager Command manager
 	 * @param GenericManager $genericManager Generic daemon component manager
 	 * @param MainManager $mainManager Main daemon configuration manager
 	 */
 	public function __construct(
-		private readonly CommandManager $commandManager,
+		private readonly CommandExecutor $commandManager,
 		GenericManager $genericManager,
 		MainManager $mainManager,
 	) {

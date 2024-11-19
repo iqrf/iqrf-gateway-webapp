@@ -20,12 +20,12 @@ declare(strict_types = 1);
 
 namespace App\MaintenanceModule\Models;
 
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\IFileManager;
 use App\MaintenanceModule\Exceptions\MonitConfigErrorException;
 use App\MaintenanceModule\Models\Monit\BaseMonitManager;
 use App\MaintenanceModule\Models\Monit\CheckManager;
 use App\MaintenanceModule\Models\Monit\MmonitManager;
+use Iqrf\CommandExecutor\CommandExecutor;
 use Nette\Schema\Elements\Structure;
 use Nette\Schema\Expect;
 use Nette\Schema\Processor;
@@ -48,9 +48,9 @@ class MonitManager extends BaseMonitManager {
 	/**
 	 * Constructor
 	 * @param IFileManager $fileManager Privileged file manager
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandManager Command manager
 	 */
-	public function __construct(IFileManager $fileManager, CommandManager $commandManager) {
+	public function __construct(IFileManager $fileManager, CommandExecutor $commandManager) {
 		parent::__construct($fileManager, $commandManager);
 		$this->checkManager = new CheckManager($fileManager, $commandManager);
 		$this->mmonitManager = new MmonitManager($fileManager, $commandManager);

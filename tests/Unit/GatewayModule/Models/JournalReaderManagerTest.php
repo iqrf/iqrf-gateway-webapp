@@ -26,12 +26,12 @@ declare(strict_types = 1);
 
 namespace Tests\Unit\GatewayModule\Models;
 
-use App\CoreModule\Entities\CommandStack;
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FileManager;
 use App\GatewayModule\Exceptions\JournalReaderArgumentException;
 use App\GatewayModule\Exceptions\JournalReaderInternalException;
 use App\GatewayModule\Models\JournalReaderManager;
+use Iqrf\CommandExecutor\CommandExecutor;
+use Iqrf\CommandExecutor\CommandStack;
 use Nette\Utils\Json;
 use Tester\Assert;
 use Tests\Toolkit\TestCases\CommandTestCase;
@@ -126,7 +126,7 @@ final class JournalReaderManagerTest extends CommandTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 		$commandStack = new CommandStack();
-		$commandManager = new CommandManager(true, $commandStack);
+		$commandManager = new CommandExecutor(true, $commandStack);
 		$this->fileManager = new FileManager(self::DATA_DIR, $commandManager);
 		$this->journalManager = new JournalReaderManager($this->commandManager);
 	}

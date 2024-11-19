@@ -27,9 +27,9 @@ declare(strict_types = 1);
 namespace Tests\Integration\ConfigModule\Models;
 
 use App\ConfigModule\Models\TranslatorConfigManager;
-use App\CoreModule\Entities\CommandStack;
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FileManager;
+use Iqrf\CommandExecutor\CommandExecutor;
+use Iqrf\CommandExecutor\CommandStack;
 use Nette\Utils\FileSystem;
 use Tester\Assert;
 use Tester\Environment;
@@ -97,12 +97,12 @@ final class TranslatorConfigManagerTest extends TestCase {
 	}
 
 	/**
-	 * Sets up the test enviornment
+	 * Sets up the test environment
 	 */
 	protected function setUp(): void {
 		FileSystem::copy(self::CONF_DIR, self::TEMP_CONF_DIR);
 		$commandStack = new CommandStack();
-		$commandManager = new CommandManager(false, $commandStack);
+		$commandManager = new CommandExecutor(false, $commandStack);
 		$fileManager = new FileManager(self::CONF_DIR, $commandManager);
 		$fileManagerTemp = new FileManager(self::TEMP_CONF_DIR, $commandManager);
 		$this->manager = new TranslatorConfigManager($fileManager);

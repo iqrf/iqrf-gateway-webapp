@@ -26,9 +26,9 @@ declare(strict_types = 1);
 
 namespace Tests\Integration\CoreModule\Models;
 
-use App\CoreModule\Entities\CommandStack;
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FileManager;
+use Iqrf\CommandExecutor\CommandExecutor;
+use Iqrf\CommandExecutor\CommandStack;
 use Nette\IOException;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
@@ -261,7 +261,7 @@ final class FileManagerTest extends TestCase {
 	protected function setUp(): void {
 		parent::setUp();
 		$commandStack = new CommandStack();
-		$commandManager = new CommandManager(false, $commandStack);
+		$commandManager = new CommandExecutor(false, $commandStack);
 		$this->manager = new FileManager(self::CONFIG_PATH, $commandManager);
 		$this->managerTest = new FileManager(self::CONFIG_TEMP_PATH, $commandManager);
 	}

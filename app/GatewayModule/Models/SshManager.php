@@ -20,7 +20,6 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models;
 
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FeatureManager;
 use App\CoreModule\Models\PrivilegedFileManager;
 use App\GatewayModule\Exceptions\SshDirectoryException;
@@ -31,6 +30,7 @@ use App\GatewayModule\Exceptions\SshUtilityException;
 use App\Models\Database\Entities\SshKey;
 use App\Models\Database\EntityManager;
 use App\Models\Database\Repositories\SshKeyRepository;
+use Iqrf\CommandExecutor\CommandExecutor;
 
 /**
  * SSH manager
@@ -59,12 +59,12 @@ class SshManager {
 
 	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandManager Command manager
 	 * @param EntityManager $entityManager Entity manager
 	 * @param FeatureManager $featureManager Feature manager
 	 */
 	public function __construct(
-		private readonly CommandManager $commandManager,
+		private readonly CommandExecutor $commandManager,
 		private readonly EntityManager $entityManager,
 		FeatureManager $featureManager,
 	) {

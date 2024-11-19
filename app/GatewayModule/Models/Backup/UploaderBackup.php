@@ -20,9 +20,9 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models\Backup;
 
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FeatureManager;
 use App\CoreModule\Models\FileManager;
+use Iqrf\CommandExecutor\CommandExecutor;
 
 /**
  * Uploader backup manager
@@ -39,12 +39,23 @@ class UploaderBackup extends IqrfSoftwareBackup {
 	/**
 	 * Constructor
 	 * @param FileManager $fileManager File manager
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandManager Command manager
 	 * @param FeatureManager $featureManager Feature manager
 	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
-	public function __construct(FileManager $fileManager, CommandManager $commandManager, FeatureManager $featureManager, RestoreLogger $restoreLogger) {
-		parent::__construct(self::IQRF_GATEWAY_UPLOADER, $fileManager, $commandManager, $featureManager, $restoreLogger);
+	public function __construct(
+		FileManager $fileManager,
+		CommandExecutor $commandManager,
+		FeatureManager $featureManager,
+		RestoreLogger $restoreLogger,
+	) {
+		parent::__construct(
+			software: self::IQRF_GATEWAY_UPLOADER,
+			fileManager: $fileManager,
+			commandManager: $commandManager,
+			featureManager: $featureManager,
+			restoreLogger: $restoreLogger,
+		);
 	}
 
 	/**

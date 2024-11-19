@@ -20,9 +20,9 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models\Backup;
 
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use App\GatewayModule\Models\SshManager;
+use Iqrf\CommandExecutor\CommandExecutor;
 use Nette\Utils\FileSystem;
 
 /**
@@ -62,13 +62,13 @@ class WebappBackup implements IBackupManager {
 	/**
 	 * Constructor
 	 * @param array{configDir: string, database: string, logDir: string} $paths Paths
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandManager Command manager
 	 * @param SshManager $sshManager SSH manager
 	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
 	public function __construct(
 		private readonly array $paths,
-		private readonly CommandManager $commandManager,
+		private readonly CommandExecutor $commandManager,
 		private readonly SshManager $sshManager,
 		private readonly RestoreLogger $restoreLogger,
 	) {

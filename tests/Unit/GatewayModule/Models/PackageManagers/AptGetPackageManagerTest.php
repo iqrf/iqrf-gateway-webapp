@@ -26,9 +26,9 @@ declare(strict_types = 1);
 
 namespace Tests\Unit\GatewayModule\Models\PackageManagers;
 
-use App\CoreModule\Models\CommandManager;
 use App\GatewayModule\Exceptions\UnsupportedPackageManagerException;
 use App\GatewayModule\Models\PackageManagers\AptGetPackageManager;
+use Iqrf\CommandExecutor\CommandExecutor;
 use Mockery;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
@@ -56,7 +56,7 @@ final class AptGetPackageManagerTest extends CommandTestCase {
 	 * Tests the constructor (failure)
 	 */
 	public function testConstructorFailure(): void {
-		$commandManager = Mockery::mock(CommandManager::class);
+		$commandManager = Mockery::mock(CommandExecutor::class);
 		$commandManager->shouldReceive('commandExist')
 			->withArgs(['apt-get'])->andReturn(false);
 		Assert::throws(static function () use ($commandManager): void {

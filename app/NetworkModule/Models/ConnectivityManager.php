@@ -20,9 +20,9 @@ declare(strict_types = 1);
 
 namespace App\NetworkModule\Models;
 
-use App\CoreModule\Models\CommandManager;
 use App\NetworkModule\Enums\ConnectivityState;
 use App\NetworkModule\Exceptions\NetworkManagerException;
+use Iqrf\CommandExecutor\CommandExecutor;
 
 /**
  * Network connectivity manager
@@ -31,10 +31,10 @@ class ConnectivityManager {
 
 	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandManager Command manager
 	 */
 	public function __construct(
-		private readonly CommandManager $commandManager,
+		private readonly CommandExecutor $commandManager,
 	) {
 	}
 

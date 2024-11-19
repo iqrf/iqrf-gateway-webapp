@@ -20,13 +20,13 @@ declare(strict_types = 1);
 
 namespace App\NetworkModule\Models;
 
-use App\CoreModule\Models\CommandManager;
 use App\NetworkModule\Entities\Connection;
 use App\NetworkModule\Entities\ConnectionDetail;
 use App\NetworkModule\Enums\ConnectionTypes;
 use App\NetworkModule\Exceptions\NetworkManagerException;
 use App\NetworkModule\Exceptions\NonexistentConnectionException;
 use App\NetworkModule\Utils\NmCliConnection;
+use Iqrf\CommandExecutor\CommandExecutor;
 use Nette\Utils\Strings;
 use Ramsey\Uuid\UuidInterface;
 use stdClass;
@@ -38,10 +38,10 @@ class ConnectionManager {
 
 	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandManager Command manager
 	 */
 	public function __construct(
-		private readonly CommandManager $commandManager,
+		private readonly CommandExecutor $commandManager,
 	) {
 	}
 

@@ -20,9 +20,9 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models\Backup;
 
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\PrivilegedFileManager;
 use App\CoreModule\Models\ZipArchiveManager;
+use Iqrf\CommandExecutor\CommandExecutor;
 use Nette\Utils\FileSystem;
 
 /**
@@ -50,11 +50,11 @@ class HostBackup implements IBackupManager {
 
 	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandManager Command manager
 	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
 	public function __construct(
-		CommandManager $commandManager,
+		CommandExecutor $commandManager,
 		private readonly RestoreLogger $restoreLogger,
 	) {
 		$this->fileManager = new PrivilegedFileManager(self::CONF_PATH, $commandManager);

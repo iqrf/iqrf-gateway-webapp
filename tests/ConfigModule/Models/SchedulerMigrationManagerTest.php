@@ -29,10 +29,10 @@ namespace Tests\ConfigModule\Models;
 use App\ConfigModule\Models\MainManager;
 use App\ConfigModule\Models\SchedulerMigrationManager;
 use App\ConfigModule\Models\SchedulerSchemaManager;
-use App\CoreModule\Entities\CommandStack;
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FileManager;
 use App\CoreModule\Models\ZipArchiveManager;
+use Iqrf\CommandExecutor\CommandExecutor;
+use Iqrf\CommandExecutor\CommandStack;
 use Mockery;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
@@ -109,7 +109,7 @@ final class SchedulerMigrationManagerTest extends TestCase {
 		Environment::lock('migration', TMP_DIR);
 		$this->copyFiles();
 		$commandStack = new CommandStack();
-		$commandManager = new CommandManager(false, $commandStack);
+		$commandManager = new CommandExecutor(false, $commandStack);
 		$this->fileManager = new FileManager(self::CONFIG_PATH, $commandManager);
 		$mainConfigManager = Mockery::mock(MainManager::class);
 		$mainConfigManager->shouldReceive('getCacheDir')
@@ -117,7 +117,7 @@ final class SchedulerMigrationManagerTest extends TestCase {
 		$schemaManager = Mockery::mock(SchedulerSchemaManager::class);
 		$schemaManager->shouldReceive('validate')
 			->andReturn(true);
-		$commandManager = Mockery::mock(CommandManager::class);
+		$commandManager = Mockery::mock(CommandExecutor::class);
 		$this->manager = new SchedulerMigrationManager($mainConfigManager, $schemaManager, $commandManager);
 	}
 

@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models\BoardManagers;
 
-use App\CoreModule\Models\CommandManager;
+use Iqrf\CommandExecutor\CommandExecutor;
 
 /**
  * Device tree board manager
@@ -29,10 +29,10 @@ class DeviceTreeBoardManager implements IBoardManager {
 
 	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandManager Command manager
 	 */
 	public function __construct(
-		private readonly CommandManager $commandManager,
+		private readonly CommandExecutor $commandManager,
 	) {
 	}
 

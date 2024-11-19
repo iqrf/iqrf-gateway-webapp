@@ -24,7 +24,6 @@ use App\ConfigModule\Models\ComponentSchemaManager;
 use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use App\CoreModule\Exceptions\ZipEmptyException;
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use App\GatewayModule\Exceptions\InvalidBackupContentException;
 use App\GatewayModule\Exceptions\InvalidGatewayFileContentException;
@@ -46,6 +45,7 @@ use App\ServiceModule\Exceptions\NonexistentServiceException;
 use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
 use App\ServiceModule\Models\ServiceManager;
 use DateTime;
+use Iqrf\CommandExecutor\CommandExecutor;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
@@ -71,7 +71,7 @@ class BackupManager {
 	/**
 	 * Constructor
 	 * @param Array<IBackupManager> $backupManagers Backup managers
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandManager Command manager
 	 * @param PowerManager $powerManager Power manager
 	 * @param ComponentSchemaManager $schemaManager JSON schema manager
 	 * @param ServiceManager $serviceManager Service manager
@@ -79,7 +79,7 @@ class BackupManager {
 	 */
 	public function __construct(
 		private readonly array $backupManagers,
-		private readonly CommandManager $commandManager,
+		private readonly CommandExecutor $commandManager,
 		private readonly PowerManager $powerManager,
 		private readonly ComponentSchemaManager $schemaManager,
 		private readonly ServiceManager $serviceManager,

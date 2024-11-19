@@ -20,9 +20,9 @@ declare(strict_types = 1);
 
 namespace App\InstallModule\Models;
 
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FeatureManager;
 use App\InstallModule\Entities\Dependency;
+use Iqrf\CommandExecutor\CommandExecutor;
 
 /**
  * Dependency manager
@@ -42,12 +42,12 @@ class DependencyManager {
 	/**
 	 * Constructor
 	 * @param bool $sudo Is sudo required?
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandManager Command manager
 	 * @param FeatureManager $featureManager Feature manager
 	 */
 	public function __construct(
 		bool $sudo,
-		private readonly CommandManager $commandManager,
+		private readonly CommandExecutor $commandManager,
 		private readonly FeatureManager $featureManager,
 	) {
 		$this->dependencies = [

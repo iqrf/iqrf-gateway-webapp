@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Models;
 
+use Iqrf\CommandExecutor\CommandExecutor;
 use Nette\IOException;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
@@ -35,11 +36,11 @@ class FileManager implements IFileManager {
 	/**
 	 * Constructor
 	 * @param string $directory Directory with files
-	 * @param CommandManager $commandManager Command managers
+	 * @param CommandExecutor $commandManager Command managers
 	 */
 	public function __construct(
 		private readonly string $directory,
-		private readonly CommandManager $commandManager,
+		private readonly CommandExecutor $commandManager,
 	) {
 	}
 

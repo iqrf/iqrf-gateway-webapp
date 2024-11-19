@@ -91,9 +91,16 @@ parameters:
 		dsn: 'https://7cd0252aae6d491b98514b9486cd2771@sentry.iqrf.org/2'
 
 extensions:
+	commandExecutor: Iqrf\CommandExecutor\DI\CommandExecutorExtension
 	iqrfRepository: Iqrf\Repository\DI\IqrfRepositoryExtension
 	iqrfMacros: Iqrf\IdeMacros\DI\IqrfMacrosExtension
 	middleware: Contributte\Middlewares\DI\NetteMiddlewaresExtension
+
+commandExecutor:
+	# Enable/disable Tracy panel
+	debug: %debugMode%
+	# Is sudo required for the command execution?
+	sudo: %sudo%
 
 iqrfMacros:
 	# path to IQRF IDE macros

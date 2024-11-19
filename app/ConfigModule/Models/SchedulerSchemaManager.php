@@ -23,9 +23,9 @@ namespace App\ConfigModule\Models;
 use App\ConfigModule\Exceptions\InvalidTaskMessageException;
 use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\JsonSchemaManager;
 use App\IqrfNetModule\Models\ApiSchemaManager;
+use Iqrf\CommandExecutor\CommandExecutor;
 use Nette\Utils\JsonException;
 
 /**
@@ -36,12 +36,12 @@ class SchedulerSchemaManager extends JsonSchemaManager {
 	/**
 	 * Constructor
 	 * @param MainManager $mainManager Main configuration manager
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandManager Command manager
 	 * @param ApiSchemaManager $apiSchemaManager JSON API JSON schema manager
 	 */
 	public function __construct(
 		MainManager $mainManager,
-		CommandManager $commandManager,
+		CommandExecutor $commandManager,
 		private readonly ApiSchemaManager $apiSchemaManager,
 	) {
 		$dataDir = $mainManager->getDataDir();

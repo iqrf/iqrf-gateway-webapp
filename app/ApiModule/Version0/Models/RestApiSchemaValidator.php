@@ -26,9 +26,9 @@ use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\JsonSchemaManager;
 use App\GatewayModule\Models\DaemonDirectories;
+use Iqrf\CommandExecutor\CommandExecutor;
 use JsonSchema\SchemaStorage;
 use Nette\IOException;
 use Nette\Utils\FileInfo;
@@ -47,13 +47,13 @@ class RestApiSchemaValidator extends JsonSchemaManager {
 	/**
 	 * Constructor
 	 * @param string $directory Directory with files
-	 * @param CommandManager $commandManager Command managers
+	 * @param CommandExecutor $commandManager Command managers
 	 * @param DaemonDirectories $daemonDirectories IQRF Gateway Daemon directories
 	 * @param LoggerInterface $logger Logger
 	 */
 	public function __construct(
 		string $directory,
-		CommandManager $commandManager,
+		CommandExecutor $commandManager,
 		private readonly DaemonDirectories $daemonDirectories,
 		private readonly LoggerInterface $logger,
 	) {

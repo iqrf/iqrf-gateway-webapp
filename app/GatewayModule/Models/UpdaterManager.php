@@ -20,11 +20,11 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models;
 
-use App\CoreModule\Models\CommandManager;
 use App\GatewayModule\Exceptions\UnsupportedPackageManagerException;
 use App\GatewayModule\Models\PackageManagers\AptGetPackageManager;
 use App\GatewayModule\Models\PackageManagers\IPackageManager;
 use App\GatewayModule\Models\PackageManagers\UnsupportedPackageManager;
+use Iqrf\CommandExecutor\CommandExecutor;
 
 /**
  * Tool for updating packages of IQRF Gateways
@@ -45,9 +45,9 @@ class UpdaterManager {
 
 	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandManager Command manager
 	 */
-	public function __construct(CommandManager $commandManager) {
+	public function __construct(CommandExecutor $commandManager) {
 		foreach ($this->packageManagers as $packageManager) {
 			try {
 				$this->packageManager = new $packageManager($commandManager);

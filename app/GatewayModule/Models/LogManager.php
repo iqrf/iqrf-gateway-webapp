@@ -20,10 +20,10 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models;
 
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use App\GatewayModule\Exceptions\LogNotFoundException;
 use App\GatewayModule\Exceptions\ServiceLogNotAvailableException;
+use Iqrf\CommandExecutor\CommandExecutor;
 use Nette\Utils\FileInfo;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
@@ -87,12 +87,12 @@ class LogManager {
 	 * Constructor
 	 * @param string $logDir Path to a general directory with log files
 	 * @param string $daemonLogDir Path to a directory with log files of IQRF Gateway Daemon
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandManager Command manager
 	 */
 	public function __construct(
 		private readonly string $logDir,
 		private readonly string $daemonLogDir,
-		private readonly CommandManager $commandManager,
+		private readonly CommandExecutor $commandManager,
 	) {
 	}
 

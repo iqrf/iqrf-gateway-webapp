@@ -20,9 +20,9 @@ declare(strict_types = 1);
 
 namespace App\MaintenanceModule\Models\Monit;
 
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\IFileManager;
 use App\MaintenanceModule\Exceptions\MonitConfigErrorException;
+use Iqrf\CommandExecutor\CommandExecutor;
 use Nette\Utils\Strings;
 
 /**
@@ -41,23 +41,14 @@ abstract class BaseMonitManager {
 	protected const CONFIG_ENABLED = 'conf-enabled';
 
 	/**
-	 * @var CommandManager Command manager
-	 */
-	protected CommandManager $commandManager;
-
-	/**
-	 * @var IFileManager File manager
-	 */
-	protected IFileManager $fileManager;
-
-	/**
 	 * Constructor
 	 * @param IFileManager $fileManager Privileged file manager
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandManager Command manager
 	 */
-	public function __construct(IFileManager $fileManager, CommandManager $commandManager) {
-		$this->fileManager = $fileManager;
-		$this->commandManager = $commandManager;
+	public function __construct(
+		protected IFileManager $fileManager,
+		protected CommandExecutor $commandManager,
+	) {
 	}
 
 	/**

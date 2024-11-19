@@ -24,8 +24,8 @@ use App\ConfigModule\Exceptions\InvalidTaskMessageException;
 use App\ConfigModule\Exceptions\TaskNotFoundException;
 use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FileManager;
+use Iqrf\CommandExecutor\CommandExecutor;
 use Nette\IOException;
 use Nette\Utils\Finder;
 use Nette\Utils\JsonException;
@@ -45,13 +45,13 @@ class SchedulerManager {
 	 * Constructor
 	 * @param MainManager $mainManager Main configuration manager
 	 * @param TaskTimeManager $timeManager Scheduler's task time specification manager
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandManager Command manager
 	 * @param SchedulerSchemaManager $schemaManager Scheduler JSON schema manager
 	 */
 	public function __construct(
 		MainManager $mainManager,
 		private readonly TaskTimeManager $timeManager,
-		CommandManager $commandManager,
+		CommandExecutor $commandManager,
 		private readonly SchedulerSchemaManager $schemaManager,
 		private readonly GenericManager $genericManager,
 	) {

@@ -20,10 +20,10 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models;
 
-use App\CoreModule\Models\CommandManager;
 use App\GatewayModule\Models\BoardManagers\DeviceTreeBoardManager;
 use App\GatewayModule\Models\BoardManagers\DmiBoardManager;
 use App\GatewayModule\Models\BoardManagers\IqrfBoardManager;
+use Iqrf\CommandExecutor\CommandExecutor;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
@@ -44,12 +44,12 @@ class InfoManager {
 
 	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandManager Command manager
 	 * @param NetworkManager $networkManager Network manager
 	 * @param VersionManager $versionManager Version manager
 	 */
 	public function __construct(
-		private readonly CommandManager $commandManager,
+		private readonly CommandExecutor $commandManager,
 		private readonly NetworkManager $networkManager,
 		private readonly VersionManager $versionManager,
 	) {

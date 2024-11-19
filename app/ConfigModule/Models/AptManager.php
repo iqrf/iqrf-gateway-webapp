@@ -22,8 +22,8 @@ namespace App\ConfigModule\Models;
 
 use App\ConfigModule\Exceptions\AptErrorException;
 use App\ConfigModule\Exceptions\AptNotFoundException;
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\IFileManager;
+use Iqrf\CommandExecutor\CommandExecutor;
 
 class AptManager {
 
@@ -46,11 +46,11 @@ class AptManager {
 	/**
 	 * Constructor
 	 * @param IFileManager $fileManager Privileged file manager
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandManager Command manager
 	 */
 	public function __construct(
 		private readonly IFileManager $fileManager,
-		private readonly CommandManager $commandManager,
+		private readonly CommandExecutor $commandManager,
 	) {
 	}
 

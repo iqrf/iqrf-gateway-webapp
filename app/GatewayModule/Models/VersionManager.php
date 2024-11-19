@@ -20,11 +20,11 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models;
 
-use App\CoreModule\Models\CommandManager;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Models\WebSocketClient;
 use App\IqrfNetModule\Requests\ApiRequest;
+use Iqrf\CommandExecutor\CommandExecutor;
 use Nette\IOException;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
@@ -38,12 +38,12 @@ class VersionManager {
 
 	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandManager Command manager
 	 * @param ApiRequest $apiRequest IQRF Gateway Daemon's JSON API request
 	 * @param WebSocketClient $wsClient WebSocket client
 	 */
 	public function __construct(
-		private readonly CommandManager $commandManager,
+		private readonly CommandExecutor $commandManager,
 		private readonly ApiRequest $apiRequest,
 		private readonly WebSocketClient $wsClient,
 	) {

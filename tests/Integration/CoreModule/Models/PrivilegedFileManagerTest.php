@@ -26,9 +26,9 @@ declare(strict_types = 1);
 
 namespace Tests\Integration\CoreModule\Models;
 
-use App\CoreModule\Entities\CommandStack;
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\PrivilegedFileManager;
+use Iqrf\CommandExecutor\CommandExecutor;
+use Iqrf\CommandExecutor\CommandStack;
 use Nette\IOException;
 use Nette\Utils\FileSystem;
 use Tester\Assert;
@@ -293,7 +293,7 @@ final class PrivilegedFileManagerTest extends TestCase {
 	 */
 	protected function setUp(): void {
 		$this->commandStack = new CommandStack();
-		$commandManager = new CommandManager(false, $this->commandStack);
+		$commandManager = new CommandExecutor(false, $this->commandStack);
 		$this->manager = new PrivilegedFileManager(self::CONFIG_PATH, $commandManager);
 		$this->managerTest = new PrivilegedFileManager(self::CONFIG_TEMP_PATH, $commandManager);
 	}

@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace Tests\Stubs\CoreModule\Models;
 
-use App\CoreModule\Entities\ICommand;
+use Iqrf\CommandExecutor\ICommand;
 
 /**
  * Command entity stub

@@ -21,7 +21,6 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Models;
 
 use App\ConfigModule\Utils\ConfParser;
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\PrivilegedFileManager;
 use App\GatewayModule\Exceptions\ConfNotFoundException;
 use App\GatewayModule\Exceptions\InvalidConfFormatException;
@@ -29,6 +28,7 @@ use App\GatewayModule\Exceptions\NonexistentTimezoneException;
 use App\GatewayModule\Exceptions\TimeDateException;
 use DateTime;
 use DateTimeZone;
+use Iqrf\CommandExecutor\CommandExecutor;
 use Nette\Utils\Strings;
 use Throwable;
 
@@ -62,10 +62,10 @@ class TimeManager {
 
 	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandManager Command manager
 	 */
 	public function __construct(
-		private readonly CommandManager $commandManager,
+		private readonly CommandExecutor $commandManager,
 		string $timesyndPath,
 	) {
 		$this->confFile = basename($timesyndPath);

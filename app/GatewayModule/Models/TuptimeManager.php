@@ -20,10 +20,10 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models;
 
-use App\CoreModule\Models\CommandManager;
 use App\GatewayModule\Entities\GatewayUptime;
 use App\GatewayModule\Exceptions\TuptimeErrorException;
 use App\GatewayModule\Exceptions\TuptimeNotFoundException;
+use Iqrf\CommandExecutor\CommandExecutor;
 use League\Csv\Exception;
 use League\Csv\Reader;
 
@@ -34,10 +34,10 @@ class TuptimeManager {
 
 	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandManager Command manager
 	 */
 	public function __construct(
-		private readonly CommandManager $commandManager,
+		private readonly CommandExecutor $commandManager,
 	) {
 	}
 

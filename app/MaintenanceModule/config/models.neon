@@ -17,7 +17,7 @@ services:
 	mender.fileManager:
 		factory: App\CoreModule\Models\PrivilegedFileManager(%paths.mender.configDir%)
 		autowired: false
-	mender.manager: App\MaintenanceModule\Models\MenderManager(@commandManager, @mender.fileManager)
+	mender.manager: App\MaintenanceModule\Models\MenderManager(@commandExecutor.commandExecutor, @mender.fileManager)
 	monit.fileManager:
 		factory: App\CoreModule\Models\PrivilegedFileManager(%paths.monit.configDir%)
 		autowired: false

@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Models;
 
+use Iqrf\CommandExecutor\CommandExecutor;
 use Nette\IOException;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
@@ -39,11 +40,11 @@ class PrivilegedFileManager implements IFileManager {
 	/**
 	 * Constructor
 	 * @param string $directory Directory path
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandManager Command manager
 	 */
 	public function __construct(
 		string $directory,
-		private readonly CommandManager $commandManager,
+		private readonly CommandExecutor $commandManager,
 	) {
 		$this->directory = rtrim(Strings::replace($directory, '~\'~', '\\\''), '/');
 	}

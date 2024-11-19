@@ -20,11 +20,11 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models\Backup;
 
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FeatureManager;
 use App\CoreModule\Models\FileManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use InvalidArgumentException;
+use Iqrf\CommandExecutor\CommandExecutor;
 
 /**
  * IQRF Software backup manager
@@ -64,14 +64,14 @@ abstract class IqrfSoftwareBackup implements IBackupManager {
 	 * Constructor
 	 * @param string $software Software name
 	 * @param FileManager $fileManager File manager
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandManager Command manager
 	 * @param FeatureManager $featureManager Feature manager
 	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
 	public function __construct(
 		private readonly string $software,
 		private readonly FileManager $fileManager,
-		private readonly CommandManager $commandManager,
+		private readonly CommandExecutor $commandManager,
 		FeatureManager $featureManager,
 		private readonly RestoreLogger $restoreLogger,
 	) {

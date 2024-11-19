@@ -20,11 +20,11 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models;
 
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FeatureManager;
 use App\CoreModule\Models\PrivilegedFileManager;
 use App\GatewayModule\Exceptions\ConfNotFoundException;
 use App\GatewayModule\Exceptions\InvalidConfFormatException;
+use Iqrf\CommandExecutor\CommandExecutor;
 use Nette\Utils\Strings;
 use stdClass;
 
@@ -57,10 +57,10 @@ class JournalConfigManager {
 
 	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandManager Command manager
 	 * @param FeatureManager $featureManager Feature manager
 	 */
-	public function __construct(CommandManager $commandManager, FeatureManager $featureManager) {
+	public function __construct(CommandExecutor $commandManager, FeatureManager $featureManager) {
 		$feature = $featureManager->get('journal');
 		$path = $feature['path'];
 		$this->confFile = basename($path);

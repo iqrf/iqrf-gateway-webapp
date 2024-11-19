@@ -22,13 +22,13 @@ namespace Tests\Toolkit\TestCases;
 
 use App\ConfigModule\Models\ComponentSchemaManager;
 use App\ConfigModule\Models\GenericManager;
-use App\CoreModule\Entities\CommandStack;
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FileManager;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
+use Iqrf\CommandExecutor\CommandExecutor;
+use Iqrf\CommandExecutor\CommandStack;
 use Mockery;
 use Tester\TestCase;
 
@@ -60,7 +60,7 @@ abstract class CloudIntegrationTestCase extends TestCase {
 		$configPath = TMP_DIR . '/configuration/';
 		$schemaPath = TESTER_DIR . '/data/cfgSchemas/';
 		$commandStack = new CommandStack();
-		$commandManager = new CommandManager(false, $commandStack);
+		$commandManager = new CommandExecutor(false, $commandStack);
 		$this->fileManager = new FileManager($configPath, $commandManager);
 		$schemaManager = new ComponentSchemaManager($schemaPath, $commandManager);
 		$this->configManager = new GenericManager($this->fileManager, $schemaManager);

@@ -27,9 +27,9 @@ declare(strict_types = 1);
 namespace Tests\Integration\ConfigModule\Models;
 
 use App\ConfigModule\Models\ControllerConfigManager;
-use App\CoreModule\Entities\CommandStack;
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FileManager;
+use Iqrf\CommandExecutor\CommandExecutor;
+use Iqrf\CommandExecutor\CommandStack;
 use Nette\Utils\FileSystem;
 use Tester\Assert;
 use Tester\Environment;
@@ -138,7 +138,7 @@ final class ControllerConfigManagerTest extends TestCase {
 	 */
 	protected function setUp(): void {
 		$commandStack = new CommandStack();
-		$commandManager = new CommandManager(false, $commandStack);
+		$commandManager = new CommandExecutor(false, $commandStack);
 		$fileManager = new FileManager(self::CONF_DIR, $commandManager);
 		$fileManagerTemp = new FileManager(self::TEMP_CONF_DIR, $commandManager);
 		$this->manager = new ControllerConfigManager($fileManager);
