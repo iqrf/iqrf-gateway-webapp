@@ -48,7 +48,7 @@
 		"egulias/email-validator": "^4.0.2",
 		"guzzlehttp/guzzle": "^7.9.2",
 		"iqrf/command-executor": "^v0.1.0",
-		"iqrf/iqrf-ide-macros-parser": "^v1.2.0",
+		"iqrf/iqrf-ide-macros-parser": "^v1.3.0",
 		"iqrf/iqrf-repository": "^v0.2.1",
 		"justinrainbow/json-schema": "^6.0.0",
 		"latte/latte": "^v3.0.20",
@@ -84,8 +84,8 @@
 		"z4kn4fein/php-semver": "^v3.0.0"
 	},
 	"require-dev": {
-		"contributte/qa": "^v0.3.1",
 		"contributte/tester": "^v0.3.0",
+		"iqrf/coding-style": "^0.1.1",
 		"iqrf/phpstan-config": "^v0.1.0",
 		"mockery/mockery": "^1.6.12"
 	},
