@@ -303,15 +303,6 @@
 					"saveSuccess": "Konfigurace poštovního serveru byla úspěšně uložena.",
 					"testFailed": "Nepodařilo se odeslat testovací e-mail: {error}",
 					"testSuccess": "Testovací e-mail byl úspěšně odeslán."
-				},
-				"validation": {
-					"host": "Prosím zadejte hostitele poštovního serveru.",
-					"hostInvalid": "Adresa hostitele poštovního serveru by měla být IP adresa, plně kvalifikovaný název domény nebo localhost.",
-					"password": "Prosím zadejte heslo pro přihlášení k poštovnímu serveru.",
-					"port": "Prosím zadejte port poštovního serveru.",
-					"portInvalid": "Port poštovního serveru by měl být celé číslo mezi 1 a 65535.",
-					"sender": "Prosím zadejte e-mailovou adresu odesílatele.",
-					"username": "Prosím zadejte uživatelské jméno pro přihlášení k poštovnímu serveru."
 				}
 			}
 		},
