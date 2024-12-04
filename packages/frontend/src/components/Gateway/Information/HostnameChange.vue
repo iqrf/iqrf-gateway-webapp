@@ -59,7 +59,7 @@ limitations under the License.
 							:label='$t("gateway.hostname.setJsonSplitter")'
 						/>
 						<v-checkbox
-							:checked.sync='setIdeCounterpart'
+							v-model='setIdeCounterpart'
 							:label='$t("gateway.hostname.setIdeCounterpart")'
 						/>
 					</form>
@@ -170,7 +170,7 @@ export default class HostnameChange extends Vue {
 	}
 
 	/**
-	 * Sets a new hostname as IDE counterpart gwIdentName
+	 * Sets a new hostname for IDE counterpart component
    */
 	private async setIdeCounterpartConfig(): Promise<void> {
 		if (!this.setIdeCounterpart) {
@@ -181,7 +181,7 @@ export default class HostnameChange extends Vue {
 		if (componentConfig === null) {
 			return;
 		}
-		componentConfig.gwIdentName = this.hostname;
+		componentConfig.gwIdentNetBios = this.hostname;
 		await DaemonConfigurationService.updateInstance('iqrf::IdeCounterpart', componentConfig.instance, componentConfig);
 	}
 
