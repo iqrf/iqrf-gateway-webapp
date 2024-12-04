@@ -27,18 +27,21 @@ declare(strict_types = 1);
 namespace Tests\Unit\CoreModule\Models;
 
 use App\CoreModule\Models\PrivilegedFileManager;
+use Iqrf\CommandExecutor\Tester\Traits\CommandExecutorTestCase;
 use Nette\IOException;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
 use Tester\Assert;
-use Tests\Toolkit\TestCases\CommandTestCase;
+use Tester\TestCase;
 
 require __DIR__ . '/../../../bootstrap.php';
 
 /**
  * Tests for privileged text file manager
  */
-final class PrivilegedFileManagerTest extends CommandTestCase {
+final class PrivilegedFileManagerTest extends TestCase {
+
+	use CommandExecutorTestCase;
 
 	/**
 	 * File name
@@ -66,7 +69,10 @@ final class PrivilegedFileManagerTest extends CommandTestCase {
 	 * Tests the function to change permissions
 	 */
 	public function testChmod(): void {
-		$this->receiveCommand('chmod 777 \'' . self::CONFIG_PATH . self::FILE_NAME . '\'', true);
+		$this->receiveCommand(
+			command: 'chmod 777 \'' . self::CONFIG_PATH . self::FILE_NAME . '\'',
+			needSudo: true,
+		);
 		Assert::noError(function (): void {
 			$this->manager->chmod(self::FILE_NAME, 0777);
 		});
@@ -77,7 +83,12 @@ final class PrivilegedFileManagerTest extends CommandTestCase {
 	 */
 	public function testChmodNonexistent(): void {
 		$stderr = 'chmod: cannot access \'' . self::CONFIG_PATH . self::FILE_NAME . '\': No such file or directory';
-		$this->receiveCommand('chmod 755 \'' . self::CONFIG_PATH . self::FILE_NAME . '\'', true, '', $stderr, 1);
+		$this->receiveCommand(
+			command: 'chmod 755 \'' . self::CONFIG_PATH . self::FILE_NAME . '\'',
+			needSudo: true,
+			stderr: $stderr,
+			exitCode: 1,
+		);
 		Assert::throws(function (): void {
 			$this->manager->chmod(self::FILE_NAME, 0755);
 		}, IOException::class, $stderr);
@@ -87,7 +98,10 @@ final class PrivilegedFileManagerTest extends CommandTestCase {
 	 * Tests the function to change owner
 	 */
 	public function testChown(): void {
-		$this->receiveCommand('chown \'root:root\' \'' . self::CONFIG_PATH . self::FILE_NAME . '\'', true);
+		$this->receiveCommand(
+			command: 'chown \'root:root\' \'' . self::CONFIG_PATH . self::FILE_NAME . '\'',
+			needSudo: true,
+		);
 		Assert::noError(function (): void {
 			$this->manager->chown(self::FILE_NAME, 'root', 'root');
 		});
@@ -98,7 +112,12 @@ final class PrivilegedFileManagerTest extends CommandTestCase {
 	 */
 	public function testChownNonexistent(): void {
 		$stderr = 'chown: cannot access \'' . self::CONFIG_PATH . self::FILE_NAME . '\': No such file or directory';
-		$this->receiveCommand('chown \'root:root\' \'' . self::CONFIG_PATH . self::FILE_NAME . '\'', true, '', $stderr, 1);
+		$this->receiveCommand(
+			command: 'chown \'root:root\' \'' . self::CONFIG_PATH . self::FILE_NAME . '\'',
+			needSudo: true,
+			stderr: $stderr,
+			exitCode: 1,
+		);
 		Assert::throws(function (): void {
 			$this->manager->chown(self::FILE_NAME, 'root', 'root');
 		}, IOException::class, $stderr);
@@ -108,7 +127,10 @@ final class PrivilegedFileManagerTest extends CommandTestCase {
 	 * Tests the function to recursively change owner
 	 */
 	public function testChownRecursive(): void {
-		$this->receiveCommand('chown -R \'root:root\' \'' . self::CONFIG_PATH . self::FILE_NAME . '\'', true);
+		$this->receiveCommand(
+			command: 'chown -R \'root:root\' \'' . self::CONFIG_PATH . self::FILE_NAME . '\'',
+			needSudo: true,
+		);
 		Assert::noError(function (): void {
 			$this->manager->chown(self::FILE_NAME, 'root', 'root', true);
 		});
@@ -119,7 +141,11 @@ final class PrivilegedFileManagerTest extends CommandTestCase {
 	 */
 	public function testRead(): void {
 		$expected = FileSystem::read(self::CONFIG_PATH . self::FILE_NAME);
-		$this->receiveCommand('cat \'' . self::CONFIG_PATH . self::FILE_NAME . '\'', true, $expected);
+		$this->receiveCommand(
+			command: 'cat \'' . self::CONFIG_PATH . self::FILE_NAME . '\'',
+			needSudo: true,
+			stdout: $expected,
+		);
 		Assert::equal($expected, $this->manager->read(self::FILE_NAME));
 	}
 
@@ -128,7 +154,12 @@ final class PrivilegedFileManagerTest extends CommandTestCase {
 	 */
 	public function testReadNonexistent(): void {
 		$stderr = 'cat: \'' . self::CONFIG_PATH . self::FILE_NAME . '\': No such file or directory';
-		$this->receiveCommand('cat \'' . self::CONFIG_PATH . self::FILE_NAME . '\'', true, '', $stderr, 1);
+		$this->receiveCommand(
+			command: 'cat \'' . self::CONFIG_PATH . self::FILE_NAME . '\'',
+			needSudo: true,
+			stderr: $stderr,
+			exitCode: 1,
+		);
 		Assert::throws(function (): void {
 			$this->manager->read(self::FILE_NAME);
 		}, IOException::class, $stderr);
@@ -139,7 +170,11 @@ final class PrivilegedFileManagerTest extends CommandTestCase {
 	 */
 	public function testReadJson(): void {
 		$content = FileSystem::read(self::CONFIG_PATH . self::FILE_NAME);
-		$this->receiveCommand('cat \'' . self::CONFIG_PATH . self::FILE_NAME . '\'', true, $content);
+		$this->receiveCommand(
+			command: 'cat \'' . self::CONFIG_PATH . self::FILE_NAME . '\'',
+			needSudo: true,
+			stdout: $content,
+		);
 		Assert::equal(Json::decode($content, forceArrays: true), $this->manager->readJson(self::FILE_NAME));
 	}
 
@@ -148,7 +183,12 @@ final class PrivilegedFileManagerTest extends CommandTestCase {
 	 */
 	public function testReadJsonNonexistent(): void {
 		$stderr = 'cat: \'' . self::CONFIG_PATH . self::FILE_NAME . '\': No such file or directory';
-		$this->receiveCommand('cat \'' . self::CONFIG_PATH . self::FILE_NAME . '\'', true, '', $stderr, 1);
+		$this->receiveCommand(
+			command: 'cat \'' . self::CONFIG_PATH . self::FILE_NAME . '\'',
+			needSudo: true,
+			stderr: $stderr,
+			exitCode: 1,
+		);
 		Assert::throws(function (): void {
 			$this->manager->readJson(self::FILE_NAME);
 		}, IOException::class, $stderr);
@@ -158,7 +198,10 @@ final class PrivilegedFileManagerTest extends CommandTestCase {
 	 * Tests the function to delete a file
 	 */
 	public function testDelete(): void {
-		$this->receiveCommand('rm -rf \'' . self::CONFIG_PATH . self::FILE_NAME . '\'', true);
+		$this->receiveCommand(
+			command: 'rm -rf \'' . self::CONFIG_PATH . self::FILE_NAME . '\'',
+			needSudo: true,
+		);
 		Assert::noError(function (): void {
 			$this->manager->delete(self::FILE_NAME);
 		});
@@ -169,7 +212,8 @@ final class PrivilegedFileManagerTest extends CommandTestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
-		$this->manager = new PrivilegedFileManager(self::CONFIG_PATH, $this->commandManager);
+		$this->setUpCommandExecutor();
+		$this->manager = new PrivilegedFileManager(self::CONFIG_PATH, $this->commandExecutor);
 	}
 
 }

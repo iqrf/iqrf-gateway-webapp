@@ -29,18 +29,21 @@ namespace Tests\Unit\GatewayModule\Models;
 use App\GatewayModule\Models\InfoManager;
 use App\GatewayModule\Models\NetworkManager;
 use App\GatewayModule\Models\VersionManager;
+use Iqrf\CommandExecutor\Tester\Traits\CommandExecutorTestCase;
 use Mockery;
 use Mockery\MockInterface;
 use Nette\Utils\FileSystem;
 use Tester\Assert;
-use Tests\Toolkit\TestCases\CommandTestCase;
+use Tester\TestCase;
 
 require __DIR__ . '/../../../bootstrap.php';
 
 /**
  * Tests for Gateway info manager
  */
-final class InfoManagerTest extends CommandTestCase {
+final class InfoManagerTest extends TestCase {
+
+	use CommandExecutorTestCase;
 
 	/**
 	 * Executed commands
@@ -135,8 +138,11 @@ final class InfoManagerTest extends CommandTestCase {
 	 * Tests the function to get information about the board (via IQRF GW json)
 	 */
 	public function testGetBoardGw(): void {
-		$output = '{"gwProduct":"IQD-GW-01","gwManufacturer":"MICRORISC s.r.o."}';
-		$this->receiveCommand(self::COMMANDS['gw'], true, $output);
+		$this->receiveCommand(
+			command: self::COMMANDS['gw'],
+			needSudo: true,
+			stdout: '{"gwProduct":"IQD-GW-01","gwManufacturer":"MICRORISC s.r.o."}',
+		);
 		Assert::same(self::EXPECTED['board'], $this->manager->getBoard());
 	}
 
@@ -145,8 +151,15 @@ final class InfoManagerTest extends CommandTestCase {
 	 */
 	public function testGetBoardDeviceTree(): void {
 		$expected = 'Raspberry Pi 2 Models B Rev 1.1';
-		$this->receiveCommand(self::COMMANDS['gw'], true);
-		$this->receiveCommand(self::COMMANDS['deviceTreeName'], true, $expected);
+		$this->receiveCommand(
+			command: self::COMMANDS['gw'],
+			needSudo: true,
+		);
+		$this->receiveCommand(
+			command: self::COMMANDS['deviceTreeName'],
+			needSudo: true,
+			stdout: $expected,
+		);
 		Assert::same($expected, $this->manager->getBoard());
 	}
 
@@ -154,11 +167,29 @@ final class InfoManagerTest extends CommandTestCase {
 	 * Tests the function to get information about the board (via DMI)
 	 */
 	public function testGetBoardDmi(): void {
-		$this->receiveCommand(self::COMMANDS['gw'], true);
-		$this->receiveCommand(self::COMMANDS['deviceTreeName'], true);
-		$this->receiveCommand(self::COMMANDS['dmiBoardVendor'], true, 'AAEON');
-		$this->receiveCommand(self::COMMANDS['dmiBoardName'], true, 'UP-APL01');
-		$this->receiveCommand(self::COMMANDS['dmiBoardVersion'], true, 'V0.4');
+		$this->receiveCommand(
+			command: self::COMMANDS['gw'],
+			needSudo: true,
+		);
+		$this->receiveCommand(
+			command: self::COMMANDS['deviceTreeName'],
+			needSudo: true,
+		);
+		$this->receiveCommand(
+			command: self::COMMANDS['dmiBoardVendor'],
+			needSudo: true,
+			stdout: 'AAEON',
+		);
+		$this->receiveCommand(
+			command: self::COMMANDS['dmiBoardName'],
+			needSudo: true,
+			stdout: 'UP-APL01',
+		);
+		$this->receiveCommand(
+			command: self::COMMANDS['dmiBoardVersion'],
+			needSudo: true,
+			stdout: 'V0.4',
+		);
 		Assert::same('AAEON UP-APL01 (V0.4)', $this->manager->getBoard());
 	}
 
@@ -166,11 +197,26 @@ final class InfoManagerTest extends CommandTestCase {
 	 * Tests the function to get information about the board (unknown method)
 	 */
 	public function testGetBoardUnknown(): void {
-		$this->receiveCommand(self::COMMANDS['gw'], true);
-		$this->receiveCommand(self::COMMANDS['deviceTreeName'], true);
-		$this->receiveCommand(self::COMMANDS['dmiBoardVendor'], true);
-		$this->receiveCommand(self::COMMANDS['dmiBoardName'], true);
-		$this->receiveCommand(self::COMMANDS['dmiBoardVersion'], true);
+		$this->receiveCommand(
+			command: self::COMMANDS['gw'],
+			needSudo: true,
+		);
+		$this->receiveCommand(
+			command: self::COMMANDS['deviceTreeName'],
+			needSudo: true,
+		);
+		$this->receiveCommand(
+			command: self::COMMANDS['dmiBoardVendor'],
+			needSudo: true,
+		);
+		$this->receiveCommand(
+			command: self::COMMANDS['dmiBoardName'],
+			needSudo: true,
+		);
+		$this->receiveCommand(
+			command: self::COMMANDS['dmiBoardVersion'],
+			needSudo: true,
+		);
 		Assert::same('UNKNOWN', $this->manager->getBoard());
 	}
 
@@ -178,8 +224,11 @@ final class InfoManagerTest extends CommandTestCase {
 	 * Tests the function to get the gateway ID
 	 */
 	public function testGetId(): void {
-		$output = '{"gwId":"0242fc1e6f85b296"}';
-		$this->receiveCommand(self::COMMANDS['gw'], true, $output);
+		$this->receiveCommand(
+			command: self::COMMANDS['gw'],
+			needSudo: true,
+			stdout: '{"gwId":"0242fc1e6f85b296"}',
+		);
 		Assert::same(self::EXPECTED['gwId'], $this->manager->getId());
 	}
 
@@ -187,8 +236,11 @@ final class InfoManagerTest extends CommandTestCase {
 	 * Tests the function to get the gateway ID (invalid JSON)
 	 */
 	public function testGetIdInvalidJson(): void {
-		$output = '{"gwId":"0242fc1e6f85b296",}';
-		$this->receiveCommand(self::COMMANDS['gw'], true, $output);
+		$this->receiveCommand(
+			command: self::COMMANDS['gw'],
+			needSudo: true,
+			stdout: '{"gwId":"0242fc1e6f85b296",}',
+		);
 		Assert::null($this->manager->getId());
 	}
 
@@ -196,8 +248,11 @@ final class InfoManagerTest extends CommandTestCase {
 	 * Tests the function to get the gateway image version
 	 */
 	public function testGetImage(): void {
-		$output = '{"gwImage": "gw v1.0.0"}';
-		$this->receiveCommand(self::COMMANDS['gw'], true, $output);
+		$this->receiveCommand(
+			command: self::COMMANDS['gw'],
+			needSudo: true,
+			stdout: '{"gwImage": "gw v1.0.0"}',
+		);
 		Assert::same(self::EXPECTED['gwImage'], $this->manager->getImage());
 	}
 
@@ -205,8 +260,11 @@ final class InfoManagerTest extends CommandTestCase {
 	 * Tests the function to get the gateway image version (invalid JSON)
 	 */
 	public function testGetImageInvalidJson(): void {
-		$output = '{"gwImage": "gw v1.0.0",}';
-		$this->receiveCommand(self::COMMANDS['gw'], true, $output);
+		$this->receiveCommand(
+			command: self::COMMANDS['gw'],
+			needSudo: true,
+			stdout: '{"gwImage": "gw v1.0.0",}',
+		);
 		Assert::null($this->manager->getImage());
 	}
 
@@ -214,7 +272,10 @@ final class InfoManagerTest extends CommandTestCase {
 	 * Tests the function to get information about the operating system
 	 */
 	public function testGetOs(): void {
-		$this->receiveCommand(self::COMMANDS['osInfo'], null, FileSystem::read(TESTER_DIR . '/data/os-release'));
+		$this->receiveCommand(
+			command: self::COMMANDS['osInfo'],
+			stdout: FileSystem::read(TESTER_DIR . '/data/os-release'),
+		);
 		Assert::same(self::EXPECTED['os'], $this->manager->getOs());
 	}
 
@@ -222,8 +283,12 @@ final class InfoManagerTest extends CommandTestCase {
 	 * Tests the function to read the gateway file (missing file)
 	 */
 	public function testReadGatewayFileMissingFle(): void {
-		$stderr = 'cat: /etc/iqrf-gateway.json: No such file or directory';
-		$this->receiveCommand(self::COMMANDS['gw'], true, '', $stderr, 1);
+		$this->receiveCommand(
+			command: self::COMMANDS['gw'],
+			needSudo: true,
+			stderr: 'cat: /etc/iqrf-gateway.json: No such file or directory',
+			exitCode: 1,
+		);
 		Assert::null($this->manager->readGatewayFile());
 	}
 
@@ -231,8 +296,11 @@ final class InfoManagerTest extends CommandTestCase {
 	 * Tests the function to get the gateway ID (missing property)
 	 */
 	public function testGetIdMissingProperty(): void {
-		$output = '{"id":"0242fc1e6f85b296"}';
-		$this->receiveCommand(self::COMMANDS['gw'], true, $output);
+		$this->receiveCommand(
+			command: self::COMMANDS['gw'],
+			needSudo: true,
+			stdout: '{"id":"0242fc1e6f85b296"}',
+		);
 		Assert::null($this->manager->getId());
 	}
 
@@ -240,8 +308,11 @@ final class InfoManagerTest extends CommandTestCase {
 	 * Tests the function to get the gateway image (missing property)
 	 */
 	public function testGetImageMissingProperty(): void {
-		$output = '{"image": "gw v1.0.0"}';
-		$this->receiveCommand(self::COMMANDS['gw'], true, $output);
+		$this->receiveCommand(
+			command: self::COMMANDS['gw'],
+			needSudo: true,
+			stdout: '{"image": "gw v1.0.0"}',
+		);
 		Assert::null($this->manager->getImage());
 	}
 
@@ -249,9 +320,10 @@ final class InfoManagerTest extends CommandTestCase {
 	 * Tests the function to get disk usages
 	 */
 	public function testGetDiskUsages(): void {
-		$command = 'df -l -B1 -x tmpfs -x devtmpfs -x overlay -x squashfs -T -P | awk \'{if (NR!=1) {$6="";print}}\'';
-		$output = '/dev/sda1 ext4 243735838720 205705183232 25625583616  /';
-		$this->receiveCommand($command, null, $output);
+		$this->receiveCommand(
+			command: 'df -l -B1 -x tmpfs -x devtmpfs -x overlay -x squashfs -T -P | awk \'{if (NR!=1) {$6="";print}}\'',
+			stdout: '/dev/sda1 ext4 243735838720 205705183232 25625583616  /',
+		);
 		Assert::same(self::EXPECTED['diskUsages'], $this->manager->getDiskUsages());
 	}
 
@@ -259,9 +331,10 @@ final class InfoManagerTest extends CommandTestCase {
 	 * Tests the function to get memory usage
 	 */
 	public function testGetMemoryUsage(): void {
-		$command = 'free -bw | awk \'{{if (NR==2) print $2,$3,$4,$5,$6,$7,$8}}\'';
-		$output = '8220397568 6708125696 256442368 361750528 115830784 1139998720 879230976';
-		$this->receiveCommand($command, null, $output);
+		$this->receiveCommand(
+			command: 'free -bw | awk \'{{if (NR==2) print $2,$3,$4,$5,$6,$7,$8}}\'',
+			stdout: '8220397568 6708125696 256442368 361750528 115830784 1139998720 879230976',
+		);
 		Assert::same(self::EXPECTED['memoryUsage'], $this->manager->getMemoryUsage());
 	}
 
@@ -269,9 +342,10 @@ final class InfoManagerTest extends CommandTestCase {
 	 * Tests the function to get swap usage
 	 */
 	public function testGetSwapUsage(): void {
-		$command = 'free -b | awk \'{{if (NR==3) print $2,$3,$4}}\'';
-		$output = '8291086336 2250952704 6040133632';
-		$this->receiveCommand($command, null, $output);
+		$this->receiveCommand(
+			command: 'free -b | awk \'{{if (NR==3) print $2,$3,$4}}\'',
+			stdout: '8291086336 2250952704 6040133632',
+		);
 		Assert::same(self::EXPECTED['swapUsage'], $this->manager->getSwapUsage());
 	}
 
@@ -279,14 +353,15 @@ final class InfoManagerTest extends CommandTestCase {
 	 * Tests the function to get swap usage (computer hasn't got swap)
 	 */
 	public function testGetSwapUsageWithoutSwap(): void {
-		$command = 'free -b | awk \'{{if (NR==3) print $2,$3,$4}}\'';
-		$output = '0 0 0 ';
-		$this->receiveCommand($command, null, $output);
+		$this->receiveCommand(
+			command: 'free -b | awk \'{{if (NR==3) print $2,$3,$4}}\'',
+			stdout: '0 0 0 ',
+		);
 		Assert::null($this->manager->getSwapUsage());
 	}
 
 	/**
-	 * Tests the function to convert size in bytes to human readable format
+	 * Tests the function to convert size in bytes to human-readable format
 	 */
 	public function testConvertSizes(): void {
 		Assert::same('1000 B', $this->manager->convertSizes(1e3));
@@ -298,8 +373,10 @@ final class InfoManagerTest extends CommandTestCase {
 	 * Tests the function to get gateway uptime
 	 */
 	public function testGetUptime(): void {
-		$output = 'up 2 hours, 30 minutes';
-		$this->receiveCommand(self::COMMANDS['uptime'], null, $output);
+		$this->receiveCommand(
+			command: self::COMMANDS['uptime'],
+			stdout: 'up 2 hours, 30 minutes',
+		);
 		Assert::same(self::EXPECTED['uptime'], $this->manager->getUptime());
 	}
 
@@ -308,7 +385,7 @@ final class InfoManagerTest extends CommandTestCase {
 	 */
 	public function testGet(): void {
 		$verbose = false;
-		$manager = Mockery::mock(InfoManager::class, [$this->commandManager, $this->networkManager, $this->versionManager])->makePartial();
+		$manager = Mockery::mock(InfoManager::class, [$this->commandExecutor, $this->networkManager, $this->versionManager])->makePartial();
 		$manager->shouldReceive('getBoard')
 			->andReturn(self::EXPECTED['board']);
 		$manager->shouldReceive('getId')
@@ -356,7 +433,7 @@ final class InfoManagerTest extends CommandTestCase {
 	 * Tests the function to return brief information about the gateway
 	 */
 	public function testGetBrief(): void {
-		$manager = Mockery::mock(InfoManager::class, [$this->commandManager, $this->networkManager, $this->versionManager])->makePartial();
+		$manager = Mockery::mock(InfoManager::class, [$this->commandExecutor, $this->networkManager, $this->versionManager])->makePartial();
 		$manager->shouldReceive('getBoard')
 			->andReturn(self::EXPECTED['board']);
 		$manager->shouldReceive('getId')
@@ -373,9 +450,10 @@ final class InfoManagerTest extends CommandTestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
+		$this->setUpCommandExecutor();
 		$this->networkManager = Mockery::mock(NetworkManager::class);
 		$this->versionManager = Mockery::mock(VersionManager::class);
-		$this->manager = new InfoManager($this->commandManager, $this->networkManager, $this->versionManager);
+		$this->manager = new InfoManager($this->commandExecutor, $this->networkManager, $this->versionManager);
 	}
 
 }

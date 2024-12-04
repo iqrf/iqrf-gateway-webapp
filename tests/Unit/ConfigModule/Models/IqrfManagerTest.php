@@ -27,15 +27,18 @@ declare(strict_types = 1);
 namespace Tests\Unit\ConfigModule\Models;
 
 use App\ConfigModule\Models\IqrfManager;
+use Iqrf\CommandExecutor\Tester\Traits\CommandExecutorTestCase;
 use Tester\Assert;
-use Tests\Toolkit\TestCases\CommandTestCase;
+use Tester\TestCase;
 
 require __DIR__ . '/../../../bootstrap.php';
 
 /**
  * Tests for IQRF interface manager
  */
-final class IqrfManagerTest extends CommandTestCase {
+final class IqrfManagerTest extends TestCase {
+
+	use CommandExecutorTestCase;
 
 	/**
 	 * @var IqrfManager IQRF interface manager
@@ -46,10 +49,12 @@ final class IqrfManagerTest extends CommandTestCase {
 	 * Tests the function to get list of USB CDC interfaces available in the system
 	 */
 	public function testGetCdcInterfaces(): void {
-		$command = 'ls -1 /dev/ttyACM*';
 		$expected = ['/dev/ttyACM0', '/dev/ttyACM1'];
-		$output = implode(PHP_EOL, $expected);
-		$this->receiveCommand($command, true, $output);
+		$this->receiveCommand(
+			command: 'ls -1 /dev/ttyACM*',
+			needSudo: true,
+			stdout: implode(PHP_EOL, $expected),
+		);
 		Assert::same($expected, $this->manager->getCdcInterfaces());
 	}
 
@@ -57,10 +62,12 @@ final class IqrfManagerTest extends CommandTestCase {
 	 * Tests the function to get list of SPI interfaces available in the system
 	 */
 	public function testGetSpiInterfaces(): void {
-		$command = 'ls -1 /dev/spidev*';
 		$expected = ['/dev/spidev0.0', '/dev/spidev0.1', '/dev/spidev1.0', '/dev/spidev1.1'];
-		$output = implode(PHP_EOL, $expected);
-		$this->receiveCommand($command, true, $output);
+		$this->receiveCommand(
+			command: 'ls -1 /dev/spidev*',
+			needSudo: true,
+			stdout: implode(PHP_EOL, $expected),
+		);
 		Assert::same($expected, $this->manager->getSpiInterfaces());
 	}
 
@@ -68,10 +75,12 @@ final class IqrfManagerTest extends CommandTestCase {
 	 * Tests the function to get list of UART interfaces available in the system
 	 */
 	public function testGetUartInterfaces(): void {
-		$command = 'ls -1 /dev/ttyAMA* /dev/ttyS*';
 		$expected = ['/dev/ttyS0', '/dev/ttyS1', '/dev/ttyS2', '/dev/ttyS3'];
-		$output = implode(PHP_EOL, $expected);
-		$this->receiveCommand($command, true, $output);
+		$this->receiveCommand(
+			command: 'ls -1 /dev/ttyAMA* /dev/ttyS*',
+			needSudo: true,
+			stdout: implode(PHP_EOL, $expected),
+		);
 		Assert::same($expected, $this->manager->getUartInterfaces());
 	}
 
@@ -80,7 +89,8 @@ final class IqrfManagerTest extends CommandTestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
-		$this->manager = new IqrfManager($this->commandManager);
+		$this->setUpCommandExecutor();
+		$this->manager = new IqrfManager($this->commandExecutor);
 	}
 
 }

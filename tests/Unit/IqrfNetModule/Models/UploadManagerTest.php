@@ -31,17 +31,20 @@ use App\ConfigModule\Models\MainManager;
 use App\IqrfNetModule\Enums\UploadFormats;
 use App\IqrfNetModule\Exceptions\UploaderMissingException;
 use App\IqrfNetModule\Models\UploadManager;
+use Iqrf\CommandExecutor\Tester\Traits\CommandExecutorTestCase;
 use Mockery;
 use Nette\Utils\FileSystem;
 use Tester\Assert;
-use Tests\Toolkit\TestCases\CommandTestCase;
+use Tester\TestCase;
 
 require __DIR__ . '/../../../bootstrap.php';
 
 /**
  * Test for IQRF TR upload manager
  */
-final class UploadManagerTest extends CommandTestCase {
+final class UploadManagerTest extends TestCase {
+
+	use CommandExecutorTestCase;
 
 	/**
 	 * Data dir path
@@ -112,7 +115,7 @@ final class UploadManagerTest extends CommandTestCase {
 	public function testUploadToTr(string $fileName, UploadFormats $format, bool $os): void {
 		$this->receiveCommandExist('iqrf-gateway-uploader', true);
 		$command = sprintf('iqrf-gateway-uploader %s \'%s\'', $format->getUploaderParameter(), ($os ? UploadManager::OS_PATH : self::UPLOAD_PATH) . $fileName);
-		$this->receiveCommand($command, true);
+		$this->receiveCommand(command: $command, needSudo: true);
 		Assert::noError(function () use ($fileName, $os, $format): void {
 			$this->manager->uploadToTr($fileName, $os, $format);
 		});
@@ -133,6 +136,7 @@ final class UploadManagerTest extends CommandTestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
+		$this->setUpCommandExecutor();
 		$mainManager = Mockery::mock(MainManager::class);
 		$mainManager->shouldReceive('getCacheDir')
 			->andReturn(TMP_DIR);
@@ -141,7 +145,7 @@ final class UploadManagerTest extends CommandTestCase {
 			->with('iqrf::OtaUploadService');
 		$configManager->shouldReceive('list')
 			->andReturn([['uploadPathSuffix' => self::UPLOAD_DIR]]);
-		$this->manager = new UploadManager($this->commandManager, $configManager, $mainManager);
+		$this->manager = new UploadManager($this->commandExecutor, $configManager, $mainManager);
 	}
 
 }

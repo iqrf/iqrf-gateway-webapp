@@ -29,14 +29,14 @@ namespace Tests\Unit\GatewayModule\Models\PackageManagers;
 use App\GatewayModule\Exceptions\UnsupportedPackageManagerException;
 use App\GatewayModule\Models\PackageManagers\UnsupportedPackageManager;
 use Tester\Assert;
-use Tests\Toolkit\TestCases\CommandTestCase;
+use Tester\TestCase;
 
 require __DIR__ . '/../../../../bootstrap.php';
 
 /**
  * Tests for tool for unsupported package manager
  */
-final class UnsupportedPackageManagerTest extends CommandTestCase {
+final class UnsupportedPackageManagerTest extends TestCase {
 
 	/**
 	 * Packages

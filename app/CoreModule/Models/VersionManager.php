@@ -60,7 +60,6 @@ class VersionManager {
 	public function availableWebappUpdate(): bool {
 		$installedVersion = $this->versionManager->getWebapp();
 		$currentVersion = $this->getCurrentWebapp();
-		print_r([$installedVersion, $currentVersion]);
 		return version_compare($installedVersion, $currentVersion, '<');
 	}
 

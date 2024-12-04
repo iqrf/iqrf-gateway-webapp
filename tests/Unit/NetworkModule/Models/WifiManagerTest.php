@@ -31,15 +31,18 @@ use App\NetworkModule\Enums\WifiMode;
 use App\NetworkModule\Enums\WifiSecurity;
 use App\NetworkModule\Exceptions\NetworkManagerException;
 use App\NetworkModule\Models\WifiManager;
+use Iqrf\CommandExecutor\Tester\Traits\CommandExecutorTestCase;
 use Tester\Assert;
-use Tests\Toolkit\TestCases\CommandTestCase;
+use Tester\TestCase;
 
 require __DIR__ . '/../../../bootstrap.php';
 
 /**
  * Tests for WiFi network manager
  */
-final class WifiManagerTest extends CommandTestCase {
+final class WifiManagerTest extends TestCase {
+
+	use CommandExecutorTestCase;
 
 	/**
 	 * NetworkManager WiFi list command
@@ -52,13 +55,18 @@ final class WifiManagerTest extends CommandTestCase {
 	private WifiManager $manager;
 
 	/**
-	 * Tests the function for listing available WiFI networks
+	 * Tests the function for listing available WiFi networks
 	 */
 	public function testList(): void {
-		$output = '*:04\:F0\:21\:24\:1E\:53:WIFI MAGDA:Infra:36:405 Mbit/s:60:WPA2' . PHP_EOL
-			. ' :18\:E8\:29\:E4\:CB\:9A:WIFI MAGDA:Infra:1:195 Mbit/s:47:WPA2' . PHP_EOL
-			. ' :1A\:E8\:29\:E5\:CB\:9A:WIFI MAGDA:Infra:36:405 Mbit/s:32:WPA2' . PHP_EOL;
-		$this->receiveCommand(self::LIST_COMMAND, true, $output);
+		$this->receiveCommand(
+			command: self::LIST_COMMAND,
+			needSudo: true,
+			stdout: <<<'EOT'
+*:04\:F0\:21\:24\:1E\:53:WIFI MAGDA:Infra:36:405 Mbit/s:60:WPA2
+ :18\:E8\:29\:E4\:CB\:9A:WIFI MAGDA:Infra:1:195 Mbit/s:47:WPA2
+ :1A\:E8\:29\:E5\:CB\:9A:WIFI MAGDA:Infra:36:405 Mbit/s:32:WPA2
+EOT,
+		);
 		$ssid = 'WIFI MAGDA';
 		$mode = WifiMode::INFRA;
 		$security = WifiSecurity::WPA2_PERSONAL;
@@ -71,11 +79,16 @@ final class WifiManagerTest extends CommandTestCase {
 	}
 
 	/**
-	 * Tests the function for listing available WiFI networks - NetworkManager error
+	 * Tests the function for listing available WiFi networks - NetworkManager error
 	 */
 	public function testListError(): void {
 		Assert::throws(function (): void {
-			$this->receiveCommand(self::LIST_COMMAND, true, '', 'ERROR', 1);
+			$this->receiveCommand(
+				command: self::LIST_COMMAND,
+				needSudo: true,
+				stderr: 'ERROR',
+				exitCode: 1,
+			);
 			$this->manager->list();
 		}, NetworkManagerException::class, 'ERROR');
 	}
@@ -85,7 +98,8 @@ final class WifiManagerTest extends CommandTestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
-		$this->manager = new WifiManager($this->commandManager);
+		$this->setUpCommandExecutor();
+		$this->manager = new WifiManager($this->commandExecutor);
 	}
 
 }

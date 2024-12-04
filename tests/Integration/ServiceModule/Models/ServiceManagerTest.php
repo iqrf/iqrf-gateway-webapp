@@ -28,15 +28,18 @@ namespace Tests\Integration\ServiceModule\Models;
 
 use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
 use App\ServiceModule\Models\ServiceManager;
+use Iqrf\CommandExecutor\Tester\Traits\CommandExecutorTestCase;
 use Tester\Assert;
-use Tests\Toolkit\TestCases\CommandTestCase;
+use Tester\TestCase;
 
 require __DIR__ . '/../../../bootstrap.php';
 
 /**
  * Tests for service manager
  */
-final class ServiceManagerTest extends CommandTestCase {
+final class ServiceManagerTest extends TestCase {
+
+	use CommandExecutorTestCase;
 
 	/**
 	 * IQRF Gateway Daemon service
@@ -69,7 +72,7 @@ final class ServiceManagerTest extends CommandTestCase {
 			'systemctl disable \'' . self::DAEMON_SERVICE_NAME . '.service\' \'' . self::CONTROLLER_SERVICE_NAME . '.service\'',
 		];
 		foreach ($commands as $command) {
-			$this->receiveCommand($command, true);
+			$this->receiveCommand(command: $command, needSudo: true);
 		}
 		Assert::noError(function (): void {
 			$this->managerSystemD->disable(self::DAEMON_SERVICE_NAME);
@@ -99,7 +102,7 @@ final class ServiceManagerTest extends CommandTestCase {
 			'systemctl enable \'' . self::DAEMON_SERVICE_NAME . '.service\' \'' . self::CONTROLLER_SERVICE_NAME . '.service\'',
 		];
 		foreach ($commands as $command) {
-			$this->receiveCommand($command, true);
+			$this->receiveCommand(command: $command, needSudo: true);
 		}
 		Assert::noError(function (): void {
 			$this->managerSystemD->enable(self::DAEMON_SERVICE_NAME);
@@ -123,7 +126,11 @@ final class ServiceManagerTest extends CommandTestCase {
 	 */
 	public function testIsActiveSystemD(): void {
 		$command = 'systemctl is-active \'' . self::DAEMON_SERVICE_NAME . '.service\'';
-		$this->receiveCommand($command, true, 'active');
+		$this->receiveCommand(
+			command: $command,
+			needSudo: true,
+			stdout: 'active',
+		);
 		Assert::true($this->managerSystemD->isActive(self::DAEMON_SERVICE_NAME));
 	}
 
@@ -141,7 +148,11 @@ final class ServiceManagerTest extends CommandTestCase {
 	 */
 	public function testIsEnabledSystemD(): void {
 		$command = 'systemctl is-enabled \'' . self::DAEMON_SERVICE_NAME . '.service\'';
-		$this->receiveCommand($command, true, 'enabled');
+		$this->receiveCommand(
+			command: $command,
+			needSudo: true,
+			stdout: 'enabled',
+		);
 		Assert::true($this->managerSystemD->isEnabled(self::DAEMON_SERVICE_NAME));
 	}
 
@@ -163,7 +174,7 @@ final class ServiceManagerTest extends CommandTestCase {
 			'systemctl start \'' . self::DAEMON_SERVICE_NAME . '.service\' \'' . self::CONTROLLER_SERVICE_NAME . '.service\'',
 		];
 		foreach ($commands as $command) {
-			$this->receiveCommand($command, true);
+			$this->receiveCommand(command: $command, needSudo: true);
 		}
 		Assert::noError(function (): void {
 			$this->managerSystemD->start(self::DAEMON_SERVICE_NAME);
@@ -189,7 +200,7 @@ final class ServiceManagerTest extends CommandTestCase {
 			'systemctl stop \'' . self::DAEMON_SERVICE_NAME . '.service\' \'' . self::CONTROLLER_SERVICE_NAME . '.service\'',
 		];
 		foreach ($commands as $command) {
-			$this->receiveCommand($command, true);
+			$this->receiveCommand(command: $command, needSudo: true);
 		}
 		Assert::noError(function (): void {
 			$this->managerSystemD->stop(self::DAEMON_SERVICE_NAME);
@@ -211,7 +222,7 @@ final class ServiceManagerTest extends CommandTestCase {
 	 */
 	public function testRestartSystemD(): void {
 		$command = 'systemctl restart \'' . self::DAEMON_SERVICE_NAME . '.service\'';
-		$this->receiveCommand($command, true);
+		$this->receiveCommand(command: $command, needSudo: true);
 		Assert::noError(function (): void {
 			$this->managerSystemD->restart(self::DAEMON_SERVICE_NAME);
 		});
@@ -232,7 +243,11 @@ final class ServiceManagerTest extends CommandTestCase {
 	public function testGetStatusSystemD(): void {
 		$expected = 'status';
 		$command = 'systemctl status \'' . self::DAEMON_SERVICE_NAME . '.service\'';
-		$this->receiveCommand($command, true, $expected);
+		$this->receiveCommand(
+			command: $command,
+			needSudo: true,
+			stdout: $expected,
+		);
 		Assert::same($expected, $this->managerSystemD->getStatus(self::DAEMON_SERVICE_NAME));
 	}
 
@@ -250,8 +265,9 @@ final class ServiceManagerTest extends CommandTestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
-		$this->managerSystemD = new ServiceManager('systemd', $this->commandManager);
-		$this->managerUnknown = new ServiceManager('unknown', $this->commandManager);
+		$this->setUpCommandExecutor();
+		$this->managerSystemD = new ServiceManager('systemd', $this->commandExecutor);
+		$this->managerUnknown = new ServiceManager('unknown', $this->commandExecutor);
 	}
 
 }

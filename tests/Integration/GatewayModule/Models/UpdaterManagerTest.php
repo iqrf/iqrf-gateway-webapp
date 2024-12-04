@@ -28,19 +28,21 @@ namespace Tests\Integration\GatewayModule\Models;
 
 use App\GatewayModule\Exceptions\UnsupportedPackageManagerException;
 use App\GatewayModule\Models\UpdaterManager;
-use Iqrf\CommandExecutor\CommandExecutor;
+use Iqrf\CommandExecutor\Tester\Traits\CommandExecutorTestCase;
 use Mockery;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
 use Tester\Assert;
-use Tests\Toolkit\TestCases\CommandTestCase;
+use Tester\TestCase;
 
 require __DIR__ . '/../../../bootstrap.php';
 
 /**
  * Tests for tool for updating packages of IQRF Gateways
  */
-final class UpdaterManagerTest extends CommandTestCase {
+final class UpdaterManagerTest extends TestCase {
+
+	use CommandExecutorTestCase;
 
 	/**
 	 * @var UpdaterManager Tool for updating IQRF Gateway
@@ -51,11 +53,11 @@ final class UpdaterManagerTest extends CommandTestCase {
 	 * Tests the constructor (unsupported package manager)
 	 */
 	public function testConstructorFailure(): void {
-		$commandManager = Mockery::mock(CommandExecutor::class);
-		$commandManager->shouldReceive('commandExist')
-			->withArgs(['apt-get'])->andReturn(false);
-		Assert::throws(static function () use ($commandManager): void {
-			$manager = new UpdaterManager($commandManager);
+		Mockery::close();
+		$this->setUpCommandExecutor();
+		$this->receiveCommandExist('apt-get', false);
+		Assert::throws(function (): void {
+			$manager = new UpdaterManager($this->commandExecutor);
 			$manager->getUpgradable();
 		}, UnsupportedPackageManagerException::class);
 	}
@@ -64,7 +66,11 @@ final class UpdaterManagerTest extends CommandTestCase {
 	 * Tests the function to list upgradable packages
 	 */
 	public function testListUpgradable(): void {
-		$this->receiveAsyncCommand([$this, 'callback'], 'apt-get -s upgrade -V', true);
+		$this->receiveAsyncCommand(
+			callback: [$this, 'callback'],
+			command: 'apt-get -s upgrade -V',
+			needSudo: true,
+		);
 		Assert::noError(function (): void {
 			$this->manager->listUpgradable([$this, 'callback']);
 		});
@@ -91,7 +97,11 @@ final class UpdaterManagerTest extends CommandTestCase {
 	 * @param array<array{name: string, oldVersion: string, newVersion: string}> $packages List of upgradable packages
 	 */
 	public function testGetUpgradable(string $stdout, array $packages): void {
-		$this->receiveCommand('apt-get -s upgrade -V', true, $stdout);
+		$this->receiveCommand(
+			command: 'apt-get -s upgrade -V',
+			needSudo: true,
+			stdout: $stdout,
+		);
 		Assert::same($packages, $this->manager->getUpgradable());
 	}
 
@@ -99,7 +109,11 @@ final class UpdaterManagerTest extends CommandTestCase {
 	 * Tests the function to update list of packages
 	 */
 	public function testUpdate(): void {
-		$this->receiveAsyncCommand([$this, 'callback'], 'apt-get update', true);
+		$this->receiveAsyncCommand(
+			callback: [$this, 'callback'],
+			command: 'apt-get update',
+			needSudo: true,
+		);
 		Assert::noError(function (): void {
 			$this->manager->update([$this, 'callback']);
 		});
@@ -109,8 +123,11 @@ final class UpdaterManagerTest extends CommandTestCase {
 	 * Tests the function to upgrade packages
 	 */
 	public function testUpgrade(): void {
-		$this->checkCommandExistence();
-		$this->receiveAsyncCommand([$this, 'callback'], 'apt-get upgrade -y', true);
+		$this->receiveAsyncCommand(
+			callback: [$this, 'callback'],
+			command: 'apt-get upgrade -y',
+			needSudo: true,
+		);
 		Assert::noError(function (): void {
 			$this->manager->upgrade([$this, 'callback']);
 		});
@@ -128,8 +145,9 @@ final class UpdaterManagerTest extends CommandTestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
+		$this->setUpCommandExecutor();
 		$this->checkCommandExistence();
-		$this->manager = new UpdaterManager($this->commandManager);
+		$this->manager = new UpdaterManager($this->commandExecutor);
 	}
 
 	/**

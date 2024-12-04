@@ -28,15 +28,18 @@ namespace Tests\Unit\ServiceModule\Models;
 
 use App\ServiceModule\Exceptions\NotImplementedException;
 use App\ServiceModule\Models\SupervisordManager;
+use Iqrf\CommandExecutor\Tester\Traits\CommandExecutorTestCase;
 use Tester\Assert;
-use Tests\Toolkit\TestCases\CommandTestCase;
+use Tester\TestCase;
 
 require __DIR__ . '/../../../bootstrap.php';
 
 /**
  * Tests for supervisord service manager in a Docker container
  */
-final class SupervisordManagerTest extends CommandTestCase {
+final class SupervisordManagerTest extends TestCase {
+
+	use CommandExecutorTestCase;
 
 	/**
 	 * Name of service
@@ -89,7 +92,7 @@ final class SupervisordManagerTest extends CommandTestCase {
 	 */
 	public function testStart(): void {
 		$command = 'supervisorctl start \'' . self::SERVICE_NAME . '\'';
-		$this->receiveCommand($command, true);
+		$this->receiveCommand(command: $command, needSudo: true);
 		Assert::noError(function (): void {
 			$this->manager->start(self::SERVICE_NAME);
 		});
@@ -100,7 +103,7 @@ final class SupervisordManagerTest extends CommandTestCase {
 	 */
 	public function testStop(): void {
 		$command = 'supervisorctl stop \'' . self::SERVICE_NAME . '\'';
-		$this->receiveCommand($command, true);
+		$this->receiveCommand(command: $command, needSudo: true);
 		Assert::noError(function (): void {
 			$this->manager->stop(self::SERVICE_NAME);
 		});
@@ -111,7 +114,7 @@ final class SupervisordManagerTest extends CommandTestCase {
 	 */
 	public function testRestart(): void {
 		$command = 'supervisorctl restart \'' . self::SERVICE_NAME . '\'';
-		$this->receiveCommand($command, true);
+		$this->receiveCommand(command: $command, needSudo: true);
 		Assert::noError(function (): void {
 			$this->manager->restart(self::SERVICE_NAME);
 		});
@@ -123,7 +126,11 @@ final class SupervisordManagerTest extends CommandTestCase {
 	public function testGetStatus(): void {
 		$expected = 'status';
 		$command = 'supervisorctl status \'' . self::SERVICE_NAME . '\'';
-		$this->receiveCommand($command, true, $expected);
+		$this->receiveCommand(
+			command: $command,
+			needSudo: true,
+			stdout: $expected,
+		);
 		Assert::same($expected, $this->manager->getStatus(self::SERVICE_NAME));
 	}
 
@@ -132,7 +139,8 @@ final class SupervisordManagerTest extends CommandTestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
-		$this->manager = new SupervisordManager($this->commandManager);
+		$this->setUpCommandExecutor();
+		$this->manager = new SupervisordManager($this->commandExecutor);
 	}
 
 }

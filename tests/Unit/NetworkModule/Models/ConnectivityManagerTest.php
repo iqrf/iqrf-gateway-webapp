@@ -29,15 +29,18 @@ namespace Tests\Unit\NetworkModule\Models;
 use App\NetworkModule\Enums\ConnectivityState;
 use App\NetworkModule\Exceptions\NetworkManagerException;
 use App\NetworkModule\Models\ConnectivityManager;
+use Iqrf\CommandExecutor\Tester\Traits\CommandExecutorTestCase;
 use Tester\Assert;
-use Tests\Toolkit\TestCases\CommandTestCase;
+use Tester\TestCase;
 
 require __DIR__ . '/../../../bootstrap.php';
 
 /**
  * Tests for network connectivity manager
  */
-final class ConnectivityManagerTest extends CommandTestCase {
+final class ConnectivityManagerTest extends TestCase {
+
+	use CommandExecutorTestCase;
 
 	/**
 	 * Connectivity check command
@@ -53,7 +56,11 @@ final class ConnectivityManagerTest extends CommandTestCase {
 	 * Tests the function to check network connectivity (failure)
 	 */
 	public function testCheckFailure(): void {
-		$this->receiveCommand(self::CHECK_CMD, true, '', '', 10);
+		$this->receiveCommand(
+			command: self::CHECK_CMD,
+			needSudo: true,
+			exitCode: 10,
+		);
 		Assert::throws(function (): void {
 			$this->manager->check();
 		}, NetworkManagerException::class);
@@ -63,7 +70,11 @@ final class ConnectivityManagerTest extends CommandTestCase {
 	 * Tests the function to check network connectivity (success)
 	 */
 	public function testCheckSuccess(): void {
-		$this->receiveCommand(self::CHECK_CMD, true, 'full');
+		$this->receiveCommand(
+			command: self::CHECK_CMD,
+			needSudo: true,
+			stdout: 'full',
+		);
 		Assert::equal(ConnectivityState::FULL, $this->manager->check());
 	}
 
@@ -72,7 +83,8 @@ final class ConnectivityManagerTest extends CommandTestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
-		$this->manager = new ConnectivityManager($this->commandManager);
+		$this->setUpCommandExecutor();
+		$this->manager = new ConnectivityManager($this->commandExecutor);
 	}
 
 }

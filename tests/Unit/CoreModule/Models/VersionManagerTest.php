@@ -36,14 +36,14 @@ use Mockery;
 use Mockery\MockInterface;
 use Nette\Caching\Storages\DevNullStorage;
 use Tester\Assert;
-use Tests\Toolkit\TestCases\CommandTestCase;
+use Tester\TestCase;
 
 require __DIR__ . '/../../../bootstrap.php';
 
 /**
  * Tests for version manager
  */
-final class VersionManagerTest extends CommandTestCase {
+final class VersionManagerTest extends TestCase {
 
 	/**
 	 * Current version of the webapp

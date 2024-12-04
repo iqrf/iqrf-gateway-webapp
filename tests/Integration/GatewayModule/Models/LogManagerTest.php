@@ -33,8 +33,9 @@ use App\GatewayModule\Exceptions\ServiceLogNotAvailableException;
 use App\GatewayModule\Models\LogManager;
 use Iqrf\CommandExecutor\CommandExecutor;
 use Iqrf\CommandExecutor\CommandStack;
+use Iqrf\CommandExecutor\Tester\Traits\CommandExecutorTestCase;
 use Tester\Assert;
-use Tests\Toolkit\TestCases\CommandTestCase;
+use Tester\TestCase;
 use ZipArchive;
 
 require __DIR__ . '/../../../bootstrap.php';
@@ -42,7 +43,9 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for Gateway info manager
  */
-final class LogManagerTest extends CommandTestCase {
+final class LogManagerTest extends TestCase {
+
+	use CommandExecutorTestCase;
 
 	/**
 	 * @var FileManager Text file manager
@@ -115,21 +118,11 @@ final class LogManagerTest extends CommandTestCase {
 			LogManager::TRANSLATOR,
 			LogManager::UPLOADER,
 		];
-		$this->commandManager->shouldReceive('commandExist')
-			->withArgs([LogManager::CONTROLLER])
-			->andReturn(true);
-		$this->commandManager->shouldReceive('commandExist')
-			->withArgs(['iqrfgd2'])
-			->andReturn(true);
-		$this->commandManager->shouldReceive('commandExist')
-			->withArgs([LogManager::SETTER])
-			->andReturn(true);
-		$this->commandManager->shouldReceive('commandExist')
-			->withArgs([LogManager::TRANSLATOR])
-			->andReturn(true);
-		$this->commandManager->shouldReceive('commandExist')
-			->withArgs([LogManager::UPLOADER])
-			->andReturn(true);
+		$this->receiveCommandExist(LogManager::CONTROLLER, true);
+		$this->receiveCommandExist('iqrfgd2', true);
+		$this->receiveCommandExist(LogManager::SETTER, true);
+		$this->receiveCommandExist(LogManager::TRANSLATOR, true);
+		$this->receiveCommandExist(LogManager::UPLOADER, true);
 		Assert::same($expected, $this->managerMockCommand->getAvailableServices());
 	}
 
@@ -137,21 +130,6 @@ final class LogManagerTest extends CommandTestCase {
 	 * Tests the function to get service log
 	 */
 	public function testGetServiceLog(): void {
-		$this->commandManager->shouldReceive('commandExist')
-			->withArgs([LogManager::CONTROLLER])
-			->andReturn(true);
-		$this->commandManager->shouldReceive('commandExist')
-			->withArgs(['iqrfgd2'])
-			->andReturn(true);
-		$this->commandManager->shouldReceive('commandExist')
-			->withArgs([LogManager::SETTER])
-			->andReturn(false);
-		$this->commandManager->shouldReceive('commandExist')
-			->withArgs([LogManager::TRANSLATOR])
-			->andReturn(false);
-		$this->commandManager->shouldReceive('commandExist')
-			->withArgs([LogManager::UPLOADER])
-			->andReturn(true);
 		$expected = $this->fileManager->read('iqrf-gateway-controller.log');
 		Assert::same($expected, $this->managerMockCommand->getServiceLog(LogManager::CONTROLLER));
 		$expected = $this->fileManager->read('daemon/2018-08-13-13-37-834-iqrf-gateway-daemon.log');
@@ -164,21 +142,6 @@ final class LogManagerTest extends CommandTestCase {
 	 * Tests the function to get log of nonexistent service
 	 */
 	public function testGetServiceLogNonexistent(): void {
-		$this->commandManager->shouldReceive('commandExist')
-			->withArgs([LogManager::CONTROLLER])
-			->andReturn(true);
-		$this->commandManager->shouldReceive('commandExist')
-			->withArgs(['iqrfgd2'])
-			->andReturn(true);
-		$this->commandManager->shouldReceive('commandExist')
-			->withArgs([LogManager::SETTER])
-			->andReturn(true);
-		$this->commandManager->shouldReceive('commandExist')
-			->withArgs([LogManager::TRANSLATOR])
-			->andReturn(true);
-		$this->commandManager->shouldReceive('commandExist')
-			->withArgs([LogManager::UPLOADER])
-			->andReturn(true);
 		Assert::exception(function (): void {
 			$this->managerMockCommand->getServiceLog('nonexistent');
 		}, ServiceLogNotAvailableException::class);
@@ -189,12 +152,13 @@ final class LogManagerTest extends CommandTestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
+		$this->setUpCommandExecutor();
 		$logDir = realpath(TESTER_DIR . '/data/logs/');
 		$commandStack = new CommandStack();
 		$commandManager = new CommandExecutor(false, $commandStack);
 		$this->fileManager = new FileManager($logDir, $commandManager);
 		$this->manager = new LogManager($logDir . '/', $logDir . '/daemon/', $commandManager);
-		$this->managerMockCommand = new LogManager($logDir . '/', $logDir . '/daemon/', $this->commandManager);
+		$this->managerMockCommand = new LogManager($logDir . '/', $logDir . '/daemon/', $this->commandExecutor);
 		$modifyDates = [
 			'2018-08-13T13:37:13.107090' => 'daemon/2018-08-13-13-37-496-iqrf-gateway-daemon.log',
 			'2018-08-13T13:37:18.262028' => 'daemon/2018-08-13-13-37-834-iqrf-gateway-daemon.log',

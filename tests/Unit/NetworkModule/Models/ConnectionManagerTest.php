@@ -41,18 +41,21 @@ use App\NetworkModule\Exceptions\NonexistentConnectionException;
 use App\NetworkModule\Models\ConnectionManager;
 use Darsyn\IP\Version\IPv4;
 use Darsyn\IP\Version\IPv6;
+use Iqrf\CommandExecutor\Tester\Traits\CommandExecutorTestCase;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
 use Ramsey\Uuid\Uuid;
 use Tester\Assert;
-use Tests\Toolkit\TestCases\CommandTestCase;
+use Tester\TestCase;
 
 require __DIR__ . '/../../../bootstrap.php';
 
 /**
  * Tests for network connection manager
  */
-final class ConnectionManagerTest extends CommandTestCase {
+final class ConnectionManagerTest extends TestCase {
+
+	use CommandExecutorTestCase;
 
 	/**
 	 * Executed commands
@@ -84,8 +87,10 @@ final class ConnectionManagerTest extends CommandTestCase {
 	 * Tests the function to delete network connection
 	 */
 	public function testDelete(): void {
-		$command = self::COMMANDS['delete'] . self::UUID;
-		$this->receiveCommand($command, true);
+		$this->receiveCommand(
+			command: self::COMMANDS['delete'] . self::UUID,
+			needSudo: true,
+		);
 		Assert::noError(function (): void {
 			$this->manager->delete(Uuid::fromString(self::UUID));
 		});
@@ -95,10 +100,14 @@ final class ConnectionManagerTest extends CommandTestCase {
 	 * Tests the function to delete network connection (nonexistent connection)
 	 */
 	public function testDeleteNonexistent(): void {
-		$command = self::COMMANDS['delete'] . self::UUID;
 		$stderr = 'Error: unknown connection \'' . self::UUID . '\'.' .
 			PHP_EOL . 'Error: cannot delete unknown connection(s): \'' . self::UUID . '\'.';
-		$this->receiveCommand($command, true, '', $stderr, 10);
+		$this->receiveCommand(
+			command: self::COMMANDS['delete'] . self::UUID,
+			needSudo: true,
+			stderr: $stderr,
+			exitCode: 10,
+		);
 		Assert::throws(function (): void {
 			$this->manager->delete(Uuid::fromString(self::UUID));
 		}, NonexistentConnectionException::class, $stderr);
@@ -108,18 +117,28 @@ final class ConnectionManagerTest extends CommandTestCase {
 	 * Tests the function to deactivate network connection
 	 */
 	public function testDown(): void {
-		$command = self::COMMANDS['down'] . self::UUID;
-		$this->receiveCommand($command, true);
+		$this->receiveCommand(
+			command: self::COMMANDS['down'] . self::UUID,
+			needSudo: true,
+		);
 		Assert::noError(function (): void {
 			$this->manager->down(Uuid::fromString(self::UUID));
 		});
 	}
 
+	/**
+	 * Tests the function to deactivate network connection (nonexistent connection)
+	 */
 	public function testDownNonexistent(): void {
 		$command = self::COMMANDS['down'] . self::UUID;
 		$stderr = 'Error: \'' . self::UUID . '\' is not an active connection.' .
 			PHP_EOL . 'Error: no active connection provided.';
-		$this->receiveCommand($command, true, '', $stderr, 10);
+		$this->receiveCommand(
+			command: $command,
+			needSudo: true,
+			stderr: $stderr,
+			exitCode: 10,
+		);
 		Assert::throws(function (): void {
 			$this->manager->down(Uuid::fromString(self::UUID));
 		}, NonexistentConnectionException::class, $stderr);
@@ -129,10 +148,13 @@ final class ConnectionManagerTest extends CommandTestCase {
 	 * Tests the function to get detailed network connection entity
 	 */
 	public function testGet(): void {
-		$output = FileSystem::read(self::NM_DATA . self::UUID . '.conf');
 		$expected = $this->createDetailedConnection();
 		$command = self::COMMANDS['get'] . self::UUID;
-		$this->receiveCommand($command, true, $output);
+		$this->receiveCommand(
+			command: $command,
+			needSudo: true,
+			stdout: FileSystem::read(self::NM_DATA . self::UUID . '.conf'),
+		);
 		Assert::equal($expected, $this->manager->get(Uuid::fromString(self::UUID)));
 	}
 
@@ -140,9 +162,13 @@ final class ConnectionManagerTest extends CommandTestCase {
 	 * Tests the function to get detailed network connection entity (nonexistent connection)
 	 */
 	public function testGetNonexistent(): void {
-		$command = self::COMMANDS['get'] . self::UUID;
 		$stderr = 'Error: ' . self::UUID . ' - no such connection profile.';
-		$this->receiveCommand($command, true, '', $stderr, 10);
+		$this->receiveCommand(
+			command: self::COMMANDS['get'] . self::UUID,
+			needSudo: true,
+			stderr: $stderr,
+			exitCode: 10,
+		);
 		Assert::throws(function (): void {
 			$this->manager->get(Uuid::fromString(self::UUID));
 		}, NonexistentConnectionException::class, $stderr);
@@ -152,9 +178,14 @@ final class ConnectionManagerTest extends CommandTestCase {
 	 * Tests the function to list network connections
 	 */
 	public function testList(): void {
-		$output = 'eth0:25ab1b06-2a86-40a9-950f-1c576ddcd35a:802-3-ethernet:eth0:yes:activated' . PHP_EOL
-			. 'wlan0:dd1c59ea-6f5d-471c-8fe7-e066761b9764:802-11-wireless::no:' . PHP_EOL;
-		$this->receiveCommand(self::COMMANDS['list'], true, $output);
+		$this->receiveCommand(
+			command: self::COMMANDS['list'],
+			needSudo: true,
+			stdout: <<<'EOT'
+eth0:25ab1b06-2a86-40a9-950f-1c576ddcd35a:802-3-ethernet:eth0:yes:activated
+wlan0:dd1c59ea-6f5d-471c-8fe7-e066761b9764:802-11-wireless::no:
+EOT,
+		);
 		$expected = [
 			new Connection('eth0', Uuid::fromString('25ab1b06-2a86-40a9-950f-1c576ddcd35a'), ConnectionTypes::ETHERNET, 'eth0', true, ConnectionStates::ACTIVATED),
 			new Connection('wlan0', Uuid::fromString('dd1c59ea-6f5d-471c-8fe7-e066761b9764'), ConnectionTypes::WIFI, '', false, ConnectionStates::DEACTIVATED),
@@ -166,7 +197,7 @@ final class ConnectionManagerTest extends CommandTestCase {
 	 * Tests the function to list network connections (empty list)
 	 */
 	public function testListEmpty(): void {
-		$this->receiveCommand(self::COMMANDS['list'], true, '');
+		$this->receiveCommand(command: self::COMMANDS['list'], needSudo: true);
 		$expected = [];
 		Assert::equal($expected, $this->manager->list());
 	}
@@ -175,13 +206,17 @@ final class ConnectionManagerTest extends CommandTestCase {
 	 * Tests the function to edit the network connection
 	 */
 	public function testEdit(): void {
-		$output = FileSystem::read(self::NM_DATA . self::UUID . '.conf');
-		$command = 'nmcli -t -s connection show ' . self::UUID;
-		$this->receiveCommand($command, true, $output);
+		$this->receiveCommand(
+			command: 'nmcli -t -s connection show ' . self::UUID,
+			needSudo: true,
+			stdout: FileSystem::read(self::NM_DATA . self::UUID . '.conf'),
+		);
 		$json = FileSystem::read(self::NM_DATA . 'fromForm/' . self::UUID . '.json');
 		$jsonData = Json::decode($json);
-		$command = 'nmcli -t connection modify 25ab1b06-2a86-40a9-950f-1c576ddcd35a connection.id "eth0" connection.interface-name "eth0" connection.autoconnect "yes" connection.autoconnect-priority "1" connection.autoconnect-retries "10" ipv4.method "manual" ipv4.addresses "10.0.0.2/16" ipv4.gateway "10.0.0.1" ipv4.dns "10.0.0.1 1.1.1.1" ipv6.method "manual" ipv6.addresses "2001:470:5bb2:2::2/64" ipv6.gateway "fe80::1" ipv6.dns "2001:470:5bb2:2::1" ';
-		$this->receiveCommand($command, true);
+		$this->receiveCommand(
+			command: 'nmcli -t connection modify 25ab1b06-2a86-40a9-950f-1c576ddcd35a connection.id "eth0" connection.interface-name "eth0" connection.autoconnect "yes" connection.autoconnect-priority "1" connection.autoconnect-retries "10" ipv4.method "manual" ipv4.addresses "10.0.0.2/16" ipv4.gateway "10.0.0.1" ipv4.dns "10.0.0.1 1.1.1.1" ipv6.method "manual" ipv6.addresses "2001:470:5bb2:2::2/64" ipv6.gateway "fe80::1" ipv6.dns "2001:470:5bb2:2::1" ',
+			needSudo: true,
+		);
 		Assert::noError(function () use ($jsonData): void {
 			$uuid = Uuid::fromString(self::UUID);
 			$this->manager->edit($uuid, $jsonData);
@@ -193,8 +228,10 @@ final class ConnectionManagerTest extends CommandTestCase {
 	 */
 	public function testUp(): void {
 		$connection = $this->createDetailedConnection();
-		$command = self::COMMANDS['up'] . self::UUID;
-		$this->receiveCommand($command, true);
+		$this->receiveCommand(
+			command: self::COMMANDS['up'] . self::UUID,
+			needSudo: true,
+		);
 		Assert::noError(function () use ($connection): void {
 			$this->manager->up($connection->getUuid());
 		});
@@ -205,8 +242,10 @@ final class ConnectionManagerTest extends CommandTestCase {
 	 */
 	public function testUpInterface(): void {
 		$connection = $this->createDetailedConnection();
-		$command = self::COMMANDS['up'] . self::UUID . ' ifname eth0';
-		$this->receiveCommand($command, true);
+		$this->receiveCommand(
+			command: self::COMMANDS['up'] . self::UUID . ' ifname eth0',
+			needSudo: true,
+		);
 		Assert::noError(function () use ($connection): void {
 			$this->manager->up($connection->getUuid(), 'eth0');
 		});
@@ -217,9 +256,13 @@ final class ConnectionManagerTest extends CommandTestCase {
 	 */
 	public function testUpNonexistent(): void {
 		$connection = $this->createDetailedConnection();
-		$command = self::COMMANDS['up'] . self::UUID;
 		$stderr = 'Error: unknown connection \'' . self::UUID . '\'.';
-		$this->receiveCommand($command, true, '', $stderr, 10);
+		$this->receiveCommand(
+			command: self::COMMANDS['up'] . self::UUID,
+			needSudo: true,
+			stderr: $stderr,
+			exitCode: 10,
+		);
 		Assert::throws(function () use ($connection): void {
 			$this->manager->up($connection->getUuid());
 		}, NonexistentConnectionException::class, $stderr);
@@ -230,7 +273,8 @@ final class ConnectionManagerTest extends CommandTestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
-		$this->manager = new ConnectionManager($this->commandManager);
+		$this->setUpCommandExecutor();
+		$this->manager = new ConnectionManager($this->commandExecutor);
 	}
 
 	/**
@@ -248,7 +292,7 @@ final class ConnectionManagerTest extends CommandTestCase {
 
 	/**
 	 * Creates the IPv4 network connection entity
-	 * @return IPv4Connection IPv4 nmetwork connection entity
+	 * @return IPv4Connection IPv4 network connection entity
 	 */
 	private function createIpv4Connection(): IPv4Connection {
 		$method = IPv4Methods::MANUAL;

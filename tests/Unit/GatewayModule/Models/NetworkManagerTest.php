@@ -27,15 +27,18 @@ declare(strict_types = 1);
 namespace Tests\Unit\GatewayModule\Models;
 
 use App\GatewayModule\Models\NetworkManager;
+use Iqrf\CommandExecutor\Tester\Traits\CommandExecutorTestCase;
 use Tester\Assert;
-use Tests\Toolkit\TestCases\CommandTestCase;
+use Tester\TestCase;
 
 require __DIR__ . '/../../../bootstrap.php';
 
 /**
  * Tests for Network manager
  */
-final class NetworkManagerTest extends CommandTestCase {
+final class NetworkManagerTest extends TestCase {
+
+	use CommandExecutorTestCase;
 
 	/**
 	 * Executed commands
@@ -58,7 +61,10 @@ final class NetworkManagerTest extends CommandTestCase {
 	 */
 	public function testGetHostname(): void {
 		$expected = 'gateway';
-		$this->receiveCommand(self::COMMANDS['hostname'], null, $expected);
+		$this->receiveCommand(
+			command: self::COMMANDS['hostname'],
+			stdout: $expected,
+		);
 		Assert::same($expected, $this->manager->getHostname());
 	}
 
@@ -66,7 +72,11 @@ final class NetworkManagerTest extends CommandTestCase {
 	 * Tests the function to get hostname of the gateway (POSIX hostname)
 	 */
 	public function testGetHostnamePosix(): void {
-		$this->receiveCommand(self::COMMANDS['hostname'], null, '', 'ERROR', 1);
+		$this->receiveCommand(
+			command: self::COMMANDS['hostname'],
+			stderr: 'ERROR',
+			exitCode: 1,
+		);
 		Assert::same(gethostname(), $this->manager->getHostname());
 	}
 
@@ -74,9 +84,21 @@ final class NetworkManagerTest extends CommandTestCase {
 	 * Tests the function to get information about network interfaces
 	 */
 	public function testGetInterfaces(): void {
-		$this->receiveCommand(self::COMMANDS['networkAdapters'], true, 'eth0' . PHP_EOL . 'lo');
-		$this->receiveCommand(self::COMMANDS['ipAddressesEth0'], true, '192.168.1.100/24' . PHP_EOL . 'fda9:d95:d5b1::64/64');
-		$this->receiveCommand(self::COMMANDS['macAddresses'], true, '01:02:03:04:05:06');
+		$this->receiveCommand(
+			command: self::COMMANDS['networkAdapters'],
+			needSudo: true,
+			stdout: 'eth0' . PHP_EOL . 'lo',
+		);
+		$this->receiveCommand(
+			command: self::COMMANDS['ipAddressesEth0'],
+			needSudo: true,
+			stdout: '192.168.1.100/24' . PHP_EOL . 'fda9:d95:d5b1::64/64',
+		);
+		$this->receiveCommand(
+			command: self::COMMANDS['macAddresses'],
+			needSudo: true,
+			stdout: '01:02:03:04:05:06',
+		);
 		$expected = [
 			[
 				'name' => 'eth0',
@@ -92,7 +114,8 @@ final class NetworkManagerTest extends CommandTestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
-		$this->manager = new NetworkManager($this->commandManager);
+		$this->setUpCommandExecutor();
+		$this->manager = new NetworkManager($this->commandExecutor);
 	}
 
 }

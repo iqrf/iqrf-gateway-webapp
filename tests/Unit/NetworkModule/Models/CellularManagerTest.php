@@ -27,16 +27,19 @@ declare(strict_types = 1);
 namespace Tests\Unit\NetworkModule\Models;
 
 use App\NetworkModule\Models\CellularManager;
+use Iqrf\CommandExecutor\Tester\Traits\CommandExecutorTestCase;
 use Nette\Utils\FileSystem;
 use Tester\Assert;
-use Tests\Toolkit\TestCases\CommandTestCase;
+use Tester\TestCase;
 
 require __DIR__ . '/../../../bootstrap.php';
 
 /**
  * Tests for Cellular manager
  */
-final class CellularManagerTest extends CommandTestCase {
+final class CellularManagerTest extends TestCase {
+
+	use CommandExecutorTestCase;
 
 	/**
 	 * @var CellularManager GSM manager
@@ -47,7 +50,11 @@ final class CellularManagerTest extends CommandTestCase {
 	 * Tests the function to scan GSM modems
 	 */
 	public function testScanModems(): void {
-		$this->receiveCommand('mmcli --scan-modems', true, 'successfully requested to scan devices');
+		$this->receiveCommand(
+			command: 'mmcli --scan-modems',
+			needSudo: true,
+			stdout: 'successfully requested to scan devices',
+		);
 		Assert::noError(function (): void {
 			$this->manager->scanModems();
 		});
@@ -57,16 +64,31 @@ final class CellularManagerTest extends CommandTestCase {
 	 * Tests the function to list GSM modems
 	 */
 	public function testListModems(): void {
-		$stdout = '{"modem-list":["/org/freedesktop/ModemManager1/Modem/3"]}';
-		$this->receiveCommand('mmcli --list-modems --output-json', true, $stdout);
-		$stdout = FileSystem::read(TESTER_DIR . '/data/modemManager/connected-3g.json');
-		$this->receiveCommand('mmcli -m /org/freedesktop/ModemManager1/Modem/3 --output-json', true, $stdout);
-		$stdout = '{"modem":{"signal":{"5g":{"error-rate":"--","rsrp":"--","rsrq":"--","snr":"--"},"cdma1x":{"ecio":"--","error-rate":"--","rssi":"--"},"evdo":{"ecio":"--","error-rate":"--","io":"--","rssi":"--","sinr":"--"},"gsm":{"error-rate":"--","rssi":"--"},"lte":{"error-rate":"--","rsrp":"--","rsrq":"--","rssi":"--","snr":"--"},"refresh":{"rate":"0"},"threshold":{"error-rate":"no","rssi":"0"},"umts":{"ecio":"--","error-rate":"--","rscp":"--","rssi":"--"}}}}';
-		$this->receiveCommand('mmcli -m /org/freedesktop/ModemManager1/Modem/3 --signal-get --output-json', true, $stdout);
-		$stdout = 'Successfully setup signal quality information polling';
-		$this->receiveCommand('mmcli -m /org/freedesktop/ModemManager1/Modem/3 --signal-setup=300', true, $stdout);
-		$stdout = '{"modem":{"signal":{"5g":{"error-rate":"--","rsrp":"--","rsrq":"--","snr":"--"},"cdma1x":{"ecio":"--","error-rate":"--","rssi":"--"},"evdo":{"ecio":"--","error-rate":"--","io":"--","rssi":"--","sinr":"--"},"gsm":{"error-rate":"--","rssi":"-67,00"},"lte":{"error-rate":"--","rsrp":"--","rsrq":"--","rssi":"--","snr":"--"},"refresh":{"rate":"300"},"threshold":{"error-rate":"no","rssi":"0"},"umts":{"ecio":"--","error-rate":"--","rscp":"--","rssi":"--"}}}}';
-		$this->receiveCommand('mmcli -m /org/freedesktop/ModemManager1/Modem/3 --signal-get --output-json', true, $stdout);
+		$this->receiveCommand(
+			command: 'mmcli --list-modems --output-json',
+			needSudo: true,
+			stdout: '{"modem-list":["/org/freedesktop/ModemManager1/Modem/3"]}',
+		);
+		$this->receiveCommand(
+			command: 'mmcli -m /org/freedesktop/ModemManager1/Modem/3 --output-json',
+			needSudo: true,
+			stdout: FileSystem::read(TESTER_DIR . '/data/modemManager/connected-3g.json'),
+		);
+		$this->receiveCommand(
+			command: 'mmcli -m /org/freedesktop/ModemManager1/Modem/3 --signal-get --output-json',
+			needSudo: true,
+			stdout: '{"modem":{"signal":{"5g":{"error-rate":"--","rsrp":"--","rsrq":"--","snr":"--"},"cdma1x":{"ecio":"--","error-rate":"--","rssi":"--"},"evdo":{"ecio":"--","error-rate":"--","io":"--","rssi":"--","sinr":"--"},"gsm":{"error-rate":"--","rssi":"--"},"lte":{"error-rate":"--","rsrp":"--","rsrq":"--","rssi":"--","snr":"--"},"refresh":{"rate":"0"},"threshold":{"error-rate":"no","rssi":"0"},"umts":{"ecio":"--","error-rate":"--","rscp":"--","rssi":"--"}}}}',
+		);
+		$this->receiveCommand(
+			command: 'mmcli -m /org/freedesktop/ModemManager1/Modem/3 --signal-setup=300',
+			needSudo: true,
+			stdout: 'Successfully setup signal quality information polling',
+		);
+		$this->receiveCommand(
+			command: 'mmcli -m /org/freedesktop/ModemManager1/Modem/3 --signal-get --output-json',
+			needSudo: true,
+			stdout: '{"modem":{"signal":{"5g":{"error-rate":"--","rsrp":"--","rsrq":"--","snr":"--"},"cdma1x":{"ecio":"--","error-rate":"--","rssi":"--"},"evdo":{"ecio":"--","error-rate":"--","io":"--","rssi":"--","sinr":"--"},"gsm":{"error-rate":"--","rssi":"-67,00"},"lte":{"error-rate":"--","rsrp":"--","rsrq":"--","rssi":"--","snr":"--"},"refresh":{"rate":"300"},"threshold":{"error-rate":"no","rssi":"0"},"umts":{"ecio":"--","error-rate":"--","rscp":"--","rssi":"--"}}}}',
+		);
 		$actual = $this->manager->listModems();
 		$expected = [
 			[
@@ -88,7 +110,8 @@ final class CellularManagerTest extends CommandTestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
-		$this->manager = new CellularManager($this->commandManager);
+		$this->setUpCommandExecutor();
+		$this->manager = new CellularManager($this->commandExecutor);
 	}
 
 }

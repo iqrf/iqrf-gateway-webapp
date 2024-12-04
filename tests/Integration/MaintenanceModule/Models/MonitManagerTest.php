@@ -29,17 +29,20 @@ namespace Tests\Integration\MaintenanceModule\Models;
 use App\CoreModule\Models\FileManager;
 use App\MaintenanceModule\Exceptions\MonitConfigErrorException;
 use App\MaintenanceModule\Models\MonitManager;
+use Iqrf\CommandExecutor\Tester\Traits\CommandExecutorTestCase;
 use Nette\Utils\FileSystem;
 use Tester\Assert;
 use Tester\Environment;
-use Tests\Toolkit\TestCases\CommandTestCase;
+use Tester\TestCase;
 
 require __DIR__ . '/../../../bootstrap.php';
 
 /**
  * Tests for Monit manager
  */
-final class MonitManagerTest extends CommandTestCase {
+final class MonitManagerTest extends TestCase {
+
+	use CommandExecutorTestCase;
 
 	/**
 	 * @var FileManager Text file manager
@@ -123,8 +126,15 @@ final class MonitManagerTest extends CommandTestCase {
 	 */
 	public function testSaveConfig(): void {
 		$realPath = realpath($this->fileManagerTemp->getBasePath());
-		$this->receiveCommand('monit -t -c ' . escapeshellarg($realPath . '/conf-available/check_system'), true);
-		$this->receiveCommand('monit -t -c ' . escapeshellarg($realPath . '/conf-available/mmonit'), true, '', '', 0, 2);
+		$this->receiveCommand(
+			command: 'monit -t -c ' . escapeshellarg($realPath . '/conf-available/check_system'),
+			needSudo: true,
+		);
+		$this->receiveCommand(
+			command: 'monit -t -c ' . escapeshellarg($realPath . '/conf-available/mmonit'),
+			needSudo: true,
+			count: 2,
+		);
 		$expected = [
 			'checks' => [
 				[
@@ -151,20 +161,30 @@ final class MonitManagerTest extends CommandTestCase {
 	protected function setUp(): void {
 		Environment::lock('monit', TMP_DIR);
 		parent::setUp();
+		$this->setUpCommandExecutor();
 		$monitDir = realpath(TESTER_DIR . '/data/maintenance/monit/');
 		$monitTempDir = realpath(TMP_DIR) . '/maintenance/monit/';
+		$filesToChmod = [
+			'' => 777,
+			'/conf-available/check_system' => 666,
+			'/conf-available/mmonit' => 666,
+			'/conf-enabled/check_system' => 666,
+			'/conf-enabled/mmonit' => 666,
+		];
 		foreach ([$monitDir, $monitTempDir] as $dir) {
-			$this->receiveCommand('chmod 777 ' . escapeshellarg($dir), true, '', '', 0, null);
-			$this->receiveCommand('chmod 666 ' . escapeshellarg($dir . '/conf-available/check_system'), true, '', '', 0, null);
-			$this->receiveCommand('chmod 666 ' . escapeshellarg($dir . '/conf-available/mmonit'), true, '', '', 0, null);
-			$this->receiveCommand('chmod 666 ' . escapeshellarg($dir . '/conf-enabled/check_system'), true, '', '', 0, null);
-			$this->receiveCommand('chmod 666 ' . escapeshellarg($dir . '/conf-enabled/mmonit'), true, '', '', 0, null);
+			foreach ($filesToChmod as $file => $mode) {
+				$this->receiveCommand(
+					command: 'chmod ' . $mode . ' ' . escapeshellarg($dir . $file),
+					needSudo: true,
+					count: null,
+				);
+			}
 		}
 		FileSystem::copy($monitDir, $monitTempDir);
-		$this->fileManager = new FileManager($monitDir, $this->commandManager);
-		$this->fileManagerTemp = new FileManager($monitTempDir, $this->commandManager);
-		$this->manager = new MonitManager($this->fileManager, $this->commandManager);
-		$this->managerTemp = new MonitManager($this->fileManagerTemp, $this->commandManager);
+		$this->fileManager = new FileManager($monitDir, $this->commandExecutor);
+		$this->fileManagerTemp = new FileManager($monitTempDir, $this->commandExecutor);
+		$this->manager = new MonitManager($this->fileManager, $this->commandExecutor);
+		$this->managerTemp = new MonitManager($this->fileManagerTemp, $this->commandExecutor);
 	}
 
 }

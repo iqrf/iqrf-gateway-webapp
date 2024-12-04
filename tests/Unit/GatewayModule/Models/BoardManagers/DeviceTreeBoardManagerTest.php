@@ -27,15 +27,18 @@ declare(strict_types = 1);
 namespace Tests\Unit\GatewayModule\Models\BoardManagers;
 
 use App\GatewayModule\Models\BoardManagers\DeviceTreeBoardManager;
+use Iqrf\CommandExecutor\Tester\Traits\CommandExecutorTestCase;
 use Tester\Assert;
-use Tests\Toolkit\TestCases\CommandTestCase;
+use Tester\TestCase;
 
 require __DIR__ . '/../../../../bootstrap.php';
 
 /**
  * Tests for Device tree board manager
  */
-final class DeviceTreeBoardManagerTest extends CommandTestCase {
+final class DeviceTreeBoardManagerTest extends TestCase {
+
+	use CommandExecutorTestCase;
 
 	/**
 	 * Executed command
@@ -52,7 +55,11 @@ final class DeviceTreeBoardManagerTest extends CommandTestCase {
 	 */
 	public function testGetNameSuccess(): void {
 		$expected = 'Raspberry Pi 2 Models B Rev 1.1';
-		$this->receiveCommand(self::COMMAND, true, $expected);
+		$this->receiveCommand(
+			command: self::COMMAND,
+			needSudo: true,
+			stdout: $expected,
+		);
 		Assert::same($expected, $this->manager->getName());
 	}
 
@@ -60,7 +67,7 @@ final class DeviceTreeBoardManagerTest extends CommandTestCase {
 	 * Tests the function to get board's name from DMI (fail)
 	 */
 	public function testGetNameFail(): void {
-		$this->receiveCommand(self::COMMAND, true);
+		$this->receiveCommand(command: self::COMMAND, needSudo: true);
 		Assert::null($this->manager->getName());
 	}
 
@@ -69,7 +76,8 @@ final class DeviceTreeBoardManagerTest extends CommandTestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
-		$this->manager = new DeviceTreeBoardManager($this->commandManager);
+		$this->setUpCommandExecutor();
+		$this->manager = new DeviceTreeBoardManager($this->commandExecutor);
 	}
 
 }
