@@ -291,11 +291,10 @@ export class Client {
 	 * Add a response interceptor
 	 * @param {Function} onFulfilled Fulfilled callback
 	 * @param {Function} onRejected Rejected callback
-	 * @param {AxiosInterceptorOptions} options Interceptor options
 	 * @return {number} Interceptor ID
 	 */
-	public useResponseInterceptor(onFulfilled?: ((value: AxiosResponse) => AxiosResponse | Promise<AxiosResponse>) | null, onRejected?: ((error: any) => any) | null, options?: AxiosInterceptorOptions): number {
-		return this.axiosInstance.interceptors.response.use(onFulfilled, onRejected, options);
+	public useResponseInterceptor(onFulfilled?: ((value: AxiosResponse) => AxiosResponse | Promise<AxiosResponse>) | null, onRejected?: ((error: any) => any) | null): number {
+		return this.axiosInstance.interceptors.response.use(onFulfilled, onRejected);
 	}
 
 	/**
