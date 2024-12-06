@@ -26,10 +26,6 @@
 					/>
 				</ValidationProvider>
 				<CInputCheckbox
-					:checked.sync='setJsonSplitter'
-					:label='$t("gateway.hostname.setJsonSplitter")'
-				/>
-				<CInputCheckbox
 					:checked.sync='setIdeCounterpart'
 					:label='$t("gateway.hostname.setIdeCounterpart")'
 				/>
@@ -65,10 +61,8 @@ import GatewayService from '@/services/GatewayService';
 
 import {IHostname} from '@/interfaces/Gateway/Information';
 import {AxiosError, AxiosResponse} from 'axios';
+import { IIdeCounterpart } from '@/interfaces/Config/IdeCounterpart';
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
-import {IJsonSplitter} from '@/interfaces/Config/JsonApi';
-import {IIdeCounterpart} from '@/interfaces/Config/IdeCounterpart';
-
 
 @Component({
 	components: {
@@ -98,13 +92,8 @@ export default class HostnameChange extends Vue {
 	private render = false;
 
 	/**
-	 * @property {boolean} setJsonSplitter Controls whether or not to set JsonSplitter instance ID
-   */
-	private setJsonSplitter: boolean = false;
-
-	/**
 	 * @property {boolean} setIdeCounterpart Controls whether or not to set IQRF IDE counterpart gwIdentName
-   */
+	 */
 	private setIdeCounterpart: boolean = false;
 
 	/**
@@ -133,7 +122,6 @@ export default class HostnameChange extends Vue {
 	private async save(): Promise<void> {
 		this.$store.commit('spinner/SHOW');
 		Promise.all([
-			this.setJsonSplitterConfig(),
 			this.setIdeCounterpartConfig(),
 			GatewayService.setHostname(this.config)
 		])
@@ -142,7 +130,7 @@ export default class HostnameChange extends Vue {
 				this.$toast.success(
 					this.$t('gateway.hostname.messages.success').toString()
 				);
-				if (this.setJsonSplitter || this.setIdeCounterpart) {
+				if (this.setIdeCounterpart) {
 					this.$toast.info(
 						this.$t('gateway.hostname.messages.daemonRestart').toString()
 					);
@@ -167,24 +155,8 @@ export default class HostnameChange extends Vue {
 		if (componentConfig === null) {
 			return;
 		}
-		componentConfig.gwIdentName = this.config.hostname;
+		componentConfig.gwIdentNetBios = this.config.hostname;
 		await DaemonConfigurationService.updateInstance('iqrf::IdeCounterpart', componentConfig.instance, componentConfig);
-	}
-
-	/**
-	 * Sets a new hostname as JsonSplitter instance ID
-   */
-	private async setJsonSplitterConfig(): Promise<void> {
-		if (!this.setJsonSplitter) {
-			return;
-		}
-		const componentConfig: IJsonSplitter|null = await DaemonConfigurationService.getComponent('iqrf::JsonSplitter')
-			.then((response: AxiosResponse<{instances: IJsonSplitter[]}>) => response.data.instances[0] ?? null);
-		if (componentConfig === null) {
-			return;
-		}
-		componentConfig.insId = this.config.hostname;
-		await DaemonConfigurationService.updateInstance('iqrf::JsonSplitter', componentConfig.instance, componentConfig);
 	}
 
 	/**
