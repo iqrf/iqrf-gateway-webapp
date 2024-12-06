@@ -84,6 +84,18 @@ class GatewayInfoUtil {
 	}
 
 	/**
+	 * Returns gateway ID with null as default if it doesn't exist
+	 * @return string|null Gateway ID
+	 */
+	public function getIdNullable(): ?string {
+		$gwId = $this->read()['gwId'];
+		if ($gwId === 'FFFFFFFFFFFFFFFF') {
+			return null;
+		}
+		return $gwId;
+	}
+
+	/**
 	 * Returns gateway host
 	 * @return string Gateway host
 	 */

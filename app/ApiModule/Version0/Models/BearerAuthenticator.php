@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ApiModule\Version0\Models;
 
+use App\GatewayModule\Models\Utils\GatewayInfoUtil;
 use App\Models\Database\Entities\ApiKey;
 use App\Models\Database\Entities\User;
 use App\Models\Database\EntityManager;
@@ -46,13 +47,24 @@ class BearerAuthenticator implements IAuthenticator {
 	private Configuration $configuration;
 
 	/**
+	 * @var GatewayInfoUtil Gateway info
+	 */
+	private GatewayInfoUtil $gatewayInfo;
+
+	/**
 	 * Constructor
 	 * @param JwtConfigurator $configurator JWT configurator
 	 * @param EntityManager $entityManager Entity manager
+	 * @param GatewayInfoUtil $gatewayInfo Gateway info
 	 */
-	public function __construct(JwtConfigurator $configurator, EntityManager $entityManager) {
+	public function __construct(
+		JwtConfigurator $configurator,
+		EntityManager $entityManager,
+		GatewayInfoUtil $gatewayInfo
+	) {
 		$this->configuration = $configurator->create();
 		$this->entityManager = $entityManager;
+		$this->gatewayInfo = $gatewayInfo;
 	}
 
 	/**
@@ -109,7 +121,7 @@ class BearerAuthenticator implements IAuthenticator {
 	 * @return bool Is JWT valid?
 	 */
 	private function isJwtValid(Plain $token): bool {
-		$hostname = gethostname();
+		$gwId = $this->gatewayInfo->getIdNullable();
 		$now = new DateTimeImmutable();
 		$validator = $this->configuration->validator();
 		$signer = $this->configuration->signer();
@@ -119,8 +131,8 @@ class BearerAuthenticator implements IAuthenticator {
 			!$token->isExpired($now) &&
 			$token->claims()->has('uid') &&
 			$token->hasBeenIssuedBefore($now) &&
-			($hostname === false || $token->hasBeenIssuedBy($hostname) &&
-				$token->isIdentifiedBy($hostname));
+			($gwId === null || ($token->hasBeenIssuedBy($gwId) &&
+				$token->isIdentifiedBy($gwId)));
 	}
 
 	/**

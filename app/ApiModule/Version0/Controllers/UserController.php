@@ -37,6 +37,7 @@ use App\CoreModule\Models\UserManager;
 use App\Exceptions\InvalidEmailAddressException;
 use App\Exceptions\InvalidPasswordException;
 use App\Exceptions\InvalidUserLanguageException;
+use App\GatewayModule\Models\Utils\GatewayInfoUtil;
 use App\Models\Database\Entities\PasswordRecovery;
 use App\Models\Database\Entities\User;
 use App\Models\Database\EntityManager;
@@ -45,7 +46,6 @@ use DateTimeImmutable;
 use Lcobucci\JWT\Configuration;
 use Nette\Mail\SendException;
 use Throwable;
-use function gethostname;
 
 /**
  * User manager API controller
@@ -65,6 +65,11 @@ class UserController extends BaseController {
 	private EntityManager $entityManager;
 
 	/**
+	 * @var GatewayInfoUtil Gateway info
+	 */
+	private GatewayInfoUtil $gatewayInfo;
+
+	/**
 	 * @var UserManager User manager
 	 */
 	private UserManager $manager;
@@ -78,13 +83,22 @@ class UserController extends BaseController {
 	 * Constructor
 	 * @param JwtConfigurator $configurator JWT configurator
 	 * @param EntityManager $entityManager Entity manager
+	 * @param GatewayInfoUtil $gatewayInfo Gateway info
 	 * @param UserManager $manager User manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 * @param PasswordRecoveryMailSender $passwordRecoverySender Forgotten password recovery e-mail sender
 	 */
-	public function __construct(JwtConfigurator $configurator, EntityManager $entityManager, UserManager $manager, RestApiSchemaValidator $validator, PasswordRecoveryMailSender $passwordRecoverySender) {
+	public function __construct(
+		JwtConfigurator $configurator,
+		EntityManager $entityManager,
+		GatewayInfoUtil $gatewayInfo,
+		UserManager $manager,
+		RestApiSchemaValidator $validator,
+		PasswordRecoveryMailSender $passwordRecoverySender
+	) {
 		$this->configuration = $configurator->create();
 		$this->entityManager = $entityManager;
+		$this->gatewayInfo = $gatewayInfo;
 		$this->manager = $manager;
 		$this->passwordRecoverySender = $passwordRecoverySender;
 		parent::__construct($validator);
@@ -523,13 +537,13 @@ class UserController extends BaseController {
 		} catch (Throwable $e) {
 			throw new ServerErrorException('Date creation error', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
-		$hostname = gethostname();
+		$gwId = $this->gatewayInfo->getIdNullable();
 		$builder = $this->configuration->builder()
 			->issuedAt($now)
 			->expiresAt($now->modify('+90 min'))
 			->withClaim('uid', $user->getId());
-		if ($hostname !== false) {
-			$builder->issuedBy($hostname)->identifiedBy($hostname);
+		if ($gwId !== null) {
+			$builder->issuedBy($gwId)->identifiedBy($gwId);
 		}
 		$signer = $this->configuration->signer();
 		$signingKey = $this->configuration->signingKey();
