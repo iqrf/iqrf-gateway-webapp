@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ApiModule\Version0\Models;
 
+use App\GatewayModule\Models\Utils\GatewayInfoUtil;
 use App\Models\Database\Entities\ApiKey;
 use App\Models\Database\Entities\User;
 use App\Models\Database\EntityManager;
@@ -38,10 +39,12 @@ class BearerAuthenticator implements IAuthenticator {
 	 * Constructor
 	 * @param JwtConfigurator $jwtConfigurator JWT configurator
 	 * @param EntityManager $entityManager Entity manager
+	 * @param GatewayInfoUtil $gatewayInfo Gateway info
 	 */
 	public function __construct(
 		private readonly JwtConfigurator $jwtConfigurator,
 		private readonly EntityManager $entityManager,
+		private readonly GatewayInfoUtil $gatewayInfo,
 	) {
 	}
 
@@ -122,7 +125,7 @@ class BearerAuthenticator implements IAuthenticator {
 	 * @return bool Is JWT valid?
 	 */
 	private function isJwtValid(Plain $token): bool {
-		$hostname = gethostname();
+		$gwid = $this->gatewayInfo->getIdNullable();
 		$now = new DateTimeImmutable();
 		$configuration = $this->jwtConfigurator->create();
 		$validator = $configuration->validator();
@@ -133,8 +136,7 @@ class BearerAuthenticator implements IAuthenticator {
 			!$token->isExpired($now) &&
 			$token->claims()->has('uid') &&
 			$token->hasBeenIssuedBefore($now) &&
-			($hostname === false || $token->hasBeenIssuedBy($hostname) &&
-				$token->isIdentifiedBy($hostname));
+			($gwid === null || ($token->hasBeenIssuedBy($gwid) && $token->isIdentifiedBy($gwid)));
 	}
 
 }

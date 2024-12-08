@@ -198,6 +198,15 @@ final class GatewayInfoUtilTest extends TestCase {
 	}
 
 	/**
+	 * Tests the function to get gateway ID with null
+	 */
+	public function testGetIdNullable(): void {
+		Assert::same(self::GW_ID, $this->gwInfo->getIdNullable());
+		Assert::same(self::GW_ID, $this->incompleteGwInfo->getIdNullable());
+		Assert::null($this->defaultGwInfo->getIdNullable());
+	}
+
+	/**
 	 * Tests the function to get host
 	 */
 	public function testGetHost(): void {
