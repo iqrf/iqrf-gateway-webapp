@@ -134,7 +134,7 @@ limitations under the License.
 									lg='2'
 								>
 									<v-checkbox
-										:checked.sync='config.factoryReset.cloudProv'
+										v-model='config.factoryReset.cloudProv'
 										:label='$t("config.controller.form.factoryReset.cloudProv")'
 									/>
 								</v-col>
@@ -145,7 +145,7 @@ limitations under the License.
 									lg='2'
 								>
 									<v-checkbox
-										:checked.sync='config.factoryReset.iqaros'
+										v-model='config.factoryReset.iqaros'
 										:label='$t("config.controller.form.factoryReset.iqaros")'
 									/>
 								</v-col>

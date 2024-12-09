@@ -35,7 +35,10 @@ limitations under the License.
 								<tr v-for='check of configuration.checks' :key='check.name'>
 									<td>{{ check.name.replace('_', ' ') }}</td>
 									<td>
-										<CInputCheckbox :checked.sync='check.enabled' class='float-right' />
+										<v-checkbox
+											v-model='check.enabled'
+											class='float-right'
+										/>
 									</td>
 								</tr>
 							</tbody>

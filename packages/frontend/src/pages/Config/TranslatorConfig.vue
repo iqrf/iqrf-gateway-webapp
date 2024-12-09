@@ -212,7 +212,7 @@ limitations under the License.
 								</v-col>
 								<v-col cols='12' md='6'>
 									<v-checkbox
-										:checked.sync='config.mqtt.tls.require_broker_certificate'
+										v-model='config.mqtt.tls.require_broker_certificate'
 										:label='$t("config.translator.form.mqtt.tls.requireBrokerCert")'
 									/>
 								</v-col>
