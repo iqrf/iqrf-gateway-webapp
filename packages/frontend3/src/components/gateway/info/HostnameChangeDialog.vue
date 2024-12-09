@@ -44,10 +44,6 @@ limitations under the License.
 					required
 				/>
 				<v-checkbox
-					v-model='setSplitterId'
-					:label='$t("components.gateway.information.hostnameChange.setSplitterId")'
-				/>
-				<v-checkbox
 					v-model='setIdeHostname'
 					:label='$t("components.gateway.information.hostnameChange.setIdeHostname")'
 				/>
@@ -74,8 +70,6 @@ import {
 	type IqrfGatewayDaemonComponent,
 	IqrfGatewayDaemonComponentName,
 	type IqrfGatewayDaemonIdeCounterpart,
-	type IqrfGatewayDaemonJsonSplitter,
-	type IqrfGatewayDaemonJsonSplitterV3,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { mdiPencil, mdiTextShort } from '@mdi/js';
 import { type PropType, ref, type Ref, watchEffect } from 'vue';
@@ -105,10 +99,8 @@ const daemonConfigurationService: IqrfGatewayDaemonService = useApiClient().getC
 const show: Ref<boolean> = ref(false);
 const form: Ref<VForm | null> = ref(null);
 const hostname: Ref<string> = ref('');
-const setSplitterId: Ref<boolean> = ref(false);
 const setIdeHostname: Ref<boolean> = ref(false);
 const ideComponentComponent = IqrfGatewayDaemonComponentName.IqrfIdeCounterpart;
-const splitterComponent = IqrfGatewayDaemonComponentName.IqrfJsonSplitter;
 
 watchEffect((): void => {
 	if (componentProps.currentHostname === null) {
@@ -123,7 +115,6 @@ async function onSubmit(): Promise<void> {
 		return;
 	}
 	Promise.all([
-		updateSplitterConfig(),
 		updateIdeCounterpartConfig(),
 		hostnameService.updateHostname(hostname.value),
 	])
@@ -131,7 +122,7 @@ async function onSubmit(): Promise<void> {
 			toast.success(
 				i18n.t('components.gateway.information.hostnameChange.messages.save.success'),
 			);
-			if (setSplitterId.value || setIdeHostname.value) {
+			if (setIdeHostname.value) {
 				toast.success(
 					i18n.t('components.gateway.information.hostnameChange.messages.daemonRestart'),
 				);
@@ -143,20 +134,6 @@ async function onSubmit(): Promise<void> {
 		.catch(() => {
 			toast.error('TODO ERROR HANDLING');
 		});
-}
-
-async function updateSplitterConfig(): Promise<void> {
-	if (!setSplitterId.value) {
-		return;
-	}
-	const instance: IqrfGatewayDaemonJsonSplitter | IqrfGatewayDaemonJsonSplitterV3 | null = await daemonConfigurationService.getComponent(splitterComponent)
-		.then((response: IqrfGatewayDaemonComponent<IqrfGatewayDaemonComponentName.IqrfJsonSplitter>): IqrfGatewayDaemonJsonSplitter | IqrfGatewayDaemonJsonSplitterV3 | null =>
-			response.instances[0] ?? null);
-	if (instance === null) {
-		return;
-	}
-	instance.insId = hostname.value;
-	await daemonConfigurationService.updateInstance(splitterComponent, instance.instance, instance);
 }
 
 async function updateIdeCounterpartConfig(): Promise<void> {
@@ -174,7 +151,6 @@ async function updateIdeCounterpartConfig(): Promise<void> {
 }
 
 function clear(): void {
-	setSplitterId.value = false;
 	setIdeHostname.value = false;
 }
 

@@ -55,10 +55,6 @@ limitations under the License.
 							/>
 						</ValidationProvider>
 						<v-checkbox
-							v-model='setJsonSplitter'
-							:label='$t("gateway.hostname.setJsonSplitter")'
-						/>
-						<v-checkbox
 							v-model='setIdeCounterpart'
 							:label='$t("gateway.hostname.setIdeCounterpart")'
 						/>
@@ -87,7 +83,6 @@ import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {machineHostname} from '@/helpers/validationRules/Gateway';
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
-import {IJsonSplitter} from '@/interfaces/Config/JsonApi';
 import {IIdeCounterpart} from '@/interfaces/Config/IdeCounterpart';
 import {useApiClient} from '@/services/ApiClient';
 
@@ -113,14 +108,10 @@ export default class HostnameChange extends Vue {
 	 */
 	private render = false;
 
-	/**
-	 * @property {boolean} setJsonSplitter Controls whether or not to set JsonSplitter instance ID
-   */
-	private setJsonSplitter: boolean = false;
 
 	/**
 	 * @property {boolean} setIdeCounterpart Controls whether or not to set IQRF IDE counterpart gwIdentName
-   */
+	 */
 	private setIdeCounterpart: boolean = false;
 
 	/**
@@ -147,7 +138,6 @@ export default class HostnameChange extends Vue {
 	private async save(): Promise<void> {
 		this.$store.commit('spinner/SHOW');
 		Promise.all([
-			this.setJsonSplitterConfig(),
 			this.setIdeCounterpartConfig(),
 			useApiClient().getGatewayServices().getHostnameService().updateHostname(this.hostname)
 		])
@@ -156,7 +146,7 @@ export default class HostnameChange extends Vue {
 				this.$toast.success(
 					this.$t('gateway.hostname.messages.success').toString()
 				);
-				if (this.setJsonSplitter || this.setIdeCounterpart) {
+				if (this.setIdeCounterpart) {
 					this.$toast.info(
 						this.$t('gateway.hostname.messages.daemonRestart').toString()
 					);
@@ -171,7 +161,7 @@ export default class HostnameChange extends Vue {
 
 	/**
 	 * Sets a new hostname for IDE counterpart component
-   */
+	 */
 	private async setIdeCounterpartConfig(): Promise<void> {
 		if (!this.setIdeCounterpart) {
 			return;
@@ -183,22 +173,6 @@ export default class HostnameChange extends Vue {
 		}
 		componentConfig.gwIdentNetBios = this.hostname;
 		await DaemonConfigurationService.updateInstance('iqrf::IdeCounterpart', componentConfig.instance, componentConfig);
-	}
-
-	/**
-	 * Sets a new hostname as JsonSplitter instance ID
-   */
-	private async setJsonSplitterConfig(): Promise<void> {
-		if (!this.setJsonSplitter) {
-			return;
-		}
-		const componentConfig: IJsonSplitter|null = await DaemonConfigurationService.getComponent('iqrf::JsonSplitter')
-			.then((response: AxiosResponse<{instances: IJsonSplitter[]}>) => response.data.instances[0] ?? null);
-		if (componentConfig === null) {
-			return;
-		}
-		componentConfig.insId = this.hostname;
-		await DaemonConfigurationService.updateInstance('iqrf::JsonSplitter', componentConfig.instance, componentConfig);
 	}
 
 	/**
