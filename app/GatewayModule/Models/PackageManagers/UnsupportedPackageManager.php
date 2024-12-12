@@ -29,7 +29,7 @@ class UnsupportedPackageManager implements IPackageManager {
 
 	/**
 	 * Installs the packages
-	 * @param callable $callback Callback
+	 * @param callable('out'|'err' $type, string $data): void $callback Callback
 	 * @param array<string> $packages Packages to install
 	 * @throws UnsupportedPackageManagerException
 	 */
@@ -39,7 +39,7 @@ class UnsupportedPackageManager implements IPackageManager {
 
 	/**
 	 * Lists upgradable packages
-	 * @param callable $callback Callback
+	 * @param callable('out'|'err' $type, string $data): void $callback Callback
 	 * @throws UnsupportedPackageManagerException
 	 */
 	public function listUpgradable(callable $callback): void {
@@ -58,7 +58,7 @@ class UnsupportedPackageManager implements IPackageManager {
 
 	/**
 	 * Purges the packages
-	 * @param callable $callback Callback
+	 * @param callable('out'|'err' $type, string $data): void $callback Callback
 	 * @param array<string> $packages Packages to purge
 	 * @throws UnsupportedPackageManagerException
 	 */
@@ -68,7 +68,7 @@ class UnsupportedPackageManager implements IPackageManager {
 
 	/**
 	 * Removes the packages
-	 * @param callable $callback Callback
+	 * @param callable('out'|'err' $type, string $data): void $callback Callback
 	 * @param array<string> $packages Packages to remove
 	 * @throws UnsupportedPackageManagerException
 	 */
@@ -78,7 +78,7 @@ class UnsupportedPackageManager implements IPackageManager {
 
 	/**
 	 * Updates a list of packages
-	 * @param callable $callback Callback
+	 * @param callable('out'|'err' $type, string $data): void $callback Callback
 	 * @throws UnsupportedPackageManagerException
 	 */
 	public function update(callable $callback): void {
@@ -87,7 +87,7 @@ class UnsupportedPackageManager implements IPackageManager {
 
 	/**
 	 * Upgrades packages
-	 * @param callable $callback Callback
+	 * @param callable('out'|'err' $type, string $data): void $callback Callback
 	 * @throws UnsupportedPackageManagerException
 	 */
 	public function upgrade(callable $callback): void {

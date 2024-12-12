@@ -63,29 +63,20 @@ class ApiKey implements JsonSerializable {
 	private string $salt;
 
 	/**
-	 * @var string API key description
-	 */
-	#[ORM\Column(type: Types::STRING, length: 255)]
-	private string $description;
-
-	/**
-	 * @var DateTime|null API key expiration
-	 */
-	#[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-	private ?DateTime $expiration;
-
-	/**
 	 * Constructor
 	 * @param string $description API key description
 	 * @param DateTime|null $expiration API key expiration
 	 */
-	public function __construct(string $description, ?DateTime $expiration) {
+	public function __construct(
+		#[ORM\Column(type: Types::STRING, length: 255)]
+		private string $description,
+		#[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+		private ?DateTime $expiration,
+	) {
 		$this->key = base64_encode(random_bytes(32));
 		$this->hash = password_hash($this->key, PASSWORD_BCRYPT);
 		$saltHash = explode('$', $this->hash);
 		$this->salt = Strings::substring(end($saltHash), 0, 22);
-		$this->description = $description;
-		$this->expiration = $expiration;
 	}
 
 	/**
@@ -181,7 +172,12 @@ class ApiKey implements JsonSerializable {
 
 	/**
 	 * Returns JSON serialized data
-	 * @return array<string, int|string|null> JSON serialized data
+	 * @return array{
+	 *     id: int|null,
+	 *     description: string,
+	 *     expiration: string|null,
+	 *     key?: string
+	 * } JSON serialized data
 	 */
 	public function jsonSerialize(): array {
 		$array = [

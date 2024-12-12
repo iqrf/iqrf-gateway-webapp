@@ -39,18 +39,14 @@ class PasswordRecovery {
 	use TCreatedAt;
 
 	/**
-	 * @var User User ID
-	 */
-	#[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist'])]
-	#[ORM\JoinColumn(name: 'user', onDelete: 'CASCADE')]
-	private User $user;
-
-	/**
 	 * Constructor
 	 * @param User $user User
 	 */
-	public function __construct(User $user) {
-		$this->user = $user;
+	public function __construct(
+		#[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist'])]
+		#[ORM\JoinColumn(name: 'user', nullable: false, onDelete: 'CASCADE')]
+		private User $user,
+	) {
 	}
 
 	/**

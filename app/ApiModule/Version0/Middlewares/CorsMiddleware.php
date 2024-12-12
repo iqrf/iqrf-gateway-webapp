@@ -29,6 +29,13 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class CorsMiddleware implements IMiddleware {
 
+	/**
+	 * Middleware invocation
+	 * @param ServerRequestInterface $request Request
+	 * @param ResponseInterface $response Response
+	 * @param callable(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface $next
+	 * @return ResponseInterface Response
+	 */
 	public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next): ResponseInterface {
 		// Add CORS headers
 		if ($request->getMethod() === 'OPTIONS') {

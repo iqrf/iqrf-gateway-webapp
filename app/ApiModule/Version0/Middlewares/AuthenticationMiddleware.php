@@ -111,7 +111,18 @@ class AuthenticationMiddleware implements IMiddleware {
 			->withHeader('Content-Type', 'application/json');
 	}
 
-	public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next): ResponseInterface {
+	/**
+	 * Middleware invocation
+	 * @param ServerRequestInterface $request Request
+	 * @param ResponseInterface $response Response
+	 * @param callable(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface $next
+	 * @return ResponseInterface Response
+	 */
+	public function __invoke(
+		ServerRequestInterface $request,
+		ResponseInterface $response,
+		callable $next,
+	): ResponseInterface {
 		if ($this->isWhitelisted($request)) {
 			// Pass to next middleware
 			return $next($request, $response);

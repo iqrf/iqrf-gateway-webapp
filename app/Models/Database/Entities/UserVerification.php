@@ -44,7 +44,7 @@ class UserVerification {
 	 */
 	public function __construct(
 		#[ORM\OneToOne(inversedBy: 'verification', targetEntity: User::class)]
-		#[ORM\JoinColumn(name: 'user', onDelete: 'CASCADE')]
+		#[ORM\JoinColumn(name: 'user', nullable: false, onDelete: 'CASCADE')]
 		public readonly User $user,
 	) {
 	}

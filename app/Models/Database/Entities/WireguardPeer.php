@@ -65,7 +65,7 @@ class WireguardPeer implements JsonSerializable {
 		#[ORM\Column(type: Types::INTEGER)]
 		private int $port,
 		#[ORM\ManyToOne(targetEntity: WireguardInterface::class, inversedBy: 'peers')]
-		#[ORM\JoinColumn(name: 'interface_id')]
+		#[ORM\JoinColumn(name: 'interface_id', nullable: false)]
 		private WireguardInterface $interface,
 	) {
 		$this->addresses = new ArrayCollection();
@@ -201,7 +201,26 @@ class WireguardPeer implements JsonSerializable {
 
 	/**
 	 * Serializes WireGuard peer entity into JSON
-	 * @return array<string, array<string, array<int, mixed>>|int|string|null> JSON serialized WireGuard peer entity
+	 * @return array{
+	 *     id: int|null,
+	 *     publicKey: string,
+	 *     psk: string|null,
+	 *     keepalive: int,
+	 *     endpoint: string,
+	 *     port: int,
+	 *     allowedIPs: array{
+	 *         ipv4: array<array{
+	 *             id: int|null,
+	 *             address: string,
+	 *             prefix: int,
+	 *         }>,
+	 *         ipv6: array<array{
+	 *             id: int|null,
+	 *             address: string,
+	 *             prefix: int,
+	 *         }>,
+	 *     },
+	 * } JSON serialized WireGuard peer entity
 	 */
 	public function jsonSerialize(): array {
 		$ipv4 = $ipv6 = [];

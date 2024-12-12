@@ -46,7 +46,7 @@ class UserPreferences implements JsonSerializable {
 	 */
 	public function __construct(
 		#[ORM\OneToOne(inversedBy: 'preferences', targetEntity: User::class)]
-		#[ORM\JoinColumn(name: 'user', onDelete: 'CASCADE')]
+		#[ORM\JoinColumn(name: 'user', nullable: false, onDelete: 'CASCADE')]
 		private readonly User $user,
 		#[ORM\Column(type: Types::INTEGER, enumType: TimeFormat::class, options: ['default' => TimeFormat::Auto])]
 		private TimeFormat $timeFormat = TimeFormat::Auto,

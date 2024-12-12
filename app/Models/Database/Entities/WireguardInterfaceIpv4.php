@@ -51,21 +51,18 @@ class WireguardInterfaceIpv4 implements JsonSerializable {
 	private int $prefix;
 
 	/**
-	 * @var WireguardInterface WireGuard interface
-	 */
-	#[ORM\OneToOne(inversedBy: 'ipv4', targetEntity: WireguardInterface::class)]
-	#[ORM\JoinColumn(name: 'interface_id')]
-	private WireguardInterface $interface;
-
-	/**
 	 * Constructor
 	 * @param MultiAddress $address Interface address
 	 * @param WireguardInterface $interface WireGuard interface
 	 */
-	public function __construct(MultiAddress $address, WireguardInterface $interface) {
+	public function __construct(
+		MultiAddress $address,
+		#[ORM\OneToOne(inversedBy: 'ipv4', targetEntity: WireguardInterface::class)]
+		#[ORM\JoinColumn(name: 'interface_id', nullable: false)]
+		private WireguardInterface $interface,
+	) {
 		$this->address = $address->getAddress();
 		$this->prefix = $address->getPrefix();
-		$this->interface = $interface;
 	}
 
 	/**
@@ -103,7 +100,11 @@ class WireguardInterfaceIpv4 implements JsonSerializable {
 
 	/**
 	 * Serializes WireGuard interface IPv4 address to JSON
-	 * @return array{id: int|null, address: string, prefix: int} JSON serialized WireGuard interface IPv4 address
+	 * @return array{
+	 *     id: int|null,
+	 *     address: string,
+	 *     prefix: int,
+	 * } JSON serialized WireGuard interface IPv4 address
 	 */
 	public function jsonSerialize(): array {
 		return [

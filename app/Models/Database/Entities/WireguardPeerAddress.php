@@ -51,21 +51,18 @@ class WireguardPeerAddress implements JsonSerializable {
 	private int $prefix;
 
 	/**
-	 * @var WireguardPeer WireGuard peer
-	 */
-	#[ORM\ManyToOne(targetEntity: WireguardPeer::class, inversedBy: 'addresses')]
-	#[ORM\JoinColumn(name: 'peer_id')]
-	private WireguardPeer $peer;
-
-	/**
 	 * Constructor
 	 * @param MultiAddress $address Peer address
 	 * @param WireguardPeer $peer WireGuard peer
 	 */
-	public function __construct(MultiAddress $address, WireguardPeer $peer) {
+	public function __construct(
+		MultiAddress $address,
+		#[ORM\ManyToOne(targetEntity: WireguardPeer::class, inversedBy: 'addresses')]
+		#[ORM\JoinColumn(name: 'peer_id', nullable: false)]
+		private WireguardPeer $peer,
+	) {
 		$this->address = $address->getAddress();
 		$this->prefix = $address->getPrefix();
-		$this->peer = $peer;
 	}
 
 	/**
@@ -103,7 +100,11 @@ class WireguardPeerAddress implements JsonSerializable {
 
 	/**
 	 * Serializes WireGuard peer allowed IP into JSON
-	 * @return array{id: int|null, address: string, prefix: int} JSON serialized WireGuard peer allowed IPs
+	 * @return array{
+	 *     id: int|null,
+	 *     address: string,
+	 *     prefix: int,
+	 * } JSON serialized WireGuard peer allowed IPs
 	 */
 	public function jsonSerialize(): array {
 		$address = $this->address->getVersion() === 4 ? $this->address->getDotAddress() : $this->address->getCompactedAddress();

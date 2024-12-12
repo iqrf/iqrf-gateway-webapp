@@ -89,9 +89,9 @@ class User implements JsonSerializable {
 	 * @param string $username User name
 	 * @param string|null $email User's email
 	 * @param string $password User password
-	 * @param UserRole|null $role User role
-	 * @param UserLanguage|null $language User language
-	 * @param UserState|null $state Account state
+	 * @param UserRole $role User role
+	 * @param UserLanguage $language User language
+	 * @param UserState $state Account state
 	 */
 	public function __construct(
 		#[ORM\Column(type: Types::STRING, length: 255, unique: true)]
@@ -99,11 +99,11 @@ class User implements JsonSerializable {
 		?string $email,
 		string $password,
 		#[ORM\Column(type: Types::STRING, length: 15, enumType: UserRole::class, options: ['default' => UserRole::Default])]
-		private ?UserRole $role = UserRole::Default,
+		private UserRole $role = UserRole::Default,
 		#[ORM\Column(type: Types::STRING, length: 7, enumType: UserLanguage::class, options: ['default' => UserLanguage::Default])]
-		private ?UserLanguage $language = UserLanguage::Default,
+		private UserLanguage $language = UserLanguage::Default,
 		#[ORM\Column(type: Types::INTEGER, length: 10, enumType: UserState::class, options: ['default' => UserState::Default])]
-		private ?UserState $state = UserState::Default,
+		private UserState $state = UserState::Default,
 	) {
 		$this->setEmail($email);
 		$this->setPassword($password);

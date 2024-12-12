@@ -43,7 +43,7 @@ class AptGetPackageManager implements IPackageManager {
 
 	/**
 	 * Installs the packages
-	 * @param callable $callback Callback
+	 * @param callable('out'|'err' $type, string $data): void $callback Callback
 	 * @param array<string> $packages Packages to install
 	 */
 	public function install(callable $callback, array $packages): void {
@@ -53,7 +53,7 @@ class AptGetPackageManager implements IPackageManager {
 
 	/**
 	 * Lists upgradable packages
-	 * @param callable $callback Callback
+	 * @param callable('out'|'err' $type, string $data): void $callback Callback
 	 */
 	public function listUpgradable(callable $callback): void {
 		$this->commandManager->runAsync($callback, 'apt-get -s upgrade -V', true);
@@ -61,7 +61,11 @@ class AptGetPackageManager implements IPackageManager {
 
 	/**
 	 * Returns list of upgradable packages
-	 * @return array<array{name: string, oldVersion: string, newVersion: string}> Upgradable packages
+	 * @return array<array{
+	 *     name: string,
+	 *     oldVersion: string,
+	 *     newVersion: string,
+	 * }> Upgradable packages
 	 */
 	public function getUpgradable(): array {
 		$stdout = $this->commandManager->run('apt-get -s upgrade -V', true)->getStdout();
@@ -74,7 +78,7 @@ class AptGetPackageManager implements IPackageManager {
 
 	/**
 	 * Purges the packages
-	 * @param callable $callback Callback
+	 * @param callable('out'|'err' $type, string $data): void $callback Callback
 	 * @param array<string> $packages Packages to purge
 	 */
 	public function purge(callable $callback, array $packages): void {
@@ -87,7 +91,7 @@ class AptGetPackageManager implements IPackageManager {
 
 	/**
 	 * Removes the packages
-	 * @param callable $callback Callback
+	 * @param callable('out'|'err' $type, string $data): void $callback Callback
 	 * @param array<string> $packages Packages to remove
 	 */
 	public function remove(callable $callback, array $packages): void {
@@ -100,7 +104,7 @@ class AptGetPackageManager implements IPackageManager {
 
 	/**
 	 * Updates a list of packages
-	 * @param callable $callback Callback
+	 * @param callable('out'|'err' $type, string $data): void $callback Callback
 	 */
 	public function update(callable $callback): void {
 		$this->commandManager->runAsync($callback, 'apt-get update', true);
@@ -108,7 +112,7 @@ class AptGetPackageManager implements IPackageManager {
 
 	/**
 	 * Upgrades packages
-	 * @param callable $callback Callback
+	 * @param callable('out'|'err' $type, string $data): void $callback Callback
 	 */
 	public function upgrade(callable $callback): void {
 		$this->commandManager->runAsync($callback, 'apt-get upgrade -y', true);

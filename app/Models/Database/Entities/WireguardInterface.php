@@ -39,24 +39,6 @@ class WireguardInterface implements JsonSerializable {
 	use TId;
 
 	/**
-	 * @var string Interface name
-	 */
-	#[ORM\Column(type: Types::STRING, length: 255, unique: true)]
-	private string $name;
-
-	/**
-	 * @var string Interface private key
-	 */
-	#[ORM\Column(type: Types::STRING, length: 255)]
-	private string $privateKey;
-
-	/**
-	 * @var int|null Interface listen port
-	 */
-	#[ORM\Column(type: Types::INTEGER, nullable: true)]
-	private ?int $port;
-
-	/**
 	 * @var WireguardInterfaceIpv4|null Interface IPv4 address
 	 */
 	#[ORM\OneToOne(mappedBy: 'interface', targetEntity: WireguardInterfaceIpv4::class, cascade: ['persist'], orphanRemoval: true)]
@@ -80,10 +62,14 @@ class WireguardInterface implements JsonSerializable {
 	 * @param string $privateKey WireGuard tunnel interface private key
 	 * @param int|null $port WireGuard tunnel interface listen port
 	 */
-	public function __construct(string $name, string $privateKey, ?int $port) {
-		$this->name = $name;
-		$this->privateKey = $privateKey;
-		$this->port = $port;
+	public function __construct(
+		#[ORM\Column(type: Types::STRING, length: 255, unique: true)]
+		private string $name,
+		#[ORM\Column(type: Types::STRING, length: 255)]
+		private string $privateKey,
+		#[ORM\Column(type: Types::INTEGER, nullable: true)]
+		private ?int $port,
+	) {
 		$this->peers = new ArrayCollection();
 	}
 

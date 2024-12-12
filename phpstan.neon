@@ -17,6 +17,7 @@ includes:
 
 parameters:
 	level: 6
+	phpVersion: 80200
 	additionalConstructors:
 		- Tester\TestCase::setUp
 	bootstrapFiles:
@@ -30,6 +31,16 @@ parameters:
 		analyseAndScan:
 			- tests/tmp/*
 	reportUnmatchedIgnoredErrors: false
+	disallowedFunctionCalls:
+		-
+			function: 'posix_getpwuid()'
+			message: 'might reveal system user information'
+			allowInMethods:
+				- 'App\GatewayModule\Models\Backup\CloudProvisioningBackup::recreateDirectory()'
+				- 'App\GatewayModule\Models\Backup\DaemonBackup::recreateDirectories()'
+				- 'App\GatewayModule\Models\Backup\DaemonBackup::restore()'
+				- 'App\GatewayModule\Models\Backup\IqrfSoftwareBackup::recreateDirectory()'
+				- 'App\InstallModule\Models\SudoManager::checkSudo()'
 	ignoreErrors:
 		- '#Method App\\CoreModule\\Models\\CommandManager::run(Async|)\(\) has parameter \$input with no value type specified in iterable type Traversable.#'
 		- '#Method App\\IqrfNetModule\\Models\\WebSocketClient::[a-zA-Z]+\(\) has parameter \$[a-z]+ with no value type specified in iterable type Ratchet\\RFC6455\\Messaging\\MessageInterface\.#'
@@ -46,3 +57,8 @@ parameters:
 			message: '#Left side of \&\& is always (true|false)\.#'
 			path: app/Models/Database/Entities/User.php
 			count: 1
+		-
+			message: '#^Calling Tracy\\Debugger::barDump\(\) is forbidden, use logger instead, debug bar is not visible in production\.#'
+			path: app/IqrfNetModule/Models/WebSocketClient.php
+			count: 2
+		- '#^^Parameter \#3 \$next \(callable\(Psr\\Http\\Message\\ServerRequestInterface, Psr\\Http\\Message\\ResponseInterface\): Psr\\Http\\Message\\ResponseInterface\) of method [A-Za-z0-9\\]+::__invoke\(\) should be contravariant with parameter \$next \(callable\(\): mixed\) of method Contributte\\Middlewares\\IMiddleware::__invoke\(\)$#'

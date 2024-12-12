@@ -37,41 +37,22 @@ class NetworkOperator implements JsonSerializable {
 	use TId;
 
 	/**
-	 * @var string Operator name
-	 */
-	#[ORM\Column(type: Types::STRING, length: 255)]
-	private string $name;
-
-	/**
-	 * @var string APN
-	 */
-	#[ORM\Column(type: Types::STRING, length: 255)]
-	private string $apn;
-
-	/**
-	 * @var string|null Username
-	 */
-	#[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
-	private ?string $username;
-
-	/**
-	 * @var string|null Password
-	 */
-	#[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
-	private ?string $password;
-
-	/**
 	 * Constructor
 	 * @param string $name Operator name
 	 * @param string $apn APN
 	 * @param string|null $username Username
 	 * @param string|null $password Password
 	 */
-	public function __construct(string $name, string $apn, ?string $username = null, ?string $password = null) {
-		$this->name = $name;
-		$this->apn = $apn;
-		$this->username = $username;
-		$this->password = $password;
+	public function __construct(
+		#[ORM\Column(type: Types::STRING, length: 255)]
+		private string $name,
+		#[ORM\Column(type: Types::STRING, length: 255)]
+		private string $apn,
+		#[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+		private ?string $username = null,
+		#[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+		private ?string $password = null,
+	) {
 	}
 
 	/**
@@ -140,7 +121,13 @@ class NetworkOperator implements JsonSerializable {
 
 	/**
 	 * Returns JSON serialized operator data
-	 * @return array{id: int|null, name: string, apn: string, username?: string, password?: string} JSON serialized operator data
+	 * @return array{
+	 *     id: int|null,
+	 *     name: string,
+	 *     apn: string,
+	 *     username?: string,
+	 *     password?: string,
+	 * } JSON serialized operator data
 	 */
 	public function jsonSerialize(): array {
 		$array = [

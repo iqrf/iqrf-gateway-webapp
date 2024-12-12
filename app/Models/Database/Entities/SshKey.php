@@ -40,41 +40,22 @@ class SshKey implements JsonSerializable {
 	use TCreatedAt;
 
 	/**
-	 * @var string SSH key type
-	 */
-	#[ORM\Column(type: Types::STRING, length: 255)]
-	private string $type;
-
-	/**
-	 * @var string SSH key
-	 */
-	#[ORM\Column(type: Types::STRING, length: 2048, unique: true)]
-	private string $key;
-
-	/**
-	 * @var string SSH key hash
-	 */
-	#[ORM\Column(type: Types::STRING, length: 64, unique: true)]
-	private string $hash;
-
-	/**
-	 * @var string|null SSH key description
-	 */
-	#[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
-	private ?string $description;
-
-	/**
 	 * Constructor
 	 * @param string $type SSH key type
 	 * @param string $key SSH key
 	 * @param string $hash SSH key hash
 	 * @param string|null $description SSH key description
 	 */
-	public function __construct(string $type, string $key, string $hash, ?string $description = null) {
-		$this->type = $type;
-		$this->key = $key;
-		$this->hash = $hash;
-		$this->description = $description;
+	public function __construct(
+		#[ORM\Column(type: Types::STRING, length: 255)]
+		private string $type,
+		#[ORM\Column(type: Types::STRING, length: 2048, unique: true)]
+		private string $key,
+		#[ORM\Column(type: Types::STRING, length: 64, unique: true)]
+		private string $hash,
+		#[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+		private ?string $description = null,
+	) {
 	}
 
 	/**
@@ -143,7 +124,14 @@ class SshKey implements JsonSerializable {
 
 	/**
 	 * Returns JSON serialized ssh key entity
-	 * @return array{id: int|null, type: string, key: string, hash: string, description: string|null, createdAt: string} JSON serialized entity
+	 * @return array{
+	 *     id: int|null,
+	 *     type: string,
+	 *     key: string,
+	 *     hash: string,
+	 *     description: string|null,
+	 *     createdAt: string,
+	 * } JSON serialized entity
 	 */
 	public function jsonSerialize(): array {
 		return [
