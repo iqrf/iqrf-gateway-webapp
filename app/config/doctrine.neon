@@ -55,6 +55,6 @@ nettrine.orm.attributes:
 nettrine.migrations:
 	table: doctrine_migrations
 	column: version
-	directory: %appDir%/../db/Migrations
-	namespace: Database\Migrations
+	directories:
+		Database\Migrations: %appDir%/../db/Migrations
 	versionsOrganization: null

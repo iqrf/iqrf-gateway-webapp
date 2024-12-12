@@ -62,7 +62,7 @@
 		"nette/http": "^v3.3.1",
 		"nette/mail": "^v4.0.3",
 		"nette/neon": "^v3.4.4",
-		"nette/php-generator": "^v4.1.6",
+		"nette/php-generator": "^v4.1.7",
 		"nette/robot-loader": "^v4.0.3",
 		"nette/safe-stream": "^v3.0.1",
 		"nette/security": "^v3.2.1",
@@ -74,7 +74,7 @@
 		"nettrine/migrations": "^v0.9.1",
 		"nettrine/orm": "^v0.9.0",
 		"php-http/guzzle7-adapter": "^1.0.0",
-		"phpmailer/phpmailer": "^v6.9.2",
+		"phpmailer/phpmailer": "^v6.9.3",
 		"ramsey/uuid": "^4.7.6",
 		"ramsey/uuid-doctrine": "^2.1.0",
 		"ratchet/pawl": "^v0.4.1",
@@ -84,11 +84,11 @@
 		"z4kn4fein/php-semver": "^v3.0.0"
 	},
 	"require-dev": {
-		"contributte/tester": "^v0.3.0",
+		"contributte/tester": "^v0.4.0",
 		"iqrf/coding-style": "^0.1.1",
-		"iqrf/phpstan-config": "^v0.1.0",
+		"iqrf/phpstan-config": "^v0.1.2",
 		"mockery/mockery": "^1.6.12",
-		"rector/rector": "^2.0.0-RC1"
+		"rector/rector": "^2.0.0"
 	},
 	"autoload": {
 		"psr-4": {
