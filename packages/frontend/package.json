@@ -45,8 +45,8 @@
 	},
 	"dependencies": {
 		"@chenfengyuan/vue-countdown": "^1.1.5",
-		"@iqrf/iqrf-gateway-daemon-utils": "workspace:latest",
-		"@iqrf/iqrf-gateway-webapp-client": "workspace:latest",
+		"@iqrf/iqrf-gateway-daemon-utils": "latest",
+		"@iqrf/iqrf-gateway-webapp-client": "latest",
 		"@iqrf/iqrf-repository-client": "^0.1.4",
 		"@mdi/font": "^7.4.47",
 		"@popperjs/core": "^2.11.8",
