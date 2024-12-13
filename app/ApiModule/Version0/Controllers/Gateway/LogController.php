@@ -60,18 +60,18 @@ class LogController extends BaseGatewayController {
 
 	#[Path('/')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Returns list of services with available logs
 		responses:
-			\'200\':
-				description: \'Success\'
+			'200':
+				description: 'Success'
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/LogServices\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-	')]
+							$ref: '#/components/schemas/LogServices'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+	EOT)]
 	public function logServices(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['gateway:log']);
 		$response = $response->writeJsonBody($this->logManager->getAvailableServices());
@@ -80,26 +80,26 @@ class LogController extends BaseGatewayController {
 
 	#[Path('/{service}')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Returns latest log of a service
 		responses:
-			\'200\':
-				description: \'Success\'
+			'200':
+				description: 'Success'
 				content:
 					text/plain:
 						schema:
 							type: string
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'404\':
-				description: \'Service not found or log not found\'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				description: 'Service not found or log not found'
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/Error\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+							$ref: '#/components/schemas/Error'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	#[RequestParameter(name: 'service', type: 'string', description: 'Service name')]
 	public function log(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['gateway:log']);
@@ -118,19 +118,19 @@ class LogController extends BaseGatewayController {
 
 	#[Path('/export')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Returns archive with IQRF Gateway logs
 		responses:
-			\'200\':
-				description: \'Success\'
+			'200':
+				description: 'Success'
 				content:
 					application/zip:
 						schema:
 							type: string
 							format: binary
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-	')]
+			'403':
+				$ref: '#/components/responses/Forbidden'
+	EOT)]
 	public function logArchive(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['gateway:log']);
 		$path = $this->logManager->createArchive();

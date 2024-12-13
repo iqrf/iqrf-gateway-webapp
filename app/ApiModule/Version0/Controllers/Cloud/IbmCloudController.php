@@ -49,7 +49,7 @@ class IbmCloudController extends BaseCloudController {
 
 	#[Path('/')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Creates a new MQTT connection into IBM Cloud
 		requestBody:
 			description: IBM Cloud connection configuration
@@ -57,17 +57,17 @@ class IbmCloudController extends BaseCloudController {
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/CloudIbm\'
+						$ref: '#/components/schemas/CloudIbm'
 		responses:
-			\'201\':
+			'201':
 				description: Created
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->checkRequest('cloudIbm', $request);
 		return parent::create($request, $response);

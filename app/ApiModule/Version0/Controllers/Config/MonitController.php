@@ -55,20 +55,20 @@ class MonitController extends BaseConfigController {
 
 	#[Path('/')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Returns the current Monit configuration
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/MonitConfig\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	 ')]
+							$ref: '#/components/schemas/MonitConfig'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['maintenance:monit']);
 		try {
@@ -82,24 +82,24 @@ class MonitController extends BaseConfigController {
 
 	#[Path('/')]
 	#[Method('PUT')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Updates the Monit configuration
 		requestBody:
 			required: true
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/MonitConfig\'
+						$ref: '#/components/schemas/MonitConfig'
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function save(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['maintenance:monit']);
 		$this->validators->validateRequest('monitConfig', $request);
@@ -113,20 +113,20 @@ class MonitController extends BaseConfigController {
 
 	#[Path('/checks/{name}')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Returns the Monit check configuration
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/MonitCheckConfig\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-	')]
+							$ref: '#/components/schemas/MonitCheckConfig'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+	EOT)]
 	#[RequestParameter(name: 'name', type: 'string', in: 'path', description: 'Check name')]
 	public function getCheck(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['maintenance:monit']);
@@ -141,16 +141,16 @@ class MonitController extends BaseConfigController {
 
 	#[Path('/checks/{name}/enable')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Enables Monit check
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-	')]
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+	EOT)]
 	#[RequestParameter(name: 'name', type: 'string', in: 'path', description: 'Check name')]
 	public function enableCheck(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['maintenance:monit']);
@@ -164,16 +164,16 @@ class MonitController extends BaseConfigController {
 
 	#[Path('/checks/{name}/disable')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Disables Monit check
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-	')]
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+	EOT)]
 	#[RequestParameter(name: 'name', type: 'string', in: 'path', description: 'Check name')]
 	public function disableCheck(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['maintenance:monit']);

@@ -56,7 +56,7 @@ class InterfacesController extends BaseNetworkController {
 
 	#[Path('/')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Returns network interfaces
 		parameters:
 			-
@@ -65,34 +65,34 @@ class InterfacesController extends BaseNetworkController {
 				schema:
 					type: string
 					enum:
-						- \'bond\'
-						- \'bt\'
-						- \'bridge\'
-						- \'dummy\'
-						- \'ethernet\'
-						- \'gsm\'
-						- \'iptunnel\'
-						- \'loopback\'
-						- \'ppp\'
-						- \'tun\'
-						- \'vlan\'
-						- \'wifi\'
-						- \'wifi-p2p\'
-						- \'wireguard\'
+						- 'bond'
+						- 'bt'
+						- 'bridge'
+						- 'dummy'
+						- 'ethernet'
+						- 'gsm'
+						- 'iptunnel'
+						- 'loopback'
+						- 'ppp'
+						- 'tun'
+						- 'vlan'
+						- 'wifi'
+						- 'wifi-p2p'
+						- 'wireguard'
 				required: false
 				description: Connection type
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/NetworkInterfaces\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+							$ref: '#/components/schemas/NetworkInterfaces'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['network']);
 		$typeParam = $request->getQueryParam('type', null);
@@ -104,18 +104,18 @@ class InterfacesController extends BaseNetworkController {
 
 	#[Path('/{name}/connect')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Connects network interface
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	#[RequestParameter(name: 'name', type: 'string', description: 'Network interface name')]
 	public function connect(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['network']);
@@ -131,20 +131,20 @@ class InterfacesController extends BaseNetworkController {
 
 	#[Path('/{name}/disconnect')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Disconnects network interface
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	#[RequestParameter(name: 'name', type: 'string', description: 'Network interface name')]
 	public function disconnect(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['network']);

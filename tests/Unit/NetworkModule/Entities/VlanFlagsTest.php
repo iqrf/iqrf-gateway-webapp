@@ -3,7 +3,7 @@
 /**
  * TEST: App\NetworkModule\Entities\VlanFlags
  * @covers App\NetworkModule\Entities\VlanFlags
- * @phpVersion >= 8.1
+ * @phpVersion >= 8.2
  * @testCase
  */
 /**

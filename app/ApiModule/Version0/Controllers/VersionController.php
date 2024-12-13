@@ -53,20 +53,20 @@ class VersionController extends BaseController {
 
 	#[Path('/')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Returns IQRF Gateway software versions
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/Versions\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+							$ref: '#/components/schemas/Versions'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function all(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$versions = $this->manager->getAll();
 		$response = $response->writeJsonBody($versions);
@@ -75,20 +75,20 @@ class VersionController extends BaseController {
 
 	#[Path('/daemon')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Returns IQRF Gateway Daemon version
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/VersionDaemon\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+							$ref: '#/components/schemas/VersionDaemon'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function daemonVersion(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$version = $this->manager->getDaemon();
 		if ($version !== 'none' && $version !== 'unknown') {
@@ -100,20 +100,20 @@ class VersionController extends BaseController {
 
 	#[Path('/webapp')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Returns IQRF Gateway Webapp version
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/VersionWebapp\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+							$ref: '#/components/schemas/VersionWebapp'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function webappVersion(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
 			$response = $response->writeJsonBody($this->manager->getWebappJson());

@@ -107,7 +107,7 @@ class ConnectionManager {
 		$connections = [];
 		foreach ($array as $row) {
 			$connection = Connection::nmCliDeserialize($row);
-			if ($type === null || $type === $connection->getType()) {
+			if (!$type instanceof ConnectionTypes || $type === $connection->getType()) {
 				if ($type === ConnectionTypes::WIFI) {
 					$detail = $this->get($connection->getUuid())->jsonSerialize();
 					$bssids = $detail['wifi']['bssids'];

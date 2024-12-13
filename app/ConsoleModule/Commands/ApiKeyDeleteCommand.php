@@ -57,7 +57,7 @@ class ApiKeyDeleteCommand extends ApiKeyCommand {
 		$style = new SymfonyStyle($input, $output);
 		$style->title('Delete the API key');
 		$apiKey = $this->deleteAskId($input, $output);
-		if ($apiKey === null) {
+		if (!$apiKey instanceof ApiKey) {
 			$style->error('API key with specified ID does not exist.');
 			return Command::FAILURE;
 		}

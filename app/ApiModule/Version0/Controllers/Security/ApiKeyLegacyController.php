@@ -51,7 +51,7 @@ class ApiKeyLegacyController extends BaseController {
 
 	#[Path('/')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Lists all API keys
 		description: "Deprecated in favor of the new API keys controller, use `GET` `/security/apiKeys` instead. Will be removed in the version 3.1.0."
 		deprecated: true
@@ -63,17 +63,17 @@ class ApiKeyLegacyController extends BaseController {
 						schema:
 							type: array
 							items:
-								$ref: \'#/components/schemas/ApiKeyDetail\'
+								$ref: '#/components/schemas/ApiKeyDetail'
 			403:
-				$ref: \'#/components/responses/Forbidden\'
-	')]
+				$ref: '#/components/responses/Forbidden'
+	EOT)]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->list($request, $response);
 	}
 
 	#[Path('/')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Creates a new API key
 		deprecated: true
 		description: "Deprecated in favor of the new API keys controller, use `POST` `/security/apiKeys` instead. Will be removed in the version 3.1.0."
@@ -82,46 +82,46 @@ class ApiKeyLegacyController extends BaseController {
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/ApiKeyModify\'
+						$ref: '#/components/schemas/ApiKeyModify'
 		responses:
-			\'201\':
+			'201':
 				description: Created
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/ApiKeyCreated\'
+							$ref: '#/components/schemas/ApiKeyCreated'
 				headers:
 					Location:
 						description: Location of information about the created API key
 						schema:
 							type: string
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-	')]
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+	EOT)]
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->create($request, $response);
 	}
 
 	#[Path('/{id}')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Returns API key by ID
 		deprecated: true
 		description: "Deprecated in favor of the new API keys controller, use `GET` `/security/apiKeys/{id}` instead. Will be removed in the version 3.1.0."
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/ApiKeyDetail\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-	')]
+							$ref: '#/components/schemas/ApiKeyDetail'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+	EOT)]
 	#[RequestParameter('id', type: 'integer', description: 'API key ID')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->get($request, $response);
@@ -129,18 +129,18 @@ class ApiKeyLegacyController extends BaseController {
 
 	#[Path('/{id}')]
 	#[Method('DELETE')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Deletes a API key
 		deprecated: true
 		description: "Deprecated in favor of the new API keys controller, use `DELETE` `/security/apiKeys/{id}` instead. Will be removed in the version 3.1.0."
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-	')]
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+	EOT)]
 	#[RequestParameter('id', type: 'integer', description: 'API key ID')]
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->delete($request, $response);
@@ -148,7 +148,7 @@ class ApiKeyLegacyController extends BaseController {
 
 	#[Path('/{id}')]
 	#[Method('PUT')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Updates the API key
 		deprecated: true
 		description: "Deprecated in favor of the new API keys controller, use `PUT` `/security/apiKeys/{id}` instead. Will be removed in the version 3.1.0."
@@ -157,17 +157,17 @@ class ApiKeyLegacyController extends BaseController {
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/ApiKeyModify\'
+						$ref: '#/components/schemas/ApiKeyModify'
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-	')]
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'API key ID')]
 	public function update(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->update($request, $response);

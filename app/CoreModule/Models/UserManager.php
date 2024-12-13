@@ -62,7 +62,7 @@ class UserManager {
 	 */
 	public function checkEmailUniqueness(string $email, ?int $userId = null): bool {
 		$user = $this->entityManager->getUserRepository()->findOneByEmail($email);
-		return $user !== null && $user->getId() !== $userId;
+		return $user instanceof User && $user->getId() !== $userId;
 	}
 
 	/**
@@ -73,7 +73,7 @@ class UserManager {
 	 */
 	public function checkUsernameUniqueness(string $username, ?int $userId = null): bool {
 		$user = $this->entityManager->getUserRepository()->findOneByUserName($username);
-		return $user !== null && $user->getId() !== $userId;
+		return $user instanceof User && $user->getId() !== $userId;
 	}
 
 	/**
@@ -99,7 +99,7 @@ class UserManager {
 		} else {
 			$baseUrl = explode('/api/v0/', (string) $request->getUri(), 2)[0];
 		}
-		if ($user->verification !== null) {
+		if ($user->verification instanceof UserVerification) {
 			$this->entityManager->remove($user->verification);
 			$this->entityManager->flush();
 		}

@@ -60,18 +60,18 @@ class CellularOperatorsController extends BaseCellularNetworkController {
 
 	#[Path('/')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Lists all network operators
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/NetworkOperatorList\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-	')]
+							$ref: '#/components/schemas/NetworkOperatorList'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+	EOT)]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$operators = $this->repository->findAll();
 		$response = $response->writeJsonBody($operators);
@@ -80,20 +80,20 @@ class CellularOperatorsController extends BaseCellularNetworkController {
 
 	#[Path('/{id}')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Returns a network operator configuration
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/NetworkOperator\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-	')]
+							$ref: '#/components/schemas/NetworkOperator'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Operator ID')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$id = (int) $request->getParameter('id');
@@ -107,31 +107,31 @@ class CellularOperatorsController extends BaseCellularNetworkController {
 
 	#[Path('/')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Creates a new network operator
 		requestBody:
 			required: true
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/NetworkOperator\'
+						$ref: '#/components/schemas/NetworkOperator'
 		responses:
-			\'201\':
+			'201':
 				description: Created
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/NetworkOperator\'
+							$ref: '#/components/schemas/NetworkOperator'
 				headers:
 					Location:
 						description: Location of information about network operator
 						schema:
 							type: string
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-	')]
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+	EOT)]
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->validateRequest('networkOperator', $request);
 		$json = $request->getJsonBodyCopy(false);
@@ -152,24 +152,24 @@ class CellularOperatorsController extends BaseCellularNetworkController {
 
 	#[Path('/{id}')]
 	#[Method('PUT')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Edits a network operator
 		requestBody:
 			required: true
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/NetworkOperator\'
+						$ref: '#/components/schemas/NetworkOperator'
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-	')]
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Operator ID')]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$id = (int) $request->getParameter('id');
@@ -190,16 +190,16 @@ class CellularOperatorsController extends BaseCellularNetworkController {
 
 	#[Path('/{id}')]
 	#[Method('DELETE')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Removes a network operator
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-	')]
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Operator ID')]
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$id = (int) $request->getParameter('id');

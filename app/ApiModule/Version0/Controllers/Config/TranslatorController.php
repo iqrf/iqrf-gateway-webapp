@@ -53,20 +53,20 @@ class TranslatorController extends BaseConfigController {
 
 	#[Path('/')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Returns the current configuration of IQRF Gateway Translator
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/TranslatorConfig\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+							$ref: '#/components/schemas/TranslatorConfig'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function getConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['config:translator']);
 		try {
@@ -82,24 +82,24 @@ class TranslatorController extends BaseConfigController {
 
 	#[Path('/')]
 	#[Method('PUT')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Updates the configuration of IQRF Gateway Translator
 		requestBody:
 			required: true
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/TranslatorConfig\'
+						$ref: '#/components/schemas/TranslatorConfig'
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function setConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['config:translator']);
 		$this->validators->validateRequest('translatorConfig', $request);

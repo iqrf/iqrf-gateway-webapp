@@ -185,10 +185,8 @@ class BackupManager {
 					if (!$this->serviceManager->isEnabled($service)) {
 						$toEnable[] = $service;
 					}
-				} else {
-					if ($this->serviceManager->isEnabled($service)) {
-						$toDisable[] = $service;
-					}
+				} elseif ($this->serviceManager->isEnabled($service)) {
+					$toDisable[] = $service;
 				}
 			} catch (NonexistentServiceException) {
 				continue;

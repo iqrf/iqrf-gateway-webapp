@@ -44,7 +44,7 @@ class MailerFactory {
 	 */
 	public function build(): Mailer {
 		$smtpMailer = $this->buildSmtpMailer();
-		if ($smtpMailer !== null) {
+		if ($smtpMailer instanceof SmtpMailer) {
 			return $smtpMailer;
 		}
 		return new SendmailMailer();

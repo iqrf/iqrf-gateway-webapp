@@ -41,6 +41,7 @@ use App\GatewayModule\Models\Utils\GatewayInfoUtil;
 use App\Models\Database\Entities\PasswordRecovery;
 use App\Models\Database\Entities\User;
 use App\Models\Database\Entities\UserPreferences;
+use App\Models\Database\Entities\UserVerification;
 use App\Models\Database\EntityManager;
 use App\Models\Database\Enums\ThemePreference;
 use App\Models\Database\Enums\TimeFormat;
@@ -81,18 +82,18 @@ class AccountController extends BaseController {
 
 	#[Path('/')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Returns information about the user account
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/UserDetail\'
-			\'403\':
-				$ref: \'#/components/responses/ForbiddenApiKey\'
-	')]
+							$ref: '#/components/schemas/UserDetail'
+			'403':
+				$ref: '#/components/responses/ForbiddenApiKey'
+	EOT)]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->onlyForUsers($request);
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
@@ -102,28 +103,28 @@ class AccountController extends BaseController {
 
 	#[Path('/')]
 	#[Method('PUT')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Updates the user account information
 		requestBody:
 			required: true
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/UserEdit\'
+						$ref: '#/components/schemas/UserEdit'
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/ForbiddenApiKey\'
-			\'409\':
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/ForbiddenApiKey'
+			'409':
 				description: Username or e-mail address is already used
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/Error\'
-	')]
+							$ref: '#/components/schemas/Error'
+	EOT)]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->onlyForUsers($request);
 		$this->validators->validateRequest('userEdit', $request);
@@ -173,18 +174,18 @@ class AccountController extends BaseController {
 
 	#[Path('/preferences')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Returns user preferences
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/UserPreferences\'
-			\'403\':
+							$ref: '#/components/schemas/UserPreferences'
+			'403':
 				description: Forbidden
-	')]
+	EOT)]
 	public function getPreferences(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->onlyForUsers($request);
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
@@ -197,22 +198,22 @@ class AccountController extends BaseController {
 
 	#[Path('/preferences')]
 	#[Method('PUT')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Edit user preferences
 		requestBody:
 			required: true
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/UserPreferences\'
+						$ref: '#/components/schemas/UserPreferences'
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'400\':
+			'400':
 				description: Invalid time format or theme
-			\'403\':
+			'403':
 				description: Forbidden
-	')]
+	EOT)]
 	public function editPreferences(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->onlyForUsers($request);
 		$this->validators->validateRequest('userPreferences', $request);
@@ -241,20 +242,20 @@ class AccountController extends BaseController {
 
 	#[Path('/password')]
 	#[Method('PUT')]
-	#[OpenApi('
-		summary: "Updates user\'s password"
+	#[OpenApi(<<<'EOT'
+		summary: "Updates user's password"
 		requestBody:
 			required: true
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/PasswordChange\'
+						$ref: '#/components/schemas/PasswordChange'
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'403\':
-				$ref: \'#/components/responses/ForbiddenApiKey\'
-	')]
+			'403':
+				$ref: '#/components/responses/ForbiddenApiKey'
+	EOT)]
 	public function changePassword(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->onlyForUsers($request);
 		$this->validators->validateRequest('passwordChange', $request);
@@ -280,32 +281,32 @@ class AccountController extends BaseController {
 
 	#[Path('/passwordRecovery')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Requests the password recovery
 		requestBody:
 			required: true
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/PasswordRecoveryRequest\'
+						$ref: '#/components/schemas/PasswordRecoveryRequest'
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'403\':
+			'403':
 				description: E-mail address is not verified
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/Error\'
-			\'404\':
+							$ref: '#/components/schemas/Error'
+			'404':
 				description: User not found
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/Error\'
-			\'500\':
-				$ref: \'#/components/responses/MailerError\'
-	')]
+							$ref: '#/components/schemas/Error'
+			'500':
+				$ref: '#/components/responses/MailerError'
+	EOT)]
 	public function requestPasswordRecovery(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->validateRequest('passwordRecoveryRequest', $request);
 		$body = $request->getJsonBodyCopy();
@@ -317,7 +318,7 @@ class AccountController extends BaseController {
 		} else {
 			throw new ClientErrorException('E-mail address or username is required', ApiResponse::S400_BAD_REQUEST);
 		}
-		if ($user === null) {
+		if (!$user instanceof User) {
 			throw new ClientErrorException('User not found', ApiResponse::S404_NOT_FOUND);
 		}
 		if (!$user->getState()->isVerified()) {
@@ -341,36 +342,36 @@ class AccountController extends BaseController {
 
 	#[Path('/passwordRecovery/{uuid}')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Recovers the forgotten password
 		requestBody:
 			required: true
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/PasswordRecovery\'
+						$ref: '#/components/schemas/PasswordRecovery'
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/UserToken\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-			\'410\':
+							$ref: '#/components/schemas/UserToken'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'410':
 				description: Password recovery request is expired
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/Error\'
-	')]
+							$ref: '#/components/schemas/Error'
+	EOT)]
 	#[RequestParameter(name: 'uuid', type: 'string', description: 'Password recovery request UUID')]
 	public function recoverPassword(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->validateRequest('passwordRecovery', $request);
 		$body = $request->getJsonBodyCopy();
 		$recoveryRequest = $this->entityManager->getPasswordRecoveryRepository()->findOneByUuid($request->getParameter('uuid'));
-		if ($recoveryRequest === null) {
+		if (!$recoveryRequest instanceof PasswordRecovery) {
 			throw new ClientErrorException('Password recovery request not found', ApiResponse::S404_NOT_FOUND);
 		}
 		if ($recoveryRequest->isExpired()) {
@@ -400,18 +401,18 @@ class AccountController extends BaseController {
 
 	#[Path('/tokenRefresh')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Refreshes user access token
 		responses:
-			\'201\':
+			'201':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/UserToken\'
-			\'403\':
-				$ref: \'#/components/responses/ForbiddenApiKey\'
-	')]
+							$ref: '#/components/schemas/UserToken'
+			'403':
+				$ref: '#/components/responses/ForbiddenApiKey'
+	EOT)]
 	public function refreshToken(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->onlyForUsers($request);
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
@@ -423,7 +424,7 @@ class AccountController extends BaseController {
 
 	#[Path('/signIn')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Signs in the user
 		security:
 			- []
@@ -432,24 +433,24 @@ class AccountController extends BaseController {
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/UserSignIn\'
+						$ref: '#/components/schemas/UserSignIn'
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/UserToken\'
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+							$ref: '#/components/schemas/UserToken'
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function signIn(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->validateRequest('userSignIn', $request);
 		$credentials = $request->getJsonBodyCopy();
 		$user = $this->entityManager->getUserRepository()->findOneByUserName($credentials['username']);
-		if (!($user instanceof User)) {
+		if (!$user instanceof User) {
 			throw new ClientErrorException('Invalid credentials', ApiResponse::S400_BAD_REQUEST);
 		}
 		if (!$user->verifyPassword($credentials['password'])) {
@@ -468,20 +469,20 @@ class AccountController extends BaseController {
 
 	#[Path('/emailVerification/resend')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Resends the verification e-mail
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'400\':
+			'400':
 				description: User is already verified
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/Error\'
-			\'500\':
-				$ref: \'#/components/responses/MailerError\'
-	')]
+							$ref: '#/components/schemas/Error'
+			'500':
+				$ref: '#/components/responses/MailerError'
+	EOT)]
 	public function resendVerification(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->onlyForUsers($request);
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
@@ -498,23 +499,23 @@ class AccountController extends BaseController {
 
 	#[Path('/emailVerification/{uuid}')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Verifies the user
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/UserToken\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-	')]
+							$ref: '#/components/schemas/UserToken'
+			'404':
+				$ref: '#/components/responses/NotFound'
+	EOT)]
 	#[RequestParameter(name: 'uuid', type: 'string', description: 'User verification UUID')]
 	public function verify(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$repository = $this->entityManager->getUserVerificationRepository();
 		$verification = $repository->findOneByUuid($request->getParameter('uuid'));
-		if ($verification === null) {
+		if (!$verification instanceof UserVerification) {
 			throw new ClientErrorException('User verification not found', ApiResponse::S404_NOT_FOUND);
 		}
 		$user = $verification->user;
@@ -548,19 +549,19 @@ class AccountController extends BaseController {
 		} catch (Throwable $e) {
 			throw new ServerErrorException('Date creation error', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
-		if ($expiration === null) {
+		if (!$expiration instanceof SessionExpiration) {
 			$expiration = SessionExpiration::Default;
 		}
 		$configuration = $this->jwtConfigurator->create();
 		$gwid = $this->gatewayInfo->getIdNullable();
-		$builder = $configuration->builder();
-		$builder = $builder->issuedAt($now);
-		$builder = $builder->canOnlyBeUsedAfter($now);
-		$builder = $builder->expiresAt($now->modify($expiration->toDateModify()));
-		$builder = $builder->withClaim('uid', $user->getId());
+		$builder = $configuration->builder()
+			->issuedAt($now)
+			->canOnlyBeUsedAfter($now)
+			->expiresAt($now->modify($expiration->toDateModify()))
+			->withClaim('uid', $user->getId());
 		if ($gwid !== null) {
-			$builder = $builder->issuedBy($gwid);
-			$builder = $builder->identifiedBy($gwid);
+			$builder = $builder->issuedBy($gwid)
+				->identifiedBy($gwid);
 		}
 		$signer = $configuration->signer();
 		$signingKey = $configuration->signingKey();

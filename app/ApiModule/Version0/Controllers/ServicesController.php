@@ -85,16 +85,16 @@ class ServicesController extends BaseController {
 
 	#[Path('/')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Returns the supported services
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/ServiceList\'
-	')]
+							$ref: '#/components/schemas/ServiceList'
+	EOT)]
 	#[RequestParameter(name: 'withStatus', type: 'bool', in: 'query', description: 'Include service status')]
 	public function listServices(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$array = [];
@@ -113,22 +113,22 @@ class ServicesController extends BaseController {
 
 	#[Path('/{name}')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Returns the service status
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/ServiceStatus\'
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-			\'500\':
-				$ref: \'#/components/responses/UnsupportedInitSystem\'
-	')]
+							$ref: '#/components/schemas/ServiceStatus'
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'500':
+				$ref: '#/components/responses/UnsupportedInitSystem'
+	EOT)]
 	#[RequestParameter(name: 'name', type: 'string', description: 'Service name')]
 	public function getService(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$name = $request->getParameter('name');
@@ -168,24 +168,24 @@ class ServicesController extends BaseController {
 
 	#[Path('/{name}/enable')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Enables the service
 		requestBody:
 			required: false
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/ServiceEnable\'
+						$ref: '#/components/schemas/ServiceEnable'
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-			\'500\':
-				$ref: \'#/components/responses/UnsupportedInitSystem\'
-	')]
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'500':
+				$ref: '#/components/responses/UnsupportedInitSystem'
+	EOT)]
 	#[RequestParameter(name: 'name', type: 'string', description: 'Service name')]
 	public function enableService(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$name = $request->getParameter('name');
@@ -207,26 +207,26 @@ class ServicesController extends BaseController {
 
 	#[Path('/{name}/disable')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Disables the service
 		requestBody:
 			required: false
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/ServiceDisable\'
+						$ref: '#/components/schemas/ServiceDisable'
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-			\'500\':
-				$ref: \'#/components/responses/UnsupportedInitSystem\'
-	')]
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'500':
+				$ref: '#/components/responses/UnsupportedInitSystem'
+	EOT)]
 	#[RequestParameter(name: 'name', type: 'string', description: 'Service name')]
 	public function disableService(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$name = $request->getParameter('name');
@@ -248,20 +248,20 @@ class ServicesController extends BaseController {
 
 	#[Path('/{name}/start')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Starts the service
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-			\'500\':
-				$ref: \'#/components/responses/UnsupportedInitSystem\'
-	')]
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'500':
+				$ref: '#/components/responses/UnsupportedInitSystem'
+	EOT)]
 	#[RequestParameter(name: 'name', type: 'string', description: 'Service name')]
 	public function startService(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$name = $request->getParameter('name');
@@ -278,20 +278,20 @@ class ServicesController extends BaseController {
 
 	#[Path('/{name}/stop')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Stops the service
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-			\'500\':
-				$ref: \'#/components/responses/UnsupportedInitSystem\'
-	')]
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'500':
+				$ref: '#/components/responses/UnsupportedInitSystem'
+	EOT)]
 	#[RequestParameter(name: 'name', type: 'string', description: 'Service name')]
 	public function stopService(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$name = $request->getParameter('name');
@@ -308,20 +308,20 @@ class ServicesController extends BaseController {
 
 	#[Path('/{name}/restart')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Restarts the service
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-			\'500\':
-				$ref: \'#/components/responses/UnsupportedInitSystem\'
-	')]
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'500':
+				$ref: '#/components/responses/UnsupportedInitSystem'
+	EOT)]
 	#[RequestParameter(name: 'name', type: 'string', description: 'Service name')]
 	public function restartService(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$name = $request->getParameter('name');

@@ -31,22 +31,22 @@ use Ramsey\Uuid\UuidInterface;
 /**
  * Network interface entity
  */
-final class InterfaceStatus implements JsonSerializable {
+final readonly class InterfaceStatus implements JsonSerializable {
 
 	/**
 	 * @var string|null MAC address
 	 */
-	private readonly ?string $macAddress;
+	private ?string $macAddress;
 
 	/**
 	 * @var string|null Manufacturer
 	 */
-	private readonly ?string $manufacturer;
+	private ?string $manufacturer;
 
 	/**
 	 * @var string|null Model
 	 */
-	private readonly ?string $model;
+	private ?string $model;
 
 	/**
 	 * Network interface entity constructor
@@ -62,16 +62,16 @@ final class InterfaceStatus implements JsonSerializable {
 	 * @param array<AvailableConnection> $availableConnections Available network connections
 	 */
 	public function __construct(
-		private readonly string $name,
+		private string $name,
 		?string $macAddress,
 		?string $manufacturer,
 		?string $model,
-		private readonly InterfaceTypes $type,
-		private readonly InterfaceStates $state,
-		private readonly ?UuidInterface $connection,
-		private readonly ?ConnectivityState $ipv4Connectivity,
-		private readonly ?ConnectivityState $ipv6Connectivity,
-		private readonly array $availableConnections = [],
+		private InterfaceTypes $type,
+		private InterfaceStates $state,
+		private ?UuidInterface $connection,
+		private ?ConnectivityState $ipv4Connectivity,
+		private ?ConnectivityState $ipv6Connectivity,
+		private array $availableConnections = [],
 	) {
 		$this->macAddress = $macAddress === '' ? null : $macAddress;
 		$this->manufacturer = $manufacturer === '' ? null : $manufacturer;
@@ -129,7 +129,8 @@ final class InterfaceStatus implements JsonSerializable {
 				$this->availableConnections,
 			),
 		];
-		if ($this->ipv4Connectivity !== null && $this->ipv6Connectivity !== null) {
+		if ($this->ipv4Connectivity instanceof ConnectivityState &&
+			$this->ipv6Connectivity instanceof ConnectivityState) {
 			$array['connectivity'] = [
 				'ipv4' => $this->ipv4Connectivity->value,
 				'ipv6' => $this->ipv6Connectivity->value,

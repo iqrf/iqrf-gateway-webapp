@@ -51,18 +51,18 @@ class MappingsLegacyController extends BaseController {
 
 	#[Path('/')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Lists all mappings
 		deprecated: true
 		description: "Deprecated in favor of the new IQRF Gateway Daemon mapping controller, use `GET` `/config/daemon/mappings` instead. Will be removed in the version 3.1.0."
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/MappingList\'
-	')]
+							$ref: '#/components/schemas/MappingList'
+	EOT)]
 	#[RequestParameter(name: 'interface', type: 'string', in: 'query', required: false, description: 'Interface type')]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->list($request, $response);
@@ -70,7 +70,7 @@ class MappingsLegacyController extends BaseController {
 
 	#[Path('/')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Creates a new mapping
 		deprecated: true
 		description: "Deprecated in favor of the new IQRF Gateway Daemon mapping controller, use `POST` `/config/daemon/mappings` instead. Will be removed in the version 3.1.0."
@@ -79,46 +79,46 @@ class MappingsLegacyController extends BaseController {
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/Mapping\'
+						$ref: '#/components/schemas/Mapping'
 		responses:
-			\'201\':
+			'201':
 				description: Created
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/MappingDetail\'
+							$ref: '#/components/schemas/MappingDetail'
 				headers:
 					Location:
 						description: Location of information about the created mapping
 						schema:
 							type: string
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-	')]
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+	EOT)]
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->create($request, $response);
 	}
 
 	#[Path('/{id}')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Finds mapping by ID
 		deprecated: true
 		description: "Deprecated in favor of the new IQRF Gateway Daemon mapping controller, use `GET` `/config/daemon/mappings/{id}` instead. Will be removed in the version 3.1.0."
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/MappingDetail\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-	')]
+							$ref: '#/components/schemas/MappingDetail'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Mapping ID')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->get($request, $response);
@@ -126,16 +126,16 @@ class MappingsLegacyController extends BaseController {
 
 	#[Path('/{id}')]
 	#[Method('DELETE')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Removes a mapping
 		deprecated: true
 		description: "Deprecated in favor of the new IQRF Gateway Daemon mapping controller, use `DELETE` `/config/daemon/mappings/{id}` instead. Will be removed in the version 3.1.0."
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-	')]
+			'404':
+				$ref: '#/components/responses/NotFound'
+	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Mapping ID')]
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->delete($request, $response);
@@ -143,7 +143,7 @@ class MappingsLegacyController extends BaseController {
 
 	#[Path('/{id}')]
 	#[Method('PUT')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Updates a mapping
 		deprecated: true
 		description: "Deprecated in favor of the new IQRF Gateway Daemon mapping controller, use `PUT` `/config/daemon/mappings/{id}` instead. Will be removed in the version 3.1.0."
@@ -152,17 +152,17 @@ class MappingsLegacyController extends BaseController {
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/Mapping\'
+						$ref: '#/components/schemas/Mapping'
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-	')]
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Mapping ID')]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->edit($request, $response);

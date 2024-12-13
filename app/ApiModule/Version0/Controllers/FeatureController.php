@@ -55,20 +55,20 @@ class FeatureController extends BaseController {
 
 	#[Path('/')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Returns optional features configuration
 		security:
 			- []
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/FeatureList\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+							$ref: '#/components/schemas/FeatureList'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function getAll(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$config = $this->manager->read();
 		$response = $response->writeJsonBody($config);
@@ -77,22 +77,22 @@ class FeatureController extends BaseController {
 
 	#[Path('/{feature}')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Returns optional feature configuration
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/Feature\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+							$ref: '#/components/schemas/Feature'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	#[RequestParameter(name: 'feature', type: 'string', description: 'Feature name')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$name = urldecode($request->getParameter('feature'));
@@ -106,26 +106,26 @@ class FeatureController extends BaseController {
 
 	#[Path('/{feature}')]
 	#[Method('PUT')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Edits optional feature configuration
 		requestBody:
 			required: true
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/Feature\'
+						$ref: '#/components/schemas/Feature'
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	#[RequestParameter(name: 'feature', type: 'string', description: 'Feature name')]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$name = urldecode($request->getParameter('feature'));

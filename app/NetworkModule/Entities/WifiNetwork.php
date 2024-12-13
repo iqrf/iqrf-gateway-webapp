@@ -28,7 +28,7 @@ use Nette\Utils\Strings;
 /**
  * WiFi network entity
  */
-final class WifiNetwork implements JsonSerializable {
+final readonly class WifiNetwork implements JsonSerializable {
 
 	/**
 	 * Constructor
@@ -42,14 +42,14 @@ final class WifiNetwork implements JsonSerializable {
 	 * @param WifiSecurity $security Security
 	 */
 	public function __construct(
-		private readonly bool $inUse,
-		private readonly string $bssid,
-		private readonly string $ssid,
-		private readonly WifiMode $mode,
-		private readonly int $channel,
-		private readonly string $rate,
-		private readonly int $signal,
-		private readonly WifiSecurity $security,
+		private bool $inUse,
+		private string $bssid,
+		private string $ssid,
+		private WifiMode $mode,
+		private int $channel,
+		private string $rate,
+		private int $signal,
+		private WifiSecurity $security,
 	) {
 	}
 
@@ -81,7 +81,16 @@ final class WifiNetwork implements JsonSerializable {
 
 	/**
 	 * Serializes WiFi network entity into JSON
-	 * @return array{inUse: bool, bssid: string, ssid: string, mode: string, channel: int, rate: string, signal: int, security: string} JSON serialized entity
+	 * @return array{
+	 *     inUse: bool,
+	 *     bssid: string,
+	 *     ssid: string,
+	 *     mode: string,
+	 *     channel: int,
+	 *     rate: string,
+	 *     signal: int,
+	 *     security: string,
+	 * } JSON serialized entity
 	 */
 	public function jsonSerialize(): array {
 		return [

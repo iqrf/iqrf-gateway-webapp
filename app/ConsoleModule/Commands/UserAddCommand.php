@@ -98,7 +98,7 @@ class UserAddCommand extends UserCommand {
 			$helper = $this->getHelper('question');
 			$question = new Question('Please enter the username: ');
 			$name = $helper->ask($input, $output, $question);
-			if ($name !== null && $this->repository->findOneByUserName($name) === null) {
+			if ($name !== null && !$this->repository->findOneByUserName($name) instanceof User) {
 				$username = $name;
 			} else {
 				$output->writeln('This username is already taken. Please choose another username.');

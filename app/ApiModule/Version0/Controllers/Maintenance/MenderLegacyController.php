@@ -50,7 +50,7 @@ class MenderLegacyController extends BaseController {
 
 	#[Path('/install')]
 	#[Method(['POST'])]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Installs mender artifact
 		deprecated: true
 		description: "Deprecated in favor of the new Mender controller, use `POST` `/maintenance/mender/install` instead. Will be removed in the version 3.1.0."
@@ -65,79 +65,79 @@ class MenderLegacyController extends BaseController {
 								type: string
 								format: binary
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
 							type: string
 							description: Mender action log
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'415\':
-				$ref: \'#/components/responses/InvalidContentType\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'415':
+				$ref: '#/components/responses/InvalidContentType'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function installArtifact(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->installArtifact($request, $response);
 	}
 
 	#[Path('/commit')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Commits installed mender artifact
 		deprecated: true
 		description: "Deprecated in favor of the new Mender controller, use `POST` `/maintenance/mender/commit` instead. Will be removed in the version 3.1.0."
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
 							type: string
 							description: Mender action log
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function commitUpdate(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->commitUpdate($request, $response);
 	}
 
 	#[Path('/rollback')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Rolls installed mender artifact back
 		deprecated: true
 		description: "Deprecated in favor of the new Mender controller, use `POST` `/maintenance/mender/rollback` instead. Will be removed in the version 3.1.0."
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
 							type: string
 							description: Mender action log
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function rollbackUpdate(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->rollbackUpdate($request, $response);
 	}
 
 	#[Path('/remount')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Remounts root filesystem
 		deprecated: true
 		description: "Deprecated in favor of the new Mender controller, use `POST` `/maintenance/mender/remount` instead. Will be removed in the version 3.1.0."
@@ -146,22 +146,22 @@ class MenderLegacyController extends BaseController {
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/Remount\'
+						$ref: '#/components/schemas/Remount'
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
 							type: string
 							description: Mender action log
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function remount(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->remount($request, $response);
 	}

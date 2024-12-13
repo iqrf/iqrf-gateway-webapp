@@ -31,8 +31,12 @@ Environment::setupTester();
 Environment::setupTimezone('Etc/GMT-2');
 Environment::setupFolders(__DIR__);
 if (basename(__DIR__) === 'tests') {
-	define('TESTER_DIR', realpath(__DIR__));
-	define('TMP_DIR', TESTER_DIR . '/tmp');
+	if (!defined('TESTER_DIR')) {
+		define('TESTER_DIR', realpath(__DIR__));
+	}
+	if (!defined('TMP_DIR')) {
+		define('TMP_DIR', TESTER_DIR . '/tmp');
+	}
 	@mkdir(TMP_DIR);
 	$dirs = [
 		'certificates/',

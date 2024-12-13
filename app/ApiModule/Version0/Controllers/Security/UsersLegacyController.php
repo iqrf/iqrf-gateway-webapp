@@ -51,28 +51,28 @@ class UsersLegacyController extends BaseController {
 
 	#[Path('/')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Lists all users
 		deprecated: true
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
 							type: array
 							items:
-								$ref: \'#/components/schemas/UserDetail\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-	')]
+								$ref: '#/components/schemas/UserDetail'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+	EOT)]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->list($request, $response);
 	}
 
 	#[Path('/')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Creates a new user
 		deprecated: true
 		requestBody:
@@ -80,47 +80,47 @@ class UsersLegacyController extends BaseController {
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/UserCreate\'
+						$ref: '#/components/schemas/UserCreate'
 		responses:
-			\'201\':
+			'201':
 				description: Created
 				headers:
 					Location:
 						description: Location of information about the created user
 						schema:
 							type: string
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'409\':
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'409':
 				description: E-mail address or username is already used
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/Error\'
-	')]
+							$ref: '#/components/schemas/Error'
+	EOT)]
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->create($request, $response);
 	}
 
 	#[Path('/{id}')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Returns user by ID
 		deprecated: true
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/UserDetail\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-	')]
+							$ref: '#/components/schemas/UserDetail'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'User ID')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->get($request, $response);
@@ -128,17 +128,17 @@ class UsersLegacyController extends BaseController {
 
 	#[Path('/{id}')]
 	#[Method('DELETE')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Deletes the user
 		deprecated: true
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-	')]
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'User ID')]
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->delete($request, $response);
@@ -146,7 +146,7 @@ class UsersLegacyController extends BaseController {
 
 	#[Path('/{id}')]
 	#[Method('PUT')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Updates the user
 		deprecated: true
 		requestBody:
@@ -154,23 +154,23 @@ class UsersLegacyController extends BaseController {
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/UserEdit\'
+						$ref: '#/components/schemas/UserEdit'
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-			\'409\':
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'409':
 				description: Username is already used
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/Error\'
-	')]
+							$ref: '#/components/schemas/Error'
+	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'User ID')]
 	public function update(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->edit($request, $response);
@@ -178,23 +178,23 @@ class UsersLegacyController extends BaseController {
 
 	#[Path('/{id}/resendVerification')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Resends the verification e-mail
 		deprecated: true
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'400\':
+			'400':
 				description: User is already verified
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/Error\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-			\'500\':
-				$ref: \'#/components/responses/MailerError\'
-	')]
+							$ref: '#/components/schemas/Error'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'500':
+				$ref: '#/components/responses/MailerError'
+	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'User ID')]
 	public function resendVerification(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->resendVerification($request, $response);

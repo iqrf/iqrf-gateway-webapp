@@ -50,18 +50,18 @@ class InfoController extends BaseGatewayController {
 
 	#[Path('/')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Returns information about the gateway
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/GatewayInfo\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-	')]
+							$ref: '#/components/schemas/GatewayInfo'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+	EOT)]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$info = $this->infoManager->get();
 		$response = $response->writeJsonBody($info);
@@ -70,18 +70,18 @@ class InfoController extends BaseGatewayController {
 
 	#[Path('/brief')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Returns brief information about the gateway
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/GatewayBriefInfo\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-	')]
+							$ref: '#/components/schemas/GatewayBriefInfo'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+	EOT)]
 	public function getBrief(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$info = $this->infoManager->getBrief();
 		$response = $response->writeJsonBody($info);

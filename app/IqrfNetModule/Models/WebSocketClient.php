@@ -177,7 +177,7 @@ class WebSocketClient {
 	 */
 	private function parseResponse(ApiRequest $request, ?MessageInterface $response, bool $checkStatus): array {
 		$data = ['request' => $request->get()];
-		if ($response === null) {
+		if (!$response instanceof MessageInterface) {
 			$data['status'] = 'Empty response.';
 			Debugger::barDump($data, 'WebSocket client');
 			throw new EmptyResponseException();

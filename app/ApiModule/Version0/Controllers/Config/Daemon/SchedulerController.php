@@ -65,18 +65,18 @@ class SchedulerController extends BaseDaemonConfigController {
 
 	#[Path('/')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Lists tasks
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/TaskList\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-	')]
+							$ref: '#/components/schemas/TaskList'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+	EOT)]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['config:daemon']);
 		$response = $response->writeJsonBody($this->manager->list());
@@ -85,28 +85,28 @@ class SchedulerController extends BaseDaemonConfigController {
 
 	#[Path('/')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Creates a new task
 		requestBody:
 			required: true
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/Task\'
+						$ref: '#/components/schemas/Task'
 		responses:
-			\'201\':
+			'201':
 				description: Created
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'409\':
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'409':
 				description: Task already exists
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/Error\'
-	')]
+							$ref: '#/components/schemas/Error'
+	EOT)]
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['config:daemon']);
 		$this->validators->validateRequest('task', $request);
@@ -128,14 +128,14 @@ class SchedulerController extends BaseDaemonConfigController {
 
 	#[Path('/')]
 	#[Method('DELETE')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Deletes all tasks
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-	')]
+			'403':
+				$ref: '#/components/responses/Forbidden'
+	EOT)]
 	public function deleteAll(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['config:daemon']);
 		$this->manager->deleteAll();
@@ -144,20 +144,20 @@ class SchedulerController extends BaseDaemonConfigController {
 
 	#[Path('/{taskId}')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Returns task configuration
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/Task\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-	')]
+							$ref: '#/components/schemas/Task'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+	EOT)]
 	#[RequestParameter(name: 'taskId', type: 'integer', description: 'Task ID')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['config:daemon']);
@@ -173,16 +173,16 @@ class SchedulerController extends BaseDaemonConfigController {
 
 	#[Path('/{taskId}')]
 	#[Method('DELETE')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Deletes a task
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-	')]
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+	EOT)]
 	#[RequestParameter(name: 'taskId', type: 'integer', description: 'Task ID')]
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['config:daemon']);
@@ -197,24 +197,24 @@ class SchedulerController extends BaseDaemonConfigController {
 
 	#[Path('/{taskId}')]
 	#[Method('PUT')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Edits a task
 		requestBody:
 			required: true
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/Task\'
+						$ref: '#/components/schemas/Task'
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-	')]
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+	EOT)]
 	#[RequestParameter(name: 'taskId', type: 'integer', description: 'Task ID')]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['config:daemon']);
@@ -238,25 +238,25 @@ class SchedulerController extends BaseDaemonConfigController {
 
 	#[Path('/export')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Exports scheduler configuration
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/zip:
 						schema:
 							type: string
 							format: binary
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'404\':
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
 				description: No tasks to export
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/Error\'
-	')]
+							$ref: '#/components/schemas/Error'
+	EOT)]
 	public function export(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['config:daemon']);
 		try {
@@ -271,42 +271,36 @@ class SchedulerController extends BaseDaemonConfigController {
 
 	#[Path('/import')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Imports scheduler configuration
 		requestBody:
 			required: true
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/Task\'
+						$ref: '#/components/schemas/Task'
 				application/zip:
 					schema:
 						type: string
 						format: binary
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'415\':
-				$ref: \'#/components/responses/InvalidContentType\'
-	')]
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'415':
+				$ref: '#/components/responses/InvalidContentType'
+	EOT)]
 	public function import(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['config:daemon']);
 		try {
-			switch (ContentTypeUtil::getContentType($request)) {
-				case 'application/zip':
-				case 'application/x-zip-compressed':
-					$this->importZip($request);
-					break;
-				case 'application/json':
-					$this->importJson($request);
-					break;
-				default:
-					throw new ClientErrorException('Unsupported media type', ApiResponse::S415_UNSUPPORTED_MEDIA_TYPE);
-			}
+			match (ContentTypeUtil::getContentType($request)) {
+				'application/zip', 'application/x-zip-compressed' => $this->importZip($request),
+				'application/json' => $this->importJson($request),
+				default => throw new ClientErrorException('Unsupported media type', ApiResponse::S415_UNSUPPORTED_MEDIA_TYPE),
+			};
 		} catch (InvalidTaskMessageException $e) {
 			throw new ClientErrorException('Invalid mType', ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (JsonException $e) {
@@ -319,20 +313,20 @@ class SchedulerController extends BaseDaemonConfigController {
 
 	#[Path('/messagings')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Returns all messagings suitable for scheduler tasks
 		response:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/SchedulerMessagings\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+							$ref: '#/components/schemas/SchedulerMessagings'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function getMessagings(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['config:daemon']);
 		try {

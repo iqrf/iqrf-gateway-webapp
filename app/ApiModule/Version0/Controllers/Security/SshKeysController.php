@@ -59,20 +59,20 @@ class SshKeysController extends BaseSecurityController {
 
 	#[Path('/types')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Lists SSH key types
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/SshKeyTypes\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+							$ref: '#/components/schemas/SshKeyTypes'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function listKeyTypes(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['sshKeys']);
 		try {
@@ -85,20 +85,20 @@ class SshKeysController extends BaseSecurityController {
 
 	#[Path('/')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: List authorized SSH public keys
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/SshKeyList\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+							$ref: '#/components/schemas/SshKeyList'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function listKeys(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['sshKeys']);
 		$response = $response->writeJsonBody($this->manager->listKeys());
@@ -107,22 +107,22 @@ class SshKeysController extends BaseSecurityController {
 
 	#[Path('/{id}')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Returns authorized SSH public key
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/SshKeyDetail\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+							$ref: '#/components/schemas/SshKeyDetail'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'SSH public key ID')]
 	public function getKey(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['sshKeys']);
@@ -137,40 +137,40 @@ class SshKeysController extends BaseSecurityController {
 
 	#[Path('/')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Adds SSH keys for key-based authentication
 		requestBody:
 			required: true
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/SshKeysAdd\'
+						$ref: '#/components/schemas/SshKeysAdd'
 		responses:
-			\'200\':
-				description: \'Partial success, duplicate keys in body (ignored)\'
+			'200':
+				description: 'Partial success, duplicate keys in body (ignored)'
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/SshKeyCreated\'
-			\'201\':
+							$ref: '#/components/schemas/SshKeyCreated'
+			'201':
 				description: Created
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/SshKeyCreated\'
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'409\':
+							$ref: '#/components/schemas/SshKeyCreated'
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'409':
 				description: SSH public key already exists
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/Error\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+							$ref: '#/components/schemas/Error'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function addKeys(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['sshKeys']);
 		$this->validators->validateRequest('sshKeysAdd', $request);
@@ -190,16 +190,16 @@ class SshKeysController extends BaseSecurityController {
 
 	#[Path('/{id}')]
 	#[Method('DELETE')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Removes an authorized SSH public key
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-	')]
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'SSH public key ID')]
 	public function deleteKey(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['sshKeys']);

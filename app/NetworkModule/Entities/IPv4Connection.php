@@ -30,7 +30,7 @@ use stdClass;
 /**
  * IPv4 connection entity
  */
-final class IPv4Connection implements INetworkManagerEntity {
+final readonly class IPv4Connection implements INetworkManagerEntity {
 
 	/**
 	 * nmcli configuration prefix
@@ -46,11 +46,11 @@ final class IPv4Connection implements INetworkManagerEntity {
 	 * @param IPv4Current|null $current Current configuration
 	 */
 	public function __construct(
-		private readonly IPv4Methods $method,
-		private readonly array $addresses,
-		private readonly ?IPv4 $gateway,
-		private readonly array $dns,
-		private readonly ?IPv4Current $current,
+		private IPv4Methods $method,
+		private array $addresses,
+		private ?IPv4 $gateway,
+		private array $dns,
+		private ?IPv4Current $current,
 	) {
 	}
 
@@ -109,7 +109,26 @@ final class IPv4Connection implements INetworkManagerEntity {
 
 	/**
 	 * Serializes IPv4 connection entity into JSON
-	 * @return array{method: string, addresses: array<array{address: string, prefix: int, mask: string}>, gateway: string|null, dns: array<array{address: string}>, current?: array{method: string, addresses: array<array{address: string, prefix: int, mask: string}>, gateway: string|null, dns: array<array{address: string}>}} JSON serialized entity
+	 * @return array{
+	 *     method: string,
+	 *     addresses: array<array{
+	 *         address: string,
+	 *         prefix: int,
+	 *         mask: string,
+	 *     }>,
+	 *     gateway: string|null,
+	 *     dns: array<array{address: string}>,
+	 *     current?: array{
+	 *         method: string,
+	 *         addresses: array<array{
+	 *             address: string,
+	 *             prefix: int,
+	 *             mask: string,
+	 *         }>,
+	 *         gateway: string|null,
+	 *         dns: array<array{address: string}>,
+	 *     },
+	 * } JSON serialized entity
 	 */
 	public function jsonSerialize(): array {
 		$array = [
@@ -118,7 +137,7 @@ final class IPv4Connection implements INetworkManagerEntity {
 			'gateway' => $this->gateway?->getDotAddress(),
 			'dns' => array_map(static fn (IPv4 $a): array => ['address' => $a->getDotAddress()], $this->dns),
 		];
-		if ($this->current !== null) {
+		if ($this->current instanceof IPv4Current) {
 			$array['current'] = $this->current->jsonSerialize();
 		}
 		return $array;
@@ -132,7 +151,7 @@ final class IPv4Connection implements INetworkManagerEntity {
 		$array = [
 			'method' => $this->method->value,
 			'addresses' => implode(' ', array_map(static fn (IPv4Address $address): string => $address->toString(), $this->addresses)),
-			'gateway' => ($this->gateway !== null) ? $this->gateway->getDotAddress() : '',
+			'gateway' => ($this->gateway instanceof IPv4) ? $this->gateway->getDotAddress() : '',
 			'dns' => implode(' ', array_map(static fn (IPv4 $ipv4): string => $ipv4->getDotAddress(), $this->dns)),
 		];
 		return NmCliConnection::encode($array, self::NMCLI_PREFIX);

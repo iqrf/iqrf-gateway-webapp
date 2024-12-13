@@ -65,7 +65,7 @@ class UploadController extends BaseIqrfController {
 
 	#[Path('/upload')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Uploads file
 		requestBody:
 			description: Uploads file
@@ -76,26 +76,26 @@ class UploadController extends BaseIqrfController {
 						type: object
 						properties:
 							format:
-								enum: [hex, iqrf, trcnfg, \'\']
+								enum: [hex, iqrf, trcnfg, '']
 								type: string
 							file:
 								type: string
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/IqrfUploadedFile\'
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'415\':
-				$ref: \'#/components/responses/InvalidContentType\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+							$ref: '#/components/schemas/IqrfUploadedFile'
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'415':
+				$ref: '#/components/responses/InvalidContentType'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function upload(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['iqrf:upload']);
 		ContentTypeUtil::validContentType($request, ['multipart/form-data']);
@@ -116,30 +116,30 @@ class UploadController extends BaseIqrfController {
 
 	#[Path('/dpaFile')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Returns DPA file
 		requestBody:
 			required: true
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/DpaFile\'
+						$ref: '#/components/schemas/DpaFile'
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/DpaFileName\'
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+							$ref: '#/components/schemas/DpaFileName'
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function getDpaFile(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['iqrf:upload']);
 		$this->validators->validateRequest('dpaFile', $request);
@@ -167,26 +167,26 @@ class UploadController extends BaseIqrfController {
 
 	#[Path('/uploader')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Executes upload using the IQRF Gateway Uploader
 		requestBody:
 			required: true
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/UploaderFile\'
+						$ref: '#/components/schemas/UploaderFile'
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function uploader(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['iqrf:upload']);
 		$this->validators->validateRequest('uploaderFile', $request);

@@ -53,18 +53,18 @@ class IqrfRepositoryController extends BaseConfigController {
 
 	#[Path('/')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Returns the current configuration of IQRF Repository
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/IqrfRepositoryConfig\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-	')]
+							$ref: '#/components/schemas/IqrfRepositoryConfig'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+	EOT)]
 	public function readConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['config:iqrfRepository']);
 		$response = $response->writeJsonBody($this->manager->readConfig());
@@ -73,24 +73,24 @@ class IqrfRepositoryController extends BaseConfigController {
 
 	#[Path('/')]
 	#[Method('PUT')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Updates IQRF repository extension configuration
 		requestBody:
 			required: true
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/IqrfRepositoryConfig\'
+						$ref: '#/components/schemas/IqrfRepositoryConfig'
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function saveConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['config:iqrfRepository']);
 		$this->validators->validateRequest('iqrfRepositoryConfig', $request);

@@ -70,28 +70,19 @@ class GatewayFileBackup implements IBackupManager {
 	/**
 	 * @var string Gateway ID
 	 */
-	private string $gwId;
-
-	/**
-	 * @var PrivilegedFileManager Daemon file manager
-	 */
-	private PrivilegedFileManager $daemonFileManager;
-
-	/**
-	 * @var RestoreLogger Restore logger
-	 */
-	private RestoreLogger $restoreLogger;
+	private readonly string $gwId;
 
 	/**
 	 * Constructor
 	 * @param PrivilegedFileManager $daemonFileManager Daemon file manager
 	 * @param GatewayInfoUtil $gwInfo Gateway information utility
-	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
-	public function __construct(PrivilegedFileManager $daemonFileManager, GatewayInfoUtil $gwInfo, RestoreLogger $restoreLogger) {
-		$this->daemonFileManager = $daemonFileManager;
+	public function __construct(
+		private readonly PrivilegedFileManager $daemonFileManager,
+		GatewayInfoUtil $gwInfo,
+		private readonly RestoreLogger $restoreLogger,
+	) {
 		$this->gwId = Strings::lower($gwInfo->getId());
-		$this->restoreLogger = $restoreLogger;
 	}
 
 	/**

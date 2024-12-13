@@ -52,24 +52,24 @@ class ShellUserController extends BaseSecurityController {
 
 	#[Path('/password')]
 	#[Method('PUT')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Updates default gateway user password
 		requestBody:
 			required: true
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/GatewayPassword\'
+						$ref: '#/components/schemas/GatewayPassword'
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function setPassword(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkFeatures(['gatewayPass']);
 		$this->validators->validateRequest('gatewayPassword', $request);

@@ -62,7 +62,7 @@ class ApiKeyController extends BaseSecurityController {
 
 	#[Path('/')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Lists all API keys
 		responses:
 			200:
@@ -70,10 +70,10 @@ class ApiKeyController extends BaseSecurityController {
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/ApiKeyList\'
+							$ref: '#/components/schemas/ApiKeyList'
 			403:
-				$ref: \'#/components/responses/Forbidden\'
-	')]
+				$ref: '#/components/responses/Forbidden'
+	EOT)]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['apiKeys']);
 		$apiKeys = $this->repository->findAll();
@@ -83,31 +83,31 @@ class ApiKeyController extends BaseSecurityController {
 
 	#[Path('/')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Creates a new API key
 		requestBody:
 			required: true
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/ApiKeyModify\'
+						$ref: '#/components/schemas/ApiKeyModify'
 		responses:
-			\'201\':
+			'201':
 				description: Created
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/ApiKeyCreated\'
+							$ref: '#/components/schemas/ApiKeyCreated'
 				headers:
 					Location:
 						description: Location of information about the created API key
 						schema:
 							type: string
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-	')]
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+	EOT)]
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['apiKeys']);
 		$this->validators->validateRequest('apiKeyModify', $request);
@@ -128,20 +128,20 @@ class ApiKeyController extends BaseSecurityController {
 
 	#[Path('/{id}')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Returns API key by ID
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/ApiKeyDetail\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-	')]
+							$ref: '#/components/schemas/ApiKeyDetail'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+	EOT)]
 	#[RequestParameter('id', type: 'integer', description: 'API key ID')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['apiKeys']);
@@ -156,16 +156,16 @@ class ApiKeyController extends BaseSecurityController {
 
 	#[Path('/{id}')]
 	#[Method('DELETE')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Deletes a API key
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-	')]
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+	EOT)]
 	#[RequestParameter('id', type: 'integer', description: 'API key ID')]
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['apiKeys']);
@@ -181,24 +181,24 @@ class ApiKeyController extends BaseSecurityController {
 
 	#[Path('/{id}')]
 	#[Method('PUT')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Updates the API key
 		requestBody:
 			required: true
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/ApiKeyModify\'
+						$ref: '#/components/schemas/ApiKeyModify'
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-	')]
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'API key ID')]
 	public function update(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['apiKeys']);

@@ -51,68 +51,68 @@ class SshController extends BaseGatewayController {
 
 	#[Path('/keyTypes')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Lists SSH key types
 		deprecated: true
 		description: "Deprecated in favor of the new SSH keys controller, use `GET` `/security/sshKeys/types` instead. Will be removed in the version 3.1.0."
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/SshKeyTypes\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+							$ref: '#/components/schemas/SshKeyTypes'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function listKeyTypes(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->listKeyTypes($request, $response);
 	}
 
 	#[Path('/keys')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: List authorized SSH public keys
 		deprecated: true
 		description: "Deprecated in favor of the new SSH keys controller, use `GET` `/security/sshKeys` instead. Will be removed in the version 3.1.0."
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/SshKeyList\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+							$ref: '#/components/schemas/SshKeyList'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function listKeys(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->listKeys($request, $response);
 	}
 
 	#[Path('/keys/{id}')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Returns authorized SSH public key
 		deprecated: true
 		description: "Deprecated in favor of the new SSH keys controller, use `GET` `/security/sshKeys/{id}` instead. Will be removed in the version 3.1.0."
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/SshKeyDetail\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+							$ref: '#/components/schemas/SshKeyDetail'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'SSH public key ID')]
 	public function getKey(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->getKey($request, $response);
@@ -120,7 +120,7 @@ class SshController extends BaseGatewayController {
 
 	#[Path('/keys')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Adds SSH keys for key-based authentication
 		deprecated: true
 		description: "Deprecated in favor of the new SSH keys controller, use `POST` `/security/sshKeys` instead. Will be removed in the version 3.1.0."
@@ -129,47 +129,47 @@ class SshController extends BaseGatewayController {
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/SshKeysAdd\'
+						$ref: '#/components/schemas/SshKeysAdd'
 		responses:
-			\'200\':
-				description: \'Partial success, duplicate keys in body (ignored)\'
+			'200':
+				description: 'Partial success, duplicate keys in body (ignored)'
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/SshKeyCreated\'
-			\'201\':
+							$ref: '#/components/schemas/SshKeyCreated'
+			'201':
 				description: Created
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'409\':
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'409':
 				description: SSH public key already exists
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/Error\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+							$ref: '#/components/schemas/Error'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function addKeys(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->addKeys($request, $response);
 	}
 
 	#[Path('/keys/{id}')]
 	#[Method('DELETE')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Removes an authorized SSH public key
 		deprecated: true
 		description: "Deprecated in favor of the new SSH keys controller, use `DELETE` `/security/sshKeys/{id}` instead. Will be removed in the version 3.1.0."
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-	')]
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'SSH public key ID')]
 	public function deleteKey(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->deleteKey($request, $response);

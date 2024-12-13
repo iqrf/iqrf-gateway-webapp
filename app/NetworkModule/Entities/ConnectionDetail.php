@@ -224,16 +224,16 @@ class ConnectionDetail implements INetworkManagerEntity {
 			'ipv4' => $this->ipv4->jsonSerialize(),
 			'ipv6' => $this->ipv6->jsonSerialize(),
 		];
-		if ($this->wifi !== null) {
+		if ($this->wifi instanceof WifiConnection) {
 			$json['wifi'] = $this->wifi->jsonSerialize();
 		}
-		if ($this->gsm !== null) {
+		if ($this->gsm instanceof GSMConnection) {
 			$json['gsm'] = $this->gsm->jsonSerialize();
 		}
-		if ($this->serial !== null) {
+		if ($this->serial instanceof SerialLink) {
 			$json['serial'] = $this->serial->jsonSerialize();
 		}
-		if ($this->vlan !== null) {
+		if ($this->vlan instanceof VlanConfiguration) {
 			$json['vlan'] = $this->vlan->jsonSerialize();
 		}
 		return $json;
@@ -259,7 +259,7 @@ class ConnectionDetail implements INetworkManagerEntity {
 				break;
 			case ConnectionTypes::GSM:
 				$nmcli .= $this->gsm->nmCliSerialize();
-				if ($this->serial !== null) {
+				if ($this->serial instanceof SerialLink) {
 					$nmcli .= $this->serial->nmCliSerialize();
 				}
 				break;

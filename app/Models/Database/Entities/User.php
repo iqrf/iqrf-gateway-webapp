@@ -71,7 +71,7 @@ class User implements JsonSerializable {
 	/**
 	 * @var string|null Password hash
 	 */
-	#[ORM\Column(type: 'string', length: 255, nullable: true)]
+	#[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
 	private ?string $password = null;
 
 	/**
@@ -107,8 +107,6 @@ class User implements JsonSerializable {
 	) {
 		$this->setEmail($email);
 		$this->setPassword($password);
-		$this->emailChanged = false;
-		$this->passwordChanged = false;
 	}
 
 	/**

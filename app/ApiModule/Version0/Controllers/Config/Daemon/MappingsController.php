@@ -63,19 +63,19 @@ class MappingsController extends BaseDaemonConfigController {
 
 	#[Path('/')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Lists all mappings
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/MappingList\'
-	')]
+							$ref: '#/components/schemas/MappingList'
+	EOT)]
 	#[RequestParameter(name: 'interface', type: 'string', in: 'query', required: false, description: 'Interface type')]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$criteria = !$request->hasQueryParam('interface') ? [] : ['type' => $request->getQueryParam('interface')];
+		$criteria = $request->hasQueryParam('interface') ? ['type' => $request->getQueryParam('interface')] : [];
 		$mappings = $this->repository->findBy($criteria);
 		$response = $response->writeJsonBody($mappings);
 		return $this->validators->validateResponse('mappingList', $response);
@@ -83,31 +83,31 @@ class MappingsController extends BaseDaemonConfigController {
 
 	#[Path('/')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Creates a new mapping
 		requestBody:
 			required: true
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/Mapping\'
+						$ref: '#/components/schemas/Mapping'
 		responses:
-			\'201\':
+			'201':
 				description: Created
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/MappingDetail\'
+							$ref: '#/components/schemas/MappingDetail'
 				headers:
 					Location:
 						description: Location of information about the created mapping
 						schema:
 							type: string
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-	')]
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+	EOT)]
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->validateRequest('mapping', $request);
 		$json = $request->getJsonBodyCopy(false);
@@ -152,20 +152,20 @@ class MappingsController extends BaseDaemonConfigController {
 
 	#[Path('/{id}')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Returns mapping by ID
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/MappingDetail\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-	')]
+							$ref: '#/components/schemas/MappingDetail'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Mapping ID')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$id = (int) $request->getParameter('id');
@@ -179,14 +179,14 @@ class MappingsController extends BaseDaemonConfigController {
 
 	#[Path('/{id}')]
 	#[Method('DELETE')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Removes a mapping
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-	')]
+			'404':
+				$ref: '#/components/responses/NotFound'
+	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Mapping ID')]
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$id = (int) $request->getParameter('id');
@@ -201,24 +201,24 @@ class MappingsController extends BaseDaemonConfigController {
 
 	#[Path('/{id}')]
 	#[Method('PUT')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Updates a mapping
 		requestBody:
 			required: true
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/Mapping\'
+						$ref: '#/components/schemas/Mapping'
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-	')]
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Mapping ID')]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$id = (int) $request->getParameter('id');

@@ -3,7 +3,7 @@
 /**
  * TEST: App\MaintenanceModule\Entities\MenderClientConfiguration
  * @covers App\MaintenanceModule\Entities\MenderClientConfiguration
- * @phpVersion >= 8.1
+ * @phpVersion >= 8.2
  * @testCase
  */
 /**

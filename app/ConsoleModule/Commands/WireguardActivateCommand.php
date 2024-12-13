@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ConsoleModule\Commands;
 
+use App\Models\Database\Entities\WireguardInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -56,7 +57,7 @@ class WireguardActivateCommand extends WireguardCommand {
 			return Command::FAILURE;
 		}
 		$tunnel = $this->repository->findInterfaceByName($tunnelName);
-		if ($tunnel === null) {
+		if (!$tunnel instanceof WireguardInterface) {
 			$style->error('WireGuard tunnel ' . $tunnelName . ' does not exist.');
 			return Command::FAILURE;
 		}

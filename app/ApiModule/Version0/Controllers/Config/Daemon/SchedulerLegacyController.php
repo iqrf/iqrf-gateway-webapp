@@ -51,27 +51,27 @@ class SchedulerLegacyController extends BaseController {
 
 	#[Path('/')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Lists tasks
 		deprecated: true
 		description: "Deprecated in favor of the new IQRF Gateway Daemon scheduler controller, use `GET` `/config/daemon/scheduler` instead. Will be removed in the version 3.1.0."
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/TaskList\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-	')]
+							$ref: '#/components/schemas/TaskList'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+	EOT)]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->list($request, $response);
 	}
 
 	#[Path('/')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Creates a new task
 		deprecated: true
 		description: "Deprecated in favor of the new IQRF Gateway Daemon scheduler controller, use `POST` `/config/daemon/scheduler` instead. Will be removed in the version 3.1.0."
@@ -80,59 +80,59 @@ class SchedulerLegacyController extends BaseController {
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/Task\'
+						$ref: '#/components/schemas/Task'
 		responses:
-			\'201\':
+			'201':
 				description: Created
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'409\':
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'409':
 				description: Task already exists
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/Error\'
-	')]
+							$ref: '#/components/schemas/Error'
+	EOT)]
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->create($request, $response);
 	}
 
 	#[Path('/')]
 	#[Method('DELETE')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Deletes all tasks
 		deprecated: true
 		description: "Deprecated in favor of the new IQRF Gateway Daemon scheduler controller, use `DELETE` `/config/daemon/scheduler` instead. Will be removed in the version 3.1.0."
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-	')]
+			'403':
+				$ref: '#/components/responses/Forbidden'
+	EOT)]
 	public function deleteAll(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->deleteAll($request, $response);
 	}
 
 	#[Path('/{taskId}')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Returns task configuration
 		deprecated: true
 		description: "Deprecated in favor of the new IQRF Gateway Daemon scheduler controller, use `GET` `/config/daemon/scheduler/{taskId}` instead. Will be removed in the version 3.1.0."
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/Task\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-	')]
+							$ref: '#/components/schemas/Task'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+	EOT)]
 	#[RequestParameter(name: 'taskId', type: 'integer', description: 'Task ID')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->get($request, $response);
@@ -140,18 +140,18 @@ class SchedulerLegacyController extends BaseController {
 
 	#[Path('/{taskId}')]
 	#[Method('DELETE')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Deletes a task
 		deprecated: true
 		description: "Deprecated in favor of the new IQRF Gateway Daemon scheduler controller, use `DELETE` `/config/daemon/scheduler/{taskId}` instead. Will be removed in the version 3.1.0."
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-	')]
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+	EOT)]
 	#[RequestParameter(name: 'taskId', type: 'integer', description: 'Task ID')]
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->delete($request, $response);
@@ -159,7 +159,7 @@ class SchedulerLegacyController extends BaseController {
 
 	#[Path('/{taskId}')]
 	#[Method('PUT')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Updates a task
 		deprecated: true
 		description: "Deprecated in favor of the new IQRF Gateway Daemon scheduler controller, use `PUT` `/config/daemon/scheduler/{taskId}` instead. Will be removed in the version 3.1.0."
@@ -168,17 +168,17 @@ class SchedulerLegacyController extends BaseController {
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/Task\'
+						$ref: '#/components/schemas/Task'
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-	')]
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+	EOT)]
 	#[RequestParameter(name: 'taskId', type: 'integer', description: 'Task ID')]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->edit($request, $response);
@@ -186,34 +186,34 @@ class SchedulerLegacyController extends BaseController {
 
 	#[Path('/export')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Exports scheduler configuration
 		deprecated: true
 		description: "Deprecated in favor of the new IQRF Gateway Daemon scheduler controller, use `POST` `/config/daemon/scheduler/export` instead. Will be removed in the version 3.1.0."
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/zip:
 						schema:
 							type: string
 							format: binary
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'404\':
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
 				description: No tasks to export
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/Error\'
-	')]
+							$ref: '#/components/schemas/Error'
+	EOT)]
 	public function export(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->export($request, $response);
 	}
 
 	#[Path('/import')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Imports scheduler configuration
 		deprecated: true
 		description: "Deprecated in favor of the new IQRF Gateway Daemon scheduler controller, use `POST` `/config/daemon/scheduler/import` instead. Will be removed in the version 3.1.0."
@@ -222,43 +222,43 @@ class SchedulerLegacyController extends BaseController {
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/Task\'
+						$ref: '#/components/schemas/Task'
 				application/zip:
 					schema:
 						type: string
 						format: binary
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'415\':
-				$ref: \'#/components/responses/InvalidContentType\'
-	')]
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'415':
+				$ref: '#/components/responses/InvalidContentType'
+	EOT)]
 	public function import(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->import($request, $response);
 	}
 
 	#[Path('/messagings')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Returns all messagings suitable for scheduler tasks
 		deprecated: true
 		description: "Deprecated in favor of the new IQRF Gateway Daemon scheduler controller, use `GET` `/config/daemon/scheduler/messagings` instead. Will be removed in the version 3.1.0."
 		response:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/SchedulerMessagings\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+							$ref: '#/components/schemas/SchedulerMessagings'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function getMessagings(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->getMessagings($request, $response);
 	}

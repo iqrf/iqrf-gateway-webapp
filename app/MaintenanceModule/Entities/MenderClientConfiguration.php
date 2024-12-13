@@ -61,7 +61,7 @@ class MenderClientConfiguration implements IMenderConfiguration {
 			} elseif (
 				array_key_exists('Servers', $config) &&
 				is_array($config['Servers']) &&
-				count($config['Servers']) !== 0
+				$config['Servers'] !== []
 			) {
 				$servers = [$config['Servers'][0]['ServerURL']];
 			} else {

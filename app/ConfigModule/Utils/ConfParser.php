@@ -53,11 +53,7 @@ class ConfParser {
 		foreach ($config as $key => $array) {
 			$output[] = '[' . $key . ']';
 			foreach ($array as $arrKey => $arrVal) {
-				if ($arrVal === null || $arrVal === '') {
-					$output[] = '#' . $arrKey . '=';
-				} else {
-					$output[] = $arrKey . '=' . $arrVal;
-				}
+				$output[] = $arrVal === null || $arrVal === '' ? '#' . $arrKey . '=' : $arrKey . '=' . $arrVal;
 			}
 			$output[] = PHP_EOL;
 		}

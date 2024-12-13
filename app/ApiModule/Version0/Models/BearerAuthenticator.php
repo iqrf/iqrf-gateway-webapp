@@ -75,7 +75,7 @@ class BearerAuthenticator implements IAuthenticator {
 		$repository = $this->entityManager->getApiKeyRepository();
 		$salt = Strings::substring($key, 0, 22);
 		$apiKey = $repository->findOneBySalt($salt);
-		if ($apiKey !== null && $apiKey->verify($key)) {
+		if ($apiKey instanceof ApiKey && $apiKey->verify($key)) {
 			return $apiKey;
 		}
 		return null;

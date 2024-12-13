@@ -54,21 +54,21 @@ class CertificateController extends BaseController {
 
 	#[Path('/')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Returns information about TLS certificate
 		deprecated: true
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/CertificateDetail\'
-			\'400\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+							$ref: '#/components/schemas/CertificateDetail'
+			'400':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
 			$response = $response->writeJsonBody($this->manager->getInfo());

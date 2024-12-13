@@ -127,7 +127,7 @@ class WireguardManager {
 	 * @param stdClass $values New WireGuard interface configuration
 	 */
 	public function createInterface(stdClass $values): void {
-		if ($this->interfaceRepository->findInterfaceByName($values->name) !== null) {
+		if ($this->interfaceRepository->findInterfaceByName($values->name) instanceof WireguardInterface) {
 			throw new InterfaceExistsException(sprintf('WireGuard tunnel %s already exists.', $values->name));
 		}
 		$interface = new WireguardInterface($values->name, $values->privateKey, $values->port ?? null);
@@ -344,10 +344,10 @@ class WireguardManager {
 			throw new Exception(sprintf('Failed to set wg tunnel properties: %s.', $output->getStderr()));
 		}
 		FileSystem::delete(self::TMP_DIR);
-		if ($iface->getIpv4() !== null) {
+		if ($iface->getIpv4() instanceof WireguardInterfaceIpv4) {
 			$this->setTunnelIp($name, $iface->getIpv4()->toString(), 4);
 		}
-		if ($iface->getIpv6() !== null) {
+		if ($iface->getIpv6() instanceof WireguardInterfaceIpv6) {
 			$this->setTunnelIp($name, $iface->getIpv6()->toString(), 6);
 		}
 		$output = $this->commandManager->run('ip link set mtu 1420 up dev ' . escapeshellarg($name), true);

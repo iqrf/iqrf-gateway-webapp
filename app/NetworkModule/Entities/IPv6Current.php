@@ -24,7 +24,7 @@ use App\NetworkModule\Enums\IPv6Methods;
 use Darsyn\IP\Version\IPv6;
 use JsonSerializable;
 
-final class IPv6Current implements JsonSerializable {
+final readonly class IPv6Current implements JsonSerializable {
 
 	/**
 	 * nmcli configuration prefix
@@ -39,10 +39,10 @@ final class IPv6Current implements JsonSerializable {
 	 * @param array<IPv6> $dns IPv6 addresses of DNS servers
 	 */
 	public function __construct(
-		private readonly IPv6Methods $method,
-		private readonly array $addresses,
-		private readonly ?IPv6 $gateway,
-		private readonly array $dns,
+		private IPv6Methods $method,
+		private array $addresses,
+		private ?IPv6 $gateway,
+		private array $dns,
 	) {
 	}
 

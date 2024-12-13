@@ -59,7 +59,7 @@ fix-cc: temp/code-checker
 	php temp/code-checker/code-checker -f -l --no-progress --strict-types $(CC_IGNORE)
 
 cs: deps
-	vendor/bin/codesniffer --runtime-set php_version 80100 app bin tests
+	vendor/bin/codesniffer --runtime-set php_version 80200 app bin tests
 
 deb-package:
 	debuild -b -uc -us
@@ -173,4 +173,4 @@ temp/code-checker:
 	composer create-project nette/code-checker temp/code-checker --no-interaction
 
 test: deps
-	vendor/bin/tester -p phpdbg -c ./tests/php.ini ./tests
+	vendor/bin/tester -p phpdbg -j `nproc` -c ./tests/php.ini ./tests

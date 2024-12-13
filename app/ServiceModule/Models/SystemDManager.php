@@ -45,11 +45,7 @@ class SystemDManager implements IServiceManager {
 	 * @throws NonexistentServiceException
 	 */
 	public function disable(string|array $services, bool $stop = true): void {
-		if (is_array($services)) {
-			$arg = $this->formatServiceNames($services);
-		} else {
-			$arg = $this->formatServiceName($services);
-		}
+		$arg = is_array($services) ? $this->formatServiceNames($services) : $this->formatServiceName($services);
 		$cmd = sprintf('systemctl disable%s %s', $stop ? ' --now' : '', $arg);
 		$command = $this->commandManager->run($cmd, true);
 		if ($command->getExitCode() !== 0) {
@@ -64,11 +60,7 @@ class SystemDManager implements IServiceManager {
 	 * @throws NonexistentServiceException
 	 */
 	public function enable(string|array $services, bool $start = true): void {
-		if (is_array($services)) {
-			$arg = $this->formatServiceNames($services);
-		} else {
-			$arg = $this->formatServiceName($services);
-		}
+		$arg = is_array($services) ? $this->formatServiceNames($services) : $this->formatServiceName($services);
 		$cmd = sprintf('systemctl enable%s %s', $start ? ' --now' : '', $arg);
 		$command = $this->commandManager->run($cmd, true);
 		if ($command->getExitCode() !== 0) {
@@ -113,11 +105,7 @@ class SystemDManager implements IServiceManager {
 	 * @throws NonexistentServiceException
 	 */
 	public function start(string|array $services): void {
-		if (is_array($services)) {
-			$arg = $this->formatServiceNames($services);
-		} else {
-			$arg = $this->formatServiceName($services);
-		}
+		$arg = is_array($services) ? $this->formatServiceNames($services) : $this->formatServiceName($services);
 		$cmd = 'systemctl start ' . $arg;
 		$command = $this->commandManager->run($cmd, true);
 		if ($command->getExitCode() !== 0) {
@@ -131,11 +119,7 @@ class SystemDManager implements IServiceManager {
 	 * @throws NonexistentServiceException
 	 */
 	public function stop(string|array $services): void {
-		if (is_array($services)) {
-			$arg = $this->formatServiceNames($services);
-		} else {
-			$arg = $this->formatServiceName($services);
-		}
+		$arg = is_array($services) ? $this->formatServiceNames($services) : $this->formatServiceName($services);
 		$cmd = 'systemctl stop ' . $arg;
 		$command = $this->commandManager->run($cmd, true);
 		if ($command->getExitCode() !== 0) {

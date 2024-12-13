@@ -49,27 +49,27 @@ class IqrfRepositoryLegacyController extends BaseConfigController {
 
 	#[Path('/')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Returns the current configuration of IQRF Repository
 		deprecated: true
 		description: "Deprecated in favor of the new IQRF Repository controller, use `GET` `/config/iqrfRepository` instead. Will be removed in the version 3.1.0."
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/IqrfRepositoryConfig\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-	')]
+							$ref: '#/components/schemas/IqrfRepositoryConfig'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+	EOT)]
 	public function readConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->readConfig($request, $response);
 	}
 
 	#[Path('/')]
 	#[Method('PUT')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Updates IQRF repository extension configuration
 		deprecated: true
 		description: "Deprecated in favor of the new IQRF Repository controller, use `PUT` `/config/iqrfRepository` instead. Will be removed in the version 3.1.0."
@@ -78,17 +78,17 @@ class IqrfRepositoryLegacyController extends BaseConfigController {
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/IqrfRepositoryConfig\'
+						$ref: '#/components/schemas/IqrfRepositoryConfig'
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function saveConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->saveConfig($request, $response);
 	}

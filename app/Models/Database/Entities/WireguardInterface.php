@@ -197,10 +197,10 @@ class WireguardInterface implements JsonSerializable {
 			'port' => $this->getPort(),
 			'peers' => array_map(static fn (WireguardPeer $peer): array => $peer->jsonSerialize(), $this->getPeers()->toArray()),
 		];
-		if ($this->getIpv4() !== null) {
+		if ($this->getIpv4() instanceof WireguardInterfaceIpv4) {
 			$array['ipv4'] = $this->getIpv4()->jsonSerialize();
 		}
-		if ($this->getIpv6() !== null) {
+		if ($this->getIpv6() instanceof WireguardInterfaceIpv6) {
 			$array['ipv6'] = $this->getIpv6()->jsonSerialize();
 		}
 		return $array;
@@ -217,8 +217,7 @@ class WireguardInterface implements JsonSerializable {
 		if ($port !== null) {
 			$command .= sprintf(' \'listen-port\' %s', escapeshellarg((string) $port));
 		}
-		$command .= implode('', array_map(static fn (WireguardPeer $peer): string => ' ' . $peer->wgSerialize(), $this->getPeers()->toArray()));
-		return $command;
+		return $command . implode('', array_map(static fn (WireguardPeer $peer): string => ' ' . $peer->wgSerialize(), $this->getPeers()->toArray()));
 	}
 
 	/**

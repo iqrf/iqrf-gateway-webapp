@@ -57,18 +57,18 @@ class PowerController extends BaseGatewayController {
 
 	#[Path('/poweroff')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Powers off the gateway
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/PowerControl\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-	')]
+							$ref: '#/components/schemas/PowerControl'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+	EOT)]
 	public function powerOff(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['gateway:power']);
 		$response = $response->writeJsonBody($this->powerManager->powerOff());
@@ -77,18 +77,18 @@ class PowerController extends BaseGatewayController {
 
 	#[Path('/reboot')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Reboots the gateway
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/PowerControl\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-	')]
+							$ref: '#/components/schemas/PowerControl'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+	EOT)]
 	public function reboot(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['gateway:power']);
 		$response = $response->writeJsonBody($this->powerManager->reboot());
@@ -97,26 +97,26 @@ class PowerController extends BaseGatewayController {
 
 	#[Path('/stats')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Returns power statistics
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/TuptimeStats\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'424\':
+							$ref: '#/components/schemas/TuptimeStats'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'424':
 				description: tuptime not found
 				content:
-					\'application/json\':
+					'application/json':
 						schema:
-							$ref: \'#/components/schemas/Error\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+							$ref: '#/components/schemas/Error'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function stats(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['gateway:power']);
 		try {

@@ -57,20 +57,20 @@ class IqrfOsController extends BaseIqrfController {
 
 	#[Path('/osPatches')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Lists all IQRF OS patches
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
 							type: array
 							items:
-								$ref: \'#/components/schemas/IqrfOsPatchDetail\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-	')]
+								$ref: '#/components/schemas/IqrfOsPatchDetail'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+	EOT)]
 	public function listOsPatches(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['iqrf:upload']);
 		$patches = $this->iqrfOsManager->listOsPatches();
@@ -80,24 +80,24 @@ class IqrfOsController extends BaseIqrfController {
 
 	#[Path('/osUpgrades')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Lists all IQRF OS upgrades
 		requestBody:
 			required: true
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/IqrfOsPatchUpgrade\'
+						$ref: '#/components/schemas/IqrfOsPatchUpgrade'
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/IqrfOsUpgradeList\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-	')]
+							$ref: '#/components/schemas/IqrfOsUpgradeList'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+	EOT)]
 	public function listOsUpgrades(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['iqrf:upload']);
 		$this->validators->validateRequest('iqrfOsPatchUpgrade', $request);
@@ -109,26 +109,26 @@ class IqrfOsController extends BaseIqrfController {
 
 	#[Path('/upgradeOs')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Upgrades OS and DPA
 		requestBody:
 			required: true
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/IqrfOsDpaUpgrade\'
+						$ref: '#/components/schemas/IqrfOsDpaUpgrade'
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function upgradeOs(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['iqrf:upload']);
 		$this->validators->validateRequest('iqrfOsDpaUpgrade', $request);

@@ -38,19 +38,22 @@ class MonitManager extends BaseMonitManager {
 	/**
 	 * @var CheckManager Monit check manager
 	 */
-	private CheckManager $checkManager;
+	private readonly CheckManager $checkManager;
 
 	/**
 	 * @var MmonitManager M/Monit configuration manager
 	 */
-	private MmonitManager $mmonitManager;
+	private readonly MmonitManager $mmonitManager;
 
 	/**
 	 * Constructor
 	 * @param IFileManager $fileManager Privileged file manager
 	 * @param CommandExecutor $commandManager Command manager
 	 */
-	public function __construct(IFileManager $fileManager, CommandExecutor $commandManager) {
+	public function __construct(
+		IFileManager $fileManager,
+		CommandExecutor $commandManager,
+	) {
 		parent::__construct($fileManager, $commandManager);
 		$this->checkManager = new CheckManager($fileManager, $commandManager);
 		$this->mmonitManager = new MmonitManager($fileManager, $commandManager);
@@ -97,7 +100,20 @@ class MonitManager extends BaseMonitManager {
 
 	/**
 	 * Saves new monit configuration
-	 * @param array{checks: array<array{name: string, enabled: bool}>, mmonit: array{enabled: bool, credentials: array{username: string, password: string}, server: string}} $newConfig New monit configuration
+	 * @param array{
+	 *     checks: array<array{
+	 *         name: string,
+	 *         enabled: bool,
+	 *     }>,
+	 *     mmonit: array{
+	 *         enabled: bool,
+	 *         credentials: array{
+	 *             username: string,
+	 *             password: string,
+	 *         },
+	 *         server: string,
+	 *     },
+	 * } $newConfig New monit configuration
 	 * @throws MonitConfigErrorException
 	 */
 	public function saveConfig(array $newConfig): void {

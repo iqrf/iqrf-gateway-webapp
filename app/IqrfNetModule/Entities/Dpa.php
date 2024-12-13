@@ -52,7 +52,7 @@ class Dpa {
 		$interface = $this->interface->value;
 		$trSeries = $this->trSeries->value;
 		$filePrefixes = [];
-		if ($this->rfMode !== null) {
+		if ($this->rfMode instanceof RfModes) {
 			$rfMode = $this->rfMode->value;
 			$filePrefixes = [
 				'GeneralHWP-Coordinator-' . $rfMode . '-' . $interface . '-' . $trSeries . '-',

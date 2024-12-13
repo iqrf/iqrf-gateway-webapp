@@ -75,7 +75,7 @@ class InterfaceManager {
 		$interfaces = [];
 		foreach ($array as $row) {
 			$parts = preg_split('~(?<!\\\)' . preg_quote(':', '~') . '~', $row);
-			if ($type !== null && $type !== InterfaceTypes::from($parts[1])) {
+			if ($type instanceof InterfaceTypes && $type !== InterfaceTypes::from($parts[1])) {
 				continue;
 			}
 			$interfaceOutput = $this->commandManager->run('nmcli -t -f GENERAL,CONNECTIONS.AVAILABLE-CONNECTIONS device show ' . $parts[0], true)->getStdout();

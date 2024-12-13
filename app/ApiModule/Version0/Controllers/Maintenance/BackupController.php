@@ -60,27 +60,27 @@ class BackupController extends BaseMaintenanceController {
 
 	#[Path('/backup')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Backup gateway
 		requestBody:
 			required: true
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/GatewayBackup\'
+						$ref: '#/components/schemas/GatewayBackup'
 		responses:
-			\'200\':
-				description: \'Success\'
+			'200':
+				description: 'Success'
 				content:
 					application/zip:
 						schema:
 							type: string
 							format: binary
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-	')]
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+	EOT)]
 	public function backup(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['maintenance:backup']);
 		$this->validators->validateRequest('gatewayBackup', $request);
@@ -96,7 +96,7 @@ class BackupController extends BaseMaintenanceController {
 
 	#[Path('/restore')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Restore gateway from backup
 		requestBody:
 			required: true
@@ -106,19 +106,19 @@ class BackupController extends BaseMaintenanceController {
 						type: string
 						format: binary
 		responses:
-			\'200\':
-				description: \'Success\'
+			'200':
+				description: 'Success'
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/PowerControl\'
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'415\':
-				description: \'Unsupported media type\'
-	')]
+							$ref: '#/components/schemas/PowerControl'
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'415':
+				description: 'Unsupported media type'
+	EOT)]
 	public function restore(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['maintenance:backup']);
 		$contentTypes = ['application/zip', 'application/x-zip-compressed'];

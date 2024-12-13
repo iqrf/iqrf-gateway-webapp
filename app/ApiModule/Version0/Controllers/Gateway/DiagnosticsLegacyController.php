@@ -50,19 +50,19 @@ class DiagnosticsLegacyController extends BaseController {
 
 	#[Path('/')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Returns archive with diagnostics
 		deprecated: true
 		description: "Deprecated in favor of the new Diagnostics controller, use `GET` `/gateway/diagnostics` instead. Will be removed in the version 3.1.0."
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/zip:
 						schema:
 							type: string
 							format: binary
-	')]
+	EOT)]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->get($request, $response);
 	}

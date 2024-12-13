@@ -56,38 +56,38 @@ class OpenApiController extends BaseController {
 
 	#[Path('/')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Returns OpenAPI schema
 		security:
 			- []
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/OpenApiSpecification\'
-	')]
+							$ref: '#/components/schemas/OpenApiSpecification'
+	EOT)]
 	public function index(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $response->writeJsonBody($this->schemaBuilder->getArray());
 	}
 
 	#[Path('/schemas/{name}')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Returns JSON schema
 		security:
 			- []
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/JsonSchema\'
-			\'404\':
+							$ref: '#/components/schemas/JsonSchema'
+			'404':
 				description: Not found
-	')]
+	EOT)]
 	#[RequestParameter(name: 'name', type: 'string', in: 'path', required: true, description: 'Name of schema')]
 	public function getSchema(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$name = $request->getParameter('name');

@@ -52,17 +52,17 @@ class DiagnosticsController extends BaseGatewayController {
 
 	#[Path('/')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Returns archive with diagnostics
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/zip:
 						schema:
 							type: string
 							format: binary
-	')]
+	EOT)]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$path = $this->manager->createArchive();
 		$fileName = basename($path);

@@ -28,7 +28,7 @@ use Throwable;
 /**
  * WiFi connection entity
  */
-final class WifiConnection implements INetworkManagerEntity {
+final readonly class WifiConnection implements INetworkManagerEntity {
 
 	/**
 	 * nmcli configuration prefix
@@ -43,10 +43,10 @@ final class WifiConnection implements INetworkManagerEntity {
 	 * @param WifiConnectionSecurity|null $security WiFi connection security entity
 	 */
 	public function __construct(
-		private readonly string $ssid,
-		private readonly WifiMode $mode,
-		private readonly array $bssids,
-		private readonly ?WifiConnectionSecurity $security,
+		private string $ssid,
+		private WifiMode $mode,
+		private array $bssids,
+		private ?WifiConnectionSecurity $security,
 	) {
 	}
 
@@ -101,7 +101,7 @@ final class WifiConnection implements INetworkManagerEntity {
 			'mode' => $this->mode->value,
 		];
 		$string = NmCliConnection::encode($array, self::NMCLI_PREFIX);
-		if ($this->security !== null) {
+		if ($this->security instanceof WifiConnectionSecurity) {
 			$string .= $this->security->nmCliSerialize();
 		}
 		return $string;

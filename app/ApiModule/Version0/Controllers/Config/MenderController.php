@@ -54,22 +54,22 @@ class MenderController extends BaseConfigController {
 
 	#[Path('/')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Returns current configuration of Mender client
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/MenderConfig\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-			\'501\':
+							$ref: '#/components/schemas/MenderConfig'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+			'501':
 				description: Unsupported Mender client version
-	')]
+	EOT)]
 	public function getConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['maintenance:mender']);
 		try {
@@ -87,26 +87,26 @@ class MenderController extends BaseConfigController {
 
 	#[Path('/')]
 	#[Method('PUT')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Saves new Mender client configuration
 		requestBody:
 			required: true
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/MenderConfig\'
+						$ref: '#/components/schemas/MenderConfig'
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-			\'501\':
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+			'501':
 				description: Unsupported Mender client version
-	')]
+	EOT)]
 	public function setConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['maintenance:mender']);
 		$this->validators->validateRequest('menderConfig', $request);
@@ -122,7 +122,7 @@ class MenderController extends BaseConfigController {
 
 	#[Path('/cert')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Uploads and stores a Mender server certificate
 		requestBody:
 			required: true
@@ -136,20 +136,20 @@ class MenderController extends BaseConfigController {
 								format: binary
 
 		responses:
-			\'201\':
+			'201':
 				description: Created
 				content:
 					text/plain:
 						schema:
 							type: string
 							description: Path to the stored certificate
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function uploadCert(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['maintenance:mender']);
 		try {

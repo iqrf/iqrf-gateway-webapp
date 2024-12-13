@@ -72,18 +72,18 @@ class UsersController extends BaseSecurityController {
 
 	#[Path('/')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Lists all users
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/UserList\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-	')]
+							$ref: '#/components/schemas/UserList'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+	EOT)]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['users:admin', 'users:basic']);
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
@@ -97,33 +97,33 @@ class UsersController extends BaseSecurityController {
 
 	#[Path('/')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Creates a new user
 		requestBody:
 			required: true
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/UserCreate\'
+						$ref: '#/components/schemas/UserCreate'
 		responses:
-			\'201\':
+			'201':
 				description: Created
 				headers:
 					Location:
 						description: Location of information about the created user
 						schema:
 							type: string
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'409\':
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'409':
 				description: E-mail address or username is already used
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/Error\'
-	')]
+							$ref: '#/components/schemas/Error'
+	EOT)]
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		if ($this->repository->count([]) !== 0) {
 			$this->validators->checkScopes($request, ['users:admin', 'users:basic']);
@@ -166,20 +166,20 @@ class UsersController extends BaseSecurityController {
 
 	#[Path('/{id}')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Returns user by ID
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/UserDetail\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-	')]
+							$ref: '#/components/schemas/UserDetail'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'User ID')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['users:admin', 'users:basic']);
@@ -194,16 +194,16 @@ class UsersController extends BaseSecurityController {
 
 	#[Path('/{id}')]
 	#[Method('DELETE')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Deletes a user
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-	')]
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'User ID')]
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['users:admin', 'users:basic']);
@@ -222,30 +222,30 @@ class UsersController extends BaseSecurityController {
 
 	#[Path('/{id}')]
 	#[Method('PUT')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Updates the user
 		requestBody:
 			required: true
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/UserEdit\'
+						$ref: '#/components/schemas/UserEdit'
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-			\'409\':
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'409':
 				description: Username is already used
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/Error\'
-	')]
+							$ref: '#/components/schemas/Error'
+	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'User ID')]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['users:admin', 'users:basic']);
@@ -317,22 +317,22 @@ class UsersController extends BaseSecurityController {
 
 	#[Path('/{id}/resendVerification')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Resends the verification e-mail
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'400\':
+			'400':
 				description: User is already verified
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/Error\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-			\'500\':
-				$ref: \'#/components/responses/MailerError\'
-	')]
+							$ref: '#/components/schemas/Error'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'500':
+				$ref: '#/components/responses/MailerError'
+	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'User ID')]
 	public function resendVerification(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['users:admin', 'users:basic']);

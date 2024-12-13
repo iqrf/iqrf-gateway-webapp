@@ -154,7 +154,7 @@ class ApiKey implements JsonSerializable {
 	 * @return bool Is API key expired
 	 */
 	public function isExpired(): bool {
-		if ($this->expiration === null) {
+		if (!$this->expiration instanceof DateTime) {
 			return false;
 		}
 		$now = new DateTime();

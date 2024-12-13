@@ -66,16 +66,16 @@ class InstallationController extends BaseController {
 
 	#[Path('/')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Checks the installation
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/InstallationCheck\'
-	')]
+							$ref: '#/components/schemas/InstallationCheck'
+	EOT)]
 	public function check(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$gwId = $this->infoManager->getId();
 		$status = [

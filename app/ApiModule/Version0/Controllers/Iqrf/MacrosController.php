@@ -48,18 +48,18 @@ class MacrosController extends BaseIqrfController {
 
 	#[Path('/')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Returns IQRF IDE macros
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/IqrfIdeMacros\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-	')]
+							$ref: '#/components/schemas/IqrfIdeMacros'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+	EOT)]
 	public function macros(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['iqrf:macros']);
 		$response = $response->writeJsonBody($this->macroParser->read());

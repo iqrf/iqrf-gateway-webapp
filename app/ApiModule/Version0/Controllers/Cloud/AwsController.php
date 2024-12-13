@@ -58,7 +58,7 @@ class AwsController extends BaseCloudController {
 
 	#[Path('/')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Creates a new MQTT connection into Amazon AWS IoT
 		requestBody:
 			description: Amazon AWS IoT connection configuration
@@ -66,7 +66,7 @@ class AwsController extends BaseCloudController {
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/CloudAws\'
+						$ref: '#/components/schemas/CloudAws'
 				multipart/form-data:
 					schema:
 						type: object
@@ -80,15 +80,15 @@ class AwsController extends BaseCloudController {
 								type: string
 								format: binary
 		responses:
-			\'201\':
+			'201':
 				description: Created
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['clouds']);
 		try {

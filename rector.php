@@ -28,6 +28,8 @@ use Rector\CodingStyle\Rector\Stmt\NewlineAfterStatementRector;
 use Rector\CodingStyle\Rector\String_\SymplifyQuoteEscapeRector;
 use Rector\Config\RectorConfig;
 use Rector\Doctrine\Set\DoctrineSetList;
+use Rector\Php81\Rector\Array_\FirstClassCallableRector;
+use Rector\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector;
 use Rector\Symfony\Set\SymfonySetList;
 use Rector\Transform\Rector\Attribute\AttributeKeyToClassConstFetchRector;
 
@@ -38,12 +40,13 @@ return RectorConfig::configure()
 		__DIR__ . '/tests',
 	])
 	->withSkip([
-		AttributeKeyToClassConstFetchRector::class,
+//		AttributeKeyToClassConstFetchRector::class,
 		CatchExceptionNameMatchingTypeRector::class,
-		FlipTypeControlToUseExclusiveTypeRector::class,
+		FirstClassCallableRector::class,
+//		FlipTypeControlToUseExclusiveTypeRector::class,
 		NewlineAfterStatementRector::class,
 		NewlineBeforeNewAssignSetRector::class,
-		PostIncDecToPreIncDecRector::class,
+		NullToStrictStringFuncCallArgRector::class,
 		SplitDoubleAssignRector::class,
 		SymplifyQuoteEscapeRector::class,
 		__DIR__ . '/tests/tmp',
@@ -51,8 +54,8 @@ return RectorConfig::configure()
 	->withPHPStanConfigs([
 		__DIR__ . '/phpstan.neon',
 	])
-	->withPhpVersion(80100)
-	->withPhpSets(php81: true)
+	->withPhpVersion(80200)
+	->withPhpSets(php82: true)
 	->withPreparedSets(
 		deadCode: true,
 		codeQuality: true,
@@ -60,12 +63,13 @@ return RectorConfig::configure()
 		typeDeclarations: true,
 		instanceOf: true,
 	)
+	->withAttributesSets(all: true)
 	->withSets([
 		DoctrineSetList::DOCTRINE_CODE_QUALITY,
 		DoctrineSetList::DOCTRINE_COMMON_20,
 		DoctrineSetList::DOCTRINE_DBAL_30,
 		DoctrineSetList::DOCTRINE_ORM_214,
-		SymfonySetList::SYMFONY_63,
+		SymfonySetList::SYMFONY_72,
 		SymfonySetList::SYMFONY_CODE_QUALITY,
 	])
 	->withRules([

@@ -36,7 +36,7 @@ class SshBackup implements IBackupManager {
 	/**
 	 * @var bool Feature enabled
 	 */
-	private bool $featureEnabled;
+	private readonly bool $featureEnabled;
 
 	/**
 	 * Constructor

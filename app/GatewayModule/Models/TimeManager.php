@@ -94,7 +94,7 @@ class TimeManager {
 			'formattedTime' => $tokens[5],
 		];
 		$array['ntpSync'] = $status['NTP'];
-		$array['ntpServers'] = strlen($timesyncConf['Time']['NTP']) === 0 ? [] : explode(' ', $timesyncConf['Time']['NTP']);
+		$array['ntpServers'] = (string) $timesyncConf['Time']['NTP'] === '' ? [] : explode(' ', (string) $timesyncConf['Time']['NTP']);
 		return $array;
 	}
 

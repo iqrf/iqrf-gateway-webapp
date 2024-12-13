@@ -57,22 +57,22 @@ class JournalController extends BaseGatewayController {
 	#[Path('/config')]
 	#[Tag('Configuration - Logs')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Returns journal configuration
 		deprecated: true
 		description: "Deprecated in favor of the new Journal config controller, use `GET` `/config/journal` instead. Will be removed in the version 3.1.0."
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/Journal\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+							$ref: '#/components/schemas/Journal'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function getConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->configController->getConfig($request, $response);
 	}
@@ -80,7 +80,7 @@ class JournalController extends BaseGatewayController {
 	#[Path('/config')]
 	#[Tag('Configuration - Logs')]
 	#[Method('PUT')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Updates journal configuration
 		deprecated: true
 		description: "Deprecated in favor of the new Journal config controller, use `PUT` `/config/journal` instead. Will be removed in the version 3.1.0."
@@ -89,17 +89,17 @@ class JournalController extends BaseGatewayController {
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/Journal\'
+						$ref: '#/components/schemas/Journal'
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function saveConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->configController->saveConfig($request, $response);
 	}
@@ -107,7 +107,7 @@ class JournalController extends BaseGatewayController {
 	#[Path('/config')]
 	#[Tag('Configuration - Logs')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Updates journal configuration
 		deprecated: true
 		description: "Deprecated in favor of the new Journal config controller, use `PUT` `/config/journal` instead. Will be removed in the version 3.1.0."
@@ -116,17 +116,17 @@ class JournalController extends BaseGatewayController {
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/Journal\'
+						$ref: '#/components/schemas/Journal'
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function saveConfigOld(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->configController->saveConfig($request, $response);
 	}
@@ -134,7 +134,7 @@ class JournalController extends BaseGatewayController {
 	#[Path('/')]
 	#[Method('GET')]
 	#[Tag('Gateway - Logs')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Returns journal records
 		parameters:
 			-
@@ -155,17 +155,17 @@ class JournalController extends BaseGatewayController {
 				required: false
 				description: Specifies a record cursor to start from
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/JournalRecords\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+							$ref: '#/components/schemas/JournalRecords'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$count = (int) $request->getQueryParam('count', 500);
 		$cursor = $request->getQueryParam('cursor', null);

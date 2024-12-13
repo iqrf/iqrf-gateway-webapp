@@ -9,13 +9,13 @@ Adds dependency on IQRF Gateway Uploader
 + iqrf-gateway-controller, iqrf-gateway-daemon, iqrf-journal-reader,
 + mender-client, mender-connect, modemmanager, monit, net-tools, network-manager,
 + openssh-client, openssl, passwd,
-  php8.1-common | php8.2-common | php8.3-common,
-  php8.1-cli | php8.2-cli | php8.3-cli,
-  php8.1-curl | php8.2-curl | php8.3-curl,
+  php8.2-common | php8.3-common,
+  php8.2-cli | php8.3-cli,
+  php8.2-curl | php8.3-curl,
 @@ -25,6 +27,6 @@
-  php8.1-sqlite3 | php8.2-sqlite3 | php8.3-sqlite3,
-  php8.1-xml | php8.2-xml | php8.3-xml,
-  php8.1-zip | php8.2-zip | php8.3-zip,
+  php8.2-sqlite3 | php8.3-sqlite3,
+  php8.2-xml | php8.3-xml,
+  php8.2-zip | php8.3-zip,
 - procps, nginx | apache2, sudo, systemd, systemd-sysv
 + procps, nginx | apache2, sudo, systemd, systemd-sysv, wireguard-tools
  Description: Web user interface for IQRF Gateway Daemon

@@ -125,7 +125,6 @@ test:
   parallel:
     matrix:
       - PHP_VERSION:
-        - '8.1'
         - '8.2'
         - '8.3'
 
@@ -133,8 +132,8 @@ coverage:php:
   <<: *test_template
   <<: *composer_template
   before_script:
+    - update-alternatives --set php /usr/bin/php8.3
     - !reference [.composer_template, before_script]
-    - update-alternatives --set php /usr/bin/php8.1
     - vendor/bin/tester -c ./tests/php-coverage.ini --info
   script:
     - vendor/bin/tester -c ./tests/php-coverage.ini -o none -o junit:junit.xml --coverage ./coverage.html --coverage-src ./app ./tests
@@ -212,7 +211,7 @@ codesniffer:
   <<: *coding-style_template
   <<: *composer_template
   script:
-    - vendor/bin/codesniffer --runtime-set php_version 80100 app bin tests
+    - vendor/bin/codesniffer --runtime-set php_version 80200 app bin tests
 
 doctrine_mapping:
   <<: *coding-style_template

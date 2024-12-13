@@ -26,7 +26,7 @@ use stdClass;
 /**
  * GSM connection entity
  */
-final class GSMConnection implements INetworkManagerEntity {
+final readonly class GSMConnection implements INetworkManagerEntity {
 
 	/**
 	 * nmcli configuration prefix
@@ -41,10 +41,10 @@ final class GSMConnection implements INetworkManagerEntity {
 	 * @param string|null $pin SIM PIN
 	 */
 	public function __construct(
-		private readonly string $apn,
-		private readonly ?string $username = null,
-		private readonly ?string $password = null,
-		private readonly ?string $pin = null,
+		private string $apn,
+		private ?string $username = null,
+		private ?string $password = null,
+		private ?string $pin = null,
 	) {
 	}
 
@@ -72,7 +72,12 @@ final class GSMConnection implements INetworkManagerEntity {
 
 	/**
 	 * Serializes GSM connection entity into JSON
-	 * @return array{apn: string, username: string|null, password: string|null, pin: string|null} JSON serialized entity
+	 * @return array{
+	 *     apn: string,
+	 *     username: string|null,
+	 *     password: string|null,
+	 *     pin: string|null,
+	 * } JSON serialized entity
 	 */
 	public function jsonSerialize(): array {
 		return [

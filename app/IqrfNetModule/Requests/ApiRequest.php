@@ -32,11 +32,6 @@ use stdClass;
 class ApiRequest {
 
 	/**
-	 * @var MessageIdManager Message ID manager
-	 */
-	protected MessageIdManager $msgIdManager;
-
-	/**
 	 * @var array<mixed>|stdClass IQRF JSON API request
 	 */
 	protected array|stdClass $request;
@@ -45,8 +40,9 @@ class ApiRequest {
 	 * Constructor
 	 * @param MessageIdManager $msgIdManager Message ID manager
 	 */
-	public function __construct(MessageIdManager $msgIdManager) {
-		$this->msgIdManager = $msgIdManager;
+	public function __construct(
+		protected MessageIdManager $msgIdManager,
+	) {
 	}
 
 	/**

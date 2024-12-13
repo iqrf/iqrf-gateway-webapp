@@ -46,22 +46,12 @@ abstract class BaseCloudController extends BaseController {
 	protected IManager $manager;
 
 	/**
-	 * Checks REST API request
-	 * @param string $schema JSON schema for REST API request
-	 * @param ApiRequest $request API request to validate
-	 */
-	protected function checkRequest(string $schema, ApiRequest $request): void {
-		$this->validators->checkScopes($request, ['clouds']);
-		$this->validators->validateRequest($schema, $request);
-	}
-
-	/**
 	 * Creates a new MQTT connection into a specific cloud service
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
-	protected function create(ApiRequest $request, ApiResponse $response): ApiResponse {
+	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
 			$this->manager->createMqttInterface($request->getJsonBodyCopy());
 			return $response->withStatus(ApiResponse::S201_CREATED);
@@ -74,6 +64,16 @@ abstract class BaseCloudController extends BaseController {
 		} catch (GuzzleException $e) {
 			throw new ServerErrorException('Download failure', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
+	}
+
+	/**
+	 * Checks REST API request
+	 * @param string $schema JSON schema for REST API request
+	 * @param ApiRequest $request API request to validate
+	 */
+	protected function checkRequest(string $schema, ApiRequest $request): void {
+		$this->validators->checkScopes($request, ['clouds']);
+		$this->validators->validateRequest($schema, $request);
 	}
 
 }

@@ -26,7 +26,7 @@ use stdClass;
 /**
  * Automatic connecting entity
  */
-class AutoConnect implements INetworkManagerEntity {
+readonly class AutoConnect implements INetworkManagerEntity {
 
 	/**
 	 * Constructor
@@ -35,9 +35,9 @@ class AutoConnect implements INetworkManagerEntity {
 	 * @param int $retries Connection retries
 	 */
 	public function __construct(
-		private readonly bool $enabled,
-		private readonly int $priority,
-		private readonly int $retries,
+		private bool $enabled,
+		private int $priority,
+		private int $retries,
 	) {
 	}
 

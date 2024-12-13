@@ -30,7 +30,7 @@ use stdClass;
 /**
  * WiFi connection security entity
  */
-final class WifiConnectionSecurity implements INetworkManagerEntity {
+final readonly class WifiConnectionSecurity implements INetworkManagerEntity {
 
 	/**
 	 * nmcli 802-11-wireless security configuration prefix
@@ -45,11 +45,11 @@ final class WifiConnectionSecurity implements INetworkManagerEntity {
 	 * @param Wep|null $wep WEP entity
 	 */
 	public function __construct(
-		private readonly WifiSecurityType $type,
-		private readonly ?string $psk,
-		private readonly ?Leap $leap,
-		private readonly ?Wep $wep,
-		private readonly ?Eap $eap,
+		private WifiSecurityType $type,
+		private ?string $psk,
+		private ?Leap $leap,
+		private ?Wep $wep,
+		private ?Eap $eap,
 	) {
 	}
 
@@ -102,13 +102,13 @@ final class WifiConnectionSecurity implements INetworkManagerEntity {
 			'type' => $this->type->value,
 			'psk' => $this->psk,
 		];
-		if ($this->leap !== null) {
+		if ($this->leap instanceof Leap) {
 			$array['leap'] = $this->leap->jsonSerialize();
 		}
-		if ($this->wep !== null) {
+		if ($this->wep instanceof Wep) {
 			$array['wep'] = $this->wep->jsonSerialize();
 		}
-		if ($this->eap !== null) {
+		if ($this->eap instanceof Eap) {
 			$array['eap'] = $this->eap->jsonSerialize();
 		}
 		return $array;

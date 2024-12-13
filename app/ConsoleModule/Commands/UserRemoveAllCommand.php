@@ -61,7 +61,7 @@ class UserRemoveAllCommand extends UserCommand {
 			$style->error('Role ' . $input->getOption('role') . ' does not exist.');
 			return 1;
 		}
-		$criteria = $role === null ? [] : ['role' => $role];
+		$criteria = $role instanceof UserRole ? ['role' => $role] : [];
 		$users = $this->repository->findBy($criteria);
 		if ($input->isInteractive() && $users !== []) {
 			$helper = $this->getHelper('question');

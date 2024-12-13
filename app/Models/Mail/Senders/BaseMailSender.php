@@ -59,7 +59,7 @@ abstract class BaseMailSender {
 		$html = $this->renderTemplate($fileName, array_merge($defaultParams, $params));
 		$mail = new Message();
 		$mail->setFrom($this->configuration->getFrom(), $this->translator->translate('mail_' . $this->configuration->getTheme() . '.title'));
-		if ($user !== null) {
+		if ($user instanceof User) {
 			$mail->addTo($user->getEmail(), $user->getUserName());
 		}
 		$mail->setHtmlBody($html, $this->getTemplateDir());

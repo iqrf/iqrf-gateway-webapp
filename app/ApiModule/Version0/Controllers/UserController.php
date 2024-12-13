@@ -51,27 +51,27 @@ class UserController extends BaseController {
 
 	#[Path('/')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Returns information about logged in user
 		deprecated: true
 		description: "Deprecated in favor of the new account controller, use `GET` `/account` instead. Will be removed in the version 3.1.0."
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/UserDetail\'
-			\'403\':
-				$ref: \'#/components/responses/ForbiddenApiKey\'
-	')]
+							$ref: '#/components/schemas/UserDetail'
+			'403':
+				$ref: '#/components/responses/ForbiddenApiKey'
+	EOT)]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newAccountController->get($request, $response);
 	}
 
 	#[Path('/')]
 	#[Method('PUT')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Updates the user account information
 		deprecated: true
 		description: "Deprecated in favor of the new account controller, use `PUT` `/account` instead. Will be removed in the version 3.1.0."
@@ -80,29 +80,29 @@ class UserController extends BaseController {
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/UserEdit\'
+						$ref: '#/components/schemas/UserEdit'
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/ForbiddenApiKey\'
-			\'409\':
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/ForbiddenApiKey'
+			'409':
 				description: Username or e-mail address is already used
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/Error\'
-	')]
+							$ref: '#/components/schemas/Error'
+	EOT)]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newAccountController->edit($request, $response);
 	}
 
 	#[Path('/password')]
 	#[Method('PUT')]
-	#[OpenApi('
-		summary: "Updates user\'s password"
+	#[OpenApi(<<<'EOT'
+		summary: "Updates user's password"
 		deprecated: true
 		description: "Deprecated in favor of the new account controller, use `PUT` `/account/password` instead. Will be removed in the version 3.1.0."
 		requestBody:
@@ -110,20 +110,20 @@ class UserController extends BaseController {
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/PasswordChange\'
+						$ref: '#/components/schemas/PasswordChange'
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'403\':
-				$ref: \'#/components/responses/ForbiddenApiKey\'
-	')]
+			'403':
+				$ref: '#/components/responses/ForbiddenApiKey'
+	EOT)]
 	public function changePassword(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newAccountController->changePassword($request, $response);
 	}
 
 	#[Path('/password/recovery')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Requests the password recovery
 		deprecated: true
 		description: "Deprecated in favor of the new account controller, use `POST` `/account/passwordRecovery` instead. Will be removed in the version 3.1.0."
@@ -132,32 +132,32 @@ class UserController extends BaseController {
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/PasswordRecoveryRequest\'
+						$ref: '#/components/schemas/PasswordRecoveryRequest'
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'403\':
+			'403':
 				description: E-mail address is not verified
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/Error\'
-			\'404\':
+							$ref: '#/components/schemas/Error'
+			'404':
 				description: User not found
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/Error\'
-			\'500\':
-				$ref: \'#/components/responses/MailerError\'
-	')]
+							$ref: '#/components/schemas/Error'
+			'500':
+				$ref: '#/components/responses/MailerError'
+	EOT)]
 	public function requestPasswordRecovery(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newAccountController->requestPasswordRecovery($request, $response);
 	}
 
 	#[Path('/password/recovery/{uuid}')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Recovers the forgotten password
 		deprecated: true
 		description: "Deprecated in favor of the new account controller, use `POST` `/account/passwordRecovery/{uuid}` instead. Will be removed in the version 3.1.0."
@@ -166,23 +166,23 @@ class UserController extends BaseController {
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/PasswordRecovery\'
+						$ref: '#/components/schemas/PasswordRecovery'
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/UserToken\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-			\'410\':
+							$ref: '#/components/schemas/UserToken'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'410':
 				description: Password recovery request is expired
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/Error\'
-	')]
+							$ref: '#/components/schemas/Error'
+	EOT)]
 	#[RequestParameter(name: 'uuid', type: 'string', description: 'Password recovery request UUID')]
 	public function recoverPassword(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newAccountController->recoverPassword($request, $response);
@@ -190,49 +190,49 @@ class UserController extends BaseController {
 
 	#[Path('/resendVerification')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Resends the verification e-mail
 		deprecated: true
 		description: "Deprecated in favor of the new account controller, use `POST` `/account/emailVerification/resend` instead. Will be removed in the version 3.1.0."
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'400\':
+			'400':
 				description: User is already verified
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/Error\'
-			\'500\':
-				$ref: \'#/components/responses/MailerError\'
-	')]
+							$ref: '#/components/schemas/Error'
+			'500':
+				$ref: '#/components/responses/MailerError'
+	EOT)]
 	public function resendVerification(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newAccountController->resendVerification($request, $response);
 	}
 
 	#[Path('/refreshToken')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Refreshes user access token
 		deprecated: true
 		description: "Deprecated in favor of the new account controller, use `POST` `/account/tokenRefresh` instead. Will be removed in the version 3.1.0."
 		responses:
-			\'201\':
+			'201':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/UserToken\'
-			\'403\':
-				$ref: \'#/components/responses/ForbiddenApiKey\'
-	')]
+							$ref: '#/components/schemas/UserToken'
+			'403':
+				$ref: '#/components/responses/ForbiddenApiKey'
+	EOT)]
 	public function refreshToken(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newAccountController->refreshToken($request, $response);
 	}
 
 	#[Path('/signIn')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Signs in the user
 		deprecated: true
 		description: "Deprecated in favor of the new account controller, use `POST` `/account/signIn` instead. Will be removed in the version 3.1.0."
@@ -243,39 +243,39 @@ class UserController extends BaseController {
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/UserSignIn\'
+						$ref: '#/components/schemas/UserSignIn'
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/UserToken\'
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+							$ref: '#/components/schemas/UserToken'
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function signIn(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newAccountController->signIn($request, $response);
 	}
 
 	#[Path('/verify/{uuid}')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Verifies the user
 		deprecated: true
 		description: "Deprecated in favor of the new account controller, use `GET` `/account/emailVerification/{uuid}` instead. Will be removed in the version 3.1.0."
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/UserToken\'
-			\'404\':
-				$ref: \'#/components/responses/NotFound\'
-	')]
+							$ref: '#/components/schemas/UserToken'
+			'404':
+				$ref: '#/components/responses/NotFound'
+	EOT)]
 	#[RequestParameter(name: 'uuid', type: 'string', description: 'User verification UUID')]
 	public function verify(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newAccountController->verify($request, $response);

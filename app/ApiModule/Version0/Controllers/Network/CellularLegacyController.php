@@ -49,22 +49,22 @@ class CellularLegacyController extends BaseNetworkController {
 
 	#[Path('/modems')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Lists available modems
 		deprecated: true
 		description: "Deprecated in favor of the new Cellular controller, use `GET` `/network/cellular/modems` instead. Will be removed in the version 3.1.0."
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/ModemList\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+							$ref: '#/components/schemas/ModemList'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function listModems(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$response = $this->newController->listModems($request, $response);
 		return $this->validators->validateResponse('modemList', $response);
@@ -72,18 +72,18 @@ class CellularLegacyController extends BaseNetworkController {
 
 	#[Path('/modems/scan')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Scans for modems
 		deprecated: true
 		description: "Deprecated in favor of the new Cellular controller, use `POST` `/network/cellular/modems/scan` instead. Will be removed in the version 3.1.0."
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function scanModems(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->scanModems($request, $response);
 	}

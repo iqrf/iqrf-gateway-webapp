@@ -95,7 +95,7 @@ class UploadManager {
 	 * @return array{fileName: string, format: string} file name and file format
 	 */
 	public function uploadToFs(string $fileName, string $fileContent, ?UploadFormats $format = null): array {
-		if ($format === null) {
+		if (!$format instanceof UploadFormats) {
 			$format = $this->recognizeFormat($fileName);
 		}
 		FileSystem::createDir($this->path);
@@ -116,7 +116,7 @@ class UploadManager {
 		if (!$this->commandManager->commandExist(self::UPLOADER)) {
 			throw new UploaderMissingException('IQRF Gateway Uploader is not installed.');
 		}
-		if ($format === null) {
+		if (!$format instanceof UploadFormats) {
 			$format = $this->recognizeFormat($fileName);
 		}
 		$path = escapeshellarg(($os ? self::OS_PATH : $this->path) . $fileName);

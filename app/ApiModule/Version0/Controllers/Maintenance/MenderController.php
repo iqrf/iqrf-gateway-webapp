@@ -62,7 +62,7 @@ class MenderController extends BaseMaintenanceController {
 
 	#[Path('/install')]
 	#[Method(['POST'])]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Installs mender artifact
 		requestBody:
 			required: true
@@ -75,22 +75,22 @@ class MenderController extends BaseMaintenanceController {
 								type: string
 								format: binary
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
 							type: string
 							description: Mender action log
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'415\':
-				$ref: \'#/components/responses/InvalidContentType\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'415':
+				$ref: '#/components/responses/InvalidContentType'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function installArtifact(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['maintenance:mender']);
 		ContentTypeUtil::validContentType($request, ['multipart/form-data']);
@@ -111,23 +111,23 @@ class MenderController extends BaseMaintenanceController {
 
 	#[Path('/commit')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Commits installed mender artifact
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
 							type: string
 							description: Mender action log
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function commitUpdate(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['maintenance:mender']);
 		try {
@@ -141,23 +141,23 @@ class MenderController extends BaseMaintenanceController {
 
 	#[Path('/rollback')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Rolls installed mender artifact back
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
 							type: string
 							description: Mender action log
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function rollbackUpdate(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['maintenance:mender']);
 		try {
@@ -171,29 +171,29 @@ class MenderController extends BaseMaintenanceController {
 
 	#[Path('/remount')]
 	#[Method('POST')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Remounts root filesystem
 		requestBody:
 			required: true
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/Remount\'
+						$ref: '#/components/schemas/Remount'
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
 							type: string
 							description: Mender action log
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function remount(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['maintenance:mender']);
 		if (!$this->featureManager->isEnabled('remount')) {

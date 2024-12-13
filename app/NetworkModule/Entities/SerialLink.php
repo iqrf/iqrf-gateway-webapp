@@ -26,7 +26,7 @@ use stdClass;
 /**
  * Serial link entity
  */
-final class SerialLink implements INetworkManagerEntity {
+final readonly class SerialLink implements INetworkManagerEntity {
 
 	/**
 	 * nmcli configuration prefix
@@ -42,11 +42,11 @@ final class SerialLink implements INetworkManagerEntity {
 	 * @param int<1,2> $stopBits Stop bits 1 or 2
 	 */
 	public function __construct(
-		private readonly int $baudRate,
-		private readonly int $bits,
-		private readonly string $parity,
-		private readonly int $sendDelay,
-		private readonly int $stopBits,
+		private int $baudRate,
+		private int $bits,
+		private string $parity,
+		private int $sendDelay,
+		private int $stopBits,
 	) {
 	}
 

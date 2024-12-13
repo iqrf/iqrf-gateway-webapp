@@ -132,7 +132,7 @@ class SshManager {
 		foreach ($items as $item) {
 			$entity = $this->createKeyEntity($item);
 			$dbEntity = $this->sshKeyRepository->findByHash($entity->getHash());
-			if ($dbEntity !== null) {
+			if (!$dbEntity instanceof SshKey) {
 				$failedKeys[] = $item;
 				continue;
 			}
@@ -206,7 +206,7 @@ class SshManager {
 	 */
 	private function createKeyEntity(array $item): SshKey {
 		$tokens = explode(' ', $item['key'], 3);
-		if ($this->sshKeyRepository->findByKey($tokens[1]) !== null) {
+		if ($this->sshKeyRepository->findByKey($tokens[1]) instanceof SshKey) {
 			throw new SshKeyExistsException('SSH key already exists.');
 		}
 		$command = $this->commandManager->run('ssh-keygen -l -E sha256 -f /dev/stdin', true, 60, $item['key']);
@@ -214,7 +214,7 @@ class SshManager {
 			throw new SshInvalidKeyException('Submitted key is not a valid SSH public key.');
 		}
 		$hash = explode(' ', $command->getStdout())[1];
-		if ($this->sshKeyRepository->findByHash($hash) !== null) {
+		if ($this->sshKeyRepository->findByHash($hash) instanceof SshKey) {
 			throw new SshKeyExistsException('SSH key already exists.');
 		}
 		$description = $item['description'];

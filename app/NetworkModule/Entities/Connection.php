@@ -29,12 +29,12 @@ use Ramsey\Uuid\UuidInterface;
 /**
  * Network connection entity
  */
-final class Connection implements JsonSerializable {
+final readonly class Connection implements JsonSerializable {
 
 	/**
 	 * @var string|null Network interface name
 	 */
-	private readonly ?string $interfaceName;
+	private ?string $interfaceName;
 
 	/**
 	 * Network connection entity constructor
@@ -46,12 +46,12 @@ final class Connection implements JsonSerializable {
 	 * @param ConnectionStates $state Network connection state
 	 */
 	public function __construct(
-		private readonly string $name,
-		private readonly UuidInterface $uuid,
-		private readonly ConnectionTypes $type,
+		private string $name,
+		private UuidInterface $uuid,
+		private ConnectionTypes $type,
 		?string $interfaceName,
-		private readonly bool $isActive,
-		private readonly ConnectionStates $state,
+		private bool $isActive,
+		private ConnectionStates $state,
 	) {
 		$this->interfaceName = $interfaceName === '' ? null : $interfaceName;
 	}

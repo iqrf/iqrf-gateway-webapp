@@ -28,7 +28,7 @@ use Ramsey\Uuid\UuidInterface;
 /**
  * Available network connection entity
  */
-final class AvailableConnection implements JsonSerializable {
+final readonly class AvailableConnection implements JsonSerializable {
 
 	/**
 	 * Available network connection constructor
@@ -36,8 +36,8 @@ final class AvailableConnection implements JsonSerializable {
 	 * @param UuidInterface $uuid Network connection UUID
 	 */
 	public function __construct(
-		private readonly string $name,
-		private readonly UuidInterface $uuid,
+		private string $name,
+		private UuidInterface $uuid,
 	) {
 	}
 

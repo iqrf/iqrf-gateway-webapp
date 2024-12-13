@@ -50,7 +50,7 @@ class PasswordController extends BaseGatewayController {
 
 	#[Path('/')]
 	#[Method('PUT')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Updates default gateway user password
 		deprecated: true
 		description: "Deprecated in favor of the new shell user controller, use `PUT` `/security/shellUser/password` instead. Will be removed in the version 3.1.0."
@@ -59,17 +59,17 @@ class PasswordController extends BaseGatewayController {
 			content:
 				application/json:
 					schema:
-						$ref: \'#/components/schemas/GatewayPassword\'
+						$ref: '#/components/schemas/GatewayPassword'
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function setPassword(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->setPassword($request, $response);
 	}

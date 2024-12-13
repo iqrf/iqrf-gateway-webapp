@@ -54,20 +54,20 @@ class TimeController extends BaseGatewayController {
 
 	#[Path('/')]
 	#[Method('GET')]
-	#[OpenApi('
-		summary: \'Returns current gateway date, time, timezone and NTP configuration\'
+	#[OpenApi(<<<'EOT'
+		summary: 'Returns current gateway date, time, timezone and NTP configuration'
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/TimeGet\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+							$ref: '#/components/schemas/TimeGet'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function getTime(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
 			$time = $this->manager->getTime();
@@ -80,18 +80,18 @@ class TimeController extends BaseGatewayController {
 
 	#[Path('/')]
 	#[Method('POST')]
-	#[OpenApi('
-		summary: \'Sets date, time, timezone and NTP configuration\'
+	#[OpenApi(<<<'EOT'
+		summary: 'Sets date, time, timezone and NTP configuration'
 		responses:
-			\'200\':
+			'200':
 				description: Success
-			\'400\':
-				$ref: \'#/components/responses/BadRequest\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-			\'500\':
-				$ref: \'#/components/responses/ServerError\'
-	')]
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function setTime(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->validateRequest('timeSet', $request);
 		try {
@@ -105,18 +105,18 @@ class TimeController extends BaseGatewayController {
 
 	#[Path('/timezones')]
 	#[Method('GET')]
-	#[OpenApi('
+	#[OpenApi(<<<'EOT'
 		summary: Returns available timezones
 		responses:
-			\'200\':
+			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: \'#/components/schemas/TimezoneList\'
-			\'403\':
-				$ref: \'#/components/responses/Forbidden\'
-	')]
+							$ref: '#/components/schemas/TimezoneList'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+	EOT)]
 	public function getTimezones(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$timezones = $this->manager->availableTimezones();
 		$response = $response->writeJsonBody($timezones);

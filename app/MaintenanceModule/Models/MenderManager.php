@@ -294,7 +294,7 @@ class MenderManager {
 	 * @throws MenderMissingException If Mender is not installed
 	 */
 	private function checkMender(): void {
-		if ($this->clientVersion === null) {
+		if (!$this->clientVersion instanceof Version) {
 			throw new MenderMissingException('Mender utility is not installed.');
 		}
 	}

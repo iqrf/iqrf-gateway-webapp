@@ -26,7 +26,7 @@ use JsonSerializable;
 /**
  * Current configuration entity
  */
-final class IPv4Current implements JsonSerializable {
+final readonly class IPv4Current implements JsonSerializable {
 
 	/**
 	 * nmcli current configuration prefix
@@ -40,9 +40,9 @@ final class IPv4Current implements JsonSerializable {
 	 * @param array<IPv4> $dns DNS servers
 	 */
 	public function __construct(
-		private readonly array $addresses,
-		private readonly ?IPv4 $gateway,
-		private readonly array $dns,
+		private array $addresses,
+		private ?IPv4 $gateway,
+		private array $dns,
 	) {
 	}
 
