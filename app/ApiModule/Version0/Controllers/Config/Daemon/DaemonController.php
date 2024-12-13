@@ -237,7 +237,7 @@ class DaemonController extends BaseDaemonConfigController {
 			'403':
 				$ref: '#/components/responses/Forbidden'
 			'404':
-			<<<'EOT'	$ref: '#/components/responses/NotFound'
+				$ref: '#/components/responses/NotFound'
 			'500':
 				$ref: '#/components/responses/ServerError'
 	EOT)]
@@ -410,7 +410,7 @@ class DaemonController extends BaseDaemonConfigController {
 				$ref: '#/components/responses/Forbidden'
 			'404':
 				$ref: '#/components/responses/NotFound'
-			'50<<<'EOT'0':
+			'500':
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	#[RequestParameter(name: 'component', type: 'string', description: 'Component name')]

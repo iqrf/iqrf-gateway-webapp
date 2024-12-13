@@ -116,8 +116,6 @@ middleware:
 	debug: %debugMode%
 
 tracy:
-	bar:
-		- App\CoreModule\Tracy\CommandPanel(@commandStack)
 	strictMode: true
 	maxDepth: 10
 
