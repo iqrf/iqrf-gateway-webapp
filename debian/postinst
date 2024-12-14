@@ -131,12 +131,11 @@ webapp_database_migration() {
 		mv /usr/share/iqrf-gateway-webapp/app/config/database.db /var/lib/iqrf-gateway-webapp/database.db
 		chown www-data:www-data /var/lib/iqrf-gateway-webapp/database.db
 	fi
-	su - www-data -s /bin/bash -c '/usr/sbin/iqrf-gateway-webapp-manager database:create > /dev/null'
 	su - www-data -s /bin/bash -c '/usr/sbin/iqrf-gateway-webapp-manager migrations:migrate --no-interaction > /dev/null'
 }
 
 webapp_database_fixtures() {
-	su - www-data -s /bin/bash -c '/usr/sbin/iqrf-gateway-webapp-manager doctrine:fixtures:load --append --no-interaction > /dev/null'
+	su - www-data -s /bin/bash -c '/usr/sbin/iqrf-gateway-webapp-manager doctrine:fixtures:load --no-interaction > /dev/null'
 }
 
 webapp_iqrf_os_patches_import() {

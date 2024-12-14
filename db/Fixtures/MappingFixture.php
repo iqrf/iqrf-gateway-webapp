@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Database\Fixtures;
 
@@ -24,6 +24,7 @@ use App\Models\Database\Entities\Mapping;
 use App\Models\Database\Enums\MappingBaudRate;
 use App\Models\Database\Enums\MappingDeviceType;
 use App\Models\Database\Enums\MappingType;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\DBAL\Types\Types;
@@ -33,6 +34,7 @@ use Doctrine\Persistence\ObjectManager;
  * Mapping fixture
  */
 class MappingFixture implements FixtureInterface, OrderedFixtureInterface {
+
 	/**
 	 * Loads mapping data into database
 	 * @param ObjectManager $manager Object manager
@@ -54,7 +56,7 @@ class MappingFixture implements FixtureInterface, OrderedFixtureInterface {
 
 		foreach ($records as $record) {
 			if (!$queryBuilder->getParameters()->isEmpty()) {
-				$queryBuilder->setParameters([]);
+				$queryBuilder->setParameters(new ArrayCollection([]));
 			}
 			$queryBuilder->select('count(m.id)')
 				->where('m.type = :type')->setParameter('type', $record->getType()->value, Types::STRING)
@@ -90,4 +92,5 @@ class MappingFixture implements FixtureInterface, OrderedFixtureInterface {
 	public function getOrder(): int {
 		return 1;
 	}
+
 }

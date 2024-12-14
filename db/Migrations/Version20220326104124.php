@@ -16,10 +16,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Database\Migrations;
 
+use Doctrine\DBAL\Platforms\SQLitePlatform;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
@@ -27,6 +28,7 @@ use Doctrine\Migrations\AbstractMigration;
  * Controller pin configuration database migrations
  */
 final class Version20220326104124 extends AbstractMigration {
+
 	/**
 	 * Returns the migration description
 	 * @return string Migration description
@@ -35,17 +37,24 @@ final class Version20220326104124 extends AbstractMigration {
 		return 'Added controller pins repository';
 	}
 
+	/**
+	 * Applies the migration
+	 * @param Schema $schema Database schema
+	 */
 	public function up(Schema $schema): void {
-		// this up() migration is auto-generated, please modify it to your needs
-		$this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
+		$this->abortIf(!$this->connection->getDatabasePlatform() instanceof SQLitePlatform, 'Migration can only be executed safely on \'sqlite\'.');
 
 		$this->addSql('CREATE TABLE "controller_pin_configs" (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name VARCHAR(255) NOT NULL, green_led INTEGER NOT NULL, red_led INTEGER NOT NULL, button INTEGER NOT NULL, sck INTEGER DEFAULT NULL, sda INTEGER DEFAULT NULL)');
 	}
 
+	/**
+	 * Reverts the migration
+	 * @param Schema $schema Database schema
+	 */
 	public function down(Schema $schema): void {
-		// this down() migration is auto-generated, please modify it to your needs
-		$this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
+		$this->abortIf(!$this->connection->getDatabasePlatform() instanceof SQLitePlatform, 'Migration can only be executed safely on \'sqlite\'.');
 
 		$this->addSql('DROP TABLE "controller_pin_configs"');
 	}
+
 }

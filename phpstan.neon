@@ -25,6 +25,7 @@ parameters:
 	paths:
 		- app
 		- bin
+		- db
 	excludePaths:
 		analyse:
 			- tests/Unit/InstallModule/Models/SudoManagerTest.php

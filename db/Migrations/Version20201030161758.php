@@ -16,10 +16,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Database\Migrations;
 
+use Doctrine\DBAL\Platforms\SQLitePlatform;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
@@ -27,16 +28,21 @@ use Doctrine\Migrations\AbstractMigration;
  * Auto-generated Migration
  */
 final class Version20201030161758 extends AbstractMigration {
+
 	/**
 	 * Returns the migration description
 	 * @return string Migration description
 	 */
-	public function getDescription() : string {
+	public function getDescription(): string {
 		return 'Added new mappings repository';
 	}
 
-	public function up(Schema $schema) : void {
-		$this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
+	/**
+	 * Applies the migration
+	 * @param Schema $schema Database schema
+	 */
+	public function up(Schema $schema): void {
+		$this->abortIf(!$this->connection->getDatabasePlatform() instanceof SQLitePlatform, 'Migration can only be executed safely on \'sqlite\'.');
 
 		$this->addSql('CREATE TABLE mappings (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, type VARCHAR(255) NOT NULL, name VARCHAR(255) NOT NULL, iqrf_interface VARCHAR(255) NOT NULL, bus_enable_gpio_pin INTEGER NOT NULL, pgm_switch_gpio_pin INTEGER NOT NULL, power_enable_gpio_pin INTEGER NOT NULL, baud_rate INTEGER DEFAULT NULL, i2c_enable_gpio_pin INTEGER DEFAULT NULL, spi_enable_gpio_pin INTEGER DEFAULT NULL, uart_enable_gpio_pin INTEGER DEFAULT NULL)');
 		$this->addSql('INSERT INTO mappings VALUES (0, "spi", "Raspberry Pi", "/dev/spidev0.0", 7, 22, 23, null, null, null, null)');
@@ -53,8 +59,12 @@ final class Version20201030161758 extends AbstractMigration {
 		$this->addSql('INSERT INTO mappings VALUES (12, "uart", "IQD-GW-02A", "/dev/ttyS1", -1, 3, 19, 57600, 7, 10, 6)');
 	}
 
-	public function down(Schema $schema) : void {
-		$this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
+	/**
+	 * Reverts the migration
+	 * @param Schema $schema Database schema
+	 */
+	public function down(Schema $schema): void {
+		$this->abortIf(!$this->connection->getDatabasePlatform() instanceof SQLitePlatform, 'Migration can only be executed safely on \'sqlite\'.');
 
 		$this->addSql('DROP TABLE mappings');
 	}

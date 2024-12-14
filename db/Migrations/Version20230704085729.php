@@ -16,10 +16,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Database\Migrations;
 
+use Doctrine\DBAL\Platforms\SQLitePlatform;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
@@ -41,7 +42,8 @@ final class Version20230704085729 extends AbstractMigration {
 	 * @param Schema $schema Database schema
 	 */
 	public function up(Schema $schema): void {
-		// this up() migration is auto-generated, please modify it to your needs
+		$this->abortIf(!$this->connection->getDatabasePlatform() instanceof SQLitePlatform, 'Migration can only be executed safely on \'sqlite\'.');
+
 		$this->addSql('CREATE TEMPORARY TABLE __temp__api_keys AS SELECT id, hash, salt, description, expiration FROM api_keys');
 		$this->addSql('DROP TABLE api_keys');
 		$this->addSql('CREATE TABLE api_keys (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, hash VARCHAR(255) NOT NULL, salt VARCHAR(22) NOT NULL, description VARCHAR(255) NOT NULL, expiration DATETIME DEFAULT NULL)');
@@ -100,7 +102,8 @@ final class Version20230704085729 extends AbstractMigration {
 	 * @param Schema $schema Database schema
 	 */
 	public function down(Schema $schema): void {
-		// this down() migration is auto-generated, please modify it to your needs
+		$this->abortIf(!$this->connection->getDatabasePlatform() instanceof SQLitePlatform, 'Migration can only be executed safely on \'sqlite\'.');
+
 		$this->addSql('CREATE TEMPORARY TABLE __temp__api_keys AS SELECT id, hash, salt, description, expiration FROM "api_keys"');
 		$this->addSql('DROP TABLE "api_keys"');
 		$this->addSql('CREATE TABLE "api_keys" (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, hash VARCHAR(255) NOT NULL, salt VARCHAR(22) NOT NULL, description VARCHAR(255) NOT NULL, expiration DATE DEFAULT NULL)');
@@ -153,4 +156,5 @@ final class Version20230704085729 extends AbstractMigration {
 		$this->addSql('DROP TABLE __temp__wireguard_peers');
 		$this->addSql('CREATE INDEX IDX_23ACBD91AB0BE982 ON "wireguard_peers" (interface_id)');
 	}
+
 }

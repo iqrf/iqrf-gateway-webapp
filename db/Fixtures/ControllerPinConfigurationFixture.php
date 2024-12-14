@@ -16,12 +16,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Database\Fixtures;
 
 use App\ConfigModule\Enums\DeviceTypes;
 use App\Models\Database\Entities\ControllerPinConfiguration;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\DBAL\Types\Types;
@@ -31,6 +32,7 @@ use Doctrine\Persistence\ObjectManager;
  * Controller pin fixture
  */
 class ControllerPinConfigurationFixture implements FixtureInterface, OrderedFixtureInterface {
+
 	/**
 	 * Loads controller pins data into database
 	 * @param ObjectManager $manager Object manager
@@ -49,7 +51,7 @@ class ControllerPinConfigurationFixture implements FixtureInterface, OrderedFixt
 
 		foreach ($records as $record) {
 			if (!$queryBuilder->getParameters()->isEmpty()) {
-				$queryBuilder->setParameters([]);
+				$queryBuilder->setParameters(new ArrayCollection([]));
 			}
 			$queryBuilder->select('count(c.id)')
 				->where('c.name = :name')->setParameter('name', $record->getName(), Types::STRING)
@@ -76,4 +78,5 @@ class ControllerPinConfigurationFixture implements FixtureInterface, OrderedFixt
 	public function getOrder(): int {
 		return 2;
 	}
+
 }

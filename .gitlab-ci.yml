@@ -211,7 +211,7 @@ codesniffer:
   <<: *coding-style_template
   <<: *composer_template
   script:
-    - vendor/bin/codesniffer --runtime-set php_version 80200 app bin tests
+    - vendor/bin/codesniffer --runtime-set php_version 80200 app bin db tests
 
 doctrine_mapping:
   <<: *coding-style_template

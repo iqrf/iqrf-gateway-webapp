@@ -59,7 +59,7 @@ fix-cc: temp/code-checker
 	php temp/code-checker/code-checker -f -l --no-progress --strict-types $(CC_IGNORE)
 
 cs: deps
-	vendor/bin/codesniffer --runtime-set php_version 80200 app bin tests
+	vendor/bin/codesniffer --runtime-set php_version 80200 app bin db tests
 
 deb-package:
 	debuild -b -uc -us
@@ -161,9 +161,8 @@ rector: deps
 
 reset-db:
 	rm -f app/config/database.db
-	bin/manager database:create
 	bin/manager migrations:migrate --no-interaction
-	bin/manager doctrine:fixtures:load --append --no-interaction
+	bin/manager doctrine:fixtures:load --no-interaction
 	bin/manager iqrf-os:import-patches
 
 run:

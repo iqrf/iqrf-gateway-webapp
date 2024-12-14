@@ -17,10 +17,11 @@
  * limitations under the License.
  */
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Database\Migrations;
 
+use Doctrine\DBAL\Platforms\SQLitePlatform;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
@@ -42,7 +43,8 @@ final class Version20241028223003 extends AbstractMigration {
 	 * @param Schema $schema Database schema
 	 */
 	public function up(Schema $schema): void {
-		// this up() migration is auto-generated, please modify it to your needs
+		$this->abortIf(!$this->connection->getDatabasePlatform() instanceof SQLitePlatform, 'Migration can only be executed safely on \'sqlite\'.');
+
 		$this->addSql('CREATE TABLE user_preferences (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, user INTEGER DEFAULT NULL, time_format INTEGER NOT NULL, theme_preference INTEGER DEFAULT 0 NOT NULL, CONSTRAINT FK_402A6F608D93D649 FOREIGN KEY (user) REFERENCES users (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE)');
 		$this->addSql('CREATE UNIQUE INDEX UNIQ_402A6F608D93D649 ON user_preferences (user)');
 		$this->addSql('CREATE TEMPORARY TABLE __temp__email_verification AS SELECT uuid, user, created_at FROM email_verification');
@@ -66,7 +68,8 @@ final class Version20241028223003 extends AbstractMigration {
 	 * @param Schema $schema Database schema
 	 */
 	public function down(Schema $schema): void {
-		// this down() migration is auto-generated, please modify it to your needs
+		$this->abortIf(!$this->connection->getDatabasePlatform() instanceof SQLitePlatform, 'Migration can only be executed safely on \'sqlite\'.');
+
 		$this->addSql('DROP TABLE user_preferences');
 		$this->addSql('CREATE TEMPORARY TABLE __temp__email_verification AS SELECT uuid, user, created_at FROM email_verification');
 		$this->addSql('DROP TABLE email_verification');

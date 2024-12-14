@@ -13,28 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-services:
-	- App\ConsoleModule\Commands\ApiKeyAddCommand
-	- App\ConsoleModule\Commands\ApiKeyDeleteCommand
-	- App\ConsoleModule\Commands\ApiKeyEditCommand
-	- App\ConsoleModule\Commands\ApiKeyListCommand
-	- App\ConsoleModule\Commands\DatabaseCreateCommand
-	- App\ConsoleModule\Commands\FeatureDisableCommand
-	- App\ConsoleModule\Commands\FeatureEnableCommand
-	- App\ConsoleModule\Commands\FeatureListCommand
-	- App\ConsoleModule\Commands\IqrfOsPatchImportCommand
-	- App\ConsoleModule\Commands\IqrfOsPatchListCommand
-	- App\ConsoleModule\Commands\MappingAddCommand
-	- App\ConsoleModule\Commands\MappingEditCommand
-	- App\ConsoleModule\Commands\MappingListCommand
-	- App\ConsoleModule\Commands\MappingRemoveCommand
-	- App\ConsoleModule\Commands\OpenApiSpecificationCommand
-	- App\ConsoleModule\Commands\UserAddCommand
-	- App\ConsoleModule\Commands\UserEditCommand
-	- App\ConsoleModule\Commands\UserListCommand
-	- App\ConsoleModule\Commands\UserPasswordCommand
-	- App\ConsoleModule\Commands\UserRemoveCommand
-	- App\ConsoleModule\Commands\UserRemoveAllCommand
-	- App\ConsoleModule\Commands\WireguardActivateCommand
-	- App\ConsoleModule\Commands\WireguardDeactivateCommand
-	- App\ConsoleModule\Commands\WireguardListCommand
+extensions:
+	resource: Contributte\DI\Extension\ResourceExtension
+
+resource:
+	resources:
+		App\ConsoleModule\Commands\:
+			paths:
+				- %appDir%/ConsoleModule/Commands
