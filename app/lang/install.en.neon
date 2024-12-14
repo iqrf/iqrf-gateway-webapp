@@ -26,8 +26,7 @@ error:
 		IQRF Gateway Webapp cannot find some table in SQLite3 database.
 		<h4>How to fix it</h4>
 		Run these commands in terminal:
-		<pre><code class='bash'>sudo iqrf-gateway-webapp-manager database:create
-sudo iqrf-gateway-webapp-manager migrations:migrate --no-interaction</code></pre>
+		<pre><code class='bash'>sudo iqrf-gateway-webapp-manager migrations:migrate --no-interaction</code></pre>
 		"""
 	missingSqlDriver:
 		title: SQLite3 Driver is missing

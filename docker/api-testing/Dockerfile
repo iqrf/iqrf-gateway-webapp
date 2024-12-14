@@ -38,7 +38,6 @@ RUN sed -i "s/initDaemon: 'systemd'/initDaemon: 'docker'/g" app/config/config.ne
 RUN chmod 777 log/ \
  && chmod 777 temp/
 RUN rm -rf app/config/database.db \
- && bin/manager database:create \
  && bin/manager migrations:migrate --no-interaction \
  && bin/manager user:add -u admin -p iqrf -r admin -l en
 
