@@ -212,6 +212,11 @@ import {IOption} from '@/interfaces/Coreui';
 import {IOtaUploadParams, IOtaUploadResult} from '@/interfaces/DaemonApi/Iqmesh/OtaUpload';
 import {MutationPayload} from 'vuex';
 
+interface IqmeshResultBase {
+	address: number;
+	result: boolean;
+}
+
 /**
  * OTA upload component for IQRF network manager
  */
@@ -535,9 +540,9 @@ export default class OtaUpload extends Vue {
 		} else {
 			if (this.target === NetworkTarget.COORDINATOR ||
 				this.target === NetworkTarget.NODE) {
-				this.deviceResponse(response);
+				this.handleUnicastResponse(response);
 			} else {
-				this.networkResponse(response);
+				this.handleBroadcastResponse(response);
 			}
 		}
 	}
@@ -546,13 +551,13 @@ export default class OtaUpload extends Vue {
 	 * Handles OTA upload response for coordinator and node devices
 	 * @param response Daemon API response
 	 */
-	private deviceResponse(response): void {
+	private handleUnicastResponse(response): void {
 		const status = response.status;
 		if (status === 0) {
 			const action = response.rsp.loadingAction;
 			const address = response.rsp.deviceAddr;
+			this.$store.commit('spinner/HIDE');
 			if (action === OtaUploadAction.UPLOAD) {
-				this.$store.commit('spinner/HIDE');
 				this.checks.upload = true;
 				this.$toast.success(
 					this.$t(address === 0 ?
@@ -560,24 +565,8 @@ export default class OtaUpload extends Vue {
 						'iqrfnet.networkManager.otaUpload.messages.node.uploadStepSuccess', {address: address}
 					).toString()
 				);
-			} else if (action === OtaUploadAction.VERIFY) {
-				this.$store.commit('spinner/HIDE');
-				this.checks.verify = true;
-				this.$toast.success(
-					this.$t(address === 0 ?
-						'iqrfnet.networkManager.otaUpload.messages.coordinator.verifyStepSuccess':
-						'iqrfnet.networkManager.otaUpload.messages.node.verifyStepSuccess', {address: address}
-					).toString()
-				);
 			} else {
-				this.$store.commit('spinner/HIDE');
-				this.checks.flash = true;
-				this.$toast.success(
-					this.$t(address === 0 ?
-						'iqrfnet.networkManager.otaUpload.messages.coordinator.loadStepSuccess':
-						'iqrfnet.networkManager.otaUpload.messages.node.loadStepSuccess', {address: address}
-					).toString()
-				);
+				this.handleUnicastVerifyLoadResponse(action, response.rsp.verifyResult[0]);
 			}
 			return;
 		}
@@ -599,14 +588,47 @@ export default class OtaUpload extends Vue {
 				this.$t('iqrfnet.networkManager.otaUpload.messages.genericError').toString()
 			);
 		}
+	}
 
+	/**
+	 * Handles unicast verify or load action response
+	 * @param {OtaUploadAction} action OTA upload action
+	 * @param {IqmeshResultBase} data Verify / load response data
+	 */
+	private handleUnicastVerifyLoadResponse(action: OtaUploadAction, data: IqmeshResultBase): void {
+		if (data.result) {
+			if (action === OtaUploadAction.VERIFY) {
+				this.checks.verify = true;
+				this.$toast.success(
+					this.$t(data.address === 0 ?
+						'iqrfnet.networkManager.otaUpload.messages.coordinator.verifyStepSuccess':
+						'iqrfnet.networkManager.otaUpload.messages.node.verifyStepSuccess', {address: data.address}
+					).toString()
+				);
+			} else {
+				this.checks.flash = true;
+				this.$toast.success(
+					this.$t(data.address === 0 ?
+						'iqrfnet.networkManager.otaUpload.messages.coordinator.loadStepSuccess':
+						'iqrfnet.networkManager.otaUpload.messages.node.loadStepSuccess', {address: data.address}
+					).toString()
+				);
+			}
+		} else {
+			this.$toast.error(
+				this.$t(action === OtaUploadAction.VERIFY ?
+					'iqrfnet.networkManager.otaUpload.messages.verifyStepFail' :
+					'iqrfnet.networkManager.otaUpload.messages.loadStepFail'
+				).toString(),
+			);
+		}
 	}
 
 	/**
 	 * Handles OTA upload response for network target
 	 * @param response Daemon API response
 	 */
-	private networkResponse(response): void {
+	private handleBroadcastResponse(response): void {
 		const action = response.rsp.loadingAction;
 		this.$store.commit('spinner/HIDE');
 		if (action === OtaUploadAction.UPLOAD) {
