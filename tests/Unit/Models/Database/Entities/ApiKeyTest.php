@@ -54,7 +54,7 @@ class ApiKeyTest extends TestCase {
 	/**
 	 * API key expiration date in future
 	 */
-	private const FUTURE_EXPIRATION = '2025-01-01T00:00:00+02:00';
+	private const FUTURE_EXPIRATION = '2099-01-01T00:00:00+02:00';
 
 	/**
 	 * @var ApiKey API key entity
