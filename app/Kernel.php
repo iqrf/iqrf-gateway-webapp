@@ -50,16 +50,7 @@ class Kernel {
 		$configurator->createRobotLoader()->addDirectory(__DIR__)->register();
 		$confDir = __DIR__ . '/config';
 		$configurator->addConfig($confDir . '/config.neon');
-		try {
-			$version = Json::decode(FileSystem::read(__DIR__ . '/../version.json'));
-			$configurator->addStaticParameters([
-				'sentry' => [
-					'release' => $version->version . ($version->pipeline !== '' ? '~' . $version->pipeline : ''),
-				],
-			]);
-		} catch (IOException | JsonException) {
-			// Skip Sentry version settings
-		}
+		self::setVersionParameters($configurator);
 		$configurator->addStaticParameters(['confDir' => $confDir]);
 		try {
 			$iqrfRepositoryManager = new IqrfRepositoryManager($confDir . '/iqrf-repository.neon');
@@ -78,6 +69,28 @@ class Kernel {
 			define('EMAIL_VALIDATE_DNS', $container->getParameters()['emailValidateDns']);
 		}
 		return $configurator;
+	}
+
+	/**
+	 * Sets version parameters
+	 * @param Configurator $configurator Nette DI initial configurator
+	 */
+	private static function setVersionParameters(Configurator $configurator): void {
+		try {
+			$versionInfo = Json::decode(FileSystem::read(__DIR__ . '/../version.json'));
+			$version = $versionInfo->version . ($versionInfo->pipeline !== '' ? '~' . $versionInfo->pipeline : '');
+		} catch (IOException | JsonException) {
+			$version = 'unknown';
+		} finally {
+			$configurator->addStaticParameters([
+				'console' => [
+					'version' => $version,
+				],
+				'sentry' => [
+					'release' => $version,
+				],
+			]);
+		}
 	}
 
 }

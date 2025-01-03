@@ -19,7 +19,7 @@ extensions:
 
 console:
 	name: IQRF Gateway Webapp manager
-	version: 3.0.0-alpha
+	version: %console.version%
 	catchExceptions: true
 	autoExit: true
 	url: http://localhost/
@@ -30,9 +30,12 @@ console.extra:
 	cache:
 		purge:
 			- %tempDir%/cache
+			- %tempDir%/proxies
 	caching: false
 	di: false
-	latte: false
+	latte:
+		warmup:
+			- %appDir%
 	router: false
 	security: false
 	utils: false

@@ -1,13 +1,11 @@
 Fixes directory paths in Kernel.php
 --- a/app/Kernel.php
 +++ b/app/Kernel.php
-@@ -41,13 +41,14 @@
- 	 */
+@@ -42,13 +42,13 @@
  	public static function boot(): Configurator {
  		$configurator = new Configurator();
  		$configurator->setDebugMode(false);
 -		$configurator->enableTracy(__DIR__ . '/../log');
-+		$configurator->setDebugMode(false);
 +		$configurator->enableTracy('/var/log/iqrf-gateway-webapp');
  		$configurator->setTimeZone('Europe/Prague');
 -		$tempDir = __DIR__ . '/../temp';
@@ -18,5 +16,5 @@ Fixes directory paths in Kernel.php
 -		$confDir = __DIR__ . '/config';
 +		$confDir = '/etc/iqrf-gateway-webapp';
  		$configurator->addConfig($confDir . '/config.neon');
- 		try {
- 			$version = Json::decode(FileSystem::read(__DIR__ . '/../version.json'));
+ 		self::setVersionParameters($configurator);
+ 		$configurator->addStaticParameters(['confDir' => $confDir]);
