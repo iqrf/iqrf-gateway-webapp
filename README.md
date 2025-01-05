@@ -25,9 +25,9 @@ It is *CRITICAL* that whole `app/`, `log/` and `temp/` directories are not acces
 
 This project is licensed under Apache License 2.0:
 
- > Copyright 2017-2023 IQRF Tech s.r.o.
+ > Copyright 2017-2025 IQRF Tech s.r.o.
  >
- > Copyright 2019-2023 MICRORISC s.r.o.
+ > Copyright 2019-2025 MICRORISC s.r.o.
  >
  > Licensed under the Apache License, Version 2.0 (the "License");
  >
