@@ -1,10 +1,14 @@
-iqrf-gateway-webapp (2.6.2~alpha~1.gbp4b769c) UNRELEASED; urgency=medium
+iqrf-gateway-webapp (2.6.2) stable; urgency=medium
 
-  ** SNAPSHOT build @4b769c056924d84b1223d18bd30d3467615d9262 **
+  [ Karel Hanák ]
+  * Prepare for version 2.6.2-alpha
+  * JWT: use GWID instead of hostname for issuing and validating tokens
+  * HostnameChange: removed option to change splitter ID, fixed IDE counterpart hostname change
+  * Tests: fixed API key expiration test
+  * updated license headers
+  * OtaUpload: updated error handling for unicast verify and load actions
 
-  * UNRELEASED
-
- -- Karel Hanák <karel.hanak@iqrf.org>  Fri, 22 Nov 2024 10:46:39 -0500
+ -- Karel Hanák <karel.hanak@iqrf.org>  Mon, 06 Jan 2025 10:47:06 +0100
 
 iqrf-gateway-webapp (2.6.1) stable; urgency=medium
 
