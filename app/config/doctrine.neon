@@ -43,7 +43,7 @@ nettrine.orm:
 			mapping:
 				App:
 					type: attributes
-					dirs: [%appDir%/Models/Database/Entities]
+					directories: [%appDir%/Models/Database/Entities]
 					namespace: App\Models\Database\Entities
 
 nettrine.migrations:
