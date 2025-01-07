@@ -1,6 +1,6 @@
 {
 	"$schema": "https://typedoc.org/schema.json",
-	"customFooterHtml": "<p class='tsd-generator'>Copyright &copy; 2023-2024 <a href='https://www.microrisc.com' target='_blank' rel='noreferrer'>MICRORISC s.r.o.</a></p>",
+	"customFooterHtml": "<p class='tsd-generator'>Copyright &copy; 2023-2025 <a href='https://www.microrisc.com' target='_blank' rel='noreferrer'>MICRORISC s.r.o.</a></p>",
 	"customFooterHtmlDisableWrapper": true,
 	"disableGit": false,
 	"disableSources": false,
