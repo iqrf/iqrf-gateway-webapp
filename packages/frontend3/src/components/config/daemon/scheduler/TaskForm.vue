@@ -205,7 +205,7 @@ import { type IqrfGatewayDaemonSchedulerMessagings } from '@iqrf/iqrf-gateway-we
 import { mdiDelete, mdiHelpBox } from '@mdi/js';
 import cron from 'cron-validate';
 import { v4 as uuidv4 } from 'uuid';
-import { type PropType, type Ref, ref, computed } from 'vue';
+import { computed, type PropType, ref, type Ref } from 'vue';
 import { watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';

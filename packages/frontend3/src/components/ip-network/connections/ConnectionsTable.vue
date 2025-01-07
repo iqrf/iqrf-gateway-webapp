@@ -57,7 +57,7 @@ import {
 	type NetworkConnectionListEntry,
 	type NetworkConnectionType,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
-import { computed, onBeforeMount, type PropType, type Ref, ref } from 'vue';
+import { computed, onBeforeMount, type PropType, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import ConnectionActionButton

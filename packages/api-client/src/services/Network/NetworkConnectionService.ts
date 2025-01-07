@@ -135,8 +135,8 @@ export class NetworkConnectionService extends BaseService {
 		if (
 			[
 				IPv6ConfigurationMethod.AUTO,
-				IPv6ConfigurationMethod.DISABLED,
 				IPv6ConfigurationMethod.DHCP,
+				IPv6ConfigurationMethod.DISABLED,
 			].includes(preparedConfiguration.ipv6.method)
 		) {
 			preparedConfiguration.ipv6.addresses = preparedConfiguration.ipv6.dns = [];

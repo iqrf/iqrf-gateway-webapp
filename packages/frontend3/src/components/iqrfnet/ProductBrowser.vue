@@ -83,7 +83,7 @@ limitations under the License.
 import { type ProductService } from '@iqrf/iqrf-repository-client/services';
 import { type Product } from '@iqrf/iqrf-repository-client/types';
 import { mdiImport, mdiMagnify } from '@mdi/js';
-import { onMounted, type Ref, ref } from 'vue';
+import { onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import Card from '@/components/layout/card/Card.vue';

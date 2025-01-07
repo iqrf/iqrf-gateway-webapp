@@ -63,7 +63,7 @@ import { type LogService } from '@iqrf/iqrf-gateway-webapp-client/services/Gatew
 import { FileResponse } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { FileDownloader } from '@iqrf/iqrf-gateway-webapp-client/utils';
 import { mdiFolderDownloadOutline } from '@mdi/js';
-import { onMounted, type Ref, ref } from 'vue';
+import { onMounted, ref, type Ref } from 'vue';
 import { toast } from 'vue3-toastify';
 
 import JournalViewer from '@/components/gateway/logs/JournalViewer.vue';

@@ -67,10 +67,10 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { type DaemonApiResponse, type DaemonApiRequest, type JsonMessage } from '@iqrf/iqrf-gateway-daemon-utils/types';
+import { type DaemonApiRequest, type DaemonApiResponse, type JsonMessage } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { mdiSend } from '@mdi/js';
-import { type Ref, ref } from 'vue';
+import { ref, type Ref } from 'vue';
 import { VForm } from 'vuetify/components';
 
 import RequestHistory from '@/components/iqrfnet/send-json/RequestHistory.vue';

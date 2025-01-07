@@ -66,7 +66,7 @@ limitations under the License.
 import { type MenderService } from '@iqrf/iqrf-gateway-webapp-client/services/Maintenance';
 import { mdiFileOutline } from '@mdi/js';
 import { type AxiosError } from 'axios';
-import { type Ref, ref } from 'vue';
+import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';

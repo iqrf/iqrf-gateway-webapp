@@ -85,7 +85,7 @@ limitations under the License.
 
 <script lang='ts' setup>
 import { type IqrfGatewayControllerApiAutonetworkConfig } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { type Ref, ref , watchEffect , type PropType } from 'vue';
+import { type PropType, ref , type Ref , watchEffect } from 'vue';
 import { VForm } from 'vuetify/components';
 
 import ControllerActionConfigureBtn from '@/components/config/controller/ControllerActionConfigureBtn.vue';

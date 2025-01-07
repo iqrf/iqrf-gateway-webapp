@@ -51,7 +51,7 @@
 <script lang='ts' setup>
 import { Head } from '@unhead/vue/components';
 import { storeToRefs } from 'pinia';
-import { computed, ComputedRef, Ref, ref } from 'vue';
+import { computed, ComputedRef, ref, Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { toast } from 'vue3-toastify';

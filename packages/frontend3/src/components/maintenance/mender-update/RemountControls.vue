@@ -41,7 +41,7 @@ limitations under the License.
 <script lang='ts' setup>
 import { type MenderService } from '@iqrf/iqrf-gateway-webapp-client/services/Maintenance';
 import { MenderMountMode, type MenderRemount } from '@iqrf/iqrf-gateway-webapp-client/types/Maintenance';
-import { type Ref, ref } from 'vue';
+import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 

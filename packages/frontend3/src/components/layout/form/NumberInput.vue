@@ -44,7 +44,7 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { type PropType, computed } from 'vue';
+import { computed, type PropType } from 'vue';
 
 const props = defineProps({
 	label: {

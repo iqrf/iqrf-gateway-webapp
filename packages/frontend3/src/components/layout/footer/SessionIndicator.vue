@@ -28,7 +28,7 @@ limitations under the License.
 import { mdiTimerSand } from '@mdi/js';
 import humanizeDuration, { Options as HumanizeDurationOptions } from 'humanize-duration';
 import { storeToRefs } from 'pinia';
-import { computed, onMounted, ref, type Ref , onBeforeUnmount } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref , type Ref } from 'vue';
 
 import { useLocaleStore } from '@/store/locale';
 import { useUserStore } from '@/store/user';

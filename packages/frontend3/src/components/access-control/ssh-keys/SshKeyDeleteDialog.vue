@@ -31,7 +31,7 @@ limitations under the License.
 <script lang='ts' setup>
 import { type SshKeyService } from '@iqrf/iqrf-gateway-webapp-client/services/Security';
 import { type SshKeyInfo } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
-import { ref, type Ref , type PropType } from 'vue';
+import { type PropType, ref , type Ref } from 'vue';
 import { toast } from 'vue3-toastify';
 
 import DeleteModalWindow from '@/components/DeleteModalWindow.vue';

@@ -138,7 +138,7 @@ import { FileDownloader } from '@iqrf/iqrf-gateway-webapp-client/utils';
 import { mdiExport, mdiPlay, mdiReload, mdiStop } from '@mdi/js';
 import cronstrue from 'cronstrue';
 import { DateTime, Duration } from 'luxon';
-import { onMounted, type Ref, ref } from 'vue';
+import { onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 

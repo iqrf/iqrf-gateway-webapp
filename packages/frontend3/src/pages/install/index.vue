@@ -68,7 +68,7 @@ limitations under the License.
 <script lang='ts' setup>
 import { Head } from '@unhead/vue/components';
 import { storeToRefs } from 'pinia';
-import { onMounted, type Ref, ref } from 'vue';
+import { onMounted, ref, type Ref } from 'vue';
 
 import AdminUserCreation
 	from '@/components/install/wizard/AdminUserCreation.vue';

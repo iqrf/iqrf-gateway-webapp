@@ -125,8 +125,8 @@ limitations under the License.
 
 <script lang='ts' setup>
 import { type JournalService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
-import { JournalTimeUnit, type JournalConfig, JournalPersistence } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { type Ref, ref , onMounted } from 'vue';
+import { type JournalConfig, JournalPersistence, JournalTimeUnit } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import { onMounted, ref , type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';

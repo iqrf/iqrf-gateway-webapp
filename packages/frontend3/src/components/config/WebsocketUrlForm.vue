@@ -86,7 +86,7 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { type Ref, ref } from 'vue';
+import { ref, type Ref } from 'vue';
 import { watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 

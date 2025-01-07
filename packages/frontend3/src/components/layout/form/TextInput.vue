@@ -43,7 +43,7 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { type PropType , computed } from 'vue';
+import { computed , type PropType } from 'vue';
 import { VTextField } from 'vuetify/components';
 
 const props = defineProps({

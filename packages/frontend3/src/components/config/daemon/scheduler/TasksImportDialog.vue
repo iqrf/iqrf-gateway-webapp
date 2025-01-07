@@ -182,7 +182,7 @@ async function onSubmit(): Promise<void> {
 	processedRecords.value = [];
 	componentState.value = ComponentState.Saving;
 	const file = files.value[0];
-	if (['application/zip', 'application/x-zip-compressed'].includes(file.type)) {
+	if (['application/x-zip-compressed', 'application/zip'].includes(file.type)) {
 		await extractZip(file)
 			.then((records: SchedulerRecord[]) => importRecords.value = records)
 			.catch(() => toast.error(

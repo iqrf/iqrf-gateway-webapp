@@ -31,7 +31,7 @@ limitations under the License.
 <script lang='ts' setup>
 import { type ApiKeyService } from '@iqrf/iqrf-gateway-webapp-client/services/Security';
 import { type ApiKeyInfo } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
-import { ref, type Ref , type PropType } from 'vue';
+import { type PropType, ref , type Ref } from 'vue';
 import { toast } from 'vue3-toastify';
 
 import DeleteModalWindow from '@/components/DeleteModalWindow.vue';

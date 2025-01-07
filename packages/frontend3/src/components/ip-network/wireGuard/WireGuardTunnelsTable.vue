@@ -57,7 +57,7 @@ limitations under the License.
 import {
 	type WireGuardTunnelListEntry,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
-import { computed, onBeforeMount, type Ref, ref } from 'vue';
+import { computed, onBeforeMount, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import BooleanCheckMarker from '@/components/BooleanCheckMarker.vue';

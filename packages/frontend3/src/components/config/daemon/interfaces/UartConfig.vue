@@ -225,14 +225,14 @@ limitations under the License.
 <script lang='ts' setup>
 import { type IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import {
-	IqrfGatewayDaemonComponentName,
-	type IqrfGatewayDaemonUart,
 	type IqrfGatewayDaemonComponent,
+	IqrfGatewayDaemonComponentName,
 	type IqrfGatewayDaemonMapping,
+	type IqrfGatewayDaemonUart,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { MappingType } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { IqrfInterfaceType } from '@iqrf/iqrf-gateway-webapp-client/types/Iqrf';
-import { computed, onMounted, type Ref, ref } from 'vue';
+import { computed, onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { useDisplay } from 'vuetify';

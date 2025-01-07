@@ -139,7 +139,7 @@ import {
 	mdiCheckboxMultipleBlank,
 	mdiCheckboxMultipleMarked,
 } from '@mdi/js';
-import { type Ref, ref } from 'vue';
+import { ref, type Ref } from 'vue';
 import { toast } from 'vue3-toastify';
 
 import Card from '@/components/layout/card/Card.vue';

@@ -53,7 +53,7 @@ limitations under the License.
 
 <script lang='ts' setup>
 import { mdiPower } from '@mdi/js';
-import { type Ref, ref } from 'vue';
+import { ref, type Ref } from 'vue';
 
 import Card from '@/components/layout/card/Card.vue';
 import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';

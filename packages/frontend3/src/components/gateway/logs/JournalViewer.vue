@@ -39,7 +39,7 @@ limitations under the License.
 <script lang='ts' setup>
 import { LogService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
 import { type JournalRecords } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
-import { nextTick, type Ref, ref, watch } from 'vue';
+import { nextTick, ref, type Ref, watch } from 'vue';
 import { toast } from 'vue3-toastify';
 
 import { useApiClient } from '@/services/ApiClient';

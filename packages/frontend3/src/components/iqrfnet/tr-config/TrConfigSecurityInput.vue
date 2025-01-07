@@ -47,7 +47,7 @@ limitations under the License.
 
 <script lang='ts' setup>
 import { mdiAlphabetical, mdiHexadecimal, mdiInformationBox } from '@mdi/js';
-import { computed, type Ref, ref } from 'vue';
+import { computed, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 

@@ -114,7 +114,7 @@ limitations under the License.
 import { type MonitService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import { type MonitConfig } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { mdiAccount, mdiKey, mdiServerNetwork } from '@mdi/js';
-import { onMounted, type Ref, ref } from 'vue';
+import { onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';

@@ -86,7 +86,7 @@ limitations under the License.
 import { type AwsService } from '@iqrf/iqrf-gateway-webapp-client/services/Cloud';
 import { type AwsMqttConfig } from '@iqrf/iqrf-gateway-webapp-client/types/Cloud';
 import { mdiFileOutline } from '@mdi/js';
-import { type Ref, ref } from 'vue';
+import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';

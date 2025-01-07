@@ -84,8 +84,8 @@ limitations under the License.
 <script lang='ts' setup>
 import { type ApiKeyService } from '@iqrf/iqrf-gateway-webapp-client/services/Security';
 import {
-	type ApiKeyCreated,
 	type ApiKeyConfig,
+	type ApiKeyCreated,
 	type ApiKeyInfo,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import { DateTimeUtils } from '@iqrf/iqrf-gateway-webapp-client/utils';

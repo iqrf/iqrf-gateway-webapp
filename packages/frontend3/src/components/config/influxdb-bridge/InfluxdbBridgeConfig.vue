@@ -291,8 +291,8 @@ import { type BridgeConfig } from '@iqrf/iqrf-gateway-webapp-client/types/Config
 import { mdiDelete, mdiReload } from '@mdi/js';
 import {
 	onMounted,
-	type Ref,
 	ref,
+	type Ref,
 } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';

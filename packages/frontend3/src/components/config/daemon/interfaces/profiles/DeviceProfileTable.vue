@@ -64,7 +64,7 @@ limitations under the License.
 import { type IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import { type IqrfGatewayDaemonMapping } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { MappingType } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { onMounted, type PropType, type Ref, ref } from 'vue';
+import { onMounted, type PropType, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import DeviceProfileDeleteDialog from '@/components/config/daemon/interfaces/profiles/DeviceProfileDeleteDialog.vue';

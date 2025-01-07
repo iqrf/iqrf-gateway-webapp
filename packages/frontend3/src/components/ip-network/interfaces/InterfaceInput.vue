@@ -33,7 +33,7 @@ import {
 	type NetworkInterface, type NetworkInterfaceType,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import { mdiExpansionCardVariant } from '@mdi/js';
-import { onBeforeMount, type PropType, type Ref, ref } from 'vue';
+import { onBeforeMount, type PropType, ref, type Ref } from 'vue';
 
 import SelectInput from '@/components/layout/form/SelectInput.vue';
 import ValidationRules from '@/helpers/ValidationRules';

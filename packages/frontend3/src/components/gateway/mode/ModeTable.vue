@@ -97,7 +97,7 @@ import {
 	IqrfGatewayDaemonIdeCounterpartMode,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { mdiMenuDown } from '@mdi/js';
-import { onMounted, type Ref, ref, watchEffect } from 'vue';
+import { onMounted, ref, type Ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 

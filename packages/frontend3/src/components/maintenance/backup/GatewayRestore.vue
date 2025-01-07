@@ -53,7 +53,7 @@ limitations under the License.
 import { type BackupService } from '@iqrf/iqrf-gateway-webapp-client/services/Maintenance';
 import { type PowerActionResponse } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
 import { mdiFileOutline } from '@mdi/js';
-import { type Ref, ref } from 'vue';
+import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';

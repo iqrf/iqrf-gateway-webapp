@@ -51,7 +51,7 @@ limitations under the License.
 <script lang='ts' setup>
 import { type InterfacePortsService } from '@iqrf/iqrf-gateway-webapp-client/services/Iqrf';
 import { type IqrfInterfaceType } from '@iqrf/iqrf-gateway-webapp-client/types/Iqrf';
-import { type PropType, type Ref, ref } from 'vue';
+import { type PropType, ref, type Ref } from 'vue';
 import { onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';

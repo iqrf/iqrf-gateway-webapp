@@ -84,12 +84,12 @@
 		"@iqrf/iqrf-gateway-daemon-utils": "latest",
 		"axios": "^1.7.9",
 		"luxon": "^3.5.0",
-		"openapi-typescript": "^7.4.4",
+		"openapi-typescript": "^7.5.2",
 		"punycode": "^2.3.1",
-		"uuid": "^11.0.3"
+		"uuid": "^11.0.4"
 	},
 	"devDependencies": {
-		"@iqrf/eslint-config": "^0.2.3",
+		"@iqrf/eslint-config": "^0.2.4",
 		"@types/luxon": "^3.4.2",
 		"@types/node": "^22.10.5",
 		"@types/punycode": "^2.1.4",
@@ -102,7 +102,7 @@
 		"tsup": "^8.3.5",
 		"typedoc": "^0.27.6",
 		"typedoc-material-theme": "^1.2.0",
-		"typedoc-plugin-mdn-links": "^4.0.6",
+		"typedoc-plugin-mdn-links": "^4.0.7",
 		"typescript": "^5.7.2",
 		"vite-tsconfig-paths": "^5.1.4",
 		"vitest": "^2.1.8"

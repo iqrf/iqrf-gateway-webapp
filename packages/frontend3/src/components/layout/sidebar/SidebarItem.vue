@@ -31,7 +31,7 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { type Ref, ref, watchEffect } from 'vue';
+import { ref, type Ref, watchEffect } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { type SidebarLink } from '@/types/sidebar';

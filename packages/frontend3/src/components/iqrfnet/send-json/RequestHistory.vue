@@ -68,7 +68,7 @@ limitations under the License.
 <script lang='ts' setup>
 import { type JsonMessage } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { mdiDelete } from '@mdi/js';
-import { computed, type PropType, type Ref, ref } from 'vue';
+import { computed, type PropType, ref, type Ref } from 'vue';
 
 import JsonMessageViewer from '@/components/iqrfnet/send-json/JsonMessageViewer.vue';
 import Card from '@/components/layout/card/Card.vue';

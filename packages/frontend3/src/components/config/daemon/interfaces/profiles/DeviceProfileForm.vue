@@ -160,9 +160,9 @@ import { type IqrfGatewayDaemonMapping } from '@iqrf/iqrf-gateway-webapp-client/
 import { MappingDeviceType, MappingType } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import {
 	computed,
-	type Ref,
-	ref,
 	type PropType,
+	ref,
+	type Ref,
 } from 'vue';
 import { watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';

@@ -62,7 +62,7 @@ limitations under the License.
 import { type DpaMacrosService } from '@iqrf/iqrf-gateway-webapp-client/services/Iqrf';
 import { type DpaMacro, type DpaMacroGroup } from '@iqrf/iqrf-gateway-webapp-client/types/Iqrf';
 import { mdiMenuUp } from '@mdi/js';
-import { type Ref, onMounted, ref } from 'vue';
+import { onMounted, ref, type Ref } from 'vue';
 
 import Card from '@/components/layout/card/Card.vue';
 import { useApiClient } from '@/services/ApiClient';

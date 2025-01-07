@@ -70,9 +70,9 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { ShapeTraceVerbosity, type ShapeTraceChannelVerbosity } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import { type ShapeTraceChannelVerbosity, ShapeTraceVerbosity } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { mdiPlus } from '@mdi/js';
-import { ref, type Ref, watchEffect, type PropType } from 'vue';
+import { type PropType, ref, type Ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { VForm } from 'vuetify/components';
 

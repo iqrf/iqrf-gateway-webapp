@@ -56,7 +56,7 @@ import { type ServiceService } from '@iqrf/iqrf-gateway-webapp-client/services';
 import { type UpgradeService } from '@iqrf/iqrf-gateway-webapp-client/services/Iqrf';
 import { FileFormat, FileType, type FileUploadResult } from '@iqrf/iqrf-gateway-webapp-client/types/Iqrf';
 import { mdiFileOutline } from '@mdi/js';
-import { type Ref, ref } from 'vue';
+import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';

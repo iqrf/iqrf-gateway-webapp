@@ -35,9 +35,9 @@ import {
 	type IqrfGatewayDaemonMqttMessaging,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import {
+	type PropType,
 	ref,
 	type Ref,
-	type PropType,
 } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';

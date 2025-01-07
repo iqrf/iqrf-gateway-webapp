@@ -179,12 +179,12 @@ limitations under the License.
 import { type IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import {
 	IqrfGatewayDaemonComponentName,
-	ShapeTraceVerbosity,
-	type ShapeTraceFileService,
 	type ShapeTraceChannelVerbosity,
+	type ShapeTraceFileService,
+	ShapeTraceVerbosity,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { mdiDelete } from '@mdi/js';
-import { computed, type PropType, type Ref, ref , watchEffect } from 'vue';
+import { computed, type PropType, ref, type Ref , watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';

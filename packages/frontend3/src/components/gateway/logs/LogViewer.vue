@@ -28,7 +28,7 @@ limitations under the License.
 
 <script lang='ts' setup>
 import { type LogService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
-import { onMounted, type PropType, type Ref, ref, watch } from 'vue';
+import { onMounted, type PropType, ref, type Ref, watch } from 'vue';
 import { toast } from 'vue3-toastify';
 
 import { useApiClient } from '@/services/ApiClient';

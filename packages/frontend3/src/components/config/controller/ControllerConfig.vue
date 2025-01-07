@@ -355,7 +355,7 @@ import {
 	mdiGestureTapHold,
 	mdiLinkVariant,
 } from '@mdi/js';
-import { onMounted, type Ref, ref } from 'vue';
+import { onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { useDisplay } from 'vuetify';

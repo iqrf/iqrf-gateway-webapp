@@ -88,7 +88,7 @@ import {
 } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { type IqrfGatewayDaemonSchedulerMessagings } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { mdiPencil, mdiPlus } from '@mdi/js';
-import { ref, type Ref, watchEffect , type PropType, computed } from 'vue';
+import { computed, type PropType, ref , type Ref, watchEffect } from 'vue';
 import { VForm } from 'vuetify/components';
 
 import Card from '@/components/layout/card/Card.vue';

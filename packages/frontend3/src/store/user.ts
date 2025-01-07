@@ -27,7 +27,7 @@ import {
 	type UserSignedIn,
 	UserTimeFormatPreference,
 } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { setUser, type User as SentryUser } from '@sentry/vue';
+import { type User as SentryUser, setUser } from '@sentry/vue';
 import { jwtDecode, type JwtPayload } from 'jwt-decode';
 import { defineStore } from 'pinia';
 import { type RouteLocationNormalizedLoaded } from 'vue-router';

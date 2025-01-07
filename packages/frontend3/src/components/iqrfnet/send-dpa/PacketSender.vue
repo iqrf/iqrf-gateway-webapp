@@ -449,9 +449,9 @@ import { GenericMessages } from '@iqrf/iqrf-gateway-daemon-utils/enums';
 import { GenericService } from '@iqrf/iqrf-gateway-daemon-utils/services';
 import { type DaemonApiResponse, type DpaPacketMessage } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
-import { mdiHexadecimal, mdiMenu, mdiNumeric, mdiLock, mdiLockOpen } from '@mdi/js';
+import { mdiHexadecimal, mdiLock, mdiLockOpen, mdiMenu, mdiNumeric } from '@mdi/js';
 import { vMaska } from 'maska/vue';
-import { type Ref, ref } from 'vue';
+import { ref, type Ref } from 'vue';
 import { VForm } from 'vuetify/components';
 
 import ProductBrowser from '@/components/iqrfnet/ProductBrowser.vue';

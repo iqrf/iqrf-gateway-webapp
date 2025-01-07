@@ -93,7 +93,7 @@ limitations under the License.
 <script lang='ts' setup>
 import { type IbmService } from '@iqrf/iqrf-gateway-webapp-client/services/Cloud';
 import { type IbmCloudConfig } from '@iqrf/iqrf-gateway-webapp-client/types/Cloud';
-import { type Ref, ref } from 'vue';
+import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';

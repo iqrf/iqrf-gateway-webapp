@@ -1,4 +1,4 @@
-import { type DaemonMode, type ChannelState } from '../enums';
+import { type ChannelState, type DaemonMode } from '../enums';
 
 /**
  * Monitor message data

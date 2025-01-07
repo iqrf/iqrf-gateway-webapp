@@ -133,7 +133,7 @@ import {
 } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
 import { mdiDelete, mdiMapClock } from '@mdi/js';
 import { DateTime } from 'luxon';
-import { computed, onMounted, type Ref, ref } from 'vue';
+import { computed, onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 

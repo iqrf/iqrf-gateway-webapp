@@ -87,7 +87,7 @@ limitations under the License.
 
 <script lang='ts' setup>
 import { mdiPencil } from '@mdi/js';
-import { type Ref, ref } from 'vue';
+import { ref, type Ref } from 'vue';
 import { watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 

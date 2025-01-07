@@ -34,7 +34,7 @@ limitations under the License.
 <script lang='ts' setup>
 import { mdiWeatherNight, mdiWeatherSunny } from '@mdi/js';
 import { storeToRefs } from 'pinia';
-import { onBeforeMount, Ref, ref, watch } from 'vue';
+import { onBeforeMount, ref, Ref, watch } from 'vue';
 
 import { useThemeStore } from '@/store/theme';
 import { Theme } from '@/types/theme';
