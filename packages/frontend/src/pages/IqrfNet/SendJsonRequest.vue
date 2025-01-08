@@ -29,7 +29,6 @@ limitations under the License.
 				</v-btn>
 			</v-card-title>
 			<v-card-text>
-				<JsonSchemaErrors :errors='validatorErrors' />
 				<v-overlay
 					v-if='!isSocketConnected'
 					:opacity='0.65'
@@ -102,12 +101,10 @@ limitations under the License.
 import {Component, Vue} from 'vue-property-decorator';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import JsonMessage from '@/components/IqrfNet/JsonMessage.vue';
-import JsonSchemaErrors from '@/components/Config/JsonSchemaErrors.vue';
 
 import {required} from 'vee-validate/dist/rules';
 import {StatusMessages} from '@/iqrfNet/sendJson';
 import {v4 as uuidv4} from 'uuid';
-import DaemonApiValidator from '@/helpers/DaemonApiValidator';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 import IqrfNetService from '@/services/IqrfNetService';
@@ -119,7 +116,6 @@ import {mapGetters, MutationPayload} from 'vuex';
 @Component({
 	components: {
 		JsonMessage,
-		JsonSchemaErrors,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -159,33 +155,22 @@ export default class SendJsonRequest extends Vue {
 	private messages: Array<IMessagePairRequest> = [];
 
 	/**
-	 * @var {DaemonApiValidator} validator JSON schema validator function
-	 */
-	private validator: DaemonApiValidator;
-
-	/**
-	 * @var {Array<string>} validatorErrors String containing JSON schema violations
-	 */
-	private validatorErrors: Array<string> = [];
-
-	/**
 	 * Component unsubscribe function
 	 */
 	private unsubscribe: CallableFunction = () => {return;};
 
 	/**
-	 * Component constructor
-	 */
-	constructor() {
-		super();
-		this.validator = new DaemonApiValidator();
-	}
-
-	/**
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
-		extend('json', (json) => this.validator.validate(json, (errorMessages) => this.validatorErrors = errorMessages));
+		extend('json', (json: string) => {
+			try {
+				JSON.parse(json);
+				return true;
+			} catch {
+				return false;
+			}
+		});
 		extend('required', required);
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type === 'daemonClient/SOCKET_ONCLOSE' || mutation.type === 'daemonClient/SOCKET_ONERROR') {
@@ -274,7 +259,7 @@ export default class SendJsonRequest extends Vue {
 		} else if (request.mType === 'iqmeshNetwork_AutoNetwork' ||
 			request.mType === 'iqmeshNetwork_Backup' ||
 			(request.mType === 'infoDaemon_Enumeration' && request.data.req.command === 'now') ||
-			request.mType === 'otaUpload') { // requests without timeout
+			request.mType === 'iqmeshNetwork_OtaUpload') { // requests without timeout
 			this.$store.commit('spinner/SHOW');
 		} else { // regular messages have a minute timeout
 			options.timeout = 60000;
