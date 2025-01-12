@@ -86,10 +86,10 @@
 		"luxon": "^3.5.0",
 		"openapi-typescript": "^7.5.2",
 		"punycode": "^2.3.1",
-		"uuid": "^11.0.4"
+		"uuid": "^11.0.5"
 	},
 	"devDependencies": {
-		"@iqrf/eslint-config": "^0.2.4",
+		"@iqrf/eslint-config": "^0.2.5",
 		"@types/luxon": "^3.4.2",
 		"@types/node": "^22.10.5",
 		"@types/punycode": "^2.1.4",
@@ -97,13 +97,13 @@
 		"@vitest/coverage-istanbul": "^2.1.8",
 		"@vitest/spy": "^2.1.8",
 		"axios-mock-adapter": "^2.1.0",
-		"eslint": "^9.17.0",
+		"eslint": "^9.18.0",
 		"ts-node": "^10.9.2",
 		"tsup": "^8.3.5",
 		"typedoc": "^0.27.6",
 		"typedoc-material-theme": "^1.2.0",
-		"typedoc-plugin-mdn-links": "^4.0.7",
-		"typescript": "^5.7.2",
+		"typedoc-plugin-mdn-links": "^4.0.8",
+		"typescript": "^5.7.3",
 		"vite-tsconfig-paths": "^5.1.4",
 		"vitest": "^2.1.8"
 	}

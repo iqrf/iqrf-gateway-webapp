@@ -72,6 +72,9 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
 				sass: {
 					api: 'modern-compiler',
 				},
+				scss: {
+					api: 'modern-compiler',
+				},
 			},
 		},
 		define: {
