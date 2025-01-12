@@ -255,7 +255,6 @@ import {MutationPayload} from 'vuex';
 import DateTimePicker from '@/components/DateTimePicker.vue';
 import JsonEditor from '@/components/Config/JsonEditor.vue';
 import JsonSchemaErrors from '@/components/Config/JsonSchemaErrors.vue';
-import DaemonApiValidator from '@/helpers/DaemonApiValidator';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {uuid_v4} from '@/helpers/validators';
@@ -393,22 +392,9 @@ export default class SchedulerForm extends Vue {
 	};
 
 	/**
-	 * @var {DaemonApiValidator} validator JSON schema validator function
-	 */
-	private validator: DaemonApiValidator;
-
-	/**
 	 * @var {Array<Array<string>>} validatorErrors String containing JSON schema violations
 	 */
 	private validatorErrors: Array<Array<string>> = [[]];
-
-	/**
-	 * Constructor
-	 */
-	constructor() {
-		super();
-		this.validator = new DaemonApiValidator();
-	}
 
 	/**
 	 * Vue lifecycle hook created
@@ -420,11 +406,13 @@ export default class SchedulerForm extends Vue {
 		extend('required', required);
 		extend('mType', mType);
 		extend('uuidv4', uuid_v4);
-		extend('json', (json) => {
-			return this.validator.validate(json, (errorMessages) => {
-				const index = this.record.task.findIndex((task) => task.message === json);
-				this.validatorErrors[index] = errorMessages;
-			});
+		extend('json', (json: string) => {
+			try {
+				JSON.parse(json);
+				return true;
+			} catch {
+				return false;
+			}
 		});
 		extend('cron', (cronstring: string) => {
 			if (cronstring[0] === '@') {
