@@ -14,11 +14,5 @@
 # limitations under the License.
 
 services:
-	mender.fileManager:
-		factory: App\CoreModule\Models\PrivilegedFileManager(%paths.mender.configDir%)
-		autowired: false
-	mender.manager: App\MaintenanceModule\Models\MenderManager(@commandExecutor.commandExecutor, @mender.fileManager)
-	monit.fileManager:
-		factory: App\CoreModule\Models\PrivilegedFileManager(%paths.monit.configDir%)
-		autowired: false
-	monit.manager: App\MaintenanceModule\Models\MonitManager(@monit.fileManager)
+	- App\MaintenanceModule\Models\MenderManager(@fileManager.managers.mender)
+	- App\MaintenanceModule\Models\MonitManager(@fileManager.managers.monit)

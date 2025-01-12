@@ -20,12 +20,12 @@ declare(strict_types = 1);
 
 namespace App\MaintenanceModule\Models;
 
-use App\CoreModule\Models\IFileManager;
 use App\MaintenanceModule\Exceptions\MonitConfigErrorException;
 use App\MaintenanceModule\Models\Monit\BaseMonitManager;
 use App\MaintenanceModule\Models\Monit\CheckManager;
 use App\MaintenanceModule\Models\Monit\MmonitManager;
 use Iqrf\CommandExecutor\CommandExecutor;
+use Iqrf\FileManager\IFileManager;
 use Nette\Schema\Elements\Structure;
 use Nette\Schema\Expect;
 use Nette\Schema\Processor;

@@ -27,7 +27,7 @@ declare(strict_types = 1);
 namespace Tests\Integration\ConfigModule\Models;
 
 use App\ConfigModule\Models\MainManager;
-use App\CoreModule\Models\FileManager;
+use Iqrf\FileManager\FileManager;
 use Mockery;
 use Nette\IOException;
 use Tester\Assert;

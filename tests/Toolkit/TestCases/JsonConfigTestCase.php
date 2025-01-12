@@ -21,9 +21,9 @@ declare(strict_types = 1);
 namespace Tests\Toolkit\TestCases;
 
 use App\ConfigModule\Models\ComponentSchemaManager;
-use App\CoreModule\Models\FileManager;
 use Iqrf\CommandExecutor\CommandExecutor;
 use Iqrf\CommandExecutor\CommandStack;
+use Iqrf\FileManager\FileManager;
 use Mockery;
 use Nette\Utils\JsonException;
 use Tester\Environment;

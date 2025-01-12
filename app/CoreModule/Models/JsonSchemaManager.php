@@ -22,6 +22,7 @@ namespace App\CoreModule\Models;
 
 use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
+use Iqrf\FileManager\FileManager;
 use JsonSchema\Constraints\Constraint;
 use JsonSchema\Constraints\Factory;
 use JsonSchema\SchemaStorage;

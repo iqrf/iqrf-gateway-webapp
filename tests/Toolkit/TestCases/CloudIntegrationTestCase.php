@@ -22,13 +22,13 @@ namespace Tests\Toolkit\TestCases;
 
 use App\ConfigModule\Models\ComponentSchemaManager;
 use App\ConfigModule\Models\GenericManager;
-use App\CoreModule\Models\FileManager;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use Iqrf\CommandExecutor\CommandExecutor;
 use Iqrf\CommandExecutor\CommandStack;
+use Iqrf\FileManager\FileManager;
 use Mockery;
 use Tester\TestCase;
 

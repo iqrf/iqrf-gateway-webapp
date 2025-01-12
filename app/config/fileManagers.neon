@@ -1,0 +1,62 @@
+# Copyright 2017-2025 IQRF Tech s.r.o.
+# Copyright 2019-2025 MICRORISC s.r.o.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+extensions:
+	fileManager: Iqrf\FileManager\DI\FileManagerExtension
+
+fileManager:
+	managers:
+		apt:
+			directory: %paths.apt.configDir%
+			type: privileged
+		certificates:
+			directory: %paths.iqrfGatewayDaemon.certDir%/core
+			type: privileged
+		etc:
+			directory: '/etc/'
+			type: privileged
+		iqrfCloudProvisioning:
+			directory: %paths.iqrfCloudProvisioning.configDir%
+			type: privileged
+		iqrfGatewayController:
+			directory: %paths.iqrfGatewayController.configDir%
+			type: unprivileged
+		iqrfGatewayDaemon:
+			directory: %paths.iqrfGatewayDaemon.configDir%
+			type: unprivileged
+		iqrfGatewayDaemonPrivileged:
+			directory: %paths.iqrfGatewayDaemon.configDir%
+			type: privileged
+		iqrfGatewayInfluxdbBridge:
+			directory: %paths.iqrfGatewayInfluxdbBridge.configDir%
+			type: unprivileged
+		iqrfGatewayTranslator:
+			directory: %paths.iqrfGatewayTranslator.configDir%
+			type: unprivileged
+		iqrfGatewayUploader:
+			directory: %paths.iqrfGatewayUploader.configDir%
+			type: unprivileged
+		mender:
+			directory: %paths.mender.configDir%
+			type: privileged
+		monit:
+			directory: %paths.monit.configDir%
+			type: privileged
+		networkManager:
+			directory: %paths.networkManager.configDir%
+			type: privileged
+		timesyncd:
+			directory: dirname(%paths.timesyncd.config%)
+			type: privileged

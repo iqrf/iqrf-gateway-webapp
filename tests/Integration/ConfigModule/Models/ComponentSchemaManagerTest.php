@@ -29,9 +29,9 @@ namespace Tests\Integration\ConfigModule\Models;
 use App\ConfigModule\Models\ComponentSchemaManager;
 use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
-use App\CoreModule\Models\FileManager;
 use Iqrf\CommandExecutor\CommandExecutor;
 use Iqrf\CommandExecutor\CommandStack;
+use Iqrf\FileManager\FileManager;
 use Tester\Assert;
 use Tester\TestCase;
 

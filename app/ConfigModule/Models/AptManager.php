@@ -22,8 +22,8 @@ namespace App\ConfigModule\Models;
 
 use App\ConfigModule\Exceptions\AptErrorException;
 use App\ConfigModule\Exceptions\AptNotFoundException;
-use App\CoreModule\Models\IFileManager;
 use Iqrf\CommandExecutor\CommandExecutor;
+use Iqrf\FileManager\IFileManager;
 
 class AptManager {
 

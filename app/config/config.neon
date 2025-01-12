@@ -123,6 +123,7 @@ includes:
 	- api.neon
 	- console.neon
 	- doctrine.neon
+	- fileManagers.neon
 	- guzzle.neon
 	- mailer.neon
 	- monolog.neon

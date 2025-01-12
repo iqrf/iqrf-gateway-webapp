@@ -26,10 +26,10 @@ declare(strict_types = 1);
 
 namespace Tests\Integration\MaintenanceModule\Models;
 
-use App\CoreModule\Models\FileManager;
 use App\MaintenanceModule\Exceptions\MonitConfigErrorException;
 use App\MaintenanceModule\Models\MonitManager;
 use Iqrf\CommandExecutor\Tester\Traits\CommandExecutorTestCase;
+use Iqrf\FileManager\FileManager;
 use Nette\Utils\FileSystem;
 use Tester\Assert;
 use Tester\Environment;

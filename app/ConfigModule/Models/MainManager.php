@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Models;
 
-use App\CoreModule\Models\FileManager;
+use Iqrf\FileManager\FileManager;
 use Nette\IOException;
 use Nette\Utils\JsonException;
 

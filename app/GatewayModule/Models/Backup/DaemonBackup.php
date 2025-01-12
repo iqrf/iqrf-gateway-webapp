@@ -20,10 +20,10 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models\Backup;
 
-use App\CoreModule\Models\PrivilegedFileManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use App\GatewayModule\Models\DaemonDirectories;
 use Iqrf\CommandExecutor\CommandExecutor;
+use Iqrf\FileManager\PrivilegedFileManager;
 
 /**
  * Daemon backup manager

@@ -26,13 +26,13 @@ declare(strict_types = 1);
 
 namespace Tests\Unit\GatewayModule\Models;
 
-use App\CoreModule\Models\FileManager;
 use App\GatewayModule\Exceptions\JournalReaderArgumentException;
 use App\GatewayModule\Exceptions\JournalReaderInternalException;
 use App\GatewayModule\Models\JournalReaderManager;
 use Iqrf\CommandExecutor\CommandExecutor;
 use Iqrf\CommandExecutor\CommandStack;
 use Iqrf\CommandExecutor\Tester\Traits\CommandExecutorTestCase;
+use Iqrf\FileManager\FileManager;
 use Nette\Utils\Json;
 use Tester\Assert;
 use Tester\TestCase;

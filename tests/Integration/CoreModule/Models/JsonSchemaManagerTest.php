@@ -28,10 +28,10 @@ namespace Tests\Integration\CoreModule\Models;
 
 use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
-use App\CoreModule\Models\FileManager;
 use App\CoreModule\Models\JsonSchemaManager;
 use Iqrf\CommandExecutor\CommandExecutor;
 use Iqrf\CommandExecutor\CommandStack;
+use Iqrf\FileManager\FileManager;
 use Tester\Assert;
 use Tester\TestCase;
 

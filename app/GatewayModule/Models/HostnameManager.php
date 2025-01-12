@@ -20,9 +20,9 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models;
 
-use App\CoreModule\Models\IFileManager;
 use App\GatewayModule\Exceptions\HostnameException;
 use Iqrf\CommandExecutor\CommandExecutor;
+use Iqrf\FileManager\IFileManager;
 use Nette\IOException;
 use Nette\Utils\Strings;
 
@@ -48,8 +48,8 @@ class HostnameManager {
 	 * @param NetworkManager $networkManager Network manager
 	 */
 	public function __construct(
-		private readonly CommandExecutor $commandManager,
 		private readonly IFileManager $fileManager,
+		private readonly CommandExecutor $commandManager,
 		private readonly NetworkManager $networkManager,
 	) {
 	}

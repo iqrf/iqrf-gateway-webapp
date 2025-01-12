@@ -20,7 +20,6 @@ declare(strict_types = 1);
 
 namespace App\MaintenanceModule\Models;
 
-use App\CoreModule\Models\PrivilegedFileManager;
 use App\GatewayModule\Models\VersionManager;
 use App\MaintenanceModule\Entities\MenderClientConfiguration;
 use App\MaintenanceModule\Entities\MenderConnectConfiguration;
@@ -33,6 +32,7 @@ use App\ServiceModule\Exceptions\NonexistentServiceException;
 use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
 use App\ServiceModule\Models\ServiceManager;
 use Iqrf\CommandExecutor\CommandExecutor;
+use Iqrf\FileManager\PrivilegedFileManager;
 use Nette\Utils\FileSystem;
 use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
@@ -76,14 +76,14 @@ class MenderManager {
 
 	/**
 	 * Constructor
-	 * @param CommandExecutor $commandManager Command manager
 	 * @param PrivilegedFileManager $fileManager Privileged file manager
+	 * @param CommandExecutor $commandManager Command manager
 	 * @param ServiceManager $serviceManager Service manager
 	 * @param VersionManager $versionManager Version manager
 	 */
 	public function __construct(
-		private readonly CommandExecutor $commandManager,
 		private readonly PrivilegedFileManager $fileManager,
+		private readonly CommandExecutor $commandManager,
 		private readonly ServiceManager $serviceManager,
 		VersionManager $versionManager,
 	) {

@@ -26,9 +26,9 @@ use AcmePhp\Ssl\Parser\CertificateParser;
 use AcmePhp\Ssl\Parser\KeyParser;
 use AcmePhp\Ssl\PrivateKey;
 use AcmePhp\Ssl\PublicKey;
-use App\CoreModule\Models\PrivilegedFileManager;
 use App\GatewayModule\Exceptions\CertificateNotFoundException;
 use App\GatewayModule\Exceptions\PrivateKeyNotFoundException;
+use Iqrf\FileManager\PrivilegedFileManager;
 use Nette\IOException;
 
 /**

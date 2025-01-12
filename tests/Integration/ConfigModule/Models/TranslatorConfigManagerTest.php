@@ -27,9 +27,9 @@ declare(strict_types = 1);
 namespace Tests\Integration\ConfigModule\Models;
 
 use App\ConfigModule\Models\TranslatorConfigManager;
-use App\CoreModule\Models\FileManager;
 use Iqrf\CommandExecutor\CommandExecutor;
 use Iqrf\CommandExecutor\CommandStack;
+use Iqrf\FileManager\FileManager;
 use Nette\Utils\FileSystem;
 use Tester\Assert;
 use Tester\Environment;

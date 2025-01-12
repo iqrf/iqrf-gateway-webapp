@@ -21,7 +21,6 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Models;
 
 use App\CoreModule\Models\FeatureManager;
-use App\CoreModule\Models\PrivilegedFileManager;
 use App\GatewayModule\Exceptions\SshDirectoryException;
 use App\GatewayModule\Exceptions\SshInvalidKeyException;
 use App\GatewayModule\Exceptions\SshKeyExistsException;
@@ -31,6 +30,7 @@ use App\Models\Database\Entities\SshKey;
 use App\Models\Database\EntityManager;
 use App\Models\Database\Repositories\SshKeyRepository;
 use Iqrf\CommandExecutor\CommandExecutor;
+use Iqrf\FileManager\PrivilegedFileManager;
 
 /**
  * SSH manager

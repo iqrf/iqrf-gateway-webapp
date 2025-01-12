@@ -49,6 +49,7 @@
 		"egulias/email-validator": "^4.0.2",
 		"guzzlehttp/guzzle": "^7.9.2",
 		"iqrf/command-executor": "^v0.1.2",
+		"iqrf/file-manager": "^v0.1.0",
 		"iqrf/iqrf-ide-macros-parser": "^v1.3.0",
 		"iqrf/iqrf-repository": "^v0.2.1",
 		"justinrainbow/json-schema": "^6.0.0",

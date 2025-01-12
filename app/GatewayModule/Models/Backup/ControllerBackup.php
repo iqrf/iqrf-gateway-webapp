@@ -21,8 +21,8 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Models\Backup;
 
 use App\CoreModule\Models\FeatureManager;
-use App\CoreModule\Models\FileManager;
 use Iqrf\CommandExecutor\CommandExecutor;
+use Iqrf\FileManager\FileManager;
 
 /**
  * Controller backup manager

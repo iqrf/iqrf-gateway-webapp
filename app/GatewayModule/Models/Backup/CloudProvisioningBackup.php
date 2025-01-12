@@ -21,9 +21,9 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Models\Backup;
 
 use App\CoreModule\Models\FeatureManager;
-use App\CoreModule\Models\PrivilegedFileManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use Iqrf\CommandExecutor\CommandExecutor;
+use Iqrf\FileManager\PrivilegedFileManager;
 
 /**
  * Cloud provisioning backup manager
@@ -44,14 +44,14 @@ class CloudProvisioningBackup implements IBackupManager {
 
 	/**
 	 * Constructor
-	 * @param CommandExecutor $commandManager Command manager
 	 * @param PrivilegedFileManager $fileManager Privileged file manager
+	 * @param CommandExecutor $commandManager Command manager
 	 * @param FeatureManager $featureManager FeatureManager
 	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
 	public function __construct(
-		private readonly CommandExecutor $commandManager,
 		private readonly PrivilegedFileManager $fileManager,
+		private readonly CommandExecutor $commandManager,
 		FeatureManager $featureManager,
 		private readonly RestoreLogger $restoreLogger,
 	) {

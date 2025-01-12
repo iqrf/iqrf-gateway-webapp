@@ -21,8 +21,8 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Models\Backup;
 
 use App\CoreModule\Models\FeatureManager;
-use App\CoreModule\Models\PrivilegedFileManager;
 use App\CoreModule\Models\ZipArchiveManager;
+use Iqrf\FileManager\PrivilegedFileManager;
 use Nette\Utils\FileSystem;
 
 /**

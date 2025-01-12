@@ -21,7 +21,6 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Models;
 
 use App\ConfigModule\Utils\ConfParser;
-use App\CoreModule\Models\PrivilegedFileManager;
 use App\GatewayModule\Exceptions\ConfNotFoundException;
 use App\GatewayModule\Exceptions\InvalidConfFormatException;
 use App\GatewayModule\Exceptions\NonexistentTimezoneException;
@@ -29,6 +28,7 @@ use App\GatewayModule\Exceptions\TimeDateException;
 use DateTime;
 use DateTimeZone;
 use Iqrf\CommandExecutor\CommandExecutor;
+use Iqrf\FileManager\PrivilegedFileManager;
 use Nette\Utils\Strings;
 use Throwable;
 

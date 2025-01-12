@@ -20,9 +20,9 @@ declare(strict_types = 1);
 
 namespace App\MaintenanceModule\Models\Monit;
 
-use App\CoreModule\Models\IFileManager;
 use App\MaintenanceModule\Exceptions\MonitConfigErrorException;
 use Iqrf\CommandExecutor\CommandExecutor;
+use Iqrf\FileManager\IFileManager;
 use Nette\Utils\Strings;
 
 /**

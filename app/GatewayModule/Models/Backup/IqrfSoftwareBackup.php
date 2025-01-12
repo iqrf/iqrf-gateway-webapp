@@ -21,10 +21,10 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Models\Backup;
 
 use App\CoreModule\Models\FeatureManager;
-use App\CoreModule\Models\FileManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use InvalidArgumentException;
 use Iqrf\CommandExecutor\CommandExecutor;
+use Iqrf\FileManager\FileManager;
 
 /**
  * IQRF Software backup manager

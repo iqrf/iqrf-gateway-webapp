@@ -26,7 +26,6 @@ declare(strict_types = 1);
 
 namespace Tests\Integration\GatewayModule\Models;
 
-use App\CoreModule\Models\FileManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use App\GatewayModule\Exceptions\LogNotFoundException;
 use App\GatewayModule\Exceptions\ServiceLogNotAvailableException;
@@ -34,6 +33,7 @@ use App\GatewayModule\Models\LogManager;
 use Iqrf\CommandExecutor\CommandExecutor;
 use Iqrf\CommandExecutor\CommandStack;
 use Iqrf\CommandExecutor\Tester\Traits\CommandExecutorTestCase;
+use Iqrf\FileManager\FileManager;
 use Tester\Assert;
 use Tester\TestCase;
 use ZipArchive;

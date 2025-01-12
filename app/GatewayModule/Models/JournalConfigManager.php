@@ -21,10 +21,10 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Models;
 
 use App\CoreModule\Models\FeatureManager;
-use App\CoreModule\Models\PrivilegedFileManager;
 use App\GatewayModule\Exceptions\ConfNotFoundException;
 use App\GatewayModule\Exceptions\InvalidConfFormatException;
 use Iqrf\CommandExecutor\CommandExecutor;
+use Iqrf\FileManager\PrivilegedFileManager;
 use Nette\Utils\Strings;
 use stdClass;
 

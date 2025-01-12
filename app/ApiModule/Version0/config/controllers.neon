@@ -14,8 +14,5 @@
 # limitations under the License.
 
 services:
-	bridge.fileManager:
-		factory: App\CoreModule\Models\FileManager(%paths.iqrfGatewayInfluxdbBridge.configDir%)
-		autowired: false
-	bridge.configManager: App\ConfigModule\Models\IqrfConfigManager(@bridge.fileManager)
+	bridge.configManager: App\ConfigModule\Models\IqrfConfigManager(@fileManager.managers.iqrfGatewayInfluxdbBridge)
 	- App\ApiModule\Version0\Controllers\Config\BridgeController(@bridge.configManager)
