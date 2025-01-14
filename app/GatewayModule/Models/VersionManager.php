@@ -188,7 +188,7 @@ class VersionManager {
 			$command = $this->commandManager->run('mender-connect --version');
 			if ($command->getExitCode() === 0) {
 				$versionString = Strings::trim($command->getStdout());
-				$pattern = '/^mender-connect version (?\'version\'\d+\.\d+\.\d+).*$/';
+				$pattern = '/^(?:mender-connect\sversion\s)?(?\'version\'\d+\.\d+\.\d+).*$/';
 				$matches = Strings::match($versionString, $pattern);
 				return $matches['version'];
 			}
