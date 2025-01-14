@@ -153,6 +153,11 @@
 		"vue-tsc": "^2.1.10",
 		"webpack": "^5.96.1"
 	},
+	"overrides": {
+		"stylelint": {
+			"ignore": "7.0.0"
+		}
+	},
 	"browserslist": [
 		"> 0.5%",
 		"not dead",
