@@ -37,7 +37,7 @@ limitations under the License.
 		>
 			<template #append>
 				<CButton
-					v-clipboard:copy='apiKey'
+					v-clipboard='() => apiKey'
 					v-clipboard:success='copyMessage'
 					color='success'
 					size='sm'
