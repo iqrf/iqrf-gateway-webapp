@@ -20,7 +20,7 @@ limitations under the License.
 		<v-card>
 			<v-card-text>
 				<ValidationObserver v-slot='{invalid}'>
-					<v-form>
+					<v-form @submit.prevent='save'>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required'
@@ -48,7 +48,7 @@ limitations under the License.
 						<v-btn
 							color='primary'
 							:disabled='invalid'
-							@click='save'
+							type='submit'
 						>
 							{{ submitButton }}
 						</v-btn>
@@ -56,25 +56,32 @@ limitations under the License.
 				</ValidationObserver>
 			</v-card-text>
 		</v-card>
+		<ApiKeyDisplayModal
+			ref='displayModal'
+			:api-key='generatedKey'
+			@closed='displayModalClose()'
+		/>
 	</div>
 </template>
 
 <script lang='ts'>
 import {ApiKeyService} from '@iqrf/iqrf-gateway-webapp-client/services/Security';
-import {ApiKeyInfo} from '@iqrf/iqrf-gateway-webapp-client/types/Security';
+import {ApiKeyCreated, ApiKeyInfo} from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import {AxiosError} from 'axios';
 import {DateTime} from 'luxon';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 import {MetaInfo} from 'vue-meta';
-import {Component, Prop, Vue} from 'vue-property-decorator';
+import {Component, Prop, Ref, Vue} from 'vue-property-decorator';
 
+import ApiKeyDisplayModal from '@/components/Core/ApiKeyDisplayModal.vue';
 import DateTimePicker from '@/components/DateTimePicker.vue';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {useApiClient} from '@/services/ApiClient';
 
 @Component({
 	components: {
+		ApiKeyDisplayModal,
 		DateTimePicker,
 		ValidationObserver,
 		ValidationProvider,
@@ -111,14 +118,24 @@ export default class ApiKeyForm extends Vue {
 
 	/**
 	 * @property {ApiKeyService} service API key service
-   * @private
-   */
+	 * @private
+	 */
 	private service: ApiKeyService = useApiClient().getSecurityServices().getApiKeyService();
+
+	/**
+	 * @var {string|null} generatedKey Generated key for one-time display
+	 */
+	private generatedKey: string|null = null;
 
 	/**
 	 * @property {number} keyId API key id
 	 */
 	@Prop({required: false, default: null}) keyId!: number;
+
+	/**
+	 * @property {ApiKeyDisplayModal} setLaiResult Set LAI voltage result
+	 */
+	@Ref('displayModal') readonly displayModal!: ApiKeyDisplayModal;
 
 	/**
 	 * Computes page title depending on the action (add, edit)
@@ -194,7 +211,10 @@ export default class ApiKeyForm extends Vue {
 				.catch(this.handleSaveError);
 		} else {
 			this.service.create(config)
-				.then(() => this.successfulSave())
+				.then((data: ApiKeyCreated) => {
+					this.generatedKey = data.key;
+					this.successfulSave();
+				})
 				.catch(this.handleSaveError);
 		}
 	}
@@ -209,13 +229,14 @@ export default class ApiKeyForm extends Vue {
 				this.$t('core.security.apiKey.messages.addSuccess')
 					.toString()
 			);
+			this.displayModal.open();
 		} else {
 			this.$toast.success(
 				this.$t('core.security.apiKey.messages.editSuccess', {key: this.keyId})
 					.toString()
 			);
+			this.$router.push('/security/api-key/');
 		}
-		this.$router.push('/security/api-key/');
 	}
 
 	/**
@@ -228,6 +249,14 @@ export default class ApiKeyForm extends Vue {
 			'core.security.apiKey.messages.' + (this.$route.path === '/security/api-key/add' ? 'add' : 'edit') + 'Failed',
 			{key: this.keyId}
 		);
+	}
+
+	/**
+	 * Clears generated key and navigates back to api key list
+	 */
+	private displayModalClose(): void {
+		this.generatedKey = null;
+		this.$router.push('/security/api-key/');
 	}
 }
 </script>

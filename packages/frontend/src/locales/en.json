@@ -153,7 +153,8 @@
 				"between": "Device address should be an integer between 1 and 239."
 			},
 			"date": "Please enter date.",
-			"time": "Please enter time."
+			"time": "Please enter time.",
+			"clipboardCopy": "Unable to copy data to clipboard."
 		},
 		"import": "Import",
 		"export": "Export",
@@ -1220,6 +1221,11 @@
 				"add": "Add API key",
 				"edit": "Edit API key",
 				"noExpiration": "Never",
+				"display": {
+					"copyMessage": "API key has been copied to clipboard.",
+					"prompt": "Before closing this dialog, copy and store the new API key below in a safe place. For security reasons, you will not be able to view it again at a later time.",
+					"title": "Generated API key"
+				},
 				"form": {
 					"id": "ID",
 					"description": "Description",
