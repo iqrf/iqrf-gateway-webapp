@@ -1,10 +1,12 @@
-iqrf-gateway-webapp (2.6.3~alpha~1.gbp4911b5) UNRELEASED; urgency=medium
+iqrf-gateway-webapp (2.6.3) stable; urgency=medium
 
-  ** SNAPSHOT build @4911b5d8cba9b0c7adf14c8685e7473071c4a2d5 **
+  * Prepare for version 2.6.3-alpha
+  * VersionManager: handle new mender-connect version string
+  * fixed version of ignore package
+  * updated npm dependencies
+  * ApiKeyDisplayModal: fixed copy to clipboard action
 
-  * UNRELEASED
-
- -- Karel Hanák <karel.hanak@iqrf.org>  Mon, 06 Jan 2025 10:55:15 +0100
+ -- Karel Hanák <karel.hanak@iqrf.org>  Thu, 16 Jan 2025 13:40:43 +0100
 
 iqrf-gateway-webapp (2.6.2) stable; urgency=medium
 
