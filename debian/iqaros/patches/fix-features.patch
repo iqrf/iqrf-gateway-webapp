@@ -10,7 +10,7 @@
  docs:
  	enabled: true
 -	url: https://docs.iqrf.org/iqrf-gateway/
-+	url: https://www.iqaros.eu/installation.html
++	url: https://docs.iqrf.org/iqube/
  # Default gateway user password change
  gatewayPass:
 -	enabled: false
