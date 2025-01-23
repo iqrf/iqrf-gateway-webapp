@@ -1,6 +1,4 @@
-iqrf-gateway-webapp (2.99.0~alpha~1.gbpa65b5d) UNRELEASED; urgency=medium
-
-  ** SNAPSHOT build @a65b5ddcbaf49416d37042a2059a3dc154c1f5c9 **
+iqrf-gateway-webapp (2.99.0~rc1) testing; urgency=medium
 
   [ Roman Ondráček ]
   * Prepare for version 3.0.0-alpha
@@ -617,8 +615,9 @@ iqrf-gateway-webapp (2.99.0~alpha~1.gbpa65b5d) UNRELEASED; urgency=medium
   * VersionManager: handle updated mender-connect version string
   * frontend: added missing api key display modal
   * debian: set url of iqaros version if webapp to iqube
+  * version 2.99.0-alpha
 
- -- Karel Hanák <karel.hanak@iqrf.org>  Thu, 23 Jan 2025 12:48:03 +0100
+ -- Karel Hanák <karel.hanak@iqrf.org>  Thu, 23 Jan 2025 15:00:47 +0100
 
 iqrf-gateway-webapp (2.5.0) testing; urgency=medium
 
