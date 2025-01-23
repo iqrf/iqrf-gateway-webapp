@@ -147,13 +147,6 @@ if stability == 'devel' then {
 		for variant in variants
 		for stability in ['devel', 'release']
 } + {
-	['build-package_' + stability + '/' + variant.name + '-v3']: buildPackageJob(variant, stability)
-		for variant in std.map(function(item) {
-			name: item.name,
-			patches: item.patches + ['frontend-v3'],
-		}, variants)
-		for stability in ['devel', 'release']
-} + {
 	['deploy-package_' + stability + '/' + variant.name]: deployPackageJob(variant, stability)
 		for variant in variants
 		for stability in ['devel', 'release']

@@ -19,11 +19,11 @@
 	// Base Docker image
 	baseImage: 'iqrftech/iqrf-gateway-webapp:tests-bookworm',
 	// Directory for package deployment
-	deployDir: '/data/nginx/dl/iqrf-gateway-webapp/${VARIANT}/${STABILITY}/',
+	deployDir: '/data/nginx/dl/iqrf-gateway-webapp/${VARIANT}/iqaros-${STABILITY}/',
 	// Deploy server
 	deployServer: 'www-deploy@icinga.iqrf.org',
 	// Deployment base URL
 	deployBaseUrl: 'https://dl.iqrf.org/iqrf-gateway-webapp/',
 	// Main branch
-	mainBranch: 'master',
+	mainBranch: 'v2.99.x',
 }

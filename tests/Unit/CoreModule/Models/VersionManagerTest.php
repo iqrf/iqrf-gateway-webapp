@@ -48,7 +48,7 @@ final class VersionManagerTest extends TestCase {
 	/**
 	 * Current version of the webapp
 	 */
-	private const CURRENT_VERSION = '3.0.0-alpha';
+	private const CURRENT_VERSION = '2.99.0-alpha';
 
 	/**
 	 * Current stable version of the webapp
