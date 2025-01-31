@@ -29,7 +29,6 @@ limitations under the License.
 				</CButton>
 			</CCardHeader>
 			<CCardBody>
-				<JsonSchemaErrors :errors='validatorErrors' />
 				<CElementCover
 					v-if='!isSocketConnected'
 					style='z-index: 1;'
@@ -105,7 +104,6 @@ import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CTextarea}
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import JsonEditor from '@/components/Config/JsonEditor.vue';
 import JsonMessage from '@/components/IqrfNet/JsonMessage.vue';
-import JsonSchemaErrors from '@/components/Config/JsonSchemaErrors.vue';
 
 import {required} from 'vee-validate/dist/rules';
 import {StatusMessages} from '@/iqrfNet/sendJson';
@@ -117,7 +115,6 @@ import {IMessagePairRequest} from '@/interfaces/DaemonApi/Api';
 import {IOption} from '@/interfaces/Coreui';
 import {mapGetters, MutationPayload} from 'vuex';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
-import DaemonApiValidator from '@/helpers/DaemonApiValidator';
 
 @Component({
 	components: {
@@ -130,7 +127,6 @@ import DaemonApiValidator from '@/helpers/DaemonApiValidator';
 		CTextarea,
 		JsonEditor,
 		JsonMessage,
-		JsonSchemaErrors,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -170,33 +166,25 @@ export default class SendJsonRequest extends Vue {
 	private messages: Array<IMessagePairRequest> = [];
 
 	/**
-	 * @var {DaemonApiValidator} validator JSON schema validator function
-	 */
-	private validator: DaemonApiValidator;
-
-	/**
-	 * @var {Array<string>} validatorErrors String containing JSON schema violations
-	 */
-	private validatorErrors: Array<string> = [];
-
-	/**
 	 * Component unsubscribe function
 	 */
 	private unsubscribe: CallableFunction = () => {return;};
 
 	/**
-	 * Component constructor
-	 */
-	constructor() {
-		super();
-		this.validator = new DaemonApiValidator();
-	}
-
-	/**
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
-		extend('json', (json) => this.validator.validate(json, (errorMessages) => this.validatorErrors = errorMessages));
+		extend('json', (json: string|null) => {
+			if (!json) {
+				return false;
+			}
+			try {
+				JSON.parse(json);
+				return true;
+			} catch {
+				return false;
+			}
+		});
 		extend('required', required);
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type === 'daemonClient/SOCKET_ONCLOSE' || mutation.type === 'daemonClient/SOCKET_ONERROR') {
@@ -285,7 +273,7 @@ export default class SendJsonRequest extends Vue {
 		} else if (request.mType === 'iqmeshNetwork_AutoNetwork' ||
 			request.mType === 'iqmeshNetwork_Backup' ||
 			(request.mType === 'infoDaemon_Enumeration' && request.data.req.command === 'now') ||
-			request.mType === 'otaUpload') { // requests without timeout
+			request.mType === 'iqmeshNetwork_OtaUpload') { // requests without timeout
 			this.$store.commit('spinner/SHOW');
 		} else { // regular messages have a minute timeout
 			options.timeout = 60000;

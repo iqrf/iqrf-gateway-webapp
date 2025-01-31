@@ -140,11 +140,6 @@ limitations under the License.
 						>
 							<hr v-if='i > 1'>
 							<CRow>
-								<CCol>
-									<JsonSchemaErrors :errors='validatorErrors[i-1]' />
-								</CCol>
-							</CRow>
-							<CRow>
 								<CCol md='6'>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
@@ -238,12 +233,10 @@ limitations under the License.
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CBadge, CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect, CTextarea} from '@coreui/vue/src';
 import JsonEditor from '@/components/Config/JsonEditor.vue';
-import JsonSchemaErrors from '@/components/Config/JsonSchemaErrors.vue';
 import {Datetime} from 'vue-datetime';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import cron from 'cron-validate';
-import DaemonApiValidator from '@/helpers/DaemonApiValidator';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {integer, required, min_value} from 'vee-validate/dist/rules';
@@ -277,7 +270,6 @@ import {MutationPayload} from 'vuex';
 		CTextarea,
 		Datetime,
 		JsonEditor,
-		JsonSchemaErrors,
 		ValidationObserver,
 		ValidationProvider
 	},
@@ -399,24 +391,6 @@ export default class SchedulerForm extends Vue {
 	};
 
 	/**
-	 * @var {DaemonApiValidator} validator JSON schema validator function
-	 */
-	private validator: DaemonApiValidator;
-
-	/**
-	 * @var {Array<Array<string>>} validatorErrors String containing JSON schema violations
-	 */
-	private validatorErrors: Array<Array<string>> = [[]];
-
-	/**
-	 * Constructor
-	 */
-	constructor() {
-		super();
-		this.validator = new DaemonApiValidator();
-	}
-
-	/**
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
@@ -426,11 +400,16 @@ export default class SchedulerForm extends Vue {
 		extend('required', required);
 		extend('mType', mType);
 		extend('uuidv4', uuid_v4);
-		extend('json', (json) => {
-			return this.validator.validate(json, (errorMessages) => {
-				const index = this.record.task.findIndex((task) => task.message === json);
-				this.validatorErrors[index] = errorMessages;
-			});
+		extend('json', (json: string|null) => {
+			if (!json) {
+				return false;
+			}
+			try {
+				JSON.parse(json);
+				return true;
+			} catch {
+				return false;
+			}
 		});
 		extend('cron', (cronstring: string) => {
 			if (cronstring[0] === '@') {
@@ -594,9 +573,6 @@ export default class SchedulerForm extends Vue {
 			this.timeSpecSelected = TimeSpecTypes.PERIODIC;
 		}
 		delete record.active;
-		for (let i = 0; i < record.task.length; ++i) {
-			this.validatorErrors.push([]);
-		}
 		this.record = record;
 	}
 
@@ -669,7 +645,6 @@ export default class SchedulerForm extends Vue {
 	 */
 	private addMessage(): void {
 		this.record.task.push({message: '', messaging: ['']});
-		this.validatorErrors.push([]);
 	}
 
 	/**
@@ -686,7 +661,6 @@ export default class SchedulerForm extends Vue {
 	 */
 	private removeMessage(index: number): void {
 		this.record.task.splice(index, 1);
-		this.validatorErrors.splice(index, 1);
 	}
 
 	/**
