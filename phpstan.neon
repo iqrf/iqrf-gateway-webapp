@@ -63,3 +63,4 @@ parameters:
 			path: app/IqrfNetModule/Models/WebSocketClient.php
 			count: 2
 		- '#^^Parameter \#3 \$next \(callable\(Psr\\Http\\Message\\ServerRequestInterface, Psr\\Http\\Message\\ResponseInterface\): Psr\\Http\\Message\\ResponseInterface\) of method [A-Za-z0-9\\]+::__invoke\(\) should be contravariant with parameter \$next \(callable\(\): mixed\) of method Contributte\\Middlewares\\IMiddleware::__invoke\(\)$#'
+		- '#Parameter \#3 \$checkMode of method JsonSchema\\Validator::validate\(\) expects 0\|1\|2\|4\|8\|16\|32\|64\|128\|256\|null, 142\|null given.#'
