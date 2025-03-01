@@ -52,7 +52,7 @@
 		"iqrf/file-manager": "^v0.1.0",
 		"iqrf/iqrf-ide-macros-parser": "^v1.3.0",
 		"iqrf/iqrf-repository": "^v0.2.1",
-		"justinrainbow/json-schema": "^6.0.0",
+		"justinrainbow/json-schema": "<=6.1.0",
 		"latte/latte": "^v3.0.20",
 		"lcobucci/jwt": "^5.4.2",
 		"league/csv": "^9.20.0",
