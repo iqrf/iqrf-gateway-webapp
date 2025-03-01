@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+if [ $(whoami) == "www-data" ]; then
+	/usr/share/iqrf-gateway-webapp/bin/manager $*
+else
+	old_dir=$(pwd)
+	cd /var/cache/iqrf-gateway-webapp/
+	sudo -u www-data /bin/bash -c "/usr/share/iqrf-gateway-webapp/bin/manager $*"
+fi
+result=$?
+if [ -v old_dir ]; then
+	cd $old_dir
+fi
+exit $result
