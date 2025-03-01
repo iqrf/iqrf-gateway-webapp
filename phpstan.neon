@@ -54,3 +54,7 @@ parameters:
 		-
 			message: '#Strict comparison using === between int\<1, max\> and 0 will always evaluate to false.#'
 			path: app/GatewayModule/Models/JournalConfigManager.php
+		-
+			message: '#^Parameter \#3 \$checkMode of method JsonSchema\\Validator::validate\(\) expects 0|1|2|4|8|16|32|64|128|256|null, 142|null given\.$#'
+			path: app/CoreModule/Models/JsonSchemaManager.php
+			count: 1
