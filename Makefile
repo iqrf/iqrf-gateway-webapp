@@ -90,6 +90,8 @@ install:
 	install -m 0644 install/config/nginx/* $(CONFIG_DIR)/nginx
 	install -d -o $(WEBAPP_USER) $(LOG_DIR)
 	install -d -o $(WEBAPP_USER) $(DB_DIR)
+	install -d $(SBIN_DIR)
+	install -m 0755 install/scripts/iqrf-gateway-webapp-manager $(SBIN_DIR)
 	# Fix ownership
 	chown -R $(WEBAPP_USER):$(WEBAPP_GROUP) $(CACHE_DIR)
 	chown -R $(WEBAPP_USER):$(WEBAPP_GROUP) $(CONFIG_DIR)
