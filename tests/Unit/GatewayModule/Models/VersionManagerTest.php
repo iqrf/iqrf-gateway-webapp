@@ -87,7 +87,7 @@ final class VersionManagerTest extends WebSocketTestCase {
 		'influxdb-bridge' => 'v1.2.0-alpha',
 		'setter' => 'v1.0.0',
 		'uploader' => 'v1.0.0',
-		'webapp' => 'v2.99.1',
+		'webapp' => 'v2.99.2-alpha',
 	];
 
 	/**

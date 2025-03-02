@@ -1,7 +1,7 @@
 {
 	"name": "@iqrf/iqrf-gateway-webapp-next",
 	"private": true,
-	"version": "2.99.1",
+	"version": "2.99.2-alpha",
 	"repository": {
 		"type": "git",
 		"url": "https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp.git"
