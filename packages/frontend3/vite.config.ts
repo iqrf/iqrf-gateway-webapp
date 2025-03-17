@@ -25,7 +25,7 @@ import vue from '@vitejs/plugin-vue';
 import { type ConfigEnv, defineConfig, loadEnv, type UserConfig } from 'vite';
 import Pages from 'vite-plugin-pages';
 import VueDevTools from 'vite-plugin-vue-devtools';
-import Layouts from 'vite-plugin-vue-layouts';
+import Layouts from 'vite-plugin-vue-layouts-next';
 import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify';
 import svgLoader from 'vite-svg-loader';
 import tsconfigPaths from 'vite-tsconfig-paths';

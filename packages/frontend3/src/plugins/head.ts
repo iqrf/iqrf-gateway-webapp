@@ -15,8 +15,23 @@
  * limitations under the License.
  */
 
-import { createHead } from '@unhead/vue';
+import { createHead } from '@unhead/vue/client';
+import {
+	AliasSortingPlugin,
+	DeprecationsPlugin,
+	FlatMetaPlugin,
+	SafeInputPlugin,
+	TemplateParamsPlugin,
+} from 'unhead/plugins';
 
-const head = createHead({});
+const head = createHead({
+	plugins: [
+		AliasSortingPlugin,
+		DeprecationsPlugin,
+		FlatMetaPlugin,
+		TemplateParamsPlugin,
+		SafeInputPlugin,
+	],
+});
 
 export default head;

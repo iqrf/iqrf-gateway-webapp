@@ -36,6 +36,7 @@ import { useI18n } from 'vue-i18n';
 
 import InstallationChecker from '@/components/layout/InstallationChecker.vue';
 import SessionExpirationDialog from '@/components/SessionExpirationDialog.vue';
+import head from '@/plugins/head';
 import { useDaemonStore } from '@/store/daemonSocket';
 import { useInstallStore } from '@/store/install';
 import { useLocaleStore } from '@/store/locale';
@@ -64,7 +65,7 @@ const { getTheme: theme } = storeToRefs(themeStore);
  * @param {UserLanguage} newLocale New locale to set
  */
 function setHeadOptions(newLocale: UserLanguage): void {
-	useHead({
+	useHead(head, {
 		htmlAttrs: {
 			lang: newLocale.toString(),
 		},
