@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { ref } from 'vue';
 
 import { getModalWidth } from '@/helpers/modal';
@@ -32,7 +32,7 @@ describe('Modal helper', (): void => {
 		vi.mock('vuetify');
 	});
 
-	it('get modal window width for large screens', async (): Promise<void> => {
+	test('get modal window width for large screens', async (): Promise<void> => {
 		expect.assertions(1);
 		const vuetify = await import('vuetify');
 		vi.spyOn(vuetify, 'useDisplay').mockReturnValueOnce({
@@ -42,7 +42,7 @@ describe('Modal helper', (): void => {
 		expect(getModalWidth().value).toStrictEqual('50%');
 	});
 
-	it('get modal window width for medium screens', async (): Promise<void> => {
+	test('get modal window width for medium screens', async (): Promise<void> => {
 		expect.assertions(1);
 		const vuetify = await import('vuetify');
 		vi.spyOn(vuetify, 'useDisplay').mockReturnValueOnce({
@@ -52,7 +52,7 @@ describe('Modal helper', (): void => {
 		expect(getModalWidth().value).toStrictEqual('75%');
 	});
 
-	it('get modal window width for small screens', async (): Promise<void> => {
+	test('get modal window width for small screens', async (): Promise<void> => {
 		expect.assertions(1);
 		const vuetify = await import('vuetify');
 		vi.spyOn(vuetify, 'useDisplay').mockReturnValueOnce({

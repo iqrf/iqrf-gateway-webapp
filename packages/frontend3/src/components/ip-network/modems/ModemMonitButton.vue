@@ -70,6 +70,7 @@ function toggleMonitCheck(confirmed: boolean = false): void {
 	if (monitCheck.value === null) {
 		return;
 	}
+	console.warn('Toggling Monit check', monitCheck.value.enabled);
 }
 
 onBeforeMount(async () => await fetchMonitCheck());

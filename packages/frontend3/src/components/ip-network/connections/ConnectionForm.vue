@@ -184,7 +184,6 @@ const componentProps = defineProps({
 	/// Action type - add or edit
 	action: {
 		type: String as PropType<Action>,
-		default: Action.Add,
 		required: true,
 	},
 	/// Network connection type

@@ -83,27 +83,27 @@ export default class ClientSocket {
 	/**
 	 * @var {WsOnOpenCallback} onOpenCallback On open callback
 	 */
-	private onOpenCallback: WsOnOpenCallback = (): void => { return; };
+	private onOpenCallback: WsOnOpenCallback = (): void => { };
 
 	/**
 	 * @var {WsOnCloseCallback} onCloseCallback On close callback
 	 */
-	private onCloseCallback: WsOnCloseCallback = (): void => { return; };
+	private onCloseCallback: WsOnCloseCallback = (): void => { };
 
 	/**
 	 * @var {WsOnErrorCallback} onErrorCallback On error callback
 	 */
-	private onErrorCallback: WsOnErrorCallback = (): void => { return; };
+	private onErrorCallback: WsOnErrorCallback = (): void => { };
 
 	/**
 	 * @var {WsOnMessageCallback} onMessageCallback On message receive callback
 	 */
-	private onMessageCallback: WsOnMessageCallback = (): void => { return; };
+	private onMessageCallback: WsOnMessageCallback = (): void => { };
 
 	/**
 	 * @var {WsOnSendCallback} onSendCallback On message send callback
 	 */
-	private onSendCallback: WsOnSendCallback = (): void => { return; };
+	private onSendCallback: WsOnSendCallback = (): void => { };
 
 	/**
 	 * Constructor
@@ -116,11 +116,11 @@ export default class ClientSocket {
 	 */
 	public constructor(
 		options: ClientSocketOptions,
-		onOpen: WsOnOpenCallback = (): void => { return; },
-		onClose: WsOnCloseCallback = (): void => { return; },
-		onError: WsOnErrorCallback = (): void => { return; },
-		onMessage: WsOnMessageCallback = (): void => { return; },
-		onSend: WsOnSendCallback = (): void => { return; },
+		onOpen: WsOnOpenCallback = (): void => { },
+		onClose: WsOnCloseCallback = (): void => { },
+		onError: WsOnErrorCallback = (): void => { },
+		onMessage: WsOnMessageCallback = (): void => { },
+		onSend: WsOnSendCallback = (): void => { },
 	) {
 		this.options = options;
 		this.onOpenCallback = onOpen;

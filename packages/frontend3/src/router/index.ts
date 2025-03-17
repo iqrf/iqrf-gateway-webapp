@@ -51,7 +51,7 @@ router.beforeEach((to: RouteLocationNormalized, _from: RouteLocationNormalized, 
 router.onError((error: unknown, to: RouteLocationNormalized): void => {
 	if (error instanceof TypeError && error.message.includes('Failed to fetch dynamically imported module')) {
 		if (!localStorage.getItem('vuetify:dynamic-reload')) {
-			console.log('Reloading page to fix dynamic import error');
+			console.warn('Reloading page to fix dynamic import error');
 			localStorage.setItem('vuetify:dynamic-reload', 'true');
 			location.assign(to.fullPath);
 		} else {

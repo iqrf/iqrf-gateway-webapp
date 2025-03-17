@@ -120,7 +120,6 @@ const componentProps = defineProps({
 	},
 	action: {
 		type: String as PropType<Action>,
-		default: Action.Add,
 		required: true,
 	},
 	sshKey: {
@@ -133,7 +132,6 @@ const componentProps = defineProps({
 	},
 	keyTypes: {
 		type: Array as PropType<string[]>,
-		default: () => [],
 		required: true,
 	},
 });

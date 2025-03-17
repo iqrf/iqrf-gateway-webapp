@@ -37,7 +37,6 @@ import { ComponentState } from '@/types/ComponentState';
 const componentProps = defineProps({
 	serviceName: {
 		type: [String, null] as PropType<string | null>,
-		default: null,
 		required: true,
 	},
 });

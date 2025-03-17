@@ -50,7 +50,6 @@ defineProps({
 	log: {
 		type: [String, null] as PropType<string | null>,
 		required: true,
-		default: null,
 	},
 });
 const width = getModalWidth();

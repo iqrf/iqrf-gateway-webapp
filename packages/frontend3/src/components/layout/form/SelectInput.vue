@@ -51,7 +51,6 @@ import { type SelectItem } from '@/types/vuetify';
 const props = defineProps({
 	items: {
 		type: Array<SelectItem>,
-		default: () => [],
 		required: true,
 	},
 	label: {

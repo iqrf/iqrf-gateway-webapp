@@ -49,7 +49,6 @@ import Card from '@/components/layout/card/Card.vue';
 const componentProps = defineProps({
 	message: {
 		type: [String, null] as PropType<string | null>,
-		default: null,
 		required: true,
 	},
 	type: {

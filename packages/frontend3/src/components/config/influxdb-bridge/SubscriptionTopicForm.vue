@@ -97,10 +97,8 @@ const subscriptionTopic: Ref<string> = ref('');
 watchEffect((): void => {
 	if (componentProps.action === Action.Add) {
 		subscriptionTopic.value = '';
-	} else {
-		if (componentProps.topic !== undefined) {
-			subscriptionTopic.value = componentProps.topic;
-		}
+	} else if (componentProps.topic !== undefined) {
+		subscriptionTopic.value = componentProps.topic;
 	}
 });
 async function onSubmit(): Promise<void> {

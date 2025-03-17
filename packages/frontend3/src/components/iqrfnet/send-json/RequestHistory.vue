@@ -76,7 +76,6 @@ import SelectInput from '@/components/layout/form/SelectInput.vue';
 const componentProps = defineProps({
 	messages: {
 		type: Array as PropType<JsonMessage[]>,
-		default: () => [],
 		required: true,
 	},
 });

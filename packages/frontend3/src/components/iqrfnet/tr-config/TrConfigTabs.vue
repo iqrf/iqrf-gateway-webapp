@@ -130,6 +130,7 @@ async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value) || config.value === null) {
 		return;
 	}
+	console.warn(config.value);
 }
 
 </script>

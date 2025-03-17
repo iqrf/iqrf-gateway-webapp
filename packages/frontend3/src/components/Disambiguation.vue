@@ -48,7 +48,6 @@ const featureStore = useFeatureStore();
 const props = defineProps({
 	links: {
 		type: Array as PropType<DisambiguationLink[]>,
-		default: () => [],
 		required: true,
 	},
 });

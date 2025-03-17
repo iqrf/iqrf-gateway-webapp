@@ -51,12 +51,10 @@ import { computed, ref, type Ref } from 'vue';
 const componentProps = defineProps({
 	headers: {
 		type: Array,
-		default: () => [],
 		required: true,
 	},
 	items: {
 		type: Array,
-		default: () => [],
 		required: true,
 	},
 	itemsPerPage: {
