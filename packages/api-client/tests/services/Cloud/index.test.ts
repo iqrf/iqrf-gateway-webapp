@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { describe, expect, it } from 'vitest';
+import { describe, expect, test } from 'vitest';
 
 import {
 	AwsService,
@@ -31,19 +31,19 @@ describe('CloudServices', (): void => {
 	 */
 	const services: CloudServices = new CloudServices(mockedClient);
 
-	it('returns AWS IoT service instance', (): void => {
+	test('returns AWS IoT service instance', (): void => {
 		expect.assertions(1);
 		expect(services.getAwsService())
 			.toBeInstanceOf(AwsService);
 	});
 
-	it('returns Azure IoT Hub service instance', (): void => {
+	test('returns Azure IoT Hub service instance', (): void => {
 		expect.assertions(1);
 		expect(services.getAzureService())
 			.toBeInstanceOf(AzureService);
 	});
 
-	it('returns IBM cloud service instance', (): void => {
+	test('returns IBM cloud service instance', (): void => {
 		expect.assertions(1);
 		expect(services.getIbmService())
 			.toBeInstanceOf(IbmService);

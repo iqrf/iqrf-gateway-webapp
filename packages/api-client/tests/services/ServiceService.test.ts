@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, test } from 'vitest';
 
 import { ServiceService } from '../../src/services';
 import { type ServiceState, type ServiceStatus } from '../../src/types';
@@ -36,7 +36,7 @@ describe('ServiceService', (): void => {
 		mockedAxios.reset();
 	});
 
-	it('fetch list of supported system services', async (): Promise<void> => {
+	test('fetch list of supported system services', async (): Promise<void> => {
 		expect.assertions(1);
 		const services: ServiceState[] = [
 			{
@@ -56,7 +56,7 @@ describe('ServiceService', (): void => {
 		expect(actual).toStrictEqual(services);
 	});
 
-	it('fetch list of supported system services - with status', async (): Promise<void> => {
+	test('fetch list of supported system services - with status', async (): Promise<void> => {
 		expect.assertions(1);
 		const services: ServiceState[] = [
 			{
@@ -76,7 +76,7 @@ describe('ServiceService', (): void => {
 		expect(actual).toStrictEqual(services);
 	});
 
-	it('fetch status of `iqrf-gateway-daemon` service', async (): Promise<void> => {
+	test('fetch status of `iqrf-gateway-daemon` service', async (): Promise<void> => {
 		expect.assertions(1);
 		const status: ServiceStatus = {
 			'active': true,
@@ -89,35 +89,35 @@ describe('ServiceService', (): void => {
 		expect(actual).toStrictEqual(status);
 	});
 
-	it('enable `iqrf-gateway-daemon` service', async (): Promise<void> => {
+	test('enable `iqrf-gateway-daemon` service', async (): Promise<void> => {
 		expect.assertions(0);
 		mockedAxios.onPost(`/services/${serviceName}/enable`)
 			.reply(200);
 		await service.enable(serviceName);
 	});
 
-	it('disable `iqrf-gateway-daemon` service', async (): Promise<void> => {
+	test('disable `iqrf-gateway-daemon` service', async (): Promise<void> => {
 		expect.assertions(0);
 		mockedAxios.onPost(`/services/${serviceName}/disable`)
 			.reply(200);
 		await service.disable(serviceName);
 	});
 
-	it('start `iqrf-gateway-daemon` service', async (): Promise<void> => {
+	test('start `iqrf-gateway-daemon` service', async (): Promise<void> => {
 		expect.assertions(0);
 		mockedAxios.onPost(`/services/${serviceName}/start`)
 			.reply(200);
 		await service.start(serviceName);
 	});
 
-	it('stop `iqrf-gateway-daemon` service', async (): Promise<void> => {
+	test('stop `iqrf-gateway-daemon` service', async (): Promise<void> => {
 		expect.assertions(0);
 		mockedAxios.onPost(`/services/${serviceName}/stop`)
 			.reply(200);
 		await service.stop(serviceName);
 	});
 
-	it('restart `iqrf-gateway-daemon` service', async (): Promise<void> => {
+	test('restart `iqrf-gateway-daemon` service', async (): Promise<void> => {
 		expect.assertions(0);
 		mockedAxios.onPost(`/services/${serviceName}/restart`)
 			.reply(200);

@@ -15,7 +15,7 @@
  */
 
 import { type OpenAPI3, type ServerObject } from 'openapi-typescript';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, test } from 'vitest';
 
 import { OpenApiService } from '../../src/services';
 import { mockedAxios, mockedClient } from '../mocks/axios';
@@ -84,7 +84,7 @@ describe('OpenApiService', (): void => {
 		mockedAxios.reset();
 	});
 
-	it('fetch OpenAPI specification', async (): Promise<void> => {
+	test('fetch OpenAPI specification', async (): Promise<void> => {
 		expect.assertions(1);
 		mockedAxios.onGet('/openapi')
 			.reply(200, specification);

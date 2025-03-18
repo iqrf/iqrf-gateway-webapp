@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, test } from 'vitest';
 
 import { AccountService } from '../../src/services';
 import {
@@ -79,7 +79,7 @@ describe('AccountService', (): void => {
 		mockedAxios.reset();
 	});
 
-	it('fetch information about the logged-in user', async (): Promise<void> => {
+	test('fetch information about the logged-in user', async (): Promise<void> => {
 		expect.assertions(1);
 		mockedAxios.onGet('/account')
 			.reply(200, userInfo);
@@ -87,7 +87,7 @@ describe('AccountService', (): void => {
 		expect(actual).toStrictEqual(userInfo);
 	});
 
-	it('edit the user', async (): Promise<void> => {
+	test('edit the user', async (): Promise<void> => {
 		expect.assertions(1);
 		const request: UserEdit = {
 			username: 'admin',
@@ -106,7 +106,7 @@ describe('AccountService', (): void => {
 		expect(actual).toStrictEqual(response);
 	});
 
-	it('change user\' password', async (): Promise<void> => {
+	test('change user\' password', async (): Promise<void> => {
 		expect.assertions(1);
 		const request: UserPasswordChange = {
 			old: 'iqrf',
@@ -118,19 +118,19 @@ describe('AccountService', (): void => {
 		await expect(service.updatePassword(request)).resolves.not.toThrow();
 	});
 
-	it('confirm password recovery - invalid UUID format', async (): Promise<void> => {
+	test('confirm password recovery - invalid UUID format', async (): Promise<void> => {
 		expect.assertions(1);
 		await expect(service.confirmPasswordRecovery('invalid-uuid', passwordResetRequest)).rejects
 			.toThrow(new Error('Invalid password recovery request UUID.'));
 	});
 
-	it('confirm password recovery - invalid UUID version', async (): Promise<void> => {
+	test('confirm password recovery - invalid UUID version', async (): Promise<void> => {
 		expect.assertions(1);
 		await expect(service.confirmPasswordRecovery('60045219-7cbf-321e-a762-c90382cd8723', passwordResetRequest)).rejects
 			.toThrow(new Error('Invalid password recovery request UUID version.'));
 	});
 
-	it('confirm password recovery', async (): Promise<void> => {
+	test('confirm password recovery', async (): Promise<void> => {
 		expect.assertions(1);
 		const uuid = '95b7edac-f3de-4dab-9cef-35a509b88f57';
 		mockedAxios.onPost(`/account/passwordRecovery/${uuid}`, passwordResetRequest)
@@ -139,7 +139,7 @@ describe('AccountService', (): void => {
 		expect(actual).toStrictEqual(userSignedIn);
 	});
 
-	it('request password recovery', async (): Promise<void> => {
+	test('request password recovery', async (): Promise<void> => {
 		expect.assertions(1);
 		const request: UserAccountRecovery = {
 			username: 'admin',
@@ -150,19 +150,19 @@ describe('AccountService', (): void => {
 		await expect(service.requestPasswordRecovery(request)).resolves.not.toThrow();
 	});
 
-	it('verify e-mail address - invalid UUID format', async (): Promise<void> => {
+	test('verify e-mail address - invalid UUID format', async (): Promise<void> => {
 		expect.assertions(1);
 		await expect(service.verifyEmail('invalid-uuid')).rejects
 			.toThrow(new Error('Invalid e-mail verification UUID.'));
 	});
 
-	it('verify e-mail address - invalid UUID version', async (): Promise<void> => {
+	test('verify e-mail address - invalid UUID version', async (): Promise<void> => {
 		expect.assertions(1);
 		await expect(service.verifyEmail('60045219-7cbf-321e-a762-c90382cd8723')).rejects
 			.toThrow(new Error('Invalid e-mail verification UUID version.'));
 	});
 
-	it('verify e-mail address', async (): Promise<void> => {
+	test('verify e-mail address', async (): Promise<void> => {
 		expect.assertions(1);
 		const uuid = '95b7edac-f3de-4dab-9cef-35a509b88f57';
 		mockedAxios.onGet(`/account/emailVerification/${uuid}`)
@@ -171,7 +171,7 @@ describe('AccountService', (): void => {
 		expect(actual).toStrictEqual(userSignedIn);
 	});
 
-	it('resend the verification e-mail', async (): Promise<void> => {
+	test('resend the verification e-mail', async (): Promise<void> => {
 		expect.assertions(1);
 		const request: EmailVerificationResendRequest = {
 			baseUrl: 'http://iqaros.local/',
@@ -181,7 +181,7 @@ describe('AccountService', (): void => {
 		await expect(service.resendVerificationEmail(request)).resolves.not.toThrow();
 	});
 
-	it('sign in the user', async (): Promise<void> => {
+	test('sign in the user', async (): Promise<void> => {
 		expect.assertions(1);
 		mockedAxios.onPost('/account/signIn', credentials)
 			.reply(200, {
@@ -195,7 +195,7 @@ describe('AccountService', (): void => {
 		});
 	});
 
-	it('sign in the user with expiration', async (): Promise<void> => {
+	test('sign in the user with expiration', async (): Promise<void> => {
 		expect.assertions(1);
 		const credentialsWithExpiration: UserCredentials = {
 			...credentials,
@@ -207,7 +207,7 @@ describe('AccountService', (): void => {
 		expect(actual).toStrictEqual(userSignedIn);
 	});
 
-	it('refresh JWT token', async (): Promise<void> => {
+	test('refresh JWT token', async (): Promise<void> => {
 		expect.assertions(1);
 		mockedAxios.onPost('/account/tokenRefresh')
 			.reply(200, userSignedIn);

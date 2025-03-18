@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, test } from 'vitest';
 
 import { MailerService } from '../../../src/services/Config';
 import {
@@ -73,7 +73,7 @@ describe('MailerService', (): void => {
 	 */
 	const service: MailerService = new MailerService(mockedClient);
 
-	it('fetch mailer config', async (): Promise<void> => {
+	test('fetch mailer config', async (): Promise<void> => {
 		expect.assertions(1);
 		mockedAxios.onGet('/config/mailer')
 			.reply(200, defaultConfig.config);
@@ -81,7 +81,7 @@ describe('MailerService', (): void => {
 		expect(actual).toStrictEqual(defaultConfig);
 	});
 
-	it('fetch mailer config with IDN', async (): Promise<void> => {
+	test('fetch mailer config with IDN', async (): Promise<void> => {
 		expect.assertions(1);
 		const config: MailerGetConfigResponse = {
 			headers: baseConfig.headers,
@@ -105,7 +105,7 @@ describe('MailerService', (): void => {
 		expect(actual).toStrictEqual(expected);
 	});
 
-	it('update mailer config', async (): Promise<void> => {
+	test('update mailer config', async (): Promise<void> => {
 		expect.assertions(0);
 		const config: MailerConfig = {
 			...baseConfig.config,
@@ -116,7 +116,7 @@ describe('MailerService', (): void => {
 		await service.updateConfig(config);
 	});
 
-	it('update mailer config - plain text transport', async (): Promise<void> => {
+	test('update mailer config - plain text transport', async (): Promise<void> => {
 		expect.assertions(3);
 		const config: MailerConfig = {
 			...baseConfig.config,
@@ -136,7 +136,7 @@ describe('MailerService', (): void => {
 		expect(JSON.parse(mockedAxios.history.put[0].data as string)).toStrictEqual(expected);
 	});
 
-	it('update mailer config with IDN', async (): Promise<void> => {
+	test('update mailer config with IDN', async (): Promise<void> => {
 		expect.assertions(0);
 		const config: MailerConfig = {
 			...baseConfig.config,
@@ -153,7 +153,7 @@ describe('MailerService', (): void => {
 		await service.updateConfig(config);
 	});
 
-	it('test mailer config', async (): Promise<void> => {
+	test('mailer config', async (): Promise<void> => {
 		expect.assertions(0);
 		const config: MailerConfig = {
 			...baseConfig.config,

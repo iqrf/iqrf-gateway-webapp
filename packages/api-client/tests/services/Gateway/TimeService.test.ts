@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, test } from 'vitest';
 
 import { TimeService } from '../../../src/services/Gateway';
 import {
@@ -35,7 +35,7 @@ describe('TimeService', (): void => {
 		mockedAxios.reset();
 	});
 
-	it('fetch Time and NTP config', async (): Promise<void> => {
+	test('fetch Time and NTP config', async (): Promise<void> => {
 		expect.assertions(1);
 		const config: TimeConfig = {
 			abbrevation: 'CEST',
@@ -55,7 +55,7 @@ describe('TimeService', (): void => {
 		expect(actual).toStrictEqual(config);
 	});
 
-	it('set Time and NTP config', async (): Promise<void> => {
+	test('set Time and NTP config', async (): Promise<void> => {
 		expect.assertions(0);
 		const config: TimeSet = {
 			ntpSync: true,
@@ -66,7 +66,7 @@ describe('TimeService', (): void => {
 		await service.updateTime(config);
 	});
 
-	it('fetch available time zones', async (): Promise<void> => {
+	test('fetch available time zones', async (): Promise<void> => {
 		expect.assertions(1);
 		const timezones: Timezone[] = [
 			{

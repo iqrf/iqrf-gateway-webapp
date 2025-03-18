@@ -15,7 +15,7 @@
  */
 
 import { DateTime } from 'luxon';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, test } from 'vitest';
 
 import { ApiKeyService } from '../../../src/services/Security';
 import {
@@ -66,7 +66,7 @@ describe('ApiKeyService', (): void => {
 		mockedAxios.reset();
 	});
 
-	it('fetch list of API keys', async (): Promise<void> => {
+	test('fetch list of API keys', async (): Promise<void> => {
 		expect.assertions(1);
 		mockedAxios.onGet('/security/apiKeys')
 			.reply(200, rawApiKeys);
@@ -74,7 +74,7 @@ describe('ApiKeyService', (): void => {
 		expect(actual).toStrictEqual(apiKeys);
 	});
 
-	it('create API key', async (): Promise<void> => {
+	test('create API key', async (): Promise<void> => {
 		expect.assertions(1);
 		const key = 'ZJqlYCuPMSqGTRGuzpkLOu.nqkbk8VzEGpRgdpBvZkXxR8oZmQQ8C8J/Au61+L+JIQ=';
 		const expiration: DateTime = DateTime.fromISO('2023-07-13T12:00:00+02:00');
@@ -95,7 +95,7 @@ describe('ApiKeyService', (): void => {
 		expect(actual).toStrictEqual(expected);
 	});
 
-	it('fetch API key with ID 1', async (): Promise<void> => {
+	test('fetch API key with ID 1', async (): Promise<void> => {
 		expect.assertions(1);
 		mockedAxios.onGet('/security/apiKeys/1')
 			.reply(200, rawApiKeys[0]);
@@ -103,7 +103,7 @@ describe('ApiKeyService', (): void => {
 		expect(actual).toStrictEqual(apiKeys[0]);
 	});
 
-	it('update API key with ID 1', async (): Promise<void> => {
+	test('update API key with ID 1', async (): Promise<void> => {
 		expect.assertions(0);
 		const config: ApiKeyConfig = {
 			description: 'Test',
@@ -114,7 +114,7 @@ describe('ApiKeyService', (): void => {
 		await service.update(1, config);
 	});
 
-	it('delete API key with ID 1', async (): Promise<void> => {
+	test('delete API key with ID 1', async (): Promise<void> => {
 		expect.assertions(0);
 		mockedAxios.onDelete('/security/apiKeys/1')
 			.reply(200);

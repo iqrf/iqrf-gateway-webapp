@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { describe, expect, it } from 'vitest';
+import { describe, expect, test } from 'vitest';
 
 import {
 	BackupService,
@@ -29,7 +29,7 @@ describe('MaintenanceServices', (): void => {
 	 */
 	const services: MaintenanceServices = new MaintenanceServices(mockedClient);
 
-	it('returns backup service instance', (): void => {
+	test('returns backup service instance', (): void => {
 		expect.assertions(1);
 		expect(services.getBackupService())
 			.toBeInstanceOf(BackupService);

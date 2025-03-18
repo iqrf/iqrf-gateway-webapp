@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, test, vi } from 'vitest';
 
 import { SshKeyUtils } from '../../src/utils';
 
@@ -30,21 +30,21 @@ describe('SshKeyUtils', (): void => {
 	 */
 	const supportedKeyTypes: string[] = ['ssh-rsa', 'ssh-ed25519'];
 
-	it('validate supported and valid SSH public key', (): void => {
+	test('validate supported and valid SSH public key', (): void => {
 		expect.assertions(1);
 		const validateSpy = vi.spyOn(SshKeyUtils, 'validatePublicKey');
 		SshKeyUtils.validatePublicKey(key, supportedKeyTypes);
 		expect(validateSpy).toHaveReturned();
 	});
 
-	it('validate supported and invalid SSH public key', (): void => {
+	test('validate supported and invalid SSH public key', (): void => {
 		expect.assertions(1);
 		expect((): void => {
 			SshKeyUtils.validatePublicKey('ssh-rsa ', supportedKeyTypes);
 		}).toThrow('Invalid SSH key - invalid number of parts');
 	});
 
-	it('validate unsupported and valid SSH public key', (): void => {
+	test('validate unsupported and valid SSH public key', (): void => {
 		expect.assertions(1);
 		expect((): void => {
 			SshKeyUtils.validatePublicKey(key, ['sha-rsa']);

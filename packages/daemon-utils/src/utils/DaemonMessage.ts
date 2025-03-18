@@ -56,7 +56,7 @@ export class DaemonMessageOptions {
 	 * @param {string | null} message Request timeout toast message
 	 * @param {CallableFunction} callback Request timeout callback
 	 */
-	public constructor(request: DaemonApiRequest|null, timeout: number|null = null, message: string|null = null, callback: CallableFunction = () => {return;}) {
+	public constructor(request: DaemonApiRequest|null, timeout: number|null = null, message: string|null = null, callback: CallableFunction = (): void => { }) {
 		this.request = request;
 		this.timeout = timeout;
 		this.message = message;

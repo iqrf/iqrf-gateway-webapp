@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, test } from 'vitest';
 
 import { UserService } from '../../../src/services/Security';
 import {
@@ -65,7 +65,7 @@ describe('UserService', (): void => {
 		mockedAxios.reset();
 	});
 
-	it('fetch the list of users', async (): Promise<void> => {
+	test('fetch the list of users', async (): Promise<void> => {
 		expect.assertions(1);
 		mockedAxios.onGet('/users')
 			.reply(200, rawUsers);
@@ -73,7 +73,7 @@ describe('UserService', (): void => {
 		expect(actual).toStrictEqual(users);
 	});
 
-	it('create a new user', async (): Promise<void> => {
+	test('create a new user', async (): Promise<void> => {
 		expect.assertions(1);
 		const response: EmailSentResponse = {
 			emailSent: false,
@@ -96,7 +96,7 @@ describe('UserService', (): void => {
 		expect(actual).toStrictEqual(response);
 	});
 
-	it('fetch the user with ID `2`', async (): Promise<void> => {
+	test('fetch the user with ID `2`', async (): Promise<void> => {
 		expect.assertions(1);
 		mockedAxios.onGet('/users/2')
 			.reply(200, rawUsers[0]);
@@ -104,7 +104,7 @@ describe('UserService', (): void => {
 		expect(actual).toStrictEqual(users[0]);
 	});
 
-	it('update the user with ID `2`', async (): Promise<void> => {
+	test('update the user with ID `2`', async (): Promise<void> => {
 		expect.assertions(1);
 		const response: EmailSentResponse = {
 			emailSent: true,
@@ -125,14 +125,14 @@ describe('UserService', (): void => {
 		expect(actual).toStrictEqual(response);
 	});
 
-	it('delete the user with ID `2`', async (): Promise<void> => {
+	test('delete the user with ID `2`', async (): Promise<void> => {
 		expect.assertions(0);
 		mockedAxios.onDelete('/users/2')
 			.reply(200);
 		await service.delete(2);
 	});
 
-	it('resend the verification email to the user with ID `2`', async (): Promise<void> => {
+	test('resend the verification email to the user with ID `2`', async (): Promise<void> => {
 		expect.assertions(0);
 		mockedAxios.onPost('/users/2/resendVerification')
 			.reply(200);

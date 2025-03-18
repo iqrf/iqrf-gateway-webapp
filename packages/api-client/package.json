@@ -81,7 +81,7 @@
 	"license": "Apache-2.0",
 	"type": "module",
 	"dependencies": {
-		"@iqrf/iqrf-gateway-daemon-utils": "workspace:latest",
+		"@iqrf/iqrf-gateway-daemon-utils": "latest",
 		"axios": "^1.8.3",
 		"luxon": "^3.5.0",
 		"openapi-typescript": "^7.6.1",

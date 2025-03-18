@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, test } from 'vitest';
 
 import { IqrfRepositoryService } from '../../../src/services/Config';
 import { type IqrfRepositoryConfig } from '../../../src/types/Config';
@@ -31,7 +31,7 @@ describe('IqrfRepositoryService', (): void => {
 		mockedAxios.reset();
 	});
 
-	it('fetch IQRF Repository config', async (): Promise<void> => {
+	test('fetch IQRF Repository config', async (): Promise<void> => {
 		expect.assertions(1);
 		const config: IqrfRepositoryConfig = {
 			'apiEndpoint': 'https://repository.iqrfalliance.org/api/',
@@ -46,7 +46,7 @@ describe('IqrfRepositoryService', (): void => {
 		expect(actual).toStrictEqual(config);
 	});
 
-	it('update IQRF Repository config', async (): Promise<void> => {
+	test('update IQRF Repository config', async (): Promise<void> => {
 		expect.assertions(0);
 		const config: IqrfRepositoryConfig = {
 			'apiEndpoint': 'https://devrepo.iqrfalliance.org/api/',

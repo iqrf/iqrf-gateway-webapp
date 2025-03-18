@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, test } from 'vitest';
 
 import { VersionService } from '../../src/services';
 import {
@@ -34,7 +34,7 @@ describe('VersionService', (): void => {
 		mockedAxios.reset();
 	});
 
-	it('fetch IQRF Gateway Daemon version', async (): Promise<void> => {
+	test('fetch IQRF Gateway Daemon version', async (): Promise<void> => {
 		expect.assertions(1);
 		const version: VersionIqrfGatewayDaemon = {
 			version: 'v2.3.0',
@@ -45,7 +45,7 @@ describe('VersionService', (): void => {
 		expect(actual).toStrictEqual(version);
 	});
 
-	it('fetch IQRF Gateway Webapp version', async (): Promise<void> => {
+	test('fetch IQRF Gateway Webapp version', async (): Promise<void> => {
 		expect.assertions(1);
 		const version: VersionIqrfGatewayWebapp = {
 			version: 'v2.1.0-alpha',

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, test } from 'vitest';
 
 import {
 	NetworkInterfaceService,
@@ -61,7 +61,7 @@ describe('NetworkInterfaceService', (): void => {
 		mockedAxios.reset();
 	});
 
-	it('fetch list of all network interfaces', async (): Promise<void> => {
+	test('fetch list of all network interfaces', async (): Promise<void> => {
 		expect.assertions(1);
 		mockedAxios.onGet('/network/interfaces')
 			.reply(200, interfaces);
@@ -69,7 +69,7 @@ describe('NetworkInterfaceService', (): void => {
 		expect(actual).toStrictEqual(interfaces);
 	});
 
-	it('fetch list of Ethernet network interfaces', async (): Promise<void> => {
+	test('fetch list of Ethernet network interfaces', async (): Promise<void> => {
 		expect.assertions(1);
 		const ethernetInterfaces: NetworkInterface[] = [interfaces[1]];
 		mockedAxios.onGet('/network/interfaces', {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, test } from 'vitest';
 
 import { HostnameService } from '../../../src/services/Gateway';
 import { type Hostname } from '../../../src/types/Gateway';
@@ -31,7 +31,7 @@ describe('HostnameService', (): void => {
 		mockedAxios.reset();
 	});
 
-	it('set hostname', async (): Promise<void> => {
+	test('set hostname', async (): Promise<void> => {
 		expect.assertions(0);
 		const hostname = 'testHostname';
 		const data: Hostname = {
