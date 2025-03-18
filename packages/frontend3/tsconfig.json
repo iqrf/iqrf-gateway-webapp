@@ -12,6 +12,9 @@
 		],
 		"noEmit": true,
 		"paths": {
+			"@iqrf/iqrf-gateway-webapp-client": [
+				"../api-client"
+			],
 			"@/*": [
 				"src/*"
 			]

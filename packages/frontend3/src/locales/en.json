@@ -938,7 +938,7 @@
 				"mqtt": "MQTT client",
 				"noTopics": "No subscription topics specified.",
 				"notes": {
-					"newAuth": "Token is used for v2+ authentication. A token can be used for authentication in version 1.8 with the format <user:password>.",
+					"newAuth": "Token is used for v2+ authentication. A token can be used for authentication in version 1.8 with the format user:password.",
 					"oldAuth": "User and password are used for v1.x authentication."
 				},
 				"org": "Organization",
@@ -1259,11 +1259,19 @@
 				}
 			},
 			"mode": {
-				"current": "Current mode",
-				"messages": {
-					"setFailed": "Mode change request failed.",
-					"setSuccess": "Mode successfully changed to {mode}.",
-					"setTimeout": "Mode change request timed out."
+				"current": {
+					"messages": {
+						"get": {
+							"failed": "Failed to retrieve current mode.",
+							"timeout": "Current mode get request timed out."
+						},
+						"set": {
+							"failed": "Failed to change current mode.",
+							"success": "Current mode successfully changed to {mode}.",
+							"timeout": "Current mode change request timed out."
+						}
+					},
+					"title": "Current mode"
 				},
 				"modes": {
 					"forwarding": "Forwarding mode",
@@ -1271,7 +1279,18 @@
 					"service": "Service mode",
 					"unknown": "Unknown"
 				},
-				"startup": "Startup mode"
+				"startup": {
+					"messages": {
+						"get": {
+							"failed": "Failed to retrieve startup mode."
+						},
+						"set": {
+							"failed": "Failed to change startup mode.",
+							"success": "Startup mode successfully changed to {mode}."
+						}
+					},
+					"title": "Startup mode"
+				}
 			},
 			"power": {
 				"powerOff": {

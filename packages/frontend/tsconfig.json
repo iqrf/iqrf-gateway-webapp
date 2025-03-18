@@ -12,6 +12,9 @@
 		"noEmit": true,
 		"noImplicitAny": false,
 		"paths": {
+			"@iqrf/iqrf-gateway-daemon-utils": [
+				"../daemon-utils"
+			],
 			"@/*": [
 				"./src/*"
 			]

@@ -19,7 +19,8 @@ limitations under the License.
 	<Head>
 		<title>{{ $t('pages.gateway.mode.title') }}</title>
 	</Head>
-	<ModeTable />
+	<CurrentMode class='mb-4' />
+	<StartupMode />
 </template>
 
 <route>
@@ -31,5 +32,6 @@ limitations under the License.
 <script lang='ts' setup>
 import { Head } from '@unhead/vue/components';
 
-import ModeTable from '@/components/gateway/mode/ModeTable.vue';
+import CurrentMode from '@/components/gateway/mode/CurrentMode.vue';
+import StartupMode from '@/components/gateway/mode/StartupMode.vue';
 </script>

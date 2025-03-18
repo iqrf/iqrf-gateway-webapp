@@ -15,9 +15,6 @@
 		"moduleResolution": "Bundler",
 		"noEmitOnError": true,
 		"paths": {
-			"@iqrf/iqrf-gateway-daemon-utils": [
-				"./packages/daemon-utils"
-			],
 			"@iqrf/iqrf-gateway-webapp": [
 				"./packages/frontend"
 			],
