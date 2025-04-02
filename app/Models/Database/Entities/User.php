@@ -31,6 +31,7 @@ use App\Models\Database\Repositories\UserRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Egulias\EmailValidator\EmailValidator;
+use Egulias\EmailValidator\Result\Reason\UnableToGetDNSRecord;
 use Egulias\EmailValidator\Validation\DNSCheckValidation;
 use Egulias\EmailValidator\Validation\MultipleValidationWithAnd;
 use Egulias\EmailValidator\Validation\RFCValidation;
@@ -330,19 +331,24 @@ class User implements JsonSerializable {
 	/**
 	 * Validates e-mail address
 	 * @param string $email E-mail address to validate
+	 * @param bool $withDns Check DNS records
 	 */
-	private function validateEmail(string $email): void {
+	private function validateEmail(string $email, bool $withDns): void {
 		$validator = new EmailValidator();
 		$validationRules = [
 			new RFCValidation(),
 		];
-		if (EMAIL_VALIDATE_DNS && function_exists('dns_get_record')) {
+		if (EMAIL_VALIDATE_DNS && function_exists('dns_get_record') && $withDns) {
 			$validationRules[] = new DNSCheckValidation();
 		}
 		if (!$validator->isValid($email, new MultipleValidationWithAnd($validationRules))) {
 			$error = $validator->getError();
 			if ($error === null) {
 				throw new InvalidEmailAddressException();
+			}
+			if ($error->reason() instanceof UnableToGetDNSRecord) {
+				$this->validateEmail(email: $email, withDns: false);
+				return;
 			}
 			throw new InvalidEmailAddressException($error->description(), $error->code());
 		}
