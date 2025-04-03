@@ -59,6 +59,8 @@
 			"id": "ID"
 		},
 		"labels": {
+			"confirmation": "Confirmation",
+			"confirmationTs": "Confirmation time",
 			"description": "Description",
 			"format": "Format",
 			"general": "General",
@@ -76,7 +78,9 @@
 				"wss": "Secure websocket"
 			},
 			"request": "Request",
+			"requestTs": "Request time",
 			"response": "Response",
+			"responseTs": "Response time",
 			"returnVerbose": "Verbose response",
 			"severity": {
 				"debug": "Debug",

@@ -33,63 +33,65 @@ limitations under the License.
 			height='300'
 			density='compact'
 			hide-no-data
-		>
-			<template #item.timestamp='{ item }'>
-				[{{ item.requestTs }}]
-			</template>
-		</v-data-table-virtual>
+		/>
 	</Card>
 </template>
 
 <script lang='ts' setup>
-import { type DpaPacketMessage } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { mdiDelete } from '@mdi/js';
 import { type PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import Card from '@/components/layout/card/Card.vue';
+import { DpaPacketTransaction } from '@/types/Iqrfnet';
 
 defineProps({
 	messages: {
-		type: Array as PropType<DpaPacketMessage[]>,
+		type: Array as PropType<DpaPacketTransaction[]>,
 		default: () => [],
-		required: true,
 	},
 });
 const emit = defineEmits(['clear']);
 const i18n = useI18n();
 const headers = [
 	{
-		key: 'timestamp',
-		title: i18n.t('components.iqrfnet.send-dpa.history.time'),
-		width: '15%',
-		minWidth: '15%',
-		maxWidth: '15%',
+		key: 'requestTs',
+		title: i18n.t('common.labels.requestTs'),
 		sortable: false,
 	},
 	{
 		key: 'request',
 		title: i18n.t('common.labels.request'),
-		width: '30%',
-		minWidth: '30%',
-		maxWidth: '30%',
+		sortable: false,
+		cellProps: {
+			class: 'text-info',
+		},
+	},
+	{
+		key: 'confirmationTs',
+		title: i18n.t('common.labels.confirmationTs'),
 		sortable: false,
 	},
 	{
 		key: 'confirmation',
-		title: i18n.t('components.iqrfnet.send-dpa.history.confirmation'),
-		width: '20%',
-		minWidth: '20%',
-		maxWidth: '20%',
+		title: i18n.t('common.labels.confirmation'),
+		sortable: false,
+		cellProps: {
+			class: 'text-warning',
+		},
+	},
+	{
+		key: 'responseTs',
+		title: i18n.t('common.labels.responseTs'),
 		sortable: false,
 	},
 	{
 		key: 'response',
 		title: i18n.t('common.labels.response'),
-		width: '35%',
-		minWidth: '35%',
-		maxWidth: '35%',
 		sortable: false,
+		cellProps: {
+			class: 'text-success',
+		},
 	},
 ];
 

@@ -447,9 +447,10 @@ limitations under the License.
 <script lang='ts' setup>
 import { GenericMessages } from '@iqrf/iqrf-gateway-daemon-utils/enums';
 import { GenericService } from '@iqrf/iqrf-gateway-daemon-utils/services';
-import { type DaemonApiResponse, type DpaPacketMessage } from '@iqrf/iqrf-gateway-daemon-utils/types';
+import { ApiResponseRaw, RawResult, type TApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { mdiHexadecimal, mdiLock, mdiLockOpen, mdiMenu, mdiNumeric } from '@mdi/js';
+import { DateTime } from 'luxon';
 import { vMaska } from 'maska/vue';
 import { ref, type Ref } from 'vue';
 import { VForm } from 'vuetify/components';
@@ -464,25 +465,26 @@ import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useDaemonStore } from '@/store/daemonSocket';
 import { ComponentState } from '@/types/ComponentState';
+import { DpaPacketTransaction } from '@/types/Iqrfnet';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
 const daemonStore = useDaemonStore();
 const form: Ref<VForm | null> = ref(null);
 const msgId: Ref<string | null> = ref(null);
-const messages: Ref<DpaPacketMessage[]> = ref([]);
+const messages: Ref<DpaPacketTransaction[]> = ref([]);
 const hwpidMenu: Ref<boolean> = ref(false);
 
 daemonStore.$onAction(
 	({ name, after }) => {
 		if (name === 'onMessage') {
-			after((rsp: DaemonApiResponse) => {
+			after((rsp: TApiResponse) => {
 				if (rsp.data.msgId !== msgId.value) {
 					return;
 				}
 				daemonStore.removeMessage(msgId.value);
 				componentState.value = ComponentState.Ready;
-				if (rsp.mType === GenericMessages.Raw.toString()) {
-					handleResponse(rsp);
+				if (rsp.mType === GenericMessages.Raw) {
+					handleResponse(rsp as ApiResponseRaw<RawResult>);
 				}
 			});
 		}
@@ -612,7 +614,7 @@ function validatePdata(value: string): boolean {
 	if (value.length === 0) {
 		return true;
 	}
-	const re = /^([\da-f]{2}.){0,56}[\da-f]{2}(.|)$/i;
+	const re = /^(?:[\da-f]{2}.){0,56}[\da-f]{2}.?$/i;
 	return re.test(value);
 }
 
@@ -637,39 +639,42 @@ async function onSubmit(): Promise<void> {
 		return;
 	}
 	componentState.value = ComponentState.Saving;
-	const packet = buildPacket();
-	const options = new DaemonMessageOptions(null);
-	if (useCustomTimeout.value && options.request !== null) {
-		options.request.data.timeout = customTimeout.value;
+	const rq = GenericService.raw(
+		{ returnVerbose: true },
+		{ rData: buildPacket() },
+		new DaemonMessageOptions(null),
+	);
+	if (useCustomTimeout.value && rq.request !== null) {
+		rq.request.data.timeout = customTimeout.value;
 	}
-	const message = GenericService.raw(packet, options);
-	daemonStore.sendMessage(message)
-		.then((val: string) => {
-			msgId.value = val;
-			messages.value.push({
-				msgId: val,
-				request: packet,
-				requestTs: new Date().toLocaleString(),
-			});
-		});
+	msgId.value = await daemonStore.sendMessage(rq);
+	messages.value.push({
+		msgId: msgId.value,
+		request: rq.request!.data.req.rData,
+		requestTs: DateTime.now().toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS),
+	});
 }
 
-function handleResponse(rsp: DaemonApiResponse): void {
+function handleResponse(rsp: ApiResponseRaw<RawResult>): void {
 	const msgId = rsp.data.msgId;
-	const idx = messages.value.findIndex((item: DpaPacketMessage) => item.msgId === msgId);
+	const idx = messages.value.findIndex((item: DpaPacketTransaction) => item.msgId === msgId);
 	if (idx === -1) {
 		return;
 	}
 	let confirmation = undefined;
-	let response = undefined;
+	let	confirmationTs = undefined;
+	let	responseTs = undefined;
 	if (rsp.data.raw) {
 		confirmation = rsp.data.raw[0].confirmation;
-		response = rsp.data.raw[0].response;
+		confirmationTs = convertTimestamp(rsp.data.raw[0].confirmationTs);
+		responseTs = convertTimestamp(rsp.data.raw[0].responseTs);
 	}
 	messages.value[idx] = {
 		...messages.value[idx],
 		confirmation: confirmation,
-		response: response,
+		confirmationTs: confirmationTs,
+		response: rsp.data.rsp.rData,
+		responseTs: responseTs,
 	};
 }
 
@@ -694,5 +699,12 @@ function applyPacket(value: string): void {
 	pcmdHex.value = value.substring(6, 8);
 	hwpid.value = Number.parseInt(value.substring(8, 12), 16);
 	hwpidHex.value = value.substring(8, 12);
+}
+
+function convertTimestamp(ts: string | undefined): string | undefined {
+	if (ts === undefined || ts.length === 0) {
+		return undefined;
+	}
+	return DateTime.fromISO(ts).toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS);
 }
 </script>
