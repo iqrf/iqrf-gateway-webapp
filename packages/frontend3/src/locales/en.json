@@ -1226,10 +1226,15 @@
 				"os": "Operating system",
 				"tr": {
 					"dpa": "DPA",
-					"error": "Cannot get information about the Coordinator.",
 					"hwpid": "HWPID",
 					"hwpidVersion": "HWPID ver.",
 					"mcuType": "MCU type",
+					"messages": {
+						"fetch": {
+							"failed": "Failed to retrieve information about coordinator device.",
+							"timeout": "Coordinator information request timed out."
+						}
+					},
 					"moduleId": "MID",
 					"moduleType": "Module type",
 					"os": "OS",
@@ -1275,6 +1280,7 @@
 				},
 				"modes": {
 					"forwarding": "Forwarding mode",
+					"offline": "Offline",
 					"operational": "Operational mode",
 					"service": "Service mode",
 					"unknown": "Unknown"

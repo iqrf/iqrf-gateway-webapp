@@ -24,67 +24,55 @@ limitations under the License.
 		/>
 	</span>
 	<span v-else>
-		<div v-if='loaded' class='py-2'>
+		<div v-if='enumData' class='py-2'>
 			<strong>{{ $t('components.gateway.information.tr.moduleType') }}: </strong>
-			{{ trMcuType!.trType }}<br>
+			{{ enumData.osRead.trMcuType.trType }}<br>
 			<strong>{{ $t('components.gateway.information.tr.mcuType') }}: </strong>
-			{{ trMcuType!.mcuType }}<br>
+			{{ enumData.osRead.trMcuType.mcuType }}<br>
 			<strong>{{ $t('components.gateway.information.tr.moduleId') }}: </strong>
-			{{ osRead!.mid }}<br>
+			{{ enumData.osRead.mid }}<br>
 			<strong>{{ $t('components.gateway.information.tr.os') }}: </strong>
-			{{ osRead!.osVersion }} ({{ osRead!.osBuild }})<br>
+			{{ enumData.osRead.osVersion }} ({{ enumData.osRead.osBuild }})<br>
 			<strong>{{ $t('components.gateway.information.tr.dpa') }}: </strong>
-			{{ enumeration!.dpaVer }}<br>
+			{{ enumData.peripheralEnumeration.dpaVer }}<br>
 			<strong>{{ $t('components.gateway.information.tr.hwpid') }}: </strong>
-			{{ enumeration!.hwpId }} ({{ enumeration!.hwpId.toString(16).padStart(4, '0') }})<br>
+			{{ enumData.peripheralEnumeration.hwpId }} ({{ enumData.peripheralEnumeration.hwpId.toString(16).padStart(4, '0') }})<br>
 			<strong>{{ $t('components.gateway.information.tr.hwpidVersion') }}: </strong>
-			{{ enumeration!.hwpIdVer }}<br>
+			{{ enumData.peripheralEnumeration.hwpIdVer }}<br>
 			<strong>{{ $t('components.gateway.information.tr.voltage') }}: </strong>
-			{{ osRead!.supplyVoltage }}<br>
+			{{ enumData.osRead.supplyVoltage }}<br>
 		</div>
 		<span v-else>
-			{{ $t('components.gateway.information.tr.error') }}
+			{{ $t('components.gateway.information.tr.messages.fetch.failed') }}
 		</span>
 	</span>
 </template>
 
 <script lang='ts' setup>
-import { type DaemonApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { onMounted, ref, type Ref } from 'vue';
 
-import { IqmeshNetworkService } from '@/services/DaemonApi/IqmeshNetworkService';
 import { useDaemonStore } from '@/store/daemonSocket';
-import { type DeviceEnumeration, type OsRead, type PeripheralEnumeration, type TrMcuType } from '@/types/DaemonApi/Iqmesh';
-
+import { IqmeshService } from '@iqrf/iqrf-gateway-daemon-utils/services';
+import { ApiResponseIqmesh, IqmeshEnumerateDeviceResult, TApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
+import { IqmeshServiceMessages } from '@iqrf/iqrf-gateway-daemon-utils/enums';
 
 const daemonStore = useDaemonStore();
-const service: IqmeshNetworkService = new IqmeshNetworkService();
 const loading: Ref<boolean> = ref(false);
 const loaded: Ref<boolean> = ref(false);
-const enumeration: Ref<PeripheralEnumeration | null> = ref(null);
-const osRead: Ref<OsRead | null> = ref(null);
-const trMcuType: Ref<TrMcuType |null> = ref(null);
-let msgId = '';
+const enumData: Ref<IqmeshEnumerateDeviceResult | null> = ref(null);
+const msgId: Ref<string | null> = ref(null);
 
 daemonStore.$onAction(
 	({ name, after }) => {
 		if (name === 'onMessage') {
-			after((rsp: DaemonApiResponse) => {
-				if (rsp.data.msgId !== msgId) {
+			after((rsp: TApiResponse) => {
+				if (rsp.data.msgId !== msgId.value) {
 					return;
 				}
-				daemonStore.removeMessage(msgId);
-				try {
-					const data = rsp.data.rsp as DeviceEnumeration;
-					enumeration.value = data.peripheralEnumeration;
-					osRead.value = data.osRead;
-					trMcuType.value = data.osRead.trMcuType;
-					loaded.value = true;
-					loading.value = false;
-				} catch {
-					loaded.value = false;
-					loading.value = false;
+				daemonStore.removeMessage(msgId.value);
+				if (rsp.mType === IqmeshServiceMessages.EnumerateDevice) {
+					handleEnumerateResponse(rsp as ApiResponseIqmesh<IqmeshEnumerateDeviceResult>);
 				}
 			});
 		}
@@ -95,23 +83,28 @@ onMounted(() => {
 	enumerate();
 });
 
-function enumerate(): void {
-	const options = new DaemonMessageOptions(
-		null,
+async function enumerate(): Promise<void> {
+	loading.value = true;
+	const opts = new DaemonMessageOptions(
 		5_000,
-		'todo',
+		'components.gateway.information.tr.messages.fetch.timeout',
 		() => {
-			msgId = '';
+			msgId.value = null;
 			loaded.value = false;
 			loading.value = false;
 		},
 	);
-	service.deviceEnumeration(0, options)
-		.then((id: string) => {
-			msgId = id;
-			loaded.value = false;
-			loading.value = true;
-		});
+	msgId.value = await daemonStore.sendMessage(IqmeshService.enumerate({}, {deviceAddr: 0}, opts));
+}
+
+function handleEnumerateResponse(rsp: ApiResponseIqmesh<IqmeshEnumerateDeviceResult>): void {
+	if (rsp.data.status == 0) {
+		enumData.value = rsp.data.rsp;
+		loaded.value = false;
+	} else {
+		loaded.value = true;
+	}
+	loading.value = false;
 }
 
 </script>

@@ -16,16 +16,19 @@ limitations under the License.
 -->
 
 <template>
-	<span v-if='!connected || mode === DaemonMode.Unknown'>
-		<v-progress-linear
-			color='info'
-			indeterminate
-			rounded
-		/>
-	</span>
-	<span v-else>
-		{{ $t(`components.gateway.mode.modes.${mode}`) }}
-	</span>
+	<v-progress-linear
+		v-if='connected && mode === DaemonMode.Unknown'	
+		color='info'
+		indeterminate
+		rounded
+	/>		
+	<v-chip
+		v-else
+		:color='chipColor'
+		label
+	>
+		{{ chipText }}
+	</v-chip>
 </template>
 
 <script lang='ts' setup>
@@ -33,8 +36,28 @@ import { DaemonMode } from '@iqrf/iqrf-gateway-daemon-utils/enums';
 import { storeToRefs } from 'pinia';
 
 import { useMonitorStore } from '@/store/monitorSocket';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
+const i18n = useI18n();
 const monitorStore = useMonitorStore();
 const { isConnected: connected, getMode: mode } = storeToRefs(monitorStore);
+
+const chipColor = computed(() => {
+	if (!connected.value) {
+		return 'error';
+	}
+	if ([DaemonMode.Forwarding, DaemonMode.Operational].includes(mode.value)) {
+		return 'success';
+	}
+	return 'warning';
+})
+
+const chipText = computed(() => {
+	if (!connected.value) {
+		return i18n.t('components.gateway.mode.modes.unknown');
+	}
+	return i18n.t(`components.gateway.mode.modes.${mode.value}`);
+});
 
 </script>
