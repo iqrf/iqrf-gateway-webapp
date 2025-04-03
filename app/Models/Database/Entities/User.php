@@ -333,7 +333,7 @@ class User implements JsonSerializable {
 	 * @param string $email E-mail address to validate
 	 * @param bool $withDns Check DNS records
 	 */
-	private function validateEmail(string $email, bool $withDns): void {
+	private function validateEmail(string $email, bool $withDns = true): void {
 		$validator = new EmailValidator();
 		$validationRules = [
 			new RFCValidation(),
