@@ -23,55 +23,55 @@ limitations under the License.
 					{{ $t('components.iqrfnet.common.embedPeripherals') }}
 				</legend>
 				<v-checkbox
-					v-model='config.embPers.eeprom'
+					v-model='config.embPers!.eeprom'
 					:label='$t("components.iqrfnet.common.peripherals.eeprom")'
 					density='compact'
 					hide-details
 				/>
 				<v-checkbox
-					v-model='config.embPers.eeeprom'
+					v-model='config.embPers!.eeeprom'
 					:label='$t("components.iqrfnet.common.peripherals.eeeprom")'
 					density='compact'
 					hide-details
 				/>
 				<v-checkbox
-					v-model='config.embPers.ram'
+					v-model='config.embPers!.ram'
 					:label='$t("components.iqrfnet.common.peripherals.ram")'
 					density='compact'
 					hide-details
 				/>
 				<v-checkbox
-					v-model='config.embPers.ledr'
+					v-model='config.embPers!.ledr'
 					:label='$t("components.iqrfnet.common.peripherals.ledr")'
 					density='compact'
 					hide-details
 				/>
 				<v-checkbox
-					v-model='config.embPers.ledg'
+					v-model='config.embPers!.ledg'
 					:label='$t("components.iqrfnet.common.peripherals.ledg")'
 					density='compact'
 					hide-details
 				/>
 				<v-checkbox
-					v-model='config.embPers.spi'
+					v-model='config.embPers!.spi'
 					:label='$t("components.iqrfnet.common.peripherals.spi")'
 					density='compact'
 					hide-details
 				/>
 				<v-checkbox
-					v-model='config.embPers.io'
+					v-model='config.embPers!.io'
 					:label='$t("components.iqrfnet.common.peripherals.io")'
 					density='compact'
 					hide-details
 				/>
 				<v-checkbox
-					v-model='config.embPers.thermometer'
+					v-model='config.embPers!.thermometer'
 					:label='$t("components.iqrfnet.common.peripherals.thermometer")'
 					density='compact'
 					hide-details
 				/>
 				<v-checkbox
-					v-model='config.embPers.uart'
+					v-model='config.embPers!.uart'
 					:label='$t("components.iqrfnet.common.peripherals.uart")'
 					density='compact'
 					hide-details
@@ -131,7 +131,7 @@ limitations under the License.
 					hide-details
 				/>
 				<SelectInput
-					v-model='config.uartBaudrate'
+					v-model='config.uartBaudRate'
 					:label='$t("components.iqrfnet.tr-config.dpa.other.baudRate")'
 					:items='baudRateOptions'
 				/>
@@ -171,9 +171,7 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import {
-	IqmeshTrConfigParams,
-} from '@iqrf/iqrf-gateway-daemon-utils/types/iqmesh';
+import { IqmeshWriteTrConfParams } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useDisplay } from 'vuetify';
@@ -184,7 +182,7 @@ import SelectInput from '@/components/layout/form/SelectInput.vue';
 
 const i18n = useI18n();
 const display = useDisplay();
-const config = defineModel<IqmeshTrConfigParams>('config', { required: true });
+const config = defineModel<IqmeshWriteTrConfParams>('config', { required: true });
 
 const baudRateOptions = computed(() => {
 	const items: number[] = [1_200, 2_400, 4_800, 9_600, 19_200, 38_400, 57_600, 115_200, 230_400];

@@ -110,9 +110,7 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import {
-	IqmeshTrConfigParams,
-} from '@iqrf/iqrf-gateway-daemon-utils/types/iqmesh';
+import { IqmeshReadTrConfResult } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { useDisplay } from 'vuetify';
 
 import Card from '@/components/layout/card/Card.vue';
@@ -120,5 +118,5 @@ import NumberInput from '@/components/layout/form/NumberInput.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 
 const display = useDisplay();
-const config = defineModel<IqmeshTrConfigParams>('config', { required: true });
+const config = defineModel<IqmeshReadTrConfResult>('config', { required: true });
 </script>

@@ -29,9 +29,10 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
+import { type IqmeshWriteTrConfParams } from '@iqrf/iqrf-gateway-daemon-utils/types';
+
 import TrConfigSecurityInput from '@/components/iqrfnet/tr-config/TrConfigSecurityInput.vue';
 import Card from '@/components/layout/card/Card.vue';
-import { IqmeshWriteTrConfParams } from '@iqrf/iqrf-gateway-daemon-utils/types';
 
 const config = defineModel<IqmeshWriteTrConfParams>('config', { required: true });
 </script>

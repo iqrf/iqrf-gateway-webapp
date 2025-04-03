@@ -66,6 +66,12 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
+import { IqmeshService } from '@iqrf/iqrf-gateway-daemon-utils/services';
+import { type ApiResponseIqmesh,
+	type IqmeshEnumerateDeviceResult,
+	type IqmeshWriteTrConfParams,
+} from '@iqrf/iqrf-gateway-daemon-utils/types';
+import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { mdiContentSave } from '@mdi/js';
 import { ref, type Ref } from 'vue';
 import { VForm } from 'vuetify/components';
@@ -74,16 +80,10 @@ import TrConfigDpaForm from '@/components/iqrfnet/tr-config/TrConfigDpaForm.vue'
 import TrConfigOsForm from '@/components/iqrfnet/tr-config/TrConfigOsForm.vue';
 import TrConfigSecurityForm from '@/components/iqrfnet/tr-config/TrConfigSecurityForm.vue';
 import Card from '@/components/layout/card/Card.vue';
-import { validateForm } from '@/helpers/validateForm';
-import { ComponentState } from '@/types/ComponentState';
-import { type ApiResponseIqmesh,
-	type IqmeshEnumerateDeviceResult,
-	type IqmeshWriteTrConfParams,
-} from '@iqrf/iqrf-gateway-daemon-utils/types';
 import NumberInput from '@/components/layout/form/NumberInput.vue';
+import { validateForm } from '@/helpers/validateForm';
 import { useDaemonStore } from '@/store/daemonSocket';
-import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
-import { IqmeshService } from '@iqrf/iqrf-gateway-daemon-utils/services';
+import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const daemonSocket = useDaemonStore();
