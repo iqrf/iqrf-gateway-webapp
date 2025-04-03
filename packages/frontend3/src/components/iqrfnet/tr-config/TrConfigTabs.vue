@@ -144,13 +144,17 @@ async function enumerate(): Promise<void> {
 		'todo',
 		() => {
 			msgId.value = null;
-		}
-	)
-	msgId.value = await daemonSocket.sendMessage(IqmeshService.enumerate({}, {deviceAddr: addr.value}, opts));
+		},
+	);
+	msgId.value = await daemonSocket.sendMessage(IqmeshService.enumerate({}, { deviceAddr: addr.value }, opts));
 }
 
 function handleEnumerate(rsp: ApiResponseIqmesh<IqmeshEnumerateDeviceResult>): void {
-
+	switch (rsp.data.status) {
+		case 0:
+			config.value = { ...config.value, ...rsp.data.rsp.trConfiguration };
+			break;
+	}
 }
 
 async function onSubmit(): Promise<void> {
