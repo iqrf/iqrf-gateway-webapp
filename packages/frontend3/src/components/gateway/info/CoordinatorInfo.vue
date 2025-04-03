@@ -49,13 +49,13 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
+import { IqmeshServiceMessages } from '@iqrf/iqrf-gateway-daemon-utils/enums';
+import { IqmeshService } from '@iqrf/iqrf-gateway-daemon-utils/services';
+import { ApiResponseIqmesh, IqmeshEnumerateDeviceResult, TApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { onMounted, ref, type Ref } from 'vue';
 
 import { useDaemonStore } from '@/store/daemonSocket';
-import { IqmeshService } from '@iqrf/iqrf-gateway-daemon-utils/services';
-import { ApiResponseIqmesh, IqmeshEnumerateDeviceResult, TApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
-import { IqmeshServiceMessages } from '@iqrf/iqrf-gateway-daemon-utils/enums';
 
 const daemonStore = useDaemonStore();
 const loading: Ref<boolean> = ref(false);
@@ -94,11 +94,11 @@ async function enumerate(): Promise<void> {
 			loading.value = false;
 		},
 	);
-	msgId.value = await daemonStore.sendMessage(IqmeshService.enumerate({}, {deviceAddr: 0}, opts));
+	msgId.value = await daemonStore.sendMessage(IqmeshService.enumerate({}, { deviceAddr: 0 }, opts));
 }
 
 function handleEnumerateResponse(rsp: ApiResponseIqmesh<IqmeshEnumerateDeviceResult>): void {
-	if (rsp.data.status == 0) {
+	if (rsp.data.status === 0) {
 		enumData.value = rsp.data.rsp;
 		loaded.value = false;
 	} else {
