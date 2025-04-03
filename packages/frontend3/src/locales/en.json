@@ -1880,6 +1880,7 @@
 		},
 		"iqrfnet": {
 			"common": {
+				"deviceAddr": "Device address",
 				"dpa": "DPA",
 				"embedPeripherals": "Embedded Peripherals",
 				"os": "OS",

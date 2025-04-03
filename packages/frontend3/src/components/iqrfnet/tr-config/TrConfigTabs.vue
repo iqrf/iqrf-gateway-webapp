@@ -24,6 +24,10 @@ limitations under the License.
 			<template #title>
 				{{ $t('pages.iqrfnet.tr-config.title') }}
 			</template>
+			<NumberInput
+				v-model='addr'
+				:label='$t("components.iqrfnet.common.deviceAddr")'
+			/>
 			<v-tabs v-model='tab'>
 				<v-tab :value='0'>
 					{{ $t('components.iqrfnet.common.os') }}
@@ -62,9 +66,6 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import {
-	IqmeshTrConfigParams,
-} from '@iqrf/iqrf-gateway-daemon-utils/types/iqmesh';
 import { mdiContentSave } from '@mdi/js';
 import { ref, type Ref } from 'vue';
 import { VForm } from 'vuetify/components';
@@ -75,12 +76,23 @@ import TrConfigSecurityForm from '@/components/iqrfnet/tr-config/TrConfigSecurit
 import Card from '@/components/layout/card/Card.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { ComponentState } from '@/types/ComponentState';
-
+import { type ApiResponseIqmesh,
+	type IqmeshEnumerateDeviceResult,
+	type IqmeshWriteTrConfParams,
+} from '@iqrf/iqrf-gateway-daemon-utils/types';
+import NumberInput from '@/components/layout/form/NumberInput.vue';
+import { useDaemonStore } from '@/store/daemonSocket';
+import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
+import { IqmeshService } from '@iqrf/iqrf-gateway-daemon-utils/services';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
+const daemonSocket = useDaemonStore();
+const msgId: Ref<string | null> = ref(null);
+const addr: Ref<number> = ref(0);
 const tab: Ref<number> = ref(0);
 const form: Ref<VForm | null> = ref(null);
-const config: Ref<IqmeshTrConfigParams> = ref({
+const config: Ref<IqmeshWriteTrConfParams> = ref({
+	deviceAddr: 0,
 	rfBand: '868', // OS RF
 	rfChannelA: 52,
 	rfChannelB: 2,
@@ -125,6 +137,21 @@ const config: Ref<IqmeshTrConfigParams> = ref({
 	accessPassword: '', // Security
 	securityUserKey: '',
 });
+
+async function enumerate(): Promise<void> {
+	const opts = new DaemonMessageOptions(
+		60_000,
+		'todo',
+		() => {
+			msgId.value = null;
+		}
+	)
+	msgId.value = await daemonSocket.sendMessage(IqmeshService.enumerate({}, {deviceAddr: addr.value}, opts));
+}
+
+function handleEnumerate(rsp: ApiResponseIqmesh<IqmeshEnumerateDeviceResult>): void {
+
+}
 
 async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value) || config.value === null) {
