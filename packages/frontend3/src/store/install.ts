@@ -49,6 +49,9 @@ export const useInstallStore = defineStore('install', {
 		 */
 		async check(): Promise<void> {
 			this.checks = await useApiClient().getInstallationService().check();
+			if (!this.checks.hasUsers) {
+				this.currentStep = InstallationStep.UserCreation;
+			}
 		},
 		/**
 		 * Sets the installation as checked
