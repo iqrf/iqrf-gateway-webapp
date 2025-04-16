@@ -21,19 +21,19 @@ import {OtaUploadAction} from '@/enums/IqrfNet/OtaUpload';
  * OTA upload parameters interface
  */
 export interface IOtaUploadParams {
-    address: number
-    hwpid: number
-    loadingAction: OtaUploadAction
-    file: string
-    startMemAddr: number
-    uploadEeprom?: boolean
-    uploadEeeprom?: boolean
+	address: number
+	hwpid: number
+	loadingAction: OtaUploadAction
+	file: string
+	startMemAddr: number
+	uploadEeprom?: boolean
+	uploadEeeprom?: boolean
 }
 
 /**
  * OTA upload result interface
  */
 export interface IOtaUploadResult {
-    address: number
-    result: boolean
+	address: number
+	result: boolean
 }

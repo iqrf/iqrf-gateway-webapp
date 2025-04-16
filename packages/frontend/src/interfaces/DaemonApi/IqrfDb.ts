@@ -181,8 +181,8 @@ export interface IIqrfDbSensorDetails {
 	value: number|null
 
 	/**
-	  * Last updated
-	  */
+	 * Last updated
+	 */
 	updated: string|null
 }
 

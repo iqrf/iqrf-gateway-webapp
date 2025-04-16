@@ -73,7 +73,7 @@ export interface ClientOptions {
  * ## Instantiate with custom configuration
  * ```typescript
  * const config: AxiosRequestConfig = {
- * 	baseURL: 'https://iqrf-gw.exaple.org/api/',
+ *     baseURL: 'https://iqrf-gw.exaple.org/api/',
  * };
  * const client = new Client({ config });
  * ```
@@ -81,7 +81,7 @@ export interface ClientOptions {
  * ## Instantiate with custom Axios instance **advanced**
  * ```typescript
  * const config: AxiosRequestConfig = {
- * 	baseURL: 'https://iqrf-gw.exaple.org/api/',
+ *     baseURL: 'https://iqrf-gw.exaple.org/api/',
  * }
  * const axiosInstance = axios.create(config);
  * const client = new Client({ axiosInstance });

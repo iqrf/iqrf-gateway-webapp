@@ -19,6 +19,6 @@
  */
 export enum FileFormat {
 	HEX = 'hex',
-    IQRF = 'iqrf',
-    TRCNFG = 'trncfg',
+	IQRF = 'iqrf',
+	TRCNFG = 'trncfg',
 }

@@ -103,4 +103,3 @@ export interface IJournalData {
 	 */
 	endCursor: string
 }
-
