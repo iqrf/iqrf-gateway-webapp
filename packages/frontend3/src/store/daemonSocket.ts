@@ -111,11 +111,8 @@ export const useDaemonStore = defineStore('daemon', {
 			if (monitorStore.mode === DaemonMode.Service && !serviceModeWhitelist.includes(message.mType)) {
 				// TODO SERVICE MODE MODAL
 			}
-			let msgId = '';
-			if (message.data.msgId === undefined) {
-				message.data.msgId = uuidv4();
-			}
-			msgId = message.data.msgId;
+			message.data.msgId ??= uuidv4();
+			const msgId: string = message.data.msgId;
 			if (message.mType === 'iqmeshNetwork_AutoNetwork') {
 				this.socket?.send(message);
 				return Promise.resolve(msgId);

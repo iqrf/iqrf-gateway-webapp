@@ -16,16 +16,26 @@
  */
 
 import { DaemonMode } from '@iqrf/iqrf-gateway-daemon-utils/enums';
-import { type MonitorMessage } from '@iqrf/iqrf-gateway-daemon-utils/types';
+import { type MonitorStatusResult } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { defineStore } from 'pinia';
 
 import UrlBuilder from '@/helpers/urlBuilder';
 import ClientSocket, { type GenericSocketState } from '@/modules/clientSocket';
 
+/**
+ * Monitor store state
+ */
 interface MonitorState extends GenericSocketState {
+	/// IQRF Gateway Daemon mode
 	mode: DaemonMode;
+	/// Monitor message queue length
 	queueLength: number;
+	/// Last monitor notification timestamp
 	lastTimestamp: number;
+	/// Is network enumeration in progress?
+	networkEnumInProgress: boolean;
+	/// Is data reading in progress?
+	dataReadingInProgress: boolean;
 }
 
 export const useMonitorStore = defineStore('monitor', {
@@ -37,10 +47,12 @@ export const useMonitorStore = defineStore('monitor', {
 		mode: DaemonMode.Unknown,
 		queueLength: 0,
 		lastTimestamp: 0,
+		networkEnumInProgress: false,
+		dataReadingInProgress: false,
 	}),
 	actions: {
-		initSocket() {
-			const urlBuilder = new UrlBuilder();
+		initSocket(): void {
+			const urlBuilder: UrlBuilder = new UrlBuilder();
 			this.socket = new ClientSocket(
 				{
 					url: urlBuilder.getDaemonMonitorUrl(),
@@ -92,13 +104,19 @@ export const useMonitorStore = defineStore('monitor', {
 		 * @param {MessageEvent<string>} event Message event
 		 */
 		onMessage(event: MessageEvent<string>): void {
-			const message: MonitorMessage = JSON.parse(event.data) as MonitorMessage;
-			this.queueLength = message.data.msgQueueLen;
-			this.mode = message.data.operMode;
-			this.lastTimestamp = message.data.timestamp;
+			const message: MonitorStatusResult = (JSON.parse(event.data) as { data: MonitorStatusResult }).data;
+			this.queueLength = message.msgQueueLen;
+			this.mode = message.operMode;
+			this.lastTimestamp = message.timestamp;
+			this.networkEnumInProgress = message.enumInProgress;
+			this.dataReadingInProgress = message.dataReadingInProgress;
 		},
 	},
 	getters: {
+		/**
+		 * Returns connected status
+		 * @return {boolean} Connected status
+		 */
 		isConnected(): boolean {
 			return this.connected;
 		},
@@ -123,9 +141,22 @@ export const useMonitorStore = defineStore('monitor', {
 		getLastTimestamp(): number {
 			return this.lastTimestamp;
 		},
+		/**
+		 * Returns status of network enumeration
+		 * @return {boolean} Network enumeration running
+		 */
+		getEnumInProgress(): boolean {
+			return this.networkEnumInProgress;
+		},
+		/**
+		 * Returns status of data reading
+		 * @return {boolean} Data reading running
+		 */
+		getDataReadingInProgress(): boolean {
+			return this.dataReadingInProgress;
+		},
 	},
 	persist: {
 		pick: ['lastTimestamp'],
 	},
 });
-

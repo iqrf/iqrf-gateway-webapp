@@ -17,11 +17,11 @@ limitations under the License.
 
 <template>
 	<v-progress-linear
-		v-if='connected && mode === DaemonMode.Unknown'	
+		v-if='connected && mode === DaemonMode.Unknown'
 		color='info'
 		indeterminate
 		rounded
-	/>		
+	/>
 	<v-chip
 		v-else
 		:color='chipColor'
@@ -34,10 +34,10 @@ limitations under the License.
 <script lang='ts' setup>
 import { DaemonMode } from '@iqrf/iqrf-gateway-daemon-utils/enums';
 import { storeToRefs } from 'pinia';
-
-import { useMonitorStore } from '@/store/monitorSocket';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+
+import { useMonitorStore } from '@/store/monitorSocket';
 
 const i18n = useI18n();
 const monitorStore = useMonitorStore();
@@ -51,7 +51,7 @@ const chipColor = computed(() => {
 		return 'success';
 	}
 	return 'warning';
-})
+});
 
 const chipText = computed(() => {
 	if (!connected.value) {
