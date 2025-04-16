@@ -76,7 +76,7 @@ class DaemonController extends BaseDaemonConfigController {
 				$ref: '#/components/responses/Forbidden'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['config:daemon']);
 		try {
@@ -111,7 +111,7 @@ class DaemonController extends BaseDaemonConfigController {
 				$ref: '#/components/responses/NotFound'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['config:daemon']);
 		$this->validators->validateRequest('mainConfiguration', $request);
@@ -140,7 +140,7 @@ class DaemonController extends BaseDaemonConfigController {
 				$ref: '#/components/responses/BadRequest'
 			'403':
 				$ref: '#/components/responses/Forbidden'
-	EOT)]
+EOT)]
 	public function createComponent(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['config:daemon']);
 		$this->validators->validateRequest('daemonComponent', $request);
@@ -165,7 +165,7 @@ class DaemonController extends BaseDaemonConfigController {
 				$ref: '#/components/responses/NotFound'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'component', type: 'string', description: 'Component name')]
 	public function deleteComponent(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['config:daemon']);
@@ -205,7 +205,7 @@ class DaemonController extends BaseDaemonConfigController {
 				$ref: '#/components/responses/NotFound'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'component', type: 'string', description: 'Component name')]
 	public function editComponent(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['config:daemon']);
@@ -240,7 +240,7 @@ class DaemonController extends BaseDaemonConfigController {
 				$ref: '#/components/responses/NotFound'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'component', type: 'string', description: 'Component name')]
 	public function getComponent(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['config:daemon']);
@@ -293,7 +293,7 @@ class DaemonController extends BaseDaemonConfigController {
 					application/json:
 						schema:
 							$ref: '#/components/schemas/Error'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'component', type: 'string', description: 'Component name')]
 	public function createInstance(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['config:daemon']);
@@ -333,7 +333,7 @@ class DaemonController extends BaseDaemonConfigController {
 				$ref: '#/components/responses/Forbidden'
 			'404':
 				$ref: '#/components/responses/NotFound'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'component', type: 'string', description: 'Component name')]
 	#[RequestParameter(name: 'instance', type: 'string', description: 'Instance name')]
 	public function deleteInstance(ApiRequest $request, ApiResponse $response): ApiResponse {
@@ -368,7 +368,7 @@ class DaemonController extends BaseDaemonConfigController {
 				$ref: '#/components/responses/Forbidden'
 			'404':
 				$ref: '#/components/responses/NotFound'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'component', type: 'string', description: 'Component name')]
 	#[RequestParameter(name: 'instance', type: 'string', description: 'Instance name')]
 	public function editInstance(ApiRequest $request, ApiResponse $response): ApiResponse {
@@ -412,7 +412,7 @@ class DaemonController extends BaseDaemonConfigController {
 				$ref: '#/components/responses/NotFound'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'component', type: 'string', description: 'Component name')]
 	#[RequestParameter(name: 'instance', type: 'string', description: 'Instance name')]
 	public function getInstance(ApiRequest $request, ApiResponse $response): ApiResponse {
@@ -455,7 +455,7 @@ class DaemonController extends BaseDaemonConfigController {
 				$ref: '#/components/responses/NotFound'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function changeComponent(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['config:daemon']);
 		$this->validators->validateRequest('daemonComponentEnabled', $request);

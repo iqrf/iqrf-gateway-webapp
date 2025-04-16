@@ -71,7 +71,7 @@ class LogController extends BaseGatewayController {
 							$ref: '#/components/schemas/LogServices'
 			'403':
 				$ref: '#/components/responses/Forbidden'
-	EOT)]
+EOT)]
 	public function logServices(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['gateway:log']);
 		$response = $response->writeJsonBody($this->logManager->getAvailableServices());
@@ -99,7 +99,7 @@ class LogController extends BaseGatewayController {
 							$ref: '#/components/schemas/Error'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'service', type: 'string', description: 'Service name')]
 	public function log(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['gateway:log']);
@@ -130,7 +130,7 @@ class LogController extends BaseGatewayController {
 							format: binary
 			'403':
 				$ref: '#/components/responses/Forbidden'
-	EOT)]
+EOT)]
 	public function logArchive(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['gateway:log']);
 		$path = $this->logManager->createArchive();

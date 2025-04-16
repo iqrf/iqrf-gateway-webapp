@@ -80,7 +80,7 @@ class MenderLegacyController extends BaseController {
 				$ref: '#/components/responses/InvalidContentType'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function installArtifact(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->installArtifact($request, $response);
 	}
@@ -105,7 +105,7 @@ class MenderLegacyController extends BaseController {
 				$ref: '#/components/responses/Forbidden'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function commitUpdate(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->commitUpdate($request, $response);
 	}
@@ -130,7 +130,7 @@ class MenderLegacyController extends BaseController {
 				$ref: '#/components/responses/Forbidden'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function rollbackUpdate(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->rollbackUpdate($request, $response);
 	}
@@ -161,7 +161,7 @@ class MenderLegacyController extends BaseController {
 				$ref: '#/components/responses/Forbidden'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function remount(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->remount($request, $response);
 	}

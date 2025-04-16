@@ -68,7 +68,7 @@ class FeatureController extends BaseController {
 							$ref: '#/components/schemas/FeatureList'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function getAll(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$config = $this->manager->read();
 		$response = $response->writeJsonBody($config);
@@ -92,7 +92,7 @@ class FeatureController extends BaseController {
 				$ref: '#/components/responses/NotFound'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'feature', type: 'string', description: 'Feature name')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$name = urldecode($request->getParameter('feature'));
@@ -125,7 +125,7 @@ class FeatureController extends BaseController {
 				$ref: '#/components/responses/NotFound'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'feature', type: 'string', description: 'Feature name')]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$name = urldecode($request->getParameter('feature'));

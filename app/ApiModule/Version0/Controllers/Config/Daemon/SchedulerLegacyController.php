@@ -64,7 +64,7 @@ class SchedulerLegacyController extends BaseController {
 							$ref: '#/components/schemas/TaskList'
 			'403':
 				$ref: '#/components/responses/Forbidden'
-	EOT)]
+EOT)]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->list($request, $response);
 	}
@@ -94,7 +94,7 @@ class SchedulerLegacyController extends BaseController {
 					application/json:
 						schema:
 							$ref: '#/components/schemas/Error'
-	EOT)]
+EOT)]
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->create($request, $response);
 	}
@@ -110,7 +110,7 @@ class SchedulerLegacyController extends BaseController {
 				description: Success
 			'403':
 				$ref: '#/components/responses/Forbidden'
-	EOT)]
+EOT)]
 	public function deleteAll(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->deleteAll($request, $response);
 	}
@@ -132,7 +132,7 @@ class SchedulerLegacyController extends BaseController {
 				$ref: '#/components/responses/Forbidden'
 			'404':
 				$ref: '#/components/responses/NotFound'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'taskId', type: 'integer', description: 'Task ID')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->get($request, $response);
@@ -151,7 +151,7 @@ class SchedulerLegacyController extends BaseController {
 				$ref: '#/components/responses/Forbidden'
 			'404':
 				$ref: '#/components/responses/NotFound'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'taskId', type: 'integer', description: 'Task ID')]
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->delete($request, $response);
@@ -178,7 +178,7 @@ class SchedulerLegacyController extends BaseController {
 				$ref: '#/components/responses/Forbidden'
 			'404':
 				$ref: '#/components/responses/NotFound'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'taskId', type: 'integer', description: 'Task ID')]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->edit($request, $response);
@@ -206,7 +206,7 @@ class SchedulerLegacyController extends BaseController {
 					application/json:
 						schema:
 							$ref: '#/components/schemas/Error'
-	EOT)]
+EOT)]
 	public function export(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->export($request, $response);
 	}
@@ -236,7 +236,7 @@ class SchedulerLegacyController extends BaseController {
 				$ref: '#/components/responses/Forbidden'
 			'415':
 				$ref: '#/components/responses/InvalidContentType'
-	EOT)]
+EOT)]
 	public function import(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->import($request, $response);
 	}
@@ -258,7 +258,7 @@ class SchedulerLegacyController extends BaseController {
 				$ref: '#/components/responses/Forbidden'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function getMessagings(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->getMessagings($request, $response);
 	}

@@ -67,7 +67,7 @@ class TimeController extends BaseGatewayController {
 				$ref: '#/components/responses/Forbidden'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function getTime(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
 			$time = $this->manager->getTime();
@@ -91,7 +91,7 @@ class TimeController extends BaseGatewayController {
 				$ref: '#/components/responses/Forbidden'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function setTime(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->validateRequest('timeSet', $request);
 		try {
@@ -116,7 +116,7 @@ class TimeController extends BaseGatewayController {
 							$ref: '#/components/schemas/TimezoneList'
 			'403':
 				$ref: '#/components/responses/Forbidden'
-	EOT)]
+EOT)]
 	public function getTimezones(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$timezones = $this->manager->availableTimezones();
 		$response = $response->writeJsonBody($timezones);

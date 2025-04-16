@@ -73,7 +73,7 @@ class MailerController extends BaseConfigController {
 				$ref: '#/components/responses/Forbidden'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function getConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['mailer']);
 		try {
@@ -106,7 +106,7 @@ class MailerController extends BaseConfigController {
 				$ref: '#/components/responses/Forbidden'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function setConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['mailer']);
 		$this->validators->validateRequest('mailer', $request);
@@ -147,7 +147,7 @@ class MailerController extends BaseConfigController {
 					application/json:
 						schema:
 							$ref: '#/components/schemas/Error'
-	EOT)]
+EOT)]
 	public function testConfiguration(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['mailer']);
 		$this->validators->validateRequest('mailer', $request);

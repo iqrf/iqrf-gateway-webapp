@@ -64,7 +64,7 @@ class UserController extends BaseController {
 							$ref: '#/components/schemas/UserDetail'
 			'403':
 				$ref: '#/components/responses/ForbiddenApiKey'
-	EOT)]
+EOT)]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newAccountController->get($request, $response);
 	}
@@ -94,7 +94,7 @@ class UserController extends BaseController {
 					application/json:
 						schema:
 							$ref: '#/components/schemas/Error'
-	EOT)]
+EOT)]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newAccountController->edit($request, $response);
 	}
@@ -116,7 +116,7 @@ class UserController extends BaseController {
 				description: Success
 			'403':
 				$ref: '#/components/responses/ForbiddenApiKey'
-	EOT)]
+EOT)]
 	public function changePassword(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newAccountController->changePassword($request, $response);
 	}
@@ -150,7 +150,7 @@ class UserController extends BaseController {
 							$ref: '#/components/schemas/Error'
 			'500':
 				$ref: '#/components/responses/MailerError'
-	EOT)]
+EOT)]
 	public function requestPasswordRecovery(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newAccountController->requestPasswordRecovery($request, $response);
 	}
@@ -182,7 +182,7 @@ class UserController extends BaseController {
 					application/json:
 						schema:
 							$ref: '#/components/schemas/Error'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'uuid', type: 'string', description: 'Password recovery request UUID')]
 	public function recoverPassword(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newAccountController->recoverPassword($request, $response);
@@ -205,7 +205,7 @@ class UserController extends BaseController {
 							$ref: '#/components/schemas/Error'
 			'500':
 				$ref: '#/components/responses/MailerError'
-	EOT)]
+EOT)]
 	public function resendVerification(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newAccountController->resendVerification($request, $response);
 	}
@@ -225,7 +225,7 @@ class UserController extends BaseController {
 							$ref: '#/components/schemas/UserToken'
 			'403':
 				$ref: '#/components/responses/ForbiddenApiKey'
-	EOT)]
+EOT)]
 	public function refreshToken(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newAccountController->refreshToken($request, $response);
 	}
@@ -255,7 +255,7 @@ class UserController extends BaseController {
 				$ref: '#/components/responses/BadRequest'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function signIn(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newAccountController->signIn($request, $response);
 	}
@@ -275,7 +275,7 @@ class UserController extends BaseController {
 							$ref: '#/components/schemas/UserToken'
 			'404':
 				$ref: '#/components/responses/NotFound'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'uuid', type: 'string', description: 'User verification UUID')]
 	public function verify(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newAccountController->verify($request, $response);

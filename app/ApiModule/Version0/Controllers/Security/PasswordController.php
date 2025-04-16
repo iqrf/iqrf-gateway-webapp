@@ -69,7 +69,7 @@ class PasswordController extends BaseGatewayController {
 				$ref: '#/components/responses/Forbidden'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function setPassword(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->setPassword($request, $response);
 	}

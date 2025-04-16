@@ -66,7 +66,7 @@ class ApiKeyLegacyController extends BaseController {
 								$ref: '#/components/schemas/ApiKeyDetail'
 			403:
 				$ref: '#/components/responses/Forbidden'
-	EOT)]
+EOT)]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->list($request, $response);
 	}
@@ -99,7 +99,7 @@ class ApiKeyLegacyController extends BaseController {
 				$ref: '#/components/responses/BadRequest'
 			'403':
 				$ref: '#/components/responses/Forbidden'
-	EOT)]
+EOT)]
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->create($request, $response);
 	}
@@ -121,7 +121,7 @@ class ApiKeyLegacyController extends BaseController {
 				$ref: '#/components/responses/NotFound'
 			'403':
 				$ref: '#/components/responses/Forbidden'
-	EOT)]
+EOT)]
 	#[RequestParameter('id', type: 'integer', description: 'API key ID')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->get($request, $response);
@@ -140,7 +140,7 @@ class ApiKeyLegacyController extends BaseController {
 				$ref: '#/components/responses/Forbidden'
 			'404':
 				$ref: '#/components/responses/NotFound'
-	EOT)]
+EOT)]
 	#[RequestParameter('id', type: 'integer', description: 'API key ID')]
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->delete($request, $response);
@@ -167,7 +167,7 @@ class ApiKeyLegacyController extends BaseController {
 				$ref: '#/components/responses/Forbidden'
 			'404':
 				$ref: '#/components/responses/NotFound'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'API key ID')]
 	public function update(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->update($request, $response);

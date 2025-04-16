@@ -66,7 +66,7 @@ class TranslatorController extends BaseConfigController {
 				$ref: '#/components/responses/Forbidden'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function getConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['config:translator']);
 		try {
@@ -99,7 +99,7 @@ class TranslatorController extends BaseConfigController {
 				$ref: '#/components/responses/Forbidden'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function setConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['config:translator']);
 		$this->validators->validateRequest('translatorConfig', $request);

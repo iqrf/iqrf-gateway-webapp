@@ -66,7 +66,7 @@ class SshController extends BaseGatewayController {
 				$ref: '#/components/responses/Forbidden'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function listKeyTypes(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->listKeyTypes($request, $response);
 	}
@@ -88,7 +88,7 @@ class SshController extends BaseGatewayController {
 				$ref: '#/components/responses/Forbidden'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function listKeys(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->listKeys($request, $response);
 	}
@@ -112,7 +112,7 @@ class SshController extends BaseGatewayController {
 				$ref: '#/components/responses/NotFound'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'SSH public key ID')]
 	public function getKey(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->getKey($request, $response);
@@ -151,7 +151,7 @@ class SshController extends BaseGatewayController {
 							$ref: '#/components/schemas/Error'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function addKeys(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->addKeys($request, $response);
 	}
@@ -169,7 +169,7 @@ class SshController extends BaseGatewayController {
 				$ref: '#/components/responses/Forbidden'
 			'404':
 				$ref: '#/components/responses/NotFound'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'SSH public key ID')]
 	public function deleteKey(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->deleteKey($request, $response);

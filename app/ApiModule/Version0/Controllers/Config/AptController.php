@@ -67,7 +67,7 @@ class AptController extends BaseConfigController {
 				$ref: '#/components/responses/Forbidden'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function read(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
 			$response = $response->writeJsonBody($this->manager->read());
@@ -96,7 +96,7 @@ class AptController extends BaseConfigController {
 				$ref: '#/components/responses/Forbidden'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function changeEnableUnattendedUpgrades(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->validateRequest('aptConfiguration', $request);
 		try {

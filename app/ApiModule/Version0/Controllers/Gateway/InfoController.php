@@ -61,7 +61,7 @@ class InfoController extends BaseGatewayController {
 							$ref: '#/components/schemas/GatewayInfo'
 			'403':
 				$ref: '#/components/responses/Forbidden'
-	EOT)]
+EOT)]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$info = $this->infoManager->get();
 		$response = $response->writeJsonBody($info);
@@ -81,7 +81,7 @@ class InfoController extends BaseGatewayController {
 							$ref: '#/components/schemas/GatewayBriefInfo'
 			'403':
 				$ref: '#/components/responses/Forbidden'
-	EOT)]
+EOT)]
 	public function getBrief(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$info = $this->infoManager->getBrief();
 		$response = $response->writeJsonBody($info);

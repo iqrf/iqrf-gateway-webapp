@@ -59,7 +59,7 @@ class InterfacesController extends BaseIqrfController {
 							$ref: '#/components/schemas/IqrfInterfaces'
 			'403':
 				$ref: '#/components/responses/Forbidden'
-	EOT)]
+EOT)]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$interfaces = [
 			'cdc' => $this->manager->getCdcInterfaces(),

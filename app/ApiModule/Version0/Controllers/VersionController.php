@@ -66,7 +66,7 @@ class VersionController extends BaseController {
 				$ref: '#/components/responses/Forbidden'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function all(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$versions = $this->manager->getAll();
 		$response = $response->writeJsonBody($versions);
@@ -88,7 +88,7 @@ class VersionController extends BaseController {
 				$ref: '#/components/responses/Forbidden'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function daemonVersion(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$version = $this->manager->getDaemon();
 		if ($version !== 'none' && $version !== 'unknown') {
@@ -113,7 +113,7 @@ class VersionController extends BaseController {
 				$ref: '#/components/responses/Forbidden'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function webappVersion(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
 			$response = $response->writeJsonBody($this->manager->getWebappJson());

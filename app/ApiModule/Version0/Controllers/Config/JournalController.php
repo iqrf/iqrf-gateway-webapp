@@ -66,7 +66,7 @@ class JournalController extends BaseConfigController {
 				$ref: '#/components/responses/Forbidden'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function getConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkFeatures('journal');
 		try {
@@ -96,7 +96,7 @@ class JournalController extends BaseConfigController {
 				$ref: '#/components/responses/Forbidden'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function saveConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkFeatures('journal');
 		$this->validators->validateRequest('journal', $request);

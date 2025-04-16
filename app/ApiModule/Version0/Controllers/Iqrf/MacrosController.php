@@ -59,7 +59,7 @@ class MacrosController extends BaseIqrfController {
 							$ref: '#/components/schemas/IqrfIdeMacros'
 			'403':
 				$ref: '#/components/responses/Forbidden'
-	EOT)]
+EOT)]
 	public function macros(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['iqrf:macros']);
 		$response = $response->writeJsonBody($this->macroParser->read());

@@ -83,7 +83,7 @@ class UsersController extends BaseSecurityController {
 							$ref: '#/components/schemas/UserList'
 			'403':
 				$ref: '#/components/responses/Forbidden'
-	EOT)]
+EOT)]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['users:admin', 'users:basic']);
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
@@ -123,7 +123,7 @@ class UsersController extends BaseSecurityController {
 					application/json:
 						schema:
 							$ref: '#/components/schemas/Error'
-	EOT)]
+EOT)]
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		if ($this->repository->count([]) !== 0) {
 			$this->validators->checkScopes($request, ['users:admin', 'users:basic']);
@@ -179,7 +179,7 @@ class UsersController extends BaseSecurityController {
 				$ref: '#/components/responses/Forbidden'
 			'404':
 				$ref: '#/components/responses/NotFound'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'User ID')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['users:admin', 'users:basic']);
@@ -203,7 +203,7 @@ class UsersController extends BaseSecurityController {
 				$ref: '#/components/responses/Forbidden'
 			'404':
 				$ref: '#/components/responses/NotFound'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'User ID')]
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['users:admin', 'users:basic']);
@@ -245,7 +245,7 @@ class UsersController extends BaseSecurityController {
 					application/json:
 						schema:
 							$ref: '#/components/schemas/Error'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'User ID')]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['users:admin', 'users:basic']);
@@ -332,7 +332,7 @@ class UsersController extends BaseSecurityController {
 				$ref: '#/components/responses/NotFound'
 			'500':
 				$ref: '#/components/responses/MailerError'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'User ID')]
 	public function resendVerification(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['users:admin', 'users:basic']);

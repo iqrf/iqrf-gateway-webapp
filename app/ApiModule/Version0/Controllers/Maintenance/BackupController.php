@@ -80,7 +80,7 @@ class BackupController extends BaseMaintenanceController {
 				$ref: '#/components/responses/BadRequest'
 			'403':
 				$ref: '#/components/responses/Forbidden'
-	EOT)]
+EOT)]
 	public function backup(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['maintenance:backup']);
 		$this->validators->validateRequest('gatewayBackup', $request);
@@ -118,7 +118,7 @@ class BackupController extends BaseMaintenanceController {
 				$ref: '#/components/responses/Forbidden'
 			'415':
 				description: 'Unsupported media type'
-	EOT)]
+EOT)]
 	public function restore(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['maintenance:backup']);
 		$contentTypes = ['application/zip', 'application/x-zip-compressed'];

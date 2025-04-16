@@ -69,7 +69,7 @@ class MenderController extends BaseConfigController {
 				$ref: '#/components/responses/ServerError'
 			'501':
 				description: Unsupported Mender client version
-	EOT)]
+EOT)]
 	public function getConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['maintenance:mender']);
 		try {
@@ -106,7 +106,7 @@ class MenderController extends BaseConfigController {
 				$ref: '#/components/responses/ServerError'
 			'501':
 				description: Unsupported Mender client version
-	EOT)]
+EOT)]
 	public function setConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['maintenance:mender']);
 		$this->validators->validateRequest('menderConfig', $request);
@@ -149,7 +149,7 @@ class MenderController extends BaseConfigController {
 				$ref: '#/components/responses/Forbidden'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function uploadCert(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['maintenance:mender']);
 		try {

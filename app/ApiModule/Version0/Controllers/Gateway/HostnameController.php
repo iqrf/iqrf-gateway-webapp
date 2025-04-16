@@ -69,7 +69,7 @@ class HostnameController extends BaseGatewayController {
 				$ref: '#/components/responses/Forbidden'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function set(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->validateRequest('hostname', $request);
 		try {

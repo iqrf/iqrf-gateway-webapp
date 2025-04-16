@@ -68,7 +68,7 @@ class PowerController extends BaseGatewayController {
 							$ref: '#/components/schemas/PowerControl'
 			'403':
 				$ref: '#/components/responses/Forbidden'
-	EOT)]
+EOT)]
 	public function powerOff(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['gateway:power']);
 		$response = $response->writeJsonBody($this->powerManager->powerOff());
@@ -88,7 +88,7 @@ class PowerController extends BaseGatewayController {
 							$ref: '#/components/schemas/PowerControl'
 			'403':
 				$ref: '#/components/responses/Forbidden'
-	EOT)]
+EOT)]
 	public function reboot(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['gateway:power']);
 		$response = $response->writeJsonBody($this->powerManager->reboot());
@@ -116,7 +116,7 @@ class PowerController extends BaseGatewayController {
 							$ref: '#/components/schemas/Error'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function stats(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['gateway:power']);
 		try {

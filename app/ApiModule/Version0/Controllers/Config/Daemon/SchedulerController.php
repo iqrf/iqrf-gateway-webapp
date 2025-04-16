@@ -76,7 +76,7 @@ class SchedulerController extends BaseDaemonConfigController {
 							$ref: '#/components/schemas/TaskList'
 			'403':
 				$ref: '#/components/responses/Forbidden'
-	EOT)]
+EOT)]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['config:daemon']);
 		$response = $response->writeJsonBody($this->manager->list());
@@ -106,7 +106,7 @@ class SchedulerController extends BaseDaemonConfigController {
 					application/json:
 						schema:
 							$ref: '#/components/schemas/Error'
-	EOT)]
+EOT)]
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['config:daemon']);
 		$this->validators->validateRequest('task', $request);
@@ -135,7 +135,7 @@ class SchedulerController extends BaseDaemonConfigController {
 				description: Success
 			'403':
 				$ref: '#/components/responses/Forbidden'
-	EOT)]
+EOT)]
 	public function deleteAll(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['config:daemon']);
 		$this->manager->deleteAll();
@@ -157,7 +157,7 @@ class SchedulerController extends BaseDaemonConfigController {
 				$ref: '#/components/responses/Forbidden'
 			'404':
 				$ref: '#/components/responses/NotFound'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'taskId', type: 'integer', description: 'Task ID')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['config:daemon']);
@@ -182,7 +182,7 @@ class SchedulerController extends BaseDaemonConfigController {
 				$ref: '#/components/responses/Forbidden'
 			'404':
 				$ref: '#/components/responses/NotFound'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'taskId', type: 'integer', description: 'Task ID')]
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['config:daemon']);
@@ -214,7 +214,7 @@ class SchedulerController extends BaseDaemonConfigController {
 				$ref: '#/components/responses/Forbidden'
 			'404':
 				$ref: '#/components/responses/NotFound'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'taskId', type: 'integer', description: 'Task ID')]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['config:daemon']);
@@ -256,7 +256,7 @@ class SchedulerController extends BaseDaemonConfigController {
 					application/json:
 						schema:
 							$ref: '#/components/schemas/Error'
-	EOT)]
+EOT)]
 	public function export(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['config:daemon']);
 		try {
@@ -292,7 +292,7 @@ class SchedulerController extends BaseDaemonConfigController {
 				$ref: '#/components/responses/Forbidden'
 			'415':
 				$ref: '#/components/responses/InvalidContentType'
-	EOT)]
+EOT)]
 	public function import(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['config:daemon']);
 		try {
@@ -326,7 +326,7 @@ class SchedulerController extends BaseDaemonConfigController {
 				$ref: '#/components/responses/Forbidden'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function getMessagings(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['config:daemon']);
 		try {

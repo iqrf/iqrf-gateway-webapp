@@ -65,7 +65,7 @@ class UsersLegacyController extends BaseController {
 								$ref: '#/components/schemas/UserDetail'
 			'403':
 				$ref: '#/components/responses/Forbidden'
-	EOT)]
+EOT)]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->list($request, $response);
 	}
@@ -99,7 +99,7 @@ class UsersLegacyController extends BaseController {
 					application/json:
 						schema:
 							$ref: '#/components/schemas/Error'
-	EOT)]
+EOT)]
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->create($request, $response);
 	}
@@ -120,7 +120,7 @@ class UsersLegacyController extends BaseController {
 				$ref: '#/components/responses/Forbidden'
 			'404':
 				$ref: '#/components/responses/NotFound'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'User ID')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->get($request, $response);
@@ -138,7 +138,7 @@ class UsersLegacyController extends BaseController {
 				$ref: '#/components/responses/Forbidden'
 			'404':
 				$ref: '#/components/responses/NotFound'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'User ID')]
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->delete($request, $response);
@@ -170,7 +170,7 @@ class UsersLegacyController extends BaseController {
 					application/json:
 						schema:
 							$ref: '#/components/schemas/Error'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'User ID')]
 	public function update(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->edit($request, $response);
@@ -194,7 +194,7 @@ class UsersLegacyController extends BaseController {
 				$ref: '#/components/responses/NotFound'
 			'500':
 				$ref: '#/components/responses/MailerError'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'User ID')]
 	public function resendVerification(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->resendVerification($request, $response);

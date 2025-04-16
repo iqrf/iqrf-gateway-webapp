@@ -90,7 +90,7 @@ class MenderController extends BaseMaintenanceController {
 				$ref: '#/components/responses/InvalidContentType'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function installArtifact(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['maintenance:mender']);
 		ContentTypeUtil::validContentType($request, ['multipart/form-data']);
@@ -127,7 +127,7 @@ class MenderController extends BaseMaintenanceController {
 				$ref: '#/components/responses/Forbidden'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function commitUpdate(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['maintenance:mender']);
 		try {
@@ -157,7 +157,7 @@ class MenderController extends BaseMaintenanceController {
 				$ref: '#/components/responses/Forbidden'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function rollbackUpdate(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['maintenance:mender']);
 		try {
@@ -193,7 +193,7 @@ class MenderController extends BaseMaintenanceController {
 				$ref: '#/components/responses/Forbidden'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function remount(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['maintenance:mender']);
 		if (!$this->featureManager->isEnabled('remount')) {

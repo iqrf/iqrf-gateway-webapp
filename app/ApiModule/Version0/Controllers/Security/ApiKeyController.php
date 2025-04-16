@@ -73,7 +73,7 @@ class ApiKeyController extends BaseSecurityController {
 							$ref: '#/components/schemas/ApiKeyList'
 			403:
 				$ref: '#/components/responses/Forbidden'
-	EOT)]
+EOT)]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['apiKeys']);
 		$apiKeys = $this->repository->findAll();
@@ -107,7 +107,7 @@ class ApiKeyController extends BaseSecurityController {
 				$ref: '#/components/responses/BadRequest'
 			'403':
 				$ref: '#/components/responses/Forbidden'
-	EOT)]
+EOT)]
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['apiKeys']);
 		$this->validators->validateRequest('apiKeyModify', $request);
@@ -141,7 +141,7 @@ class ApiKeyController extends BaseSecurityController {
 				$ref: '#/components/responses/NotFound'
 			'403':
 				$ref: '#/components/responses/Forbidden'
-	EOT)]
+EOT)]
 	#[RequestParameter('id', type: 'integer', description: 'API key ID')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['apiKeys']);
@@ -165,7 +165,7 @@ class ApiKeyController extends BaseSecurityController {
 				$ref: '#/components/responses/Forbidden'
 			'404':
 				$ref: '#/components/responses/NotFound'
-	EOT)]
+EOT)]
 	#[RequestParameter('id', type: 'integer', description: 'API key ID')]
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['apiKeys']);
@@ -198,7 +198,7 @@ class ApiKeyController extends BaseSecurityController {
 				$ref: '#/components/responses/Forbidden'
 			'404':
 				$ref: '#/components/responses/NotFound'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'API key ID')]
 	public function update(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['apiKeys']);

@@ -72,7 +72,7 @@ class MappingsController extends BaseDaemonConfigController {
 					application/json:
 						schema:
 							$ref: '#/components/schemas/MappingList'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'interface', type: 'string', in: 'query', required: false, description: 'Interface type')]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$criteria = $request->hasQueryParam('interface') ? ['type' => $request->getQueryParam('interface')] : [];
@@ -107,7 +107,7 @@ class MappingsController extends BaseDaemonConfigController {
 				$ref: '#/components/responses/BadRequest'
 			'403':
 				$ref: '#/components/responses/Forbidden'
-	EOT)]
+EOT)]
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->validateRequest('mapping', $request);
 		$json = $request->getJsonBodyCopy(false);
@@ -165,7 +165,7 @@ class MappingsController extends BaseDaemonConfigController {
 				$ref: '#/components/responses/Forbidden'
 			'404':
 				$ref: '#/components/responses/NotFound'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Mapping ID')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$id = (int) $request->getParameter('id');
@@ -186,7 +186,7 @@ class MappingsController extends BaseDaemonConfigController {
 				description: Success
 			'404':
 				$ref: '#/components/responses/NotFound'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Mapping ID')]
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$id = (int) $request->getParameter('id');
@@ -218,7 +218,7 @@ class MappingsController extends BaseDaemonConfigController {
 				$ref: '#/components/responses/Forbidden'
 			'404':
 				$ref: '#/components/responses/NotFound'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Mapping ID')]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$id = (int) $request->getParameter('id');

@@ -93,7 +93,7 @@ class AccountController extends BaseController {
 							$ref: '#/components/schemas/UserDetail'
 			'403':
 				$ref: '#/components/responses/ForbiddenApiKey'
-	EOT)]
+EOT)]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->onlyForUsers($request);
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
@@ -124,7 +124,7 @@ class AccountController extends BaseController {
 					application/json:
 						schema:
 							$ref: '#/components/schemas/Error'
-	EOT)]
+EOT)]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->onlyForUsers($request);
 		$this->validators->validateRequest('userEdit', $request);
@@ -185,7 +185,7 @@ class AccountController extends BaseController {
 							$ref: '#/components/schemas/UserPreferences'
 			'403':
 				description: Forbidden
-	EOT)]
+EOT)]
 	public function getPreferences(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->onlyForUsers($request);
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
@@ -213,7 +213,7 @@ class AccountController extends BaseController {
 				description: Invalid time format or theme
 			'403':
 				description: Forbidden
-	EOT)]
+EOT)]
 	public function editPreferences(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->onlyForUsers($request);
 		$this->validators->validateRequest('userPreferences', $request);
@@ -255,7 +255,7 @@ class AccountController extends BaseController {
 				description: Success
 			'403':
 				$ref: '#/components/responses/ForbiddenApiKey'
-	EOT)]
+EOT)]
 	public function changePassword(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->onlyForUsers($request);
 		$this->validators->validateRequest('passwordChange', $request);
@@ -306,7 +306,7 @@ class AccountController extends BaseController {
 							$ref: '#/components/schemas/Error'
 			'500':
 				$ref: '#/components/responses/MailerError'
-	EOT)]
+EOT)]
 	public function requestPasswordRecovery(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->validateRequest('passwordRecoveryRequest', $request);
 		$body = $request->getJsonBodyCopy();
@@ -365,7 +365,7 @@ class AccountController extends BaseController {
 					application/json:
 						schema:
 							$ref: '#/components/schemas/Error'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'uuid', type: 'string', description: 'Password recovery request UUID')]
 	public function recoverPassword(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->validateRequest('passwordRecovery', $request);
@@ -412,7 +412,7 @@ class AccountController extends BaseController {
 							$ref: '#/components/schemas/UserToken'
 			'403':
 				$ref: '#/components/responses/ForbiddenApiKey'
-	EOT)]
+EOT)]
 	public function refreshToken(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->onlyForUsers($request);
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
@@ -445,7 +445,7 @@ class AccountController extends BaseController {
 				$ref: '#/components/responses/BadRequest'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function signIn(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->validateRequest('userSignIn', $request);
 		$credentials = $request->getJsonBodyCopy();
@@ -482,7 +482,7 @@ class AccountController extends BaseController {
 							$ref: '#/components/schemas/Error'
 			'500':
 				$ref: '#/components/responses/MailerError'
-	EOT)]
+EOT)]
 	public function resendVerification(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->onlyForUsers($request);
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
@@ -510,7 +510,7 @@ class AccountController extends BaseController {
 							$ref: '#/components/schemas/UserToken'
 			'404':
 				$ref: '#/components/responses/NotFound'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'uuid', type: 'string', description: 'User verification UUID')]
 	public function verify(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$repository = $this->entityManager->getUserVerificationRepository();

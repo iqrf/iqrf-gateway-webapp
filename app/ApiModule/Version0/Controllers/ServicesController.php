@@ -94,7 +94,7 @@ class ServicesController extends BaseController {
 					application/json:
 						schema:
 							$ref: '#/components/schemas/ServiceList'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'withStatus', type: 'bool', in: 'query', description: 'Include service status')]
 	public function listServices(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$array = [];
@@ -128,7 +128,7 @@ class ServicesController extends BaseController {
 				$ref: '#/components/responses/NotFound'
 			'500':
 				$ref: '#/components/responses/UnsupportedInitSystem'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'name', type: 'string', description: 'Service name')]
 	public function getService(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$name = $request->getParameter('name');
@@ -185,7 +185,7 @@ class ServicesController extends BaseController {
 				$ref: '#/components/responses/NotFound'
 			'500':
 				$ref: '#/components/responses/UnsupportedInitSystem'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'name', type: 'string', description: 'Service name')]
 	public function enableService(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$name = $request->getParameter('name');
@@ -226,7 +226,7 @@ class ServicesController extends BaseController {
 				$ref: '#/components/responses/NotFound'
 			'500':
 				$ref: '#/components/responses/UnsupportedInitSystem'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'name', type: 'string', description: 'Service name')]
 	public function disableService(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$name = $request->getParameter('name');
@@ -261,7 +261,7 @@ class ServicesController extends BaseController {
 				$ref: '#/components/responses/NotFound'
 			'500':
 				$ref: '#/components/responses/UnsupportedInitSystem'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'name', type: 'string', description: 'Service name')]
 	public function startService(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$name = $request->getParameter('name');
@@ -291,7 +291,7 @@ class ServicesController extends BaseController {
 				$ref: '#/components/responses/NotFound'
 			'500':
 				$ref: '#/components/responses/UnsupportedInitSystem'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'name', type: 'string', description: 'Service name')]
 	public function stopService(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$name = $request->getParameter('name');
@@ -321,7 +321,7 @@ class ServicesController extends BaseController {
 				$ref: '#/components/responses/NotFound'
 			'500':
 				$ref: '#/components/responses/UnsupportedInitSystem'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'name', type: 'string', description: 'Service name')]
 	public function restartService(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$name = $request->getParameter('name');

@@ -62,7 +62,7 @@ class DiagnosticsLegacyController extends BaseController {
 						schema:
 							type: string
 							format: binary
-	EOT)]
+EOT)]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->get($request, $response);
 	}

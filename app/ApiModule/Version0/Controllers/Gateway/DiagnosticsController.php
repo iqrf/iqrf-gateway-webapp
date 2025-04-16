@@ -62,7 +62,7 @@ class DiagnosticsController extends BaseGatewayController {
 						schema:
 							type: string
 							format: binary
-	EOT)]
+EOT)]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$path = $this->manager->createArchive();
 		$fileName = basename($path);

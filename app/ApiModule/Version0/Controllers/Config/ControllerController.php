@@ -72,7 +72,7 @@ class ControllerController extends BaseConfigController {
 				$ref: '#/components/responses/Forbidden'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function getConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['config:controller']);
 		try {
@@ -105,7 +105,7 @@ class ControllerController extends BaseConfigController {
 				$ref: '#/components/responses/Forbidden'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function setConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['config:controller']);
 		$this->validators->validateRequest('controllerConfig', $request);
@@ -130,7 +130,7 @@ class ControllerController extends BaseConfigController {
 							$ref: '#/components/schemas/ControllerPinConfigList'
 			'403':
 				$ref: '#/components/responses/Forbidden'
-	EOT)]
+EOT)]
 	public function listPins(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$response = $response->writeJsonBody($this->pinManager->listPinConfigs());
 		return $this->validators->validateResponse('controllerPinConfigList', $response);
@@ -151,7 +151,7 @@ class ControllerController extends BaseConfigController {
 				$ref: '#/components/responses/Forbidden'
 			'404':
 				$ref: '#/components/responses/NotFound'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Controller pin configuration profile ID')]
 	public function getPins(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$id = (int) $request->getParameter('id');
@@ -190,7 +190,7 @@ class ControllerController extends BaseConfigController {
 				$ref: '#/components/responses/BadRequest'
 			'403':
 				$ref: '#/components/responses/Forbidden'
-	EOT)]
+EOT)]
 	public function addPins(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->validateRequest('controllerPinConfig', $request);
 		$json = $request->getJsonBodyCopy(false);
@@ -222,7 +222,7 @@ class ControllerController extends BaseConfigController {
 				$ref: '#/components/responses/NotFound'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Controller pin configuration profile ID')]
 	public function editPins(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->validateRequest('controllerPinConfig', $request);
@@ -247,7 +247,7 @@ class ControllerController extends BaseConfigController {
 				$ref: '#/components/responses/Forbidden'
 			'404':
 				$ref: '#/components/responses/NotFound'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Controller pin configuration profile ID')]
 	public function removePins(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$id = (int) $request->getParameter('id');

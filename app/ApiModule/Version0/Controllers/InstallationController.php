@@ -75,7 +75,7 @@ class InstallationController extends BaseController {
 					application/json:
 						schema:
 							$ref: '#/components/schemas/InstallationCheck'
-	EOT)]
+EOT)]
 	public function check(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$gwId = $this->infoManager->getId();
 		$status = [

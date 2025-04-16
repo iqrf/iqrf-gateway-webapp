@@ -67,7 +67,7 @@ class IbmCloudController extends BaseCloudController {
 				$ref: '#/components/responses/Forbidden'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->checkRequest('cloudIbm', $request);
 		return parent::create($request, $response);

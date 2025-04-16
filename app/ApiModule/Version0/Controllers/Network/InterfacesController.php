@@ -92,7 +92,7 @@ class InterfacesController extends BaseNetworkController {
 				$ref: '#/components/responses/Forbidden'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['network']);
 		$typeParam = $request->getQueryParam('type', null);
@@ -115,7 +115,7 @@ class InterfacesController extends BaseNetworkController {
 				$ref: '#/components/responses/Forbidden'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'name', type: 'string', description: 'Network interface name')]
 	public function connect(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['network']);
@@ -144,7 +144,7 @@ class InterfacesController extends BaseNetworkController {
 				$ref: '#/components/responses/NotFound'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'name', type: 'string', description: 'Network interface name')]
 	public function disconnect(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['network']);

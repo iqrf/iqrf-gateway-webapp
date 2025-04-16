@@ -72,7 +72,7 @@ class SshKeysController extends BaseSecurityController {
 				$ref: '#/components/responses/Forbidden'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function listKeyTypes(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['sshKeys']);
 		try {
@@ -98,7 +98,7 @@ class SshKeysController extends BaseSecurityController {
 				$ref: '#/components/responses/Forbidden'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function listKeys(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['sshKeys']);
 		$response = $response->writeJsonBody($this->manager->listKeys());
@@ -122,7 +122,7 @@ class SshKeysController extends BaseSecurityController {
 				$ref: '#/components/responses/NotFound'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'SSH public key ID')]
 	public function getKey(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['sshKeys']);
@@ -170,7 +170,7 @@ class SshKeysController extends BaseSecurityController {
 							$ref: '#/components/schemas/Error'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function addKeys(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['sshKeys']);
 		$this->validators->validateRequest('sshKeysAdd', $request);
@@ -199,7 +199,7 @@ class SshKeysController extends BaseSecurityController {
 				$ref: '#/components/responses/Forbidden'
 			'404':
 				$ref: '#/components/responses/NotFound'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'SSH public key ID')]
 	public function deleteKey(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['sshKeys']);

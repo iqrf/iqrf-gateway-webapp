@@ -71,7 +71,7 @@ class CellularOperatorsController extends BaseCellularNetworkController {
 							$ref: '#/components/schemas/NetworkOperatorList'
 			'403':
 				$ref: '#/components/responses/Forbidden'
-	EOT)]
+EOT)]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$operators = $this->repository->findAll();
 		$response = $response->writeJsonBody($operators);
@@ -93,7 +93,7 @@ class CellularOperatorsController extends BaseCellularNetworkController {
 				$ref: '#/components/responses/Forbidden'
 			'404':
 				$ref: '#/components/responses/NotFound'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Operator ID')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$id = (int) $request->getParameter('id');
@@ -131,7 +131,7 @@ class CellularOperatorsController extends BaseCellularNetworkController {
 				$ref: '#/components/responses/BadRequest'
 			'403':
 				$ref: '#/components/responses/Forbidden'
-	EOT)]
+EOT)]
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->validateRequest('networkOperator', $request);
 		$json = $request->getJsonBodyCopy(false);
@@ -169,7 +169,7 @@ class CellularOperatorsController extends BaseCellularNetworkController {
 				$ref: '#/components/responses/Forbidden'
 			'404':
 				$ref: '#/components/responses/NotFound'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Operator ID')]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$id = (int) $request->getParameter('id');
@@ -199,7 +199,7 @@ class CellularOperatorsController extends BaseCellularNetworkController {
 				$ref: '#/components/responses/Forbidden'
 			'404':
 				$ref: '#/components/responses/NotFound'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'Operator ID')]
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$id = (int) $request->getParameter('id');

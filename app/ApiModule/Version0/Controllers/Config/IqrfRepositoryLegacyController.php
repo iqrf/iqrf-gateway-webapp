@@ -62,7 +62,7 @@ class IqrfRepositoryLegacyController extends BaseConfigController {
 							$ref: '#/components/schemas/IqrfRepositoryConfig'
 			'403':
 				$ref: '#/components/responses/Forbidden'
-	EOT)]
+EOT)]
 	public function readConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->readConfig($request, $response);
 	}
@@ -88,7 +88,7 @@ class IqrfRepositoryLegacyController extends BaseConfigController {
 				$ref: '#/components/responses/Forbidden'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function saveConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->saveConfig($request, $response);
 	}

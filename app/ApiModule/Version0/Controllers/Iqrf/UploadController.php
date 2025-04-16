@@ -95,7 +95,7 @@ class UploadController extends BaseIqrfController {
 				$ref: '#/components/responses/InvalidContentType'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function upload(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['iqrf:upload']);
 		ContentTypeUtil::validContentType($request, ['multipart/form-data']);
@@ -139,7 +139,7 @@ class UploadController extends BaseIqrfController {
 				$ref: '#/components/responses/NotFound'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function getDpaFile(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['iqrf:upload']);
 		$this->validators->validateRequest('dpaFile', $request);
@@ -186,7 +186,7 @@ class UploadController extends BaseIqrfController {
 				$ref: '#/components/responses/NotFound'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function uploader(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['iqrf:upload']);
 		$this->validators->validateRequest('uploaderFile', $request);

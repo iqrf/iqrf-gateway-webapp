@@ -94,7 +94,7 @@ class ConnectionsController extends BaseNetworkController {
 							$ref: '#/components/schemas/NetworkConnections'
 			'403':
 				$ref: '#/components/responses/Forbidden'
-	EOT)]
+EOT)]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['network']);
 		$typeParam = $request->getQueryParam('type', null);
@@ -119,7 +119,7 @@ class ConnectionsController extends BaseNetworkController {
 				$ref: '#/components/responses/NotFound'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'uuid', type: 'string', description: 'Connection UUID')]
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['network']);
@@ -158,7 +158,7 @@ class ConnectionsController extends BaseNetworkController {
 				$ref: '#/components/responses/Forbidden'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function add(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['network']);
 		$this->validators->validateRequest('networkConnection', $request);
@@ -194,7 +194,7 @@ class ConnectionsController extends BaseNetworkController {
 				$ref: '#/components/responses/NotFound'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'uuid', type: 'string', description: 'Connection UUID')]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['network']);
@@ -230,7 +230,7 @@ class ConnectionsController extends BaseNetworkController {
 				$ref: '#/components/responses/NotFound'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'uuid', type: 'string', description: 'Connection UUID')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['network']);
@@ -268,7 +268,7 @@ class ConnectionsController extends BaseNetworkController {
 				$ref: '#/components/responses/NotFound'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'uuid', type: 'string', description: 'Connection UUID')]
 	public function connect(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['network']);
@@ -299,7 +299,7 @@ class ConnectionsController extends BaseNetworkController {
 				$ref: '#/components/responses/NotFound'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	#[RequestParameter(name: 'uuid', type: 'string', description: 'Connection UUID')]
 	public function disconnect(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['network']);

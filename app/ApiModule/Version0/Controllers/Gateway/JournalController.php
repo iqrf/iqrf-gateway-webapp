@@ -72,7 +72,7 @@ class JournalController extends BaseGatewayController {
 				$ref: '#/components/responses/Forbidden'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function getConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->configController->getConfig($request, $response);
 	}
@@ -99,7 +99,7 @@ class JournalController extends BaseGatewayController {
 				$ref: '#/components/responses/Forbidden'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function saveConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->configController->saveConfig($request, $response);
 	}
@@ -126,7 +126,7 @@ class JournalController extends BaseGatewayController {
 				$ref: '#/components/responses/Forbidden'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function saveConfigOld(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->configController->saveConfig($request, $response);
 	}
@@ -165,7 +165,7 @@ class JournalController extends BaseGatewayController {
 				$ref: '#/components/responses/Forbidden'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$count = (int) $request->getQueryParam('count', 500);
 		$cursor = $request->getQueryParam('cursor', null);

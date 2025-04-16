@@ -64,7 +64,7 @@ class CellularLegacyController extends BaseNetworkController {
 				$ref: '#/components/responses/Forbidden'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function listModems(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$response = $this->newController->listModems($request, $response);
 		return $this->validators->validateResponse('modemList', $response);
@@ -83,7 +83,7 @@ class CellularLegacyController extends BaseNetworkController {
 				$ref: '#/components/responses/Forbidden'
 			'500':
 				$ref: '#/components/responses/ServerError'
-	EOT)]
+EOT)]
 	public function scanModems(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $this->newController->scanModems($request, $response);
 	}
