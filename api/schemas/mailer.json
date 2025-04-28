@@ -25,7 +25,7 @@
 			"type": "string",
 			"title": "SMTP host",
 			"example": "localhost",
-			"oneOf": [
+			"anyOf": [
 				{
 					"format": "hostname"
 				},
