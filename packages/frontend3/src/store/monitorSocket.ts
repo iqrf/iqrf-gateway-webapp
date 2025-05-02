@@ -28,8 +28,10 @@ import ClientSocket, { type GenericSocketState } from '@/modules/clientSocket';
 interface MonitorState extends GenericSocketState {
 	/// IQRF Gateway Daemon mode
 	mode: DaemonMode;
-	/// Monitor message queue length
-	queueLength: number;
+	/// Management queue length
+	managementQueueLen: number;
+	/// Network queue length
+	networkQueueLen: number;
 	/// Last monitor notification timestamp
 	lastTimestamp: number;
 	/// Is network enumeration in progress?
@@ -45,7 +47,8 @@ export const useMonitorStore = defineStore('monitor', {
 		reconnecting: false,
 		reconnected: false,
 		mode: DaemonMode.Unknown,
-		queueLength: 0,
+		managementQueueLen: 0,
+		networkQueueLen: 0,
 		lastTimestamp: 0,
 		networkEnumInProgress: false,
 		dataReadingInProgress: false,
@@ -105,7 +108,8 @@ export const useMonitorStore = defineStore('monitor', {
 		 */
 		onMessage(event: MessageEvent<string>): void {
 			const message: MonitorStatusResult = (JSON.parse(event.data) as { data: MonitorStatusResult }).data;
-			this.queueLength = message.msgQueueLen;
+			this.managementQueueLen = message.managementQueueLen;
+			this.networkQueueLen = message.networkQueueLen;
 			this.mode = message.operMode;
 			this.lastTimestamp = message.timestamp;
 			this.networkEnumInProgress = message.enumInProgress;
@@ -128,11 +132,18 @@ export const useMonitorStore = defineStore('monitor', {
 			return this.mode;
 		},
 		/**
-		 * Returns current queue length
+		 * Returns management queue length
 		 * @return {number} Queue length
 		 */
-		getQueueLength(): number {
-			return this.queueLength;
+		getManagementQueueLen(): number {
+			return this.managementQueueLen;
+		},
+		/**
+		 * Returns network queue length
+		 * @return {number} Network queue length
+		 */
+		getNetworkQueueLen(): number {
+			return this.networkQueueLen;
 		},
 		/**
 		 * Returns timestamp of last monitor notification

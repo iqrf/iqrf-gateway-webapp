@@ -16,13 +16,19 @@ limitations under the License.
 -->
 
 <template>
-	<v-icon
-		v-tooltip:bottom='`${$t("components.status.monitor.queue") }: ${ daemonStore.isConnected ? monitorStore.queueLength : "N/A"}`'
-		class='me-2'
-		:color='color'
-		:icon='icon'
-		size='small'
-	/>
+	<v-tooltip location='bottom'>
+		<template #activator='{ props }'>
+			<v-icon
+				v-bind='props'
+				class='me-2'
+				:color='color'
+				:icon='icon'
+				size='small'
+			/>
+		</template>
+		<span>{{ `${$t('components.status.monitor.mngQueueLen')}: ${isConnected ? mngQueueLen : $t('common.labels.notAvailable')}` }}</span><br>
+		<span>{{ `${$t('components.status.monitor.ntwQueueLen')}: ${isConnected ? ntwQueueLen : $t('common.labels.notAvailable')}` }}</span>
+	</v-tooltip>
 </template>
 
 <script lang='ts' setup>
@@ -37,16 +43,16 @@ const daemonStore = useDaemonStore();
 const monitorStore = useMonitorStore();
 
 const { isConnected } = storeToRefs(daemonStore);
-const { queueLength } = storeToRefs(monitorStore);
+const { getManagementQueueLen : mngQueueLen, getNetworkQueueLen: ntwQueueLen } = storeToRefs(monitorStore);
 
 /// Icon to display
 const icon = computed(() => {
 	if (!isConnected.value) {
 		return mdiTrayRemove;
 	}
-	if (queueLength.value <= 16) {
+	if (mngQueueLen.value <= 16 && ntwQueueLen.value <= 16) {
 		return mdiTray;
-	} else if (queueLength.value <= 24) {
+	} else if (mngQueueLen.value <= 24 && ntwQueueLen.value <= 24) {
 		return mdiTrayFull;
 	} else {
 		return mdiTrayAlert;
@@ -58,9 +64,9 @@ const color = computed(() => {
 	if (!isConnected.value) {
 		return 'red-accent-3';
 	}
-	if (queueLength.value <= 16) {
+	if (mngQueueLen.value <= 16 && ntwQueueLen.value <= 16) {
 		return 'light-green-accent-3';
-	} else if (queueLength.value <= 24) {
+	} else if (mngQueueLen.value <= 24 && ntwQueueLen.value <= 24) {
 		return 'warning';
 	} else {
 		return 'red-accent-3';

@@ -66,6 +66,7 @@
 			"general": "General",
 			"hostname": "Hostname",
 			"none": "None",
+			"notAvailable": "N/A",
 			"other": "Other",
 			"password": "Password",
 			"path": "Path",
@@ -2123,6 +2124,7 @@
 					"running": "Enumeration in progress.",
 					"unavailable": "Enumeration status not available."
 				},
+				"mngQueueLen": "Management queue length",
 				"mode": "Daemon mode",
 				"modes": {
 					"forwarding": "Forwarding",
@@ -2131,7 +2133,7 @@
 					"unknown": "Unknown"
 				},
 				"notified": "Last notified",
-				"queue": "Queue length",
+				"ntwQueueLen": "Network queue length",
 				"version": "Daemon version"
 			},
 			"sessionExpiration": {

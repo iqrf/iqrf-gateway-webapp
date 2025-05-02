@@ -16,12 +16,14 @@ limitations under the License.
 -->
 
 <template>
-	<VersionIndicator />
-	<DaemonConnectionIndicator />
-	<DaemonModeIndicator />
-	<DaemonQueueIndicator />
-	<EnumerationIndicator />
-	<SessionIndicator v-if='loggedIn' />
+	<div>
+		<VersionIndicator />
+		<DaemonConnectionIndicator />
+		<DaemonModeIndicator />
+		<DaemonQueueIndicator />
+		<EnumerationIndicator />
+		<SessionIndicator v-if='loggedIn' />
+	</div>
 </template>
 
 <script lang='ts' setup>
