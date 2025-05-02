@@ -351,7 +351,6 @@
 				"os": "Operační systém",
 				"tr": {
 					"dpa": "DPA",
-					"error": "Nelze získat informace o koordinátoru.",
 					"hwpid": "HWPID",
 					"hwpidVersion": "HWPID ver.",
 					"mcuType": "Typ MCU",
@@ -850,7 +849,6 @@
 					"unknown": "Neznámý"
 				},
 				"notified": "Poslední oznámení",
-				"queue": "Délka fronty",
 				"version": "Verze daemona"
 			}
 		}
