@@ -16,10 +16,12 @@ limitations under the License.
 -->
 
 <template>
-	<Head>
-		<title>{{ $t('pages.config.daemon.db.title') }}</title>
-	</Head>
-	<IqrfDbConfig />
+	<div>
+		<Head>
+			<title>{{ $t('pages.config.daemon.db.title') }}</title>
+		</Head>
+		<IqrfDbConfig />
+	</div>
 </template>
 
 <route>

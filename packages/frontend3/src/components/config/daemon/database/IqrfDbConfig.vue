@@ -20,7 +20,7 @@ limitations under the License.
 		ref='form'
 		v-slot='{ isValid }'
 		:disabled='[ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
-		@submit.prevent='onSubmit'
+		@submit.prevent='onSubmit()'
 	>
 		<Card>
 			<template #title>
@@ -29,7 +29,7 @@ limitations under the License.
 			<template #titleActions>
 				<CardTitleActionBtn
 					:action='Action.Reload'
-					@click='getConfig'
+					@click='getConfig()'
 				/>
 			</template>
 			<v-skeleton-loader
@@ -37,21 +37,25 @@ limitations under the License.
 				:loading='componentState === ComponentState.Loading'
 				type='text@3'
 			>
-				<v-responsive>
-					<section v-if='config'>
-						<v-checkbox
-							v-model='config.autoEnumerateBeforeInvoked'
-							:label='$t("components.config.daemon.db.autoEnumerate")'
-						/>
-						<v-checkbox
-							v-model='config.enumerateOnLaunch'
-							:label='$t("components.config.daemon.db.enumerateOnLaunch")'
-						/>
-						<v-checkbox
-							v-model='config.metadataToMessages'
-							:label='$t("components.config.daemon.db.includeMetadata")'
-						/>
-					</section>
+				<v-responsive v-if='config'>
+					<v-checkbox
+						v-model='config.autoEnumerateBeforeInvoked'
+						:label='$t("components.config.daemon.db.autoEnumerate")'
+						density='compact'
+						hide-details
+					/>
+					<v-checkbox
+						v-model='config.enumerateOnLaunch'
+						:label='$t("components.config.daemon.db.enumerateOnLaunch")'
+						density='compact'
+						hide-details
+					/>
+					<v-checkbox
+						v-model='config.metadataToMessages'
+						:label='$t("components.config.daemon.db.includeMetadata")'
+						density='compact'
+						hide-details
+					/>
 				</v-responsive>
 			</v-skeleton-loader>
 			<template #actions>
@@ -91,8 +95,8 @@ const i18n = useI18n();
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
 const form: Ref<VForm | null> = ref(null);
-let instance = '';
 const config: Ref<IqrfGatewayDaemonDb | null> = ref(null);
+let instance = '';
 
 async function getConfig(): Promise<void> {
 	if (componentState.value === ComponentState.Created) {
@@ -100,15 +104,16 @@ async function getConfig(): Promise<void> {
 	} else {
 		componentState.value = ComponentState.Reloading;
 	}
-	service.getComponent(IqrfGatewayDaemonComponentName.IqrfDb)
-		.then((response: IqrfGatewayDaemonComponent<IqrfGatewayDaemonComponentName.IqrfDb>): void => {
-			config.value = response.instances[0] ?? null;
-			if (config.value !== null) {
-				instance = config.value.instance;
-				componentState.value = ComponentState.Ready;
-			}
-		})
-		.catch(() => toast.error('TODO FETCH ERROR HANDLING'));
+	try {
+		const data = await service.getComponent(IqrfGatewayDaemonComponentName.IqrfDb);
+		config.value = data.instances[0] ?? null;
+		if (config.value) {
+			instance = config.value.instance;
+			componentState.value = ComponentState.Ready;
+		}
+	} catch {
+		toast.error('TODO FETCH ERROR HANDLING');
+	}
 }
 
 async function onSubmit(): Promise<void> {
@@ -117,15 +122,14 @@ async function onSubmit(): Promise<void> {
 	}
 	componentState.value = ComponentState.Saving;
 	const params = { ...config.value };
-	service.updateInstance(IqrfGatewayDaemonComponentName.IqrfDb, instance, params)
-		.then(() => {
-			getConfig().then(() => {
-				toast.success(
-					i18n.t('components.config.daemon.db.messages.save.success'),
-				);
-			});
-		})
-		.catch(() => toast.error('TODO SAVE ERROR HANDLING'));
+	try {
+		await service.updateInstance(IqrfGatewayDaemonComponentName.IqrfDb, instance, params);
+		toast.success(
+			i18n.t('components.config.daemon.db.messages.save.success'),
+		);
+	} catch {
+		toast.error('TODO SAVE ERROR HANDLING');
+	}
 }
 
 onMounted(() => {
