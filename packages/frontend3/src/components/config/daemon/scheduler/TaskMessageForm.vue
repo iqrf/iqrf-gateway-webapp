@@ -36,7 +36,7 @@ limitations under the License.
 		<v-form
 			v-slot='{ isValid }'
 			ref='form'
-			@submit.prevent='onSubmit'
+			@submit.prevent='onSubmit()'
 		>
 			<Card
 				:header-color='action === Action.Add ? "success" : "primary"'
@@ -72,7 +72,7 @@ limitations under the License.
 					<v-spacer />
 					<CardActionBtn
 						:action='Action.Cancel'
-						@click='close'
+						@click='close()'
 					/>
 				</template>
 			</Card>
@@ -81,11 +81,12 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
+import { MessagingType } from '@iqrf/iqrf-gateway-daemon-utils/enums';
 import {
-	type DaemonApiRequest,
 	type MessagingInstance,
-	type SchedulerRecordTask,
+	type TApiResponse,
 } from '@iqrf/iqrf-gateway-daemon-utils/types';
+import { SchedulerTask } from '@iqrf/iqrf-gateway-daemon-utils/types/management';
 import { type IqrfGatewayDaemonSchedulerMessagings } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { mdiPencil, mdiPlus } from '@mdi/js';
 import { computed, type PropType, ref , type Ref, watchEffect } from 'vue';
@@ -111,7 +112,7 @@ const componentProps = defineProps({
 		required: false,
 	},
 	task: {
-		type: [Object, null] as PropType<SchedulerRecordTask | null>,
+		type: [Object, null] as PropType<SchedulerTask | null>,
 		default: null,
 		required: false,
 	},
@@ -125,7 +126,7 @@ const emit = defineEmits(['save']);
 const show: Ref<boolean> = ref(false);
 const form: Ref<VForm | null> = ref(null);
 const message: Ref<string | null> = ref(null);
-const selected: Ref<string[] | MessagingInstance[]> = ref([]);
+const selected: Ref<MessagingInstance[]> = ref([]);
 
 const messagingOptions = computed(() => {
 	if (componentProps.messagings === null) {
@@ -133,11 +134,17 @@ const messagingOptions = computed(() => {
 	}
 	const mqttOptions = componentProps.messagings.mqtt.map((item: string) => ({
 		title: `[MQTT] ${item}`,
-		value: item,
+		value: {
+			type: MessagingType.Mqtt,
+			instance: item,
+		},
 	}));
 	const wsOptions = componentProps.messagings.ws.map((item: string) => ({
 		title: `[WS] ${item}`,
-		value: item,
+		value: {
+			type: MessagingType.Websocket,
+			instance: item,
+		},
 	}));
 	return mqttOptions.concat(wsOptions);
 });
@@ -149,7 +156,7 @@ watchEffect((): void => {
 	}
 });
 
-function isDaemonApiRequest(value: object): value is DaemonApiRequest {
+function isDaemonApiRequest(value: object): value is TApiResponse {
 	if (!('mType' in value) || !('data' in value)) {
 		return false;
 	}
@@ -160,8 +167,8 @@ async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value) || message.value === null) {
 		return;
 	}
-	const recordTask: SchedulerRecordTask = {
-		message: JSON.parse(message.value) as DaemonApiRequest,
+	const recordTask: SchedulerTask = {
+		message: JSON.parse(message.value),
 		messaging: selected.value,
 	};
 	close();

@@ -30,7 +30,7 @@ limitations under the License.
 			ref='form'
 			v-slot='{ isValid }'
 			:disabled='componentState === ComponentState.Saving'
-			@submit.prevent='onSubmit'
+			@submit.prevent='onSubmit()'
 		>
 			<Card>
 				<template #title>
@@ -44,7 +44,7 @@ limitations under the License.
 						(v: File|Blob|null) => ValidationRules.required(v, $t("components.config.daemon.scheduler.validation.importFileMissing")),
 					]'
 					:prepend-inner-icon='mdiFileOutline'
-					:prepend-icon='null'
+					:prepend-icon='undefined'
 					show-size
 					required
 				/>
@@ -92,7 +92,8 @@ limitations under the License.
 <script lang='ts' setup>
 import { SchedulerMessages } from '@iqrf/iqrf-gateway-daemon-utils/enums';
 import { SchedulerService } from '@iqrf/iqrf-gateway-daemon-utils/services';
-import { type DaemonApiResponse, type SchedulerRecord } from '@iqrf/iqrf-gateway-daemon-utils/types';
+import { type ApiResponseManagementRsp, type TApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
+import { type SchedulerAddTaskParams, type SchedulerAddTaskResult } from '@iqrf/iqrf-gateway-daemon-utils/types/management';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { mdiFileOutline } from '@mdi/js';
 import { BlobReader, TextWriter, ZipReader } from '@zip.js/zip.js';
@@ -125,7 +126,7 @@ const i18n = useI18n();
 const form: Ref<VForm | null> = ref(null);
 const files: Ref<File[]> = ref([]);
 const msgIds: Ref<string[]> = ref([]);
-const importRecords: Ref<SchedulerRecord[]> = ref([]);
+const importRecords: Ref<SchedulerAddTaskParams[]> = ref([]);
 const processedRecords: Ref<TaskImportResult[]> = ref([]);
 
 daemonStore.$onAction(
@@ -133,7 +134,7 @@ daemonStore.$onAction(
 		if (name !== 'onMessage') {
 			return;
 		}
-		after((rsp: DaemonApiResponse) => {
+		after((rsp: TApiResponse) => {
 			const msgId = rsp.data.msgId;
 			const idx = msgIds.value.indexOf(msgId);
 			if (idx === -1) {
@@ -141,10 +142,9 @@ daemonStore.$onAction(
 			}
 			msgIds.value.splice(idx, 1);
 			daemonStore.removeMessage(msgId);
-
 			switch (rsp.mType) {
-				case SchedulerMessages.AddTask.toString():
-					handleAddTask(rsp);
+				case SchedulerMessages.AddTask:
+					handleAddTask(rsp as ApiResponseManagementRsp<SchedulerAddTaskResult>);
 					break;
 				default:
 					//
@@ -157,8 +157,8 @@ daemonStore.$onAction(
 	},
 );
 
-async function extractZip(archive: File): Promise<SchedulerRecord[]> {
-	const tasks: SchedulerRecord[] = [];
+async function extractZip(archive: File): Promise<SchedulerAddTaskParams[]> {
+	const tasks: SchedulerAddTaskParams[] = [];
 	const blobReader = new BlobReader(archive);
 	const zipReader = new ZipReader(blobReader);
 	const files = await zipReader.getEntries();
@@ -168,8 +168,7 @@ async function extractZip(archive: File): Promise<SchedulerRecord[]> {
 			continue;
 		}
 		const content = await file.getData(textWriter);
-		const record: SchedulerRecord = JSON.parse(content) as SchedulerRecord;
-		tasks.push(record);
+		tasks.push(JSON.parse(content) as SchedulerAddTaskParams);
 	}
 	return tasks;
 }
@@ -184,14 +183,14 @@ async function onSubmit(): Promise<void> {
 	const file = files.value[0];
 	if (['application/x-zip-compressed', 'application/zip'].includes(file.type)) {
 		await extractZip(file)
-			.then((records: SchedulerRecord[]) => importRecords.value = records)
+			.then((records: SchedulerAddTaskParams[]) => importRecords.value = records)
 			.catch(() => toast.error(
 				i18n.t('components.config.daemon.scheduler.messages.import.archiveInvalid'),
 			));
 	} else if (file.type === 'application/json') {
 		const content = await file.text();
 		try {
-			importRecords.value.push(JSON.parse(content) as SchedulerRecord);
+			importRecords.value.push(JSON.parse(content) as SchedulerAddTaskParams);
 		} catch {
 			toast.error(
 				i18n.t('components.config.daemon.scheduler.messages.import.jsonInvalid'),
@@ -207,19 +206,25 @@ async function onSubmit(): Promise<void> {
 	uploadRecords();
 }
 
-function uploadRecords(): void {
-	const options = new DaemonMessageOptions(null, 30_000);
+async function uploadRecords(): Promise<void> {
+	const opts = new DaemonMessageOptions(30_000);
 	for (const record of importRecords.value) {
 		processedRecords.value.push({
-			taskId: record.taskId,
+			taskId: record.taskId as string,
 		});
-		daemonStore.sendMessage(
-			SchedulerService.addTask(record, options),
-		).then((val: string) => msgIds.value.push(val));
+		msgIds.value.push(
+			await daemonStore.sendMessage(
+				SchedulerService.addTask(
+					{},
+					record,
+					opts,
+				),
+			),
+		);
 	}
 }
 
-function handleAddTask(rsp: DaemonApiResponse): void {
+function handleAddTask(rsp: ApiResponseManagementRsp<SchedulerAddTaskResult>): void {
 	const taskId = rsp.data.rsp.taskId as string;
 	const idx = processedRecords.value.findIndex((item: TaskImportResult) => item.taskId === taskId);
 	if (idx !== -1) {

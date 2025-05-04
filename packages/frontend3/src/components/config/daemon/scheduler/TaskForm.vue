@@ -35,7 +35,7 @@ limitations under the License.
 			ref='form'
 			v-slot='{ isValid }'
 			:disabled='[ComponentState.Loading, ComponentState.Saving].includes(componentState)'
-			@submit.prevent='onSubmit'
+			@submit.prevent='onSubmit()'
 		>
 			<Card :action='action'>
 				<template #title>
@@ -63,16 +63,6 @@ limitations under the License.
 					<label for='datetimeinput' class='v-label'>
 						{{ $t('components.config.daemon.scheduler.oneshot') }}
 					</label>
-					<VueDatePicker
-						id='datetimeinput'
-						v-model='task.timeSpec.startTime'
-						model-type='yyyy-MM-dd&apos;T&apos;HH:mm:ssXXX'
-						:enable-seconds='true'
-						:show-now-button='true'
-						:teleport='true'
-						:state='datePickerState'
-						:utc='true'
-					/>
 				</div>
 				<NumberInput
 					v-if='taskType === SchedulerTaskType.PERIODIC'
@@ -116,14 +106,18 @@ limitations under the License.
 				<v-checkbox
 					v-model='task.persist'
 					:label='$t("components.config.daemon.scheduler.persist")'
+					density='compact'
+					hide-details
 				/>
 				<v-checkbox
 					v-model='task.enabled'
 					:label='$t("components.config.daemon.scheduler.enabled")'
+					density='compact'
+					hide-details
 				/>
 				<DataTable
 					:headers='headers'
-					:items='task.task'
+					:items='Array.isArray(task.task) ? task.task : [task.task]'
 					:hover='true'
 					:dense='true'
 					no-data-text='components.config.daemon.scheduler.noMessages'
@@ -136,12 +130,12 @@ limitations under the License.
 							<v-toolbar-items>
 								<TaskMessageForm
 									:messagings='messagings'
-									@save='saveMessage'
+									@save='(index: number, t: SchedulerTask) => saveMessage(index, t)'
 								/>
 								<v-btn
 									color='error'
 									:icon='mdiDelete'
-									@click='clearMessages'
+									@click='clearMessages()'
 								/>
 							</v-toolbar-items>
 						</v-toolbar>
@@ -150,7 +144,7 @@ limitations under the License.
 						{{ item.message.mType }}
 					</template>
 					<template #item.messaging='{ item }'>
-						{{ item.messaging.join(', ') }}
+						{{ formatMessagingInstances(item.messaging) }}
 					</template>
 					<template #item.actions='{ item, index }'>
 						<TaskMessageForm
@@ -158,7 +152,7 @@ limitations under the License.
 							:index='index'
 							:messagings='messagings'
 							:task='item'
-							@save='saveMessage'
+							@save='(index: number, t: SchedulerTask) => saveMessage(index, t)'
 						/>
 						<v-tooltip
 							location='bottom'
@@ -184,7 +178,10 @@ limitations under the License.
 						type='submit'
 					/>
 					<v-spacer />
-					<CardActionBtn :action='Action.Cancel' @click='close' />
+					<CardActionBtn
+						:action='Action.Cancel'
+						@click='close()'
+					/>
 				</template>
 			</Card>
 		</v-form>
@@ -192,20 +189,27 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { SchedulerMessages } from '@iqrf/iqrf-gateway-daemon-utils/enums';
+import { SchedulerMessages, SchedulerTaskType } from '@iqrf/iqrf-gateway-daemon-utils/enums';
 import { SchedulerService } from '@iqrf/iqrf-gateway-daemon-utils/services';
 import {
-	type DaemonApiResponse,
-	type SchedulerRecord,
-	type SchedulerRecordTask,
-	SchedulerTaskType,
+	type ApiResponseManagementRsp,
+	type MessagingInstance,
+	type TApiResponse,
 } from '@iqrf/iqrf-gateway-daemon-utils/types';
+import {
+	type SchedulerAddTaskParams,
+	type SchedulerAddTaskResult,
+	type SchedulerEditTaskParams,
+	type SchedulerEditTaskResult,
+	type SchedulerGetTaskResult,
+	type SchedulerTask,
+} from '@iqrf/iqrf-gateway-daemon-utils/types/management';
 import { DaemonMessageOptions, SchedulerCron } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { type IqrfGatewayDaemonSchedulerMessagings } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { mdiDelete, mdiHelpBox } from '@mdi/js';
 import cron from 'cron-validate';
 import { v4 as uuidv4 } from 'uuid';
-import { computed, type PropType, ref, type Ref } from 'vue';
+import { computed, type PropType, ref, type Ref, toRaw } from 'vue';
 import { watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
@@ -239,7 +243,7 @@ const componentProps = defineProps({
 		required: true,
 	},
 	schedulerTask: {
-		type: [Object, null] as PropType<SchedulerRecord | null>,
+		type: [Object, null] as PropType<SchedulerGetTaskResult | null>,
 		default: null,
 		required: false,
 	},
@@ -249,7 +253,7 @@ const i18n = useI18n();
 const daemonStore = useDaemonStore();
 const show: Ref<boolean> = ref(false);
 const form: Ref<VForm | null> = ref(null);
-const defaultTask: SchedulerRecord = {
+const defaultTask: SchedulerAddTaskParams = {
 	clientId: SchedulerService.ClientID,
 	taskId: '',
 	description: '',
@@ -265,7 +269,7 @@ const defaultTask: SchedulerRecord = {
 	enabled: true,
 };
 const msgId: Ref<string | null> = ref(null);
-const task: Ref<SchedulerRecord> = ref({ ...defaultTask });
+const task: Ref<SchedulerAddTaskParams | SchedulerEditTaskParams> = ref({ ...defaultTask });
 const taskType: Ref<SchedulerTaskType> = ref(SchedulerTaskType.ONESHOT);
 const humanCron: Ref<string | null> = ref(null);
 
@@ -274,21 +278,18 @@ daemonStore.$onAction(
 		if (name !== 'onMessage') {
 			return;
 		}
-		after((rsp: DaemonApiResponse) => {
+		after((rsp: TApiResponse) => {
 			if (rsp.data.msgId !== msgId.value) {
 				return;
 			}
 			daemonStore.removeMessage(msgId.value);
 			componentState.value = ComponentState.Ready;
 			switch (rsp.mType) {
-				case SchedulerMessages.GetTask.toString():
-					handleGetTask(rsp);
+				case SchedulerMessages.AddTask:
+					handleSaveTask(rsp as ApiResponseManagementRsp<SchedulerAddTaskResult>);
 					break;
-				case SchedulerMessages.AddTask.toString():
-					handleSaveTask(rsp);
-					break;
-				case SchedulerMessages.EditTask.toString():
-					handleSaveTask(rsp);
+				case SchedulerMessages.EditTask:
+					handleSaveTask(rsp as ApiResponseManagementRsp<SchedulerEditTaskResult>);
 					break;
 				default:
 				//
@@ -336,8 +337,8 @@ watch(show, (newVal: boolean) => {
 	if (!newVal) {
 		return;
 	}
-	if (componentProps.action === Action.Edit && componentProps.schedulerTask) {
-		task.value = structuredClone(componentProps.schedulerTask);
+	if (componentProps.action === Action.Edit && componentProps.schedulerTask !== null) {
+		task.value = structuredClone(toRaw(componentProps.schedulerTask));
 		if (Array.isArray(task.value.timeSpec.cronTime)) {
 			task.value.timeSpec.cronTime = task.value.timeSpec.cronTime.join(' ').trim();
 		}
@@ -350,6 +351,29 @@ watch(show, (newVal: boolean) => {
 	componentState.value = ComponentState.Ready;
 });
 
+function formatMessagingInstances(instances: MessagingInstance[]): string {
+	instances = instances.sort((a: MessagingInstance, b: MessagingInstance) => {
+		const res = a.type.localeCompare(b.type);
+		if (res !== 0) {
+			return res;
+		}
+		return a.instance.localeCompare(b.instance);
+	});
+	let lastType: string|null = null;
+	let out = '';
+	for (const [index, item] of instances.entries()) {
+		if (lastType !== item.type) {
+			lastType = item.type;
+			out += `[${item.type.toUpperCase()}] `;
+		}
+		out += item.instance;
+		if (index < instances.length - 1) {
+			out += ', ';
+		}
+	}
+	return out;
+}
+
 function setTaskType(): void {
 	if (task.value.timeSpec.periodic) {
 		taskType.value = SchedulerTaskType.PERIODIC;
@@ -360,63 +384,57 @@ function setTaskType(): void {
 	}
 }
 
-function saveMessage(index: number, recordTask: SchedulerRecordTask): void {
+function saveMessage(index: number, recordTask: SchedulerTask): void {
 	if (index === null) {
-		task.value.task.push(recordTask);
+		(task.value.task as SchedulerTask[]).push(recordTask);
 	} else {
-		task.value.task[index] = recordTask;
+		(task.value.task as SchedulerTask[])[index] = recordTask;
 	}
 }
 
 function deleteMessage(index: number): void {
-	task.value.task.splice(index, 1);
+	(task.value.task as SchedulerTask[]).splice(index, 1);
 }
 
 function clearMessages(): void {
 	task.value.task = [];
 }
 
-function handleGetTask(rsp: DaemonApiResponse): void {
-	if (rsp.data.status !== 0) {
-		toast.error(
-			i18n.t('TODO GET ERROR HANDLING'),
-		);
-		return;
-	}
-	task.value = rsp.data.rsp as SchedulerRecord;
-}
-
-function addTask(record: SchedulerRecord): void {
-	const options = new DaemonMessageOptions(
-		null,
+async function addTask(record: SchedulerAddTaskParams): Promise<void> {
+	componentState.value = ComponentState.Saving;
+	const opts = new DaemonMessageOptions(
 		30_000,
 		null,
 		() => {msgId.value = null;},
 	);
-	componentState.value = ComponentState.Saving;
-	daemonStore.sendMessage(
-		SchedulerService.addTask(record, options),
-	).then((val: string) => msgId.value = val);
+	msgId.value = await daemonStore.sendMessage(
+		SchedulerService.addTask(
+			{},
+			record,
+			opts,
+		),
+	);
 }
 
-function editTask(record: SchedulerRecord): void {
-	const options = new DaemonMessageOptions(
-		null,
+async function editTask(record: SchedulerEditTaskParams): Promise<void> {
+	componentState.value = ComponentState.Saving;
+	const opts = new DaemonMessageOptions(
 		30_000,
 		null,
 		() => {msgId.value = null;},
 	);
-	componentState.value = ComponentState.Saving;
-	daemonStore.sendMessage(
-		SchedulerService.editTask(record, options),
-	).then((val: string) => msgId.value = val);
+	msgId.value = await daemonStore.sendMessage(
+		SchedulerService.editTask(
+			{},
+			record,
+			opts,
+		),
+	);
 }
 
-function handleSaveTask(rsp: DaemonApiResponse): void {
+function handleSaveTask(rsp: ApiResponseManagementRsp<SchedulerAddTaskResult|SchedulerEditTaskResult>): void {
 	if (rsp.data.status !== 0) {
-		toast.error(
-			i18n.t('TODO SAVE ERROR HANDLING'),
-		);
+		toast.error('TODO SAVE ERROR HANDLING');
 		return;
 	}
 	close();
@@ -446,7 +464,7 @@ async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
 	}
-	const record = { ...task.value };
+	const record = { ...task.value } as SchedulerGetTaskResult;
 	delete record.active;
 	if (taskType.value === SchedulerTaskType.ONESHOT) {
 		record.timeSpec.exactTime = true;
@@ -456,14 +474,13 @@ async function onSubmit(): Promise<void> {
 		record.timeSpec.exactTime = false;
 	} else {
 		record.timeSpec.periodic = record.timeSpec.exactTime = false;
-		record.timeSpec.cronTime = SchedulerCron.convertCron(record.timeSpec.cronTime);
+		record.timeSpec.cronTime = SchedulerCron.convertCron(record.timeSpec.cronTime as string);
 	}
 	if (componentProps.action === Action.Edit && componentProps.schedulerTask?.taskId !== null) {
-		record.newTaskId = record.taskId;
+		(record as SchedulerEditTaskParams).newTaskId = record.taskId;
 		record.taskId = componentProps.schedulerTask!.taskId;
 		editTask(record);
 	} else {
-		delete record.newTaskId;
 		addTask(record);
 	}
 }

@@ -16,10 +16,12 @@ limitations under the License.
 -->
 
 <template>
-	<Head>
-		<title>{{ $t('pages.config.daemon.scheduler.title') }}</title>
-	</Head>
-	<TaskTable />
+	<div>
+		<Head>
+			<title>{{ $t('pages.config.daemon.scheduler.title') }}</title>
+		</Head>
+		<TaskTable />
+	</div>
 </template>
 
 <route>

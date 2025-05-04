@@ -101,7 +101,6 @@ async function getMode(): Promise<void> {
 		},
 	);
 	const rq = ManagementService.getMode({}, opts);
-	console.warn(rq);
 	msgId.value = await daemonStore.sendMessage(rq);
 }
 

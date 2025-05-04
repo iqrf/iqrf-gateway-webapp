@@ -20,7 +20,7 @@ limitations under the License.
 		ref='dialog'
 		:component-state='componentState'
 		:tooltip='$t("components.config.daemon.scheduler.actions.delete")'
-		@submit='removeTask'
+		@submit='removeTask()'
 	>
 		<template #title>
 			{{ $t('components.config.daemon.scheduler.delete.title') }}
@@ -32,7 +32,8 @@ limitations under the License.
 <script lang='ts' setup>
 import { SchedulerMessages } from '@iqrf/iqrf-gateway-daemon-utils/enums';
 import { SchedulerService } from '@iqrf/iqrf-gateway-daemon-utils/services';
-import { type DaemonApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
+import { type ApiResponseManagementRsp, type TApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
+import { type SchedulerRemoveTaskResult } from '@iqrf/iqrf-gateway-daemon-utils/types/management';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -60,35 +61,42 @@ daemonStore.$onAction(
 		if (name !== 'onMessage') {
 			return;
 		}
-		after((rsp: DaemonApiResponse) => {
+		after((rsp: TApiResponse) => {
 			if (rsp.data.msgId !== msgId.value) {
 				return;
 			}
 			daemonStore.removeMessage(msgId.value);
-			if (rsp.mType === SchedulerMessages.RemoveTask.toString()) {
-				handleRemoveTask(rsp);
+			if (rsp.mType === SchedulerMessages.RemoveTask) {
+				handleRemoveTask(rsp as ApiResponseManagementRsp<SchedulerRemoveTaskResult>);
 			}
 		});
 	},
 );
 
-function removeTask(): void {
+async function removeTask(): Promise<void> {
 	componentState.value = ComponentState.Saving;
-	const options = new DaemonMessageOptions(
-		null,
+	const opts = new DaemonMessageOptions(
 		30_000,
 		null,
-		() => {msgId.value = null;},
+		() => {
+			componentState.value = ComponentState.Ready;
+			msgId.value = null;
+		},
 	);
-	daemonStore.sendMessage(
-		SchedulerService.removeTask(componentProps.taskId, options),
-	).then((val: string) => msgId.value = val);
+	msgId.value = await daemonStore.sendMessage(
+		SchedulerService.removeTask(
+			{},
+			{ clientId: SchedulerService.ClientID, taskId: componentProps.taskId },
+			opts,
+		),
+	);
 }
 
-function handleRemoveTask(rsp: DaemonApiResponse): void {
+function handleRemoveTask(rsp: ApiResponseManagementRsp<SchedulerRemoveTaskResult>): void {
 	if (rsp.data.status !== 0) {
 		toast.error('TODO ERROR HANDLING');
 		componentState.value = ComponentState.Error;
+		return;
 	}
 	toast.success(
 		i18n.t('components.config.daemon.scheduler.messages.delete.success', { id: componentProps.taskId }),

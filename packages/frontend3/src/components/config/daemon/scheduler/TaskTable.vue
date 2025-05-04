@@ -28,7 +28,7 @@ limitations under the License.
 						color='white'
 						size='large'
 						:icon='mdiReload'
-						@click='listTasks'
+						@click='listTasks()'
 					/>
 				</template>
 				{{ $t('components.config.daemon.scheduler.actions.reload') }}
@@ -36,9 +36,9 @@ limitations under the License.
 			<TaskForm
 				:action='Action.Add'
 				:messagings='messagings'
-				@saved='listTasks'
+				@saved='listTasks()'
 			/>
-			<TasksImportDialog @imported='listTasks' />
+			<TasksImportDialog @imported='listTasks()' />
 			<v-tooltip location='bottom'>
 				<template #activator='{ props }'>
 					<v-btn
@@ -46,13 +46,13 @@ limitations under the License.
 						color='white'
 						size='large'
 						:icon='mdiExport'
-						@click='exportTasks'
+						@click='exportTasks()'
 					/>
 				</template>
 				{{ $t('components.config.daemon.scheduler.actions.export') }}
 			</v-tooltip>
 			<TasksDeleteDialog
-				@deleted='listTasks'
+				@deleted='listTasks()'
 			/>
 		</template>
 		<DataTable
@@ -106,7 +106,7 @@ limitations under the License.
 								:action='Action.Edit'
 								:messagings='messagings'
 								:scheduler-task='item'
-								@saved='listTasks'
+								@saved='listTasks()'
 							/>
 							<v-tooltip
 								activator='parent'
@@ -117,7 +117,7 @@ limitations under the License.
 						</span>
 						<TaskDeleteDialog
 							:task-id='item.taskId'
-							@deleted='listTasks'
+							@deleted='listTasks()'
 						/>
 					</v-responsive>
 				</v-skeleton-loader>
@@ -129,10 +129,16 @@ limitations under the License.
 <script lang='ts' setup>
 import { SchedulerMessages } from '@iqrf/iqrf-gateway-daemon-utils/enums';
 import { SchedulerService } from '@iqrf/iqrf-gateway-daemon-utils/services';
-import { type DaemonApiResponse, type SchedulerRecord, type SchedulerRecordTimeSpec } from '@iqrf/iqrf-gateway-daemon-utils/types';
+import { type ApiResponseManagementRsp, type TApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
+import {
+	type SchedulerGetTaskResult,
+	type SchedulerListDetailResult,
+	type SchedulerStartTaskResult,
+	type SchedulerStopTaskResult,
+	type SchedulerTimeSpec,
+} from '@iqrf/iqrf-gateway-daemon-utils/types/management';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { type IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
-import { FileResponse } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { type IqrfGatewayDaemonSchedulerMessagings } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { FileDownloader } from '@iqrf/iqrf-gateway-webapp-client/utils';
 import { mdiExport, mdiPlay, mdiReload, mdiStop } from '@mdi/js';
@@ -166,7 +172,7 @@ const headers = [
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end' },
 ];
 const msgId: Ref<string | null> = ref(null);
-const tasks: Ref<SchedulerRecord[]> = ref([]);
+const tasks: Ref<SchedulerGetTaskResult[]> = ref([]);
 const loadingTasks: Ref<string[]> = ref([]);
 const messagings: Ref<IqrfGatewayDaemonSchedulerMessagings | null> = ref(null);
 
@@ -175,23 +181,23 @@ daemonStore.$onAction(
 		if (name !== 'onMessage') {
 			return;
 		}
-		after((rsp: DaemonApiResponse) => {
+		after((rsp: TApiResponse) => {
 			if (rsp.data.msgId !== msgId.value) {
 				return;
 			}
 			daemonStore.removeMessage(msgId.value);
 			switch (rsp.mType) {
-				case SchedulerMessages.ListTasks.toString():
-					handleListTasks(rsp);
+				case SchedulerMessages.ListTasks:
+					handleListTasks(rsp as ApiResponseManagementRsp<SchedulerListDetailResult>);
 					break;
-				case SchedulerMessages.GetTask.toString():
-					handleGetTask(rsp);
+				case SchedulerMessages.GetTask:
+					handleGetTask(rsp as ApiResponseManagementRsp<SchedulerGetTaskResult>);
 					break;
-				case SchedulerMessages.StartTask.toString():
-					handleStartTask(rsp);
+				case SchedulerMessages.StartTask:
+					handleStartTask(rsp as ApiResponseManagementRsp<SchedulerStartTaskResult>);
 					break;
-				case SchedulerMessages.StopTask.toString():
-					handleStopTask(rsp);
+				case SchedulerMessages.StopTask:
+					handleStopTask(rsp as ApiResponseManagementRsp<SchedulerStopTaskResult>);
 					break;
 				default:
 				//
@@ -204,7 +210,7 @@ function activateIcon(active: boolean): string {
 	return active ? mdiStop : mdiPlay;
 }
 
-function timeString(timespec: SchedulerRecordTimeSpec): string {
+function timeString(timespec: SchedulerTimeSpec): string {
 	if (timespec.exactTime) {
 		return `At ${DateTime.fromISO(timespec.startTime).toLocaleString(DateTime.DATETIME_FULL)}`;
 	}
@@ -212,110 +218,116 @@ function timeString(timespec: SchedulerRecordTimeSpec): string {
 		const duration = Duration.fromMillis(timespec.period * 1_000).normalize().rescale();
 		return `Every ${duration.toHuman({ listStyle: 'long' })}`;
 	}
-	return cronstrue.toString(timespec.cronTime);
+	return cronstrue.toString(timespec.cronTime as string);
 }
 
-function exportTasks(): void {
+async function exportTasks(): Promise<void> {
 	componentState.value = ComponentState.Loading;
-	webappSchedulerService.exportScheduler()
-		.then((response: FileResponse<Blob>) => {
-			const filename = `iqrf-gateway-scheduler_${new Date().toISOString()}.zip`;
-			FileDownloader.downloadFileResponse(response, filename);
-			componentState.value = ComponentState.Ready;
-		})
-		.catch(() => {
-			toast.error('TODO EXPORT ERROR HANDLING');
-			componentState.value = ComponentState.Ready;
-		});
+	try {
+		const file = await webappSchedulerService.exportScheduler();
+		FileDownloader.downloadFileResponse(
+			file,
+			`iqrf-gateway-scheduler_${new Date().toISOString()}.zip`,
+		);
+	} catch {
+		toast.error('TODO EXPORT ERROR HANDLING');
+	}
+	componentState.value = ComponentState.Ready;
 }
 
-function getMessagings(): void {
-	webappSchedulerService.getSchedulerMessagings()
-		.then((response: IqrfGatewayDaemonSchedulerMessagings) => {
-			messagings.value = response;
-		});
+async function getMessagings(): Promise<void> {
+	try {
+		messagings.value = await webappSchedulerService.getSchedulerMessagings();
+	} catch {
+		//
+	}
 }
 
-function listTasks(): void {
+async function listTasks(): Promise<void> {
 	if (componentState.value === ComponentState.Created) {
 		componentState.value = ComponentState.Loading;
 	} else {
 		componentState.value = ComponentState.Reloading;
 	}
 	loadingTasks.value = [];
-	const options = new DaemonMessageOptions(
-		null,
+	const opts = new DaemonMessageOptions(
 		30_000,
 		null,
 		() => {msgId.value = null;},
 	);
-	daemonStore.sendMessage(
-		SchedulerService.listTasks(true, options),
-	).then((val: string) => msgId.value = val);
+	msgId.value = await daemonStore.sendMessage(
+		SchedulerService.listTasks(
+			{},
+			{ details: true, clientId: SchedulerService.ClientID },
+			opts,
+		),
+	);
 }
 
-function handleListTasks(rsp: DaemonApiResponse): void {
+function handleListTasks(rsp: ApiResponseManagementRsp<SchedulerListDetailResult>): void {
 	if (rsp.data.status !== 0) {
-		toast.error(
-			i18n.t('TODO LIST ERROR HANDLING'),
-		);
+		toast.error('TODO LIST ERROR HANDLING');
 		return;
 	}
-	tasks.value = rsp.data.rsp.tasks as SchedulerRecord[];
+	tasks.value = rsp.data.rsp.tasks as SchedulerGetTaskResult[];
 	componentState.value = ComponentState.Ready;
 }
 
-function getTask(taskId: string): void {
+async function getTask(taskId: string): Promise<void> {
 	if (!loadingTasks.value.includes(taskId)) {
 		loadingTasks.value.push(taskId);
 	}
-	const options = new DaemonMessageOptions(
-		null,
+	const opts = new DaemonMessageOptions(
 		30_000,
 		null,
-		() => {msgId.value = null;},
+		() => {
+			removeLoadingTask(taskId);
+			msgId.value = null;
+		},
 	);
-	daemonStore.sendMessage(
-		SchedulerService.getTask(taskId, options),
-	).then((val: string) => msgId.value = val);
+	msgId.value = await daemonStore.sendMessage(
+		SchedulerService.getTask(
+			{},
+			{ clientId: SchedulerService.ClientID, taskId: taskId },
+			opts,
+		),
+	);
 }
 
-function handleGetTask(rsp: DaemonApiResponse): void {
+async function handleGetTask(rsp: ApiResponseManagementRsp<SchedulerGetTaskResult>): Promise<void> {
 	if (rsp.data.status !== 0) {
-		toast.error(
-			i18n.t('TODO GET ERROR HANDLING'),
-		);
+		toast.error('TODO GET ERROR HANDLING');
 		return;
 	}
 	const taskId = rsp.data.rsp.taskId as string;
-	let idx = tasks.value.findIndex((item: SchedulerRecord) => item.taskId === taskId);
+	const idx = tasks.value.findIndex((item: SchedulerGetTaskResult) => item.taskId === taskId);
 	if (idx !== -1) {
-		tasks.value[idx] = rsp.data.rsp as SchedulerRecord;
-		idx = loadingTasks.value.indexOf(taskId);
-		if (idx !== -1) {
-			loadingTasks.value.splice(idx, 1);
-		}
+		tasks.value[idx] = rsp.data.rsp as SchedulerGetTaskResult;
+		removeLoadingTask(taskId);
 	}
 }
 
-function startTask(taskId: string): void {
+async function startTask(taskId: string): Promise<void> {
 	loadingTasks.value.push(taskId);
-	const options = new DaemonMessageOptions(
-		null,
+	const opts = new DaemonMessageOptions(
 		30_000,
 		null,
-		() => {msgId.value = null;},
+		() => {
+			removeLoadingTask(taskId);
+			msgId.value = null;},
 	);
-	daemonStore.sendMessage(
-		SchedulerService.startTask(taskId, options),
-	).then((val: string) => msgId.value = val);
+	msgId.value = await daemonStore.sendMessage(
+		SchedulerService.startTask(
+			{},
+			{ clientId: SchedulerService.ClientID, taskId: taskId },
+			opts,
+		),
+	);
 }
 
-function handleStartTask(rsp: DaemonApiResponse): void {
+function handleStartTask(rsp: ApiResponseManagementRsp<SchedulerStartTaskResult>): void {
 	if (rsp.data.status !== 0) {
-		toast.error(
-			i18n.t('TODO START ERROR HANDLING'),
-		);
+		toast.error('TODO START ERROR HANDLING');
 		return;
 	}
 	const taskId = rsp.data.rsp.taskId as string;
@@ -325,24 +337,28 @@ function handleStartTask(rsp: DaemonApiResponse): void {
 	getTask(taskId);
 }
 
-function stopTask(taskId: string): void {
+async function stopTask(taskId: string): Promise<void> {
 	loadingTasks.value.push(taskId);
-	const options = new DaemonMessageOptions(
-		null,
+	const opts = new DaemonMessageOptions(
 		30_000,
 		null,
-		() => {msgId.value = null;},
+		() => {
+			removeLoadingTask(taskId);
+			msgId.value = null;
+		},
 	);
-	daemonStore.sendMessage(
-		SchedulerService.stopTask(taskId, options),
-	).then((val: string) => msgId.value = val);
+	msgId.value = await daemonStore.sendMessage(
+		SchedulerService.stopTask(
+			{},
+			{ clientId: SchedulerService.ClientID, taskId: taskId },
+			opts,
+		),
+	);
 }
 
-function handleStopTask(rsp: DaemonApiResponse): void {
+function handleStopTask(rsp: ApiResponseManagementRsp<SchedulerStopTaskResult>): void {
 	if (rsp.data.status !== 0) {
-		toast.error(
-			i18n.t('TODO STOP ERROR HANDLING'),
-		);
+		toast.error('TODO STOP ERROR HANDLING');
 		return;
 	}
 	const taskId = rsp.data.rsp.taskId as string;
@@ -350,6 +366,14 @@ function handleStopTask(rsp: DaemonApiResponse): void {
 		i18n.t('components.config.daemon.scheduler.messages.stop.success', { id: taskId }),
 	);
 	getTask(taskId);
+}
+
+function removeLoadingTask(taskId: string): void {
+	const idx = loadingTasks.value.indexOf(taskId);
+	if (idx === -1) {
+		return;
+	}
+	loadingTasks.value.splice(idx, 1);
 }
 
 onMounted(() => {
