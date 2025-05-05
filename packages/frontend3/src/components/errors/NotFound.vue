@@ -16,15 +16,17 @@ limitations under the License.
 -->
 
 <template>
-	<Head>
-		<title>{{ $t('components.errors.404.title') }}</title>
-	</Head>
-	<Card>
-		<template #title>
-			{{ $t('components.errors.404.header') }} - {{ $t('components.errors.404.title') }}
-		</template>
-		<p>{{ $t('components.errors.404.text') }}</p>
-	</Card>
+	<div>
+		<Head>
+			<title>{{ $t('components.errors.404.title') }}</title>
+		</Head>
+		<Card>
+			<template #title>
+				{{ $t('components.errors.404.header') }} - {{ $t('components.errors.404.title') }}
+			</template>
+			<p>{{ $t('components.errors.404.text') }}</p>
+		</Card>
+	</div>
 </template>
 
 <script setup lang='ts'>

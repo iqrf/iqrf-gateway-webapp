@@ -16,51 +16,53 @@ limitations under the License.
 -->
 
 <template>
-	<Head>
-		<title>{{ $t('components.account.verification.title') }}</title>
-	</Head>
-	<Card>
-		<template #title>
-			{{ $t('components.account.verification.title') }}
-		</template>
-		<v-skeleton-loader
-			class='input-skeleton-loader'
-			:loading='componentState === ComponentState.Loading'
-			type='heading, text'
-		>
-			<v-responsive>
-				<v-alert
-					v-if='componentState === ComponentState.Success'
-					type='success'
-				>
-					{{ $t('components.account.verification.messages.success') }}
-					<vue-countdown
-						v-slot='{ seconds }'
-						:auto-start='true'
-						:time='10_000'
-						@end='signIn'
+	<div>
+		<Head>
+			<title>{{ $t('components.account.verification.title') }}</title>
+		</Head>
+		<Card>
+			<template #title>
+				{{ $t('components.account.verification.title') }}
+			</template>
+			<v-skeleton-loader
+				class='input-skeleton-loader'
+				:loading='componentState === ComponentState.Loading'
+				type='heading, text'
+			>
+				<v-responsive>
+					<v-alert
+						v-if='componentState === ComponentState.Success'
+						type='success'
 					>
-						{{ $t('components.account.verification.messages.redirect', { countdown: seconds }) }}
-					</vue-countdown>
-				</v-alert>
-				<v-alert
-					v-else-if='componentState === ComponentState.Error'
-					:text='$t("components.account.verification.messages.failure")'
-					type='error'
-				/>
-				<v-alert
-					v-else-if='componentState === ComponentState.Expired'
-					:text='$t("components.account.verification.messages.alreadyVerified")'
-					type='error'
-				/>
-				<v-alert
-					v-else-if='componentState === ComponentState.NotFound'
-					:text='$t("components.account.verification.messages.notFound")'
-					type='error'
-				/>
-			</v-responsive>
-		</v-skeleton-loader>
-	</Card>
+						{{ $t('components.account.verification.messages.success') }}
+						<vue-countdown
+							v-slot='{ seconds }'
+							:auto-start='true'
+							:time='10_000'
+							@end='signIn'
+						>
+							{{ $t('components.account.verification.messages.redirect', { countdown: seconds }) }}
+						</vue-countdown>
+					</v-alert>
+					<v-alert
+						v-else-if='componentState === ComponentState.Error'
+						:text='$t("components.account.verification.messages.failure")'
+						type='error'
+					/>
+					<v-alert
+						v-else-if='componentState === ComponentState.Expired'
+						:text='$t("components.account.verification.messages.alreadyVerified")'
+						type='error'
+					/>
+					<v-alert
+						v-else-if='componentState === ComponentState.NotFound'
+						:text='$t("components.account.verification.messages.notFound")'
+						type='error'
+					/>
+				</v-responsive>
+			</v-skeleton-loader>
+		</Card>
+	</div>
 </template>
 
 <route>

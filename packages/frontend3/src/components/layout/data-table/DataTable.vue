@@ -17,8 +17,8 @@ limitations under the License.
 
 <template>
 	<v-data-table
-		v-model:expanded='expanded'
-		v-model:page='page'
+		:expanded='expanded'
+		:page='page'
 		:items-per-page='itemsPerPage'
 		:headers='headers'
 		:items='items'

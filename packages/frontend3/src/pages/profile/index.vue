@@ -16,12 +16,14 @@ limitations under the License.
 -->
 
 <template>
-	<Head>
-		<title>{{ $t('pages.profile.title') }}</title>
-	</Head>
-	<ProfileEditForm />
-	<PreferencesForm />
-	<PasswordChangeForm />
+	<div>
+		<Head>
+			<title>{{ $t('pages.profile.title') }}</title>
+		</Head>
+		<ProfileEditForm />
+		<PreferencesForm />
+		<PasswordChangeForm />
+	</div>
 </template>
 
 <route>

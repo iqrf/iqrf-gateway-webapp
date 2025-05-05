@@ -16,19 +16,21 @@ limitations under the License.
 -->
 
 <template>
-	<div class='d-inline'>
-		<strong>{{ usage.fsName }} ({{ usage.fsType }}):</strong>
-		{{ $t('components.gateway.information.usages.used') }}
-		{{ usage.usage.replace('%', ' %') }}
-		({{ usage.used }} / {{ usage.size }})
-		<v-progress-linear
-			:model-value='usage.usage'
-			:color='color'
-			height='10'
-			rounded
-		/>
+	<div>
+		<div class='d-inline'>
+			<strong>{{ `${usage.fsName} ( ${usage.fsType}): ` }}</strong>
+			{{ $t('components.gateway.information.usages.used') }}
+			{{ usage.usage.replace('%', ' %') }}
+			{{ `${usage.used} / ${usage.size}` }}
+			<v-progress-linear
+				:model-value='usage.usage'
+				:color='color'
+				height='10'
+				rounded
+			/>
+		</div>
+		<br v-if='!last'>
 	</div>
-	<br v-if='!last'>
 </template>
 
 <script lang='ts' setup>

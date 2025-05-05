@@ -16,10 +16,12 @@ limitations under the License.
 -->
 
 <template>
-	<Head>
-		<title>{{ $t('pages.config.daemon.interfaces.title') }}</title>
-	</Head>
-	<Disambiguation :links='links' />
+	<div>
+		<Head>
+			<title>{{ $t('pages.config.daemon.interfaces.title') }}</title>
+		</Head>
+		<Disambiguation :links='links' />
+	</div>
 </template>
 
 <route>

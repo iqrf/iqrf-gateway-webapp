@@ -16,10 +16,12 @@ limitations under the License.
 -->
 
 <template>
-	<Head>
-		<title>{{ $t('pages.iqrfnet.tr-config.title') }}</title>
-	</Head>
-	<TrConfigTabs />
+	<div>
+		<Head>
+			<title>{{ $t('pages.iqrfnet.tr-config.title') }}</title>
+		</Head>
+		<TrConfigTabs />
+	</div>
 </template>
 
 <route>

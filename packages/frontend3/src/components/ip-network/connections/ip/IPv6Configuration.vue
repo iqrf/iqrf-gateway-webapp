@@ -16,119 +16,121 @@ limitations under the License.
 -->
 
 <template>
-	<h2 class='mb-3 text-h6 text-grey'>
-		{{ $t("components.ipNetwork.connections.form.ipv6.title") }}
-	</h2>
-	<IPv6ConfigurationMethodInput
-		v-model='configuration.ipv6.method'
-		:rules='[
-			(v: string|null) => ValidationRules.required(v, $t("components.ipNetwork.connections.errors.ipv6.method.required")),
-			(v: IPv6ConfigurationMethod) => {
-				if (v === IPv6ConfigurationMethod.DISABLED && configuration.ipv4.method === IPv4ConfigurationMethod.DISABLED) {
-					return $t("components.ipNetwork.connections.errors.ip.disabledBothIpStacks");
-				}
-				return true;
-			},
-		]'
-		:type='configuration.type'
-		@update:model-value='onConfigurationMethodChange'
-	/>
-	<div v-if='configuration.ipv6.method === IPv6ConfigurationMethod.MANUAL'>
-		<v-row
-			v-for='(address, index) in configuration.ipv6.addresses'
-			:key='`ipv6.address.${index}`'
-			dense
-		>
-			<v-col :cols='12' :md='8' :sm='7'>
-				<v-text-field
-					v-model='address.address'
-					:label='$t("components.ipNetwork.connections.form.ipv6.address")'
-					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.ipNetwork.connections.errors.ipv6.address.required")),
-						(v: string) => ValidationRules.ipv6Address(v, $t("components.ipNetwork.connections.errors.ipv6.address.ipv6Address")),
-					]'
-					required
-					:prepend-inner-icon='mdiIpNetwork'
-				/>
-			</v-col>
-			<v-col :cols='12' :md='4' :sm='5'>
-				<v-text-field
-					v-model.number='address.prefix'
-					:label='$t("components.ipNetwork.connections.form.ipv6.prefix")'
-					:rules='[
-						(v: unknown) => ValidationRules.required(v, $t("components.ipNetwork.connections.errors.ipv6.prefix.required")),
-						(v: number) => ValidationRules.between(v, 0, 128, $t("components.ipNetwork.connections.errors.ipv6.prefix.between")),
-					]'
-					required
-					:prepend-inner-icon='mdiLan'
-				>
-					<template #append-inner>
-						<v-btn
-							color='success'
-							size='small'
-							variant='flat'
-							@click='() => addAddress()'
-						>
-							<v-icon :icon='mdiPlus' />
-						</v-btn>
-						<v-btn
-							color='red'
-							:disabled='configuration.ipv6.addresses.length === 1'
-							size='small'
-							variant='flat'
-							@click='() => removeAddress(index)'
-						>
-							<v-icon :icon='mdiMinus' />
-						</v-btn>
-					</template>
-				</v-text-field>
-			</v-col>
-		</v-row>
-		<v-text-field
-			v-model='configuration.ipv6.gateway'
-			:label='$t("components.ipNetwork.connections.form.ipv6.gateway")'
+	<div>
+		<h2 class='mb-3 text-h6 text-grey'>
+			{{ $t("components.ipNetwork.connections.form.ipv6.title") }}
+		</h2>
+		<IPv6ConfigurationMethodInput
+			v-model='configuration.ipv6.method'
 			:rules='[
-				(v: string|null) => ValidationRules.required(v, $t("components.ipNetwork.connections.errors.ipv6.gateway.required")),
-				(v: string) => ValidationRules.ipv6Address(v, $t("components.ipNetwork.connections.errors.ipv6.gateway.ipv6Address")),
+				(v: string|null) => ValidationRules.required(v, $t("components.ipNetwork.connections.errors.ipv6.method.required")),
+				(v: IPv6ConfigurationMethod) => {
+					if (v === IPv6ConfigurationMethod.DISABLED && configuration.ipv4.method === IPv4ConfigurationMethod.DISABLED) {
+						return $t("components.ipNetwork.connections.errors.ip.disabledBothIpStacks");
+					}
+					return true;
+				},
 			]'
-			required
-			:prepend-inner-icon='mdiWan'
+			:type='configuration.type'
+			@update:model-value='onConfigurationMethodChange'
 		/>
-		<h3 class='mb-3 text-h6 text-grey'>
-			{{ $t("components.ipNetwork.connections.form.ipv6.dns.title") }}
-		</h3>
-		<v-text-field
-			v-for='(server, index) in configuration.ipv6.dns'
-			:key='`ipv6.dns.${index}`'
-			v-model='server.address'
-			:label='$t("components.ipNetwork.connections.form.ipv6.dns.address")'
-			:rules='[
-				(v: string|null) => ValidationRules.requiredIf(v, noIpv4Dns, $t("components.ipNetwork.connections.errors.ipv6.dns.required")),
-				(v: string) => ValidationRules.ipv6Address(v, $t("components.ipNetwork.connections.errors.ipv6.dns.ipv6Address")),
-			]'
-			required
-			:prepend-inner-icon='mdiServerNetwork'
-		>
-			<template #append-inner>
-				<v-btn
-					color='success'
-					size='small'
-					variant='flat'
-					@click='() => addDnsServer()'
-				>
-					<v-icon :icon='mdiPlus' />
-				</v-btn>
-				<v-btn
-					color='red'
-					:disabled='configuration.ipv6.dns.length === 1'
-					size='small'
-					variant='flat'
-					@click='() => removeDnsServer(index)'
-				>
-					<v-icon :icon='mdiMinus' />
-				</v-btn>
-			</template>
-		</v-text-field>
+		<div v-if='configuration.ipv6.method === IPv6ConfigurationMethod.MANUAL'>
+			<v-row
+				v-for='(address, index) in configuration.ipv6.addresses'
+				:key='`ipv6.address.${index}`'
+				dense
+			>
+				<v-col :cols='12' :md='8' :sm='7'>
+					<v-text-field
+						v-model='address.address'
+						:label='$t("components.ipNetwork.connections.form.ipv6.address")'
+						:rules='[
+							(v: string|null) => ValidationRules.required(v, $t("components.ipNetwork.connections.errors.ipv6.address.required")),
+							(v: string) => ValidationRules.ipv6Address(v, $t("components.ipNetwork.connections.errors.ipv6.address.ipv6Address")),
+						]'
+						required
+						:prepend-inner-icon='mdiIpNetwork'
+					/>
+				</v-col>
+				<v-col :cols='12' :md='4' :sm='5'>
+					<v-text-field
+						v-model.number='address.prefix'
+						:label='$t("components.ipNetwork.connections.form.ipv6.prefix")'
+						:rules='[
+							(v: unknown) => ValidationRules.required(v, $t("components.ipNetwork.connections.errors.ipv6.prefix.required")),
+							(v: number) => ValidationRules.between(v, 0, 128, $t("components.ipNetwork.connections.errors.ipv6.prefix.between")),
+						]'
+						required
+						:prepend-inner-icon='mdiLan'
+					>
+						<template #append-inner>
+							<v-btn
+								color='success'
+								size='small'
+								variant='flat'
+								@click='() => addAddress()'
+							>
+								<v-icon :icon='mdiPlus' />
+							</v-btn>
+							<v-btn
+								color='red'
+								:disabled='configuration.ipv6.addresses.length === 1'
+								size='small'
+								variant='flat'
+								@click='() => removeAddress(index)'
+							>
+								<v-icon :icon='mdiMinus' />
+							</v-btn>
+						</template>
+					</v-text-field>
+				</v-col>
+			</v-row>
+			<v-text-field
+				v-model='configuration.ipv6.gateway'
+				:label='$t("components.ipNetwork.connections.form.ipv6.gateway")'
+				:rules='[
+					(v: string|null) => ValidationRules.required(v, $t("components.ipNetwork.connections.errors.ipv6.gateway.required")),
+					(v: string) => ValidationRules.ipv6Address(v, $t("components.ipNetwork.connections.errors.ipv6.gateway.ipv6Address")),
+				]'
+				required
+				:prepend-inner-icon='mdiWan'
+			/>
+			<h3 class='mb-3 text-h6 text-grey'>
+				{{ $t("components.ipNetwork.connections.form.ipv6.dns.title") }}
+			</h3>
+			<v-text-field
+				v-for='(server, index) in configuration.ipv6.dns'
+				:key='`ipv6.dns.${index}`'
+				v-model='server.address'
+				:label='$t("components.ipNetwork.connections.form.ipv6.dns.address")'
+				:rules='[
+					(v: string|null) => ValidationRules.requiredIf(v, noIpv4Dns, $t("components.ipNetwork.connections.errors.ipv6.dns.required")),
+					(v: string) => ValidationRules.ipv6Address(v, $t("components.ipNetwork.connections.errors.ipv6.dns.ipv6Address")),
+				]'
+				required
+				:prepend-inner-icon='mdiServerNetwork'
+			>
+				<template #append-inner>
+					<v-btn
+						color='success'
+						size='small'
+						variant='flat'
+						@click='() => addDnsServer()'
+					>
+						<v-icon :icon='mdiPlus' />
+					</v-btn>
+					<v-btn
+						color='red'
+						:disabled='configuration.ipv6.dns.length === 1'
+						size='small'
+						variant='flat'
+						@click='() => removeDnsServer(index)'
+					>
+						<v-icon :icon='mdiMinus' />
+					</v-btn>
+				</template>
+			</v-text-field>
+		</div>
 	</div>
 </template>
 

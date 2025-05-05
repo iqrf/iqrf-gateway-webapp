@@ -16,10 +16,12 @@ limitations under the License.
 -->
 
 <template>
-	<Head>
-		<title>{{ $t('pages.config.daemon.interfaces.cdc.title') }}</title>
-	</Head>
-	<CdcConfig />
+	<div>
+		<Head>
+			<title>{{ $t('pages.config.daemon.interfaces.cdc.title') }}</title>
+		</Head>
+		<CdcConfig />
+	</div>
 </template>
 
 <route>

@@ -16,16 +16,18 @@ limitations under the License.
 -->
 
 <template>
-	<TheHeader />
-	<TheSidebar />
-	<v-main>
-		<UnverifiedEmailAlert />
-		<v-container fluid>
-			<router-view v-if='isAllowed' />
-			<Forbidden v-else />
-		</v-container>
-	</v-main>
-	<TheFooter />
+	<div>
+		<TheHeader />
+		<TheSidebar />
+		<v-main>
+			<UnverifiedEmailAlert />
+			<v-container fluid>
+				<router-view v-if='isAllowed' />
+				<Forbidden v-else />
+			</v-container>
+		</v-main>
+		<TheFooter />
+	</div>
 </template>
 
 <script lang='ts' setup>

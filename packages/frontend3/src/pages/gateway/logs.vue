@@ -16,10 +16,12 @@ limitations under the License.
 -->
 
 <template>
-	<Head>
-		<title>{{ $t('pages.gateway.logs.title') }}</title>
-	</Head>
-	<LogSelector />
+	<div>
+		<Head>
+			<title>{{ $t('pages.gateway.logs.title') }}</title>
+		</Head>
+		<LogSelector />
+	</div>
 </template>
 
 <route>

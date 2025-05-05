@@ -16,10 +16,12 @@ limitations under the License.
 -->
 
 <template>
-	<Head>
-		<title>{{ $t('pages.iqrfnet.send-json.title') }}</title>
-	</Head>
-	<JsonSender />
+	<div>
+		<Head>
+			<title>{{ $t('pages.iqrfnet.send-json.title') }}</title>
+		</Head>
+		<JsonSender />
+	</div>
 </template>
 
 <route>

@@ -16,10 +16,12 @@ limitations under the License.
 -->
 
 <template>
-	<Head>
-		<title>{{ $t('pages.auth.sign.in.title') }}</title>
-	</Head>
-	<SignInForm />
+	<div>
+		<Head>
+			<title>{{ $t('pages.auth.sign.in.title') }}</title>
+		</Head>
+		<SignInForm />
+	</div>
 </template>
 
 <route>

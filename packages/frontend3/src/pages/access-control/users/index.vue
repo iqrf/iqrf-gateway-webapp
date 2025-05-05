@@ -16,10 +16,12 @@ limitations under the License.
 -->
 
 <template>
-	<Head>
-		<title>{{ $t('pages.accessControl.users.title') }}</title>
-	</Head>
-	<UserTable />
+	<div>
+		<Head>
+			<title>{{ $t('pages.accessControl.users.title') }}</title>
+		</Head>
+		<UserTable />
+	</div>
 </template>
 
 <route>

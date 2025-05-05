@@ -16,10 +16,12 @@ limitations under the License.
 -->
 
 <template>
-	<Head>
-		<title>{{ $t('pages.install.sshKeys.title') }}</title>
-	</Head>
-	<SshKeyTable />
+	<div>
+		<Head>
+			<title>{{ $t('pages.install.sshKeys.title') }}</title>
+		</Head>
+		<SshKeyTable />
+	</div>
 </template>
 
 <route>

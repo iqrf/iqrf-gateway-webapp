@@ -16,11 +16,13 @@ limitations under the License.
 -->
 
 <template>
-	<Head>
-		<title>{{ $t('pages.gateway.power.title') }}</title>
-	</Head>
-	<PowerControls />
-	<UptimeStats class='mt-3' />
+	<div>
+		<Head>
+			<title>{{ $t('pages.gateway.power.title') }}</title>
+		</Head>
+		<PowerControls />
+		<UptimeStats class='mt-3' />
+	</div>
 </template>
 
 <route>

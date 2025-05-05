@@ -16,10 +16,12 @@ limitations under the License.
 -->
 
 <template>
-	<Head>
-		<title>{{ $t('pages.config.controller.title') }}</title>
-	</Head>
-	<ControllerConfig />
+	<div>
+		<Head>
+			<title>{{ $t('pages.config.controller.title') }}</title>
+		</Head>
+		<ControllerConfig />
+	</div>
 </template>
 
 <route>

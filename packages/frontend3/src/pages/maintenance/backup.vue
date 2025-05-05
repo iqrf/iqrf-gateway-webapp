@@ -16,11 +16,13 @@ limitations under the License.
 -->
 
 <template>
-	<Head>
-		<title>{{ $t('pages.maintenance.backup.title') }}</title>
-	</Head>
-	<GatewayBackup class='mb-4' />
-	<GatewayRestore />
+	<div>
+		<Head>
+			<title>{{ $t('pages.maintenance.backup.title') }}</title>
+		</Head>
+		<GatewayBackup class='mb-4' />
+		<GatewayRestore />
+	</div>
 </template>
 
 <route>

@@ -16,10 +16,12 @@ limitations under the License.
 -->
 
 <template>
-	<Head>
-		<title>{{ $t('install.gwInfo.title') }}</title>
-	</Head>
-	<InstallGatewayInfo />
+	<div>
+		<Head>
+			<title>{{ $t('install.gwInfo.title') }}</title>
+		</Head>
+		<InstallGatewayInfo />
+	</div>
 </template>
 
 <route>

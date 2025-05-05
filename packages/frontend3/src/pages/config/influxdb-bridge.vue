@@ -16,10 +16,12 @@ limitations under the License.
 -->
 
 <template>
-	<Head>
-		<title>{{ $t('pages.config.influxdb-bridge.title') }}</title>
-	</Head>
-	<InfluxdbBridgeConfig />
+	<div>
+		<Head>
+			<title>{{ $t('pages.config.influxdb-bridge.title') }}</title>
+		</Head>
+		<InfluxdbBridgeConfig />
+	</div>
 </template>
 
 <route>

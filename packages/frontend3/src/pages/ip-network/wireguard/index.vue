@@ -16,10 +16,12 @@ limitations under the License.
 -->
 
 <template>
-	<Head>
-		<title>{{ $t('pages.ipNetwork.wireGuard.title') }}</title>
-	</Head>
-	<WireGuardTunnelsTable />
+	<div>
+		<Head>
+			<title>{{ $t('pages.ipNetwork.wireGuard.title') }}</title>
+		</Head>
+		<WireGuardTunnelsTable />
+	</div>
 </template>
 
 <route>

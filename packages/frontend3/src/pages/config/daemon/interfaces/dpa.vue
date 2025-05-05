@@ -16,11 +16,13 @@ limitations under the License.
 -->
 
 <template>
-	<Head>
-		<title>{{ $t('pages.config.daemon.interfaces.dpa.title') }}</title>
-	</Head>
-	<DpaConfig class='mb-4' />
-	<ActiveInterface />
+	<div>
+		<Head>
+			<title>{{ $t('pages.config.daemon.interfaces.dpa.title') }}</title>
+		</Head>
+		<DpaConfig class='mb-4' />
+		<ActiveInterface />
+	</div>
 </template>
 
 <route>

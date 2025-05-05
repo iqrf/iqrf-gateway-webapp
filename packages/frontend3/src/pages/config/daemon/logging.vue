@@ -16,10 +16,12 @@ limitations under the License.
 -->
 
 <template>
-	<Head>
-		<title>{{ $t('pages.config.daemon.logging.title') }}</title>
-	</Head>
-	<LoggingTable />
+	<div>
+		<Head>
+			<title>{{ $t('pages.config.daemon.logging.title') }}</title>
+		</Head>
+		<LoggingTable />
+	</div>
 </template>
 
 <route>

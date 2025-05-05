@@ -16,10 +16,12 @@ limitations under the License.
 -->
 
 <template>
-	<Head>
-		<title>{{ $t('pages.account.recovery.title') }}</title>
-	</Head>
-	<AccountRecoveryForm />
+	<div>
+		<Head>
+			<title>{{ $t('pages.account.recovery.title') }}</title>
+		</Head>
+		<AccountRecoveryForm />
+	</div>
 </template>
 
 <route>

@@ -16,18 +16,20 @@ limitations under the License.
 -->
 
 <template>
-	<h2 class='mb-3 text-h6'>
-		{{ $t("components.ipNetwork.connections.form.ip.title") }}
-	</h2>
-	<BothIPStacksDisabledAlert v-model='configuration' />
-	<v-row>
-		<v-col :cols='12' :md='6'>
-			<Ipv4Configuration v-model='configuration' />
-		</v-col>
-		<v-col :cols='12' :md='6'>
-			<Ipv6Configuration v-model='configuration' />
-		</v-col>
-	</v-row>
+	<div>
+		<h2 class='mb-3 text-h6'>
+			{{ $t("components.ipNetwork.connections.form.ip.title") }}
+		</h2>
+		<BothIPStacksDisabledAlert v-model='configuration' />
+		<v-row>
+			<v-col :cols='12' :md='6'>
+				<Ipv4Configuration v-model='configuration' />
+			</v-col>
+			<v-col :cols='12' :md='6'>
+				<Ipv6Configuration v-model='configuration' />
+			</v-col>
+		</v-row>
+	</div>
 </template>
 
 <script setup lang='ts'>

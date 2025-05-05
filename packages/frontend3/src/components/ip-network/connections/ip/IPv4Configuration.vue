@@ -13,98 +13,100 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied
 See the License for the specific language governing permissions and
 limitations under the License.
--->
+-->+
 
 <template>
-	<h2 class='mb-3 text-h6 text-grey'>
-		{{ $t("components.ipNetwork.connections.form.ipv4.title") }}
-	</h2>
-	<IPv4ConfigurationMethodInput
-		v-model='configuration.ipv4.method'
-		:rules='[
-			(v: string|null) => ValidationRules.required(v, $t("components.ipNetwork.connections.errors.ipv4.method.required")),
-			(v: IPv4ConfigurationMethod) => {
-				if (v === IPv4ConfigurationMethod.DISABLED && configuration.ipv6.method === IPv6ConfigurationMethod.DISABLED) {
-					return $t("components.ipNetwork.connections.errors.ip.disabledBothIpStacks");
-				}
-				return true;
-			},
-		]'
-		:type='configuration.type'
-		@update:model-value='onConfigurationMethodChange'
-	/>
-	<div v-if='configuration.ipv4.method === IPv4ConfigurationMethod.MANUAL'>
-		<v-text-field
-			v-model='configuration.ipv4.addresses[0].address'
-			v-maska='maskaOptions'
-			:label='$t("components.ipNetwork.connections.form.ipv4.address")'
+	<div>
+		<h2 class='mb-3 text-h6 text-grey'>
+			{{ $t("components.ipNetwork.connections.form.ipv4.title") }}
+		</h2>
+		<IPv4ConfigurationMethodInput
+			v-model='configuration.ipv4.method'
 			:rules='[
-				(v: string|null) => ValidationRules.required(v, $t("components.ipNetwork.connections.errors.ipv4.address.required")),
-				(v: string) => ValidationRules.ipv4Address(v, $t("components.ipNetwork.connections.errors.ipv4.address.ipv4Address")),
-				() => ipv4SubnetCheck($t("components.ipNetwork.connections.errors.ipv4.address.ipv4Subnet")),
+				(v: string|null) => ValidationRules.required(v, $t("components.ipNetwork.connections.errors.ipv4.method.required")),
+				(v: IPv4ConfigurationMethod) => {
+					if (v === IPv4ConfigurationMethod.DISABLED && configuration.ipv6.method === IPv6ConfigurationMethod.DISABLED) {
+						return $t("components.ipNetwork.connections.errors.ip.disabledBothIpStacks");
+					}
+					return true;
+				},
 			]'
-			required
-			:prepend-inner-icon='mdiIpNetwork'
+			:type='configuration.type'
+			@update:model-value='onConfigurationMethodChange'
 		/>
-		<v-text-field
-			v-model='configuration.ipv4.addresses[0].mask'
-			v-maska='maskaOptions'
-			:label='$t("components.ipNetwork.connections.form.ipv4.mask")'
-			:rules='[
-				(v: string|null) => ValidationRules.required(v, $t("components.ipNetwork.connections.errors.ipv4.mask.required")),
-				(v: string) => ValidationRules.ipv4Address(v, $t("components.ipNetwork.connections.errors.ipv4.mask.ipv4Address")),
-			]'
-			required
-			:prepend-inner-icon='mdiLan'
-		/>
-		<v-text-field
-			v-model='configuration.ipv4.gateway'
-			v-maska='maskaOptions'
-			:label='$t("components.ipNetwork.connections.form.ipv4.gateway")'
-			:rules='[
-				(v: string|null) => ValidationRules.required(v, $t("components.ipNetwork.connections.errors.ipv4.gateway.required")),
-				(v: string) => ValidationRules.ipv4Address(v, $t("components.ipNetwork.connections.errors.ipv4.gateway.ipv4Address")),
-				() => ipv4SubnetCheck($t("components.ipNetwork.connections.errors.ipv4.gateway.ipv4Subnet")),
-			]'
-			required
-			:prepend-inner-icon='mdiWan'
-		/>
-		<h3 class='mb-3 text-h6 text-grey'>
-			{{ $t("components.ipNetwork.connections.form.ipv4.dns.title") }}
-		</h3>
-		<v-text-field
-			v-for='(server, index) in configuration.ipv4.dns'
-			:key='`ipv4.dns.${index}`'
-			v-model='server.address'
-			v-maska='maskaOptions'
-			:label='$t("components.ipNetwork.connections.form.ipv4.dns.address")'
-			:rules='[
-				(v: string|null) => ValidationRules.requiredIf(v, noIpv6Dns, $t("components.ipNetwork.connections.errors.ipv4.dns.required")),
-				(v: string) => ValidationRules.ipv4Address(v, $t("components.ipNetwork.connections.errors.ipv4.dns.ipv4Address")),
-			]'
-			required
-			:prepend-inner-icon='mdiServerNetwork'
-		>
-			<template #append-inner>
-				<v-btn
-					color='success'
-					size='small'
-					variant='flat'
-					@click='() => addDnsServer()'
-				>
-					<v-icon :icon='mdiPlus' />
-				</v-btn>
-				<v-btn
-					color='red'
-					:disabled='configuration.ipv4.dns.length === 1'
-					size='small'
-					variant='flat'
-					@click='() => removeDnsServer(index)'
-				>
-					<v-icon :icon='mdiMinus' />
-				</v-btn>
-			</template>
-		</v-text-field>
+		<div v-if='configuration.ipv4.method === IPv4ConfigurationMethod.MANUAL'>
+			<v-text-field
+				v-model='configuration.ipv4.addresses[0].address'
+				v-maska='maskaOptions'
+				:label='$t("components.ipNetwork.connections.form.ipv4.address")'
+				:rules='[
+					(v: string|null) => ValidationRules.required(v, $t("components.ipNetwork.connections.errors.ipv4.address.required")),
+					(v: string) => ValidationRules.ipv4Address(v, $t("components.ipNetwork.connections.errors.ipv4.address.ipv4Address")),
+					() => ipv4SubnetCheck($t("components.ipNetwork.connections.errors.ipv4.address.ipv4Subnet")),
+				]'
+				required
+				:prepend-inner-icon='mdiIpNetwork'
+			/>
+			<v-text-field
+				v-model='configuration.ipv4.addresses[0].mask'
+				v-maska='maskaOptions'
+				:label='$t("components.ipNetwork.connections.form.ipv4.mask")'
+				:rules='[
+					(v: string|null) => ValidationRules.required(v, $t("components.ipNetwork.connections.errors.ipv4.mask.required")),
+					(v: string) => ValidationRules.ipv4Address(v, $t("components.ipNetwork.connections.errors.ipv4.mask.ipv4Address")),
+				]'
+				required
+				:prepend-inner-icon='mdiLan'
+			/>
+			<v-text-field
+				v-model='configuration.ipv4.gateway'
+				v-maska='maskaOptions'
+				:label='$t("components.ipNetwork.connections.form.ipv4.gateway")'
+				:rules='[
+					(v: string|null) => ValidationRules.required(v, $t("components.ipNetwork.connections.errors.ipv4.gateway.required")),
+					(v: string) => ValidationRules.ipv4Address(v, $t("components.ipNetwork.connections.errors.ipv4.gateway.ipv4Address")),
+					() => ipv4SubnetCheck($t("components.ipNetwork.connections.errors.ipv4.gateway.ipv4Subnet")),
+				]'
+				required
+				:prepend-inner-icon='mdiWan'
+			/>
+			<h3 class='mb-3 text-h6 text-grey'>
+				{{ $t("components.ipNetwork.connections.form.ipv4.dns.title") }}
+			</h3>
+			<v-text-field
+				v-for='(server, index) in configuration.ipv4.dns'
+				:key='`ipv4.dns.${index}`'
+				v-model='server.address'
+				v-maska='maskaOptions'
+				:label='$t("components.ipNetwork.connections.form.ipv4.dns.address")'
+				:rules='[
+					(v: string|null) => ValidationRules.requiredIf(v, noIpv6Dns, $t("components.ipNetwork.connections.errors.ipv4.dns.required")),
+					(v: string) => ValidationRules.ipv4Address(v, $t("components.ipNetwork.connections.errors.ipv4.dns.ipv4Address")),
+				]'
+				required
+				:prepend-inner-icon='mdiServerNetwork'
+			>
+				<template #append-inner>
+					<v-btn
+						color='success'
+						size='small'
+						variant='flat'
+						@click='() => addDnsServer()'
+					>
+						<v-icon :icon='mdiPlus' />
+					</v-btn>
+					<v-btn
+						color='red'
+						:disabled='configuration.ipv4.dns.length === 1'
+						size='small'
+						variant='flat'
+						@click='() => removeDnsServer(index)'
+					>
+						<v-icon :icon='mdiMinus' />
+					</v-btn>
+				</template>
+			</v-text-field>
+		</div>
 	</div>
 </template>
 

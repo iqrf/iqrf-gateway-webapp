@@ -1,3 +1,6 @@
+/**
+ * DPA packet transaction
+ */
 export interface DpaPacketTransaction {
 	/**
 	 * Confirmation message
@@ -27,4 +30,31 @@ export interface DpaPacketTransaction {
 	 * Response timestamp
 	 */
 	responseTs?: string;
+}
+
+
+/**
+ * JSON API transaction
+ */
+export interface JsonApiTransaction {
+	/**
+	 * Message type
+	 */
+	mType: string;
+	/**
+	 * Message ID
+	 */
+	msgId: string;
+	/**
+	 * Request message
+	 */
+	request: string;
+	/**
+	 * List of response messages
+	 */
+	response: string[];
+	/**
+	 * Request timestamp
+	 */
+	timestamp: string;
 }

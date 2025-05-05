@@ -16,10 +16,12 @@ limitations under the License.
 -->
 
 <template>
-	<Head>
-		<title>{{ $t('pages.config.journal.title') }}</title>
-	</Head>
-	<JournalConfig />
+	<div>
+		<Head>
+			<title>{{ $t('pages.config.journal.title') }}</title>
+		</Head>
+		<JournalConfig />
+	</div>
 </template>
 
 <route>

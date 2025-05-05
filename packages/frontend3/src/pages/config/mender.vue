@@ -16,10 +16,12 @@ limitations under the License.
 -->
 
 <template>
-	<Head>
-		<title>{{ $t('pages.config.mender.title') }}</title>
-	</Head>
-	<MenderConfig />
+	<div>
+		<Head>
+			<title>{{ $t('pages.config.mender.title') }}</title>
+		</Head>
+		<MenderConfig />
+	</div>
 </template>
 
 <route>

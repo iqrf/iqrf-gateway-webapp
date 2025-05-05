@@ -16,42 +16,44 @@ limitations under the License.
 -->
 
 <template>
-	<Head>
-		<title>{{ $t('pages.install.wizard.title') }}</title>
-	</Head>
-	<Card>
-		<template #title>
-			{{ $t('pages.install.wizard.title') }}
-		</template>
-		{{ $t('pages.install.wizard.text') }}
-		<v-stepper-vertical
-			v-if='steps.length !== 0 && currentStep !== null'
-			v-model='currentStep'
-			flat
-			@update:model-value='(step) => installStore.setCurrentStep(steps[step - 1])'
-		>
-			<AdminUserCreation
-				v-if='steps.includes(InstallationStep.UserCreation)'
-				:index='getIndex(InstallationStep.UserCreation)'
-			/>
-			<AdminUserPreferences
-				v-if='steps.includes(InstallationStep.UserPreferences)'
-				:index='getIndex(InstallationStep.UserPreferences)'
-			/>
-			<MailServerConfiguration
-				v-if='steps.includes(InstallationStep.MailServerConfiguration)'
-				:index='getIndex(InstallationStep.MailServerConfiguration)'
-			/>
-			<SshServerConfiguration
-				v-if='steps.includes(InstallationStep.SshServerConfiguration)'
-				:index='getIndex(InstallationStep.SshServerConfiguration)'
-			/>
-			<InstallationCompleted
-				v-if='steps.includes(InstallationStep.InstallationCompleted)'
-				:index='getIndex(InstallationStep.InstallationCompleted)'
-			/>
-		</v-stepper-vertical>
-	</Card>
+	<div>
+		<Head>
+			<title>{{ $t('pages.install.wizard.title') }}</title>
+		</Head>
+		<Card>
+			<template #title>
+				{{ $t('pages.install.wizard.title') }}
+			</template>
+			{{ $t('pages.install.wizard.text') }}
+			<v-stepper-vertical
+				v-if='steps.length !== 0 && currentStep !== null'
+				v-model='currentStep'
+				flat
+				@update:model-value='(step) => installStore.setCurrentStep(steps[step - 1])'
+			>
+				<AdminUserCreation
+					v-if='steps.includes(InstallationStep.UserCreation)'
+					:index='getIndex(InstallationStep.UserCreation)'
+				/>
+				<AdminUserPreferences
+					v-if='steps.includes(InstallationStep.UserPreferences)'
+					:index='getIndex(InstallationStep.UserPreferences)'
+				/>
+				<MailServerConfiguration
+					v-if='steps.includes(InstallationStep.MailServerConfiguration)'
+					:index='getIndex(InstallationStep.MailServerConfiguration)'
+				/>
+				<SshServerConfiguration
+					v-if='steps.includes(InstallationStep.SshServerConfiguration)'
+					:index='getIndex(InstallationStep.SshServerConfiguration)'
+				/>
+				<InstallationCompleted
+					v-if='steps.includes(InstallationStep.InstallationCompleted)'
+					:index='getIndex(InstallationStep.InstallationCompleted)'
+				/>
+			</v-stepper-vertical>
+		</Card>
+	</div>
 </template>
 
 <route>

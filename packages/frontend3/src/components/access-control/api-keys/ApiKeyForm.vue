@@ -16,69 +16,71 @@ limitations under the License.
 -->
 
 <template>
-	<ModalWindow v-model='show'>
-		<template #activator='{ props }'>
-			<CardTitleActionBtn
-				v-if='action === Action.Add'
-				v-bind='props'
-				:action='action'
-				:tooltip='$t("components.accessControl.apiKeys.actions.add")'
-			/>
-			<DataTableAction
-				v-else
-				v-bind='props'
-				:action='action'
-				:tooltip='$t("components.accessControl.apiKeys.actions.edit")'
-			/>
-		</template>
-		<v-form ref='form' v-slot='{ isValid }' @submit.prevent='onSubmit'>
-			<Card :action='action'>
-				<template #title>
-					{{ dialogTitle }}
-				</template>
-				<TextInput
-					v-model='key.description'
-					:prepend-inner-icon='mdiTextShort'
-					:label='$t("common.labels.description")'
-					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.accessControl.apiKeys.validations.description.required")),
-					]'
-					required
+	<div>
+		<ModalWindow v-model='show'>
+			<template #activator='{ props }'>
+				<CardTitleActionBtn
+					v-if='action === Action.Add'
+					v-bind='props'
+					:action='action'
+					:tooltip='$t("components.accessControl.apiKeys.actions.add")'
 				/>
-				<v-checkbox
-					v-model='setExpiration'
-					:label='$t("components.accessControl.apiKeys.form.expiration")'
+				<DataTableAction
+					v-else
+					v-bind='props'
+					:action='action'
+					:tooltip='$t("components.accessControl.apiKeys.actions.edit")'
 				/>
-				<label for='datetimeinput'>
-					{{ $t('components.accessControl.apiKeys.table.expiration') }}
-				</label>
-				<VueDatePicker
-					id='datetimeinput'
-					v-model='expiration'
-					class='mb-4'
-					:enable-seconds='true'
-					:show-now-button='true'
-					:teleport='true'
-					:disabled='!setExpiration'
-					:state='datePickerState'
-				/>
-				<template #actions>
-					<CardActionBtn
-						:action='action'
-						:disabled='!isValid.value'
-						type='submit'
+			</template>
+			<v-form ref='form' v-slot='{ isValid }' @submit.prevent='onSubmit'>
+				<Card :action='action'>
+					<template #title>
+						{{ dialogTitle }}
+					</template>
+					<TextInput
+						v-model='key.description'
+						:prepend-inner-icon='mdiTextShort'
+						:label='$t("common.labels.description")'
+						:rules='[
+							(v: string|null) => ValidationRules.required(v, $t("components.accessControl.apiKeys.validations.description.required")),
+						]'
+						required
 					/>
-					<v-spacer />
-					<CardActionBtn :action='Action.Cancel' @click='close' />
-				</template>
-			</Card>
-		</v-form>
-	</ModalWindow>
-	<ApiKeyDisplayDialog
-		ref='displayDialog'
-		:api-key='generatedKey'
-		@closed='clear'
-	/>
+					<v-checkbox
+						v-model='setExpiration'
+						:label='$t("components.accessControl.apiKeys.form.expiration")'
+					/>
+					<label for='datetimeinput'>
+						{{ $t('components.accessControl.apiKeys.table.expiration') }}
+					</label>
+					<VueDatePicker
+						id='datetimeinput'
+						v-model='expiration'
+						class='mb-4'
+						:enable-seconds='true'
+						:show-now-button='true'
+						:teleport='true'
+						:disabled='!setExpiration'
+						:state='datePickerState'
+					/>
+					<template #actions>
+						<CardActionBtn
+							:action='action'
+							:disabled='!isValid.value'
+							type='submit'
+						/>
+						<v-spacer />
+						<CardActionBtn :action='Action.Cancel' @click='close' />
+					</template>
+				</Card>
+			</v-form>
+		</ModalWindow>
+		<ApiKeyDisplayDialog
+			ref='displayDialog'
+			:api-key='generatedKey'
+			@closed='clear'
+		/>
+	</div>
 </template>
 
 <script lang='ts' setup>

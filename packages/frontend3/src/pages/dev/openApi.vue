@@ -16,10 +16,12 @@ limitations under the License.
 -->
 
 <template>
-	<Head>
-		<title>{{ $t('pages.dev.openApi.title') }}</title>
-	</Head>
-	<OpenApiSpecification />
+	<div>
+		<Head>
+			<title>{{ $t('pages.dev.openApi.title') }}</title>
+		</Head>
+		<OpenApiSpecification />
+	</div>
 </template>
 
 <route>

@@ -16,10 +16,12 @@ limitations under the License.
 -->
 
 <template>
-	<Head>
-		<title>{{ $t('pages.iqrfnet.upload.title') }}</title>
-	</Head>
-	<HandlerUploader />
+	<div>
+		<Head>
+			<title>{{ $t('pages.iqrfnet.upload.title') }}</title>
+		</Head>
+		<HandlerUploader />
+	</div>
 </template>
 
 <route>

@@ -1,41 +1,43 @@
 <template>
-	<Head>
-		<title>{{ $t('pages.install.errors.title') }}</title>
-	</Head>
-	<Card>
-		<template #title>
-			{{ $t('pages.install.errors.title') }}
-		</template>
-		{{ $t('pages.install.errors.text') }}
-		<v-stepper-vertical v-if='checks !== null'>
-			<MissingDependencies
-				v-if='items.includes(InstallationError.MissingDependencies)'
-				v-model='checks.dependencies'
-				:index='getIndex(InstallationError.MissingDependencies)'
-			/>
-			<MissingPhpExtensions
-				v-if='items.includes(InstallationError.MissingPhpExtensions) && checks.phpModules.missing !== undefined'
-				v-model='checks.phpModules.missing'
-				:index='getIndex(InstallationError.MissingPhpExtensions)'
-			/>
-			<MissingMigrations
-				v-if='items.includes(InstallationError.MissingMigrations)'
-				:index='getIndex(InstallationError.MissingMigrations)'
-			/>
-			<MisconfiguredSudo
-				v-if='items.includes(InstallationError.MisconfiguredSudo) && checks.sudo !== undefined'
-				v-model='checks.sudo'
-				:index='getIndex(InstallationError.MisconfiguredSudo)'
-			/>
-		</v-stepper-vertical>
-		<template #actions>
-			<CardActionBtn
-				:action='Action.Reload'
-				:loading='componentState === ComponentState.Loading'
-				@click='reload'
-			/>
-		</template>
-	</Card>
+	<div>
+		<Head>
+			<title>{{ $t('pages.install.errors.title') }}</title>
+		</Head>
+		<Card>
+			<template #title>
+				{{ $t('pages.install.errors.title') }}
+			</template>
+			{{ $t('pages.install.errors.text') }}
+			<v-stepper-vertical v-if='checks !== null'>
+				<MissingDependencies
+					v-if='items.includes(InstallationError.MissingDependencies)'
+					v-model='checks.dependencies'
+					:index='getIndex(InstallationError.MissingDependencies)'
+				/>
+				<MissingPhpExtensions
+					v-if='items.includes(InstallationError.MissingPhpExtensions) && checks.phpModules.missing !== undefined'
+					v-model='checks.phpModules.missing'
+					:index='getIndex(InstallationError.MissingPhpExtensions)'
+				/>
+				<MissingMigrations
+					v-if='items.includes(InstallationError.MissingMigrations)'
+					:index='getIndex(InstallationError.MissingMigrations)'
+				/>
+				<MisconfiguredSudo
+					v-if='items.includes(InstallationError.MisconfiguredSudo) && checks.sudo !== undefined'
+					v-model='checks.sudo'
+					:index='getIndex(InstallationError.MisconfiguredSudo)'
+				/>
+			</v-stepper-vertical>
+			<template #actions>
+				<CardActionBtn
+					:action='Action.Reload'
+					:loading='componentState === ComponentState.Loading'
+					@click='reload'
+				/>
+			</template>
+		</Card>
+	</div>
 </template>
 
 <route>

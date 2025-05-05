@@ -16,10 +16,12 @@ limitations under the License.
 -->
 
 <template>
-	<Head>
-		<title>{{ $t('pages.config.unattendedUpgrades.title') }}</title>
-	</Head>
-	<AptConfig />
+	<div>
+		<Head>
+			<title>{{ $t('pages.config.unattendedUpgrades.title') }}</title>
+		</Head>
+		<AptConfig />
+	</div>
 </template>
 
 <route>

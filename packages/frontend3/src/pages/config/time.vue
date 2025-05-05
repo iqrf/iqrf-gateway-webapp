@@ -16,10 +16,12 @@ limitations under the License.
 -->
 
 <template>
-	<Head>
-		<title>{{ $t('pages.config.time.title') }}</title>
-	</Head>
-	<TimeConfig />
+	<div>
+		<Head>
+			<title>{{ $t('pages.config.time.title') }}</title>
+		</Head>
+		<TimeConfig />
+	</div>
 </template>
 
 <route>

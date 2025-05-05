@@ -16,10 +16,12 @@ limitations under the License.
 -->
 
 <template>
-	<Head>
-		<title>{{ $t('pages.config.daemon.interfaces.spi.title') }}</title>
-	</Head>
-	<SpiConfig />
+	<div>
+		<Head>
+			<title>{{ $t('pages.config.daemon.interfaces.spi.title') }}</title>
+		</Head>
+		<SpiConfig />
+	</div>
 </template>
 
 <route>

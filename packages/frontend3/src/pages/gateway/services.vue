@@ -16,10 +16,12 @@ limitations under the License.
 -->
 
 <template>
-	<Head>
-		<title>{{ $t('pages.gateway.services.title') }}</title>
-	</Head>
-	<ServiceTable />
+	<div>
+		<Head>
+			<title>{{ $t('pages.gateway.services.title') }}</title>
+		</Head>
+		<ServiceTable />
+	</div>
 </template>
 
 <route>

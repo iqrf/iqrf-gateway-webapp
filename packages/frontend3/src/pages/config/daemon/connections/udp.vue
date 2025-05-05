@@ -16,10 +16,12 @@ limitations under the License.
 -->
 
 <template>
-	<Head>
-		<title>{{ $t('pages.config.daemon.connections.udp.title') }}</title>
-	</Head>
-	<UdpConnectionTable />
+	<div>
+		<Head>
+			<title>{{ $t('pages.config.daemon.connections.udp.title') }}</title>
+		</Head>
+		<UdpConnectionTable />
+	</div>
 </template>
 
 <route>

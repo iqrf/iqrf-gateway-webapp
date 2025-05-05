@@ -16,10 +16,12 @@ limitations under the License.
 -->
 
 <template>
-	<Head>
-		<title>{{ $t('pages.accessControl.apiKeys.title') }}</title>
-	</Head>
-	<ApiKeyTable />
+	<div>
+		<Head>
+			<title>{{ $t('pages.accessControl.apiKeys.title') }}</title>
+		</Head>
+		<ApiKeyTable />
+	</div>
 </template>
 
 <route>

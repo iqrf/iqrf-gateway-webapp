@@ -16,11 +16,13 @@ limitations under the License.
 -->
 
 <template>
-	<Head>
-		<title>{{ $t('pages.ipNetwork.mobile.title') }}</title>
-	</Head>
-	<ModemTable class='mb-3' />
-	<ConnectionsTable :type='NetworkConnectionType.GSM' />
+	<div>
+		<Head>
+			<title>{{ $t('pages.ipNetwork.mobile.title') }}</title>
+		</Head>
+		<ModemTable class='mb-3' />
+		<ConnectionsTable :type='NetworkConnectionType.GSM' />
+	</div>
 </template>
 
 <route>

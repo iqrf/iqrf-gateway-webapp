@@ -16,11 +16,13 @@ limitations under the License.
 -->
 
 <template>
-	<Head>
-		<title>{{ $t('pages.maintenance.mender.title') }}</title>
-	</Head>
-	<MenderUpdateControls />
-	<RemountControls v-if='featureStore.isEnabled(Feature.remount)' class='my-4' />
+	<div>
+		<Head>
+			<title>{{ $t('pages.maintenance.mender.title') }}</title>
+		</Head>
+		<MenderUpdateControls />
+		<RemountControls v-if='featureStore.isEnabled(Feature.remount)' class='my-4' />
+	</div>
 </template>
 
 <route>

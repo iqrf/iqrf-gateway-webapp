@@ -16,11 +16,13 @@ limitations under the License.
 -->
 
 <template>
-	<Head>
-		<title>{{ $t('pages.gateway.mode.title') }}</title>
-	</Head>
-	<CurrentMode class='mb-4' />
-	<StartupMode />
+	<div>
+		<Head>
+			<title>{{ $t('pages.gateway.mode.title') }}</title>
+		</Head>
+		<CurrentMode class='mb-4' />
+		<StartupMode />
+	</div>
 </template>
 
 <route>

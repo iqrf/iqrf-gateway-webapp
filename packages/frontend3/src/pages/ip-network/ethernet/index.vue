@@ -16,11 +16,13 @@ limitations under the License.
 -->
 
 <template>
-	<Head>
-		<title>{{ $t('pages.ipNetwork.ethernet.title') }}</title>
-	</Head>
-	<InterfacesTable :type='NetworkInterfaceType.ETHERNET' class='mb-3' />
-	<ConnectionsTable :type='NetworkConnectionType.Ethernet' />
+	<div>
+		<Head>
+			<title>{{ $t('pages.ipNetwork.ethernet.title') }}</title>
+		</Head>
+		<InterfacesTable :type='NetworkInterfaceType.ETHERNET' class='mb-3' />
+		<ConnectionsTable :type='NetworkConnectionType.Ethernet' />
+	</div>
 </template>
 
 <route>

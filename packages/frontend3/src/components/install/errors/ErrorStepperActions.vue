@@ -1,15 +1,17 @@
 <template>
-	<CardActionBtn
-		v-if='componentProps.index !== totalErrors'
-		:action='Action.Next'
-		@click='componentProps.next'
-	/>
-	<CardActionBtn
-		v-if='componentProps.index !== 1'
-		:action='Action.Previous'
-		class='float-right'
-		@click='componentProps.prev'
-	/>
+	<div>
+		<CardActionBtn
+			v-if='componentProps.index !== totalErrors'
+			:action='Action.Next'
+			@click='componentProps.next'
+		/>
+		<CardActionBtn
+			v-if='componentProps.index !== 1'
+			:action='Action.Previous'
+			class='float-right'
+			@click='componentProps.prev'
+		/>
+	</div>
 </template>
 <script setup lang='ts'>
 import { storeToRefs } from 'pinia';

@@ -16,440 +16,440 @@ limitations under the License.
 -->
 
 <template>
-	<Card>
-		<template #title>
-			{{ $t('pages.iqrfnet.send-dpa.title') }}
-		</template>
-		<v-alert
-			v-if='componentState === ComponentState.Saving'
-			variant='tonal'
-			color='info'
-			:text='$t("components.iqrfnet.inProgress")'
-			class='mb-2'
-		/>
-		<v-form
-			ref='form'
-			v-slot='{ isValid }'
-			:disabled='componentState === ComponentState.Saving'
-		>
-			<v-row>
-				<v-col>
-					<NumberInput
-						v-if='!useHexNadr'
-						v-model.number='nadr'
-						:min='0'
-						:max='255'
-						:label='$t("components.iqrfnet.send-dpa.nadr")'
-						:rules='[
-							(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.nadrMissing")),
-							(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.send-dpa.validation.nadrInvalid")),
-							(v: number) => ValidationRules.between(v, 0, 255, $t("components.iqrfnet.send-dpa.validation.nadrInvalid")),
-						]'
-						required
-						:readonly='lockNadr'
-					>
-						<template #prepend>
-							<v-tooltip location='bottom'>
-								<template #activator='{ props }'>
-									<v-icon
-										v-bind='props'
-										:icon='lockNadr ? mdiLock : mdiLockOpen'
-										color='warning'
-										@click='lockNadr = !lockNadr'
-									/>
-								</template>
-								{{ $t(`components.iqrfnet.send-dpa.${lockNadr ? 'unlock' : 'lock'}`) }}
-							</v-tooltip>
-						</template>
-						<template #append-inner>
-							<v-tooltip location='bottom'>
-								<template #activator='{ props }'>
-									<v-icon
-										v-bind='props'
-										:icon='mdiHexadecimal'
-										color='primary'
-										size='large'
-										@click='changeNadrBase'
-									/>
-								</template>
-								{{ $t('components.iqrfnet.send-dpa.hexadecimal') }}
-							</v-tooltip>
-							<v-menu>
-								<template #activator='{ props }'>
-									<v-icon
-										v-bind='props'
-										:icon='mdiMenu'
-										color='primary'
-										size='large'
-									/>
-								</template>
-								<v-list
-									class='py-0'
-									density='compact'
-								>
-									<v-list-item density='compact'>
-										<b>{{ $t('components.iqrfnet.send-dpa.presets') }}</b>
-									</v-list-item>
-									<hr>
-									<v-list-item
-										v-for='preset of nadrPresets'
-										:key='preset.title'
-										@click='applyNadrPreset(preset.value)'
-									>
-										{{ preset.title }}
-									</v-list-item>
-								</v-list>
-							</v-menu>
-						</template>
-					</NumberInput>
-					<TextInput
-						v-else
-						v-model='nadrHex'
-						:label='$t("components.iqrfnet.send-dpa.nadr")'
-						:rules='[
-							(v: string|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.nadrHexMissing")),
-							(v: string) => validateHexByte(v) || $t("components.iqrfnet.send-dpa.validation.nadrHexInvalid"),
-						]'
-						required
-						:readonly='lockNadr'
-					>
-						<template #prepend>
-							<v-tooltip location='bottom'>
-								<template #activator='{ props }'>
-									<v-icon
-										v-bind='props'
-										:icon='lockNadr ? mdiLock : mdiLockOpen'
-										color='warning'
-										@click='lockNadr = !lockNadr'
-									/>
-								</template>
-								{{ $t(`components.iqrfnet.send-dpa.${lockNadr ? 'unlock' : 'lock'}`) }}
-							</v-tooltip>
-						</template>
-						<template #append-inner>
-							<v-tooltip location='bottom'>
-								<template #activator='{ props }'>
-									<v-icon
-										v-bind='props'
-										:icon='mdiNumeric'
-										color='primary'
-										size='large'
-										@click='changeNadrBase'
-									/>
-								</template>
-								{{ $t('components.iqrfnet.send-dpa.decimal') }}
-							</v-tooltip>
-							<v-menu>
-								<template #activator='{ props }'>
-									<v-icon
-										v-bind='props'
-										:icon='mdiMenu'
-										color='primary'
-										size='large'
-									/>
-								</template>
-								<v-list
-									class='py-0'
-									density='compact'
-								>
-									<v-list-item density='compact'>
-										<b>{{ $t('components.iqrfnet.send-dpa.presets') }}</b>
-									</v-list-item>
-									<hr>
-									<v-list-item
-										v-for='preset of nadrPresets'
-										:key='preset.title'
-										@click='applyNadrPreset(preset.value)'
-									>
-										{{ preset.title }}
-									</v-list-item>
-								</v-list>
-							</v-menu>
-						</template>
-					</TextInput>
-				</v-col>
-				<v-col>
-					<NumberInput
-						v-if='!useHexPnum'
-						v-model.number='pnum'
-						:min='0'
-						:max='255'
-						:label='$t("components.iqrfnet.send-dpa.pnum")'
-						:rules='[
-							(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.pnumMissing")),
-							(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.send-dpa.validation.pnumInvalid")),
-							(v: number) => ValidationRules.between(v, 0, 255, $t("components.iqrfnet.send-dpa.validation.pnumInvalid")),
-						]'
-						required
-					>
-						<template #append-inner>
-							<v-tooltip location='bottom'>
-								<template #activator='{ props }'>
-									<v-icon
-										v-bind='props'
-										:icon='mdiHexadecimal'
-										color='primary'
-										size='large'
-										@click='changePnumBase'
-									/>
-								</template>
-								{{ $t('components.iqrfnet.send-dpa.hexadecimal') }}
-							</v-tooltip>
-						</template>
-					</NumberInput>
-					<TextInput
-						v-else
-						v-model='pnumHex'
-						:label='$t("components.iqrfnet.send-dpa.pnum")'
-						:rules='[
-							(v: string|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.pnumHexMissing")),
-							(v: string) => validateHexByte(v) || $t("components.iqrfnet.send-dpa.validation.pnumHexInvalid"),
-						]'
-						required
-					>
-						<template #append-inner>
-							<v-tooltip location='bottom'>
-								<template #activator='{ props }'>
-									<v-icon
-										v-bind='props'
-										:icon='mdiNumeric'
-										color='primary'
-										size='large'
-										@click='changePnumBase'
-									/>
-								</template>
-								{{ $t('components.iqrfnet.send-dpa.decimal') }}
-							</v-tooltip>
-						</template>
-					</TextInput>
-				</v-col>
-				<v-col>
-					<NumberInput
-						v-if='!useHexPcmd'
-						v-model.number='pcmd'
-						:min='0'
-						:max='127'
-						:label='$t("components.iqrfnet.send-dpa.pcmd")'
-						:rules='[
-							(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.pcmdMissing")),
-							(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.send-dpa.validation.pcmdInvalid")),
-							(v: number) => ValidationRules.between(v, 0, 127, $t("components.iqrfnet.send-dpa.validation.pcmdInvalid")),
-						]'
-						required
-					>
-						<template #append-inner>
-							<v-tooltip location='bottom'>
-								<template #activator='{ props }'>
-									<v-icon
-										v-bind='props'
-										:icon='mdiHexadecimal'
-										color='primary'
-										size='large'
-										@click='changePcmdBase'
-									/>
-								</template>
-								{{ $t('components.iqrfnet.send-dpa.hexadecimal') }}
-							</v-tooltip>
-						</template>
-					</NumberInput>
-					<TextInput
-						v-else
-						v-model='pcmdHex'
-						:label='$t("components.iqrfnet.send-dpa.pcmd")'
-						:rules='[
-							(v: string|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.pcmdHexMissing")),
-							(v: string) => validateHexNibble(v) || $t("components.iqrfnet.send-dpa.validation.pcmdHexInvalid"),
-						]'
-						required
-					>
-						<template #append-inner>
-							<v-tooltip location='bottom'>
-								<template #activator='{ props }'>
-									<v-icon
-										v-bind='props'
-										:icon='mdiNumeric'
-										color='primary'
-										size='large'
-										@click='changePcmdBase'
-									/>
-								</template>
-								{{ $t('components.iqrfnet.send-dpa.decimal') }}
-							</v-tooltip>
-						</template>
-					</TextInput>
-				</v-col>
-				<v-col>
-					<NumberInput
-						v-if='!useHexHwpid'
-						v-model.number='hwpid'
-						:min='0'
-						:max='65535'
-						:label='$t("components.iqrfnet.send-dpa.hwpid")'
-						:rules='[
-							(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.hwpidMissing")),
-							(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.send-dpa.validation.hwpidInvalid")),
-							(v: number) => ValidationRules.between(v, 0, 65535, $t("components.iqrfnet.send-dpa.validation.hwpidInvalid")),
-						]'
-						required
-					>
-						<template #append-inner>
-							<v-tooltip location='bottom'>
-								<template #activator='{ props }'>
-									<v-icon
-										v-bind='props'
-										:icon='mdiHexadecimal'
-										color='primary'
-										size='large'
-										@click='changeHwpidBase'
-									/>
-								</template>
-								{{ $t('components.iqrfnet.send-dpa.hexadecimal') }}
-							</v-tooltip>
-							<v-menu
-								v-model='hwpidMenu'
-								eager
-							>
-								<template #activator='{ props }'>
-									<v-icon
-										v-bind='props'
-										:icon='mdiMenu'
-										color='primary'
-										size='large'
-									/>
-								</template>
-								<v-list
-									class='py-0'
-									density='compact'
-								>
-									<v-list-item density='compact'>
-										<b>{{ $t('components.iqrfnet.send-dpa.presets') }}</b>
-									</v-list-item>
-									<hr>
-									<v-list-item
-										v-for='preset of hwpidPresets'
-										:key='preset.title'
-										@click='applyHwpidPreset(preset.value)'
-									>
-										{{ preset.title }}
-									</v-list-item>
-									<ProductBrowser
-										:list-activator='true'
-										@apply='(item) => applyHwpidPreset(item.hwpid)'
-										@close='hwpidMenu = false'
-									/>
-								</v-list>
-							</v-menu>
-						</template>
-					</NumberInput>
-					<TextInput
-						v-else
-						v-model='hwpidHex'
-						:label='$t("components.iqrfnet.send-dpa.hwpid")'
-						:rules='[
-							(v: string|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.hwpidHexMissing")),
-							(v: string) => validateHexWord(v) || $t("components.iqrfnet.send-dpa.validation.hwpidHexInvalid"),
-						]'
-						required
-					>
-						<template #append-inner>
-							<v-tooltip location='bottom'>
-								<template #activator='{ props }'>
-									<v-icon
-										v-bind='props'
-										:icon='mdiNumeric'
-										color='primary'
-										size='large'
-										@click='changeHwpidBase'
-									/>
-								</template>
-								{{ $t('components.iqrfnet.send-dpa.decimal') }}
-							</v-tooltip>
-							<v-menu
-								v-model='hwpidMenu'
-								eager
-							>
-								<template #activator='{ props }'>
-									<v-icon
-										v-bind='props'
-										:icon='mdiMenu'
-										color='primary'
-										size='large'
-									/>
-								</template>
-								<v-list
-									class='py-0'
-									density='compact'
-								>
-									<v-list-item density='compact'>
-										<b>{{ $t('components.iqrfnet.send-dpa.presets') }}</b>
-									</v-list-item>
-									<hr>
-									<v-list-item
-										v-for='preset of hwpidPresets'
-										:key='preset.title'
-										@click='applyHwpidPreset(preset.value)'
-									>
-										{{ preset.title }}
-									</v-list-item>
-									<ProductBrowser
-										:list-activator='true'
-										@apply='(item) => applyHwpidPreset(item.hwpid)'
-										@close='hwpidMenu = false'
-									/>
-								</v-list>
-							</v-menu>
-						</template>
-					</TextInput>
-				</v-col>
-				<v-col cols='5'>
-					<v-text-field
-						v-model='pdata'
-						v-maska='maskaOptions'
-						:label='$t("components.iqrfnet.send-dpa.pdata")'
-						:rules='[
-							(v: string) => validatePdata(v) || $t("components.iqrfnet.send-dpa.validation.pdataInvalid"),
-						]'
-					/>
-				</v-col>
-			</v-row>
-			<v-checkbox
-				v-model='useCustomTimeout'
-				:label='$t("components.iqrfnet.send-dpa.useCustomTimeout")'
-				density='compact'
-				hide-details
+	<div>
+		<Card>
+			<template #title>
+				{{ $t("pages.iqrfnet.send-dpa.title") }}
+			</template>
+			<v-alert
+				v-if='componentState === ComponentState.Saving'
+				variant='tonal'
+				color='info'
+				:text='$t("components.iqrfnet.inProgress")'
+				class='mb-2'
 			/>
-			<NumberInput
-				v-model.number='customTimeout'
-				:min='1000'
-				:label='$t("components.iqrfnet.send-dpa.customTimeout")'
-				:disabled='!useCustomTimeout'
-				required
-			/>
-			<v-btn
-				color='primary'
-				:disabled='!isValid.value || componentState === ComponentState.Saving'
-				@click='onSubmit'
+			<v-form
+				ref='form'
+				v-slot='{ isValid }'
+				:disabled='componentState === ComponentState.Saving'
 			>
-				{{ $t('common.buttons.send') }}
-			</v-btn>
-		</v-form>
-	</Card>
-	<PacketMacros
-		class='my-4'
-		@set-packet='applyPacket'
-	/>
-	<PacketHistory
-		:messages='messages'
-		@clear='clearMessages'
-	/>
+				<v-row>
+					<v-col>
+						<NumberInput
+							v-if='!useHexNadr'
+							v-model.number='nadr'
+							:min='0'
+							:max='255'
+							:label='$t("components.iqrfnet.send-dpa.nadr")'
+							:rules='[
+								(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.nadrMissing")),
+								(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.send-dpa.validation.nadrInvalid")),
+								(v: number) => ValidationRules.between(v, 0, 255, $t("components.iqrfnet.send-dpa.validation.nadrInvalid")),
+							]'
+							required
+							:readonly='lockNadr'
+						>
+							<template #prepend>
+								<v-tooltip location='bottom'>
+									<template #activator='{ props }'>
+										<v-icon
+											v-bind='props'
+											:icon='lockNadr ? mdiLock : mdiLockOpen'
+											color='warning'
+											@click='lockNadr = !lockNadr'
+										/>
+									</template>
+									{{
+										$t(
+											`components.iqrfnet.send-dpa.${
+												lockNadr ? "unlock" : "lock"
+											}`,
+										)
+									}}
+								</v-tooltip>
+							</template>
+							<template #append-inner>
+								<v-tooltip location='bottom'>
+									<template #activator='{ props }'>
+										<v-icon
+											v-bind='props'
+											:icon='mdiHexadecimal'
+											color='primary'
+											size='large'
+											@click='changeNadrBase'
+										/>
+									</template>
+									{{ $t("components.iqrfnet.send-dpa.hexadecimal") }}
+								</v-tooltip>
+								<v-menu>
+									<template #activator='{ props }'>
+										<v-icon
+											v-bind='props'
+											:icon='mdiMenu'
+											color='primary'
+											size='large'
+										/>
+									</template>
+									<v-list class='py-0' density='compact'>
+										<v-list-item density='compact'>
+											<b>{{ $t("components.iqrfnet.send-dpa.presets") }}</b>
+										</v-list-item>
+										<hr>
+										<v-list-item
+											v-for='preset of nadrPresets'
+											:key='preset.title'
+											@click='applyNadrPreset(preset.value)'
+										>
+											{{ preset.title }}
+										</v-list-item>
+									</v-list>
+								</v-menu>
+							</template>
+						</NumberInput>
+						<TextInput
+							v-else
+							v-model='nadrHex'
+							:label='$t("components.iqrfnet.send-dpa.nadr")'
+							:rules='[
+								(v: string|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.nadrHexMissing")),
+								(v: string) => validateHexByte(v) || $t("components.iqrfnet.send-dpa.validation.nadrHexInvalid"),
+							]'
+							required
+							:readonly='lockNadr'
+						>
+							<template #prepend>
+								<v-tooltip location='bottom'>
+									<template #activator='{ props }'>
+										<v-icon
+											v-bind='props'
+											:icon='lockNadr ? mdiLock : mdiLockOpen'
+											color='warning'
+											@click='lockNadr = !lockNadr'
+										/>
+									</template>
+									{{
+										$t(
+											`components.iqrfnet.send-dpa.${
+												lockNadr ? "unlock" : "lock"
+											}`,
+										)
+									}}
+								</v-tooltip>
+							</template>
+							<template #append-inner>
+								<v-tooltip location='bottom'>
+									<template #activator='{ props }'>
+										<v-icon
+											v-bind='props'
+											:icon='mdiNumeric'
+											color='primary'
+											size='large'
+											@click='changeNadrBase'
+										/>
+									</template>
+									{{ $t("components.iqrfnet.send-dpa.decimal") }}
+								</v-tooltip>
+								<v-menu>
+									<template #activator='{ props }'>
+										<v-icon
+											v-bind='props'
+											:icon='mdiMenu'
+											color='primary'
+											size='large'
+										/>
+									</template>
+									<v-list class='py-0' density='compact'>
+										<v-list-item density='compact'>
+											<b>{{ $t("components.iqrfnet.send-dpa.presets") }}</b>
+										</v-list-item>
+										<hr>
+										<v-list-item
+											v-for='preset of nadrPresets'
+											:key='preset.title'
+											@click='applyNadrPreset(preset.value)'
+										>
+											{{ preset.title }}
+										</v-list-item>
+									</v-list>
+								</v-menu>
+							</template>
+						</TextInput>
+					</v-col>
+					<v-col>
+						<NumberInput
+							v-if='!useHexPnum'
+							v-model.number='pnum'
+							:min='0'
+							:max='255'
+							:label='$t("components.iqrfnet.send-dpa.pnum")'
+							:rules='[
+								(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.pnumMissing")),
+								(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.send-dpa.validation.pnumInvalid")),
+								(v: number) => ValidationRules.between(v, 0, 255, $t("components.iqrfnet.send-dpa.validation.pnumInvalid")),
+							]'
+							required
+						>
+							<template #append-inner>
+								<v-tooltip location='bottom'>
+									<template #activator='{ props }'>
+										<v-icon
+											v-bind='props'
+											:icon='mdiHexadecimal'
+											color='primary'
+											size='large'
+											@click='changePnumBase'
+										/>
+									</template>
+									{{ $t("components.iqrfnet.send-dpa.hexadecimal") }}
+								</v-tooltip>
+							</template>
+						</NumberInput>
+						<TextInput
+							v-else
+							v-model='pnumHex'
+							:label='$t("components.iqrfnet.send-dpa.pnum")'
+							:rules='[
+								(v: string|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.pnumHexMissing")),
+								(v: string) => validateHexByte(v) || $t("components.iqrfnet.send-dpa.validation.pnumHexInvalid"),
+							]'
+							required
+						>
+							<template #append-inner>
+								<v-tooltip location='bottom'>
+									<template #activator='{ props }'>
+										<v-icon
+											v-bind='props'
+											:icon='mdiNumeric'
+											color='primary'
+											size='large'
+											@click='changePnumBase'
+										/>
+									</template>
+									{{ $t("components.iqrfnet.send-dpa.decimal") }}
+								</v-tooltip>
+							</template>
+						</TextInput>
+					</v-col>
+					<v-col>
+						<NumberInput
+							v-if='!useHexPcmd'
+							v-model.number='pcmd'
+							:min='0'
+							:max='127'
+							:label='$t("components.iqrfnet.send-dpa.pcmd")'
+							:rules='[
+								(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.pcmdMissing")),
+								(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.send-dpa.validation.pcmdInvalid")),
+								(v: number) => ValidationRules.between(v, 0, 127, $t("components.iqrfnet.send-dpa.validation.pcmdInvalid")),
+							]'
+							required
+						>
+							<template #append-inner>
+								<v-tooltip location='bottom'>
+									<template #activator='{ props }'>
+										<v-icon
+											v-bind='props'
+											:icon='mdiHexadecimal'
+											color='primary'
+											size='large'
+											@click='changePcmdBase'
+										/>
+									</template>
+									{{ $t("components.iqrfnet.send-dpa.hexadecimal") }}
+								</v-tooltip>
+							</template>
+						</NumberInput>
+						<TextInput
+							v-else
+							v-model='pcmdHex'
+							:label='$t("components.iqrfnet.send-dpa.pcmd")'
+							:rules='[
+								(v: string|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.pcmdHexMissing")),
+								(v: string) => validateHexNibble(v) || $t("components.iqrfnet.send-dpa.validation.pcmdHexInvalid"),
+							]'
+							required
+						>
+							<template #append-inner>
+								<v-tooltip location='bottom'>
+									<template #activator='{ props }'>
+										<v-icon
+											v-bind='props'
+											:icon='mdiNumeric'
+											color='primary'
+											size='large'
+											@click='changePcmdBase'
+										/>
+									</template>
+									{{ $t("components.iqrfnet.send-dpa.decimal") }}
+								</v-tooltip>
+							</template>
+						</TextInput>
+					</v-col>
+					<v-col>
+						<NumberInput
+							v-if='!useHexHwpid'
+							v-model.number='hwpid'
+							:min='0'
+							:max='65535'
+							:label='$t("components.iqrfnet.send-dpa.hwpid")'
+							:rules='[
+								(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.hwpidMissing")),
+								(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.send-dpa.validation.hwpidInvalid")),
+								(v: number) => ValidationRules.between(v, 0, 65535, $t("components.iqrfnet.send-dpa.validation.hwpidInvalid")),
+							]'
+							required
+						>
+							<template #append-inner>
+								<v-tooltip location='bottom'>
+									<template #activator='{ props }'>
+										<v-icon
+											v-bind='props'
+											:icon='mdiHexadecimal'
+											color='primary'
+											size='large'
+											@click='changeHwpidBase'
+										/>
+									</template>
+									{{ $t("components.iqrfnet.send-dpa.hexadecimal") }}
+								</v-tooltip>
+								<v-menu v-model='hwpidMenu' eager>
+									<template #activator='{ props }'>
+										<v-icon
+											v-bind='props'
+											:icon='mdiMenu'
+											color='primary'
+											size='large'
+										/>
+									</template>
+									<v-list class='py-0' density='compact'>
+										<v-list-item density='compact'>
+											<b>{{ $t("components.iqrfnet.send-dpa.presets") }}</b>
+										</v-list-item>
+										<hr>
+										<v-list-item
+											v-for='preset of hwpidPresets'
+											:key='preset.title'
+											@click='applyHwpidPreset(preset.value)'
+										>
+											{{ preset.title }}
+										</v-list-item>
+										<ProductBrowser
+											:list-activator='true'
+											@apply='(item) => applyHwpidPreset(item.hwpid)'
+											@close='hwpidMenu = false'
+										/>
+									</v-list>
+								</v-menu>
+							</template>
+						</NumberInput>
+						<TextInput
+							v-else
+							v-model='hwpidHex'
+							:label='$t("components.iqrfnet.send-dpa.hwpid")'
+							:rules='[
+								(v: string|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.hwpidHexMissing")),
+								(v: string) => validateHexWord(v) || $t("components.iqrfnet.send-dpa.validation.hwpidHexInvalid"),
+							]'
+							required
+						>
+							<template #append-inner>
+								<v-tooltip location='bottom'>
+									<template #activator='{ props }'>
+										<v-icon
+											v-bind='props'
+											:icon='mdiNumeric'
+											color='primary'
+											size='large'
+											@click='changeHwpidBase'
+										/>
+									</template>
+									{{ $t("components.iqrfnet.send-dpa.decimal") }}
+								</v-tooltip>
+								<v-menu v-model='hwpidMenu' eager>
+									<template #activator='{ props }'>
+										<v-icon
+											v-bind='props'
+											:icon='mdiMenu'
+											color='primary'
+											size='large'
+										/>
+									</template>
+									<v-list class='py-0' density='compact'>
+										<v-list-item density='compact'>
+											<b>{{ $t("components.iqrfnet.send-dpa.presets") }}</b>
+										</v-list-item>
+										<hr>
+										<v-list-item
+											v-for='preset of hwpidPresets'
+											:key='preset.title'
+											@click='applyHwpidPreset(preset.value)'
+										>
+											{{ preset.title }}
+										</v-list-item>
+										<ProductBrowser
+											:list-activator='true'
+											@apply='(item) => applyHwpidPreset(item.hwpid)'
+											@close='hwpidMenu = false'
+										/>
+									</v-list>
+								</v-menu>
+							</template>
+						</TextInput>
+					</v-col>
+					<v-col cols='5'>
+						<v-text-field
+							v-model='pdata'
+							v-maska='maskaOptions'
+							:label='$t("components.iqrfnet.send-dpa.pdata")'
+							:rules='[
+								(v: string) => validatePdata(v) || $t("components.iqrfnet.send-dpa.validation.pdataInvalid"),
+							]'
+						/>
+					</v-col>
+				</v-row>
+				<v-checkbox
+					v-model='useCustomTimeout'
+					:label='$t("components.iqrfnet.send-dpa.useCustomTimeout")'
+					density='compact'
+					hide-details
+				/>
+				<NumberInput
+					v-model.number='customTimeout'
+					:min='1000'
+					:label='$t("components.iqrfnet.send-dpa.customTimeout")'
+					:disabled='!useCustomTimeout'
+					required
+				/>
+				<v-btn
+					color='primary'
+					:disabled='!isValid.value || componentState === ComponentState.Saving'
+					@click='onSubmit'
+				>
+					{{ $t("common.buttons.send") }}
+				</v-btn>
+			</v-form>
+		</Card>
+		<PacketMacros class='my-4' @set-packet='applyPacket' />
+		<PacketHistory :messages='messages' @clear='clearMessages' />
+	</div>
 </template>
 
-<script lang='ts' setup>
+<script lang="ts" setup>
 import { GenericMessages } from '@iqrf/iqrf-gateway-daemon-utils/enums';
 import { GenericService } from '@iqrf/iqrf-gateway-daemon-utils/services';
-import { ApiResponseRaw, RawResult, type TApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
+import {
+	type ApiResponseRaw,
+	type RawResult,
+	type TApiResponse,
+} from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
-import { mdiHexadecimal, mdiLock, mdiLockOpen, mdiMenu, mdiNumeric } from '@mdi/js';
+import {
+	mdiHexadecimal,
+	mdiLock,
+	mdiLockOpen,
+	mdiMenu,
+	mdiNumeric,
+} from '@mdi/js';
 import { DateTime } from 'luxon';
 import { vMaska } from 'maska/vue';
 import { ref, type Ref } from 'vue';
@@ -465,7 +465,7 @@ import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
 import { useDaemonStore } from '@/store/daemonSocket';
 import { ComponentState } from '@/types/ComponentState';
-import { DpaPacketTransaction } from '@/types/Iqrfnet';
+import { type DpaPacketTransaction } from '@/types/Iqrfnet';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
 const daemonStore = useDaemonStore();
@@ -474,22 +474,20 @@ const msgId: Ref<string | null> = ref(null);
 const messages: Ref<DpaPacketTransaction[]> = ref([]);
 const hwpidMenu: Ref<boolean> = ref(false);
 
-daemonStore.$onAction(
-	({ name, after }) => {
-		if (name === 'onMessage') {
-			after((rsp: TApiResponse) => {
-				if (rsp.data.msgId !== msgId.value) {
-					return;
-				}
-				daemonStore.removeMessage(msgId.value);
-				componentState.value = ComponentState.Ready;
-				if (rsp.mType === GenericMessages.Raw) {
-					handleResponse(rsp as ApiResponseRaw<RawResult>);
-				}
-			});
-		}
-	},
-);
+daemonStore.$onAction(({ name, after }) => {
+	if (name === 'onMessage') {
+		after((rsp: TApiResponse) => {
+			if (rsp.data.msgId !== msgId.value) {
+				return;
+			}
+			daemonStore.removeMessage(msgId.value);
+			componentState.value = ComponentState.Ready;
+			if (rsp.mType === GenericMessages.Raw) {
+				handleResponse(rsp as ApiResponseRaw<RawResult>);
+			}
+		});
+	}
+});
 
 // nadr
 const lockNadr: Ref<boolean> = ref(false);
@@ -521,8 +519,8 @@ const hwpidPresets = [
 // pdata
 const pdata: Ref<string> = ref('');
 const maskaOptions = {
-	mask: `${'HH.'.repeat(56) }HH`,
-	tokens: { 'H': { pattern: /[\da-f]/i } },
+	mask: `${'HH.'.repeat(56)}HH`,
+	tokens: { H: { pattern: /[\da-f]/i } },
 };
 // timeout
 const useCustomTimeout: Ref<boolean> = ref(false);
@@ -623,14 +621,16 @@ function numberToHexString(value: number, digits: number): string {
 }
 
 function buildPacket(): string {
-	const packetHwpid = useHexHwpid.value ? hwpidHex.value : numberToHexString(hwpid.value, 4);
+	const packetHwpid = useHexHwpid.value
+		? hwpidHex.value
+		: numberToHexString(hwpid.value, 4);
 	const packet = `${
 		useHexNadr.value ? nadrHex.value : numberToHexString(nadr.value, 2)
-	}.00.${
-		useHexPnum.value ? pnumHex.value : numberToHexString(pnum.value, 2)
-	}.${
+	}.00.${useHexPnum.value ? pnumHex.value : numberToHexString(pnum.value, 2)}.${
 		useHexPcmd.value ? pcmdHex.value : numberToHexString(pcmd.value, 2)
-	}.${packetHwpid.substring(0, 2)}.${packetHwpid.substring(2, 4)}.${pdata.value}`;
+	}.${packetHwpid.substring(0, 2)}.${packetHwpid.substring(2, 4)}.${
+		pdata.value
+	}`;
 	return packet.endsWith('.') ? packet.slice(0, -1) : packet;
 }
 
@@ -651,19 +651,23 @@ async function onSubmit(): Promise<void> {
 	messages.value.push({
 		msgId: msgId.value,
 		request: rq.request!.data.req.rData,
-		requestTs: DateTime.now().toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS),
+		requestTs: DateTime.now().toLocaleString(
+			DateTime.DATETIME_SHORT_WITH_SECONDS,
+		),
 	});
 }
 
 function handleResponse(rsp: ApiResponseRaw<RawResult>): void {
 	const msgId = rsp.data.msgId;
-	const idx = messages.value.findIndex((item: DpaPacketTransaction) => item.msgId === msgId);
+	const idx = messages.value.findIndex(
+		(item: DpaPacketTransaction) => item.msgId === msgId,
+	);
 	if (idx === -1) {
 		return;
 	}
 	let confirmation = undefined;
-	let	confirmationTs = undefined;
-	let	responseTs = undefined;
+	let confirmationTs = undefined;
+	let responseTs = undefined;
 	if (rsp.data.raw) {
 		confirmation = rsp.data.raw[0].confirmation;
 		confirmationTs = convertTimestamp(rsp.data.raw[0].confirmationTs);
@@ -705,6 +709,8 @@ function convertTimestamp(ts: string | undefined): string | undefined {
 	if (ts === undefined || ts.length === 0) {
 		return undefined;
 	}
-	return DateTime.fromISO(ts).toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS);
+	return DateTime.fromISO(ts).toLocaleString(
+		DateTime.DATETIME_SHORT_WITH_SECONDS,
+	);
 }
 </script>

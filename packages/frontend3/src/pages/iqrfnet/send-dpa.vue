@@ -16,10 +16,12 @@ limitations under the License.
 -->
 
 <template>
-	<Head>
-		<title>{{ $t('pages.iqrfnet.send-dpa.title') }}</title>
-	</Head>
-	<PacketSender />
+	<div>
+		<Head>
+			<title>{{ $t('pages.iqrfnet.send-dpa.title') }}</title>
+		</Head>
+		<PacketSender />
+	</div>
 </template>
 
 <route>

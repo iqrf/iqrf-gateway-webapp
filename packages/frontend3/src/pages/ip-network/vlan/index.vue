@@ -16,11 +16,13 @@ limitations under the License.
 -->
 
 <template>
-	<Head>
-		<title>{{ $t('pages.ipNetwork.vlan.title') }}</title>
-	</Head>
-	<InterfacesTable :type='NetworkInterfaceType.VLAN' class='mb-3' />
-	<ConnectionsTable :type='NetworkConnectionType.VLAN' />
+	<div>
+		<Head>
+			<title>{{ $t('pages.ipNetwork.vlan.title') }}</title>
+		</Head>
+		<InterfacesTable :type='NetworkInterfaceType.VLAN' class='mb-3' />
+		<ConnectionsTable :type='NetworkConnectionType.VLAN' />
+	</div>
 </template>
 
 <route>

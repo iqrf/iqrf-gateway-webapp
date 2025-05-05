@@ -16,11 +16,13 @@ limitations under the License.
 -->
 
 <template>
-	<Head>
-		<title>{{ $t('pages.ipNetwork.wireless.title') }}</title>
-	</Head>
-	<InterfacesTable :type='NetworkInterfaceType.WIFI' class='mb-3' />
-	<ConnectionsTable :type='NetworkConnectionType.WiFi' />
+	<div>
+		<Head>
+			<title>{{ $t('pages.ipNetwork.wireless.title') }}</title>
+		</Head>
+		<InterfacesTable :type='NetworkInterfaceType.WIFI' class='mb-3' />
+		<ConnectionsTable :type='NetworkConnectionType.WiFi' />
+	</div>
 </template>
 
 <route>
