@@ -23,12 +23,12 @@ limitations under the License.
 		<template #titleActions>
 			<LoggingForm
 				:action='Action.Add'
-				@saved='getConfigs'
+				@saved='getConfig()'
 			/>
 			<CardTitleActionBtn
 				:action='Action.Reload'
 				:tooltip='$t("components.config.daemon.logging.actions.reload")'
-				@click='getConfigs'
+				@click='getConfig()'
 			/>
 		</template>
 		<v-skeleton-loader
@@ -48,11 +48,11 @@ limitations under the License.
 						<LoggingForm
 							:action='Action.Edit'
 							:logging-profile='item'
-							@saved='getConfigs'
+							@saved='getConfig()'
 						/>
 						<LoggingDeleteDialog
 							:logging-instance='item'
-							@deleted='getConfigs'
+							@deleted='getConfig()'
 						/>
 					</template>
 				</DataTable>
@@ -64,7 +64,6 @@ limitations under the License.
 <script lang='ts' setup>
 import { type IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import {
-	type IqrfGatewayDaemonComponent,
 	IqrfGatewayDaemonComponentName,
 	type ShapeTraceFileService,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
@@ -90,21 +89,21 @@ const headers = [
 const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
 const instances: Ref<ShapeTraceFileService[]> = ref([]);
 
-async function getConfigs(): Promise<void> {
+async function getConfig(): Promise<void> {
 	if (componentState.value === ComponentState.Created) {
 		componentState.value = ComponentState.Loading;
 	} else {
 		componentState.value = ComponentState.Reloading;
 	}
-	service.getComponent(IqrfGatewayDaemonComponentName.ShapeTraceFile)
-		.then((response: IqrfGatewayDaemonComponent<IqrfGatewayDaemonComponentName.ShapeTraceFile>): void => {
-			instances.value = response.instances;
-			componentState.value = ComponentState.Ready;
-		})
-		.catch(() => toast.error('TODO FETCH ERROR'));
+	try {
+		instances.value = (await service.getComponent(IqrfGatewayDaemonComponentName.ShapeTraceFile)).instances;
+	} catch {
+		toast.error('TODO FETCH ERROR');
+	}
+	componentState.value = ComponentState.Ready;
 }
 
 onMounted(() => {
-	getConfigs();
+	getConfig();
 });
 </script>

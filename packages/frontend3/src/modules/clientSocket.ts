@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { type DaemonApiRequest } from '@iqrf/iqrf-gateway-daemon-utils/types';
+import { type TApiRequest } from '@iqrf/iqrf-gateway-daemon-utils/types';
 
 /**
  * Generic WebSocket state interface
@@ -55,7 +55,7 @@ export type WsOnCloseCallback = (event: CloseEvent) => void;
 export type WsOnMessageCallback = (event: MessageEvent) => void;
 
 /// WebSocket on message send callback
-export type WsOnSendCallback = (message: DaemonApiRequest) => void;
+export type WsOnSendCallback = (message: TApiRequest) => void;
 
 /// WebSocket on error callback
 export type WsOnErrorCallback = (event: Event) => void;
@@ -254,9 +254,9 @@ export default class ClientSocket {
 
 	/**
 	 * Sends a message
-	 * @param {DaemonApiRequest} data Message data
+	 * @param {TApiRequest} data Message data
 	 */
-	public send(data: DaemonApiRequest): void {
+	public send(data: TApiRequest): void {
 		try {
 			const message: string = JSON.stringify(data);
 			this.socket?.send(message);

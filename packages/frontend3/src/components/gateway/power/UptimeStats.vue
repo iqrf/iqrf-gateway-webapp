@@ -63,7 +63,7 @@ limitations under the License.
 <script lang='ts' setup>
 import { type PowerService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
 import { type GatewayUptime } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
-import { type AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 import humanizeDuration from 'humanize-duration';
 import { onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -98,12 +98,11 @@ const stats: Ref<GatewayUptime[]> = ref([]);
  */
 async function fetchData() {
 	state.value = ComponentState.Loading;
-	await service.getStats()
-		.then((response: GatewayUptime[]) => {
-			stats.value = response;
-			state.value = ComponentState.Ready;
-		})
-		.catch((error: AxiosError) => {
+	try {
+		stats.value = await service.getStats();
+		state.value = ComponentState.Ready;
+	} catch (error) {
+		if (error instanceof AxiosError) {
 			stats.value = [];
 			if (error.response?.status === 404) {
 				state.value = ComponentState.NotFound;
@@ -112,7 +111,8 @@ async function fetchData() {
 				state.value = ComponentState.FetchFailed;
 				toast.error(i18n.t('components.gateway.power.stats.messages.fetchFailed').toString());
 			}
-		});
+		}
+	}
 }
 
 onMounted(async (): Promise<void> => {

@@ -29,7 +29,7 @@ limitations under the License.
 				:action='action'
 			/>
 		</template>
-		<v-form ref='form' v-slot='{ isValid }' @submit.prevent='onSubmit'>
+		<v-form ref='form' v-slot='{ isValid }' @submit.prevent='onSubmit()'>
 			<Card>
 				<template #title>
 					{{ $t(`components.accessControl.users.actions.${action}`) }}
@@ -75,7 +75,10 @@ limitations under the License.
 						type='submit'
 					/>
 					<v-spacer />
-					<CardActionBtn :action='Action.Cancel' @click='close' />
+					<CardActionBtn
+						:action='Action.Cancel'
+						@click='close()'
+					/>
 				</template>
 			</Card>
 		</v-form>
@@ -96,7 +99,6 @@ import {
 	mdiEmail,
 	mdiKey,
 } from '@mdi/js';
-import { type AxiosError } from 'axios';
 import { ref, type Ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
@@ -111,7 +113,6 @@ import PasswordInput from '@/components/layout/form/PasswordInput.vue';
 import SelectInput from '@/components/layout/form/SelectInput.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
-import { basicErrorToast } from '@/helpers/errorToast';
 import { getFilteredRoleOptions } from '@/helpers/userData';
 import { validateForm } from '@/helpers/validateForm';
 import ValidationRules from '@/helpers/ValidationRules';
@@ -125,6 +126,7 @@ interface Props {
 }
 
 const i18n = useI18n();
+const service = useApiClient().getSecurityServices().getUserService();
 const emit = defineEmits(['refresh']);
 const componentProps = defineProps<Props>();
 const showDialog: Ref<boolean> = ref(false);
@@ -161,36 +163,26 @@ async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
 	}
-	const service = useApiClient().getSecurityServices().getUserService();
-	if (componentProps.action === Action.Add) {
-		service.create(user.value as UserCreate)
-			.then(() => onSuccess(user.value))
-			.catch((error: AxiosError) => onFailure(error, user.value));
-	} else {
-		if (componentProps.userInfo?.id === undefined) {
-			return;
+	try {
+		if (componentProps.action === Action.Add) {
+			await service.create(user.value as UserCreate);
+		} else {
+			if (componentProps.userInfo?.id === undefined) {
+				return;
+			}
+			await service.update(componentProps.userInfo.id, user.value as UserEdit);
+			if (componentProps.userInfo.id === userStore.getId) {
+				userStore.refreshUserInfo();
+			}
 		}
-		service.update(componentProps.userInfo.id, user.value as UserEdit)
-			.then(() => {
-				onSuccess(user.value);
-				if (componentProps.userInfo?.id === userStore.getId) {
-					userStore.refreshUserInfo();
-				}
-			})
-			.catch((error: AxiosError) => onFailure(error, user.value));
+		toast.success(
+			i18n.t(`components.accessControl.users.messages.${componentProps.action}.success`, { user: user.value.username }),
+		);
+		close();
+		emit('refresh');
+	} catch {
+		toast.error('TODO ERROR HANDLING');
 	}
-}
-
-function onSuccess(entity: UserCreate | UserEdit): void {
-	toast.success(
-		i18n.t(`components.accessControl.users.messages.${componentProps.action}.success`, { user: entity.username }),
-	);
-	close();
-	emit('refresh');
-}
-
-function onFailure(error: AxiosError, entity: UserCreate | UserEdit): void {
-	basicErrorToast(error, `components.accessControl.users.messages.${componentProps.action}.failure`, { user: entity.username });
 }
 
 function close(): void {

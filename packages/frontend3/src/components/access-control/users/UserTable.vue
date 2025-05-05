@@ -21,16 +21,19 @@ limitations under the License.
 			{{ $t('pages.accessControl.users.title') }}
 		</template>
 		<template #titleActions>
-			<UserForm :action='Action.Add' @refresh='getUsers' />
+			<UserForm
+				:action='Action.Add'
+				@refresh='getUsers()'
+			/>
 			<CardTitleActionBtn
 				:action='Action.Reload'
-				@click='getUsers'
+				@click='getUsers()'
 			/>
 		</template>
 		<DataTable
 			:headers='headers'
 			:items='users'
-			:loading='loading'
+			:loading='componentState === ComponentState.Loading'
 			:hover='true'
 			:dense='true'
 		>
@@ -66,10 +69,11 @@ import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue'
 import DataTable from '@/components/layout/data-table/DataTable.vue';
 import { useApiClient } from '@/services/ApiClient';
 import { Action } from '@/types/Action';
+import { ComponentState } from '@/types/ComponentState';
 
+const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
-
-const loading: Ref<boolean> = ref(false);
+const service = useApiClient().getSecurityServices().getUserService();
 const headers = [
 	{ key: 'username', title: i18n.t('components.accessControl.users.username') },
 	{ key: 'email', title: i18n.t('components.accessControl.users.email') },
@@ -84,12 +88,14 @@ onMounted(() => {
 	getUsers();
 });
 
-function getUsers(): void {
-	loading.value = true;
-	useApiClient().getSecurityServices().getUserService().list().then((rsp: UserInfo[]) => {
-		users.value = rsp;
-		loading.value = false;
-	});
+async function getUsers(): Promise<void> {
+	componentState.value = ComponentState.Loading;
+	try {
+		users.value = await service.list();
+	} catch {
+		//
+	}
+	componentState.value = ComponentState.Ready;
 }
 
 </script>

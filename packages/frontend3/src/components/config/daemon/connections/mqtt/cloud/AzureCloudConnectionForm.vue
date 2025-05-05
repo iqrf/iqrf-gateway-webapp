@@ -39,7 +39,7 @@ limitations under the License.
 						color='primary'
 						variant='elevated'
 						:disabled='!isValid.value || componentState === ComponentState.Saving'
-						@click='onSubmit'
+						@click='onSubmit()'
 					>
 						{{ $t('common.buttons.save') }}
 					</v-btn>
@@ -48,7 +48,7 @@ limitations under the License.
 						color='grey-darken-2'
 						variant='elevated'
 						:disabled='componentState === ComponentState.Saving'
-						@click='close'
+						@click='close()'
 					>
 						{{ $t('common.buttons.close') }}
 					</v-btn>
@@ -93,16 +93,17 @@ async function onSubmit(): Promise<void> {
 		return;
 	}
 	const params = { ...config.value };
-	service.createMqttInstance(params)
-		.then(() => {
-			toast.success(
-				i18n.t('components.config.daemon.connections.mqtt.clouds.messages.save.success'),
-			);
-			show.value = false;
-			emit('saved');
-			clear();
-		})
-		.catch(() => toast.error('TODO ERROR HANDLING'));
+	try {
+		await service.createMqttInstance(params);
+		toast.success(
+			i18n.t('components.config.daemon.connections.mqtt.clouds.messages.save.success'),
+		);
+		show.value = false;
+		emit('saved');
+		clear();
+	} catch {
+		toast.error('TODO ERROR HANDLING');
+	}
 }
 
 function clear(): void {

@@ -24,11 +24,11 @@ limitations under the License.
 			<DeviceProfileForm
 				:action='Action.Add'
 				:mapping-type='mappingType ?? MappingType.SPI'
-				@saved='getProfiles'
+				@saved='getProfiles()'
 			/>
 			<CardTitleActionBtn
 				:action='Action.Reload'
-				@click='getProfiles'
+				@click='getProfiles()'
 			/>
 		</template>
 		<DataTable
@@ -49,11 +49,11 @@ limitations under the License.
 					:action='Action.Edit'
 					:mapping-type='mappingType ?? MappingType.SPI'
 					:device-profile='item'
-					@saved='getProfiles'
+					@saved='getProfiles()'
 				/>
 				<DeviceProfileDeleteDialog
 					:profile='item'
-					@deleted='getProfiles'
+					@deleted='getProfiles()'
 				/>
 			</template>
 		</DataTable>
@@ -98,19 +98,20 @@ const profiles: Ref<IqrfGatewayDaemonMapping[]> = ref([]);
 
 async function getProfiles(): Promise<void> {
 	componentState.value = ComponentState.Loading;
-	service.listMappings(componentProps.mappingType)
-		.then((data: IqrfGatewayDaemonMapping[]) => {
-			profiles.value = data.sort((a: IqrfGatewayDaemonMapping, b: IqrfGatewayDaemonMapping): number => {
-				if (a === b) {
-					return 0;
-				}
-				if (a.deviceType === b.deviceType) {
-					return a.name.localeCompare(b.name);
-				}
-				return a.deviceType.localeCompare(b.deviceType);
-			});
-			componentState.value = ComponentState.Ready;
+	try {
+		profiles.value = (await service.listMappings()).sort((a, b): number => {
+			if (a === b) {
+				return 0;
+			}
+			if (a.deviceType === b.deviceType) {
+				return a.name.localeCompare(b.name);
+			}
+			return a.deviceType.localeCompare(b.deviceType);
 		});
+	} catch {
+		//
+	}
+	componentState.value = ComponentState.Ready;
 }
 
 function applyProfile(profile: IqrfGatewayDaemonMapping): void {

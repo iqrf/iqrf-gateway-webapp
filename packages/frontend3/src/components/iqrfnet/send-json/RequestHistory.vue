@@ -66,16 +66,16 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { type JsonMessage } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { mdiDelete } from '@mdi/js';
 import { computed, type PropType, ref, type Ref } from 'vue';
 
 import JsonMessageViewer from '@/components/iqrfnet/send-json/JsonMessageViewer.vue';
 import Card from '@/components/layout/card/Card.vue';
 import SelectInput from '@/components/layout/form/SelectInput.vue';
+import { JsonApiTransaction } from '@/types/Iqrfnet';
 const componentProps = defineProps({
 	messages: {
-		type: Array as PropType<JsonMessage[]>,
+		type: Array as PropType<JsonApiTransaction[]>,
 		required: true,
 	},
 });
@@ -83,7 +83,7 @@ const emit = defineEmits(['clear']);
 const messageIdx: Ref<number> = ref(0);
 
 const messageOptions = computed(() => {
-	return componentProps.messages.map((item: JsonMessage, index: number) => ({
+	return componentProps.messages.map((item: JsonApiTransaction, index: number) => ({
 		title: `[${item.timestamp}] ${item.mType} (${item.msgId})`,
 		value: index,
 	}));

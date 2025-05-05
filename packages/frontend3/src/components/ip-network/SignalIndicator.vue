@@ -23,7 +23,7 @@ limitations under the License.
 		height='16pt'
 		rounded
 	>
-		<span>{{ Math.ceil(signal) }}%</span>
+		<span>{{ `${Math.ceil(signal)}%` }}</span>
 	</v-progress-linear>
 </template>
 

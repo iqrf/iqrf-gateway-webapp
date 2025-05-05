@@ -20,7 +20,7 @@ limitations under the License.
 		ref='dialog'
 		:component-state='componentState'
 		:tooltip='$t("components.config.daemon.connections.actions.delete")'
-		@submit='onSubmit'
+		@submit='onSubmit()'
 	>
 		<template #title>
 			{{ $t('components.config.daemon.connections.udp.delete.title') }}
@@ -59,18 +59,20 @@ const dialog: Ref<typeof DeleteModalWindow | null> = ref(null);
 const i18n = useI18n();
 const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
 
-function onSubmit(): void {
+async function onSubmit(): Promise<void> {
 	componentState.value = ComponentState.Saving;
-	service.deleteInstance(IqrfGatewayDaemonComponentName.IqrfUdpMessaging, componentProps.connectionProfile.instance)
-		.then(() => {
-			componentState.value = ComponentState.Ready;
-			toast.success(
-				i18n.t('components.config.daemon.connections.udp.messages.delete.success', { name: componentProps.connectionProfile.instance }),
-			);
-			close();
-			emit('deleted');
-		})
-		.catch(() => toast.error('TODO ERROR HANDLING'));
+	try {
+		await service.deleteInstance(IqrfGatewayDaemonComponentName.IqrfUdpMessaging, componentProps.connectionProfile.instance);
+		toast.success(
+			i18n.t('components.config.daemon.connections.udp.messages.delete.success', { name: componentProps.connectionProfile.instance }),
+		);
+		close();
+		emit('deleted');
+
+	} catch {
+		toast.error('TODO ERROR HANDLING');
+	}
+	componentState.value = ComponentState.Ready;
 }
 
 function close(): void {

@@ -23,7 +23,7 @@ limitations under the License.
 					{{ $t('components.iqrfnet.common.rf') }}
 				</legend>
 				<TextInput
-					v-model='config.rfBand'
+					:model-value='rfBand'
 					:label='$t("components.iqrfnet.tr-config.os.rf.rfBand")'
 					readonly
 				/>
@@ -110,7 +110,8 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { IqmeshReadTrConfResult } from '@iqrf/iqrf-gateway-daemon-utils/types';
+import { IqmeshReadTrConfResult, IqmeshWriteTrConfParams } from '@iqrf/iqrf-gateway-daemon-utils/types';
+import { computed } from 'vue';
 import { useDisplay } from 'vuetify';
 
 import Card from '@/components/layout/card/Card.vue';
@@ -118,5 +119,9 @@ import NumberInput from '@/components/layout/form/NumberInput.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 
 const display = useDisplay();
-const config = defineModel<IqmeshReadTrConfResult>('config', { required: true });
+const config = defineModel<IqmeshReadTrConfResult|IqmeshWriteTrConfParams>('config', { required: true });
+
+const rfBand = computed(() => {
+	return (config.value as IqmeshReadTrConfResult).rfBand ?? undefined;
+});
 </script>

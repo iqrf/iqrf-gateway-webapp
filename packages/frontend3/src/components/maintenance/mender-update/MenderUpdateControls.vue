@@ -33,7 +33,7 @@ limitations under the License.
 					(v: File|Blob|null) => ValidationRules.required(v, $t("components.maintenance.mender.update.validations.artifact.required")),
 				]'
 				:prepend-inner-icon='mdiFileOutline'
-				:prepend-icon='null'
+				:prepend-icon='undefined'
 				show-size
 				required
 			/>
@@ -65,7 +65,7 @@ limitations under the License.
 <script lang='ts' setup>
 import { type MenderService } from '@iqrf/iqrf-gateway-webapp-client/services/Maintenance';
 import { mdiFileOutline } from '@mdi/js';
-import { type AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
@@ -92,56 +92,57 @@ async function installArtifact(): Promise<void> {
 	}
 	componentState.value = ComponentState.Saving;
 	const artifactFile = artifacts.value[0];
-	service.install(artifactFile)
-		.then((data: string) => {
-			updateLog(data);
-			componentState.value = ComponentState.Ready;
-			toast.success(
-				i18n.t('components.maintenance.mender.update.message.install.success'),
-			);
-		})
-		.catch((error: AxiosError) => {
+	try {
+		const data = await service.install(artifactFile);
+		updateLog(data);
+		toast.success(
+			i18n.t('components.maintenance.mender.update.messages.install.success'),
+		);
+	} catch (error) {
+		if (error instanceof AxiosError) {
 			const message = (error.response?.data as Record<string, string>).message ?? null;
 			updateLog(message);
-			componentState.value = ComponentState.Ready;
 			toast.error('TODO INSTALL ERROR HANDLING');
-		});
+		}
+	}
+	componentState.value = ComponentState.Ready;
 }
 
-function commitUpdate(): void {
+async function commitUpdate(): Promise<void> {
 	componentState.value = ComponentState.Saving;
-	service.commit()
-		.then((data: string) => {
-			updateLog(data);
-			componentState.value = ComponentState.Ready;
-			toast.success(
-				i18n.t('components.maintenance.mender.update.message.commit.success'),
-			);
-		})
-		.catch((error: AxiosError) => {
+	try {
+		const data = await service.commit();
+		updateLog(data);
+		toast.success(
+			i18n.t('components.maintenance.mender.update.messages.commit.success'),
+		);
+	} catch (error) {
+		if (error instanceof AxiosError) {
 			const message = (error.response?.data as Record<string, string>).message ?? null;
 			updateLog(message);
-			componentState.value = ComponentState.Ready;
 			toast.error('TODO COMMIT ERROR HANDLING');
-		});
+		}
+	}
+	componentState.value = ComponentState.Ready;
 }
 
-function rollbackUpdate(): void {
+async function rollbackUpdate(): Promise<void> {
 	componentState.value = ComponentState.Saving;
-	service.rollback()
-		.then((data: string) => {
-			updateLog(data);
-			componentState.value = ComponentState.Ready;
-			toast.success(
-				i18n.t('components.maintenance.mender.update.message.rollback.success'),
-			);
-		})
-		.catch((error: AxiosError) => {
+	try {
+		const data = await service.rollback();
+		updateLog(data);
+		toast.success(
+			i18n.t('components.maintenance.mender.update.messages.rollback.success'),
+		);
+	} catch (error) {
+		if (error instanceof AxiosError) {
 			const message = (error.response?.data as Record<string, string>).message ?? null;
 			updateLog(message);
 			componentState.value = ComponentState.Ready;
 			toast.error('TODO ROLLBACK ERROR HANDLING');
-		});
+		}
+	}
+	componentState.value = ComponentState.Ready;
 }
 
 function updateLog(data: string|null): void {

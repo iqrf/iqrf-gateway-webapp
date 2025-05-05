@@ -51,17 +51,17 @@ watch(() => componentProps.serviceName, (newVal: string|null) => {
 	getServiceLog();
 });
 
-function getServiceLog(): void {
+async function getServiceLog(): Promise<void> {
 	if (componentProps.serviceName === null) {
 		return;
 	}
 	componentState.value = ComponentState.Reloading;
-	service.getServiceLog(componentProps.serviceName)
-		.then((response: string) => {
-			log.value = response;
-			componentState.value = ComponentState.Ready;
-		})
-		.catch(() => toast.error('TODO GET LOG ERROR'));
+	try {
+		log.value = await service.getServiceLog(componentProps.serviceName);
+	} catch {
+		toast.error('TODO GET LOG ERROR');
+	}
+	componentState.value = ComponentState.Ready;
 }
 
 onMounted(() => {

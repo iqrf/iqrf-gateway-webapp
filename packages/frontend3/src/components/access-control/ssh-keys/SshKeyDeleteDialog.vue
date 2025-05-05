@@ -19,7 +19,7 @@ limitations under the License.
 	<DeleteModalWindow
 		ref='dialog'
 		:tooltip='$t("components.accessControl.sshKeys.actions.delete")'
-		@submit='onSubmit'
+		@submit='onSubmit()'
 	>
 		<template #title>
 			{{ $t('components.accessControl.sshKeys.delete.title') }}
@@ -48,12 +48,13 @@ const componentProps = defineProps({
 const service: SshKeyService = useApiClient().getSecurityServices().getSshKeyService();
 
 async function onSubmit(): Promise<void> {
-	service.deleteKey(componentProps.sshKey.id)
-		.then(() => {
-			close();
-			emit('refresh');
-		})
-		.catch(() => toast.error('TODO ERROR HANDLING'));
+	try {
+		await service.deleteKey(componentProps.sshKey.id);
+		close();
+		emit('refresh');
+	} catch {
+		toast.error('TODO ERROR HANDLING');
+	}
 }
 
 function close(): void {

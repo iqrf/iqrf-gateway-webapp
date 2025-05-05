@@ -20,7 +20,7 @@ limitations under the License.
 		ref='form'
 		v-slot='{ isValid }'
 		:disabled='[ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
-		@submit.prevent='onSubmit'
+		@submit.prevent='onSubmit()'
 	>
 		<Card>
 			<template #title>
@@ -29,7 +29,7 @@ limitations under the License.
 			<template #titleActions>
 				<CardTitleActionBtn
 					:action='Action.Reload'
-					@click='getConfig'
+					@click='getConfig()'
 				/>
 			</template>
 			<v-skeleton-loader
@@ -60,10 +60,8 @@ limitations under the License.
 <script lang='ts' setup>
 import { type IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import {
-	type IqrfGatewayDaemonComponentConfiguration,
 	IqrfGatewayDaemonComponentName,
 	type IqrfGatewayDaemonComponentState,
-	type IqrfGatewayDaemonConfig,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { mdiConnection } from '@mdi/js';
 import { onMounted, ref, type Ref } from 'vue';
@@ -111,18 +109,17 @@ async function getConfig(): Promise<void> {
 	} else {
 		componentState.value = ComponentState.Reloading;
 	}
-	service.getConfig()
-		.then((response: IqrfGatewayDaemonConfig) => {
-			const ifaceComponents = response.components.filter((component: IqrfGatewayDaemonComponentConfiguration<IqrfGatewayDaemonComponentName>) => whitelist.includes(component.name));
-			for (const component of ifaceComponents) {
-				if (component.enabled) {
-					active.value = component.name;
-					break;
-				}
+	try {
+		const ifaceComponents = (await service.getConfig()).components.filter(component => whitelist.includes(component.name));
+		for (const component of ifaceComponents) {
+			if (component.enabled) {
+				active.value = component.name;
+				break;
 			}
-			componentState.value = ComponentState.Ready;
-		})
-		.catch(() => toast.error('TODO GET ERROR HANDLING'));
+		}
+	} catch {
+		toast.error('TODO GET ERROR HANDLING');
+	}
 }
 
 async function onSubmit(): Promise<void> {
@@ -136,15 +133,15 @@ async function onSubmit(): Promise<void> {
 			name: value,
 		};
 	});
-	service.updateEnabledComponents(components)
-		.then(() => {
-			getConfig().then(() => {
-				toast.success(
-					i18n.t('components.config.daemon.interfaces.active.messages.save.success'),
-				);
-			});
-		})
-		.catch(() => toast.error('TODO SAVE ERROR HANDLING'));
+	try {
+		await service.updateEnabledComponents(components);
+		await getConfig();
+		toast.success(
+			i18n.t('components.config.daemon.interfaces.active.messages.save.success'),
+		);
+	} catch {
+		toast.error('TODO SAVE ERROR HANDLING');
+	}
 }
 
 onMounted(() => {

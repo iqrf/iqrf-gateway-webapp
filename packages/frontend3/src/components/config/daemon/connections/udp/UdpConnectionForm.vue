@@ -36,7 +36,7 @@ limitations under the License.
 			v-slot='{ isValid }'
 			validate-on='input'
 			:disabled='componentState === ComponentState.Saving'
-			@submit.prevent='onSubmit'
+			@submit.prevent='onSubmit()'
 		>
 			<Card :action='action'>
 				<template #title>
@@ -90,7 +90,7 @@ limitations under the License.
 					<CardActionBtn
 						:action='Action.Cancel'
 						:disabled='componentState === ComponentState.Saving'
-						@click='close'
+						@click='close()'
 					/>
 				</template>
 			</Card>
@@ -176,29 +176,21 @@ async function onSubmit(): Promise<void> {
 	}
 	componentState.value = ComponentState.Saving;
 	const params = { ...profile.value };
-	if (componentProps.action === Action.Add) {
-		service.createInstance(IqrfGatewayDaemonComponentName.IqrfUdpMessaging, params)
-			.then(() => handleSuccess(instance))
-			.catch(handleError);
-	} else {
-		service.updateInstance(IqrfGatewayDaemonComponentName.IqrfUdpMessaging, instance, params)
-			.then(() => handleSuccess(instance))
-			.catch(handleError);
+	try {
+		if (componentProps.action === Action.Add) {
+			await service.createInstance(IqrfGatewayDaemonComponentName.IqrfUdpMessaging, params);
+		} else {
+			await service.updateInstance(IqrfGatewayDaemonComponentName.IqrfUdpMessaging, instance, params);
+		}
+		toast.success(
+			i18n.t('components.config.daemon.connections.udp.messages.save.success', { name: name }),
+		);
+		close();
+		emit('saved');
+	} catch {
+		toast.error('TODO ERROR HANDLING');
 	}
-}
-
-function handleSuccess(name: string): void {
 	componentState.value = ComponentState.Ready;
-	toast.success(
-		i18n.t('components.config.daemon.connections.udp.messages.save.success', { name: name }),
-	);
-	close();
-	emit('saved');
-}
-
-function handleError(): void {
-	componentState.value = ComponentState.Ready;
-	toast.error('TODO ERROR HANDLING');
 }
 
 function importFromConfig(config: IqrfGatewayDaemonUdpMessaging): void {

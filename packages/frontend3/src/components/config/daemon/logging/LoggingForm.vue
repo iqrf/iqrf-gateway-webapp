@@ -36,7 +36,7 @@ limitations under the License.
 			v-slot='{ isValid }'
 			validate-on='input'
 			:disabled='componentState === ComponentState.Saving'
-			@submit.prevent='onSubmit'
+			@submit.prevent='onSubmit()'
 		>
 			<Card :action='action'>
 				<template #title>
@@ -167,7 +167,7 @@ limitations under the License.
 					<CardActionBtn
 						:action='Action.Cancel'
 						:disabled='componentState === ComponentState.Saving'
-						@click='close'
+						@click='close()'
 					/>
 				</template>
 			</Card>
@@ -284,14 +284,16 @@ async function onSubmit(): Promise<void> {
 	}
 	componentState.value = ComponentState.Saving;
 	const params = { ...profile.value };
-	if (componentProps.action === Action.Add) {
-		service.createInstance(IqrfGatewayDaemonComponentName.ShapeTraceFile, params)
-			.then(() => handleSuccess(params.instance))
-			.catch(handleError);
-	} else {
-		service.updateInstance(IqrfGatewayDaemonComponentName.ShapeTraceFile, instance, params)
-			.then(() => handleSuccess(instance))
-			.catch(handleError);
+	try {
+		if (componentProps.action === Action.Add) {
+			await service.createInstance(IqrfGatewayDaemonComponentName.ShapeTraceFile, params);
+			handleSuccess(params.instance);
+		} else {
+			await service.updateInstance(IqrfGatewayDaemonComponentName.ShapeTraceFile, instance, params);
+			handleSuccess(instance);
+		}
+	} catch {
+		handleError();
 	}
 }
 

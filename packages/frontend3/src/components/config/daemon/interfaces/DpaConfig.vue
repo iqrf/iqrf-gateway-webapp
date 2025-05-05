@@ -20,7 +20,7 @@ limitations under the License.
 		ref='form'
 		v-slot='{ isValid }'
 		:disabled='[ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
-		@submit.prevent='onSubmit'
+		@submit.prevent='onSubmit()'
 	>
 		<Card>
 			<template #title>
@@ -29,7 +29,7 @@ limitations under the License.
 			<template #titleActions>
 				<CardTitleActionBtn
 					:action='Action.Reload'
-					@click='getConfig'
+					@click='getConfig()'
 				/>
 			</template>
 			<v-skeleton-loader
@@ -76,7 +76,6 @@ limitations under the License.
 <script lang='ts' setup>
 import { type IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import {
-	type IqrfGatewayDaemonComponent,
 	IqrfGatewayDaemonComponentName,
 	type IqrfGatewayDaemonDpa,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
@@ -110,15 +109,15 @@ async function getConfig(): Promise<void> {
 	} else {
 		componentState.value = ComponentState.Reloading;
 	}
-	service.getComponent(IqrfGatewayDaemonComponentName.IqrfDpa)
-		.then((response: IqrfGatewayDaemonComponent<IqrfGatewayDaemonComponentName.IqrfDpa>): void => {
-			config.value = response.instances[0] ?? null;
-			if (config.value !== null) {
-				instance = config.value.instance;
-				componentState.value = ComponentState.Ready;
-			}
-		})
-		.catch(() => toast.error('TODO FETCH ERROR HANDLING'));
+	try {
+		config.value = await (await service.getComponent(IqrfGatewayDaemonComponentName.IqrfDpa)).instances[0] ?? null;
+		if (config.value !== null) {
+			instance = config.value.instance;
+			componentState.value = ComponentState.Ready;
+		}
+	} catch {
+		toast.error('TODO FETCH ERROR HANDLING');
+	}
 }
 
 async function onSubmit(): Promise<void> {
@@ -127,15 +126,15 @@ async function onSubmit(): Promise<void> {
 	}
 	componentState.value = ComponentState.Saving;
 	const params = { ...config.value };
-	service.updateInstance(IqrfGatewayDaemonComponentName.IqrfDpa, instance, params)
-		.then(() => {
-			getConfig().then(() => {
-				toast.success(
-					i18n.t('components.config.daemon.interfaces.dpa.messages.save.success'),
-				);
-			});
-		})
-		.catch(() => toast.error('TODO SAVE ERROR HANDLING'));
+	try {
+		await service.updateInstance(IqrfGatewayDaemonComponentName.IqrfDpa, instance, params);
+		await getConfig();
+		toast.success(
+			i18n.t('components.config.daemon.interfaces.dpa.messages.save.success'),
+		);
+	} catch {
+		toast.error('TODO SAVE ERROR HANDLING');
+	}
 }
 
 onMounted(() => {

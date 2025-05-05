@@ -20,7 +20,7 @@ limitations under the License.
 		ref='form'
 		v-slot='{ isValid }'
 		:disabled='[ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
-		@submit.prevent='onSubmit'
+		@submit.prevent='onSubmit()'
 	>
 		<Card>
 			<template #title>
@@ -29,7 +29,7 @@ limitations under the License.
 			<template #titleActions>
 				<CardTitleActionBtn
 					:action='Action.Reload'
-					@click='getConfig'
+					@click='getConfig()'
 				/>
 			</template>
 			<v-skeleton-loader
@@ -81,7 +81,6 @@ limitations under the License.
 <script lang='ts' setup>
 import { type IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import {
-	type IqrfGatewayDaemonComponent,
 	IqrfGatewayDaemonComponentName,
 	type IqrfGatewayDaemonJsCache,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
@@ -116,16 +115,16 @@ async function getConfig(): Promise<void> {
 	} else {
 		componentState.value = ComponentState.Reloading;
 	}
-	service.getComponent(IqrfGatewayDaemonComponentName.IqrfJsCache)
-		.then((response: IqrfGatewayDaemonComponent<IqrfGatewayDaemonComponentName.IqrfJsCache>): void => {
-			config.value = response.instances[0] ?? null;
-			if (config.value !== null) {
-				instance = config.value.instance;
-				updateCachePeriodically.value = config.value.checkPeriodInMinutes !== 0;
-				componentState.value = ComponentState.Ready;
-			}
-		})
-		.catch(() => toast.error('TODO FETCH ERROR HANDLING'));
+	try {
+		config.value = (await service.getComponent(IqrfGatewayDaemonComponentName.IqrfJsCache)).instances[0] ?? null;
+		if (config.value !== null) {
+			instance = config.value.instance;
+			updateCachePeriodically.value = config.value.checkPeriodInMinutes !== 0;
+		}
+	} catch {
+		toast.error('TODO FETCH ERROR HANDLING');
+	}
+	componentState.value = ComponentState.Ready;
 }
 
 async function onSubmit(): Promise<void> {
@@ -134,15 +133,15 @@ async function onSubmit(): Promise<void> {
 	}
 	componentState.value = ComponentState.Saving;
 	const params = { ...config.value };
-	service.updateInstance(IqrfGatewayDaemonComponentName.IqrfJsCache, instance, params)
-		.then(() => {
-			getConfig().then(() => {
-				toast.success(
-					i18n.t('components.config.daemon.repository.messages.save.success'),
-				);
-			});
-		})
-		.catch(() => toast.error('TODO SAVE ERROR HANDLING'));
+	try {
+		await service.updateInstance(IqrfGatewayDaemonComponentName.IqrfJsCache, instance, params);
+		await getConfig();
+		toast.success(
+			i18n.t('components.config.daemon.repository.messages.save.success'),
+		);
+	} catch {
+		toast.error('TODO SAVE ERROR HANDLING');
+	}
 }
 
 onMounted(() => {

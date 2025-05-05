@@ -23,12 +23,12 @@ limitations under the License.
 		<template #titleActions>
 			<CardTitleActionBtn
 				:icon='mdiFolderDownloadOutline'
-				:tooltip='$t("components.gateway.logs.actions.download")'
-				@click='exportLogs'
+				:tooltip='$t("components.common.actions.download")'
+				@click='exportLogs()'
 			/>
 			<CardTitleActionBtn
 				:action='Action.Reload'
-				@click='listServices'
+				@click='listServices()'
 			/>
 		</template>
 		<v-skeleton-loader
@@ -79,26 +79,29 @@ const service: LogService = useApiClient().getGatewayServices().getLogService();
 const services: Ref<string[]> = ref([]);
 const tab: Ref<string | null> = ref(null);
 
-function listServices(): void {
+async function listServices(): Promise<void> {
 	componentState.value = ComponentState.Loading;
-	service.listAvailable()
-		.then((response: string[]) => {
-			services.value = response;
-			if (tab.value === null && services.value.length > 0) {
-				tab.value = services.value[0];
-			}
-			componentState.value = ComponentState.Ready;
-		})
-		.catch(() => toast.error('TODO FETCH LIST ERROR'));
+	try {
+		services.value = await service.listAvailable();
+		if (tab.value === null && services.value.length > 0) {
+			tab.value = services.value[0];
+		}
+	} catch {
+		toast.error('TODO FETCH LIST ERROR');
+	}
+	componentState.value = ComponentState.Idle;
 }
 
-function exportLogs(): void {
-	service.exportLogs()
-		.then((response: FileResponse<Blob>) => {
-			const filename = `iqrf-gateway-logs_${new Date().toISOString()}.zip`;
-			FileDownloader.downloadFileResponse(response, filename);
-		})
-		.catch(() => toast.error('TODO EXPORT ERROR HANDLING'));
+async function exportLogs(): Promise<void> {
+	try {
+		const data = await service.exportLogs();
+		FileDownloader.downloadFileResponse(
+			data,
+			`iqrf-gateway-logs_${new Date().toISOString()}.zip`,
+		);
+	} catch {
+		toast.error('TODO EXPORT ERROR HANDLING');
+	}
 }
 
 onMounted(() => {

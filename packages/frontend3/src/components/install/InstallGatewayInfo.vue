@@ -18,7 +18,7 @@ limitations under the License.
 <template>
 	<v-card>
 		<v-card-title>
-			{{ $t('install.gwInfo.title') }}
+			{{ $t('pages.gateway.title') }}
 		</v-card-title>
 		<v-card-text>
 			<v-table v-if='info !== null'>
@@ -59,7 +59,7 @@ limitations under the License.
 						<th>{{ $t('components.gateway.information.addresses.ip') }}</th>
 						<td>
 							<span v-for='{ name, ipAddresses } of ipAddrs' :key='name'>
-								<strong>{{ name }}: </strong> {{ ipAddresses?.join(', ') }}<br>
+								<strong>{{ `${name}: ` }}</strong> {{ ipAddresses?.join(', ') }}<br>
 							</span>
 						</td>
 					</tr>
@@ -67,7 +67,7 @@ limitations under the License.
 						<th>{{ $t('components.gateway.information.addresses.mac') }}</th>
 						<td>
 							<span v-for='{ name, macAddress } of macAddrs' :key='name'>
-								<strong>{{ name }}: </strong> {{ macAddress }}<br>
+								<strong>{{ `${name}: ` }}</strong> {{ macAddress }}<br>
 							</span>
 						</td>
 					</tr>
@@ -88,9 +88,9 @@ limitations under the License.
 			<v-btn
 				color='primary'
 				:prepend-icon='mdiFileDownload'
-				@click='downloadDiagnostics'
+				@click='downloadInformation()'
 			>
-				{{ $t('install.gwInfo.download') }}
+				{{ $t('components.common.actions.download') }}
 			</v-btn>
 		</v-card-text>
 	</v-card>
@@ -128,22 +128,29 @@ onMounted(() => {
 	getInfo();
 });
 
-function getInfo(): void {
-	service.getDetailed()
-		.then((rsp: GatewayInformation) => info.value = rsp)
-		.catch(() => toast.error('TODO ERROR HANDLING'));
+async function getInfo(): Promise<void> {
+	try {
+		info.value = await service.getDetailed();
+	} catch {
+		toast.error('TODO ERROR HANDLING');
+	}
 }
 
-function downloadDiagnostics(): void {
-	service.getDetailed()
-		.then((rsp: GatewayInformation) => {
-			let fileName = 'iqrf-gateway-info';
-			if (info.value?.gwId) {
-				fileName += `_${ info.value.gwId.toLowerCase()}`;
-			}
-			FileDownloader.downloadFromData(rsp, 'application/json', `${fileName }.json`);
-		})
-		.catch(() => toast.error('TODO ERROR HANDLING'));
+async function downloadInformation(): Promise<void> {
+	try {
+		const data = await service.getDetailed();
+		let fileName = 'iqrf-gateway-info';
+		if (data.gwId) {
+			fileName += `_${data.gwId.toLowerCase()}`;
+		}
+		FileDownloader.downloadFromData(
+			data,
+			'application/json',
+			`${fileName}.json`,
+		);
+	} catch {
+		toast.error('TODO ERROR HANDLING');
+	}
 }
 
 </script>

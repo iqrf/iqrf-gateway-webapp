@@ -20,7 +20,6 @@ limitations under the License.
 		:expanded='expanded'
 		:page='page'
 		:items-per-page='itemsPerPage'
-		:headers='headers'
 		:items='items'
 		:items-length='items.length'
 		:loading='loading'
@@ -49,10 +48,6 @@ limitations under the License.
 import { computed, ref, type Ref } from 'vue';
 
 const componentProps = defineProps({
-	headers: {
-		type: Array,
-		required: true,
-	},
 	items: {
 		type: Array,
 		required: true,

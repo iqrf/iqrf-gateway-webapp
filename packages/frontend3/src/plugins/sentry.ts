@@ -41,6 +41,5 @@ export default function registerSentry(app: App, router: Router): void {
 		release: __GIT_COMMIT_HASH__,
 		tracePropagationTargets: ['localhost', window.location.hostname, /^\//],
 		tracesSampleRate: 1,
-		trackComponents: false,
 	});
 }

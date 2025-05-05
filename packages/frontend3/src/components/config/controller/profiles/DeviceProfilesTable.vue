@@ -23,11 +23,11 @@ limitations under the License.
 		<template #titleActions>
 			<DeviceProfileForm
 				:action='Action.Add'
-				@saved='getProfiles'
+				@saved='getProfiles()'
 			/>
 			<CardTitleActionBtn
 				:action='Action.Reload'
-				@click='getProfiles'
+				@click='getProfiles()'
 			/>
 		</template>
 		<DataTable
@@ -47,11 +47,11 @@ limitations under the License.
 				<DeviceProfileForm
 					:action='Action.Edit'
 					:device-profile='item'
-					@saved='getProfiles'
+					@saved='getProfiles()'
 				/>
 				<DeviceProfileDeleteDialog
 					:profile='item'
-					@deleted='getProfiles'
+					@deleted='getProfiles()'
 				/>
 			</template>
 		</DataTable>
@@ -85,25 +85,24 @@ const headers = [
 	{ key: 'deviceType', title: i18n.t('components.config.profiles.deviceType') },
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false },
 ];
+
 async function getProfiles(): Promise<void> {
 	componentState.value = ComponentState.Loading;
-	service.listMappings()
-		.then((data: IqrfGatewayControllerMapping[]) => {
-			profiles.value = data.sort((a: IqrfGatewayControllerMapping, b: IqrfGatewayControllerMapping): number => {
-				if (a === b) {
-					return 0;
-				}
-				if (a.deviceType === b.deviceType) {
-					return a.name.localeCompare(b.name);
-				}
-				return a.deviceType.localeCompare(b.deviceType);
-			});
-			componentState.value = ComponentState.Ready;
-		})
-		.catch(() => {
-			toast.error('TODO FETCH ERROR HANDLING');
-			componentState.value = ComponentState.FetchFailed;
+	try {
+		profiles.value = (await service.listMappings()).sort((a, b) => {
+			if (a === b) {
+				return 0;
+			}
+			if (a.deviceType === b.deviceType) {
+				return a.name.localeCompare(b.name);
+			}
+			return a.deviceType.localeCompare(b.deviceType);
 		});
+		componentState.value = ComponentState.Ready;
+	} catch {
+		toast.error('TODO FETCH ERROR HANDLING');
+		componentState.value = ComponentState.FetchFailed;
+	}
 }
 
 function applyProfile(profile: IqrfGatewayControllerMapping): void {

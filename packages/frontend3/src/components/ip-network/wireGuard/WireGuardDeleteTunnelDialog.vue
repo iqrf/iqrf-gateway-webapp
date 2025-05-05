@@ -19,7 +19,7 @@ limitations under the License.
 	<DeleteModalWindow
 		ref='dialog'
 		:component-state='componentState'
-		:tooltip='$t("components.ipNetwork.wireGuard.tunnels.actions.delete")'
+		:tooltip='$t("components.ipNetwork.wireGuard.tunnels.columns.action.delete")'
 		@submit='onSubmit'
 	>
 		<template #title>
@@ -71,25 +71,24 @@ function close(): void {
 /**
  * Handles submit event
  */
-function onSubmit(): void {
+async function onSubmit(): Promise<void> {
 	if (componentProps.tunnel === undefined || componentProps.tunnel === null) {
 		return;
 	}
 	componentState.value = ComponentState.Saving;
-	service.deleteTunnel(componentProps.tunnel?.id)
-		.then(() => {
-			componentState.value = ComponentState.Ready;
-			toast.success(
-				i18n.t('components.ipNetwork.wireGuard.tunnels.delete.messages.success', { name: componentProps.tunnel.name }),
-			);
-			close();
-			emit('deleted');
-		})
-		.catch(() => {
-			componentState.value = ComponentState.Error;
-			toast.error(
-				i18n.t('components.ipNetwork.wireGuard.tunnels.delete.messages.failure', { name: componentProps.tunnel.name }),
-			);
-		});
+	try {
+		await service.deleteTunnel(componentProps.tunnel?.id);
+		componentState.value = ComponentState.Ready;
+		toast.success(
+			i18n.t('components.ipNetwork.wireGuard.tunnels.delete.messages.success', { name: componentProps.tunnel.name }),
+		);
+		close();
+		emit('deleted');
+	} catch {
+		componentState.value = ComponentState.Error;
+		toast.error(
+			i18n.t('components.ipNetwork.wireGuard.tunnels.delete.messages.failure', { name: componentProps.tunnel.name }),
+		);
+	}
 }
 </script>

@@ -102,7 +102,7 @@ limitations under the License.
 						{{ info.hostname }}
 						<HostnameChangeDialog
 							:current-hostname='info.hostname'
-							@saved='getInformation'
+							@saved='getInformation()'
 						/>
 					</td>
 				</tr>
@@ -113,7 +113,7 @@ limitations under the License.
 					<td>
 						<div class='py-2'>
 							<span v-for='{ name, ipAddresses } of ipAddrs' :key='name'>
-								<strong>{{ name }}: </strong> {{ ipAddresses?.join(', ') }}<br>
+								<strong>{{ `${name}:` }}</strong> {{ ipAddresses?.join(', ') }}<br>
 							</span>
 						</div>
 					</td>
@@ -130,7 +130,7 @@ limitations under the License.
 								v-for='{ name, macAddress } of macAddrs'
 								:key='name'
 							>
-								<strong>{{ name }}: </strong> {{ macAddress }}<br>
+								<strong>{{ `${name}:` }}</strong> {{ macAddress }}<br>
 							</span>
 						</div>
 					</td>
@@ -241,10 +241,12 @@ onMounted(() => {
 	getInformation();
 });
 
-function getInformation(): void {
-	service.getDetailed()
-		.then((rsp: GatewayInformation) => info.value = rsp)
-		.catch(() => toast.error('TODO ERROR HANDLING'));
+async function getInformation(): Promise<void> {
+	try {
+		info.value = await service.getDetailed();
+	} catch {
+		toast.error('TODO ERROR HANDLING');
+	}
 }
 
 function getDiagnostics(): void {

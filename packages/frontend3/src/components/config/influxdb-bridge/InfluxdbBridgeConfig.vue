@@ -20,6 +20,7 @@ limitations under the License.
 		ref='form'
 		v-slot='{ isValid, validate }'
 		:disabled='[ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
+		@submit.prevent='onSubmit()'
 	>
 		<Card>
 			<template #title>
@@ -30,7 +31,7 @@ limitations under the License.
 					id='reload-activator'
 					color='white'
 					:icon='mdiReload'
-					@click='getConfig'
+					@click='getConfig()'
 				/>
 			</template>
 			<v-skeleton-loader
@@ -240,13 +241,13 @@ limitations under the License.
 									<v-toolbar-items>
 										<SubscriptionTopicForm
 											:action='Action.Add'
-											@save='saveTopic'
+											@save='(index: number|undefined, t: string) => saveTopic(index, t)'
 										/>
 										<v-btn
 											v-tooltip:bottom='$t("components.config.influxdb-bridge.actions.deleteAll")'
 											color='red'
 											:icon='mdiDelete'
-											@click='clearTopics'
+											@click='clearTopics()'
 										/>
 									</v-toolbar-items>
 								</v-toolbar>
@@ -259,7 +260,7 @@ limitations under the License.
 									:action='Action.Edit'
 									:index='index'
 									:topic='item'
-									@save='saveTopic'
+									@save='(index: number, t: string) => saveTopic(index, t)'
 								/>
 								<DataTableAction
 									:action='Action.Delete'
@@ -275,8 +276,8 @@ limitations under the License.
 				<v-btn
 					color='primary'
 					variant='elevated'
+					type='submit'
 					:disabled='componentState !== ComponentState.Ready || !isValid.value'
-					@click='onSubmit'
 				>
 					{{ $t('common.buttons.save') }}
 				</v-btn>
@@ -327,15 +328,13 @@ async function getConfig(): Promise<void> {
 	} else {
 		componentState.value = ComponentState.Reloading;
 	}
-	service.getConfig()
-		.then((response: BridgeConfig) => {
-			config.value = response;
-			componentState.value = ComponentState.Ready;
-		})
-		.catch(() => {
-			componentState.value = ComponentState.FetchFailed;
-			toast.error('TODO FETCH ERROR HANDLING');
-		});
+	try {
+		config.value = await service.getConfig();
+		componentState.value = ComponentState.Ready;
+	} catch {
+		componentState.value = ComponentState.FetchFailed;
+		toast.error('TODO FETCH ERROR HANDLING');
+	}
 }
 
 async function onSubmit(): Promise<void> {
@@ -344,13 +343,15 @@ async function onSubmit(): Promise<void> {
 	}
 	componentState.value = ComponentState.Saving;
 	const params = { ...config.value };
-	service.updateConfig(params)
-		.then(() => getConfig().then(() => {
-			toast.success(
-				i18n.t('components.config.influxdb-bridge.messages.save.success'),
-			);
-		}))
-		.catch(() => toast.error('TODO SAVE ERROR HANDLING'));
+	try {
+		await service.updateConfig(params);
+		await getConfig();
+		toast.success(
+			i18n.t('components.config.influxdb-bridge.messages.save.success'),
+		);
+	} catch {
+		toast.error('TODO SAVE ERROR HANDLING');
+	}
 }
 
 onMounted(() => {

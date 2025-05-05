@@ -47,7 +47,7 @@
 		"@chenfengyuan/vue-countdown": "^2.1.3",
 		"@fontsource/roboto": "^5.2.5",
 		"@iqrf/iqrf-gateway-daemon-utils": "^1.0.0-beta.9",
-		"@iqrf/iqrf-gateway-webapp-client": "^0.3.0-beta.12",
+		"@iqrf/iqrf-gateway-webapp-client": "^0.3.0-beta.13",
 		"@iqrf/iqrf-repository-client": "^0.1.5",
 		"@mdi/js": "^7.4.47",
 		"@mdi/svg": "^7.4.47",

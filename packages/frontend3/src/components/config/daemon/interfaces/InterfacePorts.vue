@@ -23,7 +23,7 @@ limitations under the License.
 		<template #titleActions>
 			<CardTitleActionBtn
 				:action='Action.Reload'
-				@click='getPorts'
+				@click='getPorts()'
 			/>
 		</template>
 		<DataTable
@@ -80,14 +80,14 @@ const headers = [
 ];
 const ports: Ref<string[]> = ref([]);
 
-function getPorts(): void {
+async function getPorts(): Promise<void> {
 	componentState.value = ComponentState.Loading;
-	service.getInterfacePorts(componentProps.interfaceType)
-		.then((response: string[]): void => {
-			ports.value = response;
-			componentState.value = ComponentState.Ready;
-		})
-		.catch(() => toast.error('TODO GET ERROR HANDLING'));
+	try {
+		ports.value = await service.getInterfacePorts(componentProps.interfaceType);
+	} catch {
+		toast.error('TODO GET ERROR HANDLING');
+	}
+	componentState.value = ComponentState.Ready;
 }
 
 function applyInterface(iface: string): void {

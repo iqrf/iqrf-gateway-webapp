@@ -20,7 +20,7 @@ limitations under the License.
 		ref='form'
 		v-slot='{ isValid }'
 		:disabled='[ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
-		@submit.prevent='onSubmit'
+		@submit.prevent='onSubmit()'
 	>
 		<Card>
 			<template #title>
@@ -29,7 +29,7 @@ limitations under the License.
 			<template #titleActions>
 				<CardTitleActionBtn
 					:action='Action.Reload'
-					@click='getConfig'
+					@click='getConfig()'
 				/>
 			</template>
 			<v-skeleton-loader
@@ -196,18 +196,18 @@ async function getConfig(): Promise<void> {
 	} else {
 		componentState.value = ComponentState.Reloading;
 	}
-	service.getConfig()
-		.then((response: JournalConfig) => {
-			config.value = response;
-			if (config.value.sizeRotation.maxFileSize !== 0) {
-				sizeRotation.value = true;
-			}
-			if (config.value.timeRotation.unit !== JournalTimeUnit.Months || config.value.timeRotation.count !== 1) {
-				timeRotation.value = true;
-			}
-			componentState.value = ComponentState.Ready;
-		})
-		.catch(() => toast.error('TODO FETCH ERROR HANDLING'));
+	try {
+		config.value = await service.getConfig();
+		if (config.value.sizeRotation.maxFileSize !== 0) {
+			sizeRotation.value = true;
+		}
+		if (config.value.timeRotation.unit !== JournalTimeUnit.Months || config.value.timeRotation.count !== 1) {
+			timeRotation.value = true;
+		}
+	} catch {
+		toast.error('TODO FETCH ERROR HANDLING');
+	}
+	componentState.value = ComponentState.Ready;
 }
 
 async function onSubmit(): Promise<void> {
@@ -223,15 +223,16 @@ async function onSubmit(): Promise<void> {
 		params.timeRotation.unit = JournalTimeUnit.Months;
 		params.timeRotation.count = 1;
 	}
-	service.updateConfig(params)
-		.then(() => {
-			getConfig().then(() => {
-				toast.success(
-					i18n.t('components.config.journal.messages.save.success'),
-				);
-			});
-		})
-		.catch(() => toast.error('TODO SAVE ERROR HANDLING'));
+	try {
+		await service.updateConfig(params);
+		await getConfig();
+		toast.success(
+			i18n.t('components.config.journal.messages.save.success'),
+		);
+	} catch {
+
+		toast.error('TODO SAVE ERROR HANDLING');
+	}
 }
 
 onMounted(() => {

@@ -33,7 +33,7 @@ limitations under the License.
 					(v: File|Blob|null) => ValidationRules.required(v, $t("components.maintenance.backup.restore.validation.archiveMissing")),
 				]'
 				:prepend-inner-icon='mdiFileOutline'
-				:prepend-icon='null'
+				:prepend-icon='undefined'
 				show-size
 				required
 			/>
@@ -78,14 +78,17 @@ async function onSubmit(): Promise<void> {
 	}
 	const file = archive.value[0];
 	componentState.value = ComponentState.Saving;
-	service.restore(file)
-		.then((response: PowerActionResponse) => {
-			const time = response.timestamp.toJSDate().toLocaleTimeString();
-			toast.success(
-				i18n.t('components.maintenance.backup.restore.messages.save.success', { time: time }),
-			);
-			componentState.value = ComponentState.Ready;
-		})
-		.catch(() => toast.error('TODO ERROR HANDLING'));
+	try {
+		const rsp = await service.restore(file);
+		toast.success(
+			i18n.t(
+				'components.maintenance.backup.restore.messages.save.success',
+				{ time: rsp.timestamp.toJSDate().toLocaleTimeString() },
+			),
+		);
+	} catch {
+		toast.error('TODO ERROR HANDLING');
+	}
+	componentState.value = ComponentState.Ready;
 }
 </script>

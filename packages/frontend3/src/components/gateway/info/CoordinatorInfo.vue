@@ -25,21 +25,21 @@ limitations under the License.
 	</span>
 	<span v-else>
 		<div v-if='enumData' class='py-2'>
-			<strong>{{ $t('components.gateway.information.tr.moduleType') }}: </strong>
+			<strong>{{ `${$t('components.gateway.information.tr.moduleType')}:` }} </strong>
 			{{ enumData.osRead.trMcuType.trType }}<br>
-			<strong>{{ $t('components.gateway.information.tr.mcuType') }}: </strong>
+			<strong>{{ `${$t('components.gateway.information.tr.mcuType')}:` }} </strong>
 			{{ enumData.osRead.trMcuType.mcuType }}<br>
-			<strong>{{ $t('components.gateway.information.tr.moduleId') }}: </strong>
+			<strong>{{ `${$t('components.gateway.information.tr.moduleId')}:` }} </strong>
 			{{ enumData.osRead.mid }}<br>
-			<strong>{{ $t('components.gateway.information.tr.os') }}: </strong>
-			{{ enumData.osRead.osVersion }} ({{ enumData.osRead.osBuild }})<br>
-			<strong>{{ $t('components.gateway.information.tr.dpa') }}: </strong>
+			<strong>{{ `${$t('components.gateway.information.tr.os')}:` }} </strong>
+			{{ `${enumData.osRead.osVersion} (${enumData.osRead.osBuild})` }}<br>
+			<strong>{{ `${$t('components.gateway.information.tr.dpa')}:` }} </strong>
 			{{ enumData.peripheralEnumeration.dpaVer }}<br>
-			<strong>{{ $t('components.gateway.information.tr.hwpid') }}: </strong>
-			{{ enumData.peripheralEnumeration.hwpId }} ({{ enumData.peripheralEnumeration.hwpId.toString(16).padStart(4, '0') }})<br>
-			<strong>{{ $t('components.gateway.information.tr.hwpidVersion') }}: </strong>
-			{{ enumData.peripheralEnumeration.hwpIdVer }}<br>
-			<strong>{{ $t('components.gateway.information.tr.voltage') }}: </strong>
+			<strong>{{ `${$t('components.gateway.information.tr.hwpid')}:` }} </strong>
+			{{ `${enumData.peripheralEnumeration.hwpId.toString(16).padStart(4, '0')} (${enumData.peripheralEnumeration.hwpId})` }}<br>
+			<strong>{{ `${$t('components.gateway.information.tr.hwpidVersion')}:` }} </strong>
+			{{ `${enumData.peripheralEnumeration.hwpIdVer & 0x00FF}.${enumData.peripheralEnumeration.hwpIdVer & 0xFF00}` }}<br>
+			<strong>{{ `${$t('components.gateway.information.tr.voltage')}:` }} </strong>
 			{{ enumData.osRead.supplyVoltage }}<br>
 		</div>
 		<span v-else>

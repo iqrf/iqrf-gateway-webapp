@@ -34,7 +34,7 @@ limitations under the License.
 			ref='form'
 			v-slot='{ isValid }'
 			validate-on='input'
-			@submit.prevent='onSubmit'
+			@submit.prevent='onSubmit()'
 		>
 			<Card :action='action'>
 				<template #title>
@@ -117,7 +117,10 @@ limitations under the License.
 						type='submit'
 					/>
 					<v-spacer />
-					<CardActionBtn :action='Action.Cancel' @click='close' />
+					<CardActionBtn
+						:action='Action.Cancel'
+						@click='close()'
+					/>
 				</template>
 			</Card>
 		</v-form>
@@ -218,27 +221,20 @@ async function onSubmit(): Promise<void> {
 		delete params.sck;
 		delete params.sda;
 	}
-	if (componentProps.deviceProfile.id === undefined) {
-		service.createMapping(params)
-			.then(() => handleSuccess(params.name))
-			.catch(handleError);
-	} else {
-		service.updateMapping(componentProps.deviceProfile.id, params)
-			.then(() => handleSuccess(params.name))
-			.catch(handleError);
+	try {
+		if (componentProps.deviceProfile.id === undefined) {
+			await service.createMapping(params);
+		} else {
+			await service.updateMapping(componentProps.deviceProfile.id, params);
+		}
+		toast.success(
+			i18n.t('components.config.profiles.messages.save.success', { name: params.name }),
+		);
+		close();
+		emit('saved');
+	} catch {
+		toast.error('TODO ERROR HANDLING');
 	}
-}
-
-function handleSuccess(name: string): void {
-	toast.success(
-		i18n.t('components.config.profiles.messages.save.success', { name: name }),
-	);
-	close();
-	emit('saved');
-}
-
-function handleError(): void {
-	toast.error('TODO ERROR HANDLING');
 }
 
 function close(): void {

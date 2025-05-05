@@ -51,12 +51,12 @@ limitations under the License.
 			<template #actions>
 				<CardActionBtn
 					:action='Action.Edit'
-					@click='onSubmit'
+					@click='onSubmit()'
 				/>
 				<v-spacer />
 				<CardActionBtn
 					:action='Action.Cancel'
-					@click='close'
+					@click='close()'
 				/>
 			</template>
 		</Card>
@@ -114,26 +114,25 @@ async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
 	}
-	Promise.all([
-		updateIdeCounterpartConfig(),
-		hostnameService.updateHostname(hostname.value),
-	])
-		.then(() => {
+	try {
+		await Promise.all([
+			updateIdeCounterpartConfig(),
+			hostnameService.updateHostname(hostname.value),
+		]);
+		toast.success(
+			i18n.t('components.gateway.information.hostnameChange.messages.save.success'),
+		);
+		if (setIdeHostname.value) {
 			toast.success(
-				i18n.t('components.gateway.information.hostnameChange.messages.save.success'),
+				i18n.t('components.gateway.information.hostnameChange.messages.daemonRestart'),
 			);
-			if (setIdeHostname.value) {
-				toast.success(
-					i18n.t('components.gateway.information.hostnameChange.messages.daemonRestart'),
-				);
-			}
-			clear();
-			close();
-			emit('saved');
-		})
-		.catch(() => {
-			toast.error('TODO ERROR HANDLING');
-		});
+		}
+		clear();
+		close();
+		emit('saved');
+	} catch {
+		toast.error('TODO ERROR HANDLING');
+	}
 }
 
 async function updateIdeCounterpartConfig(): Promise<void> {

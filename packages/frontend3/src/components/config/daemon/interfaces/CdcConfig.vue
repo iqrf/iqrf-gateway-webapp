@@ -20,7 +20,7 @@ limitations under the License.
 		ref='form'
 		v-slot='{ isValid }'
 		:disabled='[ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
-		@submit.prevent='onSubmit'
+		@submit.prevent='onSubmit()'
 	>
 		<Card>
 			<template #title>
@@ -29,7 +29,7 @@ limitations under the License.
 			<template #titleActions>
 				<CardTitleActionBtn
 					:action='Action.Reload'
-					@click='getConfig'
+					@click='getConfig()'
 				/>
 			</template>
 			<v-skeleton-loader
@@ -76,7 +76,7 @@ limitations under the License.
 					</template>
 					<InterfacePorts
 						:interface-type='IqrfInterfaceType.CDC'
-						@apply='applyInterface'
+						@apply='(iface: string) => applyInterface(iface)'
 					/>
 				</v-menu>
 			</span>
@@ -95,7 +95,6 @@ limitations under the License.
 import { type IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import {
 	type IqrfGatewayDaemonCdc,
-	type IqrfGatewayDaemonComponent,
 	IqrfGatewayDaemonComponentName,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { IqrfInterfaceType } from '@iqrf/iqrf-gateway-webapp-client/types/Iqrf';
@@ -129,15 +128,15 @@ async function getConfig(): Promise<void> {
 	} else {
 		componentState.value = ComponentState.Reloading;
 	}
-	service.getComponent(IqrfGatewayDaemonComponentName.IqrfCdc)
-		.then((response: IqrfGatewayDaemonComponent<IqrfGatewayDaemonComponentName.IqrfCdc>): void => {
-			config.value = response.instances[0] ?? null;
-			if (config.value !== null) {
-				instance = config.value.instance;
-				componentState.value = ComponentState.Ready;
-			}
-		})
-		.catch(() => toast.error('TODO FETCH ERROR HANDLING'));
+	try {
+		config.value = (await service.getComponent(IqrfGatewayDaemonComponentName.IqrfCdc)).instances[0] ?? null;
+		if (config.value !== null) {
+			instance = config.value.instance;
+			componentState.value = ComponentState.Ready;
+		}
+	} catch {
+		toast.error('TODO FETCH ERROR HANDLING');
+	}
 }
 
 async function onSubmit(): Promise<void> {
@@ -146,15 +145,15 @@ async function onSubmit(): Promise<void> {
 	}
 	componentState.value = ComponentState.Saving;
 	const params = { ...config.value };
-	service.updateInstance(IqrfGatewayDaemonComponentName.IqrfCdc, instance, params)
-		.then(() => {
-			getConfig().then(() => {
-				toast.success(
-					i18n.t('components.config.daemon.interfaces.cdc.messages.save.success'),
-				);
-			});
-		})
-		.catch(() => toast.error('TODO SAVE ERROR HANDLING'));
+	try {
+		await service.updateInstance(IqrfGatewayDaemonComponentName.IqrfCdc, instance, params);
+		await getConfig();
+		toast.success(
+			i18n.t('components.config.daemon.interfaces.cdc.messages.save.success'),
+		);
+	} catch {
+		toast.error('TODO SAVE ERROR HANDLING');
+	}
 }
 
 function applyInterface(iface: string): void {

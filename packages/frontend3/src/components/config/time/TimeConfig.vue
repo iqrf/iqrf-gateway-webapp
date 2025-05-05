@@ -38,7 +38,7 @@ limitations under the License.
 						type='info'
 						variant='tonal'
 					>
-						{{ $t('components.config.time.gatewayDateTime') }} {{ gatewayTime?.formattedTime }} {{ gatewayTime?.abbrevation }} (UTC{{ gatewayTime?.gmtOffset }})
+						{{ $t('components.config.time.gatewayDateTime') }} {{ gatewayTime?.formattedTime }} {{ gatewayTime?.abbrevation }} {{ `(UTC${gatewayTime?.gmtOffset})` }}
 					</v-alert>
 					<v-autocomplete
 						v-model='timezone'
@@ -57,7 +57,7 @@ limitations under the License.
 					<DataTable
 						v-if='timeSet.ntpSync'
 						:headers='headers'
-						:items='timeSet.ntpServers'
+						:items='timeSet.ntpServers ?? []'
 						:hover='true'
 						:dense='true'
 						no-data-text='components.config.time.ntpServers.noRecords'
@@ -169,26 +169,25 @@ const headers = [
 
 async function getTime(): Promise<void> {
 	componentState.value = ComponentState.Loading;
-	service.getTime()
-		.then((data: TimeConfig) => {
-			gatewayTime.value = data;
-			timezone.value = {
-				name: gatewayTime.value.zoneName,
-				code: gatewayTime.value.abbrevation,
-				offset: gatewayTime.value.gmtOffset,
-			};
-			timeSet.value = {
-				ntpSync: gatewayTime.value.ntpSync,
-				ntpServers: gatewayTime.value.ntpServers,
-				zoneName: gatewayTime.value.zoneName,
-			};
-			datetime.value = datetime.value = DateTime.fromSeconds(gatewayTime.value.utcTimestamp, { zone: gatewayTime.value.zoneName }).toJSDate();
-			componentState.value = ComponentState.Ready;
-		})
-		.catch(() => {
-			componentState.value = ComponentState.FetchFailed;
-			toast.error('TODO ERROR HANDLING');
-		});
+	try {
+		gatewayTime.value = await service.getTime();
+		timezone.value = {
+			name: gatewayTime.value.zoneName,
+			code: gatewayTime.value.abbrevation,
+			offset: gatewayTime.value.gmtOffset,
+		};
+		timeSet.value = {
+			ntpSync: gatewayTime.value.ntpSync,
+			ntpServers: gatewayTime.value.ntpServers,
+			zoneName: gatewayTime.value.zoneName,
+		};
+		datetime.value = datetime.value = DateTime.fromSeconds(gatewayTime.value.utcTimestamp, { zone: gatewayTime.value.zoneName }).toJSDate();
+		componentState.value = ComponentState.Ready;
+
+	} catch {
+		componentState.value = ComponentState.FetchFailed;
+		toast.error('TODO ERROR HANDLING');
+	}
 }
 
 async function onSubmit(): Promise<void> {
@@ -201,15 +200,15 @@ async function onSubmit(): Promise<void> {
 		const luxonDate = DateTime.fromJSDate(datetime.value, { zone: timezone.value.name });
 		params.datetime = luxonDate.toISO()!;
 	}
-	service.updateTime(params)
-		.then(() => {
-			getTime().then(() => {
-				toast.success(
-					i18n.t('components.config.time.messages.save.success'),
-				);
-			});
-		})
-		.catch(() => toast.error('TODO ERROR HANDLING'));
+	try {
+		await service.updateTime(params);
+		await getTime();
+		toast.success(
+			i18n.t('components.config.time.messages.save.success'),
+		);
+	} catch {
+		toast.error('TODO ERROR HANDLING');
+	}
 }
 
 async function getTimezones(): Promise<void> {

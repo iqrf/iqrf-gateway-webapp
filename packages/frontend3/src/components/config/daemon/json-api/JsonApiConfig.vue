@@ -20,7 +20,7 @@ limitations under the License.
 		ref='form'
 		v-slot='{ isValid }'
 		:disabled='[ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
-		@submit.prevent='onSubmit'
+		@submit.prevent='onSubmit()'
 	>
 		<Card>
 			<template #title>
@@ -29,7 +29,7 @@ limitations under the License.
 			<template #titleActions>
 				<CardTitleActionBtn
 					:action='Action.Reload'
-					@click='getConfig'
+					@click='getConfig()'
 				/>
 			</template>
 			<v-skeleton-loader
@@ -103,15 +103,15 @@ async function getConfig(): Promise<void> {
 	} else {
 		componentState.value = ComponentState.Reloading;
 	}
-	service.getComponent(IqrfGatewayDaemonComponentName.IqrfJsonSplitter)
-		.then((response: IqrfGatewayDaemonComponent<IqrfGatewayDaemonComponentName.IqrfJsonSplitter>): void => {
-			config.value = response.instances[0] ?? null;
-			if (config.value !== null) {
-				instance = config.value.instance;
-				componentState.value = ComponentState.Ready;
-			}
-		})
-		.catch(() => toast.error('TODO FETCH ERROR HANDLING'));
+	try {
+		config.value = (await service.getComponent(IqrfGatewayDaemonComponentName.IqrfJsonSplitter)).instances[0] ?? null;
+		if (config.value !== null) {
+			instance = config.value.instance;
+			componentState.value = ComponentState.Ready;
+		}
+	} catch {
+		toast.error('TODO FETCH ERROR HANDLING');
+	}
 }
 
 async function onSubmit(): Promise<void> {
@@ -120,15 +120,15 @@ async function onSubmit(): Promise<void> {
 	}
 	componentState.value = ComponentState.Saving;
 	const params = { ...config.value };
-	service.updateInstance(IqrfGatewayDaemonComponentName.IqrfJsonSplitter, instance, params)
-		.then(() => {
-			getConfig().then(() => {
-				toast.success(
-					i18n.t('components.config.daemon.json-api.messages.save.success'),
-				);
-			});
-		})
-		.catch(() => toast.error('TODO SAVE ERROR HANDLING'));
+	try {
+		await service.updateInstance(IqrfGatewayDaemonComponentName.IqrfJsonSplitter, instance, params);
+		await getConfig();
+		toast.success(
+			i18n.t('components.config.daemon.json-api.messages.save.success'),
+		);
+	} catch {
+		toast.error('TODO SAVE ERROR HANDLING');
+	}
 }
 
 onMounted(() => {

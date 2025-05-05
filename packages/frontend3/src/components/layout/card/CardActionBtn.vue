@@ -50,9 +50,9 @@ const props = defineProps({
 		default: false,
 	},
 	icon: {
-		type: [String, null] as PropType<string | null>,
+		type: [String, undefined] as PropType<string | undefined>,
 		required: false,
-		default: null,
+		default: undefined,
 	},
 	text: {
 		type: [String, null] as PropType<string | null>,
@@ -70,7 +70,7 @@ const color: Ref<string> = computed((): string => {
 });
 
 /// Icon for the action button
-const icon: Ref<string|null> = computed((): string|null => {
+const icon: Ref<string|undefined> = computed((): string|undefined => {
 	if (props.action === Action.Custom) {
 		return props.icon;
 	}

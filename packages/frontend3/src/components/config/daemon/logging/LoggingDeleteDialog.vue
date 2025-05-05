@@ -20,7 +20,7 @@ limitations under the License.
 		ref='dialog'
 		:component-state='componentState'
 		:tooltip='$t("components.config.daemon.logging.actions.delete")'
-		@submit='onSubmit'
+		@submit='onSubmit()'
 	>
 		<template #title>
 			{{ $t('components.config.daemon.logging.delete.title') }}
@@ -59,18 +59,18 @@ const dialog: Ref<typeof DeleteModalWindow | null> = ref(null);
 const i18n = useI18n();
 const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
 
-function onSubmit(): void {
+async function onSubmit(): Promise<void> {
 	componentState.value = ComponentState.Saving;
-	service.deleteInstance(IqrfGatewayDaemonComponentName.ShapeTraceFile, componentProps.loggingInstance.instance)
-		.then(() => {
-			componentState.value = ComponentState.Ready;
-			toast.success(
-				i18n.t('components.config.daemon.logging.messages.delete.success', { name: componentProps.loggingInstance.instance }),
-			);
-			close();
-			emit('deleted');
-		})
-		.catch(() => toast.error('TODO ERROR HANDLING'));
+	try {
+		await service.deleteInstance(IqrfGatewayDaemonComponentName.ShapeTraceFile, componentProps.loggingInstance.instance);
+		toast.success(
+			i18n.t('components.config.daemon.logging.messages.delete.success', { name: componentProps.loggingInstance.instance }),
+		);
+		close();
+		emit('deleted');
+	} catch {
+		toast.error('TODO ERROR HANDLING');
+	}
 }
 
 function close(): void {

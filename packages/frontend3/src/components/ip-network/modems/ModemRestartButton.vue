@@ -55,14 +55,13 @@ const componentProps = defineProps({
  */
 async function restartModemManager(): Promise<void> {
 	emit('restart');
-	await serviceService.restart('ModemManager')
-		.then(async () => {
-			await new Promise(resolve => setTimeout(resolve, 15_000));
-			emit('reload');
-		})
-		.catch(() => {
-			emit('reload');
-		});
+	try {
+		await serviceService.restart('ModemManager');
+		await new Promise(resolve => setTimeout(resolve, 15_000));
+		emit('reload');
+	} catch {
+		emit('reload');
+	}
 }
 
 </script>

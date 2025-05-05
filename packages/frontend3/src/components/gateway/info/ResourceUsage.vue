@@ -18,8 +18,7 @@ limitations under the License.
 <template>
 	<div class='d-inline'>
 		{{ $t('components.gateway.information.usages.used') }}
-		{{ usage.usage.replace('%', ' %') }}
-		({{ usage.used }} / {{ usage.size }})
+		{{ `${usage.usage.replace('%', ' %')} (${usage.used} / ${usage.size})` }}
 		<v-progress-linear
 			:model-value='usage.usage'
 			:color='color'

@@ -49,7 +49,7 @@ limitations under the License.
 				<ModemStateBadge :state='item.state' />
 			</template>
 			<template #item.rssi='{ item }'>
-				{{ item.rssi !== null ? `${item.rssi } dBm` : '-' }}
+				{{ `${item.rssi !== null ? `${item.rssi} dBm` : "-"}` }}
 			</template>
 		</DataTable>
 	</Card>

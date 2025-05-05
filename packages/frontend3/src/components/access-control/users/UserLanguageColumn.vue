@@ -42,9 +42,3 @@ const languageFlag = computed(() => {
 	return availableLocales[idx].flag;
 });
 </script>
-
-<style lang='scss' scoped>
-span {
-	font-size: large;
-}
-</style>

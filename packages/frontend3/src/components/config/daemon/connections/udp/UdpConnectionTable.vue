@@ -24,13 +24,13 @@ limitations under the License.
 			<UdpConnectionForm
 				ref='addForm'
 				:action='Action.Add'
-				@saved='getConfigs'
+				@saved='getConfig()'
 			/>
-			<UdpConnectionImportDialog @import='importFromConfig' />
+			<UdpConnectionImportDialog @import='(c: IqrfGatewayDaemonUdpMessaging) => importFromConfig(c)' />
 			<CardTitleActionBtn
 				:action='Action.Reload'
 				:tooltip='$t("components.config.daemon.connections.actions.reload")'
-				@click='getConfigs'
+				@click='getConfig()'
 			/>
 		</template>
 		<DataTable
@@ -49,11 +49,11 @@ limitations under the License.
 				<UdpConnectionForm
 					:action='Action.Edit'
 					:connection-profile='item'
-					@saved='getConfigs'
+					@saved='getConfig()'
 				/>
 				<UdpConnectionDeleteDialog
 					:connection-profile='item'
-					@deleted='getConfigs'
+					@deleted='getConfig()'
 				/>
 			</template>
 		</DataTable>
@@ -63,7 +63,6 @@ limitations under the License.
 <script lang='ts' setup>
 import { type IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import {
-	type IqrfGatewayDaemonComponent,
 	IqrfGatewayDaemonComponentName,
 	type IqrfGatewayDaemonUdpMessaging,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
@@ -94,18 +93,18 @@ const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().get
 const instances: Ref<IqrfGatewayDaemonUdpMessaging[]> = ref([]);
 const addForm: Ref<typeof UdpConnectionForm | null> = ref(null);
 
-async function getConfigs(): Promise<void> {
+async function getConfig(): Promise<void> {
 	if (componentState.value === ComponentState.Created) {
 		componentState.value = ComponentState.Loading;
 	} else {
 		componentState.value = ComponentState.Reloading;
 	}
-	service.getComponent(IqrfGatewayDaemonComponentName.IqrfUdpMessaging)
-		.then((response: IqrfGatewayDaemonComponent<IqrfGatewayDaemonComponentName.IqrfUdpMessaging>): void => {
-			instances.value = response.instances;
-			componentState.value = ComponentState.Ready;
-		})
-		.catch(() => toast.error('TODO FETCH ERROR'));
+	try {
+		instances.value = (await service.getComponent(IqrfGatewayDaemonComponentName.IqrfUdpMessaging)).instances;
+	} catch {
+		toast.error('TODO FETCH ERROR');
+	}
+	componentState.value = ComponentState.Ready;
 }
 
 function importFromConfig(config: IqrfGatewayDaemonUdpMessaging): void {
@@ -124,6 +123,6 @@ function exportConfig(config: IqrfGatewayDaemonUdpMessaging): void {
 }
 
 onMounted(() => {
-	getConfigs();
+	getConfig();
 });
 </script>

@@ -42,7 +42,7 @@ limitations under the License.
 						(v: File|null) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.clouds.aws.validation.certificateMissing")),
 					]'
 					:prepend-inner-icon='mdiFileOutline'
-					:prepend-icon='null'
+					:prepend-icon='undefined'
 					show-size
 					required
 				/>
@@ -54,7 +54,7 @@ limitations under the License.
 						(v: File|Blob|null) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.clouds.aws.validation.privateKeyMissing")),
 					]'
 					:prepend-inner-icon='mdiFileOutline'
-					:prepend-icon='null'
+					:prepend-icon='undefined'
 					show-size
 					required
 				/>
@@ -121,19 +121,20 @@ async function onSubmit(): Promise<void> {
 	}
 	const params = {
 		...config.value,
-		certificate: (config.value.certificate as unknown as File[]|Blob[])[0],
-		privateKey: (config.value.privateKey as unknown as File[]|Blob[])[0],
+		certificate: (config.value.certificate as unknown as File[])[0],
+		privateKey: (config.value.privateKey as unknown as File[])[0],
 	};
-	service.createMqttInstance(params)
-		.then(() => {
-			toast.success(
-				i18n.t('components.config.daemon.connections.mqtt.clouds.messages.save.success'),
-			);
-			show.value = false;
-			emit('saved');
-			clear();
-		})
-		.catch(() => toast.error('TODO ERROR HANDLING'));
+	try {
+		await service.createMqttInstance(params);
+		toast.success(
+			i18n.t('components.config.daemon.connections.mqtt.clouds.messages.save.success'),
+		);
+		show.value = false;
+		emit('saved');
+		clear();
+	} catch {
+		toast.error('TODO ERROR HANDLING');
+	}
 }
 
 function clear(): void {

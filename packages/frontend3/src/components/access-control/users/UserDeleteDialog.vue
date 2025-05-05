@@ -19,7 +19,7 @@ limitations under the License.
 	<DeleteModalWindow
 		ref='dialog'
 		:tooltip='$t("components.accessControl.users.actions.delete")'
-		@submit='onSubmit'
+		@submit='onSubmit()'
 	>
 		<template #title>
 			{{ $t('components.accessControl.users.delete.title') }}
@@ -84,7 +84,7 @@ async function onSubmit(): Promise<void> {
 	} catch {
 		componentState.value = ComponentState.Ready;
 		toast.error(
-			i18n.t('components.accessControl.users.messages.delete.failure', { user: componentProps.user.username }),
+			i18n.t('components.accessControl.users.messages.delete.failed', { user: componentProps.user.username }),
 		);
 	}
 }

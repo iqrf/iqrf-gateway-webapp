@@ -196,8 +196,11 @@
 				"email": "E-mail address",
 				"language": "Language",
 				"messages": {
+					"add": {
+						"failed": "Failed to create new user {user}."
+					},
 					"delete": {
-						"failure": "An error has occurred during user {user} deletion.",
+						"failed": "An error has occurred during user {user} deletion.",
 						"success": "User {user} has been deleted successfully."
 					}
 				},
@@ -1554,6 +1557,14 @@
 					}
 				},
 				"errors": {
+					"eap": {
+						"phaseOneMethod": {
+							"required": "Please select EAP phase one method."
+						},
+						"phaseTwoMethod": {
+							"required": "Please select EAP phase two method."
+						}
+					},
 					"generic": {
 						"interface": {
 							"required": "Please select the network interface."
@@ -1865,7 +1876,8 @@
 					"columns": {
 						"action": {
 							"activate": "Activate",
-							"deactivate": "Deactivate"
+							"deactivate": "Deactivate",
+							"delete": "Delete tunnel"
 						},
 						"active": "Active",
 						"enabled": "Enabled",
@@ -2364,6 +2376,9 @@
 			},
 			"wireGuard": {
 				"description": "WireGuard VPN management.",
+				"edit": {
+					"title": "Edit WireGuard connection"
+				},
 				"title": "WireGuard VPN"
 			},
 			"wireless": {

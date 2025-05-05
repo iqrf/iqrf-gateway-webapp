@@ -62,39 +62,37 @@ const stop = watch(journal, (newVal: Element|null, oldVal: Element|null) => {
 	}
 });
 
-function getJournalRecords(count: number, cursor: string|null = null): void {
+async function getJournalRecords(count: number, cursor: string|null = null): Promise<void> {
 	allowUpdate = false;
 	if (componentState.value === ComponentState.Created) {
 		componentState.value = ComponentState.Loading;
 	} else {
 		componentState.value = ComponentState.Reloading;
 	}
-	service.getJournalRecords(count, cursor)
-		.then(async (response: JournalRecords) => {
-			if (response.records.length === 0) {
-				componentState.value = ComponentState.Ready;
-				oldestRecords = true;
-				allowUpdate = false;
-				return;
-			}
+	try {
+		const data = await service.getJournalRecords(count, cursor);
+		if (data.records.length === 0) {
 			componentState.value = ComponentState.Ready;
-			log.value = `${response.records.join('\n')}\n${log.value}`;
-			if (lastCursor === null) {
-				scrollToEnd();
-			} else {
-				scrollToDisplay();
-			}
-			lastCursor = response.startCursor;
-			allowUpdate = true;
-		})
-		.catch(() => {
-			toast.error('TODO JOURNAL FAILED ERROR HANDLING');
-			if (cursor !== null) {
-				scrollToPrevious();
-			}
-			componentState.value = ComponentState.Ready;
-			allowUpdate = true;
-		});
+			oldestRecords = true;
+			allowUpdate = false;
+			return;
+		}
+		log.value = `${data.records.join('\n')}\n${log.value}`;
+		if (lastCursor === null) {
+			scrollToEnd();
+		} else {
+			scrollToDisplay();
+		}
+		lastCursor = data.startCursor;
+		allowUpdate = true;
+	} catch {
+		toast.error('TODO JOURNAL FAILED ERROR HANDLING');
+		if (cursor !== null) {
+			scrollToPrevious();
+		}
+		allowUpdate = true;
+	}
+	componentState.value = ComponentState.Ready;
 }
 
 function scrollUpdate(): void {

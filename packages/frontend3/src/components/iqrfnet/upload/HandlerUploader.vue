@@ -33,7 +33,7 @@ limitations under the License.
 					(v: File|Blob|null) => ValidationRules.required(v, $t("components.iqrfnet.upload.dpa-handler.validation.fileMissing")),
 				]'
 				:prepend-inner-icon='mdiFileOutline'
-				:prepend-icon='null'
+				:prepend-icon='undefined'
 				show-size
 				required
 			/>
@@ -106,28 +106,39 @@ async function onSubmit(): Promise<void> {
 	componentState.value = ComponentState.Ready;
 }
 
-async function uploadFile(file: File): Promise<string | null> {
-	return upgradeService.uploadToFs(file, FileFormat.HEX)
-		.then((result: FileUploadResult) => result.fileName)
-		.catch(() => null);
+async function uploadFile(file: File): Promise<string|null> {
+	try {
+		return (await upgradeService.uploadToFs(file, FileFormat.HEX)).fileName;
+	} catch {
+		return null;
+	}
 }
 
 async function runUploader(path: string): Promise<boolean> {
-	return upgradeService.uploadToTr(path, FileType.HEX)
-		.then(() => true)
-		.catch(() => false);
+	try {
+		await upgradeService.uploadToTr(path, FileType.HEX);
+		return true;
+	} catch {
+		return false;
+	}
 }
 
 async function stopDaemon(): Promise<boolean> {
-	return serviceService.stop('iqrf-gateway-daemon')
-		.then(() => true)
-		.catch(() => false);
+	try {
+		await serviceService.stop('iqrf-gateway-daemon');
+		return true;
+	} catch {
+		return false;
+	}
 }
 
 async function startDaemon(): Promise<boolean> {
-	return serviceService.start('iqrf-gateway-daemon')
-		.then(() => true)
-		.catch(() => false);
+	try {
+		await serviceService.start('iqrf-gateway-daemon');
+		return true;
+	} catch {
+		return false;
+	}
 }
 
 async function handleError(message: string): Promise<void> {

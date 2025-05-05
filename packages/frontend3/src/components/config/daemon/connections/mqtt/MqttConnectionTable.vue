@@ -24,16 +24,16 @@ limitations under the License.
 			<MqttConnectionForm
 				ref='addForm'
 				:action='Action.Add'
-				@saved='getConfigs'
+				@saved='getConfig()'
 			/>
 			<CloudConnectionSelector
-				@saved='getConfigs'
+				@saved='getConfig()'
 			/>
-			<MqttConnectionImportDialog @import='importFromConfig' />
+			<MqttConnectionImportDialog @import='(c: IqrfGatewayDaemonMqttMessaging) => importFromConfig(c)' />
 			<CardTitleActionBtn
 				:action='Action.Reload'
 				:tooltip='$t("components.config.daemon.connections.actions.reload")'
-				@click='getConfigs'
+				@click='getConfig()'
 			/>
 		</template>
 		<DataTable
@@ -52,11 +52,11 @@ limitations under the License.
 				<MqttConnectionForm
 					:action='Action.Edit'
 					:connection-profile='item'
-					@saved='getConfigs'
+					@saved='getConfig()'
 				/>
 				<MqttConnectionDeleteDialog
 					:connection-profile='item'
-					@deleted='getConfigs'
+					@deleted='getConfig()'
 				/>
 			</template>
 		</DataTable>
@@ -66,7 +66,6 @@ limitations under the License.
 <script lang='ts' setup>
 import { type IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import {
-	type IqrfGatewayDaemonComponent,
 	IqrfGatewayDaemonComponentName,
 	type IqrfGatewayDaemonMqttMessaging,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
@@ -101,18 +100,18 @@ const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().get
 const instances: Ref<IqrfGatewayDaemonMqttMessaging[]> = ref([]);
 const addForm: Ref<typeof MqttConnectionForm | null> = ref(null);
 
-async function getConfigs(): Promise<void> {
+async function getConfig(): Promise<void> {
 	if (componentState.value === ComponentState.Created) {
 		componentState.value = ComponentState.Loading;
 	} else {
 		componentState.value = ComponentState.Reloading;
 	}
-	service.getComponent(IqrfGatewayDaemonComponentName.IqrfMqttMessaging)
-		.then((response: IqrfGatewayDaemonComponent<IqrfGatewayDaemonComponentName.IqrfMqttMessaging>): void => {
-			instances.value = response.instances;
-			componentState.value = ComponentState.Ready;
-		})
-		.catch(() => toast.error('TODO FETCH ERROR'));
+	try {
+		instances.value = (await service.getComponent(IqrfGatewayDaemonComponentName.IqrfMqttMessaging)).instances;
+	} catch {
+		toast.error('TODO FETCH ERROR');
+	}
+	componentState.value = ComponentState.Ready;
 }
 
 function importFromConfig(config: IqrfGatewayDaemonMqttMessaging): void {
@@ -131,6 +130,6 @@ function exportConfig(config: IqrfGatewayDaemonMqttMessaging): void {
 }
 
 onMounted(() => {
-	getConfigs();
+	getConfig();
 });
 </script>

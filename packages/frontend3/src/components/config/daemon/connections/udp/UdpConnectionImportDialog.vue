@@ -42,7 +42,7 @@ limitations under the License.
 						(v: File|Blob|null) => ValidationRules.required(v, $t("components.config.daemon.connections.validation.profileFileMissing")),
 					]'
 					:prepend-inner-icon='mdiFileOutline'
-					:prepend-icon='null'
+					:prepend-icon='undefined'
 					show-size
 					required
 				/>

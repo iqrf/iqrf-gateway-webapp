@@ -45,7 +45,7 @@ limitations under the License.
 						(v: File|Blob|null) => ValidationRules.required(v, $t("components.config.mender.validation.certificateMissing")),
 					]'
 					:prepend-inner-icon='mdiFileOutline'
-					:prepend-icon='null'
+					:prepend-icon='undefined'
 					show-size
 					required
 				/>

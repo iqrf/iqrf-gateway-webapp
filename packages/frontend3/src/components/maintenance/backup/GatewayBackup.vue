@@ -180,14 +180,15 @@ function setAll(selected: boolean): void {
 	};
 }
 
-function onSubmit(): void {
+async function onSubmit(): Promise<void> {
 	componentState.value = ComponentState.Loading;
-	service.backup(params.value)
-		.then((response: FileResponse<Blob>) => {
-			const filename = `iqrf-gateway-backup_${new Date().toISOString()}.zip`;
-			FileDownloader.downloadFileResponse(response, filename);
-			componentState.value = ComponentState.Ready;
-		})
-		.catch(() => toast.error('TODO ERROR HANDLING'));
+	try {
+		FileDownloader.downloadFileResponse(
+			await service.backup(params.value),
+			`iqrf-gateway-backup_${new Date().toISOString()}.zip`,
+		);
+	} catch {
+		toast.error('TODO ERROR HANDLING');
+	}
 }
 </script>

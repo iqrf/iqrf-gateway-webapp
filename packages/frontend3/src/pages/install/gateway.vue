@@ -18,7 +18,7 @@ limitations under the License.
 <template>
 	<div>
 		<Head>
-			<title>{{ $t('install.gwInfo.title') }}</title>
+			<title>{{ $t('pages.gateway.information.title') }}</title>
 		</Head>
 		<InstallGatewayInfo />
 	</div>

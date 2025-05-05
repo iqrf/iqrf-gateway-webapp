@@ -19,7 +19,7 @@ limitations under the License.
 	<v-form
 		ref='form'
 		v-slot='{ isValid }'
-		@submit.prevent='onSubmit'
+		@submit.prevent='onSubmit()'
 	>
 		<Card>
 			<template #title>
@@ -321,7 +321,7 @@ limitations under the License.
 							</v-btn>
 						</template>
 						<DeviceProfilesTable
-							@apply='applyProfile'
+							@apply='(p: IqrfGatewayControllerMapping) => applyProfile(p)'
 						/>
 					</v-menu>
 				</span>
@@ -424,16 +424,14 @@ const showProfileMenu: Ref<boolean> = ref(false);
 
 async function getConfig(): Promise<void> {
 	componentState.value = ComponentState.Loading;
-	service.getConfig()
-		.then((data: IqrfGatewayControllerConfig) => {
-			configuration.value = data;
-			watchdogPins.value = data.powerOff.sck !== -1 && data.powerOff.sck !== -1;
-			componentState.value = ComponentState.Ready;
-		})
-		.catch(() => {
-			toast.error('TODO ERROR HANDLING');
-			componentState.value = ComponentState.FetchFailed;
-		});
+	try {
+		configuration.value = await service.getConfig();
+		watchdogPins.value = configuration.value.powerOff.sck !== -1 && configuration.value.powerOff.sck !== -1;
+		componentState.value = ComponentState.Ready;
+	} catch {
+		toast.error('TODO ERROR HANDLING');
+		componentState.value = ComponentState.FetchFailed;
+	}
 }
 
 async function onSubmit(): Promise<void> {
@@ -448,15 +446,15 @@ async function onSubmit(): Promise<void> {
 		params.powerOff.sck = -1;
 		params.powerOff.sda = -1;
 	}
-	service.updateConfig(configuration.value)
-		.then(() => {
-			getConfig().then(() => {
-				toast.success(
-					i18n.t('components.config.controller.messages.save.success'),
-				);
-			});
-		})
-		.catch(() => toast.error('TODO ERROR HANDLING'));
+	try {
+		await service.updateConfig(configuration.value);
+		await getConfig();
+		toast.success(
+			i18n.t('components.config.controller.messages.save.success'),
+		);
+	} catch {
+		toast.error('TODO ERROR HANDLING');
+	}
 }
 
 function onAutonetworkSave(config: IqrfGatewayControllerApiAutonetworkConfig): void {

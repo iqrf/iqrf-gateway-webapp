@@ -21,16 +21,19 @@ limitations under the License.
 			{{ $t('pages.accessControl.apiKeys.title') }}
 		</template>
 		<template #titleActions>
-			<ApiKeyForm :action='Action.Add' @refresh='getKeys' />
+			<ApiKeyForm
+				:action='Action.Add'
+				@refresh='getKeys()'
+			/>
 			<CardTitleActionBtn
 				:action='Action.Reload'
-				@click='getKeys'
+				@click='getKeys()'
 			/>
 		</template>
 		<DataTable
 			:headers='headers'
 			:items='keys'
-			:loading='loading'
+			:loading='componentState === ComponentState.Loading'
 			:hover='true'
 			:dense='true'
 		>
@@ -41,11 +44,11 @@ limitations under the License.
 				<ApiKeyForm
 					:action='Action.Edit'
 					:api-key='toRaw(item)'
-					@refresh='getKeys'
+					@refresh='getKeys()'
 				/>
 				<ApiKeyDeleteDialog
 					:api-key='toRaw(item)'
-					@refresh='getKeys'
+					@refresh='getKeys()'
 				/>
 			</template>
 		</DataTable>
@@ -58,6 +61,7 @@ import { type ApiKeyInfo } from '@iqrf/iqrf-gateway-webapp-client/types/Security
 import { DateTime } from 'luxon';
 import { onMounted, ref, type Ref, toRaw } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { toast } from 'vue3-toastify';
 
 import ApiKeyDeleteDialog from '@/components/access-control/api-keys/ApiKeyDeleteDialog.vue';
 import ApiKeyForm from '@/components/access-control/api-keys/ApiKeyForm.vue';
@@ -67,11 +71,12 @@ import DataTable from '@/components/layout/data-table/DataTable.vue';
 import { useApiClient } from '@/services/ApiClient';
 import { useLocaleStore } from '@/store/locale';
 import { Action } from '@/types/Action';
+import { ComponentState } from '@/types/ComponentState';
 
+const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
 const localeStore = useLocaleStore();
 const service: ApiKeyService = useApiClient().getSecurityServices().getApiKeyService();
-const loading: Ref<boolean> = ref(false);
 const headers = [
 	{ key: 'id', title: i18n.t('common.columns.id') },
 	{ key: 'description', title: i18n.t('common.columns.description') },
@@ -84,14 +89,14 @@ onMounted(() => {
 	getKeys();
 });
 
-function getKeys(): void {
-	loading.value = true;
-	service.list()
-		.then((data: ApiKeyInfo[]) => {
-			keys.value = data;
-			loading.value = false;
-		})
-		.catch(() => loading.value = false);
+async function getKeys(): Promise<void> {
+	componentState.value = ComponentState.Loading;
+	try {
+		keys.value = await service.list();
+	} catch {
+		toast.error('TODO ERROR HANDLING');
+	}
+	componentState.value = ComponentState.Ready;
 }
 
 function formatTime(time: DateTime | null): string|null {
