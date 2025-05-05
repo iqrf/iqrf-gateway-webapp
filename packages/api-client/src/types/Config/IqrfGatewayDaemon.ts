@@ -186,7 +186,7 @@ export interface IqrfGatewayDaemonJsonSplitterV3 extends IqrfGatewayDaemonCompon
 	/// Instance ID
 	insId: string;
 	/// List of messaging service instances
-	messagingList: MessagingInstance[];
+	messagingList: MessagingInstance;
 	/// Validate outgoing responses
 	validateJsonResponse: boolean;
 }
