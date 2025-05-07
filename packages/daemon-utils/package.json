@@ -113,29 +113,29 @@
 	],
 	"license": "Apache-2.0",
 	"dependencies": {
-		"axios": "^1.7.9",
-		"cronstrue": "^2.52.0",
-		"luxon": "^3.5.0",
+		"axios": "^1.9.0",
+		"cronstrue": "^2.60.0",
+		"luxon": "^3.6.1",
 		"punycode": "^2.3.1",
-		"uuid": "^11.0.5"
+		"uuid": "^11.1.0"
 	},
 	"devDependencies": {
-		"@iqrf/eslint-config": "^0.2.5",
-		"@types/luxon": "^3.4.2",
-		"@types/node": "^22.10.5",
+		"@iqrf/eslint-config": "^0.2.11",
+		"@types/luxon": "^3.6.2",
+		"@types/node": "^22.15.15",
 		"@types/punycode": "^2.1.4",
 		"@types/uuid": "^10.0.0",
-		"@vitest/coverage-istanbul": "^2.1.8",
-		"@vitest/spy": "^2.1.8",
+		"@vitest/coverage-istanbul": "^2.1.9",
+		"@vitest/spy": "^2.1.9",
 		"axios-mock-adapter": "^2.1.0",
-		"eslint": "^9.18.0",
+		"eslint": "^9.26.0",
 		"ts-node": "^10.9.2",
-		"tsup": "^8.3.5",
-		"typedoc": "^0.27.6",
-		"typedoc-material-theme": "^1.2.0",
-		"typedoc-plugin-mdn-links": "^4.0.8",
-		"typescript": "^5.7.3",
+		"tsup": "^8.4.0",
+		"typedoc": "^0.27.9",
+		"typedoc-material-theme": "^1.4.0",
+		"typedoc-plugin-mdn-links": "^4.0.15",
+		"typescript": "^5.8.3",
 		"vite-tsconfig-paths": "^5.1.4",
-		"vitest": "^2.1.8"
+		"vitest": "^2.1.9"
 	}
 }

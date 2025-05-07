@@ -15,7 +15,7 @@
  */
 
 import axios, { type AxiosInstance, type AxiosRequestConfig } from 'axios';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect } from 'vitest';
 
 import { Client } from '../src';
 import {
@@ -45,7 +45,7 @@ describe('Client', (): void => {
 		client = new Client();
 	});
 
-	it('can be instantiated', (): void => {
+	test('can be instantiated', (): void => {
 		expect.assertions(4);
 		expect(client.getAxiosInstance())
 			.toBeDefined();
@@ -57,7 +57,7 @@ describe('Client', (): void => {
 			.toBe(30_000);
 	});
 
-	it('can be instantiated with custom Axios instance', (): void => {
+	test('can be instantiated with custom Axios instance', (): void => {
 		expect.assertions(4);
 		const config: AxiosRequestConfig = {
 			baseURL: 'https://iqrf-gw.exaple.com/api/',
@@ -75,7 +75,7 @@ describe('Client', (): void => {
 			.toBe(5_000);
 	});
 
-	it('can be instantiated with custom Axios instance configuration', (): void => {
+	test('can be instantiated with custom Axios instance configuration', (): void => {
 		expect.assertions(4);
 		const config: AxiosRequestConfig = {
 			baseURL: 'https://iqrf-gw.exaple.com/api/',
@@ -92,7 +92,7 @@ describe('Client', (): void => {
 			.toBe(5_000);
 	});
 
-	it('cannot be instantiated with custom Axios instance and custom Axios instance configuration', (): void => {
+	test('cannot be instantiated with custom Axios instance and custom Axios instance configuration', (): void => {
 		expect.assertions(1);
 		const config: AxiosRequestConfig = {
 			baseURL: 'https://iqrf-gw.exaple.com/api/',
@@ -103,67 +103,67 @@ describe('Client', (): void => {
 			.toThrow('Cannot instantiate Client with both axiosInstance and config.');
 	});
 
-	it('returns CloudServices instance', (): void => {
+	test('returns CloudServices instance', (): void => {
 		expect.assertions(1);
 		expect(client.getCloudServices()).toBeInstanceOf(CloudServices);
 	});
 
-	it('returns ConfigServices instance', (): void => {
+	test('returns ConfigServices instance', (): void => {
 		expect.assertions(1);
 		expect(client.getConfigServices()).toBeInstanceOf(ConfigServices);
 	});
 
-	it('returns GatewayServices instance', (): void => {
+	test('returns GatewayServices instance', (): void => {
 		expect.assertions(1);
 		expect(client.getGatewayServices()).toBeInstanceOf(GatewayServices);
 	});
 
-	it('returns IqrfServices instance', (): void => {
+	test('returns IqrfServices instance', (): void => {
 		expect.assertions(1);
 		expect(client.getIqrfServices()).toBeInstanceOf(IqrfServices);
 	});
 
-	it('returns MaintenanceServices instance', (): void => {
+	test('returns MaintenanceServices instance', (): void => {
 		expect.assertions(1);
 		expect(client.getMaintenanceServices()).toBeInstanceOf(MaintenanceServices);
 	});
 
-	it('returns NetworkServices instance', (): void => {
+	test('returns NetworkServices instance', (): void => {
 		expect.assertions(1);
 		expect(client.getNetworkServices()).toBeInstanceOf(NetworkServices);
 	});
 
-	it('returns AccountService instance', (): void => {
+	test('returns AccountService instance', (): void => {
 		expect.assertions(1);
 		expect(client.getAccountService()).toBeInstanceOf(AccountService);
 	});
 
-	it('returns FeatureService instance', (): void => {
+	test('returns FeatureService instance', (): void => {
 		expect.assertions(1);
 		expect(client.getFeatureService()).toBeInstanceOf(FeatureService);
 	});
 
-	it('returns InstallationService instance', (): void => {
+	test('returns InstallationService instance', (): void => {
 		expect.assertions(1);
 		expect(client.getInstallationService()).toBeInstanceOf(InstallationService);
 	});
 
-	it('returns OpenApiService instance', (): void => {
+	test('returns OpenApiService instance', (): void => {
 		expect.assertions(1);
 		expect(client.getOpenApiService()).toBeInstanceOf(OpenApiService);
 	});
 
-	it('returns SecurityServices instance', (): void => {
+	test('returns SecurityServices instance', (): void => {
 		expect.assertions(1);
 		expect(client.getSecurityServices()).toBeInstanceOf(SecurityServices);
 	});
 
-	it('returns ServiceService instance', (): void => {
+	test('returns ServiceService instance', (): void => {
 		expect.assertions(1);
 		expect(client.getServiceService()).toBeInstanceOf(ServiceService);
 	});
 
-	it('returns VersionService instance', (): void => {
+	test('returns VersionService instance', (): void => {
 		expect.assertions(1);
 		expect(client.getVersionService()).toBeInstanceOf(VersionService);
 	});

@@ -228,10 +228,8 @@ function saveServer(index: number|undefined, server: string) {
 		if (timeSet.value.ntpServers !== undefined) {
 			timeSet.value.ntpServers.push(server);
 		}
-	} else {
-		if (timeSet.value.ntpServers !== undefined) {
-			timeSet.value.ntpServers[index] = server;
-		}
+	} else if (timeSet.value.ntpServers !== undefined) {
+		timeSet.value.ntpServers[index] = server;
 	}
 }
 

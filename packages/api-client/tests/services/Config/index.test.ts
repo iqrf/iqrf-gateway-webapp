@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { describe, expect, it } from 'vitest';
+import { describe, expect } from 'vitest';
 
 import {
 	AptService,
@@ -37,55 +37,55 @@ describe('ConfigServices', (): void => {
 	 */
 	const services: ConfigServices = new ConfigServices(mockedClient);
 
-	it('returns APT config service instance', (): void => {
+	test('returns APT config service instance', (): void => {
 		expect.assertions(1);
 		expect(services.getAptService())
 			.toBeInstanceOf(AptService);
 	});
 
-	it('returns IQRF Repository config service instance', (): void => {
+	test('returns IQRF Repository config service instance', (): void => {
 		expect.assertions(1);
 		expect(services.getIqrfRepositoryService())
 			.toBeInstanceOf(IqrfRepositoryService);
 	});
 
-	it('returns IQRF Gateway Controller config service instance', (): void => {
+	test('returns IQRF Gateway Controller config service instance', (): void => {
 		expect.assertions(1);
 		expect(services.getIqrfGatewayControllerService())
 			.toBeInstanceOf(IqrfGatewayControllerService);
 	});
 
-	it('returns IQRF Gateway Daemon config service instance', (): void => {
+	test('returns IQRF Gateway Daemon config service instance', (): void => {
 		expect.assertions(1);
 		expect(services.getIqrfGatewayDaemonService())
 			.toBeInstanceOf(IqrfGatewayDaemonService);
 	});
 
-	it('returns IQRF Gateway InfluxDB bridge config service instance', (): void => {
+	test('returns IQRF Gateway InfluxDB bridge config service instance', (): void => {
 		expect.assertions(1);
 		expect(services.getIqrfGatewayInfluxdbBridgeService())
 			.toBeInstanceOf(IqrfGatewayInfluxdbBridgeService);
 	});
 
-	it('returns Journal config service instance', (): void => {
+	test('returns Journal config service instance', (): void => {
 		expect.assertions(1);
 		expect(services.getJournalService())
 			.toBeInstanceOf(JournalService);
 	});
 
-	it('returns Mailer config service instance', (): void => {
+	test('returns Mailer config service instance', (): void => {
 		expect.assertions(1);
 		expect(services.getMailerService())
 			.toBeInstanceOf(MailerService);
 	});
 
-	it('returns Mender config service instance', (): void => {
+	test('returns Mender config service instance', (): void => {
 		expect.assertions(1);
 		expect(services.getMenderService())
 			.toBeInstanceOf(MenderService);
 	});
 
-	it('returns Monit config service instance', (): void => {
+	test('returns Monit config service instance', (): void => {
 		expect.assertions(1);
 		expect(services.getMonitService())
 			.toBeInstanceOf(MonitService);

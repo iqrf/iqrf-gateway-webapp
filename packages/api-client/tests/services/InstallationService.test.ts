@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect } from 'vitest';
 
 import { InstallationService } from '../../src/services';
 import { type InstallationChecks } from '../../src/types';
@@ -31,7 +31,7 @@ describe('InstallationService', (): void => {
 		mockedAxios.reset();
 	});
 
-	it('check the installation', async (): Promise<void> => {
+	test('check the installation', async (): Promise<void> => {
 		expect.assertions(1);
 		mockedAxios.onGet('/installation')
 			.reply(200, {

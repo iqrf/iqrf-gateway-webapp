@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { describe, expect, it } from 'vitest';
+import { describe, expect } from 'vitest';
 
 import {
 	NetworkConnectionType,
@@ -24,7 +24,7 @@ import { IpNetworkUtils } from '../../src/utils';
 
 describe('IpNetworkUtils', (): void => {
 
-	it('convert connection type to interface type', (): void => {
+	test('convert connection type to interface type', (): void => {
 		expect.assertions(5);
 		expect(IpNetworkUtils.connectionTypeToInterfaceType(null)).toBeNull();
 		expect(IpNetworkUtils.connectionTypeToInterfaceType(NetworkConnectionType.Ethernet)).toBe(NetworkInterfaceType.ETHERNET);

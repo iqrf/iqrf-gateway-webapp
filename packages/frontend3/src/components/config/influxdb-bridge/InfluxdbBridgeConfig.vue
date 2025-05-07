@@ -362,10 +362,8 @@ function saveTopic(index: number|undefined, topic: string) {
 		if (config.value !== null) {
 			config.value.mqtt.topics.push(topic);
 		}
-	} else {
-		if (config.value !== null) {
-			config.value.mqtt.topics[index] = topic;
-		}
+	} else if (config.value !== null) {
+		config.value.mqtt.topics[index] = topic;
 	}
 }
 

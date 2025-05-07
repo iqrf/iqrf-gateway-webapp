@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { describe, expect, it } from 'vitest';
+import { describe, expect } from 'vitest';
 
 import {
 	MobileOperatorService,
@@ -33,31 +33,31 @@ describe('NetworkServices', (): void => {
 	 */
 	const services: NetworkServices = new NetworkServices(mockedClient);
 
-	it('returns MobileOperatorService instance', (): void => {
+	test('returns MobileOperatorService instance', (): void => {
 		expect.assertions(1);
 		expect(services.getMobileOperatorService())
 			.toBeInstanceOf(MobileOperatorService);
 	});
 
-	it('returns ModemService instance', (): void => {
+	test('returns ModemService instance', (): void => {
 		expect.assertions(1);
 		expect(services.getModemService())
 			.toBeInstanceOf(ModemService);
 	});
 
-	it('returns NetworkConnectionService instance', (): void => {
+	test('returns NetworkConnectionService instance', (): void => {
 		expect.assertions(1);
 		expect(services.getNetworkConnectionService())
 			.toBeInstanceOf(NetworkConnectionService);
 	});
 
-	it('returns NetworkInterfaceService instance', (): void => {
+	test('returns NetworkInterfaceService instance', (): void => {
 		expect.assertions(1);
 		expect(services.getNetworkInterfaceService())
 			.toBeInstanceOf(NetworkInterfaceService);
 	});
 
-	it('returns WireGuardService instance', (): void => {
+	test('returns WireGuardService instance', (): void => {
 		expect.assertions(1);
 		expect(services.getWireGuardService())
 			.toBeInstanceOf(WireGuardService);

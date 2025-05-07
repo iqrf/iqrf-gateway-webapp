@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { describe, expect, it } from 'vitest';
+import { describe, expect } from 'vitest';
 
 import {
 	AccountState,
@@ -47,7 +47,7 @@ describe('UserUtils', (): void => {
 		state: AccountState.Verified,
 	};
 
-	it('serialize User without e-mail address (null)', (): void => {
+	test('serialize User without e-mail address (null)', (): void => {
 		expect.assertions(1);
 		const userToSerialize: UserEdit = {
 			...user,
@@ -60,7 +60,7 @@ describe('UserUtils', (): void => {
 		});
 	});
 
-	it('serialize User without e-mail address (empty string)', (): void => {
+	test('serialize User without e-mail address (empty string)', (): void => {
 		expect.assertions(1);
 		const userToSerialize: UserEdit = {
 			...user,
@@ -73,7 +73,7 @@ describe('UserUtils', (): void => {
 		});
 	});
 
-	it('serialize User with e-mail address', (): void => {
+	test('serialize User with e-mail address', (): void => {
 		expect.assertions(1);
 		const userToSerialize: UserEdit = {
 			...user,
@@ -86,7 +86,7 @@ describe('UserUtils', (): void => {
 		});
 	});
 
-	it('serialize User with Unicode IDN e-mail address', (): void => {
+	test('serialize User with Unicode IDN e-mail address', (): void => {
 		expect.assertions(1);
 		const userToSerialize: UserEdit = {
 			...user,
@@ -99,7 +99,7 @@ describe('UserUtils', (): void => {
 		});
 	});
 
-	it('serialize User with ASCII IDN e-mail address', (): void => {
+	test('serialize User with ASCII IDN e-mail address', (): void => {
 		expect.assertions(1);
 		const userToSerialize: UserEdit = {
 			...user,
@@ -112,7 +112,7 @@ describe('UserUtils', (): void => {
 		});
 	});
 
-	it('deserialize User without e-mail address', (): void => {
+	test('deserialize User without e-mail address', (): void => {
 		expect.assertions(1);
 		const userToDeserialize: UserInfo = {
 			...userInfo,
@@ -125,7 +125,7 @@ describe('UserUtils', (): void => {
 		});
 	});
 
-	it('deserialize User with e-mail address', (): void => {
+	test('deserialize User with e-mail address', (): void => {
 		expect.assertions(1);
 		const userToDeserialize: UserInfo = {
 			...userInfo,
@@ -138,7 +138,7 @@ describe('UserUtils', (): void => {
 		});
 	});
 
-	it('deserialize User with IDN e-mail address', (): void => {
+	test('deserialize User with IDN e-mail address', (): void => {
 		expect.assertions(1);
 		const userToDeserialize: UserInfo = {
 			...userInfo,

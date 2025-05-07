@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { describe, expect, it } from 'vitest';
+import { describe, expect } from 'vitest';
 
 import {
 	DpaMacrosService,
@@ -31,19 +31,19 @@ describe('IqrfServices', (): void => {
 	 */
 	const services: IqrfServices = new IqrfServices(mockedClient);
 
-	it('returns DPA macros service instance', (): void => {
+	test('returns DPA macros service instance', (): void => {
 		expect.assertions(1);
 		expect(services.getDpaMacrosService())
 			.toBeInstanceOf(DpaMacrosService);
 	});
 
-	it('returns IQRF interface ports service instance', (): void => {
+	test('returns IQRF interface ports service instance', (): void => {
 		expect.assertions(1);
 		expect(services.getInterfacePortsService())
 			.toBeInstanceOf(InterfacePortsService);
 	});
 
-	it('returns IQRF upgrade service instance', (): void => {
+	test('returns IQRF upgrade service instance', (): void => {
 		expect.assertions(1);
 		expect(services.getUpgradeService())
 			.toBeInstanceOf(UpgradeService);

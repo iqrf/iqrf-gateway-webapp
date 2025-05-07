@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { describe, expect, it } from 'vitest';
+import { describe, expect } from 'vitest';
 
 import {
 	GatewayServices,
@@ -33,31 +33,31 @@ describe('GatewayServices', (): void => {
 	 */
 	const services: GatewayServices = new GatewayServices(mockedClient);
 
-	it('returns hostname service instance', (): void => {
+	test('returns hostname service instance', (): void => {
 		expect.assertions(1);
 		expect(services.getHostnameService())
 			.toBeInstanceOf(HostnameService);
 	});
 
-	it('returns gateway information service instance', (): void => {
+	test('returns gateway information service instance', (): void => {
 		expect.assertions(1);
 		expect(services.getInfoService())
 			.toBeInstanceOf(InfoService);
 	});
 
-	it('returns gateway log service instance', (): void => {
+	test('returns gateway log service instance', (): void => {
 		expect.assertions(1);
 		expect(services.getLogService())
 			.toBeInstanceOf(LogService);
 	});
 
-	it('returns gateway power service instance', (): void => {
+	test('returns gateway power service instance', (): void => {
 		expect.assertions(1);
 		expect(services.getPowerService())
 			.toBeInstanceOf(PowerService);
 	});
 
-	it('returns gateway time service instance', (): void => {
+	test('returns gateway time service instance', (): void => {
 		expect.assertions(1);
 		expect(services.getTimeService())
 			.toBeInstanceOf(TimeService);

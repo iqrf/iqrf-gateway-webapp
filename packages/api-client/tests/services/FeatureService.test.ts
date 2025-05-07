@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect } from 'vitest';
 
 import { FeatureService } from '../../src/services';
 import { Feature, type FeatureConfig, type Features } from '../../src/types';
@@ -31,7 +31,7 @@ describe('FeatureService', (): void => {
 		mockedAxios.reset();
 	});
 
-	it('fetch all features', async (): Promise<void> => {
+	test('fetch all features', async (): Promise<void> => {
 		expect.assertions(1);
 		mockedAxios.onGet('/features')
 			.reply(200, {
@@ -71,7 +71,7 @@ describe('FeatureService', (): void => {
 		});
 	});
 
-	it('fetch feature config by its name', async (): Promise<void> => {
+	test('fetch feature config by its name', async (): Promise<void> => {
 		expect.assertions(1);
 		mockedAxios.onGet('/features/docs')
 			.reply(200, {
@@ -85,7 +85,7 @@ describe('FeatureService', (): void => {
 		});
 	});
 
-	it('set feature config', async (): Promise<void> => {
+	test('set feature config', async (): Promise<void> => {
 		expect.assertions(0);
 		mockedAxios.onPut('/features/docs', {
 			'enabled': true,

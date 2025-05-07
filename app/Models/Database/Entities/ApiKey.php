@@ -46,9 +46,9 @@ class ApiKey implements JsonSerializable {
 	use TId;
 
 	/**
-	 * @var string API key
+	 * @var string|null API key
 	 */
-	private string $key;
+	private ?string $key = null;
 
 	/**
 	 * @var string API key hash

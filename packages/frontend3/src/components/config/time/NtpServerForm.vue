@@ -89,10 +89,8 @@ const ntpServer: Ref<string> = ref('');
 watchEffect((): void => {
 	if (componentProps.action === Action.Add) {
 		ntpServer.value = '';
-	} else {
-		if (componentProps.server !== undefined) {
-			ntpServer.value = componentProps.server;
-		}
+	} else if (componentProps.server !== undefined) {
+		ntpServer.value = componentProps.server;
 	}
 });
 

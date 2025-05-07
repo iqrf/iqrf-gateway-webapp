@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, vi } from 'vitest';
 
 import UrlBuilder from '../../helpers/urlBuilder';
 
@@ -51,21 +51,21 @@ describe('URL builder', (): void => {
 		vi.unstubAllGlobals();
 	});
 
-	it('get hostname', (): void => {
+	test('get hostname', (): void => {
 		expect.assertions(1);
 		setMode('development');
 		const builder: UrlBuilder = new UrlBuilder();
 		expect(builder.getHostname()).toStrictEqual('iqube.local');
 	});
 
-	it('get port', (): void => {
+	test('get port', (): void => {
 		expect.assertions(1);
 		setMode('development');
 		const builder: UrlBuilder = new UrlBuilder();
 		expect(builder.getPort()).toStrictEqual(':8081');
 	});
 
-	it('get base URL in development mode', (): void => {
+	test('get base URL in development mode', (): void => {
 		expect.assertions(1);
 		vi.stubEnv('VITE_BASE_URL', '/system/');
 		const url = 'http://iqube.local:8081/system/';
@@ -74,7 +74,7 @@ describe('URL builder', (): void => {
 		expect(builder.getBaseUrl()).toStrictEqual(url);
 	});
 
-	it('get REST API URL from environmental variable', (): void => {
+	test('get REST API URL from environmental variable', (): void => {
 		expect.assertions(1);
 		const url = '//localhost:8080/v0';
 		vi.stubEnv('VITE_URL_REST_API', url);
@@ -82,7 +82,7 @@ describe('URL builder', (): void => {
 		expect(builder.getRestApiUrl()).toStrictEqual(url);
 	});
 
-	it('get REST API URL in development mode', (): void => {
+	test('get REST API URL in development mode', (): void => {
 		expect.assertions(1);
 		const url = '//iqube.local:8080/api/v0/';
 		setMode('development');
@@ -90,7 +90,7 @@ describe('URL builder', (): void => {
 		expect(builder.getRestApiUrl()).toStrictEqual(url);
 	});
 
-	it('get REST API URL in production mode', (): void => {
+	test('get REST API URL in production mode', (): void => {
 		expect.assertions(1);
 		const url = '//iqube.local/api/v0/';
 		setMode('production');
@@ -98,7 +98,7 @@ describe('URL builder', (): void => {
 		expect(builder.getRestApiUrl()).toStrictEqual(url);
 	});
 
-	it('get REST API URL from hostname', (): void => {
+	test('get REST API URL from hostname', (): void => {
 		expect.assertions(2);
 		setMode('development');
 		const builder: UrlBuilder = new UrlBuilder();
@@ -108,7 +108,7 @@ describe('URL builder', (): void => {
 			.toStrictEqual('//192.0.2.100:8080/api/v0/');
 	});
 
-	it('get IQRF Gateway Daemon JSON API URL from environmental variable', (): void => {
+	test('get IQRF Gateway Daemon JSON API URL from environmental variable', (): void => {
 		expect.assertions(1);
 		const url = 'ws://iqube.local/ws';
 		vi.stubEnv('VITE_URL_DAEMON_API', url);
@@ -116,7 +116,7 @@ describe('URL builder', (): void => {
 		expect(builder.getDaemonApiUrl()).toStrictEqual(url);
 	});
 
-	it('get IQRF Gateway Daemon JSON API URL in development mode', (): void => {
+	test('get IQRF Gateway Daemon JSON API URL in development mode', (): void => {
 		expect.assertions(1);
 		const url = 'ws://iqube.local:1338';
 		setMode('development');
@@ -124,7 +124,7 @@ describe('URL builder', (): void => {
 		expect(builder.getDaemonApiUrl()).toStrictEqual(url);
 	});
 
-	it('get IQRF Gateway Daemon JSON API URL in production mode', (): void => {
+	test('get IQRF Gateway Daemon JSON API URL in production mode', (): void => {
 		expect.assertions(1);
 		const url = 'wss://iqube.local/ws';
 		setMode('production');
@@ -132,7 +132,7 @@ describe('URL builder', (): void => {
 		expect(builder.getDaemonApiUrl()).toStrictEqual(url);
 	});
 
-	it('get IQRF Gateway Daemon monitor URL from environmental variable', (): void => {
+	test('get IQRF Gateway Daemon monitor URL from environmental variable', (): void => {
 		expect.assertions(1);
 		const url = 'ws://iqube.local/wsMonitor';
 		vi.stubEnv('VITE_URL_DAEMON_MONITOR', url);
@@ -140,7 +140,7 @@ describe('URL builder', (): void => {
 		expect(builder.getDaemonMonitorUrl()).toStrictEqual(url);
 	});
 
-	it('get IQRF Gateway Daemon monitor URL in development mode', (): void => {
+	test('get IQRF Gateway Daemon monitor URL in development mode', (): void => {
 		expect.assertions(1);
 		const url = 'ws://iqube.local:1438';
 		setMode('development');
@@ -148,7 +148,7 @@ describe('URL builder', (): void => {
 		expect(builder.getDaemonMonitorUrl()).toStrictEqual(url);
 	});
 
-	it('get IQRF Gateway Daemon monitor URL in production mode', (): void => {
+	test('get IQRF Gateway Daemon monitor URL in production mode', (): void => {
 		expect.assertions(1);
 		const url = 'wss://iqube.local/wsMonitor';
 		setMode('production');
@@ -156,7 +156,7 @@ describe('URL builder', (): void => {
 		expect(builder.getDaemonMonitorUrl()).toStrictEqual(url);
 	});
 
-	it('get IQRF network sync URL from environmental variable', (): void => {
+	test('get IQRF network sync URL from environmental variable', (): void => {
 		expect.assertions(1);
 		const url = 'ws://iqube.local/sync';
 		vi.stubEnv('VITE_URL_IQRF_SYNC', url);
@@ -164,7 +164,7 @@ describe('URL builder', (): void => {
 		expect(builder.getIqrfnetSyncUrl()).toStrictEqual(url);
 	});
 
-	it('get IQRF network sync URL in development mode', (): void => {
+	test('get IQRF network sync URL in development mode', (): void => {
 		expect.assertions(1);
 		const url = 'ws://iqube.local:8881/sync';
 		setMode('development');
@@ -172,7 +172,7 @@ describe('URL builder', (): void => {
 		expect(builder.getIqrfnetSyncUrl()).toStrictEqual(url);
 	});
 
-	it('get IQRF network sync URL in production mode', (): void => {
+	test('get IQRF network sync URL in production mode', (): void => {
 		expect.assertions(1);
 		const url = 'wss://iqube.local/sync';
 		setMode('production');
