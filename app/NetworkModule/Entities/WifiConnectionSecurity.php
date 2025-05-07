@@ -60,15 +60,19 @@ final readonly class WifiConnectionSecurity implements INetworkManagerEntity {
 	 */
 	public static function jsonDeserialize(stdClass $json): INetworkManagerEntity {
 		$type = WifiSecurityType::from($json->type);
-		$leap = Leap::jsonDeserialize($json->leap);
-		assert($leap instanceof Leap);
-		$wep = Wep::jsonDeserialize($json->wep);
-		assert($wep instanceof Wep);
+		if (isset($json->leap)) {
+			$leap = Leap::jsonDeserialize($json->leap);
+			assert($leap instanceof Leap);
+		}
+		if (isset($json->wep)) {
+			$wep = Wep::jsonDeserialize($json->wep);
+			assert($wep instanceof Wep);
+		}
 		if ($type === WifiSecurityType::WPA_EAP) {
 			$eap = Eap::jsonDeserialize($json->eap);
 			assert($eap instanceof Eap);
 		}
-		return new self($type, $json->psk, $leap, $wep, $eap ?? null);
+		return new self($type, $json->psk, $leap ?? null, $wep ?? null, $eap ?? null);
 	}
 
 	/**
@@ -127,8 +131,12 @@ final readonly class WifiConnectionSecurity implements INetworkManagerEntity {
 			'psk' => $this->psk,
 		];
 		$config .= NmCliConnection::encode($array, self::NMCLI_PREFIX);
-		$config .= $this->leap->nmCliSerialize();
-		$config .= $this->wep->nmCliSerialize();
+		if ($this->leap instanceof Leap) {
+			$config .= $this->leap->nmCliSerialize();
+		}
+		if ($this->wep instanceof Wep) {
+			$config .= $this->wep->nmCliSerialize();
+		}
 		if ($this->type === WifiSecurityType::WPA_EAP) {
 			$config .= $this->eap->nmCliSerialize();
 		}
