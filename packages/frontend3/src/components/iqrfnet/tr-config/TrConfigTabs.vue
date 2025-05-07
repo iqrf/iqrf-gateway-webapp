@@ -128,7 +128,7 @@ const config: Ref<IqmeshTrConfigParams> = ref({
 
 async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value) || config.value === null) {
-
+		//
 	}
 }
 

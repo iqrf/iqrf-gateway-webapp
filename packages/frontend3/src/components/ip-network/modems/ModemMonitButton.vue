@@ -68,7 +68,7 @@ async function fetchMonitCheck(): Promise<void> {
  */
 function toggleMonitCheck(confirmed: boolean = false): void {
 	if (monitCheck.value === null) {
-
+		//
 	}
 }
 
