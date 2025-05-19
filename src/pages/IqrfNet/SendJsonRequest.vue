@@ -214,8 +214,6 @@ export default class SendJsonRequest extends Vue {
 				this.handleAutoNetworkResponse(mutation.payload);
 			} else if (mutation.payload.mType === 'iqmeshNetwork_Backup') {
 				this.handleBackup(mutation.payload);
-			} else if (mutation.payload.mType === 'infoDaemon_Enumeration' && mutation.payload.data.rsp.command === 'now') {
-				this.handleEnumerationNow(mutation.payload);
 			} else {
 				this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 				this.handleResponse(mutation.payload);
@@ -338,24 +336,6 @@ export default class SendJsonRequest extends Vue {
 			this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 			this.$toast.info(
 				this.$t('iqrfnet.sendJson.messages.backupFinish').toString()
-			);
-		}
-	}
-
-	/**
-	 * Handles Enumeration now Daemon API response
-	 * @param response Daemon API response
-	 */
-	private handleEnumerationNow(response): void {
-		const idx = this.messages.findIndex((item: IMessagePairRequest) => item.msgId === response.data.msgId);
-		if (idx !== -1) {
-			this.messages[idx].response.push(JSON.stringify(response, null, 4));
-		}
-		if (response.data.rsp.percentage === 100) { // enumeration finished
-			this.$store.commit('spinner/HIDE');
-			this.$store.dispatch('daemonClient/removeMessage', this.msgId);
-			this.$toast.info(
-				this.$t('iqrfnet.sendJson.messages.enumerationFinish').toString()
 			);
 		}
 	}

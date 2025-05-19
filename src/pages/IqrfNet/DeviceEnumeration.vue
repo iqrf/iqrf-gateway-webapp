@@ -127,21 +127,11 @@ import IqrfNetService from '@/services/IqrfNetService';
 import ProductService from '@/services/IqrfRepository/ProductService';
 import RfModeLp from '@/assets/lp-black.svg';
 import RfModeStd from '@/assets/std-black.svg';
-import {AxiosError, AxiosResponse} from 'axios';
+import {AxiosError} from 'axios';
 import {IDeviceEnumeration, OsInfo, PeripheralEnumeration} from '@/interfaces/DaemonApi/Dpa';
 import {DaemonClientState} from '@/interfaces/wsClient';
 import {NavigationGuardNext, Route} from 'vue-router';
-
-interface Product {
-	companyName: string
-	homePage: string
-	hwpid: number
-	manufacturerID: number
-	name: string
-	picture: string
-	pictureOriginal: string
-	rfMode: number
-}
+import { Product } from '@iqrf/iqrf-repository-client/types';
 
 @Component({
 	components: {
@@ -310,8 +300,8 @@ export default class DeviceEnumeration extends Vue {
 	 */
 	private getProductInformation(hwpId: number): void {
 		ProductService.get(hwpId)
-			.then((response: AxiosResponse) => {
-				this.product = response.data;
+			.then((data: Product) => {
+				this.product = data;
 			})
 			.catch((error: AxiosError) => {
 				if (error.response !== undefined && error.response.status === 404) {

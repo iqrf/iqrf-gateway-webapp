@@ -2,29 +2,47 @@
 	"$schema": "https://apidocs.iqrf.org/iqrf-gateway-daemon/com.iqrftech.self-desc/schema/jsonschema/1-0-0#",
 	"self": {
 		"vendor": "com.iqrftech.self-desc",
-		"name": "schema__iqrf__JsonIqrfInfoApi",
+		"name": "schema__iqrf__JsonDbApi",
 		"format": "jsonschema",
 		"version": "1-0-0"
 	},
 	"type": "object",
+	"required": [
+		"component",
+		"instance"
+	],
+	"additionalProperties": false,
 	"properties": {
 		"component": {
-			"type": "string",
+			"$id": "#/properties/component",
+			"title": "Component name",
 			"description": "Name of component.",
+			"type": "string",
 			"enum": [
-				"iqrf::JsonIqrfInfoApi"
+				"iqrf::JsonDbApi"
 			]
 		},
 		"instance": {
+			"$id": "#/properties/instance",
+			"title": "Instance name",
+			"description": "Name of instance.",
 			"type": "string",
-			"description": "Recomended iqrf::JsonIqrfInfoApi-(id)",
-			"default": "iqrf::JsonIqrfInfoApi-1"
+			"default": "iqrf::JsonDbApi-1"
 		},
 		"RequiredInterfaces": {
-			"type": "array",
+			"$id": "#/properties/RequiredInterfaces",
+			"title": "Required interfaces",
 			"description": "Array of required interfaces.",
+			"type": "array",
+			"additionalItems": false,
 			"items": {
+				"$id": "#/properties/RequiredInterfaces/items",
 				"type": "object",
+				"required": [
+					"name",
+					"target"
+				],
+				"additionalProperties": false,
 				"properties": {
 					"name": {
 						"type": "string",
@@ -34,16 +52,8 @@
 					"target": {
 						"type": "object"
 					}
-				},
-				"required": [
-					"name",
-					"target"
-				]
+				}
 			}
 		}
-	},
-	"required": [
-		"component",
-		"instance"
-	]
+	}
 }

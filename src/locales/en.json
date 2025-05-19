@@ -805,19 +805,16 @@
 						"saveSuccess": "IQRF repository configuration successfully saved."
 					}
 				},
-				"iqrfInfo": {
+				"iqrfDb": {
 					"title": "Lite DB",
-					"description": "IQRF Info database settings.",
+					"description": "IQRF DB database configuration.",
 					"form": {
-						"enumAtStartUp": "Enumerate network on startup",
-						"enablePeriodic": "Enumerate network periodically",
-						"enumPeriod": "Enumeration period in minutes",
-						"enumUniformDpaVer": "Read only HWPID and HWPID version from nodes",
-						"metaDataToMessages": "Include metadata in messages"
+						"autoEnum": "Run enumeration automatically without prior manual invocation",
+						"launchEnum": "Run enumeration on Daemon launch",
+						"metadata": "Include device metadata in messages"
 					},
 					"errors": {
-						"instance": "Please enter name of IQRF Info instance.",
-						"enumPeriod": "Period must be greater or equal to 0."
+						"instance": "Please enter name of IQRF DB instance."
 					},
 					"messages": {
 						"saveFailed": "Failed to save Lite DB configuration: {error}.",
@@ -2347,6 +2344,16 @@
 				"title": "Reset confirmation",
 				"prompt": "Are you sure you want to reset the device database?"
 			},
+			"enumeration": {
+				"title": "Standard devices enumeration",
+				"step": "Step",
+				"time": "Time",
+				"messages": {
+					"conn": "Enumeration process interrupted, connection to IQRF Gateway Daemon lost.",
+					"success": "Standard devices enumeration concluded successfully.",
+					"failure": "Standard devices enumeration failed."
+				}
+			},
 			"table": {
 				"title": "Standard devices",
 				"actions": {
@@ -2377,7 +2384,9 @@
 					"title": "Sensors",
 					"name": "Name",
 					"index": "Index",
-					"type": "Type"
+					"type": "Type",
+					"value": "Value",
+					"updated": "Last updated"
 				},
 				"messages": {
 					"device": {

@@ -18,6 +18,7 @@ import axios, {AxiosResponse} from 'axios';
 import IqrfRepositoryConfigService from './IqrfRepositoryConfigService';
 import {IIqrfRepositoryConfig} from '@/interfaces/Config/Misc';
 import store from '@/store';
+import { Product } from '@iqrf/iqrf-repository-client/types';
 
 class ProductService {
 
@@ -30,7 +31,7 @@ class ProductService {
 	 * Retrieves the product by its HWPID
 	 * @param hwpid Product HWPID
 	 */
-	public async get(hwpid: number): Promise<AxiosResponse> {
+	public async get(hwpid: number): Promise<Product> {
 		let baseUrl = 'https://repository.iqrfalliance.org/api';
 		let config = store.getters['repository/configuration'];
 		if (config === null) {
@@ -43,7 +44,7 @@ class ProductService {
 		if (config !== null) {
 			baseUrl = config.apiEndpoint;
 		}
-		return axios.get(baseUrl + '/products/' + hwpid);
+		return (await axios.get(baseUrl + '/products/' + hwpid)).data;
 	}
 
 	/**

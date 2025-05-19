@@ -26,7 +26,7 @@ limitations under the License.
 						class='mr-1'
 						color='primary'
 						size='sm'
-						@click='enumerateNetwork'
+						@click='enumModal.start()'
 					>
 						<CIcon :content='cilSpreadsheet' size='sm' />
 						<span class='d-none d-lg-inline'>
@@ -37,16 +37,23 @@ limitations under the License.
 						class='mr-1'
 						color='primary'
 						size='sm'
-						@click='getDevices'
+						@click='getDevices()'
 					>
 						<CIcon :content='cilSync' size='sm' />
 						<span class='d-none d-lg-inline'>
 							{{ $t('iqrfnet.standard.table.actions.refresh') }}
 						</span>
 					</CButton>
-					<DatabaseResetModal
-						@reset='devices = []; getDevices()'
-					/>
+					<CButton
+						color='danger'
+						size='sm'
+						@click='resetModal.open()'
+					>
+						<CIcon :content='cilReload' size='sm' />
+						<span class='d-none d-lg-inline'>
+							{{ $t('iqrfnet.standard.table.actions.reset') }}
+						</span>
+					</CButton>
 				</div>
 			</CCardHeader>
 			<CCardBody>
@@ -273,11 +280,15 @@ limitations under the License.
 													<th>{{ $t('iqrfnet.standard.table.sensor.name') }}</th>
 													<th>{{ $t('iqrfnet.standard.table.sensor.type') }}</th>
 													<th>{{ $t('iqrfnet.standard.table.sensor.index') }}</th>
+													<th>{{ $t('iqrfnet.standard.table.sensor.value') }}</th>
+													<th>{{ $t('iqrfnet.standard.table.sensor.updated') }}</th>
 												</tr>
 												<tr v-for='(sensor, i) of item.getSensors()' :key='i'>
 													<td>{{ sensor.name }}</td>
 													<td>{{ sensor.type }}</td>
-													<td>{{ sensor.idx }}</td>
+													<td>{{ sensor.index }}</td>
+													<td>{{ formatSensorValue(sensor.value, sensor.unit) }}</td>
+													<td>{{ sensor.updated ?? $t('forms.notAvailable') }}</td>
 												</tr>
 											</table>
 										</div>
@@ -289,28 +300,35 @@ limitations under the License.
 				</CDataTable>
 			</CCardBody>
 		</CCard>
+		<EnumerationModal
+			ref='enumModal'
+			@finished='getDevices'
+		/>
+		<DatabaseResetModal
+			ref='resetModal'
+			@reset='devices = []; getDevices()'
+		/>
 	</div>
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Component, Ref, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CCollapse, CDataTable, CIcon, CMedia} from '@coreui/vue/src';
 import DatabaseResetModal from '@/components/IqrfNet/StandardManager/DatabaseResetModal.vue';
+import EnumerationModal from '@/components/IqrfNet/StandardManager/EnumerationModal.vue';
 
-import {cilCheckAlt, cilCheckCircle, cilHome, cilInfo, cilSignalCellular4, cilSpreadsheet, cilSync, cilXCircle} from '@coreui/icons';
-import {EnumerateCommand} from '@/enums/IqrfNet/info';
+import {cilCheckAlt, cilCheckCircle, cilHome, cilInfo, cilReload, cilSignalCellular4, cilSpreadsheet, cilSync, cilXCircle} from '@coreui/icons';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 import StandardDevice from '@/entities/StandardDevice';
-import InfoService from '@/services/DaemonApi/InfoService';
-import IqrfNetService from '@/services/IqrfNetService';
-import ProductService from '@/services/IqrfRepository/ProductService';
+import DbService from '@/services/DaemonApi/DbService';
 
-import {AxiosResponse} from 'axios';
 import {IField} from '@/interfaces/Coreui';
-import {IInfoBinout, IInfoDevice, IInfoNode, IInfoSensor} from '@/interfaces/DaemonApi/IqrfInfo';
 import {MutationPayload} from 'vuex';
-import DpaService, {OsDpaVersion} from '@/services/IqrfRepository/OsDpaService';
+import { IqrfDbBo, IqrfDbDeviceFull, IqrfDbSensor } from '@/interfaces/DaemonApi/IqrfDb';
+import { Product } from '@iqrf/iqrf-repository-client/types';
+import IqmeshNetworkService from '@/services/DaemonApi/IqmeshNetworkService';
+import ProductService from '@/services/IqrfRepository/ProductService';
 
 interface StandardDevicesFilters {
 	address: string;
@@ -330,12 +348,14 @@ interface StandardDevicesFilters {
 		CIcon,
 		CMedia,
 		DatabaseResetModal,
+		EnumerationModal,
 	},
 	data: () => ({
 		cilCheckAlt,
 		cilCheckCircle,
 		cilHome,
 		cilInfo,
+		cilReload,
 		cilSignalCellular4,
 		cilSpreadsheet,
 		cilSync,
@@ -347,6 +367,16 @@ interface StandardDevicesFilters {
  * Standard devices component
  */
 export default class StandardDevices extends Vue {
+	/**
+	 * @property {EnumerationModal} enumModal Enumeration component
+	 */
+	@Ref('enumModal') readonly enumModal!: EnumerationModal;
+
+	/**
+	 * @property {DatabaseResetModal} resetModal Database reset component
+	 */
+	@Ref('resetModal') readonly resetModal!: DatabaseResetModal;
+
 	/**
 	 * @var {Array<standardDevice>} devices Auxiliary array of devices before the final grid is rendered
 	 */
@@ -454,7 +484,8 @@ export default class StandardDevices extends Vue {
 	/**
 	 * Subscribes a mutation handler to websocket store
 	 */
-	created(): void {
+	async created(): Promise<void> {
+		
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type !== 'daemonClient/SOCKET_ONMESSAGE') {
 				return;
@@ -462,22 +493,18 @@ export default class StandardDevices extends Vue {
 			if (mutation.payload.data.msgId !== this.msgId) {
 				return;
 			}
+			this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 			if (mutation.payload.mType === 'messageError') {
 				this.handleMessageError(mutation.payload.data);
-			} else if (mutation.payload.mType === 'infoDaemon_Enumeration') {
-				const command = mutation.payload.data.rsp.command;
-				if (command === EnumerateCommand.NOW) {
-					this.handleEnumerationNow(mutation.payload.data);
-				}
-			} else if (mutation.payload.mType === 'infoDaemon_GetNodes') {
+			} else if (mutation.payload.mType === 'iqrfDb_GetDevices') {
 				this.handleGetDevices(mutation.payload.data);
-			} else if (mutation.payload.mType === 'infoDaemon_GetBinaryOutputs') {
-				this.handleGetBinouts(mutation.payload.data);
-			} else if (mutation.payload.mType === 'infoDaemon_GetLights') {
+			} else if (mutation.payload.mType === 'iqrfDb_GetBinaryOutputs') {
+				this.handleGetBinaryOutputs(mutation.payload.data);
+			} else if (mutation.payload.mType === 'iqrfDb_GetLights') {
 				this.handleGetLights(mutation.payload.data);
-			} else if (mutation.payload.mType === 'infoDaemon_GetSensors') {
+			} else if (mutation.payload.mType === 'iqrfDb_GetSensors') {
 				this.handleGetSensors(mutation.payload.data);
-			} else if (mutation.payload.mType === 'iqrfEmbedFrc_SendSelective') {
+			} else if (mutation.payload.mType === 'iqmeshNetwork_Ping') {
 				this.handlePingDevices(mutation.payload.data);
 			}
 		});
@@ -499,54 +526,6 @@ export default class StandardDevices extends Vue {
 	}
 
 	/**
-	 * Executes network enumeration to populate database tables
-	 */
-	private enumerateNetwork(): void {
-		this.$store.commit('spinner/SHOW');
-		InfoService.enumerate(EnumerateCommand.NOW)
-			.then((msgId: string) => this.msgId = msgId);
-	}
-
-	/**
-	 * Handles enumeration now response
-	 * @param response Daemon API response
-	 */
-	private handleEnumerationNow(response): void {
-		if (response.status !== 0) {
-			this.$store.dispatch('daemonClient/removeMessage', this.msgId);
-			this.$store.commit('spinner/HIDE');
-			this.$toast.success(
-				this.$t(
-					'iqrfnet.standard.table.messages.enumNowFailed',
-					{error: response.rsp.errorStr},
-				).toString()
-			);
-			return;
-		}
-		const process = response.rsp;
-		if (process.percentage === 100) {
-			this.$store.dispatch('daemonClient/removeMessage', this.msgId);
-			this.$store.commit('spinner/HIDE');
-			this.$toast.success(
-				this.$t('iqrfnet.standard.table.messages.enumNowSuccess').toString()
-			);
-			this.getDevices();
-			return;
-		}
-		this.$store.commit('spinner/UPDATE_TEXT',
-			this.$t(
-				'iqrfnet.standard.table.messages.enumNowProgress',
-				{
-					progress: process.percentage,
-					phase: process.enumPhase,
-					current: process.step,
-					total: process.steps,
-				}
-			).toString()
-		);
-	}
-
-	/**
 	 * Retrieves information about devices stored in database
 	 */
 	private getDevices(): void {
@@ -555,16 +534,16 @@ export default class StandardDevices extends Vue {
 			'spinner/UPDATE_TEXT',
 			this.$t('iqrfnet.standard.table.messages.device.fetch').toString()
 		);
-		InfoService.nodes(11000, this.$t('iqrfnet.standard.table.messages.device.fetchTimeout'), () => this.msgId = null)
+		const options = new DaemonMessageOptions(null, 10000, 'iqrfnet.standard.table.messages.device.fetchTimeout', () => this.msgId = null);
+		DbService.getDevices(false, options)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
 	/**
-	 * Handles GetNodes Daemon API response
+	 * Handles GetDevices Daemon API response
 	 * @param response Daemon API response
 	 */
 	private handleGetDevices(response): void {
-		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		if (response.status !== 0) {
 			this.$store.dispatch('spinner/hide');
 			this.$toast.error(
@@ -573,27 +552,27 @@ export default class StandardDevices extends Vue {
 			return;
 		}
 		const devices: Array<StandardDevice> = [];
-		response.rsp.nodes.forEach((device: IInfoNode) => {
-			devices.push(new StandardDevice(device.nAdr, device.mid, device.hwpid, device.hwpidVer, device.dpaVer, device.osBuild, device.disc));
+		response.rsp.devices.forEach((device: IqrfDbDeviceFull) => {
+			devices.push(new StandardDevice(device));
 		});
-		this.auxDevices = devices;
-		if (this.auxDevices.length > 0) {
-			this.getBinouts();
+		if (devices.length > 0) {
+			this.auxDevices = devices;
+			this.getBinaryOutputs();
 		} else {
 			this.$store.dispatch('spinner/hide');
-			this.devices = [];
 		}
 	}
 
 	/**
-	 * Retrieves information about binary output devices stored in database
+	 * Retrieves information about devices implementing binary output standard in database
 	 */
-	private getBinouts(): void {
+	private getBinaryOutputs(): void {
 		this.$store.commit(
 			'spinner/UPDATE_TEXT',
 			this.$t('iqrfnet.standard.table.messages.binout.fetch').toString()
 		);
-		InfoService.binouts(11000, this.$t('iqrfnet.standard.table.messages.binout.fetchTimeout'), () => this.msgId = null)
+		const options = new DaemonMessageOptions(null, 10000, 'iqrfnet.standard.table.messages.binout.fetchTimeout', () => this.msgId = null);
+		DbService.getBinaryOutputs(options)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
@@ -601,33 +580,33 @@ export default class StandardDevices extends Vue {
 	 * Handles GetBinaryOutputs Daemon API response
 	 * @param response Daemon API response
 	 */
-	private handleGetBinouts(response): void {
-		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
+	private handleGetBinaryOutputs(response): void {
 		if (response.status !== 0) {
-			this.$store.commit('spinner/HIDE');
+			this.$store.dispatch('spinner/hide');
 			this.$toast.error(
 				this.$t('iqrfnet.standard.table.messages.binout.fetchFailed').toString()
 			);
 			return;
 		}
-		response.rsp.binOutDevices.forEach((device: IInfoBinout) => {
-			const idx = this.getDeviceIndex(device.nAdr);
+		response.rsp.binoutDevices.forEach((device: IqrfDbBo) => {
+			const idx = this.getDeviceIndex(device.address);
 			if (idx !== -1) {
-				this.auxDevices[idx]?.setBinouts(device.binOuts);
+				this.auxDevices[idx].setBinouts(device.count);
 			}
 		});
 		this.getLights();
 	}
 
 	/**
-	 * Retrieves information about light devices stored in database
+	 * Retrieves information about devices implementing light standard
 	 */
 	private getLights(): void {
 		this.$store.commit(
 			'spinner/UPDATE_TEXT',
 			this.$t('iqrfnet.standard.table.messages.light.fetch').toString()
 		);
-		InfoService.lights(11000, this.$t('iqrfnet.standard.table.messages.light.fetchTimeout'), () => this.msgId = null)
+		const options = new DaemonMessageOptions(null, 10000, 'iqrfnet.standard.table.messages.light.fetchTimeout', () => this.msgId = null);
+		DbService.getLights(options)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
@@ -636,32 +615,32 @@ export default class StandardDevices extends Vue {
 	 * @param response Daemon API response
 	 */
 	private handleGetLights(response): void {
-		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		if (response.status !== 0) {
-			this.$store.commit('spinner/HIDE');
+			this.$store.dispatch('spinner/hide');
 			this.$toast.error(
 				this.$t('iqrfnet.standard.table.messages.light.fetchFailed').toString()
 			);
 			return;
 		}
-		response.rsp.lightDevices.forEach((device: IInfoDevice) => {
-			const idx = this.getDeviceIndex(device.nAdr);
+		response.rsp.lightDevices.forEach((device: number) => {
+			const idx = this.getDeviceIndex(device);
 			if (idx !== -1) {
-				this.auxDevices[idx]?.setLight(true);
+				this.auxDevices[idx].setLight(true);
 			}
 		});
 		this.getSensors();
 	}
 
 	/**
-	 * Retrieves information about sensor devices stored in database
+	 * Retrieves information about devices implementing sensor standard
 	 */
 	private getSensors(): void {
 		this.$store.commit(
 			'spinner/UPDATE_TEXT',
 			this.$t('iqrfnet.standard.table.messages.sensor.fetch').toString()
 		);
-		InfoService.sensors(11000, this.$t('iqrfnet.standard.table.messages.sensor.fetchTimeout'), () => this.msgId = null)
+		const options = new DaemonMessageOptions(null, 10000, 'iqrfnet.standard.table.messages.sensor.fetch', () => this.msgId = null);
+		DbService.getSensors(options)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
@@ -670,18 +649,17 @@ export default class StandardDevices extends Vue {
 	 * @param response Daemon API response
 	 */
 	private async handleGetSensors(response): Promise<void> {
-		await this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		if (response.status !== 0) {
-			this.$store.commit('spinner/HIDE');
+			this.$store.dispatch('spinner/hide');
 			this.$toast.error(
 				this.$t('iqrfnet.standard.table.messages.sensor.fetchFailed').toString()
 			);
 			return;
 		}
-		response.rsp.sensorDevices.forEach((device: IInfoSensor) => {
-			const idx = this.getDeviceIndex(device.nAdr);
+		response.rsp.sensorDevices.forEach((device: IqrfDbSensor) => {
+			const idx = this.getDeviceIndex(device.address);
 			if (idx !== -1) {
-				this.auxDevices[idx]?.setSensors(device.sensors);
+				this.auxDevices[idx].setSensors(device.sensors);
 			}
 		});
 		await this.fetchDeviceDetails();
@@ -694,23 +672,7 @@ export default class StandardDevices extends Vue {
 	 */
 	private async fetchDeviceDetails(): Promise<void> {
 		const hwpids = new Map();
-		const osVersions = new Map();
-
 		for (const auxDevice of this.auxDevices) {
-			const osBuild = auxDevice.getOsBuild();
-			if (!osVersions.has(osBuild)) {
-				await DpaService.getVersions(osBuild)
-					.then((versions: OsDpaVersion[]) => {
-						if (versions.length === 0) {
-							return;
-						}
-						osVersions.set(osBuild, versions[0].getOsVersion());
-					})
-					.catch(() => {
-					// IQRF OS not found in repository, ignore
-					});
-			}
-			auxDevice.setOsVersion(osVersions.get(osBuild));
 			const hwpid = auxDevice.getHwpid();
 			if (hwpids.has(hwpid)) {
 				auxDevice.setProduct(hwpids.get(hwpid));
@@ -720,8 +682,8 @@ export default class StandardDevices extends Vue {
 				continue;
 			}
 			await ProductService.get(hwpid)
-				.then((response: AxiosResponse) => {
-					hwpids.set(hwpid, response.data);
+				.then((response: Product) => {
+					hwpids.set(hwpid, response);
 					auxDevice.setProduct(hwpids.get(hwpid));
 				})
 				.catch(() => {
@@ -729,13 +691,14 @@ export default class StandardDevices extends Vue {
 				});
 		}
 		this.devices = this.auxDevices;
+		this.auxDevices = [];
 	}
 
 	/**
 	 * Pings devices in network to check which devices are online
 	 */
 	private pingDevices(): void {
-		const nodes: Array<number> = this.auxDevices.map((device: StandardDevice) => (device.getAddress())).filter((addr: number) => addr > 0);
+		const nodes: Array<number> = this.devices.map((device: StandardDevice) => (device.getAddress())).filter((addr: number) => addr > 0);
 		if (nodes.length === 0) {
 			return;
 		}
@@ -745,7 +708,7 @@ export default class StandardDevices extends Vue {
 			this.$t('iqrfnet.standard.table.messages.ping.fetch').toString()
 		);
 		const options = new DaemonMessageOptions(null, 100000, this.$t('iqrfnet.standard.table.messages.ping.fetchFailed'));
-		IqrfNetService.pingSelective(nodes, options)
+		IqmeshNetworkService.ping(options)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
@@ -754,7 +717,6 @@ export default class StandardDevices extends Vue {
 	 * @param response Daemon API response
 	 */
 	private handlePingDevices(response): void {
-		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		if (response.status !== 0) {
 			this.$store.dispatch('spinner/hide');
 			this.$toast.error(
@@ -762,20 +724,18 @@ export default class StandardDevices extends Vue {
 			);
 			return;
 		}
-		const map = response.rsp.result.frcData.slice(0, 30);
+		const nodes = response.rsp.pingResult;
 		const addrs = this.devices.map((device: StandardDevice) => {return device.getAddress();});
-		map.forEach((byte: number, idx: number) => {
-			if (byte === 0) {
-				return;
+		for (const node of nodes) {
+			if (node.address === 0) {
+				continue;
 			}
-			const bitString = byte.toString(2).padStart(8, '0');
-			for (let i = 0; i < 8; i++) {
-				const addr = idx * 8 + i;
-				if (addrs.includes(addr)) {
-					this.devices[addrs.indexOf(addr)].setOnline((bitString[(7 - i)] === '1'));
-				}
+			const idx = addrs.indexOf(node.address);
+			if (idx === -1) {
+				continue;
 			}
-		});
+			this.devices[idx].setOnline(node.result);
+		}
 		this.$store.dispatch('spinner/hide');
 	}
 
@@ -784,7 +744,6 @@ export default class StandardDevices extends Vue {
 	 * @param response Daemon API response
 	 */
 	private handleMessageError(response): void {
-		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		this.$store.dispatch('spinner/hide');
 		this.$toast.error(
 			this.$t('messageError', {error: response.rsp.errorStr}).toString()
@@ -798,6 +757,24 @@ export default class StandardDevices extends Vue {
 	 */
 	private getDeviceIndex(address: number): number {
 		return this.auxDevices.findIndex((device: StandardDevice) => address === device.getAddress());
+	}
+
+	/**
+	 * Formats measured sensor value to string
+	 * @param {number|number[]|null} value Measured value
+	 * @param {string|null} unit Unit of measurement
+	 */
+	private formatSensorValue(value: number|number[]|null, unit: string|null): string {
+		if (value === null) {
+			return this.$t('forms.notAvailable').toString();
+		}
+		if (Array.isArray(value)) {
+			return value.toString();
+		}
+		if (unit === null || unit.length === 0) {
+			return value.toString();
+		}
+		return `${value} ${unit}`;
 	}
 }
 </script>

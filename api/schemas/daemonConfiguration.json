@@ -58,8 +58,8 @@
 			"title": "iqrf::IqrfDpa"
 		},
 		{
-			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__IqrfInfo.json",
-			"title": "iqrf::IqrfInfo"
+			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__IqrfDb.json",
+			"title": "iqrf::IqrfDb"
 		},
 		{
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__IqrfRestore.json",
@@ -98,8 +98,8 @@
 			"title": "iqrf::JsonDpaApiRaw"
 		},
 		{
-			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__JsonIqrfInfoApi.json",
-			"title": "iqrf::JsonIqrfInfoApi"
+			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__JsonDbApi.json",
+			"title": "iqrf::JsonDbApi"
 		},
 		{
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__JsonMngApi.json",

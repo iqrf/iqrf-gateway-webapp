@@ -234,7 +234,7 @@ export interface IOtaUploadConfig {
 /**
  * IQRF Info component instance interface
  */
-export interface IIqrfInfo {
+export interface IIqrfDb {
 	/**
 	 * Component name
 	 */
@@ -246,22 +246,17 @@ export interface IIqrfInfo {
 	instance: string
 
 	/**
-	 * Enumerate network after startup?
+	 * Run enumeration thread before prior manual invocation
 	 */
-	enumAtStartUp: boolean
+	autoEnumerateBeforeInvoked: boolean
 
 	/**
-	 * Enumeration period in minutes
+	 * Enumerate network on Daemon launch
 	 */
-	enumPeriod: number
+	enumerateOnLaunch: boolean;
 
 	/**
-	 * Uniform DPA version and OS build according to coordinator?
+	 * Include metadata in messages
 	 */
-	enumUniformDpaVer: boolean
-
-	/**
-	 * Include metadata in messages?
-	 */
-	metaDataToMessages?: boolean
+	metadataToMessages: boolean
 }

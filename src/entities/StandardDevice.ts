@@ -14,10 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {cilCheckAlt, cilCheckCircle, cilHome, cilSignalCellular4, cilXCircle} from '@coreui/icons';
-import {IInfoSensorDetail} from '@/interfaces/DaemonApi/IqrfInfo';
-import {IProduct} from '@/interfaces/Repository';
+import { Product } from '@iqrf/iqrf-repository-client/types';
+import {
+	IqrfDbDeviceFull,
+	IqrfDbSensorDetails,
+} from '@/interfaces/DaemonApi/IqrfDb';
 import i18n from '@/plugins/i18n';
+import { cilCheckAlt, cilCheckCircle, cilHome, cilSignalCellular4, cilXCircle } from '@coreui/icons';
 
 /**
  * Standard device object
@@ -64,6 +67,21 @@ class StandardDevice {
 	private discovered: boolean;
 
 	/**
+	 * Device virtual routing number
+	 */
+	private vrn: number;
+
+	/**
+	 * Device zone
+	 */
+	private zone: number;
+
+	/**
+	 * Parent device
+	 */
+	private parent: number | null;
+
+	/**
 	 * Is device online?
 	 */
 	private online = false;
@@ -71,7 +89,7 @@ class StandardDevice {
 	/**
 	 * Array of implemented standard sensors
 	 */
-	private sensors: Array<IInfoSensorDetail> = [];
+	private sensors: Array<IqrfDbSensorDetails> = [];
 
 	/**
 	 * Array of implemented binary outputs
@@ -79,7 +97,7 @@ class StandardDevice {
 	private binouts = 0;
 
 	/**
-	 * Indicates that device implements light standard
+	 * Device implements light
 	 */
 	private light = false;
 
@@ -91,7 +109,7 @@ class StandardDevice {
 	/**
 	 * Product details
 	 */
-	private product: IProduct;
+	private product: Product;
 
 	/**
 	 * Standard supported icon
@@ -105,32 +123,32 @@ class StandardDevice {
 
 	/**
 	 * Constructor
-	 * @param address Device address
-	 * @param mid Device MID
-	 * @param hwpid Device HWPID
-	 * @param hwpidVer Device HWPID version
-	 * @param dpa Device DPA version
-	 * @param os Device OS build
-	 * @param discovered Is device discovered?
+	 * @param {IqrfDbDeviceFull} device Device object from Daemon API
 	 */
-	constructor(address: number, mid: number, hwpid: number, hwpidVer: number, dpa: number, os: number, discovered = false) {
-		this.address = address;
-		this.mid = mid;
-		this.hwpid = hwpid;
-		this.hwpidVer = hwpidVer;
-		this.dpa = dpa;
-		this.osBuild = os;
-		this.osVersion = '';
-		this.discovered = discovered;
+	constructor(device: IqrfDbDeviceFull) {
+		this.address = device.address;
+		this.mid = device.mid;
+		this.hwpid = device.hwpid;
+		this.hwpidVer = device.hwpidVersion;
+		this.osBuild = device.osBuild;
+		this.osVersion = device.osVersion;
+		this.dpa = device.dpa;
+		this.discovered = device.discovered;
+		this.vrn = device.vrn;
+		this.zone = device.zone;
+		this.parent = device.parent;
 		this.product = {
 			name: 'Unknown',
 			hwpid: this.hwpid,
-			manufacturerID: -1,
+			manufacturerId: -1,
 			companyName: 'Unknown',
 			homePage: '',
 			picture: '',
-			rfMode: -1,
-			pictureOriginal: ''
+			rfModes: {
+				STD: false,
+				LP: false,
+			},
+			metadata: null,
 		};
 	}
 
@@ -222,9 +240,9 @@ class StandardDevice {
 
 	/**
 	 * Sets product information
-	 * @param {IProduct|undefined} product Product information
+	 * @param {Product|undefined} product Product information
 	 */
-	setProduct(product: IProduct|undefined): void {
+	setProduct(product: Product|undefined): void {
 		if (product === undefined) {
 			return;
 		}
@@ -280,8 +298,8 @@ class StandardDevice {
 	}
 
 	/**
-	 * Sets number of implemented lights
-	 * @param {boolean} light Number of implemented lights
+	 * Sets Light implemented
+	 * @param {boolean} light Light implemented
 	 */
 	setLight(light: boolean): void {
 		this.light = light;
@@ -289,9 +307,9 @@ class StandardDevice {
 
 	/**
 	 * Sets implemented sensors
-	 * @param {Array<IInfoSensorDetail>} sensors Implemented sensors
+	 * @param {IqrfDbSensorDetails[]} sensors Implemented sensors
 	 */
-	setSensors(sensors: Array<IInfoSensorDetail>): void {
+	setSensors(sensors: IqrfDbSensorDetails[]): void {
 		this.sensors = sensors;
 	}
 
@@ -299,7 +317,7 @@ class StandardDevice {
 	 * Returns implemented sensors
 	 * @returns Implemented sensors
 	 */
-	getSensors(): Array<IInfoSensorDetail> {
+	getSensors(): IqrfDbSensorDetails[] {
 		return this.sensors;
 	}
 
@@ -347,7 +365,7 @@ class StandardDevice {
 	 * Returns device icon
 	 * @returns Device MDI
 	 */
-	getIcon(): Array<string> {
+	getIcon(): string[] {
 		if (this.address === 0) {
 			return cilHome;
 		}
@@ -372,7 +390,7 @@ class StandardDevice {
 	 * Returns binout icon
 	 * @returns Binout icon
 	 */
-	getBinoutIcon(): Array<string> {
+	getBinoutIcon(): string[] {
 		if (this.hasBinout()) {
 			return this.standardSupported;
 		}
@@ -383,7 +401,7 @@ class StandardDevice {
 	 * Returns light icon
 	 * @returns Light icon
 	 */
-	getLightIcon(): Array<string> {
+	getLightIcon(): string[] {
 		if (this.hasLight()) {
 			return this.standardSupported;
 		}
@@ -394,7 +412,7 @@ class StandardDevice {
 	 * Returns sensor icon
 	 * @returns Sensor icon
 	 */
-	getSensorIcon(): Array<string> {
+	getSensorIcon(): string[] {
 		if (this.hasSensor()) {
 			return this.standardSupported;
 		}

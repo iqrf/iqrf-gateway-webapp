@@ -1,41 +1,29 @@
 <template>
-	<span>
-		<CButton
-			color='danger'
-			size='sm'
-			@click='openModal'
-		>
-			<CIcon :content='cilReload' size='sm' />
-			<span class='d-none d-lg-inline'>
+	<CModal
+		color='danger'
+		:show.sync='show'
+	>
+		<template #header>
+			<h5 class='modal-title'>
+				{{ $t('iqrfnet.standard.modal.title') }}
+			</h5>
+		</template>
+		{{ $t('iqrfnet.standard.modal.prompt') }}
+		<template #footer>
+			<CButton
+				color='secondary'
+				@click='closeModal'
+			>
+				{{ $t('forms.cancel') }}
+			</CButton>
+			<CButton
+				color='danger'
+				@click='resetDb'
+			>
 				{{ $t('iqrfnet.standard.table.actions.reset') }}
-			</span>
-		</CButton>
-		<CModal
-			color='danger'
-			:show.sync='show'
-		>
-			<template #header>
-				<h5 class='modal-title'>
-					{{ $t('iqrfnet.standard.modal.title') }}
-				</h5>
-			</template>
-			{{ $t('iqrfnet.standard.modal.prompt') }}
-			<template #footer>
-				<CButton
-					color='secondary'
-					@click='closeModal'
-				>
-					{{ $t('forms.cancel') }}
-				</CButton>
-				<CButton
-					color='danger'
-					@click='resetDb'
-				>
-					{{ $t('iqrfnet.standard.table.actions.reset') }}
-				</CButton>
-			</template>
-		</CModal>
-	</span>
+			</CButton>
+		</template>
+	</CModal>
 </template>
 
 <script lang='ts'>
@@ -43,11 +31,10 @@ import {Component} from 'vue-property-decorator';
 import {CButton, CModal} from '@coreui/vue/src';
 import ModalBase from '@/components/ModalBase.vue';
 
-import {cilReload} from '@coreui/icons';
-
-import InfoService from '@/services/DaemonApi/InfoService';
+import DbService from '@/services/DaemonApi/DbService';
 
 import {MutationPayload} from 'vuex';
+import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 /**
  * StandardDevices database reset dialog component
@@ -57,11 +44,8 @@ import {MutationPayload} from 'vuex';
 		CButton,
 		CModal,
 	},
-	data: () => ({
-		cilReload,
-	}),
 })
-export default class DatabaseResetModal extends ModalBase{
+export default class DatabaseResetModal extends ModalBase {
 	/**
 	 * @var {string} msgId Daemon API message ID
 	 */
@@ -85,7 +69,7 @@ export default class DatabaseResetModal extends ModalBase{
 			}
 			this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 			this.$store.dispatch('spinner/hide');
-			if (mutation.payload.mType === 'infoDaemon_Reset') {
+			if (mutation.payload.mType === 'iqrfDb_Reset') {
 				this.handleReset(mutation.payload.data);
 			}
 		});
@@ -100,12 +84,13 @@ export default class DatabaseResetModal extends ModalBase{
 	}
 
 	/**
-	 * Resets the IqrfInfo database
+	 * Resets the database
 	 */
 	private resetDb(): void {
 		this.closeModal();
 		this.$store.dispatch('spinner/show', {timeout: 10000});
-		InfoService.reset(10000, this.$t('iqrfnet.standard.table.messages.resetTimeout'), () => this.msgId = '')
+		const options = new DaemonMessageOptions(null, 10000, 'iqrfnet.standard.table.messages.resetTimeout', () => this.msgId = '');
+		DbService.resetDatabase(options)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
@@ -124,6 +109,13 @@ export default class DatabaseResetModal extends ModalBase{
 			this.$t('iqrfnet.standard.table.messages.resetSuccess').toString()
 		);
 		this.$emit('reset');
+	}
+
+	/**
+	 * Open database reset modal
+	 */
+	public open(): void {
+		this.openModal();
 	}
 }
 
