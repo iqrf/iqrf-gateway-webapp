@@ -37,12 +37,12 @@
 		"packages/*"
 	],
 	"devDependencies": {
-		"@types/node": "^22.14.1",
-		"@vitest/coverage-istanbul": "^3.1.1",
-		"pnpm": "^10.8.1",
+		"@types/node": "^24.0.13",
+		"@vitest/coverage-istanbul": "^3.2.4",
+		"pnpm": "^10.13.1",
 		"ts-node": "^10.9.2",
 		"typescript": "^5.8.3",
 		"vite-tsconfig-paths": "^5.1.4",
-		"vitest": "^3.1.1"
+		"vitest": "^3.2.4"
 	}
 }

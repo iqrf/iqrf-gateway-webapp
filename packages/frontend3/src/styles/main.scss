@@ -67,7 +67,8 @@ a {
 .extended-input-error {
 	line-height: 14px;
 	font-size: 12px;
-	word-break: break-word;
+	overflow-wrap: anywhere;
+	word-break: normal;
 	word-wrap: break-word;
 	hyphens: auto;
 	letter-spacing: normal;
@@ -76,7 +77,8 @@ a {
 .extended-input-description {
 	line-height: 14px;
 	font-size: 12px;
-	word-break: break-word;
+	overflow-wrap: anywhere;
+	word-break: normal;
 	word-wrap: break-word;
 	hyphens: auto;
 	letter-spacing: normal;

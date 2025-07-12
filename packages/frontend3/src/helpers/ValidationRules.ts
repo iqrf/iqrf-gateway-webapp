@@ -122,7 +122,7 @@ export default class ValidationRules {
 	 * @return {boolean|string} Validation result
 	 */
 	public static email(value: string, errorMessage: string): boolean | string {
-		const validator: z.ZodString = z.string().email();
+		const validator: z.ZodEmail = z.email();
 		return validator.safeParse(punycodeToASCII(value)).success || errorMessage;
 	}
 
@@ -159,7 +159,7 @@ export default class ValidationRules {
 		if (ValidationRules.isEmpty(value)) {
 			return true;
 		}
-		const ipv4Validator: z.ZodString = z.string().ip({ version: 'v4' });
+		const ipv4Validator: z.ZodIPv4 = z.ipv4();
 		if (ipv4Validator.safeParse(value).success) {
 			return true;
 		}
@@ -176,8 +176,8 @@ export default class ValidationRules {
 		if (ValidationRules.isEmpty(value)) {
 			return true;
 		}
-		const ipv4Validator: z.ZodString = z.string().ip({ version: 'v6' });
-		if (ipv4Validator.safeParse(value).success) {
+		const ipv6Validator: z.ZodIPv6 = z.ipv6();
+		if (ipv6Validator.safeParse(value).success) {
 			return true;
 		}
 		return error;
@@ -193,9 +193,14 @@ export default class ValidationRules {
 		if (value === null) {
 			return error;
 		}
-		const ipv4Validator: z.ZodString = z.string().ip({ version: 'v4' });
-		const ipv6Validator: z.ZodString = z.string().ip({ version: 'v6' });
-		return (ipv4Validator.safeParse(value).success || ipv6Validator.safeParse(value).success || value === 'localhost' || isFQDN(value)) || error;
+		const ipv4Validator: z.ZodIPv4 = z.ipv4();
+		const ipv6Validator: z.ZodIPv6 = z.ipv6();
+		return (
+			ipv4Validator.safeParse(value).success ||
+			ipv6Validator.safeParse(value).success ||
+			value === 'localhost' ||
+			isFQDN(value)
+		) || error;
 	}
 
 	/**
@@ -208,7 +213,7 @@ export default class ValidationRules {
 		if (value === null) {
 			return error;
 		}
-		const uuidValidator: z.ZodString = z.string().uuid();
+		const uuidValidator: z.ZodUUID = z.uuid();
 		return uuidValidator.safeParse(value).success || error;
 	}
 
@@ -254,7 +259,7 @@ export default class ValidationRules {
 		if (value === null) {
 			return error;
 		}
-		const urlValidator: z.ZodString = z.string().url();
+		const urlValidator: z.ZodURL = z.url();
 		return urlValidator.safeParse(value).success || error;
 	}
 
