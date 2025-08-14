@@ -15,7 +15,7 @@
 		},
 		"email": {
 			"add": "Add e-mail address",
-			"messages": {
+			"messages":{
 				"missing": "Your account does not have an e-mail address set up. Without the verified e-mail address, you can not reset your password if it is forgotten.",
 				"unverified": "Your e-mail address ({email}) is not verified. Without the verified e-mail address, you can not reset your password if it is forgotten."
 			}
@@ -112,16 +112,15 @@
 	},
 	"forms": {
 		"fields": {
+			"deviceAddr": "Device address",
 			"address": "Address",
 			"id": "ID",
-			"host": "Host",
-			"port": "Port",
 			"email": "E-mail address",
 			"username": "Username",
 			"password": "Password",
 			"certificate": "Certificate",
 			"privateKey": "Private Key",
-			"clientId": "Client ID",
+			"clientId":"Client ID",
 			"requestTopic": "Topic for requests",
 			"responseTopic": "Topic for responses",
 			"instanceName": "Name of instance",
@@ -133,10 +132,7 @@
 				"error": "Error"
 			},
 			"verbose": "Verbose mode",
-			"coordinator": "Coordinator",
-			"date": "Date",
-			"time": "Time",
-			"deviceAddr": "Device address"
+			"coordinator": "Coordinator"
 		},
 		"errors": {
 			"email": "Please enter the e-mail address.",
@@ -151,10 +147,7 @@
 			"deviceAddr": {
 				"required": "Please enter device address.",
 				"between": "Device address should be an integer between 1 and 239."
-			},
-			"date": "Please enter date.",
-			"time": "Please enter time.",
-			"clipboardCopy": "Unable to copy data to clipboard."
+			}
 		},
 		"import": "Import",
 		"export": "Export",
@@ -194,6 +187,7 @@
 		"on": "On",
 		"off": "Off",
 		"skip": "Skip",
+		"copy": "Copy",
 		"clipboardCopy": "Copy to clipboard",
 		"changePassword": "Change password",
 		"downloadBackup": "Download backup",
@@ -360,7 +354,7 @@
 						"saveSuccess": "UART interface configuration successfully saved."
 					}
 				},
-				"iqrfDpa": {
+				"iqrfDpa":{
 					"title": "IQRF DPA interface",
 					"form": {
 						"DpaHandlerTimeout": "DPA Confirmation/Response timeout in milliseconds"
@@ -375,18 +369,13 @@
 					}
 				},
 				"interfaceMapping": {
-					"title": "Available mappings",
-					"profiles": "Mapping profiles",
 					"adapters": "Adapters",
 					"boards": "Boards",
 					"interfaces": "Interfaces",
-					"browse": "Browse mappings",
 					"add": "Add mapping",
 					"edit": "Edit mapping",
 					"set": "Set mapping",
 					"delete": "Delete mapping",
-					"noInterfaces": "No interfaces available.",
-					"noMappings":  "No mapping profiles available.",
 					"deleteModal": {
 						"title": "Mapping delete confirmation",
 						"prompt": "Are you sure you want to delete mapping {mapping}?"
@@ -446,7 +435,6 @@
 					"legend": "MQTT messaging instance",
 					"add": "Add MQTT messaging instance",
 					"edit": "Edit MQTT messaging instance",
-					"details": "Messaging details",
 					"form": {
 						"BrokerAddr": "Broker address",
 						"Persistence": "Persistence",
@@ -687,7 +675,6 @@
 					"messages": {
 						"title": "Messages",
 						"label": "Message (JSON request)",
-						"subtitle": "Message",
 						"messaging": "Messaging",
 						"messagingPlaceholder": "Select messaging",
 						"add": "Add another message",
@@ -711,8 +698,7 @@
 					"title": "Import task(s)",
 					"file": "JSON task file or ZIP archive with tasks",
 					"errors": {
-						"file": "Please select file to import.",
-						"invalidFile": "Selected file should be a JSON or ZIP file."
+						"fileEmpty": "Please select file to import."
 					}
 				},
 				"modal": {
@@ -819,16 +805,19 @@
 						"saveSuccess": "IQRF repository configuration successfully saved."
 					}
 				},
-				"iqrfDb": {
+				"iqrfInfo": {
 					"title": "Lite DB",
-					"description": "IQRF DB database configuration.",
+					"description": "IQRF Info database settings.",
 					"form": {
-						"autoEnum": "Run enumeration automatically without prior manual invocation",
-						"launchEnum": "Run enumeration on Daemon launch",
-						"metadata": "Include device metadata in messages"
+						"enumAtStartUp": "Enumerate network on startup",
+						"enablePeriodic": "Enumerate network periodically",
+						"enumPeriod": "Enumeration period in minutes",
+						"enumUniformDpaVer": "Read only HWPID and HWPID version from nodes",
+						"metaDataToMessages": "Include metadata in messages"
 					},
 					"errors": {
-						"instance": "Please enter name of IQRF DB instance."
+						"instance": "Please enter name of IQRF Info instance.",
+						"enumPeriod": "Period must be greater or equal to 0."
 					},
 					"messages": {
 						"saveFailed": "Failed to save Lite DB configuration: {error}.",
@@ -880,13 +869,39 @@
 						"WebsocketPort": "Please enter the port of monitoring WebSocket server."
 					}
 				},
-				"tracer": {
-					"title": "Logging service",
-					"description": "Logging service settings.",
-					"add": "Add logging service configuration",
-					"edit": "Edit logging service configuration",
+				"logging": {
+					"title": "Logging services",
+					"description": "Logging services settings."
+				},
+				"syslog": {
+					"title": "Syslog logging service",
+					"description": "Syslog logging service settings.",
+					"add": "Add syslog logging service configuration",
+					"edit": "Edit syslog logging service configuration",
 					"form": {
-						"title": "Logging instance",
+						"title": "Syslog logging instance"
+					},
+					"modal": {
+						"title": "Syslog logging delete confirmation",
+						"prompt": "Are you sure you want to delete syslog logging instance {instance}?"
+					},
+					"messages": {
+						"addFailed": "Failed to create new syslog logging instance: {error}",
+						"addSuccess": "Syslog logging instance {instance} has been added.",
+						"deleteFailed": "Failed to delete syslog logging instance {instance}: {error}",
+						"deleteSuccess": "Syslog logging instance {instance} has been deleted.",
+						"editFailed": "Failed to edit syslog logging instance {instance}: {error}",
+						"editSuccess": "Syslog logging instance {instance} has been edited.",
+						"fetchFailed": "Failed to retrieve syslog logging instance {instance} configuration: {error}"
+					}
+				},
+				"tracer": {
+					"title": "File logging service",
+					"description": "File logging service settings.",
+					"add": "Add file logging service configuration",
+					"edit": "Edit file logging service configuration",
+					"form": {
+						"title": "File logging instance",
 						"path": "Path to directory with logs",
 						"filename": "File name",
 						"maxSize": "Maximum size in bytes",
@@ -902,8 +917,8 @@
 						"level": "Verbosity level"
 					},
 					"modal": {
-						"title": "Logging delete confirmation",
-						"prompt": "Are you sure you want to delete Logging instance {instance}?"
+						"title": "File logging delete confirmation",
+						"prompt": "Are you sure you want to delete file logging instance {instance}?"
 					},
 					"messages": {
 						"zeroValues": "Disabled if value is set to 0.",
@@ -929,7 +944,7 @@
 				}
 			},
 			"messages": {
-				"configMiscFetch": "Retrieving miscellaneous components configuration…",
+				"configMiscFetch": "Retrieving miscellaneous components configuration...",
 				"configFailed": "An unexpected error has occurred: {error}",
 				"configFetchFailed": "Failed to retrieve configuration for {children}.",
 				"failedElement": "Failed to retrieve component configuration."
@@ -1026,8 +1041,6 @@
 				"edit": "Edit controller pin configuration profile",
 				"adapters": "Adapters",
 				"boards": "Boards",
-				"browse": "Browse profiles",
-				"noProfiles": "No controller pin configuration profiles available.",
 				"actions": {
 					"set": "Set pin profile",
 					"edit": "Edit pin profile",
@@ -1087,45 +1100,6 @@
 				"saveFailed": "Failed to save Controller configuration: {error}",
 				"restartSuccess": "Controller configuration has been successfully saved. Controller service has been restarted.",
 				"fetchFailed": "Failed to retrieve Controller configuration: {error}"
-			}
-		},
-		"bridge": {
-			"title": "IQRF GW InfluxDB Bridge",
-			"description": "InfluxDB Bridge configuration",
-			"influx": "InfluxDB client",
-			"mqtt": "MQTT client",
-			"form": {
-				"org": "Organization",
-				"token": "Authentication token"
-			},
-			"errors": {
-				"influx": {
-					"host": "Please enter InfluxDB hostname.",
-					"port": "Please enter InfluxDB port.",
-					"portInvalid": "InfluxDB port number should be an integer between 1024 and 65535.",
-					"org": "Please enter InfluxDB organization name."
-				},
-				"mqtt": {
-					"host": "Please enter MQTT broker hostname.",
-					"port": "Please enter MQTT broker port.",
-					"portInvalid": "MQTT broker port number should be in integer between 1024 and 65535.",
-					"client": "Please enter MQTT client ID.",
-					"credentials": "Please enter both username and password, or leave both fields empty.",
-					"subscriptionDuplicate": "Subscription topic already exists."
-				}
-			},
-			"messages": {
-				"save": {
-					"success": "IQRF Gateway InfluxDB Bridge configuration successfully saved. Restart the service for changes to take effect.",
-					"failure": "Failed to save IQRF Gateway InfluxDB Bridge configuration: {error}"
-				},
-				"fetch": {
-					"failure": "Failed to retrieve IQRF Gateway InfluxDB Bridge configuration: {error}"
-				}
-			},
-			"notes": {
-				"oldAuth": "User and password are used for v1.x authentication.",
-				"newAuth": "Token is used for v2+ authentication. A token can be used for authentication in version 1.8 with the format <user:password>."
 			}
 		},
 		"selectedComponents": {
@@ -1221,15 +1195,15 @@
 				"add": "Add API key",
 				"edit": "Edit API key",
 				"noExpiration": "Never",
-				"display": {
-					"copyMessage": "API key has been copied to clipboard.",
-					"prompt": "Before closing this dialog, copy and store the new API key below in a safe place. For security reasons, you will not be able to view it again at a later time.",
-					"title": "Generated API key"
-				},
 				"form": {
 					"id": "ID",
 					"description": "Description",
 					"expiration": "Expiration"
+				},
+				"display": {
+					"title": "Generated API key",
+					"prompt": "Before closing this dialog, copy and store the new API key below in a safe place. For security reasons, you will not be able to view it again at a later time.",
+					"copyMessage": "API key has been copied to clipboard."
 				},
 				"modal": {
 					"title": "API key delete confirmation",
@@ -1326,7 +1300,6 @@
 			},
 			"language": "Language",
 			"languages": {
-				"cs": "Czech",
 				"en": "English"
 			},
 			"verification": {
@@ -1335,9 +1308,8 @@
 				"redirect": "You will be redirected to the dashboard in {countdown}.",
 				"failed": "Account verification failed, {error}."
 			},
-			"changePassword": "Change password",
-			"oldPassword": "Old password",
-			"newPassword": "New password",
+			"oldPassword": "Old password (only if you want change password)",
+			"newPassword": "New password (only if you want change password)",
 			"modal": {
 				"title": "User delete confirmation",
 				"prompt": "Are you sure you want to delete user {user}?"
@@ -1415,7 +1387,6 @@
 				"iqrfCloudProvisioning": "IQRF Cloud Provisioning",
 				"iqrfGatewayController": "IQRF Gateway Controller",
 				"iqrfGatewayDaemon": "IQRF Gateway Daemon",
-				"iqrfGatewayInfluxdbBridge": "IQRF Gateway InfluxDB Bridge",
 				"iqrfGatewaySetter": "IQRF Gateway Setter",
 				"iqrfGatewayUploader": "IQRF Gateway Uploader",
 				"iqrfGatewayWebapp": "IQRF Gateway Webapp"
@@ -1502,7 +1473,7 @@
 				"notLoaded": "Journal records not loaded.",
 				"noRecords": "No Journal records available.",
 				"noOlderRecords": "No older Journal records available.",
-				"loading": "Loading older Journal records…",
+				"loading": "Loading older Journal records...",
 				"failed": "Failed to load journal records: {error}"
 			}
 		},
@@ -1575,7 +1546,7 @@
 		"title": "IQRF network",
 		"description": "Control IQRF network.",
 		"messages": {
-			"socketError": "IQRF Gateway Daemon is currently not available. WebSocket connection broken or not established. Attempting reconnect…",
+			"socketError": "IQRF Gateway Daemon is currently not available. Websocket connection broken or not established. Attempting reconnect...",
 			"genericError": "An unexpected error has occurred while processing the request.",
 			"genericErrorMessage": "An unexpected error has occurred while processing the request: {error}"
 		},
@@ -1633,7 +1604,7 @@
 						"title": "Stop Conditions",
 						"waves": "Maximum number of waves",
 						"emptyWaves": "Number of empty waves",
-						"nodeCount": "Node count",
+						"use": "Enable node count",
 						"total": "Number of total nodes",
 						"new": "Number of new nodes"
 					},
@@ -1745,9 +1716,9 @@
 						}
 					},
 					"messages": {
-						"coordinatorRunning": "Backing up coordinator device…",
+						"coordinatorRunning": "Backing up coordinator device...",
 						"coordinatorSuccess": "Backup of coordinator device completed.",
-						"nodeRunning": "Backing up node device {deviceAddr}…",
+						"nodeRunning": "Backing up node device {deviceAddr}...",
 						"nodeSuccess": "Backup of node device {deviceAddr} completed.",
 						"nodeFailed": "Backup of node device {deviceAddr} failed. The device may be offline.",
 						"networkRunning": "Backing up network [{progress} %]",
@@ -1778,7 +1749,7 @@
 						"invalidNodeDataC": "Device property of entry {entry} is Node, but entry contains property DataC.",
 						"invalidNodeDataN": "Device property of entry {entry} is Node, but property DataN is missing.",
 						"invalidDataContent": "Data{device} property of entry {entry} contains non-hexadecimal characters.",
-						"coordinatorRunning": "Restoring coordinator device…",
+						"coordinatorRunning": "Restoring coordinator device...",
 						"coordinatorSuccess": "Coordinator device has been successfully restored.",
 						"readFailed": "Failed to read contents of selected file.",
 						"parsingContent": "Reading and parsing content of selected file.",
@@ -1906,10 +1877,10 @@
 						"user": "User-specified"
 					},
 					"messages": {
-						"get": "Retrieving current DPA value type…",
+						"get": "Retrieving current DPA value type...",
 						"getFailed": "Failed to get current DPA value type: {error}",
 						"getSuccess": "Current DPA value type successfully retrieved.",
-						"set": "Setting DPA value type…",
+						"set": "Setting DPA value type...",
 						"setFailed": "Failed to set DPA value type: {error}",
 						"setSuccess": "DPA value type successfully set.",
 						"timeout": "DPA value request timed out.",
@@ -1930,10 +1901,10 @@
 						"responseHops": "Response hops should be an integer between 1 and 239."
 					},
 					"messages": {
-						"get": "Retrieving DPA hops…",
+						"get": "Retrieving DPA hops...",
 						"getFailed": "Failed to retrieve DPA hops: {error}",
 						"getSuccess": "DPA hops successfully retrieved.",
-						"set": "Setting DPA hops…",
+						"set": "Setting DPA hops...",
 						"setFailed": "Failed to set DPA hops: {error}",
 						"setSuccess": "DPA hops successfully set.",
 						"timeout": "DPA hops request timed out.",
@@ -1960,10 +1931,10 @@
 						"112": "20620 ms"
 					},
 					"messages": {
-						"get": "Retrieving FRC parameters…",
+						"get": "Retrieving FRC params...",
 						"getFailed": "Failed to retrieve FRC params: {error}",
 						"getSuccess": "FRC params successfully retrieved.",
-						"set": "Setting FRC parameters…",
+						"set": "Setting FRC params...",
 						"setFailed": "Failed to set FRC params: {error}",
 						"setSuccess": "FRC params successfully set.",
 						"timeout": "FRC Params request timed out.",
@@ -2024,6 +1995,7 @@
 					"gatewayUploadFailed": "Failed to upload file to gateway: {error}",
 					"genericError": "An error has occurred during the OTA upload process.",
 					"networkNote": "Warning: Uploading IQRF plug-ins to the entire network requires all devices to use the same OS version.",
+					"hwpid": "* HWPID 65535 includes all devices.",
 					"notHexFile": "Selected file is not .hex file.",
 					"notIqrfFile": "Selected file is not .iqrf file.",
 					"invalidRequest": "OTA upload request is not valid: {error}",
@@ -2090,11 +2062,11 @@
 						"notAvailable": "N/A"
 					},
 					"messages": {
-						"setProgress": "Setting FRC response time…",
+						"setProgress": "Setting FRC response time...",
 						"setTimeout": "Set FRC response time request timed out.",
 						"setFailed": "Failed to set FRC response time.",
 						"setSuccess": "FRC response time successfully set.",
-						"progress": "Checking FRC response time…\nThis process may take several minutes for large networks.",
+						"progress": "Checking FRC response time...\nThis process may take several minutes for large networks.",
 						"timeout": "Request to determine best FRC response time timed out.",
 						"failed": "Failed to determine best FRC response time: {error}"
 					}
@@ -2121,7 +2093,7 @@
 						"counter": "Count"
 					},
 					"messages": {
-						"progress": "Testing RF Signal…\nThis process may take several minutes for large networks.",
+						"progress": "Testing RF Signal...\nThis process may take several minutes for large networks.",
 						"noNodes": "RF Signal test failed, no bonded nodes in network.",
 						"failed": "RF Signal test failed."
 					}
@@ -2135,13 +2107,13 @@
 					},
 					"resolve": "Resolve",
 					"messages": {
-						"inconsistentMids": "Resolving inconsistent MIDs in coordinator…\nThis process may take several minutes for large networks.",
+						"inconsistentMids": "Resolving inconsistent MIDs in coordinator...\nThis process may take several minutes for large networks.",
 						"inconsistentMidsFailed": "Failed to resolve inconsistent MIDs in coordinator.",
 						"inconsistentMidsSuccess": "Inconsistent MIDs in coordinator successfully resolved.",
-						"duplicatedAddresses": "Resolving duplicated addresses…\nThis process may take several minutes for large networks.",
+						"duplicatedAddresses": "Resolving duplicated addresses...\nThis process may take several minutes for large networks.",
 						"duplicatedAddressesFailed": "Failed to resolve duplicated addresses.",
 						"duplicatedAddressesSuccess": "Duplicated addresses successfully resolved.",
-						"prebondedNodes": "Resolving useless prebonded nodes…",
+						"prebondedNodes": "Resolving useless prebonded nodes...",
 						"prebondedNodesFailed": "Failed to resolve useless prebonded nodes.",
 						"prebondedNodesSuccess": "Useless prebonded nodes successfully resolved."
 					},
@@ -2254,7 +2226,7 @@
 				"response": "Copy response to the clipboard"
 			},
 			"copySuccess": {
-				"dpa": {
+				"dpa":{
 					"request": "DPA request has been copied to the clipboard.",
 					"response": "DPA response has been copied to the clipboard."
 				},
@@ -2411,49 +2383,42 @@
 					"device": {
 						"general": "General information\nHWPID: {hwpid}\nMID: {mid}",
 						"details": "MID: {mid}\nHWPID: {hwpid}\nHWPID version: {hwpidVer}\nOS build: {os}\nDPA: {dpa}",
-						"fetch": "Retrieving devices in network…",
+						"fetch": "Retrieving devices in network...",
 						"fetchFailed": "Failed to retrieve devices in network.",
 						"fetchTimeout": "Request to receive devices in network timed out."
 					},
 					"binout": {
-						"fetch": "Retrieving devices implementing Binary Output standard…",
+						"fetch": "Retrieving devices implementing Binary Output standard...",
 						"fetchFailed": "Failed to retrieve devices implementing Binary Output standard.",
 						"fetchTimeout": "Request to retrieve Binary Output devices timed out.",
 						"implemented": "Binary outputs implemented: {binouts}",
 						"notImplemented": "Device does not implement the Binary Output standard."
 					},
 					"light": {
-						"fetch": "Retrieving devices implementing Light standard…",
+						"fetch": "Retrieving devices implementing Light standard...",
 						"fetchFailed": "Failed to retrieve devices implementing Light standard.",
 						"fetchTimeout": "Request to retrieve Light devices timed out.",
-						"implemented": "Lights implemented: {lights}",
+						"implemented": "Device implements Light standard.",
 						"notImplemented": "Device does not implement the Light standard."
 					},
 					"sensor": {
 						"detail": "Name: {name} [{short}]\nType: {type}\nUnit: {unit}\nFRC commands: {commands}",
-						"fetch": "Retrieving devices implementing Sensor standard…",
+						"fetch": "Retrieving devices implementing Sensor standard...",
 						"fetchFailed": "Failed to retrieve devices implementing Sensor standard.",
 						"fetchTimeout": "Request to retrieve Sensor devices timed out.",
 						"implemented": "Device implements the following sensor types:",
 						"notImplemented": "Device does not implement the Sensor standard."
 					},
 					"ping": {
-						"fetch": "Checking online status of devices…",
+						"fetch": "Checking online status of devices...",
 						"fetchFailed": "Failed to retrieve status of devices."
 					},
+					"enumNowFailed": "Network enumeration process failed: {error}",
+					"enumNowProgress": "Enumerating network [{progress} %]\nPhase: {phase}\nStep: {current}/{total}\nThis process may take tens of minutes for large networks.",
+					"enumNowSuccess": "Network enumeration has been successfully completed.",
 					"resetFailed": "Failed to reset database: {error}",
 					"resetSuccess": "Database has been successfully reset.",
 					"resetTimeout": "Request to reset database timed out."
-				}
-			},
-			"enumeration": {
-				"title": "Standard devices enumeration",
-				"step": "Step",
-				"time": "Time",
-				"messages": {
-					"conn": "Enumeration process interrupted, connection to IQRF Gateway Daemon lost.",
-					"success": "Standard devices enumeration concluded successfully.",
-					"failure": "Standard devices enumeration failed."
 				}
 			}
 		},
@@ -2584,7 +2549,7 @@
 				}
 			},
 			"messages": {
-				"targetNote": "Note: Network target does not include coordinator device.",
+				"targetNote": "Network target does not include coordinator device.",
 				"notMatched": "The following nodes did not match the selected HWPID: {nodes}.",
 				"notResponded": "The following nodes did not respond to the request: {nodes}.",
 				"invalidAddress": "Address {address} is not a valid device address.",
@@ -2618,10 +2583,10 @@
 				},
 				"messages": {
 					"noUpgrades": "No DPA version upgrade or downgrade available for this OS version.",
-					"gatewayUpload": "Downloading DPA file to gateway…",
+					"gatewayUpload": "Downloading DPA file to gateway...",
 					"gatewayUploadFailed": "Failed to download DPA file to gateway: {error}",
 					"gatewayUploadSuccess": "DPA file successfully downloaded to gateway.",
-					"trUpload": "Uploading DPA file to TR…",
+					"trUpload": "Uploading DPA file to TR...",
 					"trUploadFailed": "Failed to upload DPA file to TR: {error}",
 					"trUploadSuccess": "DPA file successfully uploaded to TR.",
 					"dpaFetchFailure": "Failed to retrieve current DPA version or DPA upgrades."
@@ -2630,19 +2595,19 @@
 			"hexUpload": {
 				"title": "Custom DPA handler",
 				"form": {
-					"file": "File to upload"
+					"file":"File to upload"
 				},
 				"errors": {
-					"file": "Please select the file to upload.",
-					"invalidFormat": "The uploaded file is not a .hex file."
+					"file": "Please select the file to upload."
 				},
 				"messages": {
-					"gatewayUpload": "Uploading HEX file to gateway…",
+					"gatewayUpload": "Uploading HEX file to gateway...",
 					"gatewayUploadFailed": "Failed to upload HEX file to gateway: {error}",
 					"gatewayUploadSuccess": "Hex file successfully uploaded to gateway.",
-					"trUpload": "Uploading HEX file to TR…",
+					"trUpload": "Uploading HEX file to TR...",
 					"trUploadFailed": "Failed to upload HEX file to TR: {error}",
-					"trUploadSuccess": "Hex file successfully uploaded to TR."
+					"trUploadSuccess": "Hex file successfully uploaded to TR.",
+					"invalidFormat": "The uploaded file is not a .hex file."
 				}
 			},
 			"osUpload": {
@@ -2657,7 +2622,7 @@
 				"messages": {
 					"newest": "Your device has the latest version of IQRF OS.",
 					"fetchFailed": "Failed to retrieve current version of IQRF OS or OS upgrades.",
-					"upgrade": "Upgrading OS and DPA…",
+					"upgrade": "Upgrading OS and DPA...",
 					"upgradeFailed": "Failed to upgrade OS and DPA: {error}",
 					"upgradeSuccess": "OS and DPA successfully upgraded."
 				}
@@ -2715,7 +2680,7 @@
 		},
 		"error": {
 			"howToFix": "How to fix it",
-			"missingDependency": {
+			"missingDependency":{
 				"title": "One or more dependencies are missing",
 				"description": "IQRF Gateway Webapp did not detect the following dependencies: {dependencies}.",
 				"details": "Details",
@@ -2751,7 +2716,7 @@
 			"button": "Restore gateway"
 		},
 		"messages": {
-			"check": "Running installation check…",
+			"check": "Running installation check...",
 			"finished": "Installation process successfully completed."
 		}
 	},
@@ -2765,7 +2730,7 @@
 			"model": "Model",
 			"macAddress": "MAC address",
 			"state": "State",
-			"states": {
+			"states" : {
 				"connected": "Connected",
 				"connecting": "Connecting",
 				"connecting (checking IP connectivity)": "Checking IP connectivity",
@@ -3168,7 +3133,7 @@
 					"autoToStatic": "IPv4 method switched from auto to static, web interface is available at {address}",
 					"staticToAuto": "Switching IPv4 method from static to auto resulted in the web interface no longer being available at this address.",
 					"staticToStatic": "IPv4 address changed, web interface is available at {address}",
-					"backendCheck": "Checking availability of web interface…"
+					"backendCheck": "Checking availability of web interface..."
 				},
 				"disabledBothIpStacks": "Both IPv4 and IPv6 have been disabled. The gateway is unable to connect to the Internet until at least one of them is enabled.",
 				"interfacesFetchFailed": "Failed to retrieve list of interfaces: {error}",
@@ -3211,9 +3176,8 @@
 			}
 		},
 		"operators": {
-			"browse": "Browse operators",
 			"title": "Network operators",
-			"set": "Set",
+			"apply": "Apply operator",
 			"edit": "Edit operator",
 			"delete": "Remove operator",
 			"form": {
@@ -3479,17 +3443,6 @@
 				"start": "IQRF Gateway Daemon has been started.",
 				"stop": "IQRF Gateway Daemon has been stopped.",
 				"restart": "IQRF Gateway Daemon has been restarted. It takes tens of seconds before the system is ready."
-			}
-		},
-		"iqrf-gateway-influxdb-bridge": {
-			"title": "InfluxDB Bridge",
-			"description": "Control IQRF Gateway InfluxDB Bridge's service.",
-			"messages": {
-				"disable": "IQRF Gateway InfluxDB Bridge has been disabled.",
-				"enable": "IQRF Gateway InfluxDB Bridge has been enabled.",
-				"start": "IQRF Gateway InfluxDB Bridge has been started.",
-				"stop": "IQRF Gateway InfluxDB Bridge has been stopped.",
-				"restart": "IQRF Gateway InfluxDB Bridge has been restarted. It takes tens of seconds before the system is ready."
 			}
 		},
 		"iqrf-gateway-translator": {

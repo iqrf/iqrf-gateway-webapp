@@ -1,80 +1,67 @@
-<!--
-Copyright 2017-2025 IQRF Tech s.r.o.
-Copyright 2019-2025 MICRORISC s.r.o.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software,
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied
-See the License for the specific language governing permissions and
-limitations under the License.
--->
 <template>
-	<v-dialog
-		v-model='show'
-		width='50%'
-		persistent
-		no-click-animation
-	>
-		<template #activator='{attrs, on}'>
-			<v-btn
-				color='error'
-				small
-				v-bind='attrs'
-				v-on='on'
-				@click='openModal'
-			>
-				<v-icon small>
-					mdi-refresh
-				</v-icon>
+	<span>
+		<CButton
+			color='danger'
+			size='sm'
+			@click='openModal'
+		>
+			<CIcon :content='cilReload' size='sm' />
+			<span class='d-none d-lg-inline'>
 				{{ $t('iqrfnet.standard.table.actions.reset') }}
-			</v-btn>
-		</template>
-		<v-card>
-			<v-card-title>
-				{{ $t('iqrfnet.standard.modal.title') }}
-			</v-card-title>
-			<v-card-text>
-				{{ $t('iqrfnet.standard.modal.prompt') }}
-			</v-card-text>
-			<v-card-actions>
-				<v-spacer />
-				<v-btn
+			</span>
+		</CButton>
+		<CModal
+			color='danger'
+			:show.sync='show'
+		>
+			<template #header>
+				<h5 class='modal-title'>
+					{{ $t('iqrfnet.standard.modal.title') }}
+				</h5>
+			</template>
+			{{ $t('iqrfnet.standard.modal.prompt') }}
+			<template #footer>
+				<CButton
+					color='secondary'
 					@click='closeModal'
 				>
 					{{ $t('forms.cancel') }}
-				</v-btn>
-				<v-btn
-					color='error'
+				</CButton>
+				<CButton
+					color='danger'
 					@click='resetDb'
 				>
 					{{ $t('iqrfnet.standard.table.actions.reset') }}
-				</v-btn>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
+				</CButton>
+			</template>
+		</CModal>
+	</span>
 </template>
 
 <script lang='ts'>
 import {Component} from 'vue-property-decorator';
+import {CButton, CModal} from '@coreui/vue/src';
 import ModalBase from '@/components/ModalBase.vue';
 
-import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
+import {cilReload} from '@coreui/icons';
 
-import DbService from '@/services/DaemonApi/DbService';
+import InfoService from '@/services/DaemonApi/InfoService';
 
 import {MutationPayload} from 'vuex';
 
 /**
  * StandardDevices database reset dialog component
  */
-@Component
-export default class DatabaseResetDialog extends ModalBase {
+@Component({
+	components: {
+		CButton,
+		CModal,
+	},
+	data: () => ({
+		cilReload,
+	}),
+})
+export default class DatabaseResetModal extends ModalBase{
 	/**
 	 * @var {string} msgId Daemon API message ID
 	 */
@@ -98,7 +85,7 @@ export default class DatabaseResetDialog extends ModalBase {
 			}
 			this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 			this.$store.dispatch('spinner/hide');
-			if (mutation.payload.mType === 'iqrfDb_Reset') {
+			if (mutation.payload.mType === 'infoDaemon_Reset') {
 				this.handleReset(mutation.payload.data);
 			}
 		});
@@ -116,9 +103,9 @@ export default class DatabaseResetDialog extends ModalBase {
 	 * Resets the IqrfInfo database
 	 */
 	private resetDb(): void {
+		this.closeModal();
 		this.$store.dispatch('spinner/show', {timeout: 10000});
-		const options = new DaemonMessageOptions(null, 10000, 'iqrfnet.standard.table.messages.resetTimeout', () => this.msgId = '');
-		DbService.resetDatabase(options)
+		InfoService.reset(10000, this.$t('iqrfnet.standard.table.messages.resetTimeout'), () => this.msgId = '')
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
@@ -136,8 +123,8 @@ export default class DatabaseResetDialog extends ModalBase {
 		this.$toast.success(
 			this.$t('iqrfnet.standard.table.messages.resetSuccess').toString()
 		);
-		this.closeModal();
 		this.$emit('reset');
 	}
 }
+
 </script>

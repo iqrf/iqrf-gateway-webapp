@@ -15,94 +15,96 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-dialog
-		v-model='show'
-		width='50%'
-		persistent
-		no-click-animation
+	<CModal
+		:show.sync='show'
+		color='success'
+		size='lg'
+		:centered='true'
+		:close-on-backdrop='false'
+		:fade='false'
 	>
-		<v-card>
-			<v-card-title>{{ $t('core.security.apiKey.display.title') }}</v-card-title>
-			<v-card-text>
-				{{ $t('core.security.apiKey.display.prompt') }}
-				<v-text-field
-					class='mt-4'
-					:value='apiKey'
-					readonly
+		<template #header>
+			<h5 class='modal-title'>
+				{{ $t('core.security.apiKey.display.title') }}
+			</h5>
+		</template>
+		<div class='mb-4'>
+			{{ $t('core.security.apiKey.display.prompt') }}
+		</div>
+		<CInput
+			:value='apiKey'
+			:readonly='true'
+		>
+			<template #append>
+				<CButton
+					v-clipboard='() => apiKey'
+					v-clipboard:success='copyMessage'
+					color='success'
+					size='sm'
 				>
-					<template #append-outer>
-						<v-btn
-							color='success'
-							small
-							@click='copyClipboard()'
-						>
-							<v-icon small>
-								mdi-clipboard-outline
-							</v-icon>
-							{{ $t('forms.clipboardCopy') }}
-						</v-btn>
-					</template>
-				</v-text-field>
-			</v-card-text>
-			<v-card-actions>
-				<v-spacer />
-				<v-btn @click='close()'>
-					{{ $t('forms.close') }}
-				</v-btn>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
+					<CIcon :content='cilClipboard' size='sm' />
+					<span class='d-none d-lg-inline'>
+						{{ $t('forms.clipboardCopy') }}
+					</span>
+				</CButton>
+			</template>
+		</CInput>
+		<template #footer>
+			<CButton
+				class='mr-1'
+				color='secondary'
+				@click='hideModal'
+			>
+				{{ $t('forms.close') }}
+			</CButton>
+		</template>
+	</CModal>
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
+import {Component, Prop} from 'vue-property-decorator';
+import {CButton, CModal} from '@coreui/vue/src';
+import ModalBase from '@/components/ModalBase.vue';
 
-@Component({})
+import {cilClipboard} from '@coreui/icons';
 
-/**
- * API key display modal
- */
-export default class ApiKeyDisplayModal extends Vue {
-
-	/**
-	 * @var {boolean} show Show dialog
-	 */
-	private show: boolean = false;
-
-	/**
-	 * @property {string|null} apiKey Generated API key
-	 */
-	@Prop({required: false, default: null}) apiKey!: string|null;
+@Component({
+	components: {
+		CButton,
+		CModal,
+	},
+	data: () => ({
+		cilClipboard,
+	}),
+})
+export default class ApiKeyDisplayModal extends ModalBase {
 
 	/**
-	 * Copy data to clipboard and show result toast
+	 * @property {string} apiKey Generate API key
 	 */
-	private async copyClipboard(): Promise<void> {
-		await navigator.clipboard.writeText(this.apiKey!)
-			.then(() => {
-				this.$toast.success(
-					this.$t('core.security.apiKey.display.copyMessage').toString(),
-				);
-			})
-			.catch(() => {
-				this.$toast.error(
-					this.$t('fields.errors.clipboardCopy').toString(),
-				);
-			});
+	@Prop({required: true, default: null}) readonly apiKey!: string|null;
+
+	/**
+	 * On clipboard copy toast message
+	 */
+	private copyMessage(): void {
+		this.$toast.success(
+			this.$t('core.security.apiKey.display.copyMessage').toString()
+		);
 	}
 
 	/**
-	 * Opens modal window
+	 * Show modal window
 	 */
-	public open(): void {
+	public showModal(): void {
 		this.show = true;
 	}
 
 	/**
-	 * Closes modal window
+	 * Hide modal windows
 	 */
-	private close(): void {
-		this.show = false;
+	private hideModal(): void {
+		this.closeModal();
 		this.$emit('closed');
 	}
 }

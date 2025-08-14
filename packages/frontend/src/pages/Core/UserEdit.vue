@@ -17,126 +17,109 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('core.user.edit') }}</h1>
-		<v-card>
-			<v-card-text>
-				<ValidationObserver v-slot='{invalid}'>
-					<v-form @submit.prevent='saveUser'>
-						<ValidationProvider
-							v-slot='{valid, touched, errors}'
-							rules='required'
-							:custom-messages='{
-								required: $t("forms.errors.username"),
-							}'
-						>
-							<v-text-field
-								v-model='user.username'
-								:label='$t("forms.fields.username")'
-								:success='touched ? valid : null'
-								:error-messages='errors'
-							/>
-						</ValidationProvider>
-						<ValidationProvider
-							v-slot='{valid, touched, errors}'
-							rules='email'
-							:custom-messages='{
-								email: $t("forms.errors.emailFormat"),
-							}'
-						>
-							<v-text-field
-								v-model='user.email'
-								:label='$t("forms.fields.email")'
-								:success='touched ? valid : null'
-								:error-messages='errors'
-							/>
-						</ValidationProvider>
-						<ValidationProvider
-							v-slot='{valid, touched, errors}'
-							rules='required'
-							:custom-messages='{
-								required: $t("core.user.errors.role"),
-							}'
-						>
-							<v-select
-								v-model='user.role'
-								:label='$t("core.user.role")'
-								:items='roles'
-								:success='touched ? valid : null'
-								:error-messages='errors'
-							/>
-						</ValidationProvider>
-						<ValidationProvider
-							v-slot='{valid, touched, errors}'
-							rules='required'
-							:custom-messages='{
-								required: $t("core.user.errors.language"),
-							}'
-						>
-							<v-select
-								v-model='user.language'
-								:label='$t("core.user.language")'
-								:items='languages'
-								:success='touched ? valid : null'
-								:error-messages='errors'
-							/>
-						</ValidationProvider>
-						<v-checkbox
-							v-model='changePassword'
-							:label='$t("core.user.changePassword")'
-							:hide-details='changePassword'
+		<CCard body-wrapper>
+			<ValidationObserver v-slot='{invalid}'>
+				<CForm @submit.prevent='saveUser'>
+					<ValidationProvider
+						v-slot='{valid, touched, errors}'
+						rules='required'
+						:custom-messages='{
+							required: $t("forms.errors.username"),
+						}'
+					>
+						<CInput
+							v-model='user.username'
+							:label='$t("forms.fields.username")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='errors.join(", ")'
 						/>
-						<div v-if='changePassword'>
-							<ValidationProvider
-								v-slot='{ valid, touched, errors }'
-								rules='required'
-								:custom-messages='{
-									required: $t("core.user.errors.newPassword"),
-								}'
-							>
-								<PasswordInput
-									v-model='password'
-									:label='$t("core.user.newPassword").toString()'
-									autocomplete='new-password'
-									:success='touched ? valid : null'
-									:error-messages='errors'
-								/>
-							</ValidationProvider>
-						</div>
-						<v-btn
-							color='primary'
-							type='submit'
-							:disabled='invalid'
-						>
-							{{ $t('forms.save') }}
-						</v-btn>
-					</v-form>
-				</ValidationObserver>
-			</v-card-text>
-		</v-card>
+					</ValidationProvider>
+					<ValidationProvider
+						v-slot='{valid, touched, errors}'
+						rules='email'
+						:custom-messages='{
+							email: $t("forms.errors.emailFormat"),
+						}'
+					>
+						<CInput
+							v-model='user.email'
+							:label='$t("forms.fields.email")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='errors.join(", ")'
+						/>
+					</ValidationProvider>
+					<ValidationProvider
+						v-slot='{valid, touched, errors}'
+						rules='required'
+						:custom-messages='{
+							required: $t("core.user.errors.role"),
+						}'
+					>
+						<CSelect
+							:value.sync='user.role'
+							:label='$t("core.user.role")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='errors.join(", ")'
+							:placeholder='$t("core.user.errors.role")'
+							:options='roles'
+						/>
+					</ValidationProvider>
+					<ValidationProvider
+						v-slot='{valid, touched, errors}'
+						rules='required'
+						:custom-messages='{
+							required: $t("core.user.errors.language"),
+						}'
+					>
+						<CSelect
+							:value.sync='user.language'
+							:label='$t("core.user.language")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='errors.join(", ")'
+							:placeholder='$t("core.user.errors.language")'
+							:options='languages'
+						/>
+					</ValidationProvider>
+					<PasswordInput
+						v-model='password'
+						:label='$t("core.user.newPassword").toString()'
+						autocomplete='new-password'
+					/>
+					<CButton
+						color='primary'
+						type='submit'
+						:disabled='invalid'
+					>
+						{{ $t('forms.save') }}
+					</CButton>
+				</CForm>
+			</ValidationObserver>
+		</CCard>
 	</div>
 </template>
 
 <script lang='ts'>
-import {UserService} from '@iqrf/iqrf-gateway-webapp-client/services/Security';
-import {
-	UserEdit,
-	UserInfo,
-	UserLanguage,
-	UserRole,
-} from '@iqrf/iqrf-gateway-webapp-client/types';
+import {Component, Prop, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CForm, CInput, CSelect} from '@coreui/vue/src';
 import {AxiosError} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {Component, Prop, Vue} from 'vue-property-decorator';
 import {required} from 'vee-validate/dist/rules';
 
 import PasswordInput from '@/components/Core/PasswordInput.vue';
+import {IOption} from '@/interfaces/Coreui';
+import {IUser} from '@/interfaces/Core/User';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {email} from '@/helpers/validators';
-import {ISelectItem} from '@/interfaces/Vuetify';
-import {useApiClient} from '@/services/ApiClient';
-import UrlBuilder from '@/helpers/urlBuilder';
+import {UserLanguage, UserRole} from '@/services/AuthenticationService';
+import UserService from '@/services/UserService';
 
 @Component({
 	components: {
+		CButton,
+		CCard,
+		CForm,
+		CInput,
+		CSelect,
 		PasswordInput,
 		ValidationObserver,
 		ValidationProvider,
@@ -149,55 +132,41 @@ import UrlBuilder from '@/helpers/urlBuilder';
 /**
  * User manager form to edit an existing user
  */
-export default class UserEditForm extends Vue {
+export default class UserEdit extends Vue {
 	/**
 	 * @property {number} userId User id
 	 */
 	@Prop({required: true}) userId!: number;
 
 	/**
-	 * @var {UserEdit} user User
+	 * @var {IUser} user User
 	 */
-	private user: UserEdit = {
+	private user: IUser = {
 		username: '',
 		email: '',
-		language: UserLanguage.English,
-		role: UserRole.Basic,
+		language: UserLanguage.ENGLISH,
+		role: UserRole.BASIC,
 	};
 
 	/**
-	 * @var {Array<ISelectItem>} roles Array of available user roles
+	 * @var {Array<IOption>} roles Array of available user roles
 	 */
-	private roles: Array<ISelectItem> = [];
+	private roles: Array<IOption> = [];
 
 	/**
-	 * @constant {Array<ISelectItem>} languages Language options
+	 * @constant {Array<IOption>} languages Language options
 	 */
-	private readonly languages: Array<ISelectItem> = [
+	private readonly languages: Array<IOption> = [
 		{
-			value: UserLanguage.Czech,
-			text: this.$t('core.user.languages.cs'),
-		},
-		{
-			value: UserLanguage.English,
-			text: this.$t('core.user.languages.en'),
+			value: UserLanguage.ENGLISH,
+			label: this.$t('core.user.languages.en'),
 		},
 	];
-
-	/**
-	 * @var {boolean} changePassword Change password
-	 */
-	private changePassword: boolean = false;
 
 	/**
 	 * @var {string} newPassword New user password
 	 */
 	private password = '';
-
-	/**
-	 * @private {UserService} service User service
-	 */
-	private service: UserService = useApiClient().getSecurityServices().getUserService();
 
 	/**
 	 * Initialize validation rules and build user roles
@@ -207,13 +176,13 @@ export default class UserEditForm extends Vue {
 		extend('required', required);
 		const roleVal = this.$store.getters['user/getRole'];
 		const roleIdx = Object.values(UserRole).indexOf(roleVal);
-		const roles: Array<ISelectItem> = [];
+		const roles: Array<IOption> = [];
 		for (const item of Object.keys(UserRole)) {
 			const itemIdx = Object.keys(UserRole).indexOf(item);
 			if (itemIdx >= roleIdx) {
 				roles.push({
 					value: UserRole[item],
-					text: this.$t(`core.user.roles.${UserRole[item]}`),
+					label: this.$t(`core.user.roles.${UserRole[item]}`),
 				});
 			}
 		}
@@ -232,15 +201,9 @@ export default class UserEditForm extends Vue {
 	 */
 	private getUser(): void {
 		this.$store.commit('spinner/SHOW');
-		this.service.get(this.userId)
-			.then((user: UserInfo) => {
-				this.user = {
-					username: user.username,
-					email: user.email,
-					language: user.language,
-					role: user.role,
-					baseUrl: new UrlBuilder().getBaseUrl(),
-				};
+		UserService.get(this.userId)
+			.then((user: IUser) => {
+				this.user = user;
 				this.$store.commit('spinner/HIDE');
 			})
 			.catch((error: AxiosError) => {
@@ -254,11 +217,11 @@ export default class UserEditForm extends Vue {
 	 */
 	private saveUser(): void {
 		this.$store.commit('spinner/SHOW');
-		const user: UserEdit = {...this.user};
-		if (this.changePassword) {
-			user.password = this.password;
+		const user: IUser = JSON.parse(JSON.stringify(this.user));
+		if (this.password !== '') {
+			Object.assign(user, {password: this.password});
 		}
-		this.service.update(this.userId, this.user)
+		UserService.edit(this.userId, user)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(

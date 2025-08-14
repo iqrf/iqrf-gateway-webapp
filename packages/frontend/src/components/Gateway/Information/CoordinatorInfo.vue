@@ -16,13 +16,10 @@ limitations under the License.
 -->
 <template>
 	<span v-if='requestRunning'>
-		<v-progress-circular
-			color='info'
-			indeterminate
-		/>
+		<CSpinner color='info' class='cinfo-spinner' />
 	</span>
 	<span v-else>
-		<span v-if='hasData && enumeration !== null && trMcuType !== null && osInfo !== null'>
+		<span v-if='hasData'>
 			<strong>{{ $t('gateway.info.tr.moduleType') }}: </strong>
 			{{ trMcuType.trType }}<br>
 			<strong>{{ $t('gateway.info.tr.mcuType') }}: </strong>
@@ -47,14 +44,17 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-
-import IqrfNetService from '@/services/IqrfNetService';
-
-import {DaemonClientState} from '@/interfaces/wsClient';
 import {MutationPayload} from 'vuex';
+import IqrfNetService from '@/services/IqrfNetService';
+import {CSpinner} from '@coreui/vue/src';
+import {DaemonClientState} from '@/interfaces/wsClient';
 import {PeripheralEnumeration, OsInfo, TrMcu} from '@/interfaces/DaemonApi/Dpa';
 
-@Component({})
+@Component({
+	components: {
+		CSpinner,
+	},
+})
 
 /**
  * Coordinator information block component for gateway information
@@ -71,12 +71,12 @@ export default class CoordinatorInfo extends Vue {
 	/**
 	 * @var {boolean} hasData Indicates whether data has been fetched successfully
 	 */
-	public hasData = false;
+	private hasData = false;
 
 	/**
 	 * @var {PeripheralEnumeration|null} enumeration Peripheral enumeration of a device
 	 */
-	public enumeration: PeripheralEnumeration|null = null;
+	private enumeration: PeripheralEnumeration|null = null;
 
 	/**
 	 * @var {string|null} msgId Daemon api message id
@@ -86,17 +86,17 @@ export default class CoordinatorInfo extends Vue {
 	/**
 	 * @var {OsInfo|null} osInfo Information about OS of a device
 	 */
-	public osInfo: OsInfo|null = null;
+	private osInfo: OsInfo|null = null;
 
 	/**
 	 * @var {boolean} requestRunning Indicates whether a daemon api request has been completed
 	 */
-	public requestRunning = false;
+	private requestRunning = false;
 
 	/**
-	 * @var {TrMcu|null} trMcuType Information about transceiver type
+	 * @var {TrMcu|null} trMcuType Information about transciever type
 	 */
-	public trMcuType: TrMcu|null = null;
+	private trMcuType: TrMcu|null = null;
 
 	/**
 	 * Component unwatch function
@@ -140,7 +140,7 @@ export default class CoordinatorInfo extends Vue {
 			this.enumerate();
 		} else {
 			this.unwatch = this.$store.watch(
-				(state: DaemonClientState, getter) => getter['daemonClient/isConnected'],
+				(state: DaemonClientState, getter: any) => getter['daemonClient/isConnected'],
 				(newVal: boolean, oldVal: boolean) => {
 					if (!oldVal && newVal) {
 						this.enumerate();
@@ -178,3 +178,10 @@ export default class CoordinatorInfo extends Vue {
 	}
 }
 </script>
+
+<style scoped>
+.cinfo-spinner {
+	width: 2rem;
+	height: 2rem;
+}
+</style>

@@ -17,27 +17,27 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('iqrfnet.sendJson.title') }}</h1>
-		<v-card class='mb-5'>
-			<v-card-title>
-				<v-btn
+		<CCard>
+			<CCardHeader>
+				<CButton
 					color='primary'
-					small
-					href='https://docs.iqrf.org/iqrf-gateway/user/daemon/api.html'
+					size='sm'
+					href='https://docs.iqrf.org/iqrf-gateway/daemon-api.html'
 					target='_blank'
 				>
 					{{ $t("iqrfnet.sendJson.documentation") }}
-				</v-btn>
-			</v-card-title>
-			<v-card-text>
-				<v-overlay
+				</CButton>
+			</CCardHeader>
+			<CCardBody>
+				<CElementCover
 					v-if='!isSocketConnected'
-					:opacity='0.65'
-					absolute
+					style='z-index: 1;'
+					:opacity='0.85'
 				>
 					{{ $t('iqrfnet.messages.socketError') }}
-				</v-overlay>
+				</CElementCover>
 				<ValidationObserver v-slot='{invalid}' slim>
-					<form @submit.prevent='processSubmit'>
+					<CForm @submit.prevent='processSubmit'>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required|json'
@@ -45,76 +45,87 @@ limitations under the License.
 								required: $t("iqrfnet.sendJson.messages.missing"),
 								json: $t("iqrfnet.sendJson.messages.invalid"),
 							}'
+							slim
 						>
-							<v-textarea
+							<JsonEditor
 								v-model='json'
 								:label='$t("iqrfnet.sendJson.form.json").toString()'
-								:success='touched ? valid : null'
-								:error-messages='errors'
-								rows='1'
-								auto-grow
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='errors.join(", ")'
+								@blur='$emit("blur", $event)'
 							/>
 						</ValidationProvider>
-						<v-btn color='primary' type='submit' :disabled='invalid'>
+						<CButton color='primary' type='submit' :disabled='invalid'>
 							{{ $t('forms.send') }}
-						</v-btn>
-					</form>
+						</CButton>
+					</CForm>
 				</ValidationObserver>
-			</v-card-text>
-		</v-card>
-		<v-card v-if='messages.length !== 0'>
-			<v-card-text>
-				<v-select
-					v-model='activeIdx'
-					:label='$t("iqrfnet.sendJson.form.activeMessage").toString()'
-					:items='messageOptions'
-				/>
-				<div v-if='messages.length > 0'>
-					<v-row>
-						<v-col md='6'>
-							<JsonMessage
-								:message='messages[activeIdx].request'
-								type='request'
-								source='sendJson'
-							/>
-						</v-col>
-						<v-col
-							v-if='messages[activeIdx].response.length > 0'
-							md='6'
-						>
-							<JsonMessage
-								v-for='(rsp, i) of messages[activeIdx].response'
-								:key='i'
-								:message='rsp'
-								type='response'
-								source='sendJson'
-							/>
-						</v-col>
-					</v-row>
-				</div>
-			</v-card-text>
-		</v-card>
+			</CCardBody>
+		</CCard>
+		<CCard
+			v-if='messages.length !== 0'
+			body-wrapper
+		>
+			<CSelect
+				:value.sync='activeIdx'
+				:label='$t("iqrfnet.sendJson.form.activeMessage").toString()'
+				:options='messageOptions'
+			/>
+			<div v-if='messages.length > 0'>
+				<CRow>
+					<CCol md='6'>
+						<JsonMessage
+							:message='messages[activeIdx].request'
+							type='request'
+							source='sendJson'
+						/>
+					</CCol>
+					<CCol
+						v-if='messages[activeIdx].response.length > 0'
+						md='6'
+					>
+						<JsonMessage
+							v-for='(rsp, i) of messages[activeIdx].response'
+							:key='i'
+							:message='rsp'
+							type='response'
+							source='sendJson'
+						/>
+					</CCol>
+				</CRow>
+			</div>
+		</CCard>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CTextarea} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import JsonEditor from '@/components/Config/JsonEditor.vue';
 import JsonMessage from '@/components/IqrfNet/JsonMessage.vue';
 
 import {required} from 'vee-validate/dist/rules';
 import {StatusMessages} from '@/iqrfNet/sendJson';
 import {v4 as uuidv4} from 'uuid';
-import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 import IqrfNetService from '@/services/IqrfNetService';
 
 import {IMessagePairRequest} from '@/interfaces/DaemonApi/Api';
-import {ISelectItem} from '@/interfaces/Vuetify';
+import {IOption} from '@/interfaces/Coreui';
 import {mapGetters, MutationPayload} from 'vuex';
+import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 @Component({
 	components: {
+		CButton,
+		CCard,
+		CCardBody,
+		CCardHeader,
+		CElementCover,
+		CForm,
+		CTextarea,
+		JsonEditor,
 		JsonMessage,
 		ValidationObserver,
 		ValidationProvider,
@@ -163,7 +174,10 @@ export default class SendJsonRequest extends Vue {
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
-		extend('json', (json: string) => {
+		extend('json', (json: string|null) => {
+			if (!json) {
+				return false;
+			}
 			try {
 				JSON.parse(json);
 				return true;
@@ -219,13 +233,13 @@ export default class SendJsonRequest extends Vue {
 
 	/**
 	 * Generates array of message options to select from to show
-	 * @returns {Array<ISelectItem>} Array of options
+	 * @returns {Array<IOption>} Array of options
 	 */
-	get messageOptions(): Array<ISelectItem> {
-		const options: Array<ISelectItem> = [];
+	get messageOptions(): Array<IOption> {
+		const options: Array<IOption> = [];
 		this.messages.forEach((item: IMessagePairRequest) => {
 			options.push({
-				text: item.label,
+				label: item.label,
 				value: this.messages.indexOf(item),
 			});
 		});

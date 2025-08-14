@@ -15,113 +15,118 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-dialog
-		v-model='showModal'
-		width='50%'
-		persistent
-		no-click-animation
-	>
-		<ValidationObserver v-if='operator !== null' v-slot='{invalid}'>
-			<v-card>
-				<v-card-title>
-					<h5>{{ modalTitle }}</h5>
-				</v-card-title>
-				<v-card-text>
-					<v-form>
-						<ValidationProvider
-							v-slot='{errors, touched, valid}'
-							rules='required'
-							:custom-messages='{
-								required: $t("network.operators.errors.nameRequired"),
-							}'
-						>
-							<v-text-field
-								v-model='operator.name'
-								:label='$t("network.operators.form.name")'
-								:success='touched ? valid : null'
-								:error-messages='errors'
-							/>
-						</ValidationProvider>
-						<ValidationProvider
-							v-slot='{errors, touched, valid}'
-							rules='required'
-							:custom-messages='{
-								required: $t("network.operators.errors.apnRequired"),
-							}'
-						>
-							<v-text-field
-								v-model='operator.apn'
-								:label='$t("network.operators.form.apn")'
-								:success='touched ? valid : null'
-								:error-messages='errors'
-							/>
-						</ValidationProvider>
-						<ValidationProvider
-							v-slot='{errors, touched, valid}'
-							:rules='{
-								required: operator.password.length > 0
-							}'
-							:custom-messages='{
-								required: $t("forms.errors.credentials"),
-							}'
-						>
-							<v-text-field
-								v-model='operator.username'
-								:label='$t("network.operators.form.username")'
-								:success='touched ? valid : null'
-								:error-messages='errors'
-							/>
-						</ValidationProvider>
-						<ValidationProvider
-							v-slot='{errors, touched, valid}'
-							:rules='{
-								required: operator.username.length > 0
-							}'
-							:custom-messages='{
-								required: $t("forms.errors.credentials"),
-							}'
-						>
-							<v-text-field
-								v-model='operator.password'
-								:label='$t("network.operators.form.password")'
-								:success='touched ? valid : null'
-								:error-messages='errors'
-							/>
-						</ValidationProvider>
-					</v-form>
-				</v-card-text>
-				<v-card-actions>
-					<v-spacer />
-					<v-btn
-						@click='hideModal'
-					>
-						{{ $t('forms.cancel') }}
-					</v-btn>
-					<v-btn
-						:color='modalColor'
-						:disabled='invalid'
-						@click='saveOperator'
-					>
-						{{ $t('forms.save') }}
-					</v-btn>
-				</v-card-actions>
-			</v-card>
-		</ValidationObserver>
-	</v-dialog>
+	<ValidationObserver v-slot='{invalid}'>
+		<CModal
+			:color='modalColor'
+			size='lg'
+			:show.sync='show'
+			:close-on-backdrop='false'
+		>
+			<template #header>
+				<h5 class='modal-title'>
+					{{ modalTitle }}
+				</h5>
+			</template>
+			<CForm>
+				<ValidationProvider
+					v-slot='{errors, touched, valid}'
+					rules='required'
+					:custom-messages='{
+						required: $t("network.operators.errors.nameRequired"),
+					}'
+				>
+					<CInput
+						v-model='operator.name'
+						:label='$t("network.operators.form.name")'
+						:is-valid='touched ? valid : null'
+						:invalid-feedback='errors.join(", ")'
+					/>
+				</ValidationProvider>
+				<ValidationProvider
+					v-slot='{errors, touched, valid}'
+					rules='required'
+					:custom-messages='{
+						required: $t("network.operators.errors.apnRequired"),
+					}'
+				>
+					<CInput
+						v-model='operator.apn'
+						:label='$t("network.operators.form.apn")'
+						:is-valid='touched ? valid : null'
+						:invalid-feedback='errors.join(", ")'
+					/>
+				</ValidationProvider>
+				<ValidationProvider
+					v-slot='{errors, touched, valid}'
+					:rules='{
+						required: operator.password.length > 0
+					}'
+					:custom-messages='{
+						required: $t("forms.errors.credentials"),
+					}'
+				>
+					<CInput
+						v-model='operator.username'
+						:label='$t("network.operators.form.username")'
+						:is-valid='touched ? valid : null'
+						:invalid-feedback='errors.join(", ")'
+					/>
+				</ValidationProvider>
+				<ValidationProvider
+					v-slot='{errors, touched, valid}'
+					:rules='{
+						required: operator.username.length > 0
+					}'
+					:custom-messages='{
+						required: $t("forms.errors.credentials"),
+					}'
+				>
+					<CInput
+						v-model='operator.password'
+						:label='$t("network.operators.form.password")'
+						:is-valid='touched ? valid : null'
+						:invalid-feedback='errors.join(", ")'
+					/>
+				</ValidationProvider>
+			</CForm>
+			<template #footer>
+				<CButton
+					:color='modalColor'
+					:disabled='invalid'
+					@click='saveOperator'
+				>
+					{{ $t('forms.save') }}
+				</CButton> <CButton
+					color='secondary'
+					@click='deactivateModal'
+				>
+					{{ $t('forms.cancel') }}
+				</CButton>
+			</template>
+		</CModal>
+	</ValidationObserver>
 </template>
 
 <script lang='ts'>
-import { MobileOperator } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
-import {AxiosError} from 'axios';
+import {Component, Vue} from 'vue-property-decorator';
+import {CButton, CForm, CIcon, CInput, CModal} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {digits, required} from 'vee-validate/dist/rules';
-import {Component, VModel, Vue} from 'vue-property-decorator';
 
+import {digits, required} from 'vee-validate/dist/rules';
 import {extendedErrorToast} from '@/helpers/errorToast';
-import {useApiClient} from '@/services/ApiClient';
+
+import NetworkOperatorService from '@/services/NetworkOperatorService';
+
+import {AxiosError, AxiosResponse} from 'axios';
+import {IOperator} from '@/interfaces/Network/Mobile';
 
 @Component({
 	components: {
+		CButton,
+		CForm,
+		CIcon,
+		CInput,
+		CModal,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -132,25 +137,31 @@ import {useApiClient} from '@/services/ApiClient';
  */
 export default class NetworkOperatorForm extends Vue {
 
-	@VModel({required: true}) operator!: MobileOperator|null;
+	/**
+	 * @var {boolean} show Controls whether modal is showed
+	 */
+	private show = false;
 
 	/**
-	 * @property {NetworkOperatorService} service Network operator service
+	 * @var {number} id Network operator ID
 	 */
-	private service = useApiClient().getNetworkServices().getMobileOperatorService();
+	private id = 0;
 
 	/**
-	 * Computes modal visibility condition
+	 * @var {IOperator} operator Network operator configuration
 	 */
-	get showModal(): boolean {
-		return this.operator !== null;
-	}
+	private operator: IOperator = {
+		name: '',
+		apn: '',
+		username: '',
+		password: ''
+	};
 
 	/**
 	 * Returns modal color depending on operator id
 	 */
 	get modalColor(): string {
-		if (this.operator?.id === undefined) {
+		if (this.id === 0) {
 			return 'success';
 		}
 		return 'primary';
@@ -160,7 +171,7 @@ export default class NetworkOperatorForm extends Vue {
 	 * Returns modal title depending on operator title
 	 */
 	get modalTitle(): string {
-		if (this.operator?.id === undefined) {
+		if (this.id === 0) {
 			return this.$t('network.operators.form.add').toString();
 		}
 		return this.$t('network.operators.form.edit').toString();
@@ -175,10 +186,26 @@ export default class NetworkOperatorForm extends Vue {
 	}
 
 	/**
+	 * Retrieves operator details
+	 */
+	private getOperator(): void {
+		this.$store.commit('spinner/SHOW');
+		NetworkOperatorService.getOperator(this.id)
+			.then((rsp: AxiosResponse) => {
+				this.operator = rsp.data;
+				this.$store.commit('spinner/HIDE');
+			})
+			.catch((err: AxiosError) => {
+				extendedErrorToast(err, 'network.operators.messages.getFailed');
+				this.deactivateModal();
+			});
+	}
+
+	/**
 	 * Saves network operator configuration
 	 */
 	private saveOperator(): void {
-		if (this.operator?.id === undefined) {
+		if (this.id === 0) {
 			this.addOperator();
 		} else {
 			this.editOperator();
@@ -189,18 +216,16 @@ export default class NetworkOperatorForm extends Vue {
 	 * Saves new network operator
 	 */
 	private addOperator(): void {
-		if (this.operator === null) {
-			return;
-		}
+		const operator = this.filterOperator(this.operator);
 		this.$store.commit('spinner/SHOW');
-		this.service.create(this.operator)
+		NetworkOperatorService.addOperator(operator)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
+				this.deactivateModal();
 				this.$toast.success(
-					this.$t('network.operators.messages.addSuccess', {operator: this.operator.name}).toString()
+					this.$t('network.operators.messages.addSuccess', {operator: operator.name}).toString()
 				);
-				this.hideModal();
-				this.$emit('saved');
+				this.$emit('closed');
 			})
 			.catch((err: AxiosError) => extendedErrorToast(err, 'network.operators.messages.addFailed'));
 	}
@@ -209,29 +234,60 @@ export default class NetworkOperatorForm extends Vue {
 	 * Edits existing network operator
 	 */
 	private editOperator(): void {
-		if (this.operator === null || this.operator.id === undefined) {
-			return;
-		}
-		const id = this.operator.id;
+		const operator = this.filterOperator(this.operator);
 		this.$store.commit('spinner/SHOW');
-		this.service.update(id, this.operator)
+		NetworkOperatorService.editOperator(this.id, operator)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
-
+				this.deactivateModal();
 				this.$toast.success(
-					this.$t('network.operators.messages.editSuccess', {operator: this.operator!.name}).toString()
+					this.$t('network.operators.messages.editSuccess', {operator: operator.name}).toString()
 				);
-				this.hideModal();
-				this.$emit('saved');
+				this.$emit('closed');
 			})
 			.catch((err: AxiosError) => extendedErrorToast(err, 'network.operators.messages.editFailed'));
 	}
 
 	/**
-	 * Hides modal window
+	 * Filters operator configuration
+	 * @param {IOperator} operator Operator
+	 * @return {IOperator} Filtered operator
 	 */
-	private hideModal(): void {
-		this.operator = null;
+	private filterOperator(operator: IOperator): IOperator {
+		delete operator.id;
+		if (operator.username?.length === 0) {
+			delete operator.username;
+		}
+		if (operator.password?.length === 0) {
+			delete operator.password;
+		}
+		return operator;
+	}
+
+	/**
+	 * Activates the modal and retrieves operator information
+	 * @param {number|undefined} id Operator ID
+	 */
+	public activateModal(id: number|undefined = undefined): void {
+		if (id !== undefined) {
+			this.id = id;
+			this.getOperator();
+		}
+		this.show = true;
+	}
+
+	/**
+	 * Hides the modal
+	 */
+	public deactivateModal(): void {
+		this.show = false;
+		this.id = 0;
+		this.operator = {
+			name: '',
+			apn: '',
+			username: '',
+			password: '',
+		};
 	}
 }
 </script>

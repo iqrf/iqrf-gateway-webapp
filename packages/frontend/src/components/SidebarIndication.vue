@@ -15,9 +15,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-simple-table
+	<table
 		v-if='!$store.getters["sidebar/isMinimized"]'
-		dense
+		class='table'
 	>
 		<tbody>
 			<tr>
@@ -25,13 +25,9 @@ limitations under the License.
 					{{ $t('daemonStatus.mode') }}
 				</td>
 				<td class='status'>
-					<VChip
-						:color='daemonModeBadgeColor'
-						small
-						label
-					>
+					<CBadge :color='daemonModeBadgeColor'>
 						{{ $t(`daemonStatus.modes.${isSocketConnected ? daemonMode : 'unknown'}`) }}
-					</VChip>
+					</CBadge>
 				</td>
 			</tr>
 			<tr>
@@ -39,14 +35,9 @@ limitations under the License.
 					{{ $t('daemonStatus.websocket.title') }}
 				</td>
 				<td class='status'>
-					<VChip
-						:color='isSocketConnected ? "success": "error"'
-						small
-						label
-						:ripple='false'
-					>
+					<CBadge :color='isSocketConnected ? "success": "danger"'>
 						{{ $t(`daemonStatus.websocket.${isSocketConnected ? 'connected' : 'notConnected'}`) }}
-					</VChip>
+					</CBadge>
 				</td>
 			</tr>
 			<tr>
@@ -54,25 +45,25 @@ limitations under the License.
 					{{ $t('daemonStatus.queue') }}
 				</td>
 				<td class='status'>
-					<VChip
-						:color='daemonQueueBadgeColor'
-						small
-						label
-					>
+					<CBadge :color='daemonQueueBadgeColor'>
 						{{ queueLen }}
-					</VChip>
+					</CBadge>
 				</td>
 			</tr>
 		</tbody>
-	</v-simple-table>
+	</table>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
+import {CBadge} from '@coreui/vue/src';
 
 import {mapGetters} from 'vuex';
 
 @Component({
+	components: {
+		CBadge
+	},
 	computed: {
 		...mapGetters({
 			daemonMode: 'monitorClient/getMode',
@@ -101,7 +92,7 @@ export default class SidebarIndication extends Vue {
 		} else if (daemonMode === 'operational' || daemonMode === 'forwarding') {
 			return 'success';
 		} else {
-			return 'error';
+			return 'danger';
 		}
 	}
 
@@ -120,7 +111,7 @@ export default class SidebarIndication extends Vue {
 		} else if (queueLen <= 24) {
 			return 'warning';
 		} else {
-			return 'error';
+			return 'danger';
 		}
 	}
 
@@ -139,24 +130,21 @@ export default class SidebarIndication extends Vue {
 }
 </script>
 
-<style scoped lang='scss'>
-tbody {
-	background-color: rgb(54 54 54 / 66%);
-
-	tr:hover {
-		background-color: transparent !important;
-	}
+<style scoped>
+table {
+	color: white;
+	margin-bottom: 0.5rem;
 }
 
 .item {
 	border-top: 0;
 	text-align: left;
-	padding: 0 0 0 0.5rem;
+	padding: 0 0 0 1.25rem;
 }
 
 .status {
 	border-top: 0;
 	text-align: right;
-	font-weight: bold;
+	padding: 0 1.25rem 0 0;
 }
 </style>

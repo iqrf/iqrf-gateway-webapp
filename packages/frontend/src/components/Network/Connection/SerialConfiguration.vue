@@ -24,11 +24,11 @@ limitations under the License.
 				required: $t("network.serial.errors.baudRateMissing"),
 			}'
 		>
-			<v-text-field
+			<CInput
 				v-model.number='connection.serial.baudRate'
 				:label='$t("network.serial.form.baudRate").toString()'
-				:success='touched ? valid : null'
-				:error-messages='errors'
+				:is-valid='touched ? valid : null'
+				:invalid-feedback='errors.join(", ")'
 				type='number'
 			/>
 		</ValidationProvider>
@@ -37,19 +37,19 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, VModel, Vue} from 'vue-property-decorator';
+import {CInput} from '@coreui/vue/src';
 import {extend, ValidationProvider} from 'vee-validate';
 
 import {required} from 'vee-validate/dist/rules';
+import {IConnection} from '@/interfaces/Network/Connection';
 import PasswordInput from '@/components/Core/PasswordInput.vue';
-import {
-	NetworkConnectionConfiguration
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 
 /**
  * GSM modem connection configuration
  */
 @Component({
 	components: {
+		CInput,
 		PasswordInput,
 		ValidationProvider,
 	},
@@ -59,7 +59,7 @@ export default class SerialConfiguration extends Vue {
 	/**
 	 * Edited connection.
 	 */
-	@VModel({required: true}) connection!: NetworkConnectionConfiguration;
+	@VModel({required: true}) connection!: IConnection;
 
 	/**
 	 * Initializes validation rules

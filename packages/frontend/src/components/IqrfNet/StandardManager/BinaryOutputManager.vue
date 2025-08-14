@@ -15,10 +15,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-card>
-		<v-card-text>
+	<CCard class='border-0 card-margin-bottom'>
+		<CCardBody>
 			<ValidationObserver v-slot='{invalid}'>
-				<form>
+				<CForm>
 					<ValidationProvider
 						v-slot='{errors, touched, valid}'
 						rules='integer|required|between:1,239'
@@ -28,14 +28,14 @@ limitations under the License.
 							between: $t("iqrfnet.standard.form.messages.address"),
 						}'
 					>
-						<v-text-field
+						<CInput
 							v-model.number='address'
 							type='number'
 							min='1'
 							max='239'
 							:label='$t("iqrfnet.standard.form.address")'
-							:success='touched ? valid : null'
-							:error-messages='errors'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='errors.join(", ")'
 						/>
 					</ValidationProvider>
 					<ValidationProvider
@@ -47,54 +47,61 @@ limitations under the License.
 							between: $t("iqrfnet.standard.binaryOutput.form.messages.index"),
 						}'
 					>
-						<v-text-field
+						<CInput
 							v-model.number='index'
 							type='number'
 							min='0'
 							max='31'
 							:label='$t("iqrfnet.standard.binaryOutput.form.index")'
-							:success='touched ? valid : null'
-							:error-messages='errors'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='errors.join(", ")'
 						/>
 					</ValidationProvider>
-					<v-switch
-						v-model='state'
-						:label='$t("iqrfnet.standard.binaryOutput.form.state")'
-						color='primary'
-						inset
-						dense
-					/>
-					<v-btn
+					<div class='form-group'>
+						<label for='formStateSwitch'>
+							{{ $t('iqrfnet.standard.binaryOutput.form.state') }}
+						</label><br>
+						<CSwitch
+							id='formStateSwitch'
+							:checked.sync='state'
+							color='primary'
+							size='lg'
+							shape='pill'
+							:label-on='$t("iqrfnet.standard.binaryOutput.form.enabled")'
+							:label-off='$t("iqrfnet.standard.binaryOutput.form.disabled")'
+						/>
+					</div>
+					<CButton
 						class='mr-1'
 						color='primary'
 						:disabled='invalid'
 						@click='enumerate'
 					>
 						{{ $t('forms.enumerate') }}
-					</v-btn>
-					<v-btn
+					</CButton>
+					<CButton
 						class='mr-1'
 						color='primary'
 						:disabled='invalid'
 						@click='getStates'
 					>
 						{{ $t('iqrfnet.standard.binaryOutput.form.getStates') }}
-					</v-btn>
-					<v-btn
+					</CButton>
+					<CButton
 						color='primary'
 						:disabled='invalid'
 						@click='setState'
 					>
 						{{ $t('iqrfnet.standard.binaryOutput.form.setState') }}
-					</v-btn>
-				</form>
+					</CButton>
+				</CForm>
 			</ValidationObserver>
-		</v-card-text>
-		<v-card-text v-if='responseType !== StandardResponses.NONE'>
-			<v-simple-table>
-				<caption class='simpletable-caption'>
+		</CCardBody>
+		<CCardFooter v-if='responseType !== StandardResponses.NONE'>
+			<table class='table d-block overflow-auto text-nowrap'>
+				<thead>
 					{{ $t(`iqrfnet.standard.binaryOutput.${responseType === StandardResponses.ENUMERATE ? 'enum' : 'prev'}`) }}
-				</caption>
+				</thead>
 				<tbody v-if='responseType === StandardResponses.ENUMERATE'>
 					<tr>
 						<th>{{ $t('iqrfnet.standard.binaryOutput.outputs') }}</th>
@@ -111,22 +118,31 @@ limitations under the License.
 					<tr>
 						<th>{{ $t('iqrfnet.standard.binaryOutput.state') }}</th>
 						<td v-for='ind of Array(32).keys()' :key='ind'>
-							<v-icon :color='states[ind] ? "success" : "error"'>
-								{{ states[ind] ? 'mdi-check' : 'mdi-close' }}
-							</v-icon>
+							<CIcon
+								v-if='states[ind] === true'
+								class='text-success'
+								:content='cilCheckAlt'
+							/>
+							<CIcon
+								v-if='states[ind] === false'
+								class='text-danger'
+								:content='cilX'
+							/>
 						</td>
 					</tr>
 				</tbody>
-			</v-simple-table>
-		</v-card-text>
-	</v-card>
+			</table>
+		</CCardFooter>
+	</CCard>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CIcon, CInput, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
+import {cilCheckAlt, cilX} from '@coreui/icons';
 import {StandardResponses} from '@/enums/IqrfNet/Standard';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
@@ -136,10 +152,20 @@ import {MutationPayload} from 'vuex';
 
 @Component({
 	components: {
+		CButton,
+		CCard,
+		CCardBody,
+		CCardHeader,
+		CForm,
+		CIcon,
+		CInput,
+		CSwitch,
 		ValidationObserver,
-		ValidationProvider,
+		ValidationProvider
 	},
 	data: () => ({
+		cilCheckAlt,
+		cilX,
 		StandardResponses,
 	}),
 })
@@ -350,8 +376,10 @@ export default class BinaryOutputManager extends Vue {
 }
 </script>
 
-<style lang="scss" scoped>
-td {
-	padding: 0 !important;
+<style scoped>
+.scroll-table {
+	display: block;
+	overflow-x: auto;
+	white-space: nowrap;
 }
 </style>

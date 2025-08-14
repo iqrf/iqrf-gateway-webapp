@@ -16,11 +16,12 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<v-row
+		<CRow
 			v-for='(ip, ipIndex) of addresses'
 			:key='ipIndex + "_" + version'
+			form
 		>
-			<v-col cols='12' lg='6'>
+			<CCol sm='12' lg='6'>
 				<IpAddressInput
 					v-model='ip.address'
 					:version='version'
@@ -29,28 +30,29 @@ limitations under the License.
 					@add='add()'
 					@remove='remove(ipIndex)'
 				/>
-			</v-col>
-			<v-col cols='12' lg='6'>
+			</CCol>
+			<CCol sm='12' lg='6'>
 				<IpAddressPrefixInput v-model='ip.prefix' :version='version' />
-			</v-col>
-		</v-row>
+			</CCol>
+		</CRow>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, VModel, Vue} from 'vue-property-decorator';
+import {CCol, CRow} from '@coreui/vue/src';
 
+import {IWGAllowedIP} from '@/interfaces/Network/Wireguard';
 import IpAddressInput from '@/components/Network/WireGuard/IpAddressInput.vue';
 import IpAddressPrefixInput from '@/components/Network/WireGuard/IpAddressPrefixInput.vue';
-import {
-	WireGuardIpAddress
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 
 /**
  * WireGuard peers
  */
 @Component({
 	components: {
+		CCol,
+		CRow,
 		IpAddressInput,
 		IpAddressPrefixInput,
 	},
@@ -60,7 +62,7 @@ export default class WireGuardPeerAddresses extends Vue {
 	/**
 	 * Edited WireGuard peer addresses
 	 */
-	@VModel({required: true}) addresses!: WireGuardIpAddress[];
+	@VModel({required: true}) addresses!: IWGAllowedIP[];
 
 	/**
 	 * @property {4|6} version IP address version

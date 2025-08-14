@@ -15,16 +15,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-card>
-		<v-card-title
-			color='error'
-			class='text-white'
-		>
+	<CCard>
+		<CCardHeader color='danger' class='text-white'>
 			{{ $t('install.error.missingExtension.title') }}
-		</v-card-title>
-		<v-card-text>
+		</CCardHeader>
+		<CCardBody>
 			{{ $t('install.error.missingExtension.description', {extensions: extensionString}) }}
-			<v-divider class='my-2' />
+		</CCardBody>
+		<CCardFooter>
 			<strong>{{ $t('install.error.howToFix') }}</strong>
 			<br>
 			<span v-if='packageString !== ""'>
@@ -39,12 +37,13 @@ limitations under the License.
 				:highlight='highlighter'
 				:readonly='true'
 			/>
-		</v-card-text>
-	</v-card>
+		</CCardFooter>
+	</CCard>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
+import {CCard, CCardBody, CCardFooter, CCardHeader} from '@coreui/vue/src';
 
 import {PrismEditor} from 'vue-prism-editor';
 import 'vue-prism-editor/dist/prismeditor.min.css';
@@ -54,6 +53,10 @@ import 'prismjs/themes/prism.css';
 
 @Component({
 	components: {
+		CCard,
+		CCardBody,
+		CCardFooter,
+		CCardHeader,
 		PrismEditor
 	},
 	metaInfo: {

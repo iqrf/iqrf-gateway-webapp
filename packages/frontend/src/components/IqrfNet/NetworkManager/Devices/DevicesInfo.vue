@@ -15,154 +15,148 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<div>
-		<v-card>
-			<v-card-title>{{ $t('iqrfnet.networkManager.devicesInfo.title') }}</v-card-title>
-			<v-card-text>
-				<v-simple-table class='text-center'>
+	<CCard>
+		<CCardHeader>{{ $t('iqrfnet.networkManager.devicesInfo.title') }}</CCardHeader>
+		<CCardBody>
+			<table class='table text-center'>
+				<tbody>
+					<tr>
+						<td class='table-toprow'>
+							<CIcon class='text-info' :content='cilHome' />
+							{{ $t('forms.fields.coordinator') }}
+						</td>
+						<td class='table-toprow'>
+							<CIcon class='text-danger' :content='cilX' />
+							{{ $t('iqrfnet.networkManager.devicesInfo.icons.unbonded') }}
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<CIcon class='text-info' :content='cilCheckAlt' />
+							{{ $t('iqrfnet.networkManager.devicesInfo.icons.bonded') }}
+						</td>
+						<td>
+							<CIcon class='text-info' :content='cilSignalCellular4' />
+							{{ $t('iqrfnet.networkManager.devicesInfo.icons.discovered') }}
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<CIcon class='text-success' :content='cilCheckAlt' />
+							{{ $t('iqrfnet.networkManager.devicesInfo.icons.bondedOnline') }}
+						</td>
+						<td>
+							<CIcon class='text-success' :content='cilSignalCellular4' />
+							{{ $t('iqrfnet.networkManager.devicesInfo.icons.discoveredOnline') }}
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<CButtonGroup class='d-flex'>
+				<CButton
+					class='w-100'
+					color='info'
+					@click='indicateCoordinator'
+				>
+					{{ $t('forms.indicateCoordinator') }}
+				</CButton>
+				<CButton
+					class='w-100'
+					color='primary'
+					@click='ping'
+				>
+					{{ $t('forms.pingNodes') }}
+				</CButton>
+				<CButton
+					class='w-100'
+					color='danger'
+					@click='restart'
+				>
+					{{ $t('forms.restartNodes') }}
+				</CButton>
+			</CButtonGroup>
+			<div v-if='devices.length !== 0' class='table-responsive'>
+				<table class='table table-striped device-info card-margin-bottom'>
 					<tbody>
 						<tr>
-							<td class='table-toprow'>
-								<v-icon color='info'>
-									mdi-home-outline
-								</v-icon>
-								{{ $t('forms.fields.coordinator') }}
-							</td>
-							<td class='table-toprow'>
-								<v-icon color='error'>
-									mdi-close
-								</v-icon>
-								{{ $t('iqrfnet.networkManager.devicesInfo.icons.unbonded') }}
+							<td colspan='11' class='text-center'>
+								{{ $t('iqrfnet.networkManager.devicesInfo.messages.clickEnumerate') }}
 							</td>
 						</tr>
 						<tr>
-							<td>
-								<v-icon color='info'>
-									mdi-check
-								</v-icon>
-								{{ $t('iqrfnet.networkManager.devicesInfo.icons.bonded') }}
-							</td>
-							<td>
-								<v-icon color='info'>
-									mdi-signal-cellular-outline
-								</v-icon>
-								{{ $t('iqrfnet.networkManager.devicesInfo.icons.discovered') }}
-							</td>
+							<th />
+							<th v-for='num of Array(10).keys()' :key='num'>
+								{{ num }}
+							</th>
 						</tr>
-						<tr>
-							<td>
-								<v-icon color='success'>
-									mdi-check
-								</v-icon>
-								{{ $t('iqrfnet.networkManager.devicesInfo.icons.bondedOnline') }}
-							</td>
-							<td>
-								<v-icon color='success'>
-									mdi-signal-cellular-outline
-								</v-icon>
-								{{ $t('iqrfnet.networkManager.devicesInfo.icons.discoveredOnline') }}
+						<tr v-for='row of Array(24).keys()' :key='row'>
+							<th>{{ row }}0</th>
+							<td v-for='col of Array(10).keys()' :key='col'>
+								<DeviceIcon :device='devices[getAddress(row, col)]' />
 							</td>
 						</tr>
 					</tbody>
-				</v-simple-table>
-				<v-row no-gutters>
-					<v-col cols='4'>
-						<v-btn
-							class='first-button'
-							color='info'
-							block
-							elevation='0'
-							@click='indicateCoordinator'
-						>
-							{{ $t('forms.indicateCoordinator') }}
-						</v-btn>
-					</v-col>
-					<v-col cols='4'>
-						<v-btn
-							class='middle-button'
-							color='primary'
-							block
-							elevation='0'
-							@click='ping'
-						>
-							{{ $t('forms.pingNodes') }}
-						</v-btn>
-					</v-col>
-					<v-col cols='4'>
-						<v-btn
-							class='last-button'
-							color='error'
-							block
-							elevation='0'
-							@click='restart'
-						>
-							{{ $t('forms.restartNodes') }}
-						</v-btn>
-					</v-col>
-				</v-row>
-				<div v-if='devices.length !== 0' class='table-responsive'>
-					<v-simple-table class='device-info'>
-						<tbody>
-							<tr>
-								<td colspan='11' class='text-center'>
-									{{ $t('iqrfnet.networkManager.devicesInfo.messages.clickEnumerate') }}
-								</td>
-							</tr>
-							<tr>
-								<th />
-								<th v-for='num of Array(10).keys()' :key='num'>
-									{{ num }}
-								</th>
-							</tr>
-							<tr v-for='row of Array(24).keys()' :key='row'>
-								<th>{{ row }}0</th>
-								<td v-for='col of Array(10).keys()' :key='col'>
-									<DeviceIcon :device='devices[getAddress(row, col)]' />
-								</td>
-							</tr>
-						</tbody>
-					</v-simple-table>
-				</div>
-				<v-alert
-					v-else
-					type='error'
-					text
-				>
-					{{ $t('iqrfnet.networkManager.devicesInfo.messages.empty') }}
-				</v-alert>
-			</v-card-text>
-		</v-card>
-		<RestartErrorModal v-model='restartNodesModel' />
-	</div>
+				</table>
+			</div>
+			<CAlert
+				v-else
+				color='danger'
+			>
+				{{ $t('iqrfnet.networkManager.devicesInfo.messages.empty') }}
+			</CAlert>
+		</CCardBody>
+		<RestartErrorModal ref='restart' />
+	</CCard>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import DeviceIcon from './DeviceIcon.vue';
+import {CAlert, CButton, CCard, CCardBody, CCardHeader, CIcon} from '@coreui/vue/src';
+import DeviceIcon from '@/components/IqrfNet/NetworkManager/Devices/DeviceIcon.vue';
 import RestartErrorModal from '@/components/IqrfNet/NetworkManager/Devices/RestartErrorModal.vue';
 
-import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
-import Device from '@/helpers/Device';
+import {cilHome, cilX, cilCheckAlt, cilSignalCellular4} from '@coreui/icons';
 import {ToastOptions} from 'vue-toast-notification';
 
+import Device from '@/helpers/Device';
 import IqmeshNetworkService from '@/services/DaemonApi/IqmeshNetworkService';
 import IqrfNetService from '@/services/IqrfNetService';
+
 import {MutationPayload} from 'vuex';
+import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
+
+@Component({
+	components: {
+		CAlert,
+		CButton,
+		CCard,
+		CCardBody,
+		CCardHeader,
+		CIcon,
+		DeviceIcon,
+		RestartErrorModal,
+	},
+	data: () => ({
+		cilCheckAlt,
+		cilHome,
+		cilSignalCellular4,
+		cilX,
+	}),
+})
 
 /**
  * Card of devices in network for Network Manager
  */
-@Component({
-	components: {
-		DeviceIcon,
-		RestartErrorModal,
-	}
-})
 export default class DevicesInfo extends Vue {
 	/**
 	 * @var {Array<Device>} devices Array of devices in network
 	 */
 	private devices: Array<Device> = [];
+
+	/**
+	 * @var {boolean} manual Manual FRC ping request
+	 */
+	private manual = false;
 
 	/**
 	 * @var {string|null} msgId Daemon api message id
@@ -173,11 +167,6 @@ export default class DevicesInfo extends Vue {
 	 * @var {ToastOptions|null} toastMessage Toast message from other components to show after grid is refreshed
 	 */
 	private toastMessage: ToastOptions|null = null;
-
-	/**
-	 * @var {Array<number>} restartNodesModel Nodes failed to restart
-	 */
-	private restartNodesModel: Array<number> = [];
 
 	/**
 	 * Component unsubscribe function
@@ -260,6 +249,16 @@ export default class DevicesInfo extends Vue {
 		for (let i = 1; i <= 239; i++) {
 			this.devices.push(new Device(i, false));
 		}
+	}
+
+	/**
+	 * Computes index of device based on row and column number
+	 * @param {number} row Row number
+	 * @param {number} col Column number
+	 * @returns {number} Device array index
+	 */
+	private getAddress(row: number, col: number): number {
+		return row * 10 + col;
 	}
 
 	/**
@@ -346,6 +345,7 @@ export default class DevicesInfo extends Vue {
 		}
 	}
 
+
 	/**
 	 * Performs Ping API call
 	 */
@@ -421,9 +421,10 @@ export default class DevicesInfo extends Vue {
 	private handleRestart(response): void {
 		if (response.status === 0) {
 			if (response.rsp.inaccessibleNodesNr > 0) {
-				this.restartNodesModel = response.rsp.restartResult
+				const nodes: Array<number> = response.rsp.restartResult
 					.filter(e => !e.result)
 					.map(n => {return n.address;});
+				(this.$refs.restart as RestartErrorModal).showModal(nodes);
 			} else {
 				this.$toast.success(
 					this.$t('iqrfnet.networkManager.devicesInfo.messages.restartSuccess').toString()
@@ -439,16 +440,6 @@ export default class DevicesInfo extends Vue {
 				this.$t('iqrfnet.networkManager.devicesInfo.messages.restartFailed').toString()
 			);
 		}
-	}
-
-	/**
-	 * Computes index of device based on row and column number
-	 * @param {number} row Row number
-	 * @param {number} col Column number
-	 * @returns {number} Device array index
-	 */
-	private getAddress(row: number, col: number): number {
-		return row * 10 + col;
 	}
 }
 </script>

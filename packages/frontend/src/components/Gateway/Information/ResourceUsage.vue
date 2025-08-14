@@ -19,18 +19,20 @@ limitations under the License.
 		{{ $t('gateway.info.usages.used') }}
 		{{ usage.usage.replace('%', ' %') }}
 		({{ usage.used }} / {{ usage.size }})
-		<v-progress-linear
-			v-model='usage.usage'
-			:color='color'
-			height='1em'
-			rounded
-		/>
+		<div class='progress'>
+			<div
+				:class='className'
+				role='progressbar'
+				:style='{ width: usage.usage }'
+			/>
+		</div>
 	</div>
 </template>
 
 <script lang='ts'>
-import {UsageBase} from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
 import {Component, Prop, Vue} from 'vue-property-decorator';
+
+import {IUsageData} from '@/interfaces/Gateway/Information';
 
 /**
  * Resource usage component for gateway information
@@ -38,22 +40,24 @@ import {Component, Prop, Vue} from 'vue-property-decorator';
 @Component({})
 export default class ResourceUsage extends Vue {
 	/**
-	 * @property {UsageBase} usage File system usage
+	 * @property {Record<string, string>} usage Dictionary of gateway device resource usage
 	 */
-	@Prop({ required: true }) usage!: UsageBase;
+	@Prop({ required: true }) usage!: IUsageData;
 
 	/**
 	 * Returns CSS classes for the progress bar
 	 */
-	get color(): string {
+	get className(): string {
 		const usage = Number.parseFloat(this.usage.usage.replace('%', ''));
+		let className = 'progress-bar usage-progress-bar';
 		if (usage >= 90) {
-			return 'danger';
+			className += ' bg-danger';
 		} else if (usage >= 80) {
-			return 'warning';
+			className += ' bg-warning';
 		} else {
-			return 'success';
+			className += ' bg-success';
 		}
+		return className;
 	}
 }
 </script>

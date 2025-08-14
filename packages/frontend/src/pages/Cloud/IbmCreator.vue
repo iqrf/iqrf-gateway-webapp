@@ -17,35 +17,27 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('cloud.ibmCloud.form.title') }}</h1>
-		<v-card>
-			<v-card-title>
-				<v-item-group>
-					<v-btn
-						color='primary'
-						small
-						href='https://github.com/iqrfsdk/iot-starter-kit/blob/master/install/pdf/iqrf-part3c.pdf'
-						target='_blank'
-					>
-						<v-icon small>
-							mdi-file-document
-						</v-icon>
-						{{ $t('cloud.guides.pdf') }}
-					</v-btn> <v-btn
-						color='error'
-						small
-						href='https://youtu.be/xoAReOyrkZ4'
-						target='_blank'
-					>
-						<v-icon small>
-							mdi-youtube
-						</v-icon>
-						{{ $t('cloud.guides.video') }}
-					</v-btn>
-				</v-item-group>
-			</v-card-title>
-			<v-card-text>
+		<CCard>
+			<CCardHeader>
+				<CButton
+					color='primary'
+					size='sm'
+					href='https://github.com/iqrfsdk/iot-starter-kit/blob/master/install/pdf/iqrf-part3c.pdf'
+				>
+					<CIcon :content='cilFile' size='sm' />
+					{{ $t('cloud.guides.pdf') }}
+				</CButton> <CButton
+					color='danger'
+					size='sm'
+					href='https://youtu.be/xoAReOyrkZ4'
+				>
+					<CIcon :content='cibYoutube' size='sm' />
+					{{ $t('cloud.guides.video') }}
+				</CButton>
+			</CCardHeader>
+			<CCardBody>
 				<ValidationObserver v-slot='{invalid}'>
-					<form>
+					<CForm>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required'
@@ -53,11 +45,11 @@ limitations under the License.
 								required: $t("cloud.ibmCloud.errors.organizationId"),
 							}'
 						>
-							<v-text-field
+							<CInput
 								v-model='config.organizationId'
 								:label='$t("cloud.ibmCloud.form.organizationId")'
-								:success='touched ? valid : null'
-								:error-messages='errors'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
@@ -67,11 +59,11 @@ limitations under the License.
 								required: $t("cloud.ibmCloud.errors.deviceType"),
 							}'
 						>
-							<v-text-field
+							<CInput
 								v-model='config.deviceType'
 								:label='$t("cloud.ibmCloud.form.deviceType")'
-								:success='touched ? valid : null'
-								:error-messages='errors'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
@@ -81,11 +73,11 @@ limitations under the License.
 								required: $t("cloud.ibmCloud.errors.deviceId"),
 							}'
 						>
-							<v-text-field
+							<CInput
 								v-model='config.deviceId'
 								:label='$t("cloud.ibmCloud.form.deviceId")'
-								:success='touched ? valid : null'
-								:error-messages='errors'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
@@ -95,11 +87,11 @@ limitations under the License.
 								required: $t("cloud.ibmCloud.errors.token"),
 							}'
 						>
-							<v-text-field
+							<CInput
 								v-model='config.token'
 								:label='$t("cloud.ibmCloud.form.token")'
-								:success='touched ? valid : null'
-								:error-messages='errors'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
@@ -109,53 +101,62 @@ limitations under the License.
 								required: $t("cloud.ibmCloud.errors.eventId"),
 							}'
 						>
-							<v-text-field
+							<CInput
 								v-model='config.eventId'
 								:label='$t("cloud.ibmCloud.form.eventId")'
-								:success='touched ? valid : null'
-								:error-messages='errors'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
-						<v-btn
-							class='mr-1'
+						<CButton
 							color='primary'
 							:disabled='invalid'
 							@click.prevent='save(false)'
 						>
 							{{ $t('forms.save') }}
-						</v-btn>
-						<v-btn
-							color='primary'
+						</CButton> <CButton
+							color='secondary'
 							:disabled='invalid'
 							@click.prevent='save(true)'
 						>
 							{{ $t('forms.saveRestart') }}
-						</v-btn>
-					</form>
+						</CButton>
+					</CForm>
 				</ValidationObserver>
-			</v-card-text>
-		</v-card>
+			</CCardBody>
+		</CCard>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
+import {cibYoutube, cilFile} from '@coreui/icons';
 import {daemonErrorToast, extendedErrorToast} from '@/helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
+import CloudService from '@/services/CloudService';
+import ServiceService from '@/services/ServiceService';
 
 import {AxiosError} from 'axios';
-import {useApiClient} from '@/services/ApiClient';
-import type {
-	IbmCloudConfig
-} from '@iqrf/iqrf-gateway-webapp-client/types/Cloud';
+import {IIbmCloud} from '@/interfaces/Clouds';
 
 @Component({
 	components: {
+		CButton,
+		CCard,
+		CCardBody,
+		CCardHeader,
+		CForm,
+		CInput,
 		ValidationObserver,
 		ValidationProvider
 	},
+	data: () => ({
+		cibYoutube,
+		cilFile,
+	}),
 	metaInfo: {
 		title: 'cloud.ibmCloud.form.title',
 	},
@@ -165,11 +166,15 @@ import type {
  * Ibm cloud mqtt connection configuration creator card
  */
 export default class IbmCreator extends Vue {
+	/**
+	 * @constant {string} serviceName Ibm cloud service name
+	 */
+	private serviceName = 'ibmCloud';
 
 	/**
-	 * @var {IbmCloudConfig} config Ibm cloud connection configuration
+	 * @var {IIbmCloud} config Ibm cloud connection configuration
 	 */
-	private config: IbmCloudConfig = {
+	private config: IIbmCloud = {
 		organizationId: '',
 		deviceType: '',
 		deviceId: '',
@@ -190,10 +195,10 @@ export default class IbmCreator extends Vue {
 	 */
 	private save(restart: boolean): void {
 		this.$store.commit('spinner/SHOW');
-		useApiClient().getCloudServices().getIbmService().createMqttInstance(this.config)
+		CloudService.create(this.serviceName, this.config)
 			.then(async () => {
 				if (restart) {
-					await useApiClient().getServiceService().restart('iqrf-gateway-daemon')
+					await ServiceService.restart('iqrf-gateway-daemon')
 						.then(() => {
 							this.$toast.success(
 								this.$t('service.iqrf-gateway-daemon.messages.restart')

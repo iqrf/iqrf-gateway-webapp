@@ -16,11 +16,13 @@ limitations under the License.
 -->
 <template>
 	<TheWizard>
-		<v-card class='p-4'>
-			<v-card-title>{{ $t('core.sign.in.title') }}</v-card-title>
-			<v-card-text>
+		<CCard class='p-4'>
+			<h1 class='text-center'>
+				{{ $t('core.sign.in.title') }}
+			</h1>
+			<CCardBody>
 				<ValidationObserver v-slot='{ invalid }'>
-					<form @submit.prevent='handleSubmit'>
+					<CForm @submit.prevent='handleSubmit'>
 						<ValidationProvider
 							v-slot='{ valid, touched, errors }'
 							rules='required'
@@ -28,16 +30,19 @@ limitations under the License.
 								required: $t("core.sign.in.messages.username"),
 							}'
 						>
-							<v-text-field
+							<CInput
 								id='username'
-								v-model='credentials.username'
-								:label='$t("forms.fields.username")'
-								:placeholder='$t("forms.fields.username")'
+								v-model='username'
+								:label='$t("forms.fields.username").toString()'
+								:placeholder='$t("forms.fields.username").toString()'
 								autocomplete='username'
-								:success='touched ? valid : null'
-								:error-messages='errors'
-								prepend-icon='mdi-account'
-							/>
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='errors.join(", ")'
+							>
+								<template #prepend-content>
+									<CIcon :content='cilUser' />
+								</template>
+							</CInput>
 						</ValidationProvider>
 						<ValidationProvider
 							v-slot='{ valid, touched, errors }'
@@ -46,50 +51,73 @@ limitations under the License.
 								required: $t("core.sign.in.messages.password")
 							}'
 						>
-							<v-text-field
+							<PasswordInput
 								id='password'
-								v-model='credentials.password'
-								:label='$t("forms.fields.password")'
-								:placeholder='$t("forms.fields.password")'
-								type='password'
+								v-model='password'
+								:label='$t("forms.fields.password").toString()'
+								:placeholder='$t("forms.fields.password").toString()'
 								autocomplete='password'
-								:success='touched ? valid : null'
-								:error-messages='errors'
-								prepend-icon='mdi-lock-open-outline'
-							/>
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='errors.join(", ")'
+							>
+								<template #prepend-content>
+									<CIcon :content='cilLockLocked' />
+								</template>
+							</PasswordInput>
 						</ValidationProvider>
 						<div style='display: flex; justify-content: space-between;'>
-							<v-btn color='primary' type='submit' :disabled='invalid'>
+							<CButton color='primary' type='submit' :disabled='invalid'>
 								{{ $t('core.sign.in.send') }}
-							</v-btn>
-							<v-btn text to='/account/recovery'>
+							</CButton>
+							<CLink
+								to='/account/recovery'
+							>
 								{{ $t('core.sign.in.recoverPassword') }}
-							</v-btn>
+							</CLink>
 						</div>
-					</form>
+					</CForm>
 				</ValidationObserver>
-			</v-card-text>
-		</v-card>
+			</CCardBody>
+		</CCard>
 	</TheWizard>
 </template>
 
 <script lang='ts'>
-import {UserCredentials} from '@iqrf/iqrf-gateway-webapp-client/types';
-import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {required} from 'vee-validate/dist/rules';
 import {Component, Vue} from 'vue-property-decorator';
+import {CButton, CContainer, CCard, CCardBody, CCol, CForm, CIcon, CInput, CLink, CRow} from '@coreui/vue/src';
+import {cilUser, cilLockLocked} from '@coreui/icons';
+import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+
+import {required} from 'vee-validate/dist/rules';
 
 import PasswordInput from '@/components/Core/PasswordInput.vue';
 import TheWizard from '@/components/TheWizard.vue';
+
 import {sleep} from '@/helpers/sleep';
+
+import {UserCredentials} from '@/services/AuthenticationService';
 
 @Component({
 	components: {
+		CButton,
+		CContainer,
+		CCard,
+		CCardBody,
+		CCol,
+		CForm,
+		CIcon,
+		CInput,
+		CLink,
+		CRow,
 		PasswordInput,
 		TheWizard,
 		ValidationObserver,
 		ValidationProvider,
 	},
+	data: () => ({
+		cilLockLocked,
+		cilUser,
+	}),
 	metaInfo: {
 		title: 'core.sign.in.title',
 	},
@@ -99,6 +127,10 @@ import {sleep} from '@/helpers/sleep';
  * Sign in page component
  */
 export default class SignIn extends Vue {
+	/**
+	 * @var {string} password User password
+	 */
+	private password = '';
 
 	/**
 	 * @var {boolean} submitted Indicates whether the login information have been submitted
@@ -106,13 +138,9 @@ export default class SignIn extends Vue {
 	private submitted = false;
 
 	/**
-	 * @property {UserCredentials} credentials User credentials
-   * @private
-   */
-	private credentials: UserCredentials = {
-		username: '',
-		password: '',
-	};
+	 * @var {string} username User name
+	 */
+	private username = '';
 
 	/**
 	 * Vue lifecycle hook created
@@ -126,7 +154,8 @@ export default class SignIn extends Vue {
 	 * Attempts to log in and retrieve features available for the user's role
 	 */
 	private handleSubmit(): void {
-		this.$store.dispatch('user/signIn', this.credentials)
+		const credentials = new UserCredentials(this.username, this.password);
+		this.$store.dispatch('user/signIn', credentials)
 			.then(async () => {
 				await sleep(500);
 				let destination = (this.$route.query.redirect as string|undefined) ?? '/';

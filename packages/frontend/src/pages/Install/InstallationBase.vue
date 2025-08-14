@@ -16,22 +16,22 @@ limitations under the License.
 -->
 <template>
 	<TheWizard>
-		<v-card v-if='!stepBlacklist.includes($route.path)' class='mb-5'>
-			<v-card-text>
-				<InstallWizardStepProgress ref='progress' class='progress-position' />
-			</v-card-text>
-		</v-card>
+		<CCard v-if='!stepBlacklist.includes($route.path)'>
+			<InstallWizardStepProgress ref='progress' class='progress-position' />
+		</CCard>
 		<router-view @next-step='next' />
 	</TheWizard>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
+import {CCard} from '@coreui/vue/src';
 import InstallWizardStepProgress from '@/components/Install/InstallWizardStepProgress.vue';
 import TheWizard from '@/components/TheWizard.vue';
 
 @Component({
 	components: {
+		CCard,
 		InstallWizardStepProgress,
 		TheWizard,
 	},

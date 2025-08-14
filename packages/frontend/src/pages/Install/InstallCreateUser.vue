@@ -16,18 +16,18 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<v-card>
-			<v-card-title>{{ $t('install.createUser.title') }}</v-card-title>
-			<v-card-text>
-				<v-overlay
+		<CCard>
+			<CCardHeader>{{ $t('install.createUser.title') }}</CCardHeader>
+			<CCardBody>
+				<CElementCover
 					v-if='running'
-					:opacity='0.65'
-					absolute
+					:opacity='0.75'
+					style='z-index: 10000;'
 				>
-					<v-progress-circular color='primary' indeterminate />
-				</v-overlay>
+					<CSpinner color='primary' />
+				</CElementCover>
 				<ValidationObserver v-slot='{invalid}'>
-					<v-form @submit.prevent='handleSubmit'>
+					<CForm @submit.prevent='handleSubmit'>
 						<div class='form-group'>
 							{{ $t('install.createUser.note') }}
 						</div>
@@ -38,12 +38,12 @@ limitations under the License.
 								required: $t("forms.errors.username"),
 							}'
 						>
-							<v-text-field
+							<CInput
 								id='username'
 								v-model='user.username'
 								:label='$t("forms.fields.username").toString()'
-								:success='touched ? valid : null'
-								:error-messages='errors'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
@@ -53,12 +53,12 @@ limitations under the License.
 								email: $t("forms.errors.emailFormat"),
 							}'
 						>
-							<v-text-field
+							<CInput
 								id='email'
 								v-model='user.email'
 								:label='$t("forms.fields.email").toString()'
-								:success='touched ? valid : null'
-								:error-messages='errors'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
@@ -72,47 +72,45 @@ limitations under the License.
 								id='password'
 								v-model='user.password'
 								:label='$t("forms.fields.password").toString()'
-								:success='touched ? valid : null'
-								:error-messages='errors'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
-						<v-btn
-							color='primary'
-							type='submit'
-							:disabled='invalid'
-						>
+						<CButton color='primary' type='submit' :disabled='invalid'>
 							{{ $t('install.createUser.createButton') }}
-						</v-btn>
-					</v-form>
+						</CButton>
+					</CForm>
 				</ValidationObserver>
-			</v-card-text>
-		</v-card>
+			</CCardBody>
+		</CCard>
 	</div>
 </template>
 
 <script lang='ts'>
-import {
-	EmailSentResponse,
-	UserCreate,
-	UserCredentials,
-	UserLanguage,
-	UserRole
-} from '@iqrf/iqrf-gateway-webapp-client/types';
-import {AxiosError} from 'axios';
+import {Component, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput, CSpinner} from '@coreui/vue/src';
+import {AxiosError, AxiosResponse} from 'axios';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
-import {Component, Vue} from 'vue-property-decorator';
 
 import PasswordInput from '@/components/Core/PasswordInput.vue';
-
-import {email} from '@/helpers/validators';
-import {sleep} from '@/helpers/sleep';
 import {extendedErrorToast} from '@/helpers/errorToast';
-import UrlBuilder from '@/helpers/urlBuilder';
-import {useApiClient} from '@/services/ApiClient';
+import {sleep} from '@/helpers/sleep';
+import {email} from '@/helpers/validators';
+import {IUser} from '@/interfaces/Core/User';
+import {UserCredentials, UserLanguage, UserRole} from '@/services/AuthenticationService';
+import UserService from '@/services/UserService';
 
 @Component({
 	components: {
+		CButton,
+		CCard,
+		CCardBody,
+		CCardHeader,
+		CElementCover,
+		CForm,
+		CInput,
+		CSpinner,
 		PasswordInput,
 		ValidationObserver,
 		ValidationProvider,
@@ -127,15 +125,14 @@ import {useApiClient} from '@/services/ApiClient';
  */
 export default class InstallCreateUser extends Vue {
 	/**
-	 * @var {UserCreate} user User
+	 * @var {IUser} user User
 	 */
-	private user: UserCreate = {
+	private user: IUser = {
 		username: '',
 		password: '',
 		email: '',
-		language: UserLanguage.English,
-		role: UserRole.Admin,
-		baseUrl: new UrlBuilder().getBaseUrl(),
+		language: UserLanguage.ENGLISH,
+		role: UserRole.ADMIN,
 	};
 
 	/**
@@ -156,17 +153,14 @@ export default class InstallCreateUser extends Vue {
 	 */
 	private handleSubmit(): void {
 		this.running = true;
-		useApiClient().getSecurityServices().getUserService().create(this.user)
-			.then((response: EmailSentResponse) => {
-				if (response.emailSent) {
+		UserService.add(this.user)
+			.then((response: AxiosResponse) => {
+				if (response.data.emailSent === true) {
 					this.$toast.success(
 						this.$t('core.user.messages.verifyNotice').toString()
 					);
 				}
-				const credentials: UserCredentials = {
-					username: this.user.username,
-					password: this.user.password as string,
-				};
+				const credentials = new UserCredentials(this.user.username, (this.user.password as string));
 				this.$store.dispatch('user/signIn', credentials)
 					.then(async () => {
 						await sleep(500);

@@ -22,34 +22,35 @@ limitations under the License.
 			required: $t("network.connection.errors.interface"),
 		}'
 	>
-		<v-select
-			v-model='interface'
+		<CSelect
+			:value.sync='interface'
 			:label='$t("network.connection.interface").toString()'
 			:placeholder='$t("network.connection.errors.interface").toString()'
-			:items='options'
-			:success='touched ? valid : null'
-			:error-messages='errors'
+			:options='options'
+			:is-valid='touched ? valid : null'
+			:invalid-feedback='errors.join(", ")'
 		/>
 	</ValidationProvider>
 </template>
 
 <script lang='ts'>
 import {Component, VModel, Vue} from 'vue-property-decorator';
+import {CSelect} from '@coreui/vue/src';
 import {extend, ValidationProvider} from 'vee-validate';
 
-import {extendedErrorToast} from '@/helpers/errorToast';
+import {IOption} from '@/interfaces/Coreui';
 import {required} from 'vee-validate/dist/rules';
-
+import NetworkInterfaceService from '@/services/NetworkInterfaceService';
 import {AxiosError} from 'axios';
-import {ISelectItem} from '@/interfaces/Vuetify';
-import {Modem} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
-import {useApiClient} from '@/services/ApiClient';
+import {extendedErrorToast} from '@/helpers/errorToast';
+import {IModem} from '@/interfaces/Network/Mobile';
 
 /**
  * GSM modem select field
  */
 @Component({
 	components: {
+		CSelect,
 		ValidationProvider,
 	},
 })
@@ -61,9 +62,9 @@ export default class GsmModemInput extends Vue {
 	@VModel({required: true}) interface!: string;
 
 	/**
-	 * @property {Array<IOption>} options Interface select options
+	 * @property {Array<IOption>} options Array of CoreUI interface options
 	 */
-	private options: Array<ISelectItem> = [];
+	private options: Array<IOption> = [];
 
 	/**
 	 * Initializes validation rules
@@ -73,14 +74,14 @@ export default class GsmModemInput extends Vue {
 	}
 
 	protected mounted(): void {
-		useApiClient().getNetworkServices().getModemService().list()
-			.then((modems: Array<Modem>) => {
-				modems.forEach((item: Modem) => {
+		NetworkInterfaceService.listModems()
+			.then((modems: Array<IModem>) => {
+				modems.forEach((item: IModem) => {
 					let label = item.interface;
 					if (item.manufacturer !== null && item.model !== null) {
 						label += ' (' + item.manufacturer + ' ' + item.model + ')';
 					}
-					this.options.push({text: label, value: item.interface});
+					this.options.push({label: label, value: item.interface});
 				});
 			})
 			.catch((error: AxiosError) => {

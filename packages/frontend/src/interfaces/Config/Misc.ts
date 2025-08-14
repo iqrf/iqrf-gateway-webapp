@@ -110,6 +110,48 @@ export interface IIqrfRepository extends ComponentInstanceBase {
 }
 
 /**
+ * IQRF repository access configuration
+ */
+export interface IIqrfRepositoryConfig {
+	/**
+	 * Repository API endpoint
+	 */
+	apiEndpoint: string
+
+	/**
+	 * Repository credentials
+	 */
+	credentials: IIqrfRepositoryCredentials
+}
+
+/**
+ * IQRF Repository credentials
+ */
+export interface IIqrfRepositoryCredentials {
+	/**
+	 * Username
+	 */
+	username: string|null
+
+	/**
+	 * Password
+	 */
+	password: string|null
+}
+
+/**
+ * Syslog logging service component instance interface
+ */
+export interface ISyslogLogger extends ComponentInstanceBase {
+
+	/**
+	 * Array of verbosity levels for different channels
+	 */
+	VerbosityLevels: Array<ITraceVerbosityLevel>
+
+}
+
+/**
  * Logging service component instance interface
  */
 export interface ITraceService extends ComponentInstanceBase {
@@ -162,4 +204,64 @@ export interface ITraceVerbosityLevel {
 	 * Verbosity severity
 	 */
 	level: string
+}
+
+/**
+ * OTA upload configuration instance interface
+ */
+export interface IOtaUploadConfig {
+	/**
+	 * Component name
+	 */
+	component: string
+
+	/**
+	 * Component instance name
+	 */
+	instance: string
+
+	/**
+	 * Upload path
+	 */
+	uploadPath: string
+
+	/**
+	 * Upload suffix
+	 */
+	uploadPathSuffix: string
+}
+
+/**
+ * IQRF Info component instance interface
+ */
+export interface IIqrfInfo {
+	/**
+	 * Component name
+	 */
+	component: string
+
+	/**
+	 * Component instance name
+	 */
+	instance: string
+
+	/**
+	 * Enumerate network after startup?
+	 */
+	enumAtStartUp: boolean
+
+	/**
+	 * Enumeration period in minutes
+	 */
+	enumPeriod: number
+
+	/**
+	 * Uniform DPA version and OS build according to coordinator?
+	 */
+	enumUniformDpaVer: boolean
+
+	/**
+	 * Include metadata in messages?
+	 */
+	metaDataToMessages?: boolean
 }

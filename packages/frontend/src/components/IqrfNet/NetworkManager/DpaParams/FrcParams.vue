@@ -15,41 +15,37 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-card flat tile>
-		<v-card-title>{{ $t('iqrfnet.networkManager.dpaParams.frcParams.title') }}</v-card-title>
-		<v-card-text>
-			<v-form>
-				<v-select
-					v-model='responseTime'
-					:items='responseTimeOptions'
+	<CCard class='border-0 card-margin-bottom'>
+		<CCardBody>
+			<CCardTitle>{{ $t('iqrfnet.networkManager.dpaParams.frcParams.title') }}</CCardTitle>
+			<CForm>
+				<CSelect
+					:value.sync='responseTime'
+					:options='responseTimeOptions'
 					:label='$t("iqrfnet.networkManager.dpaParams.frcParams.responseTime")'
-					:hint='$t("iqrfnet.networkManager.dpaParams.frcParams.notes.responseTime")'
-					persistent-hint
+					:description='$t("iqrfnet.networkManager.dpaParams.frcParams.notes.responseTime")'
 				/>
-				<v-checkbox
-					v-model='offlineFrc'
-					class='mb-2'
+				<CInputCheckbox
+					:checked.sync='offlineFrc'
 					:label='$t("iqrfnet.networkManager.dpaParams.frcParams.offlineFrc")'
-					:hint='$t("iqrfnet.networkManager.dpaParams.frcParams.notes.offlineFrc")'
-					persistent-hint
-					dense
+					:description='$t("iqrfnet.networkManager.dpaParams.frcParams.notes.offlineFrc")'
 				/>
-				<v-btn
+				<CButton
 					class='mr-1'
 					color='primary'
 					@click='getFrcParams'
 				>
 					{{ $t('forms.get') }}
-				</v-btn>
-				<v-btn
+				</CButton>
+				<CButton
 					color='primary'
 					@click='setFrcParams'
 				>
 					{{ $t('forms.set') }}
-				</v-btn>
-			</v-form>
-		</v-card-text>
-	</v-card>
+				</CButton>
+			</CForm>
+		</CCardBody>
+	</CCard>
 </template>
 
 <script lang='ts'>
@@ -60,13 +56,17 @@ import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 import IqmeshNetworkService from '@/services/DaemonApi/IqmeshNetworkService';
 
-import {ISelectItem} from '@/interfaces/Vuetify';
+import {IOption} from '@/interfaces/Coreui';
 import {MutationPayload} from 'vuex';
 
 /**
  * DPA params FRC params component
  */
-@Component
+@Component({
+	components: {
+
+	},
+})
 export default class FrcParams extends Vue {
 	/**
 	 * @var {string} msgId Daemon API msg ID
@@ -90,14 +90,14 @@ export default class FrcParams extends Vue {
 
 	/**
 	 * Generates FRC response time options for select component
-	 * @return {Array<ISelectItem>} FRC response time select options
+	 * @return {Array<IOption>} FRC response time select options
 	 */
-	get responseTimeOptions(): Array<ISelectItem> {
-		const options: Array<ISelectItem> = [];
+	get responseTimeOptions(): Array<IOption> {
+		const options: Array<IOption> = [];
 		Object.values(FrcResponseTime).filter((v): v is number => Number.isInteger(v))
 			.forEach((item: number) => {
 				options.push({
-					text: this.$t('iqrfnet.networkManager.dpaParams.frcParams.responseTimes.' + item).toString(),
+					label: this.$t('iqrfnet.networkManager.dpaParams.frcParams.responseTimes.' + item).toString(),
 					value: item,
 				});
 			});

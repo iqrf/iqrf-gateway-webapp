@@ -17,86 +17,97 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('core.security.apiKey.title') }}</h1>
-		<v-card>
-			<v-card-text>
-				<v-data-table
-					:loading='loading'
-					:headers='headers'
-					:items='keys'
-					:no-data-text='$t("table.messages.noRecords")'
+		<CCard>
+			<CCardHeader class='border-0'>
+				<CButton
+					color='success'
+					size='sm'
+					class='float-right'
+					to='/security/api-key/add'
 				>
-					<template #top>
-						<v-toolbar dense flat>
-							<v-spacer />
-							<v-btn
-								color='success'
-								small
-								to='/security/api-key/add'
+					<CIcon :content='cilPlus' size='sm' />
+					{{ $t('table.actions.add') }}
+				</CButton>
+			</CCardHeader>
+			<CCardBody>
+				<CDataTable
+					:loading='loading'
+					:fields='fields'
+					:items='keys'
+					:pagination='true'
+					:items-per-page='20'
+					:column-filter='true'
+					:striped='true'
+					:sorter='{external: false, resetable: true}'
+				>
+					<template #no-items-view='{}'>
+						{{ $t('table.messages.noRecords') }}
+					</template>
+					<template #expiration='{item}'>
+						<td>
+							{{ item.expiration === null ? $t('core.security.apiKey.noExpiration') : timeString(item) }}
+						</td>
+					</template>
+					<template #actions='{item}'>
+						<td class='col-actions'>
+							<CButton
+								class='mr-1'
+								color='info'
+								size='sm'
+								:to='"/security/api-key/edit/" + item.id'
 							>
-								<v-icon small>
-									mdi-plus
-								</v-icon>
-								{{ $t('table.actions.add') }}
-							</v-btn>
-						</v-toolbar>
+								<CIcon :content='cilPencil' size='sm' />
+								{{ $t('table.actions.edit') }}
+							</CButton>
+							<CButton
+								color='danger'
+								size='sm'
+								@click='showDeleteModal(item)'
+							>
+								<CIcon :content='cilTrash' size='sm' />
+								{{ $t('table.actions.delete') }}
+							</CButton>
+						</td>
 					</template>
-					<template #[`item.expiration`]='{item}'>
-						{{ item.expiration !== null ? timeString(item) : $t('core.security.apiKey.noExpiration') }}
-					</template>
-					<template #[`item.actions`]='{item}'>
-						<v-btn
-							class='mr-1'
-							color='info'
-							small
-							:to='"/security/api-key/edit/" + item.id'
-						>
-							<v-icon small>
-								mdi-pencil
-							</v-icon>
-							{{ $t('table.actions.edit') }}
-						</v-btn>
-						<v-btn
-							color='error'
-							small
-							@click='deleteKey(item)'
-						>
-							<v-icon small>
-								mdi-delete
-							</v-icon>
-							{{ $t('table.actions.delete') }}
-						</v-btn>
-					</template>
-				</v-data-table>
-			</v-card-text>
-		</v-card>
-		<ApiKeyDeleteModal
-			v-model='keyDeleteModel'
-			@deleted='getKeys'
-		/>
+				</CDataTable>
+			</CCardBody>
+		</CCard>
+		<ApiKeyDeleteModal ref='deleteModal' @deleted='getKeys' />
 	</div>
 </template>
 
 <script lang='ts'>
-import {ApiKeyInfo} from '@iqrf/iqrf-gateway-webapp-client/types/Security';
-import {AxiosError} from 'axios';
-import {DateTime} from 'luxon';
 import {Component, Vue} from 'vue-property-decorator';
-import {DataTableHeader} from 'vuetify';
-
+import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CIcon} from '@coreui/vue/src';
 import ApiKeyDeleteModal from '@/components/Core/ApiKeyDeleteModal.vue';
+
+import ApiKeyService from '@/services/ApiKeyService';
+import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
+import {DateTime} from 'luxon';
 import {extendedErrorToast} from '@/helpers/errorToast';
-import {useApiClient} from '@/services/ApiClient';
+
+import {AxiosError, AxiosResponse} from 'axios';
+import {IApiKey} from '@/interfaces/Core/ApiKey';
+import {IField} from '@/interfaces/Coreui';
 
 @Component({
 	components: {
+		CButton,
+		CCard,
+		CCardBody,
+		CCardHeader,
+		CDataTable,
+		CIcon,
 		ApiKeyDeleteModal,
 	},
 	data: () => ({
-		DATETIME_FULL: DateTime.DATETIME_FULL,
+		cilPencil,
+		cilPlus,
+		cilTrash,
 	}),
 	metaInfo: {
-		title: 'core.security.apiKey.title',
-	},
+		title: 'core.security.apiKey.title'
+	}
 })
 
 /**
@@ -109,39 +120,33 @@ export default class ApiKeyList extends Vue {
 	private loading = false;
 
 	/**
-	 * @var {ApiKeyInfo[]} keys List of API key objects
+	 * @constant {Array<IField>} fields Array of CoreUI data table columns
 	 */
-	private keys: ApiKeyInfo[] = [];
-
-	/**
-	 * @var {ApiKeyInfo|null} keyDeleteModel Key to delete
-	 */
-	private keyDeleteModel: ApiKeyInfo|null = null;
-
-	/**
-	 * @constant {Array<DataTableHeader>} headers Data table headers
-	 */
-	private headers: Array<DataTableHeader> = [
+	private fields: Array<IField> = [
 		{
-			value: 'id',
-			text: this.$t('core.security.apiKey.form.id').toString(),
+			key: 'id',
+			label: this.$t('core.security.apiKey.form.id'),
 		},
 		{
-			value: 'description',
-			text: this.$t('core.security.apiKey.form.description').toString(),
+			key: 'description',
+			label: this.$t('core.security.apiKey.form.description'),
 		},
 		{
-			value: 'expiration',
-			text: this.$t('core.security.apiKey.form.expiration').toString(),
+			key: 'expiration',
+			label: this.$t('core.security.apiKey.form.expiration'),
 		},
 		{
-			value: 'actions',
-			text: this.$t('table.actions.title').toString(),
-			filterable: false,
-			sortable: false,
-			align: 'end',
+			key: 'actions',
+			label: this.$t('table.actions.title'),
+			filter: false,
+			sorter: false,
 		},
 	];
+
+	/**
+	 * @var {Array<IApiKey>} keys List of API key objects
+	 */
+	private keys: Array<IApiKey> = [];
 
 	/**
 	 * Vue lifecycle hook created
@@ -155,9 +160,9 @@ export default class ApiKeyList extends Vue {
 	 */
 	private getKeys(): Promise<void> {
 		this.loading = true;
-		return useApiClient().getSecurityServices().getApiKeyService().list()
-			.then((response: ApiKeyInfo[]) => {
-				this.keys = response;
+		return ApiKeyService.getApiKeys()
+			.then((response: AxiosResponse) => {
+				this.keys = response.data;
 				this.loading = false;
 			})
 			.catch((error: AxiosError) => {
@@ -170,16 +175,16 @@ export default class ApiKeyList extends Vue {
 	 * Converts expiration date and time from UTC to locale string
 	 * @returns {string} Expiration date and time in locale format
 	 */
-	private timeString(item: ApiKeyInfo): string {
-		return item.expiration!.toLocaleString(DateTime.DATETIME_FULL);
+	private timeString(item: IApiKey): string {
+		return DateTime.fromISO(item.expiration).toLocaleString(DateTime.DATETIME_FULL);
 	}
 
 	/**
 	 * Opens delete modal with API key
-	 * @param {ApiKeyInfo} key API key
+	 * @param {IApiKey} key API key
 	 */
-	private deleteKey(key: ApiKeyInfo) {
-		this.keyDeleteModel = key;
+	private showDeleteModal(key: IApiKey) {
+		(this.$refs.deleteModal as ApiKeyDeleteModal).showModal(key);
 	}
 }
 </script>

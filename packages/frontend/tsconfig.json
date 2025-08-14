@@ -12,20 +12,21 @@
 		"noEmit": true,
 		"noImplicitAny": false,
 		"paths": {
-			"@iqrf/iqrf-gateway-daemon-utils": [
-				"../daemon-utils"
-			],
 			"@/*": [
 				"./src/*"
 			]
 		},
-		"rootDir": "./"
+		"rootDir": "./",
+		"types": [
+			"node",
+			"vuex/types/vue.d.ts"
+		]
 	},
 	"include": [
 		"src/**/*.ts",
 		"src/**/*.d.ts",
 		"src/**/*.vue",
-		"vite.config.mts"
+		"vue.config.js"
 	],
 	"exclude": [
 		"cypress",

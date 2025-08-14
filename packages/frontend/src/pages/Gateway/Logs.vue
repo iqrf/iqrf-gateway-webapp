@@ -21,98 +21,85 @@ limitations under the License.
 				{{ $t('gateway.log.title') }}
 			</h1>
 			<div>
-				<v-btn
+				<CButton
 					color='primary'
 					@click='downloadArchive'
 				>
-					<v-icon>mdi-download</v-icon>
 					{{ $t('gateway.log.download') }}
-				</v-btn> <v-btn
+				</CButton> <CButton
 					color='primary'
 					@click='getAvailableLogs'
 				>
-					<v-icon>mdi-refresh</v-icon>
 					{{ $t('forms.refresh') }}
-				</v-btn>
+				</CButton>
 			</div>
 		</header>
-		<v-card>
-			<v-tabs v-model='tab' :show-arrows='true'>
-				<v-tab v-for='key in Object.keys(logs)' :key='key'>
-					{{ $t(`gateway.log.services.${key}`) }}
-				</v-tab>
-				<v-tab>
-					{{ $t('gateway.log.journal.title') }}
-				</v-tab>
-			</v-tabs>
-			<v-divider />
-			<v-tabs-items v-model='tab'>
-				<v-tab-item
-					v-for='(item, i) in logs'
-					:key='i'
-					:transition='false'
+		<CCard>
+			<CTabs :active-tab.sync='tab'>
+				<CTab
+					v-for='(item, key) in logs'
+					:key='key'
+					:title='$t(`gateway.log.services.${key}`)'
 				>
-					<v-card
+					<CCard
 						v-if='!item.available || !item.loaded || item.log.length === 0'
-						flat
-						tile
+						class='border-0 mb-0'
 					>
-						<v-card-text>
-							<v-alert
+						<CCardBody>
+							<CAlert
 								v-if='!item.available'
 								class='mb-0'
-								type='error'
-								text
+								color='danger'
 							>
 								{{ $t('gateway.log.messages.notAvailable') }}
-							</v-alert>
-							<v-alert
+							</CAlert>
+							<CAlert
 								v-else-if='!item.loaded'
 								class='mb-0'
-								type='warning'
-								text
+								color='warning'
 							>
 								{{ $t('gateway.log.messages.notLoaded') }}
-							</v-alert>
-							<v-alert
+							</CAlert>
+							<CAlert
 								v-else-if='item.log.length === 0'
 								class='mb-0'
-								type='info'
-								text
+								color='info'
 							>
 								{{ $t('gateway.log.messages.noLogs') }}
-							</v-alert>
-						</v-card-text>
-					</v-card>
-					<LogViewer v-else :log.sync='item.log' />
-				</v-tab-item>
-				<v-tab-item
-					key='journal'
-					:transition='false'
-				>
+							</CAlert>
+						</CCardBody>
+					</CCard>
+					<LogViewer v-else :log='item.log' />
+				</CTab>
+				<CTab :title='$t("gateway.log.journal.title")'>
 					<JournalViewer v-if='tab === Object.keys(logs).length' />
-				</v-tab-item>
-			</v-tabs-items>
-		</v-card>
+				</CTab>
+			</CTabs>
+		</CCard>
 	</div>
 </template>
 
 <script lang='ts'>
-import { LogService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
-import { FileResponse } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { FileDownloader } from '@iqrf/iqrf-gateway-webapp-client/utils';
-import { AxiosError } from 'axios';
-import { Component, Vue, Watch } from 'vue-property-decorator';
-import { MetaInfo } from 'vue-meta';
-
+import {Component, Vue, Watch} from 'vue-property-decorator';
+import {CButton, CCard, CTab, CTabs} from '@coreui/vue/src';
 import JournalViewer from '@/components/Gateway/JournalViewer.vue';
 import LogViewer from '@/components/Gateway/LogViewer.vue';
-import { extendedErrorToast } from '@/helpers/errorToast';
-import { ILog } from '@/interfaces/Gateway/Log';
-import { useApiClient } from '@/services/ApiClient';
+
+import {extendedErrorToast} from '@/helpers/errorToast';
+import {fileDownloader} from '@/helpers/fileDownloader';
+
+import GatewayService from '@/services/GatewayService';
+
+import {AxiosError, AxiosResponse} from 'axios';
+import {ILog} from '@/interfaces/Gateway/Log';
+import {MetaInfo} from 'vue-meta';
 
 @Component({
 	components: {
+		CButton,
+		CCard,
+		CTab,
+		CTabs,
 		JournalViewer,
 		LogViewer,
 	},
@@ -158,11 +145,6 @@ export default class Logs extends Vue {
 		},
 	};
 
-	/**
-	 * @property {LogService} service Log service
-	 */
-	private service: LogService = useApiClient().getGatewayServices().getLogService();
-
 	@Watch('tab')
 	private onTabChanged(): void {
 		this.getServiceLog();
@@ -180,13 +162,16 @@ export default class Logs extends Vue {
 	 */
 	private getAvailableLogs(): void {
 		this.$store.commit('spinner/SHOW');
-		this.service.listAvailable()
-			.then((response: string[]) => {
-				if (response.length === 0) {
+		GatewayService.getAvailableLogs()
+			.then((response: AxiosResponse) => {
+				if (response.data.length === 0) {
 					this.$store.commit('spinner/HIDE');
 					return;
 				}
-				response.forEach((item: string) => {
+				response.data.forEach((item: string) => {
+					if (this.logs[item] === undefined) {
+						return;
+					}
 					this.logs[item].available = true;
 				});
 				this.$store.commit('spinner/HIDE');
@@ -212,9 +197,9 @@ export default class Logs extends Vue {
 		if (!this.$store.getters['spinner/isEnabled']) {
 			this.$store.commit('spinner/SHOW');
 		}
-		this.service.getServiceLog(service)
-			.then((response: string) => {
-				this.logs[service].log = response;
+		GatewayService.getServiceLog(service)
+			.then((response: AxiosResponse) => {
+				this.logs[service].log = response.data;
 				this.logs[service].loaded = true;
 				this.$store.commit('spinner/HIDE');
 			})
@@ -233,12 +218,13 @@ export default class Logs extends Vue {
 	 */
 	private downloadArchive(): void {
 		this.$store.commit('spinner/SHOW');
-		this.service.exportLogs()
-			.then((response: FileResponse<Blob>) => {
-				FileDownloader.downloadFileResponse(response);
+		GatewayService.getLogArchive().then(
+			(response: AxiosResponse) => {
+				const file = fileDownloader(response, 'application/zip', 'iqrf-gateway-logs.zip');
 				this.$store.commit('spinner/HIDE');
-			})
-			.catch(() => (this.$store.commit('spinner/HIDE')));
+				file.click();
+			}
+		).catch(() => (this.$store.commit('spinner/HIDE')));
 	}
 }
 </script>

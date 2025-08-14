@@ -15,184 +15,99 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<div>
-		<h5>{{ $t('network.operators.title') }}</h5>
-		<v-dialog
-			v-model='show'
-			width='50%'
-			persistent
-			no-click-animation
-		>
-			<template #activator='{attrs, on}'>
-				<v-btn
-					color='primary'
-					v-bind='attrs'
-					v-on='on'
-					@click='openModal'
+	<div class='form-group'>
+		<h4>{{ $t('network.operators.title') }}</h4>
+		<CButtonGroup class='flex-wrap'>
+			<CButton
+				color='success'
+				size='sm'
+				@click='addOperator'
+			>
+				<CIcon :content='cilPlus' />
+			</CButton>
+			<CDropdown
+				v-for='(operator, i) of operators'
+				:key='i'
+				:toggler-text='operator.getName()'
+				color='primary'
+				placement='top-start'
+			>
+				<CDropdownItem
+					v-if='$route.path.includes("network/mobile/add") || $route.path.includes("network/mobile/edit")'
+					@click='$emit("apply", operator)'
 				>
-					{{ $t('network.operators.browse') }}
-				</v-btn>
-			</template>
-			<v-card>
-				<v-card-title>
-					{{ $t('network.operators.title') }}
-					<v-spacer />
-					<v-btn
-						class='mr-1'
-						color='success'
-						small
-						@click='operatorFormModel = {name: "", apn: "", username: "", password: ""}'
-					>
-						<v-icon small>
-							mdi-plus
-						</v-icon>
-					</v-btn>
-					<v-btn
-						color='primary'
-						small
-						@click='getOperators'
-					>
-						<v-icon small>
-							mdi-refresh
-						</v-icon>
-					</v-btn>
-				</v-card-title>
-				<v-card-text>
-					<v-data-table
-						:loading='loading'
-						:headers='headers'
-						:items='operators'
-					>
-						<template #[`item.actions`]='{item}'>
-							<v-btn
-								v-if='allowSet'
-								class='mr-1'
-								color='primary'
-								small
-								@click='setOperator(item)'
-							>
-								<v-icon small>
-									mdi-copy
-								</v-icon>
-								{{ $t('network.operators.set') }}
-							</v-btn>
-							<v-btn
-								class='mr-1'
-								color='info'
-								small
-								@click='operatorFormModel = item'
-							>
-								<v-icon small>
-									mdi-pencil
-								</v-icon>
-								{{ $t('table.actions.edit') }}
-							</v-btn>
-							<v-btn
-								color='error'
-								small
-								@click='operatorDeleteModel = item'
-							>
-								<v-icon small>
-									mdi-delete
-								</v-icon>
-								{{ $t('table.actions.delete') }}
-							</v-btn>
-						</template>
-					</v-data-table>
-				</v-card-text>
-				<v-card-actions>
-					<v-spacer />
-					<v-btn
-						@click='closeModal'
-					>
-						{{ $t('forms.close') }}
-					</v-btn>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-		<NetworkOperatorForm
-			v-model='operatorFormModel'
-			@saved='getOperators'
-		/>
-		<NetworkOperatorDeleteModal
-			v-model='operatorDeleteModel'
-			@deleted='getOperators'
-		/>
+					<CIcon :content='cilCopy' />
+					{{ $t('network.operators.apply') }}
+				</CDropdownItem>
+				<CDropdownItem
+					@click='editOperator(i)'
+				>
+					<CIcon :content='cilPencil' />
+					{{ $t('network.operators.edit') }}
+				</CDropdownItem>
+				<CDropdownItem
+					@click='deleteOperator(i)'
+				>
+					<CIcon :content='cilTrash' />
+					{{ $t('network.operators.delete') }}
+				</CDropdownItem>
+			</CDropdown>
+		</CButtonGroup>
+		<NetworkOperatorDeleteModal ref='operatorDelete' @closed='getOperators' />
+		<NetworkOperatorForm ref='operatorForm' @closed='getOperators' />
 	</div>
 </template>
 
 <script lang='ts'>
-import {Component, Prop} from 'vue-property-decorator';
-import ModalBase from '@/components/ModalBase.vue';
-import NetworkOperatorDeleteModal from '@/components/Network/NetworkOperatorDeleteModal.vue';
-import NetworkOperatorForm from '@/components/Network/NetworkOperatorForm.vue';
+import {Component, Vue} from 'vue-property-decorator';
+import {
+	CButton,
+	CButtonGroup,
+	CDropdown,
+	CDropdownItem,
+	CIcon
+} from '@coreui/vue/src';
+import {cilCopy, cilPencil, cilPlus, cilTrash} from '@coreui/icons';
+import NetworkOperatorDeleteModal from './NetworkOperatorDeleteModal.vue';
+import NetworkOperatorForm from './NetworkOperatorForm.vue';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 
-import {AxiosError} from 'axios';
-import {DataTableHeader} from 'vuetify';
-import {
-	MobileOperator
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
-import {useApiClient} from '@/services/ApiClient';
+import NetworkOperator from '@/entities/NetworkOperator';
+
+import NetworkOperatorService from '@/services/NetworkOperatorService';
+
+import {AxiosError, AxiosResponse} from 'axios';
+import {IOperator} from '@/interfaces/Network/Mobile';
+
+
+@Component({
+	components: {
+		CButton,
+		CButtonGroup,
+		CDropdown,
+		CDropdownItem,
+		CIcon,
+		NetworkOperatorDeleteModal,
+		NetworkOperatorForm,
+	},
+	data: () => ({
+		cilCopy,
+		cilPencil,
+		cilPlus,
+		cilTrash,
+	}),
+})
 
 /**
  * Network operators components
  */
-@Component({
-	components: {
-		NetworkOperatorDeleteModal,
-		NetworkOperatorForm,
-	},
-})
-export default class NetworkOperators extends ModalBase {
+export default class NetworkOperators extends Vue {
 
 	/**
-	 * @property
+	 * @var {Array<IOperator>} operators Array of network operators
 	 */
-	@Prop({required: false, default: false}) allowSet!: boolean;
-
-	/**
-	 * @var {boolean} loading Data loading
-	 */
-	private loading = false;
-
-	/**
-	 * @var {Array<MobileOperator>} operators Array of network operators
-	 */
-	private operators: Array<MobileOperator> = [];
-
-	/**
-	 * @var {MobileOperator|null} operatorFormModel Operator add/edit form model
-	 */
-	private operatorFormModel: MobileOperator|null = null;
-
-	/**
-	 * @var {MobileOperator|null} operatorDeleteModel Operator to delete model
-	 */
-	private operatorDeleteModel: MobileOperator|null = null;
-
-	/**
-	 * @property {NetworkOperatorService} service Network operator service
-	 */
-	private service = useApiClient().getNetworkServices().getMobileOperatorService();
-
-	/**
-	 * @constant {Array<DataTableHeader>}
-	 */
-	private readonly headers: Array<DataTableHeader> = [
-		{
-			value: 'name',
-			text: this.$t('network.operators.form.name').toString()
-		},
-		{
-			value: 'actions',
-			text: this.$t('table.actions.title').toString(),
-			sortable: false,
-			filterable: false,
-			align: 'end'
-		},
-	];
+	private operators: Array<NetworkOperator> = [];
 
 	/**
 	 * Retrieves operators
@@ -205,24 +120,41 @@ export default class NetworkOperators extends ModalBase {
 	 * Retrieves list of network operators
 	 */
 	private getOperators(): Promise<void> {
-		this.loading = true;
-		return this.service.list()
-			.then((operators: MobileOperator[]) => {
+		return NetworkOperatorService.getOperators()
+			.then((rsp: AxiosResponse) => {
+				const operators: Array<NetworkOperator> = [];
+				rsp.data.forEach((operator: IOperator) => {
+					operators.push(new NetworkOperator(operator));
+				});
 				this.operators = operators;
-				this.loading = false;
 			})
-			.catch((err: AxiosError) => {
-				this.loading = false;
-				extendedErrorToast(err, 'network.operators.messages.listFailed');
-			});
+			.catch((err: AxiosError) => extendedErrorToast(err, 'network.operators.messages.listFailed'));
 	}
 
 	/**
-	 * Sets network operator to configuration form
+	 * Activates network operator form modal window to add new operator
 	 */
-	private setOperator(operator: MobileOperator): void {
-		this.closeModal();
-		this.$emit('set-operator', operator);
+	private addOperator(): void {
+		(this.$refs.operatorForm as NetworkOperatorForm).activateModal();
+	}
+
+	/**
+	 * Activates network operator form modal window to edit existing operator
+	 * @param {number} idx Operator index
+	 */
+	private editOperator(idx: number): void {
+		const id = this.operators[idx].getId();
+		(this.$refs.operatorForm as NetworkOperatorForm).activateModal(id);
+	}
+
+	/**
+	 * Deletes operator
+	 * @param {number} idx Operator index
+	 */
+	private deleteOperator(idx: number): void {
+		const id = this.operators[idx].getId();
+		const name = this.operators[idx].getName();
+		(this.$refs.operatorDelete as NetworkOperatorDeleteModal).activateModal(id, name);
 	}
 }
 </script>

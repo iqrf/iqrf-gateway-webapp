@@ -151,14 +151,12 @@ build:js:
   <<: *test_template
   <<: *npm_template
   script:
-    - 'if [[ "${PACKAGE}" == "api-client" || "${PACKAGE}" == "frontend" || "${PACKAGE}" == "frontend3" ]]; then pnpm --dir packages/daemon-utils build; fi'
     - 'if [[ "${PACKAGE}" == "frontend" || "${PACKAGE}" == "frontend3" ]]; then pnpm --dir packages/api-client build; fi'
     - pnpm --dir packages/${PACKAGE} run build
   parallel:
     matrix:
       - PACKAGE:
           - api-client
-          - daemon-utils
           - frontend
           - frontend3
 
@@ -167,7 +165,6 @@ coverage:js:
   <<: *npm_template
   before_script:
     - !reference [.npm_template, before_script]
-    - 'if [[ "${PACKAGE}" == "api-client" || "${PACKAGE}" == "frontend" || "${PACKAGE}" == "frontend3" ]]; then pnpm --dir packages/daemon-utils build; fi'
     - 'if [[ "${PACKAGE}" == "frontend" || "${PACKAGE}" == "frontend3" ]]; then pnpm --dir packages/api-client build; fi'
   script:
     - pnpm --dir packages/${PACKAGE} coverage:unit
@@ -231,7 +228,6 @@ eslint:
   <<: *npm_template
   before_script:
     - !reference [.npm_template, before_script]
-    - 'if [[ "${PACKAGE}" == "api-client" || "${PACKAGE}" == "frontend" || "${PACKAGE}" == "frontend3" ]]; then pnpm --dir packages/daemon-utils build; fi'
     - 'if [[ "${PACKAGE}" == "frontend" || "${PACKAGE}" == "frontend3" ]]; then pnpm --dir packages/api-client build; fi'
   script:
     - pnpm --dir packages/${PACKAGE} run lint:js
@@ -239,7 +235,6 @@ eslint:
     matrix:
       - PACKAGE:
           - api-client
-          - daemon-utils
           - frontend
           - frontend3
 
@@ -324,7 +319,6 @@ deploy-docs:typedoc:
   before_script:
     - !reference [.npm_template, before_script]
     - !reference [.ssh_template, before_script]
-    - 'if [[ "${PACKAGE}" == "api-client" || "${PACKAGE}" == "frontend" || "${PACKAGE}" == "frontend3" ]]; then pnpm --dir packages/daemon-utils build; fi'
     - 'if [[ "${PACKAGE}" == "frontend" || "${PACKAGE}" == "frontend3" ]]; then pnpm --dir packages/api-client build; fi'
   script:
     - pnpm --dir packages/${PACKAGE} docs
@@ -338,5 +332,3 @@ deploy-docs:typedoc:
     matrix:
       - PACKAGE: api-client
         DEPLOY_DIR: js/iqrf-gateway-webapp-client
-      - PACKAGE: daemon-utils
-        DEPLOY_DIR: js/iqrf-gateway-daemon-utils

@@ -15,55 +15,52 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-card v-if='macros'>
-		<v-card-title>{{ $t('iqrfnet.sendPacket.macros') }}</v-card-title>
-		<v-card-text>
-			<v-item-group class='flex-wrap' dense>
-				<v-menu
+	<CCard v-if='macros'>
+		<CCardHeader>
+			{{ $t('iqrfnet.sendPacket.macros') }}
+		</CCardHeader>
+		<CCardBody>
+			<CButtonGroup class='flex-wrap'>
+				<CDropdown
 					v-for='group of macros'
-					:key='group.name'
-					offset-y
-					top
+					:key='group.id'
+					:toggler-text='group.name'
+					color='primary'
+					placement='top-start'
 				>
-					<template #activator='{on, attrs}'>
-						<v-btn
-							v-bind='attrs'
-							color='primary'
-							v-on='on'
-						>
-							{{ group.name }}
-							<v-icon>
-								mdi-menu-up
-							</v-icon>
-						</v-btn>
-					</template>
-					<v-list dense>
-						<v-list-item
-							v-for='packet of group.macros'
-							:key='packet.name'
-							dense
-							@click='$emit("set-packet", packet.request)'
-						>
-							{{ packet.name }}
-						</v-list-item>
-					</v-list>
-				</v-menu>
-			</v-item-group>
-		</v-card-text>
-	</v-card>
+					<CDropdownItem
+						v-for='packet of group.macros'
+						:key='packet.name'
+						@click='$emit("set-packet", packet.request)'
+					>
+						{{ packet.name }}
+					</CDropdownItem>
+				</CDropdown>
+			</CButtonGroup>
+		</CCardBody>
+	</CCard>
 </template>
 
 <script lang='ts'>
-import {DpaMacro, DpaMacroGroup} from '@iqrf/iqrf-gateway-webapp-client/types/Iqrf';
 import {Component, Vue} from 'vue-property-decorator';
-import {useApiClient} from '@/services/ApiClient';
+import {CButtonGroup, CCard, CCardBody, CCardHeader, CDropdown, CDropdownItem} from '@coreui/vue/src';
+
+import IqrfService, {DpaMacro, DpaMacroGroup} from '@/services/IqrfService';
 
 /**
  * Raw DPA message macros for SendDpaPacket component
  */
-@Component
+@Component({
+	components: {
+		CButtonGroup,
+		CCard,
+		CCardBody,
+		CCardHeader,
+		CDropdown,
+		CDropdownItem,
+	}
+})
 export default class DpaMacros extends Vue {
-
 	/**
 	 * @var {Array<IDpaMacros>} macros Array of raw DPA message macros
 	 */
@@ -74,7 +71,7 @@ export default class DpaMacros extends Vue {
 	 * Retrieves raw DPA message macros
 	 */
 	created(): void {
-		useApiClient().getIqrfServices().getDpaMacrosService().get()
+		IqrfService.getMacros()
 			.then((response: Array<DpaMacroGroup>) => {
 				this.macros = response.filter((group: DpaMacroGroup): boolean => {
 					if (!group.enabled) {
@@ -87,21 +84,3 @@ export default class DpaMacros extends Vue {
 	}
 }
 </script>
-
-<style lang="scss" scoped>
-.v-item-group {
-	.v-btn {
-		border-radius: 0%;
-	}
-
-	.v-btn:first-child {
-		border-top-left-radius: 4px;
-		border-bottom-left-radius: 4px;
-	}
-
-	.v-btn:last-child {
-		border-top-right-radius: 4px;
-		border-bottom-right-radius: 4px;
-	}
-}
-</style>

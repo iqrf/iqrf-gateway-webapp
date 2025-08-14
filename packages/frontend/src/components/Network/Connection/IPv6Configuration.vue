@@ -23,74 +23,70 @@ limitations under the License.
 				required: $t("network.connection.ipv6.errors.method"),
 			}'
 		>
-			<v-select
-				v-model='connection.ipv6.method'
-				:label='$t("network.connection.ipv6.method").toString()'
-				:items='methods'
-				:placeholder='$t("network.connection.ipv6.methods.null").toString()'
-				:success='touched ? valid : null'
-				:error-messages='errors'
+			<CSelect
+				:value.sync='connection.ipv6.method'
 				:disabled='disabled'
+				:label='$t("network.connection.ipv6.method").toString()'
+				:options='methods'
+				:placeholder='$t("network.connection.ipv6.methods.null").toString()'
+				:is-valid='touched ? valid : null'
+				:invalid-feedback='errors.join(", ")'
 				@change='onMethodChangeStaticFixup'
 			/>
 		</ValidationProvider>
-		<div v-if='connection.ipv6.method === IPv6ConfigurationMethod.MANUAL'>
-			<v-row
+		<div v-if='connection.ipv6.method === Ipv6Method.MANUAL'>
+			<hr>
+			<CRow
 				v-for='(address, index) in connection.ipv6.addresses'
 				:key='index'
+				form
 			>
-				<v-col cols='12' lg='8'>
+				<CCol sm='12' lg='8'>
 					<ValidationProvider
 						v-slot='{errors, touched, valid}'
 						:rules='{
-							required: connection.ipv6.method === IPv6ConfigurationMethod.MANUAL,
-							ipv6: connection.ipv6.method === IPv6ConfigurationMethod.MANUAL,
+							required: connection.ipv6.method === Ipv6Method.MANUAL,
+							ipv6: connection.ipv6.method === Ipv6Method.MANUAL,
 						}'
 						:custom-messages='{
 							required: $t("network.connection.ipv6.errors.address"),
 							ipv6: $t("network.connection.ipv6.errors.addressInvalid"),
 						}'
 					>
-						<v-text-field
+						<CInput
 							v-model='address.address'
 							:disabled='disabled'
 							:label='$t("network.connection.ipv6.address").toString()'
-							:success='touched ? valid : null'
-							:error-messages='errors'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='errors.join(", ")'
 						>
-							<template #prepend>
-								<v-btn
-									color='success'
-									small
+							<template #prepend-content>
+								<span
+									class='text-success'
 									@click='addAddress'
 								>
-									<v-icon small>
-										mdi-plus
-									</v-icon>
-								</v-btn>
+									<FontAwesomeIcon :icon='["far", "plus-square"]' size='xl' />
+								</span>
 							</template>
-							<template #append-outer>
-								<v-btn
+							<template #append-content>
+								<span
 									v-if='connection.ipv6.addresses.length > 1'
-									color='error'
-									small
+									class='text-danger'
 									@click='deleteAddress(index)'
 								>
-									<v-icon small>
-										mdi-delete
-									</v-icon>
-								</v-btn>
+									<FontAwesomeIcon :icon='["far", "trash-alt"]' size='xl' />
+								</span>
 							</template>
-						</v-text-field>
+						</CInput>
 					</ValidationProvider>
-				</v-col>
-				<v-col cols='12' lg='4'>
+				</CCol>
+				<CCol sm='12' lg='4'>
 					<ValidationProvider
 						v-slot='{errors, touched, valid}'
 						:rules='{
-							required: connection.ipv6.method === IPv6ConfigurationMethod.MANUAL,
+							required: connection.ipv6.method === Ipv6Method.MANUAL,
 							between: {
-								enabled: connection.ipv6.method === IPv6ConfigurationMethod.MANUAL,
+								enabled: connection.ipv6.method === Ipv6Method.MANUAL,
 								min: 48,
 								max: 128,
 							}
@@ -100,39 +96,38 @@ limitations under the License.
 							between: $t("network.connection.ipv6.errors.prefixInvalid"),
 						}'
 					>
-						<v-text-field
+						<CInput
 							v-model.number='address.prefix'
 							:disabled='disabled'
 							type='number'
 							min='48'
 							max='128'
 							:label='$t("network.connection.ipv6.prefix").toString()'
-							:success='touched ? valid : null'
-							:error-messages='errors'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='errors.join(", ")'
 						/>
 					</ValidationProvider>
-				</v-col>
-			</v-row>
+				</CCol>
+			</CRow>
 			<ValidationProvider
 				v-slot='{errors, touched, valid}'
 				:rules='{
-					required: connection.ipv6.method === IPv6ConfigurationMethod.MANUAL,
-					ipv6: connection.ipv6.method === IPv6ConfigurationMethod.MANUAL,
+					required: connection.ipv6.method === Ipv6Method.MANUAL,
+					ipv6: connection.ipv6.method === Ipv6Method.MANUAL,
 				}'
 				:custom-messages='{
 					required: $t("network.connection.ipv6.errors.gateway"),
 					ipv6: $t("network.connection.ipv6.errors.addressInvalid"),
 				}'
 			>
-				<v-text-field
+				<CInput
 					v-model='connection.ipv6.gateway'
 					:disabled='disabled'
 					:label='$t("network.connection.ipv6.gateway").toString()'
-					:success='touched ? valid : null'
-					:error-messages='errors'
+					:is-valid='touched ? valid : null'
+					:invalid-feedback='errors.join(", ")'
 				/>
-			</ValidationProvider>
-			<v-divider class='mb-2' />
+			</ValidationProvider><hr>
 			<div
 				v-for='(address, index) in connection.ipv6.dns'
 				:key='index+"a"'
@@ -140,45 +135,39 @@ limitations under the License.
 				<ValidationProvider
 					v-slot='{errors, touched, valid}'
 					:rules='{
-						required: connection.ipv6.method === IPv6ConfigurationMethod.MANUAL,
-						ipv6: connection.ipv6.method === IPv6ConfigurationMethod.MANUAL,
+						required: connection.ipv6.method === Ipv6Method.MANUAL,
+						ipv6: connection.ipv6.method === Ipv6Method.MANUAL,
 					}'
 					:custom-messages='{
 						required: $t("network.connection.ipv6.errors.dns"),
 						ipv6: $t("network.connection.ipv6.errors.addressInvalid"),
 					}'
 				>
-					<v-text-field
+					<CInput
 						v-model='address.address'
 						:disabled='disabled'
 						:label='$t("network.connection.ipv6.dns.address").toString()'
-						:success='touched ? valid : null'
-						:error-messages='errors'
+						:is-valid='touched ? valid : null'
+						:invalid-feedback='errors.join(", ")'
 					>
-						<template #prepend>
-							<v-btn
-								class='success'
-								small
+						<template #prepend-content>
+							<span
+								class='text-success'
 								@click='addDns'
 							>
-								<v-icon small>
-									mdi-plus
-								</v-icon>
-							</v-btn>
+								<FontAwesomeIcon :icon='["far", "plus-square"]' size='xl' />
+							</span>
 						</template>
-						<template #append-outer>
-							<v-btn
+						<template #append-content>
+							<span
 								v-if='connection.ipv6.dns.length > 1'
-								color='error'
-								small
+								class='text-danger'
 								@click='deleteDns(index)'
 							>
-								<v-icon small>
-									mdi-delete
-								</v-icon>
-							</v-btn>
+								<FontAwesomeIcon :icon='["far", "trash-alt"]' size='xl' />
+							</span>
 						</template>
-					</v-text-field>
+					</CInput>
 				</ValidationProvider>
 			</div>
 		</div>
@@ -186,34 +175,42 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, VModel, Prop, Vue} from 'vue-property-decorator';
+import {Component, Prop, VModel, Vue} from 'vue-property-decorator';
+
+import {CCol, CInput, CRow, CSelect} from '@coreui/vue/src';
+import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import {extend, ValidationProvider} from 'vee-validate';
 import {between, required} from 'vee-validate/dist/rules';
 
+import {Ipv6Method} from '@/enums/Network/Ip';
 import {ipv6} from '@/helpers/validators';
 
-import {ISelectItem} from '@/interfaces/Vuetify';
-import {
-	IPv6ConfigurationMethod, NetworkConnectionConfiguration, NetworkConnectionType
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
+import {IOption} from '@/interfaces/Coreui';
+import {IConnection} from '@/interfaces/Network/Connection';
+import {ConnectionType} from '@/enums/Network/ConnectionType';
 
 /**
  * IPv6 configuration options
  */
 @Component({
 	components: {
+		CCol,
+		CInput,
+		CRow,
+		CSelect,
+		FontAwesomeIcon,
 		ValidationProvider,
 	},
 	data: () => ({
-		IPv6ConfigurationMethod,
+		Ipv6Method,
 	}),
 })
 export default class IPv6Configuration extends Vue {
 
 	/**
-	 * @property {NetworkConnectionConfiguration} connection Edited connection.
+	 * @property {IConnection} connection Edited connection.
 	 */
-	@VModel({required: true}) connection!: NetworkConnectionConfiguration;
+	@VModel({required: true}) connection!: IConnection;
 
 	/**
 	 * @property {boolean} disabled If true, disables all inputs.
@@ -242,21 +239,21 @@ export default class IPv6Configuration extends Vue {
 	}
 
 	/**
-	 * Computes array of select options for IPv6 configuration method
-	 * @returns {Array<ISelectItem>} Configuration method options
+	 * Computes array of CoreUI select options for IPv6 configuration method
+	 * @returns {Array<IOption>} Configuration method options
 	 */
-	get methods(): Array<ISelectItem> {
-		let methods: Array<IPv6ConfigurationMethod>;
+	get methods(): Array<IOption> {
+		let methods: Array<string>;
 		// let methods = ['auto', 'dhcp', 'disabled', 'ignore', 'link-local', 'manual', 'shared'];
-		if (this.connection.type == NetworkConnectionType.GSM) {
-			methods = [IPv6ConfigurationMethod.AUTO, IPv6ConfigurationMethod.DISABLED];
+		if (this.connection.type == ConnectionType.GSM) {
+			methods = [Ipv6Method.AUTO, Ipv6Method.DISABLED];
 		} else  {
-			methods = [IPv6ConfigurationMethod.AUTO, IPv6ConfigurationMethod.DHCP, IPv6ConfigurationMethod.MANUAL, IPv6ConfigurationMethod.SHARED];
+			methods = [Ipv6Method.AUTO, Ipv6Method.DHCP, Ipv6Method.MANUAL, Ipv6Method.SHARED];
 		}
 		return methods.map((method: string) =>
 			({
 				value: method,
-				text: this.$t(`network.connection.ipv6.methods.${method}`).toString(),
+				label: this.$t(`network.connection.ipv6.methods.${method}`).toString(),
 			})
 		);
 	}

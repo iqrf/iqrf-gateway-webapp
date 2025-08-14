@@ -19,18 +19,18 @@ limitations under the License.
 		<h1 v-if='!$route.path.includes("/install")'>
 			{{ $t('core.security.ssh.add') }}
 		</h1>
-		<v-card>
-			<v-card-title v-if='$route.path.includes("/install")'>
+		<CCard>
+			<CCardHeader v-if='$route.path.includes("/install")'>
 				{{ $t('core.security.ssh.add') }}
-			</v-card-title>
-			<v-card-text>
-				<v-overlay
+			</CCardHeader>
+			<CCardBody>
+				<CElementCover
 					v-if='running'
-					:opacity='0.65'
-					absolute
+					:opacity='0.75'
+					style='z-index: 10000;'
 				>
-					<v-progress-circular color='primary' indeterminate />
-				</v-overlay>
+					<CSpinner color='primary' />
+				</CElementCover>
 				<div
 					v-if='$route.path.includes("/install")'
 					class='form-group'
@@ -39,12 +39,13 @@ limitations under the License.
 				</div>
 				<SshKeyTypes ref='types' @fetch='sshValidation' />
 				<ValidationObserver v-slot='{invalid}'>
-					<v-form>
-						<v-row
+					<CForm>
+						<CRow
 							v-for='(key, idx) of keys'
 							:key='idx'
+							form
 						>
-							<v-col cols='12' md='3'>
+							<CCol sm='12' md='3'>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='required'
@@ -52,15 +53,15 @@ limitations under the License.
 										required: $t("core.security.ssh.errors.descriptionMissing")
 									}'
 								>
-									<v-text-field
+									<CInput
 										v-model='key.description'
 										:label='$t("core.security.ssh.form.description")'
-										:sucess='touched ? valid : null'
-										:error-messages='errors.join(", ")'
+										:is-valid='touched ? valid : null'
+										:invalid-feedback='errors.join(", ")'
 									/>
 								</ValidationProvider>
-							</v-col>
-							<v-col cols='12' md='9'>
+							</CCol>
+							<CCol sm='12' md='9'>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='required|ssh'
@@ -69,88 +70,101 @@ limitations under the License.
 										ssh: $t("core.security.ssh.errors.keyInvalid"),
 									}'
 								>
-									<v-text-field
+									<CInput
 										v-model='key.key'
 										:label='$t("core.security.ssh.form.key")'
-										:sucess='touched ? valid : null'
-										:error-messages='errors.join(", ")'
+										:is-valid='touched ? valid : null'
+										:invalid-feedback='errors.join(", ")'
 										@change='updateDescription(idx)'
 									>
-										<template #append-outer>
-											<v-btn
-												color='success'
-												small
+										<template #prepend-content>
+											<span
+												class='text-success'
 												@click='addKey()'
 											>
-												<v-icon>mdi-plus</v-icon>
-											</v-btn>
-											<v-btn
+												<FontAwesomeIcon :icon='["far", "plus-square"]' size='xl' />
+											</span>
+										</template>
+										<template #append-content>
+											<span
 												v-if='keys.length > 1'
-												class='ml-1'
-												color='error'
-												small
+												class='text-danger'
 												@click='removeKey(idx)'
 											>
-												<v-icon>mdi-delete-outline</v-icon>
-											</v-btn>
+												<FontAwesomeIcon :icon='["far", "trash-alt"]' size='lg' />
+											</span>
 										</template>
-									</v-text-field>
+									</CInput>
 								</ValidationProvider>
-							</v-col>
-						</v-row>
-						<v-btn
-							class='mr-1'
+							</CCol>
+							<hr>
+						</CRow>
+						<CButton
 							color='primary'
 							:disabled='invalid'
 							@click='saveKeys'
 						>
 							{{ $t('forms.save') }}
-						</v-btn>
-						<v-btn
+						</CButton> <CButton
 							v-if='$route.path.includes("/install")'
+							color='secondary'
 							@click='nextStep'
 						>
 							{{ $t('forms.skip') }}
-						</v-btn>
-					</v-form>
+						</CButton>
+					</CForm>
 				</ValidationObserver>
-			</v-card-text>
-		</v-card>
+			</CCardBody>
+		</CCard>
 	</div>
 </template>
 
 <script lang='ts'>
-import { SshKeyService } from '@iqrf/iqrf-gateway-webapp-client/services/Security';
-import {
-	SshKeyCreate,
-	SshKeyCreated
-} from '@iqrf/iqrf-gateway-webapp-client/types/Security';
-import {AxiosError, AxiosResponse} from 'axios';
-import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {Component, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
+import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import SshKeyTypes from '@/components/Gateway/SshKeyTypes.vue';
+import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
+import {cilPlus} from '@coreui/icons';
+
+import {extendedErrorToast} from '@/helpers/errorToast';
 import {required} from 'vee-validate/dist/rules';
 
-import SshKeyTypes from '@/components/Gateway/SshKeyTypes.vue';
-import {extendedErrorToast} from '@/helpers/errorToast';
-import {useApiClient} from '@/services/ApiClient';
+import SshService from '@/services/SshService';
+
+import {AxiosError, AxiosResponse} from 'axios';
+import {ISshInput} from '@/interfaces/Core/SshKey';
 
 @Component({
 	components: {
+		CButton,
+		CCard,
+		CCardBody,
+		CCardHeader,
+		CForm,
+		CInput,
+		FontAwesomeIcon,
 		SshKeyTypes,
 		ValidationObserver,
 		ValidationProvider,
 	},
+	data: () => ({
+		cilPlus,
+	}),
 	metaInfo: {
 		title: 'core.security.ssh.add',
 	},
 })
 
+/**
+ *
+ */
 export default class SshKeyForm extends Vue {
 
 	/**
-	 * @var {Array<SshKeyCreate>} keys Array of SSH keys for key-based authentication
+	 * @var {Array<string>} keys Array of SSH keys for key-based authentication
 	 */
-	private keys: Array<SshKeyCreate> = [
+	private keys: Array<ISshInput> = [
 		{
 			description: '',
 			key: '',
@@ -161,11 +175,6 @@ export default class SshKeyForm extends Vue {
 	 * @var {boolean} running Indicates whether an axios request is being processed
 	 */
 	private running = false;
-
-	/**
-	 * @var {SshKeyService} service SSH key service
-	 */
-	private service: SshKeyService = useApiClient().getSecurityServices().getSshKeyService();
 
 	/**
 	 * Initializes validation rules
@@ -203,12 +212,12 @@ export default class SshKeyForm extends Vue {
 	private saveKeys(): void {
 		if (this.$route.path.includes('/install')) {
 			this.running = true;
-			this.service.createSshKeys(this.keys)
-				.then((response: SshKeyCreated) => {
+			SshService.saveSshKeys(this.keys)
+				.then((response: AxiosResponse) => {
 					this.running = false;
-					if (response.failedKeys.length !== 0) {
+					if (response.status === 200) {
 						this.$toast.info(
-							this.$t('core.security.ssh.messages.savePartialSuccess', {keys: response.failedKeys.join(', ')}).toString()
+							this.$t('core.security.ssh.messages.savePartialSuccess', {keys: response.data.failedKeys.join(', ')}).toString()
 						);
 					}
 					this.nextStep();
@@ -219,14 +228,14 @@ export default class SshKeyForm extends Vue {
 				});
 		} else {
 			this.$store.commit('spinner/SHOW');
-			this.service.createSshKeys(this.keys)
-				.then((response: SshKeyCreated) => {
+			SshService.saveSshKeys(this.keys)
+				.then((response: AxiosResponse) => {
 					this.$store.commit('spinner/HIDE');
-					if (response.failedKeys.length === 0) {
+					if (response.status === 201) {
 						this.$toast.success(this.$t('core.security.ssh.messages.saveSuccess').toString());
-					} else {
+					} else if (response.status === 200) {
 						this.$toast.info(
-							this.$t('core.security.ssh.messages.savePartialSuccess', {keys: response.failedKeys.join(', ')}).toString()
+							this.$t('core.security.ssh.messages.savePartialSuccess', {keys: response.data.failedKeys.join(', ')}).toString()
 						);
 					}
 					this.$router.push('/security/ssh-key/');

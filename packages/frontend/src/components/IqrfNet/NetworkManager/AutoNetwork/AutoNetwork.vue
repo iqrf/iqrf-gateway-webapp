@@ -16,85 +16,81 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<v-card>
-			<v-card-text>
+		<CCard class='border-0 card-margin-bottom'>
+			<CCardBody>
 				<ValidationObserver v-slot='{invalid}'>
-					<v-form>
-						<fieldset>
-							<h5>{{ $t('iqrfnet.networkManager.autoNetwork.form.params.title') }}</h5>
+					<CForm>
+						<div class='form-group'>
+							<h4>{{ $t('iqrfnet.networkManager.autoNetwork.form.params.title') }}</h4>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								rules='integer|required|between:0,3'
 								:custom-messages='{
-									integer: $t("iqrfnet.networkManager.autoNetwork.errors.actionRetries"),
-									required: $t("iqrfnet.networkManager.autoNetwork.errors.actionRetries"),
-									between: $t("iqrfnet.networkManager.autoNetwork.errors.actionRetries"),
+									integer: "iqrfnet.networkManager.autoNetwork.errors.actionRetries",
+									required: "iqrfnet.networkManager.autoNetwork.errors.actionRetries",
+									between: "iqrfnet.networkManager.autoNetwork.errors.actionRetries",
 								}'
 							>
-								<v-text-field
+								<CInput
 									v-model.number='params.actionRetries'
 									type='number'
 									min='0'
 									max='3'
 									:label='$t("iqrfnet.networkManager.autoNetwork.form.params.actionRetries")'
-									:success='touched ? valid : null'
-									:error-messages='errors'
+									:is-valid='touched ? valid : null'
+									:invalid-feedback='$t(errors[0])'
 								/>
 							</ValidationProvider>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								rules='integer|required|between:0,7'
 								:custom-messages='{
-									integer: $t("iqrfnet.networkManager.autoNetwork.errors.discoveryTxPower"),
-									required: $t("iqrfnet.networkManager.autoNetwork.errors.discoveryTxPower"),
-									between: $t("iqrfnet.networkManager.autoNetwork.errors.discoveryTxPower"),
+									integer: "iqrfnet.networkManager.autoNetwork.errors.discoveryTxPower",
+									required: "iqrfnet.networkManager.autoNetwork.errors.discoveryTxPower",
+									between: "iqrfnet.networkManager.autoNetwork.errors.discoveryTxPower",
 								}'
 							>
-								<v-text-field
+								<CInput
 									v-model.number='params.discoveryTxPower'
 									type='number'
 									min='0'
 									max='7'
 									:label='$t("iqrfnet.networkManager.autoNetwork.form.params.discoveryTxPower")'
-									:success='touched ? valid : null'
-									:error-messages='errors'
+									:is-valid='touched ? valid : null'
+									:invalid-feedback='$t(errors[0])'
 								/>
 							</ValidationProvider>
-							<v-checkbox
-								v-model='params.discoveryBeforeStart'
+							<CInputCheckbox
+								:checked.sync='params.discoveryBeforeStart'
 								:label='$t("iqrfnet.networkManager.autoNetwork.form.params.discoveryBeforeStart")'
-								dense
 							/>
-							<v-checkbox
-								v-model='params.skipDiscoveryEachWave'
+							<CInputCheckbox
+								:checked.sync='params.skipDiscoveryEachWave'
 								:label='$t("iqrfnet.networkManager.autoNetwork.form.params.skipDiscoveryEachWave")'
-								dense
 							/>
-							<v-checkbox
-								v-model='params.unbondUnrespondingNodes'
+							<CInputCheckbox
+								:checked.sync='params.unbondUnrespondingNodes'
 								:label='$t("iqrfnet.networkManager.autoNetwork.form.params.unbondUnrespondingNodes")'
-								dense
 							/>
-							<v-checkbox
-								v-model='params.skipPrebonding'
+							<CInputCheckbox
+								:checked.sync='params.skipPrebonding'
 								:label='$t("iqrfnet.networkManager.autoNetwork.form.params.skipPrebonding")'
-								dense
 							/>
-						</fieldset>
-						<fieldset>
+						</div><hr>
+						<div class='form-group'>
 							<h4>{{ $t('iqrfnet.networkManager.autoNetwork.form.stopConditions.title') }}</h4>
-							<v-row>
-								<v-col cols='12' md='6'>
+							<CRow>
+								<CCol sm='12' md='6'>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
 										rules='integer|required|between:1,127'
 										:custom-messages='{
-											integer: $t("forms.errors.integer"),
-											required: $t("iqrfnet.networkManager.autoNetwork.errors.waves"),
-											between: $t("iqrfnet.networkManager.autoNetwork.errors.waves")
+											integer: "forms.errors.integer",
+											required: "iqrfnet.networkManager.autoNetwork.errors.waves",
+											between: "iqrfnet.networkManager.autoNetwork.errors.waves"
 										}'
 									>
-										<v-text-field
+										<CInput
 											v-model.number='waves'
 											type='number'
 											min='1'
@@ -104,90 +100,80 @@ limitations under the License.
 											:invalid-feedback='$t(errors[0])'
 											:disabled='!useWaves'
 										>
-											<template #prepend>
-												<v-simple-checkbox
-													v-model='useWaves'
-													color='primary'
-												/>
+											<template #prepend-content>
+												<CInputCheckbox :checked.sync='useWaves' />
 											</template>
-										</v-text-field>
+										</CInput>
 									</ValidationProvider>
-								</v-col>
-								<v-col cols='12' md='6'>
+								</CCol>
+								<CCol sm='12' md='6'>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
 										rules='integer|required|between:1,127'
 										:custom-messages='{
-											integer: $t("forms.errors.integer"),
-											required: $t("iqrfnet.networkManager.autoNetwork.errors.emptyWaves"),
-											between: $t("iqrfnet.networkManager.autoNetwork.errors.emptyWaves")
+											integer: "forms.errors.integer",
+											required: "iqrfnet.networkManager.autoNetwork.errors.emptyWaves",
+											between: "iqrfnet.networkManager.autoNetwork.errors.emptyWaves"
 										}'
 									>
-										<v-text-field
+										<CInput
 											v-model.number='emptyWaves'
 											type='number'
 											min='1'
 											max='127'
 											:label='$t("iqrfnet.networkManager.autoNetwork.form.stopConditions.emptyWaves")'
-											:success='touched ? valid : null'
-											:error-messages='errors'
+											:is-valid='touched ? valid : null'
+											:invalid-feedback='$t(errors[0])'
 										/>
 									</ValidationProvider>
-								</v-col>
-							</v-row>
-							<v-row>
-								<v-col cols='12' md='6'>
-									<v-select
-										v-model='nodeCondition'
-										:label='$t("iqrfnet.networkManager.autoNetwork.form.stopConditions.nodeCount")'
-										:items='nodeOptions'
+								</CCol>
+							</CRow>
+							<CInputCheckbox
+								:checked.sync='useNodes'
+								:label='$t("iqrfnet.networkManager.autoNetwork.form.stopConditions.use")'
+							/>
+							<CRow>
+								<CCol>
+									<CSelect
+										:value.sync='nodeCondition'
+										:options='nodeOptions'
 										:disabled='!useNodes'
-									>
-										<template #prepend>
-											<v-simple-checkbox
-												v-model='useNodes'
-												color='primary'
-											/>
-										</template>
-									</v-select>
-								</v-col>
-								<v-col cols='12' md='6'>
+									/>
+								</CCol>
+								<CCol>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
 										rules='integer|between:1,239|required'
 										:custom-messages='{
-											between: $t("iqrfnet.networkManager.autoNetwork.errors." + (nodeCondition === StopConditionNode.TOTAL ? "totalNodes" : "newNodes")),
-											integer: $t("iqrfnet.networkManager.autoNetwork.errors." + (nodeCondition === StopConditionNode.TOTAL ? "totalNodes" : "newNodes")),
-											required: $t("iqrfnet.networkManager.autoNetwork.errors." + (nodeCondition === StopConditionNode.TOTAL ? "totalNodes" : "newNodes")),
+											between: "iqrfnet.networkManager.autoNetwork.errors." + (nodeCondition === StopConditionNode.TOTAL ? "totalNodes" : "newNodes"),
+											integer: "iqrfnet.networkManager.autoNetwork.errors." + (nodeCondition === StopConditionNode.TOTAL ? "totalNodes" : "newNodes"),
+											required: "iqrfnet.networkManager.autoNetwork.errors." + (nodeCondition === StopConditionNode.TOTAL ? "totalNodes" : "newNodes"),
 										}'
 									>
-										<v-text-field
+										<CInput
 											v-model.number='nodeCount'
 											type='number'
 											min='1'
 											max='239'
-											:success='touched ? valid : null'
-											:error-messages='errors'
+											:is-valid='touched ? valid : null'
+											:invalid-feedback='$t(errors[0])'
 											:disabled='!useNodes'
 										/>
 									</ValidationProvider>
-								</v-col>
-							</v-row>
-							<v-checkbox
-								v-model='abortOnTooManyNodesFound'
+								</CCol>
+							</CRow>
+							<CInputCheckbox
+								:checked.sync='abortOnTooManyNodesFound'
 								:label='$t("iqrfnet.networkManager.autoNetwork.form.params.abortOnTooManyNodesFound")'
-								dense
 								:disabled='!useNodes'
 							/>
-						</fieldset>
-						<fieldset>
-							<h5>{{ $t('iqrfnet.networkManager.autoNetwork.form.bondingControl.title') }}</h5>
-							<v-checkbox
-								v-model='useAddressSpace'
+						</div><hr>
+						<div class='form-group'>
+							<h4>{{ $t('iqrfnet.networkManager.autoNetwork.form.bondingControl.title') }}</h4>
+							<CInputCheckbox
+								:checked.sync='useAddressSpace'
 								:label='$t("iqrfnet.networkManager.autoNetwork.form.bondingControl.addressSpace.use")'
-								:hint='$t("iqrfnet.networkManager.autoNetwork.notes.addressSpace")'
-								persistent-hint
-								dense
+								:description='$t("iqrfnet.networkManager.autoNetwork.notes.addressSpace")'
 							/>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
@@ -196,122 +182,120 @@ limitations under the License.
 									required: useAddressSpace,
 								}'
 								:custom-messages='{
-									required: $t("iqrfnet.networkManager.autoNetwork.errors.addressSpace"),
-									addressSpace: $t("iqrfnet.networkManager.autoNetwork.errors.addressSpace"),
+									required: "iqrfnet.networkManager.autoNetwork.errors.addressSpace",
+									addressSpace: "iqrfnet.networkManager.autoNetwork.errors.addressSpace",
 								}'
 							>
-								<ExtendedTextField
+								<CInput
 									v-model='addressSpace'
 									:label='$t("iqrfnet.networkManager.autoNetwork.form.bondingControl.addressSpace.title")'
 									:description='$t("iqrfnet.networkManager.autoNetwork.notes.addressSpaceFormat")'
-									:success='touched ? valid : null'
-									:errors='errors'
+									:is-valid='touched ? valid : null'
+									:invalid-feedback='$t(errors[0])'
 									:disabled='!useAddressSpace'
 									@change='simplifyAddressSpace'
 								>
-									<template #append-outer>
-										<v-chip
-											label
-										>
-											{{ addresses.length }}
-										</v-chip>
+									<template #prepend-content>
+										{{ addresses.length }}
 									</template>
-								</ExtendedTextField>
+								</CInput>
 							</ValidationProvider>
-							<v-checkbox
-								v-model='useMid'
+							<CInputCheckbox
+								:checked.sync='useMid'
 								:label='$t("iqrfnet.networkManager.autoNetwork.form.bondingControl.mid.use")'
 								:description='$t("iqrfnet.networkManager.autoNetwork.notes.midControl")'
-								dense
 							/>
-							<v-file-input
-								v-model='file'
-								class='pt-0'
-								:label='$t("iqrfnet.networkManager.autoNetwork.form.bondingControl.mid.file")'
-								accept='.csv,.txt'
-								:disabled='!useMid'
-								:prepend-icon='null'
-								prepend-inner-icon='mdi-file-outline'
-								@change='readFile($event)'
-							>
-								<template #append-outer>
+							<CRow align-vertical='center'>
+								<CCol>
+									<CInputFile
+										ref='file'
+										:label='$t("iqrfnet.networkManager.autoNetwork.form.bondingControl.mid.file")'
+										:disabled='!useMid'
+										accept='.csv,.txt'
+										@change='readFile($event)'
+									>
+										<template #append-content>
+											<MidListModal
+												ref='midlist'
+												:activator-disabled='!useMid'
+												:list.sync='mid.midList'
+												:invalid.sync='midInvalid'
+											/>
+										</template>
+									</CInputFile>
+								</CCol>
+								<CCol>
 									<MidListModal
 										ref='midlist'
 										:activator-disabled='!useMid'
 										:list.sync='mid.midList'
 										:invalid.sync='midInvalid'
 									/>
-								</template>
-							</v-file-input>
-							<v-checkbox
-								v-model='mid.midFiltering'
-								class='mb-4'
+								</CCol>
+							</CRow>
+							<CInputCheckbox
+								:checked.sync='mid.midFiltering'
 								:label='$t("iqrfnet.networkManager.autoNetwork.form.bondingControl.mid.filter")'
-								:hint='$t("iqrfnet.networkManager.autoNetwork.notes.midFilter")'
+								:description='$t("iqrfnet.networkManager.autoNetwork.notes.midFilter")'
 								:disabled='!useMid'
-								persistent-hint
-								dense
 							/>
-							<v-checkbox
-								v-model='useOverlappingNetworks'
+							<CInputCheckbox
+								:checked.sync='useOverlappingNetworks'
 								:label='$t("iqrfnet.networkManager.autoNetwork.form.bondingControl.overlappingNetworks.use")'
-								dense
 							/>
-							<v-row>
-								<v-col cols='12' md='6'>
+							<CRow>
+								<CCol>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
 										rules='integer|required|between:2,50'
 										:custom-messages='{
-											integer: $t("iqrfnet.networkManager.autoNetwork.errors.networks"),
-											required: $t("iqrfnet.networkManager.autoNetwork.errors.networks"),
-											between: $t("iqrfnet.networkManager.autoNetwork.errors.networks"),
+											integer: "iqrfnet.networkManager.autoNetwork.errors.networks",
+											required: "iqrfnet.networkManager.autoNetwork.errors.networks",
+											between: "iqrfnet.networkManager.autoNetwork.errors.networks",
 										}'
 									>
-										<v-text-field
+										<CInput
 											v-model.number='overlappingNetworks.networks'
 											type='number'
 											min='2'
 											max='50'
 											:label='$t("iqrfnet.networkManager.autoNetwork.form.bondingControl.overlappingNetworks.networks")'
-											:success='touched ? valid : null'
-											:error-messages='errors'
+											:is-valid='touched ? valid : null'
+											:invalid-feedback='$t(errors[0])'
 											:disabled='!useOverlappingNetworks'
 										/>
 									</ValidationProvider>
-								</v-col>
-								<v-col cols='12' md='6'>
+								</CCol>
+								<CCol>
 									<ValidationProvider
 										v-slot='{errors, touched, valid}'
 										rules='integer|required|between:1,50'
 										:custom-messages='{
-											integer: $t("iqrfnet.networkManager.autoNetwork.errors.network"),
-											required: $t("iqrfnet.networkManager.autoNetwork.errors.network"),
-											between: $t("iqrfnet.networkManager.autoNetwork.errors.network"),
+											integer: "iqrfnet.networkManager.autoNetwork.errors.network",
+											required: "iqrfnet.networkManager.autoNetwork.errors.network",
+											between: "iqrfnet.networkManager.autoNetwork.errors.network",
 										}'
 									>
-										<v-text-field
+										<CInput
 											v-model.number='overlappingNetworks.network'
 											type='number'
 											min='1'
 											max='50'
 											:label='$t("iqrfnet.networkManager.autoNetwork.form.bondingControl.overlappingNetworks.network")'
-											:success='touched ? valid : null'
-											:error-messages='errors'
+											:is-valid='touched ? valid : null'
+											:invalid-feedback='$t(errors[0])'
 											:disabled='!useOverlappingNetworks'
 										/>
 									</ValidationProvider>
-								</v-col>
-							</v-row>
-						</fieldset>
-						<fieldset>
+								</CCol>
+							</CRow>
+						</div><hr>
+						<div class='form-group'>
 							<h4>{{ $t('iqrfnet.networkManager.autoNetwork.form.hwpidFiltering.title') }}</h4>
-							<v-checkbox
-								v-model='useHwpid'
+							<CInputCheckbox
+								:checked.sync='useHwpid'
 								:label='$t("iqrfnet.networkManager.autoNetwork.form.hwpidFiltering.use")'
-								:hint='$t("iqrfnet.networkManager.autoNetwork.notes.hwpidFilter")'
-								persistent-hint
-								dense
+								:description='$t("iqrfnet.networkManager.autoNetwork.notes.hwpidFilter")'
 							/>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
@@ -320,56 +304,61 @@ limitations under the License.
 									required: useHwpid,
 								}'
 								:custom-messages='{
-									hwpidFilter: $t("iqrfnet.networkManager.autoNetwork.errors.hwpidFilter"),
-									required: $t("iqrfnet.networkManager.autoNetwork.errors.hwpidFilter"),
+									hwpidFilter: "iqrfnet.networkManager.autoNetwork.errors.hwpidFilter",
+									required: "iqrfnet.networkManager.autoNetwork.errors.hwpidFilter",
 								}'
 							>
-								<ExtendedTextField
+								<CInput
 									v-model='hwpidList'
 									:label='$t("iqrfnet.networkManager.autoNetwork.form.hwpidFiltering.list")'
 									:description='$t("iqrfnet.networkManager.autoNetwork.notes.hwpidFilterFormat")'
-									:success='touched ? valid : null'
-									:errors='errors'
+									:is-valid='touched ? valid : null'
+									:invalid-feedback='$t(errors[0])'
 									:disabled='!useHwpid'
 								/>
 							</ValidationProvider>
-						</fieldset>
-						<v-btn
+						</div>
+						<CButton
 							color='primary'
 							:disabled='invalid'
 							@click='startAutonetwork'
 						>
 							{{ $t('forms.runAutonetwork') }}
-						</v-btn>
-					</v-form>
+						</CButton>
+					</CForm>
 				</ValidationObserver>
-			</v-card-text>
-		</v-card>
+			</CCardBody>
+		</CCard>
 		<AutoNetworkResultModal ref='result' @finished='updateDevices' />
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import AutoNetworkResultModal from '@/components/IqrfNet/NetworkManager/AutoNetwork/AutoNetworkResultModal.vue';
 import MidListModal from '@/components/IqrfNet/NetworkManager/AutoNetwork/MidListModal.vue';
-import ExtendedTextField from '@/components/ExtendedTextField.vue';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
 import {hwpidFilter} from '@/helpers/validationRules/Iqrfnet';
 import {StopConditionNode} from '@/enums/IqrfNet/Autonetwork';
 import IqrfNetService from '@/services/IqrfNetService';
-import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 import {IAtnwParams, IAtnwOverlappingNetworks, IAtnwMid, IAtnwMidList, IAtnwMidErrorList} from '@/interfaces/DaemonApi/Iqmesh/Autonetwork';
-import {ISelectItem} from '@/interfaces/Vuetify';
+import {IOption} from '@/interfaces/Coreui';
 import {MutationPayload} from 'vuex';
+import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 @Component({
 	components: {
+		CButton,
+		CCard,
+		CCardBody,
+		CForm,
+		CInput,
+		CInputCheckbox,
 		AutoNetworkResultModal,
-		ExtendedTextField,
 		MidListModal,
 		ValidationObserver,
 		ValidationProvider
@@ -416,6 +405,11 @@ export default class AutoNetwork extends Vue {
 	private waves = 10;
 
 	/**
+	 * @var {boolean} useEmptyWaves Use empty waves
+	 */
+	private useEmptyWaves = true;
+
+	/**
 	 * @var {number} emptyWaves Number of empty waves
 	 */
 	private emptyWaves = 2;
@@ -431,16 +425,16 @@ export default class AutoNetwork extends Vue {
 	private nodeCondition: StopConditionNode = StopConditionNode.TOTAL;
 
 	/**
-	 * @var {Array<ISelectItem>} nodeOptions Node count stop condition options
+	 * @var {Array<IOption>} nodeOptions Node count stop condition options
 	 */
-	private nodeOptions: Array<ISelectItem> = [
+	private nodeOptions: Array<IOption> = [
 		{
 			value: StopConditionNode.TOTAL,
-			text: this.$t('iqrfnet.networkManager.autoNetwork.form.stopConditions.total').toString(),
+			label: this.$t('iqrfnet.networkManager.autoNetwork.form.stopConditions.total').toString(),
 		},
 		{
 			value: StopConditionNode.NEW,
-			text: this.$t('iqrfnet.networkManager.autoNetwork.form.stopConditions.new').toString(),
+			label: this.$t('iqrfnet.networkManager.autoNetwork.form.stopConditions.new').toString(),
 		},
 	];
 
@@ -481,11 +475,6 @@ export default class AutoNetwork extends Vue {
 	 * @var {boolean} useMid Use MID filtering
 	 */
 	private useMid = false;
-
-	/**
-	 * @var {File|null} file MID list file to import
-	 */
-	private file: File|null = null;
 
 	/**
 	 * @var {IAtnwMid} mid MID control
@@ -595,7 +584,7 @@ export default class AutoNetwork extends Vue {
 	 * Calculates address space ranges to simplify input and updates address space input
 	 */
 	private simplifyAddressSpace(): void {
-		if (this.addresses.length === 0 || this.addressSpace.length === 0) {
+		if (this.addresses.length === 0) {
 			return;
 		}
 		let updatedAddressSpace = '';
@@ -617,12 +606,13 @@ export default class AutoNetwork extends Vue {
 
 	/**
 	 * Attempts to read file contents
-	 * @param {File} file File
+	 * @param {FileList} fileList
 	 */
-	private readFile(file: File): void {
-		if (!file) {
+	private readFile(fileList: FileList): void {
+		if (fileList.length === 0) {
 			return;
 		}
+		const file = fileList[0];
 		this.$store.commit('spinner/SHOW');
 		file.text()
 			.then((content: string) => {

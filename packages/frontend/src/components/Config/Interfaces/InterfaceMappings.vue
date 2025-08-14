@@ -16,84 +16,49 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<h5>{{ $t('config.daemon.interfaces.interfaceMapping.title') }}</h5>
-		<v-dialog
-			v-model='show'
-			width='50%'
-			persistent
-			no-click-animation
+		<CTabs
+			variant='tabs'
+			:active-tab='activeTab'
 		>
-			<template #activator='{attrs, on}'>
-				<v-btn
-					color='primary'
-					v-bind='attrs'
-					v-on='on'
-					@click='openModal'
-				>
-					{{ $t('config.daemon.interfaces.interfaceMapping.browse') }}
-				</v-btn>
-			</template>
-			<v-card>
-				<v-card-title>
-					{{ $t('config.daemon.interfaces.interfaceMapping.profiles') }}
-				</v-card-title>
-				<v-card-text>
-					<v-tabs v-model='activeTab' :show-arrows='true'>
-						<v-tab>{{ $t('config.daemon.interfaces.interfaceMapping.adapters') }}</v-tab>
-						<v-tab>{{ $t('config.daemon.interfaces.interfaceMapping.boards') }}</v-tab>
-					</v-tabs>
-					<v-divider />
-					<v-tabs-items v-model='activeTab'>
-						<v-tab-item :transition='false'>
-							<InterfaceMappingGroup
-								:mappings='adapterMappings'
-								:loading='loading'
-								@set-mapping='setMapping'
-								@refresh-mappings='getMappings'
-							/>
-						</v-tab-item>
-						<v-tab-item :transition='false'>
-							<InterfaceMappingGroup
-								:mappings='boardMappings'
-								:loading='loading'
-								@set-mapping='setMapping'
-								@refresh-mappings='getMappings'
-							/>
-						</v-tab-item>
-					</v-tabs-items>
-				</v-card-text>
-				<v-card-actions>
-					<v-spacer />
-					<v-btn
-						@click='closeModal'
-					>
-						{{ $t('forms.close') }}
-					</v-btn>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+			<CTab :title='$t("config.daemon.interfaces.interfaceMapping.adapters")'>
+				<InterfaceMappingGroup
+					class='my-1'
+					:mappings='adapterMappings'
+					@set-mapping='setMapping'
+					@delete-mapping='deleteMapping'
+					@refresh-mappings='getMappings'
+				/>
+			</CTab>
+			<CTab :title='$t("config.daemon.interfaces.interfaceMapping.boards")'>
+				<InterfaceMappingGroup
+					class='my-1'
+					:mappings='boardMappings'
+					@set-mapping='setMapping'
+					@delete-mapping='deleteMapping'
+					@refresh-mappings='getMappings'
+				/>
+			</CTab>
+		</CTabs>
 	</div>
 </template>
 
 <script lang='ts'>
-import {
-	IqrfGatewayDaemonMapping,
-	MappingDeviceType,
-	MappingType,
-} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import {AxiosError} from 'axios';
-import {Component, Prop} from 'vue-property-decorator';
-
+import {Component, Prop, Vue} from 'vue-property-decorator';
+import {CTab, CTabs} from '@coreui/vue/src';
 import InterfaceMappingGroup from '@/components/Config/Interfaces/InterfaceMappingGroup.vue';
-import ModalBase from '@/components/ModalBase.vue';
+
 import {extendedErrorToast} from '@/helpers/errorToast';
-import {useApiClient} from '@/services/ApiClient';
-import {
-	IqrfGatewayDaemonService
-} from '@iqrf/iqrf-gateway-webapp-client/services/Config';
+import {ConfigDeviceType, MappingType} from '@/enums/Config/ConfigurationProfiles';
+
+import MappingService from '@/services/MappingService';
+
+import {AxiosError} from 'axios';
+import {IMapping} from '@/interfaces/Config/Mapping';
 
 @Component({
 	components: {
+		CTab,
+		CTabs,
 		InterfaceMappingGroup,
 	},
 })
@@ -101,7 +66,11 @@ import {
 /**
  * Interface configuration mapping
  */
-export default class InterfaceMappings extends ModalBase {
+export default class InterfaceMappings extends Vue {
+	/**
+	 * @var {Array<IMapping>} mappings Array of mappings
+	 */
+	private mappings: Array<IMapping> = [];
 
 	/**
 	 * @property {MappingType} interfaceType Communication interface type
@@ -109,39 +78,24 @@ export default class InterfaceMappings extends ModalBase {
 	@Prop({required: true}) interfaceType!: MappingType;
 
 	/**
-	 * @var {boolean} loading Indicates that data is loading
-	 */
-	private loading = false;
-
-	/**
-	 * @var {Array<IqrfGatewayDaemonMapping>} mappings Array of mappings
-	 */
-	private mappings: Array<IqrfGatewayDaemonMapping> = [];
-
-	/**
 	 * @var {number} activeTab Currently selected tab
 	 */
 	private activeTab = 0;
 
 	/**
-	 * @property {IqrfGatewayDaemonService} service IQRF Gateway Daemon configuration service
-	 */
-	private readonly service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
-
-	/**
 	 * Computes adapter mapping options
-	 * @return {Array<IqrfGatewayDaemonMapping>} Adapter mappings
+	 * @return {Array<IMapping>} Adapter mappings
 	 */
-	get adapterMappings(): Array<IqrfGatewayDaemonMapping> {
-		return this.mappings.filter((mapping: IqrfGatewayDaemonMapping): boolean => mapping.deviceType === MappingDeviceType.Adapter);
+	get adapterMappings(): Array<IMapping> {
+		return this.mappings.filter((mapping: IMapping): boolean => mapping.deviceType === ConfigDeviceType.ADAPTER);
 	}
 
 	/**
 	 * Computes board mapping options
-	 * @return {Array<IqrfGatewayDaemonMapping>} Board mappings
+	 * @return {Array<IMapping>} Board mappings
 	 */
-	get boardMappings(): Array<IqrfGatewayDaemonMapping> {
-		return this.mappings.filter((mapping: IqrfGatewayDaemonMapping): boolean => mapping.deviceType === MappingDeviceType.Board);
+	get boardMappings(): Array<IMapping> {
+		return this.mappings.filter((mapping: IMapping): boolean => mapping.deviceType === ConfigDeviceType.BOARD);
 	}
 
 	/**
@@ -155,15 +109,37 @@ export default class InterfaceMappings extends ModalBase {
 	 * Retrieves list of mappings
 	 */
 	private getMappings(): Promise<void> {
-		this.loading = true;
-		return this.service.listMappings(this.interfaceType)
-			.then((mappings: Array<IqrfGatewayDaemonMapping>) => {
+		return MappingService.getMappings(this.interfaceType)
+			.then((mappings: Array<IMapping>) => {
 				this.mappings = mappings;
-				this.loading = false;
 			})
 			.catch((error: AxiosError) => {
-				this.loading = false;
 				extendedErrorToast(error, 'config.daemon.interfaces.interfaceMapping.messages.listFailed');
+			});
+	}
+
+	/**
+	 * Removes a mapping from mappings database
+	 * @param {number} id Mapping profile ID
+	 */
+	private deleteMapping(id: number): void {
+		const mapping = this.mappings.find((mapping: IMapping) => mapping.id === id);
+		if (mapping === undefined) {
+			return;
+		}
+		const name = mapping.name;
+		this.$store.commit('spinner/SHOW');
+		MappingService.removeMapping(id)
+			.then(() => {
+				this.getMappings().then(() => {
+					this.$store.commit('spinner/HIDE');
+					this.$toast.success(
+						this.$t('config.daemon.interfaces.interfaceMapping.messages.deleteSuccess', {mapping: name}).toString()
+					);
+				});
+			})
+			.catch((error: AxiosError) => {
+				extendedErrorToast(error, 'config.daemon.interfaces.interfaceMapping.messages.deleteFailed', {mapping: name});
 			});
 	}
 
@@ -172,11 +148,10 @@ export default class InterfaceMappings extends ModalBase {
 	 * @param {number} id Mapping profile ID
 	 */
 	private setMapping(id: number): void {
-		const mapping = this.mappings.find((mapping: IqrfGatewayDaemonMapping) => mapping.id === id);
+		const mapping = this.mappings.find((mapping: IMapping) => mapping.id === id);
 		if (mapping !== undefined) {
 			this.$emit('update-mapping', mapping);
 		}
-		this.closeModal();
 	}
 }
 </script>

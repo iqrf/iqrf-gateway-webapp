@@ -1,19 +1,3 @@
-<!--
-Copyright 2017-2025 IQRF Tech s.r.o.
-Copyright 2019-2025 MICRORISC s.r.o.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software,
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied
-See the License for the specific language governing permissions and
-limitations under the License.
--->
 <template>
 	<VueStepProgressIndicator
 		:colors='colorConfig'
@@ -26,6 +10,8 @@ limitations under the License.
 import Color from 'color';
 import {Component, Vue} from 'vue-property-decorator';
 import VueStepProgressIndicator from 'vue-step-progress-indicator';
+
+import ThemeManager from '@/helpers/themeManager';
 
 @Component({
 	components: {
@@ -53,13 +39,18 @@ export default class InstallWizardStepProgress extends Vue {
 	};
 
 	/**
+	 * @type {Color} Color for the active step
+	 */
+	private activeColor = ThemeManager.getPrimaryColor();
+
+	/**
 	 * Vue step progress indicator color configuration
 	 */
 	private colorConfig = {
 		progress__bubble: {
 			active: {
-				backgroundColor: '#367fa9',
-				borderColor: '#367fa9',
+				backgroundColor: this.activeColor,
+				borderColor: this.activeColor,
 				color: '#fff',
 			},
 			completed: {
@@ -75,7 +66,7 @@ export default class InstallWizardStepProgress extends Vue {
 		},
 		progress__bridge: {
 			active: {
-				backgroundColor: '#367fa9',
+				backgroundColor: this.activeColor,
 			},
 			completed: {
 				backgroundColor: InstallWizardStepProgress.getCompletedColor().hex(),
@@ -86,7 +77,7 @@ export default class InstallWizardStepProgress extends Vue {
 		},
 		progress__label: {
 			active: {
-				color: '#367fa9',
+				color: this.activeColor,
 			},
 			completed: {
 				color: InstallWizardStepProgress.getCompletedColor().hex(),
@@ -132,7 +123,7 @@ export default class InstallWizardStepProgress extends Vue {
 	 * @return {Color} Color for the completed step
 	 */
 	private static getCompletedColor(): Color {
-		const color: Color = Color('#367fa9');
+		const color: Color = Color(ThemeManager.getPrimaryColor());
 		return color.lighten(0.4).desaturate(0.2);
 	}
 

@@ -40,7 +40,7 @@ import {UserRoleIndex} from '@/services/AuthenticationService';
 /**
  * System services menu component
  */
-export default class SystemServiceDisambiguation extends Vue {
+export default class IqrfServiceDisambiguation extends Vue {
 
 	/**
 	 * @var {Link[]} links Links for disambiguation menu

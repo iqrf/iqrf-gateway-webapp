@@ -15,65 +15,60 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-dialog
-		v-model='showModal'
-		width='50%'
-		persistent
-		no-click-animation
+	<CModal
+		color='danger'
+		:show='tunnelToDelete !== null'
 	>
-		<v-card v-if='tunnel !== null'>
-			<v-card-title>
+		<template #header>
+			<h5 class='modal-title'>
 				{{ $t('network.wireguard.tunnels.modal.title') }}
-			</v-card-title>
-			<v-card-text>
-				{{ $t('network.wireguard.tunnels.modal.prompt', {tunnel: tunnel.name}) }}
-			</v-card-text>
-			<v-card-actions>
-				<v-spacer />
-				<v-btn
-					@click='hideModal'
-				>
-					{{ $t('forms.cancel') }}
-				</v-btn>
-				<v-btn
-					color='error'
-					@click='removeTunnel(tunnel.id, tunnel.name)'
-				>
-					{{ $t('forms.delete') }}
-				</v-btn>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
+			</h5>
+		</template>
+		<span v-if='tunnelToDelete !== null'>
+			{{ $t('network.wireguard.tunnels.modal.prompt', {tunnel: tunnelToDelete.name}) }}
+		</span>
+		<template #footer>
+			<CButton
+				color='danger'
+				@click='removeTunnel(tunnelToDelete.id, tunnelToDelete.name)'
+			>
+				{{ $t('forms.delete') }}
+			</CButton> <CButton
+				color='secondary'
+				@click='tunnelToDelete = null'
+			>
+				{{ $t('forms.cancel') }}
+			</CButton>
+		</template>
+	</CModal>
 </template>
 
 <script lang='ts'>
 import {Component, VModel, Vue} from 'vue-property-decorator';
+import {CButton, CModal} from '@coreui/vue/src';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
+import WireguardService from '@/services/WireguardService';
 
 import {AxiosError} from 'axios';
-import {
-	WireGuardTunnelListEntry
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
-import {useApiClient} from '@/services/ApiClient';
+import {IWG} from '@/interfaces/Network/Wireguard';
+
+@Component({
+	components: {
+		CButton,
+		CModal,
+	},
+})
 
 /**
  * WireGuard connections component
  */
-@Component
 export default class WireguardTunnels extends Vue {
 
 	/**
-	 * @property {WireGuardTunnelListEntry|null} tunnel Tunnel information used in delete modal window
+	 * @property {IWG|null} tunnelToDelete Tunnel information used in delete modal window
 	 */
-	@VModel({required: true, default: null}) tunnel!: WireGuardTunnelListEntry|null;
-
-	/**
-	 * Computes modal display condition
-	 */
-	get showModal(): boolean {
-		return this.tunnel !== null;
-	}
+	@VModel({required: true, default: null}) tunnelToDelete!: IWG|null;
 
 	/**
 	 * Removes an existing WireGuard tunnel
@@ -81,9 +76,9 @@ export default class WireguardTunnels extends Vue {
 	 * @param {string} name WireGuard tunnel name
 	 */
 	private removeTunnel(id: number, name: string): void {
-		this.tunnel = null;
+		this.tunnelToDelete = null;
 		this.$store.commit('spinner/SHOW');
-		useApiClient().getNetworkServices().getWireGuardService().deleteTunnel(id)
+		WireguardService.removeTunnel(id)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$emit('deleted');
@@ -95,11 +90,5 @@ export default class WireguardTunnels extends Vue {
 			));
 	}
 
-	/**
-	 * Hides delete modal
-	 */
-	private hideModal(): void {
-		this.tunnel = null;
-	}
 }
 </script>

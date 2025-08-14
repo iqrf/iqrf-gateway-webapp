@@ -133,18 +133,21 @@ class IqrfNetService {
 	 * @return {Promise<string>} Message ID
 	 */
 	clearAllBonds(coordinatorOnly: boolean, options: DaemonMessageOptions): Promise<string> {
-		options.request = {
-			mType: 'iqmeshNetwork_RemoveBond',
-			data: {
-				req: {
-					allNodes: true,
-					coordinatorOnly: coordinatorOnly,
+		if (coordinatorOnly) {
+			options.request = {
+				'mType': 'iqmeshNetwork_RemoveBondOnlyInC',
+				'data': {
+					'req': {
+						'deviceAddr': [],
+						'clearAllBonds': true,
+					},
+					'returnVerbose': true,
 				},
-				repeat: 1,
-				returnVerbose: true,
-			},
-		};
-		return store.dispatch('daemonClient/sendRequest', options);
+			};
+			return store.dispatch('daemonClient/sendRequest', options);
+		} else {
+			return this.removeBond(255, false, options);
+		}
 	}
 
 	/**
@@ -313,17 +316,29 @@ class IqrfNetService {
 	 * @return {Promise<string>} Message ID
 	 */
 	removeBond(addr: number, coordinatorOnly: boolean, options: DaemonMessageOptions): Promise<string> {
-		options.request = {
-			mType: 'iqmeshNetwork_RemoveBond',
-			data: {
-				req: {
-					deviceAddr: addr,
-					coordinatorOnly: coordinatorOnly,
+		if (coordinatorOnly) {
+			options.request = {
+				'mType': 'iqmeshNetwork_RemoveBondOnlyInC',
+				'data': {
+					'repeat': 1,
+					'req': {
+						'deviceAddr': [addr],
+					},
+					'returnVerbose': true,
 				},
-				repeat: 1,
-				returnVerbose: true,
-			},
-		};
+			};
+		} else {
+			options.request = {
+				'mType': 'iqmeshNetwork_RemoveBond',
+				'data': {
+					'repeat': 1,
+					'req': {
+						'deviceAddr': addr,
+					},
+					'returnVerbose': true,
+				},
+			};
+		}
 		return store.dispatch('daemonClient/sendRequest', options);
 	}
 

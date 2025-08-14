@@ -17,208 +17,213 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ pageTitle }}</h1>
-		<v-card class='mb-5'>
-			<v-card-text>
-				<ValidationObserver v-slot='{invalid}'>
-					<v-form>
+		<CCard body-wrapper>
+			<ValidationObserver v-slot='{invalid}'>
+				<CForm>
+					<ValidationProvider
+						v-slot='{errors, touched, valid}'
+						rules='required'
+						:custom-messages='{
+							required: $t("network.connection.errors.name"),
+						}'
+					>
+						<CInput
+							v-model='connection.name'
+							:label='$t("network.connection.name").toString()'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='errors.join(", ")'
+						/>
+					</ValidationProvider>
+					<div v-if='interfaceType !== null && connection.interface !== undefined'>
+						<GsmModemInput
+							v-if='interfaceType === InterfaceType.GSM'
+							v-model='connection.interface'
+							@input='detectSerial'
+						/>
+						<InterfaceInput
+							v-else
+							v-model='connection.interface'
+							:type='interfaceType'
+						/>
+					</div>
+					<div class='form-group'>
+						<label for='autoConnect'>
+							<strong>{{ $t("network.connection.autoConnect") }}</strong>
+						</label><br>
+						<CSwitch
+							id='autoConnect'
+							:checked.sync='connection.autoConnect.enabled'
+							size='lg'
+							shape='pill'
+							color='primary'
+							label-on='ON'
+							label-off='OFF'
+						/>
+					</div>
+					<WiFiConfiguration v-if='connection.wifi' v-model='connection' :ap='ap' />
+					<div
+						v-if='connection.gsm'
+						:key='refresh'
+					>
+						<legend>{{ $t('network.mobile.form.title') }}</legend>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
-							rules='required'
+							rules='required|apn'
 							:custom-messages='{
-								required: $t("network.connection.errors.name"),
+								required: $t("network.mobile.errors.apnMissing"),
+								apn: $t("network.mobile.errors.apnInvalid"),
 							}'
 						>
-							<v-text-field
-								v-model='connection.name'
-								:label='$t("network.connection.name").toString()'
-								:success='touched ? valid : null'
-								:error-messages='errors'
+							<CInput
+								v-model='connection.gsm.apn'
+								:label='$t("network.mobile.form.apn").toString()'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
-						<div v-if='interfaceType !== null && connection.interface !== undefined'>
-							<GsmModemInput
-								v-if='interfaceType === NetworkInterfaceType.GSM'
-								v-model='connection.interface'
-								@input='detectSerial'
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							rules='pin'
+							:custom-messages='{
+								pin: $t("network.mobile.errors.pinInvalid"),
+							}'
+						>
+							<PasswordInput
+								v-model='connection.gsm.pin'
+								:label='$t("network.mobile.form.pin").toString()'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='errors.join(", ")'
 							/>
-							<InterfaceInput
-								v-else
-								v-model='connection.interface'
-								:type='interfaceType'
-							/>
-						</div>
-						<v-switch
-							v-model='connection.autoConnect.enabled'
-							:label='$t("network.connection.autoConnect")'
-							color='primary'
-							inset
-							dense
-						/>
-						<WiFiConfiguration v-if='connection.wifi' v-model='connection' :ap='ap' />
-						<div
-							v-if='connection.gsm'
-							:key='refresh'
-						>
-							<h5>{{ $t('network.mobile.form.title') }}</h5>
-							<ValidationProvider
-								v-slot='{errors, touched, valid}'
-								rules='required|apn'
-								:custom-messages='{
-									required: $t("network.mobile.errors.apnMissing"),
-									apn: $t("network.mobile.errors.apnInvalid"),
-								}'
-							>
-								<v-text-field
-									v-model='connection.gsm.apn'
-									:label='$t("network.mobile.form.apn").toString()'
-									:success='touched ? valid : null'
-									:error-messages='errors'
-								/>
-							</ValidationProvider>
-							<ValidationProvider
-								v-slot='{errors, touched, valid}'
-								rules='pin'
-								:custom-messages='{
-									pin: $t("network.mobile.errors.pinInvalid"),
-								}'
-							>
-								<PasswordInput
-									v-model='connection.gsm.pin'
-									:label='$t("network.mobile.form.pin").toString()'
-									:success='touched ? valid : null'
-									:error-messages='errors'
-								/>
-							</ValidationProvider>
-							<v-row>
-								<v-col>
-									<ValidationProvider
-										v-slot='{errors, touched, valid}'
-										:rules='{
-											required: connection.gsm.password.length > 0
-										}'
-										:custom-messages='{
-											required: $t("network.mobile.errors.credentialsMissing"),
-										}'
-									>
-										<v-text-field
-											v-model='connection.gsm.username'
-											:label='$t("forms.fields.username").toString()'
-											:success='touched ? valid : null'
-											:error-messages='errors'
-										/>
-									</ValidationProvider>
-								</v-col>
-								<v-col>
-									<ValidationProvider
-										v-slot='{errors, touched, valid}'
-										:rules='{
-											required: connection.gsm.username.length > 0
-										}'
-										:custom-messages='{
-											required: $t("network.mobile.errors.credentialsMissing"),
-										}'
-									>
-										<PasswordInput
-											v-model='connection.gsm.password'
-											:label='$t("forms.fields.password").toString()'
-											:success='touched ? valid : null'
-											:error-messages='errors'
-										/>
-									</ValidationProvider>
-								</v-col>
-							</v-row>
-						</div>
-						<SerialConfiguration v-if='connection.serial' v-model='connection' />
-						<v-row v-if='interfaceType'>
-							<v-col cols='12'>
-								<v-alert v-if='disabledBothIpStacks' type='error' text>
-									{{ $t('network.connection.messages.disabledBothIpStacks') }}
-								</v-alert>
-							</v-col>
-							<v-col cols='12' md='6'>
-								<h5>{{ $t('network.connection.ipv4.title') }}</h5>
-								<IPv4Configuration v-model='connection' />
-							</v-col>
-							<v-col cols='12' md='6'>
-								<h5>{{ $t('network.connection.ipv6.title') }}</h5>
-								<IPv6Configuration v-model='connection' :disabled='hasBrokenGsmModem' />
-							</v-col>
-						</v-row>
-						<v-btn
-							class='mr-1'
-							color='primary'
-							:disabled='invalid || !ipv4InSubnet || disabledBothIpStacks'
-							@click.prevent='prepareModal(true)'
-						>
-							{{ $t('network.connection.saveAndConnect') }}
-						</v-btn>
-						<v-btn
-							color='secondary'
-							:disabled='invalid || !ipv4InSubnet || disabledBothIpStacks'
-							@click.prevent='prepareModal(false)'
-						>
-							{{ $t('forms.save') }}
-						</v-btn>
-					</v-form>
-				</ValidationObserver>
-			</v-card-text>
-		</v-card>
-		<v-card
-			v-if='interfaceType === NetworkInterfaceType.GSM'
-		>
-			<v-card-text>
-				<NetworkOperators
-					:allow-set='true'
-					@set-operator='updateGsm'
-				/>
-			</v-card-text>
-		</v-card>
-		<v-dialog
-			v-model='showModal'
-			width='50%'
-			persistent
-			no-click-animation
-		>
-			<v-card>
-				<v-card-title>
-					{{ $t('network.connection.modal.title') }}
-				</v-card-title>
-				<v-card-text>
-					<span v-if='modalMessages.ipv4 !== ""'>
-						{{ modalMessages.ipv4 }}
-					</span>
-					<a
-						v-if='modalMessages.ipv4Addr !== ""'
-						style='color: blue; cursor: pointer;'
-						:href='modalMessages.ipv4Addr'
-						target='_blank'
+						</ValidationProvider>
+						<CRow>
+							<CCol>
+								<ValidationProvider
+									v-slot='{errors, touched, valid}'
+									:rules='{
+										required: connection.gsm.password.length > 0
+									}'
+									:custom-messages='{
+										required: $t("network.mobile.errors.credentialsMissing"),
+									}'
+								>
+									<CInput
+										v-model='connection.gsm.username'
+										:label='$t("forms.fields.username").toString()'
+										:is-valid='touched ? valid : null'
+										:invalid-feedback='errors.join(", ")'
+									/>
+								</ValidationProvider>
+							</CCol>
+							<CCol>
+								<ValidationProvider
+									v-slot='{errors, touched, valid}'
+									:rules='{
+										required: connection.gsm.username.length > 0
+									}'
+									:custom-messages='{
+										required: $t("network.mobile.errors.credentialsMissing"),
+									}'
+								>
+									<PasswordInput
+										v-model='connection.gsm.password'
+										:label='$t("forms.fields.password").toString()'
+										:is-valid='touched ? valid : null'
+										:invalid-feedback='errors.join(", ")'
+									/>
+								</ValidationProvider>
+								<CCol />
+							</ccol>
+						</CRow>
+					</div>
+					<SerialConfiguration v-if='connection.serial' v-model='connection' />
+					<CRow>
+						<CCol md='12'>
+							<CAlert v-if='disabledBothIpStacks' color='danger'>
+								{{ $t("network.connection.messages.disabledBothIpStacks") }}
+							</CAlert>
+						</CCol>
+						<CCol md='6'>
+							<legend>{{ $t('network.connection.ipv4.title') }}</legend>
+							<IPv4Configuration v-model='connection' />
+						</CCol>
+						<CCol md='6'>
+							<legend>{{ $t('network.connection.ipv6.title') }}</legend>
+							<IPv6Configuration v-model='connection' :disabled='hasBrokenGsmModem' />
+						</CCol>
+					</CRow>
+					<CButton
+						color='primary'
+						:disabled='invalid || !ipv4InSubnet || disabledBothIpStacks'
+						@click.prevent='prepareModal(true)'
 					>
-						{{ modalMessages.ipv4Addr }}
-					</a>
-					{{ $t('network.connection.modal.confirmPrompt') }}
-				</v-card-text>
-				<v-card-actions>
-					<v-spacer />
-					<v-btn
-						class='mr-1'
-						@click='showModal = false'
-					>
-						{{ $t('forms.cancel') }}
-					</v-btn>
-					<v-btn
-						color='warning'
-						@click='saveConnection'
+						{{ $t('network.connection.saveAndConnect') }}
+					</CButton> <CButton
+						color='secondary'
+						:disabled='invalid || !ipv4InSubnet || disabledBothIpStacks'
+						@click.prevent='prepareModal(false)'
 					>
 						{{ $t('forms.save') }}
-					</v-btn>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+					</CButton>
+				</CForm>
+			</ValidationObserver>
+		</CCard>
+		<CCard v-if='interfaceType === InterfaceType.GSM' body-wrapper>
+			<NetworkOperators @apply='updateGsm' />
+		</CCard>
+		<CModal
+			:show.sync='showModal'
+			color='warning'
+			size='lg'
+		>
+			<template #header>
+				<h5 class='modal-title'>
+					{{ $t('network.connection.modal.title') }}
+				</h5>
+			</template>
+			<div>
+				<span v-if='modalMessages.ipv4 !== ""'>
+					{{ modalMessages.ipv4 }}
+				</span>
+				<a
+					v-if='modalMessages.ipv4Addr !== ""'
+					style='color: blue; cursor: pointer;'
+					:href='modalMessages.ipv4Addr'
+					target='_blank'
+				>
+					{{ modalMessages.ipv4Addr }}
+				</a>
+			</div>
+			{{ $t('network.connection.modal.confirmPrompt') }}
+			<template #footer>
+				<CButton
+					color='warning'
+					@click='saveConnection'
+				>
+					{{ $t('forms.save') }}
+				</CButton> <CButton
+					color='secondary'
+					@click='showModal = false'
+				>
+					{{ $t('forms.cancel') }}
+				</CButton>
+			</template>
+		</CModal>
 	</div>
 </template>
 
 <script lang='ts'>
-import axios, {AxiosError} from 'axios';
+import axios, {AxiosError, AxiosResponse} from 'axios';
+import {
+	CAlert,
+	CButton,
+	CCard,
+	CCol,
+	CForm,
+	CInput,
+	CModal,
+	CRow,
+	CSwitch
+} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 import {MetaInfo} from 'vue-meta';
@@ -227,50 +232,65 @@ import {v4 as uuidv4} from 'uuid';
 
 import GsmModemInput from '@/components/Network/Connection/GsmModemInput.vue';
 import InterfaceInput from '@/components/Network/Connection/InterfaceInput.vue';
-import IPv4Configuration from '@/components/Network/Connection/IPv4Configuration.vue';
-import IPv6Configuration from '@/components/Network/Connection/IPv6Configuration.vue';
-import PasswordInput from '@/components/Core/PasswordInput.vue';
-import SerialConfiguration from '@/components/Network/Connection/SerialConfiguration.vue';
-import WiFiConfiguration from '@/components/Network/Connection/WiFiConfiguration.vue';
+import IPv4Configuration
+	from '@/components/Network/Connection/IPv4Configuration.vue';
+import IPv6Configuration
+	from '@/components/Network/Connection/IPv6Configuration.vue';
+import SerialConfiguration
+	from '@/components/Network/Connection/SerialConfiguration.vue';
+import WiFiConfiguration
+	from '@/components/Network/Connection/WiFiConfiguration.vue';
 import NetworkOperators from '@/components/Network/NetworkOperators.vue';
+import PasswordInput from '@/components/Core/PasswordInput.vue';
+
+import NetworkOperator from '@/entities/NetworkOperator';
+
+import {ConnectionType} from '@/enums/Network/ConnectionType';
+import {InterfaceType} from '@/enums/Network/InterfaceType';
+import {Ipv4Method, Ipv6Method} from '@/enums/Network/Ip';
+import {WepKeyType} from '@/enums/Network/WifiSecurity';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
-import {apn, pin} from '@/helpers/validationRules/Network';
 import IpAddressHelper from '@/helpers/IpAddressHelper';
+import {apn, pin} from '@/helpers/validationRules/Network';
 import {sleep} from '@/helpers/sleep';
 import UrlBuilder from '@/helpers/urlBuilder';
 
 import {
+	IConnection,
 	IConnectionModal,
+	IConnectionSerial
 } from '@/interfaces/Network/Connection';
+import {IAccessPoint} from '@/interfaces/Network/Wifi';
 
-import {useApiClient} from '@/services/ApiClient';
-import {
-	MobileOperator,
-	IPv4ConfigurationMethod,
-	IPv6ConfigurationMethod,
-	NetworkConnectionConfiguration,
-	NetworkConnectionType,
-	AccessPoint,
-	WepKeyType,
-	NetworkInterfaceType, NetworkConnectionCreated
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
+import NetworkConnectionService from '@/services/NetworkConnectionService';
+import VersionService from '@/services/VersionService';
+import ServiceService from '@/services/ServiceService';
 
 @Component({
 	components: {
+		CAlert,
+		CButton,
+		CCard,
+		CCol,
+		CForm,
+		CInput,
+		CModal,
+		CRow,
+		CSwitch,
 		GsmModemInput,
 		InterfaceInput,
 		IPv4Configuration,
 		IPv6Configuration,
 		NetworkOperators,
-		PasswordInput,
 		SerialConfiguration,
 		ValidationObserver,
 		ValidationProvider,
 		WiFiConfiguration,
+		PasswordInput,
 	},
 	data: () => ({
-		NetworkInterfaceType,
+		InterfaceType,
 	}),
 	metaInfo(): MetaInfo {
 		return {
@@ -282,9 +302,9 @@ import {
 export default class ConnectionForm extends Vue {
 
 	/**
-	 * @var {NetworkConnectionConfiguration} connection Configuration of IPv4 and IPv6 connectivity
+	 * @var {IConnection} connection Configuration of IPv4 and IPv6 connectivity
 	 */
-	private connection: NetworkConnectionConfiguration = {
+	private connection: IConnection = {
 		autoConnect: {
 			enabled: true,
 			priority: 0,
@@ -297,24 +317,24 @@ export default class ConnectionForm extends Vue {
 			addresses: [],
 			dns: [],
 			gateway: '',
-			method: IPv4ConfigurationMethod.AUTO,
+			method: Ipv4Method.AUTO,
 		},
 		ipv6: {
 			addresses: [],
 			dns: [],
 			gateway: '',
-			method: IPv6ConfigurationMethod.AUTO,
+			method: Ipv6Method.AUTO,
 		}
 	};
 
-	private backupConfig: NetworkConnectionConfiguration|null = null;
+	private backupConfig: IConnection|null = null;
 
 	/**
-	 * @var {Record<string, string|IPv4ConfigurationMethod>} originalIPv4 IPv4 address and method before change
+	 * @var {Record<string, string|Ipv4Method>} originalIPv4 IPv4 address and method before change
 	 */
 	private originalIPv4 = {
 		address: '',
-		method: IPv4ConfigurationMethod.AUTO,
+		method: Ipv4Method.AUTO,
 	};
 
 	/**
@@ -351,28 +371,23 @@ export default class ConnectionForm extends Vue {
 	@Prop({required: false, default: null}) ap!: string|null;
 
 	/**
-	 * @property {NetworkConnectionService} service Network connection service
-	 */
-	private service = useApiClient().getNetworkServices().getNetworkConnectionService();
-
-	/**
 	 * @property {boolean} disabledBothIpStacks Are both IP stacks disabled?
 	 */
 	get disabledBothIpStacks(): boolean {
-		return this.connection.ipv4.method === IPv4ConfigurationMethod.DISABLED
-			&& this.connection.ipv6.method === IPv6ConfigurationMethod.DISABLED;
+		return this.connection.ipv4.method === Ipv4Method.DISABLED
+			&& this.connection.ipv6.method === Ipv6Method.DISABLED;
 	}
 
 	/**
-	 * @property {NetworkInterfaceType|null} interfaceType Type of interface
+	 * @property {InterfaceType|null} interfaceType Type of interface
 	 */
-	get interfaceType(): NetworkInterfaceType|null {
+	get interfaceType(): InterfaceType|null {
 		if (this.$route.path.includes('/ip-network/wireless/')) {
-			return NetworkInterfaceType.WIFI;
+			return InterfaceType.WIFI;
 		} else if (this.$route.path.includes('/ip-network/ethernet/')) {
-			return NetworkInterfaceType.ETHERNET;
+			return InterfaceType.ETHERNET;
 		} else if (this.$route.path.includes('/ip-network/mobile/')) {
-			return NetworkInterfaceType.GSM;
+			return InterfaceType.GSM;
 		} else {
 			return null;
 		}
@@ -410,13 +425,13 @@ export default class ConnectionForm extends Vue {
 		if (this.uuid !== null) {
 			this.getConnection();
 		} else {
-			const ap = JSON.parse(this.ap || '{}') as AccessPoint;
+			const ap = JSON.parse(this.ap || '{}') as IAccessPoint;
 			this.connection.name = ap.ssid;
 			this.connection.interface = ap.interfaceName ?? '';
-			if (this.interfaceType === NetworkInterfaceType.ETHERNET) {
-				this.connection.type = NetworkConnectionType.Ethernet;
-			} else if (this.interfaceType === NetworkInterfaceType.WIFI) {
-				this.connection.type = NetworkConnectionType.WiFi;
+			if (this.interfaceType === InterfaceType.ETHERNET) {
+				this.connection.type = ConnectionType.Ethernet;
+			} else if (this.interfaceType === InterfaceType.WIFI) {
+				this.connection.type = ConnectionType.WiFi;
 				Object.assign(this.connection, {
 					wifi: {
 						ssid: ap?.ssid,
@@ -448,8 +463,8 @@ export default class ConnectionForm extends Vue {
 						}
 					});
 				}
-			} else if (this.interfaceType === NetworkInterfaceType.GSM) {
-				this.connection.type = NetworkConnectionType.GSM;
+			} else if (this.interfaceType === InterfaceType.GSM) {
+				this.connection.type = ConnectionType.GSM;
 				Object.assign(this.connection, {
 					gsm: {apn: '', pin: '', username: '', password: ''}
 				});
@@ -464,7 +479,7 @@ export default class ConnectionForm extends Vue {
 	 * @returns {boolean} Are addresses in the same subnet?
 	 */
 	get ipv4InSubnet(): boolean {
-		if (this.interfaceType === NetworkInterfaceType.GSM) {
+		if (this.interfaceType === InterfaceType.GSM) {
 			return true;
 		}
 		return IpAddressHelper.ipv4ConnectionSubnetCheck(this.connection);
@@ -478,8 +493,8 @@ export default class ConnectionForm extends Vue {
 			return;
 		}
 		this.$store.commit('spinner/SHOW');
-		this.service.get(this.uuid)
-			.then((response: NetworkConnectionConfiguration) => {
+		NetworkConnectionService.get(this.uuid)
+			.then((response: IConnection) => {
 				this.$store.commit('spinner/HIDE');
 				this.storeConnectionData(response);
 			})
@@ -490,11 +505,11 @@ export default class ConnectionForm extends Vue {
 					'network.connection.messages.fetchFailed',
 					{connection: this.uuid!}
 				);
-				if (this.connection.type === NetworkConnectionType.Ethernet) {
+				if (this.connection.type === ConnectionType.Ethernet) {
 					this.$router.push('/ip-network/ethernet');
-				} else if (this.connection.type === NetworkConnectionType.WiFi) {
+				} else if (this.connection.type === ConnectionType.WiFi) {
 					this.$router.push('/ip-network/wireless');
-				} else if (this.connection.type === NetworkConnectionType.GSM) {
+				} else if (this.connection.type === ConnectionType.GSM) {
 					this.$router.push('/ip-network/mobile');
 				}
 			});
@@ -520,16 +535,16 @@ export default class ConnectionForm extends Vue {
 
 	/**
 	 * Initializes empty arrays for the form and stores configuration
-	 * @param {NetworkConnectionConfiguration} connection Connection details
+	 * @param {IConnection} connection Connection details
 	 */
-	private storeConnectionData(connection: NetworkConnectionConfiguration): void {
+	private storeConnectionData(connection: IConnection): void {
 		// initialize ipv4 configuration objects
-		if (connection.ipv4.method === IPv4ConfigurationMethod.AUTO && connection.ipv4.current) {
+		if (connection.ipv4.method === Ipv4Method.AUTO && connection.ipv4.current) {
 			connection.ipv4 = connection.ipv4.current;
 			delete connection.ipv4.current;
 		}
 		this.originalIPv4.address = connection.ipv4.addresses[0]?.address ?? '';
-		this.originalIPv4.method = connection.ipv4.method ?? IPv4ConfigurationMethod.AUTO;
+		this.originalIPv4.method = connection.ipv4.method ?? Ipv4Method.AUTO;
 		// initialize ipv6 configuration objects
 		if (['auto', 'dhcp'].includes(connection.ipv6.method) && connection.ipv6.current) {
 			connection.ipv6 = connection.ipv6.current;
@@ -550,10 +565,10 @@ export default class ConnectionForm extends Vue {
 			this.saveConnection(connect);
 			return;
 		}
-		if (this.originalIPv4.method === IPv4ConfigurationMethod.AUTO && this.connection.ipv4.method === IPv4ConfigurationMethod.AUTO) { // ipv4 method not changed from auto
+		if (this.originalIPv4.method === Ipv4Method.AUTO && this.connection.ipv4.method === Ipv4Method.AUTO) { // ipv4 method not changed from auto
 			this.saveConnection(connect);
 			return;
-		} else if (this.originalIPv4.method === IPv4ConfigurationMethod.AUTO && this.connection.ipv4.method === IPv4ConfigurationMethod.MANUAL) { // ipv4 method changed from auto to static
+		} else if (this.originalIPv4.method === Ipv4Method.AUTO && this.connection.ipv4.method === Ipv4Method.MANUAL) { // ipv4 method changed from auto to static
 			if (this.connection.ipv4.addresses[0].address === this.originalIPv4.address) { // auto to static, but IP hasn't changed
 				this.saveConnection(connect);
 				return;
@@ -561,11 +576,11 @@ export default class ConnectionForm extends Vue {
 			this.modalMessages.ipv4 = this.$t('network.connection.modal.ipv4.autoToStatic').toString();
 			this.modalMessages.ipv4Addr = window.location.protocol + '//' +
 				this.connection.ipv4.addresses[0].address + loc.getPort();
-		} else if (this.originalIPv4.method === IPv4ConfigurationMethod.MANUAL && this.connection.ipv4.method === IPv4ConfigurationMethod.MANUAL) {
+		} else if (this.originalIPv4.method === Ipv4Method.MANUAL && this.connection.ipv4.method === Ipv4Method.MANUAL) {
 			this.modalMessages.ipv4 = this.$t('network.connection.modal.ipv4.staticIpChange').toString();
 			this.modalMessages.ipv4Addr = window.location.protocol + '//' +
 				this.connection.ipv4.addresses[0].address + loc.getPort();
-		} else if (this.originalIPv4.method === IPv4ConfigurationMethod.MANUAL && this.connection.ipv4.method === IPv4ConfigurationMethod.AUTO) { // ipv4 method changed from static to auto
+		} else if (this.originalIPv4.method === Ipv4Method.MANUAL && this.connection.ipv4.method === Ipv4Method.AUTO) { // ipv4 method changed from static to auto
 			this.modalMessages.ipv4 = this.$t('network.connection.modal.ipv4.staticToAuto').toString();
 		}
 		this.handleIPChanged = true;
@@ -574,19 +589,19 @@ export default class ConnectionForm extends Vue {
 
 	/**
 	 * Alters connection JSON for submission
-	 * @param {NetworkConnectionConfiguration} connection Connection to prepare
-	 * @returns {NetworkConnectionConfiguration} Connection prepared for submission
+	 * @param {IConnection} connection Connection to prepare
+	 * @returns {IConnection} Connection prepared for submission
 	 */
-	private prepareConnectionToSave(connection: NetworkConnectionConfiguration): NetworkConnectionConfiguration {
-		if (connection.ipv4.method === IPv4ConfigurationMethod.MANUAL) {
+	private prepareConnectionToSave(connection: IConnection): IConnection {
+		if (connection.ipv4.method === Ipv4Method.MANUAL) {
 			for (const idx in connection.ipv4.addresses) {
 				delete connection.ipv4.addresses[idx].prefix;
 			}
-		} else if ([IPv4ConfigurationMethod.AUTO, IPv4ConfigurationMethod.DISABLED, IPv4ConfigurationMethod.SHARED].includes(connection.ipv4.method)) {
+		} else if ([Ipv4Method.AUTO, Ipv4Method.DISABLED, Ipv4Method.SHARED].includes(connection.ipv4.method)) {
 			connection.ipv4.addresses = connection.ipv4.dns = [];
 			connection.ipv4.gateway = null;
 		}
-		if ([IPv6ConfigurationMethod.AUTO, IPv6ConfigurationMethod.DISABLED, IPv6ConfigurationMethod.DHCP, IPv6ConfigurationMethod.SHARED].includes(connection.ipv6.method)) {
+		if ([Ipv6Method.AUTO, Ipv6Method.DISABLED, Ipv6Method.DHCP, Ipv6Method.SHARED].includes(connection.ipv6.method)) {
 			connection.ipv6.addresses = connection.ipv6.dns = [];
 			connection.ipv6.gateway = null;
 		}
@@ -613,7 +628,7 @@ export default class ConnectionForm extends Vue {
 	 * Restarts ModemManager service to fix broken modem
 	 */
 	private async restartModemManager(): Promise<void> {
-		await useApiClient().getServiceService().restart('ModemManager');
+		await ServiceService.restart('ModemManager');
 		await new Promise(resolve => setTimeout(resolve, 15_000));
 	}
 
@@ -621,7 +636,7 @@ export default class ConnectionForm extends Vue {
 	 * Saves changes made to connection
 	 */
 	private saveConnection(connect: boolean): void {
-		let connection: NetworkConnectionConfiguration = JSON.parse(JSON.stringify(this.connection));
+		let connection: IConnection = JSON.parse(JSON.stringify(this.connection));
 		Object.assign(connection, {interface: connection.interface});
 		connection = this.prepareConnectionToSave(connection);
 		if (this.showModal) {
@@ -633,13 +648,13 @@ export default class ConnectionForm extends Vue {
 		);
 		if (this.uuid === null || connection.uuid === undefined) {
 			connection.uuid = uuidv4();
-			this.service.create(connection)
-				.then(async (response: NetworkConnectionCreated) => {
+			NetworkConnectionService.add(connection)
+				.then(async (response: AxiosResponse) => {
 					if (connect) {
-						if (this.interfaceType === NetworkInterfaceType.GSM && this.hasBrokenGsmModem) {
+						if (this.interfaceType === InterfaceType.GSM && this.hasBrokenGsmModem) {
 							await this.restartModemManager();
 						}
-						await this.connect(response.uuid, connection.name, true);
+						await this.connect(response.data, connection.name, true);
 					} else {
 						this.onSuccess();
 					}
@@ -651,10 +666,10 @@ export default class ConnectionForm extends Vue {
 					);
 				});
 		} else {
-			this.service.update(this.uuid, connection)
+			NetworkConnectionService.edit(this.uuid, connection)
 				.then(async () => {
 					if (connect) {
-						if (this.interfaceType === NetworkInterfaceType.GSM && this.hasBrokenGsmModem) {
+						if (this.interfaceType === InterfaceType.GSM && this.hasBrokenGsmModem) {
 							await this.restartModemManager();
 						}
 						await this.connect(this.uuid!, connection.name, false);
@@ -682,11 +697,11 @@ export default class ConnectionForm extends Vue {
 			message = this.$t('network.connection.messages.edit.success', {connection: name}).toString();
 		}
 		this.$toast.success(message);
-		if (this.connection.type === NetworkConnectionType.Ethernet) {
+		if (this.connection.type === ConnectionType.Ethernet) {
 			this.$router.push('/ip-network/ethernet');
-		} else if (this.connection.type === NetworkConnectionType.WiFi) {
+		} else if (this.connection.type === ConnectionType.WiFi) {
 			this.$router.push('/ip-network/wireless');
-		} else if (this.connection.type === NetworkConnectionType.GSM) {
+		} else if (this.connection.type === ConnectionType.GSM) {
 			this.$router.push('/ip-network/mobile');
 		}
 	}
@@ -697,23 +712,23 @@ export default class ConnectionForm extends Vue {
 	 * @param {boolean} added Connection added before connecting
 	 */
 	private async connect(uuid: string, name: string, added = false): Promise<void> {
-		await this.service.connect(uuid, this.connection.interface ?? null)
+		await NetworkConnectionService.connect(uuid, this.connection.interface ?? null)
 			.then(() => {this.onSuccess();})
 			.catch(async (error: AxiosError) => {
 				if (!this.handleIPChanged) {
 					if (added) {
-						await this.service.delete(uuid);
+						await NetworkConnectionService.remove(uuid);
 					} else if (this.backupConfig !== null) {
-						await this.service.update(uuid, this.prepareConnectionToSave(this.backupConfig));
+						await NetworkConnectionService.edit(uuid, this.prepareConnectionToSave(this.backupConfig));
 					}
 					extendedErrorToast(error, 'network.connection.messages.connect.failed', {connection: name});
 					return;
 				}
-				if (this.originalIPv4.method === IPv4ConfigurationMethod.AUTO && this.connection.ipv4.method === IPv4ConfigurationMethod.MANUAL) {
+				if (this.originalIPv4.method === Ipv4Method.AUTO && this.connection.ipv4.method === Ipv4Method.MANUAL) {
 					await this.tryRest('network.connection.messages.ipChange.autoToStatic');
-				} else if (this.originalIPv4.method === IPv4ConfigurationMethod.MANUAL && this.connection.ipv4.method === IPv4ConfigurationMethod.MANUAL) {
+				} else if (this.originalIPv4.method === Ipv4Method.MANUAL && this.connection.ipv4.method === Ipv4Method.MANUAL) {
 					await this.tryRest('network.connection.messages.ipChange.staticToStatic');
-				} else if (this.originalIPv4.method === IPv4ConfigurationMethod.MANUAL && this.connection.ipv4.method === IPv4ConfigurationMethod.AUTO) {
+				} else if (this.originalIPv4.method === Ipv4Method.MANUAL && this.connection.ipv4.method === Ipv4Method.AUTO) {
 					this.$store.commit('spinner/HIDE');
 					this.$store.commit('blocking/SHOW', this.$t('network.connection.messages.ipChange.staticToAuto').toString());
 				}
@@ -731,7 +746,7 @@ export default class ConnectionForm extends Vue {
 			this.$t('network.connection.messages.ipChange.backendCheck').toString()
 		);
 		await sleep(10000);
-		useApiClient().getVersionService().getWebapp()
+		VersionService.getWebappVersionRest()
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$store.commit('blocking/SHOW',
@@ -746,15 +761,15 @@ export default class ConnectionForm extends Vue {
 
 	/**
 	 * Updates GSM connection object
-	 * @param {MobileOperator} operator Network operator
+	 * @param {NetworkOperator} operator Network operator
 	 */
-	private updateGsm(operator: MobileOperator): void {
+	private updateGsm(operator: NetworkOperator): void {
 		if (this.connection.gsm === undefined) {
 			return;
 		}
-		this.connection.gsm.apn = operator.apn;
-		this.connection.gsm.username = operator.username ?? '';
-		this.connection.gsm.password = operator.password ?? '';
+		this.connection.gsm.apn = operator.getApn();
+		this.connection.gsm.username = operator.getUsername();
+		this.connection.gsm.password = operator.getPassword();
 		this.refresh++;
 	}
 
@@ -766,11 +781,11 @@ export default class ConnectionForm extends Vue {
 			return;
 		}
 		if (/tty(AMA|AMC|S)\d+/.test(this.connection.interface) && this.connection.serial === undefined) {
-			const serial: SerialConfiguration = {baudRate: 115200, bits: 8, parity: 'n', stopBits: 1, sendDelay: 0};
+			const serial: IConnectionSerial = {baudRate: 115200, bits: 8, parity: 'n', stopBits: 1, sendDelay: 0};
 			Object.assign(this.connection, {serial: serial});
 		}
 		if (this.hasBrokenGsmModem) {
-			this.connection.ipv6.method = IPv6ConfigurationMethod.DISABLED;
+			this.connection.ipv6.method = Ipv6Method.DISABLED;
 		}
 	}
 

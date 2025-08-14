@@ -22,45 +22,45 @@ limitations under the License.
 			required: $t("network.connection.errors.interface"),
 		}'
 	>
-		<v-select
-			v-model='interface'
+		<CSelect
+			:value.sync='interface'
 			:label='$t("network.connection.interface").toString()'
 			:placeholder='$t("network.connection.errors.interface").toString()'
-			:items='options'
-			:success='touched ? valid : null'
-			:error-messages='errors'
+			:options='options'
+			:is-valid='touched ? valid : null'
+			:invalid-feedback='errors.join(", ")'
 		/>
 	</ValidationProvider>
 </template>
 
 <script lang='ts'>
-import {Component, Prop, VModel, Vue} from 'vue-property-decorator';
+import {AxiosError} from 'axios';
+import {CSelect} from '@coreui/vue/src';
 import {extend, ValidationProvider} from 'vee-validate';
+import {required} from 'vee-validate/dist/rules';
+import {Component, Prop, VModel, Vue} from 'vue-property-decorator';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
-import {required} from 'vee-validate/dist/rules';
-
-import {AxiosError} from 'axios';
-import {ISelectItem} from '@/interfaces/Vuetify';
-import {
-	NetworkInterface, NetworkInterfaceType
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
-import {useApiClient} from '@/services/ApiClient';
+import {InterfaceType} from '@/enums/Network/InterfaceType';
+import {IOption} from '@/interfaces/Coreui';
+import {NetworkInterface} from '@/interfaces/Network/Connection';
+import NetworkInterfaceService from '@/services/NetworkInterfaceService';
 
 /**
  * Network interface select field
  */
 @Component({
 	components: {
+		CSelect,
 		ValidationProvider,
 	},
 })
 export default class InterfaceInput extends Vue {
 
 	/**
-	 * @property {NetworkInterfaceType} type Network interface type
+	 * @property {InterfaceType} type Network interface type
 	 */
-	@Prop({required: true}) type!: NetworkInterfaceType;
+	@Prop({required: true}) type!: InterfaceType;
 
 	/**
 	 * @property {string} interface Edited interface
@@ -68,9 +68,9 @@ export default class InterfaceInput extends Vue {
 	@VModel({required: true}) interface!: string;
 
 	/**
-	 * @property {Array<IOption>} options Interface select options
+	 * @property {Array<IOption>} options Array of CoreUI interface options
 	 */
-	private options: Array<ISelectItem> = [];
+	private options: Array<IOption> = [];
 
 	/**
 	 * Initializes validation rules
@@ -80,21 +80,21 @@ export default class InterfaceInput extends Vue {
 	}
 
 	protected mounted(): void {
-		useApiClient().getNetworkServices().getNetworkInterfaceService().list(this.type)
+		NetworkInterfaceService.list(this.type)
 			.then((interfaces: Array<NetworkInterface>) => {
 				interfaces.forEach((item: NetworkInterface) => {
 					let label = item.name;
 					if (item.manufacturer !== null && item.model !== null) {
 						label = item.name + ' (' + item.manufacturer + ' ' + item.model + ')';
 					}
-					this.options.push({text: label, value: item.name});
+					this.options.push({label: label, value: item.name});
 				});
 			})
 			.catch((error: AxiosError) => {
 				extendedErrorToast(error, 'network.connection.messages.interfacesFetchFailed');
-				if (this.type === NetworkInterfaceType.ETHERNET) {
+				if (this.type === InterfaceType.ETHERNET) {
 					this.$router.push('/ip-network/ethernet');
-				} else if (this.type === NetworkInterfaceType.WIFI) {
+				} else if (this.type === InterfaceType.WIFI) {
 					this.$router.push('/ip-network/wireless');
 				}
 			});

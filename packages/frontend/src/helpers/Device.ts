@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {cilHome, cilX, cilCheckAlt, cilSignalCellular4} from '@coreui/icons';
 
 /**
  * Class representing a device used in Network Manager.
@@ -65,17 +66,17 @@ class Device {
 	 * Returns the icon
 	 * @returns Icon to render
 	 */
-	getIcon(): string {
+	getIcon(): string[] {
 		if (this.address === 0) {
-			return 'mdi-home-outline';
+			return cilHome;
 		}
 		if (this.bonded) {
 			if (this.discovered) {
-				return 'mdi-signal-cellular-outline';
+				return cilSignalCellular4;
 			}
-			return 'mdi-check';
+			return cilCheckAlt;
 		}
-		return 'mdi-close';
+		return cilX;
 	}
 
 	/**
@@ -84,15 +85,15 @@ class Device {
 	 */
 	getIconColor(): string {
 		if (this.address === 0) {
-			return 'info';
+			return 'text-info';
 		}
 		if (this.bonded) {
 			if (this.online) {
-				return 'success';
+				return 'text-success';
 			}
-			return 'info';
+			return 'text-info';
 		}
-		return 'error';
+		return 'text-danger';
 	}
 
 	hasLink(): boolean {

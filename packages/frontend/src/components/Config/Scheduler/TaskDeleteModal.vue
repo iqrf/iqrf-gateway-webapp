@@ -15,39 +15,40 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-dialog
-		v-model='showModal'
-		width='50%'
-		persistent
-		no-click-animation
+	<CModal
+		:show.sync='show'
+		color='danger'
+		size='lg'
+		:close-on-backdrop='false'
+		:fade='false'
 	>
-		<v-card v-if='taskId !== null'>
-			<v-card-title>
-				<h5>{{ $t('config.daemon.scheduler.modal.title') }}</h5>
-			</v-card-title>
-			<v-card-text>
-				{{ $t('config.daemon.scheduler.modal.deletePrompt', {task: taskId}) }}
-			</v-card-text>
-			<v-card-actions>
-				<v-spacer />
-				<v-btn
-					@click='hideModal'
-				>
-					{{ $t('forms.cancel') }}
-				</v-btn>
-				<v-btn
-					color='error'
-					@click='removeTask'
-				>
-					{{ $t('table.actions.delete') }}
-				</v-btn>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
+		<template #header>
+			<h5 class='modal-title'>
+				{{ $t('config.daemon.scheduler.modal.title') }}
+			</h5>
+		</template>
+		{{ $t('config.daemon.scheduler.modal.deletePrompt', {task: taskId}) }}
+		<template #footer>
+			<CButton
+				color='secondary'
+				@click='hideModal'
+			>
+				{{ $t('forms.cancel') }}
+			</CButton>
+			<CButton
+				color='danger'
+				@click='removeTask'
+			>
+				{{ $t('table.actions.delete') }}
+			</CButton>
+		</template>
+	</CModal>
 </template>
 
 <script lang='ts'>
-import {Component, VModel, Vue} from 'vue-property-decorator';
+import {Component} from 'vue-property-decorator';
+import {CButton, CModal} from '@coreui/vue/src';
+import ModalBase from '@/components/ModalBase.vue';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
@@ -57,13 +58,17 @@ import SchedulerService from '@/services/SchedulerService';
 import {AxiosError} from 'axios';
 import {MutationPayload} from 'vuex';
 
-@Component
-export default class TaskDeleteModal extends Vue {
-
+@Component({
+	components: {
+		CButton,
+		CModal,
+	},
+})
+export default class TaskDeleteModal extends ModalBase {
 	/**
-	 * @property {string|null} taskId Task to delete
+	 * @var {string} taskId Scheduler task ID
 	 */
-	@VModel({required: true}) taskId!: string|null;
+	private taskId = '';
 
 	/**
 	 * @var {string} msgId Daemon API message ID
@@ -74,13 +79,6 @@ export default class TaskDeleteModal extends Vue {
 	 * Component unsubscribe function
 	 */
 	private unsubscribe: CallableFunction = () => {return;};
-
-	/**
-	 * Computes modal display condition
-	 */
-	get showModal(): boolean {
-		return this.taskId !== null;
-	}
 
 	/**
 	 * Registers mutation handling
@@ -113,26 +111,22 @@ export default class TaskDeleteModal extends Vue {
 	 * Removes a scheduler task
 	 */
 	private removeTask(): void {
-		if (this.taskId === null) {
-			return;
-		}
-		const id = this.taskId;
+		this.closeModal();
 		if (this.$store.getters['daemonClient/isConnected']) {
 			this.$store.dispatch('spinner/show', 30000);
-			SchedulerService.removeTask(id, new DaemonMessageOptions(null, 30000, 'config.daemon.scheduler.messages.deleteFail', () => this.msgId = ''))
+			SchedulerService.removeTask(this.taskId, new DaemonMessageOptions(null, 30000, 'config.daemon.scheduler.messages.deleteFail', () => this.msgId = ''))
 				.then((msgId: string) => this.msgId = msgId);
 		} else {
 			this.$store.commit('spinner/SHOW');
-			SchedulerService.removeTaskREST(id)
+			SchedulerService.removeTaskREST(this.taskId)
 				.then(() => {
 					this.$store.commit('spinner/HIDE');
 					this.$toast.success(
 						this.$t('config.daemon.scheduler.messages.deleteSuccess').toString()
 					);
-					this.hideModal();
 					this.$emit('deleted');
 				})
-				.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.scheduler.messages.deleteFailedRest', {task: id}));
+				.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.scheduler.messages.deleteFailedRest', {task: this.taskId}));
 		}
 	}
 
@@ -145,7 +139,6 @@ export default class TaskDeleteModal extends Vue {
 			this.$toast.success(
 				this.$t('config.daemon.scheduler.messages.deleteSuccess').toString()
 			);
-			this.hideModal();
 			this.$emit('deleted');
 		} else {
 			this.$toast.error(
@@ -155,10 +148,20 @@ export default class TaskDeleteModal extends Vue {
 	}
 
 	/**
-	 * Hides modal window
+	 * Stores task ID, and shows modal window
+	 * @param {string} taskId Scheduler task ID
+	 */
+	public showModal(taskId: string): void {
+		this.taskId = taskId;
+		this.openModal();
+	}
+
+	/**
+	 * Resets task ID, and hides modal window
 	 */
 	private hideModal(): void {
-		this.taskId = null;
+		this.taskId = '';
+		this.closeModal();
 	}
 }
 </script>

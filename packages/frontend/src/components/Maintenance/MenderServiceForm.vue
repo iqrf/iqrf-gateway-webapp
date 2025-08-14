@@ -15,200 +15,205 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-card>
-		<v-card-text>
-			<ValidationObserver v-slot='{invalid}'>
-				<v-form @submit.prevent='processSubmit'>
-					<h5>{{ $t('maintenance.mender.service.form.connection') }}</h5>
-					<ValidationProvider
-						v-for='idx in config.client.config.Servers.keys()'
-						:key='"server -" + idx'
-						v-slot='{errors, touched, valid}'
-						rules='required|serverUrl'
-						:custom-messages='{
-							required: $t("maintenance.mender.service.errors.serverMissing"),
-							serverUrl: $t("maintenance.mender.service.errors.serverInvalid")
-						}'
-					>
-						<v-text-field
-							v-model='config.client.config.Servers[0]'
-							:label='$t("maintenance.mender.service.form.client.server")'
-							:success='touched ? valid : null'
-							:error-messages='errors'
-							@change='serverUrlFixup(idx)'
-						/>
-					</ValidationProvider>
-					<v-text-field
-						v-model='config.client.config.ServerCertificate'
-						:label='$t("maintenance.mender.service.form.client.cert")'
-						:disabled='uploadCert'
+	<CCard body-wrapper>
+		<ValidationObserver v-if='config !== null' v-slot='{invalid}'>
+			<CForm @submit.prevent='processSubmit'>
+				<h5>{{ $t('maintenance.mender.service.form.connection') }}</h5>
+				<ValidationProvider
+					v-slot='{errors, touched, valid}'
+					rules='required|serverUrl'
+					:custom-messages='{
+						required: $t("maintenance.mender.service.errors.serverMissing"),
+						serverUrl: $t("maintenance.mender.service.errors.serverInvalid")
+					}'
+				>
+					<CInput
+						v-for='index in config.client.config.Servers.keys()'
+						:key='"MenderServerUrl" + index'
+						v-model='config.client.config.Servers[index]'
+						:label='$t("maintenance.mender.service.form.client.server")'
+						:is-valid='touched ? valid : null'
+						:invalid-feedback='errors.join(", ")'
+						@change='serverUrlFixup'
 					/>
-					<v-switch
-						v-model='uploadCert'
-						:label='$t("maintenance.mender.service.form.client.uploadCert")'
+				</ValidationProvider>
+				<CInput
+					v-model='config.client.config.ServerCertificate'
+					:label='$t("maintenance.mender.service.form.client.cert")'
+					:disabled='uploadCert'
+				/>
+				<div class='form-group'>
+					<label for='uploadSwitch'>
+						{{ $t('maintenance.mender.service.form.client.uploadCert') }}
+					</label><br>
+					<CSwitch
+						ref='uploadSwitch'
 						color='primary'
-						inset
-						dense
+						size='lg'
+						shape='pill'
+						label-on='ON'
+						label-off='OFF'
+						:checked.sync='uploadCert'
 					/>
-					<ValidationProvider
-						v-if='uploadCert'
-						v-slot='{errors, touched, valid}'
-						rules='required'
-						:custom-messages='{
-							required: $t("maintenance.mender.service.errors.tenantToken"),
-						}'
-					>
-						<v-file-input
-							v-model='certificate'
-							accept='.crt'
-							:label='$t("maintenance.mender.service.form.client.newCert")'
-							:success='touched ? valid : null'
-							:error-messages='errors'
-							:prepend-icon='null'
-							prepend-inner-icon='mdi-file-certificate'
-						/>
-					</ValidationProvider>
-					<v-divider class='my-2' />
-					<h5>{{ $t('maintenance.mender.service.form.inventory') }}</h5>
-					<ValidationProvider
-						v-slot='{errors, touched, valid}'
-						rules='required'
-						:custom-messages='{
-							required: $t("maintenance.mender.service.errors.tenantToken"),
-						}'
-					>
-						<v-text-field
-							v-model='config.client.config.TenantToken'
-							:label='$t("maintenance.mender.service.form.client.tenantToken")'
-							:placeholder='$t("maintenance.mender.service.form.placeholders.tenantToken")'
-							:success='touched ? valid : null'
-							:error-messages='errors'
-						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{errors, touched, valid}'
-						rules='min:0|required|integer'
-						:custom-messages='{
-							integer: $t("forms.errors.integer"),
-							min: $t("maintenance.mender.service.errors.inventoryPollInterval"),
-							required: $t("maintenance.mender.service.errors.inventoryPollInterval"),
-						}'
-					>
-						<v-text-field
-							v-model.number='config.client.config.InventoryPollIntervalSeconds'
-							:label='$t("maintenance.mender.service.form.client.inventoryPollInterval")'
-							type='number'
-							min='0'
-							:success='touched ? valid : null'
-							:error-messages='errors'
-						>
-							<template #append>
-								<v-chip
-									color='info'
-									label
-									small
-								>
-									{{ inventoryPollTime }}
-								</v-chip>
-							</template>
-						</v-text-field>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{errors, touched, valid}'
-						rules='min:0|required|integer'
-						:custom-messages='{
-							integer: $t("forms.errors.integer"),
-							min: $t("maintenance.mender.service.errors.retryPollInterval"),
-							required: $t("maintenance.mender.service.errors.retryPollInterval"),
-						}'
-					>
-						<v-text-field
-							v-model.number='config.client.config.RetryPollIntervalSeconds'
-							:label='$t("maintenance.mender.service.form.client.retryPollInterval")'
-							type='number'
-							min='0'
-							:success='touched ? valid : null'
-							:error-messages='errors'
-						>
-							<template #append>
-								<v-chip
-									color='info'
-									label
-									small
-								>
-									{{ retryPollTime }}
-								</v-chip>
-							</template>
-						</v-text-field>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{errors, touched, valid}'
-						rules='min:0|required|integer'
-						:custom-messages='{
-							integer: $t("forms.errors.integer"),
-							min: $t("maintenance.mender.service.errors.updatePollInterval"),
-							required: $t("maintenance.mender.service.errors.updatePollInterval"),
-						}'
-					>
-						<v-text-field
-							v-model.number='config.client.config.UpdatePollIntervalSeconds'
-							:label='$t("maintenance.mender.service.form.client.updatePollInterval")'
-							type='number'
-							min='0'
-							:success='touched ? valid : null'
-							:error-messages='errors'
-						>
-							<template #append>
-								<v-chip
-									color='info'
-									label
-									small
-								>
-									{{ updatePollTime }}
-								</v-chip>
-							</template>
-						</v-text-field>
-					</ValidationProvider>
-					<v-divider class='my-2' />
-					<h5>{{ $t('maintenance.mender.service.form.features') }}</h5>
-					<v-checkbox
-						v-model='config.connect.config.FileTransfer'
-						:label='$t("maintenance.mender.service.form.connect.fileTransfer")'
-						dense
+				</div>
+				<CInputFile
+					v-if='uploadCert'
+					ref='formCert'
+					accept='.crt'
+					:label='$t("maintenance.mender.service.form.client.newCert")'
+					@input='checkInput'
+					@click='checkInput'
+				/>
+				<hr>
+				<h5>{{ $t('maintenance.mender.service.form.inventory') }}</h5>
+				<ValidationProvider
+					v-slot='{errors, touched, valid}'
+					rules='required'
+					:custom-messages='{
+						required: $t("maintenance.mender.service.errors.tenantToken"),
+					}'
+				>
+					<CInput
+						v-model='config.client.config.TenantToken'
+						:label='$t("maintenance.mender.service.form.client.tenantToken")'
+						:placeholder='$t("maintenance.mender.service.form.placeholders.tenantToken")'
+						:is-valid='touched ? valid : null'
+						:invalid-feedback='errors.join(", ")'
 					/>
-					<v-checkbox
-						v-model='config.connect.config.PortForward'
-						:label='$t("maintenance.mender.service.form.connect.portForward")'
-						dense
-					/>
-					<v-btn
-						color='primary'
-						type='submit'
-						:disabled='invalid || uploadCert'
+				</ValidationProvider>
+				<ValidationProvider
+					v-slot='{errors, touched, valid}'
+					rules='min:0|required|integer'
+					:custom-messages='{
+						integer: $t("forms.errors.integer"),
+						min: $t("maintenance.mender.service.errors.inventoryPollInterval"),
+						required: $t("maintenance.mender.service.errors.inventoryPollInterval"),
+					}'
+				>
+					<CInput
+						id='inventoryPoll'
+						v-model.number='config.client.config.InventoryPollIntervalSeconds'
+						type='number'
+						min='0'
+						:label='$t("maintenance.mender.service.form.client.inventoryPollInterval")'
+						:is-valid='touched ? valid : null'
+						:invalid-feedback='errors.join(", ")'
 					>
-						{{ $t('forms.save') }}
-					</v-btn>
-				</v-form>
-			</ValidationObserver>
-		</v-card-text>
-	</v-card>
+						<template #append-content>
+							<CBadge color='info'>
+								{{ inventoryPollTime }}
+							</CBadge>
+						</template>
+					</CInput>
+				</ValidationProvider>
+				<ValidationProvider
+					v-slot='{errors, touched, valid}'
+					rules='min:0|required|integer'
+					:custom-messages='{
+						integer: $t("forms.errors.integer"),
+						min: $t("maintenance.mender.service.errors.retryPollInterval"),
+						required: $t("maintenance.mender.service.errors.retryPollInterval"),
+					}'
+				>
+					<CInput
+						id='retryPoll'
+						v-model.number='config.client.config.RetryPollIntervalSeconds'
+						type='number'
+						min='0'
+						:label='$t("maintenance.mender.service.form.client.retryPollInterval")'
+						:is-valid='touched ? valid : null'
+						:invalid-feedback='errors.join(", ")'
+					>
+						<template #append-content>
+							<CBadge color='info'>
+								{{ retryPollTime }}
+							</CBadge>
+						</template>
+					</CInput>
+				</ValidationProvider>
+				<ValidationProvider
+					v-slot='{errors, touched, valid}'
+					rules='min:0|required|integer'
+					:custom-messages='{
+						integer: $t("forms.errors.integer"),
+						min: $t("maintenance.mender.service.errors.updatePollInterval"),
+						required: $t("maintenance.mender.service.errors.updatePollInterval"),
+					}'
+				>
+					<CInput
+						v-model.number='config.client.config.UpdatePollIntervalSeconds'
+						type='number'
+						min='0'
+						:label='$t("maintenance.mender.service.form.client.updatePollInterval")'
+						:is-valid='touched ? valid : null'
+						:invalid-feedback='errors.join(", ")'
+					>
+						<template #append-content>
+							<CBadge color='info'>
+								{{ updatePollTime }}
+							</CBadge>
+						</template>
+					</CInput>
+				</ValidationProvider>
+				<hr>
+				<h5>{{ $t('maintenance.mender.service.form.features') }}</h5>
+				<CInputCheckbox
+					:checked.sync='config.connect.config.FileTransfer'
+					:label='$t("maintenance.mender.service.form.connect.fileTransfer")'
+				/>
+				<CInputCheckbox
+					:checked.sync='config.connect.config.PortForward'
+					:label='$t("maintenance.mender.service.form.connect.portForward")'
+				/>
+				<CButton
+					color='primary'
+					type='submit'
+					:disabled='invalid || (uploadCert && inputEmpty)'
+				>
+					{{ $t('forms.save') }}
+				</CButton>
+			</CForm>
+		</ValidationObserver>
+	</CCard>
 </template>
 
 <script lang='ts'>
-import {MenderService} from '@iqrf/iqrf-gateway-webapp-client/services/Config';
-import {MenderConfig} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import {AxiosError} from 'axios';
-import humanizeDuration from 'humanize-duration';
 import {Component, Vue} from 'vue-property-decorator';
+import {
+	CBadge,
+	CButton,
+	CCard,
+	CForm,
+	CInput,
+	CInputCheckbox,
+	CInputFile,
+	CSelect,
+	CSwitch,
+} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
+import {Duration} from 'luxon';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {integer, min_value, required} from 'vee-validate/dist/rules';
 import {menderServerUrl} from '@/helpers/validationRules/Maintenance';
-import {useApiClient} from '@/services/ApiClient';
+
+import FeatureConfigService from '@/services/FeatureConfigService';
+
+import {AxiosError, AxiosResponse} from 'axios';
+import {MenderConfig} from '@/interfaces/Maintenance/Mender';
+import MenderService from '@/services/MenderService';
 
 @Component({
 	components: {
+		CBadge,
+		CButton,
+		CCard,
+		CForm,
+		CInput,
+		CInputCheckbox,
+		CInputFile,
+		CSelect,
+		CSwitch,
 		ValidationObserver,
 		ValidationProvider,
 	}
@@ -220,43 +225,24 @@ import {useApiClient} from '@/services/ApiClient';
 export default class MenderForm extends Vue {
 
 	/**
-	 * @var {MenderConfig} configuration Mender configuration
+	 * @constant {string} featureName Feature name
 	 */
-	public config: MenderConfig = {
-		client: {
-			config: {
-				Servers: ['https://hosted.mender.io'],
-				ServerCertificate: '',
-				TenantToken: 'dummy',
-				InventoryPollIntervalSeconds: 28800,
-				RetryPollIntervalSeconds: 300,
-				UpdatePollIntervalSeconds: 1800,
-			},
-			version: 3
-		},
-		connect: {
-			config: {
-				FileTransfer: false,
-				PortForward: false,
-			},
-			version: 2,
-		},
-	};
+	private featureName = 'mender';
 
 	/**
-	 * @var {File|null} certificate Certificate file to upload
+	 * @var {MenderConfig|null} configuration Mender configuration
 	 */
-	public certificate: File|null = null;
+	private config: MenderConfig|null = null;
 
 	/**
 	 * @var {boolean} uploadCert Controls Mender form
 	 */
-	public uploadCert = false;
+	private uploadCert = false;
 
 	/**
-	 * @var {MenderService} service Mender service
+	 * @var {boolean} inputEmpty Empty status of the cert input
 	 */
-	private service: MenderService = useApiClient().getConfigServices().getMenderService();
+	private inputEmpty = true;
 
 	/**
 	 * Vue lifecycle hook created
@@ -280,7 +266,7 @@ export default class MenderForm extends Vue {
 	 * @return {string} Inventory poll interval string
 	 */
 	get inventoryPollTime(): string {
-		return humanizeDuration(this.config.client.config.InventoryPollIntervalSeconds * 1_000);
+		return this.periodString(this.config!.client.config.InventoryPollIntervalSeconds);
 	}
 
 	/**
@@ -288,7 +274,7 @@ export default class MenderForm extends Vue {
 	 * @return {string} Retry poll interval string
 	 */
 	get retryPollTime(): string {
-		return humanizeDuration(this.config.client.config.RetryPollIntervalSeconds * 1_000);
+		return this.periodString(this.config!.client.config.RetryPollIntervalSeconds);
 	}
 
 	/**
@@ -296,7 +282,7 @@ export default class MenderForm extends Vue {
 	 * @return {string} Retry update interval string
 	 */
 	get updatePollTime(): string {
-		return humanizeDuration(this.config.client.config.UpdatePollIntervalSeconds * 1_000);
+		return this.periodString(this.config!.client.config.UpdatePollIntervalSeconds);
 	}
 
 	/**
@@ -316,30 +302,49 @@ export default class MenderForm extends Vue {
 	/**
 	 * Retrieves configuration of the Mender feature
 	 */
-	public getConfig(): Promise<void> {
+	getConfig(): Promise<void> {
 		if (!this.$store.getters['spinner/isEnabled']) {
 			this.$store.commit('spinner/SHOW');
 		}
-		return this.service.getConfig()
-			.then((response: MenderConfig) => {
+		return FeatureConfigService.getConfig(this.featureName)
+			.then((response: AxiosResponse<MenderConfig>) => {
 				if (this.uploadCert) {
 					this.uploadCert = false;
 				}
-				this.config = response;
+				this.config = response.data;
+				console.warn(this.config.client);
 				this.$store.commit('spinner/HIDE');
 			})
 			.catch((error: AxiosError) => extendedErrorToast(error, 'maintenance.mender.service.messages.fetchFailed'));
 	}
 
 	/**
+	 * Extracts files from form file input
+	 */
+	private getInputFiles(): FileList {
+		const input = ((this.$refs.formCert as CInputFile).$el.children[1] as HTMLInputElement);
+		return (input.files as FileList);
+	}
+
+	/**
+	 * Checks if certificate input is empty
+	 */
+	private checkInput(): void {
+		const files = this.getInputFiles();
+		this.inputEmpty = files.length === 0;
+	}
+
+	/**
 	 * Updates configuration of the Mender feature
 	 */
-	public processSubmit(): void {
+	private processSubmit(): void {
 		this.$store.commit('spinner/SHOW');
-		if (this.uploadCert && this.certificate !== null) {
-			this.service.uploadCert(this.certificate)
-				.then((path: string) => {
-					this.config.client.config.ServerCertificate = path;
+		if (this.uploadCert) {
+			const formData = new FormData();
+			formData.append('certificate', this.getInputFiles()[0]);
+			MenderService.uploadCertificate(formData)
+				.then((response: AxiosResponse<string>) => {
+					this.config!.client.config.ServerCertificate = response.data;
 					this.saveConfig();
 				})
 				.catch((error: AxiosError) => extendedErrorToast(
@@ -355,8 +360,8 @@ export default class MenderForm extends Vue {
 	 * Saves Mender client configuration
 	 */
 	private saveConfig(): void {
-		const config: MenderConfig = { ...this.config };
-		this.service.updateConfig(config)
+		const config: MenderConfig = JSON.parse(JSON.stringify(this.config));
+		FeatureConfigService.saveConfig(this.featureName, config)
 			.then(() => this.getConfig().then(() => this.$toast.success(
 				this.$t('maintenance.mender.service.messages.saveSuccess').toString()
 			)))
@@ -364,14 +369,34 @@ export default class MenderForm extends Vue {
 	}
 
 	/**
-	 * Fixes up server URL
-	 * @param {number} idx Index of the server
+	 * Converts seconds to readable period string
 	 */
-	public serverUrlFixup(idx: number): void {
-		const server = this.config.client.config.Servers[idx];
-		if (!/^https?:\/\//i.test(server)) {
-			this.config.client.config.Servers[idx] = `https://${server}`;
+	private periodString(seconds: number): string {
+		const duration = Duration.fromMillis(seconds * 1000).shiftTo('days', 'hours', 'minutes', 'seconds').toObject();
+		const nums: Array<number> = [], units: Array<string> = [];
+		if (duration.days) {
+			nums.push(duration.days);
+			units.push(' days');
 		}
+		if (duration.hours) {
+			nums.push(duration.hours);
+			units.push(' hours');
+		}
+		if (duration.minutes) {
+			nums.push(duration.minutes);
+			units.push(' minutes');
+		}
+		if (duration.seconds) {
+			nums.push(duration.seconds);
+			units.push(' seconds');
+		}
+		return this.mergeArrays(nums, units);
+	}
+
+	private serverUrlFixup(): void {
+		this.config!.client.config.Servers.map((server: string): string => {
+			return (/^https?:\/\//i.test(server)) ? server : `https://${server}`;
+		});
 	}
 }
 </script>

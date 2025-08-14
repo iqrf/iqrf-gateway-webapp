@@ -6,7 +6,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+	http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software,
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,69 +15,73 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-dialog
-		v-model='show'
-		width='50%'
-		persistent
-		no-click-animation
-	>
-		<template #activator='{on, attrs}'>
-			<v-btn
-				color='error'
-				small
-				v-bind='attrs'
-				v-on='on'
-				@click='openModal'
-			>
-				<v-icon small>
-					mdi-delete
-				</v-icon>
-				{{ $t('table.actions.deleteAll') }}
-			</v-btn>
-		</template>
-		<v-card>
-			<v-card-title>
-				{{ $t('config.daemon.scheduler.modal.title') }}
-			</v-card-title>
-			<v-card-text>
-				{{ $t('config.daemon.scheduler.modal.deleteAllPrompt') }}
-			</v-card-text>
-			<v-card-actions>
-				<v-spacer />
-				<v-btn
+	<span>
+		<CButton
+			color='danger'
+			size='sm'
+			@click='openModal'
+		>
+			<CIcon :content='cilTrash' size='sm' />
+			{{ $t('table.actions.deleteAll') }}
+		</CButton>
+		<CModal
+			:show.sync='show'
+			color='danger'
+			size='lg'
+			:close-on-backdrop='false'
+			:fade='false'
+		>
+			<template #header>
+				<h5 class='modal-title'>
+					{{ $t('config.daemon.scheduler.modal.title') }}
+				</h5>
+			</template>
+			{{ $t('config.daemon.scheduler.modal.deleteAllPrompt') }}
+			<template #footer>
+				<CButton
+					color='secondary'
 					@click='closeModal'
 				>
 					{{ $t('forms.cancel') }}
-				</v-btn>
-				<v-btn
-					color='error'
+				</CButton>
+				<CButton
+					color='danger'
 					@click='removeAllTasks'
 				>
 					{{ $t('table.actions.deleteAll') }}
-				</v-btn>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
+				</CButton>
+			</template>
+		</CModal>
+	</span>
 </template>
 
 <script lang='ts'>
 import {Component} from 'vue-property-decorator';
+import {CButton, CModal} from '@coreui/vue/src';
+import ModalBase from '@/components/ModalBase.vue';
 
-import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
+import {cilTrash} from '@coreui/icons';
 import {extendedErrorToast} from '@/helpers/errorToast';
+import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 import SchedulerService from '@/services/SchedulerService';
 
 import {AxiosError} from 'axios';
 import {MutationPayload} from 'vuex';
-import ModalBase from '@/components/ModalBase.vue';
 
 /**
  * Scheduler tasks delete all modal component
  */
-@Component
+@Component({
+	components: {
+		CButton,
+		CModal,
+	},
+	data: () => ({
+		cilTrash
+	})
+})
 export default class TasksDeleteModal extends ModalBase {
-
 	/**
 	 * @var {string} msgId Daemon API msg ID
 	 */
@@ -144,6 +148,7 @@ export default class TasksDeleteModal extends ModalBase {
 	 */
 	private handleRemoveAll(response): void {
 		if (response.status === 0) {
+
 			this.$toast.success(
 				this.$t('config.daemon.scheduler.messages.deleteAllSuccess').toString()
 			);

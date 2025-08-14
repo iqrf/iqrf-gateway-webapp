@@ -16,9 +16,11 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<v-card class='p-4'>
-			<v-card-title>{{ $t('core.user.verification.title') }}</v-card-title>
-			<v-card-text v-if='success !== null'>
+		<CCard class='p-4'>
+			<h1 class='text-center'>
+				{{ $t('core.user.verification.title') }}
+			</h1>
+			<CCardBody v-if='success !== null'>
 				<p class='text-center'>
 					<span v-if='success'>
 						{{ $t('core.user.verification.success') }}
@@ -37,22 +39,26 @@ limitations under the License.
 						{{ $t('core.user.verification.failed', {error: verifyError}) }}
 					</span>
 				</p>
-			</v-card-text>
-		</v-card>
+			</CCardBody>
+		</CCard>
 	</div>
 </template>
 
 <script lang='ts'>
-import {UserRole, UserSignedIn} from '@iqrf/iqrf-gateway-webapp-client/types';
-import {AxiosError} from 'axios';
+import {CCard, CCardBody, CCardHeader} from '@coreui/vue/src';
 import VueCountdown from '@chenfengyuan/vue-countdown';
 import {Component, Prop, Vue} from 'vue-property-decorator';
 
+import {User, UserRole} from '@/services/AuthenticationService';
+import UserService from '@/services/UserService';
 import {ErrorResponse} from '@/types';
-import {useApiClient} from '@/services/ApiClient';
+import { AxiosError } from 'axios';
 
 @Component({
 	components: {
+		CCard,
+		CCardBody,
+		CCardHeader,
 		VueCountdown,
 	},
 	metaInfo: {
@@ -75,7 +81,7 @@ export default class UserVerify extends Vue {
 	 * User entity
 	 * @private
 	 */
-	private user: UserSignedIn|null = null;
+	private user: User|null = null;
 
 	/**
 	 * @var {string} verifyError Verification error message
@@ -87,8 +93,8 @@ export default class UserVerify extends Vue {
 	 */
 	created(): void {
 		this.$store.commit('spinner/SHOW');
-		useApiClient().getAccountService().verifyEmail(this.uuid)
-			.then((user: UserSignedIn) => {
+		UserService.verify(this.uuid)
+			.then((user: User) => {
 				this.success = true;
 				this.user = user;
 				this.$store.dispatch('user/setJwt', this.user);
@@ -109,7 +115,7 @@ export default class UserVerify extends Vue {
 		if (this.user === null) {
 			return;
 		}
-		if (this.user.role === UserRole.Basic) {
+		if (this.user.role === UserRole.BASIC) {
 			location.pathname = '/';
 		}
 		this.$router.push('/');

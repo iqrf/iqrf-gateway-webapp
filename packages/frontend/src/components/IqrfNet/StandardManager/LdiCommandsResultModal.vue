@@ -1,57 +1,84 @@
+<!--
+Copyright 2017-2025 IQRF Tech s.r.o.
+Copyright 2019-2025 MICRORISC s.r.o.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+	http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software,
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
 <template>
-	<v-dialog
-		v-model='show'
-		width='50%'
-		persistent
-		no-click-animation
+	<CModal
+		:show.sync='show'
+		color='primary'
+		size='lg'
+		:close-on-backdrop='false'
+		:fade='false'
 	>
-		<v-card>
-			<v-card-title>{{ $t('iqrfnet.standard.light.result.ldiCommand.title') }}</v-card-title>
-			<v-card-text>
-				<v-data-table
-					:headers='headers'
-					:items='result'
-					dense
-					hide-default-footer
-					:page.sync='page'
-					@page-count='pageCount = $event'
-				>
-					<template #[`item.status`]='{item}'>
-						<td>
-							<span :class='getStatusClass(item.status)'>{{ getStatusString(item.status) }}</span>
-						</td>
-					</template>
-					<template #footer>
-						<v-pagination
-							v-model='page'
-							:length='pageCount'
-						/>
-					</template>
-				</v-data-table>
-			</v-card-text>
-			<v-card-actions>
-				<v-spacer />
-				<v-btn
-					@click='close'
-				>
-					{{ $t('forms.close') }}
-				</v-btn>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
+		<template #header>
+			<h5 class='modal-title'>
+				{{ $t('iqrfnet.standard.light.result.ldiCommand.title') }}
+			</h5>
+		</template>
+		<CDataTable
+			:fields='fields'
+			:items='result'
+			:column-filter='true'
+			:items-per-page='10'
+			:pagination='true'
+			:striped='true'
+			:sorter='{external: false, resetable: true}'
+		>
+			<template #status='{item}'>
+				<td>
+					<span :class='getStatusClass(item.status)'>{{ getStatusString(item.status) }}</span>
+				</td>
+			</template>
+		</CDataTable>
+		<template #footer>
+			<CButton
+				color='secondary'
+				@click='close'
+			>
+				{{ $t('forms.close') }}
+			</CButton>
+		</template>
+	</CModal>
 </template>
 
 <script lang='ts'>
 import {Component, Prop} from 'vue-property-decorator';
+import {CButton, CDataTable, CIcon, CModal} from '@coreui/vue/src';
 import ModalBase from '@/components/ModalBase.vue';
 
-import {DataTableHeader} from 'vuetify';
+import {cilCheckCircle, cilXCircle} from '@coreui/icons';
+
+import { type IField } from '@/interfaces/Coreui';
 import { type LightAnswerResult } from '@/interfaces/DaemonApi/Standard';
+
+@Component({
+	components: {
+		CButton,
+		CDataTable,
+		CIcon,
+		CModal,
+	},
+	data: () => ({
+		cilCheckCircle,
+		cilXCircle,
+	})
+})
 
 /**
  * Standard Light LDI commands result modal
  */
- @Component
 export default class LdiCommandsResultModal extends ModalBase {
 
 	/**
@@ -59,31 +86,27 @@ export default class LdiCommandsResultModal extends ModalBase {
 	 */
 	@Prop({ default: [], required: false }) readonly result!: LightAnswerResult[];
 
-	private page = 1;
-
-	private pageCount = 0;
-
 	/**
-	 * @constant {Array<DataTableHeader>} headers Data table headers
+	 * @constant {Array<IField>} fields Data table headers
 	 */
-	private readonly headers: Array<DataTableHeader> = [
+	private fields: Array<IField> = [
 		{
-			text: this.$t('forms.fields.deviceAddr').toString(),
-			value: 'address',
+			label: this.$t('forms.fields.deviceAddr'),
+			key: 'address',
 		},
 		{
-			text: this.$t('iqrfnet.standard.light.form.ldiCommand.title').toString(),
-			value: 'command',
+			label: this.$t('iqrfnet.standard.light.form.ldiCommand.title'),
+			key: 'command',
 		},
 		{
-			text: this.$t('iqrfnet.standard.light.result.ldiCommand.status').toString(),
-			value: 'status',
-			filterable: false,
+			label: this.$t('iqrfnet.standard.light.result.ldiCommand.status'),
+			key: 'status',
+			filter: false,
 		},
 		{
-			text: this.$t('iqrfnet.standard.light.result.ldiCommand.value').toString(),
-			value: 'value',
-			filterable: false,
+			label: this.$t('iqrfnet.standard.light.result.ldiCommand.value'),
+			key: 'value',
+			filter: false,
 		},
 	];
 

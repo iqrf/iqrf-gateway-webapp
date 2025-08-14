@@ -15,20 +15,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-card :loading='loading' flat tile>
-		<v-card-title>
-			{{ $t('config.daemon.misc.jsonRawApi.title') }}
-		</v-card-title>
-		<v-card-text v-if='!loading'>
-			<v-overlay
+	<CCard class='border-0 card-margin-bottom'>
+		<CCardHeader>
+			<span class='h4 mb-0 pt-5'>
+				{{ $t('config.daemon.misc.jsonRawApi.title') }}
+			</span>
+		</CCardHeader>
+		<CCardBody>
+			<CElementCover
 				v-if='loadFailed'
-				:opacity='0.65'
-				absolute
+				style='z-index: 1;'
+				:opacity='0.85'
 			>
 				{{ $t('config.daemon.messages.failedElement') }}
-			</v-overlay>
+			</CElementCover>
 			<ValidationObserver v-slot='{invalid}'>
-				<v-form @submit.prevent='saveConfig'>
+				<CForm @submit.prevent='saveConfig'>
 					<fieldset :disabled='loadFailed'>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
@@ -37,34 +39,34 @@ limitations under the License.
 								required: $t("config.daemon.misc.jsonRawApi.errors.instance"),
 							}'
 						>
-							<v-text-field
+							<CInput
 								v-model='configuration.instance'
 								:label='$t("forms.fields.instanceName")'
-								:success='touched ? valid : null'
-								:error-messages='errors'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
-						<v-checkbox
-							v-model='configuration.asyncDpaMessage'
+						<CInputCheckbox
+							:checked.sync='configuration.asyncDpaMessage'
 							:label='$t("config.daemon.misc.jsonRawApi.form.asyncDpaMessage")'
-							dense
 						/>
-						<v-btn
+						<CButton
 							type='submit'
 							color='primary'
 							:disabled='invalid'
 						>
 							{{ $t('forms.save') }}
-						</v-btn>
+						</CButton>
 					</fieldset>
-				</v-form>
+				</CForm>
 			</ValidationObserver>
-		</v-card-text>
-	</v-card>
+		</CCardBody>
+	</CCard>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
@@ -78,6 +80,14 @@ import {IJsonRaw} from '@/interfaces/Config/JsonApi';
 
 @Component({
 	components: {
+		CButton,
+		CCard,
+		CCardBody,
+		CCardHeader,
+		CElementCover,
+		CForm,
+		CInput,
+		CInputCheckbox,
 		ValidationObserver,
 		ValidationProvider
 	}
@@ -111,22 +121,16 @@ export default class JsonRawApi extends Vue {
 	private loadFailed = false;
 
 	/**
-	 * @var {boolean} loading Flag for loading state
-	 */
-	private loading = false;
-
-	/**
-	 * Initializes validation rules
+	 * Vue lifecycle hook created
 	 */
 	created(): void {
 		extend('required', required);
 	}
 
 	/**
-	 * Loads component configuration
+	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
-		this.loading = true;
 		this.getConfig();
 	}
 
@@ -140,15 +144,11 @@ export default class JsonRawApi extends Vue {
 					this.configuration = response.data.instances[0];
 					this.instance = this.configuration.instance;
 				}
-				this.loading = false;
+				this.$emit('fetched', {name: 'jsonRawApi', success: true});
 			})
 			.catch(() => {
-				this.loading = false;
 				this.loadFailed = true;
-				this.$toast.error(
-					this.$t('config.daemon.messages.configFetchFailed', {children: 'jsonRawApi'})
-						.toString()
-				);
+				this.$emit('fetched', {name: 'jsonRawApi', success: false});
 			});
 	}
 
@@ -173,7 +173,6 @@ export default class JsonRawApi extends Vue {
 	 */
 	private handleSuccess(): void {
 		this.getConfig().then(() => {
-			this.$store.commit('spinner/HIDE');
 			this.$toast.success(
 				this.$t('config.daemon.misc.jsonRawApi.messages.saveSuccess').toString()
 			);

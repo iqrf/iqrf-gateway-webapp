@@ -1,112 +1,71 @@
-<!--
-Copyright 2017-2025 IQRF Tech s.r.o.
-Copyright 2019-2025 MICRORISC s.r.o.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software,
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied
-See the License for the specific language governing permissions and
-limitations under the License.
--->
 <template>
 	<div>
-		<v-data-table
-			:loading='loading'
-			:items='_mappings'
-			:headers='headers'
-			:no-data-text='$t("config.daemon.interfaces.interfaceMapping.noMappings")'
-		>
-			<template #top>
-				<v-toolbar dense flat>
-					<v-spacer />
-					<v-btn
-						class='mr-1'
-						color='success'
-						small
-						@click='mappingFormModel = defaultMapping'
-					>
-						<v-icon small>
-							mdi-plus
-						</v-icon>
-					</v-btn>
-					<v-btn
-						color='primary'
-						small
-						@click='refreshMappings'
-					>
-						<v-icon small>
-							mdi-refresh
-						</v-icon>
-					</v-btn>
-				</v-toolbar>
-			</template>
-			<template #[`item.actions`]='{item}'>
-				<v-btn
-					class='mr-1'
-					color='primary'
-					small
-					@click='setMapping(item.id)'
+		<CButtonGroup class='flex-wrap'>
+			<CButton
+				color='success'
+				size='sm'
+				@click='showFormModal()'
+			>
+				<CIcon :content='cilPlus' />
+			</CButton>
+			<CDropdown
+				v-for='(mapping, i) of mappings'
+				:key='i'
+				:toggler-text='mapping.name'
+				color='primary'
+				placement='top-start'
+			>
+				<CDropdownItem
+					@click='setMapping(mapping.id)'
 				>
-					<v-icon small>
-						mdi-content-copy
-					</v-icon>
-					{{ $t('forms.set') }}
-				</v-btn>
-				<v-btn
-					class='mr-1'
-					color='info'
-					small
-					@click='mappingFormModel = item'
+					<CIcon :content='cilCopy' />
+					{{ $t('config.daemon.interfaces.interfaceMapping.set') }}
+				</CDropdownItem>
+				<CDropdownItem
+					@click='showFormModal(mapping)'
 				>
-					<v-icon small>
-						mdi-pencil
-					</v-icon>
-					{{ $t('table.actions.edit') }}
-				</v-btn>
-				<v-btn
-					color='error'
-					small
-					@click='mappingDeleteModel = item'
+					<CIcon :content='cilPencil' />
+					{{ $t('config.daemon.interfaces.interfaceMapping.edit') }}
+				</CDropdownItem>
+				<CDropdownItem
+					@click='showDeleteModal(mapping.id, mapping.name)'
 				>
-					<v-icon small>
-						mdi-delete
-					</v-icon>
-					{{ $t('table.actions.delete') }}
-				</v-btn>
-			</template>
-		</v-data-table>
-		<MappingDeleteModal
-			v-model='mappingDeleteModel'
-			@deleted='refreshMappings'
-		/>
-		<MappingFormModal
-			v-model='mappingFormModel'
-			@update-mappings='refreshMappings'
-		/>
+					<CIcon :content='cilTrash' />
+					{{ $t('config.daemon.interfaces.interfaceMapping.delete') }}
+				</CDropdownItem>
+			</CDropdown>
+		</CButtonGroup>
+		<MappingFormModal ref='formModal' @update-mappings='refreshMappings' />
+		<MappingDeleteModal ref='deleteModal' @delete-mapping='deleteMapping' />
 	</div>
 </template>
 
 <script lang='ts'>
-import {
-	IqrfGatewayDaemonMapping, MappingDeviceType, MappingType
-} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import {Component, Prop, PropSync, Vue} from 'vue-property-decorator';
-import {DataTableHeader} from 'vuetify';
-
+import {Component, PropSync, Vue} from 'vue-property-decorator';
+import {CButton, CButtonGroup, CDropdown, CDropdownItem, CIcon} from '@coreui/vue/src';
 import MappingDeleteModal from '@/components/Config/Interfaces/MappingDeleteModal.vue';
 import MappingFormModal from '@/components/Config/Interfaces/MappingFormModal.vue';
 
+import {cilCopy, cilPencil, cilPlus, cilTrash} from '@coreui/icons';
+
+import {IMapping} from '@/interfaces/Config/Mapping';
+
 @Component({
 	components: {
+		CButton,
+		CButtonGroup,
+		CDropdown,
+		CDropdownItem,
+		CIcon,
 		MappingDeleteModal,
 		MappingFormModal,
 	},
+	data: () => ({
+		cilCopy,
+		cilPencil,
+		cilPlus,
+		cilTrash,
+	}),
 })
 
 /**
@@ -114,58 +73,26 @@ import MappingFormModal from '@/components/Config/Interfaces/MappingFormModal.vu
  */
 export default class InterfaceMappingGroup extends Vue {
 	/**
-	 * @property {Array<IqrfGatewayDaemonMapping>} _mappings Mapping profiles
+	 * @property {Array<IMapping>} _mappings Mapping profiles
 	 */
-	@PropSync('mappings', {type: Array, default: []}) _mappings!: Array<IqrfGatewayDaemonMapping>;
+	@PropSync('mappings', {type: Array, default: []}) _mappings!: Array<IMapping>;
 
 	/**
-	 * @property {boolean} loading Data table loading status
+	 * Invokes mapping add or edit form
+	 * @param {IMapping|null} mapping Mapping
 	 */
-	@Prop({required: false, default: false}) loading!: boolean;
+	private showFormModal(mapping: IMapping|null = null): void {
+		(this.$refs.formModal as MappingFormModal).activateModal(mapping);
+	}
 
 	/**
-	 * @var {IqrfGatewayDaemonMapping|null} mappingFormModel Form mapping model
+	 * Shows mapping delete modal
+	 * @param {number} idx Mapping index
+	 * @param {string} name Mapping name
 	 */
-	private mappingFormModel: IqrfGatewayDaemonMapping|null = null;
-
-	/**
-	 * @var {IqrfGatewayDaemonMapping|null} mappingDeleteModel Mapping to delete
-	 */
-	private mappingDeleteModel: IqrfGatewayDaemonMapping|null = null;
-
-	/**
-	 * @constant {IqrfGatewayDaemonMapping} defaultMapping Default mapping values
-	 */
-	private readonly defaultMapping: IqrfGatewayDaemonMapping = {
-		name: '',
-		type: MappingType.SPI,
-		deviceType: MappingDeviceType.Adapter,
-		IqrfInterface: '',
-		powerEnableGpioPin: 0,
-		busEnableGpioPin: 0,
-		pgmSwitchGpioPin: 0,
-		i2cEnableGpioPin: 0,
-		spiEnableGpioPin: 0,
-		uartEnableGpioPin: 0,
-		baudRate: 57600
-	};
-
-	/**
-	 * @constant {Array<DataTableHeader>} header Data table headers
-	 */
-	private readonly headers: Array<DataTableHeader> = [
-		{
-			value: 'name',
-			text: this.$t('config.daemon.interfaces.interfaceMapping.form.name').toString()
-		},
-		{
-			value: 'actions',
-			text: this.$t('table.actions.title').toString(),
-			filterable: false,
-			sortable: false,
-			align: 'end',
-		},
-	];
+	private showDeleteModal(idx: number, name: string): void {
+		(this.$refs.deleteModal as MappingDeleteModal).activateModal(idx, name);
+	}
 
 	/**
 	 * Emits event to set mapping profile to form

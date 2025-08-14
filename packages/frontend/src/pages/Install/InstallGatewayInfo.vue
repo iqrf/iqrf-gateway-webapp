@@ -15,12 +15,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-card>
-		<v-card-title>{{ $t('install.gwInfo.title') }}</v-card-title>
-		<v-card-text>
+	<CCard>
+		<CCardHeader>{{ $t('install.gwInfo.title') }}</CCardHeader>
+		<CCardBody>
 			<div class='table-responsive'>
-				<v-simple-table v-if='info !== null' class='table table-striped'>
-					<tbody class='table-paddings'>
+				<table v-if='info !== null' class='table table-striped'>
+					<tbody>
 						<tr>
 							<th>{{ $t('gateway.info.board') }}</th>
 							<td>{{ info.board }}</td>
@@ -82,33 +82,30 @@ limitations under the License.
 							</td>
 						</tr>
 					</tbody>
-				</v-simple-table>
+				</table>
 			</div>
-			<v-btn color='primary' @click='downloadDiagnostics()'>
-				<v-icon small>
-					mdi-file-download
-				</v-icon>
+			<CButton color='primary' @click='downloadDiagnostics()'>
 				{{ $t('install.gwInfo.download') }}
-			</v-btn>
-		</v-card-text>
-	</v-card>
+			</CButton>
+		</CCardBody>
+	</CCard>
 </template>
 
 <script lang='ts'>
-import type {InfoService} from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
-import {
-	GatewayInformation
-} from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
-import {FileDownloader} from '@iqrf/iqrf-gateway-webapp-client/utils';
 import {Component, Vue} from 'vue-property-decorator';
-
+import {CButton, CCardBody, CCardHeader} from '@coreui/vue/src';
 import CoordinatorInfo from '@/components/Gateway/Information/CoordinatorInfo.vue';
 import DaemonModeInfo from '@/components/Gateway/Information/DaemonModeInfo.vue';
-import {IpAddress, MacAddress} from '@/interfaces/Gateway/Information';
-import {useApiClient} from '@/services/ApiClient';
+import GatewayService from '@/services/GatewayService';
+import {fileDownloader} from '@/helpers/fileDownloader';
+import { IGatewayInfo, IpAddress, MacAddress } from '@/interfaces/Gateway/Information';
+import { AxiosResponse } from 'axios';
 
 @Component({
 	components: {
+		CButton,
+		CCardBody,
+		CCardHeader,
 		CoordinatorInfo,
 		DaemonModeInfo
 	},
@@ -122,19 +119,14 @@ import {useApiClient} from '@/services/ApiClient';
  */
 export default class InstallGatewayInfo extends Vue {
 	/**
-	 * @var {GatewayInformation|null} info Gateway information object
+	 * @var {IGatewayInfo|null} info Gateway information object
 	 */
-	private info: GatewayInformation|null = null;
+	private info: IGatewayInfo|null = null;
 
 	/**
 	 * @var {boolean} showCoordinator Controls whether coordinator information component can be shown
 	 */
 	private showCoordinator = false;
-
-	/**
-   * @property {InfoService} service Gateway info service
-   */
-	private service: InfoService = useApiClient().getGatewayServices().getInfoService();
 
 	/**
 	 * Computes array of IP address objects from network interfaces
@@ -183,10 +175,10 @@ export default class InstallGatewayInfo extends Vue {
 	 */
 	protected created(): void {
 		this.$store.commit('spinner/SHOW');
-		this.service.getDetailed()
+		GatewayService.getInfo()
 			.then(
-				(response: GatewayInformation) => {
-					this.info = response;
+				(response: AxiosResponse) => {
+					this.info = response.data;
 					this.$store.commit('spinner/HIDE');
 				}
 			)
@@ -198,18 +190,17 @@ export default class InstallGatewayInfo extends Vue {
 	 */
 	private downloadDiagnostics(): void {
 		this.$store.commit('spinner/SHOW');
-		this.service.getDetailed()
-			.then(
-				(response: GatewayInformation) => {
-					let fileName = 'iqrf-gateway-info';
-					if (this.info?.gwId) {
-						fileName += '_' + this.info.gwId.toLowerCase();
-					}
-					FileDownloader.downloadFromData(response, 'application/json', `${fileName}.json`);
-					this.$store.commit('spinner/HIDE');
+		GatewayService.getInfo().then(
+			(response: AxiosResponse) => {
+				let fileName = 'iqrf-gateway-info';
+				if (this.info?.gwId) {
+					fileName += '_' + this.info.gwId.toLowerCase();
 				}
-			)
-			.catch(() => (this.$store.commit('spinner/HIDE')));
+				const file = fileDownloader(response, 'application/json', fileName + '.json');
+				this.$store.commit('spinner/HIDE');
+				file.click();
+			}
+		).catch(() => (this.$store.commit('spinner/HIDE')));
 	}
 }
 </script>

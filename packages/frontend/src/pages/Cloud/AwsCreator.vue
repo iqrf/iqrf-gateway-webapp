@@ -17,35 +17,27 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('cloud.amazonAws.form.title') }}</h1>
-		<v-card>
-			<v-card-title>
-				<v-item-group>
-					<v-btn
-						color='primary'
-						small
-						href='https://github.com/iqrfsdk/iot-starter-kit/blob/master/install/pdf/iqrf-part3a.pdf'
-						target='_blank'
-					>
-						<v-icon small>
-							mdi-file-document
-						</v-icon>
-						{{ $t('cloud.guides.pdf') }}
-					</v-btn> <v-btn
-						color='error'
-						small
-						href='https://youtu.be/Z9R2vdaw3KA'
-						target='_blank'
-					>
-						<v-icon small>
-							mdi-youtube
-						</v-icon>
-						{{ $t('cloud.guides.video') }}
-					</v-btn>
-				</v-item-group>
-			</v-card-title>
-			<v-card-text>
+		<CCard>
+			<CCardHeader>
+				<CButton
+					color='primary'
+					size='sm'
+					href='https://github.com/iqrfsdk/iot-starter-kit/blob/master/install/pdf/iqrf-part3a.pdf'
+				>
+					<CIcon :content='cilFile' size='sm' />
+					{{ $t('cloud.guides.pdf') }}
+				</CButton> <CButton
+					color='danger'
+					size='sm'
+					href='https://youtu.be/Z9R2vdaw3KA'
+				>
+					<CIcon :content='cibYoutube' size='sm' />
+					{{ $t('cloud.guides.video') }}
+				</CButton>
+			</CCardHeader>
+			<CCardBody>
 				<ValidationObserver v-slot='{invalid}'>
-					<v-form>
+					<CForm>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required'
@@ -53,85 +45,81 @@ limitations under the License.
 								required: $t("cloud.amazonAws.errors.endpoint"),
 							}'
 						>
-							<v-text-field
-								v-model='config.endpoint'
+							<CInput
+								v-model='endpoint'
 								:label='$t("cloud.amazonAws.form.endpoint")'
-								:success='touched ? valid : null'
-								:error-messages='errors'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
-						<ValidationProvider
-							v-slot='{errors, touched, valid}'
-							rules='required'
-							:custom-messages='{
-								required: $t("cloud.amazonAws.errors.certificate"),
-							}'
-						>
-							<v-file-input
-								v-model='config.certificate'
+						<div class='form-group'>
+							<CInputFile
+								ref='awsFormCert'
 								accept='.pem'
 								:label='$t("forms.fields.certificate")'
-								:success='touched ? valid : null'
-								:error-messages='errors'
-								:prepend-icon='null'
-								prepend-inner-icon='mdi-file-certificate'
+								@input='certInputEmpty'
+								@click='certInputEmpty'
 							/>
-						</ValidationProvider>
-						<ValidationProvider
-							v-slot='{errors, touched, valid}'
-							rules='required'
-							:custom-messages='{
-								required: $t("cloud.amazonAws.errors.key"),
-							}'
-						>
-							<v-file-input
-								v-model='config.privateKey'
+						</div>
+						<div class='form-group'>
+							<CInputFile
+								ref='awsFormKey'
 								accept='.pem,.key'
 								:label='$t("forms.fields.privateKey")'
-								:success='touched ? valid : null'
-								:error-messages='errors'
-								:prepend-icon='null'
-								prepend-inner-icon='mdi-file-key'
+								@input='keyInputEmpty'
+								@click='keyInputEmpty'
 							/>
-						</ValidationProvider>
-						<v-btn
-							class='mr-1'
+						</div>
+						<CButton
 							color='primary'
-							:disabled='invalid'
+							:disabled='invalid || certEmpty || keyEmpty'
 							@click.prevent='save(false)'
 						>
 							{{ $t('forms.save') }}
-						</v-btn>
-						<v-btn
-							color='primary'
-							:disabled='invalid'
+						</CButton> <CButton
+							color='secondary'
+							:disabled='invalid || certEmpty || keyEmpty'
 							@click.prevent='save(true)'
 						>
 							{{ $t('forms.saveRestart') }}
-						</v-btn>
-					</v-form>
+						</CButton>
+					</CForm>
 				</ValidationObserver>
-			</v-card-text>
-		</v-card>
+			</CCardBody>
+		</CCard>
 	</div>
 </template>
 
 <script lang='ts'>
-import {Client} from '@iqrf/iqrf-gateway-webapp-client';
-import {AwsMqttConfig} from '@iqrf/iqrf-gateway-webapp-client/types/Cloud';
-import {AxiosError} from 'axios';
-import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {required} from 'vee-validate/dist/rules';
 import {Component, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CIcon, CInput, CInputFile} from '@coreui/vue/src';
+import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
+import {cibYoutube, cilFile} from '@coreui/icons';
 import {daemonErrorToast, extendedErrorToast} from '@/helpers/errorToast';
-import {useApiClient} from '@/services/ApiClient';
+import {required} from 'vee-validate/dist/rules';
+import CloudService from '@/services/CloudService';
+import ServiceService from '@/services/ServiceService';
+
+import {AxiosError} from 'axios';
 
 @Component({
 	components: {
+		CButton,
+		CCard,
+		CCardBody,
+		CCardHeader,
+		CForm,
+		CIcon,
+		CInput,
+		CInputFile,
 		ValidationObserver,
 		ValidationProvider
 	},
+	data: () => ({
+		cibYoutube,
+		cilFile,
+	}),
 	metaInfo: {
 		title: 'cloud.amazonAws.form.title',
 	},
@@ -141,22 +129,20 @@ import {useApiClient} from '@/services/ApiClient';
  * Aws cloud mqtt connection configuration creator card
  */
 export default class AwsCreator extends Vue {
+	/**
+	 * @var {string} endpoint Aws cloud endpoint
+	 */
+	private endpoint = '';
 
 	/**
-	 * @property {AwsMqttConfig} config AWS IoT MQTT connection configuration
-   * @private
-   */
-	private config: AwsMqttConfig = {
-		endpoint: '',
-		certificate: null,
-		privateKey: null,
-	};
+	 * @var {boolean} certEmpty Indicates whether the form certificate file input is empty
+	 */
+	private certEmpty = true;
 
 	/**
-	 * @property {Client} apiClient IQRF Gateway Webapp API client
-   * @private
-   */
-	private apiClient: Client = useApiClient();
+	 * @var {boolean} keyEmpty Indicates whether the form key file input is empty
+	 */
+	private keyEmpty = true;
 
 	/**
 	 * Vue lifecycle hook created
@@ -166,15 +152,45 @@ export default class AwsCreator extends Vue {
 	}
 
 	/**
+	 * Creates a formData object as data for Axios request
+	 * @returns {FormData} FormData object
+	 */
+	private buildRequest(): FormData {
+		const formData = new FormData();
+		formData.append('endpoint', this.endpoint);
+		formData.append('certificate', this.getCertFiles()[0]);
+		formData.append('privateKey', this.getKeyFiles()[0]);
+		return formData;
+	}
+
+	/**
+	 * Extracts uploaded files from the form certificate file input
+	 * @returns {FileList} List of uploaded files
+	 */
+	private getCertFiles(): FileList {
+		const input = ((this.$refs.awsFormCert as CInputFile).$el.children[1] as HTMLInputElement);
+		return (input.files as FileList);
+	}
+
+	/**
+	 * Extracts uploaded files from the form key file input
+	 * @returns {FileList} List of uploaded files
+	 */
+	private getKeyFiles(): FileList {
+		const input = ((this.$refs.awsFormKey as CInputFile).$el.children[1] as HTMLInputElement);
+		return (input.files as FileList);
+	}
+
+	/**
 	 * Stores new Aws cloud connection configuration in the gateway filesystem
 	 * @param {boolean} restart Restart daemon on save?
 	 */
 	private save(restart: boolean): void {
 		this.$store.commit('spinner/SHOW');
-		this.apiClient.getCloudServices().getAwsService().createMqttInstance(this.config)
+		CloudService.createAws(this.buildRequest())
 			.then(async () => {
 				if (restart) {
-					await this.apiClient.getServiceService().restart('iqrf-gateway-daemon')
+					await ServiceService.restart('iqrf-gateway-daemon')
 						.then(() => {
 							this.$toast.success(
 								this.$t('service.iqrf-gateway-daemon.messages.restart')
@@ -189,6 +205,31 @@ export default class AwsCreator extends Vue {
 			.catch((error: AxiosError) => {
 				extendedErrorToast(error, 'cloud.amazonAws.messages.saveFailed');
 			});
+	}
+
+	/**
+	 * Checks if certificate input field is empty
+	 */
+	private certInputEmpty(): void {
+		const files = this.getFileFromInput('awsFormCert');
+		this.certEmpty = files.length === 0;
+	}
+
+	/**
+	 * Checks if private key input field is empty
+	 */
+	private keyInputEmpty(): void {
+		const files = this.getFileFromInput('awsFormKey');
+		this.keyEmpty = files.length === 0;
+	}
+
+	/**
+	 * Extracts files from file input element specified by ID
+	 * @param {string} fieldId File input ID
+	 */
+	private getFileFromInput(fieldId: string): FileList {
+		const input = ((this.$refs[fieldId] as CInputFile).$el.children[1] as HTMLInputElement);
+		return (input.files as FileList);
 	}
 
 }

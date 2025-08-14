@@ -15,16 +15,14 @@
  * limitations under the License.
  */
 import * as Sentry from '@sentry/vue';
-import { browserTracingIntegration } from '@sentry/vue';
 import Vue from 'vue';
-
 import router from '@/router';
 
-if (import.meta.env.PROD) {
+if (process.env.NODE_ENV === 'production') {
 	Sentry.init({
-		dsn: import.meta.env.VITE_SENTRY_DSN,
+		dsn: process.env.VUE_APP_SENTRY_DSN,
 		integrations: [
-			browserTracingIntegration({
+			Sentry.browserTracingIntegration({
 				router: router,
 				routeLabel: 'path',
 			}),
@@ -32,7 +30,6 @@ if (import.meta.env.PROD) {
 		release: __GIT_COMMIT_HASH__,
 		tracePropagationTargets: ['localhost', window.location.hostname, /^\//],
 		tracesSampleRate: 1.0,
-		trackComponents: true,
 		Vue,
 	});
 }

@@ -1,55 +1,42 @@
-<!--
-Copyright 2017-2025 IQRF Tech s.r.o.
-Copyright 2019-2025 MICRORISC s.r.o.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software,
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied
-See the License for the specific language governing permissions and
-limitations under the License.
--->
 <template>
-	<v-text-field
+	<CInput
+		v-bind='$attrs'
 		:id='id'
 		v-model='password'
-		v-bind='$attrs'
 		:type='visible ? "text" : "password"'
 		:label='label'
-		:success='success'
-		:error-messages='errorMessages'
+		:is-valid='isValid'
+		:invalid-feedback='invalidFeedback'
 		v-on='$listeners'
 	>
-		<template #prepend>
-			<slot name='prepend' />
+		<template #prepend-content>
+			<slot name='prepend-content' />
 		</template>
-		<template #prepend-outer>
-			<slot name='prepend-outer' />
-		</template>
-		<template #append>
-			<slot name='append' />
+		<template #append-content>
+			<slot name='append-content' />
 			<span @click='visible = !visible'>
-				<v-icon>{{ visible ? 'mdi-eye' : 'mdi-eye-off' }}</v-icon>
+				<FontAwesomeIcon
+					:icon='(visible ? ["far", "eye-slash"] : ["far", "eye"])'
+				/>
 			</span>
 		</template>
-		<template #append-outer>
-			<slot name='append-outer' />
-		</template>
-	</v-text-field>
+	</CInput>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, VModel, Vue} from 'vue-property-decorator';
+import {CInput} from '@coreui/vue/src';
+import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 
 /**
  * Password Input
  */
-@Component({})
+@Component({
+	components: {
+		CInput,
+		FontAwesomeIcon,
+	},
+})
 export default class PasswordInput extends Vue {
 
 	/**
@@ -63,14 +50,14 @@ export default class PasswordInput extends Vue {
 	@Prop({required: true}) label!: string;
 
 	/**
-	 * @property {boolean|null} success Is input valid?
+	 * @property {boolean|null} isValid Is input valid?
    */
-	@Prop({required: false}) success!: boolean|null;
+	@Prop({required: false}) isValid!: boolean|null;
 
 	/**
-	 * @property {string|null} errorMessages Error message
+	 * @property {string|null} invalidFeedback Error message
    */
-	@Prop({required: false}) errorMessages!: string|null;
+	@Prop({required: false}) invalidFeedback!: string|null;
 
 	/**
 	 * @property {string|null} id Input ID

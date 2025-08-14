@@ -17,17 +17,23 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('core.error.404.title') }}</h1>
-		<v-card>
-			<v-card-title>{{ $t('core.error.404.header') }}</v-card-title>
-			<v-card-text>{{ $t('core.error.404.message') }}</v-card-text>
-		</v-card>
+		<CCard>
+			<CCardHeader>{{ $t('core.error.404.header') }}</CCardHeader>
+			<CCardBody>{{ $t('core.error.404.message') }}</CCardBody>
+		</CCard>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
+import {CCard, CCardBody, CCardHeader} from '@coreui/vue/src';
 
 @Component({
+	components: {
+		CCard,
+		CCardBody,
+		CCardHeader,
+	},
 	metaInfo: {
 		title: 'core.error.404.title',
 	},

@@ -15,18 +15,25 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-card>
-		<v-card-title>{{ $t('install.restore.title') }}</v-card-title>
-		<RestoreComponent />
-	</v-card>
+	<CCard>
+		<CCardHeader>{{ $t('install.restore.title') }}</CCardHeader>
+		<CCardBody>
+			<RestoreComponent />
+		</CCardBody>
+	</CCard>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader} from '@coreui/vue/src';
 import RestoreComponent from '@/components/Maintenance/GatewayRestore.vue';
 
 @Component({
 	components: {
+		CButton,
+		CCard,
+		CCardBody,
+		CCardHeader,
 		RestoreComponent,
 	},
 	metaInfo: {

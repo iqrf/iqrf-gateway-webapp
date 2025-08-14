@@ -1,93 +1,76 @@
-<!--
-Copyright 2017-2025 IQRF Tech s.r.o.
-Copyright 2019-2025 MICRORISC s.r.o.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software,
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied
-See the License for the specific language governing permissions and
-limitations under the License.
--->
 <template>
 	<ValidationObserver v-slot='{invalid}'>
-		<v-dialog
-			v-model='render'
-			width='50%'
-			persistent
-			no-click-animation
+		<CModal
+			:show.sync='render'
+			color='primary'
 		>
-			<template #activator='{on, attrs}'>
-				<v-btn
-					color='primary'
-					small
-					v-bind='attrs'
-					v-on='on'
-				>
-					<v-icon small>
-						mdi-pencil
-					</v-icon>
-					{{ $t('forms.edit') }}
-				</v-btn>
+			<template #header>
+				<h5 class='modal-title'>
+					{{ $t('gateway.hostname.title') }}
+				</h5>
 			</template>
-			<v-card>
-				<v-card-title>{{ $t('gateway.hostname.title') }}</v-card-title>
-				<v-card-text>
-					<form @submit.prevent='save'>
-						<ValidationProvider
-							v-slot='{errors, touched, valid}'
-							rules='hostnamePattern|required'
-							:custom-messages='{
-								hostnamePattern: $t("gateway.hostname.errors.hostnameInvalid"),
-								required: $t("gateway.hostname.errors.hostnameMissing"),
-							}'
-						>
-							<v-text-field
-								v-model='hostname'
-								:label='$t("gateway.info.hostname")'
-								:success='touched ? valid : null'
-								:error-messages='errors'
-							/>
-						</ValidationProvider>
-						<v-checkbox
-							v-model='setIdeCounterpart'
-							:label='$t("gateway.hostname.setIdeCounterpart")'
-						/>
-					</form>
-				</v-card-text>
-				<v-card-actions>
-					<v-spacer />
-					<v-btn @click='hide'>
-						{{ $t('forms.cancel') }}
-					</v-btn>
-					<v-btn color='primary' :disabled='invalid' @click='save'>
-						{{ $t('forms.save') }}
-					</v-btn>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+			<CForm @submit.prevent='save'>
+				<ValidationProvider
+					v-slot='{errors, touched, valid}'
+					rules='hostnamePattern|required'
+					:custom-messages='{
+						hostnamePattern: $t("gateway.hostname.errors.hostnameInvalid"),
+						required: $t("gateway.hostname.errors.hostnameMissing"),
+					}'
+				>
+					<CInput
+						v-model='config.hostname'
+						:label='$t("gateway.info.hostname")'
+						:is-valid='touched ? valid : null'
+						:invalid-feedback='errors.join(", ")'
+					/>
+				</ValidationProvider>
+				<CInputCheckbox
+					:checked.sync='setIdeCounterpart'
+					:label='$t("gateway.hostname.setIdeCounterpart")'
+				/>
+			</CForm>
+			<template #footer>
+				<CButton
+					color='primary'
+					:disabled='invalid'
+					@click='save'
+				>
+					{{ $t('forms.save') }}
+				</CButton> <CButton
+					color='secondary'
+					@click='hide'
+				>
+					{{ $t('forms.cancel') }}
+				</CButton>
+			</template>
+		</CModal>
 	</ValidationObserver>
 </template>
 
 <script lang='ts'>
-import {AxiosError, AxiosResponse} from 'axios';
-import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {required} from 'vee-validate/dist/rules';
 import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
+import {CButton, CForm, CInput, CInputCheckbox, CModal} from '@coreui/vue/src';
+import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
+import {required} from 'vee-validate/dist/rules';
 import {machineHostname} from '@/helpers/validationRules/Gateway';
+
+import GatewayService from '@/services/GatewayService';
+
+import {IHostname} from '@/interfaces/Gateway/Information';
+import {AxiosError, AxiosResponse} from 'axios';
+import { IIdeCounterpart } from '@/interfaces/Config/IdeCounterpart';
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
-import {IIdeCounterpart} from '@/interfaces/Config/IdeCounterpart';
-import {useApiClient} from '@/services/ApiClient';
 
 @Component({
 	components: {
+		CButton,
+		CForm,
+		CInput,
+		CInputCheckbox,
+		CModal,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -108,16 +91,17 @@ export default class HostnameChange extends Vue {
 	 */
 	private render = false;
 
-
 	/**
 	 * @property {boolean} setIdeCounterpart Controls whether or not to set IQRF IDE counterpart gwIdentName
 	 */
 	private setIdeCounterpart: boolean = false;
 
 	/**
-	 * @property {string} hostname Hostname to set
+	 * @var {IHostname} config Hostnamectl configuration
 	 */
-	private hostname: string = '';
+	private config: IHostname = {
+		hostname: ''
+	};
 
 	/**
 	 * Initializes validation rules
@@ -129,7 +113,7 @@ export default class HostnameChange extends Vue {
 
 	@Watch('current')
 	private loadCurrent(newVal: string|null): void {
-		this.hostname = newVal?.split('.', 1)[0] ?? '';
+		this.config.hostname = newVal?.split('.', 1)[0] ?? '';
 	}
 
 	/**
@@ -139,7 +123,7 @@ export default class HostnameChange extends Vue {
 		this.$store.commit('spinner/SHOW');
 		Promise.all([
 			this.setIdeCounterpartConfig(),
-			useApiClient().getGatewayServices().getHostnameService().updateHostname(this.hostname)
+			GatewayService.setHostname(this.config)
 		])
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
@@ -160,8 +144,8 @@ export default class HostnameChange extends Vue {
 	}
 
 	/**
-	 * Sets a new hostname for IDE counterpart component
-	 */
+	 * Sets a new hostname as IDE counterpart gwIdentName
+   */
 	private async setIdeCounterpartConfig(): Promise<void> {
 		if (!this.setIdeCounterpart) {
 			return;
@@ -171,7 +155,7 @@ export default class HostnameChange extends Vue {
 		if (componentConfig === null) {
 			return;
 		}
-		componentConfig.gwIdentNetBios = this.hostname;
+		componentConfig.gwIdentNetBios = this.config.hostname;
 		await DaemonConfigurationService.updateInstance('iqrf::IdeCounterpart', componentConfig.instance, componentConfig);
 	}
 

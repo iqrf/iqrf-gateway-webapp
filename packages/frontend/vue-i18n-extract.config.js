@@ -17,7 +17,4 @@
 module.exports = {
 	'vueFiles': './src/**/*.{vue,ts}',
 	'languageFiles': './src/locales/*.json',
-	'exclude': [
-		'$vuetify',
-	],
 };

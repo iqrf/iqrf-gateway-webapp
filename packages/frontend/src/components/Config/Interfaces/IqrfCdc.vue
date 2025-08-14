@@ -16,20 +16,20 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<v-card class='mb-5'>
-			<v-card-title>
+		<CCard>
+			<CCardHeader>
 				{{ $t('config.daemon.interfaces.iqrfCdc.title') }}
-			</v-card-title>
-			<v-card-text>
-				<v-overlay
+			</CCardHeader>
+			<CCardBody>
+				<CElementCover
 					v-if='loadFailed'
-					:opacity='0.65'
-					absolute
+					style='z-index: 1;'
+					:opacity='0.85'
 				>
 					{{ $t('config.daemon.messages.failedElement') }}
-				</v-overlay>
+				</CElementCover>
 				<ValidationObserver v-slot='{invalid}'>
-					<form @submit.prevent='saveConfig'>
+					<CForm @submit.prevent='saveConfig'>
 						<fieldset :disabled='loadFailed'>
 							<ValidationProvider
 								v-if='isAdmin'
@@ -39,11 +39,11 @@ limitations under the License.
 									required: $t("config.daemon.interfaces.iqrfCdc.errors.instance")
 								}'
 							>
-								<v-text-field
+								<CInput
 									v-model='configuration.instance'
 									:label='$t("forms.fields.instanceName")'
-									:success='touched ? valid : null'
-									:error-messages='errors'
+									:is-valid='touched ? valid : null'
+									:invalid-feedback='errors.join(", ")'
 								/>
 							</ValidationProvider>
 							<ValidationProvider
@@ -53,65 +53,60 @@ limitations under the License.
 									required: $t("config.daemon.interfaces.iqrfCdc.errors.iqrfInterface")
 								}'
 							>
-								<v-text-field
+								<CInput
 									v-model='configuration.IqrfInterface'
 									:label='$t("config.daemon.interfaces.iqrfCdc.form.interface")'
-									:success='touched ? valid : null'
-									:error-messages='errors'
+									:is-valid='touched ? valid : null'
+									:invalid-feedback='errors.join(", ")'
 								/>
 							</ValidationProvider>
-							<v-btn
+							<CButton
 								type='submit'
 								color='primary'
 								:disabled='invalid'
 							>
 								{{ $t('forms.save') }}
-							</v-btn>
+							</CButton>
 						</fieldset>
-					</form>
+					</CForm>
 				</ValidationObserver>
-			</v-card-text>
-		</v-card>
-		<v-card>
-			<v-card-text>
-				<InterfacePorts
-					:interface-type='MappingType.CDC'
-					@update-port='updatePort'
-				/>
-			</v-card-text>
-		</v-card>
+			</CCardBody>
+			<CCardFooter>
+				<h4>{{ $t('config.daemon.interfaces.iqrfCdc.mappings' ) }}</h4><hr>
+				<InterfacePorts interface-type='cdc' @update-port='updatePort' />
+			</CCardFooter>
+		</CCard>
 	</div>
 </template>
 
 <script lang='ts'>
-import {
-	IqrfGatewayDaemonService
-} from '@iqrf/iqrf-gateway-webapp-client/services/Config';
-import {UserRole} from '@iqrf/iqrf-gateway-webapp-client/types';
-import {
-	IqrfGatewayDaemonCdc,
-	IqrfGatewayDaemonComponent,
-	IqrfGatewayDaemonComponentName,
-	MappingType,
-} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import {AxiosError} from 'axios';
-import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {required} from 'vee-validate/dist/rules';
 import {Component, Vue} from 'vue-property-decorator';
-
+import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput} from '@coreui/vue/src';
+import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import InterfacePorts from '@/components/Config/Interfaces/InterfacePorts.vue';
+
 import {extendedErrorToast} from '@/helpers/errorToast';
-import {useApiClient} from '@/services/ApiClient';
+import {UserRole} from '@/services/AuthenticationService';
+import {required} from 'vee-validate/dist/rules';
+
+import DaemonConfigurationService from '@/services/DaemonConfigurationService';
+
+import {AxiosError, AxiosResponse} from 'axios';
+import {IIqrfCdc} from '@/interfaces/Config/IqrfInterfaces';
 
 @Component({
 	components: {
+		CButton,
+		CCard,
+		CCardBody,
+		CCardHeader,
+		CElementCover,
+		CForm,
+		CInput,
 		InterfacePorts,
 		ValidationObserver,
 		ValidationProvider,
 	},
-	data: () => ({
-		MappingType,
-	})
 })
 
 /**
@@ -119,15 +114,15 @@ import {useApiClient} from '@/services/ApiClient';
  */
 export default class IqrfCdc extends Vue {
 	/**
-	 * @constant {IqrfGatewayDaemonComponentName.IqrfCdc} componentName IQRF CDC interface component name
+	 * @constant {string} componentName IQRF CDC interface component name
 	 */
-	private componentName = IqrfGatewayDaemonComponentName.IqrfCdc;
+	private componentName = 'iqrf::IqrfCdc';
 
 	/**
-	 * @var {IqrfGatewayDaemonCdc} configuration IQRF CDC interface instance configuration
+	 * @var {IIqrfCdc} configuration IQRF CDC interface instance configuration
 	 */
-	private configuration: IqrfGatewayDaemonCdc = {
-		component: IqrfGatewayDaemonComponentName.IqrfCdc,
+	private configuration: IIqrfCdc = {
+		component: '',
 		instance: '',
 		IqrfInterface: '',
 	};
@@ -143,16 +138,11 @@ export default class IqrfCdc extends Vue {
 	private loadFailed = false;
 
 	/**
-	 * @property {IqrfGatewayDaemonService} service IQRF Gateway Daemon configuration service
-	 */
-	private readonly service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
-
-	/**
 	 * Checks if user is an administrator
 	 * @returns {boolean} True if user is an administrator
 	 */
 	get isAdmin(): boolean {
-		return this.$store.getters['user/getRole'] === UserRole.Admin;
+		return this.$store.getters['user/getRole'] === UserRole.ADMIN;
 	}
 
 	/**
@@ -173,10 +163,10 @@ export default class IqrfCdc extends Vue {
 	 * Retrieves configuration of IQRF CDC interface component
 	 */
 	private getConfig(): Promise<void> {
-		return this.service.getComponent(IqrfGatewayDaemonComponentName.IqrfCdc)
-			.then((response: IqrfGatewayDaemonComponent<IqrfGatewayDaemonComponentName.IqrfCdc>): void => {
-				if (response.instances.length > 0) {
-					this.configuration = response.instances[0];
+		return DaemonConfigurationService.getComponent(this.componentName)
+			.then((response: AxiosResponse) => {
+				if (response.data.instances.length > 0) {
+					this.configuration = response.data.instances[0];
 					this.instance = this.configuration.instance;
 				}
 				this.$emit('fetched', {name: 'iqrfCdc', success: true});
@@ -193,11 +183,11 @@ export default class IqrfCdc extends Vue {
 	private saveConfig(): void {
 		this.$store.commit('spinner/SHOW');
 		if (this.instance !== '') {
-			this.service.updateInstance(this.componentName, this.instance, this.configuration)
+			DaemonConfigurationService.updateInstance(this.componentName, this.instance, this.configuration)
 				.then(this.handleSuccess)
 				.catch(this.handleFailure);
 		} else {
-			this.service.createInstance(this.componentName, this.configuration)
+			DaemonConfigurationService.createInstance(this.componentName, this.configuration)
 				.then(this.handleSuccess)
 				.catch(this.handleFailure);
 		}

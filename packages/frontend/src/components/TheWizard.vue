@@ -15,29 +15,59 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-main>
-		<v-container fluid class='fill-height'>
-			<v-row align='center' justify='center'>
-				<v-col
-					cols='12'
-					sm='8'
-					md='6'
-					lg='4'
-				>
-					<v-img
-						:alt='$t("core.title.generic")'
-						:src='Logo'
-						max-height='32pt'
-						contain
-						class='mb-6'
-					/>
+	<div class='c-app flex-row align-items-center'>
+		<CContainer>
+			<CRow class='justify-content-center'>
+				<CCol lg='10'>
+					<div class='logo'>
+						<Logo :alt='title' />
+					</div>
 					<slot />
-				</v-col>
-			</v-row>
-		</v-container>
-	</v-main>
+				</CCol>
+			</CRow>
+		</CContainer>
+	</div>
 </template>
 
-<script lang='ts' setup>
-import Logo from '@/assets/logo-blue.svg';
+<script lang='ts'>
+import {Component, Vue} from 'vue-property-decorator';
+import {CContainer, CCol, CRow} from '@coreui/vue/src';
+import ThemeManager from '@/helpers/themeManager';
+
+@Component({
+	components: {
+		CContainer,
+		CCol,
+		CRow,
+		Logo: ThemeManager.getWizardLogo(),
+	},
+})
+
+/**
+ * Installation base page component
+ */
+export default class TheWizard extends Vue {
+
+	/**
+	 * Returns the app title
+	 * @return {string} App title
+	 */
+	get title(): string {
+		return this.$t(ThemeManager.getTitleKey()).toString();
+	}
+
+}
 </script>
+
+<style lang='scss' scoped>
+.logo {
+	padding-bottom: 3rem;
+	padding-top: 3rem;
+
+	svg {
+		height: 32pt;
+		width: 100%;
+	}
+}
+
+</style>

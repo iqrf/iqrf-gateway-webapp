@@ -15,13 +15,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-card>
-		<v-card-title>
-			{{ $t('core.profile.form.editProfile') }}
-		</v-card-title>
-		<v-card-text>
+	<CCard>
+		<CCardHeader>
+			<strong>{{ $t('core.profile.form.editProfile') }}</strong>
+		</CCardHeader>
+		<CCardBody>
 			<ValidationObserver v-slot='{invalid}'>
-				<form @submit.prevent='save'>
+				<CForm @submit.prevent='save'>
 					<ValidationProvider
 						v-slot='{valid, touched, errors}'
 						rules='required'
@@ -29,11 +29,11 @@ limitations under the License.
 							required: $t("forms.errors.username"),
 						}'
 					>
-						<v-text-field
+						<CInput
 							v-model='user.username'
 							:label='$t("forms.fields.username")'
-							:success='touched ? valid : null'
-							:error-messages='errors'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='errors.join(", ")'
 						/>
 					</ValidationProvider>
 					<ValidationProvider
@@ -43,11 +43,11 @@ limitations under the License.
 							email: $t("forms.errors.emailFormat"),
 						}'
 					>
-						<v-text-field
+						<CInput
 							v-model='user.email'
 							:label='$t("forms.fields.email")'
-							:success='touched ? valid : null'
-							:error-messages='errors'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='errors.join(", ")'
 						/>
 					</ValidationProvider>
 					<ValidationProvider
@@ -57,50 +57,53 @@ limitations under the License.
 							required: $t("core.user.errors.language"),
 						}'
 					>
-						<v-select
-							v-model='user.language'
+						<CSelect
+							:value.sync='user.language'
 							:label='$t("core.user.language")'
-							:success='touched ? valid : null'
-							:error-messages='errors'
-							:items='languageOptions'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='errors.join(", ")'
+							:options='languageOptions'
 						/>
 					</ValidationProvider>
-					<v-btn
+					<CButton
 						color='primary'
 						type='submit'
 						:disabled='invalid'
 					>
 						{{ $t('forms.save') }}
-					</v-btn>
-				</form>
+					</CButton>
+				</CForm>
 			</ValidationObserver>
-		</v-card-text>
-	</v-card>
+		</CCardBody>
+	</CCard>
 </template>
 
 <script lang='ts'>
-import {
-	UserEdit,
-	UserLanguage,
-	UserRole
-} from '@iqrf/iqrf-gateway-webapp-client/types';
-import {AxiosError} from 'axios';
-import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {required} from 'vee-validate/dist/rules';
+// Components
 import {Component, Vue} from 'vue-property-decorator';
-
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CSelect} from '@coreui/vue/src';
+import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 // Module properties
+import {required} from 'vee-validate/dist/rules';
 import {email} from '@/helpers/validators';
 // Auxiliary functions
 import {extendedErrorToast} from '@/helpers/errorToast';
 // Services
-import {useApiClient} from '@/services/ApiClient';
+import UserService from '@/services/UserService';
 // Interfaces
-import {ISelectItem} from '@/interfaces/Vuetify';
-import UrlBuilder from '@/helpers/urlBuilder';
+import {AxiosError} from 'axios';
+import {IUserBase, UserLanguage, UserRole} from '@/services/AuthenticationService';
+import {IOption} from '@/interfaces/Coreui';
 
 @Component({
 	components: {
+		CButton,
+		CCard,
+		CCardBody,
+		CCardHeader,
+		CForm,
+		CInput,
+		CSelect,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -112,26 +115,22 @@ import UrlBuilder from '@/helpers/urlBuilder';
 export default class UserProfileForm extends Vue {
 
 	/**
-	 * @var {UserEdit} user User
+	 * @var {IUserBase} user User
 	 */
-	private user: UserEdit = {
+	private user: IUserBase = {
 		username: '',
 		email: '',
-		language: UserLanguage.English,
-		role: UserRole.Basic,
+		language: UserLanguage.ENGLISH,
+		role: UserRole.BASIC,
 	};
 
 	/**
-	 * @constant {Array<ISelectItem>} languageOptions Language select options
+	 * @constant {Array<IOption>} languageOptions Language options for CoreUI select
 	 */
-	private languageOptions: Array<ISelectItem> = [
+	private languageOptions: Array<IOption> = [
 		{
-			value: UserLanguage.Czech,
-			text: this.$t('core.user.languages.cs').toString(),
-		},
-		{
-			value: UserLanguage.English,
-			text: this.$t('core.user.languages.en').toString(),
+			value: UserLanguage.ENGLISH,
+			label: this.$t('core.user.languages.en'),
 		},
 	];
 
@@ -149,7 +148,6 @@ export default class UserProfileForm extends Vue {
 	 */
 	private getUser(): void {
 		this.user = this.$store.getters['user/get'];
-		this.user.baseUrl = new UrlBuilder().getBaseUrl();
 	}
 
 	/**
@@ -157,7 +155,7 @@ export default class UserProfileForm extends Vue {
 	 */
 	private save(): void {
 		this.$store.commit('spinner/SHOW');
-		useApiClient().getAccountService().update(this.user)
+		UserService.editLoggedIn(this.user)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(

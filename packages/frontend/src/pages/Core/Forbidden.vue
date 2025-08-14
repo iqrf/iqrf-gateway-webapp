@@ -17,17 +17,23 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('core.error.403.title') }}</h1>
-		<v-card>
-			<v-card-title>{{ $t('core.error.403.header') }}</v-card-title>
-			<v-card-text>{{ $t('core.error.403.message') }}</v-card-text>
-		</v-card>
+		<CCard>
+			<CCardHeader>{{ $t('core.error.403.header') }}</CCardHeader>
+			<CCardBody>{{ $t('core.error.403.message') }}</CCardBody>
+		</CCard>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
+import {CCard, CCardBody, CCardHeader} from '@coreui/vue/src';
 
 @Component({
+	components: {
+		CCard,
+		CCardBody,
+		CCardHeader,
+	},
 	metaInfo: {
 		title: 'core.error.403.title',
 	},
@@ -36,6 +42,5 @@ import {Component, Vue} from 'vue-property-decorator';
 /**
  * Error 403 page component
  */
-export default class NotFound extends Vue {
-}
+export default class Forbidden extends Vue {}
 </script>

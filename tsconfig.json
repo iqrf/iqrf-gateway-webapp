@@ -7,9 +7,6 @@
 			"path": "./packages/api-client/"
 		},
 		{
-			"path": "./packages/daemon-utils/"
-		},
-		{
 			"path": "./packages/frontend/"
 		},
 		{

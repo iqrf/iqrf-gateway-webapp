@@ -23,53 +23,57 @@ limitations under the License.
 		<div v-if='unsupported'>
 			{{ $t('service.states.unsupported') }}
 		</div>
-		<div v-if='serviceStatus !== null'>
-			{{ $t(`states.${serviceStatus.enabled ? 'enabled' : 'disabled'}`) }},
-			{{ $t(`service.states.${serviceStatus.active ? 'active' : 'inactive'}`) }}
+		<div v-if='service !== null'>
+			{{ $t(`states.${service.enabled ? 'enabled' : 'disabled'}`) }},
+			{{ $t(`service.states.${service.active ? 'active' : 'inactive'}`) }}
 		</div>
-		<div v-if='serviceStatus !== null' class='text-end'>
-			<v-btn
-				v-if='!serviceStatus.enabled'
+		<div v-if='service !== null' class='text-end'>
+			<CButton
+				v-if='!service.enabled'
 				class='mr-1'
 				color='success'
-				small
+				size='sm'
 				@click='enable'
 			>
 				{{ $t('service.actions.enable') }}
-			</v-btn>
-			<v-btn
-				v-if='serviceStatus.enabled'
+			</CButton>
+			<CButton
+				v-if='service.enabled'
 				class='mr-1'
-				color='error'
-				small
+				color='danger'
+				size='sm'
 				@click='disable'
 			>
 				{{ $t('service.actions.disable') }}
-			</v-btn>
-			<v-btn
+			</CButton>
+			<CButton
 				color='primary'
-				small
+				size='sm'
 				@click='restart'
 			>
 				{{ $t('service.actions.restart') }}
-			</v-btn>
+			</CButton>
 		</div>
 	</div>
 </template>
 
 <script lang='ts'>
-import {ServiceService} from '@iqrf/iqrf-gateway-webapp-client/services';
-import {ServiceStatus} from '@iqrf/iqrf-gateway-webapp-client/types';
-import {AxiosError} from 'axios';
 import {Component, Prop, Vue} from 'vue-property-decorator';
+import {CButton} from '@coreui/vue/src';
 
+import ServiceService, {ServiceStatus} from '@/services/ServiceService';
+
+import {AxiosError} from 'axios';
 import {ErrorResponse} from '@/types';
-import {useApiClient} from '@/services/ApiClient';
 
 /**
  * Service control component
  */
-@Component
+@Component({
+	components: {
+		CButton,
+	}
+})
 export default class ServiceControl extends Vue {
 
 	/**
@@ -88,14 +92,9 @@ export default class ServiceControl extends Vue {
 	private unsupported = false;
 
 	/**
-	 * @var {ServiceStatus|null} serviceStatus Service status object
+	 * @var {ServiceStatus|null} service Service status object
 	 */
-	private serviceStatus: ServiceStatus|null = null;
-
-	/**
-	 * @property {ServiceService} service Service service
-   */
-	private service: ServiceService = useApiClient().getServiceService();
+	private service: ServiceStatus|null = null;
 
 	/**
 	 * Retrieves service status
@@ -109,7 +108,7 @@ export default class ServiceControl extends Vue {
 	 */
 	private enable(): void {
 		this.$store.commit('spinner/SHOW');
-		this.service.enable(this.serviceName)
+		ServiceService.enable(this.serviceName)
 			.then(() => {
 				this.getStatus();
 				this.$toast.success(
@@ -125,7 +124,7 @@ export default class ServiceControl extends Vue {
 	 */
 	private disable(): void {
 		this.$store.commit('spinner/SHOW');
-		this.service.disable(this.serviceName)
+		ServiceService.disable(this.serviceName)
 			.then(() => {
 				this.getStatus();
 				this.$toast.success(
@@ -141,7 +140,7 @@ export default class ServiceControl extends Vue {
 	 */
 	private restart(): void {
 		this.$store.commit('spinner/SHOW');
-		this.service.restart(this.serviceName)
+		ServiceService.restart(this.serviceName)
 			.then(() => {
 				this.getStatus();
 				this.$toast.success(
@@ -159,9 +158,9 @@ export default class ServiceControl extends Vue {
 		if (!this.$store.getters['spinner/isEnabled']) {
 			this.$store.commit('spinner/SHOW');
 		}
-		this.service.getStatus(this.serviceName)
+		ServiceService.getStatus(this.serviceName)
 			.then((status: ServiceStatus) => {
-				this.serviceStatus = status;
+				this.service = status;
 				this.unsupported = false;
 				this.$store.commit('spinner/HIDE');
 			})
@@ -173,7 +172,7 @@ export default class ServiceControl extends Vue {
 	 */
 	private handleError(error: AxiosError): void {
 		this.$store.commit('spinner/HIDE');
-		this.serviceStatus = null;
+		this.service = null;
 		const response = error.response;
 		if (response === undefined) {
 			this.$toast.error(this.$t('service.errors.processTimeout').toString());

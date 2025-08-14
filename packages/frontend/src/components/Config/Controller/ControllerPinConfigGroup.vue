@@ -16,100 +16,71 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<v-data-table
-			:loading='loading'
-			:items='_profiles'
-			:headers='headers'
-			:no-data-text='$t("config.controller.pins.noProfiles")'
-		>
-			<template #top>
-				<v-toolbar dense flat>
-					<v-spacer />
-					<v-btn
-						class='mr-1'
-						color='success'
-						small
-						@click='profileFormModel = defaultProfile'
-					>
-						<v-icon small>
-							mdi-plus
-						</v-icon>
-					</v-btn>
-					<v-btn
-						color='primary'
-						small
-						@click='refreshProfiles'
-					>
-						<v-icon small>
-							mdi-refresh
-						</v-icon>
-					</v-btn>
-				</v-toolbar>
-			</template>
-			<template #[`item.name`]='{item}'>
-				{{ item.name }}
-			</template>
-			<template #[`item.actions`]='{item}'>
-				<v-btn
-					class='mr-1'
-					color='primary'
-					small
-					@click='setProfile(item.id)'
+		<CButtonGroup class='flex-wrap'>
+			<CButton
+				color='success'
+				size='sm'
+				@click='showFormModal()'
+			>
+				<CIcon :content='cilPlus' />
+			</CButton>
+			<CDropdown
+				v-for='(profile, i) of profiles'
+				:key='i'
+				:toggler-text='profile.name'
+				color='primary'
+				placement='top-start'
+			>
+				<CDropdownItem
+					@click='setProfile(profile.id)'
 				>
-					<v-icon small>
-						mdi-content-copy
-					</v-icon>
-					{{ $t('forms.set') }}
-				</v-btn>
-				<v-btn
-					class='mr-1'
-					color='info'
-					small
-					@click='profileFormModel = item'
+					<CIcon :content='cilCopy' />
+					{{ $t('config.controller.pins.actions.set') }}
+				</CDropdownItem>
+				<CDropdownItem
+					@click='showFormModal(profile)'
 				>
-					<v-icon small>
-						mdi-pencil
-					</v-icon>
-					{{ $t('table.actions.edit') }}
-				</v-btn>
-				<v-btn
-					color='error'
-					small
-					@click='profileDeleteModel = item'
+					<CIcon :content='cilPencil' />
+					{{ $t('config.controller.pins.actions.edit') }}
+				</CDropdownItem>
+				<CDropdownItem
+					@click='showDeleteModal(profile.id, profile.name)'
 				>
-					<v-icon small>
-						mdi-delete
-					</v-icon>
-					{{ $t('table.actions.delete') }}
-				</v-btn>
-			</template>
-		</v-data-table>
-		<ControllerPinConfigDeleteModal
-			v-model='profileDeleteModel'
-			@deleted='refreshProfiles'
-		/>
-		<ControllerPinConfigFormModal
-			v-model='profileFormModel'
-			@update-profiles='refreshProfiles'
-		/>
+					<CIcon :content='cilTrash' />
+					{{ $t('config.controller.pins.actions.delete') }}
+				</CDropdownItem>
+			</CDropdown>
+		</CButtonGroup>
+		<ControllerPinConfigDeleteModal ref='deleteModal' @delete-profile='deleteProfile' />
+		<ControllerPinConfigFormModal ref='formModal' @update-profiles='refreshProfiles' />
 	</div>
 </template>
 
 <script lang='ts'>
-import {
-	IqrfGatewayControllerMapping, MappingDeviceType
-} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import {Component, Prop, PropSync, Vue} from 'vue-property-decorator';
-import {DataTableHeader} from 'vuetify';
-
+import {Component, PropSync, Vue} from 'vue-property-decorator';
+import {CButton, CButtonGroup, CDropdown, CDropdownItem, CIcon} from '@coreui/vue/src';
 import ControllerPinConfigDeleteModal from './ControllerPinConfigDeleteModal.vue';
 import ControllerPinConfigFormModal from './ControllerPinConfigFormModal.vue';
 
+import {cilCopy, cilPencil, cilPlus, cilTrash} from '@coreui/icons';
+import {IControllerPinConfig} from '@/interfaces/Config/Controller';
+
 @Component({
 	components: {
+		CButton,
+		CButtonGroup,
+		CDropdown,
+		CDropdownItem,
+		CIcon,
 		ControllerPinConfigDeleteModal,
 		ControllerPinConfigFormModal,
 	},
+	data: () => ({
+		cilCopy,
+		cilPencil,
+		cilPlus,
+		cilTrash,
+	}),
 })
 
 /**
@@ -117,54 +88,26 @@ import ControllerPinConfigFormModal from './ControllerPinConfigFormModal.vue';
  */
 export default class ControllerPinConfigGroup extends Vue {
 	/**
-	 * @property {Array<IqrfGatewayControllerMapping>} _profiles Controller config profiles
+	 * @property {Array<IControllerPinConfig>} _profiles Controller config profiles
 	 */
-	@PropSync('profiles', {type: Array, default: []}) _profiles!: Array<IqrfGatewayControllerMapping>;
+	@PropSync('profiles', {type: Array, default: []}) _profiles!: Array<IControllerPinConfig>;
 
 	/**
-	 * @property {boolean} loading Data table loading status
+	 * Passes configuration profile to form modal and activates the modal
+	 * @param {IControllerPinConfig|null} profile Configuration profile
 	 */
-	@Prop({required: false, default: false}) loading!: boolean;
+	private showFormModal(profile: IControllerPinConfig|null = null): void {
+		(this.$refs.formModal as ControllerPinConfigFormModal).activateModal(profile);
+	}
 
 	/**
-	 * @var {IqrfGatewayControllerMapping|null} profileFormModel Form profile model
+	 * Passes configuration profile to delete modal and activates the modal
+	 * @param {number} idx Profile ID
+	 * @param {string} name Profile name
 	 */
-	private profileFormModel: IqrfGatewayControllerMapping|null = null;
-
-	/**
-	 * @var {IqrfGatewayControllerMapping|null} profileDeleteModel Profile to delete
-	 */
-	private profileDeleteModel: IqrfGatewayControllerMapping|null = null;
-
-	/**
-	 * @constant {IqrfGatewayControllerMapping} defaultProfile Default profile values
-	 */
-	private readonly defaultProfile: IqrfGatewayControllerMapping = {
-		name: '',
-		deviceType: MappingDeviceType.Adapter,
-		greenLed: 0,
-		redLed: 0,
-		button: 0,
-		sck: 0,
-		sda: 0,
-	};
-
-	/**
-	 * @constant {Array<DataTableHeader>} header Data table headers
-	 */
-	private readonly headers: Array<DataTableHeader> = [
-		{
-			value: 'name',
-			text: this.$t('config.controller.pins.form.name').toString(),
-		},
-		{
-			value: 'actions',
-			text: this.$t('table.actions.title').toString(),
-			filterable: false,
-			sortable: false,
-			align: 'end',
-		},
-	];
+	private showDeleteModal(id: number, name: string): void {
+		(this.$refs.deleteModal as ControllerPinConfigDeleteModal).activateModal(id, name);
+	}
 
 	/**
 	 * Emits event to set config profile to form

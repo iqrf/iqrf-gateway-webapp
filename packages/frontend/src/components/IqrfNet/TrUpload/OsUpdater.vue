@@ -16,81 +16,89 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<v-card>
-			<v-card-title>
+		<CCard>
+			<CCardHeader>
 				{{ $t('iqrfnet.trUpload.osUpload.title') }}
-			</v-card-title>
-			<v-card-text>
-				<v-overlay
+			</CCardHeader>
+			<CCardBody>
+				<CElementCover
 					v-if='loadFailed'
-					absolute
-					:opacity='0.65'
+					style='z-index: 1;'
+					:opacity='0.85'
 				>
 					{{ $t('iqrfnet.trUpload.osUpload.messages.fetchFailed') }}
-				</v-overlay>
+				</CElementCover>
 				<ValidationObserver v-slot='{invalid}'>
-					<v-form>
-						<p v-if='currentOsVersion !== "" && currentOsBuild !== ""'>
-							<span>
-								<strong>{{ $t('iqrfnet.trUpload.osUpload.form.current') }}</strong> {{ prettyVersion(currentOsVersion) + ' (' + currentOsBuild + ')' }}
-							</span>
-						</p>
-						<v-alert
-							v-if='!loadFailed && selectVersions.length === 0'
-							color='success'
-							text
-							outlined
-						>
-							{{ $t('iqrfnet.trUpload.osUpload.messages.newest') }}
-						</v-alert>
-						<div v-else-if='!loadFailed && selectVersions.length > 0'>
-							<ValidationProvider
-								v-slot='{errors, touched, valid}'
-								rules='required'
-								:custom-messages='{
-									required: $t("iqrfnet.trUpload.osUpload.errors.version"),
-								}'
+					<CForm>
+						<fieldset :disabled='loadFailed'>
+							<div class='form-group'>
+								<span v-if='currentOsVersion !== "" && currentOsBuild !== ""'>
+									<strong>{{ $t('iqrfnet.trUpload.osUpload.form.current') }}</strong> {{ prettyVersion(currentOsVersion) + ' (' + currentOsBuild + ')' }}
+								</span>
+							</div>
+							<CAlert
+								v-if='!loadFailed && selectVersions.length === 0'
+								color='success'
+								class='mb-0'
 							>
-								<v-select
-									v-model='osVersion'
-									:items='selectVersions'
-									:label='$t("iqrfnet.trUpload.osUpload.form.version")'
-									:placeholder='$t("iqrfnet.trUpload.osUpload.errors.version")'
-									:success='touched ? valid : null'
-									:error-messages='errors'
-								/>
-							</ValidationProvider>
-							<v-btn
-								color='primary'
-								:disabled='invalid'
-								@click='upgradeOs'
-							>
-								{{ $t('forms.upload') }}
-							</v-btn>
-						</div>
-					</v-form>
+								{{ $t('iqrfnet.trUpload.osUpload.messages.newest') }}
+							</CAlert>
+							<div v-else-if='!loadFailed && selectVersions.length > 0'>
+								<ValidationProvider
+									v-slot='{errors, touched, valid}'
+									rules='required'
+									:custom-messages='{
+										required: $t("iqrfnet.trUpload.osUpload.errors.version"),
+									}'
+								>
+									<CSelect
+										:value.sync='osVersion'
+										:label='$t("iqrfnet.trUpload.osUpload.form.version")'
+										:placeholder='$t("iqrfnet.trUpload.osUpload.errors.version")'
+										:options='selectVersions'
+										:is-valid='touched ? valid : null'
+										:invalid-feedback='errors.join(", ")'
+									/>
+								</ValidationProvider>
+								<CButton
+									color='primary'
+									:disabled='invalid'
+									@click='upgradeOs'
+								>
+									{{ $t('forms.upload') }}
+								</CButton>
+							</div>
+						</fieldset>
+					</CForm>
 				</ValidationObserver>
-			</v-card-text>
-		</v-card>
+			</CCardBody>
+		</CCard>
 	</div>
 </template>
 
 <script lang='ts'>
-import {ServiceService} from '@iqrf/iqrf-gateway-webapp-client/services';
-import {AxiosError, AxiosResponse} from 'axios';
-import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {required} from 'vee-validate/dist/rules';
 import {Component, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CSelect} from '@coreui/vue/src';
+import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {daemonErrorToast, extendedErrorToast} from '@/helpers/errorToast';
+import {required} from 'vee-validate/dist/rules';
 import IqrfService from '@/services/IqrfService';
+import ServiceService from '@/services/ServiceService';
 
+import {AxiosError, AxiosResponse} from 'axios';
 import {IAvailableOsUpgrade, IOsUpgradeParams} from '@/interfaces/trUpload';
-import {ISelectItem} from '@/interfaces/Vuetify';
-import {useApiClient} from '@/services/ApiClient';
+import {IOption} from '@/interfaces/Coreui';
 
 @Component({
 	components: {
+		CButton,
+		CCard,
+		CCardBody,
+		CCardHeader,
+		CElementCover,
+		CForm,
+		CSelect,
 		ValidationObserver,
 		ValidationProvider
 	}
@@ -121,9 +129,9 @@ export default class OsUpdater extends Vue {
 	private osVersion: number|null = null;
 
 	/**
-	 * @var {Array<ISelectItem>} selectVersions IQRF OS version select options
+	 * @var {Array<IOption>} selectVersions Array of available IQRF OS versions for CoreUI select
 	 */
-	private selectVersions: Array<ISelectItem> = [];
+	private selectVersions: Array<IOption> = [];
 
 	/**
 	 * @var {number} trMcuType Module TR and MCU type
@@ -139,12 +147,6 @@ export default class OsUpdater extends Vue {
 	 * @var {boolean} loadFailed Indicates whether OS upgrades fetch failed
 	 */
 	private loadFailed = false;
-
-	/**
-   * @property {ServiceService} serviceService Service service
-   * @private
-   */
-	private serviceService: ServiceService = useApiClient().getServiceService();
 
 	/**
 	 * Vue lifecycle hook created
@@ -192,7 +194,7 @@ export default class OsUpdater extends Vue {
 	 * Updates list of available IQRF OS upgrades for select
 	 */
 	private updateVersions(): void {
-		const versions: Array<ISelectItem> = [];
+		const versions: Array<IOption> = [];
 		for (let i = 0; i < this.upgrades.length; ++i) {
 			const upgrade: IAvailableOsUpgrade = this.upgrades[i];
 			let text = upgrade.os.version + ' (' + upgrade.os.build;
@@ -219,7 +221,7 @@ export default class OsUpdater extends Vue {
 			}
 			versions.push({
 				value: i,
-				text: text,
+				label: text,
 			});
 		}
 		versions.sort();
@@ -278,7 +280,7 @@ export default class OsUpdater extends Vue {
 	 * @returns {Promise<void>} Empty promise for request chaining
 	 */
 	private stopDaemon(): Promise<void> {
-		return this.serviceService.stop('iqrf-gateway-daemon')
+		return ServiceService.stop('iqrf-gateway-daemon')
 			.then(() => {
 				this.$store.commit('spinner/UPDATE_TEXT',
 					this.$t('service.iqrf-gateway-daemon.messages.stop').toString()
@@ -291,7 +293,7 @@ export default class OsUpdater extends Vue {
 	 * Starts the IQRF Daemon service upon successful OS upgrade
 	 */
 	private startDaemon(): void {
-		this.serviceService.start('iqrf-gateway-daemon')
+		ServiceService.start('iqrf-gateway-daemon')
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$emit('os-upload');

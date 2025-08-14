@@ -15,87 +15,91 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-dialog
-		v-model='showModal'
-		width='50%'
-		persistent
-		no-click-animation
+	<CModal
+		color='danger'
+		size='lg'
+		:show.sync='show'
+		:close-on-backdrop='false'
+		:fade='false'
 	>
-		<v-card v-if='profile !== null'>
-			<v-card-title>{{ $t('config.controller.deleteModal.title') }}</v-card-title>
-			<v-card-text>{{ $t('config.controller.deleteModal.prompt', {profile: profile.name}) }}</v-card-text>
-			<v-card-actions>
-				<v-spacer />
-				<v-btn
-					@click='hideModal'
-				>
-					{{ $t('forms.close') }}
-				</v-btn>
-				<v-btn
-					color='error'
-					@click='remove'
-				>
-					{{ $t('forms.delete') }}
-				</v-btn>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
+		<template #header>
+			<h5 class='modal-title'>
+				{{ $t('config.controller.deleteModal.title') }}
+			</h5>
+		</template>
+		{{ $t('config.controller.deleteModal.prompt', {profile: name}) }}
+		<template #footer>
+			<CButton
+				class='mr-1'
+				color='secondary'
+				@click='deactivateModal'
+			>
+				{{ $t('forms.cancel') }}
+			</CButton>
+			<CButton
+				color='danger'
+				@click='deleteProfile'
+			>
+				{{ $t('forms.delete') }}
+			</CButton>
+		</template>
+	</CModal>
 </template>
 
 <script lang='ts'>
-import {IqrfGatewayControllerMapping} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import {AxiosError} from 'axios';
-import {Component, VModel, Vue} from 'vue-property-decorator';
+import {Component, Vue} from 'vue-property-decorator';
+import {CButton, CModal} from '@coreui/vue/src';
 
-import {extendedErrorToast} from '@/helpers/errorToast';
-import {useApiClient} from '@/services/ApiClient';
+@Component({
+	components: {
+		CButton,
+		CModal,
+	},
+})
 
 /**
  * Controller pin configuration delete modal window component
  */
-@Component
 export default class ControllerPinConfigDeleteModal extends Vue {
+	/**
+	 * @var {boolean} show Controls whether modal window is rendered
+	 */
+	private show = false;
 
 	/**
-	 * @property {IqrfGatewayControllerMapping|null} profile Profile to delete
+	 * @var {number} idx Controller profile ID
 	 */
-	@VModel({required: true, default: null}) profile!: IqrfGatewayControllerMapping|null;
+	private id = 0;
 
 	/**
-	 * Computes modal display condition
+	 * @var {string} name Controller profile name
 	 */
-	get showModal(): boolean {
-		return this.profile !== null;
+	private name = '';
+
+	/**
+	 * Stores controller pin configuration profile metadata and renders the modal window
+	 * @param {number} id Profile ID
+	 * @param {string} name Profile name
+	 */
+	public activateModal(id: number, name: string): void {
+		this.id = id;
+		this.name = name;
+		this.show = true;
 	}
 
 	/**
-	 * Removes configuration profile
+	 * Emits event to delete controller pin configuration profile
 	 */
-	private remove(): void {
-		if (this.profile === null || this.profile.id === undefined) {
-			return;
-		}
-		const name = this.profile.name;
-		this.$store.commit('spinner/SHOW');
-		useApiClient().getConfigServices().getIqrfGatewayControllerService().deleteMapping(this.profile.id)
-			.then(() => {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.success(
-					this.$t('config.controller.pins.messages.deleteSuccess', {profile: name}).toString()
-				);
-				this.hideModal();
-				this.$emit('deleted');
-			})
-			.catch((err: AxiosError) => {
-				extendedErrorToast(err, 'config.controller.pins.messages.deleteFailed', {profile: name});
-			});
+	private deleteProfile(): void {
+		this.deactivateModal();
+		this.$emit('delete-profile', this.id);
 	}
 
 	/**
-	 * Hides modal window
+	 * Clears controller pin configuration profile metadata and closes the modal window
 	 */
-	private hideModal(): void {
-		this.profile = null;
+	private deactivateModal(): void {
+		this.show = false;
 	}
 }
 </script>

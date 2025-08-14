@@ -16,73 +16,89 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<h1>{{ pageTitle }}</h1>
-		<v-card>
-			<v-card-text>
-				<ValidationObserver v-slot='{invalid}'>
-					<v-form @submit.prevent='save'>
+		<h1 v-if='$route.path === "/security/api-key/add"'>
+			{{ $t('core.security.apiKey.add') }}
+		</h1>
+		<h1 v-else>
+			{{ $t('core.security.apiKey.edit') }}
+		</h1>
+		<CCard>
+			<CCardBody>
+				<ValidationObserver v-slot='{ invalid }'>
+					<CForm @submit.prevent='saveKey'>
 						<ValidationProvider
-							v-slot='{errors, touched, valid}'
+							v-slot='{ errors, touched, valid }'
 							rules='required'
 							:custom-messages='{
 								required: $t("core.security.apiKey.errors.description"),
 							}'
 						>
-							<v-text-field
+							<CInput
 								v-model='metadata.description'
 								:label='$t("core.security.apiKey.form.description")'
-								:success='touched ? valid : null'
-								:error-messages='errors'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
-						<v-checkbox
-							v-model='useExpiration'
-							:label='$t("core.security.apiKey.form.expiration")'
-							dense
-						/>
-						<DateTimePicker
-							:datetime.sync='datetime'
-							:min-date='new Date().toISOString()'
-							:disabled='!useExpiration'
-						/>
-						<v-btn
+						<div class='form-group'>
+							<CInputCheckbox
+								:checked.sync='useExpiration'
+								:label='$t("core.security.apiKey.form.expiration")'
+								@change='clear'
+							/>
+							<Datetime
+								v-if='useExpiration'
+								v-model='metadata.expiration'
+								type='datetime'
+								:format='dateFormat'
+								:min-datetime='new Date().toISOString()'
+								input-class='form-control'
+								:disabled='!useExpiration'
+							/>
+						</div>
+						<CButton
+							type='submit'
 							color='primary'
 							:disabled='invalid'
-							type='submit'
 						>
 							{{ submitButton }}
-						</v-btn>
-					</v-form>
+						</CButton>
+					</CForm>
 				</ValidationObserver>
-			</v-card-text>
-		</v-card>
+			</CCardBody>
+		</CCard>
 		<ApiKeyDisplayModal
 			ref='displayModal'
 			:api-key='generatedKey'
-			@closed='displayModalClose()'
+			@closed='redirectToList'
 		/>
 	</div>
 </template>
 
 <script lang='ts'>
-import {ApiKeyService} from '@iqrf/iqrf-gateway-webapp-client/services/Security';
-import {ApiKeyCreated, ApiKeyInfo} from '@iqrf/iqrf-gateway-webapp-client/types/Security';
-import {AxiosError} from 'axios';
-import {DateTime} from 'luxon';
-import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {required} from 'vee-validate/dist/rules';
-import {MetaInfo} from 'vue-meta';
 import {Component, Prop, Ref, Vue} from 'vue-property-decorator';
-
+import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
+import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import ApiKeyDisplayModal from '@/components/Core/ApiKeyDisplayModal.vue';
-import DateTimePicker from '@/components/DateTimePicker.vue';
+
+import ApiKeyService from '@/services/ApiKeyService';
+import {Datetime} from 'vue-datetime';
 import {extendedErrorToast} from '@/helpers/errorToast';
-import {useApiClient} from '@/services/ApiClient';
+import {required} from 'vee-validate/dist/rules';
+
+import {AxiosError, AxiosResponse} from 'axios';
+import {MetaInfo} from 'vue-meta';
 
 @Component({
 	components: {
 		ApiKeyDisplayModal,
-		DateTimePicker,
+		CButton,
+		CCard,
+		CCardBody,
+		CForm,
+		CInput,
+		CInputCheckbox,
+		Datetime,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -97,11 +113,23 @@ import {useApiClient} from '@/services/ApiClient';
  * API key manager form to add or edit API key
  */
 export default class ApiKeyForm extends Vue {
+	/**
+	 * @constant {Record<string, string|boolean} dateFormat Date formatting options
+	 */
+	private dateFormat: Record<string, string|boolean> = {
+		year: 'numeric',
+		month: 'short',
+		day: 'numeric',
+		hour12: false,
+		hour: 'numeric',
+		minute: 'numeric',
+		second: 'numeric',
+	};
 
 	/**
-	 * @var {ApiKeyInfo} metadata API key metadata
+	 * @var {Record<string, string>} metadata API key metadata
 	 */
-	private metadata: ApiKeyInfo = {
+	private metadata: Record<string, string|null> = {
 		description: '',
 		expiration: null
 	};
@@ -112,30 +140,19 @@ export default class ApiKeyForm extends Vue {
 	private useExpiration = false;
 
 	/**
-	 * @var {Date} datetime Datetime object
-	 */
-	private datetime = new Date(0);
-
-	/**
-	 * @property {ApiKeyService} service API key service
-	 * @private
-	 */
-	private service: ApiKeyService = useApiClient().getSecurityServices().getApiKeyService();
-
-	/**
-	 * @var {string|null} generatedKey Generated key for one-time display
-	 */
-	private generatedKey: string|null = null;
-
-	/**
 	 * @property {number} keyId API key id
 	 */
 	@Prop({required: false, default: null}) keyId!: number;
 
 	/**
-	 * @property {ApiKeyDisplayModal} setLaiResult Set LAI voltage result
+	 * @var {ApiKeyDisplayModal} displayModal Display modal reference
 	 */
 	@Ref('displayModal') readonly displayModal!: ApiKeyDisplayModal;
+
+	/**
+	 * @var {string|null} generatedKey Generated API key
+	 */
+	private generatedKey: string|null = null;
 
 	/**
 	 * Computes page title depending on the action (add, edit)
@@ -156,7 +173,7 @@ export default class ApiKeyForm extends Vue {
 	}
 
 	/**
-	 * Initializes validation rules and retrieves API key
+	 * Vue lifecycle hook created
 	 */
 	created(): void {
 		extend('required', required);
@@ -182,12 +199,11 @@ export default class ApiKeyForm extends Vue {
 			return;
 		}
 		this.$store.commit('spinner/SHOW');
-		this.service.get(this.keyId)
-			.then((response: ApiKeyInfo) => {
+		ApiKeyService.getApiKey(this.keyId)
+			.then((response: AxiosResponse) => {
 				this.$store.commit('spinner/HIDE');
-				this.metadata = response;
-				if (response.expiration !== null) {
-					this.datetime = response.expiration.toJSDate();
+				this.metadata = response.data;
+				if (this.metadata.expiration !== null) {
 					this.useExpiration = true;
 				}
 			})
@@ -200,43 +216,44 @@ export default class ApiKeyForm extends Vue {
 	/**
 	 * Creates a new API key or updates metadata of existing API key
 	 */
-	private save(): void {
+	private saveKey(): void {
 		this.$store.commit('spinner/SHOW');
-		const config = {...this.metadata};
-		delete config.id;
-		config.expiration = this.useExpiration ? DateTime.fromJSDate(this.datetime) : null;
 		if (this.keyId !== null) {
-			this.service.update(this.keyId, config)
-				.then(() => this.successfulSave())
+			ApiKeyService.editApiKey(this.keyId, this.metadata)
+				.then(this.editSuccess)
 				.catch(this.handleSaveError);
 		} else {
-			this.service.create(config)
-				.then((data: ApiKeyCreated) => {
-					this.generatedKey = data.key;
-					this.successfulSave();
+			ApiKeyService.addApiKey(this.metadata)
+				.then((rsp: AxiosResponse) => {
+					this.generatedKey = rsp.data.key;
+					this.addSuccess();
 				})
 				.catch(this.handleSaveError);
 		}
 	}
 
 	/**
-	 * Handles successful REST API response
+	 * Handles API key add success
 	 */
-	private successfulSave(): void {
+	private addSuccess(): void {
 		this.$store.commit('spinner/HIDE');
-		if (this.$route.path === '/security/api-key/add') {
-			this.$toast.success(
-				this.$t('core.security.apiKey.messages.addSuccess')
-					.toString()
-			);
-			this.displayModal.open();
-		} else {
-			this.$toast.success(
-				this.$t('core.security.apiKey.messages.editSuccess', {key: this.keyId})
-					.toString()
-			);
-			this.$router.push('/security/api-key/');
-		}
+		this.$toast.success(
+			this.$t('core.security.apiKey.messages.addSuccess')
+				.toString()
+		);
+		this.displayModal.showModal();
+	}
+
+	/**
+	 * Handles API key edit success
+	 */
+	private editSuccess(): void {
+		this.$store.commit('spinner/HIDE');
+		this.$toast.success(
+			this.$t('core.security.apiKey.messages.editSuccess', {key: this.keyId})
+				.toString()
+		);
+		this.$router.push('/security/api-key/');
 	}
 
 	/**
@@ -252,10 +269,9 @@ export default class ApiKeyForm extends Vue {
 	}
 
 	/**
-	 * Clears generated key and navigates back to api key list
+	 * Redirect to API key list following API key display modal closed
 	 */
-	private displayModalClose(): void {
-		this.generatedKey = null;
+	private redirectToList(): void {
 		this.$router.push('/security/api-key/');
 	}
 }

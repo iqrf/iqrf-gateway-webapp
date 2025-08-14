@@ -15,85 +15,106 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-dialog
-		v-model='showModal'
-		width='50%'
-		persistent
-		no-click-animation
+	<CModal
+		:show.sync='show'
+		color='danger'
+		size='lg'
+		:close-on-backdrop='false'
+		:fade='false'
 	>
-		<v-card v-if='key !== null'>
-			<v-card-title>{{ $t('core.security.apiKey.modal.title') }}</v-card-title>
-			<v-card-text>{{ $t('core.security.apiKey.modal.prompt', {key: key.id}) }}</v-card-text>
-			<v-card-actions>
-				<v-spacer />
-				<v-btn
-					@click='hideModal'
-				>
-					{{ $t('forms.cancel') }}
-				</v-btn>
-				<v-btn
-					color='error'
-					@click='remove'
-				>
-					{{ $t('forms.delete') }}
-				</v-btn>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
+		<template #header>
+			<h5 class='modal-title'>
+				{{ $t('core.security.apiKey.modal.title') }}
+			</h5>
+		</template>
+		{{ $t('core.security.apiKey.modal.prompt', {key: key.id}) }}
+		<template #footer>
+			<CButton
+				class='mr-1'
+				color='secondary'
+				@click='hideModal'
+			>
+				{{ $t('forms.cancel') }}
+			</CButton>
+			<CButton
+				color='danger'
+				@click='remove'
+			>
+				{{ $t('forms.delete') }}
+			</CButton>
+		</template>
+	</CModal>
 </template>
 
 <script lang='ts'>
-import {ApiKeyInfo} from '@iqrf/iqrf-gateway-webapp-client/types/Security';
-import {AxiosError} from 'axios';
-import {Component, VModel, Vue} from 'vue-property-decorator';
+import {Component} from 'vue-property-decorator';
+import {CButton, CModal} from '@coreui/vue/src';
+import ModalBase from '@/components/ModalBase.vue';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
-import {useApiClient} from '@/services/ApiClient';
 
-@Component({})
+import ApiKeyService from '@/services/ApiKeyService';
+
+import {AxiosError} from 'axios';
+import {IApiKey} from '@/interfaces/Core/ApiKey';
+
+@Component({
+	components: {
+		CButton,
+		CModal,
+	},
+})
 
 /**
  * API key delete modal window component
  */
-export default class ApiKeyDeleteModal extends Vue {
+export default class ApiKeyDeleteModal extends ModalBase {
 	/**
-	 * API key to delete
+	 * @const {IApiKey} defaultKey Default API key
 	 */
-	@VModel({required: true}) key!: ApiKeyInfo|null;
+	private defaultKey: IApiKey = {
+		id: 0,
+		description: '',
+		expiration: ''
+	};
 
 	/**
-	 * Computes modal display condition
+	 * @var {IApiKey} key API key to delete
 	 */
-	get showModal(): boolean {
-		return this.key !== null;
-	}
+	private key: IApiKey = this.defaultKey;
 
 	/**
 	 * Removes an existing API key
 	 */
 	private remove(): void  {
-		if (this.key === null) {
-			return;
-		}
-		const id = this.key.id;
 		this.$store.commit('spinner/SHOW');
-		useApiClient().getSecurityServices().getApiKeyService().delete(id)
+		ApiKeyService.deleteApiKey(this.key.id)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
-				this.$toast.success(this.$t('core.security.apiKey.messages.deleteSuccess', {key: id}).toString());
+				this.$toast.success(this.$t('core.security.apiKey.messages.deleteSuccess', {key: this.key.id}).toString());
 				this.hideModal();
 				this.$emit('deleted');
 			})
 			.catch((error: AxiosError) => {
-				extendedErrorToast(error, 'core.security.apiKey.messages.deleteFailed', {key: id});
+				extendedErrorToast(error, 'core.security.apiKey.messages.deleteFailed', {key: this.key.id});
 			});
 	}
 
 	/**
-	 * Closes modal window
+	 * Stores key to delete and shows modal window
+	 * @param {IApiKey} key API key to delete
+	 */
+	public showModal(key: IApiKey): void {
+		this.key = key;
+		this.openModal();
+	}
+
+	/**
+	 * Resets key to delete and hides modal window
 	 */
 	private hideModal(): void {
-		this.key = null;
+		this.key = this.defaultKey;
+		this.closeModal();
 	}
 }
 </script>

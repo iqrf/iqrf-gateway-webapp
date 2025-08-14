@@ -15,29 +15,39 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-card>
-		<v-list-item
-			v-for='link in linksToRender'
-			:key='link.title'
-			two-line
-			:to='link.to'
-			:href='link.href'
-			:target='link.target'
-		>
-			<v-list-item-content>
-				<v-list-item-title>{{ link.title }}</v-list-item-title>
-				<v-list-item-subtitle>{{ link.description }}</v-list-item-subtitle>
-			</v-list-item-content>
-		</v-list-item>
-	</v-card>
+	<CCard body-wrapper>
+		<CListGroup>
+			<CListGroupItem
+				v-for='link in linksToRender'
+				:key='link.title'
+				:to='link.to'
+				:href='link.href'
+				:target='link.target'
+			>
+				<header class='list-group-item-heading'>
+					{{ link.title }}
+				</header>
+				<p class='list-group-item-text'>
+					{{ link.description }}
+				</p>
+			</CListGroupItem>
+		</CListGroup>
+	</CCard>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
 
 import DisambiguationHelper, {Link} from '@/helpers/DisambiguationHelper';
+import {CCard, CListGroup, CListGroupItem} from '@coreui/vue/src';
 
-@Component({})
+@Component({
+	components: {
+		CCard,
+		CListGroup,
+		CListGroupItem,
+	},
+})
 
 /**
  * Disambiguation menu component

@@ -1,21 +1,5 @@
-<!--
-Copyright 2017-2025 IQRF Tech s.r.o.
-Copyright 2019-2025 MICRORISC s.r.o.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software,
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied
-See the License for the specific language governing permissions and
-limitations under the License.
--->
 <template>
-	<div>
+	<div class='form-group'>
 		<ValidationProvider
 			v-slot='{errors, touched, valid}'
 			rules='required|wepKeyType'
@@ -24,19 +8,19 @@ limitations under the License.
 				wepKeyType: $t("network.wireless.errors.wepKeyType"),
 			}'
 		>
-			<v-select
-				v-model='connection.wifi.security.wep.type'
-				:items='keyOptions'
+			<CSelect
+				:value.sync='connection.wifi.security.wep.type'
+				:options='keyOptions'
 				:label='$t("network.wireless.form.wep.type").toString()'
 				:placeholder='$t("network.wireless.errors.wepKeyType").toString()'
-				:success='touched ? valid : null'
-				:error-messages='errors'
+				:is-valid='touched ? valid : null'
+				:invalid-feedback='errors.join(", ")'
 			/>
 		</ValidationProvider>
-		<v-select
+		<CSelect
 			v-if='connection.wifi.security.wep.type === WepKeyType.KEY'
-			v-model='keyLength'
-			:items='keyLengthOptions'
+			:value.sync='keyLength'
+			:options='keyLengthOptions'
 			:label='$t("network.wireless.form.wep.length").toString()'
 		/>
 		<ValidationProvider
@@ -49,14 +33,14 @@ limitations under the License.
 				wepIndex: $t("network.wireless.errors.wepIndexKeyMissing"),
 			}'
 		>
-			<v-text-field
+			<CInput
 				v-model.number='connection.wifi.security.wep.index'
 				type='number'
 				min='0'
 				max='3'
 				:label='$t("network.wireless.form.wep.index").toString()'
-				:success='touched ? valid : null'
-				:error-messages='errors'
+				:is-valid='touched ? valid : null'
+				:invalid-feedback='errors.join(", ")'
 			/>
 		</ValidationProvider>
 		<ValidationProvider
@@ -75,8 +59,8 @@ limitations under the License.
 			<PasswordInput
 				v-model='connection.wifi.security.wep.keys[index]'
 				:label='$t("network.wireless.form.wep.keyNum", {index: index}).toString()'
-				:success='touched ? valid : null'
-				:error-messages='errors'
+				:is-valid='touched ? valid : null'
+				:invalid-feedback='errors.join(", ")'
 			/>
 		</ValidationProvider>
 	</div>
@@ -84,25 +68,24 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, VModel, Vue} from 'vue-property-decorator';
+import {CInput, CSelect} from '@coreui/vue/src';
 import {extend, ValidationProvider} from 'vee-validate';
-import PasswordInput from '@/components/Core/PasswordInput.vue';
-
 import {between, integer, required} from 'vee-validate/dist/rules';
 
-import {ISelectItem} from '@/interfaces/Vuetify';
-import {
-	NetworkConnectionConfiguration
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
-import {
-	WepKeyLen,
-	WepKeyType
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
+import PasswordInput from '@/components/Core/PasswordInput.vue';
+
+import {WepKeyLen, WepKeyType} from '@/enums/Network/WifiSecurity';
+
+import {IOption} from '@/interfaces/Coreui';
+import {IConnection} from '@/interfaces/Network/Connection';
 
 /**
  * WEP configuration options
  */
 @Component({
 	components: {
+		CInput,
+		CSelect,
 		PasswordInput,
 		ValidationProvider,
 	},
@@ -116,18 +99,18 @@ export default class WepConfiguration extends Vue {
 	/**
 	 * Edited connection.
 	 */
-	@VModel({required: true}) connection!: NetworkConnectionConfiguration;
+	@VModel({required: true}) connection!: IConnection;
 
 	/**
-	 * @constant {Array<ISelectItem>} keyOptions Wep key type select options
+	 * @constant {Array<IOption>} keyOptions CoreUI wep key type select options
 	 */
-	private readonly keyOptions: Array<ISelectItem> = [
+	private keyOptions: Array<IOption> = [
 		{
-			text: this.$t('network.wireless.form.wep.types.key'),
+			label: this.$t('network.wireless.form.wep.types.key'),
 			value: WepKeyType.KEY
 		},
 		{
-			text: this.$t('network.wireless.form.wep.types.passphrase'),
+			label: this.$t('network.wireless.form.wep.types.passphrase'),
 			value: WepKeyType.PASSPHRASE
 		},
 	];
@@ -138,15 +121,15 @@ export default class WepConfiguration extends Vue {
 	private keyLength = WepKeyLen.BIT64;
 
 	/**
-	 * @constant {Array<ISelectItem>} keyLengthOptions Wep key length select options
+	 * @constant {Array<IOption>} keyLengthOptions CoreUI wep key length select options
 	 */
-	private readonly keyLengthOptions: Array<ISelectItem> = [
+	private keyLengthOptions: Array<IOption> = [
 		{
-			text: this.$t('network.wireless.form.wep.lengths.64bit'),
+			label: this.$t('network.wireless.form.wep.lengths.64bit'),
 			value: WepKeyLen.BIT64,
 		},
 		{
-			text: this.$t('network.wireless.form.wep.lengths.128bit'),
+			label: this.$t('network.wireless.form.wep.lengths.128bit'),
 			value: WepKeyLen.BIT128,
 		},
 	];

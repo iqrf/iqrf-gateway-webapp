@@ -15,94 +15,91 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-dialog
-		v-model='showModal'
-		width='50%'
-		persistent
-		no-click-animation
+	<CModal
+		color='danger'
+		size='lg'
+		:show.sync='show'
+		:close-on-backdrop='false'
+		:fade='false'
 	>
-		<v-card v-if='mapping !== null'>
-			<v-card-title>
+		<template #header>
+			<h5 class='modal-title'>
 				{{ $t('config.daemon.interfaces.interfaceMapping.deleteModal.title') }}
-			</v-card-title>
-			<v-card-text>
-				{{ $t('config.daemon.interfaces.interfaceMapping.deleteModal.prompt', {mapping: mapping.name}) }}
-			</v-card-text>
-			<v-card-actions>
-				<v-spacer />
-				<v-btn
-					@click='hideModal'
-				>
-					{{ $t('forms.close') }}
-				</v-btn>
-				<v-btn
-					color='error'
-					@click='remove'
-				>
-					{{ $t('forms.delete') }}
-				</v-btn>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
+			</h5>
+		</template>
+		{{ $t('config.daemon.interfaces.interfaceMapping.deleteModal.prompt', {mapping: name}) }}
+		<template #footer>
+			<CButton
+				class='mr-1'
+				color='secondary'
+				@click='deactivateModal'
+			>
+				{{ $t('forms.cancel') }}
+			</CButton>
+			<CButton
+				color='danger'
+				@click='deleteMapping'
+			>
+				{{ $t('forms.delete') }}
+			</CButton>
+		</template>
+	</CModal>
 </template>
 
 <script lang='ts'>
-import {
-	IqrfGatewayDaemonMapping
-} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import {AxiosError} from 'axios';
-import {Component, VModel, Vue} from 'vue-property-decorator';
+import {Component, Vue} from 'vue-property-decorator';
+import {CButton, CModal} from '@coreui/vue/src';
 
-import {extendedErrorToast} from '@/helpers/errorToast';
-import {useApiClient} from '@/services/ApiClient';
+@Component({
+	components: {
+		CButton,
+		CModal,
+	},
+})
 
 /**
  * Mapping delete modal window component
  */
-@Component
 export default class MappingDeleteModal extends Vue {
+	/**
+	 * @var {boolean} show Controls whether modal window is rendered
+	 */
+	private show = false;
 
 	/**
-	 * @property {IqrfGatewayDaemonMapping|null} mapping Mapping to delete
+	 * @var {number} id Mapping ID
 	 */
-	@VModel({required: true, default: null}) mapping!: IqrfGatewayDaemonMapping|null;
+	private id = 0;
 
 	/**
-	 * Computes modal display condition
+	 * @var {string} name Mapping name
 	 */
-	get showModal(): boolean {
-		return this.mapping !== null;
+	private name = '';
+
+	/**
+	 * Stores mapping metadata and renders the modal window
+	 * @param {number} id Mapping ID
+	 * @param {string} name Mapping name
+	 */
+	public activateModal(id: number, name: string): void {
+		this.id = id;
+		this.name = name;
+		this.show = true;
 	}
 
 	/**
-	 * Removes mapping profile
+	 * Emits event to delete mapping
 	 */
-	private remove(): void {
-		if (this.mapping === null || this.mapping.id === undefined) {
-			return;
-		}
-		const id = this.mapping.id;
-		const name = this.mapping.name;
-		this.$store.commit('spinner/SHOW');
-		useApiClient().getConfigServices().getIqrfGatewayDaemonService().deleteMapping(id)
-			.then(() => {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.success(
-					this.$t('config.daemon.interfaces.interfaceMapping.messages.deleteSuccess', {mapping: name}).toString()
-				);
-				this.hideModal();
-				this.$emit('deleted');
-			})
-			.catch((error: AxiosError) => {
-				extendedErrorToast(error, 'config.daemon.interfaces.interfaceMapping.messages.deleteFailed', {mapping: name});
-			});
+	private deleteMapping(): void {
+		this.deactivateModal();
+		this.$emit('delete-mapping', this.id);
 	}
 
 	/**
-	 * Hides modal window
+	 * Clears mapping metadata and closes the modal window
 	 */
-	private hideModal(): void {
-		this.mapping = null;
+	private deactivateModal(): void {
+		this.show = false;
 	}
 }
 </script>

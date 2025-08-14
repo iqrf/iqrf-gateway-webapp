@@ -1,117 +1,102 @@
-<!--
-Copyright 2017-2025 IQRF Tech s.r.o.
-Copyright 2019-2025 MICRORISC s.r.o.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software,
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied
-See the License for the specific language governing permissions and
-limitations under the License.
--->
 <template>
-	<v-dialog
-		v-model='show'
-		width='50%'
-		persistent
-		no-click-animation
+	<CModal
+		:show.sync='show'
+		color='primary'
+		size='xl'
 	>
-		<template #activator='{on, attrs}'>
-			<v-btn
-				color='primary'
-				small
-				v-bind='attrs'
-				v-on='on'
-			>
-				{{ $t('iqrfnet.product.browse') }}
-			</v-btn>
-		</template>
-		<v-card>
-			<v-card-title>
+		<template #header>
+			<h5 class='modal-title'>
 				{{ $t('iqrfnet.product.title') }}
-				<v-spacer />
-				<v-btn
-					color='primary'
-					small
-					@click='getProducts()'
-				>
-					<v-icon small>
-						mdi-refresh
-					</v-icon>
-				</v-btn>
-			</v-card-title>
-			<v-card-text>
-				<v-row>
-					<v-col cols='12' md='6'>
-						<v-text-field
-							v-model='filters.companyName'
-							:label='$t("iqrfnet.enumeration.manufacturer")'
-						/>
-					</v-col>
-					<v-col cols='12' md='6'>
-						<v-text-field
-							v-model='filters.name'
-							:label='$t("iqrfnet.enumeration.product")'
-						/>
-					</v-col>
-				</v-row>
-				<v-data-table
-					:loading='loading'
-					:headers='headers'
-					:items='items'
-					mobile-breakpoint='0'
-				>
-					<template #[`item.actions`]='{item}'>
-						<v-btn
-							color='success'
-							small
-							@click='selectProduct(item)'
-						>
-							<v-icon small>
-								mdi-check
-							</v-icon>
-						</v-btn>
-					</template>
-				</v-data-table>
-			</v-card-text>
-			<v-card-actions>
-				<v-spacer />
-				<v-btn
-					@click='closeModal'
-				>
-					{{ $t('forms.close') }}
-				</v-btn>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
+			</h5>
+		</template>
+		<CDataTable
+			:loading='loading'
+			:items='products'
+			:fields='fields'
+			:column-filter='true'
+			:items-per-page='10'
+			:pagination='true'
+			:striped='true'
+			:sorter='{external: false, resetable: true}'
+		>
+			<template #no-items-view='{}'>
+				{{ $t('iqrfnet.product.noProduct') }}
+			</template>
+			<template #actions='{item}'>
+				<td class='col-actions'>
+					<CButton
+						color='success'
+						size='sm'
+						@click='selectProduct(item)'
+					>
+						<CIcon :content='cilCheckAlt' size='sm' />
+					</CButton>
+				</td>
+			</template>
+		</CDataTable>
+		<template #footer>
+			<CButton
+				color='secondary'
+				@click='closeModal'
+			>
+				{{ $t('forms.close') }}
+			</CButton>
+		</template>
+	</CModal>
 </template>
 
 <script lang='ts'>
-import {Product} from '@iqrf/iqrf-repository-client/types';
 import {Component} from 'vue-property-decorator';
-import {DataTableHeader} from 'vuetify';
+import {CButton, CDataTable, CIcon, CModal} from '@coreui/vue/src';
 
+import {cilCheckAlt} from '@coreui/icons';
+
+import ProductService from '@/services/IqrfRepository/ProductService';
+
+import {AxiosResponse} from 'axios';
+import {IField} from '@/interfaces/Coreui';
+import {IProduct} from '@/interfaces/Repository';
 import ModalBase from '@/components/ModalBase.vue';
-import {useRepositoryClient} from '@/services/IqrfRepositoryClient';
 
-/**
- * Product filters
- */
-interface ProductFilters {
-	companyName: string|null;
-	name: string|null;
-}
+@Component({
+	components: {
+		CButton,
+		CDataTable,
+		CIcon,
+		CModal,
+	},
+	data: () => ({
+		cilCheckAlt,
+	}),
+})
 
 /**
  * Product modal component
  */
-@Component
 export default class ProductModal extends ModalBase {
+	/**
+	 * @constant {Array<IField>} fields Array of coreui data table fields
+	 */
+	private readonly fields: Array<IField> = [
+		{
+			key: 'companyName',
+			label: this.$t('iqrfnet.enumeration.manufacturer').toString(),
+		},
+		{
+			key: 'name',
+			label: this.$t('iqrfnet.enumeration.product').toString(),
+		},
+		{
+			key: 'hwpid',
+			label: this.$t('iqrfnet.enumeration.hwpid').toString(),
+		},
+		{
+			key: 'actions',
+			label: this.$t('table.actions.title'),
+			sorter: false,
+			filter: false,
+		},
+	];
 
 	/**
 	 * @var {boolean} loading Indicates that a request is in progress
@@ -119,75 +104,18 @@ export default class ProductModal extends ModalBase {
 	private loading = false;
 
 	/**
-	 * @var {Product[]} products Array of products from repository
+	 * @var {Array<IProduct>} products Array of products from repository
 	 */
-	private products: Product[] = [];
-
-	/**
-	 * @var {ProductFilters} filters Product filters
-	 */
-	private filters: ProductFilters = {
-		companyName: null,
-		name: null,
-	};
-
-	/**
-	 * @constant {Array<DataTableHeader>} headers Data table headers
-	 */
-	private readonly headers: Array<DataTableHeader> = [
-		{
-			value: 'companyName',
-			text: this.$t('iqrfnet.enumeration.manufacturer').toString(),
-			width: '20%',
-		},
-		{
-			value: 'name',
-			text: this.$t('iqrfnet.enumeration.product').toString(),
-			width: '50%',
-		},
-		{
-			value: 'hwpid',
-			text: this.$t('iqrfnet.enumeration.hwpid').toString(),
-			width: '15%',
-		},
-		{
-			value: 'actions',
-			text: this.$t('table.actions.title').toString(),
-			sortable: false,
-			filterable: false,
-			align: 'end',
-			width: '15%',
-		},
-	];
-
-	/**
-	 * Returns filtered products
-	 * @return {Product[]} Filtered products
-	 */
-	get items(): Product[] {
-		return this.products.filter((product: Product) => {
-			return (
-				(this.filters.companyName === null || product.companyName.toLowerCase().includes(this.filters.companyName.toLowerCase())) &&
-				(this.filters.name === null || product.name.toLowerCase().includes(this.filters.name.toLowerCase()))
-			);
-		});
-	}
-
-	/**
-	 * Retrieves products
-	 */
-	protected mounted(): void {
-		this.getProducts();
-	}
+	private products: Array<IProduct> = [];
 
 	/**
 	 * Retrieves products from repository
 	 */
-	private async getProducts(): Promise<void> {
+	private getProducts(): void {
 		this.loading = true;
-		(await useRepositoryClient()).getProductService().list()
-			.then((response: Product[]) => {
-				this.products = response;
+		ProductService.getAll()
+			.then((response: AxiosResponse) => {
+				this.products = response.data;
 				this.loading = false;
 			})
 			.catch(() => this.loading = false);
@@ -196,9 +124,26 @@ export default class ProductModal extends ModalBase {
 	/**
 	 * Selects product from table and emits data to the parent component
 	 */
-	private selectProduct(product: Product): void {
+	private selectProduct(product: IProduct): void {
 		this.closeModal();
 		this.$emit('selected-product', product);
+	}
+
+	/**
+	 * Shows modal window
+	 */
+	public showModal(): void {
+		this.openModal();
+		if (this.products.length === 0) {
+			this.getProducts();
+		}
+	}
+
+	/**
+	 * Hides modal window
+	 */
+	public hideModal(): void {
+		this.closeModal();
 	}
 }
 </script>

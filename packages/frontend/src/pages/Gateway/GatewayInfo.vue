@@ -17,9 +17,9 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('gateway.info.title') }}</h1>
-		<v-card>
-			<v-card-text>
-				<v-simple-table v-if='info !== null' class='table-paddings'>
+		<CCard body-wrapper>
+			<div class='table-responsive'>
+				<table v-if='info !== null' class='table table-striped'>
 					<tbody>
 						<tr>
 							<th>{{ $t('gateway.info.board') }}</th>
@@ -49,10 +49,6 @@ limitations under the License.
 							<th>{{ $t('gateway.info.version.iqrfGatewayDaemon') }}</th>
 							<td>{{ info.versions.daemon }}</td>
 						</tr>
-						<tr>
-							<th>{{ $t('gateway.info.version.iqrfGatewayInfluxdbBridge') }}</th>
-							<td>{{ info.versions.influxdbBridge }}</td>
-						</tr>
 						<tr v-if='info.versions.setter'>
 							<th>{{ $t('gateway.info.version.iqrfGatewaySetter') }}</th>
 							<td>{{ info.versions.setter }}</td>
@@ -69,12 +65,17 @@ limitations under the License.
 							<th>{{ $t('gateway.info.hostname') }}</th>
 							<td class='hostname'>
 								{{ info.hostname }}
-								<HostnameChange
+								<CButton
 									v-if='$store.getters["user/getRole"] === "admin"'
-									ref='hostname'
-									:current='info?.hostname'
-									@hostname-changed='getInformation'
-								/>
+									color='primary'
+									size='sm'
+									@click='showHostnameModal'
+								>
+									<CIcon :content='cilPencil' size='sm' />
+									<span class='d-none d-lg-inline'>
+										{{ $t('forms.edit') }}
+									</span>
+								</CButton>
 							</td>
 						</tr>
 						<tr>
@@ -128,37 +129,44 @@ limitations under the License.
 							</td>
 						</tr>
 					</tbody>
-				</v-simple-table>
-				<v-btn color='primary' @click='downloadDiagnostics()'>
-					<v-icon>mdi-download</v-icon>
-					{{ $t('gateway.info.diagnostics') }}
-				</v-btn>
-			</v-card-text>
-		</v-card>
+				</table>
+			</div>
+			<CButton color='primary' @click='downloadDiagnostics()'>
+				{{ $t('gateway.info.diagnostics') }}
+			</CButton>
+		</CCard>
+		<HostnameChange ref='hostname' :current='info?.hostname' @hostname-changed='getInformation' />
 	</div>
 </template>
 
 <script lang='ts'>
-import { InfoService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
-import { FileResponse } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { GatewayInformation } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
-import { FileDownloader } from '@iqrf/iqrf-gateway-webapp-client/utils';
-import { Component, Vue } from 'vue-property-decorator';
-
+import {Component, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CIcon} from '@coreui/vue/src';
 import CoordinatorInfo from '@/components/Gateway/Information/CoordinatorInfo.vue';
 import DaemonModeInfo from '@/components/Gateway/Information/DaemonModeInfo.vue';
-import HostnameChange from '@/components/Gateway/Information/HostnameChange.vue';
 import ResourceUsage from '@/components/Gateway/Information/ResourceUsage.vue';
-import {IpAddress, MacAddress} from '@/interfaces/Gateway/Information';
-import {useApiClient} from '@/services/ApiClient';
+import GatewayService from '@/services/GatewayService';
+import HostnameChange from '@/components/Gateway/Information/HostnameChange.vue';
+
+import {cilPencil} from '@coreui/icons';
+import {fileDownloader} from '@/helpers/fileDownloader';
+
+import {AxiosResponse} from 'axios';
+import {IGatewayInfo, IpAddress, MacAddress} from '@/interfaces/Gateway/Information';
 
 @Component({
 	components: {
+		CButton,
+		CCard,
+		CIcon,
 		CoordinatorInfo,
 		DaemonModeInfo,
 		HostnameChange,
 		ResourceUsage,
 	},
+	data: () => ({
+		cilPencil,
+	}),
 	metaInfo: {
 		title: 'gateway.info.title',
 	},
@@ -169,19 +177,14 @@ import {useApiClient} from '@/services/ApiClient';
  */
 export default class GatewayInfo extends Vue {
 	/**
-	 * @var {GatewayInformation|null} info Gateway information object
+	 * @var {IGatewayInfo|null} info Gateway information object
 	 */
-	private info: GatewayInformation|null = null;
+	private info: IGatewayInfo|null = null;
 
 	/**
 	 * @var {boolean} showCoordinator Controls whether coordinator information component can be shown
 	 */
 	private showCoordinator = false;
-
-	/**
-	 * @property {InfoService} service Info service
-	 */
-	private service: InfoService = useApiClient().getGatewayServices().getInfoService();
 
 	/**
 	 * Computes array of ip address objects from network interfaces
@@ -237,10 +240,10 @@ export default class GatewayInfo extends Vue {
 	 */
 	private getInformation(): void {
 		this.$store.commit('spinner/SHOW');
-		this.service.getDetailed()
+		GatewayService.getInfo()
 			.then(
-				(response: GatewayInformation): void => {
-					this.info = response;
+				(response: AxiosResponse) => {
+					this.info = response.data;
 					this.$store.commit('spinner/HIDE');
 				}
 			)
@@ -252,12 +255,20 @@ export default class GatewayInfo extends Vue {
 	 */
 	private downloadDiagnostics(): void {
 		this.$store.commit('spinner/SHOW');
-		this.service.getDiagnostics()
-			.then((response: FileResponse<Blob>) => {
-				FileDownloader.downloadFileResponse(response);
+		GatewayService.getDiagnosticsArchive().then(
+			(response: AxiosResponse) => {
+				const file = fileDownloader(response, 'application/zip', 'iqrf-gateway-diagnostics.zip');
 				this.$store.commit('spinner/HIDE');
-			})
-			.catch(() => (this.$store.commit('spinner/HIDE')));
+				file.click();
+			}
+		).catch(() => (this.$store.commit('spinner/HIDE')));
+	}
+
+	/**
+	 * Show hostname change modal
+	 */
+	private showHostnameModal(): void {
+		(this.$refs.hostname as HostnameChange).show();
 	}
 }
 </script>

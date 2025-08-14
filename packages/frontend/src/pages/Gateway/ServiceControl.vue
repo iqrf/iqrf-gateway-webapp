@@ -17,76 +17,65 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ title }}</h1>
-		<v-card class='mb-5'>
-			<v-card-text>
-				<div v-if='serviceStatus !== null && !missing && !unsupported && !unknown'>
-					<v-btn
-						v-if='!serviceStatus.enabled'
-						class='mr-1'
-						color='success'
-						@click='enable()'
-					>
-						{{ $t('service.actions.enable') }}
-					</v-btn>
-					<v-btn
-						v-if='serviceStatus.enabled'
-						class='mr-1'
-						color='error'
-						@click='disable()'
-					>
-						{{ $t('service.actions.disable') }}
-					</v-btn>
-					<v-btn
-						v-if='!serviceStatus.active'
-						class='mr-1'
-						color='success'
-						@click='start()'
-					>
-						{{ $t('service.actions.start') }}
-					</v-btn>
-					<v-btn
-						v-if='serviceStatus.active'
-						class='mr-1'
-						color='error'
-						@click='stop()'
-					>
-						{{ $t('service.actions.stop') }}
-					</v-btn>
-					<v-btn
-						v-if='serviceStatus.active'
-						class='mr-1'
-						color='info'
-						@click='restart()'
-					>
-						{{ $t('service.actions.restart') }}
-					</v-btn>
-					<v-btn
-						@click='refreshStatus()'
-					>
-						{{ $t('service.actions.status') }}
-					</v-btn>
-				</div>
-				<br>
-				<strong>{{ $t('service.status') }}: </strong>
-				<span v-if='missing'>
-					{{ $t('service.states.missing') }}
-				</span>
-				<span v-else-if='unsupported'>
-					{{ $t('service.states.unsupported') }}
-				</span>
-				<span v-else-if='unknown'>
-					{{ $t('service.states.unknown') }}
-				</span>
-				<span v-else>
-					<span v-if='serviceStatus !== null && serviceStatus.enabled'>{{ $t('states.enabled') }}</span>
-					<span v-else>{{ $t('states.disabled') }}</span>,
-					<span v-if='serviceStatus !== null && serviceStatus.active'>{{ $t('service.states.active') }}</span>
-					<span v-else>{{ $t('service.states.inactive') }}</span>
-				</span>
-				<br><br>
-				<pre v-if='serviceStatus !== null && serviceStatus.status !== null && !unsupported' class='log'>{{ serviceStatus.status }}</pre>
-			</v-card-text>
-		</v-card>
+		<CCard body-wrapper>
+			<div v-if='!missing && !unsupported && !unknown'>
+				<CButton
+					v-if='!service.enabled'
+					color='success'
+					@click='enable()'
+				>
+					{{ $t('service.actions.enable') }}
+				</CButton> <CButton
+					v-if='service.enabled'
+					color='danger'
+					@click='disable()'
+				>
+					{{ $t('service.actions.disable') }}
+				</CButton> <CButton
+					v-if='!service.active'
+					color='success'
+					@click='start()'
+				>
+					{{ $t('service.actions.start') }}
+				</CButton> <CButton
+					v-if='service.active'
+					color='danger'
+					@click='stop()'
+				>
+					{{ $t('service.actions.stop') }}
+				</CButton> <CButton
+					v-if='service.active'
+					color='info'
+					@click='restart()'
+				>
+					{{ $t('service.actions.restart') }}
+				</CButton> <CButton
+					color='secondary'
+					@click='refreshStatus()'
+				>
+					{{ $t('service.actions.status') }}
+				</CButton>
+			</div>
+			<br>
+			<strong>{{ $t('service.status') }}: </strong>
+			<span v-if='missing'>
+				{{ $t('service.states.missing') }}
+			</span>
+			<span v-else-if='unsupported'>
+				{{ $t('service.states.unsupported') }}
+			</span>
+			<span v-else-if='unknown'>
+				{{ $t('service.states.unknown') }}
+			</span>
+			<span v-else>
+				<span v-if='service.enabled'>{{ $t('states.enabled') }}</span>
+				<span v-else>{{ $t('states.disabled') }}</span>,
+				<span v-if='service.active'>{{ $t('service.states.active') }}</span>
+				<span v-else>{{ $t('service.states.inactive') }}</span>
+			</span>
+			<br><br>
+			<pre v-if='service.status !== null && !unsupported' class='log'>{{ service.status }}</pre>
+		</CCard>
 		<AptConfig v-if='serviceName === "unattended-upgrades" && $store.getters["features/isEnabled"]("unattendedUpgrades")' />
 		<GatewayUserPassword v-if='serviceName === "ssh" && $store.getters["features/isEnabled"]("gatewayPass")' />
 		<SystemdJournaldConfig v-if='serviceName === "systemd-journald" && $store.getters["features/isEnabled"]("journal")' />
@@ -94,26 +83,25 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {ServiceService} from '@iqrf/iqrf-gateway-webapp-client/services';
-import {ServiceStatus} from '@iqrf/iqrf-gateway-webapp-client/types';
 import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
+import {CButton, CCard} from '@coreui/vue/src';
 import AptConfig from '@/components/Gateway/Services/AptConfig.vue';
 import GatewayUserPassword from '@/components/Gateway/Services/GatewayUserPassword.vue';
 import SystemdJournaldConfig from '@/components/Gateway/Services/JournalConfig.vue';
 
+import AptService from '@/services/AptService';
+import ServiceService from '@/services/ServiceService';
 import {ErrorResponse} from '@/types';
 
 import {AxiosError} from 'axios';
 import {NavigationGuardNext, Route} from 'vue-router';
 import {MetaInfo} from 'vue-meta';
-import {useApiClient} from '@/services/ApiClient';
 
 const whitelisted = [
 	'apcupsd',
 	'iqrf-cloud-provisioning',
 	'iqrf-gateway-controller',
 	'iqrf-gateway-daemon',
-	'iqrf-gateway-influxdb-bridge',
 	'iqrf-gateway-translator',
 	'nodered',
 	'ssh',
@@ -125,7 +113,6 @@ const features = {
 	'apcupsd': 'apcupsd',
 	'iqrf-cloud-provisioning': 'iqrfCloudProvisioning',
 	'iqrf-gateway-controller': 'iqrfGatewayController',
-	'iqrf-gateway-influxdb-bridge': 'iqrfGatewayInfluxdbBridge',
 	'iqrf-gateway-translator': 'iqrfGatewayTranslator',
 	'nodered': 'nodeRed',
 	'ssh': 'ssh',
@@ -133,9 +120,17 @@ const features = {
 	'systemd-journald': 'journal',
 };
 
+interface IService {
+	active: boolean
+	enabled: boolean
+	status: string|null
+}
+
 @Component({
 	components: {
 		AptConfig,
+		CButton,
+		CCard,
 		GatewayUserPassword,
 		SystemdJournaldConfig,
 	},
@@ -179,14 +174,13 @@ export default class ServiceControl extends Vue {
 	private unsupported = false;
 
 	/**
-	 * @var {ServiceStatus} serviceStatus Service auxiliary data
+	 * @var {IService} service Service auxiliary data
 	 */
-	private serviceStatus: ServiceStatus|null = null;
-
-	/**
-   * @property {ServiceService} service Service service
-   */
-	private service: ServiceService = useApiClient().getServiceService();
+	private service: IService = {
+		active: false,
+		enabled: false,
+		status: null
+	};
 
 	/**
 	 * @var {string} title Page and component card title, changes with service
@@ -234,7 +228,7 @@ export default class ServiceControl extends Vue {
 	 * Write APT configuration
 	 */
 	private setUnattendedUpgrades(enable: boolean): void {
-		useApiClient().getConfigServices().getAptService().updateServiceState(enable)
+		AptService.setUnattendedUpgrades(enable)
 			.then(() => this.handleSuccess(enable ? 'enable' : 'disable'))
 			.catch(this.handleError);
 	}
@@ -244,7 +238,7 @@ export default class ServiceControl extends Vue {
 	 */
 	private enable(): void {
 		this.$store.commit('spinner/SHOW');
-		this.service.enable(this.serviceName)
+		ServiceService.enable(this.serviceName)
 			.then(() => {
 				if (this.serviceName === 'unattended-upgrades') {
 					this.setUnattendedUpgrades(true);
@@ -260,7 +254,7 @@ export default class ServiceControl extends Vue {
 	 */
 	private disable(): void {
 		this.$store.commit('spinner/SHOW');
-		this.service.disable(this.serviceName)
+		ServiceService.disable(this.serviceName)
 			.then(() => {
 				if (this.serviceName === 'unattended-upgrades') {
 					this.setUnattendedUpgrades(false);
@@ -292,9 +286,9 @@ export default class ServiceControl extends Vue {
 	 * Attempts to retrieve status of the service
 	 */
 	private getStatus(): Promise<void> {
-		return this.service.getStatus(this.serviceName)
+		return ServiceService.getStatus(this.serviceName)
 			.then((status) => {
-				this.serviceStatus = status;
+				this.service = status;
 				this.missing = false;
 				this.unknown = false;
 				this.unsupported = false;
@@ -313,7 +307,7 @@ export default class ServiceControl extends Vue {
 		const response = error.response;
 		if (response === undefined) {
 			this.unknown = true;
-			this.serviceStatus.status = null;
+			this.service.status = null;
 			this.$toast.error(this.$t('service.errors.processTimeout').toString());
 			return;
 		}
@@ -352,7 +346,7 @@ export default class ServiceControl extends Vue {
 	 */
 	private restart(): void {
 		this.$store.commit('spinner/SHOW');
-		this.service.restart(this.serviceName)
+		ServiceService.restart(this.serviceName)
 			.then(() => (this.handleSuccess('restart')))
 			.catch(this.handleError);
 	}
@@ -362,7 +356,7 @@ export default class ServiceControl extends Vue {
 	 */
 	private start(): void {
 		this.$store.commit('spinner/SHOW');
-		this.service.start(this.serviceName)
+		ServiceService.start(this.serviceName)
 			.then(() => (this.handleSuccess('start')))
 			.catch(this.handleError);
 	}
@@ -372,7 +366,7 @@ export default class ServiceControl extends Vue {
 	 */
 	private stop(): void {
 		this.$store.commit('spinner/SHOW');
-		this.service.stop(this.serviceName)
+		ServiceService.stop(this.serviceName)
 			.then(() => (this.handleSuccess('stop')))
 			.catch(this.handleError);
 	}

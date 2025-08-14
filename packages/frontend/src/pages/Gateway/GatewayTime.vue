@@ -17,49 +17,56 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('gateway.datetime.title') }}</h1>
-		<v-card v-if='time !== null'>
-			<v-card-title>
-				<h3>{{ $t('gateway.datetime.status') }}</h3>
-				<v-spacer />
-				<v-btn
-					color='primary'
-					small
-					@click='getTime'
-				>
-					<v-icon>mdi-refresh</v-icon>
-				</v-btn>
-			</v-card-title>
-			<v-card-text>
+		<CCard v-if='time !== null'>
+			<CCardBody>
+				<CCardTitle style='display: flex; justify-content: space-between;'>
+					<h3>{{ $t('gateway.datetime.status') }}</h3>
+					<CButton
+						color='primary'
+						@click='getTime'
+					>
+						<CIcon :content='cilReload' />
+					</CButton>
+				</CCardTitle>
 				<p style='font-size: 2em;'>
 					{{ time.formattedTime }}
 				</p>
 				<p style='font-size: 1.5em;'>
 					{{ time.formattedZone }}
 				</p>
-				<v-divider class='my-2' />
+				<hr>
 				<ValidationObserver v-slot='{invalid}'>
-					<v-form>
+					<CForm>
 						<h4>{{ $t('gateway.datetime.form.title') }}</h4>
-						<v-autocomplete
-							v-model='timezone'
-							:label='$t("gateway.datetime.form.zone")'
-							:items='timezoneOptions'
-							item-text='text'
-							item-value='value'
-							return-object
-						/>
-						<v-select
-							v-model='timeSet'
+						<div class='form-group'>
+							<label>
+								<strong>{{ $t('gateway.datetime.form.zone') }}</strong>
+							</label>
+							<vSelect
+								v-model='timezone'
+								:options='timezoneOptions'
+								label='label'
+								:autoscroll='true'
+								:clearable='false'
+								:filterable='true'
+							/>
+						</div>
+						<CSelect
+							:value.sync='timeSet'
+							:options='timeSetOptions'
 							:label='$t("gateway.datetime.form.set")'
-							:items='timeSetOptions'
 						/>
 						<div v-if='timeSet === TimeSetOptions.NTP'>
-							<v-switch
-								v-model='defaultServers'
-								:label='$t("gateway.datetime.form.defaultServers")'
-								inset
-								dense
-							/>
+							<div class='form-group'>
+								<label>
+									<strong>{{ $t('gateway.datetime.form.defaultServers') }}</strong>
+								</label><br>
+								<CSwitch
+									:checked.sync='defaultServers'
+									color='primary'
+									shape='pill'
+								/>
+							</div>
 							<div v-if='!defaultServers'>
 								<ValidationProvider
 									v-for='(server, idx) of time.ntpServers'
@@ -71,92 +78,105 @@ limitations under the License.
 										server: $t("gateway.datetime.errors.serverInvalid"),
 									}'
 								>
-									<v-text-field
+									<CInput
 										v-model='time.ntpServers[idx]'
 										:label='$t("gateway.datetime.form.server")'
-										:success='touched ? valid : null'
-										:error-messages='errors'
+										:is-valid='touched ? valid : null'
+										:invalid-feedback='errors.join(" ")'
 									>
-										<template #append-outer>
-											<v-btn
-												v-if='time.ntpServers.length > 1'
-												class='mr-1'
-												color='error'
-												small
-												@click='removeServer(idx)'
-											>
-												<v-icon>mdi-delete-outline</v-icon>
-											</v-btn>
-											<v-btn
+										<template #prepend-content>
+											<span
 												v-if='idx === (time.ntpServers.length - 1)'
-												color='success'
-												small
+												class='text-success'
 												@click='addServer'
 											>
-												<v-icon>mdi-plus</v-icon>
-											</v-btn>
+												<FontAwesomeIcon :icon='["far", "plus-square"]' size='xl' />
+											</span>
 										</template>
-									</v-text-field>
+										<template #append-content>
+											<span
+												v-if='time.ntpServers.length > 1'
+												class='text-danger'
+												@click='removeServer(idx)'
+											>
+												<FontAwesomeIcon :icon='["far", "trash-alt"]' size='lg' />
+											</span>
+										</template>
+									</CInput>
 								</ValidationProvider>
 							</div>
 						</div>
 						<div v-else>
-							<DateTimePicker
-								ref='datetime'
-								:datetime.sync='datetime'
-								:from-browser='true'
-							/>
+							<div class='form-group'>
+								<label>
+									<strong>{{ $t('gateway.datetime.form.datetime') }}</strong>
+								</label><br>
+								<DatePicker
+									v-model='datetime'
+									type='datetime'
+									value-type='date'
+									input-class='form-control'
+									:clearable='false'
+								/>
+							</div>
 						</div>
-						<v-btn
+						<CButton
 							class='mr-1'
 							color='primary'
 							:disabled='invalid'
 							@click='setTime'
 						>
 							{{ $t('forms.save') }}
-						</v-btn>
-						<v-btn
+						</CButton>
+						<CButton
 							v-if='timeSet === TimeSetOptions.MANUAL'
 							color='primary'
 							@click='setFromBrowser'
 						>
 							{{ $t('gateway.datetime.form.browserTime') }}
-						</v-btn>
-					</v-form>
+						</CButton>
+					</CForm>
 				</ValidationObserver>
-			</v-card-text>
-		</v-card>
+			</CCardBody>
+		</CCard>
 	</div>
 </template>
 
 <script lang='ts'>
-import {TimeService} from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
-import {
-	TimeConfig,
-	TimeSet,
-	Timezone
-} from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
-import {AxiosError} from 'axios';
-import {DateTime} from 'luxon';
-import isFQDN from 'is-fqdn';
-import ip from 'ip-regex';
-import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {required} from 'vee-validate/dist/rules';
 import {Component, Vue} from 'vue-property-decorator';
+import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import vSelect from 'vue-select';
+import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 
-import DateTimePicker from '@/components/DateTimePicker.vue';
+import DatePicker from 'vue2-datepicker';
+
+import {cilPlus, cilReload, cilTrash} from '@coreui/icons';
+
+import ip from 'ip-regex';
+import isFQDN from 'is-fqdn';
+import {DateTime} from 'luxon';
 import {extendedErrorToast} from '@/helpers/errorToast';
+import {required} from 'vee-validate/dist/rules';
 import {TimeSetOptions} from '@/enums/Gateway/Time';
-import {ISelectItem} from '@/interfaces/Vuetify';
-import {useApiClient} from '@/services/ApiClient';
+
+import TimeService from '@/services/TimeService';
+
+import {AxiosError, AxiosResponse} from 'axios';
+import {IOption} from '@/interfaces/Coreui';
+import {ITime, ITimezone, ITimeSet} from '@/interfaces/Gateway/Time';
 
 @Component({
 	components: {
-		DateTimePicker,
+		DatePicker,
+		FontAwesomeIcon,
 		ValidationObserver,
 		ValidationProvider,
+		vSelect,
 	},
 	data: () => ({
+		cilPlus,
+		cilReload,
+		cilTrash,
 		TimeSetOptions,
 	}),
 	metaInfo: {
@@ -174,34 +194,34 @@ export default class GatewayTime extends Vue {
 	private loading = false;
 
 	/**
-	 * @var {TimeConfig|null} time Gateway time and location information
+	 * @var {ITime|null} time Gateway time and location information
 	 */
-	private time: TimeConfig|null = null;
+	private time: ITime|null = null;
 
 	/**
-	 * @var {ISelectItem} timezone Currently selected timezone
+	 * @var {IOption} timezone Currently selected timezone
 	 */
-	private timezone: ISelectItem = {
-		text: '',
+	private timezone: IOption = {
+		label: '',
 		value: '',
 	};
 
 	/**
-	 * @var {Array<ISelectItem>} timezoneOptions Array of available timezones at Gateway
+	 * @var {Array<IOption>} timezoneOptions Array of available timezones at Gateway
 	 */
-	private timezoneOptions: ISelectItem[] = [];
+	private timezoneOptions: Array<IOption> = [];
 
 	/**
-	 * @constant {Array<ISelectItem>} timeSetOptions Array of time configuration options
+	 * @constant {Array<IOption>} timeSetOptions Array of time configuration options
 	 */
-	private timeSetOptions: ISelectItem[] = [
+	private timeSetOptions: Array<IOption> = [
 		{
 			value: TimeSetOptions.NTP,
-			text: this.$t('gateway.datetime.form.setOptions.ntp').toString(),
+			label: this.$t('gateway.datetime.form.setOptions.ntp').toString(),
 		},
 		{
 			value: TimeSetOptions.MANUAL,
-			text: this.$t('gateway.datetime.form.setOptions.manual').toString(),
+			label: this.$t('gateway.datetime.form.setOptions.manual').toString(),
 		},
 	];
 
@@ -219,11 +239,6 @@ export default class GatewayTime extends Vue {
 	 * @var {Date} datetime Datetime object
 	 */
 	private datetime: Date = new Date(0);
-
-	/**
-	 * @property {TimeService} service Time service
-	 */
-	private readonly service: TimeService = useApiClient().getGatewayServices().getTimeService();
 
 	/**
 	 * Initializes validation rules
@@ -248,9 +263,12 @@ export default class GatewayTime extends Vue {
 	public getTime(): Promise<void> {
 		this.$store.commit('spinner/SHOW');
 		this.loading = true;
-		return this.service.getTime()
-			.then((response: TimeConfig) => {
-				this.time = response;
+		return TimeService.getTime()
+			.then((response: AxiosResponse) => {
+				this.time = response.data;
+				if (this.time === null) {
+					return;
+				}
 				if (this.time.ntpSync) {
 					if (this.time.ntpServers.length === 0) {
 						this.time.ntpServers.push('');
@@ -259,7 +277,7 @@ export default class GatewayTime extends Vue {
 					this.timeSet = TimeSetOptions.MANUAL;
 				}
 				this.timezone = {
-					text: this.time.formattedZone,
+					label: this.time.formattedZone,
 					value: this.time.zoneName,
 				};
 				this.datetime = DateTime.fromSeconds(this.time.utcTimestamp, {zone: this.time.zoneName}).toJSDate();
@@ -275,10 +293,10 @@ export default class GatewayTime extends Vue {
 	 * Retrieve list of available timezones
 	 */
 	private getTimezones(): void {
-		this.service.listTimezones()
-			.then((response: Timezone[]) => {
+		TimeService.getTimezones()
+			.then((response: AxiosResponse) => {
 				this.$store.commit('spinner/HIDE');
-				this.parseTimezones(response);
+				this.parseTimezones(response.data);
 				this.loading = false;
 			})
 			.catch((error: AxiosError) => {
@@ -289,14 +307,14 @@ export default class GatewayTime extends Vue {
 
 	/**
 	 * Reads timezones information and creates select options
-	 * @param {Array<Timezone>} timezones Array of timezones information from REST API
+	 * @param {Array<ITimezone>} timezones Array of timezones information from REST API
 	 */
-	private parseTimezones(timezones: Array<Timezone>): void {
-		const timezoneArray: ISelectItem[] = [];
+	private parseTimezones(timezones: Array<ITimezone>): void {
+		const timezoneArray: Array<IOption> = [];
 		for (const timezone of timezones) {
 			timezoneArray.push({
 				value: timezone.name,
-				text: timezone.name + ' (' + timezone.code + ', ' + timezone.offset + ')',
+				label: timezone.name + ' (' + timezone.code + ', ' + timezone.offset + ')',
 			});
 		}
 		this.timezoneOptions = timezoneArray;
@@ -306,7 +324,7 @@ export default class GatewayTime extends Vue {
 	 * Builds time set request parameters and sets time configuration
 	 */
 	private setTime(): void {
-		const params: TimeSet = {
+		const params: ITimeSet = {
 			ntpSync: this.timeSet === TimeSetOptions.NTP,
 		};
 		if (this.timezone.value !== this.time?.zoneName) {
@@ -319,7 +337,7 @@ export default class GatewayTime extends Vue {
 			params.datetime = luxonDate.toISO();
 		}
 		this.$store.commit('spinner/SHOW');
-		this.service.updateTime(params)
+		TimeService.setTime(params)
 			.then(() => {
 				this.getTime().then(() => {
 					this.$toast.success(

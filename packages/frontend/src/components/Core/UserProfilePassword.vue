@@ -15,77 +15,90 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-card>
-		<v-card-title>
-			{{ $t('core.profile.form.changePassword') }}
-		</v-card-title>
-		<v-card-text>
-			<v-alert type='info' text>
+	<CCard>
+		<CCardHeader>
+			<strong>{{ $t('core.profile.form.changePassword') }}</strong>
+		</CCardHeader>
+		<CCardBody>
+			<CAlert color='info'>
+				<CIcon size='xl' :content='infoIcon' />
 				{{ $t('core.profile.messages.changePassword') }}
-			</v-alert>
+			</CAlert>
 			<ValidationObserver v-slot='{invalid}'>
-				<v-form @submit.prevent='changePassword'>
+				<CForm @submit.prevent='changePassword'>
 					<ValidationProvider
 						v-slot='{valid, touched, errors}'
 						:rules='{
-							required: passwordChange.new.length > 0,
+							required: newPassword.length > 0,
 						}'
 						:custom-messages='{
 							required: $t("core.user.errors.oldPassword"),
 						}'
 					>
 						<PasswordInput
-							v-model='passwordChange.old'
-							:label='$t("core.profile.form.oldPassword")'
-							:success='touched ? valid : null'
-							:error-messages='errors'
+							v-model='oldPassword'
+							:label='$t("core.profile.form.oldPassword").toString()'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='errors.join(", ")'
+							autocomplete='current-password'
 						/>
 					</ValidationProvider>
 					<ValidationProvider
 						v-slot='{valid, touched, errors}'
 						:rules='{
-							required: passwordChange.old.length > 0,
+							required: oldPassword.length > 0,
 						}'
 						:custom-messages='{
 							required: $t("core.user.errors.newPassword"),
 						}'
 					>
 						<PasswordInput
-							v-model='passwordChange.new'
-							:label='$t("core.profile.form.newPassword")'
-							:success='touched ? valid : null'
-							:error-messages='errors'
+							v-model='newPassword'
+							:label='$t("core.profile.form.newPassword").toString()'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='errors.join(", ")'
+							autocomplete='new-password'
 						/>
 					</ValidationProvider>
-					<v-btn
+					<CButton
 						color='primary'
 						type='submit'
 						:disabled='invalid'
 					>
 						{{ $t('core.profile.form.changePassword') }}
-					</v-btn>
-				</v-form>
+					</CButton>
+				</CForm>
 			</ValidationObserver>
-		</v-card-text>
-	</v-card>
+		</CCardBody>
+	</CCard>
 </template>
 
 <script lang='ts'>
-import {UserPasswordChange} from '@iqrf/iqrf-gateway-webapp-client/types';
-import {AxiosError} from 'axios';
-import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {required} from 'vee-validate/dist/rules';
-import {Component, Vue} from 'vue-property-decorator';
-
 // Components
+import {Component, Vue} from 'vue-property-decorator';
+import {CAlert, CButton, CCard, CCardBody, CCardHeader, CForm, CIcon} from '@coreui/vue/src';
+import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+
 import PasswordInput from '@/components/Core/PasswordInput.vue';
+// Module properties
+import {cilInfo} from '@coreui/icons';
+import {required} from 'vee-validate/dist/rules';
 // Auxiliary functions
 import {extendedErrorToast} from '@/helpers/errorToast';
-import UrlBuilder from '@/helpers/urlBuilder';
-import {useApiClient} from '@/services/ApiClient';
+// Services
+import UserService from '@/services/UserService';
+// Interfaces
+import {AxiosError} from 'axios';
 
 @Component({
 	components: {
+		CAlert,
+		CButton,
+		CCard,
+		CCardBody,
+		CCardHeader,
+		CForm,
+		CIcon,
 		PasswordInput,
 		ValidationObserver,
 		ValidationProvider,
@@ -96,16 +109,20 @@ import {useApiClient} from '@/services/ApiClient';
  * User profile password change component
  */
 export default class UserProfilePassword extends Vue {
+	/**
+	 * @var {string} oldPassword Old user password
+	 */
+	private oldPassword = '';
 
 	/**
-	 * @property {UserPasswordChange} passwordChange Password change data
-   * @private
-   */
-	private passwordChange: UserPasswordChange = {
-		old: '',
-		new: '',
-		baseUrl: new UrlBuilder().getBaseUrl(),
-	};
+	 * @var {string} newPassword New user password
+	 */
+	private newPassword = '';
+
+	/**
+	 * @constant {Array<string>} infoIcon Info icon
+	 */
+	private infoIcon: Array<string> = cilInfo;
 
 	/**
 	 * Retrieves user ID
@@ -119,7 +136,7 @@ export default class UserProfilePassword extends Vue {
 	 */
 	private changePassword(): void {
 		this.$store.commit('spinner/SHOW');
-		useApiClient().getAccountService().updatePassword(this.passwordChange)
+		UserService.changePasswordLoggedIn(this.oldPassword, this.newPassword)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(

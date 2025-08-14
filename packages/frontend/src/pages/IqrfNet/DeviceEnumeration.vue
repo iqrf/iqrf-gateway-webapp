@@ -17,11 +17,11 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('iqrfnet.enumeration.title') }}</h1>
-		<div v-if='response !== null && osData !== null && peripheralData !== null'>
-			<v-card class='mb-5'>
-				<v-card-title>{{ $t('iqrfnet.enumeration.deviceInfo') }}</v-card-title>
-				<v-card-text>
-					<v-simple-table>
+		<div v-if='response !== null'>
+			<CCard>
+				<CCardHeader>{{ $t('iqrfnet.enumeration.deviceInfo') }}</CCardHeader>
+				<CCardBody>
+					<table class='table table-striped'>
 						<tbody>
 							<tr>
 								<th>{{ $t('iqrfnet.enumeration.deviceAddr') }}</th>
@@ -54,24 +54,21 @@ limitations under the License.
 							<tr v-if='product !== null'>
 								<th>{{ $t('iqrfnet.enumeration.picture') }}</th>
 								<td>
-									<v-img
+									<img
 										:alt='response.product'
 										class='product-picture'
 										:src='product.picture'
-										contain
-										min-width='256px'
-										min-height='256px'
-									/>
+									>
 								</td>
 							</tr>
 						</tbody>
-					</v-simple-table>
-				</v-card-text>
-			</v-card>
-			<v-card>
-				<v-card-title>{{ $t('iqrfnet.enumeration.trInfo') }}</v-card-title>
-				<v-card-text>
-					<v-simple-table>
+					</table>
+				</CCardBody>
+			</CCard>
+			<CCard>
+				<CCardHeader>{{ $t('iqrfnet.enumeration.trInfo') }}</CCardHeader>
+				<CCardBody>
+					<table class='table table-striped'>
 						<tbody>
 							<tr>
 								<th>{{ $t('iqrfnet.enumeration.trType') }}</th>
@@ -92,11 +89,11 @@ limitations under the License.
 							<tr>
 								<th>{{ $t('iqrfnet.enumeration.rfMode') }}</th>
 								<td v-if='peripheralData.flags.rfModeStd'>
-									<img :src='RfModeStd' alt='STD' class='rf-mode-icon'>
+									<RfModeStd alt='STD' class='rf-mode-icon' />
 									<strong>{{ $t('iqrfnet.enumeration.rfModes.std') }}</strong>
 								</td>
 								<td v-else-if='peripheralData.flags.rfModeLp'>
-									<img :src='RfModeLp' alt='LP' class='rf-mode-icon'>
+									<RfModeLp alt='LP' class='rf-mode-icon' />
 									<strong>{{ $t('iqrfnet.enumeration.rfModes.lp') }}</strong>
 								</td>
 							</tr>
@@ -109,39 +106,55 @@ limitations under the License.
 								<td>{{ osData.supplyVoltage }}</td>
 							</tr>
 						</tbody>
-					</v-simple-table>
-					<v-btn
+					</table>
+					<CButton
 						color='primary'
 						:to='returnButtonRoute'
 					>
 						{{ $t('forms.back') }}
-					</v-btn>
-				</v-card-text>
-			</v-card>
+					</CButton>
+				</CCardBody>
+			</CCard>
 		</div>
 	</div>
 </template>
 
 <script lang='ts'>
-import {ProductService} from '@iqrf/iqrf-repository-client/services';
-import {Product} from '@iqrf/iqrf-repository-client/types';
-import {AxiosError} from 'axios';
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {NavigationGuardNext, Route} from 'vue-router';
 import {MutationPayload} from 'vuex';
-
+import {CButton, CCard, CCardBody, CCardHeader} from '@coreui/vue/src';
 import IqrfNetService from '@/services/IqrfNetService';
+import ProductService from '@/services/IqrfRepository/ProductService';
 import RfModeLp from '@/assets/lp-black.svg';
 import RfModeStd from '@/assets/std-black.svg';
+import {AxiosError, AxiosResponse} from 'axios';
 import {IDeviceEnumeration, OsInfo, PeripheralEnumeration} from '@/interfaces/DaemonApi/Dpa';
 import {DaemonClientState} from '@/interfaces/wsClient';
-import {useRepositoryClient} from '@/services/IqrfRepositoryClient';
+import {NavigationGuardNext, Route} from 'vue-router';
+
+interface Product {
+	companyName: string
+	homePage: string
+	hwpid: number
+	manufacturerID: number
+	name: string
+	picture: string
+	pictureOriginal: string
+	rfMode: number
+}
 
 @Component({
-	data: () => {
+	components: {
+		CButton,
+		CCard,
+		CCardBody,
+		CCardHeader,
+		RfModeLp,
+		RfModeStd,
+	},
+	data() {
 		return {
-			RfModeLp,
-			RfModeStd,
+			fromRoute: null,
 		};
 	},
 	metaInfo: {
@@ -169,24 +182,24 @@ export default class DeviceEnumeration extends Vue {
 	private msgId = '';
 
 	/**
-	 * @var {OsInfo|null} osData Device OS information
+	 * @var {OsData|null} osData Device OS information
 	 */
-	public osData: OsInfo|null = null;
+	private osData: OsInfo|null = null;
 
 	/**
 	 * @var {PeripheralEnumeration|null} peripheralData Device peripheral information
 	 */
-	public peripheralData: PeripheralEnumeration|null = null;
+	private peripheralData: PeripheralEnumeration|null = null;
 
 	/**
 	 * @var {Product|null} product Device product information
 	 */
-	public product: Product|null = null;
+	private product: Product|null = null;
 
 	/**
 	 * @var {IDeviceEnumeration} response Device enumeration data
 	 */
-	public response: IDeviceEnumeration|null = null;
+	private response: IDeviceEnumeration|null = null;
 
 	/**
 	 * Component unsubscribe function
@@ -204,12 +217,6 @@ export default class DeviceEnumeration extends Vue {
 	private fromRoute: Route|null = null;
 
 	/**
-	 * @property {ProductService|undefined} productService Product service
-   * @private
-   */
-	private productService!: ProductService;
-
-	/**
 	 * @property {string} returnButtonRoute Computes route for return button
 	 */
 	get returnButtonRoute(): string {
@@ -222,9 +229,7 @@ export default class DeviceEnumeration extends Vue {
 	/**
 	 * Vue lifecycle hook created
 	 */
-	async created(): Promise <void> {
-		const repositoryClient = await useRepositoryClient();
-		this.productService = repositoryClient.getProductService();
+	created(): void {
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type !== 'daemonClient/SOCKET_ONMESSAGE') {
 				return;
@@ -242,7 +247,7 @@ export default class DeviceEnumeration extends Vue {
 			this.enumerate();
 		} else {
 			this.unwatch = this.$store.watch(
-				(_state: DaemonClientState, getter) => getter['daemonClient/isConnected'],
+				(state: DaemonClientState, getter: any) => getter['daemonClient/isConnected'],
 				(newVal: boolean, oldVal: boolean) => {
 					if (!oldVal && newVal) {
 						this.enumerate();
@@ -304,9 +309,9 @@ export default class DeviceEnumeration extends Vue {
 	 * @param {number} hwpId HW profile ID
 	 */
 	private getProductInformation(hwpId: number): void {
-		this.productService.get(hwpId)
-			.then((response: Product) => {
-				this.product = response;
+		ProductService.get(hwpId)
+			.then((response: AxiosResponse) => {
+				this.product = response.data;
 			})
 			.catch((error: AxiosError) => {
 				if (error.response !== undefined && error.response.status === 404) {

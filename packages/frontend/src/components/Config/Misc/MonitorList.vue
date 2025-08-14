@@ -16,157 +16,139 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<v-card>
-			<v-card-text>
-				<v-data-table
-					:loading='loading'
-					:headers='headers'
-					:items='instances'
-					:no-data-text='$t("table.messages.noRecords")'
+		<CCard class='border-0 card-margin-bottom'>
+			<CCardHeader class='border-0'>
+				<CButton
+					color='success'
+					size='sm'
+					class='float-right'
+					to='/config/daemon/misc/monitor/add'
 				>
-					<template #top>
-						<v-toolbar dense flat>
-							<v-spacer />
-							<v-btn
+					<CIcon :content='cilPlus' size='sm' />
+					{{ $t('table.actions.add') }}
+				</CButton>
+			</CCardHeader>
+			<CCardBody>
+				<CDataTable
+					:loading='loading'
+					:fields='fields'
+					:items='instances'
+					:column-filter='true'
+					:items-per-page='20'
+					:pagination='true'
+					:striped='true'
+					:sorter='{ external: false, resetable: true }'
+				>
+					<template #no-items-view='{}'>
+						{{ $t('table.messages.noRecords') }}
+					</template>
+					<template #instance='{item}'>
+						<td>
+							{{ item.monitor.instance }}
+						</td>
+					</template>
+					<template #reportPeriod='{item}'>
+						<td>
+							{{ item.monitor.reportPeriod }}
+						</td>
+					</template>
+					<template #port='{item}'>
+						<td>
+							{{ item.webSocket.WebsocketPort }}
+						</td>
+					</template>
+					<template #acceptOnlyLocalhost='{item}'>
+						<td>
+							<CDropdown
+								:color='item.webSocket.acceptOnlyLocalhost ? "success": "danger"'
+								:toggler-text='$t(`states.${item.webSocket.acceptOnlyLocalhost ? "enabled" : "disabled"}`)'
+								size='sm'
+							>
+								<CDropdownItem @click='changeAcceptOnlyLocalhost(item.webSocket, true)'>
+									{{ $t('states.enabled') }}
+								</CDropdownItem>
+								<CDropdownItem @click='changeAcceptOnlyLocalhost(item.webSocket, false)'>
+									{{ $t('states.disabled') }}
+								</CDropdownItem>
+							</CDropdown>
+						</td>
+					</template>
+					<template #tlsEnabled='{item}'>
+						<td>
+							<CDropdown
+								:color='item.webSocket.tlsEnabled ? "success": "danger"'
+								:toggler-text='$t(`states.${(item.webSocket.tlsEnabled ?? false) ? "enabled" : "disabled"}`)'
+								size='sm'
+							>
+								<CDropdownItem @click='changeTls(item.webSocket, true)'>
+									{{ $t('states.enabled') }}
+								</CDropdownItem>
+								<CDropdownItem @click='changeTls(item.webSocket, false)'>
+									{{ $t('states.disabled') }}
+								</CDropdownItem>
+							</CDropdown>
+						</td>
+					</template>
+					<template #actions='{item}'>
+						<td class='col-actions'>
+							<CButton
 								class='mr-1'
-								color='success'
-								small
-								to='/config/daemon/misc/monitor/add'
+								color='info'
+								size='sm'
+								:to='"/config/daemon/misc/monitor/edit/" + item.monitor.instance'
 							>
-								<v-icon small>
-									mdi-plus
-								</v-icon>
-							</v-btn>
-							<v-btn
-								color='primary'
-								small
-								@click='getConfig'
+								<CIcon :content='cilPencil' size='sm' />
+								{{ $t('table.actions.edit') }}
+							</CButton>
+							<CButton
+								color='danger'
+								size='sm'
+								@click='removeInstance(item.monitor.instance, item.webSocket.instance)'
 							>
-								<v-icon small>
-									mdi-refresh
-								</v-icon>
-							</v-btn>
-						</v-toolbar>
+								<CIcon :content='cilTrash' size='sm' />
+								{{ $t('table.actions.delete') }}
+							</CButton>
+						</td>
 					</template>
-					<template #[`item.instance`]='{item}'>
-						{{ item.monitor.instance }}
-					</template>
-					<template #[`item.reportPeriod`]='{item}'>
-						{{ item.monitor.reportPeriod }}
-					</template>
-					<template #[`item.port`]='{item}'>
-						{{ item.webSocket.WebsocketPort }}
-					</template>
-					<template #[`item.acceptOnlyLocalhost`]='{item}'>
-						<v-menu offset-y>
-							<template #activator='{attrs, on}'>
-								<v-btn
-									:color='item.webSocket.acceptOnlyLocalhost ? "success": "error"'
-									small
-									v-bind='attrs'
-									v-on='on'
-								>
-									{{ $t(`states.${item.webSocket.acceptOnlyLocalhost ? "enabled" : "disabled"}`) }}
-									<v-icon>mdi-menu-down</v-icon>
-								</v-btn>
-							</template>
-							<v-list dense>
-								<v-list-item
-									dense
-									@click='changeAcceptOnlyLocalhost(item.webSocket, true)'
-								>
-									{{ $t('states.enabled') }}
-								</v-list-item>
-								<v-list-item
-									dense
-									@click='changeAcceptOnlyLocalhost(item.webSocket, false)'
-								>
-									{{ $t('states.disabled') }}
-								</v-list-item>
-							</v-list>
-						</v-menu>
-					</template>
-					<template #[`item.tlsEnabled`]='{item}'>
-						<v-menu offset-y>
-							<template #activator='{attrs, on}'>
-								<v-btn
-									:color='item.webSocket.tlsEnabled ? "success": "error"'
-									small
-									v-bind='attrs'
-									v-on='on'
-								>
-									{{ $t(`states.${(item.webSocket.tlsEnabled ?? false) ? "enabled" : "disabled"}`) }}
-									<v-icon>mdi-menu-down</v-icon>
-								</v-btn>
-							</template>
-							<v-list dense>
-								<v-list-item
-									dense
-									@click='changeTls(item.webSocket, true)'
-								>
-									{{ $t('states.enabled') }}
-								</v-list-item>
-								<v-list-item
-									dense
-									@click='changeTls(item.webSocket, false)'
-								>
-									{{ $t('states.disabled') }}
-								</v-list-item>
-							</v-list>
-						</v-menu>
-					</template>
-					<template #[`item.actions`]='{item}'>
-						<v-btn
-							class='mr-1'
-							color='info'
-							small
-							:to='"/config/daemon/misc/monitor/edit/" + item.monitor.instance'
-						>
-							<v-icon small>
-								mdi-pencil
-							</v-icon>
-							{{ $t('table.actions.edit') }}
-						</v-btn>
-						<v-btn
-							color='error'
-							small
-							@click='removeInstance(item.monitor.instance, item.webSocket.instance)'
-						>
-							<v-icon small>
-								mdi-delete
-							</v-icon>
-							{{ $t('table.actions.delete') }}
-						</v-btn>
-					</template>
-				</v-data-table>
-			</v-card-text>
-		</v-card>
-		<MonitorDeleteModal
-			v-model='showDeleteModal'
-			:monitor-instance='monitorInstance'
-			:websocket-instance='websocketInstance'
-			@deleted='getConfig'
-		/>
+				</CDataTable>
+			</CCardBody>
+		</CCard>
+		<MonitorDeleteModal ref='deleteModal' @deleted='getConfig' />
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CDropdown, CDropdownItem, CIcon} from '@coreui/vue/src';
 import MonitorDeleteModal from '@/components/Config/Misc/MonitorDeleteModal.vue';
 
+import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import {extendedErrorToast} from '@/helpers/errorToast';
 
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
+import {IField} from '@/interfaces/Coreui';
 import {IMonitorComponent} from '@/interfaces/Config/Misc';
 import {IWsService} from '@/interfaces/Config/Messaging';
-import {DataTableHeader} from 'vuetify';
 
 @Component({
 	components: {
+		CButton,
+		CCard,
+		CCardBody,
+		CCardHeader,
+		CDataTable,
+		CDropdown,
+		CDropdownItem,
+		CIcon,
 		MonitorDeleteModal,
 	},
+	data: () => ({
+		cilPencil,
+		cilPlus,
+		cilTrash,
+	}),
 })
 
 /**
@@ -182,6 +164,40 @@ export default class MonitorList extends Vue {
 	};
 
 	/**
+	 * @constant {Array<IField>} fields Array of CoreUI data table columns
+	 */
+	private readonly fields: Array<IField> =  [
+		{
+			key: 'instance',
+			label: this.$t('forms.fields.instanceName'),
+		},
+		{
+			key: 'reportPeriod',
+			label: this.$t('config.daemon.misc.monitor.form.reportPeriod'),
+		},
+		{
+			key: 'port',
+			label: this.$t('config.daemon.misc.monitor.form.WebsocketPort'),
+		},
+		{
+			key: 'acceptOnlyLocalhost',
+			label: this.$t('config.daemon.misc.monitor.form.acceptOnlyLocalhost'),
+			filter: false,
+		},
+		{
+			key: 'tlsEnabled',
+			label: this.$t('config.daemon.messagings.websocket.form.tlsEnabled'),
+			filter: false,
+		},
+		{
+			key: 'actions',
+			label: this.$t('table.actions.title'),
+			filter: false,
+			sorter: false,
+		},
+	];
+
+	/**
 	 * @var {boolean} loading Indicates that request is in progress
 	 */
 	private loading = false;
@@ -190,56 +206,6 @@ export default class MonitorList extends Vue {
 	 * @var {Array<IMonitorComponent>} instances Array of monitoring component instances
 	 */
 	private instances: Array<IMonitorComponent> = [];
-
-	/**
-	 * @var {boolean} showDeleteModal Controls delete modal visibility
-	 */
-	private showDeleteModal = false;
-
-	/**
-	 * @var {string} monitorInstance Delete modal monitor instance
-	 */
-	private monitorInstance = '';
-
-	/**
-	 * @var {string} websocketInstance Delete modal websocket instance
-	 */
-	private websocketInstance = '';
-
-	/**
-	 * @constant {Array<DataTableHeader>} headers Data table headers
-	 */
-	private readonly headers: Array<DataTableHeader> =  [
-		{
-			value: 'instance',
-			text: this.$t('forms.fields.instanceName').toString(),
-		},
-		{
-			value: 'reportPeriod',
-			text: this.$t('config.daemon.misc.monitor.form.reportPeriod').toString(),
-		},
-		{
-			value: 'port',
-			text: this.$t('config.daemon.misc.monitor.form.WebsocketPort').toString(),
-		},
-		{
-			value: 'acceptOnlyLocalhost',
-			text: this.$t('config.daemon.misc.monitor.form.acceptOnlyLocalhost').toString(),
-			filterable: false,
-		},
-		{
-			value: 'tlsEnabled',
-			text: this.$t('config.daemon.messagings.websocket.form.tlsEnabled').toString(),
-			filterable: false,
-		},
-		{
-			value: 'actions',
-			text: this.$t('table.actions.title').toString(),
-			filterable: false,
-			sortable: false,
-			align: 'end',
-		},
-	];
 
 	/**
 	 * Vue lifecycle hook created
@@ -253,7 +219,9 @@ export default class MonitorList extends Vue {
 	 * @returns {Promise<void>} Empty promise for request chaining
 	 */
 	private getConfig(): Promise<void> {
-		this.loading = true;
+		if (!this.loading) {
+			this.loading = true;
+		}
 		return Promise.all([
 			DaemonConfigurationService.getComponent(this.componentNames.monitor),
 			DaemonConfigurationService.getComponent(this.componentNames.webSocket),
@@ -283,13 +251,10 @@ export default class MonitorList extends Vue {
 				}
 				this.instances = instances;
 				this.loading = false;
+				this.$emit('fetched', {name: 'monitor', success: true});
 			})
 			.catch(() => {
-				this.loading = false;
-				this.$toast.error(
-					this.$t('config.daemon.messages.configFetchFailed', {children: 'monitor'},)
-						.toString()
-				);
+				this.$emit('fetched', {name: 'monitor', success: false});
 			});
 	}
 
@@ -341,17 +306,16 @@ export default class MonitorList extends Vue {
 				this.loading = false;
 				extendedErrorToast(error, 'config.daemon.misc.monitor.messages.editFailed', {instance: service.instance});
 			});
+
 	}
 
 	/**
-	 * Populates properties and model for delete modal
+	 * Removes monitor instance
 	 * @param {string} monitor Monitor instance
-	 * @param {string} websocket Websocket instance
+	 * @param {string} service Websocket instance
 	 */
 	private removeInstance(monitor: string, websocket: string): void {
-		this.monitorInstance = monitor;
-		this.websocketInstance = websocket;
-		this.showDeleteModal = true;
+		(this.$refs.deleteModal as MonitorDeleteModal).showModal(monitor, websocket);
 	}
 }
 </script>

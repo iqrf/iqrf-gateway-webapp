@@ -15,58 +15,50 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-card flat tile>
-		<v-card-title>{{ $t('iqrfnet.networkManager.maintenance.networkIssues.title') }}</v-card-title>
-		<v-card-text>
-			<v-form>
-				<v-radio-group
-					v-model='issue'
-					column
-					dense
-				>
-					<v-radio
-						v-for='(type, idx) of issues'
-						:key='idx'
-						:label='type.text'
-						:value='type.value'
-					>
-						<template #label>
-							<div>
-								{{ type.text }}
-								<div class='text-caption'>
-									{{ $t('iqrfnet.networkManager.maintenance.networkIssues.help.' + type.value) }}
-								</div>
-							</div>
-						</template>
-					</v-radio>
-				</v-radio-group>
-				<v-btn
+	<CCard class='border-0 card-margin-bottom'>
+		<CCardBody>
+			<CCardTitle>{{ $t('iqrfnet.networkManager.maintenance.networkIssues.title') }}</CCardTitle>
+			<CForm>
+				<CInputRadioGroup
+					:checked.sync='issue'
+					:options='issues'
+				/>
+				<CButton
 					color='primary'
 					@click='resolve'
 				>
 					{{ $t('iqrfnet.networkManager.maintenance.networkIssues.resolve') }}
-				</v-btn>
-			</v-form>
-		</v-card-text>
-	</v-card>
+				</CButton>
+			</CForm>
+		</CCardBody>
+	</CCard>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardTitle, CForm, CInputRadioGroup} from '@coreui/vue/src';
 
 import {NetworkIssueTypes} from '@/enums/IqrfNet/Maintenance';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
 import IqmeshNetworkService from '@/services/DaemonApi/IqmeshNetworkService';
 
-import {ISelectItem} from '@/interfaces/Vuetify';
+import {IOption} from '@/interfaces/Coreui';
 import {MutationPayload} from 'vuex';
-
 
 /**
  * Maintenance network issues component
  */
-@Component
+@Component({
+	components: {
+		CButton,
+		CCard,
+		CCardBody,
+		CCardTitle,
+		CForm,
+		CInputRadioGroup,
+	},
+})
 export default class NetworkIssues extends Vue {
 	/**
 	 * @var {string} msgId Message ID
@@ -77,23 +69,32 @@ export default class NetworkIssues extends Vue {
 	 * @var {NetworkIssueTypes} issue Network issue to solve
 	 */
 	private issue: NetworkIssueTypes = NetworkIssueTypes.INCONSISTENT_MIDS_IN_COORDINATOR;
-
+	
 	/**
 	 * @const {Array<IOption>} issues Issues options
 	 */
-	private issues: Array<ISelectItem> = [
+	private issues: Array<IOption> = [
 		{
 			value: NetworkIssueTypes.INCONSISTENT_MIDS_IN_COORDINATOR,
-			text: this.$t('iqrfnet.networkManager.maintenance.networkIssues.options.inconsistentMidsInCoordinator').toString(),
+			label: this.$t('iqrfnet.networkManager.maintenance.networkIssues.options.inconsistentMidsInCoordinator').toString(),
+			props: {
+				description: this.$t('iqrfnet.networkManager.maintenance.networkIssues.help.inconsistentMidsInCoordinator').toString(),
+			},
 		},
 		{
 			value: NetworkIssueTypes.DUPLICATED_ADDRESSES,
-			text: this.$t('iqrfnet.networkManager.maintenance.networkIssues.options.duplicatedAddresses').toString(),
+			label: this.$t('iqrfnet.networkManager.maintenance.networkIssues.options.duplicatedAddresses').toString(),
+			props: {
+				description: this.$t('iqrfnet.networkManager.maintenance.networkIssues.help.duplicatedAddresses').toString(),
+			},
 		},
 		{
 			value: NetworkIssueTypes.USELESS_PREBONDED_NODES,
-			text: this.$t('iqrfnet.networkManager.maintenance.networkIssues.options.uselessPrebondedNodes').toString(),
-		}
+			label: this.$t('iqrfnet.networkManager.maintenance.networkIssues.options.uselessPrebondedNodes').toString(),
+			props: {
+				description: this.$t('iqrfnet.networkManager.maintenance.networkIssues.help.uselessPrebondedNodes').toString(),
+			},
+		},
 	];
 
 	/**
@@ -118,8 +119,12 @@ export default class NetworkIssues extends Vue {
 				this.handleInconsistentMids(mutation.payload.data);
 			} else if (mutation.payload.mType === 'iqmeshNetwork_MaintenanceDuplicatedAddresses') {
 				this.handleDuplicatedAddresses(mutation.payload.data);
-			} else {
+			} else if (mutation.payload.mType === 'iqmeshNetwork_MaintenanceUselessPrebondedNodes') {
 				this.handlePrebondedNodes(mutation.payload.data);
+			} else {
+				this.$toast.error(
+					this.$t('iqrfnet.messages.genericError').toString()
+				);
 			}
 		});
 	}
@@ -249,4 +254,5 @@ export default class NetworkIssues extends Vue {
 		this.$toast.info(this.$t(message).toString());
 	}
 }
+
 </script>

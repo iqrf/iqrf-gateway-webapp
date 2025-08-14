@@ -15,17 +15,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-card>
-		<v-card-title>
+	<CCard>
+		<CCardHeader>
 			{{ $t('service.unattended-upgrades.configuration') }}
-		</v-card-title>
-		<v-card-text>
+		</CCardHeader>
+		<CCardBody>
 			<ValidationObserver v-slot='{invalid}'>
-				<v-form @submit.prevent='updateConfig'>
-					<v-row>
-						<v-col v-if='isAdmin' cols='12' md='4'>
+				<CForm @submit.prevent='updateConfig'>
+					<CRow form>
+						<CCol
+							v-if='isAdmin'
+							sm='12'
+							lg='4'
+						>
 							<ValidationProvider
-								v-if='isAdmin'
 								v-slot='{errors, touched, valid}'
 								rules='integer|min:0|required'
 								:custom-messages='{
@@ -34,17 +37,17 @@ limitations under the License.
 									required: $t("service.unattended-upgrades.errors.listUpdateInterval"),
 								}'
 							>
-								<v-text-field
-									v-model='config.packageListUpdateInterval'
+								<CInput
+									v-model='config["APT::Periodic::Update-Package-Lists"]'
 									type='number'
 									min='0'
 									:label='$t("service.unattended-upgrades.form.listUpdateInterval")'
-									:success='touched ? valid : null'
-									:error-messages='errors'
+									:is-valid='touched ? valid : null'
+									:invalid-feedback='errors.join(", ")'
 								/>
 							</ValidationProvider>
-						</v-col>
-						<v-col cols='12' md='4'>
+						</CCol>
+						<CCol sm='12' lg='4'>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								rules='integer|min:0|required'
@@ -54,17 +57,21 @@ limitations under the License.
 									required: $t("service.unattended-upgrades.errors.upgradeInterval"),
 								}'
 							>
-								<v-text-field
-									v-model='config.packageUpdateInterval'
+								<CInput
+									v-model='config["APT::Periodic::Unattended-Upgrade"]'
 									type='number'
 									min='0'
 									:label='$t("service.unattended-upgrades.form.upgradeInterval")'
-									:success='touched ? valid : null'
-									:error-messages='errors'
+									:is-valid='touched ? valid : null'
+									:invalid-feedback='errors.join(", ")'
 								/>
 							</ValidationProvider>
-						</v-col>
-						<v-col v-if='isAdmin' cols='12' md='4'>
+						</CCol>
+						<CCol
+							v-if='isAdmin'
+							sm='12'
+							lg='4'
+						>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								rules='integer|min:0|required'
@@ -74,51 +81,57 @@ limitations under the License.
 									required: $t("service.unattended-upgrades.errors.removeInterval"),
 								}'
 							>
-								<v-text-field
-									v-model='config.packageRemovalInterval'
+								<CInput
+									v-model='config["APT::Periodic::AutocleanInterval"]'
 									type='number'
 									min='0'
 									:label='$t("service.unattended-upgrades.form.removeInterval")'
-									:success='touched ? valid : null'
-									:error-messages='errors'
+									:is-valid='touched ? valid : null'
+									:invalid-feedback='errors.join(", ")'
 								/>
 							</ValidationProvider>
-						</v-col>
-					</v-row>
-					<v-checkbox
-						v-model='config.rebootOnKernelUpdate'
+						</CCol>
+					</CRow>
+					<CInputCheckbox
+						:value.sync='config["Unattended-Upgrade::Automatic-Reboot"]'
 						:label='$t("service.unattended-upgrades.form.rebootOnKernelUpdate")'
-						dense
 					/>
 					<div><em>{{ $t('service.unattended-upgrades.form.intervalNote') }}</em></div><br>
-					<v-btn
+					<CButton
 						color='primary'
 						type='submit'
 						:disabled='invalid'
 					>
 						{{ $t('forms.save') }}
-					</v-btn>
-				</v-form>
+					</CButton>
+				</CForm>
 			</ValidationObserver>
-		</v-card-text>
-	</v-card>
+		</CCardBody>
+	</CCard>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {integer, min_value, required} from 'vee-validate/dist/rules';
+import {UserRole} from '@/services/AuthenticationService';
+
+import AptService, {AptConfiguration} from '@/services/AptService';
 
 import {AxiosError} from 'axios';
-import {UserRole} from '@iqrf/iqrf-gateway-webapp-client/types';
-import {useApiClient} from '@/services/ApiClient';
-import {AptService} from '@iqrf/iqrf-gateway-webapp-client/services/Config';
-import {AptConfig} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 
 @Component({
 	components: {
+		CButton,
+		CCard,
+		CCardBody,
+		CCardHeader,
+		CForm,
+		CInput,
+		CInputCheckbox,
 		ValidationObserver,
 		ValidationProvider
 	},
@@ -127,24 +140,21 @@ import {AptConfig} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 /**
  * Gateway APT configuration component for service control
  */
-export default class AptConfiguration extends Vue {
+export default class AptConfig extends Vue {
 
-	private config: AptConfig = {
-		enabled: false,
-		packageRemovalInterval: 0,
-		packageListUpdateInterval: 1,
-		packageUpdateInterval: 1,
-		rebootOnKernelUpdate: false,
+	private config: AptConfiguration = {
+		'APT::Periodic::AutocleanInterval': 0,
+		'APT::Periodic::Update-Package-Lists': 1,
+		'APT::Periodic::Unattended-Upgrade': 1,
+		'Unattended-Upgrade::Automatic-Reboot': false,
 	};
-
-	private service: AptService = useApiClient().getConfigServices().getAptService();
 
 	/**
 	 * Checks if user is an administrator
 	 * @returns {boolean} True if user is an administrator
 	 */
 	get isAdmin(): boolean {
-		return this.$store.getters['user/getRole'] === UserRole.Admin;
+		return this.$store.getters['user/getRole'] === UserRole.ADMIN;
 	}
 
 	/**
@@ -169,8 +179,8 @@ export default class AptConfiguration extends Vue {
 	 * Retrieves unattended upgrades configuration
 	 */
 	private getConfig(): Promise<void> {
-		return this.service.getConfig()
-			.then((config: AptConfig) => {this.config = config;})
+		return AptService.read()
+			.then((config: AptConfiguration) => {this.config = config;})
 			.catch((error: AxiosError) => extendedErrorToast(error, 'service.unattended-upgrades.messages.getFailed'));
 	}
 
@@ -179,7 +189,7 @@ export default class AptConfiguration extends Vue {
 	 */
 	private updateConfig(): void {
 		this.$store.commit('spinner/SHOW');
-		this.service.updateConfig(this.config)
+		AptService.write(this.config)
 			.then(() => {
 				this.getConfig().then(() => {
 					this.$store.commit('spinner/HIDE');

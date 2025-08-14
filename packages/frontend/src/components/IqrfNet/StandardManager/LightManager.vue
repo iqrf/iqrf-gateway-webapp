@@ -15,32 +15,32 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-card>
-		<v-card-text>
+	<CCard class='border-0 card-margin-bottom'>
+		<CCardBody>
 			<ValidationObserver v-slot='{invalid}'>
-				<v-form>
-					<v-select
+				<CForm>
+					<CSelect
 						v-model='dpaCommand'
-						:items='dpaCommandOptions'
+						:options='dpaCommandOptions'
 						:label='$t("iqrfnet.standard.light.form.dpaCommand.title")'
 					/>
 					<ValidationProvider
 						v-slot='{errors, touched, valid}'
-						rules='required|integer|between:1,239'
+						rules='integer|required|between:1,239'
 						:custom-messages='{
-							between: $t("iqrfnet.standard.form.messages.address"),
+							between: $t("forms.errors.deviceAddr.between"),
 							integer: $t("forms.errors.integer"),
-							required: $t("iqrfnet.standard.form.messages.address"),
+							required: $t("forms.errors.deviceAddr.required"),
 						}'
 					>
-						<v-text-field
+						<CInput
 							v-model.number='address'
 							type='number'
 							min='1'
 							max='239'
-							:label='$t("iqrfnet.standard.form.address")'
-							:success='touched ? valid : null'
-							:error-messages='errors'
+							:label='$t("forms.fields.deviceAddr")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='errors.join(", ")'
 						/>
 					</ValidationProvider>
 					<div v-if='dpaCommand === StandardLightDpaCommands.SendLdi'>
@@ -55,55 +55,50 @@ limitations under the License.
 								required: $t("iqrfnet.standard.light.errors.ldiCommand.required"),
 							}'
 						>
-							<v-text-field
+							<CInput
 								v-model.number='commands[i-1]'
 								type='number'
 								min='0'
 								max='65535'
 								:label='$t("iqrfnet.standard.light.form.ldiCommand.title")'
-								:success='touched ? valid : null'
-								:error-messages='errors'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='errors.join(", ")'
 							>
-								<template #append-outer>
-									<v-btn
+								<template #prepend-content>
+									<span
 										v-if='i === commands.length'
-										:class='{
-											"mr-1": i > 1
-										}'
-										small
-										color='success'
+										class='text-success'
 										@click='addLdiCommand'
 									>
-										<v-icon>mdi-plus</v-icon>
-									</v-btn>
-									<v-btn
+										<FontAwesomeIcon :icon='["far", "square-plus"]' size='xl' />
+									</span>
+								</template>
+								<template #append-content>
+									<span
 										v-if='commands.length > 1'
-										small
-										color='error'
+										class='text-danger'
 										@click='removeLdiCommand(i-1)'
 									>
-										<v-icon size='xl'>
-											mdi-minus
-										</v-icon>
-									</v-btn>
+										<FontAwesomeIcon :icon='["far", "trash-alt"]' size='lg' />
+									</span>
 								</template>
-							</v-text-field>
+							</CInput>
 						</ValidationProvider>
-						<v-btn
+						<CButton
 							class='mr-1'
 							color='primary'
 							:disabled='invalid'
 							@click='sendLdiCommands'
 						>
 							{{ $t('forms.send') }}
-						</v-btn>
-						<v-btn
+						</CButton>
+						<CButton
 							color='primary'
 							:disabled='answers.length === 0'
 							@click='showLdiCommandsResult'
 						>
 							{{ $t('forms.showLast') }}
-						</v-btn>
+						</CButton>
 					</div>
 					<div v-else-if='dpaCommand === StandardLightDpaCommands.SetLai'>
 						<ValidationProvider
@@ -115,36 +110,36 @@ limitations under the License.
 								required: $t("iqrfnet.standard.light.errors.voltage.required"),
 							}'
 						>
-							<v-text-field
+							<CInput
 								v-model.number='voltage'
 								type='number'
 								min='0'
 								max='10'
 								step='.001'
 								:label='$t("iqrfnet.standard.light.form.voltage")'
-								:success='touched ? valid : null'
-								:error-messages='errors'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
-						<v-btn
+						<CButton
 							class='mr-1'
 							color='primary'
 							:disabled='invalid'
 							@click='setLai'
 						>
 							{{ $t('forms.set') }}
-						</v-btn>
-						<v-btn
+						</CButton>
+						<CButton
 							color='primary'
 							:disabled='voltageResult === null'
 							@click='showSetLaiResult'
 						>
 							{{ $t('forms.showLast') }}
-						</v-btn>
+						</CButton>
 					</div>
-				</v-form>
+				</CForm>
 			</ValidationObserver>
-		</v-card-text>
+		</CCardBody>
 		<LdiCommandsResultModal
 			ref='ldiCommandsResult'
 			:result='answers'
@@ -153,12 +148,14 @@ limitations under the License.
 			ref='setLaiResult'
 			:result='voltageResult'
 		/>
-	</v-card>
+	</CCard>
 </template>
 
 <script lang='ts'>
 import {Component, Ref, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardFooter, CCardHeader, CForm, CInput, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import LdiCommandsResultModal from '@/components/IqrfNet/StandardManager/LdiCommandsResultModal.vue';
 import SetVoltageResultModal from '@/components/IqrfNet/StandardManager/SetVoltageResultModal.vue';
 
@@ -168,14 +165,25 @@ import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 import StandardLightService from '@/services/DaemonApi/StandardLightService';
 
 import { SetLaiResult, type LightAnswer, type LightAnswerResult} from '@/interfaces/DaemonApi/Standard';
-import { StandardLightDpaCommands } from '@/enums/IqrfNet/Standard';
 import {MutationPayload} from 'vuex';
-import { ISelectItem } from '@/interfaces/Vuetify';
+import { StandardLightDpaCommands } from '@/enums/IqrfNet/Standard';
+import { IOption } from '@/interfaces/Coreui';
 
 @Component({
 	components: {
+		CButton,
+		CCard,
+		CCardBody,
+		CCardFooter,
+		CCardHeader,
+		CForm,
+		CInput,
+		CSelect,
+		FontAwesomeIcon,
+		LdiCommandsResultModal,
+		SetVoltageResultModal,
 		ValidationObserver,
-		ValidationProvider,
+		ValidationProvider
 	},
 	data: () => ({
 		StandardLightDpaCommands,
@@ -223,15 +231,15 @@ export default class LightManager extends Vue {
 	private dpaCommand = StandardLightDpaCommands.SendLdi;
 
 	/**
-	 * @var {ISelectItem[]} dpaCommandOptions DPA command options
+	 * @var {IOption[]} dpaCommandOptions DPA command options
 	 */
-	private dpaCommandOptions: ISelectItem[] = [
+	private dpaCommandOptions: IOption[] = [
 		{
-			text: this.$t('iqrfnet.standard.light.form.dpaCommand.options.send-ldi'),
+			label: this.$t('iqrfnet.standard.light.form.dpaCommand.options.send-ldi'),
 			value: StandardLightDpaCommands.SendLdi,
 		},
 		{
-			text: this.$t('iqrfnet.standard.light.form.dpaCommand.options.set-lai'),
+			label: this.$t('iqrfnet.standard.light.form.dpaCommand.options.set-lai'),
 			value: StandardLightDpaCommands.SetLai,
 		}
 	];
@@ -367,6 +375,7 @@ export default class LightManager extends Vue {
 				);
 				break;
 		}
+
 	}
 
 	/**
@@ -435,9 +444,3 @@ export default class LightManager extends Vue {
 
 }
 </script>
-
-<style lang="scss" scoped>
-td {
-	padding: 0 !important;
-}
-</style>

@@ -16,143 +16,130 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<h1>{{ pageTitle }}</h1>
-		<v-card>
-			<v-card-text>
-				<ValidationObserver v-slot='{invalid}'>
-					<v-form>
-						<ValidationProvider
-							v-slot='{errors, touched, valid}'
-							rules='required'
-							:custom-messages='{
-								required: $t("config.daemon.misc.tracer.errors.instance"),
-							}'
-						>
-							<v-text-field
-								v-model='configuration.instance'
-								:label='$t("forms.fields.instanceName")'
-								:success='touched ? valid : null'
-								:error-messages='errors'
-							/>
-						</ValidationProvider>
-						<v-row>
-							<v-col cols='12' md='4'>
-								<v-text-field
-									v-model='configuration.path'
-									:label='$t("config.daemon.misc.tracer.form.path")'
+		<h1 v-if='$route.path === "/config/daemon/misc/tracer/add"'>
+			{{ $t('config.daemon.misc.tracer.add') }}
+		</h1>
+		<h1 v-else>
+			{{ $t('config.daemon.misc.tracer.edit') }}
+		</h1>
+		<CCard body-wrapper>
+			<ValidationObserver v-slot='{invalid}'>
+				<CForm @submit.prevent='saveInstance'>
+					<CRow>
+						<CCol md='6'>
+							<legend>{{ $t("config.daemon.misc.tracer.form.title") }}</legend>
+							<ValidationProvider
+								v-slot='{errors, touched, valid}'
+								rules='required'
+								:custom-messages='{
+									required: $t("config.daemon.misc.tracer.errors.instance"),
+								}'
+							>
+								<CInput
+									v-model='configuration.instance'
+									:label='$t("forms.fields.instanceName")'
+									:is-valid='touched ? valid : null'
+									:invalid-feedback='errors.join(", ")'
 								/>
-							</v-col>
-							<v-col cols='12' md='4'>
+							</ValidationProvider>
+							<CInput
+								v-model='configuration.path'
+								:label='$t("config.daemon.misc.tracer.form.path")'
+							/>
+							<ValidationProvider
+								v-slot='{errors, touched, valid}'
+								rules='required'
+								:custom-messages='{
+									required: $t("config.daemon.misc.tracer.errors.filename"),
+								}'
+							>
+								<CInput
+									v-model='configuration.filename'
+									:label='$t("config.daemon.misc.tracer.form.filename")'
+									:is-valid='touched ? valid : null'
+									:invalid-feedback='errors.join(", ")'
+								/>
+							</ValidationProvider>
+							<ValidationProvider
+								v-slot='{errors, touched, valid}'
+								rules='integer|required|min:1'
+								:custom-messages='{
+									required: $t("config.daemon.misc.tracer.errors.maxSizeMb"),
+									min: $t("config.daemon.misc.tracer.errors.maxSizeMb"),
+									integer: $t("forms.errors.integer"),
+								}'
+							>
+								<CInput
+									v-model.number='configuration.maxSizeMB'
+									type='number'
+									:label='$t("config.daemon.misc.tracer.form.maxSize")'
+									:is-valid='touched ? valid : null'
+									:invalid-feedback='errors.join(", ")'
+								/>
+							</ValidationProvider>
+							<div class='form-group'>
+								<label for='timestampFilesEnable'>
+									{{ $t('config.daemon.misc.tracer.form.timestampFiles') }}
+								</label><br>
+								<CSwitch
+									id='timestampFilesEnable'
+									color='primary'
+									size='lg'
+									shape='pill'
+									label-on='ON'
+									label-off='OFF'
+									:checked.sync='configuration.timestampFiles'
+								/>
+							</div>
+							<div
+								v-if='configuration.timestampFiles'
+								class='form-group'
+							>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
-									rules='required'
+									rules='integer|min:0'
 									:custom-messages='{
-										required: $t("config.daemon.misc.tracer.errors.filename"),
-									}'
-								>
-									<v-text-field
-										v-model='configuration.filename'
-										:label='$t("config.daemon.misc.tracer.form.filename")'
-										:success='touched ? valid : null'
-										:error-messages='errors'
-									/>
-								</ValidationProvider>
-							</v-col>
-							<v-col cols='12' md='4'>
-								<ValidationProvider
-									v-slot='{errors, touched, valid}'
-									rules='integer|required|min:1'
-									:custom-messages='{
-										required: $t("config.daemon.misc.tracer.errors.maxSizeMb"),
-										min: $t("config.daemon.misc.tracer.errors.maxSizeMb"),
 										integer: $t("forms.errors.integer"),
+										min: $t("config.daemon.misc.tracer.errors.maxAgeMinutes"),
 									}'
 								>
-									<v-text-field
-										v-model.number='configuration.maxSizeMB'
+									<CInput
+										v-model.number='configuration.maxAgeMinutes'
 										type='number'
-										:label='$t("config.daemon.misc.tracer.form.maxSize")'
-										:success='touched ? valid : null'
-										:error-messages='errors'
+										min='0'
+										:label='$t("config.daemon.misc.tracer.form.maxAgeMinutes") + " *"'
+										:is-valid='touched ? valid : null'
+										:invalid-feedback='errors.join(", ")'
 									/>
 								</ValidationProvider>
-							</v-col>
-						</v-row>
-						<v-switch
-							v-model='configuration.timestampFiles'
-							:label='$t("config.daemon.misc.tracer.form.timestampFiles")'
-							inset
-							dense
-						/>
-						<div v-if='configuration.timestampFiles'>
-							<v-row>
-								<v-col cols='12' md='6'>
-									<ValidationProvider
-										v-slot='{errors, touched, valid}'
-										rules='integer|min:0'
-										:custom-messages='{
-											integer: $t("forms.errors.integer"),
-											min: $t("config.daemon.misc.tracer.errors.maxAgeMinutes"),
-										}'
-									>
-										<v-text-field
-											v-model.number='configuration.maxAgeMinutes'
-											type='number'
-											min='0'
-											:label='$t("config.daemon.misc.tracer.form.maxAgeMinutes") + " *"'
-											:success='touched ? valid : null'
-											:error-messages='errors'
-											:hint='$t("config.daemon.misc.tracer.messages.zeroValues")'
-											persistent-hint
-										/>
-									</ValidationProvider>
-								</v-col>
-								<v-col cols='12' md='6'>
-									<ValidationProvider
-										v-slot='{errors, touched, valid}'
-										rules='integer|min:0'
-										:custom-messages='{
-											integer: $t("forms.errors.integer"),
-											min: $t("config.daemon.misc.tracer.errors.maxNumber"),
-										}'
-									>
-										<v-text-field
-											v-model.number='configuration.maxNumber'
-											type='number'
-											min='0'
-											:label='$t("config.daemon.misc.tracer.form.maxNumber") + " *"'
-											:success='touched ? valid : null'
-											:error-messages='errors'
-											:hint='$t("config.daemon.misc.tracer.messages.zeroValues")'
-											persistent-hint
-										/>
-									</ValidationProvider>
-								</v-col>
-							</v-row>
-						</div>
-						<v-row
-							v-for='(level, idx) of configuration.VerbosityLevels'
-							:key='idx'
-						>
-							<v-col cols='12' md='6'>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
-									rules='required'
+									rules='integer|min:0'
 									:custom-messages='{
-										required: $t("config.daemon.misc.tracer.errors.verbosityLevels.level"),
+										integer: $t("forms.errors.integer"),
+										min: $t("config.daemon.misc.tracer.errors.maxNumber"),
 									}'
 								>
-									<v-select
-										v-model='level.level'
-										:label='$t("config.daemon.misc.tracer.form.level")'
-										:placeholder='$t("config.daemon.misc.tracer.errors.verbosityLevels.level")'
-										:items='severityOptions'
-										:success='touched ? valid : null'
-										:error-messages='errors'
+									<CInput
+										v-model.number='configuration.maxNumber'
+										type='number'
+										min='0'
+										:label='$t("config.daemon.misc.tracer.form.maxNumber") + " *"'
+										:is-valid='touched ? valid : null'
+										:invalid-feedback='errors.join(", ")'
 									/>
 								</ValidationProvider>
-							</v-col>
-							<v-col cols='12' md='6'>
+								<em>* {{ $t('config.daemon.misc.tracer.messages.zeroValues') }}</em>
+							</div>
+						</CCol>
+						<CCol md='6'>
+							<legend>{{ $t("config.daemon.misc.tracer.form.verbosityLevels.title") }}</legend>
+							<div
+								v-for='(level, i) of configuration.VerbosityLevels'
+								:key='i'
+								class='form-group'
+							>
+								<hr v-if='i > 0'>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='integer|required'
@@ -161,56 +148,59 @@ limitations under the License.
 										required: $t("config.daemon.misc.tracer.errors.verbosityLevels.channel"),
 									}'
 								>
-									<v-text-field
+									<CInput
 										v-model.number='level.channel'
 										type='number'
 										:label='$t("config.daemon.misc.tracer.form.channel")'
-										:success='touched ? valid : null'
-										:error-messages='errors'
-									>
-										<template #append-outer>
-											<v-btn
-												v-if='configuration.VerbosityLevels.length > 1'
-												color='error'
-												small
-												@click='removeLevel(idx)'
-											>
-												<v-icon>
-													mdi-delete-outline
-												</v-icon>
-											</v-btn>
-											<v-btn
-												v-if='idx === (configuration.VerbosityLevels.length - 1)'
-												:class='configuration.VerbosityLevels.length > 1 ? "ml-1" : ""'
-												color='success'
-												small
-												@click='addLevel'
-											>
-												<v-icon>
-													mdi-plus
-												</v-icon>
-											</v-btn>
-										</template>
-									</v-text-field>
+										:is-valid='touched ? valid : null'
+										:invalid-feedback='errors.join(", ")'
+									/>
 								</ValidationProvider>
-							</v-col>
-						</v-row>
-						<v-btn
-							color='primary'
-							:disabled='invalid'
-							@click='saveInstance'
-						>
-							{{ submitButton }}
-						</v-btn>
-					</v-form>
-				</ValidationObserver>
-			</v-card-text>
-		</v-card>
+								<ValidationProvider
+									v-slot='{errors, touched, valid}'
+									rules='required'
+									:custom-messages='{
+										required: $t("config.daemon.misc.tracer.errors.verbosityLevels.level"),
+									}'
+								>
+									<CSelect
+										:value.sync='level.level'
+										:label='$t("config.daemon.misc.tracer.form.level")'
+										:placeholder='$t("config.daemon.misc.tracer.errors.verbosityLevels.level")'
+										:options='selectOptions'
+										:is-valid='touched ? valid : null'
+										:invalid-feedback='errors.join(", ")'
+									/>
+								</ValidationProvider>
+								<CButton
+									v-if='configuration.VerbosityLevels.length > 1'
+									color='danger'
+									@click='removeLevel(i)'
+								>
+									{{ $t('config.daemon.misc.tracer.form.verbosityLevels.remove') }}
+								</CButton> <CButton
+									v-if='i === (configuration.VerbosityLevels.length - 1)'
+									color='success'
+									:disabled='level.channel === undefined || level.level === undefined'
+									@click='addLevel'
+								>
+									{{ $t('config.daemon.misc.tracer.form.verbosityLevels.add') }}
+								</CButton>
+							</div>
+						</CCol>
+					</CRow>
+					<CButton type='submit' color='primary' :disabled='invalid'>
+						{{ submitButton }}
+					</CButton>
+				</CForm>
+			</ValidationObserver>
+		</CCard>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CForm, CInput, CSelect, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
@@ -219,12 +209,18 @@ import {integer, min_value, required} from 'vee-validate/dist/rules';
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {ISelectItem} from '@/interfaces/Vuetify';
+import {IOption} from '@/interfaces/Coreui';
 import {ITraceService} from '@/interfaces/Config/Misc';
 import {MetaInfo} from 'vue-meta';
 
 @Component({
 	components: {
+		CButton,
+		CCard,
+		CForm,
+		CInput,
+		CSelect,
+		CSwitch,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -239,13 +235,14 @@ import {MetaInfo} from 'vue-meta';
  * Daemon Logging service component configuration card
  */
 export default class TracerForm extends Vue {
+
 	/**
 	 * @constant {string} componentName Component name
 	 */
 	private componentName = 'shape::TraceFileService';
 
 	/**
-	 * @var {ITraceService} configuration TraceFile component configuration
+	 * @var {ITraceService|null} configuration TraceFile component configuration
 	 */
 	private configuration: ITraceService = {
 		component: '',
@@ -260,24 +257,24 @@ export default class TracerForm extends Vue {
 	};
 
 	/**
-	 * @constant {Array<ISelectItem>} severityOptions Logging severity options
+	 * @constant {Array<IOption>} selectOptions Array of CoreUI logging severity select options
 	 */
-	private severityOptions: Array<ISelectItem> = [
+	private selectOptions: Array<IOption> = [
 		{
 			value: 'DBG',
-			text: this.$t('forms.fields.messageLevel.debug').toString(),
+			label: this.$t('forms.fields.messageLevel.debug')
 		},
 		{
 			value: 'INF',
-			text: this.$t('forms.fields.messageLevel.info').toString(),
+			label: this.$t('forms.fields.messageLevel.info')
 		},
 		{
 			value: 'WAR',
-			text: this.$t('forms.fields.messageLevel.warning').toString(),
+			label: this.$t('forms.fields.messageLevel.warning')
 		},
 		{
 			value: 'ERR',
-			text: this.$t('forms.fields.messageLevel.error').toString(),
+			label: this.$t('forms.fields.messageLevel.error')
 		},
 	];
 
@@ -305,7 +302,7 @@ export default class TracerForm extends Vue {
 	}
 
 	/**
-	 * Initializes validation rules
+	 * Vue lifecycle hook created
 	 */
 	created(): void {
 		extend('integer', integer);
@@ -314,7 +311,7 @@ export default class TracerForm extends Vue {
 	}
 
 	/**
-	 * Loads component data
+	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
 		if (this.instance !== '') {

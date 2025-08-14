@@ -16,69 +16,53 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<v-card flat tile>
-			<v-card-text>
+		<CCard class='border-0 card-margin-bottom'>
+			<CCardBody>
 				<ValidationObserver v-slot='{invalid}'>
-					<v-form>
-						<v-radio-group
-							v-model='fileType'
+					<CForm>
+						<CSelect
+							:value.sync='fileType'
+							:options='fileTypeOptions'
 							:label='$t("iqrfnet.networkManager.otaUpload.form.fileType")'
-							column
-							dense
-						>
-							<v-radio
-								v-for='(type, idx) of fileTypeOptions'
-								:key='idx'
-								:label='type.text'
-								:value='type.value'
-							/>
-						</v-radio-group>
-						<ValidationProvider
-							v-slot='{errors, valid}'
-							rules='required|selectedFile'
-							:custom-messages='{
-								required: $t("iqrfnet.networkManager.otaUpload.errors.file"),
-								selectedFile: $t(`iqrfnet.networkManager.otaUpload.errors.not${fileType === FileFormat.HEX ? "Hex" : "Iqrf"}File`)
-							}'
-						>
-							<v-file-input
-								v-model='file'
-								:accept='fileType === FileFormat.HEX ? ".hex" : ".iqrf"'
-								:label='$t("iqrfnet.networkManager.otaUpload.form.file")'
-								:error-messages='errors'
-								:success='valid'
-								:prepend-icon='null'
-								prepend-inner-icon='mdi-file-outline'
-								required
-							/>
-						</ValidationProvider>
-						<v-select
-							v-model='target'
-							:class='target === NetworkTarget.NETWORK ? "mb-2": ""'
-							:items='targetOptions'
+							@change='checkSelectedFile'
+						/>
+						<CInputFile
+							ref='fileInput'
+							accept='.hex,.iqrf'
+							:label='$t("iqrfnet.networkManager.otaUpload.form.file")'
+							@input='checkSelectedFile'
+							@click='fileInputEmpty'
+						/>
+						<hr>
+						<CSelect
+							:value.sync='target'
+							:options='targetOptions'
 							:label='$t("iqrfnet.networkManager.otaUpload.form.target")'
-							:hint='target === NetworkTarget.NETWORK ? $t("iqrfnet.networkManager.otaUpload.notes.network") : ""'
-							:persistent-hint='target === NetworkTarget.NETWORK'
+							:description='
+								(target === NetworkTarget.NETWORK) ?
+									$t("iqrfnet.networkManager.otaUpload.notes.network").toString():
+									undefined
+							'
 							@change='resetChecks'
 						/>
 						<ValidationProvider
-							v-if='target === "node"'
+							v-if='target === NetworkTarget.NODE'
 							v-slot='{errors, touched, valid}'
 							rules='required|integer|between:1,239'
 							:custom-messages='{
-								required: $t("iqrfnet.networkManager.otaUpload.errors.nodeAddress"),
-								integer: $t("forms.errors.integer"),
-								between: $t("iqrfnet.networkManager.otaUpload.errors.nodeAddress"),
+								required: "iqrfnet.networkManager.otaUpload.errors.nodeAddress",
+								integer: "forms.errors.integer",
+								between: "iqrfnet.networkManager.otaUpload.errors.nodeAddress"
 							}'
 						>
-							<v-text-field
+							<CInput
 								v-model.number='params.address'
 								type='number'
 								min='1'
 								max='239'
 								:label='$t("iqrfnet.networkManager.otaUpload.form.nodeAddress")'
-								:success='touched ? valid : null'
-								:invalid-feedback='errors'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
 								@input='resetChecks'
 							/>
 						</ValidationProvider>
@@ -87,22 +71,20 @@ limitations under the License.
 							v-slot='{errors, touched, valid}'
 							rules='required|integer|between:0,65535'
 							:custom-messages='{
-								required: $t("iqrfnet.networkManager.otaUpload.errors.hwpid"),
-								integer: $t("forms.errors.integer"),
-								between: $t("iqrfnet.networkManager.otaUpload.errors.hwpid"),
+								required: "iqrfnet.networkManager.otaUpload.errors.hwpid",
+								integer: "forms.errors.integer",
+								between: "iqrfnet.networkManager.otaUpload.errors.hwpid"
 							}'
 						>
-							<v-text-field
+							<CInput
 								v-model.number='params.hwpid'
-								class='mb-2'
 								type='number'
 								min='0'
 								max='65535'
 								:label='$t("iqrfnet.networkManager.otaUpload.form.hwpidFilter")'
-								:success='touched ? valid : null'
-								:invalid-feedback='errors'
-								:hint='$t("iqrfnet.networkManager.otaUpload.notes.hwpid")'
-								persistent-hint
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+								:description='$t("iqrfnet.networkManager.otaUpload.notes.hwpid")'
 								@input='resetChecks'
 							/>
 						</ValidationProvider>
@@ -110,128 +92,124 @@ limitations under the License.
 							v-slot='{errors, touched, valid}'
 							rules='required|integer|between:768,16383'
 							:custom-messages='{
-								required: $t("iqrfnet.networkManager.otaUpload.errors.eeepromAddress"),
-								integer: $t("forms.errors.integer"),
-								between: $t("iqrfnet.networkManager.otaUpload.errors.eeepromAddress"),
+								required: "iqrfnet.networkManager.otaUpload.errors.eeepromAddress",
+								integer: "forms.errors.integer",
+								between: "iqrfnet.networkManager.otaUpload.errors.eeepromAddress"
 							}'
 						>
-							<v-text-field
+							<CInput
 								v-model.number='params.startMemAddr'
 								type='number'
 								min='768'
 								max='16383'
 								:label='$t("iqrfnet.networkManager.otaUpload.form.eeepromAddress")'
-								:success='touched ? valid : null'
-								:invalid-feedback='errors'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
 								@input='resetChecks'
 							/>
 						</ValidationProvider>
-						<v-checkbox
-							v-model='params.uploadEeprom'
-							:label='$t("iqrfnet.networkManager.otaUpload.form.uploadEeprom")'
-							dense
-						/>
-						<v-checkbox
-							v-model='params.uploadEeeprom'
-							:label='$t("iqrfnet.networkManager.otaUpload.form.uploadEeeprom")'
-							dense
-						/>
-						<v-divider />
-						<div>
-							<v-row align='center'>
-								<v-col>
-									<strong>
-										{{ $t('iqrfnet.networkManager.otaUpload.form.uploadSteps.uploadEeeprom') }}
-									</strong>
-								</v-col>
-								<v-col class='d-flex justify-end'>
-									<v-btn
-										color='primary'
-										:disabled='invalid'
-										@click='uploadFile()'
-									>
-										{{ $t('forms.upload') }}
-										<v-icon
-											v-if='checks.upload'
-											size='xl'
-										>
-											mdi-check
-										</v-icon>
-									</v-btn>
-								</v-col>
-							</v-row>
-							<v-row align='center'>
-								<v-col>
-									<strong>
-										{{ $t('iqrfnet.networkManager.otaUpload.form.uploadSteps.verifyEeeprom') }}
-									</strong>
-								</v-col>
-								<v-col class='d-flex justify-end'>
-									<v-btn
-										color='primary'
-										:disabled='invalid || !checks.upload'
-										@click='verifyStep'
-									>
-										{{ $t('forms.verify') }}
-										<v-icon
-											v-if='checks.verify'
-											size='xl'
-										>
-											mdi-check
-										</v-icon>
-									</v-btn>
-								</v-col>
-							</v-row>
-							<v-row align='center'>
-								<v-col>
-									<strong>
-										{{ $t('iqrfnet.networkManager.otaUpload.form.uploadSteps.loadFlash') }}
-									</strong>
-								</v-col>
-								<v-col class='d-flex justify-end'>
-									<v-btn
-										color='primary'
-										:disabled='invalid || !checks.verify'
-										@click='flashLoadStep'
-									>
-										{{ $t('forms.load') }}
-										<v-icon
-											v-if='checks.flash'
-											size='xl'
-										>
-											mdi-check
-										</v-icon>
-									</v-btn>
-								</v-col>
-							</v-row>
+						<div v-if='fileType === FileFormat.HEX'>
+							<CInputCheckbox
+								:checked.sync='params.uploadEeprom'
+								:label='$t("iqrfnet.networkManager.otaUpload.form.uploadEeprom")'
+							/>
+							<CInputCheckbox
+								:checked.sync='params.uploadEeeprom'
+								:label='$t("iqrfnet.networkManager.otaUpload.form.uploadEeeprom")'
+							/>
 						</div>
-					</v-form>
+						<hr>
+						<div class='form-group'>
+							<div>
+								<b>
+									{{ $t('iqrfnet.networkManager.otaUpload.form.uploadSteps.uploadEeeprom') }}
+								</b>
+							</div><br>
+							<div class='step-check'>
+								<CButton
+									color='primary'
+									:disabled='invalid || fileEmpty'
+									@click='uploadFile'
+								>
+									{{ $t('forms.upload') }}
+								</CButton> <CIcon
+									v-if='checks.upload'
+									class='text-success'
+									:content='cilCheckCircle'
+									size='xl'
+								/>
+							</div>
+						</div>
+						<div class='form-group'>
+							<div>
+								<b>
+									{{ $t('iqrfnet.networkManager.otaUpload.form.uploadSteps.verifyEeeprom') }}
+								</b>
+							</div><br>
+							<div class='step-check'>
+								<CButton
+									color='primary'
+									:disabled='invalid || fileEmpty || !checks.upload'
+									@click='verifyStep'
+								>
+									{{ $t('forms.verify') }}
+								</CButton> <CIcon
+									v-if='checks.verify'
+									class='text-success'
+									:content='cilCheckCircle'
+									size='xl'
+								/>
+							</div>
+						</div>
+						<div class='form-group'>
+							<div>
+								<b>
+									{{ $t('iqrfnet.networkManager.otaUpload.form.uploadSteps.loadFlash') }}
+								</b>
+							</div><br>
+							<div class='step-check'>
+								<CButton
+									color='primary'
+									:disabled='invalid || fileEmpty || !checks.verify'
+									@click='flashLoadStep'
+								>
+									{{ $t('forms.load') }}
+								</CButton> <CIcon
+									v-if='checks.flash'
+									class='text-success'
+									:content='cilCheckCircle'
+									size='xl'
+								/>
+							</div>
+						</div>
+					</CForm>
 				</ValidationObserver>
-			</v-card-text>
-		</v-card>
+			</CCardBody>
+		</CCard>
 		<OtaUploadResultModal ref='result' :results='results' />
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CInputFile, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import OtaUploadResultModal from '@/components/IqrfNet/NetworkManager/OtaUpload/OtaUploadResultModal.vue';
 
 import {between, integer, required} from 'vee-validate/dist/rules';
+import {cilCheckCircle} from '@coreui/icons';
+import {extendedErrorToast} from '@/helpers/errorToast';
+import {FileFormat} from '@/iqrfNet/fileFormat';
+import {NetworkTarget} from '@/iqrfNet/networkTarget';
+import {OtaUploadAction} from '@/enums/IqrfNet/OtaUpload';
+import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
+
 import IqrfNetService from '@/services/IqrfNetService';
 import IqrfService from '@/services/IqrfService';
 
-import {extendedErrorToast} from '@/helpers/errorToast';
-import {FileFormat} from '@/iqrfNet/fileFormat';
-import {NetworkTarget} from '@/enums/IqrfNet/network';
-import {OtaUploadAction} from '@/enums/IqrfNet/OtaUpload';
-
-import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
-
 import {AxiosError, AxiosResponse} from 'axios';
+import {IOption} from '@/interfaces/Coreui';
 import {IOtaUploadParams, IOtaUploadResult} from '@/interfaces/DaemonApi/Iqmesh/OtaUpload';
-import {ISelectItem} from '@/interfaces/Vuetify';
 import {MutationPayload} from 'vuex';
 
 interface IqmeshResultBase {
@@ -239,21 +217,30 @@ interface IqmeshResultBase {
 	result: boolean;
 }
 
+/**
+ * OTA upload component for IQRF network manager
+ */
 @Component({
 	components: {
+		CButton,
+		CCard,
+		CCardBody,
+		CCardHeader,
+		CForm,
+		CInput,
+		CInputCheckbox,
+		CInputFile,
+		CSelect,
 		OtaUploadResultModal,
 		ValidationObserver,
 		ValidationProvider,
 	},
 	data: () => ({
+		cilCheckCircle,
 		FileFormat,
 		NetworkTarget,
 	})
 })
-
-/**
- * OTA upload component for IQRF network manager
- */
 export default class OtaUpload extends Vue {
 	/**
 	 * @var {string} msgId Daemon API message ID
@@ -274,25 +261,25 @@ export default class OtaUpload extends Vue {
 	};
 
 	/**
+	 * @var {boolean} fileEmpty Indicates whether file input is empty or not
+	 */
+	private fileEmpty = true;
+
+	/**
 	 * @var {FileFormat} fileType Type of IQRF file to upload
 	 */
 	private fileType: FileFormat = FileFormat.HEX;
 
 	/**
-	 * @var {File|null} file Selected file
+	 * @constant {Array<IOption>} fileTypeOptions Array of CoreUI select options for file input
 	 */
-	private file: File|null = null;
-
-	/**
-	 * @constant {Array<ISelectItem>} fileTypeOptions File type select options
-	 */
-	private fileTypeOptions: Array<ISelectItem> = [
+	private fileTypeOptions: Array<IOption> = [
 		{
-			text: this.$t('iqrfnet.networkManager.otaUpload.form.fileTypes.hex').toString(),
+			label: this.$t('iqrfnet.networkManager.otaUpload.form.fileTypes.hex'),
 			value: FileFormat.HEX
 		},
 		{
-			text: this.$t('iqrfnet.networkManager.otaUpload.form.fileTypes.iqrf').toString(),
+			label: this.$t('iqrfnet.networkManager.otaUpload.form.fileTypes.iqrf'),
 			value: FileFormat.IQRF
 		}
 	];
@@ -303,19 +290,19 @@ export default class OtaUpload extends Vue {
 	private target: NetworkTarget = NetworkTarget.COORDINATOR;
 
 	/**
-	 * @constant {Array<ISelectItem>} targetOptions Upload target select options
+	 * @constant {Array<IOption>} targetOptions Array of CoreUI select options for upload target
 	 */
-	private targetOptions: Array<ISelectItem> = [
+	private targetOptions: Array<IOption> = [
 		{
-			text: this.$t('iqrfnet.networkManager.otaUpload.form.targets.coordinator').toString(),
+			label: this.$t('iqrfnet.networkManager.otaUpload.form.targets.coordinator'),
 			value: NetworkTarget.COORDINATOR,
 		},
 		{
-			text: this.$t('iqrfnet.networkManager.otaUpload.form.targets.node').toString(),
+			label: this.$t('iqrfnet.networkManager.otaUpload.form.targets.node'),
 			value: NetworkTarget.NODE,
 		},
 		{
-			text: this.$t('iqrfnet.networkManager.otaUpload.form.targets.network').toString(),
+			label: this.$t('iqrfnet.networkManager.otaUpload.form.targets.network'),
 			value: NetworkTarget.NETWORK,
 		},
 	];
@@ -329,6 +316,9 @@ export default class OtaUpload extends Vue {
 		flash: false,
 	};
 
+	/**
+	 * @var {Array<IOtaUploadResult} results OTA upload step results
+	 */
 	private results: Array<IOtaUploadResult> = [];
 
 	/**
@@ -343,26 +333,7 @@ export default class OtaUpload extends Vue {
 		extend('between', between);
 		extend('integer', integer);
 		extend('required', required);
-		extend('selectedFile', (file: File|null) => {
-			if (!file) {
-				return false;
-			}
-			if (this.fileType === FileFormat.HEX && !file.name.endsWith('.hex')) {
-				return false;
-			}
-			if (this.fileType === FileFormat.IQRF && !file.name.endsWith('.iqrf')) {
-				return false;
-			}
-			return true;
-		});
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type === 'daemonClient/SOCKET_ONERROR' ||
-				mutation.type === 'daemonClient/SOCKET_ONCLOSE') {
-				if (this.$store.getters['spinner/isEnabled']) {
-					this.$store.commit('spinner/HIDE');
-				}
-				return;
-			}
 			if (mutation.type !== 'daemonClient/SOCKET_ONMESSAGE') {
 				return;
 			}
@@ -390,6 +361,30 @@ export default class OtaUpload extends Vue {
 	}
 
 	/**
+	 * Extracts file from file input
+	 * @returns {FileList} List of uploaded files
+	 */
+	private getFiles(): FileList {
+		const input = ((this.$refs.fileInput as CInputFile).$el.children[1] as HTMLInputElement);
+		return (input.files as FileList);
+	}
+
+	/**
+	 * Resets file input content
+	 */
+	private resetFileInput(): void {
+		((this.$refs.fileInput as CInputFile).$el.children[1] as HTMLInputElement).value = '';
+		this.fileInputEmpty();
+	}
+
+	/**
+	 * Checks if file input is empty
+	 */
+	private fileInputEmpty(): void {
+		this.fileEmpty = this.getFiles().length === 0;
+	}
+
+	/**
 	 * Resets step checks
 	 */
 	private resetChecks(): void {
@@ -400,20 +395,44 @@ export default class OtaUpload extends Vue {
 	 * Resets the inputs and checks if target, address or filtering has changed
 	 */
 	private clearForm(): void {
+		this.resetFileInput();
 		this.resetChecks();
+	}
+
+	/**
+	 * Checks selected file
+	 */
+	private checkSelectedFile(): void {
+		const file = this.getFiles()[0];
+		if (!file) {
+			return;
+		}
+		if (this.fileType === FileFormat.HEX && !file.name.endsWith('.hex')) {
+			this.$toast.error(
+				this.$t('iqrfnet.networkManager.otaUpload.errors.notHexFile').toString()
+			);
+			this.clearForm();
+			return;
+		}
+		if (this.fileType === FileFormat.IQRF && !file.name.endsWith('.iqrf')) {
+			this.$toast.error(
+				this.$t('iqrfnet.networkManager.otaUpload.errors.notIqrfFile').toString()
+			);
+			this.clearForm();
+			return;
+		}
+		this.resetChecks();
+		this.fileEmpty = false;
 	}
 
 	/**
 	 * Uploads file from file input to gateway filesystem
 	 */
 	private uploadFile(): void {
-		if (!this.file) {
-			return;
-		}
-		this.params.file = '';
 		const formData = new FormData();
+		const file = this.getFiles()[0];
 		formData.append('format', this.fileType);
-		formData.append('file', this.file);
+		formData.append('file', file);
 		this.$store.commit('spinner/SHOW');
 		IqrfService.uploadFile(formData)
 			.then((response: AxiosResponse) => {
@@ -463,12 +482,16 @@ export default class OtaUpload extends Vue {
 	}
 
 	/**
-	 * Sends Daemon API request to execute specified step
+	 * Sends Daemon API rquest to execute specified step
 	 */
 	private executeStep(action: OtaUploadAction, message: string): void {
 		this.$store.commit('spinner/SHOW');
-		this.$store.commit('spinner/UPDATE_TEXT', this.$t(`iqrfnet.networkManager.otaUpload.messages.${action.toLowerCase()}Running`).toString());
+		this.$store.commit('spinner/UPDATE_TEXT', this.$t('iqrfnet.networkManager.otaUpload.messages.' + action.toLowerCase() + 'Running').toString());
 		const params = JSON.parse(JSON.stringify(this.params));
+		if (this.fileType !== FileFormat.HEX) {
+			delete params.uploadEeprom;
+			delete params.uploadEeeprom;
+		}
 		params.address = this.getAddress();
 		params.loadingAction = action;
 		IqrfNetService.otaUpload(params, new DaemonMessageOptions(null, null, message, () => this.msgId = ''))
@@ -613,15 +636,24 @@ export default class OtaUpload extends Vue {
 			this.$toast.success(
 				this.$t('iqrfnet.networkManager.otaUpload.messages.network.uploadStepSuccess').toString()
 			);
-		} else if (action === OtaUploadAction.VERIFY) {
-			this.results = response.rsp.verifyResult;
-			(this.$refs.result as OtaUploadResultModal).showModal(action);
-			this.checks.verify = true;
 		} else {
-			this.results = response.rsp.verifyResult;
+			if (action === OtaUploadAction.VERIFY) {
+				this.results = response.rsp.verifyResult;
+				this.checks.verify = true;
+			} else {
+				this.results = response.rsp.loadResult;
+				this.checks.flash = true;
+			}
 			(this.$refs.result as OtaUploadResultModal).showModal(action);
-			this.checks.flash = true;
 		}
 	}
 }
 </script>
+
+<style scoped>
+.step-check {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+</style>

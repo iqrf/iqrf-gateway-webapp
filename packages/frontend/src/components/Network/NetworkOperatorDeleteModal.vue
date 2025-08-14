@@ -15,99 +15,110 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-dialog
-		v-model='showModal'
-		width='50%'
-		persistent
-		no-click-animation
+	<CModal
+		color='danger'
+		:show.sync='show'
+		:close-on-backdrop='false'
 	>
-		<v-card v-if='operator !== null'>
-			<v-card-title>
+		<template #header>
+			<h5 class='modal-title'>
 				{{ $t('network.operators.modal.title') }}
-			</v-card-title>
-			<v-card-text>
-				{{ $t('network.operators.modal.prompt', {name: operator.name}) }}
-			</v-card-text>
-			<v-card-actions>
-				<v-spacer />
-				<v-btn
-					@click='hideModal'
-				>
-					{{ $t('forms.cancel') }}
-				</v-btn>
-				<v-btn
-					color='error'
-					@click='remove'
-				>
-					{{ $t('forms.delete') }}
-				</v-btn>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
+			</h5>
+		</template>
+		{{ $t('network.operators.modal.prompt', {name: name}) }}
+		<template #footer>
+			<CButton
+				color='danger'
+				@click='deleteOperator'
+			>
+				{{ $t('forms.delete') }}
+			</CButton> <CButton
+				color='secondary'
+				@click='deactivateModal'
+			>
+				{{ $t('forms.cancel') }}
+			</CButton>
+		</template>
+	</CModal>
 </template>
 
 <script lang='ts'>
-import {Component, VModel, Vue} from 'vue-property-decorator';
+import {Component, Vue} from 'vue-property-decorator';
+import {CButton, CModal} from '@coreui/vue/src';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 
+import NetworkOperatorService from '@/services/NetworkOperatorService';
+
 import {AxiosError} from 'axios';
-import {
-	MobileOperator
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
-import {useApiClient} from '@/services/ApiClient';
+
+@Component({
+	components: {
+		CButton,
+		CModal,
+	},
+})
 
 /**
  * Network operator delete modal component
  */
-@Component
 export default class NetworkOperatorDeleteModal extends Vue {
 
 	/**
-	 * @property {MobileOperator|null} operator Operator to delete
+	 * @var {boolean} show Controls whether modal is displayed
 	 */
-	@VModel({required: true}) operator!: MobileOperator|null;
+	private show = false;
 
 	/**
-	 * @property {NetworkOperatorService} service Network operator service
+	 * @var {number} id Operator ID
 	 */
-	private service = useApiClient().getNetworkServices().getMobileOperatorService();
+	private id = 0;
 
 	/**
-	 * Computes modal display condition
+	 * @var {string} name Operator name
 	 */
-	get showModal(): boolean {
-		return this.operator !== null;
+	private name = '';
+
+	/**
+	 * Shows the modal window
+	 * @param {number} id Operator ID
+	 * @param {string} name Operator name
+	 */
+	public activateModal(id: number, name: string): void {
+		this.id = id;
+		this.name = name;
+		this.show = true;
+	}
+
+	/**
+	 * Hides the modal window
+	 */
+	public deactivateModal(): void {
+		this.id = 0;
+		this.name = '';
+		this.show = false;
 	}
 
 	/**
 	 * Deletes operator
 	 */
-	private remove(): void {
-		if (this.operator === null || this.operator.id === undefined) {
-			return;
-		}
-		const name = this.operator.name;
+	private deleteOperator(): void {
 		this.$store.commit('spinner/SHOW');
-		this.service.delete(this.operator.id)
+		NetworkOperatorService.deleteOperator(this.id)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
-					this.$t('network.operators.messages.deleteSuccess', {operator: name}).toString()
+					this.$t('network.operators.messages.deleteSuccess', {operator: this.name}).toString()
 				);
-				this.hideModal();
-				this.$emit('deleted');
+				this.deactivateModal();
+				this.$emit('closed');
 			})
 			.catch((err: AxiosError) => {
-				extendedErrorToast(err, 'network.operators.messages.deleteFailed', {name: name});
+				const params = {name: this.name};
+				extendedErrorToast(err, 'network.operators.messages.deleteFailed', params);
+				this.deactivateModal();
+				this.$emit('closed');
 			});
-	}
-
-	/**
-	 * Hides modal window
-	 */
-	private hideModal(): void {
-		this.operator = null;
 	}
 }
 </script>

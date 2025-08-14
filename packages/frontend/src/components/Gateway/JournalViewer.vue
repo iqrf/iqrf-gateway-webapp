@@ -1,69 +1,46 @@
-<!--
-Copyright 2017-2025 IQRF Tech s.r.o.
-Copyright 2019-2025 MICRORISC s.r.o.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software,
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied
-See the License for the specific language governing permissions and
-limitations under the License.
--->
 <template>
-	<v-card>
-		<v-card-text>
-			<v-alert
-				v-if='cursor === null && log.length === 0'
-				class='mb-0'
-				type='warning'
-				text
-			>
-				{{ $t('gateway.log.journal.notLoaded') }}
-			</v-alert>
-			<v-alert
-				v-else-if='log.length === 0'
-				class='mb-0'
-				type='info'
-				text
-			>
-				{{ $t('gateway.log.journal.noRecords') }}
-			</v-alert>
-			<v-alert
-				v-else-if='loading'
-				class='mb-0'
-				type='info'
-				text
-			>
-				{{ $t('gateway.log.journal.loading') }}
-			</v-alert>
-			<v-alert
-				v-else-if='oldestRecords'
-				class='mb-0'
-				type='info'
-				text
-			>
-				{{ $t('gateway.log.journal.noOlderRecords') }}
-			</v-alert>
-			<pre
-				v-if='log.length > 0'
-				ref='journal'
-				v-scroll.self='scrollUpdate'
-				class='log'
-			>{{ log }}</pre>
-		</v-card-text>
-	</v-card>
+	<CCardBody class='border-0 card-margin-bottom'>
+		<CAlert
+			v-if='cursor === null && log.length === 0'
+			class='mb-0'
+			color='warning'
+		>
+			{{ $t('gateway.log.journal.notLoaded') }}
+		</CAlert>
+		<CAlert
+			v-else-if='log.length === 0'
+			class='mb-0'
+			color='info'
+		>
+			{{ $t('gateway.log.journal.noRecords') }}
+		</CAlert>
+		<CAlert
+			v-else-if='loading'
+			class='mb-0'
+			color='info'
+		>
+			{{ $t('gateway.log.journal.loading') }}
+		</CAlert>
+		<CAlert
+			v-else-if='oldestRecords'
+			class='mb-0'
+			color='info'
+		>
+			{{ $t('gateway.log.journal.noOlderRecords') }}
+		</CAlert>
+		<pre
+			v-if='log.length > 0'
+			ref='journal'
+			class='log card-margin-bottom'
+			@scroll='scrollUpdate'
+		>{{ log }}</pre>
+	</CCardBody>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
-import {Scroll} from 'vuetify/lib/directives';
 
 import JournalService from '@/services/JournalService';
 
@@ -74,9 +51,7 @@ import {IJournalData} from '@/interfaces/Gateway/Journal';
  * Journal viewer component
  */
 @Component({
-	directives: {
-		Scroll,
-	},
+
 })
 export default class JournalViewer extends Vue {
 	/**

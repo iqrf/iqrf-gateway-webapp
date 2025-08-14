@@ -15,63 +15,64 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-card>
-		<v-card-title>{{ $t('install.ssh.title') }}</v-card-title>
-		<v-card-text>
-			<v-overlay
+	<CCard>
+		<CCardHeader>{{ $t('install.ssh.title') }}</CCardHeader>
+		<CCardBody>
+			<CElementCover
 				v-if='running'
-				:opacity='0.65'
-				absolute
+				:opacity='0.75'
+				style='z-index: 10000;'
 			>
-				<v-progress-circular color='primary' indeterminate />
-			</v-overlay>
-			<v-form>
+				<CSpinner color='primary' />
+			</CElementCover>
+			<CForm>
 				<div class='form-group'>
 					{{ $t('install.ssh.messages.note') }}
 				</div>
-				<v-divider class='my-2' />
-				<v-radio-group
-					v-model='status'
+				<CInputRadioGroup
+					:checked.sync='status'
 					:options='options'
-					dense
-				>
-					<v-radio
-						v-for='option in options'
-						:key='option.value'
-						:value='option.value'
-						:label='option.text'
-					/>
-				</v-radio-group>
+					:label='$t("install.ssh.state")'
+				/>
 				<p>
 					<em>{{ $t('install.ssh.messages.reminder') }}</em>
 				</p>
-				<v-btn
-					class='mr-1'
+				<CButton
 					color='primary'
 					@click='setService'
 				>
 					{{ $t('forms.save') }}
-				</v-btn>
-				<v-btn
+				</CButton> <CButton
+					color='secondary'
 					@click='nextStep'
 				>
 					{{ $t('forms.skip') }}
-				</v-btn>
-			</v-form>
-		</v-card-text>
-	</v-card>
+				</CButton>
+			</CForm>
+		</CCardBody>
+	</CCard>
 </template>
 
 <script lang='ts'>
-import {ServiceService} from '@iqrf/iqrf-gateway-webapp-client/services';
-import {AxiosError} from 'axios';
 import {Component, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CSelect} from '@coreui/vue/src';
 
-import {SSHStatus} from '@/enums/Install/ssh';
+import ServiceService from '@/services/ServiceService';
+
 import {extendedErrorToast} from '@/helpers/errorToast';
-import {useApiClient} from '@/services/ApiClient';
+import {SSHStatus} from '@/enums/Install/ssh';
+
+import {AxiosError} from 'axios';
+import {IOption} from '@/interfaces/Coreui';
 
 @Component({
+	components: {
+		CButton,
+		CCard,
+		CCardBody,
+		CCardHeader,
+		CSelect,
+	},
 	metaInfo: {
 		title: 'install.ssh.title'
 	}
@@ -90,28 +91,22 @@ export default class InstallSshStatus extends Vue {
 	private running = false;
 
 	/**
-	 * @constant options SSH service status options
+	 * @constant {Array<IOption>} options SSH service status options
 	 */
-	private options = [
+	private options: Array<IOption> = [
 		{
 			value: SSHStatus.ENABLE,
-			text: this.$t('install.ssh.states.enable').toString(),
+			label: this.$t('install.ssh.states.enable').toString(),
 		},
 		{
 			value: SSHStatus.START,
-			text: this.$t('install.ssh.states.start').toString(),
+			label: this.$t('install.ssh.states.start').toString(),
 		},
 		{
 			value: SSHStatus.DISABLE,
-			text: this.$t('install.ssh.states.disable').toString(),
+			label: this.$t('install.ssh.states.disable').toString(),
 		}
 	];
-
-	/**
-   * @property {ServiceService} service Service service
-   * @private
-   */
-	private service: ServiceService = useApiClient().getServiceService();
 
 	/**
 	 * Advances the install wizard step
@@ -119,15 +114,15 @@ export default class InstallSshStatus extends Vue {
 	private setService(): void {
 		this.running = true;
 		if (this.status === SSHStatus.ENABLE) {
-			this.service.enable('ssh')
+			ServiceService.enable('ssh')
 				.then(this.handleSuccess)
 				.catch(this.handleFailure);
 		} else if (this.status === SSHStatus.START) {
-			this.service.start('ssh')
+			ServiceService.start('ssh')
 				.then(this.handleSuccess)
 				.catch(this.handleFailure);
 		} else {
-			this.service.disable('ssh')
+			ServiceService.disable('ssh')
 				.then(this.handleSuccess)
 				.catch(this.handleFailure);
 		}

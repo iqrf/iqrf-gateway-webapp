@@ -15,26 +15,27 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-card>
-		<v-card-title>
-			{{ $t('gateway.user.title') }}
-		</v-card-title>
-		<v-card-text>
-			<v-overlay
+	<CCard>
+		<CCardHeader>
+			{{ $t('gateway.user.title', {user: user}) }}
+		</CCardHeader>
+		<CCardBody>
+			<CElementCover
 				v-if='running'
-				:opacity='0.65'
-				absolute
+				:opacity='0.75'
+				style='z-index: 10000;'
 			>
-				<v-progress-circular color='primary' indeterminate />
-			</v-overlay>
+				<CSpinner color='primary' />
+			</CElementCover>
 			<ValidationObserver v-slot='{invalid}'>
-				<form>
+				<CForm>
 					<div
 						v-if='$route.path.includes("/install")'
+						class='form-group'
 					>
 						{{ $t('install.gwUser.note') }}
 					</div>
-					<div>
+					<div class='form-group'>
 						<strong>{{ $t('gateway.user.user') }}</strong>{{ user }}
 					</div>
 					<ValidationProvider
@@ -47,51 +48,61 @@ limitations under the License.
 						<PasswordInput
 							v-model='password'
 							:label='$t("forms.fields.password").toString()'
-							:success='touched ? valid : null'
-							:error-messages='errors'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='errors.join(", ")'
 						/>
 					</ValidationProvider>
-					<v-btn
+					<CButton
 						color='primary'
 						:disabled='invalid'
 						@click='changePassword'
 					>
 						{{ $t('forms.changePassword') }}
-					</v-btn> <v-btn
+					</CButton> <CButton
 						v-if='$route.path.includes("/install")'
+						color='secondary'
 						@click='nextStep'
 					>
 						{{ $t('forms.skip') }}
-					</v-btn>
-				</form>
+					</CButton>
+				</CForm>
 			</ValidationObserver>
-		</v-card-text>
-	</v-card>
+		</CCardBody>
+	</CCard>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CElementCover, CForm, CInput, CSpinner} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import PasswordInput from '@/components/Core/PasswordInput.vue';
 
-import {extendedErrorToast} from '@/helpers/errorToast';
-import {GatewayPasswordFeature} from '@/services/FeatureService';
 import {required} from 'vee-validate/dist/rules';
-
 import GatewayService from '@/services/GatewayService';
 
 import {AxiosError} from 'axios';
+import {GatewayPasswordFeature} from '@/services/FeatureService';
+import {extendedErrorToast} from '@/helpers/errorToast';
 import {MetaInfo} from 'vue-meta';
+
+import PasswordInput from '@/components/Core/PasswordInput.vue';
 
 @Component({
 	components: {
+		CButton,
+		CCard,
+		CCardBody,
+		CCardHeader,
+		CElementCover,
+		CForm,
+		CInput,
+		CSpinner,
 		PasswordInput,
 		ValidationObserver,
 		ValidationProvider,
 	},
 	metaInfo(): MetaInfo {
 		return {
-			title: (this as unknown as GatewayUserPassword).pageTitle,
+			title: (this as GatewayUserPassword).pageTitle
 		};
 	}
 })
@@ -117,7 +128,8 @@ export default class GatewayUserPassword extends Vue {
 	private running = false;
 
 	/**
-	 * @var {string} pageTitle
+	 * Computes page title depending on the path
+	 * @returns {string} Page title
 	 */
 	get pageTitle(): string {
 		return this.$route.path.includes('/install') ?

@@ -15,26 +15,25 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-app dark>
+	<div>
 		<Blocking />
 		<LoadingSpinner />
 		<router-view v-if='installationChecked' />
 		<DaemonModeModal />
 		<SessionExpirationModal v-if='loggedIn' />
-	</v-app>
+	</div>
 </template>
 
 <script lang='ts'>
-import {InstallationChecks} from '@iqrf/iqrf-gateway-webapp-client/types';
-import {AxiosError} from 'axios';
 import {Component, Vue} from 'vue-property-decorator';
-import {mapGetters} from 'vuex';
+import InstallationService, {InstallationCheck} from './services/InstallationService';
+import SessionExpirationModal from '@/components/SessionExpirationModal.vue';
+import {AxiosError} from 'axios';
 
 import Blocking from './components/Blocking.vue';
 import DaemonModeModal from './components/DamonModeModal.vue';
 import LoadingSpinner from './components/LoadingSpinner.vue';
-import SessionExpirationModal from '@/components/SessionExpirationModal.vue';
-import {useApiClient} from '@/services/ApiClient';
+import {mapGetters} from 'vuex';
 
 @Component({
 	components: {
@@ -75,10 +74,8 @@ export default class App extends Vue {
 			{timeout: null, text: this.$t('install.messages.check').toString()}
 		);
 		await this.$store.dispatch('features/fetch');
-		await useApiClient().getInstallationService().check()
-			.then(async (check: InstallationChecks) => {
-				this.$store.commit('installation/CHECKED');
-				await this.$store.dispatch('spinner/hide');
+		await InstallationService.check()
+			.then(async (check: InstallationCheck) => {
 				const installUrl: boolean = this.$route.path.startsWith('/install/');
 				if (check.dependencies.length !== 0) {
 					this.setInstallationChecked();
@@ -124,7 +121,6 @@ export default class App extends Vue {
 				this.setInstallationChecked();
 			})
 			.catch((error: AxiosError) => {
-				this.$store.commit('installation/CHECKED');
 				this.$store.dispatch('spinner/hide');
 				console.error(error);
 			});

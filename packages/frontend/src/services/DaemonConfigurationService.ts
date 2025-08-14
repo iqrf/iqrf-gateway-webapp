@@ -16,11 +16,21 @@
  */
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '@/helpers/authorizationHeader';
+import {IChangeComponent} from '@/interfaces/Config/Daemon';
 
 /**
  * Daemon configuration service
  */
 class DaemonConfigurationService {
+
+	/**
+	 * Creates a new component
+	 * @param configuration Daemon component configuration
+	 */
+	createComponent(configuration: any): Promise<AxiosResponse> {
+		const url = 'config/daemon/';
+		return axios.post(url, configuration, {headers: authorizationHeader()});
+	}
 
 	/**
 	 * Creates a new component instance
@@ -52,6 +62,15 @@ class DaemonConfigurationService {
 	}
 
 	/**
+	 * Deletes the component
+	 * @param component Daemon component name
+	 */
+	deleteComponent(component: string): Promise<AxiosResponse> {
+		const url = 'config/daemon/' + encodeURIComponent(component);
+		return axios.delete(url, {headers: authorizationHeader()});
+	}
+
+	/**
 	 * Deletes the component instance
 	 * @param component Daemon component name
 	 * @param instance Daemon component instance name
@@ -59,6 +78,37 @@ class DaemonConfigurationService {
 	deleteInstance(component: string, instance: string): Promise<AxiosResponse> {
 		const url = 'config/daemon/' + encodeURIComponent(component) + '/' + encodeURIComponent(instance);
 		return axios.delete(url, {headers: authorizationHeader()});
+	}
+
+	/**
+	 * Exports daemon configuration
+	 */
+	export(): Promise<AxiosResponse> {
+		const url = 'config/daemon/migration/export';
+		return axios.get(url, {headers: authorizationHeader(), responseType: 'arraybuffer'});
+	}
+
+	/**
+	 * Imports daemon configuration
+	 * @param config daemon configuration
+	 */
+	import(config: File): Promise<AxiosResponse> {
+		const url = 'config/daemon/migration/import';
+		const headers = {
+			...authorizationHeader(),
+			'Content-Type': config.type
+		};
+		return axios.post(url, config, {headers: headers});
+	}
+
+	/**
+	 * Updates the component configuration
+	 * @param component Daemon component name
+	 * @param configuration Daemon component configuration
+	 */
+	updateComponent(component: string, configuration: any): Promise<AxiosResponse> {
+		const url = 'config/daemon/' + encodeURIComponent(component);
+		return axios.put(url, configuration, {headers: authorizationHeader()});
 	}
 
 	/**
@@ -70,6 +120,14 @@ class DaemonConfigurationService {
 	updateInstance(component: string, instance: string, configuration: any): Promise<AxiosResponse> {
 		const url = 'config/daemon/' + encodeURIComponent(component) + '/' + encodeURIComponent(instance);
 		return axios.put(url, configuration, {headers: authorizationHeader()});
+	}
+
+	/**
+	 * Changes IQRF component
+	 * @param data component configuration
+	 */
+	changeComponent(data: Array<IChangeComponent>): Promise<AxiosResponse> {
+		return axios.patch('config/daemon/components', data, {headers: authorizationHeader()});
 	}
 
 }

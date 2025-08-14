@@ -17,10 +17,10 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('config.repository.title') }}</h1>
-		<v-card>
-			<v-card-text>
+		<CCard>
+			<CCardBody>
 				<ValidationObserver v-slot='{invalid}'>
-					<v-form>
+					<CForm>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required'
@@ -28,22 +28,30 @@ limitations under the License.
 								required: $t("config.repository.errors.endpointMissing"),
 							}'
 						>
-							<v-text-field
+							<CInput
 								v-model='config.apiEndpoint'
 								:label='$t("config.repository.form.endpoint")'
-								:success='touched ? valid : null'
-								:error-messages='errors'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
-						<v-switch
-							v-model='credentials'
-							:label='$t("config.repository.form.credentials")'
-							color='primary'
-							inset
-							dense
-						/>
-						<v-row v-if='credentials'>
-							<v-col>
+						<div class='form-group'>
+							<strong>
+								<label>
+									{{ $t('config.repository.form.credentials') }}
+								</label>
+							</strong><br>
+							<CSwitch
+								:checked.sync='credentials'
+								color='primary'
+								size='lg'
+								shape='pill'
+								label-on='ON'
+								label-off='OFF'
+							/>
+						</div>
+						<CRow v-if='credentials'>
+							<CCol>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='required'
@@ -51,15 +59,15 @@ limitations under the License.
 										required: $t("forms.errors.username"),
 									}'
 								>
-									<v-text-field
+									<CInput
 										v-model='config.credentials.username'
 										:label='$t("forms.fields.username")'
-										:success='touched ? valid : null'
-										:error-messages='errors'
+										:is-valid='touched ? valid : null'
+										:invalid-feedback='errors.join(", ")'
 									/>
 								</ValidationProvider>
-							</v-col>
-							<v-col>
+							</CCol>
+							<CCol>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='required'
@@ -67,43 +75,51 @@ limitations under the License.
 										required: $t("forms.errors.password"),
 									}'
 								>
-									<v-text-field
+									<CInput
 										v-model='config.credentials.password'
 										:label='$t("forms.fields.password")'
-										:success='touched ? valid : null'
-										:error-messages='errors'
+										:is-valid='touched ? valid : null'
+										:invalid-feedback='errors.join(", ")'
 									/>
 								</ValidationProvider>
-							</v-col>
-						</v-row>
-						<v-btn
+							</CCol>
+						</CRow>
+						<CButton
 							color='primary'
 							:disabled='invalid'
 							@click='saveConfig'
 						>
 							{{ $t('forms.save') }}
-						</v-btn>
-					</v-form>
+						</CButton>
+					</CForm>
 				</ValidationObserver>
-			</v-card-text>
-		</v-card>
+			</CCardBody>
+		</CCard>
 	</div>
 </template>
 
 <script lang='ts'>
-import {IqrfRepositoryService} from '@iqrf/iqrf-gateway-webapp-client/services/Config';
-import {IqrfRepositoryConfig} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import {AxiosError} from 'axios';
-import {extend, ValidationProvider, ValidationObserver} from 'vee-validate';
-import {required} from 'vee-validate/dist/rules';
 import {Component, Vue} from 'vue-property-decorator';
-import {NavigationGuardNext, Route} from 'vue-router';
+import {CButton, CCard, CCardBody, CForm, CInput, CSwitch} from '@coreui/vue/src';
+import {extend, ValidationProvider, ValidationObserver} from 'vee-validate';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
-import {useApiClient} from '@/services/ApiClient';
+import {NavigationGuardNext, Route} from 'vue-router';
+import {required} from 'vee-validate/dist/rules';
+
+import RepositoryConfigService from '@/services/IqrfRepository/IqrfRepositoryConfigService';
+
+import {AxiosError} from 'axios';
+import {IIqrfRepositoryConfig} from '@/interfaces/Config/Misc';
 
 @Component({
 	components: {
+		CButton,
+		CCard,
+		CCardBody,
+		CForm,
+		CInput,
+		CSwitch,
 		ValidationObserver,
 		ValidationProvider
 	},
@@ -125,12 +141,12 @@ import {useApiClient} from '@/services/ApiClient';
 /**
  * IQRF repository configuration component
  */
-export default class IqrfRepositoryConfiguration extends Vue {
+export default class IqrfRepositoryConfig extends Vue {
 
 	/**
-	 * @var {IqrfRepositoryConfig} config IQRF repository configuration
+	 * @var {IIqrfRepositoryConfig} config IQRF repository configuration
 	 */
-	private config: IqrfRepositoryConfig = {
+	private config: IIqrfRepositoryConfig = {
 		apiEndpoint: 'https://repository.iqrfalliance.org/api',
 		credentials: {
 			username: null,
@@ -142,12 +158,6 @@ export default class IqrfRepositoryConfiguration extends Vue {
 	 * @var {boolean} credentials Controls credentials rendering in form
 	 */
 	private credentials = false;
-
-	/**
-	 * @property {IqrfRepositoryService} repositoryService IQRF repository service
-   * @private
-   */
-	private repositoryService: IqrfRepositoryService = useApiClient().getConfigServices().getIqrfRepositoryService();
 
 	/**
 	 * Initializes validation rules
@@ -173,8 +183,8 @@ export default class IqrfRepositoryConfiguration extends Vue {
 	 */
 	private getConfig(): Promise<void> {
 		this.$store.commit('spinner/SHOW');
-		return this.repositoryService.getConfig()
-			.then((config: IqrfRepositoryConfig) => {
+		return RepositoryConfigService.get()
+			.then((config: IIqrfRepositoryConfig) => {
 				this.storeConfig(config);
 				this.$store.commit('spinner/HIDE');
 			})
@@ -186,7 +196,7 @@ export default class IqrfRepositoryConfiguration extends Vue {
 	/**
 	 * Parses and stores repository configuration
 	 */
-	private storeConfig(config: IqrfRepositoryConfig): void {
+	private storeConfig(config: IIqrfRepositoryConfig): void {
 		this.config = {...this.config, ...config};
 		this.credentials = config.credentials.username !== null;
 	}
@@ -196,11 +206,11 @@ export default class IqrfRepositoryConfiguration extends Vue {
 	 */
 	private saveConfig(): void {
 		this.$store.commit('spinner/SHOW');
-		const config: IqrfRepositoryConfig = JSON.parse(JSON.stringify(this.config));
+		const config: IIqrfRepositoryConfig = JSON.parse(JSON.stringify(this.config));
 		if (!this.credentials) {
 			config.credentials = {username: null, password: null};
 		}
-		this.repositoryService.updateConfig(config)
+		RepositoryConfigService.save(config)
 			.then(() => {
 				this.$store.commit('repository/SET', config);
 				this.getConfig().then(() => {

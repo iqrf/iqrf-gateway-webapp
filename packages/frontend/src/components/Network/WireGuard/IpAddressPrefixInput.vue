@@ -24,18 +24,19 @@ limitations under the License.
 			between: $t(`network.wireguard.tunnels.errors.ipv${version.toString()}PrefixInvalid`),
 		}'
 	>
-		<v-text-field
+		<CInput
 			v-model.number='prefix'
 			type='number'
 			:label='$t(`network.wireguard.tunnels.form.ipv${version.toString()}Prefix`).toString()'
-			:success='touched ? valid : null'
-			:error-messages='errors'
+			:is-valid='touched ? valid : null'
+			:invalid-feedback='errors.join(", ")'
 		/>
 	</ValidationProvider>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, VModel, Vue} from 'vue-property-decorator';
+import {CInput} from '@coreui/vue/src';
 import {extend, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
 
@@ -44,6 +45,7 @@ import {between, integer, required} from 'vee-validate/dist/rules';
  */
 @Component({
 	components: {
+		CInput,
 		ValidationProvider,
 	},
 })

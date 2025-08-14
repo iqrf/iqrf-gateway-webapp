@@ -17,13 +17,13 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('config.translator.title') }}</h1>
-		<v-card>
-			<v-card-text>
+		<CCard>
+			<CCardBody>
 				<ValidationObserver v-if='config !== null' v-slot='{invalid}'>
-					<v-form @submit.prevent='processSubmit'>
-						<h5>{{ $t("config.translator.form.rest.title") }}</h5>
-						<v-row>
-							<v-col cols='12' md='6'>
+					<CForm @submit.prevent='processSubmit'>
+						<CRow>
+							<CCol>
+								<h3>{{ $t("config.translator.form.rest.title") }}</h3>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='required'
@@ -31,15 +31,13 @@ limitations under the License.
 										required: $t("config.translator.errors.restAddr"),
 									}'
 								>
-									<v-text-field
+									<CInput
 										v-model='config.rest.addr'
 										:label='$t("forms.fields.address")'
-										:success='touched ? valid : null'
-										:error-messages='errors'
+										:is-valid='touched ? valid : null'
+										:invalid-feedback='errors.join(", ")'
 									/>
 								</ValidationProvider>
-							</v-col>
-							<v-col cols='12' md='6'>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='required|integer|between:1,49151'
@@ -49,34 +47,34 @@ limitations under the License.
 										between: $t("config.translator.errors.port"),
 									}'
 								>
-									<v-text-field
+									<CInput
 										v-model.number='config.rest.port'
 										type='number'
 										min='1'
 										max='49151'
 										:label='$t("config.translator.form.rest.port")'
-										:success='touched ? valid : null'
-										:error-messages='errors'
+										:is-valid='touched ? valid : null'
+										:invalid-feedback='errors.join(", ")'
 									/>
 								</ValidationProvider>
-							</v-col>
-						</v-row>
-						<ValidationProvider
-							v-slot='{errors, touched, valid}'
-							rules='required|apiKey'
-							:custom-messages='{
-								required: $t("config.translator.errors.apiKey"),
-								apiKey: $t("config.translator.errors.apiKeyInvalid"),
-							}'
-						>
-							<v-text-field
-								v-model='config.rest.api_key'
-								:label='$t("config.translator.form.rest.apiKey")'
-								:success='touched ? valid : null'
-								:error-messages='errors'
-							/>
-						</ValidationProvider>
-						<h5>{{ $t("config.translator.form.mqtt.title") }}</h5>
+								<ValidationProvider
+									v-slot='{errors, touched, valid}'
+									rules='required|apiKey'
+									:custom-messages='{
+										required: $t("config.translator.errors.apiKey"),
+										apiKey: $t("config.translator.errors.apiKeyInvalid"),
+									}'
+								>
+									<CInput
+										v-model='config.rest.api_key'
+										:label='$t("config.translator.form.rest.apiKey")'
+										:is-valid='touched ? valid : null'
+										:invalid-feedback='errors.join(", ")'
+									/>
+								</ValidationProvider>
+							</CCol>
+						</CRow>
+						<legend>{{ $t("config.translator.form.mqtt.title") }}</legend>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required|clientId'
@@ -85,15 +83,15 @@ limitations under the License.
 								clientId: $t("config.translator.errors.clientIdInvalid"),
 							}'
 						>
-							<v-text-field
+							<CInput
 								v-model='config.mqtt.cid'
 								:label='$t("forms.fields.clientId")'
-								:success='touched ? valid : null'
-								:error-messages='errors'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
-						<v-row>
-							<v-col cols='12' md='6'>
+						<CRow>
+							<CCol md='6'>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='required'
@@ -101,15 +99,15 @@ limitations under the License.
 										required: $t("config.translator.errors.brokerAddr"),
 									}'
 								>
-									<v-text-field
+									<CInput
 										v-model='config.mqtt.addr'
 										:label='$t("config.daemon.messagings.mqtt.form.BrokerAddr")'
-										:success='touched ? valid : null'
-										:error-messages='errors'
+										:is-valid='touched ? valid : null'
+										:invalid-feedback='errors.join(", ")'
 									/>
 								</ValidationProvider>
-							</v-col>
-							<v-col cols='12' md='6'>
+							</CCol>
+							<CCol md='6'>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='required|integer|between:1,49151'
@@ -119,20 +117,18 @@ limitations under the License.
 										between: $t("config.translator.errors.port"),
 									}'
 								>
-									<v-text-field
+									<CInput
 										v-model.number='config.mqtt.port'
 										type='number'
 										min='1'
 										max='49151'
 										:label='$t("config.translator.form.mqtt.port")'
-										:success='touched ? valid : null'
-										:error-messages='errors'
+										:is-valid='touched ? valid : null'
+										:invalid-feedback='errors.join(", ")'
 									/>
 								</ValidationProvider>
-							</v-col>
-						</v-row>
-						<v-row>
-							<v-col cols='12' md='6'>
+							</CCol>
+							<CCol md='6'>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='required|requestTopic'
@@ -141,15 +137,15 @@ limitations under the License.
 										requestTopic: $t("config.translator.errors.requestTopicInvalid"),
 									}'
 								>
-									<v-text-field
+									<CInput
 										v-model='config.mqtt.request_topic'
 										:label='$t("forms.fields.requestTopic")'
-										:success='touched ? valid : null'
-										:error-messages='errors'
+										:is-valid='touched ? valid : null'
+										:invalid-feedback='errors.join(", ")'
 									/>
 								</ValidationProvider>
-							</v-col>
-							<v-col cols='12' md='6'>
+							</CCol>
+							<CCol md='6'>
 								<ValidationProvider
 									v-slot='{errors, touched, valid}'
 									rules='required|responseTopic'
@@ -158,86 +154,99 @@ limitations under the License.
 										responseTopic: $t("config.translator.errors.responseTopicInvalid"),
 									}'
 								>
-									<v-text-field
+									<CInput
 										v-model='config.mqtt.response_topic'
 										:label='$t("forms.fields.responseTopic")'
-										:success='touched ? valid : null'
-										:error-messages='errors'
+										:is-valid='touched ? valid: null'
+										:invalid-feedback='errors.join(", ")'
 									/>
 								</ValidationProvider>
-							</v-col>
-						</v-row>
-						<v-row>
-							<v-col cols='12' md='6'>
-								<v-text-field
-									v-model='config.mqtt.user'
-									:label='$t("forms.fields.username")'
+							</CCol>
+							<CCol md='6'>
+								<ValidationProvider
+									v-slot='{errors, touched, valid}'
+								>
+									<CInput
+										v-model='config.mqtt.user'
+										:label='$t("forms.fields.username")'
+										:is-valid='touched ? valid : null'
+										:invalid-feedback='errors.join(", ")'
+									/>
+								</ValidationProvider>
+							</CCol>
+							<CCol md='6'>
+								<ValidationProvider
+									v-slot='{errors, touched, valid}'
+								>
+									<PasswordInput
+										v-model='config.mqtt.pw'
+										:label='$t("forms.fields.password").toString()'
+										:is-valid='touched ? valid : null'
+										:invalid-feedback='errors.join(", ")'
+									/>
+								</ValidationProvider>
+							</CCol>
+						</CRow>
+						<CRow>
+							<CCol>
+								<h3 style='font-size: 1.5rem; float: left;'>
+									{{ $t('config.daemon.messagings.tlsTitle') }}
+								</h3>
+								<CSwitch
+									color='primary'
+									size='lg'
+									shape='pill'
+									label-on='ON'
+									label-off='OFF'
+									:checked.sync='config.mqtt.tls.enabled'
+									style='float: right;'
 								/>
-							</v-col>
-							<v-col cols='12' md='6'>
-								<PasswordInput
-									v-model='config.mqtt.pw'
-									:label='$t("forms.fields.password")'
+							</CCol>
+						</CRow>
+						<CRow v-if='config.mqtt.tls.enabled'>
+							<CCol md='6'>
+								<CInput
+									v-model='config.mqtt.tls.trust_store'
+									:label='$t("config.translator.form.mqtt.tls.trustStore")'
 								/>
-							</v-col>
-						</v-row>
-						<v-switch
-							v-model='config.mqtt.tls.enabled'
-							:label='$t("config.daemon.messagings.tlsTitle")'
-							color='primary'
-							inset
-							dense
-						/>
-						<div v-if='config.mqtt.tls.enabled'>
-							<v-row>
-								<v-col cols='12' md='6'>
-									<v-text-field
-										v-model='config.mqtt.tls.trust_store'
-										:label='$t("config.translator.form.mqtt.tls.trustStore")'
-									/>
-								</v-col>
-								<v-col cols='12' md='6'>
-									<v-text-field
-										v-model='config.mqtt.tls.key_store'
-										:label='$t("config.translator.form.mqtt.tls.keyStore")'
-									/>
-								</v-col>
-							</v-row>
-							<v-row>
-								<v-col cols='12' md='6'>
-									<v-text-field
-										v-model='config.mqtt.tls.private_key'
-										:label='$t("config.translator.form.mqtt.tls.privateKey")'
-									/>
-								</v-col>
-								<v-col cols='12' md='6'>
-									<v-checkbox
-										v-model='config.mqtt.tls.require_broker_certificate'
-										:label='$t("config.translator.form.mqtt.tls.requireBrokerCert")'
-									/>
-								</v-col>
-							</v-row>
-						</div>
-						<v-btn
-							color='primary'
-							type='submit'
-							:disabled='invalid'
-						>
+							</CCol>
+							<CCol md='6'>
+								<CInput
+									v-model='config.mqtt.tls.key_store'
+									:label='$t("config.translator.form.mqtt.tls.keyStore")'
+								/>
+							</CCol>
+							<CCol md='6'>
+								<CInput
+									v-model='config.mqtt.tls.private_key'
+									:label='$t("config.translator.form.mqtt.tls.privateKey")'
+								/>
+							</CCol>
+							<CCol md='6'>
+								<CInputCheckbox
+									:checked.sync='config.mqtt.tls.require_broker_certificate'
+									:label='$t("config.translator.form.mqtt.tls.requireBrokerCert")'
+								/>
+							</CCol>
+						</CRow>
+						<CButton color='primary' type='submit' :disabled='invalid'>
 							{{ $t('forms.save') }}
-						</v-btn>
-					</v-form>
+						</CButton>
+					</CForm>
 				</ValidationObserver>
-			</v-card-text>
-		</v-card>
+			</CCardBody>
+		</CCard>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CCol, CElementCover, CForm, CIcon, CInput, CInputCheckbox, CRow, CSwitch} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import {between, integer, required} from 'vee-validate/dist/rules';
+
 import PasswordInput from '@/components/Core/PasswordInput.vue';
 
-import {between, integer, required} from 'vee-validate/dist/rules';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import FeatureConfigService from '@/services/FeatureConfigService';
 
@@ -247,6 +256,18 @@ import {NavigationGuardNext, Route} from 'vue-router';
 
 @Component({
 	components: {
+		CButton,
+		CCard,
+		CCardBody,
+		CCardHeader,
+		CCol,
+		CElementCover,
+		CForm,
+		CIcon,
+		CInput,
+		CInputCheckbox,
+		CRow,
+		CSwitch,
 		PasswordInput,
 		ValidationObserver,
 		ValidationProvider

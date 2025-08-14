@@ -15,52 +15,39 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-card-text>
-		<v-overlay
+	<div>
+		<CElementCover
 			v-if='running'
-			:opacity='0.65'
-			absolute
+			:opacity='0.75'
+			style='z-index: 10000;'
 		>
-			<v-progress-circular color='primary' indeterminate />
-		</v-overlay>
-		<ValidationObserver v-slot='{invalid}'>
-			<v-form>
-				<ValidationProvider
-					v-slot='{errors, valid}'
-					rules='required'
-					:custom-messages='{
-						required: $t("maintenance.backup.errors.restoreArchive"),
-					}'
-				>
-					<ExtendedFileInput
-						v-model='archive'
-						accept='.zip'
-						:label='$t("maintenance.backup.form.archive")'
-						:success='valid'
-						:errors='errors'
-						:prepend-icon='null'
-						prepend-inner-icon='mdi-archive-arrow-up'
-					/>
-				</ValidationProvider>
-				<v-btn
-					color='primary'
-					:disabled='invalid'
-					@click='restore'
-				>
-					{{ $t('maintenance.backup.form.restore') }}
-				</v-btn>
-			</v-form>
-		</ValidationObserver>
-	</v-card-text>
+			<CSpinner color='primary' />
+		</CElementCover>
+		<CCardTitle>{{ $t('maintenance.backup.restoreTitle') }}</CCardTitle>
+		<CForm>
+			<CInputFile
+				ref='backupArchive'
+				accept='.zip'
+				:label='$t("maintenance.backup.form.archive")'
+				@click='fileInputEmpty'
+				@input='fileInputEmpty'
+			/>
+			<CButton
+				color='primary'
+				:disabled='inputEmpty'
+				@click.prevent='restore'
+			>
+				{{ $t('maintenance.backup.form.restore') }}
+			</CButton>
+		</CForm>
+	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import ExtendedFileInput from '@/components/ExtendedFileInput.vue';
-import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import {CButton, CForm, CInputFile} from '@coreui/vue/src';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
-import {required} from 'vee-validate/dist/rules';
 
 import BackupService from '@/services/BackupService';
 
@@ -68,9 +55,9 @@ import {AxiosError, AxiosResponse} from 'axios';
 
 @Component({
 	components: {
-		ExtendedFileInput,
-		ValidationObserver,
-		ValidationProvider,
+		CButton,
+		CForm,
+		CInputFile,
 	},
 })
 
@@ -80,9 +67,9 @@ import {AxiosError, AxiosResponse} from 'axios';
 export default class GatewayRestore extends Vue {
 
 	/**
-	 * @var {File|null} archive Archive to restore
+	 * @var {boolean} inputEmpty Indicates whether backup archive file input is empty
 	 */
-	private archive: File|null = null;
+	private inputEmpty = true;
 
 	/**
 	 * @var {boolean} running Indicates whether restore operation is running
@@ -90,21 +77,15 @@ export default class GatewayRestore extends Vue {
 	private running = false;
 
 	/**
-	 * Initializes validation rules
-	 */
-	created(): void {
-		extend('required', required);
-	}
-
-	/**
 	 * Performs gateway restore
 	 */
 	private restore(): void {
-		if (this.archive === null) {
+		const files = this.getFiles();
+		if (files === null || files.length === 0) {
 			return;
 		}
 		this.showBlockingElement();
-		BackupService.restore(this.archive)
+		BackupService.restore(files[0])
 			.then((response: AxiosResponse) => {
 				const time = new Date(response.data.timestamp * 1000).toLocaleTimeString();
 				this.hideBlockingElement();
@@ -119,6 +100,23 @@ export default class GatewayRestore extends Vue {
 				this.hideBlockingElement();
 				extendedErrorToast(error, 'maintenance.backup.messages.restoreFailed');
 			});
+	}
+
+	/**
+	 * Extracts uploaded files from form configuration file input
+	 * @returns {FileList} List of uploaded files
+	 */
+	private getFiles(): FileList {
+		const input = ((this.$refs.backupArchive as CInputFile).$el.children[1] as HTMLInputElement);
+		return (input.files as FileList);
+	}
+
+	/**
+	 * Checks if form configuration file input is empty
+	 */
+	private fileInputEmpty(): void {
+		const files = this.getFiles();
+		this.inputEmpty = files.length === 0;
 	}
 
 	/**

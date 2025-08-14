@@ -15,52 +15,55 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-dialog
-		v-model='show'
-		width='50%'
-		persistent
-		no-click-animation
-	>
-		<template #activator='{attrs, on}'>
-			<v-btn
-				color='error'
-				v-bind='attrs'
-				v-on='on'
-				@click='openModal'
-			>
-				{{ $t('forms.clearBonds') }}
-			</v-btn>
-		</template>
-		<v-card>
-			<v-card-title>
-				{{ $t('iqrfnet.networkManager.bondingManager.modal.clearAllTitle') }}
-			</v-card-title>
-			<v-card-text>
-				{{ $t('iqrfnet.networkManager.bondingManager.modal.clearAllPrompt') }}
-			</v-card-text>
-			<v-card-actions>
-				<v-spacer />
-				<v-btn
+	<span>
+		<CButton
+			color='danger'
+			@click='openModal'
+		>
+			{{ $t('forms.clearBonds') }}
+		</CButton>
+		<CModal
+			:show.sync='show'
+			color='danger'
+			size='lg'
+			:close-on-backdrop='false'
+			:fade='false'
+		>
+			<template #header>
+				<h5 class='modal-title'>
+					{{ $t('iqrfnet.networkManager.bondingManager.modal.clearAllTitle') }}
+				</h5>
+			</template>
+			{{ $t('iqrfnet.networkManager.bondingManager.modal.clearAllPrompt') }}
+			<template #footer>
+				<CButton
+					color='secondary'
 					@click='closeModal'
 				>
 					{{ $t('forms.cancel') }}
-				</v-btn>
-				<v-btn
-					color='error'
+				</CButton>
+				<CButton
+					color='danger'
 					@click='clear'
 				>
 					{{ $t('forms.clearBonds') }}
-				</v-btn>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
+				</CButton>
+			</template>
+		</CModal>
+	</span>
 </template>
 
 <script lang='ts'>
 import {Component} from 'vue-property-decorator';
+import {CButton, CModal} from '@coreui/vue/src';
 import ModalBase from '@/components/ModalBase.vue';
 
-@Component
+@Component({
+	components: {
+		CButton,
+		CModal,
+	}
+})
 export default class ClearAllModal extends ModalBase {
 	/**
 	 * Emits event to clear all bonds

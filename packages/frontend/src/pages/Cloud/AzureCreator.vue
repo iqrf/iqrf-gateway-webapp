@@ -17,35 +17,27 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('cloud.msAzure.form.title') }}</h1>
-		<v-card>
-			<v-card-title>
-				<v-item-group>
-					<v-btn
-						color='primary'
-						small
-						href='https://github.com/iqrfsdk/iot-starter-kit/blob/master/install/pdf/iqrf-part3b.pdf'
-						target='_blank'
-					>
-						<v-icon small>
-							mdi-file-document
-						</v-icon>
-						{{ $t('cloud.guides.pdf') }}
-					</v-btn> <v-btn
-						color='error'
-						small
-						href='https://youtu.be/SIBoTrYwR2g'
-						target='_blank'
-					>
-						<v-icon small>
-							mdi-youtube
-						</v-icon>
-						{{ $t('cloud.guides.video') }}
-					</v-btn>
-				</v-item-group>
-			</v-card-title>
-			<v-card-text>
+		<CCard>
+			<CCardHeader>
+				<CButton
+					color='primary'
+					size='sm'
+					href='https://github.com/iqrfsdk/iot-starter-kit/blob/master/install/pdf/iqrf-part3b.pdf'
+				>
+					<CIcon :content='cilFile' size='sm' />
+					{{ $t('cloud.guides.pdf') }}
+				</CButton> <CButton
+					color='danger'
+					size='sm'
+					href='https://youtu.be/SIBoTrYwR2g'
+				>
+					<CIcon :content='cibYoutube' size='sm' />
+					{{ $t('cloud.guides.video') }}
+				</CButton>
+			</CCardHeader>
+			<CCardBody>
 				<ValidationObserver v-slot='{invalid}'>
-					<v-form>
+					<CForm>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required'
@@ -53,51 +45,61 @@ limitations under the License.
 								required: $t("cloud.msAzure.errors.connectionString"),
 							}'
 						>
-							<v-text-field
-								v-model='config.connectionString'
+							<CInput
+								v-model='connectionString'
 								:label='$t("cloud.msAzure.form.connectionString")'
-								:success='touched ? valid : null'
-								:error-messages='errors'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
-						<v-btn
-							class='mr-1'
+						<CButton
 							color='primary'
 							:disabled='invalid'
 							@click.prevent='save(false)'
 						>
 							{{ $t('forms.save') }}
-						</v-btn>
-						<v-btn
-							color='primary'
+						</CButton> <CButton
+							color='secondary'
 							:disabled='invalid'
 							@click.prevent='save(true)'
 						>
 							{{ $t('forms.saveRestart') }}
-						</v-btn>
-					</v-form>
+						</CButton>
+					</CForm>
 				</ValidationObserver>
-			</v-card-text>
-		</v-card>
+			</CCardBody>
+		</CCard>
 	</div>
 </template>
 
 <script lang='ts'>
-import {Client} from '@iqrf/iqrf-gateway-webapp-client';
-import {AzureIotHubConfig} from '@iqrf/iqrf-gateway-webapp-client/types/Cloud';
-import {AxiosError} from 'axios';
-import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {required} from 'vee-validate/dist/rules';
 import {Component, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
+import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
+import {cibYoutube, cilFile} from '@coreui/icons';
 import {daemonErrorToast, extendedErrorToast} from '@/helpers/errorToast';
-import {useApiClient} from '@/services/ApiClient';
+import {required} from 'vee-validate/dist/rules';
+import CloudService from '@/services/CloudService';
+import ServiceService from '@/services/ServiceService';
+
+import {AxiosError} from 'axios';
 
 @Component({
 	components: {
+		CButton,
+		CCard,
+		CCardBody,
+		CCardHeader,
+		CForm,
+		CInput,
 		ValidationObserver,
 		ValidationProvider
 	},
+	data: () => ({
+		cibYoutube,
+		cilFile,
+	}),
 	metaInfo: {
 		title: 'cloud.msAzure.form.title',
 	},
@@ -107,20 +109,15 @@ import {useApiClient} from '@/services/ApiClient';
  * Azure cloud mqtt connection configuration creator card
  */
 export default class AzureCreator extends Vue {
+	/**
+	 * @var {string} connectionString Azure cloud connection string
+	 */
+	private connectionString = '';
 
 	/**
-	 * @property {AzureIotHubConfig} config Azure IoT Hub MQTT connection configuration
-   * @private
-   */
-	private config: AzureIotHubConfig = {
-		connectionString: ''
-	};
-
-	/**
-	 * @property {Client} apiClient IQRF Gateway Webapp API client
-   * @private
-   */
-	private apiClient: Client = useApiClient();
+	 * @constant {string} serviceName Azure cloud service name
+	 */
+	private serviceName = 'azure';
 
 	/**
 	 * Vue lifecycle hook created
@@ -135,10 +132,10 @@ export default class AzureCreator extends Vue {
 	 */
 	private save(restart: boolean): void {
 		this.$store.commit('spinner/SHOW');
-		this.apiClient.getCloudServices().getAzureService().createMqttInstance(this.config)
+		CloudService.create(this.serviceName, {'connectionString': this.connectionString})
 			.then(async () => {
 				if (restart) {
-					await this.apiClient.getServiceService().restart('iqrf-gateway-daemon')
+					await ServiceService.restart('iqrf-gateway-daemon')
 						.then(() => {
 							this.$toast.success(
 								this.$t('service.iqrf-gateway-daemon.messages.restart')

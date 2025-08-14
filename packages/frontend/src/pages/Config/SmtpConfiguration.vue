@@ -17,20 +17,24 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('config.smtp.title') }}</h1>
-		<v-card>
-			<v-card-text>
+		<CCard>
+			<CCardBody>
 				<SmtpForm />
-			</v-card-text>
-		</v-card>
+			</CCardBody>
+		</CCard>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
+import {CCard, CCardBody, CCardHeader} from '@coreui/vue/src';
 import SmtpForm from '@/components/Config/SmtpForm.vue';
 
 @Component({
 	components: {
+		CCard,
+		CCardBody,
+		CCardHeader,
 		SmtpForm,
 	},
 	metaInfo: {

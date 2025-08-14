@@ -48,7 +48,7 @@ export default class UrlBuilder {
 		this.hostname = window.location.hostname;
 		this.port = window.location.port;
 		this.wsProtocol = (isHttps ? 'wss://' : 'ws://');
-		this.isDev = import.meta.env.DEV;
+		this.isDev = this.port === '8081' && process.env.NODE_ENV === 'development';
 		if (this.port !== '') {
 			this.port = ':' + this.port;
 		}
@@ -72,26 +72,20 @@ export default class UrlBuilder {
 	 * Returns base URL
 	 */
 	getBaseUrl(): string {
-		return window.location.protocol + '//' + this.hostname + (this.isDev ? ':8081' : this.port) + import.meta.env.VITE_BASE_URL;
+		return window.location.protocol + '//' + this.hostname + (this.isDev ? ':8081' : this.port) + process.env.VUE_APP_BASE_URL;
 	}
 
 	/**
 	 * Returns REST API URL
 	 */
 	getRestApiUrl(): string {
-		if (import.meta.env.VITE_URL_REST_API?.length) {
-			return import.meta.env.VITE_URL_REST_API;
-		}
-		return '//' + this.hostname + (this.isDev ? ':8080' : this.port) + import.meta.env.VITE_BASE_URL + 'api/v0/';
+		return '//' + this.hostname + (this.isDev ? ':8080' : this.port) + process.env.VUE_APP_BASE_URL + 'api/v0/';
 	}
 
 	/**
 	 * Returns WebSocket API URL
 	 */
 	getWsApiUrl(): string {
-		if (import.meta.env.VITE_URL_DAEMON_API?.length) {
-			return import.meta.env.VITE_URL_DAEMON_API;
-		}
 		return this.wsProtocol + this.hostname + (this.isDev ? ':1338': this.port + '/ws');
 	}
 
@@ -99,9 +93,6 @@ export default class UrlBuilder {
 	 * Returns WebSocket Monitor URL
 	 */
 	getWsMonitorUrl(): string {
-		if (import.meta.env.VITE_URL_DAEMON_MONITOR?.length) {
-			return import.meta.env.VITE_URL_DAEMON_MONITOR;
-		}
 		return this.wsProtocol + this.hostname + (this.isDev ? ':1438': this.port + '/wsMonitor');
 	}
 
@@ -109,7 +100,7 @@ export default class UrlBuilder {
 	 * Returns REST API URL from passed hostname
 	 */
 	getRestApiUrlFromAddr(hostname: string): string {
-		return '//' + hostname + (this.isDev ? ':8080' : this.port) + import.meta.env.VITE_BASE_URL + 'api/v0/';
+		return '//' + hostname + (this.isDev ? ':8080' : this.port) + process.env.VUE_APP_BASE_URL + 'api/v0/';
 	}
 
 }

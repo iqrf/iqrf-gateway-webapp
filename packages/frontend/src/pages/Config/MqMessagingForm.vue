@@ -16,11 +16,16 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<h1>{{ pageTitle }}</h1>
-		<v-card>
-			<v-card-text>
+		<h1 v-if='$route.path === "/config/daemon/messagings/mq/add"'>
+			{{ $t('config.daemon.messagings.mq.add') }}
+		</h1>
+		<h1 v-else>
+			{{ $t('config.daemon.messagings.mq.edit') }}
+		</h1>
+		<CCard>
+			<CCardBody>
 				<ValidationObserver v-slot='{invalid}'>
-					<v-form>
+					<CForm @submit.prevent='saveConfig'>
 						<ValidationProvider
 							v-slot='{errors, touched, valid}'
 							rules='required|instance'
@@ -29,87 +34,79 @@ limitations under the License.
 								instance: $t("config.daemon.messagings.instanceInvalid"),
 							}'
 						>
-							<v-text-field
+							<CInput
 								v-model='configuration.instance'
 								:label='$t("forms.fields.instanceName")'
-								:success='touched ? valid : null'
-								:error-messages='errors'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
-						<v-row>
-							<v-col cols='12' md='6'>
-								<ValidationProvider
-									v-slot='{errors, touched, valid}'
-									rules='required'
-									:custom-messages='{
-										required: $t("config.daemon.messagings.mq.errors.LocalMqName"),
-									}'
-								>
-									<v-text-field
-										v-model='configuration.LocalMqName'
-										:label='$t("config.daemon.messagings.mq.form.LocalMqName")'
-										:success='touched ? valid : null'
-										:error-messages='errors'
-									/>
-								</ValidationProvider>
-							</v-col>
-							<v-col cols='12' md='6'>
-								<ValidationProvider
-									v-slot='{errors, touched, valid}'
-									rules='required'
-									:custom-messages='{
-										required: $t("config.daemon.messagings.mq.errors.RemoteMqName"),
-									}'
-								>
-									<v-text-field
-										v-model='configuration.RemoteMqName'
-										:label='$t("config.daemon.messagings.mq.form.RemoteMqName")'
-										:success='touched ? valid : null'
-										:error-messages='errors'
-									/>
-								</ValidationProvider>
-							</v-col>
-						</v-row>
-						<v-checkbox
-							v-model='configuration.acceptAsyncMsg'
-							:label='$t("config.daemon.messagings.acceptAsyncMsg")'
-							dense
-						/>
-						<v-btn
-							color='primary'
-							:disabled='invalid'
-							@click='saveConfig'
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							rules='required'
+							:custom-messages='{
+								required: $t("config.daemon.messagings.mq.errors.LocalMqName"),
+							}'
 						>
+							<CInput
+								v-model='configuration.LocalMqName'
+								:label='$t("config.daemon.messagings.mq.form.LocalMqName")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='errors.join(", ")'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{errors, touched, valid}'
+							rules='required'
+							:custom-messages='{
+								required: $t("config.daemon.messagings.mq.errors.RemoteMqName"),
+							}'
+						>
+							<CInput
+								v-model='configuration.RemoteMqName'
+								:label='$t("config.daemon.messagings.mq.form.RemoteMqName")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='errors.join(", ")'
+							/>
+						</ValidationProvider>
+						<CInputCheckbox
+							:checked.sync='configuration.acceptAsyncMsg'
+							:label='$t("config.daemon.messagings.acceptAsyncMsg")'
+						/>
+						<CButton type='submit' color='primary' :disabled='invalid'>
 							{{ submitButton }}
-						</v-btn>
-					</v-form>
+						</CButton>
+					</CForm>
 				</ValidationObserver>
-			</v-card-text>
-		</v-card>
+			</CCardBody>
+		</CCard>
 	</div>
 </template>
 
 <script lang='ts'>
-import {
-	IqrfGatewayDaemonService,
-} from '@iqrf/iqrf-gateway-webapp-client/services/Config';
-import {
-	IqrfGatewayDaemonComponentInstanceConfiguration,
-	IqrfGatewayDaemonComponentName,
-	IqrfGatewayDaemonMqMessaging,
-} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { AxiosError } from 'axios';
-import { extend, ValidationObserver, ValidationProvider } from 'vee-validate';
-import { required } from 'vee-validate/dist/rules';
-import { MetaInfo } from 'vue-meta';
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import {Component, Prop, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
+import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
-import { daemonInstanceName } from '@/helpers/validators';
-import { extendedErrorToast } from '@/helpers/errorToast';
-import { useApiClient } from '@/services/ApiClient';
+import {extendedErrorToast} from '@/helpers/errorToast';
+import {daemonInstanceName} from '@/helpers/validators';
+import {required} from 'vee-validate/dist/rules';
+import DaemonConfigurationService from '@/services/DaemonConfigurationService';
+
+import {AxiosError, AxiosResponse} from 'axios';
+import {IMqInstance} from '@/interfaces/Config/Messaging';
+import {MetaInfo} from 'vue-meta';
+
 
 @Component({
 	components: {
+		CButton,
+		CCard,
+		CCardBody,
+		CCardHeader,
+		CForm,
+		CInput,
+		CInputCheckbox,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -125,15 +122,15 @@ import { useApiClient } from '@/services/ApiClient';
  */
 export default class MqMessagingForm extends Vue {
 	/**
-	 * @constant {IqrfGatewayDaemonComponentName} componentName MQ messaging component name
+	 * @constant {string} componentName MQ messaging component name
 	 */
-	private componentName = IqrfGatewayDaemonComponentName.IqrfMqMessaging;
+	private componentName = 'iqrf::MqMessaging';
 
 	/**
-	 * @var {IqrfGatewayDaemonMqMessaging} configuration MQ messaging component instance configuration
+	 * @var {MqInstance} configuration MQ messaging component instance configuration
 	 */
-	private configuration: IqrfGatewayDaemonMqMessaging = {
-		component: IqrfGatewayDaemonComponentName.IqrfMqMessaging,
+	private configuration: IMqInstance = {
+		component: '',
 		instance: '',
 		LocalMqName: '',
 		RemoteMqName: '',
@@ -141,17 +138,13 @@ export default class MqMessagingForm extends Vue {
 	};
 
 	/**
-	 * @property {IqrfGatewayDaemonService} service IQRF Gateway Daemon service
-	 */
-	private readonly service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
-
-	/**
 	 * @property {string} instance MQ messaging component instance name
 	 */
 	@Prop({required: false, default: ''}) instance!: string;
 
 	/**
-	 * @var {string} pageTitle Page title
+	 * Computes page title depending on the action (add, edit)
+	 * @returns {string} Page title
 	 */
 	get pageTitle(): string {
 		return this.$route.path === '/config/daemon/messagings/mq/add' ?
@@ -159,7 +152,8 @@ export default class MqMessagingForm extends Vue {
 	}
 
 	/**
-	 * @var {string} submitButton Button text
+	 * Computes the text of form submit button depending on the action (add, edit)
+	 * @returns {string} Button text
 	 */
 	get submitButton(): string {
 		return this.$route.path === '/config/daemon/messagings/mq/add' ?
@@ -188,10 +182,10 @@ export default class MqMessagingForm extends Vue {
 	 */
 	private getConfig(): void  {
 		this.$store.commit('spinner/SHOW');
-		this.service.getInstance(IqrfGatewayDaemonComponentName.IqrfMqMessaging, this.instance)
-			.then((response: IqrfGatewayDaemonComponentInstanceConfiguration<IqrfGatewayDaemonComponentName.IqrfMqMessaging>) => {
+		DaemonConfigurationService.getInstance(this.componentName, this.instance)
+			.then((response: AxiosResponse) => {
 				this.$store.commit('spinner/HIDE');
-				this.configuration = response;
+				this.configuration = response.data;
 			})
 			.catch((error: AxiosError) => {
 				extendedErrorToast(error, 'config.daemon.messagings.mq.messages.fetchFailed', {instance: this.instance});
@@ -205,11 +199,11 @@ export default class MqMessagingForm extends Vue {
 	private saveConfig(): void  {
 		this.$store.commit('spinner/SHOW');
 		if (this.instance !== '') {
-			this.service.updateInstance(this.componentName, this.instance, this.configuration)
+			DaemonConfigurationService.updateInstance(this.componentName, this.instance, this.configuration)
 				.then(() => this.successfulSave())
 				.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.messagings.mq.messages.editFailed', {instance: this.instance}));
 		} else {
-			this.service.createInstance(this.componentName, this.configuration)
+			DaemonConfigurationService.createInstance(this.componentName, this.configuration)
 				.then(() => this.successfulSave())
 				.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.messagings.mq.messages.addFailed'));
 		}
@@ -220,12 +214,17 @@ export default class MqMessagingForm extends Vue {
 	 */
 	private successfulSave(): void  {
 		this.$store.commit('spinner/HIDE');
-		this.$toast.success(
-			this.$t(
-				`config.daemon.messagings.mq.messages.${this.$route.path === '/config/daemon/messagings/mq/add' ? 'add' : 'edit'}Success`,
-				{instance: this.configuration.instance},
-			).toString()
-		);
+		if (this.$route.path === '/config/daemon/messagings/mq/add') {
+			this.$toast.success(
+				this.$t('config.daemon.messagings.mq.messages.addSuccess', {instance: this.configuration.instance})
+					.toString()
+			);
+		} else {
+			this.$toast.success(
+				this.$t('config.daemon.messagings.mq.messages.editSuccess', {instance: this.configuration.instance})
+					.toString()
+			);
+		}
 		this.$router.push('/config/daemon/messagings/mq/');
 	}
 }

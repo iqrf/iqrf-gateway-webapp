@@ -16,29 +16,38 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<v-card>
-			<v-card-text>{{ $t('install.invitation') }}</v-card-text>
-			<v-divider />
-			<v-card-actions>
-				<v-btn
+		<CCard>
+			<CCardBody>
+				{{ $t('install.invitation') }}
+			</CCardBody>
+			<CCardFooter>
+				<CButton
 					color='primary'
 					@click='nextStep'
 				>
 					{{ $t('install.createUser.title') }}
-				</v-btn> <v-btn color='primary' to='/install/gateway-info'>
+				</CButton> <CButton color='primary' to='/install/gateway-info'>
 					{{ $t('install.gwInfo.button') }}
-				</v-btn> <v-btn color='primary' to='/install/restore'>
+				</CButton> <CButton color='primary' to='/install/restore'>
 					{{ $t('install.restore.button') }}
-				</v-btn>
-			</v-card-actions>
-		</v-card>
+				</CButton>
+			</CCardFooter>
+		</CCard>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardFooter} from '@coreui/vue/src';
+
 
 @Component({
+	components: {
+		CButton,
+		CCard,
+		CCardBody,
+		CCardFooter,
+	},
 	metaInfo: {
 		title: 'install.title'
 	}

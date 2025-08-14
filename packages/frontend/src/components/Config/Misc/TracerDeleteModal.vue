@@ -15,40 +15,44 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-dialog
-		v-model='showModal'
-		width='50%'
-		persistent
-		no-click-animation
+	<CModal
+		v-show='show'
+		:show.sync='show'
+		color='danger'
+		size='lg'
+		:close-on-backdrop='false'
+		:fade='false'
 	>
-		<v-card>
-			<v-card-title>
-				<h5>{{ $t('config.daemon.misc.tracer.modal.title') }}</h5>
-			</v-card-title>
-			<v-card-text>
-				{{ $t('config.daemon.misc.tracer.modal.prompt', {instance: instance}) }}
-			</v-card-text>
-			<v-card-actions>
-				<v-spacer />
-				<v-btn
-					@click='hideModal'
-				>
-					{{ $t('forms.cancel') }}
-				</v-btn>
-				<v-btn
-					color='error'
-					@click='remove'
-				>
-					{{ $t('forms.delete') }}
-				</v-btn>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
+		<template #header>
+			<h5 class='modal-title'>
+				{{ $t('config.daemon.misc.tracer.modal.title') }}
+			</h5>
+		</template>
+		{{ $t('config.daemon.misc.tracer.modal.prompt', {instance: instance}) }}
+		<template #footer>
+			<CButton
+				class='mr-1'
+				color='secondary'
+				@click='hideModal'
+			>
+				{{ $t('forms.cancel') }}
+			</CButton>
+			<CButton
+				color='danger'
+				@click='remove'
+			>
+				{{ $t('forms.delete') }}
+			</CButton>
+		</template>
+	</CModal>
 </template>
 
 <script lang='ts'>
-import {Component, VModel, Vue} from 'vue-property-decorator';
+import {Component} from 'vue-property-decorator';
+import {CButton, CModal} from '@coreui/vue/src';
+import ModalBase from '@/components/ModalBase.vue';
 
+import {cilTrash} from '@coreui/icons';
 import {extendedErrorToast} from '@/helpers/errorToast';
 
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
@@ -58,55 +62,60 @@ import {AxiosError} from 'axios';
 /**
  * Tracer delete modal component
  */
-@Component
-export default class TracerDeleteModal extends Vue {
-
-	/**
-	 * @property {string|null} instance Instance to delete
-	 */
-	@VModel({required: true}) instance!: string|null;
-
+@Component({
+	components: {
+		CButton,
+		CModal,
+	},
+	data: () => ({
+		cilTrash,
+	}),
+})
+export default class TracerDeleteModal extends ModalBase {
 	/**
 	 * @constant {string} component Tracer component
 	 */
 	private readonly component = 'shape::TraceFileService';
 
 	/**
-	 * Computes modal display condition
+	 * @var {string} instance Tracer instance
 	 */
-	get showModal(): boolean {
-		return this.instance !== null;
-	}
+	private instance = '';
 
 	/**
 	 * Removes instance of logging service component
 	 */
 	private remove(): void {
-		if (this.instance === null) {
-			return;
-		}
-		const instance = this.instance;
 		this.$store.commit('spinner/SHOW');
-		DaemonConfigurationService.deleteInstance(this.component, instance)
+		DaemonConfigurationService.deleteInstance(this.component, this.instance)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
-					this.$t('config.daemon.misc.tracer.messages.deleteSuccess', {instance: instance})
+					this.$t('config.daemon.misc.tracer.messages.deleteSuccess', {instance: this.instance})
 						.toString()
 				);
 				this.hideModal();
 				this.$emit('deleted');
 			})
 			.catch((error: AxiosError) => {
-				extendedErrorToast(error, 'config.daemon.misc.tracer.messages.deleteFailed', {instance: instance});
+				extendedErrorToast(error, 'config.daemon.misc.tracer.messages.deleteFailed', {instance: this.instance});
 			});
 	}
 
 	/**
-	 * Closes modal window
+	 * Stores tracer instance and shows modal window
+	 */
+	public showModal(instance: string): void {
+		this.instance = instance;
+		this.openModal();
+	}
+
+	/**
+	 * Resets tracer instance and hides modal window
 	 */
 	private hideModal(): void {
-		this.instance = null;
+		this.instance = '';
+		this.closeModal();
 	}
 }
 </script>

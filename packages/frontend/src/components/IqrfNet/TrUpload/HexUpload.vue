@@ -15,62 +15,56 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-card>
-		<v-card-title>{{ $t('iqrfnet.trUpload.hexUpload.title') }}</v-card-title>
-		<v-card-text>
-			<ValidationObserver v-slot='{invalid}'>
-				<v-form>
-					<ValidationProvider
-						v-slot='{errors, valid}'
-						rules='required|hexFile'
-						:custom-messages='{
-							required: $t("iqrfnet.trUpload.hexUpload.errors.file"),
-							hexFile: $t("iqrfnet.trUpload.hexUpload.errors.invalidFormat")
-						}'
-					>
-						<v-file-input
-							v-model='file'
-							accept='.hex'
-							:label='$t("iqrfnet.trUpload.hexUpload.form.file")'
-							:error-messages='errors'
-							:success='valid'
-							:prepend-icon='null'
-							prepend-inner-icon='mdi-file-outline'
-							required
-						/>
-					</ValidationProvider>
-					<v-btn
-						color='primary'
-						:disabled='invalid'
-						@click='gatewayUpload'
-					>
-						{{ $t('forms.upload') }}
-					</v-btn>
-				</v-form>
-			</ValidationObserver>
-		</v-card-text>
-	</v-card>
+	<CCard>
+		<CCardHeader>{{ $t('iqrfnet.trUpload.hexUpload.title') }}</CCardHeader>
+		<CCardBody>
+			<CForm>
+				<div class='form-group'>
+					<CInputFile
+						ref='fileUpload'
+						accept='.hex'
+						:label='$t("iqrfnet.trUpload.hexUpload.form.file")'
+						@input='isEmpty'
+						@click='isEmpty'
+					/>
+					<p v-if='fileEmpty && !fileUntouched' style='color: red;'>
+						{{ $t('iqrfnet.trUpload.hexUpload.errors.file') }}
+					</p>
+				</div>
+				<CButton
+					color='primary'
+					:disabled='fileEmpty'
+					@click='gatewayUpload'
+				>
+					{{ $t('forms.upload') }}
+				</CButton>
+			</CForm>
+		</CCardBody>
+	</CCard>
 </template>
 
 <script lang='ts'>
-import {ServiceService} from '@iqrf/iqrf-gateway-webapp-client/services';
-import {AxiosResponse, AxiosError} from 'axios';
 import {Component, Vue} from 'vue-property-decorator';
-import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {required} from 'vee-validate/dist/rules';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CInputFile, CSelect} from '@coreui/vue/src';
 
 import {daemonErrorToast, extendedErrorToast} from '@/helpers/errorToast';
 import {FileFormat} from '@/iqrfNet/fileFormat';
 import IqrfService from '@/services/IqrfService';
+import ServiceService from '@/services/ServiceService';
 
+import {AxiosResponse, AxiosError} from 'axios';
 import {FileUpload} from '@/interfaces/trUpload';
-import {useApiClient} from '@/services/ApiClient';
 
 @Component({
 	components: {
-		ValidationObserver,
-		ValidationProvider,
-	},
+		CButton,
+		CCard,
+		CCardBody,
+		CCardHeader,
+		CForm,
+		CInputFile,
+		CSelect
+	}
 })
 
 /**
@@ -78,39 +72,40 @@ import {useApiClient} from '@/services/ApiClient';
  */
 export default class HexUpload extends Vue {
 	/**
-	 * @var {File|null} file Selected file
+	 * @var {boolean} fileEmpty Indicates that the form file input is empty
 	 */
-	private file: File|null = null;
+	private fileEmpty = true;
 
 	/**
-   * @property {ServiceService} service Service service
-   * @private
-   */
-	private service: ServiceService = useApiClient().getServiceService();
+	 * @var {boolean} fileUntouched Indicates whether the form file input has been interacted with
+	 */
+	private fileUntouched = true;
 
 	/**
-	 * Initializes validation rules
+	 * Extracts uploaded files from form file input
+	 * @returns {FileList} list of uploaded files
 	 */
-	created(): void {
-		extend('required', required);
-		extend('hexFile', (file: File|null) => {
-			if (!file) {
-				return false;
-			}
-			return (file.type === 'text/x-hex');
-		});
+	private getFiles(): FileList {
+		const input = (this.$refs.fileUpload as CInputFile).$el.children[1] as HTMLInputElement;
+		return (input.files as FileList);
 	}
 
 	/**
 	 * Attempts to upload provided file to the gateway file storage
 	 */
 	private gatewayUpload(): void {
-		if (this.file === null) {
-			return;
-		}
+		// build form data
 		const formData = new FormData();
 		formData.append('format', FileFormat.HEX);
-		formData.append('file', this.file);
+		const files = this.getFiles();
+		if (!files[0].name.endsWith('.hex')) {
+			this.$toast.error(
+				this.$t('iqrfnet.trUpload.hexUpload.messages.invalidFormat').toString()
+			);
+			return;
+		}
+		formData.append('file', files[0]);
+
 		this.$store.commit('spinner/SHOW');
 		this.$store.commit('spinner/UPDATE_TEXT',
 			this.$t('iqrfnet.trUpload.hexUpload.messages.gatewayUpload').toString()
@@ -148,7 +143,7 @@ export default class HexUpload extends Vue {
 	 * @param {FileUpload} response Files to be uploaded
 	 */
 	private stopDaemon(response: FileUpload): void {
-		this.service.stop('iqrf-gateway-daemon')
+		ServiceService.stop('iqrf-gateway-daemon')
 			.then(() => {
 				this.$store.commit('spinner/UPDATE_TEXT',
 					this.$t('service.iqrf-gateway-daemon.messages.stop').toString()
@@ -162,11 +157,21 @@ export default class HexUpload extends Vue {
 	 * Starts the IQRF Daemon service upon successful OS upgrade
 	 */
 	private startDaemon(): void {
-		this.service.start('iqrf-gateway-daemon')
+		ServiceService.start('iqrf-gateway-daemon')
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 			})
 			.catch((error: AxiosError) => daemonErrorToast(error, 'service.messages.startFailed'));
+	}
+
+	/**
+	 * Checks if form file input is empty
+	 */
+	private isEmpty(): void {
+		if (this.fileUntouched) {
+			this.fileUntouched = false;
+		}
+		this.fileEmpty = this.getFiles().length === 0;
 	}
 }
 </script>

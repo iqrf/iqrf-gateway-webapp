@@ -23,48 +23,49 @@ limitations under the License.
 				required: $t("network.connection.ipv4.errors.method"),
 			}'
 		>
-			<v-select
-				v-model='connection.ipv4.method'
-				:items='methods'
+			<CSelect
+				id='ipv4MethodSelect'
+				:value.sync='connection.ipv4.method'
+				:options='methods'
 				:label='$t("network.connection.ipv4.method").toString()'
 				:placeholder='$t("network.connection.ipv4.methods.null").toString()'
-				:success='touched ? valid : null'
-				:error-messages='errors'
+				:is-valid='touched ? valid : null'
+				:invalid-feedback='errors.join(", ")'
 				@change='onMethodChangeStaticFixup'
 			/>
 		</ValidationProvider>
-		<div v-if='connection.ipv4.method === IPv4ConfigurationMethod.MANUAL'>
-			<v-alert
+		<div v-if='connection.ipv4.method === Ipv4Method.MANUAL'>
+			<hr>
+			<CAlert
 				v-if='!ipv4InSubnet'
-				color='error'
-				text
+				color='danger'
 			>
 				{{ $t('network.connection.ipv4.ipNotInSubnet') }}
-			</v-alert>
+			</CAlert>
 			<ValidationProvider
 				v-slot='{errors, touched, valid}'
 				:rules='{
-					required: connection.ipv4.method === IPv4ConfigurationMethod.MANUAL,
-					ipv4: connection.ipv4.method === IPv4ConfigurationMethod.MANUAL,
+					required: connection.ipv4.method === Ipv4Method.MANUAL,
+					ipv4: connection.ipv4.method === Ipv4Method.MANUAL,
 				}'
 				:custom-messages='{
 					required: $t("network.connection.ipv4.errors.address"),
 					ipv4: $t("network.connection.ipv4.errors.addressInvalid"),
 				}'
 			>
-				<v-text-field
+				<CInput
 					v-model='connection.ipv4.addresses[0].address'
 					:label='$t("network.connection.ipv4.address").toString()'
-					:success='touched ? valid : null'
-					:error-messages='errors'
+					:is-valid='touched ? valid : null'
+					:invalid-feedback='errors.join(", ")'
 				/>
 			</ValidationProvider>
 			<ValidationProvider
 				v-slot='{errors, touched, valid}'
 				:rules='{
-					required: connection.ipv4.method === IPv4ConfigurationMethod.MANUAL,
-					ipv4: connection.ipv4.method === IPv4ConfigurationMethod.MANUAL,
-					netmask: connection.ipv4.method === IPv4ConfigurationMethod.MANUAL,
+					required: connection.ipv4.method === Ipv4Method.MANUAL,
+					ipv4: connection.ipv4.method === Ipv4Method.MANUAL,
+					netmask: connection.ipv4.method === Ipv4Method.MANUAL,
 				}'
 				:custom-messages='{
 					required: $t("network.connection.ipv4.errors.mask"),
@@ -72,32 +73,32 @@ limitations under the License.
 					netmask: $t("network.connection.ipv4.errors.maskInvalid"),
 				}'
 			>
-				<v-text-field
+				<CInput
 					v-model='connection.ipv4.addresses[0].mask'
 					:label='$t("network.connection.ipv4.mask").toString()'
-					:success='touched ? valid : null'
-					:error-messages='errors'
+					:is-valid='touched ? valid : null'
+					:invalid-feedback='errors.join(", ")'
 				/>
 			</ValidationProvider>
 			<ValidationProvider
 				v-slot='{errors, touched, valid}'
 				:rules='{
-					required: connection.ipv4.method === IPv4ConfigurationMethod.MANUAL,
-					ipv4: connection.ipv4.method === IPv4ConfigurationMethod.MANUAL,
+					required: connection.ipv4.method === Ipv4Method.MANUAL,
+					ipv4: connection.ipv4.method === Ipv4Method.MANUAL,
 				}'
 				:custom-messages='{
 					required: $t("network.connection.ipv4.errors.gateway"),
 					ipv4: $t("network.connection.ipv4.errors.addressInvalid"),
 				}'
 			>
-				<v-text-field
+				<CInput
 					v-model='connection.ipv4.gateway'
 					:label='$t("network.connection.ipv4.gateway").toString()'
-					:success='touched ? valid : null'
-					:error-messages='errors'
+					:is-valid='touched ? valid : null'
+					:invalid-feedback='errors.join(", ")'
 				/>
 			</ValidationProvider>
-			<v-divider class='mb-2' />
+			<hr>
 			<div
 				v-for='(address, index) in connection.ipv4.dns'
 				:key='index'
@@ -105,44 +106,38 @@ limitations under the License.
 				<ValidationProvider
 					v-slot='{errors, touched, valid}'
 					:rules='{
-						required: connection.ipv4.method === IPv4ConfigurationMethod.MANUAL,
-						ipv4: connection.ipv4.method === IPv4ConfigurationMethod.MANUAL,
+						required: connection.ipv4.method === Ipv4Method.MANUAL,
+						ipv4: connection.ipv4.method === Ipv4Method.MANUAL,
 					}'
 					:custom-messages='{
 						required: $t("network.connection.ipv4.errors.dns"),
 						ipv4: $t("network.connection.ipv4.errors.addressInvalid"),
 					}'
 				>
-					<v-text-field
+					<CInput
 						v-model='address.address'
 						:label='$t("network.connection.ipv4.dns.address").toString()'
-						:success='touched ? valid : null'
-						:error-messages='errors'
+						:is-valid='touched ? valid : null'
+						:invalid-feedback='errors.join(", ")'
 					>
-						<template #prepend>
-							<v-btn
-								color='success'
-								small
+						<template #prepend-content>
+							<span
+								class='text-success'
 								@click='addDns'
 							>
-								<v-icon small>
-									mdi-plus
-								</v-icon>
-							</v-btn>
+								<FontAwesomeIcon :icon='["far", "plus-square"]' size='xl' />
+							</span>
 						</template>
-						<template #append-outer>
-							<v-btn
+						<template #append-content>
+							<span
 								v-if='connection.ipv4.dns.length > 1'
-								color='error'
-								small
+								class='text-danger'
 								@click='deleteDns(index)'
 							>
-								<v-icon>
-									mdi-delete
-								</v-icon>
-							</v-btn>
+								<FontAwesomeIcon :icon='["far", "trash-alt"]' size='xl' />
+							</span>
 						</template>
-					</v-text-field>
+					</CInput>
 				</ValidationProvider>
 			</div>
 		</div>
@@ -151,29 +146,37 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, VModel, Vue} from 'vue-property-decorator';
+
+import {CAlert, CCol, CInput, CRow, CSelect} from '@coreui/vue/src';
+import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import {extend, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 
-import IpAddressHelper from '@/helpers/IpAddressHelper';
-import {subnetMask} from '@/helpers/validationRules/Network';
-import {ipv4} from '@/helpers/validators';
+import {ConnectionType} from '@/enums/Network/ConnectionType';
+import {Ipv4Method} from '@/enums/Network/Ip';
 
-import {ISelectItem} from '@/interfaces/Vuetify';
-import {
-	IPv4ConfigurationMethod,
-	NetworkConnectionConfiguration,
-	NetworkConnectionType,
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
+import IpAddressHelper from '@/helpers/IpAddressHelper';
+import {ipv4} from '@/helpers/validators';
+import {subnetMask} from '@/helpers/validationRules/Network';
+
+import {IOption} from '@/interfaces/Coreui';
+import {IConnection} from '@/interfaces/Network/Connection';
 
 /**
  * IPv4 configuration options
  */
 @Component({
 	components: {
+		CAlert,
+		CCol,
+		CInput,
+		CRow,
+		CSelect,
+		FontAwesomeIcon,
 		ValidationProvider,
 	},
 	data: () => ({
-		IPv4ConfigurationMethod,
+		Ipv4Method,
 	}),
 })
 export default class IPv4Configuration extends Vue {
@@ -181,23 +184,23 @@ export default class IPv4Configuration extends Vue {
 	/**
 	 * Edited connection.
 	 */
-	@VModel({required: true}) connection!: NetworkConnectionConfiguration;
+	@VModel({required: true}) connection!: IConnection;
 
 	/**
-	 * Computes array of select options for IPv4 configuration method
-	 * @returns {Array<ISelectItem>} Configuration method options
+	 * Computes array of CoreUI select options for IPv4 configuration method
+	 * @returns {Array<IOption>} Configuration method options
 	 */
-	get methods(): Array<ISelectItem> {
-		let methods: Array<IPv4ConfigurationMethod>;
+	get methods(): Array<IOption> {
+		let methods: Array<string>;
 		// let methods = ['auto', 'disabled', 'link-local', 'manual', 'shared'];
-		if (this.connection.type === NetworkConnectionType.GSM) {
-			methods = [IPv4ConfigurationMethod.AUTO, IPv4ConfigurationMethod.DISABLED];
+		if (this.connection.type === ConnectionType.GSM) {
+			methods = [Ipv4Method.AUTO, Ipv4Method.DISABLED];
 		} else {
-			methods = [IPv4ConfigurationMethod.AUTO, IPv4ConfigurationMethod.MANUAL, IPv4ConfigurationMethod.SHARED];
+			methods = [Ipv4Method.AUTO, Ipv4Method.MANUAL, Ipv4Method.SHARED];
 		}
 		return methods.map((method: string) => ({
 			value: method,
-			text: this.$t(`network.connection.ipv4.methods.${method}`).toString(),
+			label: this.$t(`network.connection.ipv4.methods.${method}`).toString(),
 		}));
 	}
 

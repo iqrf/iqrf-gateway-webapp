@@ -19,122 +19,112 @@ limitations under the License.
 		<h1>
 			{{ $t('config.daemon.messagings.websocket.messaging.title') }}
 		</h1>
-		<v-card>
-			<v-card-text>
-				<v-data-table
-					:loading='loading'
-					:headers='headers'
-					:items='instances'
-					:no-data-text='$t("table.messages.noRecords")'
+		<CCard>
+			<CCardHeader class='border-0'>
+				<CButton
+					color='success'
+					size='sm'
+					class='float-right'
+					to='/config/daemon/messagings/websocket/add-messaging'
 				>
-					<template #top>
-						<v-toolbar dense flat>
-							<v-spacer />
-							<v-btn
-								class='mr-1'
-								color='success'
-								small
-								to='/config/daemon/messagings/websocket/add-messaging'
-							>
-								<v-icon small>
-									mdi-plus
-								</v-icon>
-							</v-btn>
-							<v-btn
-								color='primary'
-								small
-								@click='getConfig'
-							>
-								<v-icon small>
-									mdi-refresh
-								</v-icon>
-							</v-btn>
-						</v-toolbar>
+					<CIcon :content='cilPlus' size='sm' />
+					{{ $t('table.actions.add') }}
+				</CButton>
+			</CCardHeader>
+			<CCardBody>
+				<CDataTable
+					:loading='loading'
+					:fields='fields'
+					:items='instances'
+					:column-filter='true'
+					:items-per-page='20'
+					:pagination='true'
+					:striped='true'
+					:sorter='{external: false, resetable: true}'
+				>
+					<template #no-items-view='{}'>
+						{{ $t('table.messages.noRecords') }}
 					</template>
-					<template #[`item.acceptAsyncMsg`]='{item}'>
-						<v-menu offset-y>
-							<template #activator='{ on, attrs }'>
-								<v-btn
-									:color='item.acceptAsyncMsg ? "success": "error"'
-									small
-									v-bind='attrs'
-									v-on='on'
-								>
-									{{ $t(`states.${item.acceptAsyncMsg ? "enabled" : "disabled"}`) }}
-									<v-icon>mdi-menu-down</v-icon>
-								</v-btn>
-							</template>
-							<v-list dense>
-								<v-list-item
-									dense
-									@click='changeAccept(item, true)'
-								>
+					<template #acceptAsyncMsg='{item}'>
+						<td>
+							<CDropdown
+								:color='item.acceptAsyncMsg ? "success": "danger"'
+								:toggler-text='$t(`states.${item.acceptAsyncMsg ? "enabled": "disabled"}`)'
+								size='sm'
+							>
+								<CDropdownItem @click='changeAccept(item, true)'>
 									{{ $t('states.enabled') }}
-								</v-list-item>
-								<v-list-item
-									dense
-									@click='changeAccept(item, false)'
-								>
+								</CDropdownItem>
+								<CDropdownItem @click='changeAccept(item, false)'>
 									{{ $t('states.disabled') }}
-								</v-list-item>
-							</v-list>
-						</v-menu>
+								</CDropdownItem>
+							</CDropdown>
+						</td>
 					</template>
-					<template #[`item.RequiredInterfaces`]='{item}'>
-						{{ item.RequiredInterfaces[0].target.instance }}
+					<template #RequiredInterfaces='{item}'>
+						<td>
+							{{ item.RequiredInterfaces[0].target.instance }}
+						</td>
 					</template>
-					<template #[`item.actions`]='{item}'>
-						<v-btn
-							class='mr-1'
-							color='info'
-							small
-							:to='"/config/daemon/messagings/websocket/edit-messaging/" + item.instance'
-						>
-							<v-icon small>
-								mdi-pencil
-							</v-icon>
-							{{ $t('table.actions.edit') }}
-						</v-btn>
-						<v-btn
-							color='error'
-							small
-							@click='messagingDeleteModel = item'
-						>
-							<v-icon small>
-								mdi-delete
-							</v-icon>
-							{{ $t('table.actions.delete') }}
-						</v-btn>
+					<template #actions='{item}'>
+						<td class='col-actions'>
+							<CButton
+								class='mr-1'
+								color='info'
+								size='sm'
+								:to='"/config/daemon/messagings/websocket/edit-messaging/" + item.instance'
+							>
+								<CIcon :content='cilPencil' size='sm' />
+								{{ $t('table.actions.edit') }}
+							</CButton>
+							<CButton
+								color='danger'
+								size='sm'
+								@click='removeInstance(item.instance)'
+							>
+								<CIcon :content='cilTrash' size='sm' />
+								{{ $t('table.actions.delete') }}
+							</CButton>
+						</td>
 					</template>
-				</v-data-table>
-			</v-card-text>
-		</v-card>
-		<WebsocketDeleteModal
-			v-model='messagingDeleteModel'
-			:component-type='WebsocketTypes.MESSAGING'
-			@deleted='getConfig'
-		/>
+				</CDataTable>
+			</CCardBody>
+		</CCard>
+		<WebsocketDeleteModal ref='deleteModal' @deleted='getConfig' />
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CDropdown, CDropdownItem, CIcon} from '@coreui/vue/src';
 import WebsocketDeleteModal from '@/components/Config/Messagings/WebsocketDeleteModal.vue';
 
+import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {WebsocketTypes} from '@/enums/Config/Messagings';
 
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 
 import {AxiosError, AxiosResponse} from 'axios';
-import {DataTableHeader} from 'vuetify';
+import {IField} from '@/interfaces/Coreui';
 import {IWsMessaging} from '@/interfaces/Config/Messaging';
 
 @Component({
 	components: {
+		CButton,
+		CCard,
+		CCardBody,
+		CCardHeader,
+		CDataTable,
+		CDropdown,
+		CDropdownItem,
+		CIcon,
 		WebsocketDeleteModal,
 	},
 	data: () => ({
+		cilPencil,
+		cilPlus,
+		cilTrash,
 		WebsocketTypes,
 	}),
 })
@@ -143,6 +133,34 @@ import {IWsMessaging} from '@/interfaces/Config/Messaging';
  * Websocket messaging list card for normal user
  */
 export default class WebsocketMessagingList extends Vue {
+	/**
+	 * @constant {string} componentName Websocket messaging component name
+	 */
+	private readonly componentName = 'iqrf::WebsocketMessaging';
+
+	/**
+	 * @constant {Array<IField>} fields CoreUI datatable columns
+	 */
+	private fields: Array<IField> = [
+		{
+			key: 'instance',
+			label: this.$t('forms.fields.instanceName'),
+		},
+		{
+			key: 'acceptAsyncMsg',
+			label: this.$t('config.daemon.messagings.acceptAsyncMsg'),
+		},
+		{
+			key: 'RequiredInterfaces',
+			label: this.$t('config.daemon.messagings.websocket.form.requiredInterface.instance'),
+		},
+		{
+			key: 'actions',
+			label: this.$t('table.actions.title'),
+			filter: false,
+			sorter: false,
+		}
+	];
 
 	/**
 	 * @var {boolean} loading Indicates that request is in progress
@@ -153,41 +171,6 @@ export default class WebsocketMessagingList extends Vue {
 	 * @var {Array<IWsMessaging>} instances Array of Websocket messaging instances
 	 */
 	private instances: Array<IWsMessaging> = [];
-
-	/**
-	 * @var {IWsMessaging|null} messagingDeleteModel Messaging to delete
-	 */
-	private messagingDeleteModel: IWsMessaging|null = null;
-
-	/**
-	 * @constant {string} componentName Websocket messaging component name
-	 */
-	private readonly componentName = 'iqrf::WebsocketMessaging';
-
-	/**
-	 * @constant {Array<DataTableHeader>} headers Data table headers
-	 */
-	private readonly headers: Array<DataTableHeader> = [
-		{
-			value: 'instance',
-			text: this.$t('forms.fields.instanceName').toString(),
-		},
-		{
-			value: 'acceptAsyncMsg',
-			text: this.$t('config.daemon.messagings.acceptAsyncMsg').toString(),
-		},
-		{
-			value: 'RequiredInterfaces',
-			text: this.$t('config.daemon.messagings.websocket.form.requiredInterface.instance').toString(),
-		},
-		{
-			value: 'actions',
-			text: this.$t('table.actions.title').toString(),
-			filterable: false,
-			sortable: false,
-			align: 'end',
-		}
-	];
 
 	/**
 	 * Vue lifecycle hook created
@@ -241,6 +224,14 @@ export default class WebsocketMessagingList extends Vue {
 				this.loading = false;
 				extendedErrorToast(error, 'config.daemon.messagings.websocket.messaging.messages.updateFailed', {messaging: instance.instance});
 			});
+	}
+
+	/**
+	 * Removes component instance
+	 * @param {string} instance Component instance
+	 */
+	private removeInstance(instance: string): void {
+		(this.$refs.deleteModal as WebsocketDeleteModal).showModal(WebsocketTypes.MESSAGING, instance);
 	}
 }
 </script>

@@ -16,152 +16,225 @@ limitations under the License.
 -->
 <template>
 	<div>
-		<v-card>
-			<v-toolbar flat>
-				<v-toolbar-title>
+		<CCard>
+			<CCardHeader class='datatable-header'>
+				<div>
 					{{ $t('iqrfnet.standard.table.title') }}
-				</v-toolbar-title>
-				<v-spacer />
-				<EnumerationModal @finished='getDevices' />
-				<v-btn
-					class='mr-1'
-					color='primary'
-					small
-					@click='getDevices'
-				>
-					<v-icon small>
-						mdi-sync
-					</v-icon>
-					<span class='d-none d-lg-inline'>
-						{{ $t('iqrfnet.standard.table.actions.refresh') }}
-					</span>
-				</v-btn>
-				<DatabaseResetModal
-					@reset='devices = []; getDevices()'
-				/>
-			</v-toolbar>
-			<v-card-text>
+				</div>
+				<div>
+					<CButton
+						class='mr-1'
+						color='primary'
+						size='sm'
+						@click='enumerateNetwork'
+					>
+						<CIcon :content='cilSpreadsheet' size='sm' />
+						<span class='d-none d-lg-inline'>
+							{{ $t('iqrfnet.standard.table.actions.enumerate') }}
+						</span>
+					</CButton>
+					<CButton
+						class='mr-1'
+						color='primary'
+						size='sm'
+						@click='getDevices'
+					>
+						<CIcon :content='cilSync' size='sm' />
+						<span class='d-none d-lg-inline'>
+							{{ $t('iqrfnet.standard.table.actions.refresh') }}
+						</span>
+					</CButton>
+					<DatabaseResetModal
+						@reset='devices = []; getDevices()'
+					/>
+				</div>
+			</CCardHeader>
+			<CCardBody>
 				<div class='datatable-legend'>
 					<div>
-						<v-icon>
-							mdi-information-outline
-						</v-icon>
-						{{ $t('iqrfnet.standard.table.info') }}
-					</div>
-					<div>
-						<v-icon color='info'>
-							mdi-home-outline
-						</v-icon>
+						<CIcon
+							class='text-info'
+							:content='cilHome'
+							size='lg'
+						/>
 						{{ $t('forms.fields.coordinator') }}
 					</div>
 					<div>
-						<v-icon color='info'>
-							mdi-check
-						</v-icon>
+						<CIcon
+							class='text-info'
+							:content='cilCheckAlt'
+							size='lg'
+						/>
 						{{ $t('iqrfnet.networkManager.devicesInfo.icons.bonded') }}
 					</div>
 					<div>
-						<v-icon color='info'>
-							mdi-signal-cellular-outline
-						</v-icon>
+						<CIcon
+							class='text-info'
+							:content='cilSignalCellular4'
+							size='lg'
+						/>
 						{{ $t('iqrfnet.networkManager.devicesInfo.icons.discovered') }}
 					</div>
 					<div>
-						<v-icon color='success'>
-							mdi-check
-						</v-icon>
+						<CIcon
+							class='text-success'
+							:content='cilCheckAlt'
+							size='lg'
+						/>
 						{{ $t('iqrfnet.networkManager.devicesInfo.icons.bondedOnline') }}
 					</div>
 					<div>
-						<v-icon color='success'>
-							mdi-signal-cellular-outline
-						</v-icon>
+						<CIcon
+							class='text-success'
+							:content='cilSignalCellular4'
+							size='lg'
+						/>
 						{{ $t('iqrfnet.networkManager.devicesInfo.icons.discoveredOnline') }}
 					</div>
 					<div>
-						<v-icon color='success'>
-							mdi-check-circle-outline
-						</v-icon>
+						<CIcon
+							class='text-success'
+							:content='cilCheckCircle'
+							size='lg'
+						/>
 						{{ $t('iqrfnet.standard.table.supported') }}
 					</div>
 					<div>
-						<v-icon color='error'>
-							mdi-close-circle-outline
-						</v-icon>
+						<CIcon
+							class='text-danger'
+							:content='cilXCircle'
+							size='lg'
+						/>
 						{{ $t('iqrfnet.standard.table.unsupported') }}
 					</div>
 				</div>
-				<v-data-table
-					:headers='headers'
-					:items='devices'
-					:no-data-text='$t("iqrfnet.standard.table.fields.noDevices")'
-					show-expand
-					:expanded.sync='expanded'
-					item-key='address'
+				<CDataTable
+					:fields='fields'
+					:items='filteredDevices'
+					:column-filter='true'
+					:pagination='true'
+					:items-per-page='10'
+					:sorter='{external: false, resetable: true}'
 				>
-					<template #[`item.address`]='{item}'>
-						<router-link :to='"/iqrfnet/enumeration/" + item.getAddress()'>
-							{{ item.getAddress() }}
-						</router-link>
+					<template #no-items-view='{}'>
+						{{ $t('iqrfnet.standard.table.fields.noDevices') }}
 					</template>
-					<template #[`item.product`]='{item}'>
-						{{ item.getProductName() }}
+					<template #address='{item}'>
+						<td>
+							<router-link :to='"/iqrfnet/enumeration/" + item.getAddress()'>
+								{{ item.getAddress() }}
+							</router-link>
+						</td>
 					</template>
-					<template #[`item.os`]='{item}'>
-						{{ item.getOs() }}
-					</template>
-					<template #[`item.dpa`]='{item}'>
-						{{ item.getDpa() }}
-					</template>
-					<template #[`item.status`]='{item}'>
-						<v-icon
-							:color='item.getIconColor()'
-							size='xl'
+					<template #address-filter>
+						<input
+							class='form-control form-control-sm'
+							:value='filters.address'
+							@input='e => filters.address = e.target.value'
 						>
-							{{ item.getIcon() }}
-						</v-icon>
 					</template>
-					<template #[`item.sensor`]='{item}'>
-						<v-icon
-							:color='item.hasSensor() ? "success" : "error"'
-							size='xl'
+					<template #product='{item}'>
+						<td>
+							{{ item.getProductName() }}
+						</td>
+					</template>
+					<template #product-filter>
+						<input
+							class='form-control form-control-sm'
+							:value='filters.product'
+							@input='e => filters.product = e.target.value'
 						>
-							{{ item.getSensorIcon() }}
-						</v-icon>
 					</template>
-					<template #[`item.binout`]='{item}'>
-						<v-icon
-							:color='item.hasBinout() ? "success" : "error"'
-							size='xl'
+					<template #os='{item}'>
+						<td>
+							{{ item.getOs() }}
+						</td>
+					</template>
+					<template #os-filter>
+						<input
+							class='form-control form-control-sm'
+							:value='filters.os'
+							@input='e => filters.os = e.target.value'
 						>
-							{{ item.getBinoutIcon() }}
-						</v-icon>
 					</template>
-					<template #[`item.light`]='{item}'>
-						<v-icon
-							:color='item.hasLight() ? "success" : "error"'
-							size='xl'
+					<template #dpa='{item}'>
+						<td>
+							{{ item.getDpa() }}
+						</td>
+					</template>
+					<template #dpa-filter>
+						<input
+							class='form-control form-control-sm'
+							:value='filters.dpa'
+							@input='e => filters.dpa = e.target.value'
 						>
-							{{ item.getLightIcon() }}
-						</v-icon>
 					</template>
-					<template #expanded-item='{headers, item}'>
-						<td :colspan='headers.length'>
-							<v-container fluid>
-								<v-row>
-									<v-col cols='auto' align-self='center'>
-										<v-img
-											:src='item.getImg()'
-											max-width='150'
-											max-height='150'
+					<template #status='{item}'>
+						<td>
+							<CIcon
+								size='xl'
+								:class='item.getIconColor()'
+								:content='item.getIcon()'
+							/>
+						</td>
+					</template>
+					<template #sensor='{item}'>
+						<td>
+							<CIcon
+								size='xl'
+								:class='item.hasSensor() ? "text-success" : "text-danger"'
+								:content='item.getSensorIcon()'
+							/>
+						</td>
+					</template>
+					<template #binout='{item}'>
+						<td>
+							<CIcon
+								size='xl'
+								:class='item.hasBinout() ? "text-success" : "text-danger"'
+								:content='item.getBinoutIcon()'
+							/>
+						</td>
+					</template>
+					<template #light='{item}'>
+						<td>
+							<CIcon
+								size='xl'
+								:class='item.hasLight() ? "text-success" : "text-danger"'
+								:content='item.getLightIcon()'
+							/>
+						</td>
+					</template>
+					<template #show_details='{item}'>
+						<td class='py-2'>
+							<CButton
+								color='info'
+								size='sm'
+								@click='item.showDetails = !item.showDetails'
+							>
+								<CIcon :content='cilInfo' />
+							</CButton>
+						</td>
+					</template>
+					<template #details='{item}'>
+						<CCollapse :show='item.showDetails'>
+							<CCardBody>
+								<CRow align-vertical='center'>
+									<CCol sm='auto'>
+										<CMedia
+											:aside-image-props='{
+												src: item.getImg(),
+												block: true,
+												width: `150px`,
+												height: `150px`,
+											}'
 										/>
-									</v-col>
-									<v-divider vertical />
-									<v-col cols='auto'>
+									</CCol>
+									<CCol>
 										<div class='datatable-expansion-table'>
 											<table>
 												<caption>
-													<b>{{ $t('iqrfnet.standard.table.info') }}</b>
+													<strong>{{ $t('iqrfnet.standard.table.info') }}</strong>
 												</caption>
 												<tr>
 													<th>
@@ -175,7 +248,7 @@ limitations under the License.
 													<th>
 														{{ $t('iqrfnet.standard.table.fields.hwpid') }}
 													</th>
-													<td>{{ `${item.getHwpid()} [${item.getHwpidHex()}]` }}</td>
+													<td>{{ item.getHwpid() + ' [' + item.getHwpidHex() + ']' }}</td>
 												</tr>
 												<tr>
 													<th>
@@ -188,7 +261,7 @@ limitations under the License.
 														{{ $t('iqrfnet.standard.table.fields.mid') }}
 													</th>
 													<td>
-														{{ `${item.getMid()} [${item.getMidHex()}]` }}
+														{{ item.getMid() + ' [' + item.getMidHex() + ']' }}
 													</td>
 												</tr>
 											</table>
@@ -204,42 +277,70 @@ limitations under the License.
 												<tr v-for='(sensor, i) of item.getSensors()' :key='i'>
 													<td>{{ sensor.name }}</td>
 													<td>{{ sensor.type }}</td>
-													<td>{{ sensor.index }}</td>
+													<td>{{ sensor.idx }}</td>
 												</tr>
 											</table>
 										</div>
-									</v-col>
-								</v-row>
-							</v-container>
-						</td>
+									</CCol>
+								</CRow>
+							</CCardBody>
+						</CCollapse>
 					</template>
-				</v-data-table>
-			</v-card-text>
-		</v-card>
+				</CDataTable>
+			</CCardBody>
+		</CCard>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import DatabaseResetModal from './DatabaseResetModal.vue';
+import {CButton, CCard, CCardBody, CCardHeader, CCollapse, CDataTable, CIcon, CMedia} from '@coreui/vue/src';
+import DatabaseResetModal from '@/components/IqrfNet/StandardManager/DatabaseResetModal.vue';
 
+import {cilCheckAlt, cilCheckCircle, cilHome, cilInfo, cilSignalCellular4, cilSpreadsheet, cilSync, cilXCircle} from '@coreui/icons';
+import {EnumerateCommand} from '@/enums/IqrfNet/info';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
-import DbService from '@/services/DaemonApi/DbService';
-import IqmeshNetworkService from '@/services/DaemonApi/IqmeshNetworkService';
 import StandardDevice from '@/entities/StandardDevice';
+import InfoService from '@/services/DaemonApi/InfoService';
+import IqrfNetService from '@/services/IqrfNetService';
+import ProductService from '@/services/IqrfRepository/ProductService';
 
-import {DataTableHeader} from 'vuetify';
-import {IIqrfDbBo, IIqrfDbDeviceFull, IIqrfDbSensor} from '@/interfaces/DaemonApi/IqrfDb';
+import {AxiosResponse} from 'axios';
+import {IField} from '@/interfaces/Coreui';
+import {IInfoBinout, IInfoDevice, IInfoNode, IInfoSensor} from '@/interfaces/DaemonApi/IqrfInfo';
 import {MutationPayload} from 'vuex';
-import {useRepositoryClient} from '@/services/IqrfRepositoryClient';
-import {ProductService} from '@iqrf/iqrf-repository-client/services';
-import {Product} from '@iqrf/iqrf-repository-client/types';
+import DpaService, {OsDpaVersion} from '@/services/IqrfRepository/OsDpaService';
+
+interface StandardDevicesFilters {
+	address: string;
+	product: string;
+	os: string;
+	dpa: string;
+}
 
 @Component({
 	components: {
+		CButton,
+		CCard,
+		CCardBody,
+		CCardHeader,
+		CCollapse,
+		CDataTable,
+		CIcon,
+		CMedia,
 		DatabaseResetModal,
 	},
+	data: () => ({
+		cilCheckAlt,
+		cilCheckCircle,
+		cilHome,
+		cilInfo,
+		cilSignalCellular4,
+		cilSpreadsheet,
+		cilSync,
+		cilXCircle,
+	}),
 })
 
 /**
@@ -262,59 +363,88 @@ export default class StandardDevices extends Vue {
 	private msgId: string|null = null;
 
 	/**
-	 * @var {Array<StandardDevices>} expanded Expanded devices
+	 * @constant {Array<IField>} fields Array of CoreUI data table fields
 	 */
-	private expanded: Array<StandardDevices> = [];
+	private fields: Array<IField> = [
+		{
+			key: 'address',
+			label: this.$t('iqrfnet.standard.table.fields.address'),
+		},
+		{
+			key: 'product',
+			label: this.$t('iqrfnet.standard.table.fields.product'),
+		},
+		{
+			key: 'os',
+			label: this.$t('iqrfnet.standard.table.fields.os'),
+		},
+		{
+			key: 'dpa',
+			label: this.$t('iqrfnet.standard.table.fields.dpa'),
+		},
+		{
+			key: 'status',
+			label: this.$t('iqrfnet.standard.table.fields.status'),
+			filter: false,
+			sorter: false,
+		},
+		{
+			key: 'sensor',
+			label: this.$t('iqrfnet.standard.table.fields.sensor'),
+			filter: false,
+			sorter: false,
+		},
+		{
+			key: 'binout',
+			label: this.$t('iqrfnet.standard.table.fields.binout'),
+			filter: false,
+			sorter: false,
+		},
+		{
+			key: 'light',
+			label: this.$t('iqrfnet.standard.table.fields.light'),
+			filter: false,
+			sorter: false,
+		},
+		{
+			key: 'show_details',
+			label: '',
+			_style: 'width: 1%',
+			sorter: false,
+			filter: false,
+		}
+	];
 
 	/**
-	 * @constant {Array<DataTableHeader>} headers Data table headers
+	 * @var {StandardDeviceFilters} filters Filters
 	 */
-	private readonly headers: Array<DataTableHeader> = [
-		{
-			value: 'address',
-			text: this.$t('iqrfnet.standard.table.fields.address').toString(),
-		},
-		{
-			value: 'product',
-			text: this.$t('iqrfnet.standard.table.fields.product').toString(),
-		},
-		{
-			value: 'os',
-			text: this.$t('iqrfnet.standard.table.fields.os').toString(),
-		},
-		{
-			value: 'dpa',
-			text: this.$t('iqrfnet.standard.table.fields.dpa').toString(),
-		},
-		{
-			value: 'status',
-			text: this.$t('iqrfnet.standard.table.fields.status').toString(),
-			filterable: false,
-			sortable: false,
-		},
-		{
-			value: 'sensor',
-			text: this.$t('iqrfnet.standard.table.fields.sensor').toString(),
-			filterable: false,
-			sortable: false,
-		},
-		{
-			value: 'binout',
-			text: this.$t('iqrfnet.standard.table.fields.binout').toString(),
-			filterable: false,
-			sortable: false,
-		},
-		{
-			value: 'light',
-			text: this.$t('iqrfnet.standard.table.fields.light').toString(),
-			filterable: false,
-			sortable: false,
-		},
-		{
-			value: 'data-table-expand',
-			text: '',
-		},
-	];
+	private filters: StandardDevicesFilters = {
+		address: '',
+		product: '',
+		os: '',
+		dpa: '',
+	};
+
+	/**
+	 * @var {Array<StandardDevice>} filteredDevices Filtered devices
+	 */
+	get filteredDevices(): Array<StandardDevice> {
+		return this.devices.filter((item: StandardDevice) => {
+			if (this.filters.address.length > 0 && item.getAddress().toString().toUpperCase() !== this.filters.address.toUpperCase()) {
+				return false;
+			}
+			if (this.filters.product.length > 0 && !item.getProductName().toUpperCase().includes(this.filters.product.toUpperCase())) {
+				return false;
+			}
+			if (this.filters.os.length > 0 && !item.getOs().toUpperCase().includes(this.filters.os.toUpperCase())) {
+				return false;
+			}
+			if (this.filters.dpa.length > 0 && !item.getDpa().toUpperCase().includes(this.filters.dpa.toUpperCase())) {
+				return false;
+			}
+			return true;
+		});
+	}
 
 	/**
 	 * Websocket store unsubscribe function
@@ -322,17 +452,9 @@ export default class StandardDevices extends Vue {
 	private unsubscribe: CallableFunction = () => {return;};
 
 	/**
-   * @property {ProductService|undefined} productService Product service
-   * @private
-   */
-	private productService!: ProductService;
-
-	/**
 	 * Subscribes a mutation handler to websocket store
 	 */
-	async created(): Promise<void> {
-		const repositoryClient = await useRepositoryClient();
-		this.productService = repositoryClient.getProductService();
+	created(): void {
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type !== 'daemonClient/SOCKET_ONMESSAGE') {
 				return;
@@ -340,18 +462,22 @@ export default class StandardDevices extends Vue {
 			if (mutation.payload.data.msgId !== this.msgId) {
 				return;
 			}
-			this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 			if (mutation.payload.mType === 'messageError') {
 				this.handleMessageError(mutation.payload.data);
-			} else if (mutation.payload.mType === 'iqrfDb_GetDevices') {
+			} else if (mutation.payload.mType === 'infoDaemon_Enumeration') {
+				const command = mutation.payload.data.rsp.command;
+				if (command === EnumerateCommand.NOW) {
+					this.handleEnumerationNow(mutation.payload.data);
+				}
+			} else if (mutation.payload.mType === 'infoDaemon_GetNodes') {
 				this.handleGetDevices(mutation.payload.data);
-			} else if (mutation.payload.mType === 'iqrfDb_GetBinaryOutputs') {
-				this.handleGetBinaryOutputs(mutation.payload.data);
-			} else if (mutation.payload.mType === 'iqrfDb_GetLights') {
+			} else if (mutation.payload.mType === 'infoDaemon_GetBinaryOutputs') {
+				this.handleGetBinouts(mutation.payload.data);
+			} else if (mutation.payload.mType === 'infoDaemon_GetLights') {
 				this.handleGetLights(mutation.payload.data);
-			} else if (mutation.payload.mType === 'iqrfDb_GetSensors') {
+			} else if (mutation.payload.mType === 'infoDaemon_GetSensors') {
 				this.handleGetSensors(mutation.payload.data);
-			} else if (mutation.payload.mType === 'iqmeshNetwork_Ping') {
+			} else if (mutation.payload.mType === 'iqrfEmbedFrc_SendSelective') {
 				this.handlePingDevices(mutation.payload.data);
 			}
 		});
@@ -372,7 +498,53 @@ export default class StandardDevices extends Vue {
 		this.unsubscribe();
 	}
 
+	/**
+	 * Executes network enumeration to populate database tables
+	 */
+	private enumerateNetwork(): void {
+		this.$store.commit('spinner/SHOW');
+		InfoService.enumerate(EnumerateCommand.NOW)
+			.then((msgId: string) => this.msgId = msgId);
+	}
 
+	/**
+	 * Handles enumeration now response
+	 * @param response Daemon API response
+	 */
+	private handleEnumerationNow(response): void {
+		if (response.status !== 0) {
+			this.$store.dispatch('daemonClient/removeMessage', this.msgId);
+			this.$store.commit('spinner/HIDE');
+			this.$toast.success(
+				this.$t(
+					'iqrfnet.standard.table.messages.enumNowFailed',
+					{error: response.rsp.errorStr},
+				).toString()
+			);
+			return;
+		}
+		const process = response.rsp;
+		if (process.percentage === 100) {
+			this.$store.dispatch('daemonClient/removeMessage', this.msgId);
+			this.$store.commit('spinner/HIDE');
+			this.$toast.success(
+				this.$t('iqrfnet.standard.table.messages.enumNowSuccess').toString()
+			);
+			this.getDevices();
+			return;
+		}
+		this.$store.commit('spinner/UPDATE_TEXT',
+			this.$t(
+				'iqrfnet.standard.table.messages.enumNowProgress',
+				{
+					progress: process.percentage,
+					phase: process.enumPhase,
+					current: process.step,
+					total: process.steps,
+				}
+			).toString()
+		);
+	}
 
 	/**
 	 * Retrieves information about devices stored in database
@@ -383,16 +555,16 @@ export default class StandardDevices extends Vue {
 			'spinner/UPDATE_TEXT',
 			this.$t('iqrfnet.standard.table.messages.device.fetch').toString()
 		);
-		const options = new DaemonMessageOptions(null, 10000, 'iqrfnet.standard.table.messages.device.fetchTimeout', () => this.msgId = null);
-		DbService.getDevices(false, options)
+		InfoService.nodes(11000, this.$t('iqrfnet.standard.table.messages.device.fetchTimeout'), () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
 	/**
-	 * Handles GetDevices Daemon API response
+	 * Handles GetNodes Daemon API response
 	 * @param response Daemon API response
 	 */
 	private handleGetDevices(response): void {
+		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		if (response.status !== 0) {
 			this.$store.dispatch('spinner/hide');
 			this.$toast.error(
@@ -401,27 +573,27 @@ export default class StandardDevices extends Vue {
 			return;
 		}
 		const devices: Array<StandardDevice> = [];
-		response.rsp.devices.forEach((device: IIqrfDbDeviceFull) => {
-			devices.push(new StandardDevice(device));
+		response.rsp.nodes.forEach((device: IInfoNode) => {
+			devices.push(new StandardDevice(device.nAdr, device.mid, device.hwpid, device.hwpidVer, device.dpaVer, device.osBuild, device.disc));
 		});
-		if (devices.length > 0) {
-			this.auxDevices = devices;
-			this.getBinaryOutputs();
+		this.auxDevices = devices;
+		if (this.auxDevices.length > 0) {
+			this.getBinouts();
 		} else {
 			this.$store.dispatch('spinner/hide');
+			this.devices = [];
 		}
 	}
 
 	/**
-	 * Retrieves information about devices implementing binary output standard in database
+	 * Retrieves information about binary output devices stored in database
 	 */
-	private getBinaryOutputs(): void {
+	private getBinouts(): void {
 		this.$store.commit(
 			'spinner/UPDATE_TEXT',
 			this.$t('iqrfnet.standard.table.messages.binout.fetch').toString()
 		);
-		const options = new DaemonMessageOptions(null, 10000, 'iqrfnet.standard.table.messages.binout.fetchTimeout', () => this.msgId = null);
-		DbService.getBinaryOutputs(options)
+		InfoService.binouts(11000, this.$t('iqrfnet.standard.table.messages.binout.fetchTimeout'), () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
@@ -429,33 +601,33 @@ export default class StandardDevices extends Vue {
 	 * Handles GetBinaryOutputs Daemon API response
 	 * @param response Daemon API response
 	 */
-	private handleGetBinaryOutputs(response): void {
+	private handleGetBinouts(response): void {
+		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		if (response.status !== 0) {
-			this.$store.dispatch('spinner/hide');
+			this.$store.commit('spinner/HIDE');
 			this.$toast.error(
 				this.$t('iqrfnet.standard.table.messages.binout.fetchFailed').toString()
 			);
 			return;
 		}
-		response.rsp.binoutDevices.forEach((device: IIqrfDbBo) => {
-			const idx = this.getDeviceIndex(device.address);
+		response.rsp.binOutDevices.forEach((device: IInfoBinout) => {
+			const idx = this.getDeviceIndex(device.nAdr);
 			if (idx !== -1) {
-				this.auxDevices[idx].setBinouts(device.count);
+				this.auxDevices[idx]?.setBinouts(device.binOuts);
 			}
 		});
 		this.getLights();
 	}
 
 	/**
-	 * Retrieves information about devices implementing light standard
+	 * Retrieves information about light devices stored in database
 	 */
 	private getLights(): void {
 		this.$store.commit(
 			'spinner/UPDATE_TEXT',
 			this.$t('iqrfnet.standard.table.messages.light.fetch').toString()
 		);
-		const options = new DaemonMessageOptions(null, 10000, 'iqrfnet.standard.table.messages.light.fetchTimeout', () => this.msgId = null);
-		DbService.getLights(options)
+		InfoService.lights(11000, this.$t('iqrfnet.standard.table.messages.light.fetchTimeout'), () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
@@ -464,32 +636,32 @@ export default class StandardDevices extends Vue {
 	 * @param response Daemon API response
 	 */
 	private handleGetLights(response): void {
+		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		if (response.status !== 0) {
-			this.$store.dispatch('spinner/hide');
+			this.$store.commit('spinner/HIDE');
 			this.$toast.error(
 				this.$t('iqrfnet.standard.table.messages.light.fetchFailed').toString()
 			);
 			return;
 		}
-		response.rsp.lightDevices.forEach((device: number) => {
-			const idx = this.getDeviceIndex(device);
+		response.rsp.lightDevices.forEach((device: IInfoDevice) => {
+			const idx = this.getDeviceIndex(device.nAdr);
 			if (idx !== -1) {
-				this.auxDevices[idx].setLight(true);
+				this.auxDevices[idx]?.setLight(true);
 			}
 		});
 		this.getSensors();
 	}
 
 	/**
-	 * Retrieves information about devices implementing sensor standard
+	 * Retrieves information about sensor devices stored in database
 	 */
 	private getSensors(): void {
 		this.$store.commit(
 			'spinner/UPDATE_TEXT',
 			this.$t('iqrfnet.standard.table.messages.sensor.fetch').toString()
 		);
-		const options = new DaemonMessageOptions(null, 10000, 'iqrfnet.standard.table.messages.sensor.fetch', () => this.msgId = null);
-		DbService.getSensors(options)
+		InfoService.sensors(11000, this.$t('iqrfnet.standard.table.messages.sensor.fetchTimeout'), () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
@@ -498,17 +670,18 @@ export default class StandardDevices extends Vue {
 	 * @param response Daemon API response
 	 */
 	private async handleGetSensors(response): Promise<void> {
+		await this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		if (response.status !== 0) {
-			this.$store.dispatch('spinner/hide');
+			this.$store.commit('spinner/HIDE');
 			this.$toast.error(
 				this.$t('iqrfnet.standard.table.messages.sensor.fetchFailed').toString()
 			);
 			return;
 		}
-		response.rsp.sensorDevices.forEach((device: IIqrfDbSensor) => {
-			const idx = this.getDeviceIndex(device.address);
+		response.rsp.sensorDevices.forEach((device: IInfoSensor) => {
+			const idx = this.getDeviceIndex(device.nAdr);
 			if (idx !== -1) {
-				this.auxDevices[idx].setSensors(device.sensors);
+				this.auxDevices[idx]?.setSensors(device.sensors);
 			}
 		});
 		await this.fetchDeviceDetails();
@@ -521,7 +694,23 @@ export default class StandardDevices extends Vue {
 	 */
 	private async fetchDeviceDetails(): Promise<void> {
 		const hwpids = new Map();
+		const osVersions = new Map();
+
 		for (const auxDevice of this.auxDevices) {
+			const osBuild = auxDevice.getOsBuild();
+			if (!osVersions.has(osBuild)) {
+				await DpaService.getVersions(osBuild)
+					.then((versions: OsDpaVersion[]) => {
+						if (versions.length === 0) {
+							return;
+						}
+						osVersions.set(osBuild, versions[0].getOsVersion());
+					})
+					.catch(() => {
+					// IQRF OS not found in repository, ignore
+					});
+			}
+			auxDevice.setOsVersion(osVersions.get(osBuild));
 			const hwpid = auxDevice.getHwpid();
 			if (hwpids.has(hwpid)) {
 				auxDevice.setProduct(hwpids.get(hwpid));
@@ -530,9 +719,9 @@ export default class StandardDevices extends Vue {
 			if ((hwpid & 0xf) === 0xf) {
 				continue;
 			}
-			await this.productService.get(hwpid)
-				.then((response: Product) => {
-					hwpids.set(hwpid, response);
+			await ProductService.get(hwpid)
+				.then((response: AxiosResponse) => {
+					hwpids.set(hwpid, response.data);
 					auxDevice.setProduct(hwpids.get(hwpid));
 				})
 				.catch(() => {
@@ -540,14 +729,13 @@ export default class StandardDevices extends Vue {
 				});
 		}
 		this.devices = this.auxDevices;
-		this.auxDevices = [];
 	}
 
 	/**
 	 * Pings devices in network to check which devices are online
 	 */
 	private pingDevices(): void {
-		const nodes: Array<number> = this.devices.map((device: StandardDevice) => (device.getAddress())).filter((addr: number) => addr > 0);
+		const nodes: Array<number> = this.auxDevices.map((device: StandardDevice) => (device.getAddress())).filter((addr: number) => addr > 0);
 		if (nodes.length === 0) {
 			return;
 		}
@@ -557,7 +745,7 @@ export default class StandardDevices extends Vue {
 			this.$t('iqrfnet.standard.table.messages.ping.fetch').toString()
 		);
 		const options = new DaemonMessageOptions(null, 100000, this.$t('iqrfnet.standard.table.messages.ping.fetchFailed'));
-		IqmeshNetworkService.ping(options)
+		IqrfNetService.pingSelective(nodes, options)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
@@ -566,6 +754,7 @@ export default class StandardDevices extends Vue {
 	 * @param response Daemon API response
 	 */
 	private handlePingDevices(response): void {
+		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		if (response.status !== 0) {
 			this.$store.dispatch('spinner/hide');
 			this.$toast.error(
@@ -573,18 +762,20 @@ export default class StandardDevices extends Vue {
 			);
 			return;
 		}
-		const nodes = response.rsp.pingResult;
+		const map = response.rsp.result.frcData.slice(0, 30);
 		const addrs = this.devices.map((device: StandardDevice) => {return device.getAddress();});
-		for (const node of nodes) {
-			if (node.address === 0) {
-				continue;
+		map.forEach((byte: number, idx: number) => {
+			if (byte === 0) {
+				return;
 			}
-			const idx = addrs.indexOf(node.address);
-			if (idx === -1) {
-				continue;
+			const bitString = byte.toString(2).padStart(8, '0');
+			for (let i = 0; i < 8; i++) {
+				const addr = idx * 8 + i;
+				if (addrs.includes(addr)) {
+					this.devices[addrs.indexOf(addr)].setOnline((bitString[(7 - i)] === '1'));
+				}
 			}
-			this.devices[idx].setOnline(node.result);
-		}
+		});
 		this.$store.dispatch('spinner/hide');
 	}
 
@@ -593,6 +784,7 @@ export default class StandardDevices extends Vue {
 	 * @param response Daemon API response
 	 */
 	private handleMessageError(response): void {
+		this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 		this.$store.dispatch('spinner/hide');
 		this.$toast.error(
 			this.$t('messageError', {error: response.rsp.errorStr}).toString()
@@ -609,20 +801,3 @@ export default class StandardDevices extends Vue {
 	}
 }
 </script>
-
-<style scoped lang='scss'>
-.datatable-header {
-	display: flex;
-	flex-wrap: nowrap;
-	align-items: center;
-	justify-content: space-between;
-}
-
-.datatable-legend {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	justify-content: space-evenly;
-	margin-bottom: 1.25em;
-}
-</style>

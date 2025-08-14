@@ -17,61 +17,66 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('config.daemon.misc.title') }}</h1>
-		<v-card>
-			<v-tabs v-model='activeTab' :show-arrows='true'>
-				<v-tab>{{ $t("config.daemon.misc.jsonApi.title") }}</v-tab>
-				<v-tab>{{ $t("config.daemon.misc.iqrfRepository.title") }}</v-tab>
-				<v-tab>{{ $t("config.daemon.misc.iqrfDb.title") }}</v-tab>
-				<v-tab>{{ $t("config.daemon.misc.monitor.title") }}</v-tab>
-				<v-tab>{{ $t("config.daemon.misc.tracer.title") }}</v-tab>
-			</v-tabs>
-			<v-tabs-items v-model='activeTab'>
-				<v-tab-item :transition='false'>
-					<div v-if='!isAdmin'>
-						<JsonApi />
-					</div>
+		<CCard>
+			<CTabs variant='tabs' :active-tab='activeTab'>
+				<CTab :title='$t("config.daemon.misc.jsonApi.title")'>
+					<JsonApi
+						v-if='!isAdmin'
+						@fetched='configFetch'
+					/>
 					<div v-else>
-						<JsonRawApi />
-						<JsonSplitter />
+						<JsonRawApi @fetched='configFetch' />
+						<JsonSplitter @fetched='configFetch' />
 					</div>
-				</v-tab-item>
-				<v-tab-item :transition='false'>
-					<IqrfRepository />
-				</v-tab-item>
-				<v-tab-item :transition='false'>
-					<IqrfDb />
-				</v-tab-item>
-				<v-tab-item :transition='false'>
-					<MonitorList />
-				</v-tab-item>
-				<v-tab-item :transition='false'>
-					<TracerList />
-				</v-tab-item>
-			</v-tabs-items>
-		</v-card>
+				</CTab>
+				<CTab :title='$t("config.daemon.misc.iqrfRepository.title")'>
+					<IqrfRepository @fetched='configFetch' />
+				</CTab>
+				<CTab :title='$t("config.daemon.misc.iqrfInfo.title")'>
+					<IqrfInfo @fetched='configFetch' />
+				</CTab>
+				<CTab :title='$t("config.daemon.misc.monitor.title")'>
+					<MonitorList @fetched='configFetch' />
+				</CTab>
+				<CTab :title='$t("config.daemon.misc.logging.title")'>
+					<TracerList @fetched='configFetch' />
+					<SyslogList @fetched='configFetch' />
+				</CTab>
+			</CTabs>
+		</CCard>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import IqrfDb from '@/components/Config/Misc/IqrfDb.vue';
+import {CCard, CCardBody, CCardHeader, CTab, CTabs} from '@coreui/vue/src';
+import IqrfInfo from '@/components/Config/Misc/IqrfInfo.vue';
 import IqrfRepository from '@/components/Config/Misc/IqrfRepository.vue';
 import JsonApi from '@/components/Config/Misc/JsonApi.vue';
 import JsonRawApi from '@/components/Config/Misc/JsonRawApi.vue';
 import JsonSplitter from '@/components/Config/Misc/JsonSplitter.vue';
 import MonitorList from '@/components/Config/Misc/MonitorList.vue';
+import SyslogList from '@/components/Config/Misc/SyslogList.vue';
 import TracerList from '@/components/Config/Misc/TracerList.vue';
-import {UserRole} from '@iqrf/iqrf-gateway-webapp-client/types';
 
+import {UserRole} from '@/services/AuthenticationService';
+
+import {IConfigFetch} from '@/interfaces/Config/Daemon';
 
 @Component({
 	components: {
-		IqrfDb,
+		CCard,
+		CCardBody,
+		CCardHeader,
+		CTab,
+		CTabs,
+		IqrfInfo,
 		IqrfRepository,
 		JsonApi,
 		JsonRawApi,
 		JsonSplitter,
 		MonitorList,
+		SyslogList,
 		TracerList,
 	},
 	metaInfo: {
@@ -84,7 +89,7 @@ import {UserRole} from '@iqrf/iqrf-gateway-webapp-client/types';
  */
 export default class MiscConfiguration extends Vue {
 	/**
-	 * @var {number} activeTab Index of active tab
+	 * @var {number} activeTab Index of active tab in CoreUI tabs
 	 */
 	private activeTab = 0;
 
@@ -100,11 +105,37 @@ export default class MiscConfiguration extends Vue {
 	];
 
 	/**
+	 * @var {Array<string>} children Children components loading configuration
+	 */
+	private children: Array<string> = [
+		'iqrfInfo',
+		'iqrfRepository',
+		'monitor',
+		'tracer',
+	];
+
+	/**
+	 * @var {Array<string>} failed Children components config fetch failed
+	 */
+	private failed: Array<string> = [];
+
+	/**
 	 * Checks if user is an administrator
 	 * @returns {boolean} True if user is an administrator
 	 */
 	get isAdmin(): boolean {
-		return this.$store.getters['user/getRole'] === UserRole.Admin;
+		return this.$store.getters['user/getRole'] === UserRole.ADMIN;
+	}
+
+	/**
+	 * Vue lifecycle hook created
+	 */
+	created(): void {
+		if (this.isAdmin) {
+			this.children.push('jsonRawApi', 'jsonSplitter');
+		} else {
+			this.children.push('jsonApi');
+		}
 	}
 
 	/**
@@ -114,6 +145,34 @@ export default class MiscConfiguration extends Vue {
 		if (this.$attrs.tabName !== undefined) {
 			this.activeTab = this.endpoints.indexOf(this.$attrs.tabName);
 		}
+		this.$store.commit('spinner/SHOW',
+			this.$t('config.daemon.messages.configMiscFetch').toString()
+		);
+	}
+
+	/**
+	 * Handles successful child component config fetch event
+	 * @param {IConfigFetch} data Component fetch meta
+	 */
+	private configFetch(data: IConfigFetch): void {
+		this.children = this.children.filter((item: string) => item !== data.name);
+		if (!data.success) {
+			this.failed.push(this.$t(`config.daemon.misc.${data.name}.title`).toString());
+		}
+		if (this.children.length > 0) {
+			return;
+		}
+		this.$store.commit('spinner/HIDE');
+		if (this.failed.length === 0) {
+			return;
+		}
+		this.$toast.error(
+			this.$t(
+				'config.daemon.messages.configFetchFailed',
+				{children: this.failed.sort().join(', ')},
+			).toString()
+		);
+		this.failed = [];
 	}
 
 }

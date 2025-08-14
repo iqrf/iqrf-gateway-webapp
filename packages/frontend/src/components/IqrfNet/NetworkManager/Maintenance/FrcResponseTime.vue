@@ -15,33 +15,41 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-card flat tile>
-		<v-card-title>{{ $t('iqrfnet.networkManager.maintenance.frcResponseTime.title') }}</v-card-title>
-		<v-card-text>
-			<v-form>
-				<v-select
-					v-model='command'
-					:items='commands'
+	<CCard class='border-top-0 border-left-0 border-right-0 card-margin-bottom'>
+		<CCardBody>
+			<CCardTitle>{{ $t('iqrfnet.networkManager.maintenance.frcResponseTime.title') }}</CCardTitle>
+			<CForm>
+				<CSelect
+					:value.sync='command'
+					:options='commands'
 					:label='$t("iqrfnet.networkManager.maintenance.frcResponseTime.command")'
 				/>
-				<v-btn
+				<CButton
 					class='mr-1'
 					color='primary'
 					@click='getResponseTime'
 				>
 					{{ $t('forms.get') }}
-				</v-btn>
-				<FrcResponseTimeResultModal
-					ref='result'
-					@set-frc-response-time='setFrcResponseTime'
-				/>
-			</v-form>
-		</v-card-text>
-	</v-card>
+				</CButton>
+				<CButton
+					color='primary'
+					:disabled='result === null'
+					@click='showResult'
+				>
+					{{ $t('iqrfnet.networkManager.maintenance.frcResponseTime.showResult') }}
+				</CButton>
+			</CForm>
+			<FrcResponseTimeResultModal
+				ref='result'
+				@set-frc-response-time='setFrcResponseTime'
+			/>
+		</CCardBody>
+	</CCard>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
+import {CButton, CForm, CSelect} from '@coreui/vue/src';
 import FrcResponseTimeResultModal from './FrcResponseTimeResultModal.vue';
 
 import {FrcCommands} from '@/enums/IqrfNet/Maintenance';
@@ -51,7 +59,7 @@ import IqmeshNetworkService from '@/services/DaemonApi/IqmeshNetworkService';
 import IqrfNetService from '@/services/IqrfNetService';
 
 import {IFrcResponseTimeResult} from '@/interfaces/DaemonApi/Iqmesh/Maintenance';
-import {ISelectItem} from '@/interfaces/Vuetify';
+import {IOption} from '@/interfaces/Coreui';
 import {MutationPayload} from 'vuex';
 
 /**
@@ -59,6 +67,9 @@ import {MutationPayload} from 'vuex';
  */
 @Component({
 	components: {
+		CButton,
+		CForm,
+		CSelect,
 		FrcResponseTimeResultModal,
 	},
 })
@@ -80,15 +91,15 @@ export default class FrcResponseTime extends Vue {
 
 	/**
 	 * Generates FRC commands for select component
-	 * @returns {Array<ISelectItem>} FRC commands select options
+	 * @returns {Array<IOption>} FRC commands select options
 	 */
-	get commands(): Array<ISelectItem> {
-		const commands: Array<ISelectItem> = [];
+	get commands(): Array<IOption> {
+		const commands: Array<IOption> = [];
 		const items: Array<string> = Object.keys(FrcCommands).filter((v) => Number.isNaN(Number(v)));
 		items.forEach((item: string) => {
 			commands.push(
 				{
-					text: this.$t('iqrfnet.networkManager.maintenance.frcResponseTime.commands.' + item.toLowerCase()),
+					label: this.$t('iqrfnet.networkManager.maintenance.frcResponseTime.commands.' + item.toLowerCase()),
 					value: FrcCommands[item],
 				},
 			);

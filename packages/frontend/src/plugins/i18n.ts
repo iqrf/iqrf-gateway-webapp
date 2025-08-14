@@ -17,76 +17,15 @@
 
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
-import {
-	cs as csVuetify,
-	en as enVuetify,
-} from 'vuetify/lib/locale';
 
-import csWebapp from '@/locales/cs.json';
-import enWebapp from '@/locales/en.json';
-
-const cs = {
-	'$vuetify': csVuetify,
-	...csWebapp,
-};
-
-const en = {
-	'$vuetify': enVuetify,
-	...enWebapp,
-};
+import en from '@/locales/en.json';
 
 Vue.use(VueI18n);
 
 export default new VueI18n({
-	dateTimeFormats: {
-		cs: {
-			short: {
-				year: 'numeric', month: 'short', day: 'numeric'
-			},
-			normal: {
-				year: 'numeric', month: 'short', day: 'numeric',
-				hour: 'numeric', minute: 'numeric',
-			},
-			long: {
-				year: 'numeric', month: 'short', day: 'numeric',
-				weekday: 'short', hour: 'numeric', minute: 'numeric', second: 'numeric'
-			}
-		},
-		en: {
-			short: {
-				year: 'numeric', month: 'short', day: 'numeric'
-			},
-			normal: {
-				year: 'numeric', month: 'short', day: 'numeric',
-				hour: 'numeric', minute: 'numeric',
-			},
-			long: {
-				year: 'numeric', month: 'short', day: 'numeric',
-				weekday: 'short', hour: 'numeric', minute: 'numeric', second: 'numeric'
-			}
-		}
-	},
-	pluralizationRules: {
-		cs: (choice: number, choicesLength: number): number => {
-			if (choice === 0) {
-				return 0;
-			}
-			console.error(choice);
-			const teen: boolean = choice > 10 && choice < 20;
-			const lastDigit: number = choice % 10;
-			if (choice === 1) {
-				return 1;
-			}
-			if (!teen && lastDigit >= 2 && lastDigit <= 4) {
-				return 2;
-			}
-			return (choicesLength < 4) ? 2 : 3;
-		},
-	},
 	locale: 'en',
 	fallbackLocale: 'en',
 	messages: {
-		'cs': cs,
 		'en': en,
 	},
 });

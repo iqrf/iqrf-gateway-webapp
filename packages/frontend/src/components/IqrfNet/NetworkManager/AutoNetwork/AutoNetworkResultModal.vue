@@ -15,73 +15,76 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-dialog
-		v-model='show'
-		width='50%'
-		persistent
-		no-click-animation
+	<CModal
+		color='primary'
+		:show.sync='show'
+		:close-on-backdrop='false'
+		:fade='false'
 	>
-		<v-card>
-			<v-card-title>
+		<template #header>
+			<h5 class='modal-title'>
 				{{ $t('iqrfnet.networkManager.autoNetwork.resultModal.title') }}
-			</v-card-title>
-			<v-card-text>
-				<v-simple-table>
-					<tr>
-						<th>{{ $t('iqrfnet.networkManager.autoNetwork.resultModal.wave') }}</th>
-						<td>{{ result.waves === 0 ? result.wave : result.wave + '/' + result.waves }}</td>
-					</tr>
-					<tr>
-						<th>{{ $t('iqrfnet.networkManager.autoNetwork.resultModal.emptyWaves') }}</th>
-						<td>{{ result.emptyWaves }}</td>
-					</tr>
-					<tr>
-						<th>{{ $t('iqrfnet.networkManager.autoNetwork.resultModal.total') }}</th>
-						<td>{{ result.totalNodes }}</td>
-					</tr>
-					<tr>
-						<th>{{ $t('iqrfnet.networkManager.autoNetwork.resultModal.new') }}</th>
-						<td>{{ result.newNodes }}</td>
-					</tr>
-					<tr>
-						<th>{{ $t('iqrfnet.networkManager.autoNetwork.resultModal.time') }}</th>
-						<td>{{ timeString }}</td>
-					</tr>
-				</v-simple-table>
-				<v-divider class='my-2' />
-				<div class='text-center'>
-					<v-progress-linear
-						class='mb-2'
-						:color='result.progressColor'
-						:value='result.progress'
-						rounded
-						height='15'
-					/>
-					<div>{{ result.status }}</div>
-				</div>
-				<v-divider class='mt-2' />
-			</v-card-text>
-			<v-card-actions>
-				<v-spacer />
-				<v-btn
-					:disabled='!result.finished'
-					@click='deactivateModal'
-				>
-					{{ $t('forms.close') }}
-				</v-btn>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
+			</h5>
+		</template>
+		<table class='modal-table'>
+			<tr>
+				<th>{{ $t('iqrfnet.networkManager.autoNetwork.resultModal.wave') }}</th>
+				<td>{{ result.waves === 0 ? result.wave : result.wave + '/' + result.waves }}</td>
+			</tr>
+			<tr>
+				<th>{{ $t('iqrfnet.networkManager.autoNetwork.resultModal.emptyWaves') }}</th>
+				<td>{{ result.emptyWaves }}</td>
+			</tr>
+			<tr>
+				<th>{{ $t('iqrfnet.networkManager.autoNetwork.resultModal.total') }}</th>
+				<td>{{ result.totalNodes }}</td>
+			</tr>
+			<tr>
+				<th>{{ $t('iqrfnet.networkManager.autoNetwork.resultModal.new') }}</th>
+				<td>{{ result.newNodes }}</td>
+			</tr>
+			<tr>
+				<th>{{ $t('iqrfnet.networkManager.autoNetwork.resultModal.time') }}</th>
+				<td>{{ timeString }}</td>
+			</tr>
+		</table><hr>
+		<div class='text-center'>
+			<CProgress
+				class='autonetwork-progress-bar'
+				:color='result.progressColor'
+				:value='result.progress'
+				:animated='!result.finished'
+			/>
+			<div>{{ result.status }}</div>
+		</div>
+		<template #footer>
+			<CButton
+				color='secondary'
+				:disabled='!result.finished'
+				@click='deactivateModal'
+			>
+				{{ $t('forms.close') }}
+			</CButton>
+		</template>
+	</CModal>
 </template>
 
 <script lang='ts'>
 import {Component} from 'vue-property-decorator';
+import {CButton, CModal, CProgress} from '@coreui/vue/src';
 import ModalBase from '@/components/ModalBase.vue';
+
+@Component({
+	components: {
+		CButton,
+		CModal,
+		CProgress,
+	},
+})
 
 /**
  * AutoNetwork result modal window component
  */
-@Component
 export default class AutoNetworkResult extends ModalBase {
 	/**
 	 * @const defaultResult Autonetwork default result
@@ -101,7 +104,7 @@ export default class AutoNetworkResult extends ModalBase {
 	/**
 	 * @var result Autonetwork result
 	 */
-	private result = {...this.defaultResult};
+	private result = JSON.parse(JSON.stringify(this.defaultResult));
 
 	/**
 	 * @var {number} timerTimeoutId Window timeout ID
@@ -131,6 +134,7 @@ export default class AutoNetworkResult extends ModalBase {
 	 */
 	public showModal(waves = 0): void {
 		this.result.waves = waves;
+		this.result.emptyWaves = 0;
 		this.openModal();
 		this.startTimer();
 	}
@@ -201,21 +205,14 @@ export default class AutoNetworkResult extends ModalBase {
 	private deactivateModal(): void {
 		this.closeModal();
 		this.$emit('finished');
-		this.result = {...this.defaultResult};
+		this.result = JSON.parse(JSON.stringify(this.defaultResult));
 	}
 }
 </script>
 
 <style scoped>
-table {
-	width: 100%;
+.autonetwork-progress-bar {
+	height: 15px;
 }
 
-th {
-	text-align: left;
-}
-
-td {
-	text-align: right;
-}
 </style>

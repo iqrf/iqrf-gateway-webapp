@@ -17,7 +17,7 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('core.profile.title') }}</h1>
-		<UserProfileForm class='mb-5' />
+		<UserProfileForm />
 		<UserProfilePassword />
 	</div>
 </template>

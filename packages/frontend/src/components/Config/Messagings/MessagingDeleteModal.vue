@@ -15,116 +15,120 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-dialog
-		v-model='showModal'
-		width='50%'
-		persistent
-		no-click-animation
+	<CModal
+		v-show='show'
+		:show.sync='show'
+		color='danger'
+		size='lg'
+		:close-on-backdrop='false'
+		:fade='false'
 	>
-		<v-card v-if='instance !== null'>
-			<v-card-title>
+		<template #header>
+			<h5 class='modal-title'>
 				{{ $t('config.daemon.messagings.deleteDialog.title', {messaging: messagingType}) }}
-			</v-card-title>
-			<v-card-text>
-				{{ $t('config.daemon.messagings.deleteDialog.prompt', {messaging: messagingType, instance: instance}) }}
-			</v-card-text>
-			<v-card-actions>
-				<v-spacer />
-				<v-btn
-					@click='hideModal'
-				>
-					{{ $t('forms.cancel') }}
-				</v-btn>
-				<v-btn
-					color='error'
-					@click='remove'
-				>
-					{{ $t('forms.delete') }}
-				</v-btn>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
+			</h5>
+		</template>
+		{{ $t('config.daemon.messagings.deleteDialog.prompt', {messaging: messagingType, instance: instance}) }}
+		<template #footer>
+			<CButton
+				class='mr-1'
+				color='secondary'
+				@click='hideModal'
+			>
+				{{ $t('forms.cancel') }}
+			</CButton>
+			<CButton
+				color='danger'
+				@click='remove'
+			>
+				{{ $t('forms.delete') }}
+			</CButton>
+		</template>
+	</CModal>
 </template>
 
 <script lang='ts'>
-import {
-	IqrfGatewayDaemonService
-} from '@iqrf/iqrf-gateway-webapp-client/services/Config';
-import {
-	IqrfGatewayDaemonComponentName
-} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import {AxiosError} from 'axios';
-import {Component, VModel, Prop, Vue} from 'vue-property-decorator';
+import {Component} from 'vue-property-decorator';
+import {CButton, CModal} from '@coreui/vue/src';
+import ModalBase from '@/components/ModalBase.vue';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
 import {MessagingTypes} from '@/enums/Config/Messagings';
-import {useApiClient} from '@/services/ApiClient';
+
+import DaemonConfigurationService from '@/services/DaemonConfigurationService';
+
+import {AxiosError} from 'axios';
+
 
 /**
  * Messaging delete dialog component
  */
-@Component
-export default class MessagignDeleteModal extends Vue {
+@Component({
+	components: {
+		CButton,
+		CModal,
+	},
+})
+export default class MessagignDeleteModal extends ModalBase {
+	/**
+	 * @var {MessagingTypes} messagingType Messaging type
+	 */
+	private messagingType: MessagingTypes|null = null;
 
 	/**
-	 * @property {string|null} instance Messaging instance to delete
+	 * @var {string} instance Messaging instance name
 	 */
-	@VModel({required: true}) instance!: string|null;
-
-	/**
-	 * @property {MessagingType} messagingType Messaging type
-	 */
-	@Prop({required: true}) messagingType!: MessagingTypes;
+	private instance = '';
 
 	/**
 	 * @constant {Record<MessagingTypes, string>} componentNames Component names
 	 */
-	private readonly componentNames: Record<MessagingTypes, IqrfGatewayDaemonComponentName> = {
-		MQ: IqrfGatewayDaemonComponentName.IqrfMqMessaging,
-		MQTT: IqrfGatewayDaemonComponentName.IqrfMqttMessaging,
-		UDP: IqrfGatewayDaemonComponentName.IqrfUdpMessaging,
+	private componentNames: Record<MessagingTypes, string> = {
+		MQ: 'iqrf::MqMessaging',
+		MQTT: 'iqrf::MqttMessaging',
+		UDP: 'iqrf::UdpMessaging',
 	};
-
-	/**
-	 * @property {IqrfGatewayDaemonService} service IQRF Gateway Daemon service
-	 */
-	private readonly service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
-
-	/**
-	 * Computes modal display condition
-	 */
-	get showModal(): boolean {
-		return this.instance !== null;
-	}
 
 	/**
 	 * Removes instance of UDP messaging component
 	 */
 	private remove(): void {
-		if (this.instance === null) {
+		if (this.messagingType === null || this.instance.length === 0) {
 			return;
 		}
-		const instance = this.instance;
 		const type = this.messagingType;
 		this.$store.commit('spinner/SHOW');
-		this.service.deleteInstance(this.componentNames[type], instance)
+		DaemonConfigurationService.deleteInstance(this.componentNames[type], this.instance)
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
-					this.$t('config.daemon.messagings.deleteDialog.success', {messaging: type, instance: instance})
+					this.$t('config.daemon.messagings.deleteDialog.success', {messaging: type, instance: this.instance})
 						.toString()
 				);
 				this.hideModal();
 				this.$emit('deleted');
 			})
-			.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.messagings.deleteDialog.failed', {messaging: type, instance: instance}));
+			.catch((error: AxiosError) => extendedErrorToast(error, 'config.daemon.messagings.deleteDialog.failed', {messaging: type, instance: this.instance}));
 	}
 
 	/**
-	 * Hides modal window
+	 * Stores messaging type and instance, and shows modal window
+	 * @param {MessagingTypes} type Messaging type
+	 * @param {string} instance Component instance
+	 */
+	public showModal(type: MessagingTypes, instance: string): void {
+		this.messagingType = type;
+		this.instance = instance;
+		this.openModal();
+	}
+
+	/**
+	 * Resets messaging type and instance, and hides modal window
 	 */
 	private hideModal(): void {
-		this.instance = null;
+		this.messagingType = null;
+		this.instance = '';
+		this.closeModal();
 	}
 }
 </script>

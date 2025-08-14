@@ -17,21 +17,19 @@ limitations under the License.
 <template>
 	<div>
 		<FrcResponseTime />
-		<v-divider />
-		<RfSignalTest ref='rfSignal' :rf-band='rfBand' />
-		<v-divider />
+		<RfSignalTest ref='rfSignal' />
 		<NetworkIssues />
 	</div>
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
+import {Component, Vue} from 'vue-property-decorator';
 import FrcResponseTime from './FrcResponseTime.vue';
 import NetworkIssues from './NetworkIssues.vue';
 import RfSignalTest from './RfSignalTest.vue';
 
 /**
- * IQMESH Network maintenance card
+ * IQMESH Network DPA params component
  */
 @Component({
 	components: {
@@ -42,8 +40,11 @@ import RfSignalTest from './RfSignalTest.vue';
 })
 export default class Maintenance extends Vue {
 	/**
-	 * @property {number} rfBand RF band
+	 * Pass RF band to RF Signal Test component
+	 * @param {number} rfBand RF band
 	 */
-	@Prop({required: true, default: 868}) rfBand!: number;
+	public setRfChannelRules(rfBand: number): void {
+		(this.$refs.rfSignal as RfSignalTest).setRfChannelRulesMessages(rfBand);
+	}
 }
 </script>

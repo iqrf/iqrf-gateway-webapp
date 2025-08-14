@@ -15,14 +15,13 @@
  * limitations under the License.
  */
 
-import {IqrfRepositoryConfig} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import {ActionTree, GetterTree, MutationTree} from 'vuex';
-
-import {useApiClient} from '@/services/ApiClient';
+import {IIqrfRepositoryConfig} from '@/interfaces/Config/Misc';
+import IqrfRepositoryConfigService from '@/services/IqrfRepository/IqrfRepositoryConfigService';
 
 
 interface RepositoryState {
-	config: IqrfRepositoryConfig|null
+	config: IIqrfRepositoryConfig|null
 }
 
 const state: RepositoryState = {
@@ -31,8 +30,8 @@ const state: RepositoryState = {
 
 const actions: ActionTree<RepositoryState, any> = {
 	get({commit}) {
-		return useApiClient().getConfigServices().getIqrfRepositoryService().getConfig()
-			.then((config: IqrfRepositoryConfig) => {
+		return IqrfRepositoryConfigService.get()
+			.then((config: IIqrfRepositoryConfig) => {
 				commit('SET', config);
 			})
 			.catch(() => {return;});
@@ -40,7 +39,7 @@ const actions: ActionTree<RepositoryState, any> = {
 };
 
 const getters: GetterTree<RepositoryState, any> = {
-	configuration: (state: RepositoryState): IqrfRepositoryConfig|null => {
+	configuration: (state: RepositoryState): IIqrfRepositoryConfig|null => {
 		if (state.config) {
 			return state.config;
 		} else {
@@ -50,7 +49,7 @@ const getters: GetterTree<RepositoryState, any> = {
 };
 
 const mutations: MutationTree<RepositoryState> = {
-	SET(state: RepositoryState, config: IqrfRepositoryConfig) {
+	SET(state: RepositoryState, config: IIqrfRepositoryConfig) {
 		state.config = config;
 	}
 };

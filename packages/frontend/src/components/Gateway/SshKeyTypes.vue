@@ -1,24 +1,7 @@
-<!--
-Copyright 2017-2025 IQRF Tech s.r.o.
-Copyright 2019-2025 MICRORISC s.r.o.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software,
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied
-See the License for the specific language governing permissions and
-limitations under the License.
--->
 <template>
-	<v-alert
+	<CAlert
 		v-if='fetched !== null'
 		:color='fetched ? "primary" : "danger"'
-		text
 	>
 		<span v-if='fetched'>
 			<span v-if='types.length === 0'>
@@ -39,16 +22,22 @@ limitations under the License.
 		<span v-else>
 			{{ $t('core.security.ssh.messages.typeListFailed') }}
 		</span>
-	</v-alert>
+	</CAlert>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
+import {CAlert} from '@coreui/vue/src';
 
-import {useApiClient} from '@/services/ApiClient';
-import {SshKeyUtils} from '@iqrf/iqrf-gateway-webapp-client/utils';
+import SshService from '@/services/SshService';
 
-@Component({})
+import {AxiosResponse} from 'axios';
+
+@Component({
+	components: {
+		CAlert,
+	},
+})
 
 /**
  * SSH key types list component
@@ -69,9 +58,9 @@ export default class SshKeyTypes extends Vue {
 	 * Retrieves key types
 	 */
 	created(): void {
-		useApiClient().getSecurityServices().getSshKeyService().listKeyTypes()
-			.then((response: string[]) => {
-				this.types = response;
+		SshService.listKeyTypes()
+			.then((response: AxiosResponse) => {
+				this.types = response.data;
 				this.fetched = true;
 				this.$emit('fetch');
 			})
@@ -87,12 +76,11 @@ export default class SshKeyTypes extends Vue {
 	 * @returns {boolean} True if valid, false otherwise
 	 */
 	validateKey(key: string): boolean {
-		try {
-			SshKeyUtils.validatePublicKey(key, this.types);
-			return true;
-		} catch {
+		const sections = key.trim().split(' ');
+		if (sections.length < 2) {
 			return false;
 		}
+		return this.types.includes(sections[0]);
 	}
 }
 </script>

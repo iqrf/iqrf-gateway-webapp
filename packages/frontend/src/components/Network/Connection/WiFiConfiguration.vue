@@ -15,15 +15,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-row>
-		<v-col>
-			<h6>{{ $t('network.wireless.form.title') }}</h6>
-			<v-text-field
-				:label='$t("network.wireless.form.security")'
-				:value='$t(`network.wireless.form.securityTypes.${connection.wifi.security.type}`)'
-				disabled
-				readonly
-			/>
+	<CRow>
+		<CCol>
+			<legend>{{ $t('network.wireless.form.title') }}</legend>
+			<div class='form-group'>
+				<strong>
+					<span>{{ $t('network.wireless.form.security') }}</span>
+				</strong> {{ $t(`network.wireless.form.securityTypes.${connection.wifi.security.type}`) }}
+			</div>
 			<LeapConfiguration
 				v-if='connection.wifi.security.type === "ieee8021x"'
 				v-model='connection'
@@ -40,27 +39,29 @@ limitations under the License.
 				v-if='connection.wifi.security.type === "wpa-psk"'
 				v-model='connection'
 			/>
-		</v-col>
-	</v-row>
+		</CCol>
+	</CRow>
 </template>
 
 <script lang='ts'>
 import {Component, VModel, Vue} from 'vue-property-decorator';
-import LeapConfiguration from '@/components/Network/Connection/WiFi/LeapConfiguration.vue';
+import {CCol, CRow} from '@coreui/vue/src';
+
 import PasswordInput from '@/components/Core/PasswordInput.vue';
+import LeapConfiguration from '@/components/Network/Connection/WiFi/LeapConfiguration.vue';
 import WepConfiguration from '@/components/Network/Connection/WiFi/WepConfiguration.vue';
 import WpaEapConfiguration from '@/components/Network/Connection/WiFi/WpaEapConfiguration.vue';
 import WpaPskConfiguration from '@/components/Network/Connection/WiFi/WpaPskConfiguration.vue';
 
-import {
-	NetworkConnectionConfiguration
-} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
+import {IConnection} from '@/interfaces/Network/Connection';
 
 /**
  * Wi-Fi configuration options
  */
 @Component({
 	components: {
+		CCol,
+		CRow,
 		LeapConfiguration,
 		PasswordInput,
 		WepConfiguration,
@@ -73,7 +74,7 @@ export default class WiFiConfiguration extends Vue {
 	/**
 	 * Edited connection.
 	 */
-	@VModel({required: true}) connection!: NetworkConnectionConfiguration;
+	@VModel({required: true}) connection!: IConnection;
 
 }
 </script>

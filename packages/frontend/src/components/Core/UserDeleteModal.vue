@@ -15,81 +15,96 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-dialog
-		v-model='showModal'
-		width='50%'
-		persistent
-		no-click-animation
+	<CModal
+		v-show='show'
+		:show='show'
+		color='danger'
+		size='lg'
+		:close-on-backdrop='false'
+		:fade='false'
 	>
-		<v-card v-if='user !== null'>
-			<v-card-title>
+		<template #header>
+			<h5 class='modal-title'>
 				{{ $t('core.user.modal.title') }}
-			</v-card-title>
-			<v-card-text>
-				{{ $t('core.user.modal.prompt', {user: user.username}) }}
-			</v-card-text>
-			<v-card-actions>
-				<v-spacer />
-				<v-btn
-					@click='hideModal'
-				>
-					{{ $t('forms.cancel') }}
-				</v-btn>
-				<v-btn
-					color='error'
-					@click='remove'
-				>
-					{{ $t('forms.delete') }}
-				</v-btn>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
+			</h5>
+		</template>
+		<span>
+			{{ $t('core.user.modal.prompt', {user: user.username}) }}
+		</span>
+		<template #footer>
+			<CButton
+				class='mr-1'
+				color='secondary'
+				@click='hideModal'
+			>
+				{{ $t('forms.cancel') }}
+			</CButton>
+			<CButton
+				color='danger'
+				@click='remove'
+			>
+				{{ $t('forms.delete') }}
+			</CButton>
+		</template>
+	</CModal>
 </template>
 
 <script lang='ts'>
-import {UserInfo} from '@iqrf/iqrf-gateway-webapp-client/types';
-import {AxiosError} from 'axios';
-import {Component, Prop, VModel, Vue} from 'vue-property-decorator';
+import {Component} from 'vue-property-decorator';
+import {CButton, CModal} from '@coreui/vue/src';
+import ModalBase from '@/components/ModalBase.vue';
 
 import {extendedErrorToast} from '@/helpers/errorToast';
-import {useApiClient} from '@/services/ApiClient';
+import {UserRole} from '@/services/AuthenticationService';
 
-@Component({})
-export default class UserDeleteModal extends Vue {
+import UserService from '@/services/UserService';
+
+import {AxiosError} from 'axios';
+import {IUser} from '@/interfaces/Core/User';
+
+@Component({
+	components: {
+		CButton,
+		CModal,
+	},
+})
+export default class UserDeleteModal extends ModalBase {
 	/**
-	 * User to delete
+	 * @constant {IUser} defaultUser Default user
 	 */
-	@VModel({required: true}) user!: UserInfo|null;
+	private readonly defaultUser: IUser = {
+		username: '',
+		email: '',
+		language: 'en',
+		role: UserRole.BASIC
+	};
 
 	/**
-	 * @property {boolean} onlyUser Deleted user is the only user
+	 * @var {IUser} user User
 	 */
-	@Prop({required: true}) onlyUser!: boolean;
+	private user: IUser = this.defaultUser;
 
 	/**
-	 * Computes modal display condition
+	 * @var {boolean} onlyUser Current user is the only user
 	 */
-	get showModal(): boolean {
-		return this.user !== null;
-	}
+	private onlyUser = false;
 
 	/**
 	 * Removes an existing user
 	 */
 	private remove(): void {
-		if (this.user === null || this.user.id === undefined) {
+		if (this.user.id === undefined) {
 			return;
 		}
 		const id = this.user.id;
-		const username = this.user.username;
 		this.$store.commit('spinner/SHOW');
-		useApiClient().getSecurityServices().getUserService().delete(id)
+		UserService.delete(id)
 			.then(async () => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
 					this.$t(
 						'core.user.messages.deleteSuccess',
-						{user: username}
+						{user: this.user.username}
 					).toString()
 				);
 				if (id === this.$store.getters['user/getId']) {
@@ -106,14 +121,26 @@ export default class UserDeleteModal extends Vue {
 					this.$emit('deleted');
 				}
 			})
-			.catch((error: AxiosError) => extendedErrorToast(error, 'core.user.messages.deleteFailed', {user: username}));
+			.catch((error: AxiosError) => extendedErrorToast(error, 'core.user.messages.deleteFailed', {user: this.user.username}));
+	}
+
+	/**
+	 * Stores user and shows modal window
+	 * @param {IUser} user User
+	 * @param {boolean} onlyUser
+	 */
+	public showModal(user: IUser, onlyUser: boolean): void {
+		this.user = user;
+		this.onlyUser = onlyUser;
+		this.openModal();
 	}
 
 	/**
 	 * Resets user and hides modal window
 	 */
 	private hideModal(): void {
-		this.user = null;
+		this.user = this.defaultUser;
+		this.closeModal();
 	}
 }
 </script>

@@ -14,25 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-	AccountState,
-	UserBase, UserCredentials,
-	UserInfo,
-	UserRole,
-	UserSignedIn
-} from '@iqrf/iqrf-gateway-webapp-client/types';
 import * as Sentry from '@sentry/vue';
-import {jwtDecode, JwtPayload} from 'jwt-decode';
+import {AxiosError} from 'axios';
+import { jwtDecode, JwtPayload } from 'jwt-decode';
 import {ActionTree, GetterTree, MutationTree} from 'vuex';
 
-import {UserRoleIndex} from '@/services/AuthenticationService';
-import {useApiClient} from '@/services/ApiClient';
+import AuthenticationService, {
+	AccountState,
+	IUserBase,
+	User,
+	UserInfo,
+	UserRole,
+	UserRoleIndex,
+} from '@/services/AuthenticationService';
+import UserService from '@/services/UserService';
 
 /**
  * User state
  */
 interface UserState {
-	user: UserSignedIn|null,
+	user: User|null,
 	expiration: number,
 }
 
@@ -42,11 +43,17 @@ const state: UserState = {
 };
 
 const actions: ActionTree<UserState, any> = {
-	async updateInfo({commit}): Promise<void> {
-		const user: UserInfo = await useApiClient().getAccountService().getInfo();
-		commit('SET_INFO', user);
+	updateInfo({commit}) {
+		return UserService.getLoggedIn()
+			.then((user: UserInfo) => {
+				commit('SET_INFO', user);
+			})
+			.catch((error: AxiosError) => {
+				console.error(error);
+				return Promise.reject(error);
+			});
 	},
-	setJwt({commit}, user: UserSignedIn) {
+	setJwt({commit}, user: User) {
 		const now = new Date();
 		const epoch = Math.round(now.getTime() / 1000);
 		const jwt: JwtPayload = jwtDecode(user.token);
@@ -60,19 +67,25 @@ const actions: ActionTree<UserState, any> = {
 		commit('SET_EXPIRATION', jwt.exp + diff);
 		commit('SIGN_IN', user);
 	},
-	async signIn({dispatch}, credentials: UserCredentials): Promise<void> {
-		const user: UserInfo = await useApiClient().getAccountService().signIn(credentials);
-		dispatch('setJwt', user);
-		const sentryUser: Sentry.User = {
-			username: user.username,
-			ip_address: '{{auto}}',
-		};
-		if (user.email !== null) {
-			sentryUser.email = user.email;
-		}
-		Sentry.setUser(sentryUser);
+	signIn({dispatch}, credentials) {
+		return AuthenticationService.login(credentials)
+			.then((user: User) => {
+				dispatch('setJwt', user);
+				const sentryUser: Sentry.User = {
+					username: user.username,
+					ip_address: '{{auto}}',
+				};
+				if (user.email !== null) {
+					sentryUser.email = user.email;
+				}
+				Sentry.setUser(sentryUser);
+			})
+			.catch((error: AxiosError) => {
+				console.error(error);
+				return Promise.reject(error);
+			});
 	},
-	signOut({commit}): void {
+	signOut({commit}) {
 		Sentry.setUser(null);
 		commit('SIGN_OUT');
 	},
@@ -88,12 +101,12 @@ const getters: GetterTree<UserState, any> = {
 		if (state.user === null) {
 			return null;
 		}
-		return state.user.state === AccountState.Unverified;
+		return state.user.state === AccountState.UNVERIFIED;
 	},
 	hasEmail(state: UserState): boolean {
 		return state.user !== null && state.user.email !== null;
 	},
-	get(state: UserState): UserBase|null {
+	get(state: UserState): IUserBase|null {
 		if (state.user === null) {
 			return null;
 		}
@@ -161,7 +174,7 @@ const mutations: MutationTree<UserState> = {
 	SET_EXPIRATION(state: UserState, expiration: number) {
 		state.expiration = expiration;
 	},
-	SIGN_IN(state: UserState, data: UserSignedIn) {
+	SIGN_IN(state: UserState, data: User) {
 		state.user = data;
 	},
 	SIGN_OUT(state: UserState) {

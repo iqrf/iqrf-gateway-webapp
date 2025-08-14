@@ -17,67 +17,44 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('iqrfnet.networkManager.title') }}</h1>
-		<v-row>
-			<v-col lg='6'>
-				<v-card>
-					<v-tabs
-						v-model='activeTab'
-						:show-arrows='true'
-					>
-						<v-tab>
-							{{ $t('iqrfnet.networkManager.iqmesh') }}
-						</v-tab>
-						<v-tab>
-							{{ $t('iqrfnet.networkManager.autoNetwork.title') }}
-						</v-tab>
-						<v-tab>
-							{{ $t('iqrfnet.networkManager.dpaParams.title') }}
-						</v-tab>
-						<v-tab>
-							{{ $t('iqrfnet.networkManager.backupRestore.title') }}
-						</v-tab>
-						<v-tab>
-							{{ $t('iqrfnet.networkManager.otaUpload.title') }}
-						</v-tab>
-						<v-tab>
-							{{ $t('iqrfnet.networkManager.maintenance.title') }}
-						</v-tab>
-					</v-tabs>
-					<v-tabs-items v-model='activeTab'>
-						<v-tab-item :transition='false'>
+		<CRow>
+			<CCol lg='6'>
+				<CCard>
+					<CTabs variant='tabs' :active-tab='activeTab'>
+						<CTab :title='$t("iqrfnet.networkManager.iqmesh")'>
 							<BondingManager ref='bonding' @update-devices='updateDevices' />
-							<v-divider />
 							<DiscoveryManager @update-devices='updateDevices' />
-						</v-tab-item>
-						<v-tab-item :transition='false'>
+						</CTab>
+						<CTab :title='$t("iqrfnet.networkManager.autoNetwork.title")'>
 							<AutoNetwork @update-devices='updateDevices' />
-						</v-tab-item>
-						<v-tab-item :transition='false'>
+						</CTab>
+						<CTab :title='$t("iqrfnet.networkManager.dpaParams.title")'>
 							<DpaParams />
-						</v-tab-item>
-						<v-tab-item :transition='false'>
+						</CTab>
+						<CTab :title='$t("iqrfnet.networkManager.backupRestore.title")'>
 							<Backup />
-							<v-divider />
 							<Restore @update-devices='updateDevices' />
-						</v-tab-item>
-						<v-tab-item :transition='false'>
+						</CTab>
+						<CTab :title='$t("iqrfnet.networkManager.otaUpload.title")'>
 							<OtaUpload />
-						</v-tab-item>
-						<v-tab-item :transition='false'>
-							<Maintenance ref='maintenance' :rf-band='rfBand' />
-						</v-tab-item>
-					</v-tabs-items>
-				</v-card>
-			</v-col>
-			<v-col lg='6'>
+						</CTab>
+						<CTab :title='$t("iqrfnet.networkManager.maintenance.title")'>
+							<Maintenance ref='maintenance' />
+						</CTab>
+					</CTabs>
+				</CCard>
+			</CCol>
+			<CCol lg='6'>
 				<DevicesInfo ref='devices' />
-			</v-col>
-		</v-row>
+			</CCol>
+		</CRow>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Ref, Vue} from 'vue-property-decorator';
+import {CCard, CTab, CTabs} from '@coreui/vue/src';
+
 import AutoNetwork from '@/components/IqrfNet/NetworkManager/AutoNetwork/AutoNetwork.vue';
 import Backup from '@/components/IqrfNet/NetworkManager/Backup/Backup.vue';
 import BondingManager from '@/components/IqrfNet/NetworkManager/Iqmesh/BondingManager.vue';
@@ -100,6 +77,9 @@ import {ToastOptions} from 'vue-toast-notification';
  */
 @Component({
 	components: {
+		CCard,
+		CTab,
+		CTabs,
 		AutoNetwork,
 		Backup,
 		BondingManager,
@@ -139,11 +119,6 @@ export default class NetworkManager extends Vue {
 	 * @var {string} msgId Daemon API message ID
 	 */
 	private msgId = '';
-
-	/**
-	 * @var {number} rfBand RF band
-	 */
-	private rfBand = 868;
 
 	/**
 	 * Mutation handler
@@ -217,7 +192,8 @@ export default class NetworkManager extends Vue {
 		if (response.status !== 0) {
 			return;
 		}
-		this.rfBand = Number.parseInt(response.rsp.trConfiguration.rfBand);
+		const rfBand = Number.parseInt(response.rsp.trConfiguration.rfBand);
+		this.setRfChannelRules(rfBand);
 		const os = response.rsp.osRead.osBuild;
 		if (parseInt(os, 16) < 0x08d7) {
 			return;
@@ -238,11 +214,18 @@ export default class NetworkManager extends Vue {
 	}
 
 	/**
+	 * Passes RF band to the RF Signal Test component
+	 * @param {number} rfBand RF Band
+	 */
+	private setRfChannelRules(rfBand: number): void {
+		this.maintenance.setRfChannelRules(rfBand);
+	}
+
+	/**
 	 * Enables NFC bonding in bonding manager
 	 */
 	private enableBondNfc(): void {
 		this.bondingManager.enableBondNfc();
 	}
-
 }
 </script>

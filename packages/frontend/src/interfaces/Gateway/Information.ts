@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 /**
  * GatewayInfo ip address interface
  */
@@ -29,4 +28,119 @@ export interface IpAddress {
 export interface MacAddress {
 	address: string
 	iface: string
+}
+
+/**
+ * GatewayInfo disk information interface
+ */
+export interface DiskInfo {
+	available: string
+	fsName: string
+	fsType: string
+	mount: string
+	size: string
+	usage: string
+	used: string
+}
+
+export interface OsInfo {
+	name: string|null
+	homePage: string|null
+}
+
+/**
+ * GatewayInfo memory information interface
+ */
+export interface MemoryInfo {
+	available: string
+	buffers: string
+	cache: string
+	free: string
+	shared: string
+	size: string
+	usage: string
+	used: string
+}
+
+/**
+ * Resource usage data
+ */
+export interface IUsageData {
+	/**
+	 * Usage as percentage
+	 */
+	usage: string;
+
+	/**
+	 * Used size
+	 */
+	used: string;
+
+	/**
+	 * Total size
+	 */
+	size: string;
+}
+
+/**
+ * GatewayInfo swap information interface
+ */
+export interface SwapInfo {
+	free: string
+	size: string
+	usage: string
+	used: string
+}
+
+/**
+ * GatewayInfo iqrf software versions interface
+ */
+export interface VersionsInfo {
+	cloudProvisioning: string
+	controller: string
+	daemon: string
+	setter: string
+	uploader: string
+	webapp: string
+}
+
+/**
+ * GatewayInfo network interfaces interface
+ */
+export interface NetworkInterface {
+	ipAddresses: Array<string>|null
+	macAddress: string|null
+	name: string
+}
+
+/**
+ * Brief gateway information interface
+ */
+export interface IGatewayBriefInfo {
+	/// Board name
+	board: string
+}
+
+/**
+ * GatewayInfo interface
+ */
+export interface IGatewayInfo {
+	board: string
+	gwId: string|null
+	gwImage: string|null
+	os: OsInfo
+	versions: VersionsInfo
+	hostname: string
+	interfaces: Array<NetworkInterface>
+	diskUsages: Array<DiskInfo>
+	memoryUsage: MemoryInfo
+	swapUsage: SwapInfo
+	uptime: string
+}
+
+/**
+ * Hostnamectl interface
+ */
+export interface IHostname {
+	hostname: string
 }

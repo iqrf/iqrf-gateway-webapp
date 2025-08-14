@@ -26,7 +26,7 @@ export function getLanguageOptions(): ComputedRef<SelectItem[]> {
 		const languages = Object.values(UserLanguage);
 		return languages.map((item: UserLanguage): SelectItem => {
 			return {
-				title: i18n.global.t(`components.common.locale.languages.${item}`).toString(),
+				title: i18n.global.t(`components.common.locale.languages.${item}`),
 				value: item,
 			};
 		});
@@ -41,7 +41,7 @@ export function getFilteredRoleOptions(role: UserRole): ComputedRef<SelectItem[]
 		}
 		return roles.map((item: UserRole): SelectItem => {
 			return {
-				title: i18n.global.t(`user.roles.${item}`).toString(),
+				title: i18n.global.t(`user.roles.${item}`),
 				value: item,
 			};
 		});

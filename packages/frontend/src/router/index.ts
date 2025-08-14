@@ -16,6 +16,7 @@
  */
 import Vue from 'vue';
 import VueRouter, {RouteConfig} from 'vue-router';
+import {UserRole} from '@/services/AuthenticationService';
 
 import TheDashboard from '@/components/TheDashboard.vue';
 
@@ -80,7 +81,6 @@ const Interfaces = () => import(/* WebpackChunkName: "config" */ '@/pages/Config
 const MiscConfiguration = () => import (/* WebpackChunkName: "config" */ '@/pages/Config/MiscConfiguration.vue');
 const TranslatorConfig = () => import(/* webpackChunkName: "config" */ '@/pages/Config/TranslatorConfig.vue');
 const ControllerConfig = () => import(/* webpackChunkName: "config" */ '@/pages/Config/ControllerConfig.vue');
-const BridgeConfig = () => import(/* webpackChunkName: "config" */ '@/pages/Config/BridgeConfig.vue');
 const MonitorForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/MonitorForm.vue');
 const MessagingDisambiguation = () => import(/* webpackChunkName: "config" */ '@/pages/Config/MessagingDisambiguation.vue');
 const MqMessagingTable = () => import(/* webpackChunkName: "config" */ '@/pages/Config/MqMessagingTable.vue');
@@ -89,6 +89,7 @@ const MqttMessagingTable = () => import(/* webpackChunkName: "config" */ '@/page
 const MqttMessagingForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/MqttMessagingForm.vue');
 const UdpMessagingTable = () => import(/* webpackChunkName: "config" */ '@/pages/Config/UdpMessagingTable.vue');
 const UdpMessagingForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/UdpMessagingForm.vue');
+const SyslogForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/SyslogForm.vue');
 const TracerForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/TracerForm.vue');
 const WebsocketList = () => import(/* webpackChunkName: "config" */ '@/pages/Config/WebsocketList.vue');
 const WebsocketInterfaceForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/WebsocketInterfaceForm.vue');
@@ -117,7 +118,6 @@ const MonitControl = () => import(/* webpackChunkName: "maintenance" */ '@/pages
 
 import i18n from '@/plugins/i18n';
 import store from '@/store';
-import {UserRole} from '@iqrf/iqrf-gateway-webapp-client/types';
 
 Vue.use(VueRouter);
 
@@ -226,28 +226,28 @@ const routes: Array<RouteConfig> = [
 						component: CloudDisambiguation,
 						path: '',
 						meta: {
-							role: UserRole.Normal,
+							role: UserRole.NORMAL,
 						},
 					},
 					{
 						component: AzureCreator,
 						path: 'azure',
 						meta: {
-							role: UserRole.Normal,
+							role: UserRole.NORMAL,
 						},
 					},
 					{
 						component: AwsCreator,
 						path: 'aws',
 						meta: {
-							role: UserRole.Normal,
+							role: UserRole.NORMAL,
 						},
 					},
 					{
 						component: IbmCreator,
 						path: 'ibm-cloud',
 						meta: {
-							role: UserRole.Normal,
+							role: UserRole.NORMAL,
 						},
 					},
 				]
@@ -264,7 +264,7 @@ const routes: Array<RouteConfig> = [
 						component: ConfigDisambiguation,
 						path: '',
 						meta: {
-							role: UserRole.Normal,
+							role: UserRole.NORMAL,
 						},
 					},
 					{
@@ -279,14 +279,14 @@ const routes: Array<RouteConfig> = [
 								path: '',
 								component: DaemonDisambiguation,
 								meta: {
-									role: UserRole.Normal,
+									role: UserRole.NORMAL,
 								},
 							},
 							{
 								path: 'interfaces',
 								component: Interfaces,
 								meta: {
-									role: UserRole.Normal,
+									role: UserRole.NORMAL,
 								},
 							},
 							{
@@ -301,7 +301,7 @@ const routes: Array<RouteConfig> = [
 										component: MessagingDisambiguation,
 										path: '',
 										meta: {
-											role: UserRole.Normal,
+											role: UserRole.NORMAL,
 										},
 									},
 									{
@@ -316,28 +316,28 @@ const routes: Array<RouteConfig> = [
 												component: WebsocketList,
 												path: '',
 												meta: {
-													role: UserRole.Normal,
+													role: UserRole.NORMAL,
 												},
 											},
 											{
 												component: WebsocketInterfaceForm,
 												path: 'add',
 												meta: {
-													role: UserRole.Normal,
+													role: UserRole.NORMAL,
 												},
 											},
 											{
 												component: WebsocketMessagingForm,
 												path: 'add-messaging',
 												meta: {
-													role: UserRole.Normal,
+													role: UserRole.NORMAL,
 												},
 											},
 											{
 												component: WebsocketServiceForm,
 												path: 'add-service',
 												meta: {
-													role: UserRole.Normal,
+													role: UserRole.NORMAL,
 												},
 											},
 											{
@@ -345,7 +345,7 @@ const routes: Array<RouteConfig> = [
 												path: 'edit/:instance',
 												props: true,
 												meta: {
-													role: UserRole.Normal,
+													role: UserRole.NORMAL,
 												},
 											},
 											{
@@ -353,7 +353,7 @@ const routes: Array<RouteConfig> = [
 												path: 'edit-messaging/:instance',
 												props: true,
 												meta: {
-													role: UserRole.Normal,
+													role: UserRole.NORMAL,
 												},
 											},
 											{
@@ -361,7 +361,7 @@ const routes: Array<RouteConfig> = [
 												path: 'edit-service/:instance',
 												props: true,
 												meta: {
-													role: UserRole.Normal,
+													role: UserRole.NORMAL,
 												},
 											},
 										],
@@ -378,14 +378,14 @@ const routes: Array<RouteConfig> = [
 												path: '',
 												component: MqMessagingTable,
 												meta: {
-													role: UserRole.Normal,
+													role: UserRole.NORMAL,
 												},
 											},
 											{
 												component: MqMessagingForm,
 												path: 'add',
 												meta: {
-													role: UserRole.Normal,
+													role: UserRole.NORMAL,
 												},
 											},
 											{
@@ -393,7 +393,7 @@ const routes: Array<RouteConfig> = [
 												path: 'edit/:instance',
 												props: true,
 												meta: {
-													role: UserRole.Normal,
+													role: UserRole.NORMAL,
 												},
 											},
 										],
@@ -410,14 +410,14 @@ const routes: Array<RouteConfig> = [
 												component: MqttMessagingTable,
 												path: '',
 												meta: {
-													role: UserRole.Normal,
+													role: UserRole.NORMAL,
 												},
 											},
 											{
 												component: MqttMessagingForm,
 												path: 'add',
 												meta: {
-													role: UserRole.Normal,
+													role: UserRole.NORMAL,
 												},
 											},
 											{
@@ -425,7 +425,7 @@ const routes: Array<RouteConfig> = [
 												path: 'edit/:instance',
 												props: true,
 												meta: {
-													role: UserRole.Normal,
+													role: UserRole.NORMAL,
 												},
 											},
 										],
@@ -442,14 +442,14 @@ const routes: Array<RouteConfig> = [
 												component: UdpMessagingTable,
 												path: '',
 												meta: {
-													role: UserRole.Normal,
+													role: UserRole.NORMAL,
 												},
 											},
 											{
 												component: UdpMessagingForm,
 												path: 'add',
 												meta: {
-													role: UserRole.Normal,
+													role: UserRole.NORMAL,
 												},
 											},
 											{
@@ -457,7 +457,7 @@ const routes: Array<RouteConfig> = [
 												path: 'edit/:instance',
 												props: true,
 												meta: {
-													role: UserRole.Normal,
+													role: UserRole.NORMAL,
 												},
 											},
 										],
@@ -476,14 +476,14 @@ const routes: Array<RouteConfig> = [
 										path: '',
 										component: SchedulerList,
 										meta: {
-											role: UserRole.Normal,
+											role: UserRole.NORMAL,
 										},
 									},
 									{
 										path: 'add',
 										component: SchedulerForm,
 										meta: {
-											role: UserRole.Normal,
+											role: UserRole.NORMAL,
 										},
 									},
 									{
@@ -491,7 +491,7 @@ const routes: Array<RouteConfig> = [
 										component: SchedulerForm,
 										props: true,
 										meta: {
-											role: UserRole.Normal,
+											role: UserRole.NORMAL,
 										},
 									}
 								]
@@ -528,7 +528,7 @@ const routes: Array<RouteConfig> = [
 											return {tabName: redirect.split('/').pop()};
 										},
 										meta: {
-											role: UserRole.Normal,
+											role: UserRole.NORMAL,
 										},
 									},
 									{
@@ -543,7 +543,7 @@ const routes: Array<RouteConfig> = [
 												component: MonitorForm,
 												path: 'add',
 												meta: {
-													role: UserRole.Normal,
+													role: UserRole.NORMAL,
 												},
 											},
 											{
@@ -551,7 +551,32 @@ const routes: Array<RouteConfig> = [
 												path: 'edit/:instance',
 												props: true,
 												meta: {
-													role: UserRole.Normal,
+													role: UserRole.NORMAL,
+												},
+											},
+										],
+									},
+									{
+										path: 'syslog',
+										component: {
+											render(c) {
+												return c('router-view');
+											}
+										},
+										children: [
+											{
+												component: SyslogForm,
+												path: 'add',
+												meta: {
+													role: UserRole.NORMAL,
+												},
+											},
+											{
+												component: SyslogForm,
+												path: 'edit/:instance',
+												props: true,
+												meta: {
+													role: UserRole.NORMAL,
 												},
 											},
 										],
@@ -568,7 +593,7 @@ const routes: Array<RouteConfig> = [
 												component: TracerForm,
 												path: 'add',
 												meta: {
-													role: UserRole.Normal,
+													role: UserRole.NORMAL,
 												},
 											},
 											{
@@ -576,7 +601,7 @@ const routes: Array<RouteConfig> = [
 												path: 'edit/:instance',
 												props: true,
 												meta: {
-													role: UserRole.Normal,
+													role: UserRole.NORMAL,
 												},
 											},
 										],
@@ -589,35 +614,28 @@ const routes: Array<RouteConfig> = [
 						component: TranslatorConfig,
 						path: 'translator',
 						meta: {
-							role: UserRole.Normal,
+							role: UserRole.NORMAL,
 						},
 					},
 					{
 						component: ControllerConfig,
 						path: 'controller',
 						meta: {
-							role: UserRole.Normal,
-						},
-					},
-					{
-						component: BridgeConfig,
-						path: 'bridge',
-						meta: {
-							role: UserRole.Normal,
+							role: UserRole.NORMAL,
 						},
 					},
 					{
 						component: IqrfRepositoryConfig,
 						path: 'repository',
 						meta: {
-							role: UserRole.Normal,
+							role: UserRole.NORMAL,
 						},
 					},
 					{
 						component: SmtpConfiguration,
 						path: 'smtp',
 						meta: {
-							role: UserRole.Admin,
+							role: UserRole.ADMIN,
 						},
 					},
 				]
@@ -634,56 +652,56 @@ const routes: Array<RouteConfig> = [
 						component: GatewayDisambiguation,
 						path: '',
 						meta: {
-							role: UserRole.Basic,
+							role: UserRole.BASIC,
 						},
 					},
 					{
 						component: GatewayInfo,
 						path: 'info',
 						meta: {
-							role: UserRole.Basic,
+							role: UserRole.BASIC,
 						},
 					},
 					{
 						component: GatewayTime,
 						path: 'date-time',
 						meta: {
-							role: UserRole.Normal,
+							role: UserRole.NORMAL,
 						},
 					},
 					{
 						component: Logs,
 						path: 'log',
 						meta: {
-							role: UserRole.Normal,
+							role: UserRole.NORMAL,
 						},
 					},
 					{
 						component: DaemonMode,
 						path: 'change-mode',
 						meta: {
-							role: UserRole.Normal,
+							role: UserRole.NORMAL,
 						},
 					},
 					{
 						component: PowerControl,
 						path: 'power',
 						meta: {
-							role: UserRole.Normal,
+							role: UserRole.NORMAL,
 						},
 					},
 					{
 						component: IqrfServiceDisambiguation,
 						path: 'iqrf-services',
 						meta: {
-							role: UserRole.Normal,
+							role: UserRole.NORMAL,
 						},
 					},
 					{
 						component: SystemServiceDisambiguation,
 						path: 'system-services',
 						meta: {
-							role: UserRole.Normal,
+							role: UserRole.NORMAL,
 						},
 					},
 					{
@@ -692,7 +710,7 @@ const routes: Array<RouteConfig> = [
 						path: 'service/:serviceName',
 						props: true,
 						meta: {
-							role: UserRole.Normal,
+							role: UserRole.NORMAL,
 						},
 					},
 				]
@@ -709,7 +727,7 @@ const routes: Array<RouteConfig> = [
 						component: IqrfNetDisambiguation,
 						path: '',
 						meta: {
-							role: UserRole.Normal,
+							role: UserRole.NORMAL,
 						},
 					},
 					{
@@ -723,49 +741,49 @@ const routes: Array<RouteConfig> = [
 							return {address};
 						},
 						meta: {
-							role: UserRole.Normal,
+							role: UserRole.NORMAL,
 						},
 					},
 					{
 						component: NetworkManager,
 						path: 'network',
 						meta: {
-							role: UserRole.Normal,
+							role: UserRole.NORMAL,
 						},
 					},
 					{
 						component: StandardManager,
 						path: 'standard',
 						meta: {
-							role: UserRole.Normal,
+							role: UserRole.NORMAL,
 						},
 					},
 					{
 						component: SendDpaPacket,
 						path: 'send-raw',
 						meta: {
-							role: UserRole.Normal,
+							role: UserRole.NORMAL,
 						},
 					},
 					{
 						component: SendJsonRequest,
 						path: 'send-json',
 						meta: {
-							role: UserRole.Normal,
+							role: UserRole.NORMAL,
 						},
 					},
 					{
 						component: TrConfiguration,
 						path: 'tr-config',
 						meta: {
-							role: UserRole.Normal,
+							role: UserRole.NORMAL,
 						},
 					},
 					{
 						component: TrUpload,
 						path: 'tr-upload',
 						meta: {
-							role: UserRole.Admin,
+							role: UserRole.ADMIN,
 						},
 					},
 				]
@@ -830,7 +848,7 @@ const routes: Array<RouteConfig> = [
 						component: NetworkDisambiguation,
 						path: '',
 						meta: {
-							role: UserRole.Admin,
+							role: UserRole.ADMIN,
 						},
 					},
 					{
@@ -845,14 +863,14 @@ const routes: Array<RouteConfig> = [
 								component: EthernetConnections,
 								path: '',
 								meta: {
-									role: UserRole.Admin,
+									role: UserRole.ADMIN,
 								},
 							},
 							{
 								component: ConnectionForm,
 								path: 'add',
 								meta: {
-									role: UserRole.Admin,
+									role: UserRole.ADMIN,
 								},
 							},
 							{
@@ -861,7 +879,7 @@ const routes: Array<RouteConfig> = [
 								path: 'edit/:uuid',
 								props: true,
 								meta: {
-									role: UserRole.Admin,
+									role: UserRole.ADMIN,
 								},
 							},
 						]
@@ -878,7 +896,7 @@ const routes: Array<RouteConfig> = [
 								component: WifiConnections,
 								path: '',
 								meta: {
-									role: UserRole.Admin,
+									role: UserRole.ADMIN,
 								},
 							},
 							{
@@ -887,7 +905,7 @@ const routes: Array<RouteConfig> = [
 								path: 'add',
 								props: true,
 								meta: {
-									role: UserRole.Admin,
+									role: UserRole.ADMIN,
 								},
 							},
 							{
@@ -896,7 +914,7 @@ const routes: Array<RouteConfig> = [
 								path: 'edit/:uuid',
 								props: true,
 								meta: {
-									role: UserRole.Admin,
+									role: UserRole.ADMIN,
 								},
 							}
 						]
@@ -913,14 +931,14 @@ const routes: Array<RouteConfig> = [
 								component: MobileConnections,
 								path: '',
 								meta: {
-									role: UserRole.Admin,
+									role: UserRole.ADMIN,
 								},
 							},
 							{
 								component: ConnectionForm,
 								path: 'add',
 								meta: {
-									role: UserRole.Admin,
+									role: UserRole.ADMIN,
 								},
 							},
 							{
@@ -928,7 +946,7 @@ const routes: Array<RouteConfig> = [
 								path: 'edit/:uuid',
 								props: true,
 								meta: {
-									role: UserRole.Admin,
+									role: UserRole.ADMIN,
 								},
 							},
 						]
@@ -945,14 +963,14 @@ const routes: Array<RouteConfig> = [
 								component: WireguardTunnels,
 								path: '',
 								meta: {
-									role: UserRole.Admin,
+									role: UserRole.ADMIN,
 								},
 							},
 							{
 								component: WireguardTunnel,
 								path: 'add',
 								meta: {
-									role: UserRole.Admin,
+									role: UserRole.ADMIN,
 								},
 							},
 							{
@@ -966,7 +984,7 @@ const routes: Array<RouteConfig> = [
 									return {id};
 								},
 								meta: {
-									role: UserRole.Admin,
+									role: UserRole.ADMIN,
 								},
 							},
 						],
@@ -985,14 +1003,14 @@ const routes: Array<RouteConfig> = [
 						component: MaintenanceDisambiguation,
 						path: '',
 						meta: {
-							role: UserRole.Admin,
+							role: UserRole.ADMIN,
 						},
 					},
 					{
 						component: BackupRestore,
 						path: 'backup-restore',
 						meta: {
-							role: UserRole.Admin,
+							role: UserRole.ADMIN,
 						},
 					},
 					{
@@ -1007,21 +1025,21 @@ const routes: Array<RouteConfig> = [
 								component: MenderDisambiguation,
 								path: '',
 								meta: {
-									role: UserRole.Admin,
+									role: UserRole.ADMIN,
 								},
 							},
 							{
 								component: MenderControl,
 								path: 'service',
 								meta: {
-									role: UserRole.Admin,
+									role: UserRole.ADMIN,
 								},
 							},
 							{
 								component: MenderUpdate,
 								path: 'update',
 								meta: {
-									role: UserRole.Admin,
+									role: UserRole.ADMIN,
 								},
 							},
 						],
@@ -1030,7 +1048,7 @@ const routes: Array<RouteConfig> = [
 						component: MonitControl,
 						path: 'monit',
 						meta: {
-							role: UserRole.Admin,
+							role: UserRole.ADMIN,
 						},
 					},
 				]
@@ -1048,7 +1066,7 @@ const routes: Array<RouteConfig> = [
 						name: 'userList',
 						path: '',
 						meta: {
-							role: UserRole.Admin,
+							role: UserRole.ADMIN,
 						},
 					},
 					{
@@ -1056,7 +1074,7 @@ const routes: Array<RouteConfig> = [
 						name: 'userAdd',
 						path: 'add',
 						meta: {
-							role: UserRole.Admin,
+							role: UserRole.ADMIN,
 						},
 					},
 					{
@@ -1071,7 +1089,7 @@ const routes: Array<RouteConfig> = [
 							return {userId};
 						},
 						meta: {
-							role: UserRole.Admin,
+							role: UserRole.ADMIN,
 						},
 					}
 				]
@@ -1088,7 +1106,7 @@ const routes: Array<RouteConfig> = [
 						path: '',
 						component: SecurityDisambiguation,
 						meta: {
-							role: UserRole.Admin,
+							role: UserRole.ADMIN,
 						},
 					},
 					{
@@ -1103,14 +1121,14 @@ const routes: Array<RouteConfig> = [
 								path: '',
 								component: ApiKeyList,
 								meta: {
-									role: UserRole.Admin,
+									role: UserRole.ADMIN,
 								},
 							},
 							{
 								component: ApiKeyForm,
 								path: 'add',
 								meta: {
-									role: UserRole.Admin,
+									role: UserRole.ADMIN,
 								},
 							},
 							{
@@ -1124,7 +1142,7 @@ const routes: Array<RouteConfig> = [
 									return {keyId};
 								},
 								meta: {
-									role: UserRole.Admin,
+									role: UserRole.ADMIN,
 								},
 							},
 						],
@@ -1141,14 +1159,14 @@ const routes: Array<RouteConfig> = [
 								path: '',
 								component: SshKeyList,
 								meta: {
-									role: UserRole.Admin,
+									role: UserRole.ADMIN,
 								},
 							},
 							{
 								path: 'add',
 								component: SshKeyForm,
 								meta: {
-									role: UserRole.Admin,
+									role: UserRole.ADMIN,
 								},
 							},
 						],
@@ -1159,7 +1177,7 @@ const routes: Array<RouteConfig> = [
 				component: UserProfile,
 				path: 'profile',
 				meta: {
-					role: UserRole.Basic,
+					role: UserRole.BASIC,
 				},
 			},
 			{
@@ -1175,7 +1193,7 @@ const routes: Array<RouteConfig> = [
 ];
 
 const router = new VueRouter({
-	base: import.meta.env.VITE_BASE_URL,
+	base: process.env.VUE_APP_BASE_URL,
 	mode: 'history',
 	routes: routes
 });
@@ -1217,7 +1235,7 @@ router.beforeEach((to, _from, next) => {
 	}
 	if (to.meta !== undefined && to.meta.role !== undefined) {
 		const roleVal = store.getters['user/getRole'];
-		if (roleVal === UserRole.BasicAdmin) {
+		if (roleVal === UserRole.BASICADMIN) {
 			const name = to.name ?? '';
 			if (BAWhitelist.includes(name)) {
 				next();

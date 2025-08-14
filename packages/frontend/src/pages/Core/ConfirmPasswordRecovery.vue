@@ -15,21 +15,23 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-card class='p-4'>
-		<v-card-title>{{ $t('account.recovery.title') }}</v-card-title>
-		<v-card-text>
-			<v-overlay
+	<CCard class='p-4'>
+		<h1 class='text-center'>
+			{{ $t('account.recovery.title') }}
+		</h1>
+		<CCardBody>
+			<CElementCover
 				v-if='requestInProgress'
-				:opacity='0.65'
-				absolute
+				:opacity='0.75'
+				style='z-index: 10000;'
 			>
-				<v-progress-circular color='primary' indeterminate />
-			</v-overlay>
+				<CSpinner color='primary' />
+			</CElementCover>
 			<p>
 				{{ $t('account.recovery.changePrompt') }}
 			</p>
 			<ValidationObserver v-slot='{invalid}'>
-				<form @submit.prevent='confirmRecovery'>
+				<CForm @submit.prevent='confirmRecovery'>
 					<ValidationProvider
 						v-slot='{valid, touched, errors}'
 						rules='required'
@@ -37,43 +39,49 @@ limitations under the License.
 							required: $t("core.sign.in.messages.password"),
 						}'
 					>
-						<v-text-field
+						<PasswordInput
 							v-model='password'
-							:type='passwordVisible ? "text" : "password"'
-							:label='$t("forms.fields.password")'
-							:success='touched ? valid : null'
-							:error-messages='errors'
-							:append-icon='passwordVisible ? "mdi-eye" : "mdi-eye-off"'
-							@click:append='passwordVisible = !passwordVisible'
+							:label='$t("forms.fields.password").toString()'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='errors.join(", ")'
 						/>
 					</ValidationProvider>
-					<v-btn
+					<CButton
 						color='primary'
 						type='submit'
 						:disabled='invalid'
 					>
 						{{ $t('account.recovery.changePassword') }}
-					</v-btn>
-				</form>
+					</CButton>
+				</CForm>
 			</ValidationObserver>
-		</v-card-text>
-	</v-card>
+		</CCardBody>
+	</CCard>
 </template>
 
 <script lang='ts'>
+import {CButton, CCard, CCardBody, CElementCover, CForm, CInput, CSpinner} from '@coreui/vue/src';
 import {AxiosError} from 'axios';
 import {Component, Vue, Prop} from 'vue-property-decorator';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 
+import PasswordInput from '@/components/Core/PasswordInput.vue';
 import TheWizard from '@/components/TheWizard.vue';
 import {extendedErrorToast} from '@/helpers/errorToast';
-import {UserRole, UserSignedIn} from '@iqrf/iqrf-gateway-webapp-client/types';
-import {useApiClient} from '@/services/ApiClient';
-import UrlBuilder from '@/helpers/urlBuilder';
+import {User, UserRole} from '@/services/AuthenticationService';
+import UserService from '@/services/UserService';
 
 @Component({
 	components: {
+		CButton,
+		CCard,
+		CCardBody,
+		CElementCover,
+		CForm,
+		CInput,
+		CSpinner,
+		PasswordInput,
 		TheWizard,
 		ValidationObserver,
 		ValidationProvider,
@@ -120,13 +128,10 @@ export default class ConfirmPasswordRecovery extends Vue {
 	 */
 	private confirmRecovery(): void {
 		this.requestInProgress = true;
-		useApiClient().getAccountService().confirmPasswordRecovery(this.recoveryId, {
-			password: this.password,
-			baseUrl: (new UrlBuilder()).getBaseUrl(),
-		})
-			.then((user: UserSignedIn) => {
+		UserService.confirmPasswordRecovery(this.recoveryId, this.password)
+			.then((user: User) => {
 				this.requestInProgress = false;
-				if (user.role === UserRole.Basic) {
+				if (user.role === UserRole.BASIC) {
 					location.pathname = '/';
 				}
 				this.$store.dispatch('user/setJwt', user);

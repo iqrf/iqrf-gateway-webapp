@@ -15,22 +15,24 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-card class='p-4'>
-		<v-card-title>{{ $t('account.recovery.title') }}</v-card-title>
-		<v-card-text>
-			<v-overlay
+	<CCard class='p-4'>
+		<h1 class='text-center'>
+			{{ $t('account.recovery.title') }}
+		</h1>
+		<CCardBody>
+			<CElementCover
 				v-if='requestInProgress'
-				:opacity='0.65'
-				absolute
+				:opacity='0.75'
+				style='z-index: 10000;'
 			>
-				<v-progress-circular color='primary' indeterminate />
-			</v-overlay>
+				<CSpinner color='primary' />
+			</CElementCover>
 			<div v-if='!sent'>
 				<p>
 					{{ $t('account.recovery.requestPrompt') }}
 				</p>
 				<ValidationObserver v-slot='{invalid}'>
-					<form @submit.prevent='requestRecovery'>
+					<CForm @submit.prevent='requestRecovery'>
 						<ValidationProvider
 							v-slot='{valid, touched, errors}'
 							rules='required'
@@ -38,45 +40,50 @@ limitations under the License.
 								required: $t("core.sign.in.messages.username"),
 							}'
 						>
-							<v-text-field
-								v-model='request.username'
+							<CInput
+								v-model='user'
 								:label='$t("forms.fields.username")'
 								autocomplete='username'
-								:success='touched ? valid : null'
-								:error-messages='errors'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='errors.join(", ")'
 							/>
 						</ValidationProvider>
-						<v-btn
+						<CButton
 							color='primary'
 							type='submit'
 							:disabled='invalid'
 						>
 							{{ $t('account.recovery.sendEmail') }}
-						</v-btn>
-					</form>
+						</CButton>
+					</CForm>
 				</ValidationObserver>
 			</div>
 			<p v-else class='text-center'>
 				{{ $t('account.recovery.messages.sendSuccess') }}
 			</p>
-		</v-card-text>
-	</v-card>
+		</CCardBody>
+	</CCard>
 </template>
 
 <script lang='ts'>
-import {UserAccountRecovery} from '@iqrf/iqrf-gateway-webapp-client/types';
-import {AxiosError} from 'axios';
 import {Component, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CCardBody, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {required} from 'vee-validate/dist/rules';
-
 import TheWizard from '@/components/TheWizard.vue';
+
 import {extendedErrorToast} from '@/helpers/errorToast';
-import UrlBuilder from '@/helpers/urlBuilder';
-import {useApiClient} from '@/services/ApiClient';
+import {required} from 'vee-validate/dist/rules';
+import UserService from '@/services/UserService';
+
+import {AxiosError} from 'axios';
 
 @Component({
 	components: {
+		CButton,
+		CCard,
+		CCardBody,
+		CForm,
+		CInput,
 		TheWizard,
 		ValidationObserver,
 		ValidationProvider
@@ -106,11 +113,6 @@ export default class RequestPasswordRecovery extends Vue {
 	 */
 	private sent = false;
 
-	private request: UserAccountRecovery = {
-		baseUrl: (new UrlBuilder()).getBaseUrl(),
-		username: '',
-	};
-
 	/**
 	 * Initializes validation rules
 	 */
@@ -123,7 +125,7 @@ export default class RequestPasswordRecovery extends Vue {
 	 */
 	private requestRecovery(): void {
 		this.requestInProgress = true;
-		useApiClient().getAccountService().requestPasswordRecovery(this.request)
+		UserService.requestPasswordRecovery(this.user)
 			.then(() => {
 				this.requestInProgress = false;
 				this.sent = true;
@@ -135,3 +137,4 @@ export default class RequestPasswordRecovery extends Vue {
 	}
 }
 </script>
+

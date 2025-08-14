@@ -17,64 +17,56 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('core.dashboard') }}</h1>
-		<v-alert
+		<CAlert
 			v-if='userEmail === null'
-			type='warning'
-			text
+			color='warning'
+			class='d-flex justify-content-between align-items-center'
 		>
-			<v-row align='center'>
-				<v-col class='grow'>
-					{{ $t('account.email.messages.missing') }}
-				</v-col>
-				<v-col class='shrink'>
-					<v-btn
-						color='warning'
-						small
-						to='/profile/'
-					>
-						{{ $t('account.email.add') }}
-					</v-btn>
-				</v-col>
-			</v-row>
-		</v-alert>
-		<v-alert
+			{{ $t('account.email.messages.missing') }}
+			<CButton
+				color='warning'
+				size='sm'
+				to='/profile/'
+			>
+				{{ $t('account.email.add') }}
+			</CButton>
+		</CAlert>
+		<CAlert
 			v-if='userEmail !== null && isUserUnverified'
 			color='warning'
-			text
+			class='d-flex justify-content-between align-items-center'
 		>
-			<v-row align='center'>
-				<v-col class='grow'>
-					{{ $t('account.email.messages.unverified', {email: userEmail}) }}
-				</v-col>
-				<v-col class='shrink'>
-					<v-btn
-						color='warning'
-						small
-						@click='resendVerification()'
-					>
-						{{ $t('core.user.resendVerification') }}
-					</v-btn>
-				</v-col>
-			</v-row>
-		</v-alert>
+			{{ $t('account.email.messages.unverified', {email: userEmail}) }}
+			<CButton
+				color='warning'
+				size='sm'
+				@click='resendVerification()'
+			>
+				{{ $t('core.user.resendVerification') }}
+			</CButton>
+		</CAlert>
 		<Disambiguation :links='links' />
 	</div>
 </template>
 
 <script lang='ts'>
-import {AxiosError} from 'axios';
 import {Component, Vue} from 'vue-property-decorator';
+import {CAlert, CButton} from '@coreui/vue/src';
+
+import {extendedErrorToast} from '@/helpers/errorToast';
 import {mapGetters} from 'vuex';
 
+import UserService from '@/services/UserService';
+
+import {AxiosError} from 'axios';
 import Disambiguation from '@/components/Disambiguation.vue';
 import {Link, LinkTarget} from '@/helpers/DisambiguationHelper';
-import {extendedErrorToast} from '@/helpers/errorToast';
 import {UserRoleIndex} from '@/services/AuthenticationService';
-import {useApiClient} from '@/services/ApiClient';
-import UrlBuilder from '@/helpers/urlBuilder';
 
 @Component({
 	components: {
+		CAlert,
+		CButton,
 		Disambiguation,
 	},
 	metaInfo: {
@@ -187,9 +179,7 @@ export default class MainDisambiguation extends Vue {
 	 */
 	private resendVerification(): void {
 		this.$store.commit('spinner/SHOW');
-		useApiClient().getAccountService().resendVerificationEmail({
-			baseUrl: (new UrlBuilder()).getBaseUrl(),
-		})
+		UserService.resendVerificationEmailLoggedIn()
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(

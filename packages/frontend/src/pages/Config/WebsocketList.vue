@@ -31,8 +31,8 @@ import {Component, Vue} from 'vue-property-decorator';
 import WebsocketInterfaceList from '@/components/Config/Messagings/WebsocketInterfaceList.vue';
 import WebsocketMessagingList from '@/components/Config/Messagings/WebsocketMessagingList.vue';
 import WebsocketServiceList from '@/components/Config/Messagings/WebsocketServiceList.vue';
-import {UserRole} from '@iqrf/iqrf-gateway-webapp-client/types';
 
+import {UserRole} from '@/services/AuthenticationService';
 
 @Component({
 	components: {
@@ -59,7 +59,7 @@ export default class WebsocketList extends Vue {
 	 * @returns {boolean} True if user is an administrator
 	 */
 	get isAdmin(): boolean {
-		return this.$store.getters['user/getRole'] === UserRole.Admin;
+		return this.$store.getters['user/getRole'] === UserRole.ADMIN;
 	}
 
 }

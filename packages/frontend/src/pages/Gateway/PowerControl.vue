@@ -17,40 +17,49 @@ limitations under the License.
 <template>
 	<div>
 		<h1>{{ $t('gateway.power.title') }}</h1>
-		<v-card>
-			<v-card-text>
-				<v-btn
-					color='error'
-					@click='powerOff()'
-				>
-					<v-icon>mdi-power</v-icon>
-					{{ $t('gateway.power.powerOff') }}
-				</v-btn> <v-btn
-					color='primary'
-					@click='reboot()'
-				>
-					<v-icon>mdi-reload</v-icon>
-					{{ $t('gateway.power.reboot') }}
-				</v-btn>
-			</v-card-text>
-		</v-card>
+		<CCard body-wrapper>
+			<CButton
+				color='danger'
+				@click='powerOff()'
+			>
+				<CIcon :content='cilPowerStandby' />
+				{{ $t('gateway.power.powerOff') }}
+			</CButton> <CButton
+				color='primary'
+				@click='reboot()'
+			>
+				<CIcon :content='cilReload' />
+				{{ $t('gateway.power.reboot') }}
+			</CButton>
+		</CCard>
 	</div>
 </template>
 
 <script lang='ts'>
-import { PowerService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
-import { PowerActionResponse } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
-import { AxiosError } from 'axios';
-import { MetaInfo } from 'vue-meta';
-import { Component, Vue } from 'vue-property-decorator';
+import {Component, Vue} from 'vue-property-decorator';
+import {CButton, CCard, CIcon} from '@coreui/vue/src';
 
+import {cilPowerStandby, cilReload} from '@coreui/icons';
 import {extendedErrorToast} from '@/helpers/errorToast';
-import {useApiClient} from '@/services/ApiClient';
+
+import GatewayService from '@/services/GatewayService';
+
+import {AxiosError, AxiosResponse} from 'axios';
+import {MetaInfo} from 'vue-meta';
 
 @Component({
+	components: {
+		CButton,
+		CCard,
+		CIcon,
+	},
+	data: () => ({
+		cilPowerStandby,
+		cilReload,
+	}),
 	metaInfo(): MetaInfo {
 		return {
-			title: this.$t('gateway.power.title').toString(),
+			title: 'gateway.power.title',
 		};
 	}
 })
@@ -59,24 +68,18 @@ import {useApiClient} from '@/services/ApiClient';
  * Power control component
  */
 export default class PowerControl extends Vue {
-
-	/**
-	 * @property {PowerService} service Power service
-	 */
-	private service: PowerService = useApiClient().getGatewayServices().getPowerService();
-
 	/**
 	 * Performs power off
 	 */
 	private powerOff(): void {
-		this.service.powerOff()
-			.then((response: PowerActionResponse) =>
+		this.$store.commit('spinner/SHOW');
+		GatewayService.performPowerOff()
+			.then((response: AxiosResponse) => {
+				this.$store.commit('spinner/HIDE');
 				this.$toast.info(
-					this.$t('gateway.power.messages.powerOffSuccess', {
-						time: response.timestamp.toJSDate().toLocaleTimeString()
-					}).toString()
-				)
-			).catch((error: AxiosError) =>
+					this.$t('gateway.power.messages.powerOffSuccess', {time: this.parseActionTime(response.data.timestamp)}).toString()
+				);
+			}).catch((error: AxiosError) =>
 				extendedErrorToast(error, 'gateway.power.messages.powerOffFailed')
 			);
 	}
@@ -85,17 +88,23 @@ export default class PowerControl extends Vue {
 	 * Performs reboot
 	 */
 	private reboot(): void {
-		this.service.reboot()
-			.then((response: PowerActionResponse) =>
+		this.$store.commit('spinner/SHOW');
+		GatewayService.performReboot()
+			.then((response: AxiosResponse) => {
+				this.$store.commit('spinner/HIDE');
 				this.$toast.info(
-					this.$t('gateway.power.messages.rebootSuccess', {
-						time: response.timestamp.toJSDate().toLocaleTimeString()
-					}).toString()
-				)
-			).catch((error: AxiosError) =>
+					this.$t('gateway.power.messages.rebootSuccess', {time: this.parseActionTime(response.data.timestamp)}).toString()
+				);
+			}).catch((error: AxiosError) =>
 				extendedErrorToast(error, 'gateway.power.messages.rebootFailed')
 			);
 	}
 
+	/**
+	 * Converts timestamp to time string
+	 */
+	private parseActionTime(timestamp: number): string {
+		return new Date(timestamp * 1000).toLocaleTimeString();
+	}
 }
 </script>

@@ -36,7 +36,7 @@ class JournalService {
 	 * @param {IJournal} config New configuration
 	 */
 	saveConfig(config: IJournal): Promise<AxiosResponse> {
-		return axios.put('gateway/journal/config', config, {headers: authorizationHeader()});
+		return axios.post('gateway/journal/config', config, {headers: authorizationHeader()});
 	}
 
 	/**

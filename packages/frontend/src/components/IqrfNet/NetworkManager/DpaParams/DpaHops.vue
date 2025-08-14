@@ -15,14 +15,19 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <template>
-	<v-card flat tile>
-		<v-card-title>{{ $t('iqrfnet.networkManager.dpaParams.dpaHops.title') }}</v-card-title>
-		<v-card-text>
-			<small class='text-muted'>{{ $t('iqrfnet.networkManager.dpaParams.dpaHops.notes.hops') }}</small>
+	<CCard class='border-top-0 border-left-0 border-right-0 card-margin-bottom'>
+		<CCardBody>
+			<CCardTitle>{{ $t('iqrfnet.networkManager.dpaParams.dpaHops.title') }}</CCardTitle>
+			<CCardSubtitle>
+				<small>{{ $t('iqrfnet.networkManager.dpaParams.dpaHops.notes.hops') }}</small>	
+			</CCardSubtitle>
 			<ValidationObserver v-slot='{invalid}'>
-				<v-form>
-					<v-row align='center'>
-						<v-col cols='12' lg='6' md='3'>
+				<CForm>
+					<CRow
+						form
+						align-vertical='end'
+					>
+						<CCol sm='12' lg='6'>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								:rules='{
@@ -39,51 +44,40 @@ limitations under the License.
 									required: $t("iqrfnet.networkManager.dpaParams.dpaHops.errors.requestHops"),
 								}'
 							>
-								<v-text-field
+								<CInput
 									v-model.number='requestHops'
 									type='number'
 									min='1'
 									max='239'
 									:label='$t("iqrfnet.networkManager.dpaParams.dpaHops.requestHops")'
-									:success='touched ? valid : null'
-									:error-messages='errors'
+									:is-valid='touched ? valid : null'
+									:invalid-feedback='errors.join(", ")'
 									:disabled='rqDOM || rqDRM'
 								/>
 							</ValidationProvider>
-						</v-col>
-						<v-col cols='12' md='3'>
-							<v-tooltip top>
-								<template #activator='{attrs, on}'>
-									<v-checkbox
-										v-model='rqDOM'
-										:label='$t("iqrfnet.networkManager.dpaParams.dpaHops.optimizeDom")'
-										v-bind='attrs'
-										dense
-										v-on='on'
-										@click='rqDOMChange'
-									/>
-								</template>
-								<span>{{ $t('iqrfnet.networkManager.dpaParams.dpaHops.notes.dom') }}</span>
-							</v-tooltip>
-						</v-col>
-						<v-col cols='12' md='3'>
-							<v-tooltip top>
-								<template #activator='{attrs, on}'>
-									<v-checkbox
-										v-model='rqDRM'
-										:label='$t("iqrfnet.networkManager.dpaParams.dpaHops.optimizeDrm")'
-										v-bind='attrs'
-										dense
-										v-on='on'
-										@click='rqDRMChange'
-									/>
-								</template>
-								{{ $t('iqrfnet.networkManager.dpaParams.dpaHops.notes.drm') }}
-							</v-tooltip>
-						</v-col>
-					</v-row>
-					<v-row align='center'>
-						<v-col cols='12' lg='6' md='3'>
+						</CCol>
+						<CCol sm='12' md='3'>
+							<CInputCheckbox
+								:checked.sync='rqDOM'
+								:label='$t("iqrfnet.networkManager.dpaParams.dpaHops.optimizeDom")'
+								:description='$t("iqrfnet.networkManager.dpaParams.dpaHops.notes.dom")'
+								@change='rqDOMChange'
+							/>
+						</CCol>
+						<CCol sm='12' md='3'>
+							<CInputCheckbox
+								:checked.sync='rqDRM'
+								:label='$t("iqrfnet.networkManager.dpaParams.dpaHops.optimizeDrm")'
+								:description='$t("iqrfnet.networkManager.dpaParams.dpaHops.notes.drm")'
+								@change='rqDRMChange'
+							/>
+						</CCol>
+					</CRow>
+					<CRow
+						form
+						align-vertical='end'
+					>
+						<CCol sm='12' lg='6'>
 							<ValidationProvider
 								v-slot='{errors, touched, valid}'
 								:rules='{
@@ -100,52 +94,45 @@ limitations under the License.
 									required: $t("iqrfnet.networkManager.dpaParams.dpaHops.errors.responseHops"),
 								}'
 							>
-								<v-text-field
+								<CInput
 									v-model.number='responseHops'
 									type='number'
 									min='1'
 									max='239'
 									:label='$t("iqrfnet.networkManager.dpaParams.dpaHops.responseHops")'
 									:success='touched ? valid : null'
-									:error-messages='errors'
+									:invalid-feedback='errors.join(", ")'
 									:disabled='rspDOM'
 								/>
 							</ValidationProvider>
-						</v-col>
-						<v-col cols='12' md='3'>
-							<v-tooltip top>
-								<template #activator='{attrs, on}'>
-									<v-checkbox
-										v-model='rspDOM'
-										:label='$t("iqrfnet.networkManager.dpaParams.dpaHops.optimizeDom")'
-										v-bind='attrs'
-										dense
-										v-on='on'
-										@click='rspChange'
-									/>
-								</template>
-								{{ $t('iqrfnet.networkManager.dpaParams.dpaHops.notes.dom') }}
-							</v-tooltip>
-						</v-col>
-					</v-row>
-					<v-btn
+						</CCol>
+						<CCol sm='12' lg='3'>
+							<CInputCheckbox
+								:checked.sync='rspDOM'
+								:label='$t("iqrfnet.networkManager.dpaParams.dpaHops.optimizeDom")'
+								:description='$t("iqrfnet.networkManager.dpaParams.dpaHops.notes.dom")'
+								@change='rspChange'
+							/>
+						</CCol>
+					</CRow>
+					<CButton
 						class='mr-1'
 						color='primary'
 						@click='getHops'
 					>
 						{{ $t('forms.get') }}
-					</v-btn>
-					<v-btn
+					</CButton>
+					<CButton
 						color='primary'
 						:disabled='invalid'
 						@click='setHops'
 					>
 						{{ $t('forms.set') }}
-					</v-btn>
-				</v-form>
+					</CButton>
+				</CForm>
 			</ValidationObserver>
-		</v-card-text>
-	</v-card>
+		</CCardBody>
+	</CCard>
 </template>
 
 <script lang='ts'>
@@ -159,6 +146,7 @@ import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 import IqmeshNetworkService from '@/services/DaemonApi/IqmeshNetworkService';
 
 import {MutationPayload} from 'vuex';
+
 
 /**
  * DPA params DPA hops component
@@ -246,7 +234,7 @@ export default class DpaHops extends Vue {
 		if (this.rqDOM) {
 			this.rqDRM = false;
 			this.requestHops = 255;
-		} else {
+		} else {	
 			this.requestHops = 1;
 		}
 	}

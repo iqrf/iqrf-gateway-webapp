@@ -14,9 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import FeatureService, {Feature, Features} from '@/services/FeatureService';
 import {ActionTree, GetterTree, MutationTree} from 'vuex';
-import {useApiClient} from '@/services/ApiClient';
-import {FeatureConfig, Features} from '@iqrf/iqrf-gateway-webapp-client/types';
 
 /**
  * Feature state
@@ -26,7 +25,7 @@ interface FeatureState {
 	/**
 	 * Features
 	 */
-	features: Features | object,
+	features: Features,
 
 }
 
@@ -36,7 +35,7 @@ const state: FeatureState = {
 
 const actions: ActionTree<FeatureState, any> = {
 	fetch({commit}) {
-		return useApiClient().getFeatureService().list()
+		return FeatureService.fetchAll()
 			.then((features: Features) => {
 				commit('SET', features);
 			});
@@ -51,7 +50,7 @@ const getters: GetterTree<FeatureState, any> = {
 			return undefined;
 		}
 	},
-	configuration: (state: FeatureState) => (name: string): FeatureConfig|undefined => {
+	configuration: (state: FeatureState) => (name: string): Feature|undefined => {
 		try {
 			return state.features[name];
 		} catch {
