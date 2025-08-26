@@ -45,28 +45,20 @@ limitations under the License.
 					<template #no-items-view='{}'>
 						{{ $t('table.messages.noRecords') }}
 					</template>
-					<template #EnabledSSL='{item}'>
+					<template #tls='{item}'>
 						<td>
-							<CButton :color='hasTls(item) ? "success" : "danger"' size='sm'>
-								{{ hasTls(item) ? $t('states.enabled') : $t('states.disabled') }}
-							</CButton>
+							<BooleanCheckIcon
+								:value='isTls(item)'
+								size='xl'
+							/>
 						</td>
 					</template>
 					<template #acceptAsyncMsg='{item}'>
 						<td>
-							<CDropdown
-								:color='item.acceptAsyncMsg ? "success" : "danger"'
-								:toggler-text='$t(`states.${item.acceptAsyncMsg ? "enabled" : "disabled"}`)'
-								placement='top-start'
-								size='sm'
-							>
-								<CDropdownItem @click='changeAcceptAsyncMsg(item, true)'>
-									{{ $t('states.enabled') }}
-								</CDropdownItem>
-								<CDropdownItem @click='changeAcceptAsyncMsg(item, false)'>
-									{{ $t('states.disabled') }}
-								</CDropdownItem>
-							</CDropdown>
+							<BooleanCheckIcon
+								:value='item.acceptAsyncMsg'
+								size='xl'
+							/>
 						</td>
 					</template>
 					<template #actions='{item}'>
@@ -90,10 +82,57 @@ limitations under the License.
 							</CButton>
 						</td>
 					</template>
+					<template #show_details='{ item, index }'>
+						<td class='py-2'>
+							<CButton
+								color='info'
+								size='sm'
+								@click='toggleDetails(item, index)'
+							>
+								<CIcon :content='cilInfo' />
+							</CButton>
+						</td>
+					</template>
+					<template #details='{ item }'>
+						<CCollapse :show='item._toggled'>
+							<CCardBody>
+								<table class='table'>
+									<tr>
+										<th>
+											{{ $t('forms.fields.requestTopic') }}
+										</th>
+										<td>
+											{{ item.TopicRequest }}
+										</td>
+									</tr>
+									<tr>
+										<th>
+											{{ $t('forms.fields.responseTopic') }}
+										</th>
+										<td>{{ item.TopicResponse }}</td>
+									</tr>
+									<tr>
+										<th>
+											{{ $t('config.daemon.messagings.mqtt.form.QoS') }}
+										</th>
+										<td>{{ $t(`config.daemon.messagings.mqtt.form.QoSes.${item.Qos}`) }}: {{ $t(`config.daemon.messagings.mqtt.messages.qos.${item.Qos}`) }}</td>
+									</tr>
+									<tr>
+										<th>
+											{{ $t('config.daemon.messagings.mqtt.form.Persistence') }}
+										</th>
+										<td>
+											{{ $t(`config.daemon.messagings.mqtt.form.Persistences.${item.Persistence}`) }}: {{ $t(`config.daemon.messagings.mqtt.messages.persistence.${item.Persistence}`) }}
+										</td>
+									</tr>
+								</table>
+							</CCardBody>
+						</CCollapse>
+					</template>
 				</CDataTable>
 			</CCardBody>
 		</CCard>
-		<MessagingDeleteModal ref='deleteModal' @deleted='getInstances' />
+		<MessagingDeleteModal ref='deleteModal' @deleted='getInstances()' />
 	</div>
 </template>
 
@@ -105,6 +144,7 @@ import {
 	CCard,
 	CCardBody,
 	CCardHeader,
+	CCollapse,
 	CDataTable,
 	CDropdown,
 	CDropdownItem,
@@ -114,6 +154,7 @@ import MessagingDeleteModal from '@/components/Config/Messagings/MessagingDelete
 
 import {
 	cilCheckCircle,
+	cilInfo,
 	cilPencil,
 	cilPlus,
 	cilTrash,
@@ -127,14 +168,17 @@ import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 import {AxiosError, AxiosResponse} from 'axios';
 import {IField} from '@/interfaces/Coreui';
 import {IMqttInstance} from '@/interfaces/Config/Messaging';
+import BooleanCheckIcon from '@/components/ui/BooleanCheckIcon.vue';
 
 @Component({
 	components: {
+		BooleanCheckIcon,
 		CButton,
 		CButtonClose,
 		CCard,
 		CCardBody,
 		CCardHeader,
+		CCollapse,
 		CDataTable,
 		CDropdown,
 		CDropdownItem,
@@ -143,6 +187,7 @@ import {IMqttInstance} from '@/interfaces/Config/Messaging';
 	},
 	data: () => ({
 		cilCheckCircle,
+		cilInfo,
 		cilPencil,
 		cilPlus,
 		cilTrash,
@@ -180,15 +225,7 @@ export default class MqttMessagingTable extends Vue {
 			label: this.$t('forms.fields.clientId'),
 		},
 		{
-			key: 'TopicRequest',
-			label: this.$t('forms.fields.requestTopic'),
-		},
-		{
-			key: 'TopicResponse',
-			label: this.$t('forms.fields.responseTopic'),
-		},
-		{
-			key: 'EnabledSSL',
+			key: 'tls',
 			label: this.$t('config.daemon.messagings.mqtt.form.EnabledSSL'),
 			filter: false,
 		},
@@ -203,6 +240,13 @@ export default class MqttMessagingTable extends Vue {
 			sorter: false,
 			filter: false,
 		},
+		{ 
+			key: 'show_details', 
+			label: '', 
+			_style: 'width:1%', 
+			sorter: false, 
+			filter: false
+		}
 	];
 
 	/**
@@ -220,55 +264,6 @@ export default class MqttMessagingTable extends Vue {
 	 */
 	mounted(): void {
 		this.getInstances();
-	}
-
-	/**
-	 * Updates message accepting configuration of MQTT messaging component instance
-	 * @param {IMqttInstance} instance MQTT messaging instance
-	 * @param {boolean} acceptAsyncMsg Message accepting policy setting
-	 */
-	private changeAcceptAsyncMsg(instance: IMqttInstance, acceptAsyncMsg: boolean): void {
-		if (instance.acceptAsyncMsg === acceptAsyncMsg) {
-			return;
-		}
-		this.edit(instance, {acceptAsyncMsg: acceptAsyncMsg});
-	}
-
-	/**
-	 * Checks if MQTT messaging instance uses TLS
-	 * @param {IMqttInstance} instance MQTT messaging instance
-	 * @return {boolean} True if instance uses TLS, otherwise false
-	 */
-	private hasTls(instance: IMqttInstance): boolean {
-		return instance.BrokerAddr.startsWith('ssl://') ||
-			instance.BrokerAddr.startsWith('mqtts://') ||
-			instance.BrokerAddr.startsWith('wss://');
-	}
-
-	/**
-	 * Saves changes in MQTT messaging instance configuration
-	 * @param {IMqttInstance} instance MQTT messaging instance
-	 * @param {Record<string, boolean>} newSettings Settings to update instance with
-	 */
-	private edit(instance: IMqttInstance, newSettings: Record<string, boolean>): void {
-		this.loading = true;
-		const settings = {
-			...instance,
-			...newSettings,
-		};
-		DaemonConfigurationService.updateInstance(this.componentName, settings.instance, settings)
-			.then(() => {
-				this.getInstances().then(() => {
-					this.$toast.success(
-						this.$t('config.daemon.messagings.mqtt.messages.editSuccess', {instance: settings.instance})
-							.toString()
-					);
-				});
-			})
-			.catch((error: AxiosError) => {
-				this.loading = false;
-				extendedErrorToast(error, 'config.daemon.messagings.mqtt.messages.editFailed', {instance: settings.instance});
-			});
 	}
 
 	/**
@@ -296,6 +291,25 @@ export default class MqttMessagingTable extends Vue {
 	 */
 	private removeInstance(instance: string): void {
 		(this.$refs.deleteModal as MessagingDeleteModal).showModal(MessagingTypes.MQTT, instance);
+	}
+
+	/**
+	 * Determines whether connection is over TLS
+	 * @param {IMqttInstance} instance MQTT instance
+	 */
+	private isTls(instance: IMqttInstance): boolean {
+		return instance.BrokerAddr.startsWith('ssl://') ||
+			instance.BrokerAddr.startsWith('mqtts://') ||
+			instance.BrokerAddr.startsWith('wss://');
+	}
+
+	/**
+	 * Toggles details display
+	 * @param {IMqttInstance} instance MQTT instance
+	 * @param {number} index Instance index
+	 */
+	private toggleDetails(instance: IMqttInstance, index: number): void {
+		this.$set(this.instances[index], '_toggled', !instance._toggled);
 	}
 }
 </script>

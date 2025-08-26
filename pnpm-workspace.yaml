@@ -1,5 +1,5 @@
 prefer-workspace-packages: true
 packages:
   - './packages/api-client'
-  - './packages/frontend'
+#  - './packages/frontend'
   - './packages/frontend3'

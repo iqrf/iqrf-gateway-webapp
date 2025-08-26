@@ -17,10 +17,6 @@
 			"title": "iqrf::BondNodeLocalService"
 		},
 		{
-			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__BufferedMqttMessaging.json",
-			"title": "iqrf::BufferedMqttMessaging"
-		},
-		{
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__DpaHopsService.json",
 			"title": "iqrf::DpaHopsService"
 		},
@@ -115,10 +111,6 @@
 		{
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__MonitorService.json",
 			"title": "iqrf::MonitorService"
-		},
-		{
-			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__MqMessaging.json",
-			"title": "iqrf::MqMessaging"
 		},
 		{
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__MqttMessaging.json",

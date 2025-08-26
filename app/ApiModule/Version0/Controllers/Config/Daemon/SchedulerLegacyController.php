@@ -40,10 +40,12 @@ class SchedulerLegacyController extends BaseController {
 	/**
 	 * Constructor
 	 * @param SchedulerController $newController New scheduler controller
+	 * @param DaemonController $daemonController Daemon controller
 	 * @param ControllerValidators $validators Controller validators
 	 */
 	public function __construct(
 		private readonly SchedulerController $newController,
+		private readonly DaemonController $daemonController,
 		ControllerValidators $validators,
 	) {
 		parent::__construct($validators);
@@ -246,21 +248,21 @@ class SchedulerLegacyController extends BaseController {
 	#[OpenApi(<<<'EOT'
 		summary: Returns all messagings suitable for scheduler tasks
 		deprecated: true
-		description: "Deprecated in favor of the new IQRF Gateway Daemon scheduler controller, use `GET` `/config/daemon/scheduler/messagings` instead. Will be removed in the version 3.1.0."
+		description: "Deprecated in favor of the new IQRF Gateway Daemon scheduler controller, use `GET` `/config/daemon/messagings` instead. Will be removed in the version 3.1.0."
 		response:
 			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: '#/components/schemas/SchedulerMessagings'
+							$ref: '#/components/schemas/MessagingInstances'
 			'403':
 				$ref: '#/components/responses/Forbidden'
 			'500':
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function getMessagings(ApiRequest $request, ApiResponse $response): ApiResponse {
-		return $this->newController->getMessagings($request, $response);
+		return $this->daemonController->getMessagings($request, $response);
 	}
 
 }

@@ -83,8 +83,6 @@ const TranslatorConfig = () => import(/* webpackChunkName: "config" */ '@/pages/
 const ControllerConfig = () => import(/* webpackChunkName: "config" */ '@/pages/Config/ControllerConfig.vue');
 const MonitorForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/MonitorForm.vue');
 const MessagingDisambiguation = () => import(/* webpackChunkName: "config" */ '@/pages/Config/MessagingDisambiguation.vue');
-const MqMessagingTable = () => import(/* webpackChunkName: "config" */ '@/pages/Config/MqMessagingTable.vue');
-const MqMessagingForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/MqMessagingForm.vue');
 const MqttMessagingTable = () => import(/* webpackChunkName: "config" */ '@/pages/Config/MqttMessagingTable.vue');
 const MqttMessagingForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/MqttMessagingForm.vue');
 const UdpMessagingTable = () => import(/* webpackChunkName: "config" */ '@/pages/Config/UdpMessagingTable.vue');
@@ -99,6 +97,7 @@ const SchedulerList = () => import(/* webpackChunkName: "config" */ '@/pages/Con
 const SchedulerForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/SchedulerForm.vue');
 const IqrfRepositoryConfig = () => import(/* webpackChunkName: "config" */'@/pages/Config/IqrfRepositoryConfig.vue');
 const SmtpConfiguration = () => import(/* webpackChunkName: "config" */'@/pages/Config/SmtpConfiguration.vue');
+const SensorData = () => import(/* webpackChunkName: "config" */'@/pages/Config/SensorData.vue');
 
 const NetworkBase = () => import(/* webpackChunkName: "network" */ '@/pages/Network/NetworkBase.vue');
 const NetworkDisambiguation = () => import(/* webpackChunkName: "network" */ '@/pages/Network/NetworkDisambiguation.vue');
@@ -367,38 +366,6 @@ const routes: Array<RouteConfig> = [
 										],
 									},
 									{
-										path: 'mq',
-										component: {
-											render(c) {
-												return c('router-view');
-											}
-										},
-										children: [
-											{
-												path: '',
-												component: MqMessagingTable,
-												meta: {
-													role: UserRole.NORMAL,
-												},
-											},
-											{
-												component: MqMessagingForm,
-												path: 'add',
-												meta: {
-													role: UserRole.NORMAL,
-												},
-											},
-											{
-												component: MqMessagingForm,
-												path: 'edit/:instance',
-												props: true,
-												meta: {
-													role: UserRole.NORMAL,
-												},
-											},
-										],
-									},
-									{
 										path: 'mqtt',
 										component: {
 											render(c) {
@@ -495,6 +462,13 @@ const routes: Array<RouteConfig> = [
 										},
 									}
 								]
+							},
+							{
+								component: SensorData,
+								path: 'sensor-collecting',
+								meta: {
+									role: UserRole.NORMAL,
+								},
 							},
 							{
 								path: 'misc',

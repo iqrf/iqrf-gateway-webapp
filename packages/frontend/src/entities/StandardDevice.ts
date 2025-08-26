@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 import {cilCheckAlt, cilCheckCircle, cilHome, cilSignalCellular4, cilXCircle} from '@coreui/icons';
-import {IInfoSensorDetail} from '@/interfaces/DaemonApi/IqrfInfo';
 import {IProduct} from '@/interfaces/Repository';
 import i18n from '@/plugins/i18n';
+import { DatabaseDeviceData, DatabaseGetSensorsData } from '@iqrf/iqrf-gateway-daemon-utils/types';
 
 /**
  * Standard device object
@@ -71,7 +71,7 @@ class StandardDevice {
 	/**
 	 * Array of implemented standard sensors
 	 */
-	private sensors: Array<IInfoSensorDetail> = [];
+	private sensors: Array<DatabaseGetSensorsData> = [];
 
 	/**
 	 * Array of implemented binary outputs
@@ -105,23 +105,17 @@ class StandardDevice {
 
 	/**
 	 * Constructor
-	 * @param address Device address
-	 * @param mid Device MID
-	 * @param hwpid Device HWPID
-	 * @param hwpidVer Device HWPID version
-	 * @param dpa Device DPA version
-	 * @param os Device OS build
-	 * @param discovered Is device discovered?
+	 * @param {DatabaseDeviceData} data Device data
 	 */
-	constructor(address: number, mid: number, hwpid: number, hwpidVer: number, dpa: number, os: number, discovered = false) {
-		this.address = address;
-		this.mid = mid;
-		this.hwpid = hwpid;
-		this.hwpidVer = hwpidVer;
-		this.dpa = dpa;
-		this.osBuild = os;
-		this.osVersion = '';
-		this.discovered = discovered;
+	constructor(data: DatabaseDeviceData) {
+		this.address = data.address;
+		this.mid = data.mid;
+		this.hwpid = data.hwpid;
+		this.hwpidVer = data.hwpidVersion!;
+		this.dpa = data.dpa!;
+		this.osBuild = data.osBuild!;
+		this.osVersion = data.osVersion!;
+		this.discovered = data.discovered!;
 		this.product = {
 			name: 'Unknown',
 			hwpid: this.hwpid,
@@ -132,6 +126,7 @@ class StandardDevice {
 			rfMode: -1,
 			pictureOriginal: ''
 		};
+		this.binouts = data.binouts?.count ?? 0;
 	}
 
 	/**
@@ -291,7 +286,7 @@ class StandardDevice {
 	 * Sets implemented sensors
 	 * @param {Array<IInfoSensorDetail>} sensors Implemented sensors
 	 */
-	setSensors(sensors: Array<IInfoSensorDetail>): void {
+	setSensors(sensors: Array<DatabaseGetSensorsData>): void {
 		this.sensors = sensors;
 	}
 
@@ -299,7 +294,7 @@ class StandardDevice {
 	 * Returns implemented sensors
 	 * @returns Implemented sensors
 	 */
-	getSensors(): Array<IInfoSensorDetail> {
+	getSensors(): Array<DatabaseGetSensorsData> {
 		return this.sensors;
 	}
 

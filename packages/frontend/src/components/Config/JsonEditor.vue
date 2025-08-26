@@ -104,7 +104,7 @@ export default class JsonEditor extends Vue {
 	/**
 	 * @var {boolean} wasValidated Was JSON validated?
 	 */
-	@Prop({default: false}) wasValidated = false;
+	@Prop({default: false}) wasValidated!: boolean;
 
 	/**
 	 * @var {boolean|null} isValid Is JSON valid?

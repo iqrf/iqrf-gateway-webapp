@@ -30,6 +30,7 @@ limitations under the License.
 				</CTab>
 			</CTabs>
 		</CCard>
+		<SensorDataControls />
 		<StandardDevices />
 	</div>
 </template>
@@ -40,6 +41,7 @@ import {CTab, CTabs} from '@coreui/vue/src';
 import BinaryOutputManager from '@/components/IqrfNet/StandardManager/BinaryOutputManager.vue';
 import LightManager from '@/components/IqrfNet/StandardManager/LightManager.vue';
 import SensorManager from '@/components/IqrfNet/StandardManager/SensorManager.vue';
+import SensorDataControls from '@/components/IqrfNet/StandardManager/SensorDataControls.vue';
 import StandardDevices from '@/components/IqrfNet/StandardManager/StandardDevices.vue';
 
 @Component({
@@ -49,6 +51,7 @@ import StandardDevices from '@/components/IqrfNet/StandardManager/StandardDevice
 		BinaryOutputManager,
 		LightManager,
 		SensorManager,
+		SensorDataControls,
 		StandardDevices,
 	},
 	metaInfo: {

@@ -14,68 +14,56 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-/**
- * Daemon API monitor message
- */
-export interface IMonitorMsg {
-	/**
-	 * Message type
-	 */
-	mType: string;
+class Timer {
 
 	/**
-	 * Message data
+	 * Timer interval
 	 */
-	data: IMonitorMsgData;
+	private intervalId: number;
+
+	/**
+	 * Start time
+	 */
+	private startTime: number;
+
+	/**
+	 * Time elapsed
+	 */
+	private time: number;
+
+	/**
+	 * Base constructor
+	 */
+	constructor() {
+		this.intervalId = 0;
+		this.startTime = 0;
+		this.time = 0;
+	}
+
+	/**
+	 * Starts the timer
+	 */
+	start(): void {
+		this.startTime = Date.now();
+		this.intervalId = window.setInterval(() => {
+			this.time = Date.now() - this.startTime;
+		}, 400);
+	}
+
+	/**
+	 * Stops the timer
+	 */
+	stop(): void {
+		window.clearInterval(this.intervalId);
+	}
+
+	/**
+	 * Returns elapsed time in milliseconds
+	 * @returns Elapsed time in milliseconds
+	 */
+	getTime(): number {
+		return this.time;
+	}
 }
 
-/**
- * Monitor message data
- */
-interface IMonitorMsgData {
-	/**
-	 * Message number
-	 */
-	num: number;
-
-	/**
-	 * UNIX timestamp
-	 */
-	timestamp: number;
-
-	/**
-	 * DPA queue length
-	 */
-	dpaQueueLen: number;
-
-	/**
-	 * IQRF channel state
-	 */
-	iqrfChannelState: string;
-
-	/**
-	 * DPA channel state
-	 */
-	dpaChannelState: string;
-
-	/**
-	 * Message queue length
-	 */
-	msgQueueLen: number;
-
-	/**
-	 * Operation mode
-	 */
-	operMode: string;
-
-	/**
-	 * Data reading in progress
-	 */
-	dataReadingInProgress: boolean;
-
-	/**
-	 * Network enumeration in progress
-	 */
-	enumInProgress: boolean;
-}
+export default Timer;

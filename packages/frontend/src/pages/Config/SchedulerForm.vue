@@ -175,42 +175,19 @@ limitations under the License.
 									</CButton>
 								</CCol>
 								<CCol md='6'>
-									<div
-										v-for='(messaging, j) of record.task[i-1].messaging'
-										:key='j'
-										class='form-group'
-									>
-										<ValidationProvider
-											v-slot='{errors, touched, valid}'
-											rules='required'
-											:custom-messages='{
-												required: $t("config.daemon.scheduler.errors.service"),
-											}'
-										>
-											<CSelect
-												:value.sync='record.task[i-1].messaging[j]'
-												:label='$t("config.daemon.scheduler.form.messages.messaging")'
-												:placeholder='$t("config.daemon.scheduler.form.messages.messagingPlaceholder")'
-												:options='messagings'
-												:is-valid='touched ? valid : null'
-												:invalid-feedback='errors.join(", ")'
-											/>
-										</ValidationProvider>
-										<CButton
-											v-if='record.task[i-1].messaging.length > 1'
-											class='mr-1'
-											color='danger'
-											@click='removeTaskMessaging(i-1, j)'
-										>
-											{{ $t('config.daemon.scheduler.form.messagings.remove') }}
-										</CButton>
-										<CButton
-											v-if='j === (record.task[i-1].messaging.length - 1)'
-											color='success'
-											@click='addTaskMessaging(i-1)'
-										>
-											{{ $t('config.daemon.scheduler.form.messagings.add') }}
-										</CButton>
+									<div class='form-group'>
+										<label>
+											<strong>{{ $t('config.daemon.scheduler.form.messages.messaging') }}</strong>
+										</label>
+										<vSelect
+											v-model='record.task[i-1].messaging'
+											multiple
+											:options='messagings'
+											:reduce='option => option.value'
+											label='label'
+											:filterable='true'
+											:autoscroll='true'
+										/>
 									</div>
 								</CCol>
 							</CRow>
@@ -249,12 +226,14 @@ import {TimeSpecTypes} from '@/enums/Config/Scheduler';
 import DaemonConfigurationService from '@/services/DaemonConfigurationService';
 import SchedulerService from '@/services/SchedulerService';
 
-import {AxiosError, AxiosResponse} from 'axios';
-import {IOption} from '@/interfaces/Coreui';
-import {ISchedulerRecord, ISchedulerRecordTask} from '@/interfaces/DaemonApi/Scheduler';
-import {IWsMessaging} from '@/interfaces/Config/Messaging';
-import {MetaInfo} from 'vue-meta';
-import {MutationPayload} from 'vuex';
+import { AxiosError, AxiosResponse } from 'axios';
+import { IOption } from '@/interfaces/Coreui';
+import { ISchedulerRecord, ISchedulerRecordTask } from '@/interfaces/DaemonApi/Scheduler';
+import { MetaInfo } from 'vue-meta';
+import vSelect from 'vue-select';
+import { MutationPayload } from 'vuex';
+import { IqrfGatewayDaemonSchedulerMessagings } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import { MessagingType } from '@iqrf/iqrf-gateway-daemon-utils/enums';
 
 @Component({
 	components: {
@@ -271,7 +250,8 @@ import {MutationPayload} from 'vuex';
 		Datetime,
 		JsonEditor,
 		ValidationObserver,
-		ValidationProvider
+		ValidationProvider,
+		vSelect,
 	},
 	data: () => ({
 		TimeSpecTypes,
@@ -312,7 +292,7 @@ export default class SchedulerForm extends Vue {
 		description: '',
 		task: [{
 			message: '',
-			messaging: [''],
+			messaging: [],
 		}],
 		timeSpec: {
 			cronTime: '',
@@ -367,15 +347,6 @@ export default class SchedulerForm extends Vue {
 	 * @var {boolean} useRest Indicates whether the webapp should use REST API to retrieve scheduler task props
 	 */
 	private useRest = true;
-
-	/**
-	 * @constant {Record<string, string>} components Names of messaging components
-	 */
-	private components: Record<string, string> = {
-		mq: 'iqrf::MqMessaging',
-		mqtt: 'iqrf::MqttMessaging',
-		websocket: 'iqrf::WebsocketMessaging'
-	};
 
 	/**
 	 * @constant {Record<string, string|boolean>} dateFormat Date formatting options
@@ -487,22 +458,27 @@ export default class SchedulerForm extends Vue {
 	 */
 	private getMessagings(): void {
 		this.$store.commit('spinner/SHOW');
-		Promise.all([
-			DaemonConfigurationService.getComponent(this.components.mq),
-			DaemonConfigurationService.getComponent(this.components.mqtt),
-			DaemonConfigurationService.getComponent(this.components.websocket),
-		])
-			.then((responses: Array<AxiosResponse>) => {
+		DaemonConfigurationService.getMessagingInstances()
+			.then((data: IqrfGatewayDaemonSchedulerMessagings) => {
+				const mqttOptions = data.mqtt.map((item: string): IOption => ({
+					label: `[MQTT] ${item}`,
+					value: {
+						type: MessagingType.Mqtt,
+						instance: item,
+					},
+				}));
+				const wsOptions = data.ws.map((item: string): IOption => ({
+					label: `[WS] ${item}`,
+					value: {
+						type: MessagingType.Websocket,
+						instance: item,
+					},
+				}));
+				this.messagings = [
+					...mqttOptions,
+					...wsOptions,
+				];
 				this.$store.commit('spinner/HIDE');
-				responses.forEach((item: AxiosResponse) => {
-					if (item.data.instances) {
-						item.data.instances.forEach((messaging: IWsMessaging) => {
-							this.messagings.push({
-								value: messaging.instance, label: messaging.instance,
-							});
-						});
-					}
-				});
 			})
 			.catch((error: AxiosError) => {
 				extendedErrorToast(error, 'config.daemon.scheduler.messages.messagingFailed');
@@ -644,15 +620,7 @@ export default class SchedulerForm extends Vue {
 	 * Adds another scheduler task message object
 	 */
 	private addMessage(): void {
-		this.record.task.push({message: '', messaging: ['']});
-	}
-
-	/**
-	 * Adds another scheduler task messaging
-	 * @param {number} index Task index
-	 */
-	private addTaskMessaging(index: number): void {
-		(this.record.task[index].messaging as Array<string>).push('');
+		this.record.task.push({message: '', messaging: []});
 	}
 
 	/**
@@ -661,15 +629,6 @@ export default class SchedulerForm extends Vue {
 	 */
 	private removeMessage(index: number): void {
 		this.record.task.splice(index, 1);
-	}
-
-	/**
-	 * Removes a scheduler task messaging specified
-	 * @param {number} tIndex Task index
-	 * @param {number} mIndex Messaging index
-	 */
-	private removeTaskMessaging(tIndex: number, mIndex: number): void {
-		(this.record.task[tIndex].messaging as Array<string>).splice(mIndex, 1);
 	}
 }
 </script>

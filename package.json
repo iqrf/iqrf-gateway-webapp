@@ -34,7 +34,8 @@
 		"test": "vitest --run"
 	},
 	"workspaces": [
-		"packages/*"
+		"packages/api-client",
+		"packages/frontend3"
 	],
 	"devDependencies": {
 		"@types/node": "^24.2.1",

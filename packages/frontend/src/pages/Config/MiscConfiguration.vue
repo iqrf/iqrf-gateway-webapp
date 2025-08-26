@@ -32,8 +32,8 @@ limitations under the License.
 				<CTab :title='$t("config.daemon.misc.iqrfRepository.title")'>
 					<IqrfRepository @fetched='configFetch' />
 				</CTab>
-				<CTab :title='$t("config.daemon.misc.iqrfInfo.title")'>
-					<IqrfInfo @fetched='configFetch' />
+				<CTab :title='$t("config.daemon.misc.iqrfDb.title")'>
+					<IqrfDb @fetched='configFetch' />
 				</CTab>
 				<CTab :title='$t("config.daemon.misc.monitor.title")'>
 					<MonitorList @fetched='configFetch' />
@@ -50,7 +50,7 @@ limitations under the License.
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CCard, CCardBody, CCardHeader, CTab, CTabs} from '@coreui/vue/src';
-import IqrfInfo from '@/components/Config/Misc/IqrfInfo.vue';
+import IqrfDb from '@/components/Config/Misc/IqrfDb.vue';
 import IqrfRepository from '@/components/Config/Misc/IqrfRepository.vue';
 import JsonApi from '@/components/Config/Misc/JsonApi.vue';
 import JsonRawApi from '@/components/Config/Misc/JsonRawApi.vue';
@@ -70,7 +70,7 @@ import {IConfigFetch} from '@/interfaces/Config/Daemon';
 		CCardHeader,
 		CTab,
 		CTabs,
-		IqrfInfo,
+		IqrfDb,
 		IqrfRepository,
 		JsonApi,
 		JsonRawApi,
@@ -108,7 +108,7 @@ export default class MiscConfiguration extends Vue {
 	 * @var {Array<string>} children Children components loading configuration
 	 */
 	private children: Array<string> = [
-		'iqrfInfo',
+		'iqrfDb',
 		'iqrfRepository',
 		'monitor',
 		'tracer',

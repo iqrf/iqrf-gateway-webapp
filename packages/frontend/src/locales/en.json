@@ -115,9 +115,12 @@
 			"deviceAddr": "Device address",
 			"address": "Address",
 			"id": "ID",
+			"host": "Host",
+			"port": "Port",
 			"email": "E-mail address",
 			"username": "Username",
 			"password": "Password",
+			"protocol": "Protocol",
 			"certificate": "Certificate",
 			"privateKey": "Private Key",
 			"clientId":"Client ID",
@@ -143,6 +146,10 @@
 			"requestTopic": "Please enter the topic for requests.",
 			"responseTopic": "Please enter the topic for responses.",
 			"integer": "This parameter should be an integer.",
+			"port": {
+				"required": "Please enter port number.",
+				"between": "Port number should be between 1 and 65535."
+			},
 			"credentials": "Please enter both username and password, or leave both fields empty.",
 			"deviceAddr": {
 				"required": "Please enter device address.",
@@ -199,6 +206,7 @@
 		"stop": "Stop",
 		"notAvailable": "N/A",
 		"showLast": "Show last result",
+		"setDefault": "Set default",
 		"messages": {
 			"getConfTimeout": "The request to retrieve current configuration timed out.",
 			"saveConfTimeout": "The request to save new configuration timed out.",
@@ -437,6 +445,12 @@
 					"edit": "Edit MQTT messaging instance",
 					"form": {
 						"BrokerAddr": "Broker address",
+						"protocols": {
+							"ssl": "Encrypted MQTT - using TLS",
+							"tcp": "Insecure MQTT",
+							"ws": "Insecure WebSocket",
+							"wss": "Encrypted WebSocket - using TLS"
+						},
 						"Persistence": "Persistence",
 						"Persistences": {
 							"0": "In-memory",
@@ -449,12 +463,14 @@
 							"1": "QoS 1",
 							"2": "QoS 2"
 						},
+						"path": "Path",
 						"User": "User",
 						"EnabledSSL": "Enabled TLS",
 						"KeepAliveInterval": "Keep alive interval",
+						"advanced": "Advanced options",
 						"ConnectTimeout": "Connection timeout",
-						"MinReconnect": "Minimum number of reconnects",
-						"MaxReconnect": "Maximum number of reconnects",
+						"MinReconnect": "Minimum reconnect period",
+						"MaxReconnect": "Maximum reconnect period",
 						"TrustStore": "CA certificate",
 						"PrivateKeyPassword": "Private key password",
 						"EnabledCipherSuites": "Enabled cipher suites",
@@ -483,14 +499,28 @@
 						}
 					},
 					"errors": {
+						"host": "Please enter a valid hostname.",
 						"instance": "Please enter name of MQTT instance.",
-						"BrokerAddr": "Please enter address of MQTT broker.",
+						"protocol": "Please select a protocol.",
 						"Persistence": "Please enter persistence.",
 						"QoS": "Please select QoS.",
-						"KeepAliveInterval": "Please enter keep alive interval greater or equal to 0 (disabled).",
-						"ConnectTimeout": "Please enter connection timeout greater or equal to 0 (disabled).",
-						"MinReconnect": "Please enter minimum number of reconnects greater or equal to 0 (disabled) and less or equal to maximum number of reconnects.",
-						"MaxReconnect": "Please enter maximum number of reconnects greater or equal to minimum number of reconnects."
+						"KeepAliveInterval": {
+							"required": "Please enter keep alive interval.",
+							"minimum": "Keep alive interval should be greater or equal to 0 (disabled)."
+						},
+						"ConnectTimeout": {
+							"required": "Please enter connection timeout.",
+							"minimum": "Connection timeout should be greater or equal to 0 (disabled)."
+						},
+						"MinReconnect": {
+							"required": "Please enter minimum reconnect period.",
+							"minimum": "Minimum reconnect period should be 1 second.",
+							"maximum": "Minimum reconnect period should be less or equal to maximum reconnect period."
+						},
+						"MaxReconnect": {
+							"required": "Please enter maximum reconnect period.",
+							"minimum": "Maximum reconnect period should be greater or equal to minimum reconnect period."
+						}
 					}
 				},
 				"websocket": {
@@ -581,35 +611,6 @@
 						"tlsMode": "Please select TLS mode.",
 						"certificate": "Please enter path to the TLS certificate.",
 						"privateKey": "Please enter path to the private key."
-					}
-				},
-				"mq": {
-					"title": "MQ messaging",
-					"description": "MQ messaging settings.",
-					"add": "Add MQ messaging instance",
-					"edit": "Edit MQ messaging instance",
-					"form": {
-						"LocalMqName": "Local MQ name",
-						"RemoteMqName": "Remote MQ name"
-					},
-					"modal": {
-						"title": "MQ messaging instance delete confirmation",
-						"prompt": "Are you sure you want to delete MQ messaging instance {instance}?"
-					},
-					"messages": {
-						"addFailed": "Failed to create new MQ messaging instance: {error}",
-						"addSuccess": "MQ messaging instance {instance} has been added.",
-						"deleteFailed": "Failed to delete MQ messaging instance {instance}: {error}",
-						"deleteSuccess": "MQ messaging instance {instance} has been deleted.",
-						"editFailed": "Failed to edit MQ messaging instance {instance}: {error}",
-						"editSuccess": "MQ messaging instance {instance} has been edited.",
-						"fetchFailed": "Failed to retrieve MQ messaging instance {instance}: {error}",
-						"listFailed": "Failed to retrieve list of MQ messaging instances: {error}"
-					},
-					"errors": {
-						"instance": "Please enter name of MQ instance.",
-						"LocalMqName": "Please enter local MQ name.",
-						"RemoteMqName": "Please enter remote MQ name."
 					}
 				},
 				"udp": {
@@ -740,6 +741,42 @@
 					}
 				}
 			},
+			"sensor-data": {
+				"title": "Sensor data",
+				"form": {
+					"asyncReports": "Send collected data after reading",
+					"autoRun": "Start collecting data on launch",
+					"messagingList": "Connection profiles used to send data",
+					"period": "Sensor data collecting period (in minutes)",
+					"retryPeriod": "Sensor data collecting retry period (in minutes)"
+				},
+				"errors": {
+					"period": {
+						"integer": "Data collecting period should be an integer.",
+						"min": "The minimum allowed data collecting period is 4 minutes.",
+						"required": "Please enter data collecting period."
+					},
+					"retryPeriod": {
+						"integer": "Data collecting retry period should be an integer.",
+						"min": "The minimum allowed data collecting retry period is 1 minute.",
+						"required": "Please enter data collecting retry period."
+					}
+				},
+				"messages": {
+					"messagingsFetch": {
+						"failed": "Failed to get messaging instance list."
+					},
+					"get": {
+						"failed": "Failed to retrieve sensor data collecting configuration.",
+						"timeout": "Sensor data collecting configuration fetch timed out."
+					},
+					"save": {
+						"failed": "Failed to configure sensor data collecting.",
+						"success": "Sensor data collecting configuration saved.",
+						"timeout": "Saving sensor data collecting configuration timed out."
+					}
+				}
+			},
 			"misc": {
 				"title": "Misc",
 				"description": "Configuration of miscellaneous Daemon components",
@@ -805,19 +842,18 @@
 						"saveSuccess": "IQRF repository configuration successfully saved."
 					}
 				},
-				"iqrfInfo": {
+				"iqrfDb": {
 					"title": "Lite DB",
-					"description": "IQRF Info database settings.",
+					"description": "IQRF DB database configuration.",
 					"form": {
-						"enumAtStartUp": "Enumerate network on startup",
-						"enablePeriodic": "Enumerate network periodically",
-						"enumPeriod": "Enumeration period in minutes",
-						"enumUniformDpaVer": "Read only HWPID and HWPID version from nodes",
-						"metaDataToMessages": "Include metadata in messages"
+						"autoEnum": "Run enumeration automatically without prior manual invocation",
+						"launchEnum": "Run enumeration on Daemon launch",
+						"metadata": "Include device metadata in messages"
 					},
 					"errors": {
-						"instance": "Please enter name of IQRF Info instance.",
-						"enumPeriod": "Period must be greater or equal to 0."
+						"instance": {
+							"required": "Please enter name of IQRF DB instance."
+						}
 					},
 					"messages": {
 						"saveFailed": "Failed to save Lite DB configuration: {error}.",
@@ -2343,6 +2379,43 @@
 					"pnum": "Device does not support the Sensor standard."
 				}
 			},
+			"sensor-data": {
+				"title": "Sensor data worker",
+				"actions": {
+					"invoke": "Collect data now",
+					"start": "Start worker",
+					"status": "Refresh worker status",
+					"stop": "Stop worker"
+				},
+				"messages": {
+					"invoke": {
+						"failed": "Failed to invoke data collection worker.",
+						"success": "Data collecting worker invoked.",
+						"timeout": "Worker invoke request timed out."
+					},
+					"start": {
+						"failed": "Failed to start data collection worker.",
+						"success": "Data collecting worker started.",
+						"timeout": "Worker start request timed out."
+					},
+					"status": {
+						"failed": "Failed to retrieve worker status.",
+						"timeout": "Worker status fetch timed out."
+					},
+					"stop": {
+						"failed": "Failed to stop data collection worker.",
+						"success": "Data collecting worker stopped.",
+						"timeout": "Worker stop request timed out."
+					}
+				},
+				"status": {
+					"idle": "Active, waiting for next data collection time",
+					"inactive": "Inactive",
+					"reading": "Data collecting in progress",
+					"title": "Worker status",
+					"unknown": "Unknown"
+				}
+			},
 			"modal": {
 				"title": "Reset confirmation",
 				"prompt": "Are you sure you want to reset the device database?"
@@ -2377,48 +2450,45 @@
 					"title": "Sensors",
 					"name": "Name",
 					"index": "Index",
-					"type": "Type"
+					"type": "Type",
+					"value": "Last measured value",
+					"updated": "Timestamp"
 				},
 				"messages": {
+					"fetch": "Retrieving device information...",
 					"device": {
-						"general": "General information\nHWPID: {hwpid}\nMID: {mid}",
-						"details": "MID: {mid}\nHWPID: {hwpid}\nHWPID version: {hwpidVer}\nOS build: {os}\nDPA: {dpa}",
-						"fetch": "Retrieving devices in network...",
 						"fetchFailed": "Failed to retrieve devices in network.",
 						"fetchTimeout": "Request to receive devices in network timed out."
 					},
 					"binout": {
-						"fetch": "Retrieving devices implementing Binary Output standard...",
 						"fetchFailed": "Failed to retrieve devices implementing Binary Output standard.",
-						"fetchTimeout": "Request to retrieve Binary Output devices timed out.",
-						"implemented": "Binary outputs implemented: {binouts}",
-						"notImplemented": "Device does not implement the Binary Output standard."
+						"fetchTimeout": "Request to retrieve Binary Output devices timed out."
 					},
 					"light": {
-						"fetch": "Retrieving devices implementing Light standard...",
 						"fetchFailed": "Failed to retrieve devices implementing Light standard.",
-						"fetchTimeout": "Request to retrieve Light devices timed out.",
-						"implemented": "Device implements Light standard.",
-						"notImplemented": "Device does not implement the Light standard."
+						"fetchTimeout": "Request to retrieve Light devices timed out."
 					},
 					"sensor": {
-						"detail": "Name: {name} [{short}]\nType: {type}\nUnit: {unit}\nFRC commands: {commands}",
-						"fetch": "Retrieving devices implementing Sensor standard...",
 						"fetchFailed": "Failed to retrieve devices implementing Sensor standard.",
-						"fetchTimeout": "Request to retrieve Sensor devices timed out.",
-						"implemented": "Device implements the following sensor types:",
-						"notImplemented": "Device does not implement the Sensor standard."
+						"fetchTimeout": "Request to retrieve Sensor devices timed out."
 					},
 					"ping": {
 						"fetch": "Checking online status of devices...",
 						"fetchFailed": "Failed to retrieve status of devices."
 					},
-					"enumNowFailed": "Network enumeration process failed: {error}",
-					"enumNowProgress": "Enumerating network [{progress} %]\nPhase: {phase}\nStep: {current}/{total}\nThis process may take tens of minutes for large networks.",
-					"enumNowSuccess": "Network enumeration has been successfully completed.",
 					"resetFailed": "Failed to reset database: {error}",
 					"resetSuccess": "Database has been successfully reset.",
 					"resetTimeout": "Request to reset database timed out."
+				}
+			},
+			"enumeration": {
+				"title": "Standard devices enumeration",
+				"step": "Step",
+				"time": "Time",
+				"messages": {
+					"conn": "Enumeration process interrupted, connection to IQRF Gateway Daemon lost.",
+					"success": "Standard devices enumeration concluded successfully.",
+					"failure": "Standard devices enumeration failed."
 				}
 			}
 		},

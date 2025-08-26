@@ -116,6 +116,9 @@ import {IOption} from '@/interfaces/Coreui';
 import {mapGetters, MutationPayload} from 'vuex';
 import DaemonMessageOptions from '@/ws/DaemonMessageOptions';
 
+import { ApiResponseManagementRsp, DatabaseEnumerateResult } from '@iqrf/iqrf-gateway-daemon-utils/types';
+import { DatabaseMessage } from '@iqrf/iqrf-gateway-daemon-utils/enums';
+
 @Component({
 	components: {
 		CButton,
@@ -214,8 +217,8 @@ export default class SendJsonRequest extends Vue {
 				this.handleAutoNetworkResponse(mutation.payload);
 			} else if (mutation.payload.mType === 'iqmeshNetwork_Backup') {
 				this.handleBackup(mutation.payload);
-			} else if (mutation.payload.mType === 'infoDaemon_Enumeration' && mutation.payload.data.rsp.command === 'now') {
-				this.handleEnumerationNow(mutation.payload);
+			} else if (mutation.payload.mType === DatabaseMessage.Enumerate) {
+				this.handleEnumerationResponse(mutation.payload);
 			} else {
 				this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 				this.handleResponse(mutation.payload);
@@ -272,7 +275,7 @@ export default class SendJsonRequest extends Vue {
 			options.timeout = 1000;
 		} else if (request.mType === 'iqmeshNetwork_AutoNetwork' ||
 			request.mType === 'iqmeshNetwork_Backup' ||
-			(request.mType === 'infoDaemon_Enumeration' && request.data.req.command === 'now') ||
+			request.mType === DatabaseMessage.Enumerate ||
 			request.mType === 'iqmeshNetwork_OtaUpload') { // requests without timeout
 			this.$store.commit('spinner/SHOW');
 		} else { // regular messages have a minute timeout
@@ -346,12 +349,12 @@ export default class SendJsonRequest extends Vue {
 	 * Handles Enumeration now Daemon API response
 	 * @param response Daemon API response
 	 */
-	private handleEnumerationNow(response): void {
+	private handleEnumerationResponse(response: ApiResponseManagementRsp<DatabaseEnumerateResult>): void {
 		const idx = this.messages.findIndex((item: IMessagePairRequest) => item.msgId === response.data.msgId);
 		if (idx !== -1) {
 			this.messages[idx].response.push(JSON.stringify(response, null, 4));
 		}
-		if (response.data.rsp.percentage === 100) { // enumeration finished
+		if (response.data.rsp.step === 8) { // enumeration finished
 			this.$store.commit('spinner/HIDE');
 			this.$store.dispatch('daemonClient/removeMessage', this.msgId);
 			this.$toast.info(

@@ -17,6 +17,7 @@
 import {ActionTree, GetterTree, MutationTree} from 'vuex';
 
 import {MonitorClientState} from '@/interfaces/wsClient';
+import { IMonitorMsg } from '@/interfaces/DaemonApi/Monitor';
 
 /**
  * Monitor client state
@@ -29,6 +30,8 @@ const state: MonitorClientState = {
 	mode: 'unknown',
 	modal: false,
 	queueLen: 'unknown',
+	enumInProgress: false,
+	dataReadingInProgress: false,
 };
 
 const actions: ActionTree<MonitorClientState, any> = {
@@ -46,6 +49,12 @@ const getters: GetterTree<MonitorClientState, any> = {
 	},
 	getQueueLen(state: MonitorClientState): number | string {
 		return state.queueLen;
+	},
+	isDataReadRunning(state: MonitorClientState): boolean {
+		return state.dataReadingInProgress;
+	},
+	isEnumRunning(state: MonitorClientState): boolean {
+		return state.enumInProgress;
 	},
 };
 
@@ -67,8 +76,12 @@ const mutations: MutationTree<MonitorClientState> = {
 	SOCKET_ONERROR(state: MonitorClientState, event: Event) {
 		console.error(state, event);
 	},
-	SOCKET_ONMESSAGE(state: MonitorClientState) {
+	SOCKET_ONMESSAGE(state: MonitorClientState, message: IMonitorMsg) {
 		state.receivedMessages += 1;
+		state.queueLen = message.data.msgQueueLen;
+		state.mode = message.data.operMode;
+		state.dataReadingInProgress = message.data.dataReadingInProgress;
+		state.enumInProgress = message.data.enumInProgress;
 	},
 	SHOW_MODAL(state: MonitorClientState): void {
 		state.modal = true;

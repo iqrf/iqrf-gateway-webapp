@@ -51,15 +51,15 @@ class SchedulerMigrationManager {
 		private readonly SchedulerSchemaManager $schemaManager,
 		CommandExecutor $commandManager,
 	) {
-		$cacheDir = $mainManager->getCacheDir();
-		$dirs = [$cacheDir, $cacheDir . 'scheduler/'];
+		$dataDir = $mainManager->getDataDir();
+		$dirs = [$dataDir, $dataDir . 'scheduler/'];
 		foreach ($dirs as $dir) {
 			if (is_readable($dir) && is_writable($dir)) {
 				continue;
 			}
 			$commandManager->run('chmod 777 ' . escapeshellarg($dir), true);
 		}
-		$this->configDirectory = $cacheDir . 'scheduler/';
+		$this->configDirectory = $dataDir . 'scheduler/';
 	}
 
 	/**

@@ -309,11 +309,6 @@ export default class TheSidebar extends Vue {
 												role: UserRole.NORMAL,
 											},
 											{
-												name: 'MQ',
-												to: '/config/daemon/messagings/mq/',
-												role: UserRole.NORMAL,
-											},
-											{
 												name: 'UDP',
 												to: '/config/daemon/messagings/udp/',
 												role: UserRole.NORMAL,
@@ -324,6 +319,12 @@ export default class TheSidebar extends Vue {
 										_name: 'CSidebarNavItem',
 										name: this.$t('config.daemon.scheduler.title'),
 										to: '/config/daemon/scheduler/',
+										role: UserRole.NORMAL,
+									},
+									{
+										_name: 'CSidebarNavItem',
+										name: this.$t('config.daemon.sensor-data.title'),
+										to: '/config/daemon/sensor-collecting/',
 										role: UserRole.NORMAL,
 									},
 									{

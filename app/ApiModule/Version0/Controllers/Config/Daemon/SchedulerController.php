@@ -311,32 +311,6 @@ class SchedulerController extends BaseDaemonConfigController {
 		return $response;
 	}
 
-	#[Path('/messagings')]
-	#[Method('GET')]
-	#[OpenApi(<<<'EOT'
-		summary: Returns all messagings suitable for scheduler tasks
-		response:
-			'200':
-				description: Success
-				content:
-					application/json:
-						schema:
-							$ref: '#/components/schemas/SchedulerMessagings'
-			'403':
-				$ref: '#/components/responses/Forbidden'
-			'500':
-				$ref: '#/components/responses/ServerError'
-	EOT)]
-	public function getMessagings(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['config:daemon']);
-		try {
-			$response = $response->writeJsonBody($this->manager->getMessagings());
-			return $this->validators->validateResponse('schedulerMessagings', $response);
-		} catch (IOException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
-		}
-	}
-
 	/**
 	 * Imports scheduler configuration from JSON file
 	 * @param ApiRequest $request REST API request

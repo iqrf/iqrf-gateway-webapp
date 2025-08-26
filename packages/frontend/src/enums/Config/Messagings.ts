@@ -19,7 +19,6 @@
  * Messaging types enum
  */
 export enum MessagingTypes {
-	MQ = 'MQ',
 	MQTT = 'MQTT',
 	UDP = 'UDP',
 }
@@ -31,3 +30,16 @@ export enum WebsocketTypes {
 	MESSAGING = 'messaging',
 	SERVICE = 'service',
 }
+
+/**
+ * MQTT protocol enum
+ */
+export enum MqttProtocols {
+	TCP = 'tcp',
+	SSL = 'ssl',
+	MQTT = 'mqtt',
+	MQTTS = 'mqtts',
+	WS = 'ws',
+	WSS = 'wss',
+}
+

@@ -69,7 +69,7 @@ limitations under the License.
 									v-if='$store.getters["user/getRole"] === "admin"'
 									color='primary'
 									size='sm'
-									@click='showHostnameModal'
+									@click='showHostnameModal()'
 								>
 									<CIcon :content='cilPencil' size='sm' />
 									<span class='d-none d-lg-inline'>
@@ -131,11 +131,15 @@ limitations under the License.
 					</tbody>
 				</table>
 			</div>
-			<CButton color='primary' @click='downloadDiagnostics()'>
+			<CButton
+				color='primary'
+				@click='downloadDiagnostics()'
+			>
+				<CIcon :content='cilDataTransferDown' size='sm' />
 				{{ $t('gateway.info.diagnostics') }}
 			</CButton>
 		</CCard>
-		<HostnameChange ref='hostname' :current='info?.hostname' @hostname-changed='getInformation' />
+		<HostnameChange ref='hostname' :current='info?.hostname' @hostname-changed='getInformation()' />
 	</div>
 </template>
 
@@ -148,7 +152,7 @@ import ResourceUsage from '@/components/Gateway/Information/ResourceUsage.vue';
 import GatewayService from '@/services/GatewayService';
 import HostnameChange from '@/components/Gateway/Information/HostnameChange.vue';
 
-import {cilPencil} from '@coreui/icons';
+import {cilDataTransferDown, cilPencil} from '@coreui/icons';
 import {fileDownloader} from '@/helpers/fileDownloader';
 
 import {AxiosResponse} from 'axios';
@@ -165,6 +169,7 @@ import {IGatewayInfo, IpAddress, MacAddress} from '@/interfaces/Gateway/Informat
 		ResourceUsage,
 	},
 	data: () => ({
+		cilDataTransferDown,
 		cilPencil,
 	}),
 	metaInfo: {

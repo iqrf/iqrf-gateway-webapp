@@ -55,11 +55,11 @@ class SchedulerManager {
 		private readonly SchedulerSchemaManager $schemaManager,
 		private readonly GenericManager $genericManager,
 	) {
-		$cacheDir = $mainManager->getCacheDir();
-		if (!is_readable($cacheDir) || !is_writable($cacheDir)) {
-			$commandManager->run('chmod 777 ' . escapeshellarg($cacheDir), true);
+		$dataDir = $mainManager->getDataDir();
+		if (!is_readable($dataDir) || !is_writable($dataDir)) {
+			$commandManager->run('chmod 777 ' . escapeshellarg($dataDir), true);
 		}
-		$path = $cacheDir . 'scheduler/';
+		$path = $dataDir . 'scheduler/';
 		$this->fileManager = new FileManager($path, $commandManager);
 	}
 
@@ -181,32 +181,6 @@ class SchedulerManager {
 		}
 		$this->schemaManager->validate($config);
 		$this->fileManager->writeJson($fileName, $config);
-	}
-
-	/**
-	 * Returns messaging instances
-	 * @return array{mq: array<string>, mqtt: array<string>, ws: array<string>} Messaging instances
-	 */
-	public function getMessagings(): array {
-		$searched = [
-			'mq' => 'iqrf::MqMessaging',
-			'mqtt' => 'iqrf::MqttMessaging',
-			'ws' => 'iqrf::WebsocketMessaging',
-		];
-		$found = [
-			'mq' => [],
-			'mqtt' => [],
-			'ws' => [],
-		];
-		foreach ($searched as $k => $v) {
-			try {
-				$this->genericManager->setComponent($v);
-			} catch (NonexistentJsonSchemaException) {
-				continue;
-			}
-			$found[$k] = array_map(static fn (array $component): string => $component['instance'], $this->genericManager->list());
-		}
-		return $found;
 	}
 
 	/**

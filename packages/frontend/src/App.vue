@@ -34,6 +34,7 @@ import Blocking from './components/Blocking.vue';
 import DaemonModeModal from './components/DamonModeModal.vue';
 import LoadingSpinner from './components/LoadingSpinner.vue';
 import {mapGetters} from 'vuex';
+import UserService from './services/UserService';
 
 @Component({
 	components: {
@@ -85,7 +86,9 @@ export default class App extends Vue {
 							json: JSON.stringify(check.dependencies),
 						},
 					});
-				} else if (!check.phpModules.allExtensionsLoaded) {
+					return;
+				}
+				if (!check.phpModules.allExtensionsLoaded) {
 					this.setInstallationChecked();
 					await this.$router.push({
 						name: 'missing-extension',
@@ -94,7 +97,9 @@ export default class App extends Vue {
 							packageString: check.phpModules.missing?.packages !== undefined ? check.phpModules.missing?.packages.join(' ') : '',
 						}
 					});
-				} else if (check.sudo !== undefined && (!check.sudo.exists || !check.sudo.userSudo)) {
+					return;
+				}
+				if (check.sudo !== undefined && (!check.sudo.exists || !check.sudo.userSudo)) {
 					this.setInstallationChecked();
 					await this.$router.push({
 						name: 'sudo-error',
@@ -104,17 +109,26 @@ export default class App extends Vue {
 							userSudo: check.sudo.userSudo.toString(),
 						}
 					});
-				} else if (!check.allMigrationsExecuted) {
+					return;
+				}
+				if (!check.allMigrationsExecuted) {
 					this.setInstallationChecked();
 					await this.$router.push('/install/error/missing-migration');
-				} else if (!check.hasUsers && !installUrl) {
+					return;
+				}
+				if (!check.hasUsers) {
+					await this.$store.dispatch('user/signOut');
 					this.setInstallationChecked();
-					await this.$router.push('/install/');
-				} else if (check.hasUsers && installUrl) {
-					this.setInstallationChecked();
-					await this.$router.push('/sign/in/');
+					if (!installUrl) {
+						await this.$router.push('/install/');
+					}
+					return;
 				}
 				if (this.$store.getters['user/isLoggedIn']) {
+					await UserService.getLoggedIn();
+					if (installUrl) {
+						this.$router.push('/');
+					}
 					await this.$store.dispatch('repository/get');
 					await this.$store.dispatch('gateway/getInfo');
 				}
@@ -122,6 +136,7 @@ export default class App extends Vue {
 			})
 			.catch((error: AxiosError) => {
 				this.$store.dispatch('spinner/hide');
+				this.setInstallationChecked();
 				console.error(error);
 			});
 	}

@@ -69,8 +69,8 @@ const actions: ActionTree<UserState, any> = {
 	},
 	signIn({dispatch}, credentials) {
 		return AuthenticationService.login(credentials)
-			.then((user: User) => {
-				dispatch('setJwt', user);
+			.then(async (user: User) => {
+				await dispatch('setJwt', user);
 				const sentryUser: Sentry.User = {
 					username: user.username,
 					ip_address: '{{auto}}',

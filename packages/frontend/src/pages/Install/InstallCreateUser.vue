@@ -163,8 +163,14 @@ export default class InstallCreateUser extends Vue {
 				const credentials = new UserCredentials(this.user.username, (this.user.password as string));
 				this.$store.dispatch('user/signIn', credentials)
 					.then(async () => {
-						await sleep(500);
+						//await sleep(500);
 						this.running = false;
+						try {
+							this.$store.dispatch('repository/get');
+							this.$store.dispatch('gateway/getInfo');
+						} catch {
+							// not a problem
+						}
 						this.nextStep();
 					});
 			})

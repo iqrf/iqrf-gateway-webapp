@@ -44,11 +44,11 @@ class SchedulerSchemaManager extends JsonSchemaManager {
 		CommandExecutor $commandManager,
 		private readonly ApiSchemaManager $apiSchemaManager,
 	) {
-		$dataDir = $mainManager->getDataDir();
-		if (!is_readable($dataDir) || !is_writable($dataDir)) {
-			$commandManager->run('chmod 777 ' . escapeshellarg($dataDir), true);
+		$resourceDir = $mainManager->getResourceDir();
+		if (!is_readable($resourceDir) || !is_writable($resourceDir)) {
+			$commandManager->run('chmod 777 ' . escapeshellarg($resourceDir), true);
 		}
-		$configDir = $dataDir . 'schedulerSchemas/';
+		$configDir = $resourceDir . 'schedulerSchemas/';
 		parent::__construct($configDir, $commandManager);
 	}
 

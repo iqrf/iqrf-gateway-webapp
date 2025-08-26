@@ -23,13 +23,15 @@ limitations under the License.
 			<div>
 				<CButton
 					color='primary'
-					@click='downloadArchive'
+					@click='downloadArchive()'
 				>
+					<CIcon :content='cilDataTransferDown' />
 					{{ $t('gateway.log.download') }}
 				</CButton> <CButton
 					color='primary'
-					@click='getAvailableLogs'
+					@click='getAvailableLogs()'
 				>
+					<CIcon :content='cilReload' />
 					{{ $t('forms.refresh') }}
 				</CButton>
 			</div>
@@ -81,7 +83,7 @@ limitations under the License.
 
 <script lang='ts'>
 import {Component, Vue, Watch} from 'vue-property-decorator';
-import {CButton, CCard, CTab, CTabs} from '@coreui/vue/src';
+import {CButton, CCard, CIcon, CTab, CTabs} from '@coreui/vue/src';
 import JournalViewer from '@/components/Gateway/JournalViewer.vue';
 import LogViewer from '@/components/Gateway/LogViewer.vue';
 
@@ -93,16 +95,22 @@ import GatewayService from '@/services/GatewayService';
 import {AxiosError, AxiosResponse} from 'axios';
 import {ILog} from '@/interfaces/Gateway/Log';
 import {MetaInfo} from 'vue-meta';
+import { cilDataTransferDown, cilReload } from '@coreui/icons';
 
 @Component({
 	components: {
 		CButton,
 		CCard,
+		CIcon,
 		CTab,
 		CTabs,
 		JournalViewer,
 		LogViewer,
 	},
+	data: () => ({
+		cilDataTransferDown,
+		cilReload,
+	}),
 	metaInfo(): MetaInfo {
 		return {
 			title: 'gateway.log.title',

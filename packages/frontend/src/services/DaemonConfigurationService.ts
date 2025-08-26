@@ -17,6 +17,7 @@
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '@/helpers/authorizationHeader';
 import {IChangeComponent} from '@/interfaces/Config/Daemon';
+import { IqrfGatewayDaemonSchedulerMessagings } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 
 /**
  * Daemon configuration service
@@ -128,6 +129,16 @@ class DaemonConfigurationService {
 	 */
 	changeComponent(data: Array<IChangeComponent>): Promise<AxiosResponse> {
 		return axios.patch('config/daemon/components', data, {headers: authorizationHeader()});
+	}
+
+	/**
+	 * Retrieves messaging instances
+	 * @returns {Promise<IqrfGatewayDaemonSchedulerMessagings>} Messaging instances
+	 */
+	async getMessagingInstances(): Promise<IqrfGatewayDaemonSchedulerMessagings> {
+		const response: AxiosResponse<IqrfGatewayDaemonSchedulerMessagings> =
+			await axios.get('config/daemon/messagings', {headers: authorizationHeader()});
+		return response.data;
 	}
 
 }

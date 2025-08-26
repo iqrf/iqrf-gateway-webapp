@@ -26,6 +26,12 @@ module.exports = {
 	runtimeCompiler: true,
 	outputDir: 'www/dist',
 	chainWebpack: config => {
+		config.resolve.extensions
+			.clear()
+			.add('.vue')
+			.add('.ts')
+			.add('.js')
+			.add('.json');
 		config.module.rules.delete('svg');
 	},
 	configureWebpack: {
@@ -41,6 +47,6 @@ module.exports = {
 					loader: 'vue-svg-loader',
 				},
 			],
-		}
-	}
+		},
+	},
 };

@@ -436,6 +436,48 @@ class DaemonController extends BaseDaemonConfigController {
 		return $this->validators->validateResponse('daemonConfiguration', $response);
 	}
 
+	#[Path('/messagings')]
+	#[Method('GET')]
+	#[OpenApi(<<<'EOT'
+		summary: Returns all messaging instances
+		response:
+			'200':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: '#/components/schemas/MessagingInstances'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
+	public function getMessagings(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validators->checkScopes($request, ['config:daemon']);
+		try {
+			$searched = [
+				'mqtt' => 'iqrf::MqttMessaging',
+				'ws' => 'iqrf::WebsocketMessaging',
+			];
+			$found = [
+				'mqtt' => [],
+				'ws' => [],
+			];
+			foreach ($searched as $k => $v) {
+				try {
+					$this->manager->setComponent($v);
+				} catch (NonexistentJsonSchemaException) {
+					continue;
+				}
+				$found[$k] = array_map(static fn (array $component): string => $component['instance'], $this->manager->list());
+			}
+			$response = $response->writeJsonBody($found);
+			return $this->validators->validateResponse('messagingInstances', $response);
+		} catch (IOException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		}
+	}
+
 	#[Path('/components')]
 	#[Method('PATCH')]
 	#[OpenApi(<<<'EOT'

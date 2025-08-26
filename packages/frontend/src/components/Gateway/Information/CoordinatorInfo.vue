@@ -19,22 +19,23 @@ limitations under the License.
 		<CSpinner color='info' class='cinfo-spinner' />
 	</span>
 	<span v-else>
-		<span v-if='hasData'>
+		<span v-if='enumData'>
 			<strong>{{ $t('gateway.info.tr.moduleType') }}: </strong>
-			{{ trMcuType.trType }}<br>
+			{{ enumData.osRead.trMcuType.trType }}<br>
 			<strong>{{ $t('gateway.info.tr.mcuType') }}: </strong>
-			{{ trMcuType.mcuType }}<br>
-			<strong>{{ $t('gateway.info.tr.moduleId') }}: </strong> {{ osInfo.mid }}<br>
+			{{ enumData.osRead.trMcuType.mcuType }}<br>
+			<strong>{{ $t('gateway.info.tr.moduleId') }}: </strong>
+			{{ Number.parseInt(enumData.osRead.mid, 16) }} [{{ enumData.osRead.mid }}]<br>
 			<strong>{{ $t('gateway.info.tr.os') }}: </strong>
-			{{ osInfo.osVersion }} ({{ osInfo.osBuild }})<br>
+			{{ enumData.osRead.osVersion }} [{{ enumData.osRead.osBuild }}]<br>
 			<strong>{{ $t('gateway.info.tr.dpa') }}: </strong>
-			{{ enumeration.dpaVer }}<br>
+			{{ enumData.peripheralEnumeration.dpaVer }}<br>
 			<strong>{{ $t('gateway.info.tr.hwpid') }}: </strong>
-			{{ enumeration.hwpId }} ({{ enumeration.hwpId.toString(16).padStart(4, '0') }})<br>
+			{{ enumData.peripheralEnumeration.hwpId }} [{{ enumData.peripheralEnumeration.hwpId.toString(16).padStart(4, '0') }}]<br>
 			<strong>{{ $t('gateway.info.tr.hwpidVersion') }}: </strong>
-			{{ enumeration.hwpIdVer }}<br>
+			{{ enumData.peripheralEnumeration.hwpIdVer & 0x00FF }}.{{ enumData.peripheralEnumeration.hwpIdVer & 0xFF00 }}<br>
 			<strong>{{ $t('gateway.info.tr.voltage') }}: </strong>
-			{{ osInfo.supplyVoltage }}<br>
+			{{ enumData.osRead.supplyVoltage }}<br>
 		</span>
 		<span v-else>
 			{{ $t('gateway.info.tr.error') }}
@@ -48,7 +49,7 @@ import {MutationPayload} from 'vuex';
 import IqrfNetService from '@/services/IqrfNetService';
 import {CSpinner} from '@coreui/vue/src';
 import {DaemonClientState} from '@/interfaces/wsClient';
-import {PeripheralEnumeration, OsInfo, TrMcu} from '@/interfaces/DaemonApi/Dpa';
+import {IDeviceEnumeration} from '@/interfaces/DaemonApi/Dpa';
 
 @Component({
 	components: {
@@ -69,24 +70,9 @@ export default class CoordinatorInfo extends Vue {
 	];
 
 	/**
-	 * @var {boolean} hasData Indicates whether data has been fetched successfully
-	 */
-	private hasData = false;
-
-	/**
-	 * @var {PeripheralEnumeration|null} enumeration Peripheral enumeration of a device
-	 */
-	private enumeration: PeripheralEnumeration|null = null;
-
-	/**
 	 * @var {string|null} msgId Daemon api message id
 	 */
 	private msgId: string|null = null;
-
-	/**
-	 * @var {OsInfo|null} osInfo Information about OS of a device
-	 */
-	private osInfo: OsInfo|null = null;
 
 	/**
 	 * @var {boolean} requestRunning Indicates whether a daemon api request has been completed
@@ -94,9 +80,9 @@ export default class CoordinatorInfo extends Vue {
 	private requestRunning = false;
 
 	/**
-	 * @var {TrMcu|null} trMcuType Information about transciever type
+	 * @var {IDeviceEnumeration | null} enumData Device enumeration data
 	 */
-	private trMcuType: TrMcu|null = null;
+	private enumData: IDeviceEnumeration | null = null;
 
 	/**
 	 * Component unwatch function
@@ -120,18 +106,7 @@ export default class CoordinatorInfo extends Vue {
 				this.requestRunning = false;
 				if (mutation.payload.data.msgId === this.msgId) {
 					this.$store.dispatch('daemonClient/removeMessage', this.msgId);
-					try {
-						const data = mutation.payload.data.rsp;
-						this.enumeration = data.peripheralEnumeration;
-						this.osInfo = data.osRead;
-						this.hasData = true;
-						if (this.osInfo === null) {
-							return;
-						}
-						this.trMcuType = this.osInfo.trMcuType;
-					} catch {
-						this.hasData = false;
-					}
+					this.enumData = mutation.payload.data.rsp as IDeviceEnumeration;
 				}
 			}
 

@@ -84,7 +84,6 @@ export default class MessagignDeleteModal extends ModalBase {
 	 * @constant {Record<MessagingTypes, string>} componentNames Component names
 	 */
 	private componentNames: Record<MessagingTypes, string> = {
-		MQ: 'iqrf::MqMessaging',
 		MQTT: 'iqrf::MqttMessaging',
 		UDP: 'iqrf::UdpMessaging',
 	};

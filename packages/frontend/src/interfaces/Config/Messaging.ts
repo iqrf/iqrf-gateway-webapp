@@ -15,33 +15,14 @@
  * limitations under the License.
  */
 
+import { Togglable } from '../Coreui';
 import {ComponentInstanceBase} from './Daemon';
 import {RequiredInterface} from './RequiredInterfaces';
 
 /**
- * MqMessaging instance interface
- */
-export interface IMqInstance extends ComponentInstanceBase {
-	/**
-	 * Accept asynchronous messages
-	 */
-	acceptAsyncMsg: boolean;
-
-	/**
-	 * Server message queue
-	 */
-	LocalMqName: string;
-
-	/**
-	 * Client message queue
-	 */
-	RemoteMqName: string;
-}
-
-/**
  * MqttMessaging instance interface
  */
-export interface IMqttInstance extends ComponentInstanceBase {
+export interface IMqttInstance extends ComponentInstanceBase, Togglable {
 	acceptAsyncMsg: boolean;
 	BrokerAddr: string;
 	ClientId: string;

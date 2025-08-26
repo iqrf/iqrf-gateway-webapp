@@ -37,11 +37,10 @@ limitations under the License.
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CModal} from '@coreui/vue/src';
+import { Component, Vue } from 'vue-property-decorator';
+import { CButton, CModal } from '@coreui/vue/src';
 
-import {IMonitorMsg} from '@/interfaces/DaemonApi/Monitor';
-import {mapGetters, MutationPayload} from 'vuex';
+import { mapGetters } from 'vuex';
 
 @Component({
 	components: {
@@ -59,34 +58,6 @@ import {mapGetters, MutationPayload} from 'vuex';
  * Daemon mode notice modal window
  */
 export default class DaemonModeModal extends Vue {
-
-	/**
-	 * Component unsubscribe function
-	 */
-	private unsubscribe: CallableFunction = () => {return;};
-
-	/**
-	 * Subscribes to Monitor vuex mutations
-	 */
-	created(): void {
-		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type === 'monitorClient/SOCKET_ONMESSAGE') {
-				this.handleMonitorMessage(mutation.payload);
-			}
-		});
-	}
-
-	/**
-	 * Parses monitor message and applies changes to internal state
-	 * @param {IMonitorMsg} message Monitor message object
-	 */
-	private handleMonitorMessage(message: IMonitorMsg): void {
-		const mode = message.data.operMode;
-		if (mode !== this.$store.getters['monitorClient/getMode']) {
-			this.$store.commit('monitorClient/SET_MODE', mode);
-		}
-		this.$store.commit('monitorClient/UPDATE_QUEUE', message.data.msgQueueLen);
-	}
 
 	/**
 	 * Requests to hide modal window

@@ -90,4 +90,14 @@ export interface MonitorClientState extends GenericClientState {
 	 * Daemon queue length
 	 */
 	queueLen: number|string;
+
+	/**
+	 * Network enumeration in progress
+	 */
+	enumInProgress: boolean;
+
+	/**
+	 * Sensor data collecting running
+	 */
+	dataReadingInProgress: boolean;
 }

@@ -57,12 +57,25 @@ class MainManager {
 	}
 
 	/**
-	 * Returns the path of cache directory
+	 * Returns the path of persistent mutable directory
 	 * @return string Data directory path
 	 */
 	public function getDataDir(): string {
 		try {
 			$dir = $this->load()['dataDir'];
+			return str_ends_with($dir, '/') ? $dir : $dir . '/';
+		} catch (IOException | JsonException) {
+			return '/var/lib/iqrf-gateway-daemon/';
+		}
+	}
+
+	/**
+	 * Returns the path of static resource directory
+	 * @return string Resource directory path
+	 */
+	public function getResourceDir(): string {
+		try {
+			$dir = $this->load()['resourceDir'];
 			return str_ends_with($dir, '/') ? $dir : $dir . '/';
 		} catch (IOException | JsonException) {
 			return '/usr/share/iqrf-gateway-daemon/';

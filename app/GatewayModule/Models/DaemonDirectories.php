@@ -38,6 +38,11 @@ class DaemonDirectories {
 	private readonly string $dataDir;
 
 	/**
+	 * @var string Path to a directory with IQRF Gateway Daemon's static resources
+	 */
+	private readonly string $resourceDir;
+
+	/**
 	 * Constructor
 	 * @param string $configurationDir Path to a directory with IQRF Gateway Daemon's configuration
 	 * @param string $logDir Path to a directory with log files of IQRF Gateway Daemon
@@ -50,6 +55,7 @@ class DaemonDirectories {
 	) {
 		$this->cacheDir = $mainManager->getCacheDir();
 		$this->dataDir = $mainManager->getDataDir();
+		$this->resourceDir = $mainManager->getResourceDir();
 	}
 
 	/**
@@ -57,7 +63,7 @@ class DaemonDirectories {
 	 * @return string JSON API JSON schema directory path
 	 */
 	public function getApiSchemaDir(): string {
-		return $this->dataDir . '/apiSchemas/';
+		return $this->resourceDir . '/apiSchemas/';
 	}
 
 	/**
@@ -89,8 +95,8 @@ class DaemonDirectories {
 	 * @return string Configuration JSON schema directory path
 	 */
 	public function getConfigurationSchemaDir(): string {
-		if (is_dir($this->dataDir . '/cfgSchemas/')) {
-			return $this->dataDir . '/cfgSchemas/';
+		if (is_dir($this->resourceDir . '/cfgSchemas/')) {
+			return $this->resourceDir . '/cfgSchemas/';
 		}
 		return $this->configurationDir . '/cfgSchemas/';
 	}

@@ -34,7 +34,7 @@ export interface IField {
  * Coreui select component option interface
  */
 export interface IOption {
-	value: FileFormat|SecurityFormat|string|number|boolean|null
+	value: FileFormat|SecurityFormat|string|object|number|boolean|null
 	label: VueI18n.TranslateResult|string
 	props?: IProps
 }
@@ -44,4 +44,8 @@ export interface IOption {
  */
 export interface IProps {
 	description: string
+}
+
+export interface Togglable {
+	_toggled?: boolean;
 }

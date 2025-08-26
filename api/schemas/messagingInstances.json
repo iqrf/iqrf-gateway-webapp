@@ -1,24 +1,14 @@
 {
 	"$schema": "http://json-schema.org/draft-07/schema",
-	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/schedulerMessagings.json",
+	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/messagingInstances.json",
 	"type": "object",
-	"title": "Scheduler messagings",
+	"title": "Messaging instances",
 	"required": [
-		"mq",
 		"mqtt",
 		"ws"
 	],
 	"additionalProperties": false,
 	"properties": {
-		"mq": {
-			"title": "MQ messagings",
-			"type": "array",
-			"additionalItems": false,
-			"items": {
-				"title": "MQ messaging instance",
-				"type": "string"
-			}
-		},
 		"mqtt": {
 			"title": "MQTT messagings",
 			"type": "array",
