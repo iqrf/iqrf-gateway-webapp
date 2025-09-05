@@ -60,7 +60,7 @@ export default class Blocking extends Vue {}
 	font-size: 20pt;
 	text-align: center;
 	overflow: auto;
-	word-wrap: break-word;
+	overflow-wrap: break-word;
 	max-width: 50%;
 }
 </style>

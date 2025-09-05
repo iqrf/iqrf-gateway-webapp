@@ -45,6 +45,6 @@ export default class MenderUpdateLog extends Vue {
 pre {
 	overflow-x: auto;
 	white-space: pre-wrap;
-	word-wrap: break-word;
+	overflow-wrap: break-word;
 }
 </style>
