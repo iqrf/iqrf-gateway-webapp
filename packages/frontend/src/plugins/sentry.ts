@@ -14,14 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import * as Sentry from '@sentry/vue';
 import { browserTracingIntegration } from '@sentry/vue';
-import Vue from 'vue';
+import { type App } from 'vue';
+import { type Router } from 'vue-router';
 
-import router from '@/router';
-
-if (import.meta.env.PROD) {
+/**
+ * Registers Sentry error tracking
+ * @param {App} app Vue app
+ * @param {Router} router Vue router
+ */
+export default function registerSentry(app: App, router: Router): void {
+	if (!import.meta.env.VITE_SENTRY_ENABLED) {
+		return;
+	}
 	Sentry.init({
+		app,
 		dsn: import.meta.env.VITE_SENTRY_DSN,
 		integrations: [
 			browserTracingIntegration({
@@ -31,8 +40,6 @@ if (import.meta.env.PROD) {
 		],
 		release: __GIT_COMMIT_HASH__,
 		tracePropagationTargets: ['localhost', window.location.hostname, /^\//],
-		tracesSampleRate: 1.0,
-		trackComponents: true,
-		Vue,
+		tracesSampleRate: 1,
 	});
 }

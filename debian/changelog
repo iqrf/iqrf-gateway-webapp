@@ -1,10 +1,673 @@
-iqrf-gateway-webapp (3.0.0~alpha~1.gbp97977a) UNRELEASED; urgency=medium
+iqrf-gateway-webapp (2.7.0~alpha~1.gbp326107) UNRELEASED; urgency=medium
 
-  ** SNAPSHOT build @97977a0b70ad5aef6fe836ad33ace1c5e28aaa09 **
+  ** SNAPSHOT build @326107bb007d4473d8584561327149388fe3804c **
 
-  * UNRELEASED
+  [ Roman Ondráček ]
+  * Fix name of MICRORISC IQD-GW04 industrial gateway
+  * Debian packaging: build dedicated package for MICRORISC IQD-GW04 industrial gateway
 
- -- Roman Ondráček <mail@romanondracek.cz>  Mon, 06 Mar 2023 10:55:00 +0100
+  [ Karel Hanák ]
+  * debian package: fixed nginx configuration removal
+  * StandardDevices: do not send ping frc if only coordinator device is available
+
+  [ Roman Ondráček ]
+  * GitLab CI: use Jsonnet for Debian package builds
+  * Frontend: use Vuetify instead of CoreUI
+
+  [ Karel Hanák ]
+  * NetworkManager: fixed propagation of rfband to maintenance component
+  * Autonetwork: fixed undefined form reference when reading MID list file
+  * TrConfiguration: delete readonly config properties
+  * DeviceEnumeration: back button routes to previous route
+  * AutoNetwork: removed emptyWaves checkbox, fixed emptyWaves counter
+  * stylelint: fixed media-feature-range-notation error
+
+  [ Roman Ondráček ]
+  * NPM: update dependencies, fix ESLint issues
+  * vue-i18n: fix linter config
+  * NPM: update dependencies
+
+  [ Karel Hanák ]
+  * npm: updated dependencies
+  * StandardDevices: use IqrfDb API, enumeration rework
+  * replaced IqrfInfo configuration with IqrfDb
+
+  [ Weblate ]
+  * Translated using Weblate (English)
+  * Translated using Weblate (Czech)
+
+  [ Deleted User ]
+  * Translated using Weblate (Czech)
+
+  [ Roman Ondráček ]
+  * Add initial Czech support
+  * Tests: fix API tests
+  * GitLab CI: use Debian 12 bookworm based image for testing
+  * GitLab CI: run composer before setting PHP version
+  * GitLab CI: set default PHP version to 8.2
+  * Mail: test SMTP configuration
+  * Docker: fix image for REST API testing
+  * Debian packaging: add missing PHP intl extension
+  * Doctrine: fix indexes
+  * Backend: drop support for PHP 7.4 and 8.0, add support for PHP 8.2
+  * Composer: downgrade Nettrine to version with working fixtures Apitte: fix retrieving of JSON requests
+  * Auth: fix fallback JWT config
+  * NPM: update dependencies
+  * Debian packaging: fix patches
+  * Doctrine: use native attributes and enums
+  * PHPStan: fix bootstrap file
+  * Backend: use native enum instread of grifart/enum
+  * API: use native attributes instead of Doctrine annotations
+  * Console: use attribute AsCommand to set command's name and description
+  * Use features introduced in PHP 8.0 and 8.1
+  * Doctrine: fix mapping fixture
+  * Doctrine: fix baud rate binding in mapping fixture
+  * API: fix JWT token creation
+  * Copyright: update date in copyright notices
+  * API: allow User-Agent header in CORS middleware
+  * API: fix mailer configuration JSON schema
+  * Frontend: use IQRF Gateway Webapp API client
+  * Backend: fix coding style
+  * Frontend: use API client for Controller mappings and AWS + Azure cloud services
+  * Frontend: fix issues reported by ESLint
+  * Frontend: update dependencies, fix installation check spinner
+  * Debian packaging: fix patches
+  * NPM: create monorepo, move frontend to own package
+  * API client: add initial implementation
+  * Frontend: fix jest
+  * API client: fix basic admin role
+  * NPM: update dependencies
+  * Tests: Migrate from jest to vitest
+  * Debian packaging: fix package build
+
+  [ Karel Hanák ]
+  * composer: updated nette utils dep
+
+  [ Roman Ondráček ]
+  * Cloud: remove Hexio.io
+  * Frontend: fix build, link api-client from monorepo
+  * GiaLab CI: add JavaScript/TypeScript package build
+  * Gateway: add options to set the new hostname in IQRF Gateway Daemon's confdiguration
+  * Maintainence: refactor Monit configuration, add Monit check configuration
+  * Network: fix condition for broken GSM modem detection
+  * Gateway: add Node-RED service controls
+  * Debian packaging: enable Node-RED feature on iqube and industrial gateways
+  * Network: fix watchdog button in modem list
+  * Network: add "Save and connect" button to connection form
+  * Network: add modals for LTE connections
+  * Network: fix 10 s wait before connect on IQD-GW04
+  * Sidebar: update Node-RED
+  * Network: add modals for watchdog enablement if there is no connection or no connection is active
+  * Frontend: fix installation checks
+  * Maintainence: fix texts at Monit manager
+  * Gateway: add section for system services
+  * Services: fix Node-RED service name
+  * Gateway: add information about startups and shutdowns to the diagnostic archive
+  * Gateway: add missing return type hint in diagnostic manager
+
+  [ Karel Hanák ]
+  * fixed phpstan errors, gateway backup submit, ignore api-client and frontend dist files
+  * Schedulermanager: fixed task file duplication when saving tasks
+  * Kernel: fixed deprecated method warning
+
+  [ Roman Ondráček ]
+  * Services: remove iTemp
+
+  [ Karel Hanák ]
+  * GSMConnection: set pin-flags to allow empty pin
+  * GSMConnectionTest: added missing gsm pin flags
+  * include cloud provisioning version in gateway info if available
+  * VersionManager: fixed cloud provisioning command check
+  * MonitBackup: include available and enabled conf files
+  * MonitBackup: use privileged manager to read files
+  * MonitBackup: create enabled conf dir if it doesn't exist
+  * MonitBackup: set permissions to 0600
+  * GatewayFileBackup: use privileged file manager to update splitter and mqtt configuration
+  * WebappBackup: added industrial nginx configuration to whitelist
+  * WebappBackup: added iqube nginx config to whitelist
+
+  [ Roman Ondráček ]
+  * Mail: test SMTP configuration
+
+  [ Karel Hanák ]
+  * ControllerConfig: added support for cloud provisioning factory reset
+
+  [ Roman Ondráček ]
+  * Docker: fix images for backend and frontend
+
+  [ Karel Hanák ]
+  * SendJsonRequest: check for existence of req object
+  * MonitBackup: fixed permissions for check files
+
+  [ Roman Ondráček ]
+  * nginx: fix Node-RED reverse proxy configuration
+  * Docker: add PHP 8.3 to testing image
+  * NPM: update dependencies
+  * Composer: update dependencies Mailer: use entity for configuration
+  * Frontend: fix typo in router and sudo error screen
+  * Update copyright notices
+
+  [ Karel Hanák ]
+  * Added InfluxDB bridge configuration, feature, service, API endpoints and frontend components
+
+  [ Roman Ondráček ]
+  * Cloud services: remove Inteliments InteliGlue MQTT connection creator
+  * Gateway: fix power API endpoints
+
+  [ Karel Hanák ]
+  * MailerController: deserialize configuration into object for test and save methods
+
+  [ Roman Ondráček ]
+  * Composer: update dependencies
+  * Debian packaging: add support for PHP 8.3
+
+  [ Karel Hanák ]
+  * MenderManager: get client version and construct commands accordingly
+
+  [ Roman Ondráček ]
+  * Composer: update dependencies
+  * Monolog: fix Sentry logging, capture only messages with warning, error and critical severity
+  * GitLab CI: add parameter for main branch in jsonnet package build
+  * NPM: update dependencies
+  * NPM: downgrade @types/node to version 20.11.5 to fix TypeScript errors
+  * Composer: downgrade Nette\DI to version 3.1.10 due BC break, update other dependencies
+  * API: fix OpenAPI specification
+  * NPM: update dependencies
+  * Mailer: rename user entity variable to avoid conflict with Nette user from Nette\Application
+  * Composer: update PHP dependencies
+  * PHPStan: limit to single thread to fix lock issues
+  * Composer: downgrade contributte/sentry to version 0.2.3 to fix issues with locks
+
+  [ Karel Hanák ]
+  * BearerAuthenticator: fixed API key authentication
+
+  [ Roman Ondráček ]
+  * Debian packaging: fix postinst for generic IQAROS image
+  * Debian packaging: enable admin unix user password change for MICRORISC gateways
+  * Debian packaging: fix nginx virtualhost enablement
+
+  [ Karel Hanák ]
+  * composer: downgrade nette/bootstrap to v3.2.2
+
+  [ Roman Ondráček ]
+  * Debian packaging: fix shebang in postinst
+  * NPM: update dependencies
+  * Added Vue.js 3 frontend skeleton
+
+  [ Karel Hanák ]
+  * added daemon-utils lib, updated npm dependencies
+  * frontend3: added daemon websockets, added additional layout elements, replaced font icons with svg icons
+
+  [ Roman Ondráček ]
+  * API client: add ESLint plugins, fix coding style
+  * API client: add Gateway info service
+  * Frontend: fix imports in new frontent
+
+  [ Karel Hanák ]
+  * frontend3: installation wizard WIP; api-client: file download utility, user session expiration types
+
+  [ Roman Ondráček ]
+  * API client: attempt to fix dist build
+
+  [ Karel Hanák ]
+  * frontend3: installation wizard update, SSH pages, ssh and api key management
+  * WIP: user management
+  * use toolbar in card header
+  * unified tables, translations, header items
+  * added service controls page
+  * changed management to access control, added disambiguation
+
+  [ Roman Ondráček ]
+  * Gateway: add uptime statistics
+  * API client: fix coding style
+  * Gateway: improve system service management
+  * API client: add typesVersion to package.json, release v0.1.6
+
+  [ Karel Hanák ]
+  * WIP: frontend3 gateway features
+  * Services: fixed service table expansion
+  * ServiceTable: use component state for loading
+  * api client: added hot-reload target
+  * daemon-utils: added hot reload target, added management service
+  * Gateway mode: fetch current mode, set startup mode
+  * NPM: update dependencies
+  * api-client: added time service, interfaces and tests
+  * frontend3: added time configuration
+  * api client: added hostname service
+  * set hostname and update daemon components configuration, fixed some warnings
+  * api-client: added union types for daemon component and instance configuration
+  * frontend3: use union types for daemon component configuration
+
+  [ Roman Ondráček ]
+  * New frontend: fix issues reported by TypeScript compiler
+  * New frontend: enable more ESLint rules
+
+  [ Karel Hanák ]
+  * fixed build and eslint warnings and errors
+
+  [ Roman Ondráček ]
+  * Fix import of Head component at 404 page, remove outdated test from API testing
+  * Debian packaging: fix build
+
+  [ Karel Hanák ]
+  * TimeManager: format timezone offset with colon
+  * api-client: added IQRF Gateway Controller configuration services and tests
+  * frontend3: fixed TextInput model, fixed gateway mode table imports, added missing service restart
+  * frontend3: added controller configuration, device profiles, generic websocket url form
+  * api-client: release version 0.1.8
+  * fixed time manager test, frontend3: fixed controller config import
+  * api-client: fixed smtp default config header parsing, release version 0.1.9
+  * include documentation in disambiguation, fixed docs translations
+  * controller config: added settings and profiles pages, include profiles menu in config form
+  * updated padding of sidebar components
+  * API client: added interface ports and daemon mapping services, types
+  * MappingController: fixed mapping enum values
+  * frontend3: updated custom components
+  * frontend3: added daemon interfaces
+  * frontend3: extended component state, updated daemon configuration components to use new states
+  * frontend3: PowerControls: added reboot and power off confirmation dialogs
+  * frontend3: added new iqrf logos
+  * frontend3: added js cache configuration
+  * frontend3: added iqrfdb configuration
+  * frontend3: added json api configuration, mqtt and udp connections
+  * api-client: added journal service and types; frontend3: added journal configuration, added feature check in router navigation guards
+  * api-client: added apt service and types; frontend3: added apt configuration, fixed some translations
+  * frontend: set global background styles, removed features from router navigation guard
+  * api-client: added IBM cloud service and types
+  * frontend3: added aws, azure and ibm clouds, fixed daemon connections tooltips
+  * api-client: added monit service and types
+  * frontend3: added monit configuration
+  * Maintenance: gateway backup and restore
+  * api-client: added mender types and service
+  * added mender update, filesystem remount and mender log
+  * api-client/webapp: added influxdb-bridge configuration
+  * api-client: added shape trace file service typss
+  * frontend3: daemon logging service configuration
+
+  [ Roman Ondráček ]
+  * Debian packaging: build the new frontend
+
+  [ Karel Hanák ]
+  * api-client: added scheduler endpoints and interfaces
+  * daemon-utils: added scheduler support
+  * frontend3: scheduler support; added scheduler messagings endpoint
+  * frontend3 gateway logs and journal
+  * Iqrfnet: Send DPA packets
+  * frontend3: Iqrfnet JSON message sender, added product browser
+
+  [ Roman Ondráček ]
+  * Frontend: better scrollbar for Chrome-based and Webkit-based browsers
+  * API client: remove custom User-Agent header
+
+  [ Karel Hanák ]
+  * frontend v3: custom dpa handler upload
+  * NPM: updated dependencies
+  * frontend v3: fixed daemon utils imports
+  * remove cs locale
+  * Frontend v3: updated translations, unified styles across some components, removed api raw config
+  * frontend v3: fixed more translations, MQTT and UDP connection profiles import and export
+
+  [ Roman Ondráček ]
+  * Account: add password recovery form
+
+  [ Karel Hanák ]
+  * removed month and year session expiration options, fixed session expiration and locale translations
+  * API client: release version 0.1.11
+  * WIP: websocket messaging configuration
+
+  [ Roman Ondráček ]
+  * NPM: update dependencies
+  * Frontend: fix TypeScript errors
+
+  [ Karel Hanák ]
+  * IQRF network: add TR configuration skeleton
+  * daemon-utils library: added support for IQMESH SensorData service
+  * daemon-utils: added remove bond service messages
+
+  [ Roman Ondráček ]
+  * Network: add VLAN configuration parser
+  * Maintenance: add support for Mender client 4.x
+  * Gateway: fix danger color in disk usage indicator
+  * Frontend: create custom component for modals
+  * API client: stricter ESLint rules
+  * styles: fix font-weight in Vuetify3 tables
+  * modals: create delete modal window component
+
+  [ Karel Hanák ]
+  * daemon-utils: added remaining document API messages
+
+  [ Roman Ondráček ]
+  * pages: use JSON5 instead of YAML in <route> tag
+
+  [ Karel Hanák ]
+  * daemon-utils: added sensordata worker status message
+  * daemon-utils: remove empty req object from sensor data services
+  * daemon-utils: fixed autonetwork message type
+
+  [ Roman Ondráček ]
+  * NPM: update dependencies
+  * Frontend: use stricter ESLint rules
+
+  [ Karel Hanák ]
+  * Access control: added API key display dialog
+
+  [ Roman Ondráček ]
+  * Frontend: fetch IQRF Repository configuration and brief gateway informtion after sign in to Pinia store
+  * Frontend: improve access control
+  * Frontend: set URLs via env variables
+  * OpenAPI: add OpenAPI specification viewer
+  * Debian packaging: fix IQAROS patches
+  * Webserver config: fix PHP-FPM configuration
+  * Network: WIP
+  * Locales: WIP
+
+  [ Karel Hanák ]
+  * api-client: bump version for release
+
+  [ Roman Ondráček ]
+  * API client: add missing base URL options
+  * API: fix Journal configuration edit endpoint method
+  * API client: add more unit tests
+  * PHPStan: ignore issue with Mockery typing for partial mocks
+  * Add support for theme colors
+
+  [ Karel Hanák ]
+  * added support for generic iqaros services
+  * rework remove bond for daemon v3, allow coordinator restart after restore
+  * BondingManager: error handling for removeBond service changes in daemon v3
+  * npm: updated dependencies
+  * added iqaros feature to api testing
+  * debian package: updated iqd-gw-01 patch
+  * debian package: updated idq-gw-04 feature patch
+  * debian package: updated iqaros patches
+  * jsonnet: updated iqaros patches dirs
+  * Makefile: build with frontend v2, added v3 patch
+  * jsonnet: build packages with frontend v2 and v3 separately
+  * debian package: fix postinst condition
+  * debian package: fixed iqaros base url patch for frontend v3
+  * IqrfNetService: updated clear all bonds and remove bond methods
+  * ServicesController: whitelist mender-connect service
+
+  [ Roman Ondráček ]
+  * Old frontend: update branding and layout
+  * GitLab CI: fix API client typedoc documentation
+  * Debian packaging: fix IQAROS theme patch
+  * Footer: refactor status bar comaponents to use v-tooltip directive
+  * GitLab CI: fix test coverage for frontends
+  * Frontend: remove IQAROS theme, update favicons
+  * Update outdated copyright notices, add missing copyright notices
+  * Installation wizard: fix stepper in the old frontend
+  * Debian packaging: enable Monit in IQAROS variant
+
+  [ Karel Hanák ]
+  * daemon-utils: added iqmesh network ping result item interface
+  * daemon-utils: frc send selective params extend frc params
+  * daemon-utils: fixed frc params selected nodes type
+  * daemon-utils: added sensor quantities and units
+  * frontend: fixed custom text field error count prop
+
+  [ Roman Ondráček ]
+  * Vite: add option to set IDE
+  * Debian packaging: disable Grafana feature in IQAROS package
+  * NPM: update dependencies
+  * Frontend: fix HTTP 401 handling in REST API client
+  * Frontend: add loading screen, fix dark theme
+  * Frontend: add number input
+  * Frontend: add action buttons (card, card title, data table)
+  * Frontend: set selected localization from the store after initial page load
+  * Frontend: move OpenAPI spec to devtools, fix dark theme in OpenAPI spec
+
+  [ Karel Hanák ]
+  * added support for Daemon v3.x messaging list to api client and daemon utilities
+  * daemon-utils: added messaging instance types
+  * api-client: added daemon-utils as dependency, updated splitter configuration interface
+
+  [ Roman Ondráček ]
+  * ESLint: enable more rules
+  * Build daemon-utils before api-client
+  * GitLab CI: fix API client build, use NPM proxy
+  * ESLint: fix import resolver issues in API client
+  * GitLab CI: fix typedoc API docs generation
+  * TypeScript: refactor tsconfig.json
+  * ESLint: add base ESLint plugin configuration
+  * API client: fix ESLint issues
+
+  [ Karel Hanák ]
+  * ServicesController: added support for iqaros-data-availability systemd service
+
+  [ Roman Ondráček ]
+  * ESLint: fix issues
+  * GitLab CI: fix ESLint
+  * Composer: update dependencies
+  * PHPSTan: update configuration
+  * Docker: use Debian 12 bookworm as base image
+  * API client: use async functions instead of Promises
+  * NPM: remove workspace: prefix to fix npm
+  * ESLint: add RegExp plugin
+
+  [ Karel Hanák ]
+  * ServiceController: added influxdb service
+  * added support for new light standard, removed dali standard
+
+  [ Roman Ondráček ]
+  * GitLab CI: add Nette Tester coverage info and JUnit XML report, add PHP 8.3 to test matrix
+  * Makefile: update files ignored by nette/code-checker
+  * Daemon utils: refactor build system
+  * ESLint plugin: remove NPM package
+  * API client: refactor build system
+  * API client: add missing exports
+  * Frontends: fix imports and ESLint issues
+  * API client, Daemon utils: fix TypeDoc configuration, update ESLint config
+  * Docker: add build script for testing images
+  * API client: fix method names
+  * Maintenance: fix Mender client configuration
+  * Backend: refactor API endpoints
+  * Docker: fix build of frontend images
+
+  [ Karel Hanák ]
+  * LightManager: update set voltage request params and error handling
+
+  [ Roman Ondráček ]
+  * API client: partially implement changes in REST API
+  * Config: update MQTT configuration to use autodetection for TLS usage
+  * GitLab CI: update paths
+  * .mailmap: fix mappings
+  * GitLab CI: fix deployment dirs
+  * NPM: update dependencies
+  * API: fix path to JSON schemas
+  * API: add the new endpoints to whitelist
+  * API client: update Account service
+  * API client: use new endpoints
+  * Frontend: fix TypeScript issues, use Vuetify translation from vuetify NPM package
+  * NPM: update dependencies, remove unused vue-select dependency
+  * Backend: fix issues reported by PHPStan
+  * Sentry: add gateway integration, refactoring
+  * PHPStan: disable for tests due robot loader issues, fix issues in mapping command
+  * NPM: update dependencies
+  * Frontends: fix typing
+  * API client: fix SSH key creation
+  * Install: add GW ID to installation checker
+  * Versions: add endpoint for retrieving all IQRF Gateway software versions
+  * API client: fix account refresh token endpoint
+  * Frontend: rework installation errors page
+
+  [ Karel Hanák ]
+  * daemon-utils: added SensorData asynchronous report message type and data interface
+
+  [ Roman Ondráček ]
+  * NPM: update dependencies ESLint: fix issues
+  * Installation: rework Vuetify 3 installation wizard
+
+  [ Karel Hanák ]
+  * UserEdit: updated form password change
+
+  [ Roman Ondráček ]
+  * Frontend: update locales
+  * API: update IQRF Gateway Daemon JSON schema references
+
+  [ Karel Hanák ]
+  * GatewayInfoUtil: include gwHwpid property
+  * updated GatewayInfoUtil tests
+
+  [ Roman Ondráček ]
+  * Network: fix network interface type enum in the OpenAPI spec
+
+  [ Karel Hanák ]
+  * API: added definitions for current (in-use) IPv4 and IPv6 configuration
+  * BackupManager: updated image version check regex pattern
+
+  [ Roman Ondráček ]
+  * Network: update API client paths, fix JSON schemas and types
+  * Frontend: fix types
+  * API client: fix IP configuration method enum names
+  * API client: fix cellular API endpoint paths
+
+  [ Karel Hanák ]
+  * services: optionally start or stop services after enabling or disabling
+
+  [ Roman Ondráček ]
+  * API: fix network connection JSON schema
+
+  [ Karel Hanák ]
+  * api: updated service enable and disable parameters
+  * added cloud provisioning feature, include cloud provisioning in backup archive, restore
+  * CLI: fixed feature enable and disable commands
+  * API: fixed account email verification method
+  * API: fixed account service tests, dependencies
+
+  [ Roman Ondráček ]
+  * Layout: port theme handeling and header actions from IQAROS webapp
+  * Frontend: add workaround for dynamic import error
+  * Frontend: use SASS API for modern compilers
+  * NPM: fix package versions for workspace packages
+  * Frontend: add types for WebSocket callbacks
+  * Frontend: rework account components
+  * Gateway: refactor power controls
+  * User: add preferences
+  * Frontend: fix typos
+  * User preferences: fix issues reported by linters
+  * IP Network: add basic management for the new frontend
+  * IP network: fix network connection form
+
+  [ Karel Hanák ]
+  * StandardDevices: fixed index property displaying in table
+
+  [ Roman Ondráček ]
+  * GitLab CI: add missing amd64 tag
+  * GitLab CI: refactor configuration
+  * Database: use enum for account state
+  * Composer: update test dependencies
+  * Composer: use branch aliases instead of the version ones
+  * Backend: update IQRF Repository API client
+  * Backend: use shell command executor from the new package
+  * Coding style: use own PHPCodeSniffer ruleset package
+
+  [ Karel Hanák ]
+  * HostnameChange: fixed hostname change in IDE counterpart Daemon component
+  * api-client: updated axios response interceptor usage
+  * composer: use stable versions of nettrine/dbal and nettrine/orm
+
+  [ Roman Ondráček ]
+  * Tests: refactor tests using command executor
+
+  [ Karel Hanák ]
+  * updated rector dependency version
+  * JWT: replaced hostname with GWID if available
+  * HostnameChange: removed option to change json splitter instance ID
+  * fixed old checkboxes
+
+  [ Roman Ondráček ]
+  * Composer: update dependencies
+  * Backend: fix issues reported by PHPStan
+  * backend: drop support for PHP8.1
+  * NPM: update dependencies
+  * Backend: fix typos
+  * Backend: update to Doctrine DBAL 4 and ORM 3
+  * NPM: fix workspace package versions
+  * Frontend: fix typo in Czech locale file for the new frontend
+  * Backend: fix database creation
+  * API testing: fix database creation
+  * Doctrine: automatically generater proxy classes when the proxy file does not exist or when the proxied file changed
+
+  [ Karel Hanák ]
+  * OtaUpload: updated error handling
+
+  [ Roman Ondráček ]
+  * Console: use version from version.json file
+  * Tests: fix API token expiration test
+  * NPM: update dependencies
+  * Update copyright notices
+  * Backend: fix Doctrine ORM configuration
+
+  [ Karel Hanák ]
+  * SendJsonRequest: simplified validation to just JSON, fixed OTA upload timeout
+
+  [ Roman Ondráček ]
+  * Docker: update testing Docker image
+
+  [ Karel Hanák ]
+  * Scheduler: simplified request validation to json rule, removed daemon api validator
+
+  [ Roman Ondráček ]
+  * Vite: use modern-compiler option with sass-embedded NPM package
+  * Backend: use file manager Composer package
+
+  [ Karel Hanák ]
+  * VersionManager: handle updated mender-connect version string
+  * frontend: added missing api key display modal
+  * debian: set url of iqaros version if webapp to iqube
+
+  [ Roman Ondráček ]
+  * NPM: update dependencies
+  * NPM: update dependencies
+  * Debian packaging: allow PHP 8.4
+  * Backend: add workaround for bad type hint in JSON schema library
+
+  [ Karel Hanák ]
+  * added CLI wrapper
+
+  [ Roman Ondráček ]
+  * NPM: update dependencies
+  * Frontend: fix errors reported by ESLint
+
+  [ Karel Hanák ]
+  * frontend3: use v3 daemon utils lib for daemon websocket, updated gateway mode
+
+  [ Roman Ondráček ]
+  * JS libs: fix ESLint issues
+  * NPM: update dependencies
+  * Backend: fix e-mail address validation with unaccessible DNS server
+
+  [ Karel Hanák ]
+  * backend: set validateEmail withDns to true by default
+  * frontend3: updated gateway information coordinator and daemon mode
+  * npm: updated dependencies
+  * WIP: TrConfig
+  * WIP: TrConfig fetch
+  * TrConfig: fixed imports
+  * CoordinatorInfo: fixed eslint warnings/errors
+  * SendDpaPacked: rework imports, use of daemon api, displaying results
+
+  [ Roman Ondráček ]
+  * Frontend: move user to user creation in the installation wizard if no users are present
+  * Frontend: fix broken monitor WebSocket, update dependencies
+  * Backend: update dependencies
+  * Fix issues reported by Nette\CodeChecker
+  * API: use anyOf instead of oneOf when checking for hostnames and IP address literals because some validators treats IPv4 address literals as hostnames
+
+  [ Karel Hanák ]
+  * frontend3: updated daemon queue indicator and monitor socket for v3.x
+  * frontend3: updated iqrfdb config
+  * frontend3: updated scheduler config, use daemon api js lib
+  * frontend3: fixed eslint errors, update JsonSender
+  * frontend3: update iqrf lib dependencies
+  * api-client: fixed depencency import and aws file interface
+  * frontend3: fixed most eslint errors and warnings
+
+  [ Roman Ondráček ]
+  * NPM: update dependencies
+
+ -- Karel Hanák <karel.hanak@iqrf.org>  Mon, 08 Sep 2025 12:09:41 +0200
 
 iqrf-gateway-webapp (2.5.0) testing; urgency=medium
 

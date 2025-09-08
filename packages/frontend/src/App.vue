@@ -14,136 +14,79 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
+
 <template>
-	<v-app dark>
-		<Blocking />
-		<LoadingSpinner />
-		<router-view v-if='installationChecked' />
-		<DaemonModeModal />
-		<SessionExpirationModal v-if='loggedIn' />
-	</v-app>
+	<v-theme-provider :theme='theme'>
+		<v-app>
+			<div v-if='isChecked'>
+				<router-view />
+				<SessionExpirationDialog v-if='isLoggedIn' />
+			</div>
+			<InstallationChecker v-else />
+		</v-app>
+	</v-theme-provider>
 </template>
 
-<script lang='ts'>
-import {InstallationChecks} from '@iqrf/iqrf-gateway-webapp-client/types';
-import {AxiosError} from 'axios';
-import {Component, Vue} from 'vue-property-decorator';
-import {mapGetters} from 'vuex';
+<script lang='ts' setup>
+import { type UserLanguage } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { storeToRefs } from 'pinia';
+import { useHead } from 'unhead';
+import { onBeforeMount, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-import Blocking from './components/Blocking.vue';
-import DaemonModeModal from './components/DamonModeModal.vue';
-import LoadingSpinner from './components/LoadingSpinner.vue';
-import SessionExpirationModal from '@/components/SessionExpirationModal.vue';
-import {useApiClient} from '@/services/ApiClient';
+import InstallationChecker from '@/components/layout/InstallationChecker.vue';
+import SessionExpirationDialog from '@/components/SessionExpirationDialog.vue';
+import head from '@/plugins/head';
+import { useDaemonStore } from '@/store/daemonSocket';
+import { useInstallStore } from '@/store/install';
+import { useLocaleStore } from '@/store/locale';
+import { useThemeStore } from '@/store/theme';
+import { useUserStore } from '@/store/user';
 
-@Component({
-	components: {
-		Blocking,
-		DaemonModeModal,
-		LoadingSpinner,
-		SessionExpirationModal,
-	},
-	computed: {
-		...mapGetters({
-			installationChecked: 'installation/isChecked',
-			loggedIn: 'user/isLoggedIn',
-		}),
-	},
-})
+const i18n = useI18n();
 
-export default class App extends Vue {
+const daemonStore = useDaemonStore();
+const { isConnected } = storeToRefs(daemonStore);
 
-	/**
-	 * Main app watch function
-	 */
-	private unwatch: CallableFunction = () => {return;};
+const installStore = useInstallStore();
+const { isChecked } = storeToRefs(installStore);
 
-	/**
-   * Set the installation checked flag
-   */
-	private setInstallationChecked(): void {
-		this.$store.dispatch('spinner/hide');
-		this.$store.commit('installation/CHECKED');
-	}
+const userStore = useUserStore();
+const { isLoggedIn } = storeToRefs(userStore);
 
-	/**
-	 * Vue lifecycle hook before created
-	 */
-	async beforeCreate(): Promise<void> {
-		await this.$store.dispatch(
-			'spinner/show',
-			{timeout: null, text: this.$t('install.messages.check').toString()}
-		);
-		await this.$store.dispatch('features/fetch');
-		await useApiClient().getInstallationService().check()
-			.then(async (check: InstallationChecks) => {
-				this.$store.commit('installation/CHECKED');
-				await this.$store.dispatch('spinner/hide');
-				const installUrl: boolean = this.$route.path.startsWith('/install/');
-				if (check.dependencies.length !== 0) {
-					this.setInstallationChecked();
-					await this.$router.push({
-						name: 'missing-dependency',
-						params: {
-							json: JSON.stringify(check.dependencies),
-						},
-					});
-				} else if (!check.phpModules.allExtensionsLoaded) {
-					this.setInstallationChecked();
-					await this.$router.push({
-						name: 'missing-extension',
-						params: {
-							extensionString: check.phpModules.missing!.extensions.join(', '),
-							packageString: check.phpModules.missing?.packages !== undefined ? check.phpModules.missing?.packages.join(' ') : '',
-						}
-					});
-				} else if (check.sudo !== undefined && (!check.sudo.exists || !check.sudo.userSudo)) {
-					this.setInstallationChecked();
-					await this.$router.push({
-						name: 'sudo-error',
-						params: {
-							user: check.sudo.user,
-							exists: check.sudo.exists.toString(),
-							userSudo: check.sudo.userSudo.toString(),
-						}
-					});
-				} else if (!check.allMigrationsExecuted) {
-					this.setInstallationChecked();
-					await this.$router.push('/install/error/missing-migration');
-				} else if (!check.hasUsers && !installUrl) {
-					this.setInstallationChecked();
-					await this.$router.push('/install/');
-				} else if (check.hasUsers && installUrl) {
-					this.setInstallationChecked();
-					await this.$router.push('/sign/in/');
-				}
-				if (this.$store.getters['user/isLoggedIn']) {
-					await this.$store.dispatch('repository/get');
-					await this.$store.dispatch('gateway/getInfo');
-				}
-				this.setInstallationChecked();
-			})
-			.catch((error: AxiosError) => {
-				this.$store.commit('installation/CHECKED');
-				this.$store.dispatch('spinner/hide');
-				console.error(error);
-			});
-	}
+const localeStore = useLocaleStore();
+const { getLocale: locale } = storeToRefs(localeStore);
 
-	/**
-	 * Vue lifecycle hook created
-	 */
-	created(): void {
-		this.unwatch = this.$store.watch(
-			(state, getter) => getter['daemonClient/isConnected'],
-			(newVal, oldVal) => {
-				if (!oldVal && newVal) {
-					this.$store.dispatch('daemonClient/getVersion');
-					this.unwatch();
-				}
-			}
-		);
-	}
+const themeStore = useThemeStore();
+const { getTheme: theme } = storeToRefs(themeStore);
 
+/**
+ * Set HTML head options
+ * @param {UserLanguage} newLocale New locale to set
+ */
+function setHeadOptions(newLocale: UserLanguage): void {
+	useHead(head, {
+		htmlAttrs: {
+			lang: newLocale.toString(),
+		},
+		titleTemplate: '%s %separator %siteName',
+		templateParams: {
+			siteName: i18n.t('title').toString(),
+			separator: '|',
+		},
+	});
 }
+
+onBeforeMount(async () => {
+	localeStore.setLocale(locale.value);
+	setHeadOptions(locale.value);
+});
+
+watch(isConnected, (newVal) => {
+	if (newVal) {
+		daemonStore.sendVersionRequest();
+	}
+});
+
+watch(locale, setHeadOptions);
 </script>

@@ -16,13 +16,14 @@
  */
 
 import { Client } from '@iqrf/iqrf-gateway-webapp-client';
-import { AxiosError, AxiosResponse } from 'axios';
+import { type AxiosError, type AxiosResponse } from 'axios';
+import { storeToRefs } from 'pinia';
+import { toast } from 'vue3-toastify';
 
 import UrlBuilder from '@/helpers/urlBuilder';
-import router from '@/router';
-import store from '@/store';
-import Vue from 'vue';
 import i18n from '@/plugins/i18n';
+import router from '@/router';
+import { useUserStore } from '@/store/user';
 
 /**
  * Creates IQRF Gateway Webapp API client instance
@@ -32,37 +33,35 @@ export const useApiClient = (): Client => {
 	const client: Client = new Client({
 		config: {
 			baseURL: new UrlBuilder().getRestApiUrl(),
-		}
+		},
 	});
 	/// Set authorization JWT token
-	const token = store.getters['user/getToken'];
-	client.setToken(token);
+	const userStore = useUserStore();
+	const { getToken: token } = storeToRefs(userStore);
+	client.setToken(token.value);
 	client.useResponseInterceptor(
 		(response: AxiosResponse): AxiosResponse => response,
 		async (error: AxiosError) => {
 			console.error(error);
 			// Handle network error
 			if (error.response === undefined) {
-				return Promise.reject(error);
+				throw error;
 			}
 			// Handle HTTP Error 401 Unauthorized response
 			if (error.response.status === 401) {
-				if (!store.getters['user/get']) {
-					return;
-				}
-				await store.dispatch('user/signOut')
-					.then(async () => {
-						// Prevent duplicate redirect to sign in page
-						if (router.currentRoute.name !== 'signIn') {
-							await router.push({path: '/sign/in', query: {redirect: router.currentRoute.path}});
-						}
-						Vue.$toast.warning(
-							i18n.t('core.sign.out.expired').toString(),
-						);
+				const userStore = useUserStore();
+				await userStore.signOut();
+				// Prevent duplicate redirect to sign in page
+				if (router.currentRoute.value.name !== 'SignIn') {
+					await router.push({
+						name: 'SignIn',
+						query: { redirect: router.currentRoute.value.path },
 					});
+				}
+				toast.warning(i18n.global.t('components.auth.sign.out.expired'));
 			}
 			// Handle other HTTP errors
-			return Promise.reject(error);
+			throw error;
 		});
 	return client;
 };

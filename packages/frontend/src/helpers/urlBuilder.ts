@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 /**
  * URL builder
  */
@@ -21,95 +22,113 @@ export default class UrlBuilder {
 
 	/**
 	 * Is development mode detected?
-	 * @private
 	 */
 	private readonly isDev: boolean;
 
 	/**
 	 * Hostname
-	 * @private
 	 */
 	private readonly hostname: string;
 
 	/**
 	 * Port
-	 * @private
 	 */
 	private readonly port: string;
 
 	/**
 	 * Protocol for WebSocket - ws or wss
-	 * @private
 	 */
 	private readonly wsProtocol: string;
 
-	constructor() {
+	/**
+	 * Constructor
+	 */
+	public constructor() {
 		const isHttps: boolean = window.location.protocol === 'https:';
 		this.hostname = window.location.hostname;
 		this.port = window.location.port;
-		this.wsProtocol = (isHttps ? 'wss://' : 'ws://');
-		this.isDev = import.meta.env.DEV;
+		this.wsProtocol = isHttps ? 'wss://' : 'ws://';
+		this.isDev = import.meta.env.MODE !== 'production';
 		if (this.port !== '') {
-			this.port = ':' + this.port;
+			this.port = `:${ this.port}`;
 		}
 	}
 
 	/**
 	 * Returns hostname
+	 * @return {string} Hostname
 	 */
-	getHostname(): string {
+	public getHostname(): string {
 		return this.hostname;
 	}
 
 	/**
 	 * Returns port
+	 * @return {string} Port
 	 */
-	getPort(): string {
+	public getPort(): string {
 		return this.port;
 	}
 
 	/**
 	 * Returns base URL
+	 * @return {string} Base URL
 	 */
-	getBaseUrl(): string {
-		return window.location.protocol + '//' + this.hostname + (this.isDev ? ':8081' : this.port) + import.meta.env.VITE_BASE_URL;
+	public getBaseUrl(): string {
+		return `${window.location.protocol }//${ this.hostname }${this.isDev ? ':8081' : this.port }${import.meta.env.VITE_BASE_URL}`;
 	}
 
 	/**
 	 * Returns REST API URL
+	 * @return {string} REST API URL
 	 */
-	getRestApiUrl(): string {
-		if (import.meta.env.VITE_URL_REST_API?.length) {
+	public getRestApiUrl(): string {
+		if (import.meta.env.VITE_URL_REST_API.length) {
 			return import.meta.env.VITE_URL_REST_API;
 		}
-		return '//' + this.hostname + (this.isDev ? ':8080' : this.port) + import.meta.env.VITE_BASE_URL + 'api/v0/';
+		return `//${ this.hostname }${this.isDev ? ':8080' : this.port }${import.meta.env.VITE_BASE_URL }api/v0/`;
 	}
 
 	/**
-	 * Returns WebSocket API URL
+	 * Returns IQRF Gateway Daemon WebSocket API URL
+	 * @return {string} IQRF Gateway DaemonWebSocket API URL
 	 */
-	getWsApiUrl(): string {
-		if (import.meta.env.VITE_URL_DAEMON_API?.length) {
+	public getDaemonApiUrl(): string {
+		if (import.meta.env.VITE_URL_DAEMON_API.length) {
 			return import.meta.env.VITE_URL_DAEMON_API;
 		}
-		return this.wsProtocol + this.hostname + (this.isDev ? ':1338': this.port + '/ws');
+		return this.wsProtocol + this.hostname + (this.isDev ? ':1338': `${this.port }/ws`);
 	}
 
 	/**
-	 * Returns WebSocket Monitor URL
+	 * Returns IQRF Gateway Daemon WebSocket Monitor URL
+	 * @return {string} IQRF Gateway Daemon WebSocket Monitor URL
 	 */
-	getWsMonitorUrl(): string {
-		if (import.meta.env.VITE_URL_DAEMON_MONITOR?.length) {
+	public getDaemonMonitorUrl(): string {
+		if (import.meta.env.VITE_URL_DAEMON_MONITOR.length) {
 			return import.meta.env.VITE_URL_DAEMON_MONITOR;
 		}
-		return this.wsProtocol + this.hostname + (this.isDev ? ':1438': this.port + '/wsMonitor');
+		return this.wsProtocol + this.hostname + (this.isDev ? ':1438': `${this.port }/wsMonitor`);
+	}
+
+	/**
+	 * Returns WebSocket IQRF network sync URL
+	 * @return {string} WebSocket IQRF network sync URL
+	 */
+	public getIqrfnetSyncUrl(): string {
+		if (import.meta.env.VITE_URL_IQRF_SYNC.length) {
+			return import.meta.env.VITE_URL_IQRF_SYNC;
+		}
+		return `${this.wsProtocol + this.hostname + (this.isDev ? ':8881': this.port) }/sync`;
 	}
 
 	/**
 	 * Returns REST API URL from passed hostname
+	 * @param {string} hostname Hostname
+	 * @return {string} REST API URL
 	 */
-	getRestApiUrlFromAddr(hostname: string): string {
-		return '//' + hostname + (this.isDev ? ':8080' : this.port) + import.meta.env.VITE_BASE_URL + 'api/v0/';
+	public getRestApiUrlFromHostname(hostname: string): string {
+		return `//${ hostname }${this.isDev ? ':8080' : this.port }${import.meta.env.VITE_BASE_URL }api/v0/`;
 	}
 
 }

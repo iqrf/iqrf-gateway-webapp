@@ -14,45 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Vue from 'vue';
-import Vuex, {Store} from 'vuex';
-import createPersistentState from 'vuex-persistedstate';
 
-import blocking from './modules/blocking.module';
-import features from './modules/features.module';
-import gateway from './modules/gateway.module';
-import installation from './modules/installation.module';
-import sidebar from './modules/sidebar.module';
-import spinner from './modules/spinner.module';
-import user from './modules/user.module';
-import daemonClient from './modules/daemonClient.module';
-import monitorClient from './modules/monitorClient.module';
-import repository from './modules/repository.module';
-import webSocket from './modules/webSocket.module';
+import { createPinia } from 'pinia';
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
 
-Vue.use(Vuex);
+// Creates a new Pinia instance
+const pinia = createPinia();
+pinia.use(piniaPluginPersistedstate);
 
-const store: Store<any> = new Vuex.Store({
-	modules: {
-		blocking,
-		features,
-		gateway,
-		installation,
-		sidebar,
-		spinner,
-		user,
-		webSocket,
-		daemonClient,
-		monitorClient,
-		repository,
-	},
-	plugins: [createPersistentState({
-		paths: [
-			'features',
-			'repository',
-			'user',
-		]
-	})]
-});
-
-export default store;
+export default pinia;

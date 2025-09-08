@@ -1,4 +1,0 @@
-src/schemas/functions/*.js
-temp/*
-vendor/*
-www/dist/*

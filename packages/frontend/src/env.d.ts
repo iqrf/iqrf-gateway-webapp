@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-/// <reference types="vite/client" />
+/// <reference types='vite/client' />
 
 /**
  * Environment variables
@@ -23,7 +23,12 @@
 interface ImportMetaEnv {
 	/// REST API base URL
 	VITE_BASE_URL: string
-	readonly VITE_CYPRESS_ENABLED: string
+	/// IDE
+	VITE_EDITOR: 'appcode' | 'atom' | 'atom-beta' | 'brackets' | 'clion' | 'code' | 'code-insiders' | 'codium' | 'emacs' | 'idea' | 'notepad++' | 'pycharm' | 'phpstorm' | 'rubymine' | 'sublime' | 'vim' | 'visualstudio' | 'webstorm'
+	/// Default language
+	VITE_I18N_LOCALE: string
+	/// Fallback language
+	VITE_I18N_FALLBACK_LOCALE: string
 	/// Sentry enablement
 	VITE_SENTRY_ENABLED: boolean
 	/// Sentry DSN
@@ -32,6 +37,8 @@ interface ImportMetaEnv {
 	VITE_URL_DAEMON_API: string
 	/// IQRF Gateway Daemon Monitor URL
 	VITE_URL_DAEMON_MONITOR: string
+	/// IQRF network sync URL
+	VITE_URL_IQRF_SYNC: string
 	/// REST API URL
 	VITE_URL_REST_API: string
 }
