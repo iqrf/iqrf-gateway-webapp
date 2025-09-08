@@ -15,12 +15,11 @@
  * limitations under the License.
  */
 
-import Vue from 'vue';
-import VueI18n from 'vue-i18n';
+import { createI18n } from 'vue-i18n';
 import {
 	cs as csVuetify,
 	en as enVuetify,
-} from 'vuetify/lib/locale';
+} from 'vuetify/locale';
 
 import csWebapp from '@/locales/cs.json';
 import enWebapp from '@/locales/en.json';
@@ -35,43 +34,42 @@ const en = {
 	...enWebapp,
 };
 
-Vue.use(VueI18n);
+type MessageSchema = typeof en;
 
-export default new VueI18n({
-	dateTimeFormats: {
+export type Locales = 'en' | 'cs';
+
+export default createI18n<MessageSchema, Locales>({
+	datetimeFormats: {
 		cs: {
 			short: {
-				year: 'numeric', month: 'short', day: 'numeric'
-			},
-			normal: {
 				year: 'numeric', month: 'short', day: 'numeric',
-				hour: 'numeric', minute: 'numeric',
 			},
 			long: {
 				year: 'numeric', month: 'short', day: 'numeric',
-				weekday: 'short', hour: 'numeric', minute: 'numeric', second: 'numeric'
-			}
+				weekday: 'short', hour: 'numeric', minute: 'numeric', second: 'numeric',
+			},
+			time: {
+				hour: 'numeric', minute: 'numeric', second: 'numeric',
+			},
 		},
 		en: {
 			short: {
-				year: 'numeric', month: 'short', day: 'numeric'
-			},
-			normal: {
 				year: 'numeric', month: 'short', day: 'numeric',
-				hour: 'numeric', minute: 'numeric',
 			},
 			long: {
 				year: 'numeric', month: 'short', day: 'numeric',
-				weekday: 'short', hour: 'numeric', minute: 'numeric', second: 'numeric'
-			}
-		}
+				weekday: 'short', hour: 'numeric', minute: 'numeric', second: 'numeric',
+			},
+			time: {
+				hour: 'numeric', minute: 'numeric', second: 'numeric',
+			},
+		},
 	},
-	pluralizationRules: {
+	pluralRules: {
 		cs: (choice: number, choicesLength: number): number => {
 			if (choice === 0) {
 				return 0;
 			}
-			console.error(choice);
 			const teen: boolean = choice > 10 && choice < 20;
 			const lastDigit: number = choice % 10;
 			if (choice === 1) {
@@ -83,10 +81,11 @@ export default new VueI18n({
 			return (choicesLength < 4) ? 2 : 3;
 		},
 	},
-	locale: 'en',
-	fallbackLocale: 'en',
+	locale: import.meta.env.VITE_I18N_LOCALE as Locales,
+	fallbackLocale: import.meta.env.VITE_I18N_FALLBACK_LOCALE as Locales,
+	legacy: false,
 	messages: {
-		'cs': cs,
-		'en': en,
+		cs: cs,
+		en: en,
 	},
 });

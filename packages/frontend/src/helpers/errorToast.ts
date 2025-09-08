@@ -14,86 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import i18n from '@/plugins/i18n';
-import store from '@/store';
-import Vue from 'vue';
 
-import {AxiosError} from 'axios';
-import {ErrorResponse} from '@/types';
+import { type ErrorResponse } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { type AxiosError } from 'axios';
+import { toast } from 'vue3-toastify';
+
+import i18n from '@/plugins/i18n';
 
 /**
- * Shows error toast with assignable parameters
+ * Error toast
+ * @deprecated
  * @param {AxiosError} error Axios error
- * @param {string} message Path to translation message
- * @param {Dict<string|number>|undefined} params Partial translations for message placeholders
+ * @param {string} message Message
+ * @param {Record<string, string|number>|undefined} params Parameters
  */
-export function extendedErrorToast(error: AxiosError, message: string, params: Record<string, string|number>|undefined = undefined): void {
+export function basicErrorToast(error: AxiosError, message: string, params: Record<string, string|number>|undefined = undefined): void {
 	const translations = {
-		error: error.response ? (error.response.data as ErrorResponse).message : error.message
+		error: error.response ? (error.response.data as ErrorResponse).message : error.message,
 	};
 	if (params !== undefined) {
 		Object.assign(translations, params);
 	}
-	store.commit('spinner/HIDE');
-	Vue.$toast.error(i18n.t(message, translations).toString());
-}
-
-/**
- * Calls extended error toast with IQRF Gateway Controller argument
- * @param {AxiosError} error Axios error
- * @param {string} message Path to translation message
- * @param {Dict<string>|undefined} params Partial translations for message placeholders
- */
-export function controllerErrorToast(error: AxiosError, message: string, params: Record<string, string>|undefined = undefined): void {
-	if (params === undefined) {
-		params = {service: 'IQRF Gateway Controller'};
-	} else {
-		Object.assign(params, {service: 'IQRF Gateway Controller'});
-	}
-	extendedErrorToast(error, message, params);
-}
-
-/**
- * Calls extended error toast with IQRF Gateway Daemon argument
- * @param {AxiosError} error Axios error
- * @param {string} message Path to translation message
- * @param {Dict<string>|undefined} params Partial translations for message placeholders
- */
-export function daemonErrorToast(error: AxiosError, message: string, params: Record<string, string>|undefined = undefined): void {
-	if (params === undefined) {
-		params = {service: 'IQRF Gateway Daemon'};
-	} else {
-		Object.assign(params, {service: 'IQRF Gateway Daemon'});
-	}
-	extendedErrorToast(error, message, params);
-}
-
-/**
- * Calls extended error toast with Mender argument
- * @param {AxiosError} error Axios error
- * @param {string} message Path to translation message
- * @param {Dict<string>|undefined} params Partial translations for message placeholders
- */
-export function menderErrorToast(error: AxiosError, message: string, params: Record<string, string>|undefined = undefined): void {
-	if (params === undefined) {
-		params = {service: 'Mender'};
-	} else {
-		Object.assign(params, {service: 'Mender'});
-	}
-	extendedErrorToast(error, message, params);
-}
-
-/**
- * Calls extended error toast with Monit argument
- * @param {AxiosError} error Axios error
- * @param {string} message Path to translation message
- * @param {Dict<string>|undefined} params Partial translations for message placeholders
- */
-export function monitErrorToast(error: AxiosError, message: string, params: Record<string, string>|undefined = undefined): void {
-	if (params === undefined) {
-		params = {service: 'Monit'};
-	} else {
-		Object.assign(params, {service: 'Monit'});
-	}
-	extendedErrorToast(error, message, params);
+	toast.error(
+		i18n.global.t(message, translations),
+	);
 }

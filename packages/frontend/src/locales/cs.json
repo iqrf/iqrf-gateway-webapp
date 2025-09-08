@@ -1,174 +1,1077 @@
 {
-	"cloud": {
-		"amazonAws": {
-			"description": "Vytvoří nové MQTT připojení do Amazon AWS IoT.",
-			"title": "Amazon AWS IoT",
-			"messages": {
-				"mismatchedCrtAndKey": "Soukromý klíč neodpovídá certifikátu."
+	"$iqrf": {
+		"common": {
+			"actions": {
+				"add": "Přidat",
+				"apply": "Použít",
+				"cancel": "Zrušit",
+				"close": "Zavřít",
+				"confirm": "Potvrdit",
+				"delete": "Smazat",
+				"disable": "Zakázat",
+				"download": "Stáhnout",
+				"edit": "Změnit",
+				"enable": "Povolit",
+				"export": "Exportovat",
+				"import": "Importovat",
+				"next": "Další",
+				"previous": "Předchozí",
+				"reload": "Obnovit",
+				"reset": "Resetovat",
+				"restart": "Restartovat",
+				"save": "Uložit",
+				"showDetails": "Zobrazit detaily",
+				"skip": "Přeskočit",
+				"start": "Spustit",
+				"stop": "Zastavit",
+				"upload": "Nahrát"
 			},
-			"errors": {
-				"key": "Zadejte prosím soukromý klíč."
+			"components": {
+				"datatable": {
+					"filterColumns": "Filtrovat sloupce"
+				}
 			}
-		},
-		"title": "Cloudové služby",
-		"ibmCloud": {
-			"title": "IBM Cloud",
-			"description": "Vytvoří nové MQTT připojení do IBM Cloudu."
-		},
-		"description": "Vytvoření připojení do cloudových služeb.",
-		"messages": {
-			"downloadFailure": "Webové aplikaci se nepodařilo stáhnout certifikát kořenové certifikační autority. Brána pravděpodobně není připojena k internetu.",
-			"success": "Nové připojení do cloudové služby bylo úspěšně vytvořeno.",
-			"cannotCreateDir": "Webové aplikaci se nepodařilo vytvořit složku pro certifikáty."
-		},
-		"msAzure": {
-			"title": "Microsoft Azure IoT hub",
-			"description": "Vytvoří nové MQTT připojení do Microsoft Azure IoT Hubu."
 		}
 	},
-	"account": {
-		"email": {
-			"messages": {
-				"missing": "Váš uživatelský účet nemá nastavenou e-mailovou adresu. Bez ověřené e-mailové adresy si nemůžete obnovit heslo v případě jeho zapomenutí.",
-				"unverified": "Vaše e-mailová adresa ({email}) není ověřená. Bez ověřené e-mailové adresy si nemůžete obnovit heslo v případě jeho zapomenutí."
-			}
+	"common": {
+		"columns": {
+			"actions": "Akce",
+			"description": "Popis",
+			"id": "ID"
 		},
-		"recovery": {
-			"changePrompt": "Zadejte prosím nové heslo.",
-			"messages": {
-				"changeSuccess": "Heslo bylo úspěšně změněno.",
-				"changeFailed": "Nepodařilo se změnit heslo: {error}",
-				"sendFailed": "Nepodařilo se odeslat e-mail pro obnovení hesla: {error}"
+		"messages": {
+			"fetchFailed": "Při načítání dat došlo k chybě."
+		},
+		"states": {
+			"active": "Aktivní",
+			"disabled": "Zakázáno",
+			"enabled": "Povoleno",
+			"inactive": "Neaktivní",
+			"invalid": "Nevalidní",
+			"valid": "Validní"
+		},
+		"validation": {
+			"credentialsMissing": "Zadejte prosím jak uživatelské jméno, tak i heslo, nebo nechte obě pole prázdná.",
+			"email": {
+				"format": "Prosím zadejte platnou e-mailovou adresu.",
+				"required": "Prosím zadejte e-mailovou adresu."
 			},
-			"title": "Obnovení účtu",
-			"changePassword": "Změna hesla"
+			"password": {
+				"minLength": "Heslo musí být minimálně 8 znaků dlouhé.",
+				"required": "Prosím zadejte heslo."
+			},
+			"passwordConfirm": {
+				"match": "Hesla se neshodují.",
+				"required": "Prosím zadejte heslo znovu pro potvrzení."
+			},
+			"portInvalid": "Číslo portu musí být celé číslo mezi 1 a 65535.",
+			"portMissing": "Zadejte prosím číslo portu.",
+			"username": {
+				"required": "Prosím zadejte uživatelské jméno."
+			}
 		}
 	},
-	"service": {
-		"errors": {
-			"unsupportedService": "Nepodporovaná služba"
-		}
-	},
-	"table": {
-		"messages": {
-			"noRecords": "Nebyly nalezeny žádné záznamy."
-		}
-	},
-	"config": {
-		"daemon": {
-			"scheduler": {
+	"components": {
+		"account": {
+			"details": {
 				"messages": {
-					"startSuccess": "Úloha plánovače {task} byla úspěšně spuštěna.",
-					"stopFailed": "Nepodařilo se zastavit úlohu plánovače.",
-					"rest": {
-						"invalidTask": "Konfigurace úlohy není platná.",
-						"invalidFile": "Importovaná konfigurace plánovače není platná.",
-						"notFound": "Úloha neexistuje.",
-						"exists": "Úloha s tímto ID již existuje."
+					"fetch": {
+						"failed": "Nepodařilo se načíst nastavení uživatelského účtu."
 					},
-					"startFailed": "Nepodařilo se spustit úlohu plánovače.",
-					"stopSuccess": "Úloha plánovače {task} byla úspěšně ukončena."
+					"save": {
+						"failed": "Nepodařilo se uložit nastavení uživatelského účtu: {error}",
+						"success": "Nastavení uživatelského účtu bylo úspěšně uloženo."
+					}
+				},
+				"title": "Nastavení uživatelského účtu"
+			},
+			"language": {
+				"label": "Jazyk"
+			},
+			"password": {
+				"confirmation": "Potvrzení nového hesla",
+				"current": "Současné heslo",
+				"messages": {
+					"save": {
+						"failed": "Nepodařilo se změnit Vaše heslo.",
+						"success": "Vaše heslo bylo úspěšně upraveno."
+					}
+				},
+				"new": "Nové heslo",
+				"title": "Změna hesla",
+				"validation": {
+					"confirmation": {
+						"required": "Prosím zadejte Vaše nové heslo znovu pro jeho potvrzení."
+					},
+					"current": {
+						"required": "Prosím zadejte Vaše aktuální heslo."
+					},
+					"new": {
+						"required": "Prosím zadejte Vaše nové heslo."
+					}
 				}
 			},
-			"misc": {
-				"iqrfRepository": {
-					"errors": {
-						"checkPeriod": "Zadejte prosím celé číslo větší nebo rovno 0."
+			"preferences": {
+				"messages": {
+					"save": {
+						"failed": "Nepodařilo se upravit Vaše uživatelské preference.",
+						"success": "Vaše uživatelské preference byly úspěšně upraveny."
 					}
+				},
+				"theme": "Téma",
+				"themes": {
+					"auto": "Systémové",
+					"dark": "Tmavé",
+					"light": "Světlé"
+				},
+				"timeFormat": "Formát času",
+				"timeFormats": {
+					"auto": "Systémový",
+					"hour12": "12-hodinový",
+					"hour24": "24-hodinový"
+				},
+				"title": "Preference"
+			},
+			"recovery": {
+				"confirmation": {
+					"button": "Nastavit nové heslo",
+					"messages": {
+						"expired": "Platnost žádosti o obnovení hesla vypršela.",
+						"failure": "Při změně hesla došlo k chybě.",
+						"notFound": "Žádost na obnovení hesla nebyla nalezena.",
+						"success": "Heslo bylo úspěšně změněno."
+					},
+					"prompt": "Prosím zadejte nové heslo."
+				},
+				"request": {
+					"button": "Odeslat žádost",
+					"messages": {
+						"failure": "Při žádosti o obnovení hesla došlo k chybě.",
+						"notFound": "Nelze požádat o obnovení hesla, uživatel neexistuje.",
+						"notVerified": "Nelze požádat o obnovení hesla, e-mailová adresa uživatele není ověřena.",
+						"success": "Na e-mailovou adresu přidruženou k účtu byl odeslán e-mail s dalšími pokyny k obnovení hesla."
+					},
+					"prompt": "Zadejte prosím uživatelské jméno a na přidruženou e-mailovou adresu vám bude zaslán e-mail pro obnovení hesla."
+				}
+			},
+			"verification": {
+				"addEmail": "Přidat e-mailovou adresu",
+				"messages": {
+					"alreadyVerified": "E-mailová adresa je již ověřena.",
+					"failure": "Při ověření e-mailové adresy došlo k chybě.",
+					"notFound": "Neexistující ověřovací kód.",
+					"redirect": "Za {coutdown} budete přesměrováni na přehled systému.",
+					"requestFailure": "Při odesílání ověřovacího e-mailu došlo k chybě.",
+					"requestSuccess": "Ověřovací e-mail byl úspěšně odeslán.",
+					"success": "Váš účet byl úspěšně ověřen."
+				},
+				"resend": "Znovu zaslat ověřovací e-mail",
+				"title": "Ověření účtu",
+				"unverified": "Vaše e-mailová adresa není ověřena. Některé funkce (např. výstrahy, hlášení, obnovení účtu...) nebudou k dispozici."
+			}
+		},
+		"auth": {
+			"expiration": {
+				"expirations": {
+					"day": "1 den",
+					"default": "90 minut",
+					"week": "1 týden"
+				},
+				"label": "Platnost sezení"
+			},
+			"sign": {
+				"in": {
+					"actions": {
+						"recoverPassword": "Zapomenuté heslo?",
+						"signIn": "Přihlásit se"
+					},
+					"messages": {
+						"failure": "Při přihlašování došlo k chybě.",
+						"incorrectUsernameOrPassword": "Zadali jste špatné uživatelské jméno nebo heslo.",
+						"success": "Přihlášení proběhlo úspěšně."
+					},
+					"title": "Přihlášení"
+				},
+				"out": {
+					"expired": "Platnost Vašeho sezení vypršela. Prosím přihlašte se znovu.",
+					"message": "Byli jste odhlášeni.",
+					"title": "Odhlášení"
+				}
+			}
+		},
+		"common": {
+			"actions": {
+				"add": "Přidat",
+				"apply": "Použít",
+				"cancel": "Zrušit",
+				"delete": "Smazat",
+				"disable": "Zakázat",
+				"download": "Stáhnout",
+				"edit": "Změnit",
+				"enable": "Povolit",
+				"export": "Exportovat",
+				"import": "Importovat",
+				"reload": "Obnovit",
+				"restart": "Restartovat",
+				"showDetails": "Zobrazit detaily",
+				"start": "Spustit",
+				"stop": "Zastavit",
+				"upload": "Nahrát"
+			},
+			"fields": {
+				"actions": "Akce",
+				"description": "Popis",
+				"email": "E-mailová adresa",
+				"id": "ID",
+				"password": "Heslo",
+				"passwordConfirm": "Potvrzení hesla",
+				"username": "Uživatelské jméno"
+			},
+			"locale": {
+				"languages": {
+					"cs": "Čeština",
+					"en": "Angličtina"
+				},
+				"messages": {
+					"set": "Lokalizace byla změněna na: {locale}."
+				}
+			},
+			"messages": {
+				"fetchFailed": "Při načítání dat došlo k chybě."
+			},
+			"validations": {
+				"email": {
+					"email": "Špatný formát e-mailové adresy.",
+					"required": "Zadejte prosím e-mailovou adresu."
+				},
+				"password": {
+					"minLength": "Heslo musí být minimálně 8 znaků dlouhé.",
+					"required": "Zadejte prosím heslo."
+				},
+				"passwordConfirm": {
+					"match": "Hesla se neshodují.",
+					"required": "Prosím zadejte heslo znovu pro potvrzení."
+				},
+				"port": {
+					"between": "Číslo portu musí být celé číslo mezi 1 a 65535.",
+					"required": "Zadejte prosím číslo portu."
+				},
+				"username": {
+					"required": "Zadejte prosím uživatelské jméno."
+				}
+			}
+		},
+		"config": {
+			"daemon": {
+				"component": "Jméno komponenty",
+				"instance": "Jméno instance",
+				"interfaces": {
+					"active": {
+						"interface": "IQRF rozhraní",
+						"messages": {
+							"save": {
+								"success": "IQRF rozhraní bylo úšpěšně změněno."
+							}
+						},
+						"title": "Aktivní IQRF rozhraní"
+					},
+					"interface": "Jméno rozhraní"
+				}
+			},
+			"smtp": {
+				"defaultConfig": "V současné době se používá výchozí konfigurace systému IQAROS.",
+				"errors": {
+					"host": "Prosím zadejte hostitele poštovního serveru.",
+					"hostInvalid": "Adresa hostitele poštovního serveru by měla být IP adresa, plně kvalifikovaný název domény nebo localhost.",
+					"password": "Prosím zadejte heslo pro přihlášení k poštovnímu serveru.",
+					"port": "Prosím zadejte port poštovního serveru.",
+					"portInvalid": "Port poštovního serveru by měl být celé číslo mezi 1 a 65535.",
+					"sender": "Prosím zadejte e-mailovou adresu odesílatele.",
+					"username": "Prosím zadejte uživatelské jméno pro přihlášení k poštovnímu serveru."
+				},
+				"form": {
+					"customConfig": "Použít vlastní konfiguraci pro poštovní server",
+					"enabled": "Povolit odesílání e-mailů",
+					"host": "Adresa hostitele",
+					"password": "Heslo",
+					"port": "Port",
+					"security": "Zabezpečení spojení",
+					"securityLevels": {
+						"none": "Žádné",
+						"ssl": "TLS",
+						"tls": "StartTLS"
+					},
+					"sender": "Odesílatel",
+					"test": "Odeslat testovací e-mail",
+					"title": "Konfigurace poštovního serveru",
+					"username": "Uživatelské jméno"
+				},
+				"messages": {
+					"fetchFailed": "Nepodařilo se načíst konfiguraci poštovního serveru: {error}",
+					"saveFailed": "Nepodařilo se uložit konfiguraci poštovního serveru: {error}",
+					"saveSuccess": "Konfigurace poštovního serveru byla úspěšně uložena.",
+					"testFailed": "Nepodařilo se odeslat testovací e-mail: {error}",
+					"testSuccess": "Testovací e-mail byl úspěšně odeslán."
+				}
+			}
+		},
+		"dev": {
+			"openApi": {
+				"messages": {
+					"fetchFailed": "Nastala chyba při získávání OpenAPI specifikace."
+				},
+				"title": "OpenAPI specifikace"
+			}
+		},
+		"errors": {
+			"403": {
+				"header": "Chyba 403",
+				"text": "K zobrazení této stránky nemáte oprávnění. Pokud se domníváte, že byste měli mít možnost tuto stránku zobrazit, zkuste prosím kontaktovat správce webové aplikace.",
+				"title": "Přístup odepřen"
+			},
+			"404": {
+				"header": "Chyba 404",
+				"text": "Požadovanou stránku se nepodařilo najít. Adresa může být nesprávná nebo stránka již neexistuje.",
+				"title": "Stránka nenalezena"
+			}
+		},
+		"gateway": {
+			"information": {
+				"addresses": {
+					"ip": "IP adresy",
+					"mac": "MAC adresy"
+				},
+				"board": "Deska",
+				"diagnostics": "Stáhnout diagnostická data",
+				"gwId": "IQRF Gateway ID",
+				"hostname": "Jméno hostitele",
+				"hostnameChange": {
+					"title": "Změna jména hostitele"
+				},
+				"os": "Operační systém",
+				"tr": {
+					"dpa": "DPA",
+					"error": "Nelze získat informace o koordinátoru.",
+					"hwpid": "HWPID",
+					"hwpidVersion": "HWPID ver.",
+					"mcuType": "Typ MCU",
+					"moduleId": "MID",
+					"moduleType": "Typ modulu",
+					"os": "OS",
+					"voltage": "Nalájecí napětí"
+				},
+				"uptime": "Doba běhu systému",
+				"usages": {
+					"disks": "Využití disku",
+					"memory": "Využití operační paměti",
+					"swap": "Využití swapu",
+					"used": "Využito"
+				},
+				"version": {
+					"iqrfCloudProvisioning": "IQRF Cloud Provisioning",
+					"iqrfGatewayController": "IQRF Gateway Controller",
+					"iqrfGatewayDaemon": "IQRF Gateway Daemon",
+					"iqrfGatewayInfluxdbBridge": "IQRF Gateway InfluxDB Bridge",
+					"iqrfGatewaySetter": "IQRF Gateway Setter",
+					"iqrfGatewayUploader": "IQRF Gateway Uploader",
+					"iqrfGatewayWebapp": "IQRF Gateway Webapp"
+				}
+			},
+			"power": {
+				"powerOff": {
+					"action": "Vypnout",
+					"messages": {
+						"failed": "Nepodařilo se naplánovat vypnutí brány.",
+						"success": "Vaše zařízení se vypne v {time}."
+					},
+					"prompt": "Brána se vypne během 60 sekund.",
+					"title": "Potvrzení vypnutí brány"
+				},
+				"reboot": {
+					"action": "Restartovat",
+					"messages": {
+						"failed": "Nepodařilo se naplánovat restart brány.",
+						"success": "Vaše zařízení se restartuje v {time}, restart může trvat desítky sekund."
+					},
+					"prompt": "Brána se restartuje během 60 sekund.",
+					"title": "Potvrzení restartu brány"
+				}
+			}
+		},
+		"install": {
+			"checks": {
+				"loading": "IQRF Gateway Webapp se načítá…",
+				"messages": {
+					"failed": "Při načítání aplikace IQAROS došlo k chybě. Zkuste znovu načíst stránku."
+				}
+			},
+			"errors": {
+				"misconfiguredSudo": {
+					"fixes": {
+						"invalid": "Umožněte uživateli {user} spouštět příkazy sudo pomocí následujících příkazů:",
+						"missing": "Vstupte do interaktivního příkazového řádku jako root a nainstalujte nástroj sudo pomocí následujících příkazů:"
+					},
+					"texts": {
+						"invalid": "IQRF Gateway Webapp zjistila ve vašem systému neplatnou konfiguraci sudo, takže některé příkazy nelze spustit.",
+						"missing": "IQRF Gateway Webapp nedetekovala příkaz sudo ve vašem systému, který jej vyžaduje ke správnému fungování."
+					},
+					"title": "Nesprávně nakonfigurované sudo"
+				},
+				"missingDependencies": {
+					"command": "Příkaz",
+					"package": "Balíček",
+					"text": "IQRF Gateway Webapp detekovala následující chybějící závislosti: {dependencies}.",
+					"title": "Chybějící závislosti"
+				},
+				"missingMigrations": {
+					"fix": "Pro opravu spusťte v terminálu následující příkaz:",
+					"text": "IQRF Gateway Webapp detekovala chybějící databázové migrace.",
+					"title": "Chybějící databázové migrace"
+				},
+				"missingPhpExtensions": {
+					"fix": "Pro instalaci chybějících rozššíření v terminálu následující příkaz:",
+					"text": "IQRF Gateway Webapp detekovala následující chybějící PHP rozšíření: {extensions}.",
+					"title": "Chybějící PHP rozšíření"
+				}
+			},
+			"wizard": {
+				"adminUserCreation": {
+					"button": "Vytvoř uživatele",
+					"text": "Vytvoření nového uživatele pro přístup k webovému rozhraní brány IQRF a konfiguraci systému.",
+					"title": "Vytvoření nového uživatelského účtu"
+				},
+				"adminUserPreferences": {
+					"title": "Nastavte si své preference"
+				},
+				"dateTimeConfiguration": {
+					"text": "Nastavení datumu, času a časové zóny brány IQRF.",
+					"title": "Konfigurace datumu a času"
+				},
+				"installationCompleted": {
+					"button": "Přejít do aplikace",
+					"text": "Gratulujeme, dokončili jste nastavení Vaší nové brány IQRF.",
+					"title": "Instalace dokončena"
+				},
+				"mailServerConfiguration": {
+					"text": "Nastavení poštovního serveru pro odesílání e-mailů.",
+					"title": "Konfigurace poštovního serveru"
+				},
+				"sshServerConfiguration": {
+					"messages": {
+						"fetchFailed": "Nepodařilo se získat stav služby SSH serveru.",
+						"saveFailed": "Nepodařilo se uložit nový stav služby SSH serveru."
+					},
+					"service": {
+						"disable": "Službu SSH nespouštějte.",
+						"enable": "Službu SSH spusťte při každém spuštění systému.",
+						"start": "Službu SSH spusťte nyní, jednou."
+					},
+					"text": "Nastavení SSH serveru pro vzdálený přístup k terminálu Vaší brány IQRF.",
+					"title": "Konfigurace SSH serveru"
+				}
+			}
+		},
+		"ipNetwork": {
+			"connections": {
+				"actions": {
+					"add": "Přidat nové připojení",
+					"connect": "Připojit připojení",
+					"delete": "Odstranit připojení",
+					"disconnect": "Odpojit připojení",
+					"edit": "Upravit připojení",
+					"saveAndConnect": "Uložit a připojit"
+				},
+				"add": {
+					"messages": {
+						"failure": "Nepodařilo se vytvořit nové síťové připojení {name}.",
+						"success": "Nové síťové připojení {name} bylo úspěšně vytvořeno."
+					},
+					"titles": {
+						"802-11-wireless": "Vytvoření nového WiFi připojení",
+						"802-3-ethernet": "Vytvoření nového drátového připojení",
+						"gsm": "Vytvoření nového mobilního připojení",
+						"vlan": "Vytvoření nového VLAN připojení"
+					}
+				},
+				"columns": {
+					"interfaceName": "Jméno rozhraní",
+					"name": "Jméno připojení",
+					"state": "Stav",
+					"states": {
+						"activated": "Aktivováno",
+						"activating": "Aktivuje se",
+						"deactivated": "Deaktivováno",
+						"deactivating": "Deaktivuje se",
+						"unknown": "Neznámý"
+					}
+				},
+				"connect": {
+					"messages": {
+						"failure": "Nepodařilo se spojit síťové připojení {name}.",
+						"success": "Síťové připojení {name} bylo úspěšně spojeno."
+					}
+				},
+				"delete": {
+					"messages": {
+						"failure": "Nepodařilo se odstranit síťové připojení {name}.",
+						"success": "Síťové připojení {name} bylo úspěšně odstraněno."
+					},
+					"prompt": "Pokud přistupujete k webovému rozhraní z adresy používané tímto profilem síťového připojení, jeho odstranění způsobí, že webové rozhraní již nebude na této adrese dostupné. Chcete opravdu odstranit síťové připojení {name}?",
+					"title": "Potvrzení odstranění síťového připojení"
+				},
+				"disconnect": {
+					"messages": {
+						"failure": "Nepodařilo se odpojit síťové připojení {name}.",
+						"success": "Síťové připojení {name} bylo úspěšně odpojeno."
+					},
+					"prompt": "Pokud přistupujete k webovému rozhraní z adresy používané tímto profilem síťového připojení, jeho odpojení způsobí, že webové rozhraní již nebude na této adrese dostupné. Chcete opravdu odpojit síťové připojení {name}?",
+					"title": "Potvrzení odpojení síťového připojení"
+				},
+				"edit": {
+					"messages": {
+						"failure": "Nepodařilo se upravit síťové připojení {name}.",
+						"success": "Síťové připojení {name} bylo úspěšně upraveno."
+					},
+					"title": "Úprava nastavení síťového připojení",
+					"titles": {
+						"802-11-wireless": "Úprava nastavení WiFi připojení",
+						"802-3-ethernet": "Úprava nastavení drátového připojení",
+						"gsm": "Úprava nastavení mobilního připojení",
+						"vlan": "Úprava nastavení VLAN připojení"
+					}
+				},
+				"errors": {
+					"generic": {
+						"interface": {
+							"required": "Vyberte prosím síťové rozhraní."
+						},
+						"name": {
+							"required": "Zadejte prosím jméno připojení."
+						}
+					},
+					"gsm": {
+						"apn": {
+							"apn": "Zadejte prosím platné jméno přístupového bodu.",
+							"required": "Zadejte prosím jméno přístupového bodu."
+						},
+						"password": {
+							"required": "Zadejte prosím heslo."
+						},
+						"pin": {
+							"pin": "Zadejte prosím platný PIN kód, který je složen ze 4-8 číslic.",
+							"required": "Zadejte prosím PIN kód."
+						},
+						"username": {
+							"required": "Zadejte prosím uživatelské jméno."
+						}
+					},
+					"ip": {
+						"disabledBothIpStacks": "Nelze nastavit aktuální IP konfiguraci, protože konfigurace obou IP zásobníků jsou zakázány."
+					},
+					"ipv4": {
+						"address": {
+							"ipv4Address": "Zadejte prosím platnou IPv4 adresu.",
+							"ipv4Subnet": "IPv4 adresy zařízení a brány nejsou v jedné podsíťi.",
+							"required": "Zadejte prosím IPv4 adresu."
+						},
+						"dns": {
+							"ipv4Address": "Zadejte prosím platnou IPv4 adresu DNS serveru.",
+							"required": "Zadejte prosím IPv4 adresu DNS serveru."
+						},
+						"gateway": {
+							"ipv4Address": "Zadejte prosím platnou IPv4 adresu brány.",
+							"ipv4Subnet": "IPv4 adresy zařízení a brány nejsou v jedné podsíťi.",
+							"required": "Zadejte prosím IPv4 adresu brány."
+						},
+						"mask": {
+							"ipv4Address": "Zadejte prosím platnou IPv4 masku podsítě.",
+							"required": "Zadejte prosím IPv4 masku podsítě."
+						},
+						"method": {
+							"required": "Vyberte prosím IPv4 konfigurační metodu."
+						},
+						"prefix": {
+							"between": "IPv4 prefix podsítě musí být celé číslo mezi 0 a 32.",
+							"required": "Zadejte prosím IPv4 prefix podsítě."
+						}
+					},
+					"ipv6": {
+						"address": {
+							"ipv6Address": "Zadejte prosím platnou IPv6 adresu.",
+							"ipv6Subnet": "IPv6 adresy zařízení a brány nejsou v jedné podsíťi.",
+							"required": "Zadejte prosím IPv6 adresu."
+						},
+						"dns": {
+							"ipv6Address": "Zadejte prosím platnou IPv6 adresu DNS serveru.",
+							"required": "Zadejte prosím IPv6 adresu DNS serveru."
+						},
+						"gateway": {
+							"ipv6Address": "Zadejte prosím platnou IPv4 adresu brány.",
+							"ipv6Subnet": "IPv6 adresy zařízení a brány nejsou v jedné podsíťi.",
+							"required": "Zadejte prosím IPv4 adresu brány."
+						},
+						"method": {
+							"required": "Vyberte prosím IPv6 konfigurační metodu."
+						},
+						"prefix": {
+							"between": "IPv6 prefix podsítě musí být celé číslo mezi 0 a 128.",
+							"required": "Zadejte prosím IPv6 prefix podsítě."
+						}
+					},
+					"serial": {
+						"baudRate": {
+							"numerical": "Baud rate musí být číselná hodnota.",
+							"required": "Zadejte prosím baud rate"
+						}
+					},
+					"vlan": {
+						"id": {
+							"invalid": "VLAN ID musí být celé číslo mezi 1 a 4094.",
+							"required": "Zadejte prosím VLAN ID."
+						}
+					},
+					"wifi": {
+						"security": {
+							"psk": {
+								"required": "Zadejte prosím předsdílený klíč."
+							},
+							"type": {
+								"required": "Vyberte prosím typ zabezpečení."
+							}
+						},
+						"ssid": {
+							"required": "Zadejte prosím SSID přístupového bodu."
+						}
+					}
+				},
+				"form": {
+					"autoConnect": {
+						"enabled": "Automatické navázání spojení"
+					},
+					"eap": {
+						"anonymousIdentity": "Anonymní identita",
+						"cert": "Certifikát certifikační autority",
+						"identity": "Identita",
+						"password": "Heslo"
+					},
+					"generic": {
+						"interface": "Síťové rozhraní",
+						"name": "Jméno připojení"
+					},
+					"gsm": {
+						"apn": "Jméno přístupového bodu",
+						"password": "Heslo",
+						"pin": "PIN kód",
+						"title": "Konfigurace mobilního připojení",
+						"username": "Uživatelské jméno"
+					},
+					"ip": {
+						"title": "IP konfigurace"
+					},
+					"ipv4": {
+						"address": "IPv4 adresa",
+						"dns": {
+							"address": "IPv4 adresa DNS serveru",
+							"title": "IPv4 DNS servery"
+						},
+						"gateway": "IPv4 adresa brány",
+						"mask": "IPv4 maska podsítě",
+						"method": "IPv4 konfigurační metoda",
+						"methods": {
+							"auto": "Automatická (DHCP)",
+							"disabled": "Zakázáno",
+							"link-local": "Linkově-lokální",
+							"manual": "Statická",
+							"null": "Vyberte prosím IPv4 konfigurační metodu",
+							"shared": "Sdílení s ostatními počítači"
+						},
+						"prefix": "IPv4 prefix podsítě",
+						"title": "IPv4 konfigurace"
+					},
+					"ipv6": {
+						"address": "IPv6 adresa",
+						"dns": {
+							"address": "IPv6 adresa DNS serveru",
+							"title": "IPv6 DNS servery"
+						},
+						"gateway": "IPv6 adresa brány",
+						"method": "IPv6 konfigurační metoda",
+						"methods": {
+							"auto": "Automatická (SLAAC)",
+							"dhcp": "Automatická (pouze DHCPv6)",
+							"disabled": "Zakázáno",
+							"ignore": "Ignorováno",
+							"link-local": "Linkově-lokální",
+							"manual": "Statická",
+							"null": "Vyberte prosím IPv4 konfigurační metodu",
+							"shared": "Sdílení s ostatními počítači"
+						},
+						"prefix": "IPv6 prefix podsítě",
+						"title": "IPv6 konfigurace"
+					},
+					"serial": {
+						"baudRate": "Baud rate",
+						"title": "Konfigurace sériové linky"
+					},
+					"vlan": {
+						"id": "VLAN ID",
+						"title": "Konfigurace VLAN připojení"
+					},
+					"wifi": {
+						"security": {
+							"leap": {
+								"password": "Heslo",
+								"username": "Uživatelské jméno"
+							},
+							"psk": "Předsdílený klíč",
+							"type": "Typ zabezpečení",
+							"types": {
+								"leap": "LEAP",
+								"null": "Prosím vyberte typ zabezpečení",
+								"open": "Otevřená síť",
+								"wep": "WEP",
+								"wpa-eap": "WPA-Enterprise",
+								"wpa-psk": "WPA-Personal"
+							},
+							"wep": {
+								"index": "Výchozí WEP klíč",
+								"keyNum": "WEP klíč {index}",
+								"length": "Délka WEP klíče",
+								"lengths": {
+									"128bit": "128 bitů (13 ASCII nebo 26 hexadecimálních znaků)",
+									"64bit": "64 bitů (5 ASCII nebo 10 hexadecimálních znaků)",
+									"null": "Prosím vyberte délku WEP klíče"
+								},
+								"type": "Formát WEP klíče",
+								"types": {
+									"key": "Klíč",
+									"null": "Prosím vyberte typ WEP klíče",
+									"passphrase": "Heslová fráze"
+								}
+							}
+						},
+						"ssid": "SSID",
+						"title": "Konfigurace WiFi připojení"
+					}
+				},
+				"titles": {
+					"802-11-wireless": "WiFi připojení",
+					"802-3-ethernet": "Drátová připojení",
+					"gsm": "Mobilní připojení",
+					"vlan": "VLAN připojení"
 				}
 			},
 			"interfaces": {
-				"types": {
-					"uart": "UART",
-					"cdc": "CDC",
-					"spi": "SPI"
+				"columns": {
+					"macAddress": "MAC adresa",
+					"manufacturer": "Výrobce",
+					"model": "Model",
+					"name": "Jméno",
+					"state": "Stav",
+					"states": {
+						"connected": "Připojené",
+						"connecting": "Připojující se",
+						"connecting (checking IP connectivity)": "Kontrolující IP konektivitu",
+						"connecting (configuring)": "Konfigurující",
+						"connecting (getting IP configuration)": "Získávání IP konfigurace",
+						"connecting (need authentication)": "Potřebující autentizaci",
+						"connecting (prepare)": "Připravující se",
+						"connecting (starting secondary connections)": "Startující sekundární připojení",
+						"connection failed": "Selhalo připojení",
+						"deactivating": "Odpojuje se",
+						"disconnected": "Odpojené",
+						"unavailable": "Nedostupné",
+						"unknown": "Neznámé",
+						"unmanaged": "Nespravované"
+					}
 				},
-				"form": {
-					"placeholder": "Zvolte prosím komunikační rozhraní."
+				"titles": {
+					"ethernet": "Drátové rozhraní",
+					"vlan": "VLAN rozhraní",
+					"wifi": "WiFi rozhraní"
 				}
 			},
-			"description": "Konfigurace IQRF daemona",
-			"messagings": {
-				"mqtt": {
-					"form": {
-						"BrokerAddr": "Adresa brokeru"
+			"modems": {
+				"actions": {
+					"scan": "Vyhledat modemy"
+				},
+				"columns": {
+					"failedReasons": {
+						"esim-without-profiles": "eSIM bez profilů",
+						"none": "Žádná chyba",
+						"sim-error": "Nepoužitelná SIM karta",
+						"sim-missing": "Chybějící SIM karta",
+						"unknown": "Neznámá chyba",
+						"unknown-capabilities": "Neznámé schopnosti"
 					},
-					"errors": {
-						"BrokerAddr": "Zadejte prosím adresu MQTT brokeru."
+					"imei": "IMEI",
+					"interface": "Jméno rozhraní",
+					"manufacturer": "Výrobce",
+					"model": "Model",
+					"rssi": "RSSI",
+					"signal": "Síla signálu",
+					"state": "Stav",
+					"states": {
+						"connected": "Připojený",
+						"connecting": "Připojující se",
+						"disabled": "Zakázaný",
+						"disabling": "Zakazující se",
+						"disconnecting": "Odpojující se",
+						"enabled": "Povolený",
+						"enabling": "Povolující se",
+						"failed": "Nepoužitelný",
+						"initializing": "Inicializující se",
+						"locked": "Uzamčený",
+						"registered": "Registrovaný do sítě",
+						"searching": "Hledající síť",
+						"unknown": "Neznámý"
 					}
+				},
+				"title": "Modemy"
+			}
+		},
+		"layout": {
+			"themeSwitch": {
+				"title": "Přepnout téma"
+			}
+		},
+		"status": {
+			"monitor": {
+				"enumeration": {
+					"notRunning": "Enumerace neběží.",
+					"running": "Enumerace probíhá.",
+					"unavailable": "Stav enumerace není dostupný."
+				},
+				"mode": "Mód daemona",
+				"modes": {
+					"forwarding": "Přeposílání",
+					"operational": "Provozní",
+					"service": "Servisní",
+					"unknown": "Neznámý"
+				},
+				"notified": "Poslední oznámení",
+				"queue": "Délka fronty",
+				"version": "Verze daemona"
+			}
+		}
+	},
+	"pages": {
+		"accessControl": {
+			"apiKeys": {
+				"description": "Správa API klíčů.",
+				"title": "API klíče"
+			},
+			"sshKeys": {
+				"description": "Správa SSH klíčů.",
+				"title": "SSH klíče"
+			},
+			"title": "Řízení přístupu",
+			"users": {
+				"description": "Sparáva uživatelů webové aplikace.",
+				"title": "Uživatelé"
+			}
+		},
+		"account": {
+			"recovery": {
+				"title": "Obnova hesla"
+			}
+		},
+		"auth": {
+			"sign": {
+				"in": {
+					"title": "Přihlášení"
 				}
 			}
-		}
-	},
-	"iqrfnet": {
-		"product": {
-			"browse": "Procházet produkty",
-			"noProduct": "Produkty se nepodařilo načíst."
 		},
-		"enumeration": {
-			"deviceInfo": "Informace o zařízení",
-			"deviceAddr": "Adresa zařízení",
-			"hwpid": "HWPID",
-			"hwpidVer": "Verze HWPID",
-			"manufacturer": "Výrobce",
-			"product": "Název produktu",
-			"picture": "Obrázek produktu",
-			"mid": "ID modulu",
-			"dpaVersion": "Verze DPA",
-			"supplyVoltage": "Napájecí napětí",
-			"uncertifiedProduct": "Necertifikovaný výrobek"
-		},
-		"messages": {
-			"genericError": "Při zpracování požadavku došlo k neočekávané chybě.",
-			"genericErrorMessage": "Při zpracování požadavku došlo k neočekávané chybě: {error}"
-		},
-		"networkManager": {
-			"autoNetwork": {
-				"title": "AutoNetwork"
+		"config": {
+			"controller": {
+				"description": "Konfigurace IQRF Gateway Controlleru.",
+				"title": "IQRF GW Controller"
+			},
+			"daemon": {
+				"connections": {
+					"description": "Konfigurace připojení pomocí protokolů WebSocket, MQTT, MQ a UDP.",
+					"mqtt": {
+						"description": "Konfigurace MQTT připojení.",
+						"title": "MQTT"
+					},
+					"title": "Připojení",
+					"udp": {
+						"description": "Konfigurace UDP připojení.",
+						"title": "UDP"
+					},
+					"ws": {
+						"description": "Konfigurace WebSocket připojení.",
+						"title": "WebSocket"
+					}
+				},
+				"description": "Konfigurace IQRF Gateway Daemona.",
+				"interfaces": {
+					"cdc": {
+						"description": "Konfigurace USB CDC rozhraní.",
+						"title": "USB CDC"
+					},
+					"description": "Konfigurace IQRF komunikačního rozhraní.",
+					"dpa": {
+						"title": "DPA"
+					},
+					"spi": {
+						"description": "Konfigurace SPI rozhraní.",
+						"title": "SPI"
+					},
+					"title": "Rozhraní",
+					"uart": {
+						"description": "Konfigurace UART rozhraní.",
+						"title": "UART"
+					}
+				},
+				"json-api": {
+					"description": "Konfigurace JSON API.",
+					"title": "JSON API"
+				},
+				"repository": {
+					"description": "Konfigurace IQRF Repository.",
+					"title": "IQRF Repository"
+				},
+				"scheduler": {
+					"description": "Správa úkolů plánovače.",
+					"title": "Plánovač"
+				},
+				"title": "IQRF GW Daemon"
+			},
+			"influxdb-bridge": {
+				"title": "IQRF GW InfluxDB Bridge"
+			},
+			"mender": {
+				"description": "Konfigurace Mender klienta pro vzdálený přístup.",
+				"title": "Mender"
+			},
+			"monit": {
+				"description": "Konfigurace Monit klientů a kontroly zdraví systému.",
+				"title": "Monit"
+			},
+			"smtp": {
+				"description": "Konfigurace SMTP serveru.",
+				"title": "SMTP"
+			},
+			"time": {
+				"description": "Konfigurace času, časové zóny a síťová synchronizace času.",
+				"title": "Datum a čas"
+			},
+			"title": "Konfigurace",
+			"unattendedUpgrades": {
+				"description": "Konfigurace služby automatických aktualizací.",
+				"title": "Automatické aktualizace"
 			}
 		},
-		"standard": {
-			"table": {
-				"fields": {
-					"manufacturer": "Výrobce"
-				}
+		"dev": {
+			"description": "Nástroje pro vývoj a testování.",
+			"openApi": {
+				"description": "Otevře OpenAPI dokumentaci REST API.",
+				"title": "OpenAPI specifikace"
+			},
+			"title": "Vývojářské nástroje"
+		},
+		"docs": {
+			"description": "Otevře dokumentaci v novém panelu.",
+			"title": "Dokumentace"
+		},
+		"gateway": {
+			"description": "Zobrazení informací o bráně, službách a správa napájení.",
+			"information": {
+				"description": "Informace o této bráně.",
+				"title": "Informace"
+			},
+			"power": {
+				"description": "Vypnutí nebo restartování této brány.",
+				"title": "Napájení"
+			},
+			"services": {
+				"description": "Správa služeb a zobrazení jejich stavu.",
+				"title": "Služby"
+			},
+			"title": "Brána"
+		},
+		"install": {
+			"errors": {
+				"messages": {
+					"reload": {
+						"failed": "Nepodařilo se znovu spustit kontrolu instalace.",
+						"success": "Kontrola instalace byla znovu spuštěna.",
+						"successNoErrors": "Kontrola instalace byla znovu spuštěna a v instalaci již nebyla nalezena žádná chyba."
+					}
+				},
+				"text": "IQRF Gateway Webapp detekovala následující problémy s instalací. Prosím opravte je abyste mohli aplikaci používat.",
+				"title": "Chyby instalace"
+			},
+			"smtp": {
+				"title": "Konfigurace SMTP serveru"
+			},
+			"sshKeys": {
+				"title": "Přidání SSH klíčů"
+			},
+			"sshService": {
+				"title": "SSH služba"
+			},
+			"title": "Instalační průvodce",
+			"user": {
+				"title": "Vytvoření nového uživatele"
+			},
+			"wizard": {
+				"text": "Vítejte ve Vašem nové bráně IQRF.",
+				"title": "Instalační průvodce brány IQRF"
 			}
-		}
-	},
-	"install": {
-		"messages": {
-			"check": "Probíhá kontrola instalace…",
-			"finished": "Proces instalace byl úspěšně dokončen."
-		}
-	},
-	"network": {
-		"interface": {
-			"manufacturer": "Výrobce",
-			"model": "Model",
-			"macAddress": "MAC adresa",
-			"title": "Síťová rozhraní"
 		},
-		"mobile": {
-			"table": {
-				"restartModemManager": "Restartovat modem"
+		"ipNetwork": {
+			"ethernet": {
+				"description": "Správa drátových síťových připojení.",
+				"title": "Drátové připojení"
+			},
+			"mobile": {
+				"description": "Správa mobilních připojení.",
+				"title": "Mobilní připojení"
+			},
+			"title": "IP síť",
+			"vlan": {
+				"description": "Správa VLAN připojení.",
+				"title": "VLAN připojení"
+			},
+			"wireless": {
+				"description": "Správa bezdrátových připojení.",
+				"title": "Bezdrátové připojení"
 			}
+		},
+		"iqrfnet": {
+			"description": "Správa IQRF sítě a zařízení.",
+			"send-dpa": {
+				"description": "Odesílání surových DPA paketů do IQRF sítě.",
+				"title": "Odeslat DPA paket"
+			},
+			"send-json": {
+				"description": "Odesílání JSON požadavků do IQRF sítě.",
+				"title": "Odeslat JSON požadavek"
+			},
+			"title": "IQRF síť",
+			"tr-config": {
+				"description": "Konfigurace TR modulů.",
+				"title": "TR konfigurace"
+			},
+			"upload": {
+				"description": "Nahrání custom DPA handlerů a změna verze DPA.",
+				"title": "Nahrání do kooordinátoru"
+			}
+		},
+		"maintenance": {
+			"backup": {
+				"description": "Zálohování nebo obnovení zílohy brány.",
+				"title": "Zálohování a obnova"
+			},
+			"description": "Nástroje pro údržbu brány.",
+			"title": "Údržba"
+		},
+		"profile": {
+			"title": "Uživatelský profil"
 		}
 	},
-	"forms": {
-		"fields": {
-			"password": "Heslo",
-			"certificate": "Certifikát",
-			"privateKey": "Soukromý klíč"
-		},
-		"errors": {
-			"emailFormat": "Neplatný formát e-mailové adresy.",
-			"username": "Zadejte prosím uživatelské jméno.",
-			"email": "Zadejte prosím e-mailovou adresu.",
-			"password": "Zadejte prosím heslo."
-		},
-		"saveRestart": "Uložit a restartovat"
-	},
-	"daemonStatus": {
-		"queue": "Fronta daemona"
-	}
+	"title": "IQRF Gateway Webapp"
 }

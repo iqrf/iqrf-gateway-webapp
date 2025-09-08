@@ -15,39 +15,14 @@
  * limitations under the License.
  */
 
-import Vue from 'vue';
-import store from './store';
-import router from './router';
+import { createApp, type App as VueApp } from 'vue';
+
 import App from '@/App.vue';
+import { registerPlugins } from '@/plugins';
 
-import './styles/app.scss';
-import 'vue-datetime/dist/vue-datetime.css';
-import 'vue-toast-notification/dist/theme-sugar.css';
-import 'vue2-datepicker/index.css';
+const app: VueApp<Element> = createApp(App);
+registerPlugins(app);
 
-import '@/plugins/axios';
-import '@/plugins/clipboard';
-import i18n from '@/plugins/i18n';
-import '@/plugins/meta';
-import '@/plugins/sentry';
-import '@/plugins/toast';
-import vuetify from '@/plugins/vuetify';
-import '@/plugins/webSocket';
+app.mount('#app');
 
-const app = new Vue({
-	router,
-	store,
-	i18n,
-	render: h => h(App),
-	vuetify,
-	metaInfo: {
-		titleTemplate: (titleChunk: string): string => {
-			const title = i18n.t('core.title.generic').toString();
-			return (titleChunk ? `${i18n.t(titleChunk).toString()} | ` : '') + title;
-		}
-	},
-}).$mount('#app');
-
-if (import.meta.env.VITE_CYPRESS_ENABLED === '1' && (window['Cypress'] ?? false)) {
-	window['app'] = app;
-}
+export { app };

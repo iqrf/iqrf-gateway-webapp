@@ -20,9 +20,6 @@
 			],
 			"@iqrf/iqrf-gateway-webapp-client": [
 				"./packages/api-client"
-			],
-			"@iqrf/iqrf-gateway-webapp-next": [
-				"./packages/frontend3"
 			]
 		},
 		"resolveJsonModule": true,
