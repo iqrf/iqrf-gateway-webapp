@@ -43,7 +43,7 @@ export class FeatureService extends BaseService {
 	 */
 	public async getConfig(feature: Feature): Promise<FeatureConfig> {
 		const response: AxiosResponse<FeatureConfig> =
-			await this.axiosInstance.get(`/features/${feature.toString()}`);
+			await this.axiosInstance.get(`/features/${feature}`);
 		return response.data;
 	}
 
@@ -53,7 +53,7 @@ export class FeatureService extends BaseService {
 	 * @param {FeatureConfig} config Feature configuration
 	 */
 	public async updateConfig(feature: Feature, config: FeatureConfig): Promise<void> {
-		await this.axiosInstance.put(`/features/${feature.toString()}`, config);
+		await this.axiosInstance.put(`/features/${feature}`, config);
 	}
 
 }
