@@ -2146,6 +2146,7 @@
 				},
 				"notified": "Last notified",
 				"ntwQueueLen": "Network queue length",
+				"queueLen": "Request queue length",
 				"version": "Daemon version"
 			},
 			"sessionExpiration": {

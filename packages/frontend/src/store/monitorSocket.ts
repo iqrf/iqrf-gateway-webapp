@@ -16,11 +16,11 @@
  */
 
 import { DaemonMode } from '@iqrf/iqrf-gateway-daemon-utils/enums';
-import { type MonitorStatusResult } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { defineStore } from 'pinia';
 
 import UrlBuilder from '@/helpers/urlBuilder';
 import ClientSocket, { type GenericSocketState } from '@/modules/clientSocket';
+import { type MonitorData } from '@/types/DaemonApi/Monitor';
 
 /**
  * Monitor store state
@@ -28,10 +28,8 @@ import ClientSocket, { type GenericSocketState } from '@/modules/clientSocket';
 interface MonitorState extends GenericSocketState {
 	/// IQRF Gateway Daemon mode
 	mode: DaemonMode;
-	/// Management queue length
-	managementQueueLen: number;
-	/// Network queue length
-	networkQueueLen: number;
+	/// Monitor message queue length
+	queueLength: number;
 	/// Last monitor notification timestamp
 	lastTimestamp: number;
 	/// Is network enumeration in progress?
@@ -47,8 +45,7 @@ export const useMonitorStore = defineStore('monitor', {
 		reconnecting: false,
 		reconnected: false,
 		mode: DaemonMode.Unknown,
-		managementQueueLen: 0,
-		networkQueueLen: 0,
+		queueLength: 0,
 		lastTimestamp: 0,
 		networkEnumInProgress: false,
 		dataReadingInProgress: false,
@@ -107,9 +104,8 @@ export const useMonitorStore = defineStore('monitor', {
 		 * @param {MessageEvent<string>} event Message event
 		 */
 		onMessage(event: MessageEvent<string>): void {
-			const message: MonitorStatusResult = (JSON.parse(event.data) as { data: MonitorStatusResult }).data;
-			this.managementQueueLen = message.managementQueueLen;
-			this.networkQueueLen = message.networkQueueLen;
+			const message: MonitorData = (JSON.parse(event.data) as { data: MonitorData }).data;
+			this.queueLength = message.msgQueueLen;
 			this.mode = message.operMode;
 			this.lastTimestamp = message.timestamp;
 			this.networkEnumInProgress = message.enumInProgress;
@@ -135,15 +131,8 @@ export const useMonitorStore = defineStore('monitor', {
 		 * Returns management queue length
 		 * @return {number} Queue length
 		 */
-		getManagementQueueLen(): number {
-			return this.managementQueueLen;
-		},
-		/**
-		 * Returns network queue length
-		 * @return {number} Network queue length
-		 */
-		getNetworkQueueLen(): number {
-			return this.networkQueueLen;
+		getQueueLength(): number {
+			return this.queueLength;
 		},
 		/**
 		 * Returns timestamp of last monitor notification
