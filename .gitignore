@@ -48,3 +48,6 @@ packages/*/cypress/videos
 packages/*/cypress/screenshots
 # Documentations
 packages/*/docs/
+# CycloneDX SBOM
+sbom-frontend.json
+sbom-backend.json
