@@ -48,8 +48,8 @@
 		"darsyn/ip-doctrine": "^6.0.0",
 		"egulias/email-validator": "^4.0.4",
 		"guzzlehttp/guzzle": "^7.9.3",
-		"iqrf/command-executor": "^v0.1.2",
-		"iqrf/file-manager": "^v0.1.0",
+		"iqrf/command-executor": "^v0.2.0",
+		"iqrf/file-manager": "^v0.1.2",
 		"iqrf/iqrf-ide-macros-parser": "^v1.3.0",
 		"iqrf/iqrf-repository": "^v0.2.3",
 		"justinrainbow/json-schema": "^6.4.1",
@@ -83,6 +83,7 @@
 	},
 	"require-dev": {
 		"contributte/tester": "^v0.4.0",
+		"cyclonedx/cyclonedx-php-composer": "^5.2",
 		"iqrf/coding-style": "^0.1.1",
 		"iqrf/phpstan-config": "^v0.1.2",
 		"mockery/mockery": "^1.6.12",
@@ -122,9 +123,10 @@
 		},
 		"sort-packages": true,
 		"allow-plugins": {
-			"dealerdirect/phpcodesniffer-composer-installer": true,
 			"composer/package-versions-deprecated": true,
 			"cweagans/composer-patches": true,
+			"cyclonedx/cyclonedx-php-composer": true,
+			"dealerdirect/phpcodesniffer-composer-installer": true,
 			"php-http/discovery": true
 		}
 	}
