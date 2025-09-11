@@ -19,6 +19,7 @@ limitations under the License.
 	<DeleteModalWindow
 		ref='dialog'
 		:tooltip='$t("components.accessControl.users.actions.delete")'
+		:component-state='componentState'
 		@submit='onSubmit()'
 	>
 		<template #title>

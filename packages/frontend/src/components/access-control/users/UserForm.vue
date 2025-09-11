@@ -22,14 +22,21 @@ limitations under the License.
 				v-if='action === Action.Add'
 				v-bind='props'
 				:action='action'
+				:tooltip='$t("components.accessControl.users.actions.add")'
 			/>
 			<DataTableAction
 				v-else
 				v-bind='props'
 				:action='action'
+				:tooltip='$t("components.accessControl.users.actions.edit")'
 			/>
 		</template>
-		<v-form ref='form' v-slot='{ isValid }' @submit.prevent='onSubmit()'>
+		<v-form
+			ref='form'
+			v-slot='{ isValid }'
+			:disabled='componentState === ComponentState.Saving'
+			@submit.prevent='onSubmit()'
+		>
 			<Card>
 				<template #title>
 					{{ $t(`components.accessControl.users.actions.${action}`) }}
@@ -53,12 +60,14 @@ limitations under the License.
 				/>
 				<PasswordInput
 					v-model='(user as UserEdit).password'
-					:label='$t("components.accessControl.users.password")'
+					:label='$t("components.common.fields.password")'
 					:rules='[
 						(v: string) => v.length === 0 || ValidationRules.betweenLen(v, 15, 64, $t("components.common.validations.password.betweenLen")),
 						(v: string) => v.length === 0 || ValidationRules.webappUserPassword(v, $t("components.common.validations.password.invalid")),
 					]'
 					:prepend-inner-icon='mdiKey'
+					:persistent-hint='action === Action.Edit'
+					:hint='action === Action.Edit ? $t("components.accessControl.users.notes.optionalPasswordEdit") : undefined'
 				>
 					<template #append>
 						<v-tooltip location='left'>
@@ -86,12 +95,13 @@ limitations under the License.
 				<template #actions>
 					<CardActionBtn
 						:action='action'
-						:disabled='!isValid.value'
+						:disabled='!isValid.value || componentState === ComponentState.Saving'
 						type='submit'
 					/>
 					<v-spacer />
 					<CardActionBtn
 						:action='Action.Cancel'
+						:disabled='componentState === ComponentState.Saving'
 						@click='close()'
 					/>
 				</template>
@@ -115,7 +125,7 @@ import {
 	mdiHelpCircleOutline,
 	mdiKey,
 } from '@mdi/js';
-import { ref, type Ref, watchEffect } from 'vue';
+import { ref, type Ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -135,12 +145,14 @@ import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
 import { Action } from '@/types/Action';
+import { ComponentState } from '@/types/ComponentState';
 
 interface Props {
 	action: Action;
 	userInfo?: UserInfo
 }
 
+const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
 const i18n = useI18n();
 const service = useApiClient().getSecurityServices().getUserService();
 const emit = defineEmits(['refresh']);
@@ -157,8 +169,10 @@ const defaultUser: UserCreate | UserEdit = {
 const user: Ref<UserCreate | UserEdit> = ref(defaultUser);
 const roles = getFilteredRoleOptions(userStore.getRole!);
 
-
-watchEffect((): void => {
+watch(showDialog, (newVal: boolean): void => {
+	if (!newVal) {
+		return;
+	}
 	if (componentProps.action === Action.Add) {
 		user.value = { ...defaultUser, password: '' } as UserCreate;
 	} else if (componentProps.action === Action.Edit) {
@@ -180,6 +194,7 @@ async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
 	}
+	componentState.value = ComponentState.Saving;
 	const params = { ...user.value };
 	try {
 		if (componentProps.action === Action.Add) {
@@ -202,11 +217,17 @@ async function onSubmit(): Promise<void> {
 		close();
 		emit('refresh');
 	} catch {
-		toast.error('TODO ERROR HANDLING');
+		toast.error(
+			i18n.t(`components.accessControl.users.messages.${componentProps.action}.failed`, { user: user.value.username }),
+		);
 	}
+	componentState.value = ComponentState.Ready;
 }
 
 function close(): void {
+	if (componentProps.action === Action.Add) {
+		user.value = { ...defaultUser };
+	}
 	showDialog.value = false;
 }
 </script>

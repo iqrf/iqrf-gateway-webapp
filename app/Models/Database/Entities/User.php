@@ -92,7 +92,6 @@ class User implements JsonSerializable {
 	 * @param UserRole $role User role
 	 * @param UserLanguage $language User language
 	 * @param UserState $state Account state
-	 * @param bool Force password change upon use
 	 */
 	public function __construct(
 		#[ORM\Column(type: Types::STRING, length: 255, unique: true)]
@@ -105,8 +104,8 @@ class User implements JsonSerializable {
 		private UserLanguage $language = UserLanguage::Default,
 		#[ORM\Column(type: Types::INTEGER, length: 10, enumType: UserState::class, options: ['default' => UserState::Default])]
 		private UserState $state = UserState::Default,
-		##[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
-		#private bool $forcePasswordChange = false,
+		//#[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+		//private bool $forcePasswordChange = false,
 	) {
 		$this->setEmail($email);
 		$this->setPassword($password);
@@ -182,13 +181,13 @@ class User implements JsonSerializable {
 		return $this->language;
 	}
 
-	#/**
-	# * Is password change forced?
-	# * @return bool Password change is forced
-	# */
-	#public function getForcePasswordChange(): bool {
-	#	return $this->forcePasswordChange;
-	#}
+	///**
+	// * Is password change forced?
+	// * @return bool Password change is forced
+	// */
+	//public function getForcePasswordChange(): bool {
+	//return $this->forcePasswordChange;
+	//}
 
 	/**
 	 * Returns all user scopes
@@ -311,13 +310,13 @@ class User implements JsonSerializable {
 		$this->language = $language;
 	}
 
-	#/**
-	# * Sets or resets forced password change
-	# * @param bool $force Force password change?
-	# */
-	#public function setForcePasswordChange(bool $force): void {
-	#	$this->forcePasswordChange = $force;
-	#}
+	///**
+	// * Sets or resets forced password change
+	// * @param bool $force Force password change?
+	// */
+	//public function setForcePasswordChange(bool $force): void {
+	//$this->forcePasswordChange = $force;
+	//}
 
 	/**
 	 * Verifies the password

@@ -187,7 +187,8 @@
 				"actions": {
 					"add": "Add user",
 					"delete": "Delete user",
-					"edit": "Edit user"
+					"edit": "Edit user",
+					"refresh": "Refresh users"
 				},
 				"delete": {
 					"prompt": "Are you sure you want to delete user {user}?",
@@ -197,14 +198,24 @@
 				"language": "Language",
 				"messages": {
 					"add": {
-						"failed": "Failed to create new user {user}."
+						"failed": "Failed to create new user {user}.",
+						"success": "User {user} has been successfully created."
 					},
 					"delete": {
-						"failed": "An error has occurred during user {user} deletion.",
-						"success": "User {user} has been deleted successfully."
+						"failed": "Failed to delete user {user}.",
+						"success": "User {user} has been successfully deleted."
+					},
+					"edit": {
+						"failed": "Failed to update user {user}.",
+						"success": "User {user} has been successfully updated."
+					},
+					"list": {
+						"failed": "Failed to retrieve list of users."
 					}
 				},
-				"password": "Password",
+				"notes": {
+					"optionalPasswordEdit": "Leave the password field blank if you do not wish to change the current password."
+				},
 				"role": "Role",
 				"roles": {
 					"admin": "Administrator",
@@ -217,7 +228,6 @@
 					"unverified": "Unverified",
 					"verified": "Verified"
 				},
-				"username": "Username",
 				"validations": {
 					"email": {
 						"email": "Invalid e-mail address format."
