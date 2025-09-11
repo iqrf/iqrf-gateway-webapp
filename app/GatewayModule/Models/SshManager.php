@@ -128,20 +128,23 @@ class SshManager {
 	 * @throws SshKeyExistsException
 	 */
 	public function addKeys(array $items): array {
+		$this->entityManager->beginTransaction();
 		$failedKeys = [];
 		foreach ($items as $item) {
-			$entity = $this->createKeyEntity($item);
-			$dbEntity = $this->sshKeyRepository->findByHash($entity->getHash());
-			if (!$dbEntity instanceof SshKey) {
+			try {
+				$entity = $this->createKeyEntity($item);
+				$this->entityManager->persist($entity);
+				$this->entityManager->flush();
+			} catch (SshKeyExistsException) {
 				$failedKeys[] = $item;
 				continue;
 			}
-			$this->entityManager->persist($entity);
-			$this->entityManager->flush();
 		}
 		if (count($failedKeys) === count($items)) {
+			$this->entityManager->rollback();
 			throw new SshKeyExistsException('Duplicate SSH key(s).');
 		}
+		$this->entityManager->commit();
 		$this->updateKeysFile();
 		return $failedKeys;
 	}

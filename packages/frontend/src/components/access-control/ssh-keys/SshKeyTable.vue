@@ -24,69 +24,68 @@ limitations under the License.
 			<SshKeyForm
 				:action='Action.Add'
 				:key-types='types'
-				@refresh='getKeys'
+				@refresh='getKeys()'
 			/>
 			<CardTitleActionBtn
 				:action='Action.Reload'
-				@click='getKeys'
+				:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+				:tooltip='$t("components.accessControl.sshKeys.actions.refresh")'
+				@click='getKeys()'
 			/>
 		</template>
 		<DataTable
 			:headers='headers'
 			:items='keys'
-			:loading='loading'
+			:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+			:no-data-text='"components.accessControl.sshKeys.table.noData"'
 			:hover='true'
 			:dense='true'
 		>
 			<template #item.createdAt='{ item }'>
 				{{ $d(item.createdAt.toJSDate(), 'long') }}
 			</template>
-			<template #item.actions='{ item, internalItem, toggleExpand }'>
+			<template #item.actions='{ item, internalItem, toggleExpand, isExpanded }'>
 				<DataTableAction
 					color='primary'
 					:icon='mdiInformation'
-					:tooltip='$t("components.accessControl.sshKeys.actions.edit")'
+					:tooltip='isExpanded(internalItem) ? $t("components.accessControl.sshKeys.actions.hideInfo") : $t("components.accessControl.sshKeys.actions.showInfo")'
 					@click='toggleExpand(internalItem)'
 				/>
-				<SshKeyDeleteDialog :ssh-key='toRaw(item)' @refresh='getKeys' />
+				<SshKeyDeleteDialog
+					:ssh-key='toRaw(item)'
+					@refresh='getKeys()'
+				/>
 			</template>
 			<template #expanded-row='{ columns, item }'>
 				<td :colspan='columns.length'>
-					<v-table
-						density='compact'
-						hover
-					>
-						<tbody>
-							<tr>
-								<th>{{ $t('components.accessControl.sshKeys.table.type') }}</th>
-								<td>
-									{{ item.type }}
-								</td>
-							</tr>
-							<tr>
-								<th>{{ $t('components.accessControl.sshKeys.table.hash') }}</th>
-								<td>
-									{{ item.hash }}
-									<v-icon
-										color='primary'
-										:icon='mdiContentCopy'
-										@click='copyToClipboard(item.hash)'
-									/>
-								</td>
-							</tr>
-							<tr>
-								<th>{{ $t('components.accessControl.sshKeys.table.key') }}</th>
-								<td>
-									{{ item.key }}
-									<v-icon
-										color='primary'
-										:icon='mdiContentCopy'
-										@click='copyToClipboard(item.key)'
-									/>
-								</td>
-							</tr>
-						</tbody>
-					</v-table>
+					<v-sheet border>
+						<v-table density='compact'>
+							<tbody>
+								<tr>
+									<th>{{ $t('components.accessControl.sshKeys.table.hash') }}</th>
+									<td>
+										{{ item.hash }}
+										<v-icon
+											color='primary'
+											:icon='mdiContentCopy'
+											@click='copyToClipboard(item.hash)'
+										/>
+									</td>
+								</tr>
+								<tr>
+									<th>{{ $t('components.accessControl.sshKeys.table.key') }}</th>
+									<td>
+										{{ item.key }}
+										<v-icon
+											color='primary'
+											:icon='mdiContentCopy'
+											@click='copyToClipboard(item.key)'
+										/>
+									</td>
+								</tr>
+							</tbody>
+						</v-table>
+					</v-sheet>
 				</td>
 			</template>
 		</DataTable>
@@ -109,10 +108,11 @@ import DataTable from '@/components/layout/data-table/DataTable.vue';
 import DataTableAction from '@/components/layout/data-table/DataTableAction.vue';
 import { useApiClient } from '@/services/ApiClient';
 import { Action } from '@/types/Action';
+import { ComponentState } from '@/types/ComponentState';
 
+const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
 const service: SshKeyService = useApiClient().getSecurityServices().getSshKeyService();
-const loading: Ref<boolean> = ref(false);
 const headers = [
 	{ key: 'id', title: i18n.t('common.columns.id') },
 	{ key: 'description', title: i18n.t('common.columns.description') },
@@ -129,12 +129,18 @@ onMounted(async (): Promise<void> => {
 });
 
 async function getKeys(): Promise<void> {
-	loading.value = true;
+	componentState.value = [
+		ComponentState.Created,
+		ComponentState.FetchFailed,
+	].includes(componentState.value) ? ComponentState.Loading : ComponentState.Reloading;
 	try {
 		keys.value = await service.list();
-		loading.value = false;
+		componentState.value = ComponentState.Ready;
 	} catch {
-		loading.value = false;
+		toast.error(
+			i18n.t('components.accessControl.sshKeys.messages.list.failed'),
+		);
+		componentState.value = componentState.value === ComponentState.Loading ? ComponentState.FetchFailed : ComponentState.Ready;
 	}
 }
 
@@ -142,7 +148,9 @@ async function getKeyTypes(): Promise<void> {
 	try {
 		types.value = await service.listKeyTypes();
 	} catch {
-		toast.error('TODO ERROR HANDLING');
+		toast.error(
+			i18n.t('components.accessControl.sshKeys.messages.listTypes.failed'),
+		);
 	}
 }
 

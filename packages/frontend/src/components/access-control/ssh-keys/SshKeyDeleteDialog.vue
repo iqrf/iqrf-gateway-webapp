@@ -19,6 +19,7 @@ limitations under the License.
 	<DeleteModalWindow
 		ref='dialog'
 		:tooltip='$t("components.accessControl.sshKeys.actions.delete")'
+		:component-state='componentState'
 		@submit='onSubmit()'
 	>
 		<template #title>
@@ -32,28 +33,39 @@ limitations under the License.
 import { type SshKeyService } from '@iqrf/iqrf-gateway-webapp-client/services/Security';
 import { type SshKeyInfo } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import { type PropType, ref , type Ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import DeleteModalWindow from '@/components/DeleteModalWindow.vue';
 import { useApiClient } from '@/services/ApiClient';
+import { ComponentState } from '@/types/ComponentState';
 
-const emit = defineEmits(['refresh']);
-const dialog: Ref<typeof DeleteModalWindow | null> = ref(null);
+const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
 const componentProps = defineProps({
 	sshKey: {
 		type: Object as PropType<SshKeyInfo>,
 		required: true,
 	},
 });
+const emit = defineEmits(['refresh']);
+const i18n = useI18n();
+const dialog: Ref<typeof DeleteModalWindow | null> = ref(null);
 const service: SshKeyService = useApiClient().getSecurityServices().getSshKeyService();
 
 async function onSubmit(): Promise<void> {
+	componentState.value = ComponentState.Saving;
 	try {
 		await service.deleteKey(componentProps.sshKey.id);
+		toast.success(
+			i18n.t('components.accessControl.sshKeys.messages.delete.success', { id: componentProps.sshKey.id }),
+		);
 		close();
 		emit('refresh');
 	} catch {
-		toast.error('TODO ERROR HANDLING');
+		componentState.value = ComponentState.Ready;
+		toast.error(
+			i18n.t('components.accessControl.sshKeys.messages.delete.failed', { id: componentProps.sshKey.id }),
+		);
 	}
 }
 

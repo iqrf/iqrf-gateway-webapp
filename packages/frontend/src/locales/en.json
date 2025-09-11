@@ -162,7 +162,9 @@
 				"actions": {
 					"add": "Add SSH key",
 					"delete": "Delete SSH key",
-					"edit": "Edit SSH key"
+					"hideInfo": "Hide SSH key details",
+					"refresh": "Refresh SSH keys",
+					"showInfo": "Show SSH key details"
 				},
 				"delete": {
 					"prompt": "Are you sure you want to delete SSH public key ID {id}?",
@@ -174,13 +176,35 @@
 					"editTitle": "Edit SSH key"
 				},
 				"installNote": "Add SSH public keys to be used for key-based authorization when accessing the device.",
+				"messages": {
+					"add": {
+						"failed": "Failed to add new SSH key.",
+						"success": "New SSH key has been successfully added."
+					},
+					"delete": {
+						"failed": "Failed to delete SSH key ID {id}.",
+						"success": "SSH key ID {id} has been successfully deleted."
+					},
+					"list": {
+						"failed": "Failed to retrieve list of SSH keys."
+					},
+					"listTypes": {
+						"failed": "Failed to retrieve list of allwed SSH key types."
+					}
+				},
 				"noneSupported": "No SSH key type supported.",
 				"supported": "The following SSH key types are supported.",
 				"table": {
 					"createdAt": "Date created",
 					"hash": "Hash",
 					"key": "Public key",
+					"noData": "No SSH key records found.",
 					"type": "Key type"
+				},
+				"validation": {
+					"key": {
+						"required": "Please enter SSH key."
+					}
 				}
 			},
 			"users": {
