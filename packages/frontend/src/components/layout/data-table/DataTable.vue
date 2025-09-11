@@ -25,6 +25,7 @@ limitations under the License.
 		:loading='loading'
 		:hover='hover'
 		:density='dense ? "compact" : "default"'
+		:mobile='mobile'
 	>
 		<template #bottom>
 			<div
@@ -46,6 +47,7 @@ limitations under the License.
 
 <script lang='ts' setup>
 import { computed, ref, type Ref } from 'vue';
+import { useDisplay } from 'vuetify';
 
 const componentProps = defineProps({
 	items: {
@@ -79,6 +81,8 @@ const componentProps = defineProps({
 	},
 });
 
+defineSlots();
+const { mobile } = useDisplay();
 const expanded = ref([]);
 const page: Ref<number> = ref(1);
 const pageCount = computed(() => {
