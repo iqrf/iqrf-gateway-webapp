@@ -52,15 +52,30 @@ limitations under the License.
 					:prepend-inner-icon='mdiEmail'
 				/>
 				<PasswordInput
-					v-if='action === Action.Add'
 					v-model='(user as UserEdit).password'
 					:label='$t("components.accessControl.users.password")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.accessControl.users.validations.password.required")),
+						(v: string) => v.length === 0 || ValidationRules.betweenLen(v, 15, 64, $t("components.common.validations.password.betweenLen")),
+						(v: string) => v.length === 0 || ValidationRules.webappUserPassword(v, $t("components.common.validations.password.invalid")),
 					]'
-					required
 					:prepend-inner-icon='mdiKey'
-				/>
+				>
+					<template #append>
+						<v-tooltip location='left'>
+							<template #activator='{ props }'>
+								<v-icon v-bind='props' :icon='mdiHelpCircleOutline' />
+							</template>
+							<div style='white-space: pre-line;'>
+								{{ $t('components.common.hints.password.note') }}
+								<ul style='padding-left: 1.2rem; margin: 0;'>
+									<li>{{ $t('components.common.hints.password.letters') }}</li>
+									<li>{{ $t('components.common.hints.password.numbers') }}</li>
+									<li>{{ $t('components.common.hints.password.special', { special: '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~' }) }}</li>
+								</ul>
+							</div>
+						</v-tooltip>
+					</template>
+				</PasswordInput>
 				<SelectInput
 					v-model='user.role'
 					:items='roles'
@@ -97,6 +112,7 @@ import {
 	mdiAccount,
 	mdiAccountBadge,
 	mdiEmail,
+	mdiHelpCircleOutline,
 	mdiKey,
 } from '@mdi/js';
 import { ref, type Ref, watchEffect } from 'vue';
@@ -152,6 +168,7 @@ watchEffect((): void => {
 				email: componentProps.userInfo.email,
 				role: componentProps.userInfo.role,
 				language: componentProps.userInfo.language,
+				password: '',
 			};
 		} else {
 			user.value = { ...defaultUser };
@@ -163,14 +180,18 @@ async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
 	}
+	const params = { ...user.value };
 	try {
 		if (componentProps.action === Action.Add) {
-			await service.create(user.value as UserCreate);
+			await service.create(params as UserCreate);
 		} else {
 			if (componentProps.userInfo?.id === undefined) {
 				return;
 			}
-			await service.update(componentProps.userInfo.id, user.value as UserEdit);
+			if (params.password?.length === 0) {
+				delete params.password;
+			}
+			await service.update(componentProps.userInfo.id, params as UserEdit);
 			if (componentProps.userInfo.id === userStore.getId) {
 				userStore.refreshUserInfo();
 			}

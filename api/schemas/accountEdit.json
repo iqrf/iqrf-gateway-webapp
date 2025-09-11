@@ -1,8 +1,8 @@
 {
 	"$schema": "http://json-schema.org/draft-07/schema",
-	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/userEdit.json",
+	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/accountEdit.json",
 	"type": "object",
-	"title": "User Edit",
+	"title": "Update user account information",
 	"additionalProperties": false,
 	"properties": {
 		"baseUrl": {
@@ -41,37 +41,6 @@
 				"en"
 			],
 			"example": "en"
-		},
-		"password": {
-			"$id": "#/properties/password",
-			"type": "string",
-			"title": "Password",
-			"minLength": 15,
-			"maxLength": 64,
-			"pattern": "^[ -~]+$",
-			"example": "8Yz#t>pL^sD|Uq&bW@"
-		},
-		"role": {
-			"$id": "#/properties/role",
-			"type": "string",
-			"title": "Role",
-			"enum": [
-				"admin",
-				"normal",
-				"basicadmin",
-				"basic"
-			],
-			"example": "normal"
-		},
-		"state": {
-			"$id": "#/properties/state",
-			"type": "string",
-			"title": "Account state",
-			"enum": [
-				"unverified",
-				"verified"
-			],
-			"example": "verified"
 		}
 	}
 }

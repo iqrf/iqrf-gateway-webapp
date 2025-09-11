@@ -19,7 +19,7 @@
 			"$id": "#/properties/password",
 			"type": "string",
 			"title": "Password",
-			"example": "iqrf"
+			"example": "8Yz#t>pL^sD|Uq&bW@"
 		},
 		"expiration": {
 			"$id": "#/properties/expiration",

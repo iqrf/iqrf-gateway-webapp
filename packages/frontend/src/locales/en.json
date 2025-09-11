@@ -387,6 +387,14 @@
 				"passwordConfirm": "Confirm password",
 				"username": "Username"
 			},
+			"hints": {
+				"password": {
+					"letters": "Letters: A-Z, a-z",
+					"note": "The password should be between 15 and 64 characters long and can contain",
+					"numbers": "Numbers: 0-9",
+					"special": "Special characters: {special}"
+				}
+			},
 			"locale": {
 				"languages": {
 					"cs": "Czech",
@@ -405,7 +413,8 @@
 					"required": "Please enter e-mail address."
 				},
 				"password": {
-					"minLength": "Password should be at least 8 characters long.",
+					"betweenLen": "Password length should be between 15 and 64 characters.",
+					"invalid": "Password contains invalid characters.",
 					"required": "Please enter password."
 				},
 				"passwordConfirm": {
