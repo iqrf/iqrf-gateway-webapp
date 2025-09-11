@@ -94,6 +94,9 @@ components:
 					schema:
 						$ref: '#/components/schemas/Error'
 	schemas:
+		AccountEdit:
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/accountEdit.json
+			title: Account - Update user information
 		ApiKeyCreated:
 			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/apiKeyCreated.json
 			title: Security - Created API key

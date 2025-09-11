@@ -116,6 +116,18 @@ export default class ValidationRules {
 	}
 
 	/**
+	 * Length of value is between min and max
+	 * @param {string|unknown[]} value Field value
+	 * @param {number} min Minimum length
+	 * @param {number} max Maximum length
+	 * @param {string} error Error message
+	 * @return {boolean|string} Validation result
+	 */
+	public static betweenLen(value: string | unknown[], min: number, max: number, error: string): boolean | string {
+		return (value.length >= min && value.length <= max) || error;
+	}
+
+	/**
 	 * E-mail address
 	 * @param {string} value Field value
 	 * @param {string} errorMessage Error message
@@ -261,6 +273,19 @@ export default class ValidationRules {
 		}
 		const urlValidator: z.ZodURL = z.url();
 		return urlValidator.safeParse(value).success || error;
+	}
+
+	/**
+	 * Webapp user password validator
+	 * @param {string | null} value Field value
+	 * @param {string} error Error message
+	 * @return {boolean | string} Validation result
+	 */
+	public static webappUserPassword(value: string | null, error: string): boolean | string {
+		if (value === null) {
+			return error;
+		}
+		return ValidationRules.regex(value, /^[\x20-\x7E]{15,64}$/, error);
 	}
 
 	/**

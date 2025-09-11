@@ -39,12 +39,29 @@ limitations under the License.
 				v-model='passwordChange.new'
 				:label='$t("components.account.password.new")'
 				:rules='[
-					(v: string|null) => ValidationRules.required(v, $t("components.account.password.validation.new.required")),
-					(v: string) => ValidationRules.minLength(v, 8, $t("common.validation.password.minLength")),
+					(v: string|null) => ValidationRules.required(v, $t("components.common.validations.password.required")),
+					(v: string) => ValidationRules.betweenLen(v, 15, 64, $t("components.common.validations.password.betweenLen")),
+					(v: string) => ValidationRules.webappUserPassword(v, $t("components.common.validations.password.invalid")),
 				]'
 				required
 				:prepend-inner-icon='mdiKey'
-			/>
+			>
+				<template #append>
+					<v-tooltip location='left'>
+						<template #activator='{ props }'>
+							<v-icon v-bind='props' :icon='mdiHelpCircleOutline' />
+						</template>
+						<div style='white-space: pre-line;'>
+							{{ $t('components.common.hints.password.note') }}
+							<ul style='padding-left: 1.2rem; margin: 0;'>
+								<li>{{ $t('components.common.hints.password.letters') }}</li>
+								<li>{{ $t('components.common.hints.password.numbers') }}</li>
+								<li>{{ $t('components.common.hints.password.special', { special: '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~' }) }}</li>
+							</ul>
+						</div>
+					</v-tooltip>
+				</template>
+			</PasswordInput>
 			<PasswordInput
 				v-model='passwordConfirmation'
 				:label='$t("components.account.password.confirmation")'
@@ -69,7 +86,7 @@ limitations under the License.
 
 <script lang='ts' setup>
 import { type UserPasswordChange } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { mdiKey } from '@mdi/js';
+import { mdiHelpCircleOutline, mdiKey } from '@mdi/js';
 import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';

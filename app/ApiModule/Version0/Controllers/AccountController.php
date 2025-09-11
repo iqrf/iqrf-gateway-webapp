@@ -110,7 +110,7 @@ class AccountController extends BaseController {
 			content:
 				application/json:
 					schema:
-						$ref: '#/components/schemas/UserEdit'
+						$ref: '#/components/schemas/AccountEdit'
 		responses:
 			'200':
 				description: Success
@@ -127,7 +127,7 @@ class AccountController extends BaseController {
 	EOT)]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->onlyForUsers($request);
-		$this->validators->validateRequest('userEdit', $request);
+		$this->validators->validateRequest('accountEdit', $request);
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
 		$sendVerification = false;
 		$json = $request->getJsonBodyCopy();

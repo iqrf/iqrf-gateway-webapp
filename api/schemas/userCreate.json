@@ -42,8 +42,10 @@
 			"$id": "#/properties/password",
 			"type": "string",
 			"title": "Password",
-			"minLength": 1,
-			"example": "iqrf"
+			"minLength": 15,
+			"maxLength": 64,
+			"pattern": "^[ -~]+$",
+			"example": "8Yz#t>pL^sD|Uq&bW@"
 		},
 		"language": {
 			"$id": "#/properties/language",
