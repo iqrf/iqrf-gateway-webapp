@@ -32,7 +32,11 @@ limitations under the License.
 					:tooltip='$t("components.accessControl.apiKeys.actions.edit")'
 				/>
 			</template>
-			<v-form ref='form' v-slot='{ isValid }' @submit.prevent='onSubmit'>
+			<v-form
+				ref='form'
+				v-slot='{ isValid }'
+				@submit.prevent='onSubmit()'
+			>
 				<Card :action='action'>
 					<template #title>
 						{{ dialogTitle }}
@@ -91,6 +95,7 @@ import {
 	type ApiKeyInfo,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import { DateTimeUtils } from '@iqrf/iqrf-gateway-webapp-client/utils';
+import { ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiTextShort } from '@mdi/js';
 import { computed, type PropType, ref, type Ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -105,7 +110,6 @@ import DataTableAction from '@/components/layout/data-table/DataTableAction.vue'
 import TextInput from '@/components/layout/form/TextInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';
-import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
 import { Action } from '@/types/Action';
 

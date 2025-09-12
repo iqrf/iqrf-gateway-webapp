@@ -88,6 +88,7 @@ import {
 } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { SchedulerTask } from '@iqrf/iqrf-gateway-daemon-utils/types/management';
 import { type IqrfGatewayDaemonSchedulerMessagings } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import { ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiPencil, mdiPlus } from '@mdi/js';
 import { computed, type PropType, ref , type Ref, watchEffect } from 'vue';
 import { VForm } from 'vuetify/components';
@@ -97,7 +98,6 @@ import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import SelectInput from '@/components/layout/form/SelectInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';
-import ValidationRules from '@/helpers/ValidationRules';
 import { Action } from '@/types/Action';
 
 const componentProps = defineProps({

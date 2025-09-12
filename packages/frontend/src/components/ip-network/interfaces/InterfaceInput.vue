@@ -20,7 +20,7 @@ limitations under the License.
 		v-model='modelValue'
 		:items='items'
 		:loading='componentState === ComponentState.Loading'
-		:label='$t("components.ipNetwork.connections.form.generic.interface").toString()'
+		:label='$t("components.ipNetwork.connections.form.generic.interface")'
 		:rules='[
 			(v: string|null) => ValidationRules.required(v, $t("components.ipNetwork.connections.errors.generic.interface.required")),
 		]'
@@ -32,11 +32,11 @@ limitations under the License.
 import {
 	type NetworkInterface, type NetworkInterfaceType,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
+import { ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiExpansionCardVariant } from '@mdi/js';
 import { onBeforeMount, type PropType, ref, type Ref } from 'vue';
 
 import SelectInput from '@/components/layout/form/SelectInput.vue';
-import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
 import { ComponentState } from '@/types/ComponentState';
 import { type SelectItem } from '@/types/vuetify';

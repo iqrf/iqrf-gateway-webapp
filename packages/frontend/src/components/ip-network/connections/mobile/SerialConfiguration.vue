@@ -25,7 +25,7 @@ limitations under the License.
 			:label='$t("components.ipNetwork.connections.form.serial.baudRate")'
 			:rules='[
 				(v: unknown) => ValidationRules.required(v, $t("components.ipNetwork.connections.errors.serial.baudRate.required")),
-				(v: unknown) => ValidationRules.numerical(v, $t("components.ipNetwork.connections.errors.serial.baudRate.numerical")),
+				(v: unknown) => ValidationRules.numeric(v, $t("components.ipNetwork.connections.errors.serial.baudRate.numerical")),
 			]'
 			required
 			:prepend-inner-icon='mdiSerialPort'
@@ -37,10 +37,9 @@ limitations under the License.
 import {
 	type NetworkConnectionConfiguration,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
+import { ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiSerialPort } from '@mdi/js';
 import { type PropType } from 'vue';
-
-import ValidationRules from '@/helpers/ValidationRules';
 
 /// Network connection configuration
 const configuration = defineModel({

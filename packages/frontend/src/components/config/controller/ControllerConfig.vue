@@ -349,6 +349,7 @@ import {
 	IqrfGatewayControllerLoggingSeverity,
 	type IqrfGatewayControllerMapping,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import { ValidationRules } from '@iqrf/iqrf-vue-ui';
 import {
 	mdiAlert,
 	mdiFileDocument,
@@ -372,7 +373,6 @@ import NumberInput from '@/components/layout/form/NumberInput.vue';
 import SelectInput from '@/components/layout/form/SelectInput.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import { validateForm } from '@/helpers/validateForm';
-import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
 import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';

@@ -54,6 +54,7 @@ limitations under the License.
 import {
 	type NetworkConnectionConfiguration,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
+import { ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiAccount, mdiAccountQuestion, mdiKey } from '@mdi/js';
 import { type PropType } from 'vue';
 
@@ -62,7 +63,6 @@ import EapPhase1MethodInput
 import EapPhase2MethodInput
 	from '@/components/ip-network/connections/eap/EapPhase2MethodInput.vue';
 import PasswordInput from '@/components/layout/form/PasswordInput.vue';
-import ValidationRules from '@/helpers/ValidationRules';
 
 /// Network connection configuration
 const configuration = defineModel({

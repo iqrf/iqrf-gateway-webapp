@@ -81,6 +81,7 @@ import {
 	UserLanguage,
 	UserRole,
 } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiAccount, mdiEmail } from '@mdi/js';
 import { onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -91,7 +92,6 @@ import Card from '@/components/layout/card/Card.vue';
 import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import UrlBuilder from '@/helpers/urlBuilder';
-import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
 import { Action } from '@/types/Action';

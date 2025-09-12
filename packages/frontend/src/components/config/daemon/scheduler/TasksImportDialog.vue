@@ -81,7 +81,7 @@ limitations under the License.
 					<v-spacer />
 					<CardActionBtn
 						:action='Action.Cancel'
-						@click='close'
+						@click='close()'
 					/>
 				</template>
 			</Card>
@@ -95,6 +95,7 @@ import { SchedulerService } from '@iqrf/iqrf-gateway-daemon-utils/services';
 import { type ApiResponseManagementRsp, type TApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { type SchedulerAddTaskParams, type SchedulerAddTaskResult } from '@iqrf/iqrf-gateway-daemon-utils/types/management';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
+import { ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiFileOutline } from '@mdi/js';
 import { BlobReader, TextWriter, ZipReader } from '@zip.js/zip.js';
 import { ref, type Ref } from 'vue';
@@ -108,7 +109,6 @@ import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';
-import ValidationRules from '@/helpers/ValidationRules';
 import { useDaemonStore } from '@/store/daemonSocket';
 import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';

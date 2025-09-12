@@ -42,19 +42,19 @@ limitations under the License.
 					color='primary'
 					:disabled='!isValid.value || componentState === ComponentState.Saving'
 					:text='$t("components.maintenance.mender.update.install")'
-					@click='installArtifact'
+					@click='installArtifact()'
 				/>
 				<CardActionBtn
 					color='primary'
 					:disabled='componentState === ComponentState.Saving'
 					:text='$t("components.maintenance.mender.update.commit")'
-					@click='commitUpdate'
+					@click='commitUpdate()'
 				/>
 				<CardActionBtn
 					color='primary'
 					:disabled='componentState === ComponentState.Saving'
 					:text='$t("components.maintenance.mender.update.rollback")'
-					@click='rollbackUpdate'
+					@click='rollbackUpdate()'
 				/>
 				<MenderUpdateLog :log='log' />
 			</template>
@@ -64,6 +64,7 @@ limitations under the License.
 
 <script lang='ts' setup>
 import { type MenderService } from '@iqrf/iqrf-gateway-webapp-client/services/Maintenance';
+import { ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiFileOutline } from '@mdi/js';
 import { AxiosError } from 'axios';
 import { ref, type Ref } from 'vue';
@@ -75,7 +76,6 @@ import Card from '@/components/layout/card/Card.vue';
 import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import MenderUpdateLog from '@/components/maintenance/mender-update/MenderUpdateLog.vue';
 import { validateForm } from '@/helpers/validateForm';
-import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
 import { ComponentState } from '@/types/ComponentState';
 

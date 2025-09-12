@@ -206,6 +206,7 @@ import {
 } from '@iqrf/iqrf-gateway-daemon-utils/types/management';
 import { DaemonMessageOptions, SchedulerCron } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { type IqrfGatewayDaemonSchedulerMessagings } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import { ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiDelete, mdiHelpBox } from '@mdi/js';
 import cron from 'cron-validate';
 import { v4 as uuidv4 } from 'uuid';
@@ -226,7 +227,6 @@ import SelectInput from '@/components/layout/form/SelectInput.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';
-import ValidationRules from '@/helpers/ValidationRules';
 import { useDaemonStore } from '@/store/daemonSocket';
 import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';

@@ -32,7 +32,7 @@ limitations under the License.
 				:tooltip='$t("components.config.daemon.logging.channels.actions.edit")'
 			/>
 		</template>
-		<v-form ref='form' v-slot='{ isValid }' @submit.prevent='onSubmit'>
+		<v-form ref='form' v-slot='{ isValid }' @submit.prevent='onSubmit()'>
 			<Card :action='action'>
 				<template #title>
 					{{ $t(`components.config.daemon.logging.channels.actions.${action}`) }}
@@ -61,7 +61,7 @@ limitations under the License.
 					<v-spacer />
 					<CardActionBtn
 						:action='Action.Cancel'
-						@click='close'
+						@click='close()'
 					/>
 				</template>
 			</Card>
@@ -71,6 +71,7 @@ limitations under the License.
 
 <script lang='ts' setup>
 import { type ShapeTraceChannelVerbosity, ShapeTraceVerbosity } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import { ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiPlus } from '@mdi/js';
 import { type PropType, ref, type Ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -83,7 +84,6 @@ import NumberInput from '@/components/layout/form/NumberInput.vue';
 import SelectInput from '@/components/layout/form/SelectInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';
-import ValidationRules from '@/helpers/ValidationRules';
 import { Action } from '@/types/Action';
 
 const emit = defineEmits(['save']);

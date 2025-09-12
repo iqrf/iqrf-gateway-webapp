@@ -44,7 +44,7 @@ limitations under the License.
 					:label='$t("common.labels.hostname")'
 					:rules='[
 						(v: string|null) => ValidationRules.required(v, $t("common.validation.hostnameMissing")),
-						(v: string) => ValidationRules.server(v, $t("common.validation.hostnameInvalid")),
+						(v: string) => ValidationRules.host(v, $t("common.validation.hostnameInvalid")),
 					]'
 					required
 				/>
@@ -86,6 +86,7 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
+import { ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { ref, type Ref } from 'vue';
 import { watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -96,7 +97,6 @@ import SelectInput from '@/components/layout/form/SelectInput.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import { WebsocketProtocol } from '@/enums/websocket';
-import ValidationRules from '@/helpers/ValidationRules';
 
 
 const componentProps = defineProps({

@@ -30,7 +30,7 @@ limitations under the License.
 			ref='form'
 			v-slot='{ isValid }'
 			:disabled='componentState === ComponentState.Saving'
-			@submit.prevent='onSubmit'
+			@submit.prevent='onSubmit()'
 		>
 			<Card>
 				<template #title>
@@ -57,7 +57,7 @@ limitations under the License.
 					<v-spacer />
 					<CardActionBtn
 						:action='Action.Cancel'
-						@click='close'
+						@click='close()'
 					/>
 				</template>
 			</Card>
@@ -70,6 +70,7 @@ import {
 	IqrfGatewayDaemonComponentName,
 	type IqrfGatewayDaemonMqttMessaging,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import { ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiFileOutline } from '@mdi/js';
 import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -81,7 +82,6 @@ import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';
-import ValidationRules from '@/helpers/ValidationRules';
 import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 

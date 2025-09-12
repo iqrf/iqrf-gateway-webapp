@@ -59,6 +59,7 @@ limitations under the License.
 <script lang='ts' setup>
 import { AccountService } from '@iqrf/iqrf-gateway-webapp-client/services';
 import { UserAccountRecovery } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiAccount, mdiAccountKey } from '@mdi/js';
 import { AxiosError } from 'axios';
 import { ref, type Ref } from 'vue';
@@ -71,7 +72,6 @@ import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import UrlBuilder from '@/helpers/urlBuilder';
 import { validateForm } from '@/helpers/validateForm';
-import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
 import { ComponentState } from '@/types/ComponentState';
 

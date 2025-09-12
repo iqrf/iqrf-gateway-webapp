@@ -86,6 +86,7 @@ limitations under the License.
 
 <script lang='ts' setup>
 import { type UserPasswordChange } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiHelpCircleOutline, mdiKey } from '@mdi/js';
 import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -97,7 +98,6 @@ import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import PasswordInput from '@/components/layout/form/PasswordInput.vue';
 import UrlBuilder from '@/helpers/urlBuilder';
 import { validateForm } from '@/helpers/validateForm';
-import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
 import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';

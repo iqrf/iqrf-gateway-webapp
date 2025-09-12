@@ -42,7 +42,7 @@ limitations under the License.
 					color='primary'
 					variant='elevated'
 					:disabled='!isValid.value'
-					@click='onSubmit'
+					@click='onSubmit()'
 				>
 					{{ $t('common.buttons.save') }}
 				</v-btn>
@@ -54,7 +54,8 @@ limitations under the License.
 <script lang='ts' setup>
 import { type ServiceService } from '@iqrf/iqrf-gateway-webapp-client/services';
 import { type UpgradeService } from '@iqrf/iqrf-gateway-webapp-client/services/Iqrf';
-import { FileFormat, FileType, type FileUploadResult } from '@iqrf/iqrf-gateway-webapp-client/types/Iqrf';
+import { FileFormat, FileType } from '@iqrf/iqrf-gateway-webapp-client/types/Iqrf';
+import { ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiFileOutline } from '@mdi/js';
 import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -63,7 +64,6 @@ import { VForm } from 'vuetify/components';
 
 import Card from '@/components/layout/card/Card.vue';
 import { validateForm } from '@/helpers/validateForm';
-import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
 import { ComponentState } from '@/types/ComponentState';
 

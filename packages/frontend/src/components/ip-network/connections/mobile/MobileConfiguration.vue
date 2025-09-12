@@ -73,12 +73,12 @@ import {
 	type NetworkConnectionConfiguration,
 	type SerialConnection,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
+import { ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiAccessPoint, mdiAccount, mdiKey } from '@mdi/js';
 import { storeToRefs } from 'pinia';
 import { computed, ComputedRef, type PropType, watch } from 'vue';
 
 import PasswordInput from '@/components/layout/form/PasswordInput.vue';
-import ValidationRules from '@/helpers/ValidationRules';
 import { useGatewayStore } from '@/store/gateway';
 
 /// Network connection configuration

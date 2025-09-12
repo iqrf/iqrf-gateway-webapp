@@ -118,6 +118,7 @@ import {
 	UserLanguage,
 	UserRole,
 } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { ValidationRules } from '@iqrf/iqrf-vue-ui';
 import {
 	mdiAccount,
 	mdiAccountBadge,
@@ -141,7 +142,6 @@ import TextInput from '@/components/layout/form/TextInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import { getFilteredRoleOptions } from '@/helpers/userData';
 import { validateForm } from '@/helpers/validateForm';
-import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
 import { Action } from '@/types/Action';

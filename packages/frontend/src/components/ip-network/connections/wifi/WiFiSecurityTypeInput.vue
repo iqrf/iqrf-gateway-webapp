@@ -32,12 +32,12 @@ limitations under the License.
 import {
 	WifiSecurityType,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
+import { ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiWifiLock } from '@mdi/js';
 import { type PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import SelectInput from '@/components/layout/form/SelectInput.vue';
-import ValidationRules from '@/helpers/ValidationRules';
 import { type SelectItem } from '@/types/vuetify';
 
 /// Model value

@@ -59,6 +59,7 @@ import {
 	WepKeyType,
 	WifiSecurityType,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
+import { ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiWifi } from '@mdi/js';
 import { type PropType, watch } from 'vue';
 
@@ -71,7 +72,6 @@ import WpaEapConfiguration
 import WpaPskConfiguration
 	from '@/components/ip-network/connections/wifi/WpaPskConfiguration.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
-import ValidationRules from '@/helpers/ValidationRules';
 
 /// Network connection configuration
 const configuration = defineModel({

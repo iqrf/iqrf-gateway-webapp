@@ -54,7 +54,7 @@ limitations under the License.
 									:label='$t("common.labels.hostname")'
 									:rules='[
 										(v: string|null) => ValidationRules.required(v, $t("common.validation.hostnameMissing")),
-										(v: string) => ValidationRules.server(v, $t("common.validation.hostnameInvalid")),
+										(v: string) => ValidationRules.host(v, $t("common.validation.hostnameInvalid")),
 									]'
 									required
 								/>
@@ -163,7 +163,7 @@ limitations under the License.
 									:label='$t("common.labels.hostname")'
 									:rules='[
 										(v: string|null) => ValidationRules.required(v, $t("common.validation.hostnameMissing")),
-										(v: string) => ValidationRules.server(v, $t("common.validation.hostnameInvalid")),
+										(v: string) => ValidationRules.host(v, $t("common.validation.hostnameInvalid")),
 									]'
 									required
 								/>
@@ -206,7 +206,7 @@ limitations under the License.
 										] : []
 									'
 									:required='config.mqtt.password.length > 0'
-									@change='validate'
+									@change='validate()'
 								/>
 							</v-col>
 							<v-col
@@ -222,7 +222,7 @@ limitations under the License.
 										] : []
 									'
 									:required='config.mqtt.user.length > 0'
-									@change='validate'
+									@change='validate()'
 								/>
 							</v-col>
 						</v-row>
@@ -289,6 +289,7 @@ limitations under the License.
 <script lang='ts' setup>
 import { type IqrfGatewayInfluxdbBridgeService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import { type BridgeConfig } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import { ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiDelete, mdiReload } from '@mdi/js';
 import {
 	onMounted,
@@ -307,7 +308,6 @@ import NumberInput from '@/components/layout/form/NumberInput.vue';
 import PasswordInput from '@/components/layout/form/PasswordInput.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import { validateForm } from '@/helpers/validateForm';
-import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
 import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';

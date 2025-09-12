@@ -443,6 +443,7 @@ import {
 	type TApiResponse,
 } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
+import { ValidationRules } from '@iqrf/iqrf-vue-ui';
 import {
 	mdiHexadecimal,
 	mdiLock,
@@ -462,7 +463,6 @@ import Card from '@/components/layout/card/Card.vue';
 import NumberInput from '@/components/layout/form/NumberInput.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import { validateForm } from '@/helpers/validateForm';
-import ValidationRules from '@/helpers/ValidationRules';
 import { useDaemonStore } from '@/store/daemonSocket';
 import { ComponentState } from '@/types/ComponentState';
 import { type DpaPacketTransaction } from '@/types/Iqrfnet';

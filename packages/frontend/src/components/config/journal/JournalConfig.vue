@@ -126,6 +126,7 @@ limitations under the License.
 <script lang='ts' setup>
 import { type JournalService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import { type JournalConfig, JournalPersistence, JournalTimeUnit } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import { ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { onMounted, ref , type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
@@ -137,7 +138,6 @@ import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue'
 import NumberInput from '@/components/layout/form/NumberInput.vue';
 import SelectInput from '@/components/layout/form/SelectInput.vue';
 import { validateForm } from '@/helpers/validateForm';
-import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
 import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';

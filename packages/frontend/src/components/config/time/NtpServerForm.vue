@@ -31,7 +31,7 @@ limitations under the License.
 				:action='action'
 			/>
 		</template>
-		<v-form ref='form' v-slot='{ isValid }' @submit.prevent='onSubmit'>
+		<v-form ref='form' v-slot='{ isValid }' @submit.prevent='onSubmit()'>
 			<Card :action='action'>
 				<template #title>
 					{{ $t(`components.config.time.ntpServers.${action}`) }}
@@ -42,7 +42,7 @@ limitations under the License.
 					:prepend-inner-icon='mdiServerNetwork'
 					:rules='[
 						(v: string|null) => ValidationRules.required(v, $t("components.config.time.ntpServers.validation.serverMissing")),
-						(v: string|null) => ValidationRules.server(v, $t("components.config.time.ntpServers.validation.serverInvalid")),
+						(v: string) => ValidationRules.host(v, $t("components.config.time.ntpServers.validation.serverInvalid")),
 					]'
 					required
 				/>
@@ -53,7 +53,7 @@ limitations under the License.
 						type='submit'
 					/>
 					<v-spacer />
-					<CardActionBtn :action='Action.Cancel' @click='close' />
+					<CardActionBtn :action='Action.Cancel' @click='close()' />
 				</template>
 			</Card>
 		</v-form>
@@ -61,6 +61,7 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
+import { ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiPlus, mdiServerNetwork } from '@mdi/js';
 import { ref, type Ref, watchEffect } from 'vue';
 import { VForm } from 'vuetify/components';
@@ -71,7 +72,6 @@ import DataTableAction from '@/components/layout/data-table/DataTableAction.vue'
 import TextInput from '@/components/layout/form/TextInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';
-import ValidationRules from '@/helpers/ValidationRules';
 import { Action } from '@/types/Action';
 
 interface Props {

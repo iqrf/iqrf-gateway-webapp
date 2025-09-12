@@ -19,7 +19,7 @@ limitations under the License.
 	<v-form
 		ref='form'
 		:disabled='[ComponentState.Loading, ComponentState.Reloading].includes(componentState) || !configuration.enabled'
-		@submit.prevent='onSubmit'
+		@submit.prevent='onSubmit()'
 	>
 		<Card>
 			<template #title>
@@ -36,7 +36,7 @@ limitations under the License.
 				<CardTitleActionBtn
 					:action='Action.Reload'
 					:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
-					@click='getConfig'
+					@click='getConfig()'
 				/>
 			</template>
 			<v-alert
@@ -63,7 +63,7 @@ limitations under the License.
 						:label='$t("components.config.smtp.form.host")'
 						:rules='[
 							(v: string|null) => ValidationRules.required(v, $t("components.config.smtp.errors.host")),
-							(v: string) => ValidationRules.server(v, $t("components.config.smtp.errors.hostInvalid")),
+							(v: string) => ValidationRules.host(v, $t("components.config.smtp.errors.hostInvalid")),
 						]'
 						:disabled='[ComponentState.Loading, ComponentState.Reloading].includes(componentState) || !configuration.enabled'
 						:prepend-inner-icon='mdiServer'
@@ -72,6 +72,20 @@ limitations under the License.
 					<v-text-field
 						v-model.number='configuration.port'
 						:label='$t("components.config.smtp.form.port")'
+						:rules='[
+							(v: number|null) => ValidationRules.required(v, $t("components.config.smtp.errors.port")),
+							(v: number) => ValidationRules.integer(v, $t("components.config.smtp.errors.port")),
+							(v: number) => ValidationRules.between(v, 1, 65535, $t("components.config.smtp.errors.portInvalid")),
+						]'
+						:disabled='[ComponentState.Loading, ComponentState.Reloading].includes(componentState) || !configuration.enabled'
+						:prepend-inner-icon='mdiNumeric'
+						required
+					/>
+					<NumberInput
+						v-model.number='configuration.port'
+						:label='$t("components.config.smtp.form.port")'
+						:min='1'
+						:max='65535'
 						:rules='[
 							(v: number|null) => ValidationRules.required(v, $t("components.config.smtp.errors.port")),
 							(v: number) => ValidationRules.integer(v, $t("components.config.smtp.errors.port")),
@@ -138,6 +152,7 @@ import {
 	type MailerConfig,
 	type MailerGetConfigResponse, MailerTheme,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import { ValidationRules } from '@iqrf/iqrf-vue-ui';
 import {
 	mdiAccount,
 	mdiEmail,
@@ -157,9 +172,9 @@ import SmtpSecurityInput
 import Card from '@/components/layout/card/Card.vue';
 import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
+import NumberInput from '@/components/layout/form/NumberInput.vue';
 import PasswordInput from '@/components/layout/form/PasswordInput.vue';
 import { validateForm } from '@/helpers/validateForm';
-import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
 import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
