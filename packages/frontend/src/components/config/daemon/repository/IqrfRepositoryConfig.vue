@@ -84,6 +84,7 @@ import {
 	IqrfGatewayDaemonComponentName,
 	type IqrfGatewayDaemonJsCache,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import { ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiServerNetwork } from '@mdi/js';
 import { onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -96,7 +97,6 @@ import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue'
 import NumberInput from '@/components/layout/form/NumberInput.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import { validateForm } from '@/helpers/validateForm';
-import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
 import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';

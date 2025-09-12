@@ -53,7 +53,7 @@ limitations under the License.
 				:label='$t("components.config.smtp.form.host")'
 				:rules='[
 					(v: string|null) => ValidationRules.required(v, $t("components.config.smtp.errors.host")),
-					(v: string) => ValidationRules.server(v, $t("components.config.smtp.errors.hostInvalid")),
+					(v: string) => ValidationRules.host(v, $t("components.config.smtp.errors.hostInvalid")),
 				]'
 				:prepend-inner-icon='mdiServer'
 				required
@@ -118,7 +118,7 @@ limitations under the License.
 				:action='Action.Skip'
 				class='ml-2'
 				:loading='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
-				@click='next'
+				@click='next()'
 			/>
 			<CardActionBtn
 				color='info'
@@ -127,7 +127,7 @@ limitations under the License.
 				:icon='mdiEmailFast'
 				:text='$t("components.config.smtp.form.test")'
 				:loading='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
-				@click='testConfiguration'
+				@click='testConfiguration()'
 			/>
 		</template>
 	</v-stepper-vertical-item>
@@ -140,6 +140,7 @@ import {
 	type MailerConfig,
 	type MailerGetConfigResponse, MailerTheme,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import { ValidationRules } from '@iqrf/iqrf-vue-ui';
 import {
 	mdiAccount,
 	mdiEmail,
@@ -161,7 +162,6 @@ import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import PasswordInput from '@/components/layout/form/PasswordInput.vue';
 import UrlBuilder from '@/helpers/urlBuilder';
 import { validateForm } from '@/helpers/validateForm';
-import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
 import { Action } from '@/types/Action';

@@ -93,6 +93,7 @@ limitations under the License.
 <script lang='ts' setup>
 import { type IbmService } from '@iqrf/iqrf-gateway-webapp-client/services/Cloud';
 import { type IbmCloudConfig } from '@iqrf/iqrf-gateway-webapp-client/types/Cloud';
+import { ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
@@ -102,7 +103,6 @@ import Card from '@/components/layout/card/Card.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';
-import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
 import { ComponentState } from '@/types/ComponentState';
 

@@ -40,13 +40,13 @@ limitations under the License.
 import {
 	type NetworkConnectionConfiguration,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
+import { ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiTag } from '@mdi/js';
 import { type PropType } from 'vue';
 
 import InterfaceInput
 	from '@/components/ip-network/interfaces/InterfaceInput.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
-import ValidationRules from '@/helpers/ValidationRules';
 
 /// Network connection configuration
 const configuration = defineModel({

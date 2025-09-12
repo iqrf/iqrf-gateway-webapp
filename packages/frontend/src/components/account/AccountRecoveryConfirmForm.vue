@@ -85,6 +85,7 @@ import {
 	UserPasswordReset,
 	UserSignedIn,
 } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiAccountKey, mdiHelpCircleOutline, mdiKey } from '@mdi/js';
 import { AxiosError } from 'axios';
 import { validate as uuidValidate, version as uuidVersion } from 'uuid';
@@ -98,7 +99,6 @@ import Card from '@/components/layout/card/Card.vue';
 import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import PasswordInput from '@/components/layout/form/PasswordInput.vue';
 import { validateForm } from '@/helpers/validateForm';
-import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
 import { ComponentState } from '@/types/ComponentState';

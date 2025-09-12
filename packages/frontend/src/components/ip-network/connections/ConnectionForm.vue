@@ -124,7 +124,7 @@ limitations under the License.
 					<CardActionBtn
 						:action='Action.Close'
 						:disabled='componentState === ComponentState.Saving'
-						@click='close'
+						@click='close()'
 					/>
 				</template>
 			</Card>
@@ -141,6 +141,7 @@ import {
 	type NetworkInterfaceType, WifiMode, WifiSecurityType,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import { IpNetworkUtils } from '@iqrf/iqrf-gateway-webapp-client/utils';
+import { ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiContentSave, mdiTextShort } from '@mdi/js';
 import { computed, type PropType, ref, type Ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -170,7 +171,6 @@ import DataTableAction
 import TextInput from '@/components/layout/form/TextInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';
-import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
 import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';

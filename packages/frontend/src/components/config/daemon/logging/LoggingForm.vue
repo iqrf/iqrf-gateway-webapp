@@ -125,7 +125,7 @@ limitations under the License.
 									v-tooltip:bottom='$t("components.config.daemon.logging.channels.actions.deleteAll")'
 									color='red'
 									:icon='mdiDelete'
-									@click='clearLevels'
+									@click='clearLevels()'
 								/>
 							</v-toolbar-items>
 						</v-toolbar>
@@ -183,6 +183,7 @@ import {
 	type ShapeTraceFileService,
 	ShapeTraceVerbosity,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import { ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiDelete } from '@mdi/js';
 import { computed, type PropType, ref, type Ref , watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -199,7 +200,6 @@ import NumberInput from '@/components/layout/form/NumberInput.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';
-import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
 import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';

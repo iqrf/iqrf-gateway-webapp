@@ -37,7 +37,7 @@ limitations under the License.
 		<v-form
 			ref='form'
 			v-slot='{ isValid }'
-			@submit.prevent='onSubmit'
+			@submit.prevent='onSubmit()'
 		>
 			<Card :action='action'>
 				<template #title>
@@ -60,7 +60,7 @@ limitations under the License.
 					<v-spacer />
 					<CardActionBtn
 						:action='Action.Cancel'
-						@click='close'
+						@click='close()'
 					/>
 				</template>
 			</Card>
@@ -69,6 +69,7 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
+import { ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiPlus } from '@mdi/js';
 import { ref, type Ref, watchEffect } from 'vue';
 import { VForm } from 'vuetify/components';
@@ -79,7 +80,6 @@ import DataTableAction from '@/components/layout/data-table/DataTableAction.vue'
 import TextInput from '@/components/layout/form/TextInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';
-import ValidationRules from '@/helpers/ValidationRules';
 import { Action } from '@/types/Action';
 
 interface Props {

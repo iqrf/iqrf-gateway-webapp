@@ -32,7 +32,7 @@ limitations under the License.
 				},
 			]'
 			:type='configuration.type'
-			@update:model-value='onConfigurationMethodChange'
+			@update:model-value='onConfigurationMethodChange()'
 		/>
 		<div v-if='configuration.ipv6.method === IPv6ConfigurationMethod.MANUAL'>
 			<v-row
@@ -141,6 +141,7 @@ import {
 	IPv6ConfigurationMethod,
 	type NetworkConnectionConfiguration,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
+import { ValidationRules } from '@iqrf/iqrf-vue-ui';
 import {
 	mdiIpNetwork,
 	mdiLan,
@@ -154,7 +155,6 @@ import { z } from 'zod';
 
 import IPv6ConfigurationMethodInput
 	from '@/components/ip-network/connections/ip/IPv6ConfigurationMethodInput.vue';
-import ValidationRules from '@/helpers/ValidationRules';
 
 /// Network connection configuration
 const configuration = defineModel({

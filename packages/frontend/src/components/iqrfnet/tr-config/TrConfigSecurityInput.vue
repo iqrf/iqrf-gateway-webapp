@@ -31,7 +31,7 @@ limitations under the License.
 				:icon='formatSwitchIcon'
 				color='primary'
 				size='x-large'
-				@click='changeAccessPasswordFormat'
+				@click='changeAccessPasswordFormat()'
 			/>
 		</template>
 		<template #append-inner>
@@ -46,13 +46,13 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
+import { ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiAlphabetical, mdiHexadecimal, mdiInformationBox } from '@mdi/js';
 import { computed, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import PasswordInput from '@/components/layout/form/PasswordInput.vue';
-import ValidationRules from '@/helpers/ValidationRules';
 
 const i18n = useI18n();
 const componentProps = defineProps({
@@ -98,7 +98,7 @@ const lengthRule = computed(() => {
 	} else {
 		message = i18n.t(useHex.value ? 'components.iqrfnet.tr-config.security.errors.userKeyInvalidHexLen' : 'components.iqrfnet.tr-config.security.errors.userKeyInvalidAsciiLen');
 	}
-	return (v: string) => ValidationRules.maxLength(v, len, message);
+	return (v: string) => ValidationRules.maxLen(v, len, message);
 });
 const regexRule = computed(() => {
 	const pattern = useHex.value ? hexPattern : asciiPattern;

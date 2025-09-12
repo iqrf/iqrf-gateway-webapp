@@ -74,6 +74,7 @@ import {
 	type IqrfGatewayDaemonJsonSplitter,
 	type IqrfGatewayDaemonJsonSplitterV3,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import { ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiIdentifier } from '@mdi/js';
 import { onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -85,7 +86,6 @@ import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import { validateForm } from '@/helpers/validateForm';
-import ValidationRules from '@/helpers/ValidationRules';
 import { useApiClient } from '@/services/ApiClient';
 import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';

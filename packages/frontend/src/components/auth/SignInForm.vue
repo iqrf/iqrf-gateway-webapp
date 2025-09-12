@@ -74,6 +74,7 @@ import {
 	type UserCredentials,
 	UserSessionExpiration,
 } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiAccount, mdiAccountKey, mdiKey, mdiLogin } from '@mdi/js';
 import { AxiosError } from 'axios';
 import { onMounted, ref, type Ref } from 'vue';
@@ -89,7 +90,6 @@ import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import PasswordInput from '@/components/layout/form/PasswordInput.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import { validateForm } from '@/helpers/validateForm';
-import ValidationRules from '@/helpers/ValidationRules';
 import { useGatewayStore } from '@/store/gateway';
 import { useRepositoryStore } from '@/store/repository';
 import { useUserStore } from '@/store/user';
