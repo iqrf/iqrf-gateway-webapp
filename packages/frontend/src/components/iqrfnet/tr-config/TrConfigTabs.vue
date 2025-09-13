@@ -20,7 +20,7 @@ limitations under the License.
 		v-slot='{ isValid }'
 		ref='form'
 	>
-		<Card>
+		<ICard>
 			<template #title>
 				{{ $t('pages.iqrfnet.tr-config.title') }}
 			</template>
@@ -61,7 +61,7 @@ limitations under the License.
 					{{ $t('common.buttons.save') }}
 				</v-btn>
 			</template>
-		</Card>
+		</ICard>
 	</v-form>
 </template>
 
@@ -72,6 +72,7 @@ import { type ApiResponseIqmesh,
 	type IqmeshWriteTrConfParams,
 } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
+import { ICard } from '@iqrf/iqrf-vue-ui';
 import { mdiContentSave } from '@mdi/js';
 import { ref, type Ref } from 'vue';
 import { VForm } from 'vuetify/components';
@@ -79,7 +80,6 @@ import { VForm } from 'vuetify/components';
 import TrConfigDpaForm from '@/components/iqrfnet/tr-config/TrConfigDpaForm.vue';
 import TrConfigOsForm from '@/components/iqrfnet/tr-config/TrConfigOsForm.vue';
 import TrConfigSecurityForm from '@/components/iqrfnet/tr-config/TrConfigSecurityForm.vue';
-import Card from '@/components/layout/card/Card.vue';
 import NumberInput from '@/components/layout/form/NumberInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useDaemonStore } from '@/store/daemonSocket';

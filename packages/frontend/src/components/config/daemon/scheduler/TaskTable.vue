@@ -16,7 +16,7 @@ limitations under the License.
 -->
 
 <template>
-	<Card>
+	<ICard>
 		<template #title>
 			{{ $t('pages.config.daemon.scheduler.title') }}
 		</template>
@@ -123,7 +123,7 @@ limitations under the License.
 				</v-skeleton-loader>
 			</template>
 		</DataTable>
-	</Card>
+	</ICard>
 </template>
 
 <script lang='ts' setup>
@@ -141,6 +141,7 @@ import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { type IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import { type IqrfGatewayDaemonSchedulerMessagings } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { FileDownloader } from '@iqrf/iqrf-gateway-webapp-client/utils';
+import { Action, ICard } from '@iqrf/iqrf-vue-ui';
 import { mdiExport, mdiPlay, mdiReload, mdiStop } from '@mdi/js';
 import cronstrue from 'cronstrue';
 import { DateTime, Duration } from 'luxon';
@@ -153,11 +154,9 @@ import TaskDeleteDialog from '@/components/config/daemon/scheduler/TaskDeleteDia
 import TaskForm from '@/components/config/daemon/scheduler/TaskForm.vue';
 import TasksDeleteDialog from '@/components/config/daemon/scheduler/TasksDeleteDialog.vue';
 import TasksImportDialog from '@/components/config/daemon/scheduler/TasksImportDialog.vue';
-import Card from '@/components/layout/card/Card.vue';
 import DataTable from '@/components/layout/data-table/DataTable.vue';
 import { useApiClient } from '@/services/ApiClient';
 import { useDaemonStore } from '@/store/daemonSocket';
-import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);

@@ -16,7 +16,7 @@ limitations under the License.
 -->
 
 <template>
-	<Card>
+	<ICard>
 		<template #title>
 			{{ $t('components.maintenance.mender.remount.title') }}
 		</template>
@@ -35,17 +35,17 @@ limitations under the License.
 		>
 			{{ $t('components.maintenance.mender.remount.readwrite') }}
 		</v-btn>
-	</Card>
+	</ICard>
 </template>
 
 <script lang='ts' setup>
 import { type MenderService } from '@iqrf/iqrf-gateway-webapp-client/services/Maintenance';
 import { MenderMountMode, type MenderRemount } from '@iqrf/iqrf-gateway-webapp-client/types/Maintenance';
+import { ICard } from '@iqrf/iqrf-vue-ui';
 import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
-import Card from '@/components/layout/card/Card.vue';
 import { useApiClient } from '@/services/ApiClient';
 import { ComponentState } from '@/types/ComponentState';
 

@@ -32,7 +32,7 @@ limitations under the License.
 			/>
 		</template>
 		<v-form ref='form' v-slot='{ isValid }' @submit.prevent='onSubmit()'>
-			<Card :action='action'>
+			<ICard :action='action'>
 				<template #title>
 					{{ $t(`components.config.time.ntpServers.${action}`) }}
 				</template>
@@ -47,32 +47,37 @@ limitations under the License.
 					required
 				/>
 				<template #actions>
-					<CardActionBtn
+					<ICardActionBtn
 						:action='action'
 						:disabled='!isValid.value'
 						type='submit'
 					/>
 					<v-spacer />
-					<CardActionBtn :action='Action.Cancel' @click='close()' />
+					<ICardActionBtn
+						:action='Action.Cancel'
+						@click='close()'
+					/>
 				</template>
-			</Card>
+			</ICard>
 		</v-form>
 	</ModalWindow>
 </template>
 
 <script lang='ts' setup>
-import { ValidationRules } from '@iqrf/iqrf-vue-ui';
+import {
+	Action,
+	ICard,
+	ICardActionBtn,
+	ValidationRules,
+} from '@iqrf/iqrf-vue-ui';
 import { mdiPlus, mdiServerNetwork } from '@mdi/js';
 import { ref, type Ref, watchEffect } from 'vue';
 import { VForm } from 'vuetify/components';
 
-import Card from '@/components/layout/card/Card.vue';
-import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import DataTableAction from '@/components/layout/data-table/DataTableAction.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';
-import { Action } from '@/types/Action';
 
 interface Props {
 	action: Action;

@@ -18,7 +18,7 @@ limitations under the License.
 <template>
 	<ModalWindow v-model='showDialog'>
 		<template #activator='{ props }'>
-			<CardTitleActionBtn
+			<ICardTitleActionBtn
 				v-bind='props'
 				:action='Action.Add'
 				:tooltip='$t("components.accessControl.sshKeys.actions.add")'
@@ -30,7 +30,7 @@ limitations under the License.
 			:disabled='componentState === ComponentState.Saving'
 			@submit.prevent='onSubmit()'
 		>
-			<Card :action='Action.Add'>
+			<ICard :action='Action.Add'>
 				<template #title>
 					{{ $t('components.accessControl.sshKeys.form.addTitle') }}
 				</template>
@@ -71,19 +71,19 @@ limitations under the License.
 					:prepend-inner-icon='mdiTextShort'
 				/>
 				<template #actions>
-					<CardActionBtn
+					<ICardActionBtn
 						:action='Action.Add'
 						:disabled='!isValid.value || componentState === ComponentState.Saving'
 						type='submit'
 					/>
 					<v-spacer />
-					<CardActionBtn
+					<ICardActionBtn
 						:action='Action.Cancel'
 						:disabled='componentState === ComponentState.Saving'
 						@click='close()'
 					/>
 				</template>
-			</Card>
+			</ICard>
 		</v-form>
 	</ModalWindow>
 </template>
@@ -94,21 +94,21 @@ import {
 	type SshKeyCreate,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import { SshKeyUtils } from '@iqrf/iqrf-gateway-webapp-client/utils';
-import { ValidationRules } from '@iqrf/iqrf-vue-ui';
+import {
+	Action, ICard, ICardActionBtn,
+	ICardTitleActionBtn,
+	ValidationRules,
+} from '@iqrf/iqrf-vue-ui';
 import { mdiKey, mdiTextShort } from '@mdi/js';
 import { type PropType, ref, type Ref , watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
-import Card from '@/components/layout/card/Card.vue';
-import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
-import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
-import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Ready);

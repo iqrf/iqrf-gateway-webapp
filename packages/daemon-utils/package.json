@@ -113,7 +113,7 @@
 	],
 	"license": "Apache-2.0",
 	"dependencies": {
-		"axios": "^1.11.0",
+		"axios": "^1.12.1",
 		"cronstrue": "^2.61.0",
 		"luxon": "^3.7.2",
 		"punycode": "^2.3.1",
@@ -122,7 +122,7 @@
 	"devDependencies": {
 		"@iqrf/eslint-config": "^0.2.16",
 		"@types/luxon": "^3.7.1",
-		"@types/node": "^24.3.1",
+		"@types/node": "^24.3.3",
 		"@types/punycode": "^2.1.4",
 		"@types/uuid": "^10.0.0",
 		"@vitest/coverage-istanbul": "^3.2.4",

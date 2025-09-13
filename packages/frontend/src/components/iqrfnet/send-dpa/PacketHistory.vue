@@ -16,7 +16,7 @@ limitations under the License.
 -->
 
 <template>
-	<Card header-color='gray'>
+	<ICard header-color='gray'>
 		<template #title>
 			{{ $t('components.iqrfnet.send-dpa.history.title') }}
 		</template>
@@ -34,15 +34,15 @@ limitations under the License.
 			density='compact'
 			hide-no-data
 		/>
-	</Card>
+	</ICard>
 </template>
 
 <script lang='ts' setup>
+import { ICard } from '@iqrf/iqrf-vue-ui';
 import { mdiDelete } from '@mdi/js';
 import { type PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import Card from '@/components/layout/card/Card.vue';
 import { DpaPacketTransaction } from '@/types/Iqrfnet';
 
 defineProps({

@@ -22,7 +22,7 @@ limitations under the License.
 		:disabled='componentState === ComponentState.Saving'
 		@submit.prevent='onSubmit'
 	>
-		<Card>
+		<ICard>
 			<template #title>
 				{{ $t('components.account.password.title') }}
 			</template>
@@ -73,33 +73,35 @@ limitations under the License.
 				:prepend-inner-icon='mdiKey'
 			/>
 			<template #actions>
-				<CardActionBtn
+				<ICardActionBtn
 					:action='Action.Edit'
 					:disabled='!isValid.value'
 					:loading='componentState === ComponentState.Saving'
 					type='submit'
 				/>
 			</template>
-		</Card>
+		</ICard>
 	</v-form>
 </template>
 
 <script lang='ts' setup>
 import { type UserPasswordChange } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { ValidationRules } from '@iqrf/iqrf-vue-ui';
+import {
+	Action,
+	ICard,
+	ICardActionBtn,
+	ValidationRules,
+} from '@iqrf/iqrf-vue-ui';
 import { mdiHelpCircleOutline, mdiKey } from '@mdi/js';
 import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
 
-import Card from '@/components/layout/card/Card.vue';
-import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import PasswordInput from '@/components/layout/form/PasswordInput.vue';
 import UrlBuilder from '@/helpers/urlBuilder';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
-import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 /// Component state

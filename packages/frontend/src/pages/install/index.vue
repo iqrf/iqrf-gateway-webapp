@@ -20,7 +20,7 @@ limitations under the License.
 		<Head>
 			<title>{{ $t('pages.install.wizard.title') }}</title>
 		</Head>
-		<Card>
+		<ICard>
 			<template #title>
 				{{ $t('pages.install.wizard.title') }}
 			</template>
@@ -52,7 +52,7 @@ limitations under the License.
 					:index='getIndex(InstallationStep.InstallationCompleted)'
 				/>
 			</v-stepper-vertical>
-		</Card>
+		</ICard>
 	</div>
 </template>
 
@@ -68,6 +68,7 @@ limitations under the License.
 </route>
 
 <script lang='ts' setup>
+import { ICard } from '@iqrf/iqrf-vue-ui';
 import { Head } from '@unhead/vue/components';
 import { storeToRefs } from 'pinia';
 import { onMounted, ref, type Ref } from 'vue';
@@ -82,7 +83,6 @@ import MailServerConfiguration
 	from '@/components/install/wizard/MailServerConfiguration.vue';
 import SshServerConfiguration
 	from '@/components/install/wizard/SshServerConfiguration.vue';
-import Card from '@/components/layout/card/Card.vue';
 import { useInstallStore } from '@/store/install';
 import { InstallationStep } from '@/types/install';
 

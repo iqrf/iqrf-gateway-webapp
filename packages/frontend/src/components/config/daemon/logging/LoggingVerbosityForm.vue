@@ -33,7 +33,7 @@ limitations under the License.
 			/>
 		</template>
 		<v-form ref='form' v-slot='{ isValid }' @submit.prevent='onSubmit()'>
-			<Card :action='action'>
+			<ICard :action='action'>
 				<template #title>
 					{{ $t(`components.config.daemon.logging.channels.actions.${action}`) }}
 				</template>
@@ -53,38 +53,40 @@ limitations under the License.
 					:items='severityOptions'
 				/>
 				<template #actions>
-					<CardActionBtn
+					<ICardActionBtn
 						:action='action'
 						:disabled='!isValid.value'
 						type='submit'
 					/>
 					<v-spacer />
-					<CardActionBtn
+					<ICardActionBtn
 						:action='Action.Cancel'
 						@click='close()'
 					/>
 				</template>
-			</Card>
+			</ICard>
 		</v-form>
 	</ModalWindow>
 </template>
 
 <script lang='ts' setup>
 import { type ShapeTraceChannelVerbosity, ShapeTraceVerbosity } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { ValidationRules } from '@iqrf/iqrf-vue-ui';
+import {
+	Action,
+	ICard,
+	ICardActionBtn,
+	ValidationRules,
+} from '@iqrf/iqrf-vue-ui';
 import { mdiPlus } from '@mdi/js';
 import { type PropType, ref, type Ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { VForm } from 'vuetify/components';
 
-import Card from '@/components/layout/card/Card.vue';
-import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import DataTableAction from '@/components/layout/data-table/DataTableAction.vue';
 import NumberInput from '@/components/layout/form/NumberInput.vue';
 import SelectInput from '@/components/layout/form/SelectInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';
-import { Action } from '@/types/Action';
 
 const emit = defineEmits(['save']);
 const componentProps = defineProps({

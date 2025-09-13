@@ -16,12 +16,12 @@ limitations under the License.
 -->
 
 <template>
-	<Card header-color='primary'>
+	<ICard header-color='primary'>
 		<template #title>
 			{{ $t(`components.ipNetwork.interfaces.titles.${type}`) }}
 		</template>
 		<template #titleActions>
-			<CardTitleActionBtn
+			<ICardTitleActionBtn
 				:action='Action.Reload'
 				@click='fetchData'
 			/>
@@ -44,7 +44,7 @@ limitations under the License.
 				</DataTable>
 			</v-responsive>
 		</v-skeleton-loader>
-	</Card>
+	</ICard>
 </template>
 
 <script setup lang='ts'>
@@ -52,16 +52,14 @@ import {
 	type NetworkInterface,
 	type NetworkInterfaceType,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
+import { Action, ICard, ICardTitleActionBtn } from '@iqrf/iqrf-vue-ui';
 import { computed, onBeforeMount, type PropType, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import InterfaceStateBadge
 	from '@/components/ip-network/interfaces/InterfaceStateBadge.vue';
-import Card from '@/components/layout/card/Card.vue';
-import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
 import DataTable from '@/components/layout/data-table/DataTable.vue';
 import { useApiClient } from '@/services/ApiClient';
-import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 /// Component props

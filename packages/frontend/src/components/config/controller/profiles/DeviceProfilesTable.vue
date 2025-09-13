@@ -16,7 +16,7 @@ limitations under the License.
 -->
 
 <template>
-	<Card>
+	<ICard>
 		<template #title>
 			{{ $t('components.config.profiles.title') }}
 		</template>
@@ -25,7 +25,7 @@ limitations under the License.
 				:action='Action.Add'
 				@saved='getProfiles()'
 			/>
-			<CardTitleActionBtn
+			<ICardTitleActionBtn
 				:action='Action.Reload'
 				@click='getProfiles()'
 			/>
@@ -55,24 +55,22 @@ limitations under the License.
 				/>
 			</template>
 		</DataTable>
-	</Card>
+	</ICard>
 </template>
 
 <script lang='ts' setup>
 import { type IqrfGatewayControllerService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import { type IqrfGatewayControllerMapping } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import { Action, ICard, ICardTitleActionBtn } from '@iqrf/iqrf-vue-ui';
 import { onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import DeviceProfileDeleteDialog from '@/components/config/controller/profiles/DeviceProfileDeleteDialog.vue';
 import DeviceProfileForm from '@/components/config/controller/profiles/DeviceProfileForm.vue';
-import Card from '@/components/layout/card/Card.vue';
-import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
 import DataTable from '@/components/layout/data-table/DataTable.vue';
 import DataTableAction from '@/components/layout/data-table/DataTableAction.vue';
 import { useApiClient } from '@/services/ApiClient';
-import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 const emit = defineEmits(['apply']);

@@ -24,12 +24,12 @@ limitations under the License.
 			{{ $t('components.install.wizard.installationCompleted.text') }}
 		</p>
 		<template #actions='{ prev }'>
-			<CardActionBtn
+			<ICardActionBtn
 				:icon='mdiCheck'
 				:text='$t("components.install.wizard.installationCompleted.button")'
 				@click='finishInstallation'
 			/>
-			<CardActionBtn
+			<ICardActionBtn
 				:action='Action.Previous'
 				class='float-right'
 				@click='prev'
@@ -39,12 +39,11 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
+import { Action, ICardActionBtn } from '@iqrf/iqrf-vue-ui';
 import { mdiCheck } from '@mdi/js';
 import { useRouter } from 'vue-router';
 
-import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import { useInstallStore } from '@/store/install';
-import { Action } from '@/types/Action';
 
 const componentProps = defineProps({
 	index: {

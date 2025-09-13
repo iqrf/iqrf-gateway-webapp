@@ -31,19 +31,19 @@ limitations under the License.
 				{{ $t('components.maintenance.mender.update.log.button') }}
 			</v-btn>
 		</template>
-		<Card>
+		<ICard>
 			<template #title>
 				{{ $t('components.maintenance.mender.update.log.title') }}
 			</template>
 			<pre>{{ log }}</pre>
-		</Card>
+		</ICard>
 	</v-dialog>
 </template>
 
 <script lang='ts' setup>
+import { ICard } from '@iqrf/iqrf-vue-ui';
 import { type PropType } from 'vue';
 
-import Card from '@/components/layout/card/Card.vue';
 import { getModalWidth } from '@/helpers/modal';
 
 defineProps({

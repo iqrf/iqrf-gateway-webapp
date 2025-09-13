@@ -54,7 +54,7 @@ const componentProps = defineProps({
 const i18n = useI18n();
 /// Network interface items
 const items: ComputedRef<SelectItem[]> = computed((): SelectItem[] => {
-	let methods: IPv4ConfigurationMethod[] = [];
+	let methods: IPv4ConfigurationMethod[];
 	if (componentProps.type === NetworkConnectionType.GSM) {
 		methods = [
 			IPv4ConfigurationMethod.AUTO,

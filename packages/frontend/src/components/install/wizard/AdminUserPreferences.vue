@@ -12,13 +12,13 @@
 			<ThemePreferenceInput v-model='preferences.theme' />
 		</v-form>
 		<template #actions='{ next }'>
-			<CardActionBtn
+			<ICardActionBtn
 				:action='Action.Next'
 				:disabled='!formValidity'
 				:loading='componentState === ComponentState.Saving'
 				@click='onSubmit(next)'
 			/>
-			<CardActionBtn
+			<ICardActionBtn
 				:action='Action.Skip'
 				class='ml-2'
 				:loading='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
@@ -33,6 +33,7 @@ import {
 	UserPreferences, UserThemePreference,
 	UserTimeFormatPreference,
 } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { Action, ICardActionBtn } from '@iqrf/iqrf-vue-ui';
 import { onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
@@ -42,11 +43,9 @@ import ThemePreferenceInput
 	from '@/components/account/ThemePreferenceInput.vue';
 import TimeFormatPreferenceInput
 	from '@/components/account/TimeFormatPreferenceInput.vue';
-import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
-import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 /// Component state

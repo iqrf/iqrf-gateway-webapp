@@ -16,7 +16,7 @@ limitations under the License.
 -->
 
 <template>
-	<CardTitleActionBtn
+	<ICardTitleActionBtn
 		v-if='componentState === ComponentState.Ready && monitCheck !== null'
 		:action='monitCheck.enabled ? Action.Disable : Action.Enable'
 		:color='monitCheck.enabled ? "error" : "success"'
@@ -26,13 +26,11 @@ limitations under the License.
 <script setup lang='ts'>
 import { Feature } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { type MonitCheck } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import { Action, ICardTitleActionBtn } from '@iqrf/iqrf-vue-ui';
 import { onBeforeMount, ref, type Ref } from 'vue';
 
-import CardTitleActionBtn
-	from '@/components/layout/card/CardTitleActionBtn.vue';
 import { useApiClient } from '@/services/ApiClient';
 import { useFeatureStore } from '@/store/features';
-import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 const featureStore = useFeatureStore();

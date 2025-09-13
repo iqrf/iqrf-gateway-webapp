@@ -18,7 +18,7 @@ limitations under the License.
 <template>
 	<ModalWindow v-model='show'>
 		<template #activator='{ props }'>
-			<CardTitleActionBtn
+			<ICardTitleActionBtn
 				v-if='action === Action.Add'
 				v-bind='props'
 				:action='action'
@@ -37,7 +37,7 @@ limitations under the License.
 			:disabled='[ComponentState.Loading, ComponentState.Saving].includes(componentState)'
 			@submit.prevent='onSubmit()'
 		>
-			<Card :action='action'>
+			<ICard :action='action'>
 				<template #title>
 					{{ dialogTitle }}
 				</template>
@@ -172,18 +172,18 @@ limitations under the License.
 					</template>
 				</DataTable>
 				<template #actions>
-					<CardActionBtn
+					<ICardActionBtn
 						:action='action'
 						:disabled='!isValid.value || (!datePickerState && taskType === SchedulerTaskType.ONESHOT) || componentState === ComponentState.Saving'
 						type='submit'
 					/>
 					<v-spacer />
-					<CardActionBtn
+					<ICardActionBtn
 						:action='Action.Cancel'
 						@click='close()'
 					/>
 				</template>
-			</Card>
+			</ICard>
 		</v-form>
 	</ModalWindow>
 </template>
@@ -206,7 +206,12 @@ import {
 } from '@iqrf/iqrf-gateway-daemon-utils/types/management';
 import { DaemonMessageOptions, SchedulerCron } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { type IqrfGatewayDaemonSchedulerMessagings } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { ValidationRules } from '@iqrf/iqrf-vue-ui';
+import {
+	Action,
+	ICard,
+	ICardActionBtn, ICardTitleActionBtn,
+	ValidationRules,
+} from '@iqrf/iqrf-vue-ui';
 import { mdiDelete, mdiHelpBox } from '@mdi/js';
 import cron from 'cron-validate';
 import { v4 as uuidv4 } from 'uuid';
@@ -217,9 +222,6 @@ import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
 
 import TaskMessageForm from '@/components/config/daemon/scheduler/TaskMessageForm.vue';
-import Card from '@/components/layout/card/Card.vue';
-import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
-import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
 import DataTable from '@/components/layout/data-table/DataTable.vue';
 import DataTableAction from '@/components/layout/data-table/DataTableAction.vue';
 import NumberInput from '@/components/layout/form/NumberInput.vue';
@@ -228,7 +230,6 @@ import TextInput from '@/components/layout/form/TextInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useDaemonStore } from '@/store/daemonSocket';
-import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
@@ -320,10 +321,7 @@ const headers = [
 ];
 
 const datePickerState = computed((): boolean => {
-	if (task.value.timeSpec.startTime !== null && task.value.timeSpec.startTime.length !== 0) {
-		return true;
-	}
-	return false;
+	return task.value.timeSpec.startTime !== null && task.value.timeSpec.startTime.length !== 0;
 });
 
 const dialogTitle = computed(() => {
@@ -479,9 +477,9 @@ async function onSubmit(): Promise<void> {
 	if (componentProps.action === Action.Edit && componentProps.schedulerTask?.taskId !== null) {
 		(record as SchedulerEditTaskParams).newTaskId = record.taskId;
 		record.taskId = componentProps.schedulerTask!.taskId;
-		editTask(record);
+		await editTask(record);
 	} else {
-		addTask(record);
+		await addTask(record);
 	}
 }
 

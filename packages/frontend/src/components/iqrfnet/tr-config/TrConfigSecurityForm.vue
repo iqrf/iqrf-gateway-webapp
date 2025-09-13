@@ -16,7 +16,7 @@ limitations under the License.
 -->
 
 <template>
-	<Card>
+	<ICard>
 		<TrConfigSecurityInput
 			:model-value='config.accessPassword'
 			:access-password='true'
@@ -25,14 +25,14 @@ limitations under the License.
 			:model-value='config.securityUserKey'
 			:access-password='false'
 		/>
-	</Card>
+	</ICard>
 </template>
 
 <script lang='ts' setup>
 import { type IqmeshWriteTrConfParams } from '@iqrf/iqrf-gateway-daemon-utils/types';
+import { ICard } from '@iqrf/iqrf-vue-ui';
 
 import TrConfigSecurityInput from '@/components/iqrfnet/tr-config/TrConfigSecurityInput.vue';
-import Card from '@/components/layout/card/Card.vue';
 
 const config = defineModel<IqmeshWriteTrConfParams>('config', { required: true });
 </script>

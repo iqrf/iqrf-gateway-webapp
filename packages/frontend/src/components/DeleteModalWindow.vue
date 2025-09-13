@@ -30,36 +30,34 @@ limitations under the License.
 				/>
 			</template>
 		</template>
-		<Card header-color='red'>
+		<ICard header-color='red'>
 			<template #title>
 				<slot name='title' />
 			</template>
 			<slot />
 			<template #actions>
-				<CardActionBtn
+				<ICardActionBtn
 					:action='Action.Delete'
 					:disabled='componentState === ComponentState.Saving'
 					@click='submit()'
 				/>
 				<v-spacer />
-				<CardActionBtn
+				<ICardActionBtn
 					:action='Action.Cancel'
 					:disabled='componentState === ComponentState.Saving'
 					@click='close()'
 				/>
 			</template>
-		</Card>
+		</ICard>
 	</ModalWindow>
 </template>
 
 <script setup lang='ts'>
+import { Action, ICard, ICardActionBtn } from '@iqrf/iqrf-vue-ui';
 import { type PropType, ref, type Ref } from 'vue';
 
-import Card from '@/components/layout/card/Card.vue';
-import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import DataTableAction from '@/components/layout/data-table/DataTableAction.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
-import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 /// Exposed component functions

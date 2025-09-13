@@ -16,56 +16,54 @@ limitations under the License.
 -->
 
 <template>
-	<div>
-		<Card>
-			<template #title>
-				{{ $t('pages.iqrfnet.send-json.title') }}
-			</template>
-			<template #titleActions>
-				<v-btn
-					size='small'
-					href='https://docs.iqrf.org/iqrf-gateway/user/daemon/api.html'
-					target='_blank'
-				>
-					{{ $t('components.iqrfnet.send-json.api') }}
-				</v-btn>
-			</template>
-			<v-alert
-				v-if='componentState === ComponentState.Saving'
-				variant='tonal'
-				color='info'
-				:text='$t("components.iqrfnet.inProgress")'
-				class='mb-2'
-			/>
-			<v-form
-				ref='form'
-				v-slot='{ isValid }'
-				:disabled='componentState === ComponentState.Saving'
+	<ICard>
+		<template #title>
+			{{ $t('pages.iqrfnet.send-json.title') }}
+		</template>
+		<template #titleActions>
+			<v-btn
+				size='small'
+				href='https://docs.iqrf.org/iqrf-gateway/user/daemon/api.html'
+				target='_blank'
 			>
-				<v-textarea
-					v-model='json'
-					:label='$t("components.iqrfnet.send-json.json")'
-					auto-grow
-					clearable
-					rows='1'
-					required
-				/>
-				<v-btn
-					color='primary'
-					:disabled='!isValid.value || componentState === ComponentState.Saving'
-					@click='onSubmit'
-				>
-					<v-icon :icon='mdiSend' />
-					{{ $t('common.buttons.send') }}
-				</v-btn>
-			</v-form>
-		</Card>
-		<RequestHistory
-			class='mt-4'
-			:messages='messages'
-			@clear='clearMessages'
+				{{ $t('components.iqrfnet.send-json.api') }}
+			</v-btn>
+		</template>
+		<v-alert
+			v-if='componentState === ComponentState.Saving'
+			variant='tonal'
+			color='info'
+			:text='$t("components.iqrfnet.inProgress")'
+			class='mb-2'
 		/>
-	</div>
+		<v-form
+			ref='form'
+			v-slot='{ isValid }'
+			:disabled='componentState === ComponentState.Saving'
+		>
+			<v-textarea
+				v-model='json'
+				:label='$t("components.iqrfnet.send-json.json")'
+				auto-grow
+				clearable
+				rows='1'
+				required
+			/>
+			<v-btn
+				color='primary'
+				:disabled='!isValid.value || componentState === ComponentState.Saving'
+				@click='onSubmit'
+			>
+				<v-icon :icon='mdiSend' />
+				{{ $t('common.buttons.send') }}
+			</v-btn>
+		</v-form>
+	</ICard>
+	<RequestHistory
+		class='mt-4'
+		:messages='messages'
+		@clear='clearMessages'
+	/>
 </template>
 
 <script lang='ts' setup>
@@ -86,12 +84,12 @@ import {
 	type TMessageErrorResponse,
 } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
+import { ICard } from '@iqrf/iqrf-vue-ui';
 import { mdiSend } from '@mdi/js';
 import { ref, type Ref } from 'vue';
 import { VForm } from 'vuetify/components';
 
 import RequestHistory from '@/components/iqrfnet/send-json/RequestHistory.vue';
-import Card from '@/components/layout/card/Card.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useDaemonStore } from '@/store/daemonSocket';
 import { ComponentState } from '@/types/ComponentState';

@@ -11,6 +11,8 @@
 			"ESNext"
 		],
 		"noEmit": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
 		"paths": {
 			"@iqrf/iqrf-gateway-webapp-client": [
 				"../api-client"

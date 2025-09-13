@@ -22,12 +22,12 @@ limitations under the License.
 		:disabled='[ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
 		@submit.prevent='onSubmit()'
 	>
-		<Card>
+		<ICard>
 			<template #title>
 				{{ $t('pages.config.journal.title') }}
 			</template>
 			<template #titleActions>
-				<CardTitleActionBtn
+				<ICardTitleActionBtn
 					:action='Action.Reload'
 					@click='getConfig()'
 				/>
@@ -113,33 +113,34 @@ limitations under the License.
 				</v-responsive>
 			</v-skeleton-loader>
 			<template #actions>
-				<CardActionBtn
+				<ICardActionBtn
 					:action='Action.Edit'
 					:disabled='!isValid.value || [ComponentState.Loading, ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
 					type='submit'
 				/>
 			</template>
-		</Card>
+		</ICard>
 	</v-form>
 </template>
 
 <script lang='ts' setup>
 import { type JournalService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import { type JournalConfig, JournalPersistence, JournalTimeUnit } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { ValidationRules } from '@iqrf/iqrf-vue-ui';
+import {
+	Action, ICard,
+	ICardActionBtn,
+	ICardTitleActionBtn,
+	ValidationRules,
+} from '@iqrf/iqrf-vue-ui';
 import { onMounted, ref , type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
-import Card from '@/components/layout/card/Card.vue';
-import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
-import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
 import NumberInput from '@/components/layout/form/NumberInput.vue';
 import SelectInput from '@/components/layout/form/SelectInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
-import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
@@ -214,7 +215,7 @@ async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value) || config.value === null) {
 		return;
 	}
-	componentState.value === ComponentState.Saving;
+	componentState.value = ComponentState.Saving;
 	const params = { ...config.value };
 	if (!sizeRotation.value) {
 		params.sizeRotation.maxFileSize = 0;

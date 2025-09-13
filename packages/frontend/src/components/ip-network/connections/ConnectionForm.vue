@@ -18,7 +18,7 @@ limitations under the License.
 <template>
 	<ModalWindow v-model='showDialog'>
 		<template #activator='{ props }'>
-			<CardTitleActionBtn
+			<ICardTitleActionBtn
 				v-if='componentProps.action === Action.Add'
 				:action='Action.Add'
 				:tooltip='$t("components.ipNetwork.connections.actions.add")'
@@ -37,7 +37,7 @@ limitations under the License.
 			:disabled='[ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
 			@submit.prevent='onSubmit(false)'
 		>
-			<Card>
+			<ICard>
 				<template #title>
 					<span v-if='componentProps.action === Action.Add'>
 						{{ $t(`components.ipNetwork.connections.add.titles.${componentProps.type}`) }}
@@ -104,14 +104,14 @@ limitations under the License.
 					</v-responsive>
 				</v-skeleton-loader>
 				<template #actions>
-					<CardActionBtn
+					<ICardActionBtn
 						v-if='![ComponentState.Error || ComponentState.FetchFailed].includes(componentState)'
 						:action='Action.Save'
 						:loading='componentState === ComponentState.Saving'
 						:disabled='!isValid.value'
 						type='submit'
 					/>
-					<CardActionBtn
+					<ICardActionBtn
 						v-if='![ComponentState.Error || ComponentState.FetchFailed].includes(componentState)'
 						color='info'
 						:disabled='!isValid.value'
@@ -121,13 +121,13 @@ limitations under the License.
 						@click='onSubmit(true)'
 					/>
 					<v-spacer />
-					<CardActionBtn
+					<ICardActionBtn
 						:action='Action.Close'
 						:disabled='componentState === ComponentState.Saving'
 						@click='close()'
 					/>
 				</template>
-			</Card>
+			</ICard>
 		</v-form>
 	</ModalWindow>
 </template>
@@ -141,7 +141,12 @@ import {
 	type NetworkInterfaceType, WifiMode, WifiSecurityType,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import { IpNetworkUtils } from '@iqrf/iqrf-gateway-webapp-client/utils';
-import { ValidationRules } from '@iqrf/iqrf-vue-ui';
+import {
+	Action,
+	ICard,
+	ICardActionBtn, ICardTitleActionBtn,
+	ValidationRules,
+} from '@iqrf/iqrf-vue-ui';
 import { mdiContentSave, mdiTextShort } from '@mdi/js';
 import { computed, type PropType, ref, type Ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -162,17 +167,12 @@ import WiFiConfiguration
 	from '@/components/ip-network/connections/wifi/WiFiConfiguration.vue';
 import InterfaceInput
 	from '@/components/ip-network/interfaces/InterfaceInput.vue';
-import Card from '@/components/layout/card/Card.vue';
-import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
-import CardTitleActionBtn
-	from '@/components/layout/card/CardTitleActionBtn.vue';
 import DataTableAction
 	from '@/components/layout/data-table/DataTableAction.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
-import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 /// Connection configuration

@@ -20,7 +20,7 @@ limitations under the License.
 		<Head>
 			<title>{{ $t('components.account.verification.title') }}</title>
 		</Head>
-		<Card>
+		<ICard>
 			<template #title>
 				{{ $t('components.account.verification.title') }}
 			</template>
@@ -61,7 +61,7 @@ limitations under the License.
 					/>
 				</v-responsive>
 			</v-skeleton-loader>
-		</Card>
+		</ICard>
 	</div>
 </template>
 
@@ -77,6 +77,7 @@ limitations under the License.
 <script lang='ts' setup>
 import VueCountdown from '@chenfengyuan/vue-countdown';
 import { UserSignedIn } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { ICard } from '@iqrf/iqrf-vue-ui';
 import { Head } from '@unhead/vue/components';
 import { AxiosError } from 'axios';
 import { validate as uuidValidate, version as uuidVersion } from 'uuid';
@@ -85,7 +86,6 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { toast } from 'vue3-toastify';
 
-import Card from '@/components/layout/card/Card.vue';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
 import { ComponentState } from '@/types/ComponentState';

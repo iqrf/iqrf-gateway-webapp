@@ -16,7 +16,7 @@ limitations under the License.
 -->
 
 <template>
-	<Card>
+	<ICard>
 		<template #title>
 			{{ $t('pages.accessControl.apiKeys.title') }}
 		</template>
@@ -25,7 +25,7 @@ limitations under the License.
 				:action='Action.Add'
 				@refresh='getKeys()'
 			/>
-			<CardTitleActionBtn
+			<ICardTitleActionBtn
 				:action='Action.Reload'
 				@click='getKeys()'
 			/>
@@ -52,12 +52,13 @@ limitations under the License.
 				/>
 			</template>
 		</DataTable>
-	</Card>
+	</ICard>
 </template>
 
 <script lang='ts' setup>
 import { type ApiKeyService } from '@iqrf/iqrf-gateway-webapp-client/services/Security';
 import { type ApiKeyInfo } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
+import { Action, ICard, ICardTitleActionBtn } from '@iqrf/iqrf-vue-ui';
 import { DateTime } from 'luxon';
 import { onMounted, ref, type Ref, toRaw } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -65,12 +66,9 @@ import { toast } from 'vue3-toastify';
 
 import ApiKeyDeleteDialog from '@/components/access-control/api-keys/ApiKeyDeleteDialog.vue';
 import ApiKeyForm from '@/components/access-control/api-keys/ApiKeyForm.vue';
-import Card from '@/components/layout/card/Card.vue';
-import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
 import DataTable from '@/components/layout/data-table/DataTable.vue';
 import { useApiClient } from '@/services/ApiClient';
 import { useLocaleStore } from '@/store/locale';
-import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);

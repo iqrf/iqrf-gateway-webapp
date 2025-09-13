@@ -25,7 +25,7 @@ limitations under the License.
 			ref='form'
 			@submit.prevent='onSubmit'
 		>
-			<Card>
+			<ICard>
 				<template #title>
 					{{ $t('components.config.controller.form.button.actions.discovery') }}
 				</template>
@@ -48,28 +48,26 @@ limitations under the License.
 						type='submit'
 					/>
 					<v-spacer />
-					<CardActionBtn
+					<ICardActionBtn
 						:action='Action.Cancel'
 						@click='close'
 					/>
 				</template>
-			</Card>
+			</ICard>
 		</v-form>
 	</ModalWindow>
 </template>
 
 <script lang='ts' setup>
 import { type IqrfGatewayControllerApiDiscoveryConfig } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import { Action, ICard, ICardActionBtn } from '@iqrf/iqrf-vue-ui';
 import { type PropType, ref , type Ref , watchEffect } from 'vue';
 import { VForm } from 'vuetify/components';
 
 import ControllerActionConfigureBtn from '@/components/config/controller/ControllerActionConfigureBtn.vue';
-import Card from '@/components/layout/card/Card.vue';
-import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import NumberInput from '@/components/layout/form/NumberInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';
-import { Action } from '@/types/Action';
 
 const emit = defineEmits(['saved']);
 const componentProps = defineProps({

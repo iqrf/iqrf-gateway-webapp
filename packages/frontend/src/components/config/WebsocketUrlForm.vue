@@ -30,7 +30,7 @@ limitations under the License.
 			v-slot='{ isValid }'
 			@submit.prevent='onSubmit'
 		>
-			<Card>
+			<ICard>
 				<template #title>
 					{{ cardTitle }}
 				</template>
@@ -80,18 +80,17 @@ limitations under the License.
 						{{ $t('common.buttons.cancel') }}
 					</v-btn>
 				</template>
-			</Card>
+			</ICard>
 		</v-form>
 	</ModalWindow>
 </template>
 
 <script lang='ts' setup>
-import { ValidationRules } from '@iqrf/iqrf-vue-ui';
+import { ICard, ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { ref, type Ref } from 'vue';
 import { watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import Card from '@/components/layout/card/Card.vue';
 import NumberInput from '@/components/layout/form/NumberInput.vue';
 import SelectInput from '@/components/layout/form/SelectInput.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';

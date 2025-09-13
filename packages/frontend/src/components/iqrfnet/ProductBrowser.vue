@@ -36,7 +36,7 @@ limitations under the License.
 				{{ $t('components.iqrfnet.products.button') }}
 			</v-btn>
 		</template>
-		<Card>
+		<ICard>
 			<template #title>
 				{{ $t('components.iqrfnet.products.title') }}
 			</template>
@@ -70,29 +70,27 @@ limitations under the License.
 			</DataTable>
 			<template #actions>
 				<v-spacer />
-				<CardActionBtn
+				<ICardActionBtn
 					:action='Action.Cancel'
 					@click='close'
 				/>
 			</template>
-		</Card>
+		</ICard>
 	</ModalWindow>
 </template>
 
 <script lang='ts' setup>
 import { type ProductService } from '@iqrf/iqrf-repository-client/services';
 import { type Product } from '@iqrf/iqrf-repository-client/types';
+import { Action, ICard, ICardActionBtn } from '@iqrf/iqrf-vue-ui';
 import { mdiImport, mdiMagnify } from '@mdi/js';
 import { onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import Card from '@/components/layout/card/Card.vue';
-import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import DataTable from '@/components/layout/data-table/DataTable.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import { useRepositoryClient } from '@/services/RepositoryClient';
-import { Action } from '@/types/Action';
 
 defineProps({
 	listActivator: {

@@ -21,7 +21,7 @@ limitations under the License.
 		v-slot='{ isValid }'
 		@submit.prevent='onSubmit()'
 	>
-		<Card>
+		<ICard>
 			<template #title>
 				{{ $t('pages.config.controller.title') }}
 			</template>
@@ -327,13 +327,13 @@ limitations under the License.
 				</span>
 			</span>
 			<template #actions>
-				<CardActionBtn
+				<ICardActionBtn
 					:action='Action.Edit'
 					:disabled='componentState !== ComponentState.Ready || !isValid.value'
 					type='submit'
 				/>
 			</template>
-		</Card>
+		</ICard>
 	</v-form>
 </template>
 
@@ -349,7 +349,12 @@ import {
 	IqrfGatewayControllerLoggingSeverity,
 	type IqrfGatewayControllerMapping,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { ValidationRules } from '@iqrf/iqrf-vue-ui';
+import {
+	Action,
+	ICard,
+	ICardActionBtn,
+	ValidationRules,
+} from '@iqrf/iqrf-vue-ui';
 import {
 	mdiAlert,
 	mdiFileDocument,
@@ -367,14 +372,11 @@ import ControllerAutonetworkForm from '@/components/config/controller/Controller
 import ControllerDiscoveryForm from '@/components/config/controller/ControllerDiscoveryForm.vue';
 import DeviceProfilesTable from '@/components/config/controller/profiles/DeviceProfilesTable.vue';
 import WebsocketUrlForm from '@/components/config/WebsocketUrlForm.vue';
-import Card from '@/components/layout/card/Card.vue';
-import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import NumberInput from '@/components/layout/form/NumberInput.vue';
 import SelectInput from '@/components/layout/form/SelectInput.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
-import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);

@@ -19,30 +19,31 @@ limitations under the License.
 	<ModalWindow
 		v-model='show'
 	>
-		<Card header-color='warning'>
+		<ICard header-color='warning'>
 			<template #title>
 				{{ $t('components.status.sessionExpiration.title') }}
 			</template>
 			{{ $t('components.status.sessionExpiration.prompt') }}
 			<template #actions>
-				<CardActionBtn
+				<ICardActionBtn
 					color='warning'
 					:icon='mdiRefresh'
 					:text='`${$t("components.status.sessionExpiration.renew") } (${ countdown })`'
 					@click='renewSession'
 				/>
 				<v-spacer />
-				<CardActionBtn
+				<ICardActionBtn
 					:action='Action.Cancel'
 					@click='close'
 				/>
 			</template>
-		</Card>
+		</ICard>
 	</ModalWindow>
 </template>
 
 <script lang='ts' setup>
 import { type UserSignedIn } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { Action, ICard, ICardActionBtn } from '@iqrf/iqrf-vue-ui';
 import { mdiRefresh } from '@mdi/js';
 import { storeToRefs } from 'pinia';
 import { onBeforeUnmount, onMounted, ref, type Ref } from 'vue';
@@ -50,12 +51,9 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { toast } from 'vue3-toastify';
 
-import Card from '@/components/layout/card/Card.vue';
-import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
-import { Action } from '@/types/Action';
 
 const i18n = useI18n();
 const userStore = useUserStore();

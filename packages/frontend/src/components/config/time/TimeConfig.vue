@@ -16,12 +16,12 @@ limitations under the License.
 -->
 
 <template>
-	<Card>
+	<ICard>
 		<template #title>
 			{{ $t('pages.config.time.title') }}
 		</template>
 		<template #titleActions>
-			<CardTitleActionBtn
+			<ICardTitleActionBtn
 				:action='Action.Reload'
 				@click='getTime'
 			/>
@@ -113,13 +113,13 @@ limitations under the License.
 			</v-responsive>
 		</v-skeleton-loader>
 		<template #actions>
-			<CardActionBtn
+			<ICardActionBtn
 				:action='Action.Edit'
 				:disabled='componentState === ComponentState.Loading'
 				type='submit'
 			/>
 		</template>
-	</Card>
+	</ICard>
 </template>
 
 <script lang='ts' setup>
@@ -131,6 +131,12 @@ import {
 	type TimeSet,
 	type Timezone,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
+import {
+	Action,
+	ICard,
+	ICardActionBtn,
+	ICardTitleActionBtn,
+} from '@iqrf/iqrf-vue-ui';
 import { mdiDelete, mdiMapClock } from '@mdi/js';
 import { DateTime } from 'luxon';
 import { computed, onMounted, ref, type Ref } from 'vue';
@@ -138,13 +144,9 @@ import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import NtpServerForm from '@/components/config/time/NtpServerForm.vue';
-import Card from '@/components/layout/card/Card.vue';
-import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
-import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
 import DataTable from '@/components/layout/data-table/DataTable.vue';
 import DataTableAction from '@/components/layout/data-table/DataTableAction.vue';
 import { useApiClient } from '@/services/ApiClient';
-import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);

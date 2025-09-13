@@ -20,7 +20,7 @@ limitations under the License.
 		:disabled='componentState === ComponentState.Loading'
 		@submit.prevent='onSubmit'
 	>
-		<Card>
+		<ICard>
 			<template #title>
 				{{ $t('components.maintenance.backup.backup.title') }}
 			</template>
@@ -119,22 +119,23 @@ limitations under the License.
 				</tbody>
 			</v-table>
 			<template #actions>
-				<CardActionBtn
+				<ICardActionBtn
 					:action='Action.Download'
 					:disabled='componentState === ComponentState.Loading'
 					:text='$t("common.buttons.backup")'
 					type='submit'
 				/>
 			</template>
-		</Card>
+		</ICard>
 	</v-form>
 </template>
 
 <script lang='ts' setup>
 import { type BackupService } from '@iqrf/iqrf-gateway-webapp-client/services/Maintenance';
-import { Feature, FileResponse } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { Feature } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { type GatewayBackup } from '@iqrf/iqrf-gateway-webapp-client/types/Maintenance';
 import { FileDownloader } from '@iqrf/iqrf-gateway-webapp-client/utils';
+import { Action, ICard, ICardActionBtn } from '@iqrf/iqrf-vue-ui';
 import {
 	mdiCheckboxMultipleBlank,
 	mdiCheckboxMultipleMarked,
@@ -142,11 +143,8 @@ import {
 import { ref, type Ref } from 'vue';
 import { toast } from 'vue3-toastify';
 
-import Card from '@/components/layout/card/Card.vue';
-import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import { useApiClient } from '@/services/ApiClient';
 import { useFeatureStore } from '@/store/features';
-import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Ready);

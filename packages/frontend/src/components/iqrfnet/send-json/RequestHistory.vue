@@ -16,7 +16,7 @@ limitations under the License.
 -->
 
 <template>
-	<Card header-color='gray'>
+	<ICard header-color='gray'>
 		<template #title>
 			{{ $t('components.iqrfnet.send-json.history.title') }}
 		</template>
@@ -62,15 +62,15 @@ limitations under the License.
 		>
 			{{ $t('components.iqrfnet.send-json.history.noMessages') }}
 		</v-alert>
-	</Card>
+	</ICard>
 </template>
 
 <script lang='ts' setup>
+import { ICard } from '@iqrf/iqrf-vue-ui';
 import { mdiDelete } from '@mdi/js';
 import { computed, type PropType, ref, type Ref } from 'vue';
 
 import JsonMessageViewer from '@/components/iqrfnet/send-json/JsonMessageViewer.vue';
-import Card from '@/components/layout/card/Card.vue';
 import SelectInput from '@/components/layout/form/SelectInput.vue';
 import { JsonApiTransaction } from '@/types/Iqrfnet';
 const componentProps = defineProps({

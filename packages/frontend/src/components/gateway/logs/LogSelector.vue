@@ -16,17 +16,17 @@ limitations under the License.
 -->
 
 <template>
-	<Card>
+	<ICard>
 		<template #title>
 			{{ $t('pages.gateway.logs.title') }}
 		</template>
 		<template #titleActions>
-			<CardTitleActionBtn
+			<ICardTitleActionBtn
 				:icon='mdiFolderDownloadOutline'
 				:tooltip='$t("components.common.actions.download")'
 				@click='exportLogs()'
 			/>
-			<CardTitleActionBtn
+			<ICardTitleActionBtn
 				:action='Action.Reload'
 				@click='listServices()'
 			/>
@@ -55,23 +55,20 @@ limitations under the License.
 		</v-skeleton-loader>
 		<JournalViewer v-if='tab === "journal"' />
 		<LogViewer v-else :service-name='tab' />
-	</Card>
+	</ICard>
 </template>
 
 <script lang='ts' setup>
 import { type LogService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
-import { FileResponse } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { FileDownloader } from '@iqrf/iqrf-gateway-webapp-client/utils';
+import { Action, ICard, ICardTitleActionBtn } from '@iqrf/iqrf-vue-ui';
 import { mdiFolderDownloadOutline } from '@mdi/js';
 import { onMounted, ref, type Ref } from 'vue';
 import { toast } from 'vue3-toastify';
 
 import JournalViewer from '@/components/gateway/logs/JournalViewer.vue';
 import LogViewer from '@/components/gateway/logs/LogViewer.vue';
-import Card from '@/components/layout/card/Card.vue';
-import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
 import { useApiClient } from '@/services/ApiClient';
-import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);

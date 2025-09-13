@@ -21,7 +21,7 @@ limitations under the License.
 		:disabled='componentState === ComponentState.Saving'
 		@submit.prevent='onSubmit()'
 	>
-		<Card>
+		<ICard>
 			<template #title>
 				{{ $t('components.maintenance.backup.restore.title') }}
 			</template>
@@ -38,31 +38,33 @@ limitations under the License.
 				required
 			/>
 			<template #actions>
-				<CardActionBtn
+				<ICardActionBtn
 					:action='Action.Upload'
 					:disabled='!isValid.value || componentState === ComponentState.Saving'
 					:text='$t("common.buttons.restore")'
 					type='submit'
 				/>
 			</template>
-		</Card>
+		</ICard>
 	</v-form>
 </template>
 
 <script lang='ts' setup>
 import { type BackupService } from '@iqrf/iqrf-gateway-webapp-client/services/Maintenance';
-import { ValidationRules } from '@iqrf/iqrf-vue-ui';
+import {
+	Action,
+	ICard,
+	ICardActionBtn,
+	ValidationRules,
+} from '@iqrf/iqrf-vue-ui';
 import { mdiFileOutline } from '@mdi/js';
 import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
-import Card from '@/components/layout/card/Card.vue';
-import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
-import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Ready);

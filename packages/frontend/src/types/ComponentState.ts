@@ -44,29 +44,3 @@ export enum ComponentState {
 	/// Action in progress
 	Action = 'action',
 }
-
-/**
- * Error state
- */
-export enum ErrorState {
-	/// Ok, no error
-	Ok = 'ok',
-	/// Warning
-	Warning = 'warning',
-	/// Error
-	Error = 'error',
-}
-
-/**
- * State color
- */
-export enum StateColor {
-	/// Loading
-	Loading = 'info',
-	/// Ok, no error
-	Ok = 'success',
-	/// Warning
-	Warning = 'warning',
-	/// Error
-	Error = 'error',
-}

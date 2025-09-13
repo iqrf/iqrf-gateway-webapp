@@ -16,7 +16,7 @@ limitations under the License.
 -->
 
 <template>
-	<Card>
+	<ICard>
 		<template #title>
 			{{ $t('pages.config.daemon.connections.mqtt.title') }}
 		</template>
@@ -30,7 +30,7 @@ limitations under the License.
 				@saved='getConfig()'
 			/>
 			<MqttConnectionImportDialog @import='(c: IqrfGatewayDaemonMqttMessaging) => importFromConfig(c)' />
-			<CardTitleActionBtn
+			<ICardTitleActionBtn
 				:action='Action.Reload'
 				:tooltip='$t("components.config.daemon.connections.actions.reload")'
 				@click='getConfig()'
@@ -60,7 +60,7 @@ limitations under the License.
 				/>
 			</template>
 		</DataTable>
-	</Card>
+	</ICard>
 </template>
 
 <script lang='ts' setup>
@@ -70,6 +70,7 @@ import {
 	type IqrfGatewayDaemonMqttMessaging,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { FileDownloader } from '@iqrf/iqrf-gateway-webapp-client/utils';
+import { Action, ICard, ICardTitleActionBtn } from '@iqrf/iqrf-vue-ui';
 import { ref, type Ref } from 'vue';
 import { onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -79,12 +80,9 @@ import CloudConnectionSelector from '@/components/config/daemon/connections/mqtt
 import MqttConnectionDeleteDialog from '@/components/config/daemon/connections/mqtt/MqttConnectionDeleteDialog.vue';
 import MqttConnectionForm from '@/components/config/daemon/connections/mqtt/MqttConnectionForm.vue';
 import MqttConnectionImportDialog from '@/components/config/daemon/connections/mqtt/MqttConnectionImportDialog.vue';
-import Card from '@/components/layout/card/Card.vue';
-import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
 import DataTable from '@/components/layout/data-table/DataTable.vue';
 import DataTableAction from '@/components/layout/data-table/DataTableAction.vue';
 import { useApiClient } from '@/services/ApiClient';
-import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);

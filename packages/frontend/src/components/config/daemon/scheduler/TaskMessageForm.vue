@@ -38,7 +38,7 @@ limitations under the License.
 			ref='form'
 			@submit.prevent='onSubmit()'
 		>
-			<Card
+			<ICard
 				:header-color='action === Action.Add ? "success" : "primary"'
 			>
 				<template #title>
@@ -64,18 +64,18 @@ limitations under the License.
 					multiple
 				/>
 				<template #actions>
-					<CardActionBtn
+					<ICardActionBtn
 						:action='action'
 						:disabled='!isValid.value'
 						type='submit'
 					/>
 					<v-spacer />
-					<CardActionBtn
+					<ICardActionBtn
 						:action='Action.Cancel'
 						@click='close()'
 					/>
 				</template>
-			</Card>
+			</ICard>
 		</v-form>
 	</ModalWindow>
 </template>
@@ -88,17 +88,19 @@ import {
 } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { SchedulerTask } from '@iqrf/iqrf-gateway-daemon-utils/types/management';
 import { type IqrfGatewayDaemonSchedulerMessagings } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { ValidationRules } from '@iqrf/iqrf-vue-ui';
+import {
+	Action,
+	ICard,
+	ICardActionBtn,
+	ValidationRules,
+} from '@iqrf/iqrf-vue-ui';
 import { mdiPencil, mdiPlus } from '@mdi/js';
 import { computed, type PropType, ref , type Ref, watchEffect } from 'vue';
 import { VForm } from 'vuetify/components';
 
-import Card from '@/components/layout/card/Card.vue';
-import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import SelectInput from '@/components/layout/form/SelectInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';
-import { Action } from '@/types/Action';
 
 const componentProps = defineProps({
 	action: {
