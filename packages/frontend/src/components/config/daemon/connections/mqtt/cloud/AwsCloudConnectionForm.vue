@@ -22,7 +22,7 @@ limitations under the License.
 			v-slot='{ isValid }'
 			:disabled='componentState === ComponentState.Saving'
 		>
-			<Card>
+			<ICard>
 				<template #title>
 					{{ $t('components.config.daemon.connections.mqtt.clouds.aws.title') }}
 				</template>
@@ -77,7 +77,7 @@ limitations under the License.
 						{{ $t('common.buttons.close') }}
 					</v-btn>
 				</template>
-			</Card>
+			</ICard>
 		</v-form>
 	</ModalWindow>
 </template>
@@ -85,14 +85,13 @@ limitations under the License.
 <script lang='ts' setup>
 import { type AwsService } from '@iqrf/iqrf-gateway-webapp-client/services/Cloud';
 import { type AwsMqttConfig } from '@iqrf/iqrf-gateway-webapp-client/types/Cloud';
-import { ValidationRules } from '@iqrf/iqrf-vue-ui';
+import { ICard, ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiFileOutline } from '@mdi/js';
 import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
 
-import Card from '@/components/layout/card/Card.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';

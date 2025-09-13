@@ -17,7 +17,7 @@ limitations under the License.
 
 <template>
 	<ModalWindow v-model='show'>
-		<Card>
+		<ICard>
 			<template #title>
 				{{ $t('components.accessControl.apiKeys.display.title') }}
 			</template>
@@ -40,26 +40,24 @@ limitations under the License.
 				</template>
 			</TextInput>
 			<template #actions>
-				<CardActionBtn
+				<ICardActionBtn
 					:action='Action.Cancel'
 					@click='close'
 				/>
 			</template>
-		</Card>
+		</ICard>
 	</ModalWindow>
 </template>
 
 <script lang='ts' setup>
+import { Action, ICard, ICardActionBtn } from '@iqrf/iqrf-vue-ui';
 import { mdiClipboard } from '@mdi/js';
 import { type PropType, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
-import Card from '@/components/layout/card/Card.vue';
-import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
-import { Action } from '@/types/Action';
 
 const componentProps = defineProps({
 	apiKey: {

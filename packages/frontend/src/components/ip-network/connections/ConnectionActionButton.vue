@@ -28,13 +28,13 @@ limitations under the License.
 				:tooltip='$t("components.ipNetwork.connections.actions.disconnect")'
 			/>
 		</template>
-		<Card header-color='red'>
+		<ICard header-color='red'>
 			<template #title>
 				{{ $t('components.ipNetwork.connections.disconnect.title') }}
 			</template>
 			{{ $t('components.ipNetwork.connections.disconnect.prompt', { name: connection.name }) }}
 			<template #actions>
-				<CardActionBtn
+				<ICardActionBtn
 					color='red'
 					:icon='mdiLinkVariantOff'
 					:loading='componentState === ComponentState.Saving'
@@ -42,13 +42,13 @@ limitations under the License.
 					@click='disconnect()'
 				/>
 				<v-spacer />
-				<CardActionBtn
+				<ICardActionBtn
 					:action='Action.Cancel'
 					:disabled='componentState === ComponentState.Saving'
 					@click='close()'
 				/>
 			</template>
-		</Card>
+		</ICard>
 	</ModalWindow>
 	<DataTableAction
 		v-else-if='action === Action.Enable'
@@ -67,18 +67,16 @@ import {
 import {
 	type NetworkConnectionListEntry,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
+import { Action, ICard, ICardActionBtn } from '@iqrf/iqrf-vue-ui';
 import { mdiLinkVariant, mdiLinkVariantOff } from '@mdi/js';
 import { computed, ComputedRef, type PropType, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
-import Card from '@/components/layout/card/Card.vue';
-import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import DataTableAction
 	from '@/components/layout/data-table/DataTableAction.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import { useApiClient } from '@/services/ApiClient';
-import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 /// Component props

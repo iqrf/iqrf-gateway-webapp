@@ -21,7 +21,7 @@ limitations under the License.
 		v-slot='{ isValid }'
 		:disabled='componentState === ComponentState.Saving'
 	>
-		<Card>
+		<ICard>
 			<template #title>
 				{{ $t('components.iqrfnet.upload.dpa-handler.title') }}
 			</template>
@@ -47,7 +47,7 @@ limitations under the License.
 					{{ $t('common.buttons.save') }}
 				</v-btn>
 			</template>
-		</Card>
+		</ICard>
 	</v-form>
 </template>
 
@@ -55,14 +55,13 @@ limitations under the License.
 import { type ServiceService } from '@iqrf/iqrf-gateway-webapp-client/services';
 import { type UpgradeService } from '@iqrf/iqrf-gateway-webapp-client/services/Iqrf';
 import { FileFormat, FileType } from '@iqrf/iqrf-gateway-webapp-client/types/Iqrf';
-import { ValidationRules } from '@iqrf/iqrf-vue-ui';
+import { ICard, ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiFileOutline } from '@mdi/js';
 import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
-import Card from '@/components/layout/card/Card.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 import { ComponentState } from '@/types/ComponentState';

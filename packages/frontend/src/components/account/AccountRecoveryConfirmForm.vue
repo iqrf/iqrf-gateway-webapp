@@ -22,7 +22,7 @@ limitations under the License.
 		:disabled='componentState === ComponentState.Saving'
 		@submit.prevent='onSubmit'
 	>
-		<Card>
+		<ICard>
 			<template #title>
 				{{ $t('pages.account.recovery.title') }}
 			</template>
@@ -67,7 +67,7 @@ limitations under the License.
 				required
 				:prepend-inner-icon='mdiKey'
 			/>
-			<CardActionBtn
+			<ICardActionBtn
 				color='primary'
 				:disabled='!isValid.value || componentState === ComponentState.Saving'
 				:loading='componentState === ComponentState.Saving'
@@ -75,7 +75,7 @@ limitations under the License.
 				:text='$t("components.account.recovery.confirmation.button")'
 				type='submit'
 			/>
-		</Card>
+		</ICard>
 	</v-form>
 </template>
 
@@ -85,7 +85,7 @@ import {
 	UserPasswordReset,
 	UserSignedIn,
 } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { ValidationRules } from '@iqrf/iqrf-vue-ui';
+import { ICard, ICardActionBtn, ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiAccountKey, mdiHelpCircleOutline, mdiKey } from '@mdi/js';
 import { AxiosError } from 'axios';
 import { validate as uuidValidate, version as uuidVersion } from 'uuid';
@@ -95,8 +95,6 @@ import { useRouter } from 'vue-router';
 import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
 
-import Card from '@/components/layout/card/Card.vue';
-import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import PasswordInput from '@/components/layout/form/PasswordInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';

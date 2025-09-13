@@ -153,7 +153,7 @@ const noIpv6Dns: ComputedRef<boolean> = computed((): boolean =>
 	configuration.value.ipv6.method === IPv6ConfigurationMethod.DISABLED ||
 	(configuration.value.ipv6.method === IPv6ConfigurationMethod.MANUAL &&
 		configuration.value.ipv6.dns.filter((server: DnsServerConfiguration): boolean => {
-			const ipv6Validator: z.ZodString = z.string().ip({ version: 'v6' });
+			const ipv6Validator: z.ZodIPv6 = z.ipv6();
 			return server.address !== '' && ipv6Validator.safeParse(server.address).success;
 		}).length === 0),
 );

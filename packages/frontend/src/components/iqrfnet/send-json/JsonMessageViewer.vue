@@ -16,7 +16,7 @@ limitations under the License.
 -->
 
 <template>
-	<Card header-color='gray'>
+	<ICard header-color='gray'>
 		<template #title>
 			{{ $t(`common.labels.${type}`) }}
 		</template>
@@ -33,10 +33,11 @@ limitations under the License.
 			:highlight='highlighter'
 			:readonly='true'
 		/>
-	</Card>
+	</ICard>
 </template>
 
 <script lang='ts' setup>
+import { ICard } from '@iqrf/iqrf-vue-ui';
 import prism from 'prismjs';
 import { computed, type PropType } from 'vue';
 import { PrismEditor } from 'vue-prism-editor';
@@ -44,7 +45,6 @@ import { PrismEditor } from 'vue-prism-editor';
 import 'vue-prism-editor/dist/prismeditor.min.css';
 import 'prismjs/themes/prism.css';
 import 'prismjs/components/prism-json';
-import Card from '@/components/layout/card/Card.vue';
 
 const componentProps = defineProps({
 	message: {

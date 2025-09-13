@@ -22,12 +22,12 @@ limitations under the License.
 		:disabled='[ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
 		@submit.prevent='onSubmit()'
 	>
-		<Card>
+		<ICard>
 			<template #title>
 				{{ $t('pages.config.daemon.interfaces.cdc.title') }}
 			</template>
 			<template #titleActions>
-				<CardTitleActionBtn
+				<ICardTitleActionBtn
 					:action='Action.Reload'
 					@click='getConfig()'
 				/>
@@ -81,13 +81,13 @@ limitations under the License.
 				</v-menu>
 			</span>
 			<template #actions>
-				<CardActionBtn
+				<ICardActionBtn
 					:action='Action.Edit'
 					:disabled='!isValid.value || [ComponentState.Loading, ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
 					type='submit'
 				/>
 			</template>
-		</Card>
+		</ICard>
 	</v-form>
 </template>
 
@@ -98,20 +98,21 @@ import {
 	IqrfGatewayDaemonComponentName,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { IqrfInterfaceType } from '@iqrf/iqrf-gateway-webapp-client/types/Iqrf';
-import { ValidationRules } from '@iqrf/iqrf-vue-ui';
+import {
+	Action,
+	ICard,
+	ICardActionBtn, ICardTitleActionBtn,
+	ValidationRules,
+} from '@iqrf/iqrf-vue-ui';
 import { onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
 import InterfacePorts from '@/components/config/daemon/interfaces/InterfacePorts.vue';
-import Card from '@/components/layout/card/Card.vue';
-import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
-import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
-import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 const i18n = useI18n();

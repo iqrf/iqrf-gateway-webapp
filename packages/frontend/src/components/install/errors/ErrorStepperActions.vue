@@ -1,11 +1,11 @@
 <template>
 	<div>
-		<CardActionBtn
+		<ICardActionBtn
 			v-if='componentProps.index !== totalErrors'
 			:action='Action.Next'
 			@click='componentProps.next'
 		/>
-		<CardActionBtn
+		<ICardActionBtn
 			v-if='componentProps.index !== 1'
 			:action='Action.Previous'
 			class='float-right'
@@ -14,12 +14,11 @@
 	</div>
 </template>
 <script setup lang='ts'>
+import { Action, ICardActionBtn } from '@iqrf/iqrf-vue-ui';
 import { storeToRefs } from 'pinia';
 import { computed, type ComputedRef, PropType } from 'vue';
 
-import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import { useInstallStore } from '@/store/install';
-import { Action } from '@/types/Action';
 
 const installStore = useInstallStore();
 const { getErrors } = storeToRefs(installStore);

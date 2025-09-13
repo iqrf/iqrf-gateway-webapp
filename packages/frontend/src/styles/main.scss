@@ -69,7 +69,6 @@ a {
 	font-size: 12px;
 	overflow-wrap: anywhere;
 	word-break: normal;
-	word-wrap: break-word;
 	hyphens: auto;
 	letter-spacing: normal;
 }
@@ -79,7 +78,6 @@ a {
 	font-size: 12px;
 	overflow-wrap: anywhere;
 	word-break: normal;
-	word-wrap: break-word;
 	hyphens: auto;
 	letter-spacing: normal;
 	color: #3c4b64;
@@ -124,7 +122,8 @@ a {
 .log {
 	max-height: 75vh;
 	white-space: pre-wrap;
-	word-wrap: break-word;
+	overflow-wrap: anywhere;
+	word-break: normal;
 	overflow-y: scroll;
 }
 

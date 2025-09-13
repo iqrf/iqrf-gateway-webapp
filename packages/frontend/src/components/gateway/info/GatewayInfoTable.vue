@@ -16,7 +16,7 @@ limitations under the License.
 -->
 
 <template>
-	<Card>
+	<ICard>
 		<template #title>
 			{{ $t('pages.gateway.information.title') }}
 		</template>
@@ -195,19 +195,20 @@ limitations under the License.
 			</tbody>
 		</v-table>
 		<template #actions>
-			<CardActionBtn
+			<ICardActionBtn
 				color='primary'
 				:icon='mdiDownload'
 				:text='$t("components.gateway.information.diagnostics")'
 				@click='getDiagnostics'
 			/>
 		</template>
-	</Card>
+	</ICard>
 </template>
 
 <script lang='ts' setup>
 import { type InfoService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
 import { type GatewayInformation, type NetworkInterface } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
+import { ICard, ICardActionBtn } from '@iqrf/iqrf-vue-ui';
 import { mdiDownload } from '@mdi/js';
 import { computed, onMounted, ref, type Ref } from 'vue';
 import { toast } from 'vue3-toastify';
@@ -217,8 +218,6 @@ import DaemonModeInfo from '@/components/gateway/info/DaemonModeInfo.vue';
 import DiskResourceUsage from '@/components/gateway/info/DiskResourceUsage.vue';
 import HostnameChangeDialog from '@/components/gateway/info/HostnameChangeDialog.vue';
 import ResourceUsage from '@/components/gateway/info/ResourceUsage.vue';
-import Card from '@/components/layout/card/Card.vue';
-import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import { useApiClient } from '@/services/ApiClient';
 
 

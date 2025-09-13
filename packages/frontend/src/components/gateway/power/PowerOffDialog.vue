@@ -20,7 +20,7 @@ limitations under the License.
 		v-model='show'
 	>
 		<template #activator='{ props }'>
-			<CardActionBtn
+			<ICardActionBtn
 				:action='Action.Custom'
 				class='mr-1'
 				color='red'
@@ -29,36 +29,34 @@ limitations under the License.
 				v-bind='props'
 			/>
 		</template>
-		<Card header-color='red'>
+		<ICard header-color='red'>
 			<template #title>
 				{{ $t('components.gateway.power.powerOff.title') }}
 			</template>
 			{{ $t('components.gateway.power.powerOff.prompt') }}
 			<template #actions>
-				<CardActionBtn
+				<ICardActionBtn
 					color='red'
 					:icon='mdiPower'
 					:text='$t("components.gateway.power.powerOff.action")'
 					@click='powerOff'
 				/>
 				<v-spacer />
-				<CardActionBtn
+				<ICardActionBtn
 					:action='Action.Cancel'
 					@click='close'
 				/>
 			</template>
-		</Card>
+		</ICard>
 	</ModalWindow>
 </template>
 
 <script lang='ts' setup>
+import { Action, ICard, ICardActionBtn } from '@iqrf/iqrf-vue-ui';
 import { mdiPower } from '@mdi/js';
 import { ref, type Ref } from 'vue';
 
-import Card from '@/components/layout/card/Card.vue';
-import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
-import { Action } from '@/types/Action';
 
 /// Event emitter definition
 const emit = defineEmits(['confirm']);

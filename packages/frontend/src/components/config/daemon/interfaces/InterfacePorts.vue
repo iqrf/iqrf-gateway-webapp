@@ -16,12 +16,12 @@ limitations under the License.
 -->
 
 <template>
-	<Card>
+	<ICard>
 		<template #title>
 			{{ $t(`components.config.daemon.interfaces.${interfaceType}.devices`) }}
 		</template>
 		<template #titleActions>
-			<CardTitleActionBtn
+			<ICardTitleActionBtn
 				:action='Action.Reload'
 				@click='getPorts()'
 			/>
@@ -45,23 +45,21 @@ limitations under the License.
 				/>
 			</template>
 		</DataTable>
-	</Card>
+	</ICard>
 </template>
 
 <script lang='ts' setup>
 import { type InterfacePortsService } from '@iqrf/iqrf-gateway-webapp-client/services/Iqrf';
 import { type IqrfInterfaceType } from '@iqrf/iqrf-gateway-webapp-client/types/Iqrf';
+import { Action, ICard, ICardTitleActionBtn } from '@iqrf/iqrf-vue-ui';
 import { type PropType, ref, type Ref } from 'vue';
 import { onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
-import Card from '@/components/layout/card/Card.vue';
-import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
 import DataTable from '@/components/layout/data-table/DataTable.vue';
 import DataTableAction from '@/components/layout/data-table/DataTableAction.vue';
 import { useApiClient } from '@/services/ApiClient';
-import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 const componentProps = defineProps({

@@ -17,7 +17,7 @@ limitations under the License.
 
 <template>
 	<v-form @submit.prevent='setStartupMode()'>
-		<Card>
+		<ICard>
 			<template #title>
 				{{ $t('components.gateway.mode.startup.title') }}
 			</template>
@@ -27,13 +27,13 @@ limitations under the License.
 				:disabled='startupMode === null'
 			/>
 			<template #actions>
-				<CardActionBtn
+				<ICardActionBtn
 					:action='Action.Save'
 					:disabled='startupMode === null'
 					type='submit'
 				/>
 			</template>
-		</Card>
+		</ICard>
 	</v-form>
 </template>
 
@@ -45,14 +45,12 @@ import {
 	type IqrfGatewayDaemonIdeCounterpart,
 	IqrfGatewayDaemonIdeCounterpartMode,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { computed, ComputedRef, onMounted, ref, type Ref, watchEffect } from 'vue';
+import { Action, ICard, ICardActionBtn } from '@iqrf/iqrf-vue-ui';
+import { computed, ComputedRef, onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
-import Card from '@/components/layout/card/Card.vue';
-import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import { useApiClient } from '@/services/ApiClient';
-import { Action } from '@/types/Action';
 import { SelectItem } from '@/types/vuetify';
 
 const i18n = useI18n();

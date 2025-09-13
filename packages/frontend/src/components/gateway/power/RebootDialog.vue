@@ -20,7 +20,7 @@ limitations under the License.
 		v-model='show'
 	>
 		<template #activator='{ props }'>
-			<CardActionBtn
+			<ICardActionBtn
 				:action='Action.Custom'
 				color='warning'
 				:icon='mdiReload'
@@ -28,36 +28,34 @@ limitations under the License.
 				v-bind='props'
 			/>
 		</template>
-		<Card header-color='warning'>
+		<ICard header-color='warning'>
 			<template #title>
 				{{ $t('components.gateway.power.reboot.title') }}
 			</template>
 			{{ $t('components.gateway.power.reboot.prompt') }}
 			<template #actions>
-				<CardActionBtn
+				<ICardActionBtn
 					color='warning'
 					:icon='mdiReload'
 					:text='$t("components.gateway.power.reboot.action")'
 					@click='reboot'
 				/>
 				<v-spacer />
-				<CardActionBtn
+				<ICardActionBtn
 					:action='Action.Cancel'
 					@click='close'
 				/>
 			</template>
-		</Card>
+		</ICard>
 	</ModalWindow>
 </template>
 
 <script lang='ts' setup>
+import { Action, ICard, ICardActionBtn } from '@iqrf/iqrf-vue-ui';
 import { mdiReload } from '@mdi/js';
 import { ref, type Ref } from 'vue';
 
-import Card from '@/components/layout/card/Card.vue';
-import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
-import { Action } from '@/types/Action';
 
 /// Event emitter definition
 const emit = defineEmits(['confirm']);

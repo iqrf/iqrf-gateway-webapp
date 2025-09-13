@@ -28,11 +28,10 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
+import { Action, ActionUtils } from '@iqrf/iqrf-vue-ui';
 import { mdiHelp } from '@mdi/js';
 import { computed, type PropType, type Ref } from 'vue';
 
-import { ActionUtils } from '@/helpers/ActionUtils';
-import { Action } from '@/types/Action';
 
 const emit = defineEmits(['click']);
 const props = defineProps({

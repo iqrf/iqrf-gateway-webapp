@@ -16,7 +16,7 @@ limitations under the License.
 -->
 
 <template>
-	<Card>
+	<ICard>
 		<template #title>
 			{{ $t('pages.accessControl.sshKeys.title') }}
 		</template>
@@ -26,7 +26,7 @@ limitations under the License.
 				:key-types='types'
 				@refresh='getKeys()'
 			/>
-			<CardTitleActionBtn
+			<ICardTitleActionBtn
 				:action='Action.Reload'
 				:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
 				:tooltip='$t("components.accessControl.sshKeys.actions.refresh")'
@@ -89,12 +89,13 @@ limitations under the License.
 				</td>
 			</template>
 		</DataTable>
-	</Card>
+	</ICard>
 </template>
 
 <script lang='ts' setup>
 import { SshKeyService } from '@iqrf/iqrf-gateway-webapp-client/services/Security';
 import { type SshKeyInfo } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
+import { Action, ICard, ICardTitleActionBtn } from '@iqrf/iqrf-vue-ui';
 import { mdiContentCopy, mdiInformation } from '@mdi/js';
 import { onMounted, ref, type Ref, toRaw } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -102,12 +103,9 @@ import { toast } from 'vue3-toastify';
 
 import SshKeyDeleteDialog from '@/components/access-control/ssh-keys/SshKeyDeleteDialog.vue';
 import SshKeyForm from '@/components/access-control/ssh-keys/SshKeyForm.vue';
-import Card from '@/components/layout/card/Card.vue';
-import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
 import DataTable from '@/components/layout/data-table/DataTable.vue';
 import DataTableAction from '@/components/layout/data-table/DataTableAction.vue';
 import { useApiClient } from '@/services/ApiClient';
-import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);

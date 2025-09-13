@@ -17,7 +17,7 @@ limitations under the License.
 
 <template>
 	<v-form @submit.prevent='setMode()'>
-		<Card>
+		<ICard>
 			<template #title>
 				{{ $t('components.gateway.mode.current.title') }}
 			</template>
@@ -27,13 +27,13 @@ limitations under the License.
 				:disabled='mode.operMode === DaemonMode.Unknown'
 			/>
 			<template #actions>
-				<CardActionBtn
+				<ICardActionBtn
 					:action='Action.Save'
 					:disabled='mode.operMode === DaemonMode.Unknown'
 					type='submit'
 				/>
 			</template>
-		</Card>
+		</ICard>
 	</v-form>
 </template>
 
@@ -47,14 +47,12 @@ import {
 } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { DaemonGetModeResult, DaemonSetModeParams } from '@iqrf/iqrf-gateway-daemon-utils/types/management';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
+import { Action, ICard, ICardActionBtn } from '@iqrf/iqrf-vue-ui';
 import { computed, ComputedRef, onBeforeMount, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
-import Card from '@/components/layout/card/Card.vue';
-import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import { useDaemonStore } from '@/store/daemonSocket';
-import { Action } from '@/types/Action';
 import { SelectItem } from '@/types/vuetify';
 
 const i18n = useI18n();

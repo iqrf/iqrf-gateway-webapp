@@ -22,21 +22,21 @@ limitations under the License.
 		:disabled='componentState === ComponentState.Saving'
 		@submit.prevent='onSubmit'
 	>
-		<Card :bottom-margin='true'>
+		<ICard :bottom-margin='true'>
 			<template #title>
 				{{ $t('components.account.preferences.title') }}
 			</template>
 			<TimeFormatPreferenceInput v-model='preferences.timeFormat' />
 			<ThemePreferenceInput v-model='preferences.theme' />
 			<template #actions>
-				<CardActionBtn
+				<ICardActionBtn
 					:action='Action.Save'
 					:disabled='!isValid.value'
 					:loading='componentState === ComponentState.Saving'
 					type='submit'
 				/>
 			</template>
-		</Card>
+		</ICard>
 	</v-form>
 </template>
 
@@ -47,6 +47,7 @@ import {
 	UserThemePreference,
 	UserTimeFormatPreference,
 } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { Action, ICard, ICardActionBtn } from '@iqrf/iqrf-vue-ui';
 import { onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
@@ -56,12 +57,9 @@ import ThemePreferenceInput
 	from '@/components/account/ThemePreferenceInput.vue';
 import TimeFormatPreferenceInput
 	from '@/components/account/TimeFormatPreferenceInput.vue';
-import Card from '@/components/layout/card/Card.vue';
-import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
-import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 /// Component state

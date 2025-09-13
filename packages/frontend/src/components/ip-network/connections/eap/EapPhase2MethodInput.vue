@@ -55,7 +55,7 @@ const componentProps = defineProps({
 const i18n = useI18n();
 /// EAP phase two methods
 const items: ComputedRef<SelectItem[]> = computed((): SelectItem[] => {
-	let methods: EapPhaseTwoMethod[] = [];
+	let methods: EapPhaseTwoMethod[];
 	switch (componentProps.phaseOne) {
 		case EapPhaseOneMethod.FAST:
 			methods = [EapPhaseTwoMethod.GTC, EapPhaseTwoMethod.MSCHAPV2];

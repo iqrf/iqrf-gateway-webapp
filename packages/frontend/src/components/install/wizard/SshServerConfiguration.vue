@@ -40,19 +40,19 @@ limitations under the License.
 			<SshKeyTable v-if='isLoggedIn' :install='true' />
 		</v-form>
 		<template #actions='{ next, prev }'>
-			<CardActionBtn
+			<ICardActionBtn
 				:action='Action.Next'
 				:disabled='!formValidity'
 				:loading='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
 				@click='onSubmit(next)'
 			/>
-			<CardActionBtn
+			<ICardActionBtn
 				:action='Action.Skip'
 				class='ml-2'
 				:loading='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
 				@click='next'
 			/>
-			<CardActionBtn
+			<ICardActionBtn
 				:action='Action.Previous'
 				:loading='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
 				class='float-right'
@@ -68,6 +68,7 @@ import {
 	ErrorResponse,
 	ServiceStatus,
 } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { Action, ICardActionBtn } from '@iqrf/iqrf-vue-ui';
 import { AxiosError } from 'axios';
 import { storeToRefs } from 'pinia';
 import { onBeforeMount, ref, type Ref, watch } from 'vue';
@@ -76,12 +77,10 @@ import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
 
 import SshKeyTable from '@/components/access-control/ssh-keys/SshKeyTable.vue';
-import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import { ServiceAction } from '@/enums/controls';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
-import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);

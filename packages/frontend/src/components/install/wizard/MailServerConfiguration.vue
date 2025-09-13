@@ -108,19 +108,19 @@ limitations under the License.
 			/>
 		</v-form>
 		<template #actions='{ next }'>
-			<CardActionBtn
+			<ICardActionBtn
 				:action='Action.Next'
 				:disabled='!formValidity'
 				:loading='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
 				@click='onSubmit(next)'
 			/>
-			<CardActionBtn
+			<ICardActionBtn
 				:action='Action.Skip'
 				class='ml-2'
 				:loading='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
 				@click='next()'
 			/>
-			<CardActionBtn
+			<ICardActionBtn
 				color='info'
 				class='ml-2'
 				:disabled='!formValidity || defaultConfig'
@@ -140,7 +140,7 @@ import {
 	type MailerConfig,
 	type MailerGetConfigResponse, MailerTheme,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { ValidationRules } from '@iqrf/iqrf-vue-ui';
+import { Action, ICardActionBtn, ValidationRules } from '@iqrf/iqrf-vue-ui';
 import {
 	mdiAccount,
 	mdiEmail,
@@ -158,13 +158,11 @@ import { type VForm } from 'vuetify/components';
 
 import SmtpSecurityInput
 	from '@/components/config/smtp/SmtpSecurityInput.vue';
-import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import PasswordInput from '@/components/layout/form/PasswordInput.vue';
 import UrlBuilder from '@/helpers/urlBuilder';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
-import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);

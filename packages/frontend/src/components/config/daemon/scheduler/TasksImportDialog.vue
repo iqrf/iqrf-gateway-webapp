@@ -20,7 +20,7 @@ limitations under the License.
 		v-model='show'
 	>
 		<template #activator='{ props }'>
-			<CardTitleActionBtn
+			<ICardTitleActionBtn
 				v-bind='props'
 				:action='Action.Import'
 				:tooltip='$t("components.config.daemon.scheduler.actions.import")'
@@ -32,7 +32,7 @@ limitations under the License.
 			:disabled='componentState === ComponentState.Saving'
 			@submit.prevent='onSubmit()'
 		>
-			<Card>
+			<ICard>
 				<template #title>
 					{{ $t('components.config.daemon.scheduler.import.title') }}
 				</template>
@@ -73,18 +73,18 @@ limitations under the License.
 					</tbody>
 				</v-table>
 				<template #actions>
-					<CardActionBtn
+					<ICardActionBtn
 						:action='Action.Import'
 						:disabled='!isValid.value || componentState !== ComponentState.Ready'
 						type='submit'
 					/>
 					<v-spacer />
-					<CardActionBtn
+					<ICardActionBtn
 						:action='Action.Cancel'
 						@click='close()'
 					/>
 				</template>
-			</Card>
+			</ICard>
 		</v-form>
 	</ModalWindow>
 </template>
@@ -95,7 +95,12 @@ import { SchedulerService } from '@iqrf/iqrf-gateway-daemon-utils/services';
 import { type ApiResponseManagementRsp, type TApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { type SchedulerAddTaskParams, type SchedulerAddTaskResult } from '@iqrf/iqrf-gateway-daemon-utils/types/management';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
-import { ValidationRules } from '@iqrf/iqrf-vue-ui';
+import {
+	Action,
+	ICard,
+	ICardActionBtn, ICardTitleActionBtn,
+	ValidationRules,
+} from '@iqrf/iqrf-vue-ui';
 import { mdiFileOutline } from '@mdi/js';
 import { BlobReader, TextWriter, ZipReader } from '@zip.js/zip.js';
 import { ref, type Ref } from 'vue';
@@ -104,13 +109,9 @@ import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
 import BooleanCheckMarker from '@/components/BooleanCheckMarker.vue';
-import Card from '@/components/layout/card/Card.vue';
-import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
-import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useDaemonStore } from '@/store/daemonSocket';
-import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 interface TaskImportResult {
@@ -203,7 +204,7 @@ async function onSubmit(): Promise<void> {
 		);
 		return;
 	}
-	uploadRecords();
+	await uploadRecords();
 }
 
 async function uploadRecords(): Promise<void> {

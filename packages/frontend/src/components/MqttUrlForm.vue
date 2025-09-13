@@ -33,7 +33,7 @@ limitations under the License.
 			v-slot='{ isValid }'
 			@submit.prevent='onSubmit'
 		>
-			<Card>
+			<ICard>
 				<template #title>
 					{{ cardTitle }}
 				</template>
@@ -69,37 +69,39 @@ limitations under the License.
 					:label='$t("common.labels.path")'
 				/>
 				<template #actions>
-					<CardActionBtn
+					<ICardActionBtn
 						:action='Action.Edit'
 						:disabled='!isValid.value'
 						type='submit'
 					/>
 					<v-spacer />
-					<CardActionBtn
+					<ICardActionBtn
 						:action='Action.Cancel'
 						@click='close'
 					/>
 				</template>
-			</Card>
+			</ICard>
 		</v-form>
 	</ModalWindow>
 </template>
 
 <script lang='ts' setup>
-import { ValidationRules } from '@iqrf/iqrf-vue-ui';
+import {
+	Action,
+	ICard,
+	ICardActionBtn,
+	ValidationRules,
+} from '@iqrf/iqrf-vue-ui';
 import { mdiPencil } from '@mdi/js';
 import { ref, type Ref } from 'vue';
 import { watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import Card from '@/components/layout/card/Card.vue';
-import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import NumberInput from '@/components/layout/form/NumberInput.vue';
 import SelectInput from '@/components/layout/form/SelectInput.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import { MqttProtocol } from '@/enums/mqtt';
-import { Action } from '@/types/Action';
 
 const componentProps = defineProps({
 	cardTitle: {

@@ -29,7 +29,7 @@ limitations under the License.
 				{{ $t('components.common.actions.edit') }}
 			</v-btn>
 		</template>
-		<Card>
+		<ICard>
 			<template #title>
 				{{ $t('components.gateway.information.hostnameChange.title') }}
 			</template>
@@ -49,17 +49,17 @@ limitations under the License.
 				/>
 			</v-form>
 			<template #actions>
-				<CardActionBtn
+				<ICardActionBtn
 					:action='Action.Edit'
 					@click='onSubmit()'
 				/>
 				<v-spacer />
-				<CardActionBtn
+				<ICardActionBtn
 					:action='Action.Cancel'
 					@click='close()'
 				/>
 			</template>
-		</Card>
+		</ICard>
 	</ModalWindow>
 </template>
 
@@ -71,20 +71,22 @@ import {
 	IqrfGatewayDaemonComponentName,
 	type IqrfGatewayDaemonIdeCounterpart,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { ValidationRules } from '@iqrf/iqrf-vue-ui';
+import {
+	Action,
+	ICard,
+	ICardActionBtn,
+	ValidationRules,
+} from '@iqrf/iqrf-vue-ui';
 import { mdiPencil, mdiTextShort } from '@mdi/js';
 import { type PropType, ref, type Ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
-import Card from '@/components/layout/card/Card.vue';
-import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
-import { Action } from '@/types/Action';
 
 const emit = defineEmits(['saved']);
 const componentProps = defineProps({

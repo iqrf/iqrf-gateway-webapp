@@ -18,7 +18,7 @@ limitations under the License.
 <template>
 	<ModalWindow v-model='showDialog'>
 		<template #activator='{ props }'>
-			<CardTitleActionBtn
+			<ICardTitleActionBtn
 				v-if='action === Action.Add'
 				v-bind='props'
 				:action='action'
@@ -37,7 +37,7 @@ limitations under the License.
 			:disabled='componentState === ComponentState.Saving'
 			@submit.prevent='onSubmit()'
 		>
-			<Card>
+			<ICard>
 				<template #title>
 					{{ $t(`components.accessControl.users.actions.${action}`) }}
 				</template>
@@ -93,19 +93,19 @@ limitations under the License.
 				/>
 				<LanguageInput v-model='user.language' />
 				<template #actions>
-					<CardActionBtn
+					<ICardActionBtn
 						:action='action'
 						:disabled='!isValid.value || componentState === ComponentState.Saving'
 						type='submit'
 					/>
 					<v-spacer />
-					<CardActionBtn
+					<ICardActionBtn
 						:action='Action.Cancel'
 						:disabled='componentState === ComponentState.Saving'
 						@click='close()'
 					/>
 				</template>
-			</Card>
+			</ICard>
 		</v-form>
 	</ModalWindow>
 </template>
@@ -118,7 +118,12 @@ import {
 	UserLanguage,
 	UserRole,
 } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { ValidationRules } from '@iqrf/iqrf-vue-ui';
+import {
+	Action,
+	ICard,
+	ICardActionBtn, ICardTitleActionBtn,
+	ValidationRules,
+} from '@iqrf/iqrf-vue-ui';
 import {
 	mdiAccount,
 	mdiAccountBadge,
@@ -132,9 +137,6 @@ import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
 import LanguageInput from '@/components/account/LanguageInput.vue';
-import Card from '@/components/layout/card/Card.vue';
-import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
-import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
 import DataTableAction from '@/components/layout/data-table/DataTableAction.vue';
 import PasswordInput from '@/components/layout/form/PasswordInput.vue';
 import SelectInput from '@/components/layout/form/SelectInput.vue';
@@ -144,7 +146,6 @@ import { getFilteredRoleOptions } from '@/helpers/userData';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
-import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 interface Props {
@@ -208,7 +209,7 @@ async function onSubmit(): Promise<void> {
 			}
 			await service.update(componentProps.userInfo.id, params as UserEdit);
 			if (componentProps.userInfo.id === userStore.getId) {
-				userStore.refreshUserInfo();
+				await userStore.refreshUserInfo();
 			}
 		}
 		toast.success(

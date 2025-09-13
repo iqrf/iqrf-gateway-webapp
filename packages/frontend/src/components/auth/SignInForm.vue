@@ -22,7 +22,7 @@ limitations under the License.
 		:disabled='componentState === ComponentState.Saving'
 		@submit.prevent='onSubmit'
 	>
-		<Card>
+		<ICard>
 			<template #title>
 				{{ $t('components.auth.sign.in.title') }}
 			</template>
@@ -49,7 +49,7 @@ limitations under the License.
 				v-model='credentials.expiration'
 			/>
 			<template #actions>
-				<CardActionBtn
+				<ICardActionBtn
 					color='primary'
 					:disabled='!isValid.value'
 					:loading='componentState === ComponentState.Saving'
@@ -58,14 +58,14 @@ limitations under the License.
 					type='submit'
 				/>
 				<v-spacer />
-				<CardActionBtn
+				<ICardActionBtn
 					color='grey'
 					:icon='mdiAccountKey'
 					:text='$t("components.auth.sign.in.actions.recoverPassword")'
 					to='/account/recovery'
 				/>
 			</template>
-		</Card>
+		</ICard>
 	</v-form>
 </template>
 
@@ -74,7 +74,7 @@ import {
 	type UserCredentials,
 	UserSessionExpiration,
 } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { ValidationRules } from '@iqrf/iqrf-vue-ui';
+import { ICard, ICardActionBtn, ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiAccount, mdiAccountKey, mdiKey, mdiLogin } from '@mdi/js';
 import { AxiosError } from 'axios';
 import { onMounted, ref, type Ref } from 'vue';
@@ -85,8 +85,6 @@ import { type VForm } from 'vuetify/components';
 
 import SessionExpirationInput
 	from '@/components/auth/SessionExpirationInput.vue';
-import Card from '@/components/layout/card/Card.vue';
-import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import PasswordInput from '@/components/layout/form/PasswordInput.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import { validateForm } from '@/helpers/validateForm';

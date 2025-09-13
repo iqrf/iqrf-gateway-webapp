@@ -20,7 +20,7 @@ limitations under the License.
 		v-model='show'
 	>
 		<template #activator='{ props }'>
-			<CardTitleActionBtn
+			<ICardTitleActionBtn
 				v-bind='props'
 				:action='Action.Import'
 				:tooltip='$t("components.config.daemon.connections.actions.import")'
@@ -32,7 +32,7 @@ limitations under the License.
 			:disabled='componentState === ComponentState.Saving'
 			@submit.prevent='onSubmit()'
 		>
-			<Card>
+			<ICard>
 				<template #title>
 					{{ $t('components.config.daemon.connections.mqtt.import.title') }}
 				</template>
@@ -49,18 +49,18 @@ limitations under the License.
 					required
 				/>
 				<template #actions>
-					<CardActionBtn
+					<ICardActionBtn
 						:action='Action.Import'
 						:disabled='!isValid.value || componentState === ComponentState.Saving'
 						type='submit'
 					/>
 					<v-spacer />
-					<CardActionBtn
+					<ICardActionBtn
 						:action='Action.Cancel'
 						@click='close()'
 					/>
 				</template>
-			</Card>
+			</ICard>
 		</v-form>
 	</ModalWindow>
 </template>
@@ -70,19 +70,21 @@ import {
 	IqrfGatewayDaemonComponentName,
 	type IqrfGatewayDaemonMqttMessaging,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { ValidationRules } from '@iqrf/iqrf-vue-ui';
+import {
+	Action,
+	ICard,
+	ICardActionBtn,
+	ICardTitleActionBtn,
+	ValidationRules,
+} from '@iqrf/iqrf-vue-ui';
 import { mdiFileOutline } from '@mdi/js';
 import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
-import Card from '@/components/layout/card/Card.vue';
-import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
-import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';
-import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Ready);

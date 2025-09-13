@@ -16,7 +16,7 @@ limitations under the License.
 -->
 
 <template>
-	<Card>
+	<ICard>
 		<v-row>
 			<v-col>
 				<legend class='section-legend'>
@@ -106,15 +106,15 @@ limitations under the License.
 			</v-col>
 			<v-divider :vertical='!display.mobile.value' />
 		</v-row>
-	</Card>
+	</ICard>
 </template>
 
 <script lang='ts' setup>
 import { IqmeshReadTrConfResult, IqmeshWriteTrConfParams } from '@iqrf/iqrf-gateway-daemon-utils/types';
+import { ICard } from '@iqrf/iqrf-vue-ui';
 import { computed } from 'vue';
 import { useDisplay } from 'vuetify';
 
-import Card from '@/components/layout/card/Card.vue';
 import NumberInput from '@/components/layout/form/NumberInput.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 

@@ -16,7 +16,7 @@ limitations under the License.
 -->
 
 <template>
-	<Card>
+	<ICard>
 		<template #title>
 			{{ $t('components.gateway.power.stats.title') }}
 		</template>
@@ -57,12 +57,13 @@ limitations under the License.
 				/>
 			</template>
 		</DataTable>
-	</Card>
+	</ICard>
 </template>
 
 <script lang='ts' setup>
 import { type PowerService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
 import { type GatewayUptime } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
+import { ICard } from '@iqrf/iqrf-vue-ui';
 import { AxiosError } from 'axios';
 import humanizeDuration from 'humanize-duration';
 import { onMounted, ref, type Ref } from 'vue';
@@ -70,7 +71,6 @@ import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import BooleanCheckMarker from '@/components/BooleanCheckMarker.vue';
-import Card from '@/components/layout/card/Card.vue';
 import DataTable from '@/components/layout/data-table/DataTable.vue';
 import { useApiClient } from '@/services/ApiClient';
 import { useLocaleStore } from '@/store/locale';

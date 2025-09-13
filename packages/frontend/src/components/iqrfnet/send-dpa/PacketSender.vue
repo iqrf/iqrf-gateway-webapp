@@ -17,7 +17,7 @@ limitations under the License.
 
 <template>
 	<div>
-		<Card>
+		<ICard>
 			<template #title>
 				{{ $t("pages.iqrfnet.send-dpa.title") }}
 			</template>
@@ -428,7 +428,7 @@ limitations under the License.
 					{{ $t("common.buttons.send") }}
 				</v-btn>
 			</v-form>
-		</Card>
+		</ICard>
 		<PacketMacros class='my-4' @set-packet='applyPacket' />
 		<PacketHistory :messages='messages' @clear='clearMessages' />
 	</div>
@@ -443,7 +443,7 @@ import {
 	type TApiResponse,
 } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
-import { ValidationRules } from '@iqrf/iqrf-vue-ui';
+import { ICard, ValidationRules } from '@iqrf/iqrf-vue-ui';
 import {
 	mdiHexadecimal,
 	mdiLock,
@@ -459,7 +459,6 @@ import { VForm } from 'vuetify/components';
 import ProductBrowser from '@/components/iqrfnet/ProductBrowser.vue';
 import PacketHistory from '@/components/iqrfnet/send-dpa/PacketHistory.vue';
 import PacketMacros from '@/components/iqrfnet/send-dpa/PacketMacros.vue';
-import Card from '@/components/layout/card/Card.vue';
 import NumberInput from '@/components/layout/form/NumberInput.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import { validateForm } from '@/helpers/validateForm';

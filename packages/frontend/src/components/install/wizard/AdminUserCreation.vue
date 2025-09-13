@@ -88,7 +88,7 @@ limitations under the License.
 			<SessionExpirationInput v-model='expiration' />
 		</v-form>
 		<template #actions='{ next }'>
-			<CardActionBtn
+			<ICardActionBtn
 				:disabled='!formValidity'
 				:icon='mdiAccountPlus'
 				:loading='componentState === ComponentState.Saving'
@@ -108,7 +108,7 @@ import {
 	UserRole,
 	UserSessionExpiration,
 } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { ValidationRules } from '@iqrf/iqrf-vue-ui';
+import { ICardActionBtn, ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiAccount, mdiAccountPlus, mdiEmail, mdiHelpCircleOutline, mdiKey } from '@mdi/js';
 import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -119,7 +119,6 @@ import UserLanguageInput
 	from '@/components/access-control/users/UserLanguageInput.vue';
 import SessionExpirationInput
 	from '@/components/auth/SessionExpirationInput.vue';
-import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import PasswordInput from '@/components/layout/form/PasswordInput.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import UrlBuilder from '@/helpers/urlBuilder';

@@ -22,12 +22,12 @@ limitations under the License.
 		:disabled='[ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
 		@submit.prevent='onSubmit()'
 	>
-		<Card>
+		<ICard>
 			<template #title>
 				{{ $t('pages.config.mender.title') }}
 			</template>
 			<template #titleActions>
-				<CardTitleActionBtn
+				<ICardTitleActionBtn
 					:action='Action.Reload'
 					@click='getConfig()'
 				/>
@@ -150,20 +150,25 @@ limitations under the License.
 				</v-responsive>
 			</v-skeleton-loader>
 			<template #actions>
-				<CardActionBtn
+				<ICardActionBtn
 					:action='Action.Edit'
 					:disabled='!isValid.value || [ComponentState.Loading, ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
 					type='submit'
 				/>
 			</template>
-		</Card>
+		</ICard>
 	</v-form>
 </template>
 
 <script lang='ts' setup>
 import { type MenderService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import { type MenderConfig } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { ValidationRules } from '@iqrf/iqrf-vue-ui';
+import {
+	Action, ICard,
+	ICardActionBtn,
+	ICardTitleActionBtn,
+	ValidationRules,
+} from '@iqrf/iqrf-vue-ui';
 import {
 	mdiFileCertificate,
 	mdiKeyVariant,
@@ -179,14 +184,10 @@ import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
 
 import MenderCertificateUploadDialog from '@/components/config/mender/MenderCertificateUploadDialog.vue';
-import Card from '@/components/layout/card/Card.vue';
-import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
-import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
 import NumberInput from '@/components/layout/form/NumberInput.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
-import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);

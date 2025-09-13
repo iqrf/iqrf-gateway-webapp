@@ -21,7 +21,7 @@ limitations under the License.
 		:disabled='[ComponentState.Loading, ComponentState.Reloading].includes(componentState) || !configuration.enabled'
 		@submit.prevent='onSubmit()'
 	>
-		<Card>
+		<ICard>
 			<template #title>
 				{{ $t('components.config.smtp.form.title') }}
 			</template>
@@ -33,7 +33,7 @@ limitations under the License.
 				>
 					{{ stateButtonLabel }}
 				</v-btn>
-				<CardTitleActionBtn
+				<ICardTitleActionBtn
 					:action='Action.Reload'
 					:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
 					@click='getConfig()'
@@ -126,13 +126,13 @@ limitations under the License.
 						:disabled='[ComponentState.Loading, ComponentState.Reloading].includes(componentState) || !configuration.enabled'
 						:prepend-inner-icon='mdiEmail'
 					/>
-					<CardActionBtn
+					<ICardActionBtn
 						:action='Action.Save'
 						class='mr-1'
 						:disabled='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
 						type='submit'
 					/>
-					<CardActionBtn
+					<ICardActionBtn
 						color='info'
 						:icon='mdiEmailFast'
 						:text='$t("components.config.smtp.form.test")'
@@ -141,7 +141,7 @@ limitations under the License.
 					/>
 				</v-responsive>
 			</v-skeleton-loader>
-		</Card>
+		</ICard>
 	</v-form>
 </template>
 
@@ -152,7 +152,12 @@ import {
 	type MailerConfig,
 	type MailerGetConfigResponse, MailerTheme,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { ValidationRules } from '@iqrf/iqrf-vue-ui';
+import {
+	Action, ICard,
+	ICardActionBtn,
+	ICardTitleActionBtn,
+	ValidationRules,
+} from '@iqrf/iqrf-vue-ui';
 import {
 	mdiAccount,
 	mdiEmail,
@@ -169,14 +174,10 @@ import { type VForm } from 'vuetify/components';
 
 import SmtpSecurityInput
 	from '@/components/config/smtp/SmtpSecurityInput.vue';
-import Card from '@/components/layout/card/Card.vue';
-import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
-import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
 import NumberInput from '@/components/layout/form/NumberInput.vue';
 import PasswordInput from '@/components/layout/form/PasswordInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
-import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);

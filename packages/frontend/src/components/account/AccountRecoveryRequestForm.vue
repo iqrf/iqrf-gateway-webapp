@@ -22,7 +22,7 @@ limitations under the License.
 		:disabled='componentState === ComponentState.Saving'
 		@submit.prevent='onSubmit'
 	>
-		<Card>
+		<ICard>
 			<template #title>
 				{{ $t('pages.account.recovery.title') }}
 			</template>
@@ -43,7 +43,7 @@ limitations under the License.
 					required
 					:prepend-inner-icon='mdiAccount'
 				/>
-				<CardActionBtn
+				<ICardActionBtn
 					color='primary'
 					:disabled='!isValid.value'
 					:loading='componentState === ComponentState.Saving'
@@ -52,14 +52,14 @@ limitations under the License.
 					type='submit'
 				/>
 			</div>
-		</Card>
+		</ICard>
 	</v-form>
 </template>
 
 <script lang='ts' setup>
 import { AccountService } from '@iqrf/iqrf-gateway-webapp-client/services';
 import { UserAccountRecovery } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { ValidationRules } from '@iqrf/iqrf-vue-ui';
+import { ICard, ICardActionBtn, ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiAccount, mdiAccountKey } from '@mdi/js';
 import { AxiosError } from 'axios';
 import { ref, type Ref } from 'vue';
@@ -67,8 +67,6 @@ import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
 
-import Card from '@/components/layout/card/Card.vue';
-import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import UrlBuilder from '@/helpers/urlBuilder';
 import { validateForm } from '@/helpers/validateForm';

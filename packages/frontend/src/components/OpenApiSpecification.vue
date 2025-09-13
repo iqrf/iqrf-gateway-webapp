@@ -16,12 +16,12 @@ limitations under the License.
 -->
 
 <template>
-	<Card>
+	<ICard>
 		<template #title>
 			{{ $t('components.dev.openApi.title') }}
 		</template>
 		<template #titleActions>
-			<CardTitleActionBtn
+			<ICardTitleActionBtn
 				:action='Action.Reload'
 				@click='fetch'
 			/>
@@ -40,10 +40,11 @@ limitations under the License.
 		>
 			{{ $t('components.dev.openApi.messages.fetchFailed') }}
 		</v-alert>
-	</Card>
+	</ICard>
 </template>
 
 <script setup lang='ts'>
+import { Action, ICard, ICardTitleActionBtn } from '@iqrf/iqrf-vue-ui';
 import { OpenAPI3 } from 'openapi-typescript';
 import { storeToRefs } from 'pinia';
 import {
@@ -54,12 +55,9 @@ import { onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
-import Card from '@/components/layout/card/Card.vue';
-import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
 import UrlBuilder from '@/helpers/urlBuilder';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
-import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 /// Component state

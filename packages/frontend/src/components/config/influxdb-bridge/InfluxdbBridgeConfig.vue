@@ -22,7 +22,7 @@ limitations under the License.
 		:disabled='[ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
 		@submit.prevent='onSubmit()'
 	>
-		<Card>
+		<ICard>
 			<template #title>
 				{{ $t('pages.config.influxdb-bridge.title') }}
 			</template>
@@ -282,14 +282,14 @@ limitations under the License.
 					{{ $t('common.buttons.save') }}
 				</v-btn>
 			</template>
-		</Card>
+		</ICard>
 	</v-form>
 </template>
 
 <script lang='ts' setup>
 import { type IqrfGatewayInfluxdbBridgeService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import { type BridgeConfig } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { ValidationRules } from '@iqrf/iqrf-vue-ui';
+import { Action, ICard, ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiDelete, mdiReload } from '@mdi/js';
 import {
 	onMounted,
@@ -301,7 +301,6 @@ import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
 import SubscriptionTopicForm from '@/components/config/influxdb-bridge/SubscriptionTopicForm.vue';
-import Card from '@/components/layout/card/Card.vue';
 import DataTable from '@/components/layout/data-table/DataTable.vue';
 import DataTableAction from '@/components/layout/data-table/DataTableAction.vue';
 import NumberInput from '@/components/layout/form/NumberInput.vue';
@@ -309,7 +308,6 @@ import PasswordInput from '@/components/layout/form/PasswordInput.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
-import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);

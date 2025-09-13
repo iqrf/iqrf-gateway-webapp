@@ -42,7 +42,7 @@ const hasBrokenModem = computed(() => {
 /// Define emits
 const emit = defineEmits(['restart', 'reload']);
 /// Define props
-const componentProps = defineProps({
+defineProps({
 	disabled: {
 		type: Boolean,
 		default: false,

@@ -3,7 +3,7 @@
 		<Head>
 			<title>{{ $t('pages.install.errors.title') }}</title>
 		</Head>
-		<Card>
+		<ICard>
 			<template #title>
 				{{ $t('pages.install.errors.title') }}
 			</template>
@@ -30,13 +30,13 @@
 				/>
 			</v-stepper-vertical>
 			<template #actions>
-				<CardActionBtn
+				<ICardActionBtn
 					:action='Action.Reload'
 					:loading='componentState === ComponentState.Loading'
 					@click='reload'
 				/>
 			</template>
-		</Card>
+		</ICard>
 	</div>
 </template>
 
@@ -51,6 +51,7 @@
 </route>
 
 <script lang='ts' setup>
+import { Action, ICard, ICardActionBtn } from '@iqrf/iqrf-vue-ui';
 import { Head } from '@unhead/vue/components';
 import { storeToRefs } from 'pinia';
 import { computed, ComputedRef, ref, Ref } from 'vue';
@@ -62,10 +63,7 @@ import MisconfiguredSudo from '@/components/install/errors/MisconfiguredSudo.vue
 import MissingDependencies from '@/components/install/errors/MissingDependencies.vue';
 import MissingMigrations from '@/components/install/errors/MissingMigrations.vue';
 import MissingPhpExtensions from '@/components/install/errors/MissingPhpExtensions.vue';
-import Card from '@/components/layout/card/Card.vue';
-import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import { useInstallStore } from '@/store/install';
-import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 import { InstallationError } from '@/types/install';
 

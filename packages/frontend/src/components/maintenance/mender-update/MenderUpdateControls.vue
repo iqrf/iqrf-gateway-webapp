@@ -21,7 +21,7 @@ limitations under the License.
 		v-slot='{ isValid }'
 		:disabled='componentState === ComponentState.Saving'
 	>
-		<Card>
+		<ICard>
 			<template #title>
 				{{ $t('pages.maintenance.mender.title') }}
 			</template>
@@ -38,19 +38,19 @@ limitations under the License.
 				required
 			/>
 			<template #actions>
-				<CardActionBtn
+				<ICardActionBtn
 					color='primary'
 					:disabled='!isValid.value || componentState === ComponentState.Saving'
 					:text='$t("components.maintenance.mender.update.install")'
 					@click='installArtifact()'
 				/>
-				<CardActionBtn
+				<ICardActionBtn
 					color='primary'
 					:disabled='componentState === ComponentState.Saving'
 					:text='$t("components.maintenance.mender.update.commit")'
 					@click='commitUpdate()'
 				/>
-				<CardActionBtn
+				<ICardActionBtn
 					color='primary'
 					:disabled='componentState === ComponentState.Saving'
 					:text='$t("components.maintenance.mender.update.rollback")'
@@ -58,13 +58,13 @@ limitations under the License.
 				/>
 				<MenderUpdateLog :log='log' />
 			</template>
-		</Card>
+		</ICard>
 	</v-form>
 </template>
 
 <script lang='ts' setup>
 import { type MenderService } from '@iqrf/iqrf-gateway-webapp-client/services/Maintenance';
-import { ValidationRules } from '@iqrf/iqrf-vue-ui';
+import { ICard, ICardActionBtn, ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiFileOutline } from '@mdi/js';
 import { AxiosError } from 'axios';
 import { ref, type Ref } from 'vue';
@@ -72,8 +72,6 @@ import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
-import Card from '@/components/layout/card/Card.vue';
-import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
 import MenderUpdateLog from '@/components/maintenance/mender-update/MenderUpdateLog.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';

@@ -19,7 +19,7 @@ limitations under the License.
 	<div>
 		<ModalWindow v-model='show'>
 			<template #activator='{ props }'>
-				<CardTitleActionBtn
+				<ICardTitleActionBtn
 					v-if='action === Action.Add'
 					v-bind='props'
 					:action='action'
@@ -37,7 +37,7 @@ limitations under the License.
 				v-slot='{ isValid }'
 				@submit.prevent='onSubmit()'
 			>
-				<Card :action='action'>
+				<ICard :action='action'>
 					<template #title>
 						{{ dialogTitle }}
 					</template>
@@ -68,15 +68,15 @@ limitations under the License.
 						:state='datePickerState'
 					/>
 					<template #actions>
-						<CardActionBtn
+						<ICardActionBtn
 							:action='action'
 							:disabled='!isValid.value'
 							type='submit'
 						/>
 						<v-spacer />
-						<CardActionBtn :action='Action.Cancel' @click='close' />
+						<ICardActionBtn :action='Action.Cancel' @click='close' />
 					</template>
-				</Card>
+				</ICard>
 			</v-form>
 		</ModalWindow>
 		<ApiKeyDisplayDialog
@@ -95,7 +95,13 @@ import {
 	type ApiKeyInfo,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import { DateTimeUtils } from '@iqrf/iqrf-gateway-webapp-client/utils';
-import { ValidationRules } from '@iqrf/iqrf-vue-ui';
+import {
+	Action,
+	ICard,
+	ICardActionBtn,
+	ICardTitleActionBtn,
+	ValidationRules,
+} from '@iqrf/iqrf-vue-ui';
 import { mdiTextShort } from '@mdi/js';
 import { computed, type PropType, ref, type Ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -103,15 +109,11 @@ import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
 import ApiKeyDisplayDialog from '@/components/access-control/api-keys/ApiKeyDisplayDialog.vue';
-import Card from '@/components/layout/card/Card.vue';
-import CardActionBtn from '@/components/layout/card/CardActionBtn.vue';
-import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
 import DataTableAction from '@/components/layout/data-table/DataTableAction.vue';
 import TextInput from '@/components/layout/form/TextInput.vue';
 import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
-import { Action } from '@/types/Action';
 
 const emit = defineEmits(['refresh']);
 const componentProps = defineProps({

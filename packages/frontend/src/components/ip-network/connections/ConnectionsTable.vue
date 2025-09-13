@@ -16,13 +16,13 @@ limitations under the License.
 -->
 
 <template>
-	<Card header-color='primary'>
+	<ICard header-color='primary'>
 		<template #title>
 			{{ $t(`components.ipNetwork.connections.titles.${type}`) }}
 		</template>
 		<template #titleActions>
 			<ConnectionForm :action='Action.Add' :type='componentProps.type' />
-			<CardTitleActionBtn
+			<ICardTitleActionBtn
 				:action='Action.Reload'
 				@click='fetchData'
 			/>
@@ -49,7 +49,7 @@ limitations under the License.
 				</DataTable>
 			</v-responsive>
 		</v-skeleton-loader>
-	</Card>
+	</ICard>
 </template>
 
 <script setup lang='ts'>
@@ -57,6 +57,7 @@ import {
 	type NetworkConnectionListEntry,
 	type NetworkConnectionType,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
+import { Action, ICard, ICardTitleActionBtn } from '@iqrf/iqrf-vue-ui';
 import { computed, onBeforeMount, type PropType, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -68,11 +69,8 @@ import ConnectionForm
 	from '@/components/ip-network/connections/ConnectionForm.vue';
 import ConnectionStateBadge
 	from '@/components/ip-network/connections/ConnectionStateBadge.vue';
-import Card from '@/components/layout/card/Card.vue';
-import CardTitleActionBtn from '@/components/layout/card/CardTitleActionBtn.vue';
 import DataTable from '@/components/layout/data-table/DataTable.vue';
 import { useApiClient } from '@/services/ApiClient';
-import { Action } from '@/types/Action';
 import { ComponentState } from '@/types/ComponentState';
 
 /// Component props
