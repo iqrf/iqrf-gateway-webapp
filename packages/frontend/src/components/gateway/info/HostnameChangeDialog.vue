@@ -16,51 +16,56 @@ limitations under the License.
 -->
 
 <template>
-	<ModalWindow
-		v-model='show'
-	>
+	<IModalWindow v-model='show'>
 		<template #activator='{ props }'>
 			<v-btn
 				color='primary'
-				size='x-small'
+				size='small'
 				v-bind='props'
 			>
 				<v-icon :icon='mdiPencil' />
 				{{ $t('components.common.actions.edit') }}
 			</v-btn>
 		</template>
-		<ICard>
-			<template #title>
-				{{ $t('components.gateway.information.hostnameChange.title') }}
-			</template>
-			<v-form ref='form'>
-				<TextInput
+		<v-form
+			v-slot='{ isValid }'
+			ref='form'
+			:disabled='componentState === ComponentState.Action'
+		>
+			<ICard>
+				<template #title>
+					{{ $t('components.gateway.information.hostname.dialog.title') }}
+				</template>
+				<ITextInput
 					v-model='hostname'
-					:label='$t("components.gateway.information.hostname")'
+					:label='$t("components.gateway.information.hostname.label")'
 					:prepend-inner-icon='mdiTextShort'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.gateway.information.hostnameChange.validation.hostname")),
+						(v: string|null) => ValidationRules.required(v, $t("components.gateway.information.hostname.dialog.validation.hostname.required")),
 					]'
 					required
 				/>
 				<v-checkbox
 					v-model='setIdeHostname'
-					:label='$t("components.gateway.information.hostnameChange.setIdeHostname")'
+					:label='$t("components.gateway.information.hostname.dialog.setIdeHostname")'
+					hide-details
 				/>
-			</v-form>
-			<template #actions>
-				<ICardActionBtn
-					:action='Action.Edit'
-					@click='onSubmit()'
-				/>
-				<v-spacer />
-				<ICardActionBtn
-					:action='Action.Cancel'
-					@click='close()'
-				/>
-			</template>
-		</ICard>
-	</ModalWindow>
+				<template #actions>
+					<IActionBtn
+						:action='Action.Edit'
+						:disabled='!isValid.value || componentState === ComponentState.Action'
+						@click='onSubmit()'
+					/>
+					<v-spacer />
+					<IActionBtn
+						:action='Action.Cancel'
+						:disabled='componentState === ComponentState.Action'
+						@click='close()'
+					/>
+				</template>
+			</ICard>
+		</v-form>
+	</IModalWindow>
 </template>
 
 <script lang='ts' setup>
@@ -71,23 +76,17 @@ import {
 	IqrfGatewayDaemonComponentName,
 	type IqrfGatewayDaemonIdeCounterpart,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import {
-	Action,
-	ICard,
-	ICardActionBtn,
-	ValidationRules,
-} from '@iqrf/iqrf-vue-ui';
+import { Action, ComponentState, IActionBtn, ICard, IModalWindow, ITextInput, ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiPencil, mdiTextShort } from '@mdi/js';
 import { type PropType, ref, type Ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
-import TextInput from '@/components/layout/form/TextInput.vue';
-import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
+const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const emit = defineEmits(['saved']);
 const componentProps = defineProps({
 	currentHostname: {
@@ -116,25 +115,28 @@ async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
 	}
+	componentState.value = ComponentState.Action;
 	try {
 		await Promise.all([
 			updateIdeCounterpartConfig(),
 			hostnameService.updateHostname(hostname.value),
 		]);
 		toast.success(
-			i18n.t('components.gateway.information.hostnameChange.messages.save.success'),
+			i18n.t('components.gateway.information.hostname.dialog.messages.save.success'),
 		);
 		if (setIdeHostname.value) {
 			toast.success(
-				i18n.t('components.gateway.information.hostnameChange.messages.daemonRestart'),
+				i18n.t('components.gateway.information.hostname.dialog.messages.daemonRestart'),
 			);
 		}
-		clear();
 		close();
 		emit('saved');
 	} catch {
-		toast.error('TODO ERROR HANDLING');
+		toast.error(
+			i18n.t('components.gateway.information.hostname.dialog.messages.save.failed'),
+		);
 	}
+	componentState.value = ComponentState.Idle;
 }
 
 async function updateIdeCounterpartConfig(): Promise<void> {
@@ -151,11 +153,8 @@ async function updateIdeCounterpartConfig(): Promise<void> {
 	await daemonConfigurationService.updateInstance(ideComponentComponent, instance.instance, instance);
 }
 
-function clear(): void {
-	setIdeHostname.value = false;
-}
-
 function close(): void {
+	setIdeHostname.value = false;
 	show.value = false;
 }
 

@@ -104,7 +104,7 @@ limitations under the License.
 						:disabled='[ComponentState.Loading, ComponentState.Reloading].includes(componentState) || !configuration.enabled'
 						:prepend-inner-icon='mdiAccount'
 					/>
-					<PasswordInput
+					<IPasswordInput
 						v-model='configuration.password'
 						:label='$t("components.config.smtp.form.password")'
 						:rules='[
@@ -137,7 +137,7 @@ limitations under the License.
 						:icon='mdiEmailFast'
 						:text='$t("components.config.smtp.form.test")'
 						:disabled='!configuration.enabled || [ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
-						@click='testConfiguration'
+						@click='testConfiguration()'
 					/>
 				</v-responsive>
 			</v-skeleton-loader>
@@ -152,12 +152,7 @@ import {
 	type MailerConfig,
 	type MailerGetConfigResponse, MailerTheme,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import {
-	Action, ICard,
-	ICardActionBtn,
-	ICardTitleActionBtn,
-	ValidationRules,
-} from '@iqrf/iqrf-vue-ui';
+import { Action, ComponentState, ICard, ICardActionBtn, ICardTitleActionBtn, IPasswordInput, ValidationRules } from '@iqrf/iqrf-vue-ui';
 import {
 	mdiAccount,
 	mdiEmail,
@@ -175,10 +170,8 @@ import { type VForm } from 'vuetify/components';
 import SmtpSecurityInput
 	from '@/components/config/smtp/SmtpSecurityInput.vue';
 import NumberInput from '@/components/layout/form/NumberInput.vue';
-import PasswordInput from '@/components/layout/form/PasswordInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
-import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();

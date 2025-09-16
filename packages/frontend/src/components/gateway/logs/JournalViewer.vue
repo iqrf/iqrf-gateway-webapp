@@ -29,7 +29,7 @@ limitations under the License.
 			</v-alert>
 			<pre
 				ref='journal'
-				v-scroll.self='scrollUpdate'
+				v-scroll.self='scrollUpdate()'
 				class='log'
 			>{{ log }}</pre>
 		</v-responsive>
