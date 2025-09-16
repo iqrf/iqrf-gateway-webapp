@@ -21,13 +21,15 @@ limitations under the License.
 			{{ $t('pages.gateway.logs.title') }}
 		</template>
 		<template #titleActions>
-			<ICardTitleActionBtn
+			<IActionBtn
 				:icon='mdiFolderDownloadOutline'
+				type='card-title'
 				:tooltip='$t("components.common.actions.download")'
 				@click='exportLogs()'
 			/>
-			<ICardTitleActionBtn
+			<IActionBtn
 				:action='Action.Reload'
+				type='card-title'
 				@click='listServices()'
 			/>
 		</template>
@@ -61,9 +63,10 @@ limitations under the License.
 <script lang='ts' setup>
 import { type LogService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
 import { FileDownloader } from '@iqrf/iqrf-gateway-webapp-client/utils';
-import { Action, ICard, ICardTitleActionBtn } from '@iqrf/iqrf-vue-ui';
+import { Action, IActionBtn, ICard } from '@iqrf/iqrf-vue-ui';
 import { mdiFolderDownloadOutline } from '@mdi/js';
 import { onMounted, ref, type Ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import JournalViewer from '@/components/gateway/logs/JournalViewer.vue';
@@ -72,6 +75,7 @@ import { useApiClient } from '@/services/ApiClient';
 import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
+const { t } = useI18n();
 const service: LogService = useApiClient().getGatewayServices().getLogService();
 const services: Ref<string[]> = ref([]);
 const tab: Ref<string | null> = ref(null);
@@ -84,7 +88,9 @@ async function listServices(): Promise<void> {
 			tab.value = services.value[0];
 		}
 	} catch {
-		toast.error('TODO FETCH LIST ERROR');
+		toast.error(
+			t('components.gateway.logs.services.messages.list.failed'),
+		);
 	}
 	componentState.value = ComponentState.Idle;
 }
@@ -97,7 +103,9 @@ async function exportLogs(): Promise<void> {
 			`iqrf-gateway-logs_${new Date().toISOString()}.zip`,
 		);
 	} catch {
-		toast.error('TODO EXPORT ERROR HANDLING');
+		toast.error(
+			t('components.gateway.logs.messages.export.failed'),
+		);
 	}
 }
 

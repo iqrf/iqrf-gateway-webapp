@@ -1321,7 +1321,27 @@
 			},
 			"logs": {
 				"journal": {
+					"messages": {
+						"fetch": {
+							"failed": "Failed to retrieve journal records."
+						}
+					},
 					"oldestRecords": "No older Journal records available."
+				},
+				"messages": {
+					"export": {
+						"failed": "Failed to export service and journal logs."
+					}
+				},
+				"services": {
+					"messages": {
+						"fetch": {
+							"failed": "Failed to retrieve service logs."
+						},
+						"list": {
+							"failed": "Failed to retrieve list of services."
+						}
+					}
 				}
 			},
 			"mode": {
