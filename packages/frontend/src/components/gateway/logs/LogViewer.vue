@@ -29,6 +29,7 @@ limitations under the License.
 <script lang='ts' setup>
 import { type LogService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
 import { onMounted, type PropType, ref, type Ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import { useApiClient } from '@/services/ApiClient';
@@ -40,6 +41,7 @@ const componentProps = defineProps({
 		required: true,
 	},
 });
+const i18n = useI18n();
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const service: LogService = useApiClient().getGatewayServices().getLogService();
 const log: Ref<string | null> = ref(null);
@@ -59,7 +61,9 @@ async function getServiceLog(): Promise<void> {
 	try {
 		log.value = await service.getServiceLog(componentProps.serviceName);
 	} catch {
-		toast.error('TODO GET LOG ERROR');
+		toast.error(
+			i18n.t('components.gateway.logs.services.messages.fetch.failed'),
+		);
 	}
 	componentState.value = ComponentState.Ready;
 }

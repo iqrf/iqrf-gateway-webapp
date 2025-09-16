@@ -29,7 +29,7 @@ limitations under the License.
 			</v-alert>
 			<pre
 				ref='journal'
-				v-scroll.self='scrollUpdate()'
+				v-scroll.self='scrollUpdate'
 				class='log'
 			>{{ log }}</pre>
 		</v-responsive>
@@ -38,27 +38,26 @@ limitations under the License.
 
 <script lang='ts' setup>
 import { LogService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
-import { nextTick, ref, type Ref, watch } from 'vue';
+import { nextTick, onMounted, ref, type Ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import { useApiClient } from '@/services/ApiClient';
 import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
+const i18n = useI18n();
 const service: LogService = useApiClient().getGatewayServices().getLogService();
 let allowUpdate = false;
 let lastCursor: string | null = null;
 const log: Ref<string | null> = ref(null);
-const journal: Ref<Element | null> = ref(null);
+const journal: Ref<HTMLElement | null> = ref(null);
 let lastScrollHeight = 0;
 let lastScrollPos = 0;
 let oldestRecords = false;
 
-const stop = watch(journal, (newVal: Element|null, oldVal: Element|null) => {
-	if (oldVal === null && newVal !== null) {
-		getJournalRecords(300);
-		stop();
-	}
+onMounted(() => {
+	getJournalRecords(300);
 });
 
 async function getJournalRecords(count: number, cursor: string|null = null): Promise<void> {
@@ -76,7 +75,12 @@ async function getJournalRecords(count: number, cursor: string|null = null): Pro
 			allowUpdate = false;
 			return;
 		}
-		log.value = `${data.records.join('\n')}\n${log.value}`;
+		componentState.value = ComponentState.Ready;
+		if (log.value === null) {
+			log.value = data.records.join('\n');
+		} else {
+			log.value = `${data.records.join('\n')}\n${log.value}`;
+		}
 		if (lastCursor === null) {
 			scrollToEnd();
 		} else {
@@ -85,51 +89,50 @@ async function getJournalRecords(count: number, cursor: string|null = null): Pro
 		lastCursor = data.startCursor;
 		allowUpdate = true;
 	} catch {
-		toast.error('TODO JOURNAL FAILED ERROR HANDLING');
+		toast.error(
+			i18n.t('components.gateway.logs.journal.messages.fetch.failed'),
+		);
 		if (cursor !== null) {
 			scrollToPrevious();
 		}
 		allowUpdate = true;
 	}
-	componentState.value = ComponentState.Ready;
 }
 
 function scrollUpdate(): void {
-	if (!allowUpdate) {
+	if (!allowUpdate || !journal.value) {
 		return;
 	}
-	const el = journal.value!;
-	if (el.scrollTop === 0) {
-		lastScrollHeight = el.scrollHeight;
-		lastScrollPos = el.scrollTop;
+	if (journal.value.scrollTop === 0) {
+		lastScrollHeight = journal.value.scrollHeight;
+		lastScrollPos = journal.value.scrollTop;
 		getJournalRecords(300, lastCursor);
 	}
 }
 
-function scrollToPrevious(): void {
-	nextTick(() => {
-		const el = journal.value!;
-		el.scrollTop = lastScrollPos + 1;
-	});
+async function scrollToPrevious(): Promise<void> {
+	await nextTick();
+	if (journal.value) {
+		journal.value.scrollTop = lastScrollPos + 1;
+	}
 }
 
 
-function scrollToDisplay(): void {
-	nextTick(() => {
-		const el = journal.value!;
-		const diff = el.scrollHeight - lastScrollHeight;
-		el.scrollTop += diff;
-	});
+async function scrollToDisplay(): Promise<void> {
+	await nextTick();
+	if (journal.value) {
+		journal.value.scrollTop += journal.value.scrollHeight - lastScrollHeight;
+	}
 }
 
 /**
  * Moves scrollbar to the end
  */
-function scrollToEnd(): void {
-	nextTick(() => {
-		const el = journal.value!;
-		el.scrollTop = el.scrollHeight;
-	});
+async function scrollToEnd(): Promise<void> {
+	await nextTick();
+	if (journal.value) {
+		journal.value.scrollTop = journal.value.scrollHeight;
+	}
 }
 
 </script>
