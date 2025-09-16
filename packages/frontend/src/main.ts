@@ -16,6 +16,7 @@
  */
 
 import { createApp, type App as VueApp } from 'vue';
+import '@iqrf/iqrf-vue-ui/style';
 
 import App from '@/App.vue';
 import { registerPlugins } from '@/plugins';

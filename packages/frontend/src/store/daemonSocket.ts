@@ -30,11 +30,11 @@ import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'vue3-toastify';
 
 import UrlBuilder from '@/helpers/urlBuilder';
+import { waitUntil } from '@/helpers/wait';
 import ClientSocket, { type GenericSocketState } from '@/modules/clientSocket';
 import i18n from '@/plugins/i18n';
 
 import { useMonitorStore } from './monitorSocket';
-
 
 interface DaemonState extends GenericSocketState {
 	receivedMessages: number;
@@ -102,7 +102,7 @@ export const useDaemonStore = defineStore('daemon', {
 			this.socket?.send(request);
 			this.onSend(request);
 		},
-		sendMessage(options: DaemonMessageOptions<TApiRequest>): Promise<string> {
+		async sendMessage(options: DaemonMessageOptions<TApiRequest>): Promise<string> {
 			const message = options.request;
 			if (message === null) {
 				throw new Error('No message to send, message is null.');
@@ -115,8 +115,9 @@ export const useDaemonStore = defineStore('daemon', {
 			const msgId: string = message.data.msgId;
 			if (message.mType === 'iqmeshNetwork_AutoNetwork') {
 				this.socket?.send(message);
-				return Promise.resolve(msgId);
+				return msgId;
 			}
+			await waitUntil(() => !monitorStore.getDataReadingInProgress && !monitorStore.getEnumInProgress);
 			let timeout: number | null = null;
 			if (options.timeout) {
 				timeout = window.setTimeout(() => {
@@ -130,7 +131,7 @@ export const useDaemonStore = defineStore('daemon', {
 			}
 			this.messages.push(new DaemonMessage(msgId, timeout));
 			this.socket?.send(message);
-			return Promise.resolve(msgId);
+			return msgId;
 		},
 		/**
 		 * On socket open action (used as callback)

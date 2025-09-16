@@ -1259,19 +1259,35 @@
 				"gwId": "IQRF Gateway ID",
 				"gwImage": "IQRF Gateway Image",
 				"gwMode": "Daemon mode",
-				"hostname": "Hostname",
-				"hostnameChange": {
-					"messages": {
-						"daemonRestart": "IQRF Gateway Daemon restart is required to apply the changes.",
-						"save": {
-							"success": "Hostname has been successfully changed."
+				"hostname": {
+					"dialog": {
+						"messages": {
+							"daemonRestart": "IQRF Gateway Daemon restart is required to apply the changes.",
+							"save": {
+								"failed": "Failed to change hostname.",
+								"success": "Hostname has been successfully changed."
+							}
+						},
+						"setIdeHostname": "Set hostname as IQRF IDE GW hostname",
+						"title": "Change hostname",
+						"validation": {
+							"hostname": {
+								"required": "Please enter hostname."
+							}
 						}
 					},
-					"setIdeHostname": "Set hostname as IQRF IDE GW hostname",
-					"setSplitterId": "Set hostname as IQRF Gateway Daemon instance ID",
-					"title": "Change hostname",
-					"validation": {
-						"hostname": "Please enter hostname."
+					"label": "Hostname"
+				},
+				"messages": {
+					"diagnostics": {
+						"failed": "Failed to get diagnostics data."
+					},
+					"fetchInfo": {
+						"failed": "Failed to retrieve gateway information."
+					},
+					"fetchTr": {
+						"failed": "Failed to retrieve information about coordinator device.",
+						"timeout": "Coordinator information request timed out."
 					}
 				},
 				"os": "Operating system",
@@ -1280,12 +1296,6 @@
 					"hwpid": "HWPID",
 					"hwpidVersion": "HWPID ver.",
 					"mcuType": "MCU type",
-					"messages": {
-						"fetch": {
-							"failed": "Failed to retrieve information about coordinator device.",
-							"timeout": "Coordinator information request timed out."
-						}
-					},
 					"moduleId": "MID",
 					"moduleType": "Module type",
 					"os": "OS",

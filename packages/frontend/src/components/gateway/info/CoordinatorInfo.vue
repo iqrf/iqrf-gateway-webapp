@@ -16,7 +16,7 @@ limitations under the License.
 -->
 
 <template>
-	<span v-if='loading'>
+	<span v-if='componentState === ComponentState.Loading'>
 		<v-progress-linear
 			color='info'
 			indeterminate
@@ -24,7 +24,7 @@ limitations under the License.
 		/>
 	</span>
 	<span v-else>
-		<div v-if='enumData' class='py-2'>
+		<div v-if='enumData && componentState === ComponentState.Ready' class='py-2'>
 			<strong>{{ `${$t('components.gateway.information.tr.moduleType')}:` }} </strong>
 			{{ enumData.osRead.trMcuType.trType }}<br>
 			<strong>{{ `${$t('components.gateway.information.tr.mcuType')}:` }} </strong>
@@ -43,7 +43,7 @@ limitations under the License.
 			{{ enumData.osRead.supplyVoltage }}<br>
 		</div>
 		<span v-else>
-			{{ $t('components.gateway.information.tr.messages.fetch.failed') }}
+			{{ $t('components.gateway.information.messages.fetchTr.failed') }}
 		</span>
 	</span>
 </template>
@@ -53,13 +53,13 @@ import { IqmeshServiceMessages } from '@iqrf/iqrf-gateway-daemon-utils/enums';
 import { IqmeshService } from '@iqrf/iqrf-gateway-daemon-utils/services';
 import { ApiResponseIqmesh, IqmeshEnumerateDeviceResult, TApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
-import { onMounted, ref, type Ref } from 'vue';
+import { ComponentState } from '@iqrf/iqrf-vue-ui';
+import { onBeforeMount, onBeforeUnmount, onMounted, ref, type Ref } from 'vue';
 
 import { useDaemonStore } from '@/store/daemonSocket';
 
+const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const daemonStore = useDaemonStore();
-const loading: Ref<boolean> = ref(false);
-const loaded: Ref<boolean> = ref(false);
 const enumData: Ref<IqmeshEnumerateDeviceResult | null> = ref(null);
 const msgId: Ref<string | null> = ref(null);
 
@@ -79,19 +79,22 @@ daemonStore.$onAction(
 	},
 );
 
-onMounted(() => {
+onBeforeMount(() => {
 	enumerate();
 });
 
+onBeforeUnmount(() => {
+	daemonStore.removeMessage(msgId.value);
+});
+
 async function enumerate(): Promise<void> {
-	loading.value = true;
+	componentState.value = ComponentState.Loading;
 	const opts = new DaemonMessageOptions(
-		5_000,
-		'components.gateway.information.tr.messages.fetch.timeout',
+		10_000,
+		'components.gateway.information.messages.fetchTr.timeout',
 		() => {
 			msgId.value = null;
-			loaded.value = false;
-			loading.value = false;
+			componentState.value = ComponentState.Idle;
 		},
 	);
 	msgId.value = await daemonStore.sendMessage(IqmeshService.enumerate({}, { deviceAddr: 0 }, opts));
@@ -100,11 +103,10 @@ async function enumerate(): Promise<void> {
 function handleEnumerateResponse(rsp: ApiResponseIqmesh<IqmeshEnumerateDeviceResult>): void {
 	if (rsp.data.status === 0) {
 		enumData.value = rsp.data.rsp;
-		loaded.value = false;
+		componentState.value = ComponentState.Ready;
 	} else {
-		loaded.value = true;
+		componentState.value = ComponentState.FetchFailed;
 	}
-	loading.value = false;
 }
 
 </script>

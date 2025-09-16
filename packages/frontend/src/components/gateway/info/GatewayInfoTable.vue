@@ -20,186 +20,202 @@ limitations under the License.
 		<template #title>
 			{{ $t('pages.gateway.information.title') }}
 		</template>
-		<v-table
-			density='compact'
-			:hover='true'
+		<template #titleActions>
+			<IActionBtn
+				:action='Action.Reload'
+				:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+				type='card-title'
+				@click='getInformation()'
+			/>
+		</template>
+		<v-skeleton-loader
+			class='table-compact-skeleton-loader'
+			:loading='componentState === ComponentState.Loading'
+			:type='SkeletonLoaders.simpleTableSkeletonLoader(16)'
 		>
-			<tbody>
-				<tr>
-					<td>
-						<strong>{{ $t('components.gateway.information.board') }}</strong>
-					</td>
-					<td>{{ info?.board }}</td>
-				</tr>
-				<tr>
-					<td>
-						<strong>{{ $t('components.gateway.information.os') }}</strong>
-					</td>
-					<td>
-						<a v-if='info?.os.homePage !== null' :href='info?.os.homePage' class='text-primary'>{{ info?.os.name }}</a>
-						<span v-else>{{ info?.os.name }}</span>
-					</td>
-				</tr>
-				<tr v-if='info?.gwId'>
-					<td>
-						<strong>{{ $t('components.gateway.information.gwId') }}</strong>
-					</td>
-					<td>{{ info.gwId }}</td>
-				</tr>
-				<tr v-if='info?.gwImage'>
-					<td>
-						<strong>{{ $t('components.gateway.information.gwImage') }}</strong>
-					</td>
-					<td>{{ info.gwImage }}</td>
-				</tr>
-				<tr v-if='info?.versions.cloudProvisioning'>
-					<td>
-						<strong>{{ $t('components.gateway.information.version.iqrfCloudProvisioning') }}</strong>
-					</td>
-					<td>{{ info.versions.cloudProvisioning }}</td>
-				</tr>
-				<tr v-if='info?.versions.controller'>
-					<td>
-						<strong>{{ $t('components.gateway.information.version.iqrfGatewayController') }}</strong>
-					</td>
-					<td>{{ info.versions.controller }}</td>
-				</tr>
-				<tr v-if='info?.versions.daemon'>
-					<td>
-						<strong>{{ $t('components.gateway.information.version.iqrfGatewayDaemon') }}</strong>
-					</td>
-					<td>{{ info.versions.daemon }}</td>
-				</tr>
-				<tr v-if='info?.versions.influxdbBridge'>
-					<td>
-						<strong>{{ $t('components.gateway.information.version.iqrfGatewayInfluxdbBridge') }}</strong>
-					</td>
-					<td>{{ info.versions.influxdbBridge }}</td>
-				</tr>
-				<tr v-if='info?.versions.setter'>
-					<td>
-						<strong>{{ $t('components.gateway.information.version.iqrfGatewaySetter') }}</strong>
-					</td>
-					<td>{{ info.versions.setter }}</td>
-				</tr>
-				<tr v-if='info?.versions.uploader'>
-					<td>
-						<strong>{{ $t('components.gateway.information.version.iqrfGatewayUploader') }}</strong>
-					</td>
-					<td>{{ info.versions.uploader }}</td>
-				</tr>
-				<tr v-if='info?.versions.webapp'>
-					<td>
-						<strong>{{ $t('components.gateway.information.version.iqrfGatewayWebapp') }}</strong>
-					</td>
-					<td>{{ info.versions.webapp }}</td>
-				</tr>
-				<tr v-if='info?.hostname'>
-					<td>
-						<strong>{{ $t('components.gateway.information.hostname') }}</strong>
-					</td>
-					<td class='d-flex justify-space-between align-center'>
-						{{ info.hostname }}
-						<HostnameChangeDialog
-							:current-hostname='info.hostname'
-							@saved='getInformation()'
-						/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<strong>{{ $t('components.gateway.information.addresses.ip') }}</strong>
-					</td>
-					<td>
-						<div class='py-2'>
-							<span v-for='{ name, ipAddresses } of ipAddrs' :key='name'>
-								<strong>{{ `${name}:` }}</strong> {{ ipAddresses?.join(', ') }}<br>
-							</span>
-						</div>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<strong>
-							{{ $t('components.gateway.information.addresses.mac') }}
-						</strong>
-					</td>
-					<td>
-						<div class='py-2'>
-							<span
-								v-for='{ name, macAddress } of macAddrs'
-								:key='name'
-							>
-								<strong>{{ `${name}:` }}</strong> {{ macAddress }}<br>
-							</span>
-						</div>
-					</td>
-				</tr>
-				<tr v-if='info?.diskUsages'>
-					<td>
-						<strong>{{ $t('components.gateway.information.usages.disks') }}</strong>
-					</td>
-					<td>
-						<div class='py-2'>
-							<DiskResourceUsage
-								v-for='(usage, idx) in info.diskUsages'
-								:key='usage.fsName'
-								:usage='usage'
-								:last='idx === (info.diskUsages.length - 1)'
-							/>
-						</div>
-					</td>
-				</tr>
-				<tr v-if='info?.memoryUsage'>
-					<td>
-						<strong>{{ $t('components.gateway.information.usages.memory') }}</strong>
-					</td>
-					<td>
-						<div class='py-2'>
-							<ResourceUsage :usage='info.memoryUsage' />
-						</div>
-					</td>
-				</tr>
-				<tr v-if='info?.swapUsage'>
-					<td>
-						<strong>{{ $t('components.gateway.information.usages.swap') }}</strong>
-					</td>
-					<td>
-						<div class='py-2'>
-							<ResourceUsage :usage='info.swapUsage' />
-						</div>
-					</td>
-				</tr>
-				<tr v-if='info?.uptime'>
-					<td>
-						<strong>{{ $t('components.gateway.information.uptime') }}</strong>
-					</td>
-					<td>{{ info.uptime }}</td>
-				</tr>
-				<tr>
-					<td>
-						<strong>{{ $t('components.gateway.information.tr.title') }}</strong>
-					</td>
-					<td>
-						<CoordinatorInfo />
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<strong>{{ $t('components.gateway.information.gwMode') }}</strong>
-					</td>
-					<td>
-						<DaemonModeInfo />
-					</td>
-				</tr>
-			</tbody>
-		</v-table>
+			<v-responsive>
+				<v-table
+					density='compact'
+					:hover='true'
+				>
+					<tbody>
+						<tr>
+							<td>
+								<strong>{{ $t('components.gateway.information.board') }}</strong>
+							</td>
+							<td>{{ info?.board }}</td>
+						</tr>
+						<tr>
+							<td>
+								<strong>{{ $t('components.gateway.information.os') }}</strong>
+							</td>
+							<td>
+								<a v-if='info?.os.homePage !== null' :href='info?.os.homePage' class='text-primary'>{{ info?.os.name }}</a>
+								<span v-else>{{ info?.os.name }}</span>
+							</td>
+						</tr>
+						<tr v-if='info?.gwId'>
+							<td>
+								<strong>{{ $t('components.gateway.information.gwId') }}</strong>
+							</td>
+							<td>{{ info.gwId }}</td>
+						</tr>
+						<tr v-if='info?.gwImage'>
+							<td>
+								<strong>{{ $t('components.gateway.information.gwImage') }}</strong>
+							</td>
+							<td>{{ info.gwImage }}</td>
+						</tr>
+						<tr v-if='info?.versions.cloudProvisioning'>
+							<td>
+								<strong>{{ $t('components.gateway.information.version.iqrfCloudProvisioning') }}</strong>
+							</td>
+							<td>{{ info.versions.cloudProvisioning }}</td>
+						</tr>
+						<tr v-if='info?.versions.controller'>
+							<td>
+								<strong>{{ $t('components.gateway.information.version.iqrfGatewayController') }}</strong>
+							</td>
+							<td>{{ info.versions.controller }}</td>
+						</tr>
+						<tr v-if='info?.versions.daemon'>
+							<td>
+								<strong>{{ $t('components.gateway.information.version.iqrfGatewayDaemon') }}</strong>
+							</td>
+							<td>{{ info.versions.daemon }}</td>
+						</tr>
+						<tr v-if='info?.versions.influxdbBridge'>
+							<td>
+								<strong>{{ $t('components.gateway.information.version.iqrfGatewayInfluxdbBridge') }}</strong>
+							</td>
+							<td>{{ info.versions.influxdbBridge }}</td>
+						</tr>
+						<tr v-if='info?.versions.setter'>
+							<td>
+								<strong>{{ $t('components.gateway.information.version.iqrfGatewaySetter') }}</strong>
+							</td>
+							<td>{{ info.versions.setter }}</td>
+						</tr>
+						<tr v-if='info?.versions.uploader'>
+							<td>
+								<strong>{{ $t('components.gateway.information.version.iqrfGatewayUploader') }}</strong>
+							</td>
+							<td>{{ info.versions.uploader }}</td>
+						</tr>
+						<tr v-if='info?.versions.webapp'>
+							<td>
+								<strong>{{ $t('components.gateway.information.version.iqrfGatewayWebapp') }}</strong>
+							</td>
+							<td>{{ info.versions.webapp }}</td>
+						</tr>
+						<tr v-if='info?.hostname'>
+							<td>
+								<strong>{{ $t('components.gateway.information.hostname.label') }}</strong>
+							</td>
+							<td class='d-flex justify-space-between align-center'>
+								{{ info.hostname }}
+								<HostnameChangeDialog
+									:current-hostname='info.hostname'
+									@saved='getInformation()'
+								/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<strong>{{ $t('components.gateway.information.addresses.ip') }}</strong>
+							</td>
+							<td>
+								<div class='py-2'>
+									<span v-for='{ name, ipAddresses } of ipAddrs' :key='name'>
+										<strong>{{ `${name}:` }}</strong> {{ ipAddresses?.join(', ') }}<br>
+									</span>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<strong>
+									{{ $t('components.gateway.information.addresses.mac') }}
+								</strong>
+							</td>
+							<td>
+								<div class='py-2'>
+									<span
+										v-for='{ name, macAddress } of macAddrs'
+										:key='name'
+									>
+										<strong>{{ `${name}:` }}</strong> {{ macAddress }}<br>
+									</span>
+								</div>
+							</td>
+						</tr>
+						<tr v-if='info?.diskUsages'>
+							<td>
+								<strong>{{ $t('components.gateway.information.usages.disks') }}</strong>
+							</td>
+							<td>
+								<div class='py-2'>
+									<DiskResourceUsage
+										v-for='(usage, idx) in info.diskUsages'
+										:key='usage.fsName'
+										:usage='usage'
+										:last='idx === (info.diskUsages.length - 1)'
+									/>
+								</div>
+							</td>
+						</tr>
+						<tr v-if='info?.memoryUsage'>
+							<td>
+								<strong>{{ $t('components.gateway.information.usages.memory') }}</strong>
+							</td>
+							<td>
+								<div class='py-2'>
+									<ResourceUsage :usage='info.memoryUsage' />
+								</div>
+							</td>
+						</tr>
+						<tr v-if='info?.swapUsage'>
+							<td>
+								<strong>{{ $t('components.gateway.information.usages.swap') }}</strong>
+							</td>
+							<td>
+								<div class='py-2'>
+									<ResourceUsage :usage='info.swapUsage' />
+								</div>
+							</td>
+						</tr>
+						<tr v-if='info?.uptime'>
+							<td>
+								<strong>{{ $t('components.gateway.information.uptime') }}</strong>
+							</td>
+							<td>{{ info.uptime }}</td>
+						</tr>
+						<tr>
+							<td>
+								<strong>{{ $t('components.gateway.information.tr.title') }}</strong>
+							</td>
+							<td>
+								<CoordinatorInfo />
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<strong>{{ $t('components.gateway.information.gwMode') }}</strong>
+							</td>
+							<td>
+								<DaemonModeInfo />
+							</td>
+						</tr>
+					</tbody>
+				</v-table>
+			</v-responsive>
+		</v-skeleton-loader>
 		<template #actions>
-			<ICardActionBtn
-				color='primary'
+			<IActionBtn
 				:icon='mdiDownload'
+				:loading='componentState === ComponentState.Action'
 				:text='$t("components.gateway.information.diagnostics")'
-				@click='getDiagnostics'
+				@click='getDiagnostics()'
 			/>
 		</template>
 	</ICard>
@@ -208,9 +224,10 @@ limitations under the License.
 <script lang='ts' setup>
 import { type InfoService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
 import { type GatewayInformation, type NetworkInterface } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
-import { ICard, ICardActionBtn } from '@iqrf/iqrf-vue-ui';
+import { Action, ComponentState, IActionBtn, ICard, SkeletonLoaders } from '@iqrf/iqrf-vue-ui';
 import { mdiDownload } from '@mdi/js';
-import { computed, onMounted, ref, type Ref } from 'vue';
+import { computed, onBeforeMount, ref, type Ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import CoordinatorInfo from '@/components/gateway/info/CoordinatorInfo.vue';
@@ -220,7 +237,8 @@ import HostnameChangeDialog from '@/components/gateway/info/HostnameChangeDialog
 import ResourceUsage from '@/components/gateway/info/ResourceUsage.vue';
 import { useApiClient } from '@/services/ApiClient';
 
-
+const componentState: Ref<ComponentState> = ref(ComponentState.Created);
+const i18n = useI18n();
 const service: InfoService = useApiClient().getGatewayServices().getInfoService();
 const info: Ref<GatewayInformation | null> = ref(null);
 const ipAddrs = computed(() => {
@@ -236,19 +254,35 @@ const macAddrs = computed(() => {
 	return info.value.interfaces.filter((item: NetworkInterface) => item.macAddress !== null);
 });
 
-onMounted(() => {
+onBeforeMount(() => {
 	getInformation();
 });
 
 async function getInformation(): Promise<void> {
+	componentState.value = [
+		ComponentState.Created,
+		ComponentState.FetchFailed,
+	].includes(componentState.value) ? ComponentState.Loading : ComponentState.Reloading;
 	try {
 		info.value = await service.getDetailed();
+		componentState.value = ComponentState.Ready;
 	} catch {
-		toast.error('TODO ERROR HANDLING');
+		toast.error(
+			i18n.t('components.gateway.information.messages.fetchInfo.failed'),
+		);
+		componentState.value = componentState.value === ComponentState.Loading ? ComponentState.FetchFailed : ComponentState.Ready;
 	}
 }
 
-function getDiagnostics(): void {
-	//
+async function getDiagnostics(): Promise<void> {
+	componentState.value === ComponentState.Action;
+	try {
+		await service.getDiagnostics();
+	} catch {
+		toast.error(
+			i18n.t('components.gateway.information.messages.diagnostics.failed'),
+		);
+	}
+	componentState.value === ComponentState.Ready;
 }
 </script>

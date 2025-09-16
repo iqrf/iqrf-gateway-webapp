@@ -37,6 +37,23 @@ a {
 	}
 }
 
+.table-compact-skeleton-loader {
+	.v-skeleton-loader__divider {
+		height: 1px !important;
+	}
+
+	.v-skeleton-loader__heading {
+		margin: 7px !important;
+		height: 25px !important;
+	}
+
+	.v-skeleton-loader__image {
+		border-radius: 12px;
+		margin: 7px !important;
+		height: 185px !important;
+	}
+}
+
 .table-row-skeleton-loader {
 	.v-skeleton-loader__text {
 		border-radius: 10px;
