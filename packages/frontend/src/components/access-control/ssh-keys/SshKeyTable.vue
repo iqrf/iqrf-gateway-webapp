@@ -26,18 +26,19 @@ limitations under the License.
 				:key-types='types'
 				@refresh='getKeys()'
 			/>
-			<ICardTitleActionBtn
+			<IActionBtn
 				:action='Action.Reload'
+				type='card-title'
 				:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
 				:tooltip='$t("components.accessControl.sshKeys.actions.refresh")'
 				@click='getKeys()'
 			/>
 		</template>
-		<DataTable
+		<IDataTable
 			:headers='headers'
 			:items='keys'
 			:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
-			:no-data-text='"components.accessControl.sshKeys.table.noData"'
+			:no-data-text='noDataText'
 			:hover='true'
 			:dense='true'
 		>
@@ -45,7 +46,7 @@ limitations under the License.
 				{{ $d(item.createdAt.toJSDate(), 'long') }}
 			</template>
 			<template #item.actions='{ item, internalItem, toggleExpand, isExpanded }'>
-				<DataTableAction
+				<IDataTableAction
 					color='primary'
 					:icon='mdiInformation'
 					:tooltip='isExpanded(internalItem) ? $t("components.accessControl.sshKeys.actions.hideInfo") : $t("components.accessControl.sshKeys.actions.showInfo")'
@@ -88,23 +89,21 @@ limitations under the License.
 					</v-sheet>
 				</td>
 			</template>
-		</DataTable>
+		</IDataTable>
 	</ICard>
 </template>
 
 <script lang='ts' setup>
 import { SshKeyService } from '@iqrf/iqrf-gateway-webapp-client/services/Security';
 import { type SshKeyInfo } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
-import { Action, ICard, ICardTitleActionBtn } from '@iqrf/iqrf-vue-ui';
+import { Action, IActionBtn, ICard, IDataTable, IDataTableAction } from '@iqrf/iqrf-vue-ui';
 import { mdiContentCopy, mdiInformation } from '@mdi/js';
-import { onMounted, ref, type Ref, toRaw } from 'vue';
+import { computed, onMounted, ref, type Ref, toRaw } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import SshKeyDeleteDialog from '@/components/access-control/ssh-keys/SshKeyDeleteDialog.vue';
 import SshKeyForm from '@/components/access-control/ssh-keys/SshKeyForm.vue';
-import DataTable from '@/components/layout/data-table/DataTable.vue';
-import DataTableAction from '@/components/layout/data-table/DataTableAction.vue';
 import { useApiClient } from '@/services/ApiClient';
 import { ComponentState } from '@/types/ComponentState';
 
@@ -120,6 +119,13 @@ const headers = [
 ];
 const types: Ref<string[]> = ref([]);
 const keys: Ref<SshKeyInfo[]> = ref([]);
+
+const noDataText = computed(() => {
+	if (componentState.value === ComponentState.FetchFailed) {
+		return i18n.t('components.accessControl.sshKeys.noData.fetchError');
+	}
+	return i18n.t('components.accessControl.sshKeys.noData.empty');
+});
 
 onMounted(async (): Promise<void> => {
 	await getKeys();

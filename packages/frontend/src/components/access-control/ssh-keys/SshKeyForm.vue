@@ -16,19 +16,19 @@ limitations under the License.
 -->
 
 <template>
-	<ModalWindow v-model='showDialog'>
+	<IModalWindow v-model='showDialog'>
 		<template #activator='{ props }'>
-			<ICardTitleActionBtn
+			<IActionBtn
 				v-bind='props'
 				:action='Action.Add'
+				type='card-title'
 				:tooltip='$t("components.accessControl.sshKeys.actions.add")'
 			/>
 		</template>
 		<v-form
 			ref='form'
 			v-slot='{ isValid }'
-			:disabled='componentState === ComponentState.Saving'
-			@submit.prevent='onSubmit()'
+			:disabled='componentState === ComponentState.Action'
 		>
 			<ICard :action='Action.Add'>
 				<template #title>
@@ -71,21 +71,22 @@ limitations under the License.
 					:prepend-inner-icon='mdiTextShort'
 				/>
 				<template #actions>
-					<ICardActionBtn
+					<IActionBtn
 						:action='Action.Add'
-						:disabled='!isValid.value || componentState === ComponentState.Saving'
-						type='submit'
+						:loading='componentState === ComponentState.Action'
+						:disabled='!isValid.value || componentState === ComponentState.Action'
+						@click='onSubmit()'
 					/>
 					<v-spacer />
-					<ICardActionBtn
+					<IActionBtn
 						:action='Action.Cancel'
-						:disabled='componentState === ComponentState.Saving'
+						:disabled='componentState === ComponentState.Action'
 						@click='close()'
 					/>
 				</template>
 			</ICard>
 		</v-form>
-	</ModalWindow>
+	</IModalWindow>
 </template>
 
 <script lang='ts' setup>
@@ -95,8 +96,11 @@ import {
 } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import { SshKeyUtils } from '@iqrf/iqrf-gateway-webapp-client/utils';
 import {
-	Action, ICard, ICardActionBtn,
-	ICardTitleActionBtn,
+	Action,
+	ComponentState,
+	IActionBtn,
+	ICard,
+	IModalWindow,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiKey, mdiTextShort } from '@mdi/js';
@@ -106,12 +110,10 @@ import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
 import TextInput from '@/components/layout/form/TextInput.vue';
-import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
-import { ComponentState } from '@/types/ComponentState';
 
-const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
+const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const componentProps = defineProps({
 	install: {
 		type: Boolean,
@@ -170,7 +172,7 @@ async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
 	}
-	componentState.value = ComponentState.Saving;
+	componentState.value = ComponentState.Action;
 	try {
 		await service.createSshKeys([localKey.value]);
 		toast.success(
@@ -183,7 +185,7 @@ async function onSubmit(): Promise<void> {
 			i18n.t('components.accessControl.sshKeys.messages.add.failed'),
 		);
 	}
-	componentState.value = ComponentState.Ready;
+	componentState.value = ComponentState.Idle;
 }
 
 /**

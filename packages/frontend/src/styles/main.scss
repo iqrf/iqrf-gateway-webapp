@@ -29,6 +29,14 @@ a {
 	text-decoration: none;
 }
 
+.v-data-table-rows-loading {
+	td {
+		padding-left: 0 !important;
+		padding-right: 0 !important;
+	}
+}
+
+
 .input-skeleton-loader {
 	.v-skeleton-loader__heading {
 		border-radius: 12px;
