@@ -54,7 +54,7 @@ import { IqmeshService } from '@iqrf/iqrf-gateway-daemon-utils/services';
 import { ApiResponseIqmesh, IqmeshEnumerateDeviceResult, TApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { ComponentState } from '@iqrf/iqrf-vue-ui';
-import { onBeforeMount, onBeforeUnmount, onMounted, ref, type Ref } from 'vue';
+import { onBeforeMount, onBeforeUnmount, ref, type Ref } from 'vue';
 
 import { useDaemonStore } from '@/store/daemonSocket';
 

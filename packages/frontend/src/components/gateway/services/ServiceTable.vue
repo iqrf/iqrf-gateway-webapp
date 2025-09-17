@@ -21,16 +21,20 @@ limitations under the License.
 			{{ $t('pages.gateway.services.title') }}
 		</template>
 		<template #titleActions>
-			<ICardTitleActionBtn
+			<IActionBtn
 				:action='Action.Reload'
+				type='card-title'
+				:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+				:disabled='componentState === ComponentState.Action'
 				:tooltip='$t("components.gateway.services.actions.refreshAll")'
 				@click='getServices'
 			/>
 		</template>
-		<DataTable
+		<IDataTable
 			:headers='headers'
 			:items='services'
-			:loading='state === ComponentState.Loading'
+			:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+			:no-data-text='noDataText'
 			:hover='true'
 			:dense='true'
 			item-value='name'
@@ -48,41 +52,47 @@ limitations under the License.
 				<BooleanCheckMarker :value='item.active' />
 			</template>
 			<template #item.actions='{ item, index, internalItem, toggleExpand }'>
-				<DataTableAction
+				<IDataTableAction
 					v-if='item.enabled'
 					:action='Action.Disable'
+					:disabled='componentState === ComponentState.Action'
 					:tooltip='$t("components.gateway.services.actions.disable")'
 					@click='disableService(item.name, index)'
 				/>
-				<DataTableAction
+				<IDataTableAction
 					v-else
 					:action='Action.Enable'
+					:disabled='componentState === ComponentState.Action'
 					:tooltip='$t("components.gateway.services.actions.enable")'
 					@click='enableService(item.name, index)'
 				/>
-				<DataTableAction
+				<IDataTableAction
 					v-if='item.active'
 					:action='Action.Stop'
+					:disabled='componentState === ComponentState.Action'
 					:tooltip='$t("components.gateway.services.actions.stop")'
 					@click='stopService(item.name, index)'
 				/>
-				<DataTableAction
+				<IDataTableAction
 					v-else
 					:action='Action.Start'
+					:disabled='componentState === ComponentState.Action'
 					:tooltip='$t("components.gateway.services.actions.start")'
 					@click='startService(item.name, index)'
 				/>
-				<DataTableAction
+				<IDataTableAction
 					:action='Action.Restart'
+					:disabled='componentState === ComponentState.Action'
 					:tooltip='$t("components.gateway.services.actions.restart")'
 					@click='restartService(item.name, index)'
 				/>
-				<DataTableAction
+				<IDataTableAction
 					:action='Action.Reload'
+					:disabled='componentState === ComponentState.Action'
 					:tooltip='$t("components.gateway.services.actions.refresh")'
 					@click='refreshService(item.name, index)'
 				/>
-				<DataTableAction
+				<IDataTableAction
 					:action='Action.ShowDetails'
 					:tooltip='$t("components.gateway.services.actions.status")'
 					@click='toggleExpand(internalItem)'
@@ -95,20 +105,20 @@ limitations under the License.
 					</td>
 				</tr>
 			</template>
-		</DataTable>
+		</IDataTable>
 	</ICard>
 </template>
 
 <script lang='ts' setup>
 import { type ServiceService } from '@iqrf/iqrf-gateway-webapp-client/services';
 import { type ServiceState, type ServiceStatus } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { Action, ICard, ICardTitleActionBtn } from '@iqrf/iqrf-vue-ui';
-import { onMounted, ref, type Ref } from 'vue';
+import { Action, IActionBtn, ICard, IDataTable, IDataTableAction } from '@iqrf/iqrf-vue-ui';
+import { onBeforeMount, ref, type Ref } from 'vue';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { toast } from 'vue3-toastify';
 
 import BooleanCheckMarker from '@/components/BooleanCheckMarker.vue';
-import DataTable from '@/components/layout/data-table/DataTable.vue';
-import DataTableAction from '@/components/layout/data-table/DataTableAction.vue';
 import { useApiClient } from '@/services/ApiClient';
 import { ComponentState } from '@/types/ComponentState';
 
@@ -122,48 +132,95 @@ const headers = [
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false },
 ];
 /// Component state
-const state: Ref<ComponentState> = ref(ComponentState.Created);
+const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 /// Gateway services
 const services: Ref<ServiceState[]> = ref([]);
 
+const noDataText = computed(() => {
+	if (componentState.value === ComponentState.FetchFailed) {
+		return i18n.t('components.gateway.services.table.fetchError');
+	}
+	return i18n.t('components.gateway.services.table.noData');
+});
+
 async function getServices(): Promise<void> {
-	state.value = ComponentState.Loading;
-	services.value = await service.list(true);
-	state.value = ComponentState.Ready;
+	componentState.value = [
+		ComponentState.Created,
+		ComponentState.FetchFailed,
+	].includes(componentState.value) ? ComponentState.Loading : ComponentState.Reloading;
+	try {
+		services.value = await service.list(true);
+		componentState.value = ComponentState.Ready;
+	} catch {
+		toast.error(
+			i18n.t('components.gateway.services.messages.list.failed'),
+		);
+		componentState.value = componentState.value === ComponentState.Loading ? ComponentState.FetchFailed : ComponentState.Ready;
+	}
 }
 
 async function enableService(name: string, index: number): Promise<void> {
-	state.value = ComponentState.Loading;
-	await service.enable(name);
+	componentState.value = ComponentState.Action;
+	try {
+		await service.enable(name);
+	} catch {
+		toast.error(
+			i18n.t('components.gateway.services.messages.enable.failed'),
+		);
+	}
 	await refreshService(name, index);
 }
 
 async function disableService(name: string, index: number): Promise<void> {
-	state.value = ComponentState.Loading;
-	await service.disable(name);
+	componentState.value = ComponentState.Action;
+	try {
+		await service.disable(name);
+	} catch {
+		toast.error(
+			i18n.t('components.gateway.services.messages.disable.failed'),
+		);
+	}
 	await refreshService(name, index);
 }
 
 async function startService(name: string, index: number): Promise<void> {
-	state.value = ComponentState.Loading;
-	await service.start(name);
+	componentState.value = ComponentState.Action;
+	try {
+		await service.start(name);
+	} catch {
+		toast.error(
+			i18n.t('components.gateway.services.messages.start.failed'),
+		);
+	}
 	await refreshService(name, index);
 }
 
 async function stopService(name: string, index: number): Promise<void> {
-	state.value = ComponentState.Loading;
-	await service.stop(name);
+	componentState.value = ComponentState.Action;
+	try {
+		await service.stop(name);
+	} catch {
+		toast.error(
+			i18n.t('components.gateway.services.messages.stop.failed'),
+		);
+	}
 	await refreshService(name, index);
 }
 
 async function restartService(name: string, index: number): Promise<void> {
-	state.value = ComponentState.Loading;
-	await service.restart(name);
+	componentState.value = ComponentState.Action;
+	try {
+		await service.restart(name);
+	} catch {
+		toast.error(
+			i18n.t('components.gateway.services.messages.restart.failed'),
+		);
+	}
 	await refreshService(name, index);
 }
 
 async function refreshService(name: string, index: number): Promise<void> {
-	state.value = ComponentState.Loading;
+	componentState.value = ComponentState.Action;
 	const status: ServiceStatus = await service.getStatus(name);
 	services.value[index] = {
 		...services.value[index],
@@ -171,9 +228,9 @@ async function refreshService(name: string, index: number): Promise<void> {
 		enabled: status.enabled ?? null,
 		status: status.status,
 	};
-	state.value = ComponentState.Ready;
+	componentState.value = ComponentState.Ready;
 }
 
-onMounted(async () => await getServices());
+onBeforeMount(async () => await getServices());
 
 </script>
