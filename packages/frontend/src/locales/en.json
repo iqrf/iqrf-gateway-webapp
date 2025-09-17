@@ -192,6 +192,10 @@
 						"failed": "Failed to retrieve list of allwed SSH key types."
 					}
 				},
+				"noData": {
+					"empty": "No SSH key records found.",
+					"fetchError": "SSH key records could not be retrieved."
+				},
 				"noneSupported": "No SSH key type supported.",
 				"supported": "The following SSH key types are supported.",
 				"table": {
@@ -239,7 +243,7 @@
 				},
 				"noData": {
 					"empty": "No user records found.",
-					"fetchError": "User record could not be retrieved."
+					"fetchError": "User records could not be retrieved."
 				},
 				"notes": {
 					"optionalPasswordEdit": "Leave the password field blank if you do not wish to change the current password."

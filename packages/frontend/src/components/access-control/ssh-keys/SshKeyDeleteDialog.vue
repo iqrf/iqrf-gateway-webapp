@@ -16,7 +16,7 @@ limitations under the License.
 -->
 
 <template>
-	<DeleteModalWindow
+	<IDeleteModalWindow
 		ref='dialog'
 		:tooltip='$t("components.accessControl.sshKeys.actions.delete")'
 		:component-state='componentState'
@@ -26,19 +26,19 @@ limitations under the License.
 			{{ $t('components.accessControl.sshKeys.delete.title') }}
 		</template>
 		{{ $t('components.accessControl.sshKeys.delete.prompt', { id: sshKey.id }) }}
-	</DeleteModalWindow>
+	</IDeleteModalWindow>
 </template>
 
 <script lang='ts' setup>
 import { type SshKeyService } from '@iqrf/iqrf-gateway-webapp-client/services/Security';
 import { type SshKeyInfo } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
+import { ComponentState, IDeleteModalWindow } from '@iqrf/iqrf-vue-ui';
 import { type PropType, ref , type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import DeleteModalWindow from '@/components/DeleteModalWindow.vue';
 import { useApiClient } from '@/services/ApiClient';
-import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
 const componentProps = defineProps({
@@ -53,7 +53,7 @@ const dialog: Ref<typeof DeleteModalWindow | null> = ref(null);
 const service: SshKeyService = useApiClient().getSecurityServices().getSshKeyService();
 
 async function onSubmit(): Promise<void> {
-	componentState.value = ComponentState.Saving;
+	componentState.value = ComponentState.Action;
 	try {
 		await service.deleteKey(componentProps.sshKey.id);
 		toast.success(
