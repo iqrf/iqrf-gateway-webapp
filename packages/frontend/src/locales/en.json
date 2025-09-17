@@ -237,6 +237,10 @@
 						"failed": "Failed to retrieve list of users."
 					}
 				},
+				"noData": {
+					"empty": "No user records found.",
+					"fetchError": "User record could not be retrieved."
+				},
 				"notes": {
 					"optionalPasswordEdit": "Leave the password field blank if you do not wish to change the current password."
 				},

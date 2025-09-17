@@ -25,17 +25,19 @@ limitations under the License.
 				:action='Action.Add'
 				@refresh='getUsers()'
 			/>
-			<ICardTitleActionBtn
+			<IActionBtn
 				:action='Action.Reload'
+				type='card-title'
 				:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
 				:tooltip='$t("components.accessControl.users.actions.refresh")'
 				@click='getUsers()'
 			/>
 		</template>
-		<DataTable
+		<IDataTable
 			:headers='headers'
 			:items='users'
 			:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+			:no-data-text='noDataText'
 			:hover='true'
 			:dense='true'
 		>
@@ -60,14 +62,14 @@ limitations under the License.
 					@refresh='getUsers()'
 				/>
 			</template>
-		</DataTable>
+		</IDataTable>
 	</ICard>
 </template>
 
 <script lang='ts' setup>
 import { type UserInfo } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { Action, ICard, ICardTitleActionBtn } from '@iqrf/iqrf-vue-ui';
-import { onMounted, ref, type Ref, toRaw } from 'vue';
+import { Action, IActionBtn, ICard, IDataTable } from '@iqrf/iqrf-vue-ui';
+import { computed, onBeforeMount, ref, type Ref, toRaw } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
@@ -76,7 +78,6 @@ import UserForm from '@/components/access-control/users/UserForm.vue';
 import UserLanguageColumn from '@/components/access-control/users/UserLanguageColumn.vue';
 import UserRoleColumn from '@/components/access-control/users/UserRoleColumn.vue';
 import UserStateColumn from '@/components/access-control/users/UserStateColumn.vue';
-import DataTable from '@/components/layout/data-table/DataTable.vue';
 import { useApiClient } from '@/services/ApiClient';
 import { ComponentState } from '@/types/ComponentState';
 
@@ -93,8 +94,15 @@ const headers = [
 ];
 const users: Ref<UserInfo[]> = ref([]);
 
-onMounted(() => {
+onBeforeMount(() => {
 	getUsers();
+});
+
+const noDataText = computed(() => {
+	if (componentState.value === ComponentState.FetchFailed) {
+		return i18n.t('components.accessControl.users.noData.fetchError');
+	}
+	return i18n.t('components.accessControl.users.noData.empty');
 });
 
 async function getUsers(): Promise<void> {
