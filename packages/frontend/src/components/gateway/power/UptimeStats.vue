@@ -20,13 +20,20 @@ limitations under the License.
 		<template #title>
 			{{ $t('components.gateway.power.stats.title') }}
 		</template>
-		<v-alert v-if='state === ComponentState.NotFound'>
-			{{ $t('components.gateway.power.stats.messages.tuptimeMissing') }}
-		</v-alert>
-		<DataTable
+		<template #titleActions>
+			<IActionBtn
+				:action='Action.Reload'
+				type='card-title'
+				:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+				:tooltip='$t("components.gateway.power.stats.actions.refresh")'
+				@click='getStats()'
+			/>
+		</template>
+		<IDataTable
 			:headers='headers'
 			:items='stats'
-			:loading='state === ComponentState.Loading'
+			:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+			:no-data-text='noDataText'
 			:hover='true'
 			:dense='true'
 		>
@@ -56,22 +63,20 @@ limitations under the License.
 					:value='false'
 				/>
 			</template>
-		</DataTable>
+		</IDataTable>
 	</ICard>
 </template>
 
 <script lang='ts' setup>
 import { type PowerService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
 import { type GatewayUptime } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
-import { ICard } from '@iqrf/iqrf-vue-ui';
-import { AxiosError } from 'axios';
+import { Action, IActionBtn, ICard, IDataTable } from '@iqrf/iqrf-vue-ui';
 import humanizeDuration from 'humanize-duration';
-import { onMounted, ref, type Ref } from 'vue';
+import { computed, onBeforeMount, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import BooleanCheckMarker from '@/components/BooleanCheckMarker.vue';
-import DataTable from '@/components/layout/data-table/DataTable.vue';
 import { useApiClient } from '@/services/ApiClient';
 import { useLocaleStore } from '@/store/locale';
 import { ComponentState } from '@/types/ComponentState';
@@ -82,41 +87,45 @@ const service: PowerService = useApiClient().getGatewayServices().getPowerServic
 
 const headers = [
 	{ key: 'id', title: i18n.t('common.columns.id') },
-	{ key: 'start', title: i18n.t('components.gateway.power.stats.columns.start') },
-	{ key: 'shutdown', title: i18n.t('components.gateway.power.stats.columns.shutdown') },
-	{ key: 'graceful', title: i18n.t('components.gateway.power.stats.columns.graceful') },
-	{ key: 'running', title: i18n.t('components.gateway.power.stats.columns.uptime') },
-	{ key: 'downtime', title: i18n.t('components.gateway.power.stats.columns.downtime') },
+	{ key: 'start', title: i18n.t('components.gateway.power.stats.table.start') },
+	{ key: 'shutdown', title: i18n.t('components.gateway.power.stats.table.shutdown') },
+	{ key: 'graceful', title: i18n.t('components.gateway.power.stats.table.graceful') },
+	{ key: 'running', title: i18n.t('components.gateway.power.stats.table.uptime') },
+	{ key: 'downtime', title: i18n.t('components.gateway.power.stats.table.downtime') },
 ];
 /// Component state
-const state: Ref<ComponentState> = ref(ComponentState.Created);
+const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 /// Gateway uptime statistics
 const stats: Ref<GatewayUptime[]> = ref([]);
+
+const noDataText = computed(() => {
+	if (componentState.value === ComponentState.FetchFailed) {
+		return i18n.t('components.gateway.power.stats.table.fetchError');
+	}
+	return i18n.t('components.gateway.power.stats.table.noData');
+});
 
 /**
  * Fetches gateway uptime statistics
  */
-async function fetchData() {
-	state.value = ComponentState.Loading;
+async function getStats() {
+	componentState.value = [
+		ComponentState.Created,
+		ComponentState.FetchFailed,
+	].includes(componentState.value) ? ComponentState.Loading : ComponentState.Reloading;
 	try {
 		stats.value = await service.getStats();
-		state.value = ComponentState.Ready;
-	} catch (error) {
-		if (error instanceof AxiosError) {
-			stats.value = [];
-			if (error.response?.status === 404) {
-				state.value = ComponentState.NotFound;
-				toast.warn(i18n.t('components.gateway.power.stats.messages.tuptimeMissing').toString());
-			} else {
-				state.value = ComponentState.FetchFailed;
-				toast.error(i18n.t('components.gateway.power.stats.messages.fetchFailed').toString());
-			}
-		}
+		componentState.value = ComponentState.Ready;
+	} catch {
+		toast.error(
+			i18n.t('components.gateway.power.stats.messages.list.failed').toString(),
+		);
+		componentState.value = componentState.value === ComponentState.Loading ? ComponentState.FetchFailed : ComponentState.Ready;
 	}
 }
 
-onMounted(async (): Promise<void> => {
-	await fetchData();
+onBeforeMount(async (): Promise<void> => {
+	await getStats();
 });
 
 </script>

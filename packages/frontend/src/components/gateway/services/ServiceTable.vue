@@ -27,7 +27,7 @@ limitations under the License.
 				:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
 				:disabled='componentState === ComponentState.Action'
 				:tooltip='$t("components.gateway.services.actions.refreshAll")'
-				@click='getServices'
+				@click='getServices()'
 			/>
 		</template>
 		<IDataTable

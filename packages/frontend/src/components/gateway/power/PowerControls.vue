@@ -20,52 +20,14 @@ limitations under the License.
 		<template #title>
 			{{ $t('pages.gateway.power.title') }}
 		</template>
-		<PowerOffDialog class='mr-2' @confirm='powerOff' />
-		<RebootDialog @confirm='reboot' />
+		<PowerOffDialog class='mr-2' />
+		<RebootDialog />
 	</ICard>
 </template>
 
 <script lang='ts' setup>
-import { type PowerService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
-import { type PowerActionResponse } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
 import { ICard } from '@iqrf/iqrf-vue-ui';
-import { useI18n } from 'vue-i18n';
-import { toast } from 'vue3-toastify';
 
 import PowerOffDialog from '@/components/gateway/power/PowerOffDialog.vue';
 import RebootDialog from '@/components/gateway/power/RebootDialog.vue';
-import { useApiClient } from '@/services/ApiClient';
-
-/// Internalization instance
-const i18n = useI18n();
-/// Power service
-const service: PowerService = useApiClient().getGatewayServices().getPowerService();
-
-/**
- * Powers off the gateway
- */
-async function powerOff(): Promise<void> {
-	try {
-		const response: PowerActionResponse = await service.powerOff();
-		toast.success(
-			i18n.t('components.gateway.power.powerOff.messages.success', { time: i18n.d(response.timestamp.toJSDate(), 'time') }),
-		);
-	} catch {
-		toast.error(i18n.t('components.gateway.power.powerOff.messages.failed'));
-	}
-}
-
-/**
- * Reboots the gateway
- */
-async function reboot(): Promise<void> {
-	try {
-		const response: PowerActionResponse = await service.reboot();
-		toast.success(
-			i18n.t('components.gateway.power.reboot.messages.success', { time: i18n.d(response.timestamp.toJSDate(), 'time') }),
-		);
-	} catch {
-		toast.error(i18n.t('components.gateway.power.reboot.messages.failed'));
-	}
-}
 </script>

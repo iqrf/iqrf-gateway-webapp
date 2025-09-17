@@ -1399,16 +1399,22 @@
 					"title": "Reboot confirmation"
 				},
 				"stats": {
-					"columns": {
+					"actions": {
+						"refresh": "Refresh statistics"
+					},
+					"messages": {
+						"list": {
+							"failed": "Failed to retrieve uptime stats."
+						}
+					},
+					"table": {
 						"downtime": "Downtime",
+						"fetchError": "Uptime statistics could not be retrieved.",
 						"graceful": "Graceful shutdown",
+						"noData": "No uptime statistics found.",
 						"shutdown": "Shutdown time",
 						"start": "Startup time",
 						"uptime": "Uptime"
-					},
-					"messages": {
-						"fetchFailed": "Failed to retrieve power statistics.",
-						"tuptimeMissing": "Tuptime utility is not installed. Please install it to see power statistics."
 					},
 					"title": "Power statistics"
 				}

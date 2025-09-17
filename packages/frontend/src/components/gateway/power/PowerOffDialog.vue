@@ -16,11 +16,11 @@ limitations under the License.
 -->
 
 <template>
-	<ModalWindow
+	<IModalWindow
 		v-model='show'
 	>
 		<template #activator='{ props }'>
-			<ICardActionBtn
+			<IActionBtn
 				:action='Action.Custom'
 				class='mr-1'
 				color='red'
@@ -35,42 +35,60 @@ limitations under the License.
 			</template>
 			{{ $t('components.gateway.power.powerOff.prompt') }}
 			<template #actions>
-				<ICardActionBtn
+				<IActionBtn
 					color='red'
 					:icon='mdiPower'
+					:loading='componentState === ComponentState.Action'
 					:text='$t("components.gateway.power.powerOff.action")'
-					@click='powerOff'
+					@click='powerOff()'
 				/>
 				<v-spacer />
-				<ICardActionBtn
+				<IActionBtn
 					:action='Action.Cancel'
-					@click='close'
+					:disabled='componentState === ComponentState.Action'
+					@click='close()'
 				/>
 			</template>
 		</ICard>
-	</ModalWindow>
+	</IModalWindow>
 </template>
 
 <script lang='ts' setup>
-import { Action, ICard, ICardActionBtn } from '@iqrf/iqrf-vue-ui';
+import { type PowerService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
+import { type PowerActionResponse } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
+import { Action, ComponentState, IActionBtn, ICard, IModalWindow } from '@iqrf/iqrf-vue-ui';
 import { mdiPower } from '@mdi/js';
 import { ref, type Ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { toast } from 'vue3-toastify';
 
-import ModalWindow from '@/components/ModalWindow.vue';
+import { useApiClient } from '@/services/ApiClient';
 
-/// Event emitter definition
-const emit = defineEmits(['confirm']);
 /// Dialog visibility
 const show: Ref<boolean> = ref(false);
+/// Component state
+const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
+/// Internalization instance
+const i18n = useI18n();
+/// Power service
+const service: PowerService = useApiClient().getGatewayServices().getPowerService();
 
 /**
  * Powers off the gateway
  */
-function powerOff(): void {
-	emit('confirm');
-	close();
+async function powerOff(): Promise<void> {
+	componentState.value = ComponentState.Action;
+	try {
+		const response: PowerActionResponse = await service.powerOff();
+		close();
+		toast.success(
+			i18n.t('components.gateway.power.powerOff.messages.success', { time: i18n.d(response.timestamp.toJSDate(), 'time') }),
+		);
+	} catch {
+		toast.error(i18n.t('components.gateway.power.powerOff.messages.failed'));
+	}
+	componentState.value = ComponentState.Idle;
 }
-
 /**
  * Closes the dialog window
  */
