@@ -1424,6 +1424,26 @@
 					"status": "Toggle status",
 					"stop": "Stop service"
 				},
+				"messages": {
+					"disable": {
+						"failed": "Failed to disable service."
+					},
+					"enable": {
+						"failed": "Failed to enable service."
+					},
+					"list": {
+						"failed": "Failed to retrieve list of services."
+					},
+					"restart": {
+						"failed": "Failed to restart service."
+					},
+					"start": {
+						"failed": "Failed to start service."
+					},
+					"stop": {
+						"failed": "Failed to stop service."
+					}
+				},
 				"service": {
 					"ModemManager": {
 						"description": "Modem Manager is used to manage GSM modems.",
@@ -1432,6 +1452,10 @@
 					"apcupsd": {
 						"description": "",
 						"name": "APC UPS Daemon"
+					},
+					"influxdb": {
+						"description": "Time series database storing sensor measurements from IQAROS system.",
+						"name": "InfluxDB"
 					},
 					"iqrf-cloud-provisioning": {
 						"description": "Provisioning tool for IQRF Cloud.",
@@ -1449,13 +1473,13 @@
 						"description": "Stores sensor measurement data in InfluxDB.",
 						"name": "IQRF Gateway InfluxDB Bridge"
 					},
-					"iqrf-gateway-translator": {
-						"description": "",
-						"name": "IQRF Gateway Translator"
-					},
 					"mender-client": {
 						"description": "Mender is an over-the-air update manager for IoT and embedded devices.",
 						"name": "Mender"
+					},
+					"mender-connect": {
+						"description": "Daemon handling communication with Mender server.",
+						"name": "Mender Connect"
 					},
 					"monit": {
 						"description": "Monit is a utility for management and monitoring of Unix systems.",
@@ -1483,6 +1507,8 @@
 					}
 				},
 				"table": {
+					"fetchError": "Service list could not be retrieved.",
+					"noData": "No services found.",
 					"service": "Service"
 				}
 			}

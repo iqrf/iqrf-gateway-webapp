@@ -29,6 +29,7 @@ limitations under the License.
 			/>
 			<IActionBtn
 				:action='Action.Reload'
+				:loading='componentState === ComponentState.Loading'
 				type='card-title'
 				@click='listServices()'
 			/>
