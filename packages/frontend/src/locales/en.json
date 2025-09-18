@@ -1212,39 +1212,45 @@
 				}
 			},
 			"smtp": {
-				"defaultConfig": "The default configuration for IQAROS system is currently in use.",
-				"errors": {
-					"host": "Please enter server address.",
-					"hostInvalid": "Server address should be an IP address, fully-qualified domain name or localhost.",
-					"password": "Please enter password.",
-					"port": "Please enter port number.",
-					"portInvalid": "Port number should be an integer between 1 and 65535.",
-					"sender": "Please enter sender email.",
-					"username": "Please enter username."
+				"actions": {
+					"reload": "Reload configuration",
+					"test": "Test configuration"
 				},
+				"defaultConfig": "The default configuration for IQAROS system is currently in use.",
 				"form": {
 					"customConfig": "Use the custom mail server configuration",
-					"enabled": "Enable sending e-mails",
 					"host": "Server address",
 					"password": "Password",
-					"port": "Port",
 					"security": "Connection security",
 					"securityLevels": {
 						"none": "None",
 						"ssl": "TLS",
 						"tls": "StartTLS"
 					},
-					"sender": "Sender",
-					"test": "Test configuration",
-					"title": "Mail server configuration",
-					"username": "Username"
+					"sender": "Sender"
 				},
 				"messages": {
-					"fetchFailed": "Failed to retrieve mail server configuration: {error}",
-					"saveFailed": "Failed to save mail server configuration: {error}",
-					"saveSuccess": "Mail server configuration has been successfully saved.",
-					"testFailed": "Failed to send mail server configuration test email: {error}",
-					"testSuccess": "Mail server configuration test email has been successfully sent."
+					"fetch": {
+						"failed": "Failed to retrieve mail server configuration."
+					},
+					"save": {
+						"failed": "Failed to save mail server configuration.",
+						"success": "Mail server configuration has been successfully saved."
+					},
+					"test": {
+						"failed": "Failed to send mail server configuration test email.",
+						"success": "Mail server configuration test email has been successfully sent."
+					}
+				},
+				"title": "Mail server configuration",
+				"validation": {
+					"host": {
+						"invalid": "Server address should be an IP address, fully-qualified domain name or localhost.",
+						"required": "Please enter server address."
+					},
+					"sender": {
+						"required": "Please enter sender email address."
+					}
 				}
 			},
 			"time": {
