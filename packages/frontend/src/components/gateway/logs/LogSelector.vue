@@ -23,14 +23,14 @@ limitations under the License.
 		<template #titleActions>
 			<IActionBtn
 				:icon='mdiFolderDownloadOutline'
-				type='card-title'
+				container-type='card-title'
 				:tooltip='$t("components.common.actions.download")'
 				@click='exportLogs()'
 			/>
 			<IActionBtn
 				:action='Action.Reload'
 				:loading='componentState === ComponentState.Loading'
-				type='card-title'
+				container-type='card-title'
 				@click='listServices()'
 			/>
 		</template>

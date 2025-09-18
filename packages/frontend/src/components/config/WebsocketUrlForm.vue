@@ -16,7 +16,7 @@ limitations under the License.
 -->
 
 <template>
-	<ModalWindow v-model='show'>
+	<IModalWindow v-model='show'>
 		<template #activator='{ props }'>
 			<v-btn
 				v-bind='props'
@@ -28,75 +28,65 @@ limitations under the License.
 		<v-form
 			ref='form'
 			v-slot='{ isValid }'
-			@submit.prevent='onSubmit'
+			@submit.prevent='onSubmit()'
 		>
 			<ICard>
 				<template #title>
 					{{ cardTitle }}
 				</template>
-				<SelectInput
+				<ISelectInput
 					v-model='protocol'
 					:label='$t("common.labels.protocol")'
 					:items='protocolOptions'
 				/>
-				<TextInput
+				<ITextInput
 					v-model='hostname'
 					:label='$t("common.labels.hostname")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("common.validation.hostnameMissing")),
-						(v: string) => ValidationRules.host(v, $t("common.validation.hostnameInvalid")),
+						(v: string|null) => ValidationRules.required(v, $t("common.validation.hostname.required")),
+						(v: string) => ValidationRules.host(v, $t("common.validation.hostname.invalid")),
 					]'
 					required
 				/>
-				<NumberInput
-					v-model.number='port'
+				<INumberInput
+					v-model='port'
 					:label='$t("common.labels.port")'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("common.validation.portMissing")),
-						(v: number) => ValidationRules.integer(v, $t("common.validation.portInvalid")),
-						(v: number) => ValidationRules.between(v, 1, 65535, $t("common.validation.portInvalid")),
+						(v: number|null) => ValidationRules.required(v, $t("common.validation.port.required")),
+						(v: number) => ValidationRules.integer(v, $t("common.validation.port.integer")),
+						(v: number) => ValidationRules.between(v, 1, 65535, $t("common.validation.port.between")),
 					]'
+					:min='1'
+					:max='65535'
 					required
 				/>
-				<TextInput
+				<ITextInput
 					v-model='path'
 					:label='$t("common.labels.path")'
 				/>
 				<template #actions>
-					<v-btn
-						color='primary'
-						type='submit'
-						variant='elevated'
+					<IActionBtn
+						:action='Action.Save'
 						:disabled='!isValid.value'
-					>
-						{{ $t('common.buttons.save') }}
-					</v-btn>
+						type='submit'
+					/>
 					<v-spacer />
-					<v-btn
-						color='grey-darken-2'
-						variant='elevated'
-						@click='close'
-					>
-						{{ $t('common.buttons.cancel') }}
-					</v-btn>
+					<IActionBtn
+						:action='Action.Cancel'
+						@click='close()'
+					/>
 				</template>
 			</ICard>
 		</v-form>
-	</ModalWindow>
+	</IModalWindow>
 </template>
 
 <script lang='ts' setup>
-import { ICard, ValidationRules } from '@iqrf/iqrf-vue-ui';
-import { ref, type Ref } from 'vue';
-import { watchEffect } from 'vue';
+import { Action, IActionBtn, ICard, IModalWindow, INumberInput, ISelectInput, ITextInput, ValidationRules } from '@iqrf/iqrf-vue-ui';
+import { ref, type Ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import NumberInput from '@/components/layout/form/NumberInput.vue';
-import SelectInput from '@/components/layout/form/SelectInput.vue';
-import TextInput from '@/components/layout/form/TextInput.vue';
-import ModalWindow from '@/components/ModalWindow.vue';
 import { WebsocketProtocol } from '@/enums/websocket';
-
 
 const componentProps = defineProps({
 	cardTitle: {
@@ -128,8 +118,8 @@ const hostname: Ref<string> = ref('');
 const port: Ref<number> = ref(80);
 const path: Ref<string> = ref('');
 
-watchEffect((): void => {
-	if (show.value) {
+watch(show, (newVal: boolean): void => {
+	if (newVal) {
 		const parsed = componentProps.url.match(regexCapture);
 		if (parsed?.groups === undefined) {
 			return;

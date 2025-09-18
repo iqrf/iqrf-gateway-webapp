@@ -110,8 +110,10 @@
 				"format": "Invalid email address format.",
 				"required": "Please enter email address."
 			},
-			"hostnameInvalid": "Hostname should be IPv4, IPv6, localhost or fully-qualified domain name.",
-			"hostnameMissing": "Please enter hostname.",
+			"hostname": {
+				"invalid": "Hostname should be IPv4, IPv6, localhost or fully-qualified domain name.",
+				"required": "Please enter hostname."
+			},
 			"password": {
 				"minLength": "Password should be at least 8 characters long.",
 				"required": "Please enter password."
@@ -120,8 +122,11 @@
 				"match": "Password does not match.",
 				"required": "Please re-type password."
 			},
-			"portInvalid": "Port should be an integer between 1 and 65535.",
-			"portMissing": "Please enter port.",
+			"port": {
+				"between": "Port number should be between 1 and 65535.",
+				"integer": "Port number should be an integer.",
+				"required": "Please enter port number."
+			},
 			"username": {
 				"required": "Please enter username."
 			}
@@ -477,7 +482,7 @@
 				"form": {
 					"autonetwork": {
 						"abortOnTooManyNodesFound": "Abort Autonetwork if more nodes than the network can contain are found",
-						"actionRetries": "Action retries",
+						"actionRetries": "DPA transaction retry attempts",
 						"discoveryBeforeStart": "Run discovery before starting autonetwork",
 						"discoveryTxPower": "Discovery TX power",
 						"emptyWaves": "Maximum number of empty waves",
@@ -512,11 +517,11 @@
 						}
 					},
 					"pins": {
-						"button": "Action button GPIO pin",
-						"greenLed": "Green LED GPIO pin",
-						"redLed": "Red LED GPIO pin",
-						"sck": "I2C clock GPIO pin",
-						"sda": "I2C data GPIO pin",
+						"buttonPin": "Action button GPIO pin",
+						"greenLedPin": "Green LED GPIO pin",
+						"redLedPin": "Red LED GPIO pin",
+						"sckPin": "I2C clock GPIO pin",
+						"sdaPin": "I2C data GPIO pin",
 						"useWatchdogPins": "Use hardware Watchdog Timer pins"
 					},
 					"sections": {
@@ -532,17 +537,63 @@
 					}
 				},
 				"messages": {
+					"fetch": {
+						"failed": "Failed to retrieve IQRF Gateway Controller configuration."
+					},
 					"save": {
+						"failed": "Faled to save IQRF Gateway Controller configuration.",
 						"success": "IQRF Gateway Controller configuration was successfully saved. Restart the service for changes to take effect."
 					}
 				},
 				"validation": {
-					"buttonPin": "Please enter action button GPIO pin as an integer.",
-					"greenLed": "Please enter green LED GPIO pin as an integer.",
-					"logPath": "Please enter path to log file.",
-					"redLed": "Please enter red LED GPIO pin as an integer.",
-					"sck": "Please enter I2C clock GPIO pin as an integer.",
-					"sda": "Please enter I2C data GPIO pin as an integer."
+					"actionRetries": {
+						"between": "DPA transaction retry attempts should be between 0 and 3.",
+						"integer": "DPA transaction retry attempts should be an integer.",
+						"required": "Please enter number of DPA transaction retry attempts."
+					},
+					"buttonPin": {
+						"integer": "Action button GPIO pin should be an integer.",
+						"required": "Please enter action button GPIO pin."
+					},
+					"emptyWaves": {
+						"between": "Empty waves should be between 1 and 127.",
+						"integer": "Empty waves should be an integer.",
+						"required": "Please enter number of empty waves."
+					},
+					"greenLedPin": {
+						"integer": "Green LED GPIO pin should be an integer.",
+						"required": "Please enter green LED GPIO pin."
+					},
+					"logPath": {
+						"required": "Please enter path to log file."
+					},
+					"maxAddr": {
+						"between": "Maximum discovery address should be between 0 and 239.",
+						"integer": "Maximum discovery address should be an integer.",
+						"required": "Please enter maximum discovery address."
+					},
+					"redLedPin": {
+						"integer": "Red LED GPIO pin should be an integer.",
+						"required": "Please enter red LED GPIO pin."
+					},
+					"sckPin": {
+						"integer": "I2C clock GPIO pin should be an integer.",
+						"required": "Please enter I2C clock GPIO pin."
+					},
+					"sdaPin": {
+						"integer": "I2C data GPIO pin should be an integer.",
+						"required": "Please enter I2C data GPIO pin."
+					},
+					"txPower": {
+						"between": "Discovery TX power should be between 0 and 7.",
+						"integer": "Discovery TX power should be an integer.",
+						"required": "Please enter discovery TX power."
+					},
+					"waves": {
+						"between": "Waves should be between 1 and 127.",
+						"integer": "Waves should be an integer.",
+						"required": "Please enter number of waves."
+					}
 				}
 			},
 			"daemon": {
@@ -1138,9 +1189,14 @@
 				"id": "Profile ID",
 				"messages": {
 					"delete": {
+						"failed": "Failed to delete device configuration profile {name}.",
 						"success": "Device configuration profile {name} successfully deleted."
 					},
+					"list": {
+						"failed": "Failed to retrieve device configuration profiles."
+					},
 					"save": {
+						"failed": "Failed to save device configuration profile {name}.",
 						"success": "Device configuration profile {name} successfully saved."
 					}
 				},

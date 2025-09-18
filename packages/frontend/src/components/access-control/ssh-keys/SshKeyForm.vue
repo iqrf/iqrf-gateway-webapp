@@ -21,7 +21,7 @@ limitations under the License.
 			<IActionBtn
 				v-bind='props'
 				:action='Action.Add'
-				type='card-title'
+				container-type='card-title'
 				:tooltip='$t("components.accessControl.sshKeys.actions.add")'
 			/>
 		</template>

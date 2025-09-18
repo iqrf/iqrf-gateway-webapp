@@ -16,14 +16,15 @@ limitations under the License.
 -->
 
 <template>
-	<ModalWindow v-model='show'>
+	<IModalWindow v-model='show'>
 		<template #activator='{ props }'>
-			<ICardTitleActionBtn
+			<IActionBtn
 				v-if='action === Action.Add'
 				v-bind='props'
 				:action='action'
+				container-type='card-title'
 			/>
-			<DataTableAction
+			<IDataTableAction
 				v-else
 				v-bind='props'
 				:action='action'
@@ -33,14 +34,14 @@ limitations under the License.
 		<v-form
 			ref='form'
 			v-slot='{ isValid }'
-			validate-on='input'
+			validate-on='eager'
 			@submit.prevent='onSubmit()'
 		>
 			<ICard :action='action'>
 				<template #title>
 					{{ dialogTitle }}
 				</template>
-				<TextInput
+				<ITextInput
 					v-model='profile.name'
 					:label='$t("components.config.profiles.name")'
 					:rules='[
@@ -48,37 +49,40 @@ limitations under the License.
 					]'
 					required
 				/>
-				<SelectInput
+				<ISelectInput
 					v-model='profile.deviceType'
 					:items='typeOptions'
 					:label='$t("components.config.profiles.deviceType")'
 					required
 				/>
-				<NumberInput
-					v-model.number='profile.button'
-					:label='$t("components.config.controller.form.pins.button")'
+				<INumberInput
+					v-model='profile.button'
+					:label='$t("components.config.controller.form.pins.buttonPin")'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.buttonPin")),
-						(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.buttonPin")),
+						(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.buttonPin.required")),
+						(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.buttonPin.integer")),
 					]'
+					:prepend-inner-icon='mdiRadioboxBlank'
 					required
 				/>
-				<NumberInput
-					v-model.number='profile.greenLed'
-					:label='$t("components.config.controller.form.pins.greenLed")'
+				<INumberInput
+					v-model='profile.greenLed'
+					:label='$t("components.config.controller.form.pins.greenLedPin")'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.greenLed")),
-						(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.greenLed")),
+						(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.greenLedPin.required")),
+						(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.greenLedPin.integer")),
 					]'
+					:prepend-inner-icon='mdiLedVariantOutline'
 					required
 				/>
-				<NumberInput
-					v-model.number='profile.redLed'
-					:label='$t("components.config.controller.form.pins.redLed")'
+				<INumberInput
+					v-model='profile.redLed'
+					:label='$t("components.config.controller.form.pins.redLedPin")'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.redLed")),
-						(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.redLed")),
+						(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.redLedPin.required")),
+						(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.redLedPin.integer")),
 					]'
+					:prepend-inner-icon='mdiLedVariantOn'
 					required
 				/>
 				<v-checkbox
@@ -86,45 +90,47 @@ limitations under the License.
 					:label='$t("components.config.controller.form.pins.useWatchdogPins")'
 					:hide-details='false'
 				/>
-				<NumberInput
-					v-model.number='profile.sck'
-					:label='$t("components.config.controller.form.pins.sck")'
+				<INumberInput
+					v-model='profile.sck'
+					:label='$t("components.config.controller.form.pins.sckPin")'
 					:rules='watchdogPins ?
 						[
-							(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.sck")),
-							(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.sck")),
+							(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.sckPin.required")),
+							(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.sckPin.integer")),
 						] : []
 					'
+					:prepend-inner-icon='mdiChip'
 					:disabled='!watchdogPins'
 					:required='watchdogPins'
 				/>
-				<NumberInput
-					v-model.number='profile.sda'
-					:label='$t("components.config.controller.form.pins.sda")'
+				<INumberInput
+					v-model='profile.sda'
+					:label='$t("components.config.controller.form.pins.sdaPin")'
 					:rules='watchdogPins ?
 						[
-							(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.sda")),
-							(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.sda")),
+							(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.sdaPin.required")),
+							(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.sdaPin.integer")),
 						] : []
 					'
+					:prepend-inner-icon='mdiChip'
 					:disabled='!watchdogPins'
 					:required='watchdogPins'
 				/>
 				<template #actions>
-					<ICardActionBtn
+					<IActionBtn
 						:action='action'
 						:disabled='!isValid.value'
 						type='submit'
 					/>
 					<v-spacer />
-					<ICardActionBtn
+					<IActionBtn
 						:action='Action.Cancel'
 						@click='close()'
 					/>
 				</template>
 			</ICard>
 		</v-form>
-	</ModalWindow>
+	</IModalWindow>
 </template>
 
 <script lang='ts' setup>
@@ -132,21 +138,22 @@ import { type IqrfGatewayControllerService } from '@iqrf/iqrf-gateway-webapp-cli
 import { type IqrfGatewayControllerMapping } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { MappingDeviceType } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import {
-	Action, ICard,
-	ICardActionBtn,
-	ICardTitleActionBtn,
+	Action,
+	IActionBtn,
+	ICard,
+	IDataTableAction,
+	IModalWindow,
+	INumberInput,
+	ISelectInput,
+	ITextInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
-import { computed, type PropType, ref, type Ref, watchEffect } from 'vue';
+import { mdiChip, mdiLedVariantOn, mdiLedVariantOutline, mdiRadioboxBlank } from '@mdi/js';
+import { computed, type PropType, ref, type Ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
-import DataTableAction from '@/components/layout/data-table/DataTableAction.vue';
-import NumberInput from '@/components/layout/form/NumberInput.vue';
-import SelectInput from '@/components/layout/form/SelectInput.vue';
-import TextInput from '@/components/layout/form/TextInput.vue';
-import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
@@ -203,13 +210,27 @@ const dialogTitle = computed(() => {
 	return i18n.t('components.config.profiles.actions.edit').toString();
 });
 
-watchEffect((): void => {
+watch(show, (newVal: boolean): void => {
+	if (!newVal) {
+		return;
+	}
 	if (componentProps.action === Action.Edit && componentProps.deviceProfile) {
 		profile.value = { ...componentProps.deviceProfile };
-		watchdogPins.value = componentProps.deviceProfile.sck !== -1 && componentProps.deviceProfile.sda !== -1;
+		if ((componentProps.deviceProfile.sck !== undefined && componentProps.deviceProfile.sck !== -1) ||
+			(componentProps.deviceProfile.sda !== undefined && componentProps.deviceProfile.sda !== -1)) {
+			watchdogPins.value = true;
+		} else {
+			watchdogPins.value = false;
+		}
+		if (componentProps.deviceProfile.sck === undefined) {
+			profile.value.sck = -1;
+		}
+		if (componentProps.deviceProfile.sda === undefined) {
+			profile.value.sda = -1;
+		}
 	} else {
 		profile.value = { ...defaultProfile };
-		watchdogPins.value = defaultProfile.sck !== -1 && defaultProfile.sda !== -1;
+		watchdogPins.value = false;
 	}
 });
 
@@ -234,7 +255,9 @@ async function onSubmit(): Promise<void> {
 		close();
 		emit('saved');
 	} catch {
-		toast.error('TODO ERROR HANDLING');
+		toast.error(
+			i18n.t('components.config.profiles.messages.save.failed', { name: params.name }),
+		);
 	}
 }
 

@@ -25,21 +25,23 @@ limitations under the License.
 				:action='Action.Add'
 				@saved='getProfiles()'
 			/>
-			<ICardTitleActionBtn
+			<IActionBtn
 				:action='Action.Reload'
+				container-type='card-title'
 				@click='getProfiles()'
 			/>
 		</template>
-		<DataTable
+		<IDataTable
 			:headers='headers'
 			:items='profiles'
 			:loading='componentState === ComponentState.Loading'
 			:hover='true'
 			:dense='true'
+			disable-column-filtering
 			:items-per-page='5'
 		>
 			<template #item.actions='{ item }'>
-				<DataTableAction
+				<IDataTableAction
 					:action='Action.Apply'
 					:tooltip='$t("components.config.profiles.actions.apply")'
 					@click='applyProfile(item)'
@@ -54,22 +56,20 @@ limitations under the License.
 					@deleted='getProfiles()'
 				/>
 			</template>
-		</DataTable>
+		</IDataTable>
 	</ICard>
 </template>
 
 <script lang='ts' setup>
 import { type IqrfGatewayControllerService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import { type IqrfGatewayControllerMapping } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { Action, ICard, ICardTitleActionBtn } from '@iqrf/iqrf-vue-ui';
+import { Action, IActionBtn, ICard, IDataTable, IDataTableAction } from '@iqrf/iqrf-vue-ui';
 import { onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import DeviceProfileDeleteDialog from '@/components/config/controller/profiles/DeviceProfileDeleteDialog.vue';
 import DeviceProfileForm from '@/components/config/controller/profiles/DeviceProfileForm.vue';
-import DataTable from '@/components/layout/data-table/DataTable.vue';
-import DataTableAction from '@/components/layout/data-table/DataTableAction.vue';
 import { useApiClient } from '@/services/ApiClient';
 import { ComponentState } from '@/types/ComponentState';
 
@@ -98,7 +98,9 @@ async function getProfiles(): Promise<void> {
 		});
 		componentState.value = ComponentState.Ready;
 	} catch {
-		toast.error('TODO FETCH ERROR HANDLING');
+		toast.error(
+			i18n.t('components.config.profiles.messages.list.failed'),
+		);
 		componentState.value = ComponentState.FetchFailed;
 	}
 }

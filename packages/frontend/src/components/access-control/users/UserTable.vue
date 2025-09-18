@@ -27,7 +27,7 @@ limitations under the License.
 			/>
 			<IActionBtn
 				:action='Action.Reload'
-				type='card-title'
+				container-type='card-title'
 				:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
 				:tooltip='$t("components.accessControl.users.actions.refresh")'
 				@click='getUsers()'

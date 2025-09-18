@@ -19,12 +19,18 @@ limitations under the License.
 	<v-form
 		ref='form'
 		v-slot='{ isValid }'
-		@submit.prevent='onSubmit()'
+		:disabled='componentState === ComponentState.Action'
 	>
 		<ICard>
 			<template #title>
 				{{ $t('pages.config.controller.title') }}
 			</template>
+			<v-alert
+				v-if='componentState === ComponentState.FetchFailed'
+				type='error'
+				variant='tonal'
+				:text='$t("components.config.controller.messages.fetch.failed")'
+			/>
 			<span v-if='componentState !== ComponentState.Loading && configuration !== null'>
 				<section>
 					<legend>{{ $t('components.config.controller.form.sections.websocket') }}</legend>
@@ -33,7 +39,7 @@ limitations under the License.
 							cols='12'
 							md='6'
 						>
-							<TextInput
+							<ITextInput
 								v-model='configuration.wsServers.api'
 								:label='$t("components.config.controller.form.websocket.api")'
 								:prepend-inner-icon='mdiLinkVariant'
@@ -45,13 +51,13 @@ limitations under the License.
 										@edited='(val: string) => configuration!.wsServers.api = val'
 									/>
 								</template>
-							</TextInput>
+							</ITextInput>
 						</v-col>
 						<v-col
 							cols='12'
 							md='6'
 						>
-							<TextInput
+							<ITextInput
 								v-model='configuration.wsServers.monitor'
 								:label='$t("components.config.controller.form.websocket.monitor")'
 								:prepend-inner-icon='mdiLinkVariant'
@@ -63,7 +69,7 @@ limitations under the License.
 										@edited='(val: string) => configuration!.wsServers.monitor = val'
 									/>
 								</template>
-							</TextInput>
+							</ITextInput>
 						</v-col>
 					</v-row>
 				</section>
@@ -74,12 +80,12 @@ limitations under the License.
 							cols='12'
 							md='6'
 						>
-							<TextInput
+							<ITextInput
 								v-model='configuration.logger.filePath'
 								:label='$t("components.config.controller.form.logging.path")'
 								:prepend-inner-icon='mdiFileDocument'
 								:rules='[
-									(v: string|null) => ValidationRules.required(v, $t("components.config.controller.validation.logPath")),
+									(v: string|null) => ValidationRules.required(v, $t("components.config.controller.validation.logPath.required")),
 								]'
 								required
 							/>
@@ -88,7 +94,7 @@ limitations under the License.
 							cols='12'
 							md='6'
 						>
-							<SelectInput
+							<ISelectInput
 								v-model='configuration.logger.severity'
 								:items='severityOptions'
 								:label='$t("components.config.controller.form.logging.severity")'
@@ -193,7 +199,7 @@ limitations under the License.
 				</section>
 				<section>
 					<legend>{{ $t('components.config.controller.form.sections.button') }}</legend>
-					<SelectInput
+					<ISelectInput
 						v-model='configuration.resetButton.api'
 						:items='actionOptions'
 						:label='$t("components.config.controller.form.button.action")'
@@ -202,20 +208,16 @@ limitations under the License.
 						<template #append>
 							<ControllerAutonetworkForm
 								v-if='configuration.resetButton.api === IqrfGatewayControllerAction.Autonetwork'
-								:autonetwork-config='configuration.daemonApi.autoNetwork'
+								:autonetwork-config='toRaw(configuration.daemonApi.autoNetwork)'
 								@saved='onAutonetworkSave'
 							/>
 							<ControllerDiscoveryForm
 								v-else-if='configuration.resetButton.api === IqrfGatewayControllerAction.Discovery'
-								:discovery-config='configuration.daemonApi.discovery'
+								:discovery-config='toRaw(configuration.daemonApi.discovery)'
 								@saved='onDiscoverySave'
 							/>
-							<ControllerActionConfigureBtn
-								v-else
-								:disabled='true'
-							/>
 						</template>
-					</SelectInput>
+					</ISelectInput>
 				</section>
 				<section>
 					<legend>{{ $t('components.config.controller.form.sections.pins') }}</legend>
@@ -224,13 +226,14 @@ limitations under the License.
 							cols='12'
 							md='4'
 						>
-							<NumberInput
-								v-model.number='configuration.resetButton.button'
-								:label='$t("components.config.controller.form.pins.button")'
+							<INumberInput
+								v-model='configuration.resetButton.button'
+								:label='$t("components.config.controller.form.pins.buttonPin")'
 								:rules='[
-									(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.buttonPin")),
-									(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.buttonPin")),
+									(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.buttonPin.required")),
+									(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.buttonPin.integer")),
 								]'
+								:prepend-inner-icon='mdiRadioboxBlank'
 								required
 							/>
 						</v-col>
@@ -238,13 +241,14 @@ limitations under the License.
 							cols='12'
 							md='4'
 						>
-							<NumberInput
-								v-model.number='configuration.statusLed.greenLed'
-								:label='$t("components.config.controller.form.pins.greenLed")'
+							<INumberInput
+								v-model='configuration.statusLed.greenLed'
+								:label='$t("components.config.controller.form.pins.greenLedPin")'
 								:rules='[
-									(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.greenLed")),
-									(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.greenLed")),
+									(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.greenLedPin.required")),
+									(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.greenLedPin.integer")),
 								]'
+								:prepend-inner-icon='mdiLedVariantOutline'
 								required
 							/>
 						</v-col>
@@ -252,13 +256,14 @@ limitations under the License.
 							cols='12'
 							md='4'
 						>
-							<NumberInput
-								v-model.number='configuration.statusLed.redLed'
-								:label='$t("components.config.controller.form.pins.redLed")'
+							<INumberInput
+								v-model='configuration.statusLed.redLed'
+								:label='$t("components.config.controller.form.pins.redLedPin")'
 								:rules='[
-									(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.redLed")),
-									(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.redLed")),
+									(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.redLedPin.required")),
+									(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.redLedPin.integer")),
 								]'
+								:prepend-inner-icon='mdiLedVariantOn'
 								required
 							/>
 						</v-col>
@@ -272,15 +277,16 @@ limitations under the License.
 							cols='12'
 							md='4'
 						>
-							<NumberInput
-								v-model.number='configuration.powerOff.sck'
-								:label='$t("components.config.controller.form.pins.sck")'
+							<INumberInput
+								v-model='configuration.powerOff.sck'
+								:label='$t("components.config.controller.form.pins.sckPin")'
 								:rules='watchdogPins ?
 									[
-										(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.sck")),
-										(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.sck")),
+										(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.sckPin.required")),
+										(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.sckPin.integer")),
 									] : []
 								'
+								:prepend-inner-icon='mdiChip'
 								:disabled='!watchdogPins'
 								:required='watchdogPins'
 							/>
@@ -289,15 +295,16 @@ limitations under the License.
 							cols='12'
 							md='4'
 						>
-							<NumberInput
-								v-model.number='configuration.powerOff.sda'
-								:label='$t("components.config.controller.form.pins.sda")'
+							<INumberInput
+								v-model='configuration.powerOff.sda'
+								:label='$t("components.config.controller.form.pins.sdaPin")'
 								:rules='watchdogPins ?
 									[
-										(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.sda")),
-										(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.sda")),
+										(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.sdaPin.required")),
+										(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.sdaPin.integer")),
 									] : []
 								'
+								:prepend-inner-icon='mdiChip'
 								:disabled='!watchdogPins'
 								:required='watchdogPins'
 							/>
@@ -327,10 +334,11 @@ limitations under the License.
 				</span>
 			</span>
 			<template #actions>
-				<ICardActionBtn
+				<IActionBtn
 					:action='Action.Edit'
+					:loading='componentState === ComponentState.Action'
 					:disabled='componentState !== ComponentState.Ready || !isValid.value'
-					type='submit'
+					@click='onSubmit()'
 				/>
 			</template>
 		</ICard>
@@ -351,33 +359,36 @@ import {
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import {
 	Action,
+	ComponentState,
+	IActionBtn,
 	ICard,
-	ICardActionBtn,
+	INumberInput,
+	ISelectInput,
+	ITextInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import {
 	mdiAlert,
+	mdiChip,
 	mdiFileDocument,
 	mdiGestureTapHold,
+	mdiLedVariantOn,
+	mdiLedVariantOutline,
 	mdiLinkVariant,
+	mdiRadioboxBlank,
 } from '@mdi/js';
-import { onMounted, ref, type Ref } from 'vue';
+import { onMounted, ref, type Ref, toRaw } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { useDisplay } from 'vuetify';
 import { VForm } from 'vuetify/components';
 
-import ControllerActionConfigureBtn from '@/components/config/controller/ControllerActionConfigureBtn.vue';
 import ControllerAutonetworkForm from '@/components/config/controller/ControllerAutonetworkForm.vue';
 import ControllerDiscoveryForm from '@/components/config/controller/ControllerDiscoveryForm.vue';
 import DeviceProfilesTable from '@/components/config/controller/profiles/DeviceProfilesTable.vue';
 import WebsocketUrlForm from '@/components/config/WebsocketUrlForm.vue';
-import NumberInput from '@/components/layout/form/NumberInput.vue';
-import SelectInput from '@/components/layout/form/SelectInput.vue';
-import TextInput from '@/components/layout/form/TextInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
-import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const display = useDisplay();
@@ -431,7 +442,9 @@ async function getConfig(): Promise<void> {
 		watchdogPins.value = configuration.value.powerOff.sck !== -1 && configuration.value.powerOff.sck !== -1;
 		componentState.value = ComponentState.Ready;
 	} catch {
-		toast.error('TODO ERROR HANDLING');
+		toast.error(
+			i18n.t('components.config.controller.messages.fetch.failed'),
+		);
 		componentState.value = ComponentState.FetchFailed;
 	}
 }
@@ -443,6 +456,7 @@ async function onSubmit(): Promise<void> {
 	if (configuration.value === null) {
 		return;
 	}
+	componentState.value = ComponentState.Action;
 	const params = { ...configuration.value };
 	if (!watchdogPins.value) {
 		params.powerOff.sck = -1;
@@ -455,7 +469,9 @@ async function onSubmit(): Promise<void> {
 			i18n.t('components.config.controller.messages.save.success'),
 		);
 	} catch {
-		toast.error('TODO ERROR HANDLING');
+		toast.error(
+			i18n.t('components.config.controller.messages.save.failed'),
+		);
 	}
 }
 
