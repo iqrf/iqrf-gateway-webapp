@@ -24,8 +24,8 @@ limitations under the License.
 			<IActionBtn
 				:icon='mdiFolderDownloadOutline'
 				container-type='card-title'
-				:disabled='[ComponentState.Action, ComponentState.Loading].includes(componentState)'
 				:loading='componentState === ComponentState.Action'
+				:disabled='componentState === ComponentState.Loading'
 				:tooltip='$t("components.common.actions.download")'
 				@click='exportLogs()'
 			/>
