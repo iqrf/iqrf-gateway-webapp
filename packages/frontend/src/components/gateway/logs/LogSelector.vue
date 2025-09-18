@@ -24,12 +24,15 @@ limitations under the License.
 			<IActionBtn
 				:icon='mdiFolderDownloadOutline'
 				container-type='card-title'
+				:disabled='[ComponentState.Action, ComponentState.Loading].includes(componentState)'
+				:loading='componentState === ComponentState.Action'
 				:tooltip='$t("components.common.actions.download")'
 				@click='exportLogs()'
 			/>
 			<IActionBtn
 				:action='Action.Reload'
 				:loading='componentState === ComponentState.Loading'
+				:disabled='componentState === ComponentState.Action'
 				container-type='card-title'
 				@click='listServices()'
 			/>
@@ -97,6 +100,7 @@ async function listServices(): Promise<void> {
 }
 
 async function exportLogs(): Promise<void> {
+	componentState.value = ComponentState.Action;
 	try {
 		const data = await service.exportLogs();
 		FileDownloader.downloadFileResponse(
@@ -108,6 +112,7 @@ async function exportLogs(): Promise<void> {
 			t('components.gateway.logs.messages.export.failed'),
 		);
 	}
+	componentState.value = ComponentState.Idle;
 }
 
 onMounted(() => {
