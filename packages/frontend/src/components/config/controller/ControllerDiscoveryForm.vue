@@ -16,57 +16,80 @@ limitations under the License.
 -->
 
 <template>
-	<ModalWindow v-model='show'>
+	<IModalWindow v-model='show'>
 		<template #activator='{ props }'>
-			<ControllerActionConfigureBtn v-bind='props' />
+			<IActionBtn
+				v-bind='props'
+				:action='Action.Custom'
+				:icon='mdiWrench'
+				:text='$t("components.config.controller.form.button.configure")'
+			/>
 		</template>
 		<v-form
 			v-if='config !== null'
 			ref='form'
-			@submit.prevent='onSubmit'
+			v-slot='{ isValid }'
+			@submit.prevent='onSubmit()'
 		>
 			<ICard>
 				<template #title>
 					{{ $t('components.config.controller.form.button.actions.discovery') }}
 				</template>
-				<NumberInput
-					v-model.number='config.maxAddr'
+				<INumberInput
+					v-model='config.maxAddr'
 					:label='$t("components.config.controller.form.discovery.maxAddr")'
+					:rules='[
+						(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.maxAddr.required")),
+						(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.maxAddr.integer")),
+						(v: number) => ValidationRules.between(v, 0, 239, $t("components.config.controller.validation.maxAddr.between")),
+					]'
+					:min='0'
+					:max='239'
 					required
+					:prepend-inner-icon='mdiNumeric'
 				/>
-				<NumberInput
-					v-model.number='config.txPower'
+				<INumberInput
+					v-model='config.txPower'
 					:label='$t("components.config.controller.form.discovery.txPower")'
+					:rules='[
+						(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.txPower.required")),
+						(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.txPower.integer")),
+						(v: number) => ValidationRules.between(v, 0, 7, $t("components.config.controller.validation.txPower.between")),
+					]'
+					:min='0'
+					:max='7'
+					required
+					:prepend-inner-icon='mdiSignalVariant'
 				/>
 				<v-checkbox
 					v-model='config.returnVerbose'
 					:label='$t("common.labels.returnVerbose")'
+					hide-details
 				/>
 				<template #actions>
-					<CardActionBtn
+					<IActionBtn
 						:action='Action.Edit'
+						:disabled='!isValid.value'
 						type='submit'
 					/>
 					<v-spacer />
-					<ICardActionBtn
+					<IActionBtn
 						:action='Action.Cancel'
-						@click='close'
+						@click='close()'
 					/>
 				</template>
 			</ICard>
 		</v-form>
-	</ModalWindow>
+	</IModalWindow>
 </template>
 
 <script lang='ts' setup>
 import { type IqrfGatewayControllerApiDiscoveryConfig } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { Action, ICard, ICardActionBtn } from '@iqrf/iqrf-vue-ui';
-import { type PropType, ref , type Ref , watchEffect } from 'vue';
+import { Action, IActionBtn, ICard, IModalWindow, INumberInput, ValidationRules } from '@iqrf/iqrf-vue-ui';
+import { mdiNumeric, mdiSignalVariant, mdiWrench } from '@mdi/js';
+import { type PropType, ref , type Ref, watch } from 'vue';
 import { VForm } from 'vuetify/components';
 
-import ControllerActionConfigureBtn from '@/components/config/controller/ControllerActionConfigureBtn.vue';
-import NumberInput from '@/components/layout/form/NumberInput.vue';
-import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';
 
 const emit = defineEmits(['saved']);
@@ -80,8 +103,10 @@ const show: Ref<boolean> = ref(false);
 const form: Ref<VForm | null> = ref(null);
 const config: Ref<IqrfGatewayControllerApiDiscoveryConfig | null> = ref(null);
 
-watchEffect(() => {
-	config.value = { ...componentProps.discoveryConfig };
+watch(show, (newVal: boolean): void => {
+	if (newVal) {
+		config.value = { ...componentProps.discoveryConfig };
+	}
 });
 
 async function onSubmit(): Promise<void> {

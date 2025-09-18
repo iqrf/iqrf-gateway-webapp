@@ -23,7 +23,7 @@ limitations under the License.
 		<template #titleActions>
 			<IActionBtn
 				:action='Action.Reload'
-				type='card-title'
+				container-type='card-title'
 				:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
 				:tooltip='$t("components.gateway.power.stats.actions.refresh")'
 				@click='getStats()'

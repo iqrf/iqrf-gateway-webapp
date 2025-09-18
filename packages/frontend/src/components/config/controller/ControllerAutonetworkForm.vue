@@ -16,82 +16,123 @@ limitations under the License.
 -->
 
 <template>
-	<ModalWindow v-model='show'>
+	<IModalWindow v-model='show'>
 		<template #activator='{ props }'>
-			<ControllerActionConfigureBtn v-bind='props' />
+			<IActionBtn
+				v-bind='props'
+				:action='Action.Custom'
+				:icon='mdiWrench'
+				:text='$t("components.config.controller.form.button.configure")'
+			/>
 		</template>
 		<v-form
 			v-if='config !== null'
 			ref='form'
-			@submit.prevent='onSubmit'
+			v-slot='{ isValid }'
+			@submit.prevent='onSubmit()'
 		>
 			<ICard>
 				<template #title>
 					{{ $t('components.config.controller.form.button.actions.autonetwork') }}
 				</template>
 				<legend>{{ $t("common.labels.general") }}</legend>
-				<NumberInput
-					v-model.number='config.actionRetries'
+				<INumberInput
+					v-model='config.actionRetries'
 					:label='$t("components.config.controller.form.autonetwork.actionRetries")'
+					:rules='[
+						(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.actionRetries.required")),
+						(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.actionRetries.integer")),
+						(v: number) => ValidationRules.between(v, 0, 3, $t("components.config.controller.validation.actionRetries.between")),
+					]'
+					:min='0'
+					:max='3'
 					required
+					:prepend-inner-icon='mdiRepeat'
 				/>
-				<NumberInput
-					v-model.number='config.discoveryTxPower'
+				<INumberInput
+					v-model='config.discoveryTxPower'
 					:label='$t("components.config.controller.form.autonetwork.discoveryTxPower")'
+					:rules='[
+						(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.txPower.required")),
+						(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.txPower.integer")),
+						(v: number) => ValidationRules.between(v, 0, 7, $t("components.config.controller.validation.txPower.between")),
+					]'
+					:min='0'
+					:max='7'
 					required
+					:prepend-inner-icon='mdiSignalVariant'
 				/>
 				<v-checkbox
 					v-model='config.discoveryBeforeStart'
 					:label='$t("components.config.controller.form.autonetwork.discoveryBeforeStart")'
+					hide-details
 				/>
 				<v-checkbox
 					v-model='config.skipDiscoveryEachWave'
 					:label='$t("components.config.controller.form.autonetwork.skipDiscoveryEachWave")'
+					hide-details
 				/>
 				<v-checkbox
 					v-model='config.returnVerbose'
 					:label='$t("common.labels.returnVerbose")'
+					hide-details
 				/>
 				<legend>{{ $t("components.config.controller.form.autonetwork.stopConditions") }}</legend>
-				<NumberInput
-					v-model.number='config.stopConditions.emptyWaves'
+				<INumberInput
+					v-model='config.stopConditions.emptyWaves'
 					:label='$t("components.config.controller.form.autonetwork.emptyWaves")'
+					:rules='[
+						(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.emptyWaves.required")),
+						(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.emptyWaves.integer")),
+						(v: number) => ValidationRules.between(v, 1, 127, $t("components.config.controller.validation.emptyWaves.between")),
+					]'
+					:min='1'
+					:max='127'
 					required
+					:prepend-inner-icon='mdiRefresh'
 				/>
-				<NumberInput
-					v-model.number='config.stopConditions.waves'
+				<INumberInput
+					v-model='config.stopConditions.waves'
 					:label='$t("components.config.controller.form.autonetwork.waves")'
+					:rules='[
+						(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.waves.required")),
+						(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.waves.integer")),
+						(v: number) => ValidationRules.between(v, 1, 127, $t("components.config.controller.validation.waves.between")),
+					]'
+					:min='1'
+					:max='127'
 					required
+					:prepend-inner-icon='mdiRefreshCircle'
 				/>
 				<v-checkbox
 					v-model='config.stopConditions.abortOnTooManyNodesFound'
 					:label='$t("components.config.controller.form.autonetwork.abortOnTooManyNodesFound")'
+					hide-details
 				/>
 				<template #actions>
-					<ICardActionBtn
+					<IActionBtn
 						:action='Action.Edit'
+						:disabled='!isValid.value'
 						type='submit'
 					/>
 					<v-spacer />
-					<ICardActionBtn
+					<IActionBtn
 						:action='Action.Cancel'
-						@click='close'
+						@click='close()'
 					/>
 				</template>
 			</ICard>
 		</v-form>
-	</ModalWindow>
+	</IModalWindow>
 </template>
 
 <script lang='ts' setup>
 import { type IqrfGatewayControllerApiAutonetworkConfig } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { Action, ICard, ICardActionBtn } from '@iqrf/iqrf-vue-ui';
-import { type PropType, ref , type Ref , watchEffect } from 'vue';
+import { Action, IActionBtn, ICard, IModalWindow, INumberInput, ValidationRules } from '@iqrf/iqrf-vue-ui';
+import { mdiRefresh, mdiRefreshCircle, mdiRepeat, mdiSignalVariant, mdiWrench } from '@mdi/js';
+import { type PropType, ref , type Ref, watch } from 'vue';
 import { VForm } from 'vuetify/components';
 
-import ControllerActionConfigureBtn from '@/components/config/controller/ControllerActionConfigureBtn.vue';
-import NumberInput from '@/components/layout/form/NumberInput.vue';
-import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';
 
 const emit = defineEmits(['saved']);
@@ -105,8 +146,10 @@ const show: Ref<boolean> = ref(false);
 const form: Ref<VForm | null> = ref(null);
 const config: Ref<IqrfGatewayControllerApiAutonetworkConfig | null> = ref(null);
 
-watchEffect(() => {
-	config.value = { ...componentProps.autonetworkConfig };
+watch(show, (newVal: boolean): void => {
+	if (newVal) {
+		config.value = structuredClone(componentProps.autonetworkConfig);
+	}
 });
 
 async function onSubmit(): Promise<void> {

@@ -24,7 +24,7 @@ limitations under the License.
 			<IActionBtn
 				:action='Action.Reload'
 				:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
-				type='card-title'
+				container-type='card-title'
 				@click='getInformation()'
 			/>
 		</template>
