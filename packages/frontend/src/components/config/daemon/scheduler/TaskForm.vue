@@ -16,15 +16,16 @@ limitations under the License.
 -->
 
 <template>
-	<ModalWindow v-model='show'>
+	<IModalWindow v-model='show'>
 		<template #activator='{ props }'>
-			<ICardTitleActionBtn
+			<IActionBtn
 				v-if='action === Action.Add'
 				v-bind='props'
 				:action='action'
+				container-type='card-title'
 				:tooltip='$t("components.config.daemon.scheduler.actions.add")'
 			/>
-			<DataTableAction
+			<IDataTableAction
 				v-if='action === Action.Edit'
 				v-bind='props'
 				:action='action'
@@ -34,14 +35,14 @@ limitations under the License.
 		<v-form
 			ref='form'
 			v-slot='{ isValid }'
-			:disabled='[ComponentState.Loading, ComponentState.Saving].includes(componentState)'
+			:disabled='[ComponentState.Loading, ComponentState.Action].includes(componentState)'
 			@submit.prevent='onSubmit()'
 		>
 			<ICard :action='action'>
 				<template #title>
 					{{ dialogTitle }}
 				</template>
-				<TextInput
+				<ITextInput
 					v-model='task.taskId'
 					:label='$t("components.config.daemon.scheduler.taskId")'
 					:rules='[
@@ -50,7 +51,7 @@ limitations under the License.
 					]'
 					required
 				/>
-				<TextInput
+				<ITextInput
 					v-model='task.description'
 					:label='$t("common.labels.description")'
 				/>
@@ -75,7 +76,7 @@ limitations under the License.
 					]'
 					required
 				/>
-				<TextInput
+				<ITextInput
 					v-if='taskType === SchedulerTaskType.CRON'
 					v-model='task.timeSpec.cronTime'
 					:label='$t("components.config.daemon.scheduler.cron")'
@@ -102,7 +103,7 @@ limitations under the License.
 							{{ humanCron }}
 						</v-tooltip>
 					</template>
-				</TextInput>
+				</ITextInput>
 				<v-checkbox
 					v-model='task.persist'
 					:label='$t("components.config.daemon.scheduler.persist")'
@@ -115,7 +116,7 @@ limitations under the License.
 					density='compact'
 					hide-details
 				/>
-				<DataTable
+				<IDataTable
 					:headers='headers'
 					:items='Array.isArray(task.task) ? task.task : [task.task]'
 					:hover='true'
@@ -170,22 +171,24 @@ limitations under the License.
 							{{ $t('components.config.daemon.scheduler.task.actions.delete') }}
 						</v-tooltip>
 					</template>
-				</DataTable>
+				</IDataTable>
 				<template #actions>
-					<ICardActionBtn
+					<IActionBtn
 						:action='action'
-						:disabled='!isValid.value || (!datePickerState && taskType === SchedulerTaskType.ONESHOT) || componentState === ComponentState.Saving'
+						container-type='card'
+						:disabled='!isValid.value || (!datePickerState && taskType === SchedulerTaskType.ONESHOT) || componentState === ComponentState.Action'
 						type='submit'
 					/>
 					<v-spacer />
-					<ICardActionBtn
+					<IActionBtn
 						:action='Action.Cancel'
+						container-type='card'
 						@click='close()'
 					/>
 				</template>
 			</ICard>
 		</v-form>
-	</ModalWindow>
+	</IModalWindow>
 </template>
 
 <script lang='ts' setup>
@@ -208,8 +211,13 @@ import { DaemonMessageOptions, SchedulerCron } from '@iqrf/iqrf-gateway-daemon-u
 import { type IqrfGatewayDaemonSchedulerMessagings } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import {
 	Action,
+	ComponentState,
+	IActionBtn,
 	ICard,
-	ICardActionBtn, ICardTitleActionBtn,
+	IDataTable,
+	IDataTableAction,
+	IModalWindow,
+	ITextInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiDelete, mdiHelpBox } from '@mdi/js';
@@ -222,15 +230,10 @@ import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
 
 import TaskMessageForm from '@/components/config/daemon/scheduler/TaskMessageForm.vue';
-import DataTable from '@/components/layout/data-table/DataTable.vue';
-import DataTableAction from '@/components/layout/data-table/DataTableAction.vue';
 import NumberInput from '@/components/layout/form/NumberInput.vue';
 import SelectInput from '@/components/layout/form/SelectInput.vue';
-import TextInput from '@/components/layout/form/TextInput.vue';
-import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useDaemonStore } from '@/store/daemonSocket';
-import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const componentProps = defineProps({
@@ -399,7 +402,7 @@ function clearMessages(): void {
 }
 
 async function addTask(record: SchedulerAddTaskParams): Promise<void> {
-	componentState.value = ComponentState.Saving;
+	componentState.value = ComponentState.Action;
 	const opts = new DaemonMessageOptions(
 		30_000,
 		null,
@@ -415,7 +418,7 @@ async function addTask(record: SchedulerAddTaskParams): Promise<void> {
 }
 
 async function editTask(record: SchedulerEditTaskParams): Promise<void> {
-	componentState.value = ComponentState.Saving;
+	componentState.value = ComponentState.Action;
 	const opts = new DaemonMessageOptions(
 		30_000,
 		null,

@@ -16,7 +16,7 @@ limitations under the License.
 -->
 
 <template>
-	<ModalWindow v-model='show'>
+	<IModalWindow v-model='show'>
 		<template #activator='{ props }'>
 			<v-btn
 				v-if='action === Action.Add'
@@ -25,7 +25,7 @@ limitations under the License.
 				color='success'
 				:icon='mdiPlus'
 			/>
-			<DataTableAction
+			<IDataTableAction
 				v-else
 				v-bind='props'
 				:action='action'
@@ -53,28 +53,32 @@ limitations under the License.
 					:items='severityOptions'
 				/>
 				<template #actions>
-					<ICardActionBtn
+					<IActionBtn
 						:action='action'
+						container-type='card'
 						:disabled='!isValid.value'
 						type='submit'
 					/>
 					<v-spacer />
-					<ICardActionBtn
+					<IActionBtn
 						:action='Action.Cancel'
+						container-type='card'
 						@click='close()'
 					/>
 				</template>
 			</ICard>
 		</v-form>
-	</ModalWindow>
+	</IModalWindow>
 </template>
 
 <script lang='ts' setup>
 import { type ShapeTraceChannelVerbosity, ShapeTraceVerbosity } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import {
 	Action,
+	IActionBtn,
 	ICard,
-	ICardActionBtn,
+	IDataTableAction,
+	IModalWindow,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiPlus } from '@mdi/js';
@@ -82,10 +86,8 @@ import { type PropType, ref, type Ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { VForm } from 'vuetify/components';
 
-import DataTableAction from '@/components/layout/data-table/DataTableAction.vue';
 import NumberInput from '@/components/layout/form/NumberInput.vue';
 import SelectInput from '@/components/layout/form/SelectInput.vue';
-import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';
 
 const emit = defineEmits(['save']);

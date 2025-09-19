@@ -40,21 +40,24 @@ limitations under the License.
 			<SshKeyTable v-if='isLoggedIn' :install='true' />
 		</v-form>
 		<template #actions='{ next, prev }'>
-			<ICardActionBtn
+			<IActionBtn
 				:action='Action.Next'
+				container-type='card'
 				:disabled='!formValidity'
-				:loading='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
+				:loading='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState)'
 				@click='onSubmit(next)'
 			/>
-			<ICardActionBtn
+			<IActionBtn
 				:action='Action.Skip'
 				class='ml-2'
-				:loading='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
+				container-type='card'
+				:loading='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState)'
 				@click='next'
 			/>
-			<ICardActionBtn
+			<IActionBtn
 				:action='Action.Previous'
-				:loading='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
+				container-type='card'
+				:loading='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState)'
 				class='float-right'
 				@click='prev'
 			/>
@@ -68,7 +71,7 @@ import {
 	ErrorResponse,
 	ServiceStatus,
 } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { Action, ICardActionBtn } from '@iqrf/iqrf-vue-ui';
+import { Action, ComponentState, IActionBtn } from '@iqrf/iqrf-vue-ui';
 import { AxiosError } from 'axios';
 import { storeToRefs } from 'pinia';
 import { onBeforeMount, ref, type Ref, watch } from 'vue';
@@ -81,7 +84,6 @@ import { ServiceAction } from '@/enums/controls';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
-import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const componentProps = defineProps({
@@ -155,7 +157,7 @@ async function onSubmit(onClickNext: Function): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
 	}
-	componentState.value = ComponentState.Saving;
+	componentState.value = ComponentState.Action;
 	try {
 		switch (status.value) {
 			case ServiceAction.Enable:

@@ -26,7 +26,7 @@ limitations under the License.
 			>
 				<template #prepend>
 					<v-list-item-media>
-						<img height='16' :src='getFlagUrl(currentFlag)' class='me-2'>
+						<ILanguageFlag :language='current' class='me-2' />
 					</v-list-item-media>
 				</template>
 				<template #title>
@@ -38,14 +38,13 @@ limitations under the License.
 			</v-list-item>
 			<v-btn
 				v-else
-				class='mr-2'
 				variant='elevated'
 				v-bind='props'
 				color='white'
 				size='small'
 				:ripple='false'
 			>
-				<img height='16' :src='getFlagUrl(currentFlag)'>
+				<ILanguageFlag :language='current' :height='16' />
 			</v-btn>
 		</template>
 		<v-list
@@ -59,7 +58,7 @@ limitations under the License.
 				@click='setLocale(locale.code)'
 			>
 				<template #prepend>
-					<img height='16' :src='getFlagUrl(locale.flag)' class='me-2'>
+					<ILanguageFlag :language='locale.code' class='me-2' />
 				</template>
 				<v-list-item-title>
 					{{ $t(`components.common.locale.languages.${locale.code.toString()}`) }}
@@ -70,7 +69,10 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { type UserLanguage } from '@iqrf/iqrf-gateway-webapp-client/types';
+import {
+	ILanguageFlag,
+	Language,
+} from '@iqrf/iqrf-vue-ui';
 import { mdiChevronLeft } from '@mdi/js';
 import { storeToRefs } from 'pinia';
 import { useI18n } from 'vue-i18n';
@@ -90,24 +92,15 @@ const i18n = useI18n();
 const localeStore = useLocaleStore();
 const {
 	getAvailableLocales: availableLocales,
-	getLocaleFlag: currentFlag,
 	getLocale: current,
 } = storeToRefs(localeStore);
 
-/**
- * Returns the flag URL
- * @param {string} flag Flag
- * @return {string} Flag URL
- */
-function getFlagUrl(flag: string): string {
-	return `data:image/svg+xml;charset=utf-8;base64,${flag}`;
-}
 
 /**
  * Set the user language
- * @param {UserLanguage} locale User language
+ * @param {Language} locale User language
  */
-function setLocale(locale: UserLanguage): void {
+function setLocale(locale: Language): void {
 	if (current.value === locale) {
 		return;
 	}
@@ -118,9 +111,3 @@ function setLocale(locale: UserLanguage): void {
 }
 
 </script>
-
-<style lang='scss' scoped>
-img {
-	border: 1px solid black;
-}
-</style>

@@ -27,8 +27,9 @@ limitations under the License.
 				:disabled='mode.operMode === DaemonMode.Unknown'
 			/>
 			<template #actions>
-				<ICardActionBtn
+				<IActionBtn
 					:action='Action.Save'
+					container-type='card'
 					:disabled='mode.operMode === DaemonMode.Unknown'
 					type='submit'
 				/>
@@ -47,7 +48,7 @@ import {
 } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { DaemonGetModeResult, DaemonSetModeParams } from '@iqrf/iqrf-gateway-daemon-utils/types/management';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
-import { Action, ICard, ICardActionBtn } from '@iqrf/iqrf-vue-ui';
+import { Action, IActionBtn, ICard } from '@iqrf/iqrf-vue-ui';
 import { computed, ComputedRef, onBeforeMount, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';

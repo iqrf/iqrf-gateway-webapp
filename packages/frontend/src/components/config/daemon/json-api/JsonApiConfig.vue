@@ -19,7 +19,7 @@ limitations under the License.
 	<v-form
 		ref='form'
 		v-slot='{ isValid }'
-		:disabled='[ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
+		:disabled='[ComponentState.Reloading, ComponentState.Action].includes(componentState)'
 		@submit.prevent='onSubmit()'
 	>
 		<ICard>
@@ -27,8 +27,9 @@ limitations under the License.
 				{{ $t('pages.config.daemon.json-api.title') }}
 			</template>
 			<template #titleActions>
-				<ICardTitleActionBtn
+				<IActionBtn
 					:action='Action.Reload'
+					container-type='card-title'
 					@click='getConfig()'
 				/>
 			</template>
@@ -39,7 +40,7 @@ limitations under the License.
 			>
 				<v-responsive>
 					<section v-if='config'>
-						<TextInput
+						<ITextInput
 							v-model='config.insId'
 							:label='$t("components.config.daemon.json-api.instanceId")'
 							:prepend-inner-icon='mdiIdentifier'
@@ -56,9 +57,10 @@ limitations under the License.
 				</v-responsive>
 			</v-skeleton-loader>
 			<template #actions>
-				<ICardActionBtn
+				<IActionBtn
 					:action='Action.Edit'
-					:disabled='!isValid.value || [ComponentState.Loading, ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
+					container-type='card'
+					:disabled='!isValid.value || [ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState)'
 					type='submit'
 				/>
 			</template>
@@ -74,9 +76,11 @@ import {
 	type IqrfGatewayDaemonJsonSplitterV3,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import {
-	Action, ICard,
-	ICardActionBtn,
-	ICardTitleActionBtn,
+	Action,
+	ComponentState,
+	IActionBtn,
+	ICard,
+	ITextInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiIdentifier } from '@mdi/js';
@@ -85,10 +89,8 @@ import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
-import TextInput from '@/components/layout/form/TextInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
-import { ComponentState } from '@/types/ComponentState';
 
 const i18n = useI18n();
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
@@ -118,7 +120,7 @@ async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value) || config.value === null) {
 		return;
 	}
-	componentState.value = ComponentState.Saving;
+	componentState.value = ComponentState.Action;
 	const params = { ...config.value };
 	try {
 		await service.updateInstance(IqrfGatewayDaemonComponentName.IqrfJsonSplitter, instance, params);

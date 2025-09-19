@@ -96,7 +96,14 @@ limitations under the License.
 <script lang='ts' setup>
 import { SshKeyService } from '@iqrf/iqrf-gateway-webapp-client/services/Security';
 import { type SshKeyInfo } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
-import { Action, IActionBtn, ICard, IDataTable, IDataTableAction } from '@iqrf/iqrf-vue-ui';
+import {
+	Action,
+	ComponentState,
+	IActionBtn,
+	ICard,
+	IDataTable,
+	IDataTableAction,
+} from '@iqrf/iqrf-vue-ui';
 import { mdiContentCopy, mdiInformation } from '@mdi/js';
 import { computed, onMounted, ref, type Ref, toRaw } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -105,7 +112,6 @@ import { toast } from 'vue3-toastify';
 import SshKeyDeleteDialog from '@/components/access-control/ssh-keys/SshKeyDeleteDialog.vue';
 import SshKeyForm from '@/components/access-control/ssh-keys/SshKeyForm.vue';
 import { useApiClient } from '@/services/ApiClient';
-import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();

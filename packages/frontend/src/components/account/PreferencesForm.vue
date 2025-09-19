@@ -19,7 +19,7 @@ limitations under the License.
 	<v-form
 		ref='form'
 		v-slot='{ isValid }'
-		:disabled='componentState === ComponentState.Saving'
+		:disabled='componentState === ComponentState.Action'
 		@submit.prevent='onSubmit'
 	>
 		<ICard :bottom-margin='true'>
@@ -29,10 +29,11 @@ limitations under the License.
 			<TimeFormatPreferenceInput v-model='preferences.timeFormat' />
 			<ThemePreferenceInput v-model='preferences.theme' />
 			<template #actions>
-				<ICardActionBtn
+				<IActionBtn
 					:action='Action.Save'
+					container-type='card'
 					:disabled='!isValid.value'
-					:loading='componentState === ComponentState.Saving'
+					:loading='componentState === ComponentState.Action'
 					type='submit'
 				/>
 			</template>
@@ -47,7 +48,12 @@ import {
 	UserThemePreference,
 	UserTimeFormatPreference,
 } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { Action, ICard, ICardActionBtn } from '@iqrf/iqrf-vue-ui';
+import {
+	Action,
+	ComponentState,
+	IActionBtn,
+	ICard,
+} from '@iqrf/iqrf-vue-ui';
 import { onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
@@ -60,7 +66,6 @@ import TimeFormatPreferenceInput
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
-import { ComponentState } from '@/types/ComponentState';
 
 /// Component state
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
@@ -97,7 +102,7 @@ async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
 	}
-	componentState.value = ComponentState.Saving;
+	componentState.value = ComponentState.Action;
 	try {
 		await service.updatePreferences(preferences.value);
 		await userStore.refreshUserPreferences();

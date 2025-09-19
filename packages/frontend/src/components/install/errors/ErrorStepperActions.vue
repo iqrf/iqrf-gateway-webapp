@@ -1,20 +1,22 @@
 <template>
 	<div>
-		<ICardActionBtn
+		<IActionBtn
 			v-if='componentProps.index !== totalErrors'
 			:action='Action.Next'
+			container-type='card'
 			@click='componentProps.next'
 		/>
-		<ICardActionBtn
+		<IActionBtn
 			v-if='componentProps.index !== 1'
 			:action='Action.Previous'
 			class='float-right'
+			container-type='card'
 			@click='componentProps.prev'
 		/>
 	</div>
 </template>
 <script setup lang='ts'>
-import { Action, ICardActionBtn } from '@iqrf/iqrf-vue-ui';
+import { Action, IActionBtn } from '@iqrf/iqrf-vue-ui';
 import { storeToRefs } from 'pinia';
 import { computed, type ComputedRef, PropType } from 'vue';
 

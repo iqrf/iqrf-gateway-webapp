@@ -19,7 +19,7 @@ limitations under the License.
 	<v-form
 		ref='form'
 		v-slot='{ isValid }'
-		:disabled='[ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
+		:disabled='[ComponentState.Reloading, ComponentState.Action].includes(componentState)'
 		@submit.prevent='onSubmit()'
 	>
 		<ICard>
@@ -27,8 +27,9 @@ limitations under the License.
 				{{ $t('pages.config.daemon.db.title') }}
 			</template>
 			<template #titleActions>
-				<ICardTitleActionBtn
+				<IActionBtn
 					:action='Action.Reload'
+					container-type='card-title'
 					@click='getConfig()'
 				/>
 			</template>
@@ -59,9 +60,10 @@ limitations under the License.
 				</v-responsive>
 			</v-skeleton-loader>
 			<template #actions>
-				<ICardActionBtn
+				<IActionBtn
 					:action='Action.Edit'
-					:disabled='!isValid.value || [ComponentState.Loading, ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
+					container-type='card'
+					:disabled='!isValid.value || [ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState)'
 					type='submit'
 				/>
 			</template>
@@ -79,9 +81,9 @@ import {
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import {
 	Action,
+	ComponentState,
+	IActionBtn,
 	ICard,
-	ICardActionBtn,
-	ICardTitleActionBtn,
 } from '@iqrf/iqrf-vue-ui';
 import { onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -90,7 +92,6 @@ import { VForm } from 'vuetify/components';
 
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
-import { ComponentState } from '@/types/ComponentState';
 
 const i18n = useI18n();
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
@@ -121,7 +122,7 @@ async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value) || config.value === null) {
 		return;
 	}
-	componentState.value = ComponentState.Saving;
+	componentState.value = ComponentState.Action;
 	const params = { ...config.value };
 	try {
 		await service.updateInstance(IqrfGatewayDaemonComponentName.IqrfDb, instance, params);

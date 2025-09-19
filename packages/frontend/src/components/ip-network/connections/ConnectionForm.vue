@@ -16,15 +16,16 @@ limitations under the License.
 -->
 
 <template>
-	<ModalWindow v-model='showDialog'>
+	<IModalWindow v-model='showDialog'>
 		<template #activator='{ props }'>
-			<ICardTitleActionBtn
+			<IActionBtn
 				v-if='componentProps.action === Action.Add'
+				container-type='card-title'
 				:action='Action.Add'
 				:tooltip='$t("components.ipNetwork.connections.actions.add")'
 				v-bind='props'
 			/>
-			<DataTableAction
+			<IDataTableAction
 				v-else-if='componentProps.action === Action.Edit'
 				:action='Action.Edit'
 				:tooltip='$t("components.ipNetwork.connections.actions.edit")'
@@ -34,7 +35,7 @@ limitations under the License.
 		<v-form
 			ref='form'
 			v-slot='{ isValid }'
-			:disabled='[ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
+			:disabled='[ComponentState.Reloading, ComponentState.Action].includes(componentState)'
 			@submit.prevent='onSubmit(false)'
 		>
 			<ICard>
@@ -58,7 +59,7 @@ limitations under the License.
 					type='heading@8, button'
 				>
 					<v-responsive v-if='configuration !== null'>
-						<TextInput
+						<ITextInput
 							v-model='configuration.name'
 							:label='$t("components.ipNetwork.connections.form.generic.name")'
 							:rules='[
@@ -104,32 +105,35 @@ limitations under the License.
 					</v-responsive>
 				</v-skeleton-loader>
 				<template #actions>
-					<ICardActionBtn
+					<IActionBtn
 						v-if='![ComponentState.Error || ComponentState.FetchFailed].includes(componentState)'
 						:action='Action.Save'
-						:loading='componentState === ComponentState.Saving'
+						container-type='card'
+						:loading='componentState === ComponentState.Action'
 						:disabled='!isValid.value'
 						type='submit'
 					/>
-					<ICardActionBtn
+					<IActionBtn
 						v-if='![ComponentState.Error || ComponentState.FetchFailed].includes(componentState)'
 						color='info'
+						container-type='card'
 						:disabled='!isValid.value'
 						:icon='mdiContentSave'
-						:loading='componentState === ComponentState.Saving'
+						:loading='componentState === ComponentState.Action'
 						:text='$t("components.ipNetwork.connections.actions.saveAndConnect")'
 						@click='onSubmit(true)'
 					/>
 					<v-spacer />
-					<ICardActionBtn
+					<IActionBtn
 						:action='Action.Close'
-						:disabled='componentState === ComponentState.Saving'
+						container-type='card'
+						:disabled='componentState === ComponentState.Action'
 						@click='close()'
 					/>
 				</template>
 			</ICard>
 		</v-form>
-	</ModalWindow>
+	</IModalWindow>
 </template>
 
 <script setup lang='ts'>
@@ -143,8 +147,12 @@ import {
 import { IpNetworkUtils } from '@iqrf/iqrf-gateway-webapp-client/utils';
 import {
 	Action,
+	ComponentState,
+	IActionBtn,
 	ICard,
-	ICardActionBtn, ICardTitleActionBtn,
+	IDataTableAction,
+	IModalWindow,
+	ITextInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiContentSave, mdiTextShort } from '@mdi/js';
@@ -167,13 +175,8 @@ import WiFiConfiguration
 	from '@/components/ip-network/connections/wifi/WiFiConfiguration.vue';
 import InterfaceInput
 	from '@/components/ip-network/interfaces/InterfaceInput.vue';
-import DataTableAction
-	from '@/components/layout/data-table/DataTableAction.vue';
-import TextInput from '@/components/layout/form/TextInput.vue';
-import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
-import { ComponentState } from '@/types/ComponentState';
 
 /// Connection configuration
 const configuration: Ref<NetworkConnectionConfiguration | null> = ref(null);
@@ -297,7 +300,7 @@ async function onSubmit(connect: boolean): Promise<void> {
 	if (!await validateForm(form.value) || configuration.value === null) {
 		return;
 	}
-	componentState.value = ComponentState.Saving;
+	componentState.value = ComponentState.Action;
 	const translationParams = { name: configuration.value.name };
 	try {
 		let uuid: string;

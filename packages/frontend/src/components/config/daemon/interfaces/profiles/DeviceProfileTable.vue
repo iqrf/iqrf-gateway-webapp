@@ -26,12 +26,13 @@ limitations under the License.
 				:mapping-type='mappingType ?? MappingType.SPI'
 				@saved='getProfiles()'
 			/>
-			<ICardTitleActionBtn
+			<IActionBtn
 				:action='Action.Reload'
+				container-type='card-title'
 				@click='getProfiles()'
 			/>
 		</template>
-		<DataTable
+		<IDataTable
 			:headers='headers'
 			:items='profiles'
 			:loading='componentState === ComponentState.Loading'
@@ -40,7 +41,7 @@ limitations under the License.
 			:items-per-page='5'
 		>
 			<template #item.actions='{ item }'>
-				<DataTableAction
+				<IDataTableAction
 					:action='Action.Apply'
 					:tooltip='$t("components.config.profiles.actions.apply")'
 					@click='applyProfile(item)'
@@ -56,7 +57,7 @@ limitations under the License.
 					@deleted='getProfiles()'
 				/>
 			</template>
-		</DataTable>
+		</IDataTable>
 	</ICard>
 </template>
 
@@ -64,16 +65,20 @@ limitations under the License.
 import { type IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import { type IqrfGatewayDaemonMapping } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { MappingType } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { Action, ICard, ICardTitleActionBtn } from '@iqrf/iqrf-vue-ui';
+import {
+	Action,
+	ComponentState,
+	IActionBtn,
+	ICard,
+	IDataTable,
+	IDataTableAction,
+} from '@iqrf/iqrf-vue-ui';
 import { onMounted, type PropType, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import DeviceProfileDeleteDialog from '@/components/config/daemon/interfaces/profiles/DeviceProfileDeleteDialog.vue';
 import DeviceProfileForm from '@/components/config/daemon/interfaces/profiles/DeviceProfileForm.vue';
-import DataTable from '@/components/layout/data-table/DataTable.vue';
-import DataTableAction from '@/components/layout/data-table/DataTableAction.vue';
 import { useApiClient } from '@/services/ApiClient';
-import { ComponentState } from '@/types/ComponentState';
 
 defineProps({
 	mappingType: {

@@ -16,7 +16,7 @@ limitations under the License.
 -->
 
 <template>
-	<DeleteModalWindow
+	<IDeleteModalWindow
 		ref='dialog'
 		:component-state='componentState'
 		:tooltip='$t("components.config.daemon.connections.actions.delete")'
@@ -26,7 +26,7 @@ limitations under the License.
 			{{ $t('components.config.daemon.connections.udp.delete.title') }}
 		</template>
 		{{ $t('components.config.daemon.connections.udp.delete.prompt', { name: connectionProfile.instance }) }}
-	</DeleteModalWindow>
+	</IDeleteModalWindow>
 </template>
 
 <script lang='ts' setup>
@@ -36,6 +36,10 @@ import {
 	type IqrfGatewayDaemonUdpMessaging,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import {
+	ComponentState,
+	IDeleteModalWindow,
+} from '@iqrf/iqrf-vue-ui';
+import {
 	type PropType,
 	ref,
 	type Ref,
@@ -43,9 +47,7 @@ import {
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
-import DeleteModalWindow from '@/components/DeleteModalWindow.vue';
 import { useApiClient } from '@/services/ApiClient';
-import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const componentProps = defineProps({
@@ -55,12 +57,12 @@ const componentProps = defineProps({
 	},
 });
 const emit = defineEmits(['deleted']);
-const dialog: Ref<typeof DeleteModalWindow | null> = ref(null);
+const dialog: Ref<typeof IDeleteModalWindow | null> = ref(null);
 const i18n = useI18n();
 const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
 
 async function onSubmit(): Promise<void> {
-	componentState.value = ComponentState.Saving;
+	componentState.value = ComponentState.Action;
 	try {
 		await service.deleteInstance(IqrfGatewayDaemonComponentName.IqrfUdpMessaging, componentProps.connectionProfile.instance);
 		toast.success(

@@ -19,7 +19,7 @@ limitations under the License.
 	<v-form
 		ref='form'
 		v-slot='{ isValid }'
-		:disabled='componentState === ComponentState.Saving'
+		:disabled='componentState === ComponentState.Action'
 	>
 		<ICard>
 			<template #title>
@@ -38,21 +38,24 @@ limitations under the License.
 				required
 			/>
 			<template #actions>
-				<ICardActionBtn
+				<IActionBtn
 					color='primary'
-					:disabled='!isValid.value || componentState === ComponentState.Saving'
+					container-type='card'
+					:disabled='!isValid.value || componentState === ComponentState.Action'
 					:text='$t("components.maintenance.mender.update.install")'
 					@click='installArtifact()'
 				/>
-				<ICardActionBtn
+				<IActionBtn
 					color='primary'
-					:disabled='componentState === ComponentState.Saving'
+					container-type='card'
+					:disabled='componentState === ComponentState.Action'
 					:text='$t("components.maintenance.mender.update.commit")'
 					@click='commitUpdate()'
 				/>
-				<ICardActionBtn
+				<IActionBtn
 					color='primary'
-					:disabled='componentState === ComponentState.Saving'
+					container-type='card'
+					:disabled='componentState === ComponentState.Action'
 					:text='$t("components.maintenance.mender.update.rollback")'
 					@click='rollbackUpdate()'
 				/>
@@ -64,7 +67,12 @@ limitations under the License.
 
 <script lang='ts' setup>
 import { type MenderService } from '@iqrf/iqrf-gateway-webapp-client/services/Maintenance';
-import { ICard, ICardActionBtn, ValidationRules } from '@iqrf/iqrf-vue-ui';
+import {
+	ComponentState,
+	IActionBtn,
+	ICard,
+	ValidationRules,
+} from '@iqrf/iqrf-vue-ui';
 import { mdiFileOutline } from '@mdi/js';
 import { AxiosError } from 'axios';
 import { ref, type Ref } from 'vue';
@@ -75,7 +83,6 @@ import { VForm } from 'vuetify/components';
 import MenderUpdateLog from '@/components/maintenance/mender-update/MenderUpdateLog.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
-import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
 const i18n = useI18n();
@@ -88,7 +95,7 @@ async function installArtifact(): Promise<void> {
 	if (!await validateForm(form.value) || artifacts.value.length === 0) {
 		return;
 	}
-	componentState.value = ComponentState.Saving;
+	componentState.value = ComponentState.Action;
 	const artifactFile = artifacts.value[0];
 	try {
 		const data = await service.install(artifactFile);
@@ -107,7 +114,7 @@ async function installArtifact(): Promise<void> {
 }
 
 async function commitUpdate(): Promise<void> {
-	componentState.value = ComponentState.Saving;
+	componentState.value = ComponentState.Action;
 	try {
 		const data = await service.commit();
 		updateLog(data);
@@ -125,7 +132,7 @@ async function commitUpdate(): Promise<void> {
 }
 
 async function rollbackUpdate(): Promise<void> {
-	componentState.value = ComponentState.Saving;
+	componentState.value = ComponentState.Action;
 	try {
 		const data = await service.rollback();
 		updateLog(data);

@@ -19,7 +19,7 @@ limitations under the License.
 	<v-form
 		ref='form'
 		v-slot='{ isValid }'
-		:disabled='componentState === ComponentState.Saving'
+		:disabled='componentState === ComponentState.Action'
 		@submit.prevent='onSubmit'
 	>
 		<ICard>
@@ -33,7 +33,7 @@ limitations under the License.
 			/>
 			<div v-else>
 				{{ $t('components.account.recovery.request.prompt') }}
-				<TextInput
+				<ITextInput
 					v-model='data.username'
 					class='mt-4'
 					:label='$t("common.labels.username")'
@@ -43,10 +43,11 @@ limitations under the License.
 					required
 					:prepend-inner-icon='mdiAccount'
 				/>
-				<ICardActionBtn
+				<IActionBtn
 					color='primary'
+					container-type='card'
 					:disabled='!isValid.value'
-					:loading='componentState === ComponentState.Saving'
+					:loading='componentState === ComponentState.Action'
 					:icon='mdiAccountKey'
 					:text='$t("components.account.recovery.request.button")'
 					type='submit'
@@ -59,7 +60,13 @@ limitations under the License.
 <script lang='ts' setup>
 import { AccountService } from '@iqrf/iqrf-gateway-webapp-client/services';
 import { UserAccountRecovery } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { ICard, ICardActionBtn, ValidationRules } from '@iqrf/iqrf-vue-ui';
+import {
+	ComponentState,
+	IActionBtn,
+	ICard,
+	ITextInput,
+	ValidationRules,
+} from '@iqrf/iqrf-vue-ui';
 import { mdiAccount, mdiAccountKey } from '@mdi/js';
 import { AxiosError } from 'axios';
 import { ref, type Ref } from 'vue';
@@ -67,11 +74,9 @@ import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
 
-import TextInput from '@/components/layout/form/TextInput.vue';
 import UrlBuilder from '@/helpers/urlBuilder';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
-import { ComponentState } from '@/types/ComponentState';
 
 /// Component state
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
@@ -94,7 +99,7 @@ async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
 	}
-	componentState.value = ComponentState.Saving;
+	componentState.value = ComponentState.Action;
 	try {
 		await service.requestPasswordRecovery(data.value);
 		toast.success(

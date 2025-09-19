@@ -16,7 +16,7 @@ limitations under the License.
 -->
 
 <template>
-	<DeleteModalWindow
+	<IDeleteModalWindow
 		ref='dialog'
 		:tooltip='$t("components.accessControl.apiKeys.actions.delete")'
 		@submit='onSubmit'
@@ -25,20 +25,20 @@ limitations under the License.
 			{{ $t('components.accessControl.apiKeys.delete.title') }}
 		</template>
 		{{ $t('components.accessControl.apiKeys.delete.prompt', { id: apiKey.id }) }}
-	</DeleteModalWindow>
+	</IDeleteModalWindow>
 </template>
 
 <script lang='ts' setup>
 import { type ApiKeyService } from '@iqrf/iqrf-gateway-webapp-client/services/Security';
 import { type ApiKeyInfo } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
+import { IDeleteModalWindow } from '@iqrf/iqrf-vue-ui';
 import { type PropType, ref , type Ref } from 'vue';
 import { toast } from 'vue3-toastify';
 
-import DeleteModalWindow from '@/components/DeleteModalWindow.vue';
 import { useApiClient } from '@/services/ApiClient';
 
 const emit = defineEmits(['refresh']);
-const dialog: Ref<typeof DeleteModalWindow | null> = ref(null);
+const dialog: Ref<typeof IDeleteModalWindow | null> = ref(null);
 const componentProps = defineProps({
 	apiKey: {
 		type: Object as PropType<ApiKeyInfo>,

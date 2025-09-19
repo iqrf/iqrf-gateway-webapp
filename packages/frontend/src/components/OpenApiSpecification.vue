@@ -21,8 +21,9 @@ limitations under the License.
 			{{ $t('components.dev.openApi.title') }}
 		</template>
 		<template #titleActions>
-			<ICardTitleActionBtn
+			<IActionBtn
 				:action='Action.Reload'
+				container-type='card-title'
 				@click='fetch'
 			/>
 		</template>
@@ -44,7 +45,12 @@ limitations under the License.
 </template>
 
 <script setup lang='ts'>
-import { Action, ICard, ICardTitleActionBtn } from '@iqrf/iqrf-vue-ui';
+import {
+	Action,
+	ComponentState,
+	IActionBtn,
+	ICard,
+} from '@iqrf/iqrf-vue-ui';
 import { OpenAPI3 } from 'openapi-typescript';
 import { storeToRefs } from 'pinia';
 import {
@@ -58,7 +64,6 @@ import { toast } from 'vue3-toastify';
 import UrlBuilder from '@/helpers/urlBuilder';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
-import { ComponentState } from '@/types/ComponentState';
 
 /// Component state
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);

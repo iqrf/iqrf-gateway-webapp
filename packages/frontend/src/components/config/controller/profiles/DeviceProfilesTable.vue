@@ -63,7 +63,13 @@ limitations under the License.
 <script lang='ts' setup>
 import { type IqrfGatewayControllerService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import { type IqrfGatewayControllerMapping } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { Action, IActionBtn, ICard, IDataTable, IDataTableAction } from '@iqrf/iqrf-vue-ui';
+import {
+	Action,
+	ComponentState,
+	IActionBtn,
+	ICard, IDataTable,
+	IDataTableAction,
+} from '@iqrf/iqrf-vue-ui';
 import { onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
@@ -71,7 +77,6 @@ import { toast } from 'vue3-toastify';
 import DeviceProfileDeleteDialog from '@/components/config/controller/profiles/DeviceProfileDeleteDialog.vue';
 import DeviceProfileForm from '@/components/config/controller/profiles/DeviceProfileForm.vue';
 import { useApiClient } from '@/services/ApiClient';
-import { ComponentState } from '@/types/ComponentState';
 
 const emit = defineEmits(['apply']);
 const i18n = useI18n();

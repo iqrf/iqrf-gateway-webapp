@@ -18,7 +18,7 @@ limitations under the License.
 <template>
 	<v-form
 		v-slot='{ isValid }'
-		:disabled='componentState === ComponentState.Saving'
+		:disabled='componentState === ComponentState.Action'
 		@submit.prevent='onSubmit()'
 	>
 		<ICard>
@@ -38,9 +38,10 @@ limitations under the License.
 				required
 			/>
 			<template #actions>
-				<ICardActionBtn
+				<IActionBtn
 					:action='Action.Upload'
-					:disabled='!isValid.value || componentState === ComponentState.Saving'
+					container-type='card'
+					:disabled='!isValid.value || componentState === ComponentState.Action'
 					:text='$t("common.buttons.restore")'
 					type='submit'
 				/>
@@ -53,8 +54,9 @@ limitations under the License.
 import { type BackupService } from '@iqrf/iqrf-gateway-webapp-client/services/Maintenance';
 import {
 	Action,
+	ComponentState,
+	IActionBtn,
 	ICard,
-	ICardActionBtn,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiFileOutline } from '@mdi/js';
@@ -65,7 +67,6 @@ import { VForm } from 'vuetify/components';
 
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
-import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
 const i18n = useI18n();
@@ -78,7 +79,7 @@ async function onSubmit(): Promise<void> {
 		return;
 	}
 	const file = archive.value[0];
-	componentState.value = ComponentState.Saving;
+	componentState.value = ComponentState.Action;
 	try {
 		const rsp = await service.restore(file);
 		toast.success(

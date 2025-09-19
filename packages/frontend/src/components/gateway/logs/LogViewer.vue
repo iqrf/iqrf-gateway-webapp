@@ -28,12 +28,12 @@ limitations under the License.
 
 <script lang='ts' setup>
 import { type LogService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
+import { ComponentState } from '@iqrf/iqrf-vue-ui';
 import { onMounted, type PropType, ref, type Ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import { useApiClient } from '@/services/ApiClient';
-import { ComponentState } from '@/types/ComponentState';
 
 const componentProps = defineProps({
 	serviceName: {

@@ -16,7 +16,7 @@ limitations under the License.
 -->
 
 <template>
-	<DeleteModalWindow
+	<IDeleteModalWindow
 		ref='dialog'
 		:component-state='componentState'
 		:tooltip='$t("components.ipNetwork.wireGuard.tunnels.columns.action.delete")'
@@ -26,7 +26,7 @@ limitations under the License.
 			{{ $t('components.ipNetwork.wireGuard.tunnels.delete.title') }}
 		</template>
 		{{ $t('components.ipNetwork.wireGuard.tunnels.delete.prompt', { name: tunnel.name }) }}
-	</DeleteModalWindow>
+	</IDeleteModalWindow>
 </template>
 <script setup lang='ts'>
 import {
@@ -35,13 +35,15 @@ import {
 import {
 	type WireGuardTunnelListEntry,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
+import {
+	ComponentState,
+	IDeleteModalWindow,
+} from '@iqrf/iqrf-vue-ui';
 import { type PropType, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
-import DeleteModalWindow from '@/components/DeleteModalWindow.vue';
 import { useApiClient } from '@/services/ApiClient';
-import { ComponentState } from '@/types/ComponentState';
 
 /// Component state
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
@@ -55,7 +57,7 @@ const componentProps = defineProps({
 /// Define emit events
 const emit = defineEmits(['deleted']);
 /// Modal dialog reference
-const dialog: Ref<typeof DeleteModalWindow | null> = ref(null);
+const dialog: Ref<typeof IDeleteModalWindow | null> = ref(null);
 /// Internationalization instance
 const i18n = useI18n();
 /// WireGuard service
@@ -75,7 +77,7 @@ async function onSubmit(): Promise<void> {
 	if (componentProps.tunnel === undefined || componentProps.tunnel === null) {
 		return;
 	}
-	componentState.value = ComponentState.Saving;
+	componentState.value = ComponentState.Action;
 	try {
 		await service.deleteTunnel(componentProps.tunnel?.id);
 		componentState.value = ComponentState.Ready;

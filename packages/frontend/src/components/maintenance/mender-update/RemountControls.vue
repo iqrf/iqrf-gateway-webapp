@@ -23,14 +23,14 @@ limitations under the License.
 		<v-btn
 			class='mr-2'
 			color='primary'
-			:disabled='componentState === ComponentState.Saving'
+			:disabled='componentState === ComponentState.Action'
 			@click='onSubmit(MenderMountMode.RO)'
 		>
 			{{ $t('components.maintenance.mender.remount.readonly') }}
 		</v-btn>
 		<v-btn
 			color='primary'
-			:disabled='componentState === ComponentState.Saving'
+			:disabled='componentState === ComponentState.Action'
 			@click='onSubmit(MenderMountMode.RW)'
 		>
 			{{ $t('components.maintenance.mender.remount.readwrite') }}
@@ -41,13 +41,12 @@ limitations under the License.
 <script lang='ts' setup>
 import { type MenderService } from '@iqrf/iqrf-gateway-webapp-client/services/Maintenance';
 import { MenderMountMode, type MenderRemount } from '@iqrf/iqrf-gateway-webapp-client/types/Maintenance';
-import { ICard } from '@iqrf/iqrf-vue-ui';
+import { ComponentState, ICard } from '@iqrf/iqrf-vue-ui';
 import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import { useApiClient } from '@/services/ApiClient';
-import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
 const i18n = useI18n();
@@ -57,7 +56,7 @@ async function onSubmit(mode: MenderMountMode): Promise<void> {
 	const data: MenderRemount = {
 		mode: mode,
 	};
-	componentState.value = ComponentState.Saving;
+	componentState.value = ComponentState.Action;
 	try {
 		await service.remount(data);
 		toast.success(

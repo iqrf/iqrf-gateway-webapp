@@ -77,7 +77,7 @@ limitations under the License.
 <script lang='ts' setup>
 import VueCountdown from '@chenfengyuan/vue-countdown';
 import { UserSignedIn } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { ICard } from '@iqrf/iqrf-vue-ui';
+import { ComponentState, ICard } from '@iqrf/iqrf-vue-ui';
 import { Head } from '@unhead/vue/components';
 import { AxiosError } from 'axios';
 import { validate as uuidValidate, version as uuidVersion } from 'uuid';
@@ -88,7 +88,6 @@ import { toast } from 'vue3-toastify';
 
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
-import { ComponentState } from '@/types/ComponentState';
 
 /// Component props
 const componentProps = defineProps({

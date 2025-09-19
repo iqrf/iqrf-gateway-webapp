@@ -19,7 +19,7 @@ limitations under the License.
 	<v-form
 		ref='form'
 		v-slot='{ isValid }'
-		:disabled='componentState === ComponentState.Saving'
+		:disabled='componentState === ComponentState.Action'
 	>
 		<ICard>
 			<template #title>
@@ -55,7 +55,7 @@ limitations under the License.
 import { type ServiceService } from '@iqrf/iqrf-gateway-webapp-client/services';
 import { type UpgradeService } from '@iqrf/iqrf-gateway-webapp-client/services/Iqrf';
 import { FileFormat, FileType } from '@iqrf/iqrf-gateway-webapp-client/types/Iqrf';
-import { ICard, ValidationRules } from '@iqrf/iqrf-vue-ui';
+import { ComponentState, ICard, ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiFileOutline } from '@mdi/js';
 import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -64,7 +64,6 @@ import { VForm } from 'vuetify/components';
 
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
-import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
 const i18n = useI18n();
@@ -78,7 +77,7 @@ async function onSubmit(): Promise<void> {
 		return;
 	}
 	const file = handler.value[0];
-	componentState.value = ComponentState.Saving;
+	componentState.value = ComponentState.Action;
 	let success = await stopDaemon();
 	if (!success) {
 		await handleError('TODO DAEMON STOP ERROR HANDLING');

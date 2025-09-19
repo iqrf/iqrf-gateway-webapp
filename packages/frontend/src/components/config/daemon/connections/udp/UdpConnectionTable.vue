@@ -27,13 +27,14 @@ limitations under the License.
 				@saved='getConfig()'
 			/>
 			<UdpConnectionImportDialog @import='(c: IqrfGatewayDaemonUdpMessaging) => importFromConfig(c)' />
-			<ICardTitleActionBtn
+			<IActionBtn
 				:action='Action.Reload'
+				container-type='card-title'
 				:tooltip='$t("components.config.daemon.connections.actions.reload")'
 				@click='getConfig()'
 			/>
 		</template>
-		<DataTable
+		<IDataTable
 			:headers='headers'
 			:items='instances'
 			:hover='true'
@@ -41,7 +42,7 @@ limitations under the License.
 			:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
 		>
 			<template #item.actions='{ item }'>
-				<DataTableAction
+				<IDataTableAction
 					:action='Action.Export'
 					:tooltip='$t("components.config.daemon.connections.actions.export")'
 					@click='exportConfig(item)'
@@ -56,7 +57,7 @@ limitations under the License.
 					@deleted='getConfig()'
 				/>
 			</template>
-		</DataTable>
+		</IDataTable>
 	</ICard>
 </template>
 
@@ -67,7 +68,14 @@ import {
 	type IqrfGatewayDaemonUdpMessaging,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { FileDownloader } from '@iqrf/iqrf-gateway-webapp-client/utils';
-import { Action, ICard, ICardTitleActionBtn } from '@iqrf/iqrf-vue-ui';
+import {
+	Action,
+	ComponentState,
+	IActionBtn,
+	ICard,
+	IDataTable,
+	IDataTableAction,
+} from '@iqrf/iqrf-vue-ui';
 import { ref, type Ref } from 'vue';
 import { onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -76,10 +84,7 @@ import { toast } from 'vue3-toastify';
 import UdpConnectionDeleteDialog from '@/components/config/daemon/connections/udp/UdpConnectionDeleteDialog.vue';
 import UdpConnectionForm from '@/components/config/daemon/connections/udp/UdpConnectionForm.vue';
 import UdpConnectionImportDialog from '@/components/config/daemon/connections/udp/UdpConnectionImportDialog.vue';
-import DataTable from '@/components/layout/data-table/DataTable.vue';
-import DataTableAction from '@/components/layout/data-table/DataTableAction.vue';
 import { useApiClient } from '@/services/ApiClient';
-import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();

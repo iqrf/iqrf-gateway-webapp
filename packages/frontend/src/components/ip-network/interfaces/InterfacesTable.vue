@@ -21,8 +21,9 @@ limitations under the License.
 			{{ $t(`components.ipNetwork.interfaces.titles.${type}`) }}
 		</template>
 		<template #titleActions>
-			<ICardTitleActionBtn
+			<IActionBtn
 				:action='Action.Reload'
+				container-type='card-title'
 				@click='fetchData'
 			/>
 		</template>
@@ -32,7 +33,7 @@ limitations under the License.
 			type='table-heading, table-row-divider@2, table-row'
 		>
 			<v-responsive>
-				<DataTable
+				<IDataTable
 					:items='interfaces'
 					:headers='headers'
 					hide-pagination
@@ -41,7 +42,7 @@ limitations under the License.
 					<template #item.state='{ item }'>
 						<InterfaceStateBadge :state='item.state' />
 					</template>
-				</DataTable>
+				</IDataTable>
 			</v-responsive>
 		</v-skeleton-loader>
 	</ICard>
@@ -52,15 +53,19 @@ import {
 	type NetworkInterface,
 	type NetworkInterfaceType,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
-import { Action, ICard, ICardTitleActionBtn } from '@iqrf/iqrf-vue-ui';
+import {
+	Action,
+	ComponentState,
+	IActionBtn,
+	ICard,
+	IDataTable,
+} from '@iqrf/iqrf-vue-ui';
 import { computed, onBeforeMount, type PropType, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import InterfaceStateBadge
 	from '@/components/ip-network/interfaces/InterfaceStateBadge.vue';
-import DataTable from '@/components/layout/data-table/DataTable.vue';
 import { useApiClient } from '@/services/ApiClient';
-import { ComponentState } from '@/types/ComponentState';
 
 /// Component props
 const componentProps = defineProps({

@@ -33,13 +33,12 @@ limitations under the License.
 import {
 	Modem,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
-import { ValidationRules } from '@iqrf/iqrf-vue-ui';
+import { ComponentState, ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiExpansionCardVariant } from '@mdi/js';
 import { onBeforeMount, type PropType, ref, type Ref } from 'vue';
 
 import SelectInput from '@/components/layout/form/SelectInput.vue';
 import { useApiClient } from '@/services/ApiClient';
-import { ComponentState } from '@/types/ComponentState';
 import { type SelectItem } from '@/types/vuetify';
 
 /// Model value

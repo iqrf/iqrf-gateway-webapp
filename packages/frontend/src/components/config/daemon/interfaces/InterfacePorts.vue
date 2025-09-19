@@ -21,12 +21,13 @@ limitations under the License.
 			{{ $t(`components.config.daemon.interfaces.${interfaceType}.devices`) }}
 		</template>
 		<template #titleActions>
-			<ICardTitleActionBtn
+			<IActionBtn
 				:action='Action.Reload'
+				container-type='card-title'
 				@click='getPorts()'
 			/>
 		</template>
-		<DataTable
+		<IDataTable
 			:headers='headers'
 			:items='ports'
 			:loading='componentState === ComponentState.Loading'
@@ -38,29 +39,33 @@ limitations under the License.
 				{{ item }}
 			</template>
 			<template #item.actions='{ item }'>
-				<DataTableAction
+				<IDataTableAction
 					:action='Action.Apply'
 					:tooltip='$t("components.config.daemon.interfaces.apply")'
 					@click='applyInterface(item)'
 				/>
 			</template>
-		</DataTable>
+		</IDataTable>
 	</ICard>
 </template>
 
 <script lang='ts' setup>
 import { type InterfacePortsService } from '@iqrf/iqrf-gateway-webapp-client/services/Iqrf';
 import { type IqrfInterfaceType } from '@iqrf/iqrf-gateway-webapp-client/types/Iqrf';
-import { Action, ICard, ICardTitleActionBtn } from '@iqrf/iqrf-vue-ui';
+import {
+	Action,
+	ComponentState,
+	IActionBtn,
+	ICard,
+	IDataTable,
+	IDataTableAction,
+} from '@iqrf/iqrf-vue-ui';
 import { type PropType, ref, type Ref } from 'vue';
 import { onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
-import DataTable from '@/components/layout/data-table/DataTable.vue';
-import DataTableAction from '@/components/layout/data-table/DataTableAction.vue';
 import { useApiClient } from '@/services/ApiClient';
-import { ComponentState } from '@/types/ComponentState';
 
 const componentProps = defineProps({
 	interfaceType: {

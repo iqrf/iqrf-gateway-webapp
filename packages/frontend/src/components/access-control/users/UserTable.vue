@@ -68,7 +68,13 @@ limitations under the License.
 
 <script lang='ts' setup>
 import { type UserInfo } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { Action, IActionBtn, ICard, IDataTable } from '@iqrf/iqrf-vue-ui';
+import {
+	Action,
+	ComponentState,
+	IActionBtn,
+	ICard,
+	IDataTable,
+} from '@iqrf/iqrf-vue-ui';
 import { computed, onBeforeMount, ref, type Ref, toRaw } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
@@ -79,7 +85,6 @@ import UserLanguageColumn from '@/components/access-control/users/UserLanguageCo
 import UserRoleColumn from '@/components/access-control/users/UserRoleColumn.vue';
 import UserStateColumn from '@/components/access-control/users/UserStateColumn.vue';
 import { useApiClient } from '@/services/ApiClient';
-import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();

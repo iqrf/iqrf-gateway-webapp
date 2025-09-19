@@ -67,7 +67,12 @@ limitations under the License.
 <script lang='ts' setup>
 import { type LogService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
 import { FileDownloader } from '@iqrf/iqrf-gateway-webapp-client/utils';
-import { Action, IActionBtn, ICard } from '@iqrf/iqrf-vue-ui';
+import {
+	Action,
+	ComponentState,
+	IActionBtn,
+	ICard,
+} from '@iqrf/iqrf-vue-ui';
 import { mdiFolderDownloadOutline } from '@mdi/js';
 import { onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -76,7 +81,6 @@ import { toast } from 'vue3-toastify';
 import JournalViewer from '@/components/gateway/logs/JournalViewer.vue';
 import LogViewer from '@/components/gateway/logs/LogViewer.vue';
 import { useApiClient } from '@/services/ApiClient';
-import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const { t } = useI18n();

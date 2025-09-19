@@ -16,7 +16,7 @@ limitations under the License.
 -->
 
 <template>
-	<DeleteModalWindow
+	<IDeleteModalWindow
 		ref='dialog'
 		:tooltip='$t("components.config.profiles.actions.delete")'
 		@submit='onSubmit()'
@@ -25,17 +25,19 @@ limitations under the License.
 			{{ $t('components.config.profiles.delete.title') }}
 		</template>
 		{{ $t('components.config.profiles.delete.prompt', { name: profile.name }) }}
-	</DeleteModalWindow>
+	</IDeleteModalWindow>
 </template>
 
 <script lang='ts' setup>
 import { type IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import { type IqrfGatewayDaemonMapping } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import {
+	IDeleteModalWindow,
+} from '@iqrf/iqrf-vue-ui';
 import { type PropType, ref , type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
-import DeleteModalWindow from '@/components/DeleteModalWindow.vue';
 import { useApiClient } from '@/services/ApiClient';
 
 const emit = defineEmits(['deleted']);
@@ -46,7 +48,7 @@ const componentProps = defineProps({
 	},
 });
 const i18n = useI18n();
-const dialog: Ref<typeof DeleteModalWindow | null> = ref(null);
+const dialog: Ref<typeof IDeleteModalWindow | null> = ref(null);
 const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
 
 async function onSubmit(): Promise<void> {

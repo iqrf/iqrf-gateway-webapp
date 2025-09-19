@@ -16,15 +16,16 @@ limitations under the License.
 -->
 
 <template>
-	<ModalWindow v-model='show'>
+	<IModalWindow v-model='show'>
 		<template #activator='{ props }'>
-			<ICardTitleActionBtn
+			<IActionBtn
 				v-if='action === Action.Add'
 				v-bind='props'
 				:action='action'
+				container-type='card-title'
 				:tooltip='$t("components.config.daemon.connections.actions.add")'
 			/>
-			<DataTableAction
+			<IDataTableAction
 				v-if='action === Action.Edit'
 				v-bind='props'
 				:action='Action.Edit'
@@ -35,14 +36,14 @@ limitations under the License.
 			ref='form'
 			v-slot='{ isValid }'
 			validate-on='input'
-			:disabled='componentState === ComponentState.Saving'
+			:disabled='componentState === ComponentState.Action'
 			@submit.prevent='onSubmit()'
 		>
 			<ICard :action='action'>
 				<template #title>
 					{{ dialogTitle }}
 				</template>
-				<TextInput
+				<ITextInput
 					v-model='profile.instance'
 					:label='$t("components.config.daemon.connections.profile")'
 					:rules='[
@@ -81,21 +82,23 @@ limitations under the License.
 					required
 				/>
 				<template #actions>
-					<ICardActionBtn
+					<IActionBtn
 						:action='action'
-						:disabled='!isValid.value || componentState === ComponentState.Saving'
+						container-type='card'
+						:disabled='!isValid.value || componentState === ComponentState.Action'
 						type='submit'
 					/>
 					<v-spacer />
-					<ICardActionBtn
+					<IActionBtn
 						:action='Action.Cancel'
-						:disabled='componentState === ComponentState.Saving'
+						container-type='card'
+						:disabled='componentState === ComponentState.Action'
 						@click='close()'
 					/>
 				</template>
 			</ICard>
 		</v-form>
-	</ModalWindow>
+	</IModalWindow>
 </template>
 
 <script lang='ts' setup>
@@ -103,8 +106,12 @@ import { type IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/
 import { IqrfGatewayDaemonComponentName, type IqrfGatewayDaemonUdpMessaging } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import {
 	Action,
+	ComponentState,
+	IActionBtn,
 	ICard,
-	ICardActionBtn, ICardTitleActionBtn,
+	IDataTableAction,
+	IModalWindow,
+	ITextInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { computed, type PropType, ref, type Ref, watchEffect } from 'vue';
@@ -112,13 +119,9 @@ import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
-import DataTableAction from '@/components/layout/data-table/DataTableAction.vue';
 import NumberInput from '@/components/layout/form/NumberInput.vue';
-import TextInput from '@/components/layout/form/TextInput.vue';
-import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
-import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const emit = defineEmits(['saved']);
@@ -175,7 +178,7 @@ async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
 	}
-	componentState.value = ComponentState.Saving;
+	componentState.value = ComponentState.Action;
 	const params = { ...profile.value };
 	try {
 		if (componentProps.action === Action.Add) {

@@ -19,7 +19,7 @@ limitations under the License.
 	<v-form
 		ref='form'
 		v-slot='{ isValid, validate }'
-		:disabled='[ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
+		:disabled='[ComponentState.Reloading, ComponentState.Action].includes(componentState)'
 		@submit.prevent='onSubmit()'
 	>
 		<ICard>
@@ -49,7 +49,7 @@ limitations under the License.
 								cols='12'
 								md='6'
 							>
-								<TextInput
+								<ITextInput
 									v-model='config.influx.host'
 									:label='$t("common.labels.hostname")'
 									:rules='[
@@ -75,7 +75,7 @@ limitations under the License.
 								/>
 							</v-col>
 						</v-row>
-						<TextInput
+						<ITextInput
 							v-model='config.influx.token'
 							:label='$t("components.config.influxdb-bridge.token")'
 							:description='$t("components.config.influxdb-bridge.notes.newAuth")'
@@ -85,7 +85,7 @@ limitations under the License.
 								cols='12'
 								md='6'
 							>
-								<TextInput
+								<ITextInput
 									v-model='config.influx.user'
 									:label='$t("common.labels.username")'
 									:description='$t("components.config.influxdb-bridge.notes.oldAuth")'
@@ -95,13 +95,13 @@ limitations under the License.
 								cols='12'
 								md='6'
 							>
-								<PasswordInput
+								<IPasswordInput
 									v-model='config.influx.password'
 									:label='$t("common.labels.password")'
 								/>
 							</v-col>
 						</v-row>
-						<TextInput
+						<ITextInput
 							v-model='config.influx.org'
 							:label='$t("components.config.influxdb-bridge.org")'
 							:rules='[
@@ -114,7 +114,7 @@ limitations under the License.
 								cols='12'
 								md='4'
 							>
-								<TextInput
+								<ITextInput
 									v-model='config.influx.buckets.gateway'
 									:label='$t("components.config.influxdb-bridge.gatewayBucket")'
 									:rules='[
@@ -127,7 +127,7 @@ limitations under the License.
 								cols='12'
 								md='4'
 							>
-								<TextInput
+								<ITextInput
 									v-model='config.influx.buckets.devices'
 									:label='$t("components.config.influxdb-bridge.devicesBucket")'
 									:rules='[
@@ -140,7 +140,7 @@ limitations under the License.
 								cols='12'
 								md='4'
 							>
-								<TextInput
+								<ITextInput
 									v-model='config.influx.buckets.sensors'
 									:label='$t("components.config.influxdb-bridge.sensorsBucket")'
 									:rules='[
@@ -158,7 +158,7 @@ limitations under the License.
 								cols='12'
 								md='6'
 							>
-								<TextInput
+								<ITextInput
 									v-model='config.mqtt.host'
 									:label='$t("common.labels.hostname")'
 									:rules='[
@@ -184,7 +184,7 @@ limitations under the License.
 								/>
 							</v-col>
 						</v-row>
-						<TextInput
+						<ITextInput
 							v-model='config.mqtt.client'
 							:label='$t("components.config.daemon.connections.mqtt.clientId")'
 							:rules='[
@@ -197,7 +197,7 @@ limitations under the License.
 								cols='12'
 								md='6'
 							>
-								<TextInput
+								<ITextInput
 									v-model='config.mqtt.user'
 									:label='$t("common.labels.username")'
 									:rules='config.mqtt.password.length > 0 ?
@@ -213,7 +213,7 @@ limitations under the License.
 								cols='12'
 								md='6'
 							>
-								<PasswordInput
+								<IPasswordInput
 									v-model='config.mqtt.password'
 									:label='$t("common.labels.password")'
 									:rules='config.mqtt.user.length > 0 ?
@@ -226,7 +226,7 @@ limitations under the License.
 								/>
 							</v-col>
 						</v-row>
-						<DataTable
+						<IDataTable
 							:headers='headers'
 							:items='config.mqtt.topics'
 							no-data-text='components.config.influxdb-bridge.noTopics'
@@ -262,13 +262,13 @@ limitations under the License.
 									:topic='item'
 									@save='(index: number, t: string) => saveTopic(index, t)'
 								/>
-								<DataTableAction
+								<IDataTableAction
 									:action='Action.Delete'
 									:tooltip='$t("components.config.influxdb-bridge.actions.delete")'
 									@click='removeTopic(index)'
 								/>
 							</template>
-						</DataTable>
+						</IDataTable>
 					</section>
 				</v-responsive>
 			</v-skeleton-loader>
@@ -289,7 +289,16 @@ limitations under the License.
 <script lang='ts' setup>
 import { type IqrfGatewayInfluxdbBridgeService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import { type BridgeConfig } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { Action, ICard, ValidationRules } from '@iqrf/iqrf-vue-ui';
+import {
+	Action,
+	ComponentState,
+	ICard,
+	IDataTable,
+	IDataTableAction,
+	IPasswordInput,
+	ITextInput,
+	ValidationRules,
+} from '@iqrf/iqrf-vue-ui';
 import { mdiDelete, mdiReload } from '@mdi/js';
 import {
 	onMounted,
@@ -301,14 +310,9 @@ import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
 import SubscriptionTopicForm from '@/components/config/influxdb-bridge/SubscriptionTopicForm.vue';
-import DataTable from '@/components/layout/data-table/DataTable.vue';
-import DataTableAction from '@/components/layout/data-table/DataTableAction.vue';
 import NumberInput from '@/components/layout/form/NumberInput.vue';
-import PasswordInput from '@/components/layout/form/PasswordInput.vue';
-import TextInput from '@/components/layout/form/TextInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
-import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
@@ -339,7 +343,7 @@ async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value) || config.value === null) {
 		return;
 	}
-	componentState.value = ComponentState.Saving;
+	componentState.value = ComponentState.Action;
 	const params = { ...config.value };
 	try {
 		await service.updateConfig(params);

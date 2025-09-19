@@ -20,7 +20,7 @@ limitations under the License.
 		<h2 class='mb-3 text-h6'>
 			{{ $t("components.ipNetwork.connections.form.wifi.title") }}
 		</h2>
-		<TextInput
+		<ITextInput
 			v-model='configuration.wifi.ssid'
 			:label='$t("components.ipNetwork.connections.form.wifi.ssid")'
 			:rules='[
@@ -59,7 +59,10 @@ import {
 	WepKeyType,
 	WifiSecurityType,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
-import { ValidationRules } from '@iqrf/iqrf-vue-ui';
+import {
+	ITextInput,
+	ValidationRules,
+} from '@iqrf/iqrf-vue-ui';
 import { mdiWifi } from '@mdi/js';
 import { type PropType, watch } from 'vue';
 
@@ -71,7 +74,6 @@ import WpaEapConfiguration
 	from '@/components/ip-network/connections/wifi/WpaEapConfiguration.vue';
 import WpaPskConfiguration
 	from '@/components/ip-network/connections/wifi/WpaPskConfiguration.vue';
-import TextInput from '@/components/layout/form/TextInput.vue';
 
 /// Network connection configuration
 const configuration = defineModel({

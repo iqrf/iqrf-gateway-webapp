@@ -112,7 +112,14 @@ limitations under the License.
 <script lang='ts' setup>
 import { type ServiceService } from '@iqrf/iqrf-gateway-webapp-client/services';
 import { type ServiceState, type ServiceStatus } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { Action, IActionBtn, ICard, IDataTable, IDataTableAction } from '@iqrf/iqrf-vue-ui';
+import {
+	Action,
+	ComponentState,
+	IActionBtn,
+	ICard,
+	IDataTable,
+	IDataTableAction,
+} from '@iqrf/iqrf-vue-ui';
 import { onBeforeMount, ref, type Ref } from 'vue';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -120,7 +127,6 @@ import { toast } from 'vue3-toastify';
 
 import BooleanCheckMarker from '@/components/BooleanCheckMarker.vue';
 import { useApiClient } from '@/services/ApiClient';
-import { ComponentState } from '@/types/ComponentState';
 
 const i18n = useI18n();
 const service: ServiceService = useApiClient().getServiceService();

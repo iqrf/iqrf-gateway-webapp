@@ -21,8 +21,9 @@ limitations under the License.
 			{{ $t('pages.config.time.title') }}
 		</template>
 		<template #titleActions>
-			<ICardTitleActionBtn
+			<IActionBtn
 				:action='Action.Reload'
+				container-type='card-title'
 				@click='getTime'
 			/>
 		</template>
@@ -54,7 +55,7 @@ limitations under the License.
 						:label='$t("components.config.time.ntpSync")'
 						:hide-details='false'
 					/>
-					<DataTable
+					<IDataTable
 						v-if='timeSet.ntpSync'
 						:headers='headers'
 						:items='timeSet.ntpServers ?? []'
@@ -90,12 +91,12 @@ limitations under the License.
 								:server='item'
 								@save='saveServer'
 							/>
-							<DataTableAction
+							<IDataTableAction
 								:action='Action.Delete'
 								@click='removeServer(index)'
 							/>
 						</template>
-					</DataTable>
+					</IDataTable>
 					<div v-else>
 						<label for='datetimeinput'>
 							{{ $t('components.config.time.datetime') }}
@@ -113,8 +114,9 @@ limitations under the License.
 			</v-responsive>
 		</v-skeleton-loader>
 		<template #actions>
-			<ICardActionBtn
+			<IActionBtn
 				:action='Action.Edit'
+				container-type='card'
 				:disabled='componentState === ComponentState.Loading'
 				type='submit'
 			/>
@@ -133,9 +135,11 @@ import {
 } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
 import {
 	Action,
+	ComponentState,
+	IActionBtn,
 	ICard,
-	ICardActionBtn,
-	ICardTitleActionBtn,
+	IDataTable,
+	IDataTableAction,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiDelete, mdiMapClock } from '@mdi/js';
 import { DateTime } from 'luxon';
@@ -144,10 +148,7 @@ import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import NtpServerForm from '@/components/config/time/NtpServerForm.vue';
-import DataTable from '@/components/layout/data-table/DataTable.vue';
-import DataTableAction from '@/components/layout/data-table/DataTableAction.vue';
 import { useApiClient } from '@/services/ApiClient';
-import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();

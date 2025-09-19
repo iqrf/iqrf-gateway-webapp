@@ -16,7 +16,7 @@ limitations under the License.
 -->
 
 <template>
-	<ModalWindow v-model='show'>
+	<IModalWindow v-model='show'>
 		<template #activator='{ props }'>
 			<v-btn
 				v-if='action === Action.Add'
@@ -64,20 +64,22 @@ limitations under the License.
 					multiple
 				/>
 				<template #actions>
-					<ICardActionBtn
+					<IActionBtn
 						:action='action'
+						container-type='card'
 						:disabled='!isValid.value'
 						type='submit'
 					/>
 					<v-spacer />
-					<ICardActionBtn
+					<IActionBtn
 						:action='Action.Cancel'
+						container-type='card'
 						@click='close()'
 					/>
 				</template>
 			</ICard>
 		</v-form>
-	</ModalWindow>
+	</IModalWindow>
 </template>
 
 <script lang='ts' setup>
@@ -90,8 +92,9 @@ import { SchedulerTask } from '@iqrf/iqrf-gateway-daemon-utils/types/management'
 import { type IqrfGatewayDaemonSchedulerMessagings } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import {
 	Action,
+	IActionBtn,
 	ICard,
-	ICardActionBtn,
+	IModalWindow,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiPencil, mdiPlus } from '@mdi/js';
@@ -99,7 +102,6 @@ import { computed, type PropType, ref , type Ref, watchEffect } from 'vue';
 import { VForm } from 'vuetify/components';
 
 import SelectInput from '@/components/layout/form/SelectInput.vue';
-import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';
 
 const componentProps = defineProps({

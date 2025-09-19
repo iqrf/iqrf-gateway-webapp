@@ -22,8 +22,9 @@ limitations under the License.
 		</template>
 		<template #titleActions>
 			<ConnectionForm :action='Action.Add' :type='componentProps.type' />
-			<ICardTitleActionBtn
+			<IActionBtn
 				:action='Action.Reload'
+				container-type='card-title'
 				@click='fetchData'
 			/>
 		</template>
@@ -33,7 +34,7 @@ limitations under the License.
 			type='table-heading, table-row-divider@2, table-row'
 		>
 			<v-responsive>
-				<DataTable
+				<IDataTable
 					:items='connections'
 					:headers='headers'
 					dense
@@ -46,7 +47,7 @@ limitations under the License.
 						<ConnectionForm :action='Action.Edit' :type='componentProps.type' :uuid='item.uuid' />
 						<ConnectionDeleteDialog :connection='item' @deleted='fetchData' />
 					</template>
-				</DataTable>
+				</IDataTable>
 			</v-responsive>
 		</v-skeleton-loader>
 	</ICard>
@@ -57,7 +58,13 @@ import {
 	type NetworkConnectionListEntry,
 	type NetworkConnectionType,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
-import { Action, ICard, ICardTitleActionBtn } from '@iqrf/iqrf-vue-ui';
+import {
+	Action,
+	ComponentState,
+	IActionBtn,
+	ICard,
+	IDataTable,
+} from '@iqrf/iqrf-vue-ui';
 import { computed, onBeforeMount, type PropType, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -69,9 +76,7 @@ import ConnectionForm
 	from '@/components/ip-network/connections/ConnectionForm.vue';
 import ConnectionStateBadge
 	from '@/components/ip-network/connections/ConnectionStateBadge.vue';
-import DataTable from '@/components/layout/data-table/DataTable.vue';
 import { useApiClient } from '@/services/ApiClient';
-import { ComponentState } from '@/types/ComponentState';
 
 /// Component props
 const componentProps = defineProps({

@@ -19,7 +19,7 @@ limitations under the License.
 	<v-form
 		ref='form'
 		v-slot='{ isValid }'
-		:disabled='componentState === ComponentState.Saving'
+		:disabled='componentState === ComponentState.Action'
 		@submit.prevent='onSubmit'
 	>
 		<ICard :bottom-margin='true'>
@@ -38,7 +38,7 @@ limitations under the License.
 				type='heading@3, button'
 			>
 				<v-responsive>
-					<TextInput
+					<ITextInput
 						v-model='user.username'
 						:label='$t("components.common.fields.username")'
 						:rules='[
@@ -47,7 +47,7 @@ limitations under the License.
 						required
 						:prepend-inner-icon='mdiAccount'
 					/>
-					<TextInput
+					<ITextInput
 						v-model='user.email'
 						:label='$t("components.common.fields.email")'
 						:rules='[
@@ -57,15 +57,16 @@ limitations under the License.
 						required
 						:prepend-inner-icon='mdiEmail'
 					/>
-					<LanguageInput v-model='user.language' />
+					<ILanguageSelect v-model='user.language' />
 				</v-responsive>
 			</v-skeleton-loader>
 			<template #actions>
-				<ICardActionBtn
-					v-if='[ComponentState.Ready, ComponentState.Saving].includes(componentState)'
+				<IActionBtn
+					v-if='[ComponentState.Ready, ComponentState.Action].includes(componentState)'
 					:action='Action.Save'
+					container-type='card'
 					:disabled='!isValid.value'
-					:loading='componentState === ComponentState.Saving'
+					:loading='componentState === ComponentState.Action'
 					type='submit'
 				/>
 			</template>
@@ -78,13 +79,16 @@ import { type AccountService } from '@iqrf/iqrf-gateway-webapp-client/services';
 import {
 	type UserEdit,
 	type UserInfo,
-	UserLanguage,
 	UserRole,
 } from '@iqrf/iqrf-gateway-webapp-client/types';
 import {
 	Action,
+	ComponentState,
+	IActionBtn,
 	ICard,
-	ICardActionBtn,
+	ILanguageSelect,
+	ITextInput,
+	Language,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiAccount, mdiEmail } from '@mdi/js';
@@ -92,12 +96,9 @@ import { onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
-import LanguageInput from '@/components/account/LanguageInput.vue';
-import TextInput from '@/components/layout/form/TextInput.vue';
 import UrlBuilder from '@/helpers/urlBuilder';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
-import { ComponentState } from '@/types/ComponentState';
 
 /// Component state
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
@@ -109,7 +110,7 @@ const userStore = useUserStore();
 const user: Ref<UserEdit> = ref({
 	username: '',
 	email: '',
-	language: UserLanguage.English,
+	language: Language.English,
 	role: UserRole.Basic,
 });
 /// Account service
@@ -147,7 +148,7 @@ async function getUserData(): Promise<void> {
  * Updates the user profile
  */
 async function onSubmit(): Promise<void> {
-	componentState.value = ComponentState.Saving;
+	componentState.value = ComponentState.Action;
 	try {
 		await accountService.update(user.value);
 		componentState.value = ComponentState.Ready;

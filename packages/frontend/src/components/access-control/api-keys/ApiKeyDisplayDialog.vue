@@ -16,13 +16,13 @@ limitations under the License.
 -->
 
 <template>
-	<ModalWindow v-model='show'>
+	<IModalWindow v-model='show'>
 		<ICard>
 			<template #title>
 				{{ $t('components.accessControl.apiKeys.display.title') }}
 			</template>
 			{{ $t('components.accessControl.apiKeys.display.prompt') }}
-			<TextInput
+			<ITextInput
 				class='mt-4'
 				:model-value='apiKey'
 				readonly
@@ -38,26 +38,30 @@ limitations under the License.
 						{{ $t('common.buttons.clipboard') }}
 					</v-btn>
 				</template>
-			</TextInput>
+			</ITextInput>
 			<template #actions>
-				<ICardActionBtn
+				<IActionBtn
 					:action='Action.Cancel'
+					container-type='card'
 					@click='close'
 				/>
 			</template>
 		</ICard>
-	</ModalWindow>
+	</IModalWindow>
 </template>
 
 <script lang='ts' setup>
-import { Action, ICard, ICardActionBtn } from '@iqrf/iqrf-vue-ui';
+import {
+	Action,
+	IActionBtn,
+	ICard,
+	IModalWindow,
+	ITextInput,
+} from '@iqrf/iqrf-vue-ui';
 import { mdiClipboard } from '@mdi/js';
 import { type PropType, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
-
-import TextInput from '@/components/layout/form/TextInput.vue';
-import ModalWindow from '@/components/ModalWindow.vue';
 
 const componentProps = defineProps({
 	apiKey: {

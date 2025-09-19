@@ -54,7 +54,7 @@ limitations under the License.
 						</ul>
 					</span>
 				</v-alert>
-				<TextInput
+				<ITextInput
 					v-model='localKey.key'
 					label='SSH key'
 					:prepend-inner-icon='mdiKey'
@@ -65,7 +65,7 @@ limitations under the License.
 					required
 					@change='updateDescription()'
 				/>
-				<TextInput
+				<ITextInput
 					v-model='localKey.description'
 					label='Description'
 					:prepend-inner-icon='mdiTextShort'
@@ -101,6 +101,7 @@ import {
 	IActionBtn,
 	ICard,
 	IModalWindow,
+	ITextInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiKey, mdiTextShort } from '@mdi/js';
@@ -109,7 +110,6 @@ import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
-import TextInput from '@/components/layout/form/TextInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 

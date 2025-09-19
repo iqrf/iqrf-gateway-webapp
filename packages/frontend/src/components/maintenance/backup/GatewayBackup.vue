@@ -119,8 +119,9 @@ limitations under the License.
 				</tbody>
 			</v-table>
 			<template #actions>
-				<ICardActionBtn
+				<IActionBtn
 					:action='Action.Download'
+					container-type='card'
 					:disabled='componentState === ComponentState.Loading'
 					:text='$t("common.buttons.backup")'
 					type='submit'
@@ -135,7 +136,12 @@ import { type BackupService } from '@iqrf/iqrf-gateway-webapp-client/services/Ma
 import { Feature } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { type GatewayBackup } from '@iqrf/iqrf-gateway-webapp-client/types/Maintenance';
 import { FileDownloader } from '@iqrf/iqrf-gateway-webapp-client/utils';
-import { Action, ICard, ICardActionBtn } from '@iqrf/iqrf-vue-ui';
+import {
+	Action,
+	ComponentState,
+	IActionBtn,
+	ICard,
+} from '@iqrf/iqrf-vue-ui';
 import {
 	mdiCheckboxMultipleBlank,
 	mdiCheckboxMultipleMarked,
@@ -145,7 +151,6 @@ import { toast } from 'vue3-toastify';
 
 import { useApiClient } from '@/services/ApiClient';
 import { useFeatureStore } from '@/store/features';
-import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
 const featureStore = useFeatureStore();
