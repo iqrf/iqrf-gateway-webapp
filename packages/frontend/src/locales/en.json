@@ -1070,7 +1070,11 @@
 				"maxFiles": "Maximum number of log files to keep",
 				"maxSize": "Maximum disk space used by journal in MB",
 				"messages": {
+					"fetch": {
+						"failed": "Failed to retrieve journal configuration."
+					},
 					"save": {
+						"failed": "Failed to save journal configuration.",
 						"success": "Journal configuration successfully saved."
 					}
 				},
@@ -1097,14 +1101,26 @@
 				},
 				"unitCount": "Unit count",
 				"validation": {
-					"maxFileSizeInvalid": "Maximum log file size should be an integer greater or equal to 0.",
-					"maxFileSizeMissing": "Please enter maximum log file size.",
-					"maxFilesInvalid": "Maximum number of files to keep should be an integer greater or equal to 1.",
-					"maxFilesMissing": "Please enter maximum number of log files to keep.",
-					"maxSizeInvalid": "Maximum disk space used should be an integer greater or equal to 0.",
-					"maxSizeMissing": "Please enter maximum disk space usable by journal.",
-					"unitCountInvalid": "Unit count should be an integer greater or equal to 1.",
-					"unitCountMissing": "Please enter unit count."
+					"maxFileSize": {
+						"integer": "Maximum log file size should be an integer.",
+						"min": "Maximum log file size should be greater or equal to 0.",
+						"required": "Please enter maximum log file size."
+					},
+					"maxFiles": {
+						"integer": "Maximum number of files to keep should be an integer.",
+						"min": "Maximum number of files to keep should be greater or equal to 1.",
+						"required": "Pllease enter maximum number of log files to keep."
+					},
+					"maxSize": {
+						"integer": "Maximum disk space usable by journal should be an integer.",
+						"min": "Maximum disk space usable by journal should be greater or equal to 0.",
+						"required": "Please enter maximum disk size usable by journal."
+					},
+					"unitCount": {
+						"integer": "Unit count should be an integer.",
+						"min": "Unit count should be greater or equal to 1.",
+						"required": "Please enter unit count."
+					}
 				}
 			},
 			"mender": {
