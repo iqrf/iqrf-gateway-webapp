@@ -19,7 +19,7 @@ limitations under the License.
 	<v-form
 		ref='form'
 		v-slot='{ isValid }'
-		:disabled='[ComponentState.Reloading, ComponentState.Action].includes(componentState)'
+		:disabled='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState)'
 		@submit.prevent='onSubmit()'
 	>
 		<ICard>
@@ -30,9 +30,17 @@ limitations under the License.
 				<IActionBtn
 					:action='Action.Reload'
 					container-type='card-title'
+					:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+					:disabled='componentState === ComponentState.Action'
 					@click='getConfig()'
 				/>
 			</template>
+			<v-alert
+				v-if='componentState === ComponentState.FetchFailed'
+				type='error'
+				variant='tonal'
+				:text='$t("components.config.journal.messages.fetch.failed")'
+			/>
 			<v-skeleton-loader
 				class='input-skeleton-loader'
 				:loading='componentState === ComponentState.Loading'
@@ -43,50 +51,58 @@ limitations under the License.
 						<v-checkbox
 							v-model='config.forwardToSyslog'
 							:label='$t("components.config.journal.forwardToSyslog")'
+							hide-details
 						/>
-						<SelectInput
+						<ISelectInput
 							v-model='config.persistence'
 							:label='$t("components.config.journal.storage")'
 							:items='storageOptions'
+							:prepend-inner-icon='mdiMemory'
 						/>
-						<NumberInput
-							v-model.number='config.maxDiskSize'
+						<INumberInput
+							v-model='config.maxDiskSize'
 							:label='$t("components.config.journal.maxSize")'
 							:description='$t("components.config.journal.notes.systemDefault")'
 							:rules='[
-								(v: number|null) => ValidationRules.required(v, $t("components.config.journal.validation.maxSizeMissing")),
-								(v: number) => ValidationRules.integer(v, $t("components.config.journal.validation.maxSizeInvalid")),
-								(v: number) => ValidationRules.min(v, 0, $t("components.config.journal.validation.maxSizeInvalid")),
+								(v: number|null) => ValidationRules.required(v, $t("components.config.journal.validation.maxSize.required")),
+								(v: number) => ValidationRules.integer(v, $t("components.config.journal.validation.maxSize.integer")),
+								(v: number) => ValidationRules.min(v, 0, $t("components.config.journal.validation.maxSize.min")),
 							]'
+							:min='0'
 							required
+							:prepend-inner-icon='mdiFilePercent'
 						/>
-						<NumberInput
-							v-model.number='config.maxFiles'
+						<INumberInput
+							v-model='config.maxFiles'
 							:label='$t("components.config.journal.maxFiles")'
 							:description='$t("components.config.journal.notes.maxFiles")'
 							:rules='[
-								(v: number|null) => ValidationRules.required(v, $t("components.config.journal.validation.maxFilesMissing")),
-								(v: number) => ValidationRules.integer(v, $t("components.config.journal.validation.maxFilesInvalid")),
-								(v: number) => ValidationRules.min(v, 1, $t("components.config.journal.validation.maxFilesInvalid")),
+								(v: number|null) => ValidationRules.required(v, $t("components.config.journal.validation.maxFiles.required")),
+								(v: number) => ValidationRules.integer(v, $t("components.config.journal.validation.maxFiles.integer")),
+								(v: number) => ValidationRules.min(v, 1, $t("components.config.journal.validation.maxFiles.min")),
 							]'
+							:min='1'
 							required
+							:prepend-inner-icon='mdiFileMultiple'
 						/>
 						<v-checkbox
 							v-model='sizeRotation'
 							:label='$t("components.config.journal.sizeRotation")'
 							:hide-details='!sizeRotation'
 						/>
-						<NumberInput
+						<INumberInput
 							v-if='sizeRotation'
-							v-model.number='config.sizeRotation.maxFileSize'
+							v-model='config.sizeRotation.maxFileSize'
 							:label='$t("components.config.journal.maxFileSize")'
 							:description='$t("components.config.journal.notes.systemDefault")'
 							:rules='[
-								(v: number|null) => ValidationRules.required(v, $t("components.config.journal.validation.maxFileSizeMissing")),
-								(v: number) => ValidationRules.integer(v, $t("components.config.journal.validation.maxFileSizeInvalid")),
-								(v: number) => ValidationRules.min(v, 0, $t("components.config.journal.validation.maxFileSizeInvalid")),
+								(v: number|null) => ValidationRules.required(v, $t("components.config.journal.validation.maxFileSize.required")),
+								(v: number) => ValidationRules.integer(v, $t("components.config.journal.validation.maxFileSize.integer")),
+								(v: number) => ValidationRules.min(v, 0, $t("components.config.journal.validation.maxFileSize.min")),
 							]'
+							:min='0'
 							required
+							:prepend-inner-icon='mdiFileSettings'
 						/>
 						<v-checkbox
 							v-model='timeRotation'
@@ -94,20 +110,23 @@ limitations under the License.
 							:hide-details='!timeRotation'
 						/>
 						<div v-if='timeRotation'>
-							<SelectInput
+							<ISelectInput
 								v-model='config.timeRotation.unit'
 								:label='$t("components.config.journal.timeUnit")'
 								:items='unitOptions'
+								:prepend-inner-icon='mdiClockTimeFour'
 							/>
-							<NumberInput
-								v-model.number='config.timeRotation.count'
+							<INumberInput
+								v-model='config.timeRotation.count'
 								:label='$t("components.config.journal.unitCount")'
 								:rules='[
-									(v: number|null) => ValidationRules.required(v, $t("components.config.journal.validation.unitCountMissing")),
-									(v: number) => ValidationRules.integer(v, $t("components.config.journal.validation.unitCountInvalid")),
-									(v: number) => ValidationRules.min(v, 1, $t("components.config.journal.validation.unitCountInvalid")),
+									(v: number|null) => ValidationRules.required(v, $t("components.config.journal.validation.unitCount.required")),
+									(v: number) => ValidationRules.integer(v, $t("components.config.journal.validation.unitCount.integer")),
+									(v: number) => ValidationRules.min(v, 1, $t("components.config.journal.validation.unitCount.min")),
 								]'
+								:min='1'
 								required
+								:prepend-inner-icon='mdiNumeric1Box'
 							/>
 						</div>
 					</section>
@@ -115,9 +134,9 @@ limitations under the License.
 			</v-skeleton-loader>
 			<template #actions>
 				<IActionBtn
-					:action='Action.Edit'
-					container-type='card'
-					:disabled='!isValid.value || [ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState)'
+					:action='Action.Save'
+					:loading='componentState === ComponentState.Action'
+					:disabled='!isValid.value || [ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
 					type='submit'
 				/>
 			</template>
@@ -133,15 +152,23 @@ import {
 	ComponentState,
 	IActionBtn,
 	ICard,
+	INumberInput,
+	ISelectInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
+import {
+	mdiClockTimeFour,
+	mdiFileMultiple,
+	mdiFilePercent,
+	mdiFileSettings,
+	mdiMemory,
+	mdiNumeric1Box,
+} from '@mdi/js';
 import { onMounted, ref , type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
-import NumberInput from '@/components/layout/form/NumberInput.vue';
-import SelectInput from '@/components/layout/form/SelectInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
@@ -194,11 +221,10 @@ const unitOptions = [
 ];
 
 async function getConfig(): Promise<void> {
-	if (componentState.value === ComponentState.Created) {
-		componentState.value = ComponentState.Loading;
-	} else {
-		componentState.value = ComponentState.Reloading;
-	}
+	componentState.value = [
+		ComponentState.Created,
+		ComponentState.FetchFailed,
+	].includes(componentState.value) ? ComponentState.Loading : ComponentState.Reloading;
 	try {
 		config.value = await service.getConfig();
 		if (config.value.sizeRotation.maxFileSize !== 0) {
@@ -207,10 +233,13 @@ async function getConfig(): Promise<void> {
 		if (config.value.timeRotation.unit !== JournalTimeUnit.Months || config.value.timeRotation.count !== 1) {
 			timeRotation.value = true;
 		}
+		componentState.value = ComponentState.Ready;
 	} catch {
-		toast.error('TODO FETCH ERROR HANDLING');
+		toast.error(
+			i18n.t('components.config.journal.messages.fetch.failed'),
+		);
+		componentState.value = componentState.value === ComponentState.Loading ? ComponentState.FetchFailed : ComponentState.Ready;
 	}
-	componentState.value = ComponentState.Ready;
 }
 
 async function onSubmit(): Promise<void> {
@@ -228,14 +257,15 @@ async function onSubmit(): Promise<void> {
 	}
 	try {
 		await service.updateConfig(params);
-		await getConfig();
 		toast.success(
 			i18n.t('components.config.journal.messages.save.success'),
 		);
 	} catch {
-
-		toast.error('TODO SAVE ERROR HANDLING');
+		toast.error(
+			i18n.t('components.config.journal.messages.save.failed'),
+		);
 	}
+	componentState.value = ComponentState.Ready;
 }
 
 onMounted(() => {

@@ -335,7 +335,7 @@ limitations under the License.
 			</span>
 			<template #actions>
 				<IActionBtn
-					:action='Action.Edit'
+					:action='Action.Save'
 					:loading='componentState === ComponentState.Action'
 					:disabled='componentState !== ComponentState.Ready || !isValid.value'
 					@click='onSubmit()'
