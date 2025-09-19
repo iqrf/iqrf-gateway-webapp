@@ -17,12 +17,12 @@ limitations under the License.
 
 <template>
 	<div v-if='configuration?.wifi?.security?.leap'>
-		<v-text-field
+		<ITextInput
 			v-model='configuration.wifi.security.leap.username'
 			:label='$t("components.ipNetwork.connections.form.wifi.security.leap.username")'
 			:prepend-inner-icon='mdiAccount'
 		/>
-		<PasswordInput
+		<IPasswordInput
 			v-model='configuration.wifi.security.leap.password'
 			:label='$t("components.ipNetwork.connections.form.wifi.security.leap.password")'
 			:prepend-inner-icon='mdiKey'
@@ -34,10 +34,12 @@ limitations under the License.
 import {
 	type NetworkConnectionConfiguration,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
+import {
+	IPasswordInput,
+	ITextInput,
+} from '@iqrf/iqrf-vue-ui';
 import { mdiAccount, mdiKey } from '@mdi/js';
 import { type PropType } from 'vue';
-
-import PasswordInput from '@/components/layout/form/PasswordInput.vue';
 
 /// Network connection configuration
 const configuration = defineModel({

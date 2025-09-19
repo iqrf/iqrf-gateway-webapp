@@ -21,13 +21,14 @@ limitations under the License.
 			{{ $t('pages.config.daemon.connections.ws.title') }}
 		</template>
 		<template #titleActions>
-			<ICardTitleActionBtn
+			<IActionBtn
 				:action='Action.Reload'
+				container-type='card-title'
 				:tooltip='$t("components.config.daemon.connections.actions.reload")'
 				@click='getConfigs'
 			/>
 		</template>
-		<DataTable
+		<IDataTable
 			:headers='headers'
 			:items='ifaces'
 			:hover='true'
@@ -50,13 +51,13 @@ limitations under the License.
 				<BooleanCheckMarker :value='item.service.tlsEnabled' />
 			</template>
 			<template #item.actions='{ item }'>
-				<DataTableAction
+				<IDataTableAction
 					:action='Action.Export'
 					:tooltip='$t("components.config.daemon.connections.actions.export")'
 					@click='exportConfig(item)'
 				/>
 			</template>
-		</DataTable>
+		</IDataTable>
 	</ICard>
 </template>
 
@@ -69,17 +70,21 @@ import {
 	type ShapeWebsocketService,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { FileDownloader } from '@iqrf/iqrf-gateway-webapp-client/utils';
-import { Action, ICard, ICardTitleActionBtn } from '@iqrf/iqrf-vue-ui';
+import {
+	Action,
+	ComponentState,
+	IActionBtn,
+	ICard,
+	IDataTable,
+	IDataTableAction,
+} from '@iqrf/iqrf-vue-ui';
 import { ref, type Ref } from 'vue';
 import { onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import BooleanCheckMarker from '@/components/BooleanCheckMarker.vue';
-import DataTable from '@/components/layout/data-table/DataTable.vue';
-import DataTableAction from '@/components/layout/data-table/DataTableAction.vue';
 import { useApiClient } from '@/services/ApiClient';
-import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();

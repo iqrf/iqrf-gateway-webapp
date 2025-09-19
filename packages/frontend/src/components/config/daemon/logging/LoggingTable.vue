@@ -25,8 +25,9 @@ limitations under the License.
 				:action='Action.Add'
 				@saved='getConfig()'
 			/>
-			<ICardTitleActionBtn
+			<IActionBtn
 				:action='Action.Reload'
+				container-type='card-title'
 				:tooltip='$t("components.config.daemon.logging.actions.reload")'
 				@click='getConfig()'
 			/>
@@ -37,7 +38,7 @@ limitations under the License.
 			type='table-heading, table-row-divider@2, table-row'
 		>
 			<v-responsive>
-				<DataTable
+				<IDataTable
 					:headers='headers'
 					:items='instances'
 					:hover='true'
@@ -55,7 +56,7 @@ limitations under the License.
 							@deleted='getConfig()'
 						/>
 					</template>
-				</DataTable>
+				</IDataTable>
 			</v-responsive>
 		</v-skeleton-loader>
 	</ICard>
@@ -67,16 +68,20 @@ import {
 	IqrfGatewayDaemonComponentName,
 	type ShapeTraceFileService,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { Action, ICard, ICardTitleActionBtn } from '@iqrf/iqrf-vue-ui';
+import {
+	Action,
+	ComponentState,
+	IActionBtn,
+	ICard,
+	IDataTable,
+} from '@iqrf/iqrf-vue-ui';
 import { onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import LoggingDeleteDialog from '@/components/config/daemon/logging/LoggingDeleteDialog.vue';
 import LoggingForm from '@/components/config/daemon/logging/LoggingForm.vue';
-import DataTable from '@/components/layout/data-table/DataTable.vue';
 import { useApiClient } from '@/services/ApiClient';
-import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();

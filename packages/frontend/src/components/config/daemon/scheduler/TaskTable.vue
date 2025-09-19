@@ -55,7 +55,7 @@ limitations under the License.
 				@deleted='listTasks()'
 			/>
 		</template>
-		<DataTable
+		<IDataTable
 			:headers='headers'
 			:items='tasks'
 			:hover='true'
@@ -122,7 +122,7 @@ limitations under the License.
 					</v-responsive>
 				</v-skeleton-loader>
 			</template>
-		</DataTable>
+		</IDataTable>
 	</ICard>
 </template>
 
@@ -141,7 +141,12 @@ import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { type IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import { type IqrfGatewayDaemonSchedulerMessagings } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { FileDownloader } from '@iqrf/iqrf-gateway-webapp-client/utils';
-import { Action, ICard } from '@iqrf/iqrf-vue-ui';
+import {
+	Action,
+	ComponentState,
+	ICard,
+	IDataTable,
+} from '@iqrf/iqrf-vue-ui';
 import { mdiExport, mdiPlay, mdiReload, mdiStop } from '@mdi/js';
 import cronstrue from 'cronstrue';
 import { DateTime, Duration } from 'luxon';
@@ -154,10 +159,8 @@ import TaskDeleteDialog from '@/components/config/daemon/scheduler/TaskDeleteDia
 import TaskForm from '@/components/config/daemon/scheduler/TaskForm.vue';
 import TasksDeleteDialog from '@/components/config/daemon/scheduler/TasksDeleteDialog.vue';
 import TasksImportDialog from '@/components/config/daemon/scheduler/TasksImportDialog.vue';
-import DataTable from '@/components/layout/data-table/DataTable.vue';
 import { useApiClient } from '@/services/ApiClient';
 import { useDaemonStore } from '@/store/daemonSocket';
-import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();

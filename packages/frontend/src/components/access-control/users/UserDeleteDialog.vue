@@ -16,7 +16,7 @@ limitations under the License.
 -->
 
 <template>
-	<DeleteModalWindow
+	<IDeleteModalWindow
 		ref='dialog'
 		:tooltip='$t("components.accessControl.users.actions.delete")'
 		:component-state='componentState'
@@ -26,21 +26,23 @@ limitations under the License.
 			{{ $t('components.accessControl.users.delete.title') }}
 		</template>
 		{{ $t('components.accessControl.users.delete.prompt', { user: user.username }) }}
-	</DeleteModalWindow>
+	</IDeleteModalWindow>
 </template>
 
 <script lang='ts' setup>
 import { type UserInfo } from '@iqrf/iqrf-gateway-webapp-client/types';
+import {
+	ComponentState,
+	IDeleteModalWindow,
+} from '@iqrf/iqrf-vue-ui';
 import { PropType, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { toast } from 'vue3-toastify';
 
-import DeleteModalWindow from '@/components/DeleteModalWindow.vue';
 import { useApiClient } from '@/services/ApiClient';
 import { useInstallStore } from '@/store/install';
 import { useUserStore } from '@/store/user';
-import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
 const componentProps = defineProps({
@@ -58,13 +60,13 @@ const installStore = useInstallStore();
 const userStore = useUserStore();
 const i18n = useI18n();
 const router = useRouter();
-const dialog: Ref<typeof DeleteModalWindow | null> = ref(null);
+const dialog: Ref<typeof IDeleteModalWindow | null> = ref(null);
 
 /**
  * Confirm user deletion
  */
 async function onSubmit(): Promise<void> {
-	componentState.value = ComponentState.Saving;
+	componentState.value = ComponentState.Action;
 	try {
 		await useApiClient().getSecurityServices().getUserService().delete(componentProps.user.id);
 		componentState.value = ComponentState.Ready;

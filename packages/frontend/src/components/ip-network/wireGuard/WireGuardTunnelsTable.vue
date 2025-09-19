@@ -21,8 +21,9 @@ limitations under the License.
 			{{ $t('components.ipNetwork.wireGuard.tunnels.title') }}
 		</template>
 		<template #titleActions>
-			<ICardTitleActionBtn
+			<IActionBtn
 				:action='Action.Reload'
+				container-type='card-title'
 				@click='fetchData'
 			/>
 		</template>
@@ -32,7 +33,7 @@ limitations under the License.
 			type='table-heading, table-row-divider@2, table-row'
 		>
 			<v-responsive>
-				<DataTable
+				<IDataTable
 					:items='tunnels'
 					:headers='headers'
 					hide-pagination
@@ -47,7 +48,7 @@ limitations under the License.
 					<template #item.actions='{ item }'>
 						<WireGuardDeleteTunnelDialog :tunnel='item' @deleted='fetchData' />
 					</template>
-				</DataTable>
+				</IDataTable>
 			</v-responsive>
 		</v-skeleton-loader>
 	</ICard>
@@ -57,16 +58,20 @@ limitations under the License.
 import {
 	type WireGuardTunnelListEntry,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
-import { Action, ICard, ICardTitleActionBtn } from '@iqrf/iqrf-vue-ui';
+import {
+	Action,
+	ComponentState,
+	IActionBtn,
+	ICard,
+	IDataTable,
+} from '@iqrf/iqrf-vue-ui';
 import { computed, onBeforeMount, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import BooleanCheckMarker from '@/components/BooleanCheckMarker.vue';
 import WireGuardDeleteTunnelDialog
 	from '@/components/ip-network/wireGuard/WireGuardDeleteTunnelDialog.vue';
-import DataTable from '@/components/layout/data-table/DataTable.vue';
 import { useApiClient } from '@/services/ApiClient';
-import { ComponentState } from '@/types/ComponentState';
 
 const i18n = useI18n();
 const service = useApiClient().getNetworkServices().getWireGuardService();

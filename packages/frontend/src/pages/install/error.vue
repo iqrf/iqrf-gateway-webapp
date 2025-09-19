@@ -51,7 +51,12 @@
 </route>
 
 <script lang='ts' setup>
-import { Action, ICard, ICardActionBtn } from '@iqrf/iqrf-vue-ui';
+import {
+	Action,
+	ComponentState,
+	ICard,
+	ICardActionBtn,
+} from '@iqrf/iqrf-vue-ui';
 import { Head } from '@unhead/vue/components';
 import { storeToRefs } from 'pinia';
 import { computed, ComputedRef, ref, Ref } from 'vue';
@@ -64,7 +69,6 @@ import MissingDependencies from '@/components/install/errors/MissingDependencies
 import MissingMigrations from '@/components/install/errors/MissingMigrations.vue';
 import MissingPhpExtensions from '@/components/install/errors/MissingPhpExtensions.vue';
 import { useInstallStore } from '@/store/install';
-import { ComponentState } from '@/types/ComponentState';
 import { InstallationError } from '@/types/install';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);

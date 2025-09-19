@@ -23,17 +23,19 @@ limitations under the License.
 		<template #titleActions>
 			<ModemMonitButton ref='monit' />
 			<ModemRestartButton @restart='componentState = ComponentState.Loading' @reload='fetchData()' />
-			<ICardTitleActionBtn
+			<IActionBtn
+				container-type='card-title'
 				:icon='mdiMagnify'
 				:tooltip='$t("components.ipNetwork.modems.actions.scan")'
 				@click='scan'
 			/>
-			<ICardTitleActionBtn
+			<IActionBtn
 				:action='Action.Reload'
+				container-type='card-title'
 				@click='fetchData'
 			/>
 		</template>
-		<DataTable
+		<IDataTable
 			:items='modems'
 			:headers='headers'
 			:loading='componentState === ComponentState.Loading'
@@ -51,13 +53,19 @@ limitations under the License.
 			<template #item.rssi='{ item }'>
 				{{ `${item.rssi !== null ? `${item.rssi} dBm` : "-"}` }}
 			</template>
-		</DataTable>
+		</IDataTable>
 	</ICard>
 </template>
 
 <script setup lang='ts'>
 import { type Modem } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
-import { Action, ICard, ICardTitleActionBtn } from '@iqrf/iqrf-vue-ui';
+import {
+	Action,
+	ComponentState,
+	IActionBtn,
+	ICard,
+	IDataTable,
+} from '@iqrf/iqrf-vue-ui';
 import { mdiMagnify } from '@mdi/js';
 import { computed, onBeforeMount, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -69,9 +77,7 @@ import ModemRestartButton
 import ModemStateBadge
 	from '@/components/ip-network/modems/ModemStateBadge.vue';
 import SignalIndicator from '@/components/ip-network/SignalIndicator.vue';
-import DataTable from '@/components/layout/data-table/DataTable.vue';
 import { useApiClient } from '@/services/ApiClient';
-import { ComponentState } from '@/types/ComponentState';
 
 /// Internationalization instance
 const i18n = useI18n();

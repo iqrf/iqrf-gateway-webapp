@@ -61,12 +61,11 @@ limitations under the License.
 <script lang='ts' setup>
 import { type DpaMacrosService } from '@iqrf/iqrf-gateway-webapp-client/services/Iqrf';
 import { type DpaMacro, type DpaMacroGroup } from '@iqrf/iqrf-gateway-webapp-client/types/Iqrf';
-import { ICard } from '@iqrf/iqrf-vue-ui';
+import { ComponentState, ICard } from '@iqrf/iqrf-vue-ui';
 import { mdiMenuUp } from '@mdi/js';
 import { onMounted, ref, type Ref } from 'vue';
 
 import { useApiClient } from '@/services/ApiClient';
-import { ComponentState } from '@/types/ComponentState';
 
 defineEmits(['set-packet']);
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);

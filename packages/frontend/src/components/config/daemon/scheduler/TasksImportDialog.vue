@@ -16,20 +16,21 @@ limitations under the License.
 -->
 
 <template>
-	<ModalWindow
+	<IModalWindow
 		v-model='show'
 	>
 		<template #activator='{ props }'>
-			<ICardTitleActionBtn
+			<IActionBtn
 				v-bind='props'
 				:action='Action.Import'
+				container-type='card-title'
 				:tooltip='$t("components.config.daemon.scheduler.actions.import")'
 			/>
 		</template>
 		<v-form
 			ref='form'
 			v-slot='{ isValid }'
-			:disabled='componentState === ComponentState.Saving'
+			:disabled='componentState === ComponentState.Action'
 			@submit.prevent='onSubmit()'
 		>
 			<ICard>
@@ -73,20 +74,22 @@ limitations under the License.
 					</tbody>
 				</v-table>
 				<template #actions>
-					<ICardActionBtn
+					<ActionBtn
 						:action='Action.Import'
+						container-type='card'
 						:disabled='!isValid.value || componentState !== ComponentState.Ready'
 						type='submit'
 					/>
 					<v-spacer />
-					<ICardActionBtn
+					<IActionBtn
 						:action='Action.Cancel'
+						container-type='card'
 						@click='close()'
 					/>
 				</template>
 			</ICard>
 		</v-form>
-	</ModalWindow>
+	</IModalWindow>
 </template>
 
 <script lang='ts' setup>
@@ -97,8 +100,10 @@ import { type SchedulerAddTaskParams, type SchedulerAddTaskResult } from '@iqrf/
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import {
 	Action,
+	ComponentState,
+	IActionBtn,
 	ICard,
-	ICardActionBtn, ICardTitleActionBtn,
+	IModalWindow,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiFileOutline } from '@mdi/js';
@@ -109,10 +114,8 @@ import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
 import BooleanCheckMarker from '@/components/BooleanCheckMarker.vue';
-import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useDaemonStore } from '@/store/daemonSocket';
-import { ComponentState } from '@/types/ComponentState';
 
 interface TaskImportResult {
 	taskId: string,
@@ -180,7 +183,7 @@ async function onSubmit(): Promise<void> {
 	}
 	importRecords.value = [];
 	processedRecords.value = [];
-	componentState.value = ComponentState.Saving;
+	componentState.value = ComponentState.Action;
 	const file = files.value[0];
 	if (['application/x-zip-compressed', 'application/zip'].includes(file.type)) {
 		await extractZip(file)

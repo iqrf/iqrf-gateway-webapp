@@ -19,14 +19,14 @@ limitations under the License.
 	<v-form
 		ref='form'
 		v-slot='{ isValid }'
-		:disabled='componentState === ComponentState.Saving'
+		:disabled='componentState === ComponentState.Action'
 		@submit.prevent='onSubmit'
 	>
 		<ICard>
 			<template #title>
 				{{ $t('components.account.password.title') }}
 			</template>
-			<PasswordInput
+			<IPasswordInput
 				v-model='passwordChange.old'
 				:label='$t("components.account.password.current")'
 				:rules='[
@@ -35,7 +35,7 @@ limitations under the License.
 				required
 				:prepend-inner-icon='mdiKey'
 			/>
-			<PasswordInput
+			<IPasswordInput
 				v-model='passwordChange.new'
 				:label='$t("components.account.password.new")'
 				:rules='[
@@ -61,8 +61,8 @@ limitations under the License.
 						</div>
 					</v-tooltip>
 				</template>
-			</PasswordInput>
-			<PasswordInput
+			</IPasswordInput>
+			<IPasswordInput
 				v-model='passwordConfirmation'
 				:label='$t("components.account.password.confirmation")'
 				:rules='[
@@ -73,10 +73,11 @@ limitations under the License.
 				:prepend-inner-icon='mdiKey'
 			/>
 			<template #actions>
-				<ICardActionBtn
+				<IActionBtn
 					:action='Action.Edit'
+					container-type='card'
 					:disabled='!isValid.value'
-					:loading='componentState === ComponentState.Saving'
+					:loading='componentState === ComponentState.Action'
 					type='submit'
 				/>
 			</template>
@@ -88,8 +89,10 @@ limitations under the License.
 import { type UserPasswordChange } from '@iqrf/iqrf-gateway-webapp-client/types';
 import {
 	Action,
+	ComponentState,
+	IActionBtn,
 	ICard,
-	ICardActionBtn,
+	IPasswordInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiHelpCircleOutline, mdiKey } from '@mdi/js';
@@ -98,11 +101,9 @@ import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
 
-import PasswordInput from '@/components/layout/form/PasswordInput.vue';
 import UrlBuilder from '@/helpers/urlBuilder';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
-import { ComponentState } from '@/types/ComponentState';
 
 /// Component state
 const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
@@ -126,7 +127,7 @@ async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
 	}
-	componentState.value = ComponentState.Saving;
+	componentState.value = ComponentState.Action;
 	try {
 		await useApiClient().getAccountService().updatePassword(passwordChange.value);
 		toast.success(

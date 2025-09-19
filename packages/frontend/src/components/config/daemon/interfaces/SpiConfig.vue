@@ -19,7 +19,7 @@ limitations under the License.
 	<v-form
 		ref='form'
 		v-slot='{ isValid }'
-		:disabled='[ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
+		:disabled='[ComponentState.Reloading, ComponentState.Action].includes(componentState)'
 		@submit.prevent='onSubmit()'
 	>
 		<ICard>
@@ -27,8 +27,9 @@ limitations under the License.
 				{{ $t('pages.config.daemon.interfaces.spi.title') }}
 			</template>
 			<template #titleActions>
-				<ICardTitleActionBtn
+				<IActionBtn
 					:action='Action.Reload'
+					container-type='card-title'
 					@click='getConfig()'
 				/>
 			</template>
@@ -39,7 +40,7 @@ limitations under the License.
 			>
 				<v-responsive>
 					<section v-if='config'>
-						<TextInput
+						<ITextInput
 							v-model='config.instance'
 							:label='$t("components.config.daemon.instance")'
 							:rules='[
@@ -47,7 +48,7 @@ limitations under the License.
 							]'
 							required
 						/>
-						<TextInput
+						<ITextInput
 							v-model='config.IqrfInterface'
 							:label='$t("components.config.daemon.interfaces.interface")'
 							:rules='[
@@ -206,9 +207,10 @@ limitations under the License.
 				</v-menu>
 			</span>
 			<template #actions>
-				<ICardActionBtn
+				<IActionBtn
 					:action='Action.Edit'
-					:disabled='!isValid.value || [ComponentState.Loading, ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
+					container-type='card'
+					:disabled='!isValid.value || [ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState)'
 					type='submit'
 				/>
 			</template>
@@ -226,9 +228,11 @@ import {
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { IqrfInterfaceType } from '@iqrf/iqrf-gateway-webapp-client/types/Iqrf';
 import {
-	Action, ICard,
-	ICardActionBtn,
-	ICardTitleActionBtn,
+	Action,
+	ComponentState,
+	IActionBtn,
+	ICard,
+	ITextInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { onMounted, ref, type Ref } from 'vue';
@@ -240,10 +244,8 @@ import { VForm } from 'vuetify/components';
 import InterfacePorts from '@/components/config/daemon/interfaces/InterfacePorts.vue';
 import DeviceProfileTable from '@/components/config/daemon/interfaces/profiles/DeviceProfileTable.vue';
 import NumberInput from '@/components/layout/form/NumberInput.vue';
-import TextInput from '@/components/layout/form/TextInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
-import { ComponentState } from '@/types/ComponentState';
 
 const i18n = useI18n();
 const display = useDisplay();
@@ -277,7 +279,7 @@ async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value) || config.value === null) {
 		return;
 	}
-	componentState.value = ComponentState.Saving;
+	componentState.value = ComponentState.Action;
 	const params = { ...config.value };
 	if (!interfacePins.value) {
 		delete params.i2cEnableGpioPin;

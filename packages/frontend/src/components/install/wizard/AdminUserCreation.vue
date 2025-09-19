@@ -26,9 +26,9 @@ limitations under the License.
 		<v-form
 			ref='form'
 			v-model='formValidity'
-			:disabled='componentState === ComponentState.Saving'
+			:disabled='componentState === ComponentState.Action'
 		>
-			<TextInput
+			<ITextInput
 				v-model='user.username'
 				:label='$t("components.common.fields.username")'
 				:rules='[
@@ -37,7 +37,7 @@ limitations under the License.
 				required
 				:prepend-inner-icon='mdiAccount'
 			/>
-			<TextInput
+			<ITextInput
 				v-model='user.email'
 				:label='$t("components.common.fields.email")'
 				:rules='[
@@ -47,7 +47,7 @@ limitations under the License.
 				required
 				:prepend-inner-icon='mdiEmail'
 			/>
-			<PasswordInput
+			<IPasswordInput
 				v-model='user.password'
 				:label='$t("components.common.fields.password")'
 				:rules='[
@@ -73,8 +73,8 @@ limitations under the License.
 						</div>
 					</v-tooltip>
 				</template>
-			</PasswordInput>
-			<PasswordInput
+			</IPasswordInput>
+			<IPasswordInput
 				v-model='passwordConfirmation'
 				:label='$t("components.common.fields.passwordConfirm")'
 				:rules='[
@@ -84,14 +84,15 @@ limitations under the License.
 				required
 				:prepend-inner-icon='mdiKey'
 			/>
-			<UserLanguageInput v-model='user.language' />
+			<ILanguageSelect v-model='user.language' />
 			<SessionExpirationInput v-model='expiration' />
 		</v-form>
 		<template #actions='{ next }'>
-			<ICardActionBtn
+			<IActionBtn
 				:disabled='!formValidity'
+				container-type='card'
 				:icon='mdiAccountPlus'
-				:loading='componentState === ComponentState.Saving'
+				:loading='componentState === ComponentState.Action'
 				:text='$t("components.install.wizard.adminUserCreation.button")'
 				@click='onSubmit(next)'
 			/>
@@ -104,29 +105,31 @@ import {
 	type EmailSentResponse,
 	type UserCreate,
 	type UserCredentials,
-	UserLanguage,
 	UserRole,
 	UserSessionExpiration,
 } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { ICardActionBtn, ValidationRules } from '@iqrf/iqrf-vue-ui';
+import {
+	ComponentState,
+	IActionBtn,
+	ILanguageSelect,
+	IPasswordInput,
+	ITextInput,
+	Language,
+	ValidationRules,
+} from '@iqrf/iqrf-vue-ui';
 import { mdiAccount, mdiAccountPlus, mdiEmail, mdiHelpCircleOutline, mdiKey } from '@mdi/js';
 import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
-import UserLanguageInput
-	from '@/components/access-control/users/UserLanguageInput.vue';
 import SessionExpirationInput
 	from '@/components/auth/SessionExpirationInput.vue';
-import PasswordInput from '@/components/layout/form/PasswordInput.vue';
-import TextInput from '@/components/layout/form/TextInput.vue';
 import UrlBuilder from '@/helpers/urlBuilder';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 import { useInstallStore } from '@/store/install';
 import { useUserStore } from '@/store/user';
-import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const componentProps = defineProps({
@@ -142,7 +145,7 @@ const user: Ref<UserCreate> = ref({
 	username: '',
 	password: '',
 	email: '',
-	language: UserLanguage.English,
+	language: Language.English,
 	role: UserRole.Admin,
 });
 const passwordConfirmation: Ref<string> = ref('');
@@ -159,7 +162,7 @@ async function onSubmit(onClickNext: Function): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
 	}
-	componentState.value = ComponentState.Saving;
+	componentState.value = ComponentState.Action;
 	const data: UserCreate = {
 		...user.value,
 		baseUrl: urlBuilder.getBaseUrl(),

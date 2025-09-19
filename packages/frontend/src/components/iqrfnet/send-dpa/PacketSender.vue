@@ -22,7 +22,7 @@ limitations under the License.
 				{{ $t("pages.iqrfnet.send-dpa.title") }}
 			</template>
 			<v-alert
-				v-if='componentState === ComponentState.Saving'
+				v-if='componentState === ComponentState.Action'
 				variant='tonal'
 				color='info'
 				:text='$t("components.iqrfnet.inProgress")'
@@ -31,7 +31,7 @@ limitations under the License.
 			<v-form
 				ref='form'
 				v-slot='{ isValid }'
-				:disabled='componentState === ComponentState.Saving'
+				:disabled='componentState === ComponentState.Action'
 			>
 				<v-row>
 					<v-col>
@@ -106,7 +106,7 @@ limitations under the License.
 								</v-menu>
 							</template>
 						</NumberInput>
-						<TextInput
+						<ITextInput
 							v-else
 							v-model='nadrHex'
 							:label='$t("components.iqrfnet.send-dpa.nadr")'
@@ -173,7 +173,7 @@ limitations under the License.
 									</v-list>
 								</v-menu>
 							</template>
-						</TextInput>
+						</ITextInput>
 					</v-col>
 					<v-col>
 						<NumberInput
@@ -204,7 +204,7 @@ limitations under the License.
 								</v-tooltip>
 							</template>
 						</NumberInput>
-						<TextInput
+						<ITextInput
 							v-else
 							v-model='pnumHex'
 							:label='$t("components.iqrfnet.send-dpa.pnum")'
@@ -228,7 +228,7 @@ limitations under the License.
 									{{ $t("components.iqrfnet.send-dpa.decimal") }}
 								</v-tooltip>
 							</template>
-						</TextInput>
+						</ITextInput>
 					</v-col>
 					<v-col>
 						<NumberInput
@@ -259,7 +259,7 @@ limitations under the License.
 								</v-tooltip>
 							</template>
 						</NumberInput>
-						<TextInput
+						<ITextInput
 							v-else
 							v-model='pcmdHex'
 							:label='$t("components.iqrfnet.send-dpa.pcmd")'
@@ -283,7 +283,7 @@ limitations under the License.
 									{{ $t("components.iqrfnet.send-dpa.decimal") }}
 								</v-tooltip>
 							</template>
-						</TextInput>
+						</ITextInput>
 					</v-col>
 					<v-col>
 						<NumberInput
@@ -342,7 +342,7 @@ limitations under the License.
 								</v-menu>
 							</template>
 						</NumberInput>
-						<TextInput
+						<ITextInput
 							v-else
 							v-model='hwpidHex'
 							:label='$t("components.iqrfnet.send-dpa.hwpid")'
@@ -394,7 +394,7 @@ limitations under the License.
 									</v-list>
 								</v-menu>
 							</template>
-						</TextInput>
+						</ITextInput>
 					</v-col>
 					<v-col cols='5'>
 						<v-text-field
@@ -422,7 +422,7 @@ limitations under the License.
 				/>
 				<v-btn
 					color='primary'
-					:disabled='!isValid.value || componentState === ComponentState.Saving'
+					:disabled='!isValid.value || componentState === ComponentState.Action'
 					@click='onSubmit'
 				>
 					{{ $t("common.buttons.send") }}
@@ -443,7 +443,12 @@ import {
 	type TApiResponse,
 } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
-import { ICard, ValidationRules } from '@iqrf/iqrf-vue-ui';
+import {
+	ComponentState,
+	ICard,
+	ITextInput,
+	ValidationRules,
+} from '@iqrf/iqrf-vue-ui';
 import {
 	mdiHexadecimal,
 	mdiLock,
@@ -460,10 +465,8 @@ import ProductBrowser from '@/components/iqrfnet/ProductBrowser.vue';
 import PacketHistory from '@/components/iqrfnet/send-dpa/PacketHistory.vue';
 import PacketMacros from '@/components/iqrfnet/send-dpa/PacketMacros.vue';
 import NumberInput from '@/components/layout/form/NumberInput.vue';
-import TextInput from '@/components/layout/form/TextInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useDaemonStore } from '@/store/daemonSocket';
-import { ComponentState } from '@/types/ComponentState';
 import { type DpaPacketTransaction } from '@/types/Iqrfnet';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
@@ -637,7 +640,7 @@ async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
 	}
-	componentState.value = ComponentState.Saving;
+	componentState.value = ComponentState.Action;
 	const rq = GenericService.raw(
 		{ returnVerbose: true },
 		{ rData: buildPacket() },

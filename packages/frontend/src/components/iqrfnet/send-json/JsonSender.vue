@@ -30,7 +30,7 @@ limitations under the License.
 			</v-btn>
 		</template>
 		<v-alert
-			v-if='componentState === ComponentState.Saving'
+			v-if='componentState === ComponentState.Action'
 			variant='tonal'
 			color='info'
 			:text='$t("components.iqrfnet.inProgress")'
@@ -39,7 +39,7 @@ limitations under the License.
 		<v-form
 			ref='form'
 			v-slot='{ isValid }'
-			:disabled='componentState === ComponentState.Saving'
+			:disabled='componentState === ComponentState.Action'
 		>
 			<v-textarea
 				v-model='json'
@@ -51,7 +51,7 @@ limitations under the License.
 			/>
 			<v-btn
 				color='primary'
-				:disabled='!isValid.value || componentState === ComponentState.Saving'
+				:disabled='!isValid.value || componentState === ComponentState.Action'
 				@click='onSubmit'
 			>
 				<v-icon :icon='mdiSend' />
@@ -84,7 +84,7 @@ import {
 	type TMessageErrorResponse,
 } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
-import { ICard } from '@iqrf/iqrf-vue-ui';
+import { ComponentState, ICard } from '@iqrf/iqrf-vue-ui';
 import { mdiSend } from '@mdi/js';
 import { ref, type Ref } from 'vue';
 import { VForm } from 'vuetify/components';
@@ -92,7 +92,6 @@ import { VForm } from 'vuetify/components';
 import RequestHistory from '@/components/iqrfnet/send-json/RequestHistory.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useDaemonStore } from '@/store/daemonSocket';
-import { ComponentState } from '@/types/ComponentState';
 import { type JsonApiTransaction } from '@/types/Iqrfnet';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
@@ -128,7 +127,7 @@ async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value) || json.value === null) {
 		return;
 	}
-	componentState.value = ComponentState.Saving;
+	componentState.value = ComponentState.Action;
 	const request: TApiRequest = JSON.parse(json.value) as TApiRequest;
 	const options = DaemonMessageOptions.withRequest<TApiRequest>(request, null, null, () => {
 		msgId.value = null;

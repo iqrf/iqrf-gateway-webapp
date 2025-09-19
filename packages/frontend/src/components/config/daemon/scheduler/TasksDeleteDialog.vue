@@ -16,7 +16,7 @@ limitations under the License.
 -->
 
 <template>
-	<DeleteModalWindow
+	<IDeleteModalWindow
 		ref='dialog'
 		:component-state='componentState'
 		@submit='removeTasks()'
@@ -40,7 +40,7 @@ limitations under the License.
 			{{ $t('components.config.daemon.scheduler.deleteAll.title') }}
 		</template>
 		{{ $t('components.config.daemon.scheduler.deleteAll.prompt') }}
-	</DeleteModalWindow>
+	</IDeleteModalWindow>
 </template>
 
 <script lang='ts' setup>
@@ -49,18 +49,20 @@ import { SchedulerService } from '@iqrf/iqrf-gateway-daemon-utils/services';
 import { type ApiResponseManagementRsp, type TApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { type SchedulerRemoveAllResult } from '@iqrf/iqrf-gateway-daemon-utils/types/management';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
+import {
+	ComponentState,
+	IDeleteModalWindow,
+} from '@iqrf/iqrf-vue-ui';
 import { mdiDelete } from '@mdi/js';
 import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
-import DeleteModalWindow from '@/components/DeleteModalWindow.vue';
 import { useDaemonStore } from '@/store/daemonSocket';
-import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const emit = defineEmits(['deleted']);
-const dialog: Ref<typeof DeleteModalWindow | null> = ref(null);
+const dialog: Ref<typeof IDeleteModalWindow | null> = ref(null);
 const i18n = useI18n();
 const daemonStore = useDaemonStore();
 const msgId: Ref<string | null> = ref(null);
@@ -83,7 +85,7 @@ daemonStore.$onAction(
 );
 
 async function removeTasks(): Promise<void> {
-	componentState.value = ComponentState.Saving;
+	componentState.value = ComponentState.Action;
 	const opts = new DaemonMessageOptions(
 		30_000,
 		null,

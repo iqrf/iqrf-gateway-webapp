@@ -50,6 +50,7 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
+import { ComponentState } from '@iqrf/iqrf-vue-ui';
 import { mdiEmailFast } from '@mdi/js';
 import { storeToRefs } from 'pinia';
 import { ref, Ref } from 'vue';
@@ -59,7 +60,6 @@ import { toast } from 'vue3-toastify';
 import UrlBuilder from '@/helpers/urlBuilder';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
-import { ComponentState } from '@/types/ComponentState';
 
 /// Component state
 const componentState: Ref<ComponentState> = ref(ComponentState.Idle);

@@ -16,12 +16,12 @@ limitations under the License.
 -->
 
 <template>
-	<ModalWindow
+	<IModalWindow
 		v-if='action === Action.Disable'
 		v-model='showDialog'
 	>
 		<template #activator='scope'>
-			<DataTableAction
+			<IDataTableAction
 				v-bind='scope.props'
 				color='red'
 				:icon='mdiLinkVariantOff'
@@ -34,27 +34,29 @@ limitations under the License.
 			</template>
 			{{ $t('components.ipNetwork.connections.disconnect.prompt', { name: connection.name }) }}
 			<template #actions>
-				<ICardActionBtn
+				<IActionBtn
 					color='red'
+					container-type='card'
 					:icon='mdiLinkVariantOff'
-					:loading='componentState === ComponentState.Saving'
+					:loading='componentState === ComponentState.Action'
 					:text='$t("components.ipNetwork.connections.actions.disconnect")'
 					@click='disconnect()'
 				/>
 				<v-spacer />
-				<ICardActionBtn
+				<IActionBtn
 					:action='Action.Cancel'
-					:disabled='componentState === ComponentState.Saving'
+					container-type='card'
+					:disabled='componentState === ComponentState.Action'
 					@click='close()'
 				/>
 			</template>
 		</ICard>
-	</ModalWindow>
-	<DataTableAction
+	</IModalWindow>
+	<IDataTableAction
 		v-else-if='action === Action.Enable'
 		color='green'
 		:icon='mdiLinkVariant'
-		:loading='componentState === ComponentState.Saving'
+		:loading='componentState === ComponentState.Action'
 		:tooltip='$t("components.ipNetwork.connections.actions.connect")'
 		@click='connect()'
 	/>
@@ -67,17 +69,20 @@ import {
 import {
 	type NetworkConnectionListEntry,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
-import { Action, ICard, ICardActionBtn } from '@iqrf/iqrf-vue-ui';
+import {
+	Action,
+	ComponentState,
+	IActionBtn,
+	ICard,
+	IDataTableAction,
+	IModalWindow,
+} from '@iqrf/iqrf-vue-ui';
 import { mdiLinkVariant, mdiLinkVariantOff } from '@mdi/js';
 import { computed, ComputedRef, type PropType, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
-import DataTableAction
-	from '@/components/layout/data-table/DataTableAction.vue';
-import ModalWindow from '@/components/ModalWindow.vue';
 import { useApiClient } from '@/services/ApiClient';
-import { ComponentState } from '@/types/ComponentState';
 
 /// Component props
 const componentProps = defineProps({
@@ -116,7 +121,7 @@ async function connect(): Promise<void> {
 	if (componentProps.connection === undefined) {
 		return;
 	}
-	componentState.value = ComponentState.Saving;
+	componentState.value = ComponentState.Action;
 	const translationParams = { name: componentProps.connection.name };
 	try {
 		await service.connect(componentProps.connection.uuid);
@@ -140,7 +145,7 @@ async function disconnect(): Promise<void> {
 	if (componentProps.connection === undefined) {
 		return;
 	}
-	componentState.value = ComponentState.Saving;
+	componentState.value = ComponentState.Action;
 	const translationParams = { name: componentProps.connection.name };
 	try {
 		await service.disconnect(componentProps.connection.uuid);

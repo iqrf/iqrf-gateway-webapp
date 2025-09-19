@@ -49,7 +49,7 @@ limitations under the License.
 			<v-text-field
 				v-if='customConfig'
 				v-model='configuration.host'
-				:disabled='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Saving].includes(componentState) || !configuration.enabled'
+				:disabled='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState) || !configuration.enabled'
 				:label='$t("components.config.smtp.form.host")'
 				:rules='[
 					(v: string|null) => ValidationRules.required(v, $t("components.config.smtp.errors.host")),
@@ -61,7 +61,7 @@ limitations under the License.
 			<v-text-field
 				v-if='customConfig'
 				v-model.number='configuration.port'
-				:disabled='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Saving].includes(componentState) || !configuration.enabled'
+				:disabled='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState) || !configuration.enabled'
 				:label='$t("components.config.smtp.form.port")'
 				:rules='[
 					(v: number|null) => ValidationRules.required(v, $t("components.config.smtp.errors.port")),
@@ -74,17 +74,17 @@ limitations under the License.
 			<v-text-field
 				v-if='customConfig'
 				v-model='configuration.username'
-				:disabled='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Saving].includes(componentState) || !configuration.enabled'
+				:disabled='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState) || !configuration.enabled'
 				:label='$t("components.config.smtp.form.username")'
 				:rules='[
 					(v: string|null) => ValidationRules.required(v, $t("components.config.smtp.errors.username")),
 				]'
 				:prepend-inner-icon='mdiAccount'
 			/>
-			<PasswordInput
+			<IPasswordInput
 				v-if='customConfig'
 				v-model='configuration.password'
-				:disabled='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Saving].includes(componentState) || !configuration.enabled'
+				:disabled='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState) || !configuration.enabled'
 				:label='$t("components.config.smtp.form.password")'
 				:rules='[
 					(v: string|null) => ValidationRules.required(v, $t("components.config.smtp.errors.password")),
@@ -94,12 +94,12 @@ limitations under the License.
 			<SmtpSecurityInput
 				v-if='customConfig'
 				v-model='configuration.secure'
-				:disabled='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Saving].includes(componentState) || !configuration.enabled'
+				:disabled='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState) || !configuration.enabled'
 			/>
-			<v-text-field
+			<ITextInput
 				v-if='customConfig'
 				v-model='configuration.from'
-				:disabled='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Saving].includes(componentState) || !configuration.enabled'
+				:disabled='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState) || !configuration.enabled'
 				:label='$t("components.config.smtp.form.sender")'
 				:rules='[
 					(v: string|null) => ValidationRules.required(v, $t("components.config.smtp.errors.sender")),
@@ -108,25 +108,28 @@ limitations under the License.
 			/>
 		</v-form>
 		<template #actions='{ next }'>
-			<ICardActionBtn
+			<IActionBtn
 				:action='Action.Next'
+				container-type='card'
 				:disabled='!formValidity'
-				:loading='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
+				:loading='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState)'
 				@click='onSubmit(next)'
 			/>
-			<ICardActionBtn
+			<IActionBtn
 				:action='Action.Skip'
 				class='ml-2'
-				:loading='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
+				container-type='card'
+				:loading='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState)'
 				@click='next()'
 			/>
-			<ICardActionBtn
+			<IActionBtn
 				color='info'
 				class='ml-2'
+				container-type='card'
 				:disabled='!formValidity || defaultConfig'
 				:icon='mdiEmailFast'
 				:text='$t("components.config.smtp.form.test")'
-				:loading='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
+				:loading='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState)'
 				@click='testConfiguration()'
 			/>
 		</template>
@@ -140,7 +143,14 @@ import {
 	type MailerConfig,
 	type MailerGetConfigResponse, MailerTheme,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { Action, ICardActionBtn, ValidationRules } from '@iqrf/iqrf-vue-ui';
+import {
+	Action,
+	ComponentState,
+	IActionBtn,
+	IPasswordInput,
+	ITextInput,
+	ValidationRules,
+} from '@iqrf/iqrf-vue-ui';
 import {
 	mdiAccount,
 	mdiEmail,
@@ -158,12 +168,10 @@ import { type VForm } from 'vuetify/components';
 
 import SmtpSecurityInput
 	from '@/components/config/smtp/SmtpSecurityInput.vue';
-import PasswordInput from '@/components/layout/form/PasswordInput.vue';
 import UrlBuilder from '@/helpers/urlBuilder';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
-import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const componentProps = defineProps({
@@ -238,7 +246,7 @@ async function onSubmit(onClickNext: Function): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
 	}
-	componentState.value = ComponentState.Saving;
+	componentState.value = ComponentState.Action;
 	try {
 		if (customConfig.value) {
 			await service.updateConfig(configuration.value);

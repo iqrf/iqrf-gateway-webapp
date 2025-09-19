@@ -16,7 +16,7 @@ limitations under the License.
 -->
 
 <template>
-	<ModalWindow
+	<IModalWindow
 		v-model='show'
 	>
 		<template #activator='{ props }'>
@@ -27,7 +27,7 @@ limitations under the License.
 				color='green'
 				:icon='mdiPlus'
 			/>
-			<DataTableAction
+			<IDataTableAction
 				v-if='action === Action.Edit'
 				v-bind='props'
 				:action='action'
@@ -43,7 +43,7 @@ limitations under the License.
 				<template #title>
 					{{ $t(`components.config.influxdb-bridge.actions.${action}`) }}
 				</template>
-				<TextInput
+				<ITextInput
 					v-model='subscriptionTopic'
 					:label='$t("components.config.influxdb-bridge.topic")'
 					:rules='[
@@ -52,36 +52,38 @@ limitations under the License.
 					required
 				/>
 				<template #actions>
-					<ICardActionBtn
+					<IActionBtn
 						:action='action'
+						container-type='card'
 						:disabled='!isValid.value'
 						type='submit'
 					/>
 					<v-spacer />
-					<ICardActionBtn
+					<IActionBtn
 						:action='Action.Cancel'
+						container-type='card'
 						@click='close()'
 					/>
 				</template>
 			</ICard>
 		</v-form>
-	</ModalWindow>
+	</IModalWindow>
 </template>
 
 <script lang='ts' setup>
 import {
 	Action,
+	IActionBtn,
 	ICard,
-	ICardActionBtn,
+	IDataTableAction,
+	IModalWindow,
+	ITextInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiPlus } from '@mdi/js';
 import { ref, type Ref, watchEffect } from 'vue';
 import { VForm } from 'vuetify/components';
 
-import DataTableAction from '@/components/layout/data-table/DataTableAction.vue';
-import TextInput from '@/components/layout/form/TextInput.vue';
-import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';
 
 interface Props {

@@ -38,12 +38,12 @@ limitations under the License.
 
 <script lang='ts' setup>
 import { LogService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
+import { ComponentState } from '@iqrf/iqrf-vue-ui';
 import { nextTick, onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import { useApiClient } from '@/services/ApiClient';
-import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();

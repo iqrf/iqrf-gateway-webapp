@@ -37,7 +37,6 @@ import { type PropType, ref , type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
-import DeleteModalWindow from '@/components/DeleteModalWindow.vue';
 import { useApiClient } from '@/services/ApiClient';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
@@ -49,7 +48,7 @@ const componentProps = defineProps({
 });
 const emit = defineEmits(['refresh']);
 const i18n = useI18n();
-const dialog: Ref<typeof DeleteModalWindow | null> = ref(null);
+const dialog: Ref<typeof IDeleteModalWindow | null> = ref(null);
 const service: SshKeyService = useApiClient().getSecurityServices().getSshKeyService();
 
 async function onSubmit(): Promise<void> {

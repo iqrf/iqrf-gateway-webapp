@@ -17,15 +17,16 @@ limitations under the License.
 
 <template>
 	<div>
-		<ModalWindow v-model='show'>
+		<IModalWindow v-model='show'>
 			<template #activator='{ props }'>
-				<ICardTitleActionBtn
+				<IActionBtn
 					v-if='action === Action.Add'
 					v-bind='props'
 					:action='action'
+					container-type='card-title'
 					:tooltip='$t("components.accessControl.apiKeys.actions.add")'
 				/>
-				<DataTableAction
+				<IDataTableAction
 					v-else
 					v-bind='props'
 					:action='action'
@@ -41,7 +42,7 @@ limitations under the License.
 					<template #title>
 						{{ dialogTitle }}
 					</template>
-					<TextInput
+					<ITextInput
 						v-model='key.description'
 						:prepend-inner-icon='mdiTextShort'
 						:label='$t("common.labels.description")'
@@ -68,17 +69,22 @@ limitations under the License.
 						:state='datePickerState'
 					/>
 					<template #actions>
-						<ICardActionBtn
+						<IActionBtn
 							:action='action'
+							container-type='card'
 							:disabled='!isValid.value'
 							type='submit'
 						/>
 						<v-spacer />
-						<ICardActionBtn :action='Action.Cancel' @click='close' />
+						<IActionBtn
+							:action='Action.Cancel'
+							container-type='card'
+							@click='close'
+						/>
 					</template>
 				</ICard>
 			</v-form>
-		</ModalWindow>
+		</IModalWindow>
 		<ApiKeyDisplayDialog
 			ref='displayDialog'
 			:api-key='generatedKey'
@@ -97,9 +103,11 @@ import {
 import { DateTimeUtils } from '@iqrf/iqrf-gateway-webapp-client/utils';
 import {
 	Action,
+	IActionBtn,
 	ICard,
-	ICardActionBtn,
-	ICardTitleActionBtn,
+	IDataTableAction,
+	IModalWindow,
+	ITextInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiTextShort } from '@mdi/js';
@@ -109,9 +117,6 @@ import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
 import ApiKeyDisplayDialog from '@/components/access-control/api-keys/ApiKeyDisplayDialog.vue';
-import DataTableAction from '@/components/layout/data-table/DataTableAction.vue';
-import TextInput from '@/components/layout/form/TextInput.vue';
-import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 

@@ -16,7 +16,7 @@ limitations under the License.
 -->
 
 <template>
-	<ModalWindow
+	<IModalWindow
 		v-model='show'
 	>
 		<template #activator='{ props }'>
@@ -40,7 +40,7 @@ limitations under the License.
 			<template #title>
 				{{ $t('components.iqrfnet.products.title') }}
 			</template>
-			<DataTable
+			<IDataTable
 				:headers='headers'
 				:items='products'
 				:search='search'
@@ -48,7 +48,7 @@ limitations under the License.
 				:dense='true'
 			>
 				<template #top>
-					<TextInput
+					<ITextInput
 						v-model='search'
 						:prepend-inner-icon='mdiMagnify'
 						density='compact'
@@ -67,29 +67,34 @@ limitations under the License.
 						<v-icon :icon='mdiImport' />
 					</v-btn>
 				</template>
-			</DataTable>
+			</IDataTable>
 			<template #actions>
 				<v-spacer />
-				<ICardActionBtn
+				<IActionBtn
 					:action='Action.Cancel'
+					container-type='card'
 					@click='close'
 				/>
 			</template>
 		</ICard>
-	</ModalWindow>
+	</IModalWindow>
 </template>
 
 <script lang='ts' setup>
 import { type ProductService } from '@iqrf/iqrf-repository-client/services';
 import { type Product } from '@iqrf/iqrf-repository-client/types';
-import { Action, ICard, ICardActionBtn } from '@iqrf/iqrf-vue-ui';
+import {
+	Action,
+	IActionBtn,
+	ICard,
+	IDataTable,
+	IModalWindow,
+	ITextInput,
+} from '@iqrf/iqrf-vue-ui';
 import { mdiImport, mdiMagnify } from '@mdi/js';
 import { onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import DataTable from '@/components/layout/data-table/DataTable.vue';
-import TextInput from '@/components/layout/form/TextInput.vue';
-import ModalWindow from '@/components/ModalWindow.vue';
 import { useRepositoryClient } from '@/services/RepositoryClient';
 
 defineProps({

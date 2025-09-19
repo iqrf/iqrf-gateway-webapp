@@ -21,7 +21,7 @@ limitations under the License.
 			{{ $t('components.ipNetwork.connections.form.vlan.title') }}
 		</h2>
 		<InterfaceInput v-model='configuration.vlan.parentInterface' />
-		<TextInput
+		<ITextInput
 			v-model.number='configuration.vlan.id'
 			:label='$t("components.ipNetwork.connections.form.vlan.id")'
 			:rules='[
@@ -40,13 +40,14 @@ limitations under the License.
 import {
 	type NetworkConnectionConfiguration,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
-import { ValidationRules } from '@iqrf/iqrf-vue-ui';
+import {
+	ITextInput,
+	ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiTag } from '@mdi/js';
 import { type PropType } from 'vue';
 
 import InterfaceInput
 	from '@/components/ip-network/interfaces/InterfaceInput.vue';
-import TextInput from '@/components/layout/form/TextInput.vue';
 
 /// Network connection configuration
 const configuration = defineModel({

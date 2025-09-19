@@ -19,7 +19,7 @@ limitations under the License.
 	<v-form
 		ref='form'
 		v-slot='{ isValid }'
-		:disabled='[ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
+		:disabled='[ComponentState.Reloading, ComponentState.Action].includes(componentState)'
 		@submit.prevent='onSubmit()'
 	>
 		<ICard>
@@ -27,8 +27,9 @@ limitations under the License.
 				{{ $t('pages.config.monit.title') }}
 			</template>
 			<template #titleActions>
-				<ICardTitleActionBtn
+				<IActionBtn
 					:action='Action.Reload'
+					container-type='card-title'
 					@click='getConfig()'
 				/>
 			</template>
@@ -42,7 +43,7 @@ limitations under the License.
 						<legend class='section-legend'>
 							{{ $t('components.config.monit.checks.title') }}
 						</legend>
-						<DataTable
+						<IDataTable
 							class='mb-4'
 							:items='config.checks'
 							:headers='headers'
@@ -57,7 +58,7 @@ limitations under the License.
 									class='float-right'
 								/>
 							</template>
-						</DataTable>
+						</IDataTable>
 						<legend class='section-legend'>
 							{{ $t('components.config.monit.mmonit.title') }}
 						</legend>
@@ -65,7 +66,7 @@ limitations under the License.
 							v-model='config.mmonit.enabled'
 							:label='$t("components.config.monit.mmonit.enable")'
 						/>
-						<TextInput
+						<ITextInput
 							v-model='config.mmonit.server'
 							:label='$t("components.config.monit.mmonit.server")'
 							:prepend-inner-icon='mdiServerNetwork'
@@ -76,7 +77,7 @@ limitations under the License.
 							:disabled='!config.mmonit.enabled'
 							required
 						/>
-						<TextInput
+						<ITextInput
 							v-model='config.mmonit.credentials.username'
 							:label='$t("components.common.fields.username")'
 							:prepend-inner-icon='mdiAccount'
@@ -86,7 +87,7 @@ limitations under the License.
 							:disabled='!config.mmonit.enabled'
 							required
 						/>
-						<TextInput
+						<ITextInput
 							v-model='config.mmonit.credentials.password'
 							:label='$t("components.common.fields.password")'
 							:prepend-inner-icon='mdiKey'
@@ -100,9 +101,10 @@ limitations under the License.
 				</v-responsive>
 			</v-skeleton-loader>
 			<template #actions>
-				<ICardActionBtn
+				<IActionBtn
 					:action='Action.Edit'
-					:disabled='!isValid.value || [ComponentState.Loading, ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
+					container-type='card'
+					:disabled='!isValid.value || [ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState)'
 					type='submit'
 				/>
 			</template>
@@ -114,9 +116,12 @@ limitations under the License.
 import { type MonitService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import { type MonitConfig } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import {
-	Action, ICard,
-	ICardActionBtn,
-	ICardTitleActionBtn,
+	Action,
+	ComponentState,
+	IActionBtn,
+	ICard,
+	IDataTable,
+	ITextInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiAccount, mdiKey, mdiServerNetwork } from '@mdi/js';
@@ -126,11 +131,8 @@ import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
 import { z } from 'zod';
 
-import DataTable from '@/components/layout/data-table/DataTable.vue';
-import TextInput from '@/components/layout/form/TextInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
-import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
@@ -176,7 +178,7 @@ async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value) || config.value === null) {
 		return;
 	}
-	componentState.value = ComponentState.Saving;
+	componentState.value = ComponentState.Action;
 	const params = { ...config.value };
 	try {
 		await service.updateConfig(params);

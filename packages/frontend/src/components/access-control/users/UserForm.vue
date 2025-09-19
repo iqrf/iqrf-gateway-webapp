@@ -16,15 +16,16 @@ limitations under the License.
 -->
 
 <template>
-	<ModalWindow v-model='showDialog'>
+	<IModalWindow v-model='showDialog'>
 		<template #activator='{ props }'>
-			<ICardTitleActionBtn
+			<IActionBtn
 				v-if='action === Action.Add'
 				v-bind='props'
 				:action='action'
+				container-type='card-title'
 				:tooltip='$t("components.accessControl.users.actions.add")'
 			/>
-			<DataTableAction
+			<IDataTableAction
 				v-else
 				v-bind='props'
 				:action='action'
@@ -34,14 +35,14 @@ limitations under the License.
 		<v-form
 			ref='form'
 			v-slot='{ isValid }'
-			:disabled='componentState === ComponentState.Saving'
+			:disabled='componentState === ComponentState.Action'
 			@submit.prevent='onSubmit()'
 		>
 			<ICard>
 				<template #title>
 					{{ $t(`components.accessControl.users.actions.${action}`) }}
 				</template>
-				<TextInput
+				<ITextInput
 					v-model='user.username'
 					:label='$t("components.common.fields.username")'
 					:rules='[
@@ -50,7 +51,7 @@ limitations under the License.
 					required
 					:prepend-inner-icon='mdiAccount'
 				/>
-				<TextInput
+				<ITextInput
 					v-model='user.email'
 					:label='$t("components.accessControl.users.email")'
 					:rules='[
@@ -58,7 +59,7 @@ limitations under the License.
 					]'
 					:prepend-inner-icon='mdiEmail'
 				/>
-				<PasswordInput
+				<IPasswordInput
 					v-model='(user as UserEdit).password'
 					:label='$t("components.common.fields.password")'
 					:rules='[
@@ -84,30 +85,32 @@ limitations under the License.
 							</div>
 						</v-tooltip>
 					</template>
-				</PasswordInput>
+				</IPasswordInput>
 				<SelectInput
 					v-model='user.role'
 					:items='roles'
 					:label='$t("components.accessControl.users.role")'
 					:prepend-inner-icon='mdiAccountBadge'
 				/>
-				<LanguageInput v-model='user.language' />
+				<ILanguageSelect v-model='user.language' />
 				<template #actions>
-					<ICardActionBtn
+					<IActionBtn
 						:action='action'
-						:disabled='!isValid.value || componentState === ComponentState.Saving'
+						container-type='card'
+						:disabled='!isValid.value || componentState === ComponentState.Action'
 						type='submit'
 					/>
 					<v-spacer />
-					<ICardActionBtn
+					<IActionBtn
 						:action='Action.Cancel'
-						:disabled='componentState === ComponentState.Saving'
+						container-type='card'
+						:disabled='componentState === ComponentState.Action'
 						@click='close()'
 					/>
 				</template>
 			</ICard>
 		</v-form>
-	</ModalWindow>
+	</IModalWindow>
 </template>
 
 <script lang='ts' setup>
@@ -115,13 +118,19 @@ import {
 	type UserCreate,
 	type UserEdit,
 	type UserInfo,
-	UserLanguage,
 	UserRole,
 } from '@iqrf/iqrf-gateway-webapp-client/types';
 import {
 	Action,
+	ComponentState,
+	IActionBtn,
 	ICard,
-	ICardActionBtn, ICardTitleActionBtn,
+	IDataTableAction,
+	ILanguageSelect,
+	IModalWindow,
+	IPasswordInput,
+	ITextInput,
+	Language,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import {
@@ -136,17 +145,11 @@ import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
-import LanguageInput from '@/components/account/LanguageInput.vue';
-import DataTableAction from '@/components/layout/data-table/DataTableAction.vue';
-import PasswordInput from '@/components/layout/form/PasswordInput.vue';
 import SelectInput from '@/components/layout/form/SelectInput.vue';
-import TextInput from '@/components/layout/form/TextInput.vue';
-import ModalWindow from '@/components/ModalWindow.vue';
 import { getFilteredRoleOptions } from '@/helpers/userData';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
-import { ComponentState } from '@/types/ComponentState';
 
 interface Props {
 	action: Action;
@@ -165,7 +168,7 @@ const defaultUser: UserCreate | UserEdit = {
 	username: '',
 	email: '',
 	role: UserRole.Normal,
-	language: UserLanguage.English,
+	language: Language.English,
 };
 const user: Ref<UserCreate | UserEdit> = ref(defaultUser);
 const roles = getFilteredRoleOptions(userStore.getRole!);
@@ -195,7 +198,7 @@ async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
 	}
-	componentState.value = ComponentState.Saving;
+	componentState.value = ComponentState.Action;
 	const params = { ...user.value };
 	try {
 		if (componentProps.action === Action.Add) {

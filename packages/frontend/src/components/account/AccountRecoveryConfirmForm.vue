@@ -19,7 +19,7 @@ limitations under the License.
 	<v-form
 		ref='form'
 		v-slot='{ isValid }'
-		:disabled='componentState === ComponentState.Saving'
+		:disabled='componentState === ComponentState.Action'
 		@submit.prevent='onSubmit'
 	>
 		<ICard>
@@ -29,7 +29,7 @@ limitations under the License.
 			<p>
 				{{ $t('components.account.recovery.confirmation.prompt') }}
 			</p>
-			<PasswordInput
+			<IPasswordInput
 				v-model='data.password'
 				class='mt-4'
 				:label='$t("components.account.password.new")'
@@ -56,8 +56,8 @@ limitations under the License.
 						</div>
 					</v-tooltip>
 				</template>
-			</PasswordInput>
-			<PasswordInput
+			</IPasswordInput>
+			<IPasswordInput
 				v-model='passwordConfirmation'
 				:label='$t("components.account.password.confirmation")'
 				:rules='[
@@ -67,10 +67,11 @@ limitations under the License.
 				required
 				:prepend-inner-icon='mdiKey'
 			/>
-			<ICardActionBtn
+			<IActionBtn
 				color='primary'
-				:disabled='!isValid.value || componentState === ComponentState.Saving'
-				:loading='componentState === ComponentState.Saving'
+				container-type='card'
+				:disabled='!isValid.value || componentState === ComponentState.Action'
+				:loading='componentState === ComponentState.Action'
 				:icon='mdiAccountKey'
 				:text='$t("components.account.recovery.confirmation.button")'
 				type='submit'
@@ -85,7 +86,13 @@ import {
 	UserPasswordReset,
 	UserSignedIn,
 } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { ICard, ICardActionBtn, ValidationRules } from '@iqrf/iqrf-vue-ui';
+import {
+	ComponentState,
+	IActionBtn,
+	ICard,
+	IPasswordInput,
+	ValidationRules,
+} from '@iqrf/iqrf-vue-ui';
 import { mdiAccountKey, mdiHelpCircleOutline, mdiKey } from '@mdi/js';
 import { AxiosError } from 'axios';
 import { validate as uuidValidate, version as uuidVersion } from 'uuid';
@@ -95,11 +102,9 @@ import { useRouter } from 'vue-router';
 import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
 
-import PasswordInput from '@/components/layout/form/PasswordInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
-import { ComponentState } from '@/types/ComponentState';
 
 /// Component props
 const componentProps = defineProps({
@@ -137,7 +142,7 @@ async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
 	}
-	componentState.value = ComponentState.Saving;
+	componentState.value = ComponentState.Action;
 	try {
 		const user: UserSignedIn = await service.confirmPasswordRecovery(componentProps.uuid, data.value);
 		componentState.value = ComponentState.Success;

@@ -16,17 +16,17 @@ limitations under the License.
 -->
 
 <template>
-	<ModalWindow v-model='show'>
+	<IModalWindow v-model='show'>
 		<v-form
 			ref='form'
 			v-slot='{ isValid }'
-			:disabled='componentState === ComponentState.Saving'
+			:disabled='componentState === ComponentState.Action'
 		>
 			<ICard>
 				<template #title>
 					{{ $t('components.config.daemon.connections.mqtt.clouds.ibm.title') }}
 				</template>
-				<TextInput
+				<ITextInput
 					v-model='config.organizationId'
 					:label='$t("components.config.daemon.connections.mqtt.clouds.ibm.orgId")'
 					:rules='[
@@ -34,7 +34,7 @@ limitations under the License.
 					]'
 					required
 				/>
-				<TextInput
+				<ITextInput
 					v-model='config.deviceType'
 					:label='$t("components.config.daemon.connections.mqtt.clouds.ibm.deviceType")'
 					:rules='[
@@ -42,7 +42,7 @@ limitations under the License.
 					]'
 					required
 				/>
-				<TextInput
+				<ITextInput
 					v-model='config.deviceId'
 					:label='$t("components.config.daemon.connections.mqtt.clouds.ibm.deviceId")'
 					:rules='[
@@ -50,7 +50,7 @@ limitations under the License.
 					]'
 					required
 				/>
-				<TextInput
+				<ITextInput
 					v-model='config.token'
 					:label='$t("components.config.daemon.connections.mqtt.clouds.ibm.token")'
 					:rules='[
@@ -58,7 +58,7 @@ limitations under the License.
 					]'
 					required
 				/>
-				<TextInput
+				<ITextInput
 					v-model='config.eventId'
 					:label='$t("components.config.daemon.connections.mqtt.clouds.ibm.eventId")'
 					:rules='[
@@ -67,43 +67,42 @@ limitations under the License.
 					required
 				/>
 				<template #actions>
-					<v-btn
-						color='primary'
-						variant='elevated'
-						:disabled='!isValid.value || componentState === ComponentState.Saving'
+					<IActionBtn
+						:action='Action.Add'
+						:disabled='!isValid.value || componentState === ComponentState.Action'
 						@click='onSubmit()'
-					>
-						{{ $t('common.buttons.save') }}
-					</v-btn>
+					/>
 					<v-spacer />
-					<v-btn
-						color='grey-darken-2'
-						variant='elevated'
-						:disabled='componentState === ComponentState.Saving'
+					<IActionBtn
+						:action='Action.Close'
+						:disabled='componentState === ComponentState.Action'
 						@click='close()'
-					>
-						{{ $t('common.buttons.close') }}
-					</v-btn>
+					/>
 				</template>
 			</ICard>
 		</v-form>
-	</ModalWindow>
+	</IModalWindow>
 </template>
 
 <script lang='ts' setup>
 import { type IbmService } from '@iqrf/iqrf-gateway-webapp-client/services/Cloud';
 import { type IbmCloudConfig } from '@iqrf/iqrf-gateway-webapp-client/types/Cloud';
-import { ICard, ValidationRules } from '@iqrf/iqrf-vue-ui';
+import {
+	Action,
+	ComponentState,
+	IActionBtn,
+	ICard,
+	IModalWindow,
+	ITextInput,
+	ValidationRules,
+} from '@iqrf/iqrf-vue-ui';
 import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
 
-import TextInput from '@/components/layout/form/TextInput.vue';
-import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
-import { ComponentState } from '@/types/ComponentState';
 
 const show = defineModel({
 	required: true,

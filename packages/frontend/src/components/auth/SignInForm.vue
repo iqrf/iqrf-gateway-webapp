@@ -19,14 +19,14 @@ limitations under the License.
 	<v-form
 		ref='form'
 		v-slot='{ isValid }'
-		:disabled='componentState === ComponentState.Saving'
+		:disabled='componentState === ComponentState.Action'
 		@submit.prevent='onSubmit'
 	>
 		<ICard>
 			<template #title>
 				{{ $t('components.auth.sign.in.title') }}
 			</template>
-			<TextInput
+			<ITextInput
 				v-model='credentials.username'
 				:label='$t("components.common.fields.username")'
 				:rules='[
@@ -35,7 +35,7 @@ limitations under the License.
 				required
 				:prepend-inner-icon='mdiAccount'
 			/>
-			<PasswordInput
+			<IPasswordInput
 				v-model='credentials.password'
 				:label='$t("components.common.fields.password")'
 				:rules='[
@@ -49,17 +49,19 @@ limitations under the License.
 				v-model='credentials.expiration'
 			/>
 			<template #actions>
-				<ICardActionBtn
+				<IActionBtn
 					color='primary'
+					container-type='card'
 					:disabled='!isValid.value'
-					:loading='componentState === ComponentState.Saving'
+					:loading='componentState === ComponentState.Action'
 					:icon='mdiLogin'
 					:text='$t("components.auth.sign.in.actions.signIn")'
 					type='submit'
 				/>
 				<v-spacer />
-				<ICardActionBtn
+				<IActionBtn
 					color='grey'
+					container-type='card'
 					:icon='mdiAccountKey'
 					:text='$t("components.auth.sign.in.actions.recoverPassword")'
 					to='/account/recovery'
@@ -74,7 +76,14 @@ import {
 	type UserCredentials,
 	UserSessionExpiration,
 } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { ICard, ICardActionBtn, ValidationRules } from '@iqrf/iqrf-vue-ui';
+import {
+	ComponentState,
+	IActionBtn,
+	ICard,
+	IPasswordInput,
+	ITextInput,
+	ValidationRules,
+} from '@iqrf/iqrf-vue-ui';
 import { mdiAccount, mdiAccountKey, mdiKey, mdiLogin } from '@mdi/js';
 import { AxiosError } from 'axios';
 import { onMounted, ref, type Ref } from 'vue';
@@ -85,13 +94,10 @@ import { type VForm } from 'vuetify/components';
 
 import SessionExpirationInput
 	from '@/components/auth/SessionExpirationInput.vue';
-import PasswordInput from '@/components/layout/form/PasswordInput.vue';
-import TextInput from '@/components/layout/form/TextInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useGatewayStore } from '@/store/gateway';
 import { useRepositoryStore } from '@/store/repository';
 import { useUserStore } from '@/store/user';
-import { ComponentState } from '@/types/ComponentState';
 
 /// Component state
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
@@ -127,7 +133,7 @@ async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
 	}
-	componentState.value = ComponentState.Saving;
+	componentState.value = ComponentState.Action;
 	try {
 		await userStore.signIn(credentials.value);
 		let destination = (route?.query?.redirect as string | undefined) ?? '/';

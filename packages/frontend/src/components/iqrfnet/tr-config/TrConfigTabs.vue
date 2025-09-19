@@ -54,7 +54,7 @@ limitations under the License.
 				<v-btn
 					color='primary'
 					variant='elevated'
-					:disabled='!isValid.value || [ComponentState.Loading, ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
+					:disabled='!isValid.value || [ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState)'
 					@click='onSubmit'
 				>
 					<v-icon :icon='mdiContentSave' />
@@ -72,7 +72,7 @@ import { type ApiResponseIqmesh,
 	type IqmeshWriteTrConfParams,
 } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
-import { ICard } from '@iqrf/iqrf-vue-ui';
+import { ComponentState, ICard } from '@iqrf/iqrf-vue-ui';
 import { mdiContentSave } from '@mdi/js';
 import { ref, type Ref } from 'vue';
 import { VForm } from 'vuetify/components';
@@ -83,7 +83,6 @@ import TrConfigSecurityForm from '@/components/iqrfnet/tr-config/TrConfigSecurit
 import NumberInput from '@/components/layout/form/NumberInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useDaemonStore } from '@/store/daemonSocket';
-import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const daemonSocket = useDaemonStore();

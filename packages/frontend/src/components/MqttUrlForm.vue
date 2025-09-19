@@ -16,7 +16,7 @@ limitations under the License.
 -->
 
 <template>
-	<ModalWindow
+	<IModalWindow
 		v-model='show'
 	>
 		<template #activator='{ props }'>
@@ -42,7 +42,7 @@ limitations under the License.
 					:label='$t("common.labels.protocol")'
 					:items='protocolOptions'
 				/>
-				<TextInput
+				<ITextInput
 					v-model='hostname'
 					:label='$t("common.labels.hostname")'
 					:rules='[
@@ -63,33 +63,37 @@ limitations under the License.
 					]'
 					required
 				/>
-				<TextInput
+				<ITextInput
 					v-if='[MqttProtocol.WS, MqttProtocol.WSS].includes(protocol)'
 					v-model='path'
 					:label='$t("common.labels.path")'
 				/>
 				<template #actions>
-					<ICardActionBtn
+					<IActionBtn
 						:action='Action.Edit'
+						container-type='card'
 						:disabled='!isValid.value'
 						type='submit'
 					/>
 					<v-spacer />
-					<ICardActionBtn
+					<IActionBtn
 						:action='Action.Cancel'
+						container-type='card'
 						@click='close'
 					/>
 				</template>
 			</ICard>
 		</v-form>
-	</ModalWindow>
+	</IModalWindow>
 </template>
 
 <script lang='ts' setup>
 import {
 	Action,
+	IActionBtn,
 	ICard,
-	ICardActionBtn,
+	IModalWindow,
+	ITextInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiPencil } from '@mdi/js';
@@ -99,8 +103,6 @@ import { useI18n } from 'vue-i18n';
 
 import NumberInput from '@/components/layout/form/NumberInput.vue';
 import SelectInput from '@/components/layout/form/SelectInput.vue';
-import TextInput from '@/components/layout/form/TextInput.vue';
-import ModalWindow from '@/components/ModalWindow.vue';
 import { MqttProtocol } from '@/enums/mqtt';
 
 const componentProps = defineProps({

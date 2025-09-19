@@ -39,8 +39,9 @@ limitations under the License.
 				<div>
 					{{ $t("components.install.checks.messages.failed") }}
 				</div>
-				<ICardActionBtn
+				<IActionBtn
 					:action='Action.Reload'
+					container-type='card'
 					class='float-right mt-2'
 					@click='checkInstallation'
 				/>
@@ -50,7 +51,11 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { Action, ICardActionBtn } from '@iqrf/iqrf-vue-ui';
+import {
+	Action,
+	ComponentState,
+	IActionBtn,
+} from '@iqrf/iqrf-vue-ui';
 import { storeToRefs } from 'pinia';
 import { onMounted, ref, Ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
@@ -61,7 +66,6 @@ import { useGatewayStore } from '@/store/gateway';
 import { useInstallStore } from '@/store/install';
 import { useRepositoryStore } from '@/store/repository';
 import { useUserStore } from '@/store/user';
-import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const featureStore = useFeatureStore();

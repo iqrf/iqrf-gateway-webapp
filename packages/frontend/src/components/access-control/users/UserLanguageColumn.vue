@@ -20,13 +20,13 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { type UserLanguage } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { type Language } from '@iqrf/iqrf-vue-ui';
 import { computed } from 'vue';
 
 import { type Locale, useLocaleStore } from '@/store/locale';
 
 interface Props {
-	language: UserLanguage
+	language: Language
 }
 
 const props = defineProps<Props>();

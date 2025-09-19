@@ -17,7 +17,7 @@ limitations under the License.
 
 <template>
 	<div v-if='configuration?.wifi?.security'>
-		<PasswordInput
+		<IPasswordInput
 			v-model='configuration.wifi.security.psk'
 			:label='$t("components.ipNetwork.connections.form.wifi.security.psk")'
 			:rules='[
@@ -33,11 +33,12 @@ limitations under the License.
 import {
 	type NetworkConnectionConfiguration,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
-import { ValidationRules } from '@iqrf/iqrf-vue-ui';
+import {
+	IPasswordInput,
+	ValidationRules,
+} from '@iqrf/iqrf-vue-ui';
 import { mdiKeyWireless } from '@mdi/js';
 import { type PropType } from 'vue';
-
-import PasswordInput from '@/components/layout/form/PasswordInput.vue';
 
 /// Network connection configuration
 const configuration = defineModel({

@@ -16,20 +16,21 @@ limitations under the License.
 -->
 
 <template>
-	<ModalWindow
+	<IModalWindow
 		v-model='show'
 	>
 		<template #activator='{ props }'>
-			<ICardTitleActionBtn
+			<IActionBtn
 				v-bind='props'
 				:action='Action.Import'
+				container-type='card-title'
 				:tooltip='$t("components.config.daemon.connections.actions.import")'
 			/>
 		</template>
 		<v-form
 			ref='form'
 			v-slot='{ isValid }'
-			:disabled='componentState === ComponentState.Saving'
+			:disabled='componentState === ComponentState.Action'
 			@submit.prevent='onSubmit()'
 		>
 			<ICard>
@@ -49,20 +50,22 @@ limitations under the License.
 					required
 				/>
 				<template #actions>
-					<ICardActionBtn
+					<IActionBtn
 						:action='Action.Import'
-						:disabled='!isValid.value || componentState === ComponentState.Saving'
+						container-type='card'
+						:disabled='!isValid.value || componentState === ComponentState.Action'
 						type='submit'
 					/>
 					<v-spacer />
-					<ICardActionBtn
+					<IActionBtn
 						:action='Action.Cancel'
+						container-type='card'
 						@click='close()'
 					/>
 				</template>
 			</ICard>
 		</v-form>
-	</ModalWindow>
+	</IModalWindow>
 </template>
 
 <script lang='ts' setup>
@@ -72,9 +75,10 @@ import {
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import {
 	Action,
+	ComponentState,
+	IActionBtn,
 	ICard,
-	ICardActionBtn,
-	ICardTitleActionBtn,
+	IModalWindow,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiFileOutline } from '@mdi/js';
@@ -83,9 +87,7 @@ import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
-import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';
-import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
 const emit = defineEmits(['import']);
@@ -98,7 +100,7 @@ async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value) || files.value.length === 0) {
 		return;
 	}
-	componentState.value = ComponentState.Saving;
+	componentState.value = ComponentState.Action;
 	const file = files.value[0];
 	const content = await file.text();
 	const obj = JSON.parse(content) as unknown;

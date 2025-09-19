@@ -19,7 +19,7 @@ limitations under the License.
 	<v-form
 		ref='form'
 		v-slot='{ isValid }'
-		:disabled='[ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
+		:disabled='[ComponentState.Reloading, ComponentState.Action].includes(componentState)'
 		@submit.prevent='onSubmit()'
 	>
 		<ICard>
@@ -27,8 +27,9 @@ limitations under the License.
 				{{ $t('pages.config.mender.title') }}
 			</template>
 			<template #titleActions>
-				<ICardTitleActionBtn
+				<IActionBtn
 					:action='Action.Reload'
+					container-type='card-title'
 					@click='getConfig()'
 				/>
 			</template>
@@ -42,7 +43,7 @@ limitations under the License.
 						<legend class='section-legend'>
 							{{ $t('components.config.mender.connection') }}
 						</legend>
-						<TextInput
+						<ITextInput
 							v-for='index in config.client.config.Servers.keys()'
 							:key='`MenderServerUrl${ index}`'
 							v-model='config.client.config.Servers[index]'
@@ -54,7 +55,7 @@ limitations under the License.
 							:prepend-inner-icon='mdiServerNetwork'
 							required
 						/>
-						<TextInput
+						<ITextInput
 							v-model='config.client.config.ServerCertificate'
 							:label='$t("components.config.mender.client.cert")'
 							:prepend-inner-icon='mdiFileCertificate'
@@ -62,11 +63,11 @@ limitations under the License.
 							<template #append>
 								<MenderCertificateUploadDialog />
 							</template>
-						</TextInput>
+						</ITextInput>
 						<legend class='section-legend'>
 							{{ $t('components.config.mender.inventory') }}
 						</legend>
-						<TextInput
+						<ITextInput
 							v-model='config.client.config.TenantToken'
 							:label='$t("components.config.mender.client.tenantToken")'
 							:rules='[
@@ -150,9 +151,10 @@ limitations under the License.
 				</v-responsive>
 			</v-skeleton-loader>
 			<template #actions>
-				<ICardActionBtn
+				<IActionBtn
 					:action='Action.Edit'
-					:disabled='!isValid.value || [ComponentState.Loading, ComponentState.Reloading, ComponentState.Saving].includes(componentState)'
+					container-type='card'
+					:disabled='!isValid.value || [ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState)'
 					type='submit'
 				/>
 			</template>
@@ -164,9 +166,11 @@ limitations under the License.
 import { type MenderService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import { type MenderConfig } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import {
-	Action, ICard,
-	ICardActionBtn,
-	ICardTitleActionBtn,
+	Action,
+	ComponentState,
+	IActionBtn,
+	ICard,
+	ITextInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import {
@@ -185,10 +189,8 @@ import { type VForm } from 'vuetify/components';
 
 import MenderCertificateUploadDialog from '@/components/config/mender/MenderCertificateUploadDialog.vue';
 import NumberInput from '@/components/layout/form/NumberInput.vue';
-import TextInput from '@/components/layout/form/TextInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
-import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
@@ -228,7 +230,7 @@ async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value) || config.value === null) {
 		return;
 	}
-	componentState.value = ComponentState.Saving;
+	componentState.value = ComponentState.Action;
 	try {
 		const params = { ...config.value };
 		await service.updateConfig(params);

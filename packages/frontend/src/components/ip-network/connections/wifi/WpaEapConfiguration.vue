@@ -32,17 +32,17 @@ limitations under the License.
 			]'
 			required
 		/>
-		<v-text-field
+		<ITextInput
 			v-model='configuration.wifi.security.eap.anonymousIdentity'
 			:label='$t("components.ipNetwork.connections.form.eap.anonymousIdentity")'
 			:prepend-inner-icon='mdiAccountQuestion'
 		/>
-		<v-text-field
+		<ITextInput
 			v-model='configuration.wifi.security.eap.identity'
 			:label='$t("components.ipNetwork.connections.form.eap.identity")'
 			:prepend-inner-icon='mdiAccount'
 		/>
-		<PasswordInput
+		<IPasswordInput
 			v-model='configuration.wifi.security.eap.password'
 			:label='$t("components.ipNetwork.connections.form.eap.password")'
 			:prepend-inner-icon='mdiKey'
@@ -54,7 +54,11 @@ limitations under the License.
 import {
 	type NetworkConnectionConfiguration,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
-import { ValidationRules } from '@iqrf/iqrf-vue-ui';
+import {
+	IPasswordInput,
+	ITextInput,
+	ValidationRules,
+} from '@iqrf/iqrf-vue-ui';
 import { mdiAccount, mdiAccountQuestion, mdiKey } from '@mdi/js';
 import { type PropType } from 'vue';
 
@@ -62,7 +66,6 @@ import EapPhase1MethodInput
 	from '@/components/ip-network/connections/eap/EapPhase1MethodInput.vue';
 import EapPhase2MethodInput
 	from '@/components/ip-network/connections/eap/EapPhase2MethodInput.vue';
-import PasswordInput from '@/components/layout/form/PasswordInput.vue';
 
 /// Network connection configuration
 const configuration = defineModel({

@@ -27,8 +27,9 @@ limitations under the License.
 				:disabled='startupMode === null'
 			/>
 			<template #actions>
-				<ICardActionBtn
+				<IActionBtn
 					:action='Action.Save'
+					container-type='card'
 					:disabled='startupMode === null'
 					type='submit'
 				/>
@@ -38,14 +39,13 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-
 import { type IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import {
 	IqrfGatewayDaemonComponentName,
 	type IqrfGatewayDaemonIdeCounterpart,
 	IqrfGatewayDaemonIdeCounterpartMode,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { Action, ICard, ICardActionBtn } from '@iqrf/iqrf-vue-ui';
+import { Action, IActionBtn, ICard } from '@iqrf/iqrf-vue-ui';
 import { computed, ComputedRef, onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';

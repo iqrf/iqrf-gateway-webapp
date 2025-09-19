@@ -16,7 +16,7 @@ limitations under the License.
 -->
 
 <template>
-	<PasswordInput
+	<IPasswordInput
 		v-model='modelValue'
 		:label='label'
 		:description='$t("components.iqrfnet.tr-config.security.empty")'
@@ -42,17 +42,18 @@ limitations under the License.
 				size='x-large'
 			/>
 		</template>
-	</PasswordInput>
+	</IPasswordInput>
 </template>
 
 <script lang='ts' setup>
-import { ValidationRules } from '@iqrf/iqrf-vue-ui';
+import {
+	IPasswordInput,
+	ValidationRules,
+} from '@iqrf/iqrf-vue-ui';
 import { mdiAlphabetical, mdiHexadecimal, mdiInformationBox } from '@mdi/js';
 import { computed, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
-
-import PasswordInput from '@/components/layout/form/PasswordInput.vue';
 
 const i18n = useI18n();
 const componentProps = defineProps({

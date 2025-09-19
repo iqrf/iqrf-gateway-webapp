@@ -16,7 +16,7 @@ limitations under the License.
 -->
 
 <template>
-	<ModalWindow
+	<IModalWindow
 		v-model='show'
 	>
 		<template #activator='{ props }'>
@@ -30,7 +30,7 @@ limitations under the License.
 		<v-form
 			ref='form'
 			v-slot='{ isValid }'
-			:disabled='componentState === ComponentState.Saving'
+			:disabled='componentState === ComponentState.Action'
 			@submit.prevent='onSubmit()'
 		>
 			<ICard>
@@ -49,7 +49,7 @@ limitations under the License.
 					show-size
 					required
 				/>
-				<TextInput
+				<ITextInput
 					v-if='certPath.length > 0'
 					v-model='certPath'
 					:label='$t("components.config.mender.upload.certPath")'
@@ -64,30 +64,35 @@ limitations under the License.
 							{{ $t('common.buttons.clipboard') }}
 						</v-btn>
 					</template>
-				</TextInput>
+				</ITextInput>
 				<template #actions>
-					<ICardActionBtn
+					<IActionBtn
 						:action='Action.Upload'
-						:disabled='!isValid.value || componentState === ComponentState.Saving'
+						container-type='card'
+						:disabled='!isValid.value || componentState === ComponentState.Action'
 						type='submit'
 					/>
 					<v-spacer />
-					<ICardActionBtn
+					<IActionBtn
 						:action='Action.Cancel'
+						container-type='card'
 						@click='close()'
 					/>
 				</template>
 			</ICard>
 		</v-form>
-	</ModalWindow>
+	</IModalWindow>
 </template>
 
 <script lang='ts' setup>
 import { type MenderService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import {
 	Action,
+	ComponentState,
+	IActionBtn,
 	ICard,
-	ICardActionBtn,
+	IModalWindow,
+	ITextInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiClipboard, mdiFileOutline } from '@mdi/js';
@@ -96,11 +101,8 @@ import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
-import TextInput from '@/components/layout/form/TextInput.vue';
-import ModalWindow from '@/components/ModalWindow.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
-import { ComponentState } from '@/types/ComponentState';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const show: Ref<boolean> = ref(false);
@@ -118,7 +120,7 @@ async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value) || certificates.value.length === 0) {
 		return;
 	}
-	componentState.value = ComponentState.Saving;
+	componentState.value = ComponentState.Action;
 	const certificate = certificates.value[0];
 	try {
 		certPath.value = await service.uploadCert(certificate);

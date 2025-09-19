@@ -70,7 +70,13 @@ limitations under the License.
 <script lang='ts' setup>
 import { type PowerService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
 import { type GatewayUptime } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
-import { Action, IActionBtn, ICard, IDataTable } from '@iqrf/iqrf-vue-ui';
+import {
+	Action,
+	ComponentState,
+	IActionBtn,
+	ICard,
+	IDataTable,
+} from '@iqrf/iqrf-vue-ui';
 import humanizeDuration from 'humanize-duration';
 import { computed, onBeforeMount, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -79,7 +85,6 @@ import { toast } from 'vue3-toastify';
 import BooleanCheckMarker from '@/components/BooleanCheckMarker.vue';
 import { useApiClient } from '@/services/ApiClient';
 import { useLocaleStore } from '@/store/locale';
-import { ComponentState } from '@/types/ComponentState';
 
 const i18n = useI18n();
 const localeStore = useLocaleStore();
