@@ -1295,6 +1295,15 @@
 			},
 			"unattendedUpgrades": {
 				"interval": "Day(s)",
+				"messages": {
+					"fetch": {
+						"failed": "Failed to retrieve configuration of automatic upgrades."
+					},
+					"save": {
+						"failed": "Failed to save configurtion of automatic upgrades.",
+						"success": "Automatic upgrades configuration successfully saved."
+					}
+				},
 				"notes": {
 					"packageListUpdateInterval": "Set value 0 to disable automatic package list updates.",
 					"packageRemovalInterval": "Set value 0 to disable automatic package removal.",
@@ -1305,12 +1314,21 @@
 				"packageUpdateInterval": "Package update interval",
 				"rebootOnKernelUpdate": "Reboot on kernel update",
 				"validation": {
-					"packageListUpdateIntervalInvalid": "Package list update interval should be an integer greater or equal to 0.",
-					"packageListUpdateIntervalMissing": "Please enter package list update interval.",
-					"packageRemovalIntervalInvalid": "Package removal interval should be an integer greater or equal to 0.",
-					"packageRemovalIntervalMissing": "Please enter package removal interval.",
-					"packageUpdateIntervalInvalid": "Package update interval should be an integer greater or equal to 0.",
-					"packageUpdateIntervalMissing": "Please enter package update interval."
+					"packageListUpdateInterval": {
+						"integer": "Package list update interval should be an integer.",
+						"min": "Package list update interval should be greater or equal to 0.",
+						"required": "Please enter package list update interval."
+					},
+					"packageRemovalInterval": {
+						"integer": "Package removal interval should be an integer.",
+						"min": "Package removal interval should be greater or equal to 0.",
+						"required": "Please enter package removal interval."
+					},
+					"packageUpdateInterval": {
+						"integer": "Package update interval should be an integer.",
+						"min": "Package update interval should be greater or equal to 0.",
+						"required": "Please enter package update interval."
+					}
 				}
 			}
 		},
