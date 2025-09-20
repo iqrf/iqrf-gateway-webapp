@@ -19,11 +19,21 @@ limitations under the License.
 	<v-form
 		ref='form'
 		v-slot='{ isValid }'
-		:disabled='componentState === ComponentState.Action'
+		:disabled='[ComponentState.Reloading, ComponentState.Action].includes(componentState)'
+		@submit.prevent='onSubmit()'
 	>
 		<ICard>
 			<template #title>
 				{{ $t('pages.config.controller.title') }}
+			</template>
+			<template #titleActions>
+				<IActionBtn
+					:action='Action.Reload'
+					container-type='card-title'
+					:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+					:disabled='componentState === ComponentState.Action'
+					@click='getConfig()'
+				/>
 			</template>
 			<v-alert
 				v-if='componentState === ComponentState.FetchFailed'
@@ -31,314 +41,331 @@ limitations under the License.
 				variant='tonal'
 				:text='$t("components.config.controller.messages.fetch.failed")'
 			/>
-			<span v-if='componentState !== ComponentState.Loading && configuration !== null'>
-				<section>
-					<legend>{{ $t('components.config.controller.form.sections.websocket') }}</legend>
-					<v-row :no-gutters='display.mobile.value'>
-						<v-col
-							cols='12'
-							md='6'
-						>
-							<ITextInput
-								v-model='configuration.wsServers.api'
-								:label='$t("components.config.controller.form.websocket.api")'
-								:prepend-inner-icon='mdiLinkVariant'
-							>
-								<template #append-inner>
-									<WebsocketUrlForm
-										:card-title='$t("components.config.controller.form.websocket.api")'
-										:url='configuration.wsServers.api'
-										@edited='(val: string) => configuration!.wsServers.api = val'
+			<v-skeleton-loader
+				class='input-skeleton-loader'
+				:loading='componentState === ComponentState.Loading'
+				type='text, heading, text, heading@2, text, heading@2, text, heading@3'
+			>
+				<v-responsive>
+					<span v-if='configuration !== null'>
+						<section>
+							<legend class='section-legend'>
+								{{ $t('components.config.controller.form.sections.websocket') }}
+							</legend>
+							<v-row :no-gutters='display.mobile.value'>
+								<v-col
+									cols='12'
+									md='6'
+								>
+									<ITextInput
+										v-model='configuration.wsServers.api'
+										:label='$t("components.config.controller.form.websocket.api")'
+										:prepend-inner-icon='mdiLinkVariant'
+									>
+										<template #append-inner>
+											<WebsocketUrlForm
+												:card-title='$t("components.config.controller.form.websocket.api")'
+												:url='configuration.wsServers.api'
+												@edited='(val: string) => configuration!.wsServers.api = val'
+											/>
+										</template>
+									</ITextInput>
+								</v-col>
+								<v-col
+									cols='12'
+									md='6'
+								>
+									<ITextInput
+										v-model='configuration.wsServers.monitor'
+										:label='$t("components.config.controller.form.websocket.monitor")'
+										:prepend-inner-icon='mdiLinkVariant'
+									>
+										<template #append-inner>
+											<WebsocketUrlForm
+												:card-title='$t("components.config.controller.form.websocket.monitor")'
+												:url='configuration.wsServers.monitor'
+												@edited='(val: string) => configuration!.wsServers.monitor = val'
+											/>
+										</template>
+									</ITextInput>
+								</v-col>
+							</v-row>
+							<legend class='section-legend'>
+								{{ $t('components.config.controller.form.sections.logging') }}
+							</legend>
+							<v-row :no-gutters='display.mobile.value'>
+								<v-col
+									cols='12'
+									md='6'
+								>
+									<ITextInput
+										v-model='configuration.logger.filePath'
+										:label='$t("components.config.controller.form.logging.path")'
+										:prepend-inner-icon='mdiFileDocument'
+										:rules='[
+											(v: string|null) => ValidationRules.required(v, $t("components.config.controller.validation.logPath.required")),
+										]'
+										required
 									/>
-								</template>
-							</ITextInput>
-						</v-col>
-						<v-col
-							cols='12'
-							md='6'
-						>
-							<ITextInput
-								v-model='configuration.wsServers.monitor'
-								:label='$t("components.config.controller.form.websocket.monitor")'
-								:prepend-inner-icon='mdiLinkVariant'
-							>
-								<template #append-inner>
-									<WebsocketUrlForm
-										:card-title='$t("components.config.controller.form.websocket.monitor")'
-										:url='configuration.wsServers.monitor'
-										@edited='(val: string) => configuration!.wsServers.monitor = val'
+								</v-col>
+								<v-col
+									cols='12'
+									md='6'
+								>
+									<ISelectInput
+										v-model='configuration.logger.severity'
+										:items='severityOptions'
+										:label='$t("components.config.controller.form.logging.severity")'
+										:prepend-inner-icon='mdiAlert'
 									/>
-								</template>
-							</ITextInput>
-						</v-col>
-					</v-row>
-				</section>
-				<section>
-					<legend>{{ $t('components.config.controller.form.sections.logging') }}</legend>
-					<v-row :no-gutters='display.mobile.value'>
-						<v-col
-							cols='12'
-							md='6'
-						>
-							<ITextInput
-								v-model='configuration.logger.filePath'
-								:label='$t("components.config.controller.form.logging.path")'
-								:prepend-inner-icon='mdiFileDocument'
-								:rules='[
-									(v: string|null) => ValidationRules.required(v, $t("components.config.controller.validation.logPath.required")),
-								]'
-								required
-							/>
-						</v-col>
-						<v-col
-							cols='12'
-							md='6'
-						>
+								</v-col>
+							</v-row>
+							<v-table
+								density='compact'
+								class='mb-4'
+							>
+								<tbody>
+									<tr>
+										<td>
+											{{ $t('components.config.controller.form.logging.sinks.file') }}
+										</td>
+										<td>
+											<v-checkbox-btn
+												v-model='configuration.logger.sinks.file'
+												class='float-right'
+												:disabled='[ComponentState.Reloading, ComponentState.Action].includes(componentState)'
+											/>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											{{ $t('components.config.controller.form.logging.sinks.syslog') }}
+										</td>
+										<td>
+											<v-checkbox-btn
+												v-model='configuration.logger.sinks.syslog'
+												class='float-right'
+												:disabled='[ComponentState.Reloading, ComponentState.Action].includes(componentState)'
+											/>
+										</td>
+									</tr>
+								</tbody>
+							</v-table>
+							<legend class='section-legend'>
+								{{ $t('components.config.controller.form.sections.factoryReset') }}
+							</legend>
+							<v-table
+								class='mb-4'
+								density='compact'
+							>
+								<tbody>
+									<tr>
+										<td>
+											{{ $t('components.config.controller.form.factoryReset.coordinator') }}
+										</td>
+										<td>
+											<v-checkbox-btn
+												v-model='configuration.factoryReset.coordinator'
+												class='float-right'
+												:disabled='[ComponentState.Reloading, ComponentState.Action].includes(componentState)'
+											/>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											{{ $t('components.gateway.information.version.iqrfGatewayDaemon') }}
+										</td>
+										<td>
+											<v-checkbox-btn
+												v-model='configuration.factoryReset.daemon'
+												class='float-right'
+												:disabled='[ComponentState.Reloading, ComponentState.Action].includes(componentState)'
+											/>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											{{ $t('components.gateway.information.version.iqrfGatewayWebapp') }}
+										</td>
+										<td>
+											<v-checkbox-btn
+												v-model='configuration.factoryReset.webapp'
+												class='float-right'
+												:disabled='[ComponentState.Reloading, ComponentState.Action].includes(componentState)'
+											/>
+										</td>
+									</tr>
+									<tr v-if='configuration.factoryReset.iqaros !== undefined'>
+										<td>
+											{{ $t('components.config.controller.form.factoryReset.iqaros') }}
+										</td>
+										<td>
+											<v-checkbox-btn
+												v-model='configuration.factoryReset.iqaros'
+												class='float-right'
+												:disabled='[ComponentState.Reloading, ComponentState.Action].includes(componentState)'
+											/>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											{{ $t('components.config.controller.form.factoryReset.network') }}
+										</td>
+										<td>
+											<v-checkbox-btn
+												v-model='configuration.factoryReset.network'
+												class='float-right'
+												:disabled='[ComponentState.Reloading, ComponentState.Action].includes(componentState)'
+											/>
+										</td>
+									</tr>
+								</tbody>
+							</v-table>
+							<legend class='section-legend'>
+								{{ $t('components.config.controller.form.sections.button') }}
+							</legend>
 							<ISelectInput
-								v-model='configuration.logger.severity'
-								:items='severityOptions'
-								:label='$t("components.config.controller.form.logging.severity")'
-								:prepend-inner-icon='mdiAlert'
-							/>
-						</v-col>
-					</v-row>
-					<v-table
-						density='compact'
-						class='mb-4'
-					>
-						<tbody>
-							<tr>
-								<td>
-									{{ $t('components.config.controller.form.logging.sinks.file') }}
-								</td>
-								<td>
-									<v-checkbox-btn
-										v-model='configuration.logger.sinks.file'
-										class='float-right'
-									/>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									{{ $t('components.config.controller.form.logging.sinks.syslog') }}
-								</td>
-								<td>
-									<v-checkbox-btn
-										v-model='configuration.logger.sinks.syslog'
-										class='float-right'
-									/>
-								</td>
-							</tr>
-						</tbody>
-					</v-table>
-				</section>
-				<section>
-					<legend>{{ $t('components.config.controller.form.sections.factoryReset') }}</legend>
-					<v-table
-						class='mb-4'
-						density='compact'
-					>
-						<tbody>
-							<tr>
-								<td>
-									{{ $t('components.config.controller.form.factoryReset.coordinator') }}
-								</td>
-								<td>
-									<v-checkbox-btn
-										v-model='configuration.factoryReset.coordinator'
-										class='float-right'
-									/>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									{{ $t('components.gateway.information.version.iqrfGatewayDaemon') }}
-								</td>
-								<td>
-									<v-checkbox-btn
-										v-model='configuration.factoryReset.daemon'
-										class='float-right'
-									/>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									{{ $t('components.gateway.information.version.iqrfGatewayWebapp') }}
-								</td>
-								<td>
-									<v-checkbox-btn
-										v-model='configuration.factoryReset.webapp'
-										class='float-right'
-									/>
-								</td>
-							</tr>
-							<tr v-if='configuration.factoryReset.iqaros !== undefined'>
-								<td>
-									{{ $t('components.config.controller.form.factoryReset.iqaros') }}
-								</td>
-								<td>
-									<v-checkbox-btn
-										v-model='configuration.factoryReset.iqaros'
-										class='float-right'
-									/>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									{{ $t('components.config.controller.form.factoryReset.network') }}
-								</td>
-								<td>
-									<v-checkbox-btn
-										v-model='configuration.factoryReset.network'
-										class='float-right'
-									/>
-								</td>
-							</tr>
-						</tbody>
-					</v-table>
-				</section>
-				<section>
-					<legend>{{ $t('components.config.controller.form.sections.button') }}</legend>
-					<ISelectInput
-						v-model='configuration.resetButton.api'
-						:items='actionOptions'
-						:label='$t("components.config.controller.form.button.action")'
-						:prepend-inner-icon='mdiGestureTapHold'
-					>
-						<template #append>
-							<ControllerAutonetworkForm
-								v-if='configuration.resetButton.api === IqrfGatewayControllerAction.Autonetwork'
-								:autonetwork-config='toRaw(configuration.daemonApi.autoNetwork)'
-								@saved='onAutonetworkSave'
-							/>
-							<ControllerDiscoveryForm
-								v-else-if='configuration.resetButton.api === IqrfGatewayControllerAction.Discovery'
-								:discovery-config='toRaw(configuration.daemonApi.discovery)'
-								@saved='onDiscoverySave'
-							/>
-						</template>
-					</ISelectInput>
-				</section>
-				<section>
-					<legend>{{ $t('components.config.controller.form.sections.pins') }}</legend>
-					<v-row :no-gutters='display.mobile.value'>
-						<v-col
-							cols='12'
-							md='4'
-						>
-							<INumberInput
-								v-model='configuration.resetButton.button'
-								:label='$t("components.config.controller.form.pins.buttonPin")'
-								:rules='[
-									(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.buttonPin.required")),
-									(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.buttonPin.integer")),
-								]'
-								:prepend-inner-icon='mdiRadioboxBlank'
-								required
-							/>
-						</v-col>
-						<v-col
-							cols='12'
-							md='4'
-						>
-							<INumberInput
-								v-model='configuration.statusLed.greenLed'
-								:label='$t("components.config.controller.form.pins.greenLedPin")'
-								:rules='[
-									(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.greenLedPin.required")),
-									(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.greenLedPin.integer")),
-								]'
-								:prepend-inner-icon='mdiLedVariantOutline'
-								required
-							/>
-						</v-col>
-						<v-col
-							cols='12'
-							md='4'
-						>
-							<INumberInput
-								v-model='configuration.statusLed.redLed'
-								:label='$t("components.config.controller.form.pins.redLedPin")'
-								:rules='[
-									(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.redLedPin.required")),
-									(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.redLedPin.integer")),
-								]'
-								:prepend-inner-icon='mdiLedVariantOn'
-								required
-							/>
-						</v-col>
-					</v-row>
-					<v-checkbox
-						v-model='watchdogPins'
-						:label='$t("components.config.controller.form.pins.useWatchdogPins")'
-					/>
-					<v-row :no-gutters='display.mobile.value'>
-						<v-col
-							cols='12'
-							md='4'
-						>
-							<INumberInput
-								v-model='configuration.powerOff.sck'
-								:label='$t("components.config.controller.form.pins.sckPin")'
-								:rules='watchdogPins ?
-									[
-										(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.sckPin.required")),
-										(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.sckPin.integer")),
-									] : []
-								'
-								:prepend-inner-icon='mdiChip'
-								:disabled='!watchdogPins'
-								:required='watchdogPins'
-							/>
-						</v-col>
-						<v-col
-							cols='12'
-							md='4'
-						>
-							<INumberInput
-								v-model='configuration.powerOff.sda'
-								:label='$t("components.config.controller.form.pins.sdaPin")'
-								:rules='watchdogPins ?
-									[
-										(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.sdaPin.required")),
-										(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.sdaPin.integer")),
-									] : []
-								'
-								:prepend-inner-icon='mdiChip'
-								:disabled='!watchdogPins'
-								:required='watchdogPins'
-							/>
-						</v-col>
-					</v-row>
-				</section>
-				<span class='d-flex justify-space-around'>
-					<v-menu
-						v-model='showProfileMenu'
-						location='top center'
-						transition='slide-y-transition'
-						:close-on-content-click='false'
-						eager
-					>
-						<template #activator='{ props }'>
-							<v-btn
-								v-bind='props'
-								color='primary'
+								v-model='configuration.resetButton.api'
+								:items='actionOptions'
+								:label='$t("components.config.controller.form.button.action")'
+								:prepend-inner-icon='mdiGestureTapHold'
 							>
-								{{ $t('components.config.profiles.title') }}
-							</v-btn>
-						</template>
-						<DeviceProfilesTable
-							@apply='(p: IqrfGatewayControllerMapping) => applyProfile(p)'
-						/>
-					</v-menu>
-				</span>
-			</span>
+								<template #append>
+									<ControllerAutonetworkForm
+										v-if='configuration.resetButton.api === IqrfGatewayControllerAction.Autonetwork'
+										:autonetwork-config='toRaw(configuration.daemonApi.autoNetwork)'
+										@saved='onAutonetworkSave'
+									/>
+									<ControllerDiscoveryForm
+										v-else-if='configuration.resetButton.api === IqrfGatewayControllerAction.Discovery'
+										:discovery-config='toRaw(configuration.daemonApi.discovery)'
+										@saved='onDiscoverySave'
+									/>
+								</template>
+							</ISelectInput>
+							<legend class='section-legend'>
+								{{ $t('components.config.controller.form.sections.pins') }}
+							</legend>
+							<v-row :no-gutters='display.mobile.value'>
+								<v-col
+									cols='12'
+									md='4'
+								>
+									<INumberInput
+										v-model='configuration.resetButton.button'
+										:label='$t("components.config.controller.form.pins.buttonPin")'
+										:rules='[
+											(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.buttonPin.required")),
+											(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.buttonPin.integer")),
+										]'
+										:prepend-inner-icon='mdiRadioboxBlank'
+										required
+									/>
+								</v-col>
+								<v-col
+									cols='12'
+									md='4'
+								>
+									<INumberInput
+										v-model='configuration.statusLed.greenLed'
+										:label='$t("components.config.controller.form.pins.greenLedPin")'
+										:rules='[
+											(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.greenLedPin.required")),
+											(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.greenLedPin.integer")),
+										]'
+										:prepend-inner-icon='mdiLedVariantOutline'
+										required
+									/>
+								</v-col>
+								<v-col
+									cols='12'
+									md='4'
+								>
+									<INumberInput
+										v-model='configuration.statusLed.redLed'
+										:label='$t("components.config.controller.form.pins.redLedPin")'
+										:rules='[
+											(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.redLedPin.required")),
+											(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.redLedPin.integer")),
+										]'
+										:prepend-inner-icon='mdiLedVariantOn'
+										required
+									/>
+								</v-col>
+							</v-row>
+							<v-checkbox
+								v-model='watchdogPins'
+								:label='$t("components.config.controller.form.pins.useWatchdogPins")'
+							/>
+							<v-row :no-gutters='display.mobile.value'>
+								<v-col
+									cols='12'
+									md='4'
+								>
+									<INumberInput
+										v-model='configuration.powerOff.sck'
+										:label='$t("components.config.controller.form.pins.sckPin")'
+										:rules='watchdogPins ?
+											[
+												(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.sckPin.required")),
+												(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.sckPin.integer")),
+											] : []
+										'
+										:prepend-inner-icon='mdiChip'
+										:disabled='!watchdogPins'
+										:required='watchdogPins'
+									/>
+								</v-col>
+								<v-col
+									cols='12'
+									md='4'
+								>
+									<INumberInput
+										v-model='configuration.powerOff.sda'
+										:label='$t("components.config.controller.form.pins.sdaPin")'
+										:rules='watchdogPins ?
+											[
+												(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.sdaPin.required")),
+												(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.sdaPin.integer")),
+											] : []
+										'
+										:prepend-inner-icon='mdiChip'
+										:disabled='!watchdogPins'
+										:required='watchdogPins'
+									/>
+								</v-col>
+							</v-row>
+						</section>
+						<span class='d-flex justify-space-around'>
+							<v-menu
+								v-model='showProfileMenu'
+								location='top center'
+								transition='slide-y-transition'
+								:close-on-content-click='false'
+								eager
+							>
+								<template #activator='{ props }'>
+									<v-btn
+										v-bind='props'
+										color='primary'
+									>
+										{{ $t('components.config.profiles.title') }}
+									</v-btn>
+								</template>
+								<DeviceProfilesTable
+									@apply='(p: IqrfGatewayControllerMapping) => applyProfile(p)'
+								/>
+							</v-menu>
+						</span>
+					</span>
+				</v-responsive>
+			</v-skeleton-loader>
 			<template #actions>
 				<IActionBtn
 					:action='Action.Save'
 					:loading='componentState === ComponentState.Action'
-					:disabled='componentState !== ComponentState.Ready || !isValid.value'
-					@click='onSubmit()'
+					:disabled='!isValid.value || [ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+					type='submit'
 				/>
 			</template>
 		</ICard>
@@ -436,7 +463,10 @@ const watchdogPins: Ref<boolean> = ref(false);
 const showProfileMenu: Ref<boolean> = ref(false);
 
 async function getConfig(): Promise<void> {
-	componentState.value = ComponentState.Loading;
+	componentState.value = [
+		ComponentState.Created,
+		ComponentState.FetchFailed,
+	].includes(componentState.value) ? ComponentState.Loading : ComponentState.Reloading;
 	try {
 		configuration.value = await service.getConfig();
 		watchdogPins.value = configuration.value.powerOff.sck !== -1 && configuration.value.powerOff.sck !== -1;
@@ -445,7 +475,7 @@ async function getConfig(): Promise<void> {
 		toast.error(
 			i18n.t('components.config.controller.messages.fetch.failed'),
 		);
-		componentState.value = ComponentState.FetchFailed;
+		componentState.value = componentState.value === ComponentState.Loading ? ComponentState.FetchFailed : ComponentState.Ready;
 	}
 }
 
@@ -464,7 +494,6 @@ async function onSubmit(): Promise<void> {
 	}
 	try {
 		await service.updateConfig(configuration.value);
-		await getConfig();
 		toast.success(
 			i18n.t('components.config.controller.messages.save.success'),
 		);
@@ -473,6 +502,7 @@ async function onSubmit(): Promise<void> {
 			i18n.t('components.config.controller.messages.save.failed'),
 		);
 	}
+	componentState.value = ComponentState.Ready;
 }
 
 function onAutonetworkSave(config: IqrfGatewayControllerApiAutonetworkConfig): void {
@@ -510,12 +540,3 @@ onMounted((): void => {
 });
 
 </script>
-
-<style lang='scss' scoped>
-legend {
-	font-size: large;
-	font-weight: 300;
-	padding-bottom: 1em;
-}
-
-</style>

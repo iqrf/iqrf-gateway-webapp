@@ -105,7 +105,6 @@
 			"valid": "Valid"
 		},
 		"validation": {
-			"credentialsMissing": "Please enter both username and password, or leave both fields empty.",
 			"email": {
 				"format": "Invalid email address format.",
 				"required": "Please enter email address."
@@ -1031,37 +1030,60 @@
 				}
 			},
 			"influxdb-bridge": {
-				"actions": {
-					"add": "Add subscription topic",
-					"delete": "Delete subscription topic",
-					"deleteAll": "Delete all subscription topics",
-					"edit": "Edit subscription topic"
+				"influx": {
+					"devicesBucket": "Devices bucket name",
+					"gatewayBucket": "Gateway bucket name",
+					"org": "Organization",
+					"sensorsBucket": "Sensors bucket name",
+					"title": "InfluxDB client",
+					"token": "Authentication token"
 				},
-				"devicesBucket": "Devices bucket name",
-				"gatewayBucket": "Gateway bucket name",
-				"influx": "InfluxDB client",
 				"messages": {
+					"fetch": {
+						"failed": "Failed to retrieve IQRF Gateway InfluxDB Bridge configuration."
+					},
 					"save": {
+						"failed": "Failed to save IQRF Gateway InfluxDB Bridge configuration.",
 						"success": "IQRF Gateway InfluxDB Bridge configuration successfully saved."
 					}
 				},
-				"mqtt": "MQTT client",
-				"noTopics": "No subscription topics specified.",
+				"mqtt": {
+					"noTopics": "No subscription topics specified.",
+					"title": "MQTT client"
+				},
 				"notes": {
 					"newAuth": "Token is used for v2+ authentication. A token can be used for authentication in version 1.8 with the format user:password.",
 					"oldAuth": "User and password are used for v1.x authentication."
 				},
-				"org": "Organization",
-				"sensorsBucket": "Sensor bucket name",
-				"token": "Authentication token",
-				"topic": "Topic",
-				"topicTitle": "Subscriptions",
+				"topics": {
+					"actions": {
+						"add": "Add subscription topic",
+						"delete": "Delete subscription topic",
+						"deleteAll": "Delete all subscription topics",
+						"edit": "Edit subscription topic"
+					},
+					"title": "Subscriptions",
+					"topic": "Topic"
+				},
 				"validation": {
-					"devicesBucketMissing": "Please enter devices bucket name.",
-					"gatewayBucketMissing": "Please enter gateway bucket name.",
-					"orgMissing": "Please enter organization name.",
-					"sensorsBucketMissing": "Please enter sensors bucket name.",
-					"topic": "Please enter subscription topic."
+					"devicesBucket": {
+						"required": "Please enter devices bucket name."
+					},
+					"gatewayBucket": {
+						"required": "Please enter gateway bucket name."
+					},
+					"org": {
+						"required": "Please enter organization name."
+					},
+					"sensorsBucket": {
+						"required": "Please enter sensors bucket name."
+					},
+					"token": {
+						"required": "Please enter authentication token."
+					},
+					"topic": {
+						"required": "Please enter subscription topic."
+					}
 				}
 			},
 			"journal": {
