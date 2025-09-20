@@ -16,22 +16,22 @@ limitations under the License.
 -->
 
 <template>
-	<IModalWindow
-		v-model='show'
-	>
+	<IModalWindow v-model='show'>
 		<template #activator='{ props }'>
-			<v-btn
+			<IActionBtn
 				v-if='action === Action.Add'
-				v-tooltip:bottom='$t("components.config.influxdb-bridge.actions.add")'
+				v-tooltip:bottom='$t("components.config.influxdb-bridge.topics.actions.add")'
 				v-bind='props'
-				color='green'
-				:icon='mdiPlus'
+				:action='Action.Add'
+				container-type='card-title'
+				:disabled='disabled'
 			/>
 			<IDataTableAction
 				v-if='action === Action.Edit'
 				v-bind='props'
 				:action='action'
-				:tooltip='$t("components.config.influxdb-bridge.actions.edit")'
+				:tooltip='$t("components.config.influxdb-bridge.topics.actions.edit")'
+				:disabled='disabled'
 			/>
 		</template>
 		<v-form
@@ -41,27 +41,26 @@ limitations under the License.
 		>
 			<ICard :action='action'>
 				<template #title>
-					{{ $t(`components.config.influxdb-bridge.actions.${action}`) }}
+					{{ titleText }}
 				</template>
 				<ITextInput
 					v-model='subscriptionTopic'
-					:label='$t("components.config.influxdb-bridge.topic")'
+					:label='$t("components.config.influxdb-bridge.topics.topic")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.config.influxdb-bridge.validation.topic")),
+						(v: string|null) => ValidationRules.required(v, $t("components.config.influxdb-bridge.validation.topic.required")),
 					]'
 					required
+					:prepend-inner-icon='mdiForum'
 				/>
 				<template #actions>
 					<IActionBtn
 						:action='action'
-						container-type='card'
 						:disabled='!isValid.value'
 						type='submit'
 					/>
 					<v-spacer />
 					<IActionBtn
 						:action='Action.Cancel'
-						container-type='card'
 						@click='close()'
 					/>
 				</template>
@@ -80,8 +79,9 @@ import {
 	ITextInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
-import { mdiPlus } from '@mdi/js';
-import { ref, type Ref, watchEffect } from 'vue';
+import { mdiForum } from '@mdi/js';
+import { computed, ref, type Ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { VForm } from 'vuetify/components';
 
 import { validateForm } from '@/helpers/validateForm';
@@ -90,21 +90,34 @@ interface Props {
 	action: Action;
 	index?: number;
 	topic?: string;
+	disabled?: boolean;
 }
 
 const emit = defineEmits(['save']);
+const i18n = useI18n();
 const componentProps = defineProps<Props>();
 const show: Ref<boolean> = ref(false);
 const form: Ref<VForm | null> = ref(null);
 const subscriptionTopic: Ref<string> = ref('');
 
-watchEffect((): void => {
+const titleText = computed(() => {
+	if (componentProps.action === Action.Add) {
+		return i18n.t('components.config.influxdb-bridge.topics.actions.add');
+	}
+	return i18n.t('components.config.influxdb-bridge.topics.actions.edit');
+});
+
+watch(show, (newVal: boolean): void => {
+	if (!newVal) {
+		return;
+	}
 	if (componentProps.action === Action.Add) {
 		subscriptionTopic.value = '';
-	} else if (componentProps.topic !== undefined) {
-		subscriptionTopic.value = componentProps.topic;
+	} else {
+		subscriptionTopic.value = componentProps.topic ?? '';
 	}
 });
+
 async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;

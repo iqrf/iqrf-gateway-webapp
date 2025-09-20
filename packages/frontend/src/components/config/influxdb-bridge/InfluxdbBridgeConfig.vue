@@ -18,7 +18,7 @@ limitations under the License.
 <template>
 	<v-form
 		ref='form'
-		v-slot='{ isValid, validate }'
+		v-slot='{ isValid }'
 		:disabled='[ComponentState.Reloading, ComponentState.Action].includes(componentState)'
 		@submit.prevent='onSubmit()'
 	>
@@ -27,24 +27,31 @@ limitations under the License.
 				{{ $t('pages.config.influxdb-bridge.title') }}
 			</template>
 			<template #titleActions>
-				<v-btn
-					id='reload-activator'
-					color='white'
-					:icon='mdiReload'
+				<IActionBtn
+					:action='Action.Reload'
+					container-type='card-title'
+					:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+					:disabled='componentState === ComponentState.Action'
 					@click='getConfig()'
 				/>
 			</template>
+			<v-alert
+				v-if='componentState === ComponentState.FetchFailed'
+				type='error'
+				variant='tonal'
+				:text='$t("components.config.influxdb-bridge.messages.fetch.failed")'
+			/>
 			<v-skeleton-loader
 				class='input-skeleton-loader'
 				:loading='componentState === ComponentState.Loading'
-				type='text, heading@6, text, heading@3, text, table-heading, table-row-divider@2, table-row'
+				type='text, heading@5, text, heading@3'
 			>
 				<v-responsive>
-					<section v-if='config'>
+					<section v-if='config !== null'>
 						<legend class='section-legend'>
-							{{ $t('components.config.influxdb-bridge.influx') }}
+							{{ $t('components.config.influxdb-bridge.influx.title') }}
 						</legend>
-						<v-row>
+						<v-row :no-gutters='display.mobile.value'>
 							<v-col
 								cols='12'
 								md='6'
@@ -53,8 +60,8 @@ limitations under the License.
 									v-model='config.influx.host'
 									:label='$t("common.labels.hostname")'
 									:rules='[
-										(v: string|null) => ValidationRules.required(v, $t("common.validation.hostnameMissing")),
-										(v: string) => ValidationRules.host(v, $t("common.validation.hostnameInvalid")),
+										(v: string|null) => ValidationRules.required(v, $t("common.validation.hostname.required")),
+										(v: string) => ValidationRules.host(v, $t("common.validation.hostname.invalid")),
 									]'
 									required
 								/>
@@ -63,24 +70,26 @@ limitations under the License.
 								cols='12'
 								md='6'
 							>
-								<NumberInput
-									v-model.number='config.influx.port'
+								<INumberInput
+									v-model='config.influx.port'
 									:label='$t("common.labels.port")'
 									:rules='[
-										(v: number|null) => ValidationRules.required(v, $t("common.validation.portMissing")),
-										(v: number) => ValidationRules.integer(v, $t("common.validation.portInvalid")),
-										(v: number) => ValidationRules.between(v, 1, 65535, $t("common.validation.portInvalid")),
+										(v: number|null) => ValidationRules.required(v, $t("common.validation.port.required")),
+										(v: number) => ValidationRules.integer(v, $t("common.validation.port.integer")),
+										(v: number) => ValidationRules.between(v, 1, 65535, $t("common.validation.port.between")),
 									]'
+									:min='1'
+									:max='65535'
 									required
 								/>
 							</v-col>
 						</v-row>
-						<ITextInput
+						<IPasswordInput
 							v-model='config.influx.token'
-							:label='$t("components.config.influxdb-bridge.token")'
+							:label='$t("components.config.influxdb-bridge.influx.token")'
 							:description='$t("components.config.influxdb-bridge.notes.newAuth")'
 						/>
-						<v-row>
+						<v-row :no-gutters='display.mobile.value'>
 							<v-col
 								cols='12'
 								md='6'
@@ -89,6 +98,7 @@ limitations under the License.
 									v-model='config.influx.user'
 									:label='$t("common.labels.username")'
 									:description='$t("components.config.influxdb-bridge.notes.oldAuth")'
+									:prepend-inner-icon='mdiAccount'
 								/>
 							</v-col>
 							<v-col
@@ -103,24 +113,26 @@ limitations under the License.
 						</v-row>
 						<ITextInput
 							v-model='config.influx.org'
-							:label='$t("components.config.influxdb-bridge.org")'
+							:label='$t("components.config.influxdb-bridge.influx.org")'
 							:rules='[
-								(v: number|null) => ValidationRules.required(v, $t("components.config.influxdb-bridge.validation.orgMissing")),
+								(v: number|null) => ValidationRules.required(v, $t("components.config.influxdb-bridge.validation.org.required")),
 							]'
 							required
+							:prepend-inner-icon='mdiDomain'
 						/>
-						<v-row>
+						<v-row :no-gutters='display.mobile.value'>
 							<v-col
 								cols='12'
 								md='4'
 							>
 								<ITextInput
 									v-model='config.influx.buckets.gateway'
-									:label='$t("components.config.influxdb-bridge.gatewayBucket")'
+									:label='$t("components.config.influxdb-bridge.influx.gatewayBucket")'
 									:rules='[
-										(v: string|null) => ValidationRules.required(v, $t("components.config.influxdb-bridge.validation.gatewayBucketMissing")),
+										(v: string|null) => ValidationRules.required(v, $t("components.config.influxdb-bridge.validation.gatewayBucket.required")),
 									]'
 									required
+									:prepend-inner-icon='mdiDatabase'
 								/>
 							</v-col>
 							<v-col
@@ -129,11 +141,12 @@ limitations under the License.
 							>
 								<ITextInput
 									v-model='config.influx.buckets.devices'
-									:label='$t("components.config.influxdb-bridge.devicesBucket")'
+									:label='$t("components.config.influxdb-bridge.influx.devicesBucket")'
 									:rules='[
-										(v: string|null) => ValidationRules.required(v, $t("components.config.influxdb-bridge.validation.devicesBucketMissing")),
+										(v: string|null) => ValidationRules.required(v, $t("components.config.influxdb-bridge.validation.devicesBucket.required")),
 									]'
 									required
+									:prepend-inner-icon='mdiDatabase'
 								/>
 							</v-col>
 							<v-col
@@ -142,18 +155,19 @@ limitations under the License.
 							>
 								<ITextInput
 									v-model='config.influx.buckets.sensors'
-									:label='$t("components.config.influxdb-bridge.sensorsBucket")'
+									:label='$t("components.config.influxdb-bridge.influx.sensorsBucket")'
 									:rules='[
-										(v: string|null) => ValidationRules.required(v, $t("components.config.influxdb-bridge.validation.sensorsBucketMissing")),
+										(v: string|null) => ValidationRules.required(v, $t("components.config.influxdb-bridge.validation.sensorsBucket.required")),
 									]'
 									required
+									:prepend-inner-icon='mdiDatabase'
 								/>
 							</v-col>
 						</v-row>
 						<legend class='section-legend'>
-							{{ $t('components.config.influxdb-bridge.mqtt') }}
+							{{ $t('components.config.influxdb-bridge.mqtt.title') }}
 						</legend>
-						<v-row>
+						<v-row :no-gutters='display.mobile.value'>
 							<v-col
 								cols='12'
 								md='6'
@@ -162,8 +176,8 @@ limitations under the License.
 									v-model='config.mqtt.host'
 									:label='$t("common.labels.hostname")'
 									:rules='[
-										(v: string|null) => ValidationRules.required(v, $t("common.validation.hostnameMissing")),
-										(v: string) => ValidationRules.host(v, $t("common.validation.hostnameInvalid")),
+										(v: string|null) => ValidationRules.required(v, $t("common.validation.hostname.required")),
+										(v: string) => ValidationRules.host(v, $t("common.validation.hostname.required")),
 									]'
 									required
 								/>
@@ -172,14 +186,16 @@ limitations under the License.
 								cols='12'
 								md='6'
 							>
-								<NumberInput
+								<INumberInput
 									v-model.number='config.mqtt.port'
 									:label='$t("common.labels.port")'
 									:rules='[
-										(v: number|null) => ValidationRules.required(v, $t("common.validation.portMissing")),
-										(v: number) => ValidationRules.integer(v, $t("common.validation.portInvalid")),
-										(v: number) => ValidationRules.between(v, 1, 65535, $t("common.validation.portInvalid")),
+										(v: number|null) => ValidationRules.required(v, $t("common.validation.port.required")),
+										(v: number) => ValidationRules.integer(v, $t("common.validation.port.integer")),
+										(v: number) => ValidationRules.between(v, 1, 65535, $t("common.validation.port.between")),
 									]'
+									:min='1'
+									:max='65535'
 									required
 								/>
 							</v-col>
@@ -191,8 +207,9 @@ limitations under the License.
 								(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.validation.clientIdMissing")),
 							]'
 							required
+							:prepend-inner-icon='mdiIdentifier'
 						/>
-						<v-row>
+						<v-row :no-gutters='display.mobile.value'>
 							<v-col
 								cols='12'
 								md='6'
@@ -200,13 +217,11 @@ limitations under the License.
 								<ITextInput
 									v-model='config.mqtt.user'
 									:label='$t("common.labels.username")'
-									:rules='config.mqtt.password.length > 0 ?
-										[
-											(v: string|null) => ValidationRules.required(v, $t("common.validation.credentialsMissing")),
-										] : []
-									'
-									:required='config.mqtt.password.length > 0'
-									@change='validate()'
+									:rules='[
+										(v: string|null) => ValidationRules.required(v, $t("common.validation.username.required")),
+									]'
+									required
+									:prepend-inner-icon='mdiAccount'
 								/>
 							</v-col>
 							<v-col
@@ -216,37 +231,36 @@ limitations under the License.
 								<IPasswordInput
 									v-model='config.mqtt.password'
 									:label='$t("common.labels.password")'
-									:rules='config.mqtt.user.length > 0 ?
-										[
-											(v: string|null) => ValidationRules.required(v, $t("common.validation.credentialsMissing")),
-										] : []
-									'
-									:required='config.mqtt.user.length > 0'
-									@change='validate()'
+									:rules='[
+										(v: string|null) => ValidationRules.required(v, $t("common.validation.password.required")),
+									]'
+									required
 								/>
 							</v-col>
 						</v-row>
 						<IDataTable
 							:headers='headers'
 							:items='config.mqtt.topics'
-							no-data-text='components.config.influxdb-bridge.noTopics'
+							no-data-text='components.config.influxdb-bridge.mqtt.noTopics'
 							:dense='true'
 							:hover='true'
 						>
 							<template #top>
 								<v-toolbar density='compact' rounded>
 									<v-toolbar-title>
-										{{ $t('components.config.influxdb-bridge.topicTitle') }}
+										{{ $t('components.config.influxdb-bridge.topics.title') }}
 									</v-toolbar-title>
 									<v-toolbar-items>
 										<SubscriptionTopicForm
 											:action='Action.Add'
+											:disabled='[ComponentState.Action, ComponentState.Reloading].includes(componentState)'
 											@save='(index: number|undefined, t: string) => saveTopic(index, t)'
 										/>
-										<v-btn
-											v-tooltip:bottom='$t("components.config.influxdb-bridge.actions.deleteAll")'
-											color='red'
-											:icon='mdiDelete'
+										<IActionBtn
+											v-tooltip:bottom='$t("components.config.influxdb-bridge.topics.actions.deleteAll")'
+											:action='Action.Delete'
+											container-type='card-title'
+											:disabled='[ComponentState.Action, ComponentState.Reloading].includes(componentState)'
 											@click='clearTopics()'
 										/>
 									</v-toolbar-items>
@@ -260,11 +274,13 @@ limitations under the License.
 									:action='Action.Edit'
 									:index='index'
 									:topic='item'
+									:disabled='[ComponentState.Action, ComponentState.Reloading].includes(componentState)'
 									@save='(index: number, t: string) => saveTopic(index, t)'
 								/>
 								<IDataTableAction
 									:action='Action.Delete'
-									:tooltip='$t("components.config.influxdb-bridge.actions.delete")'
+									:tooltip='$t("components.config.influxdb-bridge.topics.actions.delete")'
+									:disabled='[ComponentState.Action, ComponentState.Reloading].includes(componentState)'
 									@click='removeTopic(index)'
 								/>
 							</template>
@@ -273,14 +289,12 @@ limitations under the License.
 				</v-responsive>
 			</v-skeleton-loader>
 			<template #actions>
-				<v-btn
-					color='primary'
-					variant='elevated'
+				<IActionBtn
+					:action='Action.Save'
+					:loading='componentState === ComponentState.Action'
+					:disabled='!isValid.value || [ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
 					type='submit'
-					:disabled='componentState !== ComponentState.Ready || !isValid.value'
-				>
-					{{ $t('common.buttons.save') }}
-				</v-btn>
+				/>
 			</template>
 		</ICard>
 	</v-form>
@@ -292,50 +306,50 @@ import { type BridgeConfig } from '@iqrf/iqrf-gateway-webapp-client/types/Config
 import {
 	Action,
 	ComponentState,
+	IActionBtn,
 	ICard,
 	IDataTable,
 	IDataTableAction,
+	INumberInput,
 	IPasswordInput,
 	ITextInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
-import { mdiDelete, mdiReload } from '@mdi/js';
-import {
-	onMounted,
-	ref,
-	type Ref,
-} from 'vue';
+import { mdiAccount, mdiDatabase, mdiDomain, mdiIdentifier } from '@mdi/js';
+import { onBeforeMount, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
+import { useDisplay } from 'vuetify';
 import { VForm } from 'vuetify/components';
 
 import SubscriptionTopicForm from '@/components/config/influxdb-bridge/SubscriptionTopicForm.vue';
-import NumberInput from '@/components/layout/form/NumberInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
+const display = useDisplay();
 const service: IqrfGatewayInfluxdbBridgeService = useApiClient().getConfigServices().getIqrfGatewayInfluxdbBridgeService();
 const form: Ref<VForm | null> = ref(null);
 const config: Ref<BridgeConfig | null> = ref(null);
 const headers = [
-	{ key: 'topic', title: i18n.t('components.config.influxdb-bridge.topic') },
+	{ key: 'topic', title: i18n.t('components.config.influxdb-bridge.topics.topic') },
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end' },
 ];
 
 async function getConfig(): Promise<void> {
-	if (componentState.value === ComponentState.Created) {
-		componentState.value = ComponentState.Loading;
-	} else {
-		componentState.value = ComponentState.Reloading;
-	}
+	componentState.value = [
+		ComponentState.Created,
+		ComponentState.FetchFailed,
+	].includes(componentState.value) ? ComponentState.Loading : ComponentState.Reloading;
 	try {
 		config.value = await service.getConfig();
 		componentState.value = ComponentState.Ready;
 	} catch {
-		componentState.value = ComponentState.FetchFailed;
-		toast.error('TODO FETCH ERROR HANDLING');
+		toast.error(
+			i18n.t('components.config.influxdb-bridge.messages.fetch.failed'),
+		);
+		componentState.value = componentState.value === ComponentState.Loading ? ComponentState.FetchFailed : ComponentState.Ready;
 	}
 }
 
@@ -347,16 +361,18 @@ async function onSubmit(): Promise<void> {
 	const params = { ...config.value };
 	try {
 		await service.updateConfig(params);
-		await getConfig();
 		toast.success(
 			i18n.t('components.config.influxdb-bridge.messages.save.success'),
 		);
 	} catch {
-		toast.error('TODO SAVE ERROR HANDLING');
+		toast.error(
+			i18n.t('components.config.influxdb-bridge.messages.save.failed'),
+		);
 	}
+	componentState.value = ComponentState.Ready;
 }
 
-onMounted(() => {
+onBeforeMount(() => {
 	getConfig();
 });
 
