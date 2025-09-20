@@ -19,7 +19,7 @@ limitations under the License.
 	<v-form
 		ref='form'
 		v-slot='{ isValid }'
-		:disabled='[ComponentState.Reloading, ComponentState.Action].includes(componentState)'
+		:disabled='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState)'
 		@submit.prevent='onSubmit()'
 	>
 		<ICard>
@@ -30,9 +30,17 @@ limitations under the License.
 				<IActionBtn
 					:action='Action.Reload'
 					container-type='card-title'
+					:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+					:disabled='componentState === ComponentState.Action'
 					@click='getConfig()'
 				/>
 			</template>
+			<v-alert
+				v-if='componentState === ComponentState.FetchFailed'
+				type='error'
+				variant='tonal'
+				:text='$t("components.config.unattendedUpgrades.messages.fetch.failed")'
+			/>
 			<v-skeleton-loader
 				class='input-skeleton-loader'
 				:loading='componentState === ComponentState.Loading'
@@ -40,15 +48,17 @@ limitations under the License.
 			>
 				<v-responsive>
 					<section v-if='config'>
-						<NumberInput
-							v-model.number='config.packageListUpdateInterval'
+						<INumberInput
+							v-model='config.packageListUpdateInterval'
 							:label='$t("components.config.unattendedUpgrades.packageListUpdateInterval")'
 							:rules='[
-								(v: number|null) => ValidationRules.required(v, $t("components.config.unattendedUpgrades.validation.packageListUpdateIntervalMissing")),
-								(v: number) => ValidationRules.integer(v, $t("components.config.unattendedUpgrades.validation.packageListUpdateIntervalInvalid")),
-								(v: number) => ValidationRules.min(v, 0, $t("components.config.unattendedUpgrades.validation.packageListUpdateIntervalInvalid")),
+								(v: number|null) => ValidationRules.required(v, $t("components.config.unattendedUpgrades.validation.packageListUpdateInterval.required")),
+								(v: number) => ValidationRules.integer(v, $t("components.config.unattendedUpgrades.validation.packageListUpdateInterval.integer")),
+								(v: number) => ValidationRules.min(v, 0, $t("components.config.unattendedUpgrades.validation.packageListUpdateInterval.min")),
 							]'
+							:min='0'
 							required
+							:prepend-inner-icon='mdiTimerRefresh'
 						>
 							<template #append-inner>
 								<v-chip
@@ -58,16 +68,18 @@ limitations under the License.
 									{{ $t('components.config.unattendedUpgrades.interval') }}
 								</v-chip>
 							</template>
-						</NumberInput>
-						<NumberInput
-							v-model.number='config.packageUpdateInterval'
+						</INumberInput>
+						<INumberInput
+							v-model='config.packageUpdateInterval'
 							:label='$t("components.config.unattendedUpgrades.packageUpdateInterval")'
 							:rules='[
-								(v: number|null) => ValidationRules.required(v, $t("components.config.unattendedUpgrades.validation.packageUpdateIntervalMissing")),
-								(v: number) => ValidationRules.integer(v, $t("components.config.unattendedUpgrades.validation.packageUpdateIntervalInvalid")),
-								(v: number) => ValidationRules.min(v, 0, $t("components.config.unattendedUpgrades.validation.packageUpdateIntervalInvalid")),
+								(v: number|null) => ValidationRules.required(v, $t("components.config.unattendedUpgrades.validation.packageUpdateInterval.required")),
+								(v: number) => ValidationRules.integer(v, $t("components.config.unattendedUpgrades.validation.packageUpdateInterval.integer")),
+								(v: number) => ValidationRules.min(v, 0, $t("components.config.unattendedUpgrades.validation.packageUpdateInterval.min")),
 							]'
+							:min='0'
 							required
+							:prepend-inner-icon='mdiTimerRefresh'
 						>
 							<template #append-inner>
 								<v-chip
@@ -77,16 +89,18 @@ limitations under the License.
 									{{ $t('components.config.unattendedUpgrades.interval') }}
 								</v-chip>
 							</template>
-						</NumberInput>
-						<NumberInput
-							v-model.number='config.packageRemovalInterval'
+						</INumberInput>
+						<INumberInput
+							v-model='config.packageRemovalInterval'
 							:label='$t("components.config.unattendedUpgrades.packageRemovalInterval")'
 							:rules='[
-								(v: number|null) => ValidationRules.required(v, $t("components.config.unattendedUpgrades.validation.packageRemovalIntervalMissing")),
-								(v: number) => ValidationRules.integer(v, $t("components.config.unattendedUpgrades.validation.packageRemovalIntervalInvalid")),
-								(v: number) => ValidationRules.min(v, 0, $t("components.config.unattendedUpgrades.validation.packageRemovalIntervalInvalid")),
+								(v: number|null) => ValidationRules.required(v, $t("components.config.unattendedUpgrades.validation.packageRemovalInterval.required")),
+								(v: number) => ValidationRules.integer(v, $t("components.config.unattendedUpgrades.validation.packageRemovalInterval.integer")),
+								(v: number) => ValidationRules.min(v, 0, $t("components.config.unattendedUpgrades.validation.packageRemovalInterval.min")),
 							]'
+							:min='0'
 							required
+							:prepend-inner-icon='mdiTimerRefresh'
 						>
 							<template #append-inner>
 								<v-chip
@@ -96,18 +110,18 @@ limitations under the License.
 									{{ $t('components.config.unattendedUpgrades.interval') }}
 								</v-chip>
 							</template>
-						</NumberInput>
+						</INumberInput>
 						<v-checkbox
 							v-model='config.rebootOnKernelUpdate'
 							:label='$t("components.config.unattendedUpgrades.rebootOnKernelUpdate")'
+							hide-details
 						/>
 					</section>
 				</v-responsive>
 			</v-skeleton-loader>
 			<template #actions>
 				<IActionBtn
-					:action='Action.Edit'
-					container-type='card'
+					:action='Action.Save'
 					:disabled='!isValid.value || [ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState)'
 					type='submit'
 				/>
@@ -124,14 +138,15 @@ import {
 	ComponentState,
 	IActionBtn,
 	ICard,
+	INumberInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
-import { onMounted, ref , type Ref } from 'vue';
+import { mdiTimerRefresh } from '@mdi/js';
+import { onBeforeMount, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
-import NumberInput from '@/components/layout/form/NumberInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
@@ -149,18 +164,19 @@ function intervalColor(value: number|string|null): string {
 }
 
 async function getConfig(): Promise<void> {
-	if (componentState.value === ComponentState.Created) {
-		componentState.value = ComponentState.Loading;
-	} else {
-		componentState.value = ComponentState.Reloading;
-	}
+	componentState.value = [
+		ComponentState.Created,
+		ComponentState.FetchFailed,
+	].includes(componentState.value) ? ComponentState.Loading : ComponentState.Reloading;
 	try {
 		config.value = await service.getConfig();
+		componentState.value = ComponentState.Ready;
 	} catch {
-		toast.error('TODO FETCH ERROR HANDLING');
-
+		toast.error(
+			i18n.t('components.config.unattendedUpgrades.messages.fetch.failed'),
+		);
+		componentState.value = componentState.value === ComponentState.Loading ? ComponentState.FetchFailed : ComponentState.Ready;
 	}
-	componentState.value = ComponentState.Ready;
 }
 
 async function onSubmit(): Promise<void> {
@@ -172,14 +188,17 @@ async function onSubmit(): Promise<void> {
 	try {
 		await service.updateConfig(params);
 		toast.success(
-			i18n.t('components.config.journal.messages.save.success'),
+			i18n.t('components.config.unattendedUpgrades.messages.save.success'),
 		);
 	} catch {
-		toast.error('TODO SAVE ERROR HANDLING');
+		toast.error(
+			i18n.t('components.config.unattendedUpgrades.messages.save.failed'),
+		);
 	}
+	componentState.value = ComponentState.Ready;
 }
 
-onMounted(() => {
+onBeforeMount(() => {
 	getConfig();
 });
 </script>
