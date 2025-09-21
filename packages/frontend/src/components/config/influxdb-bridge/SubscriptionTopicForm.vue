@@ -20,10 +20,10 @@ limitations under the License.
 		<template #activator='{ props }'>
 			<IActionBtn
 				v-if='action === Action.Add'
-				v-tooltip:bottom='$t("components.config.influxdb-bridge.topics.actions.add")'
 				v-bind='props'
 				:action='Action.Add'
 				container-type='card-title'
+				:tooltip='$t("components.config.influxdb-bridge.topics.actions.add")'
 				:disabled='disabled'
 			/>
 			<IDataTableAction

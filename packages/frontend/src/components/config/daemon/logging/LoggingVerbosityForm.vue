@@ -18,18 +18,20 @@ limitations under the License.
 <template>
 	<IModalWindow v-model='show'>
 		<template #activator='{ props }'>
-			<v-btn
+			<IActionBtn
 				v-if='action === Action.Add'
-				v-tooltip:bottom='$t("components.config.daemon.logging.channels.actions.add")'
 				v-bind='props'
-				color='success'
-				:icon='mdiPlus'
+				:action='Action.Add'
+				container-type='card-title'
+				:tooltip='$t("components.config.daemon.logging.channels.actions.add")'
+				:disabled='disabled'
 			/>
 			<IDataTableAction
 				v-else
 				v-bind='props'
 				:action='action'
 				:tooltip='$t("components.config.daemon.logging.channels.actions.edit")'
+				:disabled='disabled'
 			/>
 		</template>
 		<v-form ref='form' v-slot='{ isValid }' @submit.prevent='onSubmit()'>
@@ -37,17 +39,18 @@ limitations under the License.
 				<template #title>
 					{{ $t(`components.config.daemon.logging.channels.actions.${action}`) }}
 				</template>
-				<NumberInput
+				<INumberInput
 					v-model.number='level.channel'
 					:label='$t("components.config.daemon.logging.channel")'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.logging.validation.channelMissing")),
-						(v: number) => ValidationRules.integer(v, $t("components.config.daemon.logging.validation.channelInvalid")),
-						(v: number) => ValidationRules.min(v, 0, $t("components.config.daemon.logging.validation.channelInvalid")),
+						(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.logging.validation.channel.required")),
+						(v: number) => ValidationRules.integer(v, $t("components.config.daemon.logging.validation.channel.integer")),
+						(v: number) => ValidationRules.min(v, 0, $t("components.config.daemon.logging.validation.channel.min")),
 					]'
+					:min='0'
 					required
 				/>
-				<SelectInput
+				<ISelectInput
 					v-model='level.level'
 					:label='$t("components.config.daemon.logging.severity")'
 					:items='severityOptions'
@@ -55,14 +58,12 @@ limitations under the License.
 				<template #actions>
 					<IActionBtn
 						:action='action'
-						container-type='card'
 						:disabled='!isValid.value'
 						type='submit'
 					/>
 					<v-spacer />
 					<IActionBtn
 						:action='Action.Cancel'
-						container-type='card'
 						@click='close()'
 					/>
 				</template>
@@ -79,15 +80,14 @@ import {
 	ICard,
 	IDataTableAction,
 	IModalWindow,
+	INumberInput,
+	ISelectInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
-import { mdiPlus } from '@mdi/js';
-import { type PropType, ref, type Ref, watchEffect } from 'vue';
+import { type PropType, ref, type Ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { VForm } from 'vuetify/components';
 
-import NumberInput from '@/components/layout/form/NumberInput.vue';
-import SelectInput from '@/components/layout/form/SelectInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 
 const emit = defineEmits(['save']);
@@ -109,6 +109,11 @@ const componentProps = defineProps({
 			channel: 0,
 			level: ShapeTraceVerbosity.Info,
 		}),
+	},
+	disabled: {
+		type: Boolean,
+		required: false,
+		default: false,
 	},
 });
 const show: Ref<boolean> = ref(false);
@@ -138,7 +143,10 @@ const severityOptions = [
 	},
 ];
 
-watchEffect((): void => {
+watch(show, (newVal: boolean): void => {
+	if (!newVal) {
+		return;
+	}
 	if (componentProps.action === Action.Edit && componentProps.loggingLevel) {
 		level.value = { ...componentProps.loggingLevel };
 	} else {

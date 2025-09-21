@@ -20,6 +20,7 @@ limitations under the License.
 		ref='dialog'
 		:component-state='componentState'
 		:tooltip='$t("components.config.daemon.logging.actions.delete")'
+		:disabled='disabled'
 		@submit='onSubmit()'
 	>
 		<template #title>
@@ -49,11 +50,16 @@ import { toast } from 'vue3-toastify';
 
 import { useApiClient } from '@/services/ApiClient';
 
-const componentState: Ref<ComponentState> = ref(ComponentState.Created);
+const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const componentProps = defineProps({
 	loggingInstance: {
 		type: Object as PropType<ShapeTraceFileService>,
 		required: true,
+	},
+	disabled: {
+		type: Boolean,
+		required: false,
+		default: false,
 	},
 });
 const emit = defineEmits(['deleted']);
@@ -71,8 +77,11 @@ async function onSubmit(): Promise<void> {
 		close();
 		emit('deleted');
 	} catch {
-		toast.error('TODO ERROR HANDLING');
+		toast.error(
+			i18n.t('components.config.daemon.logging.messages.delete.failed', { name: componentProps.loggingInstance.instance }),
+		);
 	}
+	componentState.value = ComponentState.Idle;
 }
 
 function close(): void {
