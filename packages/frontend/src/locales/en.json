@@ -776,7 +776,11 @@
 					"active": {
 						"interface": "IQRF interface",
 						"messages": {
+							"fetch": {
+								"failed": "Failed to retrieve active IQRF interface."
+							},
 							"save": {
+								"failed": "Failed to change IQRF interface.",
 								"success": "IQRF interface successfully changed."
 							}
 						},
