@@ -794,14 +794,21 @@
 					},
 					"dpa": {
 						"messages": {
+							"fetch": {
+								"failed": "Failed to retrieve IQRF DPA configuration."
+							},
 							"save": {
+								"failed": "Failed to save IQRF DPA configuration.",
 								"success": "IQRF DPA configuration successfully saved."
 							}
 						},
 						"timeout": "DPA handler timeout",
 						"validation": {
-							"timeoutInvalid": "DPA handler timeout should be an integer greater or equal to 0.",
-							"timeoutMissing": "Please enter DPA handler timeout"
+							"timeout": {
+								"integer": "DPA handler timeout should be an integer.",
+								"min": "DPA handler timeout should be greater or equal to 500 ms.",
+								"required": "Please enter DPA hnadler timeout."
+							}
 						}
 					},
 					"i2cPin": "I2C enable GPIO pin",
