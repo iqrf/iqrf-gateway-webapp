@@ -853,13 +853,19 @@
 				"json-api": {
 					"instanceId": "Instance ID",
 					"messages": {
+						"fetch": {
+							"failed": "Failed to retrieve JSON API configuration."
+						},
 						"save": {
+							"failed": "Failed to save JSON API configuration.",
 							"success": "JSON API configuration successfully saved."
 						}
 					},
 					"validateResponses": "Validate JSON responses",
 					"validation": {
-						"instanceIdMissing": "Please enter instance ID."
+						"instanceId": {
+							"required": "Please enter instance ID."
+						}
 					}
 				},
 				"logging": {
