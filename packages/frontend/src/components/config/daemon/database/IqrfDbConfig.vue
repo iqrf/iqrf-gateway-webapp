@@ -19,6 +19,7 @@ limitations under the License.
 	<v-form
 		ref='form'
 		v-slot='{ isValid }'
+		:loading='componentState === ComponentState.Action'
 		:disabled='[ComponentState.Reloading, ComponentState.Action].includes(componentState)'
 		@submit.prevent='onSubmit()'
 	>
@@ -30,13 +31,20 @@ limitations under the License.
 				<IActionBtn
 					:action='Action.Reload'
 					container-type='card-title'
+					:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+					:disabled='componentState === ComponentState.Action'
 					@click='getConfig()'
 				/>
 			</template>
+			<v-alert
+				v-if='componentState === ComponentState.FetchFailed'
+				type='error'
+				variant='tonal'
+				:text='$t("components.config.daemon.db.messages.fetch.failed")'
+			/>
 			<v-skeleton-loader
-				class='input-skeleton-loader'
 				:loading='componentState === ComponentState.Loading'
-				type='text@3'
+				type='list-item@3'
 			>
 				<v-responsive v-if='config'>
 					<v-checkbox
@@ -61,9 +69,9 @@ limitations under the License.
 			</v-skeleton-loader>
 			<template #actions>
 				<IActionBtn
-					:action='Action.Edit'
-					container-type='card'
-					:disabled='!isValid.value || [ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState)'
+					:action='Action.Save'
+					:loading='componentState === ComponentState.Action'
+					:disabled='!isValid.value || [ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
 					type='submit'
 				/>
 			</template>
@@ -101,20 +109,23 @@ const config: Ref<IqrfGatewayDaemonDb | null> = ref(null);
 let instance = '';
 
 async function getConfig(): Promise<void> {
-	if (componentState.value === ComponentState.Created) {
-		componentState.value = ComponentState.Loading;
-	} else {
-		componentState.value = ComponentState.Reloading;
-	}
+	componentState.value = [
+		ComponentState.Created,
+		ComponentState.FetchFailed,
+	].includes(componentState.value) ? ComponentState.Loading : ComponentState.Reloading;
 	try {
 		const data = await service.getComponent(IqrfGatewayDaemonComponentName.IqrfDb);
 		config.value = data.instances[0] ?? null;
-		if (config.value) {
-			instance = config.value.instance;
-			componentState.value = ComponentState.Ready;
+		if (!config.value) {
+			throw new Error('Configuration instance missing.');
 		}
+		instance = config.value.instance;
+		componentState.value = ComponentState.Ready;
 	} catch {
-		toast.error('TODO FETCH ERROR HANDLING');
+		toast.error(
+			i18n.t('components.config.daemon.db.messages.fetch.failed'),
+		);
+		componentState.value = componentState.value === ComponentState.Loading ? ComponentState.FetchFailed : ComponentState.Ready;
 	}
 }
 
@@ -130,8 +141,11 @@ async function onSubmit(): Promise<void> {
 			i18n.t('components.config.daemon.db.messages.save.success'),
 		);
 	} catch {
-		toast.error('TODO SAVE ERROR HANDLING');
+		toast.error(
+			i18n.t('components.config.daemon.db.messages.save.failed'),
+		);
 	}
+	componentState.value = ComponentState.Ready;
 }
 
 onMounted(() => {
