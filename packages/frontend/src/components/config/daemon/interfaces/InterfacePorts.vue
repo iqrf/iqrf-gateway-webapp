@@ -16,7 +16,7 @@ limitations under the License.
 -->
 
 <template>
-	<ICard>
+	<ICard :width='cardWidth'>
 		<template #title>
 			{{ $t(`components.config.daemon.interfaces.${interfaceType}.devices`) }}
 		</template>
@@ -24,6 +24,9 @@ limitations under the License.
 			<IActionBtn
 				:action='Action.Reload'
 				container-type='card-title'
+				:tooltip='$t("components.config.daemon.interfaces.cdc.devices.actions.reload")'
+				:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+				:disabled='componentState === ComponentState.Action'
 				@click='getPorts()'
 			/>
 		</template>
@@ -34,6 +37,7 @@ limitations under the License.
 			:hover='true'
 			:dense='true'
 			:items-per-page='5'
+			disable-column-filtering
 		>
 			<template #item.interface='{ item }'>
 				{{ item }}
@@ -41,7 +45,7 @@ limitations under the License.
 			<template #item.actions='{ item }'>
 				<IDataTableAction
 					:action='Action.Apply'
-					:tooltip='$t("components.config.daemon.interfaces.apply")'
+					:tooltip='$t("components.config.daemon.interfaces.cdc.devices.actions.apply")'
 					@click='applyInterface(item)'
 				/>
 			</template>
@@ -60,10 +64,10 @@ import {
 	IDataTable,
 	IDataTableAction,
 } from '@iqrf/iqrf-vue-ui';
-import { type PropType, ref, type Ref } from 'vue';
-import { onMounted } from 'vue';
+import { computed, onBeforeMount, type PropType, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
+import { useDisplay } from 'vuetify/lib/composables/display.mjs';
 
 import { useApiClient } from '@/services/ApiClient';
 
@@ -74,6 +78,7 @@ const componentProps = defineProps({
 	},
 });
 const emit = defineEmits(['apply']);
+const display = useDisplay();
 const i18n = useI18n();
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const service: InterfacePortsService = useApiClient().getIqrfServices().getInterfacePortsService();
@@ -82,6 +87,16 @@ const headers = [
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false },
 ];
 const ports: Ref<string[]> = ref([]);
+
+const cardWidth = computed(() => {
+	if (display.lgAndUp.value) {
+		return '50vw';
+	}
+	if (display.md.value) {
+		return '75vw';
+	}
+	return '100vw';
+});
 
 async function getPorts(): Promise<void> {
 	componentState.value = ComponentState.Loading;
@@ -97,7 +112,7 @@ function applyInterface(iface: string): void {
 	emit('apply', iface);
 }
 
-onMounted(() => {
+onBeforeMount(() => {
 	getPorts();
 });
 </script>
