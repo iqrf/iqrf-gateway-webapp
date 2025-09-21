@@ -762,7 +762,11 @@
 					"enumerateOnLaunch": "Run enumeration on Daemon launch",
 					"includeMetadata": "Include device metadata in response messages",
 					"messages": {
+						"fetch": {
+							"failed": "Failed to retrieve database configuration."
+						},
 						"save": {
+							"failed": "Failed to saave database configuration.",
 							"success": "Database configuration successfully saved."
 						}
 					}
