@@ -96,7 +96,7 @@ final class JsonSchemaManagerTest extends TestCase {
 	public function testValidateInvalid(): void {
 		$this->manager->setSchema(self::SCHEMA_NAME);
 		Assert::exception(function (): void {
-			$json = (object) $this->fileManager->readJson('iqrf__MqMessaging.json');
+			$json = (object) $this->fileManager->readJson('iqrf__WebsocketMessaging.json');
 			$this->manager->validate($json);
 		}, InvalidJsonException::class);
 	}

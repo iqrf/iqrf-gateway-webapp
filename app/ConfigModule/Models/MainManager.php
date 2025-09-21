@@ -57,7 +57,7 @@ class MainManager {
 	}
 
 	/**
-	 * Returns the path of cache directory
+	 * Returns the path of data directory
 	 * @return string Data directory path
 	 */
 	public function getDataDir(): string {

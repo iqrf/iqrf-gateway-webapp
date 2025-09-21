@@ -91,7 +91,7 @@ final class ComponentSchemaManagerTest extends TestCase {
 	public function testValidateInvalid(): void {
 		$this->manager->setSchema(self::COMPONENT_NAME);
 		Assert::exception(function (): void {
-			$json = (object) $this->fileManager->readJson('iqrf__MqMessaging.json');
+			$json = (object) $this->fileManager->readJson('iqrf__WebsocketMessaging.json');
 			$this->manager->validate($json);
 		}, InvalidJsonException::class);
 	}
