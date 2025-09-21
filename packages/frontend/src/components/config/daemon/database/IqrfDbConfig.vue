@@ -93,7 +93,7 @@ import {
 	IActionBtn,
 	ICard,
 } from '@iqrf/iqrf-vue-ui';
-import { onMounted, ref, type Ref } from 'vue';
+import { onBeforeMount, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -116,7 +116,7 @@ async function getConfig(): Promise<void> {
 	try {
 		const data = await service.getComponent(IqrfGatewayDaemonComponentName.IqrfDb);
 		config.value = data.instances[0] ?? null;
-		if (!config.value) {
+		if (config.value === null) {
 			throw new Error('Configuration instance missing.');
 		}
 		instance = config.value.instance;
@@ -148,7 +148,7 @@ async function onSubmit(): Promise<void> {
 	componentState.value = ComponentState.Ready;
 }
 
-onMounted(() => {
+onBeforeMount(() => {
 	getConfig();
 });
 </script>
