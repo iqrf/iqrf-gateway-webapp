@@ -33,13 +33,19 @@ limitations under the License.
 					@click='getConfig()'
 				/>
 			</template>
+			<v-alert
+				v-if='componentState === ComponentState.FetchFailed'
+				type='error'
+				variant='tonal'
+				:text='$t("components.config.daemon.interfaces.active.messages.fetch.failed")'
+			/>
 			<v-skeleton-loader
 				class='input-skeleton-loader'
 				:loading='componentState === ComponentState.Loading'
 				type='heading'
 			>
-				<v-responsive>
-					<SelectInput
+				<v-responsive v-if='active'>
+					<ISelectInput
 						v-model='active'
 						:label='$t("components.config.daemon.interfaces.active.interface")'
 						:items='activeOptions'
@@ -49,9 +55,9 @@ limitations under the License.
 			</v-skeleton-loader>
 			<template #actions>
 				<IActionBtn
-					:action='Action.Edit'
-					container-type='card'
-					:disabled='!isValid.value || [ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState)'
+					:action='Action.Save'
+					:loading='componentState === ComponentState.Action'
+					:disabled='!isValid.value || [ComponentState.Loading, ComponentState.Reloading, ComponentState.FetchFailed].includes(componentState)'
 					type='submit'
 				/>
 			</template>
@@ -70,6 +76,7 @@ import {
 	ComponentState,
 	IActionBtn,
 	ICard,
+	ISelectInput,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiConnection } from '@mdi/js';
 import { onMounted, ref, type Ref } from 'vue';
@@ -77,7 +84,6 @@ import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
-import SelectInput from '@/components/layout/form/SelectInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
@@ -107,11 +113,10 @@ const whitelist = [
 ];
 
 async function getConfig(): Promise<void> {
-	if (componentState.value === ComponentState.Created) {
-		componentState.value = ComponentState.Loading;
-	} else {
-		componentState.value = ComponentState.Reloading;
-	}
+	componentState.value = [
+		ComponentState.Created,
+		ComponentState.FetchFailed,
+	].includes(componentState.value) ? ComponentState.Loading : ComponentState.Reloading;
 	try {
 		const ifaceComponents = (await service.getConfig()).components.filter(component => whitelist.includes(component.name));
 		for (const component of ifaceComponents) {
@@ -120,8 +125,12 @@ async function getConfig(): Promise<void> {
 				break;
 			}
 		}
+		componentState.value = ComponentState.Ready;
 	} catch {
-		toast.error('TODO GET ERROR HANDLING');
+		toast.error(
+			i18n.t('components.config.daemon.interfaces.active.messages.fetch.failed'),
+		);
+		componentState.value = componentState.value === ComponentState.Loading ? ComponentState.FetchFailed : ComponentState.Ready;
 	}
 }
 
@@ -138,13 +147,15 @@ async function onSubmit(): Promise<void> {
 	});
 	try {
 		await service.updateEnabledComponents(components);
-		await getConfig();
 		toast.success(
 			i18n.t('components.config.daemon.interfaces.active.messages.save.success'),
 		);
 	} catch {
-		toast.error('TODO SAVE ERROR HANDLING');
+		toast.error(
+			i18n.t('components.config.daemon.interfaces.active.messages.save.failed'),
+		);
 	}
+	componentState.value = ComponentState.Ready;
 }
 
 onMounted(() => {
