@@ -30,9 +30,17 @@ limitations under the License.
 				<IActionBtn
 					:action='Action.Reload'
 					container-type='card-title'
+					:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+					:disabled='componentState === ComponentState.Action'
 					@click='getConfig()'
 				/>
 			</template>
+			<v-alert
+				v-if='componentState === ComponentState.FetchFailed'
+				type='error'
+				variant='tonal'
+				:text='$t("components.config.daemon.interfaces.dpa.messages.fetch.failed")'
+			/>
 			<v-skeleton-loader
 				class='input-skeleton-loader'
 				:loading='componentState === ComponentState.Loading'
@@ -49,15 +57,16 @@ limitations under the License.
 							]'
 							required
 						/>
-						<NumberInput
-							v-model.number='config.DpaHandlerTimeout'
+						<INumberInput
+							v-model='config.DpaHandlerTimeout'
 							:label='$t("components.config.daemon.interfaces.dpa.timeout")'
 							:prepend-inner-icon='mdiTimerCancel'
 							:rules='[
-								(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.dpa.validation.timeoutMissing")),
-								(v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.dpa.validation.timeoutInvalid")),
-								(v: number) => ValidationRules.min(v, 0, $t("components.config.daemon.interfaces.dpa.validation.timeoutInvalid")),
+								(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.dpa.validation.timeout.required")),
+								(v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.dpa.validation.timeout.integer")),
+								(v: number) => ValidationRules.min(v, 500, $t("components.config.daemon.interfaces.dpa.validation.timeout.min")),
 							]'
+							:min='500'
 							required
 						/>
 					</section>
@@ -65,9 +74,9 @@ limitations under the License.
 			</v-skeleton-loader>
 			<template #actions>
 				<IActionBtn
-					:action='Action.Edit'
-					container-type='card'
-					:disabled='!isValid.value || [ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState)'
+					:action='Action.Save'
+					:loading='componentState === ComponentState.Action'
+					:disabled='!isValid.value || [ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
 					type='submit'
 				/>
 			</template>
@@ -86,16 +95,16 @@ import {
 	ComponentState,
 	IActionBtn,
 	ICard,
+	INumberInput,
 	ITextInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiTextShort, mdiTimerCancel } from '@mdi/js';
-import { onMounted, ref, type Ref } from 'vue';
+import { onBeforeMount, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
-import NumberInput from '@/components/layout/form/NumberInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
@@ -107,19 +116,22 @@ const config: Ref<IqrfGatewayDaemonDpa | null> = ref(null);
 let instance = '';
 
 async function getConfig(): Promise<void> {
-	if (componentState.value === ComponentState.Created) {
-		componentState.value = ComponentState.Loading;
-	} else {
-		componentState.value = ComponentState.Reloading;
-	}
+	componentState.value = [
+		ComponentState.Created,
+		ComponentState.FetchFailed,
+	].includes(componentState.value) ? ComponentState.Loading : ComponentState.Reloading;
 	try {
 		config.value = await (await service.getComponent(IqrfGatewayDaemonComponentName.IqrfDpa)).instances[0] ?? null;
-		if (config.value !== null) {
-			instance = config.value.instance;
-			componentState.value = ComponentState.Ready;
+		if (config.value === null) {
+			throw new Error('Configuration instance missing.');
 		}
+		instance = config.value.instance;
+		componentState.value = ComponentState.Ready;
 	} catch {
-		toast.error('TODO FETCH ERROR HANDLING');
+		toast.error(
+			i18n.t('components.config.daemon.interfaces.dpa.messages.fetch.failed'),
+		);
+		componentState.value = componentState.value === ComponentState.Loading ? ComponentState.FetchFailed : ComponentState.Ready;
 	}
 }
 
@@ -131,16 +143,18 @@ async function onSubmit(): Promise<void> {
 	const params = { ...config.value };
 	try {
 		await service.updateInstance(IqrfGatewayDaemonComponentName.IqrfDpa, instance, params);
-		await getConfig();
 		toast.success(
 			i18n.t('components.config.daemon.interfaces.dpa.messages.save.success'),
 		);
 	} catch {
-		toast.error('TODO SAVE ERROR HANDLING');
+		toast.error(
+			i18n.t('components.config.daemon.interfaces.dpa.messages.save.failed'),
+		);
 	}
+	componentState.value = ComponentState.Ready;
 }
 
-onMounted(() => {
+onBeforeMount(() => {
 	getConfig();
 });
 </script>
