@@ -789,9 +789,19 @@
 					"apply": "Apply interface",
 					"busPin": "Bus enable GPIO pin",
 					"cdc": {
-						"devices": "CDC interfaces",
+						"devices": {
+							"actions": {
+								"apply": "Apply CDC inteface",
+								"reload": "Reload CDC interfaces"
+							},
+							"title": "CDC interfaces"
+						},
 						"messages": {
+							"fetch": {
+								"failed": "Failed to retrieve IQRF USB CDC configuration."
+							},
 							"save": {
+								"failed": "Failed to save IQRF USB CDC configuration.",
 								"success": "IQRF USB CDC configuration successfully saved."
 							}
 						}

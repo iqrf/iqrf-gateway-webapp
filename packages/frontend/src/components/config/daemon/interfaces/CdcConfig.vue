@@ -30,9 +30,17 @@ limitations under the License.
 				<IActionBtn
 					:action='Action.Reload'
 					container-type='card-title'
+					:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+					:disabled='componentState === ComponentState.Action'
 					@click='getConfig()'
 				/>
 			</template>
+			<v-alert
+				v-if='componentState === ComponentState.FetchFailed'
+				type='error'
+				variant='tonal'
+				:text='$t("components.config.daemon.interfaces.cdc.messages.fetch.failed")'
+			/>
 			<v-skeleton-loader
 				class='input-skeleton-loader'
 				:loading='componentState === ComponentState.Loading'
@@ -47,6 +55,7 @@ limitations under the License.
 								(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.validation.instanceMissing")),
 							]'
 							required
+							:prepend-inner-icon='mdiTextShort'
 						/>
 						<ITextInput
 							v-model='config.IqrfInterface'
@@ -55,37 +64,40 @@ limitations under the License.
 								(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.interfaceMissing")),
 							]'
 							required
+							:prepend-inner-icon='mdiSerialPort'
 						/>
+						<span class='d-flex justify-space-around'>
+							<v-menu
+								v-model='showIntefaceMenu'
+								location='top center'
+								transition='slide-y-transition'
+								:close-on-content-click='false'
+								eager
+							>
+								<template #activator='{ props }'>
+									<IActionBtn
+										v-bind='props'
+										:action='Action.Custom'
+										color='primary'
+										:icon='mdiSerialPort'
+										:disabled='[ComponentState.Action, ComponentState.Reloading, ComponentState.FetchFailed].includes(componentState)'
+										:text='$t("components.config.daemon.interfaces.cdc.devices.title")'
+									/>
+								</template>
+								<InterfacePorts
+									:interface-type='IqrfInterfaceType.CDC'
+									@apply='(iface: string) => applyInterface(iface)'
+								/>
+							</v-menu>
+						</span>
 					</section>
 				</v-responsive>
 			</v-skeleton-loader>
-			<span class='d-flex justify-space-around'>
-				<v-menu
-					v-model='showIntefaceMenu'
-					location='top center'
-					transition='slide-y-transition'
-					:close-on-content-click='false'
-					eager
-				>
-					<template #activator='{ props }'>
-						<v-btn
-							v-bind='props'
-							color='primary'
-						>
-							{{ $t('components.config.daemon.interfaces.cdc.devices') }}
-						</v-btn>
-					</template>
-					<InterfacePorts
-						:interface-type='IqrfInterfaceType.CDC'
-						@apply='(iface: string) => applyInterface(iface)'
-					/>
-				</v-menu>
-			</span>
 			<template #actions>
 				<IActionBtn
-					:action='Action.Edit'
-					container-type='card'
-					:disabled='!isValid.value || [ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState)'
+					:action='Action.Save'
+					:loading='componentState === ComponentState.Action'
+					:disabled='!isValid.value || [ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
 					type='submit'
 				/>
 			</template>
@@ -108,7 +120,8 @@ import {
 	ITextInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
-import { onMounted, ref, type Ref } from 'vue';
+import { mdiSerialPort, mdiTextShort } from '@mdi/js';
+import { onBeforeMount, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -126,19 +139,22 @@ let instance = '';
 const showIntefaceMenu: Ref<boolean> = ref(false);
 
 async function getConfig(): Promise<void> {
-	if (componentState.value === ComponentState.Created) {
-		componentState.value = ComponentState.Loading;
-	} else {
-		componentState.value = ComponentState.Reloading;
-	}
+	componentState.value = [
+		ComponentState.Created,
+		ComponentState.FetchFailed,
+	].includes(componentState.value) ? ComponentState.Loading : ComponentState.Reloading;
 	try {
 		config.value = (await service.getComponent(IqrfGatewayDaemonComponentName.IqrfCdc)).instances[0] ?? null;
-		if (config.value !== null) {
-			instance = config.value.instance;
-			componentState.value = ComponentState.Ready;
+		if (config.value === null) {
+			throw new Error('Configuration instance missing.');
 		}
+		instance = config.value.instance;
+		componentState.value = ComponentState.Ready;
 	} catch {
-		toast.error('TODO FETCH ERROR HANDLING');
+		toast.error(
+			i18n.t('components.config.daemon.interfaces.cdc.messages.fetch.failed'),
+		);
+		componentState.value = componentState.value === ComponentState.Loading ? ComponentState.FetchFailed : ComponentState.Ready;
 	}
 }
 
@@ -150,13 +166,15 @@ async function onSubmit(): Promise<void> {
 	const params = { ...config.value };
 	try {
 		await service.updateInstance(IqrfGatewayDaemonComponentName.IqrfCdc, instance, params);
-		await getConfig();
 		toast.success(
 			i18n.t('components.config.daemon.interfaces.cdc.messages.save.success'),
 		);
 	} catch {
-		toast.error('TODO SAVE ERROR HANDLING');
+		toast.error(
+			i18n.t('components.config.daemon.interfaces.cdc.messages.save.failed'),
+		);
 	}
+	componentState.value = ComponentState.Ready;
 }
 
 function applyInterface(iface: string): void {
@@ -164,9 +182,10 @@ function applyInterface(iface: string): void {
 		return;
 	}
 	config.value.IqrfInterface = iface;
+	showIntefaceMenu.value = false;
 }
 
-onMounted(() => {
+onBeforeMount(() => {
 	getConfig();
 });
 </script>
