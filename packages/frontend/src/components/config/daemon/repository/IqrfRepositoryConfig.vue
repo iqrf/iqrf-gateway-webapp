@@ -19,6 +19,7 @@ limitations under the License.
 	<v-form
 		ref='form'
 		v-slot='{ isValid }'
+		:loading='componentState === ComponentState.Action'
 		:disabled='[ComponentState.Reloading, ComponentState.Action].includes(componentState)'
 		@submit.prevent='onSubmit()'
 	>
@@ -30,9 +31,17 @@ limitations under the License.
 				<IActionBtn
 					:action='Action.Reload'
 					container-type='card-title'
+					:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+					:disabled='componentState === ComponentState.Action'
 					@click='getConfig()'
 				/>
 			</template>
+			<v-alert
+				v-if='componentState === ComponentState.FetchFailed'
+				type='error'
+				variant='tonal'
+				:text='$t("components.config.daemon.repository.messages.fetch.failed")'
+			/>
 			<v-skeleton-loader
 				class='input-skeleton-loader'
 				:loading='componentState === ComponentState.Loading'
@@ -43,26 +52,28 @@ limitations under the License.
 						<ITextInput
 							v-model='config.urlRepo'
 							:label='$t("components.config.daemon.repository.url")'
-							:prepend-inner-icon='mdiServerNetwork'
 							:rules='[
-								(v: string|null) => ValidationRules.required(v, "components.config.daemon.repository.validation.urlMissing"),
+								(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.repository.validation.url.required")),
 							]'
 							required
+							:prepend-inner-icon='mdiServerNetwork'
 						/>
 						<v-checkbox
 							v-model='updateCachePeriodically'
 							:label='$t("components.config.daemon.repository.update")'
+							density='compact'
 							:hide-details='!updateCachePeriodically'
 						/>
-						<NumberInput
+						<INumberInput
 							v-if='updateCachePeriodically'
-							v-model.number='config.checkPeriodInMinutes'
+							v-model='config.checkPeriodInMinutes'
 							:label='$t("components.config.daemon.repository.updatePeriod")'
 							:rules='updateCachePeriodically ? [
-								(v: number|null) => ValidationRules.required(v, "components.config.daemon.repository.validation.updatePeriodMissing"),
-								(v: number) => ValidationRules.integer(v, "components.config.daemon.repository.validation.updatePeriodInvalid"),
-								(v: number) => ValidationRules.min(v, 0, "components.config.daemon.repository.validation.updatePeriodInvalid"),
+								(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.repository.validation.updatePeriod.required")),
+								(v: number) => ValidationRules.integer(v, $t("components.config.daemon.repository.validation.updatePeriod.integer")),
+								(v: number) => ValidationRules.min(v, 0, $t("components.config.daemon.repository.validation.updatePeriod.min")),
 							] : []'
+							:min='0'
 							:required='updateCachePeriodically'
 						/>
 					</section>
@@ -70,9 +81,9 @@ limitations under the License.
 			</v-skeleton-loader>
 			<template #actions>
 				<IActionBtn
-					:action='Action.Edit'
-					container-type='card'
-					:disabled='!isValid.value || [ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState)'
+					:action='Action.Save'
+					:loading='componentState === ComponentState.Action'
+					:disabled='!isValid.value || [ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
 					type='submit'
 				/>
 			</template>
@@ -91,16 +102,16 @@ import {
 	ComponentState,
 	IActionBtn,
 	ICard,
+	INumberInput,
 	ITextInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiServerNetwork } from '@mdi/js';
-import { onMounted, ref, type Ref } from 'vue';
+import { onBeforeMount, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
-import NumberInput from '@/components/layout/form/NumberInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
@@ -113,21 +124,25 @@ const config: Ref<IqrfGatewayDaemonJsCache | null> = ref(null);
 const updateCachePeriodically: Ref<boolean> = ref(false);
 
 async function getConfig(): Promise<void> {
-	if (componentState.value === ComponentState.Created) {
-		componentState.value = ComponentState.Loading;
-	} else {
-		componentState.value = ComponentState.Reloading;
-	}
+	componentState.value = [
+		ComponentState.Created,
+		ComponentState.FetchFailed,
+	].includes(componentState.value) ? ComponentState.Loading : ComponentState.Reloading;
 	try {
 		config.value = (await service.getComponent(IqrfGatewayDaemonComponentName.IqrfJsCache)).instances[0] ?? null;
-		if (config.value !== null) {
-			instance = config.value.instance;
-			updateCachePeriodically.value = config.value.checkPeriodInMinutes !== 0;
+		if (config.value === null) {
+			throw new Error('Configuration instance missing.');
 		}
+		instance = config.value.instance;
+		updateCachePeriodically.value = config.value.checkPeriodInMinutes !== 0;
+		componentState.value = ComponentState.Ready;
 	} catch {
-		toast.error('TODO FETCH ERROR HANDLING');
+		toast.error(
+			i18n.t('components.config.daemon.repository.messages.fetch.failed'),
+		);
+		componentState.value = componentState.value === ComponentState.Loading ? ComponentState.FetchFailed : ComponentState.Ready;
+		console.warn(componentState.value);
 	}
-	componentState.value = ComponentState.Ready;
 }
 
 async function onSubmit(): Promise<void> {
@@ -138,16 +153,18 @@ async function onSubmit(): Promise<void> {
 	const params = { ...config.value };
 	try {
 		await service.updateInstance(IqrfGatewayDaemonComponentName.IqrfJsCache, instance, params);
-		await getConfig();
 		toast.success(
 			i18n.t('components.config.daemon.repository.messages.save.success'),
 		);
 	} catch {
-		toast.error('TODO SAVE ERROR HANDLING');
+		toast.error(
+			i18n.t('components.config.daemon.repository.messages.save.failed'),
+		);
 	}
+	componentState.value = ComponentState.Ready;
 }
 
-onMounted(() => {
+onBeforeMount(() => {
 	getConfig();
 });
 </script>

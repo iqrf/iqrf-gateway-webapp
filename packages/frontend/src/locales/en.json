@@ -929,7 +929,11 @@
 				},
 				"repository": {
 					"messages": {
+						"fetch": {
+							"failed": "Failed to retrieve IQRF repository configuration."
+						},
 						"save": {
+							"failed": "Failed to save IQRF repositoty configuration.",
 							"success": "IQRF repository configuration successfully saved."
 						}
 					},
@@ -937,9 +941,14 @@
 					"updatePeriod": "Repository cache update period (in minutes)",
 					"url": "Repository URL",
 					"validation": {
-						"updatePeriodInvalid": "Repository cache update period should be an integer greater or equal to 0.",
-						"updatePeriodMissing": "Please enter repository cache update period.",
-						"urlMissing": "Please enter repository url."
+						"updatePeriod": {
+							"integer": "IQRF repository cache update period should be an integer.",
+							"min": "IQRF repository cache update period should be greater or equal to 0.",
+							"required": "Please enter IQRF repository cache update period."
+						},
+						"url": {
+							"required": "Please enter IQRF repository url."
+						}
 					}
 				},
 				"scheduler": {
