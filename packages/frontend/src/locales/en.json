@@ -897,9 +897,14 @@
 					"maxSize": "Maximum file size in bytes",
 					"messages": {
 						"delete": {
+							"failed": "Failed to delete logging profile {name}.",
 							"success": "Logging profile {name} has been successfully deleted."
 						},
+						"list": {
+							"failed": "Failed to retrieve logging instances."
+						},
 						"save": {
+							"failed": "Failed to save logging profile {name}.",
 							"success": "Logging profile {name} has been successfully saved."
 						}
 					},
@@ -908,24 +913,36 @@
 					},
 					"profile": "Logging profile",
 					"severity": "Logging severity",
+					"table": {
+						"fetchError": "Logging instances list could not be retrieved.",
+						"noData": "No logging instance records found."
+					},
 					"timestamps": "Split and rotate log files",
 					"validation": {
-						"channelInvalid": "Logging channel should be an integer greater or equal to 0.",
-						"channelMissing": "Please enter logging channel.",
-						"maxAgeInvalid": "Maximum lifespan of log files should greater or equal to 0.",
-						"maxAgeMissing": "Please enter maximum lifespan of log files.",
-						"maxNumberInvalid": "Maximum number of log files to keep should be an integer greater or equal to 0.",
-						"maxNumberMissing": "Please enter maximum number of log files to keep."
-					},
-					"validations": {
+						"channel": {
+							"integer": "Logging channel should be an integer.",
+							"min": "Logging channel should be greater or equal to 0.",
+							"required": "Please enter logging channel."
+						},
 						"filename": {
 							"required": "Please enter file name."
 						},
 						"logDir": {
 							"required": "Please enter path to log directory."
 						},
+						"maxAge": {
+							"integer": "Maximum lifespan of file should be an integer.",
+							"min": "Maximum lifespan of file should be greater or equal to 0.",
+							"required": "Please enter maximum lifespan of log files."
+						},
+						"maxNumber": {
+							"integer": "Maximum number of log files should be an integer.",
+							"min": "Maximum number of log files to keep should be greater or equal to 0",
+							"required": "Please enter maximum number of log files to keep."
+						},
 						"maxSize": {
-							"min": "Maximum file size should be an integer greater or equal to 1.",
+							"integer": "Maximum file size should be an integer.",
+							"min": "Maximum file size should be greater or equal to 1.",
 							"required": "Please enter maximum file size."
 						},
 						"profile": {

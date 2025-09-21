@@ -24,12 +24,14 @@ limitations under the License.
 				:action='action'
 				container-type='card-title'
 				:tooltip='$t("components.config.daemon.logging.actions.add")'
+				:disabled='disabled'
 			/>
 			<IDataTableAction
 				v-if='action === Action.Edit'
 				v-bind='props'
 				:action='action'
 				:tooltip='$t("components.config.daemon.logging.actions.edit")'
+				:disabled='disabled'
 			/>
 		</template>
 		<v-form
@@ -47,7 +49,7 @@ limitations under the License.
 					v-model='profile.instance'
 					:label='$t("components.config.daemon.logging.profile")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.logging.validations.profile.required")),
+						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.logging.validation.profile.required")),
 					]'
 					required
 				/>
@@ -55,7 +57,7 @@ limitations under the License.
 					v-model='profile.path'
 					:label='$t("components.config.daemon.logging.logDir")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.logging.validations.logDir.required")),
+						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.logging.validation.logDir.required")),
 					]'
 					required
 				/>
@@ -63,45 +65,49 @@ limitations under the License.
 					v-model='profile.filename'
 					:label='$t("components.config.daemon.logging.filename")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.logging.validations.filename.required")),
+						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.logging.validation.filename.required")),
 					]'
 					required
 				/>
-				<NumberInput
-					v-model.number='profile.maxSizeMB'
+				<INumberInput
+					v-model='profile.maxSizeMB'
 					:label='$t("components.config.daemon.logging.maxSize")'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.logging.validations.maxSize.required")),
-						(v: number) => ValidationRules.integer(v, $t("components.config.daemon.logging.validations.maxSize.min")),
-						(v: number) => ValidationRules.min(v, 1, $t("components.config.daemon.logging.validations.maxSize.min")),
+						(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.logging.validation.maxSize.required")),
+						(v: number) => ValidationRules.integer(v, $t("components.config.daemon.logging.validation.maxSize.min")),
+						(v: number) => ValidationRules.min(v, 1, $t("components.config.daemon.logging.validation.maxSize.min")),
 					]'
+					:min='1'
 					required
 				/>
 				<v-checkbox
 					v-model='profile.timestampFiles'
 					:label='$t("components.config.daemon.logging.timestamps")'
+					hide-details
 				/>
-				<NumberInput
-					v-model.number='profile.maxAgeMinutes'
+				<INumberInput
+					v-model='profile.maxAgeMinutes'
 					:label='$t("components.config.daemon.logging.maxAge")'
 					:description='$t("components.config.daemon.logging.notes.timestampsDisabled")'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.logging.validation.maxAgeMissing")),
-						(v: number) => ValidationRules.integer(v, $t("components.config.daemon.logging.validation.maxAgeInvalid")),
-						(v: number) => ValidationRules.min(v, 0, $t("components.config.daemon.logging.validation.maxAgeInvalid")),
+						(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.logging.validation.maxAge.required")),
+						(v: number) => ValidationRules.integer(v, $t("components.config.daemon.logging.validation.maxAge.integer")),
+						(v: number) => ValidationRules.min(v, 0, $t("components.config.daemon.logging.validation.maxAge.min")),
 					]'
+					:min='0'
 					:disabled='!profile.timestampFiles'
 					required
 				/>
-				<NumberInput
-					v-model.number='profile.maxNumber'
+				<INumberInput
+					v-model='profile.maxNumber'
 					:label='$t("components.config.daemon.logging.maxNumber")'
 					:description='$t("components.config.daemon.logging.notes.timestampsDisabled")'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.logging.validation.maxNumberMissing")),
-						(v: number) => ValidationRules.integer(v, $t("components.config.daemon.logging.validation.maxNumberInvalid")),
-						(v: number) => ValidationRules.min(v, 0, $t("components.config.daemon.logging.validation.maxNumberInvalid")),
+						(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.logging.validation.maxNumber.required")),
+						(v: number) => ValidationRules.integer(v, $t("components.config.daemon.logging.validation.maxNumber.integer")),
+						(v: number) => ValidationRules.min(v, 0, $t("components.config.daemon.logging.validation.maxNumber.min")),
 					]'
+					:min='0'
 					:disabled='!profile.timestampFiles'
 					required
 				/>
@@ -120,12 +126,14 @@ limitations under the License.
 							<v-toolbar-items>
 								<LoggingVerbosityForm
 									:action='Action.Add'
+									:disabled='componentState === ComponentState.Action'
 									@save='saveLevel'
 								/>
-								<v-btn
-									v-tooltip:bottom='$t("components.config.daemon.logging.channels.actions.deleteAll")'
-									color='red'
-									:icon='mdiDelete'
+								<IActionBtn
+									:action='Action.Delete'
+									container-type='card-title'
+									:tooltip='$t("components.config.daemon.logging.channels.actions.deleteAll")'
+									:disabled='componentState === ComponentState.Action'
 									@click='clearLevels()'
 								/>
 							</v-toolbar-items>
@@ -139,23 +147,15 @@ limitations under the License.
 							:action='Action.Edit'
 							:index='index'
 							:logging-level='item'
+							:disabled='componentState === ComponentState.Action'
 							@save='saveLevel'
 						/>
-						<v-tooltip
-							location='bottom'
-						>
-							<template #activator='{ props }'>
-								<v-icon
-									v-bind='props'
-									color='error'
-									size='large'
-									@click='removeLevel(index)'
-								>
-									{{ mdiDelete }}
-								</v-icon>
-							</template>
-							{{ $t('components.config.daemon.logging.channels.actions.delete') }}
-						</v-tooltip>
+						<IDataTableAction
+							:action='Action.Delete'
+							:tooltip='$t("components.config.daemon.logging.channels.actions.delete")'
+							:disabled='componentState === ComponentState.Action'
+							@click='removeLevel(index)'
+						/>
 					</template>
 				</IDataTable>
 				<template #actions>
@@ -194,17 +194,16 @@ import {
 	IDataTable,
 	IDataTableAction,
 	IModalWindow,
+	INumberInput,
 	ITextInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
-import { mdiDelete } from '@mdi/js';
-import { computed, type PropType, ref, type Ref , watchEffect } from 'vue';
+import { computed, type PropType, ref, type Ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
 import LoggingVerbosityForm from '@/components/config/daemon/logging/LoggingVerbosityForm.vue';
-import NumberInput from '@/components/layout/form/NumberInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
@@ -231,6 +230,11 @@ const componentProps = defineProps({
 				{ channel: 0, level: ShapeTraceVerbosity.Info },
 			],
 		}),
+		required: false,
+	},
+	disabled: {
+		type: Boolean,
+		default: false,
 		required: false,
 	},
 });
@@ -265,9 +269,12 @@ const dialogTitle = computed(() => {
 	return i18n.t('components.config.daemon.logging.actions.edit').toString();
 });
 
-watchEffect((): void => {
+watch(show, (newVal: boolean): void => {
+	if (!newVal) {
+		return;
+	}
 	if (componentProps.action === Action.Edit && componentProps.loggingProfile) {
-		profile.value = { ...componentProps.loggingProfile };
+		profile.value = structuredClone(componentProps.loggingProfile);
 		if (profile.value.maxAgeMinutes === undefined) {
 			profile.value.maxAgeMinutes = 0;
 		}
@@ -276,7 +283,7 @@ watchEffect((): void => {
 		}
 		instance = componentProps.loggingProfile.instance;
 	} else {
-		profile.value = { ...defaultProfile };
+		profile.value = structuredClone(defaultProfile);
 		instance = defaultProfile.instance;
 	}
 	componentState.value = ComponentState.Ready;
@@ -291,28 +298,21 @@ async function onSubmit(): Promise<void> {
 	try {
 		if (componentProps.action === Action.Add) {
 			await service.createInstance(IqrfGatewayDaemonComponentName.ShapeTraceFile, params);
-			handleSuccess(params.instance);
 		} else {
 			await service.updateInstance(IqrfGatewayDaemonComponentName.ShapeTraceFile, instance, params);
-			handleSuccess(instance);
 		}
+		componentState.value = ComponentState.Ready;
+		toast.success(
+			i18n.t('components.config.daemon.logging.messages.save.success', { name: params.instance }),
+		);
+		close();
+		emit('saved');
 	} catch {
-		handleError();
+		toast.error(
+			i18n.t('components.config.daemon.logging.messages.save.failed', { name: params.instance }),
+		);
 	}
-}
-
-function handleSuccess(name: string): void {
 	componentState.value = ComponentState.Ready;
-	toast.success(
-		i18n.t('components.config.daemon.logging.messages.save.success', { name: name }),
-	);
-	close();
-	emit('saved');
-}
-
-function handleError(): void {
-	componentState.value = ComponentState.Ready;
-	toast.error('TODO ERROR HANDLING');
 }
 
 function severityLabel(severity: ShapeTraceVerbosity): string {
@@ -344,6 +344,6 @@ function clearLevels(): void {
 
 function close(): void {
 	show.value = false;
-	profile.value = { ...defaultProfile };
+	profile.value = structuredClone(defaultProfile);
 }
 </script>

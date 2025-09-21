@@ -23,42 +23,40 @@ limitations under the License.
 		<template #titleActions>
 			<LoggingForm
 				:action='Action.Add'
+				:disabled='componentState === ComponentState.Reloading'
 				@saved='getConfig()'
 			/>
 			<IActionBtn
 				:action='Action.Reload'
 				container-type='card-title'
+				:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+				:disabled='componentState === ComponentState.Action'
 				:tooltip='$t("components.config.daemon.logging.actions.reload")'
 				@click='getConfig()'
 			/>
 		</template>
-		<v-skeleton-loader
-			class='input-skeleton-loader'
-			:loading='componentState === ComponentState.Loading'
-			type='table-heading, table-row-divider@2, table-row'
+		<IDataTable
+			:headers='headers'
+			:items='instances'
+			:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+			:no-data-text='noDataText'
+			:hover='true'
+			:dense='true'
 		>
-			<v-responsive>
-				<IDataTable
-					:headers='headers'
-					:items='instances'
-					:hover='true'
-					:dense='true'
-					:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
-				>
-					<template #item.actions='{ item }'>
-						<LoggingForm
-							:action='Action.Edit'
-							:logging-profile='item'
-							@saved='getConfig()'
-						/>
-						<LoggingDeleteDialog
-							:logging-instance='item'
-							@deleted='getConfig()'
-						/>
-					</template>
-				</IDataTable>
-			</v-responsive>
-		</v-skeleton-loader>
+			<template #item.actions='{ item }'>
+				<LoggingForm
+					:action='Action.Edit'
+					:logging-profile='toRaw(item)'
+					:disabled='componentState === ComponentState.Reloading'
+					@saved='getConfig()'
+				/>
+				<LoggingDeleteDialog
+					:logging-instance='item'
+					:disabled='componentState === ComponentState.Reloading'
+					@deleted='getConfig()'
+				/>
+			</template>
+		</IDataTable>
 	</ICard>
 </template>
 
@@ -75,7 +73,7 @@ import {
 	ICard,
 	IDataTable,
 } from '@iqrf/iqrf-vue-ui';
-import { onMounted, ref, type Ref } from 'vue';
+import { computed, onBeforeMount, ref, type Ref, toRaw } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
@@ -92,21 +90,30 @@ const headers = [
 const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
 const instances: Ref<ShapeTraceFileService[]> = ref([]);
 
-async function getConfig(): Promise<void> {
-	if (componentState.value === ComponentState.Created) {
-		componentState.value = ComponentState.Loading;
-	} else {
-		componentState.value = ComponentState.Reloading;
+const noDataText = computed(() => {
+	if (componentState.value === ComponentState.FetchFailed) {
+		return i18n.t('components.config.daemon.logging.table.fetchError');
 	}
+	return i18n.t('components.config.daemon.logging.table.noData');
+});
+
+async function getConfig(): Promise<void> {
+	componentState.value = [
+		ComponentState.Created,
+		ComponentState.FetchFailed,
+	].includes(componentState.value) ? ComponentState.Loading : ComponentState.Reloading;
 	try {
 		instances.value = (await service.getComponent(IqrfGatewayDaemonComponentName.ShapeTraceFile)).instances;
+		componentState.value = ComponentState.Ready;
 	} catch {
-		toast.error('TODO FETCH ERROR');
+		toast.error(
+			i18n.t('components.config.daemon.logging.messages.list.failed'),
+		);
+		componentState.value = componentState.value === ComponentState.Loading ? ComponentState.FetchFailed : ComponentState.Ready;
 	}
-	componentState.value = ComponentState.Ready;
 }
 
-onMounted(() => {
+onBeforeMount(() => {
 	getConfig();
 });
 </script>
