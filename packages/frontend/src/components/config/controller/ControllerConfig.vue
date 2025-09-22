@@ -345,12 +345,13 @@ limitations under the License.
 								eager
 							>
 								<template #activator='{ props }'>
-									<v-btn
+									<IActionBtn
 										v-bind='props'
 										color='primary'
-									>
-										{{ $t('components.config.profiles.title') }}
-									</v-btn>
+										:icon='mdiTuneVariant'
+										:text='$t("components.config.profiles.title")'
+										:disabled='[ComponentState.Action, ComponentState.Reloading, ComponentState.FetchFailed].includes(componentState)'
+									/>
 								</template>
 								<DeviceProfilesTable
 									@apply='(p: IqrfGatewayControllerMapping) => applyProfile(p)'
@@ -403,6 +404,7 @@ import {
 	mdiLedVariantOutline,
 	mdiLinkVariant,
 	mdiRadioboxBlank,
+	mdiTuneVariant,
 } from '@mdi/js';
 import { onMounted, ref, type Ref, toRaw } from 'vue';
 import { useI18n } from 'vue-i18n';

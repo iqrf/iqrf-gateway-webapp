@@ -16,43 +16,50 @@ limitations under the License.
 -->
 
 <template>
-	<ICard>
+	<ICard :width='cardWidth'>
 		<template #title>
 			{{ $t('components.config.profiles.title') }}
 		</template>
 		<template #titleActions>
 			<DeviceProfileForm
 				:action='Action.Add'
+				:disabled='componentState === ComponentState.Reloading'
 				@saved='getProfiles()'
 			/>
 			<IActionBtn
 				:action='Action.Reload'
 				container-type='card-title'
+				:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+				:disabled='componentState === ComponentState.Action'
 				@click='getProfiles()'
 			/>
 		</template>
 		<IDataTable
 			:headers='headers'
 			:items='profiles'
-			:loading='componentState === ComponentState.Loading'
+			:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
 			:hover='true'
 			:dense='true'
-			disable-column-filtering
 			:items-per-page='5'
+			:no-data-text='noDataText'
+			disable-column-filtering
 		>
 			<template #item.actions='{ item }'>
 				<IDataTableAction
 					:action='Action.Apply'
 					:tooltip='$t("components.config.profiles.actions.apply")'
+					:disabled='componentState === ComponentState.Reloading'
 					@click='applyProfile(item)'
 				/>
 				<DeviceProfileForm
 					:action='Action.Edit'
-					:device-profile='item'
+					:device-profile='toRaw(item)'
+					:disabled='componentState === ComponentState.Reloading'
 					@saved='getProfiles()'
 				/>
 				<DeviceProfileDeleteDialog
 					:profile='item'
+					:disabled='componentState === ComponentState.Reloading'
 					@deleted='getProfiles()'
 				/>
 			</template>
@@ -70,9 +77,10 @@ import {
 	ICard, IDataTable,
 	IDataTableAction,
 } from '@iqrf/iqrf-vue-ui';
-import { onMounted, ref, type Ref } from 'vue';
+import { computed, onMounted, ref, type Ref, toRaw } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
+import { useDisplay } from 'vuetify';
 
 import DeviceProfileDeleteDialog from '@/components/config/controller/profiles/DeviceProfileDeleteDialog.vue';
 import DeviceProfileForm from '@/components/config/controller/profiles/DeviceProfileForm.vue';
@@ -80,6 +88,7 @@ import { useApiClient } from '@/services/ApiClient';
 
 const emit = defineEmits(['apply']);
 const i18n = useI18n();
+const display = useDisplay();
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const service: IqrfGatewayControllerService = useApiClient().getConfigServices().getIqrfGatewayControllerService();
 const profiles: Ref<IqrfGatewayControllerMapping[]> = ref([]);
@@ -89,8 +98,28 @@ const headers = [
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false },
 ];
 
+const cardWidth = computed(() => {
+	if (display.lgAndUp.value) {
+		return '50vw';
+	}
+	if (display.md.value) {
+		return '75vw';
+	}
+	return '100vw';
+});
+
+const noDataText = computed(() => {
+	if (componentState.value === ComponentState.FetchFailed) {
+		return 'components.config.profiles.noData.fetchError';
+	}
+	return 'components.config.profiles.noData.empty';
+});
+
 async function getProfiles(): Promise<void> {
-	componentState.value = ComponentState.Loading;
+	componentState.value = [
+		ComponentState.Created,
+		ComponentState.FetchFailed,
+	].includes(componentState.value) ? ComponentState.Loading : ComponentState.Reloading;
 	try {
 		profiles.value = (await service.listMappings()).sort((a, b) => {
 			if (a === b) {
@@ -106,7 +135,7 @@ async function getProfiles(): Promise<void> {
 		toast.error(
 			i18n.t('components.config.profiles.messages.list.failed'),
 		);
-		componentState.value = ComponentState.FetchFailed;
+		componentState.value = componentState.value === ComponentState.Loading ? ComponentState.FetchFailed : ComponentState.Ready;
 	}
 }
 
