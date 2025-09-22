@@ -1271,10 +1271,15 @@
 				"features": "Enabled features",
 				"inventory": "Inventory",
 				"messages": {
+					"fetch": {
+						"failed": "Failed to retrieve Mender configuration."
+					},
 					"save": {
+						"failed": "Failed to save Mender configuration.",
 						"success": "Mender configuration has been successfully saved."
 					},
 					"upload": {
+						"failed": "Failed to upload certificate.",
 						"success": "Certificate has been successfully uploaded."
 					}
 				},
@@ -1284,16 +1289,31 @@
 					"title": "Mender certificate upload"
 				},
 				"validation": {
-					"certificateMissing": "Please select certificate file to upload.",
-					"inventoryPollIntervalInvalid": "Inventory poll interval should be an integer greater or equal to 0.",
-					"inventoryPollIntervalMissing": "Please enter inventory poll interval.",
-					"retryPollIntervalInvalid": "Connection retry interval should be an integer greater or equal to 0.",
-					"retryPollIntervalMissing": "Please enter connection retry interval.",
-					"serverInvalid": "Mender server URL should be IPv4, IPv6, localhost or fully-qualified domain name.",
-					"serverMissing": "Please enter Mender server URL.",
-					"tenantTokenMissing": "Please enter Tenant token.",
-					"updatePollIntervalInvalid": "Update check interval should be an integer greater or equal to 0.",
-					"updatePollIntervalMissing": "Please enter update check interval."
+					"certificate": {
+						"required": "Please select certificate file to upload."
+					},
+					"inventoryPollInterval": {
+						"integer": "Inventory poll interval should be an integer.",
+						"min": "Inventory poll interval should be greater or equal to 0.",
+						"required": "Please enter inventory poll interval."
+					},
+					"retryPollInterval": {
+						"integer": "Connection retry interval should be an integer.",
+						"min": "Connection retry interval should be greater or equal to 0.",
+						"required": "Please enter retry poll interval."
+					},
+					"server": {
+						"required": "Please enter Mender server URL.",
+						"url": "Mender server URL should be IPv4, IPv6, localhost or fully-qualified domain name."
+					},
+					"tenantToken": {
+						"required": "Please enter tenant token."
+					},
+					"updatePollInterval": {
+						"integer": "Update check interval should be an integer.",
+						"min": "Update check interval should be greater or equal to 0.",
+						"required": "Please enter update check interval."
+					}
 				}
 			},
 			"monit": {
