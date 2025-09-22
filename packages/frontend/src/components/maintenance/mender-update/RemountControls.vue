@@ -23,14 +23,16 @@ limitations under the License.
 		<v-btn
 			class='mr-2'
 			color='primary'
-			:disabled='componentState === ComponentState.Action'
+			:loading='componentState === ComponentState.Action && readOnly'
+			:disabled='componentState === ComponentState.Action && !readOnly'
 			@click='onSubmit(MenderMountMode.RO)'
 		>
 			{{ $t('components.maintenance.mender.remount.readonly') }}
 		</v-btn>
 		<v-btn
 			color='primary'
-			:disabled='componentState === ComponentState.Action'
+			:loading='componentState === ComponentState.Action && !readOnly'
+			:disabled='componentState === ComponentState.Action && readOnly'
 			@click='onSubmit(MenderMountMode.RW)'
 		>
 			{{ $t('components.maintenance.mender.remount.readwrite') }}
@@ -51,21 +53,24 @@ import { useApiClient } from '@/services/ApiClient';
 const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
 const i18n = useI18n();
 const service: MenderService = useApiClient().getMaintenanceServices().getMenderService();
+const readOnly: Ref<boolean> = ref(false);
 
 async function onSubmit(mode: MenderMountMode): Promise<void> {
 	const data: MenderRemount = {
 		mode: mode,
 	};
+	readOnly.value = mode === MenderMountMode.RO;
 	componentState.value = ComponentState.Action;
 	try {
 		await service.remount(data);
 		toast.success(
 			i18n.t('components.maintenance.mender.remount.messages.success'),
 		);
-		componentState.value = ComponentState.Ready;
 	} catch {
-		componentState.value = ComponentState.Ready;
-		toast.error('TODO REMOUNT ERROR HANDLING');
+		toast.error(
+			i18n.t('components.maintenance.mender.remount.messages.failed'),
+		);
 	}
+	componentState.value = ComponentState.Ready;
 }
 </script>

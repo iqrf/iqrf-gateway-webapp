@@ -40,22 +40,25 @@ limitations under the License.
 			<template #actions>
 				<IActionBtn
 					color='primary'
-					container-type='card'
-					:disabled='!isValid.value || componentState === ComponentState.Action'
+					:icon='mdiUpload'
+					:loading='componentState === ComponentState.Action && menderAction === MenderActions.Install'
+					:disabled='!isValid.value || componentState === ComponentState.Action && menderAction !== MenderActions.Install'
 					:text='$t("components.maintenance.mender.update.install")'
 					@click='installArtifact()'
 				/>
 				<IActionBtn
-					color='primary'
-					container-type='card'
-					:disabled='componentState === ComponentState.Action'
+					color='green'
+					:icon='mdiContentSave'
+					:loading='componentState === ComponentState.Action && menderAction === MenderActions.Commit'
+					:disabled='componentState === ComponentState.Action && menderAction !== MenderActions.Commit'
 					:text='$t("components.maintenance.mender.update.commit")'
 					@click='commitUpdate()'
 				/>
 				<IActionBtn
-					color='primary'
-					container-type='card'
-					:disabled='componentState === ComponentState.Action'
+					color='red'
+					:icon='mdiUndoVariant'
+					:loading='componentState === ComponentState.Action && menderAction === MenderActions.Rollback'
+					:disabled='componentState === ComponentState.Action && menderAction !== MenderActions.Rollback'
 					:text='$t("components.maintenance.mender.update.rollback")'
 					@click='rollbackUpdate()'
 				/>
@@ -73,7 +76,7 @@ import {
 	ICard,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
-import { mdiFileOutline } from '@mdi/js';
+import { mdiContentSave, mdiFileOutline, mdiUndoVariant, mdiUpload } from '@mdi/js';
 import { AxiosError } from 'axios';
 import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -84,17 +87,25 @@ import MenderUpdateLog from '@/components/maintenance/mender-update/MenderUpdate
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
+enum MenderActions {
+	Install = 0,
+	Commit = 1,
+	Rollback = 2,
+}
+
 const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
 const i18n = useI18n();
 const service: MenderService = useApiClient().getMaintenanceServices().getMenderService();
 const form: Ref<VForm | null> = ref(null);
 const artifacts: Ref<File[]> = ref([]);
 const log: Ref<string|null> = ref(null);
+const menderAction: Ref<number | null> = ref(null);
 
 async function installArtifact(): Promise<void> {
 	if (!await validateForm(form.value) || artifacts.value.length === 0) {
 		return;
 	}
+	menderAction.value = MenderActions.Install;
 	componentState.value = ComponentState.Action;
 	const artifactFile = artifacts.value[0];
 	try {
@@ -107,13 +118,17 @@ async function installArtifact(): Promise<void> {
 		if (error instanceof AxiosError) {
 			const message = (error.response?.data as Record<string, string>).message ?? null;
 			updateLog(message);
-			toast.error('TODO INSTALL ERROR HANDLING');
+			toast.error(
+				i18n.t('components.maintenance.mender.update.messages.install.failed'),
+			);
 		}
 	}
 	componentState.value = ComponentState.Ready;
+	menderAction.value = null;
 }
 
 async function commitUpdate(): Promise<void> {
+	menderAction.value = MenderActions.Commit;
 	componentState.value = ComponentState.Action;
 	try {
 		const data = await service.commit();
@@ -125,13 +140,17 @@ async function commitUpdate(): Promise<void> {
 		if (error instanceof AxiosError) {
 			const message = (error.response?.data as Record<string, string>).message ?? null;
 			updateLog(message);
-			toast.error('TODO COMMIT ERROR HANDLING');
+			toast.error(
+				i18n.t('components.maintenance.mender.update.messages.commit.failed'),
+			);
 		}
 	}
 	componentState.value = ComponentState.Ready;
+	menderAction.value = null;
 }
 
 async function rollbackUpdate(): Promise<void> {
+	menderAction.value = MenderActions.Rollback;
 	componentState.value = ComponentState.Action;
 	try {
 		const data = await service.rollback();
@@ -143,11 +162,13 @@ async function rollbackUpdate(): Promise<void> {
 		if (error instanceof AxiosError) {
 			const message = (error.response?.data as Record<string, string>).message ?? null;
 			updateLog(message);
-			componentState.value = ComponentState.Ready;
-			toast.error('TODO ROLLBACK ERROR HANDLING');
+			toast.error(
+				i18n.t('components.maintenance.mender.update.messages.rollback.failed'),
+			);
 		}
 	}
 	componentState.value = ComponentState.Ready;
+	menderAction.value = null;
 }
 
 function updateLog(data: string|null): void {
