@@ -17,6 +17,7 @@ limitations under the License.
 
 <template>
 	<v-form
+		ref='form'
 		v-slot='{ isValid }'
 		:disabled='componentState === ComponentState.Action'
 		@submit.prevent='onSubmit()'
@@ -41,7 +42,8 @@ limitations under the License.
 				<IActionBtn
 					:action='Action.Upload'
 					container-type='card'
-					:disabled='!isValid.value || componentState === ComponentState.Action'
+					:loading='componentState === ComponentState.Action'
+					:disabled='!isValid.value'
 					:text='$t("common.buttons.restore")'
 					type='submit'
 				/>
@@ -68,20 +70,20 @@ import { VForm } from 'vuetify/components';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
-const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
+const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const i18n = useI18n();
 const service: BackupService = useApiClient().getMaintenanceServices().getBackupService();
 const form: Ref<VForm | null> = ref(null);
-const archive: Ref<File[] | null> = ref(null);
+const archive: Ref<File | null> = ref(null);
 
 async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value) || archive.value === null) {
 		return;
 	}
-	const file = archive.value[0];
+	console.warn(archive.value);
 	componentState.value = ComponentState.Action;
 	try {
-		const rsp = await service.restore(file);
+		const rsp = await service.restore(archive.value);
 		toast.success(
 			i18n.t(
 				'components.maintenance.backup.restore.messages.save.success',
@@ -89,8 +91,10 @@ async function onSubmit(): Promise<void> {
 			),
 		);
 	} catch {
-		toast.error('TODO ERROR HANDLING');
+		toast.error(
+			i18n.t('components.maintenance.backup.restore.messages.save.failed'),
+		);
 	}
-	componentState.value = ComponentState.Ready;
+	componentState.value = ComponentState.Idle;
 }
 </script>

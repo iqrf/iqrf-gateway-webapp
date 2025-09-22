@@ -17,8 +17,8 @@ limitations under the License.
 
 <template>
 	<v-form
-		:disabled='componentState === ComponentState.Loading'
-		@submit.prevent='onSubmit'
+		:disabled='componentState === ComponentState.Action'
+		@submit.prevent='onSubmit()'
 	>
 		<ICard>
 			<template #title>
@@ -122,7 +122,7 @@ limitations under the License.
 				<IActionBtn
 					:action='Action.Download'
 					container-type='card'
-					:disabled='componentState === ComponentState.Loading'
+					:loading='componentState === ComponentState.Action'
 					:text='$t("common.buttons.backup")'
 					type='submit'
 				/>
@@ -147,13 +147,15 @@ import {
 	mdiCheckboxMultipleMarked,
 } from '@mdi/js';
 import { ref, type Ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import { useApiClient } from '@/services/ApiClient';
 import { useFeatureStore } from '@/store/features';
 
-const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
+const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const featureStore = useFeatureStore();
+const i18n = useI18n();
 const service: BackupService = useApiClient().getMaintenanceServices().getBackupService();
 const params: Ref<GatewayBackup> = ref({
 	system: {
@@ -184,14 +186,17 @@ function setAll(selected: boolean): void {
 }
 
 async function onSubmit(): Promise<void> {
-	componentState.value = ComponentState.Loading;
+	componentState.value = ComponentState.Action;
 	try {
 		FileDownloader.downloadFileResponse(
 			await service.backup(params.value),
 			`iqrf-gateway-backup_${new Date().toISOString()}.zip`,
 		);
 	} catch {
-		toast.error('TODO ERROR HANDLING');
+		toast.error(
+			i18n.t('components.maintenance.backup.backup.messages.backup.failed'),
+		);
 	}
+	componentState.value = ComponentState.Idle;
 }
 </script>
