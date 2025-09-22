@@ -23,12 +23,15 @@ limitations under the License.
 				v-bind='props'
 				:action='action'
 				container-type='card-title'
+				:tooltip='$t("components.config.profiles.actions.add")'
+				:disabled='disabled'
 			/>
 			<IDataTableAction
 				v-else
 				v-bind='props'
 				:action='action'
 				:tooltip='$t("components.config.profiles.actions.edit")'
+				:disabled='disabled'
 			/>
 		</template>
 		<v-form
@@ -119,12 +122,14 @@ limitations under the License.
 				<template #actions>
 					<IActionBtn
 						:action='action'
+						:loading='componentState === ComponentState.Action'
 						:disabled='!isValid.value'
 						type='submit'
 					/>
 					<v-spacer />
 					<IActionBtn
 						:action='Action.Cancel'
+						:disabled='componentState === ComponentState.Action'
 						@click='close()'
 					/>
 				</template>
@@ -139,6 +144,7 @@ import { type IqrfGatewayControllerMapping } from '@iqrf/iqrf-gateway-webapp-cli
 import { MappingDeviceType } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import {
 	Action,
+	ComponentState,
 	IActionBtn,
 	ICard,
 	IDataTableAction,
@@ -157,6 +163,7 @@ import { VForm } from 'vuetify/components';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
+const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const emit = defineEmits(['saved']);
 const componentProps = defineProps({
 	action: {
@@ -176,6 +183,11 @@ const componentProps = defineProps({
 			sda: -1,
 		}),
 		required: false,
+	},
+	disabled: {
+		type: Boolean,
+		required: false,
+		default: false,
 	},
 });
 const i18n = useI18n();
@@ -238,6 +250,7 @@ async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
 	}
+	componentState.value = ComponentState.Action;
 	const params = { ...profile.value };
 	if (!watchdogPins.value) {
 		delete params.sck;
@@ -259,6 +272,7 @@ async function onSubmit(): Promise<void> {
 			i18n.t('components.config.profiles.messages.save.failed', { name: params.name }),
 		);
 	}
+	componentState.value = ComponentState.Ready;
 }
 
 function close(): void {
