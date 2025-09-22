@@ -16,9 +16,7 @@ limitations under the License.
 -->
 
 <template>
-	<IModalWindow
-		v-model='show'
-	>
+	<IModalWindow v-model='show'>
 		<template #activator='{ props }'>
 			<v-btn
 				v-bind='props'
@@ -42,7 +40,7 @@ limitations under the License.
 					accept='.pem'
 					:label='$t("components.config.mender.upload.cert")'
 					:rules='[
-						(v: File|Blob|null) => ValidationRules.required(v, $t("components.config.mender.validation.certificateMissing")),
+						(v: File|Blob|null) => ValidationRules.required(v, $t("components.config.mender.validation.certificate.required")),
 					]'
 					:prepend-inner-icon='mdiFileOutline'
 					:prepend-icon='undefined'
@@ -68,14 +66,14 @@ limitations under the License.
 				<template #actions>
 					<IActionBtn
 						:action='Action.Upload'
-						container-type='card'
-						:disabled='!isValid.value || componentState === ComponentState.Action'
+						:loading='componentState === ComponentState.Action'
+						:disabled='!isValid.value'
 						type='submit'
 					/>
 					<v-spacer />
 					<IActionBtn
 						:action='Action.Cancel'
-						container-type='card'
+						:disabled='componentState === ComponentState.Action'
 						@click='close()'
 					/>
 				</template>
@@ -104,6 +102,7 @@ import { VForm } from 'vuetify/components';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
+const emit = defineEmits(['path']);
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const show: Ref<boolean> = ref(false);
 const i18n = useI18n();
@@ -127,10 +126,14 @@ async function onSubmit(): Promise<void> {
 		toast.success(
 			i18n.t('components.config.mender.messages.upload.success'),
 		);
-		componentState.value = ComponentState.Ready;
+		close();
+		emit('path', certPath.value);
 	} catch {
-		toast.error('TODO SAVE ERROR HANDLING');
+		toast.error(
+			i18n.t('components.config.mender.messages.upload.failed'),
+		);
 	}
+	componentState.value = ComponentState.Ready;
 }
 
 function close(): void {

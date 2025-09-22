@@ -30,9 +30,17 @@ limitations under the License.
 				<IActionBtn
 					:action='Action.Reload'
 					container-type='card-title'
+					:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+					:disabled='componentState === ComponentState.Action'
 					@click='getConfig()'
 				/>
 			</template>
+			<v-alert
+				v-if='componentState === ComponentState.FetchFailed'
+				type='error'
+				variant='tonal'
+				:text='$t("components.config.mender.messages.fetch.failed")'
+			/>
 			<v-skeleton-loader
 				class='input-skeleton-loader'
 				:loading='componentState === ComponentState.Loading'
@@ -49,8 +57,8 @@ limitations under the License.
 							v-model='config.client.config.Servers[index]'
 							:label='$t("components.config.mender.client.server")'
 							:rules='[
-								(v: string|null) => ValidationRules.required(v, $t("components.config.mender.validation.serverMissing")),
-								(v: string) => ValidationRules.url(v, $t("components.config.mender.validation.serverInvalid")),
+								(v: string|null) => ValidationRules.required(v, $t("components.config.mender.validation.server.required")),
+								(v: string) => ValidationRules.url(v, $t("components.config.mender.validation.server.url")),
 							]'
 							:prepend-inner-icon='mdiServerNetwork'
 							required
@@ -61,7 +69,7 @@ limitations under the License.
 							:prepend-inner-icon='mdiFileCertificate'
 						>
 							<template #append>
-								<MenderCertificateUploadDialog />
+								<MenderCertificateUploadDialog @path='(e: string) => config!.client.config.ServerCertificate = e' />
 							</template>
 						</ITextInput>
 						<legend class='section-legend'>
@@ -71,19 +79,20 @@ limitations under the License.
 							v-model='config.client.config.TenantToken'
 							:label='$t("components.config.mender.client.tenantToken")'
 							:rules='[
-								(v: string|null) => ValidationRules.required(v, $t("components.config.mender.validation.tenantTokenMissing")),
+								(v: string|null) => ValidationRules.required(v, $t("components.config.mender.validation.tenantToken.required")),
 							]'
 							:prepend-inner-icon='mdiKeyVariant'
 							required
 						/>
-						<NumberInput
-							v-model.number='config.client.config.InventoryPollIntervalSeconds'
+						<INumberInput
+							v-model='config.client.config.InventoryPollIntervalSeconds'
 							:label='$t("components.config.mender.client.inventoryPollInterval")'
 							:rules='[
-								(v: number|null) => ValidationRules.required(v, $t("components.config.mender.validation.inventoryPollIntervalMissing")),
-								(v: number) => ValidationRules.integer(v, $t("components.config.mender.validation.inventoryPollIntervalInvalid")),
-								(v: number) => ValidationRules.min(v, 0, $t("components.config.mender.validation.inventoryPollIntervalInvalid")),
+								(v: number|null) => ValidationRules.required(v, $t("components.config.mender.validation.inventoryPollInterval.required")),
+								(v: number) => ValidationRules.integer(v, $t("components.config.mender.validation.inventoryPollInterval.integer")),
+								(v: number) => ValidationRules.min(v, 0, $t("components.config.mender.validation.inventoryPollInterval.min")),
 							]'
+							:min='0'
 							:prepend-inner-icon='mdiTimerMarker'
 							required
 						>
@@ -95,15 +104,16 @@ limitations under the License.
 									{{ intervalLabel(config.client.config.InventoryPollIntervalSeconds) }}
 								</v-chip>
 							</template>
-						</NumberInput>
-						<NumberInput
-							v-model.number='config.client.config.RetryPollIntervalSeconds'
+						</INumberInput>
+						<INumberInput
+							v-model='config.client.config.RetryPollIntervalSeconds'
 							:label='$t("components.config.mender.client.retryPollInterval")'
 							:rules='[
-								(v: number|null) => ValidationRules.required(v, $t("components.config.mender.validation.retryPollIntervalMissing")),
-								(v: number) => ValidationRules.integer(v, $t("components.config.mender.validation.retryPollIntervalInvalid")),
-								(v: number) => ValidationRules.min(v, 0, $t("components.config.mender.validation.retryPollIntervalInvalid")),
+								(v: number|null) => ValidationRules.required(v, $t("components.config.mender.validation.retryPollInterval.required")),
+								(v: number) => ValidationRules.integer(v, $t("components.config.mender.validation.retryPollInterval.integer")),
+								(v: number) => ValidationRules.min(v, 0, $t("components.config.mender.validation.retryPollInterval.min")),
 							]'
+							:min='0'
 							:prepend-inner-icon='mdiTimerRefresh'
 							required
 						>
@@ -115,15 +125,16 @@ limitations under the License.
 									{{ intervalLabel(config.client.config.RetryPollIntervalSeconds) }}
 								</v-chip>
 							</template>
-						</NumberInput>
-						<NumberInput
-							v-model.number='config.client.config.UpdatePollIntervalSeconds'
+						</INumberInput>
+						<INumberInput
+							v-model='config.client.config.UpdatePollIntervalSeconds'
 							:label='$t("components.config.mender.client.updatePollInterval")'
 							:rules='[
-								(v: number|null) => ValidationRules.required(v, $t("components.config.mender.validation.updatePollIntervalMissing")),
-								(v: number) => ValidationRules.integer(v, $t("components.config.mender.validation.updatePollIntervalInvalid")),
-								(v: number) => ValidationRules.min(v, 0, $t("components.config.mender.validation.updatePollIntervalInvalid")),
+								(v: number|null) => ValidationRules.required(v, $t("components.config.mender.validation.updatePollInterval.required")),
+								(v: number) => ValidationRules.integer(v, $t("components.config.mender.validation.updatePollInterval.integer")),
+								(v: number) => ValidationRules.min(v, 0, $t("components.config.mender.validation.updatePollInterval.min")),
 							]'
+							:min='0'
 							:prepend-inner-icon='mdiTimerSync'
 							required
 						>
@@ -135,26 +146,30 @@ limitations under the License.
 									{{ intervalLabel(config.client.config.UpdatePollIntervalSeconds) }}
 								</v-chip>
 							</template>
-						</NumberInput>
+						</INumberInput>
 						<legend class='section-legend'>
 							{{ $t('components.config.mender.features') }}
 						</legend>
 						<v-checkbox
 							v-model='config.connect.config.FileTransfer'
 							:label='$t("components.config.mender.connect.fileTransfer")'
+							hide-details
+							density='compact'
 						/>
 						<v-checkbox
 							v-model='config.connect.config.PortForward'
 							:label='$t("components.config.mender.connect.portForward")'
+							hide-details
+							density='compact'
 						/>
 					</section>
 				</v-responsive>
 			</v-skeleton-loader>
 			<template #actions>
 				<IActionBtn
-					:action='Action.Edit'
-					container-type='card'
-					:disabled='!isValid.value || [ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState)'
+					:action='Action.Save'
+					:loading='componentState === ComponentState.Action'
+					:disabled='!isValid.value || [ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
 					type='submit'
 				/>
 			</template>
@@ -170,6 +185,7 @@ import {
 	ComponentState,
 	IActionBtn,
 	ICard,
+	INumberInput,
 	ITextInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
@@ -188,7 +204,6 @@ import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
 
 import MenderCertificateUploadDialog from '@/components/config/mender/MenderCertificateUploadDialog.vue';
-import NumberInput from '@/components/layout/form/NumberInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
@@ -213,16 +228,18 @@ function intervalLabel(value: number|null): string {
 }
 
 async function getConfig(): Promise<void> {
-	if (componentState.value === ComponentState.Created) {
-		componentState.value = ComponentState.Loading;
-	} else {
-		componentState.value = ComponentState.Reloading;
-	}
+	componentState.value = [
+		ComponentState.Created,
+		ComponentState.FetchFailed,
+	].includes(componentState.value) ? ComponentState.Loading : ComponentState.Reloading;
 	try {
 		config.value = await service.getConfig();
 		componentState.value = ComponentState.Ready;
 	} catch {
-		toast.error('TODO FETCH ERROR HANDLING');
+		toast.error(
+			i18n.t('components.config.mender.messages.fetch.failed'),
+		);
+		componentState.value = componentState.value === ComponentState.Loading ? ComponentState.FetchFailed : ComponentState.Ready;
 	}
 }
 
@@ -234,13 +251,15 @@ async function onSubmit(): Promise<void> {
 	try {
 		const params = { ...config.value };
 		await service.updateConfig(params);
-		await getConfig();
 		toast.success(
-			i18n.t('components.config.monit.messages.save.success'),
+			i18n.t('components.config.mender.messages.save.success'),
 		);
 	} catch {
-		toast.error('TODO SAVE ERROR HANDLING');
+		toast.error(
+			i18n.t('components.config.mender.messages.save.failed'),
+		);
 	}
+	componentState.value = ComponentState.Ready;
 }
 
 onMounted(async (): Promise<void> => await getConfig());
