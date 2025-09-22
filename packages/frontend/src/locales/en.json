@@ -829,8 +829,24 @@
 					"interface": "Interface name",
 					"interfacePins": "Use communication interface pins",
 					"pgmPin": "Programming mode switch GPIO pin",
+					"ports": {
+						"messages": {
+							"fetch": {
+								"failed": "Failed to retrieve interface ports."
+							}
+						},
+						"noData": {
+							"empty": "No interface ports records found.",
+							"fetchError": "Interace ports list could not be retrieved."
+						}
+					},
 					"powerPin": "Power enable GPIO pin",
 					"profiles": {
+						"messages": {
+							"fetch": {
+								"failed": "Failed to retrieve device profiles."
+							}
+						},
 						"spi": "SPI device profiles",
 						"uart": "UART device profiles"
 					},
@@ -846,9 +862,19 @@
 					"spiPin": "SPI enable GPIO pin",
 					"uart": {
 						"baudRate": "Baud rate",
-						"devices": "UART interfaces",
+						"devices": {
+							"actions": {
+								"apply": "Apply UART inteface",
+								"reload": "Reload UART interfaces"
+							},
+							"title": "UART interfaces"
+						},
 						"messages": {
+							"fetch": {
+								"failed": "Failed to retrieve IQRF UART configuration."
+							},
 							"save": {
+								"failed": "Failed to save IQRF UART configuration.",
 								"success": "IQRF UART configuration successfully saved."
 							}
 						},
@@ -856,19 +882,33 @@
 					},
 					"uartPin": "UART enable GPIO pin",
 					"validation": {
-						"busPinInvalid": "Bus enable GPIO pin should be an integer.",
-						"busPinMissing": "Please enter bus enable GPIO pin",
-						"i2cPinInvalid": "I2C enable GPIO pin should be an integer.",
-						"i2cPinMissing": "Please enter I2C enable GPIO pin.",
-						"interfaceMissing": "Please enter interface name.",
-						"pgmPinInvalid": "Programming mode switch GPIO pin should be an integer.",
-						"pgmPinMissing": "Please enter programming mode switch GPIO pin.",
-						"powerPinInvalid": "Power enable GPIO pin should be an integer.",
-						"powerPinMissing": "Please enter power enable GPIO pin.",
-						"spiPinInvalid": "SPI enable GPIO pin should be an integer.",
-						"spiPinMissing": "Please enter SPI enable GPIO pin.",
-						"uartPinInvalid": "UART enable GPIO pin should be an integer.",
-						"uartPinMissing": "Please enter UART enable GPIO pin."
+						"busPin": {
+							"integer": "Bus enable GPIO pin should be an integer.",
+							"required": "Please enter bus enable GPIO pin."
+						},
+						"i2cPin": {
+							"integer": "I2C enable GPIO pin should be an integer.",
+							"required": "Please enter I2C enable GPIO pin."
+						},
+						"interface": {
+							"required": "Please enter interface name."
+						},
+						"pgmPin": {
+							"integer": "Programming mode switch GPIO pin should be an integer.",
+							"required": "Please enter programming mode switch GPIO pin."
+						},
+						"powerPin": {
+							"integer": "Power enable GPIO pin should be an integer.",
+							"required": "Please enter power enable GPIO pin."
+						},
+						"spiPin": {
+							"integer": "SPI enable GPIO pin should be an integer.",
+							"required": "Please enter SPI enable GPIO pin."
+						},
+						"uartPin": {
+							"integer": "UART enable GPIO pin should be an integer.",
+							"required": "Please enter UART enable GPIO pin."
+						}
 					}
 				},
 				"json-api": {
@@ -1083,7 +1123,9 @@
 					}
 				},
 				"validation": {
-					"instanceMissing": "Please enter instance name."
+					"instance": {
+						"required": "Please enter instance name."
+					}
 				}
 			},
 			"influxdb-bridge": {
@@ -1270,7 +1312,8 @@
 					"add": "Add device profile",
 					"apply": "Apply device profile",
 					"delete": "Delete device profile",
-					"edit": "Edit device profile"
+					"edit": "Edit device profile",
+					"reload": "Reload device profiles"
 				},
 				"delete": {
 					"prompt": "Are you sure you want to delete device configuration profile {name}?",
@@ -1296,6 +1339,10 @@
 					}
 				},
 				"name": "Profile name",
+				"noData": {
+					"empty": "No device profiles records found.",
+					"fetchError": "Device profiles could not be retrieved."
+				},
 				"profileType": "Profile type",
 				"profileTypes": {
 					"spi": "SPI",

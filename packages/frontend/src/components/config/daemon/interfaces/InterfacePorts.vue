@@ -18,7 +18,7 @@ limitations under the License.
 <template>
 	<ICard :width='cardWidth'>
 		<template #title>
-			{{ $t(`components.config.daemon.interfaces.${interfaceType}.devices`) }}
+			{{ $t(`components.config.daemon.interfaces.${interfaceType}.devices.title`) }}
 		</template>
 		<template #titleActions>
 			<IActionBtn
@@ -33,11 +33,12 @@ limitations under the License.
 		<IDataTable
 			:headers='headers'
 			:items='ports'
-			:loading='componentState === ComponentState.Loading'
+			:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
 			:hover='true'
 			:dense='true'
 			:items-per-page='5'
 			disable-column-filtering
+			:no-data-text='noDataText'
 		>
 			<template #item.interface='{ item }'>
 				{{ item }}
@@ -46,6 +47,7 @@ limitations under the License.
 				<IDataTableAction
 					:action='Action.Apply'
 					:tooltip='$t("components.config.daemon.interfaces.cdc.devices.actions.apply")'
+					:disabled='componentState === ComponentState.Reloading'
 					@click='applyInterface(item)'
 				/>
 			</template>
@@ -98,14 +100,27 @@ const cardWidth = computed(() => {
 	return '100vw';
 });
 
+const noDataText = computed(() => {
+	if (componentState.value === ComponentState.FetchFailed) {
+		return 'components.config.daemon.interfaces.ports.noData.fetchError';
+	}
+	return 'components.config.daemon.interfaces.ports.noData.empty';
+});
+
 async function getPorts(): Promise<void> {
-	componentState.value = ComponentState.Loading;
+	componentState.value = [
+		ComponentState.Created,
+		ComponentState.FetchFailed,
+	].includes(componentState.value) ? ComponentState.Loading : ComponentState.Reloading;
 	try {
 		ports.value = await service.getInterfacePorts(componentProps.interfaceType);
+		componentState.value = ComponentState.Ready;
 	} catch {
-		toast.error('TODO GET ERROR HANDLING');
+		toast.error(
+			i18n.t('components.config.daemon.interfaces.ports.messages.fetch.failed'),
+		);
 	}
-	componentState.value = ComponentState.Ready;
+	componentState.value = componentState.value === ComponentState.Loading ? ComponentState.FetchFailed : ComponentState.Ready;
 }
 
 function applyInterface(iface: string): void {

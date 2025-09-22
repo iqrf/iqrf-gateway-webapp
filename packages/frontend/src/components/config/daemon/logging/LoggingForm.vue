@@ -161,14 +161,13 @@ limitations under the License.
 				<template #actions>
 					<IActionBtn
 						:action='action'
-						container-type='card'
-						:disabled='!isValid.value || componentState === ComponentState.Action'
+						:loading='componentState === ComponentState.Action'
+						:disabled='!isValid.value'
 						type='submit'
 					/>
 					<v-spacer />
 					<IActionBtn
 						:action='Action.Cancel'
-						container-type='card'
 						:disabled='componentState === ComponentState.Action'
 						@click='close()'
 					/>
@@ -301,7 +300,6 @@ async function onSubmit(): Promise<void> {
 		} else {
 			await service.updateInstance(IqrfGatewayDaemonComponentName.ShapeTraceFile, instance, params);
 		}
-		componentState.value = ComponentState.Ready;
 		toast.success(
 			i18n.t('components.config.daemon.logging.messages.save.success', { name: params.instance }),
 		);
