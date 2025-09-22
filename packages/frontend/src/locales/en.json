@@ -1323,7 +1323,11 @@
 					"title": "System checks"
 				},
 				"messages": {
+					"fetch": {
+						"failed": "Faield to retrieve Monit configuration."
+					},
 					"save": {
+						"failed": "Failed to save Monit configuration.",
 						"success": "Monit configuration has been successfully saved."
 					}
 				},
@@ -1333,8 +1337,10 @@
 					"title": "M/Monit connection"
 				},
 				"validation": {
-					"serverInvalid": "M/Monit server URL should be IPv4, IPv6, localhost or fully-qualified domain name.",
-					"serverMissing": "Please enter M/Monit server URL."
+					"server": {
+						"required": "Please enter Monit server URL.",
+						"url": "M/Monit server URL should be IPv4, IPv6, localhost or fully-qualified domain name."
+					}
 				}
 			},
 			"profiles": {
