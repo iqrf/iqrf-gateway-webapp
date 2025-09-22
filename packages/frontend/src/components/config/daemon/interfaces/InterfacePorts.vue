@@ -64,7 +64,7 @@ import {
 	IDataTable,
 	IDataTableAction,
 } from '@iqrf/iqrf-vue-ui';
-import { computed, onBeforeMount, type PropType, ref, type Ref } from 'vue';
+import { computed, onMounted, type PropType, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { useDisplay } from 'vuetify/lib/composables/display.mjs';
@@ -112,7 +112,7 @@ function applyInterface(iface: string): void {
 	emit('apply', iface);
 }
 
-onBeforeMount(() => {
+onMounted(() => {
 	getPorts();
 });
 </script>

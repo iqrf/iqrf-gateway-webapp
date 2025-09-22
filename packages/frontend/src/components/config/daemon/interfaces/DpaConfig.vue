@@ -53,7 +53,7 @@ limitations under the License.
 							:label='$t("components.config.daemon.instance")'
 							:prepend-inner-icon='mdiTextShort'
 							:rules='[
-								(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.validation.instanceMissing")),
+								(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.validation.instance.required")),
 							]'
 							required
 						/>
@@ -100,7 +100,7 @@ import {
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiTextShort, mdiTimerCancel } from '@mdi/js';
-import { onBeforeMount, ref, type Ref } from 'vue';
+import { onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -154,7 +154,7 @@ async function onSubmit(): Promise<void> {
 	componentState.value = ComponentState.Ready;
 }
 
-onBeforeMount(() => {
+onMounted(() => {
 	getConfig();
 });
 </script>

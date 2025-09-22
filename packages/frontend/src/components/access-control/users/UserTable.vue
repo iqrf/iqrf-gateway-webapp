@@ -75,7 +75,7 @@ import {
 	ICard,
 	IDataTable,
 } from '@iqrf/iqrf-vue-ui';
-import { computed, onBeforeMount, ref, type Ref, toRaw } from 'vue';
+import { computed, onMounted, ref, type Ref, toRaw } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
@@ -99,7 +99,7 @@ const headers = [
 ];
 const users: Ref<UserInfo[]> = ref([]);
 
-onBeforeMount(() => {
+onMounted(() => {
 	getUsers();
 });
 

@@ -52,7 +52,7 @@ limitations under the License.
 							v-model='config.instance'
 							:label='$t("components.config.daemon.instance")'
 							:rules='[
-								(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.validation.instanceMissing")),
+								(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.validation.instance.required")),
 							]'
 							required
 							:prepend-inner-icon='mdiTextShort'
@@ -61,7 +61,7 @@ limitations under the License.
 							v-model='config.IqrfInterface'
 							:label='$t("components.config.daemon.interfaces.interface")'
 							:rules='[
-								(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.interfaceMissing")),
+								(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.interface.required")),
 							]'
 							required
 							:prepend-inner-icon='mdiSerialPort'
@@ -121,7 +121,7 @@ import {
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiSerialPort, mdiTextShort } from '@mdi/js';
-import { onBeforeMount, ref, type Ref } from 'vue';
+import { onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -185,7 +185,7 @@ function applyInterface(iface: string): void {
 	showIntefaceMenu.value = false;
 }
 
-onBeforeMount(() => {
+onMounted(() => {
 	getConfig();
 });
 </script>
