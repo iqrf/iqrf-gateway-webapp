@@ -30,9 +30,17 @@ limitations under the License.
 				<IActionBtn
 					:action='Action.Reload'
 					container-type='card-title'
+					:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+					:disabled='componentState === ComponentState.Action'
 					@click='getConfig()'
 				/>
 			</template>
+			<v-alert
+				v-if='componentState === ComponentState.FetchFailed'
+				type='error'
+				variant='tonal'
+				:text='$t("components.config.monit.messages.fetch.failed")'
+			/>
 			<v-skeleton-loader
 				class='input-skeleton-loader'
 				:loading='componentState === ComponentState.Loading'
@@ -50,12 +58,15 @@ limitations under the License.
 							:dense='true'
 							:hover='true'
 							:hide-pagination='true'
-							:no-data-text='$t("components.config.monit.checks.noRecords")'
+							disable-column-filtering
+							disable-search
+							:no-data-text='"components.config.monit.checks.noRecords"'
 						>
 							<template #item.enabled='{ item }'>
 								<v-checkbox-btn
 									v-model='item.enabled'
 									class='float-right'
+									:disabled='[ComponentState.Action, ComponentState.Reloading].includes(componentState)'
 								/>
 							</template>
 						</IDataTable>
@@ -65,15 +76,16 @@ limitations under the License.
 						<v-checkbox
 							v-model='config.mmonit.enabled'
 							:label='$t("components.config.monit.mmonit.enable")'
+							hide-details
 						/>
 						<ITextInput
 							v-model='config.mmonit.server'
 							:label='$t("components.config.monit.mmonit.server")'
 							:prepend-inner-icon='mdiServerNetwork'
-							:rules='[
-								(v: string|null) => ValidationRules.required(v, $t("components.config.monit.validation.serverMissing")),
-								(v: string) => mmonitServerValidation(v, $t("components.config.monit.validation.serverInvalid")),
-							]'
+							:rules='config.mmonit.enabled ? [
+								(v: string|null) => ValidationRules.required(v, $t("components.config.monit.validation.server.required")),
+								(v: string) => mmonitServerValidation(v, $t("components.config.monit.validation.server.url")),
+							] : []'
 							:disabled='!config.mmonit.enabled'
 							required
 						/>
@@ -81,9 +93,9 @@ limitations under the License.
 							v-model='config.mmonit.credentials.username'
 							:label='$t("components.common.fields.username")'
 							:prepend-inner-icon='mdiAccount'
-							:rules='[
+							:rules='config.mmonit.enabled ? [
 								(v: string|null) => ValidationRules.required(v, $t("components.common.validations.username.required")),
-							]'
+							]: []'
 							:disabled='!config.mmonit.enabled'
 							required
 						/>
@@ -91,9 +103,9 @@ limitations under the License.
 							v-model='config.mmonit.credentials.password'
 							:label='$t("components.common.fields.password")'
 							:prepend-inner-icon='mdiKey'
-							:rules='[
+							:rules='config.mmonit.enabled ? [
 								(v: string|null) => ValidationRules.required(v, $t("components.common.validations.password.required")),
-							]'
+							] : []'
 							:disabled='!config.mmonit.enabled'
 							required
 						/>
@@ -102,9 +114,9 @@ limitations under the License.
 			</v-skeleton-loader>
 			<template #actions>
 				<IActionBtn
-					:action='Action.Edit'
-					container-type='card'
-					:disabled='!isValid.value || [ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState)'
+					:action='Action.Save'
+					:loading='componentState === ComponentState.Action'
+					:disabled='!isValid.value || [ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
 					type='submit'
 				/>
 			</template>
@@ -160,18 +172,19 @@ function mmonitServerValidation(value: string, error: string): boolean|string {
 }
 
 async function getConfig(): Promise<void> {
-	if (componentState.value === ComponentState.Created) {
-		componentState.value = ComponentState.Loading;
-	} else {
-		componentState.value = ComponentState.Reloading;
-	}
+	componentState.value = [
+		ComponentState.Created,
+		ComponentState.FetchFailed,
+	].includes(componentState.value) ? ComponentState.Loading : ComponentState.Reloading;
 	try {
 		config.value = await service.getConfig();
+		componentState.value = ComponentState.Ready;
 	} catch {
-		toast.error('TODO FETCH ERROR HANDLING');
-
+		toast.error(
+			i18n.t('components.config.monit.messages.fetch.failed'),
+		);
+		componentState.value = componentState.value === ComponentState.Loading ? ComponentState.FetchFailed : ComponentState.Ready;
 	}
-	componentState.value = ComponentState.Ready;
 }
 
 async function onSubmit(): Promise<void> {
@@ -182,13 +195,15 @@ async function onSubmit(): Promise<void> {
 	const params = { ...config.value };
 	try {
 		await service.updateConfig(params);
-		await getConfig();
 		toast.success(
 			i18n.t('components.config.monit.messages.save.success'),
 		);
 	} catch {
-		toast.error('TODO SAVE ERROR HANDLING');
+		toast.error(
+			i18n.t('components.config.monit.messages.save.failed'),
+		);
 	}
+	componentState.value = ComponentState.Ready;
 }
 
 onMounted(() => {
