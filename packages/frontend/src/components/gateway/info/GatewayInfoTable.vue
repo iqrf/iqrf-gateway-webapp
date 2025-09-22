@@ -226,7 +226,7 @@ import { type InfoService } from '@iqrf/iqrf-gateway-webapp-client/services/Gate
 import { type GatewayInformation, type NetworkInterface } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
 import { Action, ComponentState, IActionBtn, ICard, SkeletonLoaders } from '@iqrf/iqrf-vue-ui';
 import { mdiDownload } from '@mdi/js';
-import { computed, onBeforeMount, ref, type Ref } from 'vue';
+import { computed, onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
@@ -254,7 +254,7 @@ const macAddrs = computed(() => {
 	return info.value.interfaces.filter((item: NetworkInterface) => item.macAddress !== null);
 });
 
-onBeforeMount(() => {
+onMounted(() => {
 	getInformation();
 });
 

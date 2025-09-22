@@ -78,7 +78,7 @@ import {
 	IDataTable,
 } from '@iqrf/iqrf-vue-ui';
 import humanizeDuration from 'humanize-duration';
-import { computed, onBeforeMount, ref, type Ref } from 'vue';
+import { computed, onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
@@ -129,7 +129,7 @@ async function getStats() {
 	}
 }
 
-onBeforeMount(async (): Promise<void> => {
+onMounted(async (): Promise<void> => {
 	await getStats();
 });
 

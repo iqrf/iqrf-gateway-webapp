@@ -92,7 +92,7 @@ import {
 	IActionBtn,
 	ICard,
 } from '@iqrf/iqrf-vue-ui';
-import { onBeforeMount, ref, type Ref } from 'vue';
+import { onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -147,7 +147,7 @@ async function onSubmit(): Promise<void> {
 	componentState.value = ComponentState.Ready;
 }
 
-onBeforeMount(() => {
+onMounted(() => {
 	getConfig();
 });
 </script>

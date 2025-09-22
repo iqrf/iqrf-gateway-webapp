@@ -120,7 +120,7 @@ import {
 	IDataTable,
 	IDataTableAction,
 } from '@iqrf/iqrf-vue-ui';
-import { onBeforeMount, ref, type Ref } from 'vue';
+import { onMounted, ref, type Ref } from 'vue';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
@@ -237,6 +237,6 @@ async function refreshService(name: string, index: number): Promise<void> {
 	componentState.value = ComponentState.Ready;
 }
 
-onBeforeMount(async () => await getServices());
+onMounted(async () => await getServices());
 
 </script>

@@ -73,7 +73,7 @@ import {
 	ICard,
 	IDataTable,
 } from '@iqrf/iqrf-vue-ui';
-import { computed, onBeforeMount, ref, type Ref, toRaw } from 'vue';
+import { computed, onMounted, ref, type Ref, toRaw } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
@@ -113,7 +113,7 @@ async function getConfig(): Promise<void> {
 	}
 }
 
-onBeforeMount(() => {
+onMounted(() => {
 	getConfig();
 });
 </script>
