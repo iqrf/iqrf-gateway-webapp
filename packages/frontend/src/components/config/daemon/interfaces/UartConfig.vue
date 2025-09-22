@@ -30,9 +30,17 @@ limitations under the License.
 				<IActionBtn
 					:action='Action.Reload'
 					container-type='card-title'
+					:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+					:disabled='componentState === ComponentState.Action'
 					@click='getConfig()'
 				/>
 			</template>
+			<v-alert
+				v-if='componentState === ComponentState.FetchFailed'
+				type='error'
+				variant='tonal'
+				:text='$t("components.config.daemon.interfaces.uart.messages.fetch.failed")'
+			/>
 			<v-skeleton-loader
 				class='input-skeleton-loader'
 				:loading='componentState === ComponentState.Loading'
@@ -44,17 +52,19 @@ limitations under the License.
 							v-model='config.instance'
 							:label='$t("components.config.daemon.instance")'
 							:rules='[
-								(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.validation.instanceMissing")),
+								(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.validation.instance.required")),
 							]'
 							required
+							:prepend-inner-icon='mdiTextShort'
 						/>
 						<ITextInput
 							v-model='config.IqrfInterface'
 							:label='$t("components.config.daemon.interfaces.interface")'
 							:rules='[
-								(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.interfaceMissing")),
+								(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.interface.required")),
 							]'
 							required
+							:prepend-inner-icon='mdiSerialPort'
 						/>
 						<v-checkbox
 							v-model='config.uartReset'
@@ -65,12 +75,12 @@ limitations under the License.
 								cols='12'
 								md='4'
 							>
-								<NumberInput
-									v-model.number='config.powerEnableGpioPin'
+								<INumberInput
+									v-model='config.powerEnableGpioPin'
 									:label='$t("components.config.daemon.interfaces.powerPin")'
 									:rules='[
-										(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.powerPinMissing")),
-										(v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.powerPinInvalid")),
+										(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.powerPin.required")),
+										(v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.powerPin.integer")),
 									]'
 									required
 								/>
@@ -79,12 +89,12 @@ limitations under the License.
 								cols='12'
 								md='4'
 							>
-								<NumberInput
-									v-model.number='config.busEnableGpioPin'
+								<INumberInput
+									v-model='config.busEnableGpioPin'
 									:label='$t("components.config.daemon.interfaces.busPin")'
 									:rules='[
-										(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.busPinMissing")),
-										(v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.busPinInvalid")),
+										(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.busPin.required")),
+										(v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.busPin.integer")),
 									]'
 									required
 								/>
@@ -93,12 +103,12 @@ limitations under the License.
 								cols='12'
 								md='4'
 							>
-								<NumberInput
-									v-model.number='config.pgmSwitchGpioPin'
+								<INumberInput
+									v-model='config.pgmSwitchGpioPin'
 									:label='$t("components.config.daemon.interfaces.pgmPin")'
 									:rules='[
-										(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.pgmPinMissing")),
-										(v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.pgmPinInvalid")),
+										(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.pgmPin.required")),
+										(v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.pgmPin.integer")),
 									]'
 									required
 								/>
@@ -113,13 +123,13 @@ limitations under the License.
 								cols='12'
 								md='4'
 							>
-								<NumberInput
-									v-model.number='config.i2cEnableGpioPin'
+								<INumberInput
+									v-model='config.i2cEnableGpioPin'
 									:label='$t("components.config.daemon.interfaces.i2cPin")'
 									:rules='interfacePins ?
 										[
-											(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.i2cPinMissing")),
-											(v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.i2cPinInvalid")),
+											(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.i2cPin.required")),
+											(v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.i2cPin.integer")),
 										] : []
 									'
 									:disabled='!interfacePins'
@@ -130,13 +140,13 @@ limitations under the License.
 								cols='12'
 								md='4'
 							>
-								<NumberInput
-									v-model.number='config.spiEnableGpioPin'
+								<INumberInput
+									v-model='config.spiEnableGpioPin'
 									:label='$t("components.config.daemon.interfaces.spiPin")'
 									:rules='interfacePins ?
 										[
-											(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.spiPinMissing")),
-											(v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.spiPinInvalid")),
+											(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.spiPin.required")),
+											(v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.spiPin.integer")),
 										] : []
 									'
 									:disabled='!interfacePins'
@@ -147,13 +157,13 @@ limitations under the License.
 								cols='12'
 								md='4'
 							>
-								<NumberInput
-									v-model.number='config.uartEnableGpioPin'
+								<INumberInput
+									v-model='config.uartEnableGpioPin'
 									:label='$t("components.config.daemon.interfaces.uartPin")'
 									:rules='interfacePins ?
 										[
-											(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.uartPinMissing")),
-											(v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.uartPinInvalid")),
+											(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.uartPin.required")),
+											(v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.uartPin.integer")),
 										] : []
 									'
 									:disabled='!interfacePins'
@@ -161,62 +171,67 @@ limitations under the License.
 								/>
 							</v-col>
 						</v-row>
-						<SelectInput
+						<ISelectInput
 							v-model='config.baudRate'
 							:items='baudRateOptions'
 							:label='$t("components.config.daemon.interfaces.uart.baudRate")'
 							required
 						/>
+						<span class='d-flex justify-center'>
+							<v-menu
+								v-model='showProfileMenu'
+								location='top center'
+								transition='slide-y-transition'
+								:close-on-content-click='false'
+								eager
+							>
+								<template #activator='{ props }'>
+									<IActionBtn
+										v-bind='props'
+										:action='Action.Custom'
+										color='primary'
+										class='mr-1'
+										:icon='mdiTuneVariant'
+										:disabled='[ComponentState.Action, ComponentState.Reloading, ComponentState.FetchFailed].includes(componentState)'
+										:text='$t("components.config.daemon.interfaces.profiles.uart")'
+									/>
+								</template>
+								<DeviceProfileTable
+									:mapping-type='MappingType.UART'
+									@apply='(p: IqrfGatewayDaemonMapping) => applyProfile(p)'
+								/>
+							</v-menu>
+							<v-menu
+								v-model='showIntefaceMenu'
+								location='top center'
+								transition='slide-y-transition'
+								:close-on-content-click='false'
+								eager
+							>
+								<template #activator='{ props }'>
+									<IActionBtn
+										v-bind='props'
+										:action='Action.Custom'
+										color='primary'
+										:icon='mdiSerialPort'
+										:disabled='[ComponentState.Action, ComponentState.Reloading, ComponentState.FetchFailed].includes(componentState)'
+										:text='$t("components.config.daemon.interfaces.uart.devices.title")'
+									/>
+								</template>
+								<InterfacePorts
+									:interface-type='IqrfInterfaceType.UART'
+									@apply='(iface: string) => applyInterface(iface)'
+								/>
+							</v-menu>
+						</span>
 					</section>
 				</v-responsive>
 			</v-skeleton-loader>
-			<span class='d-flex justify-space-around'>
-				<v-menu
-					v-model='showProfileMenu'
-					location='top center'
-					transition='slide-y-transition'
-					:close-on-content-click='false'
-					eager
-				>
-					<template #activator='{ props }'>
-						<v-btn
-							v-bind='props'
-							color='primary'
-						>
-							{{ $t('components.config.daemon.interfaces.profiles.uart') }}
-						</v-btn>
-					</template>
-					<DeviceProfileTable
-						:mapping-type='MappingType.UART'
-						@apply='(p: IqrfGatewayDaemonMapping) => applyProfile(p)'
-					/>
-				</v-menu>
-				<v-menu
-					v-model='showIntefaceMenu'
-					location='top center'
-					transition='slide-y-transition'
-					:close-on-content-click='false'
-					eager
-				>
-					<template #activator='{ props }'>
-						<v-btn
-							v-bind='props'
-							color='primary'
-						>
-							{{ $t('components.config.daemon.interfaces.uart.devices') }}
-						</v-btn>
-					</template>
-					<InterfacePorts
-						:interface-type='IqrfInterfaceType.UART'
-						@apply='(iface: string) => applyInterface(iface)'
-					/>
-				</v-menu>
-			</span>
 			<template #actions>
 				<IActionBtn
-					:action='Action.Edit'
-					container-type='card'
-					:disabled='!isValid.value || [ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState)'
+					:action='Action.Save'
+					:loading='componentState === ComponentState.Action'
+					:disabled='!isValid.value || [ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
 					type='submit'
 				/>
 			</template>
@@ -238,9 +253,12 @@ import {
 	ComponentState,
 	IActionBtn,
 	ICard,
+	INumberInput,
+	ISelectInput,
 	ITextInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
+import { mdiSerialPort, mdiTextShort, mdiTuneVariant } from '@mdi/js';
 import { computed, onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
@@ -249,8 +267,6 @@ import { VForm } from 'vuetify/components';
 
 import InterfacePorts from '@/components/config/daemon/interfaces/InterfacePorts.vue';
 import DeviceProfileTable from '@/components/config/daemon/interfaces/profiles/DeviceProfileTable.vue';
-import NumberInput from '@/components/layout/form/NumberInput.vue';
-import SelectInput from '@/components/layout/form/SelectInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
@@ -273,20 +289,27 @@ const baudRateOptions = computed(() => {
 });
 
 async function getConfig(): Promise<void> {
-	if (componentState.value === ComponentState.Created) {
-		componentState.value = ComponentState.Loading;
-	} else {
-		componentState.value = ComponentState.Reloading;
-	}
+	componentState.value = [
+		ComponentState.Created,
+		ComponentState.FetchFailed,
+	].includes(componentState.value) ? ComponentState.Loading : ComponentState.Reloading;
 	try {
 		config.value = (await service.getComponent(IqrfGatewayDaemonComponentName.IqrfUart)).instances[0] ?? null;
-		if (config.value !== null) {
-			instance = config.value.instance;
+		if (config.value === null) {
+			throw new Error('Configuration instance missing.');
 		}
+		instance = config.value.instance;
+		interfacePins.value = config.value.i2cEnableGpioPin !== undefined &&
+			config.value.i2cEnableGpioPin !== -1 &&
+			config.value.spiEnableGpioPin !== undefined &&
+			config.value.spiEnableGpioPin !== -1;
+		componentState.value = ComponentState.Ready;
 	} catch {
-		toast.error('TODO FETCH ERROR HANDLING');
+		toast.error(
+			i18n.t('components.config.daemon.interfaces.uart.messages.fetch.failed'),
+		);
+		componentState.value = componentState.value === ComponentState.Loading ? ComponentState.FetchFailed : ComponentState.Ready;
 	}
-	componentState.value = ComponentState.Ready;
 }
 
 async function onSubmit(): Promise<void> {
@@ -302,13 +325,15 @@ async function onSubmit(): Promise<void> {
 	}
 	try {
 		await service.updateInstance(IqrfGatewayDaemonComponentName.IqrfUart, instance, params);
-		await getConfig();
 		toast.success(
 			i18n.t('components.config.daemon.interfaces.uart.messages.save.success'),
 		);
 	} catch {
-		toast.error('TODO SAVE ERROR HANDLING');
+		toast.error(
+			i18n.t('components.config.daemon.interfaces.uart.messages.save.failed'),
+		);
 	}
+	componentState.value = ComponentState.Ready;
 }
 
 function applyProfile(profile: IqrfGatewayDaemonMapping): void {

@@ -23,21 +23,25 @@ limitations under the License.
 				v-bind='props'
 				:action='action'
 				container-type='card-title'
+				:tooltip='$t("components.config.profiles.actions.add")'
+				:disabled='disabled'
 			/>
 			<IDataTableAction
 				v-else
 				v-bind='props'
 				:action='action'
 				:tooltip='$t("components.config.profiles.actions.edit")'
+				:disabled='disabled'
 			/>
 		</template>
 		<v-form
 			ref='form'
 			v-slot='{ isValid }'
 			validate-on='input'
+			:disabled='componentState === ComponentState.Action'
 			@submit.prevent='onSubmit()'
 		>
-			<ICard>
+			<ICard :action='action'>
 				<template #title>
 					{{ dialogTitle }}
 				</template>
@@ -49,7 +53,7 @@ limitations under the License.
 					]'
 					required
 				/>
-				<SelectInput
+				<ISelectInput
 					v-model='profile.deviceType'
 					:items='typeOptions'
 					:label='$t("components.config.profiles.deviceType")'
@@ -59,79 +63,79 @@ limitations under the License.
 					v-model='profile.IqrfInterface'
 					:label='$t("components.config.daemon.interfaces.interface")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.interfaceMissing")),
+						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.interface.required")),
 					]'
 					required
 				/>
-				<NumberInput
-					v-model.number='profile.powerEnableGpioPin'
+				<INumberInput
+					v-model='profile.powerEnableGpioPin'
 					:label='$t("components.config.daemon.interfaces.powerPin")'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.powerPinMissing")),
-						(v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.powerPinInvalid")),
+						(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.powerPin.required")),
+						(v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.powerPin.integer")),
 					]'
 					required
 				/>
-				<NumberInput
-					v-model.number='profile.busEnableGpioPin'
+				<INumberInput
+					v-model='profile.busEnableGpioPin'
 					:label='$t("components.config.daemon.interfaces.busPin")'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.busPinMissing")),
-						(v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.busPinInvalid")),
+						(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.busPin.required")),
+						(v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.busPin.integer")),
 					]'
 					required
 				/>
-				<NumberInput
-					v-model.number='profile.pgmSwitchGpioPin'
+				<INumberInput
+					v-model='profile.pgmSwitchGpioPin'
 					:label='$t("components.config.daemon.interfaces.pgmPin")'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.pgmPinMissing")),
-						(v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.pgmPinInvalid")),
+						(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.pgmPin.required")),
+						(v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.pgmPin.integer")),
 					]'
 					required
 				/>
 				<v-checkbox
 					v-model='interfacePins'
 					:label='$t("components.config.daemon.interfaces.interfacePins")'
-					:hide-details='false'
+					hide-details
 				/>
-				<NumberInput
-					v-model.number='profile.i2cEnableGpioPin'
+				<INumberInput
+					v-model='profile.i2cEnableGpioPin'
 					:label='$t("components.config.daemon.interfaces.i2cPin")'
 					:rules='interfacePins ?
 						[
-							(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.i2cPinMissing")),
-							(v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.i2cPinInvalid")),
+							(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.i2cPin.required")),
+							(v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.i2cPin.integer")),
 						] : []
 					'
 					:disabled='!interfacePins'
 					:required='interfacePins'
 				/>
-				<NumberInput
-					v-model.number='profile.spiEnableGpioPin'
+				<INumberInput
+					v-model='profile.spiEnableGpioPin'
 					:label='$t("components.config.daemon.interfaces.spiPin")'
 					:rules='interfacePins ?
 						[
-							(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.spiPinMissing")),
-							(v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.spiPinInvalid")),
+							(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.spiPin.required")),
+							(v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.spiPin.integer")),
 						] : []
 					'
 					:disabled='!interfacePins'
 					:required='interfacePins'
 				/>
-				<NumberInput
-					v-model.number='profile.uartEnableGpioPin'
+				<INumberInput
+					v-model='profile.uartEnableGpioPin'
 					:label='$t("components.config.daemon.interfaces.uartPin")'
 					:rules='interfacePins ?
 						[
-							(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.uartPinMissing")),
-							(v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.uartPinInvalid")),
+							(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.uartPin.required")),
+							(v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.uartPin.integer")),
 						] : []
 					'
 					:disabled='!interfacePins'
 					:required='interfacePins'
 				/>
-				<SelectInput
+				<ISelectInput
 					v-if='profile.type === MappingType.UART'
 					v-model='profile.baudRate'
 					:items='baudRateOptions'
@@ -141,14 +145,14 @@ limitations under the License.
 				<template #actions>
 					<IActionBtn
 						:action='action'
-						container-type='card'
+						:loading='componentState === ComponentState.Action'
 						:disabled='!isValid.value'
 						type='submit'
 					/>
 					<v-spacer />
 					<IActionBtn
 						:action='Action.Cancel'
-						container-type='card'
+						:disabled='componentState === ComponentState.Action'
 						@click='close()'
 					/>
 				</template>
@@ -163,29 +167,25 @@ import { type IqrfGatewayDaemonMapping } from '@iqrf/iqrf-gateway-webapp-client/
 import { MappingDeviceType, MappingType } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import {
 	Action,
+	ComponentState,
 	IActionBtn,
 	ICard,
 	IDataTableAction,
 	IModalWindow,
+	INumberInput,
+	ISelectInput,
 	ITextInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
-import {
-	computed,
-	type PropType,
-	ref,
-	type Ref,
-} from 'vue';
-import { watchEffect } from 'vue';
+import { computed, type PropType, ref, type Ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
-import NumberInput from '@/components/layout/form/NumberInput.vue';
-import SelectInput from '@/components/layout/form/SelectInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
+const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const componentProps = defineProps({
 	action: {
 		type: String as PropType<Action>,
@@ -212,6 +212,11 @@ const componentProps = defineProps({
 			baudRate: 9_600,
 		}),
 		required: false,
+	},
+	disabled: {
+		type: Boolean,
+		required: false,
+		default: false,
 	},
 });
 const emit = defineEmits(['saved']);
@@ -253,12 +258,15 @@ const baudRateOptions = computed(() => {
 });
 const dialogTitle = computed(() => {
 	if (componentProps.action === Action.Add) {
-		return i18n.t('components.config.profiles.actions.add').toString();
+		return i18n.t('components.config.profiles.actions.add');
 	}
-	return i18n.t('components.config.profiles.actions.edit').toString();
+	return i18n.t('components.config.profiles.actions.edit');
 });
 
-watchEffect((): void => {
+watch(show, (newVal: boolean): void => {
+	if (!newVal) {
+		return;
+	}
 	if (componentProps.action === Action.Edit && componentProps.deviceProfile) {
 		profile.value = {
 			...componentProps.deviceProfile,
@@ -292,6 +300,7 @@ async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
 	}
+	componentState.value = ComponentState.Action;
 	const params = { ...profile.value };
 	if (!interfacePins.value) {
 		delete params.i2cEnableGpioPin;
@@ -308,13 +317,16 @@ async function onSubmit(): Promise<void> {
 			await service.updateMapping(componentProps.deviceProfile.id, params);
 		}
 		toast.success(
-			i18n.t('components.config.profiles.messages.save.success', { name: name }),
+			i18n.t('components.config.profiles.messages.save.success', { name: params.name }),
 		);
 		close();
 		emit('saved');
 	} catch {
-		toast.error('TODO ERROR HANDLING');
+		toast.error(
+			i18n.t('components.config.profiles.messages.save.failed', { name: params.name }),
+		);
 	}
+	componentState.value = ComponentState.Ready;
 }
 
 function close(): void {

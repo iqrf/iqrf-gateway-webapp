@@ -18,7 +18,9 @@ limitations under the License.
 <template>
 	<IDeleteModalWindow
 		ref='dialog'
+		:component-state='componentState'
 		:tooltip='$t("components.config.profiles.actions.delete")'
+		:disabled='disabled'
 		@submit='onSubmit()'
 	>
 		<template #title>
@@ -32,6 +34,7 @@ limitations under the License.
 import { type IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import { type IqrfGatewayDaemonMapping } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import {
+	ComponentState,
 	IDeleteModalWindow,
 } from '@iqrf/iqrf-vue-ui';
 import { type PropType, ref , type Ref } from 'vue';
@@ -40,13 +43,20 @@ import { toast } from 'vue3-toastify';
 
 import { useApiClient } from '@/services/ApiClient';
 
-const emit = defineEmits(['deleted']);
+const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
+
 const componentProps = defineProps({
 	profile: {
 		type: Object as PropType<IqrfGatewayDaemonMapping>,
 		required: true,
 	},
+	disabled: {
+		type: Boolean,
+		required: false,
+		default: false,
+	},
 });
+const emit = defineEmits(['deleted']);
 const i18n = useI18n();
 const dialog: Ref<typeof IDeleteModalWindow | null> = ref(null);
 const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
@@ -55,6 +65,7 @@ async function onSubmit(): Promise<void> {
 	if (componentProps.profile.id === undefined) {
 		return;
 	}
+	componentState.value = ComponentState.Action;
 	try {
 		await service.deleteMapping(componentProps.profile.id);
 		toast.success(
@@ -63,8 +74,11 @@ async function onSubmit(): Promise<void> {
 		close();
 		emit('deleted');
 	} catch {
-		toast.error('TODO ERROR HANDLING');
+		toast.error(
+			i18n.t('components.config.profiles.messages.delete.failed', { name: componentProps.profile.name }),
+		);
 	}
+	componentState.value = ComponentState.Idle;
 }
 
 function close(): void {
