@@ -851,9 +851,19 @@
 						"uart": "UART device profiles"
 					},
 					"spi": {
-						"devices": "SPI interfaces",
+						"devices": {
+							"actions": {
+								"apply": "Apply SPI inteface",
+								"reload": "Reload SPI interfaces"
+							},
+							"title": "SPI interfaces"
+						},
 						"messages": {
+							"fetch": {
+								"failed": "Failed to retrieve IQRF SPI configuration."
+							},
 							"save": {
+								"failed": "Failed to save IQRF SPI configuration.",
 								"success": "IQRF SPI configuration successfully saved."
 							}
 						},
