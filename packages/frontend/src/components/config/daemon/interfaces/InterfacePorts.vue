@@ -24,7 +24,7 @@ limitations under the License.
 			<IActionBtn
 				:action='Action.Reload'
 				container-type='card-title'
-				:tooltip='$t("components.config.daemon.interfaces.cdc.devices.actions.reload")'
+				:tooltip='$t(`components.config.daemon.interfaces.${interfaceType}.devices.actions.reload`)'
 				:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
 				:disabled='componentState === ComponentState.Action'
 				@click='getPorts()'
@@ -46,7 +46,7 @@ limitations under the License.
 			<template #item.actions='{ item }'>
 				<IDataTableAction
 					:action='Action.Apply'
-					:tooltip='$t("components.config.daemon.interfaces.cdc.devices.actions.apply")'
+					:tooltip='$t(`components.config.daemon.interfaces.${interfaceType}.devices.actions.apply`)'
 					:disabled='componentState === ComponentState.Reloading'
 					@click='applyInterface(item)'
 				/>
@@ -69,7 +69,7 @@ import {
 import { computed, onMounted, type PropType, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
-import { useDisplay } from 'vuetify/lib/composables/display.mjs';
+import { useDisplay } from 'vuetify';
 
 import { useApiClient } from '@/services/ApiClient';
 
