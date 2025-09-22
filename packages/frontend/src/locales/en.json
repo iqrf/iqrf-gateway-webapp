@@ -2460,6 +2460,7 @@
 			"mender": {
 				"remount": {
 					"messages": {
+						"failed": "Failed to re-mount filesystem.",
 						"success": "Filesystem has been successfully re-mounted."
 					},
 					"readonly": "Read-only",
@@ -2476,12 +2477,15 @@
 					},
 					"messages": {
 						"commit": {
+							"failed": "Failed to commit mender artifact update.",
 							"success": "Update has been successfully committed."
 						},
 						"install": {
+							"failed": "Failed to install mender artifact.",
 							"success": "Mender artifact update has been successfully installed."
 						},
 						"rollback": {
+							"failed": "Failed to roll mender artifact update back.",
 							"success": "Update has been successfully rolled back."
 						}
 					},

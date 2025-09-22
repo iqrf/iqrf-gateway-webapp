@@ -16,35 +16,37 @@ limitations under the License.
 -->
 
 <template>
-	<v-dialog
-		:width='width'
-		scrollable
+	<IModalWindow
+		v-model='show'
 	>
 		<template #activator='{ props }'>
-			<v-btn
+			<IActionBtn
 				v-if='log !== null'
 				v-bind='props'
-				class='ml-2'
-				color='primary'
-				variant='elevated'
-			>
-				{{ $t('components.maintenance.mender.update.log.button') }}
-			</v-btn>
+				:action='Action.Custom'
+				:icon='mdiText'
+				:text='$t("components.maintenance.mender.update.log.button")'
+			/>
 		</template>
 		<ICard>
 			<template #title>
 				{{ $t('components.maintenance.mender.update.log.title') }}
 			</template>
-			<pre>{{ log }}</pre>
+			<pre class='log'>{{ log }}</pre>
+			<template #actions>
+				<IActionBtn
+					:action='Action.Cancel'
+					@click='close()'
+				/>
+			</template>
 		</ICard>
-	</v-dialog>
+	</IModalWindow>
 </template>
 
 <script lang='ts' setup>
-import { ICard } from '@iqrf/iqrf-vue-ui';
-import { type PropType } from 'vue';
-
-import { getModalWidth } from '@/helpers/modal';
+import { Action, IActionBtn, ICard, IModalWindow } from '@iqrf/iqrf-vue-ui';
+import { mdiText } from '@mdi/js';
+import { type PropType, ref, Ref } from 'vue';
 
 defineProps({
 	log: {
@@ -52,5 +54,7 @@ defineProps({
 		required: true,
 	},
 });
-const width = getModalWidth();
+const show: Ref<boolean> = ref(false);
+
+const close = () => show.value = false;
 </script>
