@@ -2437,6 +2437,11 @@
 			"backup": {
 				"backup": {
 					"item": "Software and system configuration",
+					"messages": {
+						"backup": {
+							"failed": "Failed to generate gateway backup archive."
+						}
+					},
 					"software": {
 						"iqrf": "IQRF Gateway Software",
 						"mender": "Mender",
@@ -2454,6 +2459,7 @@
 					"archive": "Backup archive",
 					"messages": {
 						"save": {
+							"failed": "Failed to restore gateway from backup archive.",
 							"success": "Gateway successfully restored from backup archive and will reboot at {time}."
 						}
 					},
