@@ -36,6 +36,9 @@ a {
 	}
 }
 
+.v-row + .v-row {
+	margin-top: 0;
+}
 
 .input-skeleton-loader {
 	.v-skeleton-loader__heading {

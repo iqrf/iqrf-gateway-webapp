@@ -30,6 +30,7 @@ limitations under the License.
 		<v-data-table-virtual
 			:headers='headers'
 			:items='messages'
+			fixed-header
 			height='300'
 			density='compact'
 			hide-no-data
