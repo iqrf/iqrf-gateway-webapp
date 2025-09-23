@@ -21,23 +21,20 @@ limitations under the License.
 			<template #title>
 				{{ $t("pages.iqrfnet.send-dpa.title") }}
 			</template>
-			<v-alert
-				v-if='componentState === ComponentState.Action'
-				variant='tonal'
-				color='info'
-				:text='$t("components.iqrfnet.inProgress")'
-				class='mb-2'
-			/>
 			<v-form
 				ref='form'
 				v-slot='{ isValid }'
 				:disabled='componentState === ComponentState.Action'
+				@submit.prevent='onSubmit()'
 			>
-				<v-row>
-					<v-col>
-						<NumberInput
+				<v-row :no-gutters='display.mobile.value'>
+					<v-col
+						cols='12'
+						md='6'
+					>
+						<INumberInput
 							v-if='!useHexNadr'
-							v-model.number='nadr'
+							v-model='nadr'
 							:min='0'
 							:max='255'
 							:label='$t("components.iqrfnet.send-dpa.nadr")'
@@ -105,7 +102,7 @@ limitations under the License.
 									</v-list>
 								</v-menu>
 							</template>
-						</NumberInput>
+						</INumberInput>
 						<ITextInput
 							v-else
 							v-model='nadrHex'
@@ -175,10 +172,13 @@ limitations under the License.
 							</template>
 						</ITextInput>
 					</v-col>
-					<v-col>
-						<NumberInput
+					<v-col
+						cols='12'
+						md='6'
+					>
+						<INumberInput
 							v-if='!useHexPnum'
-							v-model.number='pnum'
+							v-model='pnum'
 							:min='0'
 							:max='255'
 							:label='$t("components.iqrfnet.send-dpa.pnum")'
@@ -203,7 +203,7 @@ limitations under the License.
 									{{ $t("components.iqrfnet.send-dpa.hexadecimal") }}
 								</v-tooltip>
 							</template>
-						</NumberInput>
+						</INumberInput>
 						<ITextInput
 							v-else
 							v-model='pnumHex'
@@ -230,10 +230,15 @@ limitations under the License.
 							</template>
 						</ITextInput>
 					</v-col>
-					<v-col>
-						<NumberInput
+				</v-row>
+				<v-row :no-gutters='display.mobile.value'>
+					<v-col
+						cols='12'
+						md='6'
+					>
+						<INumberInput
 							v-if='!useHexPcmd'
-							v-model.number='pcmd'
+							v-model='pcmd'
 							:min='0'
 							:max='127'
 							:label='$t("components.iqrfnet.send-dpa.pcmd")'
@@ -258,7 +263,7 @@ limitations under the License.
 									{{ $t("components.iqrfnet.send-dpa.hexadecimal") }}
 								</v-tooltip>
 							</template>
-						</NumberInput>
+						</INumberInput>
 						<ITextInput
 							v-else
 							v-model='pcmdHex'
@@ -285,10 +290,13 @@ limitations under the License.
 							</template>
 						</ITextInput>
 					</v-col>
-					<v-col>
-						<NumberInput
+					<v-col
+						cols='12'
+						md='6'
+					>
+						<INumberInput
 							v-if='!useHexHwpid'
-							v-model.number='hwpid'
+							v-model='hwpid'
 							:min='0'
 							:max='65535'
 							:label='$t("components.iqrfnet.send-dpa.hwpid")'
@@ -341,7 +349,7 @@ limitations under the License.
 									</v-list>
 								</v-menu>
 							</template>
-						</NumberInput>
+						</INumberInput>
 						<ITextInput
 							v-else
 							v-model='hwpidHex'
@@ -396,37 +404,35 @@ limitations under the License.
 							</template>
 						</ITextInput>
 					</v-col>
-					<v-col cols='5'>
-						<v-text-field
-							v-model='pdata'
-							v-maska='maskaOptions'
-							:label='$t("components.iqrfnet.send-dpa.pdata")'
-							:rules='[
-								(v: string) => validatePdata(v) || $t("components.iqrfnet.send-dpa.validation.pdataInvalid"),
-							]'
-						/>
-					</v-col>
 				</v-row>
+				<ITextInput
+					v-model='pdata'
+					v-maska='maskaOptions'
+					:label='$t("components.iqrfnet.send-dpa.pdata")'
+					:rules='[
+						(v: string) => validatePdata(v) || $t("components.iqrfnet.send-dpa.validation.pdataInvalid"),
+					]'
+				/>
 				<v-checkbox
 					v-model='useCustomTimeout'
 					:label='$t("components.iqrfnet.send-dpa.useCustomTimeout")'
 					density='compact'
-					hide-details
 				/>
-				<NumberInput
-					v-model.number='customTimeout'
+				<INumberInput
+					v-model='customTimeout'
 					:min='1000'
 					:label='$t("components.iqrfnet.send-dpa.customTimeout")'
 					:disabled='!useCustomTimeout'
 					required
 				/>
-				<v-btn
-					color='primary'
-					:disabled='!isValid.value || componentState === ComponentState.Action'
-					@click='onSubmit'
-				>
-					{{ $t("common.buttons.send") }}
-				</v-btn>
+				<IActionBtn
+					:action='Action.Custom'
+					:icon='mdiSend'
+					:loading='componentState === ComponentState.Action'
+					:disabled='!isValid.value'
+					type='submit'
+					:text='$t("common.buttons.send")'
+				/>
 			</v-form>
 		</ICard>
 		<PacketMacros class='my-4' @set-packet='applyPacket' />
@@ -444,8 +450,11 @@ import {
 } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import {
+	Action,
 	ComponentState,
+	IActionBtn,
 	ICard,
+	INumberInput,
 	ITextInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
@@ -455,22 +464,24 @@ import {
 	mdiLockOpen,
 	mdiMenu,
 	mdiNumeric,
+	mdiSend,
 } from '@mdi/js';
 import { DateTime } from 'luxon';
 import { vMaska } from 'maska/vue';
 import { ref, type Ref } from 'vue';
+import { useDisplay } from 'vuetify';
 import { VForm } from 'vuetify/components';
 
 import ProductBrowser from '@/components/iqrfnet/ProductBrowser.vue';
 import PacketHistory from '@/components/iqrfnet/send-dpa/PacketHistory.vue';
 import PacketMacros from '@/components/iqrfnet/send-dpa/PacketMacros.vue';
-import NumberInput from '@/components/layout/form/NumberInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useDaemonStore } from '@/store/daemonSocket';
 import { type DpaPacketTransaction } from '@/types/Iqrfnet';
 
-const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
+const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const daemonStore = useDaemonStore();
+const display = useDisplay();
 const form: Ref<VForm | null> = ref(null);
 const msgId: Ref<string | null> = ref(null);
 const messages: Ref<DpaPacketTransaction[]> = ref([]);
@@ -483,7 +494,7 @@ daemonStore.$onAction(({ name, after }) => {
 				return;
 			}
 			daemonStore.removeMessage(msgId.value);
-			componentState.value = ComponentState.Ready;
+			componentState.value = ComponentState.Idle;
 			if (rsp.mType === GenericMessages.Raw) {
 				handleResponse(rsp as ApiResponseRaw<RawResult>);
 			}
@@ -644,7 +655,10 @@ async function onSubmit(): Promise<void> {
 	const rq = GenericService.raw(
 		{ returnVerbose: true },
 		{ rData: buildPacket() },
-		new DaemonMessageOptions(null),
+		new DaemonMessageOptions(null, null, () => {
+			msgId.value = null;
+			componentState.value = ComponentState.Idle;
+		}),
 	);
 	if (useCustomTimeout.value && rq.request !== null) {
 		rq.request.data.timeout = customTimeout.value;
