@@ -285,7 +285,6 @@ watch(show, (newVal: boolean): void => {
 		profile.value = structuredClone(defaultProfile);
 		instance = defaultProfile.instance;
 	}
-	componentState.value = ComponentState.Ready;
 });
 
 async function onSubmit(): Promise<void> {
