@@ -23,18 +23,23 @@ limitations under the License.
 		<template #titleActions>
 			<ApiKeyForm
 				:action='Action.Add'
+				:disabled='componentState === ComponentState.Reloading'
 				@refresh='getKeys()'
 			/>
 			<IActionBtn
 				:action='Action.Reload'
 				container-type='card-title'
+				:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+				:disabled='componentState === ComponentState.Action'
+				:tooltip='$t("components.accessControl.apiKeys.actions.reload")'
 				@click='getKeys()'
 			/>
 		</template>
 		<IDataTable
 			:headers='headers'
 			:items='keys'
-			:loading='componentState === ComponentState.Loading'
+			:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+			:no-data-text='noDataText'
 			:hover='true'
 			:dense='true'
 		>
@@ -45,10 +50,12 @@ limitations under the License.
 				<ApiKeyForm
 					:action='Action.Edit'
 					:api-key='toRaw(item)'
+					:disabled='componentState === ComponentState.Reloading'
 					@refresh='getKeys()'
 				/>
 				<ApiKeyDeleteDialog
 					:api-key='toRaw(item)'
+					:disabled='componentState === ComponentState.Reloading'
 					@refresh='getKeys()'
 				/>
 			</template>
@@ -67,7 +74,7 @@ import {
 	IDataTable,
 } from '@iqrf/iqrf-vue-ui';
 import { DateTime } from 'luxon';
-import { onMounted, ref, type Ref, toRaw } from 'vue';
+import { computed, onMounted, ref, type Ref, toRaw } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
@@ -83,23 +90,32 @@ const service: ApiKeyService = useApiClient().getSecurityServices().getApiKeySer
 const headers = [
 	{ key: 'id', title: i18n.t('common.columns.id') },
 	{ key: 'description', title: i18n.t('common.columns.description') },
-	{ key: 'expiration', title: i18n.t('components.accessControl.apiKeys.table.expiration') },
+	{ key: 'expiration', title: i18n.t('components.accessControl.apiKeys.expiration') },
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false },
 ];
 const keys: Ref<ApiKeyInfo[]> = ref([]);
 
-onMounted(() => {
-	getKeys();
+const noDataText = computed(() => {
+	if (componentState.value === ComponentState.FetchFailed) {
+		return 'components.accessControl.apiKeys.noData.fetchError';
+	}
+	return 'components.accessControl.apiKeys.noData.empty';
 });
 
 async function getKeys(): Promise<void> {
-	componentState.value = ComponentState.Loading;
+	componentState.value = [
+		ComponentState.Created,
+		ComponentState.FetchFailed,
+	].includes(componentState.value) ? ComponentState.Loading : ComponentState.Reloading;
 	try {
 		keys.value = await service.list();
+		componentState.value = ComponentState.Ready;
 	} catch {
-		toast.error('TODO ERROR HANDLING');
+		toast.error(
+			i18n.t('components.accessControl.apiKeys.messages.list.failed'),
+		);
+		componentState.value = componentState.value === ComponentState.Loading ? ComponentState.FetchFailed : ComponentState.Ready;
 	}
-	componentState.value = ComponentState.Ready;
 }
 
 function formatTime(time: DateTime | null): string|null {
@@ -108,5 +124,9 @@ function formatTime(time: DateTime | null): string|null {
 	}
 	return time.setLocale(localeStore.getLocale).toLocaleString(DateTime.DATETIME_FULL_WITH_SECONDS);
 }
+
+onMounted(() => {
+	getKeys();
+});
 
 </script>

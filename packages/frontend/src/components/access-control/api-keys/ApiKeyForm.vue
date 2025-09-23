@@ -16,81 +16,70 @@ limitations under the License.
 -->
 
 <template>
-	<div>
-		<IModalWindow v-model='show'>
-			<template #activator='{ props }'>
-				<IActionBtn
-					v-if='action === Action.Add'
-					v-bind='props'
-					:action='action'
-					container-type='card-title'
-					:tooltip='$t("components.accessControl.apiKeys.actions.add")'
+	<IModalWindow v-model='show'>
+		<template #activator='{ props }'>
+			<IActionBtn
+				v-if='action === Action.Add'
+				v-bind='props'
+				:action='action'
+				container-type='card-title'
+				:tooltip='$t("components.accessControl.apiKeys.actions.add")'
+				:disabled='disabled'
+			/>
+			<IDataTableAction
+				v-else
+				v-bind='props'
+				:action='action'
+				:tooltip='$t("components.accessControl.apiKeys.actions.edit")'
+				:disabled='disabled'
+			/>
+		</template>
+		<v-form
+			ref='form'
+			v-slot='{ isValid }'
+			:disabled='componentState === ComponentState.Action'
+			@submit.prevent='onSubmit()'
+		>
+			<ICard :action='action'>
+				<template #title>
+					{{ dialogTitle }}
+				</template>
+				<ITextInput
+					v-model='key.description'
+					:prepend-inner-icon='mdiTextShort'
+					:label='$t("common.labels.description")'
+					:rules='[
+						(v: string|null) => ValidationRules.required(v, $t("components.accessControl.apiKeys.validations.description.required")),
+					]'
+					required
 				/>
-				<IDataTableAction
-					v-else
-					v-bind='props'
-					:action='action'
-					:tooltip='$t("components.accessControl.apiKeys.actions.edit")'
+				<IDateTimeInput
+					v-model='expiration'
+					:label='$t("components.accessControl.apiKeys.expiration")'
+					:min='toRaw(minDate)'
 				/>
-			</template>
-			<v-form
-				ref='form'
-				v-slot='{ isValid }'
-				@submit.prevent='onSubmit()'
-			>
-				<ICard :action='action'>
-					<template #title>
-						{{ dialogTitle }}
-					</template>
-					<ITextInput
-						v-model='key.description'
-						:prepend-inner-icon='mdiTextShort'
-						:label='$t("common.labels.description")'
-						:rules='[
-							(v: string|null) => ValidationRules.required(v, $t("components.accessControl.apiKeys.validations.description.required")),
-						]'
-						required
+				<template #actions>
+					<IActionBtn
+						:action='action'
+						:loading='componentState === ComponentState.Action'
+						:disabled='!isValid.value'
+						type='submit'
 					/>
-					<v-checkbox
-						v-model='setExpiration'
-						:label='$t("components.accessControl.apiKeys.form.expiration")'
+					<v-spacer />
+					<IActionBtn
+						:action='Action.Cancel'
+						:disabled='componentState === ComponentState.Action'
+						@click='close'
 					/>
-					<label for='datetimeinput'>
-						{{ $t('components.accessControl.apiKeys.table.expiration') }}
-					</label>
-					<VueDatePicker
-						id='datetimeinput'
-						v-model='expiration'
-						class='mb-4'
-						:enable-seconds='true'
-						:show-now-button='true'
-						:teleport='true'
-						:disabled='!setExpiration'
-						:state='datePickerState'
-					/>
-					<template #actions>
-						<IActionBtn
-							:action='action'
-							container-type='card'
-							:disabled='!isValid.value'
-							type='submit'
-						/>
-						<v-spacer />
-						<IActionBtn
-							:action='Action.Cancel'
-							container-type='card'
-							@click='close'
-						/>
-					</template>
-				</ICard>
-			</v-form>
-		</IModalWindow>
-		<ApiKeyDisplayDialog
-			ref='displayDialog'
-			:api-key='generatedKey'
-			@closed='clear'
-		/>
-	</div>
+				</template>
+			</ICard>
+		</v-form>
+	</IModalWindow>
+	<ApiKeyDisplayDialog
+		ref='displayDialog'
+		:api-key='generatedKey'
+		@closed='clear'
+	/>
 </template>
 
 <script lang='ts' setup>
@@ -103,15 +92,18 @@ import {
 import { DateTimeUtils } from '@iqrf/iqrf-gateway-webapp-client/utils';
 import {
 	Action,
+	ComponentState,
 	IActionBtn,
 	ICard,
 	IDataTableAction,
+	IDateTimeInput,
 	IModalWindow,
 	ITextInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiTextShort } from '@mdi/js';
-import { computed, type PropType, ref, type Ref, watchEffect } from 'vue';
+import { DateTime } from 'luxon';
+import { computed, type PropType, ref, type Ref, toRaw, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -120,6 +112,7 @@ import ApiKeyDisplayDialog from '@/components/access-control/api-keys/ApiKeyDisp
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
+const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const emit = defineEmits(['refresh']);
 const componentProps = defineProps({
 	action: {
@@ -135,6 +128,11 @@ const componentProps = defineProps({
 		}),
 		required: false,
 	},
+	disabled: {
+		type: Boolean,
+		default: false,
+		required: false,
+	},
 });
 const i18n = useI18n();
 const show: Ref<boolean> = ref(false);
@@ -144,29 +142,23 @@ const defaultKey: ApiKeyConfig = {
 	description: '',
 	expiration: null,
 };
-const setExpiration: Ref<boolean> = ref(false);
-const expiration: Ref<Date | null> = ref(null);
+const expiration: Ref<DateTime | null> = ref(null);
 const key: Ref<ApiKeyInfo> = ref(defaultKey);
 const generatedKey: Ref<string | null> = ref(null);
 const displayDialog: Ref<typeof ApiKeyDisplayDialog | null> = ref(null);
+const minDate: Ref<DateTime | null> = ref(null);
 
 const dialogTitle = computed(() => {
 	if (componentProps.action === Action.Add) {
-		return i18n.t('components.accessControl.apiKeys.form.addTitle').toString();
+		return i18n.t('components.accessControl.apiKeys.actions.add').toString();
 	}
-	return i18n.t('components.accessControl.apiKeys.form.editTitle').toString();
-});
-const datePickerState = computed((): false|null => {
-	if (!setExpiration.value) {
-		return null;
-	}
-	if (expiration.value !== null && expiration.value !== undefined) {
-		return null;
-	}
-	return false;
+	return i18n.t('components.accessControl.apiKeys.actions.edit').toString();
 });
 
-watchEffect((): void => {
+watch(show, (newVal: boolean): void => {
+	if (!newVal) {
+		return;
+	}
 	if (componentProps.action === Action.Add) {
 		key.value = { ...defaultKey };
 	} else if (componentProps.action === Action.Edit) {
@@ -177,41 +169,46 @@ watchEffect((): void => {
 		}
 	}
 	if (key.value.expiration !== null) {
-		expiration.value = key.value.expiration.toJSDate();
+		expiration.value = key.value.expiration;
 	} else {
 		expiration.value = null;
 	}
-	setExpiration.value = key.value.expiration !== null;
+	minDate.value = DateTime.now();
 });
 
 async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
 	}
-	const keyToSave = key.value;
-	if (setExpiration.value && expiration.value !== null) {
-		keyToSave.expiration = DateTimeUtils.deserialize(expiration.value.toISOString());
-	} else {
-		keyToSave.expiration = null;
+	componentState.value = ComponentState.Action;
+	const params = { ...key.value };
+	console.warn(params, expiration.value);
+	if (expiration.value !== null) {
+		params.expiration = DateTimeUtils.deserialize(expiration.value.toJSDate().toISOString());
 	}
-	if (componentProps.action === Action.Add) {
-		const createdKey: ApiKeyCreated = await service.create(keyToSave);
-		generatedKey.value = createdKey.key;
-		addSuccess();
-	} else if (componentProps.action === Action.Edit) {
-		const id = keyToSave.id!;
-		delete keyToSave.id;
-		await service.update(id, keyToSave);
-		close();
-		emit('refresh');
+	try {
+		if (componentProps.action === Action.Add) {
+			const createdKey: ApiKeyCreated = await service.create(params);
+			generatedKey.value = createdKey.key;
+			toast.success(
+				i18n.t('components.accessControl.apiKeys.messages.save.success'),
+			);
+			close();
+			emit('refresh');
+			displayDialog.value?.open();
+		} else if (componentProps.action === Action.Edit) {
+			const id = params.id!;
+			delete params.id;
+			await service.update(id, params);
+			close();
+			emit('refresh');
+		}
+	} catch {
+		toast.error(
+			i18n.t('components.accessControl.apiKeys.messages.save.failed'),
+		);
 	}
-}
-
-function addSuccess(): void {
-	toast.success('TODO SAVE SUCCESS MESSAGE');
-	close();
-	emit('refresh');
-	displayDialog.value?.open();
+	componentState.value = ComponentState.Ready;
 }
 
 function clear(): void {

@@ -18,7 +18,9 @@ limitations under the License.
 <template>
 	<IDeleteModalWindow
 		ref='dialog'
+		:component-state='componentState'
 		:tooltip='$t("components.accessControl.apiKeys.actions.delete")'
+		:disabled='disabled'
 		@submit='onSubmit'
 	>
 		<template #title>
@@ -31,30 +33,45 @@ limitations under the License.
 <script lang='ts' setup>
 import { type ApiKeyService } from '@iqrf/iqrf-gateway-webapp-client/services/Security';
 import { type ApiKeyInfo } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
-import { IDeleteModalWindow } from '@iqrf/iqrf-vue-ui';
+import { ComponentState, IDeleteModalWindow } from '@iqrf/iqrf-vue-ui';
 import { type PropType, ref , type Ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import { useApiClient } from '@/services/ApiClient';
 
-const emit = defineEmits(['refresh']);
-const dialog: Ref<typeof IDeleteModalWindow | null> = ref(null);
+const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const componentProps = defineProps({
 	apiKey: {
 		type: Object as PropType<ApiKeyInfo>,
 		required: true,
 	},
+	disabled: {
+		type: Boolean,
+		required: false,
+		default: false,
+	},
 });
+const emit = defineEmits(['refresh']);
+const dialog: Ref<typeof IDeleteModalWindow | null> = ref(null);
+const i18n = useI18n();
 const service: ApiKeyService = useApiClient().getSecurityServices().getApiKeyService();
 
 async function onSubmit(): Promise<void> {
+	componentState.value = ComponentState.Action;
 	try {
 		await service.delete(componentProps.apiKey.id!);
+		toast.success(
+			i18n.t('components.accessControl.apiKeys.messages.delete.success', { id: componentProps.apiKey.id! }),
+		);
 		close();
 		emit('refresh');
 	} catch {
-		toast.error('TODO ERROR HANDLING');
+		toast.error(
+			i18n.t('components.accessControl.apiKeys.messages.delete.failed', { id: componentProps.apiKey.id! }),
+		);
 	}
+	componentState.value = ComponentState.Idle;
 }
 
 function close(): void {
