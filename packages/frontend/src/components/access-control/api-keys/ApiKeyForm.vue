@@ -69,7 +69,7 @@ limitations under the License.
 					<IActionBtn
 						:action='Action.Cancel'
 						:disabled='componentState === ComponentState.Action'
-						@click='close'
+						@click='close()'
 					/>
 				</template>
 			</ICard>

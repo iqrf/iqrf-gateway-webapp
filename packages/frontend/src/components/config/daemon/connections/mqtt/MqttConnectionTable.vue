@@ -24,15 +24,22 @@ limitations under the License.
 			<MqttConnectionForm
 				ref='addForm'
 				:action='Action.Add'
+				:disabled='componentState === ComponentState.Reloading'
 				@saved='getConfig()'
 			/>
 			<CloudConnectionSelector
+				:disabled='componentState === ComponentState.Reloading'
 				@saved='getConfig()'
 			/>
-			<MqttConnectionImportDialog @import='(c: IqrfGatewayDaemonMqttMessaging) => importFromConfig(c)' />
+			<MqttConnectionImportDialog
+				:disabled='componentState === ComponentState.Reloading'
+				@import='(c: IqrfGatewayDaemonMqttMessaging) => importFromConfig(c)'
+			/>
 			<IActionBtn
 				:action='Action.Reload'
 				container-type='card-title'
+				:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+				:disabled='componentState === ComponentState.Action'
 				:tooltip='$t("components.config.daemon.connections.actions.reload")'
 				@click='getConfig()'
 			/>
@@ -40,25 +47,54 @@ limitations under the License.
 		<IDataTable
 			:headers='headers'
 			:items='instances'
+			:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+			:no-data-text='noDataText'
 			:hover='true'
 			:dense='true'
-			:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
 		>
-			<template #item.actions='{ item }'>
+			<template #item.actions='{ item, internalItem, toggleExpand, isExpanded }'>
+				<IDataTableAction
+					color='primary'
+					:icon='mdiInformation'
+					:disabled='componentState === ComponentState.Reloading'
+					:tooltip='isExpanded(internalItem) ? $t("components.config.daemon.connections.mqtt.actions.hideInfo") : $t("components.config.daemon.connections.mqtt.actions.showInfo")'
+					@click='toggleExpand(internalItem)'
+				/>
 				<IDataTableAction
 					:action='Action.Export'
 					:tooltip='$t("components.config.daemon.connections.actions.export")'
+					:disabled='componentState === ComponentState.Reloading'
 					@click='exportConfig(item)'
 				/>
 				<MqttConnectionForm
 					:action='Action.Edit'
-					:connection-profile='item'
+					:connection-profile='toRaw(item)'
+					:disabled='componentState === ComponentState.Reloading'
 					@saved='getConfig()'
 				/>
 				<MqttConnectionDeleteDialog
-					:connection-profile='item'
+					:connection-profile='toRaw(item)'
+					:disabled='componentState === ComponentState.Reloading'
 					@deleted='getConfig()'
 				/>
+			</template>
+			<template #expanded-row='{ columns, item }'>
+				<td :colspan='columns.length'>
+					<v-sheet border>
+						<v-table density='compact'>
+							<tbody>
+								<tr>
+									<th>{{ $t('components.config.daemon.connections.mqtt.requestTopic') }}</th>
+									<td>{{ item.TopicRequest }}</td>
+								</tr>
+								<tr>
+									<th>{{ $t('components.config.daemon.connections.mqtt.responseTopic') }}</th>
+									<td>{{ item.TopicResponse }}</td>
+								</tr>
+							</tbody>
+						</v-table>
+					</v-sheet>
+				</td>
 			</template>
 		</IDataTable>
 	</ICard>
@@ -79,7 +115,8 @@ import {
 	IDataTable,
 	IDataTableAction,
 } from '@iqrf/iqrf-vue-ui';
-import { ref, type Ref } from 'vue';
+import { mdiInformation } from '@mdi/js';
+import { computed, ref, type Ref, toRaw } from 'vue';
 import { onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
@@ -95,26 +132,33 @@ const i18n = useI18n();
 const headers = [
 	{ key: 'instance', title: i18n.t('components.config.daemon.connections.profile') },
 	{ key: 'BrokerAddr', title: i18n.t('components.config.daemon.connections.mqtt.broker') },
-	{ key: 'TopicRequest', title: i18n.t('components.config.daemon.connections.mqtt.requestTopic') },
-	{ key: 'TopicResponse', title: i18n.t('components.config.daemon.connections.mqtt.responseTopic') },
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false },
 ];
 const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
 const instances: Ref<IqrfGatewayDaemonMqttMessaging[]> = ref([]);
 const addForm: Ref<typeof MqttConnectionForm | null> = ref(null);
 
-async function getConfig(): Promise<void> {
-	if (componentState.value === ComponentState.Created) {
-		componentState.value = ComponentState.Loading;
-	} else {
-		componentState.value = ComponentState.Reloading;
+const noDataText = computed(() => {
+	if (componentState.value === ComponentState.FetchFailed) {
+		return 'components.config.daemon.connections.mqtt.noData.fetchError';
 	}
+	return 'components.config.daemon.connections.mqtt.noData.empty';
+});
+
+async function getConfig(): Promise<void> {
+	componentState.value = [
+		ComponentState.Created,
+		ComponentState.FetchFailed,
+	].includes(componentState.value) ? ComponentState.Loading : ComponentState.Reloading;
 	try {
 		instances.value = (await service.getComponent(IqrfGatewayDaemonComponentName.IqrfMqttMessaging)).instances;
+		componentState.value = ComponentState.Ready;
 	} catch {
-		toast.error('TODO FETCH ERROR');
+		toast.error(
+			i18n.t('components.config.daemon.connections.mqtt.messages.list.failed'),
+		);
+		componentState.value = componentState.value === ComponentState.Loading ? ComponentState.FetchFailed : ComponentState.Ready;
 	}
-	componentState.value = ComponentState.Ready;
 }
 
 function importFromConfig(config: IqrfGatewayDaemonMqttMessaging): void {

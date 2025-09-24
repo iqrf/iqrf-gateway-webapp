@@ -16,58 +16,54 @@ limitations under the License.
 -->
 
 <template>
-	<div>
-		<v-menu
-			location='start'
-			:close-on-content-click='true'
-		>
-			<template #activator='{ props }'>
-				<v-btn
-					id='tooltip-activator'
-					v-bind='props'
-					:icon='mdiCloudPlusOutline'
-				/>
-				<v-tooltip
-					activator='#tooltip-activator'
-					location='bottom'
-				>
-					{{ $t('components.config.daemon.connections.mqtt.clouds.add') }}
-				</v-tooltip>
-			</template>
-			<v-list density='compact'>
-				<v-list-item @click='showAws = true'>
-					<v-list-item-title>
-						{{ $t('components.config.daemon.connections.mqtt.clouds.aws.title') }}
-					</v-list-item-title>
-				</v-list-item>
-				<v-list-item @click='showAzure = true'>
-					<v-list-item-title>
-						{{ $t('components.config.daemon.connections.mqtt.clouds.azure.title') }}
-					</v-list-item-title>
-				</v-list-item>
-				<v-list-item @click='showIbm = true'>
-					<v-list-item-title>
-						{{ $t('components.config.daemon.connections.mqtt.clouds.ibm.title') }}
-					</v-list-item-title>
-				</v-list-item>
-			</v-list>
-		</v-menu>
-		<AwsCloudConnectionForm
-			v-model='showAws'
-			@saved='onSaved()'
-		/>
-		<AzureCloudConnectionForm
-			v-model='showAzure'
-			@saved='onSaved()'
-		/>
-		<IbmCloudConnectionForm
-			v-model='showIbm'
-			@saved='onSaved()'
-		/>
-	</div>
+	<v-menu
+		location='start'
+		:close-on-content-click='true'
+	>
+		<template #activator='{ props }'>
+			<IActionBtn
+				v-bind='props'
+				:action='Action.Custom'
+				container-type='card-title'
+				:icon='mdiCloudPlusOutline'
+				:disabled='disabled'
+				:tooltip='$t("components.config.daemon.connections.mqtt.clouds.add")'
+			/>
+		</template>
+		<v-list density='compact'>
+			<v-list-item @click='showAws = true'>
+				<v-list-item-title>
+					{{ $t('components.config.daemon.connections.mqtt.clouds.aws.title') }}
+				</v-list-item-title>
+			</v-list-item>
+			<v-list-item @click='showAzure = true'>
+				<v-list-item-title>
+					{{ $t('components.config.daemon.connections.mqtt.clouds.azure.title') }}
+				</v-list-item-title>
+			</v-list-item>
+			<v-list-item @click='showIbm = true'>
+				<v-list-item-title>
+					{{ $t('components.config.daemon.connections.mqtt.clouds.ibm.title') }}
+				</v-list-item-title>
+			</v-list-item>
+		</v-list>
+	</v-menu>
+	<AwsCloudConnectionForm
+		v-model='showAws'
+		@saved='onSaved()'
+	/>
+	<AzureCloudConnectionForm
+		v-model='showAzure'
+		@saved='onSaved()'
+	/>
+	<IbmCloudConnectionForm
+		v-model='showIbm'
+		@saved='onSaved()'
+	/>
 </template>
 
 <script lang='ts' setup>
+import { Action, IActionBtn } from '@iqrf/iqrf-vue-ui';
 import { mdiCloudPlusOutline } from '@mdi/js';
 import { ref, type Ref } from 'vue';
 
@@ -75,6 +71,13 @@ import AwsCloudConnectionForm from '@/components/config/daemon/connections/mqtt/
 import AzureCloudConnectionForm from '@/components/config/daemon/connections/mqtt/cloud/AzureCloudConnectionForm.vue';
 import IbmCloudConnectionForm from '@/components/config/daemon/connections/mqtt/cloud/IbmCloudConnectionForm.vue';
 
+defineProps({
+	disabled: {
+		type: Boolean,
+		required: false,
+		default: false,
+	},
+});
 const emit = defineEmits(['saved']);
 const showAws: Ref<boolean> = ref(false);
 const showAzure: Ref<boolean> = ref(false);

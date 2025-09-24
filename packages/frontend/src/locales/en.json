@@ -59,6 +59,7 @@
 			"id": "ID"
 		},
 		"labels": {
+			"certificate": "Certificate",
 			"confirmation": "Confirmation",
 			"confirmationTs": "Confirmation time",
 			"description": "Description",
@@ -71,6 +72,7 @@
 			"password": "Password",
 			"path": "Path",
 			"port": "Port",
+			"privateKey": "Private key",
 			"protocol": "Protocol",
 			"protocols": {
 				"ssl": "Encrypted SSL/TLS",
@@ -105,6 +107,9 @@
 			"valid": "Valid"
 		},
 		"validation": {
+			"certificate": {
+				"required": "Please select a certificate file."
+			},
 			"email": {
 				"format": "Invalid email address format.",
 				"required": "Please enter email address."
@@ -125,6 +130,9 @@
 				"between": "Port number should be between 1 and 65535.",
 				"integer": "Port number should be an integer.",
 				"required": "Please enter port number."
+			},
+			"privateKey": {
+				"required": "Please select a private key file."
 			},
 			"username": {
 				"required": "Please enter username."
@@ -626,26 +634,31 @@
 						"profileFileInvalid": "Selected file is not a valid connection profile file."
 					},
 					"mqtt": {
+						"actions": {
+							"hideInfo": "Hide MQTT connection details",
+							"showInfo": "Show MQTT connection details"
+						},
 						"broker": "Broker URL",
 						"clientId": "Client ID",
 						"clouds": {
 							"add": "Create cloud connection profile",
 							"aws": {
-								"certificate": "Certificate",
 								"endpoint": "Endpoint",
-								"privateKey": "Private key",
 								"title": "Amazon AWS IoT",
 								"validation": {
-									"certificateMissing": "Please select certificate file.",
-									"endpointMissing": "Please enter endpoint.",
-									"privateKeyMissing": "Please select private key file."
+									"endpoint": {
+										"required": "Please enter endpoint.",
+										"url": "Invalid AWS cloud endpoint URL."
+									}
 								}
 							},
 							"azure": {
 								"connectionString": "IoT Hub device connection string",
 								"title": "Microsoft Azure IoT Hub",
 								"validation": {
-									"connectionStringMissing": "Please enter IoT Hub device connection string."
+									"connectionString": {
+										"required": "Please enter IoT Hub device connection string."
+									}
 								}
 							},
 							"ibm": {
@@ -656,15 +669,26 @@
 								"title": "IBM Cloud",
 								"token": "Authentication token",
 								"validation": {
-									"deviceIdMissing": "Please enter device ID.",
-									"deviceTypeMissing": "Please enter device type.",
-									"eventIdMissing": "Please enter command and event ID.",
-									"orgIdMissing": "Please enter organization ID.",
-									"tokenMissing": "Please enter authentication token."
+									"deviceId": {
+										"required": "Please enter device ID."
+									},
+									"deviceType": {
+										"required": "Please enter device type."
+									},
+									"eventId": {
+										"required": "Please enter command and event ID."
+									},
+									"orgId": {
+										"required": "Please enter organization ID."
+									},
+									"token": {
+										"required": "Please enter authentication token."
+									}
 								}
 							},
 							"messages": {
 								"save": {
+									"failed": "Failed to save MQTT cloud connection.",
 									"success": "MQTT cloud connection successfully added."
 								}
 							}
@@ -680,8 +704,23 @@
 						"maxReconnect": "Maximum reconnect period",
 						"messages": {
 							"delete": {
+								"failed": "Failed to delete MQTT connection profile {name}.",
 								"success": "MQTT connection profile {name} successfully deleted."
 							},
+							"list": {
+								"failed": "Failed to retrieve MQTT connection profiles."
+							},
+							"save": {
+								"failed": "Failed to save MQTT connection profile {name}.",
+								"success": "MQTT connection profile {name} successfully saved."
+							}
+						},
+						"minReconnect": "Minimum reconnect period",
+						"noData": {
+							"empty": "No MQTT connection profile records found.",
+							"fetchError": "MQTT connection profile records could not be retrieved."
+						},
+						"notes": {
 							"persistence": {
 								"application": "Persistence control is delegated to the application.",
 								"filesystem": "State of in-flight messages is held in persistent storage and prevents loss of messages to some degree in case of a client failure.",
@@ -691,12 +730,8 @@
 								"atLeastOnce": "Messages are guaranteed to be delivered at least once by acknowledging receipt of a message.",
 								"atMostOnce": "Fastest method, but the delivery of a message is not guaranteed.",
 								"exactlyOnce": "Safest but slowest method. Message is guaranteed to be delivered exactly once utilizing a 4-part handshake."
-							},
-							"save": {
-								"success": "MQTT connection profile {name} successfully saved."
 							}
 						},
-						"minReconnect": "Minimum reconnect period",
 						"persistence": "Persistence",
 						"persistenceLevels": {
 							"application": "Application-specific",
@@ -713,19 +748,40 @@
 						"responseTopic": "Response topic",
 						"timeout": "Connection timeout",
 						"validation": {
-							"clientIdMissing": "Please enter MQTT client ID.",
-							"keepAliveInvalid": "Keep alive interval should be a positive integer.",
-							"keepAliveMissing": "Please enter keep alive interval.",
-							"maxReconnectInvalid": "Maximum reconnect period should be at integer greater or equal to 1 second.",
-							"maxReconnectLow": "Maximum reconnect period should be greater or equal to minimum reconnect period.",
-							"maxReconnectMissing": "Please enter maximum reconnect period.",
-							"minReconnectHigh": "Minimum reconnect period should be less or equal to maximum reconnect period.",
-							"minReconnectInvalid": "Minimum reconnect period should be an integer greater or equal to 1 second.",
-							"minReconnectMissing": "Please enter minimum reconnect period.",
-							"requestTopicMissing": "Please enter request topic.",
-							"responseTopicMissing": "Please enter response topic.",
-							"timeoutInvalid": "Connection timeout should be a positive integer.",
-							"timeoutMissing": "Please enter connection timeout."
+							"broker": {
+								"required": "Please enter MQTT broker URL.",
+								"url": "MQTT broker URL should be IPv4, IPv6, localhost or fully-qualified domain name."
+							},
+							"clientId": {
+								"required": "Please enter MQTT client ID."
+							},
+							"keepAlive": {
+								"integer": "Keep alive interval should be an integer.",
+								"min": "Keep alive interval should be greater or equal to 0.",
+								"required": "Please enter keep alive interval."
+							},
+							"maxReconnect": {
+								"integer": "Maximum reconnect period should be an integer.",
+								"min": "Maximum reconnect period should be greater or equal minimum reconnect period.",
+								"required": "Please enter maximum reconnect period."
+							},
+							"minReconnect": {
+								"integer": "Minimum reconnect period should be an integer.",
+								"max": "Minimum reconnect period should be less or equal to maximum reconnect period.",
+								"min": "Minimum reconnect period should be greter or equal to 1 second.",
+								"required": "Please enter minimum reconnect period."
+							},
+							"requestTopic": {
+								"required": "Please enter request topic."
+							},
+							"responseTopic": {
+								"required": "Please enter response topic."
+							},
+							"timeout": {
+								"integer": "Connection timeout should be an integer.",
+								"min": "Connection timeout should be greater or equal to 1 second.",
+								"required": "Please enter connection timeout."
+							}
 						}
 					},
 					"privateKey": "Private key",
@@ -764,8 +820,12 @@
 						}
 					},
 					"validation": {
-						"profileFileMissing": "Please select connection profile file.",
-						"profileMissing": "Please enter connection profile name."
+						"profile": {
+							"required": "Please enter connection profile name."
+						},
+						"profileFile": {
+							"required": "Please select connection profile file."
+						}
 					}
 				},
 				"db": {

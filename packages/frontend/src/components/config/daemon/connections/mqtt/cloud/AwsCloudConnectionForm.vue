@@ -21,8 +21,9 @@ limitations under the License.
 			ref='form'
 			v-slot='{ isValid }'
 			:disabled='componentState === ComponentState.Action'
+			@submit.prevent='onSubmit()'
 		>
-			<ICard>
+			<ICard :action='Action.Add'>
 				<template #title>
 					{{ $t('components.config.daemon.connections.mqtt.clouds.aws.title') }}
 				</template>
@@ -30,39 +31,42 @@ limitations under the License.
 					v-model='config.endpoint'
 					:label='$t("components.config.daemon.connections.mqtt.clouds.aws.endpoint")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.clouds.aws.validation.endpointMissing")),
+						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.clouds.aws.validation.endpoint.required")),
+						(v: string) => ValidationRules.url(v, $t("components.config.daemon.connections.mqtt.clouds.aws.validation.endpoint.url")),
 					]'
+					:prepend-inner-icon='mdiServerNetwork'
 					required
 				/>
 				<v-file-input
 					v-model='config.certificate'
 					accept='.pem'
-					:label='$t("components.config.daemon.connections.mqtt.clouds.aws.certificate")'
+					:label='$t("common.labels.certificate")'
 					:rules='[
-						(v: File|null) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.clouds.aws.validation.certificateMissing")),
+						(v: File|null) => ValidationRules.required(v, $t("common.validation.certificate.required")),
 					]'
-					:prepend-inner-icon='mdiFileOutline'
-					:prepend-icon='undefined'
+					:prepend-inner-icon='mdiCertificate'
+					prepend-icon=''
 					show-size
 					required
 				/>
 				<v-file-input
 					v-model='config.privateKey'
 					accept='.pem,.key'
-					:label='$t("components.config.daemon.connections.mqtt.clouds.aws.privateKey")'
+					:label='$t("common.labels.privateKey")'
 					:rules='[
-						(v: File|Blob|null) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.clouds.aws.validation.privateKeyMissing")),
+						(v: File|Blob|null) => ValidationRules.required(v, $t("common.validation.privateKey.required")),
 					]'
-					:prepend-inner-icon='mdiFileOutline'
-					:prepend-icon='undefined'
+					:prepend-inner-icon='mdiKey'
+					prepend-icon=''
 					show-size
 					required
 				/>
 				<template #actions>
 					<IActionBtn
 						:action='Action.Add'
-						:disabled='!isValid.value || componentState === ComponentState.Action'
-						@click='onSubmit()'
+						:loading='componentState === ComponentState.Action'
+						:disabled='!isValid.value'
+						type='submit'
 					/>
 					<v-spacer />
 					<IActionBtn
@@ -88,7 +92,7 @@ import {
 	ITextInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
-import { mdiFileOutline } from '@mdi/js';
+import { mdiCertificate, mdiKey, mdiServerNetwork } from '@mdi/js';
 import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
@@ -102,7 +106,7 @@ const show = defineModel({
 	type: Boolean,
 });
 const emit = defineEmits(['saved']);
-const componentState: Ref<ComponentState> = ref(ComponentState.Created);
+const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const i18n = useI18n();
 const service: AwsService = useApiClient().getCloudServices().getAwsService();
 const form: Ref<VForm | null> = ref(null);
@@ -117,11 +121,13 @@ async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
 	}
+	componentState.value = ComponentState.Action;
 	const params = {
 		...config.value,
-		certificate: (config.value.certificate as unknown as File[])[0],
-		privateKey: (config.value.privateKey as unknown as File[])[0],
+		certificate: config.value.certificate,
+		privateKey: config.value.privateKey,
 	};
+	console.warn(params);
 	try {
 		await service.createMqttInstance(params);
 		toast.success(
@@ -131,8 +137,11 @@ async function onSubmit(): Promise<void> {
 		emit('saved');
 		clear();
 	} catch {
-		toast.error('TODO ERROR HANDLING');
+		toast.error(
+			i18n.t('components.config.daemon.connections.mqtt.clouds.messages.save.failed'),
+		);
 	}
+	componentState.value = ComponentState.Idle;
 }
 
 function clear(): void {

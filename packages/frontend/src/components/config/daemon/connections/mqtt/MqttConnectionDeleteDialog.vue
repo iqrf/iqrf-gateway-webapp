@@ -18,7 +18,9 @@ limitations under the License.
 <template>
 	<IDeleteModalWindow
 		ref='dialog'
+		:component-state='componentState'
 		:tooltip='$t("components.config.daemon.connections.actions.delete")'
+		:disabled='disabled'
 		@submit='onSubmit()'
 	>
 		<template #title>
@@ -48,11 +50,16 @@ import { toast } from 'vue3-toastify';
 
 import { useApiClient } from '@/services/ApiClient';
 
-const componentState: Ref<ComponentState> = ref(ComponentState.Created);
+const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const componentProps = defineProps({
 	connectionProfile: {
 		type: Object as PropType<IqrfGatewayDaemonMqttMessaging>,
 		required: true,
+	},
+	disabled: {
+		type: Boolean,
+		required: false,
+		default: false,
 	},
 });
 const emit = defineEmits(['deleted']);
@@ -70,10 +77,11 @@ async function onSubmit(): Promise<void> {
 		close();
 		emit('deleted');
 	} catch {
-		toast.error('TODO ERROR HANDLING');
-
+		toast.error(
+			i18n.t('components.config.daemon.connections.mqtt.messages.delete.failed', { name: componentProps.connectionProfile.instance }),
+		);
 	}
-	componentState.value = ComponentState.Ready;
+	componentState.value = ComponentState.Idle;
 }
 
 function close(): void {

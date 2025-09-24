@@ -22,7 +22,7 @@ limitations under the License.
 			v-slot='{ isValid }'
 			:disabled='componentState === ComponentState.Action'
 		>
-			<ICard>
+			<ICard :action='Action.Add'>
 				<template #title>
 					{{ $t('components.config.daemon.connections.mqtt.clouds.ibm.title') }}
 				</template>
@@ -30,7 +30,7 @@ limitations under the License.
 					v-model='config.organizationId'
 					:label='$t("components.config.daemon.connections.mqtt.clouds.ibm.orgId")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.clouds.ibm.validation.orgIdMissing")),
+						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.clouds.ibm.validation.orgId.required")),
 					]'
 					required
 				/>
@@ -38,7 +38,7 @@ limitations under the License.
 					v-model='config.deviceType'
 					:label='$t("components.config.daemon.connections.mqtt.clouds.ibm.deviceType")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.clouds.ibm.validation.deviceTypeMissing")),
+						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.clouds.ibm.validation.deviceType.required")),
 					]'
 					required
 				/>
@@ -46,15 +46,15 @@ limitations under the License.
 					v-model='config.deviceId'
 					:label='$t("components.config.daemon.connections.mqtt.clouds.ibm.deviceId")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.clouds.ibm.validation.deviceIdMissing")),
+						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.clouds.ibm.validation.deviceId.required")),
 					]'
 					required
 				/>
-				<ITextInput
+				<IPasswordInput
 					v-model='config.token'
 					:label='$t("components.config.daemon.connections.mqtt.clouds.ibm.token")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.clouds.ibm.validation.tokenMissing")),
+						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.clouds.ibm.validation.token.required")),
 					]'
 					required
 				/>
@@ -62,14 +62,15 @@ limitations under the License.
 					v-model='config.eventId'
 					:label='$t("components.config.daemon.connections.mqtt.clouds.ibm.eventId")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.clouds.ibm.validation.eventIdMissing")),
+						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.clouds.ibm.validation.eventId.required")),
 					]'
 					required
 				/>
 				<template #actions>
 					<IActionBtn
 						:action='Action.Add'
-						:disabled='!isValid.value || componentState === ComponentState.Action'
+						:loading='componentState === ComponentState.Action'
+						:disabled='!isValid.value'
 						@click='onSubmit()'
 					/>
 					<v-spacer />
@@ -93,6 +94,7 @@ import {
 	IActionBtn,
 	ICard,
 	IModalWindow,
+	IPasswordInput,
 	ITextInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
@@ -109,7 +111,7 @@ const show = defineModel({
 	type: Boolean,
 });
 const emit = defineEmits(['saved']);
-const componentState: Ref<ComponentState> = ref(ComponentState.Created);
+const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const i18n = useI18n();
 const service: IbmService = useApiClient().getCloudServices().getIbmService();
 const form: Ref<VForm | null> = ref(null);
@@ -126,6 +128,7 @@ async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
 	}
+	componentState.value = ComponentState.Action;
 	const params = { ...config.value };
 	try {
 		await service.createMqttInstance(params);
@@ -136,8 +139,11 @@ async function onSubmit(): Promise<void> {
 		emit('saved');
 		clear();
 	} catch {
-		toast.error('TODO ERROR HANDLING');
+		toast.error(
+			i18n.t('components.config.daemon.connections.mqtt.clouds.messages.save.failed'),
+		);
 	}
+	componentState.value = ComponentState.Idle;
 }
 
 function clear(): void {
