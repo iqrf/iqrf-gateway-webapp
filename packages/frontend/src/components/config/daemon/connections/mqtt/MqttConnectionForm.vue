@@ -24,12 +24,14 @@ limitations under the License.
 				:action='action'
 				container-type='card-title'
 				:tooltip='$t("components.config.daemon.connections.actions.add")'
+				:disabled='disabled'
 			/>
 			<IDataTableAction
 				v-if='action === Action.Edit'
 				v-bind='props'
 				:action='action'
 				:tooltip='$t("components.config.daemon.connections.actions.edit")'
+				:disabled='disabled'
 			/>
 		</template>
 		<v-form
@@ -47,13 +49,17 @@ limitations under the License.
 					v-model='profile.instance'
 					:label='$t("components.config.daemon.connections.profile")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.connections.validation.profileMissing")),
+						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.connections.validation.profile.required")),
 					]'
 					required
 				/>
 				<ITextInput
 					v-model='profile.BrokerAddr'
 					:label='$t("components.config.daemon.connections.mqtt.broker")'
+					:rules='[
+						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.validation.broker.required")),
+						(v: string) => ValidationRules.url(v, $t("components.config.daemon.connections.mqtt.validation.broker.url")),
+					]'
 					readonly
 					required
 				>
@@ -69,7 +75,7 @@ limitations under the License.
 					v-model='profile.ClientId'
 					:label='$t("components.config.daemon.connections.mqtt.clientId")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.validation.clientIdMissing")),
+						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.validation.clientId.required")),
 					]'
 					required
 				/>
@@ -77,7 +83,7 @@ limitations under the License.
 					v-model='profile.TopicRequest'
 					:label='$t("components.config.daemon.connections.mqtt.requestTopic")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.validation.requestTopicMissing")),
+						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.validation.requestTopic.required")),
 					]'
 					required
 				/>
@@ -85,7 +91,7 @@ limitations under the License.
 					v-model='profile.TopicResponse'
 					:label='$t("components.config.daemon.connections.mqtt.responseTopic")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.validation.responseTopicMissing")),
+						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.validation.responseTopic.required")),
 					]'
 					required
 				/>
@@ -93,76 +99,76 @@ limitations under the License.
 					v-model='profile.User'
 					:label='$t("common.labels.username")'
 					:rules='[
-						(v: string|null) => ValidationRules.requiredIf(v, profile.Password.length > 0, $t("common.validation.credentialsMissing")),
+						(v: string|null) => ValidationRules.required(v, $t("common.validation.username.required")),
 					]'
-					:required='profile.Password.length > 0'
+					:prepend-inner-icon='mdiAccount'
+					required
 				/>
 				<IPasswordInput
 					v-model='profile.Password'
 					:label='$t("common.labels.password")'
 					:rules='[
-						(v: string|null) => ValidationRules.requiredIf(v, profile.User.length > 0, $t("common.validation.credentialsMissing")),
+						(v: string|null) => ValidationRules.required(v, $t("common.validation.password.required")),
 					]'
 					:required='profile.User.length > 0'
 				/>
-				<SelectInput
+				<ISelectInput
 					v-model='profile.Qos'
 					:label='$t("components.config.daemon.connections.mqtt.qos")'
 					:items='qosOptions'
 					:hint='qosDescription'
 					persistent-hint
 				/>
-				<SelectInput
+				<ISelectInput
 					v-model.number='profile.Persistence'
 					:label='$t("components.config.daemon.connections.mqtt.persistence")'
 					:items='persistenceOptions'
 					:hint='persistenceDescription'
 					persistent-hint
 				/>
-				<NumberInput
-					v-model.number='profile.KeepAliveInterval'
+				<INumberInput
+					v-model='profile.KeepAliveInterval'
 					:label='$t("components.config.daemon.connections.mqtt.keepAlive")'
 					:min='0'
 					:rules='[
-						(v: number) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.validation.keepAliveMissing")),
-						(v: number) => ValidationRules.integer(v, $t("components.config.daemon.connections.mqtt.validation.keepAliveInvalid")),
-						(v: number) => ValidationRules.min(v, 0, $t("components.config.daemon.connections.mqtt.validation.keepAliveInvalid")),
+						(v: number) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.validation.keepAlive.required")),
+						(v: number) => ValidationRules.integer(v, $t("components.config.daemon.connections.mqtt.validation.keepAlive.integer")),
+						(v: number) => ValidationRules.min(v, 0, $t("components.config.daemon.connections.mqtt.validation.keepAlive.min")),
 					]'
 					required
 				/>
-				<NumberInput
-					v-model.number='profile.ConnectTimeout'
+				<INumberInput
+					v-model='profile.ConnectTimeout'
 					:label='$t("components.config.daemon.connections.mqtt.timeout")'
 					:min='0'
 					:rules='[
-						(v: number) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.validation.timeoutMissing")),
-						(v: number) => ValidationRules.integer(v, $t("components.config.daemon.connections.mqtt.validation.timeoutInvalid")),
-						(v: number) => ValidationRules.min(v, 0, $t("components.config.daemon.connections.mqtt.validation.timeoutInvalid")),
+						(v: number) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.validation.timeout.required")),
+						(v: number) => ValidationRules.integer(v, $t("components.config.daemon.connections.mqtt.validation.timeout.integer")),
+						(v: number) => ValidationRules.min(v, 0, $t("components.config.daemon.connections.mqtt.validation.timeout.min")),
 					]'
 					required
 				/>
-				<NumberInput
-					v-model.number='profile.MinReconnect'
+				<INumberInput
+					v-model='profile.MinReconnect'
 					:label='$t("components.config.daemon.connections.mqtt.minReconnect")'
 					:min='1'
 					:max='profile.MaxReconnect'
 					:rules='[
-						(v: number) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.validation.minReconnectMissing")),
-						(v: number) => ValidationRules.integer(v, $t("components.config.daemon.connections.mqtt.validation.minReconnectInvalid")),
-						(v: number) => ValidationRules.min(v, 1, $t("components.config.daemon.connections.mqtt.validation.minReconnectInvalid")),
-						(v: number) => ValidationRules.max(v, profile.MaxReconnect, $t("components.config.daemon.connections.mqtt.validation.minReconnectHigh")),
+						(v: number) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.validation.minReconnect.required")),
+						(v: number) => ValidationRules.integer(v, $t("components.config.daemon.connections.mqtt.validation.minReconnect.integer")),
+						(v: number) => ValidationRules.min(v, 1, $t("components.config.daemon.connections.mqtt.validation.minReconnect.min")),
+						(v: number) => ValidationRules.max(v, profile.MaxReconnect, $t("components.config.daemon.connections.mqtt.validation.minReconnect.max")),
 					]'
 					required
 				/>
-				<NumberInput
-					v-model.number='profile.MaxReconnect'
+				<INumberInput
+					v-model='profile.MaxReconnect'
 					:label='$t("components.config.daemon.connections.mqtt.maxReconnect")'
-					:min='1'
+					:min='profile.MinReconnect'
 					:rules='[
-						(v: number) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.validation.maxReconnectMissing")),
-						(v: number) => ValidationRules.integer(v, $t("components.config.daemon.connections.mqtt.validation.maxReconnectInvalid")),
-						(v: number) => ValidationRules.min(v, 1, $t("components.config.daemon.connections.mqtt.validation.maxReconnectInvalid")),
-						(v: number) => ValidationRules.min(v, profile.MinReconnect, $t("components.config.daemon.connections.mqtt.validation.maxReconnectLow")),
+						(v: number) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.validation.maxReconnect.required")),
+						(v: number) => ValidationRules.integer(v, $t("components.config.daemon.connections.mqtt.validation.maxReconnect.integer")),
+						(v: number) => ValidationRules.min(v, profile.MinReconnect, $t("components.config.daemon.connections.mqtt.validation.maxReconnect.min")),
 					]'
 					required
 				/>
@@ -199,14 +205,13 @@ limitations under the License.
 				<template #actions>
 					<IActionBtn
 						:action='action'
-						container-type='card'
-						:disabled='!isValid.value || componentState === ComponentState.Action'
+						:loading='componentState === ComponentState.Action'
+						:disabled='!isValid.value'
 						type='submit'
 					/>
 					<v-spacer />
 					<IActionBtn
 						:action='Action.Cancel'
-						container-type='card'
 						:disabled='componentState === ComponentState.Action'
 						@click='close()'
 					/>
@@ -231,22 +236,23 @@ import {
 	ICard,
 	IDataTableAction,
 	IModalWindow,
+	INumberInput,
 	IPasswordInput,
+	ISelectInput,
 	ITextInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
-import { computed, type PropType, ref, type Ref , watchEffect } from 'vue';
+import { mdiAccount } from '@mdi/js';
+import { computed, type PropType, ref, type Ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
-import NumberInput from '@/components/layout/form/NumberInput.vue';
-import SelectInput from '@/components/layout/form/SelectInput.vue';
 import MqttUrlForm from '@/components/MqttUrlForm.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
-const componentState: Ref<ComponentState> = ref(ComponentState.Created);
+const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const emit = defineEmits(['saved']);
 const componentProps = defineProps({
 	action: {
@@ -281,10 +287,16 @@ const componentProps = defineProps({
 		}),
 		required: false,
 	},
+	disabled: {
+		type: Boolean,
+		required: false,
+		default: false,
+	},
 });
 const i18n = useI18n();
 const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
 const show: Ref<boolean> = ref(false);
+let fromImport = false;
 const form: Ref<VForm | null> = ref(null);
 const defaultProfile: IqrfGatewayDaemonMqttMessaging = {
 	component: IqrfGatewayDaemonComponentName.IqrfMqttMessaging,
@@ -332,11 +344,11 @@ const qosOptions = [
 ];
 const qosDescription = computed(() => {
 	if (profile.value.Qos === IqrfGatewayDaemonMqttMessagingQos.AT_MOST_ONCE) {
-		return i18n.t('components.config.daemon.connections.mqtt.messages.qos.atMostOnce').toString();
+		return i18n.t('components.config.daemon.connections.mqtt.notes.qos.atMostOnce').toString();
 	} else if (profile.value.Qos === IqrfGatewayDaemonMqttMessagingQos.AT_LEAST_ONCE) {
-		return i18n.t('components.config.daemon.connections.mqtt.messages.qos.atMostOnce').toString();
+		return i18n.t('components.config.daemon.connections.mqtt.notes.qos.atMostOnce').toString();
 	}
-	return i18n.t('components.config.daemon.connections.mqtt.messages.qos.exactlyOnce').toString();
+	return i18n.t('components.config.daemon.connections.mqtt.notes.qos.exactlyOnce').toString();
 });
 const persistenceOptions = [
 	{
@@ -354,11 +366,11 @@ const persistenceOptions = [
 ];
 const persistenceDescription = computed(() => {
 	if (profile.value.Persistence === IqrfGatewayDaemonMqttMessagingPersistence.MEMORY) {
-		return i18n.t('components.config.daemon.connections.mqtt.messages.persistence.memory').toString();
+		return i18n.t('components.config.daemon.connections.mqtt.notes.persistence.memory').toString();
 	} else if (profile.value.Persistence === IqrfGatewayDaemonMqttMessagingPersistence.FILESYSTEM) {
-		return i18n.t('components.config.daemon.connections.mqtt.messages.persistence.filesystem').toString();
+		return i18n.t('components.config.daemon.connections.mqtt.notes.persistence.filesystem').toString();
 	}
-	return i18n.t('components.config.daemon.connections.mqtt.messages.persistence.application').toString();
+	return i18n.t('components.config.daemon.connections.mqtt.notes.persistence.application').toString();
 });
 
 const dialogTitle = computed(() => {
@@ -368,7 +380,10 @@ const dialogTitle = computed(() => {
 	return i18n.t('components.config.daemon.connections.actions.edit').toString();
 });
 
-watchEffect((): void => {
+watch(show, (newVal: boolean): void => {
+	if (!newVal || fromImport) {
+		return;
+	}
 	if (componentProps.action === Action.Edit && componentProps.connectionProfile) {
 		profile.value = { ...componentProps.connectionProfile };
 		instance = componentProps.connectionProfile.instance;
@@ -376,7 +391,6 @@ watchEffect((): void => {
 		profile.value = { ...defaultProfile };
 		instance = defaultProfile.instance;
 	}
-	componentState.value = ComponentState.Ready;
 });
 
 async function onSubmit(): Promise<void> {
@@ -392,18 +406,21 @@ async function onSubmit(): Promise<void> {
 			await service.updateInstance(IqrfGatewayDaemonComponentName.IqrfMqttMessaging, instance, params);
 		}
 		toast.success(
-			i18n.t('components.config.daemon.connections.udp.messages.save.success', { name: instance }),
+			i18n.t('components.config.daemon.connections.mqtt.messages.save.success', { name: instance }),
 		);
 		close();
 		emit('saved');
 	} catch {
-		toast.error('TODO ERROR HANDLING');
+		toast.error(
+			i18n.t('components.config.daemon.connections.mqtt.messages.save.failed', { name: instance }),
+		);
 	}
-	componentState.value = ComponentState.Ready;
+	componentState.value = ComponentState.Idle;
 }
 
 function importFromConfig(config: IqrfGatewayDaemonMqttMessaging): void {
 	profile.value = { ...config };
+	fromImport = true;
 	show.value = true;
 }
 
@@ -413,6 +430,7 @@ defineExpose({
 
 function close(): void {
 	show.value = false;
+	fromImport = false;
 	profile.value = { ...defaultProfile };
 }
 </script>

@@ -21,8 +21,9 @@ limitations under the License.
 			ref='form'
 			v-slot='{ isValid }'
 			:disabled='componentState === ComponentState.Action'
+			@submit.prevent='onSubmit()'
 		>
-			<ICard>
+			<ICard :action='Action.Add'>
 				<template #title>
 					{{ $t('components.config.daemon.connections.mqtt.clouds.azure.title') }}
 				</template>
@@ -30,15 +31,17 @@ limitations under the License.
 					v-model='config.connectionString'
 					:label='$t("components.config.daemon.connections.mqtt.clouds.azure.connectionString")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.clouds.azure.validation.connectionStringMissing")),
+						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.clouds.azure.validation.connectionString.required")),
 					]'
+					:prepend-inner-icon='mdiConnection'
 					required
 				/>
 				<template #actions>
 					<IActionBtn
 						:action='Action.Add'
-						:disabled='!isValid.value || componentState === ComponentState.Action'
-						@click='onSubmit()'
+						:loading='componentState === ComponentState.Action'
+						:disabled='!isValid.value'
+						type='submit'
 					/>
 					<v-spacer />
 					<IActionBtn
@@ -63,6 +66,7 @@ import {
 	IModalWindow,
 	ITextInput,
 	ValidationRules } from '@iqrf/iqrf-vue-ui';
+import { mdiConnection } from '@mdi/js';
 import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
@@ -76,7 +80,7 @@ const show = defineModel({
 	type: Boolean,
 });
 const emit = defineEmits(['saved']);
-const componentState: Ref<ComponentState> = ref(ComponentState.Created);
+const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const i18n = useI18n();
 const service: AzureService = useApiClient().getCloudServices().getAzureService();
 const form: Ref<VForm | null> = ref(null);
@@ -89,6 +93,7 @@ async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
 	}
+	componentState.value = ComponentState.Action;
 	const params = { ...config.value };
 	try {
 		await service.createMqttInstance(params);
@@ -99,8 +104,11 @@ async function onSubmit(): Promise<void> {
 		emit('saved');
 		clear();
 	} catch {
-		toast.error('TODO ERROR HANDLING');
+		toast.error(
+			i18n.t('components.config.daemon.connections.mqtt.clouds.messages.save.failed'),
+		);
 	}
+	componentState.value = ComponentState.Idle;
 }
 
 function clear(): void {

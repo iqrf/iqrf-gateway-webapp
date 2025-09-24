@@ -25,6 +25,7 @@ limitations under the License.
 				:action='Action.Import'
 				container-type='card-title'
 				:tooltip='$t("components.config.daemon.connections.actions.import")'
+				:disabled='disabled'
 			/>
 		</template>
 		<v-form
@@ -38,14 +39,14 @@ limitations under the License.
 					{{ $t('components.config.daemon.connections.mqtt.import.title') }}
 				</template>
 				<v-file-input
-					v-model='files'
+					v-model='file'
 					accept='.json'
 					:label='$t("components.config.daemon.connections.profileFile")'
 					:rules='[
-						(v: File|Blob|null) => ValidationRules.required(v, $t("components.config.daemon.connections.validation.profileFileMissing")),
+						(v: File|Blob|null) => ValidationRules.required(v, $t("components.config.daemon.connections.validation.profileFile.required")),
 					]'
 					:prepend-inner-icon='mdiFileOutline'
-					:prepend-icon='undefined'
+					prepend-icon=''
 					show-size
 					required
 				/>
@@ -53,13 +54,15 @@ limitations under the License.
 					<IActionBtn
 						:action='Action.Import'
 						container-type='card'
-						:disabled='!isValid.value || componentState === ComponentState.Action'
+						:loading='componentState === ComponentState.Action'
+						:disabled='!isValid.value'
 						type='submit'
 					/>
 					<v-spacer />
 					<IActionBtn
 						:action='Action.Cancel'
 						container-type='card'
+						:disabled='componentState === ComponentState.Action'
 						@click='close()'
 					/>
 				</template>
@@ -90,19 +93,25 @@ import { VForm } from 'vuetify/components';
 import { validateForm } from '@/helpers/validateForm';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
+defineProps({
+	disabled: {
+		type: Boolean,
+		required: false,
+		default: false,
+	},
+});
 const emit = defineEmits(['import']);
 const i18n = useI18n();
 const show: Ref<boolean> = ref(false);
 const form: Ref<VForm | null> = ref(null);
-const files: Ref<File[]> = ref([]);
+const file: Ref<File | null> = ref(null);
 
 async function onSubmit(): Promise<void> {
-	if (!await validateForm(form.value) || files.value.length === 0) {
+	if (!await validateForm(form.value) || file.value === null) {
 		return;
 	}
 	componentState.value = ComponentState.Action;
-	const file = files.value[0];
-	const content = await file.text();
+	const content = await file.value.text();
 	const obj = JSON.parse(content) as unknown;
 	if (!isMqttConnectionProfile(obj)) {
 		toast.error(
@@ -141,7 +150,7 @@ function isMqttConnectionProfile(obj: any): obj is IqrfGatewayDaemonMqttMessagin
 }
 
 function close(): void {
-	files.value = [];
+	file.value = null;
 	show.value = false;
 }
 
