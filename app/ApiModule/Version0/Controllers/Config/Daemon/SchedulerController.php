@@ -38,7 +38,6 @@ use App\ConfigModule\Models\SchedulerManager;
 use App\ConfigModule\Models\SchedulerMigrationManager;
 use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\ZipEmptyException;
-use Nette\IOException;
 use Nette\Utils\FileSystem;
 use Nette\Utils\JsonException;
 
@@ -51,11 +50,13 @@ class SchedulerController extends BaseDaemonConfigController {
 
 	/**
 	 * Constructor
+	 * @param DaemonController $daemonController Daemon config controller
 	 * @param SchedulerManager $manager IQRF Gateway Daemon's scheduler manager
 	 * @param SchedulerMigrationManager $migrationManager IQRF Gateway Daemon's scheduler migration manager
 	 * @param ControllerValidators $validators Controller validators
 	 */
 	public function __construct(
+		private readonly DaemonController $daemonController,
 		private readonly SchedulerManager $manager,
 		private readonly SchedulerMigrationManager $migrationManager,
 		ControllerValidators $validators,
@@ -315,26 +316,22 @@ class SchedulerController extends BaseDaemonConfigController {
 	#[Method('GET')]
 	#[OpenApi(<<<'EOT'
 		summary: Returns all messagings suitable for scheduler tasks
+		deprecated: true
+		description: "Deprecated, use `GET` `/config/daemon/messagings` instead. Will be removed in the version 3.1.0."
 		response:
 			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: '#/components/schemas/SchedulerMessagings'
+							$ref: '#/components/schemas/MessagingInstances'
 			'403':
 				$ref: '#/components/responses/Forbidden'
 			'500':
 				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function getMessagings(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['config:daemon']);
-		try {
-			$response = $response->writeJsonBody($this->manager->getMessagings());
-			return $this->validators->validateResponse('schedulerMessagings', $response);
-		} catch (IOException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
-		}
+		return $this->daemonController->getMessagings($request, $response);
 	}
 
 	/**

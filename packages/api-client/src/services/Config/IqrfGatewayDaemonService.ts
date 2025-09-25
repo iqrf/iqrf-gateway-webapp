@@ -26,7 +26,7 @@ import {
 	type IqrfGatewayDaemonComponentState,
 	type IqrfGatewayDaemonConfig,
 	type IqrfGatewayDaemonMapping,
-	type IqrfGatewayDaemonSchedulerMessagings,
+	type IqrfGatewayDaemonMessagingInstances,
 	type MappingType,
 } from '../../types/Config';
 import { BaseService } from '../BaseService';
@@ -193,12 +193,12 @@ export class IqrfGatewayDaemonService extends BaseService {
 	}
 
 	/**
-	 * Retrieves scheduler messaging instances
-	 * @return {Promise<IqrfGatewayDaemonSchedulerMessagings>} Scheduler task suitable messaging instances
+	 * Retrieves messaging instances
+	 * @return {Promise<IqrfGatewayDaemonMessagingInstances>} Messaging instances
 	 */
-	public async getSchedulerMessagings(): Promise<IqrfGatewayDaemonSchedulerMessagings> {
-		const response: AxiosResponse<IqrfGatewayDaemonSchedulerMessagings> =
-			await this.axiosInstance.get('/config/daemon/scheduler/messagings');
+	public async getMessagingInstances(): Promise<IqrfGatewayDaemonMessagingInstances> {
+		const response: AxiosResponse<IqrfGatewayDaemonMessagingInstances> =
+			await this.axiosInstance.get('/config/daemon/messagings');
 		return response.data;
 	}
 

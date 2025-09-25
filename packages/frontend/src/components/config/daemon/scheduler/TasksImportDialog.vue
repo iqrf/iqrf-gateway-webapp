@@ -24,6 +24,7 @@ limitations under the License.
 				v-bind='props'
 				:action='Action.Import'
 				container-type='card-title'
+				:disabled='disabled'
 				:tooltip='$t("components.config.daemon.scheduler.actions.import")'
 			/>
 		</template>
@@ -38,7 +39,7 @@ limitations under the License.
 					{{ $t('components.config.daemon.scheduler.import.title') }}
 				</template>
 				<v-file-input
-					v-model='files'
+					v-model='file'
 					accept='.zip'
 					:label='$t("components.config.daemon.scheduler.import.file")'
 					:rules='[
@@ -74,16 +75,16 @@ limitations under the License.
 					</tbody>
 				</v-table>
 				<template #actions>
-					<ActionBtn
+					<IActionBtn
 						:action='Action.Import'
-						container-type='card'
-						:disabled='!isValid.value || componentState !== ComponentState.Ready'
+						:loading='componentState === ComponentState.Action'
+						:disabled='!isValid.value'
 						type='submit'
 					/>
 					<v-spacer />
 					<IActionBtn
 						:action='Action.Cancel'
-						container-type='card'
+						:disabled='componentState === ComponentState.Action'
 						@click='close()'
 					/>
 				</template>
@@ -122,13 +123,20 @@ interface TaskImportResult {
 	imported?: boolean,
 	reason?: string,
 }
+defineProps({
+	disabled: {
+		type: Boolean,
+		required: false,
+		default: false,
+	},
+});
 const emit = defineEmits(['imported']);
 const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
 const show: Ref<boolean> = ref(false);
 const daemonStore = useDaemonStore();
 const i18n = useI18n();
 const form: Ref<VForm | null> = ref(null);
-const files: Ref<File[]> = ref([]);
+const file: Ref<File | null> = ref(null);
 const msgIds: Ref<string[]> = ref([]);
 const importRecords: Ref<SchedulerAddTaskParams[]> = ref([]);
 const processedRecords: Ref<TaskImportResult[]> = ref([]);
@@ -163,36 +171,38 @@ daemonStore.$onAction(
 
 async function extractZip(archive: File): Promise<SchedulerAddTaskParams[]> {
 	const tasks: SchedulerAddTaskParams[] = [];
-	const blobReader = new BlobReader(archive);
-	const zipReader = new ZipReader(blobReader);
-	const files = await zipReader.getEntries();
-	for (const file of files) {
-		const textWriter = new TextWriter();
-		if (file.getData === undefined) {
+	const zipReader = new ZipReader(new BlobReader(archive));
+	const entries = await zipReader.getEntries();
+	for (const entry of entries) {
+		if (entry.directory || !entry.filename.endsWith('.json')) {
 			continue;
 		}
-		const content = await file.getData(textWriter);
-		tasks.push(JSON.parse(content) as SchedulerAddTaskParams);
+		const content = await entry?.getData(new TextWriter());
+		try {
+			tasks.push(JSON.parse(content));
+		} catch {
+			continue;
+		}
 	}
+	await zipReader.close();
 	return tasks;
 }
 
 async function onSubmit(): Promise<void> {
-	if (!await validateForm(form.value) || files.value.length === 0) {
+	if (!await validateForm(form.value) || file.value === null) {
 		return;
 	}
 	importRecords.value = [];
 	processedRecords.value = [];
 	componentState.value = ComponentState.Action;
-	const file = files.value[0];
-	if (['application/x-zip-compressed', 'application/zip'].includes(file.type)) {
-		await extractZip(file)
+	if (['application/x-zip-compressed', 'application/zip'].includes(file.value.type)) {
+		await extractZip(file.value)
 			.then((records: SchedulerAddTaskParams[]) => importRecords.value = records)
 			.catch(() => toast.error(
 				i18n.t('components.config.daemon.scheduler.messages.import.archiveInvalid'),
 			));
-	} else if (file.type === 'application/json') {
-		const content = await file.text();
+	} else if (file.value.type === 'application/json') {
+		const content = await file.value.text();
 		try {
 			importRecords.value.push(JSON.parse(content) as SchedulerAddTaskParams);
 		} catch {
@@ -243,6 +253,7 @@ function handleAddTask(rsp: ApiResponseManagementRsp<SchedulerAddTaskResult>): v
 
 function close(): void {
 	show.value = false;
+	file.value = null;
 	importRecords.value = [];
 	processedRecords.value = [];
 }

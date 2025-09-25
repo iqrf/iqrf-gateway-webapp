@@ -20,6 +20,7 @@ limitations under the License.
 		ref='dialog'
 		:component-state='componentState'
 		:tooltip='$t("components.config.daemon.scheduler.actions.delete")'
+		:disabled='disabled'
 		@submit='removeTask()'
 	>
 		<template #title>
@@ -45,11 +46,16 @@ import { toast } from 'vue3-toastify';
 
 import { useDaemonStore } from '@/store/daemonSocket';
 
-const componentState: Ref<ComponentState> = ref(ComponentState.Created);
+const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const componentProps = defineProps({
 	taskId: {
 		type: String,
 		required: true,
+	},
+	disabled: {
+		type: Boolean,
+		required: false,
+		default: false,
 	},
 });
 const emit = defineEmits(['deleted']);
@@ -79,9 +85,9 @@ async function removeTask(): Promise<void> {
 	componentState.value = ComponentState.Action;
 	const opts = new DaemonMessageOptions(
 		30_000,
-		null,
+		i18n.t('components.config.daemon.scheduler.messages.delete.timeout'),
 		() => {
-			componentState.value = ComponentState.Ready;
+			componentState.value = ComponentState.Idle;
 			msgId.value = null;
 		},
 	);
@@ -96,14 +102,16 @@ async function removeTask(): Promise<void> {
 
 function handleRemoveTask(rsp: ApiResponseManagementRsp<SchedulerRemoveTaskResult>): void {
 	if (rsp.data.status !== 0) {
-		toast.error('TODO ERROR HANDLING');
-		componentState.value = ComponentState.Error;
+		toast.error(
+			i18n.t('components.config.daemon.scheduler.messages.delete.failed', { id: componentProps.taskId }),
+		);
+		componentState.value = ComponentState.Idle;
 		return;
 	}
 	toast.success(
 		i18n.t('components.config.daemon.scheduler.messages.delete.success', { id: componentProps.taskId }),
 	);
-	componentState.value = ComponentState.Ready;
+	componentState.value = ComponentState.Idle;
 	dialog.value?.close();
 	emit('deleted');
 }

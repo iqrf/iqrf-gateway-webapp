@@ -18,19 +18,20 @@ limitations under the License.
 <template>
 	<IModalWindow v-model='show'>
 		<template #activator='{ props }'>
-			<v-btn
+			<IActionBtn
 				v-if='action === Action.Add'
 				v-bind='props'
-				color='success'
-				:icon='mdiPlus'
+				:action='Action.Add'
+				container-type='card-title'
+				:tooltip='$t("components.config.daemon.scheduler.task.actions.add")'
+				:disabled='disabled'
 			/>
-			<v-icon
+			<IDataTableAction
 				v-else
 				v-bind='props'
-				color='info'
-				class='me-2'
-				:icon='mdiPencil'
-				size='large'
+				:action='Action.Edit'
+				:tooltip='$t("components.config.daemon.scheduler.task.actions.edit")'
+				:disabled='disabled'
 			/>
 		</template>
 		<v-form
@@ -38,9 +39,7 @@ limitations under the License.
 			ref='form'
 			@submit.prevent='onSubmit()'
 		>
-			<ICard
-				:header-color='action === Action.Add ? "success" : "primary"'
-			>
+			<ICard :action='action'>
 				<template #title>
 					{{ $t(`components.config.daemon.scheduler.task.actions.${action}`) }}
 				</template>
@@ -48,16 +47,16 @@ limitations under the License.
 					v-model='message'
 					:label='$t("components.config.daemon.scheduler.task.message")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.scheduler.validation.messageMissing")),
-						(v: string) => ValidationRules.json(v, $t("components.config.daemon.scheduler.validation.messageInvalid")),
-						(v: string) => isDaemonApiRequest(JSON.parse(v)) || $t("components.config.daemon.scheduler.validation.messageInvalid"),
+						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.scheduler.validation.message.required")),
+						(v: string) => ValidationRules.json(v, $t("components.config.daemon.scheduler.validation.message.json")),
+						(v: string) => isDaemonApiRequest(JSON.parse(v)) || $t("components.config.daemon.scheduler.validation.message.json"),
 					]'
 					auto-grow
 					clearable
 					rows='1'
 					required
 				/>
-				<SelectInput
+				<ISelectInput
 					v-model='selected'
 					:items='messagingOptions'
 					:label='$t("components.config.daemon.scheduler.task.messaging")'
@@ -66,14 +65,12 @@ limitations under the License.
 				<template #actions>
 					<IActionBtn
 						:action='action'
-						container-type='card'
 						:disabled='!isValid.value'
 						type='submit'
 					/>
 					<v-spacer />
 					<IActionBtn
 						:action='Action.Cancel'
-						container-type='card'
 						@click='close()'
 					/>
 				</template>
@@ -89,19 +86,19 @@ import {
 	type TApiResponse,
 } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { SchedulerTask } from '@iqrf/iqrf-gateway-daemon-utils/types/management';
-import { type IqrfGatewayDaemonSchedulerMessagings } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import { type IqrfGatewayDaemonMessagingInstances } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import {
 	Action,
 	IActionBtn,
 	ICard,
+	IDataTableAction,
 	IModalWindow,
+	ISelectInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
-import { mdiPencil, mdiPlus } from '@mdi/js';
-import { computed, type PropType, ref , type Ref, watchEffect } from 'vue';
+import { computed, type PropType, ref , type Ref, watch } from 'vue';
 import { VForm } from 'vuetify/components';
 
-import SelectInput from '@/components/layout/form/SelectInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 
 const componentProps = defineProps({
@@ -121,8 +118,13 @@ const componentProps = defineProps({
 		required: false,
 	},
 	messagings: {
-		type: [Object, null] as PropType<IqrfGatewayDaemonSchedulerMessagings | null>,
+		type: [Object, null] as PropType<IqrfGatewayDaemonMessagingInstances | null>,
 		default: null,
+		required: false,
+	},
+	disabled: {
+		type: Boolean,
+		default: false,
 		required: false,
 	},
 });
@@ -150,10 +152,16 @@ const messagingOptions = computed(() => {
 			instance: item,
 		},
 	}));
-	return mqttOptions.concat(wsOptions);
+	return [
+		...mqttOptions,
+		...wsOptions,
+	];
 });
 
-watchEffect((): void => {
+watch(show, (newVal: boolean): void => {
+	if (!newVal) {
+		return;
+	}
 	if (componentProps.action === Action.Edit && componentProps.task !== null) {
 		message.value = JSON.stringify(componentProps.task.message, null, 4);
 		selected.value = componentProps.task.messaging;

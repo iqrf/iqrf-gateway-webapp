@@ -510,9 +510,7 @@ export interface IqrfGatewayDaemonMapping {
 /**
  * IQRF Gateway Daemon scheduler messaging instances
  */
-export interface IqrfGatewayDaemonSchedulerMessagings {
-	/// MQ messaging instances
-	mq: string[],
+export interface IqrfGatewayDaemonMessagingInstances {
 	/// MQTT messaging instances
 	mqtt: string[],
 	/// WS messaging instances
