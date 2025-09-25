@@ -83,6 +83,9 @@ class Packet {
 	 * @returns {Packet} Parsed DPA packet
 	 */
 	static parse(packet: string): Packet {
+		if (packet.endsWith('.')) {
+			packet = packet.slice(0, -1);
+		}
 		const packetArray = packet.split('.');
 		if (packetArray.length < 6) {
 			throw new Error('Invalid DPA packet length');
