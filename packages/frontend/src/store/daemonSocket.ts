@@ -32,7 +32,6 @@ import { toast } from 'vue3-toastify';
 import UrlBuilder from '@/helpers/urlBuilder';
 import { waitUntil } from '@/helpers/wait';
 import ClientSocket, { type GenericSocketState } from '@/modules/clientSocket';
-import i18n from '@/plugins/i18n';
 
 import { useMonitorStore } from './monitorSocket';
 
@@ -126,7 +125,7 @@ export const useDaemonStore = defineStore('daemon', {
 					if (options.message === null) {
 						return;
 					}
-					toast.error(i18n.global.t(options.message));
+					toast.error(options.message);
 				}, options.timeout);
 			}
 			this.messages.push(new DaemonMessage(msgId, timeout));

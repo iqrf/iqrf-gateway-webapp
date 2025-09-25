@@ -210,6 +210,8 @@ components:
 			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/mappingList.json
 		MenderConfig:
 			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/menderConfig.json
+		messagingInstances:
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/messagingInstances.json
 		ModemList:
 			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/modemList.json
 			title: Network - Cellular modem list
@@ -265,8 +267,6 @@ components:
 			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/powerControl.json
 		Remount:
 			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/remount.json
-		SchedulerMessagings:
-			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/schedulerMessagings.json
 		ServiceDisable:
 			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/serviceDisable.json
 		ServiceEnable:

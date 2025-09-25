@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Models;
 
+use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use Iqrf\FileManager\FileManager;
 use Nette\IOException;
 use Nette\Utils\Arrays;
@@ -229,6 +230,29 @@ class GenericManager {
 	public function setComponent(string $component): void {
 		$this->component = $component;
 		$this->schemaManager->setSchema($component);
+	}
+
+	/**
+	 * Returns messaging instances
+	 * @return array{
+	 *  mqtt: array<string>,
+	 *  ws: array<string>,
+	 * } Messaging instances
+	 */
+	public function getMessagingInstances(): array {
+		$found = [
+			'mqtt' => [],
+			'ws' => [],
+		];
+		foreach (['mqtt' => 'iqrf::MqttMessaging', 'ws' => 'iqrf::WebsocketMessaging'] as $k => $v) {
+			try {
+				$this->setComponent($v);
+			} catch (NonexistentJsonSchemaException) {
+				continue;
+			}
+			$found[$k] = array_map(static fn (array $component): string => $component['instance'], $this->list());
+		}
+		return $found;
 	}
 
 }

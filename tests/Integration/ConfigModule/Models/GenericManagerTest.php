@@ -164,6 +164,17 @@ final class GenericManagerTest extends JsonConfigTestCase {
 	}
 
 	/**
+	 * Tests the function to get messaging instances
+	 */
+	public function testGetMessagingInstances(): void {
+		$expected = [
+			'mqtt' => ['MqttMessaging'],
+			'ws' => ['WebsocketMessaging'],
+		];
+		Assert::same($expected, $this->manager->getMessagingInstances());
+	}
+
+	/**
 	 * Tests the function to save main configuration of daemon
 	 */
 	public function testSave(): void {

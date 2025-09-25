@@ -1146,13 +1146,31 @@
 					},
 					"messages": {
 						"add": {
-							"success": "Task {id} successfully created."
+							"failed": "Failed to create scheduler task.",
+							"success": "Scheduler task {id} successfully created.",
+							"timeout": "Scheduler task create request timed out."
 						},
 						"delete": {
-							"success": "Task {id} successfully deleted."
+							"failed": "Failed to delete scheduler task {id}.",
+							"success": "Scheduler task {id} successfully deleted.",
+							"timeout": "Scheduler task delete request timed out."
 						},
 						"deleteAll": {
-							"success": "All tasks have been deleted."
+							"failed": "Failed to delete scheduler tasks.",
+							"success": "All tasks have been deleted.",
+							"timeout": "Scheduler tasks delete request timed out."
+						},
+						"edit": {
+							"failed": "Failed to edit scheduler task {id}.",
+							"success": "Scheduler task {id} successfully edited.",
+							"timeout": "Scheduler task edit request timed out."
+						},
+						"export": {
+							"failed": "Failed to export scheduler tasks."
+						},
+						"fetch": {
+							"failed": "Failed to retrieve scheduler task.",
+							"timeout": "Scheduler task retrieve request timed out."
 						},
 						"import": {
 							"archiveInvalid": "",
@@ -1160,15 +1178,29 @@
 							"jsonInvalid": "",
 							"success": "Scheduler tasks have been successfully imported."
 						},
+						"list": {
+							"failed": "Failed to list scheduler tasks.",
+							"timeout": "Scheduler task list request timed out."
+						},
+						"listMessagings": {
+							"failed": "Failed to list messaging instances."
+						},
 						"start": {
-							"success": "Task {id} successfully started."
+							"failed": "Failed to start task.",
+							"success": "Task {id} has been successfully started.",
+							"timeout": "Start task request timed out."
 						},
 						"stop": {
-							"success": "Task {id} successfully stopped."
+							"failed": "Failed to stop task.",
+							"success": "Task {id} has been successfully stopped.",
+							"timeout": "Stop task request timed out."
 						}
 					},
+					"noData": {
+						"empty": "No scheduler tasks found.",
+						"fetchError": "Scheduler tasks could not be retrieved."
+					},
 					"noMessages": "No task messages specified.",
-					"noTasks": "No tasks defined.",
 					"oneshot": "Execution time",
 					"period": "Period in seconds",
 					"persist": "Persistent task",
@@ -1193,14 +1225,26 @@
 						"periodic": "Periodic - frequency of task execution in seconds"
 					},
 					"validation": {
-						"cronMissing": "Please enter a valid 7 field cron time expression.",
-						"importFileMissing": "Please select a task JSON file or ZIP archive.",
-						"messageInvalid": "Task message should be a valid Daemon JSON API request.",
-						"messageMissing": "Please enter task message.",
-						"periodInvalid": "Task execution period should be an integer greater than 0.",
-						"periodMissing": "Please enter task execution period in seconds.",
-						"taskIdInvalid": "Task ID should be UUID version 4 string.",
-						"taskIdMissing": "Please enter task ID."
+						"cron": {
+							"invalid": "cron expresion should have 7 valid fields.",
+							"required": "Please enter a cron expression."
+						},
+						"importFile": {
+							"required": "Please select a task JSON file or ZIP archive containing tasks."
+						},
+						"message": {
+							"json": "Task message should be a valid Daemon JSON API request.",
+							"required": "Please enter task message."
+						},
+						"period": {
+							"integer": "Task execution period should be an integer.",
+							"min": "Task execution period should be greater or equal to 0.",
+							"required": "Please enter task execution period in seconds."
+						},
+						"taskId": {
+							"required": "Please enter task ID.",
+							"uuid": "Task ID should be be UUID version 4."
+						}
 					}
 				},
 				"validation": {
@@ -1395,7 +1439,7 @@
 				},
 				"messages": {
 					"fetch": {
-						"failed": "Faield to retrieve Monit configuration."
+						"failed": "Failed to retrieve Monit configuration."
 					},
 					"save": {
 						"failed": "Failed to save Monit configuration.",

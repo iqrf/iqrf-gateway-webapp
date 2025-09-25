@@ -21,37 +21,33 @@ limitations under the License.
 			{{ $t('pages.config.daemon.scheduler.title') }}
 		</template>
 		<template #titleActions>
-			<v-tooltip location='bottom'>
-				<template #activator='{ props }'>
-					<v-btn
-						v-bind='props'
-						color='white'
-						size='large'
-						:icon='mdiReload'
-						@click='listTasks()'
-					/>
-				</template>
-				{{ $t('components.config.daemon.scheduler.actions.reload') }}
-			</v-tooltip>
 			<TaskForm
 				:action='Action.Add'
 				:messagings='messagings'
+				:disabled='[ComponentState.Action, ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
 				@saved='listTasks()'
 			/>
-			<TasksImportDialog @imported='listTasks()' />
-			<v-tooltip location='bottom'>
-				<template #activator='{ props }'>
-					<v-btn
-						v-bind='props'
-						color='white'
-						size='large'
-						:icon='mdiExport'
-						@click='exportTasks()'
-					/>
-				</template>
-				{{ $t('components.config.daemon.scheduler.actions.export') }}
-			</v-tooltip>
+			<TasksImportDialog
+				:disabled='[ComponentState.Action, ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+				@imported='listTasks()'
+			/>
+			<IActionBtn
+				:action='Action.Export'
+				container-type='card-title'
+				:disabled='[ComponentState.Action, ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+				:tooltip='$t("components.config.daemon.scheduler.actions.export")'
+				@click='exportTasks()'
+			/>
+			<IActionBtn
+				:action='Action.Reload'
+				container-type='card-title'
+				:loading='componentState === ComponentState.Action'
+				:disabled='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+				:tooltip='$t("components.config.daemon.scheduler.actions.reload")'
+				@click='listTasks()'
+			/>
 			<TasksDeleteDialog
+				:disabled='[ComponentState.Action, ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
 				@deleted='listTasks()'
 			/>
 		</template>
@@ -60,67 +56,45 @@ limitations under the License.
 			:items='tasks'
 			:hover='true'
 			:dense='true'
-			:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
-			no-data-text='components.config.daemon.scheduler.noTasks'
+			:loading='[ComponentState.Action, ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+			:no-data-text='noDataText'
 		>
 			<template #item.time='{ item }'>
 				{{ timeString(item.timeSpec) }}
 			</template>
 			<template #item.active='{ item }'>
-				<v-skeleton-loader
-					class='table-row-skeleton-loader'
-					:loading='loadingTasks.includes(item.taskId)'
-					type='text'
-				>
-					<v-responsive>
-						<BooleanCheckMarker
-							v-if='item.active !== undefined'
-							:value='item.active'
-						/>
-					</v-responsive>
-				</v-skeleton-loader>
+				<IBooleanIcon
+					v-if='item.active !== undefined'
+					:value='item.active'
+				/>
 			</template>
 			<template #item.actions='{ item }'>
-				<v-skeleton-loader
-					:loading='loadingTasks.includes(item.taskId)'
-					type='text'
-				>
-					<v-responsive>
-						<span>
-							<v-icon
-								:icon='activateIcon(item.active)'
-								size='large'
-								color='primary'
-								class='me-2'
-								@click='item.active ? stopTask(item.taskId) : startTask(item.taskId)'
-							/>
-							<v-tooltip
-								activator='parent'
-								location='bottom'
-							>
-								{{ $t(`components.config.daemon.scheduler.actions.${item.active ? 'stop' : 'start'}`) }}
-							</v-tooltip>
-						</span>
-						<span>
-							<TaskForm
-								:action='Action.Edit'
-								:messagings='messagings'
-								:scheduler-task='item'
-								@saved='listTasks()'
-							/>
-							<v-tooltip
-								activator='parent'
-								location='bottom'
-							>
-								{{ $t('components.config.daemon.scheduler.actions.edit') }}
-							</v-tooltip>
-						</span>
-						<TaskDeleteDialog
-							:task-id='item.taskId'
-							@deleted='listTasks()'
-						/>
-					</v-responsive>
-				</v-skeleton-loader>
+				<IDataTableAction
+					v-if='item.active'
+					:action='Action.Stop'
+					:disabled='[ComponentState.Action, ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+					:tooltip='$t("components.config.daemon.scheduler.actions.stop")'
+					@click='stopTask(item.taskId)'
+				/>
+				<IDataTableAction
+					v-else
+					:action='Action.Start'
+					:disabled='[ComponentState.Action, ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+					:tooltip='$t("components.config.daemon.scheduler.actions.start")'
+					@click='startTask(item.taskId)'
+				/>
+				<TaskForm
+					:action='Action.Edit'
+					:messagings='messagings'
+					:scheduler-task='item'
+					:disabled='[ComponentState.Action, ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+					@saved='listTasks()'
+				/>
+				<TaskDeleteDialog
+					:task-id='item.taskId'
+					:disabled='[ComponentState.Action, ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+					@deleted='listTasks()'
+				/>
 			</template>
 		</IDataTable>
 	</ICard>
@@ -139,22 +113,23 @@ import {
 } from '@iqrf/iqrf-gateway-daemon-utils/types/management';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { type IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
-import { type IqrfGatewayDaemonSchedulerMessagings } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import { IqrfGatewayDaemonMessagingInstances } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { FileDownloader } from '@iqrf/iqrf-gateway-webapp-client/utils';
 import {
 	Action,
 	ComponentState,
+	IActionBtn,
+	IBooleanIcon,
 	ICard,
 	IDataTable,
+	IDataTableAction,
 } from '@iqrf/iqrf-vue-ui';
-import { mdiExport, mdiPlay, mdiReload, mdiStop } from '@mdi/js';
 import cronstrue from 'cronstrue';
 import { DateTime, Duration } from 'luxon';
-import { onMounted, ref, type Ref } from 'vue';
+import { computed, onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
-import BooleanCheckMarker from '@/components/BooleanCheckMarker.vue';
 import TaskDeleteDialog from '@/components/config/daemon/scheduler/TaskDeleteDialog.vue';
 import TaskForm from '@/components/config/daemon/scheduler/TaskForm.vue';
 import TasksDeleteDialog from '@/components/config/daemon/scheduler/TasksDeleteDialog.vue';
@@ -169,14 +144,13 @@ const webappSchedulerService: IqrfGatewayDaemonService = useApiClient().getConfi
 const headers = [
 	{ key: 'taskId', title: i18n.t('components.config.daemon.scheduler.taskId') },
 	{ key: 'description', title: i18n.t('common.labels.description') },
-	{ key: 'time', title: i18n.t('components.config.daemon.scheduler.time') },
+	{ key: 'time', title: i18n.t('components.config.daemon.scheduler.time'), sortable: false },
 	{ key: 'active', title: i18n.t('common.states.active') },
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end' },
 ];
 const msgId: Ref<string | null> = ref(null);
 const tasks: Ref<SchedulerGetTaskResult[]> = ref([]);
-const loadingTasks: Ref<string[]> = ref([]);
-const messagings: Ref<IqrfGatewayDaemonSchedulerMessagings | null> = ref(null);
+const messagings: Ref<IqrfGatewayDaemonMessagingInstances | null> = ref(null);
 
 daemonStore.$onAction(
 	({ name, after }) => {
@@ -208,9 +182,12 @@ daemonStore.$onAction(
 	},
 );
 
-function activateIcon(active: boolean): string {
-	return active ? mdiStop : mdiPlay;
-}
+const noDataText = computed(() => {
+	if (componentState.value === ComponentState.FetchFailed) {
+		return 'components.config.daemon.scheduler.noData.fetchError';
+	}
+	return 'components.config.daemon.scheduler.noData.empty';
+});
 
 function timeString(timespec: SchedulerTimeSpec): string {
 	if (timespec.exactTime) {
@@ -224,7 +201,7 @@ function timeString(timespec: SchedulerTimeSpec): string {
 }
 
 async function exportTasks(): Promise<void> {
-	componentState.value = ComponentState.Loading;
+	componentState.value = ComponentState.Action;
 	try {
 		const file = await webappSchedulerService.exportScheduler();
 		FileDownloader.downloadFileResponse(
@@ -232,30 +209,35 @@ async function exportTasks(): Promise<void> {
 			`iqrf-gateway-scheduler_${new Date().toISOString()}.zip`,
 		);
 	} catch {
-		toast.error('TODO EXPORT ERROR HANDLING');
+		toast.error(
+			i18n.t('components.config.daemon.scheduler.messages.export.failed'),
+		);
 	}
 	componentState.value = ComponentState.Ready;
 }
 
 async function getMessagings(): Promise<void> {
 	try {
-		messagings.value = await webappSchedulerService.getSchedulerMessagings();
+		messagings.value = await webappSchedulerService.getMessagingInstances();
 	} catch {
-		//
+		toast.error(
+			i18n.t('components.config.daemon.scheduler.messages.listMessagings.failed'),
+		);
 	}
 }
 
 async function listTasks(): Promise<void> {
-	if (componentState.value === ComponentState.Created) {
-		componentState.value = ComponentState.Loading;
-	} else {
-		componentState.value = ComponentState.Reloading;
-	}
-	loadingTasks.value = [];
+	componentState.value = [
+		ComponentState.Created,
+		ComponentState.FetchFailed,
+	].includes(componentState.value) ? ComponentState.Loading : ComponentState.Reloading;
 	const opts = new DaemonMessageOptions(
 		30_000,
-		null,
-		() => {msgId.value = null;},
+		i18n.t('components.config.daemon.scheduler.messages.list.failed'),
+		() => {
+			componentState.value = componentState.value === ComponentState.Loading ? ComponentState.FetchFailed : ComponentState.Ready;
+			msgId.value = null;
+		},
 	);
 	msgId.value = await daemonStore.sendMessage(
 		SchedulerService.listTasks(
@@ -268,22 +250,23 @@ async function listTasks(): Promise<void> {
 
 function handleListTasks(rsp: ApiResponseManagementRsp<SchedulerListDetailResult>): void {
 	if (rsp.data.status !== 0) {
-		toast.error('TODO LIST ERROR HANDLING');
+		toast.error(
+			i18n.t('components.config.daemon.scheduler.messages.list.failed'),
+		);
+		componentState.value = componentState.value === ComponentState.Loading ? ComponentState.FetchFailed : ComponentState.Ready;
 		return;
 	}
-	tasks.value = rsp.data.rsp.tasks as SchedulerGetTaskResult[];
+	tasks.value = rsp.data.rsp.tasks;
 	componentState.value = ComponentState.Ready;
 }
 
 async function getTask(taskId: string): Promise<void> {
-	if (!loadingTasks.value.includes(taskId)) {
-		loadingTasks.value.push(taskId);
-	}
+	componentState.value = ComponentState.Action;
 	const opts = new DaemonMessageOptions(
 		30_000,
-		null,
+		i18n.t('components.config.daemon.scheduler.messages.fetch.timeout'),
 		() => {
-			removeLoadingTask(taskId);
+			componentState.value = ComponentState.Ready;
 			msgId.value = null;
 		},
 	);
@@ -298,25 +281,29 @@ async function getTask(taskId: string): Promise<void> {
 
 async function handleGetTask(rsp: ApiResponseManagementRsp<SchedulerGetTaskResult>): Promise<void> {
 	if (rsp.data.status !== 0) {
-		toast.error('TODO GET ERROR HANDLING');
+		toast.error(
+			i18n.t('components.config.daemon.scheduler.messages.fetch.failed'),
+		);
+		componentState.value = ComponentState.Ready;
 		return;
 	}
 	const taskId = rsp.data.rsp.taskId as string;
 	const idx = tasks.value.findIndex((item: SchedulerGetTaskResult) => item.taskId === taskId);
 	if (idx !== -1) {
 		tasks.value[idx] = rsp.data.rsp as SchedulerGetTaskResult;
-		removeLoadingTask(taskId);
 	}
+	componentState.value = ComponentState.Ready;
 }
 
 async function startTask(taskId: string): Promise<void> {
-	loadingTasks.value.push(taskId);
+	componentState.value = ComponentState.Action;
 	const opts = new DaemonMessageOptions(
 		30_000,
-		null,
+		i18n.t('components.config.daemon.scheduler.messages.start.timeout'),
 		() => {
-			removeLoadingTask(taskId);
-			msgId.value = null;},
+			componentState.value = ComponentState.Ready;
+			msgId.value = null;
+		},
 	);
 	msgId.value = await daemonStore.sendMessage(
 		SchedulerService.startTask(
@@ -329,7 +316,10 @@ async function startTask(taskId: string): Promise<void> {
 
 function handleStartTask(rsp: ApiResponseManagementRsp<SchedulerStartTaskResult>): void {
 	if (rsp.data.status !== 0) {
-		toast.error('TODO START ERROR HANDLING');
+		toast.error(
+			i18n.t('components.config.daemon.scheduler.messages.start.failed'),
+		);
+		componentState.value = ComponentState.Ready;
 		return;
 	}
 	const taskId = rsp.data.rsp.taskId as string;
@@ -340,12 +330,12 @@ function handleStartTask(rsp: ApiResponseManagementRsp<SchedulerStartTaskResult>
 }
 
 async function stopTask(taskId: string): Promise<void> {
-	loadingTasks.value.push(taskId);
+	componentState.value = ComponentState.Action;
 	const opts = new DaemonMessageOptions(
 		30_000,
-		null,
+		i18n.t('components.config.daemon.scheduler.messages.stop.timeout'),
 		() => {
-			removeLoadingTask(taskId);
+			componentState.value = ComponentState.Ready;
 			msgId.value = null;
 		},
 	);
@@ -360,7 +350,10 @@ async function stopTask(taskId: string): Promise<void> {
 
 function handleStopTask(rsp: ApiResponseManagementRsp<SchedulerStopTaskResult>): void {
 	if (rsp.data.status !== 0) {
-		toast.error('TODO STOP ERROR HANDLING');
+		toast.error(
+			i18n.t('components.config.daemon.scheduler.messages.stop.failed'),
+		);
+		componentState.value = ComponentState.Ready;
 		return;
 	}
 	const taskId = rsp.data.rsp.taskId as string;
@@ -368,14 +361,6 @@ function handleStopTask(rsp: ApiResponseManagementRsp<SchedulerStopTaskResult>):
 		i18n.t('components.config.daemon.scheduler.messages.stop.success', { id: taskId }),
 	);
 	getTask(taskId);
-}
-
-function removeLoadingTask(taskId: string): void {
-	const idx = loadingTasks.value.indexOf(taskId);
-	if (idx === -1) {
-		return;
-	}
-	loadingTasks.value.splice(idx, 1);
 }
 
 onMounted(() => {

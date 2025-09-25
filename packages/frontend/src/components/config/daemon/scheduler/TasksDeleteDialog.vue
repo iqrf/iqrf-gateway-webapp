@@ -22,19 +22,14 @@ limitations under the License.
 		@submit='removeTasks()'
 	>
 		<template #activator='{ props }'>
-			<v-btn
+			<IActionBtn
 				v-bind='props'
-				id='tasks-delete-activator'
-				color='white'
-				size='large'
-				:icon='mdiDelete'
+				:action='Action.Delete'
+				container-type='card-title'
+				:loading='componentState === ComponentState.Action'
+				:disabled='disabled'
+				:tooltip='$t("components.config.daemon.scheduler.actions.deleteAll")'
 			/>
-			<v-tooltip
-				activator='#tasks-delete-activator'
-				location='bottom'
-			>
-				{{ $t('components.config.daemon.scheduler.actions.deleteAll') }}
-			</v-tooltip>
 		</template>
 		<template #title>
 			{{ $t('components.config.daemon.scheduler.deleteAll.title') }}
@@ -50,17 +45,25 @@ import { type ApiResponseManagementRsp, type TApiResponse } from '@iqrf/iqrf-gat
 import { type SchedulerRemoveAllResult } from '@iqrf/iqrf-gateway-daemon-utils/types/management';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import {
+	Action,
 	ComponentState,
+	IActionBtn,
 	IDeleteModalWindow,
 } from '@iqrf/iqrf-vue-ui';
-import { mdiDelete } from '@mdi/js';
 import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import { useDaemonStore } from '@/store/daemonSocket';
 
-const componentState: Ref<ComponentState> = ref(ComponentState.Created);
+const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
+defineProps({
+	disabled: {
+		type: Boolean,
+		required: false,
+		default: false,
+	},
+});
 const emit = defineEmits(['deleted']);
 const dialog: Ref<typeof IDeleteModalWindow | null> = ref(null);
 const i18n = useI18n();
@@ -88,9 +91,9 @@ async function removeTasks(): Promise<void> {
 	componentState.value = ComponentState.Action;
 	const opts = new DaemonMessageOptions(
 		30_000,
-		null,
+		i18n.t('components.config.daemon.scheduler.messages.deleteAll.timeout'),
 		() => {
-			componentState.value = ComponentState.Ready;
+			componentState.value = ComponentState.Idle;
 			msgId.value = null;
 		},
 	);
@@ -105,14 +108,16 @@ async function removeTasks(): Promise<void> {
 
 function handleRemoveTasks(rsp: ApiResponseManagementRsp<SchedulerRemoveAllResult>): void {
 	if (rsp.data.status !== 0) {
-		toast.error('TODO ERROR HANDLING');
-		componentState.value = ComponentState.Error;
+		toast.error(
+			i18n.t('components.config.daemon.scheduler.messages.deleteAll.failed'),
+		);
+		componentState.value = ComponentState.Idle;
 		return;
 	}
 	toast.success(
 		i18n.t('components.config.daemon.scheduler.messages.deleteAll.success'),
 	);
-	componentState.value = ComponentState.Ready;
+	componentState.value = ComponentState.Idle;
 	dialog.value?.close();
 	emit('deleted');
 }
