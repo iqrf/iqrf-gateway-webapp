@@ -444,23 +444,27 @@ export default class SendDpaPacket extends Vue {
 			this.$toast.error(this.$t('iqrfnet.sendPacket.form.messages.missing.packet').toString());
 			return;
 		}
+		let packetData = this.packet;
+		if (packetData.endsWith('.')) {
+			packetData = packetData.slice(0, -1);
+		}
 		const json: RawMessage = {
 			'mType': 'iqrfRaw',
 			'data': {
 				'req': {
-					'rData': this.packet,
+					'rData': packetData,
 				},
 				'returnVerbose': true,
 			},
 		};
 		if (this.addressOverwrite) {
-			json.data.req.rData = Packet.updateNadr(this.packet, this.address);
+			json.data.req.rData = Packet.updateNadr(packetData, this.address);
 		}
 		if (this.timeoutOverwrite) {
 			json.data.timeout = this.timeout;
 		}
 		const options = new DaemonMessageOptions(json);
-		const packet = Packet.parse(this.packet);
+		const packet = Packet.parse(packetData);
 		if (packet.nadr === 255) {
 			options.timeout = 1000;
 		} else if (packet.pnum === 2 && (packet.pcmd === 5 || packet.pcmd === 11)) {
