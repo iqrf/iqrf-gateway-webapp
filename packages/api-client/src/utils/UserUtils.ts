@@ -17,6 +17,7 @@
 import * as punycode from 'punycode/';
 
 import {
+	type AccountEdit,
 	type UserCreate,
 	type UserEdit,
 	type UserInfo,
@@ -35,8 +36,8 @@ export class UserUtils {
 	 * @param {T} user User to serialize
 	 * @return {T} Serialized user
 	 */
-	public static serialize<T extends UserCreate|UserEdit>(user: T): T {
-		user.email = (user.email === null || user.email.length === 0) ? null : punycode.toASCII(user.email);
+	public static serialize<T extends UserCreate|UserEdit|AccountEdit>(user: T): T {
+		user.email = (user.email === null || user.email === undefined || user.email.length === 0) ? null : punycode.toASCII(user.email);
 		return user;
 	}
 
