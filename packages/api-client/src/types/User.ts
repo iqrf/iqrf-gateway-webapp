@@ -123,6 +123,16 @@ export interface UserSignedIn extends UserInfo {
 }
 
 /**
+ * Current user edit profile
+ */
+export interface AccountEdit {
+	baseUrl?: string;
+	username?: string;
+	language?: UserLanguage;
+	email?: string;
+}
+
+/**
  * User password change interface
  */
 export interface UserPasswordChange {

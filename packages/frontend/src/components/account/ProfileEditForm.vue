@@ -57,7 +57,7 @@ limitations under the License.
 						required
 						:prepend-inner-icon='mdiEmail'
 					/>
-					<ILanguageSelect v-model='user.language' />
+					<ILanguageSelect v-model='(user.language! as unknown as Language)' />
 				</v-responsive>
 			</v-skeleton-loader>
 			<template #actions>
@@ -77,9 +77,9 @@ limitations under the License.
 <script lang='ts' setup>
 import { type AccountService } from '@iqrf/iqrf-gateway-webapp-client/services';
 import {
-	type UserEdit,
+	type AccountEdit,
 	type UserInfo,
-	UserRole,
+	UserLanguage,
 } from '@iqrf/iqrf-gateway-webapp-client/types';
 import {
 	Action,
@@ -107,11 +107,10 @@ const i18n = useI18n();
 /// User store
 const userStore = useUserStore();
 /// User data
-const user: Ref<UserEdit> = ref({
+const user: Ref<AccountEdit> = ref({
 	username: '',
+	language: Language.English as unknown as UserLanguage,
 	email: '',
-	language: Language.English,
-	role: UserRole.Basic,
 });
 /// Account service
 const accountService: AccountService = useApiClient().getAccountService();
@@ -130,9 +129,8 @@ async function getUserData(): Promise<void> {
 		const data: UserInfo = await accountService.getInfo();
 		user.value = {
 			username: data.username,
-			email: data.email,
+			email: data.email ?? '',
 			language: data.language,
-			role: data.role,
 			baseUrl: new UrlBuilder().getBaseUrl(),
 		};
 		componentState.value = ComponentState.Ready;

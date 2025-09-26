@@ -21,10 +21,11 @@ import {
 } from 'uuid';
 
 import {
+	type AccountEdit,
 	type EmailSentResponse,
 	type EmailVerificationResendRequest,
-	type UserAccountRecovery, type UserCredentials,
-	type UserEdit,
+	type UserAccountRecovery,
+	type UserCredentials,
 	type UserInfo,
 	type UserPasswordChange,
 	type UserPasswordReset,
@@ -52,10 +53,10 @@ export class AccountService extends BaseService {
 
 	/**
 	 * Update the user
-	 * @param {UserEdit} user User to edit
+	 * @param {AccountEdit} user User to edit
 	 * @return {Promise<EmailSentResponse>} Email sent response
 	 */
-	public async update(user: UserEdit): Promise<EmailSentResponse> {
+	public async update(user: AccountEdit): Promise<EmailSentResponse> {
 		const response: AxiosResponse<EmailSentResponse> =
 			await this.axiosInstance.put('/account', UserUtils.serialize(user));
 		return response.data;
