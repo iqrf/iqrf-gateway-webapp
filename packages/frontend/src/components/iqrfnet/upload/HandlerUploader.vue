@@ -33,19 +33,48 @@ limitations under the License.
 					(v: File|Blob|null) => ValidationRules.required(v, $t("components.iqrfnet.upload.dpa-handler.validation.fileMissing")),
 				]'
 				:prepend-inner-icon='mdiFileOutline'
-				:prepend-icon='undefined'
+				prepend-icon=''
 				show-size
 				required
 			/>
 			<template #actions>
-				<v-btn
-					color='primary'
-					variant='elevated'
-					:disabled='!isValid.value'
-					@click='onSubmit()'
+				<IModalWindow
+					v-model='show'
+					persistent
 				>
-					{{ $t('common.buttons.save') }}
-				</v-btn>
+					<template #activator='{ props }'>
+						<IActionBtn
+							v-bind='props'
+							:action='Action.Upload'
+							:loading='componentState === ComponentState.Action'
+							:disabled='!isValid.value'
+							@click='onSubmit()'
+						/>
+					</template>
+					<ICard>
+						<template #title>
+							{{ $t('components.iqrfnet.upload.dpa-handler.dialog.title') }}
+						</template>
+						<div class='text-center'>
+							{{ progressMessage }}
+							<v-divider class='my-2' />
+							<v-progress-linear
+								:indeterminate='componentState === ComponentState.Action'
+								model-value='100'
+								:color='progressColor'
+								rounded
+								height='24'
+							/>
+						</div>
+						<template #actions>
+							<IActionBtn
+								:action='Action.Close'
+								:disabled='componentState === ComponentState.Action'
+								@click='closeDialog()'
+							/>
+						</template>
+					</ICard>
+				</IModalWindow>
 			</template>
 		</ICard>
 	</v-form>
@@ -55,9 +84,9 @@ limitations under the License.
 import { type ServiceService } from '@iqrf/iqrf-gateway-webapp-client/services';
 import { type UpgradeService } from '@iqrf/iqrf-gateway-webapp-client/services/Iqrf';
 import { FileFormat, FileType } from '@iqrf/iqrf-gateway-webapp-client/types/Iqrf';
-import { ComponentState, ICard, ValidationRules } from '@iqrf/iqrf-vue-ui';
+import { Action, ComponentState, IActionBtn, ICard, IModalWindow, ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiFileOutline } from '@mdi/js';
-import { ref, type Ref } from 'vue';
+import { computed, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -65,46 +94,66 @@ import { VForm } from 'vuetify/components';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
-const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
+const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const i18n = useI18n();
 const form: Ref<VForm | null> = ref(null);
-const handler: Ref<File[] | null> = ref(null);
+const show: Ref<boolean> = ref(false);
+const handler: Ref<File | null> = ref(null);
+const progressMessage: Ref<string> = ref('');
 const serviceService: ServiceService = useApiClient().getServiceService();
 const upgradeService: UpgradeService = useApiClient().getIqrfServices().getUpgradeService();
+
+const progressColor = computed(() => {
+	if (componentState.value === ComponentState.Action || ComponentState.Success) {
+		return 'green';
+	}
+	return 'red';
+});
 
 async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value) || handler.value === null) {
 		return;
 	}
-	const file = handler.value[0];
+	show.value = true;
+	const file = handler.value;
 	componentState.value = ComponentState.Action;
 	let success = await stopDaemon();
 	if (!success) {
-		await handleError('TODO DAEMON STOP ERROR HANDLING');
+		await handleError(
+			i18n.t('components.iqrfnet.upload.dpa-handler.messages.stop.failed'),
+		);
 		return;
 	}
 	const path = await uploadFile(file);
 	if (path === null) {
-		await handleError('TODO UPLOAD TO FS ERROR HANDLING');
+		await handleError(
+			i18n.t('components.iqrfnet.upload.dpa-handler.messages.uploadFs.failed'),
+		);
 		return;
 	}
 	success = await runUploader(path);
 	if (!success) {
-		await handleError('TODO UPLOAD TO TR ERROR HANDLING');
+		await handleError(
+			i18n.t('components.iqrfnet.upload.dpa-handler.messages.uploadTr.failed'),
+		);
 		return;
 	}
 	success = await startDaemon();
 	if (!success) {
-		await handleError('TODO DAEMON START ERROR HANDLING');
+		await handleError(
+			i18n.t('components.iqrfnet.upload.dpa-handler.messages.start.failed'),
+		);
 		return;
 	}
 	toast.success(
-		i18n.t('components.iqrfnet.upload.dpa-handler.messages.success'),
+		i18n.t('components.iqrfnet.upload.dpa-handler.messages.upload.success'),
 	);
-	componentState.value = ComponentState.Ready;
+	progressMessage.value = i18n.t('components.iqrfnet.upload.dpa-handler.messages.upload.success');
+	componentState.value = ComponentState.Success;
 }
 
 async function uploadFile(file: File): Promise<string|null> {
+	progressMessage.value = i18n.t('components.iqrfnet.upload.dpa-handler.messages.uploadFs.action');
 	try {
 		return (await upgradeService.uploadToFs(file, FileFormat.HEX)).fileName;
 	} catch {
@@ -113,6 +162,7 @@ async function uploadFile(file: File): Promise<string|null> {
 }
 
 async function runUploader(path: string): Promise<boolean> {
+	progressMessage.value = i18n.t('components.iqrfnet.upload.dpa-handler.messages.uploadTr.action');
 	try {
 		await upgradeService.uploadToTr(path, FileType.HEX);
 		return true;
@@ -122,6 +172,7 @@ async function runUploader(path: string): Promise<boolean> {
 }
 
 async function stopDaemon(): Promise<boolean> {
+	progressMessage.value = i18n.t('components.iqrfnet.upload.dpa-handler.messages.stop.action');
 	try {
 		await serviceService.stop('iqrf-gateway-daemon');
 		return true;
@@ -131,6 +182,7 @@ async function stopDaemon(): Promise<boolean> {
 }
 
 async function startDaemon(): Promise<boolean> {
+	progressMessage.value = i18n.t('components.iqrfnet.upload.dpa-handler.messages.start.action');
 	try {
 		await serviceService.start('iqrf-gateway-daemon');
 		return true;
@@ -140,9 +192,16 @@ async function startDaemon(): Promise<boolean> {
 }
 
 async function handleError(message: string): Promise<void> {
+	progressMessage.value = message;
 	toast.error(message);
 	await startDaemon();
-	componentState.value = ComponentState.Ready;
+	componentState.value = ComponentState.Error;
+}
+
+function closeDialog(): void {
+	show.value = false;
+	progressMessage.value = '';
+	componentState.value = ComponentState.Idle;
 }
 
 </script>

@@ -2532,9 +2532,30 @@
 			},
 			"upload": {
 				"dpa-handler": {
+					"dialog": {
+						"title": "Custom DPA handler upload progress"
+					},
 					"file": "Hex file to upload",
 					"messages": {
-						"success": "Custom DPA handler has been successfully uploaded."
+						"start": {
+							"action": "Starting IQRF Gateway Daemon back up.",
+							"failed": "Failed to start IQRF Gateway Daemon service back up."
+						},
+						"stop": {
+							"action": "Stopping IQRF Gateway Daemon.",
+							"failed": "Failed to stop IQRF Gateway Daemon."
+						},
+						"upload": {
+							"success": "Custom DPA handler has been successfully uploaded."
+						},
+						"uploadFs": {
+							"action": "Uploading file to gateway filesystem.",
+							"failed": "Failed to upload the file to gateway filesystem."
+						},
+						"uploadTr": {
+							"action": "Uploading custom DPA handler to TR.",
+							"failed": "Failed to uplod custom DPA handler into the TR."
+						}
 					},
 					"title": "Custom DPA handler",
 					"validation": {
