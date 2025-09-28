@@ -16,14 +16,7 @@
  */
 
 import { DaemonMode } from '@iqrf/iqrf-gateway-daemon-utils/enums';
-import {
-	type ApiRequestManagement,
-	type ApiResponseManagementRsp,
-	type DatabaseEnumerateResult,
-	type TApiRequest,
-	type TApiResponse,
-} from '@iqrf/iqrf-gateway-daemon-utils/types';
-import { type DaemonVersionResult } from '@iqrf/iqrf-gateway-daemon-utils/types/management';
+import { type DaemonApiRequest, type DaemonApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { DaemonMessage, type DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { defineStore } from 'pinia';
 import { v4 as uuidv4 } from 'uuid';
@@ -37,12 +30,11 @@ import { useMonitorStore } from './monitorSocket';
 
 interface DaemonState extends GenericSocketState {
 	receivedMessages: number;
-	requests: Record<string, string | TApiRequest>;
-	responses: Record<string, string | TApiResponse>;
+	requests: Record<string, string | DaemonApiRequest>;
+	responses: Record<string, string | DaemonApiResponse>;
 	messages: DaemonMessage[];
 	version: string;
 	versionMsgId: string;
-	enum: boolean;
 }
 
 const serviceModeWhitelist: string[] = [
@@ -70,7 +62,6 @@ export const useDaemonStore = defineStore('daemon', {
 		messages: [],
 		version: '',
 		versionMsgId: '',
-		enum: false,
 	}),
 	actions: {
 		initSocket(): void {
@@ -91,7 +82,7 @@ export const useDaemonStore = defineStore('daemon', {
 		},
 		sendVersionRequest(): void {
 			this.versionMsgId = uuidv4();
-			const request: ApiRequestManagement = {
+			const request: DaemonApiRequest = {
 				mType: 'mngDaemon_Version',
 				data: {
 					msgId: this.versionMsgId,
@@ -101,7 +92,7 @@ export const useDaemonStore = defineStore('daemon', {
 			this.socket?.send(request);
 			this.onSend(request);
 		},
-		async sendMessage(options: DaemonMessageOptions<TApiRequest>): Promise<string> {
+		async sendMessage(options: DaemonMessageOptions): Promise<string> {
 			const message = options.request;
 			if (message === null) {
 				throw new Error('No message to send, message is null.');
@@ -166,26 +157,18 @@ export const useDaemonStore = defineStore('daemon', {
 		 * @param {MessageEvent<string>} event Message event
 		 * @return {TApiResponse} IQRF Gateway Daemon API response
 		 */
-		onMessage(event: MessageEvent<string>): TApiResponse {
-			const message: TApiResponse = JSON.parse(event.data) as TApiResponse;
+		onMessage(event: MessageEvent<string>): DaemonApiResponse {
+			const message: DaemonApiResponse = JSON.parse(event.data) as DaemonApiResponse;
 			if (message.mType === 'mngDaemon_Version' && message.data.msgId === this.versionMsgId) {
-				const tokens = RegExp(/v\d+\.\d+\.\d+/).exec((message as ApiResponseManagementRsp<DaemonVersionResult>).data.rsp.version);
+				const tokens = RegExp(/v\d+\.\d+\.\d+/).exec(message.data.rsp.version as string);
 				if (tokens !== null && tokens.length > 0) {
 					this.version = tokens[0];
-				}
-			}
-			if (message.mType === 'iqrfDb_Enumerate' && message.data.msgId === 'iqrfdb_enumerate_async') {
-				const msg = message as ApiResponseManagementRsp<DatabaseEnumerateResult>;
-				if (msg.data.rsp.step === 0) {
-					this.enum = true;
-				} else if (msg.data.rsp.step === 8) {
-					this.enum = false;
 				}
 			}
 			this.responses[message.data.msgId] = message;
 			return message;
 		},
-		onSend(message: TApiRequest): void {
+		onSend(message: DaemonApiRequest): void {
 			if (message.data.msgId === undefined) {
 				return;
 			}
@@ -223,9 +206,6 @@ export const useDaemonStore = defineStore('daemon', {
 		},
 		getVersion(): string {
 			return this.version;
-		},
-		isEnumerationRunning(): boolean {
-			return this.enum;
 		},
 	},
 });

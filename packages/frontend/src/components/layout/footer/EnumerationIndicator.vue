@@ -32,14 +32,14 @@ import { computed, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { useDaemonStore } from '@/store/daemonSocket';
+import { useMonitorStore } from '@/store/monitorSocket';
 
 const daemonStore = useDaemonStore();
+const monitorStore = useMonitorStore();
 const i18n = useI18n();
 
-const {
-	isEnumerationRunning: active,
-	isConnected: connected,
-} = storeToRefs(daemonStore);
+const { isConnected: connected } = storeToRefs(daemonStore);
+const { getEnumInProgress: active } = storeToRefs(monitorStore);
 
 /// Color of the icon
 const color: Ref<string> = computed((): string => {
