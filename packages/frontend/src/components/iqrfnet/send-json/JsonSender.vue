@@ -68,21 +68,11 @@ limitations under the License.
 
 <script lang='ts' setup>
 import {
-	EmbedCoordinatorMessages,
 	EmbedOsMessages,
 	GenericMessages,
 	IqmeshServiceMessages,
 } from '@iqrf/iqrf-gateway-daemon-utils/enums';
-import {
-	type ApiRequestEmbedReq,
-	type ApiResponseIqmesh,
-	type ApiResponseMessageError,
-	type IqmeshAutonetworkResult,
-	type IqmeshBackupResult,
-	type TApiRequest,
-	type TApiResponse,
-	type TMessageErrorResponse,
-} from '@iqrf/iqrf-gateway-daemon-utils/types';
+import { DaemonApiRequest, DaemonApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { ComponentState, ICard } from '@iqrf/iqrf-vue-ui';
 import { mdiSend } from '@mdi/js';
@@ -94,7 +84,7 @@ import { validateForm } from '@/helpers/validateForm';
 import { useDaemonStore } from '@/store/daemonSocket';
 import { type JsonApiTransaction } from '@/types/Iqrfnet';
 
-const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
+const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const daemonStore = useDaemonStore();
 const form: Ref<VForm | null> = ref(null);
 const msgId: Ref<string | null> = ref(null);
@@ -104,16 +94,16 @@ const messages: Ref<JsonApiTransaction[]> = ref([]);
 daemonStore.$onAction(
 	({ name, after }) => {
 		if (name === 'onMessage') {
-			after((rsp: TApiResponse) => {
+			after((rsp: DaemonApiResponse) => {
 				if (rsp.data.msgId !== msgId.value) {
 					return;
 				}
 				if (rsp.mType === IqmeshServiceMessages.Autonetwork) {
-					handleAutonetworkResponse(rsp as ApiResponseIqmesh<IqmeshAutonetworkResult>);
+					handleAutonetworkResponse(rsp);
 				} else if (rsp.mType === IqmeshServiceMessages.Backup) {
-					handleBackupResponse(rsp as ApiResponseIqmesh<IqmeshBackupResult>);
+					handleBackupResponse(rsp);
 				} else if (rsp.mType === GenericMessages.MessageError) {
-					handleMessageError(rsp as ApiResponseMessageError<TMessageErrorResponse>);
+					handleMessageError(rsp);
 				} else {
 					daemonStore.removeMessage(msgId.value);
 					handleResponse(rsp);
@@ -128,23 +118,25 @@ async function onSubmit(): Promise<void> {
 		return;
 	}
 	componentState.value = ComponentState.Action;
-	const request: TApiRequest = JSON.parse(json.value) as TApiRequest;
-	const options = DaemonMessageOptions.withRequest<TApiRequest>(request, null, null, () => {
-		msgId.value = null;
-		componentState.value = ComponentState.Ready;
-	});
-	if (checkIfNoResponseMessage(options as DaemonMessageOptions<ApiRequestEmbedReq>)) {
+	const request = JSON.parse(json.value) as DaemonApiRequest;
+	const options = new DaemonMessageOptions(null);
+	if (request.data.req && request.data.req.nAdr === 255) { // if a message is broadcasted, do not wait for proper response
 		options.timeout = 1_000;
-	} else if (request.mType === EmbedCoordinatorMessages.Discovery ||
-		request.mType === IqmeshServiceMessages.Autonetwork ||
+	} else if (request.mType === EmbedOsMessages.Batch || request.mType === EmbedOsMessages.SelectiveBatch) { // batch and selective batch requests do not have proper responses, do not wait
+		options.timeout = 1_000;
+	} else if (request.mType === IqmeshServiceMessages.Autonetwork ||
 		request.mType === IqmeshServiceMessages.Backup ||
-		request.mType === IqmeshServiceMessages.OtaUpload
-	) {
-		options.timeout = null;
-		options.message = null;
-	} else {
+		(request.mType === 'iqrfDb_Enumerate' && request.data.req && request.data.req.command === 'now') ||
+		request.mType === IqmeshServiceMessages.OtaUpload) { // requests without timeout
+	} else { // regular messages have a minute timeout
 		options.timeout = 60_000;
+		options.message = 'iqrfnet.sendJson.messages.error.fail';
 	}
+	options.callback = () => {
+		componentState.value = ComponentState.Idle;
+		msgId.value = null;
+	};
+	options.request = request;
 	msgId.value = await daemonStore.sendMessage(options);
 	messages.value.unshift({
 		msgId: msgId.value,
@@ -155,54 +147,50 @@ async function onSubmit(): Promise<void> {
 	});
 }
 
-function checkIfNoResponseMessage(options: DaemonMessageOptions<ApiRequestEmbedReq>): boolean {
-	return (options.request !== null && options.request.data.req !== undefined &&
-		{}.hasOwnProperty.call(options.request.data.req, 'nAdr') && options.request.data.req.nAdr === 255) ||
-		options.request?.mType === EmbedOsMessages.Batch || options.request?.mType === EmbedOsMessages.SelectiveBatch;
-}
-
-function handleAutonetworkResponse(rsp: ApiResponseIqmesh<IqmeshAutonetworkResult>): void {
+function handleAutonetworkResponse(rsp: DaemonApiResponse): void {
 	const idx = getMessageIndex(rsp);
 	if (idx === -1) {
 		return;
 	}
 	messages.value[idx].response.push(JSON.stringify(rsp, null, 4));
 	if (rsp.data.rsp.lastWave && rsp.data.rsp.progress === 100) {
+		daemonStore.removeMessage(msgId.value);
 		componentState.value = ComponentState.Ready;
 	}
 }
 
-function handleBackupResponse(response: ApiResponseIqmesh<IqmeshBackupResult>): void {
-	const idx = getMessageIndex(response);
+function handleBackupResponse(rsp: DaemonApiResponse): void {
+	const idx = getMessageIndex(rsp);
 	if (idx === -1) {
 		return;
 	}
-	messages.value[idx].response.push(JSON.stringify(response, null, 4));
-	if (response.data.rsp.progress === 100) {
+	messages.value[idx].response.push(JSON.stringify(rsp, null, 4));
+	if (rsp.data.rsp.progress === 100) {
+		daemonStore.removeMessage(msgId.value);
 		componentState.value = ComponentState.Ready;
 	}
 }
 
-function handleMessageError(response: ApiResponseMessageError<TMessageErrorResponse>): void {
-	const idx = messages.value.findIndex((item: JsonApiTransaction) => item.msgId === response.data.msgId);
+function handleMessageError(rsp: DaemonApiResponse): void {
+	const idx = messages.value.findIndex((item: JsonApiTransaction) => item.msgId === rsp.data.msgId);
 	if (idx === -1) {
 		return;
 	}
-	messages.value[idx].response.push(JSON.stringify(response, null, 4));
+	messages.value[idx].response.push(JSON.stringify(rsp, null, 4));
 	componentState.value = ComponentState.Ready;
 }
 
-function handleResponse(response: TApiResponse): void {
-	const idx = getMessageIndex(response);
+function handleResponse(rsp: DaemonApiResponse): void {
+	const idx = getMessageIndex(rsp);
 	if (idx === -1) {
 		return;
 	}
-	messages.value[idx].response.push(JSON.stringify(response, null, 4));
+	messages.value[idx].response.push(JSON.stringify(rsp, null, 4));
 	componentState.value = ComponentState.Ready;
 }
 
-function getMessageIndex(response: TApiResponse): number {
-	return messages.value.findIndex((item: JsonApiTransaction) => item.msgId === response.data.msgId && item.mType === response.mType);
+function getMessageIndex(rsp: DaemonApiResponse): number {
+	return messages.value.findIndex((item: JsonApiTransaction) => item.msgId === rsp.data.msgId && item.mType === rsp.mType);
 }
 
 function clearMessages(): void {

@@ -21,16 +21,17 @@ limitations under the License.
 			<template #title>
 				{{ $t('components.gateway.mode.current.title') }}
 			</template>
-			<v-select
-				v-model='mode.operMode'
+			<ISelectInput
+				v-model='mode'
 				:items='modeOptions'
-				:disabled='mode.operMode === DaemonMode.Unknown'
+				:disabled='mode === DaemonMode.Unknown'
+				hide-details
 			/>
 			<template #actions>
 				<IActionBtn
 					:action='Action.Save'
 					container-type='card'
-					:disabled='mode.operMode === DaemonMode.Unknown'
+					:disabled='mode === DaemonMode.Unknown'
 					type='submit'
 				/>
 			</template>
@@ -41,50 +42,51 @@ limitations under the License.
 <script lang='ts' setup>
 import { DaemonMode, ManagementMessages } from '@iqrf/iqrf-gateway-daemon-utils/enums';
 import { ManagementService } from '@iqrf/iqrf-gateway-daemon-utils/services';
-import {
-	type ApiResponseManagement,
-	type ApiResponseManagementRsp,
-	type TApiResponse,
-} from '@iqrf/iqrf-gateway-daemon-utils/types';
-import { DaemonGetModeResult, DaemonSetModeParams } from '@iqrf/iqrf-gateway-daemon-utils/types/management';
+import { DaemonApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
-import { Action, IActionBtn, ICard } from '@iqrf/iqrf-vue-ui';
-import { computed, ComputedRef, onBeforeMount, ref, type Ref } from 'vue';
+import { Action, ComponentState, IActionBtn, ICard, ISelectInput } from '@iqrf/iqrf-vue-ui';
+import { onBeforeMount, onBeforeUnmount, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import { useDaemonStore } from '@/store/daemonSocket';
-import { SelectItem } from '@/types/vuetify';
 
+enum ModeActions {
+	GET = 0,
+	SET = 1,
+}
+
+const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
 const daemonStore = useDaemonStore();
 const msgId: Ref<string | null> = ref(null);
-
-const mode: Ref<DaemonSetModeParams> = ref({
-	operMode: DaemonMode.Unknown,
-});
-const modeOptions: ComputedRef<SelectItem[]> = computed(() => {
-	const modes = Object.values(DaemonMode);
-	return modes.map((item: DaemonMode): SelectItem => {
-		return {
-			title: i18n.t(`components.gateway.mode.modes.${item}`),
-			value: item,
-		};
-	});
-});
+const modeAction: Ref<ModeActions | null> = ref(null);
+const mode: Ref<DaemonMode> = ref(DaemonMode.Unknown);
+const modeOptions = ref([
+	{
+		title: i18n.t('components.gateway.mode.modes.operational'),
+		value: DaemonMode.Operational,
+	},
+	{
+		title: i18n.t('components.gateway.mode.modes.forwarding'),
+		value: DaemonMode.Forwarding,
+	},
+	{
+		title: i18n.t('components.gateway.mode.modes.service'),
+		value: DaemonMode.Service,
+	},
+]);
 
 daemonStore.$onAction(
 	({ name, after }) => {
 		if (name === 'onMessage') {
-			after((rsp: TApiResponse) => {
+			after((rsp: DaemonApiResponse) => {
 				if (rsp.data.msgId !== msgId.value) {
 					return;
 				}
 				daemonStore.removeMessage(msgId.value);
-				if (rsp.mType === ManagementMessages.GetMode) {
-					handleGetMode(rsp as ApiResponseManagementRsp<DaemonGetModeResult>);
-				} else if (rsp.mType === ManagementMessages.SetMode) {
-					handleSetMode(rsp);
+				if (rsp.mType === ManagementMessages.Mode) {
+					handleModeResponse(rsp);
 				}
 			});
 		}
@@ -92,52 +94,62 @@ daemonStore.$onAction(
 );
 
 async function getMode(): Promise<void> {
+	componentState.value = ComponentState.Loading;
+	modeAction.value = ModeActions.GET;
 	const opts = new DaemonMessageOptions(
+		null,
 		5_000,
 		'components.gateway.mode.current.messages.get.timeout',
 		() => {
 			msgId.value = null;
 		},
 	);
-	const rq = ManagementService.getMode({}, opts);
-	msgId.value = await daemonStore.sendMessage(rq);
-}
-
-function handleGetMode(response: ApiResponseManagementRsp<DaemonGetModeResult>): void {
-	if (response.data.status !== 0) {
-		toast.error(
-			i18n.t('components.gateway.mode.current.messages.get.failed'),
-		);
-		return;
-	}
-	mode.value.operMode = response.data.rsp.operMode;
+	msgId.value = await daemonStore.sendMessage(ManagementService.getMode(opts));
 }
 
 async function setMode(): Promise<void> {
+	componentState.value = ComponentState.Action;
+	modeAction.value = ModeActions.SET;
 	const opts = new DaemonMessageOptions(
+		null,
 		5_000,
-		'components.gateway.mode.messages.setTimeout',
+		'components.gateway.mode.current.messages.set.timeout',
 		() => {msgId.value = null;},
 	);
-	msgId.value = await daemonStore.sendMessage(ManagementService.setMode({}, mode.value, opts));
+	msgId.value = await daemonStore.sendMessage(ManagementService.setMode(mode.value, opts));
 }
 
-function handleSetMode(response: ApiResponseManagement): void {
-	if (response.data.status !== 0) {
-		toast.error(
-			i18n.t('components.gateway.mode.current.messages.set.failed'),
-		);
+function handleModeResponse(rsp: Record<string, any>): void {
+	if (rsp.data.status !== 0) {
+		if (modeAction.value === ModeActions.GET) {
+			toast.error(
+				i18n.t('components.gateway.mode.current.messages.get.failed'),
+			);
+		} else {
+			toast.error(
+				i18n.t('components.gateway.mode.current.messages.set.failed'),
+			);
+			componentState.value = ComponentState.Idle;
+		}
 		return;
 	}
-	toast.success(
-		i18n.t(
-			'components.gateway.mode.current.messages.set.success',
-			{ mode: i18n.t(`components.gateway.mode.modes.${mode.value.operMode}`) },
-		),
-	);
+	if (modeAction.value === ModeActions.GET) {
+		mode.value = rsp.data.rsp.operMode;
+	} else if (modeAction.value === ModeActions.SET) {
+		toast.success(
+			i18n.t(
+				'components.gateway.mode.current.messages.set.success',
+				{ mode: i18n.t(`components.gateway.mode.modes.${mode.value}`) },
+			),
+		);
+	}
 }
 
 onBeforeMount(() => {
 	getMode();
+});
+
+onBeforeUnmount(() => {
+	daemonStore.removeMessage(msgId.value);
 });
 </script>
