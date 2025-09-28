@@ -43,6 +43,7 @@
 			"delete": "Delete",
 			"deselectAll": "Deselect all",
 			"edit": "Edit",
+			"enumerate": "Enumerate",
 			"import": "Import",
 			"refresh": "Refresh",
 			"reload": "Reload",
@@ -96,7 +97,8 @@
 			"value": "Value"
 		},
 		"messages": {
-			"fetchFailed": "An error has occurred while fetching data."
+			"fetchFailed": "An error has occurred while fetching data.",
+			"noDevice": "No device exists at address {address}."
 		},
 		"states": {
 			"active": "Active",
@@ -2406,7 +2408,14 @@
 				"rfpgm": "RFPGM",
 				"rxFilter": "RX filter",
 				"trPeripherals": "TR Peripherals",
-				"txPower": "TX power"
+				"txPower": "TX power",
+				"validation": {
+					"deviceAddr": {
+						"between": "Device addres should be between 0 and 239",
+						"integer": "Device addres should be an integer.",
+						"required": "Please enter device address"
+					}
+				}
 			},
 			"inProgress": "Request handling in progress.",
 			"products": {
@@ -2464,6 +2473,105 @@
 					"title": "Request history"
 				},
 				"json": "Request message"
+			},
+			"standard-manager": {
+				"binary-output": {
+					"actions": {
+						"getStates": "Get states",
+						"setState": "Set state"
+					},
+					"binoutCount": "Binary output count",
+					"index": "Index",
+					"messages": {
+						"enumerate": {
+							"failed": "Failed to enumerate binary outputs.",
+							"success": "Binary output enumeration successful.",
+							"timeout": "Binary output enumeration request timed out."
+						},
+						"getStates": {
+							"timeout": "Get binary output states request timed out."
+						},
+						"pnumError": "Device does not implement Binary output peripheral.",
+						"setState": {
+							"timeout": "Set binary output state request timed out."
+						},
+						"states": {
+							"failed": "Binary output state request failed.",
+							"success": "Binary output states successfully updated.",
+							"timeout": "Binary output state request timed out."
+						}
+					},
+					"state": "State",
+					"title": "Binary output",
+					"validation": {
+						"index": {
+							"between": "Binary output index should be between 0 and 31.",
+							"integer": "Binary output index should be an integer.",
+							"required": "Please enter binary output index."
+						}
+					}
+				},
+				"light": {
+					"actions": {
+						"sendCommands": "Send LDI command(s)",
+						"setLai": "Set LAI voltage"
+					},
+					"answer": "Answer",
+					"command": "LDI command",
+					"dpaCommand": "DPA command",
+					"messages": {
+						"pnumError": "Device does not implement Light peripheral.",
+						"sendCommands": {
+							"failed": "Failed to process LDI commands request.",
+							"success": "LDI commands have been successfully processed.",
+							"timeout": "Send LDI commands request has timed out."
+						},
+						"setLai": {
+							"failed": "Failed to set LAI voltage.",
+							"success": "LAI voltage has been successfully set.",
+							"timeout": "Set LAI voltage request has timed out."
+						}
+					},
+					"prevVoltage": "Previous voltage",
+					"status": "Answer status",
+					"title": "Light",
+					"validation": {
+						"command": {
+							"between": "LDI command should be between 0 and 65535.",
+							"integer": "LDI command should be an integer.",
+							"required": "Please enter LDI command."
+						},
+						"voltage": {
+							"between": "Voltage should be a number between 0 and 10, and a step of 0.001.",
+							"required": "Please enter voltage in V."
+						}
+					},
+					"value": "Answer value",
+					"voltage": "Voltage [V]"
+				},
+				"sensor": {
+					"actions": {
+						"read": "Read all"
+					},
+					"index": "Index",
+					"messages": {
+						"enumerate": {
+							"failed": "Failed to enumerate sensors.",
+							"success": "Sensor enumeration successful.",
+							"timeout": "Sensor enumeration request timed out."
+						},
+						"pnumError": "Device does not implement Sensor peripheral.",
+						"read": {
+							"failed": "Failed to read sensor data.",
+							"success": "Sensor data read successful.",
+							"timeout": "Sensor data read request timed out."
+						}
+					},
+					"name": "Quantity",
+					"title": "Sensor",
+					"type": "Sensor type",
+					"value": "Measured value"
+				}
 			},
 			"tr-config": {
 				"dpa": {
@@ -2916,6 +3024,9 @@
 			"send-json": {
 				"description": "Send JSON requests into the IQRF network.",
 				"title": "Send JSON request"
+			},
+			"standard-manager": {
+				"title": "Standard manager"
 			},
 			"title": "IQRF Network",
 			"tr-config": {
