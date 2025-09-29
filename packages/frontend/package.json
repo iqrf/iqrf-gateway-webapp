@@ -46,7 +46,7 @@
 	"dependencies": {
 		"@chenfengyuan/vue-countdown": "^2.1.3",
 		"@fontsource/roboto": "^5.2.8",
-		"@iqrf/iqrf-gateway-daemon-utils": "0.1.8",
+		"@iqrf/iqrf-gateway-daemon-utils": "0.1.10",
 		"@iqrf/iqrf-gateway-webapp-client": "^0.3.0-beta.13",
 		"@iqrf/iqrf-repository-client": "^0.1.5",
 		"@iqrf/iqrf-vue-ui": "0.0.1-beta.19",

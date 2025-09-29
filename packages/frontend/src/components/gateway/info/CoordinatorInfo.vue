@@ -50,29 +50,30 @@ limitations under the License.
 
 <script lang='ts' setup>
 import { IqmeshServiceMessages } from '@iqrf/iqrf-gateway-daemon-utils/enums';
-import { IqmeshService } from '@iqrf/iqrf-gateway-daemon-utils/services';
-import { ApiResponseIqmesh, IqmeshEnumerateDeviceResult, TApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
+import { EnumerationService } from '@iqrf/iqrf-gateway-daemon-utils/services/iqmesh';
+import { type DaemonApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { ComponentState } from '@iqrf/iqrf-vue-ui';
 import { onBeforeMount, onBeforeUnmount, ref, type Ref } from 'vue';
 
 import { useDaemonStore } from '@/store/daemonSocket';
+import { DeviceEnumeration } from '@/types/DaemonApi/Iqmesh';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const daemonStore = useDaemonStore();
-const enumData: Ref<IqmeshEnumerateDeviceResult | null> = ref(null);
+const enumData: Ref<DeviceEnumeration | null> = ref(null);
 const msgId: Ref<string | null> = ref(null);
 
 daemonStore.$onAction(
 	({ name, after }) => {
 		if (name === 'onMessage') {
-			after((rsp: TApiResponse) => {
+			after((rsp: DaemonApiResponse) => {
 				if (rsp.data.msgId !== msgId.value) {
 					return;
 				}
 				daemonStore.removeMessage(msgId.value);
-				if (rsp.mType === IqmeshServiceMessages.EnumerateDevice) {
-					handleEnumerateResponse(rsp as ApiResponseIqmesh<IqmeshEnumerateDeviceResult>);
+				if (rsp.mType === IqmeshServiceMessages.Enumerate) {
+					handleEnumerateResponse(rsp);
 				}
 			});
 		}
@@ -90,6 +91,7 @@ onBeforeUnmount(() => {
 async function enumerate(): Promise<void> {
 	componentState.value = ComponentState.Loading;
 	const opts = new DaemonMessageOptions(
+		null,
 		10_000,
 		'components.gateway.information.messages.fetchTr.timeout',
 		() => {
@@ -97,12 +99,14 @@ async function enumerate(): Promise<void> {
 			componentState.value = ComponentState.Idle;
 		},
 	);
-	msgId.value = await daemonStore.sendMessage(IqmeshService.enumerate({}, { deviceAddr: 0 }, opts));
+	msgId.value = await daemonStore.sendMessage(
+		EnumerationService.enumerate({}, { deviceAddr: 0 }, opts),
+	);
 }
 
-function handleEnumerateResponse(rsp: ApiResponseIqmesh<IqmeshEnumerateDeviceResult>): void {
+function handleEnumerateResponse(rsp: DaemonApiResponse): void {
 	if (rsp.data.status === 0) {
-		enumData.value = rsp.data.rsp;
+		enumData.value = rsp.data.rsp as DeviceEnumeration;
 		componentState.value = ComponentState.Ready;
 	} else {
 		componentState.value = ComponentState.FetchFailed;
