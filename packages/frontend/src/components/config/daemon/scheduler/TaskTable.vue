@@ -103,14 +103,7 @@ limitations under the License.
 <script lang='ts' setup>
 import { SchedulerMessages } from '@iqrf/iqrf-gateway-daemon-utils/enums';
 import { SchedulerService } from '@iqrf/iqrf-gateway-daemon-utils/services';
-import { type ApiResponseManagementRsp, type TApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
-import {
-	type SchedulerGetTaskResult,
-	type SchedulerListDetailResult,
-	type SchedulerStartTaskResult,
-	type SchedulerStopTaskResult,
-	type SchedulerTimeSpec,
-} from '@iqrf/iqrf-gateway-daemon-utils/types/management';
+import { DaemonApiResponse, SchedulerRecord, SchedulerRecordTimeSpec } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { type IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import { IqrfGatewayDaemonMessagingInstances } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
@@ -149,7 +142,7 @@ const headers = [
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end' },
 ];
 const msgId: Ref<string | null> = ref(null);
-const tasks: Ref<SchedulerGetTaskResult[]> = ref([]);
+const tasks: Ref<SchedulerRecord[]> = ref([]);
 const messagings: Ref<IqrfGatewayDaemonMessagingInstances | null> = ref(null);
 
 daemonStore.$onAction(
@@ -157,23 +150,23 @@ daemonStore.$onAction(
 		if (name !== 'onMessage') {
 			return;
 		}
-		after((rsp: TApiResponse) => {
+		after((rsp: DaemonApiResponse) => {
 			if (rsp.data.msgId !== msgId.value) {
 				return;
 			}
 			daemonStore.removeMessage(msgId.value);
 			switch (rsp.mType) {
 				case SchedulerMessages.ListTasks:
-					handleListTasks(rsp as ApiResponseManagementRsp<SchedulerListDetailResult>);
+					handleListTasks(rsp);
 					break;
 				case SchedulerMessages.GetTask:
-					handleGetTask(rsp as ApiResponseManagementRsp<SchedulerGetTaskResult>);
+					handleGetTask(rsp);
 					break;
 				case SchedulerMessages.StartTask:
-					handleStartTask(rsp as ApiResponseManagementRsp<SchedulerStartTaskResult>);
+					handleStartTask(rsp);
 					break;
 				case SchedulerMessages.StopTask:
-					handleStopTask(rsp as ApiResponseManagementRsp<SchedulerStopTaskResult>);
+					handleStopTask(rsp);
 					break;
 				default:
 				//
@@ -189,7 +182,7 @@ const noDataText = computed(() => {
 	return 'components.config.daemon.scheduler.noData.empty';
 });
 
-function timeString(timespec: SchedulerTimeSpec): string {
+function timeString(timespec: SchedulerRecordTimeSpec): string {
 	if (timespec.exactTime) {
 		return `At ${DateTime.fromISO(timespec.startTime).toLocaleString(DateTime.DATETIME_FULL)}`;
 	}
@@ -232,6 +225,7 @@ async function listTasks(): Promise<void> {
 		ComponentState.FetchFailed,
 	].includes(componentState.value) ? ComponentState.Loading : ComponentState.Reloading;
 	const opts = new DaemonMessageOptions(
+		null,
 		30_000,
 		i18n.t('components.config.daemon.scheduler.messages.list.failed'),
 		() => {
@@ -240,15 +234,11 @@ async function listTasks(): Promise<void> {
 		},
 	);
 	msgId.value = await daemonStore.sendMessage(
-		SchedulerService.listTasks(
-			{},
-			{ details: true, clientId: SchedulerService.ClientID },
-			opts,
-		),
+		SchedulerService.listTasks(true, opts),
 	);
 }
 
-function handleListTasks(rsp: ApiResponseManagementRsp<SchedulerListDetailResult>): void {
+function handleListTasks(rsp: DaemonApiResponse): void {
 	if (rsp.data.status !== 0) {
 		toast.error(
 			i18n.t('components.config.daemon.scheduler.messages.list.failed'),
@@ -263,6 +253,7 @@ function handleListTasks(rsp: ApiResponseManagementRsp<SchedulerListDetailResult
 async function getTask(taskId: string): Promise<void> {
 	componentState.value = ComponentState.Action;
 	const opts = new DaemonMessageOptions(
+		null,
 		30_000,
 		i18n.t('components.config.daemon.scheduler.messages.fetch.timeout'),
 		() => {
@@ -271,15 +262,11 @@ async function getTask(taskId: string): Promise<void> {
 		},
 	);
 	msgId.value = await daemonStore.sendMessage(
-		SchedulerService.getTask(
-			{},
-			{ clientId: SchedulerService.ClientID, taskId: taskId },
-			opts,
-		),
+		SchedulerService.getTask(taskId, opts),
 	);
 }
 
-async function handleGetTask(rsp: ApiResponseManagementRsp<SchedulerGetTaskResult>): Promise<void> {
+async function handleGetTask(rsp: DaemonApiResponse): Promise<void> {
 	if (rsp.data.status !== 0) {
 		toast.error(
 			i18n.t('components.config.daemon.scheduler.messages.fetch.failed'),
@@ -288,9 +275,9 @@ async function handleGetTask(rsp: ApiResponseManagementRsp<SchedulerGetTaskResul
 		return;
 	}
 	const taskId = rsp.data.rsp.taskId as string;
-	const idx = tasks.value.findIndex((item: SchedulerGetTaskResult) => item.taskId === taskId);
+	const idx = tasks.value.findIndex((item: SchedulerRecord) => item.taskId === taskId);
 	if (idx !== -1) {
-		tasks.value[idx] = rsp.data.rsp as SchedulerGetTaskResult;
+		tasks.value[idx] = rsp.data.rsp as SchedulerRecord;
 	}
 	componentState.value = ComponentState.Ready;
 }
@@ -298,6 +285,7 @@ async function handleGetTask(rsp: ApiResponseManagementRsp<SchedulerGetTaskResul
 async function startTask(taskId: string): Promise<void> {
 	componentState.value = ComponentState.Action;
 	const opts = new DaemonMessageOptions(
+		null,
 		30_000,
 		i18n.t('components.config.daemon.scheduler.messages.start.timeout'),
 		() => {
@@ -306,15 +294,11 @@ async function startTask(taskId: string): Promise<void> {
 		},
 	);
 	msgId.value = await daemonStore.sendMessage(
-		SchedulerService.startTask(
-			{},
-			{ clientId: SchedulerService.ClientID, taskId: taskId },
-			opts,
-		),
+		SchedulerService.startTask(taskId, opts),
 	);
 }
 
-function handleStartTask(rsp: ApiResponseManagementRsp<SchedulerStartTaskResult>): void {
+function handleStartTask(rsp: DaemonApiResponse): void {
 	if (rsp.data.status !== 0) {
 		toast.error(
 			i18n.t('components.config.daemon.scheduler.messages.start.failed'),
@@ -332,6 +316,7 @@ function handleStartTask(rsp: ApiResponseManagementRsp<SchedulerStartTaskResult>
 async function stopTask(taskId: string): Promise<void> {
 	componentState.value = ComponentState.Action;
 	const opts = new DaemonMessageOptions(
+		null,
 		30_000,
 		i18n.t('components.config.daemon.scheduler.messages.stop.timeout'),
 		() => {
@@ -340,15 +325,11 @@ async function stopTask(taskId: string): Promise<void> {
 		},
 	);
 	msgId.value = await daemonStore.sendMessage(
-		SchedulerService.stopTask(
-			{},
-			{ clientId: SchedulerService.ClientID, taskId: taskId },
-			opts,
-		),
+		SchedulerService.stopTask(taskId, opts),
 	);
 }
 
-function handleStopTask(rsp: ApiResponseManagementRsp<SchedulerStopTaskResult>): void {
+function handleStopTask(rsp: DaemonApiResponse): void {
 	if (rsp.data.status !== 0) {
 		toast.error(
 			i18n.t('components.config.daemon.scheduler.messages.stop.failed'),

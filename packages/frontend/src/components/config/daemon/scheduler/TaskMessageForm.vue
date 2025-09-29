@@ -82,10 +82,10 @@ limitations under the License.
 <script lang='ts' setup>
 import { MessagingType } from '@iqrf/iqrf-gateway-daemon-utils/enums';
 import {
+	DaemonApiResponse,
 	type MessagingInstance,
-	type TApiResponse,
+	SchedulerRecordTask,
 } from '@iqrf/iqrf-gateway-daemon-utils/types';
-import { SchedulerTask } from '@iqrf/iqrf-gateway-daemon-utils/types/management';
 import { type IqrfGatewayDaemonMessagingInstances } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import {
 	Action,
@@ -113,7 +113,7 @@ const componentProps = defineProps({
 		required: false,
 	},
 	task: {
-		type: [Object, null] as PropType<SchedulerTask | null>,
+		type: [Object, null] as PropType<SchedulerRecordTask | null>,
 		default: null,
 		required: false,
 	},
@@ -168,7 +168,7 @@ watch(show, (newVal: boolean): void => {
 	}
 });
 
-function isDaemonApiRequest(value: object): value is TApiResponse {
+function isDaemonApiRequest(value: object): value is DaemonApiResponse {
 	if (!('mType' in value) || !('data' in value)) {
 		return false;
 	}
@@ -179,7 +179,7 @@ async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value) || message.value === null) {
 		return;
 	}
-	const recordTask: SchedulerTask = {
+	const recordTask: SchedulerRecordTask = {
 		message: JSON.parse(message.value),
 		messaging: selected.value,
 	};
