@@ -70,45 +70,39 @@
 				</tr>
 			</tbody>
 		</v-table>
-		<v-row no-gutters>
-			<v-col cols='12' sm='4'>
-				<IActionBtn
-					:action='Action.Custom'
-					color='info'
-					:icon='mdiLightbulbOnOutline'
-					block
-					flat
-					:text='$t("components.iqrfnet.network-manager.devices.actions.indicate")'
-					:loading='componentState === ComponentState.Action && actionType === ActionType.INDICATE'
-					:disabled='[ComponentState.Action, ComponentState.Loading, ComponentState.Reloading].includes(componentState) && actionType !== ActionType.INDICATE'
-					@click='indicateCoordinator()'
-				/>
-			</v-col>
-			<v-col cols='12' sm='4'>
-				<IActionBtn
-					:action='Action.Custom'
-					color='primary'
-					:icon='mdiRadar'
-					block
-					flat
-					:text='$t("components.iqrfnet.network-manager.devices.actions.ping")'
-					:loading='componentState === ComponentState.Action && actionType === ActionType.PING'
-					:disabled='[ComponentState.Action, ComponentState.Loading, ComponentState.Reloading].includes(componentState) && actionType !== ActionType.PING'
-					@click='ping()'
-				/>
-			</v-col>
-			<v-col cols='12' sm='4'>
-				<IActionBtn
-					:action='Action.Restart'
-					block
-					flat
-					:text='$t("components.iqrfnet.network-manager.devices.actions.restart")'
-					:loading='componentState === ComponentState.Action && actionType === ActionType.RESTART'
-					:disabled='[ComponentState.Action, ComponentState.Loading, ComponentState.Reloading].includes(componentState) && actionType !== ActionType.RESTART'
-					@click='restart()'
-				/>
-			</v-col>
-		</v-row>
+		<v-btn-group
+			rounded
+			divided
+		>
+			<IActionBtn
+				:action='Action.Custom'
+				color='info'
+				:icon='mdiLightbulbOnOutline'
+				flat
+				:text='$t("components.iqrfnet.network-manager.devices.actions.indicate")'
+				:loading='componentState === ComponentState.Action && actionType === ActionType.INDICATE'
+				:disabled='[ComponentState.Action, ComponentState.Loading, ComponentState.Reloading].includes(componentState) && actionType !== ActionType.INDICATE'
+				@click='indicateCoordinator()'
+			/>
+			<IActionBtn
+				:action='Action.Custom'
+				color='primary'
+				:icon='mdiRadar'
+				flat
+				:text='$t("components.iqrfnet.network-manager.devices.actions.ping")'
+				:loading='componentState === ComponentState.Action && actionType === ActionType.PING'
+				:disabled='[ComponentState.Action, ComponentState.Loading, ComponentState.Reloading].includes(componentState) && actionType !== ActionType.PING'
+				@click='ping()'
+			/>
+			<IActionBtn
+				:action='Action.Restart'
+				flat
+				:text='$t("components.iqrfnet.network-manager.devices.actions.restart")'
+				:loading='componentState === ComponentState.Action && actionType === ActionType.RESTART'
+				:disabled='[ComponentState.Action, ComponentState.Loading, ComponentState.Reloading].includes(componentState) && actionType !== ActionType.RESTART'
+				@click='restart()'
+			/>
+		</v-btn-group>
 		<v-table v-if='devices.length > 0'>
 			<tbody>
 				<tr>
@@ -227,6 +221,9 @@ function handleBondedDevices(rsp: DaemonApiResponse): void {
 	if (rsp.data.status !== 0) {
 		return;
 	}
+	for (let i = 0; i < devices.value.length; ++i) {
+		devices.value[i].bonded = false;
+	}
 	const bonded: number[] = rsp.data.rsp.result.bondedDevices;
 	if (bonded.length === 0) {
 		return;
@@ -258,6 +255,9 @@ async function getDiscoveredDevices(): Promise<void> {
 function handleDiscoveredDevices(rsp: DaemonApiResponse): void {
 	if (rsp.data.status !== 0) {
 		return;
+	}
+	for (let i = 0; i < devices.value.length; ++i) {
+		devices.value[i].discovered = false;
 	}
 	const discovered: number[] = rsp.data.rsp.result.discoveredDevices;
 	if (discovered.length === 0) {
@@ -404,6 +404,10 @@ function handleIndicate(rsp: DaemonApiResponse): void {
 		);
 	}
 }
+
+defineExpose({
+	getBondedDevices,
+});
 
 onMounted(() => {
 	getBondedDevices();

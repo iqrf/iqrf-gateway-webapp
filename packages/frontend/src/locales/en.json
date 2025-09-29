@@ -520,10 +520,6 @@
 						},
 						"configure": "Configure"
 					},
-					"discovery": {
-						"maxAddr": "Maximum node address",
-						"txPower": "TX power"
-					},
 					"factoryReset": {
 						"coordinator": "Coordinator",
 						"iqaros": "IQAROS",
@@ -2420,6 +2416,9 @@
 			},
 			"inProgress": "Request handling in progress.",
 			"network-manager": {
+				"bonding": {
+					"title": "Bonding"
+				},
 				"devices": {
 					"actions": {
 						"indicate": "Indicate coordinator",
@@ -2466,8 +2465,32 @@
 					"title": "Devices"
 				},
 				"discovery": {
-					"title": "Discovery"
-				}
+					"actions": {
+						"run": "Run discovery"
+					},
+					"maxAddr": "Maximum node address",
+					"messages": {
+						"failed": "The discovery process failed.",
+						"success": "The discovery process succeeded, there are {count} discovered nodes in network.",
+						"timeout": "The discovery process request timeout."
+					},
+					"note": "The discovery process can take several minutes, depending on the size of the network.",
+					"title": "Discovery",
+					"txPower": "TX power",
+					"validation": {
+						"maxAddr": {
+							"between": "Maximum node address should be between 0 and 239.",
+							"integer": "Maximum node address should be an integer.",
+							"required": "Please enter maximum node address."
+						},
+						"txPower": {
+							"between": "TX power should be between 0 and 7.",
+							"integer": "TX power should be an integer.",
+							"required": "Please enter TX power."
+						}
+					}
+				},
+				"iqmesh": "IQMESH"
 			},
 			"products": {
 				"button": "Browse products",

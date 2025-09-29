@@ -37,7 +37,7 @@ limitations under the License.
 				</template>
 				<INumberInput
 					v-model='config.maxAddr'
-					:label='$t("components.config.controller.form.discovery.maxAddr")'
+					:label='$t("components.iqrfnet.network-manager.discovery.maxAddr")'
 					:rules='[
 						(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.maxAddr.required")),
 						(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.maxAddr.integer")),
@@ -50,7 +50,7 @@ limitations under the License.
 				/>
 				<INumberInput
 					v-model='config.txPower'
-					:label='$t("components.config.controller.form.discovery.txPower")'
+					:label='$t("components.iqrfnet.network-manager.discovery.txPower")'
 					:rules='[
 						(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.txPower.required")),
 						(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.txPower.integer")),

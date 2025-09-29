@@ -22,10 +22,30 @@ limitations under the License.
 		</Head>
 		<v-row>
 			<v-col lg='6' cols='12'>
-
+				<v-toolbar
+					density='compact'
+					class='rounded-t'
+					color='primary'
+				>
+					<template #title>
+						<v-tabs v-model='tab'>
+							<v-tab
+								value='0'
+								:text='$t("components.iqrfnet.network-manager.iqmesh")'
+							/>
+						</v-tabs>
+					</template>
+				</v-toolbar>
+				<v-tabs-window v-model='tab'>
+					<v-tabs-window-item
+						value='0'
+					>
+						<DiscoveryManager @update-devices='refreshDevices()' />
+					</v-tabs-window-item>
+				</v-tabs-window>
 			</v-col>
 			<v-col lg='6' cols='12'>
-				<Devices ref='devices' />
+				<Devices ref='devicesComponent' />
 			</v-col>
 		</v-row>
 	</div>
@@ -42,7 +62,15 @@ import { Head } from '@unhead/vue/components';
 import { ref, Ref } from 'vue';
 
 import Devices from '@/components/iqrfnet/network-manager/Devices.vue';
+import DiscoveryManager from '@/components/iqrfnet/network-manager/DiscoveryManager.vue';
 
-const devices: Ref<typeof Devices | null> = ref(null);
+const tab: Ref<number> = ref(0);
+const devicesComponent: Ref<typeof Devices | null> = ref(null);
+
+function refreshDevices(): void {
+	if (devicesComponent.value !== null) {
+		devicesComponent.value.getBondedDevices();
+	}
+}
 
 </script>
