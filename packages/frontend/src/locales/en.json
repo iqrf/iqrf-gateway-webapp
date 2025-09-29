@@ -98,7 +98,8 @@
 		},
 		"messages": {
 			"fetchFailed": "An error has occurred while fetching data.",
-			"noDevice": "No device exists at address {address}."
+			"noDevice": "No device exists at address {address}.",
+			"noDevices": "No devices exist in network."
 		},
 		"states": {
 			"active": "Active",
@@ -2418,6 +2419,56 @@
 				}
 			},
 			"inProgress": "Request handling in progress.",
+			"network-manager": {
+				"devices": {
+					"actions": {
+						"indicate": "Indicate coordinator",
+						"ping": "Ping nodes",
+						"refresh": "Refresh devices",
+						"restart": "Restart nodes"
+					},
+					"messages": {
+						"bonded": {
+							"failed": "Failed to get bonded devices.",
+							"timeout": "Get bonded devices request timed out."
+						},
+						"discovered": {
+							"failed": "Failed to get discovered devices.",
+							"timeout": "Get discovered devices request timed out."
+						},
+						"indicate": {
+							"failed": "Failed to indicate coordinator device.",
+							"success": "Coordinator device successfully indicated.",
+							"timeout": "Indicate coordinator request timed out."
+						},
+						"ping": {
+							"failed": "Failed to ping devices.",
+							"timeout": "Ping nodes request timed out."
+						},
+						"restart": {
+							"failed": "Failed to restart devices.",
+							"success": "All nodes have been successfully restarted.",
+							"timeout": "Restart nodes request timed out."
+						}
+					},
+					"restart": {
+						"text": "The following nodes could not be restarted.",
+						"title": "Restart result"
+					},
+					"states": {
+						"bonded": "Bonded device",
+						"coordinator": "Coordinator device",
+						"discovered": "Discovered device",
+						"onlineBonded": "Online bonded device",
+						"onlineDiscovered": "Online discovered device",
+						"unbonded": "Unbonded"
+					},
+					"title": "Devices"
+				},
+				"discovery": {
+					"title": "Discovery"
+				}
+			},
 			"products": {
 				"button": "Browse products",
 				"hwpid": "Product HWPID",
@@ -3017,6 +3068,9 @@
 		},
 		"iqrfnet": {
 			"description": "Manager IQRF network and devices.",
+			"network-manager": {
+				"title": "Network manager"
+			},
 			"send-dpa": {
 				"description": "Send raw DPA packets into the IQRF network.",
 				"title": "Send DPA packet"

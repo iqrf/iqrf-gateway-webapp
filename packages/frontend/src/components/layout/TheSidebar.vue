@@ -258,6 +258,10 @@ function items(): SidebarLink[] {
 						to: '/iqrfnet/tr-config',
 					},
 					{
+						title: i18n.t('pages.iqrfnet.network-manager.title'),
+						to: '/iqrfnet/network-manager',
+					},
+					{
 						title: i18n.t('pages.iqrfnet.standard-manager.title'),
 						to: '/iqrfnet/standard-manager',
 					},
