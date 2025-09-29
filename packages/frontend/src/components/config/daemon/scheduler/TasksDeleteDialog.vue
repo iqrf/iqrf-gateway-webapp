@@ -41,8 +41,7 @@ limitations under the License.
 <script lang='ts' setup>
 import { SchedulerMessages } from '@iqrf/iqrf-gateway-daemon-utils/enums';
 import { SchedulerService } from '@iqrf/iqrf-gateway-daemon-utils/services';
-import { type ApiResponseManagementRsp, type TApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
-import { type SchedulerRemoveAllResult } from '@iqrf/iqrf-gateway-daemon-utils/types/management';
+import { type DaemonApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import {
 	Action,
@@ -75,13 +74,13 @@ daemonStore.$onAction(
 		if (name !== 'onMessage') {
 			return;
 		}
-		after((rsp: TApiResponse) => {
+		after((rsp: DaemonApiResponse) => {
 			if (rsp.data.msgId !== msgId.value) {
 				return;
 			}
 			daemonStore.removeMessage(msgId.value);
 			if (rsp.mType === SchedulerMessages.RemoveAll) {
-				handleRemoveTasks(rsp as ApiResponseManagementRsp<SchedulerRemoveAllResult>);
+				handleRemoveTasks(rsp);
 			}
 		});
 	},
@@ -90,6 +89,7 @@ daemonStore.$onAction(
 async function removeTasks(): Promise<void> {
 	componentState.value = ComponentState.Action;
 	const opts = new DaemonMessageOptions(
+		null,
 		30_000,
 		i18n.t('components.config.daemon.scheduler.messages.deleteAll.timeout'),
 		() => {
@@ -98,15 +98,11 @@ async function removeTasks(): Promise<void> {
 		},
 	);
 	msgId.value = await daemonStore.sendMessage(
-		SchedulerService.removeAllTasks(
-			{},
-			{ clientId: SchedulerService.ClientID },
-			opts,
-		),
+		SchedulerService.removeAllTasks(opts),
 	);
 }
 
-function handleRemoveTasks(rsp: ApiResponseManagementRsp<SchedulerRemoveAllResult>): void {
+function handleRemoveTasks(rsp: DaemonApiResponse): void {
 	if (rsp.data.status !== 0) {
 		toast.error(
 			i18n.t('components.config.daemon.scheduler.messages.deleteAll.failed'),
