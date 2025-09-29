@@ -66,11 +66,9 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { IqmeshService } from '@iqrf/iqrf-gateway-daemon-utils/services';
-import { type ApiResponseIqmesh,
-	type IqmeshEnumerateDeviceResult,
-	type IqmeshWriteTrConfParams,
-} from '@iqrf/iqrf-gateway-daemon-utils/types';
+import { EnumerationService } from '@iqrf/iqrf-gateway-daemon-utils/services/iqmesh';
+import { DaemonApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
+import { IqmeshTrConfigParams } from '@iqrf/iqrf-gateway-daemon-utils/types/iqmesh';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { ComponentState, ICard } from '@iqrf/iqrf-vue-ui';
 import { mdiContentSave } from '@mdi/js';
@@ -90,7 +88,7 @@ const msgId: Ref<string | null> = ref(null);
 const addr: Ref<number> = ref(0);
 const tab: Ref<number> = ref(0);
 const form: Ref<VForm | null> = ref(null);
-const config: Ref<IqmeshWriteTrConfParams> = ref({
+const config: Ref<IqmeshTrConfigParams> = ref({
 	deviceAddr: 0,
 	rfBand: '868', // OS RF
 	rfChannelA: 52,
@@ -139,16 +137,23 @@ const config: Ref<IqmeshWriteTrConfParams> = ref({
 
 async function enumerate(): Promise<void> {
 	const opts = new DaemonMessageOptions(
+		null,
 		60_000,
 		'todo',
 		() => {
 			msgId.value = null;
 		},
 	);
-	msgId.value = await daemonSocket.sendMessage(IqmeshService.enumerate({}, { deviceAddr: addr.value }, opts));
+	msgId.value = await daemonSocket.sendMessage(
+		EnumerationService.enumerate(
+			{},
+			{ deviceAddr: addr.value },
+			opts,
+		),
+	);
 }
 
-function handleEnumerate(rsp: ApiResponseIqmesh<IqmeshEnumerateDeviceResult>): void {
+function handleEnumerate(rsp: DaemonApiResponse): void {
 	switch (rsp.data.status) {
 		case 0:
 			config.value = { ...config.value, ...rsp.data.rsp.trConfiguration };
