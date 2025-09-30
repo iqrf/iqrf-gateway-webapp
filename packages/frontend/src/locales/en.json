@@ -2567,13 +2567,52 @@
 					}
 				},
 				"dpa-params": {
+					"dpa-hops": {
+						"actions": {
+							"get": "Get DPA hops",
+							"set": "Set DPA hops"
+						},
+						"messages": {
+							"get": {
+								"failed": "Failed to get current DPA hops.",
+								"success": "Current DPA hops successfully retrieved.",
+								"timeout": "Get DPA hops request timed out."
+							},
+							"set": {
+								"failed": "Failed to set DPA hops.",
+								"success": "DPA hops successfully set.",
+								"timeout": "Set DPA hops request timed out."
+							}
+						},
+						"notes": {
+							"dom": "Discovered Optimized Mesh.",
+							"drm": "Discovered Reduced Mesh.",
+							"hops": "Specifies fixed number of hops used to send a DPA request or response, or an optimization algorithm to compute number of hops."
+						},
+						"optimizeDom": "Optimize DOM",
+						"optimizeDrm": "Optimize DRM",
+						"requestHops": "Request hops",
+						"responseHops": "Response hops",
+						"title": "DPA Hops",
+						"validation": {
+							"requestHops": {
+								"between": "Request hops should be between 1 and 239.",
+								"integer": "Request hops should be an integer between.",
+								"required": "Please enter request hops."
+							},
+							"responseHops": {
+								"between": "Response hops should be between 1 and 239.",
+								"integer": "Response hops should be an integer between.",
+								"required": "Please enter response hops."
+							}
+						}
+					},
 					"dpa-value": {
 						"actions": {
 							"get": "Get DPA value",
 							"set": "Set DPA value"
 						},
 						"messages": {
-							"genericError": "DPA value request failed: {error}",
 							"get": {
 								"failed": "Failed to get current DPA value type.",
 								"success": "Current DPA value type successfully retrieved.",
