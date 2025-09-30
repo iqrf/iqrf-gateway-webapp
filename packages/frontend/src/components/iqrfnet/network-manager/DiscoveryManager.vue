@@ -5,7 +5,7 @@
 		:disabled='componentState === ComponentState.Action'
 		@submit.prevent='discovery()'
 	>
-		<ICard>
+		<ICard flat>
 			<v-card-title>
 				{{ $t('components.iqrfnet.network-manager.discovery.title') }}
 			</v-card-title>
@@ -67,7 +67,9 @@ import { mdiNumeric, mdiPlay, mdiSignalVariant } from '@mdi/js';
 import { ref, Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
+import { VForm } from 'vuetify/components';
 
+import { validateForm } from '@/helpers/validateForm';
 import { useDaemonStore } from '@/store/daemonSocket';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
@@ -76,6 +78,7 @@ const emit = defineEmits<{
 }>();
 const i18n = useI18n();
 const daemonStore = useDaemonStore();
+const form: Ref<VForm | null> = ref(null);
 const discoveryParams: Ref<DiscoveryParams> = ref({
 	maxAddr: 239,
 	txPower: 6,
@@ -98,6 +101,9 @@ daemonStore.$onAction(({ name, after }) => {
 });
 
 async function discovery(): Promise<void> {
+	if (!await validateForm(form.value)) {
+		return;
+	}
 	componentState.value = ComponentState.Action;
 	const opts = new DaemonMessageOptions(null);
 	const params = { ...discoveryParams.value };
