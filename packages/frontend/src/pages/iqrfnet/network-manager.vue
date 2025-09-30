@@ -53,6 +53,7 @@ limitations under the License.
 					>
 						<DpaValue />
 						<DpaHops />
+						<FrcParams />
 					</v-tabs-window-item>
 				</v-tabs-window>
 			</v-col>
@@ -77,7 +78,8 @@ import BondingManager from '@/components/iqrfnet/network-manager/BondingManager.
 import Devices from '@/components/iqrfnet/network-manager/Devices.vue';
 import DiscoveryManager from '@/components/iqrfnet/network-manager/DiscoveryManager.vue';
 import DpaHops from '@/components/iqrfnet/network-manager/DpaHops.vue';
-import DpaValue from '@/components/iqrfnet/network-manager/DpaValue..vue';
+import DpaValue from '@/components/iqrfnet/network-manager/DpaValue.vue';
+import FrcParams from '@/components/iqrfnet/network-manager/FrcParams.vue';
 import NfcBondingManager from '@/components/iqrfnet/network-manager/NfcBondingManager.vue';
 
 const tab: Ref<number> = ref(0);

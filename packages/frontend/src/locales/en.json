@@ -2636,8 +2636,42 @@
 							"voltage": "Supply voltage"
 						}
 					},
+					"frc-params": {
+						"actions": {
+							"get": "Get FRC params",
+							"set": "Set FRC params"
+						},
+						"messages": {
+							"get": {
+								"failed": "Failed to get current FRC params.",
+								"success": "Current FRC params successfully retrieved.",
+								"timeout": "Get FRC params request timed out."
+							},
+							"set": {
+								"failed": "Failed to set FRC params.",
+								"success": "FRC params successfully set.",
+								"timeout": "Set FRC params request timed out."
+							}
+						},
+						"notes": {
+							"offlineFrc": "Offline FRC takes less time. Enable this feature only for downloading data from Beaming sensors (in Offline mode).",
+							"responseTime": "Specifies FRC response time i.e. a maximum time reserved for preparing return FRC value."
+						},
+						"offlineFrc": "Offline FRC",
+						"responseTime": "FRC response time",
+						"responseTimes": {
+							"0": "40 ms",
+							"112": "20620 ms",
+							"16": "360 ms",
+							"32": "680 ms",
+							"48": "1320 ms",
+							"64": "2600 ms",
+							"80": "5160 ms",
+							"96": "10280 ms"
+						},
+						"title": "FRC params"
+					},
 					"title": "DPA params"
-
 				},
 				"iqmesh": "IQMESH"
 			},
