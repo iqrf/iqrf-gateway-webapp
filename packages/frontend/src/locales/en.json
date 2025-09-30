@@ -99,7 +99,8 @@
 		"messages": {
 			"fetchFailed": "An error has occurred while fetching data.",
 			"noDevice": "No device exists at address {address}.",
-			"noDevices": "No devices exist in network."
+			"noDevices": "No devices exist in network.",
+			"offlineDevice": "Device at address {address} may be offline."
 		},
 		"states": {
 			"active": "Active",
@@ -2382,9 +2383,15 @@
 		},
 		"iqrfnet": {
 			"common": {
+				"address": "Address",
+				"autoAddress": "Assign address automatically",
+				"bondingTestRetries": "Number of retry DPA transactions",
 				"deviceAddr": "Device address",
 				"dpa": "DPA",
 				"embedPeripherals": "Embedded Peripherals",
+				"messages": {
+					"error": "An error has occured when processing request."
+				},
 				"os": "OS",
 				"peripherals": {
 					"coordinator": "Coordinator",
@@ -2407,21 +2414,90 @@
 				"trPeripherals": "TR Peripherals",
 				"txPower": "TX power",
 				"validation": {
+					"address": {
+						"between": "Address should be between 1 and 239.",
+						"integer": "Address should be an integer.",
+						"required": "Please enter address."
+					},
+					"bondingTestRetries": {
+						"between": "Number of retry DPA transactions should be between 0 and 3.",
+						"integer": "Number of retry DPA transactions should be an integer.",
+						"required": "Please enter number of retry DPA transactions."
+					},
 					"deviceAddr": {
-						"between": "Device addres should be between 0 and 239",
+						"between": "Device addres should be between 0 and 239.",
 						"integer": "Device addres should be an integer.",
-						"required": "Please enter device address"
+						"required": "Please enter device address."
 					}
 				}
 			},
 			"inProgress": "Request handling in progress.",
 			"network-manager": {
+				"bondNfc": {
+					"messages": {
+						"failed": "Failed to bond NFC reader.",
+						"success": "NFC reader has been successfully bonded.",
+						"timeout": "NFC reader bond request timed out."
+					},
+					"note": "NFC NOTE HERE",
+					"title": "Bond NFC reader"
+				},
 				"bonding": {
-					"title": "Bonding"
+					"actions": {
+						"bond": "Bond node",
+						"clear": "Clear bonds",
+						"smartConnect": "Smart connect",
+						"unbond": "Unbond node"
+					},
+					"clear": {
+						"text": "Are you sure you want to clear all bonds.",
+						"title": "Clear bonds confirmation"
+					},
+					"messages": {
+						"addressTaken": "Another node is already bonded to address {address}.",
+						"bond": {
+							"timeout": "Local bonding request timed out."
+						},
+						"clear": {
+							"failed": "Failed to clear all bonds.",
+							"failedCoordinator": "Failed to clear all bonds from coordinator memory.",
+							"success": "All nodes bonds have been successfully cleared.",
+							"successCoordinator": "All node bonds have been successfully cleared from coordinator memory.",
+							"timeout": "Clear node bonds request timed out."
+						},
+						"error": "Failed to bond a new node device.",
+						"noAddressAvailable": "There is no address available to bond a new node device.",
+						"success": "A new node has been bonded to address {address}.",
+						"unbond": {
+							"failed": "Failed to unbond node device from address {address}.",
+							"failedCoordinator": "Failed to unbond node device from coordinator memmory from address {address}.",
+							"success": "Node device has been successfully unbonded from address {address}.",
+							"successCoordinator": "Node device has been successfully unbonded from coordinator memory from address {address}.",
+							"timeout": "Node device unbond request timed out."
+						}
+					},
+					"method": "Bonding method",
+					"methods": {
+						"local": "Local bonding",
+						"smartConnect": "Smart connect"
+					},
+					"smartConnectCode": "Smart connect code",
+					"title": "Bonding",
+					"unbond": {
+						"text": "Are you sure you want to unbond a device at address {address}.",
+						"title": "Unbond node confirmation"
+					},
+					"unbondCoordinator": "Remove bonds only from Coordinator memory",
+					"validation": {
+						"smartConnectCode": {
+							"regex": "Smart Connect code should be a 34 characters long base57 string.",
+							"required": "Please enter smart connect code."
+						}
+					}
 				},
 				"devices": {
 					"actions": {
-						"indicate": "Indicate coordinator",
+						"indicate": "Indicate",
 						"ping": "Ping nodes",
 						"refresh": "Refresh devices",
 						"restart": "Restart nodes"

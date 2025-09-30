@@ -40,6 +40,8 @@ limitations under the License.
 					<v-tabs-window-item
 						value='0'
 					>
+						<BondingManager @update-devices='refreshDevices()' />
+						<NfcBondingManager />
 						<DiscoveryManager @update-devices='refreshDevices()' />
 					</v-tabs-window-item>
 				</v-tabs-window>
@@ -61,8 +63,10 @@ limitations under the License.
 import { Head } from '@unhead/vue/components';
 import { ref, Ref } from 'vue';
 
+import BondingManager from '@/components/iqrfnet/network-manager/BondingManager.vue';
 import Devices from '@/components/iqrfnet/network-manager/Devices.vue';
 import DiscoveryManager from '@/components/iqrfnet/network-manager/DiscoveryManager.vue';
+import NfcBondingManager from '@/components/iqrfnet/network-manager/NfcBondingManager.vue';
 
 const tab: Ref<number> = ref(0);
 const devicesComponent: Ref<typeof Devices | null> = ref(null);
