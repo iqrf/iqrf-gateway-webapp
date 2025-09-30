@@ -33,6 +33,10 @@ limitations under the License.
 								value='0'
 								:text='$t("components.iqrfnet.network-manager.iqmesh")'
 							/>
+							<v-tab
+								value='1'
+								:text='$t("components.iqrfnet.network-manager.dpa-params.title")'
+							/>
 						</v-tabs>
 					</template>
 				</v-toolbar>
@@ -43,6 +47,11 @@ limitations under the License.
 						<BondingManager @update-devices='refreshDevices()' />
 						<NfcBondingManager />
 						<DiscoveryManager @update-devices='refreshDevices()' />
+					</v-tabs-window-item>
+					<v-tabs-window-item
+						value='1'
+					>
+						<DpaValue />
 					</v-tabs-window-item>
 				</v-tabs-window>
 			</v-col>
@@ -66,6 +75,7 @@ import { ref, Ref } from 'vue';
 import BondingManager from '@/components/iqrfnet/network-manager/BondingManager.vue';
 import Devices from '@/components/iqrfnet/network-manager/Devices.vue';
 import DiscoveryManager from '@/components/iqrfnet/network-manager/DiscoveryManager.vue';
+import DpaValue from '@/components/iqrfnet/network-manager/DpaValue..vue';
 import NfcBondingManager from '@/components/iqrfnet/network-manager/NfcBondingManager.vue';
 
 const tab: Ref<number> = ref(0);

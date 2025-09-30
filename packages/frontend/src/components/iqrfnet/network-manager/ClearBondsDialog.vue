@@ -58,7 +58,7 @@ import { BondingService } from '@iqrf/iqrf-gateway-daemon-utils/services/iqmesh'
 import { DaemonApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { Action, ComponentState, IActionBtn, ICard, IModalWindow } from '@iqrf/iqrf-vue-ui';
-import { ref, type Ref } from 'vue';
+import { onBeforeUnmount, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
@@ -161,5 +161,9 @@ function handleBond(rsp: DaemonApiResponse): void {
 function close(): void {
 	show.value = false;
 }
+
+onBeforeUnmount(() => {
+	daemonStore.removeMessage(msgId.value);
+});
 
 </script>

@@ -64,7 +64,7 @@ import { DiscoveryParams } from '@iqrf/iqrf-gateway-daemon-utils/types/embed';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { Action, ComponentState, IActionBtn, ICard, INumberInput, ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiNumeric, mdiPlay, mdiSignalVariant } from '@mdi/js';
-import { ref, Ref } from 'vue';
+import { onBeforeUnmount, ref, Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -133,5 +133,9 @@ function handleDiscovery(rsp: DaemonApiResponse): void {
 	}
 	componentState.value = ComponentState.Idle;
 }
+
+onBeforeUnmount(() => {
+	daemonStore.removeMessage(msgId.value);
+});
 
 </script>
