@@ -52,6 +52,7 @@ limitations under the License.
 						value='1'
 					>
 						<DpaValue />
+						<DpaHops />
 					</v-tabs-window-item>
 				</v-tabs-window>
 			</v-col>
@@ -75,6 +76,7 @@ import { ref, Ref } from 'vue';
 import BondingManager from '@/components/iqrfnet/network-manager/BondingManager.vue';
 import Devices from '@/components/iqrfnet/network-manager/Devices.vue';
 import DiscoveryManager from '@/components/iqrfnet/network-manager/DiscoveryManager.vue';
+import DpaHops from '@/components/iqrfnet/network-manager/DpaHops.vue';
 import DpaValue from '@/components/iqrfnet/network-manager/DpaValue..vue';
 import NfcBondingManager from '@/components/iqrfnet/network-manager/NfcBondingManager.vue';
 
