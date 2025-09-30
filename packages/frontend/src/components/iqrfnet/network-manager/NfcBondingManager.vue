@@ -35,7 +35,7 @@ import { DaemonApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { Action, ComponentState, IActionBtn, ICard } from '@iqrf/iqrf-vue-ui';
 import { mdiSignalVariant } from '@mdi/js';
-import { ref, Ref } from 'vue';
+import { onBeforeUnmount, ref, Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
@@ -92,5 +92,9 @@ function handleBondNfc(rsp: DaemonApiResponse): void {
 	}
 	componentState.value = ComponentState.Idle;
 }
+
+onBeforeUnmount(() => {
+	daemonStore.removeMessage(msgId.value);
+});
 
 </script>

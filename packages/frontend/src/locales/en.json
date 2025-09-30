@@ -2566,6 +2566,40 @@
 						}
 					}
 				},
+				"dpa-params": {
+					"dpa-value": {
+						"actions": {
+							"get": "Get DPA value",
+							"set": "Set DPA value"
+						},
+						"messages": {
+							"genericError": "DPA value request failed: {error}",
+							"get": {
+								"failed": "Failed to get current DPA value type.",
+								"success": "Current DPA value type successfully retrieved.",
+								"timeout": "Get DPA value type request timed out."
+							},
+							"set": {
+								"failed": "Failed to set DPA value type.",
+								"success": "DPA value type successfully set.",
+								"timeout": "Set DPA value type request timed out."
+							}
+						},
+						"notes": {
+							"value": "Specifies which type of DPA Value is returned in every DPA request or DPA confirmation message."
+						},
+						"title": "DPA Value",
+						"type": "Value type",
+						"types": {
+							"rssi": "RSSI",
+							"system": "System",
+							"user": "User-specified",
+							"voltage": "Supply voltage"
+						}
+					},
+					"title": "DPA params"
+
+				},
 				"iqmesh": "IQMESH"
 			},
 			"products": {
