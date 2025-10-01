@@ -125,6 +125,7 @@ async function frcParamsAction(action: IqmeshConfigAction): Promise<void> {
 		),
 		() => {
 			componentState.value = ComponentState.Idle;
+			msgId.value = null;
 		},
 	);
 	const params: IqmeshFrcParams = {

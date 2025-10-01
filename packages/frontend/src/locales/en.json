@@ -100,6 +100,7 @@
 			"fetchFailed": "An error has occurred while fetching data.",
 			"noDevice": "No device exists at address {address}.",
 			"noDevices": "No devices exist in network.",
+			"noNodes": "No node devices exist in network.",
 			"offlineDevice": "Device at address {address} may be offline."
 		},
 		"states": {
@@ -2710,6 +2711,42 @@
 					"title": "DPA params"
 				},
 				"iqmesh": "IQMESH",
+				"maintenance": "Maintenance",
+				"network-issues": {
+					"actions": {
+						"resolve": "Resolve"
+					},
+					"issue": "Issue",
+					"issues": {
+						"duplicatedAddresses": "Duplicated addresses",
+						"inconsistentMids": "Inconsistent MIDs in Coordinator",
+						"prebondedNodes": "Useless prebonded nodes"
+					},
+					"messages": {
+						"duplicatedAddresses": {
+							"failed": "Failed to resolve duplicated addresses.",
+							"success": "Duplicated addresses successfully resolved.",
+							"timeout": "Resolve duplicated addresses request timed out."
+						},
+						"inconsistentMids": {
+							"failed": "Failed to resolve inconsistent MIDs in coordinator.",
+							"success": "Inconsistent MIDs in coordinator successfully resolved.",
+							"timeout": "Resolve inconsistent MIDs in coordinator request timed out."
+						},
+						"prebondedNodes": {
+							"failed": "Failed to resolve useless prebonded nodes.",
+							"success": "Useless prebonded nodes successfully resolved.",
+							"timeout": "Resolve useless prebonded nodes request timed out."
+						}
+					},
+					"note": {
+						"duplicatedAddresses": "Unbonds nodes with MIDs that mismatch MIDs in coordinator memory. This may occur in some situations during Autonetwork.",
+						"inconsistentMidsInCoordinator": "Sets MIDs in coordinator to MIDs of the bonded nodes. This may occur during upgrade of OS or DPA.",
+						"uselessPrebondedNodes": "Unbonds ramaining nodes with the universal address used in prebonding, from the network. This may occur during Autonetwork when creating overlapping network."
+					},
+					"title": "Network Issues"
+
+				},
 				"restore": {
 					"actions": {
 						"run": "Run restore"
