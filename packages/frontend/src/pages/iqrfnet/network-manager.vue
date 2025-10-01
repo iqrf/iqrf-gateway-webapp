@@ -37,6 +37,10 @@ limitations under the License.
 								value='1'
 								:text='$t("components.iqrfnet.network-manager.dpa-params.title")'
 							/>
+							<v-tab
+								value='2'
+								:text='$t("components.iqrfnet.network-manager.backup-restore")'
+							/>
 						</v-tabs>
 					</template>
 				</v-toolbar>
@@ -54,6 +58,12 @@ limitations under the License.
 						<DpaValue />
 						<DpaHops />
 						<FrcParams />
+					</v-tabs-window-item>
+					<v-tabs-window-item
+						value='2'
+					>
+						<BackupManager />
+						<RestoreManager @update-devices='refreshDevices()' />
 					</v-tabs-window-item>
 				</v-tabs-window>
 			</v-col>
@@ -74,6 +84,7 @@ limitations under the License.
 import { Head } from '@unhead/vue/components';
 import { ref, Ref } from 'vue';
 
+import BackupManager from '@/components/iqrfnet/network-manager/BackupManager.vue';
 import BondingManager from '@/components/iqrfnet/network-manager/BondingManager.vue';
 import Devices from '@/components/iqrfnet/network-manager/Devices.vue';
 import DiscoveryManager from '@/components/iqrfnet/network-manager/DiscoveryManager.vue';
@@ -81,6 +92,7 @@ import DpaHops from '@/components/iqrfnet/network-manager/DpaHops.vue';
 import DpaValue from '@/components/iqrfnet/network-manager/DpaValue.vue';
 import FrcParams from '@/components/iqrfnet/network-manager/FrcParams.vue';
 import NfcBondingManager from '@/components/iqrfnet/network-manager/NfcBondingManager.vue';
+import RestoreManager from '@/components/iqrfnet/network-manager/RestoreManager.vue';
 
 const tab: Ref<number> = ref(0);
 const devicesComponent: Ref<typeof Devices | null> = ref(null);
