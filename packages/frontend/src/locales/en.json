@@ -2433,6 +2433,42 @@
 			},
 			"inProgress": "Request handling in progress.",
 			"network-manager": {
+				"backup": {
+					"actions": {
+						"backup": "Run backup",
+						"download": "Download backup data"
+					},
+					"log": "Backup log",
+					"messages": {
+						"coordinator": {
+							"failed": "Failed to backup coordinator device data.",
+							"finish": "Finished backing up coordinator device data.",
+							"start": "Starting coordinator device data backup.",
+							"success": "Coordinator device data successfully backed up."
+						},
+						"failedNodes": "Could not retrieve backup data from the following node devices: {nodes}.",
+						"network": {
+							"failed": "Failed to backup network devices data.",
+							"finish": "Finished backing up network devices data.",
+							"start": "Starting network device data backup.",
+							"success": "Network devices data successfully backed up."
+						},
+						"noData": "No device data to generate backup file from.",
+						"node": {
+							"failed": "Failed to backup node device {address} data.",
+							"finish": "Finished backing up node device data.",
+							"start": "Starting node device {address} backup.",
+							"success": "Node device {address} data successfully backed up."
+						}
+					},
+					"target": "Backup target",
+					"targets": {
+						"network": "Network",
+						"node": "Node"
+					},
+					"title": "Backup"
+				},
+				"backup-restore": "Backup & Restore",
 				"bondNfc": {
 					"messages": {
 						"failed": "Failed to bond NFC reader.",
@@ -2673,7 +2709,51 @@
 					},
 					"title": "DPA params"
 				},
-				"iqmesh": "IQMESH"
+				"iqmesh": "IQMESH",
+				"restore": {
+					"actions": {
+						"run": "Run restore"
+					},
+					"file": "Backup file",
+					"messages": {
+						"read": {
+							"failed": "Failed to read contents of selected file."
+						},
+						"restore": {
+							"failed": "Failed to restore coordinator device.",
+							"invalidChecksum": "Incorrect coordinator backup data checksum.",
+							"invalidSize": "Invalid coordinator backup data size.",
+							"offline": "Coordinator device may be offline.",
+							"success": "Coordinator device has been successfully restored."
+						}
+					},
+					"note": {
+						"accessPassword": "The access password of backed up and restored TR module must be the same for the restore process to finish successfully. Access password can be changed in TR configuration.",
+						"restart": "It is recommended to restart the coordinator device after completing the restoration process."
+					},
+					"restartCoordinator": "Restart coordinator",
+					"title": "Coordinator restore",
+					"validation": {
+						"content": {
+							"invalid": "The uploaded file does not contain valid IQMESH backup data.",
+							"invalidCoordinatorDataC": "Device property of entry {entry} is Coordinator, but DataC entry is missing.",
+							"invalidCoordinatorDataN": "Device property of entry {entry} is Coordinator, but entry contains property DataN.",
+							"invalidDataContent": "Data {device} property of entry {entry} contains non-hexadecimal characters.",
+							"invalidNodeDataC": "Device property of entry {entry} is Node, but entry contains property DataC.",
+							"invalidNodeDataN": "Device property of entry {entry} is Node, but property DataN is missing.",
+							"missingCoordinator": "Selected file does not contain coordinator device backup data entry.",
+							"propMissing": "Entry {item} does not contain property {property}.",
+							"wrongAddr": "Address property of entry {entry} should be between 0 and 239, but is {address}.",
+							"wrongCoordinatorAddr": "Device property of entry {entry} is Coordinator, but address is not 0. Address: {address}.",
+							"wrongDevice": "Device property of entry {entry} should be Coordinator or Node, but is {device}.",
+							"wrongNodeAddr": "Device property of entry {entry} is Node, but address is 0."
+						},
+						"file": {
+							"invalid": "Selected file should be a .iqrfbkp file.",
+							"required": "Please select a backup file."
+						}
+					}
+				}
 			},
 			"products": {
 				"button": "Browse products",
