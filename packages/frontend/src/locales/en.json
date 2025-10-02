@@ -2710,6 +2710,51 @@
 					},
 					"title": "DPA params"
 				},
+				"frc-response-time": {
+					"actions": {
+						"get": "Measure",
+						"set": "Set"
+					},
+					"command": "FRC Command",
+					"commands": {
+						"iqrf1byte": "IQRF Standard 1-byte FRC",
+						"iqrf2bits": "IQRF Standard 2-bits FRC",
+						"iqrf2byte": "IQRF Standard 2-byte FRC",
+						"iqrf4byte": "IQRF Standard 4-byte FRC",
+						"user1byte": "User 1-byte FRC",
+						"user2bits": "User 2-bits FRC",
+						"user2byte": "User 2-byte FRC",
+						"user4byte": "User 4-byte FRC"
+					},
+					"messages": {
+						"get": {
+							"failed": "Failed to determine best FRC response time.",
+							"timeout": "Get best FRC response time request timed out."
+						},
+						"set": {
+							"failed": "Failed to set FRC response time.",
+							"success": "FRC response time successfully set.",
+							"timeout": "Set FRC response time request timed out."
+						}
+					},
+					"modal": {
+						"current": "Current FRC response time (ms):",
+						"inaccessibleNodes": "Inaccessible nodes:",
+						"notAvailable": "N/A",
+						"prompt": "Do you wish to set recommended FRC response time?",
+						"recommended": "Recommended FRC response time (ms):",
+						"table": {
+							"address": "Node address",
+							"handled": "Event handled",
+							"responded": "Responded",
+							"responseTime": "FRC response time (ms)"
+						},
+						"title": "FRC Response Time Result",
+						"unhandledNodes": "Nodes ignored event:"
+					},
+					"showResult": "Show last result",
+					"title": "FRC Response Time"
+				},
 				"iqmesh": "IQMESH",
 				"maintenance": "Maintenance",
 				"network-issues": {

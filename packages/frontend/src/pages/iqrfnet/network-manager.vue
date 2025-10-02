@@ -72,6 +72,7 @@ limitations under the License.
 					<v-tabs-window-item
 						value='3'
 					>
+						<FrcResponseTime />
 						<NetworkIssuesResolver />
 					</v-tabs-window-item>
 				</v-tabs-window>
@@ -100,6 +101,7 @@ import DiscoveryManager from '@/components/iqrfnet/network-manager/DiscoveryMana
 import DpaHops from '@/components/iqrfnet/network-manager/DpaHops.vue';
 import DpaValue from '@/components/iqrfnet/network-manager/DpaValue.vue';
 import FrcParams from '@/components/iqrfnet/network-manager/FrcParams.vue';
+import FrcResponseTime from '@/components/iqrfnet/network-manager/FrcResponseTime.vue';
 import NetworkIssuesResolver from '@/components/iqrfnet/network-manager/NetworkIssuesResolver.vue';
 import NfcBondingManager from '@/components/iqrfnet/network-manager/NfcBondingManager.vue';
 import RestoreManager from '@/components/iqrfnet/network-manager/RestoreManager.vue';

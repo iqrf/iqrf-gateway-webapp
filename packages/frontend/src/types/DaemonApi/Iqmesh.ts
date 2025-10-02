@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 
+import { type FrcCommand } from '@iqrf/iqrf-gateway-daemon-utils/enums/embed';
+
 export interface EmbeddedPeripherals {
 	values?: number[]
 	coordinator?: boolean
@@ -150,3 +152,20 @@ export interface DeviceEnumeration {
 	standards: string[]
 	trConfiguration: TrConfiguration
 }
+
+export interface FrcResponseTimeResult {
+	command: FrcCommand
+	nodes: FrcResponseTimeResultNode[]
+	inaccessibleNodes: number
+	unhandledNodes: number
+	currentResponseTime: number
+	recommendedResponseTime: number
+}
+
+export interface FrcResponseTimeResultNode {
+	deviceAddr: number
+	responded: boolean
+	handled?: boolean
+	responseTime?: number
+}
+
