@@ -169,3 +169,9 @@ export interface FrcResponseTimeResultNode {
 	responseTime?: number
 }
 
+export interface RfSignalTestResult {
+	deviceAddr: number
+	online: boolean
+}
+
+

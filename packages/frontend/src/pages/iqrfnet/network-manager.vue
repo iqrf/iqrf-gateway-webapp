@@ -53,7 +53,7 @@ limitations under the License.
 						value='0'
 					>
 						<BondingManager @update-devices='refreshDevices()' />
-						<NfcBondingManager />
+						<NfcBondingManager v-if='showNfc' />
 						<DiscoveryManager @update-devices='refreshDevices()' />
 					</v-tabs-window-item>
 					<v-tabs-window-item
@@ -73,6 +73,7 @@ limitations under the License.
 						value='3'
 					>
 						<FrcResponseTime />
+						<RfSignalTest ref='rfSignalComponent' />
 						<NetworkIssuesResolver />
 					</v-tabs-window-item>
 				</v-tabs-window>
@@ -91,8 +92,14 @@ limitations under the License.
 </route>
 
 <script lang='ts' setup>
+import { IqmeshServiceMessages } from '@iqrf/iqrf-gateway-daemon-utils/enums';
+import { EnumerationService } from '@iqrf/iqrf-gateway-daemon-utils/services/iqmesh';
+import { DaemonApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
+import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { Head } from '@unhead/vue/components';
-import { ref, Ref } from 'vue';
+import { compare } from 'compare-versions';
+import { storeToRefs } from 'pinia';
+import { onBeforeUnmount, onMounted, ref, Ref, watch } from 'vue';
 
 import BackupManager from '@/components/iqrfnet/network-manager/BackupManager.vue';
 import BondingManager from '@/components/iqrfnet/network-manager/BondingManager.vue';
@@ -105,14 +112,87 @@ import FrcResponseTime from '@/components/iqrfnet/network-manager/FrcResponseTim
 import NetworkIssuesResolver from '@/components/iqrfnet/network-manager/NetworkIssuesResolver.vue';
 import NfcBondingManager from '@/components/iqrfnet/network-manager/NfcBondingManager.vue';
 import RestoreManager from '@/components/iqrfnet/network-manager/RestoreManager.vue';
+import RfSignalTest from '@/components/iqrfnet/network-manager/RfSignalTest.vue';
+import { useDaemonStore } from '@/store/daemonSocket';
 
+const daemonStore = useDaemonStore();
+const { isConnected } = storeToRefs(daemonStore);
+const msgId: Ref<string | null> = ref(null);
 const tab: Ref<number> = ref(0);
 const devicesComponent: Ref<typeof Devices | null> = ref(null);
+const rfSignalComponent: Ref<typeof RfSignalTest | null> = ref(null);
+const showNfc: Ref<boolean> = ref(false);
 
 function refreshDevices(): void {
 	if (devicesComponent.value !== null) {
 		devicesComponent.value.getBondedDevices();
 	}
 }
+
+daemonStore.$onAction(({ name, after }) => {
+	if (name === 'onMessage') {
+		after((rsp: DaemonApiResponse) => {
+			if (rsp.data.msgId !== msgId.value) {
+				return;
+			}
+			daemonStore.removeMessage(msgId.value);
+			if (rsp.mType === IqmeshServiceMessages.Enumerate) {
+				handleEnumerate(rsp);
+			}
+		});
+	}
+});
+
+async function enumerate(): Promise<void> {
+	const opts = new DaemonMessageOptions(
+		null,
+		60_000,
+		null,
+		() => {
+			msgId.value = null;
+		},
+	);
+	msgId.value = await daemonStore.sendMessage(
+		EnumerationService.enumerate(
+			{ repeat: 1, returnVerbose: true },
+			{ deviceAddr: 0 },
+			opts,
+		),
+	);
+}
+
+function handleEnumerate(rsp: DaemonApiResponse): void {
+	if (rsp.data.status !== 0) {
+		return;
+	}
+	const rfBand = Number.parseInt(rsp.data.rsp.trConfiguration.rfBand);
+	rfSignalComponent.value?.setRfChannel(rfBand);
+	const os = rsp.data.rsp.osRead.osBuild;
+	if (Number.parseInt(os, 16) < 0x08_D7) {
+		return;
+	}
+	const dpa = rsp.data.rsp.peripheralEnumeration.dpaVer;
+	if (compare(dpa, '4.16', '<')) {
+		return;
+	}
+	showNfc.value = true;
+
+}
+
+onMounted(() => {
+	if (isConnected.value) {
+		enumerate();
+	} else {
+		watch(isConnected, (newVal: boolean, oldVal: boolean): void => {
+			if (newVal && !oldVal) {
+				enumerate();
+			}
+		}, { once: true });
+	}
+});
+
+onBeforeUnmount(() => {
+	daemonStore.removeMessage(msgId.value);
+});
 
 </script>

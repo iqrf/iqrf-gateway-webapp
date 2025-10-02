@@ -127,11 +127,20 @@ async function frcResponseTime(): Promise<void> {
 
 function handleFrcResponseTime(rsp: DaemonApiResponse): void {
 	if (rsp.data.status === 0) {
+		rsp.data.rsp.command = command.value;
 		result.value = rsp.data.rsp as FrcResponseTimeResult;
 		resultModal.value?.open();
 	} else if (rsp.data.status === 1_003) {
 		toast.info(
 			i18n.t('common.messages.noNodes'),
+		);
+	} else if (rsp.data.status === 1_004) {
+		toast.error(
+			i18n.t('components.iqrfnet.network-manager.frc-response-time.messages.get.noResponded'),
+		);
+	} else if (rsp.data.status === 1_005) {
+		toast.error(
+			i18n.t('components.iqrfnet.network-manager.frc-response-time.messages.get.noHandled'),
 		);
 	} else {
 		toast.error(

@@ -2729,6 +2729,8 @@
 					"messages": {
 						"get": {
 							"failed": "Failed to determine best FRC response time.",
+							"noHandled": "No node in network handled FRC response time event.",
+							"noResponded": "No node in network responded.",
 							"timeout": "Get best FRC response time request timed out."
 						},
 						"set": {
@@ -2833,6 +2835,47 @@
 						"file": {
 							"invalid": "Selected file should be a .iqrfbkp file.",
 							"required": "Please select a backup file."
+						}
+					}
+				},
+				"rf-signal": {
+					"actions": {
+						"test": "Test RF"
+					},
+					"messages": {
+						"failed": "RF Signal test failed.",
+						"noNodes": "RF Signal test failed, no bonded nodes in network.",
+						"timeout": "RF signal test request timed out."
+					},
+					"modal": {
+						"address": "Device address",
+						"counter": "Count",
+						"online": "Online",
+						"title": "RF Signal Test Results"
+					},
+					"note": "The RF signal testing process may take several minutes for large networks.",
+					"rfChannel": "RF channel",
+					"rxFilter": "RX filter",
+					"target": "Target device",
+					"targets": {
+						"coordinator": "Coordinator",
+						"nodes": "All nodes"
+					},
+					"time": "{time} ms",
+					"timeLabel": "Measurement time",
+					"title": "RF Signal",
+					"validation": {
+						"rfChannel": {
+							"between433": "RF channel should be between 0 and 16.",
+							"between868": "RF channel should be between 0 and 67.",
+							"between916": "RF channel should be between 0 and 255.",
+							"integer": "RF channel should be an integer.",
+							"required": "Please enter RF channel."
+						},
+						"rxFilter": {
+							"between": "RX filter should be between 0 and 64.",
+							"integer": "RX filter should be an integer.",
+							"required": "Please enter RX filter."
 						}
 					}
 				}
