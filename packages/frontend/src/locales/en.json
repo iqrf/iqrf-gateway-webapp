@@ -101,6 +101,7 @@
 			"noDevice": "No device exists at address {address}.",
 			"noDevices": "No devices exist in network.",
 			"noNodes": "No node devices exist in network.",
+			"offlineCoordinator": "Coordinator device may be offline.",
 			"offlineDevice": "Device at address {address} may be offline."
 		},
 		"states": {
@@ -2390,6 +2391,7 @@
 				"deviceAddr": "Device address",
 				"dpa": "DPA",
 				"embedPeripherals": "Embedded Peripherals",
+				"hwpid": "HWPID",
 				"messages": {
 					"error": "An error has occured when processing request."
 				},
@@ -2429,6 +2431,11 @@
 						"between": "Device addres should be between 0 and 239.",
 						"integer": "Device addres should be an integer.",
 						"required": "Please enter device address."
+					},
+					"hwpid": {
+						"between": "HWPID should be an between 0 and 65535.",
+						"integer": "HWPID should be an integer.",
+						"required": "Please enter HWPID."
 					}
 				}
 			},
@@ -2793,6 +2800,98 @@
 					},
 					"title": "Network Issues"
 
+				},
+				"ota-upload": {
+					"actions": {
+						"load": "Load",
+						"verify": "Verify"
+					},
+					"form": {
+						"eeepromAddress": "External EEPROM address",
+						"file": "File",
+						"fileType": "File type",
+						"fileTypes": {
+							"hex": "Custom DPA handler",
+							"iqrf": "IQRF plug-in"
+						},
+						"hwpidFilter": "Filter nodes by HWPID",
+						"nodeAddress": "Node address",
+						"target": "Upload target",
+						"targets": {
+							"coordinator": "Coordinator",
+							"network": "Network",
+							"node": "Node"
+						},
+						"uploadEeeprom": "Upload EEEPROM data",
+						"uploadEeprom": "Upload EEPROM data",
+						"uploadSteps": {
+							"loadFlash": "Step 3: Load from to external EEPROM to Flash",
+							"uploadEeeprom": "Step 1: Upload to external EEPROM",
+							"verifyEeeprom": "Step 2: Verify data in external EEPROM"
+						}
+					},
+					"messages": {
+						"compatibilityError": "Compatibility error: {error}",
+						"coordinator": {
+							"loadStepSuccess": "Data successfully loaded to flash in coordinator device.",
+							"uploadStepSuccess": "Data successfully uploaded to coordinator device.",
+							"verifyStepSuccess": "Data successfully verified in coordinator device."
+						},
+						"deviceOfflineError": "One or more devices were offline during the upload process.",
+						"generalError": "An error has occured during OTA upload process: {error}",
+						"genericError": "An error has occurred during the OTA upload process.",
+						"hwpid": "* HWPID 65535 includes all devices.",
+						"invalidContent": "An error has occurred during file content parsing: {error}",
+						"invalidFile": "Invalid OTA upload file: {error}",
+						"invalidMemory": "Invalid memory operation: {error}",
+						"invalidRequest": "OTA upload request is not valid: {error}",
+						"loadRunning": "Loading data from external EEPROM to Flash memory.",
+						"loadStepFail": "An error has occurred during the flash load step.",
+						"network": {
+							"loadStepSuccess": "Data successfully loaded to flash of network devices.",
+							"uploadStepSuccess": "Data successfully uploaded to network devices.",
+							"verifyStepSuccess": "Data successfully verified in network devices."
+						},
+						"networkNote": "Warning: Uploading IQRF plug-ins to the entire network requires all devices to use the same OS version.",
+						"noDevicesError": "There are no devices bonded in the network.",
+						"noHwpidMatch": "No device in network matched specified HWPID.",
+						"node": {
+							"loadStepSuccess": "Data successfully loaded to flash on device at address {address}.",
+							"uploadStepSuccess": "Data successfully uploaded to device at address {address}.",
+							"verifyStepSuccess": "Data successfully verified on device at address {address}."
+						},
+						"notHexFile": "Selected file is not .hex file.",
+						"notIqrfFile": "Selected file is not .iqrf file.",
+						"uploadFs": {
+							"failed": "Failed to upload file to gateway."
+						},
+						"uploadRunning": "Uploading data to external EEPROM.",
+						"uploadStepFail": "An error has occurred during the upload step.",
+						"verifyRunning": "Verifying data in external EEPROM.",
+						"verifyStepFail": "An error has occurred during the verification step."
+					},
+					"modal": {
+						"loadTitle": "Load step results",
+						"success": "Success",
+						"verifyTitle": "Verify step results"
+					},
+					"notes": {
+						"hwpid": "HWPID 65535 includes all devices.",
+						"network": "Network upload does not include Coordinator device. Uploading DPA handlers or IQRF plugins to the entire network requires all devices to use the same OS version and be online."
+					},
+					"title": "OTA upload",
+					"validation": {
+						"eeepromAddress": {
+							"between": "EEEPROM address should be between 768 and 16383.",
+							"integer": "EEEPROM address should be an integer.",
+							"required": "Please enter EEEPROM address."
+						},
+						"file": {
+							"notHex": "Selected file is not HEX file.",
+							"notIqrf": "Selected file is not IQRF plugin file.",
+							"required": "Please select a file to upload."
+						}
+					}
 				},
 				"restore": {
 					"actions": {
