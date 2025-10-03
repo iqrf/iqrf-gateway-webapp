@@ -43,6 +43,10 @@ limitations under the License.
 							/>
 							<v-tab
 								value='3'
+								:text='$t("components.iqrfnet.network-manager.ota-upload.title")'
+							/>
+							<v-tab
+								value='4'
 								:text='$t("components.iqrfnet.network-manager.maintenance")'
 							/>
 						</v-tabs>
@@ -71,6 +75,11 @@ limitations under the License.
 					</v-tabs-window-item>
 					<v-tabs-window-item
 						value='3'
+					>
+						<OtaUpload />
+					</v-tabs-window-item>
+					<v-tabs-window-item
+						value='4'
 					>
 						<FrcResponseTime />
 						<RfSignalTest ref='rfSignalComponent' />
@@ -111,6 +120,7 @@ import FrcParams from '@/components/iqrfnet/network-manager/FrcParams.vue';
 import FrcResponseTime from '@/components/iqrfnet/network-manager/FrcResponseTime.vue';
 import NetworkIssuesResolver from '@/components/iqrfnet/network-manager/NetworkIssuesResolver.vue';
 import NfcBondingManager from '@/components/iqrfnet/network-manager/NfcBondingManager.vue';
+import OtaUpload from '@/components/iqrfnet/network-manager/OtaUpload.vue';
 import RestoreManager from '@/components/iqrfnet/network-manager/RestoreManager.vue';
 import RfSignalTest from '@/components/iqrfnet/network-manager/RfSignalTest.vue';
 import { useDaemonStore } from '@/store/daemonSocket';

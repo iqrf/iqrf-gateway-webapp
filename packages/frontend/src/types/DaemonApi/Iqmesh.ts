@@ -174,4 +174,13 @@ export interface RfSignalTestResult {
 	online: boolean
 }
 
+export interface OtaUploadResult {
+    address: number
+    result: boolean
+}
 
+export enum OtaUploadAction {
+	Upload = 'Upload',
+	Verify = 'Verify',
+	Load = 'Load',
+}
