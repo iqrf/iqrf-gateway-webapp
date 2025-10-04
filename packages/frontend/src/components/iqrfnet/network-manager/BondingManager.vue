@@ -44,11 +44,11 @@
 			/>
 			<INumberInput
 				v-model='retries'
-				:label='$t("components.iqrfnet.common.bondingTestRetries")'
+				:label='$t("components.iqrfnet.common.actionRetries")'
 				:rules='[
-					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.common.validation.bondingTestRetries.required")),
-					(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.common.validation.bondingTestRetries.integer")),
-					(v: number) => ValidationRules.between(v, 0, 3, $t("components.iqrfnet.common.validation.bondingTestRetries.between")),
+					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.common.validation.actionRetries.required")),
+					(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.common.validation.actionRetries.integer")),
+					(v: number) => ValidationRules.between(v, 0, 3, $t("components.iqrfnet.common.validation.actionRetries.between")),
 				]'
 				:min='0'
 				:max='3'
