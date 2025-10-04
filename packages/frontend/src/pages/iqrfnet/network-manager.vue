@@ -35,18 +35,22 @@ limitations under the License.
 							/>
 							<v-tab
 								value='1'
-								:text='$t("components.iqrfnet.network-manager.dpa-params.title")'
+								:text='$t("components.iqrfnet.network-manager.autonetwork.title")'
 							/>
 							<v-tab
 								value='2'
-								:text='$t("components.iqrfnet.network-manager.backup-restore")'
+								:text='$t("components.iqrfnet.network-manager.dpa-params.title")'
 							/>
 							<v-tab
 								value='3'
-								:text='$t("components.iqrfnet.network-manager.ota-upload.title")'
+								:text='$t("components.iqrfnet.network-manager.backup-restore")'
 							/>
 							<v-tab
 								value='4'
+								:text='$t("components.iqrfnet.network-manager.ota-upload.title")'
+							/>
+							<v-tab
+								value='5'
 								:text='$t("components.iqrfnet.network-manager.maintenance")'
 							/>
 						</v-tabs>
@@ -63,23 +67,28 @@ limitations under the License.
 					<v-tabs-window-item
 						value='1'
 					>
+						<Autonetwork @update-devices='refreshDevices()' />
+					</v-tabs-window-item>
+					<v-tabs-window-item
+						value='2'
+					>
 						<DpaValue />
 						<DpaHops />
 						<FrcParams />
 					</v-tabs-window-item>
 					<v-tabs-window-item
-						value='2'
+						value='3'
 					>
 						<BackupManager />
 						<RestoreManager @update-devices='refreshDevices()' />
 					</v-tabs-window-item>
 					<v-tabs-window-item
-						value='3'
+						value='4'
 					>
 						<OtaUpload />
 					</v-tabs-window-item>
 					<v-tabs-window-item
-						value='4'
+						value='5'
 					>
 						<FrcResponseTime />
 						<RfSignalTest ref='rfSignalComponent' />
@@ -110,6 +119,7 @@ import { compare } from 'compare-versions';
 import { storeToRefs } from 'pinia';
 import { onBeforeUnmount, onMounted, ref, Ref, watch } from 'vue';
 
+import Autonetwork from '@/components/iqrfnet/network-manager/Autonetwork.vue';
 import BackupManager from '@/components/iqrfnet/network-manager/BackupManager.vue';
 import BondingManager from '@/components/iqrfnet/network-manager/BondingManager.vue';
 import Devices from '@/components/iqrfnet/network-manager/Devices.vue';
