@@ -25,22 +25,23 @@ limitations under the License.
 			class='rounded-t'
 			color='primary'
 		>
-			<template #title>
-				<v-tabs v-model='tab'>
-					<v-tab
-						value='0'
-						:text='$t("components.iqrfnet.standard-manager.sensor.title")'
-					/>
-					<v-tab
-						value='1'
-						:text='$t("components.iqrfnet.standard-manager.binary-output.title")'
-					/>
-					<v-tab
-						value='2'
-						:text='$t("components.iqrfnet.standard-manager.light.title")'
-					/>
-				</v-tabs>
-			</template>
+			<v-tabs v-model='tab'>
+				<v-tab
+					class='toolbar-tab-title'
+					value='0'
+					:text='$t("components.iqrfnet.standard-manager.sensor.title")'
+				/>
+				<v-tab
+					class='toolbar-tab-title'
+					value='1'
+					:text='$t("components.iqrfnet.standard-manager.binary-output.title")'
+				/>
+				<v-tab
+					class='toolbar-tab-title'
+					value='2'
+					:text='$t("components.iqrfnet.standard-manager.light.title")'
+				/>
+			</v-tabs>
 		</v-toolbar>
 		<v-tabs-window v-model='tab'>
 			<v-tabs-window-item
