@@ -109,7 +109,7 @@ const statusColor = computed(() => {
 		return 'warning';
 	}
 	if (!status.value.running) {
-		return 'grey-darken-2';
+		return 'grey';
 	}
 	if (!dataReadingInProgress.value) {
 		return 'primary';
