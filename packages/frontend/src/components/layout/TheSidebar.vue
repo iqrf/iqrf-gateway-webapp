@@ -200,6 +200,10 @@ function items(): SidebarLink[] {
 								title: i18n.t('pages.config.daemon.logging.title'),
 								to: '/config/daemon/logging',
 							},
+							{
+								title: i18n.t('pages.config.daemon.data-collecting.title'),
+								to: '/config/daemon/data-collecting',
+							},
 						],
 					},
 					{
