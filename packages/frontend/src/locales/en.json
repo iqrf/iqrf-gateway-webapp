@@ -3271,6 +3271,43 @@
 					"type": "Sensor type",
 					"value": "Measured value"
 				},
+				"sensor-data": {
+					"actions": {
+						"invoke": "Collect data now",
+						"start": "Start worker",
+						"status": "Refresh status",
+						"stop": "Stop worker"
+					},
+					"messages": {
+						"invoke": {
+							"failed": "Failed to invoke data collection worker.",
+							"success": "Data collecting worker invoked.",
+							"timeout": "Worker invoke request timed out."
+						},
+						"start": {
+							"failed": "Failed to start data collection worker.",
+							"success": "Data collecting worker started.",
+							"timeout": "Worker start request timed out."
+						},
+						"status": {
+							"failed": "Failed to retrieve worker status.",
+							"timeout": "Worker status fetch timed out."
+						},
+						"stop": {
+							"failed": "Failed to stop data collection worker.",
+							"success": "Data collecting worker stopped.",
+							"timeout": "Worker stop request timed out."
+						}
+					},
+					"status": {
+						"idle": "Active, waiting for next data collection time",
+						"inactive": "Inactive",
+						"reading": "Data collecting in progress",
+						"title": "Worker status",
+						"unknown": "Unknown"
+					},
+					"title": "Data collecting worker"
+				},
 				"standard-devices": {
 					"actions": {
 						"enumerate": "Enumerate",

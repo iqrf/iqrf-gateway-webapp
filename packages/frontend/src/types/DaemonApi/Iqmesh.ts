@@ -175,8 +175,8 @@ export interface RfSignalTestResult {
 }
 
 export interface OtaUploadResult {
-    address: number
-    result: boolean
+	address: number
+	result: boolean
 }
 
 export enum OtaUploadAction {
