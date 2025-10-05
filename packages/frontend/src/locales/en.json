@@ -3574,6 +3574,11 @@
 		},
 		"status": {
 			"monitor": {
+				"data-collecting": {
+					"notRunning": "Data collecting not running.",
+					"running": "Data collecting in progress.",
+					"unavailable": "Data collecting status not available."
+				},
 				"enumeration": {
 					"notRunning": "Enumeration not running.",
 					"running": "Enumeration in progress.",

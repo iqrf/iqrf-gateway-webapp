@@ -18,11 +18,14 @@ limitations under the License.
 <template>
 	<div>
 		<VersionIndicator />
-		<DaemonConnectionIndicator />
-		<DaemonModeIndicator />
-		<DaemonQueueIndicator />
-		<EnumerationIndicator />
-		<SessionIndicator v-if='loggedIn' />
+		<span v-if='loggedIn'>
+			<DaemonConnectionIndicator />
+			<DaemonModeIndicator />
+			<DaemonQueueIndicator />
+			<EnumerationIndicator />
+			<DataReadingIndicator />
+			<SessionIndicator />
+		</span>
 	</div>
 </template>
 
@@ -32,6 +35,7 @@ import { storeToRefs } from 'pinia';
 import DaemonConnectionIndicator from '@/components/layout/footer/DaemonConnectionIndicator.vue';
 import DaemonModeIndicator from '@/components/layout/footer/DaemonModeIndicator.vue';
 import DaemonQueueIndicator from '@/components/layout/footer/DaemonQueueIndicator.vue';
+import DataReadingIndicator from '@/components/layout/footer/DataReadingIndicator.vue';
 import EnumerationIndicator from '@/components/layout/footer/EnumerationIndicator.vue';
 import SessionIndicator from '@/components/layout/footer/SessionIndicator.vue';
 import VersionIndicator from '@/components/layout/footer/VersionIndicator.vue';

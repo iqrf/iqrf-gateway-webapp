@@ -26,7 +26,7 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { mdiDatabase, mdiDatabaseAlert, mdiDatabaseArrowDown } from '@mdi/js';
+import { mdiNetworkOffOutline, mdiNetworkOutline, mdiPlayNetworkOutline } from '@mdi/js';
 import { storeToRefs } from 'pinia';
 import { computed, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -52,12 +52,12 @@ const color: Ref<string> = computed((): string => {
 /// Icon to display
 const icon: Ref<string> = computed((): string => {
 	if (!connected.value) {
-		return mdiDatabaseAlert;
+		return mdiNetworkOffOutline;
 	}
 	if (active.value) {
-		return mdiDatabaseArrowDown;
+		return mdiPlayNetworkOutline;
 	}
-	return mdiDatabase;
+	return mdiNetworkOutline;
 });
 
 /// Message to display in the tooltip
