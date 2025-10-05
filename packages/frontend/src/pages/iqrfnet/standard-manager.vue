@@ -59,6 +59,7 @@ limitations under the License.
 				<LightManager />
 			</v-tabs-window-item>
 		</v-tabs-window>
+		<StandardDevices class='mt-4' />
 	</div>
 </template>
 
@@ -75,6 +76,7 @@ import { ref, type Ref } from 'vue';
 import BinaryOutputManager from '@/components/iqrfnet/standard-manager/BinaryOutputManager.vue';
 import LightManager from '@/components/iqrfnet/standard-manager/LightManager.vue';
 import SensorManager from '@/components/iqrfnet/standard-manager/SensorManager.vue';
+import StandardDevices from '@/components/iqrfnet/standard-manager/StandardDevices.vue';
 
 const tab: Ref<number> = ref(0);
 
