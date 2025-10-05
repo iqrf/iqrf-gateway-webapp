@@ -830,6 +830,39 @@
 						}
 					}
 				},
+				"data-collecting": {
+					"asyncReports": "Send collected data after reading",
+					"autoRun": "Start collecting data on launch",
+					"messages": {
+						"fetchInstances": {
+							"failed": "Failed to retrieve messaging instances."
+						},
+						"get": {
+							"failed": "Failed to retrieve data collecting configuration.",
+							"timeout": "Get data collecting configuration request timed out."
+						},
+						"save": {
+							"failed": "Failed to configure data collecting.",
+							"success": "Data collecting configuration saved.",
+							"timeout": "Save data collecting configuration request timed out."
+						}
+					},
+					"messagingList": "Connection profiles used to send data",
+					"period": "Data collection period (in minutes)",
+					"retryPeriod": "Data collection retry period (in minutes)",
+					"validation": {
+						"period": {
+							"integer": "Data collecting period should be an integer.",
+							"min": "The minimum allowed data collecting period is 4 minutes.",
+							"required": "Please enter data collecting period."
+						},
+						"retryPeriod": {
+							"integer": "Data collecting retry period should be an integer.",
+							"min": "The minimum allowed data collecting retry period is 1 minute.",
+							"required": "Please enter data collecting retry period."
+						}
+					}
+				},
 				"db": {
 					"autoEnumerate": "Run enumeration automatically without manual invocation",
 					"enumerateOnLaunch": "Run enumeration on Daemon launch",
@@ -3661,6 +3694,9 @@
 						"description": "Configure WebSocket connections.",
 						"title": "WebSocket"
 					}
+				},
+				"data-collecting": {
+					"title": "Data collecting"
 				},
 				"db": {
 					"description": "Configure device database.",
