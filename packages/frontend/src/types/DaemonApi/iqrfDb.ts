@@ -1,185 +1,165 @@
-/**
- * Database device brief interface
- */
-export interface DbDeviceBrief {
+export interface DbDeviceDataBrief {
 	/**
 	 * Device address
 	 */
-	address: number
-
+	address: number;
 	/**
-	 * Device HWPID
+	 * Hardware profile ID
 	 */
-	hwpid: number
-
-	/**
-	 * Device name
-	 */
-	name: string|null
-
-	/**
-	 * Device location
-	 */
-	location: string|null
+	hwpid: number;
 }
 
-/**
- * Database device record interface
- */
-export interface DbDevice extends DbDeviceBrief {
+export interface DbDeviceData extends DbDeviceDataBrief {
 	/**
-	 * Device module ID
+	 * Implemented binary outputs
 	 */
-	mid: number
-
-	/**
-	 * Device HWPID version
-	 */
-	hwpidVersion: number
-
-	/**
-	 * Device OS build
-	 */
-	osBuild: number
-
-	/**
-	 * Device OS version
-	 */
-	osVersion: string
-
-	/**
-	 * Device DPA version
-	 */
-	dpa: number
-
+	binouts?: DbBinoutData;
 	/**
 	 * Is device discovered?
 	 */
-	discovered: boolean
-
+	discovered: boolean;
 	/**
-	 * Device virtual routing number
+	 * DPA version
 	 */
-	vrn: number
-
+	dpa: number;
 	/**
-	 * Device zone
+	 * Hardware profile ID version
 	 */
-	zone: number
-
+	hwpidVersion: number;
 	/**
-	 * Parent device
+	 * Optional metadata
 	 */
-	parent: number|null
-
-	sensors?: DbDeviceSensorDetail[]
+	metadata: Record<string, unknown> | null;
+	/**
+	 * Module ID
+	 */
+	mid: number;
+	/**
+	 * OS build
+	 */
+	osBuild: number;
+	/**
+	 * OS version
+	 */
+	osVersion: string;
+	/**
+	 * Parent address
+	 */
+	parent: number | null;
+	/**
+	 * Product name
+	 */
+	product: string | null;
+	/**
+	 * Implemented sensors
+	 */
+	sensors?: DbDeviceSensorDataBrief[];
+	/**
+	 * Virtual routing number
+	 */
+	vrn: number;
+	/**
+	 * Zone
+	 */
+	zone: number;
 }
 
-export interface DbDeviceSensorDetail {
-	index: number
-
-	type: number
-
-	name: string
-
-	shortname: string
-
-	unit: string
-
-	frcs: number[]
-}
-
-export interface DbDeviceMetadata {
-	address: number
-	metadata: DbDeviceMetadataData
-}
-
-export interface DbDeviceMetadataData {
-	name?: string|null
-	location?: string|null
-	other?: Record<string, any>
-}
-
-export interface DbDeviceSensors {
+export interface DbBinoutData {
 	/**
-	 * Device address
+	 * Number of implemented binary outputs
 	 */
-	address: number
-
-	/**
-	 * Array of sensors
-	 */
-	sensors: DbSensorDetails[]
+	count: number;
 }
 
-export interface DbSensorDetails {
+export interface DbDeviceSensorDataBrief {
+	/**
+	 * Number of valid decimal places
+	 */
+	decimalPlaces: number;
+	/**
+	 * Implemented FRC commands
+	 */
+	frcs: number[];
 	/**
 	 * Sensor index
 	 */
-	index: number
-
+	index: number;
+	/**
+	 * Quantity name
+	 */
+	name: string;
+	/**
+	 * Quantity short name
+	 */
+	shortname: string;
 	/**
 	 * Sensor type
 	 */
-	type: number
-
+	type: number;
 	/**
-	 * Sensor name
+	 * Unit of measurement
 	 */
-	name: string
-
-	/**
-	 * Sensor shortname
-	 */
-	shortname: string
-
-	/**
-	 * Quantity unit
-	 */
-	unit: string
-
-	/**
-	 * Unit decimal places
-	 */
-	decimalPlaces: number
-
-	/**
-	 * Implements 2 bit FRC command
-	 */
-	frc2Bit: boolean
-
-	/**
-	 * Implements 1 byte FRC command
-	 */
-	frc1Byte: boolean
-
-	/**
-	 * Implements 2 byte FRC command
-	 */
-	frc2Byte: boolean
-
-	/**
-	 * Implements 4 byte FRC command
-	 */
-	frc4Byte: boolean
-
-	/**
-	 * Last measured value
-	 */
-	value: number|null
-
-	/**
-	 * Last updated
-	 */
-	updated: string|null
+	unit: string;
 }
 
-/**
- * Enumeration response interface
- */
-export interface DbEnumerateRsp {
-	/// Enumeration step
-	step: number;
-	/// Enumeration step string
-	stepStr: string;
+export interface DbSensors {
+	/**
+	 * Device address
+	 */
+	address: number;
+	/**
+	 * Sensor data
+	 */
+	sensors: DbSensorData[];
+}
+
+export interface DbSensorData {
+	/**
+	 * Valid decimal places
+	 */
+	decimalPlaces: number;
+	/**
+	 * 2-bit FRC implemented
+	 */
+	frc2Bit: boolean;
+	/**
+	 * 1-byte FRC implemented
+	 */
+	frc1Byte: boolean;
+	/**
+	 * 2-byte FRC implemented
+	 */
+	frc2Byte: boolean;
+	/**
+	 * 4-byte FRC implemented
+	 */
+	frc4Byte: boolean;
+	/**
+	 * Sensor index
+	 */
+	index: number;
+	/**
+	 * Quantity name
+	 */
+	name: string;
+	/**
+	 * Quantity short name
+	 */
+	shortname: string;
+	/**
+	 * Sensor type
+	 */
+	type: number;
+	/**
+	 * Unit of measurement
+	 */
+	unit: string;
+	/**
+	 * Last value timestamp
+	 */
+	updated: string | null;
+	/**
+	 * Last recorded value
+	 */
+	value: number | number[] | null;
 }

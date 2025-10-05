@@ -3270,6 +3270,88 @@
 					"title": "Sensor",
 					"type": "Sensor type",
 					"value": "Measured value"
+				},
+				"standard-devices": {
+					"actions": {
+						"enumerate": "Enumerate",
+						"hideInfo": "Hide details",
+						"reset": "Reset database",
+						"showInfo": "Show details"
+					},
+					"enumeration": {
+						"step": "Enumeration step",
+						"time": "Time elapsed",
+						"title": "Enumeration progress"
+					},
+					"headers": {
+						"address": "Address",
+						"binout": "Binary Output",
+						"dpa": "DPA",
+						"hwpid": "HWPID",
+						"hwpidVer": "HWPID ver.",
+						"light": "Light",
+						"manufacturer": "Manufacturer",
+						"mid": "Module ID",
+						"name": "Product name",
+						"os": "OS",
+						"product": "Product",
+						"sensor": "Sensor",
+						"status": "Status"
+					},
+					"info": "Product details",
+					"messages": {
+						"devices": {
+							"fetch": {
+								"failed": "Failed to retrieve devices in network.",
+								"timeout": "Get devices request timed out."
+							}
+						},
+						"enumeration": {
+							"failed": "Standard devices enumeration failed.",
+							"interrupted": "Enumeration process interrupted, connection to IQRF Gateway Daemon lost.",
+							"success": "Standard devices enumeration concluded successfully."
+						},
+						"light": {
+							"fetch": {
+								"failed": "Failed to retrieve devices implementing Light standard.",
+								"timeout": "Get devices implementing Light standard request timed out."
+							}
+						},
+						"ping": {
+							"failed": "Failed to retrieve status of devices.",
+							"timeout": "Get status of devices request timed out."
+						},
+						"reset": {
+							"failed": "Failed to reset database: {error}",
+							"success": "Database has been successfully reset.",
+							"timeout": "Database reset request timed out."
+						},
+						"sensor": {
+							"fetch": {
+								"failed": "Failed to retrieve devices implementing Sensor standard.",
+								"timeout": "Get devices implementing Sensor standard request timed out."
+							}
+						}
+					},
+					"noData": {
+						"empty": "No device records found.",
+						"fetchError": "Device records could not be retrieved."
+					},
+					"reset": {
+						"text": "Are you sure you want to reset device database data?",
+						"title": "Database reset confirmation"
+					},
+					"sensor": {
+						"index": "Index",
+						"name": "Name",
+						"title": "Sensors",
+						"type": "Type",
+						"updated": "Last updated",
+						"value": "Last measurement"
+					},
+					"supported": "Supported",
+					"title": "Standard devices",
+					"unsupported": "Unsupported"
 				}
 			},
 			"tr-config": {
