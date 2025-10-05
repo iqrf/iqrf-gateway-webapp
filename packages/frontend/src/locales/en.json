@@ -2423,12 +2423,17 @@
 				"autoAddress": "Assign address automatically",
 				"deviceAddr": "Device address",
 				"dpa": "DPA",
+				"dpaVersion": "DPA version",
 				"embedPeripherals": "Embedded Peripherals",
 				"hwpid": "HWPID",
+				"hwpidVer": "HWPID version",
+				"manufacturer": "Manufacturer",
 				"messages": {
 					"error": "An error has occured when processing request."
 				},
+				"mid": "Module ID",
 				"os": "OS",
+				"osVersion": "OS version",
 				"peripherals": {
 					"coordinator": "Coordinator",
 					"eeeprom": "EEEPROM",
@@ -2444,10 +2449,21 @@
 					"thermometer": "Thermometer",
 					"uart": "UART"
 				},
+				"picture": "Product picture",
+				"product": "Product name",
 				"rf": "RF",
+				"rfMode": "RF mode",
+				"rfModes": {
+					"lp": "LP",
+					"std": "STD",
+					"stdLp": "STD+LP"
+				},
 				"rfpgm": "RFPGM",
+				"rssi": "RSSI",
+				"rssiVal": "{rssi} dBm",
 				"rxFilter": "RX filter",
 				"trPeripherals": "TR Peripherals",
+				"trType": "TR type",
 				"txPower": "TX power",
 				"validation": {
 					"actionRetries": {
@@ -2475,7 +2491,16 @@
 						"integer": "TX power should be an integer.",
 						"required": "Please enter TX power."
 					}
-				}
+				},
+				"voltage": "Supply voltage"
+			},
+			"enumeration": {
+				"device": "Device information",
+				"messages": {
+					"failed": "Failed to retrieve device information.",
+					"timeout": "Get device information request timed out."
+				},
+				"tr": "TR information"
 			},
 			"inProgress": "Request handling in progress.",
 			"network-manager": {
@@ -3876,6 +3901,9 @@
 		},
 		"iqrfnet": {
 			"description": "Manager IQRF network and devices.",
+			"enumeration": {
+				"title": "Device enumeration"
+			},
 			"network-manager": {
 				"title": "Network manager"
 			},

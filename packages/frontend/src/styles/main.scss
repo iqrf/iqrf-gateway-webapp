@@ -92,6 +92,16 @@ a {
 	}
 }
 
+.simple-table {
+	th {
+		text-align: start !important;
+	}
+
+	td {
+		text-align: end !important;
+	}
+}
+
 .extended-input-error {
 	line-height: 14px;
 	font-size: 12px;
