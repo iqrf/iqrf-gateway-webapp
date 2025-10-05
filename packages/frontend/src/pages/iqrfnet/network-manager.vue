@@ -27,34 +27,40 @@ limitations under the License.
 					class='rounded-t'
 					color='primary'
 				>
-					<template #title>
-						<v-tabs v-model='tab'>
-							<v-tab
-								value='0'
-								:text='$t("components.iqrfnet.network-manager.iqmesh")'
-							/>
-							<v-tab
-								value='1'
-								:text='$t("components.iqrfnet.network-manager.autonetwork.title")'
-							/>
-							<v-tab
-								value='2'
-								:text='$t("components.iqrfnet.network-manager.dpa-params.title")'
-							/>
-							<v-tab
-								value='3'
-								:text='$t("components.iqrfnet.network-manager.backup-restore")'
-							/>
-							<v-tab
-								value='4'
-								:text='$t("components.iqrfnet.network-manager.ota-upload.title")'
-							/>
-							<v-tab
-								value='5'
-								:text='$t("components.iqrfnet.network-manager.maintenance")'
-							/>
-						</v-tabs>
-					</template>
+					<v-tabs
+						v-model='tab'
+					>
+						<v-tab
+							class='toolbar-tab-title'
+							value='0'
+							:text='$t("components.iqrfnet.network-manager.iqmesh")'
+						/>
+						<v-tab
+							class='toolbar-tab-title'
+							value='1'
+							:text='$t("components.iqrfnet.network-manager.autonetwork.title")'
+						/>
+						<v-tab
+							class='toolbar-tab-title'
+							value='2'
+							:text='$t("components.iqrfnet.network-manager.dpa-params.title")'
+						/>
+						<v-tab
+							class='toolbar-tab-title'
+							value='3'
+							:text='$t("components.iqrfnet.network-manager.backup-restore")'
+						/>
+						<v-tab
+							class='toolbar-tab-title'
+							value='4'
+							:text='$t("components.iqrfnet.network-manager.ota-upload.title")'
+						/>
+						<v-tab
+							class='toolbar-tab-title'
+							value='5'
+							:text='$t("components.iqrfnet.network-manager.maintenance")'
+						/>
+					</v-tabs>
 				</v-toolbar>
 				<v-tabs-window v-model='tab'>
 					<v-tabs-window-item
@@ -216,3 +222,4 @@ onBeforeUnmount(() => {
 });
 
 </script>
+
