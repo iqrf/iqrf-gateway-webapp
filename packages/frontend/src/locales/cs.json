@@ -1,38 +1,4 @@
 {
-	"$iqrf": {
-		"common": {
-			"actions": {
-				"add": "Přidat",
-				"apply": "Použít",
-				"cancel": "Zrušit",
-				"close": "Zavřít",
-				"confirm": "Potvrdit",
-				"delete": "Smazat",
-				"disable": "Zakázat",
-				"download": "Stáhnout",
-				"edit": "Změnit",
-				"enable": "Povolit",
-				"export": "Exportovat",
-				"import": "Importovat",
-				"next": "Další",
-				"previous": "Předchozí",
-				"reload": "Obnovit",
-				"reset": "Resetovat",
-				"restart": "Restartovat",
-				"save": "Uložit",
-				"showDetails": "Zobrazit detaily",
-				"skip": "Přeskočit",
-				"start": "Spustit",
-				"stop": "Zastavit",
-				"upload": "Nahrát"
-			},
-			"components": {
-				"datatable": {
-					"filterColumns": "Filtrovat sloupce"
-				}
-			}
-		}
-	},
 	"common": {
 		"columns": {
 			"actions": "Akce",

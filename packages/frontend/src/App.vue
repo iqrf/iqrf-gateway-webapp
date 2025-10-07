@@ -28,7 +28,7 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { type UserLanguage } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { Language } from '@iqrf/iqrf-vue-ui';
 import { storeToRefs } from 'pinia';
 import { useHead } from 'unhead';
 import { onBeforeMount, watch } from 'vue';
@@ -62,9 +62,9 @@ const { getTheme: theme } = storeToRefs(themeStore);
 
 /**
  * Set HTML head options
- * @param {UserLanguage} newLocale New locale to set
+ * @param {Language} newLocale New locale to set
  */
-function setHeadOptions(newLocale: UserLanguage): void {
+function setHeadOptions(newLocale: Language): void {
 	useHead(head, {
 		htmlAttrs: {
 			lang: newLocale.toString(),

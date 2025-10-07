@@ -1,38 +1,4 @@
 {
-	"$iqrf": {
-		"common": {
-			"actions": {
-				"add": "Add",
-				"apply": "Apply",
-				"cancel": "Cancel",
-				"close": "Close",
-				"confirm": "Confirm",
-				"delete": "Delete",
-				"disable": "Disable",
-				"download": "Download",
-				"edit": "Edit",
-				"enable": "Enable",
-				"export": "Export",
-				"import": "Import",
-				"next": "Next",
-				"previous": "Previous",
-				"reload": "Reload",
-				"reset": "Reset",
-				"restart": "Restart",
-				"save": "Save",
-				"showDetails": "Show details",
-				"skip": "Skip",
-				"start": "Start",
-				"stop": "Stop",
-				"upload": "Upload"
-			},
-			"components": {
-				"datatable": {
-					"filterColumns": "Filter columns"
-				}
-			}
-		}
-	},
 	"common": {
 		"buttons": {
 			"add": "Add",
