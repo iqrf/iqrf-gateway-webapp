@@ -14,7 +14,7 @@
 			/>
 			<INumberInput
 				v-model='rfChannel'
-				:label='$t("components.iqrfnet.network-manager.rf-signal.rfChannel")'
+				:label='$t("components.iqrfnet.common.rfChannel")'
 				:rules='rfChannelRules'
 				:min='0'
 				:max='rfChannelMax'
@@ -22,11 +22,11 @@
 			/>
 			<INumberInput
 				v-model='rxFilter'
-				:label='$t("components.iqrfnet.network-manager.rf-signal.rxFilter")'
+				:label='$t("components.iqrfnet.common.rxFilter")'
 				:rules='[
-					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.network-manager.rf-signal.validation.rxFilter.required")),
-					(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.network-manager.rf-signal.validation.rxFilter.integer")),
-					(v: number) => ValidationRules.between(v, 0, 64, $t("components.iqrfnet.network-manager.rf-signal.validation.rxFilter.between")),
+					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.common.validation.rxFilter.required")),
+					(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.common.validation.rxFilter.integer")),
+					(v: number) => ValidationRules.between(v, 0, 64, $t("components.iqrfnet.common.validation.rxFilter.between")),
 				]'
 				:min='0'
 				:max='64'
@@ -146,20 +146,20 @@ const rfChannelMax = computed(() => {
 
 const rfChannelRules = computed(() => {
 	const rules = [
-		(v: number|null) => ValidationRules.required(v, i18n.t('components.iqrfnet.network-manager.rf-signal.validation.rfChannel.required')),
-		(v: number) => ValidationRules.integer(v, i18n.t('components.iqrfnet.network-manager.rf-signal.validation.rfChannel.integer')),
+		(v: number|null) => ValidationRules.required(v, i18n.t('components.iqrfnet.common.validation.rfChannel.required')),
+		(v: number) => ValidationRules.integer(v, i18n.t('components.iqrfnet.common.validation.rfChannel.integer')),
 	];
 	if (rfBand.value === 433) {
 		rules.push(
-			(v: number) => ValidationRules.between(v, 0, 16, i18n.t('components.iqrfnet.network-manager.rf-signal.validation.rfChannel.between433')),
+			(v: number) => ValidationRules.between(v, 0, 16, i18n.t('components.iqrfnet.common.validation.rfChannel.between433')),
 		);
 	} else if (rfBand.value === 868) {
 		rules.push(
-			(v: number) => ValidationRules.between(v, 0, 67, i18n.t('components.iqrfnet.network-manager.rf-signal.validation.rfChannel.between868')),
+			(v: number) => ValidationRules.between(v, 0, 67, i18n.t('components.iqrfnet.common.validation.rfChannel.between868')),
 		);
 	} else {
 		rules.push(
-			(v: number) => ValidationRules.between(v, 0, 255, i18n.t('components.iqrfnet.network-manager.rf-signal.validation.rfChannel.between916')),
+			(v: number) => ValidationRules.between(v, 0, 255, i18n.t('components.iqrfnet.common.validation.rfChannel.between916')),
 		);
 	}
 	return rules;
