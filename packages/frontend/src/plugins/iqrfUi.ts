@@ -15,31 +15,11 @@
  * limitations under the License.
  */
 
-import { type App } from 'vue';
+import { createIqrfUi } from '@iqrf/iqrf-vue-ui';
 
-import head from '@/plugins/head';
 import i18n from '@/plugins/i18n';
-import iqrfUi from '@/plugins/iqrfUi';
-import registerSentry from '@/plugins/sentry';
-import toastify, { ToastOptions } from '@/plugins/toastify';
-import vuetify from '@/plugins/vuetify';
-import registerSockets from '@/plugins/websocket';
-import router from '@/router';
-import pinia from '@/store';
 
-/**
- * Register plugins
- * @param {App} app Vue.js app instance
- */
-export function registerPlugins(app: App): void {
-	app
-		.use(pinia)
-		.use(router)
-		.use(i18n)
-		.use(head)
-		.use(toastify, ToastOptions)
-		.use(vuetify)
-		.use(iqrfUi);
-	registerSentry(app, router);
-	registerSockets();
-}
+export default createIqrfUi({
+	// @ts-ignore Ignore type mismatch, because legacy property of vue-i18n is not properly propagated from imported i18n instance
+	i18n: i18n,
+});

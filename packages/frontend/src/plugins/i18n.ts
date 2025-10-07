@@ -15,6 +15,10 @@
  * limitations under the License.
  */
 
+import {
+	cs as csIqrf,
+	en as enIqrf,
+} from '@iqrf/iqrf-vue-ui/locales';
 import { createI18n } from 'vue-i18n';
 import {
 	cs as csVuetify,
@@ -26,11 +30,13 @@ import enWebapp from '@/locales/en.json';
 
 const cs = {
 	'$vuetify': csVuetify,
+	...csIqrf,
 	...csWebapp,
 };
 
 const en = {
 	'$vuetify': enVuetify,
+	...enIqrf,
 	...enWebapp,
 };
 
