@@ -18,6 +18,7 @@ limitations under the License.
 <template>
 	<IModalWindow
 		v-model='show'
+		persistent
 	>
 		<ICard header-color='warning'>
 			<template #title>

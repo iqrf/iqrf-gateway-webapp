@@ -16,16 +16,20 @@ limitations under the License.
 -->
 
 <template>
-	<IModalWindow v-model='show'>
+	<IModalWindow
+		v-model='show'
+		persistent
+	>
 		<template #activator='{ props }'>
-			<v-btn
+			<IActionBtn
+				v-bind='props'
+				:action='Action.Custom'
 				color='primary'
 				size='small'
-				v-bind='props'
-			>
-				<v-icon :icon='mdiPencil' />
-				{{ $t('components.common.actions.edit') }}
-			</v-btn>
+				:icon='mdiPencil'
+				:text='$t("components.common.actions.edit")'
+				:disabled='disabled'
+			/>
 		</template>
 		<v-form
 			v-slot='{ isValid }'
@@ -92,6 +96,11 @@ const componentProps = defineProps({
 	currentHostname: {
 		type: [String, null] as PropType<string | null>,
 		required: true,
+	},
+	disabled: {
+		type: Boolean,
+		required: false,
+		default: false,
 	},
 });
 const i18n = useI18n();

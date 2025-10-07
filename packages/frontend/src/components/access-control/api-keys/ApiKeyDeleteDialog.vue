@@ -21,6 +21,7 @@ limitations under the License.
 		:component-state='componentState'
 		:tooltip='$t("components.accessControl.apiKeys.actions.delete")'
 		:disabled='disabled'
+		persistent
 		@submit='onSubmit()'
 	>
 		<template #title>

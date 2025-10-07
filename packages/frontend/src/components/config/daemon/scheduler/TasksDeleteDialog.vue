@@ -19,6 +19,7 @@ limitations under the License.
 	<IDeleteModalWindow
 		ref='dialog'
 		:component-state='componentState'
+		persistent
 		@submit='removeTasks()'
 	>
 		<template #activator='{ props }'>

@@ -116,6 +116,7 @@ limitations under the License.
 								{{ info.hostname }}
 								<HostnameChangeDialog
 									:current-hostname='info.hostname'
+									:disabled='[ComponentState.Action, ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
 									@saved='getInformation()'
 								/>
 							</td>
@@ -214,6 +215,7 @@ limitations under the License.
 			<IActionBtn
 				:icon='mdiDownload'
 				:loading='componentState === ComponentState.Action'
+				:disabled='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
 				:text='$t("components.gateway.information.diagnostics")'
 				@click='getDiagnostics()'
 			/>

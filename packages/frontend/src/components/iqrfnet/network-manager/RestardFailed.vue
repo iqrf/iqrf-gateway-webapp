@@ -1,5 +1,8 @@
 <template>
-	<IModalWindow v-model='show'>
+	<IModalWindow
+		v-model='show'
+		persistent
+	>
 		<ICard header-color='red'>
 			<template #title>
 				{{ $t('components.iqrfnet.network-manager.devices.restart.title') }}

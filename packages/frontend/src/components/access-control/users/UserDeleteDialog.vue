@@ -20,6 +20,7 @@ limitations under the License.
 		ref='dialog'
 		:tooltip='$t("components.accessControl.users.actions.delete")'
 		:component-state='componentState'
+		persistent
 		@submit='onSubmit()'
 	>
 		<template #title>
