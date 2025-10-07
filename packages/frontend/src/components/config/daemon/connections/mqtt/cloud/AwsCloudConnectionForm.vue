@@ -16,7 +16,10 @@ limitations under the License.
 -->
 
 <template>
-	<IModalWindow v-model='show'>
+	<IModalWindow
+		v-model='show'
+		persistent
+	>
 		<v-form
 			ref='form'
 			v-slot='{ isValid }'

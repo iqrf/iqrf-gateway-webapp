@@ -20,6 +20,7 @@ limitations under the License.
 		ref='dialog'
 		:component-state='componentState'
 		:tooltip='$t("components.ipNetwork.connections.actions.delete")'
+		persistent
 		@submit='onSubmit'
 	>
 		<template #title>

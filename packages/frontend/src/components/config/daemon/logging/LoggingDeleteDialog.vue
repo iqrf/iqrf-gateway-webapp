@@ -21,6 +21,7 @@ limitations under the License.
 		:component-state='componentState'
 		:tooltip='$t("components.config.daemon.logging.actions.delete")'
 		:disabled='disabled'
+		persistent
 		@submit='onSubmit()'
 	>
 		<template #title>

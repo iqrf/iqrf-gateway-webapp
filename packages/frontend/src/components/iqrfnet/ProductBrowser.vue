@@ -18,6 +18,7 @@ limitations under the License.
 <template>
 	<IModalWindow
 		v-model='show'
+		persistent
 	>
 		<template #activator='{ props }'>
 			<v-list-item

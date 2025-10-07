@@ -21,6 +21,7 @@ limitations under the License.
 		:component-state='componentState'
 		:tooltip='$t("components.config.daemon.scheduler.actions.delete")'
 		:disabled='disabled'
+		persistent
 		@submit='removeTask()'
 	>
 		<template #title>

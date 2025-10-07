@@ -16,7 +16,10 @@ limitations under the License.
 -->
 
 <template>
-	<IModalWindow v-model='show'>
+	<IModalWindow
+		v-model='show'
+		persistent
+	>
 		<ICard>
 			<template #title>
 				{{ $t('components.accessControl.apiKeys.display.title') }}

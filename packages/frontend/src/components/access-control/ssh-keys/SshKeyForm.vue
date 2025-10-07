@@ -16,7 +16,10 @@ limitations under the License.
 -->
 
 <template>
-	<IModalWindow v-model='showDialog'>
+	<IModalWindow
+		v-model='showDialog'
+		persistent
+	>
 		<template #activator='{ props }'>
 			<IActionBtn
 				v-bind='props'

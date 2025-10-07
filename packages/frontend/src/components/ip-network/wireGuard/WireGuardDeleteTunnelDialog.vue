@@ -20,6 +20,7 @@ limitations under the License.
 		ref='dialog'
 		:component-state='componentState'
 		:tooltip='$t("components.ipNetwork.wireGuard.tunnels.columns.action.delete")'
+		persistent
 		@submit='onSubmit'
 	>
 		<template #title>

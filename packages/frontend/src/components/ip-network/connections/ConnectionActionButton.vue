@@ -19,6 +19,7 @@ limitations under the License.
 	<IModalWindow
 		v-if='action === Action.Disable'
 		v-model='showDialog'
+		persistent
 	>
 		<template #activator='scope'>
 			<IDataTableAction
