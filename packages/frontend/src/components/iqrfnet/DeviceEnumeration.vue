@@ -26,7 +26,7 @@
 				>
 					<v-responsive>
 						<v-table
-							v-if='data && product'
+							v-if='data'
 							class='simple-table'
 							density='compact'
 						>
@@ -40,19 +40,24 @@
 								</tr>
 								<tr>
 									<th>{{ $t('components.iqrfnet.common.hwpid') }}</th>
-									<td>{{ data.peripheralEnumeration.hwpId }}</td>
+									<td>{{ `${data.peripheralEnumeration.hwpId} [${data.peripheralEnumeration.hwpId.toString(16).padStart(4, '0').toUpperCase()}]` }}</td>
 								</tr>
 								<tr>
 									<th>{{ $t('components.iqrfnet.common.hwpidVer') }}</th>
-									<td>{{ data.peripheralEnumeration.hwpIdVer }}</td>
+									<td>{{ `${data.peripheralEnumeration.hwpIdVer & 0x00_FF}.${data.peripheralEnumeration.hwpIdVer & 0xFF_00}` }}</td>
 								</tr>
-								<tr>
+								<tr v-if='product !== null || data.manufacturer.length > 0'>
 									<th>{{ $t('components.iqrfnet.common.manufacturer') }}</th>
-									<td>{{ product.companyName }}</td>
+									<td v-if='product !== null'>
+										{{ product.companyName }}
+									</td>
+									<td v-else>
+										{{ data.manufacturer }}
+									</td>
 								</tr>
 								<tr>
 									<th>{{ $t('components.iqrfnet.common.product') }}</th>
-									<td>
+									<td v-if='product !== null'>
 										<a
 											:href='product.homePage'
 											target='_blank'
@@ -60,8 +65,14 @@
 											{{ product.name }}
 										</a>
 									</td>
+									<td v-else-if='data.product.length > 0'>
+										{{ data.product }}
+									</td>
+									<td v-else>
+										{{ $t('components.iqrfnet.enumeration.uncertified') }}
+									</td>
 								</tr>
-								<tr>
+								<tr v-if='product !== null'>
 									<th>{{ $t('components.iqrfnet.common.picture') }}</th>
 									<td>
 										<v-img
@@ -84,7 +95,7 @@
 				>
 					<v-responsive>
 						<v-table
-							v-if='data && product'
+							v-if='data'
 							class='simple-table'
 							density='compact'
 						>
@@ -94,31 +105,46 @@
 							<tbody>
 								<tr>
 									<th>{{ $t('components.iqrfnet.common.trType') }}</th>
-									<td />
+									<td>{{ data.osRead.trMcuType.trType }}</td>
 								</tr>
 								<tr>
 									<th>{{ $t('components.iqrfnet.common.mid') }}</th>
-									<td />
+									<td>{{ `${Number.parseInt(data.osRead.mid, 16)} [${data.osRead.mid}]` }}</td>
 								</tr>
 								<tr>
 									<th>{{ $t('components.iqrfnet.common.osVersion') }}</th>
-									<td />
+									<td>{{ `${data.osRead.osVersion} (${data.osRead.osBuild})` }}</td>
 								</tr>
 								<tr>
 									<th>{{ $t('components.iqrfnet.common.dpaVersion') }}</th>
-									<td />
+									<td>{{ data.peripheralEnumeration.dpaVer }}</td>
 								</tr>
 								<tr>
 									<th>{{ $t('components.iqrfnet.common.rfMode') }}</th>
-									<td />
+									<td v-if='data.peripheralEnumeration.flags.rfModeStd'>
+										<v-icon
+											:icon='mdiPowerPlug'
+											color='primary'
+											size='x-large'
+										/>
+										{{ $t('components.iqrfnet.common.rfModes.std') }}
+									</td>
+									<td v-else-if='data.peripheralEnumeration.flags.rfModeLp'>
+										<v-icon
+											:icon='mdiBattery70'
+											color='primary'
+											size='x-large'
+										/>
+										{{ $t('components.iqrfnet.common.rfModes.lp') }}
+									</td>
 								</tr>
 								<tr>
 									<th>{{ $t('components.iqrfnet.common.rssi') }}</th>
-									<td />
+									<td>{{ data.osRead.rssi }}</td>
 								</tr>
 								<tr>
 									<th>{{ $t('components.iqrfnet.common.voltage') }}</th>
-									<td />
+									<td>{{ data.osRead.supplyVoltage }}</td>
 								</tr>
 							</tbody>
 						</v-table>
@@ -137,6 +163,7 @@ import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { ProductService } from '@iqrf/iqrf-repository-client/services';
 import { Product } from '@iqrf/iqrf-repository-client/types';
 import { Action, ComponentState, IActionBtn, ICard, SkeletonLoaders } from '@iqrf/iqrf-vue-ui';
+import { mdiBattery70, mdiPowerPlug } from '@mdi/js';
 import { onBeforeMount, onBeforeUnmount, onMounted, ref, Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
