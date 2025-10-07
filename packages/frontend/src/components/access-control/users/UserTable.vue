@@ -23,6 +23,7 @@ limitations under the License.
 		<template #titleActions>
 			<UserForm
 				:action='Action.Add'
+				:disabled='componentState === ComponentState.Reloading'
 				@refresh='getUsers()'
 			/>
 			<IActionBtn
@@ -54,11 +55,13 @@ limitations under the License.
 				<UserForm
 					:action='Action.Edit'
 					:user-info='toRaw(item)'
+					:disabled='componentState === ComponentState.Reloading'
 					@refresh='getUsers()'
 				/>
 				<UserDeleteDialog
 					:user='toRaw(item)'
 					:only-user='users.length === 1'
+					:disabled='componentState === ComponentState.Reloading'
 					@refresh='getUsers()'
 				/>
 			</template>
