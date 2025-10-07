@@ -2463,7 +2463,6 @@
 				},
 				"rfpgm": "RFPGM",
 				"rssi": "RSSI",
-				"rssiVal": "{rssi} dBm",
 				"rxFilter": "RX filter",
 				"target": "Target",
 				"trPeripherals": "TR Peripherals",
@@ -2517,6 +2516,7 @@
 			},
 			"enumeration": {
 				"device": "Device information",
+				"uncertified": "Uncertified product.",
 				"messages": {
 					"failed": "Failed to retrieve device information.",
 					"timeout": "Get device information request timed out."
