@@ -2516,12 +2516,12 @@
 			},
 			"enumeration": {
 				"device": "Device information",
-				"uncertified": "Uncertified product.",
 				"messages": {
 					"failed": "Failed to retrieve device information.",
 					"timeout": "Get device information request timed out."
 				},
-				"tr": "TR information"
+				"tr": "TR information",
+				"uncertified": "Uncertified product."
 			},
 			"inProgress": "Request handling in progress.",
 			"network-manager": {
