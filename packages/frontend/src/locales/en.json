@@ -98,7 +98,7 @@
 		},
 		"messages": {
 			"fetchFailed": "An error has occurred while fetching data.",
-			"noDevice": "No device exists at address {address}.",
+			"noDevice": "No device bonded to address {address}.",
 			"noDevices": "No devices exist in network.",
 			"noNodes": "No node devices exist in network.",
 			"offlineCoordinator": "Coordinator device may be offline.",
@@ -2421,6 +2421,7 @@
 				"actionRetries": "Number of retry DPA transactions",
 				"address": "Address",
 				"autoAddress": "Assign address automatically",
+				"device": "Device",
 				"deviceAddr": "Device address",
 				"dpa": "DPA",
 				"dpaVersion": "DPA version",
@@ -2432,6 +2433,7 @@
 					"error": "An error has occured when processing request."
 				},
 				"mid": "Module ID",
+				"network": "Network",
 				"os": "OS",
 				"osVersion": "OS version",
 				"peripherals": {
@@ -2452,6 +2454,7 @@
 				"picture": "Product picture",
 				"product": "Product name",
 				"rf": "RF",
+				"rfChannel": "RF channel",
 				"rfMode": "RF mode",
 				"rfModes": {
 					"lp": "LP",
@@ -2462,6 +2465,7 @@
 				"rssi": "RSSI",
 				"rssiVal": "{rssi} dBm",
 				"rxFilter": "RX filter",
+				"target": "Target",
 				"trPeripherals": "TR Peripherals",
 				"trType": "TR type",
 				"txPower": "TX power",
@@ -2485,6 +2489,23 @@
 						"between": "HWPID should be an between 0 and 65535.",
 						"integer": "HWPID should be an integer.",
 						"required": "Please enter HWPID."
+					},
+					"lpRxTimeout": {
+						"between": "LP RX timeout should be between 1 and 255.",
+						"integer": "LP RX timeout should be an integer.",
+						"required": "Please enter LP RX timeout."
+					},
+					"rfChannel": {
+						"between433": "RF channel should be between 0 and 16.",
+						"between868": "RF channel should be between 0 and 67.",
+						"between916": "RF channel should be between 0 and 255.",
+						"integer": "RF channel should be an integer.",
+						"required": "Please enter RF channel."
+					},
+					"rxFilter": {
+						"between": "RX filter should be between 0 and 64.",
+						"integer": "RX filter should be an integer.",
+						"required": "Please enter RX filter."
 					},
 					"txPower": {
 						"between": "TX power should be between 0 and 7.",
@@ -3149,8 +3170,6 @@
 						"title": "RF Signal Test Results"
 					},
 					"note": "The RF signal testing process may take several minutes for large networks.",
-					"rfChannel": "RF channel",
-					"rxFilter": "RX filter",
 					"target": "Target device",
 					"targets": {
 						"coordinator": "Coordinator",
@@ -3158,21 +3177,7 @@
 					},
 					"time": "{time} ms",
 					"timeLabel": "Measurement time",
-					"title": "RF Signal",
-					"validation": {
-						"rfChannel": {
-							"between433": "RF channel should be between 0 and 16.",
-							"between868": "RF channel should be between 0 and 67.",
-							"between916": "RF channel should be between 0 and 255.",
-							"integer": "RF channel should be an integer.",
-							"required": "Please enter RF channel."
-						},
-						"rxFilter": {
-							"between": "RX filter should be between 0 and 64.",
-							"integer": "RX filter should be an integer.",
-							"required": "Please enter RX filter."
-						}
-					}
+					"title": "RF Signal"
 				}
 			},
 			"products": {
@@ -3450,7 +3455,24 @@
 				}
 			},
 			"tr-config": {
+				"disable": {
+					"action": "Disable DPA handle",
+					"text": "Custom DPA handler has been enabled in transceiver configuration, but not detected. Do you wish to disable Custom DPA handler? The transceiver will then be restarted.",
+					"title": "Custom DPA handler issue detected"
+				},
 				"dpa": {
+					"notes": {
+						"channelNote": "5 See OS tab notes 1, 2 and 3.",
+						"coordinatorOnly": "6 Used at Coordinator only.",
+						"exclusive": "9 Mutually exclusive peripherals, only enable one.",
+						"interoperability": "Disabling STD and LP network will break interoperability.",
+						"nodeOnly": "7 Used at Node only.",
+						"uartOnly": "8 For UART interface. For UART peripheral at DPA 4.11 or higher.",
+						"valid303Above": "1 Valid only for DPA 3.03 or higher.",
+						"valid410Above": "2 Valid only for DPA 4.10 or higher.",
+						"valid414Below": "4 Valid only for DPA 4.14 or lower.",
+						"valid415Above": "3 Valid only for DPA 4.15 or higher."
+					},
 					"other": {
 						"autoexec": "Autoexec",
 						"baudRate": "UART interface baud rate",
@@ -3459,6 +3481,7 @@
 						"ioSetup": "IO Setup",
 						"localFrc": "Local FRC",
 						"neverSleep": "Stay awake when not bonded",
+						"nodeDpaInterface": "Node DPA interface",
 						"routingOff": "Routing off",
 						"up2p": "User Peer-to-Peer"
 					},
@@ -3472,11 +3495,47 @@
 						}
 					}
 				},
+				"messages": {
+					"disable": {
+						"failed": "Failed to disable custom DPA handler.",
+						"success": "Custom DPA handler has been successfully disabled.",
+						"timeout": "Disable custom DPA handler request timed out."
+					},
+					"read": {
+						"failed": "Failed to download TR configuration.",
+						"success": "TR configuration succesfully downloaded.",
+						"timeout": "Download TR configuration request timed out."
+					},
+					"restart": {
+						"failed": "Failed to restart device.",
+						"success": "Device has been successfully restarted.",
+						"timeout": "Restart device request timed out."
+					},
+					"write": {
+						"failed": "Failed to upload TR configuration.",
+						"success": "TR configuration successfully uploaded.",
+						"timeout": "Upload TR configuration request timed out."
+					}
+				},
 				"os": {
+					"notes": {
+						"readOnly": "5 Read only",
+						"rfBand433": "3 Value 16 (433 MHz band) allowed only for TR-7xD with IQRF OS 3.08D or above",
+						"rfBand868": "1 Value from 62 to 67 (868 MHz band) allowed only for TR-7xD",
+						"rfBand916": "2 Value from 189 to 255 (916 MHz band) allowed only for TR-7xD with IQRF OS 3.08D or above",
+						"rfpgmOnly": "4 Used at RFPGM only"
+					},
+					"peripherals": {
+						"serialEeprom": "External EEPROM",
+						"thermometer": "Thermometer",
+						"transceiverIL": "Transceiver IL type"
+					},
 					"rf": {
 						"rfBand": "RF band",
 						"rfChannelA": "RF channel A",
-						"rfChannelB": "RF channel B"
+						"rfChannelB": "RF channel B",
+						"rfSubChannelA": "RF subchannel A",
+						"rfSubChannelB": "RF subchannel B"
 					},
 					"rfpgm": {
 						"dualChannel": "Dual channel",
@@ -3487,31 +3546,46 @@
 						"terminateByMcuPin": "Terminate by MCU pin"
 					}
 				},
+				"readTitle": "Select device",
 				"security": {
 					"accessPassword": "Access password",
-					"allowedCharactersAscii": "Allowed characters: Digits and letters, \"#$%&()*+,-./:;?{'@'}[\\]^_`{'{'}{'}'}~ and space.",
-					"allowedCharactersHex": "Allowed characters: Digits and letters a-f.",
-					"ascii": "ASCII",
 					"asciiChange": "Change to ASCII",
-					"empty": "Blank field sets default value.",
 					"errors": {
-						"accessPasswordInvalidAsciiChar": "ASCII access password contains invalid characters.",
-						"accessPasswordInvalidAsciiLen": "ASCII access password should be 0-16 characters long.",
-						"accessPasswordInvalidHexChar": "Hexadecimal access password contains invalid characters.",
-						"accessPasswordInvalidHexLen": "Hexadecimal access password should be 0-32 characters long.",
 						"userKeyInvalidAsciiChar": "ASCII user key contains invalid characters.",
 						"userKeyInvalidAsciiLen": "ASCII user key should be 0-16 characters long.",
 						"userKeyInvalidHexChar": "Hexadecimal user key contains invalid characters.",
 						"userKeyInvalidHexLen": "Hexadecimal user key should be 0-32 characters long."
 					},
-					"hex": "HEX",
 					"hexChange": "Change to HEX",
 					"messages": {
 						"asciiToHexConversionInvalid": "ASCII value contained disallowed characters during conversion, input cleared.",
 						"hexToAsciiConversionInvalid": "Hexadecimal value contained disallowed ASCII characters during conversion, input cleared."
 					},
+					"notes": {
+						"asciiCharset": "Allowed characters: Digits and letters, \"#$%&()*+,-./:;?{'@'}[\\]^_`{'{'}{'}'}~ and space.",
+						"empty": "1 Blank field sets default value.",
+						"hexCharset": "Allowed characters: Digits and letters a-f."
+					},
 					"title": "Security",
+					"useAccessPassword": "Set access password",
+					"useUserKey": "Set user key",
 					"userKey": "User key"
+				},
+				"validation": {
+					"accessPassword": {
+						"betweenAscii": "ASCII access password should be between 0 and 16 characters.",
+						"betweenHex": "HEX access password should be between 0 and 32 characters.",
+						"regexAscii": "ASCII access password contains invalid characters.",
+						"regexHex": "HEX access password contains invalid characters.",
+						"required": "Please enter access password."
+					},
+					"userKey": {
+						"betweenAscii": "ASCII user key should be between 0 and 16 characters.",
+						"betweenHex": "HEX user key should be between 0 and 32 characters.",
+						"regexAscii": "ASCII user key contains invalid characters.",
+						"regexHex": "HEX user key contains invalid characters.",
+						"required": "Please enter user key."
+					}
 				}
 			},
 			"upload": {
