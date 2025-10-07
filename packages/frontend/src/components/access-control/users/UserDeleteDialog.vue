@@ -20,6 +20,7 @@ limitations under the License.
 		ref='dialog'
 		:tooltip='$t("components.accessControl.users.actions.delete")'
 		:component-state='componentState'
+		:disabled='disabled'
 		persistent
 		@submit='onSubmit()'
 	>
@@ -54,6 +55,11 @@ const componentProps = defineProps({
 	onlyUser: {
 		type: Boolean,
 		required: true,
+	},
+	disabled: {
+		type: Boolean,
+		required: false,
+		default: false,
 	},
 });
 const emit = defineEmits(['refresh']);

@@ -21,6 +21,7 @@ limitations under the License.
 		:tooltip='$t("components.accessControl.sshKeys.actions.delete")'
 		:component-state='componentState'
 		persistent
+		:disabled='disabled'
 		@submit='onSubmit()'
 	>
 		<template #title>
@@ -45,6 +46,11 @@ const componentProps = defineProps({
 	sshKey: {
 		type: Object as PropType<SshKeyInfo>,
 		required: true,
+	},
+	disabled: {
+		type: Boolean,
+		required: false,
+		default: false,
 	},
 });
 const emit = defineEmits(['refresh']);

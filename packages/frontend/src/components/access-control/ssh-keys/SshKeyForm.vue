@@ -26,6 +26,7 @@ limitations under the License.
 				:action='Action.Add'
 				container-type='card-title'
 				:tooltip='$t("components.accessControl.sshKeys.actions.add")'
+				:disabled='disabled'
 			/>
 		</template>
 		<v-form
@@ -134,6 +135,11 @@ const componentProps = defineProps({
 	keyTypes: {
 		type: Array as PropType<string[]>,
 		required: true,
+	},
+	disabled: {
+		type: Boolean,
+		default: false,
+		required: false,
 	},
 });
 const emit = defineEmits(['refresh']);

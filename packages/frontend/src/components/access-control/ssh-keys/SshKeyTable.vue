@@ -24,12 +24,14 @@ limitations under the License.
 			<SshKeyForm
 				:action='Action.Add'
 				:key-types='types'
+				:disabled='componentState === ComponentState.Reloading'
 				@refresh='getKeys()'
 			/>
 			<IActionBtn
 				:action='Action.Reload'
 				container-type='card-title'
 				:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+				:disabled='componentState === ComponentState.Action'
 				:tooltip='$t("components.accessControl.sshKeys.actions.refresh")'
 				@click='getKeys()'
 			/>
@@ -54,6 +56,7 @@ limitations under the License.
 				/>
 				<SshKeyDeleteDialog
 					:ssh-key='toRaw(item)'
+					:disabled='componentState === ComponentState.Reloading'
 					@refresh='getKeys()'
 				/>
 			</template>

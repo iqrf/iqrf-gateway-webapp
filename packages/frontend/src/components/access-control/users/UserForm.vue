@@ -27,12 +27,14 @@ limitations under the License.
 				:action='action'
 				container-type='card-title'
 				:tooltip='$t("components.accessControl.users.actions.add")'
+				:disabled='disabled'
 			/>
 			<IDataTableAction
 				v-else
 				v-bind='props'
 				:action='action'
 				:tooltip='$t("components.accessControl.users.actions.edit")'
+				:disabled='disabled'
 			/>
 		</template>
 		<v-form
@@ -41,7 +43,7 @@ limitations under the License.
 			:disabled='componentState === ComponentState.Action'
 			@submit.prevent='onSubmit()'
 		>
-			<ICard>
+			<ICard :action='action'>
 				<template #title>
 					{{ $t(`components.accessControl.users.actions.${action}`) }}
 				</template>
@@ -156,7 +158,8 @@ import { useUserStore } from '@/store/user';
 
 interface Props {
 	action: Action;
-	userInfo?: UserInfo
+	userInfo?: UserInfo;
+	disabled?: boolean;
 }
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
