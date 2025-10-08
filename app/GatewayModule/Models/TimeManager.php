@@ -99,7 +99,7 @@ class TimeManager {
 	}
 
 	/**
-	 * Sets gateway date, time, timezone and NTP configuration
+	 * Sets gateway timezone and NTP configuration
 	 * @param array<string, bool|string|array<string>> $time Time configuration
 	 */
 	public function setTime(array $time): void {
@@ -111,7 +111,6 @@ class TimeManager {
 			$this->setNtp(true);
 		} else {
 			$this->setNtp(false);
-			$this->setDateTime($time['datetime']);
 		}
 	}
 
@@ -179,17 +178,6 @@ class TimeManager {
 	 */
 	public function setNtp(bool $enabled): void {
 		$command = $this->commandManager->run('timedatectl set-ntp ' . ($enabled ? 'true' : 'false'), true);
-		if ($command->getExitCode() !== 0) {
-			throw new TimeDateException($command->getStderr());
-		}
-	}
-
-	/**
-	 * Sets date and time
-	 * @param string $datetime ISO8601 datetime string
-	 */
-	private function setDateTime(string $datetime): void {
-		$command = $this->commandManager->run(sprintf('date --set=%s', escapeshellarg($datetime)), true, 0);
 		if ($command->getExitCode() !== 0) {
 			throw new TimeDateException($command->getStderr());
 		}

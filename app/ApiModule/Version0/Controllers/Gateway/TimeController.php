@@ -81,7 +81,7 @@ class TimeController extends BaseGatewayController {
 	#[Path('/')]
 	#[Method('POST')]
 	#[OpenApi(<<<'EOT'
-		summary: 'Sets date, time, timezone and NTP configuration'
+		summary: 'Sets timezone and NTP configuration'
 		responses:
 			'200':
 				description: Success
