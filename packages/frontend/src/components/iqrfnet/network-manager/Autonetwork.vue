@@ -144,13 +144,14 @@
 				v-if='useAddressSpace'
 				v-model='addressSpace'
 				:label='$t("components.iqrfnet.network-manager.autonetwork.form.bondingControl.addressSpace.title")'
+				:rules='[
+					(v: string|null) => ValidationRules.required(v, $t("components.iqrfnet.network-manager.autonetwork.validation.addressSpace.required")),
+					(v: string) => addressSpaceValidator(v, $t("components.iqrfnet.network-manager.autonetwork.validation.addressSpace.regex")),
+				]'
 				class='mt-2'
 				:description='$t("components.iqrfnet.network-manager.autonetwork.notes.addressSpaceFormat", { range: "1,2,4,<10;20>" })'
-			>
-				<template #append-inner>
-					{{ params.addressSpace.length }}
-				</template>
-			</ITextInput>
+				@blur='compactAddressSpace()'
+			/>
 			<v-checkbox
 				v-model='useMidList'
 				:label='$t("components.iqrfnet.network-manager.autonetwork.form.bondingControl.mid.use")'
@@ -358,6 +359,7 @@ const nodeConditionOptions = [
 ];
 const useAddressSpace: Ref<boolean> = ref(false);
 const addressSpace: Ref<string> = ref('');
+const addressSpacePattern = /^(?:\d+|<\d+;\d+>)(?:,(?:\d+|<\d+;\d+>))*$/;
 const useMidList: Ref<boolean> = ref(false);
 const midHeaders = [
 	{
@@ -385,6 +387,33 @@ const resultDialog: Ref<typeof AutonetworkResultDialog | null> = ref(null);
 const emit = defineEmits<{
 	updateDevices: [],
 }>();
+
+const addressSpaceValidator = (v: string, error: string): string|true => {
+	if (!addressSpacePattern.test(v)) {
+		return error;
+	}
+	const items = v.split(',');
+	const addrs = new Set<number>();
+	for (const item of items) {
+		if (item.startsWith('<')) {
+			const [start, end] = item.slice(1, -1).split(';').map(Number);
+			if (Number.isNaN(start) || Number.isNaN(end) || start > end) {
+				return error;
+			}
+			for (let i = start; i <= end; ++i) {
+				addrs.add(i);
+			}
+		} else {
+			const num = Number.parseInt(item);
+			if (Number.isNaN(num) || num < 1 || num > 239) {
+				return error;
+			}
+			addrs.add(num);
+		}
+	}
+	params.value.addressSpace = Array.from(addrs).sort((a: number, b: number) => a - b);
+	return true;
+};
 
 const hwpidValidator = (v: string, error: string): string|true => {
 	if (/\s/.test(v) || v.endsWith(',') || /,,/.test(v)) {
@@ -419,6 +448,36 @@ daemonStore.$onAction(({ name, after }) => {
 		});
 	}
 });
+
+function compactAddressSpace(): void {
+	if (params.value.addressSpace.length === 0) {
+		return;
+	}
+	const addrs = params.value.addressSpace;
+	const chunks = [];
+	let i = 0;
+
+	while (i < addrs.length) {
+		// while there are more addresses
+		const first = addrs[i];
+		let last = first;
+
+		while (i + 1 < addrs.length && addrs[i + 1] === last + 1) {
+			// find last consecutive address
+			i++;
+			last = addrs[i];
+		}
+
+		if (first === last) {
+			// no consecutive for iteration
+			chunks.push(`${first}`);
+		} else {
+			chunks.push(`<${first};${last}>`);
+		}
+		i++;
+	}
+	addressSpace.value = chunks.join(',');
+}
 
 function parseHwpidFilter(input: string): number[] {
 	const hwpids = new Set<number>();
