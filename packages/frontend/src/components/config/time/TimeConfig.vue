@@ -16,38 +16,38 @@ limitations under the License.
 -->
 
 <template>
-	<ICard>
-		<template #title>
-			{{ $t('pages.config.time.title') }}
-		</template>
-		<template #titleActions>
-			<IActionBtn
-				:action='Action.Reload'
-				container-type='card-title'
-				:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
-				:disabled='componentState === ComponentState.Action'
-				:tooltip='$t("components.config.time.actions.refresh")'
-				@click='getTime()'
+	<v-form
+		ref='form'
+		:disabled='[ComponentState.Action, ComponentState.Reloading].includes(componentState)'
+		@submit.prevent='setTime()'
+	>
+		<ICard>
+			<template #title>
+				{{ $t('pages.config.time.title') }}
+			</template>
+			<template #titleActions>
+				<IActionBtn
+					:action='Action.Reload'
+					container-type='card-title'
+					:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+					:disabled='componentState === ComponentState.Action'
+					:tooltip='$t("components.config.time.actions.refresh")'
+					@click='getTime()'
+				/>
+			</template>
+			<v-alert
+				v-if='componentState === ComponentState.FetchFailed'
+				type='error'
+				variant='tonal'
+				:text='$t("components.config.time.messages.fetch.failed")'
 			/>
-		</template>
-		<v-alert
-			v-if='componentState === ComponentState.FetchFailed'
-			type='error'
-			variant='tonal'
-			:text='$t("components.config.time.messages.fetch.failed")'
-		/>
-		<v-skeleton-loader
-			v-else
-			class='input-skeleton-loader'
-			:loading='componentState === ComponentState.Loading'
-			type='heading@2, text, table-heading, table-row-divider@2, table-row'
-		>
-			<v-responsive>
-				<v-form
-					ref='form'
-					:disabled='[ComponentState.Action, ComponentState.Reloading].includes(componentState)'
-					@submit.prevent='setTime()'
-				>
+			<v-skeleton-loader
+				v-else
+				class='input-skeleton-loader'
+				:loading='componentState === ComponentState.Loading'
+				type='heading@2, text, table-heading, table-row-divider@2, table-row'
+			>
+				<v-responsive>
 					<v-alert
 						class='mb-4'
 						type='info'
@@ -119,18 +119,18 @@ limitations under the License.
 							/>
 						</template>
 					</IDataTable>
-				</v-form>
-			</v-responsive>
-		</v-skeleton-loader>
-		<template #actions>
-			<IActionBtn
-				:action='Action.Save'
-				:loading='componentState === ComponentState.Action'
-				:disabled='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
-				type='submit'
-			/>
-		</template>
-	</ICard>
+				</v-responsive>
+			</v-skeleton-loader>
+			<template #actions>
+				<IActionBtn
+					:action='Action.Save'
+					:loading='componentState === ComponentState.Action'
+					:disabled='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+					type='submit'
+				/>
+			</template>
+		</ICard>
+	</v-form>
 </template>
 
 <script lang='ts' setup>
@@ -152,7 +152,7 @@ import {
 } from '@iqrf/iqrf-vue-ui';
 import { mdiMapClock } from '@mdi/js';
 import { DateTime } from 'luxon';
-import { onMounted, ref, type Ref } from 'vue';
+import { onMounted, ref, type Ref, toRaw } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
@@ -185,16 +185,17 @@ async function getTime(): Promise<void> {
 		ComponentState.FetchFailed,
 	].includes(componentState.value) ? ComponentState.Loading : ComponentState.Reloading;
 	try {
-		gatewayTime.value = await service.getTime();
+		const data = await service.getTime();
+		gatewayTime.value = data;
 		timezone.value = {
-			name: gatewayTime.value.zoneName,
-			code: gatewayTime.value.abbrevation,
-			offset: gatewayTime.value.gmtOffset,
+			name: data.zoneName,
+			code: data.abbrevation,
+			offset: data.gmtOffset,
 		};
 		timeSet.value = {
-			ntpSync: gatewayTime.value.ntpSync,
-			ntpServers: gatewayTime.value.ntpServers,
-			zoneName: gatewayTime.value.zoneName,
+			ntpSync: data.ntpSync,
+			ntpServers: data.ntpServers,
+			zoneName: data.zoneName,
 		};
 		datetime.value = datetime.value = DateTime.fromSeconds(gatewayTime.value.utcTimestamp, { zone: gatewayTime.value.zoneName }).toJSDate();
 		componentState.value = ComponentState.Ready;
@@ -209,7 +210,7 @@ async function getTime(): Promise<void> {
 
 async function setTime(): Promise<void> {
 	componentState.value = ComponentState.Action;
-	const params: TimeSet = structuredClone(timeSet.value);
+	const params: TimeSet = structuredClone(toRaw(timeSet.value));
 	params.zoneName = timezone.value.name;
 	if (!params.ntpSync) {
 		delete params.ntpServers;
