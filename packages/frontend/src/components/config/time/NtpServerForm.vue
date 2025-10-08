@@ -21,43 +21,46 @@ limitations under the License.
 		persistent
 	>
 		<template #activator='{ props }'>
-			<v-btn
+			<IActionBtn
 				v-if='action === Action.Add'
 				v-bind='props'
-				color='green'
-				:icon='mdiPlus'
+				:action='action'
+				container-type='card-title'
+				:disabled='disabled'
+				:tooltip='$t("components.config.time.ntpServers.actions.add")'
 			/>
 			<IDataTableAction
 				v-else
+				v-bind='props'
 				:action='action'
+				:disabled='disabled'
+				:tooltip='$t("components.config.time.ntpServers.actions.edit")'
 			/>
 		</template>
 		<v-form ref='form' v-slot='{ isValid }' @submit.prevent='onSubmit()'>
 			<ICard :action='action'>
 				<template #title>
-					{{ $t(`components.config.time.ntpServers.${action}`) }}
+					{{ cardTitle }}
 				</template>
 				<ITextInput
 					v-model='ntpServer'
 					label='NTP server address'
 					:prepend-inner-icon='mdiServerNetwork'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.config.time.ntpServers.validation.serverMissing")),
-						(v: string) => ValidationRules.host(v, $t("components.config.time.ntpServers.validation.serverInvalid")),
+						(v: string|null) => ValidationRules.required(v, $t("components.config.time.ntpServers.validation.server.required")),
+						(v: string) => ValidationRules.host(v, $t("components.config.time.ntpServers.validation.server.invalid")),
 					]'
 					required
 				/>
 				<template #actions>
 					<IActionBtn
 						:action='action'
-						container-type='card'
 						:disabled='!isValid.value'
 						type='submit'
 					/>
 					<v-spacer />
 					<IActionBtn
 						:action='Action.Cancel'
-						container-type='card'
 						@click='close()'
 					/>
 				</template>
@@ -76,30 +79,56 @@ import {
 	ITextInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
-import { mdiPlus, mdiServerNetwork } from '@mdi/js';
-import { ref, type Ref, watchEffect } from 'vue';
+import { mdiServerNetwork } from '@mdi/js';
+import { computed, PropType, ref, type Ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { VForm } from 'vuetify/components';
 
 import { validateForm } from '@/helpers/validateForm';
 
-interface Props {
-	action: Action;
-	index?: number;
-	server?: string;
-}
-
+const i18n = useI18n();
 const emit = defineEmits(['save']);
-const componentProps = defineProps<Props>();
+const componentProps = defineProps({
+	action: {
+		type: String as PropType<Action>,
+		required: true,
+	},
+	index: {
+		type: Number,
+		required: false,
+		default: undefined,
+	},
+	server: {
+		type: String,
+		required: false,
+		default: undefined,
+	},
+	disabled: {
+		type: Boolean,
+		required: false,
+		default: false,
+	},
+});
 const show: Ref<boolean> = ref(false);
 const form: Ref<VForm | null> = ref(null);
 const ntpServer: Ref<string> = ref('');
 
-watchEffect((): void => {
+watch(show, (newVal: boolean): void => {
+	if (!newVal) {
+		return;
+	}
 	if (componentProps.action === Action.Add) {
 		ntpServer.value = '';
 	} else if (componentProps.server !== undefined) {
 		ntpServer.value = componentProps.server;
 	}
+});
+
+const cardTitle = computed(() => {
+	if (componentProps.action === Action.Add) {
+		return i18n.t('components.config.time.ntpServers.actions.add');
+	}
+	return i18n.t('components.config.time.ntpServers.actions.edit');
 });
 
 async function onSubmit(): Promise<void> {

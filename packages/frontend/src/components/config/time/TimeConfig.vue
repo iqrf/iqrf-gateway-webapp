@@ -24,16 +24,30 @@ limitations under the License.
 			<IActionBtn
 				:action='Action.Reload'
 				container-type='card-title'
-				@click='getTime'
+				:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+				:disabled='componentState === ComponentState.Action'
+				:tooltip='$t("components.config.time.actions.refresh")'
+				@click='getTime()'
 			/>
 		</template>
+		<v-alert
+			v-if='componentState === ComponentState.FetchFailed'
+			type='error'
+			variant='tonal'
+			:text='$t("components.config.time.messages.fetch.failed")'
+		/>
 		<v-skeleton-loader
+			v-else
 			class='input-skeleton-loader'
 			:loading='componentState === ComponentState.Loading'
 			type='heading@2, text, table-heading, table-row-divider@2, table-row'
 		>
 			<v-responsive>
-				<v-form ref='form' @submit.prevent='onSubmit'>
+				<v-form
+					ref='form'
+					:disabled='[ComponentState.Action, ComponentState.Reloading].includes(componentState)'
+					@submit.prevent='setTime()'
+				>
 					<v-alert
 						class='mb-4'
 						type='info'
@@ -53,7 +67,8 @@ limitations under the License.
 					<v-checkbox
 						v-model='timeSet.ntpSync'
 						:label='$t("components.config.time.ntpSync")'
-						:hide-details='false'
+						density='compact'
+						:hide-details='!timeSet.ntpSync'
 					/>
 					<IDataTable
 						v-if='timeSet.ntpSync'
@@ -71,12 +86,16 @@ limitations under the License.
 								<v-toolbar-items>
 									<NtpServerForm
 										:action='Action.Add'
+										:disabled='[ComponentState.Action, ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
 										@save='saveServer'
 									/>
-									<v-btn
-										color='red'
-										:icon='mdiDelete'
-										@click='clearServers'
+									<IActionBtn
+										class='rounded-e'
+										:action='Action.Delete'
+										container-type='card-title'
+										:tooltip='$t("components.config.time.ntpServers.actions.deleteAll")'
+										:disabled='[ComponentState.Action, ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+										@click='clearServers()'
 									/>
 								</v-toolbar-items>
 							</v-toolbar>
@@ -89,35 +108,25 @@ limitations under the License.
 								:action='Action.Edit'
 								:index='index'
 								:server='item'
+								:disabled='[ComponentState.Action, ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
 								@save='saveServer'
 							/>
 							<IDataTableAction
 								:action='Action.Delete'
+								:disabled='[ComponentState.Action, ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+								:tooltip='$t("components.config.time.ntpServers.actions.delete")'
 								@click='removeServer(index)'
 							/>
 						</template>
 					</IDataTable>
-					<div v-else>
-						<label for='datetimeinput'>
-							{{ $t('components.config.time.datetime') }}
-						</label>
-						<VueDatePicker
-							id='datetimeinput'
-							v-model='datetime'
-							:enable-seconds='true'
-							:show-now-button='true'
-							:teleport='true'
-							:state='datePickerState'
-						/>
-					</div>
 				</v-form>
 			</v-responsive>
 		</v-skeleton-loader>
 		<template #actions>
 			<IActionBtn
-				:action='Action.Edit'
-				container-type='card'
-				:disabled='componentState === ComponentState.Loading'
+				:action='Action.Save'
+				:loading='componentState === ComponentState.Action'
+				:disabled='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
 				type='submit'
 			/>
 		</template>
@@ -141,9 +150,9 @@ import {
 	IDataTable,
 	IDataTableAction,
 } from '@iqrf/iqrf-vue-ui';
-import { mdiDelete, mdiMapClock } from '@mdi/js';
+import { mdiMapClock } from '@mdi/js';
 import { DateTime } from 'luxon';
-import { computed, onMounted, ref, type Ref } from 'vue';
+import { onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
@@ -171,7 +180,10 @@ const headers = [
 ];
 
 async function getTime(): Promise<void> {
-	componentState.value = ComponentState.Loading;
+	componentState.value = [
+		ComponentState.Created,
+		ComponentState.FetchFailed,
+	].includes(componentState.value) ? ComponentState.Loading : ComponentState.Reloading;
 	try {
 		gatewayTime.value = await service.getTime();
 		timezone.value = {
@@ -188,20 +200,19 @@ async function getTime(): Promise<void> {
 		componentState.value = ComponentState.Ready;
 
 	} catch {
-		componentState.value = ComponentState.FetchFailed;
-		toast.error('TODO ERROR HANDLING');
+		componentState.value = componentState.value === ComponentState.Loading ? ComponentState.FetchFailed : ComponentState.Ready;
+		toast.error(
+			i18n.t('components.config.time.messages.fetch.failed'),
+		);
 	}
 }
 
-async function onSubmit(): Promise<void> {
+async function setTime(): Promise<void> {
+	componentState.value = ComponentState.Action;
 	const params: TimeSet = structuredClone(timeSet.value);
 	params.zoneName = timezone.value.name;
-	if (params.ntpSync) {
-		delete params.datetime;
-	} else {
+	if (!params.ntpSync) {
 		delete params.ntpServers;
-		const luxonDate = DateTime.fromJSDate(datetime.value, { zone: timezone.value.name });
-		params.datetime = luxonDate.toISO()!;
 	}
 	try {
 		await service.updateTime(params);
@@ -210,7 +221,10 @@ async function onSubmit(): Promise<void> {
 			i18n.t('components.config.time.messages.save.success'),
 		);
 	} catch {
-		toast.error('TODO ERROR HANDLING');
+		componentState.value = ComponentState.Ready;
+		toast.error(
+			i18n.t('components.config.time.messages.save.failed'),
+		);
 	}
 }
 
@@ -245,17 +259,6 @@ function clearServers(): void {
 		timeSet.value.ntpServers = [];
 	}
 }
-
-const datePickerState = computed((): false|null => {
-	if (timeSet.value.ntpSync) {
-		return null;
-	}
-	if (datetime.value !== null) {
-		return null;
-	}
-	return false;
-});
-
 
 onMounted(async () => {
 	await getTime();
