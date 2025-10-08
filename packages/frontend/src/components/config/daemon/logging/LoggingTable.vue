@@ -92,9 +92,9 @@ const instances: Ref<ShapeTraceFileService[]> = ref([]);
 
 const noDataText = computed(() => {
 	if (componentState.value === ComponentState.FetchFailed) {
-		return i18n.t('components.config.daemon.logging.table.fetchError');
+		return 'components.config.daemon.logging.noData.fetchError';
 	}
-	return i18n.t('components.config.daemon.logging.table.noData');
+	return 'components.config.daemon.logging.noData.empty';
 });
 
 async function getConfig(): Promise<void> {

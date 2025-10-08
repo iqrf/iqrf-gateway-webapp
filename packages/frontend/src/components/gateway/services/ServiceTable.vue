@@ -144,9 +144,9 @@ const services: Ref<ServiceState[]> = ref([]);
 
 const noDataText = computed(() => {
 	if (componentState.value === ComponentState.FetchFailed) {
-		return i18n.t('components.gateway.services.table.fetchError');
+		return 'components.gateway.services.table.fetchError';
 	}
-	return i18n.t('components.gateway.services.table.noData');
+	return 'components.gateway.services.table.noData';
 });
 
 async function getServices(): Promise<void> {

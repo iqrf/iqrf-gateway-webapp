@@ -119,7 +119,7 @@ limitations under the License.
 					:items='profile.VerbosityLevels'
 					:dense='true'
 					:hover='true'
-					:no-data-text='$t("components.config.daemon.logging.channels.noChannels")'
+					no-data-text='components.config.daemon.logging.channels.noChannels'
 				>
 					<template #top>
 						<v-toolbar density='compact' rounded>

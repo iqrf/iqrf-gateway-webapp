@@ -108,9 +108,9 @@ onMounted(() => {
 
 const noDataText = computed(() => {
 	if (componentState.value === ComponentState.FetchFailed) {
-		return i18n.t('components.accessControl.users.noData.fetchError');
+		return 'components.accessControl.users.noData.fetchError';
 	}
-	return i18n.t('components.accessControl.users.noData.empty');
+	return 'components.accessControl.users.noData.empty';
 });
 
 async function getUsers(): Promise<void> {
