@@ -131,9 +131,9 @@ const keys: Ref<SshKeyInfo[]> = ref([]);
 
 const noDataText = computed(() => {
 	if (componentState.value === ComponentState.FetchFailed) {
-		return i18n.t('components.accessControl.sshKeys.noData.fetchError');
+		return 'components.accessControl.sshKeys.noData.fetchError';
 	}
-	return i18n.t('components.accessControl.sshKeys.noData.empty');
+	return 'components.accessControl.sshKeys.noData.empty';
 });
 
 onMounted(async (): Promise<void> => {

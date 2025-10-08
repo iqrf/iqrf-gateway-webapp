@@ -204,7 +204,7 @@ limitations under the License.
 							v-model='config.mqtt.client'
 							:label='$t("components.config.daemon.connections.mqtt.clientId")'
 							:rules='[
-								(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.validation.clientIdMissing")),
+								(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.validation.clientId.required")),
 							]'
 							required
 							:prepend-inner-icon='mdiIdentifier'

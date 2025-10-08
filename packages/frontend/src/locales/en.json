@@ -1051,15 +1051,15 @@
 							"success": "Logging profile {name} has been successfully saved."
 						}
 					},
+					"noData": {
+						"empty": "No logging instance records found.",
+						"fetchError": "Logging instances list could not be retrieved."
+					},
 					"notes": {
 						"timestampsDisabled": "Setting value to 0 disables this feature."
 					},
 					"profile": "Logging profile",
 					"severity": "Logging severity",
-					"table": {
-						"fetchError": "Logging instances list could not be retrieved.",
-						"noData": "No logging instance records found."
-					},
 					"timestamps": "Split and rotate log files",
 					"validation": {
 						"channel": {

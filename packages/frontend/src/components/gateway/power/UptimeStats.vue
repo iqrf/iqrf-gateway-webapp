@@ -105,9 +105,9 @@ const stats: Ref<GatewayUptime[]> = ref([]);
 
 const noDataText = computed(() => {
 	if (componentState.value === ComponentState.FetchFailed) {
-		return i18n.t('components.gateway.power.stats.table.fetchError');
+		return 'components.gateway.power.stats.table.fetchError';
 	}
-	return i18n.t('components.gateway.power.stats.table.noData');
+	return 'components.gateway.power.stats.table.noData';
 });
 
 /**
