@@ -28,10 +28,10 @@ limitations under the License.
 			</template>
 			<template #titleActions>
 				<IActionBtn
-					:action='Action.Custom'
+					:action='configuration.enabled ? Action.Disable : Action.Enable'
 					container-type='card-title'
+					color='primary'
 					:icon='stateButtonIcon'
-					:tooltip='stateButtonTooltip'
 					@click='configuration.enabled = !configuration.enabled'
 				/>
 				<IActionBtn
@@ -39,7 +39,6 @@ limitations under the License.
 					container-type='card-title'
 					:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
 					:disabled='componentState === ComponentState.Action'
-					:tooltip='$t("components.config.smtp.actions.reload")'
 					@click='getConfig()'
 				/>
 			</template>
@@ -193,12 +192,6 @@ const configuration: Ref<MailerConfig> = ref({
 });
 const defaultConfig: Ref<boolean> = ref(false);
 
-const stateButtonTooltip: ComputedRef<string> = computed((): string => {
-	if (configuration.value.enabled) {
-		return i18n.t('$iqrf.common.actions.disable');
-	}
-	return i18n.t('$iqrf.common.actions.enable');
-});
 const stateButtonIcon: ComputedRef<string> = computed((): string => {
 	if (configuration.value.enabled) {
 		return mdiEmailOff;
