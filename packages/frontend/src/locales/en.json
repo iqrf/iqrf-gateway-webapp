@@ -1548,24 +1548,35 @@
 				}
 			},
 			"time": {
+				"actions": {
+					"refresh": "Refresh time"
+				},
 				"datetime": "Date and time",
 				"gatewayDateTime": "Gateway date and time: ",
 				"messages": {
+					"fetch": {
+						"failed": "Failed to retrieve time configuration."
+					},
 					"save": {
-						"success": "Time and NTP configuration successfully saved."
+						"failed": "Failed to save time configuration.",
+						"success": "Time configuration successfully saved."
 					}
 				},
 				"ntpServers": {
-					"add": "Add NTP server",
+					"actions": {
+						"add": "Add NTP server",
+						"delete": "Delete NTP server",
+						"deleteAll": "Delete all NTP servers",
+						"edit": "Edit NTP server"
+					},
 					"address": "NTP server address",
-					"delete": "Delete NTP server",
-					"deleteAll": "Delete all NTP servers",
-					"edit": "Edit NTP server",
 					"noRecords": "No custom NTP server defined. Default NTP servers will be used for time synchronization.",
 					"title": "NTP servers",
 					"validation": {
-						"serverInvalid": "NTP server address should be a valid IP or fully qualified domain name.",
-						"serverMissing": "Please enter NTP server address."
+						"server": {
+							"invalid": "NTP server address should be a valid IP or fully qualified domain name.",
+							"required": "Please enter NTP server address."
+						}
 					}
 				},
 				"ntpSync": "Synchronize time automatically",
