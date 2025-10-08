@@ -87,6 +87,12 @@ export const useInstallStore = defineStore('install', {
 			}
 			this.running = isRunning;
 		},
+		/**
+		 * Resets current step to nothing
+		 */
+		resetStep(): void {
+			this.currentStep = null;
+		},
 	},
 	getters: {
 		/**

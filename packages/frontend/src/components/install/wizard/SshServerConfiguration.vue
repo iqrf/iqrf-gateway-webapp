@@ -37,27 +37,30 @@ limitations under the License.
 					:label='option.text'
 				/>
 			</v-radio-group>
-			<SshKeyTable v-if='isLoggedIn' :install='true' />
+			<SshKeyTable
+				v-if='isLoggedIn'
+				:install='true'
+			/>
 		</v-form>
 		<template #actions='{ next, prev }'>
 			<IActionBtn
 				:action='Action.Next'
 				container-type='card'
-				:disabled='!formValidity'
-				:loading='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState)'
+				:loading='componentState === ComponentState.Action'
+				:disabled='!formValidity || [ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
 				@click='onSubmit(next)'
 			/>
 			<IActionBtn
 				:action='Action.Skip'
 				class='ml-2'
 				container-type='card'
-				:loading='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState)'
+				:disabled='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState)'
 				@click='next'
 			/>
 			<IActionBtn
 				:action='Action.Previous'
 				container-type='card'
-				:loading='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState)'
+				:disabled='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState)'
 				class='float-right'
 				@click='prev'
 			/>

@@ -28,7 +28,7 @@ limitations under the License.
 				:icon='mdiCheck'
 				container-type='card'
 				:text='$t("components.install.wizard.installationCompleted.button")'
-				@click='finishInstallation'
+				@click='finishInstallation()'
 			/>
 			<IActionBtn
 				:action='Action.Previous'
@@ -61,6 +61,7 @@ const router = useRouter();
  */
 async function finishInstallation(): Promise<void> {
 	installStore.setRunning(false);
+	installStore.resetStep();
 	await router.push('/');
 }
 

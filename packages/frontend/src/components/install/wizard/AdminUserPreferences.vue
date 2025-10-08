@@ -14,7 +14,6 @@
 		<template #actions='{ next }'>
 			<IActionBtn
 				:action='Action.Next'
-				container-type='card'
 				:disabled='!formValidity'
 				:loading='componentState === ComponentState.Action'
 				@click='onSubmit(next)'
@@ -22,8 +21,7 @@
 			<IActionBtn
 				:action='Action.Skip'
 				class='ml-2'
-				container-type='card'
-				:loading='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState)'
+				:disabled='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState)'
 				@click='next'
 			/>
 		</template>
