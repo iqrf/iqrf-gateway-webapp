@@ -43,53 +43,57 @@ limitations under the License.
 			<v-switch
 				v-if='customConfig'
 				v-model='configuration.enabled'
-				:label='$t("components.config.smtp.form.enabled")'
+				:label='$t("common.states.enabled")'
 				color='primary'
 			/>
-			<v-text-field
+			<ITextInput
 				v-if='customConfig'
 				v-model='configuration.host'
-				:disabled='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState) || !configuration.enabled'
 				:label='$t("components.config.smtp.form.host")'
 				:rules='[
-					(v: string|null) => ValidationRules.required(v, $t("components.config.smtp.errors.host")),
-					(v: string) => ValidationRules.host(v, $t("components.config.smtp.errors.hostInvalid")),
+					(v: string|null) => ValidationRules.required(v, $t("components.config.smtp.validation.host.required")),
+					(v: string) => ValidationRules.host(v, $t("components.config.smtp.validation.host.invalid")),
 				]'
+				:disabled='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState) || !configuration.enabled'
 				:prepend-inner-icon='mdiServer'
 				required
 			/>
-			<v-text-field
+			<INumberInput
 				v-if='customConfig'
-				v-model.number='configuration.port'
-				:disabled='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState) || !configuration.enabled'
-				:label='$t("components.config.smtp.form.port")'
+				v-model='configuration.port'
+				:label='$t("common.labels.port")'
 				:rules='[
-					(v: number|null) => ValidationRules.required(v, $t("components.config.smtp.errors.port")),
-					(v: number) => ValidationRules.integer(v, $t("components.config.smtp.errors.port")),
-					(v: number) => ValidationRules.between(v, 1, 65535, $t("components.config.smtp.errors.portInvalid")),
+					(v: number|null) => ValidationRules.required(v, $t("common.validation.port.required")),
+					(v: number) => ValidationRules.integer(v, $t("common.validation.port.integer")),
+					(v: number) => ValidationRules.between(v, 1, 65535, $t("common.validation.port.between")),
 				]'
+				:min='1'
+				:max='65535'
+				:disabled='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState) || !configuration.enabled'
 				:prepend-inner-icon='mdiNumeric'
 				required
 			/>
-			<v-text-field
+			<ITextInput
 				v-if='customConfig'
 				v-model='configuration.username'
-				:disabled='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState) || !configuration.enabled'
-				:label='$t("components.config.smtp.form.username")'
+				:label='$t("common.labels.username")'
 				:rules='[
-					(v: string|null) => ValidationRules.required(v, $t("components.config.smtp.errors.username")),
+					(v: string|null) => ValidationRules.required(v, $t("common.validation.username.required")),
 				]'
+				:disabled='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState) || !configuration.enabled'
 				:prepend-inner-icon='mdiAccount'
+				required
 			/>
 			<IPasswordInput
 				v-if='customConfig'
 				v-model='configuration.password'
-				:disabled='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState) || !configuration.enabled'
-				:label='$t("components.config.smtp.form.password")'
+				:label='$t("common.labels.password")'
 				:rules='[
-					(v: string|null) => ValidationRules.required(v, $t("components.config.smtp.errors.password")),
+					(v: string|null) => ValidationRules.required(v, $t("common.validation.password.required")),
 				]'
+				:disabled='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState) || !configuration.enabled'
 				:prepend-inner-icon='mdiKey'
+				required
 			/>
 			<SmtpSecurityInput
 				v-if='customConfig'
@@ -99,37 +103,34 @@ limitations under the License.
 			<ITextInput
 				v-if='customConfig'
 				v-model='configuration.from'
-				:disabled='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState) || !configuration.enabled'
 				:label='$t("components.config.smtp.form.sender")'
 				:rules='[
-					(v: string|null) => ValidationRules.required(v, $t("components.config.smtp.errors.sender")),
+					(v: string|null) => ValidationRules.required(v, $t("components.config.smtp.validation.sender.required")),
 				]'
+				:disabled='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState) || !configuration.enabled'
 				:prepend-inner-icon='mdiEmail'
 			/>
 		</v-form>
 		<template #actions='{ next }'>
 			<IActionBtn
 				:action='Action.Next'
-				container-type='card'
-				:disabled='!formValidity'
-				:loading='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState)'
+				:loading='componentState === ComponentState.Action && smtpAction === SmtpAction.Save'
+				:disabled='!formValidity || [ComponentState.Loading, ComponentState.Reloading].includes(componentState) || (componentState === ComponentState.Action && smtpAction !== SmtpAction.Save)'
 				@click='onSubmit(next)'
 			/>
 			<IActionBtn
 				:action='Action.Skip'
 				class='ml-2'
-				container-type='card'
-				:loading='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState)'
+				:disabled='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState)'
 				@click='next()'
 			/>
 			<IActionBtn
 				color='info'
 				class='ml-2'
-				container-type='card'
-				:disabled='!formValidity || defaultConfig'
 				:icon='mdiEmailFast'
-				:text='$t("components.config.smtp.form.test")'
-				:loading='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState)'
+				:text='$t("components.config.smtp.actions.test")'
+				:loading='componentState === ComponentState.Action && smtpAction === SmtpAction.Test'
+				:disabled='!formValidity || defaultConfig || !configuration.enabled || [ComponentState.Loading, ComponentState.Reloading].includes(componentState) || (componentState === ComponentState.Action && smtpAction !== SmtpAction.Test)'
 				@click='testConfiguration()'
 			/>
 		</template>
@@ -138,7 +139,6 @@ limitations under the License.
 
 <script lang='ts' setup>
 import { MailerService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
-import { ErrorResponse } from '@iqrf/iqrf-gateway-webapp-client/types';
 import {
 	type MailerConfig,
 	type MailerGetConfigResponse, MailerTheme,
@@ -147,6 +147,7 @@ import {
 	Action,
 	ComponentState,
 	IActionBtn,
+	INumberInput,
 	IPasswordInput,
 	ITextInput,
 	ValidationRules,
@@ -159,7 +160,6 @@ import {
 	mdiNumeric,
 	mdiServer,
 } from '@mdi/js';
-import { AxiosError } from 'axios';
 import { storeToRefs } from 'pinia';
 import { onBeforeMount, ref, type Ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -172,6 +172,11 @@ import UrlBuilder from '@/helpers/urlBuilder';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
+
+enum SmtpAction {
+	Save = 0,
+	Test = 1,
+}
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const componentProps = defineProps({
@@ -202,6 +207,7 @@ const form: Ref<VForm | null> = ref(null);
 const formValidity: Ref<boolean | null> = ref(null);
 const i18n = useI18n();
 let service: MailerService = useApiClient().getConfigServices().getMailerService();
+const smtpAction: Ref<SmtpAction | null> = ref(null);
 
 onBeforeMount(async () => {
 	if (isLoggedIn.value) {
@@ -229,12 +235,11 @@ async function getConfig(): Promise<void> {
 			customConfig.value = !response.headers.defaultConfig;
 		}
 		componentState.value = ComponentState.Ready;
-	} catch (error) {
+	} catch {
 		componentState.value = ComponentState.FetchFailed;
-		if (error instanceof AxiosError) {
-			const message = (error.response?.data as ErrorResponse | undefined)?.message ?? error.message;
-			toast.error(i18n.t('components.config.smtp.messages.fetchFailed', { error: message }));
-		}
+		toast.error(
+			i18n.t('components.config.smtp.messages.test.failed'),
+		);
 	}
 }
 
@@ -246,6 +251,7 @@ async function onSubmit(onClickNext: Function): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
 	}
+	smtpAction.value = SmtpAction.Save;
 	componentState.value = ComponentState.Action;
 	try {
 		if (customConfig.value) {
@@ -255,17 +261,17 @@ async function onSubmit(onClickNext: Function): Promise<void> {
 					baseUrl: new UrlBuilder().getBaseUrl(),
 				});
 			}
-			toast.success(i18n.t('components.config.smtp.messages.saveSuccess'));
+			toast.success(
+				i18n.t('components.config.smtp.messages.save.success'),
+			);
 		}
-		componentState.value = ComponentState.Ready;
 		onClickNext();
-	} catch (error) {
-		if (error instanceof AxiosError) {
-			componentState.value = ComponentState.Ready;
-			const message = (error.response?.data as ErrorResponse | undefined)?.message ?? error.message;
-			toast.error(i18n.t('components.config.smtp.messages.saveFailed', { error: message }));
-		}
+	} catch {
+		toast.error(
+			i18n.t('components.config.smtp.messages.save.failed'),
+		);
 	}
+	componentState.value = ComponentState.Ready;
 }
 
 /**
@@ -275,18 +281,19 @@ async function testConfiguration(): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
 	}
-	componentState.value = ComponentState.Reloading;
+	smtpAction.value = SmtpAction.Test;
+	componentState.value = ComponentState.Action;
 	try {
 		await service.testConfig(configuration.value);
-		componentState.value = ComponentState.Ready;
-		toast.success(i18n.t('components.config.smtp.messages.testSuccess'));
-	} catch (error) {
-		if (error instanceof AxiosError) {
-			componentState.value = ComponentState.Ready;
-			const message = (error.response?.data as ErrorResponse | undefined)?.message ?? error.message;
-			toast.error(i18n.t('components.config.smtp.messages.testFailed', { error: message }));
-		}
+		toast.success(
+			i18n.t('components.config.smtp.messages.test.success'),
+		);
+	} catch {
+		toast.error(
+			i18n.t('components.config.smtp.messages.test.failed'),
+		);
 	}
+	componentState.value = ComponentState.Ready;
 }
 
 </script>
