@@ -32,6 +32,7 @@ limitations under the License.
 					container-type='card-title'
 					color='primary'
 					:icon='stateButtonIcon'
+					:disabled='[ComponentState.Action, ComponentState.Loading, ComponentState.Reloading, ComponentState.FetchFailed].includes(componentState)'
 					@click='configuration.enabled = !configuration.enabled'
 				/>
 				<IActionBtn
@@ -124,14 +125,16 @@ limitations under the License.
 			<template #actions>
 				<IActionBtn
 					:action='Action.Save'
-					:disabled='!isValid.value || componentState !== ComponentState.Ready'
+					:loading='componentState === ComponentState.Action && smtpAction === SmtpAction.Save'
+					:disabled='!isValid.value || [ComponentState.Loading, ComponentState.Reloading].includes(componentState) || (componentState === ComponentState.Action && smtpAction !== SmtpAction.Save)'
 					type='submit'
 				/>
 				<IActionBtn
 					color='info'
 					:icon='mdiEmailFast'
 					:text='$t("components.config.smtp.actions.test")'
-					:disabled='componentState !== ComponentState.Ready || !configuration.enabled || !isValid.value'
+					:loading='componentState === ComponentState.Action && smtpAction === SmtpAction.Test'
+					:disabled='!isValid.value || !configuration.enabled || [ComponentState.Loading, ComponentState.Reloading].includes(componentState) || (componentState === ComponentState.Action && smtpAction !== SmtpAction.Test)'
 					@click='testConfiguration()'
 				/>
 			</template>
@@ -173,6 +176,11 @@ import SmtpSecurityInput from '@/components/config/smtp/SmtpSecurityInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
+enum SmtpAction {
+	Save = 0,
+	Test = 1,
+}
+
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
 const form: Ref<VForm | null> = ref(null);
@@ -191,6 +199,7 @@ const configuration: Ref<MailerConfig> = ref({
 	theme: MailerTheme.Generic,
 });
 const defaultConfig: Ref<boolean> = ref(false);
+const smtpAction: Ref<SmtpAction | null> = ref(null);
 
 const stateButtonIcon: ComputedRef<string> = computed((): string => {
 	if (configuration.value.enabled) {
@@ -233,6 +242,7 @@ async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
 	}
+	smtpAction.value = SmtpAction.Save;
 	componentState.value = ComponentState.Action;
 	try {
 		await service.updateConfig(configuration.value);
@@ -254,6 +264,7 @@ async function testConfiguration(): Promise<void> {
 	if (!await validateForm(form.value)) {
 		return;
 	}
+	smtpAction.value = SmtpAction.Test;
 	componentState.value = ComponentState.Action;
 	try {
 		await service.testConfig(configuration.value);
