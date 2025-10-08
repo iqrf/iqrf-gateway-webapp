@@ -2591,7 +2591,10 @@
 					},
 					"title": "Autonetwork",
 					"validation": {
-						"addressSpace": "Invalid address space format.",
+						"addressSpace": {
+							"regex": "The address space format is invalid or address space contains addresses outside of allowed range.",
+							"required": "Please define address space."
+						},
 						"emptyWaves": {
 							"between": "Number of empty wavess should be between 1 and 127.",
 							"integer": "Number of empty waves should be an integer.",
