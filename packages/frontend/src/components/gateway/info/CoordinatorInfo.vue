@@ -30,13 +30,13 @@ limitations under the License.
 			<strong>{{ `${$t('components.gateway.information.tr.mcuType')}:` }} </strong>
 			{{ enumData.osRead.trMcuType.mcuType }}<br>
 			<strong>{{ `${$t('components.gateway.information.tr.moduleId')}:` }} </strong>
-			{{ enumData.osRead.mid }}<br>
+			{{ `${enumData.osRead.mid} [${Number.parseInt(enumData.osRead.mid, 16)}]` }}<br>
 			<strong>{{ `${$t('components.gateway.information.tr.os')}:` }} </strong>
 			{{ `${enumData.osRead.osVersion} (${enumData.osRead.osBuild})` }}<br>
 			<strong>{{ `${$t('components.gateway.information.tr.dpa')}:` }} </strong>
 			{{ enumData.peripheralEnumeration.dpaVer }}<br>
 			<strong>{{ `${$t('components.gateway.information.tr.hwpid')}:` }} </strong>
-			{{ `${enumData.peripheralEnumeration.hwpId.toString(16).padStart(4, '0')} (${enumData.peripheralEnumeration.hwpId})` }}<br>
+			{{ `${enumData.peripheralEnumeration.hwpId.toString(16).padStart(4, '0')} [${enumData.peripheralEnumeration.hwpId}]` }}<br>
 			<strong>{{ `${$t('components.gateway.information.tr.hwpidVersion')}:` }} </strong>
 			{{ `${enumData.peripheralEnumeration.hwpIdVer & 0x00FF}.${enumData.peripheralEnumeration.hwpIdVer & 0xFF00}` }}<br>
 			<strong>{{ `${$t('components.gateway.information.tr.voltage')}:` }} </strong>

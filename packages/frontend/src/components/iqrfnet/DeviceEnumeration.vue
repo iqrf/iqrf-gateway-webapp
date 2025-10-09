@@ -40,7 +40,7 @@
 								</tr>
 								<tr>
 									<th>{{ $t('components.iqrfnet.common.hwpid') }}</th>
-									<td>{{ `${data.peripheralEnumeration.hwpId} [${data.peripheralEnumeration.hwpId.toString(16).padStart(4, '0').toUpperCase()}]` }}</td>
+									<td>{{ `${data.peripheralEnumeration.hwpId.toString(16).padStart(4, '0').toUpperCase()} [${data.peripheralEnumeration.hwpId}]` }}</td>
 								</tr>
 								<tr>
 									<th>{{ $t('components.iqrfnet.common.hwpidVer') }}</th>
@@ -109,7 +109,7 @@
 								</tr>
 								<tr>
 									<th>{{ $t('components.iqrfnet.common.mid') }}</th>
-									<td>{{ `${Number.parseInt(data.osRead.mid, 16)} [${data.osRead.mid}]` }}</td>
+									<td>{{ `${data.osRead.mid} [${Number.parseInt(data.osRead.mid, 16)}]` }}</td>
 								</tr>
 								<tr>
 									<th>{{ $t('components.iqrfnet.common.osVersion') }}</th>
