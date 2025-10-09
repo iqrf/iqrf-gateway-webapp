@@ -64,3 +64,39 @@ export interface OsUpgradeMetadata {
 	/// Current OS version
 	version: string;
 }
+
+/**
+ * DPA file fetch params
+ */
+export interface DpaFileParams {
+	/**
+	 * OS build
+	 */
+	osBuild: string;
+	/**
+	 * DPA version
+	 */
+	dpa: string;
+	/**
+	 * TR series
+	 */
+	trSeries: number;
+	/**
+	 * IQRF interface
+	 */
+	interfaceType: 'SPI' | 'UART';
+	/**
+	 * RF mode
+	 */
+	rfMode?: 'STD' | 'LP';
+}
+
+/**
+ * DPA file fetch result
+ */
+export interface DpaFileResult {
+	/**
+	 * Path to downloaded file
+	 */
+	fileName: string;
+}

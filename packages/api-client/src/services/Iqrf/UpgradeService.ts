@@ -17,6 +17,8 @@
 import { type AxiosResponse } from 'axios';
 
 import {
+	type DpaFileParams,
+	type DpaFileResult,
 	type FileFormat,
 	type FileType,
 	type FileUploadResult,
@@ -55,5 +57,16 @@ export class UpgradeService extends BaseService {
 			type: type,
 		};
 		await this.axiosInstance.post('/iqrf/uploader', data);
+	}
+
+	/**
+	 * Downloads a DPA file to filesystem and returns path to file
+	 * @param {DpaFileParams} params DPA file parameters
+	 * @return {Promise<string>} Path to downloaded DPA file
+	 */
+	public async getDpaFile(params: DpaFileParams): Promise<DpaFileResult> {
+		const response: AxiosResponse<DpaFileResult> =
+			await this.axiosInstance.post('/iqrf/dpaFile', params);
+		return response.data;
 	}
 }
