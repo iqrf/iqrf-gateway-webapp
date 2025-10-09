@@ -196,7 +196,7 @@ limitations under the License.
 								<strong>{{ $t('components.gateway.information.tr.title') }}</strong>
 							</td>
 							<td>
-								<CoordinatorInfo />
+								<CoordinatorInfo v-if='componentState !== ComponentState.Created' />
 							</td>
 						</tr>
 						<tr>

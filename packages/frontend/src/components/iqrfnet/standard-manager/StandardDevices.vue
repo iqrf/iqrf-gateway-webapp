@@ -106,7 +106,7 @@ limitations under the License.
 								</tr>
 								<tr>
 									<th>{{ $t('components.iqrfnet.standard-manager.standard-devices.headers.hwpid') }}</th>
-									<td>{{ `${item.getHwpid()} [${item.getHwpidHex()}]` }}</td>
+									<td>{{ `${item.getHwpidHex()} [${item.getHwpid()}]` }}</td>
 								</tr>
 								<tr>
 									<th>{{ $t('components.iqrfnet.standard-manager.standard-devices.headers.hwpidVer') }}</th>
@@ -114,7 +114,7 @@ limitations under the License.
 								</tr>
 								<tr>
 									<th>{{ $t('components.iqrfnet.standard-manager.standard-devices.headers.mid') }}</th>
-									<td>{{ `${item.getMid()} [${item.getMidHex()}]` }}</td>
+									<td>{{ `${item.getMidHex()} [${item.getMid()}]` }}</td>
 								</tr>
 							</tbody>
 						</v-table>
