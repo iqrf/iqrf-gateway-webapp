@@ -93,6 +93,10 @@ export const useInstallStore = defineStore('install', {
 		resetStep(): void {
 			this.currentStep = null;
 		},
+		reset(): void {
+			this.setRunning(false);
+			this.resetStep();
+		},
 	},
 	getters: {
 		/**

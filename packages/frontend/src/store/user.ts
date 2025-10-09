@@ -170,14 +170,17 @@ export const useUserStore = defineStore('user', {
 			const localeStore = useLocaleStore();
 			localeStore.setLocale(response.language);
 		},
+		clearUserData(): void {
+			this.expiration = 0;
+			this.user = null;
+			setUser(null);
+		},
 		/**
 		 * Signs out the user
 		 * @param {boolean} restoreLocation Restore location after sign in
 		 */
 		async signOut(restoreLocation: boolean = true): Promise<void> {
-			this.expiration = 0;
-			this.user = null;
-			setUser(null);
+			this.clearUserData();
 			const currentRoute: RouteLocationNormalizedLoaded = router.currentRoute.value;
 			await router.push({
 				name: 'SignIn',
