@@ -43,7 +43,7 @@ limitations under the License.
 					:action='Action.Reload'
 					container-type='card'
 					class='float-right mt-2'
-					@click='checkInstallation'
+					@click='checkInstallation()'
 				/>
 			</v-alert>
 		</template>
@@ -61,6 +61,7 @@ import { onMounted, ref, Ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import Logo from '@/assets/logo-blue.svg?url';
+import { useApiClient } from '@/services/ApiClient';
 import { useFeatureStore } from '@/store/features';
 import { useGatewayStore } from '@/store/gateway';
 import { useInstallStore } from '@/store/install';
@@ -86,38 +87,43 @@ async function checkInstallation(): Promise<void> {
 	try {
 		await featureStore.fetch();
 		await installStore.check();
-		const {
-			hasErrors,
-			hasNoUsers,
-			isRunning,
-		} = storeToRefs(installStore);
+		const { hasErrors, hasNoUsers } = storeToRefs(installStore);
 		const isInstallUrl: boolean = [
 			'InstallationErrors',
 			'InstallationWizard',
 		].includes(route.name as string);
 		if (hasErrors.value) {
-			installStore.setChecked();
 			await router.push({ name: 'InstallationErrors' });
-		} else if (isRunning.value && !isInstallUrl) {
 			installStore.setChecked();
-			if (hasNoUsers.value || isLoggedIn.value) {
-				await router.push({ name: 'InstallationWizard' });
-			} else {
-				await router.push({ name: 'SignIn', query: { redirect: '/install/' } });
+			componentState.value = ComponentState.Ready;
+			return;
+		}
+		if (hasNoUsers.value) {
+			userStore.clearUserData();
+			installStore.reset();
+			if (!isInstallUrl) {
+				await router.push('/install');
 			}
-		} else if (!isRunning.value && isInstallUrl) {
 			installStore.setChecked();
-			await router.push(isLoggedIn.value ? '/' : { name: 'SignIn' });
+			componentState.value = ComponentState.Ready;
+			return;
 		}
 		if (isLoggedIn.value) {
+			await useApiClient().getAccountService().getInfo();
+			if (isInstallUrl && !installStore.isRunning) {
+				await router.push('/');
+			} else if (!isInstallUrl && installStore.isRunning) {
+				await router.push('/install');
+			}
 			await userStore.refreshUserPreferences();
 			await repositoryStore.fetch();
 			await gatewayStore.fetchInfo();
 		}
 		installStore.setChecked();
-		componentState.value = ComponentState.Error;
+		componentState.value = ComponentState.Ready;
 	} catch {
 		componentState.value = ComponentState.FetchFailed;
+		installStore.setChecked();
 	}
 }
 

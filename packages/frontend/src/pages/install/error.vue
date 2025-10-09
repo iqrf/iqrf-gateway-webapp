@@ -68,7 +68,11 @@ import MisconfiguredSudo from '@/components/install/errors/MisconfiguredSudo.vue
 import MissingDependencies from '@/components/install/errors/MissingDependencies.vue';
 import MissingMigrations from '@/components/install/errors/MissingMigrations.vue';
 import MissingPhpExtensions from '@/components/install/errors/MissingPhpExtensions.vue';
+import { useApiClient } from '@/services/ApiClient';
+import { useGatewayStore } from '@/store/gateway';
 import { useInstallStore } from '@/store/install';
+import { useRepositoryStore } from '@/store/repository';
+import { useUserStore } from '@/store/user';
 import { InstallationError } from '@/types/install';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
@@ -79,8 +83,12 @@ const {
 	getChecks: checks,
 	getErrors: errors,
 	hasErrors,
-	isRunning: isInstallationRunning,
+	hasNoUsers,
 } = storeToRefs(installStore);
+const userStore = useUserStore();
+const { isLoggedIn } = storeToRefs(userStore);
+const repositoryStore = useRepositoryStore();
+const gatewayStore = useGatewayStore();
 
 const items: ComputedRef<InstallationError[]> = computed((): InstallationError[] => {
 	const items: InstallationError[] = [];
@@ -112,14 +120,33 @@ async function reload(): Promise<void> {
 		componentState.value = ComponentState.Loading;
 		await installStore.check();
 		if (!hasErrors.value) {
-			toast.success(i18n.t('pages.install.errors.messages.reload.successNoErrors'));
-			await router.push(isInstallationRunning.value ? { name: 'InstallationWizard' } : '/');
+			toast.success(
+				i18n.t('pages.install.errors.messages.reload.successNoErrors'),
+			);
+			if (hasNoUsers.value) {
+				userStore.clearUserData();
+				installStore.reset();
+				await router.push('/install');
+				return;
+			} else if (isLoggedIn.value) {
+				await useApiClient().getAccountService().getInfo();
+				await router.push('/');
+				await userStore.refreshUserPreferences();
+				await repositoryStore.fetch();
+				await gatewayStore.fetchInfo();
+			} else {
+				await router.push('/install');
+			}
 		} else {
-			toast.success(i18n.t('pages.install.errors.messages.reload.success'));
+			toast.success(
+				i18n.t('pages.install.errors.messages.reload.success'),
+			);
 		}
 		componentState.value = ComponentState.Created;
 	} catch {
-		toast.error(i18n.t('pages.install.errors.messages.reload.failed'));
+		toast.error(
+			i18n.t('pages.install.errors.messages.reload.failed'),
+		);
 	}
 }
 </script>
