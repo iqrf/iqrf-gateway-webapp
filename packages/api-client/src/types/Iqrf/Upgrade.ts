@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 
+import { type IqrfInterfaces, type RfModes } from './Transceiver';
+
 /**
  * IQRF Upload file format enum
  */
@@ -84,11 +86,11 @@ export interface DpaFileParams {
 	/**
 	 * IQRF interface
 	 */
-	interfaceType: 'SPI' | 'UART';
+	interfaceType: IqrfInterfaces;
 	/**
 	 * RF mode
 	 */
-	rfMode?: 'STD' | 'LP';
+	rfMode?: RfModes;
 }
 
 /**
