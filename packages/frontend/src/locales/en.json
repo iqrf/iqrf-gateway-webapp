@@ -294,6 +294,7 @@
 					}
 				},
 				"new": "New password",
+				"note": "Changing password will log you out of the current session.",
 				"title": "Change password",
 				"validation": {
 					"confirmation": {
