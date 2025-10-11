@@ -35,7 +35,7 @@ limitations under the License.
 				<template #append>
 					<v-btn
 						color='success'
-						@click='copyToClipboard'
+						@click='copyToClipboard()'
 					>
 						<v-icon :icon='mdiClipboard' />
 						{{ $t('common.buttons.clipboard') }}
@@ -44,9 +44,9 @@ limitations under the License.
 			</ITextInput>
 			<template #actions>
 				<IActionBtn
-					:action='Action.Cancel'
+					:action='Action.Close'
 					container-type='card'
-					@click='close'
+					@click='close()'
 				/>
 			</template>
 		</ICard>
