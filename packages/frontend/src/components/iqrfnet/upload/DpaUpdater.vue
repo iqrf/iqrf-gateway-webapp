@@ -77,6 +77,7 @@ import { useApiClient } from '@/services/ApiClient';
 import { useRepositoryClient } from '@/services/RepositoryClient';
 import { useDaemonStore } from '@/store/daemonSocket';
 import { DeviceEnumeration } from '@/types/DaemonApi/Iqmesh';
+import { SelectItem } from '@/types/vuetify';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
@@ -94,7 +95,7 @@ const form: Ref<VForm | null> = ref(null);
 const conflictDialog: Ref<typeof SameVersionDialog | null> = ref(null);
 const progressDialog: Ref<typeof DpaUpdateProgressDialog | null> = ref(null);
 const version: Ref<string> = ref('');
-const versionOptions: Ref<any[]> = ref([]);
+const versionOptions: Ref<SelectItem[]> = ref([]);
 const showAlert = computed(() => {
 	return componentState.value === ComponentState.FetchFailed || (componentState.value !== ComponentState.Loading && versionOptions.value.length === 0);
 });
