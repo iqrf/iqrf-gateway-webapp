@@ -24,6 +24,7 @@ limitations under the License.
 			<IActionBtn
 				:action='Action.Reload'
 				:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+				:disabled='componentState === ComponentState.Action'
 				container-type='card-title'
 				@click='getInformation()'
 			/>
@@ -213,6 +214,7 @@ limitations under the License.
 		</v-skeleton-loader>
 		<template #actions>
 			<IActionBtn
+				:action='Action.Custom'
 				:icon='mdiDownload'
 				:loading='componentState === ComponentState.Action'
 				:disabled='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
@@ -226,6 +228,7 @@ limitations under the License.
 <script lang='ts' setup>
 import { type InfoService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
 import { type GatewayInformation, type NetworkInterface } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
+import { FileDownloader } from '@iqrf/iqrf-gateway-webapp-client/utils';
 import { Action, ComponentState, IActionBtn, ICard, SkeletonLoaders } from '@iqrf/iqrf-vue-ui';
 import { mdiDownload } from '@mdi/js';
 import { computed, onMounted, ref, type Ref } from 'vue';
@@ -277,14 +280,18 @@ async function getInformation(): Promise<void> {
 }
 
 async function getDiagnostics(): Promise<void> {
-	componentState.value === ComponentState.Action;
+	componentState.value = ComponentState.Action;
 	try {
-		await service.getDiagnostics();
+		const file = await service.getDiagnostics();
+		FileDownloader.downloadFileResponse(
+			file,
+			file.name,
+		);
 	} catch {
 		toast.error(
 			i18n.t('components.gateway.information.messages.diagnostics.failed'),
 		);
 	}
-	componentState.value === ComponentState.Ready;
+	componentState.value = ComponentState.Ready;
 }
 </script>
