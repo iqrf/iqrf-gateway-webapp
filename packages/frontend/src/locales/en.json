@@ -3575,14 +3575,6 @@
 					},
 					"file": "Hex file to upload",
 					"messages": {
-						"start": {
-							"action": "Starting IQRF Gateway Daemon back up.",
-							"failed": "Failed to start IQRF Gateway Daemon service back up."
-						},
-						"stop": {
-							"action": "Stopping IQRF Gateway Daemon.",
-							"failed": "Failed to stop IQRF Gateway Daemon."
-						},
 						"upload": {
 							"success": "Custom DPA handler has been successfully uploaded."
 						},
@@ -3598,6 +3590,52 @@
 					"title": "Custom DPA handler",
 					"validation": {
 						"fileMissing": "Please select custom DPA handler hex file."
+					}
+				},
+				"dpa-plugin": {
+					"dialog": {
+						"title": "DPA plug-in handler upload progress"
+					},
+					"form": {
+						"placeholder": "Select DPA version.",
+						"version": "DPA version"
+					},
+					"messages": {
+						"dpaList": {
+							"failed": "Failed to retrieve current DPA version or DPA upgrades."
+						},
+						"noUpgrades": "No DPA version upgrade or downgrade available for this OS version.",
+						"upload": {
+							"success": "DPA plug-in has been successfully uploaded."
+						},
+						"uploadFs": {
+							"action": "Downloading DPA plug-in file to gateway filesystem.",
+							"failed": "Failed to get DPA plug-in file."
+						},
+						"uploadTr": {
+							"action": "Uploading DPA plug-in to TR.",
+							"failed": "Failed to upload DPA plug-in to TR."
+						}
+					},
+					"modal": {
+						"text": "The device already uses DPA version {version}, are you sure you want to proceed with upload?",
+						"title": "DPA plug-in upload confirmation"
+					},
+					"title": "DPA plug-in",
+					"validation": {
+						"version": {
+							"required": "Please select DPA version to upload."
+						}
+					}
+				},
+				"messages": {
+					"start": {
+						"action": "Starting IQRF Gateway Daemon back up.",
+						"failed": "Failed to start IQRF Gateway Daemon service back up."
+					},
+					"stop": {
+						"action": "Stopping IQRF Gateway Daemon.",
+						"failed": "Failed to stop IQRF Gateway Daemon."
 					}
 				}
 			}

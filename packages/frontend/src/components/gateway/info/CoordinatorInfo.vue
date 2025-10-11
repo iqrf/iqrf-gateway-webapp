@@ -55,11 +55,13 @@ import { type DaemonApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { ComponentState } from '@iqrf/iqrf-vue-ui';
 import { onBeforeMount, onBeforeUnmount, ref, type Ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import { useDaemonStore } from '@/store/daemonSocket';
 import { DeviceEnumeration } from '@/types/DaemonApi/Iqmesh';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
+const i18n = useI18n();
 const daemonStore = useDaemonStore();
 const enumData: Ref<DeviceEnumeration | null> = ref(null);
 const msgId: Ref<string | null> = ref(null);
@@ -80,20 +82,12 @@ daemonStore.$onAction(
 	},
 );
 
-onBeforeMount(() => {
-	enumerate();
-});
-
-onBeforeUnmount(() => {
-	daemonStore.removeMessage(msgId.value);
-});
-
 async function enumerate(): Promise<void> {
 	componentState.value = ComponentState.Loading;
 	const opts = new DaemonMessageOptions(
 		null,
 		10_000,
-		'components.gateway.information.messages.fetchTr.timeout',
+		i18n.t('components.gateway.information.messages.fetchTr.timeout'),
 		() => {
 			msgId.value = null;
 			componentState.value = ComponentState.Idle;
@@ -112,5 +106,13 @@ function handleEnumerateResponse(rsp: DaemonApiResponse): void {
 		componentState.value = ComponentState.FetchFailed;
 	}
 }
+
+onBeforeMount(() => {
+	enumerate();
+});
+
+onBeforeUnmount(() => {
+	daemonStore.removeMessage(msgId.value);
+});
 
 </script>

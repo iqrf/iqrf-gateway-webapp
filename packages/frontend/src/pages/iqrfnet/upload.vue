@@ -21,6 +21,7 @@ limitations under the License.
 			<title>{{ $t('pages.iqrfnet.upload.title') }}</title>
 		</Head>
 		<HandlerUploader />
+		<DpaUpdater />
 	</div>
 </template>
 
@@ -33,5 +34,6 @@ limitations under the License.
 <script lang='ts' setup>
 import { Head } from '@unhead/vue/components';
 
+import DpaUpdater from '@/components/iqrfnet/upload/DpaUpdater.vue';
 import HandlerUploader from '@/components/iqrfnet/upload/HandlerUploader.vue';
 </script>

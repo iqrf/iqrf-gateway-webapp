@@ -104,7 +104,7 @@ const serviceService: ServiceService = useApiClient().getServiceService();
 const upgradeService: UpgradeService = useApiClient().getIqrfServices().getUpgradeService();
 
 const progressColor = computed(() => {
-	if (componentState.value === ComponentState.Action || ComponentState.Success) {
+	if (componentState.value === ComponentState.Action || componentState.value === ComponentState.Success) {
 		return 'green';
 	}
 	return 'red';
@@ -120,7 +120,7 @@ async function onSubmit(): Promise<void> {
 	let success = await stopDaemon();
 	if (!success) {
 		await handleError(
-			i18n.t('components.iqrfnet.upload.dpa-handler.messages.stop.failed'),
+			i18n.t('components.iqrfnet.upload.messages.stop.failed'),
 		);
 		return;
 	}
@@ -141,7 +141,7 @@ async function onSubmit(): Promise<void> {
 	success = await startDaemon();
 	if (!success) {
 		await handleError(
-			i18n.t('components.iqrfnet.upload.dpa-handler.messages.start.failed'),
+			i18n.t('components.iqrfnet.upload.messages.start.failed'),
 		);
 		return;
 	}
@@ -172,7 +172,7 @@ async function runUploader(path: string): Promise<boolean> {
 }
 
 async function stopDaemon(): Promise<boolean> {
-	progressMessage.value = i18n.t('components.iqrfnet.upload.dpa-handler.messages.stop.action');
+	progressMessage.value = i18n.t('components.iqrfnet.upload.messages.stop.action');
 	try {
 		await serviceService.stop('iqrf-gateway-daemon');
 		return true;
@@ -182,7 +182,7 @@ async function stopDaemon(): Promise<boolean> {
 }
 
 async function startDaemon(): Promise<boolean> {
-	progressMessage.value = i18n.t('components.iqrfnet.upload.dpa-handler.messages.start.action');
+	progressMessage.value = i18n.t('components.iqrfnet.upload.messages.start.action');
 	try {
 		await serviceService.start('iqrf-gateway-daemon');
 		return true;
