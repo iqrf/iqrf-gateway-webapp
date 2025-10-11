@@ -20,12 +20,18 @@ limitations under the License.
 		ref='form'
 		v-slot='{ isValid }'
 		:disabled='componentState === ComponentState.Action'
-		@submit.prevent='onSubmit'
+		@submit.prevent='onSubmit()'
 	>
 		<ICard>
 			<template #title>
 				{{ $t('components.account.password.title') }}
 			</template>
+			<v-alert
+				class='mb-4'
+				type='info'
+				variant='tonal'
+				:text='$t("components.account.password.note")'
+			/>
 			<IPasswordInput
 				v-model='passwordChange.old'
 				:label='$t("components.account.password.current")'
@@ -74,10 +80,10 @@ limitations under the License.
 			/>
 			<template #actions>
 				<IActionBtn
-					:action='Action.Edit'
-					container-type='card'
+					:action='Action.Save'
 					:disabled='!isValid.value'
 					:loading='componentState === ComponentState.Action'
+					:text='$t("components.account.password.title")'
 					type='submit'
 				/>
 			</template>
@@ -104,11 +110,14 @@ import { type VForm } from 'vuetify/components';
 import UrlBuilder from '@/helpers/urlBuilder';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
+import { useUserStore } from '@/store/user';
 
 /// Component state
 const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
 /// Form reference
 const form: Ref<VForm | null> = ref(null);
+/// User store
+const userStore = useUserStore();
 /// Internationalization instance
 const i18n = useI18n();
 /// Password change request
@@ -130,6 +139,7 @@ async function onSubmit(): Promise<void> {
 	componentState.value = ComponentState.Action;
 	try {
 		await useApiClient().getAccountService().updatePassword(passwordChange.value);
+		await userStore.signOut();
 		toast.success(
 			i18n.t('components.account.password.messages.save.success'),
 		);
