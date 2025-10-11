@@ -35,7 +35,7 @@ limitations under the License.
 			<v-skeleton-loader
 				class='input-skeleton-loader'
 				:loading='componentState === ComponentState.Loading'
-				type='heading@3, button'
+				type='heading@3'
 			>
 				<v-responsive>
 					<ITextInput
