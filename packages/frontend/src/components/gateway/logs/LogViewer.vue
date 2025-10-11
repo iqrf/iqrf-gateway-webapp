@@ -16,60 +16,22 @@ limitations under the License.
 -->
 
 <template>
-	<v-skeleton-loader
-		:loading='log === null'
-		type='text@3, paragraph@2, text@5'
-	>
-		<v-responsive>
-			<pre class='log'>{{ log }}</pre>
-		</v-responsive>
-	</v-skeleton-loader>
+	<h2>{{ `${title} log` }}</h2>
+	<v-divider class='my-2' />
+	<pre class='log'>{{ log }}</pre>
 </template>
 
 <script lang='ts' setup>
-import { type LogService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
-import { ComponentState } from '@iqrf/iqrf-vue-ui';
-import { onMounted, type PropType, ref, type Ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { toast } from 'vue3-toastify';
-
-import { useApiClient } from '@/services/ApiClient';
+import { type PropType } from 'vue';
 
 const componentProps = defineProps({
-	serviceName: {
+	title: {
+		type: String,
+		required: true,
+	},
+	log: {
 		type: [String, null] as PropType<string | null>,
 		required: true,
 	},
 });
-const i18n = useI18n();
-const componentState: Ref<ComponentState> = ref(ComponentState.Created);
-const service: LogService = useApiClient().getGatewayServices().getLogService();
-const log: Ref<string | null> = ref(null);
-
-watch(() => componentProps.serviceName, (newVal: string|null) => {
-	if (newVal === null) {
-		return;
-	}
-	getServiceLog();
-});
-
-async function getServiceLog(): Promise<void> {
-	if (componentProps.serviceName === null) {
-		return;
-	}
-	componentState.value = ComponentState.Reloading;
-	try {
-		log.value = await service.getServiceLog(componentProps.serviceName);
-	} catch {
-		toast.error(
-			i18n.t('components.gateway.logs.services.messages.fetch.failed'),
-		);
-	}
-	componentState.value = ComponentState.Ready;
-}
-
-onMounted(() => {
-	getServiceLog();
-});
-
 </script>

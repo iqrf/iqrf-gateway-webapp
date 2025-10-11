@@ -1714,9 +1714,13 @@
 				}
 			},
 			"logs": {
+				"actions": {
+					"load": "Load"
+				},
 				"journal": {
 					"messages": {
 						"fetch": {
+							"action": "Loading older journal records.",
 							"failed": "Failed to retrieve journal records."
 						}
 					},
@@ -1725,16 +1729,28 @@
 				"messages": {
 					"export": {
 						"failed": "Failed to export service and journal logs."
+					},
+					"fetch": {
+						"failed": "Failed to retrieve service logs."
+					},
+					"list": {
+						"failed": "Failed to retrieve list of services."
 					}
 				},
+				"placeholder": "Select service.",
+				"service": "Service",
 				"services": {
-					"messages": {
-						"fetch": {
-							"failed": "Failed to retrieve service logs."
-						},
-						"list": {
-							"failed": "Failed to retrieve list of services."
-						}
+					"tabs": {
+						"iqrf-gateway-controller": "Controller",
+						"iqrf-gateway-daemon": "Daemon",
+						"iqrf-gateway-setter": "Setter",
+						"iqrf-gateway-uploader": "Uploader",
+						"systemd-journald": "Journal"
+					}
+				},
+				"validation": {
+					"service": {
+						"required": "Please select service."
 					}
 				}
 			},
@@ -1872,6 +1888,12 @@
 					"iqrf-gateway-influxdb-bridge": {
 						"description": "Stores sensor measurement data in InfluxDB.",
 						"name": "IQRF Gateway InfluxDB Bridge"
+					},
+					"iqrf-gateway-setter": {
+						"name": "IQRF Gateway Setter"
+					},
+					"iqrf-gateway-uploader": {
+						"name": "IQRF Gateway Uploader"
 					},
 					"mender-client": {
 						"description": "Mender is an over-the-air update manager for IoT and embedded devices.",

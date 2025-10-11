@@ -16,6 +16,9 @@ limitations under the License.
 -->
 
 <template>
+	<v-divider class='my-2' />
+	<h2>{{ `${$t('components.gateway.logs.services.tabs.systemd-journald')} log` }}</h2>
+	<v-divider class='my-2' />
 	<v-skeleton-loader
 		:loading='componentState === ComponentState.Loading'
 		type='text@3, paragraph@2, text@5'
@@ -23,11 +26,25 @@ limitations under the License.
 		<v-responsive>
 			<v-alert
 				v-if='oldestRecords'
-				color='info'
-			>
-				{{ $t('components.gateway.logs.journal.oldestRecords') }}
-			</v-alert>
+				type='info'
+				variant='tonal'
+				:text='$t("components.gateway.logs.journal.oldestRecords")'
+			/>
+			<v-alert
+				v-if='componentState === ComponentState.Reloading'
+				class='mb-2'
+				type='info'
+				variant='tonal'
+				:text='$t("components.gateway.logs.journal.messages.fetch.action")'
+			/>
+			<v-alert
+				v-if='componentState === ComponentState.FetchFailed'
+				type='error'
+				variant='tonal'
+				:text='$t("components.gateway.logs.journal.messages.fetch.failed")'
+			/>
 			<pre
+				v-if='log !== null'
 				ref='journal'
 				v-scroll.self='scrollUpdate'
 				class='log'
@@ -39,7 +56,7 @@ limitations under the License.
 <script lang='ts' setup>
 import { LogService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
 import { ComponentState } from '@iqrf/iqrf-vue-ui';
-import { nextTick, onMounted, ref, type Ref } from 'vue';
+import { nextTick, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
@@ -56,17 +73,12 @@ let lastScrollHeight = 0;
 let lastScrollPos = 0;
 let oldestRecords = false;
 
-onMounted(() => {
-	getJournalRecords(300);
-});
-
 async function getJournalRecords(count: number, cursor: string|null = null): Promise<void> {
 	allowUpdate = false;
-	if (componentState.value === ComponentState.Created) {
-		componentState.value = ComponentState.Loading;
-	} else {
-		componentState.value = ComponentState.Reloading;
-	}
+	componentState.value = [
+		ComponentState.Created,
+		ComponentState.FetchFailed,
+	].includes(componentState.value) ? ComponentState.Loading : ComponentState.Reloading;
 	try {
 		const data = await service.getJournalRecords(count, cursor);
 		if (data.records.length === 0) {
@@ -92,6 +104,7 @@ async function getJournalRecords(count: number, cursor: string|null = null): Pro
 		toast.error(
 			i18n.t('components.gateway.logs.journal.messages.fetch.failed'),
 		);
+		componentState.value = componentState.value === ComponentState.Loading ? ComponentState.FetchFailed : ComponentState.Ready;
 		if (cursor !== null) {
 			scrollToPrevious();
 		}
@@ -135,4 +148,11 @@ async function scrollToEnd(): Promise<void> {
 	}
 }
 
+function fetch(): void {
+	getJournalRecords(300);
+}
+
+defineExpose({
+	fetch,
+});
 </script>
