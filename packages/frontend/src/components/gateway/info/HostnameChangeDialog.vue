@@ -56,7 +56,7 @@ limitations under the License.
 				/>
 				<template #actions>
 					<IActionBtn
-						:action='Action.Edit'
+						:action='Action.Save'
 						:disabled='!isValid.value || componentState === ComponentState.Action'
 						@click='onSubmit()'
 					/>
