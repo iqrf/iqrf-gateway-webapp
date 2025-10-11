@@ -112,7 +112,7 @@
 		"@vitest/spy": "^3.2.4",
 		"cypress": "^14.5.1",
 		"eslint": "^9.31.0",
-		"happy-dom": "^18.0.1",
+		"happy-dom": "^20.0.0",
 		"newman": "^6.2.1",
 		"nyc": "^17.1.0",
 		"openapi-typescript": "^7.8.0",
