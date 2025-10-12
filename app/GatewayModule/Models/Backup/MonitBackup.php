@@ -119,7 +119,7 @@ class MonitBackup implements IBackupManager {
 				// If check in enabled, create symlink to it, otherwise delete if symlink exists
 				if (isset($enabledChecks[$checkFile])) {
 					$this->fileManager->createSymLink($availableCheckFilePath, $enabledCheckFilePath);
-				} else if ($this->fileManager->isSymLink($enabledCheckFilePath)) {
+				} elseif ($this->fileManager->isSymLink($enabledCheckFilePath)) {
 					$this->fileManager->delete($enabledCheckFilePath);
 				}
 			}
