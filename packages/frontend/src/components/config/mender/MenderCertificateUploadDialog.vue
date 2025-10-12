@@ -111,7 +111,7 @@ const show: Ref<boolean> = ref(false);
 const i18n = useI18n();
 const form: Ref<VForm | null> = ref(null);
 const service: MenderService = useApiClient().getConfigServices().getMenderService();
-const certificates: Ref<File[]> = ref([]);
+const certificates: Ref<File | null> = ref(null);
 const certPath: Ref<string> = ref('');
 
 function copyToClipboard(content: string): void {
@@ -119,11 +119,11 @@ function copyToClipboard(content: string): void {
 }
 
 async function onSubmit(): Promise<void> {
-	if (!await validateForm(form.value) || certificates.value.length === 0) {
+	if (!await validateForm(form.value) || certificates.value === null) {
 		return;
 	}
 	componentState.value = ComponentState.Action;
-	const certificate = certificates.value[0];
+	const certificate = certificates.value;
 	try {
 		certPath.value = await service.uploadCert(certificate);
 		toast.success(

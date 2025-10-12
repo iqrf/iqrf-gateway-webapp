@@ -161,7 +161,7 @@ class MenderController extends BaseConfigController {
 				->withHeader('Content-Type', 'text/plain')
 				->writeBody($filePath);
 		} catch (IOException $e) {
-			throw new ServerErrorException('Write failure', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 
