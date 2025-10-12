@@ -133,6 +133,7 @@ limitations under the License.
 									@save='saveLevel'
 								/>
 								<IActionBtn
+									class='rounded-e'
 									:action='Action.Delete'
 									container-type='card-title'
 									:tooltip='$t("components.config.daemon.logging.channels.actions.deleteAll")'
