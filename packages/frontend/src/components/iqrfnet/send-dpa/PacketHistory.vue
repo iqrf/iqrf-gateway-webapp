@@ -24,7 +24,7 @@ limitations under the License.
 			<v-btn
 				:icon='mdiDelete'
 				color='error'
-				@click='clearMessages'
+				@click='clearMessages()'
 			/>
 		</template>
 		<v-data-table-virtual
@@ -34,7 +34,13 @@ limitations under the License.
 			height='300'
 			density='compact'
 			hide-no-data
-		/>
+		>
+			<template #item.response='{ item }'>
+				<td :class='getResponseColor(item.response)'>
+					{{ item.response }}
+				</td>
+			</template>
+		</v-data-table-virtual>
 	</ICard>
 </template>
 
@@ -90,11 +96,23 @@ const headers = [
 		key: 'response',
 		title: i18n.t('common.labels.response'),
 		sortable: false,
-		cellProps: {
-			class: 'text-success',
-		},
 	},
 ];
+
+function getResponseColor(response?: string): string | undefined {
+	if (!response) {
+		return undefined;
+	}
+	const errn = response.split('.');
+	if (errn.length < 7) {
+		return undefined;
+	}
+	const val = Number.parseInt(errn[6], 16);
+	if (val === 0) {
+		return 'text-success';
+	}
+	return 'text-red';
+}
 
 function clearMessages(): void {
 	emit('clear');

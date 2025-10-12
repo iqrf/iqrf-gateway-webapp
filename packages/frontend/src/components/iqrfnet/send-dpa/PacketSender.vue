@@ -73,7 +73,7 @@ limitations under the License.
 											:icon='mdiHexadecimal'
 											color='primary'
 											size='large'
-											@click='changeNadrBase'
+											@click='changeNadrBase()'
 										/>
 									</template>
 									{{ $t("components.iqrfnet.send-dpa.hexadecimal") }}
@@ -106,6 +106,7 @@ limitations under the License.
 						<ITextInput
 							v-else
 							v-model='nadrHex'
+							v-maska='byteMaska'
 							:label='$t("components.iqrfnet.send-dpa.nadr")'
 							:rules='[
 								(v: string|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.nadrHexMissing")),
@@ -141,7 +142,7 @@ limitations under the License.
 											:icon='mdiNumeric'
 											color='primary'
 											size='large'
-											@click='changeNadrBase'
+											@click='changeNadrBase()'
 										/>
 									</template>
 									{{ $t("components.iqrfnet.send-dpa.decimal") }}
@@ -197,7 +198,7 @@ limitations under the License.
 											:icon='mdiHexadecimal'
 											color='primary'
 											size='large'
-											@click='changePnumBase'
+											@click='changePnumBase()'
 										/>
 									</template>
 									{{ $t("components.iqrfnet.send-dpa.hexadecimal") }}
@@ -207,6 +208,7 @@ limitations under the License.
 						<ITextInput
 							v-else
 							v-model='pnumHex'
+							v-maska='byteMaska'
 							:label='$t("components.iqrfnet.send-dpa.pnum")'
 							:rules='[
 								(v: string|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.pnumHexMissing")),
@@ -222,7 +224,7 @@ limitations under the License.
 											:icon='mdiNumeric'
 											color='primary'
 											size='large'
-											@click='changePnumBase'
+											@click='changePnumBase()'
 										/>
 									</template>
 									{{ $t("components.iqrfnet.send-dpa.decimal") }}
@@ -257,7 +259,7 @@ limitations under the License.
 											:icon='mdiHexadecimal'
 											color='primary'
 											size='large'
-											@click='changePcmdBase'
+											@click='changePcmdBase()'
 										/>
 									</template>
 									{{ $t("components.iqrfnet.send-dpa.hexadecimal") }}
@@ -267,6 +269,7 @@ limitations under the License.
 						<ITextInput
 							v-else
 							v-model='pcmdHex'
+							v-maska='byteMaska'
 							:label='$t("components.iqrfnet.send-dpa.pcmd")'
 							:rules='[
 								(v: string|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.pcmdHexMissing")),
@@ -282,7 +285,7 @@ limitations under the License.
 											:icon='mdiNumeric'
 											color='primary'
 											size='large'
-											@click='changePcmdBase'
+											@click='changePcmdBase()'
 										/>
 									</template>
 									{{ $t("components.iqrfnet.send-dpa.decimal") }}
@@ -315,7 +318,7 @@ limitations under the License.
 											:icon='mdiHexadecimal'
 											color='primary'
 											size='large'
-											@click='changeHwpidBase'
+											@click='changeHwpidBase()'
 										/>
 									</template>
 									{{ $t("components.iqrfnet.send-dpa.hexadecimal") }}
@@ -353,6 +356,7 @@ limitations under the License.
 						<ITextInput
 							v-else
 							v-model='hwpidHex'
+							v-maska='hwpidMaska'
 							:label='$t("components.iqrfnet.send-dpa.hwpid")'
 							:rules='[
 								(v: string|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.hwpidHexMissing")),
@@ -368,7 +372,7 @@ limitations under the License.
 											:icon='mdiNumeric'
 											color='primary'
 											size='large'
-											@click='changeHwpidBase'
+											@click='changeHwpidBase()'
 										/>
 									</template>
 									{{ $t("components.iqrfnet.send-dpa.decimal") }}
@@ -407,7 +411,7 @@ limitations under the License.
 				</v-row>
 				<ITextInput
 					v-model='pdata'
-					v-maska='maskaOptions'
+					v-maska='pdataMaska'
 					:label='$t("components.iqrfnet.send-dpa.pdata")'
 					:rules='[
 						(v: string) => validatePdata(v) || $t("components.iqrfnet.send-dpa.validation.pdataInvalid"),
@@ -443,11 +447,7 @@ limitations under the License.
 <script lang="ts" setup>
 import { GenericMessages } from '@iqrf/iqrf-gateway-daemon-utils/enums';
 import { GenericService } from '@iqrf/iqrf-gateway-daemon-utils/services';
-import {
-	type ApiResponseRaw,
-	type RawResult,
-	type TApiResponse,
-} from '@iqrf/iqrf-gateway-daemon-utils/types';
+import { DaemonApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import {
 	Action,
@@ -489,14 +489,14 @@ const hwpidMenu: Ref<boolean> = ref(false);
 
 daemonStore.$onAction(({ name, after }) => {
 	if (name === 'onMessage') {
-		after((rsp: TApiResponse) => {
+		after((rsp: DaemonApiResponse) => {
 			if (rsp.data.msgId !== msgId.value) {
 				return;
 			}
 			daemonStore.removeMessage(msgId.value);
 			componentState.value = ComponentState.Idle;
 			if (rsp.mType === GenericMessages.Raw) {
-				handleResponse(rsp as ApiResponseRaw<RawResult>);
+				handleResponse(rsp);
 			}
 		});
 	}
@@ -521,6 +521,10 @@ const pnumHex: Ref<string> = ref('00');
 const useHexPcmd: Ref<boolean> = ref(true);
 const pcmd: Ref<number> = ref(0);
 const pcmdHex: Ref<string> = ref('00');
+const byteMaska = {
+	mask: 'HH',
+	tokens: { H: { pattern: /[\da-f]/i } },
+};
 // hwpid
 const useHexHwpid: Ref<boolean> = ref(true);
 const hwpid: Ref<number> = ref(0);
@@ -529,9 +533,13 @@ const hwpidPresets = [
 	{ title: 'DPA Plugin without handler', value: 0 },
 	{ title: 'Any device', value: 65_535 },
 ];
+const hwpidMaska = {
+	mask: 'HHHH',
+	tokens: { H: { pattern: /[\da-f]/i } },
+};
 // pdata
 const pdata: Ref<string> = ref('');
-const maskaOptions = {
+const pdataMaska = {
 	mask: `${'HH.'.repeat(56)}HH`,
 	tokens: { H: { pattern: /[\da-f]/i } },
 };
@@ -629,7 +637,10 @@ function validatePdata(value: string): boolean {
 	return re.test(value);
 }
 
-function numberToHexString(value: number, digits: number): string {
+function numberToHexString(value: number | null, digits: number): string {
+	if (value === null) {
+		return ''.padStart(digits, '0');
+	}
 	return value.toString(16).padStart(digits, '0');
 }
 
@@ -653,12 +664,16 @@ async function onSubmit(): Promise<void> {
 	}
 	componentState.value = ComponentState.Action;
 	const rq = GenericService.raw(
-		{ returnVerbose: true },
-		{ rData: buildPacket() },
-		new DaemonMessageOptions(null, null, () => {
-			msgId.value = null;
-			componentState.value = ComponentState.Idle;
-		}),
+		buildPacket(),
+		new DaemonMessageOptions(
+			null,
+			null,
+			null,
+			() => {
+				msgId.value = null;
+				componentState.value = ComponentState.Idle;
+			},
+		),
 	);
 	if (useCustomTimeout.value && rq.request !== null) {
 		rq.request.data.timeout = customTimeout.value;
@@ -666,14 +681,14 @@ async function onSubmit(): Promise<void> {
 	msgId.value = await daemonStore.sendMessage(rq);
 	messages.value.push({
 		msgId: msgId.value,
-		request: rq.request!.data.req.rData,
+		request: rq.request!.data.req!.rData,
 		requestTs: DateTime.now().toLocaleString(
 			DateTime.DATETIME_SHORT_WITH_SECONDS,
 		),
 	});
 }
 
-function handleResponse(rsp: ApiResponseRaw<RawResult>): void {
+function handleResponse(rsp: DaemonApiResponse): void {
 	const msgId = rsp.data.msgId;
 	const idx = messages.value.findIndex(
 		(item: DpaPacketTransaction) => item.msgId === msgId,
