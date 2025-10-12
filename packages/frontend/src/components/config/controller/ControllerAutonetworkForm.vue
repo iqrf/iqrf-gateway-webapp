@@ -69,16 +69,19 @@ limitations under the License.
 					v-model='config.discoveryBeforeStart'
 					:label='$t("components.config.controller.form.autonetwork.discoveryBeforeStart")'
 					hide-details
+					density='compact'
 				/>
 				<v-checkbox
 					v-model='config.skipDiscoveryEachWave'
 					:label='$t("components.config.controller.form.autonetwork.skipDiscoveryEachWave")'
 					hide-details
+					density='compact'
 				/>
 				<v-checkbox
 					v-model='config.returnVerbose'
 					:label='$t("common.labels.returnVerbose")'
 					hide-details
+					density='compact'
 				/>
 				<legend>{{ $t("components.config.controller.form.autonetwork.stopConditions") }}</legend>
 				<INumberInput
@@ -111,6 +114,7 @@ limitations under the License.
 					v-model='config.stopConditions.abortOnTooManyNodesFound'
 					:label='$t("components.config.controller.form.autonetwork.abortOnTooManyNodesFound")'
 					hide-details
+					density='compact'
 				/>
 				<template #actions>
 					<IActionBtn

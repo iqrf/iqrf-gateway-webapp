@@ -296,6 +296,8 @@ limitations under the License.
 							<v-checkbox
 								v-model='watchdogPins'
 								:label='$t("components.config.controller.form.pins.useWatchdogPins")'
+								hide-details
+								density='compact'
 							/>
 							<v-row :no-gutters='display.mobile.value'>
 								<v-col
@@ -346,6 +348,7 @@ limitations under the License.
 							>
 								<template #activator='{ props }'>
 									<IActionBtn
+										class='mt-2'
 										v-bind='props'
 										color='primary'
 										:icon='mdiTuneVariant'

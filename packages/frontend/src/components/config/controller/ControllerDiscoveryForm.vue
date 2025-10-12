@@ -68,6 +68,7 @@ limitations under the License.
 					v-model='config.returnVerbose'
 					:label='$t("common.labels.returnVerbose")'
 					hide-details
+					density='compact'
 				/>
 				<template #actions>
 					<IActionBtn
