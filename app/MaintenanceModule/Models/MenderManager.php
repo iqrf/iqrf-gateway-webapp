@@ -45,11 +45,6 @@ use z4kn4fein\SemVer\Version;
 class MenderManager {
 
 	/**
-	 * Path to certificate storage
-	 */
-	private const CERT_PATH = '/etc/mender/';
-
-	/**
 	 * JSON file containing mender-client configuration
 	 */
 	private const CLIENT_CONF = 'mender.conf';
@@ -158,9 +153,12 @@ class MenderManager {
 	 */
 	public function saveCertFile(string $fileName, string $content): string {
 		$this->checkMender();
-		$filePath = self::CERT_PATH . $fileName;
-		FileSystem::write($filePath, $content);
-		return $filePath;
+		$this->fileManager->write($fileName, $content);
+		$dir = $this->fileManager->getBasePath();
+		if (!str_ends_with($dir, '/')) {
+			$dir .= '/';
+		}
+		return $dir . $fileName;
 	}
 
 	/**
