@@ -96,18 +96,33 @@ class MonitBackup implements IBackupManager {
 		$this->restoreLogger->log('Restoring Monit configuration.');
 		$zipManager->extract(self::TMP_PATH, 'monit/monitrc');
 		$this->fileManager->copy('monitrc', self::TMP_PATH . 'monit/monitrc');
-		foreach ($zipManager->listFiles() as $file) {
-			if (str_starts_with($file, 'monit/conf-available/')) {
-				$zipManager->extract(self::TMP_PATH, $file);
-				$this->fileManager->copy('conf-available/' . basename($file), self::TMP_PATH . $file);
+		// Check for enabled services
+		$enabledChecks = [];
+		if ($zipManager->exist('monit/conf-enabled')) {
+			$enabled = explode(PHP_EOL, $zipManager->openFile('monit/conf-enabled'));
+			foreach ($enabled as $check) {
+				$enabledChecks[$check] = true;
 			}
 		}
+		// Create enabled checks directory if it does not exist
 		if (!$this->fileManager->exists('conf-enabled')) {
 			$this->fileManager->createDirectory('conf-enabled');
 		}
-		$enabled = explode(PHP_EOL, $zipManager->openFile('monit/conf-enabled'));
-		foreach ($enabled as $file) {
-			$this->fileManager->createSymLink('conf-available/' . $file, 'conf-enabled/' . $file);
+		// Copy all checks
+		foreach ($zipManager->listFiles() as $file) {
+			if (str_starts_with($file, 'monit/conf-available/')) {
+				$zipManager->extract(self::TMP_PATH, $file);
+				$checkFile = basename($file);
+				$availableCheckFilePath = 'conf-available/' . $checkFile;
+				$enabledCheckFilePath = 'conf-enabled/' . $checkFile;
+				$this->fileManager->copy($availableCheckFilePath, self::TMP_PATH . $file);
+				// If check in enabled, create symlink to it, otherwise delete if symlink exists
+				if (isset($enabledChecks[$checkFile])) {
+					$this->fileManager->createSymLink($availableCheckFilePath, $enabledCheckFilePath);
+				} else if ($this->fileManager->isSymLink($enabledCheckFilePath)) {
+					$this->fileManager->delete($enabledCheckFilePath);
+				}
+			}
 		}
 		FileSystem::delete(self::TMP_PATH . 'monit');
 		$this->fixPrivileges();
