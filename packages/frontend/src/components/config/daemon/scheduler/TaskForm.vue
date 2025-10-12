@@ -140,6 +140,7 @@ limitations under the License.
 									@save='(index: number, t: SchedulerRecordTask) => saveMessage(index, t)'
 								/>
 								<IActionBtn
+									class='rounded-e'
 									:action='Action.Delete'
 									container-type='card-title'
 									:disabled='componentState === ComponentState.Action'
