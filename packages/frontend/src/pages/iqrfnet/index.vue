@@ -60,5 +60,15 @@ const links: Ref<DisambiguationLink[]> = ref([
 		description: i18n.t('pages.iqrfnet.tr-config.description'),
 		to: '/iqrfnet/tr-config',
 	},
+	{
+		title: i18n.t('pages.iqrfnet.network-manager.title'),
+		description: i18n.t('pages.iqrfnet.network-manager.description'),
+		to: '/iqrfnet/network-manager',
+	},
+	{
+		title: i18n.t('pages.iqrfnet.standard-manager.title'),
+		description: i18n.t('pages.iqrfnet.standard-manager.description'),
+		to: '/iqrfnet/standard-manager',
+	},
 ]);
 </script>

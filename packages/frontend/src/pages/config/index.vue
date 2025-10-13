@@ -81,6 +81,12 @@ const links: Ref<DisambiguationLink[]> = ref([
 		feature: Feature.unattendedUpgrades,
 	},
 	{
+		title: i18n.t('pages.config.mender.title'),
+		description: i18n.t('pages.config.mender.description'),
+		to: '/config/mender',
+		feature: Feature.mender,
+	},
+	{
 		title: i18n.t('pages.config.monit.title'),
 		description: i18n.t('pages.config.monit.description'),
 		to: '/config/monit',
