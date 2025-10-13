@@ -52,7 +52,7 @@ limitations under the License.
 			<v-btn
 				color='primary'
 				:disabled='!isValid.value || componentState === ComponentState.Action'
-				@click='onSubmit'
+				@click='onSubmit()'
 			>
 				<v-icon :icon='mdiSend' />
 				{{ $t('common.buttons.send') }}
@@ -62,12 +62,13 @@ limitations under the License.
 	<RequestHistory
 		class='mt-4'
 		:messages='messages'
-		@clear='clearMessages'
+		@clear='clearMessages()'
 	/>
 </template>
 
 <script lang='ts' setup>
 import {
+	DbMessages,
 	EmbedOsMessages,
 	GenericMessages,
 	IqmeshServiceMessages,
@@ -102,6 +103,8 @@ daemonStore.$onAction(
 					handleAutonetworkResponse(rsp);
 				} else if (rsp.mType === IqmeshServiceMessages.Backup) {
 					handleBackupResponse(rsp);
+				} else if (rsp.mType === DbMessages.Enumerate) {
+					handleEnumerateResponse(rsp);
 				} else if (rsp.mType === GenericMessages.MessageError) {
 					handleMessageError(rsp);
 				} else {
@@ -126,7 +129,7 @@ async function onSubmit(): Promise<void> {
 		options.timeout = 1_000;
 	} else if (request.mType === IqmeshServiceMessages.Autonetwork ||
 		request.mType === IqmeshServiceMessages.Backup ||
-		(request.mType === 'iqrfDb_Enumerate' && request.data.req && request.data.req.command === 'now') ||
+		(request.mType === DbMessages.Enumerate) ||
 		request.mType === IqmeshServiceMessages.OtaUpload) { // requests without timeout
 	} else { // regular messages have a minute timeout
 		options.timeout = 60_000;
@@ -166,6 +169,18 @@ function handleBackupResponse(rsp: DaemonApiResponse): void {
 	}
 	messages.value[idx].response.push(JSON.stringify(rsp, null, 4));
 	if (rsp.data.rsp.progress === 100) {
+		daemonStore.removeMessage(msgId.value);
+		componentState.value = ComponentState.Ready;
+	}
+}
+
+function handleEnumerateResponse(rsp: DaemonApiResponse): void {
+	const idx = getMessageIndex(rsp);
+	if (idx === -1) {
+		return;
+	}
+	messages.value[idx].response.push(JSON.stringify(rsp, null, 4));
+	if (rsp.data.rsp.step === 8) {
 		daemonStore.removeMessage(msgId.value);
 		componentState.value = ComponentState.Ready;
 	}
