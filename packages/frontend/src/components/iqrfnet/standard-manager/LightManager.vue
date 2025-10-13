@@ -37,6 +37,7 @@
 			/>
 			<INumberInput
 				v-for='i of commands.length'
+				v-else
 				:key='`cmd-input-${i}`'
 				v-model='commands[i-1]'
 				:label='$t("components.iqrfnet.standard-manager.light.command")'
