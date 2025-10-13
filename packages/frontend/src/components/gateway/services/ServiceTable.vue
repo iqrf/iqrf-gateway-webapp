@@ -169,6 +169,9 @@ async function enableService(name: string, index: number): Promise<void> {
 	componentState.value = ComponentState.Action;
 	try {
 		await service.enable(name);
+		toast.success(
+			i18n.t('components.gateway.services.messages.enable.success'),
+		);
 	} catch {
 		toast.error(
 			i18n.t('components.gateway.services.messages.enable.failed'),
@@ -181,6 +184,9 @@ async function disableService(name: string, index: number): Promise<void> {
 	componentState.value = ComponentState.Action;
 	try {
 		await service.disable(name);
+		toast.success(
+			i18n.t('components.gateway.services.messages.disable.success'),
+		);
 	} catch {
 		toast.error(
 			i18n.t('components.gateway.services.messages.disable.failed'),
@@ -193,6 +199,9 @@ async function startService(name: string, index: number): Promise<void> {
 	componentState.value = ComponentState.Action;
 	try {
 		await service.start(name);
+		toast.success(
+			i18n.t('components.gateway.services.messages.start.success'),
+		);
 	} catch {
 		toast.error(
 			i18n.t('components.gateway.services.messages.start.failed'),
@@ -205,6 +214,9 @@ async function stopService(name: string, index: number): Promise<void> {
 	componentState.value = ComponentState.Action;
 	try {
 		await service.stop(name);
+		toast.success(
+			i18n.t('components.gateway.services.messages.stop.success'),
+		);
 	} catch {
 		toast.error(
 			i18n.t('components.gateway.services.messages.stop.failed'),
@@ -217,6 +229,9 @@ async function restartService(name: string, index: number): Promise<void> {
 	componentState.value = ComponentState.Action;
 	try {
 		await service.restart(name);
+		toast.success(
+			i18n.t('components.gateway.services.messages.restart.success'),
+		);
 	} catch {
 		toast.error(
 			i18n.t('components.gateway.services.messages.restart.failed'),
