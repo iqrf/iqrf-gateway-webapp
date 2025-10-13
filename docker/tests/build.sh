@@ -17,7 +17,7 @@
 
 set -ex
 
-VERSIONS=("bookworm")
+VERSIONS=("bookworm" "trixie")
 REPO="iqrftech/iqrf-gateway-webapp"
 
 for VERSION in "${VERSIONS[@]}"

@@ -17,7 +17,7 @@
 
 {
 	// Base Docker image
-	baseImage: 'iqrftech/iqrf-gateway-webapp:tests-bookworm',
+	baseImage: 'iqrftech/iqrf-gateway-webapp:tests-trixie',
 	// Directory for package deployment
 	deployDir: '/data/nginx/dl/iqrf-gateway-webapp/${VARIANT}/${STABILITY}/',
 	// Deploy server
