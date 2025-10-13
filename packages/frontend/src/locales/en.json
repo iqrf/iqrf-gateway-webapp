@@ -1842,22 +1842,27 @@
 				},
 				"messages": {
 					"disable": {
-						"failed": "Failed to disable service."
+						"failed": "Failed to disable service.",
+						"success": "Service has been successfully disabled."
 					},
 					"enable": {
-						"failed": "Failed to enable service."
+						"failed": "Failed to enable service.",
+						"success": "Service has been successfully enabled."
 					},
 					"list": {
 						"failed": "Failed to retrieve list of services."
 					},
 					"restart": {
-						"failed": "Failed to restart service."
+						"failed": "Failed to restart service.",
+						"success": "Service has been successfully restarted."
 					},
 					"start": {
-						"failed": "Failed to start service."
+						"failed": "Failed to start service.",
+						"success": "Service has been successfully started."
 					},
 					"stop": {
-						"failed": "Failed to stop service."
+						"failed": "Failed to stop service.",
+						"success": "Service has been successfully stopped."
 					}
 				},
 				"service": {
