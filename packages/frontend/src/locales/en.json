@@ -3820,7 +3820,7 @@
 			},
 			"daemon": {
 				"connections": {
-					"description": "Configure WebSocket, MQTT, MQ and UDP connections.",
+					"description": "Configure MQTT, WebSocket and UDP connections.",
 					"mqtt": {
 						"description": "Configure MQTT connections.",
 						"title": "MQTT"
@@ -3836,6 +3836,7 @@
 					}
 				},
 				"data-collecting": {
+					"description": "Configure data collecting service and reporting.",
 					"title": "Data collecting"
 				},
 				"db": {
@@ -4020,6 +4021,7 @@
 				"title": "Device enumeration"
 			},
 			"network-manager": {
+				"description": "Manage IQMESH network.",
 				"title": "Network manager"
 			},
 			"send-dpa": {
@@ -4031,6 +4033,7 @@
 				"title": "Send JSON request"
 			},
 			"standard-manager": {
+				"description": "IQRF Standard manager.",
 				"title": "Standard manager"
 			},
 			"title": "IQRF Network",
