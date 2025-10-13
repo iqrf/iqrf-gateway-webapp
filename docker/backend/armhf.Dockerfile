@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM iqrftech/iqrf-gateway-webapp:tests-bookworm AS builder
+FROM iqrftech/iqrf-gateway-webapp:tests-trixie AS builder
 
 LABEL maintainer="roman.ondracek@iqrf.com"
 

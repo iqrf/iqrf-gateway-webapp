@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-image: iqrftech/iqrf-gateway-webapp:tests-bookworm
+image: iqrftech/iqrf-gateway-webapp:tests-trixie
 
 stages:
   - build-docker-testing
