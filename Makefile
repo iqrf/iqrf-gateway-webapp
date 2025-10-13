@@ -169,7 +169,7 @@ run:
 	php -S [::]:8080 -t www/
 
 temp/code-checker:
-	composer create-project nette/code-checker temp/code-checker --no-interaction
+	[ -f temp/code-checker/composer.json ] || rm -rf temp/code-checker && composer create-project nette/code-checker temp/code-checker --no-interaction
 
 test: deps
 	vendor/bin/tester -p phpdbg -j `nproc` -c ./tests/php.ini ./tests
