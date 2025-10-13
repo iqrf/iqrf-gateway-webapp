@@ -199,8 +199,8 @@ newman:
 coding-style:
   <<: *coding-style_template
   <<: *composer_template
+  image: iqrftech/iqrf-gateway-webapp:tests-bookworm
   script:
-    - rm -rf temp/code-checker
     - make cc
 
 codesniffer:
