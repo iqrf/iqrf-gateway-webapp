@@ -403,22 +403,23 @@ async function ping(): Promise<void> {
 }
 
 function handlePing(rsp: DaemonApiResponse): void {
+	componentState.value = ComponentState.Ready;
 	daemonStore.removeMessage(msgId.value);
-	if (rsp.data.status !== 0) {
-		componentState.value = ComponentState.Ready;
+	if (rsp.data.status === 0) {
+		const results = rsp.data.rsp.pingResult;
+		for (const device of results) {
+			const idx = getDeviceIndex(device.address);
+			if (idx !== -1) {
+				devices.value[idx].setOnline(device.result);
+			}
+		}
+	} else if (rsp.data.status === 1_003) {
+		// NO ONLINE NODES, that's okay
+	} else {
 		toast.error(
 			i18n.t('components.iqrfnet.standard-manager.standard-devices.messages.ping.failed'),
 		);
-		return;
 	}
-	const results = rsp.data.rsp.pingResult;
-	for (const device of results) {
-		const idx = getDeviceIndex(device.address);
-		if (idx !== -1) {
-			devices.value[idx].setOnline(device.result);
-		}
-	}
-	componentState.value = ComponentState.Ready;
 }
 
 async function fetchDeviceDetails(): Promise<void> {
