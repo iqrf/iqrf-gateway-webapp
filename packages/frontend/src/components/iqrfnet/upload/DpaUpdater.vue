@@ -256,6 +256,7 @@ async function upload(force: boolean = false): Promise<void> {
 	toast.success(
 		i18n.t('components.iqrfnet.upload.dpa-plugin.messages.upload.success'),
 	);
+	progressMessage.value = i18n.t('components.iqrfnet.upload.dpa-plugin.messages.upload.success');
 	componentState.value = ComponentState.Success;
 }
 
