@@ -60,7 +60,12 @@ limitations under the License.
 									<ITextInput
 										v-model='configuration.wsServers.api'
 										:label='$t("components.config.controller.form.websocket.api")'
+										:rules='[
+											(v: string|null) => ValidationRules.required(v, $t("components.config.controller.validation.websocket.api.required")),
+											(v: string) => ValidationRules.url(v, $t("components.config.controller.validation.websocket.api.invalid"), /^wss?$/),
+										]'
 										:prepend-inner-icon='mdiLinkVariant'
+										required
 									>
 										<template #append-inner>
 											<WebsocketUrlForm
@@ -78,7 +83,12 @@ limitations under the License.
 									<ITextInput
 										v-model='configuration.wsServers.monitor'
 										:label='$t("components.config.controller.form.websocket.monitor")'
+										:rules='[
+											(v: string|null) => ValidationRules.required(v, $t("components.config.controller.validation.websocket.monitor.required")),
+											(v: string) => ValidationRules.url(v, $t("components.config.controller.validation.websocket.monitor.invalid"), /^wss?$/),
+										]'
 										:prepend-inner-icon='mdiLinkVariant'
+										required
 									>
 										<template #append-inner>
 											<WebsocketUrlForm
