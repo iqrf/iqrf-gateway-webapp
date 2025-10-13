@@ -38,9 +38,9 @@
 	],
 	"devDependencies": {
 		"@cyclonedx/cyclonedx-npm": "^4.0.3",
-		"@types/node": "^24.7.0",
+		"@types/node": "^24.7.2",
 		"@vitest/coverage-istanbul": "^3.2.4",
-		"pnpm": "^10.18.1",
+		"pnpm": "^10.18.2",
 		"ts-node": "^10.9.2",
 		"typescript": "^5.9.3",
 		"vite-tsconfig-paths": "^5.1.4",

@@ -18,17 +18,15 @@
  */
 declare(strict_types = 1);
 
-use Rector\CodeQuality\Rector\Class_\InlineConstructorDefaultToPropertyRector;
 use Rector\CodingStyle\Rector\Assign\SplitDoubleAssignRector;
 use Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector;
 use Rector\CodingStyle\Rector\ClassMethod\NewlineBeforeNewAssignSetRector;
 use Rector\CodingStyle\Rector\Stmt\NewlineAfterStatementRector;
 use Rector\CodingStyle\Rector\String_\SymplifyQuoteEscapeRector;
 use Rector\Config\RectorConfig;
-use Rector\Doctrine\Set\DoctrineSetList;
 use Rector\Php81\Rector\Array_\FirstClassCallableRector;
 use Rector\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector;
-use Rector\Symfony\Set\SymfonySetList;
+use Rector\Symfony\Symfony73\Rector\Class_\InvokableCommandInputAttributeRector;
 
 return RectorConfig::configure()
 	->withPaths([
@@ -39,6 +37,7 @@ return RectorConfig::configure()
 	->withSkip([
 		CatchExceptionNameMatchingTypeRector::class,
 		FirstClassCallableRector::class,
+		InvokableCommandInputAttributeRector::class,
 		NewlineAfterStatementRector::class,
 		NewlineBeforeNewAssignSetRector::class,
 		NullToStrictStringFuncCallArgRector::class,
@@ -59,15 +58,9 @@ return RectorConfig::configure()
 		instanceOf: true,
 	)
 	->withAttributesSets(all: true)
-	->withSets([
-		DoctrineSetList::DOCTRINE_CODE_QUALITY,
-		DoctrineSetList::DOCTRINE_COMMON_20,
-		DoctrineSetList::DOCTRINE_DBAL_40,
-		DoctrineSetList::DOCTRINE_ORM_214,
-		SymfonySetList::SYMFONY_72,
-		SymfonySetList::SYMFONY_CODE_QUALITY,
-	])
-	->withRules([
-		InlineConstructorDefaultToPropertyRector::class,
-	])
+	->withComposerBased(
+		doctrine: true,
+		symfony: true,
+		netteUtils: true,
+	)
 	->withIndent("\t");
