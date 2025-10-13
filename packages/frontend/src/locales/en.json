@@ -580,6 +580,16 @@
 						"between": "Waves should be between 1 and 127.",
 						"integer": "Waves should be an integer.",
 						"required": "Please enter number of waves."
+					},
+					"websocket": {
+						"api": {
+							"invalid": "Daemon API WebSocket URL is not valid.",
+							"required": "Please enter Daemon API WebSocket URL."
+						},
+						"monitor": {
+							"invalid": "Monitor WebSocket URL is not valid.",
+							"required": "Please enter Monitor WebSocket URL."
+						}
 					}
 				}
 			},
