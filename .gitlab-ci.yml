@@ -19,6 +19,7 @@ stages:
   - build-docker-testing
   - test
   - coding-style
+  - dependency-check
   - sentry-release
   - jsonnet
   - build-docker
@@ -58,6 +59,11 @@ stages:
   stage: test
   needs: []
   retry: 2
+  <<: *base_template
+
+.dependency-check_template: &dependency-check_template
+  stage: dependency-check
+  needs: []
   <<: *base_template
 
 .sentry-version_template: &sentry-version_template
@@ -245,6 +251,39 @@ stylelint:
     matrix:
       - PACKAGE:
           - frontend
+
+# Dependency check
+dependency-check:composer:
+  <<: *dependency-check_template
+  <<: *composer_template
+  script:
+    - cd ${PACKAGE_PATH}
+    - |
+      composer CycloneDX:make-sbom \
+        --output-format=json \
+        --output-file=sbom-${PACKAGE}.json \
+        --spec-version=1.6 \
+        --output-reproducible \
+        --validate
+    - export VERSION=`jq -r .version version.json`"~${CI_PIPELINE_ID}"
+    - |
+      curl -X "POST" "http://dependency-track.microrisc.site/api/v1/bom" \
+           -H 'Content-Type: multipart/form-data' \
+           -H "X-Api-Key: ${DEPENDENCY_TRACK_API_KEY}" \
+           -F "autoCreate=true" \
+           -F "project=${PROJECT}" \
+           -F "projectVersion=${VERSION}" \
+           -F "parentUUID=${PROJECT_PARENT}" \
+           -F "parentVersion=${VERSION}" \
+           -F "bom=@sbom-${PACKAGE}.json" \
+           -o - \
+           -v
+  parallel:
+    matrix:
+      - PACKAGE: backend
+        PACKAGE_PATH: .
+        PROJECT: b80e3ddf-be81-4845-8a21-cb706e6a6cd4
+        PROJECT_PARENT: 0a6ff882-596f-41d5-9013-362d37082958
 
 # Sentry version
 sentry-version:
