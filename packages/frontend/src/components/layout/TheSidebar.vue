@@ -212,6 +212,11 @@ function items(): SidebarLink[] {
 						feature: Feature.iqrfGatewayInfluxdbBridge,
 					},
 					{
+						title: i18n.t('pages.config.iqrf-repository.title'),
+						to: '/config/iqrf-repository',
+						feature: Feature.iqrfRepository,
+					},
+					{
 						title: i18n.t('pages.config.smtp.title'),
 						to: '/config/smtp',
 					},

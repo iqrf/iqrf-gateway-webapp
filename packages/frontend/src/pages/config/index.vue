@@ -59,6 +59,12 @@ const links: Ref<DisambiguationLink[]> = ref([
 		feature: Feature.iqrfGatewayInfluxdbBridge,
 	},
 	{
+		title: i18n.t('pages.config.iqrf-repository.title'),
+		description: i18n.t('pages.config.iqrf-repository.description'),
+		to: '/config/iqrf-repository',
+		feature: Feature.iqrfRepository,
+	},
+	{
 		title: i18n.t('pages.config.smtp.title'),
 		description: i18n.t('pages.config.smtp.description'),
 		to: '/config/smtp',

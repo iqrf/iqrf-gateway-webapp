@@ -1322,6 +1322,25 @@
 					}
 				}
 			},
+			"iqrf-repository": {
+				"credentials": "Use credentials",
+				"endpoint": "API endpoint",
+				"messages": {
+					"fetch": {
+						"failed": "Failed to retrieve IQRF Repository extension configuration."
+					},
+					"save": {
+						"failed": "Failed to save IQRF Repository extension configuration.",
+						"success": "IQRF Repository extension configuration successfully saved."
+					}
+				},
+				"validation": {
+					"endpoint": {
+						"invalid": "API endpoint is not valid.",
+						"required": "Please enter API endpoint."
+					}
+				}
+			},
 			"journal": {
 				"forwardToSyslog": "Forward journal to syslog",
 				"maxFileSize": "Maximum log size in MB",
@@ -3901,6 +3920,10 @@
 			"influxdb-bridge": {
 				"description": "Configure IQRF Gateway InfluxDB Bridge.",
 				"title": "IQRF GW InfluxDB Bridge"
+			},
+			"iqrf-repository": {
+				"description": "Configure IQRF Repository extension.",
+				"title": "IQRF Repository"
 			},
 			"journal": {
 				"description": "Configure systemd Journal logging.",
