@@ -31,7 +31,8 @@ limitations under the License.
 				accept='.zip'
 				:label='$t("components.maintenance.backup.restore.archive")'
 				:rules='[
-					(v: File|Blob|null) => ValidationRules.required(v, $t("components.maintenance.backup.restore.validation.archiveMissing")),
+					(v: File|null) => ValidationRules.required(v, $t("components.maintenance.backup.restore.validation.archive.required")),
+					(v: File) => ValidationRules.fileExtension(v, ["zip"], $t("components.maintenance.backup.restore.validation.archive.fileExtension")),
 				]'
 				:prepend-inner-icon='mdiFileOutline'
 				:prepend-icon='undefined'
@@ -80,10 +81,10 @@ async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value) || archive.value === null) {
 		return;
 	}
-	console.warn(archive.value);
+	const file = archive.value;
 	componentState.value = ComponentState.Action;
 	try {
-		const rsp = await service.restore(archive.value);
+		const rsp = await service.restore(file);
 		toast.success(
 			i18n.t(
 				'components.maintenance.backup.restore.messages.save.success',
