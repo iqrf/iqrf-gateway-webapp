@@ -32,7 +32,7 @@ limitations under the License.
 		<v-form
 			ref='form'
 			v-slot='{ isValid }'
-			@submit.prevent='onSubmit'
+			@submit.prevent='onSubmit()'
 		>
 			<ICard>
 				<template #title>
@@ -72,15 +72,13 @@ limitations under the License.
 				<template #actions>
 					<IActionBtn
 						:action='Action.Edit'
-						container-type='card'
 						:disabled='!isValid.value'
 						type='submit'
 					/>
 					<v-spacer />
 					<IActionBtn
 						:action='Action.Cancel'
-						container-type='card'
-						@click='close'
+						@click='close()'
 					/>
 				</template>
 			</ICard>
