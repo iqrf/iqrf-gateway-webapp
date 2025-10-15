@@ -3734,7 +3734,10 @@
 					},
 					"title": "Gateway restore",
 					"validation": {
-						"archiveMissing": "Please select gateway backup archive."
+						"archive": {
+							"fileExtension": "Selected file is not a zip archive.",
+							"required": "Please select gateway backup archive."
+						}
 					}
 				}
 			},
