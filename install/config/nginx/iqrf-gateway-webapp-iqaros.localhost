@@ -143,6 +143,10 @@ server {
 		fastcgi_index index.php;
 	}
 
+	if ($scheme != "https") {
+		return 301 https://$host$request_uri;
+	}
+
 	add_header Referrer-Policy "same-origin" always;
 	add_header X-Content-Type-Options "nosniff" always;
 	add_header X-Xss-Protection "1; mode=block" always;
