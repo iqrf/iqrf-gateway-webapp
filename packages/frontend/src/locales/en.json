@@ -803,6 +803,8 @@
 							"required": "Please enter connection profile name."
 						},
 						"profileFile": {
+							"extension": "Selected file is not a JSON file.",
+							"json": "Selected file does not contain JSON data.",
 							"required": "Please select connection profile file."
 						}
 					}
