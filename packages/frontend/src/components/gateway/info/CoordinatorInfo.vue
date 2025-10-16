@@ -16,103 +16,36 @@ limitations under the License.
 -->
 
 <template>
-	<span v-if='componentState === ComponentState.Loading'>
-		<v-progress-linear
-			color='info'
-			indeterminate
-			rounded
-		/>
-	</span>
-	<span v-else>
-		<div v-if='enumData && componentState === ComponentState.Ready' class='py-2'>
-			<strong>{{ `${$t('components.gateway.information.tr.moduleType')}:` }} </strong>
-			{{ enumData.osRead.trMcuType.trType }}<br>
-			<strong>{{ `${$t('components.gateway.information.tr.mcuType')}:` }} </strong>
-			{{ enumData.osRead.trMcuType.mcuType }}<br>
-			<strong>{{ `${$t('components.gateway.information.tr.moduleId')}:` }} </strong>
-			{{ `${enumData.osRead.mid} [${Number.parseInt(enumData.osRead.mid, 16)}]` }}<br>
-			<strong>{{ `${$t('components.gateway.information.tr.os')}:` }} </strong>
-			{{ `${enumData.osRead.osVersion} (${enumData.osRead.osBuild})` }}<br>
-			<strong>{{ `${$t('components.gateway.information.tr.dpa')}:` }} </strong>
-			{{ enumData.peripheralEnumeration.dpaVer }}<br>
-			<strong>{{ `${$t('components.gateway.information.tr.hwpid')}:` }} </strong>
-			{{ `${enumData.peripheralEnumeration.hwpId.toString(16).padStart(4, '0')} [${enumData.peripheralEnumeration.hwpId}]` }}<br>
-			<strong>{{ `${$t('components.gateway.information.tr.hwpidVersion')}:` }} </strong>
-			{{ `${enumData.peripheralEnumeration.hwpIdVer & 0x00FF}.${enumData.peripheralEnumeration.hwpIdVer & 0xFF00}` }}<br>
-			<strong>{{ `${$t('components.gateway.information.tr.voltage')}:` }} </strong>
-			{{ enumData.osRead.supplyVoltage }}<br>
-		</div>
-		<span v-else>
-			{{ $t('components.gateway.information.messages.fetchTr.failed') }}
-		</span>
-	</span>
+	<div class='py-2'>
+		<strong>{{ `${$t('components.gateway.information.tr.moduleType')}:` }} </strong>
+		{{ data.osRead.trMcuType.trType }}<br>
+		<strong>{{ `${$t('components.gateway.information.tr.mcuType')}:` }} </strong>
+		{{ data.osRead.trMcuType.mcuType }}<br>
+		<strong>{{ `${$t('components.gateway.information.tr.moduleId')}:` }} </strong>
+		{{ `${data.osRead.mid} [${Number.parseInt(data.osRead.mid, 16)}]` }}<br>
+		<strong>{{ `${$t('components.gateway.information.tr.os')}:` }} </strong>
+		{{ `${data.osRead.osVersion} (${data.osRead.osBuild})` }}<br>
+		<strong>{{ `${$t('components.gateway.information.tr.dpa')}:` }} </strong>
+		{{ data.peripheralEnumeration.dpaVer }}<br>
+		<strong>{{ `${$t('components.gateway.information.tr.hwpid')}:` }} </strong>
+		{{ `${data.peripheralEnumeration.hwpId.toString(16).padStart(4, '0')} [${data.peripheralEnumeration.hwpId}]` }}<br>
+		<strong>{{ `${$t('components.gateway.information.tr.hwpidVersion')}:` }} </strong>
+		{{ `${data.peripheralEnumeration.hwpIdVer & 0x00FF}.${data.peripheralEnumeration.hwpIdVer & 0xFF00}` }}<br>
+		<strong>{{ `${$t('components.gateway.information.tr.voltage')}:` }} </strong>
+		{{ data.osRead.supplyVoltage }}<br>
+	</div>
 </template>
 
 <script lang='ts' setup>
-import { IqmeshServiceMessages } from '@iqrf/iqrf-gateway-daemon-utils/enums';
-import { EnumerationService } from '@iqrf/iqrf-gateway-daemon-utils/services/iqmesh';
-import { type DaemonApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
-import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
-import { ComponentState } from '@iqrf/iqrf-vue-ui';
-import { onBeforeMount, onBeforeUnmount, ref, type Ref } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { PropType } from 'vue';
 
-import { useDaemonStore } from '@/store/daemonSocket';
 import { DeviceEnumeration } from '@/types/DaemonApi/Iqmesh';
 
-const componentState: Ref<ComponentState> = ref(ComponentState.Created);
-const i18n = useI18n();
-const daemonStore = useDaemonStore();
-const enumData: Ref<DeviceEnumeration | null> = ref(null);
-const msgId: Ref<string | null> = ref(null);
-
-daemonStore.$onAction(
-	({ name, after }) => {
-		if (name === 'onMessage') {
-			after((rsp: DaemonApiResponse) => {
-				if (rsp.data.msgId !== msgId.value) {
-					return;
-				}
-				daemonStore.removeMessage(msgId.value);
-				if (rsp.mType === IqmeshServiceMessages.Enumerate) {
-					handleEnumerateResponse(rsp);
-				}
-			});
-		}
+defineProps({
+	data: {
+		type: Object as PropType<DeviceEnumeration>,
+		required: true,
 	},
-);
-
-async function enumerate(): Promise<void> {
-	componentState.value = ComponentState.Loading;
-	const opts = new DaemonMessageOptions(
-		null,
-		10_000,
-		i18n.t('components.gateway.information.messages.fetchTr.timeout'),
-		() => {
-			msgId.value = null;
-			componentState.value = ComponentState.Idle;
-		},
-	);
-	msgId.value = await daemonStore.sendMessage(
-		EnumerationService.enumerate({}, { deviceAddr: 0 }, opts),
-	);
-}
-
-function handleEnumerateResponse(rsp: DaemonApiResponse): void {
-	if (rsp.data.status === 0) {
-		enumData.value = rsp.data.rsp as DeviceEnumeration;
-		componentState.value = ComponentState.Ready;
-	} else {
-		componentState.value = ComponentState.FetchFailed;
-	}
-}
-
-onBeforeMount(() => {
-	enumerate();
-});
-
-onBeforeUnmount(() => {
-	daemonStore.removeMessage(msgId.value);
 });
 
 </script>

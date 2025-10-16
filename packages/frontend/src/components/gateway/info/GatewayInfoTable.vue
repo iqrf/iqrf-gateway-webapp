@@ -29,7 +29,14 @@ limitations under the License.
 				@click='getInformation()'
 			/>
 		</template>
+		<v-alert
+			v-if='componentState === ComponentState.FetchFailed'
+			type='error'
+			variant='tonal'
+			:text='$t("components.gateway.information.messages.fetchInfo.failed")'
+		/>
 		<v-skeleton-loader
+			v-else
 			class='table-compact-skeleton-loader'
 			:loading='componentState === ComponentState.Loading'
 			:type='SkeletonLoaders.simpleTableSkeletonLoader(16)'
@@ -197,7 +204,14 @@ limitations under the License.
 								<strong>{{ $t('components.gateway.information.tr.title') }}</strong>
 							</td>
 							<td>
-								<CoordinatorInfo v-if='componentState !== ComponentState.Created' />
+								<CoordinatorInfo
+									v-if='enumData'
+									:component-state='componentState'
+									:data='enumData'
+								/>
+								<span v-else>
+									{{ $t('components.gateway.information.messages.fetchTr.failed') }}
+								</span>
 							</td>
 						</tr>
 						<tr>
@@ -217,7 +231,7 @@ limitations under the License.
 				:action='Action.Custom'
 				:icon='mdiDownload'
 				:loading='componentState === ComponentState.Action'
-				:disabled='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+				:disabled='[ComponentState.FetchFailed, ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
 				:text='$t("components.gateway.information.diagnostics")'
 				@click='getDiagnostics()'
 			/>
@@ -226,12 +240,16 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
+import { IqmeshServiceMessages } from '@iqrf/iqrf-gateway-daemon-utils/enums';
+import { EnumerationService } from '@iqrf/iqrf-gateway-daemon-utils/services/iqmesh';
+import { DaemonApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
+import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { type InfoService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
 import { type GatewayInformation, type NetworkInterface } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
 import { FileDownloader } from '@iqrf/iqrf-gateway-webapp-client/utils';
 import { Action, ComponentState, IActionBtn, ICard, SkeletonLoaders } from '@iqrf/iqrf-vue-ui';
 import { mdiDownload } from '@mdi/js';
-import { computed, onMounted, ref, type Ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
@@ -241,11 +259,16 @@ import DiskResourceUsage from '@/components/gateway/info/DiskResourceUsage.vue';
 import HostnameChangeDialog from '@/components/gateway/info/HostnameChangeDialog.vue';
 import ResourceUsage from '@/components/gateway/info/ResourceUsage.vue';
 import { useApiClient } from '@/services/ApiClient';
+import { useDaemonStore } from '@/store/daemonSocket';
+import { DeviceEnumeration } from '@/types/DaemonApi/Iqmesh';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
 const service: InfoService = useApiClient().getGatewayServices().getInfoService();
 const info: Ref<GatewayInformation | null> = ref(null);
+const daemonStore = useDaemonStore();
+const enumData: Ref<DeviceEnumeration | null> = ref(null);
+const msgId: Ref<string | null> = ref(null);
 const ipAddrs = computed(() => {
 	if (info.value === null) {
 		return [];
@@ -259,9 +282,21 @@ const macAddrs = computed(() => {
 	return info.value.interfaces.filter((item: NetworkInterface) => item.macAddress !== null);
 });
 
-onMounted(() => {
-	getInformation();
-});
+daemonStore.$onAction(
+	({ name, after }) => {
+		if (name === 'onMessage') {
+			after((rsp: DaemonApiResponse) => {
+				if (rsp.data.msgId !== msgId.value) {
+					return;
+				}
+				daemonStore.removeMessage(msgId.value);
+				if (rsp.mType === IqmeshServiceMessages.Enumerate) {
+					handleEnumerateResponse(rsp);
+				}
+			});
+		}
+	},
+);
 
 async function getInformation(): Promise<void> {
 	componentState.value = [
@@ -270,13 +305,35 @@ async function getInformation(): Promise<void> {
 	].includes(componentState.value) ? ComponentState.Loading : ComponentState.Reloading;
 	try {
 		info.value = await service.getDetailed();
-		componentState.value = ComponentState.Ready;
+		enumerate();
 	} catch {
 		toast.error(
 			i18n.t('components.gateway.information.messages.fetchInfo.failed'),
 		);
 		componentState.value = componentState.value === ComponentState.Loading ? ComponentState.FetchFailed : ComponentState.Ready;
 	}
+}
+
+async function enumerate(): Promise<void> {
+	const opts = new DaemonMessageOptions(
+		null,
+		10_000,
+		i18n.t('components.gateway.information.messages.fetchTr.timeout'),
+		() => {
+			msgId.value = null;
+			componentState.value = ComponentState.Ready;
+		},
+	);
+	msgId.value = await daemonStore.sendMessage(
+		EnumerationService.enumerate({}, { deviceAddr: 0 }, opts),
+	);
+}
+
+function handleEnumerateResponse(rsp: DaemonApiResponse): void {
+	if (rsp.data.status === 0) {
+		enumData.value = rsp.data.rsp as DeviceEnumeration;
+	}
+	componentState.value = ComponentState.Ready;
 }
 
 async function getDiagnostics(): Promise<void> {
@@ -294,4 +351,12 @@ async function getDiagnostics(): Promise<void> {
 	}
 	componentState.value = ComponentState.Ready;
 }
+
+onMounted(() => {
+	getInformation();
+});
+
+onBeforeUnmount(() => {
+	daemonStore.removeMessage(msgId.value);
+});
 </script>
