@@ -44,7 +44,8 @@ limitations under the License.
 					accept='.json'
 					:label='$t("components.config.daemon.connections.profileFile")'
 					:rules='[
-						(v: File|Blob|null) => ValidationRules.required(v, $t("components.config.daemon.connections.validation.profileFile.required")),
+						(v: File|null) => ValidationRules.required(v, $t("components.config.daemon.connections.validation.profileFile.required")),
+						(v: File) => ValidationRules.fileExtension(v, ["json"], $t("components.config.daemon.connections.validation.profileFile.extension")),
 					]'
 					:prepend-inner-icon='mdiFileOutline'
 					prepend-icon=''
@@ -54,7 +55,6 @@ limitations under the License.
 				<template #actions>
 					<IActionBtn
 						:action='Action.Import'
-						container-type='card'
 						:loading='componentState === ComponentState.Action'
 						:disabled='!isValid.value'
 						type='submit'
@@ -62,7 +62,6 @@ limitations under the License.
 					<v-spacer />
 					<IActionBtn
 						:action='Action.Cancel'
-						container-type='card'
 						:disabled='componentState === ComponentState.Action'
 						@click='close()'
 					/>
@@ -93,7 +92,7 @@ import { VForm } from 'vuetify/components';
 
 import { validateForm } from '@/helpers/validateForm';
 
-const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
+const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 defineProps({
 	disabled: {
 		type: Boolean,
@@ -113,15 +112,24 @@ async function onSubmit(): Promise<void> {
 	}
 	componentState.value = ComponentState.Action;
 	const content = await file.value.text();
-	const obj = JSON.parse(content) as unknown;
+	let obj;
+	try {
+		obj = JSON.parse(content);
+	} catch {
+		toast.error(
+			i18n.t('components.config.daemon.connections.validation.profileFile.json'),
+		);
+		componentState.value = ComponentState.Idle;
+		return;
+	}
 	if (!isMqttConnectionProfile(obj)) {
 		toast.error(
 			i18n.t('components.config.daemon.connections.messages.profileFileInvalid'),
 		);
-		componentState.value = ComponentState.Ready;
+		componentState.value = ComponentState.Idle;
 		return;
 	}
-	componentState.value = ComponentState.Ready;
+	componentState.value = ComponentState.Idle;
 	emit('import', obj);
 	close();
 }

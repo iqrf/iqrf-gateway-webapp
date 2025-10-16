@@ -61,9 +61,8 @@ limitations under the License.
 					:label='$t("components.config.daemon.connections.mqtt.broker")'
 					:rules='[
 						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.validation.broker.required")),
-						(v: string) => ValidationRules.url(v, $t("components.config.daemon.connections.mqtt.validation.broker.url")),
+						(v: string) => ValidationRules.url(v, $t("components.config.daemon.connections.mqtt.validation.broker.url"), /^(tcp|ssl|mqtts?|wss?)$/),
 					]'
-					readonly
 					required
 				>
 					<template #append>
@@ -178,6 +177,8 @@ limitations under the License.
 				<v-checkbox
 					v-model='profile.acceptAsyncMsg'
 					:label='$t("components.config.daemon.connections.acceptAsyncMessages")'
+					density='compact'
+					:hide-details='!hasTls'
 				/>
 				<span v-if='hasTls'>
 					<ITextInput
