@@ -36,14 +36,19 @@ nginx_default_site() {
 		case "${image}" in
 			industrial*)
 				ln -sf "${WEBAPP_CONFIG_DIR}/iqrf-gateway-webapp-industrial.localhost" "${SITE_AVAILABLE_PATH}"
+				;;
 			iqaros-*-v2*)
-				: ;;
+				:
+				;;
 			iqaros*|nakit*)
 				ln -sf "${WEBAPP_CONFIG_DIR}/iqrf-gateway-webapp-iqaros.localhost" "${SITE_AVAILABLE_PATH}"
+				;;
 			iqube*)
 				ln -sf "${WEBAPP_CONFIG_DIR}/iqrf-gateway-webapp-iqube.localhost" "${SITE_AVAILABLE_PATH}"
+				;;
 			*)
 				ln -sf "${WEBAPP_CONFIG_DIR}/iqrf-gateway-webapp.localhost" "${SITE_AVAILABLE_PATH}"
+				;;
 		esac
 	else
 		ln -sf "${WEBAPP_CONFIG_DIR}/iqrf-gateway-webapp.localhost" "${SITE_AVAILABLE_PATH}"
