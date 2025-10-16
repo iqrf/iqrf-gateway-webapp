@@ -53,7 +53,7 @@ class TuptimeManager {
 		}
 		$command = $this->commandManager->run('tuptime -ckpst');
 		try {
-			$csv = Reader::createFromString($command->getStdout());
+			$csv = Reader::fromString($command->getStdout());
 			$csv->setHeaderOffset(0);
 			$data = [];
 			foreach ($csv->getRecords() as $record) {
