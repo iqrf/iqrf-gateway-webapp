@@ -16,31 +16,18 @@ limitations under the License.
 -->
 
 <template>
-	<v-footer
-		class='status-footer px-1 py-1'
-		app
-		color='#1c241e'
-	>
-		<Breakpoint v-if='dev' />
-		<v-spacer />
-		<StatusBar />
-	</v-footer>
+	<v-chip
+		class='mx-1 text-button'
+		variant='flat'
+		size='small'
+		label
+		:text='display.name.value'
+	/>
 </template>
 
 <script lang='ts' setup>
-import { computed } from 'vue';
+import { useDisplay } from 'vuetify';
 
-import Breakpoint from '@/components/layout/footer/Breakpoint.vue';
-import StatusBar from '@/components/layout/footer/StatusBar.vue';
 
-const dev = computed(() => {
-	return import.meta.env.DEV;
-});
-
+const display = useDisplay();
 </script>
-
-<style lang='scss' scoped>
-.status-footer {
-	position: fixed !important;
-}
-</style>
