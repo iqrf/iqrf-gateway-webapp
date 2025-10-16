@@ -51,6 +51,7 @@ limitations under the License.
 			:no-data-text='noDataText'
 			:hover='true'
 			:dense='true'
+			item-value='instance'
 		>
 			<template #item.actions='{ item, internalItem, toggleExpand, isExpanded }'>
 				<IDataTableAction
