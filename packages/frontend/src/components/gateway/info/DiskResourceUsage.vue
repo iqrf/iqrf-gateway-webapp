@@ -18,7 +18,7 @@ limitations under the License.
 <template>
 	<div>
 		<div class='d-inline'>
-			<strong>{{ `${usage.fsName} ( ${usage.fsType}): ` }}</strong>
+			<strong>{{ `${usage.fsName} (${usage.fsType}): ` }}</strong>
 			{{ $t('components.gateway.information.usages.used') }}
 			{{ usage.usage.replace('%', ' %') }}
 			{{ `${usage.used} / ${usage.size}` }}
