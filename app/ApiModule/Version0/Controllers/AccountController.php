@@ -31,13 +31,12 @@ use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\ControllerValidators;
-use App\ApiModule\Version0\Models\JwtConfigurator;
+use App\ApiModule\Version0\Models\JwtAuthenticator;
 use App\ApiModule\Version0\RequestAttributes;
 use App\CoreModule\Enums\SessionExpiration;
 use App\CoreModule\Models\UserManager;
 use App\Exceptions\InvalidEmailAddressException;
 use App\Exceptions\InvalidPasswordException;
-use App\GatewayModule\Models\Utils\GatewayInfoUtil;
 use App\Models\Database\Entities\PasswordRecovery;
 use App\Models\Database\Entities\User;
 use App\Models\Database\Entities\UserPreferences;
@@ -47,10 +46,8 @@ use App\Models\Database\Enums\ThemePreference;
 use App\Models\Database\Enums\TimeFormat;
 use App\Models\Database\Enums\UserLanguage;
 use App\Models\Mail\Senders\PasswordRecoveryMailSender;
-use DateTimeImmutable;
 use DomainException;
 use Nette\Mail\SendException;
-use Throwable;
 use ValueError;
 
 /**
@@ -62,17 +59,15 @@ class AccountController extends BaseController {
 
 	/**
 	 * Constructor
-	 * @param JwtConfigurator $jwtConfigurator JWT configurator
+	 * @param JwtAuthenticator $jwtAuthenticator JWT authenticator
 	 * @param EntityManager $entityManager Entity manager
-	 * @param GatewayInfoUtil $gatewayInfo Gateway info
 	 * @param UserManager $manager User manager
 	 * @param PasswordRecoveryMailSender $passwordRecoverySender Forgotten password recovery e-mail sender
 	 * @param ControllerValidators $validators Controller validators
 	 */
 	public function __construct(
-		private readonly JwtConfigurator $jwtConfigurator,
+		private readonly JwtAuthenticator $jwtAuthenticator,
 		private readonly EntityManager $entityManager,
-		private readonly GatewayInfoUtil $gatewayInfo,
 		private readonly UserManager $manager,
 		private readonly PasswordRecoveryMailSender $passwordRecoverySender,
 		ControllerValidators $validators,
@@ -389,7 +384,7 @@ class AccountController extends BaseController {
 		$this->entityManager->remove($recoveryRequest);
 		$this->entityManager->flush();
 		$json = $user->jsonSerialize();
-		$json['token'] = $this->createToken($user);
+		$json['token'] = $this->jwtAuthenticator->createToken($user);
 		try {
 			$this->manager->sendPasswordChangeConfirmationEmail($request, $user);
 		} catch (SendException) {
@@ -417,7 +412,7 @@ class AccountController extends BaseController {
 		$this->validators->onlyForUsers($request);
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
 		$json = $user->jsonSerialize();
-		$json['token'] = $this->createToken($user);
+		$json['token'] = $this->jwtAuthenticator->createToken($user);
 		$response = $response->writeJsonBody($json);
 		return $this->validators->validateResponse('userToken', $response);
 	}
@@ -462,7 +457,7 @@ class AccountController extends BaseController {
 			$expiration = SessionExpiration::Default;
 		}
 		$json = $user->jsonSerialize();
-		$json['token'] = $this->createToken($user, $expiration);
+		$json['token'] = $this->jwtAuthenticator->createToken($user, $expiration);
 		$response = $response->writeJsonBody($json);
 		return $this->validators->validateResponse('userToken', $response);
 	}
@@ -530,42 +525,9 @@ class AccountController extends BaseController {
 		$this->entityManager->persist($user);
 		$this->entityManager->flush();
 		$json = $user->jsonSerialize();
-		$json['token'] = $this->createToken($user);
+		$json['token'] = $this->jwtAuthenticator->createToken($user);
 		$response = $response->writeJsonBody($json);
 		return $this->validators->validateResponse('userToken', $response);
-	}
-
-	/**
-	 * Creates a new JWT token
-	 * @param User $user User
-	 * @param SessionExpiration|null $expiration Session expiration
-	 * @return string JWT token
-	 */
-	private function createToken(User $user, ?SessionExpiration $expiration = null): string {
-		try {
-			$now = new DateTimeImmutable();
-			$us = $now->format('u');
-			$now = $now->modify('-' . $us . ' usec');
-		} catch (Throwable $e) {
-			throw new ServerErrorException('Date creation error', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
-		}
-		if (!$expiration instanceof SessionExpiration) {
-			$expiration = SessionExpiration::Default;
-		}
-		$configuration = $this->jwtConfigurator->create();
-		$gwid = $this->gatewayInfo->getIdNullable();
-		$builder = $configuration->builder()
-			->issuedAt($now)
-			->canOnlyBeUsedAfter($now)
-			->expiresAt($now->modify($expiration->toDateModify()))
-			->withClaim('uid', $user->getId());
-		if ($gwid !== null) {
-			$builder = $builder->issuedBy($gwid)
-				->identifiedBy($gwid);
-		}
-		$signer = $configuration->signer();
-		$signingKey = $configuration->signingKey();
-		return $builder->getToken($signer, $signingKey)->toString();
 	}
 
 }
