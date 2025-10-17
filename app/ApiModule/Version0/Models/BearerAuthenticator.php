@@ -20,31 +20,24 @@ declare(strict_types = 1);
 
 namespace App\ApiModule\Version0\Models;
 
-use App\GatewayModule\Models\Utils\GatewayInfoUtil;
 use App\Models\Database\Entities\ApiKey;
 use App\Models\Database\Entities\User;
 use App\Models\Database\EntityManager;
 use Contributte\Middlewares\Security\IAuthenticator;
-use DateTimeImmutable;
 use InvalidArgumentException;
-use Lcobucci\JWT\Token\Plain;
-use Lcobucci\JWT\Validation\Constraint\SignedWith;
 use Nette\Utils\Strings;
 use Psr\Http\Message\ServerRequestInterface;
-use Throwable;
 
 class BearerAuthenticator implements IAuthenticator {
 
 	/**
 	 * Constructor
-	 * @param JwtConfigurator $jwtConfigurator JWT configurator
+	 * @param JwtAuthenticator $jwtAuthenticator JWT authenticator
 	 * @param EntityManager $entityManager Entity manager
-	 * @param GatewayInfoUtil $gatewayInfo Gateway info
 	 */
 	public function __construct(
-		private readonly JwtConfigurator $jwtConfigurator,
+		private readonly JwtAuthenticator $jwtAuthenticator,
 		private readonly EntityManager $entityManager,
-		private readonly GatewayInfoUtil $gatewayInfo,
 	) {
 	}
 
@@ -88,19 +81,7 @@ class BearerAuthenticator implements IAuthenticator {
 	 * @throws InvalidArgumentException
 	 */
 	public function authenticateUser(string $jwt): ?User {
-		$parser = $this->jwtConfigurator->create()->parser();
-		$token = $parser->parse($jwt);
-		assert($token instanceof Plain);
-		if (!$this->isJwtValid($token)) {
-			return null;
-		}
-		try {
-			$repository = $this->entityManager->getUserRepository();
-			$id = $token->claims()->get('uid');
-			return $repository->find($id);
-		} catch (Throwable) {
-			return null;
-		}
+		return $this->jwtAuthenticator->authenticate($jwt);
 	}
 
 	/**
@@ -117,26 +98,6 @@ class BearerAuthenticator implements IAuthenticator {
 			return null;
 		}
 		return $str;
-	}
-
-	/**
-	 * Validates JWT
-	 * @param Plain $token JWT to validate
-	 * @return bool Is JWT valid?
-	 */
-	private function isJwtValid(Plain $token): bool {
-		$gwid = $this->gatewayInfo->getIdNullable();
-		$now = new DateTimeImmutable();
-		$configuration = $this->jwtConfigurator->create();
-		$validator = $configuration->validator();
-		$signer = $configuration->signer();
-		$verificationKey = $configuration->verificationKey();
-		$signedWith = new SignedWith($signer, $verificationKey);
-		return $validator->validate($token, $signedWith) &&
-			!$token->isExpired($now) &&
-			$token->claims()->has('uid') &&
-			$token->hasBeenIssuedBefore($now) &&
-			($gwid === null || ($token->hasBeenIssuedBy($gwid) && $token->isIdentifiedBy($gwid)));
 	}
 
 }
