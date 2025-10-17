@@ -16,10 +16,12 @@
  */
 
 import { createPinia } from 'pinia';
-import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
+import { createPersistedState } from 'pinia-plugin-persistedstate';
 
 // Creates a new Pinia instance
 const pinia = createPinia();
-pinia.use(piniaPluginPersistedstate);
+pinia.use(createPersistedState({
+	key: (storeKey: string): string => `iqrf-gw-webapp_${storeKey}`,
+}));
 
 export default pinia;
