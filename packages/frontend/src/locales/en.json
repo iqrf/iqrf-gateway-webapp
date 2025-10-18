@@ -1106,6 +1106,27 @@
 						}
 					}
 				},
+				"monitoring": {
+					"messages": {
+						"fetch": {
+							"failed": "Failed to retrieve monitoring service configuration."
+						},
+						"save": {
+							"failed": "Failed to save monitoring service configuration.",
+							"success": "Monitoring service configuration successfully saved."
+						}
+					},
+					"onlyLocalhost": "Accept only localhost connections",
+					"port": "WebSocket port",
+					"reportPeriod": "Reporting period (in seconds)",
+					"validation": {
+						"reportPeriod": {
+							"integer": "Reporting period should be an integer.",
+							"minimum": "Reporting period should be greater or equal to 1.",
+							"required": "Please enter reporting period."
+						}
+					}
+				},
 				"repository": {
 					"messages": {
 						"fetch": {
@@ -1264,6 +1285,32 @@
 				"validation": {
 					"instance": {
 						"required": "Please enter instance name."
+					}
+				},
+				"websocket": {
+					"certificate": "Path to certificate",
+					"notes": {
+						"tlsModes": {
+							"intermediate": "General-purpose servers with a variety of clients, recommended for almost all systems. Supports Firefox 27, Android 4.4.2, Chrome 31, Edge, IE 11 on Windows 7, Java 8u31, OpenSSL 1.0.1, Opera 20, and Safari 9.",
+							"modern": "Services with clients that support TLS 1.3 and don't need backward compatibility. Supports Firefox 63, Android 10.0, Chrome 70, Edge 75, Java 11, OpenSSL 1.1.1, Opera 57, and Safari 12.1.",
+							"old": "Compatible with a number of very old clients, and should be used only as a last resort. Supports Firefox 1, Android 2.3, Chrome 1, Edge 12, IE8 on Windows XP, Java 6, OpenSSL 0.9.8, Opera 5, and Safari 1."
+						}
+					},
+					"privateKey": "Path to private key",
+					"tlsEnabled": "Enable TLS",
+					"tlsMode": "TLS mode",
+					"tlsModes": {
+						"intermediate": "Intermediate",
+						"modern": "Modern",
+						"old": "Old"
+					},
+					"validation": {
+						"certificate": {
+							"required": "Please enter path to certificate file."
+						},
+						"privateKey": {
+							"required": "Please enter path to private key file."
+						}
 					}
 				}
 			},
@@ -3910,6 +3957,10 @@
 				"logging": {
 					"description": "Configure logging service.",
 					"title": "Logging"
+				},
+				"monitoring": {
+					"description": "Configure monitoring service.",
+					"title": "Monitoring"
 				},
 				"repository": {
 					"description": "Configure IQRF repository.",

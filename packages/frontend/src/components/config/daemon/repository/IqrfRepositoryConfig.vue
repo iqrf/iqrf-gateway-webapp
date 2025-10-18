@@ -140,7 +140,6 @@ async function getConfig(): Promise<void> {
 			i18n.t('components.config.daemon.repository.messages.fetch.failed'),
 		);
 		componentState.value = componentState.value === ComponentState.Loading ? ComponentState.FetchFailed : ComponentState.Ready;
-		console.warn(componentState.value);
 	}
 }
 
