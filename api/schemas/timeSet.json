@@ -5,14 +5,13 @@
 	"title": "Gateway time information",
 	"examples": [
 		{
-			"ntpSync": false,
-			"date-time": "2022-08-01T10:00:00+02:00"
-		},
-		{
 			"ntpSync": true,
 			"ntpServers": [],
 			"zoneName": "Europe/Prague"
 		}
+	],
+	"required": [
+		"ntpSync"
 	],
 	"additionalProperties": false,
 	"properties": {
@@ -49,14 +48,6 @@
 				]
 			}
 		},
-		"datetime": {
-			"#id": "#/properties/datetime",
-			"title": "Datetime",
-			"description": "ISO 8601 datetime string.",
-			"type": "string",
-			"format": "date-time",
-			"example": ""
-		},
 		"zoneName": {
 			"$id": "#/properties/zoneName",
 			"title": "Timezone name",
@@ -67,23 +58,10 @@
 	},
 	"if": {
 		"properties": {
-			"ntpSync": {
-				"const": true
-			}
+			"ntpSync": { "const": true }
 		}
 	},
 	"then": {
-		"required": [
-			"ntpSync",
-			"ntpServers"
-		],
-		"not": {"required": ["datetime"]}
-	},
-	"else": {
-		"required": [
-			"ntpSync",
-			"datetime"
-		],
-		"not": {"required": ["ntpServers"]}
+		"required": ["ntpServers"]
 	}
 }
