@@ -76,6 +76,11 @@ const links: Ref<DisambiguationLink[]> = ref([
 		to: '/config/daemon/logging',
 	},
 	{
+		title: i18n.t('pages.config.daemon.monitoring.title'),
+		description: i18n.t('pages.config.daemon.monitoring.description'),
+		to: '/config/daemon/monitoring',
+	},
+	{
 		title: i18n.t('pages.config.daemon.data-collecting.title'),
 		description: i18n.t('pages.config.daemon.data-collecting.description'),
 		to: '/config/daemon/data-collecting',
