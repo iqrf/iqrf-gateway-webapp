@@ -44,8 +44,6 @@ export interface TimeConfig {
  * Gateway time set interface
  */
 export interface TimeSet {
-	/// Datetime to set ntp synchronization is disabled
-	datetime?: string;
 	/// NTP servers
 	ntpServers?: string[];
 	/// Enable NTP synchronization
