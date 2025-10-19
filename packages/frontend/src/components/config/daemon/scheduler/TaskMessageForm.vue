@@ -46,6 +46,17 @@ limitations under the License.
 				<template #title>
 					{{ $t(`components.config.daemon.scheduler.task.actions.${action}`) }}
 				</template>
+				<template #titleActions>
+					<IActionBtn
+						:action='Action.Custom'
+						container-type='card-title'
+						color='green'
+						:icon='mdiApi'
+						:tooltip='$t("common.labels.apidoc")'
+						href='https://docs.iqrf.org/iqrf-gateway/user/daemon/api.html'
+						target='_blank'
+					/>
+				</template>
 				<v-textarea
 					v-model='message'
 					:label='$t("components.config.daemon.scheduler.task.message")'
@@ -99,6 +110,7 @@ import {
 	ISelectInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
+import { mdiApi } from '@mdi/js';
 import { computed, type PropType, ref , type Ref, watch } from 'vue';
 import { VForm } from 'vuetify/components';
 
