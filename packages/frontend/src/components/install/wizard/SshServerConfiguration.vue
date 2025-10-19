@@ -77,7 +77,7 @@ import {
 import { Action, ComponentState, IActionBtn } from '@iqrf/iqrf-vue-ui';
 import { AxiosError } from 'axios';
 import { storeToRefs } from 'pinia';
-import { onBeforeMount, ref, type Ref, watch } from 'vue';
+import { computed, onBeforeMount, ref, type Ref, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
@@ -99,7 +99,7 @@ const userStore = useUserStore();
 const { isLoggedIn } = storeToRefs(userStore);
 const i18n = useI18n();
 const status: Ref<ServiceAction> = ref(ServiceAction.Disable);
-const options = [
+const options = computed(() => [
 	{
 		value: ServiceAction.Enable,
 		text: i18n.t('components.install.wizard.sshServerConfiguration.service.enable'),
@@ -112,8 +112,8 @@ const options = [
 		value: ServiceAction.Disable,
 		text: i18n.t('components.install.wizard.sshServerConfiguration.service.disable'),
 	},
-];
-const form: Ref<VForm | null> = ref(null);
+]);
+const form: Ref<VForm | null> = useTemplateRef('form');
 const formValidity: Ref<boolean | null> = ref(null);
 let service: ServiceService = useApiClient().getServiceService();
 

@@ -145,7 +145,7 @@ import {
 	mdiHelpCircleOutline,
 	mdiKey,
 } from '@mdi/js';
-import { ref, type Ref, watch } from 'vue';
+import { ref, type Ref, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -165,10 +165,12 @@ interface Props {
 const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
 const i18n = useI18n();
 const service = useApiClient().getSecurityServices().getUserService();
-const emit = defineEmits(['refresh']);
+const emit = defineEmits<{
+	refresh: [];
+}>();
 const componentProps = defineProps<Props>();
 const showDialog: Ref<boolean> = ref(false);
-const form: Ref<VForm | null> = ref(null);
+const form: Ref<VForm | null> = useTemplateRef('form');
 const userStore = useUserStore();
 const defaultUser: UserCreate | UserEdit = {
 	username: '',
@@ -206,6 +208,7 @@ async function onSubmit(): Promise<void> {
 	}
 	componentState.value = ComponentState.Action;
 	const params = { ...user.value };
+	const translationParams = { user: user.value.username };
 	try {
 		if (componentProps.action === Action.Add) {
 			await service.create(params as UserCreate);
@@ -222,13 +225,13 @@ async function onSubmit(): Promise<void> {
 			}
 		}
 		toast.success(
-			i18n.t(`components.accessControl.users.messages.${componentProps.action}.success`, { user: user.value.username }),
+			i18n.t(`components.accessControl.users.messages.${componentProps.action}.success`, translationParams),
 		);
 		close();
 		emit('refresh');
 	} catch {
 		toast.error(
-			i18n.t(`components.accessControl.users.messages.${componentProps.action}.failed`, { user: user.value.username }),
+			i18n.t(`components.accessControl.users.messages.${componentProps.action}.failed`, translationParams),
 		);
 	}
 	componentState.value = ComponentState.Ready;

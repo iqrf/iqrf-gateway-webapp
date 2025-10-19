@@ -70,11 +70,8 @@
 					:hide-details='!serviceConfig.tlsEnabled'
 				/>
 				<div v-if='serviceConfig.tlsEnabled'>
-					<ISelectInput
+					<WsTlsModeInput
 						v-model='serviceConfig.tlsMode'
-						:label='$t("components.config.daemon.connections.websocket.tlsMode")'
-						:items='tlsModeOptions'
-						:description='$t(`components.config.daemon.connections.websocket.notes.tlsModes.${serviceConfig.tlsMode}`)'
 					/>
 					<ITextInput
 						v-model='serviceConfig.certificate'
@@ -114,7 +111,12 @@
 
 <script lang='ts' setup>
 import { IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
-import { IqrfGatewayDaemonComponentName, IqrfGatewayDaemonWsMessaging, ShapeWebsocketService } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import {
+	IqrfGatewayDaemonComponentName,
+	IqrfGatewayDaemonWsMessaging,
+	ShapeWebsocketService,
+	ShapeWebsocketTlsMode,
+} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import {
 	Action,
 	ComponentState,
@@ -123,28 +125,27 @@ import {
 	IDataTableAction,
 	IModalWindow,
 	INumberInput,
-	ISelectInput,
 	ITextInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
-import { computed, PropType, ref, Ref, toRaw, watch } from 'vue';
+import { computed, PropType, ref, Ref, toRaw, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
+import WsTlsModeInput
+	from '@/components/config/daemon/connections/websocket/WsTlsModeInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
-enum TLSModes {
-	Intermediate = 'intermediate',
-	Modern = 'modern',
-	Old = 'old',
-}
-
 const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const i18n = useI18n();
-const daemonService: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
-const emit = defineEmits(['saved']);
+const daemonService: IqrfGatewayDaemonService = useApiClient()
+	.getConfigServices()
+	.getIqrfGatewayDaemonService();
+const emit = defineEmits<{
+	saved: [];
+}>();
 const componentProps = defineProps({
 	action: {
 		type: String as PropType<Action>,
@@ -169,9 +170,9 @@ const componentProps = defineProps({
 });
 const show: Ref<boolean> = ref(false);
 let fromImport = false;
-const form: Ref<VForm | null> = ref(null);
+const form: Ref<VForm | null> = useTemplateRef('form');
 const defaultMessaging: IqrfGatewayDaemonWsMessaging = {
-	component:  IqrfGatewayDaemonComponentName.IqrfWsMessaging,
+	component: IqrfGatewayDaemonComponentName.IqrfWsMessaging,
 	instance: '',
 	acceptAsyncMsg: false,
 	RequiredInterfaces: [],
@@ -184,31 +185,17 @@ const defaultService: ShapeWebsocketService = {
 	certificate: '',
 	privateKey: '',
 	tlsEnabled: false,
-	tlsMode: TLSModes.Intermediate,
+	tlsMode: ShapeWebsocketTlsMode.Intermediate,
 };
 let previousInstance = '';
 const messagingConfig: Ref<IqrfGatewayDaemonWsMessaging> = ref(structuredClone(defaultMessaging));
 const serviceConfig: Ref<ShapeWebsocketService> = ref(structuredClone(defaultService));
-const tlsModeOptions = [
-	{
-		title: i18n.t('components.config.daemon.connections.websocket.tlsModes.intermediate'),
-		value: TLSModes.Intermediate,
-	},
-	{
-		title: i18n.t('components.config.daemon.connections.websocket.tlsModes.modern'),
-		value: TLSModes.Modern,
-	},
-	{
-		title: i18n.t('components.config.daemon.connections.websocket.tlsModes.old'),
-		value: TLSModes.Old,
-	},
-];
 
 const dialogTitle = computed(() => {
 	if (componentProps.action === Action.Add) {
-		return i18n.t('components.config.daemon.connections.actions.add').toString();
+		return i18n.t('components.config.daemon.connections.actions.add');
 	}
-	return i18n.t('components.config.daemon.connections.actions.edit').toString();
+	return i18n.t('components.config.daemon.connections.actions.edit');
 });
 
 watch(show, (newVal: boolean): void => {
@@ -244,6 +231,7 @@ async function onSubmit(): Promise<void> {
 	} else {
 		messagingParams.RequiredInterfaces[0].target.instance = serviceParams.instance;
 	}
+	const translationParams = { name: previousInstance };
 	try {
 		if (componentProps.action === Action.Add) {
 			await daemonService.createInstance(IqrfGatewayDaemonComponentName.ShapeWebsocketService, serviceParams);
@@ -253,13 +241,13 @@ async function onSubmit(): Promise<void> {
 			await daemonService.updateInstance(IqrfGatewayDaemonComponentName.IqrfWsMessaging, previousInstance, messagingParams);
 		}
 		toast.success(
-			i18n.t('components.config.daemon.connections.websocket.messages.save.success', { name: previousInstance }),
+			i18n.t('components.config.daemon.connections.websocket.messages.save.success', translationParams),
 		);
 		close();
 		emit('saved');
 	} catch {
 		toast.error(
-			i18n.t('components.config.daemon.connections.websocket.messages.save.failed', { name: previousInstance }),
+			i18n.t('components.config.daemon.connections.websocket.messages.save.failed', translationParams),
 		);
 	}
 	componentState.value = ComponentState.Idle;

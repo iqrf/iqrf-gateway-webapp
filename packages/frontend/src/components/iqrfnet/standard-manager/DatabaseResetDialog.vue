@@ -82,7 +82,9 @@ const componentProps = defineProps({
 		default: false,
 	},
 });
-const emit = defineEmits(['reset']);
+const emit = defineEmits<{
+	reset: [];
+}>();
 const daemonStore = useDaemonStore();
 const i18n = useI18n();
 const msgId: Ref<string | null> = ref(null);

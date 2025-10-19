@@ -25,6 +25,7 @@ limitations under the License.
 		:prepend-inner-icon='mdiKey'
 	/>
 </template>
+
 <script setup lang='ts'>
 import {
 	EapPhaseOneMethod,

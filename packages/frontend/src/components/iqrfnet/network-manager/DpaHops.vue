@@ -92,15 +92,18 @@ import { DaemonApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { IqmeshDpaHopsParams } from '@iqrf/iqrf-gateway-daemon-utils/types/iqmesh';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { Action, ComponentState, IActionBtn, ICard, INumberInput, ValidationRules } from '@iqrf/iqrf-vue-ui';
-import { onBeforeUnmount, ref, Ref } from 'vue';
+import { onBeforeUnmount, ref, Ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
+import { type VForm } from 'vuetify/components';
 
+import { validateForm } from '@/helpers/validateForm';
 import { useDaemonStore } from '@/store/daemonSocket';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const i18n = useI18n();
 const daemonStore = useDaemonStore();
+const form: Ref<VForm|null> = useTemplateRef('form');
 const requestHops: Ref<number> = ref(239);
 const responseHops: Ref<number> = ref(255);
 const requestDom: Ref<boolean> = ref(false);
@@ -160,6 +163,9 @@ function responseChange(val: boolean | null): void {
 }
 
 async function dpaHopsAction(action: IqmeshConfigAction): Promise<void> {
+	if (!await validateForm(form.value)) {
+		return;
+	}
 	actionType.value = action;
 	componentState.value = ComponentState.Action;
 	const opts = new DaemonMessageOptions(

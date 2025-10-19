@@ -93,7 +93,7 @@ import {
 	ITextInput,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiImport, mdiMagnify } from '@mdi/js';
-import { onMounted, ref, type Ref } from 'vue';
+import { computed, onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { useRepositoryClient } from '@/services/RepositoryClient';
@@ -105,16 +105,19 @@ defineProps({
 		required: false,
 	},
 });
-const emit = defineEmits(['apply', 'close']);
+const emit = defineEmits<{
+	apply: [product: Product];
+	close: [];
+}>();
 const i18n = useI18n();
 const show: Ref<boolean> = ref(false);
 let service: ProductService;
-const headers = [
+const headers = computed(() => [
 	{ key: 'companyName', title: i18n.t('components.iqrfnet.products.manufacturer') },
 	{ key: 'name', title: i18n.t('components.iqrfnet.products.name') },
 	{ key: 'hwpid', title: i18n.t('components.iqrfnet.products.hwpid') },
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false },
-];
+]);
 const products: Ref<Product[]> = ref([]);
 const search: Ref<string> = ref('');
 

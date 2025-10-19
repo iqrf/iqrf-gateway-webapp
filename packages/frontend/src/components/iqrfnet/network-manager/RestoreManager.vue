@@ -56,7 +56,7 @@ import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { Action, ComponentState, IActionBtn, ICard, ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiFileOutline, mdiImport } from '@mdi/js';
 import { parse } from 'ini';
-import { onBeforeUnmount, ref, Ref } from 'vue';
+import { onBeforeUnmount, ref, Ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -65,21 +65,21 @@ import { validateForm } from '@/helpers/validateForm';
 import { useDaemonStore } from '@/store/daemonSocket';
 
 interface RestoreData {
-	Address: string
-	DataC?: string
-	DataN?: string
-	Device: string
-	Version: string
+	Address: string;
+	DataC?: string;
+	DataN?: string;
+	Device: string;
+	Version: string;
 }
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const emit = defineEmits<{
-  updateDevices: []
+  updateDevices: [];
 }>();
 const i18n = useI18n();
 const daemonStore = useDaemonStore();
 const msgId: Ref<string | null> = ref(null);
-const form: Ref<VForm | null> = ref(null);
+const form: Ref<VForm|null> = useTemplateRef('form');
 const file: Ref<File | null> = ref(null);
 const restartCoordinator: Ref<boolean> = ref(false);
 const restoreData: Ref<RestoreData[]> = ref([]);
@@ -151,7 +151,7 @@ async function parseContent(file: File): Promise<boolean> {
 	delete data.Backup;
 	const backupKeys = Object.keys(data);
 	for (const key of backupKeys) {
-		if (!RegExp(/^[\da-f]{8}$/i).test(key)) {
+		if (!new RegExp(/^[\da-f]{8}$/i).test(key)) {
 			toast.error(
 				i18n.t('components.iqrfnet.network-manager.restore.validation.content.invalid'),
 			);
@@ -204,7 +204,7 @@ function validateEntry(entry: RestoreData, key: string): boolean {
 		return false;
 	}
 	if (device === 'Coordinator') {
-		if (addr !== 0) { // Check invalid coodinator address
+		if (addr !== 0) { // Check invalid coordinator address
 			toast.error(
 				i18n.t(
 					'components.iqrfnet.network-manager.restore.validation.content.wrongCoordinatorAddr',
@@ -222,7 +222,7 @@ function validateEntry(entry: RestoreData, key: string): boolean {
 			);
 			return false;
 		}
-		if (!RegExp(/^[\da-f]+$/i).test(entry.DataC)) { // Check for invalid charset
+		if (!new RegExp(/^[\da-f]+$/i).test(entry.DataC)) { // Check for invalid charset
 			toast.error(
 				i18n.t(
 					'components.iqrfnet.network-manager.restore.validation.content.invalidDataContent',
@@ -260,7 +260,7 @@ function validateEntry(entry: RestoreData, key: string): boolean {
 			);
 			return false;
 		}
-		if (!RegExp(/^[\da-f]+$/i).test(entry.DataN)) { // Check for invalid charset
+		if (!new RegExp(/^[\da-f]+$/i).test(entry.DataN)) { // Check for invalid charset
 			toast.error(
 				i18n.t(
 					'components.iqrfnet.network-manager.restore.validation.content.invalidDataContent',

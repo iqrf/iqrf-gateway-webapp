@@ -76,7 +76,9 @@ const componentProps = defineProps({
 defineExpose({
 	open,
 });
-const emit = defineEmits(['closed']);
+const emit = defineEmits<{
+	closed: [];
+}>();
 const show: Ref<boolean> = ref(false);
 const i18n = useI18n();
 

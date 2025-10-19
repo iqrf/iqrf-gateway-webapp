@@ -30,7 +30,7 @@ import { mdiCheck, mdiHelp } from '@mdi/js';
 import { computed } from 'vue';
 
 interface Props {
-	state: AccountState
+	state: AccountState;
 }
 
 const props = defineProps<Props>();

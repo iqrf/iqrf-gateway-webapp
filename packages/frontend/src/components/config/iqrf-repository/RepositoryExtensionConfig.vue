@@ -113,7 +113,7 @@ import {
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiAccount, mdiKey, mdiServer } from '@mdi/js';
-import { onMounted, ref, type Ref, toRaw } from 'vue';
+import { onMounted, ref, type Ref, toRaw, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -126,7 +126,7 @@ const i18n = useI18n();
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const service = useApiClient().getConfigServices().getIqrfRepositoryService();
 const repositoryStore = useRepositoryStore();
-const form: Ref<VForm | null> = ref(null);
+const form: Ref<VForm | null> = useTemplateRef('form');
 const config: Ref<IqrfRepositoryConfig> = ref({
 	apiEndpoint: '',
 	credentials: {

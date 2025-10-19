@@ -36,13 +36,13 @@ export interface GenericSocketState {
  */
 export interface ClientSocketOptions {
 	/// WebSocket server URL
-	url: string
+	url: string;
 	/// Auto-connect to server
-	autoConnect?: boolean
+	autoConnect?: boolean;
 	/// Reconnect to server
-	reconnect?: boolean
+	reconnect?: boolean;
 	/// Reconnection delay
-	reconnectDelay?: number
+	reconnectDelay?: number;
 }
 
 /// WebSocket on socket open callback

@@ -159,7 +159,7 @@ import {
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiContentSave, mdiTextShort } from '@mdi/js';
-import { computed, type PropType, ref, type Ref, watch } from 'vue';
+import { computed, type PropType, ref, type Ref, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
@@ -206,13 +206,15 @@ const componentProps = defineProps({
 	},
 });
 /// Define emits
-const emit = defineEmits(['change']);
+const emit = defineEmits<{
+	change: [];
+}>();
 /// Interface type
 const interfaceType: Ref<NetworkInterfaceType | null> = computed((): NetworkInterfaceType | null => {
 	return IpNetworkUtils.connectionTypeToInterfaceType(configuration.value?.type ?? null);
 });
 /// Form reference
-const form: Ref<VForm | null> = ref(null);
+const form: Ref<VForm | null> = useTemplateRef('form');
 /// Dialog visibility
 const showDialog: Ref<boolean> = ref(false);
 /// Internationalization instance

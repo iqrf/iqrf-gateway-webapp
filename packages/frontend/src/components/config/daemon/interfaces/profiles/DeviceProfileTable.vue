@@ -97,17 +97,21 @@ const componentProps = defineProps({
 		required: true,
 	},
 });
-const emit = defineEmits(['apply']);
+const emit = defineEmits<{
+	apply: [profile: IqrfGatewayDaemonMapping];
+}>();
 const display = useDisplay();
 const i18n = useI18n();
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
-const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
-const headers = [
+const service: IqrfGatewayDaemonService = useApiClient()
+	.getConfigServices()
+	.getIqrfGatewayDaemonService();
+const headers = computed(() => [
 	{ key: 'name', title: i18n.t('components.config.profiles.name') },
 	{ key: 'type', title: i18n.t('components.config.profiles.profileType') },
 	{ key: 'deviceType', title: i18n.t('components.config.profiles.deviceType') },
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false },
-];
+]);
 const profiles: Ref<IqrfGatewayDaemonMapping[]> = ref([]);
 
 const cardWidth = computed(() => {

@@ -29,6 +29,7 @@ limitations under the License.
 		{{ $t('components.ipNetwork.connections.delete.prompt', { name: connection.name }) }}
 	</IDeleteModalWindow>
 </template>
+
 <script setup lang='ts'>
 import {
 	type NetworkConnectionService,
@@ -40,7 +41,7 @@ import {
 	ComponentState,
 	IDeleteModalWindow,
 } from '@iqrf/iqrf-vue-ui';
-import { type PropType, ref, type Ref } from 'vue';
+import { type PropType, ref, type Ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
@@ -56,9 +57,11 @@ const componentProps = defineProps({
 	},
 });
 /// Define emit events
-const emit = defineEmits(['deleted']);
+const emit = defineEmits<{
+	deleted: [];
+}>();
 /// Modal dialog reference
-const dialog: Ref<typeof IDeleteModalWindow | null> = ref(null);
+const dialog: Ref<InstanceType<typeof IDeleteModalWindow> | null> = useTemplateRef('dialog');
 /// Internationalization instance
 const i18n = useI18n();
 /// Network connection service

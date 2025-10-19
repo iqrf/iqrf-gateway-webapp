@@ -21,9 +21,10 @@ limitations under the License.
 		:action='monitCheck.enabled ? Action.Disable : Action.Enable'
 		:color='monitCheck.enabled ? "error" : "success"'
 		container-type='card-title'
-		@click='toggleMonitCheck'
+		@click='toggleMonitCheck()'
 	/>
 </template>
+
 <script setup lang='ts'>
 import { Feature } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { type MonitCheck } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
@@ -37,6 +38,9 @@ import { onBeforeMount, ref, type Ref } from 'vue';
 import { useApiClient } from '@/services/ApiClient';
 import { useFeatureStore } from '@/store/features';
 
+defineExpose({
+	fetchMonitCheck,
+});
 const featureStore = useFeatureStore();
 const monitService = useApiClient().getConfigServices().getMonitService();
 

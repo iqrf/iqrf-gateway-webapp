@@ -34,15 +34,17 @@ limitations under the License.
 import { type IqrfGatewayControllerService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import { type IqrfGatewayControllerMapping } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { ComponentState, IDeleteModalWindow } from '@iqrf/iqrf-vue-ui';
-import { type PropType, ref , type Ref } from 'vue';
+import { type PropType, ref, type Ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import { useApiClient } from '@/services/ApiClient';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
-const emit = defineEmits(['deleted']);
-const dialog: Ref<typeof IDeleteModalWindow | null> = ref(null);
+const emit = defineEmits<{
+	deleted: [];
+}>();
+const dialog: Ref<InstanceType<typeof IDeleteModalWindow> | null> = useTemplateRef('dialog');
 const componentProps = defineProps({
 	profile: {
 		type: Object as PropType<IqrfGatewayControllerMapping>,
@@ -50,23 +52,26 @@ const componentProps = defineProps({
 	},
 });
 const i18n = useI18n();
-const service: IqrfGatewayControllerService = useApiClient().getConfigServices().getIqrfGatewayControllerService();
+const service: IqrfGatewayControllerService = useApiClient()
+	.getConfigServices()
+	.getIqrfGatewayControllerService();
 
 async function onSubmit(): Promise<void> {
 	if (componentProps.profile.id === undefined) {
 		return;
 	}
 	componentState.value = ComponentState.Action;
+	const translationParams = { name: componentProps.profile.name };
 	try {
 		await service.deleteMapping(componentProps.profile.id);
 		toast.success(
-			i18n.t('components.config.profiles.messages.delete.success', { name: componentProps.profile.name }),
+			i18n.t('components.config.profiles.messages.delete.success', translationParams),
 		);
 		close();
 		emit('deleted');
 	} catch {
 		toast.error(
-			i18n.t('components.config.profiles.messages.delete.failed', { name: componentProps.profile.name }),
+			i18n.t('components.config.profiles.messages.delete.failed', translationParams),
 		);
 	}
 	componentState.value = ComponentState.Idle;

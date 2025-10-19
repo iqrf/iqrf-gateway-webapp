@@ -17,7 +17,7 @@ limitations under the License.
 
 <template>
 	<v-icon
-		v-tooltip:bottom='`${$t("components.status.monitor.mode") }: ${ $t(`components.status.monitor.modes.${monitorStore.mode}`)}`'
+		v-tooltip:bottom='`${$t("components.status.monitor.mode")}: ${$t(`components.status.monitor.modes.${monitorStore.mode}`)}`'
 		class='me-2'
 		:color='color'
 		:icon='icon'

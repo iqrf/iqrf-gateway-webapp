@@ -226,7 +226,9 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { type IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
+import {
+	type IqrfGatewayDaemonService,
+} from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import {
 	IqrfGatewayDaemonComponentName,
 	type IqrfGatewayDaemonMqttMessaging,
@@ -247,17 +249,19 @@ import {
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiAccount } from '@mdi/js';
-import { computed, type PropType, ref, type Ref, watch } from 'vue';
+import { computed, type PropType, ref, type Ref, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
-import { VForm } from 'vuetify/components';
+import { type VForm } from 'vuetify/components';
 
 import MqttUrlForm from '@/components/MqttUrlForm.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
-const emit = defineEmits(['saved']);
+const emit = defineEmits<{
+	saved: [];
+}>();
 const componentProps = defineProps({
 	action: {
 		type: String as PropType<Action>,
@@ -298,10 +302,12 @@ const componentProps = defineProps({
 	},
 });
 const i18n = useI18n();
-const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
+const service: IqrfGatewayDaemonService = useApiClient()
+	.getConfigServices()
+	.getIqrfGatewayDaemonService();
 const show: Ref<boolean> = ref(false);
 let fromImport = false;
-const form: Ref<VForm | null> = ref(null);
+const form: Ref<VForm | null> = useTemplateRef('form');
 const defaultProfile: IqrfGatewayDaemonMqttMessaging = {
 	component: IqrfGatewayDaemonComponentName.IqrfMqttMessaging,
 	instance: '',
@@ -327,61 +333,59 @@ const defaultProfile: IqrfGatewayDaemonMqttMessaging = {
 };
 const profile: Ref<IqrfGatewayDaemonMqttMessaging> = ref({ ...defaultProfile });
 let instance = '';
-const hasTls = computed((): boolean =>
-	profile.value.BrokerAddr.startsWith('ssl://') ||
+const hasTls = computed((): boolean => profile.value.BrokerAddr.startsWith('ssl://') ||
 	profile.value.BrokerAddr.startsWith('mqtts://') ||
-	profile.value.BrokerAddr.startsWith('wss://'),
-);
-const qosOptions = [
+	profile.value.BrokerAddr.startsWith('wss://'));
+const qosOptions = computed(() => [
 	{
-		title: i18n.t('components.config.daemon.connections.mqtt.qosLevels.atMostOnce').toString(),
+		title: i18n.t('components.config.daemon.connections.mqtt.qosLevels.atMostOnce'),
 		value: IqrfGatewayDaemonMqttMessagingQos.AT_LEAST_ONCE,
 	},
 	{
-		title: i18n.t('components.config.daemon.connections.mqtt.qosLevels.atLeastOnce').toString(),
+		title: i18n.t('components.config.daemon.connections.mqtt.qosLevels.atLeastOnce'),
 		value: IqrfGatewayDaemonMqttMessagingQos.AT_MOST_ONCE,
 	},
 	{
-		title: i18n.t('components.config.daemon.connections.mqtt.qosLevels.exactlyOnce').toString(),
+		title: i18n.t('components.config.daemon.connections.mqtt.qosLevels.exactlyOnce'),
 		value: IqrfGatewayDaemonMqttMessagingQos.ONCE,
 	},
-];
+]);
 const qosDescription = computed(() => {
 	if (profile.value.Qos === IqrfGatewayDaemonMqttMessagingQos.AT_MOST_ONCE) {
-		return i18n.t('components.config.daemon.connections.mqtt.notes.qos.atMostOnce').toString();
+		return i18n.t('components.config.daemon.connections.mqtt.notes.qos.atMostOnce');
 	} else if (profile.value.Qos === IqrfGatewayDaemonMqttMessagingQos.AT_LEAST_ONCE) {
-		return i18n.t('components.config.daemon.connections.mqtt.notes.qos.atMostOnce').toString();
+		return i18n.t('components.config.daemon.connections.mqtt.notes.qos.atMostOnce');
 	}
-	return i18n.t('components.config.daemon.connections.mqtt.notes.qos.exactlyOnce').toString();
+	return i18n.t('components.config.daemon.connections.mqtt.notes.qos.exactlyOnce');
 });
-const persistenceOptions = [
+const persistenceOptions = computed(() => [
 	{
-		title: i18n.t('components.config.daemon.connections.mqtt.persistenceLevels.memory').toString(),
+		title: i18n.t('components.config.daemon.connections.mqtt.persistenceLevels.memory'),
 		value: IqrfGatewayDaemonMqttMessagingPersistence.MEMORY,
 	},
 	{
-		title: i18n.t('components.config.daemon.connections.mqtt.persistenceLevels.filesystem').toString(),
+		title: i18n.t('components.config.daemon.connections.mqtt.persistenceLevels.filesystem'),
 		value: IqrfGatewayDaemonMqttMessagingPersistence.FILESYSTEM,
 	},
 	{
-		title: i18n.t('components.config.daemon.connections.mqtt.persistenceLevels.application').toString(),
+		title: i18n.t('components.config.daemon.connections.mqtt.persistenceLevels.application'),
 		value: IqrfGatewayDaemonMqttMessagingPersistence.APPLICATION,
 	},
-];
+]);
 const persistenceDescription = computed(() => {
 	if (profile.value.Persistence === IqrfGatewayDaemonMqttMessagingPersistence.MEMORY) {
-		return i18n.t('components.config.daemon.connections.mqtt.notes.persistence.memory').toString();
+		return i18n.t('components.config.daemon.connections.mqtt.notes.persistence.memory');
 	} else if (profile.value.Persistence === IqrfGatewayDaemonMqttMessagingPersistence.FILESYSTEM) {
-		return i18n.t('components.config.daemon.connections.mqtt.notes.persistence.filesystem').toString();
+		return i18n.t('components.config.daemon.connections.mqtt.notes.persistence.filesystem');
 	}
-	return i18n.t('components.config.daemon.connections.mqtt.notes.persistence.application').toString();
+	return i18n.t('components.config.daemon.connections.mqtt.notes.persistence.application');
 });
 
 const dialogTitle = computed(() => {
 	if (componentProps.action === Action.Add) {
-		return i18n.t('components.config.daemon.connections.actions.add').toString();
+		return i18n.t('components.config.daemon.connections.actions.add');
 	}
-	return i18n.t('components.config.daemon.connections.actions.edit').toString();
+	return i18n.t('components.config.daemon.connections.actions.edit');
 });
 
 watch(show, (newVal: boolean): void => {
@@ -403,6 +407,7 @@ async function onSubmit(): Promise<void> {
 	}
 	componentState.value = ComponentState.Action;
 	const params = { ...profile.value };
+	const translationParams = { name: instance };
 	try {
 		if (componentProps.action === Action.Add) {
 			await service.createInstance(IqrfGatewayDaemonComponentName.IqrfMqttMessaging, params);
@@ -410,13 +415,13 @@ async function onSubmit(): Promise<void> {
 			await service.updateInstance(IqrfGatewayDaemonComponentName.IqrfMqttMessaging, instance, params);
 		}
 		toast.success(
-			i18n.t('components.config.daemon.connections.mqtt.messages.save.success', { name: instance }),
+			i18n.t('components.config.daemon.connections.mqtt.messages.save.success', translationParams),
 		);
 		close();
 		emit('saved');
 	} catch {
 		toast.error(
-			i18n.t('components.config.daemon.connections.mqtt.messages.save.failed', { name: instance }),
+			i18n.t('components.config.daemon.connections.mqtt.messages.save.failed', translationParams),
 		);
 	}
 	componentState.value = ComponentState.Idle;

@@ -68,7 +68,7 @@ limitations under the License.
 						/>
 						<span class='d-flex justify-space-around'>
 							<v-menu
-								v-model='showIntefaceMenu'
+								v-model='showInterfaceMenu'
 								location='top center'
 								transition='slide-y-transition'
 								:close-on-content-click='false'
@@ -121,7 +121,7 @@ import {
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiSerialPort, mdiTextShort } from '@mdi/js';
-import { onMounted, ref, type Ref } from 'vue';
+import { onMounted, ref, type Ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -132,11 +132,13 @@ import { useApiClient } from '@/services/ApiClient';
 
 const i18n = useI18n();
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
-const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
-const form: Ref<VForm | null> = ref(null);
+const service: IqrfGatewayDaemonService = useApiClient()
+	.getConfigServices()
+	.getIqrfGatewayDaemonService();
+const form: Ref<VForm | null> = useTemplateRef('form');
 const config: Ref<IqrfGatewayDaemonCdc | null> = ref(null);
 let instance = '';
-const showIntefaceMenu: Ref<boolean> = ref(false);
+const showInterfaceMenu: Ref<boolean> = ref(false);
 
 async function getConfig(): Promise<void> {
 	componentState.value = [
@@ -182,7 +184,7 @@ function applyInterface(iface: string): void {
 		return;
 	}
 	config.value.IqrfInterface = iface;
-	showIntefaceMenu.value = false;
+	showInterfaceMenu.value = false;
 }
 
 onMounted(() => {

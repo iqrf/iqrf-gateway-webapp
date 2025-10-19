@@ -25,6 +25,7 @@ limitations under the License.
 		:prepend-inner-icon='mdiWrenchCog'
 	/>
 </template>
+
 <script setup lang='ts'>
 import {
 	IPv4ConfigurationMethod,

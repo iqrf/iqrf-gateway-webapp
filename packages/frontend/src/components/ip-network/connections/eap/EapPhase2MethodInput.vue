@@ -17,7 +17,7 @@ limitations under the License.
 
 <template>
 	<SelectInput
-		v-if='items.length !== 0'
+		v-if='items.length > 0'
 		v-model='modelValue'
 		:items='items'
 		:label='$t("components.ipNetwork.connections.form.eap.phaseTwoMethod")'
@@ -26,6 +26,7 @@ limitations under the License.
 		:prepend-inner-icon='mdiKey'
 	/>
 </template>
+
 <script setup lang='ts'>
 import {
 	EapPhaseOneMethod,

@@ -79,7 +79,7 @@ import {
 	ISelectInput,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiConnection } from '@mdi/js';
-import { onMounted, ref, type Ref } from 'vue';
+import { computed, onMounted, ref, type Ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -89,10 +89,12 @@ import { useApiClient } from '@/services/ApiClient';
 
 const i18n = useI18n();
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
-const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
-const form: Ref<VForm | null> = ref(null);
+const service: IqrfGatewayDaemonService = useApiClient()
+	.getConfigServices()
+	.getIqrfGatewayDaemonService();
+const form: Ref<VForm | null> = useTemplateRef('form');
 const active: Ref<IqrfGatewayDaemonComponentName | null> = ref(null);
-const activeOptions = [
+const activeOptions = computed(() => [
 	{
 		title: i18n.t('pages.config.daemon.interfaces.uart.title'),
 		value: IqrfGatewayDaemonComponentName.IqrfUart,
@@ -105,7 +107,7 @@ const activeOptions = [
 		title: i18n.t('pages.config.daemon.interfaces.cdc.title'),
 		value: IqrfGatewayDaemonComponentName.IqrfCdc,
 	},
-];
+]);
 const whitelist = [
 	IqrfGatewayDaemonComponentName.IqrfCdc,
 	IqrfGatewayDaemonComponentName.IqrfSpi,

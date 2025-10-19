@@ -66,7 +66,7 @@ import { useDaemonStore } from '@/store/daemonSocket';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const emit = defineEmits<{
-  updateDevices: []
+  updateDevices: [];
 }>();
 const componentProps = defineProps({
 	coordinatorOnly: {

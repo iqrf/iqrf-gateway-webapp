@@ -83,10 +83,10 @@ import { useApiClient } from '@/services/ApiClient';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
-const headers = [
+const headers = computed(() => [
 	{ key: 'instance', title: i18n.t('components.config.daemon.logging.profile') },
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false },
-];
+]);
 const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
 const instances: Ref<ShapeTraceFileService[]> = ref([]);
 

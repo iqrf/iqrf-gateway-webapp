@@ -47,7 +47,7 @@ limitations under the License.
 <script lang='ts' setup>
 import { ICard } from '@iqrf/iqrf-vue-ui';
 import { mdiDelete } from '@mdi/js';
-import { type PropType } from 'vue';
+import { computed, type PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { DpaPacketTransaction } from '@/types/Iqrfnet';
@@ -58,9 +58,11 @@ defineProps({
 		default: () => [],
 	},
 });
-const emit = defineEmits(['clear']);
+const emit = defineEmits<{
+	clear: [];
+}>();
 const i18n = useI18n();
-const headers = [
+const headers = computed(() => [
 	{
 		key: 'requestTs',
 		title: i18n.t('common.labels.requestTs'),
@@ -97,7 +99,7 @@ const headers = [
 		title: i18n.t('common.labels.response'),
 		sortable: false,
 	},
-];
+]);
 
 function getResponseColor(response?: string): string | undefined {
 	if (!response) {

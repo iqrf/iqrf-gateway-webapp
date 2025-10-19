@@ -66,13 +66,14 @@ import { DpaFileParams, FileType, IqrfInterfaces, RfModes } from '@iqrf/iqrf-gat
 import { OsDpaService } from '@iqrf/iqrf-repository-client/services';
 import { Action, ComponentState, IActionBtn, ICard, ISelectInput, ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { compare } from 'compare-versions';
-import { computed, onBeforeMount, onMounted, ref, Ref } from 'vue';
+import { computed, onBeforeMount, onMounted, ref, Ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
 import DpaUpdateProgressDialog from '@/components/iqrfnet/upload/DpaUpdateProgressDialog.vue';
 import SameVersionDialog from '@/components/iqrfnet/upload/SameVersionDialog.vue';
+import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 import { useRepositoryClient } from '@/services/RepositoryClient';
 import { useDaemonStore } from '@/store/daemonSocket';
@@ -91,9 +92,9 @@ const dpaVersionPretty: Ref<string> = ref('');
 const trType: Ref<number> = ref(0);
 const iqrfInterface: Ref<IqrfInterfaces> = ref(IqrfInterfaces.UART);
 const msgId: Ref<string | null> = ref(null);
-const form: Ref<VForm | null> = ref(null);
-const conflictDialog: Ref<typeof SameVersionDialog | null> = ref(null);
-const progressDialog: Ref<typeof DpaUpdateProgressDialog | null> = ref(null);
+const form: Ref<VForm|null> = useTemplateRef('form');
+const conflictDialog: Ref<InstanceType<typeof SameVersionDialog>|null> = useTemplateRef('conflictDialog');
+const progressDialog: Ref<InstanceType<typeof DpaUpdateProgressDialog>|null> = useTemplateRef('progressDialog');
 const version: Ref<string> = ref('');
 const versionOptions: Ref<SelectItem[]> = ref([]);
 const showAlert = computed(() => {
@@ -216,7 +217,7 @@ async function getDpaVersions(): Promise<void> {
 }
 
 async function upload(force: boolean = false): Promise<void> {
-	if (version.value.length === 0) {
+	if (!await validateForm(form.value) || version.value.length === 0) {
 		return;
 	}
 	if (!force && version.value === dpaVersion.value) {

@@ -34,13 +34,13 @@ export enum InstallationError {
  */
 export interface InstallationErrors {
 	/// Has missing dependencies?
-	missingDependencies: boolean,
+	missingDependencies: boolean;
 	/// Has missing PHP extensions?
-	missingPhpExtensions: boolean,
+	missingPhpExtensions: boolean;
 	/// Has missing database migrations?
-	missingMigrations: boolean,
+	missingMigrations: boolean;
 	/// Has misconfigured sudo?
-	misconfiguredSudo: boolean,
+	misconfiguredSudo: boolean;
 }
 
 /**

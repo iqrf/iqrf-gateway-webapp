@@ -39,7 +39,7 @@ defineExpose({
 	open,
 });
 const emit = defineEmits<{
-	upload: [],
+	upload: [];
 }>();
 const show: Ref<boolean> = ref(false);
 

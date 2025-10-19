@@ -37,7 +37,7 @@ import {
 	ComponentState,
 	IDeleteModalWindow,
 } from '@iqrf/iqrf-vue-ui';
-import { PropType, ref, type Ref } from 'vue';
+import { PropType, ref, type Ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { toast } from 'vue3-toastify';
@@ -62,24 +62,31 @@ const componentProps = defineProps({
 		default: false,
 	},
 });
-const emit = defineEmits(['refresh']);
+const emit = defineEmits<{
+	refresh: [];
+}>();
 const installStore = useInstallStore();
 const userStore = useUserStore();
 const i18n = useI18n();
 const router = useRouter();
-const dialog: Ref<typeof IDeleteModalWindow | null> = ref(null);
+const dialog: Ref<InstanceType<typeof IDeleteModalWindow>|null> = useTemplateRef('dialog');
 
 /**
  * Confirm user deletion
  */
 async function onSubmit(): Promise<void> {
 	componentState.value = ComponentState.Action;
+	const translationParams = { user: componentProps.user.username };
 	try {
-		await useApiClient().getSecurityServices().getUserService().delete(componentProps.user.id);
+		await useApiClient()
+			.getSecurityServices()
+			.getUserService()
+			.delete(componentProps.user.id);
 		componentState.value = ComponentState.Ready;
-		toast.success(
-			i18n.t('components.accessControl.users.messages.delete.success', { user: componentProps.user.username }),
-		);
+		toast.success(i18n.t(
+			'components.accessControl.users.messages.delete.success',
+			translationParams,
+		));
 		if (componentProps.user.id === userStore.getId) {
 			close();
 			await userStore.signOut();
@@ -93,9 +100,10 @@ async function onSubmit(): Promise<void> {
 		}
 	} catch {
 		componentState.value = ComponentState.Ready;
-		toast.error(
-			i18n.t('components.accessControl.users.messages.delete.failed', { user: componentProps.user.username }),
-		);
+		toast.error(i18n.t(
+			'components.accessControl.users.messages.delete.failed',
+			translationParams,
+		));
 	}
 }
 

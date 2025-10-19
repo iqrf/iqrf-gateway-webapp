@@ -133,7 +133,7 @@
 			</tbody>
 		</v-table>
 	</ICard>
-	<RestardFailed v-model='failedRestart' />
+	<RestartFailed v-model='failedRestart' />
 </template>
 
 <script lang='ts' setup>
@@ -150,7 +150,7 @@ import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import DeviceIcon from '@/components/iqrfnet/network-manager/DeviceIcon.vue';
-import RestardFailed from '@/components/iqrfnet/network-manager/RestardFailed.vue';
+import RestartFailed from '@/components/iqrfnet/network-manager/RestartFailed.vue';
 import Device from '@/helpers/device';
 import { useDaemonStore } from '@/store/daemonSocket';
 

@@ -201,7 +201,7 @@ import {
 	ITextInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
-import { computed, type PropType, ref, type Ref, watch } from 'vue';
+import { computed, type PropType, ref, type Ref, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -211,7 +211,9 @@ import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
-const emit = defineEmits(['saved']);
+const emit = defineEmits<{
+	saved: [];
+}>();
 const componentProps = defineProps({
 	action: {
 		type: String as PropType<Action>,
@@ -242,9 +244,11 @@ const componentProps = defineProps({
 	},
 });
 const i18n = useI18n();
-const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
+const service: IqrfGatewayDaemonService = useApiClient()
+	.getConfigServices()
+	.getIqrfGatewayDaemonService();
 const show: Ref<boolean> = ref(false);
-const form: Ref<VForm | null> = ref(null);
+const form: Ref<VForm | null> = useTemplateRef('form');
 const defaultProfile: ShapeTraceFileService = {
 	component: IqrfGatewayDaemonComponentName.ShapeTraceFile,
 	instance: '',
@@ -260,16 +264,16 @@ const defaultProfile: ShapeTraceFileService = {
 };
 const profile: Ref<ShapeTraceFileService> = ref({ ...defaultProfile });
 let instance = '';
-const headers = [
+const headers = computed(() => [
 	{ key: 'channel', title: i18n.t('components.config.daemon.logging.channel') },
 	{ key: 'level', title: i18n.t('components.config.daemon.logging.severity') },
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end' },
-];
+]);
 const dialogTitle = computed(() => {
 	if (componentProps.action === Action.Add) {
-		return i18n.t('components.config.daemon.logging.actions.add').toString();
+		return i18n.t('components.config.daemon.logging.actions.add');
 	}
-	return i18n.t('components.config.daemon.logging.actions.edit').toString();
+	return i18n.t('components.config.daemon.logging.actions.edit');
 });
 
 watch(show, (newVal: boolean): void => {
@@ -297,6 +301,7 @@ async function onSubmit(): Promise<void> {
 	}
 	componentState.value = ComponentState.Action;
 	const params = { ...profile.value };
+	const translationParams = { name: params.instance };
 	try {
 		if (componentProps.action === Action.Add) {
 			await service.createInstance(IqrfGatewayDaemonComponentName.ShapeTraceFile, params);
@@ -304,27 +309,29 @@ async function onSubmit(): Promise<void> {
 			await service.updateInstance(IqrfGatewayDaemonComponentName.ShapeTraceFile, instance, params);
 		}
 		toast.success(
-			i18n.t('components.config.daemon.logging.messages.save.success', { name: params.instance }),
+			i18n.t('components.config.daemon.logging.messages.save.success', translationParams),
 		);
 		close();
 		emit('saved');
 	} catch {
 		toast.error(
-			i18n.t('components.config.daemon.logging.messages.save.failed', { name: params.instance }),
+			i18n.t('components.config.daemon.logging.messages.save.failed', translationParams),
 		);
 	}
 	componentState.value = ComponentState.Ready;
 }
 
 function severityLabel(severity: ShapeTraceVerbosity): string {
-	if (severity === ShapeTraceVerbosity.Debug) {
-		return i18n.t('common.labels.severity.debug');
-	} else if (severity === ShapeTraceVerbosity.Info) {
-		return i18n.t('common.labels.severity.info');
-	} else if (severity === ShapeTraceVerbosity.Warning) {
-		return i18n.t('common.labels.severity.warning');
+	switch (severity) {
+		case ShapeTraceVerbosity.Debug:
+			return i18n.t('common.labels.severity.debug');
+		case ShapeTraceVerbosity.Info:
+			return i18n.t('common.labels.severity.info');
+		case ShapeTraceVerbosity.Warning:
+			return i18n.t('common.labels.severity.warning');
+		default:
+			return i18n.t('common.labels.severity.error');
 	}
-	return i18n.t('common.labels.severity.error');
 }
 
 function saveLevel(index: number|null, level: ShapeTraceChannelVerbosity) {

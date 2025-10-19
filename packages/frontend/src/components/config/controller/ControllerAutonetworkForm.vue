@@ -137,12 +137,14 @@ limitations under the License.
 import { type IqrfGatewayControllerApiAutonetworkConfig } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { Action, IActionBtn, ICard, IModalWindow, INumberInput, ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiRefresh, mdiRefreshCircle, mdiRepeat, mdiSignalVariant, mdiWrench } from '@mdi/js';
-import { type PropType, ref , type Ref, watch } from 'vue';
+import { type PropType, ref, type Ref, useTemplateRef, watch } from 'vue';
 import { VForm } from 'vuetify/components';
 
 import { validateForm } from '@/helpers/validateForm';
 
-const emit = defineEmits(['saved']);
+const emit = defineEmits<{
+	saved: [config: IqrfGatewayControllerApiAutonetworkConfig];
+}>();
 const componentProps = defineProps({
 	autonetworkConfig: {
 		type: Object as PropType<IqrfGatewayControllerApiAutonetworkConfig>,
@@ -150,7 +152,7 @@ const componentProps = defineProps({
 	},
 });
 const show: Ref<boolean> = ref(false);
-const form: Ref<VForm | null> = ref(null);
+const form: Ref<VForm | null> = useTemplateRef('form');
 const config: Ref<IqrfGatewayControllerApiAutonetworkConfig | null> = ref(null);
 
 watch(show, (newVal: boolean): void => {
@@ -160,7 +162,7 @@ watch(show, (newVal: boolean): void => {
 });
 
 async function onSubmit(): Promise<void> {
-	if (!await validateForm(form.value)) {
+	if (!await validateForm(form.value) || config.value === null) {
 		return;
 	}
 	emit('saved', config.value);

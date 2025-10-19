@@ -85,7 +85,7 @@ import {
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiFileOutline } from '@mdi/js';
-import { ref, type Ref } from 'vue';
+import { ref, type Ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -100,10 +100,12 @@ defineProps({
 		default: false,
 	},
 });
-const emit = defineEmits(['import']);
+const emit = defineEmits<{
+	import: [messaging: IqrfGatewayDaemonWsMessaging, service: IqrfGatewayDaemonWsMessaging];
+}>();
 const i18n = useI18n();
 const show: Ref<boolean> = ref(false);
-const form: Ref<VForm | null> = ref(null);
+const form: Ref<VForm | null> = useTemplateRef('form');
 const file: Ref<File | null> = ref(null);
 
 async function onSubmit(): Promise<void> {

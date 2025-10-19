@@ -40,15 +40,10 @@ const hasBrokenModem = computed(() => {
 	return gatewayStore.board === 'MICRORISC s.r.o. IQD-GW04';
 });
 /// Define emits
-const emit = defineEmits(['restart', 'reload']);
-/// Define props
-defineProps({
-	disabled: {
-		type: Boolean,
-		default: false,
-		required: false,
-	},
-});
+const emit = defineEmits<{
+	restart: [];
+	reload: [];
+}>();
 
 /**
  * Restarts the ModemManager service

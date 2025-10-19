@@ -27,7 +27,7 @@ limitations under the License.
 				@click='fetch'
 			/>
 		</template>
-		<div id='swagger' ref='swagger' />
+		<div id='swagger' />
 		<v-skeleton-loader
 			v-if='componentState === ComponentState.Loading'
 			class='input-skeleton-loader'

@@ -134,13 +134,13 @@ const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
 const daemonStore = useDaemonStore();
 const webappSchedulerService: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
-const headers = [
+const headers = computed(() => [
 	{ key: 'taskId', title: i18n.t('components.config.daemon.scheduler.taskId') },
 	{ key: 'description', title: i18n.t('common.labels.description') },
 	{ key: 'time', title: i18n.t('components.config.daemon.scheduler.time'), sortable: false },
 	{ key: 'active', title: i18n.t('common.states.active') },
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end' },
-];
+]);
 const msgId: Ref<string | null> = ref(null);
 const tasks: Ref<SchedulerRecord[]> = ref([]);
 const messagings: Ref<IqrfGatewayDaemonMessagingInstances | null> = ref(null);

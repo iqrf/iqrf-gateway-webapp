@@ -69,7 +69,7 @@ import {
 } from '@iqrf/iqrf-vue-ui';
 import { mdiAccount, mdiAccountKey } from '@mdi/js';
 import { AxiosError } from 'axios';
-import { ref, type Ref } from 'vue';
+import { ref, type Ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
@@ -85,7 +85,7 @@ const service: AccountService = useApiClient().getAccountService();
 /// Internationalization instance
 const i18n = useI18n();
 /// Form reference
-const form: Ref<VForm | null> = ref(null);
+const form: Ref<VForm | null> = useTemplateRef('form');
 /// Account recovery request
 const data: Ref<UserAccountRecovery> = ref({
 	username: '',

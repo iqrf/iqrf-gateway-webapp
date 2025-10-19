@@ -180,7 +180,7 @@ import {
 	ITextInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
-import { computed, type PropType, ref, type Ref, watch } from 'vue';
+import { computed, type PropType, ref, type Ref, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -222,10 +222,12 @@ const componentProps = defineProps({
 		default: false,
 	},
 });
-const emit = defineEmits(['saved']);
+const emit = defineEmits<{
+	saved: [];
+}>();
 const i18n = useI18n();
 const show: Ref<boolean> = ref(false);
-const form: Ref<VForm | null> = ref(null);
+const form: Ref<VForm | null> = useTemplateRef('form');
 const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
 const defaultProfile: IqrfGatewayDaemonMapping = {
 	busEnableGpioPin: 0,
@@ -242,7 +244,7 @@ const defaultProfile: IqrfGatewayDaemonMapping = {
 };
 const profile: Ref<IqrfGatewayDaemonMapping> = ref({ ...defaultProfile });
 const interfacePins: Ref<boolean> = ref(false);
-const typeOptions = [
+const typeOptions = computed(() => [
 	{
 		title: i18n.t('components.config.profiles.deviceTypes.adapter'),
 		value: MappingDeviceType.Adapter,
@@ -251,7 +253,7 @@ const typeOptions = [
 		title: i18n.t('components.config.profiles.deviceTypes.board'),
 		value: MappingDeviceType.Board,
 	},
-];
+]);
 const baudRateOptions = computed(() => {
 	const items: number[] = [1_200, 2_400, 4_800, 9_600, 19_200, 38_400, 57_600, 115_200, 230_400];
 	return items.map((item: number) => ({
@@ -313,6 +315,7 @@ async function onSubmit(): Promise<void> {
 	if (params.type !== MappingType.UART) {
 		delete params.baudRate;
 	}
+	const translationParams = { name: params.name };
 	try {
 		if (componentProps.deviceProfile.id === undefined) {
 			await service.createMapping(params);
@@ -320,13 +323,13 @@ async function onSubmit(): Promise<void> {
 			await service.updateMapping(componentProps.deviceProfile.id, params);
 		}
 		toast.success(
-			i18n.t('components.config.profiles.messages.save.success', { name: params.name }),
+			i18n.t('components.config.profiles.messages.save.success', translationParams),
 		);
 		close();
 		emit('saved');
 	} catch {
 		toast.error(
-			i18n.t('components.config.profiles.messages.save.failed', { name: params.name }),
+			i18n.t('components.config.profiles.messages.save.failed', translationParams),
 		);
 	}
 	componentState.value = ComponentState.Ready;

@@ -106,7 +106,7 @@ import { DaemonApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { Action, ComponentState, IActionBtn, IBooleanIcon, ICard, INumberInput, ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiDownload, mdiUpload, mdiViewList } from '@mdi/js';
-import { onBeforeUnmount, ref, Ref } from 'vue';
+import { onBeforeUnmount, ref, Ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -128,7 +128,7 @@ enum ResponseType {
 const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const daemonStore = useDaemonStore();
 const i18n = useI18n();
-const form: Ref<VForm | null> = ref(null);
+const form: Ref<VForm|null> = useTemplateRef('form');
 const address: Ref<number> = ref(0);
 const index: Ref<number> = ref(0);
 const state: Ref<boolean> = ref(false);
@@ -245,7 +245,7 @@ async function setOutput(): Promise<void> {
 }
 
 function parseSetOutput(result: boolean[]): void {
-	for(let i = 0; i < result.length; ++i) {
+	for (let i = 0; i < result.length; ++i) {
 		states.value[i] = result[i];
 	}
 }
@@ -268,7 +268,7 @@ function handleSetOutput(rsp: Record<string, any>): void {
 
 function handleError(statusCode: number, timeout: string, generalFailure: string): void {
 	let message = '';
-	switch(statusCode) {
+	switch (statusCode) {
 		case -1:
 			message = timeout;
 			break;

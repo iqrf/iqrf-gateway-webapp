@@ -93,12 +93,10 @@ const gatewayStore = useGatewayStore();
 const { board: gatewayModel } = storeToRefs(gatewayStore);
 
 /// Whether the GSM modem is broken
-const hasBrokenGsmModem: ComputedRef<boolean> = computed((): boolean =>
-	gatewayModel.value === 'MICRORISC s.r.o. IQD-GW04' && configuration.value.interface === 'ttyAMA2',
-);
+const hasBrokenGsmModem: ComputedRef<boolean> = computed((): boolean => gatewayModel.value === 'MICRORISC s.r.o. IQD-GW04' && configuration.value.interface === 'ttyAMA2');
 
 // Add Serial link configuration if the interface is ttyAMA or ttyAMC or ttyS
-watch(configuration.value, (value: NetworkConnectionConfiguration): void => {
+watch(configuration, (value: NetworkConnectionConfiguration): void => {
 	if (value.interface === undefined) {
 		return;
 	}

@@ -26,7 +26,7 @@ limitations under the License.
 			</template>
 			{{ $t('pages.install.wizard.text') }}
 			<v-stepper-vertical
-				v-if='steps.length !== 0 && currentStep !== null'
+				v-if='steps.length > 0 && currentStep !== null'
 				v-model='currentStep'
 				flat
 				@update:model-value='(step) => installStore.setCurrentStep(steps[step - 1])'

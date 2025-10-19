@@ -109,7 +109,7 @@ import {
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiFolderDownloadOutline, mdiTextLong } from '@mdi/js';
-import { nextTick, onMounted, ref, type Ref } from 'vue';
+import { nextTick, onMounted, ref, type Ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -132,7 +132,7 @@ enum ServiceType {
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
-const form: Ref<VForm | null> = ref(null);
+const form: Ref<VForm | null> = useTemplateRef('form');
 const logService: LogService = useApiClient().getGatewayServices().getLogService();
 const service: Ref<string | null> = ref(null);
 const serviceOptions: Ref<SelectItem[]> = ref([]);
@@ -140,7 +140,7 @@ const actionType: Ref<ActionType> = ref(ActionType.Export);
 const serviceType: Ref<ServiceType | null> = ref(null);
 const logTitle: Ref<string> = ref('');
 const serviceLog: Ref<string | null> = ref(null);
-const journalViewer: Ref<typeof JournalViewer | null> = ref(null);
+const journalViewer: Ref<InstanceType<typeof JournalViewer> | null> = useTemplateRef('journalViewer');
 
 async function listServices(): Promise<void> {
 	componentState.value = [

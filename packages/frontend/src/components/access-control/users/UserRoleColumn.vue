@@ -30,7 +30,7 @@ import { mdiAccount, mdiAccountBadge, mdiAccountSearch, mdiShieldAccount } from 
 import { computed } from 'vue';
 
 interface Props {
-	role: UserRole
+	role: UserRole;
 }
 
 const props = defineProps<Props>();

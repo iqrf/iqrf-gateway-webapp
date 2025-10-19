@@ -73,7 +73,7 @@ import { DaemonApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { Action, ComponentState, IActionBtn, ICard, INumberInput, ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiDownload, mdiViewList } from '@mdi/js';
-import { onBeforeUnmount, ref, Ref } from 'vue';
+import { onBeforeUnmount, ref, Ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -100,13 +100,13 @@ interface ISensor {
 	decimalPlaces: number;
 	frcs: number[];
 	value?: number|number[];
-	breakdown?: ISensor
+	breakdown?: ISensor;
 }
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const daemonStore = useDaemonStore();
 const i18n = useI18n();
-const form: Ref<VForm | null> = ref(null);
+const form: Ref<VForm|null> = useTemplateRef('form');
 const address: Ref<number> = ref(0);
 const actionType: Ref<ActionType | null> = ref(null);
 const responseType: Ref<ResponseType | null> = ref(null);
@@ -213,7 +213,7 @@ function handleRead(rsp: DaemonApiResponse): void {
 
 function handleError(statusCode: number, timeout: string, generalFailure: string): void {
 	let message = '';
-	switch(statusCode) {
+	switch (statusCode) {
 		case -1:
 			message = timeout;
 			break;

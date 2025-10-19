@@ -144,19 +144,17 @@ const maskaOptions: MaskInputOptions = {
 	tokens: {
 		'0': {
 			pattern: /\d/,
-			optional:true,
+			optional: true,
 		},
 	},
 };
 /// No IPv6 DNS servers are specified
-const noIpv6Dns: ComputedRef<boolean> = computed((): boolean =>
-	configuration.value.ipv6.method === IPv6ConfigurationMethod.DISABLED ||
+const noIpv6Dns: ComputedRef<boolean> = computed((): boolean => configuration.value.ipv6.method === IPv6ConfigurationMethod.DISABLED ||
 	(configuration.value.ipv6.method === IPv6ConfigurationMethod.MANUAL &&
 		configuration.value.ipv6.dns.filter((server: DnsServerConfiguration): boolean => {
 			const ipv6Validator: z.ZodIPv6 = z.ipv6();
 			return server.address !== '' && ipv6Validator.safeParse(server.address).success;
-		}).length === 0),
-);
+		}).length === 0));
 
 /**
  * Converts an IPv4 address string to an integer representation

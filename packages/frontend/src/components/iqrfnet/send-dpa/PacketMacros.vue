@@ -67,7 +67,9 @@ import { onMounted, ref, type Ref } from 'vue';
 
 import { useApiClient } from '@/services/ApiClient';
 
-defineEmits(['set-packet']);
+defineEmits<{
+	'set-packet': [packet: string];
+}>();
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const service: DpaMacrosService = useApiClient().getIqrfServices().getDpaMacrosService();
 const macros: Ref<DpaMacroGroup[]> = ref([]);

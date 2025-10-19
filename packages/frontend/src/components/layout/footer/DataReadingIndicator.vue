@@ -27,7 +27,7 @@ const color = computed(() => {
 		return 'red-accent-3';
 	}
 	if (active.value) {
-		return undefined;
+		return;
 	}
 	return 'grey-lighten-1';
 });

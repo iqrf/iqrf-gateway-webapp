@@ -94,11 +94,11 @@ const componentProps = defineProps({
 	},
 });
 /// Component emits
-const emits = defineEmits(['change']);
+const emits = defineEmits<{
+	change: [];
+}>();
 /// Action
-const action: ComputedRef<Action> = computed((): Action =>
-	componentProps.connection.isActive ? Action.Disable : Action.Enable,
-);
+const action: ComputedRef<Action> = computed((): Action => componentProps.connection.isActive ? Action.Disable : Action.Enable);
 /// Component state
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 /// Show dialog window

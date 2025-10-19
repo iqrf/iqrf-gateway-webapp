@@ -63,7 +63,7 @@ import {
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiFileOutline } from '@mdi/js';
-import { ref, type Ref } from 'vue';
+import { ref, type Ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -73,8 +73,10 @@ import { useApiClient } from '@/services/ApiClient';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const i18n = useI18n();
-const service: BackupService = useApiClient().getMaintenanceServices().getBackupService();
-const form: Ref<VForm | null> = ref(null);
+const service: BackupService = useApiClient()
+	.getMaintenanceServices()
+	.getBackupService();
+const form: Ref<VForm|null> = useTemplateRef('form');
 const archive: Ref<File | null> = ref(null);
 
 async function onSubmit(): Promise<void> {

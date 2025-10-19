@@ -76,7 +76,7 @@ import {
 	IDataTable,
 	IDataTableAction,
 } from '@iqrf/iqrf-vue-ui';
-import { ref, type Ref } from 'vue';
+import { computed, ref, type Ref, useTemplateRef } from 'vue';
 import { onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
@@ -88,13 +88,15 @@ import { useApiClient } from '@/services/ApiClient';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
-const headers = [
+const headers = computed(() => [
 	{ key: 'instance', title: i18n.t('components.config.daemon.connections.profile') },
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false },
-];
-const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
+]);
+const service: IqrfGatewayDaemonService = useApiClient()
+	.getConfigServices()
+	.getIqrfGatewayDaemonService();
 const instances: Ref<IqrfGatewayDaemonUdpMessaging[]> = ref([]);
-const addForm: Ref<typeof UdpConnectionForm | null> = ref(null);
+const addForm: Ref<InstanceType<typeof UdpConnectionForm> | null> = useTemplateRef('addForm');
 
 async function getConfig(): Promise<void> {
 	if (componentState.value === ComponentState.Created) {
@@ -121,7 +123,7 @@ function exportConfig(config: IqrfGatewayDaemonUdpMessaging): void {
 	FileDownloader.downloadFromData(
 		config,
 		'application/json',
-		`${config.component.replace('::','__')}__${config.instance}.json`,
+		`${config.component.replace('::', '__')}__${config.instance}.json`,
 	);
 }
 

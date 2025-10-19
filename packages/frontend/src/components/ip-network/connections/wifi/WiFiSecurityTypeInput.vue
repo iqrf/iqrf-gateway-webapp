@@ -28,13 +28,14 @@ limitations under the License.
 		:prepend-inner-icon='mdiWifiLock'
 	/>
 </template>
+
 <script setup lang='ts'>
 import {
 	WifiSecurityType,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import { ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiWifiLock } from '@mdi/js';
-import { type PropType } from 'vue';
+import { computed, type PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import SelectInput from '@/components/layout/form/SelectInput.vue';
@@ -47,7 +48,7 @@ const modelValue = defineModel({
 });
 const i18n = useI18n();
 /// Wi-Fi security types
-const items: SelectItem[] =[
+const items = computed((): SelectItem[] => [
 	{
 		value: WifiSecurityType.LEAP,
 		title: i18n.t('components.ipNetwork.connections.form.wifi.security.types.leap'),
@@ -68,5 +69,5 @@ const items: SelectItem[] =[
 		value: WifiSecurityType.WPA_PSK,
 		title: i18n.t('components.ipNetwork.connections.form.wifi.security.types.wpa-psk'),
 	},
-];
+]);
 </script>

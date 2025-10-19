@@ -42,7 +42,7 @@ const daemonStore = useDaemonStore();
 const monitorStore = useMonitorStore();
 
 const { isConnected } = storeToRefs(daemonStore);
-const { getQueueLength : queueLen } = storeToRefs(monitorStore);
+const { getQueueLength: queueLen } = storeToRefs(monitorStore);
 
 /// Icon to display
 const icon = computed(() => {

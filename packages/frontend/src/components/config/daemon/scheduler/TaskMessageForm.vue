@@ -55,6 +55,7 @@ limitations under the License.
 						:tooltip='$t("common.labels.apidoc")'
 						href='https://docs.iqrf.org/iqrf-gateway/user/daemon/api.html'
 						target='_blank'
+						rel='noopener noreferrer'
 					/>
 				</template>
 				<v-textarea
@@ -111,7 +112,7 @@ import {
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiApi } from '@mdi/js';
-import { computed, type PropType, ref , type Ref, watch } from 'vue';
+import { computed, type PropType, ref, type Ref, useTemplateRef, watch } from 'vue';
 import { VForm } from 'vuetify/components';
 
 import { validateForm } from '@/helpers/validateForm';
@@ -143,9 +144,11 @@ const componentProps = defineProps({
 		required: false,
 	},
 });
-const emit = defineEmits(['save']);
+const emit = defineEmits<{
+	save: [index: number|null, task: SchedulerRecordTask];
+}>();
 const show: Ref<boolean> = ref(false);
-const form: Ref<VForm | null> = ref(null);
+const form: Ref<VForm | null> = useTemplateRef('form');
 const message: Ref<string | null> = ref(null);
 const selected: Ref<MessagingInstance[]> = ref([]);
 

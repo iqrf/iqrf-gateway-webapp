@@ -51,7 +51,9 @@ limitations under the License.
 				<IDataTableAction
 					color='primary'
 					:icon='mdiInformation'
-					:tooltip='isExpanded(internalItem) ? $t("components.accessControl.sshKeys.actions.hideInfo") : $t("components.accessControl.sshKeys.actions.showInfo")'
+					:tooltip='isExpanded(internalItem) ?
+						$t("components.accessControl.sshKeys.actions.hideInfo") :
+						$t("components.accessControl.sshKeys.actions.showInfo")'
 					@click='toggleExpand(internalItem)'
 				/>
 				<SshKeyDeleteDialog
@@ -119,13 +121,13 @@ import { useApiClient } from '@/services/ApiClient';
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
 const service: SshKeyService = useApiClient().getSecurityServices().getSshKeyService();
-const headers = [
+const headers = computed(() => [
 	{ key: 'id', title: i18n.t('common.columns.id') },
 	{ key: 'description', title: i18n.t('common.columns.description') },
 	{ key: 'type', title: i18n.t('components.accessControl.sshKeys.table.type') },
 	{ key: 'createdAt', title: i18n.t('components.accessControl.sshKeys.table.createdAt') },
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false },
-];
+]);
 const types: Ref<string[]> = ref([]);
 const keys: Ref<SshKeyInfo[]> = ref([]);
 

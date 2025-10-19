@@ -125,7 +125,7 @@ export const useInstallStore = defineStore('install', {
 				return null;
 			}
 			return {
-				missingDependencies: this.checks.dependencies.length !== 0,
+				missingDependencies: this.checks.dependencies.length > 0,
 				missingPhpExtensions: !this.checks.phpModules.allExtensionsLoaded,
 				missingMigrations: !this.checks.allMigrationsExecuted,
 				misconfiguredSudo: this.checks.sudo !== undefined && (!this.checks.sudo.exists || !this.checks.sudo.userSudo),
@@ -139,7 +139,7 @@ export const useInstallStore = defineStore('install', {
 			if (this.checks === null) {
 				return true;
 			}
-			return this.checks.dependencies.length !== 0 ||
+			return this.checks.dependencies.length > 0 ||
 				!this.checks.phpModules.allExtensionsLoaded ||
 				!this.checks.allMigrationsExecuted;
 		},
@@ -174,10 +174,10 @@ export const useInstallStore = defineStore('install', {
 			if (this.hasNoUsers) {
 				steps.push(InstallationStep.UserCreation);
 			}
-			steps.push(...[
+			steps.push(
 				InstallationStep.UserPreferences,
 				InstallationStep.MailServerConfiguration,
-			]);
+			);
 			if (featureStore.isEnabled(Feature.ssh)) {
 				steps.push(InstallationStep.SshServerConfiguration);
 			}

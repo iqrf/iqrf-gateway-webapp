@@ -8,7 +8,9 @@ export function waitUntil(condition: () => boolean) {
 		if (condition()) {
 			resolve();
 		} else {
-			window.setTimeout(() => { resolver(resolve); }, 300);
+			window.setTimeout(() => {
+				resolver(resolve);
+			}, 300);
 		}
 	};
 

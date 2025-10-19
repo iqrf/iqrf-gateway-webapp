@@ -45,6 +45,7 @@ import {
 	type PropType,
 	ref,
 	type Ref,
+	useTemplateRef,
 } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
@@ -63,24 +64,29 @@ const componentProps = defineProps({
 		default: false,
 	},
 });
-const emit = defineEmits(['deleted']);
-const dialog: Ref<typeof IDeleteModalWindow | null> = ref(null);
+const emit = defineEmits<{
+	deleted: [];
+}>();
+const dialog: Ref<InstanceType<typeof IDeleteModalWindow> | null> = useTemplateRef('dialog');
 const i18n = useI18n();
-const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
+const service: IqrfGatewayDaemonService = useApiClient()
+	.getConfigServices()
+	.getIqrfGatewayDaemonService();
 
 async function onSubmit(): Promise<void> {
 	componentState.value = ComponentState.Action;
+	const translationParams = { name: componentProps.connectionProfile.messaging.instance };
 	try {
 		await service.deleteInstance(IqrfGatewayDaemonComponentName.IqrfWsMessaging, componentProps.connectionProfile.messaging.instance);
 		await service.deleteInstance(IqrfGatewayDaemonComponentName.ShapeWebsocketService, componentProps.connectionProfile.service.instance);
 		toast.success(
-			i18n.t('components.config.daemon.connections.websocket.messages.delete.success', { name: componentProps.connectionProfile.messaging.instance }),
+			i18n.t('components.config.daemon.connections.websocket.messages.delete.success', translationParams),
 		);
 		close();
 		emit('deleted');
 	} catch {
 		toast.error(
-			i18n.t('components.config.daemon.connections.websocket.messages.delete.failed', { name: componentProps.connectionProfile.messaging.instance }),
+			i18n.t('components.config.daemon.connections.websocket.messages.delete.failed', translationParams),
 		);
 	}
 	componentState.value = ComponentState.Idle;

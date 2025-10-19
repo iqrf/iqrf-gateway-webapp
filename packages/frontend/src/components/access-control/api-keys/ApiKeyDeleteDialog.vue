@@ -35,7 +35,7 @@ limitations under the License.
 import { type ApiKeyService } from '@iqrf/iqrf-gateway-webapp-client/services/Security';
 import { type ApiKeyInfo } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import { ComponentState, IDeleteModalWindow } from '@iqrf/iqrf-vue-ui';
-import { type PropType, ref , type Ref } from 'vue';
+import { type PropType, ref, type Ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
@@ -53,23 +53,26 @@ const componentProps = defineProps({
 		default: false,
 	},
 });
-const emit = defineEmits(['refresh']);
-const dialog: Ref<typeof IDeleteModalWindow | null> = ref(null);
+const emit = defineEmits<{
+	refresh: [];
+}>();
+const dialog: Ref<InstanceType<typeof IDeleteModalWindow>|null> = useTemplateRef('dialog');
 const i18n = useI18n();
 const service: ApiKeyService = useApiClient().getSecurityServices().getApiKeyService();
 
 async function onSubmit(): Promise<void> {
 	componentState.value = ComponentState.Action;
+	const translationParams = { id: componentProps.apiKey.id! };
 	try {
 		await service.delete(componentProps.apiKey.id!);
 		toast.success(
-			i18n.t('components.accessControl.apiKeys.messages.delete.success', { id: componentProps.apiKey.id! }),
+			i18n.t('components.accessControl.apiKeys.messages.delete.success', translationParams),
 		);
 		close();
 		emit('refresh');
 	} catch {
 		toast.error(
-			i18n.t('components.accessControl.apiKeys.messages.delete.failed', { id: componentProps.apiKey.id! }),
+			i18n.t('components.accessControl.apiKeys.messages.delete.failed', translationParams),
 		);
 	}
 	componentState.value = ComponentState.Idle;

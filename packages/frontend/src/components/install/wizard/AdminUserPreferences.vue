@@ -36,8 +36,9 @@ import {
 import {
 	Action,
 	ComponentState,
-	IActionBtn } from '@iqrf/iqrf-vue-ui';
-import { onMounted, ref, type Ref } from 'vue';
+	IActionBtn,
+} from '@iqrf/iqrf-vue-ui';
+import { onMounted, ref, type Ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
@@ -62,7 +63,7 @@ const componentProps = defineProps({
 /// User store
 const userStore = useUserStore();
 /// Form reference
-const form: Ref<VForm | null> = ref(null);
+const form: Ref<VForm | null> = useTemplateRef('form');
 /// Form validity
 const formValidity: Ref<boolean | null> = ref(null);
 /// User preferences

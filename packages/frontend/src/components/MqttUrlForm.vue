@@ -96,13 +96,15 @@ import {
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiPencil } from '@mdi/js';
-import { ref, type Ref } from 'vue';
+import { computed, ref, type Ref, useTemplateRef } from 'vue';
 import { watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { type VForm } from 'vuetify/components';
 
 import NumberInput from '@/components/layout/form/NumberInput.vue';
 import SelectInput from '@/components/layout/form/SelectInput.vue';
 import { MqttProtocol } from '@/enums/mqtt';
+import { validateForm } from '@/helpers/validateForm';
 
 const componentProps = defineProps({
 	cardTitle: {
@@ -115,12 +117,15 @@ const componentProps = defineProps({
 		required: true,
 	},
 });
-const emit = defineEmits(['edited']);
+const emit = defineEmits<{
+	edited: [url: string];
+}>();
+const form: Ref<VForm|null> = useTemplateRef('form');
 const i18n = useI18n();
 const show: Ref<boolean> = ref(false);
 const regexCapture = new RegExp(/(?<protocol>tcp|ssl|ws|wss|mqtt|mqtts):\/\/(?<host>.+):(?<port>\d+)(\/(?<path>.*))?/);
 const protocol: Ref<MqttProtocol> = ref(MqttProtocol.TCP);
-const protocolOptions = [
+const protocolOptions = computed(() => [
 	{
 		title: i18n.t('common.labels.protocols.tcp'),
 		value: MqttProtocol.TCP,
@@ -137,7 +142,7 @@ const protocolOptions = [
 		title: i18n.t('common.labels.protocols.wss'),
 		value: MqttProtocol.WSS,
 	},
-];
+]);
 const hostname: Ref<string> = ref('');
 const port: Ref<number> = ref(1_883);
 const path: Ref<string> = ref('');
@@ -158,7 +163,10 @@ watchEffect((): void => {
 	}
 });
 
-function onSubmit(): void {
+async function onSubmit(): Promise<void> {
+	if (!await validateForm(form.value)) {
+		return;
+	}
 	let url = `${protocol.value}://${hostname.value}:${port.value}`;
 	if (protocol.value === MqttProtocol.WS || protocol.value === MqttProtocol.WSS) {
 		url += `/${path.value}`;

@@ -41,5 +41,5 @@ export interface SidebarLink {
 	/// Feature enabled
 	feature?: Feature;
 	/// Development build only?
-	developmentOnly?: boolean
+	developmentOnly?: boolean;
 }

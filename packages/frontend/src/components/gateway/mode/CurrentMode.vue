@@ -114,7 +114,9 @@ async function setMode(): Promise<void> {
 		null,
 		5_000,
 		'components.gateway.mode.current.messages.set.timeout',
-		() => {msgId.value = null;},
+		() => {
+			msgId.value = null;
+		},
 	);
 	msgId.value = await daemonStore.sendMessage(ManagementService.setMode(mode.value, opts));
 }

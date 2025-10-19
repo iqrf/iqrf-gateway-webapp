@@ -130,13 +130,13 @@ import { useApiClient } from '@/services/ApiClient';
 
 const i18n = useI18n();
 const service: ServiceService = useApiClient().getServiceService();
-const headers = [
+const headers = computed(() => [
 	{ key: 'name', title: i18n.t('components.gateway.services.table.service') },
 	{ key: 'description', title: i18n.t('common.columns.description') },
 	{ key: 'enabled', title: i18n.t('common.states.enabled') },
 	{ key: 'active', title: i18n.t('common.states.active') },
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false },
-];
+]);
 /// Component state
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 /// Gateway services
