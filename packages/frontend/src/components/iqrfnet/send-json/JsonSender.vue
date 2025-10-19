@@ -26,7 +26,7 @@ limitations under the License.
 				href='https://docs.iqrf.org/iqrf-gateway/user/daemon/api.html'
 				target='_blank'
 			>
-				{{ $t('components.iqrfnet.send-json.api') }}
+				{{ $t('common.labels.apidoc') }}
 			</v-btn>
 		</template>
 		<v-alert

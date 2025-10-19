@@ -26,6 +26,7 @@
 			"id": "ID"
 		},
 		"labels": {
+			"apidoc": "API documentation",
 			"certificate": "Certificate",
 			"confirmation": "Confirmation",
 			"confirmationTs": "Confirmation time",
@@ -3333,7 +3334,6 @@
 				}
 			},
 			"send-json": {
-				"api": "API documentation",
 				"history": {
 					"noMessages": "No recorded JSON messages.",
 					"title": "Request history"
