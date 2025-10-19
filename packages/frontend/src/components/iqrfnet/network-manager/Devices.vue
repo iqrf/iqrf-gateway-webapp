@@ -412,6 +412,7 @@ function handleIndicate(rsp: DaemonApiResponse): void {
 			i18n.t('components.iqrfnet.network-manager.devices.messages.indicate.failed'),
 		);
 	}
+	componentState.value = ComponentState.Ready;
 }
 
 defineExpose({
