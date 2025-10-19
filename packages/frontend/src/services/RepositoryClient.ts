@@ -40,7 +40,10 @@ export const useRepositoryClient = async (): Promise<Client> => {
 	let config: IqrfRepositoryConfig | null = store.configuration;
 	if (config === null) {
 		try {
-			config = await useApiClient().getConfigServices().getIqrfRepositoryService().getConfig();
+			config = await useApiClient()
+				.getConfigServices()
+				.getIqrfRepositoryService()
+				.getConfig();
 		} catch (error) {
 			console.error(error);
 		}

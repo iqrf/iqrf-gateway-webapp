@@ -122,11 +122,8 @@ limitations under the License.
 									cols='12'
 									md='6'
 								>
-									<ISelectInput
+									<ControllerLoggingSeverityInput
 										v-model='configuration.logger.severity'
-										:items='severityOptions'
-										:label='$t("components.config.controller.form.logging.severity")'
-										:prepend-inner-icon='mdiAlert'
 									/>
 								</v-col>
 							</v-row>
@@ -234,11 +231,8 @@ limitations under the License.
 							<legend class='section-legend'>
 								{{ $t('components.config.controller.form.sections.button') }}
 							</legend>
-							<ISelectInput
+							<ControllerActionInput
 								v-model='configuration.resetButton.api'
-								:items='actionOptions'
-								:label='$t("components.config.controller.form.button.action")'
-								:prepend-inner-icon='mdiGestureTapHold'
 							>
 								<template #append>
 									<ControllerAutonetworkForm
@@ -252,7 +246,7 @@ limitations under the License.
 										@saved='onDiscoverySave'
 									/>
 								</template>
-							</ISelectInput>
+							</ControllerActionInput>
 							<legend class='section-legend'>
 								{{ $t('components.config.controller.form.sections.pins') }}
 							</legend>
@@ -395,7 +389,6 @@ import {
 	type IqrfGatewayControllerApiAutonetworkConfig,
 	type IqrfGatewayControllerApiDiscoveryConfig,
 	type IqrfGatewayControllerConfig,
-	IqrfGatewayControllerLoggingSeverity,
 	type IqrfGatewayControllerMapping,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import {
@@ -404,29 +397,30 @@ import {
 	IActionBtn,
 	ICard,
 	INumberInput,
-	ISelectInput,
 	ITextInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import {
-	mdiAlert,
 	mdiChip,
 	mdiFileDocument,
-	mdiGestureTapHold,
 	mdiLedVariantOn,
 	mdiLedVariantOutline,
 	mdiLinkVariant,
 	mdiRadioboxBlank,
 	mdiTuneVariant,
 } from '@mdi/js';
-import { onMounted, ref, type Ref, toRaw } from 'vue';
+import { onMounted, ref, type Ref, toRaw, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { useDisplay } from 'vuetify';
 import { VForm } from 'vuetify/components';
 
+import ControllerActionInput
+	from '@/components/config/controller/ControllerActionInput.vue';
 import ControllerAutonetworkForm from '@/components/config/controller/ControllerAutonetworkForm.vue';
 import ControllerDiscoveryForm from '@/components/config/controller/ControllerDiscoveryForm.vue';
+import ControllerLoggingSeverityInput
+	from '@/components/config/controller/ControllerLoggingSeverityInput.vue';
 import DeviceProfilesTable from '@/components/config/controller/profiles/DeviceProfilesTable.vue';
 import WebsocketUrlForm from '@/components/config/WebsocketUrlForm.vue';
 import { validateForm } from '@/helpers/validateForm';
@@ -435,45 +429,11 @@ import { useApiClient } from '@/services/ApiClient';
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const display = useDisplay();
 const i18n = useI18n();
-const service: IqrfGatewayControllerService = useApiClient().getConfigServices().getIqrfGatewayControllerService();
-const form: Ref<VForm | null> = ref(null);
+const service: IqrfGatewayControllerService = useApiClient()
+	.getConfigServices()
+	.getIqrfGatewayControllerService();
+const form: Ref<VForm | null> = useTemplateRef('form');
 const configuration: Ref<IqrfGatewayControllerConfig | null> = ref(null);
-const severityOptions = [
-	{
-		title: i18n.t('common.labels.severity.trace'),
-		value: IqrfGatewayControllerLoggingSeverity.Trace,
-	},
-	{
-		title: i18n.t('common.labels.severity.debug'),
-		value: IqrfGatewayControllerLoggingSeverity.Debug,
-	},
-	{
-		title: i18n.t('common.labels.severity.info'),
-		value: IqrfGatewayControllerLoggingSeverity.Info,
-	},
-	{
-		title: i18n.t('common.labels.severity.warning'),
-		value: IqrfGatewayControllerLoggingSeverity.Warning,
-	},
-	{
-		title: i18n.t('common.labels.severity.error'),
-		value: IqrfGatewayControllerLoggingSeverity.Error,
-	},
-];
-const actionOptions = [
-	{
-		title: i18n.t('components.config.controller.form.button.actions.none'),
-		value: IqrfGatewayControllerAction.None,
-	},
-	{
-		title: i18n.t('components.config.controller.form.button.actions.autonetwork'),
-		value: IqrfGatewayControllerAction.Autonetwork,
-	},
-	{
-		title: i18n.t('components.config.controller.form.button.actions.discovery'),
-		value: IqrfGatewayControllerAction.Discovery,
-	},
-];
 const watchdogPins: Ref<boolean> = ref(false);
 const showProfileMenu: Ref<boolean> = ref(false);
 

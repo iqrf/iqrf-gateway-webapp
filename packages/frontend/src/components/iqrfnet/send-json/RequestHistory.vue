@@ -79,7 +79,9 @@ const componentProps = defineProps({
 		required: true,
 	},
 });
-const emit = defineEmits(['clear']);
+const emit = defineEmits<{
+	clear: [];
+}>();
 const messageIdx: Ref<number> = ref(0);
 
 const messageOptions = computed(() => {

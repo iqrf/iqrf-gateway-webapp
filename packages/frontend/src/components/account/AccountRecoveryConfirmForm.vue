@@ -62,7 +62,7 @@ limitations under the License.
 				:label='$t("components.account.password.confirmation")'
 				:rules='[
 					(v: string|null) => ValidationRules.required(v, $t("components.account.password.validation.confirmation.required")),
-					(v: string) => v.length !== 0 && v === data.password || $t("common.validation.passwordConfirm.match"),
+					(v: string) => v.length > 0 && v === data.password || $t("common.validation.passwordConfirm.match"),
 				]'
 				required
 				:prepend-inner-icon='mdiKey'
@@ -96,7 +96,7 @@ import {
 import { mdiAccountKey, mdiHelpCircleOutline, mdiKey } from '@mdi/js';
 import { AxiosError } from 'axios';
 import { validate as uuidValidate, version as uuidVersion } from 'uuid';
-import { ref, type Ref } from 'vue';
+import { ref, type Ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { toast } from 'vue3-toastify';
@@ -119,7 +119,7 @@ const componentProps = defineProps({
 /// Component state
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 /// Form reference
-const form: Ref<VForm | null> = ref(null);
+const form: Ref<VForm | null> = useTemplateRef('form');
 /// Internationalization instance
 const i18n = useI18n();
 /// Password reset request

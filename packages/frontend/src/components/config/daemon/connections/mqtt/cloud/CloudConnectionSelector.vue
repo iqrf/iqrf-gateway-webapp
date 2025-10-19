@@ -78,7 +78,9 @@ defineProps({
 		default: false,
 	},
 });
-const emit = defineEmits(['saved']);
+const emit = defineEmits<{
+	saved: [];
+}>();
 const showAws: Ref<boolean> = ref(false);
 const showAzure: Ref<boolean> = ref(false);
 const showIbm: Ref<boolean> = ref(false);

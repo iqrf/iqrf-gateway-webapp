@@ -124,7 +124,7 @@ import { DaemonApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { Action, ComponentState, IActionBtn, ICard, INumberInput, ISelectInput, ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiDownload, mdiViewList } from '@mdi/js';
-import { onBeforeUnmount, ref, Ref } from 'vue';
+import { onBeforeUnmount, ref, Ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -150,7 +150,7 @@ interface LdiCommandAnswer {
 const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const daemonStore = useDaemonStore();
 const i18n = useI18n();
-const form: Ref<VForm | null> = ref(null);
+const form: Ref<VForm|null> = useTemplateRef('form');
 const actionType: Ref<ActionType> = ref(ActionType.SEND_COMMANDS);
 const address: Ref<number> = ref(0);
 const commands: Ref<number[]> = ref([0]);
@@ -281,7 +281,7 @@ function handleSetLai(rsp: DaemonApiResponse): void {
 
 function handleError(statusCode: number, timeout: string, generalFailure: string): void {
 	let message = '';
-	switch(statusCode) {
+	switch (statusCode) {
 		case -1:
 			message = timeout;
 			break;

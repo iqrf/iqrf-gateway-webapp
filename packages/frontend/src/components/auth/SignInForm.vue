@@ -86,7 +86,7 @@ import {
 } from '@iqrf/iqrf-vue-ui';
 import { mdiAccount, mdiAccountKey, mdiKey, mdiLogin } from '@mdi/js';
 import { AxiosError } from 'axios';
-import { onMounted, ref, type Ref } from 'vue';
+import { onMounted, ref, type Ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 import { toast } from 'vue3-toastify';
@@ -120,7 +120,7 @@ const credentials: Ref<UserCredentials> = ref({
 	expiration: UserSessionExpiration.Default,
 });
 /// Form reference
-const form: Ref<VForm | null> = ref(null);
+const form: Ref<VForm | null> = useTemplateRef('form');
 
 onMounted(() => {
 	credentials.value.expiration = userStore.getLastRequestedExpiration;

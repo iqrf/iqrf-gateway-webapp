@@ -123,7 +123,7 @@ import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { Head } from '@unhead/vue/components';
 import { compare } from 'compare-versions';
 import { storeToRefs } from 'pinia';
-import { onBeforeUnmount, onMounted, ref, Ref, watch } from 'vue';
+import { onBeforeUnmount, onMounted, ref, Ref, useTemplateRef, watch } from 'vue';
 
 import Autonetwork from '@/components/iqrfnet/network-manager/Autonetwork.vue';
 import BackupManager from '@/components/iqrfnet/network-manager/BackupManager.vue';
@@ -145,8 +145,8 @@ const daemonStore = useDaemonStore();
 const { isConnected } = storeToRefs(daemonStore);
 const msgId: Ref<string | null> = ref(null);
 const tab: Ref<number> = ref(0);
-const devicesComponent: Ref<typeof Devices | null> = ref(null);
-const rfSignalComponent: Ref<typeof RfSignalTest | null> = ref(null);
+const devicesComponent: Ref<InstanceType<typeof Devices>|null> = useTemplateRef('devicesComponent');
+const rfSignalComponent: Ref<InstanceType<typeof RfSignalTest>|null> = useTemplateRef('rfSignalComponent');
 const showNfc: Ref<boolean> = ref(false);
 
 function refreshDevices(): void {

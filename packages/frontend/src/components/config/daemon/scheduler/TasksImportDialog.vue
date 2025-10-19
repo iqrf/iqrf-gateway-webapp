@@ -109,7 +109,7 @@ import {
 } from '@iqrf/iqrf-vue-ui';
 import { mdiFileOutline } from '@mdi/js';
 import { BlobReader, TextWriter, ZipReader } from '@zip.js/zip.js';
-import { ref, type Ref } from 'vue';
+import { ref, type Ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -119,9 +119,9 @@ import { validateForm } from '@/helpers/validateForm';
 import { useDaemonStore } from '@/store/daemonSocket';
 
 interface TaskImportResult {
-	taskId: string,
-	imported?: boolean,
-	reason?: string,
+	taskId: string;
+	imported?: boolean;
+	reason?: string;
 }
 defineProps({
 	disabled: {
@@ -130,12 +130,14 @@ defineProps({
 		default: false,
 	},
 });
-const emit = defineEmits(['imported']);
+const emit = defineEmits<{
+	imported: [];
+}>();
 const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
 const show: Ref<boolean> = ref(false);
 const daemonStore = useDaemonStore();
 const i18n = useI18n();
-const form: Ref<VForm | null> = ref(null);
+const form: Ref<VForm | null> = useTemplateRef('form');
 const file: Ref<File | null> = ref(null);
 const msgIds: Ref<string[]> = ref([]);
 const importRecords: Ref<SchedulerRecord[]> = ref([]);

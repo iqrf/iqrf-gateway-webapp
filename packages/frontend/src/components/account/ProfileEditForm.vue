@@ -92,16 +92,20 @@ import {
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiAccount, mdiEmail } from '@mdi/js';
-import { onMounted, ref, type Ref } from 'vue';
+import { onMounted, ref, type Ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
+import { type VForm } from 'vuetify/components';
 
 import UrlBuilder from '@/helpers/urlBuilder';
+import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
 
 /// Component state
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
+/// Form reference
+const form: Ref<VForm | null> = useTemplateRef('form');
 /// Internalization instance
 const i18n = useI18n();
 /// User store
@@ -146,18 +150,21 @@ async function getUserData(): Promise<void> {
  * Updates the user profile
  */
 async function onSubmit(): Promise<void> {
+	if (!await validateForm(form.value)) {
+		return;
+	}
 	componentState.value = ComponentState.Action;
 	try {
 		await accountService.update(user.value);
 		componentState.value = ComponentState.Ready;
-		toast.success(
-			i18n.t('components.account.details.messages.save.success'),
-		);
+		toast.success(i18n.t(
+			'components.account.details.messages.save.success',
+		));
 		await userStore.refreshUserInfo();
 	} catch {
-		toast.error(
-			i18n.t('components.account.details.messages.save.failed'),
-		);
+		toast.error(i18n.t(
+			'components.account.details.messages.save.failed',
+		));
 		componentState.value = ComponentState.Ready;
 	}
 }

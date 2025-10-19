@@ -396,6 +396,18 @@ export interface ShapeTraceFileService extends IqrfGatewayDaemonComponentInstanc
 }
 
 /**
+ * Shape WebSocket TLS presets
+ */
+export enum ShapeWebsocketTlsMode {
+	/// Modern preset
+	Modern = 'modern',
+	/// Intermediate preset
+	Intermediate = 'intermediate',
+	/// Old preset
+	Old = 'old',
+}
+
+/**
  * Shape websocket service interface
  */
 export interface ShapeWebsocketService extends IqrfGatewayDaemonComponentInstanceBase<IqrfGatewayDaemonComponentName.ShapeWebsocketService> {
@@ -410,7 +422,7 @@ export interface ShapeWebsocketService extends IqrfGatewayDaemonComponentInstanc
 	/// TLS enabled
 	tlsEnabled?: boolean;
 	/// TLS mode
-	tlsMode?: string;
+	tlsMode?: ShapeWebsocketTlsMode;
 }
 
 /**

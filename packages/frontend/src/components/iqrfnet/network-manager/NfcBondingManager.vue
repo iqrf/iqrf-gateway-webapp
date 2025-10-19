@@ -35,15 +35,18 @@ import { DaemonApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { Action, ComponentState, IActionBtn, ICard } from '@iqrf/iqrf-vue-ui';
 import { mdiSignalVariant } from '@mdi/js';
-import { onBeforeUnmount, ref, Ref } from 'vue';
+import { onBeforeUnmount, ref, Ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
+import { type VForm } from 'vuetify/components';
 
+import { validateForm } from '@/helpers/validateForm';
 import { useDaemonStore } from '@/store/daemonSocket';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const i18n = useI18n();
 const daemonStore = useDaemonStore();
+const form: Ref<VForm|null> = useTemplateRef('form');
 const msgId: Ref<string | null> = ref(null);
 
 daemonStore.$onAction(({ name, after }) => {
@@ -62,6 +65,9 @@ daemonStore.$onAction(({ name, after }) => {
 });
 
 async function bondNfc(): Promise<void> {
+	if (!await validateForm(form.value)) {
+		return;
+	}
 	componentState.value = ComponentState.Action;
 	const opts = new DaemonMessageOptions(
 		null,

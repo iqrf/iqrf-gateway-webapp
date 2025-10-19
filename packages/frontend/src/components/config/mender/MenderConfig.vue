@@ -53,7 +53,7 @@ limitations under the License.
 						</legend>
 						<ITextInput
 							v-for='index in config.client.config.Servers.keys()'
-							:key='`MenderServerUrl${ index}`'
+							:key='`MenderServerUrl${index}`'
 							v-model='config.client.config.Servers[index]'
 							:label='$t("components.config.mender.client.server")'
 							:rules='[
@@ -198,7 +198,7 @@ import {
 	mdiTimerSync,
 } from '@mdi/js';
 import humanizeDuration from 'humanize-duration';
-import { onMounted, ref, type Ref } from 'vue';
+import { onMounted, ref, type Ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
@@ -210,7 +210,7 @@ import { useApiClient } from '@/services/ApiClient';
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
 const service: MenderService = useApiClient().getConfigServices().getMenderService();
-const form: Ref<VForm | null> = ref(null);
+const form: Ref<VForm | null> = useTemplateRef('form');
 const config: Ref<MenderConfig | null> = ref(null);
 
 function intervalColor(value: number|null): string {

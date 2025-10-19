@@ -158,7 +158,7 @@ import {
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiChip, mdiLedVariantOn, mdiLedVariantOutline, mdiRadioboxBlank } from '@mdi/js';
-import { computed, type PropType, ref, type Ref, watch } from 'vue';
+import { computed, type PropType, ref, type Ref, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -167,7 +167,9 @@ import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
-const emit = defineEmits(['saved']);
+const emit = defineEmits<{
+	saved: [];
+}>();
 const componentProps = defineProps({
 	action: {
 		type: String as PropType<Action>,
@@ -196,7 +198,7 @@ const componentProps = defineProps({
 const i18n = useI18n();
 const service: IqrfGatewayControllerService = useApiClient().getConfigServices().getIqrfGatewayControllerService();
 const show: Ref<boolean> = ref(false);
-const form: Ref<VForm | null> = ref(null);
+const form: Ref<VForm | null> = useTemplateRef('form');
 const defaultProfile: IqrfGatewayControllerMapping = {
 	name: '',
 	deviceType: MappingDeviceType.Board,
@@ -208,7 +210,7 @@ const defaultProfile: IqrfGatewayControllerMapping = {
 };
 const profile: Ref<IqrfGatewayControllerMapping> = ref({ ...defaultProfile });
 const watchdogPins: Ref<boolean> = ref(false);
-const typeOptions = [
+const typeOptions = computed(() => [
 	{
 		title: i18n.t('components.config.profiles.deviceTypes.adapter'),
 		value: MappingDeviceType.Adapter,
@@ -217,12 +219,12 @@ const typeOptions = [
 		title: i18n.t('components.config.profiles.deviceTypes.board'),
 		value: MappingDeviceType.Board,
 	},
-];
+]);
 const dialogTitle = computed(() => {
 	if (componentProps.action === Action.Add) {
-		return i18n.t('components.config.profiles.actions.add').toString();
+		return i18n.t('components.config.profiles.actions.add');
 	}
-	return i18n.t('components.config.profiles.actions.edit').toString();
+	return i18n.t('components.config.profiles.actions.edit');
 });
 
 watch(show, (newVal: boolean): void => {
@@ -259,6 +261,7 @@ async function onSubmit(): Promise<void> {
 		delete params.sck;
 		delete params.sda;
 	}
+	const translationParams = { name: params.name };
 	try {
 		if (componentProps.deviceProfile.id === undefined) {
 			await service.createMapping(params);
@@ -266,13 +269,13 @@ async function onSubmit(): Promise<void> {
 			await service.updateMapping(componentProps.deviceProfile.id, params);
 		}
 		toast.success(
-			i18n.t('components.config.profiles.messages.save.success', { name: params.name }),
+			i18n.t('components.config.profiles.messages.save.success', translationParams),
 		);
 		close();
 		emit('saved');
 	} catch {
 		toast.error(
-			i18n.t('components.config.profiles.messages.save.failed', { name: params.name }),
+			i18n.t('components.config.profiles.messages.save.failed', translationParams),
 		);
 	}
 	componentState.value = ComponentState.Ready;

@@ -64,21 +64,21 @@ import { DiscoveryParams } from '@iqrf/iqrf-gateway-daemon-utils/types/embed';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { Action, ComponentState, IActionBtn, ICard, INumberInput, ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiNumeric, mdiPlay, mdiSignalVariant } from '@mdi/js';
-import { onBeforeUnmount, ref, Ref } from 'vue';
+import { onBeforeUnmount, ref, Ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
-import { VForm } from 'vuetify/components';
+import { type VForm } from 'vuetify/components';
 
 import { validateForm } from '@/helpers/validateForm';
 import { useDaemonStore } from '@/store/daemonSocket';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const emit = defineEmits<{
-  updateDevices: []
+  updateDevices: [];
 }>();
 const i18n = useI18n();
 const daemonStore = useDaemonStore();
-const form: Ref<VForm | null> = ref(null);
+const form: Ref<VForm | null> = useTemplateRef('form');
 const discoveryParams: Ref<DiscoveryParams> = ref({
 	maxAddr: 239,
 	txPower: 6,

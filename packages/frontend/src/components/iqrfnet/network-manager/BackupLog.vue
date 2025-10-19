@@ -73,7 +73,7 @@ defineProps({
 	},
 });
 const emit = defineEmits<{
-  generateBackup: []
+  generateBackup: [];
 }>();
 const show: Ref<boolean> = ref(false);
 

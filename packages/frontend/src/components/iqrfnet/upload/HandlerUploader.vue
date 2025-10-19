@@ -86,7 +86,7 @@ import { type UpgradeService } from '@iqrf/iqrf-gateway-webapp-client/services/I
 import { FileFormat, FileType } from '@iqrf/iqrf-gateway-webapp-client/types/Iqrf';
 import { Action, ComponentState, IActionBtn, ICard, IModalWindow, ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiFileOutline } from '@mdi/js';
-import { computed, ref, type Ref } from 'vue';
+import { computed, ref, type Ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -96,7 +96,7 @@ import { useApiClient } from '@/services/ApiClient';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const i18n = useI18n();
-const form: Ref<VForm | null> = ref(null);
+const form: Ref<VForm|null> = useTemplateRef('form');
 const show: Ref<boolean> = ref(false);
 const handler: Ref<File | null> = ref(null);
 const progressMessage: Ref<string> = ref('');

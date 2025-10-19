@@ -86,17 +86,19 @@ import DeviceProfileDeleteDialog from '@/components/config/controller/profiles/D
 import DeviceProfileForm from '@/components/config/controller/profiles/DeviceProfileForm.vue';
 import { useApiClient } from '@/services/ApiClient';
 
-const emit = defineEmits(['apply']);
+const emit = defineEmits<{
+	apply: [profile: IqrfGatewayControllerMapping];
+}>();
 const i18n = useI18n();
 const display = useDisplay();
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const service: IqrfGatewayControllerService = useApiClient().getConfigServices().getIqrfGatewayControllerService();
 const profiles: Ref<IqrfGatewayControllerMapping[]> = ref([]);
-const headers = [
+const headers = computed(() => [
 	{ key: 'name', title: i18n.t('components.config.profiles.name') },
 	{ key: 'deviceType', title: i18n.t('components.config.profiles.deviceType') },
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false },
-];
+]);
 
 const cardWidth = computed(() => {
 	if (display.lgAndUp.value) {

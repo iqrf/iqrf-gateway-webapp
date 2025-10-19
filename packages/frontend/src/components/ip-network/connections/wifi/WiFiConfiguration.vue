@@ -82,7 +82,7 @@ const configuration = defineModel({
 });
 
 // Add specific security configuration if selected and is not present
-watch(configuration.value, (value: NetworkConnectionConfiguration): void => {
+watch(configuration, (value: NetworkConnectionConfiguration): void => {
 	if (value.wifi?.security === undefined) {
 		return;
 	}

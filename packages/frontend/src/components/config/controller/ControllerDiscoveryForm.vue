@@ -91,12 +91,14 @@ limitations under the License.
 import { type IqrfGatewayControllerApiDiscoveryConfig } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { Action, IActionBtn, ICard, IModalWindow, INumberInput, ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiNumeric, mdiSignalVariant, mdiWrench } from '@mdi/js';
-import { type PropType, ref , type Ref, watch } from 'vue';
+import { type PropType, ref, type Ref, useTemplateRef, watch } from 'vue';
 import { VForm } from 'vuetify/components';
 
 import { validateForm } from '@/helpers/validateForm';
 
-const emit = defineEmits(['saved']);
+const emit = defineEmits<{
+	saved: [config: IqrfGatewayControllerApiDiscoveryConfig];
+}>();
 const componentProps = defineProps({
 	discoveryConfig: {
 		type: Object as PropType<IqrfGatewayControllerApiDiscoveryConfig>,
@@ -104,7 +106,7 @@ const componentProps = defineProps({
 	},
 });
 const show: Ref<boolean> = ref(false);
-const form: Ref<VForm | null> = ref(null);
+const form: Ref<VForm | null> = useTemplateRef('form');
 const config: Ref<IqrfGatewayControllerApiDiscoveryConfig | null> = ref(null);
 
 watch(show, (newVal: boolean): void => {
@@ -114,7 +116,7 @@ watch(show, (newVal: boolean): void => {
 });
 
 async function onSubmit(): Promise<void> {
-	if (!await validateForm(form.value)) {
+	if (!await validateForm(form.value) || config.value === null) {
 		return;
 	}
 	emit('saved', config.value);

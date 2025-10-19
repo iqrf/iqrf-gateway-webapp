@@ -17,7 +17,6 @@ limitations under the License.
 
 <template>
 	<v-form
-		ref='form'
 		:disabled='[ComponentState.Action, ComponentState.Reloading].includes(componentState)'
 		@submit.prevent='setTime()'
 	>
@@ -152,7 +151,7 @@ import {
 } from '@iqrf/iqrf-vue-ui';
 import { mdiMapClock } from '@mdi/js';
 import { DateTime } from 'luxon';
-import { onMounted, ref, type Ref, toRaw } from 'vue';
+import { computed, onMounted, ref, type Ref, toRaw } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
@@ -174,10 +173,10 @@ const timeSet: Ref<TimeSet> = ref({
 	ntpServers: [],
 });
 const datetime = ref(new Date(0));
-const headers = [
+const headers = computed(() => [
 	{ key: 'server', title: i18n.t('components.config.time.ntpServers.address') },
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end' },
-];
+]);
 
 async function getTime(): Promise<void> {
 	componentState.value = [

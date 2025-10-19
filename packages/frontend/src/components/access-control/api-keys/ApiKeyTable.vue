@@ -87,12 +87,12 @@ const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
 const localeStore = useLocaleStore();
 const service: ApiKeyService = useApiClient().getSecurityServices().getApiKeyService();
-const headers = [
+const headers = computed(() => [
 	{ key: 'id', title: i18n.t('common.columns.id') },
 	{ key: 'description', title: i18n.t('common.columns.description') },
 	{ key: 'expiration', title: i18n.t('components.accessControl.apiKeys.expiration') },
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false },
-];
+]);
 const keys: Ref<ApiKeyInfo[]> = ref([]);
 
 const noDataText = computed(() => {

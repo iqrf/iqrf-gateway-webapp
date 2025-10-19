@@ -14,7 +14,7 @@
 					<tr>
 						<th>{{ $t('components.iqrfnet.network-manager.autonetwork.result.wave') }}</th>
 						<td class='text-end'>
-							{{ result.waves === 0 ? result.wave : `${result.wave }/${ result.waves}` }}
+							{{ result.waves === 0 ? result.wave : `${result.wave}/${result.waves}` }}
 						</td>
 					</tr>
 					<tr>
@@ -77,7 +77,7 @@ defineExpose({
 	stopProgress,
 });
 const emit = defineEmits<{
-	updateDevices: [],
+	updateDevices: [];
 }>();
 const i18n = useI18n();
 const { duration, start, stop, reset } = useDuration();
@@ -93,7 +93,7 @@ const defaultResult = ref({
 	status: i18n.t('components.iqrfnet.network-manager.autonetwork.result.startMessage'),
 	finished: false,
 });
-const result = ref({ ... defaultResult.value });
+const result = ref(structuredClone(defaultResult));
 const timeString = computed(() => {
 	return new Intl.DateTimeFormat('en-GB', {
 		hour: '2-digit',

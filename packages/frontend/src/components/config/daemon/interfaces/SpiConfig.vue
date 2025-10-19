@@ -194,7 +194,7 @@ limitations under the License.
 								/>
 							</v-menu>
 							<v-menu
-								v-model='showIntefaceMenu'
+								v-model='showInterfaceMenu'
 								location='top center'
 								transition='slide-y-transition'
 								:close-on-content-click='false'
@@ -250,7 +250,7 @@ import {
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiSerialPort, mdiTuneVariant } from '@mdi/js';
-import { onMounted, ref, type Ref } from 'vue';
+import { onMounted, ref, type Ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { useDisplay } from 'vuetify';
@@ -264,12 +264,14 @@ import { useApiClient } from '@/services/ApiClient';
 const i18n = useI18n();
 const display = useDisplay();
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
-const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
-const form: Ref<VForm | null> = ref(null);
+const service: IqrfGatewayDaemonService = useApiClient()
+	.getConfigServices()
+	.getIqrfGatewayDaemonService();
+const form: Ref<VForm | null> = useTemplateRef('form');
 const config: Ref<IqrfGatewayDaemonSpi | null> = ref(null);
 let instance = '';
 const interfacePins: Ref<boolean> = ref(false);
-const showIntefaceMenu: Ref<boolean> = ref(false);
+const showInterfaceMenu: Ref<boolean> = ref(false);
 const showProfileMenu: Ref<boolean> = ref(false);
 
 async function getConfig(): Promise<void> {
@@ -351,7 +353,7 @@ function applyInterface(iface: string): void {
 		return;
 	}
 	config.value.IqrfInterface = iface;
-	showIntefaceMenu.value = false;
+	showInterfaceMenu.value = false;
 }
 
 onMounted(() => {

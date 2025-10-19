@@ -15,6 +15,7 @@
 		/>
 	</div>
 </template>
+
 <script setup lang='ts'>
 import { Action, IActionBtn } from '@iqrf/iqrf-vue-ui';
 import { storeToRefs } from 'pinia';

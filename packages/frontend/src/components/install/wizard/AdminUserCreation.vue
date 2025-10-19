@@ -79,7 +79,7 @@ limitations under the License.
 				:label='$t("components.common.fields.passwordConfirm")'
 				:rules='[
 					(v: string|null) => ValidationRules.required(v, $t("components.common.validations.passwordConfirm.required")),
-					(v: string) => v.length !== 0 && v === user.password || $t("components.common.validations.passwordConfirm.match"),
+					(v: string) => v.length > 0 && v === user.password || $t("components.common.validations.passwordConfirm.match"),
 				]'
 				required
 				:prepend-inner-icon='mdiKey'
@@ -118,7 +118,7 @@ import {
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiAccount, mdiAccountPlus, mdiEmail, mdiHelpCircleOutline, mdiKey } from '@mdi/js';
-import { ref, type Ref } from 'vue';
+import { ref, type Ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -150,7 +150,7 @@ const user: Ref<UserCreate> = ref({
 });
 const passwordConfirmation: Ref<string> = ref('');
 const expiration = ref(UserSessionExpiration.Default);
-const form: Ref<VForm | null> = ref(null);
+const form: Ref<VForm | null> = useTemplateRef('form');
 const formValidity: Ref<boolean | null> = ref(null);
 const i18n = useI18n();
 
@@ -168,12 +168,12 @@ async function onSubmit(onClickNext: Function): Promise<void> {
 		baseUrl: urlBuilder.getBaseUrl(),
 	};
 	try {
-		const response: EmailSentResponse =
-			await useApiClient().getSecurityServices().getUserService().create(user.value);
+		const response: EmailSentResponse = await useApiClient()
+			.getSecurityServices()
+			.getUserService()
+			.create(user.value);
 		if (response.emailSent) {
-			toast.success(
-				i18n.t('user.messages.verificationSent'),
-			);
+			toast.success(i18n.t('user.messages.verificationSent'));
 		}
 		const credentials: UserCredentials = {
 			username: user.value.username,
@@ -186,7 +186,10 @@ async function onSubmit(onClickNext: Function): Promise<void> {
 		componentState.value = ComponentState.Idle;
 		onClickNext();
 	} catch {
-		toast.error(i18n.t('components.accessControl.users.messages.add.failed', { user: data.username }));
+		toast.error(i18n.t(
+			'components.accessControl.users.messages.add.failed',
+			{ user: data.username },
+		));
 		componentState.value = ComponentState.Idle;
 	}
 }

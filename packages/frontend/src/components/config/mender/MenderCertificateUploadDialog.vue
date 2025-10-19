@@ -97,7 +97,7 @@ import {
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiClipboard, mdiFileOutline } from '@mdi/js';
-import { ref, type Ref } from 'vue';
+import { ref, type Ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -105,12 +105,16 @@ import { VForm } from 'vuetify/components';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
-const emit = defineEmits(['path']);
+const emit = defineEmits<{
+	path: [path: string];
+}>();
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const show: Ref<boolean> = ref(false);
 const i18n = useI18n();
-const form: Ref<VForm | null> = ref(null);
-const service: MenderService = useApiClient().getConfigServices().getMenderService();
+const form: Ref<VForm | null> = useTemplateRef('form');
+const service: MenderService = useApiClient()
+	.getConfigServices()
+	.getMenderService();
 const certificates: Ref<File | null> = ref(null);
 const certPath: Ref<string> = ref('');
 

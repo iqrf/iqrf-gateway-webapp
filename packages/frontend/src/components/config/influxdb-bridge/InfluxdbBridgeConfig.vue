@@ -275,7 +275,7 @@ limitations under the License.
 									:index='index'
 									:topic='item'
 									:disabled='[ComponentState.Action, ComponentState.Reloading].includes(componentState)'
-									@save='(index: number, t: string) => saveTopic(index, t)'
+									@save='(index: number|undefined, t: string) => saveTopic(index, t)'
 								/>
 								<IDataTableAction
 									:action='Action.Delete'
@@ -316,7 +316,7 @@ import {
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiAccount, mdiDatabase, mdiDomain, mdiIdentifier } from '@mdi/js';
-import { onMounted, ref, type Ref } from 'vue';
+import { computed, onMounted, ref, type Ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { useDisplay } from 'vuetify';
@@ -329,13 +329,15 @@ import { useApiClient } from '@/services/ApiClient';
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
 const display = useDisplay();
-const service: IqrfGatewayInfluxdbBridgeService = useApiClient().getConfigServices().getIqrfGatewayInfluxdbBridgeService();
-const form: Ref<VForm | null> = ref(null);
+const service: IqrfGatewayInfluxdbBridgeService = useApiClient()
+	.getConfigServices()
+	.getIqrfGatewayInfluxdbBridgeService();
+const form: Ref<VForm | null> = useTemplateRef('form');
 const config: Ref<BridgeConfig | null> = ref(null);
-const headers = [
+const headers = computed(() => [
 	{ key: 'topic', title: i18n.t('components.config.influxdb-bridge.topics.topic') },
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end' },
-];
+]);
 
 async function getConfig(): Promise<void> {
 	componentState.value = [

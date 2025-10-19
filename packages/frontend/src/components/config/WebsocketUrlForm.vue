@@ -86,10 +86,12 @@ limitations under the License.
 
 <script lang='ts' setup>
 import { Action, IActionBtn, ICard, IModalWindow, INumberInput, ISelectInput, ITextInput, ValidationRules } from '@iqrf/iqrf-vue-ui';
-import { ref, type Ref, watch } from 'vue';
+import { ref, type Ref, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { type VForm } from 'vuetify/components';
 
 import { WebsocketProtocol } from '@/enums/websocket';
+import { validateForm } from '@/helpers/validateForm';
 
 const componentProps = defineProps({
 	cardTitle: {
@@ -102,7 +104,10 @@ const componentProps = defineProps({
 		required: true,
 	},
 });
-const emit = defineEmits(['edited']);
+const emit = defineEmits<{
+	edited: [url: string];
+}>();
+const form: Ref<VForm|null> = useTemplateRef('form');
 const i18n = useI18n();
 const show: Ref<boolean> = ref(false);
 const regexCapture = new RegExp(/(?<protocol>ws|wss):\/\/(?<host>.+):(?<port>\d+)(\/(?<path>.*))?/);
@@ -138,6 +143,9 @@ watch(show, (newVal: boolean): void => {
 });
 
 async function onSubmit(): Promise<void> {
+	if (!await validateForm(form.value)) {
+		return;
+	}
 	const url = `${protocol.value}://${hostname.value}:${port.value}/${path.value}`;
 	emit('edited', url);
 	close();

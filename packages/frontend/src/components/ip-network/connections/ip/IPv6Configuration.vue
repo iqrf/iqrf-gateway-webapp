@@ -162,14 +162,12 @@ const configuration = defineModel({
 	required: true,
 });
 /// No IPv4 DNS servers are specified
-const noIpv4Dns: ComputedRef<boolean> = computed((): boolean =>
-	configuration.value.ipv4.method === IPv4ConfigurationMethod.DISABLED ||
+const noIpv4Dns: ComputedRef<boolean> = computed((): boolean => configuration.value.ipv4.method === IPv4ConfigurationMethod.DISABLED ||
 	(configuration.value.ipv4.method === IPv4ConfigurationMethod.MANUAL &&
 	configuration.value.ipv4.dns.filter((server: DnsServerConfiguration): boolean => {
 		const ipv4Validator: z.ZodIPv4 = z.ipv4();
 		return server.address !== '' && ipv4Validator.safeParse(server.address).success;
-	}).length === 0),
-);
+	}).length === 0));
 
 /**
  * Adds a new IPv6 address object to configuration

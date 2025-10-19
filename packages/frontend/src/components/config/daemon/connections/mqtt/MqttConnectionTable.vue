@@ -117,7 +117,7 @@ import {
 	IDataTableAction,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiInformation } from '@mdi/js';
-import { computed, ref, type Ref, toRaw } from 'vue';
+import { computed, ref, type Ref, toRaw, useTemplateRef } from 'vue';
 import { onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
@@ -130,14 +130,16 @@ import { useApiClient } from '@/services/ApiClient';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
-const headers = [
+const headers = computed(() => [
 	{ key: 'instance', title: i18n.t('components.config.daemon.connections.profile') },
 	{ key: 'BrokerAddr', title: i18n.t('components.config.daemon.connections.mqtt.broker') },
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false },
-];
-const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
+]);
+const service: IqrfGatewayDaemonService = useApiClient()
+	.getConfigServices()
+	.getIqrfGatewayDaemonService();
 const instances: Ref<IqrfGatewayDaemonMqttMessaging[]> = ref([]);
-const addForm: Ref<typeof MqttConnectionForm | null> = ref(null);
+const addForm: Ref<InstanceType<typeof MqttConnectionForm> | null> = useTemplateRef('addForm');
 
 const noDataText = computed(() => {
 	if (componentState.value === ComponentState.FetchFailed) {
@@ -173,7 +175,7 @@ function exportConfig(config: IqrfGatewayDaemonMqttMessaging): void {
 	FileDownloader.downloadFromData(
 		config,
 		'application/json',
-		`${config.component.replace('::','__')}__${config.instance}.json`,
+		`${config.component.replace('::', '__')}__${config.instance}.json`,
 	);
 }
 

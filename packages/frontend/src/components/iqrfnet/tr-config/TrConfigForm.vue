@@ -197,7 +197,7 @@ import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { Action, ComponentState, IActionBtn, ICard, INumberInput, IPasswordInput, ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiAlphabeticalVariant, mdiHexadecimal } from '@mdi/js';
 import { compare } from 'compare-versions';
-import { onBeforeUnmount, ref, type Ref, toRaw } from 'vue';
+import { onBeforeUnmount, ref, type Ref, toRaw, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { useDisplay } from 'vuetify';
@@ -217,8 +217,8 @@ const i18n = useI18n();
 const msgId: Ref<string | null> = ref(null);
 const address: Ref<number> = ref(0);
 const tab: Ref<number> = ref(0);
-const readForm: Ref<VForm | null> = ref(null);
-const writeForm: Ref<VForm | null> = ref(null);
+const readForm: Ref<VForm|null> = useTemplateRef('readForm');
+const writeForm: Ref<VForm|null> = useTemplateRef('writeForm');
 const config: Ref<TrConfiguration & { deviceAddr: number }> = ref({
 	deviceAddr: 0,
 	rfBand: '868', // OS RF

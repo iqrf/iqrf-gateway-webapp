@@ -40,7 +40,7 @@ import {
 	ComponentState,
 	IDeleteModalWindow,
 } from '@iqrf/iqrf-vue-ui';
-import { ref, type Ref } from 'vue';
+import { ref, type Ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
@@ -58,8 +58,10 @@ const componentProps = defineProps({
 		default: false,
 	},
 });
-const emit = defineEmits(['deleted']);
-const dialog: Ref<typeof IDeleteModalWindow | null> = ref(null);
+const emit = defineEmits<{
+	deleted: [];
+}>();
+const dialog: Ref<InstanceType<typeof IDeleteModalWindow> | null> = useTemplateRef('dialog');
 const i18n = useI18n();
 const daemonStore = useDaemonStore();
 const msgId: Ref<string | null> = ref(null);

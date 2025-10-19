@@ -35,6 +35,7 @@
 		</ICard>
 	</IModalWindow>
 </template>
+
 <script setup lang='ts'>
 import { Action, IActionBtn, ICard, IModalWindow } from '@iqrf/iqrf-vue-ui';
 import { computed, ComputedRef, PropType } from 'vue';

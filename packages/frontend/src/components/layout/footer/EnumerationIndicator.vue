@@ -63,12 +63,12 @@ const icon: Ref<string> = computed((): string => {
 /// Message to display in the tooltip
 const message: Ref<string> = computed((): string => {
 	if (!connected.value) {
-		return i18n.t('components.status.monitor.enumeration.unavailable').toString();
+		return i18n.t('components.status.monitor.enumeration.unavailable');
 	}
 	if (active.value) {
-		return i18n.t('components.status.monitor.enumeration.running').toString();
+		return i18n.t('components.status.monitor.enumeration.running');
 	}
-	return i18n.t('components.status.monitor.enumeration.notRunning').toString();
+	return i18n.t('components.status.monitor.enumeration.notRunning');
 });
 
 </script>

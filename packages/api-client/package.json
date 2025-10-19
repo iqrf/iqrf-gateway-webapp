@@ -96,7 +96,7 @@
 		"@vitest/coverage-istanbul": "^3.2.4",
 		"@vitest/spy": "^3.2.4",
 		"axios-mock-adapter": "^2.1.0",
-		"eslint": "^9.37.0",
+		"eslint": "^9.38.0",
 		"ts-node": "^10.9.2",
 		"tsup": "^8.5.0",
 		"typedoc": "^0.28.14",

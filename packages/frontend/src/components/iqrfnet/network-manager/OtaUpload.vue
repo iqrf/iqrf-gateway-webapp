@@ -138,7 +138,7 @@ import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { FileFormat } from '@iqrf/iqrf-gateway-webapp-client/types/Iqrf';
 import { Action, ComponentState, IActionBtn, ICard, INumberInput, ISelectInput, ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiCheck, mdiFileCheckOutline, mdiImport } from '@mdi/js';
-import { onBeforeUnmount, ref, Ref, toRaw } from 'vue';
+import { onBeforeUnmount, ref, Ref, toRaw, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -158,7 +158,7 @@ enum UploadTarget {
 const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const i18n = useI18n();
 const daemonStore = useDaemonStore();
-const form: Ref<VForm | null> = ref(null);
+const form: Ref<VForm | null> = useTemplateRef('form');
 const fileType: Ref<FileFormat> = ref(FileFormat.HEX);
 const fileTypeOptions = [
 	{
@@ -196,7 +196,7 @@ const otaParams: Ref<IqmeshOtaUploadParams> = ref({
 	loadingAction: OtaUploadAction.Upload,
 });
 const results: Ref<OtaUploadResult[]> = ref([]);
-const resultDialog: Ref<typeof OtaUploadResultDialog | null> = ref(null);
+const resultDialog: Ref<InstanceType<typeof OtaUploadResultDialog>|null> = useTemplateRef('resultDialog');
 const msgId: Ref<string | null> = ref(null);
 const checks = ref({
 	upload: false,
@@ -327,7 +327,6 @@ function handleOtaUploadResponse(rsp: DaemonApiResponse): void {
 			case 1_010:
 				message = i18n.t('components.iqrfnet.network-manager.ota-upload.messages.noHwpidMatch');
 				break;
-			case 1_002:
 			default:
 				message = i18n.t('components.iqrfnet.network-manager.ota-upload.messages.generalError', { error: rsp.data.statusStr });
 		}
@@ -341,67 +340,68 @@ function handleOtaUploadResponse(rsp: DaemonApiResponse): void {
 
 function handleUnicastResponse(rsp: DaemonApiResponse): void {
 	const status = rsp.data.status;
-	if (status === 0) {
-		const action = rsp.data.rsp.loadingAction;
-		const address = rsp.data.rsp.deviceAddr;
-		if (action === OtaUploadAction.Upload) {
-			checks.value.upload = true;
-			toast.success(
-				i18n.t(address === 0 ?
-					'components.iqrfnet.network-manager.ota-upload.messages.coordinator.uploadStepSuccess':
-					'components.iqrfnet.network-manager.ota-upload.messages.node.uploadStepSuccess', { address: address },
-				),
-			);
-		} else {
-			handleUnicastVerifyLoadResponse(action, rsp.data.rsp.verifyResult[0]);
-		}
-		return;
-	}
 	const address = rsp.data.rsp.deviceAddr;
-	if (status === -1) {
-		toast.error(
-			i18n.t(address === 0 ?
-				'common.messages.offlineCoordinator':
-				'common.messages.offlineDevice', { address: address },
-			),
-		);
-	} else if (status === 8) {
-		toast.error(
-			i18n.t('common.messages.noDevice', { address: address }),
-		);
-	} else {
-		toast.error(
-			i18n.t('components.iqrfnet.network-manager.ota-upload.messages.genericError'),
-		);
+	const translationParams = { address: address };
+	switch (status) {
+		case 0: {
+			const action = rsp.data.rsp.loadingAction;
+			if (action === OtaUploadAction.Upload) {
+				checks.value.upload = true;
+				toast.success(i18n.t(
+					address === 0
+						? 'components.iqrfnet.network-manager.ota-upload.messages.coordinator.uploadStepSuccess'
+						: 'components.iqrfnet.network-manager.ota-upload.messages.node.uploadStepSuccess',
+					translationParams,
+				));
+			} else {
+				handleUnicastVerifyLoadResponse(action, rsp.data.rsp.verifyResult[0]);
+			}
+			break;
+		}
+		case -1:
+			toast.error(i18n.t(
+				address === 0
+					? 'common.messages.offlineCoordinator'
+					: 'common.messages.offlineDevice',
+				translationParams,
+			));
+			break;
+		case 8:
+			toast.error(i18n.t('common.messages.noDevice', translationParams));
+			break;
+		default:
+			toast.error(i18n.t(
+				'components.iqrfnet.network-manager.ota-upload.messages.genericError',
+			));
 	}
 }
 
 function handleUnicastVerifyLoadResponse(action: OtaUploadAction, data: OtaUploadResult): void {
 	if (data.result) {
+		const translationParams = { address: data.address };
 		if (action === OtaUploadAction.Verify) {
 			checks.value.verify = true;
-			toast.success(
-				i18n.t(data.address === 0 ?
-					'components.iqrfnet.network-manager.ota-upload.messages.coordinator.verifyStepSuccess':
-					'components.iqrfnet.network-manager.ota-upload.messages.node.verifyStepSuccess', { address: data.address },
-				),
-			);
+			toast.success(i18n.t(
+				data.address === 0
+					? 'components.iqrfnet.network-manager.ota-upload.messages.coordinator.verifyStepSuccess'
+					: 'components.iqrfnet.network-manager.ota-upload.messages.node.verifyStepSuccess',
+				translationParams,
+			));
 		} else {
 			checks.value.load = true;
-			toast.success(
-				i18n.t(data.address === 0 ?
-					'components.iqrfnet.network-manager.ota-upload.messages.coordinator.loadStepSuccess':
-					'components.iqrfnet.network-manager.ota-upload.messages.node.loadStepSuccess', { address: data.address },
-				),
-			);
+			toast.success(i18n.t(
+				data.address === 0
+					? 'components.iqrfnet.network-manager.ota-upload.messages.coordinator.loadStepSuccess'
+					: 'components.iqrfnet.network-manager.ota-upload.messages.node.loadStepSuccess',
+				translationParams,
+			));
 		}
 	} else {
-		toast.error(
-			i18n.t(action === OtaUploadAction.Verify ?
-				'components.iqrfnet.network-manager.ota-upload.messages.verifyStepFail' :
-				'components.iqrfnet.network-manager.ota-upload.messages.loadStepFail',
-			),
-		);
+		toast.error(i18n.t(
+			action === OtaUploadAction.Verify
+				? 'components.iqrfnet.network-manager.ota-upload.messages.verifyStepFail'
+				: 'components.iqrfnet.network-manager.ota-upload.messages.loadStepFail',
+		));
 	}
 
 }
@@ -410,9 +410,9 @@ function handleBroadcastResponse(rsp: DaemonApiResponse): void {
 	const action = rsp.data.rsp.loadingAction;
 	if (action === OtaUploadAction.Upload) {
 		checks.value.upload = true;
-		toast.success(
-			i18n.t('components.iqrfnet.network-manager.ota-upload.messages.network.uploadStepSuccess'),
-		);
+		toast.success(i18n.t(
+			'components.iqrfnet.network-manager.ota-upload.messages.network.uploadStepSuccess',
+		));
 	} else {
 		if (action === OtaUploadAction.Verify) {
 			results.value = rsp.data.rsp.verifyResult;

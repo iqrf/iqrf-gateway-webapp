@@ -46,7 +46,7 @@ limitations under the License.
 				<UserRoleColumn :role='item.role' />
 			</template>
 			<template #item.language='{ item }'>
-				<UserLanguageColumn :language='item.language' />
+				<ILanguageFlag :language='item.language' />
 			</template>
 			<template #item.state='{ item }'>
 				<UserStateColumn :state='item.state' />
@@ -77,6 +77,7 @@ import {
 	IActionBtn,
 	ICard,
 	IDataTable,
+	ILanguageFlag,
 } from '@iqrf/iqrf-vue-ui';
 import { computed, onMounted, ref, type Ref, toRaw } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -84,7 +85,6 @@ import { toast } from 'vue3-toastify';
 
 import UserDeleteDialog from '@/components/access-control/users/UserDeleteDialog.vue';
 import UserForm from '@/components/access-control/users/UserForm.vue';
-import UserLanguageColumn from '@/components/access-control/users/UserLanguageColumn.vue';
 import UserRoleColumn from '@/components/access-control/users/UserRoleColumn.vue';
 import UserStateColumn from '@/components/access-control/users/UserStateColumn.vue';
 import { useApiClient } from '@/services/ApiClient';
@@ -92,14 +92,14 @@ import { useApiClient } from '@/services/ApiClient';
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
 const service = useApiClient().getSecurityServices().getUserService();
-const headers = [
+const headers = computed(() => [
 	{ key: 'username', title: i18n.t('components.common.fields.username') },
 	{ key: 'email', title: i18n.t('components.accessControl.users.email') },
 	{ key: 'role', title: i18n.t('components.accessControl.users.role') },
 	{ key: 'language', title: i18n.t('components.accessControl.users.language') },
 	{ key: 'state', title: i18n.t('components.accessControl.users.state') },
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false },
-];
+]);
 const users: Ref<UserInfo[]> = ref([]);
 
 onMounted(() => {

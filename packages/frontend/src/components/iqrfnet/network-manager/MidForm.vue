@@ -100,9 +100,9 @@ limitations under the License.
 <script lang='ts' setup>
 import { AutonetworkMidList } from '@iqrf/iqrf-gateway-daemon-utils/types/iqmesh';
 import { Action, IActionBtn, ICard, IDataTableAction, IModalWindow, INumberInput, ITextInput, ValidationRules } from '@iqrf/iqrf-vue-ui';
-import { computed, ref, Ref, watch } from 'vue';
+import { computed, ref, Ref, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { VForm } from 'vuetify/components';
+import { type VForm } from 'vuetify/components';
 
 import { validateForm } from '@/helpers/validateForm';
 
@@ -120,12 +120,12 @@ const emit = defineEmits<{
 }>();
 const i18n = useI18n();
 const show: Ref<boolean> = ref(false);
-const form: Ref<VForm | null> = ref(null);
+const form: Ref<VForm | null> = useTemplateRef('form');
 const defaultRecord: Ref<AutonetworkMidList> = ref({
 	deviceMID: '',
 	deviceAddr: 1,
 });
-const record: Ref<AutonetworkMidList> = ref({ ...defaultRecord.value });
+const record: Ref<AutonetworkMidList> = ref(structuredClone(defaultRecord));
 const useAddr: Ref<boolean> = ref(false);
 
 const titleText = computed(() => {

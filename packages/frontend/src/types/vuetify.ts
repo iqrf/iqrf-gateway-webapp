@@ -16,6 +16,6 @@
  */
 
 export interface SelectItem {
-	title: string
-	value: string|number|boolean|object|null
+	title: string;
+	value: string|number|boolean|object|null;
 }

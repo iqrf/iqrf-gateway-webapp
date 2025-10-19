@@ -42,7 +42,8 @@ import {
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import {
 	ITextInput,
-	ValidationRules } from '@iqrf/iqrf-vue-ui';
+	ValidationRules,
+} from '@iqrf/iqrf-vue-ui';
 import { mdiTag } from '@mdi/js';
 import { type PropType } from 'vue';
 

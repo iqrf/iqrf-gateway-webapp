@@ -56,7 +56,7 @@ limitations under the License.
 <script lang='ts' setup>
 import { LogService } from '@iqrf/iqrf-gateway-webapp-client/services/Gateway';
 import { ComponentState } from '@iqrf/iqrf-vue-ui';
-import { nextTick, ref, type Ref } from 'vue';
+import { nextTick, ref, type Ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
@@ -68,7 +68,7 @@ const service: LogService = useApiClient().getGatewayServices().getLogService();
 let allowUpdate = false;
 let lastCursor: string | null = null;
 const log: Ref<string | null> = ref(null);
-const journal: Ref<HTMLElement | null> = ref(null);
+const journal: Ref<HTMLElement | null> = useTemplateRef('journal');
 let lastScrollHeight = 0;
 let lastScrollPos = 0;
 let oldestRecords = false;

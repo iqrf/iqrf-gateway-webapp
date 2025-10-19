@@ -62,6 +62,7 @@ export const useApiClient = (): Client => {
 			}
 			// Handle other HTTP errors
 			throw error;
-		});
+		},
+	);
 	return client;
 };

@@ -29,6 +29,7 @@ limitations under the License.
 		:prepend-inner-icon='mdiExpansionCardVariant'
 	/>
 </template>
+
 <script setup lang='ts'>
 import {
 	Modem,

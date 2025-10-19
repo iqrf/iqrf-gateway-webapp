@@ -202,7 +202,7 @@ limitations under the License.
 								/>
 							</v-menu>
 							<v-menu
-								v-model='showIntefaceMenu'
+								v-model='showInterfaceMenu'
 								location='top center'
 								transition='slide-y-transition'
 								:close-on-content-click='false'
@@ -259,7 +259,7 @@ import {
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiSerialPort, mdiTextShort, mdiTuneVariant } from '@mdi/js';
-import { computed, onMounted, ref, type Ref } from 'vue';
+import { computed, onMounted, ref, type Ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { useDisplay } from 'vuetify';
@@ -274,11 +274,11 @@ const i18n = useI18n();
 const display = useDisplay();
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
-const form: Ref<VForm | null> = ref(null);
+const form: Ref<VForm | null> = useTemplateRef('form');
 const config: Ref<IqrfGatewayDaemonUart | null> = ref(null);
 let instance = '';
 const interfacePins: Ref<boolean> = ref(false);
-const showIntefaceMenu: Ref<boolean> = ref(false);
+const showInterfaceMenu: Ref<boolean> = ref(false);
 const showProfileMenu: Ref<boolean> = ref(false);
 const baudRateOptions = computed(() => {
 	const items: number[] = [1_200, 2_400, 4_800, 9_600, 19_200, 38_400, 57_600, 115_200, 230_400];
@@ -369,7 +369,7 @@ function applyInterface(iface: string): void {
 		return;
 	}
 	config.value.IqrfInterface = iface;
-	showIntefaceMenu.value = false;
+	showInterfaceMenu.value = false;
 }
 
 onMounted(() => {

@@ -73,7 +73,7 @@ limitations under the License.
 				:label='$t("components.account.password.confirmation")'
 				:rules='[
 					(v: string|null) => ValidationRules.required(v, $t("components.account.password.validation.confirmation.required")),
-					(v: string) => v.length !== 0 && v === passwordChange.new || $t("common.validation.passwordConfirm.match"),
+					(v: string) => v.length > 0 && v === passwordChange.new || $t("common.validation.passwordConfirm.match"),
 				]'
 				required
 				:prepend-inner-icon='mdiKey'
@@ -102,7 +102,7 @@ import {
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiHelpCircleOutline, mdiKey } from '@mdi/js';
-import { ref, type Ref } from 'vue';
+import { ref, type Ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
@@ -115,7 +115,7 @@ import { useUserStore } from '@/store/user';
 /// Component state
 const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
 /// Form reference
-const form: Ref<VForm | null> = ref(null);
+const form: Ref<VForm | null> = useTemplateRef('form');
 /// User store
 const userStore = useUserStore();
 /// Internationalization instance

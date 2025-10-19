@@ -78,7 +78,7 @@ import {
 } from '@iqrf/iqrf-vue-ui';
 import { mdiContentSave, mdiFileOutline, mdiUndoVariant, mdiUpload } from '@mdi/js';
 import { AxiosError } from 'axios';
-import { ref, type Ref } from 'vue';
+import { ref, type Ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -96,7 +96,7 @@ enum MenderActions {
 const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
 const i18n = useI18n();
 const service: MenderService = useApiClient().getMaintenanceServices().getMenderService();
-const form: Ref<VForm | null> = ref(null);
+const form: Ref<VForm|null> = useTemplateRef('form');
 const artifacts: Ref<File[]> = ref([]);
 const log: Ref<string|null> = ref(null);
 const menderAction: Ref<number | null> = ref(null);
@@ -178,7 +178,7 @@ function updateLog(data: string|null): void {
 	if (log.value === null) {
 		log.value = data;
 	} else {
-		log.value += `\n${ data}`;
+		log.value += `\n${data}`;
 	}
 }
 

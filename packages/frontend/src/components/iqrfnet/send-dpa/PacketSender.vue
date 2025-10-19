@@ -468,7 +468,7 @@ import {
 } from '@mdi/js';
 import { DateTime } from 'luxon';
 import { vMaska } from 'maska/vue';
-import { ref, type Ref } from 'vue';
+import { ref, type Ref, useTemplateRef } from 'vue';
 import { useDisplay } from 'vuetify';
 import { VForm } from 'vuetify/components';
 
@@ -482,7 +482,7 @@ import { type DpaPacketTransaction } from '@/types/Iqrfnet';
 const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const daemonStore = useDaemonStore();
 const display = useDisplay();
-const form: Ref<VForm | null> = ref(null);
+const form: Ref<VForm|null> = useTemplateRef('form');
 const msgId: Ref<string | null> = ref(null);
 const messages: Ref<DpaPacketTransaction[]> = ref([]);
 const hwpidMenu: Ref<boolean> = ref(false);

@@ -41,7 +41,7 @@ router.beforeEach((to: RouteLocationNormalized, _from: RouteLocationNormalized, 
 		}
 		next({ name: 'SignIn', query: query }); return;
 	}
-	if(to.name === 'SignIn' && userStore.isLoggedIn) {
+	if (to.name === 'SignIn' && userStore.isLoggedIn) {
 		next((to.query.redirect as string|undefined) ?? '/'); return;
 	}
 	next();

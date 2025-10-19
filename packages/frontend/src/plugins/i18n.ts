@@ -28,23 +28,22 @@ import {
 import csWebapp from '@/locales/cs.json';
 import enWebapp from '@/locales/en.json';
 
-const cs = {
-	'$vuetify': csVuetify,
-	...csIqrf,
-	...csWebapp,
-};
-
-const en = {
-	'$vuetify': enVuetify,
-	...enIqrf,
-	...enWebapp,
-};
-
-type MessageSchema = typeof en;
-
 export type Locales = 'en' | 'cs';
 
-export default createI18n<MessageSchema, Locales>({
+const messages = {
+	cs: {
+		'$vuetify': csVuetify,
+		...csIqrf,
+		...csWebapp,
+	},
+	en: {
+		'$vuetify': enVuetify,
+		...enIqrf,
+		...enWebapp,
+	},
+};
+
+export default createI18n({
 	datetimeFormats: {
 		cs: {
 			short: {
@@ -53,6 +52,10 @@ export default createI18n<MessageSchema, Locales>({
 			long: {
 				year: 'numeric', month: 'short', day: 'numeric',
 				weekday: 'short', hour: 'numeric', minute: 'numeric', second: 'numeric',
+			},
+			dateTime: {
+				year: 'numeric', month: 'short', day: 'numeric',
+				hour: 'numeric', minute: 'numeric', second: 'numeric',
 			},
 			time: {
 				hour: 'numeric', minute: 'numeric', second: 'numeric',
@@ -65,6 +68,10 @@ export default createI18n<MessageSchema, Locales>({
 			long: {
 				year: 'numeric', month: 'short', day: 'numeric',
 				weekday: 'short', hour: 'numeric', minute: 'numeric', second: 'numeric',
+			},
+			dateTime: {
+				year: 'numeric', month: 'short', day: 'numeric',
+				hour: 'numeric', minute: 'numeric', second: 'numeric',
 			},
 			time: {
 				hour: 'numeric', minute: 'numeric', second: 'numeric',
@@ -90,8 +97,5 @@ export default createI18n<MessageSchema, Locales>({
 	locale: import.meta.env.VITE_I18N_LOCALE as Locales,
 	fallbackLocale: import.meta.env.VITE_I18N_FALLBACK_LOCALE as Locales,
 	legacy: false,
-	messages: {
-		cs: cs,
-		en: en,
-	},
+	messages: messages,
 });

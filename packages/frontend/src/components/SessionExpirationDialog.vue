@@ -30,7 +30,7 @@ limitations under the License.
 					color='warning'
 					container-type='card'
 					:icon='mdiRefresh'
-					:text='`${$t("components.status.sessionExpiration.renew") } (${ countdown })`'
+					:text='`${$t("components.status.sessionExpiration.renew")} (${countdown})`'
 					@click='renewSession'
 				/>
 				<v-spacer />
@@ -120,7 +120,7 @@ async function renewSession(): Promise<void> {
 		await setup();
 	} catch (error) {
 		console.error(error);
-		toast.error(i18n.t('components.status.sessionExpiration.failed').toString());
+		toast.error(i18n.t('components.status.sessionExpiration.failed'));
 	}
 }
 

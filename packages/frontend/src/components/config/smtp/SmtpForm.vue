@@ -167,7 +167,7 @@ import {
 	mdiNumeric,
 	mdiServer,
 } from '@mdi/js';
-import { computed, ComputedRef, onMounted, ref, type Ref } from 'vue';
+import { computed, ComputedRef, onMounted, ref, type Ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
@@ -183,7 +183,7 @@ enum SmtpAction {
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
-const form: Ref<VForm | null> = ref(null);
+const form: Ref<VForm | null> = useTemplateRef('form');
 const configuration: Ref<MailerConfig> = ref({
 	enabled: false,
 	host: '',

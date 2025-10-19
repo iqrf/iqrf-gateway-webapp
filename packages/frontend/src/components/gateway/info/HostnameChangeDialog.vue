@@ -82,7 +82,7 @@ import {
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { Action, ComponentState, IActionBtn, ICard, IModalWindow, ITextInput, ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiPencil, mdiTextShort } from '@mdi/js';
-import { type PropType, ref, type Ref, watchEffect } from 'vue';
+import { type PropType, ref, type Ref, useTemplateRef, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -91,7 +91,9 @@ import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
-const emit = defineEmits(['saved']);
+const emit = defineEmits<{
+	saved: [];
+}>();
 const componentProps = defineProps({
 	currentHostname: {
 		type: [String, null] as PropType<string | null>,
@@ -104,10 +106,14 @@ const componentProps = defineProps({
 	},
 });
 const i18n = useI18n();
-const hostnameService: HostnameService = useApiClient().getGatewayServices().getHostnameService();
-const daemonConfigurationService: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
+const hostnameService: HostnameService = useApiClient()
+	.getGatewayServices()
+	.getHostnameService();
+const daemonConfigurationService: IqrfGatewayDaemonService = useApiClient()
+	.getConfigServices()
+	.getIqrfGatewayDaemonService();
 const show: Ref<boolean> = ref(false);
-const form: Ref<VForm | null> = ref(null);
+const form: Ref<VForm | null> = useTemplateRef('form');
 const hostname: Ref<string> = ref('');
 const setIdeHostname: Ref<boolean> = ref(false);
 const ideComponentComponent = IqrfGatewayDaemonComponentName.IqrfIdeCounterpart;
@@ -152,9 +158,9 @@ async function updateIdeCounterpartConfig(): Promise<void> {
 	if (!setIdeHostname.value) {
 		return;
 	}
-	const instance: IqrfGatewayDaemonIdeCounterpart|null = await daemonConfigurationService.getComponent(ideComponentComponent)
-		.then((response: IqrfGatewayDaemonComponent<IqrfGatewayDaemonComponentName.IqrfIdeCounterpart>): IqrfGatewayDaemonIdeCounterpart|null =>
-			response.instances[0] ?? null);
+	const response: IqrfGatewayDaemonComponent<IqrfGatewayDaemonComponentName.IqrfIdeCounterpart> =
+		await daemonConfigurationService.getComponent(ideComponentComponent);
+	const instance: IqrfGatewayDaemonIdeCounterpart|null = response.instances[0] ?? null;
 	if (instance === null) {
 		return;
 	}

@@ -38,7 +38,7 @@ import {
 	ComponentState,
 	IDeleteModalWindow,
 } from '@iqrf/iqrf-vue-ui';
-import { type PropType, ref , type Ref } from 'vue';
+import { type PropType, ref, type Ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
@@ -57,26 +57,31 @@ const componentProps = defineProps({
 		default: false,
 	},
 });
-const emit = defineEmits(['deleted']);
+const emit = defineEmits<{
+	deleted: [];
+}>();
 const i18n = useI18n();
-const dialog: Ref<typeof IDeleteModalWindow | null> = ref(null);
-const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
+const dialog: Ref<InstanceType<typeof IDeleteModalWindow> | null> = useTemplateRef('dialog');
+const service: IqrfGatewayDaemonService = useApiClient()
+	.getConfigServices()
+	.getIqrfGatewayDaemonService();
 
 async function onSubmit(): Promise<void> {
 	if (componentProps.profile.id === undefined) {
 		return;
 	}
 	componentState.value = ComponentState.Action;
+	const translationParams = { name: componentProps.profile.name };
 	try {
 		await service.deleteMapping(componentProps.profile.id);
 		toast.success(
-			i18n.t('components.config.profiles.messages.delete.success', { name: componentProps.profile.name }),
+			i18n.t('components.config.profiles.messages.delete.success', translationParams),
 		);
 		close();
 		emit('deleted');
 	} catch {
 		toast.error(
-			i18n.t('components.config.profiles.messages.delete.failed', { name: componentProps.profile.name }),
+			i18n.t('components.config.profiles.messages.delete.failed', translationParams),
 		);
 	}
 	componentState.value = ComponentState.Idle;

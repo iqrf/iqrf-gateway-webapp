@@ -44,5 +44,5 @@ export interface DisambiguationLink {
 	/// Link target
 	target?: LinkTarget;
 	/// Development build only
-	developmentOnly?: boolean
+	developmentOnly?: boolean;
 }

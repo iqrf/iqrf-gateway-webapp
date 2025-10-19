@@ -90,14 +90,14 @@ const i18n = useI18n();
 const localeStore = useLocaleStore();
 const service: PowerService = useApiClient().getGatewayServices().getPowerService();
 
-const headers = [
+const headers = computed(() => [
 	{ key: 'id', title: i18n.t('common.columns.id') },
 	{ key: 'start', title: i18n.t('components.gateway.power.stats.table.start') },
 	{ key: 'shutdown', title: i18n.t('components.gateway.power.stats.table.shutdown') },
 	{ key: 'graceful', title: i18n.t('components.gateway.power.stats.table.graceful') },
 	{ key: 'running', title: i18n.t('components.gateway.power.stats.table.uptime') },
 	{ key: 'downtime', title: i18n.t('components.gateway.power.stats.table.downtime') },
-];
+]);
 /// Component state
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 /// Gateway uptime statistics
@@ -123,7 +123,7 @@ async function getStats() {
 		componentState.value = ComponentState.Ready;
 	} catch {
 		toast.error(
-			i18n.t('components.gateway.power.stats.messages.list.failed').toString(),
+			i18n.t('components.gateway.power.stats.messages.list.failed'),
 		);
 		componentState.value = componentState.value === ComponentState.Loading ? ComponentState.FetchFailed : ComponentState.Ready;
 	}

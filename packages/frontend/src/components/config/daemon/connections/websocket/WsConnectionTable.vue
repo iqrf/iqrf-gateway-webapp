@@ -29,7 +29,7 @@ limitations under the License.
 			/>
 			<WsConnectionImportDialog
 				:disabled='componentState === ComponentState.Reloading'
-				@import='(m: IqrfGatewayDaemonWsMessaging, s: ShapeWebsocketService) => importFromConfig(m, s)'
+				@import='(m: IqrfGatewayDaemonWsMessaging, s: ShapeWebsocketService): void => importFromConfig(m, s)'
 			/>
 			<IActionBtn
 				:action='Action.Reload'
@@ -101,7 +101,7 @@ import {
 	IDataTable,
 	IDataTableAction,
 } from '@iqrf/iqrf-vue-ui';
-import { ref, type Ref, toRaw } from 'vue';
+import { computed, ref, type Ref, toRaw, useTemplateRef } from 'vue';
 import { onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
@@ -114,17 +114,19 @@ import { useApiClient } from '@/services/ApiClient';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
-const headers = [
+const headers = computed(() => [
 	{ key: 'instance', title: i18n.t('components.config.daemon.connections.profile') },
 	{ key: 'port', title: i18n.t('common.labels.port') },
 	{ key: 'acceptAsyncMsg', title: i18n.t('components.config.daemon.connections.acceptAsyncMessages') },
 	{ key: 'acceptOnlyLocalhost', title: i18n.t('components.config.daemon.connections.acceptOnlyLocalhost') },
 	{ key: 'tlsEnabled', title: i18n.t('components.config.daemon.connections.tls') },
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false },
-];
-const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
+]);
+const service: IqrfGatewayDaemonService = useApiClient()
+	.getConfigServices()
+	.getIqrfGatewayDaemonService();
 const ifaces: Ref<IqrfGatewayDaemonWebsocketInterface[]> = ref([]);
-const form: Ref<typeof WsConnectionForm | null> = ref(null);
+const form: Ref<InstanceType<typeof WsConnectionForm>|null> = useTemplateRef('form');
 
 async function getConfigs(): Promise<void> {
 	componentState.value = [
@@ -177,7 +179,7 @@ function exportConfig(config: IqrfGatewayDaemonWebsocketInterface): void {
 	FileDownloader.downloadFromData(
 		config,
 		'application/json',
-		`${config.messaging.component.replace('::','__')}__${config.messaging.instance}.json`,
+		`${config.messaging.component.replace('::', '__')}__${config.messaging.instance}.json`,
 	);
 }
 

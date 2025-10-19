@@ -38,8 +38,6 @@ const configuration = defineModel({
 	required: true,
 });
 /// Are both IP stacks disabled?
-const bothIpStacksDisabled: ComputedRef<boolean> = computed(() =>
-	configuration.value.ipv4.method === IPv4ConfigurationMethod.DISABLED &&
-	configuration.value.ipv6.method === IPv6ConfigurationMethod.DISABLED,
-);
+const bothIpStacksDisabled: ComputedRef<boolean> = computed(() => configuration.value.ipv4.method === IPv4ConfigurationMethod.DISABLED &&
+	configuration.value.ipv6.method === IPv6ConfigurationMethod.DISABLED);
 </script>

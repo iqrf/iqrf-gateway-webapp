@@ -137,7 +137,7 @@ import {
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiAccount, mdiKey, mdiServerNetwork } from '@mdi/js';
-import { onMounted, ref, type Ref } from 'vue';
+import { computed, onMounted, ref, type Ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
@@ -149,12 +149,12 @@ import { useApiClient } from '@/services/ApiClient';
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
 const service: MonitService = useApiClient().getConfigServices().getMonitService();
-const form: Ref<VForm | null> = ref(null);
+const form: Ref<VForm | null> = useTemplateRef('form');
 const config: Ref<MonitConfig | null> = ref(null);
-const headers = [
+const headers = computed(() => [
 	{ key: 'name', title: i18n.t('components.config.monit.checks.name') },
 	{ key: 'enabled', title: i18n.t('common.states.enabled'), align: 'end' },
-];
+]);
 
 function mmonitServerValidation(value: string, error: string): boolean|string {
 	const validator: z.ZodURL = z.url();

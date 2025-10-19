@@ -71,7 +71,7 @@ function setHeadOptions(newLocale: Language): void {
 		},
 		titleTemplate: '%s %separator %siteName',
 		templateParams: {
-			siteName: i18n.t('title').toString(),
+			siteName: i18n.t('title'),
 			separator: '|',
 		},
 	});

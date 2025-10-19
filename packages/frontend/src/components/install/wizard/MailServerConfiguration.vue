@@ -161,7 +161,7 @@ import {
 	mdiServer,
 } from '@mdi/js';
 import { storeToRefs } from 'pinia';
-import { onBeforeMount, ref, type Ref, watch } from 'vue';
+import { onBeforeMount, ref, type Ref, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
@@ -203,7 +203,7 @@ const configuration: Ref<MailerConfig> = ref({
 	theme: MailerTheme.Generic,
 });
 const customConfig: Ref<boolean> = ref(true);
-const form: Ref<VForm | null> = ref(null);
+const form: Ref<VForm | null> = useTemplateRef('form');
 const formValidity: Ref<boolean | null> = ref(null);
 const i18n = useI18n();
 let service: MailerService = useApiClient().getConfigServices().getMailerService();

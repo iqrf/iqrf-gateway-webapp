@@ -66,7 +66,7 @@ import { useDaemonStore } from '@/store/daemonSocket';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const emit = defineEmits<{
-  updateDevices: []
+  updateDevices: [];
 }>();
 const componentProps = defineProps({
 	address: {
@@ -129,13 +129,14 @@ async function unbond(): Promise<void> {
 }
 
 function handleUnbond(rsp: DaemonApiResponse): void {
+	const translationParams = { address: componentProps.address };
 	if (rsp.data.status === 0) {
 		toast.success(
 			i18n.t(
 				componentProps.coordinatorOnly ?
 					'components.iqrfnet.network-manager.bonding.messages.unbond.successCoordinator' :
 					'components.iqrfnet.network-manager.bonding.messages.unbond.success',
-				{ address: componentProps.address },
+				translationParams,
 			),
 		);
 		emit('updateDevices');
@@ -145,23 +146,23 @@ function handleUnbond(rsp: DaemonApiResponse): void {
 	let message = '';
 	switch (rsp.data.status) {
 		case -1:
-			message = i18n.t('common.messages.offlineDevice', { address: componentProps.address });
+			message = i18n.t('common.messages.offlineDevice', translationParams);
 			break;
 		case 1:
 			if (componentProps.coordinatorOnly) {
-				message = i18n.t('common.messages.noDevice', { address: componentProps.address });
+				message = i18n.t('common.messages.noDevice', translationParams);
 				break;
 			}
 		// eslint-disable-next-line no-fallthrough
 		case 8:
-			message = i18n.t('common.messages.noDevice', { address: componentProps.address });
+			message = i18n.t('common.messages.noDevice', translationParams);
 			break;
 		default:
 			message = i18n.t(
 				componentProps.coordinatorOnly ?
 					'components.iqrfnet.network-manager.bonding.messages.unbond.failedCoordinator' :
 					'components.iqrfnet.network-manager.bonding.messages.unbond.failed',
-				{ address: componentProps.address },
+				translationParams,
 			);
 	}
 	toast.error(message);

@@ -106,7 +106,7 @@ import {
 } from '@iqrf/iqrf-vue-ui';
 import { mdiTextShort } from '@mdi/js';
 import { DateTime } from 'luxon';
-import { computed, type PropType, ref, type Ref, toRaw, watch } from 'vue';
+import { computed, type PropType, ref, type Ref, toRaw, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -116,7 +116,9 @@ import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
-const emit = defineEmits(['refresh']);
+const emit = defineEmits<{
+	refresh: [];
+}>();
 const componentProps = defineProps({
 	action: {
 		type: String as PropType<Action>,
@@ -139,8 +141,10 @@ const componentProps = defineProps({
 });
 const i18n = useI18n();
 const show: Ref<boolean> = ref(false);
-const service: ApiKeyService = useApiClient().getSecurityServices().getApiKeyService();
-const form: Ref<VForm | null> = ref(null);
+const service: ApiKeyService = useApiClient()
+	.getSecurityServices()
+	.getApiKeyService();
+const form: Ref<VForm|null> = useTemplateRef('form');
 const defaultKey: ApiKeyConfig = {
 	description: '',
 	expiration: null,
@@ -148,14 +152,14 @@ const defaultKey: ApiKeyConfig = {
 const expiration: Ref<DateTime | null> = ref(null);
 const key: Ref<ApiKeyInfo> = ref(defaultKey);
 const generatedKey: Ref<string | null> = ref(null);
-const displayDialog: Ref<typeof ApiKeyDisplayDialog | null> = ref(null);
+const displayDialog: Ref<InstanceType<typeof ApiKeyDisplayDialog>|null> = useTemplateRef('displayDialog');
 const minDate: Ref<DateTime | null> = ref(null);
 
 const dialogTitle = computed(() => {
 	if (componentProps.action === Action.Add) {
-		return i18n.t('components.accessControl.apiKeys.actions.add').toString();
+		return i18n.t('components.accessControl.apiKeys.actions.add');
 	}
-	return i18n.t('components.accessControl.apiKeys.actions.edit').toString();
+	return i18n.t('components.accessControl.apiKeys.actions.edit');
 });
 
 watch(show, (newVal: boolean): void => {

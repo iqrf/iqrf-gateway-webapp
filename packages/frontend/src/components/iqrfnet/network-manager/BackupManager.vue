@@ -57,10 +57,10 @@ import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { Action, ComponentState, IActionBtn, ICard, INumberInput, ISelectInput, ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiExport } from '@mdi/js';
 import saveAs from 'file-saver';
-import { onBeforeUnmount, onMounted, ref, Ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, type Ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
-import { VForm } from 'vuetify/components';
+import { type VForm } from 'vuetify/components';
 
 import BackupLog from '@/components/iqrfnet/network-manager/BackupLog.vue';
 import { validateForm } from '@/helpers/validateForm';
@@ -85,10 +85,10 @@ const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const i18n = useI18n();
 const daemonStore = useDaemonStore();
 const msgId: Ref<string | null> = ref(null);
-const form: Ref<VForm | null> = ref(null);
-const backupLog: Ref<typeof BackupLog | null> = ref(null);
+const form: Ref<VForm | null> = useTemplateRef('form');
+const backupLog: Ref<InstanceType<typeof BackupLog> | null> = useTemplateRef('backupLog');
 const targetType: Ref<TargetType> = ref(TargetType.COORDINATOR);
-const targetTypeOptions = [
+const targetTypeOptions = computed(() => [
 	{
 		title: i18n.t('components.iqrfnet.common.peripherals.coordinator'),
 		value: TargetType.COORDINATOR,
@@ -101,7 +101,7 @@ const targetTypeOptions = [
 		title: i18n.t('components.iqrfnet.network-manager.backup.targets.network'),
 		value: TargetType.NETWORK,
 	},
-];
+]);
 const address: Ref<number> = ref(1);
 const deviceData: Ref<BackupData[]> = ref([]);
 const failedDevices: Ref<number[]> = ref([]);
@@ -275,7 +275,11 @@ function generateAndDownloadBackupFile(): void {
 		);
 		return;
 	}
-	let fileContent = `[Backup]\nCreated=${new Date().toLocaleString('en-GB').replaceAll('/', '.').replaceAll(',', '')} IQRF GW Webapp: ${ webappVersion.value }\n\n`;
+	const created = new Date()
+		.toLocaleString('en-GB')
+		.replaceAll('/', '.')
+		.replaceAll(',', '');
+	let fileContent = `[Backup]\nCreated=${created} IQRF GW Webapp: ${webappVersion.value}\n\n`;
 	let fileName: string;
 	if (targetType.value === TargetType.COORDINATOR) {
 		fileName = 'Coordinator_';
@@ -287,22 +291,26 @@ function generateAndDownloadBackupFile(): void {
 		fileName = 'Network_';
 		fileContent += networkBackup();
 	}
-	fileName += `${deviceData.value[0].mid!.toString(16).toUpperCase()}_${new Date().toISOString().slice(2, 10).replaceAll('-', '')}.iqrfbkp`;
+	const timeStamp = new Date()
+		.toISOString()
+		.slice(2, 10)
+		.replaceAll('-', '');
+	fileName += `${deviceData.value[0].mid!.toString(16).toUpperCase()}_${timeStamp}.iqrfbkp`;
 	const blob = new Blob([fileContent], { type: 'text/plain;charset=utf-8' });
 	saveAs(blob, fileName);
 }
 
 function coordinatorBackup(): string {
 	const device = deviceData.value[0];
-	let message = `[${device.mid!.toString(16).toUpperCase() }]\n`;
-	message += `Device=Coordinator\nVersion=${ getDpaVersion(device.dpaVer!)}\n`;
+	let message = `[${device.mid!.toString(16).toUpperCase()}]\n`;
+	message += `Device=Coordinator\nVersion=${getDpaVersion(device.dpaVer!)}\n`;
 	message += `DataC=${device.data!.toUpperCase()}\nAddress=${device.deviceAddr}\n`;
 	return message;
 }
 
 function nodeBackup(index: number): string {
 	const device = deviceData.value[index];
-	let message = `[${ device.mid!.toString(16).toUpperCase() }]\n`;
+	let message = `[${device.mid!.toString(16).toUpperCase()}]\n`;
 	message += `Device=Node\nVersion=${getDpaVersion(device.dpaVer!)}\n`;
 	message += `DataN=${device.data!.toUpperCase()}\nAddress=${device.deviceAddr}\n`;
 	return message;
@@ -319,7 +327,7 @@ function networkBackup(): string {
 function getDpaVersion(version: number): string {
 	const major = version >> 8;
 	const minor = version & 0xFF;
-	return `${major.toString() }.${ minor.toString(16).padStart(2, '0')}`;
+	return `${major.toString()}.${minor.toString(16).padStart(2, '0')}`;
 }
 
 onMounted(() => {

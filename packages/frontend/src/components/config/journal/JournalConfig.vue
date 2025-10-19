@@ -53,11 +53,8 @@ limitations under the License.
 							:label='$t("components.config.journal.forwardToSyslog")'
 							hide-details
 						/>
-						<ISelectInput
+						<JournalStorageInput
 							v-model='config.persistence'
-							:label='$t("components.config.journal.storage")'
-							:items='storageOptions'
-							:prepend-inner-icon='mdiMemory'
 						/>
 						<INumberInput
 							v-model='config.maxDiskSize'
@@ -110,11 +107,8 @@ limitations under the License.
 							:hide-details='!timeRotation'
 						/>
 						<div v-if='timeRotation'>
-							<ISelectInput
+							<JournalTimeUnitInput
 								v-model='config.timeRotation.unit'
-								:label='$t("components.config.journal.timeUnit")'
-								:items='unitOptions'
-								:prepend-inner-icon='mdiClockTimeFour'
 							/>
 							<INumberInput
 								v-model='config.timeRotation.count'
@@ -146,79 +140,43 @@ limitations under the License.
 
 <script lang='ts' setup>
 import { type JournalService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
-import { type JournalConfig, JournalPersistence, JournalTimeUnit } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import { type JournalConfig, JournalTimeUnit } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import {
 	Action,
 	ComponentState,
 	IActionBtn,
 	ICard,
 	INumberInput,
-	ISelectInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import {
-	mdiClockTimeFour,
 	mdiFileMultiple,
 	mdiFilePercent,
 	mdiFileSettings,
-	mdiMemory,
 	mdiNumeric1Box,
 } from '@mdi/js';
-import { onMounted, ref, type Ref } from 'vue';
+import { onMounted, ref, type Ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
+import JournalStorageInput
+	from '@/components/config/journal/JournalStorageInput.vue';
+import JournalTimeUnitInput
+	from '@/components/config/journal/JournalTimeUnitInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
-const service: JournalService = useApiClient().getConfigServices().getJournalService();
-const form: Ref<VForm | null> = ref(null);
+const service: JournalService = useApiClient()
+	.getConfigServices()
+	.getJournalService();
+const form: Ref<VForm | null> = useTemplateRef('form');
 const config: Ref<JournalConfig | null> = ref(null);
-const storageOptions = [
-	{
-		title: i18n.t('components.config.journal.storages.volatile'),
-		value: JournalPersistence.Volatile,
-	},
-	{
-		title: i18n.t('components.config.journal.storages.persistent'),
-		value: JournalPersistence.Persistent,
-	},
-];
+
 const sizeRotation: Ref<boolean> = ref(false);
 const timeRotation: Ref<boolean> = ref(false);
-const unitOptions = [
-	{
-		title: i18n.t('components.config.journal.timeUnits.seconds'),
-		value: JournalTimeUnit.Seconds,
-	},
-	{
-		title: i18n.t('components.config.journal.timeUnits.minutes'),
-		value: JournalTimeUnit.Minutes,
-	},
-	{
-		title: i18n.t('components.config.journal.timeUnits.hours'),
-		value: JournalTimeUnit.Hours,
-	},
-	{
-		title: i18n.t('components.config.journal.timeUnits.days'),
-		value: JournalTimeUnit.Days,
-	},
-	{
-		title: i18n.t('components.config.journal.timeUnits.weeks'),
-		value: JournalTimeUnit.Weeks,
-	},
-	{
-		title: i18n.t('components.config.journal.timeUnits.months'),
-		value: JournalTimeUnit.Months,
-	},
-	{
-		title: i18n.t('components.config.journal.timeUnits.years'),
-		value: JournalTimeUnit.Years,
-	},
-];
 
 async function getConfig(): Promise<void> {
 	componentState.value = [

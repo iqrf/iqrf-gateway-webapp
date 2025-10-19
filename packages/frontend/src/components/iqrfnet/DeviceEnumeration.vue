@@ -61,6 +61,7 @@
 										<a
 											:href='product.homePage'
 											target='_blank'
+											rel='noopener noreferrer'
 										>
 											{{ product.name }}
 										</a>

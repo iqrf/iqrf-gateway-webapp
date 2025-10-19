@@ -25,6 +25,7 @@ limitations under the License.
 				size='small'
 				href='https://docs.iqrf.org/iqrf-gateway/user/daemon/api.html'
 				target='_blank'
+				rel='noopener noreferrer'
 			>
 				{{ $t('common.labels.apidoc') }}
 			</v-btn>
@@ -77,7 +78,7 @@ import { DaemonApiRequest, DaemonApiResponse } from '@iqrf/iqrf-gateway-daemon-u
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { ComponentState, ICard } from '@iqrf/iqrf-vue-ui';
 import { mdiSend } from '@mdi/js';
-import { ref, type Ref } from 'vue';
+import { ref, type Ref, useTemplateRef } from 'vue';
 import { VForm } from 'vuetify/components';
 
 import RequestHistory from '@/components/iqrfnet/send-json/RequestHistory.vue';
@@ -87,7 +88,7 @@ import { type JsonApiTransaction } from '@/types/Iqrfnet';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const daemonStore = useDaemonStore();
-const form: Ref<VForm | null> = ref(null);
+const form: Ref<VForm|null> = useTemplateRef('form');
 const msgId: Ref<string | null> = ref(null);
 const json: Ref<string | null> = ref(null);
 const messages: Ref<JsonApiTransaction[]> = ref([]);
@@ -99,17 +100,22 @@ daemonStore.$onAction(
 				if (rsp.data.msgId !== msgId.value) {
 					return;
 				}
-				if (rsp.mType === IqmeshServiceMessages.Autonetwork) {
-					handleAutonetworkResponse(rsp);
-				} else if (rsp.mType === IqmeshServiceMessages.Backup) {
-					handleBackupResponse(rsp);
-				} else if (rsp.mType === DbMessages.Enumerate) {
-					handleEnumerateResponse(rsp);
-				} else if (rsp.mType === GenericMessages.MessageError) {
-					handleMessageError(rsp);
-				} else {
-					daemonStore.removeMessage(msgId.value);
-					handleResponse(rsp);
+				switch (rsp.mType) {
+					case IqmeshServiceMessages.Autonetwork:
+						handleAutonetworkResponse(rsp);
+						break;
+					case IqmeshServiceMessages.Backup:
+						handleBackupResponse(rsp);
+						break;
+					case DbMessages.Enumerate:
+						handleEnumerateResponse(rsp);
+						break;
+					case GenericMessages.MessageError:
+						handleMessageError(rsp);
+						break;
+					default:
+						daemonStore.removeMessage(msgId.value);
+						handleResponse(rsp);
 				}
 			});
 		}

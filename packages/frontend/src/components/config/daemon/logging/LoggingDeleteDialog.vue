@@ -45,6 +45,7 @@ import {
 	type PropType,
 	ref,
 	type Ref,
+	useTemplateRef,
 } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
@@ -63,23 +64,26 @@ const componentProps = defineProps({
 		default: false,
 	},
 });
-const emit = defineEmits(['deleted']);
-const dialog: Ref<typeof IDeleteModalWindow | null> = ref(null);
+const emit = defineEmits<{
+	deleted: [];
+}>();
+const dialog: Ref<InstanceType<typeof IDeleteModalWindow> | null> = useTemplateRef('dialog');
 const i18n = useI18n();
 const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
 
 async function onSubmit(): Promise<void> {
 	componentState.value = ComponentState.Action;
+	const translationParams = { name: componentProps.loggingInstance.instance };
 	try {
 		await service.deleteInstance(IqrfGatewayDaemonComponentName.ShapeTraceFile, componentProps.loggingInstance.instance);
 		toast.success(
-			i18n.t('components.config.daemon.logging.messages.delete.success', { name: componentProps.loggingInstance.instance }),
+			i18n.t('components.config.daemon.logging.messages.delete.success', translationParams),
 		);
 		close();
 		emit('deleted');
 	} catch {
 		toast.error(
-			i18n.t('components.config.daemon.logging.messages.delete.failed', { name: componentProps.loggingInstance.instance }),
+			i18n.t('components.config.daemon.logging.messages.delete.failed', translationParams),
 		);
 	}
 	componentState.value = ComponentState.Idle;

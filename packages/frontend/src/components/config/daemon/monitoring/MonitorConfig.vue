@@ -84,11 +84,9 @@ limitations under the License.
 							:hide-details='!websocketConfig.tlsEnabled'
 						/>
 						<div v-if='websocketConfig.tlsEnabled'>
-							<ISelectInput
+							<WsTlsModeInput
 								v-model='websocketConfig.tlsMode'
 								:label='$t("components.config.daemon.connections.websocket.tlsMode")'
-								:items='tlsModeOptions'
-								:description='$t(`components.config.daemon.connections.websocket.notes.tlsModes.${websocketConfig.tlsMode}`)'
 							/>
 							<ITextInput
 								v-model='websocketConfig.certificate'
@@ -128,6 +126,7 @@ import {
 	IqrfGatewayDaemonComponentName,
 	type IqrfGatewayDaemonMonitor,
 	type ShapeWebsocketService,
+	ShapeWebsocketTlsMode,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import {
 	Action,
@@ -135,44 +134,27 @@ import {
 	IActionBtn,
 	ICard,
 	INumberInput,
-	ISelectInput,
 	ITextInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
-import { onMounted, ref, type Ref, toRaw } from 'vue';
+import { onMounted, ref, type Ref, toRaw, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
+import WsTlsModeInput
+	from '@/components/config/daemon/connections/websocket/WsTlsModeInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
-enum TLSModes {
-	Intermediate = 'intermediate',
-	Modern = 'modern',
-	Old = 'old',
-}
-
 const i18n = useI18n();
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
-const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
-const form: Ref<VForm | null> = ref(null);
+const service: IqrfGatewayDaemonService = useApiClient()
+	.getConfigServices()
+	.getIqrfGatewayDaemonService();
+const form: Ref<VForm | null> = useTemplateRef('form');
 const monitorConfig: Ref<IqrfGatewayDaemonMonitor | null> = ref(null);
 const websocketConfig: Ref<ShapeWebsocketService | null> = ref(null);
-const tlsModeOptions = [
-	{
-		title: i18n.t('components.config.daemon.connections.websocket.tlsModes.intermediate'),
-		value: TLSModes.Intermediate,
-	},
-	{
-		title: i18n.t('components.config.daemon.connections.websocket.tlsModes.modern'),
-		value: TLSModes.Modern,
-	},
-	{
-		title: i18n.t('components.config.daemon.connections.websocket.tlsModes.old'),
-		value: TLSModes.Old,
-	},
-];
 
 async function getConfig(): Promise<void> {
 	componentState.value = [
@@ -192,7 +174,7 @@ async function getConfig(): Promise<void> {
 			certificate: '',
 			privateKey: '',
 			tlsEnabled: false,
-			tlsMode: TLSModes.Intermediate,
+			tlsMode: ShapeWebsocketTlsMode.Intermediate,
 			...data,
 		};
 		if (websocketConfig.value === null) {

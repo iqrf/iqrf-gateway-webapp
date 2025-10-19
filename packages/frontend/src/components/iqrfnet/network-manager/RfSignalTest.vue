@@ -32,10 +32,8 @@
 				:max='64'
 				required
 			/>
-			<ISelectInput
+			<RfMeasurementTimeInput
 				v-model='measurementTime'
-				:label='$t("components.iqrfnet.network-manager.rf-signal.timeLabel")'
-				:items='measurementTimeOptions'
 			/>
 			<template #actions>
 				<IActionBtn
@@ -61,12 +59,16 @@ import { DaemonApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { IqmeshTestRfSignalParams } from '@iqrf/iqrf-gateway-daemon-utils/types/iqmesh';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { Action, ComponentState, IActionBtn, ICard, INumberInput, ISelectInput, ValidationRules } from '@iqrf/iqrf-vue-ui';
-import { computed, onBeforeUnmount, ref, Ref } from 'vue';
+import { computed, onBeforeUnmount, ref, Ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
+import { type VForm } from 'vuetify/components';
 
-import FrcResponseTimeResultDialog from '@/components/iqrfnet/network-manager/FrcResponseTimeResultDialog.vue';
-import RfSignalTestResultDialog from '@/components/iqrfnet/network-manager/RfSignalTestResultDialog.vue';
+import RfMeasurementTimeInput
+	from '@/components/iqrfnet/network-manager/RfMeasurementTimeInput.vue';
+import RfSignalTestResultDialog
+	from '@/components/iqrfnet/network-manager/RfSignalTestResultDialog.vue';
+import { validateForm } from '@/helpers/validateForm';
 import { useDaemonStore } from '@/store/daemonSocket';
 import { RfSignalTestResult } from '@/types/DaemonApi/Iqmesh';
 
@@ -96,41 +98,8 @@ const rfBand: Ref<number> = ref(868);
 const rfChannel: Ref<number> = ref(52);
 const rxFilter: Ref<number> = ref(0);
 const measurementTime: Ref<IqmeshTestRfMeasurementTime> = ref(IqmeshTestRfMeasurementTime.MS5160);
-const measurementTimeOptions = [
-	{
-		title: i18n.t('components.iqrfnet.network-manager.rf-signal.time', { time: IqmeshTestRfMeasurementTime.MS40 }),
-		value: IqmeshTestRfMeasurementTime.MS40,
-	},
-	{
-		title: i18n.t('components.iqrfnet.network-manager.rf-signal.time', { time: IqmeshTestRfMeasurementTime.MS360 }),
-		value: IqmeshTestRfMeasurementTime.MS360,
-	},
-	{
-		title: i18n.t('components.iqrfnet.network-manager.rf-signal.time', { time: IqmeshTestRfMeasurementTime.MS680 }),
-		value: IqmeshTestRfMeasurementTime.MS680,
-	},
-	{
-		title: i18n.t('components.iqrfnet.network-manager.rf-signal.time', { time: IqmeshTestRfMeasurementTime.MS1320 }),
-		value: IqmeshTestRfMeasurementTime.MS1320,
-	},
-	{
-		title: i18n.t('components.iqrfnet.network-manager.rf-signal.time', { time: IqmeshTestRfMeasurementTime.MS2600 }),
-		value: IqmeshTestRfMeasurementTime.MS2600,
-	},
-	{
-		title: i18n.t('components.iqrfnet.network-manager.rf-signal.time', { time: IqmeshTestRfMeasurementTime.MS5160 }),
-		value: IqmeshTestRfMeasurementTime.MS5160,
-	},
-	{
-		title: i18n.t('components.iqrfnet.network-manager.rf-signal.time', { time: IqmeshTestRfMeasurementTime.MS10280 }),
-		value: IqmeshTestRfMeasurementTime.MS10280,
-	},
-	{
-		title: i18n.t('components.iqrfnet.network-manager.rf-signal.time', { time: IqmeshTestRfMeasurementTime.MS20620 }),
-		value: IqmeshTestRfMeasurementTime.MS20620,
-	},
-];
-const resultModal: Ref<typeof FrcResponseTimeResultDialog | null> = ref(null);
+const form: Ref<VForm|null> = useTemplateRef('form');
+const resultModal: Ref<InstanceType<typeof RfSignalTestResultDialog>|null> = useTemplateRef('resultModal');
 const result: Ref<RfSignalTestResult[]> = ref([]);
 const msgId: Ref<string | null> = ref(null);
 
@@ -181,6 +150,9 @@ daemonStore.$onAction(({ name, after }) => {
 });
 
 async function testRf(): Promise<void> {
+	if (!await validateForm(form.value)) {
+		return;
+	}
 	componentState.value = ComponentState.Action;
 	result.value = [];
 	const opts = new DaemonMessageOptions(

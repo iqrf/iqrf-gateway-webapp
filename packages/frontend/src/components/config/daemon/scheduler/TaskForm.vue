@@ -137,7 +137,7 @@ limitations under the License.
 								<TaskMessageForm
 									:messagings='messagings'
 									:disabled='componentState === ComponentState.Action'
-									@save='(index: number, t: SchedulerRecordTask) => saveMessage(index, t)'
+									@save='(index: number|null, t: SchedulerRecordTask) => saveMessage(index, t)'
 								/>
 								<IActionBtn
 									class='rounded-e'
@@ -163,7 +163,7 @@ limitations under the License.
 							:messagings='messagings'
 							:task='item'
 							:disabled='componentState === ComponentState.Action'
-							@save='(index: number, t: SchedulerRecordTask) => saveMessage(index, t)'
+							@save='(index: number|null, t: SchedulerRecordTask) => saveMessage(index, t)'
 						/>
 						<IDataTableAction
 							:action='Action.Delete'
@@ -222,7 +222,7 @@ import { mdiHelpBox } from '@mdi/js';
 import cron from 'cron-validate';
 import { DateTime } from 'luxon';
 import { v4 as uuidv4 } from 'uuid';
-import { computed, type PropType, ref, type Ref, toRaw } from 'vue';
+import { computed, type PropType, ref, type Ref, toRaw, useTemplateRef } from 'vue';
 import { watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
@@ -254,11 +254,13 @@ const componentProps = defineProps({
 		required: false,
 	},
 });
-const emit = defineEmits(['saved']);
+const emit = defineEmits<{
+	saved: [];
+}>();
 const i18n = useI18n();
 const daemonStore = useDaemonStore();
 const show: Ref<boolean> = ref(false);
-const form: Ref<VForm | null> = ref(null);
+const form: Ref<VForm | null> = useTemplateRef('form');
 const defaultTask: SchedulerRecord = {
 	clientId: SchedulerService.ClientID,
 	taskId: '',
@@ -305,7 +307,7 @@ daemonStore.$onAction(
 	},
 );
 
-const taskTypeOptions = [
+const taskTypeOptions = computed(() => [
 	{
 		value: SchedulerTaskType.ONESHOT,
 		title: i18n.t('components.config.daemon.scheduler.types.oneshot'),
@@ -318,13 +320,13 @@ const taskTypeOptions = [
 		value: SchedulerTaskType.CRON,
 		title: i18n.t('components.config.daemon.scheduler.types.cron'),
 	},
-];
+]);
 
-const headers = [
+const headers = computed(() => [
 	{ key: 'message', title: i18n.t('components.config.daemon.scheduler.task.mType') },
 	{ key: 'messaging', title: i18n.t('components.config.daemon.scheduler.task.messaging') },
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end' },
-];
+]);
 
 const oneshotTimeValid = computed(() => {
 	return taskType.value !== SchedulerTaskType.ONESHOT || oneshotTime.value !== null;
@@ -332,9 +334,9 @@ const oneshotTimeValid = computed(() => {
 
 const dialogTitle = computed(() => {
 	if (componentProps.action === Action.Add) {
-		return i18n.t('components.config.daemon.scheduler.actions.add').toString();
+		return i18n.t('components.config.daemon.scheduler.actions.add');
 	}
-	return i18n.t('components.config.daemon.scheduler.actions.edit').toString();
+	return i18n.t('components.config.daemon.scheduler.actions.edit');
 });
 
 watch(show, (newVal: boolean) => {
@@ -390,7 +392,7 @@ function setTaskType(): void {
 	}
 }
 
-function saveMessage(index: number, recordTask: SchedulerRecordTask): void {
+function saveMessage(index: number|null, recordTask: SchedulerRecordTask): void {
 	if (index === null) {
 		(task.value.task as SchedulerRecordTask[]).push(recordTask);
 	} else {

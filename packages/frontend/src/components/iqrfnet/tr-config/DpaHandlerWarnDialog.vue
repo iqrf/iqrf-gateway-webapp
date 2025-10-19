@@ -43,7 +43,7 @@ import { useDaemonStore } from '@/store/daemonSocket';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const emit = defineEmits<{
-	restart: [],
+	restart: [];
 }>();
 const modelValue = defineModel({
 	type: Boolean,

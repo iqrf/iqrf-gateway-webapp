@@ -1,6 +1,5 @@
 <template>
 	<v-form
-		ref='form'
 		:disabled='componentState === ComponentState.Action'
 	>
 		<ICard flat>

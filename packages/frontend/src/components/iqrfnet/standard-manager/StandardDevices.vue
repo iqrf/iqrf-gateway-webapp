@@ -187,7 +187,7 @@ import { DbDeviceData, DbSensors } from '@/types/DaemonApi/iqrfDb';
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const daemonStore = useDaemonStore();
 const i18n = useI18n();
-const headers = [
+const headers = computed(() => [
 	{
 		key: 'address',
 		title: i18n.t('components.iqrfnet.standard-manager.standard-devices.headers.address'),
@@ -231,7 +231,7 @@ const headers = [
 		align: 'end',
 		sortable: false,
 	},
-];
+]);
 const devices: Ref<StandardDevice[]> = ref([]);
 const productService: Ref<ProductService | null> = ref(null);
 const products = new Map<number, Product|null>();

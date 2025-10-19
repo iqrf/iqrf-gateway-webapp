@@ -36,11 +36,13 @@ import { DaemonApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { IqmeshFrcResponseTimeParams } from '@iqrf/iqrf-gateway-daemon-utils/types/iqmesh';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { Action, ComponentState, IActionBtn, ICard, ISelectInput } from '@iqrf/iqrf-vue-ui';
-import { onBeforeUnmount, ref, Ref } from 'vue';
+import { onBeforeUnmount, ref, Ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
+import { type VForm } from 'vuetify/components';
 
 import FrcResponseTimeResultDialog from '@/components/iqrfnet/network-manager/FrcResponseTimeResultDialog.vue';
+import { validateForm } from '@/helpers/validateForm';
 import { useDaemonStore } from '@/store/daemonSocket';
 import { FrcResponseTimeResult } from '@/types/DaemonApi/Iqmesh';
 
@@ -82,7 +84,8 @@ const commandOptions = [
 		value: FrcCommand.User4Bytes,
 	},
 ];
-const resultModal: Ref<typeof FrcResponseTimeResultDialog | null> = ref(null);
+const form: Ref<VForm | null> = useTemplateRef('form');
+const resultModal: Ref<InstanceType<typeof FrcResponseTimeResultDialog> | null> = useTemplateRef('resultModal');
 const result: Ref<FrcResponseTimeResult | null> = ref(null);
 const msgId: Ref<string | null> = ref(null);
 
@@ -102,6 +105,9 @@ daemonStore.$onAction(({ name, after }) => {
 });
 
 async function frcResponseTime(): Promise<void> {
+	if (!await validateForm(form.value)) {
+		return;
+	}
 	componentState.value = ComponentState.Action;
 	result.value = null;
 	const opts = new DaemonMessageOptions(
@@ -126,26 +132,29 @@ async function frcResponseTime(): Promise<void> {
 }
 
 function handleFrcResponseTime(rsp: DaemonApiResponse): void {
-	if (rsp.data.status === 0) {
-		rsp.data.rsp.command = command.value;
-		result.value = rsp.data.rsp as FrcResponseTimeResult;
-		resultModal.value?.open();
-	} else if (rsp.data.status === 1_003) {
-		toast.info(
-			i18n.t('common.messages.noNodes'),
-		);
-	} else if (rsp.data.status === 1_004) {
-		toast.error(
-			i18n.t('components.iqrfnet.network-manager.frc-response-time.messages.get.noResponded'),
-		);
-	} else if (rsp.data.status === 1_005) {
-		toast.error(
-			i18n.t('components.iqrfnet.network-manager.frc-response-time.messages.get.noHandled'),
-		);
-	} else {
-		toast.error(
-			i18n.t('components.iqrfnet.network-manager.frc-response-time.messages.get.failed'),
-		);
+	switch (rsp.data.status) {
+		case 0:
+			rsp.data.rsp.command = command.value;
+			result.value = rsp.data.rsp as FrcResponseTimeResult;
+			resultModal.value?.open();
+			break;
+		case 1_003:
+			toast.info(i18n.t('common.messages.noNodes'));
+			break;
+		case 1_004:
+			toast.error(i18n.t(
+				'components.iqrfnet.network-manager.frc-response-time.messages.get.noResponded',
+			));
+			break;
+		case 1_005:
+			toast.error(i18n.t(
+				'components.iqrfnet.network-manager.frc-response-time.messages.get.noHandled',
+			));
+			break;
+		default:
+			toast.error(i18n.t(
+				'components.iqrfnet.network-manager.frc-response-time.messages.get.failed',
+			));
 	}
 }
 

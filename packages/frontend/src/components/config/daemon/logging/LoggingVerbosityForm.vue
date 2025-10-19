@@ -53,11 +53,7 @@ limitations under the License.
 					:min='0'
 					required
 				/>
-				<ISelectInput
-					v-model='level.level'
-					:label='$t("components.config.daemon.logging.severity")'
-					:items='severityOptions'
-				/>
+				<ShapeTraceVerbosityInput v-model='level.level' />
 				<template #actions>
 					<IActionBtn
 						:action='action'
@@ -76,7 +72,10 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { type ShapeTraceChannelVerbosity, ShapeTraceVerbosity } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import {
+	type ShapeTraceChannelVerbosity,
+	ShapeTraceVerbosity,
+} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import {
 	Action,
 	IActionBtn,
@@ -84,16 +83,18 @@ import {
 	IDataTableAction,
 	IModalWindow,
 	INumberInput,
-	ISelectInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
-import { type PropType, ref, type Ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { type PropType, ref, type Ref, useTemplateRef, watch } from 'vue';
 import { VForm } from 'vuetify/components';
 
+import ShapeTraceVerbosityInput
+	from '@/components/config/daemon/logging/ShapeTraceVerbosityInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 
-const emit = defineEmits(['save']);
+const emit = defineEmits<{
+	save: [index: number|null, level: ShapeTraceChannelVerbosity];
+}>();
 const componentProps = defineProps({
 	action: {
 		type: String as PropType<Action>,
@@ -120,31 +121,12 @@ const componentProps = defineProps({
 	},
 });
 const show: Ref<boolean> = ref(false);
-const i18n = useI18n();
 const defaultLevel: ShapeTraceChannelVerbosity = {
 	channel: 0,
 	level: ShapeTraceVerbosity.Info,
 };
-const form: Ref<VForm | null> = ref(null);
+const form: Ref<VForm | null> = useTemplateRef('form');
 const level: Ref<ShapeTraceChannelVerbosity> = ref({ ...defaultLevel });
-const severityOptions = [
-	{
-		title: i18n.t('common.labels.severity.debug'),
-		value: ShapeTraceVerbosity.Debug,
-	},
-	{
-		title: i18n.t('common.labels.severity.info'),
-		value: ShapeTraceVerbosity.Info,
-	},
-	{
-		title: i18n.t('common.labels.severity.warning'),
-		value: ShapeTraceVerbosity.Warning,
-	},
-	{
-		title: i18n.t('common.labels.severity.error'),
-		value: ShapeTraceVerbosity.Error,
-	},
-];
 
 watch(show, (newVal: boolean): void => {
 	if (!newVal) {
