@@ -108,7 +108,12 @@
 			},
 			"example": [
 				{
-					"messaging": "MqttMessaging",
+					"messaging": [
+						{
+							"type": "mqtt",
+							"instance": "MqttMessaging"
+						}
+					],
 					"message": {
 						"mType": "iqrfEmbedLedr_Pulse",
 						"data": {
@@ -144,25 +149,32 @@
 			],
 			"properties": {
 				"messaging": {
-					"$id": "#/definitions/task/messaging",
-					"title": "Task messaging type(s)",
-					"oneOf": [
-						{
-							"type": "string",
-							"example": "MqttMessaging"
-						},
-						{
-							"type": "array",
-							"items": {
-								"$id": "#/definitions/task/messaging/items",
+					"$id": "#/definitions/task/properties/messaging",
+					"type": "array",
+					"uniqueItems": true,
+					"additionalItems": false,
+					"items": {
+						"$id": "#/definitions/task/properties/messaging/items",
+						"type": "object",
+						"required": [
+							"type",
+							"instance"
+						],
+						"additionalProperties": false,
+						"properties": {
+							"type": {
+								"$id": "#/definitions/task/properties/messaging/items/properties/type",
 								"type": "string",
-								"pattern": "^[^&]+$"
+								"enum": ["mqtt", "ws"],
+								"example": "mqtt"
 							},
-							"example": [
-								"MqttMessaging"
-							]
+							"instance": {
+								"$id": "#/definitions/task/properties/messaging/items/properties/instance",
+								"type": "string",
+								"example": "default"
+							}
 						}
-					]
+					}
 				},
 				"message": {
 					"$id": "#/definitions/task/message",
