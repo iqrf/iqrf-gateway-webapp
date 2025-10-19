@@ -610,7 +610,7 @@
 					"enableTls": "Enable TLS",
 					"keyStore": "Key store",
 					"messages": {
-						"profileFileInvalid": "Selected file is not a valid connection profile file."
+						"profileFileInvalid": "Selected file is does not contain valid connection profile configuration."
 					},
 					"mqtt": {
 						"actions": {
@@ -806,6 +806,50 @@
 							"extension": "Selected file is not a JSON file.",
 							"json": "Selected file does not contain JSON data.",
 							"required": "Please select connection profile file."
+						}
+					},
+					"websocket": {
+						"asyncMessages": "Accept asynchronous messages",
+						"certificate": "Path to certificate",
+						"delete": {
+							"prompt": "Are you sure you want to delete WebSocket connection profile {name}?",
+							"title": "WebSocket connection profile delete confirmation"
+						},
+						"messages": {
+							"delete": {
+								"failed": "Failed to delete WebSocket connection profile {name}.",
+								"success": "WebSockeet connection profile {name} successfully deleted."
+							},
+							"fetch": {
+								"failed": "Failed to retrieve WebSocket connection profiles."
+							},
+							"save": {
+								"failed": "Failed to save WebSocket connection profile {name}",
+								"success": "WebSocket connection profile {name} successfully saved."
+							}
+						},
+						"notes": {
+							"tlsModes": {
+								"intermediate": "General-purpose servers with a variety of clients, recommended for almost all systems. Supports Firefox 27, Android 4.4.2, Chrome 31, Edge, IE 11 on Windows 7, Java 8u31, OpenSSL 1.0.1, Opera 20, and Safari 9.",
+								"modern": "Services with clients that support TLS 1.3 and don't need backward compatibility. Supports Firefox 63, Android 10.0, Chrome 70, Edge 75, Java 11, OpenSSL 1.1.1, Opera 57, and Safari 12.1.",
+								"old": "Compatible with a number of very old clients, and should be used only as a last resort. Supports Firefox 1, Android 2.3, Chrome 1, Edge 12, IE8 on Windows XP, Java 6, OpenSSL 0.9.8, Opera 5, and Safari 1."
+							}
+						},
+						"privateKey": "Path to private key",
+						"tlsEnabled": "Enable TLS",
+						"tlsMode": "TLS mode",
+						"tlsModes": {
+							"intermediate": "Intermediate",
+							"modern": "Modern",
+							"old": "Old"
+						},
+						"validation": {
+							"certificate": {
+								"required": "Please enter path to certificate file."
+							},
+							"privateKey": {
+								"required": "Please enter path to private key file."
+							}
 						}
 					}
 				},
@@ -1285,32 +1329,6 @@
 				"validation": {
 					"instance": {
 						"required": "Please enter instance name."
-					}
-				},
-				"websocket": {
-					"certificate": "Path to certificate",
-					"notes": {
-						"tlsModes": {
-							"intermediate": "General-purpose servers with a variety of clients, recommended for almost all systems. Supports Firefox 27, Android 4.4.2, Chrome 31, Edge, IE 11 on Windows 7, Java 8u31, OpenSSL 1.0.1, Opera 20, and Safari 9.",
-							"modern": "Services with clients that support TLS 1.3 and don't need backward compatibility. Supports Firefox 63, Android 10.0, Chrome 70, Edge 75, Java 11, OpenSSL 1.1.1, Opera 57, and Safari 12.1.",
-							"old": "Compatible with a number of very old clients, and should be used only as a last resort. Supports Firefox 1, Android 2.3, Chrome 1, Edge 12, IE8 on Windows XP, Java 6, OpenSSL 0.9.8, Opera 5, and Safari 1."
-						}
-					},
-					"privateKey": "Path to private key",
-					"tlsEnabled": "Enable TLS",
-					"tlsMode": "TLS mode",
-					"tlsModes": {
-						"intermediate": "Intermediate",
-						"modern": "Modern",
-						"old": "Old"
-					},
-					"validation": {
-						"certificate": {
-							"required": "Please enter path to certificate file."
-						},
-						"privateKey": {
-							"required": "Please enter path to private key file."
-						}
 					}
 				}
 			},
