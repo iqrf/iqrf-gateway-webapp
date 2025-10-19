@@ -79,30 +79,30 @@ limitations under the License.
 						/>
 						<v-checkbox
 							v-model='websocketConfig.tlsEnabled'
-							:label='$t("components.config.daemon.websocket.tlsEnabled")'
+							:label='$t("components.config.daemon.connections.websocket.tlsEnabled")'
 							density='compact'
 							:hide-details='!websocketConfig.tlsEnabled'
 						/>
 						<div v-if='websocketConfig.tlsEnabled'>
 							<ISelectInput
 								v-model='websocketConfig.tlsMode'
-								:label='$t("components.config.daemon.websocket.tlsMode")'
+								:label='$t("components.config.daemon.connections.websocket.tlsMode")'
 								:items='tlsModeOptions'
-								:description='$t(`components.config.daemon.websocket.notes.tlsModes.${websocketConfig.tlsMode}`)'
+								:description='$t(`components.config.daemon.connections.websocket.notes.tlsModes.${websocketConfig.tlsMode}`)'
 							/>
 							<ITextInput
 								v-model='websocketConfig.certificate'
-								:label='$t("components.config.daemon.websocket.certificate")'
+								:label='$t("components.config.daemon.connections.websocket.certificate")'
 								:rules='[
-									(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.websocket.validation.certificate.required")),
+									(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.connections.websocket.validation.certificate.required")),
 								]'
 								required
 							/>
 							<ITextInput
 								v-model='websocketConfig.privateKey'
-								:label='$t("components.config.daemon.websocket.privateKey")'
+								:label='$t("components.config.daemon.connections.websocket.privateKey")'
 								:rules='[
-									(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.websocket.validation.privateKey.required")),
+									(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.connections.websocket.validation.privateKey.required")),
 								]'
 								required
 							/>
@@ -161,15 +161,15 @@ const monitorConfig: Ref<IqrfGatewayDaemonMonitor | null> = ref(null);
 const websocketConfig: Ref<ShapeWebsocketService | null> = ref(null);
 const tlsModeOptions = [
 	{
-		title: i18n.t('components.config.daemon.websocket.tlsModes.intermediate'),
+		title: i18n.t('components.config.daemon.connections.websocket.tlsModes.intermediate'),
 		value: TLSModes.Intermediate,
 	},
 	{
-		title: i18n.t('components.config.daemon.websocket.tlsModes.modern'),
+		title: i18n.t('components.config.daemon.connections.websocket.tlsModes.modern'),
 		value: TLSModes.Modern,
 	},
 	{
-		title: i18n.t('components.config.daemon.websocket.tlsModes.old'),
+		title: i18n.t('components.config.daemon.connections.websocket.tlsModes.old'),
 		value: TLSModes.Old,
 	},
 ];

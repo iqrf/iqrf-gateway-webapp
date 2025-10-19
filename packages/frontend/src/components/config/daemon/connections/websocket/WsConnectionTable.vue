@@ -21,11 +21,21 @@ limitations under the License.
 			{{ $t('pages.config.daemon.connections.ws.title') }}
 		</template>
 		<template #titleActions>
+			<WsConnectionForm
+				ref='form'
+				:action='Action.Add'
+				:disabled='componentState === ComponentState.Reloading'
+				@saved='getConfigs()'
+			/>
+			<WsConnectionImportDialog
+				:disabled='componentState === ComponentState.Reloading'
+				@import='(m: IqrfGatewayDaemonWsMessaging, s: ShapeWebsocketService) => importFromConfig(m, s)'
+			/>
 			<IActionBtn
 				:action='Action.Reload'
 				container-type='card-title'
 				:tooltip='$t("components.config.daemon.connections.actions.reload")'
-				@click='getConfigs'
+				@click='getConfigs()'
 			/>
 		</template>
 		<IDataTable
@@ -54,7 +64,20 @@ limitations under the License.
 				<IDataTableAction
 					:action='Action.Export'
 					:tooltip='$t("components.config.daemon.connections.actions.export")'
+					:disabled='[ComponentState.Action, ComponentState.Reloading].includes(componentState)'
 					@click='exportConfig(item)'
+				/>
+				<WsConnectionForm
+					:action='Action.Edit'
+					:messaging-instance='toRaw(item.messaging)'
+					:service-instance='toRaw(item.service)'
+					:disabled='componentState === ComponentState.Reloading'
+					@saved='getConfigs()'
+				/>
+				<WsConnectionDeleteDialog
+					:connection-profile='toRaw(item)'
+					:disabled='componentState === ComponentState.Reloading'
+					@deleted='getConfigs()'
 				/>
 			</template>
 		</IDataTable>
@@ -64,9 +87,9 @@ limitations under the License.
 <script lang='ts' setup>
 import { type IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import {
-	type IqrfGatewayDaemonComponent,
 	IqrfGatewayDaemonComponentName,
 	type IqrfGatewayDaemonWebsocketInterface,
+	type IqrfGatewayDaemonWsMessaging,
 	type ShapeWebsocketService,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { FileDownloader } from '@iqrf/iqrf-gateway-webapp-client/utils';
@@ -78,12 +101,15 @@ import {
 	IDataTable,
 	IDataTableAction,
 } from '@iqrf/iqrf-vue-ui';
-import { ref, type Ref } from 'vue';
+import { ref, type Ref, toRaw } from 'vue';
 import { onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import BooleanCheckMarker from '@/components/BooleanCheckMarker.vue';
+import WsConnectionDeleteDialog from '@/components/config/daemon/connections/websocket/WsConnectionDeleteDialog.vue';
+import WsConnectionForm from '@/components/config/daemon/connections/websocket/WsConnectionForm.vue';
+import WsConnectionImportDialog from '@/components/config/daemon/connections/websocket/WsConnectionImportDialog.vue';
 import { useApiClient } from '@/services/ApiClient';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
@@ -98,38 +124,53 @@ const headers = [
 ];
 const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
 const ifaces: Ref<IqrfGatewayDaemonWebsocketInterface[]> = ref([]);
+const form: Ref<typeof WsConnectionForm | null> = ref(null);
 
 async function getConfigs(): Promise<void> {
-	const instances: IqrfGatewayDaemonWebsocketInterface[] = [];
-	const services = await service.getComponent(IqrfGatewayDaemonComponentName.ShapeWebsocketService)
-		.then((data: IqrfGatewayDaemonComponent<IqrfGatewayDaemonComponentName.ShapeWebsocketService>) => {
-			return data.instances;
-		})
-		.catch(() => undefined);
-	const messagings = await service.getComponent(IqrfGatewayDaemonComponentName.IqrfWsMessaging)
-		.then((data: IqrfGatewayDaemonComponent<IqrfGatewayDaemonComponentName.IqrfWsMessaging>) => {
-			return data.instances;
-		})
-		.catch(() => undefined);
-	if (services === undefined || messagings === undefined) {
-		toast.error('TODO ERROR FETCH CONFIG');
-		return;
+	componentState.value = [
+		ComponentState.Created,
+		ComponentState.FetchFailed,
+	].includes(componentState.value) ? ComponentState.Loading : ComponentState.Reloading;
+	try {
+		const messagings = (await service.getComponent(IqrfGatewayDaemonComponentName.IqrfWsMessaging)).instances;
+		const services = (await service.getComponent(IqrfGatewayDaemonComponentName.ShapeWebsocketService)).instances;
+		buildInterfaces(messagings, services);
+		componentState.value = ComponentState.Ready;
+	} catch {
+		toast.error(
+			i18n.t('components.config.daemon.connections.websocket.messages.fetch.failed'),
+		);
+		componentState.value = componentState.value === ComponentState.Loading ? ComponentState.FetchFailed : ComponentState.Ready;
 	}
-	for (const m of messagings) {
-		if (m.RequiredInterfaces === undefined || m.RequiredInterfaces.length === 0) {
+}
+
+function buildInterfaces(messagings: IqrfGatewayDaemonWsMessaging[], services: ShapeWebsocketService[]): void {
+	const serviceMap = new Map<string, number>();
+	for (const [idx, service] of services.entries()) {
+		serviceMap.set(service.instance, idx);
+	}
+	const interfaces: IqrfGatewayDaemonWebsocketInterface[] = [];
+	for (const messaging of messagings) {
+		if (messaging.RequiredInterfaces.length === 0) {
 			continue;
 		}
-		const requiredService = m.RequiredInterfaces[0].target.instance;
-		const idx = services.findIndex((item: ShapeWebsocketService) => item.instance === requiredService);
-		if (idx === -1) {
+		const serviceIdx = serviceMap.get(messaging.RequiredInterfaces[0].target.instance);
+		if (serviceIdx === undefined) {
 			continue;
 		}
-		instances.push({
-			messaging: m,
-			service: services[idx],
+		interfaces.push({
+			messaging: messaging,
+			service: services[serviceIdx],
 		});
 	}
-	ifaces.value = instances;
+	ifaces.value = interfaces;
+}
+
+function importFromConfig(messaging: IqrfGatewayDaemonWsMessaging, service: ShapeWebsocketService): void {
+	if (form.value === null) {
+		return;
+	}
+	form.value.importFromConfig(messaging, service);
 }
 
 function exportConfig(config: IqrfGatewayDaemonWebsocketInterface): void {

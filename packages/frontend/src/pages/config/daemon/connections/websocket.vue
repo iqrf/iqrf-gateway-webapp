@@ -20,7 +20,7 @@ limitations under the License.
 		<Head>
 			<title>{{ $t('pages.config.daemon.connections.ws.title') }}</title>
 		</Head>
-		<WebsocketConnectionTable />
+		<WsConnectionTable />
 	</div>
 </template>
 
@@ -33,5 +33,5 @@ limitations under the License.
 <script lang='ts' setup>
 import { Head } from '@unhead/vue/components';
 
-import WebsocketConnectionTable from '@/components/config/daemon/connections/websocket/WebsockeConnectionTable.vue';
+import WsConnectionTable from '@/components/config/daemon/connections/websocket/WsConnectionTable.vue';
 </script>
