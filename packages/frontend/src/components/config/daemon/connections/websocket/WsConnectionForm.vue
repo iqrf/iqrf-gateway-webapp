@@ -236,7 +236,7 @@ async function onSubmit(): Promise<void> {
 	serviceParams.instance = messagingParams.instance;
 	if (messagingParams.RequiredInterfaces.length === 0) {
 		messagingParams.RequiredInterfaces.push({
-			name: IqrfGatewayDaemonComponentName.ShapeWebsocketService,
+			name: 'shape::IWebsocketService',
 			target: {
 				instance: serviceParams.instance,
 			},
