@@ -175,42 +175,6 @@
 			"$id": "#/definitions/message",
 			"oneOf": [
 				{
-					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/infoDaemon_Enumeration-request-1-0-0.json"
-				},
-				{
-					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/infoDaemon_GetBinaryOutputs-request-1-0-0.json"
-				},
-				{
-					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/infoDaemon_GetLights-request-1-0-0.json"
-				},
-				{
-					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/infoDaemon_GetMidMetaData-request-1-0-0.json"
-				},
-				{
-					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/infoDaemon_GetNodeMetaData-request-1-0-0.json"
-				},
-				{
-					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/infoDaemon_GetNodes-request-1-0-0.json"
-				},
-				{
-					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/infoDaemon_GetSensors-request-1-0-0.json"
-				},
-				{
-					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/infoDaemon_MidMetaDataAnnotate-request-1-0-0.json"
-				},
-				{
-					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/infoDaemon_OrphanedMids-request-1-0-0.json"
-				},
-				{
-					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/infoDaemon_Reset-request-1-0-0.json"
-				},
-				{
-					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/infoDaemon_SetMidMetaData-request-1-0-0.json"
-				},
-				{
-					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/infoDaemon_SetNodeMetaData-request-1-0-0.json"
-				},
-				{
 					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqmeshNetwork_AutoNetwork-request-1-0-0.json"
 				},
 				{
