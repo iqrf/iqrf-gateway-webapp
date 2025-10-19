@@ -226,9 +226,6 @@
 					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqmeshNetwork_Restore-request-1-0-0.json"
 				},
 				{
-					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqmeshNetwork_SensorData-request-1-0-0.json"
-				},
-				{
 					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqmeshNetwork_SmartConnect-request-1-0-0.json"
 				},
 				{
