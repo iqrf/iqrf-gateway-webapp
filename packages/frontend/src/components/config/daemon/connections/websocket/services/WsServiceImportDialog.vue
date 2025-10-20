@@ -25,7 +25,7 @@ limitations under the License.
 				v-bind='props'
 				:action='Action.Import'
 				container-type='card-title'
-				:tooltip='$t("components.config.daemon.connections.actions.import")'
+				:tooltip='$t("components.config.daemon.connections.websocket.service.actions.import")'
 				:disabled='disabled'
 			/>
 		</template>
@@ -37,14 +37,14 @@ limitations under the License.
 		>
 			<ICard>
 				<template #title>
-					{{ $t('components.config.daemon.connections.actions.import') }}
+					{{ $t('components.config.daemon.connections.websocket.service.actions.import') }}
 				</template>
 				<v-file-input
 					v-model='file'
 					accept='.json'
-					:label='$t("components.config.daemon.connections.profileFile")'
+					:label='$t("components.config.daemon.connections.websocket.service.import.file")'
 					:rules='[
-						(v: File|null) => ValidationRules.required(v, $t("components.config.daemon.connections.validation.profileFile.required")),
+						(v: File|null) => ValidationRules.required(v, $t("components.config.daemon.connections.websocket.service.validation.file.required")),
 						(v: File) => ValidationRules.fileExtension(v, ["json"], $t("components.config.daemon.connections.validation.profileFile.extension")),
 					]'
 					:prepend-inner-icon='mdiFileOutline'
@@ -74,7 +74,6 @@ limitations under the License.
 <script lang='ts' setup>
 import {
 	IqrfGatewayDaemonComponentName,
-	type IqrfGatewayDaemonWsMessaging,
 	type ShapeWebsocketService,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import {
@@ -102,7 +101,7 @@ defineProps({
 	},
 });
 const emit = defineEmits<{
-	import: [messaging: IqrfGatewayDaemonWsMessaging, service: ShapeWebsocketService];
+	import: [service: ShapeWebsocketService];
 }>();
 const i18n = useI18n();
 const show: Ref<boolean> = ref(false);
@@ -125,27 +124,16 @@ async function onSubmit(): Promise<void> {
 		componentState.value = ComponentState.Idle;
 		return;
 	}
-	if (obj.messaging === undefined || !isWsMessaging(obj.messaging) || obj.service === undefined || !isWsService(obj.service)) {
+	if (!isWsService(obj)) {
 		toast.error(
-			i18n.t('components.config.daemon.connections.messages.profileFileInvalid'),
+			i18n.t('components.config.daemon.connections.websocket.service.validation.file.invalid'),
 		);
 		componentState.value = ComponentState.Idle;
 		return;
 	}
 	componentState.value = ComponentState.Idle;
-	emit('import', obj.messaging, obj.service);
+	emit('import', obj);
 	close();
-}
-
-function isWsMessaging(obj: any): obj is IqrfGatewayDaemonWsMessaging {
-	return obj !== undefined && obj !== null && typeof obj === 'object' &&
-		obj.component !== undefined && typeof obj.component === 'string' && obj.component === IqrfGatewayDaemonComponentName.IqrfWsMessaging &&
-		obj.instance !== undefined && typeof obj.instance === 'string' &&
-		obj.acceptAsyncMsg !== undefined && typeof obj.acceptAsyncMsg === 'boolean' &&
-		obj.RequiredInterfaces !== undefined && Array.isArray(obj.RequiredInterfaces) && obj.RequiredInterfaces.length === 1 && typeof obj.RequiredInterfaces[0] === 'object' &&
-		obj.RequiredInterfaces[0].name !== undefined && typeof obj.RequiredInterfaces[0].name === 'string' && obj.RequiredInterfaces[0].name === 'shape::IWebsocketService' &&
-		obj.RequiredInterfaces[0].target !== undefined && typeof obj.RequiredInterfaces[0].target === 'object' &&
-		obj.RequiredInterfaces[0].target.instance !== undefined && typeof obj.RequiredInterfaces[0].target.instance === 'string';
 }
 
 function isWsService(obj: any): obj is ShapeWebsocketService {

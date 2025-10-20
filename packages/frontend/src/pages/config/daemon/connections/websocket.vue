@@ -1,3 +1,4 @@
+
 <!--
 Copyright 2017-2025 IQRF Tech s.r.o.
 Copyright 2019-2025 MICRORISC s.r.o.
@@ -21,6 +22,14 @@ limitations under the License.
 			<title>{{ $t('pages.config.daemon.connections.ws.title') }}</title>
 		</Head>
 		<WsConnectionTable />
+		<WsMessagingTable
+			class='mt-4'
+			:service-instances='serviceInstances'
+		/>
+		<WsServiceTable
+			class='mt-4'
+			@update-services='(services: string[]) => serviceInstances = services'
+		/>
 	</div>
 </template>
 
@@ -32,6 +41,11 @@ limitations under the License.
 
 <script lang='ts' setup>
 import { Head } from '@unhead/vue/components';
+import { ref, type Ref } from 'vue';
 
+import WsMessagingTable from '@/components/config/daemon/connections/websocket/messagings/WsMessagingTable.vue';
+import WsServiceTable from '@/components/config/daemon/connections/websocket/services/WsServiceTable.vue';
 import WsConnectionTable from '@/components/config/daemon/connections/websocket/WsConnectionTable.vue';
+
+const serviceInstances: Ref<string[]> = ref([]);
 </script>

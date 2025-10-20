@@ -9,14 +9,14 @@
 				v-bind='props'
 				:action='action'
 				container-type='card-title'
-				:tooltip='$t("components.config.daemon.connections.actions.add")'
+				:tooltip='$t("components.config.daemon.connections.websocket.service.actions.add")'
 				:disabled='disabled'
 			/>
 			<IDataTableAction
 				v-if='action === Action.Edit'
 				v-bind='props'
 				:action='action'
-				:tooltip='$t("components.config.daemon.connections.actions.edit")'
+				:tooltip='$t("components.config.daemon.connections.websocket.service.actions.edit")'
 				:disabled='disabled'
 			/>
 		</template>
@@ -32,10 +32,10 @@
 					{{ dialogTitle }}
 				</template>
 				<ITextInput
-					v-model='messagingConfig.instance'
-					:label='$t("components.config.daemon.connections.profile")'
+					v-model='serviceConfig.instance'
+					:label='$t("components.config.daemon.connections.websocket.service.name")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.connections.validation.profile.required")),
+						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.connections.websocket.service.validation.name.required")),
 					]'
 					required
 				/>
@@ -52,14 +52,8 @@
 					required
 				/>
 				<v-checkbox
-					v-model='messagingConfig.acceptAsyncMsg'
-					:label='$t("components.config.daemon.connections.websocket.asyncMessages")'
-					density='compact'
-					hide-details
-				/>
-				<v-checkbox
 					v-model='serviceConfig.acceptOnlyLocalhost'
-					:label='$t("components.config.daemon.monitoring.onlyLocalhost")'
+					:label='$t("components.config.daemon.connections.websocket.acceptOnlyLocalhost")'
 					density='compact'
 					hide-details
 				/>
@@ -113,7 +107,6 @@
 import { IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import {
 	IqrfGatewayDaemonComponentName,
-	type IqrfGatewayDaemonWsMessaging,
 	type ShapeWebsocketService,
 	ShapeWebsocketTlsMode,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
@@ -128,7 +121,7 @@ import {
 	ITextInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
-import { computed, PropType, ref, Ref, toRaw, useTemplateRef, watch } from 'vue';
+import { computed, PropType, ref, Ref, toRaw, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -152,11 +145,6 @@ const componentProps = defineProps({
 		default: Action.Add,
 		required: false,
 	},
-	messagingInstance: {
-		type: Object as PropType<IqrfGatewayDaemonWsMessaging>,
-		required: false,
-		default: undefined,
-	},
 	serviceInstance: {
 		type: Object as PropType<ShapeWebsocketService>,
 		required: false,
@@ -170,13 +158,7 @@ const componentProps = defineProps({
 });
 const show: Ref<boolean> = ref(false);
 let fromImport = false;
-const form: Ref<VForm | null> = useTemplateRef('form');
-const defaultMessaging: IqrfGatewayDaemonWsMessaging = {
-	component: IqrfGatewayDaemonComponentName.IqrfWsMessaging,
-	instance: '',
-	acceptAsyncMsg: false,
-	RequiredInterfaces: [],
-};
+const form: Ref<VForm | null> = ref(null);
 const defaultService: ShapeWebsocketService = {
 	component: IqrfGatewayDaemonComponentName.ShapeWebsocketService,
 	instance: '',
@@ -188,28 +170,25 @@ const defaultService: ShapeWebsocketService = {
 	tlsMode: ShapeWebsocketTlsMode.Intermediate,
 };
 let previousInstance = '';
-const messagingConfig: Ref<IqrfGatewayDaemonWsMessaging> = ref(structuredClone(defaultMessaging));
 const serviceConfig: Ref<ShapeWebsocketService> = ref(structuredClone(defaultService));
 
 const dialogTitle = computed(() => {
 	if (componentProps.action === Action.Add) {
-		return i18n.t('components.config.daemon.connections.actions.add');
+		return i18n.t('components.config.daemon.connections.websocket.service.actions.add').toString();
 	}
-	return i18n.t('components.config.daemon.connections.actions.edit');
+	return i18n.t('components.config.daemon.connections.websocket.service.actions.edit').toString();
 });
 
 watch(show, (newVal: boolean): void => {
 	if (!newVal || fromImport) {
 		return;
 	}
-	if (componentProps.action === Action.Edit && componentProps.messagingInstance && componentProps.serviceInstance) {
-		messagingConfig.value = structuredClone(componentProps.messagingInstance);
+	if (componentProps.action === Action.Edit && componentProps.serviceInstance) {
 		serviceConfig.value = structuredClone(componentProps.serviceInstance);
-		previousInstance = componentProps.messagingInstance.instance;
+		previousInstance = componentProps.serviceInstance.instance;
 	} else {
-		messagingConfig.value = structuredClone(defaultMessaging);
 		serviceConfig.value = structuredClone(defaultService);
-		previousInstance = defaultMessaging.instance;
+		previousInstance = defaultService.instance;
 	}
 });
 
@@ -218,43 +197,28 @@ async function onSubmit(): Promise<void> {
 		return;
 	}
 	componentState.value = ComponentState.Action;
-	const messagingParams = structuredClone(toRaw(messagingConfig.value));
 	const serviceParams = structuredClone(toRaw(serviceConfig.value));
-	serviceParams.instance = messagingParams.instance;
-	if (messagingParams.RequiredInterfaces.length === 0) {
-		messagingParams.RequiredInterfaces.push({
-			name: 'shape::IWebsocketService',
-			target: {
-				instance: serviceParams.instance,
-			},
-		});
-	} else {
-		messagingParams.RequiredInterfaces[0].target.instance = serviceParams.instance;
-	}
-	const translationParams = { name: componentProps.action === Action.Add ? messagingParams.instance : previousInstance };
+	const translationParams = { name: componentProps.action === Action.Add ? serviceParams.instance : previousInstance };
 	try {
 		if (componentProps.action === Action.Add) {
 			await daemonService.createInstance(IqrfGatewayDaemonComponentName.ShapeWebsocketService, serviceParams);
-			await daemonService.createInstance(IqrfGatewayDaemonComponentName.IqrfWsMessaging, messagingParams);
 		} else {
 			await daemonService.updateInstance(IqrfGatewayDaemonComponentName.ShapeWebsocketService, previousInstance, serviceParams);
-			await daemonService.updateInstance(IqrfGatewayDaemonComponentName.IqrfWsMessaging, previousInstance, messagingParams);
 		}
 		toast.success(
-			i18n.t('components.config.daemon.connections.websocket.profile.messages.save.success', translationParams),
+			i18n.t('components.config.daemon.connections.websocket.service.messages.save.success', translationParams),
 		);
 		close();
 		emit('saved');
 	} catch {
 		toast.error(
-			i18n.t('components.config.daemon.connections.websocket.profile.messages.save.failed', translationParams),
+			i18n.t('components.config.daemon.connections.websocket.service.messages.save.failed', translationParams),
 		);
 	}
 	componentState.value = ComponentState.Idle;
 }
 
-function importFromConfig(messaging: IqrfGatewayDaemonWsMessaging, service: ShapeWebsocketService): void {
-	messagingConfig.value = structuredClone(messaging);
+function importFromConfig(service: ShapeWebsocketService): void {
 	serviceConfig.value = structuredClone(service);
 	fromImport = true;
 	show.value = true;
