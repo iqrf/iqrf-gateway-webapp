@@ -810,23 +810,52 @@
 						}
 					},
 					"websocket": {
+						"acceptOnlyLocalhost": "Accept only localhost connections",
 						"asyncMessages": "Accept asynchronous messages",
 						"certificate": "Path to certificate",
-						"delete": {
-							"prompt": "Are you sure you want to delete WebSocket connection profile {name}?",
-							"title": "WebSocket connection profile delete confirmation"
-						},
-						"messages": {
+						"messaging": {
+							"actions": {
+								"add": "Add WebSocket messaging",
+								"delete": "Delete WebSocket messaging",
+								"edit": "Edit WebSocket messaging",
+								"export": "Export WebSocket messaging",
+								"import": "Import WebSocket messaging",
+								"reload": "Reload WebSocket messagings"
+							},
 							"delete": {
-								"failed": "Failed to delete WebSocket connection profile {name}.",
-								"success": "WebSockeet connection profile {name} successfully deleted."
+								"prompt": "Are you sure you want to delete WebSocket messaging {name}?",
+								"title": "WebSocket messaging delete confirmation"
 							},
-							"fetch": {
-								"failed": "Failed to retrieve WebSocket connection profiles."
+							"import": {
+								"file": "WebSocket messaging file"
 							},
-							"save": {
-								"failed": "Failed to save WebSocket connection profile {name}",
-								"success": "WebSocket connection profile {name} successfully saved."
+							"messages": {
+								"delete": {
+									"failed": "Failed to delete WebSocket messaging {name}.",
+									"success": "WebSocket messaging {name} successfully deleted."
+								},
+								"fetch": {
+									"failed": "Failed to retrieve WebSocket messagings."
+								},
+								"save": {
+									"failed": "Failed to save WebSocket messaging {name}.",
+									"success": "WebSocket messaging {name} successfully saved."
+								}
+							},
+							"name": "Messaging name",
+							"notes": {
+								"serviceMissing": "WebSocket service missing."
+							},
+							"service": "Websocket service",
+							"title": "WebSocket messagings",
+							"validation": {
+								"file": {
+									"invalid": "Selected file does not contain a valid WebSocket messaging configuration.",
+									"required": "Please select WebSocket messaging file."
+								},
+								"name": {
+									"required": "Please enter WebSocket messaging name."
+								}
 							}
 						},
 						"notes": {
@@ -837,6 +866,66 @@
 							}
 						},
 						"privateKey": "Path to private key",
+						"profile": {
+							"delete": {
+								"prompt": "Are you sure you want to delete WebSocket connection profile {name}?",
+								"title": "WebSocket connection profile delete confirmation"
+							},
+							"messages": {
+								"delete": {
+									"failed": "Failed to delete WebSocket connection profile {name}.",
+									"success": "WebSocket connection profile {name} successfully deleted."
+								},
+								"fetch": {
+									"failed": "Failed to retrieve WebSocket connection profiles."
+								},
+								"save": {
+									"failed": "Failed to save WebSocket connection profile {name}.",
+									"success": "WebSocket connection profile {name} successfully saved."
+								}
+							}
+						},
+						"service": {
+							"actions": {
+								"add": "Add WebSocket service",
+								"delete": "Delete WebSocket service",
+								"edit": "Edit WebSocket service",
+								"export": "Export WebSocket service",
+								"import": "Import WebSocket service",
+								"reload": "Reload WebSocket services"
+							},
+							"delete": {
+								"prompt": "Are you sure you want to delete WebSocket service {name}?",
+								"title": "WebSocket service delete confirmation"
+							},
+							"import": {
+								"file": "WebSocket service file"
+							},
+							"messages": {
+								"delete": {
+									"failed": "Failed to delete WebSocket service {name}.",
+									"success": "WebSocket service {name} successfully deleted."
+								},
+								"fetch": {
+									"failed": "Failed to retrieve WebSocket services."
+								},
+								"save": {
+									"failed": "Failed to save WebSocket service {name}.",
+									"success": "WebSocket service {name} successfully saved."
+								}
+							},
+							"name": "Service name",
+							"title": "WebSocket services",
+							"validation": {
+								"file": {
+									"invalid": "Selected file does not contain a valid WebSocket service configuration.",
+									"required": "Please select WebSocket service file."
+								},
+								"name": {
+									"required": "Please enter WebSocket service name."
+								}
+							}
+						},
 						"tlsEnabled": "Enable TLS",
 						"tlsMode": "TLS mode",
 						"tlsModes": {

@@ -18,65 +18,61 @@ limitations under the License.
 <template>
 	<ICard>
 		<template #title>
-			{{ $t('pages.config.daemon.connections.ws.title') }}
+			{{ $t('components.config.daemon.connections.websocket.service.title') }}
 		</template>
 		<template #titleActions>
-			<WsConnectionForm
+			<WsServiceForm
 				ref='form'
 				:action='Action.Add'
 				:disabled='componentState === ComponentState.Reloading'
 				@saved='getConfigs()'
 			/>
-			<WsConnectionImportDialog
+			<WsServiceImportDialog
 				:disabled='componentState === ComponentState.Reloading'
-				@import='(m: IqrfGatewayDaemonWsMessaging, s: ShapeWebsocketService): void => importFromConfig(m, s)'
+				@import='(s: ShapeWebsocketService) => importFromConfig(s)'
 			/>
 			<IActionBtn
 				:action='Action.Reload'
 				container-type='card-title'
 				:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
-				:tooltip='$t("components.config.daemon.connections.actions.reload")'
+				:tooltip='$t("components.config.daemon.connections.websocket.service.actions.reload")'
 				@click='getConfigs()'
 			/>
 		</template>
 		<IDataTable
 			:headers='headers'
-			:items='ifaces'
+			:items='wsServices'
 			:hover='true'
 			:dense='true'
 			:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
 		>
 			<template #item.instance='{ item }'>
-				{{ item.messaging.instance }}
+				{{ item.instance }}
 			</template>
 			<template #item.port='{ item }'>
-				{{ item.service.WebsocketPort }}
-			</template>
-			<template #item.acceptAsyncMsg='{ item }'>
-				<BooleanCheckMarker :value='item.messaging.acceptAsyncMsg' />
+				{{ item.WebsocketPort }}
 			</template>
 			<template #item.acceptOnlyLocalhost='{ item }'>
-				<BooleanCheckMarker :value='item.service.acceptOnlyLocalhost' />
+				<BooleanCheckMarker :value='item.acceptOnlyLocalhost' />
 			</template>
 			<template #item.tlsEnabled='{ item }'>
-				<BooleanCheckMarker :value='item.service.tlsEnabled' />
+				<BooleanCheckMarker :value='item.tlsEnabled' />
 			</template>
 			<template #item.actions='{ item }'>
 				<IDataTableAction
 					:action='Action.Export'
-					:tooltip='$t("components.config.daemon.connections.actions.export")'
+					:tooltip='$t("components.config.daemon.connections.websocket.service.actions.export")'
 					:disabled='[ComponentState.Action, ComponentState.Reloading].includes(componentState)'
 					@click='exportConfig(item)'
 				/>
-				<WsConnectionForm
+				<WsServiceForm
 					:action='Action.Edit'
-					:messaging-instance='toRaw(item.messaging)'
-					:service-instance='toRaw(item.service)'
+					:service-instance='toRaw(item)'
 					:disabled='componentState === ComponentState.Reloading'
 					@saved='getConfigs()'
 				/>
-				<WsConnectionDeleteDialog
-					:connection-profile='toRaw(item)'
+				<WsServiceDeleteDialog
+					:connection-service='toRaw(item)'
 					:disabled='componentState === ComponentState.Reloading'
 					@deleted='getConfigs()'
 				/>
@@ -89,8 +85,6 @@ limitations under the License.
 import { type IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import {
 	IqrfGatewayDaemonComponentName,
-	type IqrfGatewayDaemonWebsocketInterface,
-	type IqrfGatewayDaemonWsMessaging,
 	type ShapeWebsocketService,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { FileDownloader } from '@iqrf/iqrf-gateway-webapp-client/utils';
@@ -102,32 +96,32 @@ import {
 	IDataTable,
 	IDataTableAction,
 } from '@iqrf/iqrf-vue-ui';
-import { computed, ref, type Ref, toRaw, useTemplateRef } from 'vue';
+import { ref, type Ref, toRaw, useTemplateRef } from 'vue';
 import { onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import BooleanCheckMarker from '@/components/BooleanCheckMarker.vue';
-import WsConnectionDeleteDialog from '@/components/config/daemon/connections/websocket/WsConnectionDeleteDialog.vue';
-import WsConnectionForm from '@/components/config/daemon/connections/websocket/WsConnectionForm.vue';
-import WsConnectionImportDialog from '@/components/config/daemon/connections/websocket/WsConnectionImportDialog.vue';
+import WsServiceDeleteDialog from '@/components/config/daemon/connections/websocket/services/WsServiceDeleteDialog.vue';
+import WsServiceForm from '@/components/config/daemon/connections/websocket/services/WsServiceForm.vue';
+import WsServiceImportDialog from '@/components/config/daemon/connections/websocket/services/WsServiceImportDialog.vue';
 import { useApiClient } from '@/services/ApiClient';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
-const headers = computed(() => [
-	{ key: 'instance', title: i18n.t('components.config.daemon.connections.profile') },
+const emit = defineEmits<{
+	updateServices: [services: string[]];
+}>();
+const headers = [
+	{ key: 'instance', title: i18n.t('components.config.daemon.connections.websocket.service.name') },
 	{ key: 'port', title: i18n.t('common.labels.port') },
-	{ key: 'acceptAsyncMsg', title: i18n.t('components.config.daemon.connections.acceptAsyncMessages') },
 	{ key: 'acceptOnlyLocalhost', title: i18n.t('components.config.daemon.connections.acceptOnlyLocalhost') },
 	{ key: 'tlsEnabled', title: i18n.t('components.config.daemon.connections.tls') },
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false },
-]);
-const service: IqrfGatewayDaemonService = useApiClient()
-	.getConfigServices()
-	.getIqrfGatewayDaemonService();
-const ifaces: Ref<IqrfGatewayDaemonWebsocketInterface[]> = ref([]);
-const form: Ref<InstanceType<typeof WsConnectionForm>|null> = useTemplateRef('form');
+];
+const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
+const wsServices: Ref<ShapeWebsocketService[]> = ref([]);
+const form: Ref<InstanceType<typeof WsServiceForm> | null> = useTemplateRef('form');
 
 async function getConfigs(): Promise<void> {
 	componentState.value = [
@@ -135,52 +129,30 @@ async function getConfigs(): Promise<void> {
 		ComponentState.FetchFailed,
 	].includes(componentState.value) ? ComponentState.Loading : ComponentState.Reloading;
 	try {
-		const messagings = (await service.getComponent(IqrfGatewayDaemonComponentName.IqrfWsMessaging)).instances;
-		const services = (await service.getComponent(IqrfGatewayDaemonComponentName.ShapeWebsocketService)).instances;
-		buildInterfaces(messagings, services);
+		wsServices.value = (await service.getComponent(IqrfGatewayDaemonComponentName.ShapeWebsocketService)).instances;
+		const instances = wsServices.value.map((item: ShapeWebsocketService) => item.instance);
+		emit('updateServices', instances);
 		componentState.value = ComponentState.Ready;
 	} catch {
 		toast.error(
-			i18n.t('components.config.daemon.connections.websocket.profile.messages.fetch.failed'),
+			i18n.t('components.config.daemon.connections.websocket.service.messages.fetch.failed'),
 		);
 		componentState.value = componentState.value === ComponentState.Loading ? ComponentState.FetchFailed : ComponentState.Ready;
 	}
 }
 
-function buildInterfaces(messagings: IqrfGatewayDaemonWsMessaging[], services: ShapeWebsocketService[]): void {
-	const serviceMap = new Map<string, number>();
-	for (const [idx, service] of services.entries()) {
-		serviceMap.set(service.instance, idx);
-	}
-	const interfaces: IqrfGatewayDaemonWebsocketInterface[] = [];
-	for (const messaging of messagings) {
-		if (messaging.RequiredInterfaces.length === 0) {
-			continue;
-		}
-		const serviceIdx = serviceMap.get(messaging.RequiredInterfaces[0].target.instance);
-		if (serviceIdx === undefined) {
-			continue;
-		}
-		interfaces.push({
-			messaging: messaging,
-			service: services[serviceIdx],
-		});
-	}
-	ifaces.value = interfaces;
-}
-
-function importFromConfig(messaging: IqrfGatewayDaemonWsMessaging, service: ShapeWebsocketService): void {
+function importFromConfig(service: ShapeWebsocketService): void {
 	if (form.value === null) {
 		return;
 	}
-	form.value.importFromConfig(messaging, service);
+	form.value.importFromConfig(service);
 }
 
-function exportConfig(config: IqrfGatewayDaemonWebsocketInterface): void {
+function exportConfig(config: ShapeWebsocketService): void {
 	FileDownloader.downloadFromData(
 		config,
 		'application/json',
-		`${config.messaging.component.replace('::', '__')}__${config.messaging.instance}__${config.service.component.replace('::', '__')}__${config.service.instance}.json`,
+		`${config.component.replace('::','__')}__${config.instance}.json`,
 	);
 }
 
