@@ -13,32 +13,38 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-image: iqrftech/iqrf-gateway-webapp:tests-bullseye
+image: iqrftech/iqrf-gateway-webapp:tests-bookworm
 
 stages:
   - build-docker-testing
   - test
   - coding-style
+  - dependency-check
   - sentry-release
   - build-package
   - deploy-package
   - build-docker
   - deploy-docs
 
-variables:
-  COMPOSER_CACHE_DIR: temp/composer/cache
+# Templates
+.base_template: &base_template
+  tags:
+    - linux
+    - amd64
 
-cache:
-  paths:
-    - temp/composer/cache
-
-.coding-style_template: &coding-style_template
-  stage: coding-style
-  needs: []
+.composer_template: &composer_template
+  before_script:
+    - composer install --no-progress
+  cache:
+    paths:
+      - temp/composer/cache
+  variables:
+    COMPOSER_CACHE_DIR: temp/composer/cache
 
 .npm_template: &npm_template
   before_script:
     - pnpm config set store-dir .pnpm-store
+    - pnpm config set registry http://nexus.iqrf.internal/repository/npmjs.org-proxy/
     - pnpm install
   cache:
     key: ${CI_COMMIT_REF_SLUG}
@@ -49,14 +55,24 @@ cache:
   stage: test
   needs: []
   retry: 2
-  tags:
-    - linux, amd64
+  <<: *base_template
+
+.coding-style_template: &coding-style_template
+  stage: coding-style
+  needs: []
+  <<: *base_template
+
+.dependency-check_template: &dependency-check_template
+  stage: dependency-check
+  needs: []
+  <<: *base_template
 
 .sentry-version_template: &sentry-version_template
   stage: sentry-release
   script:
     - sentry-cli releases new -p iqrf-gateway-webapp -p iqrf-gateway-webapp-frontend ${VERSION}
     - sentry-cli releases set-commits --auto ${VERSION}
+  <<: *base_template
 
 .ssh_template: &ssh_template
   before_script:
@@ -66,8 +82,7 @@ cache:
     - chmod 700 ~/.ssh
     - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
-  tags:
-    - linux
+  <<: *base_template
 
 .docker_template:
   image: docker:stable
@@ -103,8 +118,12 @@ build-docker:tests:
     DOCKER_FILE: docker/tests/bullseye.Dockerfile
     DOCKER_TAG: tests-bullseye
 
+# Tests
 test:
+  <<: *test_template
+  <<: *composer_template
   before_script:
+    - !reference [.composer_template, before_script]
     - update-alternatives --set php /usr/bin/php${PHP_VERSION}
     - composer install --no-progress
   script:
@@ -118,35 +137,29 @@ test:
         - '8.0'
         - '8.1'
         - '8.2'
+
+coverage:php:
   <<: *test_template
-
-newman:
-  stage: test
-  image: docker:latest
-  needs: []
-  services:
-    - docker:dind
-  before_script:
-    - apk add  --no-cache docker-compose
-  script:
-    - docker-compose -f api-testing.docker-compose.yml up --build --abort-on-container-exit
-  tags:
-    - linux, docker, amd64
-
-coverage:
+  <<: *composer_template
   before_script:
     - update-alternatives --set php /usr/bin/php8.1
-    - composer install --no-progress
+    - !reference [.composer_template, before_script]
+    - vendor/bin/tester -c ./tests/php-coverage.ini --info
   script:
     - vendor/bin/tester -c ./tests/php-coverage.ini -o none --coverage ./coverage.html --coverage-src ./app ./tests
   allow_failure: true
+  coverage: '/^\d+% covered/'
   artifacts:
     paths:
       - 'coverage.html'
     expire_in: 2 weeks
-  <<: *test_template
+    reports:
+      junit:
+        - junit.xml
 
-coverage:jest:
+coverage:js:
+  <<: *test_template
+  <<: *npm_template
   script:
     - pnpm run coverage:unit-ci
   allow_failure: true
@@ -162,62 +175,161 @@ coverage:jest:
   <<: *test_template
   <<: *npm_template
 
+newman:
+  <<: *test_template
+  image: docker:latest
+  needs: []
+  services:
+    - docker:dind
+  before_script:
+    - apk add  --no-cache docker-compose
+  script:
+    - docker-compose -f api-testing.docker-compose.yml up --build --abort-on-container-exit
+  tags:
+    - linux, docker, amd64
+
+# Coding style
 coding-style:
+  <<: *coding-style_template
+  <<: *composer_template
   script:
     - make cc
-  <<: *coding-style_template
 
 doctrine_mapping:
-  before_script:
-    - update-alternatives --set php /usr/bin/php7.4
-    - composer install --no-progress
+  <<: *coding-style_template
+  <<: *composer_template
   script:
     - bin/manager orm:validate-schema --skip-sync
-  <<: *coding-style_template
 
 phpstan:
+  <<: *coding-style_template
+  <<: *composer_template
   retry: 2
   before_script:
+    - !reference [.composer_template, before_script]
     - update-alternatives --set php /usr/bin/php7.4
-    - composer install --no-progress
   script:
-    - make phpstan
-  <<: *coding-style_template
+    - NETTE_TESTER_RUNNER=1 php vendor/bin/phpstan analyse -c phpstan.neon
 
 eslint:
+  <<: *coding-style_template
+  <<: *npm_template
   script:
     - pnpm run lint
-  <<: *coding-style_template
-  <<: *npm_template
 
 stylelint:
-  script:
-    - pnpm run lint:css
   <<: *coding-style_template
   <<: *npm_template
+  script:
+    - pnpm run lint:css
 
 qa:
+  <<: *coding-style_template
   before_script:
+    - !reference [.composer_template, before_script]
     - update-alternatives --set php /usr/bin/php7.4
-    - composer install --no-progress
   script:
     - make qa
-  <<: *coding-style_template
 
+# Dependency check
+dependency-check:parent:
+  <<: *dependency-check_template
+  script:
+    - |
+      curl -X "POST" "http://dependency-track.microrisc.site/api/v1/bom" \
+           -H 'Content-Type: multipart/form-data' \
+           -H "X-Api-Key: ${DEPENDENCY_TRACK_API_KEY}" \
+           -F "autoCreate=true" \
+           -F "projectName=IQRF Gateway Webapp" \
+           -F "projectVersion=${CI_COMMIT_REF_NAME}" \
+           -o - \
+           -v
+
+dependency-check:composer:
+  <<: *dependency-check_template
+  <<: *composer_template
+  script:
+
+    - cd ${PACKAGE_PATH}
+    - |
+      composer CycloneDX:make-sbom \
+        --output-format=json \
+        --output-file=sbom-composer-${PACKAGE}.json \
+        --spec-version=1.6 \
+        --output-reproducible \
+        --validate
+    - |
+      curl -X "POST" "http://dependency-track.microrisc.site/api/v1/bom" \
+           -H 'Content-Type: multipart/form-data' \
+           -H "X-Api-Key: ${DEPENDENCY_TRACK_API_KEY}" \
+           -F "autoCreate=true" \
+           -F "projectName=${PROJECT}" \
+           -F "projectVersion=${CI_COMMIT_REF_NAME}" \
+           -F "parentName=${PROJECT_PARENT}" \
+           -F "parentVersion=${CI_COMMIT_REF_NAME}" \
+           -F "bom=@sbom-composer-${PACKAGE}.json" \
+           -o - \
+           -v
+  needs:
+    - dependency-check:parent
+  parallel:
+    matrix:
+      - PACKAGE: backend
+        PACKAGE_PATH: .
+        PROJECT: 'IQRF Gateway Webapp Backend'
+        PROJECT_PARENT: 'IQRF Gateway Webapp'
+
+dependency-check:npm:
+  <<: *dependency-check_template
+  <<: *npm_template
+  script:
+    - cd ${PACKAGE_PATH}
+    - pnpm add --save-dev @cyclonedx/cdxgen
+    - |
+      npx @cyclonedx/cdxgen \
+        --output=sbom-npm-${PACKAGE}.json \
+        --type pnpm \
+        --spec-version=1.6 \
+        --validate
+    - |
+      curl -X "POST" "http://dependency-track.microrisc.site/api/v1/bom" \
+           -H 'Content-Type: multipart/form-data' \
+           -H "X-Api-Key: ${DEPENDENCY_TRACK_API_KEY}" \
+           -F "autoCreate=true" \
+           -F "projectName=${PROJECT}" \
+           -F "projectVersion=${CI_COMMIT_REF_NAME}" \
+           -F "parentName=${PROJECT_PARENT}" \
+           -F "parentVersion=${CI_COMMIT_REF_NAME}" \
+           -F "bom=@sbom-npm-${PACKAGE}.json" \
+           -o - \
+           -v
+  needs:
+    - dependency-check:parent
+  variables:
+    CDXGEN_IN_CONTAINER: "true"
+  parallel:
+    matrix:
+      - PACKAGE: frontend
+        PACKAGE_PATH: .
+        PROJECT: 'IQRF Gateway Webapp Frontend'
+        PROJECT_PARENT: 'IQRF Gateway Webapp'
+
+# Sentry version
 sentry-version:
+  <<: *sentry-version_template
   before_script:
     - export VERSION=`jq -r .version version.json`"~${CI_PIPELINE_ID}"
   except:
     - tags
-  <<: *sentry-version_template
 
 sentry-version_release:
+  <<: *sentry-version_template
   before_script:
     - export VERSION=`jq -r .version version.json`
   only:
     - tags
-  <<: *sentry-version_template
 
+# Package builds
 build-package:
   stage: build-package
   except:

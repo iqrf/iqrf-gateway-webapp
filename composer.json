@@ -82,6 +82,7 @@
 		"z4kn4fein/php-semver": "^v2.0.2"
 	},
 	"require-dev": {
+		"cyclonedx/cyclonedx-php-composer": "^v5.2.3",
 		"mockery/mockery": "^1.6.7",
 		"nette/tester": "^v2.4.3",
 		"ninjify/coding-standard": "^v0.12.1",
@@ -133,6 +134,7 @@
 		"allow-plugins": {
 			"dealerdirect/phpcodesniffer-composer-installer": true,
 			"composer/package-versions-deprecated": true,
+			"cyclonedx/cyclonedx-php-composer": true,
 			"cweagans/composer-patches": true,
 			"php-http/discovery": true
 		}
