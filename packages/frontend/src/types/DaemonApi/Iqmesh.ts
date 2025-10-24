@@ -117,7 +117,11 @@ export interface TrConfiguration {
 	// initphy
 	thermometerSensorPresent?: boolean;
 	serialEepromPresent?: boolean;
+	/**
+	 * @deprecated Use transceiverILType instead.
+	 */
 	transcieverILType?: boolean;
+	transceiverILType?: boolean;
 	// RF
 	rfBand?: string;
 	rfChannelA: number;

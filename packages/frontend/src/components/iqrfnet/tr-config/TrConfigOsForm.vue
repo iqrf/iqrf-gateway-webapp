@@ -130,7 +130,7 @@ limitations under the License.
 					hide-details
 				/>
 				<v-checkbox
-					v-model='config.serialEepromPresent'
+					v-model='config.transceiverILType'
 					:label='`${$t("components.iqrfnet.tr-config.os.peripherals.transceiverIL")} (5)`'
 					density='compact'
 					readonly
