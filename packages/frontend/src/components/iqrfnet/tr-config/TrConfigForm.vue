@@ -452,6 +452,7 @@ function prepareConfigData(data: TrConfiguration, addr: number): IqmeshWriteTrCo
 	delete data.thermometerSensorPresent;
 	delete data.serialEepromPresent;
 	delete data.transcieverILType;
+	delete data.transceiverILType;
 	return data as IqmeshWriteTrConfigParams;
 }
 
