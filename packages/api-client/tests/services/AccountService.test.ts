@@ -18,11 +18,12 @@ import { beforeEach, describe, expect, test } from 'vitest';
 
 import { AccountService } from '../../src/services';
 import {
+	type AccountEdit,
 	AccountState,
 	type EmailSentResponse,
 	type EmailVerificationResendRequest,
-	type UserAccountRecovery, type UserCredentials,
-	type UserEdit,
+	type UserAccountRecovery,
+	type UserCredentials,
 	type UserInfo,
 	UserLanguage,
 	type UserPasswordChange,
@@ -89,12 +90,10 @@ describe('AccountService', (): void => {
 
 	test('edit the user', async (): Promise<void> => {
 		expect.assertions(1);
-		const request: UserEdit = {
+		const request: AccountEdit = {
 			username: 'admin',
 			email: 'admin@example.org',
-			password: 'iqrf',
 			language: UserLanguage.English,
-			role: UserRole.Admin,
 			baseUrl: 'http://iqaros.local/',
 		};
 		const response: EmailSentResponse = {
