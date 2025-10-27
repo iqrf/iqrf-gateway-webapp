@@ -201,33 +201,37 @@ newman:
   tags:
     - linux, docker, amd64
 
-# Coding style
-coding-style:
-  <<: *coding-style_template
-  <<: *composer_template
-  image: iqrftech/iqrf-gateway-webapp:tests-bookworm
-  script:
-    - make cc
+# Coding style - backend
+include:
+  - component: gitlab.iqrf.org/open-source/gitlab-ci-components/coding-style-php-codesniffer@master
+    inputs:
+      job_name: backend:codesniffer
+      stage: coding-style
+      php_version: '8.2'
+      php_version_id: '80200'
+      project_dir: '.'
+      sources: 'app bin db tests'
+  - component: gitlab.iqrf.org/open-source/gitlab-ci-components/coding-style-php-doctrine-mapping@master
+    inputs:
+      job_name: backend:doctrine_mapping
+      stage: coding-style
+      php_version: '8.3'
+      project_dir: '.'
+  - component: gitlab.iqrf.org/open-source/gitlab-ci-components/coding-style-php-latte-lint@master
+    inputs:
+      job_name: backend:latte-lint
+      stage: coding-style
+      php_version: '8.3'
+      project_dir: '.'
+      sources: 'app'
+  - component: gitlab.iqrf.org/open-source/gitlab-ci-components/coding-style-php-phpstan@master
+    inputs:
+      job_name: backend:phpstan
+      stage: coding-style
+      php_version: '8.3'
+      project_dir: '.'
 
-codesniffer:
-  <<: *coding-style_template
-  <<: *composer_template
-  script:
-    - vendor/bin/codesniffer --runtime-set php_version 80200 app bin db tests
-
-doctrine_mapping:
-  <<: *coding-style_template
-  <<: *composer_template
-  script:
-    - bin/manager orm:validate-schema --skip-sync
-
-phpstan:
-  <<: *coding-style_template
-  <<: *composer_template
-  retry: 2
-  script:
-    - NETTE_TESTER_RUNNER=1 php vendor/bin/phpstan analyse -c phpstan.neon
-
+# Coding style - frontend
 eslint:
   <<: *coding-style_template
   <<: *npm_template
@@ -270,7 +274,6 @@ dependency-check:composer:
   <<: *dependency-check_template
   <<: *composer_template
   script:
-
     - cd ${PACKAGE_PATH}
     - |
       composer CycloneDX:make-sbom \
