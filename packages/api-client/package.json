@@ -38,9 +38,9 @@
 	"module": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"scripts": {
-		"build": "NODE_OPTIONS='--max-old-space-size=4096' tsup",
+		"build": "NODE_OPTIONS='--max-old-space-size=4096' tsdown",
 		"coverage:unit": "vitest --run --coverage",
-		"dev": "tsup --watch",
+		"dev": "tsdown --watch",
 		"docs": "rm -rf docs/ && typedoc",
 		"prepublish": "npm run build",
 		"lint": "npm run lint:js && npm run lint:ts",
@@ -89,21 +89,21 @@
 		"uuid": "^13.0.0"
 	},
 	"devDependencies": {
-		"@iqrf/eslint-config": "^0.2.17",
+		"@iqrf/eslint-config": "^0.3.1",
 		"@types/luxon": "^3.7.1",
-		"@types/node": "^24.8.1",
+		"@types/node": "^24.9.1",
 		"@types/punycode": "^2.1.4",
-		"@vitest/coverage-istanbul": "^3.2.4",
-		"@vitest/spy": "^3.2.4",
+		"@vitest/coverage-istanbul": "^4.0.4",
+		"@vitest/spy": "^4.0.4",
 		"axios-mock-adapter": "^2.1.0",
 		"eslint": "^9.38.0",
 		"ts-node": "^10.9.2",
-		"tsup": "^8.5.0",
+		"tsdown": "^0.15.10",
 		"typedoc": "^0.28.14",
 		"typedoc-material-theme": "^1.4.0",
 		"typedoc-plugin-mdn-links": "^5.0.10",
 		"typescript": "^5.9.3",
 		"vite-tsconfig-paths": "^5.1.4",
-		"vitest": "^3.2.4"
+		"vitest": "^4.0.4"
 	}
 }

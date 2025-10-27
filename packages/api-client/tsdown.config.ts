@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { defineConfig } from 'tsup';
+import { defineConfig, type UserConfig } from 'tsdown';
 
 export default defineConfig({
 	clean: true,
@@ -43,9 +43,8 @@ export default defineConfig({
 	outDir: 'dist',
 	sourcemap: true,
 	splitting: false,
-	bundle: true,
 	skipNodeModulesBundle: true,
 	keepNames: true,
 	target: 'es2022',
 	tsconfig: 'tsconfig.build.json',
-});
+} as UserConfig);
