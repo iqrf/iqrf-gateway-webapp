@@ -23,18 +23,13 @@ stages:
   - sentry-release
   - jsonnet
   - build-docker
-  - deploy-docs
+  - deploy
 
 # Templates
 .base_template: &base_template
   tags:
     - linux
     - amd64
-
-.coding-style_template: &coding-style_template
-  stage: coding-style
-  needs: []
-  <<: *base_template
 
 .composer_template: &composer_template
   before_script:
@@ -165,30 +160,6 @@ build:js:
           - api-client
           - frontend
 
-coverage:js:
-  <<: *test_template
-  <<: *npm_template
-  before_script:
-    - !reference [.npm_template, before_script]
-    - 'if [[ "${PACKAGE}" == "frontend" ]]; then pnpm --dir packages/api-client build; fi'
-  script:
-    - pnpm --dir packages/${PACKAGE} coverage:unit
-  allow_failure: true
-  coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
-  artifacts:
-    paths:
-      - 'packages/${PACKAGE}/coverage/'
-    expire_in: 2 weeks
-    when: always
-    reports:
-      junit:
-        - packages/${PACKAGE}/junit.xml
-  parallel:
-    matrix:
-      - PACKAGE:
-          - api-client
-          - frontend
-
 newman:
   <<: *test_template
   image: docker:latest
@@ -201,8 +172,23 @@ newman:
   tags:
     - linux, docker, amd64
 
-# Coding style - backend
 include:
+  # Tests - API client
+  - component: gitlab.iqrf.org/open-source/gitlab-ci-components/test-js-vitest-coverage@master
+    inputs:
+      job_name: coverage
+      project_dir: 'packages/api-client'
+  # Tests - Frontend
+  - component: gitlab.iqrf.org/open-source/gitlab-ci-components/test-js-vitest-coverage@master
+    inputs:
+      job_name: coverage
+      project_dir: 'packages/frontend'
+  # Coding style - API client
+  - component: gitlab.iqrf.org/open-source/gitlab-ci-components/coding-style-js-eslint@master
+    inputs:
+      job_name: api-client:eslint
+      project_dir: 'packages/api-client'
+  # Coding style - backend
   - component: gitlab.iqrf.org/open-source/gitlab-ci-components/coding-style-php-codesniffer@master
     inputs:
       job_name: backend:codesniffer
@@ -230,31 +216,36 @@ include:
       stage: coding-style
       php_version: '8.3'
       project_dir: '.'
-
-# Coding style - frontend
-eslint:
-  <<: *coding-style_template
-  <<: *npm_template
-  before_script:
-    - !reference [.npm_template, before_script]
-    - 'if [[ "${PACKAGE}" == "frontend" ]]; then pnpm --dir packages/api-client build; fi'
-  script:
-    - pnpm --dir packages/${PACKAGE} run lint:js
-  parallel:
-    matrix:
-      - PACKAGE:
-          - api-client
-          - frontend
-
-stylelint:
-  <<: *coding-style_template
-  <<: *npm_template
-  script:
-    - pnpm --dir packages/${PACKAGE} lint:css
-  parallel:
-    matrix:
-      - PACKAGE:
-          - frontend
+  # Coding style - frontend
+  - component: gitlab.iqrf.org/open-source/gitlab-ci-components/coding-style-js-eslint@master
+    inputs:
+      job_name: frontend:eslint
+      project_dir: 'packages/frontend'
+  - component: gitlab.iqrf.org/open-source/gitlab-ci-components/coding-style-js-stylelint@master
+    inputs:
+      job_name: frontend:stylelint
+      project_dir: 'packages/frontend'
+#  - component: gitlab.iqrf.org/open-source/gitlab-ci-components/coding-style-js-tsc@master
+#    inputs:
+#      job_name: frontend:tsc
+#      project_dir: 'packages/frontend'
+  - component: gitlab.iqrf.org/open-source/gitlab-ci-components/coding-style-js-vue-i18n@master
+    inputs:
+      job_name: frontend:vue-i18n
+      project_dir: 'packages/frontend'
+  # Documentation deployment
+  - component: gitlab.iqrf.org/open-source/gitlab-ci-components/deploy-js@master
+    inputs:
+      job_name: deploy-typedoc:api-client
+      build_dir: 'docs'
+      deploy_path: '/data/nginx/apidocs/js/iqrf-gateway-webapp-client/${CI_COMMIT_REF_SLUG}'
+      environment_name: '${CI_COMMIT_REF_SLUG}'
+      environment_url: 'https://apidocs.iqrf.org/js/iqrf-gateway-webapp-client/${CI_COMMIT_REF_SLUG}'
+      npm_script_name: 'docs:typedoc'
+      only:
+        - master
+        - tags
+      project_dir: 'packages/api-client'
 
 # Dependency check
 dependency-check:parent:
@@ -384,7 +375,7 @@ jsonnet-trigger-packages:
 deploy:docs:openapi:
   <<: *ssh_template
   <<: *composer_template
-  stage: deploy-docs
+  stage: deploy
   environment:
     name: apidocs
     url: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/
@@ -398,30 +389,3 @@ deploy:docs:openapi:
     - ssh www-deploy@icinga.iqrf.org "rm -rf /data/nginx/apidocs/openapi/iqrf-gateway-webapp/api.json /data/nginx/apidocs/openapi/iqrf-gateway-webapp/schemas/"
     - rsync -hrvz --delete -e ssh api.json www-deploy@icinga.iqrf.org:/data/nginx/apidocs/openapi/iqrf-gateway-webapp/api.json
     - rsync -hrvz --delete -e ssh api/schemas/* www-deploy@icinga.iqrf.org:/data/nginx/apidocs/openapi/iqrf-gateway-webapp/schemas/
-
-deploy-docs:typedoc:
-  <<: *base_template
-  <<: *npm_template
-  <<: *ssh_template
-  stage: deploy-docs
-  environment:
-    name: apidocs
-    url: https://apidocs.iqrf.org/${DEPLOY_DIR}/
-  only:
-    - master
-  before_script:
-    - !reference [.npm_template, before_script]
-    - !reference [.ssh_template, before_script]
-    - 'if [[ "${PACKAGE}" == "frontend" ]]; then pnpm --dir packages/api-client build; fi'
-  script:
-    - pnpm --dir packages/${PACKAGE} docs
-    - ssh www-deploy@icinga.iqrf.org "rm -rf /data/nginx/apidocs/${DEPLOY_DIR}/*"
-    - rsync -hrvz --delete -e ssh packages/${PACKAGE}/docs/* www-deploy@icinga.iqrf.org:/data/nginx/apidocs/${DEPLOY_DIR}/
-  cache:
-    key: ${CI_COMMIT_REF_SLUG}
-    paths:
-      - .pnpm-store
-  parallel:
-    matrix:
-      - PACKAGE: api-client
-        DEPLOY_DIR: js/iqrf-gateway-webapp-client
