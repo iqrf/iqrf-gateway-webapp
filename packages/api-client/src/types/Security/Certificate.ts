@@ -22,31 +22,31 @@ export interface CertificateInfo {
 	/**
 	 * Certificate subject
 	 */
-	subject: string,
+	subject: string;
 
 	/**
 	 * Certificate issuer
 	 */
-	issuer: string,
+	issuer: string;
 
 	/**
 	 * Certificate subject alternative names
 	 */
-	subjectAlternativeNames: string[],
+	subjectAlternativeNames: string[];
 
 	/**
 	 * Certificate is valid until
 	 */
-	validTo: string,
+	validTo: string;
 
 	/**
 	 * Expired certificate
 	 */
-	expired: boolean,
+	expired: boolean;
 
 	/**
 	 * Self-signed certificate
 	 */
-	selfSigned: boolean,
+	selfSigned: boolean;
 
 }

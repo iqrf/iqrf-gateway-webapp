@@ -19,15 +19,15 @@
  */
 export interface AptConfigRaw {
 	/// Unnecessary package removal interval
-	'APT::Periodic::AutocleanInterval': string,
+	'APT::Periodic::AutocleanInterval': string;
 	/// Enable automatic upgrades
-	'APT::Periodic::Enable'?: string,
+	'APT::Periodic::Enable'?: string;
 	/// Package upgrade interval
-	'APT::Periodic::Unattended-Upgrade': string
-	///Package list update interval
-	'APT::Periodic::Update-Package-Lists': string,
+	'APT::Periodic::Unattended-Upgrade': string;
+	/// Package list update interval
+	'APT::Periodic::Update-Package-Lists': string;
 	/// Reboot on kernel updates
-	'Unattended-Upgrade::Automatic-Reboot': string,
+	'Unattended-Upgrade::Automatic-Reboot': string;
 }
 
 /**

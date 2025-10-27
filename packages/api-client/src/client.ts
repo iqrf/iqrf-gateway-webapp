@@ -278,22 +278,29 @@ export class Client {
 
 	/**
 	 * Add a request interceptor
-	 * @param {Function} onFulfilled Fulfilled callback
-	 * @param {Function} onRejected Rejected callback
+	 * @param {((value: InternalAxiosRequestConfig) => InternalAxiosRequestConfig | Promise<InternalAxiosRequestConfig>) | null} onFulfilled Fulfilled callback
+	 * @param {((error: any) => any) | null} onRejected Rejected callback
 	 * @param {AxiosInterceptorOptions} options Interceptor options
 	 * @return {number} Interceptor ID
 	 */
-	public useRequestInterceptor(onFulfilled?: ((value: InternalAxiosRequestConfig) => InternalAxiosRequestConfig | Promise<InternalAxiosRequestConfig>) | null, onRejected?: ((error: any) => any) | null, options?: AxiosInterceptorOptions): number {
+	public useRequestInterceptor(
+		onFulfilled?: ((value: InternalAxiosRequestConfig) => InternalAxiosRequestConfig | Promise<InternalAxiosRequestConfig>) | null,
+		onRejected?: ((error: any) => any) | null,
+		options?: AxiosInterceptorOptions,
+	): number {
 		return this.axiosInstance.interceptors.request.use(onFulfilled, onRejected, options);
 	}
 
 	/**
 	 * Add a response interceptor
-	 * @param {Function} onFulfilled Fulfilled callback
-	 * @param {Function} onRejected Rejected callback
+	 * @param {((value: AxiosResponse) => AxiosResponse | Promise<AxiosResponse>) | null} onFulfilled Fulfilled callback
+	 * @param {((error: any) => any) | null} onRejected Rejected callback
 	 * @return {number} Interceptor ID
 	 */
-	public useResponseInterceptor(onFulfilled?: ((value: AxiosResponse) => AxiosResponse | Promise<AxiosResponse>) | null, onRejected?: ((error: any) => any) | null): number {
+	public useResponseInterceptor(
+		onFulfilled?: ((value: AxiosResponse) => AxiosResponse | Promise<AxiosResponse>) | null,
+		onRejected?: ((error: any) => any) | null,
+	): number {
 		return this.axiosInstance.interceptors.response.use(onFulfilled, onRejected);
 	}
 

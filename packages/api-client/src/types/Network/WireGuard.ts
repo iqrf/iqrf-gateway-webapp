@@ -19,9 +19,9 @@
  */
 export interface WireGuardKeyPair {
 	/// Private key
-	privateKey: string,
+	privateKey: string;
 	/// Public key
-	publicKey: string,
+	publicKey: string;
 }
 
 /**
@@ -41,9 +41,9 @@ export enum WireGuardIpStack {
  */
 export interface WireGuardIpAddress {
 	/// IP address
-	address: string,
+	address: string;
 	/// Prefix length
-	prefix: number,
+	prefix: number;
 }
 
 /**
@@ -51,11 +51,11 @@ export interface WireGuardIpAddress {
  */
 export interface WireGuardAllowedIps {
 	/// IPv4 allowed IPs
-	ipv4: WireGuardIpAddress[],
+	ipv4: WireGuardIpAddress[];
 	/// IPv6 allowed IPs
-	ipv6: WireGuardIpAddress[],
+	ipv6: WireGuardIpAddress[];
 	/// IP stack type
-	stack?: WireGuardIpStack,
+	stack?: WireGuardIpStack;
 }
 
 /**
@@ -63,17 +63,17 @@ export interface WireGuardAllowedIps {
  */
 export interface WireGuardPeer {
 	/// Allowed IPs
-	allowedIPs: WireGuardAllowedIps,
+	allowedIPs: WireGuardAllowedIps;
 	/// Endpoint
-	endpoint: string,
+	endpoint: string;
 	/// Keepalive interval
-	keepalive: number,
+	keepalive: number;
 	/// Endpoint port
-	port: number,
+	port: number;
 	/// Pre-shared key
-	psk?: string,
+	psk?: string;
 	/// Peer public key
-	publicKey: string
+	publicKey: string;
 }
 
 /**
@@ -81,21 +81,21 @@ export interface WireGuardPeer {
  */
 export interface WireGuardTunnelConfig {
 	/// Tunnel IPv4 address
-	ipv4?: WireGuardIpAddress,
+	ipv4?: WireGuardIpAddress;
 	/// Tunnel IPv6 address
-	ipv6?: WireGuardIpAddress,
+	ipv6?: WireGuardIpAddress;
 	/// Tunnel name
-	name: string,
+	name: string;
 	/// Tunnel peers
-	peers: WireGuardPeer[],
+	peers: WireGuardPeer[];
 	/// Tunnel port
-	port?: number,
+	port?: number;
 	/// Tunnel private key
-	privateKey: string,
+	privateKey: string;
 	/// Tunnel public key
-	publicKey?: string,
+	publicKey?: string;
 	/// Tunnel IP stack
-	stack?: WireGuardIpStack,
+	stack?: WireGuardIpStack;
 }
 
 /**
@@ -103,11 +103,11 @@ export interface WireGuardTunnelConfig {
  */
 export interface WireGuardTunnelListEntry {
 	/// Tunnel active status
-	active: boolean,
+	active: boolean;
 	/// Tunnel enabled status
-	enabled: boolean,
+	enabled: boolean;
 	/// Tunnel ID
-	id: number,
+	id: number;
 	/// Tunnel name
-	name: string
+	name: string;
 }

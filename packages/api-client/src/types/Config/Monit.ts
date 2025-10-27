@@ -19,9 +19,9 @@
  */
 export interface MonitCheckEnablement {
 	/// Check enablement
-	enabled: boolean,
+	enabled: boolean;
 	/// Check name
-	name: string
+	name: string;
 }
 
 /**
@@ -29,7 +29,7 @@ export interface MonitCheckEnablement {
  */
 export interface MonitCheck extends MonitCheckEnablement {
 	/// Check content
-	content: string
+	content: string;
 }
 
 /**
@@ -37,9 +37,9 @@ export interface MonitCheck extends MonitCheckEnablement {
  */
 export interface MMonitCredentials {
 	/// M/Monit password
-	password: string,
+	password: string;
 	/// M/Monit username
-	username: string
+	username: string;
 }
 
 /**
@@ -47,11 +47,11 @@ export interface MMonitCredentials {
  */
 export interface MMonitConfig {
 	/// M/Monit credentials
-	credentials: MMonitCredentials,
+	credentials: MMonitCredentials;
 	/// M/Monit connection enablement
-	enabled: boolean,
+	enabled: boolean;
 	/// M/Monit server address
-	server: string
+	server: string;
 }
 
 /**
@@ -59,7 +59,7 @@ export interface MMonitConfig {
  */
 export interface MonitConfig {
 	/// Monit check enablement
-	checks: MonitCheckEnablement[]
+	checks: MonitCheckEnablement[];
 	/// M/Monit connection configuration
-	mmonit: MMonitConfig
+	mmonit: MMonitConfig;
 }

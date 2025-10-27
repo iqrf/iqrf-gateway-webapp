@@ -24,12 +24,12 @@ export interface ApiKeyConfig {
 	/**
 	 * API key description
 	 */
-	description: string,
+	description: string;
 
 	/**
 	 * API key expiration date
 	 */
-	expiration: DateTime|null,
+	expiration: DateTime|null;
 
 }
 
@@ -41,7 +41,7 @@ export interface ApiKeyInfo extends ApiKeyConfig {
 	/**
 	 * API key ID
 	 */
-	id?: number,
+	id?: number;
 
 }
 
@@ -53,6 +53,6 @@ export interface ApiKeyCreated extends ApiKeyInfo {
 	/**
 	 * API key
 	 */
-	key: string,
+	key: string;
 
 }

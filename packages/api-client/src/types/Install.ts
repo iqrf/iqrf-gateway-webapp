@@ -21,13 +21,13 @@ import { type Feature } from './Feature';
  */
 export interface InstallationCheckDependency {
 	/// Required command from the dependency
-	command: string,
+	command: string;
 	/// Is the dependency critical?
-	critical: boolean,
+	critical: boolean;
 	/// Name of the feature that requires the missing command
-	feature?: Feature,
+	feature?: Feature;
 	/// Name of the package from which the missing dependency comes
-	package: string,
+	package: string;
 }
 
 /**
@@ -35,9 +35,9 @@ export interface InstallationCheckDependency {
  */
 export interface InstallationCheckPhpMissingExtensions {
 	/// Missing PHP extensions
-	extensions: string[],
+	extensions: string[];
 	/// Missing PHP packages
-	packages?: string[],
+	packages?: string[];
 }
 
 /**
@@ -45,21 +45,21 @@ export interface InstallationCheckPhpMissingExtensions {
  */
 export interface InstallationCheckPhpExtensions {
 	/// Are all required PHP extensions loaded?
-	allExtensionsLoaded: boolean,
+	allExtensionsLoaded: boolean;
 	/// Missing PHP extensions
-	missing?: InstallationCheckPhpMissingExtensions,
+	missing?: InstallationCheckPhpMissingExtensions;
 }
 
 /**
  * sudo check
  */
 export interface InstallationCheckSudo {
-	///Does the sudo command exist?
-	exists: boolean,
-	///Name of the user that is used to run the application
-	user: string,
+	/// Does the sudo command exist?
+	exists: boolean;
+	/// Name of the user that is used to run the application
+	user: string;
 	/// Is the user allowed to run sudo commands?
-	userSudo: boolean,
+	userSudo: boolean;
 }
 
 
@@ -68,15 +68,15 @@ export interface InstallationCheckSudo {
  */
 export interface InstallationChecks {
 	/// Are all database migrations executed?
-	allMigrationsExecuted: boolean,
+	allMigrationsExecuted: boolean;
 	/// Missing dependencies
-	dependencies: InstallationCheckDependency[],
+	dependencies: InstallationCheckDependency[];
 	/// Are there any users in the database?
-	hasUsers?: boolean,
+	hasUsers?: boolean;
 	/// IQRF Gateway ID
-	gwId: string | null,
+	gwId: string | null;
 	/// PHP extensions check
-	phpModules: InstallationCheckPhpExtensions,
+	phpModules: InstallationCheckPhpExtensions;
 	/// sudo check
-	sudo?: InstallationCheckSudo,
+	sudo?: InstallationCheckSudo;
 }

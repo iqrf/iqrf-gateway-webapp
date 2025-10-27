@@ -208,11 +208,11 @@ export interface IqrfGatewayDaemonMonitor extends IqrfGatewayDaemonComponentInst
  */
 export interface IqrfGatewayDaemonMqMessaging extends IqrfGatewayDaemonComponentInstanceBase<IqrfGatewayDaemonComponentName.IqrfMqMessaging> {
 	/// Accept asynchronous messages
-	acceptAsyncMsg: boolean,
+	acceptAsyncMsg: boolean;
 	/// Server message queue
-	LocalMqName: string,
+	LocalMqName: string;
 	/// Client message queue
-	RemoteMqName: string,
+	RemoteMqName: string;
 }
 
 /**
@@ -537,7 +537,7 @@ export interface IqrfGatewayDaemonMapping {
  */
 export interface IqrfGatewayDaemonMessagingInstances {
 	/// MQTT messaging instances
-	mqtt: string[],
+	mqtt: string[];
 	/// WS messaging instances
-	ws: string[],
+	ws: string[];
 }

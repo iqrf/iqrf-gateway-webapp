@@ -47,7 +47,7 @@ describe('TimeService', (): void => {
 			ntpServers: [],
 			localTimestamp: 1_698_325_571,
 			utcTimestamp: 1_698_318_371,
-			zoneName :'Europe/Prague',
+			zoneName: 'Europe/Prague',
 		};
 		mockedAxios.onGet('/gateway/time')
 			.reply(200, config);

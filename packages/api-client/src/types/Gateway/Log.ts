@@ -16,9 +16,9 @@
 
 export interface JournalRecords {
 	/// Cursor of the last record
-	endCursor: string,
+	endCursor: string;
 	/// Journal records
 	records: string[];
 	/// Cursor of the first record
-	startCursor: string
+	startCursor: string;
 }

@@ -24,27 +24,27 @@ export interface SshKeyInfoBase {
 	/**
 	 * SSH key description
 	 */
-	description: string,
+	description: string;
 
 	/**
 	 * SSH key hash
 	 */
-	hash: string,
+	hash: string;
 
 	/**
 	 * SSH key ID
 	 */
-	id: number,
+	id: number;
 
 	/**
 	 * SSH public key
 	 */
-	key: string,
+	key: string;
 
 	/**
 	 * SSH key type
 	 */
-	type: string
+	type: string;
 
 }
 
@@ -56,7 +56,7 @@ export interface SshKeyInfo extends SshKeyInfoBase {
 	/**
 	 * SSH key creation date
 	 */
-	createdAt: DateTime | null
+	createdAt: DateTime | null;
 
 }
 
@@ -68,7 +68,7 @@ export interface SshKeyInfoRaw extends SshKeyInfoBase {
 	/**
 	 * SSH key creation date
 	 */
-	createdAt: string
+	createdAt: string;
 
 }
 
@@ -80,12 +80,12 @@ export interface SshKeyCreate {
 	/**
 	 * SSH key description
 	 */
-	description: string
+	description: string;
 
 	/**
 	 * SSH public key
 	 */
-	key: string
+	key: string;
 
 }
 
@@ -97,6 +97,6 @@ export interface SshKeyCreated {
 	/**
 	 * Failed to create SSH keys
 	 */
-	failedKeys: SshKeyCreate[]
+	failedKeys: SshKeyCreate[];
 
 }

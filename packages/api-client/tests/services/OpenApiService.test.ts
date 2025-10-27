@@ -43,7 +43,7 @@ describe('OpenApiService', (): void => {
 				'name': 'Apache 2.0',
 				'url': 'https://www.apache.org/licenses/LICENSE-2.0.html',
 			},
-			'version':'0.0.1',
+			'version': '0.0.1',
 		},
 		'paths': {
 			'/openapi': {
@@ -56,7 +56,7 @@ describe('OpenApiService', (): void => {
 							'description': 'Success',
 							'content': {
 								'application/json': {
-									'schema': { '$ref':'#/components/schemas/OpenApiSpecification' },
+									'schema': { '$ref': '#/components/schemas/OpenApiSpecification' },
 								},
 							},
 						},
@@ -69,11 +69,11 @@ describe('OpenApiService', (): void => {
 				'url': '{protocol}://{server}/api/v0/',
 				'variables': {
 					'protocol': {
-						'enum': ['http','https'],
+						'enum': ['http', 'https'],
 						'default': 'http',
 					},
 					'server': {
-						'default':'localhost:8080',
+						'default': 'localhost:8080',
 					},
 				},
 			} as unknown as ServerObject,

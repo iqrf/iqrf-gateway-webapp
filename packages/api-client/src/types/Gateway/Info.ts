@@ -41,13 +41,13 @@ export interface UsageBase {
  */
 export interface FileSystemUsage extends UsageBase {
 	/// Available space
-	available: string
+	available: string;
 	/// File system name
-	fsName: string
+	fsName: string;
 	/// File system name
-	fsType: string
+	fsType: string;
 	/// Mount point
-	mount: string
+	mount: string;
 }
 
 /**
@@ -55,15 +55,15 @@ export interface FileSystemUsage extends UsageBase {
  */
 export interface MemoryUsage extends UsageBase {
 	/// Available memory
-	available: string
+	available: string;
 	/// Memory used for buffers
-	buffers: string
+	buffers: string;
 	/// Memory used for cache
-	cache: string
+	cache: string;
 	/// Free memory
-	free: string
+	free: string;
 	/// Shared memory
-	shared: string
+	shared: string;
 }
 
 /**
@@ -71,7 +71,7 @@ export interface MemoryUsage extends UsageBase {
  */
 export interface SwapUsage extends UsageBase {
 	/// Free swap
-	free: string
+	free: string;
 }
 
 /**

@@ -19,25 +19,25 @@
  */
 export interface AccessPoint {
 	/// Access point BSSID
-	bssid: string,
+	bssid: string;
 	/// Access point channel
-	channel: number,
+	channel: number;
 	/// Is access point connected?
-	inUse: boolean,
+	inUse: boolean;
 	/// WiFi interface name
-	interfaceName: string|null,
+	interfaceName: string|null;
 	/// Access point mode
-	mode: string,
+	mode: string;
 	/// Access point rate
-	rate: string
+	rate: string;
 	/// Access point security
-	security: string,
+	security: string;
 	/// Access point signal
-	signal: number,
+	signal: number;
 	/// Access point SSID
-	ssid: string,
+	ssid: string;
 	/// Access point UUID
-	uuid?: string
+	uuid?: string;
 }
 
 /**
@@ -91,17 +91,17 @@ export enum EapPhaseTwoMethod {
  */
 export interface EapConfiguration {
 	/// EAP (Extensible Authentication Protocol) anonymous identity
-	anonymousIdentity?: string,
+	anonymousIdentity?: string;
 	/// EAP (Extensible Authentication Protocol) CA certificate path
-	cert?: string,
+	cert?: string;
 	// EAP (Extensible Authentication Protocol) identity
-	identity: string,
+	identity: string;
 	/// EAP (Extensible Authentication Protocol) password
-	password: string,
+	password: string;
 	/// EAP (Extensible Authentication Protocol) phase one authentication method
-	phaseOneMethod: EapPhaseOneMethod|null,
+	phaseOneMethod: EapPhaseOneMethod|null;
 	/// EAP (Extensible Authentication Protocol) phase two authentication method
-	phaseTwoMethod: EapPhaseTwoMethod|null
+	phaseTwoMethod: EapPhaseTwoMethod|null;
 }
 
 /**
@@ -109,9 +109,9 @@ export interface EapConfiguration {
  */
 export interface LeapConfiguration {
 	/// Cisco LEAP (Lightweight Extensible Authentication Protocol) password
-	password: string,
+	password: string;
 	/// Cisco LEAP (Lightweight Extensible Authentication Protocol) username
-	username: string
+	username: string;
 }
 
 /**
@@ -136,11 +136,11 @@ export enum WepKeyType {
  */
 export interface WepConfiguration {
 	/// WEP key length
-	keyLen: WepKeyLen,
+	keyLen: WepKeyLen;
 	/// WEP key type
-	keyType: WepKeyType,
+	keyType: WepKeyType;
 	/// WEP keys
-	keys: string[],
+	keys: string[];
 }
 
 
@@ -165,15 +165,15 @@ export enum WifiSecurityType {
  */
 export interface WifiSecurity {
 	/// EAP (Extensible Authentication Protocol) configuration
-	eap?: EapConfiguration,
+	eap?: EapConfiguration;
 	/// Cisco LEAP (Lightweight Extensible Authentication Protocol) configuration
-	leap?: LeapConfiguration,
+	leap?: LeapConfiguration;
 	/// Pre-shared key
-	psk?: string,
+	psk?: string;
 	/// Type of WiFi security
-	type: WifiSecurityType,
+	type: WifiSecurityType;
 	/// WEP configuration
-	wep?: WepConfiguration,
+	wep?: WepConfiguration;
 }
 
 /**
@@ -195,9 +195,9 @@ export enum WifiMode {
  */
 export interface WifiNetwork {
 	/// Access points
-	aps: AccessPoint[],
+	aps: AccessPoint[];
 	/// Show details
-	showDetails: boolean,
+	showDetails: boolean;
 	/// SSID
-	ssid: string
+	ssid: string;
 }
