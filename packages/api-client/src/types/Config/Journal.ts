@@ -74,7 +74,7 @@ export interface JournalConfig {
 	maxFiles: number;
 	/// Journal record persistence
 	persistence: JournalPersistence;
-	///Size-based log rotation
+	/// Size-based log rotation
 	sizeRotation: JournalSizeRotation;
 	/// Time-based log rotation
 	timeRotation: JournalTimeRotation;

@@ -22,27 +22,27 @@ export interface DpaMacro {
 	/**
 	 * Has confirmation?
 	 */
-	confirmation: boolean,
+	confirmation: boolean;
 
 	/**
 	 * Is enabled?
 	 */
-	enabled: boolean,
+	enabled: boolean;
 
 	/**
 	 * Macro name
 	 */
-	name: string,
+	name: string;
 
 	/**
 	 * Macro note
 	 */
-	note?: string,
+	note?: string;
 
 	/**
 	 * DPA request
 	 */
-	request: string,
+	request: string;
 
 }
 
@@ -54,21 +54,21 @@ export interface DpaMacroGroup {
 	/**
 	 * @property {boolean} enabled Is enabled?
 	 */
-	enabled: boolean,
+	enabled: boolean;
 
 	/**
 	 * @property {number} id Macro group ID
 	 */
-	id: number,
+	id: number;
 
 	/**
 	 * @property {DpaMacro[]} macros DPA macros
 	 */
-	macros: DpaMacro[],
+	macros: DpaMacro[];
 
 	/**
 	 * @property {string} name Macro group name
 	 */
-	name: string,
+	name: string;
 
 }

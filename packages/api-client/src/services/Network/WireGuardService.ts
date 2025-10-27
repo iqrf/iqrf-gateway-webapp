@@ -185,7 +185,7 @@ export class WireGuardService extends BaseService {
 	 * @return {WireGuardPeer} Serialized WireGuard peer configuration
 	 */
 	private serializePeer(peer: WireGuardPeer): WireGuardPeer {
-		if(peer.psk === '' || peer.psk === undefined) {
+		if (peer.psk === '' || peer.psk === undefined) {
 			delete peer.psk;
 		}
 		if (peer.allowedIPs.stack === WireGuardIpStack.IPV4) {

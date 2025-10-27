@@ -32,9 +32,9 @@ export interface IqrfGatewayControllerMapping {
 	name: string;
 	/// Red LED GPIO pin
 	redLed: number;
-	///I2C clock GPIO pin
+	/// I2C clock GPIO pin
 	sck?: number;
-	///I2C data GPIO pin
+	/// I2C data GPIO pin
 	sda?: number;
 }
 

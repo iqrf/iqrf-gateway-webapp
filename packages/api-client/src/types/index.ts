@@ -15,17 +15,17 @@
  */
 
 export * from './Authentication';
-export * from './Common';
-export * from './Feature';
-export * from './Install';
-export * from './Service';
-export * from './User';
-export * from './Version';
-
 export * as Cloud from './Cloud';
+export * from './Common';
 export * as Config from './Config';
+export * from './Feature';
 export * as Gateway from './Gateway';
+export * from './Install';
+
 export * as Iqrf from './Iqrf';
 export * as Maintenance from './Maintenance';
 export * as Network from './Network';
 export * as Security from './Security';
+export * from './Service';
+export * from './User';
+export * from './Version';

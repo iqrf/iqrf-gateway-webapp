@@ -40,7 +40,8 @@ describe('ApiKeyService', (): void => {
 			'id': 1,
 			'description': 'Test',
 			'expiration': '2023-07-13T12:00:00.000+02:00',
-		}, {
+		},
+		{
 			'id': 2,
 			'description': 'Test #2',
 			'expiration': null,
@@ -55,7 +56,8 @@ describe('ApiKeyService', (): void => {
 			id: 1,
 			description: 'Test',
 			expiration: DateTime.fromISO('2023-07-13T12:00:00.000+02:00'),
-		}, {
+		},
+		{
 			id: 2,
 			description: 'Test #2',
 			expiration: null,

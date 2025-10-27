@@ -24,17 +24,17 @@ export interface ErrorResponse {
 	/**
 	 * Error code
 	 */
-	code: number,
+	code: number;
 
 	/**
 	 * Error message
 	 */
-	message: string,
+	message: string;
 
 	/**
 	 * Response status
 	 */
-	status: 'error'
+	status: 'error';
 
 }
 
@@ -134,7 +134,7 @@ export type JsonValue = string | number | null;
  * JSON object
  */
 export interface Json {
-	[propName: string]: JsonValue | JsonValue[] | Json
+	[propName: string]: JsonValue | JsonValue[] | Json;
 }
 
 /**

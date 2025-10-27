@@ -174,15 +174,15 @@ export interface MobileConnection {
  */
 export interface SerialConnection {
 	/// Serial port baud rate
-	baudRate: number
+	baudRate: number;
 	/// Serial port bits
-	bits: number
+	bits: number;
 	/// Serial port parity
-	parity: ''|'E'|'o'|'n'
+	parity: ''|'E'|'o'|'n';
 	/// Serial port send delay
-	sendDelay: number
+	sendDelay: number;
 	/// Serial port stop bits
-	stopBits: 1|2
+	stopBits: 1|2;
 }
 
 /**
@@ -190,13 +190,13 @@ export interface SerialConnection {
  */
 export interface VlanFlags {
 	/// This interface should use GVRP to register itself with its switch.
-	gvrp: boolean,
+	gvrp: boolean;
 	/// This interface's operating state is tied to the underlying network interface but other details (like routing) are not.
-	looseBinding: boolean,
+	looseBinding: boolean;
 	/// This interface should use MVRP to register itself with its switch.
-	mvrp: boolean,
+	mvrp: boolean;
 	/// This interface should reorder outgoing packet headers to look more like a non-VLAN Ethernet interface.
-	reorderHeaders: boolean
+	reorderHeaders: boolean;
 }
 
 /**
@@ -204,11 +204,11 @@ export interface VlanFlags {
  */
 export interface VlanConnection {
 	/// VLAN flags
-	flags: VlanFlags,
+	flags: VlanFlags;
 	/// VLAN ID
-	id: number,
+	id: number;
 	/// Parent Ethernet interface name
-	parentInterface: string
+	parentInterface: string;
 }
 
 /**

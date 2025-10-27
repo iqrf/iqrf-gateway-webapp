@@ -22,7 +22,7 @@ import { type DateTime, type Duration } from 'luxon';
  */
 export interface PowerActionResponseRaw {
 	/// Restart timestamp
-	timestamp: number
+	timestamp: number;
 }
 
 /**
@@ -30,7 +30,7 @@ export interface PowerActionResponseRaw {
  */
 export interface PowerActionResponse {
 	/// Restart timestamp
-	timestamp: DateTime
+	timestamp: DateTime;
 }
 
 /**
@@ -39,21 +39,21 @@ export interface PowerActionResponse {
  */
 export interface GatewayUptimeRaw {
 	/// Downtime in seconds
-	downtime: number,
+	downtime: number;
 	/// Was the shutdown graceful?
-	graceful: boolean,
+	graceful: boolean;
 	/// ID
-	id: number,
+	id: number;
 	/// Kernel version
-	kernel: string,
+	kernel: string;
 	/// Run time in seconds
-	running: number,
+	running: number;
 	/// Shutdown time
-	shutdown: string | null,
+	shutdown: string | null;
 	/// Sleep time in seconds
-	sleeping: number,
+	sleeping: number;
 	/// Start time
-	start: string,
+	start: string;
 }
 
 
@@ -62,19 +62,19 @@ export interface GatewayUptimeRaw {
  */
 export interface GatewayUptime {
 	/// Downtime in seconds
-	downtime: Duration,
+	downtime: Duration;
 	/// Was the shutdown graceful?
-	graceful: boolean,
+	graceful: boolean;
 	/// ID
-	id: number,
+	id: number;
 	/// Kernel version
-	kernel: string,
+	kernel: string;
 	/// Run time in seconds
-	running: Duration,
+	running: Duration;
 	/// Shutdown time
-	shutdown: DateTime | null,
+	shutdown: DateTime | null;
 	/// Sleep time in seconds
-	sleeping: Duration,
+	sleeping: Duration;
 	/// Start time
-	start: DateTime
+	start: DateTime;
 }

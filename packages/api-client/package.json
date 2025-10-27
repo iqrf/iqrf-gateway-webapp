@@ -82,14 +82,14 @@
 	"type": "module",
 	"dependencies": {
 		"@iqrf/iqrf-gateway-daemon-utils": "^0.1.17",
-		"axios": "^1.12.2",
+		"axios": "^1.13.0",
 		"luxon": "^3.7.2",
 		"openapi-typescript": "^7.10.1",
 		"punycode": "^2.3.1",
 		"uuid": "^13.0.0"
 	},
 	"devDependencies": {
-		"@iqrf/eslint-config": "^0.3.1",
+		"@iqrf/eslint-config": "^0.3.2",
 		"@types/luxon": "^3.7.1",
 		"@types/node": "^24.9.1",
 		"@types/punycode": "^2.1.4",

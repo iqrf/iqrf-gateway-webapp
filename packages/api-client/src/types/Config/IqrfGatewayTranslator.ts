@@ -38,7 +38,7 @@ export interface IqrfGatewayTranslatorMqttConfig {
 	/**
 	 * MQTT client ID
 	 */
-	cid: string
+	cid: string;
 
 	/**
 	 * MQTT broker address
