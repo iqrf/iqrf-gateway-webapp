@@ -83,7 +83,14 @@ import {
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiForum } from '@mdi/js';
-import { computed, ref, type Ref, useTemplateRef, watch } from 'vue';
+import {
+	computed,
+	ref,
+	type Ref,
+	type TemplateRef,
+	useTemplateRef,
+	watch,
+} from 'vue';
 import { useI18n } from 'vue-i18n';
 import { VForm } from 'vuetify/components';
 
@@ -96,13 +103,13 @@ interface Props {
 	disabled?: boolean;
 }
 
+const componentProps = defineProps<Props>();
 const emit = defineEmits<{
 	save: [index: number|undefined, topic: string];
 }>();
 const i18n = useI18n();
-const componentProps = defineProps<Props>();
 const show: Ref<boolean> = ref(false);
-const form: Ref<VForm | null> = useTemplateRef('form');
+const form: TemplateRef<VForm> = useTemplateRef('form');
 const subscriptionTopic: Ref<string> = ref('');
 
 const titleText = computed(() => {

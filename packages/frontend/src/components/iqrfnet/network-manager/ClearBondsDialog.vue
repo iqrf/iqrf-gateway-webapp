@@ -64,16 +64,16 @@ import { toast } from 'vue3-toastify';
 
 import { useDaemonStore } from '@/store/daemonSocket';
 
-const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
-const emit = defineEmits<{
-  updateDevices: [];
-}>();
 const componentProps = defineProps({
 	coordinatorOnly: {
 		type: Boolean,
 		required: true,
 	},
 });
+const emit = defineEmits<{
+  updateDevices: [];
+}>();
+const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const daemonStore = useDaemonStore();
 const msgId: Ref<string | null> = ref(null);
 const i18n = useI18n();

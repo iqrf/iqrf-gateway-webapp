@@ -409,7 +409,14 @@ import {
 	mdiRadioboxBlank,
 	mdiTuneVariant,
 } from '@mdi/js';
-import { onMounted, ref, type Ref, toRaw, useTemplateRef } from 'vue';
+import {
+	onMounted,
+	ref,
+	type Ref,
+	type TemplateRef,
+	toRaw,
+	useTemplateRef,
+} from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { useDisplay } from 'vuetify';
@@ -432,7 +439,7 @@ const i18n = useI18n();
 const service: IqrfGatewayControllerService = useApiClient()
 	.getConfigServices()
 	.getIqrfGatewayControllerService();
-const form: Ref<VForm | null> = useTemplateRef('form');
+const form: TemplateRef<VForm> = useTemplateRef('form');
 const configuration: Ref<IqrfGatewayControllerConfig | null> = ref(null);
 const watchdogPins: Ref<boolean> = ref(false);
 const showProfileMenu: Ref<boolean> = ref(false);

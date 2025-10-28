@@ -222,7 +222,10 @@ import { mdiHelpBox } from '@mdi/js';
 import cron from 'cron-validate';
 import { DateTime } from 'luxon';
 import { v4 as uuidv4 } from 'uuid';
-import { computed, type PropType, ref, type Ref, toRaw, useTemplateRef } from 'vue';
+import {
+	computed, type PropType, ref, type Ref,
+	type TemplateRef, toRaw, useTemplateRef,
+} from 'vue';
 import { watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
@@ -232,7 +235,6 @@ import TaskMessageForm from '@/components/config/daemon/scheduler/TaskMessageFor
 import { validateForm } from '@/helpers/validateForm';
 import { useDaemonStore } from '@/store/daemonSocket';
 
-const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const componentProps = defineProps({
 	action: {
 		type: String as PropType<Action>,
@@ -257,10 +259,11 @@ const componentProps = defineProps({
 const emit = defineEmits<{
 	saved: [];
 }>();
+const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const i18n = useI18n();
 const daemonStore = useDaemonStore();
 const show: Ref<boolean> = ref(false);
-const form: Ref<VForm | null> = useTemplateRef('form');
+const form: TemplateRef<VForm> = useTemplateRef('form');
 const defaultTask: SchedulerRecord = {
 	clientId: SchedulerService.ClientID,
 	taskId: '',

@@ -33,7 +33,11 @@ import { mdiSecurity } from '@mdi/js';
 import { computed, PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-const i18n = useI18n();
+/// SMTP Security type model value
+const modelValue = defineModel({
+	required: true,
+	type: [String, null] as PropType<MailerSmtpSecurity | null>,
+});
 
 /// SMTP Security type component properties
 const componentProps = defineProps({
@@ -43,11 +47,9 @@ const componentProps = defineProps({
 		default: false,
 	},
 });
-/// SMTP Security type model value
-const modelValue = defineModel({
-	required: true,
-	type: [String, null] as PropType<MailerSmtpSecurity | null>,
-});
+
+const i18n = useI18n();
+
 /// SMTP Security type options
 const options = computed(() => [
 	{

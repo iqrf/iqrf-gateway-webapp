@@ -37,7 +37,7 @@ limitations under the License.
 import { type FileSystemUsage } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
 import { computed, type PropType } from 'vue';
 
-const props = defineProps({
+const componentProps = defineProps({
 	usage: {
 		type: Object as PropType<FileSystemUsage>,
 		required: true,
@@ -51,7 +51,7 @@ const props = defineProps({
 
 const color = computed(() => {
 	const percentage = Number.parseFloat(
-		props.usage.usage.replace('%', ''),
+		componentProps.usage.usage.replace('%', ''),
 	);
 	if (percentage >= 90) {
 		return 'error';

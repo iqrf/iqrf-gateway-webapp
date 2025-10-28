@@ -96,7 +96,7 @@ import {
 	IDataTable,
 	IDataTableAction,
 } from '@iqrf/iqrf-vue-ui';
-import { ref, type Ref, toRaw, useTemplateRef } from 'vue';
+import { ref, type Ref, type TemplateRef, toRaw, useTemplateRef } from 'vue';
 import { onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
@@ -107,11 +107,11 @@ import WsServiceForm from '@/components/config/daemon/connections/websocket/serv
 import WsServiceImportDialog from '@/components/config/daemon/connections/websocket/services/WsServiceImportDialog.vue';
 import { useApiClient } from '@/services/ApiClient';
 
-const componentState: Ref<ComponentState> = ref(ComponentState.Created);
-const i18n = useI18n();
 const emit = defineEmits<{
 	updateServices: [services: string[]];
 }>();
+const componentState: Ref<ComponentState> = ref(ComponentState.Created);
+const i18n = useI18n();
 const headers = [
 	{ key: 'instance', title: i18n.t('components.config.daemon.connections.websocket.service.name') },
 	{ key: 'port', title: i18n.t('common.labels.port') },
@@ -121,7 +121,7 @@ const headers = [
 ];
 const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
 const wsServices: Ref<ShapeWebsocketService[]> = ref([]);
-const form: Ref<InstanceType<typeof WsServiceForm> | null> = useTemplateRef('form');
+const form: TemplateRef<InstanceType<typeof WsServiceForm>> = useTemplateRef('form');
 
 async function getConfigs(): Promise<void> {
 	componentState.value = [
@@ -152,7 +152,7 @@ function exportConfig(config: ShapeWebsocketService): void {
 	FileDownloader.downloadFromData(
 		config,
 		'application/json',
-		`${config.component.replace('::','__')}__${config.instance}.json`,
+		`${config.component.replace('::', '__')}__${config.instance}.json`,
 	);
 }
 

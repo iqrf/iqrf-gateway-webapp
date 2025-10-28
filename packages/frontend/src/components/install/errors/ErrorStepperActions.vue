@@ -23,9 +23,6 @@ import { computed, type ComputedRef, PropType } from 'vue';
 
 import { useInstallStore } from '@/store/install';
 
-const installStore = useInstallStore();
-const { getErrors } = storeToRefs(installStore);
-
 const componentProps = defineProps({
 	index: {
 		type: Number,
@@ -40,6 +37,9 @@ const componentProps = defineProps({
 		required: true,
 	},
 });
+const installStore = useInstallStore();
+const { getErrors } = storeToRefs(installStore);
+
 /// Number of total errors
 const totalErrors: ComputedRef<number> = computed((): number => {
 	if (getErrors.value === null) {

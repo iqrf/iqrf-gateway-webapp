@@ -77,7 +77,10 @@ import {
 import { Action, ComponentState, IActionBtn } from '@iqrf/iqrf-vue-ui';
 import { AxiosError } from 'axios';
 import { storeToRefs } from 'pinia';
-import { computed, onBeforeMount, ref, type Ref, useTemplateRef, watch } from 'vue';
+import {
+	computed, onBeforeMount, ref, type Ref,
+	type TemplateRef, useTemplateRef, watch,
+} from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
@@ -88,13 +91,13 @@ import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
 
-const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const componentProps = defineProps({
 	index: {
 		type: Number,
 		required: true,
 	},
 });
+const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const userStore = useUserStore();
 const { isLoggedIn } = storeToRefs(userStore);
 const i18n = useI18n();
@@ -113,7 +116,7 @@ const options = computed(() => [
 		text: i18n.t('components.install.wizard.sshServerConfiguration.service.disable'),
 	},
 ]);
-const form: Ref<VForm | null> = useTemplateRef('form');
+const form: TemplateRef<VForm> = useTemplateRef('form');
 const formValidity: Ref<boolean | null> = ref(null);
 let service: ServiceService = useApiClient().getServiceService();
 

@@ -44,9 +44,6 @@ const componentProps = defineProps({
 		required: true,
 	},
 });
-defineExpose({
-	open,
-});
 const i18n = useI18n();
 const show: Ref<boolean> = ref(false);
 const action: Ref<OtaUploadAction> = ref(OtaUploadAction.Verify);
@@ -78,4 +75,7 @@ function close(): void {
 	show.value = false;
 }
 
+defineExpose({
+	open,
+});
 </script>

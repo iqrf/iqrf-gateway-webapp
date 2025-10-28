@@ -38,9 +38,6 @@ import { onBeforeMount, ref, type Ref } from 'vue';
 import { useApiClient } from '@/services/ApiClient';
 import { useFeatureStore } from '@/store/features';
 
-defineExpose({
-	fetchMonitCheck,
-});
 const featureStore = useFeatureStore();
 const monitService = useApiClient().getConfigServices().getMonitService();
 
@@ -80,4 +77,8 @@ function toggleMonitCheck(confirmed: boolean = false): void {
 }
 
 onBeforeMount(async () => await fetchMonitCheck());
+
+defineExpose({
+	fetchMonitCheck,
+});
 </script>

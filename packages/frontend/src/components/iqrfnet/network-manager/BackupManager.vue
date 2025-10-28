@@ -57,7 +57,10 @@ import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { Action, ComponentState, IActionBtn, ICard, INumberInput, ISelectInput, ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiExport } from '@mdi/js';
 import saveAs from 'file-saver';
-import { computed, onBeforeUnmount, onMounted, ref, type Ref, useTemplateRef } from 'vue';
+import {
+	computed, onBeforeUnmount, onMounted, ref, type Ref,
+	type TemplateRef, useTemplateRef,
+} from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
@@ -85,8 +88,8 @@ const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const i18n = useI18n();
 const daemonStore = useDaemonStore();
 const msgId: Ref<string | null> = ref(null);
-const form: Ref<VForm | null> = useTemplateRef('form');
-const backupLog: Ref<InstanceType<typeof BackupLog> | null> = useTemplateRef('backupLog');
+const form: TemplateRef<VForm> = useTemplateRef('form');
+const backupLog: TemplateRef<InstanceType<typeof BackupLog>> = useTemplateRef('backupLog');
 const targetType: Ref<TargetType> = ref(TargetType.COORDINATOR);
 const targetTypeOptions = computed(() => [
 	{

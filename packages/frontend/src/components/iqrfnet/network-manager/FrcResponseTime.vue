@@ -36,7 +36,13 @@ import { DaemonApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { IqmeshFrcResponseTimeParams } from '@iqrf/iqrf-gateway-daemon-utils/types/iqmesh';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { Action, ComponentState, IActionBtn, ICard, ISelectInput } from '@iqrf/iqrf-vue-ui';
-import { onBeforeUnmount, ref, Ref, useTemplateRef } from 'vue';
+import {
+	onBeforeUnmount,
+	ref,
+	Ref,
+	type TemplateRef,
+	useTemplateRef,
+} from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
@@ -84,8 +90,8 @@ const commandOptions = [
 		value: FrcCommand.User4Bytes,
 	},
 ];
-const form: Ref<VForm | null> = useTemplateRef('form');
-const resultModal: Ref<InstanceType<typeof FrcResponseTimeResultDialog> | null> = useTemplateRef('resultModal');
+const form: TemplateRef<VForm> = useTemplateRef('form');
+const resultModal: TemplateRef<InstanceType<typeof FrcResponseTimeResultDialog>> = useTemplateRef('resultModal');
 const result: Ref<FrcResponseTimeResult | null> = ref(null);
 const msgId: Ref<string | null> = ref(null);
 

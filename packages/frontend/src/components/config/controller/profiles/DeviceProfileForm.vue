@@ -158,7 +158,10 @@ import {
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiChip, mdiLedVariantOn, mdiLedVariantOutline, mdiRadioboxBlank } from '@mdi/js';
-import { computed, type PropType, ref, type Ref, useTemplateRef, watch } from 'vue';
+import {
+	computed, type PropType, ref, type Ref,
+	type TemplateRef, useTemplateRef, watch,
+} from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -166,10 +169,6 @@ import { VForm } from 'vuetify/components';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
-const componentState: Ref<ComponentState> = ref(ComponentState.Created);
-const emit = defineEmits<{
-	saved: [];
-}>();
 const componentProps = defineProps({
 	action: {
 		type: String as PropType<Action>,
@@ -195,10 +194,14 @@ const componentProps = defineProps({
 		default: false,
 	},
 });
+const emit = defineEmits<{
+	saved: [];
+}>();
+const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
 const service: IqrfGatewayControllerService = useApiClient().getConfigServices().getIqrfGatewayControllerService();
 const show: Ref<boolean> = ref(false);
-const form: Ref<VForm | null> = useTemplateRef('form');
+const form: TemplateRef<VForm> = useTemplateRef('form');
 const defaultProfile: IqrfGatewayControllerMapping = {
 	name: '',
 	deviceType: MappingDeviceType.Board,

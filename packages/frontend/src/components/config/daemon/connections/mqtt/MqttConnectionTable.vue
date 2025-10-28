@@ -117,7 +117,14 @@ import {
 	IDataTableAction,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiInformation } from '@mdi/js';
-import { computed, ref, type Ref, toRaw, useTemplateRef } from 'vue';
+import {
+	computed,
+	ref,
+	type Ref,
+	type TemplateRef,
+	toRaw,
+	useTemplateRef,
+} from 'vue';
 import { onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
@@ -139,7 +146,7 @@ const service: IqrfGatewayDaemonService = useApiClient()
 	.getConfigServices()
 	.getIqrfGatewayDaemonService();
 const instances: Ref<IqrfGatewayDaemonMqttMessaging[]> = ref([]);
-const addForm: Ref<InstanceType<typeof MqttConnectionForm> | null> = useTemplateRef('addForm');
+const addForm: TemplateRef<InstanceType<typeof MqttConnectionForm>> = useTemplateRef('addForm');
 
 const noDataText = computed(() => {
 	if (componentState.value === ComponentState.FetchFailed) {

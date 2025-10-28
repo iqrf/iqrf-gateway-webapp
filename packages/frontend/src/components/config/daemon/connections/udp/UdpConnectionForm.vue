@@ -117,7 +117,10 @@ import {
 	ITextInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
-import { computed, type PropType, ref, type Ref, useTemplateRef, watchEffect } from 'vue';
+import {
+	computed, type PropType, ref, type Ref,
+	type TemplateRef, useTemplateRef, watchEffect,
+} from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -126,10 +129,6 @@ import NumberInput from '@/components/layout/form/NumberInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
-const componentState: Ref<ComponentState> = ref(ComponentState.Created);
-const emit = defineEmits<{
-	saved: [];
-}>();
 const componentProps = defineProps({
 	action: {
 		type: String as PropType<Action>,
@@ -148,10 +147,14 @@ const componentProps = defineProps({
 		required: false,
 	},
 });
+const emit = defineEmits<{
+	saved: [];
+}>();
+const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
 const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
 const show: Ref<boolean> = ref(false);
-const form: Ref<VForm | null> = useTemplateRef('form');
+const form: TemplateRef<VForm> = useTemplateRef('form');
 const defaultProfile: IqrfGatewayDaemonUdpMessaging = {
 	component: IqrfGatewayDaemonComponentName.IqrfUdpMessaging,
 	instance: '',
@@ -207,12 +210,12 @@ function importFromConfig(config: IqrfGatewayDaemonUdpMessaging): void {
 	show.value = true;
 }
 
-defineExpose({
-	importFromConfig,
-});
-
 function close(): void {
 	show.value = false;
 	profile.value = { ...defaultProfile };
 }
+
+defineExpose({
+	importFromConfig,
+});
 </script>

@@ -38,13 +38,17 @@ import {
 	ComponentState,
 	IDeleteModalWindow,
 } from '@iqrf/iqrf-vue-ui';
-import { type PropType, ref, type Ref, useTemplateRef } from 'vue';
+import {
+	type PropType,
+	ref,
+	type Ref,
+	type TemplateRef,
+	useTemplateRef,
+} from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import { useApiClient } from '@/services/ApiClient';
-
-const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 
 const componentProps = defineProps({
 	profile: {
@@ -57,11 +61,14 @@ const componentProps = defineProps({
 		default: false,
 	},
 });
+
 const emit = defineEmits<{
 	deleted: [];
 }>();
+
+const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const i18n = useI18n();
-const dialog: Ref<InstanceType<typeof IDeleteModalWindow> | null> = useTemplateRef('dialog');
+const dialog: TemplateRef<InstanceType<typeof IDeleteModalWindow>> = useTemplateRef('dialog');
 const service: IqrfGatewayDaemonService = useApiClient()
 	.getConfigServices()
 	.getIqrfGatewayDaemonService();

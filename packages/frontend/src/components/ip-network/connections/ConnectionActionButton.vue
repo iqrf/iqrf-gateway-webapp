@@ -94,7 +94,7 @@ const componentProps = defineProps({
 	},
 });
 /// Component emits
-const emits = defineEmits<{
+const emit = defineEmits<{
 	change: [];
 }>();
 /// Action
@@ -130,7 +130,7 @@ async function connect(): Promise<void> {
 		toast.success(
 			i18n.t('components.ipNetwork.connections.connect.messages.success', translationParams),
 		);
-		emits('change');
+		emit('change');
 	} catch {
 		componentState.value = ComponentState.Error;
 		toast.error(
@@ -155,7 +155,7 @@ async function disconnect(): Promise<void> {
 			i18n.t('components.ipNetwork.connections.disconnect.messages.success', translationParams),
 		);
 		close();
-		emits('change');
+		emit('change');
 	} catch {
 		componentState.value = ComponentState.Error;
 		toast.error(

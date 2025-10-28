@@ -46,7 +46,7 @@ limitations under the License.
 <script lang='ts' setup>
 import { computed, type PropType } from 'vue';
 
-const props = defineProps({
+const componentProps = defineProps({
 	label: {
 		type: String,
 		default: '',
@@ -59,5 +59,5 @@ const props = defineProps({
 	},
 });
 
-const showHint = computed(() => props.description !== null && props.description.length > 0);
+const showHint = computed(() => componentProps.description !== null && componentProps.description.length > 0);
 </script>

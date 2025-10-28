@@ -48,7 +48,7 @@ import { computed } from 'vue';
 
 import { type SelectItem } from '@/types/vuetify';
 
-const props = defineProps({
+const componentProps = defineProps({
 	items: {
 		type: Array<SelectItem>,
 		required: true,
@@ -65,6 +65,6 @@ const props = defineProps({
 	},
 });
 
-const showHint = computed(() => props.description.length > 0);
+const showHint = computed(() => componentProps.description.length > 0);
 
 </script>

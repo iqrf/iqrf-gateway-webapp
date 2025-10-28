@@ -43,17 +43,16 @@ import { useFeatureStore } from '@/store/features';
 import { useUserStore } from '@/store/user';
 import { type DisambiguationLink } from '@/types/disambiguation';
 
-const userStore = useUserStore();
-const featureStore = useFeatureStore();
-const props = defineProps({
+const componentProps = defineProps({
 	links: {
 		type: Array as PropType<DisambiguationLink[]>,
 		required: true,
 	},
 });
-
+const userStore = useUserStore();
+const featureStore = useFeatureStore();
 const filteredLinks: ComputedRef<DisambiguationLink[]> = computed(() => {
-	return props.links.filter((link: DisambiguationLink) => {
+	return componentProps.links.filter((link: DisambiguationLink) => {
 		if (
 			((link.developmentOnly ?? false) && import.meta.env.PROD) ||
 			(link.roles !== undefined && !link.roles.includes(userStore.getRole!))

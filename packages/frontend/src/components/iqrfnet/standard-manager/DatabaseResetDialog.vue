@@ -74,7 +74,6 @@ import { toast } from 'vue3-toastify';
 
 import { useDaemonStore } from '@/store/daemonSocket';
 
-const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const componentProps = defineProps({
 	disabled: {
 		type: Boolean,
@@ -85,6 +84,7 @@ const componentProps = defineProps({
 const emit = defineEmits<{
 	reset: [];
 }>();
+const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const daemonStore = useDaemonStore();
 const i18n = useI18n();
 const msgId: Ref<string | null> = ref(null);

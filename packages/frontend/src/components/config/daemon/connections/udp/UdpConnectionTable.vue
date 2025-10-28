@@ -76,7 +76,7 @@ import {
 	IDataTable,
 	IDataTableAction,
 } from '@iqrf/iqrf-vue-ui';
-import { computed, ref, type Ref, useTemplateRef } from 'vue';
+import { computed, ref, type Ref, type TemplateRef, useTemplateRef } from 'vue';
 import { onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
@@ -96,7 +96,7 @@ const service: IqrfGatewayDaemonService = useApiClient()
 	.getConfigServices()
 	.getIqrfGatewayDaemonService();
 const instances: Ref<IqrfGatewayDaemonUdpMessaging[]> = ref([]);
-const addForm: Ref<InstanceType<typeof UdpConnectionForm> | null> = useTemplateRef('addForm');
+const addForm: TemplateRef<InstanceType<typeof UdpConnectionForm>> = useTemplateRef('addForm');
 
 async function getConfig(): Promise<void> {
 	if (componentState.value === ComponentState.Created) {

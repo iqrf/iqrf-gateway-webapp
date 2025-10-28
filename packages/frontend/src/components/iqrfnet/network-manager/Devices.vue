@@ -415,15 +415,15 @@ function handleIndicate(rsp: DaemonApiResponse): void {
 	componentState.value = ComponentState.Ready;
 }
 
-defineExpose({
-	getBondedDevices,
-});
-
 onMounted(() => {
 	getBondedDevices();
 });
 
 onBeforeUnmount(() => {
 	daemonStore.removeMessage(msgId.value);
+});
+
+defineExpose({
+	getBondedDevices,
 });
 </script>

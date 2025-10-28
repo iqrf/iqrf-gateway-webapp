@@ -246,8 +246,6 @@ import { useDisplay } from 'vuetify';
 
 import { TrConfiguration } from '@/types/DaemonApi/Iqmesh';
 
-const i18n = useI18n();
-const display = useDisplay();
 const config = defineModel<TrConfiguration & { deviceAddr: number }>('config', { required: true });
 defineProps({
 	dpaVersion: {
@@ -259,7 +257,8 @@ defineProps({
 		required: true,
 	},
 });
-
+const i18n = useI18n();
+const display = useDisplay();
 const rfChannelMax = computed(() => {
 	if (config.value.rfBand === '433') {
 		return 16;

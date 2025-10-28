@@ -35,13 +35,12 @@ limitations under the License.
 import { type SshKeyService } from '@iqrf/iqrf-gateway-webapp-client/services/Security';
 import { type SshKeyInfo } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import { ComponentState, IDeleteModalWindow } from '@iqrf/iqrf-vue-ui';
-import { type PropType, ref, type Ref, useTemplateRef } from 'vue';
+import { type PropType, ref, type Ref, type TemplateRef, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import { useApiClient } from '@/services/ApiClient';
 
-const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
 const componentProps = defineProps({
 	sshKey: {
 		type: Object as PropType<SshKeyInfo>,
@@ -56,8 +55,9 @@ const componentProps = defineProps({
 const emit = defineEmits<{
 	refresh: [];
 }>();
+const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
 const i18n = useI18n();
-const dialog: Ref<InstanceType<typeof IDeleteModalWindow>|null> = useTemplateRef('dialog');
+const dialog: TemplateRef<InstanceType<typeof IDeleteModalWindow>> = useTemplateRef('dialog');
 const service: SshKeyService = useApiClient()
 	.getSecurityServices()
 	.getSshKeyService();

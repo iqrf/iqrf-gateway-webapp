@@ -169,8 +169,6 @@ import { useDisplay } from 'vuetify';
 
 import { TrConfiguration } from '@/types/DaemonApi/Iqmesh';
 
-const i18n = useI18n();
-const display = useDisplay();
 const config = defineModel<TrConfiguration>('config', { required: true });
 defineProps({
 	dpaVersion: {
@@ -178,6 +176,8 @@ defineProps({
 		required: true,
 	},
 });
+const i18n = useI18n();
+const display = useDisplay();
 const rfBand = computed(() => {
 	return (config.value as TrConfiguration).rfBand ?? undefined;
 });

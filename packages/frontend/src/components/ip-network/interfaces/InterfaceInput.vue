@@ -41,6 +41,11 @@ import SelectInput from '@/components/layout/form/SelectInput.vue';
 import { useApiClient } from '@/services/ApiClient';
 import { type SelectItem } from '@/types/vuetify';
 
+/// Model value
+const modelValue = defineModel({
+	type: [String, null] as PropType<string | null>,
+	required: true,
+});
 /// Component properties
 const componentProps = defineProps({
 	type: {
@@ -49,11 +54,6 @@ const componentProps = defineProps({
 		default: null,
 	},
 
-});
-/// Model value
-const modelValue = defineModel({
-	type: [String, null] as PropType<string | null>,
-	required: true,
 });
 /// Component state
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);

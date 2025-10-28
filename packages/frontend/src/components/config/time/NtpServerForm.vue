@@ -80,16 +80,15 @@ import {
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiServerNetwork } from '@mdi/js';
-import { computed, PropType, ref, type Ref, useTemplateRef, watch } from 'vue';
+import {
+	computed, PropType, ref, type Ref,
+	type TemplateRef, useTemplateRef, watch,
+} from 'vue';
 import { useI18n } from 'vue-i18n';
 import { VForm } from 'vuetify/components';
 
 import { validateForm } from '@/helpers/validateForm';
 
-const i18n = useI18n();
-const emit = defineEmits<{
-	save: [index: number|undefined, server: string];
-}>();
 const componentProps = defineProps({
 	action: {
 		type: String as PropType<Action>,
@@ -111,8 +110,12 @@ const componentProps = defineProps({
 		default: false,
 	},
 });
+const emit = defineEmits<{
+	save: [index: number|undefined, server: string];
+}>();
+const i18n = useI18n();
 const show: Ref<boolean> = ref(false);
-const form: Ref<VForm | null> = useTemplateRef('form');
+const form: TemplateRef<VForm> = useTemplateRef('form');
 const ntpServer: Ref<string> = ref('');
 
 watch(show, (newVal: boolean): void => {

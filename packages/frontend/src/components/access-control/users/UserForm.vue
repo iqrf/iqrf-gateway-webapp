@@ -145,7 +145,7 @@ import {
 	mdiHelpCircleOutline,
 	mdiKey,
 } from '@mdi/js';
-import { ref, type Ref, useTemplateRef, watch } from 'vue';
+import { ref, type Ref, type TemplateRef, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -162,15 +162,15 @@ interface Props {
 	disabled?: boolean;
 }
 
-const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
-const i18n = useI18n();
-const service = useApiClient().getSecurityServices().getUserService();
+const componentProps = defineProps<Props>();
 const emit = defineEmits<{
 	refresh: [];
 }>();
-const componentProps = defineProps<Props>();
+const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
+const i18n = useI18n();
+const service = useApiClient().getSecurityServices().getUserService();
 const showDialog: Ref<boolean> = ref(false);
-const form: Ref<VForm | null> = useTemplateRef('form');
+const form: TemplateRef<VForm> = useTemplateRef('form');
 const userStore = useUserStore();
 const defaultUser: UserCreate | UserEdit = {
 	username: '',

@@ -112,7 +112,10 @@ import {
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiApi } from '@mdi/js';
-import { computed, type PropType, ref, type Ref, useTemplateRef, watch } from 'vue';
+import {
+	computed, type PropType, ref, type Ref,
+	type TemplateRef, useTemplateRef, watch,
+} from 'vue';
 import { VForm } from 'vuetify/components';
 
 import { validateForm } from '@/helpers/validateForm';
@@ -148,7 +151,7 @@ const emit = defineEmits<{
 	save: [index: number|null, task: SchedulerRecordTask];
 }>();
 const show: Ref<boolean> = ref(false);
-const form: Ref<VForm | null> = useTemplateRef('form');
+const form: TemplateRef<VForm> = useTemplateRef('form');
 const message: Ref<string | null> = ref(null);
 const selected: Ref<MessagingInstance[]> = ref([]);
 

@@ -97,7 +97,10 @@ import { IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/servi
 import { IqrfGatewayDaemonMessagingInstances } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { Action, ComponentState, IActionBtn, ICard, INumberInput, ISelectInput, ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiMulticast, mdiTimerOutline, mdiTimerRefreshOutline } from '@mdi/js';
-import { computed, onBeforeUnmount, ref, type Ref, useTemplateRef } from 'vue';
+import {
+	computed, onBeforeUnmount, ref, type Ref,
+	type TemplateRef, useTemplateRef,
+} from 'vue';
 import { onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
@@ -109,7 +112,7 @@ import { useDaemonStore } from '@/store/daemonSocket';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
-const form: Ref<VForm | null> = useTemplateRef('form');
+const form: TemplateRef<VForm> = useTemplateRef('form');
 const config: Ref<SensorDataConfig> = ref({
 	autoRun: false,
 	period: 10,

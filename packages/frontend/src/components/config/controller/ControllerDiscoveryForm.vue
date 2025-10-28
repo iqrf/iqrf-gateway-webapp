@@ -91,22 +91,29 @@ limitations under the License.
 import { type IqrfGatewayControllerApiDiscoveryConfig } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { Action, IActionBtn, ICard, IModalWindow, INumberInput, ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiNumeric, mdiSignalVariant, mdiWrench } from '@mdi/js';
-import { type PropType, ref, type Ref, useTemplateRef, watch } from 'vue';
+import {
+	type PropType,
+	ref,
+	type Ref,
+	type TemplateRef,
+	useTemplateRef,
+	watch,
+} from 'vue';
 import { VForm } from 'vuetify/components';
 
 import { validateForm } from '@/helpers/validateForm';
 
-const emit = defineEmits<{
-	saved: [config: IqrfGatewayControllerApiDiscoveryConfig];
-}>();
 const componentProps = defineProps({
 	discoveryConfig: {
 		type: Object as PropType<IqrfGatewayControllerApiDiscoveryConfig>,
 		required: true,
 	},
 });
+const emit = defineEmits<{
+	saved: [config: IqrfGatewayControllerApiDiscoveryConfig];
+}>();
 const show: Ref<boolean> = ref(false);
-const form: Ref<VForm | null> = useTemplateRef('form');
+const form: TemplateRef<VForm> = useTemplateRef('form');
 const config: Ref<IqrfGatewayControllerApiDiscoveryConfig | null> = ref(null);
 
 watch(show, (newVal: boolean): void => {

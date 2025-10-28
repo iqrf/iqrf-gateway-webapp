@@ -101,7 +101,14 @@ import {
 	IDataTable,
 	IDataTableAction,
 } from '@iqrf/iqrf-vue-ui';
-import { PropType, ref, type Ref, toRaw, useTemplateRef } from 'vue';
+import {
+	PropType,
+	ref,
+	type Ref,
+	type TemplateRef,
+	toRaw,
+	useTemplateRef,
+} from 'vue';
 import { onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
@@ -113,13 +120,13 @@ import WsMessagingImportDialog from '@/components/config/daemon/connections/webs
 import WsServiceMissingIcon from '@/components/config/daemon/connections/websocket/messagings/WsServiceMissingIcon.vue';
 import { useApiClient } from '@/services/ApiClient';
 
-const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 defineProps({
 	serviceInstances: {
 		type: Array as PropType<string[]>,
 		required: true,
 	},
 });
+const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
 const headers = [
 	{ key: 'instance', title: i18n.t('components.config.daemon.connections.websocket.messaging.name') },
@@ -129,7 +136,7 @@ const headers = [
 ];
 const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
 const wsMessagings: Ref<IqrfGatewayDaemonWsMessaging[]> = ref([]);
-const form: Ref<InstanceType<typeof WsMessagingForm> | null> = useTemplateRef('form');
+const form: TemplateRef<InstanceType<typeof WsMessagingForm>> = useTemplateRef('form');
 
 async function getConfigs(): Promise<void> {
 	componentState.value = [
@@ -158,7 +165,7 @@ function exportConfig(config: IqrfGatewayDaemonWsMessaging): void {
 	FileDownloader.downloadFromData(
 		config,
 		'application/json',
-		`${config.component.replace('::','__')}__${config.instance}.json`,
+		`${config.component.replace('::', '__')}__${config.instance}.json`,
 	);
 }
 

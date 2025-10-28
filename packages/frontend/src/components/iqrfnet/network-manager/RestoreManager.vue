@@ -72,10 +72,10 @@ interface RestoreData {
 	Version: string;
 }
 
-const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const emit = defineEmits<{
   updateDevices: [];
 }>();
+const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const i18n = useI18n();
 const daemonStore = useDaemonStore();
 const msgId: Ref<string | null> = ref(null);

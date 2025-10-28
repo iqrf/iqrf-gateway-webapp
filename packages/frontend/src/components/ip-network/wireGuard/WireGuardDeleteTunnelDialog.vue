@@ -41,14 +41,18 @@ import {
 	ComponentState,
 	IDeleteModalWindow,
 } from '@iqrf/iqrf-vue-ui';
-import { type PropType, ref, type Ref, useTemplateRef } from 'vue';
+import {
+	type PropType,
+	ref,
+	type Ref,
+	type TemplateRef,
+	useTemplateRef,
+} from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import { useApiClient } from '@/services/ApiClient';
 
-/// Component state
-const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 /// Component properties
 const componentProps = defineProps({
 	tunnel: {
@@ -60,8 +64,10 @@ const componentProps = defineProps({
 const emit = defineEmits<{
 	deleted: [];
 }>();
+/// Component state
+const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 /// Modal dialog reference
-const dialog: Ref<InstanceType<typeof IDeleteModalWindow> | null> = useTemplateRef('dialog');
+const dialog: TemplateRef<InstanceType<typeof IDeleteModalWindow>> = useTemplateRef('dialog');
 /// Internationalization instance
 const i18n = useI18n();
 /// WireGuard service
