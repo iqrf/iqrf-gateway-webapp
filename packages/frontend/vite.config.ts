@@ -95,16 +95,5 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
 				'.vue',
 			],
 		},
-		test: {
-			coverage: {
-				provider: 'istanbul',
-				reporter: ['text', 'html', 'clover'],
-			},
-			environment: 'happy-dom',
-			outputFile: {
-				junit: 'junit.xml',
-			},
-			reporters: ['verbose', 'junit'],
-		},
 	};
 });
