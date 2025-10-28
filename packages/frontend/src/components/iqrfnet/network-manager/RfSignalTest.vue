@@ -78,9 +78,6 @@ enum Targets {
 }
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
-defineExpose({
-	setRfChannel,
-});
 const i18n = useI18n();
 const daemonStore = useDaemonStore();
 const target: Ref<Targets> = ref(Targets.Coordinator);
@@ -209,4 +206,7 @@ onBeforeUnmount(() => {
 	daemonStore.removeMessage(msgId.value);
 });
 
+defineExpose({
+	setRfChannel,
+});
 </script>

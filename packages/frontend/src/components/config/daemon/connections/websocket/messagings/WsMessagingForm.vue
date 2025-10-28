@@ -83,7 +83,16 @@ import {
 	ITextInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
-import { computed, PropType, ref, Ref, toRaw, watch } from 'vue';
+import {
+	computed,
+	PropType,
+	ref,
+	Ref,
+	TemplateRef,
+	toRaw,
+	useTemplateRef,
+	watch,
+} from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -91,14 +100,6 @@ import { VForm } from 'vuetify/components';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
-const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
-const i18n = useI18n();
-const daemonService: IqrfGatewayDaemonService = useApiClient()
-	.getConfigServices()
-	.getIqrfGatewayDaemonService();
-const emit = defineEmits<{
-	saved: [];
-}>();
 const componentProps = defineProps({
 	action: {
 		type: String as PropType<Action>,
@@ -121,11 +122,19 @@ const componentProps = defineProps({
 		default: false,
 	},
 });
+const emit = defineEmits<{
+	saved: [];
+}>();
+const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
+const i18n = useI18n();
+const daemonService: IqrfGatewayDaemonService = useApiClient()
+	.getConfigServices()
+	.getIqrfGatewayDaemonService();
 const show: Ref<boolean> = ref(false);
 let fromImport = false;
-const form: Ref<VForm | null> = ref(null);
+const form: TemplateRef<VForm> = useTemplateRef('form');
 const defaultMessaging: IqrfGatewayDaemonWsMessaging = {
-	component:  IqrfGatewayDaemonComponentName.IqrfWsMessaging,
+	component: IqrfGatewayDaemonComponentName.IqrfWsMessaging,
 	instance: '',
 	acceptAsyncMsg: false,
 	RequiredInterfaces: [
@@ -192,12 +201,12 @@ function importFromConfig(messaging: IqrfGatewayDaemonWsMessaging): void {
 	show.value = true;
 }
 
-defineExpose({
-	importFromConfig,
-});
-
 function close(): void {
 	show.value = false;
 	fromImport = false;
 }
+
+defineExpose({
+	importFromConfig,
+});
 </script>

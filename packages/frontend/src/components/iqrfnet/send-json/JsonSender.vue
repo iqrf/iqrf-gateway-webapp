@@ -42,13 +42,11 @@ limitations under the License.
 			v-slot='{ isValid }'
 			:disabled='componentState === ComponentState.Action'
 		>
-			<v-textarea
+			<CodeEditor
 				v-model='json'
 				:label='$t("components.iqrfnet.send-json.json")'
-				auto-grow
+				language='json'
 				clearable
-				rows='1'
-				required
 			/>
 			<v-btn
 				color='primary'
@@ -81,6 +79,7 @@ import { mdiSend } from '@mdi/js';
 import { ref, type Ref, useTemplateRef } from 'vue';
 import { VForm } from 'vuetify/components';
 
+import CodeEditor from '@/components/iqrfnet/send-json/CodeEditor.vue';
 import RequestHistory from '@/components/iqrfnet/send-json/RequestHistory.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useDaemonStore } from '@/store/daemonSocket';

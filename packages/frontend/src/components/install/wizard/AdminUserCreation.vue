@@ -118,7 +118,7 @@ import {
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiAccount, mdiAccountPlus, mdiEmail, mdiHelpCircleOutline, mdiKey } from '@mdi/js';
-import { ref, type Ref, useTemplateRef } from 'vue';
+import { ref, type Ref, type TemplateRef, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -131,13 +131,13 @@ import { useApiClient } from '@/services/ApiClient';
 import { useInstallStore } from '@/store/install';
 import { useUserStore } from '@/store/user';
 
-const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const componentProps = defineProps({
 	index: {
 		type: Number,
 		required: true,
 	},
 });
+const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const urlBuilder = new UrlBuilder();
 const installStore = useInstallStore();
 const userStore = useUserStore();
@@ -150,7 +150,7 @@ const user: Ref<UserCreate> = ref({
 });
 const passwordConfirmation: Ref<string> = ref('');
 const expiration = ref(UserSessionExpiration.Default);
-const form: Ref<VForm | null> = useTemplateRef('form');
+const form: TemplateRef<VForm> = useTemplateRef('form');
 const formValidity: Ref<boolean | null> = ref(null);
 const i18n = useI18n();
 

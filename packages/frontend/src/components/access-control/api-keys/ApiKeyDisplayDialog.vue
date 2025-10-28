@@ -73,9 +73,6 @@ const componentProps = defineProps({
 		required: false,
 	},
 });
-defineExpose({
-	open,
-});
 const emit = defineEmits<{
 	closed: [];
 }>();
@@ -97,4 +94,8 @@ function close(): void {
 	show.value = false;
 	emit('closed');
 }
+
+defineExpose({
+	open,
+});
 </script>

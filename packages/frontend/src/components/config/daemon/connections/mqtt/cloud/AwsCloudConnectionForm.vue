@@ -96,7 +96,7 @@ import {
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiCertificate, mdiKey, mdiServerNetwork } from '@mdi/js';
-import { ref, type Ref, useTemplateRef } from 'vue';
+import { ref, type Ref, type TemplateRef, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
@@ -116,7 +116,7 @@ const i18n = useI18n();
 const service: AwsService = useApiClient()
 	.getCloudServices()
 	.getAwsService();
-const form: Ref<VForm | null> = useTemplateRef('form');
+const form: TemplateRef<VForm> = useTemplateRef('form');
 const defaultConfig: AwsMqttConfig = {
 	endpoint: '',
 	certificate: null,

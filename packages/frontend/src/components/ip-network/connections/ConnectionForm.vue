@@ -159,7 +159,10 @@ import {
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiContentSave, mdiTextShort } from '@mdi/js';
-import { computed, type PropType, ref, type Ref, useTemplateRef, watch } from 'vue';
+import {
+	computed, type PropType, ref, type Ref,
+	type TemplateRef, useTemplateRef, watch,
+} from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
@@ -181,10 +184,6 @@ import InterfaceInput
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
-/// Connection configuration
-const configuration: Ref<NetworkConnectionConfiguration | null> = ref(null);
-/// Component state
-const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 /// Define props
 const componentProps = defineProps({
 	/// Action type - add or edit
@@ -209,12 +208,16 @@ const componentProps = defineProps({
 const emit = defineEmits<{
 	change: [];
 }>();
+/// Connection configuration
+const configuration: Ref<NetworkConnectionConfiguration | null> = ref(null);
+/// Component state
+const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 /// Interface type
 const interfaceType: Ref<NetworkInterfaceType | null> = computed((): NetworkInterfaceType | null => {
 	return IpNetworkUtils.connectionTypeToInterfaceType(configuration.value?.type ?? null);
 });
 /// Form reference
-const form: Ref<VForm | null> = useTemplateRef('form');
+const form: TemplateRef<VForm> = useTemplateRef('form');
 /// Dialog visibility
 const showDialog: Ref<boolean> = ref(false);
 /// Internationalization instance

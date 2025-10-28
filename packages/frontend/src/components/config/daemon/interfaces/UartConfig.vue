@@ -259,7 +259,14 @@ import {
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiSerialPort, mdiTextShort, mdiTuneVariant } from '@mdi/js';
-import { computed, onMounted, ref, type Ref, useTemplateRef } from 'vue';
+import {
+	computed,
+	onMounted,
+	ref,
+	type Ref,
+	type TemplateRef,
+	useTemplateRef,
+} from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { useDisplay } from 'vuetify';
@@ -274,7 +281,7 @@ const i18n = useI18n();
 const display = useDisplay();
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const service: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
-const form: Ref<VForm | null> = useTemplateRef('form');
+const form: TemplateRef<VForm> = useTemplateRef('form');
 const config: Ref<IqrfGatewayDaemonUart | null> = ref(null);
 let instance = '';
 const interfacePins: Ref<boolean> = ref(false);

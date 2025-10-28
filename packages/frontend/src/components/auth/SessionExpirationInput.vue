@@ -33,6 +33,12 @@ import { useI18n } from 'vue-i18n';
 import SelectInput from '@/components/layout/form/SelectInput.vue';
 import { SelectItem } from '@/types/vuetify';
 
+/// Model value
+const modelValue = defineModel({
+	default: UserSessionExpiration.Default,
+	required: true,
+	type: String as PropType<UserSessionExpiration>,
+});
 /// Internationalization instance
 const i18n = useI18n();
 /// Session expiration options
@@ -50,10 +56,4 @@ const options: ComputedRef<SelectItem[]> = computed(() => [
 		title: i18n.t('components.auth.expiration.expirations.week'),
 	},
 ]);
-/// Model value
-const modelValue = defineModel({
-	default: UserSessionExpiration.Default,
-	required: true,
-	type: String as PropType<UserSessionExpiration>,
-});
 </script>

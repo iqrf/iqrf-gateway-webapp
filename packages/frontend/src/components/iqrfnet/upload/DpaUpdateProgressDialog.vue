@@ -33,9 +33,6 @@
 import { Action, ComponentState, IActionBtn, ICard, IModalWindow } from '@iqrf/iqrf-vue-ui';
 import { computed, type PropType, ref, type Ref } from 'vue';
 
-defineExpose({
-	open,
-});
 const componentProps = defineProps({
 	componentState: {
 		type: String as PropType<ComponentState>,
@@ -62,4 +59,8 @@ function open(): void {
 function close(): void {
 	show.value = false;
 }
+
+defineExpose({
+	open,
+});
 </script>

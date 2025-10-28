@@ -93,7 +93,6 @@ import { toast } from 'vue3-toastify';
 import { useDuration } from '@/composables/duration';
 import { useDaemonStore } from '@/store/daemonSocket';
 
-const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const componentProps = defineProps({
 	disabled: {
 		type: Boolean,
@@ -104,6 +103,7 @@ const componentProps = defineProps({
 const emit = defineEmits<{
 	finished: [];
 }>();
+const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const daemonStore = useDaemonStore();
 const i18n = useI18n();
 const { duration, start, stop, reset } = useDuration();

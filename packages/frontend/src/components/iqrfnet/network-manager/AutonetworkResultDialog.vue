@@ -71,11 +71,6 @@ import { useI18n } from 'vue-i18n';
 
 import { useDuration } from '@/composables/duration';
 
-defineExpose({
-	open,
-	updateProgress,
-	stopProgress,
-});
 const emit = defineEmits<{
 	updateDevices: [];
 }>();
@@ -146,4 +141,9 @@ function close(): void {
 	emit('updateDevices');
 }
 
+defineExpose({
+	open,
+	updateProgress,
+	stopProgress,
+});
 </script>

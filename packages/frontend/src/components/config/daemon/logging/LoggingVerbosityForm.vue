@@ -85,16 +85,20 @@ import {
 	INumberInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
-import { type PropType, ref, type Ref, useTemplateRef, watch } from 'vue';
+import {
+	type PropType,
+	ref,
+	type Ref,
+	type TemplateRef,
+	useTemplateRef,
+	watch,
+} from 'vue';
 import { VForm } from 'vuetify/components';
 
 import ShapeTraceVerbosityInput
 	from '@/components/config/daemon/logging/ShapeTraceVerbosityInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 
-const emit = defineEmits<{
-	save: [index: number|null, level: ShapeTraceChannelVerbosity];
-}>();
 const componentProps = defineProps({
 	action: {
 		type: String as PropType<Action>,
@@ -120,12 +124,15 @@ const componentProps = defineProps({
 		default: false,
 	},
 });
+const emit = defineEmits<{
+	save: [index: number|null, level: ShapeTraceChannelVerbosity];
+}>();
 const show: Ref<boolean> = ref(false);
 const defaultLevel: ShapeTraceChannelVerbosity = {
 	channel: 0,
 	level: ShapeTraceVerbosity.Info,
 };
-const form: Ref<VForm | null> = useTemplateRef('form');
+const form: TemplateRef<VForm> = useTemplateRef('form');
 const level: Ref<ShapeTraceChannelVerbosity> = ref({ ...defaultLevel });
 
 watch(show, (newVal: boolean): void => {

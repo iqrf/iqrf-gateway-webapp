@@ -92,7 +92,6 @@ import { useI18n } from 'vue-i18n';
 
 import { FrcResponseTimeResult } from '@/types/DaemonApi/Iqmesh';
 
-const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const componentProps = defineProps({
 	result: {
 		type: [Object, null] as PropType<FrcResponseTimeResult | null>,
@@ -100,9 +99,7 @@ const componentProps = defineProps({
 		default: null,
 	},
 });
-defineExpose({
-	open,
-});
+const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const i18n = useI18n();
 const show: Ref<boolean> = ref(false);
 const commandLabel = computed(() => {
@@ -159,4 +156,7 @@ function close(): void {
 	show.value = false;
 }
 
+defineExpose({
+	open,
+});
 </script>

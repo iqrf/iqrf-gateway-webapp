@@ -32,6 +32,11 @@ import { computed } from 'vue';
 import { useApiClient } from '@/services/ApiClient';
 import { useGatewayStore } from '@/store/gateway';
 
+/// Define emits
+const emit = defineEmits<{
+	restart: [];
+	reload: [];
+}>();
 const gatewayStore = useGatewayStore();
 const serviceService = useApiClient().getServiceService();
 
@@ -39,12 +44,6 @@ const serviceService = useApiClient().getServiceService();
 const hasBrokenModem = computed(() => {
 	return gatewayStore.board === 'MICRORISC s.r.o. IQD-GW04';
 });
-/// Define emits
-const emit = defineEmits<{
-	restart: [];
-	reload: [];
-}>();
-
 /**
  * Restarts the ModemManager service
  */

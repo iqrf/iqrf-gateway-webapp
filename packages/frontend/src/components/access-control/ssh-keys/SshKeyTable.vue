@@ -120,7 +120,9 @@ import { useApiClient } from '@/services/ApiClient';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
-const service: SshKeyService = useApiClient().getSecurityServices().getSshKeyService();
+const service: SshKeyService = useApiClient()
+	.getSecurityServices()
+	.getSshKeyService();
 const headers = computed(() => [
 	{ key: 'id', title: i18n.t('common.columns.id') },
 	{ key: 'description', title: i18n.t('common.columns.description') },
@@ -172,5 +174,4 @@ async function getKeyTypes(): Promise<void> {
 function copyToClipboard(content: string): void {
 	navigator.clipboard.writeText(content);
 }
-
 </script>

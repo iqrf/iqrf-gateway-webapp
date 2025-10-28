@@ -97,7 +97,7 @@ import {
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiClipboard, mdiFileOutline } from '@mdi/js';
-import { ref, type Ref, useTemplateRef } from 'vue';
+import { ref, type Ref, type TemplateRef, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -111,7 +111,7 @@ const emit = defineEmits<{
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const show: Ref<boolean> = ref(false);
 const i18n = useI18n();
-const form: Ref<VForm | null> = useTemplateRef('form');
+const form: TemplateRef<VForm> = useTemplateRef('form');
 const service: MenderService = useApiClient()
 	.getConfigServices()
 	.getMenderService();

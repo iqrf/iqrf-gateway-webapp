@@ -138,7 +138,14 @@ import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { FileFormat } from '@iqrf/iqrf-gateway-webapp-client/types/Iqrf';
 import { Action, ComponentState, IActionBtn, ICard, INumberInput, ISelectInput, ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiCheck, mdiFileCheckOutline, mdiImport } from '@mdi/js';
-import { onBeforeUnmount, ref, Ref, toRaw, useTemplateRef } from 'vue';
+import {
+	onBeforeUnmount,
+	ref,
+	Ref,
+	type TemplateRef,
+	toRaw,
+	useTemplateRef,
+} from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -158,7 +165,7 @@ enum UploadTarget {
 const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const i18n = useI18n();
 const daemonStore = useDaemonStore();
-const form: Ref<VForm | null> = useTemplateRef('form');
+const form: TemplateRef<VForm> = useTemplateRef('form');
 const fileType: Ref<FileFormat> = ref(FileFormat.HEX);
 const fileTypeOptions = [
 	{

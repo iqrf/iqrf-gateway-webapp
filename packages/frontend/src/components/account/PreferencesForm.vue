@@ -54,7 +54,13 @@ import {
 	IActionBtn,
 	ICard,
 } from '@iqrf/iqrf-vue-ui';
-import { onMounted, ref, type Ref, useTemplateRef } from 'vue';
+import {
+	onMounted,
+	ref,
+	type Ref,
+	type TemplateRef,
+	useTemplateRef,
+} from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
@@ -76,7 +82,7 @@ const userStore = useUserStore();
 /// Account service
 const service: AccountService = useApiClient().getAccountService();
 /// Form reference
-const form: Ref<VForm | null> = useTemplateRef('form');
+const form: TemplateRef<VForm> = useTemplateRef('form');
 /// User preferences
 const preferences: Ref<UserPreferences> = ref({
 	timeFormat: UserTimeFormatPreference.Auto,

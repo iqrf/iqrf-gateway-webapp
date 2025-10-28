@@ -249,7 +249,10 @@ import {
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiAccount } from '@mdi/js';
-import { computed, type PropType, ref, type Ref, useTemplateRef, watch } from 'vue';
+import {
+	computed, type PropType, ref, type Ref,
+	type TemplateRef, useTemplateRef, watch,
+} from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
@@ -258,10 +261,6 @@ import MqttUrlForm from '@/components/MqttUrlForm.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
-const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
-const emit = defineEmits<{
-	saved: [];
-}>();
 const componentProps = defineProps({
 	action: {
 		type: String as PropType<Action>,
@@ -301,13 +300,17 @@ const componentProps = defineProps({
 		default: false,
 	},
 });
+const emit = defineEmits<{
+	saved: [];
+}>();
+const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const i18n = useI18n();
 const service: IqrfGatewayDaemonService = useApiClient()
 	.getConfigServices()
 	.getIqrfGatewayDaemonService();
 const show: Ref<boolean> = ref(false);
 let fromImport = false;
-const form: Ref<VForm | null> = useTemplateRef('form');
+const form: TemplateRef<VForm> = useTemplateRef('form');
 const defaultProfile: IqrfGatewayDaemonMqttMessaging = {
 	component: IqrfGatewayDaemonComponentName.IqrfMqttMessaging,
 	instance: '',
@@ -433,13 +436,13 @@ function importFromConfig(config: IqrfGatewayDaemonMqttMessaging): void {
 	show.value = true;
 }
 
-defineExpose({
-	importFromConfig,
-});
-
 function close(): void {
 	show.value = false;
 	fromImport = false;
 	profile.value = { ...defaultProfile };
 }
+
+defineExpose({
+	importFromConfig,
+});
 </script>

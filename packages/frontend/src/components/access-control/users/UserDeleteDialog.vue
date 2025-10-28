@@ -37,7 +37,7 @@ import {
 	ComponentState,
 	IDeleteModalWindow,
 } from '@iqrf/iqrf-vue-ui';
-import { PropType, ref, type Ref, useTemplateRef } from 'vue';
+import { PropType, ref, type Ref, type TemplateRef, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { toast } from 'vue3-toastify';
@@ -46,7 +46,6 @@ import { useApiClient } from '@/services/ApiClient';
 import { useInstallStore } from '@/store/install';
 import { useUserStore } from '@/store/user';
 
-const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
 const componentProps = defineProps({
 	user: {
 		type: Object as PropType<UserInfo>,
@@ -65,11 +64,12 @@ const componentProps = defineProps({
 const emit = defineEmits<{
 	refresh: [];
 }>();
+const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
 const installStore = useInstallStore();
 const userStore = useUserStore();
 const i18n = useI18n();
 const router = useRouter();
-const dialog: Ref<InstanceType<typeof IDeleteModalWindow>|null> = useTemplateRef('dialog');
+const dialog: TemplateRef<InstanceType<typeof IDeleteModalWindow>> = useTemplateRef('dialog');
 
 /**
  * Confirm user deletion
@@ -113,5 +113,4 @@ async function onSubmit(): Promise<void> {
 function close(): void {
 	dialog.value?.close();
 }
-
 </script>

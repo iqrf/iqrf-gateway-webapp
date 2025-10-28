@@ -54,9 +54,6 @@ const componentProps = defineProps({
 		default: null,
 	},
 });
-defineExpose({
-	open,
-});
 const i18n = useI18n();
 const show: Ref<boolean> = ref(false);
 const headers = [
@@ -87,4 +84,7 @@ function close(): void {
 	show.value = false;
 }
 
+defineExpose({
+	open,
+});
 </script>

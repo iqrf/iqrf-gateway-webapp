@@ -101,7 +101,7 @@ import {
 	ITextInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
-import { ref, type Ref, useTemplateRef } from 'vue';
+import { ref, type Ref, type TemplateRef, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
@@ -121,7 +121,7 @@ const i18n = useI18n();
 const service: IbmService = useApiClient()
 	.getCloudServices()
 	.getIbmService();
-const form: Ref<VForm | null> = useTemplateRef('form');
+const form: TemplateRef<VForm> = useTemplateRef('form');
 const defaultConfig: IbmCloudConfig = {
 	deviceId: '',
 	deviceType: '',

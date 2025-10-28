@@ -33,17 +33,17 @@ interface Props {
 	state: AccountState;
 }
 
-const props = defineProps<Props>();
+const componentProps = defineProps<Props>();
 
 const stateColor = computed(() => {
-	if (props.state === AccountState.Unverified) {
+	if (componentProps.state === AccountState.Unverified) {
 		return 'orange';
 	}
 	return 'green';
 });
 
 const stateIcon = computed(() => {
-	if (props.state === AccountState.Unverified) {
+	if (componentProps.state === AccountState.Unverified) {
 		return mdiHelp;
 	}
 	return mdiCheck;

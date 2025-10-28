@@ -173,13 +173,13 @@ import { useRepositoryClient } from '@/services/RepositoryClient';
 import { useDaemonStore } from '@/store/daemonSocket';
 import { DeviceEnumeration } from '@/types/DaemonApi/Iqmesh';
 
-const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const componentProps = defineProps({
 	address: {
 		type: Number,
 		required: true,
 	},
 });
+const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
 const daemonStore = useDaemonStore();
 const msgId: Ref<string | null> = ref(null);

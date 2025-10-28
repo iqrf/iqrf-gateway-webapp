@@ -96,7 +96,7 @@ import {
 import { mdiAccountKey, mdiHelpCircleOutline, mdiKey } from '@mdi/js';
 import { AxiosError } from 'axios';
 import { validate as uuidValidate, version as uuidVersion } from 'uuid';
-import { ref, type Ref, useTemplateRef } from 'vue';
+import { ref, type Ref, type TemplateRef, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { toast } from 'vue3-toastify';
@@ -119,7 +119,7 @@ const componentProps = defineProps({
 /// Component state
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 /// Form reference
-const form: Ref<VForm | null> = useTemplateRef('form');
+const form: TemplateRef<VForm> = useTemplateRef('form');
 /// Internationalization instance
 const i18n = useI18n();
 /// Password reset request

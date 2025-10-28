@@ -102,7 +102,7 @@ import {
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiHelpCircleOutline, mdiKey } from '@mdi/js';
-import { ref, type Ref, useTemplateRef } from 'vue';
+import { ref, type Ref, type TemplateRef, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
@@ -115,7 +115,7 @@ import { useUserStore } from '@/store/user';
 /// Component state
 const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
 /// Form reference
-const form: Ref<VForm | null> = useTemplateRef('form');
+const form: TemplateRef<VForm> = useTemplateRef('form');
 /// User store
 const userStore = useUserStore();
 /// Internationalization instance

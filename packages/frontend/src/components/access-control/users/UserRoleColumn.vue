@@ -33,10 +33,10 @@ interface Props {
 	role: UserRole;
 }
 
-const props = defineProps<Props>();
+const componentProps = defineProps<Props>();
 
 const roleColor = computed(() => {
-	switch (props.role) {
+	switch (componentProps.role) {
 		case UserRole.Admin:
 			return 'deep-purple';
 		case UserRole.Normal:
@@ -48,7 +48,7 @@ const roleColor = computed(() => {
 	}
 });
 const roleIcon = computed(() => {
-	switch (props.role) {
+	switch (componentProps.role) {
 		case UserRole.Admin:
 			return mdiShieldAccount;
 		case UserRole.Normal:

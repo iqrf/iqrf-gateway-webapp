@@ -198,7 +198,13 @@ import {
 	mdiTimerSync,
 } from '@mdi/js';
 import humanizeDuration from 'humanize-duration';
-import { onMounted, ref, type Ref, useTemplateRef } from 'vue';
+import {
+	onMounted,
+	ref,
+	type Ref,
+	type TemplateRef,
+	useTemplateRef,
+} from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
@@ -210,7 +216,7 @@ import { useApiClient } from '@/services/ApiClient';
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
 const service: MenderService = useApiClient().getConfigServices().getMenderService();
-const form: Ref<VForm | null> = useTemplateRef('form');
+const form: TemplateRef<VForm> = useTemplateRef('form');
 const config: Ref<MenderConfig | null> = ref(null);
 
 function intervalColor(value: number|null): string {

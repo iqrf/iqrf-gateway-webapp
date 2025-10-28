@@ -38,7 +38,13 @@ import {
 	ComponentState,
 	IActionBtn,
 } from '@iqrf/iqrf-vue-ui';
-import { onMounted, ref, type Ref, useTemplateRef } from 'vue';
+import {
+	onMounted,
+	ref,
+	type Ref,
+	type TemplateRef,
+	useTemplateRef,
+} from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
@@ -51,8 +57,6 @@ import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
 
-/// Component state
-const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 /// Component props
 const componentProps = defineProps({
 	index: {
@@ -60,10 +64,12 @@ const componentProps = defineProps({
 		required: true,
 	},
 });
+/// Component state
+const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 /// User store
 const userStore = useUserStore();
 /// Form reference
-const form: Ref<VForm | null> = useTemplateRef('form');
+const form: TemplateRef<VForm> = useTemplateRef('form');
 /// Form validity
 const formValidity: Ref<boolean | null> = ref(null);
 /// User preferences

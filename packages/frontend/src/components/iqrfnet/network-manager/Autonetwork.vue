@@ -304,7 +304,7 @@ import { AutonetworkMidList, IqmeshAutonetworkParams } from '@iqrf/iqrf-gateway-
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { Action, ComponentState, IActionBtn, ICard, IDataTable, IDataTableAction, INumberInput, ISelectInput, ITextInput, ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiPlay } from '@mdi/js';
-import { ref, Ref, toRaw, useTemplateRef } from 'vue';
+import { ref, Ref, type TemplateRef, toRaw, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { type VForm } from 'vuetify/components';
 
@@ -318,10 +318,13 @@ enum NodeCondition {
 	New = 1,
 }
 
+const emit = defineEmits<{
+	updateDevices: [];
+}>();
 const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const i18n = useI18n();
 const daemonStore = useDaemonStore();
-const form: Ref<VForm | null> = useTemplateRef('form');
+const form: TemplateRef<VForm> = useTemplateRef('form');
 const params: Ref<IqmeshAutonetworkParams> = ref({
 	actionRetries: 1,
 	discoveryTxPower: 7,
@@ -383,11 +386,7 @@ const useOverlappingNetworks: Ref<boolean> = ref(false);
 const useHwpidFiltering: Ref<boolean> = ref(false);
 const hwpidFilter: Ref<string> = ref('');
 const msgId: Ref<string | null> = ref(null);
-const resultDialog: Ref<InstanceType<typeof AutonetworkResultDialog> | null> = useTemplateRef('resultDialog');
-const emit = defineEmits<{
-	updateDevices: [];
-}>();
-
+const resultDialog: TemplateRef<InstanceType<typeof AutonetworkResultDialog>> = useTemplateRef('resultDialog');
 const addressSpaceValidator = (v: string, error: string): string|true => {
 	if (!addressSpacePattern.test(v)) {
 		return error;

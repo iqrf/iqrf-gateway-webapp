@@ -109,7 +109,7 @@ import {
 } from '@iqrf/iqrf-vue-ui';
 import { mdiFileOutline } from '@mdi/js';
 import { BlobReader, TextWriter, ZipReader } from '@zip.js/zip.js';
-import { ref, type Ref, useTemplateRef } from 'vue';
+import { ref, type Ref, type TemplateRef, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -137,7 +137,7 @@ const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
 const show: Ref<boolean> = ref(false);
 const daemonStore = useDaemonStore();
 const i18n = useI18n();
-const form: Ref<VForm | null> = useTemplateRef('form');
+const form: TemplateRef<VForm> = useTemplateRef('form');
 const file: Ref<File | null> = ref(null);
 const msgIds: Ref<string[]> = ref([]);
 const importRecords: Ref<SchedulerRecord[]> = ref([]);

@@ -35,9 +35,6 @@ defineProps({
 		required: true,
 	},
 });
-defineExpose({
-	open,
-});
 const emit = defineEmits<{
 	upload: [];
 }>();
@@ -56,4 +53,7 @@ function close(): void {
 	show.value = false;
 }
 
+defineExpose({
+	open,
+});
 </script>

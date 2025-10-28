@@ -43,7 +43,7 @@ import {
 import {
 	type PropType,
 	ref,
-	type Ref,
+	type Ref, type TemplateRef,
 	useTemplateRef,
 } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -51,7 +51,6 @@ import { toast } from 'vue3-toastify';
 
 import { useApiClient } from '@/services/ApiClient';
 
-const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const componentProps = defineProps({
 	connectionProfile: {
 		type: Object as PropType<IqrfGatewayDaemonUdpMessaging>,
@@ -61,7 +60,8 @@ const componentProps = defineProps({
 const emit = defineEmits<{
 	deleted: [];
 }>();
-const dialog: Ref<InstanceType<typeof IDeleteModalWindow> | null> = useTemplateRef('dialog');
+const componentState: Ref<ComponentState> = ref(ComponentState.Created);
+const dialog: TemplateRef<InstanceType<typeof IDeleteModalWindow>> = useTemplateRef('dialog');
 const i18n = useI18n();
 const service: IqrfGatewayDaemonService = useApiClient()
 	.getConfigServices()

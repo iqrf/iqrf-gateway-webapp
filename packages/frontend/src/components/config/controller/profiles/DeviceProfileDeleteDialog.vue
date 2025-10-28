@@ -34,23 +34,29 @@ limitations under the License.
 import { type IqrfGatewayControllerService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import { type IqrfGatewayControllerMapping } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { ComponentState, IDeleteModalWindow } from '@iqrf/iqrf-vue-ui';
-import { type PropType, ref, type Ref, useTemplateRef } from 'vue';
+import {
+	type PropType,
+	ref,
+	type Ref,
+	type TemplateRef,
+	useTemplateRef,
+} from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import { useApiClient } from '@/services/ApiClient';
 
-const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
-const emit = defineEmits<{
-	deleted: [];
-}>();
-const dialog: Ref<InstanceType<typeof IDeleteModalWindow> | null> = useTemplateRef('dialog');
 const componentProps = defineProps({
 	profile: {
 		type: Object as PropType<IqrfGatewayControllerMapping>,
 		required: true,
 	},
 });
+const emit = defineEmits<{
+	deleted: [];
+}>();
+const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
+const dialog: TemplateRef<InstanceType<typeof IDeleteModalWindow>> = useTemplateRef('dialog');
 const i18n = useI18n();
 const service: IqrfGatewayControllerService = useApiClient()
 	.getConfigServices()

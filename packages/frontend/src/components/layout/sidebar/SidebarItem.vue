@@ -40,16 +40,16 @@ interface Props {
 	/// Sidebar item to render
 	item: SidebarLink;
 }
-const props = defineProps<Props>();
+const componentProps = defineProps<Props>();
 const active: Ref<boolean> = ref(false);
 const route = useRoute();
 watchEffect((): void => {
-	if (props.item.group === undefined) {
-		active.value = props.item.to === route.path;
-	} else if (typeof props.item.group === 'string') {
-		active.value = props.item.group === route.path;
+	if (componentProps.item.group === undefined) {
+		active.value = componentProps.item.to === route.path;
+	} else if (typeof componentProps.item.group === 'string') {
+		active.value = componentProps.item.group === route.path;
 	} else {
-		active.value = props.item.group.test(route.path);
+		active.value = componentProps.item.group.test(route.path);
 	}
 });
 </script>

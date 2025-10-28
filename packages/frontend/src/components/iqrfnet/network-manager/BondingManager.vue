@@ -99,7 +99,14 @@ import { DaemonApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { IqmeshBondNodeParams, IqmeshSmartConnectParams } from '@iqrf/iqrf-gateway-daemon-utils/types/iqmesh';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { Action, ComponentState, IActionBtn, ICard, INumberInput, ISelectInput, ITextInput, ValidationRules } from '@iqrf/iqrf-vue-ui';
-import { computed, onBeforeUnmount, ref, Ref, useTemplateRef } from 'vue';
+import {
+	computed,
+	onBeforeUnmount,
+	ref,
+	Ref,
+	type TemplateRef,
+	useTemplateRef,
+} from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -114,14 +121,14 @@ enum BondingMethod {
 	SMART_CONNECT = 1,
 }
 
-const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const emit = defineEmits<{
   updateDevices: [];
 }>();
+const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const i18n = useI18n();
 const daemonStore = useDaemonStore();
 const msgId: Ref<string | null> = ref(null);
-const form: Ref<VForm | null> = useTemplateRef('form');
+const form: TemplateRef<VForm> = useTemplateRef('form');
 const bondingMethod: Ref<BondingMethod> = ref(BondingMethod.LOCAL);
 const bondingMethodOptions = computed(() => [
 	{

@@ -17,7 +17,7 @@ limitations under the License.
 
 <template>
 	<v-list class='text-white'>
-		<template v-for='navItem in props.items'>
+		<template v-for='navItem in componentProps.items'>
 			<SidebarGroup
 				v-if='navItem.children !== undefined && navItem.children.length > 0'
 				:key='`${navItem.title}_group`'
@@ -43,5 +43,5 @@ interface Props {
 	/// Sidebar items to render
 	items: SidebarLink[];
 }
-const props = defineProps<Props>();
+const componentProps = defineProps<Props>();
 </script>

@@ -316,7 +316,14 @@ import {
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiAccount, mdiDatabase, mdiDomain, mdiIdentifier } from '@mdi/js';
-import { computed, onMounted, ref, type Ref, useTemplateRef } from 'vue';
+import {
+	computed,
+	onMounted,
+	ref,
+	type Ref,
+	type TemplateRef,
+	useTemplateRef,
+} from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { useDisplay } from 'vuetify';
@@ -332,7 +339,7 @@ const display = useDisplay();
 const service: IqrfGatewayInfluxdbBridgeService = useApiClient()
 	.getConfigServices()
 	.getIqrfGatewayInfluxdbBridgeService();
-const form: Ref<VForm | null> = useTemplateRef('form');
+const form: TemplateRef<VForm> = useTemplateRef('form');
 const config: Ref<BridgeConfig | null> = ref(null);
 const headers = computed(() => [
 	{ key: 'topic', title: i18n.t('components.config.influxdb-bridge.topics.topic') },

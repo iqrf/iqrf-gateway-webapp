@@ -128,5 +128,4 @@ function formatTime(time: DateTime | null): string|null {
 onMounted(() => {
 	getKeys();
 });
-
 </script>

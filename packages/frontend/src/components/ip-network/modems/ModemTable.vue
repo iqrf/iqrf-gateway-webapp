@@ -67,7 +67,10 @@ import {
 	IDataTable,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiMagnify } from '@mdi/js';
-import { computed, onBeforeMount, ref, type Ref, useTemplateRef } from 'vue';
+import {
+	computed, onBeforeMount, ref, type Ref,
+	type TemplateRef, useTemplateRef,
+} from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import ModemMonitButton
@@ -121,7 +124,7 @@ const headers = computed(() => [
 /// Modems
 const modems: Ref<Modem[]> = ref([]);
 /// Monit button reference
-const monitButton: Ref<InstanceType<typeof ModemMonitButton> | null> = useTemplateRef('monit');
+const monitButton: TemplateRef<InstanceType<typeof ModemMonitButton>> = useTemplateRef('monit');
 
 /**
  * Fetches modems
