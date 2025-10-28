@@ -17,7 +17,7 @@
 
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 
-import UrlBuilder from '../../helpers/urlBuilder';
+import UrlBuilder from '@/helpers/urlBuilder';
 
 describe('URL builder', (): void => {
 

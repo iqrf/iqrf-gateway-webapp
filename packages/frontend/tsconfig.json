@@ -34,7 +34,8 @@
 		"src/**/*.d.ts",
 		"src/**/*.vue",
 		"shims.d.ts",
-		"vite.config.ts"
+		"vite.config.ts",
+		"vitest.config.ts"
 	],
 	"exclude": [
 		"dist",
