@@ -35,6 +35,7 @@ stages:
   before_script:
     - composer install --no-progress
   cache:
+    key: ${CI_COMMIT_REF_SLUG}-php
     paths:
       - temp/composer/cache
   variables:
@@ -46,15 +47,9 @@ stages:
     - pnpm config set registry http://nexus.iqrf.internal/repository/npmjs.org-proxy/
     - pnpm install
   cache:
-    key: ${CI_COMMIT_REF_SLUG}
+    key: ${CI_COMMIT_REF_SLUG}-js
     paths:
       - .pnpm-store
-
-.test_template: &test_template
-  stage: test
-  needs: []
-  retry: 2
-  <<: *base_template
 
 .dependency-check_template: &dependency-check_template
   stage: dependency-check
@@ -113,44 +108,11 @@ build-docker:tests:
     DOCKER_TAG: tests-bookworm
 
 # Tests
-test:
-  <<: *test_template
-  <<: *composer_template
-  before_script:
-    - !reference [.composer_template, before_script]
-    - update-alternatives --set php /usr/bin/php${PHP_VERSION}
-  script:
-    - vendor/bin/tester -p phpdbg${PHP_VERSION} -c ./tests/php.ini -s ./tests
-  after_script:
-    - 'for i in $(find ./tests -name \*.actual); do echo "--- $i"; cat $i; echo; echo; done'
-  parallel:
-    matrix:
-      - PHP_VERSION:
-        - '8.2'
-        - '8.3'
-
-coverage:php:
-  <<: *test_template
-  <<: *composer_template
-  before_script:
-    - update-alternatives --set php /usr/bin/php8.3
-    - !reference [.composer_template, before_script]
-    - vendor/bin/tester -c ./tests/php-coverage.ini --info
-  script:
-    - vendor/bin/tester -c ./tests/php-coverage.ini -o none -o junit:junit.xml --coverage ./coverage.html --coverage-src ./app ./tests
-  allow_failure: true
-  coverage: '/^\d+% covered/'
-  artifacts:
-    paths:
-      - 'coverage.html'
-    expire_in: 2 weeks
-    reports:
-      junit:
-        - junit.xml
-
 build:js:
-  <<: *test_template
+  <<: *base_template
   <<: *npm_template
+  stage: test
+  needs: []
   script:
     - 'if [[ "${PACKAGE}" == "frontend" ]]; then pnpm --dir packages/api-client build; fi'
     - pnpm --dir packages/${PACKAGE} run build
@@ -161,8 +123,9 @@ build:js:
           - frontend
 
 newman:
-  <<: *test_template
   image: docker:latest
+  stage: test
+  needs: []
   services:
     - docker:dind
   before_script:
@@ -176,12 +139,29 @@ include:
   # Tests - API client
   - component: gitlab.iqrf.org/open-source/gitlab-ci-components/test-js-vitest-coverage@master
     inputs:
-      job_name: coverage
+      job_name: api-client:coverage
       project_dir: 'packages/api-client'
+  # Tests - Backend
+  - component: gitlab.iqrf.org/open-source/gitlab-ci-components/test-php-nette@master
+    inputs:
+      job_name: backend:test
+      php_versions:
+        - '8.2'
+        - '8.3'
+        - '8.4'
+      project_dir: '.'
+      retry: 2
+  - component: gitlab.iqrf.org/open-source/gitlab-ci-components/test-php-nette-coverage@master
+    inputs:
+      job_name: backend:coverage
+      coverage_src: './app'
+      php_versions: ['8.3']
+      project_dir: '.'
+      retry: 2
   # Tests - Frontend
   - component: gitlab.iqrf.org/open-source/gitlab-ci-components/test-js-vitest-coverage@master
     inputs:
-      job_name: coverage
+      job_name: frontend:coverage
       project_dir: 'packages/frontend'
   # Coding style - API client
   - component: gitlab.iqrf.org/open-source/gitlab-ci-components/coding-style-js-eslint@master
@@ -221,6 +201,8 @@ include:
     inputs:
       job_name: frontend:eslint
       project_dir: 'packages/frontend'
+      before_script:
+        - pnpm --dir packages/api-client build
   - component: gitlab.iqrf.org/open-source/gitlab-ci-components/coding-style-js-stylelint@master
     inputs:
       job_name: frontend:stylelint
