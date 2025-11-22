@@ -222,6 +222,20 @@ limitations under the License.
 								<DaemonModeInfo />
 							</td>
 						</tr>
+						<tr v-if='info?.emmcHealth'>
+							<td>
+								<strong>{{ $t('components.gateway.information.emmcHealth.emmcHealth') }}</strong>
+							</td>
+							<td>
+								<div class='py-2'>
+									<span>
+										<strong>{{ $t('components.gateway.information.emmcHealth.preEol') }}</strong> {{ $t('components.gateway.information.emmcHealth.preEolMessages.' + info.emmcHealth.EXT_CSD_PRE_EOL_INFO) }}<br>
+										<strong>{{ $t('components.gateway.information.emmcHealth.typeA') }}</strong> {{ info.emmcHealth.EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_A }}<br>
+										<strong>{{ $t('components.gateway.information.emmcHealth.preEol') }}</strong> {{ info.emmcHealth.EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_B }}<br>
+									</span>
+								</div>
+							</td>
+						</tr>
 					</tbody>
 				</v-table>
 			</v-responsive>

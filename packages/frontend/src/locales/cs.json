@@ -309,6 +309,18 @@
 				},
 				"board": "Deska",
 				"diagnostics": "Stáhnout diagnostická data",
+				"emmcHealth": {
+					"emmcHealth": "Stav eMMC paměti",
+					"preEol": "Celkový stav",
+					"preEolMessages": {
+						"0": "Stav není definován. (Reportování stavu nemusí být podporováno.)",
+						"1": "Normální: spotřebováno méně než 80 % rezervovaných bloků.",
+						"2": "Varování: spotřebováno 80 % rezervovaných bloků!",
+						"3": "Naléhavé: spotřebováno 90 % rezervovaných bloků! Paměť se blíží konciživotnosti!"
+					},
+					"typeA": "Úroveň opotřebení SLC oblasti",
+					"typeB": "Úroveň opotřebení MLC oblasti"
+				},
 				"gwId": "IQRF Gateway ID",
 				"hostname": "Jméno hostitele",
 				"hostnameChange": {

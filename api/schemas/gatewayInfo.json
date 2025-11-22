@@ -15,7 +15,8 @@
 		"interfaces",
 		"diskUsages",
 		"memoryUsage",
-		"swapUsage"
+		"swapUsage",
+		"emmcHealth"
 	],
 	"properties": {
 		"board": {
@@ -533,6 +534,44 @@
 					"type": "string",
 					"title": "Usage",
 					"example": "32.54%"
+				}
+			}
+		},
+		"emmcHealth": {
+			"$id": "#/properties/emmcHealth",
+			"oneOf": [
+				{
+					"type": "object"
+				},
+				{
+					"type": "null"
+				}
+			],
+			"title": "eMMC health",
+			"example": {
+				"EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_A": "10-20 %",
+				"EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_B": "10-20 %",
+				"EXT_CSD_PRE_EOL_INFO": "1"
+			},
+			"additionalProperties": false,
+			"properties": {
+				"EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_A": {
+					"$id": "#/properties/emmcHealth/properties/EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_A",
+					"type": "string",
+					"title": "eMMC SLC area life time estimation",
+					"example": "10-20 %"
+				},
+				"EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_B": {
+					"$id": "#/properties/emmcHealth/properties/EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_B",
+					"type": "string",
+					"title": "eMMC MLC area life time estimation",
+					"example": "10-20 %"
+				},
+				"EXT_CSD_PRE_EOL_INFO": {
+					"$id": "#/properties/emmcHealth/properties/EXT_CSD_PRE_EOL_INFO",
+					"type": "string",
+					"title": "eMMC pre EOL information",
+					"example": "1"
 				}
 			}
 		}

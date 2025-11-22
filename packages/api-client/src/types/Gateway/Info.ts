@@ -117,6 +117,18 @@ export interface GatewayBriefInformation {
 }
 
 /**
+ * Information about eMMC flash memory health
+ */
+export interface EmmcHealth {
+	/// eMMC SLC area life time estimation
+	EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_A: string | null;
+	/// eMMC MLC area life time estimation
+	EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_B: string | null;
+	/// eMMC PreEol info
+	EXT_CSD_PRE_EOL_INFO: string | null;
+}
+
+/**
  * Information about IQRF Gateway
  */
 export interface GatewayInformation extends GatewayBriefInformation {
@@ -138,4 +150,6 @@ export interface GatewayInformation extends GatewayBriefInformation {
 	uptime: string;
 	/// IQRF Gateway SW versions
 	versions: SoftwareVersions;
+	/// eMMC health
+	emmcHealth: EmmcHealth | null;
 }

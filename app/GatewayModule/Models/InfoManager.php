@@ -83,6 +83,7 @@ class InfoManager {
 			'memoryUsage' => $this->getMemoryUsage(),
 			'swapUsage' => $this->getSwapUsage(),
 			'uptime' => $this->getUptime(),
+			'emmcHealth' => $this->getEmmcHealth(),
 		];
 	}
 
@@ -262,6 +263,38 @@ class InfoManager {
 	 */
 	public function getHostname(): string {
 		return $this->networkManager->getHostname();
+	}
+
+	/**
+	 * Get eMMC health status
+	 * @return array<string, string>|null Health status
+	 */
+	public function getEmmcHealth(): ?array {
+		$command = 'mmc extcsd read /dev/mmcblk0 | grep -e EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_A -e EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_B -e EXT_CSD_PRE_EOL_INFO';
+		$output = $this->commandManager->run($command)->getStdout();
+		if (strlen($output) === 0) {
+			return null;
+		}
+		$segments = explode(PHP_EOL, $output);
+		$output = [];
+		foreach ($segments as $segment) {
+			$segment = explode(' ', $segment);
+			$len = count($segment);
+			$name = substr($segment[$len - 2], 1, -2);
+			$value = hexdec($segment[$len - 1]);
+			switch ($name) {
+				case 'EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_A':
+				case 'EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_B':
+					$end = $value * 10;
+					$start = $end - 10;
+					$output[$name] = sprintf('%d-%d% %', $start, $end);
+					break;
+				case 'EXT_CSD_PRE_EOL_INFO':
+					$output[$name] = strval($value);
+					break;
+			}
+		}
+		return $output;
 	}
 
 }
