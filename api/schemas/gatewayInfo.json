@@ -549,29 +549,29 @@
 			],
 			"title": "eMMC health",
 			"example": {
-				"EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_A": "10-20 %",
-				"EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_B": "10-20 %",
-				"EXT_CSD_PRE_EOL_INFO": "1"
+				"slc_region": "90 %",
+				"mlc_region": "90 %",
+				"status": "normal"
 			},
 			"additionalProperties": false,
 			"properties": {
 				"EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_A": {
-					"$id": "#/properties/emmcHealth/properties/EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_A",
+					"$id": "#/properties/emmcHealth/properties/slc_region",
 					"type": "string",
 					"title": "eMMC SLC area life time estimation",
-					"example": "10-20 %"
+					"example": "90 %"
 				},
 				"EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_B": {
-					"$id": "#/properties/emmcHealth/properties/EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_B",
+					"$id": "#/properties/emmcHealth/properties/mlc_region",
 					"type": "string",
 					"title": "eMMC MLC area life time estimation",
-					"example": "10-20 %"
+					"example": "90 %"
 				},
 				"EXT_CSD_PRE_EOL_INFO": {
-					"$id": "#/properties/emmcHealth/properties/EXT_CSD_PRE_EOL_INFO",
+					"$id": "#/properties/emmcHealth/properties/status",
 					"type": "string",
-					"title": "eMMC pre EOL information",
-					"example": "1"
+					"title": "eMMC pre EOL status information",
+					"example": "normal"
 				}
 			}
 		}

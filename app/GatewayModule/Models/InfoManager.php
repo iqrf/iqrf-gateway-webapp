@@ -270,6 +270,12 @@ class InfoManager {
 	 * @return array<string, string>|null Health status
 	 */
 	public function getEmmcHealth(): ?array {
+		$status_table = [
+			0 => 'undefined',
+			1 => 'normal',
+			2 => 'warning',
+			3 => 'urgent',
+		];
 		$command = 'mmc extcsd read /dev/mmcblk0 | grep -e EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_A -e EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_B -e EXT_CSD_PRE_EOL_INFO';
 		$output = $this->commandManager->run($command)->getStdout();
 		if (strlen($output) === 0) {
@@ -283,14 +289,19 @@ class InfoManager {
 			$name = substr($segment[$len - 2], 1, -2);
 			$value = hexdec($segment[$len - 1]);
 			switch ($name) {
+				// single level cell memory region health (in %)
 				case 'EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_A':
-				case 'EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_B':
-					$end = $value * 10;
-					$start = $end - 10;
-					$output[$name] = sprintf('%d-%d% %', $start, $end);
+					$output['slc_region'] = sprintf('%d %%', 100 - ($value * 10));
 					break;
+				// multi level cell memory region health (in %)
+				case 'EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_B':
+					$output['mlc_region'] = sprintf('%d %%', 100 - ($value * 10));
+					break;
+				// overall status message
 				case 'EXT_CSD_PRE_EOL_INFO':
-					$output[$name] = strval($value);
+					$output['status'] = $status_table[$value];
+					break;
+				default:
 					break;
 			}
 		}

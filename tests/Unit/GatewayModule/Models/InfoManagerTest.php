@@ -57,6 +57,7 @@ final class InfoManagerTest extends TestCase {
 		'gitBranches' => 'git branch -v --no-abbrev',
 		'osInfo' => 'cat /etc/os-release',
 		'uptime' => 'uptime -p',
+		'emmcHealth' => 'mmc extcsd read /dev/mmcblk0 | grep -e EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_A -e EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_B -e EXT_CSD_PRE_EOL_INFO',
 	];
 
 	/**
@@ -117,6 +118,11 @@ final class InfoManagerTest extends TestCase {
 			'usage' => '27.15%',
 		],
 		'uptime' => 'up 2 hours, 30 minutes',
+		'emmcHealth' => [
+			'slc_region' => '90 %',
+			'mlc_region' => '90 %',
+			'status' => 'normal',
+		],
 	];
 
 	/**
@@ -381,6 +387,31 @@ final class InfoManagerTest extends TestCase {
 	}
 
 	/**
+	 * Test function to get the eMMC flash memory health
+	 */
+	public function testGetEmmcHealth(): void {
+		$this->receiveCommand(
+			command: self::COMMANDS['emmcHealth'],
+			stdout: 'eMMC Life Time Estimation A [EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_A]: 0x01' . PHP_EOL .
+					'eMMC Life Time Estimation B [EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_B]: 0x01' . PHP_EOL .
+					'eMMC Pre EOL information [EXT_CSD_PRE_EOL_INFO]: 0x01',
+		);
+		Assert::same(self::EXPECTED['emmcHealth'], $this->manager->getEmmcHealth());
+	}
+
+	/**
+	 * Test function to get the eMMC flash memory health when eMMC is not present
+	 */
+	public function testGetEmmcHealthNotPresent(): void {
+		$this->receiveCommand(
+			command: self::COMMANDS['emmcHealth'],
+			stdout: '',
+			exitCode: 1,
+		);
+		Assert::null($this->manager->getEmmcHealth());
+	}
+
+	/**
 	 * Tests the function to return information about the gateway
 	 */
 	public function testGet(): void {
@@ -426,6 +457,8 @@ final class InfoManagerTest extends TestCase {
 			->andReturn(self::EXPECTED['swapUsage']);
 		$manager->shouldReceive('getUptime')
 			->andReturn(self::EXPECTED['uptime']);
+		$manager->shouldReceive('getEmmcHealth')
+			->andReturn(self::EXPECTED['emmcHealth']);
 		Assert::same(self::EXPECTED, $manager->get($verbose));
 	}
 
