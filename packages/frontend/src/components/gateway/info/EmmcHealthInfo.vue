@@ -39,7 +39,7 @@ limitations under the License.
 		</div>
 		<div class='d-inline' if='emmcHealth.status'>
 			{{ $t('components.gateway.information.emmcHealth.preEol_info') }}
-			{{ $t('components.gateway.information.emmcHealth.preEolMessages.' + emmcHealth.status) }}
+			{{ $t(`components.gateway.information.emmcHealth.preEolMessages.${emmcHealth.status}`) }}
 		</div>
 		<br v-if='!last'>
 	</div>
