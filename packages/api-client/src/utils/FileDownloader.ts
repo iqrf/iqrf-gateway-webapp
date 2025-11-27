@@ -30,8 +30,12 @@ export class FileDownloader {
 	 * @param {string} contentType MIME content type
 	 * @param {string} fileName Name of downloaded file
 	 */
-	public static downloadFromAxiosResponse(response: AxiosResponse<object|string>, contentType: string, fileName: string): void {
-		const element = this.getDownloadElementFromAxiosResponse(response, contentType, fileName);
+	public static downloadFromAxiosResponse(
+		response: AxiosResponse<object|string>,
+		contentType: string,
+		fileName: string,
+	): void {
+		const element: HTMLAnchorElement = this.getDownloadElementFromAxiosResponse(response, contentType, fileName);
 		document.body.append(element);
 		element.click();
 		element.remove();
@@ -44,7 +48,11 @@ export class FileDownloader {
 	 * @param {string} fileName Name of downloaded file
 	 * @return {HTMLAnchorElement} New file download element
 	 */
-	public static getDownloadElementFromAxiosResponse(response: AxiosResponse<object|string>, contentType: string, fileName: string): HTMLAnchorElement {
+	public static getDownloadElementFromAxiosResponse(
+		response: AxiosResponse<object|string>,
+		contentType: string,
+		fileName: string,
+	): HTMLAnchorElement {
 		const contentDisposition = response.headers['content-disposition'] as string;
 		if (contentDisposition) {
 			const fileNameMatch = /filename="(.+)"/.exec(contentDisposition);
@@ -61,8 +69,11 @@ export class FileDownloader {
 	 * @param {FileResponse<T>} response File response
 	 * @param {string} fileName Name of downloaded file
 	 */
-	public static downloadFileResponse<T extends FileResponseType>(response: FileResponse<T>, fileName: string | null = null): void {
-		const element = response.toDownloadElement(fileName);
+	public static downloadFileResponse<T extends FileResponseType>(
+		response: FileResponse<T>,
+		fileName: string | null = null,
+	): void {
+		const element: HTMLAnchorElement = response.toDownloadElement(fileName);
 		document.body.append(element);
 		element.click();
 		element.remove();
@@ -74,8 +85,12 @@ export class FileDownloader {
 	 * @param {string} contentType MIME content type
 	 * @param {string} fileName Name of downloaded file
 	 */
-	public static downloadFromData(data: object|string, contentType: string, fileName: string): void {
-		const element = this.getDownloadElementFromData(data, contentType, fileName);
+	public static downloadFromData(
+		data: object|string,
+		contentType: string,
+		fileName: string,
+	): void {
+		const element: HTMLAnchorElement = this.getDownloadElementFromData(data, contentType, fileName);
 		document.body.append(element);
 		element.click();
 		element.remove();
@@ -88,7 +103,11 @@ export class FileDownloader {
 	 * @param {string} fileName Name of downloaded file
 	 * @return {HTMLAnchorElement} New file download element
 	 */
-	public static getDownloadElementFromData(data: object|string, contentType: string, fileName: string): HTMLAnchorElement {
+	public static getDownloadElementFromData(
+		data: object|string,
+		contentType: string,
+		fileName: string,
+	): HTMLAnchorElement {
 		return this.getDownloadElement(data, contentType, fileName);
 	}
 
@@ -99,7 +118,11 @@ export class FileDownloader {
 	 * @param {string} fileName Name of downloaded file
 	 * @return {HTMLAnchorElement} New file download element
 	 */
-	private static getDownloadElement(rawData: object|string, contentType: string, fileName: string): HTMLAnchorElement {
+	private static getDownloadElement(
+		rawData: object|string,
+		contentType: string,
+		fileName: string,
+	): HTMLAnchorElement {
 		const data = contentType === 'application/json' && typeof rawData === 'object' ? JSON.stringify(rawData, null, '\t') : (rawData as string);
 		const blob: Blob = new Blob([data], { type: contentType });
 		const fileUrl: string = window.URL.createObjectURL(blob);

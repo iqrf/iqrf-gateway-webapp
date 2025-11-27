@@ -68,11 +68,11 @@ export interface MenderConfig {
 }
 
 /**
- * @deprecated Use MenderRemount from module @iqrf/iqrf-gateway-webapp-client/types/Maintenance instead
+ * @deprecated Use MenderRemount from module `@iqrf/iqrf-gateway-webapp-client/types/Maintenance` instead
  */
 export type MenderRemount = MenderRemountNew;
 
 /**
- * @deprecated Use MenderMountMode from module @iqrf/iqrf-gateway-webapp-client/types/Maintenance instead
+ * @deprecated Use MenderMountMode from module `@iqrf/iqrf-gateway-webapp-client/types/Maintenance` instead
  */
 export type MenderMountMode = MenderMountModeNew;

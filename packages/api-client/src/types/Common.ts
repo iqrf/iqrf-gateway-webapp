@@ -50,7 +50,7 @@ export interface EmailSentResponse {
 
 }
 
-export type FileResponseType = Blob | object | string | unknown[];
+export type FileResponseType = Blob | object | string;
 
 /**
  * File response
