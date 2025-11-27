@@ -67,7 +67,7 @@ export interface MailerConfig {
 	/**
 	 * Context for connecting to the SMTP server
 	 */
-	context?: any[];
+	context?: unknown[];
 
 	/**
 	 * SMTP server enablement
