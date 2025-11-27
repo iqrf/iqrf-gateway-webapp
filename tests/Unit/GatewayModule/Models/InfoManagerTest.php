@@ -389,7 +389,7 @@ final class InfoManagerTest extends TestCase {
 	/**
 	 * Test function to get the eMMC flash memory health
 	 */
-	public function testGetEmmcHealth(): void {
+	public function testGetEmmcHealthOk(): void {
 		$this->receiveCommand(
 			command: self::COMMANDS['emmcHealth'],
 			stdout: 'eMMC Life Time Estimation A [EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_A]: 0x01' . PHP_EOL .
@@ -397,6 +397,57 @@ final class InfoManagerTest extends TestCase {
 					'eMMC Pre EOL information [EXT_CSD_PRE_EOL_INFO]: 0x01',
 		);
 		Assert::same(self::EXPECTED['emmcHealth'], $this->manager->getEmmcHealth());
+	}
+
+	/**
+	 * Test function to get the eMMC flash memory health when warning is displayed
+	 */
+	public function testGetEmmcHealthWarning(): void {
+		$this->receiveCommand(
+			command: self::COMMANDS['emmcHealth'],
+			stdout: 'eMMC Life Time Estimation A [EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_A]: 0x08' . PHP_EOL .
+					'eMMC Life Time Estimation B [EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_B]: 0x08' . PHP_EOL .
+					'eMMC Pre EOL information [EXT_CSD_PRE_EOL_INFO]: 0x02',
+		);
+		Assert::same([
+			'slc_region' => '20 %',
+			'mlc_region' => '20 %',
+			'status' => 'warning',
+		], $this->manager->getEmmcHealth());
+	}
+
+	/**
+	 * Test function to get the eMMC flash memory health when urgent warning is displayed
+	 */
+	public function testGetEmmcHealthUrgent(): void {
+		$this->receiveCommand(
+			command: self::COMMANDS['emmcHealth'],
+			stdout: 'eMMC Life Time Estimation A [EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_A]: 0x09' . PHP_EOL .
+					'eMMC Life Time Estimation B [EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_B]: 0x09' . PHP_EOL .
+					'eMMC Pre EOL information [EXT_CSD_PRE_EOL_INFO]: 0x03',
+		);
+		Assert::same([
+			'slc_region' => '10 %',
+			'mlc_region' => '10 %',
+			'status' => 'urgent',
+		], $this->manager->getEmmcHealth());
+	}
+
+	/**
+	 * Test function to get the eMMC flash memory health when device does not provide info data and memory is 100% worn off
+	 */
+	public function testGetEmmcHealthUndefined(): void {
+		$this->receiveCommand(
+			command: self::COMMANDS['emmcHealth'],
+			stdout: 'eMMC Life Time Estimation A [EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_A]: 0x0A' . PHP_EOL .
+					'eMMC Life Time Estimation B [EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_B]: 0x0A' . PHP_EOL .
+					'eMMC Pre EOL information [EXT_CSD_PRE_EOL_INFO]: 0x00',
+		);
+		Assert::same([
+			'slc_region' => '0 %',
+			'mlc_region' => '0 %',
+			'status' => 'undefined',
+		], $this->manager->getEmmcHealth());
 	}
 
 	/**
