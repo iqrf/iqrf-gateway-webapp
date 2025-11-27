@@ -87,6 +87,8 @@ stages:
     - linux, amd64, docker
   variables:
     DOCKER_IMAGE: iqrftech/iqrf-gateway-webapp
+    DOCKER_HOST: "unix:///runner/services/docker/docker.sock"
+    DOCKER_TLS_CERTDIR: "/certs"
 
 .docker_template_testing:
   extends: .docker_template
@@ -132,6 +134,9 @@ newman:
     - apk add  --no-cache docker-compose
   script:
     - docker-compose -f api-testing.docker-compose.yml up --build --abort-on-container-exit
+  variables:
+    DOCKER_HOST: "unix:///runner/services/docker/docker.sock"
+    DOCKER_TLS_CERTDIR: "/certs"
   tags:
     - linux, docker, amd64
 
