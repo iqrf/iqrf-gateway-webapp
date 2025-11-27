@@ -227,13 +227,7 @@ limitations under the License.
 								<strong>{{ $t('components.gateway.information.emmcHealth.emmcHealth') }}</strong>
 							</td>
 							<td>
-								<div class='py-2'>
-									<span>
-										<strong>{{ $t('components.gateway.information.emmcHealth.preEol') }}</strong> {{ $t('components.gateway.information.emmcHealth.preEolMessages.' + info.emmcHealth.EXT_CSD_PRE_EOL_INFO) }}<br>
-										<strong>{{ $t('components.gateway.information.emmcHealth.typeA') }}</strong> {{ info.emmcHealth.EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_A }}<br>
-										<strong>{{ $t('components.gateway.information.emmcHealth.preEol') }}</strong> {{ info.emmcHealth.EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_B }}<br>
-									</span>
-								</div>
+								<EmmcHealthInfo :emmc-health='info.emmcHealth' />
 							</td>
 						</tr>
 					</tbody>
@@ -275,6 +269,7 @@ import ResourceUsage from '@/components/gateway/info/ResourceUsage.vue';
 import { useApiClient } from '@/services/ApiClient';
 import { useDaemonStore } from '@/store/daemonSocket';
 import { DeviceEnumeration } from '@/types/DaemonApi/Iqmesh';
+import EmmcHealthInfo from './EmmcHealthInfo.vue';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();

@@ -1838,15 +1838,15 @@
 				"diagnostics": "Download diagnostics",
 				"emmcHealth": {
 					"emmcHealth": "eMMC flash memory health",
-					"preEol": "Memory health overview",
+					"mlc_region": "MLC area health",
 					"preEolMessages": {
-						"0": "Not defined. (Memory may not support status reporting.)",
-						"1": "Normal: consumed less than 80% of the reserved blocks.",
-						"2": "Warning: consumed 80% of the reserved blocks!",
-						"3": "Urgent: consumed 90% of the reserved blocks! Device is near failure!"
+						"normal": "normal.",
+						"undefined": "not defined. (Memory may not support status reporting.)",
+						"urgent": "urgent: consumed more than 90% of the reserved blocks! Device is near failure!",
+						"warning": "warning: consumed more than 80% of the reserved blocks!"
 					},
-					"typeA": "SLC area wear level",
-					"typeB": "MLC area wear level"
+					"preEol_info": "Overall memory health",
+					"slc_region": "SLC area health"
 				},
 				"gwId": "IQRF Gateway ID",
 				"gwImage": "IQRF Gateway Image",
