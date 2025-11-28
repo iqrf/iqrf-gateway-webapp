@@ -26,6 +26,7 @@ declare(strict_types = 1);
 
 namespace Tests\Unit\GatewayModule\Models;
 
+use App\GatewayModule\Enums\EmmcHealthStatus;
 use App\GatewayModule\Models\InfoManager;
 use App\GatewayModule\Models\NetworkManager;
 use App\GatewayModule\Models\VersionManager;
@@ -121,7 +122,7 @@ final class InfoManagerTest extends TestCase {
 		'emmcHealth' => [
 			'slc_region' => '90 %',
 			'mlc_region' => '90 %',
-			'status' => 'normal',
+			'status' => EmmcHealthStatus::Normal,
 		],
 	];
 
@@ -412,7 +413,7 @@ final class InfoManagerTest extends TestCase {
 		Assert::same([
 			'slc_region' => '20 %',
 			'mlc_region' => '20 %',
-			'status' => 'warning',
+			'status' => EmmcHealthStatus::Warning,
 		], $this->manager->getEmmcHealth());
 	}
 
@@ -429,7 +430,7 @@ final class InfoManagerTest extends TestCase {
 		Assert::same([
 			'slc_region' => '10 %',
 			'mlc_region' => '10 %',
-			'status' => 'urgent',
+			'status' => EmmcHealthStatus::Urgent,
 		], $this->manager->getEmmcHealth());
 	}
 
@@ -446,7 +447,7 @@ final class InfoManagerTest extends TestCase {
 		Assert::same([
 			'slc_region' => '0 %',
 			'mlc_region' => '0 %',
-			'status' => 'undefined',
+			'status' => EmmcHealthStatus::Undefined,
 		], $this->manager->getEmmcHealth());
 	}
 

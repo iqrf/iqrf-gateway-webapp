@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models;
 
+use App\GatewayModule\Enums\EmmcHealthStatus;
 use App\GatewayModule\Models\BoardManagers\DeviceTreeBoardManager;
 use App\GatewayModule\Models\BoardManagers\DmiBoardManager;
 use App\GatewayModule\Models\BoardManagers\IqrfBoardManager;
@@ -58,7 +59,7 @@ class InfoManager {
 	/**
 	 * Returns information about the gateway
 	 * @param bool $verbose Verbose output
-	 * @return array<string, array<int|string, array<string, array<int, string>|string>|string>|string|null> Gateway information
+	 * @return array<string, array<EmmcHealthStatus|array<array<string>|string|null>|int|string|null>|string|null> Gateway information
 	 */
 	public function get(bool $verbose = false): array {
 		return [
@@ -267,15 +268,9 @@ class InfoManager {
 
 	/**
 	 * Get eMMC health status
-	 * @return array<string, string>|null Health status
+	 * @return array{slc_region?: int, mlc_region?: int, status?: EmmcHealthStatus}|null Health status
 	 */
 	public function getEmmcHealth(): ?array {
-		$status_table = [
-			0 => 'undefined',
-			1 => 'normal',
-			2 => 'warning',
-			3 => 'urgent',
-		];
 		$command = 'mmc extcsd read /dev/mmcblk0 | grep -e EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_A -e EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_B -e EXT_CSD_PRE_EOL_INFO';
 		$output = $this->commandManager->run($command)->getStdout();
 		if (strlen($output) === 0) {
@@ -299,7 +294,7 @@ class InfoManager {
 					break;
 				// overall status message
 				case 'EXT_CSD_PRE_EOL_INFO':
-					$output['status'] = $status_table[$value];
+					$output['status'] = EmmcHealthStatus::from($value);
 					break;
 				default:
 					break;
