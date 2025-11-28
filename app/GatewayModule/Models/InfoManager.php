@@ -286,11 +286,11 @@ class InfoManager {
 			switch ($name) {
 				// single level cell memory region health (in %)
 				case 'EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_A':
-					$output['slc_region'] = sprintf('%d %%', 100 - ($value * 10));
+					$output['slc_region'] = 100 - ($value * 10);
 					break;
 				// multi level cell memory region health (in %)
 				case 'EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_B':
-					$output['mlc_region'] = sprintf('%d %%', 100 - ($value * 10));
+					$output['mlc_region'] = 100 - ($value * 10);
 					break;
 				// overall status message
 				case 'EXT_CSD_PRE_EOL_INFO':
