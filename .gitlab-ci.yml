@@ -154,6 +154,7 @@ include:
         - '8.2'
         - '8.3'
         - '8.4'
+        - '8.5'
       project_dir: '.'
       retry: 2
   - component: gitlab.iqrf.org/open-source/gitlab-ci-components/test-php-nette-coverage@master
