@@ -15,7 +15,8 @@
 		"interfaces",
 		"diskUsages",
 		"memoryUsage",
-		"swapUsage"
+		"swapUsage",
+		"emmcHealth"
 	],
 	"properties": {
 		"board": {
@@ -533,6 +534,59 @@
 					"type": "string",
 					"title": "Usage",
 					"example": "32.54%"
+				}
+			}
+		},
+		"emmcHealth": {
+			"$id": "#/properties/emmcHealth",
+			"oneOf": [
+				{
+					"type": "object"
+				},
+				{
+					"type": "null"
+				}
+			],
+			"title": "eMMC health",
+			"example": {
+				"slcRegion": 90,
+				"mlcRegion": 90,
+				"status": "normal"
+			},
+			"additionalProperties": false,
+			"required": [
+				"slcRegion",
+				"mlcRegion",
+				"status"
+			],
+			"properties": {
+				"slcRegion": {
+					"$id": "#/properties/emmcHealth/properties/slcRegion",
+					"type": "integer",
+					"title": "eMMC SLC area life time estimation",
+					"minimum": 0,
+					"maximum": 100,
+					"example": 90
+				},
+				"mlcRegion": {
+					"$id": "#/properties/emmcHealth/properties/mlcRegion",
+					"type": "integer",
+					"title": "eMMC MLC area life time estimation",
+					"minimum": 0,
+					"maximum": 100,
+					"example": 90
+				},
+				"status": {
+					"$id": "#/properties/emmcHealth/properties/status",
+					"enum": [
+						"undefined",
+						"normal",
+						"warning",
+						"urgent"
+					],
+					"type": "string",
+					"title": "eMMC pre EOL status information",
+					"example": "normal"
 				}
 			}
 		}

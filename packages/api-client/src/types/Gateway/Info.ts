@@ -117,6 +117,32 @@ export interface GatewayBriefInformation {
 }
 
 /**
+ * eMMC health overall status detail
+ */
+export enum EmmcHealthStatus {
+	/// undefined status - for example when memory does not support status reporting
+	undefined = 'undefined',
+	/// normal status - memory has enough healthy blocks
+	normal = 'normal',
+	/// warning - send when more than 80% of memory blocks are consumed
+	warning = 'warning',
+	/// urgent state - more than 90% of blocks are consumed
+	urgent = 'urgent',
+}
+
+/**
+ * Information about eMMC flash memory health
+ */
+export interface EmmcHealth {
+	/// eMMC SLC region life time estimation
+	slcRegion: number;
+	/// eMMC MLC region life time estimation
+	mlcRegion: number;
+	/// eMMC pre EOL info (overall status)
+	status: EmmcHealthStatus;
+}
+
+/**
  * Information about IQRF Gateway
  */
 export interface GatewayInformation extends GatewayBriefInformation {
@@ -138,4 +164,6 @@ export interface GatewayInformation extends GatewayBriefInformation {
 	uptime: string;
 	/// IQRF Gateway SW versions
 	versions: SoftwareVersions;
+	/// eMMC health
+	emmcHealth: EmmcHealth | null;
 }
