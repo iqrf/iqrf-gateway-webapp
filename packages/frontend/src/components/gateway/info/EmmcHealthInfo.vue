@@ -17,27 +17,9 @@ limitations under the License.
 
 <template>
 	<div>
-		<div class='d-inline' if='emmcHealth.slc_region'>
-			{{ $t('components.gateway.information.emmcHealth.slc_region') }}
-			{{ emmcHealth.slc_region }}
-			<v-progress-linear
-				:model-value='emmcHealth.slc_region || undefined'
-				:color='slc_color'
-				height='10'
-				rounded
-			/>
-		</div>
-		<div class='d-inline' if='emmcHealth.mlc_region'>
-			{{ $t('components.gateway.information.emmcHealth.mlc_region') }}
-			{{ emmcHealth.mlc_region }}
-			<v-progress-linear
-				:model-value='emmcHealth.mlc_region || undefined'
-				:color='mlc_color'
-				height='10'
-				rounded
-			/>
-		</div>
-		<div class='d-inline' if='emmcHealth.status'>
+		<EmmcRegionHealthInfo :region-health='emmcHealth.slc_region' :region-name='$t("components.gateway.information.emmcHealth.slc_region")' />
+		<EmmcRegionHealthInfo :region-health='emmcHealth.mlc_region' :region-name='$t("components.gateway.information.emmcHealth.mlc_region")' />
+		<div class='d-inline'>
 			{{ $t('components.gateway.information.emmcHealth.preEol_info') }}
 			{{ $t(`components.gateway.information.emmcHealth.preEolMessages.${emmcHealth.status}`) }}
 		</div>
@@ -47,7 +29,9 @@ limitations under the License.
 
 <script lang='ts' setup>
 import { type EmmcHealth } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
-import { computed, type PropType } from 'vue';
+import { type PropType } from 'vue';
+
+import EmmcRegionHealthInfo from './EmmcRegionHealthInfo.vue';
 
 const componentProps = defineProps({
 	emmcHealth: {
@@ -60,37 +44,4 @@ const componentProps = defineProps({
 		required: false,
 	},
 });
-
-const slc_color = computed(() => {
-	if (!componentProps.emmcHealth.slc_region) {
-		return 'success';
-	}
-	const slc_percentage = Number.parseFloat(
-		componentProps.emmcHealth.slc_region.replace('%', ''),
-	);
-	if (slc_percentage <= 10) {
-		return 'error';
-	} else if (slc_percentage <= 20) {
-		return 'warning';
-	} else {
-		return 'success';
-	}
-});
-const mlc_color = computed(() => {
-	if (!componentProps.emmcHealth.mlc_region) {
-		return 'success';
-	}
-	const mlc_percentage = Number.parseFloat(
-		componentProps.emmcHealth.mlc_region.replace('%', ''),
-	);
-	if (mlc_percentage <= 10) {
-		return 'error';
-	} else if (mlc_percentage <= 20) {
-		return 'warning';
-	} else {
-		return 'success';
-	}
-});
-
-
 </script>

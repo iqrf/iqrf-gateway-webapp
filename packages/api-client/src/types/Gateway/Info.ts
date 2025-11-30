@@ -117,15 +117,29 @@ export interface GatewayBriefInformation {
 }
 
 /**
+ * eMMC health overall status detail
+ */
+export enum EmmcHealthStatus {
+	/// undefined status - for example when memory does not support status reporting
+	undefined = 'undefined',
+	/// normal status - memory has enough healthy blocks
+	normal = 'normal',
+	/// warning - send when more than 80% of memory blocks are consumed
+	warning = 'warning',
+	/// urgent state - more than 90% of blocks are consumed
+	urgent = 'urgent'
+}
+
+/**
  * Information about eMMC flash memory health
  */
 export interface EmmcHealth {
 	/// eMMC SLC region life time estimation
-	slc_region: string | null;
+	slc_region: number;
 	/// eMMC MLC region life time estimation
-	mlc_region: string | null;
+	mlc_region: number;
 	/// eMMC pre EOL info (overall status)
-	status: string | null;
+	status: EmmcHealthStatus;
 }
 
 /**
