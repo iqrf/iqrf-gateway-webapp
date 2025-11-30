@@ -120,8 +120,8 @@ final class InfoManagerTest extends TestCase {
 		],
 		'uptime' => 'up 2 hours, 30 minutes',
 		'emmcHealth' => [
-			'slc_region' => 90,
-			'mlc_region' => 90,
+			'slcRegion' => 90,
+			'mlcRegion' => 90,
 			'status' => EmmcHealthStatus::Normal,
 		],
 	];
@@ -411,8 +411,8 @@ final class InfoManagerTest extends TestCase {
 					'eMMC Pre EOL information [EXT_CSD_PRE_EOL_INFO]: 0x02',
 		);
 		Assert::same([
-			'slc_region' => 20,
-			'mlc_region' => 20,
+			'slcRegion' => 20,
+			'mlcRegion' => 20,
 			'status' => EmmcHealthStatus::Warning,
 		], $this->manager->getEmmcHealth());
 	}
@@ -428,8 +428,8 @@ final class InfoManagerTest extends TestCase {
 					'eMMC Pre EOL information [EXT_CSD_PRE_EOL_INFO]: 0x03',
 		);
 		Assert::same([
-			'slc_region' => 10,
-			'mlc_region' => 10,
+			'slcRegion' => 10,
+			'mlcRegion' => 10,
 			'status' => EmmcHealthStatus::Urgent,
 		], $this->manager->getEmmcHealth());
 	}
@@ -445,8 +445,8 @@ final class InfoManagerTest extends TestCase {
 					'eMMC Pre EOL information [EXT_CSD_PRE_EOL_INFO]: 0x00',
 		);
 		Assert::same([
-			'slc_region' => 0,
-			'mlc_region' => 0,
+			'slcRegion' => 0,
+			'mlcRegion' => 0,
 			'status' => EmmcHealthStatus::Undefined,
 		], $this->manager->getEmmcHealth());
 	}

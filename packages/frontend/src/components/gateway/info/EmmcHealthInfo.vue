@@ -17,10 +17,10 @@ limitations under the License.
 
 <template>
 	<div>
-		<EmmcRegionHealthInfo :region-health='emmcHealth.slc_region' :region-name='$t("components.gateway.information.emmcHealth.slc_region")' />
-		<EmmcRegionHealthInfo :region-health='emmcHealth.mlc_region' :region-name='$t("components.gateway.information.emmcHealth.mlc_region")' />
+		<EmmcRegionHealthInfo :region-health='emmcHealth.slcRegion' :region-name='$t("components.gateway.information.emmcHealth.slcRegion")' />
+		<EmmcRegionHealthInfo :region-health='emmcHealth.mlcRegion' :region-name='$t("components.gateway.information.emmcHealth.mlcRegion")' />
 		<div class='d-inline'>
-			{{ $t('components.gateway.information.emmcHealth.preEol_info') }}
+			{{ $t('components.gateway.information.emmcHealth.preEolInfo') }}
 			{{ $t(`components.gateway.information.emmcHealth.preEolMessages.${emmcHealth.status}`) }}
 		</div>
 		<br v-if='!last'>

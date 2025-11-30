@@ -311,15 +311,15 @@
 				"diagnostics": "Stáhnout diagnostická data",
 				"emmcHealth": {
 					"emmcHealth": "Stav eMMC paměti",
-					"mlc_region": "Zbývající životnost MLC oblasti",
+					"mlcRegion": "Zbývající životnost MLC oblasti",
+					"preEolInfo": "Celkový stav",
 					"preEolMessages": {
 						"normal": "normální.",
 						"undefined": "není definován. (Reportování stavu nemusí být podporováno.)",
 						"urgent": "naléhavý: spotřebováno 90 % rezervovaných bloků! Paměť se blíží konciživotnosti!",
 						"warning": "varování: spotřebováno 80 % rezervovaných bloků!"
 					},
-					"preEol_info": "Celkový stav",
-					"slc_region": "Zbývající životnost SLC oblasti"
+					"slcRegion": "Zbývající životnost SLC oblasti"
 				},
 				"gwId": "IQRF Gateway ID",
 				"hostname": "Jméno hostitele",

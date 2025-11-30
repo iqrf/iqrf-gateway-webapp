@@ -549,27 +549,27 @@
 			],
 			"title": "eMMC health",
 			"example": {
-				"slc_region": 90,
-				"mlc_region": 90,
+				"slcRegion": 90,
+				"mlcRegion": 90,
 				"status": "normal"
 			},
 			"additionalProperties": false,
 			"required": [
-				"slc_region",
-				"mlc_region",
+				"slcRegion",
+				"mlcRegion",
 				"status"
 			],
 			"properties": {
-				"slc_region": {
-					"$id": "#/properties/emmcHealth/properties/slc_region",
+				"slcRegion": {
+					"$id": "#/properties/emmcHealth/properties/slcRegion",
 					"type": "integer",
 					"title": "eMMC SLC area life time estimation",
 					"minimum": 0,
 					"maximum": 100,
 					"example": 90
 				},
-				"mlc_region": {
-					"$id": "#/properties/emmcHealth/properties/mlc_region",
+				"mlcRegion": {
+					"$id": "#/properties/emmcHealth/properties/mlcRegion",
 					"type": "integer",
 					"title": "eMMC MLC area life time estimation",
 					"minimum": 0,

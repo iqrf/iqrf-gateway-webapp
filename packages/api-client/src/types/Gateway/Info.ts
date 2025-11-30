@@ -135,9 +135,9 @@ export enum EmmcHealthStatus {
  */
 export interface EmmcHealth {
 	/// eMMC SLC region life time estimation
-	slc_region: number;
+	slcRegion: number;
 	/// eMMC MLC region life time estimation
-	mlc_region: number;
+	mlcRegion: number;
 	/// eMMC pre EOL info (overall status)
 	status: EmmcHealthStatus;
 }

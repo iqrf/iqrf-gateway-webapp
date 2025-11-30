@@ -268,7 +268,7 @@ class InfoManager {
 
 	/**
 	 * Get eMMC health status
-	 * @return array{slc_region?: int, mlc_region?: int, status?: EmmcHealthStatus}|null Health status
+	 * @return array{slcRegion?: int, mlcRegion?: int, status?: EmmcHealthStatus}|null Health status
 	 */
 	public function getEmmcHealth(): ?array {
 		$command = 'mmc extcsd read /dev/mmcblk0 | grep -e EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_A -e EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_B -e EXT_CSD_PRE_EOL_INFO';
@@ -286,11 +286,11 @@ class InfoManager {
 			switch ($name) {
 				// single level cell memory region health (in %)
 				case 'EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_A':
-					$output['slc_region'] = 100 - ($value * 10);
+					$output['slcRegion'] = 100 - ($value * 10);
 					break;
 				// multi level cell memory region health (in %)
 				case 'EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_B':
-					$output['mlc_region'] = 100 - ($value * 10);
+					$output['mlcRegion'] = 100 - ($value * 10);
 					break;
 				// overall status message
 				case 'EXT_CSD_PRE_EOL_INFO':
