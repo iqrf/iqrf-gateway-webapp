@@ -127,7 +127,7 @@ export enum EmmcHealthStatus {
 	/// warning - send when more than 80% of memory blocks are consumed
 	warning = 'warning',
 	/// urgent state - more than 90% of blocks are consumed
-	urgent = 'urgent'
+	urgent = 'urgent',
 }
 
 /**
