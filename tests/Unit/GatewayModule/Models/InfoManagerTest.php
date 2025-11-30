@@ -26,6 +26,7 @@ declare(strict_types = 1);
 
 namespace Tests\Unit\GatewayModule\Models;
 
+use App\GatewayModule\Enums\EmmcHealthStatus;
 use App\GatewayModule\Models\InfoManager;
 use App\GatewayModule\Models\NetworkManager;
 use App\GatewayModule\Models\VersionManager;
@@ -57,6 +58,7 @@ final class InfoManagerTest extends TestCase {
 		'gitBranches' => 'git branch -v --no-abbrev',
 		'osInfo' => 'cat /etc/os-release',
 		'uptime' => 'uptime -p',
+		'emmcHealth' => 'mmc extcsd read /dev/mmcblk0 | grep -e EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_A -e EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_B -e EXT_CSD_PRE_EOL_INFO',
 	];
 
 	/**
@@ -117,6 +119,11 @@ final class InfoManagerTest extends TestCase {
 			'usage' => '27.15%',
 		],
 		'uptime' => 'up 2 hours, 30 minutes',
+		'emmcHealth' => [
+			'slcRegion' => 90,
+			'mlcRegion' => 90,
+			'status' => EmmcHealthStatus::Normal,
+		],
 	];
 
 	/**
@@ -381,6 +388,82 @@ final class InfoManagerTest extends TestCase {
 	}
 
 	/**
+	 * Test function to get the eMMC flash memory health
+	 */
+	public function testGetEmmcHealthOk(): void {
+		$this->receiveCommand(
+			command: self::COMMANDS['emmcHealth'],
+			stdout: 'eMMC Life Time Estimation A [EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_A]: 0x01' . PHP_EOL .
+					'eMMC Life Time Estimation B [EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_B]: 0x01' . PHP_EOL .
+					'eMMC Pre EOL information [EXT_CSD_PRE_EOL_INFO]: 0x01',
+		);
+		Assert::same(self::EXPECTED['emmcHealth'], $this->manager->getEmmcHealth());
+	}
+
+	/**
+	 * Test function to get the eMMC flash memory health when warning is displayed
+	 */
+	public function testGetEmmcHealthWarning(): void {
+		$this->receiveCommand(
+			command: self::COMMANDS['emmcHealth'],
+			stdout: 'eMMC Life Time Estimation A [EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_A]: 0x08' . PHP_EOL .
+					'eMMC Life Time Estimation B [EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_B]: 0x08' . PHP_EOL .
+					'eMMC Pre EOL information [EXT_CSD_PRE_EOL_INFO]: 0x02',
+		);
+		Assert::same([
+			'slcRegion' => 20,
+			'mlcRegion' => 20,
+			'status' => EmmcHealthStatus::Warning,
+		], $this->manager->getEmmcHealth());
+	}
+
+	/**
+	 * Test function to get the eMMC flash memory health when urgent warning is displayed
+	 */
+	public function testGetEmmcHealthUrgent(): void {
+		$this->receiveCommand(
+			command: self::COMMANDS['emmcHealth'],
+			stdout: 'eMMC Life Time Estimation A [EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_A]: 0x09' . PHP_EOL .
+					'eMMC Life Time Estimation B [EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_B]: 0x09' . PHP_EOL .
+					'eMMC Pre EOL information [EXT_CSD_PRE_EOL_INFO]: 0x03',
+		);
+		Assert::same([
+			'slcRegion' => 10,
+			'mlcRegion' => 10,
+			'status' => EmmcHealthStatus::Urgent,
+		], $this->manager->getEmmcHealth());
+	}
+
+	/**
+	 * Test function to get the eMMC flash memory health when device does not provide info data and memory is 100% worn off
+	 */
+	public function testGetEmmcHealthUndefined(): void {
+		$this->receiveCommand(
+			command: self::COMMANDS['emmcHealth'],
+			stdout: 'eMMC Life Time Estimation A [EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_A]: 0x0A' . PHP_EOL .
+					'eMMC Life Time Estimation B [EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_B]: 0x0A' . PHP_EOL .
+					'eMMC Pre EOL information [EXT_CSD_PRE_EOL_INFO]: 0x00',
+		);
+		Assert::same([
+			'slcRegion' => 0,
+			'mlcRegion' => 0,
+			'status' => EmmcHealthStatus::Undefined,
+		], $this->manager->getEmmcHealth());
+	}
+
+	/**
+	 * Test function to get the eMMC flash memory health when eMMC is not present
+	 */
+	public function testGetEmmcHealthNotPresent(): void {
+		$this->receiveCommand(
+			command: self::COMMANDS['emmcHealth'],
+			stdout: '',
+			exitCode: 1,
+		);
+		Assert::null($this->manager->getEmmcHealth());
+	}
+
+	/**
 	 * Tests the function to return information about the gateway
 	 */
 	public function testGet(): void {
@@ -426,6 +509,8 @@ final class InfoManagerTest extends TestCase {
 			->andReturn(self::EXPECTED['swapUsage']);
 		$manager->shouldReceive('getUptime')
 			->andReturn(self::EXPECTED['uptime']);
+		$manager->shouldReceive('getEmmcHealth')
+			->andReturn(self::EXPECTED['emmcHealth']);
 		Assert::same(self::EXPECTED, $manager->get($verbose));
 	}
 

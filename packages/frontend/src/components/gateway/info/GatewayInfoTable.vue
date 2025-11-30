@@ -222,6 +222,14 @@ limitations under the License.
 								<DaemonModeInfo />
 							</td>
 						</tr>
+						<tr v-if='info?.emmcHealth'>
+							<td>
+								<strong>{{ $t('components.gateway.information.emmcHealth.emmcHealth') }}</strong>
+							</td>
+							<td>
+								<EmmcHealthInfo :emmc-health='info.emmcHealth' />
+							</td>
+						</tr>
 					</tbody>
 				</v-table>
 			</v-responsive>
@@ -261,6 +269,8 @@ import ResourceUsage from '@/components/gateway/info/ResourceUsage.vue';
 import { useApiClient } from '@/services/ApiClient';
 import { useDaemonStore } from '@/store/daemonSocket';
 import { DeviceEnumeration } from '@/types/DaemonApi/Iqmesh';
+
+import EmmcHealthInfo from './EmmcHealthInfo.vue';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();

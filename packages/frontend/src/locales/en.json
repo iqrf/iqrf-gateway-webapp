@@ -1836,6 +1836,18 @@
 				},
 				"board": "Board",
 				"diagnostics": "Download diagnostics",
+				"emmcHealth": {
+					"emmcHealth": "eMMC flash memory health",
+					"mlcRegion": "MLC area health",
+					"preEolInfo": "Overall memory health",
+					"preEolMessages": {
+						"normal": "normal.",
+						"undefined": "not defined. (Memory may not support status reporting.)",
+						"urgent": "urgent: consumed more than 90% of the reserved blocks! Device is near failure!",
+						"warning": "warning: consumed more than 80% of the reserved blocks!"
+					},
+					"slcRegion": "SLC area health"
+				},
 				"gwId": "IQRF Gateway ID",
 				"gwImage": "IQRF Gateway Image",
 				"gwMode": "Daemon mode",

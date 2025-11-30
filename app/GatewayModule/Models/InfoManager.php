@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models;
 
+use App\GatewayModule\Enums\EmmcHealthStatus;
 use App\GatewayModule\Models\BoardManagers\DeviceTreeBoardManager;
 use App\GatewayModule\Models\BoardManagers\DmiBoardManager;
 use App\GatewayModule\Models\BoardManagers\IqrfBoardManager;
@@ -58,7 +59,7 @@ class InfoManager {
 	/**
 	 * Returns information about the gateway
 	 * @param bool $verbose Verbose output
-	 * @return array<string, array<int|string, array<string, array<int, string>|string>|string>|string|null> Gateway information
+	 * @return array<string, array<EmmcHealthStatus|array<array<string>|string|null>|int|string|null>|string|null> Gateway information
 	 */
 	public function get(bool $verbose = false): array {
 		return [
@@ -83,6 +84,7 @@ class InfoManager {
 			'memoryUsage' => $this->getMemoryUsage(),
 			'swapUsage' => $this->getSwapUsage(),
 			'uptime' => $this->getUptime(),
+			'emmcHealth' => $this->getEmmcHealth(),
 		];
 	}
 
@@ -262,6 +264,43 @@ class InfoManager {
 	 */
 	public function getHostname(): string {
 		return $this->networkManager->getHostname();
+	}
+
+	/**
+	 * Get eMMC health status
+	 * @return array{slcRegion?: int, mlcRegion?: int, status?: EmmcHealthStatus}|null Health status
+	 */
+	public function getEmmcHealth(): ?array {
+		$command = 'mmc extcsd read /dev/mmcblk0 | grep -e EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_A -e EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_B -e EXT_CSD_PRE_EOL_INFO';
+		$output = $this->commandManager->run($command)->getStdout();
+		if (strlen($output) === 0) {
+			return null;
+		}
+		$segments = explode(PHP_EOL, $output);
+		$output = [];
+		foreach ($segments as $segment) {
+			$segment = explode(' ', $segment);
+			$len = count($segment);
+			$name = substr($segment[$len - 2], 1, -2);
+			$value = hexdec($segment[$len - 1]);
+			switch ($name) {
+				// single level cell memory region health (in %)
+				case 'EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_A':
+					$output['slcRegion'] = 100 - ($value * 10);
+					break;
+				// multi level cell memory region health (in %)
+				case 'EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_B':
+					$output['mlcRegion'] = 100 - ($value * 10);
+					break;
+				// overall status message
+				case 'EXT_CSD_PRE_EOL_INFO':
+					$output['status'] = EmmcHealthStatus::from($value);
+					break;
+				default:
+					break;
+			}
+		}
+		return $output;
 	}
 
 }
