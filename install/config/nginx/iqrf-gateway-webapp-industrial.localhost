@@ -14,6 +14,7 @@
 # limitations under the License.
 
 upstream php-fpm {
+	server unix:/run/php/php8.5-fpm.sock weight=8;
 	server unix:/run/php/php8.4-fpm.sock weight=4;
 	server unix:/run/php/php8.3-fpm.sock weight=2;
 	server unix:/run/php/php8.2-fpm.sock;
