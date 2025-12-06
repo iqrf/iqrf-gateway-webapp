@@ -44,6 +44,7 @@ limitations under the License.
 			<v-responsive>
 				<v-table
 					density='compact'
+					striped='even'
 					:hover='true'
 				>
 					<tbody>
