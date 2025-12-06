@@ -3,6 +3,51 @@
 	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/wireguardTunnel.json",
 	"type": "object",
 	"title": "New WireGuard VPN tunnel configuration",
+	"examples": [
+		{
+			"id": 1,
+			"name": "wg0",
+			"privateKey": "+DsMmGWks1DawE1yc4UlOI6pbH3XVxdVArj9lLOyD18=",
+			"publicKey": "2OGuuIWQLKvtVYGntdHSoRb8MtDyKq6wxKd9vQphzDQ=",
+			"port": 58775,
+			"ipv4": {
+				"id": 1,
+				"address": "10.0.0.35",
+				"prefix": 24
+			},
+			"ipv6": {
+				"id": 1,
+				"address": "fd86:ea04:1115::35",
+				"prefix": 64
+			},
+			"peers": [
+				{
+					"id": 1,
+					"publicKey": "oFfa5w0nSkfYNdggb/Su/MUJQ1ryotfjMo5zfSim7yk=",
+					"psk": "Tkyhh13wpqw/ffriFSQtR8TNdxyT9s2MPhqLlT5Z2SA=",
+					"keepalive": 25,
+					"endpoint": "vpn.example.org",
+					"port": 51820,
+					"allowedIPs": {
+						"ipv4": [
+							{
+								"id": 1,
+								"address": "10.0.0.0",
+								"prefix": 24
+							}
+						],
+						"ipv6": [
+							{
+								"id": 2,
+								"address": "2001:db8::/48",
+								"prefix": 48
+							}
+						]
+					}
+				}
+			]
+		}
+	],
 	"required": [
 		"name",
 		"privateKey",
@@ -46,6 +91,12 @@
 			"title": "WireGuard interface private key",
 			"type": "string",
 			"example": "+DsMmGWks1DawE1yc4UlOI6pbH3XVxdVArj9lLOyD18="
+		},
+		"publicKey": {
+			"$id": "#/properties/publicKey",
+			"title": "wireGuard interface private key",
+			"type": "string",
+			"example": "2OGuuIWQLKvtVYGntdHSoRb8MtDyKq6wxKd9vQphzDQ="
 		},
 		"port": {
 			"$id": "#/properties/port",

@@ -249,7 +249,7 @@ components:
 			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/networkWireGuardKeys.json
 			title: Network - WireGuard - key pair
 		NetworkWireGuardTunnel:
-			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/wireguardTunnel.json
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/networkWireGuardTunnel.json
 			title: Network - WireGuard - tunnel configuration
 		NetworkWireGuardTunnels:
 			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/networkWireGuardTunnels.json
