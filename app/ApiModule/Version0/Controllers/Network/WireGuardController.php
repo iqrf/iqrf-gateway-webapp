@@ -108,7 +108,7 @@ class WireGuardController extends BaseNetworkController {
 			$tunnel = $this->manager->getInterface($id)->jsonSerialize();
 			$tunnel['publicKey'] = $this->manager->generatePublicKey($tunnel['privateKey']);
 			$response = $response->writeJsonBody($tunnel);
-			return $this->validators->validateResponse('wireguardTunnel', $response);
+			return $this->validators->validateResponse('networkWireGuardTunnel', $response);
 		} catch (NonexistentWireguardTunnelException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND);
 		} catch (WireguardKeyErrorException $e) {
@@ -139,7 +139,7 @@ class WireGuardController extends BaseNetworkController {
 	EOT)]
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['network']);
-		$this->validators->validateRequest('wireguardTunnel', $request);
+		$this->validators->validateRequest('networkWireGuardTunnel', $request);
 		try {
 			$this->manager->createInterface($request->getJsonBody(false));
 			return $response;
@@ -176,7 +176,7 @@ class WireGuardController extends BaseNetworkController {
 	#[RequestParameter(name: 'id', type: 'integer', description: 'WireGuard tunnel ID')]
 	public function update(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['network']);
-		$this->validators->validateRequest('wireguardTunnel', $request);
+		$this->validators->validateRequest('networkWireGuardTunnel', $request);
 		try {
 			$id = (int) $request->getParameter('id');
 			$this->manager->editInterface($id, $request->getJsonBody(false));
