@@ -384,6 +384,7 @@ function items(): SidebarLink[] {
 		href: featureStore.getConfiguration(Feature.docs)?.url,
 		icon: mdiBook,
 		feature: Feature.docs,
+		target: '_blank',
 		to: '',
 	});
 	return links.filter((item: SidebarLink) => filter(item));
