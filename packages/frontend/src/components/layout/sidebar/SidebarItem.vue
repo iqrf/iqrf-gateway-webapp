@@ -19,6 +19,7 @@ limitations under the License.
 	<v-list-item
 		:href='item.href'
 		:prepend-icon='item.icon'
+		:rel='item.target === "_blank" ? "noopener noreferrer" : undefined'
 		:target='item.target'
 		:to='item.to'
 		:active='active'
