@@ -52,7 +52,7 @@ limitations under the License.
 						container-type='card-title'
 						color='green'
 						:icon='mdiApi'
-						:tooltip='$t("common.labels.apidoc")'
+						:tooltip='$t("common.labels.apiDocs")'
 						href='https://docs.iqrf.org/iqrf-gateway/user/daemon/api.html'
 						target='_blank'
 						rel='noopener noreferrer'

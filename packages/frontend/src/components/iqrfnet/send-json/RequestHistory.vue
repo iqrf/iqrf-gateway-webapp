@@ -68,22 +68,24 @@ limitations under the License.
 <script lang='ts' setup>
 import { ICard } from '@iqrf/iqrf-vue-ui';
 import { mdiDelete } from '@mdi/js';
-import { computed, type PropType, ref, type Ref } from 'vue';
+import { computed, ref, type Ref } from 'vue';
 
 import JsonMessageViewer from '@/components/iqrfnet/send-json/JsonMessageViewer.vue';
 import SelectInput from '@/components/layout/form/SelectInput.vue';
 import { JsonApiTransaction } from '@/types/Iqrfnet';
-const componentProps = defineProps({
-	messages: {
-		type: Array as PropType<JsonApiTransaction[]>,
-		required: true,
-	},
-});
+
+/// Component props
+const componentProps = defineProps<{
+	/// Array of JSON API transactions
+	messages: JsonApiTransaction[];
+}>();
+/// Component emits
 const emit = defineEmits<{
 	clear: [];
 }>();
 const messageIdx: Ref<number> = ref(0);
 
+/// Computed options for message selection
 const messageOptions = computed(() => {
 	return componentProps.messages.map((item: JsonApiTransaction, index: number) => ({
 		title: `[${item.timestamp}] ${item.mType} (${item.msgId})`,

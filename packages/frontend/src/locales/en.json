@@ -1,9 +1,7 @@
 {
 	"common": {
 		"buttons": {
-			"add": "Add",
 			"backup": "Backup",
-			"cancel": "Cancel",
 			"clipboard": "Copy to clipboard",
 			"close": "Close",
 			"delete": "Delete",
@@ -26,7 +24,7 @@
 			"id": "ID"
 		},
 		"labels": {
-			"apidoc": "API documentation",
+			"apiDocs": "API documentation",
 			"certificate": "Certificate",
 			"confirmation": "Confirmation",
 			"confirmationTs": "Confirmation time",
@@ -2633,7 +2631,7 @@
 				"hwpidVer": "HWPID version",
 				"manufacturer": "Manufacturer",
 				"messages": {
-					"error": "An error has occured when processing request."
+					"error": "An error has occurred when processing request."
 				},
 				"mid": "Module ID",
 				"network": "Network",
@@ -3261,7 +3259,7 @@
 							"verifyStepSuccess": "Data successfully verified in coordinator device."
 						},
 						"deviceOfflineError": "One or more devices were offline during the upload process.",
-						"generalError": "An error has occured during OTA upload process: {error}",
+						"generalError": "An error has occurred during OTA upload process: {error}",
 						"genericError": "An error has occurred during the OTA upload process.",
 						"hwpid": "* HWPID 65535 includes all devices.",
 						"invalidContent": "An error has occurred during file content parsing: {error}",
@@ -3439,7 +3437,19 @@
 					"noMessages": "No recorded JSON messages.",
 					"title": "Request history"
 				},
-				"json": "Request message"
+				"json": "Request message",
+				"messageViewer": {
+					"copy": {
+						"request": {
+							"failed": "Failed to copy JSON request to clipboard.",
+							"success": "JSON request has been successfully copied to clipboard."
+						},
+						"response": {
+							"failed": "Failed to copy JSON response to clipboard.",
+							"success": "JSON response has been successfully copied to clipboard."
+						}
+					}
+				}
 			},
 			"standard-manager": {
 				"binary-output": {

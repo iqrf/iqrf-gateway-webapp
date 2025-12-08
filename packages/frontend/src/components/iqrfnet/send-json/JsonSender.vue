@@ -26,8 +26,9 @@ limitations under the License.
 				href='https://docs.iqrf.org/iqrf-gateway/user/daemon/api.html'
 				target='_blank'
 				rel='noopener noreferrer'
+				:prepend-icon='mdiBook'
 			>
-				{{ $t('common.labels.apidoc') }}
+				{{ $t('common.labels.apiDocs') }}
 			</v-btn>
 		</template>
 		<v-alert
@@ -75,7 +76,7 @@ import {
 import { DaemonApiRequest, DaemonApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { ComponentState, ICard } from '@iqrf/iqrf-vue-ui';
-import { mdiSend } from '@mdi/js';
+import { mdiBook, mdiSend } from '@mdi/js';
 import { ref, type Ref, useTemplateRef } from 'vue';
 import { VForm } from 'vuetify/components';
 
@@ -89,7 +90,7 @@ const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const daemonStore = useDaemonStore();
 const form: Ref<VForm|null> = useTemplateRef('form');
 const msgId: Ref<string | null> = ref(null);
-const json: Ref<string | null> = ref(null);
+const json: Ref<string | undefined> = ref(undefined);
 const messages: Ref<JsonApiTransaction[]> = ref([]);
 
 daemonStore.$onAction(
@@ -126,7 +127,7 @@ async function onSubmit(): Promise<void> {
 		return;
 	}
 	componentState.value = ComponentState.Action;
-	const request = JSON.parse(json.value) as DaemonApiRequest;
+	const request = JSON.parse(json.value!) as DaemonApiRequest;
 	const options = new DaemonMessageOptions(null);
 	if (request.data.req && request.data.req.nAdr === 255) { // if a message is broadcasted, do not wait for proper response
 		options.timeout = 1_000;

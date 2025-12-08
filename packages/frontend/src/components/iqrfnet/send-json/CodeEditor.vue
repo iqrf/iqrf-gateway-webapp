@@ -16,7 +16,7 @@ limitations under the License.
 -->
 
 <template>
-	<v-input>
+	<v-input :disabled='disabled'>
 		<v-field
 			:active='isFocused || !!modelValue'
 			:clearable='clearable'
@@ -49,49 +49,80 @@ limitations under the License.
 </template>
 
 <script setup lang='ts'>
+import { Theme } from '@iqrf/iqrf-vue-ui';
 import { mdiCloseCircle } from '@mdi/js';
+import { storeToRefs } from 'pinia';
 import prism from 'prismjs';
-import { PropType, ref, type TemplateRef, useTemplateRef } from 'vue';
+import prism_dark from 'prismjs/themes/prism-okaidia.css?inline';
+import prism_light from 'prismjs/themes/prism.css?inline';
+import {
+	computed,
+	type ComputedRef,
+	ref,
+	type Ref,
+	type TemplateRef,
+	useTemplateRef,
+	watch,
+	watchEffect,
+} from 'vue';
 import { PrismEditor } from 'vue-prism-editor';
 
+import { useThemeStore } from '@/store/theme';
+
 import 'vue-prism-editor/dist/prismeditor.min.css';
-import 'prismjs/themes/prism.css';
 import 'prismjs/components/prism-json';
 
-const modelValue = defineModel({
-	type: [String, undefined] as PropType<string|undefined>,
+/// Model value for the code editor
+const modelValue = defineModel<string|undefined>({
 	required: false,
-	default: null,
+	default: undefined,
 });
-const componentProps = defineProps({
-	clearable: {
-		type: Boolean,
-		required: false,
-		default: false,
+/// Component props with default values
+const componentProps = withDefaults(
+	defineProps<{
+		/// Whether the field is clearable
+		clearable?: boolean;
+		/// Whether the field is disabled
+		disabled?: boolean;
+		/// Label of the code editor
+		label?: string|undefined;
+		/// Language for syntax highlighting
+		language?: string;
+	}>(),
+	{
+		clearable: false,
+		disabled: false,
+		label: undefined,
+		language: 'json',
 	},
-	label: {
-		type: [String, undefined] as PropType<string|undefined>,
-		required: false,
-		default: undefined,
-	},
-	language: {
-		type: String,
-		required: false,
-		default: 'json',
-		validator(value: unknown): boolean {
-			if (prism.languages[value as string]) {
-				return true;
-			}
-			console.warn(`Language '${value as string}' is not supported by PrismJS.`);
-			return false;
-		},
-	},
-});
+);
 defineSlots();
 
+/// Theme store instance
+const themeStore = useThemeStore();
+/// Reactive reference to the current application theme
+const { getTheme: currentTheme } = storeToRefs(themeStore);
+/// Reference to the PrismEditor component
 const editor: TemplateRef<InstanceType<typeof PrismEditor>> = useTemplateRef('editor');
-const isFocused = ref(false);
+/// Computed PrismJS theme based on the current application theme
+const editorTheme: ComputedRef<string> = computed((): string => {
+	switch (currentTheme.value) {
+		case Theme.Dark:
+			return prism_dark;
+		case Theme.Light:
+			return prism_light;
+		default:
+			return prism_light;
+	}
+});
+/// Input wrapper top padding
+const wrapperPaddingTop: ComputedRef<string> = computed((): string => componentProps.label === undefined ? '0' : '2.5rem');
+/// Focus state of the code editor
+const isFocused: Ref<boolean> = ref(false);
 
+/**
+ * Focuses the textarea inside the code editor when the field is clicked
+ */
 function onFieldClick(): void {
 	const root = editor.value?.$el;
 	const textarea = root?.querySelector('.prism-editor__textarea') as HTMLTextAreaElement|null;
@@ -100,15 +131,41 @@ function onFieldClick(): void {
 	}
 }
 
-function highlighter(code: string) {
+/**
+ * Highlights the code syntax
+ * @param {string} code Code to highlight
+ * @return {string} Highlighted code
+ */
+function highlighter(code: string): string {
 	const grammar = prism.languages[componentProps.language];
 	return prism.highlight(code, grammar, componentProps.language);
 }
+
+/**
+ * Loads PrismJS theme
+ */
+function loadPrismTheme() {
+	for (const s of document.querySelectorAll('style[data-prism_theme]')) {
+		s.remove();
+	}
+	const tag = document.createElement('style');
+	tag.dataset.prism_theme = '';
+	tag.innerHTML = editorTheme.value;
+	document.head.append(tag);
+}
+
+loadPrismTheme();
+watch(currentTheme, (): void => loadPrismTheme());
+watchEffect((): void => {
+	if (!prism.languages[componentProps.language ?? 'json']) {
+		throw new Error(`Language '${componentProps.language}' is not supported by PrismJS.`);
+	}
+});
 </script>
 
 <style scoped>
 .i-code-editor__wrapper {
-	padding-top: 2.5rem;
+	padding-top: v-bind(wrapperPaddingTop);
 	width: 100%;
 }
 
