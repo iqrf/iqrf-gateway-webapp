@@ -1,5 +1,15 @@
 {
 	"common": {
+		"buttons": {
+			"backup": "Zálohovat",
+			"clipboard": "Kopírovat do schránky",
+			"deselectAll": "Zrušit výběr všeho",
+			"edit": "Upravit",
+			"enumerate": "Výčet",
+			"restore": "Obnovit",
+			"selectAll": "Vybrat vše",
+			"send": "Odeslat"
+		},
 		"columns": {
 			"actions": "Akce",
 			"description": "Popis",

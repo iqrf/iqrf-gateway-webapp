@@ -23,28 +23,32 @@ limitations under the License.
 		<template #titleActions>
 			<v-btn
 				color='primary'
+				:prepend-icon='mdiClipboardTextMultiple'
 				size='small'
+				@click='copyToClipboard'
 			>
 				{{ $t('common.buttons.clipboard') }}
 			</v-btn>
 		</template>
-		<prism-editor
+		<CodeEditor
 			v-model='json'
-			:highlight='highlighter'
-			:readonly='true'
+			:label='$t(`common.labels.${type}`)'
+			language='json'
+			clearable
+			disabled
 		/>
 	</ICard>
 </template>
 
 <script lang='ts' setup>
 import { ICard } from '@iqrf/iqrf-vue-ui';
-import prism from 'prismjs';
+import { mdiClipboardTextMultiple } from '@mdi/js';
+import { useClipboard } from '@vueuse/core';
 import { computed, type PropType } from 'vue';
-import { PrismEditor } from 'vue-prism-editor';
+import { useI18n } from 'vue-i18n';
+import { toast } from 'vue3-toastify';
 
-import 'vue-prism-editor/dist/prismeditor.min.css';
-import 'prismjs/themes/prism.css';
-import 'prismjs/components/prism-json';
+import CodeEditor from '@/components/iqrfnet/send-json/CodeEditor.vue';
 
 const componentProps = defineProps({
 	message: {
@@ -60,8 +64,18 @@ const componentProps = defineProps({
 const json = computed(() => {
 	return componentProps.message ?? undefined;
 });
+const { copy, copied } = useClipboard({ legacy: true });
+const i18n = useI18n();
 
-function highlighter(code: string) {
-	return prism.highlight(code, prism.languages.json, 'json');
+async function copyToClipboard(): Promise<void> {
+	if (componentProps.message === null) {
+		return;
+	}
+	await copy(componentProps.message);
+	if (copied.value) {
+		toast.success(i18n.t('commands.messages.copySuccess'));
+	} else {
+		toast.error(i18n.t('commands.messages.copyFailure'));
+	}
 }
 </script>

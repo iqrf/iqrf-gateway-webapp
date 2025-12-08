@@ -54,6 +54,7 @@
 		"@popperjs/core": "^2.11.8",
 		"@sentry/vue": "^10.29.0",
 		"@unhead/vue": "^2.0.19",
+		"@vueuse/core": "^14.1.0",
 		"@zip.js/zip.js": "^2.8.11",
 		"ajv": "^8.17.1",
 		"axios": "^1.13.2",

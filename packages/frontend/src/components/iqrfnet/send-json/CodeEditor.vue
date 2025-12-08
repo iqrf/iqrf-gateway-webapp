@@ -16,7 +16,7 @@ limitations under the License.
 -->
 
 <template>
-	<v-input>
+	<v-input :disabled='disabled'>
 		<v-field
 			:active='isFocused || !!modelValue'
 			:clearable='clearable'
@@ -49,13 +49,26 @@ limitations under the License.
 </template>
 
 <script setup lang='ts'>
+import { Theme } from '@iqrf/iqrf-vue-ui';
 import { mdiCloseCircle } from '@mdi/js';
+import { storeToRefs } from 'pinia';
 import prism from 'prismjs';
-import { PropType, ref, type TemplateRef, useTemplateRef } from 'vue';
+import prism_dark from 'prismjs/themes/prism-okaidia.css?inline';
+import prism_light from 'prismjs/themes/prism.css?inline';
+import {
+	computed,
+	ComputedRef,
+	PropType,
+	ref,
+	type TemplateRef,
+	useTemplateRef,
+	watch,
+} from 'vue';
 import { PrismEditor } from 'vue-prism-editor';
 
+import { useThemeStore } from '@/store/theme';
+
 import 'vue-prism-editor/dist/prismeditor.min.css';
-import 'prismjs/themes/prism.css';
 import 'prismjs/components/prism-json';
 
 const modelValue = defineModel({
@@ -64,7 +77,14 @@ const modelValue = defineModel({
 	default: null,
 });
 const componentProps = defineProps({
+	/// Whether the field is clearable
 	clearable: {
+		type: Boolean,
+		required: false,
+		default: false,
+	},
+	/// Whether the field is disabled
+	disabled: {
 		type: Boolean,
 		required: false,
 		default: false,
@@ -89,9 +109,29 @@ const componentProps = defineProps({
 });
 defineSlots();
 
+/// Theme store instance
+const themeStore = useThemeStore();
+/// Reactive reference to the current application theme
+const { getTheme: currentTheme } = storeToRefs(themeStore);
+/// Reference to the PrismEditor component
 const editor: TemplateRef<InstanceType<typeof PrismEditor>> = useTemplateRef('editor');
+/// Computed PrismJS theme based on the current application theme
+const editorTheme: ComputedRef<string> = computed((): string => {
+	switch (currentTheme.value) {
+		case Theme.Dark:
+			return prism_dark;
+		case Theme.Light:
+			return prism_light;
+		default:
+			return prism_light;
+	}
+});
+/// Focus state of the code editor
 const isFocused = ref(false);
 
+/**
+ * Focuses the textarea inside the code editor when the field is clicked
+ */
 function onFieldClick(): void {
 	const root = editor.value?.$el;
 	const textarea = root?.querySelector('.prism-editor__textarea') as HTMLTextAreaElement|null;
@@ -100,10 +140,31 @@ function onFieldClick(): void {
 	}
 }
 
-function highlighter(code: string) {
+/**
+ * Highlights the code syntax
+ * @param {string} code Code to highlight
+ * @return {string} Highlighted code
+ */
+function highlighter(code: string): string {
 	const grammar = prism.languages[componentProps.language];
 	return prism.highlight(code, grammar, componentProps.language);
 }
+
+/**
+ * Loads PrismJS theme
+ */
+function loadPrismTheme() {
+	for (const s of document.querySelectorAll('style[data-prism_theme]')) {
+		s.remove();
+	}
+	const tag = document.createElement('style');
+	tag.dataset.prism_theme = '';
+	tag.innerHTML = editorTheme.value;
+	document.head.append(tag);
+}
+
+loadPrismTheme();
+watch(currentTheme, () => loadPrismTheme());
 </script>
 
 <style scoped>

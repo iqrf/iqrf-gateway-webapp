@@ -1,9 +1,7 @@
 {
 	"common": {
 		"buttons": {
-			"add": "Add",
 			"backup": "Backup",
-			"cancel": "Cancel",
 			"clipboard": "Copy to clipboard",
 			"close": "Close",
 			"delete": "Delete",
@@ -26,7 +24,7 @@
 			"id": "ID"
 		},
 		"labels": {
-			"apidoc": "API documentation",
+			"apiDocs": "API documentation",
 			"certificate": "Certificate",
 			"confirmation": "Confirmation",
 			"confirmationTs": "Confirmation time",

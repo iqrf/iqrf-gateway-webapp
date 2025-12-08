@@ -27,7 +27,7 @@ limitations under the License.
 				target='_blank'
 				rel='noopener noreferrer'
 			>
-				{{ $t('common.labels.apidoc') }}
+				{{ $t('common.labels.apiDocs') }}
 			</v-btn>
 		</template>
 		<v-alert
