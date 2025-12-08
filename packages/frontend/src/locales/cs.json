@@ -1,5 +1,15 @@
 {
 	"common": {
+		"buttons": {
+			"backup": "Zálohovat",
+			"clipboard": "Kopírovat do schránky",
+			"deselectAll": "Zrušit výběr všeho",
+			"edit": "Upravit",
+			"enumerate": "Výčet",
+			"restore": "Obnovit",
+			"selectAll": "Vybrat vše",
+			"send": "Odeslat"
+		},
 		"columns": {
 			"actions": "Akce",
 			"description": "Popis",
@@ -806,6 +816,27 @@
 					}
 				},
 				"title": "Modemy"
+			}
+		},
+		"iqrfnet": {
+			"send-json": {
+				"history": {
+					"noMessages": "Nebyly dosud zaznamenány žádné zprávy.",
+					"title": "Historie zpráv"
+				},
+				"json": "Zpráva požadavku",
+				"messageViewer": {
+					"copy": {
+						"request": {
+							"failed": "Nepodařilo se zkopírovat JSON požadavku do schránky.",
+							"success": "JSON požadavek byl úspěšně zkopírován do schránky."
+						},
+						"response": {
+							"failed": "Nepodařilo se zkopírovat JSON odpověď do schránky.",
+							"success": "JSON odpověď byla úspěšně zkopírována do schránky."
+						}
+					}
+				}
 			}
 		},
 		"layout": {
