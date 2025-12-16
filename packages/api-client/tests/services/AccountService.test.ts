@@ -114,19 +114,19 @@ describe('AccountService', (): void => {
 		};
 		mockedAxios.onPut('/account/password', request)
 			.reply(200);
-		await expect(service.updatePassword(request)).resolves.not.toThrow();
+		await expect(service.updatePassword(request)).resolves.not.toThrowError();
 	});
 
 	test('confirm password recovery - invalid UUID format', async (): Promise<void> => {
 		expect.assertions(1);
 		await expect(service.confirmPasswordRecovery('invalid-uuid', passwordResetRequest)).rejects
-			.toThrow(new Error('Invalid password recovery request UUID.'));
+			.toThrowError(new Error('Invalid password recovery request UUID.'));
 	});
 
 	test('confirm password recovery - invalid UUID version', async (): Promise<void> => {
 		expect.assertions(1);
 		await expect(service.confirmPasswordRecovery('60045219-7cbf-321e-a762-c90382cd8723', passwordResetRequest)).rejects
-			.toThrow(new Error('Invalid password recovery request UUID version.'));
+			.toThrowError(new Error('Invalid password recovery request UUID version.'));
 	});
 
 	test('confirm password recovery', async (): Promise<void> => {
@@ -146,19 +146,19 @@ describe('AccountService', (): void => {
 		};
 		mockedAxios.onPost('/account/passwordRecovery', request)
 			.reply(200);
-		await expect(service.requestPasswordRecovery(request)).resolves.not.toThrow();
+		await expect(service.requestPasswordRecovery(request)).resolves.not.toThrowError();
 	});
 
 	test('verify e-mail address - invalid UUID format', async (): Promise<void> => {
 		expect.assertions(1);
 		await expect(service.verifyEmail('invalid-uuid')).rejects
-			.toThrow(new Error('Invalid e-mail verification UUID.'));
+			.toThrowError(new Error('Invalid e-mail verification UUID.'));
 	});
 
 	test('verify e-mail address - invalid UUID version', async (): Promise<void> => {
 		expect.assertions(1);
 		await expect(service.verifyEmail('60045219-7cbf-321e-a762-c90382cd8723')).rejects
-			.toThrow(new Error('Invalid e-mail verification UUID version.'));
+			.toThrowError(new Error('Invalid e-mail verification UUID version.'));
 	});
 
 	test('verify e-mail address', async (): Promise<void> => {
@@ -177,7 +177,7 @@ describe('AccountService', (): void => {
 		};
 		mockedAxios.onPost('/account/emailVerification/resend', request)
 			.reply(200);
-		await expect(service.resendVerificationEmail(request)).resolves.not.toThrow();
+		await expect(service.resendVerificationEmail(request)).resolves.not.toThrowError();
 	});
 
 	test('sign in the user', async (): Promise<void> => {
