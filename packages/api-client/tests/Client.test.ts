@@ -100,7 +100,7 @@ describe('Client', (): void => {
 		};
 		const axiosInstance: AxiosInstance = axios.create(config);
 		expect(() => new Client({ axiosInstance: axiosInstance, config: config }))
-			.toThrow('Cannot instantiate Client with both axiosInstance and config.');
+			.toThrowError('Cannot instantiate Client with both axiosInstance and config.');
 	});
 
 	test('returns CloudServices instance', (): void => {
