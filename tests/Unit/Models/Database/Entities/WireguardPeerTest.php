@@ -247,6 +247,7 @@ final class WireguardPeerTest extends TestCase {
 					],
 				],
 			],
+			'tunnelId' => $this->interfaceEntity->getId(),
 		];
 		$this->entity->addAddress($this->peerIpv4Entity);
 		$this->entity->addAddress($this->peerIpv6Entity);

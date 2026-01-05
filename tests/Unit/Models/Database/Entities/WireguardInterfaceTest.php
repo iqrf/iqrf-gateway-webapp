@@ -212,44 +212,6 @@ class WireguardInterfaceTest extends TestCase {
 	}
 
 	/**
-	 * Tests the function to serialize wg interface entity with peer into JSON
-	 */
-	public function testJsonSerializePeers(): void {
-		$expected = [
-			'id' => null,
-			'name' => self::NAME,
-			'privateKey' => self::PRIVATE_KEY,
-			'port' => self::PORT,
-			'peers' => [
-				[
-					'id' => null,
-					'publicKey' => 'Z4Csw6v+89bcamtek9elXmuIEA+6PeB6CLnjNh4dJzI=',
-					'psk' => null,
-					'keepalive' => 25,
-					'endpoint' => 'vpn.example.org',
-					'port' => 51280,
-					'allowedIPs' => [
-						'ipv4' => [],
-						'ipv6' => [],
-					],
-				],
-			],
-			'ipv4' => [
-				'id' => null,
-				'address' => '192.168.1.2',
-				'prefix' => 24,
-			],
-			'ipv6' => [
-				'id' => null,
-				'address' => '2001:db8::',
-				'prefix' => 32,
-			],
-		];
-		$this->entity->addPeer($this->peerEntity);
-		Assert::same($expected, $this->entity->jsonSerialize());
-	}
-
-	/**
 	 * Tests the function to serialize wg interface entity without peers and with null values into JSON
 	 */
 	public function testJsonSerializeNull(): void {
@@ -258,7 +220,6 @@ class WireguardInterfaceTest extends TestCase {
 			'name' => self::NAME,
 			'privateKey' => self::PRIVATE_KEY,
 			'port' => null,
-			'peers' => [],
 		];
 		$this->entity->setPort();
 		$this->entity->setIpv4();
