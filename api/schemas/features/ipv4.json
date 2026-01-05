@@ -1,0 +1,41 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/ipv4.json",
+	"type": "object",
+	"title": "IPv4 configuration",
+	"examples": [
+		{
+			"id": 1,
+			"address": "10.0.0.0",
+			"prefix": 24
+		}
+	],
+	"required": [
+		"address",
+		"prefix"
+	],
+	"additionalProperties": false,
+	"properties": {
+		"id": {
+			"$id": "#/properties/ipv4/properties/id",
+			"title": "WireGuard interface IPv4 address ID",
+			"type": "integer",
+			"example": 1
+		},
+		"address": {
+			"$id": "#/properties/ipv4/properties/address",
+			"title": "WireGuard interface IPv4 address",
+			"type": "string",
+			"format": "ipv4",
+			"example": "10.0.0.35"
+		},
+		"prefix": {
+			"$id": "#/properties/ipv4/properties/prefix",
+			"title": "WireGuard interface IPv4 address prefix",
+			"type": "integer",
+			"minimum": 0,
+			"maximum": 32,
+			"example": 24
+		}
+	}
+}
