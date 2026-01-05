@@ -19,14 +19,14 @@ limitations under the License.
 	<IDeleteModalWindow
 		ref='dialog'
 		:component-state='componentState'
-		:tooltip='$t("components.ipNetwork.wireGuard.tunnels.columns.action.delete")'
+		:tooltip='$t("components.ipNetwork.wireGuard.peers.columns.action.delete")'
 		persistent
 		@submit='onSubmit'
 	>
 		<template #title>
-			{{ $t('components.ipNetwork.wireGuard.tunnels.delete.title') }}
+			{{ $t('components.ipNetwork.wireGuard.peers.delete.title') }}
 		</template>
-		{{ $t('components.ipNetwork.wireGuard.tunnels.delete.prompt', { name: tunnel.name }) }}
+		{{ $t('components.ipNetwork.wireGuard.peers.delete.prompt', { name: peer.endpoint }) }}
 	</IDeleteModalWindow>
 </template>
 
@@ -35,13 +35,14 @@ import {
 	type WireGuardService,
 } from '@iqrf/iqrf-gateway-webapp-client/services/Network';
 import {
-	type WireGuardTunnelListEntry,
+	WireGuardPeer,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import {
 	ComponentState,
 	IDeleteModalWindow,
 } from '@iqrf/iqrf-vue-ui';
 import {
+	type PropType,
 	ref,
 	type Ref,
 	type TemplateRef,
@@ -53,12 +54,15 @@ import { toast } from 'vue3-toastify';
 import { useApiClient } from '@/services/ApiClient';
 
 /// Component properties
-const componentProps = defineProps<{
-	tunnel: WireGuardTunnelListEntry;
-}>();
+const componentProps = defineProps({
+	peer: {
+		type: Object as PropType<WireGuardPeer>,
+		required: true,
+	},
+});
 /// Define emit events
 const emit = defineEmits<{
-	deleted: [tunnelId: number];
+	deleted: [peerId: number];
 }>();
 /// Component state
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
@@ -80,22 +84,22 @@ function close(): void {
  * Handles submit event
  */
 async function onSubmit(): Promise<void> {
-	if (componentProps.tunnel === undefined || componentProps.tunnel === null) {
+	if (componentProps.peer === undefined || componentProps.peer === null) {
 		return;
 	}
 	componentState.value = ComponentState.Action;
 	try {
-		await service.deleteTunnel(componentProps.tunnel?.id);
+		await service.removePeer(componentProps.peer.id!);
 		componentState.value = ComponentState.Ready;
 		toast.success(
-			i18n.t('components.ipNetwork.wireGuard.tunnels.delete.messages.success', { name: componentProps.tunnel.name }),
+			i18n.t('components.ipNetwork.wireGuard.peers.delete.messages.success', { name: componentProps.peer.endpoint }),
 		);
 		close();
-		emit('deleted', componentProps.tunnel.id);
+		emit('deleted', componentProps.peer.id!);
 	} catch {
 		componentState.value = ComponentState.Error;
 		toast.error(
-			i18n.t('components.ipNetwork.wireGuard.tunnels.delete.messages.failure', { name: componentProps.tunnel.name }),
+			i18n.t('components.ipNetwork.wireGuard.peers.delete.messages.failure', { name: componentProps.peer.endpoint }),
 		);
 	}
 }

@@ -21,6 +21,7 @@ limitations under the License.
 			{{ $t('components.ipNetwork.wireGuard.tunnels.title') }}
 		</template>
 		<template #titleActions>
+			<WireGuardTunnelForm :action='Action.Add' @update-tunnel='updateTunnel' />
 			<IActionBtn
 				:action='Action.Reload'
 				container-type='card-title'
@@ -46,7 +47,10 @@ limitations under the License.
 						<BooleanCheckMarker :value='item.enabled' />
 					</template>
 					<template #item.actions='{ item }'>
-						<WireGuardDeleteTunnelDialog :tunnel='item' @deleted='fetchData' />
+						<WireGuardDeactivateDialog :wg-list-entry='item' @update-active-flag='updateActiveFlag' />
+						<WireGuardDisableDialog :wg-list-entry='item' @update-enable-flag='updateEnableFlag' />
+						<WireGuardTunnelForm :action='Action.Edit' :tunnel-id='item.id' @update-tunnel='updateTunnel' />
+						<WireGuardDeleteTunnelDialog :tunnel='item' @deleted='deleteTunnel' />
 					</template>
 				</IDataTable>
 			</v-responsive>
@@ -56,6 +60,7 @@ limitations under the License.
 
 <script setup lang='ts'>
 import {
+	WireGuardTunnelConfig,
 	type WireGuardTunnelListEntry,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import {
@@ -65,19 +70,35 @@ import {
 	ICard,
 	IDataTable,
 } from '@iqrf/iqrf-vue-ui';
-import { computed, onBeforeMount, ref, type Ref } from 'vue';
+import { computed, PropType, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import BooleanCheckMarker from '@/components/BooleanCheckMarker.vue';
 import WireGuardDeleteTunnelDialog
 	from '@/components/ip-network/wireGuard/WireGuardDeleteTunnelDialog.vue';
-import { useApiClient } from '@/services/ApiClient';
+import WireGuardTunnelForm from '@/components/ip-network/wireGuard/WireGuardTunnelForm.vue';
+
+import WireGuardDeactivateDialog from './WireGuardDeactivateDialog.vue';
+import WireGuardDisableDialog from './WireGuardDisableDialog.vue';
+
+const componentProps = defineProps({
+	tunnels: {
+		type: Array as PropType<WireGuardTunnelListEntry[]>,
+		required: true,
+	},
+});
+
+const emit = defineEmits<{
+	updateTunnel: [tunnel: WireGuardTunnelConfig, enabled: boolean, active: boolean];
+	updateActiveFlag: [tunnelId: number];
+	updateEnableFlag: [tunnelId: number];
+	deleteTunnel: [tunnelId: number];
+	fetchData: [];
+}>();
 
 const i18n = useI18n();
-const service = useApiClient().getNetworkServices().getWireGuardService();
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
-const tunnels: Ref<WireGuardTunnelListEntry[]> = ref([]);
 const headers = computed(() => [
 	{
 		key: 'name',
@@ -100,17 +121,43 @@ const headers = computed(() => [
 ]);
 
 /**
- * Fetches WireGuard tunnels
+ * Passes fetch data event to parent component
  */
 async function fetchData(): Promise<void> {
-	componentState.value = ComponentState.Loading;
-	try {
-		tunnels.value = await service.listTunnels();
-		componentState.value = ComponentState.Ready;
-	} catch {
-		componentState.value = ComponentState.FetchFailed;
-	}
+	emit('fetchData');
 }
 
-onBeforeMount(async () => await fetchData());
+/**
+ * Passes update tunnel event to parent component
+ * @param {WireGuardTunnelConfig} tunnel tunnel to add to the array
+ * @param {boolean} enabled enabled flag - tells if tunnel is enabled
+ * @param {boolean} active active flag - tells if tunnel is active
+ */
+function updateTunnel(tunnel: WireGuardTunnelConfig, enabled: boolean, active: boolean): void {
+	emit('updateTunnel', tunnel, enabled, active);
+}
+
+/**
+ * Passes delete tunnel event to parent component
+ * @param {number} tunnelId ID of tunnel to remove
+ */
+function deleteTunnel(tunnelId: number): void {
+	emit('deleteTunnel', tunnelId);
+}
+
+/**
+ * Passes update enable flag event to parent component
+ * @param {number} tunnelId ID of tunnel to update.
+ */
+function updateEnableFlag(tunnelId: number): void {
+	emit('updateEnableFlag', tunnelId);
+}
+
+/**
+ * Passes update active flag event to parent component
+ * @param {number} tunnelId ID of tunnel to update
+ */
+function updateActiveFlag(tunnelId: number): void {
+	emit('updateActiveFlag', tunnelId);
+}
 </script>

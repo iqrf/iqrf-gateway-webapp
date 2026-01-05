@@ -20,7 +20,7 @@ limitations under the License.
 		<Head>
 			<title>{{ $t('pages.ipNetwork.wireGuard.title') }}</title>
 		</Head>
-		<WireGuardTunnelsTable />
+		<WireGuardTableWrapper />
 	</div>
 </template>
 
@@ -37,6 +37,5 @@ limitations under the License.
 <script lang='ts' setup>
 import { Head } from '@unhead/vue/components';
 
-import WireGuardTunnelsTable
-	from '@/components/ip-network/wireGuard/WireGuardTunnelsTable.vue';
+import WireGuardTableWrapper from '@/components/ip-network/wireGuard/WireGuardTableWrapper.vue';
 </script>
