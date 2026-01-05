@@ -32,6 +32,7 @@ use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\ControllerValidators;
 use App\Models\Database\Entities\WireguardInterface;
 use App\NetworkModule\Exceptions\InterfaceExistsException;
+use App\NetworkModule\Exceptions\NonexistentWireguardPeerException;
 use App\NetworkModule\Exceptions\NonexistentWireguardTunnelException;
 use App\NetworkModule\Exceptions\WireguardInvalidEndpointException;
 use App\NetworkModule\Exceptions\WireguardKeyErrorException;
@@ -105,9 +106,8 @@ class WireGuardController extends BaseNetworkController {
 		$this->validators->checkScopes($request, ['network']);
 		try {
 			$id = (int) $request->getParameter('id');
-			$tunnel = $this->manager->getInterface($id)->jsonSerialize();
-			$tunnel['publicKey'] = $this->manager->generatePublicKey($tunnel['privateKey']);
-			$response = $response->writeJsonBody($tunnel);
+			$iface = $this->manager->getInterface($id);
+			$response = $response->writeJsonBody($this->serializeTunnel($iface));
 			return $this->validators->validateResponse('networkWireGuardTunnel', $response);
 		} catch (NonexistentWireguardTunnelException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND);
@@ -130,6 +130,10 @@ class WireGuardController extends BaseNetworkController {
 		responses:
 			'200':
 				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: '#/components/schemas/NetworkWireGuardTunnel'
 			'400':
 				$ref: '#/components/responses/BadRequest'
 			'403':
@@ -141,8 +145,9 @@ class WireGuardController extends BaseNetworkController {
 		$this->validators->checkScopes($request, ['network']);
 		$this->validators->validateRequest('networkWireGuardTunnel', $request);
 		try {
-			$this->manager->createInterface($request->getJsonBody(false));
-			return $response;
+			$interface = $this->manager->createInterface($request->getJsonBody(false));
+			$response = $response->writeJsonBody($this->serializeTunnel($interface));
+			return $this->validators->validateResponse('networkWireGuardTunnel', $response);
 		} catch (InterfaceExistsException | WireguardInvalidEndpointException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
 		} catch (WireguardKeyErrorException $e) {
@@ -164,6 +169,10 @@ class WireGuardController extends BaseNetworkController {
 		responses:
 			'200':
 				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: '#/components/schemas/NetworkWireGuardTunnel'
 			'400':
 				$ref: '#/components/responses/BadRequest'
 			'403':
@@ -179,8 +188,9 @@ class WireGuardController extends BaseNetworkController {
 		$this->validators->validateRequest('networkWireGuardTunnel', $request);
 		try {
 			$id = (int) $request->getParameter('id');
-			$this->manager->editInterface($id, $request->getJsonBody(false));
-			return $response;
+			$interface = $this->manager->editInterface($id, $request->getJsonBody(false));
+			$response = $response->writeJsonBody($this->serializeTunnel($interface));
+			return $this->validators->validateResponse('networkWireGuardTunnel', $response);
 		} catch (NonexistentWireguardTunnelException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND);
 		} catch (InterfaceExistsException | WireguardInvalidEndpointException $e) {
@@ -371,12 +381,213 @@ class WireGuardController extends BaseNetworkController {
 		}
 	}
 
+	#[Path('/{id}/peers')]
+	#[Method('GET')]
+	#[OpenApi(<<<'EOT'
+		summary: Get WireGuard intetrface peers
+		responses:
+			'200':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: '#/components/schemas/networkWireGuardTunnelPeerList'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
+	#[RequestParameter(name: 'id', type: 'integer', description: 'WireGuard tunnel ID')]
+	public function getInterfacePeers(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validators->checkScopes($request, ['network']);
+		try {
+			$tunnel = $this->manager->getInterface((int) $request->getParameter('id'));
+			$peers = $tunnel->getPeers()->toArray();
+			$response = $response->writeJsonBody($peers);
+			return $this->validators->validateResponse('networkWireGuardTunnelPeerList', $response);
+		} catch (NonexistentWireguardTunnelException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND);
+		}
+	}
+
+	#[Path('/peers')]
+	#[Method('GET')]
+	#[OpenApi(<<<'EOT'
+		summary: Get all WireGuard peers
+		responses:
+			'200':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: '#/components/schemas/networkWireGuardTunnelPeerList'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
+	public function getAllPeers(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validators->checkScopes($request, ['network']);
+		$peers = $this->manager->getAllPeers();
+		$response = $response->writeJsonBody($peers);
+		return $this->validators->validateResponse('networkWireGuardTunnelPeerList', $response);
+	}
+
+	#[Path('/peers/{id}')]
+	#[Method('DELETE')]
+	#[OpenApi(<<<'EOT'
+		summary: Delete WireGuard peer
+		responses:
+			'200':
+				description: Success
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
+	#[RequestParameter(name: 'id', type: 'integer', description: 'WireGuard peer ID')]
+	public function deletePeer(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validators->checkScopes($request, ['network']);
+		try {
+			$this->manager->removePeer((int) $request->getParameter('id'));
+			return $response;
+		} catch (NonexistentWireguardPeerException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND);
+		}
+	}
+
+	#[Path('/peers')]
+	#[Method('POST')]
+	#[OpenApi(<<<'EOT'
+		summary: Add WireGuard peer
+		requestBody:
+			description: WireGuard peer configuration
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: '#/components/schemas/networkWireGuardTunnelPeer'
+		responses:
+			'200':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: '#/components/schemas/networkWireGuardTunnelPeer'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
+	public function addPeer(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validators->checkScopes($request, ['network']);
+		$this->validators->validateRequest('networkWireGuardTunnelPeer', $request);
+		$requestBody = $request->getJsonBody(false);
+		try {
+			$interface = $this->manager->getInterface($requestBody->tunnelId);
+			$peer = $this->manager->createPeer($requestBody, $interface);
+			$response = $response->writeJsonBody($peer->jsonSerialize());
+			return $this->validators->validateResponse('networkWireGuardTunnelPeer', $response);
+		} catch (NonexistentWireguardTunnelException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND);
+		}
+	}
+
+	#[Path('/peers/{id}')]
+	#[Method('PUT')]
+	#[OpenApi(<<<'EOT'
+		summary: Update WireGuard peer
+		requestBody:
+			description: WireGuard peer configuration
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: '#/components/schemas/networkWireGuardTunnelPeer'
+		responses:
+			'200':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: '#/components/schemas/networkWireGuardTunnelPeer'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
+	#[RequestParameter(name: 'id', type: 'integer', description: 'WireGuard peer ID')]
+	public function updatePeer(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validators->checkScopes($request, ['network']);
+		$this->validators->validateRequest('networkWireGuardTunnelPeer', $request);
+		$requestBody = $request->getJsonBody(false);
+		try {
+			$peer = $this->manager->modifyPeer($requestBody);
+			$response = $response->writeJsonBody($peer->jsonSerialize());
+			return $this->validators->validateResponse('networkWireGuardTunnelPeer', $response);
+		} catch (NonexistentWireguardTunnelException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND);
+		} catch (NonexistentWireguardPeerException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND);
+		}
+	}
+
+	#[Path('/peers/{id}')]
+	#[Method('GET')]
+	#[OpenApi(<<<'EOT'
+		summary: Get WireGuard peer
+		responses:
+			'200':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: '#/components/schemas/networkWireGuardTunnelPeer'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
+	#[RequestParameter(name: 'id', type: 'integer', description: 'WireGuard peer ID')]
+	public function getPeer(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validators->checkScopes($request, ['network']);
+		try {
+			$peer = $this->manager->getPeer((int) $request->getParameter('id'));
+			$response = $response->writeJsonBody($peer->jsonSerialize());
+			return $this->validators->validateResponse('networkWireGuardTunnelPeer', $response);
+		} catch (NonexistentWireguardPeerException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND);
+		}
+	}
+
 	/**
 	 * Constructs WireGuard tunnel service name
 	 * @param WireguardInterface $iface WireGuard interface entity
 	 */
 	private function tunnelService(WireguardInterface $iface): string {
 		return 'iqrf-gateway-webapp-wg@' . $iface->getName();
+	}
+
+	/**
+	 * Serializes a WireGuard tunnel with derived public key
+	 * @param WireguardInterface $iface WireGuard interface entity
+	 * @return array<string, mixed>
+	 */
+	private function serializeTunnel(WireguardInterface $iface): array
+	{
+		$tunnel = $iface->jsonSerialize();
+		$tunnel['publicKey'] = $this->manager->generatePublicKey($tunnel['privateKey']);
+		return $tunnel;
 	}
 
 }

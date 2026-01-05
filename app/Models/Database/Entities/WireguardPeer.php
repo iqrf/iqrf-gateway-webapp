@@ -242,6 +242,7 @@ class WireguardPeer implements JsonSerializable {
 				'ipv4' => $ipv4,
 				'ipv6' => $ipv6,
 			],
+			'tunnelId' => $this->getInterface()->getId(),
 		];
 	}
 
