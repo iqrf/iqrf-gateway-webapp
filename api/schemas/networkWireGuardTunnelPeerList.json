@@ -1,0 +1,37 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/networkWireGuardTunnelPeerList.json",
+	"type": "array",
+	"title": "List of WireGuard VPN tunnel peer configurations",
+	"examples": [
+		[
+			{
+				"id": 1,
+				"publicKey": "oFfa5w0nSkfYNdggb/Su/MUJQ1ryotfjMo5zfSim7yk=",
+				"psk": "Tkyhh13wpqw/ffriFSQtR8TNdxyT9s2MPhqLlT5Z2SA=",
+				"keepalive": 25,
+				"endpoint": "vpn.example.org",
+				"port": 51820,
+				"allowedIPs": {
+					"ipv4": [
+						{
+							"id": 1,
+							"address": "10.0.0.0",
+							"prefix": 24
+						}
+					],
+					"ipv6": [
+						{
+							"id": 2,
+							"address": "2001:db8::/48",
+							"prefix": 48
+						}
+					]
+				}
+			}
+		]
+	],
+	"items": {
+		"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/networkWireGuardTunnelPeer.json"
+	}
+}

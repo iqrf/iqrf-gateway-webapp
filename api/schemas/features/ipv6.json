@@ -1,0 +1,41 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/ipv6.json",
+	"type": "object",
+	"title": "IPv6 configuration",
+	"examples": [
+		{
+			"id": 1,
+			"address": "fd86:ea04:1115::35",
+			"prefix": 64
+		}
+	],
+	"required": [
+		"address",
+		"prefix"
+	],
+	"additionalProperties": false,
+	"properties": {
+		"id": {
+			"$id": "#/properties/ipv6/properties/id",
+			"title": "WireGuard interface IPv6 address ID",
+			"type": "integer",
+			"example": 1
+		},
+		"address": {
+			"$id": "#/properties/ipv6/properties/address",
+			"title": "WireGuard interface IPv6 address",
+			"type": "string",
+			"format": "ipv6",
+			"example": "fd86:ea04:1115::35"
+		},
+		"prefix": {
+			"$id": "#/properties/ipv6/properties/prefix",
+			"title": "WireGuard interface IPv6 address prefix",
+			"type": "integer",
+			"minimum": 0,
+			"maximum": 128,
+			"example": 64
+		}
+	}
+}

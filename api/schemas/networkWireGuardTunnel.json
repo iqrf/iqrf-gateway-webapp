@@ -19,39 +19,12 @@
 				"id": 1,
 				"address": "fd86:ea04:1115::35",
 				"prefix": 64
-			},
-			"peers": [
-				{
-					"id": 1,
-					"publicKey": "oFfa5w0nSkfYNdggb/Su/MUJQ1ryotfjMo5zfSim7yk=",
-					"psk": "Tkyhh13wpqw/ffriFSQtR8TNdxyT9s2MPhqLlT5Z2SA=",
-					"keepalive": 25,
-					"endpoint": "vpn.example.org",
-					"port": 51820,
-					"allowedIPs": {
-						"ipv4": [
-							{
-								"id": 1,
-								"address": "10.0.0.0",
-								"prefix": 24
-							}
-						],
-						"ipv6": [
-							{
-								"id": 2,
-								"address": "2001:db8::/48",
-								"prefix": 48
-							}
-						]
-					}
-				}
-			]
+			}
 		}
 	],
 	"required": [
 		"name",
-		"privateKey",
-		"peers"
+		"privateKey"
 	],
 	"anyOf": [
 		{
@@ -169,156 +142,6 @@
 					"minimum": 48,
 					"maximum": 128,
 					"example": 64
-				}
-			}
-		},
-		"peers": {
-			"$id": "#/properties/peers",
-			"title": "WireGuard tunnel peers",
-			"type": "array",
-			"additionalItems": false,
-			"items": {
-				"$id": "#/properties/peers/items",
-				"title": "WireGuard tunnel peer object",
-				"type": "object",
-				"required": [
-					"publicKey",
-					"keepalive",
-					"endpoint",
-					"port",
-					"allowedIPs"
-				],
-				"additionalProperties": false,
-				"properties": {
-					"id": {
-						"$id": "#/properties/peers/items/properties/id",
-						"title": "WireGuard peer ID",
-						"type": "integer",
-						"example": 1
-					},
-					"publicKey": {
-						"$id": "#/properties/peers/items/properties/publicKey",
-						"title": "WireGuard tunnel peer public key",
-						"type": "string",
-						"example": "oFfa5w0nSkfYNdggb/Su/MUJQ1ryotfjMo5zfSim7yk="
-					},
-					"psk": {
-						"$id": "#/properties/peers/items/properties/psk",
-						"title": "WireGuard tunnel peer pre-shared key",
-						"type": "string",
-						"example": "Tkyhh13wpqw/ffriFSQtR8TNdxyT9s2MPhqLlT5Z2SA="
-					},
-					"keepalive": {
-						"$id": "#/properties/peers/items/properties/keepalive",
-						"title": "WireGuard tunnel peer keepalive interval",
-						"type": "integer",
-						"minimum": 0,
-						"example": 25
-					},
-					"endpoint": {
-						"$id": "#/properties/peers/items/properties/endpoint",
-						"title": "WireGuard tunnel peer endpoint",
-						"type": "string",
-						"example": "vpn.example.org"
-					},
-					"port": {
-						"$id": "#/properties/peers/items/properties/port",
-						"title": "WireGuard tunnel peer listen port",
-						"type": "integer",
-						"minimum": 0,
-						"maximum": 65535,
-						"example": 51820
-					},
-					"allowedIPs": {
-						"$id": "#/properties/peers/items/properties/allowedIPs",
-						"title": "WireGuard tunnel peer allowed IP adresses",
-						"type": "object",
-						"required": [
-							"ipv4",
-							"ipv6"
-						],
-						"additionalProperties": false,
-						"properties": {
-							"ipv4": {
-								"$id": "#/properties/peers/items/properties/allowedIPs/properties/ipv4",
-								"title": "WireGuard tunnel peer allowed IPv4 addresses",
-								"type": "array",
-								"additionalItems": false,
-								"items": {
-									"$id": "#/properties/peers/items/properties/allowedIPs/properties/ipv4/items",
-									"title": "WireGuard tunnel peer allowed IPv4 address object",
-									"type": "object",
-									"required": [
-										"address",
-										"prefix"
-									],
-									"additionalProperties": false,
-									"properties": {
-										"id": {
-											"$id": "#/properties/id",
-											"title": "WireGuard peer allowed IPv4 address ID",
-											"type": "integer",
-											"example": 1
-										},
-										"address": {
-											"$id": "#/properties/peers/items/properties/allowedIPs/properties/ipv4/items/properties/address",
-											"title": "WireGuard tunnel peer allowed IPv4 address",
-											"type": "string",
-											"format": "ipv4",
-											"example": "10.0.0.0"
-										},
-										"prefix": {
-											"$id": "#/properties/peers/items/properties/allowedIPs/properties/ipv4/items/properties/prefix",
-											"title": "WireGuard tunnel peer allowed IPv4 address prefix",
-											"type": "integer",
-											"minimum": 1,
-											"maximum": 32,
-											"example": 24
-										}
-									}
-								}
-							},
-							"ipv6": {
-								"$id": "#/properties/peers/items/properties/allowedIPs/properties/ipv6",
-								"title": "WireGuard tunnel peer allowed IPv6 addresses",
-								"type": "array",
-								"additionalItems": false,
-								"items": {
-									"$id": "#/properties/peers/items/properties/allowedIPs/properties/ipv6/items",
-									"title": "WireGuard tunnel peer allowed IPv6 address object",
-									"type": "object",
-									"required": [
-										"address",
-										"prefix"
-									],
-									"additionalProperties": false,
-									"properties": {
-										"id": {
-											"$id": "#/properties/id",
-											"title": "WireGuard peer allowed IPv6 address ID",
-											"type": "integer",
-											"example": 2
-										},
-										"address": {
-											"$id": "#/properties/peers/items/properties/allowedIPs/properties/ipv6/items/properties/address",
-											"title": "WireGuard tunnel peer allowed IPv6 address",
-											"type": "string",
-											"format": "ipv6",
-											"example": "2001:db8::/48"
-										},
-										"prefix": {
-											"$id": "#/properties/peers/items/properties/allowedIPs/properties/ipv6/items/properties/prefix",
-											"title": "WireGuard tunnel peer allowed IPv6 address prefix",
-											"type": "integer",
-											"minimum": 48,
-											"maximum": 128,
-											"example": 48
-										}
-									}
-								}
-							}
-						}
-					}
 				}
 			}
 		}
