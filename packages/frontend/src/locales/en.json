@@ -2571,26 +2571,156 @@
 				"title": "Modems"
 			},
 			"wireGuard": {
+				"peers": {
+					"add": {
+						"messages": {
+							"failure": "Failed to add WireGuard peer!",
+							"success": "WireGuard peer added successfully!"
+						}
+					},
+					"columns": {
+						"action": {
+							"delete": "Delete peer"
+						},
+						"endpoint": "Peer endpoint",
+						"port": "Peer port",
+						"tunnel": "Tunnel"
+					},
+					"configuration": {
+						"form": {
+							"addPeer": "Add new WireGuard peer",
+							"allowedIps": {
+								"addIPv4": "Add another IPv4 address",
+								"addIPv6": "Add another IPv6 address",
+								"ipv4title": "Allowed IPv4 addresses",
+								"ipv6title": "Allowed IPv6 addresses",
+								"remove": "Remove"
+							},
+							"editPeer": "Edit WireGuard peer",
+							"endpoint": "Peer endpoint (peer public IP or hostname)",
+							"keepalive": "Keep alive interval",
+							"port": "Peer port",
+							"psk": "Pre-shared key",
+							"publicKey": "Public key",
+							"tunnel": "Tunnel that the peer will use"
+						},
+						"noTunnelErrorMessage": "No WireGuard tunnel is configured! Please configure tunnel first. Peers are assigned to tunnels and cannot be added if there are no tunnels configured.",
+						"title": "WireGuard peer configuration",
+						"validation": {
+							"endpoint": "Endpoint is required!",
+							"keepalive": "Keepalive interval is required!",
+							"portNumber": "Port number is not between 0 and 65535!",
+							"portRequired": "Port number is required!",
+							"publicKey": "Public key is required!"
+						}
+					},
+					"delete": {
+						"messages": {
+							"failure": "Failed to delete WireGuard peer {name}.",
+							"success": "WireGuard peer {name} has been successfully deleted."
+						},
+						"prompt": "Are you sure you want to delete WireGuard peer {name}?",
+						"title": "WireGuard peer deletion confirmation"
+					},
+					"title": "WireGuard peers",
+					"update": {
+						"messages": {
+							"failure": "Failed to update WireGuard peer configuration!",
+							"success": "WireGuard peer configuration updated successfully!"
+						}
+					}
+				},
 				"tunnels": {
+					"add": {
+						"messages": {
+							"failure": "WireGuard tunnel creation failed!",
+							"success": "WireGuard tunnel created successfylly!"
+						}
+					},
 					"columns": {
 						"action": {
 							"activate": "Activate",
 							"deactivate": "Deactivate",
-							"delete": "Delete tunnel"
+							"delete": "Delete tunnel",
+							"disable": "Disable",
+							"enable": "Enable",
+							"failure": {
+								"activate": "Failed to activate WireGuard tunnel!",
+								"deactivate": "Failed to deactivate WireGuard tunnel!",
+								"delete": "Failed to delete WireGuard tunnel!",
+								"disable": "Failed to disable WireGuard tunnel!",
+								"enable": "Failed to enable WireGuard tunnel!"
+							},
+							"success": {
+								"activate": "WireGuard tunnel activation successful.",
+								"deactivate": "WireGuard tunnel deactivation successful.",
+								"delete": "WireGuard tunnel deleted successfully.",
+								"disable": "WireGuard tunnel disabled successfully.",
+								"enable": "WireGuard tunnel enabled successfully."
+							}
 						},
 						"active": "Active",
 						"enabled": "Enabled",
 						"name": "Name"
+					},
+					"configuration": {
+						"form": {
+							"addTunnel": "Add new WireGuard tunnel",
+							"changeKeyPair": "Change key pair manually",
+							"copyKey": "Key copied!",
+							"editTunnel": "Edit WireGuard tunnel",
+							"genKeyPair": {
+								"error": "Failed to get new key pair!",
+								"genKeyPair": "Generate new key pair",
+								"prompt": "Generating new key pair will repace existing keys. Existing connections will stop working until clients are reconfigured with new key. Private key will be visible only after its generated and cannot be shown again for security reasons.",
+								"title": "Key replacement warning!"
+							},
+							"ipAddressPrefix": "Prefix",
+							"ipv4address": "IPv4 address",
+							"ipv6address": "IPv6 address",
+							"name": "Tunnel name",
+							"port": "WireGuard port",
+							"privateKey": "Tunnel private key",
+							"publicKey": "Tunnel public key",
+							"saveActivate": "Save and activate tunnel",
+							"saveEnable": "Save and enable tunnel",
+							"stack": "IP stack used by the tunnel"
+						},
+						"title": "WireGuard tunnel configuration",
+						"validation": {
+							"ipAddressInvalid": "IP address format is not valid!",
+							"ipAddressPrefixRequired": "Prefix is required!",
+							"ipAddressRequired": "IP address is required!",
+							"ipv4AddressPrefix": "Prefix must be between 0 and 32!",
+							"ipv6AddressPrefix": "Prefix must be between 0 and 128!",
+							"name": "Tunnel name is required!"
+						}
+					},
+					"deactivate": {
+						"deactivate": "Deactivate the tunnel",
+						"prompt": "If you are connected to the device over the {name} WireGuard tunnel, deactivating it will result in the loss of connection to the device. Do you wish to proceed?",
+						"title": "Deacitvate WireGuard tunnel"
 					},
 					"delete": {
 						"messages": {
 							"failure": "Failed to delete WireGuard tunnel {name}.",
 							"success": "WireGuard tunnel {name} has been successfully deleted."
 						},
-						"prompt": "Are you sure you want to delete WireGuard tunnel {name}?",
+						"prompt": "Are you sure you want to delete WireGuard tunnel {name}? This will also delete all peers related to this tunnel!",
 						"title": "WireGuard tunnel deletion confirmation"
 					},
-					"title": "WireGuard tunnels"
+					"disable": {
+						"disable": "Disable the tunnel",
+						"prompt": "If you disable the {name} WireGuard tunnel then it will not automatically connect when the device restart. Do you wish to proceed?",
+						"title": "Disable WireGuard tunnel"
+					},
+					"title": "WireGuard tunnels",
+					"update": {
+						"messages": {
+							"failure": "WireGuard tunnel update failed!",
+							"success": "WireGuard tunnel update successfull!"
+						}
+					}
 				}
 			}
 		},
