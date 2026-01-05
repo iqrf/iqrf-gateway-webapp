@@ -40,6 +40,17 @@
 				"type": "boolean",
 				"title": "WireGuard Tunnel enabled",
 				"example": true
+			},
+			"stack": {
+				"$id": "#/items/properties/stack",
+				"type": "string",
+				"title": "WireGuard Tunnel IP stack type",
+				"enum": [
+					"ipv4",
+					"ipv6",
+					"both"
+				],
+				"example": "ipv4"
 			}
 		}
 	}
