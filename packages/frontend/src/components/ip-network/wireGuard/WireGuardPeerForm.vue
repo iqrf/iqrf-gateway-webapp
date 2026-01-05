@@ -278,7 +278,7 @@ const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 /// Tunnel IP stack
 const tunnelStack: Ref<WireGuardIpStack> = computed(() => {
 	const tunnel = componentProps.tunnels.find((t) => t.id === peerConfig.value.tunnelId);
-	return tunnel.stack;
+	return tunnel?.stack ?? WireGuardIpStack.DUAL;
 });
 
 /**
