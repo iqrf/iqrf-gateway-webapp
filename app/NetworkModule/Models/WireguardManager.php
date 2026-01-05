@@ -32,7 +32,9 @@ use App\Models\Database\Repositories\WireguardInterfaceRepository;
 use App\Models\Database\Repositories\WireguardPeerAddressRepository;
 use App\Models\Database\Repositories\WireguardPeerRepository;
 use App\NetworkModule\Entities\MultiAddress;
+use App\NetworkModule\Enums\WireguardIpStack;
 use App\NetworkModule\Exceptions\InterfaceExistsException;
+use App\NetworkModule\Exceptions\NonexistentWireguardPeerException;
 use App\NetworkModule\Exceptions\NonexistentWireguardTunnelException;
 use App\NetworkModule\Exceptions\WireguardInvalidEndpointException;
 use App\NetworkModule\Exceptions\WireguardKeyErrorException;
@@ -96,6 +98,16 @@ class WireguardManager {
 		$this->peerRepository = $this->entityManager->getWireguardPeerRepository();
 	}
 
+	public function getInterfaceIpStack(WireguardInterface $interface): WireguardIpStack {
+		if ($interface->getIpv4() === null) {
+			return WireguardIpStack::IPV6;
+		} else if ($interface->getIpv6() === null) {
+			return WireguardIpStack::IPV4;
+		} else {
+			return WireguardIpStack::DUAL;
+		}
+	}
+
 	/**
 	 * Returns list of existing WireGuard interfaces configurations
 	 * @return array<int, array<string, bool|int|string|null>> List of WireGuard interfaces
@@ -106,6 +118,7 @@ class WireguardManager {
 			'name' => $interface->getName(),
 			'active' => $this->serviceManager->isActive('iqrf-gateway-webapp-wg@' . $interface->getName()),
 			'enabled' => $this->serviceManager->isEnabled('iqrf-gateway-webapp-wg@' . $interface->getName()),
+			'stack' => $this->getInterfaceIpStack($interface),
 		], $this->interfaceRepository->findAll());
 	}
 
@@ -125,8 +138,9 @@ class WireguardManager {
 	/**
 	 * Adds a new WireGuard interface
 	 * @param stdClass $values New WireGuard interface configuration
+	 * @return WireguardInterface Newly created WireGuard interface
 	 */
-	public function createInterface(stdClass $values): void {
+	public function createInterface(stdClass $values): WireguardInterface {
 		if ($this->interfaceRepository->findInterfaceByName($values->name) instanceof WireguardInterface) {
 			throw new InterfaceExistsException(sprintf('WireGuard tunnel %s already exists.', $values->name));
 		}
@@ -139,19 +153,18 @@ class WireguardManager {
 			$ipv6 = new WireguardInterfaceIpv6(new MultiAddress(Multi::factory($values->ipv6->address), $values->ipv6->prefix), $interface);
 			$interface->setIpv6($ipv6);
 		}
-		foreach ($values->peers as $peer) {
-			$interface->addPeer($this->createPeer($peer, $interface));
-		}
 		$this->entityManager->persist($interface);
 		$this->entityManager->flush();
+		return $interface;
 	}
 
 	/**
 	 * Edits an existing WireGuard interface
 	 * @param int $id WireGuard interface ID
 	 * @param stdClass $values WireGuard interface configuration
+	 * @return WireguardInterface Updated WireGuard interface
 	 */
-	public function editInterface(int $id, stdClass $values): void {
+	public function editInterface(int $id, stdClass $values): WireguardInterface {
 		$interface = $this->getInterface($id);
 		$tunnels = $this->interfaceRepository->findBy(['name' => $values->name]);
 		foreach ($tunnels as $tunnel) {
@@ -172,37 +185,9 @@ class WireguardManager {
 		} else {
 			$interface->setIpv6();
 		}
-		$oldPeers = $interface->getPeers()->toArray();
-		$peersIds = [];
-		foreach ($values->peers as $peer) {
-			if (property_exists($peer, 'id') && $peer->id !== null) {
-				$ifPeer = $this->peerRepository->find($peer->id);
-				if (!($ifPeer instanceof WireguardPeer)) {
-					throw new NonexistentWireguardTunnelException('WireGuard peer not found');
-				}
-				if (ip2long($peer->endpoint) !== false && function_exists('dns_get_record')) {
-					$this->validateEndpoint($peer->endpoint);
-				}
-				$this->updatePeerAddresses($peer->allowedIPs->ipv4, $ifPeer, 4);
-				$this->updatePeerAddresses($peer->allowedIPs->ipv6, $ifPeer, 6);
-				$ifPeer->setPublicKey($peer->publicKey);
-				$ifPeer->setPsk($peer->psk ?? null);
-				$ifPeer->setKeepalive($peer->keepalive);
-				$ifPeer->setEndpoint($peer->endpoint);
-				$ifPeer->setPort($peer->port);
-				$this->entityManager->persist($ifPeer);
-				$peersIds[] = $ifPeer->getId();
-			} else {
-				$interface->addPeer($this->createPeer($peer, $interface));
-			}
-		}
-		foreach ($oldPeers as $peer) {
-			if (!in_array($peer->getId(), $peersIds, true)) {
-				$interface->deletePeer($peer);
-			}
-		}
 		$this->entityManager->persist($interface);
 		$this->entityManager->flush();
+		return $interface;
 	}
 
 	/**
@@ -225,9 +210,18 @@ class WireguardManager {
 		if (!((bool) ip2long($peer->endpoint)) && function_exists('dns_get_record')) {
 			$this->validateEndpoint($peer->endpoint);
 		}
-		$ifPeer = new WireguardPeer($peer->publicKey, $peer->psk ?? null, $peer->keepalive, $peer->endpoint, $peer->port, $interface);
+		$ifPeer = new WireguardPeer(
+			$peer->publicKey,
+			$peer->psk ?? null,
+			$peer->keepalive,
+			$peer->endpoint,
+			$peer->port,
+			$interface
+		);
 		$this->createPeerAddresses($peer->allowedIPs->ipv4, $ifPeer);
 		$this->createPeerAddresses($peer->allowedIPs->ipv6, $ifPeer);
+		$this->entityManager->persist($ifPeer);
+		$this->entityManager->flush();
 		return $ifPeer;
 	}
 
@@ -241,6 +235,70 @@ class WireguardManager {
 			$address = new WireguardPeerAddress(new MultiAddress(Multi::factory($ip->address), $ip->prefix), $ifPeer);
 			$ifPeer->addAddress($address);
 		}
+	}
+
+	/**
+	 * Get WireGuard peer
+	 * @param int $id Wireguard peer id
+	 * @return WireguardPeer Peer with given id
+	 */
+	public function getPeer(int $id): WireguardPeer {
+		$peer = $this->peerRepository->find($id);
+		if (!($peer instanceof WireguardPeer)) {
+			throw new NonexistentWireguardPeerException('WireGuard peer not found');
+		}
+		return $peer;
+	}
+
+	/**
+	 * Get all WireGuard peers
+	 * @return array{WireGuardPeer} all wireguard peers
+	 */
+	public function getAllPeers(): array {
+		return $this->peerRepository->findAll();
+	}
+
+	/**
+	 * Modify existing WireGuard peer
+	 * @param stdClass $peer Object with peer data.
+	 * @param bool $flush Flush data to database when update is finished (default = true).
+	 *                     Can disable flush when called from function that does it itself.
+	 */
+	public function modifyPeer(stdClass $peer, bool $flush = true): WireguardPeer {
+		if (!property_exists($peer, 'id') || $peer->id === null) {
+			throw new NonexistentWireguardPeerException('Peer ID not specified!');
+		}
+
+		$ifPeer = $this->getPeer($peer->id);
+		if (!((bool) ip2long($peer->endpoint)) && function_exists('dns_get_record')) {
+			$this->validateEndpoint($peer->endpoint);
+		}
+		if (property_exists($peer, 'tunnelId') && $peer->tunnelId !== $ifPeer->getInterface()->getId()) {
+			$tunnel = $this->getInterface($peer->tunnelId);
+			$ifPeer->setInterface($tunnel);
+		}
+		$this->updatePeerAddresses($peer->allowedIPs->ipv4, $ifPeer, 4);
+		$this->updatePeerAddresses($peer->allowedIPs->ipv6, $ifPeer, 6);
+		$ifPeer->setPublicKey($peer->publicKey);
+		$ifPeer->setPsk($peer->psk ?? null);
+		$ifPeer->setKeepalive($peer->keepalive);
+		$ifPeer->setEndpoint($peer->endpoint);
+		$ifPeer->setPort($peer->port);
+		$this->entityManager->persist($ifPeer);
+
+		if ($flush) $this->entityManager->flush();
+
+		return $ifPeer;
+	}
+
+	/**
+	 * Removes WireGuard peer
+	 * @param int $id id of peer to remove
+	 */
+	public function removePeer(int $id): void {
+		$peer = $this->getPeer($id);
+		$this->entityManager->remove($peer);
+		$this->entityManager->flush();
 	}
 
 	/**
