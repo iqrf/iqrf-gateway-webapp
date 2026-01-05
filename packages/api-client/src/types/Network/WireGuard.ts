@@ -40,6 +40,8 @@ export enum WireGuardIpStack {
  * WireGuard peer allowed IP
  */
 export interface WireGuardIpAddress {
+	/// Record ID
+	id?: number;
 	/// IP address
 	address: string;
 	/// Prefix length
@@ -54,47 +56,49 @@ export interface WireGuardAllowedIps {
 	ipv4: WireGuardIpAddress[];
 	/// IPv6 allowed IPs
 	ipv6: WireGuardIpAddress[];
-	/// IP stack type
-	stack?: WireGuardIpStack;
 }
 
 /**
  * WireGuard peer
  */
 export interface WireGuardPeer {
-	/// Allowed IPs
-	allowedIPs: WireGuardAllowedIps;
-	/// Endpoint
-	endpoint: string;
-	/// Keepalive interval
-	keepalive: number;
-	/// Endpoint port
-	port: number;
-	/// Pre-shared key
-	psk?: string;
+	/// Record ID
+	id?: number;
 	/// Peer public key
 	publicKey: string;
+	/// Pre-shared key
+	psk?: string;
+	/// Keepalive interval
+	keepalive: number;
+	/// Endpoint
+	endpoint: string;
+	/// Endpoint port
+	port: number;
+	/// Allowed IPs
+	allowedIPs: WireGuardAllowedIps;
+	/// Tunnel ID
+	tunnelId: number;
 }
 
 /**
  * WireGuard tunnel configuration
  */
 export interface WireGuardTunnelConfig {
-	/// Tunnel IPv4 address
-	ipv4?: WireGuardIpAddress;
-	/// Tunnel IPv6 address
-	ipv6?: WireGuardIpAddress;
+	/// Record ID
+	id?: number;
 	/// Tunnel name
 	name: string;
-	/// Tunnel peers
-	peers: WireGuardPeer[];
-	/// Tunnel port
-	port?: number;
 	/// Tunnel private key
 	privateKey: string;
 	/// Tunnel public key
 	publicKey?: string;
-	/// Tunnel IP stack
+	/// Tunnel port
+	port?: number;
+	/// Tunnel IPv4 address
+	ipv4?: WireGuardIpAddress;
+	/// Tunnel IPv6 address
+	ipv6?: WireGuardIpAddress;
+	// Tunnel IP stack
 	stack?: WireGuardIpStack;
 }
 
@@ -110,4 +114,6 @@ export interface WireGuardTunnelListEntry {
 	id: number;
 	/// Tunnel name
 	name: string;
+	// Tunnel IP stack
+	stack?: WireGuardIpStack;
 }
