@@ -89,7 +89,7 @@ export interface WireGuardTunnelConfig {
 	/// Tunnel name
 	name: string;
 	/// Tunnel private key
-	privateKey: string;
+	privateKey?: string;
 	/// Tunnel public key
 	publicKey?: string;
 	/// Tunnel port
