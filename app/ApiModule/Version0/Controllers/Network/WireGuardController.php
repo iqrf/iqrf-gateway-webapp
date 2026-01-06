@@ -107,7 +107,9 @@ class WireGuardController extends BaseNetworkController {
 		try {
 			$id = (int) $request->getParameter('id');
 			$iface = $this->manager->getInterface($id);
-			$response = $response->writeJsonBody($this->serializeTunnel($iface));
+			$jsonBody = $this->serializeTunnel($iface);
+			unset($jsonBody['privateKey']);
+			$response = $response->writeJsonBody($jsonBody);
 			return $this->validators->validateResponse('networkWireGuardTunnel', $response);
 		} catch (NonexistentWireguardTunnelException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND);
@@ -146,7 +148,9 @@ class WireGuardController extends BaseNetworkController {
 		$this->validators->validateRequest('networkWireGuardTunnel', $request);
 		try {
 			$interface = $this->manager->createInterface($request->getJsonBody(false));
-			$response = $response->writeJsonBody($this->serializeTunnel($interface));
+			$jsonBody = $this->serializeTunnel($interface);
+			unset($jsonBody['privateKey']);
+			$response = $response->writeJsonBody($jsonBody);
 			return $this->validators->validateResponse('networkWireGuardTunnel', $response);
 		} catch (InterfaceExistsException | WireguardInvalidEndpointException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
@@ -189,7 +193,9 @@ class WireGuardController extends BaseNetworkController {
 		try {
 			$id = (int) $request->getParameter('id');
 			$interface = $this->manager->editInterface($id, $request->getJsonBody(false));
-			$response = $response->writeJsonBody($this->serializeTunnel($interface));
+			$jsonBody = $this->serializeTunnel($interface);
+			unset($jsonBody['privateKey']);
+			$response = $response->writeJsonBody($jsonBody);
 			return $this->validators->validateResponse('networkWireGuardTunnel', $response);
 		} catch (NonexistentWireguardTunnelException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND);
