@@ -23,8 +23,7 @@
 		}
 	],
 	"required": [
-		"name",
-		"privateKey"
+		"name"
 	],
 	"anyOf": [
 		{
