@@ -2681,6 +2681,7 @@
 							"name": "Tunnel name",
 							"port": "WireGuard port",
 							"privateKey": "Tunnel private key",
+							"privateKeyWarning": "Private key can't be displayed again! If you want to create backup, copy it now!",
 							"publicKey": "Tunnel public key",
 							"saveActivate": "Save and activate tunnel",
 							"saveEnable": "Save and enable tunnel",
