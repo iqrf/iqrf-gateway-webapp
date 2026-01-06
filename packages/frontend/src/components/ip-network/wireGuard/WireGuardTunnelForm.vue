@@ -83,11 +83,20 @@ limitations under the License.
 								@click='copyToClipboard(wgConfig.publicKey)'
 							>
 								<v-icon :icon='mdiClipboard' />
+								&nbsp;
 								{{ $t('common.buttons.clipboard') }}
 							</v-btn>
 						</template>
 					</ITextInput>
+					<v-alert
+						v-if='showPrivateKeyWarning'
+						color='warning'
+						:text='$t("components.ipNetwork.wireGuard.tunnels.configuration.form.privateKeyWarning")'
+						variant='tonal'
+						class='mb-5'
+					/>
 					<ITextInput
+						v-if='showPrivateKey'
 						v-model='wgConfig.privateKey'
 						:label='$t("components.ipNetwork.wireGuard.tunnels.configuration.form.privateKey")'
 						:readonly='!editKeys'
@@ -99,6 +108,7 @@ limitations under the License.
 								@click='copyToClipboard(wgConfig.privateKey)'
 							>
 								<v-icon :icon='mdiClipboard' />
+								&nbsp;
 								{{ $t('common.buttons.clipboard') }}
 							</v-btn>
 						</template>
@@ -181,7 +191,7 @@ limitations under the License.
 import { WireGuardIpStack, WireGuardTunnelConfig } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import { Action, ComponentState, IActionBtn, ICard, IDataTableAction, IModalWindow, INumberInput, ITextInput, ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiClipboard, mdiContentSave, mdiUploadOutline } from '@mdi/js';
-import { onMounted, type PropType, ref, type Ref, TemplateRef, useTemplateRef, watch } from 'vue';
+import { computed, onMounted, type PropType, ref, type Ref, TemplateRef, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
@@ -247,7 +257,11 @@ const i18n = useI18n();
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 /// Allow editing of key pair
 const editKeys: Ref<boolean> = ref(false);
-
+/// Shows private key field switch
+const showPrivateKey: Ref<boolean> = computed(() => (!!wgConfig.value.privateKey || editKeys.value || componentProps.action === Action.Add));
+/// Show private key warning when the key is dispalyed and present
+const showPrivateKeyWarning: Ref<boolean> = computed(() => (!!wgConfig.value.privateKey && showPrivateKey.value));
+/// Generate new key dialog window instance
 const generateKeyDialogInstance: TemplateRef<InstanceType<typeof WireGuardGenerateKeyDialog>> = useTemplateRef('generateKeyDialogInstance');
 
 /**
@@ -328,13 +342,12 @@ async function generateKey(): Promise<void> {
 	try {
 		response = await service.generateKeyPair();
 		generateKeyDialogInstance.value?.close();
+		wgConfig.value.privateKey = response.privateKey;
+		wgConfig.value.publicKey = response.publicKey;
 	} catch {
 		componentState.value = ComponentState.Error;
 		toast.error(i18n.t('components.ipNetwork.wireGuard.tunnels.configuration.form.genKeyPair.error'));
-		return;
 	}
-	wgConfig.value.privateKey = response.privateKey;
-	wgConfig.value.publicKey = response.publicKey;
 }
 
 watch(
