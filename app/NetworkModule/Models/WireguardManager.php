@@ -173,7 +173,9 @@ class WireguardManager {
 			}
 		}
 		$interface->setName($values->name);
-		$interface->setPrivateKey($values->privateKey);
+		if (property_exists($values, 'privateKey')) {
+			$interface->setPrivateKey($values->privateKey);
+		}
 		$interface->setPort($values->port ?? null);
 		if (property_exists($values, 'ipv4')) {
 			$this->updateInterfaceAddress($values->ipv4, $interface, 4);
