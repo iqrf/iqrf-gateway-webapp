@@ -109,7 +109,7 @@ final class WireguardManagerTest extends TestCase {
 		$peerObject->allowedIPs->ipv4 = $peerObject->allowedIPs->ipv6 = [];
 		Assert::equal($this->peerEntity, $this->manager->createPeer($peerObject, $this->interfaceEntity));
 	}
-	*/
+	 */
 
 	/**
 	 * Tests the function to create peer address

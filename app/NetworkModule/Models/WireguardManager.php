@@ -101,16 +101,16 @@ class WireguardManager {
 	public function getInterfaceIpStack(WireguardInterface $interface): WireguardIpStack {
 		if ($interface->getIpv4() === null) {
 			return WireguardIpStack::IPV6;
-		} else if ($interface->getIpv6() === null) {
-			return WireguardIpStack::IPV4;
-		} else {
-			return WireguardIpStack::DUAL;
 		}
+		if ($interface->getIpv6() === null) {
+			return WireguardIpStack::IPV4;
+		}
+		return WireguardIpStack::DUAL;
 	}
 
 	/**
 	 * Returns list of existing WireGuard interfaces configurations
-	 * @return array<int, array<string, bool|int|string|null>> List of WireGuard interfaces
+	 * @return array<int, array<string, WireguardIpStack|bool|int|string|null>> List of WireGuard interfaces
 	 */
 	public function listInterfaces(): array {
 		return array_map(fn (WireguardInterface $interface): array => [
