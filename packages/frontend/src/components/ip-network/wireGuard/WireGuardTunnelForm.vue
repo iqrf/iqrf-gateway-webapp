@@ -258,9 +258,9 @@ const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 /// Allow editing of key pair
 const editKeys: Ref<boolean> = ref(false);
 /// Shows private key field switch
-const showPrivateKey: Ref<boolean> = computed(() => (!!wgConfig.value.privateKey || editKeys.value || componentProps.action === Action.Add));
+const showPrivateKey: Ref<boolean> = computed(() => !!wgConfig.value.privateKey || editKeys.value || componentProps.action === Action.Add);
 /// Show private key warning when the key is dispalyed and present
-const showPrivateKeyWarning: Ref<boolean> = computed(() => (!!wgConfig.value.privateKey && showPrivateKey.value));
+const showPrivateKeyWarning: Ref<boolean> = computed(() => !!wgConfig.value.privateKey && showPrivateKey.value);
 /// Generate new key dialog window instance
 const generateKeyDialogInstance: TemplateRef<InstanceType<typeof WireGuardGenerateKeyDialog>> = useTemplateRef('generateKeyDialogInstance');
 
