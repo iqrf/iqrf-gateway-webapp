@@ -3,12 +3,14 @@
 		"buttons": {
 			"backup": "Zálohovat",
 			"clipboard": "Kopírovat do schránky",
-			"deselectAll": "Zrušit výběr všeho",
+			"deselectAll": "Zrušit výběr",
 			"edit": "Upravit",
-			"enumerate": "Výčet",
+			"enumerate": "Enumerovat",
 			"restore": "Obnovit",
 			"selectAll": "Vybrat vše",
-			"send": "Odeslat"
+			"send": "Odeslat",
+			"skip": "Přeskočit",
+			"upload": "Nahrát"
 		},
 		"columns": {
 			"actions": "Akce",
@@ -16,40 +18,71 @@
 			"id": "ID"
 		},
 		"labels": {
-			"apiDocs": "API dokumentace",
+			"apidoc": "API dokumentace",
 			"certificate": "Certifikát",
-			"configuration": "Potvrzení",
+			"confirmation": "Potvrzení",
 			"confirmationTs": "Čas potvrzení",
+			"description": "Popis",
 			"format": "Formát",
+			"general": "Obecné",
 			"hostname": "Jméno hostitele",
 			"none": "Žádný",
 			"notAvailable": "N/A",
-			"other": "Ostatní",
+			"other": "Další",
 			"password": "Heslo",
 			"path": "Cesta",
 			"port": "Port",
 			"privateKey": "Soukromý klíč",
 			"protocol": "Protokol",
+			"protocols": {
+				"ssl": "Šifrované SSL/TLS",
+				"tcp": "Nezabezpečené TCP",
+				"ws": "Nezabezpečený websocket",
+				"wss": "Zabezpečený websocket"
+			},
 			"request": "Požadavek",
 			"requestTs": "Čas požadavku",
 			"response": "Odpověď",
 			"responseTs": "Čas odpovědi",
-			"returnVerbose": "Vrátit podrobné informace",
+			"returnVerbose": "Podrobná odpověď",
+			"severity": {
+				"debug": "Debug",
+				"error": "Chyba",
+				"info": "Informace",
+				"trace": "Trace",
+				"warning": "Varování"
+			},
 			"username": "Uživatelské jméno",
 			"value": "Hodnota"
 		},
 		"messages": {
-			"fetchFailed": "Při načítání dat došlo k chybě."
+			"fetchFailed": "Při načítání dat došlo k chybě.",
+			"noDevice": "Na adrese {address} není připojeno žádné zařízení.",
+			"noDevices": "V síti neexistují žádná zařízení.",
+			"noNodes": "V síti neexistují žádná uzlová zařízení.",
+			"offlineCoordinator": "Koordinátor může být offline.",
+			"offlineDevice": "Zařízení na adrese {address} může být offline."
 		},
 		"states": {
 			"active": "Aktivní",
-			"enabled": "Povoleno"
+			"disabled": "Zakázáno",
+			"enabled": "Povoleno",
+			"inactive": "Neaktivní",
+			"invalid": "Nevalidní",
+			"valid": "Validní"
 		},
 		"validation": {
+			"certificate": {
+				"required": "Prosím vyberte soubor s certifikátem."
+			},
 			"credentialsMissing": "Zadejte prosím jak uživatelské jméno, tak i heslo, nebo nechte obě pole prázdná.",
 			"email": {
 				"format": "Prosím zadejte platnou e-mailovou adresu.",
 				"required": "Prosím zadejte e-mailovou adresu."
+			},
+			"hostname": {
+				"invalid": "Jméno hostitele musí být IPv4, IPv6, localhost nebo plně kvalifikované doménové jméno.",
+				"required": "Prosím zadejte jméno hostitele."
 			},
 			"password": {
 				"minLength": "Heslo musí být minimálně 8 znaků dlouhé.",
@@ -59,8 +92,16 @@
 				"match": "Hesla se neshodují.",
 				"required": "Prosím zadejte heslo znovu pro potvrzení."
 			},
+			"port": {
+				"between": "Číslo portu musí být mezi 1 a 65535.",
+				"integer": "Číslo portu musí být celé číslo.",
+				"required": "Prosím zadejte číslo portu."
+			},
 			"portInvalid": "Číslo portu musí být celé číslo mezi 1 a 65535.",
 			"portMissing": "Zadejte prosím číslo portu.",
+			"privateKey": {
+				"required": "Prosím vyberte soubor soukromého klíče."
+			},
 			"username": {
 				"required": "Prosím zadejte uživatelské jméno."
 			}
@@ -831,6 +872,160 @@
 					}
 				},
 				"title": "Modemy"
+			},
+			"wireGuard": {
+				"peers": {
+					"add": {
+						"messages": {
+							"failure": "Nepodařilo se přidat WireGuard uzel!",
+							"success": "WireGuard uzel byl úspěšně přidán!"
+						}
+					},
+					"columns": {
+						"action": {
+							"delete": "Smazat uzel"
+						},
+						"endpoint": "Adresa uzlu",
+						"port": "Port uzlu",
+						"tunnel": "Tunel"
+					},
+					"configuration": {
+						"form": {
+							"addPeer": "Přidat nový WireGuard uzel",
+							"allowedIps": {
+								"addIPv4": "Přidat další IPv4 adresu",
+								"addIPv6": "Přidat další IPv6 adresu",
+								"ipv4title": "Povolené IPv4 adresy",
+								"ipv6title": "Povolené IPv6 adresy",
+								"remove": "Odstranit"
+							},
+							"editPeer": "Upravit WireGuard uzel",
+							"endpoint": "Adresa uzlu (veřejná IP nebo doménové jméno)",
+							"keepalive": "Keep-alive interval",
+							"port": "Port uzlu",
+							"psk": "Předsdílený klíč",
+							"publicKey": "Veřejný klíč",
+							"tunnel": "Tunel, který uzel použije"
+						},
+						"noTunnelErrorMessage": "Není nakonfigurován žádný WireGuard tunel! Nejprve prosím nakonfigurujte tunel. Uzly jsou přiřazeny k tunelům a nelze je přidat bez tunelů.",
+						"title": "Konfigurace WireGuard uzlu",
+						"validation": {
+							"endpoint": "Prosím zadejte adresu nebo doménové jméno!",
+							"keepalive": "Prosím zadejte keep-alive interval!",
+							"portNumber": "Číslo portu musí být mezi 0 a 65 535!",
+							"portRequired": "Prosím zadejte číslo portu!",
+							"publicKey": "Prosím zadejte veřejný klíč!"
+						}
+					},
+					"delete": {
+						"messages": {
+							"failure": "Nepodařilo se odstranit WireGuard uzel {name}.",
+							"success": "WireGuard uzel {name} byl úspěšně smazán."
+						},
+						"prompt": "Opravdu si přejete smazat WireGuard uzel {name}?",
+						"title": "Potvrzení smazání WireGuard uzlu"
+					},
+					"title": "WireGuard uzly",
+					"update": {
+						"messages": {
+							"failure": "Nepodařilo se aktualizovat konfiguraci WireGuard uzlu!",
+							"success": "Konfigurace WireGuard uzlu byla úspěšně aktualizována!"
+						}
+					}
+				},
+				"tunnels": {
+					"add": {
+						"messages": {
+							"failure": "Přidání WireGuard tunelu selhalo!",
+							"success": "WireGuard tunel byl úspěšně přidán!"
+						}
+					},
+					"columns": {
+						"action": {
+							"activate": "Aktivovat",
+							"deactivate": "Deaktivovat",
+							"delete": "Smazat tunel",
+							"disable": "Zakázat automatické spuštění při startu systému",
+							"enable": "Povolit automatické spuštění při startu systému",
+							"failure": {
+								"activate": "Nepodařilo se aktivovat WireGuard tunel!",
+								"deactivate": "Nepodařilo se deaktivovat WireGuard tunel!",
+								"delete": "Nepodařilo se smazat WireGuard tunel!",
+								"disable": "Nepodařilo se zakázat WireGuard tunel!",
+								"enable": "Nepodařilo se povolit WireGuard tunel!"
+							},
+							"success": {
+								"activate": "WireGuard tunel byl úspěšně aktivován.",
+								"deactivate": "WireGuard tunel byl úspěšně deaktivován.",
+								"delete": "WireGuard tunel byl úspěšně smazán.",
+								"disable": "WireGuard tunel byl úspěšně zakázán.",
+								"enable": "WireGuard tunel byl úspěšně povolen."
+							}
+						},
+						"active": "Aktivní",
+						"enabled": "Povoleno automatické spuštění",
+						"name": "Název"
+					},
+					"configuration": {
+						"form": {
+							"addTunnel": "Přidat nový WireGuard tunel",
+							"changeKeyPair": "Změnit pár klíčů ručně",
+							"copyKey": "Klíč zkopírován!",
+							"editTunnel": "Upravit WireGuard tunel",
+							"genKeyPair": {
+								"error": "Nepodařilo se získat nový pár klíčů!",
+								"genKeyPair": "Vygenerovat nový pár klíčů",
+								"prompt": "Generování nového páru klíčů nahradí stávající klíče. Existující připojení přestanou fungovat, dokud klienti nebudou přenastaveni s novým klíčem. Soukromý klíč bude viditelný pouze po jeho vygenerování a z bezpečnostních důvodů jej nelze zobrazit znovu.",
+								"title": "Upozornění na výměnu klíčů!"
+							},
+							"ipAddressPrefix": "Prefix",
+							"ipv4address": "IPv4 adresa",
+							"ipv6address": "IPv6 adresa",
+							"name": "Název tunelu",
+							"port": "Port tunelu",
+							"privateKey": "Soukromý klíč tunelu",
+							"privateKeyWarning": "Soukromý klíč nelze znovu zobrazit! Pokud chcete zálohu, zkopírujte jej nyní!",
+							"publicKey": "Veřejný klíč tunelu",
+							"saveActivate": "Uložit a aktivovat tunel",
+							"saveEnable": "Uložit a povolit tunel",
+							"stack": "Verze IP protokolu používaný tunelem"
+						},
+						"title": "Konfigurace WireGuard tunelu",
+						"validation": {
+							"ipAddressInvalid": "Formát IP adresy není platný!",
+							"ipAddressPrefixRequired": "Prosím zadejte prefix adresy!",
+							"ipAddressRequired": "Prosím zadejte IP adresu!",
+							"ipv4AddressPrefix": "Prefix musí být mezi 0 a 32!",
+							"ipv6AddressPrefix": "Prefix musí být mezi 0 a 128!",
+							"name": "Prosím zadejte název tunelu!"
+						}
+					},
+					"deactivate": {
+						"deactivate": "Deaktivovat tunel",
+						"prompt": "Pokud jste připojeni k zařízení přes WireGuard tunel {name}, jeho deaktivací dojde ke ztrátě spojení. Chcete pokračovat?",
+						"title": "Deaktivace WireGuard tunelu"
+					},
+					"delete": {
+						"messages": {
+							"failure": "Nepodařilo se odstranit WireGuard tunel {name}.",
+							"success": "WireGuard tunel {name} byl úspěšně smazán."
+						},
+						"prompt": "Opravdu si přejete smazat WireGuard tunel {name}? Tímto odstraníte i všechny uzly přiřazené k tomuto tunelu!",
+						"title": "Potvrzení smazání WireGuard tunelu"
+					},
+					"disable": {
+						"disable": "Zakázat tunel",
+						"prompt": "Pokud zakážete WireGuard tunel {name}, nebude se automaticky připojovat při restartu zařízení. Chcete pokračovat?",
+						"title": "Zakázání WireGuard tunelu"
+					},
+					"title": "WireGuard tunely",
+					"update": {
+						"messages": {
+							"failure": "Aktualizace WireGuard tunelu selhala!",
+							"success": "WireGuard tunel byl úspěšně aktualizován!"
+						}
+					}
+				}
 			}
 		},
 		"iqrfnet": {

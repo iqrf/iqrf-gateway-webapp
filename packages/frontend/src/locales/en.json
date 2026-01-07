@@ -2609,7 +2609,7 @@
 						"validation": {
 							"endpoint": "Endpoint is required!",
 							"keepalive": "Keepalive interval is required!",
-							"portNumber": "Port number is not between 0 and 65535!",
+							"portNumber": "Port number is not between 0 and 65,535!",
 							"portRequired": "Port number is required!",
 							"publicKey": "Public key is required!"
 						}
