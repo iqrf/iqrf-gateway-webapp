@@ -57,7 +57,7 @@ monit:
 	enabled: false
 # Network manager
 networkManager:
-	enabled: true
+	enabled: false
 # Node-RED
 nodeRed:
 	enabled: false

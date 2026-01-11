@@ -15,6 +15,10 @@ debian/debhelper-build-stamp
 debian/files
 debian/iqrf-gateway-webapp/
 debian/iqrf-gateway-webapp.substvars
+debian/iqrf-gateway-webapp.debhelper.log
+debian/iqrf-gateway-webapp.postinst.debhelper
+debian/iqrf-gateway-webapp.postrm.debhelper
+debian/iqrf-gateway-webapp.prerm.debhelper
 # NetBeans IDE
 nbproject/
 # PhpStorm IDE
