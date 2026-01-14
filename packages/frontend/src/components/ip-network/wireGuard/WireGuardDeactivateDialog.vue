@@ -17,7 +17,7 @@ limitations under the License.
 
 <template>
 	<WireGuardActionDialog
-		ref='acitonDialogInstance'
+		ref='actionDialogInstance'
 		:enabled='wgListEntry.active'
 		:disable-tooltip='$t("components.ipNetwork.wireGuard.tunnels.columns.action.deactivate")'
 		:enable-tooltip='$t("components.ipNetwork.wireGuard.tunnels.columns.action.activate")'
@@ -42,7 +42,7 @@ import {
 	ComponentState,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiLinkVariant, mdiLinkVariantOff } from '@mdi/js';
-import { type PropType, ref, type Ref, TemplateRef, useTemplateRef } from 'vue';
+import { ref, type Ref, type TemplateRef, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
@@ -51,13 +51,10 @@ import { useApiClient } from '@/services/ApiClient';
 import WireGuardActionDialog from './WireGuardActionDialog.vue';
 
 /// Component props
-const componentProps = defineProps({
+const componentProps = defineProps<{
 	/// WireGuard tunnel data
-	wgListEntry: {
-		type: Object as PropType<WireGuardTunnelListEntry>,
-		required: true,
-	},
-});
+	wgListEntry: WireGuardTunnelListEntry;
+}>();
 /// Component emits
 const emit = defineEmits<{
 	updateActiveFlag: [tunnelId: number];
@@ -69,7 +66,7 @@ const i18n = useI18n();
 /// Network connection service
 const service: WireGuardService = useApiClient().getNetworkServices().getWireGuardService();
 /// Action dialog component instance
-const acitonDialogInstance: TemplateRef<InstanceType<typeof WireGuardActionDialog>> = useTemplateRef('acitonDialogInstance');
+const actionDialogInstance: TemplateRef<InstanceType<typeof WireGuardActionDialog>> = useTemplateRef('actionDialogInstance');
 
 /**
  * Activates WireGuard tunnel
@@ -104,7 +101,7 @@ async function deactivate(): Promise<void> {
 		toast.success(
 			i18n.t('components.ipNetwork.wireGuard.tunnels.columns.action.success.deactivate'),
 		);
-		acitonDialogInstance.value?.close();
+		actionDialogInstance.value?.close();
 		emit('updateActiveFlag', componentProps.wgListEntry.id);
 	} catch {
 		componentState.value = ComponentState.Error;

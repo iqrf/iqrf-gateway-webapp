@@ -220,7 +220,7 @@ limitations under the License.
 <script setup lang='ts'>
 import { WireGuardIpAddress, WireGuardIpStack, WireGuardPeer, WireGuardTunnelListEntry } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import { Action, ComponentState, IActionBtn, ICard, IDataTableAction, IModalWindow, INumberInput, ITextInput, ValidationRules } from '@iqrf/iqrf-vue-ui';
-import { computed, onMounted, type PropType, ref, type Ref, TemplateRef, useTemplateRef, watch } from 'vue';
+import { computed, onMounted, ref, type Ref, type TemplateRef, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
@@ -230,21 +230,19 @@ import { useApiClient } from '@/services/ApiClient';
 import WireGuardIpConfig from './WireGuardIpConfig.vue';
 
 /// Define props
-const componentProps = defineProps({
-	action: {
-		type: String as PropType<Action>,
-		required: true,
+const componentProps = withDefaults(
+	defineProps<{
+		/// Action type (add/edit)
+		action: Action.Add | Action.Edit;
+		/// WireGuard peer ID (for edit action)
+		peerId?: number | null;
+		/// List of available WireGuard tunnels
+		tunnels: WireGuardTunnelListEntry[];
+	}>(),
+	{
+		peerId: null,
 	},
-	peerId: {
-		type: [Number, null] as PropType<number | null>,
-		required: false,
-		default: null,
-	},
-	tunnels: {
-		type: Array as PropType<WireGuardTunnelListEntry[]>,
-		required: true,
-	},
-});
+);
 
 const emit = defineEmits<{
 	updatePeer: [peer: WireGuardPeer];
@@ -269,7 +267,7 @@ const getDefaultConfig = (): WireGuardPeer => ({
 	},
 	tunnelId: componentProps.tunnels.at(0)?.id ?? 0,
 });
-/// Wireguard tunnel configuration
+/// WireGuard tunnel configuration
 const peerConfig: Ref<WireGuardPeer> = ref(getDefaultConfig());
 /// Internationalization instance
 const i18n = useI18n();
@@ -303,7 +301,7 @@ function addAllowedAddress(type: WireGuardIpStack): void {
 }
 
 /**
- * Removes address record on given index in coresponding allowed IP address list
+ * Removes address record on given index in corresponding allowed IP address list
  * @param {WireGuardIpStack} type Type of removed address (allowed are WireGuardIpStack.IPV4 and WireGuardIpStack.IPV6)
  * @param {number} index Index of removed address in the list of allowed IPs
  */
@@ -414,7 +412,9 @@ function resetForm(): void {
 	form.value?.resetValidation();
 }
 
-onMounted(() => {
-	if (componentProps.peerId) fetchConfig(componentProps.peerId);
+onMounted((): void => {
+	if (componentProps.peerId) {
+		fetchConfig(componentProps.peerId);
+	}
 });
 </script>

@@ -91,7 +91,9 @@ function updateTunnel(tunnel: WireGuardTunnelConfig, enabled: boolean, active: b
 		tunnels.value[index] = tunnelListEntry;
 	});
 	// Add tunnel if doesn't exist
-	if (!found) tunnels.value.push(tunnelListEntry);
+	if (!found) {
+		tunnels.value.push(tunnelListEntry);
+	}
 }
 
 /**

@@ -54,24 +54,21 @@ limitations under the License.
 <script setup lang='ts'>
 import { WireGuardIpAddress, WireGuardIpStack } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import { INumberInput, ITextInput, ValidationRules } from '@iqrf/iqrf-vue-ui';
-import { computed, PropType, Ref } from 'vue';
+import { computed, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-const componentProps = defineProps({
-	type: {
-		type: String as PropType<WireGuardIpStack>,
-		required: true,
-		validator: (v: WireGuardIpStack) => [WireGuardIpStack.IPV4, WireGuardIpStack.IPV6].includes(v),
+const componentProps = withDefaults(
+	defineProps<{
+		/// IP stack type
+		type: WireGuardIpStack.IPV4 | WireGuardIpStack.IPV6;
+		/// Record ID
+		recordId: string | number;
+		/// IP address object
+		ipAddress?: WireGuardIpAddress;
+	}>(),
+	{
+		ipAddress: undefined,
 	},
-	recordId: {
-		type: [String, Number] as PropType<string | number>,
-		required: true,
-	},
-	ipAddress: {
-		type: Object as PropType<WireGuardIpAddress>,
-		required: false,
-		default: undefined,
-	},
-});
+);
 
 const emit = defineEmits<{
 	updateIp: [recordId: number | string, value: WireGuardIpAddress, type: WireGuardIpStack];

@@ -70,7 +70,7 @@ import {
 	ICard,
 	IDataTable,
 } from '@iqrf/iqrf-vue-ui';
-import { computed, PropType, ref, type Ref } from 'vue';
+import { computed, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import BooleanCheckMarker from '@/components/BooleanCheckMarker.vue';
@@ -81,12 +81,10 @@ import WireGuardTunnelForm from '@/components/ip-network/wireGuard/WireGuardTunn
 import WireGuardDeactivateDialog from './WireGuardDeactivateDialog.vue';
 import WireGuardDisableDialog from './WireGuardDisableDialog.vue';
 
-const componentProps = defineProps({
-	tunnels: {
-		type: Array as PropType<WireGuardTunnelListEntry[]>,
-		required: true,
-	},
-});
+defineProps<{
+	/// List of WireGuard tunnels
+	tunnels: WireGuardTunnelListEntry[];
+}>();
 
 const emit = defineEmits<{
 	updateTunnel: [tunnel: WireGuardTunnelConfig, enabled: boolean, active: boolean];
