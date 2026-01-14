@@ -72,48 +72,27 @@ import {
 	IDataTableAction,
 	IModalWindow,
 } from '@iqrf/iqrf-vue-ui';
-import { computed, ComputedRef, type PropType, ref, type Ref } from 'vue';
-
+import { computed, type ComputedRef, ref, type Ref } from 'vue';
 
 /// Component props
-const componentProps = defineProps({
-	/// WireGuard tunnel data
-	enabled: {
-		type: Boolean as PropType<boolean>,
-		required: true,
-	},
-	/// Component configuration:
-	/// Texts to display in component
-	disableTooltip: {
-		type: String as PropType<string>,
-		required: true,
-	},
-	enableTooltip: {
-		type: String as PropType<string>,
-		required: true,
-	},
-	title: {
-		type: String as PropType<string>,
-		required: true,
-	},
-	prompt: {
-		type: String as PropType<string>,
-		required: true,
-	},
-	disableButtonText: {
-		type: String as PropType<string>,
-		required: true,
-	},
-	/// Icons to use:
-	disableIcon: {
-		type: String as PropType<string>,
-		required: true,
-	},
-	enableIcon: {
-		type: String as PropType<string>,
-		required: true,
-	},
-});
+const componentProps = defineProps<{
+	/// WireGuard current state
+	enabled: boolean;
+	/// Tooltip for disable action
+	disableTooltip: string;
+	/// Tooltip for enable action
+	enableTooltip: string;
+	/// Dialog title
+	title: string;
+	/// Dialog prompt
+	prompt: string;
+	/// Disable button text
+	disableButtonText: string;
+	/// Icon for disable action
+	disableIcon: string;
+	/// Icon for enable action
+	enableIcon: string;
+}>();
 /// Component emits
 const emit = defineEmits<{
 	disable: [];
