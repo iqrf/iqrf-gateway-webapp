@@ -240,7 +240,7 @@ dependency-check:parent:
   <<: *dependency-check_template
   script:
     - |
-      curl -X "POST" "http://dependency-track.microrisc.site/api/v1/bom" \
+      curl -X "POST" "https://dependency-track.microrisc.site/api/v1/bom" \
            -H 'Content-Type: multipart/form-data' \
            -H "X-Api-Key: ${DEPENDENCY_TRACK_API_KEY}" \
            -F "autoCreate=true" \
@@ -262,7 +262,7 @@ dependency-check:composer:
         --output-reproducible \
         --validate
     - |
-      curl -X "POST" "http://dependency-track.microrisc.site/api/v1/bom" \
+      curl -X "POST" "https://dependency-track.microrisc.site/api/v1/bom" \
            -H 'Content-Type: multipart/form-data' \
            -H "X-Api-Key: ${DEPENDENCY_TRACK_API_KEY}" \
            -F "autoCreate=true" \
@@ -295,7 +295,7 @@ dependency-check:npm:
         --spec-version=1.6 \
         --validate
     - |
-      curl -X "POST" "http://dependency-track.microrisc.site/api/v1/bom" \
+      curl -X "POST" "https://dependency-track.microrisc.site/api/v1/bom" \
            -H 'Content-Type: multipart/form-data' \
            -H "X-Api-Key: ${DEPENDENCY_TRACK_API_KEY}" \
            -F "autoCreate=true" \
