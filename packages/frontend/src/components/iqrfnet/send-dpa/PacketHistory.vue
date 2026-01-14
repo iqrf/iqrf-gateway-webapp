@@ -47,17 +47,19 @@ limitations under the License.
 <script lang='ts' setup>
 import { ICard } from '@iqrf/iqrf-vue-ui';
 import { mdiDelete } from '@mdi/js';
-import { computed, type PropType } from 'vue';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { DpaPacketTransaction } from '@/types/Iqrfnet';
 
-defineProps({
-	messages: {
-		type: Array as PropType<DpaPacketTransaction[]>,
-		default: () => [],
+withDefaults(
+	defineProps<{
+		messages?: DpaPacketTransaction[];
+	}>(),
+	{
+		messages: () => [],
 	},
-});
+);
 const emit = defineEmits<{
 	clear: [];
 }>();

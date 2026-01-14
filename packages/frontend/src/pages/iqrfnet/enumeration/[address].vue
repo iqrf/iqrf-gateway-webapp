@@ -20,12 +20,9 @@ import { computed } from 'vue';
 
 import DeviceEnumeration from '@/components/iqrfnet/DeviceEnumeration.vue';
 
-const componentProps = defineProps({
-	address: {
-		type: String,
-		required: true,
-	},
-});
+const componentProps = defineProps<{
+	address: string;
+}>();
 
 const deviceAddr = computed(() => {
 	const addr = Number.parseInt(componentProps.address);

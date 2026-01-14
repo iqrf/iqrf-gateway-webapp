@@ -202,7 +202,7 @@ import {
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import {
-	computed, type PropType, ref, type Ref,
+	computed, ref, type Ref,
 	type TemplateRef, useTemplateRef, watch,
 } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -213,15 +213,18 @@ import LoggingVerbosityForm from '@/components/config/daemon/logging/LoggingVerb
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
-const componentProps = defineProps({
-	action: {
-		type: String as PropType<Action>,
-		default: Action.Add,
-		required: false,
-	},
-	loggingProfile: {
-		type: Object as PropType<ShapeTraceFileService>,
-		default: () => ({
+const componentProps = withDefaults(
+	defineProps<{
+		/// Action to perform (add/edit)
+		action?: Action.Add | Action.Edit;
+		/// Logging profile to edit
+		loggingProfile?: ShapeTraceFileService;
+		/// Disable form activator
+		disabled?: boolean;
+	}>(),
+	{
+		action: Action.Add,
+		loggingProfile: (): ShapeTraceFileService => ({
 			component: IqrfGatewayDaemonComponentName.ShapeTraceFile,
 			instance: '',
 			path: '/var/log/iqrf-gateway-daemon',
@@ -234,14 +237,9 @@ const componentProps = defineProps({
 				{ channel: 0, level: ShapeTraceVerbosity.Info },
 			],
 		}),
-		required: false,
+		disabled: false,
 	},
-	disabled: {
-		type: Boolean,
-		default: false,
-		required: false,
-	},
-});
+);
 const emit = defineEmits<{
 	saved: [];
 }>();

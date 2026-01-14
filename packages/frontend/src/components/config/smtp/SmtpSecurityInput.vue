@@ -30,23 +30,24 @@ import {
 	MailerSmtpSecurity,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { mdiSecurity } from '@mdi/js';
-import { computed, PropType } from 'vue';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 /// SMTP Security type model value
-const modelValue = defineModel({
+const modelValue = defineModel<MailerSmtpSecurity | null>({
 	required: true,
-	type: [String, null] as PropType<MailerSmtpSecurity | null>,
 });
 
 /// SMTP Security type component properties
-const componentProps = defineProps({
-	disabled: {
-		type: Boolean,
-		required: false,
-		default: false,
+const componentProps = withDefaults(
+	defineProps<{
+		/// Is the input disabled
+		disabled?: boolean;
+	}>(),
+	{
+		disabled: false,
 	},
-});
+);
 
 const i18n = useI18n();
 

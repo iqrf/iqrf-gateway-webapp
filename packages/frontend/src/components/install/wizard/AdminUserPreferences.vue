@@ -58,12 +58,10 @@ import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
 
 /// Component props
-const componentProps = defineProps({
-	index: {
-		type: Number,
-		required: true,
-	},
-});
+const componentProps = defineProps<{
+	/// Step index
+	index: number;
+}>();
 /// Component state
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 /// User store

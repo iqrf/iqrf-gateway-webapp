@@ -38,10 +38,9 @@
 
 <script setup lang='ts'>
 import { Action, IActionBtn, ICard, IModalWindow } from '@iqrf/iqrf-vue-ui';
-import { computed, ComputedRef, PropType } from 'vue';
+import { computed, type ComputedRef } from 'vue';
 
-const devices = defineModel({
-	type: Array as PropType<number[]>,
+const devices = defineModel<number[]>({
 	required: true,
 });
 

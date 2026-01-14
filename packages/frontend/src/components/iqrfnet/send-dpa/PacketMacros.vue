@@ -48,7 +48,7 @@ limitations under the License.
 						v-for='packet of group.macros'
 						:key='packet.name'
 						density='compact'
-						@click='$emit("set-packet", packet.request)'
+						@click='$emit("setPacket", packet.request)'
 					>
 						{{ packet.name }}
 					</v-list-item>
@@ -68,7 +68,7 @@ import { onMounted, ref, type Ref } from 'vue';
 import { useApiClient } from '@/services/ApiClient';
 
 defineEmits<{
-	'set-packet': [packet: string];
+	'setPacket': [packet: string];
 }>();
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const service: DpaMacrosService = useApiClient().getIqrfServices().getDpaMacrosService();

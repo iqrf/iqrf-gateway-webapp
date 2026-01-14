@@ -35,7 +35,6 @@ import { type IqrfGatewayControllerService } from '@iqrf/iqrf-gateway-webapp-cli
 import { type IqrfGatewayControllerMapping } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { ComponentState, IDeleteModalWindow } from '@iqrf/iqrf-vue-ui';
 import {
-	type PropType,
 	ref,
 	type Ref,
 	type TemplateRef,
@@ -46,12 +45,9 @@ import { toast } from 'vue3-toastify';
 
 import { useApiClient } from '@/services/ApiClient';
 
-const componentProps = defineProps({
-	profile: {
-		type: Object as PropType<IqrfGatewayControllerMapping>,
-		required: true,
-	},
-});
+const componentProps = defineProps<{
+	profile: IqrfGatewayControllerMapping;
+}>();
 const emit = defineEmits<{
 	deleted: [];
 }>();

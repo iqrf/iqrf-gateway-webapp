@@ -64,16 +64,10 @@ import { toast } from 'vue3-toastify';
 
 import { useDaemonStore } from '@/store/daemonSocket';
 
-const componentProps = defineProps({
-	address: {
-		type: Number,
-		required: true,
-	},
-	coordinatorOnly: {
-		type: Boolean,
-		required: true,
-	},
-});
+const componentProps = defineProps<{
+	address: number;
+	coordinatorOnly: boolean;
+}>();
 const emit = defineEmits<{
   updateDevices: [];
 }>();

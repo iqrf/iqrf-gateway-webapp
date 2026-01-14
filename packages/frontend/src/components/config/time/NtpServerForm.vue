@@ -81,7 +81,7 @@ import {
 } from '@iqrf/iqrf-vue-ui';
 import { mdiServerNetwork } from '@mdi/js';
 import {
-	computed, PropType, ref, type Ref,
+	computed, ref, type Ref,
 	type TemplateRef, useTemplateRef, watch,
 } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -89,27 +89,19 @@ import { VForm } from 'vuetify/components';
 
 import { validateForm } from '@/helpers/validateForm';
 
-const componentProps = defineProps({
-	action: {
-		type: String as PropType<Action>,
-		required: true,
+const componentProps = withDefaults(
+	defineProps<{
+		action: Action.Add | Action.Edit;
+		index?: number;
+		server?: string;
+		disabled?: boolean;
+	}>(),
+	{
+		index: undefined,
+		server: undefined,
+		disabled: false,
 	},
-	index: {
-		type: Number,
-		required: false,
-		default: undefined,
-	},
-	server: {
-		type: String,
-		required: false,
-		default: undefined,
-	},
-	disabled: {
-		type: Boolean,
-		required: false,
-		default: false,
-	},
-});
+);
 const emit = defineEmits<{
 	save: [index: number|undefined, server: string];
 }>();

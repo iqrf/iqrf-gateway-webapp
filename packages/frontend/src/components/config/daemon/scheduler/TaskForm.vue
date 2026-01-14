@@ -223,7 +223,7 @@ import cron from 'cron-validate';
 import { DateTime } from 'luxon';
 import { v4 as uuidv4 } from 'uuid';
 import {
-	computed, type PropType, ref, type Ref,
+	computed, ref, type Ref,
 	type TemplateRef, toRaw, useTemplateRef,
 } from 'vue';
 import { watch } from 'vue';
@@ -235,27 +235,23 @@ import TaskMessageForm from '@/components/config/daemon/scheduler/TaskMessageFor
 import { validateForm } from '@/helpers/validateForm';
 import { useDaemonStore } from '@/store/daemonSocket';
 
-const componentProps = defineProps({
-	action: {
-		type: String as PropType<Action>,
-		default: Action.Add,
-		required: false,
+const componentProps = withDefaults(
+	defineProps<{
+		/// Action type (add/edit)
+		action?: Action;
+		/// Available messaging instances
+		messagings: IqrfGatewayDaemonMessagingInstances | null;
+		/// Scheduler task for edit action
+		schedulerTask?: SchedulerRecord | null;
+		/// Disabled state
+		disabled?: boolean;
+	}>(),
+	{
+		action: Action.Add,
+		schedulerTask: null,
+		disabled: false,
 	},
-	messagings: {
-		type: [Object, null] as PropType<IqrfGatewayDaemonMessagingInstances | null>,
-		required: true,
-	},
-	schedulerTask: {
-		type: [Object, null] as PropType<SchedulerRecord | null>,
-		default: null,
-		required: false,
-	},
-	disabled: {
-		type: Boolean,
-		default: false,
-		required: false,
-	},
-});
+);
 const emit = defineEmits<{
 	saved: [];
 }>();

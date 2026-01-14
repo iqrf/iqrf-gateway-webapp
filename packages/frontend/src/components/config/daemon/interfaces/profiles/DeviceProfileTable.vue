@@ -82,7 +82,7 @@ import {
 	IDataTable,
 	IDataTableAction,
 } from '@iqrf/iqrf-vue-ui';
-import { computed, onMounted, type PropType, ref, type Ref, toRaw } from 'vue';
+import { computed, onMounted, ref, type Ref, toRaw } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { useDisplay } from 'vuetify';
@@ -91,12 +91,9 @@ import DeviceProfileDeleteDialog from '@/components/config/daemon/interfaces/pro
 import DeviceProfileForm from '@/components/config/daemon/interfaces/profiles/DeviceProfileForm.vue';
 import { useApiClient } from '@/services/ApiClient';
 
-const componentProps = defineProps({
-	mappingType: {
-		type: String as PropType<MappingType>,
-		required: true,
-	},
-});
+const componentProps = defineProps<{
+	mappingType: MappingType;
+}>();
 const emit = defineEmits<{
 	apply: [profile: IqrfGatewayDaemonMapping];
 }>();

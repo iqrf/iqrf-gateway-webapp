@@ -92,13 +92,14 @@ import { VForm } from 'vuetify/components';
 
 import { validateForm } from '@/helpers/validateForm';
 
-defineProps({
-	disabled: {
-		type: Boolean,
-		required: false,
-		default: false,
+withDefaults(
+	defineProps<{
+		disabled?: boolean;
+	}>(),
+	{
+		disabled: false,
 	},
-});
+);
 const emit = defineEmits<{
 	import: [messaging: IqrfGatewayDaemonWsMessaging];
 }>();

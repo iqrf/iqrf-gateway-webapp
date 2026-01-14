@@ -79,20 +79,17 @@ import {
 	IModalWindow,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiLinkVariant, mdiLinkVariantOff } from '@mdi/js';
-import { computed, ComputedRef, type PropType, ref, type Ref } from 'vue';
+import { computed, ComputedRef, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import { useApiClient } from '@/services/ApiClient';
 
 /// Component props
-const componentProps = defineProps({
+const componentProps = defineProps<{
 	/// Network connection
-	connection: {
-		type: Object as PropType<NetworkConnectionListEntry>,
-		required: true,
-	},
-});
+	connection: NetworkConnectionListEntry;
+}>();
 /// Component emits
 const emit = defineEmits<{
 	change: [];

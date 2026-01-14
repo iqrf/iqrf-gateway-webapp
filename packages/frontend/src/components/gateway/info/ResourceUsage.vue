@@ -30,14 +30,12 @@ limitations under the License.
 
 <script lang='ts' setup>
 import { type UsageBase } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
-import { computed, type PropType } from 'vue';
+import { computed } from 'vue';
 
-const componentProps = defineProps({
-	usage: {
-		type: Object as PropType<UsageBase>,
-		required: true,
-	},
-});
+const componentProps = defineProps<{
+	/// Resource usage data
+	usage: UsageBase;
+}>();
 
 const color = computed(() => {
 	const percentage = Number.parseFloat(

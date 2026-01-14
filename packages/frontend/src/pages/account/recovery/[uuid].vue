@@ -36,17 +36,18 @@ limitations under the License.
 <script lang='ts' setup>
 import { Head } from '@unhead/vue/components';
 import { validate as uuidValidate, version as uuidVersion } from 'uuid';
+import { watchEffect } from 'vue';
 
 import AccountRecoveryConfirmForm
 	from '@/components/account/AccountRecoveryConfirmForm.vue';
 
-defineProps({
-	uuid: {
-		type: String,
-		required: true,
-		validator(value: string): boolean {
-			return uuidValidate(value) && uuidVersion(value) === 4;
-		},
-	},
+const componentProps = defineProps<{
+	uuid: string;
+}>();
+
+watchEffect((): void => {
+	if (!uuidValidate(componentProps.uuid) || uuidVersion(componentProps.uuid) !== 4) {
+		throw new Error('Invalid UUID v4 format');
+	}
 });
 </script>

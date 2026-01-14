@@ -22,16 +22,8 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { type PropType } from 'vue';
-
-const componentProps = defineProps({
-	title: {
-		type: String,
-		required: true,
-	},
-	log: {
-		type: [String, null] as PropType<string | null>,
-		required: true,
-	},
-});
+const componentProps = defineProps<{
+	title: string;
+	log: string | null;
+}>();
 </script>

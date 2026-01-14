@@ -159,7 +159,7 @@ import {
 } from '@iqrf/iqrf-vue-ui';
 import { mdiChip, mdiLedVariantOn, mdiLedVariantOutline, mdiRadioboxBlank } from '@mdi/js';
 import {
-	computed, type PropType, ref, type Ref,
+	computed, ref, type Ref,
 	type TemplateRef, useTemplateRef, watch,
 } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -169,15 +169,18 @@ import { VForm } from 'vuetify/components';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
-const componentProps = defineProps({
-	action: {
-		type: String as PropType<Action>,
-		default: Action.Add,
-		required: false,
-	},
-	deviceProfile: {
-		type: Object as PropType<IqrfGatewayControllerMapping>,
-		default: (): IqrfGatewayControllerMapping => ({
+const componentProps = withDefaults(
+	defineProps<{
+		/// Action type
+		action?: Action.Add | Action.Edit;
+		/// Device profile to edit
+		deviceProfile?: IqrfGatewayControllerMapping;
+		/// Disable form
+		disabled?: boolean;
+	}>(),
+	{
+		action: Action.Add,
+		deviceProfile: (): IqrfGatewayControllerMapping => ({
 			button: 0,
 			deviceType: MappingDeviceType.Adapter,
 			greenLed: 0,
@@ -186,14 +189,9 @@ const componentProps = defineProps({
 			sck: -1,
 			sda: -1,
 		}),
-		required: false,
+		disabled: false,
 	},
-	disabled: {
-		type: Boolean,
-		required: false,
-		default: false,
-	},
-});
+);
 const emit = defineEmits<{
 	saved: [];
 }>();

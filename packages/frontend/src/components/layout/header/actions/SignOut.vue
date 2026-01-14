@@ -38,13 +38,14 @@ import { toast } from 'vue3-toastify';
 import { useUserStore } from '@/store/user';
 
 /// Component props
-defineProps({
-	mobile: {
-		type: Boolean,
-		required: false,
-		default: false,
+withDefaults(
+	defineProps<{
+		mobile?: boolean;
+	}>(),
+	{
+		mobile: false,
 	},
-});
+);
 const i18n = useI18n();
 const userStore = useUserStore();
 

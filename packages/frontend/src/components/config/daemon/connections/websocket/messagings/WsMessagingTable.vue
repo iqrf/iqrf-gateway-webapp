@@ -102,7 +102,6 @@ import {
 	IDataTableAction,
 } from '@iqrf/iqrf-vue-ui';
 import {
-	PropType,
 	ref,
 	type Ref,
 	type TemplateRef,
@@ -120,12 +119,9 @@ import WsMessagingImportDialog from '@/components/config/daemon/connections/webs
 import WsServiceMissingIcon from '@/components/config/daemon/connections/websocket/messagings/WsServiceMissingIcon.vue';
 import { useApiClient } from '@/services/ApiClient';
 
-defineProps({
-	serviceInstances: {
-		type: Array as PropType<string[]>,
-		required: true,
-	},
-});
+defineProps<{
+	serviceInstances: string[];
+}>();
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
 const headers = [

@@ -20,11 +20,8 @@ import { ref, Ref } from 'vue';
 import ErrorStepperActions
 	from '@/components/install/errors/ErrorStepperActions.vue';
 
-const componentProps = defineProps({
-	index: {
-		type: Number,
-		required: true,
-	},
-});
+const componentProps = defineProps<{
+	index: number;
+}>();
 const command: Ref<string> = ref('sudo iqrf-gateway-webapp-manager migrations:migrate --no-interaction');
 </script>

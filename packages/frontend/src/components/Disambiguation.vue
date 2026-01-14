@@ -37,18 +37,15 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { computed, type ComputedRef, type PropType } from 'vue';
+import { computed, type ComputedRef } from 'vue';
 
 import { useFeatureStore } from '@/store/features';
 import { useUserStore } from '@/store/user';
 import { type DisambiguationLink } from '@/types/disambiguation';
 
-const componentProps = defineProps({
-	links: {
-		type: Array as PropType<DisambiguationLink[]>,
-		required: true,
-	},
-});
+const componentProps = defineProps<{
+	links: DisambiguationLink[];
+}>();
 const userStore = useUserStore();
 const featureStore = useFeatureStore();
 const filteredLinks: ComputedRef<DisambiguationLink[]> = computed(() => {

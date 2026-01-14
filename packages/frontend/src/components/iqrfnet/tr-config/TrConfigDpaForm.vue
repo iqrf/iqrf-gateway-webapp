@@ -247,16 +247,10 @@ import { useDisplay } from 'vuetify';
 import { TrConfiguration } from '@/types/DaemonApi/Iqmesh';
 
 const config = defineModel<TrConfiguration & { deviceAddr: number }>('config', { required: true });
-defineProps({
-	dpaVersion: {
-		type: String,
-		required: true,
-	},
-	dpaHandlerDetected: {
-		type: Boolean,
-		required: true,
-	},
-});
+defineProps<{
+	dpaVersion: string;
+	dpaHandlerDetected: boolean;
+}>();
 const i18n = useI18n();
 const display = useDisplay();
 const rfChannelMax = computed(() => {

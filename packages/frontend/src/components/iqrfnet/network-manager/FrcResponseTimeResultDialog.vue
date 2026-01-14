@@ -87,18 +87,19 @@
 <script lang='ts' setup>
 import { FrcCommand } from '@iqrf/iqrf-gateway-daemon-utils/enums/embed';
 import { Action, ComponentState, IActionBtn, IBooleanIcon, ICard, IDataTable, IModalWindow } from '@iqrf/iqrf-vue-ui';
-import { computed, PropType, ref, Ref } from 'vue';
+import { computed, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { FrcResponseTimeResult } from '@/types/DaemonApi/Iqmesh';
 
-const componentProps = defineProps({
-	result: {
-		type: [Object, null] as PropType<FrcResponseTimeResult | null>,
-		required: false,
-		default: null,
+const componentProps = withDefaults(
+	defineProps<{
+		result?: FrcResponseTimeResult | null;
+	}>(),
+	{
+		result: null,
 	},
-});
+);
 const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const i18n = useI18n();
 const show: Ref<boolean> = ref(false);

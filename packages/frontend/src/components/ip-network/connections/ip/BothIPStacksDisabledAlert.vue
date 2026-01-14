@@ -30,11 +30,10 @@ import {
 	IPv6ConfigurationMethod,
 	type NetworkConnectionConfiguration,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
-import { computed, type ComputedRef, type PropType } from 'vue';
+import { computed, type ComputedRef } from 'vue';
 
 /// Network connection configuration
-const configuration = defineModel({
-	type: Object as PropType<NetworkConnectionConfiguration>,
+const configuration = defineModel<NetworkConnectionConfiguration>({
 	required: true,
 });
 /// Are both IP stacks disabled?

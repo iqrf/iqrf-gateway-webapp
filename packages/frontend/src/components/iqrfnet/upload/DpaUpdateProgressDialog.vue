@@ -31,19 +31,17 @@
 
 <script lang='ts' setup>
 import { Action, ComponentState, IActionBtn, ICard, IModalWindow } from '@iqrf/iqrf-vue-ui';
-import { computed, type PropType, ref, type Ref } from 'vue';
+import { computed, ref, type Ref } from 'vue';
 
-const componentProps = defineProps({
-	componentState: {
-		type: String as PropType<ComponentState>,
-		required: true,
+const componentProps = withDefaults(
+	defineProps<{
+		componentState: ComponentState;
+		message?: string;
+	}>(),
+	{
+		message: '',
 	},
-	message: {
-		type: String,
-		required: false,
-		default: '',
-	},
-});
+);
 const show: Ref<boolean> = ref(false);
 const progressColor = computed(() => {
 	if (componentProps.componentState === ComponentState.Action || componentProps.componentState === ComponentState.Success) {

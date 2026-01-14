@@ -96,7 +96,7 @@ import {
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiPencil } from '@mdi/js';
-import { computed, ref, type Ref, useTemplateRef } from 'vue';
+import { computed, ref, type Ref, type TemplateRef, useTemplateRef } from 'vue';
 import { watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { type VForm } from 'vuetify/components';
@@ -106,21 +106,19 @@ import SelectInput from '@/components/layout/form/SelectInput.vue';
 import { MqttProtocol } from '@/enums/mqtt';
 import { validateForm } from '@/helpers/validateForm';
 
-const componentProps = defineProps({
-	cardTitle: {
-		type: String,
-		default: '',
-		required: false,
+const componentProps = withDefaults(
+	defineProps<{
+		cardTitle?: string;
+		url: string;
+	}>(),
+	{
+		cardTitle: '',
 	},
-	url: {
-		type: String,
-		required: true,
-	},
-});
+);
 const emit = defineEmits<{
 	edited: [url: string];
 }>();
-const form: Ref<VForm|null> = useTemplateRef('form');
+const form: TemplateRef<VForm> = useTemplateRef('form');
 const i18n = useI18n();
 const show: Ref<boolean> = ref(false);
 const regexCapture = new RegExp(/(?<protocol>tcp|ssl|ws|wss|mqtt|mqtts):\/\/(?<host>.+):(?<port>\d+)(\/(?<path>.*))?/);

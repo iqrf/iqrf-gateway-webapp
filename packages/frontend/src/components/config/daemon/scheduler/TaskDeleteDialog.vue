@@ -46,17 +46,17 @@ import { toast } from 'vue3-toastify';
 
 import { useDaemonStore } from '@/store/daemonSocket';
 
-const componentProps = defineProps({
-	taskId: {
-		type: String,
-		required: true,
+const componentProps = withDefaults(
+	defineProps<{
+		/// Task ID to delete
+		taskId: string;
+		/// Disable delete button
+		disabled?: boolean;
+	}>(),
+	{
+		disabled: false,
 	},
-	disabled: {
-		type: Boolean,
-		required: false,
-		default: false,
-	},
-});
+);
 const emit = defineEmits<{
 	deleted: [];
 }>();

@@ -26,14 +26,13 @@ limitations under the License.
 
 <script lang='ts' setup>
 import { mdiTranslate } from '@mdi/js';
-import { type PropType, type Ref } from 'vue';
+import { type Ref } from 'vue';
 
 import SelectInput from '@/components/layout/form/SelectInput.vue';
 import { getLanguageOptions } from '@/helpers/userData';
 import { type SelectItem } from '@/types/vuetify';
 
-const modelValue = defineModel({
-	type: [String, null] as PropType<string|null>,
+const modelValue = defineModel<string|null>({
 	required: true,
 });
 const options: Ref<SelectItem[]> = getLanguageOptions();

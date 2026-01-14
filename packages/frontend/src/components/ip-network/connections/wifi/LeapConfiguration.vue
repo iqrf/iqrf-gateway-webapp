@@ -39,11 +39,9 @@ import {
 	ITextInput,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiAccount, mdiKey } from '@mdi/js';
-import { type PropType } from 'vue';
 
 /// Network connection configuration
-const configuration = defineModel({
-	type: Object as PropType<NetworkConnectionConfiguration>,
+const configuration = defineModel<NetworkConnectionConfiguration>({
 	required: true,
 });
 </script>

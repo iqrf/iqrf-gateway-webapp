@@ -62,17 +62,18 @@ import {
 	ITextInput,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiClipboard } from '@mdi/js';
-import { type PropType, ref, type Ref } from 'vue';
+import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
-const componentProps = defineProps({
-	apiKey: {
-		type: [String, null] as PropType<string | null>,
-		default: null,
-		required: false,
+const componentProps = withDefaults(
+	defineProps<{
+		apiKey?: string | null;
+	}>(),
+	{
+		apiKey: null,
 	},
-});
+);
 const emit = defineEmits<{
 	closed: [];
 }>();

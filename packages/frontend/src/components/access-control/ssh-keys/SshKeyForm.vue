@@ -109,7 +109,7 @@ import {
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiKey, mdiTextShort } from '@mdi/js';
-import { type PropType, ref, type Ref, type TemplateRef, useTemplateRef, watch } from 'vue';
+import { ref, type Ref, type TemplateRef, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -117,17 +117,15 @@ import { VForm } from 'vuetify/components';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
-const componentProps = defineProps({
-	keyTypes: {
-		type: Array as PropType<string[]>,
-		required: true,
+const componentProps = withDefaults(
+	defineProps<{
+		keyTypes: string[];
+		disabled?: boolean;
+	}>(),
+	{
+		disabled: false,
 	},
-	disabled: {
-		type: Boolean,
-		default: false,
-		required: false,
-	},
-});
+);
 const emit = defineEmits<{
 	refresh: [];
 }>();

@@ -37,7 +37,7 @@ import {
 	ComponentState,
 	IDeleteModalWindow,
 } from '@iqrf/iqrf-vue-ui';
-import { PropType, ref, type Ref, type TemplateRef, useTemplateRef } from 'vue';
+import { ref, type Ref, type TemplateRef, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { toast } from 'vue3-toastify';
@@ -46,21 +46,16 @@ import { useApiClient } from '@/services/ApiClient';
 import { useInstallStore } from '@/store/install';
 import { useUserStore } from '@/store/user';
 
-const componentProps = defineProps({
-	user: {
-		type: Object as PropType<UserInfo>,
-		required: true,
+const componentProps = withDefaults(
+	defineProps<{
+		user: UserInfo;
+		onlyUser: boolean;
+		disabled?: boolean;
+	}>(),
+	{
+		disabled: false,
 	},
-	onlyUser: {
-		type: Boolean,
-		required: true,
-	},
-	disabled: {
-		type: Boolean,
-		required: false,
-		default: false,
-	},
-});
+);
 const emit = defineEmits<{
 	refresh: [];
 }>();

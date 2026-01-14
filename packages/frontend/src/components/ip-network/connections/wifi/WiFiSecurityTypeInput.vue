@@ -35,15 +35,14 @@ import {
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import { ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiWifiLock } from '@mdi/js';
-import { computed, type PropType } from 'vue';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import SelectInput from '@/components/layout/form/SelectInput.vue';
 import { type SelectItem } from '@/types/vuetify';
 
 /// Model value
-const modelValue = defineModel({
-	type: [String, null] as PropType<string | null>,
+const modelValue = defineModel<string | null>({
 	required: true,
 });
 const i18n = useI18n();

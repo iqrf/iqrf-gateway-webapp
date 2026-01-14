@@ -26,13 +26,12 @@ limitations under the License.
 <script setup lang='ts'>
 import { ShapeTraceVerbosity } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { ISelectInput } from '@iqrf/iqrf-vue-ui';
-import { computed, PropType } from 'vue';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { SelectItem } from '@/types/vuetify';
 
-const modelValue = defineModel({
-	type: String as PropType<ShapeTraceVerbosity>,
+const modelValue = defineModel<ShapeTraceVerbosity>({
 	required: true,
 });
 

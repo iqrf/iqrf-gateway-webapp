@@ -98,13 +98,14 @@ import { useI18n } from 'vue-i18n';
 
 import { useRepositoryClient } from '@/services/RepositoryClient';
 
-defineProps({
-	listActivator: {
-		type: Boolean,
-		default: false,
-		required: false,
+withDefaults(
+	defineProps<{
+		listActivator?: boolean;
+	}>(),
+	{
+		listActivator: false,
 	},
-});
+);
 const emit = defineEmits<{
 	apply: [product: Product];
 	close: [];

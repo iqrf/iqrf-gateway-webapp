@@ -42,7 +42,6 @@ import {
 	IDeleteModalWindow,
 } from '@iqrf/iqrf-vue-ui';
 import {
-	type PropType,
 	ref,
 	type Ref,
 	type TemplateRef,
@@ -54,12 +53,9 @@ import { toast } from 'vue3-toastify';
 import { useApiClient } from '@/services/ApiClient';
 
 /// Component properties
-const componentProps = defineProps({
-	connection: {
-		type: Object as PropType<NetworkConnectionListEntry>,
-		required: true,
-	},
-});
+const componentProps = defineProps<{
+	connection: NetworkConnectionListEntry;
+}>();
 /// Define emit events
 const emit = defineEmits<{
 	deleted: [];

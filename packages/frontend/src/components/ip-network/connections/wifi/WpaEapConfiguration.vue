@@ -60,7 +60,6 @@ import {
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiAccount, mdiAccountQuestion, mdiKey } from '@mdi/js';
-import { type PropType } from 'vue';
 
 import EapPhase1MethodInput
 	from '@/components/ip-network/connections/eap/EapPhase1MethodInput.vue';
@@ -68,8 +67,7 @@ import EapPhase2MethodInput
 	from '@/components/ip-network/connections/eap/EapPhase2MethodInput.vue';
 
 /// Network connection configuration
-const configuration = defineModel({
-	type: Object as PropType<NetworkConnectionConfiguration>,
+const configuration = defineModel<NetworkConnectionConfiguration>({
 	required: true,
 });
 </script>

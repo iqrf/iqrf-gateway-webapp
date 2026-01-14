@@ -93,17 +93,15 @@ import { type VForm } from 'vuetify/components';
 import { WebsocketProtocol } from '@/enums/websocket';
 import { validateForm } from '@/helpers/validateForm';
 
-const componentProps = defineProps({
-	cardTitle: {
-		type: String,
-		default: '',
-		required: false,
+const componentProps = withDefaults(
+	defineProps<{
+		cardTitle?: string;
+		url: string;
+	}>(),
+	{
+		cardTitle: '',
 	},
-	url: {
-		type: String,
-		required: true,
-	},
-});
+);
 const emit = defineEmits<{
 	edited: [url: string];
 }>();

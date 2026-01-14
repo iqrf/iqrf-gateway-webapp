@@ -79,9 +79,8 @@ import { type VForm } from 'vuetify/components';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
-const show = defineModel({
+const show = defineModel<boolean>({
 	required: true,
-	type: Boolean,
 });
 const emit = defineEmits<{
 	saved: [];

@@ -29,19 +29,18 @@ limitations under the License.
 
 <script lang='ts' setup>
 import { type EmmcHealth } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
-import { type PropType } from 'vue';
 
 import EmmcRegionHealthInfo from './EmmcRegionHealthInfo.vue';
 
-const componentProps = defineProps({
-	emmcHealth: {
-		type: Object as PropType<EmmcHealth>,
-		required: true,
+const componentProps = withDefaults(
+	defineProps<{
+		/// EMMC health information
+		emmcHealth: EmmcHealth;
+		/// Is last item
+		last?: boolean;
+	}>(),
+	{
+		last: false,
 	},
-	last: {
-		type: Boolean,
-		default: false,
-		required: false,
-	},
-});
+);
 </script>

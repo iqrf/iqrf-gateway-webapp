@@ -41,16 +41,12 @@ import { toast } from 'vue3-toastify';
 
 import { useDaemonStore } from '@/store/daemonSocket';
 
-const modelValue = defineModel({
-	type: Boolean,
+const modelValue = defineModel<boolean>({
 	required: true,
 });
-const componentProps = defineProps({
-	deviceAddr: {
-		type: Number,
-		required: true,
-	},
-});
+const componentProps = defineProps<{
+	deviceAddr: number;
+}>();
 const emit = defineEmits<{
 	restart: [];
 }>();

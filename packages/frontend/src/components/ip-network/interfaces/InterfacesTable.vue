@@ -60,7 +60,7 @@ import {
 	ICard,
 	IDataTable,
 } from '@iqrf/iqrf-vue-ui';
-import { computed, onBeforeMount, type PropType, ref, type Ref } from 'vue';
+import { computed, onBeforeMount, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import InterfaceStateBadge
@@ -68,13 +68,14 @@ import InterfaceStateBadge
 import { useApiClient } from '@/services/ApiClient';
 
 /// Component props
-const componentProps = defineProps({
-	type: {
-		type: [String, null] as PropType<NetworkInterfaceType | null>,
-		default: null,
-		required: false,
+const componentProps = withDefaults(
+	defineProps<{
+		type?: NetworkInterfaceType | null;
+	}>(),
+	{
+		type: null,
 	},
-});
+);
 const i18n = useI18n();
 const service = useApiClient().getNetworkServices().getNetworkInterfaceService();
 

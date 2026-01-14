@@ -42,18 +42,19 @@
 
 <script lang='ts' setup>
 import { Action, IActionBtn, IBooleanIcon, ICard, IDataTable, IModalWindow } from '@iqrf/iqrf-vue-ui';
-import { PropType, ref, Ref } from 'vue';
+import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { RfSignalTestResult } from '@/types/DaemonApi/Iqmesh';
 
-const componentProps = defineProps({
-	result: {
-		type: [Object, null] as PropType<RfSignalTestResult[] | null>,
-		required: false,
-		default: null,
+const componentProps = withDefaults(
+	defineProps<{
+		result?: RfSignalTestResult[] | null;
+	}>(),
+	{
+		result: null,
 	},
-});
+);
 const i18n = useI18n();
 const show: Ref<boolean> = ref(false);
 const headers = [

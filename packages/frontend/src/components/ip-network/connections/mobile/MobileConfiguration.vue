@@ -79,13 +79,12 @@ import {
 } from '@iqrf/iqrf-vue-ui';
 import { mdiAccessPoint, mdiAccount, mdiKey } from '@mdi/js';
 import { storeToRefs } from 'pinia';
-import { computed, ComputedRef, type PropType, watch } from 'vue';
+import { computed, ComputedRef, watch } from 'vue';
 
 import { useGatewayStore } from '@/store/gateway';
 
 /// Network connection configuration
-const configuration = defineModel({
-	type: Object as PropType<NetworkConnectionConfiguration>,
+const configuration = defineModel<NetworkConnectionConfiguration>({
 	required: true,
 });
 

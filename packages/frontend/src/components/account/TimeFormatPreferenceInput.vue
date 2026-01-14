@@ -41,11 +41,9 @@ limitations under the License.
 import {
 	UserTimeFormatPreference,
 } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { type PropType } from 'vue';
 
 /// Model value
-const modelValue = defineModel({
-	type: String as PropType<UserTimeFormatPreference>,
+const modelValue = defineModel<UserTimeFormatPreference>({
 	required: true,
 });
 </script>

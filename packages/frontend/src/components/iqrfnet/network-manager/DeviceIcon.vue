@@ -34,15 +34,10 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { PropType } from 'vue';
-
 import Device from '@/helpers/device';
 
-defineProps({
-	device: {
-		type: Object as PropType<Device>,
-		required: true,
-	},
-});
+defineProps<{
+	device: Device;
+}>();
 
 </script>

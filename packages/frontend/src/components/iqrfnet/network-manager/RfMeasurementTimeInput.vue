@@ -28,13 +28,12 @@ limitations under the License.
 import { IqmeshTestRfMeasurementTime } from '@iqrf/iqrf-gateway-daemon-utils/enums/iqmesh';
 import { ISelectInput } from '@iqrf/iqrf-vue-ui';
 import { mdiSendClock } from '@mdi/js';
-import { computed, PropType } from 'vue';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { SelectItem } from '@/types/vuetify';
 
-const modelValue = defineModel({
-	type: Number as PropType<IqmeshTestRfMeasurementTime>,
+const modelValue = defineModel<IqmeshTestRfMeasurementTime>({
 	required: true,
 });
 

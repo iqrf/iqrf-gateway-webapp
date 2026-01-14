@@ -250,7 +250,7 @@ import {
 } from '@iqrf/iqrf-vue-ui';
 import { mdiAccount } from '@mdi/js';
 import {
-	computed, type PropType, ref, type Ref,
+	computed, ref, type Ref,
 	type TemplateRef, useTemplateRef, watch,
 } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -261,15 +261,15 @@ import MqttUrlForm from '@/components/MqttUrlForm.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
-const componentProps = defineProps({
-	action: {
-		type: String as PropType<Action>,
-		default: Action.Add,
-		required: false,
-	},
-	connectionProfile: {
-		type: Object as PropType<IqrfGatewayDaemonMqttMessaging>,
-		default: () => ({
+const componentProps = withDefaults(
+	defineProps<{
+		action?: Action.Add | Action.Edit;
+		connectionProfile?: IqrfGatewayDaemonMqttMessaging;
+		disabled?: boolean;
+	}>(),
+	{
+		action: Action.Add,
+		connectionProfile: (): IqrfGatewayDaemonMqttMessaging => ({
 			component: IqrfGatewayDaemonComponentName.IqrfMqttMessaging,
 			instance: '',
 			BrokerAddr: '',
@@ -292,14 +292,9 @@ const componentProps = defineProps({
 			EnableServerCertAuth: false,
 			acceptAsyncMsg: false,
 		}),
-		required: false,
+		disabled: false,
 	},
-	disabled: {
-		type: Boolean,
-		required: false,
-		default: false,
-	},
-});
+);
 const emit = defineEmits<{
 	saved: [];
 }>();

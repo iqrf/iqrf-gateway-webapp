@@ -27,18 +27,16 @@ limitations under the License.
 import { mdiCheckCircleOutline, mdiCloseCircleOutline } from '@mdi/js';
 import { computed } from 'vue';
 
-const componentProps = defineProps({
-	value: {
-		type: Boolean,
-		default: false,
-		required: false,
+const componentProps = withDefaults(
+	defineProps<{
+		value?: boolean;
+		size?: string;
+	}>(),
+	{
+		value: false,
+		size: undefined,
 	},
-	size: {
-		type: String,
-		default: undefined,
-		required: false,
-	},
-});
+);
 
 const size = computed(() => {
 	return componentProps.size ?? 'large';

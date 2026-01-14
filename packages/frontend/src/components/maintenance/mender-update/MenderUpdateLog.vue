@@ -47,14 +47,11 @@ limitations under the License.
 <script lang='ts' setup>
 import { Action, IActionBtn, ICard, IModalWindow } from '@iqrf/iqrf-vue-ui';
 import { mdiText } from '@mdi/js';
-import { type PropType, ref, Ref } from 'vue';
+import { ref, type Ref } from 'vue';
 
-defineProps({
-	log: {
-		type: [String, null] as PropType<string | null>,
-		required: true,
-	},
-});
+defineProps<{
+	log: string | null;
+}>();
 const show: Ref<boolean> = ref(false);
 
 const close = () => show.value = false;

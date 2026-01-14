@@ -21,13 +21,14 @@ import { storeToRefs } from 'pinia';
 import { useUserStore } from '@/store/user';
 
 /// Component props
-defineProps({
-	mobile: {
-		type: Boolean,
-		required: false,
-		default: false,
+withDefaults(
+	defineProps<{
+		mobile?: boolean;
+	}>(),
+	{
+		mobile: false,
 	},
-});
+);
 const userStore = useUserStore();
 const { getName: name } = storeToRefs(userStore);
 </script>

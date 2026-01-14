@@ -19,21 +19,17 @@
 import {
 	type InstallationCheckPhpMissingExtensions,
 } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { computed, type ComputedRef, PropType } from 'vue';
+import { computed, type ComputedRef } from 'vue';
 
 import ErrorStepperActions
 	from '@/components/install/errors/ErrorStepperActions.vue';
 
-const model = defineModel({
+const model = defineModel<InstallationCheckPhpMissingExtensions | null>({
 	required: true,
-	type: [Object, null] as PropType<InstallationCheckPhpMissingExtensions | null>,
 });
-const componentProps = defineProps({
-	index: {
-		type: Number,
-		required: true,
-	},
-});
+const componentProps = defineProps<{
+	index: number;
+}>();
 const extensions: ComputedRef<string> = computed((): string => {
 	return model.value?.extensions.join(', ') ?? '';
 });

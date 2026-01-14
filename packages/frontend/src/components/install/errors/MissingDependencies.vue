@@ -29,21 +29,17 @@
 
 <script setup lang='ts'>
 import { InstallationCheckDependency } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { computed, type ComputedRef, PropType } from 'vue';
+import { computed, type ComputedRef } from 'vue';
 
 import ErrorStepperActions
 	from '@/components/install/errors/ErrorStepperActions.vue';
 
-const model = defineModel({
+const model = defineModel<InstallationCheckDependency[]>({
 	required: true,
-	type: Array as PropType<InstallationCheckDependency[]>,
 });
-const componentProps = defineProps({
-	index: {
-		type: Number,
-		required: true,
-	},
-});
+const componentProps = defineProps<{
+	index: number;
+}>();
 const packages: ComputedRef<string> = computed((): string => {
 	const dependencies = model.value.map((item: InstallationCheckDependency): string => item.package);
 	return dependencies.filter((value: string, index: number, array: string[]) => array.indexOf(value) === index).join(', ');

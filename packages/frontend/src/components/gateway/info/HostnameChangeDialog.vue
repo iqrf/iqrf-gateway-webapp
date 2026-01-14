@@ -83,7 +83,7 @@ import {
 import { Action, ComponentState, IActionBtn, ICard, IModalWindow, ITextInput, ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiPencil, mdiTextShort } from '@mdi/js';
 import {
-	type PropType, ref, type Ref,
+	ref, type Ref,
 	type TemplateRef, useTemplateRef, watchEffect,
 } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -93,17 +93,15 @@ import { VForm } from 'vuetify/components';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
-const componentProps = defineProps({
-	currentHostname: {
-		type: [String, null] as PropType<string | null>,
-		required: true,
+const componentProps = withDefaults(
+	defineProps<{
+		currentHostname: string | null;
+		disabled?: boolean;
+	}>(),
+	{
+		disabled: false,
 	},
-	disabled: {
-		type: Boolean,
-		required: false,
-		default: false,
-	},
-});
+);
 const emit = defineEmits<{
 	saved: [];
 }>();

@@ -41,9 +41,9 @@ import {
 	IDeleteModalWindow,
 } from '@iqrf/iqrf-vue-ui';
 import {
-	type PropType,
 	ref,
-	type Ref, type TemplateRef,
+	type Ref,
+	type TemplateRef,
 	useTemplateRef,
 } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -51,12 +51,9 @@ import { toast } from 'vue3-toastify';
 
 import { useApiClient } from '@/services/ApiClient';
 
-const componentProps = defineProps({
-	connectionProfile: {
-		type: Object as PropType<IqrfGatewayDaemonUdpMessaging>,
-		required: true,
-	},
-});
+const componentProps = defineProps<{
+	connectionProfile: IqrfGatewayDaemonUdpMessaging;
+}>();
 const emit = defineEmits<{
 	deleted: [];
 }>();

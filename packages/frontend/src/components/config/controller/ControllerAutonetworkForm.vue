@@ -138,7 +138,6 @@ import { type IqrfGatewayControllerApiAutonetworkConfig } from '@iqrf/iqrf-gatew
 import { Action, IActionBtn, ICard, IModalWindow, INumberInput, ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiRefresh, mdiRefreshCircle, mdiRepeat, mdiSignalVariant, mdiWrench } from '@mdi/js';
 import {
-	type PropType,
 	ref,
 	type Ref,
 	type TemplateRef,
@@ -149,12 +148,9 @@ import { VForm } from 'vuetify/components';
 
 import { validateForm } from '@/helpers/validateForm';
 
-const componentProps = defineProps({
-	autonetworkConfig: {
-		type: Object as PropType<IqrfGatewayControllerApiAutonetworkConfig>,
-		required: true,
-	},
-});
+const componentProps = defineProps<{
+	autonetworkConfig: IqrfGatewayControllerApiAutonetworkConfig;
+}>();
 const emit = defineEmits<{
 	saved: [config: IqrfGatewayControllerApiAutonetworkConfig];
 }>();

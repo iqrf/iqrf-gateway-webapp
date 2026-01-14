@@ -85,10 +85,9 @@ import {
 } from '@iqrf/iqrf-vue-ui';
 import {
 	computed,
-	PropType,
 	ref,
-	Ref,
-	TemplateRef,
+	type Ref,
+	type TemplateRef,
 	toRaw,
 	useTemplateRef,
 	watch,
@@ -100,28 +99,24 @@ import { VForm } from 'vuetify/components';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
-const componentProps = defineProps({
-	action: {
-		type: String as PropType<Action>,
-		default: Action.Add,
-		required: false,
+const componentProps = withDefaults(
+	defineProps<{
+		/// Action type (add/edit)
+		action?: Action.Add | Action.Edit;
+		/// Messaging instance to edit
+		messagingInstance?: IqrfGatewayDaemonWsMessaging;
+		/// Available service instances
+		serviceInstances?: string[];
+		/// Disable form
+		disabled?: boolean;
+	}>(),
+	{
+		action: Action.Add,
+		messagingInstance: undefined,
+		serviceInstances: (): string[] => [],
+		disabled: false,
 	},
-	messagingInstance: {
-		type: Object as PropType<IqrfGatewayDaemonWsMessaging>,
-		required: false,
-		default: undefined,
-	},
-	serviceInstances: {
-		type: Array as PropType<string[]>,
-		required: false,
-		default: () => [],
-	},
-	disabled: {
-		type: Boolean,
-		required: false,
-		default: false,
-	},
-});
+);
 const emit = defineEmits<{
 	saved: [];
 }>();

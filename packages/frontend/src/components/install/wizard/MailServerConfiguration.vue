@@ -185,12 +185,10 @@ enum SmtpAction {
 	Test = 1,
 }
 
-const componentProps = defineProps({
-	index: {
-		type: Number,
-		required: true,
-	},
-});
+const componentProps = defineProps<{
+	/// Step index
+	index: number;
+}>();
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const userStore = useUserStore();
 const { isLoggedIn, isVerified } = storeToRefs(userStore);

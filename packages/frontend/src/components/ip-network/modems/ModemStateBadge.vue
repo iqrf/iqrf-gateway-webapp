@@ -27,15 +27,12 @@ limitations under the License.
 
 <script setup lang='ts'>
 import { ModemState } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
-import { computed, type PropType } from 'vue';
+import { computed } from 'vue';
 
 /// Component props
-const componentProps = defineProps({
-	state: {
-		type: String as PropType<ModemState>,
-		required: true,
-	},
-});
+const componentProps = defineProps<{
+	state: ModemState;
+}>();
 
 /// Badge color
 const color = computed(() => {

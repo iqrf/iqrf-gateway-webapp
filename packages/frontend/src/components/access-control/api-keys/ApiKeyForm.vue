@@ -106,7 +106,7 @@ import {
 } from '@iqrf/iqrf-vue-ui';
 import { mdiTextShort } from '@mdi/js';
 import { DateTime } from 'luxon';
-import { computed, type PropType, ref, type Ref, type TemplateRef, toRaw, useTemplateRef, watch } from 'vue';
+import { computed, ref, type Ref, type TemplateRef, toRaw, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -115,26 +115,21 @@ import ApiKeyDisplayDialog from '@/components/access-control/api-keys/ApiKeyDisp
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
-const componentProps = defineProps({
-	action: {
-		type: String as PropType<Action>,
-		default: Action.Add,
-		required: false,
-	},
-	apiKey: {
-		type: Object as PropType<ApiKeyConfig | ApiKeyInfo>,
-		default: () => ({
+const componentProps = withDefaults(
+	defineProps<{
+		action?: Action.Add | Action.Edit;
+		apiKey?: ApiKeyConfig | ApiKeyInfo;
+		disabled?: boolean;
+	}>(),
+	{
+		action: Action.Add,
+		apiKey: () => ({
 			description: '',
 			expiration: null,
 		}),
-		required: false,
+		disabled: false,
 	},
-	disabled: {
-		type: Boolean,
-		default: false,
-		required: false,
-	},
-});
+);
 const emit = defineEmits<{
 	refresh: [];
 }>();

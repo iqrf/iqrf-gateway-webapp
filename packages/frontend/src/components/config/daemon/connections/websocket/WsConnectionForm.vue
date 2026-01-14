@@ -129,7 +129,7 @@ import {
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import {
-	computed, PropType, ref, Ref,
+	computed, ref, type Ref,
 	type TemplateRef, toRaw, useTemplateRef, watch,
 } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -141,28 +141,20 @@ import WsTlsModeInput
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
-const componentProps = defineProps({
-	action: {
-		type: String as PropType<Action>,
-		default: Action.Add,
-		required: false,
+const componentProps = withDefaults(
+	defineProps<{
+		action?: Action.Add | Action.Edit;
+		messagingInstance?: IqrfGatewayDaemonWsMessaging;
+		serviceInstance?: ShapeWebsocketService;
+		disabled?: boolean;
+	}>(),
+	{
+		action: Action.Add,
+		messagingInstance: undefined,
+		serviceInstance: undefined,
+		disabled: false,
 	},
-	messagingInstance: {
-		type: Object as PropType<IqrfGatewayDaemonWsMessaging>,
-		required: false,
-		default: undefined,
-	},
-	serviceInstance: {
-		type: Object as PropType<ShapeWebsocketService>,
-		required: false,
-		default: undefined,
-	},
-	disabled: {
-		type: Boolean,
-		required: false,
-		default: false,
-	},
-});
+);
 const emit = defineEmits<{
 	saved: [];
 }>();

@@ -28,13 +28,12 @@ limitations under the License.
 import { IqrfGatewayControllerAction } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { ISelectInput } from '@iqrf/iqrf-vue-ui';
 import { mdiGestureTapHold } from '@mdi/js';
-import { computed, PropType } from 'vue';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { SelectItem } from '@/types/vuetify';
 
-const modelValue = defineModel({
-	type: String as PropType<IqrfGatewayControllerAction>,
+const modelValue = defineModel<IqrfGatewayControllerAction>({
 	required: true,
 });
 defineSlots();

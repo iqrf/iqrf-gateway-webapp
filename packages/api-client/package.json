@@ -90,7 +90,7 @@
 		"uuid": "^13.0.0"
 	},
 	"devDependencies": {
-		"@iqrf/eslint-config": "^0.4.0",
+		"@iqrf/eslint-config": "^0.4.1",
 		"@types/luxon": "^3.7.1",
 		"@types/node": "^25.0.8",
 		"@types/punycode": "^2.1.4",

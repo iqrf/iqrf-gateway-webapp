@@ -173,12 +173,9 @@ import { useRepositoryClient } from '@/services/RepositoryClient';
 import { useDaemonStore } from '@/store/daemonSocket';
 import { DeviceEnumeration } from '@/types/DaemonApi/Iqmesh';
 
-const componentProps = defineProps({
-	address: {
-		type: Number,
-		required: true,
-	},
-});
+const componentProps = defineProps<{
+	address: number;
+}>();
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
 const daemonStore = useDaemonStore();

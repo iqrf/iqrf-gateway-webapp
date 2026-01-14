@@ -19,24 +19,15 @@
 <script setup lang='ts'>
 import { Action, IActionBtn } from '@iqrf/iqrf-vue-ui';
 import { storeToRefs } from 'pinia';
-import { computed, type ComputedRef, PropType } from 'vue';
+import { computed, type ComputedRef } from 'vue';
 
 import { useInstallStore } from '@/store/install';
 
-const componentProps = defineProps({
-	index: {
-		type: Number,
-		required: true,
-	},
-	prev: {
-		type: Function as PropType<(...args: any[]) => any>,
-		required: true,
-	},
-	next: {
-		type: Function as PropType<(...args: any[]) => any>,
-		required: true,
-	},
-});
+const componentProps = defineProps<{
+	index: number;
+	prev: (...args: any[]) => any;
+	next: (...args: any[]) => any;
+}>();
 const installStore = useInstallStore();
 const { getErrors } = storeToRefs(installStore);
 

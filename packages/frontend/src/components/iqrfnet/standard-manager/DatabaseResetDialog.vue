@@ -74,13 +74,14 @@ import { toast } from 'vue3-toastify';
 
 import { useDaemonStore } from '@/store/daemonSocket';
 
-const componentProps = defineProps({
-	disabled: {
-		type: Boolean,
-		required: false,
-		default: false,
+const componentProps = withDefaults(
+	defineProps<{
+		disabled?: boolean;
+	}>(),
+	{
+		disabled: false,
 	},
-});
+);
 const emit = defineEmits<{
 	reset: [];
 }>();

@@ -30,15 +30,12 @@ limitations under the License.
 import {
 	NetworkConnectionState,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
-import { computed, type PropType } from 'vue';
+import { computed } from 'vue';
 
 /// Component props
-const componentProps = defineProps({
-	state: {
-		type: [String, null] as PropType<NetworkConnectionState | null>,
-		required: true,
-	},
-});
+const componentProps = defineProps<{
+	state: NetworkConnectionState | null;
+}>();
 
 /// Badge color
 const color = computed(() => {

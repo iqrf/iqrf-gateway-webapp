@@ -35,23 +35,21 @@ limitations under the License.
 import { type ApiKeyService } from '@iqrf/iqrf-gateway-webapp-client/services/Security';
 import { type ApiKeyInfo } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import { ComponentState, IDeleteModalWindow } from '@iqrf/iqrf-vue-ui';
-import { type PropType, ref, type Ref, type TemplateRef, useTemplateRef } from 'vue';
+import { ref, type Ref, type TemplateRef, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import { useApiClient } from '@/services/ApiClient';
 
-const componentProps = defineProps({
-	apiKey: {
-		type: Object as PropType<ApiKeyInfo>,
-		required: true,
+const componentProps = withDefaults(
+	defineProps<{
+		apiKey: ApiKeyInfo;
+		disabled?: boolean;
+	}>(),
+	{
+		disabled: false,
 	},
-	disabled: {
-		type: Boolean,
-		required: false,
-		default: false,
-	},
-});
+);
 const emit = defineEmits<{
 	refresh: [];
 }>();

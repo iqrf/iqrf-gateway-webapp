@@ -60,7 +60,7 @@ limitations under the License.
 							:hide-pagination='true'
 							disable-column-filtering
 							disable-search
-							:no-data-text='"components.config.monit.checks.noRecords"'
+							:no-data-text='$t("components.config.monit.checks.noRecords")'
 						>
 							<template #item.enabled='{ item }'>
 								<v-checkbox-btn

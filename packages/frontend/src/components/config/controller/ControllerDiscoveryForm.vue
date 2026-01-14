@@ -92,7 +92,6 @@ import { type IqrfGatewayControllerApiDiscoveryConfig } from '@iqrf/iqrf-gateway
 import { Action, IActionBtn, ICard, IModalWindow, INumberInput, ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiNumeric, mdiSignalVariant, mdiWrench } from '@mdi/js';
 import {
-	type PropType,
 	ref,
 	type Ref,
 	type TemplateRef,
@@ -103,12 +102,9 @@ import { VForm } from 'vuetify/components';
 
 import { validateForm } from '@/helpers/validateForm';
 
-const componentProps = defineProps({
-	discoveryConfig: {
-		type: Object as PropType<IqrfGatewayControllerApiDiscoveryConfig>,
-		required: true,
-	},
-});
+const componentProps = defineProps<{
+	discoveryConfig: IqrfGatewayControllerApiDiscoveryConfig;
+}>();
 const emit = defineEmits<{
 	saved: [config: IqrfGatewayControllerApiDiscoveryConfig];
 }>();

@@ -96,7 +96,7 @@ import {
 import { mdiAccountKey, mdiHelpCircleOutline, mdiKey } from '@mdi/js';
 import { AxiosError } from 'axios';
 import { validate as uuidValidate, version as uuidVersion } from 'uuid';
-import { ref, type Ref, type TemplateRef, useTemplateRef } from 'vue';
+import { ref, type Ref, type TemplateRef, useTemplateRef, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { toast } from 'vue3-toastify';
@@ -107,15 +107,9 @@ import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
 
 /// Component props
-const componentProps = defineProps({
-	uuid: {
-		type: String,
-		required: true,
-		validator(value: string): boolean {
-			return uuidValidate(value) && uuidVersion(value) === 4;
-		},
-	},
-});
+const componentProps = defineProps<{
+	uuid: string;
+}>();
 /// Component state
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 /// Form reference
@@ -182,4 +176,10 @@ async function onSubmit(): Promise<void> {
 		}
 	}
 }
+
+watchEffect((): void => {
+	if (!uuidValidate(componentProps.uuid) || uuidVersion(componentProps.uuid) !== 4) {
+		throw new Error('Invalid UUID v4 format');
+	}
+});
 </script>

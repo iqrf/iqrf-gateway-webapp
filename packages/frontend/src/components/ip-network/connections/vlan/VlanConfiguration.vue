@@ -45,14 +45,12 @@ import {
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiTag } from '@mdi/js';
-import { type PropType } from 'vue';
 
 import InterfaceInput
 	from '@/components/ip-network/interfaces/InterfaceInput.vue';
 
 /// Network connection configuration
-const configuration = defineModel({
-	type: Object as PropType<NetworkConnectionConfiguration>,
+const configuration = defineModel<NetworkConnectionConfiguration>({
 	required: true,
 });
 </script>

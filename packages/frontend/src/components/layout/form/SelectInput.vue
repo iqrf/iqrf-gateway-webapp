@@ -48,22 +48,17 @@ import { computed } from 'vue';
 
 import { type SelectItem } from '@/types/vuetify';
 
-const componentProps = defineProps({
-	items: {
-		type: Array<SelectItem>,
-		required: true,
+const componentProps = withDefaults(
+	defineProps<{
+		items: Array<SelectItem>;
+		label?: string;
+		description?: string;
+	}>(),
+	{
+		label: '',
+		description: '',
 	},
-	label: {
-		type: String,
-		default: '',
-		required: false,
-	},
-	description: {
-		type: String,
-		default: '',
-		required: false,
-	},
-});
+);
 
 const showHint = computed(() => componentProps.description.length > 0);
 

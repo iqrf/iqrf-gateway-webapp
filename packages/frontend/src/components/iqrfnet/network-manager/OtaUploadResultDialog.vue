@@ -33,17 +33,14 @@
 
 <script lang='ts' setup>
 import { Action, IActionBtn, IBooleanIcon, ICard, IDataTable, IModalWindow } from '@iqrf/iqrf-vue-ui';
-import { computed, PropType, ref, Ref } from 'vue';
+import { computed, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { OtaUploadAction, OtaUploadResult } from '@/types/DaemonApi/Iqmesh';
 
-const componentProps = defineProps({
-	results: {
-		type: Array as PropType<OtaUploadResult[]>,
-		required: true,
-	},
-});
+const componentProps = defineProps<{
+	results: OtaUploadResult[];
+}>();
 const i18n = useI18n();
 const show: Ref<boolean> = ref(false);
 const action: Ref<OtaUploadAction> = ref(OtaUploadAction.Verify);

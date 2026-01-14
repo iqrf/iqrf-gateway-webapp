@@ -127,15 +127,14 @@ import {
 } from '@mdi/js';
 import { MaskInputOptions } from 'maska';
 import { vMaska } from 'maska/vue';
-import { computed, ComputedRef, type PropType } from 'vue';
+import { computed, type ComputedRef } from 'vue';
 import { z } from 'zod';
 
 import IPv4ConfigurationMethodInput
 	from '@/components/ip-network/connections/ip/IPv4ConfigurationMethodInput.vue';
 
 /// Network connection configuration
-const configuration = defineModel({
-	type: Object as PropType<NetworkConnectionConfiguration>,
+const configuration = defineModel<NetworkConnectionConfiguration>({
 	required: true,
 });
 /// IPv4 address mask input options

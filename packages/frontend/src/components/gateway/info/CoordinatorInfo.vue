@@ -37,15 +37,11 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { PropType } from 'vue';
-
 import { DeviceEnumeration } from '@/types/DaemonApi/Iqmesh';
 
-defineProps({
-	data: {
-		type: Object as PropType<DeviceEnumeration>,
-		required: true,
-	},
-});
+defineProps<{
+	/// Device enumeration data
+	data: DeviceEnumeration;
+}>();
 
 </script>

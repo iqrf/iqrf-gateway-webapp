@@ -29,12 +29,9 @@
 import { Action, IActionBtn, ICard, IModalWindow } from '@iqrf/iqrf-vue-ui';
 import { ref, Ref } from 'vue';
 
-defineProps({
-	current: {
-		type: String,
-		required: true,
-	},
-});
+defineProps<{
+	current: string;
+}>();
 const emit = defineEmits<{
 	upload: [];
 }>();

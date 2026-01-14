@@ -91,12 +91,10 @@ import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
 
-const componentProps = defineProps({
-	index: {
-		type: Number,
-		required: true,
-	},
-});
+const componentProps = defineProps<{
+	/// Step index
+	index: number;
+}>();
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const userStore = useUserStore();
 const { isLoggedIn } = storeToRefs(userStore);

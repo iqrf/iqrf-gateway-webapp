@@ -181,7 +181,7 @@ import {
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import {
-	computed, type PropType, ref, type Ref,
+	computed, ref, type Ref,
 	type TemplateRef, useTemplateRef, watch,
 } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -191,19 +191,20 @@ import { VForm } from 'vuetify/components';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
-const componentProps = defineProps({
-	action: {
-		type: String as PropType<Action>,
-		default: Action.Add,
-		required: false,
-	},
-	mappingType: {
-		type: String as PropType<MappingType>,
-		required: true,
-	},
-	deviceProfile: {
-		type: Object as PropType<IqrfGatewayDaemonMapping>,
-		default: (): IqrfGatewayDaemonMapping => ({
+const componentProps = withDefaults(
+	defineProps<{
+		/// Action to perform (add/edit)
+		action?: Action.Add | Action.Edit;
+		/// Mapping type (SPI/I2C/UART)
+		mappingType: MappingType;
+		/// Device profile to edit
+		deviceProfile?: IqrfGatewayDaemonMapping;
+		/// Disable form activator button
+		disabled?: boolean;
+	}>(),
+	{
+		action: Action.Add,
+		deviceProfile: (): IqrfGatewayDaemonMapping => ({
 			busEnableGpioPin: 0,
 			deviceType: MappingDeviceType.Board,
 			IqrfInterface: '',
@@ -216,14 +217,9 @@ const componentProps = defineProps({
 			uartEnableGpioPin: -1,
 			baudRate: 9_600,
 		}),
-		required: false,
+		disabled: false,
 	},
-	disabled: {
-		type: Boolean,
-		required: false,
-		default: false,
-	},
-});
+);
 const emit = defineEmits<{
 	saved: [];
 }>();

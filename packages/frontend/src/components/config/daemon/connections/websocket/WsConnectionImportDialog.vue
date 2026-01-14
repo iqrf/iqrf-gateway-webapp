@@ -93,13 +93,15 @@ import { VForm } from 'vuetify/components';
 
 import { validateForm } from '@/helpers/validateForm';
 
-defineProps({
-	disabled: {
-		type: Boolean,
-		required: false,
-		default: false,
+withDefaults(
+	defineProps<{
+		/// Import dialog activator button disabled state
+		disabled?: boolean;
+	}>(),
+	{
+		disabled: false,
 	},
-});
+);
 const emit = defineEmits<{
 	import: [messaging: IqrfGatewayDaemonWsMessaging, service: ShapeWebsocketService];
 }>();

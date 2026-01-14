@@ -35,26 +35,25 @@ import {
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import { ComponentState, ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiExpansionCardVariant } from '@mdi/js';
-import { onBeforeMount, type PropType, ref, type Ref } from 'vue';
+import { onBeforeMount, ref, type Ref } from 'vue';
 
 import SelectInput from '@/components/layout/form/SelectInput.vue';
 import { useApiClient } from '@/services/ApiClient';
 import { type SelectItem } from '@/types/vuetify';
 
 /// Model value
-const modelValue = defineModel({
-	type: [String, null] as PropType<string | null>,
+const modelValue = defineModel<string | null>({
 	required: true,
 });
 /// Component properties
-const componentProps = defineProps({
-	type: {
-		type: [String, null] as PropType<NetworkInterfaceType | null>,
-		required: false,
-		default: null,
+const componentProps = withDefaults(
+	defineProps<{
+		type?: NetworkInterfaceType | null;
+	}>(),
+	{
+		type: null,
 	},
-
-});
+);
 /// Component state
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 /// Network interface items

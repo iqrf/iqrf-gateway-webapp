@@ -36,7 +36,6 @@ limitations under the License.
 import {
 	type NetworkConnectionConfiguration,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
-import { type PropType } from 'vue';
 
 import BothIPStacksDisabledAlert
 	from '@/components/ip-network/connections/ip/BothIPStacksDisabledAlert.vue';
@@ -46,8 +45,7 @@ import Ipv6Configuration
 	from '@/components/ip-network/connections/ip/IPv6Configuration.vue';
 
 /// Network connection configuration
-const configuration = defineModel({
-	type: Object as PropType<NetworkConnectionConfiguration>,
+const configuration = defineModel<NetworkConnectionConfiguration>({
 	required: true,
 });
 </script>

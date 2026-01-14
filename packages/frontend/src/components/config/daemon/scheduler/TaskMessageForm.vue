@@ -113,40 +113,34 @@ import {
 } from '@iqrf/iqrf-vue-ui';
 import { mdiApi } from '@mdi/js';
 import {
-	computed, type PropType, ref, type Ref,
+	computed, ref, type Ref,
 	type TemplateRef, useTemplateRef, watch,
 } from 'vue';
 import { VForm } from 'vuetify/components';
 
 import { validateForm } from '@/helpers/validateForm';
 
-const componentProps = defineProps({
-	action: {
-		type: String as PropType<Action>,
-		default: Action.Add,
-		required: false,
+const componentProps = withDefaults(
+	defineProps<{
+		/// Action type (add/edit)
+		action?: Action;
+		/// Task index for edit action
+		index?: number | null;
+		/// Task data for edit action
+		task?: SchedulerRecordTask | null;
+		/// Available messaging instances
+		messagings?: IqrfGatewayDaemonMessagingInstances | null;
+		/// Disabled state
+		disabled?: boolean;
+	}>(),
+	{
+		action: Action.Add,
+		index: null,
+		task: null,
+		messagings: null,
+		disabled: false,
 	},
-	index: {
-		type: [Number, null] as PropType<number | null>,
-		default: null,
-		required: false,
-	},
-	task: {
-		type: [Object, null] as PropType<SchedulerRecordTask | null>,
-		default: null,
-		required: false,
-	},
-	messagings: {
-		type: [Object, null] as PropType<IqrfGatewayDaemonMessagingInstances | null>,
-		default: null,
-		required: false,
-	},
-	disabled: {
-		type: Boolean,
-		default: false,
-		required: false,
-	},
-});
+);
 const emit = defineEmits<{
 	save: [index: number|null, task: SchedulerRecordTask];
 }>();

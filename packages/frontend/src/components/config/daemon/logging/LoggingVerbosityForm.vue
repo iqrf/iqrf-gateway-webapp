@@ -86,7 +86,6 @@ import {
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import {
-	type PropType,
 	ref,
 	type Ref,
 	type TemplateRef,
@@ -99,31 +98,27 @@ import ShapeTraceVerbosityInput
 	from '@/components/config/daemon/logging/ShapeTraceVerbosityInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 
-const componentProps = defineProps({
-	action: {
-		type: String as PropType<Action>,
-		required: false,
-		default: Action.Add,
-	},
-	index: {
-		type: [Number, null] as PropType<number|null>,
-		required: false,
-		default: null,
-	},
-	loggingLevel: {
-		type: Object as PropType<ShapeTraceChannelVerbosity>,
-		required: false,
-		default: () => ({
+const componentProps = withDefaults(
+	defineProps<{
+		/// Action type (add/edit)
+		action?: Action.Add | Action.Edit;
+		/// Index of the logging level to edit
+		index?: number|null;
+		/// Logging level to edit
+		loggingLevel?: ShapeTraceChannelVerbosity;
+		/// Disable form activator
+		disabled?: boolean;
+	}>(),
+	{
+		action: Action.Add,
+		index: null,
+		loggingLevel: (): ShapeTraceChannelVerbosity => ({
 			channel: 0,
 			level: ShapeTraceVerbosity.Info,
 		}),
+		disabled: false,
 	},
-	disabled: {
-		type: Boolean,
-		required: false,
-		default: false,
-	},
-});
+);
 const emit = defineEmits<{
 	save: [index: number|null, level: ShapeTraceChannelVerbosity];
 }>();

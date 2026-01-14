@@ -25,21 +25,17 @@
 
 <script setup lang='ts'>
 import { InstallationCheckSudo } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { computed, ComputedRef, PropType } from 'vue';
+import { computed, type ComputedRef } from 'vue';
 
 import ErrorStepperActions
 	from '@/components/install/errors/ErrorStepperActions.vue';
 
-const model = defineModel({
+const model = defineModel<InstallationCheckSudo>({
 	required: true,
-	type: Object as PropType<InstallationCheckSudo>,
 });
-const componentProps = defineProps({
-	index: {
-		type: Number,
-		required: true,
-	},
-});
+const componentProps = defineProps<{
+	index: number;
+}>();
 const invalidCommand: ComputedRef<string> = computed((): string => `echo "${model.value.user} ALL=(ALL) NOPASSWD:ALL" | sudo tee -a /etc/sudoers.d/iqaros-webapp >/dev/null`);
 const missingCommand: string = 'su\napt-get install sudo';
 </script>

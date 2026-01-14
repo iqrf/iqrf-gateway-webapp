@@ -32,25 +32,25 @@ import {
 	NetworkConnectionType,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import { mdiWrenchCog } from '@mdi/js';
-import { computed, type ComputedRef, type PropType } from 'vue';
+import { computed, type ComputedRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import SelectInput from '@/components/layout/form/SelectInput.vue';
 import { type SelectItem } from '@/types/vuetify';
 
 /// Model value
-const modelValue = defineModel({
-	type: [String, null] as PropType<IPv4ConfigurationMethod | null>,
+const modelValue = defineModel<IPv4ConfigurationMethod | null>({
 	required: true,
 });
 /// Define props
-const componentProps = defineProps({
-	type: {
-		type: [String, null] as PropType<NetworkConnectionType | null>,
-		default: null,
-		required: false,
+const componentProps = withDefaults(
+	defineProps<{
+		type?: NetworkConnectionType | null;
+	}>(),
+	{
+		type: null,
 	},
-});
+);
 
 const i18n = useI18n();
 /// Network interface items

@@ -31,12 +31,9 @@ limitations under the License.
 import { computed } from 'vue';
 
 /// Signal strength indicator props
-const componentProps = defineProps({
-	signal: {
-		type: Number,
-		required: true,
-	},
-});
+const componentProps = defineProps<{
+	signal: number;
+}>();
 
 /// Indicator color
 const color = computed(() => {

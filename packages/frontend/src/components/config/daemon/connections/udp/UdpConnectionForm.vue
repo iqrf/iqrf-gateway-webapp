@@ -118,7 +118,7 @@ import {
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import {
-	computed, type PropType, ref, type Ref,
+	computed, ref, type Ref,
 	type TemplateRef, useTemplateRef, watchEffect,
 } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -129,24 +129,22 @@ import NumberInput from '@/components/layout/form/NumberInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
-const componentProps = defineProps({
-	action: {
-		type: String as PropType<Action>,
-		default: Action.Add,
-		required: false,
-	},
-	connectionProfile: {
-		type: Object as PropType<IqrfGatewayDaemonUdpMessaging>,
-		default: () => ({
+const componentProps = withDefaults(
+	defineProps<{
+		action?: Action.Add | Action.Edit;
+		connectionProfile?: IqrfGatewayDaemonUdpMessaging;
+	}>(),
+	{
+		action: Action.Add,
+		connectionProfile: (): IqrfGatewayDaemonUdpMessaging => ({
 			component: IqrfGatewayDaemonComponentName.IqrfUdpMessaging,
 			instance: '',
 			LocalPort: 55_000,
 			RemotePort: 55_300,
 			deviceRecordExpiration: 300,
 		}),
-		required: false,
 	},
-});
+);
 const emit = defineEmits<{
 	saved: [];
 }>();

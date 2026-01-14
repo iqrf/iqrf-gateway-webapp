@@ -39,11 +39,9 @@ limitations under the License.
 
 <script setup lang='ts'>
 import { UserThemePreference } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { type PropType } from 'vue';
 
 /// Model value
-const modelValue = defineModel({
-	type: String as PropType<UserThemePreference>,
+const modelValue = defineModel<UserThemePreference>({
 	required: true,
 });
 </script>

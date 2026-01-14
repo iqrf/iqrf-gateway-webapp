@@ -27,17 +27,16 @@ limitations under the License.
 <script lang='ts' setup>
 import { UserSessionExpiration } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { mdiAccountClock } from '@mdi/js';
-import { computed, ComputedRef, PropType } from 'vue';
+import { computed, type ComputedRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import SelectInput from '@/components/layout/form/SelectInput.vue';
 import { SelectItem } from '@/types/vuetify';
 
 /// Model value
-const modelValue = defineModel({
+const modelValue = defineModel<UserSessionExpiration>({
 	default: UserSessionExpiration.Default,
 	required: true,
-	type: String as PropType<UserSessionExpiration>,
 });
 /// Internationalization instance
 const i18n = useI18n();

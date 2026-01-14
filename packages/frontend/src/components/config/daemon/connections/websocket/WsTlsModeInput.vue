@@ -29,13 +29,12 @@ limitations under the License.
 import { ShapeWebsocketTlsMode } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { ISelectInput } from '@iqrf/iqrf-vue-ui';
 import { mdiSendLock } from '@mdi/js';
-import { computed, PropType } from 'vue';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { SelectItem } from '@/types/vuetify';
 
-const modelValue = defineModel({
-	type: String as PropType<ShapeWebsocketTlsMode>,
+const modelValue = defineModel<ShapeWebsocketTlsMode | undefined>({
 	required: true,
 });
 

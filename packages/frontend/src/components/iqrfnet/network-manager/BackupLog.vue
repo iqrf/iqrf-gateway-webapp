@@ -52,26 +52,14 @@ limitations under the License.
 
 <script lang='ts' setup>
 import { Action, ComponentState, IActionBtn, ICard, IModalWindow } from '@iqrf/iqrf-vue-ui';
-import { type PropType, ref, Ref } from 'vue';
+import { ref, type Ref } from 'vue';
 
-defineProps({
-	messages: {
-		type: Array as PropType<string[]>,
-		required: true,
-	},
-	progress: {
-		type: Number,
-		required: true,
-	},
-	componentState: {
-		type: String as PropType<ComponentState>,
-		required: true,
-	},
-	dataLen: {
-		type: Number,
-		required: true,
-	},
-});
+defineProps<{
+	messages: string[];
+	progress: number;
+	componentState: ComponentState;
+	dataLen: number;
+}>();
 const emit = defineEmits<{
   generateBackup: [];
 }>();

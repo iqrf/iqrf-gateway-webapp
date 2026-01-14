@@ -40,13 +40,14 @@ import { useThemeStore } from '@/store/theme';
 import { Theme } from '@/types/theme';
 
 /// Component props
-defineProps({
-	mobile: {
-		type: Boolean,
-		required: false,
-		default: false,
+withDefaults(
+	defineProps<{
+		mobile?: boolean;
+	}>(),
+	{
+		mobile: false,
 	},
-});
+);
 const themeStore = useThemeStore();
 const { getTheme: currentTheme } = storeToRefs(themeStore);
 const themeSwitch: Ref<boolean> = ref(false);

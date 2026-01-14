@@ -39,7 +39,6 @@ import {
 	IDeleteModalWindow,
 } from '@iqrf/iqrf-vue-ui';
 import {
-	type PropType,
 	ref,
 	type Ref,
 	type TemplateRef,
@@ -50,18 +49,17 @@ import { toast } from 'vue3-toastify';
 
 import { useApiClient } from '@/services/ApiClient';
 
-const componentProps = defineProps({
-	profile: {
-		type: Object as PropType<IqrfGatewayDaemonMapping>,
-		required: true,
+const componentProps = withDefaults(
+	defineProps<{
+		/// Device profile mapping to delete
+		profile: IqrfGatewayDaemonMapping;
+		/// Disable delete dialog activator
+		disabled?: boolean;
+	}>(),
+	{
+		disabled: false,
 	},
-	disabled: {
-		type: Boolean,
-		required: false,
-		default: false,
-	},
-});
-
+);
 const emit = defineEmits<{
 	deleted: [];
 }>();

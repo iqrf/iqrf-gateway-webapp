@@ -123,13 +123,14 @@ interface TaskImportResult {
 	imported?: boolean;
 	reason?: string;
 }
-defineProps({
-	disabled: {
-		type: Boolean,
-		required: false,
-		default: false,
+withDefaults(
+	defineProps<{
+		disabled?: boolean;
+	}>(),
+	{
+		disabled: false,
 	},
-});
+);
 const emit = defineEmits<{
 	imported: [];
 }>();

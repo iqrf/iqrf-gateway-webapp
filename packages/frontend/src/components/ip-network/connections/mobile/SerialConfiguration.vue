@@ -39,11 +39,9 @@ import {
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import { ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiSerialPort } from '@mdi/js';
-import { type PropType } from 'vue';
 
 /// Network connection configuration
-const configuration = defineModel({
-	type: Object as PropType<NetworkConnectionConfiguration>,
+const configuration = defineModel<NetworkConnectionConfiguration>({
 	required: true,
 });
 </script>

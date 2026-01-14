@@ -64,7 +64,7 @@ import {
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiWifi } from '@mdi/js';
-import { type PropType, watch } from 'vue';
+import { watch } from 'vue';
 
 import LeapConfigurationFields
 	from '@/components/ip-network/connections/wifi/LeapConfiguration.vue';
@@ -76,8 +76,7 @@ import WpaPskConfiguration
 	from '@/components/ip-network/connections/wifi/WpaPskConfiguration.vue';
 
 /// Network connection configuration
-const configuration = defineModel({
-	type: Object as PropType<NetworkConnectionConfiguration>,
+const configuration = defineModel<NetworkConnectionConfiguration>({
 	required: true,
 });
 

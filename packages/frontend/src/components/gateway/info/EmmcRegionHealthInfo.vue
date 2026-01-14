@@ -31,16 +31,12 @@ limitations under the License.
 <script lang='ts' setup>
 import { computed } from 'vue';
 
-const componentProps = defineProps({
-	regionName: {
-		type: String,
-		required: true,
-	},
-	regionHealth: {
-		type: Number,
-		required: true,
-	},
-});
+const componentProps = defineProps<{
+	/// EMMC region name
+	regionName: string;
+	/// EMMC region health in percentage
+	regionHealth: number;
+}>();
 
 const color = computed(() => {
 	if (componentProps.regionHealth <= 10) {

@@ -35,19 +35,19 @@ limitations under the License.
 
 <script lang='ts' setup>
 import { type FileSystemUsage } from '@iqrf/iqrf-gateway-webapp-client/types/Gateway';
-import { computed, type PropType } from 'vue';
+import { computed } from 'vue';
 
-const componentProps = defineProps({
-	usage: {
-		type: Object as PropType<FileSystemUsage>,
-		required: true,
+const componentProps = withDefaults(
+	defineProps<{
+		/// File system usage information
+		usage: FileSystemUsage;
+		/// Is the last item in the list
+		last?: boolean;
+	}>(),
+	{
+		last: false,
 	},
-	last: {
-		type: Boolean,
-		default: false,
-		required: false,
-	},
-});
+);
 
 const color = computed(() => {
 	const percentage = Number.parseFloat(

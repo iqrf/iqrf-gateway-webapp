@@ -81,13 +81,14 @@ import { toast } from 'vue3-toastify';
 import { useLocaleStore } from '@/store/locale';
 
 /// Component props
-defineProps({
-	mobile: {
-		type: Boolean,
-		required: false,
-		default: false,
+withDefaults(
+	defineProps<{
+		mobile?: boolean;
+	}>(),
+	{
+		mobile: false,
 	},
-});
+);
 const i18n = useI18n();
 const localeStore = useLocaleStore();
 const {

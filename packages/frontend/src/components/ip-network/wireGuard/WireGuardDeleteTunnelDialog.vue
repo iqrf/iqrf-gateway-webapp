@@ -42,7 +42,6 @@ import {
 	IDeleteModalWindow,
 } from '@iqrf/iqrf-vue-ui';
 import {
-	type PropType,
 	ref,
 	type Ref,
 	type TemplateRef,
@@ -54,12 +53,9 @@ import { toast } from 'vue3-toastify';
 import { useApiClient } from '@/services/ApiClient';
 
 /// Component properties
-const componentProps = defineProps({
-	tunnel: {
-		type: Object as PropType<WireGuardTunnelListEntry>,
-		required: true,
-	},
-});
+const componentProps = defineProps<{
+	tunnel: WireGuardTunnelListEntry;
+}>();
 /// Define emit events
 const emit = defineEmits<{
 	deleted: [];

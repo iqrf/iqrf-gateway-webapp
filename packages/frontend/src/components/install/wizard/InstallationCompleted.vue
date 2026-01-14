@@ -47,12 +47,10 @@ import { useRouter } from 'vue-router';
 
 import { useInstallStore } from '@/store/install';
 
-const componentProps = defineProps({
-	index: {
-		type: Number,
-		required: true,
-	},
-});
+const componentProps = defineProps<{
+	/// Step index
+	index: number;
+}>();
 const installStore = useInstallStore();
 const router = useRouter();
 

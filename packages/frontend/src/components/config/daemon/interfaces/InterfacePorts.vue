@@ -66,19 +66,16 @@ import {
 	IDataTable,
 	IDataTableAction,
 } from '@iqrf/iqrf-vue-ui';
-import { computed, onMounted, type PropType, ref, type Ref } from 'vue';
+import { computed, onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { useDisplay } from 'vuetify';
 
 import { useApiClient } from '@/services/ApiClient';
 
-const componentProps = defineProps({
-	interfaceType: {
-		type: String as PropType<IqrfInterfaceType>,
-		required: true,
-	},
-});
+const componentProps = defineProps<{
+	interfaceType: IqrfInterfaceType;
+}>();
 const emit = defineEmits<{
 	apply: [iface: string];
 }>();

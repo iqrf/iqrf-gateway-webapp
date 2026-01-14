@@ -145,7 +145,9 @@ import {
 	IPv6ConfigurationMethod,
 	type NetworkConnectionConfiguration,
 	NetworkConnectionType,
-	type NetworkInterfaceType, WifiMode, WifiSecurityType,
+	type NetworkInterfaceType,
+	WifiMode,
+	WifiSecurityType,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import { IpNetworkUtils } from '@iqrf/iqrf-gateway-webapp-client/utils';
 import {
@@ -160,8 +162,12 @@ import {
 } from '@iqrf/iqrf-vue-ui';
 import { mdiContentSave, mdiTextShort } from '@mdi/js';
 import {
-	computed, type PropType, ref, type Ref,
-	type TemplateRef, useTemplateRef, watch,
+	computed,
+	ref,
+	type Ref,
+	type TemplateRef,
+	useTemplateRef,
+	watch,
 } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
@@ -185,25 +191,20 @@ import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
 /// Define props
-const componentProps = defineProps({
-	/// Action type - add or edit
-	action: {
-		type: String as PropType<Action>,
-		required: true,
+const componentProps = withDefaults(
+	defineProps<{
+		/// Action type - add or edit
+		action: Action.Add | Action.Edit;
+		/// Network connection type
+		type?: NetworkConnectionType | null;
+		/// Network connection UUID
+		uuid?: string | null;
+	}>(),
+	{
+		type: null,
+		uuid: null,
 	},
-	/// Network connection type
-	type: {
-		type: [String, null] as PropType<NetworkConnectionType | null>,
-		default: null,
-		required: false,
-	},
-	/// Network connection UUID
-	uuid: {
-		type: [String, null] as PropType<string | null>,
-		required: false,
-		default: null,
-	},
-});
+);
 /// Define emits
 const emit = defineEmits<{
 	change: [];

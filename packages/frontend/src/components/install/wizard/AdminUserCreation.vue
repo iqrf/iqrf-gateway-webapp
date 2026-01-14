@@ -131,12 +131,10 @@ import { useApiClient } from '@/services/ApiClient';
 import { useInstallStore } from '@/store/install';
 import { useUserStore } from '@/store/user';
 
-const componentProps = defineProps({
-	index: {
-		type: Number,
-		required: true,
-	},
-});
+const componentProps = defineProps<{
+	/// Step index
+	index: number;
+}>();
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const urlBuilder = new UrlBuilder();
 const installStore = useInstallStore();

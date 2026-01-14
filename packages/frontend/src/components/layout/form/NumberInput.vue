@@ -44,20 +44,18 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { computed, type PropType } from 'vue';
+import { computed } from 'vue';
 
-const componentProps = defineProps({
-	label: {
-		type: String,
-		default: '',
-		required: false,
+const componentProps = withDefaults(
+	defineProps<{
+		label?: string;
+		description?: string | null;
+	}>(),
+	{
+		label: '',
+		description: null,
 	},
-	description: {
-		type: [String, null] as PropType<string | null>,
-		default: null,
-		required: false,
-	},
-});
+);
 
 const showHint = computed(() => componentProps.description !== null && componentProps.description.length > 0);
 </script>

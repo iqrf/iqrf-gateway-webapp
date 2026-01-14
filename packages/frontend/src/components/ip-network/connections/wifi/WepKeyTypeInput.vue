@@ -31,15 +31,14 @@ import {
 	WepKeyType,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import { mdiKey } from '@mdi/js';
-import { computed, type ComputedRef, type PropType } from 'vue';
+import { computed, type ComputedRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import SelectInput from '@/components/layout/form/SelectInput.vue';
 import { type SelectItem } from '@/types/vuetify';
 
 /// Model value
-const modelValue = defineModel({
-	type: [String, null] as PropType<WepKeyType | null>,
+const modelValue = defineModel<WepKeyType | null>({
 	required: true,
 });
 
