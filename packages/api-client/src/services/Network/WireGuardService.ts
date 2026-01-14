@@ -138,14 +138,14 @@ export class WireGuardService extends BaseService {
 			'/network/wireguard/peers',
 			this.serializePeer(peer),
 		);
-		return this.deserializePeer(response.data);
+		return response.data;
 	}
 
 	/**
-	 * Removes existing WireGuard peer
+	 * Deletes existing WireGuard peer
 	 * @param {number} id ID of peer to remove
 	 */
-	public async removePeer(id: number): Promise<void> {
+	public async deletePeer(id: number): Promise<void> {
 		await this.axiosInstance.delete(`/network/wireguard/peers/${id.toString()}`);
 	}
 
@@ -160,7 +160,7 @@ export class WireGuardService extends BaseService {
 			`/network/wireguard/peers/${id.toString()}`,
 			this.serializePeer(peer),
 		);
-		return this.deserializePeer(response.data);
+		return response.data;
 	}
 
 	/**
@@ -170,7 +170,7 @@ export class WireGuardService extends BaseService {
 	 */
 	public async getPeer(id: number): Promise<WireGuardPeer> {
 		const response: AxiosResponse<WireGuardPeer> = await this.axiosInstance.get(`/network/wireguard/peers/${id.toString()}`);
-		return this.deserializePeer(response.data);
+		return response.data;
 	}
 
 	/**
@@ -180,7 +180,7 @@ export class WireGuardService extends BaseService {
 	 */
 	public async getTunnelPeers(tunnelId: number): Promise<WireGuardPeer[]> {
 		const response: AxiosResponse<WireGuardPeer[]> = await this.axiosInstance.get(`/network/wireguard/${tunnelId.toString()}/peers`);
-		return response.data.map((peer) => this.deserializePeer(peer));
+		return response.data;
 	}
 
 	/**
@@ -189,7 +189,7 @@ export class WireGuardService extends BaseService {
 	 */
 	public async getAllPeers(): Promise<WireGuardPeer[]> {
 		const response: AxiosResponse<WireGuardPeer[]> = await this.axiosInstance.get('/network/wireguard/peers');
-		return response.data.map((peer) => this.deserializePeer(peer));
+		return response.data;
 	}
 
 	/**
@@ -200,10 +200,8 @@ export class WireGuardService extends BaseService {
 	private deserializeTunnel(tunnel: WireGuardTunnelConfig): WireGuardTunnelConfig {
 		if (tunnel.ipv4 === undefined) {
 			tunnel.stack = WireGuardIpStack.IPV6;
-			// tunnel.ipv4 = { address: '', prefix: 24 };
 		} else if (tunnel.ipv6 === undefined) {
 			tunnel.stack = WireGuardIpStack.IPV4;
-			// tunnel.ipv6 = { address: '', prefix: 64 };
 		} else {
 			tunnel.stack = WireGuardIpStack.DUAL;
 		}
@@ -227,15 +225,6 @@ export class WireGuardService extends BaseService {
 		delete tunnel.stack;
 		delete tunnel.publicKey;
 		return tunnel;
-	}
-
-	/**
-	 * Deserializes WireGuard peer configuration
-	 * @param {WireGuardPeer} peer WireGuard peer configuration
-	 * @return {WireGuardPeer} Deserialized WireGuard peer configuration
-	 */
-	private deserializePeer(peer: WireGuardPeer): WireGuardPeer {
-		return peer;
 	}
 
 	/**
