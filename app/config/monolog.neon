@@ -28,22 +28,10 @@ monolog:
 	channel:
 		default:
 			handlers:
-				-
-					type: Monolog\Handler\StreamHandler
-					arguments:
-						- %paths.iqrfGatewayWebapp.logDir%/default.log
-						- Monolog\Logger::WARNING
-				-
-					type: Monolog\Handler\PsrHandler
-					arguments:
-						- @monolog.sentryLogger
-						- Monolog\Logger::WARNING
+				- Monolog\Handler\StreamHandler(%paths.iqrfGatewayWebapp.logDir%/default.log, Monolog\Logger::WARNING)
+				- Monolog\Handler\PsrHandler(@monolog.sentryLogger, Monolog\Logger::WARNING)
 		restore:
 			handlers:
-				-
-					type: Monolog\Handler\StreamHandler
-					arguments:
-						- %paths.iqrfGatewayWebapp.logDir%/restore.log
-						- Monolog\Logger::NOTICE
+				- Monolog\Handler\StreamHandler(%paths.iqrfGatewayWebapp.logDir%/restore.log, Monolog\Logger::NOTICE)
 	manager:
 		enabled: true
