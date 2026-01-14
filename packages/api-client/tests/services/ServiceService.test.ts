@@ -1,5 +1,5 @@
 /**
- * Copyright 2023-2025 MICRORISC s.r.o.
+ * Copyright 2023-2026 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -90,38 +90,52 @@ describe('ServiceService', (): void => {
 	});
 
 	test('enable `iqrf-gateway-daemon` service', async (): Promise<void> => {
-		expect.assertions(0);
+		expect.assertions(1);
 		mockedAxios.onPost(`/services/${serviceName}/enable`)
 			.reply(200);
-		await service.enable(serviceName);
+		await expect(service.enable(serviceName)).resolves.not.toThrowError();
+	});
+
+	test('enable and start `iqrf-gateway-daemon` service', async (): Promise<void> => {
+		expect.assertions(1);
+		mockedAxios.onPost(`/services/${serviceName}/enable`, { start: true })
+			.reply(200);
+		await expect(service.enable(serviceName, true)).resolves.not.toThrowError();
 	});
 
 	test('disable `iqrf-gateway-daemon` service', async (): Promise<void> => {
-		expect.assertions(0);
+		expect.assertions(1);
 		mockedAxios.onPost(`/services/${serviceName}/disable`)
 			.reply(200);
-		await service.disable(serviceName);
+		await expect(service.disable(serviceName)).resolves.not.toThrowError();
+	});
+
+	test('disable and stop `iqrf-gateway-daemon` service', async (): Promise<void> => {
+		expect.assertions(1);
+		mockedAxios.onPost(`/services/${serviceName}/disable`, { stop: true })
+			.reply(200);
+		await expect(service.disable(serviceName, true)).resolves.not.toThrowError();
 	});
 
 	test('start `iqrf-gateway-daemon` service', async (): Promise<void> => {
-		expect.assertions(0);
+		expect.assertions(1);
 		mockedAxios.onPost(`/services/${serviceName}/start`)
 			.reply(200);
-		await service.start(serviceName);
+		await expect(service.start(serviceName)).resolves.not.toThrowError();
 	});
 
 	test('stop `iqrf-gateway-daemon` service', async (): Promise<void> => {
-		expect.assertions(0);
+		expect.assertions(1);
 		mockedAxios.onPost(`/services/${serviceName}/stop`)
 			.reply(200);
-		await service.stop(serviceName);
+		await expect(service.stop(serviceName)).resolves.not.toThrowError();
 	});
 
 	test('restart `iqrf-gateway-daemon` service', async (): Promise<void> => {
-		expect.assertions(0);
+		expect.assertions(1);
 		mockedAxios.onPost(`/services/${serviceName}/restart`)
 			.reply(200);
-		await service.restart(serviceName);
+		await expect(service.restart(serviceName)).resolves.not.toThrowError();
 	});
 
 });

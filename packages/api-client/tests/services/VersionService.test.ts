@@ -1,5 +1,5 @@
 /**
- * Copyright 2023-2025 MICRORISC s.r.o.
+ * Copyright 2023-2026 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import { VersionService } from '../../src/services';
 import {
 	type VersionIqrfGatewayDaemon,
 	type VersionIqrfGatewayWebapp,
+	type Versions,
 } from '../../src/types';
 import { mockedAxios, mockedClient } from '../mocks/axios';
 
@@ -32,6 +33,25 @@ describe('VersionService', (): void => {
 
 	beforeEach((): void => {
 		mockedAxios.reset();
+	});
+
+	test('list all versions of IQRF Gateway components', async (): Promise<void> => {
+		expect.assertions(1);
+		const versions: Versions = {
+			'iqrf-cloud-provisioning': 'v0.1.2',
+			'iqrf-gateway-controller': 'v1.5.0',
+			'iqrf-gateway-daemon': 'v2.7.0',
+			'iqrf-gateway-influxdb-bridge': null,
+			'iqrf-gateway-setter': 'v1.5.1',
+			'iqrf-gateway-uploader': 'v1.0.7',
+			'iqrf-gateway-webapp': 'v2.7.0',
+			'mender-client': '3.5.3',
+			'mender-connect': '2.2.1',
+		};
+		mockedAxios.onGet('/version')
+			.reply(200, versions);
+		const actual: Versions = await service.list();
+		expect(actual).toStrictEqual(versions);
 	});
 
 	test('fetch IQRF Gateway Daemon version', async (): Promise<void> => {

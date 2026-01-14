@@ -28,8 +28,12 @@ import {
 	UserLanguage,
 	type UserPasswordChange,
 	type UserPasswordReset,
-	UserRole, UserSessionExpiration,
+	type UserPreferences,
+	UserRole,
+	UserSessionExpiration,
 	type UserSignedIn,
+	UserThemePreference,
+	UserTimeFormatPreference,
 } from '../../src/types';
 import { mockedAxios, mockedClient } from '../mocks/axios';
 
@@ -55,6 +59,14 @@ describe('AccountService', (): void => {
 	 * @var {AccountService} service Account service
 	 */
 	const service: AccountService = new AccountService(mockedClient);
+
+	/**
+	 * @var {UserPreferences} preferences User preferences
+	 */
+	const preferences: UserPreferences = {
+		theme: UserThemePreference.Auto,
+		timeFormat: UserTimeFormatPreference.Auto,
+	};
 
 	/**
 	 * @var {UserInfo} userInfo User information
@@ -147,6 +159,21 @@ describe('AccountService', (): void => {
 		mockedAxios.onPost('/account/passwordRecovery', request)
 			.reply(200);
 		await expect(service.requestPasswordRecovery(request)).resolves.not.toThrowError();
+	});
+
+	test('get user preferences', async (): Promise<void> => {
+		expect.assertions(1);
+		mockedAxios.onGet('/account/preferences')
+			.reply(200, preferences);
+		const actual: UserPreferences = await service.getPreferences();
+		expect(actual).toStrictEqual(preferences);
+	});
+
+	test('update user preferences', async (): Promise<void> => {
+		expect.assertions(1);
+		mockedAxios.onPut('/account/preferences', preferences)
+			.reply(200);
+		await expect(service.updatePreferences(preferences)).resolves.not.toThrowError();
 	});
 
 	test('verify e-mail address - invalid UUID format', async (): Promise<void> => {
