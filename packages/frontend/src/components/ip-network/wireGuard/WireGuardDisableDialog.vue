@@ -17,7 +17,7 @@ limitations under the License.
 
 <template>
 	<WireGuardActionDialog
-		ref='acitonDialogInstance'
+		ref='actionDialogInstance'
 		:enabled='wgListEntry.enabled'
 		:disable-tooltip='$t("components.ipNetwork.wireGuard.tunnels.columns.action.disable")'
 		:enable-tooltip='$t("components.ipNetwork.wireGuard.tunnels.columns.action.enable")'
@@ -42,7 +42,7 @@ import {
 	ComponentState,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiPlayCircleOutline, mdiStopCircleOutline } from '@mdi/js';
-import { type PropType, ref, type Ref, TemplateRef, useTemplateRef } from 'vue';
+import { ref, type Ref, type TemplateRef, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
@@ -52,13 +52,10 @@ import WireGuardActionDialog from './WireGuardActionDialog.vue';
 
 
 /// Component props
-const componentProps = defineProps({
+const componentProps = defineProps<{
 	/// WireGuard tunnel data
-	wgListEntry: {
-		type: Object as PropType<WireGuardTunnelListEntry>,
-		required: true,
-	},
-});
+	wgListEntry: WireGuardTunnelListEntry;
+}>();
 /// Component emits
 const emit = defineEmits<{
 	updateEnableFlag: [tunnelId: number];
@@ -70,7 +67,7 @@ const i18n = useI18n();
 /// Network connection service
 const service: WireGuardService = useApiClient().getNetworkServices().getWireGuardService();
 /// Action dialog component instance
-const acitonDialogInstance: TemplateRef<InstanceType<typeof WireGuardActionDialog>> = useTemplateRef('acitonDialogInstance');
+const actionDialogInstance: TemplateRef<InstanceType<typeof WireGuardActionDialog>> = useTemplateRef('actionDialogInstance');
 
 /**
  * Activates WireGuard tunnel
@@ -105,7 +102,7 @@ async function disable(): Promise<void> {
 		toast.success(
 			i18n.t('components.ipNetwork.wireGuard.tunnels.columns.action.success.disable'),
 		);
-		acitonDialogInstance.value?.close();
+		actionDialogInstance.value?.close();
 		emit('updateEnableFlag', componentProps.wgListEntry.id);
 	} catch {
 		componentState.value = ComponentState.Error;

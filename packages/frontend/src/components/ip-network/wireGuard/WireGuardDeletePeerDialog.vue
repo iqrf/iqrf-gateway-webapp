@@ -42,7 +42,6 @@ import {
 	IDeleteModalWindow,
 } from '@iqrf/iqrf-vue-ui';
 import {
-	type PropType,
 	ref,
 	type Ref,
 	type TemplateRef,
@@ -54,12 +53,10 @@ import { toast } from 'vue3-toastify';
 import { useApiClient } from '@/services/ApiClient';
 
 /// Component properties
-const componentProps = defineProps({
-	peer: {
-		type: Object as PropType<WireGuardPeer>,
-		required: true,
-	},
-});
+const componentProps = defineProps<{
+	/// WireGuard peer to delete
+	peer: WireGuardPeer;
+}>();
 /// Define emit events
 const emit = defineEmits<{
 	deleted: [peerId: number];

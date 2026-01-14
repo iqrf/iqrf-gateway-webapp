@@ -43,7 +43,7 @@ limitations under the License.
 		>
 			<ICard>
 				<template #title>
-					<span>{{ $t("components.ipNetwork.wireGuard.tunnels.configuration.title") }}</span>
+					{{ $t("components.ipNetwork.wireGuard.tunnels.configuration.title") }}
 				</template>
 				<v-alert
 					v-if='componentState === ComponentState.FetchFailed'
@@ -127,11 +127,7 @@ limitations under the License.
 							@click='editKeys = !editKeys'
 						/>
 					</div>
-					<v-select
-						v-model='wgConfig.stack'
-						:label='$t("components.ipNetwork.wireGuard.tunnels.configuration.form.stack")'
-						:items='stackSelecOptions'
-					/>
+					<WireGuardIpStackSelect v-model='wgConfig.stack' />
 					<WireGuardIpConfig
 						v-if='WireGuardIpStack.IPV6 !== wgConfig.stack'
 						record-id='TunnelIPv4'
@@ -187,35 +183,60 @@ limitations under the License.
 	</IModalWindow>
 </template>
 
-<script setup lang='ts'>
-import { WireGuardIpStack, WireGuardTunnelConfig } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
-import { Action, ComponentState, IActionBtn, ICard, IDataTableAction, IModalWindow, INumberInput, ITextInput, ValidationRules } from '@iqrf/iqrf-vue-ui';
+<script setup lang="ts">
+import {
+	WireGuardIpStack,
+	WireGuardTunnelConfig,
+} from '@iqrf/iqrf-gateway-webapp-client/types/Network';
+import {
+	Action,
+	ComponentState,
+	IActionBtn,
+	ICard,
+	IDataTableAction,
+	IModalWindow,
+	INumberInput,
+	ITextInput,
+	ValidationRules,
+} from '@iqrf/iqrf-vue-ui';
 import { mdiClipboard, mdiContentSave, mdiUploadOutline } from '@mdi/js';
-import { computed, onMounted, type PropType, ref, type Ref, TemplateRef, useTemplateRef, watch } from 'vue';
+import {
+	computed,
+	onMounted,
+	ref,
+	type Ref,
+	type TemplateRef,
+	useTemplateRef,
+	watch,
+} from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
 
+import WireGuardGenerateKeyDialog from '@/components/ip-network/wireGuard/WireGuardGenerateKeyDialog.vue';
+import WireGuardIpConfig from '@/components/ip-network/wireGuard/WireGuardIpConfig.vue';
+import WireGuardIpStackSelect from '@/components/ip-network/wireGuard/WireGuardIpStackSelect.vue';
 import { useApiClient } from '@/services/ApiClient';
 
-import WireGuardGenerateKeyDialog from './WireGuardGenerateKeyDialog.vue';
-import WireGuardIpConfig from './WireGuardIpConfig.vue';
-
 /// Define props
-const componentProps = defineProps({
-	action: {
-		type: String as PropType<Action>,
-		required: true,
+const componentProps = withDefaults(
+	defineProps<{
+		/// Action type (add/edit)
+		action: Action.Add | Action.Edit;
+		/// Tunnel ID for edit action
+		tunnelId?: number | null;
+	}>(),
+	{
+		tunnelId: null,
 	},
-	tunnelId: {
-		type: [Number, null] as PropType<number | null>,
-		required: false,
-		default: null,
-	},
-});
+);
 
 const emit = defineEmits<{
-	updateTunnel: [tunnel: WireGuardTunnelConfig, enabled: boolean, active: boolean];
+	updateTunnel: [
+		tunnel: WireGuardTunnelConfig,
+		enabled: boolean,
+		active: boolean,
+	];
 }>();
 
 /// WireGuard API service
@@ -224,21 +245,6 @@ const service = useApiClient().getNetworkServices().getWireGuardService();
 const showDialog: Ref<boolean> = ref(false);
 /// Form instance
 const form: TemplateRef<VForm> = useTemplateRef('form');
-/// Stack select values
-const stackSelecOptions = [
-	{
-		'title': 'IPv4',
-		'value': WireGuardIpStack.IPV4,
-	},
-	{
-		'title': 'IPv6',
-		'value': WireGuardIpStack.IPV6,
-	},
-	{
-		'title': 'Dual',
-		'value': WireGuardIpStack.DUAL,
-	},
-];
 /// Returns default WireGuard tunnel configuration
 const getDefaultConfig = (): WireGuardTunnelConfig => ({
 	name: '',
@@ -249,7 +255,7 @@ const getDefaultConfig = (): WireGuardTunnelConfig => ({
 	ipv6: { address: '', prefix: 48 },
 	stack: WireGuardIpStack.DUAL,
 });
-/// Wireguard tunnel configuration
+/// WireGuard tunnel configuration
 const wgConfig: Ref<WireGuardTunnelConfig> = ref(getDefaultConfig());
 /// Internationalization instance
 const i18n = useI18n();
@@ -258,9 +264,15 @@ const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 /// Allow editing of key pair
 const editKeys: Ref<boolean> = ref(false);
 /// Shows private key field switch
-const showPrivateKey: Ref<boolean> = computed(() => !!wgConfig.value.privateKey || editKeys.value || componentProps.action === Action.Add);
-/// Show private key warning when the key is dispalyed and present
-const showPrivateKeyWarning: Ref<boolean> = computed(() => !!wgConfig.value.privateKey && showPrivateKey.value);
+const showPrivateKey: Ref<boolean> = computed(
+	() => !!wgConfig.value.privateKey ||
+		editKeys.value ||
+		componentProps.action === Action.Add,
+);
+/// Show private key warning when the key is displayed and present
+const showPrivateKeyWarning: Ref<boolean> = computed(
+	() => !!wgConfig.value.privateKey && showPrivateKey.value,
+);
 /// Generate new key dialog window instance
 const generateKeyDialogInstance: TemplateRef<InstanceType<typeof WireGuardGenerateKeyDialog>> = useTemplateRef('generateKeyDialogInstance');
 
@@ -272,7 +284,7 @@ function closeDialog(): void {
 }
 
 /**
- * Fetches wireguard configuration
+ * Fetches WireGuard configuration
  * @param {number} id - id of record to fetch
  */
 async function fetchConfig(id: number): Promise<void> {
@@ -285,7 +297,7 @@ async function fetchConfig(id: number): Promise<void> {
 
 /**
  * Verifies and saves configuration changes.
- * @param {boolean} enable enable the serice when saved (includes activate)
+ * @param {boolean} enable enable the service when saved (includes activate)
  * @param {boolean} activate activate the service when saved
  */
 async function onSubmit(enable: boolean, activate: boolean): Promise<void> {
@@ -302,12 +314,20 @@ async function onSubmit(enable: boolean, activate: boolean): Promise<void> {
 		} else {
 			response = await service.updateTunnel(wgConfig.value.id!, payload);
 		}
-		if (enable) service.enableTunnel(response.id!);
-		if (activate) service.activateTunnel(response.id!);
+		if (enable) {
+			service.enableTunnel(response.id!);
+		}
+		if (activate) {
+			service.activateTunnel(response.id!);
+		}
 		if (componentProps.action === Action.Add) {
-			toast.success(i18n.t('components.ipNetwork.wireGuard.tunnels.add.messages.success'));
+			toast.success(
+				i18n.t('components.ipNetwork.wireGuard.tunnels.add.messages.success'),
+			);
 		} else {
-			toast.success(i18n.t('components.ipNetwork.wireGuard.tunnels.update.messages.success'));
+			toast.success(
+				i18n.t('components.ipNetwork.wireGuard.tunnels.update.messages.success'),
+			);
 		}
 		emit('updateTunnel', response, enable, activate);
 		componentState.value = ComponentState.Ready;
@@ -318,20 +338,29 @@ async function onSubmit(enable: boolean, activate: boolean): Promise<void> {
 	} catch {
 		componentState.value = ComponentState.Error;
 		if (componentProps.action === Action.Add) {
-			toast.error(i18n.t('components.ipNetwork.wireGuard.tunnels.add.messages.failure'));
+			toast.error(
+				i18n.t('components.ipNetwork.wireGuard.tunnels.add.messages.failure'),
+			);
 		} else {
-			toast.error(i18n.t('components.ipNetwork.wireGuard.tunnels.update.messages.failure'));
+			toast.error(
+				i18n.t('components.ipNetwork.wireGuard.tunnels.update.messages.failure'),
+			);
 		}
 	}
 }
 
 /**
  * Copy field value to clipboard
- * @param {any} value Value to copy to clipboard.
+ * @param {string} value Value to copy to clipboard.
  */
-function copyToClipboard(value: any): void {
+function copyToClipboard(value: string | undefined): void {
+	if (value === undefined || value === '') {
+		return;
+	}
 	navigator.clipboard.writeText(value);
-	toast.success(i18n.t('components.ipNetwork.wireGuard.tunnels.configuration.form.copyKey'));
+	toast.success(
+		i18n.t('components.ipNetwork.wireGuard.tunnels.configuration.form.copyKey'),
+	);
 }
 
 /**
@@ -346,7 +375,11 @@ async function generateKey(): Promise<void> {
 		wgConfig.value.publicKey = response.publicKey;
 	} catch {
 		componentState.value = ComponentState.Error;
-		toast.error(i18n.t('components.ipNetwork.wireGuard.tunnels.configuration.form.genKeyPair.error'));
+		toast.error(
+			i18n.t(
+				'components.ipNetwork.wireGuard.tunnels.configuration.form.genKeyPair.error',
+			),
+		);
 	}
 }
 
@@ -367,7 +400,9 @@ function resetForm(): void {
 	form.value?.resetValidation();
 }
 
-onMounted(() => {
-	if (componentProps.tunnelId) fetchConfig(componentProps.tunnelId);
+onMounted((): void => {
+	if (componentProps.tunnelId) {
+		fetchConfig(componentProps.tunnelId);
+	}
 });
 </script>

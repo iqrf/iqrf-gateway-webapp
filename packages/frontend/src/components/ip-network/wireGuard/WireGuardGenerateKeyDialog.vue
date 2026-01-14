@@ -73,17 +73,12 @@ import {
 	IModalWindow,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiAutorenew } from '@mdi/js';
-import { computed, ComputedRef, type PropType, ref, type Ref } from 'vue';
-
+import { computed, type ComputedRef, ref, type Ref } from 'vue';
 
 /// Component props
-const componentProps = defineProps({
-	/// WireGuard tunnel data
-	keyExists: {
-		type: Boolean as PropType<boolean>,
-		required: true,
-	},
-});
+const componentProps = defineProps<{
+	keyExists: boolean;
+}>();
 /// Component emits
 const emit = defineEmits<{
 	generateKey: [];

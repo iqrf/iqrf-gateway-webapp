@@ -70,7 +70,7 @@ import {
 	ICard,
 	IDataTable,
 } from '@iqrf/iqrf-vue-ui';
-import { computed, onBeforeMount, PropType, ref, type Ref, watch } from 'vue';
+import { computed, onBeforeMount, ref, type Ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { useApiClient } from '@/services/ApiClient';
@@ -78,12 +78,9 @@ import { useApiClient } from '@/services/ApiClient';
 import WireGuardDeletePeerDialog from './WireGuardDeletePeerDialog.vue';
 import WireGuardPeerForm from './WireGuardPeerForm.vue';
 
-const componentProps = defineProps({
-	tunnels: {
-		type: Array as PropType<WireGuardTunnelListEntry[]>,
-		required: true,
-	},
-});
+const componentProps = defineProps<{
+	tunnels: WireGuardTunnelListEntry[];
+}>();
 
 const i18n = useI18n();
 const service = useApiClient().getNetworkServices().getWireGuardService();
@@ -156,7 +153,7 @@ function removePeer(peerId: number): void {
 watch(
 	() => componentProps.tunnels.map((tunnel) => tunnel.id),
 	(tunnelIds) => {
-		// If tunnels were removed, remove coresponding peers
+		// If tunnels were removed, remove corresponding peers
 		let len = peers.value.length;
 		for (let i = 0; i < len; i++) {
 			if (tunnelIds.includes(peers.value[i].tunnelId)) {
