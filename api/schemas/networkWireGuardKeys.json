@@ -1,6 +1,6 @@
 {
 	"$schema": "http://json-schema.org/draft-07/schema",
-	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/networkConnectionCreated.json",
+	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/networkWireGuardKeys.json",
 	"type": "object",
 	"title": "WireGuard generated key pair",
 	"additionalProperties": false,
@@ -10,16 +10,10 @@
 	],
 	"properties": {
 		"privateKey": {
-			"$id": "#/properties/privateKey",
-			"type": "string",
-			"title": "WireGuard private key",
-			"example": "+DsMmGWks1DawE1yc4UlOI6pbH3XVxdVArj9lLOyD18="
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/wireGuard.json#/definitions/privateKey"
 		},
 		"publicKey": {
-			"$id": "#/properties/publicKey",
-			"type": "string",
-			"title": "WireGuard public key",
-			"example": "2OGuuIWQLKvtVYGntdHSoRb8MtDyKq6wxKd9vQphzDQ="
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/wireGuard.json#/definitions/publicKey"
 		}
 	}
 }

@@ -397,7 +397,7 @@ class WireGuardController extends BaseNetworkController {
 				content:
 					application/json:
 						schema:
-							$ref: '#/components/schemas/networkWireGuardTunnelPeerList'
+							$ref: '#/components/schemas/NetworkWireGuardTunnelPeerList'
 			'403':
 				$ref: '#/components/responses/Forbidden'
 			'404':
@@ -428,7 +428,7 @@ class WireGuardController extends BaseNetworkController {
 				content:
 					application/json:
 						schema:
-							$ref: '#/components/schemas/networkWireGuardTunnelPeerList'
+							$ref: '#/components/schemas/NetworkWireGuardTunnelPeerList'
 			'403':
 				$ref: '#/components/responses/Forbidden'
 			'500':
@@ -476,14 +476,14 @@ class WireGuardController extends BaseNetworkController {
 			content:
 				application/json:
 					schema:
-						$ref: '#/components/schemas/networkWireGuardTunnelPeer'
+						$ref: '#/components/schemas/NetworkWireGuardTunnelPeer'
 		responses:
 			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: '#/components/schemas/networkWireGuardTunnelPeer'
+							$ref: '#/components/schemas/NetworkWireGuardTunnelPeer'
 			'403':
 				$ref: '#/components/responses/Forbidden'
 			'404':
@@ -515,14 +515,14 @@ class WireGuardController extends BaseNetworkController {
 			content:
 				application/json:
 					schema:
-						$ref: '#/components/schemas/networkWireGuardTunnelPeer'
+						$ref: '#/components/schemas/NetworkWireGuardTunnelPeer'
 		responses:
 			'200':
 				description: Success
 				content:
 					application/json:
 						schema:
-							$ref: '#/components/schemas/networkWireGuardTunnelPeer'
+							$ref: '#/components/schemas/NetworkWireGuardTunnelPeer'
 			'403':
 				$ref: '#/components/responses/Forbidden'
 			'404':
@@ -556,7 +556,7 @@ class WireGuardController extends BaseNetworkController {
 				content:
 					application/json:
 						schema:
-							$ref: '#/components/schemas/networkWireGuardTunnelPeer'
+							$ref: '#/components/schemas/NetworkWireGuardTunnelPeer'
 			'403':
 				$ref: '#/components/responses/Forbidden'
 			'404':
