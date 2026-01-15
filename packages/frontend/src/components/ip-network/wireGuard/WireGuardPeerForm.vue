@@ -176,7 +176,7 @@ limitations under the License.
 										@update-ip='updateAllowedIp'
 									/>
 								</v-col>
-								<v-col class='auto'>
+								<v-col cols='auto'>
 									<IActionBtn
 										:text='$t("components.ipNetwork.wireGuard.peers.configuration.form.allowedIps.remove")'
 										:action='Action.Delete'
