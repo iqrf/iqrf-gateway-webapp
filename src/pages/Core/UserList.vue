@@ -205,14 +205,19 @@ export default class UserList extends Vue {
 	];
 
 	/**
-	 * @constant {Array<string>} roles Array of user roles
+	 * @var {UserRole[]} roles Array of roles
 	 */
-	private readonly roles = [
-		UserRole.ADMIN,
-		UserRole.NORMAL,
-		UserRole.BASICADMIN,
-		UserRole.BASIC,
-	];
+	get roles(): UserRole[] {
+		const roles: UserRole[] = [];
+		const roleIdx = Object.values(UserRole).indexOf(this.$store.getters['user/getRole']);
+		for (const item of Object.keys(UserRole)) {
+			const itemIdx = Object.keys(UserRole).indexOf(item);
+			if (itemIdx >= roleIdx) {
+				roles.push(UserRole[item]);
+			}
+		}
+		return roles;
+	}
 
 	/**
 	 * @var {Array<User>} users Array of user objects

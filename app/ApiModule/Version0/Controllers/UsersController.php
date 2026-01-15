@@ -211,6 +211,9 @@ class UsersController extends BaseController {
 		if ($user === null) {
 			throw new ClientErrorException('User not found', ApiResponse::S404_NOT_FOUND);
 		}
+		if (!in_array($user->getRole(), [User::ROLE_BASIC, User::ROLE_BASICADMIN], true)) {
+			self::checkScopes($request, ['users:admin']);
+		}
 		return $response->writeJsonObject($user);
 	}
 
@@ -288,6 +291,9 @@ class UsersController extends BaseController {
 		if ($user === null) {
 			throw new ClientErrorException('User not found', ApiResponse::S404_NOT_FOUND);
 		}
+		if (!in_array($user->getRole(), [User::ROLE_BASIC, User::ROLE_BASICADMIN], true)) {
+			self::checkScopes($request, ['users:admin']);
+		}
 		$this->validator->validateRequest('userEdit', $request);
 		$json = $request->getJsonBodyCopy();
 		if (array_key_exists('username', $json)) {
@@ -297,7 +303,7 @@ class UsersController extends BaseController {
 			$user->setUserName($json['username']);
 		}
 		if (array_key_exists('role', $json)) {
-			if (!in_array($user->getRole(), [User::ROLE_BASIC, User::ROLE_BASICADMIN], true) &&
+			if (!in_array($user->getRole(), [User::ROLE_BASIC, User::ROLE_BASICADMIN], true) ||
 				!in_array($json['role'], [User::ROLE_BASIC, User::ROLE_BASICADMIN], true)) {
 				self::checkScopes($request, ['users:admin']);
 			}
