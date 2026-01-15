@@ -288,7 +288,9 @@ class WireguardManager {
 		$ifPeer->setPort($peer->port);
 		$this->entityManager->persist($ifPeer);
 
-		if ($flush) $this->entityManager->flush();
+		if ($flush) {
+			$this->entityManager->flush();
+		}
 
 		return $ifPeer;
 	}
