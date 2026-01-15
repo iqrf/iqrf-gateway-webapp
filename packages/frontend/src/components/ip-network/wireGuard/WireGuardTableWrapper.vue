@@ -19,6 +19,7 @@ limitations under the License.
 	<WireGuardTunnelsTable
 		class='mb-3'
 		:tunnels='tunnels'
+		:parent-state='componentState'
 		@delete-tunnel='deleteTunnel'
 		@fetch-data='fetchData'
 		@update-active-flag='updateActiveFlag'

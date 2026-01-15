@@ -70,7 +70,7 @@ import {
 	ICard,
 	IDataTable,
 } from '@iqrf/iqrf-vue-ui';
-import { computed, ref, type Ref } from 'vue';
+import { computed, ref, type Ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import BooleanCheckMarker from '@/components/BooleanCheckMarker.vue';
@@ -81,9 +81,11 @@ import WireGuardTunnelForm from '@/components/ip-network/wireGuard/WireGuardTunn
 import WireGuardDeactivateDialog from './WireGuardDeactivateDialog.vue';
 import WireGuardDisableDialog from './WireGuardDisableDialog.vue';
 
-defineProps<{
+const componentProps = defineProps<{
 	/// List of WireGuard tunnels
 	tunnels: WireGuardTunnelListEntry[];
+	/// Parent component state
+	parentState?: ComponentState;
 }>();
 
 const emit = defineEmits<{
@@ -158,4 +160,18 @@ function updateEnableFlag(tunnelId: number): void {
 function updateActiveFlag(tunnelId: number): void {
 	emit('updateActiveFlag', tunnelId);
 }
+
+/**
+ * Watch for changes in parent component state. Needed to update state in this component,
+ * because data fetching is passed to parent compoent via emit. Therefore this component
+ * has no information about state unless it is passed in from parent.
+ */
+watch(
+	() => componentProps.parentState,
+	(parentState) => {
+		if (parentState) {
+			componentState.value = parentState;
+		}
+	},
+);
 </script>
