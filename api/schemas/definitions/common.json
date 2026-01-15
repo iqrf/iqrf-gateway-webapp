@@ -1,0 +1,12 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/common.json",
+	"definitions": {
+		"id": {
+			"$id": "#/definitions/id",
+			"title": "Record ID",
+			"type": "integer",
+			"example": 1
+		}
+	}
+}

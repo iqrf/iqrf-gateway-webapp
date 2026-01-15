@@ -18,16 +18,10 @@
 		],
 		"properties": {
 			"id": {
-				"$id": "#/items/properties/id",
-				"type": "integer",
-				"title": "WireGuard Tunnel ID",
-				"example": 1
+				"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/common.json#/definitions/id"
 			},
 			"name": {
-				"$id": "#/items/properties/name",
-				"type": "string",
-				"title": "WireGuard Tunnel name",
-				"example": "wg0"
+				"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/wireGuard.json#/definitions/name"
 			},
 			"active": {
 				"$id": "#/items/properties/active",
