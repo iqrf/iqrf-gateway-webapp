@@ -1,6 +1,6 @@
 {
 	"$schema": "http://json-schema.org/draft-07/schema",
-	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/wireguardTunnel.json",
+	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/networkWireGuardTunnel.json",
 	"type": "object",
 	"title": "New WireGuard VPN tunnel configuration",
 	"examples": [
@@ -46,103 +46,25 @@
 	"additionalProperties": false,
 	"properties": {
 		"id": {
-			"$id": "#/properties/id",
-			"title": "WireGuard interface ID",
-			"type": "integer",
-			"example": 1
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/common.json#/definitions/id"
 		},
 		"name": {
-			"$id": "#/properties/name",
-			"title": "WireGuard interface name",
-			"type": "string",
-			"description": "WireGuard interface is also used as WireGuard tunnel identifier",
-			"example": "wg0"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/wireGuard.json#/definitions/name"
 		},
 		"privateKey": {
-			"$id": "#/properties/privateKey",
-			"title": "WireGuard interface private key",
-			"type": "string",
-			"example": "+DsMmGWks1DawE1yc4UlOI6pbH3XVxdVArj9lLOyD18="
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/wireGuard.json#/definitions/privateKey"
 		},
 		"publicKey": {
-			"$id": "#/properties/publicKey",
-			"title": "wireGuard interface private key",
-			"type": "string",
-			"example": "2OGuuIWQLKvtVYGntdHSoRb8MtDyKq6wxKd9vQphzDQ="
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/wireGuard.json#/definitions/publicKey"
 		},
 		"port": {
-			"$id": "#/properties/port",
-			"title": "WireGuard interface listen port",
-			"type": "integer",
-			"minimum": 0,
-			"maximum": 65535,
-			"example": 58775
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/wireGuard.json#/definitions/port"
 		},
 		"ipv4": {
-			"$id": "#/properties/ipv4",
-			"title": "WireGuard interface IPv4 address object",
-			"type": "object",
-			"required": [
-				"address",
-				"prefix"
-			],
-			"additionalProperties": false,
-			"properties": {
-				"id": {
-					"$id": "#/properties/ipv4/properties/id",
-					"title": "WireGuard interface IPv4 address ID",
-					"type": "integer",
-					"example": 1
-				},
-				"address": {
-					"$id": "#/properties/ipv4/properties/address",
-					"title": "WireGuard interface IPv4 address",
-					"type": "string",
-					"format": "ipv4",
-					"example": "10.0.0.35"
-				},
-				"prefix": {
-					"$id": "#/properties/ipv4/properties/prefix",
-					"title": "WireGuard interface IPv4 address prefix",
-					"type": "integer",
-					"minimum": 1,
-					"maximum": 32,
-					"example": 24
-				}
-			}
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/wireGuard.json#/definitions/ipv4"
 		},
 		"ipv6": {
-			"$id": "#/properties/ipv6",
-			"title": "WireGuard interface IPv6 address object",
-			"type": "object",
-			"required": [
-				"address",
-				"prefix"
-			],
-			"additionalProperties": false,
-			"properties": {
-				"id": {
-					"$id": "#/properties/ipv6/properties/id",
-					"title": "WireGuard interface IPv6 address ID",
-					"type": "integer",
-					"example": 1
-				},
-				"address": {
-					"$id": "#/properties/ipv6/properties/address",
-					"title": "WireGuard interface IPv6 address",
-					"type": "string",
-					"format": "ipv6",
-					"example": "fd86:ea04:1115::35"
-				},
-				"prefix": {
-					"$id": "#/properties/ipv6/properties/prefix",
-					"title": "WireGuard interface IPv6 address prefix",
-					"type": "integer",
-					"minimum": 48,
-					"maximum": 128,
-					"example": 64
-				}
-			}
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/wireGuard.json#/definitions/ipv6"
 		}
 	}
 }
