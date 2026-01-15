@@ -86,7 +86,7 @@ async function onSubmit(): Promise<void> {
 	}
 	componentState.value = ComponentState.Action;
 	try {
-		await service.removePeer(componentProps.peer.id!);
+		await service.deletePeer(componentProps.peer.id!);
 		componentState.value = ComponentState.Ready;
 		toast.success(
 			i18n.t('components.ipNetwork.wireGuard.peers.delete.messages.success', { name: componentProps.peer.endpoint }),
