@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Copyright 2017-2025 IQRF Tech s.r.o.
- * Copyright 2019-2025 MICRORISC s.r.o.
+ * Copyright 2017-2026 IQRF Tech s.r.o.
+ * Copyright 2019-2026 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ class MailerConfiguration implements JsonSerializable {
 	 * @param string $username SMTP server username
 	 * @param string $password SMTP server password
 	 * @param string $from Sender's e-mail address
-	 * @param string|null $secure SMTP server security type
+	 * @param 'ssl'|'tls'|null $secure SMTP server security type
 	 * @param int $timeout SMTP server connection timeout
 	 * @param array<mixed>|null $context SMTP server context
 	 * @param string|null $clientHost Client hostname
@@ -61,7 +61,20 @@ class MailerConfiguration implements JsonSerializable {
 
 	/**
 	 * Deserializes mailer configuration from JSON
-	 * @param array{enabled: bool, host: string, port: int, username: string, password: string, from: string, secure: ?string, timeout: int, context: ?array<mixed>, clientHost: ?string, persistent: bool, theme: string} $json JSON serialized mailer configuration
+	 * @param array{
+	 *     enabled: bool,
+	 *     host: string,
+	 *     port: int,
+	 *     username: string,
+	 *     password: string,
+	 *     from: string,
+	 *     secure: 'ssl'|'tls'|null,
+	 *     timeout: int,
+	 *     context: ?array<mixed>,
+	 *     clientHost: ?string,
+	 *     persistent: bool,
+	 *     theme: string
+	 * } $json JSON serialized mailer configuration
 	 * @return self Mailer configuration
 	 */
 	public static function jsonDeserialize(array $json): self {
@@ -83,7 +96,20 @@ class MailerConfiguration implements JsonSerializable {
 
 	/**
 	 * Merges the mailer configuration with the default configuration
-	 * @param array{enabled: bool, host: string, port: int, username: string, password: string, from: string, secure: ?string, timeout: int, context: ?array<mixed>, clientHost: ?string, persistent: bool, theme: string}|MailerConfiguration $configuration Mailer configuration
+	 * @param array{
+	 *     enabled: bool,
+	 *     host: string,
+	 *     port: int,
+	 *     username: string,
+	 *     password: string,
+	 *     from: string,
+	 *     secure: 'ssl'|'tls'|null,
+	 *     timeout: int,
+	 *     context: ?array<mixed>,
+	 *     clientHost: ?string,
+	 *     persistent: bool,
+	 *     theme: string,
+	 * }|MailerConfiguration $configuration Mailer configuration
 	 * @return self Merged mailer configuration
 	 */
 	public static function mergeDefaults(array|self $configuration): self {
@@ -121,7 +147,20 @@ class MailerConfiguration implements JsonSerializable {
 
 	/**
 	 * Serializes mailer configuration into JSON
-	 * @return array{enabled: bool, host: string, port: int, username: string, password: string, from: string, secure: ?string, timeout: int, context: ?array<mixed>, clientHost: ?string, persistent: bool, theme: string} JSON serialized mailer configuration
+	 * @return array{
+	 *     enabled: bool,
+	 *     host: string,
+	 *     port: int,
+	 *     username: string,
+	 *     password: string,
+	 *     from: string,
+	 *     secure: 'ssl'|'tls'|null,
+	 *     timeout: int,
+	 *     context: ?array<mixed>,
+	 *     clientHost: ?string,
+	 *     persistent: bool,
+	 *     theme: string,
+	 * } JSON serialized mailer configuration
 	 */
 	public function jsonSerialize(): array {
 		return [

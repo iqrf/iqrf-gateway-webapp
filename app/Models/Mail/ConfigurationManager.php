@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Copyright 2017-2025 IQRF Tech s.r.o.
- * Copyright 2019-2025 MICRORISC s.r.o.
+ * Copyright 2017-2026 IQRF Tech s.r.o.
+ * Copyright 2019-2026 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -102,6 +102,7 @@ class ConfigurationManager {
 			return;
 		}
 		$smtp = new SMTP();
+		$smtp->Timelimit = 5;
 		$options = [
 			'ssl' => [
 				'peer_name' => $configuration->host,
@@ -116,7 +117,7 @@ class ConfigurationManager {
 		if ($configuration->secure === 'ssl') {
 			$this->validateCertificate($configuration);
 		}
-		if (!$smtp->connect($host, $configuration->port, $configuration->timeout, $options)) {
+		if (!$smtp->connect($host, $configuration->port, $this->calculateStepTimeout($configuration), $options)) {
 			$errors = Json::encode($smtp->getError());
 			throw new InvalidSmtpConfigException('Could not connect to the SMTP server. Errors: ' . $errors, InvalidSmtpConfigException::CONNECTION_FAILED, null);
 		}
@@ -157,12 +158,26 @@ class ConfigurationManager {
 	}
 
 	/**
+	 * Calculates timeout for SMTP verification step
+	 * @param MailerConfiguration $configuration Mailer configuration
+	 * @return int Step timeout
+	 */
+	private function calculateStepTimeout(MailerConfiguration $configuration): int {
+		$timeout = $configuration->timeout;
+		if ($timeout > 30) {
+			$timeout = 30;
+		}
+		return (int) ceil($timeout / 4);
+	}
+
+	/**
 	 * Validates the SSL certificate
 	 * @param MailerConfiguration $configuration Mailer configuration
 	 */
 	private function validateCertificate(MailerConfiguration $configuration): void {
 		try {
 			$downloader = new Downloader();
+			$downloader->setTimeout($this->calculateStepTimeout($configuration));
 			$downloader->usingSni(true);
 			$downloader->withVerifyPeer(false);
 			$downloader->withVerifyPeerName(false);
