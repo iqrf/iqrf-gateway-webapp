@@ -330,7 +330,7 @@ function items(): SidebarLink[] {
 					{
 						title: i18n.t('pages.accessControl.users.title'),
 						to: '/access-control/users',
-						roles: [UserRole.Admin, UserRole.BasicAdmin],
+						roles: [UserRole.Admin],
 					},
 					{
 						title: i18n.t('pages.accessControl.apiKeys.title'),

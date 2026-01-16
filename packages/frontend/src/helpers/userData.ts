@@ -35,7 +35,7 @@ export function getLanguageOptions(): ComputedRef<SelectItem[]> {
 
 export function getFilteredRoleOptions(role: UserRole): ComputedRef<SelectItem[]> {
 	return computed(() => {
-		const roles = [UserRole.Admin, UserRole.Normal, UserRole.BasicAdmin, UserRole.Basic];
+		const roles = [UserRole.Admin, UserRole.Normal, UserRole.Basic];
 		if (role !== UserRole.Admin) {
 			roles.splice(0, roles.indexOf(role));
 		}

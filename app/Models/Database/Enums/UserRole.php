@@ -35,10 +35,6 @@ enum UserRole: string {
 	/// Normal role
 	case Normal = 'normal';
 
-
-	/// Basic admin role
-	case BasicAdmin = 'basicadmin';
-
 	/// Basic role
 	case Basic = 'basic';
 

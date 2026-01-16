@@ -195,11 +195,6 @@ class User implements JsonSerializable {
 	 */
 	public function getScopes(): array {
 		$scopes = [];
-		if ($this->role === UserRole::BasicAdmin) {
-			$scopes = array_merge($scopes, [
-				'users:basic',
-			]);
-		}
 		if ($this->role === UserRole::Normal || $this->role === UserRole::Admin) {
 			$scopes = array_merge($scopes, [
 				'clouds',

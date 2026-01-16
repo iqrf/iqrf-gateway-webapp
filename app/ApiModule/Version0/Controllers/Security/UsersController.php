@@ -30,7 +30,6 @@ use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\ControllerValidators;
-use App\ApiModule\Version0\RequestAttributes;
 use App\CoreModule\Models\UserManager;
 use App\Exceptions\InvalidEmailAddressException;
 use App\Exceptions\InvalidPasswordException;
@@ -85,13 +84,8 @@ class UsersController extends BaseSecurityController {
 				$ref: '#/components/responses/Forbidden'
 	EOT)]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['users:admin', 'users:basic']);
-		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
-		$roles = [];
-		if ($user instanceof User && $user->hasScope('users:basic')) {
-			$roles = [UserRole::Basic, UserRole::BasicAdmin];
-		}
-		$response = $response->writeJsonBody($this->manager->list($roles));
+		$this->validators->checkScopes($request, ['users:admin']);
+		$response = $response->writeJsonBody($this->manager->list([]));
 		return $this->validators->validateResponse('userList', $response);
 	}
 
@@ -126,14 +120,10 @@ class UsersController extends BaseSecurityController {
 	EOT)]
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		if ($this->repository->count([]) !== 0) {
-			$this->validators->checkScopes($request, ['users:admin', 'users:basic']);
+			$this->validators->checkScopes($request, ['users:admin']);
 		}
 		$this->validators->validateRequest('userCreate', $request);
 		$json = $request->getJsonBodyCopy();
-		if ($this->repository->count([]) !== 0 &&
-			!in_array($json['role'], [UserRole::Basic->value, UserRole::BasicAdmin->value], true)) {
-			$this->validators->checkScopes($request, ['users:admin']);
-		}
 		try {
 			if ($this->manager->checkUsernameUniqueness($json['username'])) {
 				throw new ClientErrorException('Username is already used', ApiResponse::S409_CONFLICT);
@@ -182,7 +172,7 @@ class UsersController extends BaseSecurityController {
 	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'User ID')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['users:admin', 'users:basic']);
+		$this->validators->checkScopes($request, ['users:admin']);
 		$id = (int) $request->getParameter('id');
 		$user = $this->repository->find($id);
 		if ($user === null) {
@@ -206,14 +196,11 @@ class UsersController extends BaseSecurityController {
 	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'User ID')]
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['users:admin', 'users:basic']);
+		$this->validators->checkScopes($request, ['users:admin']);
 		$id = (int) $request->getParameter('id');
 		$user = $this->repository->find($id);
 		if ($user === null) {
 			throw new ClientErrorException('User not found', ApiResponse::S404_NOT_FOUND);
-		}
-		if (!in_array($user->getRole(), [UserRole::Basic, UserRole::BasicAdmin], true)) {
-			$this->validators->checkScopes($request, ['users:admin']);
 		}
 		$this->entityManager->remove($user);
 		$this->entityManager->flush();
@@ -248,7 +235,7 @@ class UsersController extends BaseSecurityController {
 	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'User ID')]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['users:admin', 'users:basic']);
+		$this->validators->checkScopes($request, ['users:admin']);
 		$id = (int) $request->getParameter('id');
 		$user = $this->repository->find($id);
 		if ($user === null) {
@@ -263,10 +250,6 @@ class UsersController extends BaseSecurityController {
 			$user->setUserName($json['username']);
 		}
 		if (array_key_exists('role', $json)) {
-			if (!in_array($user->getRole(), [UserRole::Basic, UserRole::BasicAdmin], true) &&
-				!in_array($json['role'], [UserRole::Basic->value, UserRole::BasicAdmin->value], true)) {
-				$this->validators->checkScopes($request, ['users:admin']);
-			}
 			if ($user->getRole() === UserRole::Admin &&
 				$this->repository->userCountByRole(UserRole::Admin) === 1 &&
 				$json['role'] !== UserRole::Admin->value) {
@@ -335,7 +318,7 @@ class UsersController extends BaseSecurityController {
 	EOT)]
 	#[RequestParameter(name: 'id', type: 'integer', description: 'User ID')]
 	public function resendVerification(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validators->checkScopes($request, ['users:admin', 'users:basic']);
+		$this->validators->checkScopes($request, ['users:admin']);
 		$id = (int) $request->getParameter('id');
 		$user = $this->repository->find($id);
 		if (!($user instanceof User)) {

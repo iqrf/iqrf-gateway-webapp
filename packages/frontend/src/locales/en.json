@@ -246,7 +246,6 @@
 				"roles": {
 					"admin": "Administrator",
 					"basic": "Basic user",
-					"basicadmin": "Basic admin",
 					"normal": "Normal user"
 				},
 				"state": "State",
@@ -4298,7 +4297,6 @@
 		"roles": {
 			"admin": "Administrator",
 			"basic": "Basic user",
-			"basicadmin": "Basic admin",
 			"normal": "Normal user"
 		},
 		"state": "State",

@@ -52,8 +52,6 @@ export enum UserRole {
 	Admin = 'admin',
 	/// Basic user
 	Basic = 'basic',
-	/// Basic user with user management
-	BasicAdmin = 'basicadmin',
 	/// Normal user
 	Normal = 'normal',
 }

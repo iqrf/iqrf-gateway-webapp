@@ -28,7 +28,7 @@ limitations under the License.
 {
 	"name": "Users",
 	"meta": {
-		"roles": ["admin", "basicadmin"],
+		"roles": ["admin"],
 	},
 }
 </route>

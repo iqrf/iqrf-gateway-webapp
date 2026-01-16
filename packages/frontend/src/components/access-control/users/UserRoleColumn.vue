@@ -41,8 +41,6 @@ const roleColor = computed(() => {
 			return 'deep-purple';
 		case UserRole.Normal:
 			return 'indigo';
-		case UserRole.BasicAdmin:
-			return 'cyan';
 		default:
 			return 'teal';
 	}
@@ -53,8 +51,6 @@ const roleIcon = computed(() => {
 			return mdiShieldAccount;
 		case UserRole.Normal:
 			return mdiAccount;
-		case UserRole.BasicAdmin:
-			return mdiAccountBadge;
 		default:
 			return mdiAccountSearch;
 	}

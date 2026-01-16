@@ -898,7 +898,7 @@
 											"});",
 											"pm.test('Error message is \\'JSON does not validate. ', function () {",
 											"    var jsonData = pm.response.json();",
-											"    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: userCreate Violations:\\n[role] Does not have a value in the enumeration [\\\"admin\\\",\\\"normal\\\",\\\"basicadmin\\\",\\\"basic\\\"]');",
+											"    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: userCreate Violations:\\n[role] Does not have a value in the enumeration [\\\"admin\\\",\\\"normal\\\",\\\"basic\\\"]');",
 											"});"
 										],
 										"type": "text/javascript",

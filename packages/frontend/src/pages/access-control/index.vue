@@ -28,7 +28,7 @@ limitations under the License.
 {
 	"name": "AccessControl",
 	"meta": {
-		"roles": ["admin", "basicadmin"],
+		"roles": ["admin"],
 	},
 }
 </route>
@@ -48,7 +48,7 @@ const links: Ref<DisambiguationLink[]> = ref([
 		title: i18n.t('pages.accessControl.users.title'),
 		description: i18n.t('pages.accessControl.users.description'),
 		to: '/access-control/users',
-		roles: [UserRole.Admin, UserRole.BasicAdmin],
+		roles: [UserRole.Admin],
 	},
 	{
 		title: i18n.t('pages.accessControl.apiKeys.title'),

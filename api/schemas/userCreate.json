@@ -65,7 +65,6 @@
 			"enum": [
 				"admin",
 				"normal",
-				"basicadmin",
 				"basic"
 			],
 			"default": "normal",
