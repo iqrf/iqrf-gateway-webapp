@@ -30,9 +30,10 @@ use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\Signer\Rsa\Sha256 as RsaSha256;
 use Nette\Utils\Strings;
+use SpomkyLabs\Pki\CryptoTypes\AlgorithmIdentifier\AlgorithmIdentifier;
+use SpomkyLabs\Pki\CryptoTypes\AlgorithmIdentifier\Asymmetric\ECPublicKeyAlgorithmIdentifier;
+use SpomkyLabs\Pki\CryptoTypes\Asymmetric\EC\ECPrivateKey;
 use Throwable;
-use const OPENSSL_KEYTYPE_EC;
-use const OPENSSL_KEYTYPE_RSA;
 
 /**
  * JWT configurator
@@ -56,25 +57,23 @@ class JwtConfigurator {
 	 */
 	public function create(): Configuration {
 		try {
-			$privateKey = $this->certificateManager->getPrivateKey()->getPEM();
-			$publicKey = $this->certificateManager->getPublicKey()->getPEM();
-			if ($privateKey === '' || $publicKey === '') {
-				return $this->createFallback();
-			}
+			$privateKey = $this->certificateManager->getPrivateKey()->toPEM();
+			$publicKey = $this->certificateManager->getPublicKey()->toPEM();
 			$parsedKey = $this->certificateManager->getParsedPrivateKey();
-			switch ($parsedKey->getType()) {
-				case OPENSSL_KEYTYPE_RSA:
+			switch ($parsedKey->algorithmIdentifier()->oid()) {
+				case AlgorithmIdentifier::OID_RSA_ENCRYPTION:
 					$signer = new RsaSha256();
 					break;
-				case OPENSSL_KEYTYPE_EC:
-					switch ($parsedKey->getDetail('curve_name')) {
-						case 'prime256v1':
+				case AlgorithmIdentifier::OID_EC_PUBLIC_KEY:
+					$ecKey = ECPrivateKey::fromPEM($privateKey);
+					switch ($ecKey->namedCurve()) {
+						case ECPublicKeyAlgorithmIdentifier::CURVE_PRIME256V1:
 							$signer = new EcdsaSha256();
 							break;
-						case 'secp384r1':
+						case ECPublicKeyAlgorithmIdentifier::CURVE_SECP384R1:
 							$signer = new EcdsaSha384();
 							break;
-						case 'secp521r1':
+						case ECPublicKeyAlgorithmIdentifier::CURVE_SECP521R1:
 							$signer = new EcdsaSha512();
 							break;
 						default:
@@ -84,7 +83,11 @@ class JwtConfigurator {
 				default:
 					return $this->createFallback();
 			}
-			return Configuration::forAsymmetricSigner($signer, InMemory::plainText($privateKey), InMemory::plainText($publicKey));
+			return Configuration::forAsymmetricSigner(
+				signer: $signer,
+				signingKey: InMemory::plainText($privateKey->string()),
+				verificationKey: InMemory::plainText($publicKey->string()),
+			);
 		} catch (Throwable) {
 			return $this->createFallback();
 		}

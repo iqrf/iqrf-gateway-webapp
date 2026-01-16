@@ -20,7 +20,6 @@ declare(strict_types = 1);
 
 namespace App\ApiModule\Version0\Controllers\Security;
 
-use AcmePhp\Ssl\Exception\AcmeSslException;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
@@ -32,6 +31,7 @@ use App\ApiModule\Version0\Controllers\BaseController;
 use App\ApiModule\Version0\Models\ControllerValidators;
 use App\GatewayModule\Exceptions\CertificateNotFoundException;
 use App\GatewayModule\Models\CertificateManager;
+use LogicException;
 
 /**
  * TLS certificate controller
@@ -73,7 +73,7 @@ class CertificateController extends BaseController {
 		try {
 			$response = $response->writeJsonBody($this->manager->getInfo());
 			return $this->validators->validateResponse('certificate', $response);
-		} catch (AcmeSslException $e) {
+		} catch (LogicException $e) {
 			throw new ServerErrorException('Certificate parsing error', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (CertificateNotFoundException $e) {
 			throw new ServerErrorException('Certificate not found', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
