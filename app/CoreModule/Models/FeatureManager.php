@@ -239,7 +239,7 @@ class FeatureManager {
 		}
 
 		return match ($this->gatewayInfo->getProduct()) {
-			'IQD-GW-01', 'IQD-GW-02' => 'https://docs.iqrf.org/iqube/',
+			'IQD-GW-01', 'IQD-GW-02', 'IQD-GW-02A' => 'https://docs.iqrf.org/iqube/',
 			'IQD-GW04' => 'https://docs.iqrf.org/industrial/',
 			default => 'https://docs.iqrf.org/iqrf-gateway/',
 		};
