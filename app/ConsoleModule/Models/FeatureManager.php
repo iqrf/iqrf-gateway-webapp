@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\ConsoleModule\Models;
 
 use App\CoreModule\Models\FeatureManager as CoreFeatureManager;
+use App\GatewayModule\Models\Utils\GatewayInfoUtil;
 use Nette\Localization\Translator;
 
 /**
@@ -31,13 +32,15 @@ class FeatureManager extends CoreFeatureManager {
 	/**
 	 * Constructor
 	 * @param string $path Path to the configuration file
+	 * @param GatewayInfoUtil $gatewayInfo Gateway info util
 	 * @param Translator $translator ITranslator
 	 */
 	public function __construct(
 		string $path,
+		GatewayInfoUtil $gatewayInfo,
 		private readonly Translator $translator,
 	) {
-		parent::__construct($path);
+		parent::__construct($path, $gatewayInfo);
 	}
 
 	/**

@@ -30,7 +30,7 @@ use App\CoreModule\Models\FeatureManager;
 use App\GatewayModule\Exceptions\ChpasswdErrorException;
 use App\GatewayModule\Models\PasswordManager;
 use Iqrf\CommandExecutor\Tester\Traits\CommandExecutorTestCase;
-use Nette\Utils\FileSystem;
+use Mockery;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -95,10 +95,14 @@ final class PasswordManagerTest extends TestCase {
 	protected function setUp(): void {
 		parent::setUp();
 		$this->setUpCommandExecutor();
-		$original = __DIR__ . '/../../../data/features.neon';
-		$path = TMP_DIR . '/features.neon';
-		FileSystem::copy($original, $path);
-		$this->manager = new PasswordManager($this->commandExecutor, new FeatureManager($path));
+		$featureManager = Mockery::mock(FeatureManager::class);
+		$featureManager->shouldReceive('get')
+			->withArgs(['gatewayPass'])
+			->andReturn([
+				'user' => 'root',
+				'enabled' => true,
+			]);
+		$this->manager = new PasswordManager($this->commandExecutor, $featureManager);
 	}
 
 }

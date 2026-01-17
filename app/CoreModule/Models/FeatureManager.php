@@ -21,10 +21,12 @@ declare(strict_types = 1);
 namespace App\CoreModule\Models;
 
 use App\CoreModule\Exceptions\FeatureNotFoundException;
+use App\GatewayModule\Models\Utils\GatewayInfoUtil;
 use Nette\IOException;
 use Nette\Neon\Exception as NeonException;
 use Nette\Neon\Neon;
 use Nette\Utils\FileSystem;
+use Nette\Utils\Strings;
 
 /**
  * Optional feature manager
@@ -115,6 +117,7 @@ class FeatureManager {
 	 */
 	public function __construct(
 		private readonly string $path,
+		private readonly GatewayInfoUtil $gatewayInfo,
 	) {
 	}
 
@@ -135,7 +138,8 @@ class FeatureManager {
 		try {
 			$content = FileSystem::read($this->path);
 			$configuration = Neon::decode($content) ?? [];
-			return array_merge(self::DEFAULTS, $configuration);
+			$docsUrl = ['docs' => ['url' => $this->getDocumentationUrl()]];
+			return array_replace_recursive(self::DEFAULTS, $docsUrl, $configuration);
 		} catch (IOException | NeonException) {
 			return self::DEFAULTS;
 		}
@@ -168,7 +172,11 @@ class FeatureManager {
 		if (!array_key_exists($name, $configuration)) {
 			throw new FeatureNotFoundException();
 		}
-		return $configuration[$name];
+		$feature = $configuration[$name];
+		if ($name === 'docs') {
+			$feature['url'] = $this->getDocumentationUrl();
+		}
+		return $feature;
 	}
 
 	/**
@@ -216,6 +224,25 @@ class FeatureManager {
 	protected function write(array $features): void {
 		$content = Neon::encode($features, blockMode: true);
 		FileSystem::write($this->path, $content);
+	}
+
+	/**
+	 * Gets documentation URL based on the gateway image and product
+	 * @return string Documentation URL based on the gateway image and product
+	 */
+	private function getDocumentationUrl(): string {
+		$imageRegex = '/^(?P<product>industrial|iqaros|iqube|litework)-(?P<variant>armbian|yocto)-(?P<version>v\d+\.\d+\.\d+(-(alpha|beta|rc)\d*)?)$/';
+		$imageMatch = Strings::match($this->gatewayInfo->getImage(), $imageRegex);
+
+		if ($imageMatch['product'] === 'iqaros') {
+			return 'https://iqaros.eu/installation2.html';
+		}
+
+		return match ($this->gatewayInfo->getProduct()) {
+			'IQD-GW-01', 'IQD-GW-02' => 'https://docs.iqrf.org/iqube/',
+			'IQD-GW04' => 'https://docs.iqrf.org/industrial/',
+			default => 'https://docs.iqrf.org/iqrf-gateway/',
+		};
 	}
 
 }

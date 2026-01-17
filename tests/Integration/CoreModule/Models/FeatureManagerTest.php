@@ -28,6 +28,9 @@ namespace Tests\Integration\CoreModule\Models;
 
 use App\CoreModule\Exceptions\FeatureNotFoundException;
 use App\CoreModule\Models\FeatureManager;
+use App\GatewayModule\Models\Utils\GatewayInfoUtil;
+use Mockery;
+use Mockery\Mock;
 use Nette\Utils\FileSystem;
 use Tester\Assert;
 use Tester\Environment;
@@ -51,6 +54,11 @@ final class FeatureManagerTest extends TestCase {
 	private const PATH = TESTER_DIR . '/data/features.neon';
 
 	/**
+	 * @var GatewayInfoUtil&Mock Optional gateway info util
+	 */
+	private GatewayInfoUtil $gatewayInfoUtil;
+
+	/**
 	 * @var FeatureManager Optional feature manager
 	 */
 	private FeatureManager $manager;
@@ -64,7 +72,7 @@ final class FeatureManagerTest extends TestCase {
 	 * Tests the constructor with nonexistent path
 	 */
 	public function testConstructorNonexistent(): void {
-		$manager = new FeatureManager(TMP_DIR . '/nonsense');
+		$manager = new FeatureManager(TMP_DIR . '/nonsense', $this->gatewayInfoUtil);
 		Assert::same(['docs'], $manager->listEnabled());
 	}
 
@@ -148,8 +156,17 @@ final class FeatureManagerTest extends TestCase {
 	 * Sets up the test environment
 	 */
 	protected function setUp(): void {
-		$this->manager = new FeatureManager(self::PATH);
-		$this->managerTemp = new FeatureManager(self::PATH_TEMP);
+		$this->gatewayInfoUtil = Mockery::mock(GatewayInfoUtil::class);
+		$this->gatewayInfoUtil
+			->shouldReceive('getImage')
+			->withNoArgs()
+			->andReturn('iqube-armbian-v1.7.0');
+		$this->gatewayInfoUtil
+			->shouldReceive('getProduct')
+			->withNoArgs()
+			->andReturn('IQD-GW-02');
+		$this->manager = new FeatureManager(self::PATH, $this->gatewayInfoUtil);
+		$this->managerTemp = new FeatureManager(self::PATH_TEMP, $this->gatewayInfoUtil);
 	}
 
 	/**
