@@ -1,6 +1,6 @@
 --- a/debian/control
 +++ b/debian/control
-@@ -14,7 +14,9 @@ Vcs-Browser: https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp
+@@ -14,7 +14,9 @@
  Package: iqrf-gateway-webapp
  Architecture: all
  Depends: ${misc:Depends}, apt, gawk, iproute2,
@@ -8,13 +8,13 @@
 + iqrf-gateway-controller, iqrf-gateway-daemon, iqrf-journal-reader,
 + mender-client, mender-connect, modemmanager, net-tools, network-manager,
 + openssh-client, openssl, passwd,
-  php8.2-common | php8.3-common,
-  php8.2-cli | php8.3-cli,
-  php8.2-curl | php8.3-curl,
-@@ -25,6 +27,6 @@ Depends: ${misc:Depends}, apt, gawk, iproute2,
-  php8.2-sqlite3 | php8.3-sqlite3,
-  php8.2-xml | php8.3-xml,
-  php8.2-zip | php8.3-zip,
+  php8.4-common | php8.3-common | php8.2-common,
+  php8.4-cli | php8.3-cli | php8.2-cli,
+  php8.4-curl | php8.3-curl | php8.2-curl,
+@@ -25,6 +27,6 @@
+  php8.4-sqlite3 | php8.3-sqlite3 | php8.2-sqlite3,
+  php8.4-xml | php8.3-xml | php8.2-xml,
+  php8.4-zip | php8.3-zip | php8.2-zip,
 - procps, nginx | apache2, sudo, systemd, systemd-sysv
 + procps, nginx | apache2, sudo, systemd, systemd-sysv, wireguard-tools
  Description: Web user interface for IQRF Gateway Daemon
