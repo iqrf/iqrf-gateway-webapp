@@ -1,6 +1,6 @@
 --- a/app/config/features.neon
 +++ b/app/config/features.neon
-@@ -15,14 +15,14 @@
+@@ -15,13 +15,13 @@
  
  # apcupsd service
  apcupsd:
@@ -16,7 +16,7 @@
  	user: root
  # Grafana dashboard
  grafana:
-@@ -36,7 +36,7 @@ iqrfCloudProvisioning:
+@@ -35,7 +35,7 @@
  	enabled: false
  # IQRF Gateway Controller configuration
  iqrfGatewayController:
@@ -25,7 +25,16 @@
  # IQRF Gateway InfluxDB Bridge configuration
  iqrfGatewayInfluxdbBridge:
  	enabled: false
-@@ -52,36 +52,36 @@ journal:
+@@ -44,20 +44,20 @@
+ 	enabled: false
+ # IQRF Repository Extension configuration
+ iqrfRepository:
+-	enabled: false
++	enabled: true
+ # Systemd journald configuration
+ journal:
+-	enabled: false
++	enabled: true
  	path: /etc/systemd/journald.conf
  # Mender client configuration
  mender:
@@ -41,11 +50,8 @@
 +	enabled: true
  # Node-RED
  nodeRed:
--	enabled: false
-+	enabled: true
- 	url: /node-red/
- # Remount endpoints
- remount:
+ 	enabled: false
+@@ -67,20 +67,20 @@
  	enabled: false
  # SSH daemon manager
  ssh:
