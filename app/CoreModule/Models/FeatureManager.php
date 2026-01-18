@@ -26,7 +26,6 @@ use Nette\IOException;
 use Nette\Neon\Exception as NeonException;
 use Nette\Neon\Neon;
 use Nette\Utils\FileSystem;
-use Nette\Utils\Strings;
 
 /**
  * Optional feature manager
@@ -231,13 +230,6 @@ class FeatureManager {
 	 * @return string Documentation URL based on the gateway image and product
 	 */
 	private function getDocumentationUrl(): string {
-		$imageRegex = '/^(?P<product>industrial|iqaros|iqube|litework)-(?P<variant>armbian|yocto)-(?P<version>v\d+\.\d+\.\d+(-(alpha|beta|rc)\d*)?)$/';
-		$imageMatch = Strings::match($this->gatewayInfo->getImage(), $imageRegex);
-
-		if ($imageMatch['product'] === 'iqaros') {
-			return 'https://iqaros.eu/installation2.html';
-		}
-
 		return match ($this->gatewayInfo->getProduct()) {
 			'IQD-GW-01', 'IQD-GW-02', 'IQD-GW-02A' => 'https://docs.iqrf.org/iqube/',
 			'IQD-GW04' => 'https://docs.iqrf.org/industrial/',
