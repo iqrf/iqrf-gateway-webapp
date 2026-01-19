@@ -115,7 +115,7 @@ class MailerController extends BaseConfigController {
 			$this->manager->test($configuration);
 			$this->manager->write($configuration);
 			$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
-			if ($user->getEmail() !== null) {
+			if ($user->getEmail() !== null && $configuration->enabled === true) {
 				$this->sender->send($user);
 			}
 			return $response;

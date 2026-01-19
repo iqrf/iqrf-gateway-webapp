@@ -32,8 +32,13 @@ limitations under the License.
 					container-type='card-title'
 					color='primary'
 					:icon='stateButtonIcon'
-					:disabled='[ComponentState.Action, ComponentState.Loading, ComponentState.Reloading, ComponentState.FetchFailed].includes(componentState)'
-					@click='configuration.enabled = !configuration.enabled'
+					:disabled='[
+						ComponentState.Action,
+						ComponentState.Loading,
+						ComponentState.Reloading,
+						ComponentState.FetchFailed,
+					].includes(componentState)'
+					@click='enableFlip()'
 				/>
 				<IActionBtn
 					:action='Action.Reload'
@@ -126,7 +131,10 @@ limitations under the License.
 				<IActionBtn
 					:action='Action.Save'
 					:loading='componentState === ComponentState.Action && smtpAction === SmtpAction.Save'
-					:disabled='!isValid.value || [ComponentState.Loading, ComponentState.Reloading].includes(componentState) || (componentState === ComponentState.Action && smtpAction !== SmtpAction.Save)'
+					:disabled='!isValid.value || [
+						ComponentState.Loading,
+						ComponentState.Reloading,
+					].includes(componentState) || (componentState === ComponentState.Action && smtpAction !== SmtpAction.Save)'
 					type='submit'
 				/>
 				<IActionBtn
@@ -134,7 +142,10 @@ limitations under the License.
 					:icon='mdiEmailFast'
 					:text='$t("components.config.smtp.actions.test")'
 					:loading='componentState === ComponentState.Action && smtpAction === SmtpAction.Test'
-					:disabled='!isValid.value || !configuration.enabled || [ComponentState.Loading, ComponentState.Reloading].includes(componentState) || (componentState === ComponentState.Action && smtpAction !== SmtpAction.Test)'
+					:disabled='!isValid.value || !configuration.enabled || [
+						ComponentState.Loading,
+						ComponentState.Reloading,
+					].includes(componentState) || (componentState === ComponentState.Action && smtpAction !== SmtpAction.Test)'
 					@click='testConfiguration()'
 				/>
 			</template>
@@ -280,5 +291,13 @@ async function testConfiguration(): Promise<void> {
 		);
 	}
 	componentState.value = ComponentState.Ready;
+}
+
+/**
+ * Enables or disables configuration based on curent state and sends it on the backend.
+ */
+async function enableFlip() {
+	configuration.value.enabled = !configuration.value.enabled;
+	onSubmit();
 }
 </script>
