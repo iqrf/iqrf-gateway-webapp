@@ -140,7 +140,7 @@ async function resend(): Promise<void> {
 	min-width: 0;
 	height: 28px;
 	width: 28px;
-	color: currentColor;
+	color: currentcolor;
 	opacity: 0.6;
 	transition: opacity 0.2s ease-in-out;
 
