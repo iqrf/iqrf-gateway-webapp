@@ -1,6 +1,6 @@
 <!--
-Copyright 2017-2025 IQRF Tech s.r.o.
-Copyright 2019-2025 MICRORISC s.r.o.
+Copyright 2017-2026 IQRF Tech s.r.o.
+Copyright 2019-2026 MICRORISC s.r.o.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,9 +17,10 @@ limitations under the License.
 
 <template>
 	<v-alert
-		v-if='isLoggedIn && !isVerified'
+		v-if='isLoggedIn && !isVerified && !closed'
 		type='warning'
 		variant='tonal'
+		class='unverified-email-alert'
 	>
 		<div v-if='hasEmail' class='alert'>
 			{{ $t('components.account.verification.unverified', { email: userEmail }) }}
@@ -46,14 +47,23 @@ limitations under the License.
 				{{ $t('components.account.verification.addEmail') }}
 			</v-btn>
 		</div>
+		<v-btn
+			class='alert-close'
+			:icon='mdiCloseThick'
+			variant='text'
+			size='small'
+			density='compact'
+			aria-label='Close'
+			@click='closeAlert'
+		/>
 	</v-alert>
 </template>
 
 <script lang='ts' setup>
 import { ComponentState } from '@iqrf/iqrf-vue-ui';
-import { mdiEmailFast } from '@mdi/js';
+import { mdiCloseThick, mdiEmailFast } from '@mdi/js';
 import { storeToRefs } from 'pinia';
-import { ref, Ref } from 'vue';
+import { ref, Ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
@@ -73,6 +83,22 @@ const {
 	isVerified,
 	getEmail: userEmail,
 } = storeToRefs(userStore);
+
+/// Warning was closed by user
+const closed = ref(false);
+/// Reopen warning on next login / app reload
+watch(
+	isLoggedIn,
+	(loggedIn) => {
+		if (!loggedIn) {
+			closed.value = false;
+		}
+	},
+);
+
+function closeAlert(): void {
+	closed.value = true;
+}
 
 /**
  * Resends the verification e-mail
@@ -96,9 +122,31 @@ async function resend(): Promise<void> {
 </script>
 
 <style scoped lang='scss'>
+.unverified-email-alert {
+	position: relative;
+}
+
 .alert {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+	padding-right: 28px;
+}
+
+.alert-close {
+	position: absolute;
+	top: 6px;
+	right: 6px;
+	min-width: 0;
+	height: 28px;
+	width: 28px;
+	color: currentColor;
+	opacity: 0.6;
+	transition: opacity 0.2s ease-in-out;
+
+	&:hover,
+	&:focus {
+		opacity: 1;
+	}
 }
 </style>
