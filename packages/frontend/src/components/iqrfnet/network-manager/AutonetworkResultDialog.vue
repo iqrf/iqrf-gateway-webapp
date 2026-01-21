@@ -77,18 +77,7 @@ const emit = defineEmits<{
 const i18n = useI18n();
 const { duration, start, stop, reset } = useDuration();
 const show: Ref<boolean> = ref(false);
-const defaultResult = ref({
-	waves: 0,
-	emptyWaves: 0,
-	wave: 1,
-	totalNodes: 0,
-	newNodes: 0,
-	progress: 0,
-	progressColor: 'success',
-	status: i18n.t('components.iqrfnet.network-manager.autonetwork.result.startMessage'),
-	finished: false,
-});
-const result = ref(structuredClone(defaultResult));
+const result = ref(createDefaultResult());
 const timeString = computed(() => {
 	return new Intl.DateTimeFormat('en-GB', {
 		hour: '2-digit',
@@ -134,10 +123,24 @@ function stopProgress(status: string): void {
 	result.value.finished = true;
 }
 
+function createDefaultResult() {
+	return {
+		waves: 0,
+		emptyWaves: 0,
+		wave: 1,
+		totalNodes: 0,
+		newNodes: 0,
+		progress: 0,
+		progressColor: 'success',
+		status: i18n.t('components.iqrfnet.network-manager.autonetwork.result.startMessage'),
+		finished: false,
+	};
+}
+
 function close(): void {
 	show.value = false;
 	reset();
-	result.value = { ...defaultResult.value };
+	result.value = createDefaultResult();
 	emit('updateDevices');
 }
 
