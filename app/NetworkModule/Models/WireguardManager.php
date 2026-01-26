@@ -26,8 +26,6 @@ use App\Models\Database\Entities\WireguardInterfaceIpv6;
 use App\Models\Database\Entities\WireguardPeer;
 use App\Models\Database\Entities\WireguardPeerAddress;
 use App\Models\Database\EntityManager;
-use App\Models\Database\Repositories\WireguardInterfaceIpv4Repository;
-use App\Models\Database\Repositories\WireguardInterfaceIpv6Repository;
 use App\Models\Database\Repositories\WireguardInterfaceRepository;
 use App\Models\Database\Repositories\WireguardPeerRepository;
 use App\NetworkModule\Entities\MultiAddress;
@@ -55,16 +53,6 @@ class WireguardManager {
 	private const TMP_DIR = '/tmp/wireguard/';
 
 	/**
-	 * @var WireguardInterfaceIpv4Repository WireGuard interface IPv4 repository
-	 */
-	private readonly WireguardInterfaceIpv4Repository $interfaceIpv4Repository;
-
-	/**
-	 * @var WireguardInterfaceIpv6Repository WireGuard interface IPv6 repository
-	 */
-	private readonly WireguardInterfaceIpv6Repository $interfaceIpv6Repository;
-
-	/**
 	 * @var WireguardInterfaceRepository WireGuard interface repository
 	 */
 	private readonly WireguardInterfaceRepository $interfaceRepository;
@@ -85,8 +73,6 @@ class WireguardManager {
 		private readonly EntityManager $entityManager,
 		private readonly ServiceManager $serviceManager,
 	) {
-		$this->interfaceIpv4Repository = $this->entityManager->getWireguardInterfaceIpv4Repository();
-		$this->interfaceIpv6Repository = $this->entityManager->getWireguardInterfaceIpv6Repository();
 		$this->interfaceRepository = $this->entityManager->getWireguardInterfaceRepository();
 		$this->peerRepository = $this->entityManager->getWireguardPeerRepository();
 	}
