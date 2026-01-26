@@ -328,7 +328,7 @@ function updateAllowedIp(index: string | number, value: WireGuardIpAddress, type
 	if (type === WireGuardIpStack.IPV4) {
 		peerConfig.value.allowedIPs.ipv4[index].address = value.address;
 		peerConfig.value.allowedIPs.ipv4[index].prefix = value.prefix;
-	} else if (WireGuardIpStack.IPV6) {
+	} else if (type === WireGuardIpStack.IPV6) {
 		peerConfig.value.allowedIPs.ipv6[index].address = value.address;
 		peerConfig.value.allowedIPs.ipv6[index].prefix = value.prefix;
 	} else {
