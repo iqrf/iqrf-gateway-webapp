@@ -174,6 +174,14 @@ limitations under the License.
 								</div>
 							</td>
 						</tr>
+						<tr v-if='info?.emmcHealth'>
+							<td>
+								<strong>{{ $t('components.gateway.information.emmcHealth.emmcHealth') }}</strong>
+							</td>
+							<td>
+								<EmmcHealthInfo :emmc-health='info.emmcHealth' />
+							</td>
+						</tr>
 						<tr v-if='info?.memoryUsage'>
 							<td>
 								<strong>{{ $t('components.gateway.information.usages.memory') }}</strong>
@@ -221,14 +229,6 @@ limitations under the License.
 							</td>
 							<td>
 								<DaemonModeInfo />
-							</td>
-						</tr>
-						<tr v-if='info?.emmcHealth'>
-							<td>
-								<strong>{{ $t('components.gateway.information.emmcHealth.emmcHealth') }}</strong>
-							</td>
-							<td>
-								<EmmcHealthInfo :emmc-health='info.emmcHealth' />
 							</td>
 						</tr>
 					</tbody>

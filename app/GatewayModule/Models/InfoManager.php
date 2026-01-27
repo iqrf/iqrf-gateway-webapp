@@ -272,8 +272,8 @@ class InfoManager {
 	 */
 	public function getEmmcHealth(): ?array {
 		$command = 'mmc extcsd read /dev/mmcblk0 | grep -e EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_A -e EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_B -e EXT_CSD_PRE_EOL_INFO';
-		$output = $this->commandManager->run($command)->getStdout();
-		if (strlen($output) === 0) {
+		$output = $this->commandManager->run($command, true)->getStdout();
+		if ($output === '') {
 			return null;
 		}
 		$segments = explode(PHP_EOL, $output);

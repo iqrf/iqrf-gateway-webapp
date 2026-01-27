@@ -393,6 +393,7 @@ final class InfoManagerTest extends TestCase {
 	public function testGetEmmcHealthOk(): void {
 		$this->receiveCommand(
 			command: self::COMMANDS['emmcHealth'],
+			needSudo: true,
 			stdout: 'eMMC Life Time Estimation A [EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_A]: 0x01' . PHP_EOL .
 					'eMMC Life Time Estimation B [EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_B]: 0x01' . PHP_EOL .
 					'eMMC Pre EOL information [EXT_CSD_PRE_EOL_INFO]: 0x01',
@@ -406,6 +407,7 @@ final class InfoManagerTest extends TestCase {
 	public function testGetEmmcHealthWarning(): void {
 		$this->receiveCommand(
 			command: self::COMMANDS['emmcHealth'],
+			needSudo: true,
 			stdout: 'eMMC Life Time Estimation A [EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_A]: 0x08' . PHP_EOL .
 					'eMMC Life Time Estimation B [EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_B]: 0x08' . PHP_EOL .
 					'eMMC Pre EOL information [EXT_CSD_PRE_EOL_INFO]: 0x02',
@@ -423,6 +425,7 @@ final class InfoManagerTest extends TestCase {
 	public function testGetEmmcHealthUrgent(): void {
 		$this->receiveCommand(
 			command: self::COMMANDS['emmcHealth'],
+			needSudo: true,
 			stdout: 'eMMC Life Time Estimation A [EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_A]: 0x09' . PHP_EOL .
 					'eMMC Life Time Estimation B [EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_B]: 0x09' . PHP_EOL .
 					'eMMC Pre EOL information [EXT_CSD_PRE_EOL_INFO]: 0x03',
@@ -440,6 +443,7 @@ final class InfoManagerTest extends TestCase {
 	public function testGetEmmcHealthUndefined(): void {
 		$this->receiveCommand(
 			command: self::COMMANDS['emmcHealth'],
+			needSudo: true,
 			stdout: 'eMMC Life Time Estimation A [EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_A]: 0x0A' . PHP_EOL .
 					'eMMC Life Time Estimation B [EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_B]: 0x0A' . PHP_EOL .
 					'eMMC Pre EOL information [EXT_CSD_PRE_EOL_INFO]: 0x00',
@@ -457,6 +461,7 @@ final class InfoManagerTest extends TestCase {
 	public function testGetEmmcHealthNotPresent(): void {
 		$this->receiveCommand(
 			command: self::COMMANDS['emmcHealth'],
+			needSudo: true,
 			stdout: '',
 			exitCode: 1,
 		);
