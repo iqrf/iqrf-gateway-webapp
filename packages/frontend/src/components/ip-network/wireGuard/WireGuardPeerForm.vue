@@ -382,9 +382,9 @@ async function onSubmit(): Promise<void> {
  * This is necessary for updating the form when rendered before tunnels are fetched.
  */
 watch(
-	() => componentProps.tunnels,
-	(tunnelList) => {
-		if (tunnelList.length === 0) {
+	() => componentProps.tunnels.map((tunnel) => tunnel.id),
+	(tunnelIds) => {
+		if (tunnelIds.length === 0) {
 			componentState.value = ComponentState.NotFound;
 			return;
 		}
@@ -395,8 +395,8 @@ watch(
 			return;
 		}
 
-		if (!peerConfig.value.tunnelId) {
-			peerConfig.value.tunnelId = tunnelList[0].id;
+		if (!peerConfig.value.tunnelId || !tunnelIds.find((t) => t.id === peerConfig.value.tunnelId)) {
+			peerConfig.value.tunnelId = tunnelIds[0];
 		}
 		componentState.value = ComponentState.Ready;
 	},
