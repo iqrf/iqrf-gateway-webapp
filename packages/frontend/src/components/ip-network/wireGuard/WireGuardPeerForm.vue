@@ -36,7 +36,6 @@ limitations under the License.
 			/>
 		</template>
 		<v-form
-			ref='form'
 			v-slot='{ isValid }'
 			:disabled='[ComponentState.Reloading, ComponentState.Action].includes(componentState)'
 			@submit.prevent='onSubmit()'
@@ -220,10 +219,9 @@ limitations under the License.
 <script setup lang='ts'>
 import { WireGuardIpAddress, WireGuardIpStack, WireGuardPeer, WireGuardTunnelListEntry } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import { Action, ComponentState, IActionBtn, ICard, IDataTableAction, IModalWindow, INumberInput, ITextInput, ValidationRules } from '@iqrf/iqrf-vue-ui';
-import { computed, onMounted, ref, type Ref, type TemplateRef, useTemplateRef, watch } from 'vue';
+import { computed, ref, type Ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
-import { type VForm } from 'vuetify/components';
 
 import { useApiClient } from '@/services/ApiClient';
 
@@ -252,8 +250,6 @@ const emit = defineEmits<{
 const service = useApiClient().getNetworkServices().getWireGuardService();
 /// Dialog visibility
 const showDialog: Ref<boolean> = ref(false);
-/// Form instance
-const form: TemplateRef<VForm> = useTemplateRef('form');
 /// Returns default WireGuard peer configuration
 const getDefaultConfig = (): WireGuardPeer => ({
 	publicKey: '',
