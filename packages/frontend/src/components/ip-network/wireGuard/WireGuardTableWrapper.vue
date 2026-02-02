@@ -86,6 +86,7 @@ function updateTunnel(tunnel: WireGuardTunnelConfig, enabled: boolean, active: b
 		name: tunnel.name,
 		enabled: enabled,
 		active: enabled || active,
+		stack: tunnel.stack,
 	};
 	// update the entry
 	const found = findAndModifyTunnel(tunnelListEntry.id, (index: number) => {

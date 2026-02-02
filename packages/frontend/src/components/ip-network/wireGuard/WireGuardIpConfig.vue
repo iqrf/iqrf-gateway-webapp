@@ -19,6 +19,7 @@ limitations under the License.
 	<v-row class='align-center' no-gutters>
 		<v-col>
 			<ITextInput
+				ref='addressInput'
 				v-model='ipAddress.address'
 				:label='getAddressFieldName()'
 				:rules='[
@@ -36,6 +37,7 @@ limitations under the License.
 		<!-- eslint-enable @intlify/vue-i18n/no-raw-text -->
 		<v-col cols='3'>
 			<INumberInput
+				ref='prefixInput'
 				v-model='ipAddress.prefix'
 				:label='$t("components.ipNetwork.wireGuard.tunnels.configuration.form.ipAddressPrefix")'
 				:rules='[
@@ -54,7 +56,7 @@ limitations under the License.
 <script setup lang='ts'>
 import { WireGuardIpAddress, WireGuardIpStack } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import { INumberInput, ITextInput, ValidationRules } from '@iqrf/iqrf-vue-ui';
-import { computed, type Ref } from 'vue';
+import { computed, type Ref, type TemplateRef, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 const componentProps = withDefaults(
 	defineProps<{
@@ -78,6 +80,8 @@ const ipAddress: Ref<WireGuardIpAddress> = computed(() => componentProps.ipAddre
 	address: '',
 	prefix: componentProps.type === WireGuardIpStack.IPV4 ? 24 : 48,
 });
+const addressInput: TemplateRef<InstanceType<typeof ITextInput>> = useTemplateRef('addressInput');
+const prefixInput: TemplateRef<InstanceType<typeof INumberInput>> = useTemplateRef('prefixInput');
 
 /// i18n language localization
 const i18n = useI18n();
@@ -134,5 +138,15 @@ async function updateIp(): Promise<void> {
 		emit('updateIp', componentProps.recordId, ipAddress.value, componentProps.type);
 	}
 }
+
+/**
+ * Resets input validation for IP address and prefix fields
+ */
+function resetValidation(): void {
+	addressInput.value?.resetValidation?.();
+	prefixInput.value?.resetValidation?.();
+}
+
+defineExpose({ resetValidation });
 
 </script>
