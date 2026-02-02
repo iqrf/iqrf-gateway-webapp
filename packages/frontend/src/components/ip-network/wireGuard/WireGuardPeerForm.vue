@@ -337,23 +337,12 @@ function updateAllowedIp(index: string | number, value: WireGuardIpAddress, type
 }
 
 /**
- * Fetches WireGuard peer configuration
- * @param {number} id - id of record to fetch
- */
-async function fetchConfig(id: number): Promise<void> {
-	try {
-		peerConfig.value = await service.getPeer(id);
-	} catch {
-		componentState.value = ComponentState.FetchFailed;
-	}
-}
-
-/**
  * Verifies and saves WireGuard peer configuration changes
  */
 async function onSubmit(): Promise<void> {
 	let response = null;
 	try {
+		componentState.value = ComponentState.Action;
 		if (componentProps.action === Action.Add) {
 			response = await service.createPeer(peerConfig.value);
 			toast.success(i18n.t('components.ipNetwork.wireGuard.peers.add.messages.success'));
@@ -362,10 +351,6 @@ async function onSubmit(): Promise<void> {
 			toast.success(i18n.t('components.ipNetwork.wireGuard.peers.update.messages.success'));
 		}
 		emit('updatePeer', response);
-		componentState.value = ComponentState.Ready;
-		if (componentProps.action === Action.Add) {
-			resetForm();
-		}
 		closeDialog();
 	} catch {
 		componentState.value = ComponentState.Error;
@@ -378,43 +363,38 @@ async function onSubmit(): Promise<void> {
 }
 
 /**
- * Watch for change of tunnels.
- * This is necessary for updating the form when rendered before tunnels are fetched.
+ * Setup the form when opened.
  */
 watch(
-	() => componentProps.tunnels.map((tunnel) => tunnel.id),
-	(tunnelIds) => {
+	[
+		() => componentProps.tunnels.map((tunnel) => tunnel.id),
+		showDialog,
+	],
+	async ([tunnelIds, dialogShown]) => {
+		// if form is not shown, do nothing
+		if (!dialogShown) {
+			return;
+		}
+		componentState.value = ComponentState.Loading;
+		// if there are no tunnels, show warning
 		if (tunnelIds.length === 0) {
 			componentState.value = ComponentState.NotFound;
 			return;
 		}
-		if (componentProps.peerId) {
-			if (componentState.value !== ComponentState.FetchFailed) {
-				componentState.value = ComponentState.Ready;
-			}
+		// reset form data to default if not loading existing peer config
+		if (!componentProps.peerId) {
+			peerConfig.value = getDefaultConfig();
+			componentState.value = ComponentState.Ready;
 			return;
 		}
-
-		if (!peerConfig.value.tunnelId || !tunnelIds.find((t) => t.id === peerConfig.value.tunnelId)) {
-			peerConfig.value.tunnelId = tunnelIds[0];
+		// fetch peer data
+		try {
+			peerConfig.value = await service.getPeer(componentProps.peerId);
+			componentState.value = ComponentState.Ready;
+		} catch {
+			componentState.value = ComponentState.FetchFailed;
 		}
-		componentState.value = ComponentState.Ready;
 	},
 	{ immediate: true },
 );
-
-/**
- * Resets form back to default values
- */
-function resetForm(): void {
-	peerConfig.value = getDefaultConfig();
-	componentState.value = ComponentState.Created;
-	form.value?.resetValidation();
-}
-
-onMounted((): void => {
-	if (componentProps.peerId) {
-		fetchConfig(componentProps.peerId);
-	}
-});
 </script>
