@@ -36,7 +36,6 @@ limitations under the License.
 			/>
 		</template>
 		<v-form
-			ref='form'
 			v-slot='{ isValid }'
 			:disabled='[ComponentState.Reloading, ComponentState.Action].includes(componentState)'
 			@submit.prevent='onSubmit(false, false)'
@@ -130,12 +129,14 @@ limitations under the License.
 					<WireGuardIpStackSelect v-model='wgConfig.stack' />
 					<WireGuardIpConfig
 						v-if='WireGuardIpStack.IPV6 !== wgConfig.stack'
+						ref='ipv4config'
 						record-id='TunnelIPv4'
 						:type='WireGuardIpStack.IPV4'
 						:ip-address='wgConfig.ipv4'
 					/>
 					<WireGuardIpConfig
 						v-if='WireGuardIpStack.IPV4 !== wgConfig.stack'
+						ref='ipv6config'
 						record-id='TunnelIPv6'
 						:type='WireGuardIpStack.IPV6'
 						:ip-address='wgConfig.ipv6'
@@ -202,7 +203,6 @@ import {
 import { mdiClipboard, mdiContentSave, mdiUploadOutline } from '@mdi/js';
 import {
 	computed,
-	onMounted,
 	ref,
 	type Ref,
 	type TemplateRef,
@@ -211,7 +211,6 @@ import {
 } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
-import { type VForm } from 'vuetify/components';
 
 import WireGuardGenerateKeyDialog from '@/components/ip-network/wireGuard/WireGuardGenerateKeyDialog.vue';
 import WireGuardIpConfig from '@/components/ip-network/wireGuard/WireGuardIpConfig.vue';
@@ -244,7 +243,8 @@ const service = useApiClient().getNetworkServices().getWireGuardService();
 /// Dialog visibility
 const showDialog: Ref<boolean> = ref(false);
 /// Form instance
-const form: TemplateRef<VForm> = useTemplateRef('form');
+const ipv4config = useTemplateRef<InstanceType<typeof WireGuardIpConfig>>('ipv4config');
+const ipv6config = useTemplateRef<InstanceType<typeof WireGuardIpConfig>>('ipv6config');
 /// Returns default WireGuard tunnel configuration
 const getDefaultConfig = (): WireGuardTunnelConfig => ({
 	name: '',
@@ -284,18 +284,6 @@ function closeDialog(): void {
 }
 
 /**
- * Fetches WireGuard configuration
- * @param {number} id - id of record to fetch
- */
-async function fetchConfig(id: number): Promise<void> {
-	try {
-		wgConfig.value = await service.getTunnel(id);
-	} catch {
-		componentState.value = ComponentState.FetchFailed;
-	}
-}
-
-/**
  * Verifies and saves configuration changes.
  * @param {boolean} enable enable the service when saved (includes activate)
  * @param {boolean} activate activate the service when saved
@@ -309,6 +297,7 @@ async function onSubmit(enable: boolean, activate: boolean): Promise<void> {
 		delete payload.ipv4;
 	}
 	try {
+		componentState.value = ComponentState.Action;
 		if (componentProps.action === Action.Add) {
 			response = await service.createTunnel(payload);
 		} else {
@@ -330,10 +319,6 @@ async function onSubmit(enable: boolean, activate: boolean): Promise<void> {
 			);
 		}
 		emit('updateTunnel', response, enable, activate);
-		componentState.value = ComponentState.Ready;
-		if (componentProps.action === Action.Add) {
-			resetForm();
-		}
 		closeDialog();
 	} catch {
 		componentState.value = ComponentState.Error;
@@ -369,10 +354,12 @@ function copyToClipboard(value: string | undefined): void {
 async function generateKey(): Promise<void> {
 	let response = null;
 	try {
+		componentState.value = ComponentState.Action;
 		response = await service.generateKeyPair();
 		generateKeyDialogInstance.value?.close();
 		wgConfig.value.privateKey = response.privateKey;
 		wgConfig.value.publicKey = response.publicKey;
+		componentState.value = ComponentState.Ready;
 	} catch {
 		componentState.value = ComponentState.Error;
 		toast.error(
@@ -383,26 +370,53 @@ async function generateKey(): Promise<void> {
 	}
 }
 
+/**
+ * Reset form validation for unused IP stack.
+ */
 watch(
 	() => wgConfig.value.stack,
-	() => {
-		form.value?.resetValidation();
+	(stack) => {
+		if (stack === WireGuardIpStack.IPV4) {
+			ipv6config.value?.resetValidation();
+		}
+		if (stack === WireGuardIpStack.IPV6) {
+			ipv4config.value?.resetValidation();
+		}
 	},
 );
 
 /**
- * Resets form back to default values
+ * Setup the form when opened.
  */
-function resetForm(): void {
-	wgConfig.value = getDefaultConfig();
-	editKeys.value = false;
-	componentState.value = ComponentState.Created;
-	form.value?.resetValidation();
-}
-
-onMounted((): void => {
-	if (componentProps.tunnelId) {
-		fetchConfig(componentProps.tunnelId);
-	}
-});
+watch(
+	showDialog,
+	async (dialogShown) => {
+		// if closed, do nothing
+		if (!dialogShown) {
+			return;
+		}
+		componentState.value = ComponentState.Loading;
+		// reset form data to default if not loading existing tunnel
+		if (!componentProps.tunnelId) {
+			wgConfig.value = getDefaultConfig();
+			editKeys.value = false;
+			componentState.value = ComponentState.Ready;
+			return;
+		}
+		// fetch tunnel config
+		try {
+			wgConfig.value = await service.getTunnel(componentProps.tunnelId);
+			componentState.value = ComponentState.Ready;
+			// Add default value for unused stack
+			if (!wgConfig.value.ipv6) {
+				wgConfig.value.ipv6 = { address: '', prefix: 48 };
+			}
+			if (!wgConfig.value.ipv4) {
+				wgConfig.value.ipv4 = { address: '', prefix: 24 };
+			}
+		} catch {
+			componentState.value = ComponentState.FetchFailed;
+		}
+	},
+);
 </script>
