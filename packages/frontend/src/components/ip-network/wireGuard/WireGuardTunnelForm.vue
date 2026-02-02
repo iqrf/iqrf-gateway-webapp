@@ -242,7 +242,7 @@ const emit = defineEmits<{
 const service = useApiClient().getNetworkServices().getWireGuardService();
 /// Dialog visibility
 const showDialog: Ref<boolean> = ref(false);
-/// Form instance
+/// Form instances
 const ipv4config = useTemplateRef<InstanceType<typeof WireGuardIpConfig>>('ipv4config');
 const ipv6config = useTemplateRef<InstanceType<typeof WireGuardIpConfig>>('ipv6config');
 /// Returns default WireGuard tunnel configuration
