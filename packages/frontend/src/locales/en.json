@@ -2584,6 +2584,7 @@
 						},
 						"endpoint": "Peer endpoint",
 						"port": "Peer port",
+						"publicKey": "Peer public key",
 						"tunnel": "Tunnel"
 					},
 					"configuration": {
