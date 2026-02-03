@@ -27,6 +27,9 @@ limitations under the License.
 <route>
 {
 	"name": "SensorDataConfiguration",
+	"meta": {
+		"requiresProxy": true,
+	},
 }
 </route>
 

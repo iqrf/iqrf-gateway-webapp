@@ -1,0 +1,4 @@
+host: 'localhost'
+port: 9005
+upstream: 'ws://iqube.local/ws'
+token: 'iqrfgd2;1;ETi3v8RGLVGXb/uNenhskEiSH/2KussEbantcvjfGQ4='

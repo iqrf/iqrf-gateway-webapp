@@ -57,6 +57,9 @@ fileManager:
 		networkManager:
 			directory: %paths.networkManager.configDir%
 			type: privileged
+		proxy:
+			directory: %confDir%
+			type: unprivileged
 		timesyncd:
 			directory: dirname(%paths.timesyncd.config%)
 			type: privileged

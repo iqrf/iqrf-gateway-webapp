@@ -228,6 +228,7 @@ import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
 
 import TaskMessageForm from '@/components/config/daemon/scheduler/TaskMessageForm.vue';
+import { DaemonApiSendError } from '@/errors/DaemonApiSendError';
 import { validateForm } from '@/helpers/validateForm';
 import { useDaemonStore } from '@/store/daemonSocket';
 
@@ -414,9 +415,17 @@ async function addTask(record: SchedulerRecord): Promise<void> {
 			msgId.value = null;
 		},
 	);
-	msgId.value = await daemonStore.sendMessage(
-		SchedulerService.addTask(record, opts),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			SchedulerService.addTask(record, opts),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = ComponentState.Idle;
+	}
 }
 
 function handleAddTask(rsp: DaemonApiResponse): void {
@@ -446,12 +455,20 @@ async function editTask(record: SchedulerRecord): Promise<void> {
 			msgId.value = null;
 		},
 	);
-	msgId.value = await daemonStore.sendMessage(
-		SchedulerService.editTask(
-			record,
-			opts,
-		),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			SchedulerService.editTask(
+				record,
+				opts,
+			),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = ComponentState.Idle;
+	}
 }
 
 function handleEditTask(rsp: DaemonApiResponse): void {

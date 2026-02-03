@@ -73,6 +73,7 @@ import { VForm } from 'vuetify/components';
 
 import DpaUpdateProgressDialog from '@/components/iqrfnet/upload/DpaUpdateProgressDialog.vue';
 import SameVersionDialog from '@/components/iqrfnet/upload/SameVersionDialog.vue';
+import { DaemonApiSendError } from '@/errors/DaemonApiSendError';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 import { useRepositoryClient } from '@/services/RepositoryClient';
@@ -98,7 +99,8 @@ const progressDialog: Ref<InstanceType<typeof DpaUpdateProgressDialog>|null> = u
 const version: Ref<string> = ref('');
 const versionOptions: Ref<SelectItem[]> = ref([]);
 const showAlert = computed(() => {
-	return componentState.value === ComponentState.FetchFailed || (componentState.value !== ComponentState.Loading && versionOptions.value.length === 0);
+	return componentState.value === ComponentState.FetchFailed ||
+		(componentState.value !== ComponentState.Loading && versionOptions.value.length === 0);
 });
 const alertType = computed(() => {
 	if (componentState.value === ComponentState.FetchFailed) {
@@ -142,13 +144,20 @@ async function enumerate(): Promise<void> {
 			msgId.value = null;
 		},
 	);
-	msgId.value = await daemonStore.sendMessage(
-		EnumerationService.enumerate(
-			{ repeat: 1, returnVerbose: true },
-			{ deviceAddr: 0 },
-			opts,
-		),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			EnumerationService.enumerate(
+				{ repeat: 1, returnVerbose: true },
+				{ deviceAddr: 0 },
+				opts,
+			),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+		}
+		componentState.value = ComponentState.FetchFailed;
+	}
 }
 
 function handleEnumerate(rsp: DaemonApiResponse): void {

@@ -62,6 +62,7 @@ import { onBeforeUnmount, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
+import { DaemonApiSendError } from '@/errors/DaemonApiSendError';
 import { useDaemonStore } from '@/store/daemonSocket';
 
 const componentProps = defineProps<{
@@ -102,22 +103,30 @@ async function clear(): Promise<void> {
 			msgId.value = null;
 		},
 	);
-	if (componentProps.coordinatorOnly) {
-		msgId.value = await daemonStore.sendMessage(
-			BondingService.removeBondCoordinator(
-				{ repeat: 1, returnVerbose: true },
-				{ deviceAddr: [], clearAllBonds: true },
-				opts,
-			),
-		);
-	} else {
-		msgId.value = await daemonStore.sendMessage(
-			BondingService.removeBond(
-				{ repeat: 1, returnVerbose: true },
-				{ deviceAddr: 255, wholeNetwork: true },
-				opts,
-			),
-		);
+	try {
+		if (componentProps.coordinatorOnly) {
+			msgId.value = await daemonStore.sendMessage(
+				BondingService.removeBondCoordinator(
+					{ repeat: 1, returnVerbose: true },
+					{ deviceAddr: [], clearAllBonds: true },
+					opts,
+				),
+			);
+		} else {
+			msgId.value = await daemonStore.sendMessage(
+				BondingService.removeBond(
+					{ repeat: 1, returnVerbose: true },
+					{ deviceAddr: 255, wholeNetwork: true },
+					opts,
+				),
+			);
+		}
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = ComponentState.Idle;
 	}
 }
 

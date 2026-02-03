@@ -27,6 +27,9 @@ limitations under the License.
 <route>
 {
 	"name": "TrConfig",
+	"meta": {
+		"requiresProxy": true,
+	},
 }
 </route>
 

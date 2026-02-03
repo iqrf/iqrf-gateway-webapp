@@ -200,6 +200,7 @@ import { VForm } from 'vuetify/components';
 import DpaHandlerWarnDialog from '@/components/iqrfnet/tr-config/DpaHandlerWarnDialog.vue';
 import TrConfigDpaForm from '@/components/iqrfnet/tr-config/TrConfigDpaForm.vue';
 import TrConfigOsForm from '@/components/iqrfnet/tr-config/TrConfigOsForm.vue';
+import { DaemonApiSendError } from '@/errors/DaemonApiSendError';
 import { validateForm } from '@/helpers/validateForm';
 import { useDaemonStore } from '@/store/daemonSocket';
 import { DeviceEnumeration, TrConfiguration } from '@/types/DaemonApi/Iqmesh';
@@ -314,12 +315,20 @@ async function readOs(): Promise<void> {
 			msgId.value = null;
 		},
 	);
-	msgId.value = await daemonStore.sendMessage(
-		OsService.read(
-			{ addr: address.value, returnVerbose: true },
-			opts,
-		),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			OsService.read(
+				{ addr: address.value, returnVerbose: true },
+				opts,
+			),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = ComponentState.FetchFailed;
+	}
 }
 
 function handleOsRead(rsp: DaemonApiResponse): void {
@@ -353,13 +362,21 @@ async function enumerate(): Promise<void> {
 			msgId.value = null;
 		},
 	);
-	msgId.value = await daemonStore.sendMessage(
-		EnumerationService.enumerate(
-			{ repeat: 1, returnVerbose: true },
-			{ deviceAddr: address.value },
-			opts,
-		),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			EnumerationService.enumerate(
+				{ repeat: 1, returnVerbose: true },
+				{ deviceAddr: address.value },
+				opts,
+			),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = ComponentState.FetchFailed;
+	}
 }
 
 function handleEnumerate(rsp: DaemonApiResponse): void {
@@ -465,13 +482,21 @@ async function writeConfig(): Promise<void> {
 			msgId.value = null;
 		},
 	);
-	msgId.value = await daemonStore.sendMessage(
-		TrConfigurationService.write(
-			{ repeat: 1, returnVerbose: true },
-			params,
-			opts,
-		),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			TrConfigurationService.write(
+				{ repeat: 1, returnVerbose: true },
+				params,
+				opts,
+			),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = ComponentState.Ready;
+	}
 }
 
 function handleWriteConfig(rsp: DaemonApiResponse): void {
@@ -512,12 +537,20 @@ async function restart(addr: number): Promise<void> {
 			msgId.value = null;
 		},
 	);
-	msgId.value = await daemonStore.sendMessage(
-		OsService.restart(
-			{ addr: addr, returnVerbose: true },
-			opts,
-		),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			OsService.restart(
+				{ addr: addr, returnVerbose: true },
+				opts,
+			),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = ComponentState.Ready;
+	}
 }
 
 function handleRestart(rsp: DaemonApiResponse): void {

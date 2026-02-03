@@ -1,0 +1,2 @@
+services:
+	- App\Models\WebSocket\ProxyConfigManager(@fileManager.managers.proxy)

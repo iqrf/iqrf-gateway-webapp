@@ -151,6 +151,7 @@ import { toast } from 'vue3-toastify';
 
 import DeviceIcon from '@/components/iqrfnet/network-manager/DeviceIcon.vue';
 import RestartFailed from '@/components/iqrfnet/network-manager/RestartFailed.vue';
+import { DaemonApiSendError } from '@/errors/DaemonApiSendError';
 import Device from '@/helpers/device';
 import { useDaemonStore } from '@/store/daemonSocket';
 
@@ -159,7 +160,6 @@ enum ActionType {
 	PING = 1,
 	RESTART = 2,
 }
-
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
@@ -212,12 +212,20 @@ async function getBondedDevices(): Promise<void> {
 			componentState.value = componentState.value === ComponentState.Loading ? ComponentState.FetchFailed : ComponentState.Ready;
 		},
 	);
-	msgId.value = await daemonStore.sendMessage(
-		CoordinatorService.bondedDevices(
-			{ addr: 0 },
-			opts,
-		),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			CoordinatorService.bondedDevices(
+				{ addr: 0 },
+				opts,
+			),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = componentState.value === ComponentState.Loading ? ComponentState.FetchFailed : ComponentState.Ready;
+	}
 }
 
 function handleBondedDevices(rsp: DaemonApiResponse): void {
@@ -252,12 +260,20 @@ async function getDiscoveredDevices(): Promise<void> {
 			componentState.value = ComponentState.Ready;
 		},
 	);
-	msgId.value = await daemonStore.sendMessage(
-		CoordinatorService.discoveredDevices(
-			{ addr: 0 },
-			opts,
-		),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			CoordinatorService.discoveredDevices(
+				{ addr: 0 },
+				opts,
+			),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = ComponentState.Ready;
+	}
 }
 
 function handleDiscoveredDevices(rsp: DaemonApiResponse): void {
@@ -292,13 +308,21 @@ async function ping(): Promise<void> {
 			componentState.value = ComponentState.Ready;
 		},
 	);
-	msgId.value = await daemonStore.sendMessage(
-		NetworkService.ping(
-			{},
-			{ hwpId: 0xFF_FF },
-			opts,
-		),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			NetworkService.ping(
+				{},
+				{ hwpId: 0xFF_FF },
+				opts,
+			),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = ComponentState.Ready;
+	}
 }
 
 function handlePing(rsp: DaemonApiResponse): void {
@@ -333,13 +357,21 @@ async function restart(): Promise<void> {
 			componentState.value = ComponentState.Ready;
 		},
 	);
-	msgId.value = await daemonStore.sendMessage(
-		NetworkService.restart(
-			{},
-			{ hwpId: 0xFF_FF },
-			opts,
-		),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			NetworkService.restart(
+				{},
+				{ hwpId: 0xFF_FF },
+				opts,
+			),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = ComponentState.Ready;
+	}
 }
 
 function handleRestart(rsp: DaemonApiResponse): void {
@@ -399,7 +431,15 @@ async function indicateCoordinator(): Promise<void> {
 			componentState.value = ComponentState.Ready;
 		},
 	);
-	msgId.value = await daemonStore.sendMessage(opts);
+	try {
+		msgId.value = await daemonStore.sendMessage(opts);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = ComponentState.Ready;
+	}
 }
 
 function handleIndicate(rsp: DaemonApiResponse): void {

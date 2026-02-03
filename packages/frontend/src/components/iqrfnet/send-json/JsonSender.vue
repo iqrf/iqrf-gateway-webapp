@@ -78,10 +78,12 @@ import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import { ComponentState, ICard } from '@iqrf/iqrf-vue-ui';
 import { mdiBook, mdiSend } from '@mdi/js';
 import { ref, type Ref, useTemplateRef } from 'vue';
+import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
 import CodeEditor from '@/components/iqrfnet/send-json/CodeEditor.vue';
 import RequestHistory from '@/components/iqrfnet/send-json/RequestHistory.vue';
+import { DaemonApiSendError } from '@/errors/DaemonApiSendError';
 import { validateForm } from '@/helpers/validateForm';
 import { useDaemonStore } from '@/store/daemonSocket';
 import { type JsonApiTransaction } from '@/types/Iqrfnet';
@@ -123,7 +125,7 @@ daemonStore.$onAction(
 );
 
 async function onSubmit(): Promise<void> {
-	if (!await validateForm(form.value) || json.value === null) {
+	if (!await validateForm(form.value) || !json.value) {
 		return;
 	}
 	componentState.value = ComponentState.Action;
@@ -146,14 +148,22 @@ async function onSubmit(): Promise<void> {
 		msgId.value = null;
 	};
 	options.request = request;
-	msgId.value = await daemonStore.sendMessage(options);
-	messages.value.unshift({
-		msgId: msgId.value,
-		mType: request.mType,
-		timestamp: new Date().toLocaleString(),
-		request: JSON.stringify(request, null, 4),
-		response: [],
-	});
+	try {
+		msgId.value = await daemonStore.sendMessage(options);
+		messages.value.unshift({
+			msgId: msgId.value,
+			mType: request.mType,
+			timestamp: new Date().toLocaleString(),
+			request: JSON.stringify(request, null, 4),
+			response: [],
+		});
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = ComponentState.Idle;
+	}
 }
 
 function handleAutonetworkResponse(rsp: DaemonApiResponse): void {

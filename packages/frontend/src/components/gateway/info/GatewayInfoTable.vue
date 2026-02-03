@@ -265,13 +265,13 @@ import { toast } from 'vue3-toastify';
 import CoordinatorInfo from '@/components/gateway/info/CoordinatorInfo.vue';
 import DaemonModeInfo from '@/components/gateway/info/DaemonModeInfo.vue';
 import DiskResourceUsage from '@/components/gateway/info/DiskResourceUsage.vue';
+import EmmcHealthInfo from '@/components/gateway/info/EmmcHealthInfo.vue';
 import HostnameChangeDialog from '@/components/gateway/info/HostnameChangeDialog.vue';
 import ResourceUsage from '@/components/gateway/info/ResourceUsage.vue';
+import { DaemonApiSendError } from '@/errors/DaemonApiSendError';
 import { useApiClient } from '@/services/ApiClient';
 import { useDaemonStore } from '@/store/daemonSocket';
 import { DeviceEnumeration } from '@/types/DaemonApi/Iqmesh';
-
-import EmmcHealthInfo from './EmmcHealthInfo.vue';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
@@ -335,9 +335,16 @@ async function enumerate(): Promise<void> {
 			componentState.value = ComponentState.Ready;
 		},
 	);
-	msgId.value = await daemonStore.sendMessage(
-		EnumerationService.enumerate({}, { deviceAddr: 0 }, opts),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			EnumerationService.enumerate({}, { deviceAddr: 0 }, opts),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			toast.error(error.message);
+		}
+		componentState.value = ComponentState.Ready;
+	}
 }
 
 function handleEnumerateResponse(rsp: DaemonApiResponse): void {

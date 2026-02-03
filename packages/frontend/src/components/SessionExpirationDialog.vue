@@ -58,9 +58,11 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { toast } from 'vue3-toastify';
 
+import { useDaemonStore } from '@/store/daemonSocket';
 import { useUserStore } from '@/store/user';
 
 const i18n = useI18n();
+const daemonStore = useDaemonStore();
 const userStore = useUserStore();
 const show: Ref<boolean> = ref(false);
 const expirationWarningTimeout: Ref<number> = ref(0);
@@ -112,6 +114,11 @@ async function setup(): Promise<void> {
 async function renewSession(): Promise<void> {
 	try {
 		await userStore.refreshSession();
+		daemonStore.destroySocket();
+		const token = userStore.getToken;
+		if (token !== null) {
+			daemonStore.initSocket(token);
+		}
 		close();
 		clear();
 		await setup();
