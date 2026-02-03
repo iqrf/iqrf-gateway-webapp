@@ -11,6 +11,9 @@
 <route>
 {
 	"name": "DeviceEnumeration",
+	"meta": {
+		"requiresProxy": true,
+	},
 	"props": true,
 }
 </route>

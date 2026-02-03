@@ -23,7 +23,6 @@ import iqrfUi from '@/plugins/iqrfUi';
 import registerSentry from '@/plugins/sentry';
 import toastify, { ToastOptions } from '@/plugins/toastify';
 import vuetify from '@/plugins/vuetify';
-import registerSockets from '@/plugins/websocket';
 import router from '@/router';
 import pinia from '@/store';
 
@@ -41,5 +40,4 @@ export function registerPlugins(app: App): void {
 		.use(vuetify)
 		.use(iqrfUi);
 	registerSentry(app, router);
-	registerSockets();
 }

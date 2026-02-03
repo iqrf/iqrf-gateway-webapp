@@ -28,6 +28,9 @@ limitations under the License.
 <route>
 {
 	"name": "CoordinatorUpload",
+	"meta": {
+		"requiresProxy": true,
+	},
 }
 </route>
 

@@ -112,6 +112,9 @@ limitations under the License.
 <route>
 {
 	"name": "NetworkManager",
+	"meta": {
+		"requiresProxy": true,
+	},
 }
 </route>
 
@@ -139,6 +142,7 @@ import NfcBondingManager from '@/components/iqrfnet/network-manager/NfcBondingMa
 import OtaUpload from '@/components/iqrfnet/network-manager/OtaUpload.vue';
 import RestoreManager from '@/components/iqrfnet/network-manager/RestoreManager.vue';
 import RfSignalTest from '@/components/iqrfnet/network-manager/RfSignalTest.vue';
+import { DaemonApiSendError } from '@/errors/DaemonApiSendError';
 import { useDaemonStore } from '@/store/daemonSocket';
 
 const daemonStore = useDaemonStore();
@@ -178,13 +182,19 @@ async function enumerate(): Promise<void> {
 			msgId.value = null;
 		},
 	);
-	msgId.value = await daemonStore.sendMessage(
-		EnumerationService.enumerate(
-			{ repeat: 1, returnVerbose: true },
-			{ deviceAddr: 0 },
-			opts,
-		),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			EnumerationService.enumerate(
+				{ repeat: 1, returnVerbose: true },
+				{ deviceAddr: 0 },
+				opts,
+			),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+		}
+	}
 }
 
 function handleEnumerate(rsp: DaemonApiResponse): void {

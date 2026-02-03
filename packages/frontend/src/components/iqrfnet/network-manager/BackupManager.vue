@@ -66,6 +66,7 @@ import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
 
 import BackupLog from '@/components/iqrfnet/network-manager/BackupLog.vue';
+import { DaemonApiSendError } from '@/errors/DaemonApiSendError';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 import { useDaemonStore } from '@/store/daemonSocket';
@@ -151,27 +152,35 @@ async function runBackup(): Promise<void> {
 		params.wholeNetwork = true;
 	}
 	const opts = new DaemonMessageOptions(null);
-	backupLog.value?.open();
-	if (targetType.value === TargetType.COORDINATOR) {
-		messages.value.push(
-			i18n.t('components.iqrfnet.network-manager.backup.messages.coordinator.start'),
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			BackupService.backup(
+				{ repeat: 1, returnVerbose: true },
+				params,
+				opts,
+			),
 		);
-	} else if (targetType.value === TargetType.NODE) {
-		messages.value.push(
-			i18n.t('components.iqrfnet.network-manager.backup.messages.node.start', { address: address.value }),
-		);
-	} else {
-		messages.value.push(
-			i18n.t('components.iqrfnet.network-manager.backup.messages.network.start'),
-		);
+		backupLog.value?.open();
+		if (targetType.value === TargetType.COORDINATOR) {
+			messages.value.push(
+				i18n.t('components.iqrfnet.network-manager.backup.messages.coordinator.start'),
+			);
+		} else if (targetType.value === TargetType.NODE) {
+			messages.value.push(
+				i18n.t('components.iqrfnet.network-manager.backup.messages.node.start', { address: address.value }),
+			);
+		} else {
+			messages.value.push(
+				i18n.t('components.iqrfnet.network-manager.backup.messages.network.start'),
+			);
+		}
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = ComponentState.Idle;
 	}
-	msgId.value = await daemonStore.sendMessage(
-		BackupService.backup(
-			{ repeat: 1, returnVerbose: true },
-			params,
-			opts,
-		),
-	);
 }
 
 function handleBackup(rsp: DaemonApiResponse): void {

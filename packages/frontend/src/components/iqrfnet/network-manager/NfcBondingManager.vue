@@ -40,6 +40,7 @@ import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
 
+import { DaemonApiSendError } from '@/errors/DaemonApiSendError';
 import { validateForm } from '@/helpers/validateForm';
 import { useDaemonStore } from '@/store/daemonSocket';
 
@@ -77,9 +78,17 @@ async function bondNfc(): Promise<void> {
 			componentState.value = ComponentState.Idle;
 		},
 	);
-	msgId.value = await daemonStore.sendMessage(
-		CoordinatorService.bondIquip(opts),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			CoordinatorService.bondIquip(opts),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = ComponentState.Idle;
+	}
 }
 
 function handleBondNfc(rsp: DaemonApiResponse): void {

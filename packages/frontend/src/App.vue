@@ -42,17 +42,18 @@ import { useInstallStore } from '@/store/install';
 import { useLocaleStore } from '@/store/locale';
 import { useThemeStore } from '@/store/theme';
 import { useUserStore } from '@/store/user';
+import { UpstreamStatus } from '@/types/proxy';
 
 const i18n = useI18n();
 
 const daemonStore = useDaemonStore();
-const { isConnected } = storeToRefs(daemonStore);
+const { upstreamStatus } = storeToRefs(daemonStore);
 
 const installStore = useInstallStore();
 const { isChecked } = storeToRefs(installStore);
 
 const userStore = useUserStore();
-const { isLoggedIn } = storeToRefs(userStore);
+const { isLoggedIn, getToken: token } = storeToRefs(userStore);
 
 const localeStore = useLocaleStore();
 const { getLocale: locale } = storeToRefs(localeStore);
@@ -82,11 +83,29 @@ onBeforeMount(async () => {
 	setHeadOptions(locale.value);
 });
 
-watch(isConnected, (newVal) => {
-	if (newVal) {
+watch(
+	isLoggedIn,
+	(newVal: boolean, oldVal: boolean | undefined) => {
+		if (newVal && !oldVal && token.value) {
+			daemonStore.initSocket(token.value);
+			return;
+		}
+		if (oldVal && !newVal) {
+			daemonStore.destroySocket();
+		}
+	},
+	{ immediate: true },
+);
+
+watch(
+	upstreamStatus,
+	(val: UpstreamStatus) => {
+		if (val !== UpstreamStatus.READY) {
+			return;
+		}
 		daemonStore.sendVersionRequest();
-	}
-});
+	},
+);
 
 watch(locale, setHeadOptions);
 </script>

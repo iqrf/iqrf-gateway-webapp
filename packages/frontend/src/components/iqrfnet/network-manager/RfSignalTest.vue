@@ -5,7 +5,7 @@
 	>
 		<ICard flat tile>
 			<v-card-title>
-				{{ $t('components.iqrfnet.network-manager.frc-response-time.title') }}
+				{{ $t('components.iqrfnet.network-manager.rf-signal.title') }}
 			</v-card-title>
 			<ISelectInput
 				v-model='target'
@@ -68,6 +68,7 @@ import RfMeasurementTimeInput
 	from '@/components/iqrfnet/network-manager/RfMeasurementTimeInput.vue';
 import RfSignalTestResultDialog
 	from '@/components/iqrfnet/network-manager/RfSignalTestResultDialog.vue';
+import { DaemonApiSendError } from '@/errors/DaemonApiSendError';
 import { validateForm } from '@/helpers/validateForm';
 import { useDaemonStore } from '@/store/daemonSocket';
 import { RfSignalTestResult } from '@/types/DaemonApi/Iqmesh';
@@ -167,13 +168,21 @@ async function testRf(): Promise<void> {
 		rfChannel: rfChannel.value,
 		rxFilter: rxFilter.value,
 	};
-	msgId.value = await daemonStore.sendMessage(
-		MaintenanceService.testRf(
-			{ repeat: 1, returnVerbose: true },
-			params,
-			opts,
-		),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			MaintenanceService.testRf(
+				{ repeat: 1, returnVerbose: true },
+				params,
+				opts,
+			),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = ComponentState.Idle;
+	}
 }
 
 function handleTestRf(rsp: DaemonApiResponse): void {
