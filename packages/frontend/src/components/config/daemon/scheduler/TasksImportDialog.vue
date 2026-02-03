@@ -115,6 +115,7 @@ import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
 import BooleanCheckMarker from '@/components/BooleanCheckMarker.vue';
+import { DaemonApiSendError } from '@/errors/DaemonApiSendError';
 import { validateForm } from '@/helpers/validateForm';
 import { useDaemonStore } from '@/store/daemonSocket';
 
@@ -225,15 +226,23 @@ async function onSubmit(): Promise<void> {
 
 async function uploadRecords(): Promise<void> {
 	const opts = new DaemonMessageOptions(null, 30_000);
-	for (const record of importRecords.value) {
-		processedRecords.value.push({
-			taskId: record.taskId as string,
-		});
-		msgIds.value.push(
-			await daemonStore.sendMessage(
-				SchedulerService.addTask(record, opts),
-			),
-		);
+	try {
+		for (const record of importRecords.value) {
+			processedRecords.value.push({
+				taskId: record.taskId as string,
+			});
+			msgIds.value.push(
+				await daemonStore.sendMessage(
+					SchedulerService.addTask(record, opts),
+				),
+			);
+		}
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = ComponentState.Idle;
 	}
 }
 

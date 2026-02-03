@@ -31,8 +31,15 @@ limitations under the License.
 				accept='.zip'
 				:label='$t("components.maintenance.backup.restore.archive")'
 				:rules='[
-					(v: File|null) => ValidationRules.required(v, $t("components.maintenance.backup.restore.validation.archive.required")),
-					(v: File) => ValidationRules.fileExtension(v, ["zip"], $t("components.maintenance.backup.restore.validation.archive.fileExtension")),
+					(v: File|null) => ValidationRules.required(
+						v,
+						$t("components.maintenance.backup.restore.validation.archive.required"),
+					),
+					(v: File) => ValidationRules.fileExtension(
+						v,
+						["zip"],
+						$t("components.maintenance.backup.restore.validation.archive.fileExtension"),
+					),
 				]'
 				:prepend-inner-icon='mdiFileOutline'
 				:prepend-icon='undefined'

@@ -85,7 +85,10 @@ limitations under the License.
 				<IDataTableAction
 					color='primary'
 					:icon='mdiInformationBox'
-					:tooltip='isExpanded(internalItem) ? $t("components.iqrfnet.standard-manager.standard-devices.actions.hideInfo") : $t("components.iqrfnet.standard-manager.standard-devices.actions.showInfo")'
+					:tooltip='isExpanded(internalItem) ?
+						$t("components.iqrfnet.standard-manager.standard-devices.actions.hideInfo") :
+						$t("components.iqrfnet.standard-manager.standard-devices.actions.showInfo")
+					'
 					@click='toggleExpand(internalItem)'
 				/>
 			</template>
@@ -179,6 +182,7 @@ import { toast } from 'vue3-toastify';
 
 import DatabaseResetDialog from '@/components/iqrfnet/standard-manager/DatabaseResetDialog.vue';
 import EnumerationDialog from '@/components/iqrfnet/standard-manager/EnumerationDialog.vue';
+import { DaemonApiSendError } from '@/errors/DaemonApiSendError';
 import StandardDevice from '@/modules/standardDevice';
 import { useRepositoryClient } from '@/services/RepositoryClient';
 import { useDaemonStore } from '@/store/daemonSocket';
@@ -284,12 +288,20 @@ async function getDevices(): Promise<void> {
 			msgId.value = null;
 		},
 	);
-	msgId.value = await daemonStore.sendMessage(
-		DbService.getDevices(
-			{ brief: false, addresses: [], sensors: false, binouts: true },
-			opts,
-		),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			DbService.getDevices(
+				{ brief: false, addresses: [], sensors: false, binouts: true },
+				opts,
+			),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = componentState.value === ComponentState.Loading ? ComponentState.FetchFailed : ComponentState.Ready;
+	}
 }
 
 function handleGetDevices(rsp: DaemonApiResponse): void {
@@ -324,9 +336,17 @@ async function getLights(): Promise<void> {
 			msgId.value = null;
 		},
 	);
-	msgId.value = await daemonStore.sendMessage(
-		DbService.getLights(opts),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			DbService.getLights(opts),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = ComponentState.Ready;
+	}
 }
 
 function handleGetLights(rsp: DaemonApiResponse): void {
@@ -358,9 +378,17 @@ async function getSensors(): Promise<void> {
 			msgId.value = null;
 		},
 	);
-	msgId.value = await daemonStore.sendMessage(
-		DbService.getSensors(opts),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			DbService.getSensors(opts),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = ComponentState.Ready;
+	}
 }
 
 function handleGetSensors(rsp: DaemonApiResponse): void {
@@ -393,13 +421,21 @@ async function ping(): Promise<void> {
 			msgId.value = null;
 		},
 	);
-	msgId.value = await daemonStore.sendMessage(
-		NetworkService.ping(
-			{ repeat: 1, returnVerbose: true },
-			{ hwpId: 0xFF_FF },
-			opts,
-		),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			NetworkService.ping(
+				{ repeat: 1, returnVerbose: true },
+				{ hwpId: 0xFF_FF },
+				opts,
+			),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = ComponentState.Ready;
+	}
 }
 
 function handlePing(rsp: DaemonApiResponse): void {

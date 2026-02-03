@@ -123,5 +123,6 @@ includes:
 	- guzzle.neon
 	- mailer.neon
 	- monolog.neon
+	- proxy.neon
 	- sentry.neon
 	- translation.neon

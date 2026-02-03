@@ -27,6 +27,9 @@ limitations under the License.
 <route>
 {
 	"name": "SendJsonRequest",
+	"meta": {
+		"requiresProxy": true,
+	},
 }
 </route>
 

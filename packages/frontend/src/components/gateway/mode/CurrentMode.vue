@@ -21,12 +21,37 @@ limitations under the License.
 			<template #title>
 				{{ $t('components.gateway.mode.current.title') }}
 			</template>
-			<DaemonModeInput v-model='mode' />
+			<template #titleActions>
+				<IActionBtn
+					:action='Action.Reload'
+					container-type='card-title'
+					:loading='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+					:disabled='componentState === ComponentState.Action'
+					@click='getMode()'
+				/>
+			</template>
+			<v-alert
+				v-if='componentState === ComponentState.FetchFailed'
+				type='error'
+				variant='tonal'
+				:text='$t("components.gateway.mode.current.noData.fetchError")'
+			/>
+			<v-skeleton-loader
+				v-else
+				class='input-skeleton-loader'
+				:loading='componentState === ComponentState.Loading'
+				type='heading'
+			>
+				<v-responsive>
+					<DaemonModeInput v-model='mode' />
+				</v-responsive>
+			</v-skeleton-loader>
 			<template #actions>
 				<IActionBtn
 					:action='Action.Save'
 					container-type='card'
-					:disabled='mode === DaemonMode.Unknown'
+					:loading='componentState === ComponentState.Action'
+					:disabled='mode === DaemonMode.Unknown || [ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
 					type='submit'
 				/>
 			</template>
@@ -45,6 +70,7 @@ import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import DaemonModeInput from '@/components/gateway/mode/DaemonModeInput.vue';
+import { DaemonApiSendError } from '@/errors/DaemonApiSendError';
 import { useDaemonStore } from '@/store/daemonSocket';
 
 enum ModeActions {
@@ -76,7 +102,10 @@ daemonStore.$onAction(
 );
 
 async function getMode(): Promise<void> {
-	componentState.value = ComponentState.Loading;
+	componentState.value = [
+		ComponentState.Created,
+		ComponentState.FetchFailed,
+	].includes(componentState.value) ? ComponentState.Loading : ComponentState.Reloading;
 	modeAction.value = ModeActions.GET;
 	const opts = new DaemonMessageOptions(
 		null,
@@ -86,7 +115,14 @@ async function getMode(): Promise<void> {
 			msgId.value = null;
 		},
 	);
-	msgId.value = await daemonStore.sendMessage(ManagementService.getMode(opts));
+	try {
+		msgId.value = await daemonStore.sendMessage(ManagementService.getMode(opts));
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+		}
+		componentState.value = componentState.value === ComponentState.Loading ? ComponentState.FetchFailed : ComponentState.Idle;
+	}
 }
 
 async function setMode(): Promise<void> {
@@ -100,10 +136,18 @@ async function setMode(): Promise<void> {
 			msgId.value = null;
 		},
 	);
-	msgId.value = await daemonStore.sendMessage(ManagementService.setMode(mode.value, opts));
+	try {
+		msgId.value = await daemonStore.sendMessage(ManagementService.setMode(mode.value, opts));
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+		}
+		componentState.value = ComponentState.Idle;
+	}
 }
 
 function handleModeResponse(rsp: Record<string, any>): void {
+	componentState.value = ComponentState.Idle;
 	if (rsp.data.status !== 0) {
 		if (modeAction.value === ModeActions.GET) {
 			toast.error(
@@ -113,7 +157,6 @@ function handleModeResponse(rsp: Record<string, any>): void {
 			toast.error(
 				i18n.t('components.gateway.mode.current.messages.set.failed'),
 			);
-			componentState.value = ComponentState.Idle;
 		}
 		return;
 	}

@@ -27,6 +27,9 @@ limitations under the License.
 <route>
 {
 	"name": "SendDpaPacket",
+	"meta": {
+		"requiresProxy": true,
+	},
 }
 </route>
 

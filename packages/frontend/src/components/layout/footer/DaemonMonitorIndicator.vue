@@ -16,30 +16,51 @@ limitations under the License.
 -->
 
 <template>
-	<v-icon
-		v-tooltip:bottom='`${$t("components.status.monitor.mode")}: ${$t(`components.status.monitor.modes.${monitorStore.mode}`)}`'
-		class='me-2'
-		:color='color'
-		:icon='icon'
-		size='small'
-	/>
+	<v-tooltip location='bottom'>
+		<template #activator='{ props }'>
+			<v-icon
+				v-bind='props'
+				class='me-2'
+				:color='color'
+				:icon='icon'
+				size='small'
+			/>
+		</template>
+		<div class='d-flex justify-space-between'>
+			<span class='text-left'>{{ `${$t("components.status.monitor.mode")}:&nbsp;` }}</span>
+			<span class='text-right'>{{ $t(`components.status.monitor.modes.${monitorStore.mode}`) }}</span>
+		</div>
+		<div class='d-flex justify-space-between'>
+			<span class='text-left'>{{ `${$t("components.status.monitor.notified")}:&nbsp;` }}</span>
+			<span class='text-right'>{{ $d(date, "dateTime") }}</span>
+		</div>
+	</v-tooltip>
 </template>
 
 <script lang='ts' setup>
 import { DaemonMode } from '@iqrf/iqrf-gateway-daemon-utils/enums';
 import {
-	mdiCheckCircleOutline, mdiForward, mdiHelp, mdiWrench,
+	mdiCheckCircleOutline,
+	mdiClose,
+	mdiForward,
+	mdiHelp,
+	mdiWrench,
 } from '@mdi/js';
+import { DateTime } from 'luxon';
+import { storeToRefs } from 'pinia';
 import { computed, type Ref } from 'vue';
 
 import { useMonitorStore } from '@/store/monitorSocket';
 
 const monitorStore = useMonitorStore();
+const { mode, connected, lastTimestamp } = storeToRefs(monitorStore);
 
 /// Icon to display
 const icon: Ref<string> = computed((): string => {
-	const mode: DaemonMode = monitorStore.mode;
-	switch (mode) {
+	if (!connected.value) {
+		return mdiClose;
+	}
+	switch (mode.value) {
 		case DaemonMode.Operational:
 			return mdiCheckCircleOutline;
 		case DaemonMode.Forwarding:
@@ -53,8 +74,7 @@ const icon: Ref<string> = computed((): string => {
 
 /// Color of the icon
 const color: Ref<string> = computed((): string => {
-	const mode: DaemonMode = monitorStore.mode;
-	switch (mode) {
+	switch (mode.value) {
 		case DaemonMode.Operational:
 		case DaemonMode.Forwarding:
 			return 'light-green-accent-3';
@@ -63,5 +83,10 @@ const color: Ref<string> = computed((): string => {
 		default:
 			return 'red-accent-3';
 	}
+});
+
+/// Date of the last notification
+const date: Ref<Date> = computed((): Date => {
+	return DateTime.fromSeconds(lastTimestamp.value).toJSDate();
 });
 </script>

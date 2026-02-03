@@ -68,6 +68,9 @@ limitations under the License.
 <route>
 {
 	"name": "StandardManager",
+	"meta": {
+		"requiresProxy": true,
+	},
 }
 </route>
 
