@@ -54,7 +54,7 @@ class WireguardPeer implements JsonSerializable {
 	 * @param WireguardInterface $interface WireGuard interface
 	 */
 	public function __construct(
-		#[ORM\Column(type: Types::STRING, length: 255)]
+		#[ORM\Column(type: Types::STRING, length: 255, unique: true)]
 		private string $publicKey,
 		#[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
 		private ?string $psk,
