@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Copyright 2017-2025 IQRF Tech s.r.o.
- * Copyright 2019-2025 MICRORISC s.r.o.
+ * Copyright 2017-2026 IQRF Tech s.r.o.
+ * Copyright 2019-2026 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,7 @@ use App\Models\Database\Entities\WireguardInterface;
 use App\NetworkModule\Exceptions\InterfaceExistsException;
 use App\NetworkModule\Exceptions\NonexistentWireguardPeerException;
 use App\NetworkModule\Exceptions\NonexistentWireguardTunnelException;
+use App\NetworkModule\Exceptions\PeerExistsException;
 use App\NetworkModule\Exceptions\WireguardInvalidEndpointException;
 use App\NetworkModule\Exceptions\WireguardKeyErrorException;
 use App\NetworkModule\Models\WireguardManager;
@@ -75,6 +76,8 @@ class WireGuardController extends BaseNetworkController {
 							$ref: '#/components/schemas/NetworkWireGuardTunnels'
 			'403':
 				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
 	EOT)]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['network']);
@@ -113,8 +116,6 @@ class WireGuardController extends BaseNetworkController {
 			return $this->validators->validateResponse('networkWireGuardTunnel', $response);
 		} catch (NonexistentWireguardTunnelException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND);
-		} catch (WireguardKeyErrorException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 
@@ -136,10 +137,10 @@ class WireGuardController extends BaseNetworkController {
 					application/json:
 						schema:
 							$ref: '#/components/schemas/NetworkWireGuardTunnel'
-			'400':
-				$ref: '#/components/responses/BadRequest'
 			'403':
 				$ref: '#/components/responses/Forbidden'
+			'409':
+				$ref: '#/components/responses/Conflict'
 			'500':
 				$ref: '#/components/responses/ServerError'
 	EOT)]
@@ -152,10 +153,8 @@ class WireGuardController extends BaseNetworkController {
 			unset($jsonBody['privateKey']);
 			$response = $response->writeJsonBody($jsonBody);
 			return $this->validators->validateResponse('networkWireGuardTunnel', $response);
-		} catch (InterfaceExistsException | WireguardInvalidEndpointException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
-		} catch (WireguardKeyErrorException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		} catch (InterfaceExistsException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S409_CONFLICT);
 		}
 	}
 
@@ -177,12 +176,12 @@ class WireGuardController extends BaseNetworkController {
 					application/json:
 						schema:
 							$ref: '#/components/schemas/NetworkWireGuardTunnel'
-			'400':
-				$ref: '#/components/responses/BadRequest'
 			'403':
 				$ref: '#/components/responses/Forbidden'
 			'404':
 				$ref: '#/components/responses/NotFound'
+			'409':
+				$ref: '#/components/responses/Conflict'
 			'500':
 				$ref: '#/components/responses/ServerError'
 	EOT)]
@@ -199,10 +198,8 @@ class WireGuardController extends BaseNetworkController {
 			return $this->validators->validateResponse('networkWireGuardTunnel', $response);
 		} catch (NonexistentWireguardTunnelException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND);
-		} catch (InterfaceExistsException | WireguardInvalidEndpointException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
-		} catch (WireguardKeyErrorException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
+		}  catch (InterfaceExistsException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S409_CONFLICT);
 		}
 	}
 
@@ -484,10 +481,14 @@ class WireGuardController extends BaseNetworkController {
 					application/json:
 						schema:
 							$ref: '#/components/schemas/NetworkWireGuardTunnelPeer'
+			'400':
+				$ref: '#/components/responses/BadRequest'
 			'403':
 				$ref: '#/components/responses/Forbidden'
 			'404':
 				$ref: '#/components/responses/NotFound'
+			'409':
+				$ref: '#/components/responses/Conflict'
 			'500':
 				$ref: '#/components/responses/ServerError'
 	EOT)]
@@ -500,8 +501,12 @@ class WireGuardController extends BaseNetworkController {
 			$peer = $this->manager->createPeer($requestBody, $interface);
 			$response = $response->writeJsonBody($peer->jsonSerialize());
 			return $this->validators->validateResponse('networkWireGuardTunnelPeer', $response);
+		} catch (WireguardInvalidEndpointException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
 		} catch (NonexistentWireguardTunnelException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND);
+		} catch (PeerExistsException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S409_CONFLICT);
 		}
 	}
 
@@ -523,10 +528,14 @@ class WireGuardController extends BaseNetworkController {
 					application/json:
 						schema:
 							$ref: '#/components/schemas/NetworkWireGuardTunnelPeer'
+			'400':
+				$ref: '#/components/responses/BadRequest'
 			'403':
 				$ref: '#/components/responses/Forbidden'
 			'404':
 				$ref: '#/components/responses/NotFound'
+			'409':
+				$ref: '#/components/responses/Conflict'
 			'500':
 				$ref: '#/components/responses/ServerError'
 	EOT)]
@@ -539,10 +548,14 @@ class WireGuardController extends BaseNetworkController {
 			$peer = $this->manager->modifyPeer($requestBody);
 			$response = $response->writeJsonBody($peer->jsonSerialize());
 			return $this->validators->validateResponse('networkWireGuardTunnelPeer', $response);
-		} catch (NonexistentWireguardTunnelException $e) {
+		} catch (WireguardInvalidEndpointException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
+		}  catch (NonexistentWireguardTunnelException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND);
 		} catch (NonexistentWireguardPeerException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND);
+		} catch (PeerExistsException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S409_CONFLICT);
 		}
 	}
 

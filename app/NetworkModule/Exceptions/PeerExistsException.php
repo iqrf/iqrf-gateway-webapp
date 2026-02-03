@@ -23,8 +23,8 @@ namespace App\NetworkModule\Exceptions;
 use RuntimeException;
 
 /**
- * The exception that indicates that WireGuard key generation error
+ * The exception that indicates WireGuard peer already exists
  */
-class WireguardKeyErrorException extends RuntimeException {
+class PeerExistsException extends RuntimeException {
 
 }
