@@ -65,7 +65,7 @@ class WireguardInterface implements JsonSerializable {
 	public function __construct(
 		#[ORM\Column(type: Types::STRING, length: 255, unique: true)]
 		private string $name,
-		#[ORM\Column(type: Types::STRING, length: 255)]
+		#[ORM\Column(type: Types::STRING, length: 255, unique: true)]
 		private string $privateKey,
 		#[ORM\Column(type: Types::INTEGER, nullable: true)]
 		private ?int $port,

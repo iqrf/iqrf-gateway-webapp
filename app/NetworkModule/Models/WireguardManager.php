@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Copyright 2017-2025 IQRF Tech s.r.o.
- * Copyright 2019-2025 MICRORISC s.r.o.
+ * Copyright 2017-2026 IQRF Tech s.r.o.
+ * Copyright 2019-2026 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ use App\NetworkModule\Enums\WireguardIpStack;
 use App\NetworkModule\Exceptions\InterfaceExistsException;
 use App\NetworkModule\Exceptions\NonexistentWireguardPeerException;
 use App\NetworkModule\Exceptions\NonexistentWireguardTunnelException;
+use App\NetworkModule\Exceptions\PeerExistsException;
 use App\NetworkModule\Exceptions\WireguardInvalidEndpointException;
 use App\NetworkModule\Exceptions\WireguardKeyErrorException;
 use App\ServiceModule\Models\ServiceManager;
@@ -123,6 +124,9 @@ class WireguardManager {
 		if ($this->interfaceRepository->findInterfaceByName($values->name) instanceof WireguardInterface) {
 			throw new InterfaceExistsException(sprintf('WireGuard tunnel %s already exists.', $values->name));
 		}
+		if ($this->interfaceRepository->findOneBy(['privateKey' => $values->privateKey]) instanceof WireguardInterface) {
+			throw new InterfaceExistsException('WireGuard interface with given private key already exists!');
+		}
 		$interface = new WireguardInterface($values->name, $values->privateKey, $values->port ?? null);
 		if (property_exists($values, 'ipv4')) {
 			$ipv4 = new WireguardInterfaceIpv4(new MultiAddress(Multi::factory($values->ipv4->address), $values->ipv4->prefix), $interface);
@@ -152,7 +156,11 @@ class WireguardManager {
 			}
 		}
 		$interface->setName($values->name);
-		if (property_exists($values, 'privateKey')) {
+		if (property_exists($values, 'privateKey') && $interface->getPrivateKey() !== $values->privateKey) {
+			$existingInterface = $this->interfaceRepository->findOneBy(['privateKey' => $values->privateKey]);
+			if ($existingInterface instanceof WireguardInterface) {
+				throw new InterfaceExistsException('WireGuard interface with given private key already exists!');
+			}
 			$interface->setPrivateKey($values->privateKey);
 		}
 		$interface->setPort($values->port ?? null);
@@ -188,6 +196,10 @@ class WireguardManager {
 	 * @return WireguardPeer WireGuard peer entity
 	 */
 	public function createPeer(stdClass $peer, WireguardInterface $interface): WireguardPeer {
+		$existingPeer = $this->peerRepository->findOneBy(['publicKey' => $peer->publicKey]);
+		if ($existingPeer instanceof WireguardPeer) {
+			throw new PeerExistsException('WireGuard peer with given public key already exists!');
+		}
 		if (!((bool) ip2long($peer->endpoint)) && function_exists('dns_get_record')) {
 			$this->validateEndpoint($peer->endpoint);
 		}
@@ -254,6 +266,12 @@ class WireguardManager {
 		if (!((bool) ip2long($peer->endpoint)) && function_exists('dns_get_record')) {
 			$this->validateEndpoint($peer->endpoint);
 		}
+		if ($ifPeer->getPublicKey() !== $peer->publicKey) {
+			$existingPeer = $this->peerRepository->findOneBy(['publicKey' => $peer->publicKey]);
+			if ($existingPeer instanceof WireguardPeer) {
+				throw new PeerExistsException('WireGuard peer with given public key already exists!');
+			}
+		}
 		if (property_exists($peer, 'tunnelId') && $peer->tunnelId !== $ifPeer->getInterface()->getId()) {
 			$tunnel = $this->getInterface($peer->tunnelId);
 			$ifPeer->setInterface($tunnel);
@@ -289,10 +307,7 @@ class WireguardManager {
 	 * @param int $id WireGuard interface id
 	 */
 	public function removeInterface(int $id): void {
-		$interface = $this->interfaceRepository->find($id);
-		if ($interface === null) {
-			throw new NonexistentWireguardTunnelException('WireGuard tunnel not found');
-		}
+		$interface = $this->getInterface($id);
 		$this->entityManager->remove($interface);
 		$this->entityManager->flush();
 	}
