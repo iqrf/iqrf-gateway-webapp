@@ -89,6 +89,10 @@ const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const peers: Ref<WireGuardPeer[]> = ref([]);
 const headers = computed(() => [
 	{
+		key: 'publicKey',
+		title: i18n.t('components.ipNetwork.wireGuard.peers.columns.publicKey'),
+	},
+	{
 		key: 'endpoint',
 		title: i18n.t('components.ipNetwork.wireGuard.peers.columns.endpoint'),
 	},
