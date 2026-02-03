@@ -887,6 +887,7 @@
 						},
 						"endpoint": "Adresa uzlu",
 						"port": "Port uzlu",
+						"publicKey": "Veřejný klíč uzlu",
 						"tunnel": "Tunel"
 					},
 					"configuration": {
