@@ -61,6 +61,7 @@ import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
+import { DaemonApiSendError } from '@/errors/DaemonApiSendError';
 import { validateForm } from '@/helpers/validateForm';
 import { useDaemonStore } from '@/store/daemonSocket';
 
@@ -124,13 +125,21 @@ async function runRestore(): Promise<void> {
 		data: restoreData.value[idx].DataC!,
 	};
 	const opts = new DaemonMessageOptions(null);
-	msgId.value = await daemonStore.sendMessage(
-		BackupService.restore(
-			{ repeat: 1, returnVerbose: true },
-			params,
-			opts,
-		),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			BackupService.restore(
+				{ repeat: 1, returnVerbose: true },
+				params,
+				opts,
+			),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = ComponentState.Idle;
+	}
 }
 
 async function parseContent(file: File): Promise<boolean> {

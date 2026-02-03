@@ -17,10 +17,22 @@ extensions:
 	monolog: Contributte\Monolog\DI\MonologExtension
 
 services:
+	monolog.fileTraceProcessor:
+		factory: App\Models\Monolog\FileTraceProcessor
+		autowired: false
 	monolog.sentryLogger:
 		factory: App\Models\Sentry\Loggers\SentryPsrLogger
 		autowired: false
-
+	monolog.proxyLogger:
+		factory: Monolog\Handler\StreamHandler(%paths.iqrfGatewayWebapp.logDir%/proxy.log, Monolog\Logger::DEBUG)
+		setup:
+			- setFormatter(Monolog\Formatter\LineFormatter(
+				"[%%datetime%% | %%level_name%% | %%extra.file%%:%%extra.lineno%%] %%message%%\n",
+				null,
+				true,
+				true,
+				true
+			))
 monolog:
 	hook:
 		fromTracy: false
@@ -30,6 +42,12 @@ monolog:
 			handlers:
 				- Monolog\Handler\StreamHandler(%paths.iqrfGatewayWebapp.logDir%/default.log, Monolog\Logger::WARNING)
 				- Monolog\Handler\PsrHandler(@monolog.sentryLogger, Monolog\Logger::WARNING)
+		proxy:
+			handlers:
+				- @monolog.proxyLogger
+			processors:
+				- App\Models\Monolog\FileTraceProcessor()
+				- Monolog\Processor\PsrLogMessageProcessor()
 		restore:
 			handlers:
 				- Monolog\Handler\StreamHandler(%paths.iqrfGatewayWebapp.logDir%/restore.log, Monolog\Logger::NOTICE)

@@ -60,7 +60,6 @@ export type WsOnSendCallback = (message: DaemonApiRequest) => void;
 /// WebSocket on error callback
 export type WsOnErrorCallback = (event: Event) => void;
 
-
 export default class ClientSocket {
 
 	/**
@@ -79,6 +78,11 @@ export default class ClientSocket {
 	 * @var {WebSocket|null} client WebSocket object
 	 */
 	private socket: WebSocket | null = null;
+
+	/**
+	 * @var {boolean} closing Socket is closing
+	 */
+	private closing: boolean = false;
 
 	/**
 	 * @var {WsOnOpenCallback} onOpenCallback On open callback
@@ -239,6 +243,9 @@ export default class ClientSocket {
 	 * Reconnects after a failure
 	 */
 	public reconnect(): void {
+		if (this.closing) {
+			return;
+		}
 		clearTimeout(this.reconnectTimeout);
 		this.reconnectTimeout = window.setTimeout((): void => {
 			this.connect();
@@ -249,7 +256,9 @@ export default class ClientSocket {
 	 * Closes connection
 	 */
 	public close(): void {
+		this.closing = true;
 		this.socket?.close();
+		this.socket = null;
 	}
 
 	/**

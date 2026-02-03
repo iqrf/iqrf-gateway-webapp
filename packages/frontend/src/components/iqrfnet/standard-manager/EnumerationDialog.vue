@@ -80,7 +80,6 @@ import { DaemonApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
 import {
 	Action,
-	ComponentState,
 	IActionBtn,
 	ICard,
 	IModalWindow,
@@ -91,6 +90,7 @@ import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
 import { useDuration } from '@/composables/duration';
+import { DaemonApiSendError } from '@/errors/DaemonApiSendError';
 import { useDaemonStore } from '@/store/daemonSocket';
 
 const componentProps = withDefaults(
@@ -104,7 +104,6 @@ const componentProps = withDefaults(
 const emit = defineEmits<{
 	finished: [];
 }>();
-const componentState: Ref<ComponentState> = ref(ComponentState.Idle);
 const daemonStore = useDaemonStore();
 const i18n = useI18n();
 const { duration, start, stop, reset } = useDuration();
@@ -151,12 +150,19 @@ daemonStore.$onAction(({ name, after }) => {
 
 async function enumerate(): Promise<void> {
 	const opts = new DaemonMessageOptions(null);
-	msgId.value = await daemonStore.sendMessage(
-		DbService.enumerate(
-			{ reenumerate: true, standards: true },
-			opts,
-		),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			DbService.enumerate(
+				{ reenumerate: true, standards: true },
+				opts,
+			),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			conclude(false, error.message);
+		}
+	}
 }
 
 function handleEnumerate(rsp: DaemonApiResponse): void {
@@ -186,7 +192,6 @@ function open(): void {
 
 function conclude(success: boolean, message: string): void {
 	daemonStore.removeMessage(msgId.value);
-	componentState.value = ComponentState.Idle;
 	status.value.finished = true;
 	status.value.message = message;
 	status.value.color = success ? 'success' : 'red';

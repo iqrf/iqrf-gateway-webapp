@@ -111,6 +111,7 @@ import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
+import { DaemonApiSendError } from '@/errors/DaemonApiSendError';
 import { validateForm } from '@/helpers/validateForm';
 import { useDaemonStore } from '@/store/daemonSocket';
 
@@ -171,12 +172,20 @@ async function enumerate(): Promise<void> {
 			componentState.value = ComponentState.Idle;
 		},
 	);
-	msgId.value = await daemonStore.sendMessage(
-		BinaryOutputService.enumerate(
-			{ addr: address.value },
-			opts,
-		),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			BinaryOutputService.enumerate(
+				{ addr: address.value },
+				opts,
+			),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = ComponentState.Idle;
+	}
 }
 
 function handleEnumerate(rsp: Record<string, any>): void {
@@ -211,13 +220,21 @@ async function getOutputs(): Promise<void> {
 			componentState.value = ComponentState.Idle;
 		},
 	);
-	msgId.value = await daemonStore.sendMessage(
-		BinaryOutputService.setOutput(
-			{ addr: address.value },
-			{ binOuts: [] },
-			opts,
-		),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			BinaryOutputService.setOutput(
+				{ addr: address.value },
+				{ binOuts: [] },
+				opts,
+			),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = ComponentState.Idle;
+	}
 }
 
 async function setOutput(): Promise<void> {
@@ -235,13 +252,21 @@ async function setOutput(): Promise<void> {
 			componentState.value = ComponentState.Idle;
 		},
 	);
-	msgId.value = await daemonStore.sendMessage(
-		BinaryOutputService.setOutput(
-			{ addr: address.value },
-			{ binOuts: [{ index: index.value, state: state.value }] },
-			opts,
-		),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			BinaryOutputService.setOutput(
+				{ addr: address.value },
+				{ binOuts: [{ index: index.value, state: state.value }] },
+				opts,
+			),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = ComponentState.Idle;
+	}
 }
 
 function parseSetOutput(result: boolean[]): void {

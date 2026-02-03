@@ -469,12 +469,14 @@ import {
 import { DateTime } from 'luxon';
 import { vMaska } from 'maska/vue';
 import { ref, type Ref, useTemplateRef } from 'vue';
+import { toast } from 'vue3-toastify';
 import { useDisplay } from 'vuetify';
 import { VForm } from 'vuetify/components';
 
 import ProductBrowser from '@/components/iqrfnet/ProductBrowser.vue';
 import PacketHistory from '@/components/iqrfnet/send-dpa/PacketHistory.vue';
 import PacketMacros from '@/components/iqrfnet/send-dpa/PacketMacros.vue';
+import { DaemonApiSendError } from '@/errors/DaemonApiSendError';
 import { validateForm } from '@/helpers/validateForm';
 import { useDaemonStore } from '@/store/daemonSocket';
 import { type DpaPacketTransaction } from '@/types/Iqrfnet';
@@ -678,14 +680,22 @@ async function onSubmit(): Promise<void> {
 	if (useCustomTimeout.value && rq.request !== null) {
 		rq.request.data.timeout = customTimeout.value;
 	}
-	msgId.value = await daemonStore.sendMessage(rq);
-	messages.value.push({
-		msgId: msgId.value,
-		request: rq.request!.data.req!.rData,
-		requestTs: DateTime.now().toLocaleString(
-			DateTime.DATETIME_SHORT_WITH_SECONDS,
-		),
-	});
+	try {
+		msgId.value = await daemonStore.sendMessage(rq);
+		messages.value.push({
+			msgId: msgId.value,
+			request: rq.request!.data.req!.rData,
+			requestTs: DateTime.now().toLocaleString(
+				DateTime.DATETIME_SHORT_WITH_SECONDS,
+			),
+		});
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = ComponentState.Idle;
+	}
 }
 
 function handleResponse(rsp: DaemonApiResponse): void {

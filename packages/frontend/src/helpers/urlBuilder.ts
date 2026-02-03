@@ -101,6 +101,18 @@ export default class UrlBuilder {
 	}
 
 	/**
+	 * Returns WebSocket proxy server URL
+	 * @param {string} jwt JWT for authentication
+	 * @return {string} WebSocket proxy server URL
+	 */
+	public getWebSocketProxyUrl(jwt: string): string {
+		if (import.meta.env.VITE_URL_WEBSOCKET_PROXY.length > 0) {
+			return `${import.meta.env.VITE_URL_WEBSOCKET_PROXY}?token=${jwt}`;
+		}
+		return `${this.wsProtocol}${this.hostname}${this.isDev ? ':9000' : `${this.port}/ws`}?token=${jwt}`;
+	}
+
+	/**
 	 * Returns IQRF Gateway Daemon WebSocket Monitor URL
 	 * @return {string} IQRF Gateway Daemon WebSocket Monitor URL
 	 */

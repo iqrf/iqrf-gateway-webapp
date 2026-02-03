@@ -21,6 +21,8 @@ limitations under the License.
 		<TheSidebar />
 		<v-main>
 			<UnverifiedEmailAlert />
+			<ProxyServerOverlay v-if='showProxyOverlay' />
+			<ServiceModeOverlay v-if='showServiceOverlay' />
 			<v-container fluid>
 				<router-view v-if='isAllowed' />
 				<Forbidden v-else />
@@ -31,28 +33,37 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
+import { DaemonMode } from '@iqrf/iqrf-gateway-daemon-utils/enums';
 import { type Feature, type UserRole } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { storeToRefs } from 'pinia';
 import { computed, type Ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import Forbidden from '@/components/errors/Forbidden.vue';
+import ProxyServerOverlay from '@/components/layout/ProxyServerOverlay.vue';
+import ServiceModeOverlay from '@/components/layout/ServiceModeOverlay.vue';
 import TheFooter from '@/components/layout/TheFooter.vue';
 import TheHeader from '@/components/layout/TheHeader.vue';
 import TheSidebar from '@/components/layout/TheSidebar.vue';
 import UnverifiedEmailAlert from '@/components/layout/UnverifiedEmailAlert.vue';
+import { useDaemonStore } from '@/store/daemonSocket';
 import { useFeatureStore } from '@/store/features';
+import { useMonitorStore } from '@/store/monitorSocket';
 import { useUserStore } from '@/store/user';
+import { UpstreamStatus } from '@/types/proxy';
 
+const daemonStore = useDaemonStore();
 const featureStore = useFeatureStore();
 const route = useRoute();
 const userStore = useUserStore();
+const monitorStore = useMonitorStore();
 
 const { getRole: role } = storeToRefs(userStore);
 const { isLoggedIn } = storeToRefs(userStore);
 const developmentOnly: Ref<boolean> = computed((): boolean => (route.meta.developmentOnly ?? false) as boolean);
 const requiresAuth: Ref<boolean> = computed((): boolean => (route.meta.requiresAuth ?? true) as boolean);
 const requiredFeature: Ref<Feature | null> = computed((): Feature | null => (route.meta.feature ?? null) as Feature | null);
+const requiresProxy: Ref<boolean> = computed((): boolean => (route.meta.requiresProxy ?? false) as boolean);
 const requiredRoles: Ref<UserRole[]> = computed((): UserRole[] => (route.meta.roles ?? []) as UserRole[]);
 const isAllowed: Ref<boolean> = computed((): boolean => {
 	if (developmentOnly.value && import.meta.env.PROD) {
@@ -66,5 +77,18 @@ const isAllowed: Ref<boolean> = computed((): boolean => {
 	}
 	return !requiresAuth.value || requiredRoles.value.length === 0 ||
 		(role.value !== null && requiredRoles.value.includes(role.value));
+});
+const isServiceWhitelisted: Ref<boolean> = computed((): boolean => (route.meta.isServiceWhitelisted ?? false) as boolean);
+const showProxyOverlay: Ref<boolean> = computed((): boolean => {
+	if (!requiresProxy.value) {
+		return false;
+	}
+	return daemonStore.upstreamStatus !== UpstreamStatus.READY;
+});
+const showServiceOverlay: Ref<boolean> = computed((): boolean => {
+	if (isServiceWhitelisted.value || !requiresProxy.value || daemonStore.upstreamStatus !== UpstreamStatus.READY) {
+		return false;
+	}
+	return monitorStore.mode === DaemonMode.Service;
 });
 </script>

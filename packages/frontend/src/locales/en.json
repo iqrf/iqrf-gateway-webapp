@@ -63,11 +63,14 @@
 		},
 		"messages": {
 			"fetchFailed": "An error has occurred while fetching data.",
+			"noDaemonMessage": "Cannot send message, no message passed.",
 			"noDevice": "No device bonded to address {address}.",
 			"noDevices": "No devices exist in network.",
 			"noNodes": "No node devices exist in network.",
 			"offlineCoordinator": "Coordinator device may be offline.",
-			"offlineDevice": "Device at address {address} may be offline."
+			"offlineDevice": "Device at address {address} may be offline.",
+			"proxyUnavailable": "Daemon API server not available, cannot send message: {mType}",
+			"serviceModeActive": "Daemon is in service mode, cannot send message: {mType}"
 		},
 		"states": {
 			"active": "Active",
@@ -1954,6 +1957,9 @@
 							"timeout": "Current mode change request timed out."
 						}
 					},
+					"noData": {
+						"fetchError": "Current gateway mode could not be retrieved."
+					},
 					"title": "Current mode"
 				},
 				"modes": {
@@ -1972,6 +1978,9 @@
 							"failed": "Failed to change startup mode.",
 							"success": "Startup mode successfully changed to {mode}."
 						}
+					},
+					"noData": {
+						"fetchError": "Startup gateway mode could not be retrieved."
 					},
 					"title": "Startup mode"
 				}
@@ -3867,6 +3876,22 @@
 			}
 		},
 		"layout": {
+			"overlay": {
+				"proxyServer": {
+					"table": {
+						"serverConnected": "Connected to proxy server",
+						"upstreamConnected": "Connected to Daemon API",
+						"upstreamReconnectDelay": "Next reconnect attempt"
+					},
+					"text": "Connection to proxy server or Daemon API not available. Features requiring IQRF network may not be available. Please try again later or contact your network administrator.",
+					"title": "Daemon API unavailable"
+				},
+				"serviceMode": {
+					"button": "Go to mode change",
+					"text": "This feature is currently unavailable as IQRF Gateway Daemon is in service mode. To use this feature, change the current mode to operational or forwarding.",
+					"title": "Service mode active"
+				}
+			},
 			"themeSwitch": {
 				"title": "Switch theme"
 			}
@@ -3952,6 +3977,30 @@
 			}
 		},
 		"status": {
+			"daemonApi": {
+				"messages": {
+					"proxyAuthFailed": "Failed to authenticate connection to proxy server.",
+					"upstreamAuthFailed": "Failed to authenticate upstream session.",
+					"upstreamDisconnected": "Connection to upstream server lost."
+				},
+				"proxy": {
+					"status": "Proxy server status",
+					"values": {
+						"connected": "Connected",
+						"reconnecting": "Reconnecting"
+					}
+				},
+				"upstream": {
+					"nextAttempt": "Next attempt",
+					"status": "Daemon API status",
+					"values": {
+						"disconnected": "Disconnected",
+						"ready": "Ready",
+						"reconnecting": "Reconnecting",
+						"unknown": "Unknown"
+					}
+				}
+			},
 			"monitor": {
 				"data-collecting": {
 					"notRunning": "Data collecting not running.",

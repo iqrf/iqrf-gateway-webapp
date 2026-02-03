@@ -44,6 +44,7 @@ import { ref, type Ref, type TemplateRef, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
+import { DaemonApiSendError } from '@/errors/DaemonApiSendError';
 import { useDaemonStore } from '@/store/daemonSocket';
 
 const componentProps = withDefaults(
@@ -94,9 +95,17 @@ async function removeTask(): Promise<void> {
 			msgId.value = null;
 		},
 	);
-	msgId.value = await daemonStore.sendMessage(
-		SchedulerService.removeTask(componentProps.taskId, opts),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			SchedulerService.removeTask(componentProps.taskId, opts),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = ComponentState.Idle;
+	}
 }
 
 function handleRemoveTask(rsp: DaemonApiResponse): void {

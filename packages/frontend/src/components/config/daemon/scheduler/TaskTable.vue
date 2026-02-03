@@ -127,6 +127,7 @@ import TaskDeleteDialog from '@/components/config/daemon/scheduler/TaskDeleteDia
 import TaskForm from '@/components/config/daemon/scheduler/TaskForm.vue';
 import TasksDeleteDialog from '@/components/config/daemon/scheduler/TasksDeleteDialog.vue';
 import TasksImportDialog from '@/components/config/daemon/scheduler/TasksImportDialog.vue';
+import { DaemonApiSendError } from '@/errors/DaemonApiSendError';
 import { useApiClient } from '@/services/ApiClient';
 import { useDaemonStore } from '@/store/daemonSocket';
 
@@ -233,9 +234,17 @@ async function listTasks(): Promise<void> {
 			msgId.value = null;
 		},
 	);
-	msgId.value = await daemonStore.sendMessage(
-		SchedulerService.listTasks(true, opts),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			SchedulerService.listTasks(true, opts),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = componentState.value === ComponentState.Loading ? ComponentState.FetchFailed : ComponentState.Ready;
+	}
 }
 
 function handleListTasks(rsp: DaemonApiResponse): void {
@@ -261,9 +270,17 @@ async function getTask(taskId: string): Promise<void> {
 			msgId.value = null;
 		},
 	);
-	msgId.value = await daemonStore.sendMessage(
-		SchedulerService.getTask(taskId, opts),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			SchedulerService.getTask(taskId, opts),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = ComponentState.Ready;
+	}
 }
 
 async function handleGetTask(rsp: DaemonApiResponse): Promise<void> {
@@ -293,9 +310,17 @@ async function startTask(taskId: string): Promise<void> {
 			msgId.value = null;
 		},
 	);
-	msgId.value = await daemonStore.sendMessage(
-		SchedulerService.startTask(taskId, opts),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			SchedulerService.startTask(taskId, opts),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = ComponentState.Ready;
+	}
 }
 
 function handleStartTask(rsp: DaemonApiResponse): void {
@@ -324,9 +349,17 @@ async function stopTask(taskId: string): Promise<void> {
 			msgId.value = null;
 		},
 	);
-	msgId.value = await daemonStore.sendMessage(
-		SchedulerService.stopTask(taskId, opts),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			SchedulerService.stopTask(taskId, opts),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = ComponentState.Ready;
+	}
 }
 
 function handleStopTask(rsp: DaemonApiResponse): void {

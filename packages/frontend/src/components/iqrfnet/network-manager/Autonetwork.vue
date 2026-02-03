@@ -306,10 +306,12 @@ import { Action, ComponentState, IActionBtn, ICard, IDataTable, IDataTableAction
 import { mdiPlay } from '@mdi/js';
 import { ref, Ref, type TemplateRef, toRaw, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
 
 import AutonetworkResultDialog from '@/components/iqrfnet/network-manager/AutonetworkResultDialog.vue';
 import MidForm from '@/components/iqrfnet/network-manager/MidForm.vue';
+import { DaemonApiSendError } from '@/errors/DaemonApiSendError';
 import { validateForm } from '@/helpers/validateForm';
 import { useDaemonStore } from '@/store/daemonSocket';
 
@@ -524,15 +526,23 @@ async function runAutonetwork(): Promise<void> {
 	} else {
 		atnwParams.hwpidFiltering = parseHwpidFilter(hwpidFilter.value);
 	}
-	resultDialog.value?.open();
 	const opts = new DaemonMessageOptions(null);
-	msgId.value = await daemonStore.sendMessage(
-		BondingService.autonetwork(
-			{},
-			atnwParams,
-			opts,
-		),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			BondingService.autonetwork(
+				{},
+				atnwParams,
+				opts,
+			),
+		);
+		resultDialog.value?.open();
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = ComponentState.Idle;
+	}
 }
 
 function handleAutonetwork(rsp: DaemonApiResponse): void {

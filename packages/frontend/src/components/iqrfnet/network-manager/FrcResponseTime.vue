@@ -48,6 +48,7 @@ import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
 
 import FrcResponseTimeResultDialog from '@/components/iqrfnet/network-manager/FrcResponseTimeResultDialog.vue';
+import { DaemonApiSendError } from '@/errors/DaemonApiSendError';
 import { validateForm } from '@/helpers/validateForm';
 import { useDaemonStore } from '@/store/daemonSocket';
 import { FrcResponseTimeResult } from '@/types/DaemonApi/Iqmesh';
@@ -128,13 +129,21 @@ async function frcResponseTime(): Promise<void> {
 	const params: IqmeshFrcResponseTimeParams = {
 		command: command.value,
 	};
-	msgId.value = await daemonStore.sendMessage(
-		MaintenanceService.frcResponseTime(
-			{ repeat: 1, returnVerbose: true },
-			params,
-			opts,
-		),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			MaintenanceService.frcResponseTime(
+				{ repeat: 1, returnVerbose: true },
+				params,
+				opts,
+			),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = ComponentState.Idle;
+	}
 }
 
 function handleFrcResponseTime(rsp: DaemonApiResponse): void {

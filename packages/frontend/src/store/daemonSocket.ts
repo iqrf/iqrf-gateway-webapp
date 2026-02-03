@@ -22,19 +22,32 @@ import { defineStore } from 'pinia';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'vue3-toastify';
 
+import { DaemonApiSendError } from '@/errors/DaemonApiSendError';
 import UrlBuilder from '@/helpers/urlBuilder';
 import { waitUntil } from '@/helpers/wait';
 import ClientSocket, { type GenericSocketState } from '@/modules/clientSocket';
+import i18n from '@/plugins/i18n';
+import { useMonitorStore } from '@/store/monitorSocket';
+import {
+	type ProxyMessage,
+	ProxyMessageType,
+	type UpstreamReconnecting,
+	type UpstreamResponse,
+	UpstreamStatus,
+} from '@/types/proxy';
 
-import { useMonitorStore } from './monitorSocket';
+
+interface UpstreamState {
+	status: UpstreamStatus;
+	nextAttempt: number|null;
+}
 
 interface DaemonState extends GenericSocketState {
 	receivedMessages: number;
-	requests: Record<string, string | DaemonApiRequest>;
-	responses: Record<string, string | DaemonApiResponse>;
 	messages: DaemonMessage[];
 	version: string;
 	versionMsgId: string;
+	upstream: UpstreamState;
 }
 
 const serviceModeWhitelist: string[] = [
@@ -57,18 +70,27 @@ export const useDaemonStore = defineStore('daemon', {
 		reconnecting: false,
 		reconnected: false,
 		receivedMessages: 0,
-		requests: {},
-		responses: {},
 		messages: [],
 		version: '',
 		versionMsgId: '',
+		upstream: {
+			status: UpstreamStatus.UNKNOWN,
+			nextAttempt: null,
+		},
 	}),
 	actions: {
-		initSocket(): void {
+		/**
+		 * Initializes websocket
+		 * @param {string} jwt Authentication token
+		 */
+		initSocket(jwt: string): void {
+			if (this.socket !== null) {
+				return;
+			}
 			const urlBuilder = new UrlBuilder();
 			this.socket = new ClientSocket(
 				{
-					url: urlBuilder.getDaemonApiUrl(),
+					url: urlBuilder.getWebSocketProxyUrl(jwt),
 					autoConnect: true,
 					reconnect: true,
 					reconnectDelay: 5_000,
@@ -76,52 +98,18 @@ export const useDaemonStore = defineStore('daemon', {
 				this.onOpen,
 				this.onClose,
 				this.onError,
-				this.onMessage,
-				this.onSend,
+				this.onProxyMessage,
 			);
 		},
-		sendVersionRequest(): void {
-			this.versionMsgId = uuidv4();
-			const request: DaemonApiRequest = {
-				mType: 'mngDaemon_Version',
-				data: {
-					msgId: this.versionMsgId,
-					returnVerbose: true,
-				},
-			};
-			this.socket?.send(request);
-			this.onSend(request);
-		},
-		async sendMessage(options: DaemonMessageOptions): Promise<string> {
-			const message = options.request;
-			if (message === null) {
-				throw new Error('No message to send, message is null.');
+		/**
+		 * Closes and destroys socket if it exists
+		 */
+		destroySocket(): void {
+			if (this.socket !== null) {
+				this.socket.close();
+				this.socket = null;
 			}
-			const monitorStore = useMonitorStore();
-			if (monitorStore.mode === DaemonMode.Service && !serviceModeWhitelist.includes(message.mType)) {
-				// TODO SERVICE MODE MODAL
-			}
-			message.data.msgId ??= uuidv4();
-			const msgId: string = message.data.msgId;
-			if (message.mType === 'iqmeshNetwork_AutoNetwork') {
-				this.socket?.send(message);
-				return msgId;
-			}
-			await waitUntil(() => !monitorStore.getDataReadingInProgress && !monitorStore.getEnumInProgress);
-			let timeout: number | null = null;
-			if (options.timeout) {
-				timeout = window.setTimeout(() => {
-					this.removeMessage(msgId);
-					options.callback();
-					if (options.message === null) {
-						return;
-					}
-					toast.error(options.message);
-				}, options.timeout);
-			}
-			this.messages.push(new DaemonMessage(msgId, timeout));
-			this.socket?.send(message);
-			return msgId;
+			this.reconnecting = false;
 		},
 		/**
 		 * On socket open action (used as callback)
@@ -137,13 +125,77 @@ export const useDaemonStore = defineStore('daemon', {
 			}
 		},
 		/**
+		 * On WebSocket message handler (used as callback)
+		 * This method is passed as handler for incoming messages from WebSocket proxy server.
+		 * Messages pertaining to upstream state are handled here, forwarded responses from Daemon API
+		 * server are passed to the `onMessage` handler for purposes of backwards compatibility of components
+		 * listening for actions with $onAction and `onMessage`.
+		 * @param {MessageEvent<string>} event Message event
+		 */
+		onProxyMessage(event: MessageEvent<string>): void {
+			const message: ProxyMessage = JSON.parse(event.data) as ProxyMessage;
+			if (message.type === ProxyMessageType.PROXY_AUTH_FAILED) {
+				console.error(
+					i18n.global.t('components.status.daemonApi.messages.proxyAuthFailed'),
+				);
+				return;
+			}
+			if (message.type === ProxyMessageType.UPSTREAM_AUTH_FAILED) {
+				console.error(
+					i18n.global.t('components.status.daemonApi.messages.upstreamAuthFailed'),
+				);
+				return;
+			}
+			if (message.type === ProxyMessageType.UPSTREAM_DISCONNECTED) {
+				this.upstream.status = UpstreamStatus.DISCONNECTED;
+				console.error(
+					i18n.global.t('components.status.daemonApi.messages.upstreamDisconnected'),
+				);
+				return;
+			}
+			if (message.type === ProxyMessageType.UPSTREAM_RECONNECTING) {
+				const data = (message as UpstreamReconnecting).data;
+				this.upstream.status = UpstreamStatus.RECONNECTING;
+				this.upstream.nextAttempt = (message.timestamp + data.delay) * 1_000;
+				return;
+			}
+			if (message.type === ProxyMessageType.UPSTREAM_READY) {
+				this.upstream.status = UpstreamStatus.READY;
+				this.upstream.nextAttempt = null;
+				return;
+			}
+			if (message.type === ProxyMessageType.UPSTRAEM_RESPONSE) {
+				this.onMessage((message as UpstreamResponse).data);
+			}
+		},
+		/**
+		 * Daemon API message handler.
+		 * If the incoming message is a response to version request
+		 * the version is first parsed and stored before passing the request further for processing.
+		 * Responses are stored for matching with requests.
+		 * @param {DaemonApiResponse} message Daemon API response
+		 * @return {DaemonApiResponse} IQRF Gateway Daemon API response
+		 */
+		onMessage(message: DaemonApiResponse): DaemonApiResponse {
+			if (message.mType === 'mngDaemon_Version' && message.data.msgId === this.versionMsgId) {
+				const tokens = new RegExp(/v\d+\.\d+\.\d+/).exec(message.data.rsp.version as string);
+				if (tokens !== null && tokens.length > 0) {
+					this.version = tokens[0];
+				}
+			}
+			return message;
+		},
+		/**
 		 * On socket close action (used as callback)
 		 * @param {CloseEvent} event Close event
 		 */
 		onClose(event: CloseEvent): void {
 			console.error(event);
 			this.connected = false;
-			this.reconnecting = true;
+			this.upstream.status = UpstreamStatus.UNKNOWN;
+			if (this.socket !== null) {
+				this.reconnecting = true;
+			}
 		},
 		/**
 		 * On socket error action (used as callback)
@@ -153,27 +205,76 @@ export const useDaemonStore = defineStore('daemon', {
 			console.error(event);
 		},
 		/**
-		 * On socket message action (used as callback)
-		 * @param {MessageEvent<string>} event Message event
-		 * @return {DaemonApiResponse} IQRF Gateway Daemon API response
+		 * Send a request to fetch Daemon version
 		 */
-		onMessage(event: MessageEvent<string>): DaemonApiResponse {
-			const message: DaemonApiResponse = JSON.parse(event.data) as DaemonApiResponse;
-			if (message.mType === 'mngDaemon_Version' && message.data.msgId === this.versionMsgId) {
-				const tokens = new RegExp(/v\d+\.\d+\.\d+/).exec(message.data.rsp.version as string);
-				if (tokens !== null && tokens.length > 0) {
-					this.version = tokens[0];
-				}
-			}
-			this.responses[message.data.msgId] = message;
-			return message;
-		},
-		onSend(message: DaemonApiRequest): void {
-			if (message.data.msgId === undefined) {
+		sendVersionRequest(): void {
+			if (!this.socket) {
 				return;
 			}
-			this.requests[message.data.msgId] = message;
+			this.versionMsgId = uuidv4();
+			const request: DaemonApiRequest = {
+				mType: 'mngDaemon_Version',
+				data: {
+					msgId: this.versionMsgId,
+					returnVerbose: true,
+				},
+			};
+			this.socket.send(request);
 		},
+		/**
+		 * Sends a message via proxy server to Daemon API for processing.
+		 * If the message options do not contain a request, an error is thrown.
+		 * Similarly, the socket is not initialized or upstream is not ready, an error is thrown.
+		 * If the request does not contain a message ID for matching with response,
+		 * UUIDv4 is generated for it and stored before sending the message.
+		 * The message is not sent until Daemon is done with network enumeration or reading sensor data.
+		 * @param {DaemonMessageOptions} options Daemon API message options
+		 * @return {Promise<string>} Message ID
+		 */
+		async sendMessage(options: DaemonMessageOptions): Promise<string> {
+			const message = options.request;
+			if (message === null) {
+				throw new DaemonApiSendError(
+					i18n.global.t('common.messages.noDaemonMessage'),
+				);
+			}
+			if (!this.socket || this.upstream.status !== UpstreamStatus.READY) {
+				throw new DaemonApiSendError(
+					i18n.global.t('common.messages.proxyUnavailable', { mType: message.mType }),
+				);
+			}
+			const monitorStore = useMonitorStore();
+			if (monitorStore.mode === DaemonMode.Service && !serviceModeWhitelist.includes(message.mType)) {
+				throw new DaemonApiSendError(
+					i18n.global.t('common.messages.serviceModeActive', { mType: message.mType }),
+				);
+			}
+			message.data.msgId ??= uuidv4();
+			const msgId: string = message.data.msgId;
+			if (message.mType === 'iqmeshNetwork_AutoNetwork') {
+				this.socket.send(message);
+				return msgId;
+			}
+			await waitUntil(() => !monitorStore.getDataReadingInProgress && !monitorStore.getEnumInProgress);
+			let timeout: number | null = null;
+			if (options.timeout) {
+				timeout = window.setTimeout(() => {
+					this.removeMessage(msgId);
+					options.callback();
+					if (options.message === null) {
+						return;
+					}
+					toast.error(options.message);
+				}, options.timeout);
+			}
+			this.messages.push(new DaemonMessage(msgId, timeout));
+			this.socket.send(message);
+			return msgId;
+		},
+		/**
+		 * Remove expected message ID and cancel timeout for callback
+		 * @param {string | null} msgId Message ID
+		 */
 		removeMessage(msgId: string | null): void {
 			if (msgId === null) {
 				return;
@@ -187,23 +288,31 @@ export const useDaemonStore = defineStore('daemon', {
 			window.clearTimeout(this.messages[idx].timeout);
 			this.messages.splice(idx, 1);
 		},
-		trimMessageQueue(): void {
-			const overload: DaemonMessage[] = this.messages.slice(32, this.messages.length - 1);
-			this.messages.splice(32, this.messages.length - 1);
-			for (const message of overload) {
-				if (message.msgId in this.requests) {
-					delete this.requests[message.msgId];
-				}
-				if (message.msgId in this.responses) {
-					delete this.responses[message.msgId];
-				}
-			}
-		},
 	},
 	getters: {
+		/**
+		 * Returns connected state of socket
+		 * @return {boolean} Socket connected state
+		 */
 		isConnected(): boolean {
 			return this.connected;
 		},
+		isUpstreamReady(): boolean {
+			return this.upstream.status === UpstreamStatus.READY;
+		},
+		isUpstreamReconnecting(): boolean {
+			return this.upstream.status === UpstreamStatus.RECONNECTING;
+		},
+		upstreamStatus(): UpstreamStatus {
+			return this.upstream.status;
+		},
+		upstreamReconnectTs(): number|null {
+			return this.upstream.nextAttempt;
+		},
+		/**
+		 * Returns version of IQRF Gateway Daemon
+		 * @return {string} IQRF Gateway Daemon verson
+		 */
 		getVersion(): string {
 			return this.version;
 		},

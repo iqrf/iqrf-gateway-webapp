@@ -61,6 +61,7 @@ import { computed, onBeforeUnmount, onMounted, ref, Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
+import { DaemonApiSendError } from '@/errors/DaemonApiSendError';
 import { useDaemonStore } from '@/store/daemonSocket';
 import { useMonitorStore } from '@/store/monitorSocket';
 
@@ -153,9 +154,16 @@ async function getStatus(): Promise<void> {
 		10_000,
 		i18n.t('components.iqrfnet.standard-manager.sensor-data.messages.status.timeout'),
 	);
-	msgId.value = await daemonStore.sendMessage(
-		SensorDataService.status(opts),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			SensorDataService.status(opts),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+		}
+		componentState.value = componentState.value === ComponentState.Loading ? ComponentState.FetchFailed : ComponentState.Ready;
+	}
 }
 
 function handleGetStatus(rsp: DaemonApiResponse): void {
@@ -177,9 +185,17 @@ async function invoke(): Promise<void> {
 		10_000,
 		i18n.t('components.iqrfnet.standard-manager.sensor-data.messages.invoke.timeout'),
 	);
-	msgId.value = await daemonStore.sendMessage(
-		SensorDataService.invoke(opts),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			SensorDataService.invoke(opts),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = ComponentState.Ready;
+	}
 }
 
 function handleInvoke(rsp: DaemonApiResponse): void {
@@ -203,9 +219,17 @@ async function start(): Promise<void> {
 		10_000,
 		i18n.t('components.iqrfnet.standard-manager.sensor-data.messages.start.timeout'),
 	);
-	msgId.value = await daemonStore.sendMessage(
-		SensorDataService.start(opts),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			SensorDataService.start(opts),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = ComponentState.Ready;
+	}
 }
 
 function handleStart(rsp: DaemonApiResponse): void {
@@ -229,9 +253,17 @@ async function stop(): Promise<void> {
 		10_000,
 		i18n.t('components.iqrfnet.standard-manager.sensor-data.messages.stop.timeout'),
 	);
-	msgId.value = await daemonStore.sendMessage(
-		SensorDataService.stop(opts),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			SensorDataService.stop(opts),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = ComponentState.Ready;
+	}
 }
 
 function handleStop(rsp: DaemonApiResponse): void {

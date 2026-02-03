@@ -129,6 +129,7 @@ import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
+import { DaemonApiSendError } from '@/errors/DaemonApiSendError';
 import { validateForm } from '@/helpers/validateForm';
 import { useDaemonStore } from '@/store/daemonSocket';
 
@@ -213,13 +214,21 @@ async function sendCommands(): Promise<void> {
 			componentState.value = ComponentState.Idle;
 		},
 	);
-	msgId.value = await daemonStore.sendMessage(
-		LightService.sendLdiCommands(
-			{ addr: address.value },
-			{ commands: commands.value },
-			opts,
-		),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			LightService.sendLdiCommands(
+				{ addr: address.value },
+				{ commands: commands.value },
+				opts,
+			),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = ComponentState.Idle;
+	}
 }
 
 function handleSendCommands(rsp: Record<string, any>): void {
@@ -254,13 +263,21 @@ async function setLai(): Promise<void> {
 			componentState.value = ComponentState.Idle;
 		},
 	);
-	msgId.value = await daemonStore.sendMessage(
-		LightService.setLai(
-			{ addr: address.value },
-			{ voltage: voltage.value },
-			opts,
-		),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			LightService.setLai(
+				{ addr: address.value },
+				{ voltage: voltage.value },
+				opts,
+			),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = ComponentState.Idle;
+	}
 }
 
 function handleSetLai(rsp: DaemonApiResponse): void {

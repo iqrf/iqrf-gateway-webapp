@@ -34,6 +34,7 @@ import { computed, onBeforeUnmount, ref, Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
+import { DaemonApiSendError } from '@/errors/DaemonApiSendError';
 import { useDaemonStore } from '@/store/daemonSocket';
 
 enum IssueType {
@@ -116,12 +117,20 @@ async function resolveDuplicatedAddresses(): Promise<void> {
 			msgId.value = null;
 		},
 	);
-	msgId.value = await daemonStore.sendMessage(
-		MaintenanceService.duplicatedAddresses(
-			{ repeat: 1, returnVerbose: true },
-			opts,
-		),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			MaintenanceService.duplicatedAddresses(
+				{ repeat: 1, returnVerbose: true },
+				opts,
+			),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = ComponentState.Idle;
+	}
 }
 
 function handleDuplicatedAddresses(rsp: DaemonApiResponse): void {
@@ -150,12 +159,20 @@ async function resolveInconsistentMids(): Promise<void> {
 			msgId.value = null;
 		},
 	);
-	msgId.value = await daemonStore.sendMessage(
-		MaintenanceService.inconsistentMids(
-			{ repeat: 1, returnVerbose: true },
-			opts,
-		),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			MaintenanceService.inconsistentMids(
+				{ repeat: 1, returnVerbose: true },
+				opts,
+			),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = ComponentState.Idle;
+	}
 }
 
 function handleInconsistentMids(rsp: DaemonApiResponse): void {
@@ -184,12 +201,20 @@ async function resolvePrebondedNodes(): Promise<void> {
 			msgId.value = null;
 		},
 	);
-	msgId.value = await daemonStore.sendMessage(
-		MaintenanceService.unusedPrebondedNodes(
-			{ repeat: 1, returnVerbose: true },
-			opts,
-		),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			MaintenanceService.unusedPrebondedNodes(
+				{ repeat: 1, returnVerbose: true },
+				opts,
+			),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = ComponentState.Idle;
+	}
 }
 
 function handlePrebondedNodes(rsp: DaemonApiResponse): void {

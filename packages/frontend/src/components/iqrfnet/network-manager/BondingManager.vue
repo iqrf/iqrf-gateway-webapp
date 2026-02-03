@@ -113,6 +113,7 @@ import { VForm } from 'vuetify/components';
 
 import ClearBondsDialog from '@/components/iqrfnet/network-manager//ClearBondsDialog.vue';
 import UnbondNodeDialog from '@/components/iqrfnet/network-manager/UnbondNodeDialog.vue';
+import { DaemonApiSendError } from '@/errors/DaemonApiSendError';
 import { validateForm } from '@/helpers/validateForm';
 import { useDaemonStore } from '@/store/daemonSocket';
 
@@ -182,13 +183,21 @@ async function bond(): Promise<void> {
 			msgId.value = null;
 		},
 	);
-	msgId.value = await daemonStore.sendMessage(
-		BondingService.bondNode(
-			{ repeat: 1, returnVerbose: true },
-			params,
-			opts,
-		),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			BondingService.bondNode(
+				{ repeat: 1, returnVerbose: true },
+				params,
+				opts,
+			),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = ComponentState.Idle;
+	}
 }
 
 function handleBond(rsp: DaemonApiResponse): void {
@@ -237,13 +246,21 @@ async function smartConnect(): Promise<void> {
 			msgId.value = null;
 		},
 	);
-	msgId.value = await daemonStore.sendMessage(
-		BondingService.smartConnect(
-			{ repeat: 1, returnVerbose: true },
-			params,
-			opts,
-		),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			BondingService.smartConnect(
+				{ repeat: 1, returnVerbose: true },
+				params,
+				opts,
+			),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = ComponentState.Idle;
+	}
 }
 
 function handleSmartConnect(rsp: DaemonApiResponse): void {

@@ -78,6 +78,7 @@ import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
+import { DaemonApiSendError } from '@/errors/DaemonApiSendError';
 import { validateForm } from '@/helpers/validateForm';
 import { useDaemonStore } from '@/store/daemonSocket';
 
@@ -146,12 +147,20 @@ async function enumerate(): Promise<void> {
 			componentState.value = ComponentState.Idle;
 		},
 	);
-	msgId.value = await daemonStore.sendMessage(
-		SensorService.enumerate(
-			{ addr: address.value },
-			opts,
-		),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			SensorService.enumerate(
+				{ addr: address.value },
+				opts,
+			),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = ComponentState.Idle;
+	}
 }
 
 function handleEnumerate(rsp: Record<string, any>): void {
@@ -186,13 +195,21 @@ async function read(): Promise<void> {
 			componentState.value = ComponentState.Idle;
 		},
 	);
-	msgId.value = await daemonStore.sendMessage(
-		SensorService.readSensorsWithTypes(
-			{ addr: address.value },
-			{ sensorIndexes: -1 },
-			opts,
-		),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			SensorService.readSensorsWithTypes(
+				{ addr: address.value },
+				{ sensorIndexes: -1 },
+				opts,
+			),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = ComponentState.Idle;
+	}
 }
 
 function handleRead(rsp: DaemonApiResponse): void {

@@ -75,6 +75,7 @@ import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
 
+import { DaemonApiSendError } from '@/errors/DaemonApiSendError';
 import { validateForm } from '@/helpers/validateForm';
 import { useDaemonStore } from '@/store/daemonSocket';
 
@@ -113,13 +114,21 @@ async function discovery(): Promise<void> {
 	componentState.value = ComponentState.Action;
 	const opts = new DaemonMessageOptions(null);
 	const params = { ...discoveryParams.value };
-	msgId.value = await daemonStore.sendMessage(
-		CoordinatorService.discovery(
-			{ addr: 0 },
-			params,
-			opts,
-		),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			CoordinatorService.discovery(
+				{ addr: 0 },
+				params,
+				opts,
+			),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = ComponentState.Idle;
+	}
 }
 
 function handleDiscovery(rsp: DaemonApiResponse): void {

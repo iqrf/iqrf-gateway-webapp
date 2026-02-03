@@ -5,7 +5,7 @@
 	>
 		<ICard flat tile>
 			<v-card-title>
-				{{ $t('components.iqrfnet.network-manager.dpa-params.dpa-value.title') }}
+				{{ $t('components.iqrfnet.network-manager.dpa-params.dpa-hops.title') }}
 			</v-card-title>
 			<v-alert
 				class='mb-4'
@@ -97,6 +97,7 @@ import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
 
+import { DaemonApiSendError } from '@/errors/DaemonApiSendError';
 import { validateForm } from '@/helpers/validateForm';
 import { useDaemonStore } from '@/store/daemonSocket';
 
@@ -187,13 +188,21 @@ async function dpaHopsAction(action: IqmeshConfigAction): Promise<void> {
 		params.requestHops = requestHops.value;
 		params.responseHops = responseHops.value;
 	}
-	msgId.value = await daemonStore.sendMessage(
-		DpaParametersService.dpaHops(
-			{ repeat: 1, returnVerbose: true },
-			params,
-			opts,
-		),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			DpaParametersService.dpaHops(
+				{ repeat: 1, returnVerbose: true },
+				params,
+				opts,
+			),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = ComponentState.Idle;
+	}
 }
 
 function handleDpaHopsAction(rsp: DaemonApiResponse): void {

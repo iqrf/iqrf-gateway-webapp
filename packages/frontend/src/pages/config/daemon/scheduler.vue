@@ -27,6 +27,10 @@ limitations under the License.
 <route>
 {
 	"name": "SchedulerConfiguration",
+	"meta": {
+		"isServiceWhitelisted": true,
+		"requiresProxy": true,
+	},
 }
 </route>
 

@@ -151,6 +151,7 @@ import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
 import OtaUploadResultDialog from '@/components/iqrfnet/network-manager/OtaUploadResultDialog.vue';
+import { DaemonApiSendError } from '@/errors/DaemonApiSendError';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 import { useDaemonStore } from '@/store/daemonSocket';
@@ -296,13 +297,21 @@ async function executeStep(action: OtaUploadAction): Promise<void> {
 			msgId.value = null;
 		},
 	);
-	msgId.value = await daemonStore.sendMessage(
-		OtaUploadService.upload(
-			{ repeat: 1, returnVerbose: true },
-			params,
-			opts,
-		),
-	);
+	try {
+		msgId.value = await daemonStore.sendMessage(
+			OtaUploadService.upload(
+				{ repeat: 1, returnVerbose: true },
+				params,
+				opts,
+			),
+		);
+	} catch (error) {
+		if (error instanceof DaemonApiSendError) {
+			console.error(error);
+			toast.error(error.message);
+		}
+		componentState.value = ComponentState.Idle;
+	}
 }
 
 function handleOtaUploadResponse(rsp: DaemonApiResponse): void {
