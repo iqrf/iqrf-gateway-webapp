@@ -198,7 +198,7 @@ class WireGuardController extends BaseNetworkController {
 			return $this->validators->validateResponse('networkWireGuardTunnel', $response);
 		} catch (NonexistentWireguardTunnelException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND);
-		}  catch (InterfaceExistsException $e) {
+		} catch (InterfaceExistsException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S409_CONFLICT);
 		}
 	}
@@ -550,7 +550,7 @@ class WireGuardController extends BaseNetworkController {
 			return $this->validators->validateResponse('networkWireGuardTunnelPeer', $response);
 		} catch (WireguardInvalidEndpointException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
-		}  catch (NonexistentWireguardTunnelException $e) {
+		} catch (NonexistentWireguardTunnelException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND);
 		} catch (NonexistentWireguardPeerException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND);
