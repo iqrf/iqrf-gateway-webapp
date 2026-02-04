@@ -201,6 +201,7 @@ import {
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiClipboard, mdiContentSave, mdiUploadOutline } from '@mdi/js';
+import { AxiosError } from 'axios';
 import {
 	computed,
 	ref,
@@ -216,7 +217,6 @@ import WireGuardGenerateKeyDialog from '@/components/ip-network/wireGuard/WireGu
 import WireGuardIpConfig from '@/components/ip-network/wireGuard/WireGuardIpConfig.vue';
 import WireGuardIpStackSelect from '@/components/ip-network/wireGuard/WireGuardIpStackSelect.vue';
 import { useApiClient } from '@/services/ApiClient';
-import { AxiosError } from 'axios';
 
 /// Define props
 const componentProps = withDefaults(
