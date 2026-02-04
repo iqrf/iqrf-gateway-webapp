@@ -72,12 +72,12 @@ import {
 } from '@iqrf/iqrf-vue-ui';
 import { computed, onBeforeMount, ref, type Ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { toast } from 'vue3-toastify';
 
 import { useApiClient } from '@/services/ApiClient';
 
 import WireGuardDeletePeerDialog from './WireGuardDeletePeerDialog.vue';
 import WireGuardPeerForm from './WireGuardPeerForm.vue';
-import { toast } from 'vue3-toastify';
 
 const componentProps = defineProps<{
 	tunnels: WireGuardTunnelListEntry[];
