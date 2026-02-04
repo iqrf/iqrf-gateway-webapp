@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Database\Migrations;
 
@@ -10,15 +10,13 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20260202205833 extends AbstractMigration
-{
-	public function getDescription(): string
-	{
+final class Version20260202205833 extends AbstractMigration {
+
+	public function getDescription(): string {
 		return '';
 	}
 
-	public function up(Schema $schema): void
-	{
+	public function up(Schema $schema): void {
 		// this up() migration is auto-generated, please modify it to your needs
 		$this->addSql('CREATE TEMPORARY TABLE __temp__wireguard_peers AS SELECT id, interface_id, public_key, psk, keepalive, endpoint, port FROM wireguard_peers');
 		$this->addSql('DROP TABLE wireguard_peers');
@@ -29,8 +27,7 @@ final class Version20260202205833 extends AbstractMigration
 		$this->addSql('CREATE UNIQUE INDEX UNIQ_23ACBD9166F9D463 ON wireguard_peers (public_key)');
 	}
 
-	public function down(Schema $schema): void
-	{
+	public function down(Schema $schema): void {
 		// this down() migration is auto-generated, please modify it to your needs
 		$this->addSql('CREATE TEMPORARY TABLE __temp__wireguard_peers AS SELECT public_key, psk, keepalive, endpoint, port, id, interface_id FROM wireguard_peers');
 		$this->addSql('DROP TABLE wireguard_peers');
@@ -39,4 +36,5 @@ final class Version20260202205833 extends AbstractMigration
 		$this->addSql('DROP TABLE __temp__wireguard_peers');
 		$this->addSql('CREATE INDEX IDX_23ACBD91AB0BE982 ON wireguard_peers (interface_id)');
 	}
+
 }
