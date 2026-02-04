@@ -219,6 +219,7 @@ limitations under the License.
 <script setup lang='ts'>
 import { WireGuardIpAddress, WireGuardIpStack, WireGuardPeer, WireGuardTunnelListEntry } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import { Action, ComponentState, IActionBtn, ICard, IDataTableAction, IModalWindow, INumberInput, ITextInput, ValidationRules } from '@iqrf/iqrf-vue-ui';
+import { AxiosError } from 'axios';
 import { computed, ref, type Ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
@@ -226,7 +227,7 @@ import { toast } from 'vue3-toastify';
 import { useApiClient } from '@/services/ApiClient';
 
 import WireGuardIpConfig from './WireGuardIpConfig.vue';
-import { AxiosError } from 'axios';
+
 
 /// Define props
 const componentProps = withDefaults(
