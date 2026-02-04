@@ -226,6 +226,7 @@ import { toast } from 'vue3-toastify';
 import { useApiClient } from '@/services/ApiClient';
 
 import WireGuardIpConfig from './WireGuardIpConfig.vue';
+import { AxiosError } from 'axios';
 
 /// Define props
 const componentProps = withDefaults(
@@ -341,19 +342,32 @@ async function onSubmit(): Promise<void> {
 		componentState.value = ComponentState.Action;
 		if (componentProps.action === Action.Add) {
 			response = await service.createPeer(peerConfig.value);
-			toast.success(i18n.t('components.ipNetwork.wireGuard.peers.add.messages.success'));
+			toast.success(
+				i18n.t('components.ipNetwork.wireGuard.peers.add.messages.success'),
+			);
 		} else {
 			response = await service.updatePeer(peerConfig.value.id!, peerConfig.value);
-			toast.success(i18n.t('components.ipNetwork.wireGuard.peers.update.messages.success'));
+			toast.success(
+				i18n.t('components.ipNetwork.wireGuard.peers.update.messages.success'),
+			);
 		}
 		emit('updatePeer', response);
 		closeDialog();
-	} catch {
+	} catch (error) {
 		componentState.value = ComponentState.Error;
-		if (componentProps.action === Action.Add) {
-			toast.error(i18n.t('components.ipNetwork.wireGuard.peers.add.messages.failure'));
+		if ((error as AxiosError)?.response?.status === 409) {
+			toast.error(
+				i18n.t('components.ipNetwork.wireGuard.peers.add.messages.conflict'),
+			);
+			componentState.value = ComponentState.Ready;
+		} else if (componentProps.action === Action.Add) {
+			toast.error(
+				i18n.t('components.ipNetwork.wireGuard.peers.add.messages.failure'),
+			);
 		} else {
-			toast.error(i18n.t('components.ipNetwork.wireGuard.peers.update.messages.failure'));
+			toast.error(
+				i18n.t('components.ipNetwork.wireGuard.peers.update.messages.failure'),
+			);
 		}
 	}
 }
@@ -389,6 +403,7 @@ watch(
 			componentState.value = ComponentState.Ready;
 		} catch {
 			componentState.value = ComponentState.FetchFailed;
+			toast.error(i18n.t('common.messages.fetchFailed'));
 		}
 	},
 	{ immediate: true },

@@ -77,6 +77,7 @@ import { useApiClient } from '@/services/ApiClient';
 
 import WireGuardDeletePeerDialog from './WireGuardDeletePeerDialog.vue';
 import WireGuardPeerForm from './WireGuardPeerForm.vue';
+import { toast } from 'vue3-toastify';
 
 const componentProps = defineProps<{
 	tunnels: WireGuardTunnelListEntry[];
@@ -122,6 +123,7 @@ async function fetchData(): Promise<void> {
 		componentState.value = ComponentState.Ready;
 	} catch {
 		componentState.value = ComponentState.FetchFailed;
+		toast.error(i18n.t('common.messages.fetchFailed'));
 	}
 }
 

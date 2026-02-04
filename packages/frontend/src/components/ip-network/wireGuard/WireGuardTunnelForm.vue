@@ -216,6 +216,7 @@ import WireGuardGenerateKeyDialog from '@/components/ip-network/wireGuard/WireGu
 import WireGuardIpConfig from '@/components/ip-network/wireGuard/WireGuardIpConfig.vue';
 import WireGuardIpStackSelect from '@/components/ip-network/wireGuard/WireGuardIpStackSelect.vue';
 import { useApiClient } from '@/services/ApiClient';
+import { AxiosError } from 'axios';
 
 /// Define props
 const componentProps = withDefaults(
@@ -303,12 +304,6 @@ async function onSubmit(enable: boolean, activate: boolean): Promise<void> {
 		} else {
 			response = await service.updateTunnel(wgConfig.value.id!, payload);
 		}
-		if (enable) {
-			service.enableTunnel(response.id!);
-		}
-		if (activate) {
-			service.activateTunnel(response.id!);
-		}
 		if (componentProps.action === Action.Add) {
 			toast.success(
 				i18n.t('components.ipNetwork.wireGuard.tunnels.add.messages.success'),
@@ -320,15 +315,39 @@ async function onSubmit(enable: boolean, activate: boolean): Promise<void> {
 		}
 		emit('updateTunnel', response, enable, activate);
 		closeDialog();
-	} catch {
+	} catch (error) {
 		componentState.value = ComponentState.Error;
-		if (componentProps.action === Action.Add) {
+		if ((error as AxiosError)?.response?.status === 409) {
+			toast.error(
+				i18n.t('components.ipNetwork.wireGuard.tunnels.add.messages.conflict'),
+			);
+			componentState.value = ComponentState.Ready;
+		} else if (componentProps.action === Action.Add) {
 			toast.error(
 				i18n.t('components.ipNetwork.wireGuard.tunnels.add.messages.failure'),
 			);
 		} else {
 			toast.error(
 				i18n.t('components.ipNetwork.wireGuard.tunnels.update.messages.failure'),
+			);
+		}
+		return;
+	}
+	if (enable) {
+		try {
+			service.enableTunnel(response.id!);
+		} catch {
+			toast.error(
+				i18n.t('components.ipNetwork.wireGuard.tunnels.columns.action.failure.enable'),
+			);
+		}
+	}
+	if (activate) {
+		try {
+			service.activateTunnel(response.id!);
+		} catch {
+			toast.error(
+				i18n.t('components.ipNetwork.wireGuard.tunnels.columns.action.failure.activate'),
 			);
 		}
 	}
@@ -363,9 +382,7 @@ async function generateKey(): Promise<void> {
 	} catch {
 		componentState.value = ComponentState.Error;
 		toast.error(
-			i18n.t(
-				'components.ipNetwork.wireGuard.tunnels.configuration.form.genKeyPair.error',
-			),
+			i18n.t('components.ipNetwork.wireGuard.tunnels.configuration.form.genKeyPair.error'),
 		);
 	}
 }
@@ -416,6 +433,7 @@ watch(
 			}
 		} catch {
 			componentState.value = ComponentState.FetchFailed;
+			toast.error(i18n.t('common.messages.fetchFailed'));
 		}
 	},
 );

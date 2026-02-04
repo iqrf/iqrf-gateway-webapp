@@ -79,11 +79,15 @@ async function activate(): Promise<void> {
 	try {
 		await service.activateTunnel(componentProps.wgListEntry.id);
 		componentState.value = ComponentState.Ready;
-		toast.success(i18n.t('components.ipNetwork.wireGuard.tunnels.columns.action.success.activate'));
+		toast.success(
+			i18n.t('components.ipNetwork.wireGuard.tunnels.columns.action.success.activate'),
+		);
 		emit('updateActiveFlag', componentProps.wgListEntry.id);
 	} catch {
 		componentState.value = ComponentState.Error;
-		toast.error(i18n.t('components.ipNetwork.wireGuard.tunnels.columns.action.failure.activate'));
+		toast.error(
+			i18n.t('components.ipNetwork.wireGuard.tunnels.columns.action.failure.activate'),
+		);
 	}
 }
 

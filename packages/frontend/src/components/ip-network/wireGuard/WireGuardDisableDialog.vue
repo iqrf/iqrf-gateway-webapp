@@ -80,11 +80,15 @@ async function enable(): Promise<void> {
 	try {
 		await service.enableTunnel(componentProps.wgListEntry.id);
 		componentState.value = ComponentState.Ready;
-		toast.success(i18n.t('components.ipNetwork.wireGuard.tunnels.columns.action.success.enable'));
+		toast.success(
+			i18n.t('components.ipNetwork.wireGuard.tunnels.columns.action.success.enable'),
+		);
 		emit('updateEnableFlag', componentProps.wgListEntry.id);
 	} catch {
 		componentState.value = ComponentState.Error;
-		toast.error(i18n.t('components.ipNetwork.wireGuard.tunnels.columns.action.failure.enable'));
+		toast.error(
+			i18n.t('components.ipNetwork.wireGuard.tunnels.columns.action.failure.enable'),
+		);
 	}
 }
 

@@ -33,6 +33,8 @@ limitations under the License.
 import { WireGuardTunnelConfig, WireGuardTunnelListEntry } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import { ComponentState } from '@iqrf/iqrf-vue-ui';
 import { onBeforeMount, ref, Ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { toast } from 'vue3-toastify';
 
 import WireGuardPeersTable from '@/components/ip-network/wireGuard/WireGuardPeersTable.vue';
 import WireGuardTunnelsTable
@@ -43,6 +45,7 @@ import { useApiClient } from '@/services/ApiClient';
 const service = useApiClient().getNetworkServices().getWireGuardService();
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const tunnels: Ref<WireGuardTunnelListEntry[]> = ref([]);
+const i18n = useI18n();
 
 /**
  * Fetches WireGuard tunnels
@@ -54,6 +57,7 @@ async function fetchData(): Promise<void> {
 		componentState.value = ComponentState.Ready;
 	} catch {
 		componentState.value = ComponentState.FetchFailed;
+		toast.error(i18n.t('common.messages.fetchFailed'));
 	}
 }
 
