@@ -2574,6 +2574,7 @@
 				"peers": {
 					"add": {
 						"messages": {
+							"conflict": "Peer public key is already used by another WireGuard peer!",
 							"failure": "Failed to add WireGuard peer!",
 							"success": "WireGuard peer added successfully!"
 						}
@@ -2634,6 +2635,7 @@
 				"tunnels": {
 					"add": {
 						"messages": {
+							"conflict": "Tunnel name or private key is already used by another tunnel!",
 							"failure": "WireGuard tunnel creation failed!",
 							"success": "WireGuard tunnel created successfylly!"
 						}

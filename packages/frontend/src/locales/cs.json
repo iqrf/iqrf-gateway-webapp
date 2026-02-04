@@ -877,6 +877,7 @@
 				"peers": {
 					"add": {
 						"messages": {
+							"conflict": "Veřejný klíč je již používán jiným uzlem!",
 							"failure": "Nepodařilo se přidat WireGuard uzel!",
 							"success": "WireGuard uzel byl úspěšně přidán!"
 						}
@@ -937,6 +938,7 @@
 				"tunnels": {
 					"add": {
 						"messages": {
+							"conflict": "Název nebo soukromý klíč tunelu jsou již používány jiným tunelem!",
 							"failure": "Přidání WireGuard tunelu selhalo!",
 							"success": "WireGuard tunel byl úspěšně přidán!"
 						}
