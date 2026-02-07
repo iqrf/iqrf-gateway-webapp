@@ -1,6 +1,6 @@
 /**
- * Copyright 2017-2025 IQRF Tech s.r.o.
- * Copyright 2019-2025 MICRORISC s.r.o.
+ * Copyright 2017-2026 IQRF Tech s.r.o.
+ * Copyright 2019-2026 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,18 @@
  */
 
 import { setupLayouts } from 'virtual:generated-layouts';
-import generatedRoutes from 'virtual:generated-pages';
-import { createRouter, createWebHistory, type NavigationGuardNext, type RouteLocationNormalized, type RouteRecordRaw } from 'vue-router';
+import {
+	createRouter,
+	createWebHistory,
+	type NavigationGuardNext,
+	type RouteLocationNormalized,
+	type Router,
+	type RouteRecordRaw,
+} from 'vue-router';
+import {
+	routes as generatedRoutes,
+	handleHotUpdate,
+} from 'vue-router/auto-routes';
 
 import { useUserStore } from '@/store/user';
 
@@ -25,7 +35,7 @@ const routes: RouteRecordRaw[] = [
 	...setupLayouts(generatedRoutes),
 ];
 
-const router = createRouter({
+const router: Router = createRouter({
 	history: createWebHistory(import.meta.env.BASE_URL),
 	routes: routes,
 });
@@ -68,5 +78,9 @@ router.isReady().then((): void => {
 }).catch((error: unknown): void => {
 	console.error(error);
 });
+
+if (import.meta.hot) {
+	handleHotUpdate(router);
+}
 
 export default router;

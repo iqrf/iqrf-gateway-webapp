@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 
-/// <reference types='vite/client' />
-
 /**
  * Environment variables
  */

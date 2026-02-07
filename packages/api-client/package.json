@@ -83,28 +83,28 @@
 	"type": "module",
 	"dependencies": {
 		"@iqrf/iqrf-gateway-daemon-utils": "^0.1.17",
-		"axios": "^1.13.2",
+		"axios": "^1.13.4",
 		"luxon": "^3.7.2",
 		"openapi-typescript": "^7.10.1",
 		"punycode": "^2.3.1",
 		"uuid": "^13.0.0"
 	},
 	"devDependencies": {
-		"@iqrf/eslint-config": "^0.4.1",
+		"@iqrf/eslint-config": "^0.4.2",
 		"@types/luxon": "^3.7.1",
-		"@types/node": "^25.0.8",
+		"@types/node": "^25.2.1",
 		"@types/punycode": "^2.1.4",
-		"@vitest/coverage-istanbul": "^4.0.17",
-		"@vitest/spy": "^4.0.17",
+		"@vitest/coverage-istanbul": "^4.0.18",
+		"@vitest/spy": "^4.0.18",
 		"axios-mock-adapter": "^2.1.0",
 		"eslint": "^9.39.2",
 		"ts-node": "^10.9.2",
-		"tsdown": "^0.19.0",
+		"tsdown": "^0.20.3",
 		"typedoc": "^0.28.16",
 		"typedoc-material-theme": "^1.4.1",
-		"typedoc-plugin-mdn-links": "^5.0.10",
+		"typedoc-plugin-mdn-links": "^5.1.1",
 		"typescript": "^5.9.3",
-		"vite-tsconfig-paths": "^6.0.4",
-		"vitest": "^4.0.17"
+		"vite-tsconfig-paths": "^6.0.5",
+		"vitest": "^4.0.18"
 	}
 }

@@ -42,6 +42,7 @@ dist/
 packages/*/.env.local
 packages/*/dist/
 packages/*/components.d.ts
+packages/*/src/types/vue-router.d.ts
 www/dist/
 # Cypress
 packages/*/cypress/videos

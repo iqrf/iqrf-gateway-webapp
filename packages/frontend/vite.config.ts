@@ -23,12 +23,12 @@ import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite';
 import UnheadVite from '@unhead/addons/vite';
 import vue from '@vitejs/plugin-vue';
 import { type ConfigEnv, defineConfig, loadEnv, type UserConfig } from 'vite';
-import Pages from 'vite-plugin-pages';
 import VueDevTools from 'vite-plugin-vue-devtools';
 import Layouts from 'vite-plugin-vue-layouts-next';
 import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify';
 import svgLoader from 'vite-svg-loader';
 import tsconfigPaths from 'vite-tsconfig-paths';
+import VueRouter from 'vue-router/vite';
 
 const gitCommitHash = proc.execSync('git rev-parse --short HEAD').toString().trim();
 
@@ -41,7 +41,10 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
 		},
 		plugins: [
 			tsconfigPaths(),
-			Pages(),
+			VueRouter({
+				routesFolder: 'src/pages',
+				dts: 'src/types/vue-router.d.ts',
+			}),
 			Layouts({
 				layoutsDirs: 'src/layouts',
 				defaultLayout: 'DefaultLayout',
