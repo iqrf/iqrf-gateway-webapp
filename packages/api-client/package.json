@@ -82,8 +82,8 @@
 	"license": "Apache-2.0",
 	"type": "module",
 	"dependencies": {
-		"@iqrf/iqrf-ui-common-types": "^0.1.0",
 		"@iqrf/iqrf-gateway-daemon-utils": "^0.1.17",
+		"@iqrf/iqrf-ui-common-types": "^0.1.0",
 		"axios": "^1.13.4",
 		"luxon": "^3.7.2",
 		"openapi-typescript": "^7.10.1",
@@ -105,7 +105,7 @@
 		"typedoc-material-theme": "^1.4.1",
 		"typedoc-plugin-mdn-links": "^5.1.1",
 		"typescript": "^5.9.3",
-		"vite-tsconfig-paths": "^6.0.5",
+		"vite-tsconfig-paths": "^6.1.0",
 		"vitest": "^4.0.18"
 	}
 }

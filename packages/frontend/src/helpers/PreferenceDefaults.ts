@@ -14,8 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Theme } from '@iqrf/iqrf-ui-common-types';
 
-import { Theme } from '@/types/theme';
 import { TimeFormat } from '@/types/time';
 
 /**

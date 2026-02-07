@@ -32,12 +32,12 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
+import { Theme } from '@iqrf/iqrf-ui-common-types';
 import { mdiWeatherNight, mdiWeatherSunny } from '@mdi/js';
 import { storeToRefs } from 'pinia';
 import { onBeforeMount, ref, Ref, watch } from 'vue';
 
 import { useThemeStore } from '@/store/theme';
-import { Theme } from '@/types/theme';
 
 /// Component props
 withDefaults(

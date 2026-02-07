@@ -49,7 +49,7 @@ limitations under the License.
 </template>
 
 <script setup lang='ts'>
-import { Theme } from '@iqrf/iqrf-vue-ui';
+import { Theme } from '@iqrf/iqrf-ui-common-types';
 import { mdiCloseCircle } from '@mdi/js';
 import { storeToRefs } from 'pinia';
 import prism from 'prismjs';

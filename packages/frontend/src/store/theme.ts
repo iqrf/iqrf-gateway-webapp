@@ -16,10 +16,10 @@
  */
 
 import { UserThemePreference } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { Theme } from '@iqrf/iqrf-ui-common-types';
 import { defineStore } from 'pinia';
 
 import { PreferenceDefaults } from '@/helpers/PreferenceDefaults';
-import { Theme } from '@/types/theme';
 
 /**
  * Theme store state
