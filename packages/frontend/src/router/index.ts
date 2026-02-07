@@ -72,7 +72,7 @@ router.onError((error: unknown, to: RouteLocationNormalized): void => {
 	}
 });
 
-// eslint-disable-next-line promise/always-return
+// eslint-disable-next-line promise/always-return -- we want to catch errors but do not want to interfere with normal navigation
 router.isReady().then((): void => {
 	localStorage.removeItem('vuetify:dynamic-reload');
 }).catch((error: unknown): void => {

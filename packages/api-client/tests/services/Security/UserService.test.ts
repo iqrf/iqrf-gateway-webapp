@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { Language } from '@iqrf/iqrf-ui-common-types';
 import { beforeEach, describe, expect, test } from 'vitest';
 
 import { UserService } from '../../../src/services/Security';
@@ -21,7 +22,6 @@ import {
 	AccountState,
 	type EmailSentResponse,
 	type UserInfo,
-	UserLanguage,
 	UserRole,
 } from '../../../src/types';
 import { mockedAxios, mockedClient } from '../../mocks/axios';
@@ -56,7 +56,7 @@ describe('UserService', (): void => {
 			'username': 'roman',
 			'email': 'roman@ondráček.eu',
 			'role': UserRole.Admin,
-			'language': UserLanguage.English,
+			'language': Language.English,
 			'state': AccountState.Unverified,
 		},
 	];
@@ -90,7 +90,7 @@ describe('UserService', (): void => {
 			username: 'roman',
 			email: null,
 			password: 'password',
-			language: UserLanguage.English,
+			language: Language.English,
 			role: UserRole.Admin,
 		});
 		expect(actual).toStrictEqual(response);
@@ -119,7 +119,7 @@ describe('UserService', (): void => {
 		const actual: EmailSentResponse = await service.update(2, {
 			username: 'roman',
 			email: 'roman@ondráček.eu',
-			language: UserLanguage.English,
+			language: Language.English,
 			role: UserRole.Admin,
 		});
 		expect(actual).toStrictEqual(response);

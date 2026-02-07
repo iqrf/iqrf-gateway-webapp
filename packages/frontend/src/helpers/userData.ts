@@ -15,7 +15,8 @@
  * limitations under the License.
  */
 
-import { UserLanguage, UserRole } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { UserRole } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { Language } from '@iqrf/iqrf-vue-ui';
 import { computed, type ComputedRef } from 'vue';
 
 import i18n from '@/plugins/i18n';
@@ -23,8 +24,8 @@ import { type SelectItem } from '@/types/vuetify';
 
 export function getLanguageOptions(): ComputedRef<SelectItem[]> {
 	return computed(() => {
-		const languages = Object.values(UserLanguage);
-		return languages.map((item: UserLanguage): SelectItem => {
+		const languages = Object.values(Language);
+		return languages.map((item: Language): SelectItem => {
 			return {
 				title: i18n.global.t(`components.common.locale.languages.${item}`),
 				value: item,

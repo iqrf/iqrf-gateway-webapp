@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { Language } from '@iqrf/iqrf-ui-common-types';
 import { beforeEach, describe, expect, test } from 'vitest';
 
 import { AccountService } from '../../src/services';
@@ -25,7 +26,6 @@ import {
 	type UserAccountRecovery,
 	type UserCredentials,
 	type UserInfo,
-	UserLanguage,
 	type UserPasswordChange,
 	type UserPasswordReset,
 	type UserPreferences,
@@ -76,7 +76,7 @@ describe('AccountService', (): void => {
 		username: 'admin',
 		email: 'admin@example.com',
 		role: UserRole.Admin,
-		language: UserLanguage.English,
+		language: Language.English,
 		state: AccountState.Verified,
 	};
 
@@ -105,7 +105,7 @@ describe('AccountService', (): void => {
 		const request: AccountEdit = {
 			username: 'admin',
 			email: 'admin@example.org',
-			language: UserLanguage.English,
+			language: Language.English,
 			baseUrl: 'http://iqaros.local/',
 		};
 		const response: EmailSentResponse = {

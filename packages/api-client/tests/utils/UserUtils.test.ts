@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { Language } from '@iqrf/iqrf-ui-common-types';
 import { describe, expect, test } from 'vitest';
 
 import {
@@ -21,7 +22,6 @@ import {
 	type UserBase,
 	type UserEdit,
 	type UserInfo,
-	UserLanguage,
 	UserRole,
 } from '../../src/types';
 import { UserUtils } from '../../src/utils';
@@ -35,7 +35,7 @@ describe('UserUtils', (): void => {
 		username: 'admin',
 		email: null,
 		role: UserRole.Admin,
-		language: UserLanguage.English,
+		language: Language.English,
 	};
 
 	/**

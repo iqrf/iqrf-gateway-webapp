@@ -79,7 +79,6 @@ import { type AccountService } from '@iqrf/iqrf-gateway-webapp-client/services';
 import {
 	type AccountEdit,
 	type UserInfo,
-	UserLanguage,
 } from '@iqrf/iqrf-gateway-webapp-client/types';
 import {
 	Action,
@@ -119,7 +118,7 @@ const userStore = useUserStore();
 /// User data
 const user: Ref<AccountEdit> = ref({
 	username: '',
-	language: Language.English as unknown as UserLanguage,
+	language: Language.English,
 	email: '',
 });
 /// Account service

@@ -20,13 +20,13 @@ import {
 	TimeFormat,
 	type UserCredentials,
 	type UserInfo,
-	type UserLanguage,
 	type UserPreferences,
 	type UserRole,
 	UserSessionExpiration,
 	type UserSignedIn,
 	UserTimeFormatPreference,
 } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { type Language } from '@iqrf/iqrf-vue-ui';
 import { type User as SentryUser, setUser } from '@sentry/vue';
 import { jwtDecode, type JwtPayload } from 'jwt-decode';
 import { defineStore } from 'pinia';
@@ -261,9 +261,9 @@ export const useUserStore = defineStore('user', {
 		/**
 		 * Returns the user language
 		 * @param {UserState} state User state
-		 * @return {UserLanguage|null} User language
+		 * @return {Language|null} User language
 		 */
-		getLanguage(state: UserState): UserLanguage | null {
+		getLanguage(state: UserState): Language | null {
 			return state.user?.language ?? null;
 		},
 		/**

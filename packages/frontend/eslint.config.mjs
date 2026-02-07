@@ -51,6 +51,7 @@ const options = {
 		'coverage/',
 		'dist/',
 		'src/schemas/functions/*.js',
+		'src/types/vue-router.d.ts',
 	],
 };
 

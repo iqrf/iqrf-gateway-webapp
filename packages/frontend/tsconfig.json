@@ -27,7 +27,7 @@
 	},
 	"types": [
 		"vue3-toastify/global",
-		"vite-plugin-vue-layouts-next/client",
+		"vite-plugin-vue-layouts-next/client"
 	],
 	"include": [
 		"src/**/*.ts",

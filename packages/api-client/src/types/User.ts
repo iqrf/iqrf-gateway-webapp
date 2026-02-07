@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import { type Language } from '@iqrf/iqrf-ui-common-types';
+
 /**
  * Account state enum
  */
@@ -22,16 +24,6 @@ export enum AccountState {
 	Unverified = 'unverified',
 	/// Verified account
 	Verified = 'verified',
-}
-
-/**
- * User language enum
- */
-export enum UserLanguage {
-	/// Czech
-	Czech = 'cs',
-	/// English
-	English = 'en',
 }
 
 /**
@@ -75,7 +67,7 @@ export interface UserBase {
 	/// User e-mail address
 	email: string|null;
 	/// User language
-	language: UserLanguage;
+	language: Language;
 	/// User role
 	role: UserRole;
 	/// User name
@@ -126,7 +118,7 @@ export interface UserSignedIn extends UserInfo {
 export interface AccountEdit {
 	baseUrl?: string;
 	username?: string;
-	language?: UserLanguage;
+	language?: Language;
 	email?: string;
 }
 

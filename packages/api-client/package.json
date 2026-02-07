@@ -82,6 +82,7 @@
 	"license": "Apache-2.0",
 	"type": "module",
 	"dependencies": {
+		"@iqrf/iqrf-ui-common-types": "^0.1.0",
 		"@iqrf/iqrf-gateway-daemon-utils": "^0.1.17",
 		"axios": "^1.13.4",
 		"luxon": "^3.7.2",
