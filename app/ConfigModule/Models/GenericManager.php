@@ -24,6 +24,7 @@ use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use Iqrf\FileManager\FileManager;
 use Nette\IOException;
 use Nette\Utils\Arrays;
+use Nette\Utils\FileInfo;
 use Nette\Utils\Finder;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
@@ -86,7 +87,7 @@ class GenericManager {
 		$dir = $this->fileManager->getBasePath();
 		$instances = [];
 		foreach (Finder::findFiles('*.json')->exclude('config.json')->in($dir) as $file) {
-			$fileName = Strings::replace($file->getRealPath(), ['~^' . realpath($dir) . '/~', '/.json$/']);
+			$fileName = $this->normalizeFileName($file, $dir);
 			try {
 				$json = $this->fileManager->readJson($fileName . '.json');
 			} catch (IOException | JsonException) {
@@ -166,7 +167,7 @@ class GenericManager {
 	public function getInstanceByProperty(string $type, mixed $value): ?string {
 		$dir = $this->fileManager->getBasePath();
 		foreach (Finder::findFiles('*.json')->exclude('config.json')->in($dir) as $file) {
-			$fileName = Strings::replace($file->getRealPath(), ['~^' . realpath($dir) . '/~', '/.json$/']);
+			$fileName = $this->normalizeFileName($file, $dir);
 			try {
 				$json = $this->fileManager->readJson($fileName . '.json');
 			} catch (IOException | JsonException) {
@@ -253,6 +254,19 @@ class GenericManager {
 			$found[$k] = array_map(static fn (array $component): string => $component['instance'], $this->list());
 		}
 		return $found;
+	}
+
+	/**
+	 * Normalizes the file name by removing the base path and the .json extension
+	 * @param FileInfo $file File info
+	 * @param string $basePath Base path
+	 * @return string Normalized file name
+	 */
+	private function normalizeFileName(FileInfo $file, string $basePath): string {
+		return Strings::replace($file->getRealPath(), [
+			'~^' . realpath($basePath) . '/~' => '',
+			'/.json$/' => '',
+		]);
 	}
 
 }
