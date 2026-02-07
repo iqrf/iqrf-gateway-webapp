@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Copyright 2017-2025 IQRF Tech s.r.o.
- * Copyright 2019-2025 MICRORISC s.r.o.
+ * Copyright 2017-2026 IQRF Tech s.r.o.
+ * Copyright 2019-2026 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ConsoleModule\Commands;
 
+use RuntimeException;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
@@ -64,11 +65,12 @@ class UserPasswordCommand extends UserCommand {
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
 	 * @return string New user's password
+	 * @throws RuntimeException Question helper not found
 	 */
 	private function askPassword(InputInterface $input, OutputInterface $output): string {
 		$password = $input->getOption('password');
 		while ($password === null) {
-			$helper = $this->getHelper('question');
+			$helper = $this->getQuestionHelper();
 			$question = new Question('Please enter the new user\'s password: ');
 			$password = $helper->ask($input, $output, $question);
 		}

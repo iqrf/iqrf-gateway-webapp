@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Copyright 2017-2025 IQRF Tech s.r.o.
- * Copyright 2019-2025 MICRORISC s.r.o.
+ * Copyright 2017-2026 IQRF Tech s.r.o.
+ * Copyright 2019-2026 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\ConsoleModule\Commands;
 
 use App\Models\Database\Entities\ApiKey;
+use RuntimeException;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputDefinition;
@@ -52,6 +53,7 @@ class ApiKeyDeleteCommand extends ApiKeyCommand {
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
 	 * @return int Exit code
+	 * @throws RuntimeException Question helper not found
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$style = new SymfonyStyle($input, $output);
@@ -61,9 +63,9 @@ class ApiKeyDeleteCommand extends ApiKeyCommand {
 			$style->error('API key with specified ID does not exist.');
 			return Command::FAILURE;
 		}
-		$helper = $this->getHelper('question');
+		$helper = $this->getQuestionHelper();
 		$question = new ConfirmationQuestion('Do you really want to delete API key "' . $apiKey->getDescription() . '"? ', false);
-		if (!$helper->ask($input, $output, $question)) {
+		if ($helper->ask($input, $output, $question) !== true) {
 			return Command::SUCCESS;
 		}
 		$this->entityManager->remove($apiKey);
@@ -85,7 +87,7 @@ class ApiKeyDeleteCommand extends ApiKeyCommand {
 			return $apiKey;
 		}
 		$style = new SymfonyStyle($input, $output);
-		$helper = $this->getHelper('question');
+		$helper = $this->getQuestionHelper();
 		while ($apiKey === null) {
 			$style->error('API key with ID "' . $apiKeyId . '" does not exist.');
 			$apiKeys = $this->repository->listWithDescription();

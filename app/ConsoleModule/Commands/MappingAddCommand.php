@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Copyright 2017-2025 IQRF Tech s.r.o.
- * Copyright 2019-2025 MICRORISC s.r.o.
+ * Copyright 2017-2026 IQRF Tech s.r.o.
+ * Copyright 2019-2026 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -81,8 +81,8 @@ class MappingAddCommand extends MappingCommand {
 		$powerPin = $this->askPowerPin($input, $output);
 		$mapping = new Mapping($type, $name, $deviceType, $interface, $busPin, $pgmPin, $powerPin);
 		if ($type === MappingType::UART) {
-			$baudRate = $this->askBaudRate($input, $output);
 			try {
+				$baudRate = $this->askBaudRate($input, $output);
 				$mapping->setBaudRate($baudRate);
 			} catch (ValueError) {
 				$style->error('Invalid UART baud rate: ' . $input->getOption('baud-rate'));

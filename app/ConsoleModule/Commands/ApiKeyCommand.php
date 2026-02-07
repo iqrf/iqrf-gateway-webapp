@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Copyright 2017-2025 IQRF Tech s.r.o.
- * Copyright 2019-2025 MICRORISC s.r.o.
+ * Copyright 2017-2026 IQRF Tech s.r.o.
+ * Copyright 2019-2026 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ use App\Models\Database\EntityManager;
 use App\Models\Database\Repositories\ApiKeyRepository;
 use DateMalformedStringException;
 use DateTime;
+use RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
@@ -52,11 +53,12 @@ abstract class ApiKeyCommand extends EntityManagerCommand {
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
 	 * @return string Username
+	 * @throws RuntimeException Question helper not found
 	 */
 	protected function askDescription(InputInterface $input, OutputInterface $output): string {
 		$description = $input->getOption('description');
 		while ($description === null) {
-			$helper = $this->getHelper('question');
+			$helper = $this->getQuestionHelper();
 			$question = new Question('Please enter the API key description: ');
 			$description = $helper->ask($input, $output, $question);
 		}
@@ -69,6 +71,7 @@ abstract class ApiKeyCommand extends EntityManagerCommand {
 	 * @param OutputInterface $output Command output
 	 * @return DateTime|null API key expiration date
 	 * @throws ApiKeyInvalidExpirationException Date string is malformed
+	 * @throws RuntimeException Question helper not found
 	 */
 	protected function askExpiration(InputInterface $input, OutputInterface $output): ?DateTime {
 		$expiration = $input->getOption('expiration');
@@ -82,7 +85,7 @@ abstract class ApiKeyCommand extends EntityManagerCommand {
 				throw new ApiKeyInvalidExpirationException($e->getMessage());
 			}
 		}
-		$helper = $this->getHelper('question');
+		$helper = $this->getQuestionHelper();
 		$question = new Question('Please enter the API key expiration date: ');
 		$expiration = $helper->ask($input, $output, $question);
 		try {
@@ -97,11 +100,12 @@ abstract class ApiKeyCommand extends EntityManagerCommand {
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
 	 * @return ApiKey API key
+	 * @throws RuntimeException Question helper not found
 	 */
 	protected function askId(InputInterface $input, OutputInterface $output): ApiKey {
 		$apiKeyId = $input->getOption('id');
 		$apiKey = ($apiKeyId !== null) ? $this->repository->find($apiKeyId) : null;
-		$helper = $this->getHelper('question');
+		$helper = $this->getQuestionHelper();
 		while ($apiKey === null) {
 			$apiKeys = $this->repository->listWithDescription();
 			$question = new ChoiceQuestion('Please enter API key ID: ', $apiKeys);

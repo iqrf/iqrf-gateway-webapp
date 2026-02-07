@@ -130,8 +130,8 @@ class WebSocketClient {
 	/**
 	 * Receives a message from WebSocket server
 	 * @param Client\WebSocket $connection WebSocket client connection
-	 * @param MessageInterface $message Received message
-	 * @param MessageInterface|null $resolved Stored receive message
+	 * @param MessageInterface<string> $message Received message
+	 * @param MessageInterface<string>|null $resolved Stored receive message
 	 * @param bool $wait Wait to finish
 	 * @param int $attempts Attempts to receive
 	 * @param ApiRequest $request IQRF JSON API request
@@ -154,7 +154,7 @@ class WebSocketClient {
 	/**
 	 * Checks if JSON DPA request and response have got the same message ID
 	 * @param ApiRequest $request JSON DPA request
-	 * @param MessageInterface $response JSON DPA request
+	 * @param MessageInterface<string> $response JSON DPA request
 	 * @return bool Have JSON DPA request and response got the same message ID
 	 * @throws JsonException
 	 */
@@ -169,7 +169,7 @@ class WebSocketClient {
 	/**
 	 * Parses IQRF JSON API request and response
 	 * @param ApiRequest $request JSON DPA request
-	 * @param MessageInterface|null $response IQRF JSON API response
+	 * @param MessageInterface<string>|null $response IQRF JSON API response
 	 * @param bool $checkStatus Check response status
 	 * @return array{request: array<mixed>|stdClass, response: stdClass} IQRF JSON API response in an array
 	 * @throws EmptyResponseException

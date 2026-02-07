@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Copyright 2017-2025 IQRF Tech s.r.o.
- * Copyright 2019-2025 MICRORISC s.r.o.
+ * Copyright 2017-2026 IQRF Tech s.r.o.
+ * Copyright 2019-2026 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ use App\Models\Database\EntityManager;
 use App\Models\Database\Enums\UserLanguage;
 use App\Models\Database\Enums\UserRole;
 use App\Models\Database\Repositories\UserRepository;
-use Symfony\Component\Console\Command\Command;
+use RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
@@ -34,7 +34,7 @@ use Symfony\Component\Console\Question\ChoiceQuestion;
 /**
  * User base command
  */
-abstract class UserCommand extends Command {
+abstract class UserCommand extends EntityManagerCommand {
 
 	/**
 	 * @var UserRepository User database repository
@@ -46,9 +46,9 @@ abstract class UserCommand extends Command {
 	 * @param EntityManager $entityManager Entity manager
 	 */
 	public function __construct(
-		protected readonly EntityManager $entityManager,
+		EntityManager $entityManager,
 	) {
-		parent::__construct();
+		parent::__construct($entityManager);
 		$this->repository = $entityManager->getUserRepository();
 	}
 
@@ -57,6 +57,7 @@ abstract class UserCommand extends Command {
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
 	 * @return User Information about the user
+	 * @throws RuntimeException Question helper not found
 	 */
 	protected function findUserByName(InputInterface $input, OutputInterface $output): User {
 		$username = $input->getOption('username');
@@ -65,7 +66,7 @@ abstract class UserCommand extends Command {
 			$user = $this->repository->findOneByUserName($username);
 		}
 		while (!($user instanceof User)) {
-			$helper = $this->getHelper('question');
+			$helper = $this->getQuestionHelper();
 			$userNames = $this->repository->listUserNames();
 			$question = new ChoiceQuestion('Please enter the username: ', $userNames);
 			$username = $helper->ask($input, $output, $question);
@@ -80,13 +81,14 @@ abstract class UserCommand extends Command {
 	 * @param OutputInterface $output Command output
 	 * @param UserLanguage|null $default Default user's language
 	 * @return UserLanguage User's language
+	 * @throws RuntimeException Question helper not found
 	 */
 	protected function askLanguage(InputInterface $input, OutputInterface $output, ?UserLanguage $default): UserLanguage {
 		$language = $input->getOption('language');
 		$language = $language !== null ? UserLanguage::tryFrom($language) : null;
 		$languages = array_column(UserLanguage::cases(), 'value');
 		while ($language === null) {
-			$helper = $this->getHelper('question');
+			$helper = $this->getQuestionHelper();
 			$question = new ChoiceQuestion('Please enter the user\'s language: ', $languages, $default->value);
 			$language = UserLanguage::tryFrom($helper->ask($input, $output, $question));
 		}
@@ -99,7 +101,8 @@ abstract class UserCommand extends Command {
 	 * @param OutputInterface $output Command output
 	 * @param UserRole|null $default Default user's role
 	 * @return UserRole User's role
-	 * @throws InvalidUserRoleException
+	 * @throws InvalidUserRoleException Role does not exist
+	 * @throws RuntimeException Question helper not found
 	 */
 	protected function askRole(InputInterface $input, OutputInterface $output, ?UserRole $default): UserRole {
 		$role = $input->getOption('role');
@@ -108,7 +111,7 @@ abstract class UserCommand extends Command {
 		}
 		$roles = array_column(UserRole::cases(), 'value');
 		while ($role === null) {
-			$helper = $this->getHelper('question');
+			$helper = $this->getQuestionHelper();
 			$question = new ChoiceQuestion('Please enter the user\'s role: ', $roles, $default?->value);
 			$role = UserRole::tryFrom($helper->ask($input, $output, $question));
 		}

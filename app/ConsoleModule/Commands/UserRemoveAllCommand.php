@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Copyright 2017-2025 IQRF Tech s.r.o.
- * Copyright 2019-2025 MICRORISC s.r.o.
+ * Copyright 2017-2026 IQRF Tech s.r.o.
+ * Copyright 2019-2026 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ namespace App\ConsoleModule\Commands;
 use App\Exceptions\InvalidUserRoleException;
 use App\Models\Database\Entities\User;
 use App\Models\Database\Enums\UserRole;
+use RuntimeException;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -52,6 +53,7 @@ class UserRemoveAllCommand extends UserCommand {
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
 	 * @return int Exit code
+	 * @throws RuntimeException Question helper not found
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$style = new SymfonyStyle($input, $output);
@@ -64,9 +66,9 @@ class UserRemoveAllCommand extends UserCommand {
 		$criteria = $role instanceof UserRole ? ['role' => $role] : [];
 		$users = $this->repository->findBy($criteria);
 		if ($input->isInteractive() && $users !== []) {
-			$helper = $this->getHelper('question');
+			$helper = $this->getQuestionHelper();
 			$question = new ConfirmationQuestion(sprintf('Do you really want to remove user(s) %s? (y/N)', $this->usersToString($users)), false);
-			if (!$helper->ask($input, $output, $question)) {
+			if ($helper->ask($input, $output, $question) !== true) {
 				$style->warning('No users were removed.');
 				return 0;
 			}
@@ -84,6 +86,7 @@ class UserRemoveAllCommand extends UserCommand {
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
 	 * @return UserRole|null Role
+	 * @throws InvalidUserRoleException Role does not exist
 	 */
 	protected function askUsersRole(InputInterface $input, OutputInterface $output): ?UserRole {
 		$role = $input->getOption('role');
@@ -92,12 +95,12 @@ class UserRemoveAllCommand extends UserCommand {
 		}
 		$roles = array_column(UserRole::cases(), 'value');
 		while ($role === null) {
-			$helper = $this->getHelper('question');
+			$helper = $this->getQuestionHelper();
 			$question = new ConfirmationQuestion('Do you want to filter removed users by role? (y/N)', false);
-			if (!$helper->ask($input, $output, $question)) {
+			if ($helper->ask($input, $output, $question) !== true) {
 				return null;
 			}
-			$helper = $this->getHelper('question');
+			$helper = $this->getQuestionHelper();
 			$question = new ChoiceQuestion('Please select a role to delete users by: ', $roles);
 			$role = UserRole::tryFrom($helper->ask($input, $output, $question));
 		}

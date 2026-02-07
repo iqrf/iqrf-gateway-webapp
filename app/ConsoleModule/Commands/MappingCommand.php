@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Copyright 2017-2025 IQRF Tech s.r.o.
- * Copyright 2019-2025 MICRORISC s.r.o.
+ * Copyright 2017-2026 IQRF Tech s.r.o.
+ * Copyright 2019-2026 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,10 +26,12 @@ use App\Models\Database\Enums\MappingBaudRate;
 use App\Models\Database\Enums\MappingDeviceType;
 use App\Models\Database\Enums\MappingType;
 use App\Models\Database\Repositories\MappingRepository;
+use RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
+use ValueError;
 
 abstract class MappingCommand extends EntityManagerCommand {
 
@@ -53,6 +55,8 @@ abstract class MappingCommand extends EntityManagerCommand {
 	 * @param OutputInterface $output Command output
 	 * @param MappingType $current Default or current mapping type
 	 * @return MappingType Mapping type
+	 * @throws RuntimeException Question helper not found
+	 * @throws ValueError Invalid mapping type provided as command option
 	 */
 	protected function askType(InputInterface $input, OutputInterface $output, MappingType $current = MappingType::SPI): MappingType {
 		$type = $input->getOption('type');
@@ -61,7 +65,7 @@ abstract class MappingCommand extends EntityManagerCommand {
 		}
 		$types = array_column(MappingType::cases(), 'value');
 		while ($type === null) {
-			$helper = $this->getHelper('question');
+			$helper = $this->getQuestionHelper();
 			$question = new ChoiceQuestion('Please select mapping type: ', $types, $current->value);
 			$type = MappingType::tryFrom($helper->ask($input, $output, $question));
 		}
@@ -73,11 +77,12 @@ abstract class MappingCommand extends EntityManagerCommand {
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
 	 * @return string Mapping name
+	 * @throws RuntimeException Question helper not found
 	 */
 	protected function askName(InputInterface $input, OutputInterface $output): string {
 		$name = $input->getOption('name');
 		while ($name === null) {
-			$helper = $this->getHelper('question');
+			$helper = $this->getQuestionHelper();
 			$question = new Question('Please enter the mapping name: ');
 			$name = $helper->ask($input, $output, $question);
 		}
@@ -90,6 +95,8 @@ abstract class MappingCommand extends EntityManagerCommand {
 	 * @param OutputInterface $output Command output
 	 * @param MappingDeviceType $current Default or current device type
 	 * @return MappingDeviceType Device type
+	 * @throws RuntimeException Question helper not found
+	 * @throws ValueError Invalid device type provided as command option
 	 */
 	protected function askDeviceType(InputInterface $input, OutputInterface $output, MappingDeviceType $current = MappingDeviceType::Board): MappingDeviceType {
 		$type = $input->getOption('device-type');
@@ -98,7 +105,7 @@ abstract class MappingCommand extends EntityManagerCommand {
 		}
 		$types = array_column(MappingDeviceType::cases(), 'value');
 		while ($type === null) {
-			$helper = $this->getHelper('question');
+			$helper = $this->getQuestionHelper();
 			$question = new ChoiceQuestion('Please select device type: ', $types, $current->value);
 			$type = MappingDeviceType::tryFrom($helper->ask($input, $output, $question));
 		}
@@ -110,11 +117,12 @@ abstract class MappingCommand extends EntityManagerCommand {
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
 	 * @return string Mapping device name
+	 * @throws RuntimeException Question helper not found
 	 */
 	protected function askInterface(InputInterface $input, OutputInterface $output): string {
 		$interface = $input->getOption('interface');
 		while ($interface === null) {
-			$helper = $this->getHelper('question');
+			$helper = $this->getQuestionHelper();
 			$question = new Question('Please enter the mapping device interface: ');
 			$interface = $helper->ask($input, $output, $question);
 		}
@@ -126,11 +134,12 @@ abstract class MappingCommand extends EntityManagerCommand {
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
 	 * @return int Mapping bus enable pin
+	 * @throws RuntimeException Question helper not found
 	 */
 	protected function askBusPin(InputInterface $input, OutputInterface $output): int {
 		$busPin = $input->getOption('bus-pin');
 		while ($busPin === null || !$this->isValidPinNumber($busPin)) {
-			$helper = $this->getHelper('question');
+			$helper = $this->getQuestionHelper();
 			$question = new Question('Please enter the mapping bus enable pin number: ');
 			$busPin = $helper->ask($input, $output, $question);
 
@@ -143,11 +152,12 @@ abstract class MappingCommand extends EntityManagerCommand {
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
 	 * @return int Mapping programming mode switch pin
+	 * @throws RuntimeException Question helper not found
 	 */
 	protected function askPgmPin(InputInterface $input, OutputInterface $output): int {
 		$pgmPin = $input->getOption('pgm-pin');
 		while ($pgmPin === null || !$this->isValidPinNumber($pgmPin)) {
-			$helper = $this->getHelper('question');
+			$helper = $this->getQuestionHelper();
 			$question = new Question('Please enter the mapping programming mode switch pin number: ');
 			$pgmPin = $helper->ask($input, $output, $question);
 		}
@@ -159,11 +169,12 @@ abstract class MappingCommand extends EntityManagerCommand {
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
 	 * @return int Mapping power enable pin
+	 * @throws RuntimeException Question helper not found
 	 */
 	protected function askPowerPin(InputInterface $input, OutputInterface $output): int {
 		$powerPin = $input->getOption('power-pin');
 		while ($powerPin === null || !$this->isValidPinNumber($powerPin)) {
-			$helper = $this->getHelper('question');
+			$helper = $this->getQuestionHelper();
 			$question = new Question('Please enter the mapping power enable pin number: ');
 			$powerPin = $helper->ask($input, $output, $question);
 
@@ -177,6 +188,8 @@ abstract class MappingCommand extends EntityManagerCommand {
 	 * @param OutputInterface $output Command output
 	 * @param MappingBaudRate $current Current mapping UART baud rate
 	 * @return MappingBaudRate Mapping UART baud rate
+	 * @throws RuntimeException Question helper not found
+	 * @throws ValueError Invalid baud rate provided as command option
 	 */
 	protected function askBaudRate(InputInterface $input, OutputInterface $output, MappingBaudRate $current = MappingBaudRate::Default): MappingBaudRate {
 		$baudRate = $input->getOption('baud-rate');
@@ -185,7 +198,7 @@ abstract class MappingCommand extends EntityManagerCommand {
 		}
 		$baudRates = array_column(MappingBaudRate::cases(), 'value');
 		while ($baudRate === null) {
-			$helper = $this->getHelper('question');
+			$helper = $this->getQuestionHelper();
 			$question = new ChoiceQuestion('Please select the mapping UART baud rate: ', $baudRates, $current->value);
 			$baudRate = MappingBaudRate::tryFrom(intval($helper->ask($input, $output, $question)));
 		}
@@ -197,11 +210,12 @@ abstract class MappingCommand extends EntityManagerCommand {
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
 	 * @return Mapping Mapping
+	 * @throws RuntimeException Question helper not found
 	 */
 	protected function askId(InputInterface $input, OutputInterface $output): Mapping {
 		$mappingId = $input->getOption('mapping-id');
 		$mapping = ($mappingId !== null) ? $this->repository->find($mappingId) : null;
-		$helper = $this->getHelper('question');
+		$helper = $this->getQuestionHelper();
 		while ($mapping === null) {
 			$mappings = $this->repository->listMappingNamesWithTypes();
 			$question = new ChoiceQuestion('Please select mapping ID: ', $mappings);

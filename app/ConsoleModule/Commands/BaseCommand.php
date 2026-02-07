@@ -20,21 +20,26 @@ declare(strict_types = 1);
 
 namespace App\ConsoleModule\Commands;
 
-use App\Models\Database\EntityManager;
+use RuntimeException;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\QuestionHelper;
 
 /**
- * CLI command with entity manager
+ * Base CLI command
  */
-abstract class EntityManagerCommand extends BaseCommand {
+abstract class BaseCommand extends Command {
 
 	/**
-	 * Constructor
-	 * @param EntityManager $entityManager Entity manager
+	 * Returns the question helper
+	 * @return QuestionHelper Question helper
+	 * @throws RuntimeException Question helper not found
 	 */
-	public function __construct(
-		protected readonly EntityManager $entityManager,
-	) {
-		parent::__construct();
+	protected function getQuestionHelper(): QuestionHelper {
+		$helper = $this->getHelper('question');
+		if (!$helper instanceof QuestionHelper) {
+			throw new RuntimeException('Question helper not found');
+		}
+		return $helper;
 	}
 
 }
