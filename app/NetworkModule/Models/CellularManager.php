@@ -52,7 +52,11 @@ class CellularManager {
 
 	/**
 	 * Lists available modems
-	 * @return array<array{interface: string, signal: int, rssi: float}> Available modems
+	 * @return array<array{
+	 *     interface: string,
+	 *     signal: int,
+	 *     rssi: float|null,
+	 * }> Available modems
 	 */
 	public function listModems(): array {
 		$output = $this->commandManager->run('mmcli --list-modems --output-json', true);
@@ -101,6 +105,11 @@ class CellularManager {
 		return $output->getExitCode() === 0 ? Json::decode($output->getStdout()) : null;
 	}
 
+	/**
+	 * Checks command output for errors
+	 * @param ICommand $command Command to check
+	 * @throws ModemManagerException Command execution failed
+	 */
 	private function checkCommand(ICommand $command): void {
 		if ($command->getExitCode() !== 0) {
 			throw new ModemManagerException($command->getStderr());

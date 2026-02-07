@@ -42,7 +42,9 @@ class AzureManager implements IManager {
 
 	/**
 	 * Creates a new MQTT interface
-	 * @param array<string, int|string> $values Values from form
+	 * @param array{
+	 *     connectionString: string,
+	 * } $values Values from form
 	 * @throws InvalidConnectionStringException
 	 * @throws JsonException
 	 */

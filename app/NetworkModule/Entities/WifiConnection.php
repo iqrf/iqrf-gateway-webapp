@@ -67,6 +67,13 @@ final readonly class WifiConnection implements INetworkManagerEntity {
 	 * @return WifiConnection WiFi connection entity
 	 */
 	public static function nmCliDeserialize(array $nmCli): INetworkManagerEntity {
+		/**
+		 * @var array{
+		 *     ssid: string,
+		 *     mode: string,
+		 *     'seen-bssids': string,
+		 * } $array Parsed nmcli configuration array
+		 */
 		$array = $nmCli[self::NMCLI_PREFIX];
 		$mode = WifiMode::from($array['mode']);
 		$bssids = explode(',', $array['seen-bssids']);
@@ -80,7 +87,32 @@ final readonly class WifiConnection implements INetworkManagerEntity {
 
 	/**
 	 * Serializes WiFi connection entity into JSON
-	 * @return array<string, string|array<int|string, string|array<string, array<string>|int|string>>|null> JSON serialized entity
+	 * @return array{
+	 *     ssid: string,
+	 *     mode: string,
+	 *     bssids: array<int, string>,
+	 *     security: array{
+	 *         type: string,
+	 *         psk: string|null,
+	 *         leap?: array{
+	 *             username: string,
+	 *             password: string,
+	 *         },
+	 *         wep?: array{
+	 *             type: string,
+	 *             index: int,
+	 *             keys: array<string>,
+	 *         },
+	 *         eap?: array{
+	 *             phaseOneMethod: string|null,
+	 *             phaseTwoMethod: string|null,
+	 *             anonymousIdentity: string,
+	 *             cert: string,
+	 *             identity: string,
+	 *             password: string,
+	 *         },
+	 *     }|null,
+	 * } JSON serialized entity
 	 */
 	public function jsonSerialize(): array {
 		return [

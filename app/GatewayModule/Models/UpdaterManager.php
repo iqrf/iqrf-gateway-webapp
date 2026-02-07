@@ -37,7 +37,7 @@ class UpdaterManager {
 	private IPackageManager $packageManager;
 
 	/**
-	 * @var array<string> Adapters for package managers
+	 * @var array<class-string<IPackageManager>> Adapters for package managers
 	 */
 	private array $packageManagers = [
 		AptGetPackageManager::class,
@@ -53,7 +53,7 @@ class UpdaterManager {
 				$this->packageManager = new $packageManager($commandManager);
 				break;
 			} catch (UnsupportedPackageManagerException) {
-				$this->packageManager = new UnsupportedPackageManager();
+				$this->packageManager = new UnsupportedPackageManager($commandManager);
 			}
 		}
 	}

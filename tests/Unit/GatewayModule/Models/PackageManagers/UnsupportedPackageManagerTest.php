@@ -28,6 +28,7 @@ namespace Tests\Unit\GatewayModule\Models\PackageManagers;
 
 use App\GatewayModule\Exceptions\UnsupportedPackageManagerException;
 use App\GatewayModule\Models\PackageManagers\UnsupportedPackageManager;
+use Iqrf\CommandExecutor\Tester\Traits\CommandExecutorTestCase;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -37,6 +38,8 @@ require __DIR__ . '/../../../../bootstrap.php';
  * Tests for tool for unsupported package manager
  */
 final class UnsupportedPackageManagerTest extends TestCase {
+
+	use CommandExecutorTestCase;
 
 	/**
 	 * Packages
@@ -121,7 +124,9 @@ final class UnsupportedPackageManagerTest extends TestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
-		$this->manager = new UnsupportedPackageManager();
+		$this->setUpCommandExecutor();
+		$this->commandExecutor->shouldNotHaveBeenCalled();
+		$this->manager = new UnsupportedPackageManager($this->commandExecutor);
 	}
 
 }

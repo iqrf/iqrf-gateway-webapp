@@ -22,6 +22,7 @@ namespace App\NetworkModule\Entities;
 
 use App\NetworkModule\Enums\WifiMode;
 use App\NetworkModule\Enums\WifiSecurity;
+use InvalidArgumentException;
 use JsonSerializable;
 use Nette\Utils\Strings;
 
@@ -61,6 +62,9 @@ final readonly class WifiNetwork implements JsonSerializable {
 	public static function nmCliDeserialize(string $nmCli): self {
 		$pattern = '#^(?\'inUse\'[^:]*):(?\'bssid\'([A-Fa-f\d]{2}\\\\:){5}[A-Fa-f\d]{2}):(?\'ssid\'[^:]*):(?\'mode\'[^:]*):(?\'channel\'[^:]*):(?\'rate\'[^:]*):(?\'signal\'[^:]*):(?\'security\'[^:]*)$#';
 		$matches = Strings::match($nmCli, $pattern);
+		if ($matches === null) {
+			throw new InvalidArgumentException('Invalid nmcli output for WiFi network: ' . $nmCli);
+		}
 		$inUse = $matches['inUse'] === '*';
 		$bssid = Strings::replace($matches['bssid'], '#\\\\:#', ':');
 		$ssid = Strings::replace($matches['ssid'], '#\\\\:#', ':');

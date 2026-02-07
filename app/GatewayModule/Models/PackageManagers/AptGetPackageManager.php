@@ -32,6 +32,7 @@ class AptGetPackageManager implements IPackageManager {
 	/**
 	 * Constructor
 	 * @param CommandExecutor $commandManager Command manager
+	 * @throws UnsupportedPackageManagerException When apt-get is not available
 	 */
 	public function __construct(
 		private readonly CommandExecutor $commandManager,

@@ -64,6 +64,13 @@ class VlanConfiguration implements INetworkManagerEntity {
 	 * @return self VLAN configuration entity
 	 */
 	public static function nmCliDeserialize(array $nmCli): self {
+		/**
+		 * @var array{
+		 *     parent: string,
+		 *     id: string,
+		 *     flags: string,
+		 * } $array Parsed nmcli VLAN configuration
+		 */
 		$array = $nmCli[self::NMCLI_PREFIX];
 		return new self(
 			$array['parent'],
@@ -87,7 +94,16 @@ class VlanConfiguration implements INetworkManagerEntity {
 
 	/**
 	 * Serializes VLAN configuration entity into JSON
-	 * @return array{parentInterface: string, id: int, flags: array{reorderHeaders: bool, gvrp: bool, looseBinding: bool, mvrp: bool}} JSON serialized VLAN configuration
+	 * @return array{
+	 *     parentInterface: string,
+	 *     id: int,
+	 *     flags: array{
+	 *         reorderHeaders: bool,
+	 *         gvrp: bool,
+	 *         looseBinding: bool,
+	 *         mvrp: bool,
+	 *     },
+	 * } JSON serialized VLAN configuration
 	 */
 	public function jsonSerialize(): array {
 		return [

@@ -137,6 +137,9 @@ class ConnectionManager {
 		}
 		$pattern = '#[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}#';
 		$matches = Strings::match($output->getStdout(), $pattern);
+		if ($matches === null) {
+			throw new NetworkManagerException('Failed to parse nmcli output for new connection UUID: ' . $output->getStdout());
+		}
 		return $matches[0];
 	}
 

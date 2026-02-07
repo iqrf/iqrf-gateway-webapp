@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\NetworkModule\Entities;
 
+use InvalidArgumentException;
 use JsonSerializable;
 use Nette\Utils\Strings;
 use Ramsey\Uuid\Uuid;
@@ -48,6 +49,12 @@ final readonly class AvailableConnection implements JsonSerializable {
 	 */
 	public static function nmCliDeserialize(string $string): self {
 		$array = Strings::match($string, '#^(?<uuid>[[:xdigit:]]{8}(?:-[[:xdigit:]]{4}){3}-[[:xdigit:]]{12}) \| (?<name>.*)$#');
+		if (
+			$array === null ||
+			!Uuid::isValid($array['uuid'])
+		) {
+			throw new InvalidArgumentException('Invalid nmcli output for available network connection: ' . $string);
+		}
 		return new self(
 			name: $array['name'],
 			uuid: Uuid::fromString($array['uuid']),

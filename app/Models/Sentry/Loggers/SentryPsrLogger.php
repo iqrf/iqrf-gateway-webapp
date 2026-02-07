@@ -92,7 +92,7 @@ class SentryPsrLogger implements LoggerInterface {
 			in_array($level, $this->captureLevels, true)
 		) {
 			$event = Event::createEvent();
-			$event->setMessage($message);
+			$event->setMessage($message instanceof Stringable ? $message->__toString() : $message);
 			if ($context !== []) {
 				$event->setExtra($context);
 			}

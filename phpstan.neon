@@ -37,10 +37,7 @@ parameters:
 			function: 'posix_getpwuid()'
 			message: 'might reveal system user information'
 			allowInMethods:
-				- 'App\GatewayModule\Models\Backup\CloudProvisioningBackup::recreateDirectory()'
-				- 'App\GatewayModule\Models\Backup\DaemonBackup::recreateDirectories()'
-				- 'App\GatewayModule\Models\Backup\DaemonBackup::restore()'
-				- 'App\GatewayModule\Models\Backup\IqrfSoftwareBackup::recreateDirectory()'
+				- 'App\GatewayModule\Models\Backup\PosixHelper::getChownOwner()'
 				- 'App\InstallModule\Models\SudoManager::checkSudo()'
 	ignoreErrors:
 		-
@@ -55,4 +52,5 @@ parameters:
 			message: '#^Calling Tracy\\Debugger::barDump\(\) is forbidden, use logger instead, debug bar is not visible in production\.#'
 			path: app/IqrfNetModule/Models/WebSocketClient.php
 			count: 2
-		- '#^^Parameter \#3 \$next \(callable\(Psr\\Http\\Message\\ServerRequestInterface, Psr\\Http\\Message\\ResponseInterface\): Psr\\Http\\Message\\ResponseInterface\) of method [A-Za-z0-9\\]+::__invoke\(\) should be contravariant with parameter \$next \(callable\(\): mixed\) of method Contributte\\Middlewares\\IMiddleware::__invoke\(\)$#'
+		- '#^Parameter \#1 \$values \(.*\) of method [A-Za-z0-9\\]+::createMqttInterface\(\) should be contravariant with parameter \$values \(array<string, int\|string>\) of method App\\CloudModule\\Models\\IManager::createMqttInterface\(\)$#'
+		- '#^Parameter \#3 \$next \(callable\(Psr\\Http\\Message\\ServerRequestInterface, Psr\\Http\\Message\\ResponseInterface\): Psr\\Http\\Message\\ResponseInterface\) of method [A-Za-z0-9\\]+::__invoke\(\) should be contravariant with parameter \$next \(callable\(\): mixed\) of method Contributte\\Middlewares\\IMiddleware::__invoke\(\)$#'

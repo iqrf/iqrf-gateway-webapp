@@ -53,6 +53,13 @@ final readonly class IPv6Current implements JsonSerializable {
 	 * @return static IPv6 current configuration
 	 */
 	public static function nmCliDeserialize(array $nmCli, IPv6Methods $method): self {
+		/**
+		 * @var array{
+		 *     GATEWAY?: string,
+		 *     ADDRESS?: array<int, string>,
+		 *     DNS?: array<int, string>,
+		 * } $array Parsed nmcli configuration array
+		 */
 		$array = $nmCli[self::NMCLI_PREFIX] ?? [];
 		if (array_key_exists('GATEWAY', $array) && ($array['GATEWAY'] !== '')) {
 			$gateway = IPv6::factory($array['GATEWAY']);
@@ -73,7 +80,17 @@ final readonly class IPv6Current implements JsonSerializable {
 
 	/**
 	 * Serializes current IPv6 configuration entity into JSON
-	 * @return array{method: string, addresses: array<array{address: string, prefix: int}>, gateway: string|null, dns: array<array{address: string}>} JSON serialized entity
+	 * @return array{
+	 *     method: string,
+	 *     addresses: array<array{
+	 *         address: string,
+	 *         prefix: int,
+	 *     }>,
+	 *     gateway: string|null,
+	 *     dns: array<array{
+	 *         address: string,
+	 *     }>,
+	 * } JSON serialized entity
 	 */
 	public function jsonSerialize(): array {
 		return [

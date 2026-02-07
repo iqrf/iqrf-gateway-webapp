@@ -31,7 +31,7 @@ class IqrfOsPatchRepository extends EntityRepository {
 
 	/**
 	 * Retrieves list of all patch details
-	 * @return list<array<int|string>> Array of OS patch detail
+	 * @return list<array{int|null, string, int, int, int, int, int, int, string}> Array of OS patch detail
 	 */
 	public function getOsPatchDetails(): array {
 		return array_map(

@@ -61,7 +61,7 @@ class MonitBackup implements IBackupManager {
 		private readonly RestoreLogger $restoreLogger,
 		FeatureManager $featureManager,
 	) {
-		$this->featureEnabled = $featureManager->get('monit')['enabled'];
+		$this->featureEnabled = $featureManager->isEnabled('monit');
 	}
 
 	/**

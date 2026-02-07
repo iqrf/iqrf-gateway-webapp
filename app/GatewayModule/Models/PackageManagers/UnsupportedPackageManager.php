@@ -21,11 +21,22 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Models\PackageManagers;
 
 use App\GatewayModule\Exceptions\UnsupportedPackageManagerException;
+use Iqrf\CommandExecutor\CommandExecutor;
 
 /**
  * Adapter for unsupported package manager
  */
 class UnsupportedPackageManager implements IPackageManager {
+
+	/**
+	 * Constructor
+	 * @param CommandExecutor $commandManager Command manager
+	 */
+	public function __construct(
+		CommandExecutor $commandManager,
+	) {
+		// No implementation needed
+	}
 
 	/**
 	 * Installs the packages

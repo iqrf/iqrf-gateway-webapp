@@ -78,7 +78,7 @@ abstract class IqrfSoftwareBackup implements IBackupManager {
 		if (!in_array($software, self::SOFTWARES, true)) {
 			throw new InvalidArgumentException('Invalid software name.');
 		}
-		$this->featureEnabled = $featureManager->get($this->getFeatureName())['enabled'];
+		$this->featureEnabled = $featureManager->isEnabled($this->getFeatureName());
 	}
 
 	/**
@@ -131,8 +131,7 @@ abstract class IqrfSoftwareBackup implements IBackupManager {
 	 * Recreates directory
 	 */
 	private function recreateDirectory(): void {
-		$user = posix_getpwuid(posix_geteuid());
-		$owner = $user['name'] . ':' . posix_getgrgid($user['gid'])['name'];
+		$owner = PosixHelper::getChownOwner();
 		$path = escapeshellarg($this->fileManager->getBasePath());
 		$this->commandManager->run('rm -rf ' . $path, true);
 		$this->commandManager->run('mkdir ' . $path, true);

@@ -77,6 +77,16 @@ readonly class Eap implements INetworkManagerEntity {
 	 * @return INetworkManagerEntity EAP entity
 	 */
 	public static function nmCliDeserialize(array $nmCli): INetworkManagerEntity {
+		/**
+		 * @var array{
+		 *     'eap': 'fast'|'leap'|'md5'|'peap'|'pwd'|'tls'|'ttls',
+		 *     'phase2-auth': 'gtc'|'md5'|'mschapv2',
+		 *     'anonymous-identity': string,
+		 *     'ca-cert': string,
+		 *     'identity': string,
+		 *     'password': string,
+		 * } $array Parsed nmcli configuration array
+		 */
 		$array = $nmCli[self::NMCLI_PREFIX];
 		return new self(
 			EapPhaseOneMethod::from($array['eap']),
@@ -101,8 +111,8 @@ readonly class Eap implements INetworkManagerEntity {
 	 */
 	public function jsonSerialize(): array {
 		return [
-			'phaseOneMethod' => $this->phaseOne instanceof EapPhaseOneMethod ? $this->phaseOne->jsonSerialize() : null,
-			'phaseTwoMethod' => $this->phaseTwo instanceof EapPhaseTwoMethod ? $this->phaseTwo->jsonSerialize() : null,
+			'phaseOneMethod' => $this->phaseOne?->jsonSerialize(),
+			'phaseTwoMethod' => $this->phaseTwo?->jsonSerialize(),
 			'anonymousIdentity' => $this->anonymousIdentity,
 			'cert' => $this->cert,
 			'identity' => $this->identity,
@@ -116,8 +126,8 @@ readonly class Eap implements INetworkManagerEntity {
 	 */
 	public function nmCliSerialize(): string {
 		$array = [
-			'eap' => $this->phaseOne->value,
-			'phase2-auth' => $this->phaseTwo->value,
+			'eap' => $this->phaseOne?->value,
+			'phase2-auth' => $this->phaseTwo?->value,
 			'anonymous-identity' => $this->anonymousIdentity,
 			'ca-cert' => $this->cert,
 			'identity' => $this->identity,

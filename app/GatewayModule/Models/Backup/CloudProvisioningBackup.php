@@ -55,7 +55,7 @@ class CloudProvisioningBackup implements IBackupManager {
 		FeatureManager $featureManager,
 		private readonly RestoreLogger $restoreLogger,
 	) {
-		$this->featureEnabled = $featureManager->get('iqrfCloudProvisioning')['enabled'];
+		$this->featureEnabled = $featureManager->isEnabled('iqrfCloudProvisioning');
 	}
 
 	/**
@@ -102,8 +102,7 @@ class CloudProvisioningBackup implements IBackupManager {
 	 * Recreates directory
 	 */
 	private function recreateDirectory(): void {
-		$user = posix_getpwuid(posix_geteuid());
-		$owner = $user['name'] . ':' . posix_getgrgid($user['gid'])['name'];
+		$owner = PosixHelper::getChownOwner();
 		$path = escapeshellarg($this->fileManager->getBasePath());
 		$this->commandManager->run('rm -rf ' . $path, true);
 		$this->commandManager->run('mkdir ' . $path, true);

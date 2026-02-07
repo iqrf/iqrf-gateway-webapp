@@ -52,6 +52,13 @@ final readonly class IPv4Current implements JsonSerializable {
 	 * @return static IPv4 current configuration
 	 */
 	public static function nmCliDeserialize(array $nmCli): self {
+		/**
+		 * @var array{
+		 *     ADDRESS?: array<string>,
+		 *     GATEWAY?: string,
+		 *     DNS?: array<string>,
+		 * } $array Parsed nmcli configuration for IPv4 current configuration
+		 */
 		$array = $nmCli[self::NMCLI_PREFIX] ?? [];
 		if (array_key_exists('ADDRESS', $array)) {
 			$addresses = array_map(static fn (string $address): IPv4Address => IPv4Address::fromPrefix($address), $array['ADDRESS']);
@@ -65,7 +72,18 @@ final readonly class IPv4Current implements JsonSerializable {
 
 	/**
 	 * Serializes current IPv4 configuration entity to JSON
-	 * @return array{method: string, addresses: array<array{address: string, prefix: int, mask: string}>, gateway: string|null, dns: array<array{address: string}>} IPv4 current configuration
+	 * @return array{
+	 *     method: string,
+	 *     addresses: array<array{
+	 *         address: string,
+	 *         prefix: int,
+	 *         mask: string,
+	 *     }>,
+	 *     gateway: string|null,
+	 *     dns: array<array{
+	 *         address: string,
+	 *     }>,
+	 * } IPv4 current configuration
 	 */
 	public function jsonSerialize(): array {
 		return [

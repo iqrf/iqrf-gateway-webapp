@@ -62,8 +62,11 @@ enum InterfaceStates: string {
 	 * @return static Network interface state
 	 */
 	public static function fromNmCli(string $nmCli): self {
-		$state = Strings::match($nmCli, '~^\d+ \((?\'state\'.+)\)$~')['state'];
-		$state = Strings::replace($state, '# \(externally\)#');
+		$matches = Strings::match($nmCli, '~^\d+ \((?\'state\'.+)\)$~');
+		if ($matches === null || !isset($matches['state'])) {
+			throw new \InvalidArgumentException('Invalid nmcli output for network interface state: ' . $nmCli);
+		}
+		$state = Strings::replace($matches['state'], '# \(externally\)#');
 		return self::from($state);
 	}
 

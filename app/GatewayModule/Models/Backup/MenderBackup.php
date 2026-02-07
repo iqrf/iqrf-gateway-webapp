@@ -62,7 +62,7 @@ class MenderBackup implements IBackupManager {
 		FeatureManager $featureManager,
 		private readonly RestoreLogger $restoreLogger,
 	) {
-		$this->featureEnabled = $featureManager->get('mender')['enabled'];
+		$this->featureEnabled = $featureManager->isEnabled('mender');
 	}
 
 	/**

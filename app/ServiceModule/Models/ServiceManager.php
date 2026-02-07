@@ -37,7 +37,7 @@ class ServiceManager implements IServiceManager {
 	private IServiceManager $initDaemon;
 
 	/**
-	 * @var array<string> Init daemon service managers
+	 * @var array<string, class-string<IServiceManager>> Init daemon service managers
 	 */
 	private array $initDaemons = [
 		'docker-supervisor' => SupervisordManager::class,

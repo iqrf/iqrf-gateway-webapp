@@ -76,6 +76,9 @@ class JournalBackup implements IBackupManager {
 		FeatureManager $featureManager,
 		private readonly RestoreLogger $restoreLogger,
 	) {
+		/**
+		 * @var array{path: string, enabled: bool} $feature Systemd journal feature
+		 */
 		$feature = $featureManager->get('journal');
 		$this->path = dirname($feature['path']);
 		$this->file = basename($feature['path']);

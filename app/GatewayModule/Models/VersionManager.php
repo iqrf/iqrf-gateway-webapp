@@ -52,7 +52,17 @@ class VersionManager {
 	/**
 	 * Returns versions of all software components
 	 * @param bool $verbose Verbose output
-	 * @return array<string, string> List of versions of all software components
+	 * @return array{
+	 *     'iqrf-cloud-provisioning': string|null,
+	 *     'iqrf-gateway-controller': string|null,
+	 *     'iqrf-gateway-daemon': string,
+	 *     'iqrf-gateway-influxdb-bridge': string|null,
+	 *     'iqrf-gateway-setter': string|null,
+	 *     'iqrf-gateway-uploader': string|null,
+	 *     'iqrf-gateway-webapp': string,
+	 *     'mender-client': string|null,
+	 *     'mender-connect': string|null,
+	 * } List of versions of all software components
 	 */
 	public function getAll(bool $verbose = false): array {
 		return [
@@ -150,7 +160,7 @@ class VersionManager {
 				$versionString = Strings::trim($command->getStdout());
 				$pattern = '/^(?\'version\'\d+\.\d+\.\d+).*$/';
 				$matches = Strings::match($versionString, $pattern);
-				return $matches['version'];
+				return $matches['version'] ?? null;
 			}
 		}
 		return null;
@@ -171,7 +181,7 @@ class VersionManager {
 				$versionString = Strings::trim($command->getStdout());
 				$pattern = '/^(?:mender-connect\sversion\s)?(?\'version\'\d+\.\d+\.\d+).*$/';
 				$matches = Strings::match($versionString, $pattern);
-				return $matches['version'];
+				return $matches['version'] ?? null;
 			}
 		}
 		return null;

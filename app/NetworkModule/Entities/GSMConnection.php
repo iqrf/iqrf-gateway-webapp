@@ -63,6 +63,14 @@ final readonly class GSMConnection implements INetworkManagerEntity {
 	 * @return GSMConnection GSM connection entity
 	 */
 	public static function nmCliDeserialize(array $nmCli): INetworkManagerEntity {
+		/**
+		 * @var array{
+		 *     apn: string,
+		 *     username?: string,
+		 *     password?: string,
+		 *     pin?: string,
+		 * } $array Parsed nmcli configuration
+		 */
 		$array = $nmCli[self::NMCLI_PREFIX];
 		$username = $array['username'] ?? null;
 		$password = $array['password'] ?? null;

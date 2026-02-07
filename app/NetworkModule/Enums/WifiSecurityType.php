@@ -42,16 +42,18 @@ enum WifiSecurityType: string {
 
 	/**
 	 * Deserializes WiFi security entity from nmcli connection configuration
-	 * @param array<string, array<string, array<string>|string>> $nmCli nmcli connection configuration
+	 * @param array{
+	 *     'auth-alg'?: string,
+	 *     'key-mgmt'?: string,
+	 * } $nmCli nmcli connection configuration
 	 * @return self WiFi security type entity
 	 */
 	public static function nmCliDeserialize(array $nmCli): self {
-		$conf = $nmCli[WifiConnectionSecurity::NMCLI_PREFIX] ?? [];
-		if ($conf === []) {
+		if ($nmCli === []) {
 			return self::OPEN;
 		}
-		$authAlg = WifiAuthAlgorithm::from($conf['auth-alg'] ?? '');
-		$keyManagement = WifiKeyManagement::from($conf['key-mgmt']);
+		$authAlg = WifiAuthAlgorithm::from($nmCli['auth-alg'] ?? '');
+		$keyManagement = WifiKeyManagement::from($nmCli['key-mgmt'] ?? '');
 		switch ($keyManagement) {
 			case WifiKeyManagement::DYNAMIC_WEP:
 				if ($authAlg === WifiAuthAlgorithm::LEAP) {

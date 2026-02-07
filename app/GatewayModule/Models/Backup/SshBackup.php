@@ -43,7 +43,7 @@ class SshBackup implements IBackupManager {
 	 * @param FeatureManager $featureManager Feature manager
 	 */
 	public function __construct(FeatureManager $featureManager) {
-		$this->featureEnabled = $featureManager->get('ssh')['enabled'];
+		$this->featureEnabled = $featureManager->isEnabled('ssh');
 	}
 
 	/**

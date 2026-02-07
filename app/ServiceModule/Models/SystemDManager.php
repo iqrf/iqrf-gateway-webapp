@@ -23,6 +23,7 @@ namespace App\ServiceModule\Models;
 use App\ServiceModule\Entities\ServiceState;
 use App\ServiceModule\Exceptions\NonexistentServiceException;
 use Iqrf\CommandExecutor\CommandExecutor;
+use ParseError;
 
 /**
  * Tool for managing services (systemD init daemon)
@@ -160,7 +161,8 @@ class SystemDManager implements IServiceManager {
 	 * @param string $serviceName Service name
 	 * @param bool $withStatus Include service status?
 	 * @return ServiceState Service state
-	 * @throws NonexistentServiceException
+	 * @throws NonexistentServiceException Service does not exist
+	 * @throws ParseError Failed to parse systemctl output
 	 */
 	public function getState(string $serviceName, bool $withStatus = false): ServiceState {
 		$cmd = 'systemctl show --property=UnitFileState,ActiveState ' . $this->formatServiceName($serviceName);
@@ -169,6 +171,9 @@ class SystemDManager implements IServiceManager {
 			throw new NonexistentServiceException($command->getStderr());
 		}
 		$parsedOutput = parse_ini_string($command->getStdout());
+		if ($parsedOutput === false) {
+			throw new ParseError('Failed to parse systemctl output.');
+		}
 		$status = null;
 		if ($withStatus) {
 			$status = $this->getStatus($serviceName);

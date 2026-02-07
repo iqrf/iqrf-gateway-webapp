@@ -158,7 +158,11 @@ abstract class BaseMonitManager {
 	 * @return bool Is configuration file valid?
 	 */
 	protected function validateConfig(?string $configFile = null): bool {
-		$command = $this->commandManager->run('monit -t' . ($configFile !== null ? (' -c ' . escapeshellarg(realpath($this->fileManager->getBasePath() . '/' . $configFile))) : ''), true);
+		$path = realpath($this->fileManager->getBasePath() . '/' . ($configFile ?? ''));
+		if ($path === false) {
+			return false;
+		}
+		$command = $this->commandManager->run('monit -t' . ($configFile !== null ? (' -c ' . escapeshellarg($path)) : ''), true);
 		return $command->getExitCode() === 0;
 	}
 

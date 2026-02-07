@@ -113,7 +113,11 @@ class AwsController extends BaseCloudController {
 	/**
 	 * Returns Amazon AWS IoT connection configuration
 	 * @param ApiRequest $request API request
-	 * @return array<string, int|string> Amazon AWS IoT connection configuration
+	 * @return array{
+	 *     endpoint: string,
+	 *     certificate: string,
+	 *     privateKey: string,
+	 * } Amazon AWS IoT connection configuration
 	 */
 	private function getConfiguration(ApiRequest $request): array {
 		$contentType = ContentTypeUtil::validContentType($request, ['application/json', 'multipart/form-data']);

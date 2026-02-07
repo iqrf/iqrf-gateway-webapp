@@ -159,9 +159,9 @@ class User implements JsonSerializable {
 
 	/**
 	 * Returns the password hash
-	 * @return string Password hash
+	 * @return string|null Password hash
 	 */
-	public function getPassword(): string {
+	public function getPasswordHash(): ?string {
 		return $this->password;
 	}
 

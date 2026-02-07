@@ -60,7 +60,7 @@ class NetworkManagerBackup implements IBackupManager {
 		FeatureManager $featureManager,
 		private readonly RestoreLogger $restoreLogger,
 	) {
-		$this->featureEnabled = $featureManager->get('networkManager')['enabled'];
+		$this->featureEnabled = $featureManager->isEnabled('networkManager');
 	}
 
 	/**

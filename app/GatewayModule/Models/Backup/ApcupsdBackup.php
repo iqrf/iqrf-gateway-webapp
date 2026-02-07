@@ -43,7 +43,7 @@ class ApcupsdBackup implements IBackupManager {
 	 * @param FeatureManager $featureManager Feature manager
 	 */
 	public function __construct(FeatureManager $featureManager) {
-		$this->featureEnabled = $featureManager->get('apcupsd')['enabled'];
+		$this->featureEnabled = $featureManager->isEnabled('apcupsd');
 	}
 
 	/**

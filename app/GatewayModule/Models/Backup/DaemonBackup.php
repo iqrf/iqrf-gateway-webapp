@@ -92,8 +92,7 @@ class DaemonBackup implements IBackupManager {
 			$this->daemonDirectories->getConfigurationDir(),
 			$this->daemonDirectories->getDataDir() . 'DB/',
 		]);
-		$user = posix_getpwuid(posix_geteuid());
-		$owner = $user['name'] . ':' . posix_getgrgid($user['gid'])['name'];
+		$owner = PosixHelper::getChownOwner();
 		$this->commandManager->run('chown -R ' . $owner . ' ' . $this->daemonDirectories->getCacheDir(), true);
 		foreach ($zipManager->listFiles() as $file) {
 			if (str_starts_with($file, 'daemon/scheduler/')) {
@@ -118,8 +117,7 @@ class DaemonBackup implements IBackupManager {
 	 * @param array<int, string> $dirs Array of directory paths
 	 */
 	public function recreateDirectories(array $dirs): void {
-		$user = posix_getpwuid(posix_geteuid());
-		$owner = $user['name'] . ':' . posix_getgrgid($user['gid'])['name'];
+		$owner = PosixHelper::getChownOwner();
 		foreach ($dirs as $dir) {
 			$this->commandManager->run('rm -rf ' . $dir, true);
 			$this->commandManager->run('mkdir ' . $dir, true);

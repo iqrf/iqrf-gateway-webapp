@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Copyright 2017-2025 IQRF Tech s.r.o.
- * Copyright 2019-2025 MICRORISC s.r.o.
+ * Copyright 2017-2026 IQRF Tech s.r.o.
+ * Copyright 2019-2026 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,6 +63,9 @@ class JwtAuthenticator {
 	 * @throws InvalidArgumentException
 	 */
 	public function authenticate(string $jwt): ?User {
+		if ($jwt === '') {
+			return null;
+		}
 		$parser = $this->jwtConfigurator->create()->parser();
 		$token = $parser->parse($jwt);
 		assert($token instanceof Plain);
@@ -103,7 +106,7 @@ class JwtAuthenticator {
 			->expiresAt($now->modify($expiration->toDateModify()))
 			->permittedFor(self::AUDIENCE)
 			->withClaim('uid', $user->getId());
-		if ($gwId !== null) {
+		if ($gwId !== null && $gwId !== '') {
 			$builder = $builder->issuedBy($gwId);
 		}
 		return $builder->getToken(
@@ -131,7 +134,7 @@ class JwtAuthenticator {
 			new StrictValidAt(SystemClock::fromSystemTimezone()),
 			new HasClaim('uid')
 		) &&
-			($gwId === null || ($token->hasBeenIssuedBy($gwId)));
+			($gwId === null || $gwId === '' || ($token->hasBeenIssuedBy($gwId)));
 	}
 
 }

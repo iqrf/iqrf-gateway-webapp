@@ -68,6 +68,12 @@ class SshManager {
 		private readonly EntityManager $entityManager,
 		FeatureManager $featureManager,
 	) {
+		/**
+		 * @var array{
+		 *     enabled: bool,
+		 *     user: string
+		 * } $feature GatewayPass feature configuration
+		 */
 		$feature = $featureManager->get('gatewayPass');
 		$userInfo = posix_getpwnam($feature['user']);
 		if ($userInfo !== false) {

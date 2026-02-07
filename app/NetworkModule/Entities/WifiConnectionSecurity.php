@@ -77,8 +77,15 @@ final readonly class WifiConnectionSecurity implements INetworkManagerEntity {
 	 * @return WifiConnectionSecurity WiFI connection security entity
 	 */
 	public static function nmCliDeserialize(array $nmCli): INetworkManagerEntity {
+		/**
+		 * @var array{
+		 *      'auth-alg'?: string,
+		 *      'key-mgmt'?: string,
+		 *      'psk'?: string,
+		 *  } $array Parsed nmcli configuration array for 802-11-wireless-security
+		 */
 		$array = $nmCli[self::NMCLI_PREFIX] ?? [];
-		$type = WifiSecurityType::nmCliDeserialize($nmCli);
+		$type = WifiSecurityType::nmCliDeserialize($array);
 		if ($type === WifiSecurityType::OPEN) {
 			return new self($type, null, null, null, null);
 		}
@@ -90,12 +97,32 @@ final readonly class WifiConnectionSecurity implements INetworkManagerEntity {
 			$eap = Eap::nmCliDeserialize($nmCli);
 			assert($eap instanceof Eap);
 		}
-		return new self($type, $array['psk'], $leap, $wep, $eap ?? null);
+		return new self($type, $array['psk'] ?? null, $leap, $wep, $eap ?? null);
 	}
 
 	/**
 	 * Serializes WiFi connection security entity into JSON
-	 * @return array{type: string, psk: string|null, leap?: array{username: string, password: string}, wep?: array{type: string, index: int, keys: array<string>}, eap?: array{phaseOneMethod: string|null, phaseTwoMethod: string|null, anonymousIdentity: string, cert: string, identity: string, password: string}} JSON serialized entity
+	 * @return array{
+	 *     type: string,
+	 *     psk: string|null,
+	 *     leap?: array{
+	 *         username: string,
+	 *         password: string,
+	 *     },
+	 *     wep?: array{
+	 *         type: string,
+	 *         index: int,
+	 *         keys: array<string>,
+	 *     },
+	 *     eap?: array{
+	 *         phaseOneMethod: string|null,
+	 *         phaseTwoMethod: string|null,
+	 *         anonymousIdentity: string,
+	 *         cert: string,
+	 *         identity: string,
+	 *         password: string,
+	 *     },
+	 * } JSON serialized entity
 	 */
 	public function jsonSerialize(): array {
 		$array = [
@@ -127,10 +154,10 @@ final readonly class WifiConnectionSecurity implements INetworkManagerEntity {
 			'psk' => $this->psk,
 		];
 		$config .= NmCliConnection::encode($array, self::NMCLI_PREFIX);
-		$config .= $this->leap->nmCliSerialize();
-		$config .= $this->wep->nmCliSerialize();
+		$config .= $this->leap?->nmCliSerialize();
+		$config .= $this->wep?->nmCliSerialize();
 		if ($this->type === WifiSecurityType::WPA_EAP) {
-			$config .= $this->eap->nmCliSerialize();
+			$config .= $this->eap?->nmCliSerialize();
 		}
 		return $config;
 	}

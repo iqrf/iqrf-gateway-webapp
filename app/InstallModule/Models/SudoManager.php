@@ -41,7 +41,11 @@ class SudoManager {
 	 * @return array<string, bool|string> Sudo check meta
 	 */
 	public function checkSudo(): array {
-		$user = posix_getpwuid(posix_geteuid())['name'];
+		$userInfo = posix_getpwuid(posix_geteuid());
+		if ($userInfo === false) {
+			return [];
+		}
+		$user = $userInfo['name'];
 		if ($user !== 'root') {
 			return [
 				'user' => $user,

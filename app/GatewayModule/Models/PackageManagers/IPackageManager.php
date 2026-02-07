@@ -20,10 +20,20 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models\PackageManagers;
 
+use App\GatewayModule\Exceptions\UnsupportedPackageManagerException;
+use Iqrf\CommandExecutor\CommandExecutor;
+
 /**
  * Interface for package managers
  */
 interface IPackageManager {
+
+	/**
+	 * Constructor
+	 * @param CommandExecutor $commandManager Command manager
+	 * @throws UnsupportedPackageManagerException When package manager is not supported
+	 */
+	public function __construct(CommandExecutor $commandManager);
 
 	/**
 	 * Installs the packages

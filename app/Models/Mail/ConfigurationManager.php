@@ -121,13 +121,18 @@ class ConfigurationManager {
 			$errors = Json::encode($smtp->getError());
 			throw new InvalidSmtpConfigException('Could not connect to the SMTP server. Errors: ' . $errors, InvalidSmtpConfigException::CONNECTION_FAILED, null);
 		}
-		if (!$smtp->hello($configuration->clientHost)) {
+		$clientHost = $configuration->clientHost;
+		if ($clientHost === null || $host === '') {
+			$hostname = gethostname();
+			$clientHost = $hostname === false ? 'localhost' : $hostname;
+		}
+		if (!$smtp->hello($clientHost)) {
 			$errors = Json::encode($smtp->getError());
 			$smtp->close();
 			throw new InvalidSmtpConfigException('Could not send EHLO/HELO to the SMTP server. Errors: ' . $errors, InvalidSmtpConfigException::HELLO_FAILED);
 		}
 		$extensions = $smtp->getServerExtList();
-		if (!array_key_exists('STARTTLS', $extensions) && $configuration->secure === 'tls') {
+		if ($extensions !== null && !array_key_exists('STARTTLS', $extensions) && $configuration->secure === 'tls') {
 			$errors = Json::encode($smtp->getError());
 			$smtp->close();
 			throw new InvalidSmtpConfigException('The SMTP server does not support TLS. Errors: ' . $errors, InvalidSmtpConfigException::STARTTLS_NOT_SUPPORTED);
@@ -138,14 +143,14 @@ class ConfigurationManager {
 				$smtp->close();
 				throw new InvalidSmtpConfigException('Could not use STARTTLS to connect to the SMTP server. Errors: ' . $errors, InvalidSmtpConfigException::STARTTLS_FAILED);
 			}
-			if (!$smtp->hello($configuration->clientHost)) {
+			if (!$smtp->hello($clientHost)) {
 				$errors = Json::encode($smtp->getError());
 				$smtp->close();
 				throw new InvalidSmtpConfigException('Could not send EHLO/HELO to the SMTP server. Errors: ' . $errors, InvalidSmtpConfigException::HELLO_FAILED);
 			}
 			$extensions = $smtp->getServerExtList();
 		}
-		if (!array_key_exists('AUTH', $extensions) && $configuration->hasCredentials()) {
+		if ($extensions !== null && !array_key_exists('AUTH', $extensions) && $configuration->hasCredentials()) {
 			$smtp->close();
 			throw new InvalidSmtpConfigException('The SMTP server does not support authentication.', InvalidSmtpConfigException::AUTH_NOT_SUPPORTED);
 		}

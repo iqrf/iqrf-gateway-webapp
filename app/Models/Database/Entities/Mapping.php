@@ -257,7 +257,20 @@ class Mapping implements JsonSerializable {
 
 	/**
 	 * Returns JSON serialized mapping data
-	 * @return array<string, string|int> JSON serialized mapping data
+	 * @return array{
+	 *     id: int|null,
+	 *     type: string,
+	 *     name: string,
+	 *     deviceType: string,
+	 *     IqrfInterface: string,
+	 *     busEnableGpioPin: int,
+	 *     pgmSwitchGpioPin: int,
+	 *     powerEnableGpioPin: int,
+	 *     baudRate?: int|null,
+	 *     i2cEnableGpioPin?: int,
+	 *     spiEnableGpioPin?: int,
+	 *     uartEnableGpioPin?: int,
+	 * } JSON serialized mapping data
 	 */
 	public function jsonSerialize(): array {
 		$array = [
@@ -271,7 +284,7 @@ class Mapping implements JsonSerializable {
 			'powerEnableGpioPin' => $this->getPowerPin(),
 		];
 		if ($this->getType() === MappingType::UART) {
-			$array['baudRate'] = $this->getBaudRate()->value;
+			$array['baudRate'] = $this->getBaudRate()?->value;
 		}
 		if ($this->getI2cPin() !== null) {
 			$array['i2cEnableGpioPin'] = $this->getI2cPin();

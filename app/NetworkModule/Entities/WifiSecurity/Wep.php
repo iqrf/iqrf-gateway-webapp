@@ -70,6 +70,16 @@ class Wep implements INetworkManagerEntity {
 	 * @return INetworkManagerEntity WEP entity
 	 */
 	public static function nmCliDeserialize(array $nmCli): INetworkManagerEntity {
+		/**
+		 * @var array{
+		 *     'wep-key-type': string,
+		 *     'wep-tx-keyidx': string,
+		 *     'wep-key0': string,
+		 *     'wep-key1': string,
+		 *     'wep-key2': string,
+		 *     'wep-key3': string,
+		 *  } $array Parsed nmcli configuration array
+		 */
 		$array = $nmCli[WifiConnectionSecurity::NMCLI_PREFIX];
 		$type = WepKeyType::from($array['wep-key-type']);
 		$index = (int) $array['wep-tx-keyidx'];

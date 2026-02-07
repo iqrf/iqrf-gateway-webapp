@@ -102,7 +102,7 @@ final class UserTest extends TestCase {
 	 * Tests the function to get the user's password hash
 	 */
 	public function testGetPassword(): void {
-		$hash = $this->entity->getPassword();
+		$hash = $this->entity->getPasswordHash();
 		Assert::true(password_verify(self::PASSWORD, $hash));
 	}
 

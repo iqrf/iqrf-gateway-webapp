@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Copyright 2017-2025 IQRF Tech s.r.o.
- * Copyright 2019-2025 MICRORISC s.r.o.
+ * Copyright 2017-2026 IQRF Tech s.r.o.
+ * Copyright 2019-2026 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ use GuzzleHttp\Exception\GuzzleException;
 use Nette\IOException;
 use Nette\Utils\FileSystem;
 use Nette\Utils\JsonException;
+use ParseError;
 
 /**
  * Tool for managing Amazon AWS IoT
@@ -56,7 +57,11 @@ class AwsManager implements IManager {
 
 	/**
 	 * Creates a new MQTT interface
-	 * @param array<string, int|string> $values Values from form
+	 * @param array{
+	 *     certificate: string,
+	 *     endpoint: string,
+	 *     privateKey: string,
+	 * } $values Values from form
 	 * @throws GuzzleException
 	 * @throws InvalidPrivateKeyForCertificateException
 	 * @throws JsonException
@@ -123,12 +128,16 @@ class AwsManager implements IManager {
 	 * Checks a certificate and a private key
 	 * @param string $certificate Certificate
 	 * @param string $privateKey Private key
-	 * @throws InvalidPrivateKeyForCertificateException
+	 * @throws InvalidPrivateKeyForCertificateException Private key does not match the certificate
+	 * @throws ParseError Invalid private key
 	 */
 	public function checkCertificate(string $certificate, string $privateKey): void {
 		$key = openssl_pkey_get_private($privateKey, '');
+		if ($key === false) {
+			throw new ParseError('Invalid private key');
+		}
 		if (!openssl_x509_check_private_key($certificate, $key)) {
-			throw new InvalidPrivateKeyForCertificateException();
+			throw new InvalidPrivateKeyForCertificateException('Private key does not match the certificate');
 		}
 	}
 

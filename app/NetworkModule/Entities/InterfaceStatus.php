@@ -84,6 +84,24 @@ final readonly class InterfaceStatus implements JsonSerializable {
 	 * @return InterfaceStatus Network interface
 	 */
 	public static function nmCliDeserialize(string $string): self {
+		/**
+		 * @var array{
+		 *     GENERAL: array{
+		 *         CON-UUID: string,
+		 *         DEVICE: string,
+		 *         HWADDR: string,
+		 *         VENDOR: string,
+		 *         PRODUCT: string,
+		 *         TYPE: string,
+		 *         STATE: string,
+		 *         IP4-CONNECTIVITY?: string,
+		 *         IP6-CONNECTIVITY?: string,
+		 *     },
+		 *     CONNECTIONS: array{
+		 *         AVAILABLE-CONNECTIONS?: array<string>,
+		 *     },
+		 * } $array Parsed nmcli output
+		 */
 		$array = NmCliConnection::decode($string);
 		$connection = $array['GENERAL']['CON-UUID'];
 		return new self(
@@ -113,7 +131,20 @@ final readonly class InterfaceStatus implements JsonSerializable {
 
 	/**
 	 * Serializes network interface status entity into JSON
-	 * @return array{name: string, type: string, state: string, connection: string|null, availableConnections: array<array{name: string, uuid: string}>, connectivity?: array{ipv4: string, ipv6: string}} JSON serialized data
+	 * @return array{
+	 *     name: string,
+	 *     type: string,
+	 *     state: string,
+	 *     connection: string|null,
+	 *     availableConnections: array<array{
+	 *         name: string,
+	 *         uuid: string,
+	 *     }>,
+	 *     connectivity?: array{
+	 *         ipv4: 'none'|'portal'|'limited'|'full'|'unknown',
+	 *         ipv6: 'none'|'portal'|'limited'|'full'|'unknown',
+	 *     },
+	 * } JSON serialized data
 	 */
 	public function jsonSerialize(): array {
 		$array = [

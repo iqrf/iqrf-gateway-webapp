@@ -57,7 +57,14 @@ class MmonitManager extends BaseMonitManager {
 
 	/**
 	 * Reads M/Monit configuration
-	 * @return array{enabled: bool, credentials: array{username: string, password: string}, server: string} M/Monit configuration
+	 * @return array{
+	 *     enabled: bool,
+	 *     credentials: array{
+	 *         username: string,
+	 *         password: string,
+	 *     },
+	 *     server: string,
+	 * } M/Monit configuration
 	 * @throws MonitConfigErrorException Failed to read M/Monit configuration
 	 */
 	public function readConfig(): array {
@@ -68,7 +75,14 @@ class MmonitManager extends BaseMonitManager {
 
 	/**
 	 * Writes M/Monit configuration
-	 * @param array{enabled: bool, credentials: array{username: string, password: string}, server: string} $newConfig New M/Monit configuration
+	 * @param array{
+	 *     enabled: bool,
+	 *     credentials: array{
+	 *         username: string,
+	 *         password: string,
+	 *     },
+	 *     server: string,
+	 * } $newConfig New M/Monit configuration
 	 * @throws MonitConfigErrorException Monit configuration file contains invalid content
 	 */
 	public function writeConfig(array $newConfig): void {
@@ -79,13 +93,24 @@ class MmonitManager extends BaseMonitManager {
 
 	/**
 	 * Encodes M/Monit configuration
-	 * @param array{enabled: bool, credentials: array{username: string, password: string}, server: string} $config M/Monit configuration
+	 * @param array{
+	 *     enabled: bool,
+	 *     credentials: array{
+	 *         username: string,
+	 *         password: string
+	 *     },
+	 *     server: string,
+	 * } $config M/Monit configuration
 	 * @return string Encoded M/Monit configuration
 	 * @throws MonitConfigErrorException
 	 */
 	private function encodeConfig(array $config): string {
 		$url = parse_url($config['server']);
-		if ($url === false) {
+		if (
+			$url === false ||
+			!isset($url['scheme'], $url['host']) ||
+			!in_array($url['scheme'], ['http', 'https'], true)
+		) {
 			throw new MonitConfigErrorException('M/Monit server URL is invalid.');
 		}
 		$server = $url['host'];
@@ -103,12 +128,23 @@ class MmonitManager extends BaseMonitManager {
 	/**
 	 * Decodes M/Monit configuration
 	 * @param array<string> $data M/Monit configuration to decode
-	 * @return array{enabled: bool, credentials: array{username: string, password: string}, server: string} Decoded M/Monit configuration
-	 * @throws MonitConfigErrorException
+	 * @return array{
+	 *     enabled: bool,
+	 *     credentials: array{
+	 *         username: string,
+	 *         password: string,
+	 *     },
+	 *     server: string,
+	 * } Decoded M/Monit configuration
+	 * @throws MonitConfigErrorException M/Monit configuration file contains invalid content
 	 */
 	private function decodeConfig(array $data): array {
 		$url = parse_url($data['url']);
-		if ($url === false || !in_array($url['scheme'], ['http', 'https'], true)) {
+		if (
+			$url === false ||
+			!isset($url['host'], $url['scheme']) ||
+			!in_array($url['scheme'], ['http', 'https'], true)
+		) {
 			throw new MonitConfigErrorException('M/Monit server URL is invalid.');
 		}
 		$server = $url['scheme'] . '://' . $url['host'];
@@ -121,8 +157,8 @@ class MmonitManager extends BaseMonitManager {
 		$config = [
 			'enabled' => $this->isConfigFileEnabled(self::FILE_NAME),
 			'credentials' => [
-				'username' => urldecode($url['user']),
-				'password' => urldecode($url['pass']),
+				'username' => urldecode($url['user'] ?? ''),
+				'password' => urldecode($url['pass'] ?? ''),
 			],
 			'server' => $server,
 		];

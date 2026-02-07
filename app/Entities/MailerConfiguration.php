@@ -78,6 +78,11 @@ class MailerConfiguration implements JsonSerializable {
 	 * @return self Mailer configuration
 	 */
 	public static function jsonDeserialize(array $json): self {
+		$clientHost = $json['clientHost'] ?? null;
+		if ($clientHost === null || $clientHost === '') {
+			$hostname = gethostname();
+			$clientHost = $hostname !== false ? $hostname : null;
+		}
 		return new self(
 			$json['enabled'],
 			$json['host'],
@@ -88,7 +93,7 @@ class MailerConfiguration implements JsonSerializable {
 			$json['secure'],
 			$json['timeout'],
 			$json['context'],
-			($json['clientHost'] !== null && $json['clientHost'] !== '') ? $json['clientHost'] : gethostname(),
+			$clientHost,
 			$json['persistent'],
 			$json['theme'],
 		);

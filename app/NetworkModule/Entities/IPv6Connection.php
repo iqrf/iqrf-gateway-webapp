@@ -86,6 +86,14 @@ final readonly class IPv6Connection implements INetworkManagerEntity {
 	 * @return IPv6Connection IPv6 connection entity
 	 */
 	public static function nmCliDeserialize(array $nmCli): INetworkManagerEntity {
+		/**
+		 * @var array{
+		 *     method: string,
+		 *     addresses: string,
+		 *     gateway?: string,
+		 *     dns: string,
+		 * } $array Parsed nmcli configuration array
+		 */
 		$array = $nmCli[self::NMCLI_PREFIX];
 		$method = IPv6Methods::from($array['method']);
 		$addresses = [];

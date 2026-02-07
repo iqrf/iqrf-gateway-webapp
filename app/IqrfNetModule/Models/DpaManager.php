@@ -64,12 +64,15 @@ class DpaManager {
 			return null;
 		}
 		$dpaVersion = $files[0]->dpa;
-		$this->filesManager->useCredentials = $dpaVersion->attributes->beta;
+		$this->filesManager->useCredentials = $dpaVersion->attributes->beta === true;
 		$this->filesManager->setPath($dpaVersion->downloadPath);
 		foreach ($this->filesManager->list()->files as $file) {
 			foreach ($dpa->getFilePrefixes() as $filePrefix) {
 				if (str_starts_with($file->name, $filePrefix)) {
 					$fileContent = $this->filesManager->download($file->name);
+					if ($fileContent === null) {
+						continue;
+					}
 					$filePath = $file->name;
 					$this->uploadManager->uploadToFs($filePath, $fileContent);
 					return $filePath;

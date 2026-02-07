@@ -61,6 +61,12 @@ class JournalConfigManager {
 	 * @param FeatureManager $featureManager Feature manager
 	 */
 	public function __construct(CommandExecutor $commandManager, FeatureManager $featureManager) {
+		/**
+		 * @var array{
+		 *     enabled: bool,
+		 *     path: string,
+		 * } $feature Journald feature configuration
+		 */
 		$feature = $featureManager->get('journal');
 		$path = $feature['path'];
 		$this->confFile = basename($path);
@@ -69,7 +75,14 @@ class JournalConfigManager {
 
 	/**
 	 * Retrieves journal configuration
-	 * @return array{forwardToSyslog: bool, persistence: string, maxDiskSize: int, maxFiles: int, sizeRotation: array<string, int>, timeRotation: array<int|string>} Journal configuration
+	 * @return array{
+	 *     forwardToSyslog: bool,
+	 *     persistence: string,
+	 *     maxDiskSize: int,
+	 *     maxFiles: int,
+	 *     sizeRotation: array<string, int>,
+	 *     timeRotation: array<int|string>,
+	 * } Journal configuration
 	 * @throws ConfNotFoundException
 	 * @throws InvalidConfFormatException
 	 */
