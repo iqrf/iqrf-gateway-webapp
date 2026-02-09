@@ -113,10 +113,12 @@ export const useUserStore = defineStore('user', {
 		 * Refreshes the user session
 		 */
 		async refreshSession(): Promise<void> {
+			if (this.user === null) {
+				throw new Error('Cannot refresh session, user is not signed in.');
+			}
 			try {
-				const user: UserSignedIn = await useApiClient().getAccountService().refreshToken();
-				this.processJwt(user.token);
-				this.setUserInfo(user);
+				const response: UserSignedIn = await useApiClient().getAccountService().refreshToken();
+				this.processSignInResponse(response, false);
 			} catch (error) {
 				console.error(error);
 				throw error;
@@ -142,7 +144,7 @@ export const useUserStore = defineStore('user', {
 		async signIn(credentials: UserCredentials): Promise<void> {
 			try {
 				const user: UserSignedIn = await useApiClient().getAccountService().signIn(credentials);
-				this.processSignInResponse(user);
+				this.processSignInResponse(user, true);
 			} catch (error) {
 				console.error(error);
 				throw error;
@@ -151,12 +153,15 @@ export const useUserStore = defineStore('user', {
 		/**
 		 * Processes the sign in response
 		 * @param {UserSignedIn} response Sign in response
+		 * @param {boolean} setLocale Set locale based on user language
 		 */
-		processSignInResponse(response: UserSignedIn): void {
+		processSignInResponse(response: UserSignedIn, setLocale: boolean): void {
 			this.processJwt(response.token);
 			this.setUserInfo(response);
-			const localeStore = useLocaleStore();
-			localeStore.setLocale(response.language);
+			if (setLocale) {
+				const localeStore = useLocaleStore();
+				localeStore.setLocale(response.language);
+			}
 		},
 		clearUserData(): void {
 			this.expiration = 0;

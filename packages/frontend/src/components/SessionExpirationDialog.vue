@@ -45,7 +45,6 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { type UserSignedIn } from '@iqrf/iqrf-gateway-webapp-client/types';
 import {
 	Action,
 	IActionBtn,
@@ -59,7 +58,6 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { toast } from 'vue3-toastify';
 
-import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
 
 const i18n = useI18n();
@@ -113,8 +111,7 @@ async function setup(): Promise<void> {
  */
 async function renewSession(): Promise<void> {
 	try {
-		const rsp: UserSignedIn = await useApiClient().getAccountService().refreshToken();
-		await userStore.processJwt(rsp.token);
+		await userStore.refreshSession();
 		close();
 		clear();
 		await setup();
