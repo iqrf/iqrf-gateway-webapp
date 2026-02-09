@@ -44,10 +44,6 @@ limitations under the License.
 				required
 				:prepend-inner-icon='mdiKey'
 			/>
-			<SessionExpirationInput
-				v-if='credentials.expiration !== undefined'
-				v-model='credentials.expiration'
-			/>
 			<template #actions>
 				<IActionBtn
 					color='primary'
@@ -74,7 +70,6 @@ limitations under the License.
 <script lang='ts' setup>
 import {
 	type UserCredentials,
-	UserSessionExpiration,
 } from '@iqrf/iqrf-gateway-webapp-client/types';
 import {
 	ComponentState,
@@ -87,7 +82,6 @@ import {
 import { mdiAccount, mdiAccountKey, mdiKey, mdiLogin } from '@mdi/js';
 import { AxiosError } from 'axios';
 import {
-	onMounted,
 	ref,
 	type Ref,
 	type TemplateRef,
@@ -98,8 +92,6 @@ import { useRoute, useRouter } from 'vue-router';
 import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
 
-import SessionExpirationInput
-	from '@/components/auth/SessionExpirationInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useGatewayStore } from '@/store/gateway';
 import { useRepositoryStore } from '@/store/repository';
@@ -123,14 +115,9 @@ const userStore = useUserStore();
 const credentials: Ref<UserCredentials> = ref({
 	username: '',
 	password: '',
-	expiration: UserSessionExpiration.Default,
 });
 /// Form reference
 const form: TemplateRef<VForm> = useTemplateRef('form');
-
-onMounted(() => {
-	credentials.value.expiration = userStore.getLastRequestedExpiration;
-});
 
 /**
  * Handles the sign in form submission

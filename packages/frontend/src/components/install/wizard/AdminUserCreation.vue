@@ -85,7 +85,6 @@ limitations under the License.
 				:prepend-inner-icon='mdiKey'
 			/>
 			<ILanguageSelect v-model='user.language' />
-			<SessionExpirationInput v-model='expiration' />
 		</v-form>
 		<template #actions='{ next }'>
 			<IActionBtn
@@ -106,7 +105,6 @@ import {
 	type UserCreate,
 	type UserCredentials,
 	UserRole,
-	UserSessionExpiration,
 } from '@iqrf/iqrf-gateway-webapp-client/types';
 import {
 	ComponentState,
@@ -123,8 +121,6 @@ import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
-import SessionExpirationInput
-	from '@/components/auth/SessionExpirationInput.vue';
 import UrlBuilder from '@/helpers/urlBuilder';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
@@ -147,7 +143,6 @@ const user: Ref<UserCreate> = ref({
 	role: UserRole.Admin,
 });
 const passwordConfirmation: Ref<string> = ref('');
-const expiration = ref(UserSessionExpiration.Default);
 const form: TemplateRef<VForm> = useTemplateRef('form');
 const formValidity: Ref<boolean | null> = ref(null);
 const i18n = useI18n();
@@ -176,7 +171,6 @@ async function onSubmit(onClickNext: Function): Promise<void> {
 		const credentials: UserCredentials = {
 			username: user.value.username,
 			password: user.value.password,
-			expiration: expiration.value,
 		};
 		await userStore.signIn(credentials);
 		await userStore.refreshUserPreferences();

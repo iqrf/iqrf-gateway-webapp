@@ -30,7 +30,6 @@ import {
 	type UserPasswordReset,
 	type UserPreferences,
 	UserRole,
-	UserSessionExpiration,
 	type UserSignedIn,
 	UserThemePreference,
 	UserTimeFormatPreference,
@@ -219,18 +218,6 @@ describe('AccountService', (): void => {
 			...userSignedIn,
 			email: 'admin@räksmörgås.josefsson.org',
 		});
-	});
-
-	test('sign in the user with expiration', async (): Promise<void> => {
-		expect.assertions(1);
-		const credentialsWithExpiration: UserCredentials = {
-			...credentials,
-			expiration: UserSessionExpiration.Week,
-		};
-		mockedAxios.onPost('/account/signIn', credentialsWithExpiration)
-			.reply(200, userSignedIn);
-		const actual: UserSignedIn = await service.signIn(credentialsWithExpiration);
-		expect(actual).toStrictEqual(userSignedIn);
 	});
 
 	test('refresh JWT token', async (): Promise<void> => {

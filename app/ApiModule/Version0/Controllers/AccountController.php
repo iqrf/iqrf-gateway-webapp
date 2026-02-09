@@ -33,7 +33,6 @@ use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\ControllerValidators;
 use App\ApiModule\Version0\Models\JwtAuthenticator;
 use App\ApiModule\Version0\RequestAttributes;
-use App\CoreModule\Enums\SessionExpiration;
 use App\CoreModule\Models\UserManager;
 use App\Exceptions\InvalidEmailAddressException;
 use App\Exceptions\InvalidPasswordException;
@@ -451,13 +450,8 @@ class AccountController extends BaseController {
 		if (!$user->verifyPassword($credentials['password'])) {
 			throw new ClientErrorException('Invalid credentials', ApiResponse::S400_BAD_REQUEST);
 		}
-		if (array_key_exists('expiration', $credentials)) {
-			$expiration = SessionExpiration::from($credentials['expiration']);
-		} else {
-			$expiration = SessionExpiration::Default;
-		}
 		$json = $user->jsonSerialize();
-		$json['token'] = $this->jwtAuthenticator->createToken($user, $expiration);
+		$json['token'] = $this->jwtAuthenticator->createToken($user);
 		$response = $response->writeJsonBody($json);
 		return $this->validators->validateResponse('userToken', $response);
 	}

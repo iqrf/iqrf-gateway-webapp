@@ -367,14 +367,6 @@
 			}
 		},
 		"auth": {
-			"expiration": {
-				"expirations": {
-					"day": "1 day",
-					"default": "90 minutes",
-					"week": "1 week"
-				},
-				"label": "Session expiration"
-			},
 			"sign": {
 				"in": {
 					"actions": {

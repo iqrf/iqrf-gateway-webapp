@@ -22,7 +22,6 @@ namespace App\ApiModule\Version0\Models;
 
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiResponse;
-use App\CoreModule\Enums\SessionExpiration;
 use App\GatewayModule\Models\Utils\GatewayInfoUtil;
 use App\Models\Database\Entities\User;
 use App\Models\Database\EntityManager;
@@ -84,10 +83,9 @@ class JwtAuthenticator {
 	/**
 	 * Creates a new JWT token
 	 * @param User $user User
-	 * @param SessionExpiration|null $expiration Session expiration
 	 * @return string JWT token
 	 */
-	public function createToken(User $user, ?SessionExpiration $expiration = null): string {
+	public function createToken(User $user): string {
 		try {
 			$now = new DateTimeImmutable();
 			$us = $now->format('u');
@@ -95,15 +93,12 @@ class JwtAuthenticator {
 		} catch (Throwable $e) {
 			throw new ServerErrorException('Date creation error', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
-		if (!$expiration instanceof SessionExpiration) {
-			$expiration = SessionExpiration::Default;
-		}
 		$configuration = $this->jwtConfigurator->create();
 		$gwId = $this->gatewayInfo->getIdNullable();
 		$builder = $configuration->builder()
 			->issuedAt($now)
 			->canOnlyBeUsedAfter($now)
-			->expiresAt($now->modify($expiration->toDateModify()))
+			->expiresAt($now->modify('+90 min'))
 			->permittedFor(self::AUDIENCE)
 			->withClaim('uid', $user->getId());
 		if ($gwId !== null && $gwId !== '') {

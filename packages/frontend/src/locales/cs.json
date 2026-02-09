@@ -147,14 +147,6 @@
 			}
 		},
 		"auth": {
-			"expiration": {
-				"expirations": {
-					"day": "1 den",
-					"default": "90 minut",
-					"week": "1 týden"
-				},
-				"label": "Platnost sezení"
-			},
 			"sign": {
 				"in": {
 					"actions": {

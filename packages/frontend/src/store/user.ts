@@ -22,7 +22,6 @@ import {
 	type UserInfo,
 	type UserPreferences,
 	type UserRole,
-	UserSessionExpiration,
 	type UserSignedIn,
 	UserTimeFormatPreference,
 } from '@iqrf/iqrf-gateway-webapp-client/types';
@@ -47,8 +46,6 @@ interface UserState {
 	user: UserSignedIn | null;
 	/// User session expiration timestamp
 	expiration: number;
-	/// Requested session expiration
-	requestedSessionExpiration: UserSessionExpiration | null;
 	/// User preferences
 	preferences: UserPreferences | null;
 }
@@ -57,7 +54,6 @@ export const useUserStore = defineStore('user', {
 	state: (): UserState => ({
 		user: null,
 		expiration: 0,
-		requestedSessionExpiration: null,
 		preferences: null,
 	}),
 	actions: {
@@ -114,13 +110,6 @@ export const useUserStore = defineStore('user', {
 			this.expiration = jwt.exp + diff;
 		},
 		/**
-		 * Sets the requested session expiration
-		 * @param {UserSessionExpiration} expiration Requested session expiration
-		 */
-		setRequestedExpiration(expiration: UserSessionExpiration): void {
-			this.requestedSessionExpiration = expiration;
-		},
-		/**
 		 * Refreshes the user session
 		 */
 		async refreshSession(): Promise<void> {
@@ -154,7 +143,6 @@ export const useUserStore = defineStore('user', {
 			try {
 				const user: UserSignedIn = await useApiClient().getAccountService().signIn(credentials);
 				this.processSignInResponse(user);
-				this.setRequestedExpiration(credentials.expiration ?? UserSessionExpiration.Default);
 			} catch (error) {
 				console.error(error);
 				throw error;
@@ -289,17 +277,6 @@ export const useUserStore = defineStore('user', {
 		 */
 		getExpiration(state: UserState): number {
 			return state.expiration * 1_000;
-		},
-		/**
-		 * Returns the requested session expiration
-		 * @param {UserState} state User state
-		 * @return {UserSessionExpiration} Requested session expiration
-		 */
-		getLastRequestedExpiration(state: UserState): UserSessionExpiration {
-			if (state.requestedSessionExpiration === null) {
-				return UserSessionExpiration.Default;
-			}
-			return state.requestedSessionExpiration;
 		},
 		/**
 		 * Returns the user preferences

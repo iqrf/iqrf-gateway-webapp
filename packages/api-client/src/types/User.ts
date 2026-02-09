@@ -49,18 +49,6 @@ export enum UserRole {
 }
 
 /**
- * User session expiration enum
- */
-export enum UserSessionExpiration {
-	/// Day
-	Day = 'day',
-	/// Default expiration (90 min)
-	Default = 'default',
-	/// Week
-	Week = 'week',
-}
-
-/**
  * User base interface
  */
 export interface UserBase {
