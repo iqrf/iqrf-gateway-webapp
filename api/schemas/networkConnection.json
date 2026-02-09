@@ -6,7 +6,6 @@
 	"additionalProperties": false,
 	"required": [
 		"name",
-		"uuid",
 		"type",
 		"interface",
 		"autoConnect",

@@ -69,7 +69,7 @@ class ConnectionDetail implements INetworkManagerEntity {
 	 */
 	public function __construct(
 		private readonly string $name,
-		private readonly UuidInterface $uuid,
+		private readonly UuidInterface|null $uuid,
 		private readonly ConnectionTypes $type,
 		private readonly string $interfaceName,
 		private readonly AutoConnect $autoConnect,
@@ -84,7 +84,11 @@ class ConnectionDetail implements INetworkManagerEntity {
 	 * @return INetworkManagerEntity Network connection entity
 	 */
 	public static function jsonDeserialize(stdClass $json): INetworkManagerEntity {
-		$uuid = Uuid::fromString($json->uuid);
+		if (property_exists($json, 'uuid')) {
+			$uuid = Uuid::fromString($json->uuid);
+		} else {
+			$uuid = null;
+		}
 		$autoConnect = AutoConnect::jsonDeserialize($json->autoConnect);
 		$ipv4 = IPv4Connection::jsonDeserialize($json->ipv4);
 		$ipv6 = IPv6Connection::jsonDeserialize($json->ipv6);
@@ -158,7 +162,7 @@ class ConnectionDetail implements INetworkManagerEntity {
 	 * Returns the network connection UUID
 	 * @return UuidInterface Network connection UUID
 	 */
-	public function getUuid(): UuidInterface {
+	public function getUuid(): UuidInterface|null {
 		return $this->uuid;
 	}
 
@@ -217,13 +221,15 @@ class ConnectionDetail implements INetworkManagerEntity {
 	public function jsonSerialize(): array {
 		$json = [
 			'name' => $this->name,
-			'uuid' => $this->uuid->toString(),
 			'type' => $this->type->value,
 			'interface' => $this->interfaceName,
 			'autoConnect' => $this->autoConnect->jsonSerialize(),
 			'ipv4' => $this->ipv4->jsonSerialize(),
 			'ipv6' => $this->ipv6->jsonSerialize(),
 		];
+		if ($this->uuid instanceof UuidInterface) {
+			$json['uuid'] = $this->uuid->toString();
+		}
 		if ($this->wifi instanceof WifiConnection) {
 			$json['wifi'] = $this->wifi->jsonSerialize();
 		}

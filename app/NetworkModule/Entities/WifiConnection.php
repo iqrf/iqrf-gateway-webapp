@@ -75,7 +75,12 @@ final readonly class WifiConnection implements INetworkManagerEntity {
 		 * } $array Parsed nmcli configuration array
 		 */
 		$array = $nmCli[self::NMCLI_PREFIX];
-		$mode = WifiMode::from($array['mode']);
+		if (array_key_exists('mode', $array) && $array['mode'] !== '') {
+			$mode = WifiMode::from($array['mode']);
+		} else {
+			// missing mode = default (which is infrastructure)
+			$mode = WifiMode::INFRA;
+		}
 		$bssids = explode(',', $array['seen-bssids']);
 		try {
 			$security = WifiConnectionSecurity::nmCliDeserialize($nmCli);

@@ -21,7 +21,7 @@ limitations under the License.
 			{{ $t(`components.ipNetwork.connections.titles.${type}`) }}
 		</template>
 		<template #titleActions>
-			<ConnectionForm :action='Action.Add' :type='componentProps.type' />
+			<ConnectionForm :action='Action.Add' :type='componentProps.type' @change='fetchData' />
 			<IActionBtn
 				:action='Action.Reload'
 				container-type='card-title'
