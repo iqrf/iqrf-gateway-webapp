@@ -31,7 +31,7 @@
 		"ext-openssl": "*",
 		"ext-posix": "*",
 		"ext-zip": "*",
-		"contributte/apitte": "^v0.13.0",
+		"contributte/apitte": "^v0.14.0",
 		"contributte/console": "^0.11.0",
 		"contributte/console-extra": "^v0.8.0",
 		"contributte/di": "^v0.6.0",
@@ -62,8 +62,8 @@
 		"nette/http": "^v3.3.3",
 		"nette/mail": "^v4.0.4",
 		"nette/neon": "^v3.4.7",
-		"nette/php-generator": "^v4.2.0",
-		"nette/robot-loader": "^v4.1.0",
+		"nette/php-generator": "^v4.2.1",
+		"nette/robot-loader": "^v4.1.1",
 		"nette/safe-stream": "^v3.0.3",
 		"nette/security": "^v3.2.2",
 		"nette/utils": "^v4.1.2",
@@ -77,7 +77,7 @@
 		"ratchet/pawl": "^v0.4.3",
 		"spatie/ssl-certificate": "^2.6.10",
 		"spomky-labs/pki-framework": "^1.4.1",
-		"tracy/tracy": "^v2.11.0",
+		"tracy/tracy": "^v2.11.1",
 		"z4kn4fein/php-semver": "^v3.0.0"
 	},
 	"require-dev": {
