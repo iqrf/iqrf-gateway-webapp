@@ -95,7 +95,7 @@ final readonly class WifiConnectionSecurity implements INetworkManagerEntity {
 		 *  } $array Parsed nmcli configuration array for 802-11-wireless-security
 		 */
 		$array = $nmCli[self::NMCLI_PREFIX] ?? [];
-		$type = WifiSecurityType::nmCliDeserialize($nmCli);
+		$type = WifiSecurityType::nmCliDeserialize($array);
 		switch ($type) {
 			case WifiSecurityType::LEAP:
 				$leap = Leap::nmCliDeserialize($nmCli);

@@ -70,7 +70,7 @@ final readonly class WifiConnection implements INetworkManagerEntity {
 		/**
 		 * @var array{
 		 *     ssid: string,
-		 *     mode: string,
+		 *     mode?: string,
 		 *     'seen-bssids': string,
 		 * } $array Parsed nmcli configuration array
 		 */
