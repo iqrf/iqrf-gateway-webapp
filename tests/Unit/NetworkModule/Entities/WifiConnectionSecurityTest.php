@@ -44,23 +44,47 @@ final class WifiConnectionSecurityTest extends TestCase {
 	/**
 	 * @var WifiConnectionSecurity WiFi connection security entity
 	 */
-	private WifiConnectionSecurity $entity;
+	private WifiConnectionSecurity $entityPsk;
 
-	public function testJsonSerialize(): void {
+	/**
+	 * @var WifiConnectionSecurity WiFi connection security entity
+	 */
+	private WifiConnectionSecurity $entityLeap;
+
+	/**
+	 * @var WifiConnectionSecurity WiFi connection security entity
+	 */
+	private WifiConnectionSecurity $entityWep;
+
+	public function testJsonSerializePsk(): void {
 		$expected = [
 			'type' => 'wpa-psk',
 			'psk' => 'password',
+		];
+		Assert::same($expected, $this->entityPsk->jsonSerialize());
+	}
+
+	public function testJsonSerializeLeap(): void {
+		$expected = [
+			'type' => 'leap',
 			'leap' => [
 				'username' => '',
 				'password' => '',
 			],
+		];
+		Assert::same($expected, $this->entityLeap->jsonSerialize());
+	}
+
+	public function testJsonSerializeWep(): void {
+		$expected = [
+			'type' => 'wep',
 			'wep' => [
 				'type' => 'unknown',
 				'index' => 0,
 				'keys' => ['', '', '', ''],
 			],
 		];
-		Assert::same($expected, $this->entity->jsonSerialize());
+		Assert::same($expected, $this->entityWep->jsonSerialize());
 	}
 
 	/**
@@ -69,7 +93,10 @@ final class WifiConnectionSecurityTest extends TestCase {
 	protected function setUp(): void {
 		$leap = new Leap('', '');
 		$wep = new Wep(WepKeyType::UNKNOWN, 0, ['', '', '', '']);
-		$this->entity = new WifiConnectionSecurity(WifiSecurityType::WPA_PSK, 'password', $leap, $wep, null);
+		$psk = 'password';
+		$this->entityPsk = new WifiConnectionSecurity(WifiSecurityType::WPA_PSK, $psk, null, null, null);
+		$this->entityLeap = new WifiConnectionSecurity(WifiSecurityType::LEAP, null, $leap, null, null);
+		$this->entityWep = new WifiConnectionSecurity(WifiSecurityType::WEP, null, null, $wep, null);
 	}
 
 }

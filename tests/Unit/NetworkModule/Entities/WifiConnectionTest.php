@@ -28,9 +28,6 @@ namespace Tests\Unit\NetworkModule\Entities;
 
 use App\NetworkModule\Entities\WifiConnection;
 use App\NetworkModule\Entities\WifiConnectionSecurity;
-use App\NetworkModule\Entities\WifiSecurity\Leap;
-use App\NetworkModule\Entities\WifiSecurity\Wep;
-use App\NetworkModule\Enums\WepKeyType;
 use App\NetworkModule\Enums\WifiMode;
 use App\NetworkModule\Enums\WifiSecurityType;
 use App\NetworkModule\Utils\NmCliConnection;
@@ -81,15 +78,6 @@ final class WifiConnectionTest extends TestCase {
 			'security' => [
 				'type' => 'wpa-psk',
 				'psk' => 'password',
-				'leap' => [
-					'username' => '',
-					'password' => '',
-				],
-				'wep' => [
-					'type' => 'unknown',
-					'index' => 0,
-					'keys' => ['', '', '', ''],
-				],
 			],
 		];
 		Assert::same($expected, $this->entity->jsonSerialize());
@@ -99,7 +87,7 @@ final class WifiConnectionTest extends TestCase {
 	 * Tests the function to convert WiFi connection entity to nmcli configuration string
 	 */
 	public function testNmCliSerialize(): void {
-		$expected = '802-11-wireless.ssid "WIFI MAGDA" 802-11-wireless.mode "infrastructure" 802-11-wireless-security.key-mgmt "wpa-psk" 802-11-wireless-security.psk "password" 802-11-wireless-security.leap-password "" 802-11-wireless-security.leap-username "" 802-11-wireless-security.wep-key-type "unknown" 802-11-wireless-security.wep-tx-keyidx "0" 802-11-wireless-security.wep-key0 "" 802-11-wireless-security.wep-key1 "" 802-11-wireless-security.wep-key2 "" 802-11-wireless-security.wep-key3 "" ';
+		$expected = '802-11-wireless.ssid "WIFI MAGDA" 802-11-wireless.mode "infrastructure" 802-11-wireless-security.key-mgmt "wpa-psk" 802-11-wireless-security.psk "password" ';
 		Assert::same($expected, $this->entity->nmCliSerialize());
 	}
 
@@ -110,9 +98,7 @@ final class WifiConnectionTest extends TestCase {
 		$ssid = 'WIFI MAGDA';
 		$mode = WifiMode::INFRA;
 		$bssids = ['04:4F:4C:AB:DD:6A', '04:F0:21:23:29:00', '04:F0:21:24:1E:53', '18:E8:29:E4:CB:9A', '1A:E8:29:E5:CB:9A'];
-		$leap = new Leap('', '');
-		$wep = new Wep(WepKeyType::UNKNOWN, 0, ['', '', '', '']);
-		$security = new WifiConnectionSecurity(WifiSecurityType::WPA_PSK, 'password', $leap, $wep, null);
+		$security = new WifiConnectionSecurity(WifiSecurityType::WPA_PSK, 'password', null, null, null);
 		$this->entity = new WifiConnection($ssid, $mode, $bssids, $security);
 	}
 

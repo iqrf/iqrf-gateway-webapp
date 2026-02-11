@@ -1,6 +1,5 @@
 {
 	"name": "eth0",
-	"uuid": "25ab1b06-2a86-40a9-950f-1c576ddcd35a",
 	"type": "802-3-ethernet",
 	"interface": "eth0",
 	"autoConnect": {
@@ -38,5 +37,6 @@
 				"address": "2001:470:5bb2::1"
 			}
 		]
-	}
+	},
+	"uuid": "25ab1b06-2a86-40a9-950f-1c576ddcd35a"
 }
