@@ -62,6 +62,13 @@ limitations under the License.
 					:loading='componentState === ComponentState.Loading'
 					type='heading@8, button'
 				>
+					<v-alert
+						v-if='showWarning'
+						color='warning'
+						:text='$t("components.ipNetwork.wireGuard.peers.configuration.form.restartInfo")'
+						variant='tonal'
+						class='mb-5'
+					/>
 					<ITextInput
 						v-model='peerConfig.publicKey'
 						:label='$t("components.ipNetwork.wireGuard.peers.configuration.form.publicKey")'
@@ -265,6 +272,8 @@ const getDefaultConfig = (): WireGuardPeer => ({
 	},
 	tunnelId: componentProps.tunnels.at(0)?.id ?? 0,
 });
+/// Initial config snapshot
+let initialConfigSnapshot: string = JSON.stringify(getDefaultConfig());
 /// WireGuard tunnel configuration
 const peerConfig: Ref<WireGuardPeer> = ref(getDefaultConfig());
 /// Internationalization instance
@@ -275,6 +284,14 @@ const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const tunnelStack: Ref<WireGuardIpStack> = computed(() => {
 	const tunnel = componentProps.tunnels.find((t) => t.id === peerConfig.value.tunnelId);
 	return tunnel?.stack ?? WireGuardIpStack.DUAL;
+});
+/// Is modified
+const showWarning: Ref<boolean> = computed(() => {
+	if (componentProps.action === Action.Add) {
+		return true;
+	} else { // Action.Edit
+		return JSON.stringify(peerConfig.value) !== initialConfigSnapshot;
+	}
 });
 
 /**
@@ -402,6 +419,7 @@ watch(
 		try {
 			peerConfig.value = await service.getPeer(componentProps.peerId);
 			componentState.value = ComponentState.Ready;
+			initialConfigSnapshot = JSON.stringify(peerConfig.value);
 		} catch {
 			componentState.value = ComponentState.FetchFailed;
 			toast.error(i18n.t('common.messages.fetchFailed'));

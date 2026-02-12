@@ -907,6 +907,7 @@
 							"port": "Port uzlu",
 							"psk": "Předsdílený klíč",
 							"publicKey": "Veřejný klíč",
+							"restartInfo": "Po přidání nebo změně nastavení uzlu je třeba restartovat WireGuard tunel, aby se spojení s uzlem aktivovalo.",
 							"tunnel": "Tunel, který uzel použije"
 						},
 						"noTunnelErrorMessage": "Není nakonfigurován žádný WireGuard tunel! Nejprve prosím nakonfigurujte tunel. Uzly jsou přiřazeny k tunelům a nelze je přidat bez tunelů.",
