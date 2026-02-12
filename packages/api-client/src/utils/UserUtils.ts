@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as punycode from 'punycode/';
+import * as punycode from 'punycode/punycode';
 
 import {
 	type AccountEdit,
