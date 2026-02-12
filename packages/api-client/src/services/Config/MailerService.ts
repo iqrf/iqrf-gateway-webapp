@@ -15,7 +15,7 @@
  */
 
 import { type AxiosResponse } from 'axios';
-import * as punycode from 'punycode/punycode';
+import * as punycode from 'punycode/punycode.js';
 
 import { MailerSmtpSecurity } from '../../types/Config';
 import {
