@@ -2604,6 +2604,7 @@
 							"port": "Peer port",
 							"psk": "Pre-shared key",
 							"publicKey": "Public key",
+							"restartInfo": "After peer is added or modified, WireGuard tunnel must be restarted to activate the connection.",
 							"tunnel": "Tunnel that the peer will use"
 						},
 						"noTunnelErrorMessage": "No WireGuard tunnel is configured! Please configure tunnel first. Peers are assigned to tunnels and cannot be added if there are no tunnels configured.",
