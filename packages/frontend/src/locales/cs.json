@@ -912,6 +912,11 @@
 						},
 						"noTunnelErrorMessage": "Není nakonfigurován žádný WireGuard tunel! Nejprve prosím nakonfigurujte tunel. Uzly jsou přiřazeny k tunelům a nelze je přidat bez tunelů.",
 						"title": "Konfigurace WireGuard uzlu",
+						"tunnelRestart": {
+							"notActive": "WireGuard tunel nelze restartovat, protože není aktivní.",
+							"restartFailed": "Nepodařilo se restartovat WireGuard tunel!",
+							"save": "Uložit a restartovat WireGuard tunel"
+						},
 						"validation": {
 							"endpoint": "Prosím zadejte adresu nebo doménové jméno!",
 							"keepalive": "Prosím zadejte keep-alive interval!",
