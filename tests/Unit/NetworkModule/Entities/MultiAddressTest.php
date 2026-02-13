@@ -135,6 +135,20 @@ final class MultiAddressTest extends TestCase {
 	}
 
 	/**
+	 * Tests the function to create multiple address type entity from IPv4 address and prefix
+	 */
+	public function testFromStringIpv4(): void {
+		Assert::equal($this->ipv4Entity, MultiAddress::fromString('192.168.1.2', 24));
+	}
+
+	/**
+	 * Tests the function to create multiple address type entity from IPv6 address and prefix
+	 */
+	public function testFromStringIpv6(): void {
+		Assert::equal($this->ipv6Entity, MultiAddress::fromString('2001:db8::', 32));
+	}
+
+	/**
 	 * Tests the function to convert multiple address type entity to IPv4 string representation
 	 */
 	public function testToStringIpv4(): void {

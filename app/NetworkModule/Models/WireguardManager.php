@@ -37,7 +37,6 @@ use App\NetworkModule\Exceptions\PeerExistsException;
 use App\NetworkModule\Exceptions\WireguardInvalidEndpointException;
 use App\NetworkModule\Exceptions\WireguardKeyErrorException;
 use App\ServiceModule\Models\ServiceManager;
-use Darsyn\IP\Version\Multi;
 use Exception;
 use Iqrf\CommandExecutor\CommandExecutor;
 use Nette\Utils\FileSystem;
@@ -129,11 +128,11 @@ class WireguardManager {
 		}
 		$interface = new WireguardInterface($values->name, $values->privateKey, $values->port ?? null);
 		if (property_exists($values, 'ipv4')) {
-			$ipv4 = new WireguardInterfaceIpv4(new MultiAddress(Multi::factory($values->ipv4->address), $values->ipv4->prefix), $interface);
+			$ipv4 = new WireguardInterfaceIpv4(MultiAddress::fromString($values->ipv4->address, $values->ipv4->prefix), $interface);
 			$interface->setIpv4($ipv4);
 		}
 		if (property_exists($values, 'ipv6')) {
-			$ipv6 = new WireguardInterfaceIpv6(new MultiAddress(Multi::factory($values->ipv6->address), $values->ipv6->prefix), $interface);
+			$ipv6 = new WireguardInterfaceIpv6(MultiAddress::fromString($values->ipv6->address, $values->ipv6->prefix), $interface);
 			$interface->setIpv6($ipv6);
 		}
 		$this->entityManager->persist($interface);
@@ -225,14 +224,14 @@ class WireguardManager {
 	 */
 	public function createPeerAddresses(array $addresses, WireguardPeer $ifPeer): void {
 		foreach ($addresses as $ip) {
-			$address = new WireguardPeerAddress(new MultiAddress(Multi::factory($ip->address), $ip->prefix), $ifPeer);
+			$address = new WireguardPeerAddress(MultiAddress::fromString($ip->address, $ip->prefix), $ifPeer);
 			$ifPeer->addAddress($address);
 		}
 	}
 
 	/**
 	 * Get WireGuard peer
-	 * @param int $id Wireguard peer id
+	 * @param int $id WireGuard peer id
 	 * @return WireguardPeer Peer with given id
 	 */
 	public function getPeer(int $id): WireguardPeer {
@@ -245,7 +244,7 @@ class WireguardManager {
 
 	/**
 	 * Get all WireGuard peers
-	 * @return array{WireGuardPeer} all wireguard peers
+	 * @return array{WireGuardPeer} all WireGuard peers
 	 */
 	public function getAllPeers(): array {
 		return $this->peerRepository->findAll();
@@ -382,35 +381,35 @@ class WireguardManager {
 
 	/**
 	 * Configures WireGuard interface and peers
-	 * @param WireguardInterface $iface WireGuard interface entity
+	 * @param WireguardInterface $interface WireGuard interface entity
 	 */
-	public function initializeTunnel(WireguardInterface $iface): void {
-		$name = $iface->getName();
+	public function initializeTunnel(WireguardInterface $interface): void {
+		$name = $interface->getName();
 		$output = $this->commandManager->run('ip link add ' . escapeshellarg($name) . ' type wireguard', true);
 		if ($output->getExitCode() !== 0) {
 			throw new Exception(sprintf('Failed to create new interface: %s.', $output->getStderr()));
 		}
 		FileSystem::createDir(self::TMP_DIR, 0700);
 		$privateKeyFile = self::TMP_DIR . $name . '.privatekey';
-		FileSystem::write($privateKeyFile, $iface->getPrivateKey(), 0600);
-		$iface->setPrivateKey($privateKeyFile);
-		$this->setPeerPsk($iface->getPeers()->toArray());
-		$output = $this->commandManager->run($iface->wgSerialize(), true);
+		FileSystem::write($privateKeyFile, $interface->getPrivateKey(), 0600);
+		$interface->setPrivateKey($privateKeyFile);
+		$this->setPeerPsk($interface->getPeers()->toArray());
+		$output = $this->commandManager->run($interface->wgSerialize(), true);
 		if ($output->getExitCode() !== 0) {
 			throw new Exception(sprintf('Failed to set wg tunnel properties: %s.', $output->getStderr()));
 		}
 		FileSystem::delete(self::TMP_DIR);
-		if ($iface->getIpv4() instanceof WireguardInterfaceIpv4) {
-			$this->setTunnelIp($name, $iface->getIpv4()->toString(), 4);
+		if ($interface->getIpv4() instanceof WireguardInterfaceIpv4) {
+			$this->setTunnelIp($name, $interface->getIpv4()->toString(), 4);
 		}
-		if ($iface->getIpv6() instanceof WireguardInterfaceIpv6) {
-			$this->setTunnelIp($name, $iface->getIpv6()->toString(), 6);
+		if ($interface->getIpv6() instanceof WireguardInterfaceIpv6) {
+			$this->setTunnelIp($name, $interface->getIpv6()->toString(), 6);
 		}
 		$output = $this->commandManager->run('ip link set mtu 1420 up dev ' . escapeshellarg($name), true);
 		if ($output->getExitCode() !== 0) {
 			throw new Exception(sprintf('Failed to set interface MTU: %s.', $output->getStderr()));
 		}
-		$this->setPeerRoutes($name, $iface->getPeers()->toArray());
+		$this->setPeerRoutes($name, $interface->getPeers()->toArray());
 	}
 
 	/**
@@ -474,10 +473,10 @@ class WireguardManager {
 	private function updateInterfaceAddress(stdClass $ip, WireguardInterface $interface, int $protocol): void {
 		$ifIp = $protocol === 4 ? $interface->getIpv4() : $interface->getIpv6();
 		if ($ifIp !== null) {
-			$ifIp->setAddress(new MultiAddress(Multi::factory($ip->address), $ip->prefix));
+			$ifIp->setAddress(MultiAddress::fromString($ip->address, $ip->prefix));
 			$this->entityManager->persist($ifIp);
 		} else {
-			$newAddress = new MultiAddress(Multi::factory($ip->address), $ip->prefix);
+			$newAddress = MultiAddress::fromString($ip->address, $ip->prefix);
 			if ($protocol === 4) {
 				$newIp = new WireguardInterfaceIpv4($newAddress, $interface);
 				$interface->setIpv4($newIp);
@@ -490,17 +489,17 @@ class WireguardManager {
 
 	/**
 	 * Adds new, updates existing and deletes missing WireGuard peer addresses
-	 * @param array<int, stdClass> $addrs WireGuard peer addresses
+	 * @param array<int, stdClass> $addresses WireGuard peer addresses
 	 * @param WireguardPeer $ifPeer WireGuard peer entity
 	 * @param int $protocol IP version
 	 */
-	private function updatePeerAddresses(array $addrs, WireguardPeer $ifPeer, int $protocol): void {
-		$oldAddrs = $ifPeer->getAddresses()->toArray();
+	private function updatePeerAddresses(array $addresses, WireguardPeer $ifPeer, int $protocol): void {
+		$oldAddresses = $ifPeer->getAddresses()->toArray();
 		$addrIds = [];
-		foreach ($addrs as $ip) {
-			$ipAddr = new MultiAddress(Multi::factory($ip->address), $ip->prefix);
+		foreach ($addresses as $ip) {
+			$ipAddr = MultiAddress::fromString($ip->address, $ip->prefix);
 			$found = false;
-			foreach ($oldAddrs as $addr) {
+			foreach ($oldAddresses as $addr) {
 				$oldAddr = $addr->getAddress();
 				if ($oldAddr->getVersion() !== $protocol) {
 					continue;
@@ -516,7 +515,7 @@ class WireguardManager {
 				$ifPeer->addAddress(new WireguardPeerAddress($ipAddr, $ifPeer));
 			}
 		}
-		foreach ($oldAddrs as $addr) {
+		foreach ($oldAddresses as $addr) {
 			if ($addr->getAddress()->getVersion() !== $protocol) {
 				continue;
 			}

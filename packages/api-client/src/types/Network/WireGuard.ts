@@ -37,6 +37,11 @@ export enum WireGuardIpStack {
 }
 
 /**
+ * WireGuard single IP stack
+ */
+export type WireGuardIpStackSingle = Exclude<WireGuardIpStack, WireGuardIpStack.DUAL>;
+
+/**
  * WireGuard peer allowed IP
  */
 export interface WireGuardIpAddress {
