@@ -54,14 +54,14 @@ limitations under the License.
 </template>
 
 <script setup lang='ts'>
-import { WireGuardIpAddress, WireGuardIpStack } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
+import { WireGuardIpAddress, WireGuardIpStack, WireGuardIpStackSingle } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import { INumberInput, ITextInput, ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { computed, type Ref, type TemplateRef, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 const componentProps = withDefaults(
 	defineProps<{
 		/// IP stack type
-		type: WireGuardIpStack.IPV4 | WireGuardIpStack.IPV6;
+		type: WireGuardIpStackSingle;
 		/// Record ID
 		recordId: string | number;
 		/// IP address object
@@ -73,7 +73,7 @@ const componentProps = withDefaults(
 );
 
 const emit = defineEmits<{
-	updateIp: [recordId: number | string, value: WireGuardIpAddress, type: WireGuardIpStack];
+	updateIp: [recordId: number | string, value: WireGuardIpAddress, type: WireGuardIpStackSingle];
 }>();
 
 const ipAddress: Ref<WireGuardIpAddress> = computed(() => componentProps.ipAddress !== undefined ? componentProps.ipAddress : {
@@ -87,10 +87,10 @@ const prefixInput: TemplateRef<InstanceType<typeof INumberInput>> = useTemplateR
 const i18n = useI18n();
 
 /**
- * Validates IP address format and returns error message if does not match.
+ * Validates IP address format and returns error message if it does not match.
  * @param {string} address IP address to validate
  * @param {string} error Error to return if validation fails
- * @return {boolean|string} True if validation is successfull, error otherwise
+ * @return {boolean|string} True if validation is successful, error otherwise
  */
 function validateIp(address: string, error: string): boolean | string {
 	if (componentProps.type === WireGuardIpStack.IPV4) {
@@ -115,7 +115,7 @@ function getAddressFieldName(): string {
 /**
  * Validates IP address prefix
  * @param {number} prefix prefix to validate
- * @return {boolean|string} True if validation is successfull, error message otherwise
+ * @return {boolean|string} True if validation is successful, error message otherwise
  */
 function validatePrefix(prefix: number): boolean | string {
 	if (componentProps.type === WireGuardIpStack.IPV4) {

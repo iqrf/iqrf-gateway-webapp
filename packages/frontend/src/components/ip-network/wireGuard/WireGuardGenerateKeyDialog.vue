@@ -91,7 +91,7 @@ const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const showDialog: Ref<boolean> = ref(false);
 
 /**
- * Close dialog window
+ * Close the dialog window
  */
 function close(): void {
 	showDialog.value = false;

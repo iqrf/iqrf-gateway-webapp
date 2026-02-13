@@ -130,8 +130,8 @@ async function fetchData(): Promise<void> {
 /**
  * Passes update tunnel event to parent component
  * @param {WireGuardTunnelConfig} tunnel tunnel to add to the array
- * @param {boolean} enabled enabled flag - tells if tunnel is enabled
- * @param {boolean} active active flag - tells if tunnel is active
+ * @param {boolean} enabled enabled flag - tells if the tunnel is enabled
+ * @param {boolean} active active flag - tells if the tunnel is active
  */
 function updateTunnel(tunnel: WireGuardTunnelConfig, enabled: boolean, active: boolean): void {
 	emit('updateTunnel', tunnel, enabled, active);
@@ -162,8 +162,8 @@ function updateActiveFlag(tunnelId: number): void {
 }
 
 /**
- * Watch for changes in parent component state. Needed to update state in this component,
- * because data fetching is passed to parent compoent via emit. Therefore this component
+ * Watch for changes in the parent component state. Needed to update state in this component,
+ * because data fetching is passed to the parent component via emit. Therefore, this component
  * has no information about state unless it is passed in from parent.
  */
 watch(
