@@ -63,7 +63,7 @@ limitations under the License.
 					type='heading@8, button'
 				>
 					<v-alert
-						v-if='showWarning'
+						v-if='componentProps.action === Action.Add || isModified'
 						color='warning'
 						:text='$t("components.ipNetwork.wireGuard.peers.configuration.form.restartInfo")'
 						variant='tonal'
@@ -207,8 +207,18 @@ limitations under the License.
 						:action='Action.Save'
 						container-type='card'
 						:loading='componentState === ComponentState.Loading'
-						:disabled='!isValid.value'
+						:disabled='!isValid.value || !isModified'
 						type='submit'
+					/>
+					<IActionBtn
+						v-if='![ComponentState.Error || ComponentState.FetchFailed || ComponentState.NotFound].includes(componentState)'
+						color='info'
+						:icon='mdiContentSave'
+						container-type='card'
+						:disabled='!isValid.value || !isModified'
+						:loading='componentState === ComponentState.Action'
+						:text='$t("components.ipNetwork.wireGuard.peers.configuration.tunnelRestart.save")'
+						@click='onSubmit(true)'
 					/>
 					<v-spacer />
 					<IActionBtn
@@ -226,6 +236,7 @@ limitations under the License.
 <script setup lang='ts'>
 import { WireGuardIpAddress, WireGuardIpStack, WireGuardPeer, WireGuardTunnelListEntry } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import { Action, ComponentState, IActionBtn, ICard, IDataTableAction, IModalWindow, INumberInput, ITextInput, ValidationRules } from '@iqrf/iqrf-vue-ui';
+import { mdiContentSave } from '@mdi/js';
 import { AxiosError } from 'axios';
 import { computed, ref, type Ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -285,14 +296,7 @@ const tunnelStack: Ref<WireGuardIpStack> = computed(() => {
 	const tunnel = componentProps.tunnels.find((t) => t.id === peerConfig.value.tunnelId);
 	return tunnel?.stack ?? WireGuardIpStack.DUAL;
 });
-/// Is modified
-const showWarning: Ref<boolean> = computed(() => {
-	if (componentProps.action === Action.Add) {
-		return true;
-	} else { // Action.Edit
-		return JSON.stringify(peerConfig.value) !== initialConfigSnapshot;
-	}
-});
+const isModified: Ref<boolean> = computed(() => JSON.stringify(peerConfig.value) !== initialConfigSnapshot);
 
 /**
  * Closes the dialog window
@@ -353,8 +357,9 @@ function updateAllowedIp(index: string | number, value: WireGuardIpAddress, type
 
 /**
  * Verifies and saves WireGuard peer configuration changes
+ * @param {boolean} restartTunnelOnSave restarts tunnel on save if true
  */
-async function onSubmit(): Promise<void> {
+async function onSubmit(restartTunnelOnSave: boolean = false): Promise<void> {
 	let response = null;
 	try {
 		componentState.value = ComponentState.Action;
@@ -388,6 +393,33 @@ async function onSubmit(): Promise<void> {
 			);
 		}
 	}
+	if (restartTunnelOnSave) {
+		restartTunnel();
+	}
+}
+
+/**
+ * Restart the tunnel (deactivate and activate again)
+ */
+async function restartTunnel(): Promise<void> {
+	const tunnel = componentProps.tunnels.find((t) => t.id === peerConfig.value.tunnelId);
+	if (!tunnel?.active) {
+		toast.error(
+			i18n.t('components.ipNetwork.wireGuard.peers.configuration.tunnelRestart.notActive'),
+		);
+		return;
+	}
+	componentState.value = ComponentState.Action;
+	try {
+		await service.deactivateTunnel(tunnel.id);
+		await service.activateTunnel(tunnel.id);
+		componentState.value = ComponentState.Ready;
+	} catch {
+		componentState.value = ComponentState.Error;
+		toast.error(
+			i18n.t('components.ipNetwork.wireGuard.peers.configuration.tunnelRestart.restartFailed'),
+		);
+	}
 }
 
 /**
@@ -418,8 +450,8 @@ watch(
 		// fetch peer data
 		try {
 			peerConfig.value = await service.getPeer(componentProps.peerId);
-			componentState.value = ComponentState.Ready;
 			initialConfigSnapshot = JSON.stringify(peerConfig.value);
+			componentState.value = ComponentState.Ready;
 		} catch {
 			componentState.value = ComponentState.FetchFailed;
 			toast.error(i18n.t('common.messages.fetchFailed'));

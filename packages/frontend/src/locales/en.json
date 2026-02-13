@@ -2609,6 +2609,11 @@
 						},
 						"noTunnelErrorMessage": "No WireGuard tunnel is configured! Please configure tunnel first. Peers are assigned to tunnels and cannot be added if there are no tunnels configured.",
 						"title": "WireGuard peer configuration",
+						"tunnelRestart": {
+							"notActive": "WireGuard tunnel could not be restarted because it is not active.",
+							"restartFailed": "Failed to restart WireGuard tunnel!",
+							"save": "Save and restart WireGuard tunnel"
+						},
 						"validation": {
 							"endpoint": "Endpoint is required!",
 							"keepalive": "Keepalive interval is required!",
