@@ -11,6 +11,7 @@
 <route>
 {
 	"name": "DeviceEnumeration",
+	"props": true,
 }
 </route>
 
