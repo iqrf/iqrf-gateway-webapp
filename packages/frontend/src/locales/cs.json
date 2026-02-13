@@ -18,7 +18,6 @@
 		"labels": {
 			"apiDocs": "API dokumentace",
 			"certificate": "Certifikát",
-			"configuration": "Potvrzení",
 			"confirmationTs": "Čas potvrzení",
 			"format": "Formát",
 			"hostname": "Jméno hostitele",
@@ -46,7 +45,6 @@
 			"enabled": "Povoleno"
 		},
 		"validation": {
-			"credentialsMissing": "Zadejte prosím jak uživatelské jméno, tak i heslo, nebo nechte obě pole prázdná.",
 			"email": {
 				"format": "Prosím zadejte platnou e-mailovou adresu.",
 				"required": "Prosím zadejte e-mailovou adresu."
@@ -59,8 +57,6 @@
 				"match": "Hesla se neshodují.",
 				"required": "Prosím zadejte heslo znovu pro potvrzení."
 			},
-			"portInvalid": "Číslo portu musí být celé číslo mezi 1 a 65535.",
-			"portMissing": "Zadejte prosím číslo portu.",
 			"username": {
 				"required": "Prosím zadejte uživatelské jméno."
 			}
@@ -204,7 +200,6 @@
 		},
 		"common": {
 			"actions": {
-				"disable": "Zakázat",
 				"download": "Stáhnout",
 				"upload": "Nahrát"
 			},
@@ -235,7 +230,6 @@
 					"required": "Zadejte prosím e-mailovou adresu."
 				},
 				"password": {
-					"minLength": "Heslo musí být minimálně 8 znaků dlouhé.",
 					"required": "Zadejte prosím heslo."
 				},
 				"passwordConfirm": {
@@ -270,38 +264,17 @@
 			},
 			"smtp": {
 				"defaultConfig": "V současné době se používá výchozí konfigurace systému IQAROS.",
-				"errors": {
-					"host": "Prosím zadejte hostitele poštovního serveru.",
-					"hostInvalid": "Adresa hostitele poštovního serveru by měla být IP adresa, plně kvalifikovaný název domény nebo localhost.",
-					"password": "Prosím zadejte heslo pro přihlášení k poštovnímu serveru.",
-					"port": "Prosím zadejte port poštovního serveru.",
-					"portInvalid": "Port poštovního serveru by měl být celé číslo mezi 1 a 65535.",
-					"sender": "Prosím zadejte e-mailovou adresu odesílatele.",
-					"username": "Prosím zadejte uživatelské jméno pro přihlášení k poštovnímu serveru."
-				},
 				"form": {
 					"customConfig": "Použít vlastní konfiguraci pro poštovní server",
-					"enabled": "Povolit odesílání e-mailů",
 					"host": "Adresa hostitele",
 					"password": "Heslo",
-					"port": "Port",
 					"security": "Zabezpečení spojení",
 					"securityLevels": {
 						"none": "Žádné",
 						"ssl": "TLS",
 						"tls": "StartTLS"
 					},
-					"sender": "Odesílatel",
-					"test": "Odeslat testovací e-mail",
-					"title": "Konfigurace poštovního serveru",
-					"username": "Uživatelské jméno"
-				},
-				"messages": {
-					"fetchFailed": "Nepodařilo se načíst konfiguraci poštovního serveru: {error}",
-					"saveFailed": "Nepodařilo se uložit konfiguraci poštovního serveru: {error}",
-					"saveSuccess": "Konfigurace poštovního serveru byla úspěšně uložena.",
-					"testFailed": "Nepodařilo se odeslat testovací e-mail: {error}",
-					"testSuccess": "Testovací e-mail byl úspěšně odeslán."
+					"sender": "Odesílatel"
 				}
 			}
 		},
@@ -346,14 +319,9 @@
 					"slcRegion": "Zbývající životnost SLC oblasti"
 				},
 				"gwId": "IQRF Gateway ID",
-				"hostname": "Jméno hostitele",
-				"hostnameChange": {
-					"title": "Změna jména hostitele"
-				},
 				"os": "Operační systém",
 				"tr": {
 					"dpa": "DPA",
-					"error": "Nelze získat informace o koordinátoru.",
 					"hwpid": "HWPID",
 					"hwpidVersion": "HWPID ver.",
 					"mcuType": "Typ MCU",
@@ -874,7 +842,6 @@
 					"unknown": "Neznámý"
 				},
 				"notified": "Poslední oznámení",
-				"queue": "Délka fronty",
 				"version": "Verze daemona"
 			}
 		}
