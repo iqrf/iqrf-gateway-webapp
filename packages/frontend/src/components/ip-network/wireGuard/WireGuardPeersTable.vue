@@ -139,7 +139,7 @@ function updatePeer(peer: WireGuardPeer): void {
 			return;
 		}
 	}
-	// Add new peer if doesn't exist
+	// Add new peer if it doesn't exist
 	peers.value.push(peer);
 }
 

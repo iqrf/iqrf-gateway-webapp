@@ -234,7 +234,7 @@ limitations under the License.
 </template>
 
 <script setup lang='ts'>
-import { WireGuardIpAddress, WireGuardIpStack, WireGuardPeer, WireGuardTunnelListEntry } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
+import { WireGuardIpAddress, WireGuardIpStack, WireGuardIpStackSingle, WireGuardPeer, WireGuardTunnelListEntry } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import { Action, ComponentState, IActionBtn, ICard, IDataTableAction, IModalWindow, INumberInput, ITextInput, ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiContentSave } from '@mdi/js';
 import { AxiosError } from 'axios';
@@ -307,9 +307,9 @@ function closeDialog(): void {
 
 /**
  * Adds another record to the allowed IP address list
- * @param {WireGuardIpStack} type Type of address to add (allowed are WireGuardIpStack.IPV4 and WireGuardIpStack.IPV6)
+ * @param {WireGuardIpStackSingle} type Type of address to add
  */
-function addAllowedAddress(type: WireGuardIpStack): void {
+function addAllowedAddress(type: WireGuardIpStackSingle): void {
 	if (type === WireGuardIpStack.IPV4) {
 		peerConfig.value.allowedIPs.ipv4.push({ address: '', prefix: 24 });
 	} else if (type === WireGuardIpStack.IPV6) {
@@ -321,10 +321,10 @@ function addAllowedAddress(type: WireGuardIpStack): void {
 
 /**
  * Removes address record on given index in corresponding allowed IP address list
- * @param {WireGuardIpStack} type Type of removed address (allowed are WireGuardIpStack.IPV4 and WireGuardIpStack.IPV6)
+ * @param {WireGuardIpStackSingle} type Type of removed address
  * @param {number} index Index of removed address in the list of allowed IPs
  */
-function removeAllowedAddress(type: WireGuardIpStack, index: number): void {
+function removeAllowedAddress(type: WireGuardIpStackSingle, index: number): void {
 	if (type === WireGuardIpStack.IPV4) {
 		peerConfig.value.allowedIPs.ipv4.splice(index, 1);
 	} else if (type === WireGuardIpStack.IPV6) {
@@ -338,9 +338,9 @@ function removeAllowedAddress(type: WireGuardIpStack, index: number): void {
  * Updates IP from the list of allowed IPs.
  * @param {string|number} index index of the record in the array
  * @param {WireGuardIpAddress} value IP address instance
- * @param {WireGuardIpStack} type IP stack type (IPv4 or IPv6) the record is part of
+ * @param {WireGuardIpStackSingle} type IP stack type (IPv4 or IPv6) the record is part of
  */
-function updateAllowedIp(index: string | number, value: WireGuardIpAddress, type: WireGuardIpStack): void {
+function updateAllowedIp(index: string | number, value: WireGuardIpAddress, type: WireGuardIpStackSingle): void {
 	if (typeof index === 'string') {
 		index = Number.parseInt(index);
 	}
@@ -394,7 +394,7 @@ async function onSubmit(restartTunnelOnSave: boolean = false): Promise<void> {
 		}
 	}
 	if (restartTunnelOnSave) {
-		restartTunnel();
+		await restartTunnel();
 	}
 }
 
@@ -423,20 +423,20 @@ async function restartTunnel(): Promise<void> {
 }
 
 /**
- * Setup the form when opened.
+ * Set up the form when opened.
  */
 watch(
 	[
-		() => componentProps.tunnels.map((tunnel) => tunnel.id),
+		(): number[] => componentProps.tunnels.map((tunnel: WireGuardTunnelListEntry): number => tunnel.id),
 		showDialog,
 	],
-	async ([tunnelIds, dialogShown]) => {
-		// if form is not shown, do nothing
+	async ([tunnelIds, dialogShown]): Promise<void> => {
+		// if the form is not shown, do nothing
 		if (!dialogShown) {
 			return;
 		}
 		componentState.value = ComponentState.Loading;
-		// if there are no tunnels, show warning
+		// if there are no tunnels, show a warning
 		if (tunnelIds.length === 0) {
 			componentState.value = ComponentState.NotFound;
 			return;

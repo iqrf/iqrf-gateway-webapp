@@ -47,6 +47,16 @@ class MultiAddress {
 	}
 
 	/**
+	 * Creates a new IP address entity from the address and prefix
+	 * @param string $address IP address
+	 * @param int $prefix IP address prefix
+	 * @return MultiAddress IP address entity
+	 */
+	public static function fromString(string $address, int $prefix): self {
+		return new self(IP::factory($address), $prefix);
+	}
+
+	/**
 	 * Returns the IP address
 	 * @return IP IP address
 	 */

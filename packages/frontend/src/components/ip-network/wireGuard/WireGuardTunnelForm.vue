@@ -403,7 +403,7 @@ watch(
 );
 
 /**
- * Setup the form when opened.
+ * Set up the form when opened.
  */
 watch(
 	showDialog,
@@ -413,7 +413,7 @@ watch(
 			return;
 		}
 		componentState.value = ComponentState.Loading;
-		// reset form data to default if not loading existing tunnel
+		// reset form data to default if not loading an existing tunnel
 		if (!componentProps.tunnelId) {
 			wgConfig.value = getDefaultConfig();
 			editKeys.value = false;
