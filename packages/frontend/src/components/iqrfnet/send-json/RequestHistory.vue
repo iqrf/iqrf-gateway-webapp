@@ -28,7 +28,7 @@ limitations under the License.
 			/>
 		</template>
 		<div v-if='messages.length > 0'>
-			<SelectInput
+			<ISelectInput
 				v-model='messageIdx'
 				:items='messageOptions'
 			/>
@@ -66,12 +66,11 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { ICard } from '@iqrf/iqrf-vue-ui';
+import { ICard, ISelectInput } from '@iqrf/iqrf-vue-ui';
 import { mdiDelete } from '@mdi/js';
 import { computed, ref, type Ref } from 'vue';
 
 import JsonMessageViewer from '@/components/iqrfnet/send-json/JsonMessageViewer.vue';
-import SelectInput from '@/components/layout/form/SelectInput.vue';
 import { JsonApiTransaction } from '@/types/Iqrfnet';
 
 /// Component props

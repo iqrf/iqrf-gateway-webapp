@@ -21,18 +21,20 @@ limitations under the License.
 		label
 		size='small'
 	>
-		{{ $t(`components.ipNetwork.modems.columns.states.${state}`) }}
+		{{ text }}
 	</v-chip>
 </template>
 
 <script setup lang='ts'>
 import { ModemState } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
-import { computed } from 'vue';
+import { computed, type ComputedRef } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 /// Component props
 const componentProps = defineProps<{
 	state: ModemState;
 }>();
+const i18n = useI18n();
 
 /// Badge color
 const color = computed(() => {
@@ -49,5 +51,24 @@ const color = computed(() => {
 		default:
 			return 'secondary';
 	}
+});
+/// Badge text
+const text: ComputedRef<string> = computed((): string => {
+	const data: Record<ModemState, string> = {
+		[ModemState.connected]: i18n.t('components.ipNetwork.modems.columns.states.connected'),
+		[ModemState.connecting]: i18n.t('components.ipNetwork.modems.columns.states.connecting'),
+		[ModemState.disabled]: i18n.t('components.ipNetwork.modems.columns.states.disabled'),
+		[ModemState.disabling]: i18n.t('components.ipNetwork.modems.columns.states.disabling'),
+		[ModemState.disconnecting]: i18n.t('components.ipNetwork.modems.columns.states.disconnecting'),
+		[ModemState.enabled]: i18n.t('components.ipNetwork.modems.columns.states.enabled'),
+		[ModemState.enabling]: i18n.t('components.ipNetwork.modems.columns.states.enabling'),
+		[ModemState.failed]: i18n.t('components.ipNetwork.modems.columns.states.failed'),
+		[ModemState.initializing]: i18n.t('components.ipNetwork.modems.columns.states.initializing'),
+		[ModemState.locked]: i18n.t('components.ipNetwork.modems.columns.states.locked'),
+		[ModemState.registered]: i18n.t('components.ipNetwork.modems.columns.states.registered'),
+		[ModemState.searching]: i18n.t('components.ipNetwork.modems.columns.states.searching'),
+		[ModemState.unknown]: i18n.t('components.ipNetwork.modems.columns.states.unknown'),
+	};
+	return data[componentProps.state] ?? '';
 });
 </script>

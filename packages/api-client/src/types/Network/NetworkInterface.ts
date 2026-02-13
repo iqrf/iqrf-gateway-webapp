@@ -31,7 +31,7 @@ export enum NetworkInterfaceState {
 	/// The interface failed to connect to the requested network
 	Failed = 'failed',
 	/// The interface is getting IP configuration
-	GetingIpConfiguration = 'connecting (getting IP configuration)',
+	GettingIpConfiguration = 'connecting (getting IP configuration)',
 	/// The interface requires more information to continue connecting to the requested network
 	NeedAuthentication = 'connecting (need authentication)',
 	/// The interface is preparing the connection to the network

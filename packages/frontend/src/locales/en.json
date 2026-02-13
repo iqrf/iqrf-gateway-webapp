@@ -71,11 +71,7 @@
 		},
 		"states": {
 			"active": "Active",
-			"disabled": "Disabled",
-			"enabled": "Enabled",
-			"inactive": "Inactive",
-			"invalid": "Invalid",
-			"valid": "Valid"
+			"enabled": "Enabled"
 		},
 		"validation": {
 			"certificate": {
@@ -250,6 +246,8 @@
 				},
 				"state": "State",
 				"states": {
+					"blocked": "Blocked",
+					"invited": "Invited",
 					"unverified": "Unverified",
 					"verified": "Verified"
 				},
@@ -389,21 +387,8 @@
 		},
 		"common": {
 			"actions": {
-				"add": "Add",
-				"apply": "Apply",
-				"cancel": "Cancel",
-				"delete": "Delete",
-				"disable": "Disable",
 				"download": "Download",
 				"edit": "Edit",
-				"enable": "Enable",
-				"export": "Export",
-				"import": "Import",
-				"reload": "Reload",
-				"restart": "Restart",
-				"showDetails": "Show details",
-				"start": "Start",
-				"stop": "Stop",
 				"upload": "Upload"
 			},
 			"fields": {
@@ -2535,6 +2520,7 @@
 						"connection failed": "Failed",
 						"deactivating": "Deactivating",
 						"disconnected": "Disconnected",
+						"failed": "Failed",
 						"unavailable": "Unavailable",
 						"unknown": "Unknown",
 						"unmanaged": "Unmanaged"
@@ -4278,30 +4264,8 @@
 	},
 	"title": "IQRF Gateway Webapp",
 	"user": {
-		"email": "E-mail address",
-		"language": "Language",
 		"messages": {
-			"createFailure": "Failed to create new user: {error}",
 			"verificationSent": "An email containing instructions to verify your account was sent to your address."
-		},
-		"password": "Password",
-		"role": "Role",
-		"roles": {
-			"admin": "Administrator",
-			"basic": "Basic user",
-			"normal": "Normal user"
-		},
-		"state": "State",
-		"states": {
-			"unverified": "Unverified",
-			"verified": "Verified"
-		},
-		"username": "Username",
-		"validation": {
-			"invalidEmail": "Invalid e-mail address format.",
-			"missingEmail": "Please enter your e-mail address.",
-			"password": "Please enter your password.",
-			"username": "Please enter your username."
 		}
 	}
 }

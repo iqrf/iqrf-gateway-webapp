@@ -21,20 +21,22 @@ limitations under the License.
 		label
 		size='small'
 	>
-		{{ $t(`components.ipNetwork.interfaces.columns.states.${state}`) }}
+		{{ text }}
 	</v-chip>
 </template>
 
 <script setup lang='ts'>
 import {
-	type NetworkInterfaceState,
+	NetworkInterfaceState,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
-import { computed } from 'vue';
+import { computed, type ComputedRef } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 /// Component props
 const componentProps = defineProps<{
 	state: NetworkInterfaceState;
 }>();
+const i18n = useI18n();
 
 /// Badge color
 const color = computed(() => {
@@ -49,7 +51,26 @@ const color = computed(() => {
 		case 'disconnected':
 			return 'error';
 		default:
-			return 'gray';
+			return 'secondary';
 	}
+});
+/// Badge text
+const text: ComputedRef<string> = computed((): string => {
+	const data: Record<NetworkInterfaceState, string> = {
+		[NetworkInterfaceState.CheckingIpConnectivity]: i18n.t('components.ipNetwork.interfaces.columns.states.connecting (checking IP connectivity)'),
+		[NetworkInterfaceState.Configuring]: i18n.t('components.ipNetwork.interfaces.columns.states.connecting (configuring)'),
+		[NetworkInterfaceState.Connected]: i18n.t('components.ipNetwork.interfaces.columns.states.connected'),
+		[NetworkInterfaceState.Deactivating]: i18n.t('components.ipNetwork.interfaces.columns.states.deactivating'),
+		[NetworkInterfaceState.Disconnected]: i18n.t('components.ipNetwork.interfaces.columns.states.disconnected'),
+		[NetworkInterfaceState.Failed]: i18n.t('components.ipNetwork.interfaces.columns.states.failed'),
+		[NetworkInterfaceState.GettingIpConfiguration]: i18n.t('components.ipNetwork.interfaces.columns.states.connecting (getting IP configuration)'),
+		[NetworkInterfaceState.NeedAuthentication]: i18n.t('components.ipNetwork.interfaces.columns.states.connecting (need authentication)'),
+		[NetworkInterfaceState.Prepare]: i18n.t('components.ipNetwork.interfaces.columns.states.connecting (prepare)'),
+		[NetworkInterfaceState.StartingSecondaries]: i18n.t('components.ipNetwork.interfaces.columns.states.connecting (starting secondary connections)'),
+		[NetworkInterfaceState.Unavailable]: i18n.t('components.ipNetwork.interfaces.columns.states.unavailable'),
+		[NetworkInterfaceState.Unknown]: i18n.t('components.ipNetwork.interfaces.columns.states.unknown'),
+		[NetworkInterfaceState.Unmanaged]: i18n.t('components.ipNetwork.interfaces.columns.states.unmanaged'),
+	};
+	return data[componentProps.state] ?? '';
 });
 </script>

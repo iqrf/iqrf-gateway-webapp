@@ -16,7 +16,7 @@ limitations under the License.
 -->
 
 <template>
-	<SelectInput
+	<ISelectInput
 		v-model='modelValue'
 		:items='items'
 		:loading='componentState === ComponentState.Loading'
@@ -34,11 +34,11 @@ limitations under the License.
 import {
 	Modem,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
+import { ISelectInput } from '@iqrf/iqrf-vue-ui';
 import { ComponentState, ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiExpansionCardVariant } from '@mdi/js';
 import { onBeforeMount, ref, type Ref } from 'vue';
 
-import SelectInput from '@/components/layout/form/SelectInput.vue';
 import { useApiClient } from '@/services/ApiClient';
 import { type SelectItem } from '@/types/vuetify';
 

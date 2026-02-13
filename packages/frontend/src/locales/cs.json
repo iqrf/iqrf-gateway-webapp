@@ -15,16 +15,35 @@
 			"description": "Popis",
 			"id": "ID"
 		},
+		"labels": {
+			"apiDocs": "API dokumentace",
+			"certificate": "Certifikát",
+			"configuration": "Potvrzení",
+			"confirmationTs": "Čas potvrzení",
+			"format": "Formát",
+			"hostname": "Jméno hostitele",
+			"none": "Žádný",
+			"notAvailable": "N/A",
+			"other": "Ostatní",
+			"password": "Heslo",
+			"path": "Cesta",
+			"port": "Port",
+			"privateKey": "Soukromý klíč",
+			"protocol": "Protokol",
+			"request": "Požadavek",
+			"requestTs": "Čas požadavku",
+			"response": "Odpověď",
+			"responseTs": "Čas odpovědi",
+			"returnVerbose": "Vrátit podrobné informace",
+			"username": "Uživatelské jméno",
+			"value": "Hodnota"
+		},
 		"messages": {
 			"fetchFailed": "Při načítání dat došlo k chybě."
 		},
 		"states": {
 			"active": "Aktivní",
-			"disabled": "Zakázáno",
-			"enabled": "Povoleno",
-			"inactive": "Neaktivní",
-			"invalid": "Nevalidní",
-			"valid": "Validní"
+			"enabled": "Povoleno"
 		},
 		"validation": {
 			"credentialsMissing": "Zadejte prosím jak uživatelské jméno, tak i heslo, nebo nechte obě pole prázdná.",
@@ -48,6 +67,22 @@
 		}
 	},
 	"components": {
+		"accessControl": {
+			"apiKeys": {
+				"actions": {
+					"add": "Přidat API klíč",
+					"delete": "Smazat API klíč",
+					"edit": "Upravit API klíč",
+					"reload": "Znovu načíst API klíče"
+				},
+				"messages": {
+					"delete": {
+						"failed": "Nepodařilo se smazat API klíč s ID {id}.",
+						"success": "API klíč s ID {id} byl úspěšně smazán."
+					}
+				}
+			}
+		},
 		"account": {
 			"details": {
 				"messages": {
@@ -169,21 +204,8 @@
 		},
 		"common": {
 			"actions": {
-				"add": "Přidat",
-				"apply": "Použít",
-				"cancel": "Zrušit",
-				"delete": "Smazat",
 				"disable": "Zakázat",
 				"download": "Stáhnout",
-				"edit": "Změnit",
-				"enable": "Povolit",
-				"export": "Exportovat",
-				"import": "Importovat",
-				"reload": "Obnovit",
-				"restart": "Restartovat",
-				"showDetails": "Zobrazit detaily",
-				"start": "Spustit",
-				"stop": "Zastavit",
 				"upload": "Nahrát"
 			},
 			"fields": {
@@ -760,6 +782,7 @@
 						"connection failed": "Selhalo připojení",
 						"deactivating": "Odpojuje se",
 						"disconnected": "Odpojené",
+						"failed": "Selhalo",
 						"unavailable": "Nedostupné",
 						"unknown": "Neznámé",
 						"unmanaged": "Nespravované"

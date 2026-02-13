@@ -16,44 +16,38 @@ limitations under the License.
 -->
 
 <template>
-	<v-chip
-		:color='roleColor'
-		:prepend-icon='roleIcon'
-	>
-		{{ $t(`components.accessControl.users.roles.${role}`) }}
-	</v-chip>
+	<ISelectInput
+		v-model='modelValue'
+		:items='roles'
+		:label='$t("components.accessControl.users.role")'
+		:prepend-inner-icon='mdiAccountBadge'
+	/>
 </template>
 
-<script lang='ts' setup>
+<script setup lang='ts'>
 import { UserRole } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { mdiAccount, mdiAccountSearch, mdiShieldAccount } from '@mdi/js';
+import { ISelectInput } from '@iqrf/iqrf-vue-ui';
+import { mdiAccountBadge } from '@mdi/js';
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-interface Props {
-	role: UserRole;
-}
-
-const componentProps = defineProps<Props>();
-
-const roleColor = computed(() => {
-	switch (componentProps.role) {
-		case UserRole.Admin:
-			return 'deep-purple';
-		case UserRole.Normal:
-			return 'indigo';
-		default:
-			return 'teal';
-	}
+const modelValue = defineModel<UserRole>({
+	required: true,
 });
-const roleIcon = computed(() => {
-	switch (componentProps.role) {
-		case UserRole.Admin:
-			return mdiShieldAccount;
-		case UserRole.Normal:
-			return mdiAccount;
-		default:
-			return mdiAccountSearch;
-	}
-});
-
+const i18n = useI18n();
+const roles = computed(() => [
+	{
+		title: i18n.t('components.accessControl.users.roles.admin'),
+		value: UserRole.Admin,
+	},
+	{
+		title: i18n.t('components.accessControl.users.roles.normal'),
+		value: UserRole.Normal,
+	},
+	{
+		title: i18n.t('components.accessControl.users.roles.basic'),
+		value: UserRole.Basic,
+	},
+]);
 </script>
+

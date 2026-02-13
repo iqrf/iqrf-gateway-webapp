@@ -21,11 +21,7 @@ limitations under the License.
 			<template #title>
 				{{ $t('components.gateway.mode.startup.title') }}
 			</template>
-			<v-select
-				v-model='startupMode'
-				:items='startupModeOptions'
-				:disabled='startupMode === null'
-			/>
+			<DaemonModeInput v-model='startupMode' />
 			<template #actions>
 				<IActionBtn
 					:action='Action.Save'
@@ -46,12 +42,12 @@ import {
 	IqrfGatewayDaemonIdeCounterpartMode,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import { Action, IActionBtn, ICard } from '@iqrf/iqrf-vue-ui';
-import { computed, ComputedRef, onMounted, ref, type Ref } from 'vue';
+import { onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
+import DaemonModeInput from '@/components/gateway/mode/DaemonModeInput.vue';
 import { useApiClient } from '@/services/ApiClient';
-import { SelectItem } from '@/types/vuetify';
 
 const i18n = useI18n();
 const daemonConfigService: IqrfGatewayDaemonService = useApiClient().getConfigServices().getIqrfGatewayDaemonService();
@@ -59,16 +55,6 @@ const daemonConfigService: IqrfGatewayDaemonService = useApiClient().getConfigSe
 const startupMode: Ref<IqrfGatewayDaemonIdeCounterpartMode | null> = ref(null);
 const componentName = IqrfGatewayDaemonComponentName.IqrfIdeCounterpart;
 const instance: Ref<IqrfGatewayDaemonIdeCounterpart | null> = ref(null);
-
-const startupModeOptions: ComputedRef<SelectItem[]> = computed(() => {
-	const modes = Object.values(IqrfGatewayDaemonIdeCounterpartMode);
-	return modes.map((item: IqrfGatewayDaemonIdeCounterpartMode): SelectItem => {
-		return {
-			title: i18n.t(`components.gateway.mode.modes.${item}`),
-			value: item,
-		};
-	});
-});
 
 async function getStartupMode(): Promise<void> {
 	try {

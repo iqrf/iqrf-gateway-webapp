@@ -16,7 +16,7 @@ limitations under the License.
 -->
 
 <template>
-	<SelectInput
+	<ISelectInput
 		v-model='modelValue'
 		:items='items'
 		:label='$t("components.ipNetwork.connections.form.wifi.security.wep.type")'
@@ -30,11 +30,11 @@ limitations under the License.
 import {
 	WepKeyType,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
+import { ISelectInput } from '@iqrf/iqrf-vue-ui';
 import { mdiKey } from '@mdi/js';
 import { computed, type ComputedRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import SelectInput from '@/components/layout/form/SelectInput.vue';
 import { type SelectItem } from '@/types/vuetify';
 
 /// Model value

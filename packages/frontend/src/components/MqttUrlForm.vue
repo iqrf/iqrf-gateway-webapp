@@ -38,7 +38,7 @@ limitations under the License.
 				<template #title>
 					{{ cardTitle }}
 				</template>
-				<SelectInput
+				<ISelectInput
 					v-model='protocol'
 					:label='$t("common.labels.protocol")'
 					:items='protocolOptions'
@@ -92,6 +92,7 @@ import {
 	IActionBtn,
 	ICard,
 	IModalWindow,
+	ISelectInput,
 	ITextInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
@@ -102,7 +103,6 @@ import { useI18n } from 'vue-i18n';
 import { type VForm } from 'vuetify/components';
 
 import NumberInput from '@/components/layout/form/NumberInput.vue';
-import SelectInput from '@/components/layout/form/SelectInput.vue';
 import { MqttProtocol } from '@/enums/mqtt';
 import { validateForm } from '@/helpers/validateForm';
 

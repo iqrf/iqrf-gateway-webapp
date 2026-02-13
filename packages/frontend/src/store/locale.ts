@@ -15,13 +15,16 @@
  * limitations under the License.
  */
 
-import { Language } from '@iqrf/iqrf-vue-ui';
+import { Language } from '@iqrf/iqrf-ui-common-types';
 import { defineStore } from 'pinia';
 import { preferredLocale } from 'preferred-locale';
 
 import i18n from '@/plugins/i18n';
 
-export interface Locale {
+/**
+ * Locale
+ */
+interface Locale {
 	/// Locale code
 	code: Language;
 	/// Development build only?
@@ -32,10 +35,15 @@ export interface Locale {
  * Locale store state
  */
 interface LocaleState {
+	/// Current locale
 	locale: Language;
+	/// Available locales
+	locales: Language[];
 }
 
-
+/**
+ * @const {Locale[]} locales Available locales
+ */
 const locales: Locale[] = [
 	{
 		code: Language.English,
@@ -46,19 +54,22 @@ const locales: Locale[] = [
 	},
 ];
 
-const filteredLocales: Locale[] = locales.filter((locale: Locale): boolean => import.meta.env.DEV || !(locale.developmentOnly ?? false));
-
 export const useLocaleStore = defineStore('locale', {
-	state: (): LocaleState => ({
-		locale: preferredLocale('en', filteredLocales.map((locale: Locale): string => locale.code), { languageOnly: true }) as Language,
-	}),
+	state: (): LocaleState => {
+		const available = locales
+			.filter((locale: Locale): boolean => import.meta.env.DEV || !(locale.developmentOnly ?? false))
+			.map((locale: Locale): Language => locale.code);
+		return {
+			locales: available,
+			locale: preferredLocale('en', available, { languageOnly: true }) as Language,
+		};
+	},
 	actions: {
 		/**
 		 * Sets a new locale
 		 * @param {Language} locale Locale to set
 		 */
 		setLocale(locale: Language): void {
-			// @ts-ignore
 			i18n.global.locale.value = locale;
 			this.locale = locale;
 		},
@@ -66,10 +77,11 @@ export const useLocaleStore = defineStore('locale', {
 	getters: {
 		/**
 		 * Returns available locales
-		 * @return {Locale[]} Available locales
+		 * @param {LocaleState} state Current state
+		 * @return {Language[]} Available locales
 		 */
-		getAvailableLocales(): Locale[] {
-			return filteredLocales;
+		getAvailableLocales(state: LocaleState): Language[] {
+			return state.locales;
 		},
 		/**
 		 * Returns current locale code

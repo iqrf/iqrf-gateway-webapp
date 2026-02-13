@@ -1,6 +1,6 @@
 /**
- * Copyright 2017-2025 IQRF Tech s.r.o.
- * Copyright 2019-2025 MICRORISC s.r.o.
+ * Copyright 2017-2026 IQRF Tech s.r.o.
+ * Copyright 2019-2026 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -84,6 +84,7 @@ describe('URL builder', (): void => {
 
 	test('get REST API URL in development mode', (): void => {
 		expect.assertions(1);
+		vi.stubEnv('VITE_URL_REST_API', '');
 		const url = '//iqube.local:8080/api/v0/';
 		setMode('development');
 		const builder: UrlBuilder = new UrlBuilder();
@@ -92,6 +93,7 @@ describe('URL builder', (): void => {
 
 	test('get REST API URL in production mode', (): void => {
 		expect.assertions(1);
+		vi.stubEnv('VITE_URL_REST_API', '');
 		const url = '//iqube.local/api/v0/';
 		setMode('production');
 		const builder: UrlBuilder = new UrlBuilder();
@@ -118,6 +120,7 @@ describe('URL builder', (): void => {
 
 	test('get IQRF Gateway Daemon JSON API URL in development mode', (): void => {
 		expect.assertions(1);
+		vi.stubEnv('VITE_URL_DAEMON_API', '');
 		const url = 'ws://iqube.local:1338';
 		setMode('development');
 		const builder: UrlBuilder = new UrlBuilder();
@@ -126,6 +129,7 @@ describe('URL builder', (): void => {
 
 	test('get IQRF Gateway Daemon JSON API URL in production mode', (): void => {
 		expect.assertions(1);
+		vi.stubEnv('VITE_URL_DAEMON_API', '');
 		const url = 'wss://iqube.local/ws';
 		setMode('production');
 		const builder: UrlBuilder = new UrlBuilder();
@@ -142,6 +146,7 @@ describe('URL builder', (): void => {
 
 	test('get IQRF Gateway Daemon monitor URL in development mode', (): void => {
 		expect.assertions(1);
+		vi.stubEnv('VITE_URL_DAEMON_MONITOR', '');
 		const url = 'ws://iqube.local:1438';
 		setMode('development');
 		const builder: UrlBuilder = new UrlBuilder();
@@ -150,6 +155,7 @@ describe('URL builder', (): void => {
 
 	test('get IQRF Gateway Daemon monitor URL in production mode', (): void => {
 		expect.assertions(1);
+		vi.stubEnv('VITE_URL_DAEMON_MONITOR', '');
 		const url = 'wss://iqube.local/wsMonitor';
 		setMode('production');
 		const builder: UrlBuilder = new UrlBuilder();
@@ -166,6 +172,7 @@ describe('URL builder', (): void => {
 
 	test('get IQRF network sync URL in development mode', (): void => {
 		expect.assertions(1);
+		vi.stubEnv('VITE_URL_IQRF_SYNC', '');
 		const url = 'ws://iqube.local:8881/sync';
 		setMode('development');
 		const builder: UrlBuilder = new UrlBuilder();
@@ -174,6 +181,7 @@ describe('URL builder', (): void => {
 
 	test('get IQRF network sync URL in production mode', (): void => {
 		expect.assertions(1);
+		vi.stubEnv('VITE_URL_IQRF_SYNC', '');
 		const url = 'wss://iqube.local/sync';
 		setMode('production');
 		const builder: UrlBuilder = new UrlBuilder();

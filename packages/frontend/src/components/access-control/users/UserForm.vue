@@ -91,12 +91,7 @@ limitations under the License.
 						</v-tooltip>
 					</template>
 				</IPasswordInput>
-				<SelectInput
-					v-model='user.role'
-					:items='roles'
-					:label='$t("components.accessControl.users.role")'
-					:prepend-inner-icon='mdiAccountBadge'
-				/>
+				<UserRoleInput v-model='user.role' />
 				<ILanguageSelect v-model='user.language' />
 				<template #actions>
 					<IActionBtn
@@ -140,7 +135,6 @@ import {
 } from '@iqrf/iqrf-vue-ui';
 import {
 	mdiAccount,
-	mdiAccountBadge,
 	mdiEmail,
 	mdiHelpCircleOutline,
 	mdiKey,
@@ -150,19 +144,16 @@ import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
-import SelectInput from '@/components/layout/form/SelectInput.vue';
-import { getFilteredRoleOptions } from '@/helpers/userData';
+import UserRoleInput from '@/components/access-control/users/UserRoleInput.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 import { useUserStore } from '@/store/user';
 
-interface Props {
+const componentProps = defineProps<{
 	action: Action;
 	userInfo?: UserInfo;
 	disabled?: boolean;
-}
-
-const componentProps = defineProps<Props>();
+}>();
 const emit = defineEmits<{
 	refresh: [];
 }>();
@@ -179,7 +170,6 @@ const defaultUser: UserCreate | UserEdit = {
 	language: Language.English,
 };
 const user: Ref<UserCreate | UserEdit> = ref(defaultUser);
-const roles = getFilteredRoleOptions(userStore.getRole!);
 
 watch(showDialog, (newVal: boolean): void => {
 	if (!newVal) {

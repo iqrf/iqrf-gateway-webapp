@@ -20,9 +20,13 @@ import { type Language } from '@iqrf/iqrf-ui-common-types';
  * Account state enum
  */
 export enum AccountState {
-	/// Unverified account
+	/// Blocked account
+	Blocked = 'blocked',
+	/// Invited account
+	Invited = 'invited',
+	/// Unverified e-mail address
 	Unverified = 'unverified',
-	/// Verified account
+	/// Verified e-mail address
 	Verified = 'verified',
 }
 

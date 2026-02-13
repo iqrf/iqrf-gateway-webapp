@@ -31,6 +31,9 @@ export default defineConfig((env: ConfigEnv): UserConfig => mergeConfig(
 				include: [
 					'src/',
 				],
+				exclude: [
+					'src/tests/',
+				],
 			},
 			environment: 'happy-dom',
 			globals: true,

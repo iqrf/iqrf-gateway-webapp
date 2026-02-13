@@ -43,13 +43,13 @@ limitations under the License.
 			:dense='true'
 		>
 			<template #item.role='{ item }'>
-				<UserRoleColumn :role='item.role' />
+				<UserRoleBadge :role='item.role' />
 			</template>
 			<template #item.language='{ item }'>
 				<ILanguageFlag :language='item.language' />
 			</template>
 			<template #item.state='{ item }'>
-				<UserStateColumn :state='item.state' />
+				<AccountStateBadge :state='item.state' />
 			</template>
 			<template #item.actions='{ item }'>
 				<UserForm
@@ -83,10 +83,10 @@ import { computed, onMounted, ref, type Ref, toRaw } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
+import AccountStateBadge from '@/components/access-control/users/AccountStateBadge.vue';
 import UserDeleteDialog from '@/components/access-control/users/UserDeleteDialog.vue';
 import UserForm from '@/components/access-control/users/UserForm.vue';
-import UserRoleColumn from '@/components/access-control/users/UserRoleColumn.vue';
-import UserStateColumn from '@/components/access-control/users/UserStateColumn.vue';
+import UserRoleBadge from '@/components/access-control/users/UserRoleBadge.vue';
 import { useApiClient } from '@/services/ApiClient';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);

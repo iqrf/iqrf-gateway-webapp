@@ -26,11 +26,11 @@ limitations under the License.
 			>
 				<template #prepend>
 					<v-list-item-media>
-						<ILanguageFlag :language='current' class='me-2' />
+						<ILanguageFlag :language='current' class='me-5' />
 					</v-list-item-media>
 				</template>
 				<template #title>
-					{{ $t(`components.common.locale.languages.${current.toString()}`) }}
+					{{ translatedOptions[current] }}
 				</template>
 				<template #append>
 					<v-icon :icon='mdiChevronLeft' />
@@ -53,19 +53,20 @@ limitations under the License.
 		>
 			<v-list-item
 				v-for='locale in availableLocales'
-				:key='locale.code'
+				:key='locale'
 				density='compact'
-				@click='setLocale(locale.code)'
+				@click='setLocale(locale)'
 			>
 				<template #prepend>
-					<ILanguageFlag :language='locale.code' class='me-2' />
+					<ILanguageFlag :language='locale' class='me-2' />
 				</template>
 				<v-list-item-title>
-					{{ $t(`components.common.locale.languages.${locale.code.toString()}`) }}
+					{{ translatedOptions[locale] }}
 				</v-list-item-title>
 			</v-list-item>
 		</v-list>
 	</v-menu>
+	<div v-else />
 </template>
 
 <script lang='ts' setup>
@@ -96,6 +97,10 @@ const {
 	getLocale: current,
 } = storeToRefs(localeStore);
 
+const translatedOptions: Record<Language, string> = {
+	[Language.Czech]: i18n.t('components.common.locale.languages.cs'),
+	[Language.English]: i18n.t('components.common.locale.languages.en'),
+};
 
 /**
  * Set the user language
@@ -107,7 +112,7 @@ function setLocale(locale: Language): void {
 	}
 	localeStore.setLocale(locale);
 	toast.success(
-		i18n.t('components.common.locale.messages.set', { locale: i18n.t(`components.common.locale.languages.${locale.toString()}`) }),
+		i18n.t('components.common.locale.messages.set', { locale: translatedOptions[locale] }),
 	);
 }
 

@@ -21,12 +21,7 @@ limitations under the License.
 			<template #title>
 				{{ $t('components.gateway.mode.current.title') }}
 			</template>
-			<ISelectInput
-				v-model='mode'
-				:items='modeOptions'
-				:disabled='mode === DaemonMode.Unknown'
-				hide-details
-			/>
+			<DaemonModeInput v-model='mode' />
 			<template #actions>
 				<IActionBtn
 					:action='Action.Save'
@@ -44,11 +39,12 @@ import { DaemonMode, ManagementMessages } from '@iqrf/iqrf-gateway-daemon-utils/
 import { ManagementService } from '@iqrf/iqrf-gateway-daemon-utils/services';
 import { DaemonApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
-import { Action, ComponentState, IActionBtn, ICard, ISelectInput } from '@iqrf/iqrf-vue-ui';
+import { Action, ComponentState, IActionBtn, ICard } from '@iqrf/iqrf-vue-ui';
 import { onBeforeMount, onBeforeUnmount, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
+import DaemonModeInput from '@/components/gateway/mode/DaemonModeInput.vue';
 import { useDaemonStore } from '@/store/daemonSocket';
 
 enum ModeActions {
@@ -62,20 +58,6 @@ const daemonStore = useDaemonStore();
 const msgId: Ref<string | null> = ref(null);
 const modeAction: Ref<ModeActions | null> = ref(null);
 const mode: Ref<DaemonMode> = ref(DaemonMode.Unknown);
-const modeOptions = ref([
-	{
-		title: i18n.t('components.gateway.mode.modes.operational'),
-		value: DaemonMode.Operational,
-	},
-	{
-		title: i18n.t('components.gateway.mode.modes.forwarding'),
-		value: DaemonMode.Forwarding,
-	},
-	{
-		title: i18n.t('components.gateway.mode.modes.service'),
-		value: DaemonMode.Service,
-	},
-]);
 
 daemonStore.$onAction(
 	({ name, after }) => {

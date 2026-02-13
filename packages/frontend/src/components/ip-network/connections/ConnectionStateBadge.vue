@@ -22,7 +22,7 @@ limitations under the License.
 		label
 		size='small'
 	>
-		{{ $t(`components.ipNetwork.connections.columns.states.${state}`) }}
+		{{ text }}
 	</v-chip>
 </template>
 
@@ -30,26 +30,36 @@ limitations under the License.
 import {
 	NetworkConnectionState,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
-import { computed } from 'vue';
+import { computed, type ComputedRef } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 /// Component props
 const componentProps = defineProps<{
 	state: NetworkConnectionState | null;
 }>();
+const i18n = useI18n();
 
 /// Badge color
-const color = computed(() => {
-	switch (componentProps.state) {
-		case NetworkConnectionState.Activated:
-			return 'success';
-		case NetworkConnectionState.Activating:
-			return 'primary';
-		case NetworkConnectionState.Deactivating:
-			return 'warning';
-		case NetworkConnectionState.Deactivated:
-			return 'error';
-		default:
-			return 'gray';
-	}
+const color: ComputedRef<string> = computed((): string => {
+	const data: Record<NetworkConnectionState, string> = {
+		[NetworkConnectionState.Activated]: 'success',
+		[NetworkConnectionState.Activating]: 'primary',
+		[NetworkConnectionState.Deactivating]: 'warning',
+		[NetworkConnectionState.Deactivated]: 'error',
+		[NetworkConnectionState.Unknown]: 'gray',
+	};
+	return componentProps.state ? data[componentProps.state] ?? 'gray' : 'gray';
+});
+
+// Badge text
+const text: ComputedRef<string> = computed((): string => {
+	const data: Record<NetworkConnectionState, string> = {
+		[NetworkConnectionState.Activated]: i18n.t('components.ipNetwork.connections.columns.states.activated'),
+		[NetworkConnectionState.Activating]: i18n.t('components.ipNetwork.connections.columns.states.activating'),
+		[NetworkConnectionState.Deactivating]: i18n.t('components.ipNetwork.connections.columns.states.deactivating'),
+		[NetworkConnectionState.Deactivated]: i18n.t('components.ipNetwork.connections.columns.states.deactivated'),
+		[NetworkConnectionState.Unknown]: i18n.t('components.ipNetwork.connections.columns.states.unknown'),
+	};
+	return componentProps.state ? data[componentProps.state] ?? '' : '';
 });
 </script>
