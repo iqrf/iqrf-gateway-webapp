@@ -56,15 +56,21 @@ class WebsocketProxyCommand extends Command {
 	 * @return int Exit code
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
+		$style = new SymfonyStyle($input, $output);
 		// get config
 		$config = $this->configManager->readConfig();
 		// check token
 		if ($config['token'] === '') {
-			(new SymfonyStyle($input, $output))->error('API token in proxy configuration is empty or missing.');
+			$style->error('API token in proxy configuration is empty or missing.');
 			return 1;
 		}
+		$style->info('Starting server at ' . $config['host'] . ':' . strval($config['port']));
 		// Create Ratchet app
-		$app = new App($config['host'], $config['port']);
+		$app = new App(
+			httpHost: $config['host'],
+			port: $config['port'],
+			address: $config['address']
+		);
 		// Register connection handler
 		$app->route(
 			path: '',
