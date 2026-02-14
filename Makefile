@@ -48,12 +48,7 @@ cache-purge:
 	rm -rf temp/cache/
 
 coverage: deps
-	@( \
-		php ./tests/Toolkit/ProxyServerRunner.php 9595 & \
-		PROXY_PID=$$!; \
-		vendor/bin/tester -c ./tests/php.ini --coverage ./coverage.html --coverage-src ./app ./tests; \
-		kill -TERM $$PROXY_PID; \
-	)
+	vendor/bin/tester -c ./tests/php.ini --coverage ./coverage.html --coverage-src ./app ./tests
 
 cc: temp/code-checker
 	php temp/code-checker/code-checker -l --no-progress --strict-types $(CC_IGNORE)
@@ -177,9 +172,4 @@ temp/code-checker:
 	composer create-project nette/code-checker temp/code-checker --no-interaction
 
 test: deps
-	@( \
-		php ./tests/Toolkit/ProxyServerRunner.php 9595 & \
-		PROXY_PID=$$!; \
-		vendor/bin/tester -p phpdbg -j `nproc` -c ./tests/php.ini ./tests; \
-		kill -TERM $$PROXY_PID; \
-	)
+	vendor/bin/tester -p phpdbg -j `nproc` -c ./tests/php.ini ./tests
