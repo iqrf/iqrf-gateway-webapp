@@ -43,6 +43,11 @@ class ProxyConfigManager {
 	public const DEFAULT_PORT = 9000;
 
 	/**
+	 * Default (fallback) binding address
+	 */
+	public const DEFAULT_ADDRESS = '127.0.0.1';
+
+	/**
 	 * Default (fallback) upstream URL
 	 */
 	public const DEFAULT_UPSTREAM = 'ws://localhost:1338';
@@ -69,6 +74,7 @@ class ProxyConfigManager {
 		return Expect::structure([
 			'host' => Expect::string(self::DEFAULT_HOST),
 			'port' => Expect::int(self::DEFAULT_PORT),
+			'address' => Expect::string(self::DEFAULT_ADDRESS),
 			'upstream' => Expect::string(self::DEFAULT_UPSTREAM),
 			'token' => Expect::string(''),
 		])->castTo('array');
@@ -79,6 +85,7 @@ class ProxyConfigManager {
 	 * @return array{
 	 *  host: string,
 	 *  port: int,
+	 *  address: string,
 	 *  upstream: string,
 	 *  token: string,
 	 * } Proxy server configuration

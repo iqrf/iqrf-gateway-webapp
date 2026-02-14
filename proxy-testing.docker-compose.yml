@@ -1,0 +1,34 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: docker/proxy-testing/proxy.Dockerfile
+    container_name: backend
+    command: php -S [::]:8080 -t www/
+    ports:
+      - "8080:8080"
+    volumes:
+      - data:/app/var
+  proxy:
+    build:
+      context: .
+      dockerfile: docker/proxy-testing/proxy.Dockerfile
+    container_name: proxy
+    command: php bin/manager websocket:proxy:run
+    ports:
+      - "9000:9000"
+    volumes:
+      - data:/app/var
+    depends_on:
+      - backend
+  testing:
+    build:
+      context: .
+      dockerfile: docker/proxy-testing/testing.Dockerfile
+    container_name: testing
+    depends_on:
+      - backend
+      - proxy
+
+volumes:
+  data:
