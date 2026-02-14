@@ -101,7 +101,7 @@
 		"eslint": "^9.39.2",
 		"ts-node": "^10.9.2",
 		"tsdown": "^0.20.3",
-		"typedoc": "^0.28.16",
+		"typedoc": "^0.28.17",
 		"typedoc-material-theme": "^1.4.1",
 		"typedoc-plugin-mdn-links": "^5.1.1",
 		"typescript": "^5.9.3",

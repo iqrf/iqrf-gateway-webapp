@@ -106,13 +106,13 @@ import {
 	type UserCredentials,
 	UserRole,
 } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { Language } from '@iqrf/iqrf-ui-common-types';
 import {
 	ComponentState,
 	IActionBtn,
 	ILanguageSelect,
 	IPasswordInput,
 	ITextInput,
-	Language,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiAccount, mdiAccountPlus, mdiEmail, mdiHelpCircleOutline, mdiKey } from '@mdi/js';

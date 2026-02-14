@@ -50,7 +50,7 @@
 		"@iqrf/iqrf-gateway-webapp-client": "^0.3.0",
 		"@iqrf/iqrf-repository-client": "^0.1.5",
 		"@iqrf/iqrf-ui-common-types": "^0.1.0",
-		"@iqrf/iqrf-vue-ui": "0.0.1-beta.22",
+		"@iqrf/iqrf-vue-ui": "0.0.1-beta.24",
 		"@mdi/js": "^7.4.47",
 		"@popperjs/core": "^2.11.8",
 		"@sentry/vue": "^10.38.0",

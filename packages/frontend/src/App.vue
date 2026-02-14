@@ -28,7 +28,7 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { Language } from '@iqrf/iqrf-vue-ui';
+import { Language } from '@iqrf/iqrf-ui-common-types';
 import { storeToRefs } from 'pinia';
 import { useHead } from 'unhead';
 import { onBeforeMount, watch } from 'vue';

@@ -25,7 +25,7 @@ import {
 	type UserSignedIn,
 	UserTimeFormatPreference,
 } from '@iqrf/iqrf-gateway-webapp-client/types';
-import { type Language } from '@iqrf/iqrf-vue-ui';
+import { type Language } from '@iqrf/iqrf-ui-common-types';
 import { type User as SentryUser, setUser } from '@sentry/vue';
 import { jwtDecode, type JwtPayload } from 'jwt-decode';
 import { defineStore } from 'pinia';

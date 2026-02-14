@@ -70,10 +70,8 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import {
-	ILanguageFlag,
-	Language,
-} from '@iqrf/iqrf-vue-ui';
+import { Language } from '@iqrf/iqrf-ui-common-types';
+import { ILanguageFlag } from '@iqrf/iqrf-vue-ui';
 import { mdiChevronLeft } from '@mdi/js';
 import { storeToRefs } from 'pinia';
 import { useI18n } from 'vue-i18n';

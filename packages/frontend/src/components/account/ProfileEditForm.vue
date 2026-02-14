@@ -80,6 +80,7 @@ import {
 	type AccountEdit,
 	type UserInfo,
 } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { Language } from '@iqrf/iqrf-ui-common-types';
 import {
 	Action,
 	ComponentState,
@@ -87,7 +88,6 @@ import {
 	ICard,
 	ILanguageSelect,
 	ITextInput,
-	Language,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiAccount, mdiEmail } from '@mdi/js';

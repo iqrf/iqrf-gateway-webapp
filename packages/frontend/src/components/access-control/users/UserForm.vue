@@ -120,6 +120,7 @@ import {
 	type UserInfo,
 	UserRole,
 } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { Language } from '@iqrf/iqrf-ui-common-types';
 import {
 	Action,
 	ComponentState,
@@ -130,7 +131,6 @@ import {
 	IModalWindow,
 	IPasswordInput,
 	ITextInput,
-	Language,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import {
