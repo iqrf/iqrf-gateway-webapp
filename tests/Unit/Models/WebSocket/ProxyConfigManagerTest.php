@@ -63,6 +63,7 @@ final class ProxyConfigManagerTest extends TestCase {
 			[
 				'host' => 'localhost',
 				'port' => 9005,
+				'address' => '127.0.0.1',
 				'upstream' => 'ws://iqube.local/ws',
 				'token' => 'iqrfgd2;1;ETi3v8RGLVGXb/uNenhskEiSH/2KussEbantcvjfGQ4=',
 			],
@@ -78,6 +79,7 @@ final class ProxyConfigManagerTest extends TestCase {
 			[
 				'host' => ProxyConfigManager::DEFAULT_HOST,
 				'port' => ProxyConfigManager::DEFAULT_PORT,
+				'address' => ProxyConfigManager::DEFAULT_ADDRESS,
 				'upstream' => ProxyConfigManager::DEFAULT_UPSTREAM,
 				'token' => '',
 			],
