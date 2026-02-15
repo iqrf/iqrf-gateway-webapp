@@ -44,7 +44,7 @@ server {
 	}
 
 	location /ws {
-		proxy_pass http://localhost:1338;
+		proxy_pass http://localhost:9000;
 		proxy_read_timeout 3600;
 		proxy_set_header X-Real-IP $remote_addr;
 		proxy_set_header Upgrade $http_upgrade;
