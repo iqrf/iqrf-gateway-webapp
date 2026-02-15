@@ -1,0 +1,16 @@
+[Unit]
+Description=IQRF Gateway Webapp Proxy Server
+After=network.target nss-lookup.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/var/lib/iqrf-gateway-webapp
+ExecStart=/bin/bash -c '/usr/sbin/iqrf-gateway-webapp-manager websocket:proxy:run'
+StandardOutput=journal
+StandardError=journal
+RestartSec=5
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
