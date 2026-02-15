@@ -50,6 +50,7 @@ server {
 	}
 
 	location /ws {
+		rewrite ^/ws?(.*)$ /$1 break;
 		proxy_pass http://localhost:9000;
 		proxy_read_timeout 3600;
 		proxy_set_header X-Real-IP $remote_addr;
