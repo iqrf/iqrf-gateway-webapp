@@ -60,23 +60,23 @@ class WebsocketProxyCommand extends Command {
 		// get config
 		$config = $this->configManager->readConfig();
 		// check token
-		if ($config['token'] === '') {
+		if ($config->token === '') {
 			$style->error('API token in proxy configuration is empty or missing.');
 			return 1;
 		}
-		$style->info('Starting server at ' . $config['host'] . ':' . strval($config['port']));
+		$style->info('Starting server at ' . $config->host . ':' . strval($config->port));
 		// Create Ratchet app
 		$app = new App(
-			httpHost: $config['host'],
-			port: $config['port'],
-			address: $config['address']
+			httpHost: $config->host,
+			port: $config->port,
+			address: $config->address,
 		);
 		// Register connection handler
 		$app->route(
 			path: '',
 			controller: new ProxyHandler(
-				upstreamUrl: $config['upstream'],
-				upstreamToken: $config['token'],
+				upstreamUrl: $config->upstream,
+				upstreamToken: $config->token,
 				authenticator: $this->authenticator,
 				loggerManager: $this->loggerManager,
 			),
