@@ -20,37 +20,15 @@ declare(strict_types = 1);
 
 namespace App\Models\WebSocket;
 
+use App\Entities\ProxyConfiguration;
 use Iqrf\FileManager\FileManager;
 use Nette\IOException;
 use Nette\Neon\Exception as NeonException;
-use Nette\Schema\Elements\Structure;
-use Nette\Schema\Expect;
-use Nette\Schema\Processor;
 
 /**
  * Proxy configuration manager
  */
 class ProxyConfigManager {
-
-	/**
-	 * Default (fallback) proxy server host
-	 */
-	public const DEFAULT_HOST = 'localhost';
-
-	/**
-	 * Default (fallback) proxy server port
-	 */
-	public const DEFAULT_PORT = 9000;
-
-	/**
-	 * Default (fallback) binding address
-	 */
-	public const DEFAULT_ADDRESS = '127.0.0.1';
-
-	/**
-	 * Default (fallback) upstream URL
-	 */
-	public const DEFAULT_UPSTREAM = 'ws://localhost:1338';
 
 	/**
 	 * WebSocket proxy configuration file
@@ -67,37 +45,24 @@ class ProxyConfigManager {
 	}
 
 	/**
-	 * Creates a proxy configuration validation schema
-	 * @return Structure Proxy configuration validation schema
+	 * Returns proxy configuration
+	 * @return ProxyConfiguration Proxy configuration
 	 */
-	public static function createValidationSchema(): Structure {
-		return Expect::structure([
-			'host' => Expect::string(self::DEFAULT_HOST),
-			'port' => Expect::int(self::DEFAULT_PORT),
-			'address' => Expect::string(self::DEFAULT_ADDRESS),
-			'upstream' => Expect::string(self::DEFAULT_UPSTREAM),
-			'token' => Expect::string(''),
-		])->castTo('array');
-	}
-
-	/**
-	 * Returns proxy server configuration
-	 * @return array{
-	 *  host: string,
-	 *  port: int,
-	 *  address: string,
-	 *  upstream: string,
-	 *  token: string,
-	 * } Proxy server configuration
-	 */
-	public function readConfig(): array {
+	public function readConfig(): ProxyConfiguration {
 		try {
 			$config = $this->fileManager->readNeon(self::FILE_NAME);
 		} catch (IOException | NeonException) {
 			$config = [];
 		}
-		$processor = new Processor();
-		return $processor->process(self::createValidationSchema(), $config);
+		return ProxyConfiguration::mergeDefaults($config);
+	}
+
+	/**
+	 * Saves proxy configuration
+	 * @param ProxyConfiguration $config Proxy configuration
+	 */
+	public function writeConfig(ProxyConfiguration $config): void {
+		$this->fileManager->writeNeon(self::FILE_NAME, $config->jsonSerialize());
 	}
 
 }
