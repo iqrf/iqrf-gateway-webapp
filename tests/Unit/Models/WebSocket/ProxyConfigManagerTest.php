@@ -26,11 +26,14 @@ declare(strict_types = 1);
 
 namespace Tests\Unit\Models\WebSocket;
 
+use App\Entities\ProxyConfiguration;
 use App\Models\WebSocket\ProxyConfigManager;
 use Iqrf\CommandExecutor\CommandExecutor;
 use Iqrf\CommandExecutor\CommandStack;
 use Iqrf\FileManager\FileManager;
+use Nette\Utils\FileSystem;
 use Tester\Assert;
+use Tester\Environment;
 use Tester\TestCase;
 
 require __DIR__ . '/../../../bootstrap.php';
@@ -46,44 +49,60 @@ final class ProxyConfigManagerTest extends TestCase {
 	private const CONF_DIR = TESTER_DIR . '/data/proxy/';
 
 	/**
+	 * Temporary data dir path
+	 */
+	private const TEMP_CONF_DIR = TMP_DIR . '/proxy/';
+
+	/**
 	 * @var ProxyConfigManager Proxy configuration manager
 	 */
 	private ProxyConfigManager $manager;
 
 	/**
-	 * @var ProxyConfigManager Proxy configuration manager
+	 * @var ProxyConfigManager Proxy configuration manager with invalid file
 	 */
-	private ProxyConfigManager $managerMissing;
+	private ProxyConfigManager $managerInvalid;
 
 	/**
-	 * Tests the function read configuration (from a valid file)
+	 * @var ProxyConfigManager Proxy configuration manager for temporary files
+	 */
+	private ProxyConfigManager $managerTmp;
+
+	/**
+	 * @var ProxyConfiguration Proxy configuration object
+	 */
+	private ProxyConfiguration $config;
+
+	/**
+	 * Tests the function read configuration file
 	 */
 	public function testReadConfig(): void {
 		Assert::equal(
-			[
-				'host' => 'localhost',
-				'port' => 9005,
-				'address' => '127.0.0.1',
-				'upstream' => 'ws://iqube.local/ws',
-				'token' => 'iqrfgd2;1;ETi3v8RGLVGXb/uNenhskEiSH/2KussEbantcvjfGQ4=',
-			],
-			$this->manager->readConfig(),
+			expected: $this->config,
+			actual: $this->manager->readConfig(),
 		);
 	}
 
 	/**
-	 * Tests the function to read config (from missing file)
+	 * Tests the function to read configuration from invalid file or missing properties
 	 */
 	public function testReadConfigMissing(): void {
 		Assert::equal(
-			[
-				'host' => ProxyConfigManager::DEFAULT_HOST,
-				'port' => ProxyConfigManager::DEFAULT_PORT,
-				'address' => ProxyConfigManager::DEFAULT_ADDRESS,
-				'upstream' => ProxyConfigManager::DEFAULT_UPSTREAM,
-				'token' => '',
-			],
-			$this->managerMissing->readConfig(),
+			expected: new ProxyConfiguration(),
+			actual: $this->managerInvalid->readConfig(),
+		);
+	}
+
+	/**
+	 * Tests the function to write configuration to file
+	 */
+	public function testWriteConfig(): void {
+		$config = $this->config;
+		$config->port = 9000;
+		$this->managerTmp->writeConfig($config);
+		Assert::equal(
+			expected: $config,
+			actual: $this->managerTmp->readConfig(),
 		);
 	}
 
@@ -91,7 +110,8 @@ final class ProxyConfigManagerTest extends TestCase {
 	 * Sets up the test environment
 	 */
 	protected function setUp(): void {
-		parent::setUp();
+		Environment::lock('proxy_config', TMP_DIR);
+		FileSystem::copy(self::CONF_DIR, self::TEMP_CONF_DIR);
 		$commandManager = new CommandExecutor(false, new CommandStack());
 		$this->manager = new ProxyConfigManager(
 			new FileManager(
@@ -99,11 +119,24 @@ final class ProxyConfigManagerTest extends TestCase {
 				$commandManager,
 			),
 		);
-		$this->managerMissing = new ProxyConfigManager(
+		$this->managerInvalid = new ProxyConfigManager(
 			new FileManager(
 				self::CONF_DIR . 'missing/',
 				$commandManager,
 			),
+		);
+		$this->managerTmp = new ProxyConfigManager(
+			new FileManager(
+				self::TEMP_CONF_DIR,
+				$commandManager,
+			),
+		);
+		$this->config = new ProxyConfiguration(
+			host: 'localhost',
+			port: 9005,
+			address: '127.0.0.1',
+			upstream: 'ws://iqube.local/ws',
+			token: 'iqrfgd2;1;ETi3v8RGLVGXb/uNenhskEiSH/2KussEbantcvjfGQ4='
 		);
 	}
 
