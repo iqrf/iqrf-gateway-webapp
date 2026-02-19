@@ -24,21 +24,30 @@ use App\ApiModule\Version0\Models\BearerAuthenticator;
 use App\Models\Database\Entities\User;
 use App\Models\WebSocket\Enums\ProxyAuthError;
 use App\Models\WebSocket\Messages\ProxyAuthFailed;
+use App\Models\WebSocket\Messages\ProxyAuthSuccess;
+use App\Models\WebSocket\Messages\ProxyMessageInvalid;
 use App\Models\WebSocket\Messages\ProxySessionExpired;
+use App\Models\WebSocket\Messages\ProxySessionRefreshFailed;
+use App\Models\WebSocket\Messages\ProxySessionRefreshSuccess;
+use App\Models\WebSocket\Utils\ProxyMessageValidator;
 use Contributte\Monolog\LoggerManager;
 use DateTimeImmutable;
 use GuzzleHttp\Psr7\Request;
+use InvalidArgumentException;
+use JsonException;
 use Lcobucci\JWT\Encoding\JoseEncoder;
 use Lcobucci\JWT\Token\Parser;
 use Lcobucci\JWT\Token\Plain;
 use Lcobucci\JWT\Token\RegisteredClaims;
 use Monolog\Level;
+use Nette\Utils\Json;
 use Psr\Log\LoggerInterface;
 use Ratchet\Client\Connector;
 use Ratchet\ConnectionInterface;
 use Ratchet\MessageComponentInterface;
 use Ratchet\RFC6455\Messaging\Frame;
 use Ratchet\WebSocket\WsConnection;
+use React\Dns\Config\Config as DnsConfig;
 use React\EventLoop\Loop;
 use React\EventLoop\LoopInterface;
 use React\Socket\Connector as SocketConnector;
@@ -71,10 +80,8 @@ class ProxyHandler implements MessageComponentInterface {
 	private array $sessionMap;
 
 	/**
-	 * @var array<int, DateTimeImmutable> Client connection expiration map
+	 * @var Parser JWT parser
 	 */
-	private array $expMap;
-
 	private Parser $jwtParser;
 
 	/**
@@ -118,7 +125,7 @@ class ProxyHandler implements MessageComponentInterface {
 		assert($conn instanceof WsConnection);
 
 		// @phpstan-ignore property.notFound
-		$clientId = $conn->resourceId;
+		$sessionId = $conn->resourceId;
 		// @phpstan-ignore property.notFound
 		$clientAddr = $conn->remoteAddress;
 
@@ -127,7 +134,7 @@ class ProxyHandler implements MessageComponentInterface {
 			'Client connected to proxy server.',
 			[
 				'addr' => $clientAddr,
-				'id' => strval($clientId),
+				'id' => strval($sessionId),
 			],
 		);
 
@@ -146,7 +153,7 @@ class ProxyHandler implements MessageComponentInterface {
 				'Token missing, closing connection.',
 				[
 					'addr' => $clientAddr,
-					'id' => strval($clientId),
+					'id' => strval($sessionId),
 				],
 			);
 			$conn->send((new ProxyAuthFailed(ProxyAuthError::MISSING_TOKEN))->toJsonString());
@@ -163,7 +170,7 @@ class ProxyHandler implements MessageComponentInterface {
 				'Invalid token format, closing connection.',
 				[
 					'addr' => $clientAddr,
-					'id' => strval($clientId),
+					'id' => strval($sessionId),
 				],
 			);
 			$conn->send((new ProxyAuthFailed(ProxyAuthError::INVALID_TOKEN))->toJsonString());
@@ -177,7 +184,7 @@ class ProxyHandler implements MessageComponentInterface {
 				'Invalid token, closing connection.',
 				[
 					'addr' => $clientAddr,
-					'id' => strval($clientId),
+					'id' => strval($sessionId),
 				],
 			);
 			$conn->send((new ProxyAuthFailed(ProxyAuthError::INVALID_TOKEN))->toJsonString());
@@ -192,24 +199,25 @@ class ProxyHandler implements MessageComponentInterface {
 		$expiration = $token->claims()->get(RegisteredClaims::EXPIRATION_TIME);
 
 		$session = new ProxySession(
-			$conn,
-			$this->upstreamUrl,
-			$this->upstreamToken,
-			$this->connector,
-			$this->logger,
+			client: $conn,
+			userId: $user->getId(),
+			sessionId: $sessionId,
+			remoteAddr: $clientAddr,
+			clientSessionExpiration: $expiration,
+			upstreamAddr: $this->upstreamUrl,
+			apiToken: $this->upstreamToken,
+			connector: $this->connector,
+			logger: $this->logger,
 		);
 		$session->registerSessionCloseCallback(
-			function (int $clientId): void {
-				if (isset($this->sessionMap[$clientId])) {
-					unset($this->sessionMap[$clientId]);
-				}
-				if (isset($this->expMap[$clientId])) {
-					unset($this->expMap[$clientId]);
+			function (int $sessionId): void {
+				if (isset($this->sessionMap[$sessionId])) {
+					unset($this->sessionMap[$sessionId]);
 				}
 			}
 		);
-		$this->sessionMap[$clientId] = $session;
-		$this->expMap[$clientId] = $expiration;
+		$this->sessionMap[$sessionId] = $session;
+		$conn->send((new ProxyAuthSuccess($sessionId))->toJsonString());
 	}
 
 	/**
@@ -228,7 +236,7 @@ class ProxyHandler implements MessageComponentInterface {
 	public function onMessage(ConnectionInterface $conn, $msg): void {
 		assert($conn instanceof WsConnection);
 		// @phpstan-ignore property.notFound
-		$clientId = $conn->resourceId;
+		$sessionId = $conn->resourceId;
 		// @phpstan-ignore property.notFound
 		$clientAddr = $conn->remoteAddress;
 
@@ -237,31 +245,90 @@ class ProxyHandler implements MessageComponentInterface {
 			'Incoming message from client: {message}',
 			[
 				'addr' => $clientAddr,
-				'id' => strval($clientId),
+				'id' => strval($sessionId),
 				'message' => $msg,
 			],
 		);
 
-		if (isset($this->expMap[$clientId])) {
-			if (new DateTimeImmutable() >= $this->expMap[$clientId]) {
+		if (!isset($this->sessionMap[$sessionId])) {
+			return;
+		}
+
+		$session = $this->sessionMap[$sessionId];
+		if (new DateTimeImmutable() >= $session->getExpiration()) {
+			$this->logMessage(
+				Level::Info,
+				'Client session has expired, closing connection.',
+				[
+					'addr' => $clientAddr,
+					'id' => strval($sessionId),
+				],
+			);
+			$conn->send((new ProxySessionExpired())->toJsonString());
+			$conn->close(Frame::CLOSE_POLICY);
+			return;
+		}
+
+		try {
+			$json = Json::decode($msg);
+		} catch (JsonException $e) {
+			$conn->send((new ProxyMessageInvalid($msg, $e->getMessage()))->toJsonString());
+			return;
+		}
+
+		if (ProxyMessageValidator::isProxySessionRefreshMessage($json)) {
+			// if token can't be parsed, do nothing
+			try {
+				$user = $this->authenticator->authenticateUser($json->data->token);
+			} catch (Throwable) {
 				$this->logMessage(
-					Level::Info,
-					'Client session has expired, closing connection.',
+					Level::Warning,
+					'Invalid token format, session not refreshed.',
 					[
 						'addr' => $clientAddr,
-						'id' => strval($clientId),
+						'id' => strval($sessionId),
 					],
 				);
-
-				$conn->send((new ProxySessionExpired())->toJsonString());
-				$conn->close(Frame::CLOSE_POLICY);
+				$conn->send((new ProxySessionRefreshFailed())->toJsonString());
 				return;
 			}
+			// if token does not identify a user, do nothing
+			if (!($user instanceof User)) {
+				$this->logMessage(
+					Level::Warning,
+					'Invalid token, session not refreshed.',
+					[
+						'addr' => $clientAddr,
+						'id' => strval($sessionId),
+					],
+				);
+				$conn->send((new ProxySessionRefreshFailed())->toJsonString());
+				return;
+			}
+			// if access token does not belong to session user, or the session ID does not match, do nothing
+			if ($session->getUserId() !== $user->getId() || $json->data->sessionId !== $sessionId) {
+				$this->logMessage(
+					Level::Warning,
+					'Session ID does not match, or access token belongs to another user.',
+					[
+						'addr' => $clientAddr,
+						'id' => strval($sessionId),
+					],
+				);
+				$conn->send((new ProxySessionRefreshFailed())->toJsonString());
+				return;
+			}
+			// valid access token for user and session ID matches, update expiration
+			$token = $this->jwtParser->parse($json->data->token);
+			assert($token instanceof Plain);
+			$expiration = $token->claims()->get(RegisteredClaims::EXPIRATION_TIME);
+			$session->updateExpiration($expiration);
+			// send success response
+			$conn->send((new ProxySessionRefreshSuccess())->toJsonString());
+			return;
 		}
 
-		if (isset($this->sessionMap[$clientId])) {
-			$this->sessionMap[$clientId]->handleClientMessage($msg);
-		}
+		$session->handleClientMessage($json, $msg);
 	}
 
 	/**
@@ -330,15 +397,28 @@ class ProxyHandler implements MessageComponentInterface {
 	 */
 	private function createConnector(): Connector {
 		$tls = substr($this->upstreamUrl, 0, 3) === 'wss';
+		// build TCP options
+		$options = [
+			'timeout' => 10,
+			'dns' => false,
+		];
 		// TCP socket connector
 		$tcpConnector = new SocketConnector(
-			// TODO: maybe redo this to use available DNS
-			[
-				'dns' => '8.8.8.8',
-				'timeout' => 10,
-			],
-			$this->loop,
+			context: $options,
+			loop: $this->loop,
 		);
+		$dnsConfig = DnsConfig::loadSystemConfigBlocking();
+		foreach ($dnsConfig->nameservers as $ns) {
+			try {
+				$options['dns'] = $ns;
+				$tcpConnector = new SocketConnector(
+					context: $options,
+					loop: $this->loop,
+				);
+			} catch (InvalidArgumentException) {
+				// ignore this and try next
+			}
+		}
 		// TLS connector
 		if ($tls) {
 			$tlsConnector = new SecureConnector(

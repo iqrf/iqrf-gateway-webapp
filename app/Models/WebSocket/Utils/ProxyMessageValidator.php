@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\Models\WebSocket\Utils;
 
+use App\Models\WebSocket\Enums\ProxyMessageType;
 use stdClass;
 
 /**
@@ -44,7 +45,24 @@ final class ProxyMessageValidator {
 	}
 
 	/**
-	 * Checks if JSON object is an authentication success message.
+	 * Checks if JSON object is a proxy session refresh message.
+	 *
+	 * The proxy session refresh message is expected to have message type `proxy_session_refresh`,
+	 * an integer property `timestamp`, and a data object containing integer `sessionId` and string `token`.
+	 *
+	 * @param stdClass $json JSON object of a message
+	 * @return bool `true` if message is proxy session refresh, `false` otherwise
+	 */
+	public static function isProxySessionRefreshMessage(stdClass $json): bool {
+		return (property_exists($json, 'type') && $json->type === ProxyMessageType::PROXY_SESSION_REFRESH->value) &&
+			(property_exists($json, 'timestamp') && is_int($json->timestamp)) &&
+			(property_exists($json, 'data') && is_object($json->data)) &&
+			(property_exists($json->data, 'sessionId') && is_int($json->data->sessionId)) &&
+			(property_exists($json->data, 'token') && is_string($json->data->token));
+	}
+
+	/**
+	 * Checks if JSON object is an upstream authentication success message.
 	 *
 	 * The authentication success message is expected to have message type
 	 * `auth_success`, an integer property `expiration` and a bool property `service`.
@@ -62,7 +80,7 @@ final class ProxyMessageValidator {
 	}
 
 	/**
-	 * Checks if JSON object is an authentication error message.
+	 * Checks if JSON object is an upstream authentication error message.
 	 *
 	 * The authentication error message is expected to have message type
 	 * `auth_failed`, an integer property `code` and a string property `error`.

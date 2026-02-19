@@ -29,8 +29,10 @@ import ClientSocket, { type GenericSocketState } from '@/modules/clientSocket';
 import i18n from '@/plugins/i18n';
 import { useMonitorStore } from '@/store/monitorSocket';
 import {
+	type ProxyAuthSuccess,
 	type ProxyMessage,
 	ProxyMessageType,
+	type ProxySessionRefresh,
 	type UpstreamReconnecting,
 	type UpstreamResponse,
 	UpstreamStatus,
@@ -43,6 +45,7 @@ interface UpstreamState {
 }
 
 interface DaemonState extends GenericSocketState {
+	sessionId: number|null;
 	receivedMessages: number;
 	messages: DaemonMessage[];
 	version: string;
@@ -69,6 +72,7 @@ export const useDaemonStore = defineStore('daemon', {
 		connected: false,
 		reconnecting: false,
 		reconnected: false,
+		sessionId: null,
 		receivedMessages: 0,
 		messages: [],
 		version: '',
@@ -102,6 +106,33 @@ export const useDaemonStore = defineStore('daemon', {
 			);
 		},
 		/**
+		 * Attempts to refresh proxy server session
+		 * @param {string} jwt New access token
+		 */
+		refreshSession(jwt: string): void {
+			if (this.socket === null) {
+				console.error(
+					i18n.global.t('components.status.daemonApi.messages.proxySessionRefreshNoSocket'),
+				);
+				return;
+			}
+			if (this.sessionId === null) {
+				console.error(
+					i18n.global.t('components.status.daemonApi.messages.proxySessionRefreshNoSessionId'),
+				);
+				return;
+			}
+			const message: ProxySessionRefresh = {
+				type: ProxyMessageType.PROXY_SESSION_REFRESH,
+				timestamp: Math.floor(Date.now() / 1_000),
+				data: {
+					sessionId: this.sessionId,
+					token: jwt,
+				},
+			};
+			this.socket.sendProxyMessage(message);
+		},
+		/**
 		 * Closes and destroys socket if it exists
 		 */
 		destroySocket(): void {
@@ -109,6 +140,7 @@ export const useDaemonStore = defineStore('daemon', {
 				this.socket.close();
 				this.socket = null;
 			}
+			this.sessionId = null;
 			this.reconnecting = false;
 		},
 		/**
@@ -138,6 +170,11 @@ export const useDaemonStore = defineStore('daemon', {
 				console.error(
 					i18n.global.t('components.status.daemonApi.messages.proxyAuthFailed'),
 				);
+				return;
+			}
+			if (message.type === ProxyMessageType.PROXY_AUTH_SUCCESS) {
+				const data = (message as ProxyAuthSuccess).data;
+				this.sessionId = data.sessionId;
 				return;
 			}
 			if (message.type === ProxyMessageType.UPSTREAM_AUTH_FAILED) {
@@ -192,6 +229,7 @@ export const useDaemonStore = defineStore('daemon', {
 		onClose(event: CloseEvent): void {
 			console.error(event);
 			this.connected = false;
+			this.sessionId = null;
 			this.upstream.status = UpstreamStatus.UNKNOWN;
 			if (this.socket !== null) {
 				this.reconnecting = true;
@@ -297,15 +335,31 @@ export const useDaemonStore = defineStore('daemon', {
 		isConnected(): boolean {
 			return this.connected;
 		},
+		/**
+		 * Returns upstream ready state
+		 * @return {boolean} Upstream ready state
+		 */
 		isUpstreamReady(): boolean {
 			return this.upstream.status === UpstreamStatus.READY;
 		},
+		/**
+		 * Returns upstream reconnecting state
+		 * @return {boolean} Upstream reconnecting state
+		 */
 		isUpstreamReconnecting(): boolean {
 			return this.upstream.status === UpstreamStatus.RECONNECTING;
 		},
+		/**
+		 * Returns upstream status
+		 * @return {UpstreamStatus} Upstream status
+		 */
 		upstreamStatus(): UpstreamStatus {
 			return this.upstream.status;
 		},
+		/**
+		 * Returns next upstream reconnect attempt timestamp
+		 * @return {number|null} Next upstream reconnect attempt timestamp
+		 */
 		upstreamReconnectTs(): number|null {
 			return this.upstream.nextAttempt;
 		},

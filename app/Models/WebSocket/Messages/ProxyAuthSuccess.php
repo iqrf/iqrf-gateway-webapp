@@ -23,22 +23,22 @@ namespace App\Models\WebSocket\Messages;
 use App\Models\WebSocket\Enums\ProxyMessageType;
 
 /**
- * Upstream ready message
+ * Proxy authentication success message
  */
-class UpstreamReady extends ProxyMessageBase {
+class ProxyAuthSuccess extends ProxyMessageBase {
 
 	/**
-	 * Constructs upstream ready message
-	 * @param int $expiration Expiration timestamp
+	 * Constructs proxy authentication success message
+	 * @param int $sessionId Session ID
 	 * @param int|null $timestamp Message timestamp (unix epoch)
 	 */
-	public function __construct(int $expiration, ?int $timestamp = null) {
+	public function __construct(int $sessionId, ?int $timestamp = null) {
 		parent::__construct(
-			type: ProxyMessageType::READY,
+			type: ProxyMessageType::PROXY_AUTH_SUCCESS,
 			timestamp: $timestamp,
 			payload: [
-				'expiration' => $expiration,
-			]
+				'sessionId' => $sessionId,
+			],
 		);
 	}
 
