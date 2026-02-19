@@ -3980,6 +3980,8 @@
 			"daemonApi": {
 				"messages": {
 					"proxyAuthFailed": "Failed to authenticate connection to proxy server.",
+					"proxySessionRefreshNoSessionId": "Cannot refresh session, session ID missing.",
+					"proxySessionRefreshNoSocket": "Cannot refresh proxy session, socket does not exist.",
 					"upstreamAuthFailed": "Failed to authenticate upstream session.",
 					"upstreamDisconnected": "Connection to upstream server lost."
 				},

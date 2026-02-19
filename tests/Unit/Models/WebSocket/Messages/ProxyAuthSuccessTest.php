@@ -1,8 +1,8 @@
 <?php
 
 /**
- * TEST: App\Models\WebSocket\Messages\UpstreamReady
- * @covers App\Models\WebSocket\Messages\UpstreamReady
+ * TEST: App\Models\WebSocket\Messages\ProxyAuthSuccess
+ * @covers App\Models\WebSocket\Messages\ProxyAuthSuccess
  * @phpVersion >= 8.2
  * @testCase
  */
@@ -27,21 +27,21 @@ declare(strict_types = 1);
 namespace Tests\Unit\Models\WebSocket\Messages;
 
 use App\Models\WebSocket\Enums\ProxyMessageType;
-use App\Models\WebSocket\Messages\UpstreamReady;
+use App\Models\WebSocket\Messages\ProxyAuthSuccess;
 use Tester\Assert;
 use Tester\TestCase;
 
 require __DIR__ . '/../../../../bootstrap.php';
 
 /**
- * Tests for UpstreamReady class
+ * Tests for ProxyAuthSuccess class
  */
-final class UpstreamReadyTest extends TestCase {
+final class ProxyAuthSuccessTest extends TestCase {
 
 	/**
-	 * Upstream session expiration timestamp
+	 * Session ID
 	 */
-	private const EXPIRATION = 1798761600;
+	private const SESSION_ID = 2203;
 
 	/**
 	 * Message timestamp
@@ -49,9 +49,9 @@ final class UpstreamReadyTest extends TestCase {
 	private const TIMESTAMP = 1767261600;
 
 	/**
-	 * @var UpstreamReady Message object
+	 * @var ProxyAuthSuccess Message object
 	 */
-	private UpstreamReady $message;
+	private ProxyAuthSuccess $message;
 
 	/**
 	 * Tests the function to serialize message to JSON object
@@ -59,10 +59,10 @@ final class UpstreamReadyTest extends TestCase {
 	public function testJsonSerialize(): void {
 		Assert::equal(
 			[
-				'type' => ProxyMessageType::READY->value,
+				'type' => ProxyMessageType::PROXY_AUTH_SUCCESS->value,
 				'timestamp' => self::TIMESTAMP,
 				'data' => [
-					'expiration' => self::EXPIRATION,
+					'sessionId' => self::SESSION_ID,
 				],
 			],
 			$this->message->jsonSerialize(),
@@ -74,7 +74,7 @@ final class UpstreamReadyTest extends TestCase {
 	 */
 	public function testToJsonString(): void {
 		Assert::same(
-			'{"type":"upstream_ready","timestamp":1767261600,"data":{"expiration":1798761600}}',
+			'{"type":"proxy_auth_success","timestamp":1767261600,"data":{"sessionId":2203}}',
 			$this->message->toJsonString(),
 		);
 	}
@@ -83,10 +83,10 @@ final class UpstreamReadyTest extends TestCase {
 	 * Sets up test environment
 	 */
 	protected function setUp(): void {
-		$this->message = new UpstreamReady(self::EXPIRATION, self::TIMESTAMP);
+		$this->message = new ProxyAuthSuccess(self::SESSION_ID, self::TIMESTAMP);
 	}
 
 }
 
-$test = new UpstreamReadyTest();
+$test = new ProxyAuthSuccessTest();
 $test->run();

@@ -26,6 +26,7 @@ declare(strict_types = 1);
 
 namespace Tests\Unit\Models\WebSocket;
 
+use App\Models\WebSocket\Enums\ProxyMessageType;
 use App\Models\WebSocket\Utils\ProxyMessageValidator;
 use Tester\Assert;
 use Tester\TestCase;
@@ -38,9 +39,168 @@ require __DIR__ . '/../../../../bootstrap.php';
 final class ProxyMessageValidatorTest extends TestCase {
 
 	/**
-	 * Expiration time
+	 * Timestamp
 	 */
-	private const EXPIRATION = 1767261600;
+	private const TIMESTAMP = 1767261600;
+
+	/**
+	 * Access token
+	 */
+	private const ACCESS_TOKEN = '';
+
+	/**
+	 * Tests the function to check if message is proxy session refresh message
+	 */
+	public function testIsProxySessionRefreshMessageValid(): void {
+		$msg = (object) [
+			'type' => ProxyMessageType::PROXY_SESSION_REFRESH->value,
+			'timestamp' => self::TIMESTAMP,
+			'data' => (object) [
+				'sessionId' => 1,
+				'token' => self::ACCESS_TOKEN,
+			],
+		];
+		Assert::true(ProxyMessageValidator::isProxySessionRefreshMessage($msg));
+	}
+
+	/**
+	 * Tests the function to check if message is proxy session refresh message (missing type)
+	 */
+	public function testIsProxySessionRefreshMessageMissingType(): void {
+		$msg = (object) [
+			'timestamp' => self::TIMESTAMP,
+			'data' => (object) [
+				'sessionId' => 1,
+				'token' => self::ACCESS_TOKEN,
+			],
+		];
+		Assert::false(ProxyMessageValidator::isProxySessionRefreshMessage($msg));
+	}
+
+	/**
+	 * Tests the function to check if message is proxy session refresh message (invalid type)
+	 */
+	public function testIsProxySessionRefreshMessageInvalidType(): void {
+		$msg = (object) [
+			'type' => 1,
+			'timestamp' => self::TIMESTAMP,
+			'data' => (object) [
+				'sessionId' => 1,
+				'token' => self::ACCESS_TOKEN,
+			],
+		];
+		Assert::false(ProxyMessageValidator::isProxySessionRefreshMessage($msg));
+	}
+
+	/**
+	 * Tests the function to check if message is proxy session refresh message (missing timestamp)
+	 */
+	public function testIsProxySessionRefreshMessageMissingTimestamp(): void {
+		$msg = (object) [
+			'type' => ProxyMessageType::PROXY_SESSION_REFRESH->value,
+			'data' => (object) [
+				'sessionId' => 1,
+				'token' => self::ACCESS_TOKEN,
+			],
+		];
+		Assert::false(ProxyMessageValidator::isProxySessionRefreshMessage($msg));
+	}
+
+	/**
+	 * Tests the function to check if message is proxy session refresh message (invalid timestamp)
+	 */
+	public function testIsProxySessionRefreshMessageInvalidTimestamp(): void {
+		$msg = (object) [
+			'type' => ProxyMessageType::PROXY_SESSION_REFRESH->value,
+			'timestamp' => strval(self::TIMESTAMP),
+			'data' => (object) [
+				'sessionId' => 1,
+				'token' => self::ACCESS_TOKEN,
+			],
+		];
+		Assert::false(ProxyMessageValidator::isProxySessionRefreshMessage($msg));
+	}
+
+	/**
+	 * Tests the function to check if message is proxy session refresh message (missing data)
+	 */
+	public function testIsProxySessionRefreshMessageMissingData(): void {
+		$msg = (object) [
+			'type' => ProxyMessageType::PROXY_SESSION_REFRESH->value,
+			'timestamp' => self::TIMESTAMP,
+		];
+		Assert::false(ProxyMessageValidator::isProxySessionRefreshMessage($msg));
+	}
+
+	/**
+	 * Tests the function to check if message is proxy session refresh message (invalid data)
+	 */
+	public function testIsProxySessionRefreshMessageInvalidData(): void {
+		$msg = (object) [
+			'type' => ProxyMessageType::PROXY_SESSION_REFRESH->value,
+			'timestamp' => self::TIMESTAMP,
+			'data' => 'invalid',
+		];
+		Assert::false(ProxyMessageValidator::isProxySessionRefreshMessage($msg));
+	}
+
+	/**
+	 * Tests the function to check if message is proxy session refresh message (missing session ID)
+	 */
+	public function testIsProxySessionRefreshMessageMissingSessionId(): void {
+		$msg = (object) [
+			'type' => ProxyMessageType::PROXY_SESSION_REFRESH->value,
+			'timestamp' => self::TIMESTAMP,
+			'data' => (object) [
+				'token' => self::ACCESS_TOKEN,
+			],
+		];
+		Assert::false(ProxyMessageValidator::isProxySessionRefreshMessage($msg));
+	}
+
+	/**
+	 * Tests the function to check if message is proxy session refresh message (invalid session ID)
+	 */
+	public function testIsProxySessionRefreshMessageInvalidSessionId(): void {
+		$msg = (object) [
+			'type' => ProxyMessageType::PROXY_SESSION_REFRESH->value,
+			'timestamp' => self::TIMESTAMP,
+			'data' => (object) [
+				'sessionId' => false,
+				'token' => self::ACCESS_TOKEN,
+			],
+		];
+		Assert::false(ProxyMessageValidator::isProxySessionRefreshMessage($msg));
+	}
+
+	/**
+	 * Tests the function to check if message is proxy session refresh message (missing token)
+	 */
+	public function testIsProxySessionRefreshMessageMissingToken(): void {
+		$msg = (object) [
+			'type' => ProxyMessageType::PROXY_SESSION_REFRESH->value,
+			'timestamp' => self::TIMESTAMP,
+			'data' => (object) [
+				'sessionId' => 1,
+			],
+		];
+		Assert::false(ProxyMessageValidator::isProxySessionRefreshMessage($msg));
+	}
+
+	/**
+	 * Tests the function to check if message is proxy session refresh message (invalid token)
+	 */
+	public function testIsProxySessionRefreshMessageInvalidToken(): void {
+		$msg = (object) [
+			'type' => ProxyMessageType::PROXY_SESSION_REFRESH->value,
+			'timestamp' => self::TIMESTAMP,
+			'data' => (object) [
+				'sessionId' => 1,
+				'token' => [],
+			],
+		];
+		Assert::false(ProxyMessageValidator::isProxySessionRefreshMessage($msg));
+	}
 
 	/**
 	 * Tests the function to check if message is auth success message
@@ -48,7 +208,7 @@ final class ProxyMessageValidatorTest extends TestCase {
 	public function testIsAuthSuccessMessageValid(): void {
 		$msg = (object) [
 			'type' => 'auth_success',
-			'expiration' => self::EXPIRATION,
+			'expiration' => self::TIMESTAMP,
 			'service' => false,
 		];
 		Assert::true(ProxyMessageValidator::isAuthSuccessMessage($msg));
@@ -59,7 +219,7 @@ final class ProxyMessageValidatorTest extends TestCase {
 	 */
 	public function testIsAuthSuccessMessageMissingType(): void {
 		$msg = (object) [
-			'expiration' => self::EXPIRATION,
+			'expiration' => self::TIMESTAMP,
 			'service' => false,
 		];
 		Assert::false(ProxyMessageValidator::isAuthSuccessMessage($msg));
@@ -71,7 +231,7 @@ final class ProxyMessageValidatorTest extends TestCase {
 	public function testIsAuthSuccessMessageInvalidType(): void {
 		$msg = (object) [
 			'type' => 'auth',
-			'expiration' => self::EXPIRATION,
+			'expiration' => self::TIMESTAMP,
 			'service' => false,
 		];
 		Assert::false(ProxyMessageValidator::isAuthSuccessMessage($msg));
@@ -106,7 +266,7 @@ final class ProxyMessageValidatorTest extends TestCase {
 	public function testIsAuthSuccessMessageMissingService(): void {
 		$msg = (object) [
 			'type' => 'auth_success',
-			'expiration' => self::EXPIRATION,
+			'expiration' => self::TIMESTAMP,
 		];
 		Assert::false(ProxyMessageValidator::isAuthSuccessMessage($msg));
 	}
@@ -117,7 +277,7 @@ final class ProxyMessageValidatorTest extends TestCase {
 	public function testIsAuthSuccessMessageInvalidService(): void {
 		$msg = (object) [
 			'type' => 'auth_success',
-			'expiration' => self::EXPIRATION,
+			'expiration' => self::TIMESTAMP,
 			'service' => 'yes',
 		];
 		Assert::false(ProxyMessageValidator::isAuthSuccessMessage($msg));

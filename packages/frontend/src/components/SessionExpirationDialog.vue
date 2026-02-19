@@ -114,11 +114,8 @@ async function setup(): Promise<void> {
 async function renewSession(): Promise<void> {
 	try {
 		await userStore.refreshSession();
-		daemonStore.destroySocket();
-		const token = userStore.getToken;
-		if (token !== null) {
-			daemonStore.initSocket(token);
-		}
+		const token = userStore.getToken!;
+		daemonStore.refreshSession(token);
 		close();
 		clear();
 		await setup();

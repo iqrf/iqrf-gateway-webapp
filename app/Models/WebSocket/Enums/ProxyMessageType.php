@@ -30,9 +30,29 @@ enum ProxyMessageType: string {
 	 */
 	case PROXY_AUTH_FAILED = 'proxy_auth_failed';
 	/**
+	 * Proxy authentication success
+	 */
+	case PROXY_AUTH_SUCCESS = 'proxy_auth_success';
+	/**
+	 * Proxy message invalid
+	 */
+	case PROXY_MESSAGE_INVALID = 'proxy_message_invalid';
+	/**
 	 * Proxy session expired
 	 */
 	case PROXY_SESSION_EXPIRED = 'proxy_session_expired';
+	/**
+	 * Proxy session refresh
+	 */
+	case PROXY_SESSION_REFRESH = 'proxy_session_refresh';
+	/**
+	 * Proxy session refresh failed
+	 */
+	case PROXY_SESSION_REFRESH_FAILED = 'proxy_session_refresh_failed';
+	/**
+	 * Proxy session refresh success
+	 */
+	case PROXY_SESSION_REFRESH_SUCCESS = 'proxy_session_refresh_success';
 	/**
 	 * Upstream connection lost
 	 */

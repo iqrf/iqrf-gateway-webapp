@@ -17,6 +17,8 @@
 
 import { type DaemonApiRequest } from '@iqrf/iqrf-gateway-daemon-utils/types';
 
+import { type ProxyMessage } from '@/types/proxy';
+
 /**
  * Generic WebSocket state interface
  */
@@ -262,7 +264,7 @@ export default class ClientSocket {
 	}
 
 	/**
-	 * Sends a message
+	 * Sends a Daemon API message
 	 * @param {DaemonApiRequest} data Message data
 	 */
 	public send(data: DaemonApiRequest): void {
@@ -271,7 +273,20 @@ export default class ClientSocket {
 			this.socket?.send(message);
 			this.onSendCallback(data);
 		} catch {
-			//
+			console.error('Failed to send Daemon API message.');
+		}
+	}
+
+	/**
+	 * Sends a proxy message
+	 * @param {ProxyMessage} data Proxy message
+	 */
+	public sendProxyMessage(data: ProxyMessage): void {
+		try {
+			const message: string = JSON.stringify(data);
+			this.socket?.send(message);
+		} catch {
+			console.error('Failed to send proxy message.');
 		}
 	}
 
