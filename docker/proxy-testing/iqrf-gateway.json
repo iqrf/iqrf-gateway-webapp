@@ -1,0 +1,9 @@
+{
+	"gwProduct": "IQD-GW-02A",
+	"gwManufacturer": "MICRORISC s.r.o.",
+	"gwId": "0123456789ABCDEF",
+	"gwHost": "iqube-0123456789abcdef.local",
+	"gwImage": "iqube-armbian-v1.7.0",
+	"gwInterface": "uart",
+	"gwHwpid": "3004"
+}
