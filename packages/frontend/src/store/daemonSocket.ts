@@ -94,7 +94,7 @@ export const useDaemonStore = defineStore('daemon', {
 			const urlBuilder = new UrlBuilder();
 			this.socket = new ClientSocket(
 				{
-					url: urlBuilder.getWebSocketProxyUrl(jwt),
+					url: `${urlBuilder.getWebSocketProxyUrl()}?token=${jwt}`,
 					autoConnect: true,
 					reconnect: true,
 					reconnectDelay: 5_000,
