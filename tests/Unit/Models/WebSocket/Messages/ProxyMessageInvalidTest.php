@@ -1,8 +1,8 @@
 <?php
 
 /**
- * TEST: App\Models\WebSocket\Messages\UpstreamReady
- * @covers App\Models\WebSocket\Messages\UpstreamReady
+ * TEST: App\Models\WebSocket\Messages\ProxyMessageInvalid
+ * @covers App\Models\WebSocket\Messages\ProxyMessageInvalid
  * @phpVersion >= 8.2
  * @testCase
  */
@@ -27,21 +27,26 @@ declare(strict_types = 1);
 namespace Tests\Unit\Models\WebSocket\Messages;
 
 use App\Models\WebSocket\Enums\ProxyMessageType;
-use App\Models\WebSocket\Messages\UpstreamReady;
+use App\Models\WebSocket\Messages\ProxyMessageInvalid;
 use Tester\Assert;
 use Tester\TestCase;
 
 require __DIR__ . '/../../../../bootstrap.php';
 
 /**
- * Tests for UpstreamReady class
+ * Tests for ProxyMessageInvalid class
  */
-final class UpstreamReadyTest extends TestCase {
+final class ProxyMessageInvalidTest extends TestCase {
 
 	/**
-	 * Upstream session expiration timestamp
+	 * Message contents
 	 */
-	private const EXPIRATION = 1798761600;
+	private const MESSAGE = '{invalid_json';
+
+	/**
+	 * Error message
+	 */
+	private const ERROR = 'Message is not a valid JSON object';
 
 	/**
 	 * Message timestamp
@@ -49,9 +54,9 @@ final class UpstreamReadyTest extends TestCase {
 	private const TIMESTAMP = 1767261600;
 
 	/**
-	 * @var UpstreamReady Message object
+	 * @var ProxyMessageInvalid Message object
 	 */
-	private UpstreamReady $message;
+	private ProxyMessageInvalid $message;
 
 	/**
 	 * Tests the function to serialize message to JSON object
@@ -59,10 +64,11 @@ final class UpstreamReadyTest extends TestCase {
 	public function testJsonSerialize(): void {
 		Assert::equal(
 			[
-				'type' => ProxyMessageType::READY->value,
+				'type' => ProxyMessageType::PROXY_MESSAGE_INVALID->value,
 				'timestamp' => self::TIMESTAMP,
 				'data' => [
-					'expiration' => self::EXPIRATION,
+					'message' => self::MESSAGE,
+					'error' => self::ERROR,
 				],
 			],
 			$this->message->jsonSerialize(),
@@ -74,7 +80,7 @@ final class UpstreamReadyTest extends TestCase {
 	 */
 	public function testToJsonString(): void {
 		Assert::same(
-			'{"type":"upstream_ready","timestamp":1767261600,"data":{"expiration":1798761600}}',
+			'{"type":"proxy_message_invalid","timestamp":1767261600,"data":{"message":"{invalid_json","error":"Message is not a valid JSON object"}}',
 			$this->message->toJsonString(),
 		);
 	}
@@ -83,10 +89,10 @@ final class UpstreamReadyTest extends TestCase {
 	 * Sets up test environment
 	 */
 	protected function setUp(): void {
-		$this->message = new UpstreamReady(self::EXPIRATION, self::TIMESTAMP);
+		$this->message = new ProxyMessageInvalid(self::MESSAGE, self::ERROR, self::TIMESTAMP);
 	}
 
 }
 
-$test = new UpstreamReadyTest();
+$test = new ProxyMessageInvalidTest();
 $test->run();

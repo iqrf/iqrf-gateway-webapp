@@ -29,6 +29,7 @@ use App\Models\WebSocket\Messages\UpstreamRequestInvalid;
 use App\Models\WebSocket\Messages\UpstreamResponse;
 use App\Models\WebSocket\Utils\ProxyMessageValidator;
 use Closure;
+use DateTimeImmutable;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 use Psr\Log\LoggerInterface;
@@ -38,6 +39,7 @@ use Ratchet\ConnectionInterface;
 use Ratchet\RFC6455\Messaging\MessageInterface;
 use React\EventLoop\Loop;
 use React\EventLoop\TimerInterface;
+use stdClass;
 use Throwable;
 
 /**
@@ -52,16 +54,6 @@ class ProxySession {
 	 * Maximum reconnect backoff delay
 	 */
 	private const MAX_RECONNECT_DELAY = 60;
-
-	/**
-	 * @var int Client ID (resource ID of connection)
-	 */
-	private readonly int $clientId;
-
-	/**
-	 * @var string Address of remote client
-	 */
-	private readonly string $remoteAddr;
 
 	/**
 	 * @var ExpBackoffDelay Backoff reconnect delay
@@ -89,9 +81,9 @@ class ProxySession {
 	private bool $authenticated = false;
 
 	/**
-	 * @var int|null Session expiration time
+	 * @var int|null Upstream session expiration
 	 */
-	private ?int $expiration = null;
+	private ?int $upstreamSessionExpiration;
 
 	/**
 	 * @var bool Indicates that session is closing (do not reconnect, do not handle messages)
@@ -101,6 +93,10 @@ class ProxySession {
 	/**
 	 * Constructor
 	 * @param ConnectionInterface $client Remote client
+	 * @param int $userId User ID
+	 * @param int $sessionId Client session ID
+	 * @param string $remoteAddr Client address
+	 * @param DateTimeImmutable $clientSessionExpiration Client session expiration (at creation time)
 	 * @param string $upstreamAddr Upstream URL
 	 * @param string $apiToken API token for upstream authentication
 	 * @param Connector $connector Connector for establishing upstream connection
@@ -108,20 +104,48 @@ class ProxySession {
 	 */
 	public function __construct(
 		private readonly ConnectionInterface $client,
+		private readonly int $userId,
+		private readonly int $sessionId,
+		private readonly string $remoteAddr,
+		private ?DateTimeImmutable $clientSessionExpiration,
 		private readonly string $upstreamAddr,
 		private readonly string $apiToken,
 		private readonly Connector $connector,
 		private readonly LoggerInterface $logger,
 	) {
-		// @phpstan-ignore property.notFound
-		$this->clientId = $client->resourceId;
-		// @phpstan-ignore property.notFound
-		$this->remoteAddr = $client->remoteAddress;
 		$this->reconnectDelay = new ExpBackoffDelay(self::MAX_RECONNECT_DELAY);
 		$this->connect();
 	}
 
 	///// PUBLIC API
+
+	/**
+	 * Returns ID of session user
+	 * @return int Session user ID
+	 */
+	public function getUserId(): int {
+		return $this->userId;
+	}
+
+	/**
+	 * Returns client session expiration
+	 * @return DateTimeImmutable Client session expiration
+	 */
+	public function getExpiration(): DateTimeImmutable {
+		return $this->clientSessionExpiration;
+	}
+
+	/**
+	 * Updates client session expriration
+	 *
+	 * This method is intended to be used when client uses reauthentication message,
+	 * to extend the validity of session with a valid access token for the same user.
+	 *
+	 * @param DateTimeImmutable $expiration Client session expiration
+	 */
+	public function updateExpiration(DateTimeImmutable $expiration): void {
+		$this->clientSessionExpiration = $expiration;
+	}
 
 	/**
 	 * Registers external callback to execute when session object is shutting down
@@ -143,17 +167,16 @@ class ProxySession {
 	 *
 	 * In all error cases, the client is notified.
 	 *
-	 * @param string $msg Message to send
+	 * @param stdClass $json Parsed message
+	 * @param string $msg Original message
 	 */
-	public function handleClientMessage(string $msg): void {
-		$json = Json::decode($msg);
-
+	public function handleClientMessage(stdClass $json, string $msg): void {
 		if (!ProxyMessageValidator::isDaemonApiMessage($json)) {
 			$this->logger->warning(
 				'[{id}|{addr}] Invalid message for upstream, discarding message: {msg}',
 				[
 					'addr' => $this->remoteAddr,
-					'id' => strval($this->clientId),
+					'id' => strval($this->sessionId),
 					'msg' => $msg,
 				],
 			);
@@ -169,7 +192,7 @@ class ProxySession {
 				'[{id}|{addr}] Cannot send message to upstream, upstream session does not exist.',
 				[
 					'addr' => $this->remoteAddr,
-					'id' => strval($this->clientId),
+					'id' => strval($this->sessionId),
 				],
 			);
 			$this->client->send((new UpstreamRequestFailed($mType, $msgId))->toJsonString());
@@ -181,7 +204,7 @@ class ProxySession {
 				'[{id}|{addr}] Cannot send message to upstream, session not authenticated.',
 				[
 					'addr' => $this->remoteAddr,
-					'id' => strval($this->clientId),
+					'id' => strval($this->sessionId),
 				],
 			);
 			$this->client->send((new UpstreamRequestFailed($mType, $msgId))->toJsonString());
@@ -217,7 +240,7 @@ class ProxySession {
 			$this->reconnectTimer = null;
 		}
 		if ($this->onSessionClose !== null) {
-			($this->onSessionClose)($this->clientId);
+			($this->onSessionClose)($this->sessionId);
 		}
 		// if upstream exists and is connected, close it
 		if ($this->upstream !== null) {
@@ -253,7 +276,7 @@ class ProxySession {
 					'[{id}|{addr}] Failed to establish upstream connection with proxy server for client: {reason}.',
 					[
 						'addr' => $this->remoteAddr,
-						'id' => strval($this->clientId),
+						'id' => strval($this->sessionId),
 						'reason' => $e->getMessage(),
 						'code' => strval($e->getCode()),
 					],
@@ -272,13 +295,17 @@ class ProxySession {
 	 */
 	protected function authenticate(): void {
 		if ($this->authenticated) {
-			// session already authenticated
-			// TODO reauth before session expires, with a new token
 			return;
 		}
 
 		if ($this->upstream === null) {
-			// TODO error handling of some kind
+			$this->logger->error(
+				'[{id}|{addr}] Upstream unavailable during authentication.',
+				[
+					'addr' => $this->remoteAddr,
+					'id' => strval($this->sessionId),
+				],
+			);
 			return;
 		}
 
@@ -320,7 +347,7 @@ class ProxySession {
 			'[{id}|{addr}] Connection to upstream established.',
 			[
 				'addr' => $this->remoteAddr,
-				'id' => strval($this->clientId),
+				'id' => strval($this->sessionId),
 			],
 		);
 
@@ -357,7 +384,7 @@ class ProxySession {
 			'[{id}|{addr}] Incoming message from upstream for client: {message}',
 			[
 				'addr' => $this->remoteAddr,
-				'id' => strval($this->clientId),
+				'id' => strval($this->sessionId),
 				'message' => $msg,
 			],
 		);
@@ -371,13 +398,13 @@ class ProxySession {
 					'[{id}|{addr}] Upstream session successfully authenticated, expiration: {expiration}',
 					[
 						'addr' => $this->remoteAddr,
-						'id' => strval($this->clientId),
+						'id' => strval($this->sessionId),
 						'expiration' => $json->expiration,
 					],
 				);
 				$this->authenticated = true;
-				$this->expiration = $json->expiration;
-				$this->client->send((new UpstreamReady())->toJsonString());
+				$this->upstreamSessionExpiration = $json->expiration;
+				$this->client->send((new UpstreamReady($this->upstreamSessionExpiration))->toJsonString());
 				return;
 			}
 
@@ -387,7 +414,7 @@ class ProxySession {
 					'[{id}|{addr}] Failed to authenticate upstream session: {reason}({code})',
 					[
 						'addr' => $this->remoteAddr,
-						'id' => strval($this->clientId),
+						'id' => strval($this->sessionId),
 						'reason' => $json->error,
 						'code' => $json->code,
 					],
@@ -402,7 +429,7 @@ class ProxySession {
 					'[{id}|{addr}] Upstream session closed for authentication reasons: {reason}({code})',
 					[
 						'addr' => $this->remoteAddr,
-						'id' => strval($this->clientId),
+						'id' => strval($this->sessionId),
 						'reason' => $json->error,
 						'code' => $json->code,
 					],
@@ -417,7 +444,7 @@ class ProxySession {
 				'[{id}|{addr}] Received invalid JSON message: {message}',
 				[
 					'addr' => $this->remoteAddr,
-					'id' => strval($this->clientId),
+					'id' => strval($this->sessionId),
 					'message' => $msg,
 				],
 			);
@@ -441,7 +468,7 @@ class ProxySession {
 			'[{id}|{addr}] Upstream connection closed: {reason}({code}}',
 			[
 				'addr' => $this->remoteAddr,
-				'id' => strval($this->clientId),
+				'id' => strval($this->sessionId),
 				'reason' => $reason,
 				'code' => strval($code),
 			],
@@ -470,7 +497,7 @@ class ProxySession {
 			'[{id}|{addr}] Connction to upstream lost: {reason}({code}}',
 			[
 				'addr' => $this->remoteAddr,
-				'id' => strval($this->clientId),
+				'id' => strval($this->sessionId),
 				'reason' => $e->getMessage(),
 				'code' => strval($e->getCode()),
 			],
@@ -514,7 +541,7 @@ class ProxySession {
 			'[{id}|{addr}] Reconnect to upstream scheduled in {delay} seconds.',
 			[
 				'addr' => $this->remoteAddr,
-				'id' => strval($this->clientId),
+				'id' => strval($this->sessionId),
 				'delay' => strval($delay),
 			],
 		);
@@ -523,7 +550,7 @@ class ProxySession {
 				'[{id}|{addr}] Reconnecting to upstream.',
 				[
 					'addr' => $this->remoteAddr,
-					'id' => strval($this->clientId),
+					'id' => strval($this->sessionId),
 				],
 			);
 			$this->connect();
@@ -539,7 +566,7 @@ class ProxySession {
 	private function resetSession(): void {
 		$this->upstream = null;
 		$this->authenticated = false;
-		$this->expiration = null;
+		$this->upstreamSessionExpiration = null;
 	}
 
 }
