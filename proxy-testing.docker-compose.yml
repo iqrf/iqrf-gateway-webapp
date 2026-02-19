@@ -1,4 +1,14 @@
 services:
+  upstream:
+    build:
+      context: .
+      dockerfile: docker/proxy-testing/upstream.Dockerfile
+    container_name: upstream
+    ports:
+      - "9500:9500"
+    networks:
+      iqrf-gateway-webapp-proxy:
+        ipv4_address: 172.16.10.2
   backend:
     build:
       context: .
@@ -7,8 +17,12 @@ services:
     command: php -S [::]:8080 -t www/
     ports:
       - "8080:8080"
-    volumes:
-      - data:/app/var
+    networks:
+      iqrf-gateway-webapp-proxy:
+        ipv4_address: 172.16.10.3
+    depends_on:
+      upstream:
+        condition: service_healthy
   proxy:
     build:
       context: .
@@ -17,18 +31,32 @@ services:
     command: php bin/manager websocket:proxy:run
     ports:
       - "9000:9000"
-    volumes:
-      - data:/app/var
+    networks:
+      iqrf-gateway-webapp-proxy:
+        ipv4_address: 172.16.10.4
     depends_on:
-      - backend
+      backend:
+          condition: service_started
+      upstream:
+        condition: service_healthy
   testing:
     build:
       context: .
       dockerfile: docker/proxy-testing/testing.Dockerfile
     container_name: testing
     depends_on:
-      - backend
-      - proxy
+      backend:
+        condition: service_started
+      proxy:
+        condition: service_started
+    networks:
+      iqrf-gateway-webapp-proxy:
+        ipv4_address: 172.16.10.5
 
-volumes:
-  data:
+networks:
+  iqrf-gateway-webapp-proxy:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.10.0/24
