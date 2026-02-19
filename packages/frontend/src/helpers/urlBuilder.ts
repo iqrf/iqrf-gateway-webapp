@@ -91,25 +91,13 @@ export default class UrlBuilder {
 
 	/**
 	 * Returns IQRF Gateway Daemon WebSocket API URL
-	 * @return {string} IQRF Gateway DaemonWebSocket API URL
+	 * @return {string} IQRF Gateway Daemon WebSocket API URL
 	 */
 	public getDaemonApiUrl(): string {
 		if (import.meta.env.VITE_URL_DAEMON_API.length > 0) {
 			return import.meta.env.VITE_URL_DAEMON_API;
 		}
 		return this.wsProtocol + this.hostname + (this.isDev ? ':1338': `${this.port}/ws`);
-	}
-
-	/**
-	 * Returns WebSocket proxy server URL
-	 * @param {string} jwt JWT for authentication
-	 * @return {string} WebSocket proxy server URL
-	 */
-	public getWebSocketProxyUrl(jwt: string): string {
-		if (import.meta.env.VITE_URL_WEBSOCKET_PROXY.length > 0) {
-			return `${import.meta.env.VITE_URL_WEBSOCKET_PROXY}?token=${jwt}`;
-		}
-		return `${this.wsProtocol}${this.hostname}${this.isDev ? ':9000' : `${this.port}/ws`}?token=${jwt}`;
 	}
 
 	/**
@@ -141,6 +129,17 @@ export default class UrlBuilder {
 	 */
 	public getRestApiUrlFromHostname(hostname: string): string {
 		return `//${hostname}${this.isDev ? ':8080' : this.port}${import.meta.env.VITE_BASE_URL}api/v0/`;
+	}
+
+	/**
+	 * Returns WebSocket proxy server URL
+	 * @return {string} WebSocket proxy server URL
+	 */
+	public getWebSocketProxyUrl(): string {
+		if (import.meta.env.VITE_URL_WEBSOCKET_PROXY.length > 0) {
+			return import.meta.env.VITE_URL_WEBSOCKET_PROXY;
+		}
+		return this.wsProtocol + this.hostname + (this.isDev ? ':9000': `${this.port}/api/ws`);
 	}
 
 }

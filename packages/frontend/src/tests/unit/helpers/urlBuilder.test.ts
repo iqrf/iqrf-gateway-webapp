@@ -180,4 +180,20 @@ describe('URL builder', (): void => {
 		expect(builder.getIqrfnetSyncUrl()).toStrictEqual(url);
 	});
 
+	test('get WebSocket proxy URL in development mode', (): void => {
+		expect.assertions(1);
+		const url = 'ws://iqube.local:9000';
+		setMode('development');
+		const builder: UrlBuilder = new UrlBuilder();
+		expect(builder.getWebSocketProxyUrl()).toStrictEqual(url);
+	});
+
+	test('get WebSocket proxy URL in production mode', (): void => {
+		expect.assertions(1);
+		const url = 'wss://iqube.local/api/ws';
+		setMode('production');
+		const builder: UrlBuilder = new UrlBuilder();
+		expect(builder.getWebSocketProxyUrl()).toStrictEqual(url);
+	});
+
 });
