@@ -15,10 +15,15 @@
 
 FROM python:3.12-slim
 
-COPY docker/proxy-testing/testing-requirements.txt /tests/requirements.txt
-COPY tests/proxy/* /tests
-WORKDIR /tests
+COPY docker/proxy-testing/upstream-requirements.txt /app/requirements.txt
+COPY docker/proxy-testing/upstream/* /app
+WORKDIR /app
 
 RUN pip install --no-cache-dir -r requirements.txt
+RUN apt-get update && apt-get install -y iproute2
 
-CMD ["pytest", "-vv"]
+HEALTHCHECK --interval=10s --timeout=3s --retries=3 CMD ss -tln | grep ':9500' || exit 1
+
+EXPOSE 9500
+
+CMD ["python3", "server.py"]

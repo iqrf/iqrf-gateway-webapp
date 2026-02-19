@@ -1,5 +1,5 @@
 host: 'proxy'
 port: 9000
 address: '0.0.0.0'
-upstream: 'ws://upstream:1338'
+upstream: 'ws://upstream:9500'
 token: 'iqrfgd2;2;wF65PToI51fywQVS+rH9Ss5+ElGx6RWtMLjtS1CKWKs='

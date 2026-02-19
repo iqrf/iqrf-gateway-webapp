@@ -140,6 +140,22 @@ newman:
   tags:
     - linux, docker, amd64
 
+proxy_tests:
+  image: docker:latest
+  stage: test
+  needs: []
+  services:
+    - docker:dind
+  before_script:
+    - apk add  --no-cache docker-compose
+  script:
+    - docker-compose -f proxy-testing.docker-compose.yml up --build --abort-on-container-exit
+  variables:
+    DOCKER_HOST: "unix:///runner/services/docker/docker.sock"
+    DOCKER_TLS_CERTDIR: "/certs"
+  tags:
+    - linux, docker, amd64
+
 include:
   # Tests - API client
   - component: gitlab.iqrf.org/open-source/gitlab-ci-components/test-js-vitest-coverage@master
