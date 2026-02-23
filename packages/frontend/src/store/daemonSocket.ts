@@ -37,7 +37,7 @@ interface DaemonState extends GenericSocketState {
 	versionMsgId: string;
 }
 
-const serviceModeWhitelist: string[] = [
+const serviceModeWhitelist = new Set([
 	'mngDaemon_Exit',
 	'mngDaemon_Mode',
 	'mngDaemon_Version',
@@ -48,7 +48,7 @@ const serviceModeWhitelist: string[] = [
 	'mngScheduler_List',
 	'mngScheduler_RemoveAll',
 	'mngScheduler_RemoveTask',
-];
+]);
 
 export const useDaemonStore = defineStore('daemon', {
 	state: (): DaemonState => ({
@@ -98,7 +98,7 @@ export const useDaemonStore = defineStore('daemon', {
 				throw new Error('No message to send, message is null.');
 			}
 			const monitorStore = useMonitorStore();
-			if (monitorStore.mode === DaemonMode.Service && !serviceModeWhitelist.includes(message.mType)) {
+			if (monitorStore.mode === DaemonMode.Service && !serviceModeWhitelist.has(message.mType)) {
 				// TODO SERVICE MODE MODAL
 			}
 			message.data.msgId ??= uuidv4();
@@ -188,7 +188,7 @@ export const useDaemonStore = defineStore('daemon', {
 			this.messages.splice(idx, 1);
 		},
 		trimMessageQueue(): void {
-			const overload: DaemonMessage[] = this.messages.slice(32, this.messages.length - 1);
+			const overload: DaemonMessage[] = this.messages.slice(32, -1);
 			this.messages.splice(32, this.messages.length - 1);
 			for (const message of overload) {
 				if (message.msgId in this.requests) {

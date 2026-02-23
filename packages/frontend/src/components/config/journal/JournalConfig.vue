@@ -61,9 +61,7 @@ limitations under the License.
 							:label='$t("components.config.journal.maxSize")'
 							:description='$t("components.config.journal.notes.systemDefault")'
 							:rules='[
-								(v: number|null) => ValidationRules.required(v, $t("components.config.journal.validation.maxSize.required")),
-								(v: number) => ValidationRules.integer(v, $t("components.config.journal.validation.maxSize.integer")),
-								(v: number) => ValidationRules.min(v, 0, $t("components.config.journal.validation.maxSize.min")),
+								(v: number|null) => ValidationRules.required(v, $t("components.config.journal.validation.maxSize.required")), (v: number) => ValidationRules.integer(v, $t("components.config.journal.validation.maxSize.integer")), (v: number) => ValidationRules.min(v, 0, $t("components.config.journal.validation.maxSize.min")),
 							]'
 							:min='0'
 							required
@@ -74,9 +72,7 @@ limitations under the License.
 							:label='$t("components.config.journal.maxFiles")'
 							:description='$t("components.config.journal.notes.maxFiles")'
 							:rules='[
-								(v: number|null) => ValidationRules.required(v, $t("components.config.journal.validation.maxFiles.required")),
-								(v: number) => ValidationRules.integer(v, $t("components.config.journal.validation.maxFiles.integer")),
-								(v: number) => ValidationRules.min(v, 1, $t("components.config.journal.validation.maxFiles.min")),
+								(v: number|null) => ValidationRules.required(v, $t("components.config.journal.validation.maxFiles.required")), (v: number) => ValidationRules.integer(v, $t("components.config.journal.validation.maxFiles.integer")), (v: number) => ValidationRules.min(v, 1, $t("components.config.journal.validation.maxFiles.min")),
 							]'
 							:min='1'
 							required
@@ -93,9 +89,7 @@ limitations under the License.
 							:label='$t("components.config.journal.maxFileSize")'
 							:description='$t("components.config.journal.notes.systemDefault")'
 							:rules='[
-								(v: number|null) => ValidationRules.required(v, $t("components.config.journal.validation.maxFileSize.required")),
-								(v: number) => ValidationRules.integer(v, $t("components.config.journal.validation.maxFileSize.integer")),
-								(v: number) => ValidationRules.min(v, 0, $t("components.config.journal.validation.maxFileSize.min")),
+								(v: number|null) => ValidationRules.required(v, $t("components.config.journal.validation.maxFileSize.required")), (v: number) => ValidationRules.integer(v, $t("components.config.journal.validation.maxFileSize.integer")), (v: number) => ValidationRules.min(v, 0, $t("components.config.journal.validation.maxFileSize.min")),
 							]'
 							:min='0'
 							required
@@ -114,9 +108,7 @@ limitations under the License.
 								v-model='config.timeRotation.count'
 								:label='$t("components.config.journal.unitCount")'
 								:rules='[
-									(v: number|null) => ValidationRules.required(v, $t("components.config.journal.validation.unitCount.required")),
-									(v: number) => ValidationRules.integer(v, $t("components.config.journal.validation.unitCount.integer")),
-									(v: number) => ValidationRules.min(v, 1, $t("components.config.journal.validation.unitCount.min")),
+									(v: number|null) => ValidationRules.required(v, $t("components.config.journal.validation.unitCount.required")), (v: number) => ValidationRules.integer(v, $t("components.config.journal.validation.unitCount.integer")), (v: number) => ValidationRules.min(v, 1, $t("components.config.journal.validation.unitCount.min")),
 								]'
 								:min='1'
 								required

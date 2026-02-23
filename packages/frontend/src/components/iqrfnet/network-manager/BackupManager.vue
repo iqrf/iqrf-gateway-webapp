@@ -18,9 +18,7 @@
 				v-model='address'
 				:label='$t("components.iqrfnet.common.address")'
 				:rules='[
-					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.common.validation.address.required")),
-					(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.common.validation.address.integer")),
-					(v: number) => ValidationRules.between(v, 1, 239, $t("components.iqrfnet.common.validation.address.between")),
+					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.common.validation.address.required")), (v: number) => ValidationRules.integer(v, $t("components.iqrfnet.common.validation.address.integer")), (v: number) => ValidationRules.between(v, 1, 239, $t("components.iqrfnet.common.validation.address.between")),
 				]'
 				:min='1'
 				:max='239'

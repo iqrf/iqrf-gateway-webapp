@@ -167,8 +167,10 @@ describe('IqrfGatewayControllerService', (): void => {
 
 	test('edit IQRF Gateway Controller mapping', async (): Promise<void> => {
 		expect.assertions(0);
-		const data = { ...profile };
-		data.deviceType = MappingDeviceType.Adapter;
+		const data = {
+			...profile,
+			deviceType: MappingDeviceType.Adapter,
+		};
 		mockedAxios.onPut('/config/controller/pins/1', data)
 			.reply(200);
 		await service.updateMapping(1, data);

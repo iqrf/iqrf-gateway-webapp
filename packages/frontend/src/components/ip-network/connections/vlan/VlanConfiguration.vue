@@ -25,10 +25,7 @@ limitations under the License.
 			v-model.number='configuration.vlan.id'
 			:label='$t("components.ipNetwork.connections.form.vlan.id")'
 			:rules='[
-				(v: string|null) => ValidationRules.required(v, $t("components.ipNetwork.connections.errors.vlan.id.required")),
-				(v: number) => ValidationRules.integer(v, $t("components.ipNetwork.connections.errors.vlan.id.invalid")),
-				(v: number) => ValidationRules.min(v, 1, $t("components.ipNetwork.connections.errors.vlan.id.invalid")),
-				(v: number) => ValidationRules.max(v, 4094, $t("components.ipNetwork.connections.errors.vlan.id.invalid")),
+				(v: string|null) => ValidationRules.required(v, $t("components.ipNetwork.connections.errors.vlan.id.required")), (v: number) => ValidationRules.integer(v, $t("components.ipNetwork.connections.errors.vlan.id.invalid")), (v: number) => ValidationRules.min(v, 1, $t("components.ipNetwork.connections.errors.vlan.id.invalid")), (v: number) => ValidationRules.max(v, 4094, $t("components.ipNetwork.connections.errors.vlan.id.invalid")),
 			]'
 			required
 			:prepend-inner-icon='mdiTag'

@@ -52,9 +52,7 @@ limitations under the License.
 							v-model='monitorConfig.reportPeriod'
 							:label='$t("components.config.daemon.monitoring.reportPeriod")'
 							:rules='[
-								(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.monitoring.validation.reportPeriod.required")),
-								(v: number) => ValidationRules.integer(v, $t("components.config.daemon.monitoring.validation.reportPeriod.integer")),
-								(v: number) => ValidationRules.min(v, 1, $t("components.config.daemon.monitoring.validation.reportPeriod.minimum")),
+								(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.monitoring.validation.reportPeriod.required")), (v: number) => ValidationRules.integer(v, $t("components.config.daemon.monitoring.validation.reportPeriod.integer")), (v: number) => ValidationRules.min(v, 1, $t("components.config.daemon.monitoring.validation.reportPeriod.minimum")),
 							]'
 							:min='1'
 							required
@@ -63,9 +61,7 @@ limitations under the License.
 							v-model='websocketConfig.WebsocketPort'
 							:label='$t("components.config.daemon.monitoring.port")'
 							:rules='[
-								(v: number|null) => ValidationRules.required(v, $t("common.validation.port.required")),
-								(v: number) => ValidationRules.integer(v, $t("common.validation.port.integer")),
-								(v: number) => ValidationRules.between(v, 1, 65535, $t("common.validation.port.between")),
+								(v: number|null) => ValidationRules.required(v, $t("common.validation.port.required")), (v: number) => ValidationRules.integer(v, $t("common.validation.port.integer")), (v: number) => ValidationRules.between(v, 1, 65535, $t("common.validation.port.between")),
 							]'
 							:min='1'
 							:max='65535'

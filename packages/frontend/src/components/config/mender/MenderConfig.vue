@@ -57,8 +57,7 @@ limitations under the License.
 							v-model='config.client.config.Servers[index]'
 							:label='$t("components.config.mender.client.server")'
 							:rules='[
-								(v: string|null) => ValidationRules.required(v, $t("components.config.mender.validation.server.required")),
-								(v: string) => ValidationRules.url(v, $t("components.config.mender.validation.server.url")),
+								(v: string|null) => ValidationRules.required(v, $t("components.config.mender.validation.server.required")), (v: string) => ValidationRules.url(v, $t("components.config.mender.validation.server.url")),
 							]'
 							:prepend-inner-icon='mdiServerNetwork'
 							required
@@ -88,9 +87,7 @@ limitations under the License.
 							v-model='config.client.config.InventoryPollIntervalSeconds'
 							:label='$t("components.config.mender.client.inventoryPollInterval")'
 							:rules='[
-								(v: number|null) => ValidationRules.required(v, $t("components.config.mender.validation.inventoryPollInterval.required")),
-								(v: number) => ValidationRules.integer(v, $t("components.config.mender.validation.inventoryPollInterval.integer")),
-								(v: number) => ValidationRules.min(v, 0, $t("components.config.mender.validation.inventoryPollInterval.min")),
+								(v: number|null) => ValidationRules.required(v, $t("components.config.mender.validation.inventoryPollInterval.required")), (v: number) => ValidationRules.integer(v, $t("components.config.mender.validation.inventoryPollInterval.integer")), (v: number) => ValidationRules.min(v, 0, $t("components.config.mender.validation.inventoryPollInterval.min")),
 							]'
 							:min='0'
 							:prepend-inner-icon='mdiTimerMarker'
@@ -109,9 +106,7 @@ limitations under the License.
 							v-model='config.client.config.RetryPollIntervalSeconds'
 							:label='$t("components.config.mender.client.retryPollInterval")'
 							:rules='[
-								(v: number|null) => ValidationRules.required(v, $t("components.config.mender.validation.retryPollInterval.required")),
-								(v: number) => ValidationRules.integer(v, $t("components.config.mender.validation.retryPollInterval.integer")),
-								(v: number) => ValidationRules.min(v, 0, $t("components.config.mender.validation.retryPollInterval.min")),
+								(v: number|null) => ValidationRules.required(v, $t("components.config.mender.validation.retryPollInterval.required")), (v: number) => ValidationRules.integer(v, $t("components.config.mender.validation.retryPollInterval.integer")), (v: number) => ValidationRules.min(v, 0, $t("components.config.mender.validation.retryPollInterval.min")),
 							]'
 							:min='0'
 							:prepend-inner-icon='mdiTimerRefresh'
@@ -130,9 +125,7 @@ limitations under the License.
 							v-model='config.client.config.UpdatePollIntervalSeconds'
 							:label='$t("components.config.mender.client.updatePollInterval")'
 							:rules='[
-								(v: number|null) => ValidationRules.required(v, $t("components.config.mender.validation.updatePollInterval.required")),
-								(v: number) => ValidationRules.integer(v, $t("components.config.mender.validation.updatePollInterval.integer")),
-								(v: number) => ValidationRules.min(v, 0, $t("components.config.mender.validation.updatePollInterval.min")),
+								(v: number|null) => ValidationRules.required(v, $t("components.config.mender.validation.updatePollInterval.required")), (v: number) => ValidationRules.integer(v, $t("components.config.mender.validation.updatePollInterval.integer")), (v: number) => ValidationRules.min(v, 0, $t("components.config.mender.validation.updatePollInterval.min")),
 							]'
 							:min='0'
 							:prepend-inner-icon='mdiTimerSync'

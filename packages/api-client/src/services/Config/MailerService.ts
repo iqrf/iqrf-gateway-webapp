@@ -66,7 +66,7 @@ export class MailerService extends BaseService {
 	private deserializeConfig(config: MailerConfig): MailerConfig {
 		config.host = punycode.toUnicode(config.host);
 		config.from = punycode.toUnicode(config.from);
-		// eslint-disable-next-line @typescript-eslint/no-deprecated
+		// eslint-disable-next-line @typescript-eslint/no-deprecated -- Backward compatibility with older API versions
 		if (config.secure === MailerSmtpSecurity.PlainText) {
 			config.secure = null;
 		}
@@ -81,7 +81,7 @@ export class MailerService extends BaseService {
 	private serializeConfig(config: MailerConfig): MailerConfig {
 		config.host = punycode.toASCII(config.host);
 		config.from = punycode.toASCII(config.from);
-		// eslint-disable-next-line @typescript-eslint/no-deprecated
+		// eslint-disable-next-line @typescript-eslint/no-deprecated -- Backward compatibility with older API versions
 		if (config.secure === MailerSmtpSecurity.PlainText) {
 			config.secure = null;
 		}

@@ -60,8 +60,7 @@ limitations under the License.
 					v-model='profile.BrokerAddr'
 					:label='$t("components.config.daemon.connections.mqtt.broker")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.validation.broker.required")),
-						(v: string) => ValidationRules.url(v, $t("components.config.daemon.connections.mqtt.validation.broker.url"), /^(tcp|ssl|mqtts?|wss?)$/),
+						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.validation.broker.required")), (v: string) => ValidationRules.url(v, $t("components.config.daemon.connections.mqtt.validation.broker.url"), /^(tcp|ssl|mqtts?|wss?)$/),
 					]'
 					required
 				>
@@ -133,9 +132,7 @@ limitations under the License.
 					:label='$t("components.config.daemon.connections.mqtt.keepAlive")'
 					:min='0'
 					:rules='[
-						(v: number) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.validation.keepAlive.required")),
-						(v: number) => ValidationRules.integer(v, $t("components.config.daemon.connections.mqtt.validation.keepAlive.integer")),
-						(v: number) => ValidationRules.min(v, 0, $t("components.config.daemon.connections.mqtt.validation.keepAlive.min")),
+						(v: number) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.validation.keepAlive.required")), (v: number) => ValidationRules.integer(v, $t("components.config.daemon.connections.mqtt.validation.keepAlive.integer")), (v: number) => ValidationRules.min(v, 0, $t("components.config.daemon.connections.mqtt.validation.keepAlive.min")),
 					]'
 					required
 				/>
@@ -144,9 +141,7 @@ limitations under the License.
 					:label='$t("components.config.daemon.connections.mqtt.timeout")'
 					:min='0'
 					:rules='[
-						(v: number) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.validation.timeout.required")),
-						(v: number) => ValidationRules.integer(v, $t("components.config.daemon.connections.mqtt.validation.timeout.integer")),
-						(v: number) => ValidationRules.min(v, 0, $t("components.config.daemon.connections.mqtt.validation.timeout.min")),
+						(v: number) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.validation.timeout.required")), (v: number) => ValidationRules.integer(v, $t("components.config.daemon.connections.mqtt.validation.timeout.integer")), (v: number) => ValidationRules.min(v, 0, $t("components.config.daemon.connections.mqtt.validation.timeout.min")),
 					]'
 					required
 				/>
@@ -156,10 +151,7 @@ limitations under the License.
 					:min='1'
 					:max='profile.MaxReconnect'
 					:rules='[
-						(v: number) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.validation.minReconnect.required")),
-						(v: number) => ValidationRules.integer(v, $t("components.config.daemon.connections.mqtt.validation.minReconnect.integer")),
-						(v: number) => ValidationRules.min(v, 1, $t("components.config.daemon.connections.mqtt.validation.minReconnect.min")),
-						(v: number) => ValidationRules.max(v, profile.MaxReconnect, $t("components.config.daemon.connections.mqtt.validation.minReconnect.max")),
+						(v: number) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.validation.minReconnect.required")), (v: number) => ValidationRules.integer(v, $t("components.config.daemon.connections.mqtt.validation.minReconnect.integer")), (v: number) => ValidationRules.min(v, 1, $t("components.config.daemon.connections.mqtt.validation.minReconnect.min")), (v: number) => ValidationRules.max(v, profile.MaxReconnect, $t("components.config.daemon.connections.mqtt.validation.minReconnect.max")),
 					]'
 					required
 				/>
@@ -168,9 +160,7 @@ limitations under the License.
 					:label='$t("components.config.daemon.connections.mqtt.maxReconnect")'
 					:min='profile.MinReconnect'
 					:rules='[
-						(v: number) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.validation.maxReconnect.required")),
-						(v: number) => ValidationRules.integer(v, $t("components.config.daemon.connections.mqtt.validation.maxReconnect.integer")),
-						(v: number) => ValidationRules.min(v, profile.MinReconnect, $t("components.config.daemon.connections.mqtt.validation.maxReconnect.min")),
+						(v: number) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.validation.maxReconnect.required")), (v: number) => ValidationRules.integer(v, $t("components.config.daemon.connections.mqtt.validation.maxReconnect.integer")), (v: number) => ValidationRules.min(v, profile.MinReconnect, $t("components.config.daemon.connections.mqtt.validation.maxReconnect.min")),
 					]'
 					required
 				/>

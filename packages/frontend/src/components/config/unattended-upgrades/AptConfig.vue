@@ -52,9 +52,7 @@ limitations under the License.
 							v-model='config.packageListUpdateInterval'
 							:label='$t("components.config.unattendedUpgrades.packageListUpdateInterval")'
 							:rules='[
-								(v: number|null) => ValidationRules.required(v, $t("components.config.unattendedUpgrades.validation.packageListUpdateInterval.required")),
-								(v: number) => ValidationRules.integer(v, $t("components.config.unattendedUpgrades.validation.packageListUpdateInterval.integer")),
-								(v: number) => ValidationRules.min(v, 0, $t("components.config.unattendedUpgrades.validation.packageListUpdateInterval.min")),
+								(v: number|null) => ValidationRules.required(v, $t("components.config.unattendedUpgrades.validation.packageListUpdateInterval.required")), (v: number) => ValidationRules.integer(v, $t("components.config.unattendedUpgrades.validation.packageListUpdateInterval.integer")), (v: number) => ValidationRules.min(v, 0, $t("components.config.unattendedUpgrades.validation.packageListUpdateInterval.min")),
 							]'
 							:min='0'
 							required
@@ -73,9 +71,7 @@ limitations under the License.
 							v-model='config.packageUpdateInterval'
 							:label='$t("components.config.unattendedUpgrades.packageUpdateInterval")'
 							:rules='[
-								(v: number|null) => ValidationRules.required(v, $t("components.config.unattendedUpgrades.validation.packageUpdateInterval.required")),
-								(v: number) => ValidationRules.integer(v, $t("components.config.unattendedUpgrades.validation.packageUpdateInterval.integer")),
-								(v: number) => ValidationRules.min(v, 0, $t("components.config.unattendedUpgrades.validation.packageUpdateInterval.min")),
+								(v: number|null) => ValidationRules.required(v, $t("components.config.unattendedUpgrades.validation.packageUpdateInterval.required")), (v: number) => ValidationRules.integer(v, $t("components.config.unattendedUpgrades.validation.packageUpdateInterval.integer")), (v: number) => ValidationRules.min(v, 0, $t("components.config.unattendedUpgrades.validation.packageUpdateInterval.min")),
 							]'
 							:min='0'
 							required
@@ -94,9 +90,7 @@ limitations under the License.
 							v-model='config.packageRemovalInterval'
 							:label='$t("components.config.unattendedUpgrades.packageRemovalInterval")'
 							:rules='[
-								(v: number|null) => ValidationRules.required(v, $t("components.config.unattendedUpgrades.validation.packageRemovalInterval.required")),
-								(v: number) => ValidationRules.integer(v, $t("components.config.unattendedUpgrades.validation.packageRemovalInterval.integer")),
-								(v: number) => ValidationRules.min(v, 0, $t("components.config.unattendedUpgrades.validation.packageRemovalInterval.min")),
+								(v: number|null) => ValidationRules.required(v, $t("components.config.unattendedUpgrades.validation.packageRemovalInterval.required")), (v: number) => ValidationRules.integer(v, $t("components.config.unattendedUpgrades.validation.packageRemovalInterval.integer")), (v: number) => ValidationRules.min(v, 0, $t("components.config.unattendedUpgrades.validation.packageRemovalInterval.min")),
 							]'
 							:min='0'
 							required

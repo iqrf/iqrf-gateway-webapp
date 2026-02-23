@@ -123,7 +123,7 @@ async function getProfiles(): Promise<void> {
 		ComponentState.FetchFailed,
 	].includes(componentState.value) ? ComponentState.Loading : ComponentState.Reloading;
 	try {
-		profiles.value = (await service.listMappings()).sort((a, b) => {
+		profiles.value = (await service.listMappings()).toSorted((a, b) => {
 			if (a === b) {
 				return 0;
 			}

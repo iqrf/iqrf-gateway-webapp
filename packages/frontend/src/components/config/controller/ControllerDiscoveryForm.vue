@@ -42,9 +42,7 @@ limitations under the License.
 					v-model='config.maxAddr'
 					:label='$t("components.iqrfnet.network-manager.discovery.maxAddr")'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.maxAddr.required")),
-						(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.maxAddr.integer")),
-						(v: number) => ValidationRules.between(v, 0, 239, $t("components.config.controller.validation.maxAddr.between")),
+						(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.maxAddr.required")), (v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.maxAddr.integer")), (v: number) => ValidationRules.between(v, 0, 239, $t("components.config.controller.validation.maxAddr.between")),
 					]'
 					:min='0'
 					:max='239'
@@ -55,9 +53,7 @@ limitations under the License.
 					v-model='config.txPower'
 					:label='$t("components.iqrfnet.network-manager.discovery.txPower")'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.txPower.required")),
-						(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.txPower.integer")),
-						(v: number) => ValidationRules.between(v, 0, 7, $t("components.config.controller.validation.txPower.between")),
+						(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.txPower.required")), (v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.txPower.integer")), (v: number) => ValidationRules.between(v, 0, 7, $t("components.config.controller.validation.txPower.between")),
 					]'
 					:min='0'
 					:max='7'

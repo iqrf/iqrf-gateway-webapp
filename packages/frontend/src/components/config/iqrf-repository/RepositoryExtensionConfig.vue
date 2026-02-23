@@ -52,8 +52,7 @@ limitations under the License.
 							v-model='config.apiEndpoint'
 							:label='$t("components.config.iqrf-repository.endpoint")'
 							:rules='[
-								(v: string|null) => ValidationRules.required(v, $t("components.config.iqrf-repository.validation.endpoint.required")),
-								(v: string) => ValidationRules.url(v, $t("components.config.iqrf-repository.validation.endpoint.invalid"), /^https?$/),
+								(v: string|null) => ValidationRules.required(v, $t("components.config.iqrf-repository.validation.endpoint.required")), (v: string) => ValidationRules.url(v, $t("components.config.iqrf-repository.validation.endpoint.invalid"), /^https?$/),
 							]'
 							:prepend-inner-icon='mdiServer'
 							required

@@ -37,7 +37,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
 	return {
 		base: environment.VITE_BASE_URL,
 		build: {
-			outDir: path.resolve(__dirname, './dist'),
+			outDir: path.resolve(import.meta.dirname, 'dist'),
 		},
 		plugins: [
 			tsconfigPaths(),
@@ -64,7 +64,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
 			}),
 			UnheadVite(),
 			VueI18nPlugin({
-				include: [path.resolve(__dirname, './src/locales/**')],
+				include: [path.resolve(import.meta.dirname, './src/locales/**')],
 				escapeHtml: true,
 				strictMessage: false,
 			}),
@@ -85,7 +85,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
 		},
 		resolve: {
 			alias: {
-				'@iqrf/iqrf-gateway-webapp-client': path.resolve(__dirname, '../api-client/src'),
+				'@iqrf/iqrf-gateway-webapp-client': path.resolve(import.meta.dirname, '../api-client/src'),
 				'@': fileURLToPath(new URL('src', import.meta.url)),
 			},
 			extensions: [

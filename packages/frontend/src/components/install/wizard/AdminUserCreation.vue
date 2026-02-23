@@ -41,8 +41,7 @@ limitations under the License.
 				v-model='user.email'
 				:label='$t("components.common.fields.email")'
 				:rules='[
-					(v: string|null) => ValidationRules.required(v, $t("components.common.validations.email.required")),
-					(v: string) => ValidationRules.email(v, $t("components.common.validations.email.email")),
+					(v: string|null) => ValidationRules.required(v, $t("components.common.validations.email.required")), (v: string) => ValidationRules.email(v, $t("components.common.validations.email.email")),
 				]'
 				required
 				:prepend-inner-icon='mdiEmail'
@@ -51,9 +50,7 @@ limitations under the License.
 				v-model='user.password'
 				:label='$t("components.common.fields.password")'
 				:rules='[
-					(v: string|null) => ValidationRules.required(v, $t("components.common.validations.password.required")),
-					(v: string) => ValidationRules.betweenLen(v, 15, 64, $t("components.common.validations.password.betweenLen")),
-					(v: string) => ValidationRules.webappUserPassword(v, $t("components.common.validations.password.invalid")),
+					(v: string|null) => ValidationRules.required(v, $t("components.common.validations.password.required")), (v: string) => ValidationRules.betweenLen(v, 15, 64, $t("components.common.validations.password.betweenLen")), (v: string) => ValidationRules.webappUserPassword(v, $t("components.common.validations.password.invalid")),
 				]'
 				required
 				:prepend-inner-icon='mdiKey'
@@ -78,8 +75,7 @@ limitations under the License.
 				v-model='passwordConfirmation'
 				:label='$t("components.common.fields.passwordConfirm")'
 				:rules='[
-					(v: string|null) => ValidationRules.required(v, $t("components.common.validations.passwordConfirm.required")),
-					(v: string) => v.length > 0 && v === user.password || $t("components.common.validations.passwordConfirm.match"),
+					(v: string|null) => ValidationRules.required(v, $t("components.common.validations.passwordConfirm.required")), (v: string) => v.length > 0 && v === user.password || $t("components.common.validations.passwordConfirm.match"),
 				]'
 				required
 				:prepend-inner-icon='mdiKey'

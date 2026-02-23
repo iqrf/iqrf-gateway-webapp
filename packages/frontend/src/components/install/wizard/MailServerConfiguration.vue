@@ -51,8 +51,7 @@ limitations under the License.
 				v-model='configuration.host'
 				:label='$t("components.config.smtp.form.host")'
 				:rules='[
-					(v: string|null) => ValidationRules.required(v, $t("components.config.smtp.validation.host.required")),
-					(v: string) => ValidationRules.host(v, $t("components.config.smtp.validation.host.invalid")),
+					(v: string|null) => ValidationRules.required(v, $t("components.config.smtp.validation.host.required")), (v: string) => ValidationRules.host(v, $t("components.config.smtp.validation.host.invalid")),
 				]'
 				:disabled='[ComponentState.Loading, ComponentState.Reloading, ComponentState.Action].includes(componentState) || !configuration.enabled'
 				:prepend-inner-icon='mdiServer'
@@ -63,9 +62,7 @@ limitations under the License.
 				v-model='configuration.port'
 				:label='$t("common.labels.port")'
 				:rules='[
-					(v: number|null) => ValidationRules.required(v, $t("common.validation.port.required")),
-					(v: number) => ValidationRules.integer(v, $t("common.validation.port.integer")),
-					(v: number) => ValidationRules.between(v, 1, 65535, $t("common.validation.port.between")),
+					(v: number|null) => ValidationRules.required(v, $t("common.validation.port.required")), (v: number) => ValidationRules.integer(v, $t("common.validation.port.integer")), (v: number) => ValidationRules.between(v, 1, 65535, $t("common.validation.port.between")),
 				]'
 				:min='1'
 				:max='65535'

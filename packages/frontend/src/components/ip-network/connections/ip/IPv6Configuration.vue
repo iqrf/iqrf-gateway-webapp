@@ -45,8 +45,7 @@ limitations under the License.
 						v-model='address.address'
 						:label='$t("components.ipNetwork.connections.form.ipv6.address")'
 						:rules='[
-							(v: string|null) => ValidationRules.required(v, $t("components.ipNetwork.connections.errors.ipv6.address.required")),
-							(v: string) => ValidationRules.ipv6Address(v, $t("components.ipNetwork.connections.errors.ipv6.address.ipv6Address")),
+							(v: string|null) => ValidationRules.required(v, $t("components.ipNetwork.connections.errors.ipv6.address.required")), (v: string) => ValidationRules.ipv6Address(v, $t("components.ipNetwork.connections.errors.ipv6.address.ipv6Address")),
 						]'
 						required
 						:prepend-inner-icon='mdiIpNetwork'
@@ -57,8 +56,7 @@ limitations under the License.
 						v-model.number='address.prefix'
 						:label='$t("components.ipNetwork.connections.form.ipv6.prefix")'
 						:rules='[
-							(v: unknown) => ValidationRules.required(v, $t("components.ipNetwork.connections.errors.ipv6.prefix.required")),
-							(v: number) => ValidationRules.between(v, 0, 128, $t("components.ipNetwork.connections.errors.ipv6.prefix.between")),
+							(v: unknown) => ValidationRules.required(v, $t("components.ipNetwork.connections.errors.ipv6.prefix.required")), (v: number) => ValidationRules.between(v, 0, 128, $t("components.ipNetwork.connections.errors.ipv6.prefix.between")),
 						]'
 						required
 						:prepend-inner-icon='mdiLan'
@@ -89,8 +87,7 @@ limitations under the License.
 				v-model='configuration.ipv6.gateway'
 				:label='$t("components.ipNetwork.connections.form.ipv6.gateway")'
 				:rules='[
-					(v: string|null) => ValidationRules.required(v, $t("components.ipNetwork.connections.errors.ipv6.gateway.required")),
-					(v: string) => ValidationRules.ipv6Address(v, $t("components.ipNetwork.connections.errors.ipv6.gateway.ipv6Address")),
+					(v: string|null) => ValidationRules.required(v, $t("components.ipNetwork.connections.errors.ipv6.gateway.required")), (v: string) => ValidationRules.ipv6Address(v, $t("components.ipNetwork.connections.errors.ipv6.gateway.ipv6Address")),
 				]'
 				required
 				:prepend-inner-icon='mdiWan'
@@ -104,8 +101,7 @@ limitations under the License.
 				v-model='server.address'
 				:label='$t("components.ipNetwork.connections.form.ipv6.dns.address")'
 				:rules='[
-					(v: string|null) => ValidationRules.requiredIf(v, noIpv4Dns, $t("components.ipNetwork.connections.errors.ipv6.dns.required")),
-					(v: string) => ValidationRules.ipv6Address(v, $t("components.ipNetwork.connections.errors.ipv6.dns.ipv6Address")),
+					(v: string|null) => ValidationRules.requiredIf(v, noIpv4Dns, $t("components.ipNetwork.connections.errors.ipv6.dns.required")), (v: string) => ValidationRules.ipv6Address(v, $t("components.ipNetwork.connections.errors.ipv6.dns.ipv6Address")),
 				]'
 				required
 				:prepend-inner-icon='mdiServerNetwork'

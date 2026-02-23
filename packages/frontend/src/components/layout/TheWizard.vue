@@ -39,6 +39,10 @@ limitations under the License.
 
 <script lang='ts' setup>
 import Logo from '@/assets/logo-blue.svg?url';
+
+defineSlots<{
+	default(props: {}): any;
+}>();
 </script>
 
 <style lang='scss' scoped>

@@ -68,8 +68,7 @@ limitations under the License.
 					v-model='(user as UserEdit).password'
 					:label='$t("components.common.fields.password")'
 					:rules='[
-						(v: string) => v.length === 0 || ValidationRules.betweenLen(v, 15, 64, $t("components.common.validations.password.betweenLen")),
-						(v: string) => v.length === 0 || ValidationRules.webappUserPassword(v, $t("components.common.validations.password.invalid")),
+						(v: string) => v.length === 0 || ValidationRules.betweenLen(v, 15, 64, $t("components.common.validations.password.betweenLen")), (v: string) => v.length === 0 || ValidationRules.webappUserPassword(v, $t("components.common.validations.password.invalid")),
 					]'
 					:prepend-inner-icon='mdiKey'
 					:persistent-hint='action === Action.Edit'

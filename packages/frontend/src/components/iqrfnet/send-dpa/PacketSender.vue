@@ -39,9 +39,7 @@ limitations under the License.
 							:max='255'
 							:label='$t("components.iqrfnet.send-dpa.nadr")'
 							:rules='[
-								(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.nadrMissing")),
-								(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.send-dpa.validation.nadrInvalid")),
-								(v: number) => ValidationRules.between(v, 0, 255, $t("components.iqrfnet.send-dpa.validation.nadrInvalid")),
+								(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.nadrMissing")), (v: number) => ValidationRules.integer(v, $t("components.iqrfnet.send-dpa.validation.nadrInvalid")), (v: number) => ValidationRules.between(v, 0, 255, $t("components.iqrfnet.send-dpa.validation.nadrInvalid")),
 							]'
 							required
 							:readonly='lockNadr'
@@ -109,8 +107,7 @@ limitations under the License.
 							v-maska='byteMaska'
 							:label='$t("components.iqrfnet.send-dpa.nadr")'
 							:rules='[
-								(v: string|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.nadrHexMissing")),
-								(v: string) => validateHexByte(v) || $t("components.iqrfnet.send-dpa.validation.nadrHexInvalid"),
+								(v: string|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.nadrHexMissing")), (v: string) => validateHexByte(v) || $t("components.iqrfnet.send-dpa.validation.nadrHexInvalid"),
 							]'
 							required
 							:readonly='lockNadr'
@@ -184,9 +181,7 @@ limitations under the License.
 							:max='255'
 							:label='$t("components.iqrfnet.send-dpa.pnum")'
 							:rules='[
-								(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.pnumMissing")),
-								(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.send-dpa.validation.pnumInvalid")),
-								(v: number) => ValidationRules.between(v, 0, 255, $t("components.iqrfnet.send-dpa.validation.pnumInvalid")),
+								(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.pnumMissing")), (v: number) => ValidationRules.integer(v, $t("components.iqrfnet.send-dpa.validation.pnumInvalid")), (v: number) => ValidationRules.between(v, 0, 255, $t("components.iqrfnet.send-dpa.validation.pnumInvalid")),
 							]'
 							required
 						>
@@ -211,8 +206,7 @@ limitations under the License.
 							v-maska='byteMaska'
 							:label='$t("components.iqrfnet.send-dpa.pnum")'
 							:rules='[
-								(v: string|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.pnumHexMissing")),
-								(v: string) => validateHexByte(v) || $t("components.iqrfnet.send-dpa.validation.pnumHexInvalid"),
+								(v: string|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.pnumHexMissing")), (v: string) => validateHexByte(v) || $t("components.iqrfnet.send-dpa.validation.pnumHexInvalid"),
 							]'
 							required
 						>
@@ -245,9 +239,7 @@ limitations under the License.
 							:max='127'
 							:label='$t("components.iqrfnet.send-dpa.pcmd")'
 							:rules='[
-								(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.pcmdMissing")),
-								(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.send-dpa.validation.pcmdInvalid")),
-								(v: number) => ValidationRules.between(v, 0, 127, $t("components.iqrfnet.send-dpa.validation.pcmdInvalid")),
+								(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.pcmdMissing")), (v: number) => ValidationRules.integer(v, $t("components.iqrfnet.send-dpa.validation.pcmdInvalid")), (v: number) => ValidationRules.between(v, 0, 127, $t("components.iqrfnet.send-dpa.validation.pcmdInvalid")),
 							]'
 							required
 						>
@@ -272,8 +264,7 @@ limitations under the License.
 							v-maska='byteMaska'
 							:label='$t("components.iqrfnet.send-dpa.pcmd")'
 							:rules='[
-								(v: string|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.pcmdHexMissing")),
-								(v: string) => validateHexNibble(v) || $t("components.iqrfnet.send-dpa.validation.pcmdHexInvalid"),
+								(v: string|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.pcmdHexMissing")), (v: string) => validateHexNibble(v) || $t("components.iqrfnet.send-dpa.validation.pcmdHexInvalid"),
 							]'
 							required
 						>
@@ -304,9 +295,7 @@ limitations under the License.
 							:max='65535'
 							:label='$t("components.iqrfnet.send-dpa.hwpid")'
 							:rules='[
-								(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.hwpidMissing")),
-								(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.send-dpa.validation.hwpidInvalid")),
-								(v: number) => ValidationRules.between(v, 0, 65535, $t("components.iqrfnet.send-dpa.validation.hwpidInvalid")),
+								(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.hwpidMissing")), (v: number) => ValidationRules.integer(v, $t("components.iqrfnet.send-dpa.validation.hwpidInvalid")), (v: number) => ValidationRules.between(v, 0, 65535, $t("components.iqrfnet.send-dpa.validation.hwpidInvalid")),
 							]'
 							required
 						>
@@ -359,8 +348,7 @@ limitations under the License.
 							v-maska='hwpidMaska'
 							:label='$t("components.iqrfnet.send-dpa.hwpid")'
 							:rules='[
-								(v: string|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.hwpidHexMissing")),
-								(v: string) => validateHexWord(v) || $t("components.iqrfnet.send-dpa.validation.hwpidHexInvalid"),
+								(v: string|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.hwpidHexMissing")), (v: string) => validateHexWord(v) || $t("components.iqrfnet.send-dpa.validation.hwpidHexInvalid"),
 							]'
 							required
 						>
@@ -652,7 +640,7 @@ function buildPacket(): string {
 		useHexNadr.value ? nadrHex.value : numberToHexString(nadr.value, 2)
 	}.00.${useHexPnum.value ? pnumHex.value : numberToHexString(pnum.value, 2)}.${
 		useHexPcmd.value ? pcmdHex.value : numberToHexString(pcmd.value, 2)
-	}.${packetHwpid.substring(0, 2)}.${packetHwpid.substring(2, 4)}.${
+	}.${packetHwpid.slice(0, 2)}.${packetHwpid.slice(2, 4)}.${
 		pdata.value
 	}`;
 	return packet.endsWith('.') ? packet.slice(0, -1) : packet;
@@ -719,21 +707,21 @@ function clearMessages(): void {
 
 function applyPacket(value: string): void {
 	if (value.length > 17) {
-		pdata.value = value.substring(18, value.length);
+		pdata.value = value.slice(18);
 	} else {
 		pdata.value = '';
 	}
 	value = value.replaceAll('.', '');
 	if (!lockNadr.value) {
-		nadr.value = Number.parseInt(value.substring(0, 2), 16);
-		nadrHex.value = value.substring(0, 2);
+		nadr.value = Number.parseInt(value.slice(0, 2), 16);
+		nadrHex.value = value.slice(0, 2);
 	}
-	pnum.value = Number.parseInt(value.substring(4, 6), 16);
-	pnumHex.value = value.substring(4, 6);
-	pcmd.value = Number.parseInt(value.substring(6, 8), 16);
-	pcmdHex.value = value.substring(6, 8);
-	hwpid.value = Number.parseInt(value.substring(8, 12), 16);
-	hwpidHex.value = value.substring(8, 12);
+	pnum.value = Number.parseInt(value.slice(4, 6), 16);
+	pnumHex.value = value.slice(4, 6);
+	pcmd.value = Number.parseInt(value.slice(6, 8), 16);
+	pcmdHex.value = value.slice(6, 8);
+	hwpid.value = Number.parseInt(value.slice(8, 12), 16);
+	hwpidHex.value = value.slice(8, 12);
 }
 
 function convertTimestamp(ts: string | undefined): string | undefined {

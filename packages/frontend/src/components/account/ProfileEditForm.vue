@@ -51,8 +51,7 @@ limitations under the License.
 						v-model='user.email'
 						:label='$t("components.common.fields.email")'
 						:rules='[
-							(v: string|null) => ValidationRules.required(v, $t("components.common.validations.email.required")),
-							(v: string) => ValidationRules.email(v, $t("components.common.validations.email.email")),
+							(v: string|null) => ValidationRules.required(v, $t("components.common.validations.email.required")), (v: string) => ValidationRules.email(v, $t("components.common.validations.email.email")),
 						]'
 						required
 						:prepend-inner-icon='mdiEmail'

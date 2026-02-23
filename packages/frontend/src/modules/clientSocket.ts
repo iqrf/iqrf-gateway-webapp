@@ -142,9 +142,9 @@ export default class ClientSocket {
 			return;
 		}
 		this.onOpenCallback = callback;
-		this.socket.onopen = function (): void {
+		this.socket.addEventListener('open', function (): void {
 			callback();
-		};
+		});
 	}
 
 	/**
@@ -156,12 +156,12 @@ export default class ClientSocket {
 			return;
 		}
 		this.onCloseCallback = callback;
-		this.socket.onclose = (event: CloseEvent): void => {
+		this.socket.addEventListener('close', (event: CloseEvent): void => {
 			callback(event);
 			if (this.options.reconnect) {
 				this.reconnect();
 			}
-		};
+		});
 	}
 
 	/**
@@ -217,15 +217,15 @@ export default class ClientSocket {
 	 */
 	public connect(): WebSocket {
 		this.socket = new WebSocket(this.options.url);
-		this.socket.onopen = (): void => {
+		this.socket.addEventListener('open', (): void => {
 			this.onOpenCallback();
-		};
-		this.socket.onclose = (event: CloseEvent): void => {
+		});
+		this.socket.addEventListener('close', (event: CloseEvent): void => {
 			this.onCloseCallback(event);
 			if (this.options.reconnect) {
 				this.reconnect();
 			}
-		};
+		});
 		this.socket.onerror = (event: Event): void => {
 			this.onErrorCallback(event);
 		};

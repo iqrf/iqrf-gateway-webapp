@@ -29,9 +29,7 @@ limitations under the License.
 				v-model='address'
 				:label='$t("components.iqrfnet.common.deviceAddr")'
 				:rules='[
-					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.common.validation.deviceAddr.required")),
-					(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.common.validation.deviceAddr.integer")),
-					(v: number) => ValidationRules.between(v, 0, 239, $t("components.iqrfnet.common.validation.deviceAddr.between")),
+					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.common.validation.deviceAddr.required")), (v: number) => ValidationRules.integer(v, $t("components.iqrfnet.common.validation.deviceAddr.integer")), (v: number) => ValidationRules.between(v, 0, 239, $t("components.iqrfnet.common.validation.deviceAddr.between")),
 				]'
 				:min='0'
 				:max='239'
@@ -105,11 +103,9 @@ limitations under the License.
 									v-model='config.accessPassword'
 									:label='`${$t("components.iqrfnet.tr-config.security.accessPassword")} (1)`'
 									:rules='hexPassword ? [
-										(v: string) => ValidationRules.betweenLen(v, 0, 32, $t("components.iqrfnet.tr-config.validation.accessPassword.betweenHex")),
-										(v: string) => ValidationRules.regex(v, /^[0-9a-fA-F]+$/, $t("components.iqrfnet.tr-config.validation.accessPassword.regexHex")),
+										(v: string) => ValidationRules.betweenLen(v, 0, 32, $t("components.iqrfnet.tr-config.validation.accessPassword.betweenHex")), (v: string) => ValidationRules.regex(v, /^[0-9a-fA-F]+$/, $t("components.iqrfnet.tr-config.validation.accessPassword.regexHex")),
 									] : [
-										(v: string) => ValidationRules.betweenLen(v, 0, 16, $t("components.iqrfnet.tr-config.validation.accessPassword.betweenAscii")),
-										(v: string) => ValidationRules.regex(v, /^[ -~]+$/, $t("components.iqrfnet.tr-config.validation.accessPassword.regexAscii")),
+										(v: string) => ValidationRules.betweenLen(v, 0, 16, $t("components.iqrfnet.tr-config.validation.accessPassword.betweenAscii")), (v: string) => ValidationRules.regex(v, /^[ -~]+$/, $t("components.iqrfnet.tr-config.validation.accessPassword.regexAscii")),
 									]'
 									:description='hexPassword ? $t("components.iqrfnet.tr-config.security.notes.hexCharset") : $t("components.iqrfnet.tr-config.security.notes.asciiCharset")'
 									:required='usePassword'
@@ -135,11 +131,9 @@ limitations under the License.
 									v-model='config.securityUserKey'
 									:label='`${$t("components.iqrfnet.tr-config.security.userKey")} (1)`'
 									:rules='hexUserKey ? [
-										(v: string) => ValidationRules.betweenLen(v, 0, 32, $t("components.iqrfnet.tr-config.validation.userKey.betweenHex")),
-										(v: string) => ValidationRules.regex(v, /^[0-9a-fA-F]+$/, $t("components.iqrfnet.tr-config.validation.userKey.regexHex")),
+										(v: string) => ValidationRules.betweenLen(v, 0, 32, $t("components.iqrfnet.tr-config.validation.userKey.betweenHex")), (v: string) => ValidationRules.regex(v, /^[0-9a-fA-F]+$/, $t("components.iqrfnet.tr-config.validation.userKey.regexHex")),
 									] : [
-										(v: string) => ValidationRules.betweenLen(v, 0, 16, $t("components.iqrfnet.tr-config.validation.userKey.betweenAscii")),
-										(v: string) => ValidationRules.regex(v, /^[ -~]+$/, $t("components.iqrfnet.tr-config.validation.userKey.regexAscii")),
+										(v: string) => ValidationRules.betweenLen(v, 0, 16, $t("components.iqrfnet.tr-config.validation.userKey.betweenAscii")), (v: string) => ValidationRules.regex(v, /^[ -~]+$/, $t("components.iqrfnet.tr-config.validation.userKey.regexAscii")),
 									]'
 									:description='hexUserKey ? $t("components.iqrfnet.tr-config.security.notes.hexCharset") : $t("components.iqrfnet.tr-config.security.notes.asciiCharset")'
 									:required='useUserKey'

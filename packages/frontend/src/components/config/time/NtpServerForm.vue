@@ -47,8 +47,7 @@ limitations under the License.
 					label='NTP server address'
 					:prepend-inner-icon='mdiServerNetwork'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.config.time.ntpServers.validation.server.required")),
-						(v: string) => ValidationRules.host(v, $t("components.config.time.ntpServers.validation.server.invalid")),
+						(v: string|null) => ValidationRules.required(v, $t("components.config.time.ntpServers.validation.server.required")), (v: string) => ValidationRules.host(v, $t("components.config.time.ntpServers.validation.server.invalid")),
 					]'
 					required
 				/>

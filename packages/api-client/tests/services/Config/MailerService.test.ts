@@ -121,7 +121,7 @@ describe('MailerService', (): void => {
 		const config: MailerConfig = {
 			...baseConfig.config,
 			'port': 25,
-			'secure': MailerSmtpSecurity.PlainText, // eslint-disable-line @typescript-eslint/no-deprecated
+			'secure': MailerSmtpSecurity.PlainText, // eslint-disable-line @typescript-eslint/no-deprecated -- Backward compatibility with older API versions
 			'clientHost': 'iqrf-gw.example.com',
 		};
 		const expected: MailerConfig = {

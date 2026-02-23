@@ -43,9 +43,7 @@ limitations under the License.
 					v-model='config.actionRetries'
 					:label='$t("components.config.controller.form.autonetwork.actionRetries")'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.actionRetries.required")),
-						(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.actionRetries.integer")),
-						(v: number) => ValidationRules.between(v, 0, 3, $t("components.config.controller.validation.actionRetries.between")),
+						(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.actionRetries.required")), (v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.actionRetries.integer")), (v: number) => ValidationRules.between(v, 0, 3, $t("components.config.controller.validation.actionRetries.between")),
 					]'
 					:min='0'
 					:max='3'
@@ -56,9 +54,7 @@ limitations under the License.
 					v-model='config.discoveryTxPower'
 					:label='$t("components.config.controller.form.autonetwork.discoveryTxPower")'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.txPower.required")),
-						(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.txPower.integer")),
-						(v: number) => ValidationRules.between(v, 0, 7, $t("components.config.controller.validation.txPower.between")),
+						(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.txPower.required")), (v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.txPower.integer")), (v: number) => ValidationRules.between(v, 0, 7, $t("components.config.controller.validation.txPower.between")),
 					]'
 					:min='0'
 					:max='7'
@@ -88,9 +84,7 @@ limitations under the License.
 					v-model='config.stopConditions.emptyWaves'
 					:label='$t("components.config.controller.form.autonetwork.emptyWaves")'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.emptyWaves.required")),
-						(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.emptyWaves.integer")),
-						(v: number) => ValidationRules.between(v, 1, 127, $t("components.config.controller.validation.emptyWaves.between")),
+						(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.emptyWaves.required")), (v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.emptyWaves.integer")), (v: number) => ValidationRules.between(v, 1, 127, $t("components.config.controller.validation.emptyWaves.between")),
 					]'
 					:min='1'
 					:max='127'
@@ -101,9 +95,7 @@ limitations under the License.
 					v-model='config.stopConditions.waves'
 					:label='$t("components.config.controller.form.autonetwork.waves")'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.waves.required")),
-						(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.waves.integer")),
-						(v: number) => ValidationRules.between(v, 1, 127, $t("components.config.controller.validation.waves.between")),
+						(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.waves.required")), (v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.waves.integer")), (v: number) => ValidationRules.between(v, 1, 127, $t("components.config.controller.validation.waves.between")),
 					]'
 					:min='1'
 					:max='127'

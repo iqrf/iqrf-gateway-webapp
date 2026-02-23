@@ -24,9 +24,7 @@
 				v-model='rxFilter'
 				:label='$t("components.iqrfnet.common.rxFilter")'
 				:rules='[
-					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.common.validation.rxFilter.required")),
-					(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.common.validation.rxFilter.integer")),
-					(v: number) => ValidationRules.between(v, 0, 64, $t("components.iqrfnet.common.validation.rxFilter.between")),
+					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.common.validation.rxFilter.required")), (v: number) => ValidationRules.integer(v, $t("components.iqrfnet.common.validation.rxFilter.integer")), (v: number) => ValidationRules.between(v, 0, 64, $t("components.iqrfnet.common.validation.rxFilter.between")),
 				]'
 				:min='0'
 				:max='64'

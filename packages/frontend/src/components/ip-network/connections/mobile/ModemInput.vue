@@ -34,8 +34,7 @@ limitations under the License.
 import {
 	Modem,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
-import { ISelectInput } from '@iqrf/iqrf-vue-ui';
-import { ComponentState, ValidationRules } from '@iqrf/iqrf-vue-ui';
+import { ComponentState, ISelectInput, ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { mdiExpansionCardVariant } from '@mdi/js';
 import { onBeforeMount, ref, type Ref } from 'vue';
 

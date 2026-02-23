@@ -61,8 +61,7 @@ limitations under the License.
 										v-model='configuration.wsServers.api'
 										:label='$t("components.config.controller.form.websocket.api")'
 										:rules='[
-											(v: string|null) => ValidationRules.required(v, $t("components.config.controller.validation.websocket.api.required")),
-											(v: string) => ValidationRules.url(v, $t("components.config.controller.validation.websocket.api.invalid"), /^wss?$/),
+											(v: string|null) => ValidationRules.required(v, $t("components.config.controller.validation.websocket.api.required")), (v: string) => ValidationRules.url(v, $t("components.config.controller.validation.websocket.api.invalid"), /^wss?$/),
 										]'
 										:prepend-inner-icon='mdiLinkVariant'
 										required
@@ -84,8 +83,7 @@ limitations under the License.
 										v-model='configuration.wsServers.monitor'
 										:label='$t("components.config.controller.form.websocket.monitor")'
 										:rules='[
-											(v: string|null) => ValidationRules.required(v, $t("components.config.controller.validation.websocket.monitor.required")),
-											(v: string) => ValidationRules.url(v, $t("components.config.controller.validation.websocket.monitor.invalid"), /^wss?$/),
+											(v: string|null) => ValidationRules.required(v, $t("components.config.controller.validation.websocket.monitor.required")), (v: string) => ValidationRules.url(v, $t("components.config.controller.validation.websocket.monitor.invalid"), /^wss?$/),
 										]'
 										:prepend-inner-icon='mdiLinkVariant'
 										required
@@ -259,8 +257,7 @@ limitations under the License.
 										v-model='configuration.resetButton.button'
 										:label='$t("components.config.controller.form.pins.buttonPin")'
 										:rules='[
-											(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.buttonPin.required")),
-											(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.buttonPin.integer")),
+											(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.buttonPin.required")), (v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.buttonPin.integer")),
 										]'
 										:prepend-inner-icon='mdiRadioboxBlank'
 										required
@@ -274,8 +271,7 @@ limitations under the License.
 										v-model='configuration.statusLed.greenLed'
 										:label='$t("components.config.controller.form.pins.greenLedPin")'
 										:rules='[
-											(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.greenLedPin.required")),
-											(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.greenLedPin.integer")),
+											(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.greenLedPin.required")), (v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.greenLedPin.integer")),
 										]'
 										:prepend-inner-icon='mdiLedVariantOutline'
 										required
@@ -289,8 +285,7 @@ limitations under the License.
 										v-model='configuration.statusLed.redLed'
 										:label='$t("components.config.controller.form.pins.redLedPin")'
 										:rules='[
-											(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.redLedPin.required")),
-											(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.redLedPin.integer")),
+											(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.redLedPin.required")), (v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.redLedPin.integer")),
 										]'
 										:prepend-inner-icon='mdiLedVariantOn'
 										required
@@ -313,8 +308,7 @@ limitations under the License.
 										:label='$t("components.config.controller.form.pins.sckPin")'
 										:rules='watchdogPins ?
 											[
-												(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.sckPin.required")),
-												(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.sckPin.integer")),
+												(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.sckPin.required")), (v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.sckPin.integer")),
 											] : []
 										'
 										:prepend-inner-icon='mdiChip'
@@ -331,8 +325,7 @@ limitations under the License.
 										:label='$t("components.config.controller.form.pins.sdaPin")'
 										:rules='watchdogPins ?
 											[
-												(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.sdaPin.required")),
-												(v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.sdaPin.integer")),
+												(v: number|null) => ValidationRules.required(v, $t("components.config.controller.validation.sdaPin.required")), (v: number) => ValidationRules.integer(v, $t("components.config.controller.validation.sdaPin.integer")),
 											] : []
 										'
 										:prepend-inner-icon='mdiChip'

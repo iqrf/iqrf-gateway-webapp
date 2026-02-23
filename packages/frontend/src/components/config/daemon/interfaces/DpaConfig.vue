@@ -62,9 +62,7 @@ limitations under the License.
 							:label='$t("components.config.daemon.interfaces.dpa.timeout")'
 							:prepend-inner-icon='mdiTimerCancel'
 							:rules='[
-								(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.dpa.validation.timeout.required")),
-								(v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.dpa.validation.timeout.integer")),
-								(v: number) => ValidationRules.min(v, 500, $t("components.config.daemon.interfaces.dpa.validation.timeout.min")),
+								(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.dpa.validation.timeout.required")), (v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.dpa.validation.timeout.integer")), (v: number) => ValidationRules.min(v, 500, $t("components.config.daemon.interfaces.dpa.validation.timeout.min")),
 							]'
 							:min='500'
 							required

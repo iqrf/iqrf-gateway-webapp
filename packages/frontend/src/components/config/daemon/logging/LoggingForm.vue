@@ -76,9 +76,7 @@ limitations under the License.
 					v-model='profile.maxSizeMB'
 					:label='$t("components.config.daemon.logging.maxSize")'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.logging.validation.maxSize.required")),
-						(v: number) => ValidationRules.integer(v, $t("components.config.daemon.logging.validation.maxSize.min")),
-						(v: number) => ValidationRules.min(v, 1, $t("components.config.daemon.logging.validation.maxSize.min")),
+						(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.logging.validation.maxSize.required")), (v: number) => ValidationRules.integer(v, $t("components.config.daemon.logging.validation.maxSize.min")), (v: number) => ValidationRules.min(v, 1, $t("components.config.daemon.logging.validation.maxSize.min")),
 					]'
 					:min='1'
 					required
@@ -93,9 +91,7 @@ limitations under the License.
 					:label='$t("components.config.daemon.logging.maxAge")'
 					:description='$t("components.config.daemon.logging.notes.timestampsDisabled")'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.logging.validation.maxAge.required")),
-						(v: number) => ValidationRules.integer(v, $t("components.config.daemon.logging.validation.maxAge.integer")),
-						(v: number) => ValidationRules.min(v, 0, $t("components.config.daemon.logging.validation.maxAge.min")),
+						(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.logging.validation.maxAge.required")), (v: number) => ValidationRules.integer(v, $t("components.config.daemon.logging.validation.maxAge.integer")), (v: number) => ValidationRules.min(v, 0, $t("components.config.daemon.logging.validation.maxAge.min")),
 					]'
 					:min='0'
 					:disabled='!profile.timestampFiles'
@@ -106,9 +102,7 @@ limitations under the License.
 					:label='$t("components.config.daemon.logging.maxNumber")'
 					:description='$t("components.config.daemon.logging.notes.timestampsDisabled")'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.logging.validation.maxNumber.required")),
-						(v: number) => ValidationRules.integer(v, $t("components.config.daemon.logging.validation.maxNumber.integer")),
-						(v: number) => ValidationRules.min(v, 0, $t("components.config.daemon.logging.validation.maxNumber.min")),
+						(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.logging.validation.maxNumber.required")), (v: number) => ValidationRules.integer(v, $t("components.config.daemon.logging.validation.maxNumber.integer")), (v: number) => ValidationRules.min(v, 0, $t("components.config.daemon.logging.validation.maxNumber.min")),
 					]'
 					:min='0'
 					:disabled='!profile.timestampFiles'

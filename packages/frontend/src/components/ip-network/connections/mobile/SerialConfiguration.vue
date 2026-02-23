@@ -24,8 +24,7 @@ limitations under the License.
 			v-model.number='configuration.serial.baudRate'
 			:label='$t("components.ipNetwork.connections.form.serial.baudRate")'
 			:rules='[
-				(v: unknown) => ValidationRules.required(v, $t("components.ipNetwork.connections.errors.serial.baudRate.required")),
-				(v: unknown) => ValidationRules.numeric(v, $t("components.ipNetwork.connections.errors.serial.baudRate.numerical")),
+				(v: unknown) => ValidationRules.required(v, $t("components.ipNetwork.connections.errors.serial.baudRate.required")), (v: unknown) => ValidationRules.numeric(v, $t("components.ipNetwork.connections.errors.serial.baudRate.numerical")),
 			]'
 			required
 			:prepend-inner-icon='mdiSerialPort'

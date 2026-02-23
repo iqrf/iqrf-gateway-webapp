@@ -366,27 +366,29 @@ function items(): SidebarLink[] {
 			},
 		];
 	}
-	links.push({
-		title: i18n.t('pages.dev.title'),
-		to: '/dev',
-		icon: mdiTools,
-		children: [
-			{
-				title: i18n.t('pages.dev.openApi.title'),
-				to: '/dev/openApi',
-				developmentOnly: true,
-			},
-		],
-		developmentOnly: true,
-	});
-	links.push({
-		title: i18n.t('pages.docs.title'),
-		href: featureStore.getConfiguration(Feature.docs)?.url,
-		icon: mdiBook,
-		feature: Feature.docs,
-		target: '_blank',
-		to: '',
-	});
+	links.push(
+		{
+			title: i18n.t('pages.dev.title'),
+			to: '/dev',
+			icon: mdiTools,
+			children: [
+				{
+					title: i18n.t('pages.dev.openApi.title'),
+					to: '/dev/openApi',
+					developmentOnly: true,
+				},
+			],
+			developmentOnly: true,
+		},
+		{
+			title: i18n.t('pages.docs.title'),
+			href: featureStore.getConfiguration(Feature.docs)?.url,
+			icon: mdiBook,
+			feature: Feature.docs,
+			target: '_blank',
+			to: '',
+		},
+	);
 	return links.filter((item: SidebarLink) => filter(item));
 }
 

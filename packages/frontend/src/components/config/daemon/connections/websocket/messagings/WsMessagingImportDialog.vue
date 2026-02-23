@@ -44,8 +44,7 @@ limitations under the License.
 					accept='.json'
 					:label='$t("components.config.daemon.connections.websocket.messaging.import.file")'
 					:rules='[
-						(v: File|null) => ValidationRules.required(v, $t("components.config.daemon.connections.websocket.messaging.validation.file.required")),
-						(v: File) => ValidationRules.fileExtension(v, ["json"], $t("components.config.daemon.connections.validation.profileFile.extension")),
+						(v: File|null) => ValidationRules.required(v, $t("components.config.daemon.connections.websocket.messaging.validation.file.required")), (v: File) => ValidationRules.fileExtension(v, ["json"], $t("components.config.daemon.connections.validation.profileFile.extension")),
 					]'
 					:prepend-inner-icon='mdiFileOutline'
 					prepend-icon=''

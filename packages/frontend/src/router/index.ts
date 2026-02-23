@@ -19,7 +19,6 @@ import { setupLayouts } from 'virtual:generated-layouts';
 import {
 	createRouter,
 	createWebHistory,
-	type NavigationGuardNext,
 	type RouteLocationNormalized,
 	type Router,
 	type RouteRecordRaw,
@@ -40,7 +39,7 @@ const router: Router = createRouter({
 	routes: routes,
 });
 
-router.beforeEach((to: RouteLocationNormalized, _from: RouteLocationNormalized, next: NavigationGuardNext) => {
+router.beforeEach((to: RouteLocationNormalized) => {
 	const userStore = useUserStore();
 	const requiresAuth: boolean = (to.meta.requiresAuth ?? true) === true;
 	const install: boolean = (to.meta.installWizard ?? false) === true;
@@ -49,12 +48,12 @@ router.beforeEach((to: RouteLocationNormalized, _from: RouteLocationNormalized, 
 		if (to.path !== '/' && to.path !== '/sign/in') {
 			query = { ...query, redirect: to.path };
 		}
-		next({ name: 'SignIn', query: query }); return;
+		return { name: 'SignIn', query: query };
 	}
 	if (to.name === 'SignIn' && userStore.isLoggedIn) {
-		next((to.query.redirect as string|undefined) ?? '/'); return;
+		return (to.query.redirect as string|undefined) ?? '/';
 	}
-	next();
+	return true;
 });
 
 // Workaround for https://github.com/vitejs/vite/issues/11804

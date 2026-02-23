@@ -68,6 +68,6 @@ export class PowerService extends BaseService {
 			sleeping: Duration.fromObject({ seconds: uptime.sleeping }),
 			shutdown: uptime.shutdown ? DateTime.fromISO(uptime.shutdown) : null,
 			start: DateTime.fromISO(uptime.start),
-		})).sort((a: GatewayUptime, b: GatewayUptime): number => b.id - a.id);
+		})).toSorted((a: GatewayUptime, b: GatewayUptime): number => b.id - a.id);
 	}
 }

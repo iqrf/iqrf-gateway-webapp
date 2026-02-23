@@ -177,7 +177,7 @@ async function getDpaVersions(): Promise<void> {
 		return;
 	}
 	try {
-		const fetched = [];
+		let fetched = [];
 		const versions = await osDpaService.value.list({ osBuild: osBuild.value });
 		for (const version of versions) {
 			const dpaVerPretty = version.dpa.version;
@@ -200,7 +200,7 @@ async function getDpaVersions(): Promise<void> {
 				});
 			}
 		}
-		fetched.sort().reverse();
+		fetched = fetched.toSorted().toReversed();
 		for (const item of fetched) {
 			if (item.value === dpaVersion.value) {
 				item.title = `${item.title} (Current)`;
