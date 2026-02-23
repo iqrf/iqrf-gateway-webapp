@@ -179,9 +179,9 @@ export default class ClientSocket {
 			return;
 		}
 		this.onErrorCallback = callback;
-		this.socket.onerror = function (event: Event): void {
+		this.socket.addEventListener('error', (event: Event): void => {
 			callback(event);
-		};
+		});
 	}
 
 	/**
@@ -204,9 +204,9 @@ export default class ClientSocket {
 			return;
 		}
 		this.onMessageCallback = callback;
-		this.socket.onmessage = function (event: MessageEvent): void {
+		this.socket.addEventListener('message', (event: MessageEvent): void => {
 			callback(event);
-		};
+		});
 	}
 
 	/**
@@ -232,12 +232,12 @@ export default class ClientSocket {
 				this.reconnect();
 			}
 		});
-		this.socket.onerror = (event: Event): void => {
+		this.socket.addEventListener('error', (event: Event): void => {
 			this.onErrorCallback(event);
-		};
-		this.socket.onmessage = (event: MessageEvent): void => {
+		});
+		this.socket.addEventListener('message', (event: MessageEvent): void => {
 			this.onMessageCallback(event);
-		};
+		});
 		return this.socket;
 	}
 
