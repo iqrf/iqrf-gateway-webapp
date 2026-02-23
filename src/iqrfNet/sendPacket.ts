@@ -110,7 +110,7 @@ class Packet {
 	 * @param {boolean} withPdata With PDATA
 	 * @returns {string} DPA packet as string
 	 */
-	toString(withPdata = true): string {
+	toString(withPdata: boolean = true): string {
 		let packet = [
 			this.nadr & 255, this.nadr >> 8, this.pnum, this.pcmd,
 			this.hwpid & 255, this.hwpid >> 8,

@@ -62,6 +62,12 @@ test('Deserialize DPA packet (with PDATA) from string', () => {
 	expect(Packet.parse(packet)).toEqual(expected);
 });
 
+test('Deserialize DPA packet from string ending in dot', () => {
+	const packet = '00.00.00.04.ff.ff.00.00.';
+	const expected = new Packet(0, 0, 4, 65535, [0, 0]);
+	expect(Packet.parse(packet)).toEqual(expected);
+});
+
 test('Serialize DPA packet (without PDATA) into string', () => {
 	const packet = new Packet(1, 2, 0, 65535, []);
 	const expected = '01.00.02.00.ff.ff';
