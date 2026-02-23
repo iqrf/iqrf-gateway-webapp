@@ -69,8 +69,8 @@ import {
 	type IqrfGatewayDaemonIdeCounterpart,
 	IqrfGatewayDaemonIdeCounterpartMode,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
-import { onMounted, ref, type Ref } from 'vue';
 import { Action, ComponentState, IActionBtn, ICard } from '@iqrf/iqrf-vue-ui';
+import { onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 
