@@ -198,7 +198,7 @@ describe('URL builder', (): void => {
 
 	test('get WebSocket proxy URL in production mode', (): void => {
 		expect.assertions(1);
-		const url = 'wss://iqube.local/api/ws';
+		const url = 'wss://iqube.local/wsProxy';
 		setMode('production');
 		const builder: UrlBuilder = new UrlBuilder();
 		expect(builder.getWebSocketProxyUrl()).toStrictEqual(url);
