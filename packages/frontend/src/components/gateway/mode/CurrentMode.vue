@@ -120,6 +120,7 @@ async function getMode(): Promise<void> {
 	} catch (error) {
 		if (error instanceof DaemonApiSendError) {
 			console.error(error);
+			toast.error(error.message);
 		}
 		componentState.value = componentState.value === ComponentState.Loading ? ComponentState.FetchFailed : ComponentState.Idle;
 	}
@@ -141,6 +142,7 @@ async function setMode(): Promise<void> {
 	} catch (error) {
 		if (error instanceof DaemonApiSendError) {
 			console.error(error);
+			toast.error(error.message);
 		}
 		componentState.value = ComponentState.Idle;
 	}
