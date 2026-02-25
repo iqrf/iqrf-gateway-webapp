@@ -54,21 +54,21 @@ enum ProxyMessageType: string {
 	 */
 	case PROXY_SESSION_REFRESH_SUCCESS = 'proxy_session_refresh_success';
 	/**
-	 * Upstream connection lost
-	 */
-	case DISCONNECTED = 'upstream_disconnected';
-	/**
 	 * Upstream authentication failed
 	 */
 	case UPSTREAM_AUTH_FAILED = 'upstream_auth_failed';
 	/**
-	 * Reconnecting to upstream
+	 * Upstream connection lost
 	 */
-	case RECONNECTING = 'upstream_reconnecting';
+	case DISCONNECTED = 'upstream_disconnected';
 	/**
 	 * Upstream ready for messages
 	 */
 	case READY = 'upstream_ready';
+	/**
+	 * Reconnecting to upstream
+	 */
+	case RECONNECTING = 'upstream_reconnecting';
 	/**
 	 * Request for upstream could not be handled
 	 */
