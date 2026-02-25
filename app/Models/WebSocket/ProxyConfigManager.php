@@ -23,7 +23,7 @@ namespace App\Models\WebSocket;
 use App\Entities\ProxyConfiguration;
 use Iqrf\FileManager\FileManager;
 use Nette\IOException;
-use Nette\Neon\Exception as NeonException;
+use Nette\Utils\JsonException;
 
 /**
  * Proxy configuration manager
@@ -33,7 +33,7 @@ class ProxyConfigManager {
 	/**
 	 * WebSocket proxy configuration file
 	 */
-	private const FILE_NAME = 'proxy-config.neon';
+	private const FILE_NAME = 'proxy-config.json';
 
 	/**
 	 * Constructor
@@ -50,8 +50,8 @@ class ProxyConfigManager {
 	 */
 	public function readConfig(): ProxyConfiguration {
 		try {
-			$config = $this->fileManager->readNeon(self::FILE_NAME);
-		} catch (IOException | NeonException) {
+			$config = $this->fileManager->readJson(self::FILE_NAME, forceArray: true);
+		} catch (IOException | JsonException) {
 			$config = [];
 		}
 		return ProxyConfiguration::mergeDefaults($config);
@@ -62,7 +62,7 @@ class ProxyConfigManager {
 	 * @param ProxyConfiguration $config Proxy configuration
 	 */
 	public function writeConfig(ProxyConfiguration $config): void {
-		$this->fileManager->writeNeon(self::FILE_NAME, $config->jsonSerialize());
+		$this->fileManager->writeJson(self::FILE_NAME, $config->jsonSerialize());
 	}
 
 }

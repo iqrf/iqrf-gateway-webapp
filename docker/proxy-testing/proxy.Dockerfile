@@ -23,7 +23,7 @@ RUN install-php-extensions intl sockets xsl zip
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 COPY . /app
-COPY docker/proxy-testing/proxy-config.neon /app/app/config/proxy-config.neon
+COPY docker/proxy-testing/proxy-config.json /app/app/config/proxy-config.json
 COPY docker/proxy-testing/iqrf-gateway.json /etc/iqrf-gateway.json
 WORKDIR /app
 
