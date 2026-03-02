@@ -360,7 +360,7 @@ function updateAllowedIp(index: string | number, value: WireGuardIpAddress, type
  * @param {boolean} restartTunnelOnSave restarts tunnel on save if true
  */
 async function onSubmit(restartTunnelOnSave: boolean = false): Promise<void> {
-	let response = null;
+	let response: WireGuardPeer;
 	try {
 		componentState.value = ComponentState.Action;
 		if (componentProps.action === Action.Add) {
