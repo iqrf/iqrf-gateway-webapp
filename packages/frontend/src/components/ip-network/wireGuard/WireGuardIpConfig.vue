@@ -58,6 +58,7 @@ import { WireGuardIpAddress, WireGuardIpStack, WireGuardIpStackSingle } from '@i
 import { INumberInput, ITextInput, ValidationRules } from '@iqrf/iqrf-vue-ui';
 import { computed, type Ref, type TemplateRef, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
+
 const componentProps = withDefaults(
 	defineProps<{
 		/// IP stack type

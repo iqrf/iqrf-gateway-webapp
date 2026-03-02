@@ -186,7 +186,7 @@ limitations under the License.
 
 <script setup lang="ts">
 import {
-	WireGuardIpStack,
+	WireGuardIpStack, type WireGuardKeyPair,
 	WireGuardTunnelConfig,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Network';
 import {
@@ -290,7 +290,7 @@ function closeDialog(): void {
  * @param {boolean} activate activate the service when saved
  */
 async function onSubmit(enable: boolean, activate: boolean): Promise<void> {
-	let response = null;
+	let response: WireGuardTunnelConfig;
 	const payload: WireGuardTunnelConfig = { ...wgConfig.value };
 	if (payload.stack === WireGuardIpStack.IPV4) {
 		delete payload.ipv6;
@@ -371,7 +371,7 @@ function copyToClipboard(value: string | undefined): void {
  * Generate key
  */
 async function generateKey(): Promise<void> {
-	let response = null;
+	let response: WireGuardKeyPair;
 	try {
 		componentState.value = ComponentState.Action;
 		response = await service.generateKeyPair();

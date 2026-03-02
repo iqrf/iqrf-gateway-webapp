@@ -152,12 +152,9 @@ function handleUnbond(rsp: DaemonApiResponse): void {
 			message = i18n.t('common.messages.noDevice', translationParams);
 			break;
 		default:
-			message = i18n.t(
-				componentProps.coordinatorOnly ?
-					'components.iqrfnet.network-manager.bonding.messages.unbond.failedCoordinator' :
-					'components.iqrfnet.network-manager.bonding.messages.unbond.failed',
-				translationParams,
-			);
+			message = componentProps.coordinatorOnly ?
+				i18n.t('components.iqrfnet.network-manager.bonding.messages.unbond.failedCoordinator', translationParams) :
+				i18n.t('components.iqrfnet.network-manager.bonding.messages.unbond.failed', translationParams);
 	}
 	toast.error(message);
 }
