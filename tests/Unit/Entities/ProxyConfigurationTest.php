@@ -68,7 +68,7 @@ final class ProxyConfigurationTest extends TestCase {
 	}
 
 	/**
-	 * Tests the function to serialize proxy configuration object into json
+	 * Tests the function to serialize proxy configuration object into JSON
 	 */
 	public function testJsonSerialize(): void {
 		Assert::same(

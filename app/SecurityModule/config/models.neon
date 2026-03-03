@@ -14,4 +14,5 @@
 # limitations under the License.
 
 services:
+	- App\SecurityModule\Models\DaemonApiTokenManager
 	- App\SecurityModule\Models\MosquittoPluginManager
