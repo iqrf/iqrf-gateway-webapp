@@ -18,16 +18,19 @@ limitations under the License.
 <template>
 	<v-alert
 		v-if='isLoggedIn && !isVerified && !closed'
+		closable
+		:close-icon='mdiCloseThick'
+		:icon-size='34'
 		type='warning'
 		variant='tonal'
-		class='unverified-email-alert'
+		@click:close='closeAlert'
 	>
 		<div v-if='hasEmail' class='alert'>
 			{{ $t('components.account.verification.unverified', { email: userEmail }) }}
 			<v-btn
 				color='warning'
 				size='small'
-				dense
+				density='compact'
 				:loading='componentState === ComponentState.Loading'
 				:prepend-icon='mdiEmailFast'
 				@click='resend'
@@ -47,15 +50,6 @@ limitations under the License.
 				{{ $t('components.account.verification.addEmail') }}
 			</v-btn>
 		</div>
-		<v-btn
-			class='alert-close'
-			:icon='mdiCloseThick'
-			variant='text'
-			size='small'
-			density='compact'
-			aria-label='Close'
-			@click='closeAlert'
-		/>
 	</v-alert>
 </template>
 
@@ -122,31 +116,9 @@ async function resend(): Promise<void> {
 </script>
 
 <style scoped lang='scss'>
-.unverified-email-alert {
-	position: relative;
-}
-
 .alert {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	padding-right: 28px;
-}
-
-.alert-close {
-	position: absolute;
-	top: 6px;
-	right: 6px;
-	min-width: 0;
-	height: 28px;
-	width: 28px;
-	color: currentcolor;
-	opacity: 0.6;
-	transition: opacity 0.2s ease-in-out;
-
-	&:hover,
-	&:focus {
-		opacity: 1;
-	}
 }
 </style>
