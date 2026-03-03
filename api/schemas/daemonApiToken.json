@@ -1,0 +1,73 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/daemonApiToken.json",
+	"type": "object",
+	"title": "Daemon API access token information",
+	"additionalProperties": false,
+	"required": [
+		"id",
+		"owner",
+		"created_at",
+		"expires_at",
+		"status",
+		"service",
+		"invalidated_at"
+	],
+	"properties": {
+		"id": {
+			"$id": "#/properties/id",
+			"title": "Token ID",
+			"type": "integer",
+			"example": 1
+		},
+		"owner": {
+			"$id": "#/properties/token",
+			"title": "Token owner",
+			"type": "string",
+			"minLength": 1,
+			"example": "webapp"
+		},
+		"created_at": {
+			"$id": "#/properties/created_at",
+			"title": "Created timestamp",
+			"type": "string",
+			"format": "date-time",
+			"example": "2026-02-20T12:00:00Z"
+		},
+		"expires_at": {
+			"$id": "#/properties/expires_at",
+			"title": "Expiration timestamp",
+			"type": "string",
+			"format": "date-time",
+			"example": "2027-02-20T12:00:00Z"
+		},
+		"status": {
+			"$id": "#/properties/status",
+			"title": "Token status",
+			"description": "0 - valid, 1 - expired, 2 - revoked",
+			"type": "integer",
+			"enum": [0, 1, 2],
+			"example": 0
+		},
+		"service": {
+			"$id": "#/properties/service",
+			"title": "Service mode permissions",
+			"type": "boolean",
+			"example": false
+		},
+		"invalidated_at": {
+			"$id": "#/properties/invalidated_at",
+			"title": "Invalidation timestamp",
+			"oneOf": [
+				{
+					"type": "string",
+					"format": "date-time"
+				},
+				{
+					"type": "null"
+				}
+			],
+			"example": "2026-05-20T10:06:00Z"
+		}
+	}
+}

@@ -1,5 +1,5 @@
 /**
- * Copyright 2023-2025 MICRORISC s.r.o.
+ * Copyright 2023-2026 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,28 @@
  * limitations under the License.
  */
 
-export * from './ApiKey';
-export * from './Certificate';
-export * from './DaemonApiToken';
-export * from './MosquittoUser';
-export * from './SshKey';
+/**
+ * WebSocket proxy server configuration interface
+ */
+export interface WebSocketProxyConfig {
+	/**
+	 * Hostname
+	 */
+	host: string;
+	/**
+	 * Port number
+	 */
+	port: number;
+	/**
+	 * Address of listening interface
+	 */
+	address: string;
+	/**
+	 * Daeon API server address
+	 */
+	upstream: string;
+	/**
+	 * Authentication token
+	 */
+	token?: string;
+}

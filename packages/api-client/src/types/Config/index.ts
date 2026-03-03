@@ -24,3 +24,4 @@ export * from './Mailer';
 export * from './Mapping';
 export * from './Mender';
 export * from './Monit';
+export * from './WebSocketProxy';
