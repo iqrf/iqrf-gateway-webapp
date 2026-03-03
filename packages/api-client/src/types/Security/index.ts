@@ -16,4 +16,5 @@
 
 export * from './ApiKey';
 export * from './Certificate';
+export * from './DaemonApiToken';
 export * from './SshKey';

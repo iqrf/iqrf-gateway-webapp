@@ -58,6 +58,7 @@ class ServicesController extends BaseController {
 		'iqrf-gateway-daemon' => null,
 		'iqrf-gateway-influxdb-bridge' => 'iqrfGatewayInfluxdbBridge',
 		'iqrf-gateway-translator' => 'iqrfGatewayTranslator',
+		'iqrf-gateway-webapp-proxy' => null,
 		'mender-connect' => 'mender',
 		'mender-client' => 'mender',
 		'mender-updated' => 'mender',

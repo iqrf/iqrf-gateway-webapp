@@ -460,7 +460,8 @@ export interface IqrfGatewayDaemonComponentInstanceConfigurations {
 /**
  * IQRF Gateway Daemon component instance generic
  */
-export type IqrfGatewayDaemonComponentInstanceConfiguration<C extends IqrfGatewayDaemonComponentName> = IqrfGatewayDaemonComponentInstanceConfigurations[C];
+export type IqrfGatewayDaemonComponentInstanceConfiguration<C extends IqrfGatewayDaemonComponentName> =
+	| IqrfGatewayDaemonComponentInstanceConfigurations[C];
 
 /**
  * IQRF Gateway Daemon component generic

@@ -1,0 +1,59 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/webSocketProxyConfig.json",
+	"type": "object",
+	"title": "WebSocket Proxy Server configuration",
+	"additionalProperties": false,
+	"required": [
+		"host",
+		"port",
+		"address",
+		"upstream"
+	],
+	"properties": {
+		"host": {
+			"$id": "#/properties/host",
+			"title": "Proxy server host",
+			"type": "string",
+			"default": "localhost",
+			"example": "localhost",
+			"anyOf": [
+				{"format": "hostname"},
+				{"format": "ipv4"},
+				{"format": "ipv6"}
+			]
+		},
+		"port": {
+			"$id": "#/properties/port",
+			"title": "Proxy server port",
+			"type": "number",
+			"default": 9000,
+			"example": 9000,
+			"minimum": 1,
+			"maximum": 65535
+		},
+		"address": {
+			"$id": "#/properties/address",
+			"title": "Address of listening interface",
+			"type": "string",
+			"minLength": 1,
+			"default": "127.0.0.1",
+			"example": "0.0.0.0",
+			"anyOf": [
+				{"format": "ipv4"},
+				{"format": "ipv6"}
+			]
+		},
+		"upstream": {
+			"$id": "#/properties/upstream",
+			"title": "Upstream address",
+			"type": "string",
+			"minLength": 1
+		},
+		"token": {
+			"$id": "#/properties/token",
+			"title": "Authentication token",
+			"type": "string"
+		}
+	}
+}

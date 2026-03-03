@@ -53,6 +53,11 @@ const links: Ref<DisambiguationLink[]> = ref([
 		to: '/config/daemon',
 	},
 	{
+		title: i18n.t('pages.config.ws-proxy.title'),
+		description: i18n.t('pages.config.ws-proxy.description'),
+		to: '/config/ws-proxy',
+	},
+	{
 		title: i18n.t('pages.config.influxdb-bridge.title'),
 		description: i18n.t('pages.config.influxdb-bridge.description'),
 		to: '/config/influxdb-bridge',

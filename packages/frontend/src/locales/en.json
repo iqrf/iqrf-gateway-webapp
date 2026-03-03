@@ -12,6 +12,8 @@
 			"refresh": "Refresh",
 			"reload": "Reload",
 			"restore": "Restore",
+			"revoke": "Revoke",
+			"rotate": "Rotate",
 			"save": "Save",
 			"selectAll": "Select all",
 			"send": "Send",
@@ -28,7 +30,9 @@
 			"certificate": "Certificate",
 			"confirmation": "Confirmation",
 			"confirmationTs": "Confirmation time",
+			"createdAt": "Created at",
 			"description": "Description",
+			"expiration": "Expiration",
 			"format": "Format",
 			"general": "General",
 			"hostname": "Hostname",
@@ -58,6 +62,7 @@
 				"trace": "Trace",
 				"warning": "Warning"
 			},
+			"status": "Status",
 			"username": "Username",
 			"value": "Value"
 		},
@@ -148,6 +153,71 @@
 				"validations": {
 					"description": {
 						"required": "Please enter API key description."
+					}
+				}
+			},
+			"daemonAccessTokens": {
+				"absoluteExpiration": "Absolute expiration",
+				"actions": {
+					"add": "Add Daemon API access token",
+					"reload": "Reload Daemon API access tokens",
+					"revoke": "Revoke Daemon API access token",
+					"rotate": "Rotate Daemon API access token"
+				},
+				"count": "Unit count",
+				"display": {
+					"copyFailed": "Failed to copy Daemon API access token to clipboard.",
+					"copySuccess": "Daemon API access token has been copied to clipboard.",
+					"prompt": "Before closing this dialog, copy and store the new Daemon API access token below in a safe place. For security reasons, you will not be able to view it again at a later time.",
+					"title": "Generated Daemon API access token"
+				},
+				"messages": {
+					"create": {
+						"failed": "Failed to create a new Daemon API access token.",
+						"success": "A new Daemon API access token has been sucessfully created."
+					},
+					"list": {
+						"failed": "Failed to retrieve Daemon API access token list."
+					},
+					"revoke": {
+						"failed": "Failed to revoke Daemon API access token ID {id}.",
+						"success": "Daemon API access token ID {id} has been successfully revoked."
+					},
+					"rotate": {
+						"failed": "Failed to rotate Daemon API access token ID {id}.",
+						"success": "Daemon API access token ID {id} has been successfully rotated."
+					}
+				},
+				"noData": {
+					"empty": "No Daemon API access token records found.",
+					"fetchError": "Daemon API access tokens could not be retrieved."
+				},
+				"owner": "Token owner",
+				"relativeExpiration": "Relative expiration",
+				"revoke": {
+					"prompt": "Are you sure you want to revoke Daemon API access token ID {id}?",
+					"title": "Daemon API access token revoke confirmation"
+				},
+				"rotate": {
+					"prompt": "Are you sure you want to rotate Daemon API access token ID {id}? The current token shall be revoked an a new token will take its place.",
+					"title": "Daemon API access token rotate confirmation"
+				},
+				"service": "Service mode permissions",
+				"states": {
+					"expired": "EXPIRED",
+					"revoked": "REVOKED",
+					"valid": "VALID"
+				},
+				"unit": "Time unit",
+				"units": {
+					"day": "Day(s)",
+					"month": "Month(s)",
+					"week": "Week(s)",
+					"year": "Year(s)"
+				},
+				"validations": {
+					"owner": {
+						"required": "Please enter token owner."
 					}
 				}
 			},
@@ -1781,6 +1851,30 @@
 						"integer": "Package update interval should be an integer.",
 						"min": "Package update interval should be greater or equal to 0.",
 						"required": "Please enter package update interval."
+					}
+				}
+			},
+			"ws-proxy": {
+				"messages": {
+					"fetch": {
+						"failed": "Failed to retrieve WebSocket proxy server configuration."
+					},
+					"save": {
+						"failed": "Failed to save WebSocket proxy server configuration.",
+						"success": "WebSocket proxy server configuration successfully saved."
+					}
+				},
+				"proxy": "Proxy server host",
+				"token": "Access token",
+				"upstream": "Upstream server address",
+				"validation": {
+					"proxy": {
+						"hostname": "Proxy server host should be IPv4, IPv6, localhost or fully-qualified domain name.",
+						"required": "Please enter proxy server address."
+					},
+					"upstream": {
+						"required": "Please enter upstream server address.",
+						"url": "Upstream server address is not valid."
 					}
 				}
 			}
@@ -4029,6 +4123,10 @@
 				"description": "Manage API keys.",
 				"title": "API keys"
 			},
+			"daemonAccessTokens": {
+				"description": "Manage Daemon API access tokens.",
+				"title": "Daemon access tokens"
+			},
 			"description": "Manage access via users, API or SSH keys.",
 			"sshKeys": {
 				"description": "Manage SSH keys.",
@@ -4162,6 +4260,10 @@
 			"unattendedUpgrades": {
 				"description": "Configure automatic unattended upgrades service.",
 				"title": "Automatic upgrades"
+			},
+			"ws-proxy": {
+				"description": "Configure WebSocket proxy server for communication with Daemon API.",
+				"title": "WebSocket proxy"
 			}
 		},
 		"dev": {

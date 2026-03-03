@@ -1,5 +1,8 @@
+<?php
+
 /**
- * Copyright 2023-2025 MICRORISC s.r.o.
+ * Copyright 2017-2026 IQRF Tech s.r.o.
+ * Copyright 2019-2026 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +16,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+declare(strict_types = 1);
 
-export * from './Apt';
-export * from './IqrfGatewayController';
-export * from './IqrfGatewayDaemon';
-export * from './IqrfGatewayInfluxdbBridge';
-export * from './IqrfGatewayTranslator';
-export * from './IqrfRepository';
-export * from './Journal';
-export * from './Mailer';
-export * from './Mapping';
-export * from './Mender';
-export * from './Monit';
-export * from './WebSocketProxy';
+namespace App\SecurityModule\Exceptions;
+
+use RuntimeException;
+
+/**
+ * Exception indicating an internal error with Daemon API token CLI utility
+ */
+class DaemonApiTokenManagerException extends RuntimeException {
+
+}

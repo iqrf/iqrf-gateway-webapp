@@ -25,6 +25,7 @@ import { JournalService } from './JournalService';
 import { MailerService } from './MailerService';
 import { MenderService } from './MenderService';
 import { MonitService } from './MonitService';
+import { WebSocketProxyService } from './WebSocketProxyService';
 
 export * from './AptService';
 export * from './IqrfGatewayControllerService';
@@ -35,6 +36,7 @@ export * from './JournalService';
 export * from './MailerService';
 export * from './MenderService';
 export * from './MonitService';
+export * from './WebSocketProxyService';
 
 /**
  * Configuration services
@@ -111,6 +113,14 @@ export class ConfigServices extends BaseService {
 	 */
 	public getMonitService(): MonitService {
 		return new MonitService(this.apiClient);
+	}
+
+	/**
+	 * Returns WebSocket proxy server service
+	 * @return {WebSocketProxyService} WebSocket proxy server service
+	 */
+	public getWebSocketProxyService(): WebSocketProxyService {
+		return new WebSocketProxyService(this.apiClient);
 	}
 
 }

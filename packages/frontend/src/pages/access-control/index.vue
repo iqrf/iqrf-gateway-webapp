@@ -62,5 +62,11 @@ const links: Ref<DisambiguationLink[]> = ref([
 		to: '/access-control/ssh-keys',
 		roles: [UserRole.Admin],
 	},
+	{
+		title: i18n.t('pages.accessControl.daemonAccessTokens.title'),
+		description: i18n.t('pages.accessControl.daemonAccessTokens.description'),
+		to: '/access-control/daemon-access-tokens',
+		roles: [UserRole.Admin],
+	},
 ]);
 </script>

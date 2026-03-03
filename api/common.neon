@@ -136,6 +136,18 @@ components:
 		ControllerPinConfigList:
 			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/controllerPinConfigList.json
 			title: Configuration - IQRF Gateway Controller - pin configuration list
+		DaemonApiToken:
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/DaemonApiToken.json
+			title: Security - Daemon API access tokens - token information
+		DaemonApiTokenCreate:
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/DaemonApiTokenCreate.json
+			title: Security - Daemon API access tokens - create token
+		DaemonApiTokenCreated:
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/DaemonApiTokenCreated.json
+			title: Security - Daemon API access tokens - token created
+		DaemonApiTokenList:
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/DaemonApiTokenList.json
+			title: Security - Daemon API access tokens - token list
 		DaemonComponent:
 			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/daemonComponent.json
 			title: Configuration - IQRF Gateway Daemon - component
@@ -326,6 +338,9 @@ components:
 			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/userSignIn.json
 		UserToken:
 			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/userToken.json
+		WebSocketProxyConfig:
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/WebSocketProxyConfig.json
+			title: Configuration - WebSocket Proxy Server
 		Versions:
 			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/versions.json
 			title: Versions - IQRF Gateway software

@@ -1,0 +1,68 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/daemonApiTokenCreate.json",
+	"type": "object",
+	"title": "Daemon API access token creation",
+	"additionalProperties": false,
+	"required": [
+		"owner"
+	],
+	"properties": {
+		"owner": {
+			"$id": "#/properties/owner",
+			"title": "Token owner",
+			"type": "string",
+			"minLength": 1,
+			"maxLength": 64,
+			"example": "webapp"
+		},
+		"expiration": {
+			"$id": "#/properties/expiration",
+			"title": "Absolute expiration",
+			"type": "string",
+			"format": "date-time",
+			"example": "2027-02-20T12:00:00Z"
+		},
+		"unit": {
+			"$id": "#/properties/unit",
+			"title": "Time unit",
+			"type": "string",
+			"enum": [
+				"d",
+				"w",
+				"m",
+				"y"
+			],
+			"example": "year"
+		},
+		"count": {
+			"$id": "#/properties/count",
+			"title": "Unit count",
+			"type": "integer",
+			"minimum": 1,
+			"example": 11
+		}
+	},
+	"oneOf": [
+		{
+			"required": [
+				"expiration"
+			],
+			"not": {
+				"required": [
+					"unit",
+					"count"
+				]
+			}
+		},
+		{
+			"required": [
+				"unit",
+				"count"
+			],
+			"not": {
+				"required": ["expiration"]
+			}
+		}
+	]
+}

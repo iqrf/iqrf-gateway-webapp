@@ -136,7 +136,6 @@ class ProxyConfiguration implements JsonSerializable {
 			'port' => $this->port,
 			'address' => $this->address,
 			'upstream' => $this->upstream,
-			//TODO obfuscate token
 			'token' => $this->token,
 		];
 	}

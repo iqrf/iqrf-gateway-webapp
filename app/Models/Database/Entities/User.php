@@ -211,6 +211,7 @@ class User implements JsonSerializable {
 		if ($this->role === UserRole::Admin) {
 			$scopes = array_merge($scopes, [
 				'apiKeys',
+				'config:ws-proxy',
 				'iqrf:upload',
 				'mailer',
 				'maintenance:backup',
@@ -219,6 +220,7 @@ class User implements JsonSerializable {
 				'network',
 				'users:admin',
 				'sshKeys',
+				'security:daemon-access-tokens',
 			]);
 		}
 		return $scopes;

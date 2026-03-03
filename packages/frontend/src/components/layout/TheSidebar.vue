@@ -211,6 +211,11 @@ function items(): SidebarLink[] {
 						],
 					},
 					{
+						title: i18n.t('pages.config.ws-proxy.title'),
+						to: '/config/ws-proxy',
+						roles: [UserRole.Admin],
+					},
+					{
 						title: i18n.t('pages.config.influxdb-bridge.title'),
 						to: '/config/influxdb-bridge',
 						feature: Feature.iqrfGatewayInfluxdbBridge,
@@ -340,6 +345,11 @@ function items(): SidebarLink[] {
 					{
 						title: i18n.t('pages.accessControl.sshKeys.title'),
 						to: '/access-control/ssh-keys',
+						roles: [UserRole.Admin],
+					},
+					{
+						title: i18n.t('pages.accessControl.daemonAccessTokens.title'),
+						to: '/access-control/daemon-access-tokens',
 						roles: [UserRole.Admin],
 					},
 				],
