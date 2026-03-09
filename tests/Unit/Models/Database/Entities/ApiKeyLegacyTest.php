@@ -1,14 +1,14 @@
 <?php
 
 /**
- * TEST: App\Models\Database\Entities\ApiKey
- * @covers App\Models\Database\Entities\ApiKey
+ * TEST: App\Models\Database\Entities\ApiKeyLegacy
+ * @covers App\Models\Database\Entities\ApiKeyLegacy
  * @phpVersion >= 7.4
  * @testCase
  */
 /**
- * Copyright 2017-2025 IQRF Tech s.r.o.
- * Copyright 2019-2025 MICRORISC s.r.o.
+ * Copyright 2017-2026 IQRF Tech s.r.o.
+ * Copyright 2019-2026 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ namespace Tests\Unit\Models\Database\Entities;
 
 use App\Exceptions\ApiKeyExpirationPassedException;
 use App\Exceptions\ApiKeyInvalidExpirationException;
-use App\Models\Database\Entities\ApiKey;
+use App\Models\Database\Entities\ApiKeyLegacy;
 use DateTime;
 use Nette\Utils\Strings;
 use Tester\Assert;
@@ -39,7 +39,7 @@ require __DIR__ . '/../../../../bootstrap.php';
 /**
  * Tests for API key database entity
  */
-class ApiKeyTest extends TestCase {
+class ApiKeyLegacyTest extends TestCase {
 
 	/**
 	 * API key description
@@ -57,9 +57,9 @@ class ApiKeyTest extends TestCase {
 	private const FUTURE_EXPIRATION = '2099-01-01T00:00:00+02:00';
 
 	/**
-	 * @var ApiKey API key entity
+	 * @var ApiKeyLegacy API key entity
 	 */
-	private ApiKey $entity;
+	private ApiKeyLegacy $entity;
 
 	/**
 	 * @var string API key
@@ -136,9 +136,9 @@ class ApiKeyTest extends TestCase {
 	 */
 	public function testIsExpired(): void {
 		Assert::false($this->entity->isExpired());
-		$entity = new ApiKey(self::DESCRIPTION, null);
+		$entity = new ApiKeyLegacy(self::DESCRIPTION, null);
 		Assert::false($entity->isExpired());
-		$entity = new ApiKey(self::DESCRIPTION, new DateTime(self::PAST_EXPIRATION));
+		$entity = new ApiKeyLegacy(self::DESCRIPTION, new DateTime(self::PAST_EXPIRATION));
 		Assert::true($entity->isExpired());
 	}
 
@@ -170,11 +170,11 @@ class ApiKeyTest extends TestCase {
 	protected function setUp(): void {
 		parent::setUp();
 		$this->expiration = new DateTime(self::FUTURE_EXPIRATION);
-		$this->entity = new ApiKey(self::DESCRIPTION, $this->expiration);
+		$this->entity = new ApiKeyLegacy(self::DESCRIPTION, $this->expiration);
 		$this->key = $this->entity->getKey();
 	}
 
 }
 
-$test = new ApiKeyTest();
+$test = new ApiKeyLegacyTest();
 $test->run();
