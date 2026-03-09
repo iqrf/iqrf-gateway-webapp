@@ -22,6 +22,7 @@ namespace App\Models\WebSocket\Messages;
 
 use App\Models\WebSocket\Enums\ProxyAuthError;
 use App\Models\WebSocket\Enums\ProxyMessageType;
+use DateTimeImmutable;
 
 /**
  * Proxy authentication failed message
@@ -31,9 +32,9 @@ class ProxyAuthFailed extends ProxyMessageBase {
 	/**
 	 * Constructs proxy authentication failed message
 	 * @param ProxyAuthError $error Authentication failure reason
-	 * @param int|null $timestamp Message timestamp (unix epoch)
+	 * @param DateTimeImmutable|null $timestamp Message timestamp
 	 */
-	public function __construct(ProxyAuthError $error, ?int $timestamp = null) {
+	public function __construct(ProxyAuthError $error, ?DateTimeImmutable $timestamp = null) {
 		parent::__construct(
 			type: ProxyMessageType::PROXY_AUTH_FAILED,
 			timestamp: $timestamp,

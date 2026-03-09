@@ -21,6 +21,8 @@ declare(strict_types = 1);
 namespace App\Models\WebSocket\Utils;
 
 use App\Models\WebSocket\Enums\ProxyMessageType;
+use DateTimeImmutable;
+use DateTimeZone;
 use stdClass;
 
 /**
@@ -55,7 +57,7 @@ final class ProxyMessageValidator {
 	 */
 	public static function isProxySessionRefreshMessage(stdClass $json): bool {
 		return (property_exists($json, 'type') && $json->type === ProxyMessageType::PROXY_SESSION_REFRESH->value) &&
-			(property_exists($json, 'timestamp') && is_int($json->timestamp)) &&
+			(property_exists($json, 'timestamp') && is_string($json->timestamp)) &&
 			(property_exists($json, 'data') && is_object($json->data)) &&
 			(property_exists($json->data, 'sessionId') && is_int($json->data->sessionId)) &&
 			(property_exists($json->data, 'token') && is_string($json->data->token));
@@ -65,18 +67,23 @@ final class ProxyMessageValidator {
 	 * Checks if JSON object is an upstream authentication success message.
 	 *
 	 * The authentication success message is expected to have message type
-	 * `auth_success`, an integer property `expiration` and a bool property `service`.
+	 * `auth_success`, a string property `expiration` and a bool property `service`.
 	 *
-	 * The expiration is represented by unix epoch in seconds.
+	 * The expiration is represented by strict ISO 8601 timestamp.
 	 * Service property indicates whether session can use service mode.
 	 *
 	 * @param stdClass $json JSON object of a messsage
 	 * @return bool `true` if message is authentication success, `false` otherwise
 	 */
 	public static function isAuthSuccessMessage(stdClass $json): bool {
-		return (property_exists($json, 'type') && $json->type === self::AUTH_SUCCESS_MESSAGE_TYPE) &&
-			(property_exists($json, 'expiration') && is_int($json->expiration)) &&
+		$properties_valid = (property_exists($json, 'type') && $json->type === self::AUTH_SUCCESS_MESSAGE_TYPE) &&
+			(property_exists($json, 'expiration') && is_string($json->expiration)) &&
 			(property_exists($json, 'service') && is_bool($json->service));
+		if (!$properties_valid) {
+			return false;
+		}
+		$dt = DateTimeImmutable::createFromFormat(DateTimeImmutable::ATOM, $json->expiration, new DateTimeZone('UTC'));
+		return $dt !== false;
 	}
 
 	/**

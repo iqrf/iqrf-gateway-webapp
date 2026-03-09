@@ -28,6 +28,8 @@ namespace Tests\Unit\Models\WebSocket\Messages;
 
 use App\Models\WebSocket\Enums\ProxyMessageType;
 use App\Models\WebSocket\Messages\UpstreamReady;
+use DateTimeImmutable;
+use DateTimeZone;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -41,12 +43,17 @@ final class UpstreamReadyTest extends TestCase {
 	/**
 	 * Upstream session expiration timestamp
 	 */
-	private const EXPIRATION = 1798761600;
+	private const EXPIRATION = '2027-01-01T12:00:00+00:00';
 
 	/**
 	 * Message timestamp
 	 */
-	private const TIMESTAMP = 1767261600;
+	private const TIMESTAMP = '2026-01-01T10:00:00+00:00';
+
+	/**
+	 * Message datetime
+	 */
+	private DateTimeImmutable $dt;
 
 	/**
 	 * @var UpstreamReady Message object
@@ -74,7 +81,7 @@ final class UpstreamReadyTest extends TestCase {
 	 */
 	public function testToJsonString(): void {
 		Assert::same(
-			'{"type":"upstream_ready","timestamp":1767261600,"data":{"expiration":1798761600}}',
+			'{"type":"upstream_ready","timestamp":"2026-01-01T10:00:00+00:00","data":{"expiration":"2027-01-01T12:00:00+00:00"}}',
 			$this->message->toJsonString(),
 		);
 	}
@@ -83,7 +90,12 @@ final class UpstreamReadyTest extends TestCase {
 	 * Sets up test environment
 	 */
 	protected function setUp(): void {
-		$this->message = new UpstreamReady(self::EXPIRATION, self::TIMESTAMP);
+		$this->dt = DateTimeImmutable::createFromFormat(
+			'Y-m-d H:i:s',
+			sprintf('%04d-%02d-%02d %02d:%02d:%02d', 2026, 1, 1, 10, 0, 0),
+			new DateTimeZone('UTC')
+		);
+		$this->message = new UpstreamReady(self::EXPIRATION, $this->dt);
 	}
 
 }

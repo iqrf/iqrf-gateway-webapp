@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\Models\WebSocket\Messages;
 
 use App\Models\WebSocket\Enums\ProxyMessageType;
+use DateTimeImmutable;
 use stdClass;
 
 /**
@@ -31,9 +32,9 @@ class UpstreamResponse extends ProxyMessageBase {
 	/**
 	 * Constructs upstream response message
 	 * @param stdClass $message Message contents
-	 * @param int|null $timestamp Message timestamp (unix epoch)
+	 * @param DateTimeImmutable|null $timestamp Message timestamp
 	 */
-	public function __construct(stdClass $message, ?int $timestamp = null) {
+	public function __construct(stdClass $message, ?DateTimeImmutable $timestamp = null) {
 		parent::__construct(
 			type: ProxyMessageType::RESPONSE,
 			timestamp: $timestamp,

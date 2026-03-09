@@ -39,7 +39,7 @@ limitations under the License.
 			class='d-flex justify-space-between'
 		>
 			<span class='text-left'>{{ $t('components.status.daemonApi.upstream.nextAttempt') }}:&nbsp;</span>
-			<span class='text-right'>{{ $d(new Date(upstreamReconnectTs), 'dateTime') }}</span>
+			<span class='text-right'>{{ $d(upstreamReconnectTs.toJSDate(), 'dateTime') }}</span>
 		</div>
 	</v-tooltip>
 </template>
