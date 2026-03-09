@@ -1,0 +1,11 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/accessScopes.json",
+	"title": "Access scopes",
+	"type": "array",
+	"items": {
+		"title": "Scope identifier",
+		"type": "string",
+		"example": "devices:read"
+	}
+}
