@@ -30,6 +30,7 @@ use App\Models\WebSocket\Messages\UpstreamResponse;
 use App\Models\WebSocket\Utils\ProxyMessageValidator;
 use Closure;
 use DateTimeImmutable;
+use DateTimeZone;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 use Psr\Log\LoggerInterface;
@@ -81,9 +82,9 @@ class ProxySession {
 	private bool $authenticated = false;
 
 	/**
-	 * @var int|null Upstream session expiration
+	 * @var DateTimeImmutable|null Upstream session expiration
 	 */
-	private ?int $upstreamSessionExpiration;
+	private ?DateTimeImmutable $upstreamSessionExpiration;
 
 	/**
 	 * @var bool Indicates that session is closing (do not reconnect, do not handle messages)
@@ -403,8 +404,8 @@ class ProxySession {
 					],
 				);
 				$this->authenticated = true;
-				$this->upstreamSessionExpiration = $json->expiration;
-				$this->client->send((new UpstreamReady($this->upstreamSessionExpiration))->toJsonString());
+				$this->upstreamSessionExpiration = DateTimeImmutable::createFromFormat(DateTimeImmutable::ATOM, $json->expiration, new DateTimeZone('UTC'));
+				$this->client->send((new UpstreamReady($this->upstreamSessionExpiration->format(DateTimeImmutable::ATOM)))->toJsonString());
 				return;
 			}
 

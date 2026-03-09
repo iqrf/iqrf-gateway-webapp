@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\Models\WebSocket\Messages;
 
 use App\Models\WebSocket\Enums\ProxyMessageType;
+use DateTimeImmutable;
 
 /**
  * Proxy authentication success message
@@ -30,9 +31,9 @@ class ProxyAuthSuccess extends ProxyMessageBase {
 	/**
 	 * Constructs proxy authentication success message
 	 * @param int $sessionId Session ID
-	 * @param int|null $timestamp Message timestamp (unix epoch)
+	 * @param DateTimeImmutable|null $timestamp Message timestamp
 	 */
-	public function __construct(int $sessionId, ?int $timestamp = null) {
+	public function __construct(int $sessionId, ?DateTimeImmutable $timestamp = null) {
 		parent::__construct(
 			type: ProxyMessageType::PROXY_AUTH_SUCCESS,
 			timestamp: $timestamp,

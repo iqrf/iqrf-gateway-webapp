@@ -21,6 +21,8 @@ declare(strict_types = 1);
 namespace App\Models\WebSocket\Messages;
 
 use App\Models\WebSocket\Enums\ProxyMessageType;
+use DateTimeImmutable;
+use DateTimeZone;
 use JsonSerializable;
 use Nette\Utils\Json;
 use stdClass;
@@ -31,36 +33,36 @@ use stdClass;
 abstract class ProxyMessageBase implements JsonSerializable {
 
 	/**
-	 * @var int Message timestamp (unix epoch)
+	 * @var DateTimeImmutable Message timestamp
 	 */
-	protected int $timestamp;
+	protected DateTimeImmutable $timestamp;
 
 	/**
 	 * Constructor
 	 * @param ProxyMessageType $type Message type
-	 * @param int $timestamp Message timestamp (unix epoch)
+	 * @param DateTimeImmutable $timestamp Message timestamp
 	 * @param array<mixed>|stdClass|string|null $payload Payload data
 	 */
 	public function __construct(
 		protected readonly ProxyMessageType $type,
-		?int $timestamp,
+		?DateTimeImmutable $timestamp,
 		protected array|stdClass|string|null $payload = null
 	) {
-		$this->timestamp = $timestamp ?? time();
+		$this->timestamp = $timestamp ?? new DateTimeImmutable('now', new DateTimeZone('UTC'));
 	}
 
 	/**
 	 * Serializes message into JSON
 	 * @return array{
 	 *  type: string,
-	 *  timestamp: int,
+	 *  timestamp: string,
 	 *  data?: array<mixed>|stdClass|string
 	 * } JSON-serialized message
 	 */
 	public function jsonSerialize(): array {
 		$arr = [
 			'type' => $this->type->value,
-			'timestamp' => $this->timestamp,
+			'timestamp' => $this->timestamp->format(DateTimeImmutable::ATOM),
 		];
 		if ($this->payload !== null) {
 			$arr['data'] = $this->payload;

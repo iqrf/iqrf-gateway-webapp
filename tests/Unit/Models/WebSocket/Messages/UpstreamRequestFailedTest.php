@@ -28,6 +28,8 @@ namespace Tests\Unit\Models\WebSocket\Messages;
 
 use App\Models\WebSocket\Enums\ProxyMessageType;
 use App\Models\WebSocket\Messages\UpstreamRequestFailed;
+use DateTimeImmutable;
+use DateTimeZone;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -51,7 +53,12 @@ final class UpstreamRequestFailedTest extends TestCase {
 	/**
 	 * Message timestamp
 	 */
-	private const TIMESTAMP = 1767261600;
+	private const TIMESTAMP = '2026-01-01T10:00:00+00:00';
+
+	/**
+	 * Message datetime
+	 */
+	private DateTimeImmutable $dt;
 
 	/**
 	 * @var UpstreamRequestFailed Message object
@@ -80,7 +87,7 @@ final class UpstreamRequestFailedTest extends TestCase {
 	 */
 	public function testToJsonString(): void {
 		Assert::same(
-			'{"type":"upstream_request_failed","timestamp":1767261600,"data":{"mType":"iqrfRaw","msgId":"4e753420-3287-4de8-bdd5-ef2235d09a75"}}',
+			'{"type":"upstream_request_failed","timestamp":"2026-01-01T10:00:00+00:00","data":{"mType":"iqrfRaw","msgId":"4e753420-3287-4de8-bdd5-ef2235d09a75"}}',
 			$this->message->toJsonString(),
 		);
 	}
@@ -89,7 +96,12 @@ final class UpstreamRequestFailedTest extends TestCase {
 	 * Sets up test environment
 	 */
 	protected function setUp(): void {
-		$this->message = new UpstreamRequestFailed(self::MTYPE, self::MSGID, self::TIMESTAMP);
+		$this->dt = DateTimeImmutable::createFromFormat(
+			'Y-m-d H:i:s',
+			sprintf('%04d-%02d-%02d %02d:%02d:%02d', 2026, 1, 1, 10, 0, 0),
+			new DateTimeZone('UTC')
+		);
+		$this->message = new UpstreamRequestFailed(self::MTYPE, self::MSGID, $this->dt);
 	}
 
 }

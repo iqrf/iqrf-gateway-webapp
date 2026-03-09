@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\Models\WebSocket\Messages;
 
 use App\Models\WebSocket\Enums\ProxyMessageType;
+use DateTimeImmutable;
 
 /**
  * Proxy session refresh success message
@@ -29,9 +30,9 @@ class ProxySessionRefreshSuccess extends ProxyMessageBase {
 
 	/**
 	 * Constructs proxy session refresh success message
-	 * @param int|null $timestamp Message timestamp (unix epoch)
+	 * @param DateTimeImmutable|null $timestamp Message timestamp
 	 */
-	public function __construct(?int $timestamp = null) {
+	public function __construct(?DateTimeImmutable $timestamp = null) {
 		parent::__construct(
 			type: ProxyMessageType::PROXY_SESSION_REFRESH_SUCCESS,
 			timestamp: $timestamp,

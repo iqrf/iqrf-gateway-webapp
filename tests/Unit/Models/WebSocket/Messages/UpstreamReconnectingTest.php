@@ -28,6 +28,8 @@ namespace Tests\Unit\Models\WebSocket\Messages;
 
 use App\Models\WebSocket\Enums\ProxyMessageType;
 use App\Models\WebSocket\Messages\UpstreamReconnecting;
+use DateTimeImmutable;
+use DateTimeZone;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -51,7 +53,12 @@ final class UpstreamReconnectingTest extends TestCase {
 	/**
 	 * Message timestamp
 	 */
-	private const TIMESTAMP = 1767261600;
+	private const TIMESTAMP = '2026-01-01T10:00:00+00:00';
+
+	/**
+	 * Message datetime
+	 */
+	private DateTimeImmutable $dt;
 
 	/**
 	 * @var UpstreamReconnecting Message object
@@ -80,7 +87,7 @@ final class UpstreamReconnectingTest extends TestCase {
 	 */
 	public function testToJsonString(): void {
 		Assert::same(
-			'{"type":"upstream_reconnecting","timestamp":1767261600,"data":{"attempt":1,"delay":1.375}}',
+			'{"type":"upstream_reconnecting","timestamp":"2026-01-01T10:00:00+00:00","data":{"attempt":1,"delay":1.375}}',
 			$this->message->toJsonString(),
 		);
 	}
@@ -89,7 +96,12 @@ final class UpstreamReconnectingTest extends TestCase {
 	 * Sets up test environment
 	 */
 	protected function setUp(): void {
-		$this->message = new UpstreamReconnecting(self::ATTEMPT, self::DELAY, self::TIMESTAMP);
+		$this->dt = DateTimeImmutable::createFromFormat(
+			'Y-m-d H:i:s',
+			sprintf('%04d-%02d-%02d %02d:%02d:%02d', 2026, 1, 1, 10, 0, 0),
+			new DateTimeZone('UTC')
+		);
+		$this->message = new UpstreamReconnecting(self::ATTEMPT, self::DELAY, $this->dt);
 	}
 
 }

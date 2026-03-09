@@ -325,6 +325,14 @@ class ProxyHandler implements MessageComponentInterface {
 			$session->updateExpiration($expiration);
 			// send success response
 			$conn->send((new ProxySessionRefreshSuccess())->toJsonString());
+			$this->logMessage(
+				Level::Info,
+				'Session has been successfully refreshed.',
+				[
+					'addr' => $clientAddr,
+					'id' => strval($sessionId),
+				],
+			);
 			return;
 		}
 

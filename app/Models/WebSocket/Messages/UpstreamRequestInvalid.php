@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\Models\WebSocket\Messages;
 
 use App\Models\WebSocket\Enums\ProxyMessageType;
+use DateTimeImmutable;
 
 /**
  * Upstream request invalid message
@@ -30,9 +31,9 @@ class UpstreamRequestInvalid extends ProxyMessageBase {
 	/**
 	 * Constructs upstream request invalid
 	 * @param string $message Invalid message
-	 * @param int|null $timestamp Message timestamp (unix epoch)
+	 * @param DateTimeImmutable|null $timestamp Message timestamp
 	 */
-	public function __construct(string $message, ?int $timestamp = null) {
+	public function __construct(string $message, ?DateTimeImmutable $timestamp = null) {
 		parent::__construct(
 			type: ProxyMessageType::REQUEST_INVALID,
 			timestamp: $timestamp,
