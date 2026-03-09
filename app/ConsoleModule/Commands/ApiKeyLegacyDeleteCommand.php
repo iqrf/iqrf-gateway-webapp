@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ConsoleModule\Commands;
 
-use App\Models\Database\Entities\ApiKey;
+use App\Models\Database\Entities\ApiKeyLegacy;
 use RuntimeException;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -33,10 +33,10 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * CLI command for deleting API keys
+ * CLI command for deleting legacy API keys
  */
-#[AsCommand(name: 'api-key:delete', description: 'Deletes an API key')]
-class ApiKeyDeleteCommand extends ApiKeyCommand {
+#[AsCommand(name: 'api-key-legacy:delete', description: 'Deletes a legacy API key')]
+class ApiKeyLegacyDeleteCommand extends ApiKeyLegacyCommand {
 
 	/**
 	 * Configures the user add command
@@ -59,7 +59,7 @@ class ApiKeyDeleteCommand extends ApiKeyCommand {
 		$style = new SymfonyStyle($input, $output);
 		$style->title('Delete the API key');
 		$apiKey = $this->deleteAskId($input, $output);
-		if (!$apiKey instanceof ApiKey) {
+		if (!$apiKey instanceof ApiKeyLegacy) {
 			$style->error('API key with specified ID does not exist.');
 			return Command::FAILURE;
 		}
@@ -78,9 +78,9 @@ class ApiKeyDeleteCommand extends ApiKeyCommand {
 	 * Asks for API key ID
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
-	 * @return ApiKey|null Api key
+	 * @return ApiKeyLegacy|null Api key
 	 */
-	protected function deleteAskId(InputInterface $input, OutputInterface $output): ?ApiKey {
+	protected function deleteAskId(InputInterface $input, OutputInterface $output): ?ApiKeyLegacy {
 		$apiKeyId = $input->getOption('id');
 		$apiKey = ($apiKeyId !== null) ? $this->repository->find($apiKeyId) : null;
 		if (!$input->isInteractive()) {
@@ -95,7 +95,7 @@ class ApiKeyDeleteCommand extends ApiKeyCommand {
 			$apiKeyId = array_search($helper->ask($input, $output, $question), $apiKeys, true);
 			$apiKey = $this->repository->find($apiKeyId);
 		}
-		assert($apiKey instanceof ApiKey);
+		assert($apiKey instanceof ApiKeyLegacy);
 		return $apiKey;
 	}
 

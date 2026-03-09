@@ -21,9 +21,9 @@ declare(strict_types = 1);
 namespace App\ConsoleModule\Commands;
 
 use App\Exceptions\ApiKeyInvalidExpirationException;
-use App\Models\Database\Entities\ApiKey;
+use App\Models\Database\Entities\ApiKeyLegacy;
 use App\Models\Database\EntityManager;
-use App\Models\Database\Repositories\ApiKeyRepository;
+use App\Models\Database\Repositories\ApiKeyLegacyRepository;
 use DateMalformedStringException;
 use DateTime;
 use RuntimeException;
@@ -32,12 +32,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
 
-abstract class ApiKeyCommand extends EntityManagerCommand {
+abstract class ApiKeyLegacyCommand extends EntityManagerCommand {
 
 	/**
-	 * @var ApiKeyRepository API key database repository
+	 * @var ApiKeyLegacyRepository API key database repository
 	 */
-	protected readonly ApiKeyRepository $repository;
+	protected readonly ApiKeyLegacyRepository $repository;
 
 	/**
 	 * Constructor
@@ -45,7 +45,7 @@ abstract class ApiKeyCommand extends EntityManagerCommand {
 	 */
 	public function __construct(EntityManager $entityManager) {
 		parent::__construct($entityManager);
-		$this->repository = $entityManager->getApiKeyRepository();
+		$this->repository = $entityManager->getApiKeyLegacyRepository();
 	}
 
 	/**
@@ -99,10 +99,10 @@ abstract class ApiKeyCommand extends EntityManagerCommand {
 	 * Asks for the API key ID
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
-	 * @return ApiKey API key
+	 * @return ApiKeyLegacy API key
 	 * @throws RuntimeException Question helper not found
 	 */
-	protected function askId(InputInterface $input, OutputInterface $output): ApiKey {
+	protected function askId(InputInterface $input, OutputInterface $output): ApiKeyLegacy {
 		$apiKeyId = $input->getOption('id');
 		$apiKey = ($apiKeyId !== null) ? $this->repository->find($apiKeyId) : null;
 		$helper = $this->getQuestionHelper();
@@ -112,7 +112,7 @@ abstract class ApiKeyCommand extends EntityManagerCommand {
 			$apiKeyId = array_search($helper->ask($input, $output, $question), $apiKeys, true);
 			$apiKey = $this->repository->find($apiKeyId);
 		}
-		assert($apiKey instanceof ApiKey);
+		assert($apiKey instanceof ApiKeyLegacy);
 		return $apiKey;
 	}
 

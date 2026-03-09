@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Copyright 2017-2025 IQRF Tech s.r.o.
- * Copyright 2019-2025 MICRORISC s.r.o.
+ * Copyright 2017-2026 IQRF Tech s.r.o.
+ * Copyright 2019-2026 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,10 +26,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * CLI command for listing API keys
+ * CLI command for listing legacy API keys
  */
-#[AsCommand(name: 'api-key:list', description: 'Lists API keys')]
-class ApiKeyListCommand extends ApiKeyCommand {
+#[AsCommand(name: 'api-key-legacy:list', description: 'Lists legacy API keys')]
+class ApiKeyLegacyListCommand extends ApiKeyLegacyCommand {
 
 	/**
 	 * Executes the API key list command
