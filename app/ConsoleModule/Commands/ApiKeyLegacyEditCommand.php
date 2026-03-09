@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Copyright 2017-2025 IQRF Tech s.r.o.
- * Copyright 2019-2025 MICRORISC s.r.o.
+ * Copyright 2017-2026 IQRF Tech s.r.o.
+ * Copyright 2019-2026 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,8 @@ declare(strict_types = 1);
 
 namespace App\ConsoleModule\Commands;
 
+use App\Exceptions\ApiKeyExpirationPassedException;
 use App\Exceptions\ApiKeyInvalidExpirationException;
-use App\Models\Database\Entities\ApiKey;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputDefinition;
@@ -31,55 +31,48 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * CLI command for adding a new API key
+ * CLI command for editing legacy API keys
  */
-#[AsCommand(name: 'api-key:add', description: 'Adds a new API key')]
-class ApiKeyAddCommand extends ApiKeyCommand {
+#[AsCommand(name: 'api-key-legacy:edit', description: 'Edits a legacy API key')]
+class ApiKeyLegacyEditCommand extends ApiKeyLegacyCommand {
 
 	/**
 	 * Configures the user add command
 	 */
 	protected function configure(): void {
 		$definitions = [
-			new InputOption('description', ['d'], InputOption::VALUE_OPTIONAL, 'API key description'),
-			new InputOption('expiration', ['e'], InputOption::VALUE_OPTIONAL, 'API key expiration date'),
-			new InputOption('no-formatting', null, InputOption::VALUE_NONE, 'Output API key without formatting.'),
+			new InputOption('id', ['i'], InputOption::VALUE_OPTIONAL, 'API key ID to edit'),
+			new InputOption('description', ['d'], InputOption::VALUE_OPTIONAL, 'New API key description'),
+			new InputOption('expiration', ['e'], InputOption::VALUE_OPTIONAL, 'New API key expiration'),
 		];
 		$this->setDefinition(new InputDefinition($definitions));
 	}
 
 	/**
-	 * Executes the API key add command
+	 * Executes the API key edit command
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
 	 * @return int Exit code
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$style = new SymfonyStyle($input, $output);
-		$format = ($input->getParameterOption('--no-formatting') === false);
-		if ($format) {
-			$style->title('Add a new API key');
-		}
+		$apiKey = $this->askId($input, $output);
 		$description = $this->askDescription($input, $output);
+		$apiKey->setDescription($description);
 		try {
 			$expiration = $this->askExpiration($input, $output);
+			$apiKey->setExpiration($expiration);
 		} catch (ApiKeyInvalidExpirationException) {
 			$style->error('Invalid time and date format.');
 			return Command::FAILURE;
-		}
-		$apiKey = new ApiKey($description, $expiration);
-		if ($apiKey->isExpired()) {
+		} catch (ApiKeyExpirationPassedException) {
 			$style->error('Expiration date has already passed.');
 			return Command::FAILURE;
 		}
 		$this->entityManager->persist($apiKey);
 		$this->entityManager->flush();
-		if ($format) {
-			$style->success('API key ' . $apiKey->getKey() . ' has been added!');
-		} else {
-			$style->text($apiKey->getKey());
-		}
-		return 0;
+		$style->success('API key "' . $apiKey->getDescription() . '" has been edited.');
+		return Command::SUCCESS;
 	}
 
 }
