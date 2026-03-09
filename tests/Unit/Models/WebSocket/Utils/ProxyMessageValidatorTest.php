@@ -41,7 +41,17 @@ final class ProxyMessageValidatorTest extends TestCase {
 	/**
 	 * Timestamp
 	 */
-	private const TIMESTAMP = 1767261600;
+	private const TIMESTAMP = '2026-01-01T00:00:00Z';
+
+	/**
+	 * Timestamp in UTC
+	 */
+	private const EXPIRATION_TIMESTAMP_UTC = '2026-01-01T10:00:00Z';
+
+	/**
+	 * Timestamp in Europe/Prague
+	 */
+	private const EXPIRATION_TIMESTAMP_PRG = '2026-01-01T11:00:00+01:00';
 
 	/**
 	 * Access token
@@ -112,7 +122,7 @@ final class ProxyMessageValidatorTest extends TestCase {
 	public function testIsProxySessionRefreshMessageInvalidTimestamp(): void {
 		$msg = (object) [
 			'type' => ProxyMessageType::PROXY_SESSION_REFRESH->value,
-			'timestamp' => strval(self::TIMESTAMP),
+			'timestamp' => 1767261600,
 			'data' => (object) [
 				'sessionId' => 1,
 				'token' => self::ACCESS_TOKEN,
@@ -208,9 +218,11 @@ final class ProxyMessageValidatorTest extends TestCase {
 	public function testIsAuthSuccessMessageValid(): void {
 		$msg = (object) [
 			'type' => 'auth_success',
-			'expiration' => self::TIMESTAMP,
+			'expiration' => self::EXPIRATION_TIMESTAMP_UTC,
 			'service' => false,
 		];
+		Assert::true(ProxyMessageValidator::isAuthSuccessMessage($msg));
+		$msg->expiration = self::EXPIRATION_TIMESTAMP_PRG;
 		Assert::true(ProxyMessageValidator::isAuthSuccessMessage($msg));
 	}
 
@@ -219,7 +231,7 @@ final class ProxyMessageValidatorTest extends TestCase {
 	 */
 	public function testIsAuthSuccessMessageMissingType(): void {
 		$msg = (object) [
-			'expiration' => self::TIMESTAMP,
+			'expiration' => self::EXPIRATION_TIMESTAMP_UTC,
 			'service' => false,
 		];
 		Assert::false(ProxyMessageValidator::isAuthSuccessMessage($msg));
@@ -231,7 +243,7 @@ final class ProxyMessageValidatorTest extends TestCase {
 	public function testIsAuthSuccessMessageInvalidType(): void {
 		$msg = (object) [
 			'type' => 'auth',
-			'expiration' => self::TIMESTAMP,
+			'expiration' => self::EXPIRATION_TIMESTAMP_UTC,
 			'service' => false,
 		];
 		Assert::false(ProxyMessageValidator::isAuthSuccessMessage($msg));
@@ -266,7 +278,7 @@ final class ProxyMessageValidatorTest extends TestCase {
 	public function testIsAuthSuccessMessageMissingService(): void {
 		$msg = (object) [
 			'type' => 'auth_success',
-			'expiration' => self::TIMESTAMP,
+			'expiration' => self::EXPIRATION_TIMESTAMP_UTC,
 		];
 		Assert::false(ProxyMessageValidator::isAuthSuccessMessage($msg));
 	}
@@ -277,7 +289,7 @@ final class ProxyMessageValidatorTest extends TestCase {
 	public function testIsAuthSuccessMessageInvalidService(): void {
 		$msg = (object) [
 			'type' => 'auth_success',
-			'expiration' => self::TIMESTAMP,
+			'expiration' => self::EXPIRATION_TIMESTAMP_UTC,
 			'service' => 'yes',
 		];
 		Assert::false(ProxyMessageValidator::isAuthSuccessMessage($msg));

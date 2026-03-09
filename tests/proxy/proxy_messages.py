@@ -1,5 +1,5 @@
+from datetime import datetime, timezone
 import json
-import time
 
 class ProxyMessages:
 
@@ -8,7 +8,7 @@ class ProxyMessages:
 		"""Creates a proxy session refresh message, and serializes it to JSON string."""
 		return json.dumps({
 			'type': 'proxy_session_refresh',
-			'timestamp': int(time.time()),
+			'timestamp': datetime.now(timezone.utc).isoformat(timespec='seconds'),
 			'data': {
 				'sessionId': session_id,
 				'token': access_token,

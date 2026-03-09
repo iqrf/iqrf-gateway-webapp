@@ -1,12 +1,12 @@
+from datetime import datetime, timedelta, timezone
 import json
-import time
-
 
 def auth_success() -> str:
 	"""Returns a JSON string representation of upstream auth success message."""
+	dt = datetime.now(timezone.utc) + timedelta(hours=1)
 	msg = {
 		'type': 'auth_success',
-		'expiration': int(time.time()) + 3600,
+		'expiration': dt.isoformat(timespec='seconds'),
 		'service': False,
 	}
 	return json.dumps(msg)

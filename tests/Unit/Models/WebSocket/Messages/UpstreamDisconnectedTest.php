@@ -28,6 +28,8 @@ namespace Tests\Unit\Models\WebSocket\Messages;
 
 use App\Models\WebSocket\Enums\ProxyMessageType;
 use App\Models\WebSocket\Messages\UpstreamDisconnected;
+use DateTimeImmutable;
+use DateTimeZone;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -41,7 +43,12 @@ final class UpstreamDisconnectedTest extends TestCase {
 	/**
 	 * Message timestamp
 	 */
-	private const TIMESTAMP = 1767261600;
+	private const TIMESTAMP = '2026-01-01T10:00:00+00:00';
+
+	/**
+	 * Message datetime
+	 */
+	private DateTimeImmutable $dt;
 
 	/**
 	 * @var UpstreamDisconnected Message object
@@ -66,7 +73,7 @@ final class UpstreamDisconnectedTest extends TestCase {
 	 */
 	public function testToJsonString(): void {
 		Assert::same(
-			'{"type":"upstream_disconnected","timestamp":1767261600}',
+			'{"type":"upstream_disconnected","timestamp":"2026-01-01T10:00:00+00:00"}',
 			$this->message->toJsonString(),
 		);
 	}
@@ -75,7 +82,12 @@ final class UpstreamDisconnectedTest extends TestCase {
 	 * Sets up test environment
 	 */
 	protected function setUp(): void {
-		$this->message = new UpstreamDisconnected(self::TIMESTAMP);
+		$this->dt = DateTimeImmutable::createFromFormat(
+			'Y-m-d H:i:s',
+			sprintf('%04d-%02d-%02d %02d:%02d:%02d', 2026, 1, 1, 10, 0, 0),
+			new DateTimeZone('UTC')
+		);
+		$this->message = new UpstreamDisconnected($this->dt);
 	}
 
 }

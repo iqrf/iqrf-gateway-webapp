@@ -28,6 +28,8 @@ namespace Tests\Unit\Models\WebSocket\Messages;
 
 use App\Models\WebSocket\Enums\ProxyMessageType;
 use App\Models\WebSocket\Messages\ProxyAuthSuccess;
+use DateTimeImmutable;
+use DateTimeZone;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -46,7 +48,12 @@ final class ProxyAuthSuccessTest extends TestCase {
 	/**
 	 * Message timestamp
 	 */
-	private const TIMESTAMP = 1767261600;
+	private const TIMESTAMP = '2026-01-01T10:00:00+00:00';
+
+	/**
+	 * Message datetime
+	 */
+	private DateTimeImmutable $dt;
 
 	/**
 	 * @var ProxyAuthSuccess Message object
@@ -74,7 +81,7 @@ final class ProxyAuthSuccessTest extends TestCase {
 	 */
 	public function testToJsonString(): void {
 		Assert::same(
-			'{"type":"proxy_auth_success","timestamp":1767261600,"data":{"sessionId":2203}}',
+			'{"type":"proxy_auth_success","timestamp":"2026-01-01T10:00:00+00:00","data":{"sessionId":2203}}',
 			$this->message->toJsonString(),
 		);
 	}
@@ -83,7 +90,12 @@ final class ProxyAuthSuccessTest extends TestCase {
 	 * Sets up test environment
 	 */
 	protected function setUp(): void {
-		$this->message = new ProxyAuthSuccess(self::SESSION_ID, self::TIMESTAMP);
+		$this->dt = DateTimeImmutable::createFromFormat(
+			'Y-m-d H:i:s',
+			sprintf('%04d-%02d-%02d %02d:%02d:%02d', 2026, 1, 1, 10, 0, 0),
+			new DateTimeZone('UTC')
+		);
+		$this->message = new ProxyAuthSuccess(self::SESSION_ID, $this->dt);
 	}
 
 }

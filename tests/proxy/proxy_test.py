@@ -15,7 +15,7 @@ async def test_proxy_connect_no_token():
 		data = json.loads(msg)
 
 		assert_prop_type_value(data, 'type', str, 'proxy_auth_failed')
-		assert_prop_type(data, 'timestamp', int)
+		assert_prop_type(data, 'timestamp', str)
 		assert_prop_type(data, 'data', object)
 		assert_prop_type_value(data['data'], 'code', int, 0)
 
@@ -33,7 +33,7 @@ async def test_proxy_connect_invalid_token_format():
 		data = json.loads(msg)
 
 		assert_prop_type_value(data, 'type', str, 'proxy_auth_failed')
-		assert_prop_type(data, 'timestamp', int)
+		assert_prop_type(data, 'timestamp', str)
 		assert_prop_type(data, 'data', object)
 		assert_prop_type_value(data['data'], 'code', int, 1)
 
@@ -51,7 +51,7 @@ async def test_proxy_connect_invalid_token(invalid_token):
 		data = json.loads(msg)
 
 		assert_prop_type_value(data, 'type', str, 'proxy_auth_failed')
-		assert_prop_type(data, 'timestamp', int)
+		assert_prop_type(data, 'timestamp', str)
 		assert_prop_type(data, 'data', object)
 		assert_prop_type_value(data['data'], 'code', int, 1)
 
@@ -72,7 +72,7 @@ async def test_proxy_connect_success(api):
 
 		# process expected proxy auth success
 		assert_prop_type_value(data, 'type', str, 'proxy_auth_success')
-		assert_prop_type(data, 'timestamp', int)
+		assert_prop_type(data, 'timestamp', str)
 		assert_prop_type(data, 'data', object)
 		assert_prop_type(data['data'], 'sessionId', int)
 
@@ -81,9 +81,9 @@ async def test_proxy_connect_success(api):
 
 		# process upstream ready message
 		assert_prop_type_value(data, 'type', str, 'upstream_ready')
-		assert_prop_type(data, 'timestamp', int)
+		assert_prop_type(data, 'timestamp', str)
 		assert_prop_type(data, 'data', object)
-		assert_prop_type(data['data'], 'expiration', int)
+		assert_prop_type(data['data'], 'expiration', str)
 
 @pytest.mark.asyncio
 async def test_proxy_receive_invalid_message(api):
@@ -95,7 +95,7 @@ async def test_proxy_receive_invalid_message(api):
 
 		# process expected proxy auth success
 		assert_prop_type_value(msg, 'type', str, 'proxy_auth_success')
-		assert_prop_type(msg, 'timestamp', int)
+		assert_prop_type(msg, 'timestamp', str)
 		assert_prop_type(msg, 'data', object)
 		assert_prop_type(msg['data'], 'sessionId', int)
 
@@ -103,9 +103,9 @@ async def test_proxy_receive_invalid_message(api):
 
 		# process upstream ready message
 		assert_prop_type_value(msg, 'type', str, 'upstream_ready')
-		assert_prop_type(msg, 'timestamp', int)
+		assert_prop_type(msg, 'timestamp', str)
 		assert_prop_type(msg, 'data', object)
-		assert_prop_type(msg['data'], 'expiration', int)
+		assert_prop_type(msg['data'], 'expiration', str)
 
 		rq = '{"type}'
 		await ws.send(rq)
@@ -113,7 +113,7 @@ async def test_proxy_receive_invalid_message(api):
 
 		# process proxy message invalid
 		assert_prop_type_value(msg, 'type', str, 'proxy_message_invalid')
-		assert_prop_type(msg, 'timestamp', int)
+		assert_prop_type(msg, 'timestamp', str)
 		assert_prop_type(msg, 'data', object)
 		assert_prop_type_value(msg['data'], 'message', str, rq)
 		assert_prop_type(msg['data'], 'error', str)
@@ -128,7 +128,7 @@ async def test_proxy_session_refresh_invalid_format_token(api):
 
 		# process expected proxy auth success
 		assert_prop_type_value(msg, 'type', str, 'proxy_auth_success')
-		assert_prop_type(msg, 'timestamp', int)
+		assert_prop_type(msg, 'timestamp', str)
 		assert_prop_type(msg, 'data', object)
 		assert_prop_type(msg['data'], 'sessionId', int)
 
@@ -138,9 +138,9 @@ async def test_proxy_session_refresh_invalid_format_token(api):
 
 		# process upstream ready message
 		assert_prop_type_value(msg, 'type', str, 'upstream_ready')
-		assert_prop_type(msg, 'timestamp', int)
+		assert_prop_type(msg, 'timestamp', str)
 		assert_prop_type(msg, 'data', object)
-		assert_prop_type(msg['data'], 'expiration', int)
+		assert_prop_type(msg['data'], 'expiration', str)
 
 		await ws.send(
 			ProxyMessages.proxy_session_refresh(
@@ -152,7 +152,7 @@ async def test_proxy_session_refresh_invalid_format_token(api):
 
 		# process proxy session refresh invalid
 		assert_prop_type_value(msg, 'type', str, 'proxy_session_refresh_failed')
-		assert_prop_type(msg, 'timestamp', int)
+		assert_prop_type(msg, 'timestamp', str)
 
 @pytest.mark.asyncio
 async def test_proxy_session_refresh_different_user(api, invalid_token):
@@ -164,7 +164,7 @@ async def test_proxy_session_refresh_different_user(api, invalid_token):
 
 		# process expected proxy auth success
 		assert_prop_type_value(msg, 'type', str, 'proxy_auth_success')
-		assert_prop_type(msg, 'timestamp', int)
+		assert_prop_type(msg, 'timestamp', str)
 		assert_prop_type(msg, 'data', object)
 		assert_prop_type(msg['data'], 'sessionId', int)
 
@@ -174,9 +174,9 @@ async def test_proxy_session_refresh_different_user(api, invalid_token):
 
 		# process upstream ready message
 		assert_prop_type_value(msg, 'type', str, 'upstream_ready')
-		assert_prop_type(msg, 'timestamp', int)
+		assert_prop_type(msg, 'timestamp', str)
 		assert_prop_type(msg, 'data', object)
-		assert_prop_type(msg['data'], 'expiration', int)
+		assert_prop_type(msg['data'], 'expiration', str)
 
 		await ws.send(
 			ProxyMessages.proxy_session_refresh(
@@ -188,7 +188,7 @@ async def test_proxy_session_refresh_different_user(api, invalid_token):
 
 		# process proxy session refresh invalid
 		assert_prop_type_value(msg, 'type', str, 'proxy_session_refresh_failed')
-		assert_prop_type(msg, 'timestamp', int)
+		assert_prop_type(msg, 'timestamp', str)
 
 @pytest.mark.asyncio
 async def test_proxy_session_refresh_session_id_mismatch(api):
@@ -200,7 +200,7 @@ async def test_proxy_session_refresh_session_id_mismatch(api):
 
 		# process expected proxy auth success
 		assert_prop_type_value(msg, 'type', str, 'proxy_auth_success')
-		assert_prop_type(msg, 'timestamp', int)
+		assert_prop_type(msg, 'timestamp', str)
 		assert_prop_type(msg, 'data', object)
 		assert_prop_type(msg['data'], 'sessionId', int)
 
@@ -208,9 +208,9 @@ async def test_proxy_session_refresh_session_id_mismatch(api):
 
 		# process upstream ready message
 		assert_prop_type_value(msg, 'type', str, 'upstream_ready')
-		assert_prop_type(msg, 'timestamp', int)
+		assert_prop_type(msg, 'timestamp', str)
 		assert_prop_type(msg, 'data', object)
-		assert_prop_type(msg['data'], 'expiration', int)
+		assert_prop_type(msg['data'], 'expiration', str)
 
 		new_access_token = await api.refresh_session(access_token=access_token)
 
@@ -224,7 +224,7 @@ async def test_proxy_session_refresh_session_id_mismatch(api):
 
 		# process proxy session refresh invalid
 		assert_prop_type_value(msg, 'type', str, 'proxy_session_refresh_failed')
-		assert_prop_type(msg, 'timestamp', int)
+		assert_prop_type(msg, 'timestamp', str)
 
 @pytest.mark.asyncio
 async def test_proxy_session_refresh_session_success(api):
@@ -236,7 +236,7 @@ async def test_proxy_session_refresh_session_success(api):
 
 		# process expected proxy auth success
 		assert_prop_type_value(msg, 'type', str, 'proxy_auth_success')
-		assert_prop_type(msg, 'timestamp', int)
+		assert_prop_type(msg, 'timestamp', str)
 		assert_prop_type(msg, 'data', object)
 		assert_prop_type(msg['data'], 'sessionId', int)
 
@@ -246,9 +246,9 @@ async def test_proxy_session_refresh_session_success(api):
 
 		# process upstream ready message
 		assert_prop_type_value(msg, 'type', str, 'upstream_ready')
-		assert_prop_type(msg, 'timestamp', int)
+		assert_prop_type(msg, 'timestamp', str)
 		assert_prop_type(msg, 'data', object)
-		assert_prop_type(msg['data'], 'expiration', int)
+		assert_prop_type(msg['data'], 'expiration', str)
 
 		new_access_token = await api.refresh_session(access_token=access_token)
 
@@ -262,7 +262,7 @@ async def test_proxy_session_refresh_session_success(api):
 
 		# process proxy session refresh invalid
 		assert_prop_type_value(msg, 'type', str, 'proxy_session_refresh_success')
-		assert_prop_type(msg, 'timestamp', int)
+		assert_prop_type(msg, 'timestamp', str)
 
 @pytest.mark.asyncio
 async def test_proxy_session_not_daemon_api_message(api):
@@ -274,7 +274,7 @@ async def test_proxy_session_not_daemon_api_message(api):
 
 		# process expected proxy auth success
 		assert_prop_type_value(msg, 'type', str, 'proxy_auth_success')
-		assert_prop_type(msg, 'timestamp', int)
+		assert_prop_type(msg, 'timestamp', str)
 		assert_prop_type(msg, 'data', object)
 		assert_prop_type(msg['data'], 'sessionId', int)
 
@@ -284,9 +284,9 @@ async def test_proxy_session_not_daemon_api_message(api):
 
 		# process upstream ready message
 		assert_prop_type_value(msg, 'type', str, 'upstream_ready')
-		assert_prop_type(msg, 'timestamp', int)
+		assert_prop_type(msg, 'timestamp', str)
 		assert_prop_type(msg, 'data', object)
-		assert_prop_type(msg['data'], 'expiration', int)
+		assert_prop_type(msg['data'], 'expiration', str)
 
 		rq = '{"testkey":"testval"}'
 		await ws.send(rq)
@@ -294,7 +294,7 @@ async def test_proxy_session_not_daemon_api_message(api):
 
 		# process proxy session refresh invalid
 		assert_prop_type_value(msg, 'type', str, 'upstream_request_invalid')
-		assert_prop_type(msg, 'timestamp', int)
+		assert_prop_type(msg, 'timestamp', str)
 		assert_prop_type_value(msg, 'data', str, rq)
 
 @pytest.mark.asyncio
@@ -307,7 +307,7 @@ async def test_proxy_session_upstream_response(api):
 
 		# process expected proxy auth success
 		assert_prop_type_value(msg, 'type', str, 'proxy_auth_success')
-		assert_prop_type(msg, 'timestamp', int)
+		assert_prop_type(msg, 'timestamp', str)
 		assert_prop_type(msg, 'data', object)
 		assert_prop_type(msg['data'], 'sessionId', int)
 
@@ -317,9 +317,9 @@ async def test_proxy_session_upstream_response(api):
 
 		# process upstream ready message
 		assert_prop_type_value(msg, 'type', str, 'upstream_ready')
-		assert_prop_type(msg, 'timestamp', int)
+		assert_prop_type(msg, 'timestamp', str)
 		assert_prop_type(msg, 'data', object)
-		assert_prop_type(msg['data'], 'expiration', int)
+		assert_prop_type(msg['data'], 'expiration', str)
 
 		rq = {
 			'mType': 'iqrfRaw',
@@ -337,7 +337,7 @@ async def test_proxy_session_upstream_response(api):
 
 		# process proxy session refresh invalid
 		assert_prop_type_value(msg, 'type', str, 'upstream_response')
-		assert_prop_type(msg, 'timestamp', int)
+		assert_prop_type(msg, 'timestamp', str)
 		assert_prop_type_value(
 			msg,
 			'data',

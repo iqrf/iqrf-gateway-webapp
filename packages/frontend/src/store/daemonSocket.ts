@@ -18,6 +18,7 @@
 import { DaemonMode } from '@iqrf/iqrf-gateway-daemon-utils/enums';
 import { type DaemonApiRequest, type DaemonApiResponse } from '@iqrf/iqrf-gateway-daemon-utils/types';
 import { DaemonMessage, type DaemonMessageOptions } from '@iqrf/iqrf-gateway-daemon-utils/utils';
+import { DateTime } from 'luxon';
 import { defineStore } from 'pinia';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'vue3-toastify';
@@ -41,7 +42,7 @@ import {
 
 interface UpstreamState {
 	status: UpstreamStatus;
-	nextAttempt: number|null;
+	nextAttempt: DateTime|null;
 }
 
 interface DaemonState extends GenericSocketState {
@@ -124,7 +125,7 @@ export const useDaemonStore = defineStore('daemon', {
 			}
 			const message: ProxySessionRefresh = {
 				type: ProxyMessageType.PROXY_SESSION_REFRESH,
-				timestamp: Math.floor(Date.now() / 1_000),
+				timestamp: new Date().toISOString(),
 				data: {
 					sessionId: this.sessionId,
 					token: jwt,
@@ -193,7 +194,7 @@ export const useDaemonStore = defineStore('daemon', {
 			if (message.type === ProxyMessageType.UPSTREAM_RECONNECTING) {
 				const data = (message as UpstreamReconnecting).data;
 				this.upstream.status = UpstreamStatus.RECONNECTING;
-				this.upstream.nextAttempt = (message.timestamp + data.delay) * 1_000;
+				this.upstream.nextAttempt = DateTime.fromISO(message.timestamp).plus({ seconds: data.delay });
 				return;
 			}
 			if (message.type === ProxyMessageType.UPSTREAM_READY) {
@@ -358,9 +359,9 @@ export const useDaemonStore = defineStore('daemon', {
 		},
 		/**
 		 * Returns next upstream reconnect attempt timestamp
-		 * @return {number|null} Next upstream reconnect attempt timestamp
+		 * @return {DateTime|null} Next upstream reconnect attempt timestamp
 		 */
-		upstreamReconnectTs(): number|null {
+		upstreamReconnectTs(): DateTime|null {
 			return this.upstream.nextAttempt;
 		},
 		/**

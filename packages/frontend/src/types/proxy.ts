@@ -48,7 +48,7 @@ export interface ProxyMessage {
 	/**
 	 * Message timestamp
 	 */
-	timestamp: number;
+	timestamp: string;
 }
 
 /**

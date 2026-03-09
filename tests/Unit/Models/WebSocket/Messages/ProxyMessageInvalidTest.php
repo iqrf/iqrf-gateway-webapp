@@ -28,6 +28,8 @@ namespace Tests\Unit\Models\WebSocket\Messages;
 
 use App\Models\WebSocket\Enums\ProxyMessageType;
 use App\Models\WebSocket\Messages\ProxyMessageInvalid;
+use DateTimeImmutable;
+use DateTimeZone;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -51,7 +53,12 @@ final class ProxyMessageInvalidTest extends TestCase {
 	/**
 	 * Message timestamp
 	 */
-	private const TIMESTAMP = 1767261600;
+	private const TIMESTAMP = '2026-01-01T10:00:00+00:00';
+
+	/**
+	 * Message datetime
+	 */
+	private DateTimeImmutable $dt;
 
 	/**
 	 * @var ProxyMessageInvalid Message object
@@ -80,7 +87,7 @@ final class ProxyMessageInvalidTest extends TestCase {
 	 */
 	public function testToJsonString(): void {
 		Assert::same(
-			'{"type":"proxy_message_invalid","timestamp":1767261600,"data":{"message":"{invalid_json","error":"Message is not a valid JSON object"}}',
+			'{"type":"proxy_message_invalid","timestamp":"2026-01-01T10:00:00+00:00","data":{"message":"{invalid_json","error":"Message is not a valid JSON object"}}',
 			$this->message->toJsonString(),
 		);
 	}
@@ -89,7 +96,12 @@ final class ProxyMessageInvalidTest extends TestCase {
 	 * Sets up test environment
 	 */
 	protected function setUp(): void {
-		$this->message = new ProxyMessageInvalid(self::MESSAGE, self::ERROR, self::TIMESTAMP);
+		$this->dt = DateTimeImmutable::createFromFormat(
+			'Y-m-d H:i:s',
+			sprintf('%04d-%02d-%02d %02d:%02d:%02d', 2026, 1, 1, 10, 0, 0),
+			new DateTimeZone('UTC')
+		);
+		$this->message = new ProxyMessageInvalid(self::MESSAGE, self::ERROR, $this->dt);
 	}
 
 }

@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\Models\WebSocket\Messages;
 
 use App\Models\WebSocket\Enums\ProxyMessageType;
+use DateTimeImmutable;
 
 /**
  * Upstream ready message
@@ -29,10 +30,10 @@ class UpstreamReady extends ProxyMessageBase {
 
 	/**
 	 * Constructs upstream ready message
-	 * @param int $expiration Expiration timestamp
-	 * @param int|null $timestamp Message timestamp (unix epoch)
+	 * @param string $expiration Expiration timestamp
+	 * @param DateTimeImmutable|null $timestamp Message timestamp
 	 */
-	public function __construct(int $expiration, ?int $timestamp = null) {
+	public function __construct(string $expiration, ?DateTimeImmutable $timestamp = null) {
 		parent::__construct(
 			type: ProxyMessageType::READY,
 			timestamp: $timestamp,
