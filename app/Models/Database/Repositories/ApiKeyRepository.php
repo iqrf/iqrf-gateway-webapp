@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Copyright 2017-2025 IQRF Tech s.r.o.
- * Copyright 2019-2025 MICRORISC s.r.o.
+ * Copyright 2017-2026 IQRF Tech s.r.o.
+ * Copyright 2019-2026 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,27 +28,5 @@ use Doctrine\ORM\EntityRepository;
  * @extends EntityRepository<ApiKey>
  */
 class ApiKeyRepository extends EntityRepository {
-
-	/**
-	 * Finds one API key by its hash salt value
-	 * @param string $salt API key hash salt
-	 * @return ApiKey|null API key entity
-	 */
-	public function findOneBySalt(string $salt): ?ApiKey {
-		return $this->findOneBy(['salt' => $salt]);
-	}
-
-	/**
-	 * Lists API keys as qrray of strings with description and expiration
-	 * @return array<int, string> API keys
-	 */
-	public function listWithDescription(): array {
-		$array = [];
-		foreach ($this->findAll() as $apiKey) {
-			$expiration = $apiKey->getExpiration() === null ? 'none' : $apiKey->getExpiration()->format('c');
-			$array[$apiKey->getId()] = sprintf('ID: %d, description: %s, expiration: %s', $apiKey->getId(), $apiKey->getDescription(), $expiration);
-		}
-		return $array;
-	}
 
 }

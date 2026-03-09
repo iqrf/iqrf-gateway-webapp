@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Copyright 2017-2025 IQRF Tech s.r.o.
- * Copyright 2019-2025 MICRORISC s.r.o.
+ * Copyright 2017-2026 IQRF Tech s.r.o.
+ * Copyright 2019-2026 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,12 +21,14 @@ declare(strict_types = 1);
 namespace App\ApiModule\Version0\Models;
 
 use App\Models\Database\Entities\ApiKey;
+use App\Models\Database\Entities\ApiKeyLegacy;
 use App\Models\Database\Entities\User;
 use App\Models\Database\EntityManager;
 use Contributte\Middlewares\Security\IAuthenticator;
 use InvalidArgumentException;
 use Nette\Utils\Strings;
 use Psr\Http\Message\ServerRequestInterface;
+use Throwable;
 
 class BearerAuthenticator implements IAuthenticator {
 
@@ -44,31 +46,60 @@ class BearerAuthenticator implements IAuthenticator {
 	/**
 	 * Authenticates the application or user
 	 * @param ServerRequestInterface $request HTTP request
-	 * @return ApiKey|User|null API key or user entity
+	 * @return ApiKeyLegacy|ApiKey|User|null API key or user entity
 	 * @throws InvalidArgumentException
 	 */
-	public function authenticate(ServerRequestInterface $request): ApiKey|User|null {
+	public function authenticate(ServerRequestInterface $request): ApiKeyLegacy|ApiKey|User|null {
 		$header = $request->getHeader('Authorization')[0] ?? '';
 		$token = $this->parseAuthorizationHeader($header);
 		if ($token === null) {
 			return null;
 		}
-		if (Strings::match($token, '#^[./A-Za-z0-9]{22}\.[A-Za-z0-9+/=]{44}$#') !== null) {
+		// Authenticate with API key
+		// TODO: UPDATE REGEX TO BE MORE STRICT, 0-2x '=' -> 44, [..]{43}=, [..]{42}={2}..
+		if (Strings::match($token, '~^webapp;[0-9]+;([0-9A-Za-z+/=]{44})$~') !== null) {
 			return $this->authenticateApp($token);
+		}
+		// Authentication with legacy API key
+		if (Strings::match($token, '#^[./A-Za-z0-9]{22}\.[A-Za-z0-9+/=]{44}$#') !== null) {
+			return $this->authenticateAppLegacy($token);
 		}
 		return $this->authenticateUser($token);
 	}
 
 	/**
-	 * Authenticates the application
+	 * Authenticates the application with API key
 	 * @param string $key API key
 	 * @return ApiKey|null API key entity
 	 */
 	public function authenticateApp(string $key): ?ApiKey {
-		$repository = $this->entityManager->getApiKeyRepository();
+		if ($key === '') {
+			return null;
+		}
+		$keyTokens = explode(';', $key, 3);
+		$id = intval($keyTokens[1]);
+		try {
+			$repository = $this->entityManager->getApiKeyRepository();
+			$apiKey = $repository->find($id);
+			if ($apiKey instanceof ApiKey && $apiKey->verify($keyTokens[2])) {
+				return $apiKey;
+			}
+			return null;
+		} catch (Throwable) {
+			return null;
+		}
+	}
+
+	/**
+	 * Authenticates the application with legacy API key
+	 * @param string $key API key
+	 * @return ApiKeyLegacy|null API key entity
+	 */
+	public function authenticateAppLegacy(string $key): ?ApiKeyLegacy {
+		$repository = $this->entityManager->getApiKeyLegacyRepository();
 		$salt = Strings::substring($key, 0, 22);
 		$apiKey = $repository->findOneBySalt($salt);
-		if ($apiKey instanceof ApiKey && $apiKey->verify($key)) {
+		if ($apiKey instanceof ApiKeyLegacy && $apiKey->verify($key)) {
 			return $apiKey;
 		}
 		return null;
