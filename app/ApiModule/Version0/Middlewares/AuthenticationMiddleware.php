@@ -23,6 +23,7 @@ namespace App\ApiModule\Version0\Middlewares;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\RequestAttributes;
 use App\Models\Database\Entities\ApiKey;
+use App\Models\Database\Entities\ApiKeyLegacy;
 use App\Models\Database\Entities\User;
 use App\Models\Database\EntityManager;
 use Contributte\Middlewares\IMiddleware;
@@ -141,6 +142,9 @@ class AuthenticationMiddleware implements IMiddleware {
 			$request = $request->withAttribute(RequestAttributes::APP_LOGGED_USER, $identity);
 		} elseif ($identity instanceof ApiKey) {
 			// Add info about current logged application to request attributes
+			$request = $request->withAttribute(RequestAttributes::APP_LOGGED_APP, $identity);
+		} elseif ($identity instanceof ApiKeyLegacy) {
+			// Add info about current logged application with legacy key to request attributes
 			$request = $request->withAttribute(RequestAttributes::APP_LOGGED_APP, $identity);
 		}
 		// Pass to next middleware

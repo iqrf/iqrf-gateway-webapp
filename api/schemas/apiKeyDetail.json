@@ -35,6 +35,50 @@
 			],
 			"title": "API key expiration",
 			"example": null
+		},
+		"revokedBy": {
+			"$id": "#/properties/revokedBy",
+			"title": "Revoked by user",
+			"oneOf": [
+				{
+					"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/userDetail.json"
+				},
+				{
+					"type": "null"
+				}
+			]
+		},
+		"revokedAt": {
+			"$id": "#/properties/revokedAt",
+			"oneOf": [
+				{
+					"type": "string",
+					"format": "date-time"
+				},
+				{
+					"type": "null"
+				}
+			],
+			"title": "API key expiration",
+			"example": null
+		},
+		"state": {
+			"$id": "#/properties/state",
+			"title": "API key state",
+			"type": "string",
+			"enum": [
+				"active",
+				"revoked"
+			]
+		},
+		"scopes": {
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/accessScopes.json"
+		},
+		"legacy": {
+			"$id": "#/properties/legacy",
+			"title": "Legacy flag",
+			"type": "boolean",
+			"example": true
 		}
 	}
 }

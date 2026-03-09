@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Copyright 2017-2025 IQRF Tech s.r.o.
- * Copyright 2019-2025 MICRORISC s.r.o.
+ * Copyright 2017-2026 IQRF Tech s.r.o.
+ * Copyright 2019-2026 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\Models\Database;
 
 use App\Models\Database\Entities\ApiKey;
+use App\Models\Database\Entities\ApiKeyLegacy;
 use App\Models\Database\Entities\ControllerPinConfiguration;
 use App\Models\Database\Entities\IqrfOsPatch;
 use App\Models\Database\Entities\Mapping;
@@ -34,6 +35,7 @@ use App\Models\Database\Entities\WireguardInterfaceIpv4;
 use App\Models\Database\Entities\WireguardInterfaceIpv6;
 use App\Models\Database\Entities\WireguardPeer;
 use App\Models\Database\Entities\WireguardPeerAddress;
+use App\Models\Database\Repositories\ApiKeyLegacyRepository;
 use App\Models\Database\Repositories\ApiKeyRepository;
 use App\Models\Database\Repositories\ControllerPinConfigurationRepository;
 use App\Models\Database\Repositories\IqrfOsPatchRepository;
@@ -60,6 +62,14 @@ trait TRepositories {
 	 */
 	public function getApiKeyRepository(): ApiKeyRepository {
 		return $this->getRepository(ApiKey::class);
+	}
+
+	/**
+	 * Returns the legacy API key repository
+	 * @return ApiKeyLegacyRepository legacy API key repository
+	 */
+	public function getApiKeyLegacyRepository(): ApiKeyLegacyRepository {
+		return $this->getRepository(ApiKeyLegacy::class);
 	}
 
 	/**

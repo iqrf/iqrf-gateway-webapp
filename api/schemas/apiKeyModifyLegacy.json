@@ -1,13 +1,12 @@
 {
 	"$schema": "http://json-schema.org/draft-07/schema",
-	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/apiKeyModify.json",
+	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/apiKeyModifyLegacy.json",
 	"type": "object",
-	"title": "API key to modify",
+	"title": "Legacy API key to modify",
 	"additionalProperties": false,
 	"required": [
 		"description",
-		"expiration",
-		"scopes"
+		"expiration"
 	],
 	"properties": {
 		"description": {
@@ -29,9 +28,6 @@
 			],
 			"title": "API key expiration",
 			"example": null
-		},
-		"scopes": {
-			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/accessScopes.json"
 		}
 	}
 }

@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Copyright 2017-2025 IQRF Tech s.r.o.
- * Copyright 2019-2025 MICRORISC s.r.o.
+ * Copyright 2017-2026 IQRF Tech s.r.o.
+ * Copyright 2019-2026 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,11 +29,16 @@ use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\ControllerValidators;
+use App\ApiModule\Version0\RequestAttributes;
 use App\Exceptions\ApiKeyExpirationPassedException;
 use App\Exceptions\ApiKeyInvalidExpirationException;
 use App\Models\Database\Entities\ApiKey;
+use App\Models\Database\Entities\ApiKeyLegacy;
 use App\Models\Database\EntityManager;
+use App\Models\Database\Repositories\ApiKeyLegacyRepository;
 use App\Models\Database\Repositories\ApiKeyRepository;
+use DomainException;
+use InvalidArgumentException;
 
 /**
  * API keys controller
@@ -41,6 +46,11 @@ use App\Models\Database\Repositories\ApiKeyRepository;
 #[Path('/apiKeys')]
 #[Tag('Security - API key management')]
 class ApiKeyController extends BaseSecurityController {
+
+	/**
+	 * @var ApiKeyLegacyRepository API key database repository
+	 */
+	private readonly ApiKeyLegacyRepository $repositoryLegacy;
 
 	/**
 	 * @var ApiKeyRepository API key database repository
@@ -57,6 +67,7 @@ class ApiKeyController extends BaseSecurityController {
 		ControllerValidators $validators,
 	) {
 		parent::__construct($validators);
+		$this->repositoryLegacy = $entityManager->getApiKeyLegacyRepository();
 		$this->repository = $entityManager->getApiKeyRepository();
 	}
 
@@ -76,8 +87,23 @@ class ApiKeyController extends BaseSecurityController {
 	EOT)]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['apiKeys']);
-		$apiKeys = $this->repository->findAll();
-		$response = $response->writeJsonBody($apiKeys);
+		$apiKeys = array_map(
+			static function (ApiKey $apiKey): array {
+				$data = $apiKey->jsonSerialize();
+				$data['legacy'] = false;
+				return $data;
+			},
+			$this->repository->findAll()
+		);
+		$apiKeysLegacy = array_map(
+			static function (ApiKeyLegacy $apiKey): array {
+				$data = $apiKey->jsonSerialize();
+				$data['legacy'] = true;
+				return $data;
+			},
+			$this->repositoryLegacy->findAll()
+		);
+		$response = $response->writeJsonBody([...$apiKeys, ...$apiKeysLegacy]);
 		return $this->validators->validateResponse('apiKeyList', $response);
 	}
 
@@ -112,9 +138,14 @@ class ApiKeyController extends BaseSecurityController {
 		$this->validators->checkScopes($request, ['apiKeys']);
 		$this->validators->validateRequest('apiKeyModify', $request);
 		$json = $request->getJsonBodyCopy(false);
-		$apiKey = new ApiKey($json->description, null);
+		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
 		try {
-			$apiKey->setExpirationFromString($json->expiration);
+			$apiKey = new ApiKey(
+				$json->description,
+				$json->expiration,
+				$user
+			);
+			$apiKey->setScopesFromStringArray($json->scopes);
 		} catch (ApiKeyExpirationPassedException | ApiKeyInvalidExpirationException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
 		}
@@ -148,6 +179,9 @@ class ApiKeyController extends BaseSecurityController {
 		$id = (int) $request->getParameter('id');
 		$apiKey = $this->repository->find($id);
 		if ($apiKey === null) {
+			$apiKey = $this->repositoryLegacy->find($id);
+		}
+		if ($apiKey === null) {
 			throw new ClientErrorException('API key not found', ApiResponse::S404_NOT_FOUND);
 		}
 		$response = $response->writeJsonObject($apiKey);
@@ -171,6 +205,9 @@ class ApiKeyController extends BaseSecurityController {
 		$this->validators->checkScopes($request, ['apiKeys']);
 		$id = (int) $request->getParameter('id');
 		$apiKey = $this->repository->find($id);
+		if ($apiKey === null) {
+			$apiKey = $this->repositoryLegacy->find($id);
+		}
 		if ($apiKey === null) {
 			throw new ClientErrorException('API key not found', ApiResponse::S404_NOT_FOUND);
 		}
@@ -204,17 +241,69 @@ class ApiKeyController extends BaseSecurityController {
 		$this->validators->checkScopes($request, ['apiKeys']);
 		$id = (int) $request->getParameter('id');
 		$apiKey = $this->repository->find($id);
+		if ($apiKey !== null) {
+			$this->validators->validateRequest('apiKeyModify', $request);
+			$json = $request->getJsonBodyCopy(false);
+			try {
+				$apiKey->setDescription($json->description);
+				$apiKey->setExpiration($json->expiration);
+				$apiKey->setScopesFromStringArray($json->scopes);
+			} catch (DomainException | InvalidArgumentException $e) {
+				throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
+			}
+		} else {
+			// modify legacy key
+			$apiKey = $this->repositoryLegacy->find($id);
+			if ($apiKey === null) {
+				throw new ClientErrorException('API key not found', ApiResponse::S404_NOT_FOUND);
+			}
+			$this->validators->validateRequest('apiKeyModify', $request);
+			$json = $request->getJsonBodyCopy(false);
+			$apiKey->setDescription($json->description);
+			try {
+				$apiKey->setExpirationFromString($json->expiration);
+			} catch (ApiKeyExpirationPassedException | ApiKeyInvalidExpirationException $e) {
+				throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
+			}
+		}
+		$this->entityManager->persist($apiKey);
+		$this->entityManager->flush();
+		return $response;
+	}
+
+	#[Path('/{id}/revoke')]
+	#[Method('POST')]
+	#[OpenApi(<<<'EOT'
+		summary: Revokes the API key
+		responses:
+			'200':
+				description: Success
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'409':
+				description: Legacy API keys do not support revocation
+				content:
+					application/json:
+						schema:
+							$ref: '#/components/schemas/Error'
+	EOT)]
+	#[RequestParameter(name: 'id', type: 'integer', description: 'API key ID')]
+	public function revoke(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validators->checkScopes($request, ['apiKeys']);
+		$this->validators->onlyForUsers($request);
+		$id = (int) $request->getParameter('id');
+		$apiKey = $this->repository->find($id);
+		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
 		if ($apiKey === null) {
-			throw new ClientErrorException('API key not found', ApiResponse::S404_NOT_FOUND);
+			$apiKey = $this->repositoryLegacy->find($id);
+			if ($apiKey === null) {
+				throw new ClientErrorException('API key not found', ApiResponse::S404_NOT_FOUND);
+			}
+			throw new ClientErrorException('Legacy API keys do not support revocation', ApiResponse::S409_CONFLICT);
 		}
-		$this->validators->validateRequest('apiKeyModify', $request);
-		$json = $request->getJsonBodyCopy(false);
-		$apiKey->setDescription($json->description);
-		try {
-			$apiKey->setExpirationFromString($json->expiration);
-		} catch (ApiKeyExpirationPassedException | ApiKeyInvalidExpirationException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
-		}
+		$apiKey->revoke($user);
 		$this->entityManager->persist($apiKey);
 		$this->entityManager->flush();
 		return $response;
