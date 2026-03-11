@@ -32,32 +32,32 @@ final class Version20260311193946 extends AbstractMigration {
 	 * Returns the migration description
 	 * @return string Migration description
 	 */
-    public function getDescription(): string {
-        return 'Fix default mapping pins for IQD-GW04 and KONA-RASP-04';
-    }
+	public function getDescription(): string {
+		return 'Fix default mapping pins for IQD-GW04 and KONA-RASP-04';
+	}
 
 	/**
 	 * Applies the migration
 	 * @param Schema $schema Database schema
 	 */
-    public function up(Schema $schema): void {
+	public function up(Schema $schema): void {
 		$this->addSql(<<<'SQL'
 			UPDATE mappings
 			SET i2c_enable_gpio_pin = -1
 			WHERE name IN ('IQD-GW04', 'KONA-RASP-04') AND i2c_enable_gpio_pin = 18
 		SQL);
-    }
+	}
 
 	/**
 	 * Reverts the migration
 	 * @param Schema $schema Database schema
 	 */
-    public function down(Schema $schema): void {
+	public function down(Schema $schema): void {
 		$this->addSql(<<<'SQL'
 			UPDATE mappings
 			SET i2c_enable_gpio_pin = 18
 			WHERE name IN ('IQD-GW04', 'KONA-RASP-04') AND i2c_enable_gpio_pin = -1
 		SQL);
-    }
+	}
 
 }
