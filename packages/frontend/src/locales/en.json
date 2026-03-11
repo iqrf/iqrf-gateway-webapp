@@ -2175,6 +2175,10 @@
 					"iqrf-gateway-uploader": {
 						"name": "IQRF Gateway Uploader"
 					},
+					"iqrf-gateway-webapp-proxy": {
+						"description": "Proxy server for communication with Daemon API WebSocket server.",
+						"name": "WebSocket Proxy Server"
+					},
 					"mender-client": {
 						"description": "Mender is an over-the-air update manager for IoT and embedded devices.",
 						"name": "Mender"
