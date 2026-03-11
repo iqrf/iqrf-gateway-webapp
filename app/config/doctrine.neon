@@ -27,8 +27,11 @@ nettrine.dbal:
 	debug:
 		panel: %debugMode%
 	types:
+		access_scope_array: App\Models\Database\Types\AccessScopeArrayType
 		ip: Darsyn\IP\Doctrine\MultiType
 		uuid: Ramsey\Uuid\Doctrine\UuidType
+	typesMapping:
+		access_scope_array: access_scope_array
 
 nettrine.fixtures:
 	paths:
