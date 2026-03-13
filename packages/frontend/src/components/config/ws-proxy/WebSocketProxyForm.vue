@@ -128,7 +128,7 @@ import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
-import WebsocketUrlForm from '@/components/config/ws-proxy/WebSocketProxyForm.vue';
+import WebsocketUrlForm from '@/components/config/WebsocketUrlForm.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 

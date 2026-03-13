@@ -19,7 +19,6 @@ limitations under the License.
 	<IModalWindow
 		v-model='show'
 		persistent
-		no-click-animation
 		:scrim='false'
 	>
 		<ICard
@@ -45,7 +44,7 @@ limitations under the License.
 					</tr>
 					<tr v-if='upstreamReconnecting && upstreamReconnectTs'>
 						<th>{{ $t('components.layout.overlay.proxyServer.table.upstreamReconnectDelay') }}</th>
-						<td>{{ $d(upstreamReconnectTs, 'dateTime') }}</td>
+						<td>{{ $d(upstreamReconnectTs.toJSDate(), 'dateTime') }}</td>
 					</tr>
 				</tbody>
 			</v-table>
