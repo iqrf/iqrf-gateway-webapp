@@ -73,13 +73,13 @@ async function onSubmit(): Promise<void> {
 			.getDaemonApiTokenService()
 			.revoke(token);
 		toast.success(
-			i18n.t('components.accessControl.daemonAccessTokens.messages.revoke.sucess'),
+			i18n.t('components.accessControl.daemonAccessTokens.messages.revoke.sucess', { id: token }),
 		);
 		emit('refresh');
 		close();
 	} catch {
 		toast.error(
-			i18n.t('components.accessControl.daemonAccessTokens.messages.revoke.failed'),
+			i18n.t('components.accessControl.daemonAccessTokens.messages.revoke.failed', { id: token }),
 		);
 	}
 	componentState.value = ComponentState.Idle;

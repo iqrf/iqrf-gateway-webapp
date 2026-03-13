@@ -19,7 +19,6 @@ limitations under the License.
 	<IModalWindow
 		v-model='show'
 		persistent
-		no-click-animation
 		:scrim='false'
 	>
 		<ICard
