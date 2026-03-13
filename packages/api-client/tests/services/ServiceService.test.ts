@@ -93,49 +93,49 @@ describe('ServiceService', (): void => {
 		expect.assertions(1);
 		mockedAxios.onPost(`/services/${serviceName}/enable`)
 			.reply(200);
-		await expect(service.enable(serviceName)).resolves.not.toThrowError();
+		await expect(service.enable(serviceName)).resolves.not.toThrow();
 	});
 
 	test('enable and start `iqrf-gateway-daemon` service', async (): Promise<void> => {
 		expect.assertions(1);
 		mockedAxios.onPost(`/services/${serviceName}/enable`, { start: true })
 			.reply(200);
-		await expect(service.enable(serviceName, true)).resolves.not.toThrowError();
+		await expect(service.enable(serviceName, true)).resolves.not.toThrow();
 	});
 
 	test('disable `iqrf-gateway-daemon` service', async (): Promise<void> => {
 		expect.assertions(1);
 		mockedAxios.onPost(`/services/${serviceName}/disable`)
 			.reply(200);
-		await expect(service.disable(serviceName)).resolves.not.toThrowError();
+		await expect(service.disable(serviceName)).resolves.not.toThrow();
 	});
 
 	test('disable and stop `iqrf-gateway-daemon` service', async (): Promise<void> => {
 		expect.assertions(1);
 		mockedAxios.onPost(`/services/${serviceName}/disable`, { stop: true })
 			.reply(200);
-		await expect(service.disable(serviceName, true)).resolves.not.toThrowError();
+		await expect(service.disable(serviceName, true)).resolves.not.toThrow();
 	});
 
 	test('start `iqrf-gateway-daemon` service', async (): Promise<void> => {
 		expect.assertions(1);
 		mockedAxios.onPost(`/services/${serviceName}/start`)
 			.reply(200);
-		await expect(service.start(serviceName)).resolves.not.toThrowError();
+		await expect(service.start(serviceName)).resolves.not.toThrow();
 	});
 
 	test('stop `iqrf-gateway-daemon` service', async (): Promise<void> => {
 		expect.assertions(1);
 		mockedAxios.onPost(`/services/${serviceName}/stop`)
 			.reply(200);
-		await expect(service.stop(serviceName)).resolves.not.toThrowError();
+		await expect(service.stop(serviceName)).resolves.not.toThrow();
 	});
 
 	test('restart `iqrf-gateway-daemon` service', async (): Promise<void> => {
 		expect.assertions(1);
 		mockedAxios.onPost(`/services/${serviceName}/restart`)
 			.reply(200);
-		await expect(service.restart(serviceName)).resolves.not.toThrowError();
+		await expect(service.restart(serviceName)).resolves.not.toThrow();
 	});
 
 });

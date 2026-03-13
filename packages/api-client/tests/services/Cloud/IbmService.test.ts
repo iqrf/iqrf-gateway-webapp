@@ -49,6 +49,6 @@ describe('IbmService', (): void => {
 			.reply(200);
 		await expect(
 			service.createMqttInstance(config),
-		).resolves.not.toThrowError();
+		).resolves.not.toThrow();
 	});
 });
