@@ -82,14 +82,14 @@ async function onSubmit(): Promise<void> {
 			.getDaemonApiTokenService()
 			.rotate(token);
 		toast.success(
-			i18n.t('components.accessControl.daemonAccessTokens.messages.rotate.success'),
+			i18n.t('components.accessControl.daemonAccessTokens.messages.rotate.success', { id: token }),
 		);
 		close();
 		emit('refresh');
 		displayDialog.value?.open(newToken.token);
 	} catch {
 		toast.error(
-			i18n.t('components.accessControl.daemonAccessTokens.messages.rotate.failed'),
+			i18n.t('components.accessControl.daemonAccessTokens.messages.rotate.failed', { id: token }),
 		);
 	}
 	componentState.value = ComponentState.Idle;
