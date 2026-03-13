@@ -53,7 +53,10 @@ class DaemonApiTokenManager {
 	 */
 	public function listTokens(): string {
 		$this->checkUtility();
-		$result = $this->commandManager->run(self::COMMAND . ' list -j');
+		$result = $this->commandManager->run(
+			command: self::COMMAND . ' list -j',
+			needSudo: true,
+		);
 		if ($result->getExitCode() !== 0) {
 			throw new DaemonApiTokenManagerException($result->getStderr());
 		}
@@ -69,7 +72,10 @@ class DaemonApiTokenManager {
 	 */
 	public function getToken(int $id): string {
 		$this->checkUtility();
-		$result = $this->commandManager->run(self::COMMAND . ' get -j -i ' . strval($id));
+		$result = $this->commandManager->run(
+			command: self::COMMAND . ' get -j -i ' . strval($id),
+			needSudo: true,
+		);
 		$exitCode = $result->getExitCode();
 		if ($exitCode === 0) {
 			return $result->getStdout();
@@ -92,12 +98,13 @@ class DaemonApiTokenManager {
 	public function createToken(stdClass $data): array {
 		$this->checkUtility();
 		$result = $this->commandManager->run(
-			sprintf(
+			command: sprintf(
 				'%s create -o %s -e %s -j',
 				self::COMMAND,
 				escapeshellarg($data->owner),
 				property_exists($data, 'expiration') ? $data->expiration : strval($data->count) . $data->unit,
 			),
+			needSudo: true,
 		);
 		if ($result->getExitCode() !== 0) {
 			throw new DaemonApiTokenManagerException($result->getStderr());
@@ -116,7 +123,10 @@ class DaemonApiTokenManager {
 	 */
 	public function revokeToken(int $id): void {
 		$this->checkUtility();
-		$result = $this->commandManager->run(self::COMMAND . ' revoke -i ' . strval($id));
+		$result = $this->commandManager->run(
+			command: self::COMMAND . ' revoke -i ' . strval($id),
+			needSudo: true,
+		);
 		$exitCode = $result->getExitCode();
 		if ($exitCode === 0 || $exitCode === 4 || $exitCode === 5) {
 			return;
@@ -140,7 +150,10 @@ class DaemonApiTokenManager {
 	 */
 	public function rotateToken(int $id): array {
 		$this->checkUtility();
-		$result = $this->commandManager->run(self::COMMAND . ' rotate -j -i ' . strval($id));
+		$result = $this->commandManager->run(
+			command: self::COMMAND . ' rotate -j -i ' . strval($id),
+			needSudo: true,
+		);
 		$exitCode = $result->getExitCode();
 		if ($exitCode === 0) {
 			return Json::decode($result->getStdout(), forceArrays: true);

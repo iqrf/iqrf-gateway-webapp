@@ -93,6 +93,7 @@ final class DaemonApiTokenManagerTest extends TestCase {
 		);
 		$this->receiveCommand(
 			command: self::LIST_COMMAND,
+			needSudo: true,
 			stdout: '[]',
 			exitCode: 0,
 		);
@@ -113,6 +114,7 @@ final class DaemonApiTokenManagerTest extends TestCase {
 		$expected = '[{"created_at":"2026-02-20T12:00:00Z","expires_at":"2026-02-20T12:00:00Z","id":1,"invalidated_at":null,"owner":"test","service":false,"status":0}]';
 		$this->receiveCommand(
 			command: self::LIST_COMMAND,
+			needSudo: true,
 			stdout: $expected,
 			exitCode: 0,
 		);
@@ -132,6 +134,7 @@ final class DaemonApiTokenManagerTest extends TestCase {
 		);
 		$this->receiveCommand(
 			command: self::LIST_COMMAND,
+			needSudo: true,
 			exitCode: 1,
 		);
 		Assert::throws(function (): void {
@@ -150,6 +153,7 @@ final class DaemonApiTokenManagerTest extends TestCase {
 		$expected = '{"created_at":"2026-02-20T12:00:00Z","expires_at":"2026-02-20T12:00:00Z","id":1,"invalidated_at":null,"owner":"test","service":false,"status":0}';
 		$this->receiveCommand(
 			command: self::GET_COMMAND,
+			needSudo: true,
 			stdout: $expected,
 			exitCode: 0,
 		);
@@ -169,6 +173,7 @@ final class DaemonApiTokenManagerTest extends TestCase {
 		);
 		$this->receiveCommand(
 			command: self::GET_COMMAND_MISSING,
+			needSudo: true,
 			exitCode: 3,
 		);
 		Assert::throws(function (): void {
@@ -186,6 +191,7 @@ final class DaemonApiTokenManagerTest extends TestCase {
 		);
 		$this->receiveCommand(
 			command: self::GET_COMMAND,
+			needSudo: true,
 			exitCode: 1,
 		);
 		Assert::throws(function (): void {
@@ -207,6 +213,7 @@ final class DaemonApiTokenManagerTest extends TestCase {
 		];
 		$this->receiveCommand(
 			command: self::CREATE_COMMAND_RELATIVE,
+			needSudo: true,
 			stdout: '{"id":1,"token":"iqrfgd2;1;zDrcvQaXWopzJ+DbfkpGq3Tn00wkt3n6fExj8iUsYio="}',
 			exitCode: 0,
 		);
@@ -236,6 +243,7 @@ final class DaemonApiTokenManagerTest extends TestCase {
 		];
 		$this->receiveCommand(
 			command: self::CREATE_COMMAND_ABSOLUTE,
+			needSudo: true,
 			stdout: '{"id":1,"token":"iqrfgd2;1;zDrcvQaXWopzJ+DbfkpGq3Tn00wkt3n6fExj8iUsYio="}',
 			exitCode: 0,
 		);
@@ -260,6 +268,7 @@ final class DaemonApiTokenManagerTest extends TestCase {
 		);
 		$this->receiveCommand(
 			command: self::CREATE_COMMAND_ABSOLUTE,
+			needSudo: true,
 			exitCode: 1,
 		);
 		Assert::throws(function (): void {
@@ -282,6 +291,7 @@ final class DaemonApiTokenManagerTest extends TestCase {
 		);
 		$this->receiveCommand(
 			command: self::REVOKE_COMMAND,
+			needSudo: true,
 			exitCode: 0,
 		);
 		Assert::noError(function (): void {
@@ -299,6 +309,7 @@ final class DaemonApiTokenManagerTest extends TestCase {
 		);
 		$this->receiveCommand(
 			command: self::REVOKE_COMMAND,
+			needSudo: true,
 			exitCode: 4,
 		);
 		Assert::noError(function (): void {
@@ -316,6 +327,7 @@ final class DaemonApiTokenManagerTest extends TestCase {
 		);
 		$this->receiveCommand(
 			command: self::REVOKE_COMMAND,
+			needSudo: true,
 			exitCode: 5,
 		);
 		Assert::noError(function (): void {
@@ -333,6 +345,7 @@ final class DaemonApiTokenManagerTest extends TestCase {
 		);
 		$this->receiveCommand(
 			command: self::REVOKE_COMMAND,
+			needSudo: true,
 			exitCode: 3,
 		);
 		Assert::throws(function (): void {
@@ -350,6 +363,7 @@ final class DaemonApiTokenManagerTest extends TestCase {
 		);
 		$this->receiveCommand(
 			command: self::REVOKE_COMMAND,
+			needSudo: true,
 			exitCode: 1,
 		);
 		Assert::throws(function (): void {
@@ -371,6 +385,7 @@ final class DaemonApiTokenManagerTest extends TestCase {
 		];
 		$this->receiveCommand(
 			command: self::ROTATE_TOKEN,
+			needSudo: true,
 			stdout: '{"id":2,"token":"iqrfgd2;2;uiJCz+dKPZIaa1bn8vq3xcmktblBsoyoWz0UBpU8Cx8="}',
 			exitCode: 0,
 		);
@@ -390,6 +405,7 @@ final class DaemonApiTokenManagerTest extends TestCase {
 		);
 		$this->receiveCommand(
 			command: self::ROTATE_TOKEN,
+			needSudo: true,
 			exitCode: 3,
 		);
 		Assert::throws(function (): void {
@@ -407,6 +423,7 @@ final class DaemonApiTokenManagerTest extends TestCase {
 		);
 		$this->receiveCommand(
 			command: self::ROTATE_TOKEN,
+			needSudo: true,
 			exitCode: 4,
 		);
 		Assert::throws(function (): void {
@@ -424,6 +441,7 @@ final class DaemonApiTokenManagerTest extends TestCase {
 		);
 		$this->receiveCommand(
 			command: self::ROTATE_TOKEN,
+			needSudo: true,
 			exitCode: 5,
 		);
 		Assert::throws(function (): void {
@@ -441,6 +459,7 @@ final class DaemonApiTokenManagerTest extends TestCase {
 		);
 		$this->receiveCommand(
 			command: self::ROTATE_TOKEN,
+			needSudo: true,
 			exitCode: 1,
 		);
 		Assert::throws(function (): void {
