@@ -73,7 +73,7 @@ async function onSubmit(): Promise<void> {
 			.getDaemonApiTokenService()
 			.revoke(token);
 		toast.success(
-			i18n.t('components.accessControl.daemonAccessTokens.messages.revoke.sucess', { id: token }),
+			i18n.t('components.accessControl.daemonAccessTokens.messages.revoke.success', { id: token }),
 		);
 		emit('refresh');
 		close();
