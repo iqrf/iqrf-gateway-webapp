@@ -19,7 +19,7 @@ limitations under the License.
 	<v-form
 		ref='form'
 		v-slot='{ isValid }'
-		:disabled='[ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
+		:disabled='[ComponentState.Action, ComponentState.Loading, ComponentState.Reloading].includes(componentState)'
 		@submit.prevent='saveConfig()'
 	>
 		<ICard>
