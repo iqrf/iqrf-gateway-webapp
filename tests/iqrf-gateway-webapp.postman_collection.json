@@ -79,7 +79,7 @@
 											"    var jsonData = pm.response.json();",
 											"    pm.expect(jsonData.username).to.eql('admin');",
 											"});",
-											"pm.test('User language is english', function () {",
+											"pm.test('User language is English', function () {",
 											"    var jsonData = pm.response.json();",
 											"    pm.expect(jsonData.language).to.eql('en');",
 											"});",

@@ -5,16 +5,49 @@
 	"title": "Optional feature configuration",
 	"oneOf": [
 		{
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/apcupsd.json"
+		},
+		{
 			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/docs.json"
 		},
 		{
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/gatewayPass.json"
+		},
+		{
 			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/grafana.json"
+		},
+		{
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/iqrfCloudProvisioning.json"
+		},
+		{
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/iqrfGatewayController.json"
+		},
+		{
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/iqrfGatewayInfluxdbBridge.json"
+		},
+		{
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/iqrfGatewayTranslator.json"
+		},
+		{
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/iqrfRepository.json"
+		},
+		{
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/journal.json"
+		},
+		{
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/mender.json"
+		},
+		{
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/monit.json"
 		},
 		{
 			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/networkManager.json"
 		},
 		{
 			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/nodeRed.json"
+		},
+		{
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/remount.json"
 		},
 		{
 			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/ssh.json"
@@ -26,10 +59,10 @@
 			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/trUpload.json"
 		},
 		{
-			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/updater.json"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/unattendedUpgrades.json"
 		},
 		{
-			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/unattendedUpgrades.json"
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/updater.json"
 		},
 		{
 			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/versionChecker.json"

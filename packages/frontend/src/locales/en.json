@@ -179,7 +179,7 @@
 						"failed": "Failed to retrieve list of SSH keys."
 					},
 					"listTypes": {
-						"failed": "Failed to retrieve list of allwed SSH key types."
+						"failed": "Failed to retrieve list of allowed SSH key types."
 					}
 				},
 				"noData": {
@@ -503,7 +503,7 @@
 						"failed": "Failed to retrieve IQRF Gateway Controller configuration."
 					},
 					"save": {
-						"failed": "Faled to save IQRF Gateway Controller configuration.",
+						"failed": "Filed to save IQRF Gateway Controller configuration.",
 						"success": "IQRF Gateway Controller configuration was successfully saved. Restart the service for changes to take effect."
 					}
 				},
@@ -722,7 +722,7 @@
 							"minReconnect": {
 								"integer": "Minimum reconnect period should be an integer.",
 								"max": "Minimum reconnect period should be less or equal to maximum reconnect period.",
-								"min": "Minimum reconnect period should be greter or equal to 1 second.",
+								"min": "Minimum reconnect period should be greater or equal to 1 second.",
 								"required": "Please enter minimum reconnect period."
 							},
 							"requestTopic": {
@@ -959,7 +959,7 @@
 							"failed": "Failed to retrieve database configuration."
 						},
 						"save": {
-							"failed": "Failed to saave database configuration.",
+							"failed": "Failed to save database configuration.",
 							"success": "Database configuration successfully saved."
 						}
 					}
@@ -984,7 +984,7 @@
 					"cdc": {
 						"devices": {
 							"actions": {
-								"apply": "Apply CDC inteface",
+								"apply": "Apply CDC interface",
 								"reload": "Reload CDC interfaces"
 							},
 							"title": "CDC interfaces"
@@ -1014,7 +1014,7 @@
 							"timeout": {
 								"integer": "DPA handler timeout should be an integer.",
 								"min": "DPA handler timeout should be greater or equal to 500 ms.",
-								"required": "Please enter DPA hnadler timeout."
+								"required": "Please enter DPA handler timeout."
 							}
 						}
 					},
@@ -1030,7 +1030,7 @@
 						},
 						"noData": {
 							"empty": "No interface ports records found.",
-							"fetchError": "Interace ports list could not be retrieved."
+							"fetchError": "Interface ports list could not be retrieved."
 						}
 					},
 					"powerPin": "Power enable GPIO pin",
@@ -1241,7 +1241,7 @@
 							"failed": "Failed to retrieve IQRF repository configuration."
 						},
 						"save": {
-							"failed": "Failed to save IQRF repositoty configuration.",
+							"failed": "Failed to save IQRF repository configuration.",
 							"success": "IQRF repository configuration successfully saved."
 						}
 					},
@@ -1364,12 +1364,12 @@
 					"type": "Task execution condition",
 					"types": {
 						"cron": "Cron time expression - specifies when and how frequently a task is executed",
-						"oneshot": "Oneshot - execute task once at specified time",
+						"oneshot": "One shot - execute task once at specified time",
 						"periodic": "Periodic - frequency of task execution in seconds"
 					},
 					"validation": {
 						"cron": {
-							"invalid": "cron expresion should have 7 valid fields.",
+							"invalid": "cron expression should have 7 valid fields.",
 							"required": "Please enter a cron expression."
 						},
 						"importFile": {
@@ -1517,7 +1517,7 @@
 					"maxFiles": {
 						"integer": "Maximum number of files to keep should be an integer.",
 						"min": "Maximum number of files to keep should be greater or equal to 1.",
-						"required": "Pllease enter maximum number of log files to keep."
+						"required": "Please enter maximum number of log files to keep."
 					},
 					"maxSize": {
 						"integer": "Maximum disk space usable by journal should be an integer.",
@@ -1750,7 +1750,7 @@
 						"failed": "Failed to retrieve configuration of automatic upgrades."
 					},
 					"save": {
-						"failed": "Failed to save configurtion of automatic upgrades.",
+						"failed": "Failed to save configuration of automatic upgrades.",
 						"success": "Automatic upgrades configuration successfully saved."
 					}
 				},
@@ -2158,7 +2158,7 @@
 					"title": "Set your preferences"
 				},
 				"dateTimeConfiguration": {
-					"text": "Configure date, time and timezone settings for your IQRF gatewaym.",
+					"text": "Configure date, time and timezone settings for your IQRF gateway.",
 					"title": "Date and time configuration"
 				},
 				"installationCompleted": {
@@ -2658,8 +2658,8 @@
 						"required": "Please enter address."
 					},
 					"deviceAddr": {
-						"between": "Device addres should be between 0 and 239.",
-						"integer": "Device addres should be an integer.",
+						"between": "Device address should be between 0 and 239.",
+						"integer": "Device address should be an integer.",
 						"required": "Please enter device address."
 					},
 					"hwpid": {
@@ -2808,7 +2808,7 @@
 							"required": "Please define address space."
 						},
 						"emptyWaves": {
-							"between": "Number of empty wavess should be between 1 and 127.",
+							"between": "Number of empty waves should be between 1 and 127.",
 							"integer": "Number of empty waves should be an integer.",
 							"required": "Please enter number of empty waves."
 						},
@@ -2912,7 +2912,7 @@
 						"success": "A new node has been bonded to address {address}.",
 						"unbond": {
 							"failed": "Failed to unbond node device from address {address}.",
-							"failedCoordinator": "Failed to unbond node device from coordinator memmory from address {address}.",
+							"failedCoordinator": "Failed to unbond node device from coordinator memory from address {address}.",
 							"success": "Node device has been successfully unbonded from address {address}.",
 							"successCoordinator": "Node device has been successfully unbonded from coordinator memory from address {address}.",
 							"timeout": "Node device unbond request timed out."
@@ -3194,7 +3194,7 @@
 					"note": {
 						"duplicatedAddresses": "Unbonds nodes with MIDs that mismatch MIDs in coordinator memory. This may occur in some situations during Autonetwork.",
 						"inconsistentMidsInCoordinator": "Sets MIDs in coordinator to MIDs of the bonded nodes. This may occur during upgrade of OS or DPA.",
-						"uselessPrebondedNodes": "Unbonds ramaining nodes with the universal address used in prebonding, from the network. This may occur during Autonetwork when creating overlapping network."
+						"uselessPrebondedNodes": "Unbonds remaining nodes with the universal address used in prebonding, from the network. This may occur during Autonetwork when creating overlapping network."
 					},
 					"title": "Network Issues"
 
@@ -3695,7 +3695,7 @@
 					},
 					"read": {
 						"failed": "Failed to download TR configuration.",
-						"success": "TR configuration succesfully downloaded.",
+						"success": "TR configuration successfully downloaded.",
 						"timeout": "Download TR configuration request timed out."
 					},
 					"restart": {
