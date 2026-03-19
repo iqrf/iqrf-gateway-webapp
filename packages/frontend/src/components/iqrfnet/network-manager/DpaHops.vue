@@ -17,7 +17,9 @@
 				v-model='requestHops'
 				:label='$t("components.iqrfnet.network-manager.dpa-params.dpa-hops.requestHops")'
 				:rules='[
-					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.network-manager.dpa-params.dpa-hops.validation.requestHops.required")), (v: number) => ValidationRules.integer(v, $t("components.iqrfnet.network-manager.dpa-params.dpa-hops.validation.requestHops.integer")), (v: number) => ValidationRules.between(v, requestDrm ? 0 : 1, requestDom ? 255 : 239, $t("components.iqrfnet.network-manager.dpa-params.dpa-hops.validation.requestHops.between")),
+					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.network-manager.dpa-params.dpa-hops.validation.requestHops.required")),
+					(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.network-manager.dpa-params.dpa-hops.validation.requestHops.integer")),
+					(v: number) => ValidationRules.between(v, requestDrm ? 0 : 1, requestDom ? 255 : 239, $t("components.iqrfnet.network-manager.dpa-params.dpa-hops.validation.requestHops.between")),
 				]'
 				:min='requestDrm ? 0 : 1'
 				:max='requestDom ? 255 : 239'
@@ -45,7 +47,9 @@
 				v-model='responseHops'
 				:label='$t("components.iqrfnet.network-manager.dpa-params.dpa-hops.responseHops")'
 				:rules='[
-					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.network-manager.dpa-params.dpa-hops.validation.responseHops.required")), (v: number) => ValidationRules.integer(v, $t("components.iqrfnet.network-manager.dpa-params.dpa-hops.validation.responseHops.integer")), (v: number) => ValidationRules.between(v, 1, responseDom ? 255 : 239, $t("components.iqrfnet.network-manager.dpa-params.dpa-hops.validation.responseHops.between")),
+					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.network-manager.dpa-params.dpa-hops.validation.responseHops.required")),
+					(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.network-manager.dpa-params.dpa-hops.validation.responseHops.integer")),
+					(v: number) => ValidationRules.between(v, 1, responseDom ? 255 : 239, $t("components.iqrfnet.network-manager.dpa-params.dpa-hops.validation.responseHops.between")),
 				]'
 				:min='1'
 				:max='responseDom ? 255 : 239'

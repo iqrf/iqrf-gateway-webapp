@@ -39,7 +39,9 @@ limitations under the License.
 							:max='255'
 							:label='$t("components.iqrfnet.send-dpa.nadr")'
 							:rules='[
-								(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.nadrMissing")), (v: number) => ValidationRules.integer(v, $t("components.iqrfnet.send-dpa.validation.nadrInvalid")), (v: number) => ValidationRules.between(v, 0, 255, $t("components.iqrfnet.send-dpa.validation.nadrInvalid")),
+								(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.nadrMissing")),
+								(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.send-dpa.validation.nadrInvalid")),
+								(v: number) => ValidationRules.between(v, 0, 255, $t("components.iqrfnet.send-dpa.validation.nadrInvalid")),
 							]'
 							required
 							:readonly='lockNadr'
@@ -54,13 +56,7 @@ limitations under the License.
 											@click='lockNadr = !lockNadr'
 										/>
 									</template>
-									{{
-										$t(
-											`components.iqrfnet.send-dpa.${
-												lockNadr ? "unlock" : "lock"
-											}`,
-										)
-									}}
+									{{ lockNadr ? $t('components.iqrfnet.send-dpa.unlock') : $t('components.iqrfnet.send-dpa.lock') }}
 								</v-tooltip>
 							</template>
 							<template #append-inner>
@@ -107,7 +103,8 @@ limitations under the License.
 							v-maska='byteMaska'
 							:label='$t("components.iqrfnet.send-dpa.nadr")'
 							:rules='[
-								(v: string|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.nadrHexMissing")), (v: string) => validateHexByte(v) || $t("components.iqrfnet.send-dpa.validation.nadrHexInvalid"),
+								(v: string|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.nadrHexMissing")),
+								(v: string) => validateHexByte(v) || $t("components.iqrfnet.send-dpa.validation.nadrHexInvalid"),
 							]'
 							required
 							:readonly='lockNadr'
@@ -122,13 +119,7 @@ limitations under the License.
 											@click='lockNadr = !lockNadr'
 										/>
 									</template>
-									{{
-										$t(
-											`components.iqrfnet.send-dpa.${
-												lockNadr ? "unlock" : "lock"
-											}`,
-										)
-									}}
+									{{ lockNadr ? $t('components.iqrfnet.send-dpa.unlock') : $t('components.iqrfnet.send-dpa.lock') }}
 								</v-tooltip>
 							</template>
 							<template #append-inner>
@@ -181,7 +172,9 @@ limitations under the License.
 							:max='255'
 							:label='$t("components.iqrfnet.send-dpa.pnum")'
 							:rules='[
-								(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.pnumMissing")), (v: number) => ValidationRules.integer(v, $t("components.iqrfnet.send-dpa.validation.pnumInvalid")), (v: number) => ValidationRules.between(v, 0, 255, $t("components.iqrfnet.send-dpa.validation.pnumInvalid")),
+								(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.pnumMissing")),
+								(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.send-dpa.validation.pnumInvalid")),
+								(v: number) => ValidationRules.between(v, 0, 255, $t("components.iqrfnet.send-dpa.validation.pnumInvalid")),
 							]'
 							required
 						>
@@ -206,7 +199,8 @@ limitations under the License.
 							v-maska='byteMaska'
 							:label='$t("components.iqrfnet.send-dpa.pnum")'
 							:rules='[
-								(v: string|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.pnumHexMissing")), (v: string) => validateHexByte(v) || $t("components.iqrfnet.send-dpa.validation.pnumHexInvalid"),
+								(v: string|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.pnumHexMissing")),
+								(v: string) => validateHexByte(v) || $t("components.iqrfnet.send-dpa.validation.pnumHexInvalid"),
 							]'
 							required
 						>
@@ -239,7 +233,9 @@ limitations under the License.
 							:max='127'
 							:label='$t("components.iqrfnet.send-dpa.pcmd")'
 							:rules='[
-								(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.pcmdMissing")), (v: number) => ValidationRules.integer(v, $t("components.iqrfnet.send-dpa.validation.pcmdInvalid")), (v: number) => ValidationRules.between(v, 0, 127, $t("components.iqrfnet.send-dpa.validation.pcmdInvalid")),
+								(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.pcmdMissing")),
+								(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.send-dpa.validation.pcmdInvalid")),
+								(v: number) => ValidationRules.between(v, 0, 127, $t("components.iqrfnet.send-dpa.validation.pcmdInvalid")),
 							]'
 							required
 						>
@@ -264,7 +260,8 @@ limitations under the License.
 							v-maska='byteMaska'
 							:label='$t("components.iqrfnet.send-dpa.pcmd")'
 							:rules='[
-								(v: string|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.pcmdHexMissing")), (v: string) => validateHexNibble(v) || $t("components.iqrfnet.send-dpa.validation.pcmdHexInvalid"),
+								(v: string|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.pcmdHexMissing")),
+								(v: string) => validateHexNibble(v) || $t("components.iqrfnet.send-dpa.validation.pcmdHexInvalid"),
 							]'
 							required
 						>
@@ -295,7 +292,9 @@ limitations under the License.
 							:max='65535'
 							:label='$t("components.iqrfnet.send-dpa.hwpid")'
 							:rules='[
-								(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.hwpidMissing")), (v: number) => ValidationRules.integer(v, $t("components.iqrfnet.send-dpa.validation.hwpidInvalid")), (v: number) => ValidationRules.between(v, 0, 65535, $t("components.iqrfnet.send-dpa.validation.hwpidInvalid")),
+								(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.hwpidMissing")),
+								(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.send-dpa.validation.hwpidInvalid")),
+								(v: number) => ValidationRules.between(v, 0, 65535, $t("components.iqrfnet.send-dpa.validation.hwpidInvalid")),
 							]'
 							required
 						>
@@ -348,7 +347,8 @@ limitations under the License.
 							v-maska='hwpidMaska'
 							:label='$t("components.iqrfnet.send-dpa.hwpid")'
 							:rules='[
-								(v: string|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.hwpidHexMissing")), (v: string) => validateHexWord(v) || $t("components.iqrfnet.send-dpa.validation.hwpidHexInvalid"),
+								(v: string|null) => ValidationRules.required(v, $t("components.iqrfnet.send-dpa.validation.hwpidHexMissing")),
+								(v: string) => validateHexWord(v) || $t("components.iqrfnet.send-dpa.validation.hwpidHexInvalid"),
 							]'
 							required
 						>

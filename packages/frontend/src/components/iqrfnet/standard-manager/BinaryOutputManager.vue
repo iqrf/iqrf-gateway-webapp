@@ -9,7 +9,9 @@
 				v-model='address'
 				:label='$t("components.iqrfnet.common.deviceAddr")'
 				:rules='[
-					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.common.validation.deviceAddr.required")), (v: number) => ValidationRules.integer(v, $t("components.iqrfnet.common.validation.deviceAddr.integer")), (v: number) => ValidationRules.between(v, 0, 239, $t("components.iqrfnet.common.validation.deviceAddr.between")),
+					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.common.validation.deviceAddr.required")),
+					(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.common.validation.deviceAddr.integer")),
+					(v: number) => ValidationRules.between(v, 0, 239, $t("components.iqrfnet.common.validation.deviceAddr.between")),
 				]'
 				:min='0'
 				:max='239'
@@ -19,7 +21,9 @@
 				v-model='index'
 				:label='$t("components.iqrfnet.standard-manager.binary-output.index")'
 				:rules='[
-					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.standard-manager.binary-output.validation.index.required")), (v: number) => ValidationRules.integer(v, $t("components.iqrfnet.standard-manager.binary-output.validation.index.integer")), (v: number) => ValidationRules.between(v, 0, 31, $t("components.iqrfnet.standard-manager.binary-output.validation.index.between")),
+					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.standard-manager.binary-output.validation.index.required")),
+					(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.standard-manager.binary-output.validation.index.integer")),
+					(v: number) => ValidationRules.between(v, 0, 31, $t("components.iqrfnet.standard-manager.binary-output.validation.index.between")),
 				]'
 				:min='0'
 				:max='31'
@@ -263,7 +267,7 @@ function handleSetOutput(rsp: Record<string, any>): void {
 }
 
 function handleError(statusCode: number, timeout: string, generalFailure: string): void {
-	let message = '';
+	let message: string;
 	switch (statusCode) {
 		case -1:
 			message = timeout;

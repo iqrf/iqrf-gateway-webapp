@@ -137,7 +137,7 @@ function handleUnbond(rsp: DaemonApiResponse): void {
 		close();
 		return;
 	}
-	let message = '';
+	let message: string;
 	switch (rsp.data.status) {
 		case -1:
 			message = i18n.t('common.messages.offlineDevice', translationParams);

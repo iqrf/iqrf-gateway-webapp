@@ -43,7 +43,9 @@
 					v-model='serviceConfig.WebsocketPort'
 					:label='$t("common.labels.port")'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("common.validation.port.required")), (v: number) => ValidationRules.integer(v, $t("common.validation.port.integer")), (v: number) => ValidationRules.between(v, 1, 65535, $t("common.validation.port.between")),
+						(v: number|null) => ValidationRules.required(v, $t("common.validation.port.required")),
+						(v: number) => ValidationRules.integer(v, $t("common.validation.port.integer")),
+						(v: number) => ValidationRules.between(v, 1, 65535, $t("common.validation.port.between")),
 					]'
 					:min='1'
 					:max='65535'
@@ -178,9 +180,9 @@ const serviceConfig: Ref<ShapeWebsocketService> = ref(structuredClone(defaultSer
 
 const dialogTitle = computed(() => {
 	if (componentProps.action === Action.Add) {
-		return i18n.t('components.config.daemon.connections.websocket.service.actions.add').toString();
+		return i18n.t('components.config.daemon.connections.websocket.service.actions.add');
 	}
-	return i18n.t('components.config.daemon.connections.websocket.service.actions.edit').toString();
+	return i18n.t('components.config.daemon.connections.websocket.service.actions.edit');
 });
 
 watch(show, (newVal: boolean): void => {

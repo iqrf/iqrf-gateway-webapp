@@ -47,7 +47,8 @@ limitations under the License.
 					v-model='hostname'
 					:label='$t("common.labels.hostname")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("common.validation.hostname.required")), (v: string) => ValidationRules.host(v, $t("common.validation.hostname.invalid")),
+						(v: string|null) => ValidationRules.required(v, $t("common.validation.hostname.required")),
+						(v: string) => ValidationRules.host(v, $t("common.validation.hostname.invalid")),
 					]'
 					required
 				/>
@@ -57,7 +58,9 @@ limitations under the License.
 					:min='1'
 					:max='65535'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("common.validation.port.required")), (v: number) => ValidationRules.integer(v, $t("common.validation.port.integer")), (v: number) => ValidationRules.between(v, 1, 65535, $t("common.validation.port.between")),
+						(v: number|null) => ValidationRules.required(v, $t("common.validation.port.required")),
+						(v: number) => ValidationRules.integer(v, $t("common.validation.port.integer")),
+						(v: number) => ValidationRules.between(v, 1, 65535, $t("common.validation.port.between")),
 					]'
 					required
 				/>

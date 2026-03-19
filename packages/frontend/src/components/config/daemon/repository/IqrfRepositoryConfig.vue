@@ -68,7 +68,9 @@ limitations under the License.
 							v-model='config.checkPeriodInMinutes'
 							:label='$t("components.config.daemon.repository.updatePeriod")'
 							:rules='updateCachePeriodically ? [
-								(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.repository.validation.updatePeriod.required")), (v: number) => ValidationRules.integer(v, $t("components.config.daemon.repository.validation.updatePeriod.integer")), (v: number) => ValidationRules.min(v, 0, $t("components.config.daemon.repository.validation.updatePeriod.min")),
+								(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.repository.validation.updatePeriod.required")),
+								(v: number) => ValidationRules.integer(v, $t("components.config.daemon.repository.validation.updatePeriod.integer")),
+								(v: number) => ValidationRules.min(v, 0, $t("components.config.daemon.repository.validation.updatePeriod.min")),
 							] : []'
 							:min='0'
 							:required='updateCachePeriodically'

@@ -43,7 +43,9 @@
 					v-model='serviceConfig.WebsocketPort'
 					:label='$t("common.labels.port")'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("common.validation.port.required")), (v: number) => ValidationRules.integer(v, $t("common.validation.port.integer")), (v: number) => ValidationRules.between(v, 1, 65535, $t("common.validation.port.between")),
+						(v: number|null) => ValidationRules.required(v, $t("common.validation.port.required")),
+						(v: number) => ValidationRules.integer(v, $t("common.validation.port.integer")),
+						(v: number) => ValidationRules.between(v, 1, 65535, $t("common.validation.port.between")),
 					]'
 					:min='1'
 					:max='65535'

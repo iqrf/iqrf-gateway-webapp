@@ -83,7 +83,8 @@ limitations under the License.
 							:label='$t("components.config.monit.mmonit.server")'
 							:prepend-inner-icon='mdiServerNetwork'
 							:rules='config.mmonit.enabled ? [
-								(v: string|null) => ValidationRules.required(v, $t("components.config.monit.validation.server.required")), (v: string) => mmonitServerValidation(v, $t("components.config.monit.validation.server.url")),
+								(v: string|null) => ValidationRules.required(v, $t("components.config.monit.validation.server.required")),
+								(v: string) => mmonitServerValidation(v, $t("components.config.monit.validation.server.url")),
 							] : []'
 							:disabled='!config.mmonit.enabled'
 							required

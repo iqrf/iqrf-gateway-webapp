@@ -46,7 +46,9 @@ limitations under the License.
 					v-model.number='level.channel'
 					:label='$t("components.config.daemon.logging.channel")'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.logging.validation.channel.required")), (v: number) => ValidationRules.integer(v, $t("components.config.daemon.logging.validation.channel.integer")), (v: number) => ValidationRules.min(v, 0, $t("components.config.daemon.logging.validation.channel.min")),
+						(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.logging.validation.channel.required")),
+						(v: number) => ValidationRules.integer(v, $t("components.config.daemon.logging.validation.channel.integer")),
+						(v: number) => ValidationRules.min(v, 0, $t("components.config.daemon.logging.validation.channel.min")),
 					]'
 					:min='0'
 					required

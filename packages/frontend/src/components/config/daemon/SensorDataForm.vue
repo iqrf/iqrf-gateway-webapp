@@ -42,7 +42,9 @@
 							v-model='config.period'
 							:label='$t("components.config.daemon.data-collecting.period")'
 							:rules='[
-								(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.data-collecting.validation.period.required")), (v: number) => ValidationRules.integer(v, $t("components.config.daemon.data-collecting.validation.period.integer")), (v: number) => ValidationRules.min(v, 4, $t("components.config.daemon.data-collecting.validation.period.min")),
+								(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.data-collecting.validation.period.required")),
+								(v: number) => ValidationRules.integer(v, $t("components.config.daemon.data-collecting.validation.period.integer")),
+								(v: number) => ValidationRules.min(v, 4, $t("components.config.daemon.data-collecting.validation.period.min")),
 							]'
 							required
 							:prepend-inner-icon='mdiTimerOutline'
@@ -51,7 +53,9 @@
 							v-model='config.retryPeriod'
 							:label='$t("components.config.daemon.data-collecting.retryPeriod")'
 							:rules='[
-								(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.data-collecting.validation.retryPeriod.required")), (v: number) => ValidationRules.integer(v, $t("components.config.daemon.data-collecting.validation.retryPeriod.integer")), (v: number) => ValidationRules.min(v, 1, $t("components.config.daemon.data-collecting.validation.retryPeriod.min")),
+								(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.data-collecting.validation.retryPeriod.required")),
+								(v: number) => ValidationRules.integer(v, $t("components.config.daemon.data-collecting.validation.retryPeriod.integer")),
+								(v: number) => ValidationRules.min(v, 1, $t("components.config.daemon.data-collecting.validation.retryPeriod.min")),
 							]'
 							required
 							:prepend-inner-icon='mdiTimerRefreshOutline'

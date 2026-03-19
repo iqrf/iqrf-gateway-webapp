@@ -58,7 +58,9 @@ limitations under the License.
 					v-model.number='profile.LocalPort'
 					:label='$t("components.config.daemon.connections.udp.localPort")'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.connections.udp.validation.localPortMissing")), (v: number) => ValidationRules.integer(v, $t("components.config.daemon.connections.udp.validation.localPortInvalid")), (v: number) => ValidationRules.between(v, 1, 65535, $t("components.config.daemon.connections.udp.validation.localPortInvalid")),
+						(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.connections.udp.validation.localPortMissing")),
+						(v: number) => ValidationRules.integer(v, $t("components.config.daemon.connections.udp.validation.localPortInvalid")),
+						(v: number) => ValidationRules.between(v, 1, 65535, $t("components.config.daemon.connections.udp.validation.localPortInvalid")),
 					]'
 					required
 				/>
@@ -66,7 +68,9 @@ limitations under the License.
 					v-model.number='profile.RemotePort'
 					:label='$t("components.config.daemon.connections.udp.remotePort")'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.connections.udp.validation.remotePortMissing")), (v: number) => ValidationRules.integer(v, $t("components.config.daemon.connections.udp.validation.remotePortInvalid")), (v: number) => ValidationRules.between(v, 1, 65535, $t("components.config.daemon.connections.udp.validation.remotePortInvalid")),
+						(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.connections.udp.validation.remotePortMissing")),
+						(v: number) => ValidationRules.integer(v, $t("components.config.daemon.connections.udp.validation.remotePortInvalid")),
+						(v: number) => ValidationRules.between(v, 1, 65535, $t("components.config.daemon.connections.udp.validation.remotePortInvalid")),
 					]'
 					required
 				/>
@@ -74,7 +78,9 @@ limitations under the License.
 					v-model.number='profile.deviceRecordExpiration'
 					:label='$t("components.config.daemon.connections.udp.expiration")'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.connections.udp.validation.expirationMissing")), (v: number) => ValidationRules.integer(v, $t("components.config.daemon.connections.udp.validation.expirationInvalid")), (v: number) => ValidationRules.min(v, 0, $t("components.config.daemon.connections.udp.validation.expirationInvalid")),
+						(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.connections.udp.validation.expirationMissing")),
+						(v: number) => ValidationRules.integer(v, $t("components.config.daemon.connections.udp.validation.expirationInvalid")),
+						(v: number) => ValidationRules.min(v, 0, $t("components.config.daemon.connections.udp.validation.expirationInvalid")),
 					]'
 					required
 				/>

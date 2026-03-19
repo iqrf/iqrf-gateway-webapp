@@ -45,7 +45,9 @@ limitations under the License.
 				v-model='passwordChange.new'
 				:label='$t("components.account.password.new")'
 				:rules='[
-					(v: string|null) => ValidationRules.required(v, $t("components.common.validations.password.required")), (v: string) => ValidationRules.betweenLen(v, 15, 64, $t("components.common.validations.password.betweenLen")), (v: string) => ValidationRules.webappUserPassword(v, $t("components.common.validations.password.invalid")),
+					(v: string|null) => ValidationRules.required(v, $t("components.common.validations.password.required")),
+					(v: string) => ValidationRules.betweenLen(v, 15, 64, $t("components.common.validations.password.betweenLen")),
+					(v: string) => ValidationRules.webappUserPassword(v, $t("components.common.validations.password.invalid")),
 				]'
 				required
 				:prepend-inner-icon='mdiKey'
@@ -70,7 +72,8 @@ limitations under the License.
 				v-model='passwordConfirmation'
 				:label='$t("components.account.password.confirmation")'
 				:rules='[
-					(v: string|null) => ValidationRules.required(v, $t("components.account.password.validation.confirmation.required")), (v: string) => v.length > 0 && v === passwordChange.new || $t("common.validation.passwordConfirm.match"),
+					(v: string|null) => ValidationRules.required(v, $t("components.account.password.validation.confirmation.required")),
+					(v: string) => v.length > 0 && v === passwordChange.new || $t("common.validation.passwordConfirm.match"),
 				]'
 				required
 				:prepend-inner-icon='mdiKey'

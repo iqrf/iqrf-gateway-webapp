@@ -175,7 +175,9 @@ limitations under the License.
 					v-model='config.txPower'
 					:label='$t("components.iqrfnet.common.txPower")'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.common.validation.txPower.required")), (v: number) => ValidationRules.integer(v, $t("components.iqrfnet.common.validation.txPower.integer")), (v: number) => ValidationRules.between(v, 0, 7, $t("components.iqrfnet.common.validation.txPower.between")),
+						(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.common.validation.txPower.required")),
+						(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.common.validation.txPower.integer")),
+						(v: number) => ValidationRules.between(v, 0, 7, $t("components.iqrfnet.common.validation.txPower.between")),
 					]'
 					:min='0'
 					:max='7'
@@ -185,7 +187,9 @@ limitations under the License.
 					v-model='config.rxFilter'
 					:label='$t("components.iqrfnet.common.rxFilter")'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.common.validation.rxFilter.required")), (v: number) => ValidationRules.integer(v, $t("components.iqrfnet.common.validation.rxFilter.integer")), (v: number) => ValidationRules.between(v, 0, 64, $t("components.iqrfnet.common.validation.rxFilter.between")),
+						(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.common.validation.rxFilter.required")),
+						(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.common.validation.rxFilter.integer")),
+						(v: number) => ValidationRules.between(v, 0, 64, $t("components.iqrfnet.common.validation.rxFilter.between")),
 					]'
 					:min='0'
 					:max='64'
@@ -195,7 +199,9 @@ limitations under the License.
 					v-model='config.lpRxTimeout'
 					:label='`${$t("components.iqrfnet.tr-config.dpa.rf.lpRxTimeout")} (7)`'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.common.validation.lpRxTimeout.required")), (v: number) => ValidationRules.integer(v, $t("components.iqrfnet.common.validation.lpRxTimeout.integer")), (v: number) => ValidationRules.between(v, 1, 255, $t("components.iqrfnet.common.validation.lpRxTimeout.between")),
+						(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.common.validation.lpRxTimeout.required")),
+						(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.common.validation.lpRxTimeout.integer")),
+						(v: number) => ValidationRules.between(v, 1, 255, $t("components.iqrfnet.common.validation.lpRxTimeout.between")),
 					]'
 					:min='1'
 					:max='255'
@@ -286,7 +292,7 @@ const baudRateOptions = computed(() => {
 	}));
 });
 
-const networkTypeOptions = [
+const networkTypeOptions = computed(() => [
 	{
 		value: false,
 		title: i18n.t('components.iqrfnet.tr-config.dpa.rf.networkTypes.std'),
@@ -295,5 +301,5 @@ const networkTypeOptions = [
 		value: true,
 		title: i18n.t('components.iqrfnet.tr-config.dpa.rf.networkTypes.stdLp'),
 	},
-];
+]);
 </script>

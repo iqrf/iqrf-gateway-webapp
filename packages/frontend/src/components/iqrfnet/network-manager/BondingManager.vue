@@ -24,7 +24,9 @@
 				v-model='address'
 				:label='$t("components.iqrfnet.common.address")'
 				:rules='[
-					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.common.validation.address.required")), (v: number) => ValidationRules.integer(v, $t("components.iqrfnet.common.validation.address.integer")), (v: number) => ValidationRules.between(v, 1, 239, $t("components.iqrfnet.common.validation.address.between")),
+					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.common.validation.address.required")),
+					(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.common.validation.address.integer")),
+					(v: number) => ValidationRules.between(v, 1, 239, $t("components.iqrfnet.common.validation.address.between")),
 				]'
 				:min='1'
 				:max='239'
@@ -35,7 +37,8 @@
 				v-model='scCode'
 				:label='$t("components.iqrfnet.network-manager.bonding.smartConnectCode")'
 				:rules='[
-					(v: string|null) => ValidationRules.required(v, $t("components.iqrfnet.network-manager.bonding.validation.smartConnectCode.required")), (v: string) => ValidationRules.regex(v, /^[1-9a-km-tv-zA-HJ-NP-Z]{34}$/, $t("components.iqrfnet.network-manager.bonding.validation.smartConnectCode.regex")),
+					(v: string|null) => ValidationRules.required(v, $t("components.iqrfnet.network-manager.bonding.validation.smartConnectCode.required")),
+					(v: string) => ValidationRules.regex(v, /^[1-9a-km-tv-zA-HJ-NP-Z]{34}$/, $t("components.iqrfnet.network-manager.bonding.validation.smartConnectCode.regex")),
 				]'
 				required
 			/>
@@ -43,7 +46,9 @@
 				v-model='retries'
 				:label='$t("components.iqrfnet.common.actionRetries")'
 				:rules='[
-					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.common.validation.actionRetries.required")), (v: number) => ValidationRules.integer(v, $t("components.iqrfnet.common.validation.actionRetries.integer")), (v: number) => ValidationRules.between(v, 0, 3, $t("components.iqrfnet.common.validation.actionRetries.between")),
+					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.common.validation.actionRetries.required")),
+					(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.common.validation.actionRetries.integer")),
+					(v: number) => ValidationRules.between(v, 0, 3, $t("components.iqrfnet.common.validation.actionRetries.between")),
 				]'
 				:min='0'
 				:max='3'
@@ -199,7 +204,7 @@ function handleBond(rsp: DaemonApiResponse): void {
 }
 
 function handleBondError(rsp: DaemonApiResponse): void {
-	let message = '';
+	let message: string;
 	switch (rsp.data.status) {
 		case 1_003:
 			message = i18n.t('components.iqrfnet.network-manager.bonding.messages.addressTaken', { address: address.value });

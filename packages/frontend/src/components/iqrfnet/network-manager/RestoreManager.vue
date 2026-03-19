@@ -300,7 +300,7 @@ function handleRestore(rsp: DaemonApiResponse): void {
 		emit('updateDevices');
 		return;
 	}
-	let message = '';
+	let message: string;
 	switch (rsp.data.status) {
 		case -1:
 			message = i18n.t('components.iqrfnet.network-manager.restore.messages.restore.offline');

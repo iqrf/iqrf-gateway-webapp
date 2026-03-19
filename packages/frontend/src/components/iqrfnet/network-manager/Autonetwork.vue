@@ -12,7 +12,9 @@
 				v-model='params.actionRetries'
 				:label='$t("components.iqrfnet.common.actionRetries")'
 				:rules='[
-					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.common.validation.actionRetries.required")), (v: number) => ValidationRules.integer(v, $t("components.iqrfnet.common.validation.actionRetries.integer")), (v: number) => ValidationRules.between(v, 0, 3, $t("components.iqrfnet.common.validation.actionRetries.between")),
+					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.common.validation.actionRetries.required")),
+					(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.common.validation.actionRetries.integer")),
+					(v: number) => ValidationRules.between(v, 0, 3, $t("components.iqrfnet.common.validation.actionRetries.between")),
 				]'
 				:min='0'
 				:max='3'
@@ -22,7 +24,9 @@
 				v-model='params.discoveryTxPower'
 				:label='$t("components.iqrfnet.network-manager.autonetwork.form.params.discoveryTxPower")'
 				:rules='[
-					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.common.validation.txPower.required")), (v: number) => ValidationRules.integer(v, $t("components.iqrfnet.common.validation.txPower.integer")), (v: number) => ValidationRules.between(v, 0, 7, $t("components.iqrfnet.common.validation.txPower.between")),
+					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.common.validation.txPower.required")),
+					(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.common.validation.txPower.integer")),
+					(v: number) => ValidationRules.between(v, 0, 7, $t("components.iqrfnet.common.validation.txPower.between")),
 				]'
 				:min='0'
 				:max='7'
@@ -60,7 +64,9 @@
 				v-model='params.stopConditions.waves'
 				:label='$t("components.iqrfnet.network-manager.autonetwork.form.stopConditions.waves")'
 				:rules='[
-					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.network-manager.autonetwork.validation.waves.required")), (v: number) => ValidationRules.integer(v, $t("components.iqrfnet.network-manager.autonetwork.validation.waves.integer")), (v: number) => ValidationRules.between(v, 1, 127, $t("components.iqrfnet.network-manager.autonetwork.validation.waves.between")),
+					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.network-manager.autonetwork.validation.waves.required")),
+					(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.network-manager.autonetwork.validation.waves.integer")),
+					(v: number) => ValidationRules.between(v, 1, 127, $t("components.iqrfnet.network-manager.autonetwork.validation.waves.between")),
 				]'
 				:min='1'
 				:max='127'
@@ -70,7 +76,9 @@
 				v-model='params.stopConditions.emptyWaves'
 				:label='$t("components.iqrfnet.network-manager.autonetwork.form.stopConditions.emptyWaves")'
 				:rules='[
-					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.network-manager.autonetwork.validation.emptyWaves.required")), (v: number) => ValidationRules.integer(v, $t("components.iqrfnet.network-manager.autonetwork.validation.emptyWaves.integer")), (v: number) => ValidationRules.between(v, 1, 127, $t("components.iqrfnet.network-manager.autonetwork.validation.emptyWaves.between")),
+					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.network-manager.autonetwork.validation.emptyWaves.required")),
+					(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.network-manager.autonetwork.validation.emptyWaves.integer")),
+					(v: number) => ValidationRules.between(v, 1, 127, $t("components.iqrfnet.network-manager.autonetwork.validation.emptyWaves.between")),
 				]'
 				:min='1'
 				:max='127'
@@ -93,7 +101,9 @@
 					v-model='params.stopConditions.numberOfTotalNodes'
 					:label='$t("components.iqrfnet.network-manager.autonetwork.form.stopConditions.nodeConditions.total")'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.network-manager.autonetwork.validation.nodes.required")), (v: number) => ValidationRules.integer(v, $t("components.iqrfnet.network-manager.autonetwork.validation.nodes.integer")), (v: number) => ValidationRules.between(v, 1, 239, $t("components.iqrfnet.network-manager.autonetwork.validation.nodes.between")),
+						(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.network-manager.autonetwork.validation.nodes.required")),
+						(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.network-manager.autonetwork.validation.nodes.integer")),
+						(v: number) => ValidationRules.between(v, 1, 239, $t("components.iqrfnet.network-manager.autonetwork.validation.nodes.between")),
 					]'
 					:min='1'
 					:max='239'
@@ -104,7 +114,9 @@
 					v-model='params.stopConditions.numberOfNewNodes'
 					:label='$t("components.iqrfnet.network-manager.autonetwork.form.stopConditions.nodeConditions.new")'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.network-manager.autonetwork.validation.nodes.required")), (v: number) => ValidationRules.integer(v, $t("components.iqrfnet.network-manager.autonetwork.validation.nodes.integer")), (v: number) => ValidationRules.between(v, 1, 239, $t("components.iqrfnet.network-manager.autonetwork.validation.nodes.between")),
+						(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.network-manager.autonetwork.validation.nodes.required")),
+						(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.network-manager.autonetwork.validation.nodes.integer")),
+						(v: number) => ValidationRules.between(v, 1, 239, $t("components.iqrfnet.network-manager.autonetwork.validation.nodes.between")),
 					]'
 					:min='1'
 					:max='239'
@@ -133,7 +145,8 @@
 				v-model='addressSpace'
 				:label='$t("components.iqrfnet.network-manager.autonetwork.form.bondingControl.addressSpace.title")'
 				:rules='[
-					(v: string|null) => ValidationRules.required(v, $t("components.iqrfnet.network-manager.autonetwork.validation.addressSpace.required")), (v: string) => addressSpaceValidator(v, $t("components.iqrfnet.network-manager.autonetwork.validation.addressSpace.regex")),
+					(v: string|null) => ValidationRules.required(v, $t("components.iqrfnet.network-manager.autonetwork.validation.addressSpace.required")),
+					(v: string) => addressSpaceValidator(v, $t("components.iqrfnet.network-manager.autonetwork.validation.addressSpace.regex")),
 				]'
 				class='mt-2'
 				:description='$t("components.iqrfnet.network-manager.autonetwork.notes.addressSpaceFormat", { range: "1,2,4,<10;20>" })'
@@ -215,7 +228,9 @@
 					v-model='params.overlappingNetworks!.networks'
 					:label='$t("components.iqrfnet.network-manager.autonetwork.form.bondingControl.overlappingNetworks.networks")'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.network-manager.autonetwork.validation.networks.required")), (v: number) => ValidationRules.integer(v, $t("components.iqrfnet.network-manager.autonetwork.validation.networks.integer")), (v: number) => ValidationRules.between(v, 2, 50, $t("components.iqrfnet.network-manager.autonetwork.validation.networks.between")),
+						(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.network-manager.autonetwork.validation.networks.required")),
+						(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.network-manager.autonetwork.validation.networks.integer")),
+						(v: number) => ValidationRules.between(v, 2, 50, $t("components.iqrfnet.network-manager.autonetwork.validation.networks.between")),
 					]'
 					:min='2'
 					:max='50'
@@ -225,7 +240,9 @@
 					v-model='params.overlappingNetworks!.network'
 					:label='$t("components.iqrfnet.network-manager.autonetwork.form.bondingControl.overlappingNetworks.network")'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.network-manager.autonetwork.validation.network.required")), (v: number) => ValidationRules.integer(v, $t("components.iqrfnet.network-manager.autonetwork.validation.network.integer")), (v: number) => ValidationRules.between(v, 1, 50, $t("components.iqrfnet.network-manager.autonetwork.validation.network.between")),
+						(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.network-manager.autonetwork.validation.network.required")),
+						(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.network-manager.autonetwork.validation.network.integer")),
+						(v: number) => ValidationRules.between(v, 1, 50, $t("components.iqrfnet.network-manager.autonetwork.validation.network.between")),
 					]'
 					:min='1'
 					:max='50'
@@ -255,7 +272,8 @@
 				class='mt-2'
 				:label='$t("components.iqrfnet.network-manager.autonetwork.form.hwpidFiltering.list")'
 				:rules='[
-					(v: string|null) => ValidationRules.required(v, $t("components.iqrfnet.network-manager.autonetwork.validation.hwpidFilter.required")), (v: string) => hwpidValidator(v, $t("components.iqrfnet.network-manager.autonetwork.validation.hwpidFilter.format")),
+					(v: string|null) => ValidationRules.required(v, $t("components.iqrfnet.network-manager.autonetwork.validation.hwpidFilter.required")),
+					(v: string) => hwpidValidator(v, $t("components.iqrfnet.network-manager.autonetwork.validation.hwpidFilter.format")),
 				]'
 				:description='$t("components.iqrfnet.network-manager.autonetwork.notes.hwpidFilterFormat")'
 				required

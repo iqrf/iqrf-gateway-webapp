@@ -51,7 +51,8 @@ limitations under the License.
 					v-model='task.taskId'
 					:label='$t("components.config.daemon.scheduler.taskId")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.scheduler.validation.taskId.required")), (v: string) => ValidationRules.uuid(v, $t("components.config.daemon.scheduler.validation.taskId.uuid")),
+						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.scheduler.validation.taskId.required")),
+						(v: string) => ValidationRules.uuid(v, $t("components.config.daemon.scheduler.validation.taskId.uuid")),
 					]'
 					required
 				/>
@@ -74,7 +75,9 @@ limitations under the License.
 					v-model='task.timeSpec.period'
 					:label='$t("components.config.daemon.scheduler.period")'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.scheduler.validation.period.required")), (v: number) => ValidationRules.integer(v, $t("components.config.daemon.scheduler.validation.period.integer")), (v: number) => ValidationRules.min(v, 1, $t("components.config.daemon.scheduler.validation.period.min")),
+						(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.scheduler.validation.period.required")),
+						(v: number) => ValidationRules.integer(v, $t("components.config.daemon.scheduler.validation.period.integer")),
+						(v: number) => ValidationRules.min(v, 1, $t("components.config.daemon.scheduler.validation.period.min")),
 					]'
 					:min='1'
 					required
@@ -84,7 +87,8 @@ limitations under the License.
 					v-model='task.timeSpec.cronTime'
 					:label='$t("components.config.daemon.scheduler.cron")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.scheduler.validation.cron.required")), (v: string) => validateCron(v),
+						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.scheduler.validation.cron.required")),
+						(v: string) => validateCron(v),
 					]'
 					:description='humanCron'
 					required

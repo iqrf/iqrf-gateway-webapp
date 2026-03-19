@@ -77,7 +77,8 @@ limitations under the License.
 									v-model='config.powerEnableGpioPin'
 									:label='$t("components.config.daemon.interfaces.powerPin")'
 									:rules='[
-										(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.powerPin.required")), (v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.powerPin.integer")),
+										(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.powerPin.required")),
+										(v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.powerPin.integer")),
 									]'
 									required
 								/>
@@ -90,7 +91,8 @@ limitations under the License.
 									v-model='config.busEnableGpioPin'
 									:label='$t("components.config.daemon.interfaces.busPin")'
 									:rules='[
-										(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.busPin.required")), (v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.busPin.integer")),
+										(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.busPin.required")),
+										(v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.busPin.integer")),
 									]'
 									required
 								/>
@@ -103,7 +105,8 @@ limitations under the License.
 									v-model='config.pgmSwitchGpioPin'
 									:label='$t("components.config.daemon.interfaces.pgmPin")'
 									:rules='[
-										(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.pgmPin.required")), (v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.pgmPin.integer")),
+										(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.pgmPin.required")),
+										(v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.pgmPin.integer")),
 									]'
 									required
 								/>
@@ -123,7 +126,8 @@ limitations under the License.
 									:label='$t("components.config.daemon.interfaces.i2cPin")'
 									:rules='interfacePins ?
 										[
-											(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.i2cPin.required")), (v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.i2cPin.integer")),
+											(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.i2cPin.required")),
+											(v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.i2cPin.integer")),
 										] : []
 									'
 									:disabled='!interfacePins'
@@ -139,7 +143,8 @@ limitations under the License.
 									:label='$t("components.config.daemon.interfaces.spiPin")'
 									:rules='interfacePins ?
 										[
-											(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.spiPin.required")), (v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.spiPin.integer")),
+											(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.spiPin.required")),
+											(v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.spiPin.integer")),
 										] : []
 									'
 									:disabled='!interfacePins'
@@ -155,7 +160,8 @@ limitations under the License.
 									:label='$t("components.config.daemon.interfaces.uartPin")'
 									:rules='interfacePins ?
 										[
-											(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.uartPin.required")), (v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.uartPin.integer")),
+											(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.interfaces.validation.uartPin.required")),
+											(v: number) => ValidationRules.integer(v, $t("components.config.daemon.interfaces.validation.uartPin.integer")),
 										] : []
 									'
 									:disabled='!interfacePins'

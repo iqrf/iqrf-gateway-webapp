@@ -18,7 +18,8 @@
 				accept='.hex,.iqrf'
 				:label='$t("components.iqrfnet.network-manager.ota-upload.form.file")'
 				:rules='[
-					(v: File|null) => ValidationRules.required(v, $t("components.iqrfnet.network-manager.ota-upload.validation.file.required")), (v: File) => validateFile(v),
+					(v: File|null) => ValidationRules.required(v, $t("components.iqrfnet.network-manager.ota-upload.validation.file.required")),
+					(v: File) => validateFile(v),
 				]'
 				prepend-icon=''
 				show-size
@@ -36,7 +37,9 @@
 				v-model='otaParams.deviceAddr'
 				:label='$t("components.iqrfnet.common.address")'
 				:rules='[
-					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.common.validation.address.required")), (v: number) => ValidationRules.integer(v, $t("components.iqrfnet.common.validation.address.integer")), (v: number) => ValidationRules.between(v, 1, 239, $t("components.iqrfnet.common.validation.address.between")),
+					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.common.validation.address.required")),
+					(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.common.validation.address.integer")),
+					(v: number) => ValidationRules.between(v, 1, 239, $t("components.iqrfnet.common.validation.address.between")),
 				]'
 				:min='1'
 				:max='239'
@@ -47,7 +50,9 @@
 				v-model='otaParams.hwpId'
 				:label='$t("components.iqrfnet.common.hwpid")'
 				:rules='[
-					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.common.validation.hwpid.required")), (v: number) => ValidationRules.integer(v, $t("components.iqrfnet.common.validation.hwpid.integer")), (v: number) => ValidationRules.between(v, 0, 65535, $t("components.iqrfnet.common.validation.hwpid.between")),
+					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.common.validation.hwpid.required")),
+					(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.common.validation.hwpid.integer")),
+					(v: number) => ValidationRules.between(v, 0, 65535, $t("components.iqrfnet.common.validation.hwpid.between")),
 				]'
 				:min='0'
 				:max='65535'
@@ -58,7 +63,9 @@
 				v-model='otaParams.startMemAddr'
 				:label='$t("components.iqrfnet.network-manager.ota-upload.form.eeepromAddress")'
 				:rules='[
-					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.network-manager.ota-upload.validation.eeepromAddress.required")), (v: number) => ValidationRules.integer(v, $t("components.iqrfnet.network-manager.ota-upload.validation.eeepromAddress.integer")), (v: number) => ValidationRules.between(v, 768, 16383, $t("components.iqrfnet.network-manager.ota-upload.validation.eeepromAddress.between")),
+					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.network-manager.ota-upload.validation.eeepromAddress.required")),
+					(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.network-manager.ota-upload.validation.eeepromAddress.integer")),
+					(v: number) => ValidationRules.between(v, 768, 16383, $t("components.iqrfnet.network-manager.ota-upload.validation.eeepromAddress.between")),
 				]'
 				:min='768'
 				:max='16383'
@@ -300,7 +307,7 @@ async function executeStep(action: OtaUploadAction): Promise<void> {
 
 function handleOtaUploadResponse(rsp: DaemonApiResponse): void {
 	if (rsp.data.status > 1_000) {
-		let message = '';
+		let message: string;
 		switch (rsp.data.status) {
 			case 1_001:
 				message = i18n.t('components.iqrfnet.network-manager.ota-upload.messages.invalidRequest', { error: rsp.data.statusStr });

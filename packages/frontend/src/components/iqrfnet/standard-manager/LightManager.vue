@@ -14,7 +14,9 @@
 				v-model='address'
 				:label='$t("components.iqrfnet.common.deviceAddr")'
 				:rules='[
-					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.common.validation.deviceAddr.required")), (v: number) => ValidationRules.integer(v, $t("components.iqrfnet.common.validation.deviceAddr.integer")), (v: number) => ValidationRules.between(v, 0, 239, $t("components.iqrfnet.common.validation.deviceAddr.between")),
+					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.common.validation.deviceAddr.required")),
+					(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.common.validation.deviceAddr.integer")),
+					(v: number) => ValidationRules.between(v, 0, 239, $t("components.iqrfnet.common.validation.deviceAddr.between")),
 				]'
 				:min='0'
 				:max='239'
@@ -25,7 +27,8 @@
 				v-model='voltage'
 				:label='$t("components.iqrfnet.standard-manager.light.voltage")'
 				:rules='[
-					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.standard-manager.light.validation.voltage.required")), (v: number) => ValidationRules.between(v, 0, 10, $t("components.iqrfnet.standard-manager.light.validation.voltage.between")),
+					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.standard-manager.light.validation.voltage.required")),
+					(v: number) => ValidationRules.between(v, 0, 10, $t("components.iqrfnet.standard-manager.light.validation.voltage.between")),
 				]'
 				:min='0'
 				:max='10'
@@ -39,7 +42,9 @@
 				v-model='commands[i-1]'
 				:label='$t("components.iqrfnet.standard-manager.light.command")'
 				:rules='[
-					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.standard-manager.light.validation.command.required")), (v: number) => ValidationRules.integer(v, $t("components.iqrfnet.standard-manager.light.validation.command.integer")), (v: number) => ValidationRules.between(v, 0, 65535, $t("components.iqrfnet.standard-manager.light.validation.command.between")),
+					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.standard-manager.light.validation.command.required")),
+					(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.standard-manager.light.validation.command.integer")),
+					(v: number) => ValidationRules.between(v, 0, 65535, $t("components.iqrfnet.standard-manager.light.validation.command.between")),
 				]'
 				:min='0'
 				:max='65535'
@@ -275,7 +280,7 @@ function handleSetLai(rsp: DaemonApiResponse): void {
 }
 
 function handleError(statusCode: number, timeout: string, generalFailure: string): void {
-	let message = '';
+	let message: string;
 	switch (statusCode) {
 		case -1:
 			message = timeout;

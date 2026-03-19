@@ -47,7 +47,10 @@ limitations under the License.
 					v-model='record.deviceMID'
 					:label='$t("components.iqrfnet.network-manager.autonetwork.midlist.mid")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.iqrfnet.network-manager.autonetwork.midlist.validation.mid.required")), (v: string) => ValidationRules.regex(v, /^[0-9a-fA-F]+$/, $t("components.iqrfnet.network-manager.autonetwork.midlist.validation.mid.regex")), (v: string) => ValidationRules.len(v, 8, $t("components.iqrfnet.network-manager.autonetwork.midlist.validation.mid.len")), (v: string) => duplicateMid(v, $t("components.iqrfnet.network-manager.autonetwork.midlist.validation.mid.duplicate")),
+						(v: string|null) => ValidationRules.required(v, $t("components.iqrfnet.network-manager.autonetwork.midlist.validation.mid.required")),
+						(v: string) => ValidationRules.regex(v, /^[0-9a-fA-F]+$/, $t("components.iqrfnet.network-manager.autonetwork.midlist.validation.mid.regex")),
+						(v: string) => ValidationRules.len(v, 8, $t("components.iqrfnet.network-manager.autonetwork.midlist.validation.mid.len")),
+						(v: string) => duplicateMid(v, $t("components.iqrfnet.network-manager.autonetwork.midlist.validation.mid.duplicate")),
 					]'
 					required
 				/>
@@ -62,7 +65,10 @@ limitations under the License.
 					v-model='record.deviceAddr'
 					:label='$t("components.iqrfnet.common.address")'
 					:rules='[
-						(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.common.validation.address.required")), (v: number) => ValidationRules.integer(v, $t("components.iqrfnet.common.validation.address.integer")), (v: number) => ValidationRules.between(v, 1, 239, $t("components.iqrfnet.common.validation.address.between")), (v: number) => duplicateAddr(v, $t("components.iqrfnet.network-manager.autonetwork.midlist.validation.addr.duplicate")),
+						(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.common.validation.address.required")),
+						(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.common.validation.address.integer")),
+						(v: number) => ValidationRules.between(v, 1, 239, $t("components.iqrfnet.common.validation.address.between")),
+						(v: number) => duplicateAddr(v, $t("components.iqrfnet.network-manager.autonetwork.midlist.validation.addr.duplicate")),
 					]'
 					:min='1'
 					:max='239'

@@ -34,7 +34,8 @@ limitations under the License.
 					v-model='config.endpoint'
 					:label='$t("components.config.daemon.connections.mqtt.clouds.aws.endpoint")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.clouds.aws.validation.endpoint.required")), (v: string) => ValidationRules.url(v, $t("components.config.daemon.connections.mqtt.clouds.aws.validation.endpoint.url")),
+						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.connections.mqtt.clouds.aws.validation.endpoint.required")),
+						(v: string) => ValidationRules.url(v, $t("components.config.daemon.connections.mqtt.clouds.aws.validation.endpoint.url")),
 					]'
 					:prepend-inner-icon='mdiServerNetwork'
 					required

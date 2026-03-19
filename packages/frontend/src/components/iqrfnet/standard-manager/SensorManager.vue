@@ -9,7 +9,9 @@
 				v-model='address'
 				:label='$t("components.iqrfnet.common.deviceAddr")'
 				:rules='[
-					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.common.validation.deviceAddr.required")), (v: number) => ValidationRules.integer(v, $t("components.iqrfnet.common.validation.deviceAddr.integer")), (v: number) => ValidationRules.between(v, 0, 239, $t("components.iqrfnet.common.validation.deviceAddr.between")),
+					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.common.validation.deviceAddr.required")),
+					(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.common.validation.deviceAddr.integer")),
+					(v: number) => ValidationRules.between(v, 0, 239, $t("components.iqrfnet.common.validation.deviceAddr.between")),
 				]'
 				:min='0'
 				:max='239'
@@ -210,7 +212,7 @@ function handleRead(rsp: DaemonApiResponse): void {
 }
 
 function handleError(statusCode: number, timeout: string, generalFailure: string): void {
-	let message = '';
+	let message: string;
 	switch (statusCode) {
 		case -1:
 			message = timeout;

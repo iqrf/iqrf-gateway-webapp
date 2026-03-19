@@ -40,7 +40,9 @@ limitations under the License.
 				v-maska='maskaOptions'
 				:label='$t("components.ipNetwork.connections.form.ipv4.address")'
 				:rules='[
-					(v: string|null) => ValidationRules.required(v, $t("components.ipNetwork.connections.errors.ipv4.address.required")), (v: string) => ValidationRules.ipv4Address(v, $t("components.ipNetwork.connections.errors.ipv4.address.ipv4Address")), () => ipv4SubnetCheck($t("components.ipNetwork.connections.errors.ipv4.address.ipv4Subnet")),
+					(v: string|null) => ValidationRules.required(v, $t("components.ipNetwork.connections.errors.ipv4.address.required")),
+					(v: string) => ValidationRules.ipv4Address(v, $t("components.ipNetwork.connections.errors.ipv4.address.ipv4Address")),
+					() => ipv4SubnetCheck($t("components.ipNetwork.connections.errors.ipv4.address.ipv4Subnet")),
 				]'
 				required
 				:prepend-inner-icon='mdiIpNetwork'
@@ -50,7 +52,8 @@ limitations under the License.
 				v-maska='maskaOptions'
 				:label='$t("components.ipNetwork.connections.form.ipv4.mask")'
 				:rules='[
-					(v: string|null) => ValidationRules.required(v, $t("components.ipNetwork.connections.errors.ipv4.mask.required")), (v: string) => ValidationRules.ipv4Address(v, $t("components.ipNetwork.connections.errors.ipv4.mask.ipv4Address")),
+					(v: string|null) => ValidationRules.required(v, $t("components.ipNetwork.connections.errors.ipv4.mask.required")),
+					(v: string) => ValidationRules.ipv4Address(v, $t("components.ipNetwork.connections.errors.ipv4.mask.ipv4Address")),
 				]'
 				required
 				:prepend-inner-icon='mdiLan'
@@ -60,7 +63,9 @@ limitations under the License.
 				v-maska='maskaOptions'
 				:label='$t("components.ipNetwork.connections.form.ipv4.gateway")'
 				:rules='[
-					(v: string|null) => ValidationRules.required(v, $t("components.ipNetwork.connections.errors.ipv4.gateway.required")), (v: string) => ValidationRules.ipv4Address(v, $t("components.ipNetwork.connections.errors.ipv4.gateway.ipv4Address")), () => ipv4SubnetCheck($t("components.ipNetwork.connections.errors.ipv4.gateway.ipv4Subnet")),
+					(v: string|null) => ValidationRules.required(v, $t("components.ipNetwork.connections.errors.ipv4.gateway.required")),
+					(v: string) => ValidationRules.ipv4Address(v, $t("components.ipNetwork.connections.errors.ipv4.gateway.ipv4Address")),
+					() => ipv4SubnetCheck($t("components.ipNetwork.connections.errors.ipv4.gateway.ipv4Subnet")),
 				]'
 				required
 				:prepend-inner-icon='mdiWan'
@@ -75,7 +80,8 @@ limitations under the License.
 				v-maska='maskaOptions'
 				:label='$t("components.ipNetwork.connections.form.ipv4.dns.address")'
 				:rules='[
-					(v: string|null) => ValidationRules.requiredIf(v, noIpv6Dns, $t("components.ipNetwork.connections.errors.ipv4.dns.required")), (v: string) => ValidationRules.ipv4Address(v, $t("components.ipNetwork.connections.errors.ipv4.dns.ipv4Address")),
+					(v: string|null) => ValidationRules.requiredIf(v, noIpv6Dns, $t("components.ipNetwork.connections.errors.ipv4.dns.required")),
+					(v: string) => ValidationRules.ipv4Address(v, $t("components.ipNetwork.connections.errors.ipv4.dns.ipv4Address")),
 				]'
 				required
 				:prepend-inner-icon='mdiServerNetwork'

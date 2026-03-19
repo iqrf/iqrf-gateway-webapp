@@ -62,7 +62,9 @@ limitations under the License.
 					v-model='message'
 					:label='$t("components.config.daemon.scheduler.task.message")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.scheduler.validation.message.required")), (v: string) => ValidationRules.json(v, $t("components.config.daemon.scheduler.validation.message.json")), (v: string) => isDaemonApiRequest(JSON.parse(v)) || $t("components.config.daemon.scheduler.validation.message.json"),
+						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.scheduler.validation.message.required")),
+						(v: string) => ValidationRules.json(v, $t("components.config.daemon.scheduler.validation.message.json")),
+						(v: string) => isDaemonApiRequest(JSON.parse(v)) || $t("components.config.daemon.scheduler.validation.message.json"),
 					]'
 					auto-grow
 					clearable

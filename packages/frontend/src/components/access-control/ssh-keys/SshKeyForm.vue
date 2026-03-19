@@ -63,7 +63,8 @@ limitations under the License.
 					label='SSH key'
 					:prepend-inner-icon='mdiKey'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.accessControl.sshKeys.validation.key.required")), (v: string) => validateKey(v),
+						(v: string|null) => ValidationRules.required(v, $t("components.accessControl.sshKeys.validation.key.required")),
+						(v: string) => validateKey(v),
 					]'
 					required
 					@change='updateDescription()'

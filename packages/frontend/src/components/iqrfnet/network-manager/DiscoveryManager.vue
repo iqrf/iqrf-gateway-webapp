@@ -19,7 +19,9 @@
 				v-model='discoveryParams.maxAddr'
 				:label='$t("components.iqrfnet.network-manager.discovery.maxAddr")'
 				:rules='[
-					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.network-manager.discovery.validation.maxAddr.required")), (v: number) => ValidationRules.integer(v, $t("components.iqrfnet.network-manager.discovery.validation.maxAddr.integer")), (v: number) => ValidationRules.between(v, 0, 239, $t("components.iqrfnet.network-manager.discovery.validation.maxAddr.between")),
+					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.network-manager.discovery.validation.maxAddr.required")),
+					(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.network-manager.discovery.validation.maxAddr.integer")),
+					(v: number) => ValidationRules.between(v, 0, 239, $t("components.iqrfnet.network-manager.discovery.validation.maxAddr.between")),
 				]'
 				:min='0'
 				:max='239'
@@ -30,7 +32,9 @@
 				v-model='discoveryParams.txPower'
 				:label='$t("components.iqrfnet.network-manager.discovery.txPower")'
 				:rules='[
-					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.network-manager.discovery.validation.txPower.required")), (v: number) => ValidationRules.integer(v, $t("components.iqrfnet.network-manager.discovery.validation.txPower.integer")), (v: number) => ValidationRules.between(v, 0, 7, $t("components.iqrfnet.network-manager.discovery.validation.txPower.between")),
+					(v: number|null) => ValidationRules.required(v, $t("components.iqrfnet.network-manager.discovery.validation.txPower.required")),
+					(v: number) => ValidationRules.integer(v, $t("components.iqrfnet.network-manager.discovery.validation.txPower.integer")),
+					(v: number) => ValidationRules.between(v, 0, 7, $t("components.iqrfnet.network-manager.discovery.validation.txPower.between")),
 				]'
 				:min='0'
 				:max='7'

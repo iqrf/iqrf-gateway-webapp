@@ -130,27 +130,23 @@ function handleBond(rsp: DaemonApiResponse): void {
 	}
 	if (rsp.data.status === 0) {
 		toast.success(
-			i18n.t(
-				componentProps.coordinatorOnly ?
-					'components.iqrfnet.network-manager.bonding.messages.clear.successCoordinator' :
-					'components.iqrfnet.network-manager.bonding.messages.clear.success',
-			),
+			componentProps.coordinatorOnly ?
+				i18n.t('components.iqrfnet.network-manager.bonding.messages.clear.successCoordinator') :
+				i18n.t('components.iqrfnet.network-manager.bonding.messages.clear.success'),
 		);
 		emit('updateDevices');
 		close();
 		return;
 	}
-	let message = '';
+	let message: string;
 	switch (rsp.data.status) {
 		case -1:
 			message = i18n.t('components.iqrfnet.network-manager.bonding.messages.clear.timeout');
 			break;
 		default:
-			message = i18n.t(
-				componentProps.coordinatorOnly ?
-					'components.iqrfnet.network-manager.bonding.messages.clear.failedCoordinator' :
-					'components.iqrfnet.network-manager.bonding.messages.clear.failed',
-			);
+			message = componentProps.coordinatorOnly ?
+				i18n.t('components.iqrfnet.network-manager.bonding.messages.clear.failedCoordinator') :
+				i18n.t('components.iqrfnet.network-manager.bonding.messages.clear.failed');
 	}
 	toast.error(message);
 }
