@@ -79,6 +79,14 @@ export class ApiKeyService extends BaseService {
 	}
 
 	/**
+	 * Revokes the API key
+	 * @param {number} id API key ID
+	 */
+	public async revoke(id: number): Promise<void> {
+		await this.axiosInstance.post(`/security/apiKeys/${id.toString()}/revoke`);
+	}
+
+	/**
 	 * Deserializes API key
 	 * @template {ApiKeyConfig|ApiKeyInfo|ApiKeyCreated} T API key type
 	 * @param {T} key API key to deserialize

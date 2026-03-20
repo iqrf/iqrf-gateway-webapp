@@ -16,6 +16,10 @@
 
 import { type DateTime } from 'luxon';
 
+import { type UserInfo } from '../User';
+
+import { type AccessScope } from './AccessScope';
+
 /**
  * API key configuration
  */
@@ -29,7 +33,12 @@ export interface ApiKeyConfig {
 	/**
 	 * API key expiration date
 	 */
-	expiration: DateTime|null;
+	expiration: DateTime | null;
+
+	/**
+	 * API key access scopes
+	 */
+	scopes: AccessScope[];
 
 }
 
@@ -42,6 +51,26 @@ export interface ApiKeyInfo extends ApiKeyConfig {
 	 * API key ID
 	 */
 	id?: number;
+
+	/**
+	 * User who revoked the key
+	 */
+	revokedBy?: UserInfo;
+
+	/**
+	 * Time when key was revoked
+	 */
+	revokedAt?: DateTime;
+
+	/**
+	 * Key state
+	 */
+	state?: string;
+
+	/**
+	 * Legacy key
+	 */
+	legacy: boolean;
 
 }
 
