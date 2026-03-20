@@ -1,6 +1,6 @@
 <!--
-Copyright 2017-2025 IQRF Tech s.r.o.
-Copyright 2019-2025 MICRORISC s.r.o.
+Copyright 2017-2026 IQRF Tech s.r.o.
+Copyright 2019-2026 MICRORISC s.r.o.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -46,7 +46,13 @@ limitations under the License.
 			<template #item.expiration='{ item }'>
 				{{ formatTime(item.expiration) }}
 			</template>
+			<template #item.state='{ item }'>
+				{{ getState(item.state) }}
+			</template>
 			<template #item.actions='{ item }'>
+				<ApiKeyRevokeDialog
+					:api-key="item"
+				/>
 				<ApiKeyForm
 					:action='Action.Edit'
 					:api-key='toRaw(item)'
@@ -82,6 +88,7 @@ import ApiKeyDeleteDialog from '@/components/access-control/api-keys/ApiKeyDelet
 import ApiKeyForm from '@/components/access-control/api-keys/ApiKeyForm.vue';
 import { useApiClient } from '@/services/ApiClient';
 import { useLocaleStore } from '@/store/locale';
+import ApiKeyRevokeDialog from './ApiKeyRevokeDialog.vue';
 
 const componentState: Ref<ComponentState> = ref(ComponentState.Created);
 const i18n = useI18n();
@@ -91,6 +98,7 @@ const headers = computed(() => [
 	{ key: 'id', title: i18n.t('common.columns.id') },
 	{ key: 'description', title: i18n.t('common.columns.description') },
 	{ key: 'expiration', title: i18n.t('components.accessControl.apiKeys.expiration') },
+	{ key: 'state', title: i18n.t('components.accessControl.apiKeys.stateTitle')},
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false },
 ]);
 const keys: Ref<ApiKeyInfo[]> = ref([]);
@@ -123,6 +131,15 @@ function formatTime(time: DateTime | null): string|null {
 		return null;
 	}
 	return time.setLocale(localeStore.getLocale).toLocaleString(DateTime.DATETIME_FULL_WITH_SECONDS);
+}
+
+function getState(state: string | null): string {
+	switch (state) {
+		case 'revoked':
+			return i18n.t('components.accessControl.apiKeys.state.revoked');
+		default:
+			return i18n.t('components.accessControl.apiKeys.state.active');
+	}
 }
 
 onMounted(() => {
