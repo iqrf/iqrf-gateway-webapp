@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+export * from './AccessScope';
 export * from './ApiKey';
 export * from './Certificate';
 export * from './SshKey';
