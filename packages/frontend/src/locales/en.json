@@ -108,6 +108,16 @@
 	},
 	"components": {
 		"accessControl": {
+			"apiKeyRevocationDialog": {
+				"prompt": "Are you sure you want to revoke this API key?",
+				"revokeButtonText": "Revoke API key",
+				"title": "API key revocation confirmation",
+				"tooltip": {
+					"legacy": "Legacy API keys cannot be revoked.",
+					"revoke": "Revoke API key",
+					"revoked": "API key has already been revoked."
+				}
+			},
 			"apiKeys": {
 				"actions": {
 					"add": "Add API key",
@@ -133,6 +143,11 @@
 					"list": {
 						"failed": "Failed to retrieve API key list."
 					},
+					"revoke": {
+						"failed": "Failed to revoke API key.",
+						"legacy": "Legacy API keys cannot be revoked.",
+						"success": "API key has been successfully revoked."
+					},
 					"save": {
 						"failed": "Failed to save API key.",
 						"success": "API key has been successfully saved."
@@ -142,11 +157,227 @@
 					"empty": "No API key records found.",
 					"fetchError": "API key records could not be retrieved."
 				},
+				"state": {
+					"active": "Active",
+					"revoked": "Revoked"
+				},
+				"stateTitle": "Key state",
 				"validations": {
 					"description": {
 						"required": "Please enter API key description."
 					}
 				}
+			},
+			"scopeTable": {
+				"columns": {
+					"description": "Description",
+					"selected": "Selected",
+					"title": "Title",
+					"value": "Value"
+				},
+				"scopes": {
+					"account:read": {
+						"description": "Allows viewing user's own account details.",
+						"title": "View account"
+					},
+					"account:write": {
+						"description": "Allows updating user's own account details.",
+						"title": "Manage account"
+					},
+					"config:automaticUpgrades:read": {
+						"description": "Allows viewing automatic upgrades configuration.",
+						"title": "View automatic upgrades configuration"
+					},
+					"config:automaticUpgrades:write": {
+						"description": "Allows updating automatic upgrades configuration.",
+						"title": "Manage automatic upgrades configuration"
+					},
+					"config:features:read": {
+						"description": "Allows viewing enabled gateway features.",
+						"title": "View feature configuration"
+					},
+					"config:features:write": {
+						"description": "Allows updating enabled gateway features.",
+						"title": "Manage feature configuration"
+					},
+					"config:iqrfGatewayController:read": {
+						"description": "Allows viewing IQRF Gateway Controller configuration.",
+						"title": "View controller configuration"
+					},
+					"config:iqrfGatewayController:write": {
+						"description": "Allows updating IQRF Gateway Controller configuration.",
+						"title": "Manage controller configuration"
+					},
+					"config:iqrfGatewayDaemon:read": {
+						"description": "Allows viewing IQRF Gateway Daemon configuration.",
+						"title": "View daemon configuration"
+					},
+					"config:iqrfGatewayDaemon:write": {
+						"description": "Allows updating IQRF Gateway Daemon configuration.",
+						"title": "Manage daemon configuration"
+					},
+					"config:iqrfGatewayInfluxdbBridge:read": {
+						"description": "Allows viewing IQRF Gateway InfluxDB bridge configuration.",
+						"title": "View InfluxDB bridge configuration"
+					},
+					"config:iqrfGatewayInfluxdbBridge:write": {
+						"description": "Allows updating IQRF Gateway InfluxDB bridge configuration.",
+						"title": "Manage InfluxDB bridge configuration"
+					},
+					"config:iqrfRepository:read": {
+						"description": "Allows viewing IQRF repository configuration.",
+						"title": "View repository configuration"
+					},
+					"config:iqrfRepository:write": {
+						"description": "Allows updating IQRF repository configuration.",
+						"title": "Manage repository configuration"
+					},
+					"config:journal:read": {
+						"description": "Allows viewing journal configuration.",
+						"title": "View journal configuration"
+					},
+					"config:journal:write": {
+						"description": "Allows updating journal configuration.",
+						"title": "Manage journal configuration"
+					},
+					"config:mailer:read": {
+						"description": "Allows viewing mailer configuration.",
+						"title": "View mailer configuration"
+					},
+					"config:mailer:write": {
+						"description": "Allows updating mailer configuration.",
+						"title": "Manage mailer configuration"
+					},
+					"config:mender:read": {
+						"description": "Allows viewing Mender configuration.",
+						"title": "View Mender configuration"
+					},
+					"config:mender:write": {
+						"description": "Allows updating Mender configuration.",
+						"title": "Manage Mender configuration"
+					},
+					"config:monit:read": {
+						"description": "Allows viewing Monit configuration.",
+						"title": "View Monit configuration"
+					},
+					"config:monit:write": {
+						"description": "Allows updating Monit configuration.",
+						"title": "Manage Monit configuration"
+					},
+					"config:time:read": {
+						"description": "Allows viewing time configuration.",
+						"title": "View time configuration"
+					},
+					"config:time:write": {
+						"description": "Allows updating time configuration.",
+						"title": "Manage time configuration"
+					},
+					"gateway:backup:execute": {
+						"description": "Allows creating gateway backups.",
+						"title": "Run gateway backup"
+					},
+					"gateway:diagnostic:read": {
+						"description": "Allows viewing gateway diagnostics.",
+						"title": "View diagnostics"
+					},
+					"gateway:information:read": {
+						"description": "Allows viewing gateway information.",
+						"title": "View gateway information"
+					},
+					"gateway:information:write": {
+						"description": "Allows updating gateway information.",
+						"title": "Manage gateway information"
+					},
+					"gateway:mender:execute": {
+						"description": "Allows using Mender actions like Mender update.",
+						"title": "Run Mender actions"
+					},
+					"gateway:power:execute": {
+						"description": "Allows executing gateway power actions.",
+						"title": "Run power actions"
+					},
+					"gateway:power:read": {
+						"description": "Allows viewing gateway power status.",
+						"title": "View power status"
+					},
+					"gateway:service:execute": {
+						"description": "Allows starting and stopping of system services.",
+						"title": "Run service actions"
+					},
+					"gateway:service:read": {
+						"description": "Allows viewing gateway services.",
+						"title": "View services"
+					},
+					"gateway:version:read": {
+						"description": "Allows viewing gateway version details.",
+						"title": "View gateway version"
+					},
+					"ipNetwork:physicalConnections:execute": {
+						"description": "Allows executing actions (enable, disable, etc) on IP network physical connections (like ethernet).",
+						"title": "Run physical connection actions"
+					},
+					"ipNetwork:physicalConnections:read": {
+						"description": "Allows viewing IP network physical connection configurations.",
+						"title": "View physical connections"
+					},
+					"ipNetwork:physicalConnections:write": {
+						"description": "Allows updating IP network physical connection configurations.",
+						"title": "Manage physical connections"
+					},
+					"ipNetwork:vpns:read": {
+						"description": "Allows viewing IP network VPN configuration.",
+						"title": "View VPN configuration"
+					},
+					"ipNetwork:vpns:write": {
+						"description": "Allows updating IP network VPN configuration.",
+						"title": "Manage VPN configuration"
+					},
+					"iqrfNetwork:macros:read": {
+						"description": "Allows viewing IQRF network macros.",
+						"title": "View IQRF macros"
+					},
+					"iqrfNetwork:trUpload:execute": {
+						"description": "Allows executing IQRF TR upload operations.",
+						"title": "Run TR upload"
+					},
+					"security:apiKeys:read": {
+						"description": "Allows viewing API keys.",
+						"title": "View API keys"
+					},
+					"security:apiKeys:write": {
+						"description": "Allows creating, updating and deleting API keys.",
+						"title": "Manage API keys"
+					},
+					"security:certificates:read": {
+						"description": "Allows viewing certificates.",
+						"title": "View certificates"
+					},
+					"security:certificates:write": {
+						"description": "Allows updating certificates.",
+						"title": "Manage certificates"
+					},
+					"security:shellUser:write": {
+						"description": "Allows updating shell user settings (shell user is used for SSH connections).",
+						"title": "Manage shell user"
+					},
+					"security:sshkeys:read": {
+						"description": "Allows viewing SSH keys.",
+						"title": "View SSH keys"
+					},
+					"security:sshkeys:write": {
+						"description": "Allows creating, updating and deleting SSH keys.",
+						"title": "Manage SSH keys"
+					},
+					"security:users:read": {
+						"description": "Allows viewing web application users.",
+						"title": "View users"
+					},
+					"security:users:write": {
+						"description": "Allows creating, updating and deleting web application users.",
+						"title": "Manage users"
+					}
+				},
+				"title": "Scopes"
 			},
 			"sshKeys": {
 				"actions": {

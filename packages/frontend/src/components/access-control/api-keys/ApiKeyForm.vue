@@ -47,6 +47,12 @@ limitations under the License.
 				<template #title>
 					{{ dialogTitle }}
 				</template>
+				<v-alert
+					v-if='key.legacy'
+					color='warning'
+					variant='tonal'
+					:text='$t("components.accessControl.apiKeys.legacyKeyWarning")'
+				/>
 				<ITextInput
 					v-model='key.description'
 					:prepend-inner-icon='mdiTextShort'
@@ -61,12 +67,34 @@ limitations under the License.
 					:label='$t("components.accessControl.apiKeys.expiration")'
 					:min='toRaw(minDate)'
 				/>
+				<ScopeTable
+					:selected='scopes'
+					@update='updateScopes'
+				/>
+				<ITextInput
+					v-if='key.revokedBy'
+					v-model='key.revokedBy'
+					:label='$t("components.accessControl.apiKeys.revokedBy")'
+					disabled
+				/>
+				<IDateTimeInput
+					v-if='key.revokedAt'
+					v-model='key.revokedAt'
+					:label='$t("components.accessControl.apiKeys.revokedAt")'
+					disabled
+				/>
 				<template #actions>
 					<IActionBtn
 						:action='action'
 						:loading='componentState === ComponentState.Action'
 						:disabled='!isValid.value'
 						type='submit'
+					/>
+					<ApiKeyRevokeDialog
+						v-if='action === Action.Edit'
+						:api-key="key"
+						appearance="button"
+						@revoke='emit("refresh")'
 					/>
 					<v-spacer />
 					<IActionBtn
@@ -88,9 +116,10 @@ limitations under the License.
 <script lang='ts' setup>
 import { type ApiKeyService } from '@iqrf/iqrf-gateway-webapp-client/services/Security';
 import {
-	type ApiKeyConfig,
 	type ApiKeyCreated,
 	type ApiKeyInfo,
+	AccessScope,
+	ApiKeyConfig
 } from '@iqrf/iqrf-gateway-webapp-client/types/Security';
 import { DateTimeUtils } from '@iqrf/iqrf-gateway-webapp-client/utils';
 import {
@@ -104,7 +133,7 @@ import {
 	ITextInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
-import { mdiTextShort } from '@mdi/js';
+import { mdiContentSave, mdiTextShort } from '@mdi/js';
 import { DateTime } from 'luxon';
 import { computed, ref, type Ref, type TemplateRef, toRaw, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -114,11 +143,13 @@ import { VForm } from 'vuetify/components';
 import ApiKeyDisplayDialog from '@/components/access-control/api-keys/ApiKeyDisplayDialog.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
+import ScopeTable from './ScopeTable.vue';
+import ApiKeyRevokeDialog from './ApiKeyRevokeDialog.vue';
 
 const componentProps = withDefaults(
 	defineProps<{
 		action?: Action.Add | Action.Edit;
-		apiKey?: ApiKeyConfig | ApiKeyInfo;
+		apiKey?: ApiKeyInfo;
 		disabled?: boolean;
 	}>(),
 	{
@@ -126,6 +157,8 @@ const componentProps = withDefaults(
 		apiKey: () => ({
 			description: '',
 			expiration: null,
+			scopes: [],
+			legacy: false,
 		}),
 		disabled: false,
 	},
@@ -140,15 +173,18 @@ const service: ApiKeyService = useApiClient()
 	.getSecurityServices()
 	.getApiKeyService();
 const form: TemplateRef<VForm> = useTemplateRef('form');
-const defaultKey: ApiKeyConfig = {
+const defaultKey: ApiKeyInfo = {
 	description: '',
 	expiration: null,
+	scopes: [],
+	legacy: false
 };
 const expiration: Ref<DateTime | null> = ref(null);
 const key: Ref<ApiKeyInfo> = ref(defaultKey);
 const generatedKey: Ref<string | null> = ref(null);
 const displayDialog: Ref<InstanceType<typeof ApiKeyDisplayDialog>|null> = useTemplateRef('displayDialog');
 const minDate: Ref<DateTime | null> = ref(null);
+const scopes: Ref<AccessScope[]> = ref([]);
 
 const dialogTitle = computed(() => {
 	if (componentProps.action === Action.Add) {
@@ -190,7 +226,12 @@ async function onSubmit(): Promise<void> {
 	}
 	try {
 		if (componentProps.action === Action.Add) {
-			const createdKey: ApiKeyCreated = await service.create(params);
+			const config: ApiKeyConfig = {
+				description: params.description,
+				expiration: params.expiration,
+				scopes: params.scopes
+			}
+			const createdKey: ApiKeyCreated = await service.create(config);
 			generatedKey.value = createdKey.key;
 			toast.success(
 				i18n.t('components.accessControl.apiKeys.messages.save.success'),
@@ -220,5 +261,14 @@ function clear(): void {
 function close(): void {
 	show.value = false;
 	key.value = { ...defaultKey };
+}
+
+function updateScopes(scope: AccessScope): void {
+	if (scopes.value.includes(scope)) {
+		const index = scopes.value.indexOf(scope);
+		scopes.value.splice(index, 1);
+	} else {
+		scopes.value.push(scope);
+	}
 }
 </script>
