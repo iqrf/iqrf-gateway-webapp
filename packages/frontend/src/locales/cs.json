@@ -68,6 +68,16 @@
 	},
 	"components": {
 		"accessControl": {
+			"apiKeyRevocationDialog": {
+				"prompt": "Opravdu chcete revokovat tento API klíč?",
+				"revokeButtonText": "Revokovat API klíč",
+				"title": "Potvrzení revokace API klíče",
+				"tooltip": {
+					"legacy": "Legacy API klíče nelze revokovat.",
+					"revoke": "Revokovat API klíč",
+					"revoked": "API klíč již byl revokován."
+				}
+			},
 			"apiKeys": {
 				"actions": {
 					"add": "Přidat API klíč",
@@ -75,10 +85,372 @@
 					"edit": "Upravit API klíč",
 					"reload": "Znovu načíst API klíče"
 				},
+				"delete": {
+					"prompt": "Opravdu chcete smazat API klíč s ID {id}?",
+					"title": "Potvrzení smazání API klíče"
+				},
+				"display": {
+					"copyMessage": "API klíč byl zkopírován do schránky.",
+					"prompt": "Před zavřením tohoto dialogu zkopírujte a bezpečně uložte níže uvedený nový API klíč. Z bezpečnostních důvodů jej později již nebude možné znovu zobrazit.",
+					"title": "Vygenerovaný API klíč"
+				},
+				"expiration": "Expirace",
 				"messages": {
 					"delete": {
 						"failed": "Nepodařilo se smazat API klíč s ID {id}.",
 						"success": "API klíč s ID {id} byl úspěšně smazán."
+					},
+					"list": {
+						"failed": "Nepodařilo se načíst seznam API klíčů."
+					},
+					"revoke": {
+						"failed": "Nepodařilo se revokovat API klíč.",
+						"legacy": "Legacy API klíče nelze revokovat.",
+						"success": "API klíč byl úspěšně revokován."
+					},
+					"save": {
+						"failed": "Nepodařilo se uložit API klíč.",
+						"success": "API klíč byl úspěšně uložen."
+					}
+				},
+				"noData": {
+					"empty": "Nebyly nalezeny žádné záznamy API klíčů.",
+					"fetchError": "Záznamy API klíčů se nepodařilo načíst."
+				},
+				"state": {
+					"active": "Aktivní",
+					"revoked": "Revokovaný"
+				},
+				"stateTitle": "Stav klíče",
+				"validations": {
+					"description": {
+						"required": "Zadejte prosím popis API klíče."
+					}
+				}
+			},
+			"scopeTable": {
+				"columns": {
+					"description": "Popis",
+					"selected": "Vybráno",
+					"title": "Název",
+					"value": "Hodnota"
+				},
+				"scopes": {
+					"account:read": {
+						"description": "Umožňuje zobrazit detail vlastního uživatelského účtu.",
+						"title": "Prohlížet účet"
+					},
+					"account:write": {
+						"description": "Umožňuje upravit detail vlastního uživatelského účtu.",
+						"title": "Spravovat účet"
+					},
+					"config:automaticUpgrades:read": {
+						"description": "Umožňuje zobrazit konfiguraci automatických aktualizací.",
+						"title": "Prohlížet konfiguraci automatických aktualizací"
+					},
+					"config:automaticUpgrades:write": {
+						"description": "Umožňuje upravit konfiguraci automatických aktualizací.",
+						"title": "Spravovat konfiguraci automatických aktualizací"
+					},
+					"config:features:read": {
+						"description": "Umožňuje zobrazit povolené funkce gatewaye.",
+						"title": "Prohlížet konfiguraci funkcí"
+					},
+					"config:features:write": {
+						"description": "Umožňuje upravit povolené funkce gatewaye.",
+						"title": "Spravovat konfiguraci funkcí"
+					},
+					"config:iqrfGatewayController:read": {
+						"description": "Umožňuje zobrazit konfiguraci IQRF Gateway Controlleru.",
+						"title": "Prohlížet konfiguraci controlleru"
+					},
+					"config:iqrfGatewayController:write": {
+						"description": "Umožňuje upravit konfiguraci IQRF Gateway Controlleru.",
+						"title": "Spravovat konfiguraci controlleru"
+					},
+					"config:iqrfGatewayDaemon:read": {
+						"description": "Umožňuje zobrazit konfiguraci IQRF Gateway Daemonu.",
+						"title": "Prohlížet konfiguraci daemonu"
+					},
+					"config:iqrfGatewayDaemon:write": {
+						"description": "Umožňuje upravit konfiguraci IQRF Gateway Daemonu.",
+						"title": "Spravovat konfiguraci daemonu"
+					},
+					"config:iqrfGatewayInfluxdbBridge:read": {
+						"description": "Umožňuje zobrazit konfiguraci IQRF Gateway InfluxDB bridge.",
+						"title": "Prohlížet konfiguraci InfluxDB bridge"
+					},
+					"config:iqrfGatewayInfluxdbBridge:write": {
+						"description": "Umožňuje upravit konfiguraci IQRF Gateway InfluxDB bridge.",
+						"title": "Spravovat konfiguraci InfluxDB bridge"
+					},
+					"config:iqrfRepository:read": {
+						"description": "Umožňuje zobrazit konfiguraci IQRF repozitáře.",
+						"title": "Prohlížet konfiguraci repozitáře"
+					},
+					"config:iqrfRepository:write": {
+						"description": "Umožňuje upravit konfiguraci IQRF repozitáře.",
+						"title": "Spravovat konfiguraci repozitáře"
+					},
+					"config:journal:read": {
+						"description": "Umožňuje zobrazit konfiguraci žurnálu.",
+						"title": "Prohlížet konfiguraci žurnálu"
+					},
+					"config:journal:write": {
+						"description": "Umožňuje upravit konfiguraci žurnálu.",
+						"title": "Spravovat konfiguraci žurnálu"
+					},
+					"config:mailer:read": {
+						"description": "Umožňuje zobrazit konfiguraci maileru.",
+						"title": "Prohlížet konfiguraci maileru"
+					},
+					"config:mailer:write": {
+						"description": "Umožňuje upravit konfiguraci maileru.",
+						"title": "Spravovat konfiguraci maileru"
+					},
+					"config:mender:read": {
+						"description": "Umožňuje zobrazit konfiguraci Menderu.",
+						"title": "Prohlížet konfiguraci Menderu"
+					},
+					"config:mender:write": {
+						"description": "Umožňuje upravit konfiguraci Menderu.",
+						"title": "Spravovat konfiguraci Menderu"
+					},
+					"config:monit:read": {
+						"description": "Umožňuje zobrazit konfiguraci Monitu.",
+						"title": "Prohlížet konfiguraci Monitu"
+					},
+					"config:monit:write": {
+						"description": "Umožňuje upravit konfiguraci Monitu.",
+						"title": "Spravovat konfiguraci Monitu"
+					},
+					"config:time:read": {
+						"description": "Umožňuje zobrazit konfiguraci času.",
+						"title": "Prohlížet konfiguraci času"
+					},
+					"config:time:write": {
+						"description": "Umožňuje upravit konfiguraci času.",
+						"title": "Spravovat konfiguraci času"
+					},
+					"gateway:backup:execute": {
+						"description": "Umožňuje vytvářet zálohy gatewaye.",
+						"title": "Spouštět zálohu gatewaye"
+					},
+					"gateway:diagnostic:read": {
+						"description": "Umožňuje zobrazit diagnostiku gatewaye.",
+						"title": "Prohlížet diagnostiku"
+					},
+					"gateway:information:read": {
+						"description": "Umožňuje zobrazit informace o gatewayi.",
+						"title": "Prohlížet informace o gatewayi"
+					},
+					"gateway:information:write": {
+						"description": "Umožňuje upravit informace o gatewayi.",
+						"title": "Spravovat informace o gatewayi"
+					},
+					"gateway:mender:execute": {
+						"description": "Umožňuje používat akce Menderu, například Mender update.",
+						"title": "Spouštět akce Menderu"
+					},
+					"gateway:power:execute": {
+						"description": "Umožňuje spouštět napájecí akce gatewaye.",
+						"title": "Spouštět napájecí akce"
+					},
+					"gateway:power:read": {
+						"description": "Umožňuje zobrazit stav napájení gatewaye.",
+						"title": "Prohlížet stav napájení"
+					},
+					"gateway:service:execute": {
+						"description": "Umožňuje spouštět a zastavovat systémové služby.",
+						"title": "Spouštět akce služeb"
+					},
+					"gateway:service:read": {
+						"description": "Umožňuje zobrazit služby gatewaye.",
+						"title": "Prohlížet služby"
+					},
+					"gateway:version:read": {
+						"description": "Umožňuje zobrazit detail verze gatewaye.",
+						"title": "Prohlížet verzi gatewaye"
+					},
+					"ipNetwork:physicalConnections:execute": {
+						"description": "Umožňuje provádět akce (povolit, zakázat atd.) na fyzických připojeních IP sítě, například ethernetu.",
+						"title": "Spouštět akce fyzických připojení"
+					},
+					"ipNetwork:physicalConnections:read": {
+						"description": "Umožňuje zobrazit konfiguraci fyzických připojení IP sítě.",
+						"title": "Prohlížet fyzická připojení"
+					},
+					"ipNetwork:physicalConnections:write": {
+						"description": "Umožňuje upravit konfiguraci fyzických připojení IP sítě.",
+						"title": "Spravovat fyzická připojení"
+					},
+					"ipNetwork:vpns:read": {
+						"description": "Umožňuje zobrazit konfiguraci VPN v IP síti.",
+						"title": "Prohlížet konfiguraci VPN"
+					},
+					"ipNetwork:vpns:write": {
+						"description": "Umožňuje upravit konfiguraci VPN v IP síti.",
+						"title": "Spravovat konfiguraci VPN"
+					},
+					"iqrfNetwork:macros:read": {
+						"description": "Umožňuje zobrazit makra IQRF sítě.",
+						"title": "Prohlížet IQRF makra"
+					},
+					"iqrfNetwork:trUpload:execute": {
+						"description": "Umožňuje provádět operace nahrání IQRF TR.",
+						"title": "Spouštět nahrání TR"
+					},
+					"security:apiKeys:read": {
+						"description": "Umožňuje zobrazit API klíče.",
+						"title": "Prohlížet API klíče"
+					},
+					"security:apiKeys:write": {
+						"description": "Umožňuje vytvářet, upravovat a mazat API klíče.",
+						"title": "Spravovat API klíče"
+					},
+					"security:certificates:read": {
+						"description": "Umožňuje zobrazit certifikáty.",
+						"title": "Prohlížet certifikáty"
+					},
+					"security:certificates:write": {
+						"description": "Umožňuje upravit certifikáty.",
+						"title": "Spravovat certifikáty"
+					},
+					"security:shellUser:write": {
+						"description": "Umožňuje upravit nastavení shell uživatele, který se používá pro SSH připojení.",
+						"title": "Spravovat shell uživatele"
+					},
+					"security:sshkeys:read": {
+						"description": "Umožňuje zobrazit SSH klíče.",
+						"title": "Prohlížet SSH klíče"
+					},
+					"security:sshkeys:write": {
+						"description": "Umožňuje vytvářet, upravovat a mazat SSH klíče.",
+						"title": "Spravovat SSH klíče"
+					},
+					"security:users:read": {
+						"description": "Umožňuje zobrazit uživatele webové aplikace.",
+						"title": "Prohlížet uživatele"
+					},
+					"security:users:write": {
+						"description": "Umožňuje vytvářet, upravovat a mazat uživatele webové aplikace.",
+						"title": "Spravovat uživatele"
+					}
+				},
+				"title": "Rozsahy oprávnění"
+			},
+			"sshKeys": {
+				"actions": {
+					"add": "Přidat SSH klíč",
+					"delete": "Smazat SSH klíč",
+					"hideInfo": "Skrýt detail SSH klíče",
+					"refresh": "Obnovit SSH klíče",
+					"showInfo": "Zobrazit detail SSH klíče"
+				},
+				"delete": {
+					"prompt": "Opravdu chcete smazat veřejný SSH klíč s ID {id}?",
+					"title": "Potvrzení smazání veřejného SSH klíče"
+				},
+				"fetchFailed": "Nepodařilo se načíst seznam podporovaných typů SSH klíčů.",
+				"form": {
+					"addTitle": "Přidat SSH klíč",
+					"editTitle": "Upravit SSH klíč"
+				},
+				"installNote": "Přidejte veřejné SSH klíče, které budou použity pro autorizaci pomocí klíče při přístupu k zařízení.",
+				"messages": {
+					"add": {
+						"failed": "Nepodařilo se přidat nový SSH klíč.",
+						"success": "Nový SSH klíč byl úspěšně přidán."
+					},
+					"delete": {
+						"failed": "Nepodařilo se smazat SSH klíč s ID {id}.",
+						"success": "SSH klíč s ID {id} byl úspěšně smazán."
+					},
+					"list": {
+						"failed": "Nepodařilo se načíst seznam SSH klíčů."
+					},
+					"listTypes": {
+						"failed": "Nepodařilo se načíst seznam povolených typů SSH klíčů."
+					}
+				},
+				"noData": {
+					"empty": "Nebyly nalezeny žádné záznamy SSH klíčů.",
+					"fetchError": "Záznamy SSH klíčů se nepodařilo načíst."
+				},
+				"noneSupported": "Není podporován žádný typ SSH klíče.",
+				"supported": "Jsou podporovány následující typy SSH klíčů.",
+				"table": {
+					"createdAt": "Datum vytvoření",
+					"hash": "Hash",
+					"key": "Veřejný klíč",
+					"noData": "Nebyly nalezeny žádné záznamy SSH klíčů.",
+					"type": "Typ klíče"
+				},
+				"validation": {
+					"key": {
+						"required": "Zadejte prosím SSH klíč."
+					}
+				}
+			},
+			"users": {
+				"actions": {
+					"add": "Přidat uživatele",
+					"delete": "Smazat uživatele",
+					"edit": "Upravit uživatele",
+					"refresh": "Obnovit uživatele"
+				},
+				"delete": {
+					"prompt": "Opravdu chcete smazat uživatele {user}?",
+					"title": "Potvrzení smazání uživatele"
+				},
+				"email": "E-mailová adresa",
+				"language": "Jazyk",
+				"messages": {
+					"add": {
+						"failed": "Nepodařilo se vytvořit nového uživatele {user}.",
+						"success": "Uživatel {user} byl úspěšně vytvořen."
+					},
+					"delete": {
+						"failed": "Nepodařilo se smazat uživatele {user}.",
+						"success": "Uživatel {user} byl úspěšně smazán."
+					},
+					"edit": {
+						"failed": "Nepodařilo se upravit uživatele {user}.",
+						"success": "Uživatel {user} byl úspěšně upraven."
+					},
+					"list": {
+						"failed": "Nepodařilo se načíst seznam uživatelů."
+					}
+				},
+				"noData": {
+					"empty": "Nebyly nalezeny žádné záznamy uživatelů.",
+					"fetchError": "Záznamy uživatelů se nepodařilo načíst."
+				},
+				"notes": {
+					"optionalPasswordEdit": "Pokud nechcete změnit aktuální heslo, ponechte pole hesla prázdné."
+				},
+				"role": "Role",
+				"roles": {
+					"admin": "Administrátor",
+					"basic": "Základní uživatel",
+					"normal": "Běžný uživatel"
+				},
+				"state": "Stav",
+				"states": {
+					"blocked": "Blokovaný",
+					"invited": "Pozvaný",
+					"unverified": "Neověřený",
+					"verified": "Ověřený"
+				},
+				"validations": {
+					"email": {
+						"email": "Neplatný formát e-mailové adresy."
+					},
+					"password": {
+						"required": "Zadejte prosím heslo."
+					},
+					"username": {
+						"required": "Zadejte prosím uživatelské jméno."
 					}
 				}
 			}
