@@ -37,6 +37,7 @@ use App\Models\Database\Entities\ApiKeyLegacy;
 use App\Models\Database\EntityManager;
 use App\Models\Database\Repositories\ApiKeyLegacyRepository;
 use App\Models\Database\Repositories\ApiKeyRepository;
+use DateTime;
 use DomainException;
 use InvalidArgumentException;
 
@@ -138,6 +139,10 @@ class ApiKeyController extends BaseSecurityController {
 		$this->validators->checkScopes($request, ['apiKeys']);
 		$this->validators->validateRequest('apiKeyModify', $request);
 		$json = $request->getJsonBodyCopy(false);
+		// Expiration check - required for new keys, can't be verified by schema validator to keep backward compatibility with legacy API keys.
+		if (!$json->expiration) {
+			throw new ClientErrorException("Key Expiration time is not set!", ApiResponse::S400_BAD_REQUEST);
+		}
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
 		try {
 			$apiKey = new ApiKey(
@@ -239,14 +244,18 @@ class ApiKeyController extends BaseSecurityController {
 	#[RequestParameter(name: 'id', type: 'integer', description: 'API key ID')]
 	public function update(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validators->checkScopes($request, ['apiKeys']);
+		$this->validators->validateRequest('apiKeyModify', $request);
 		$id = (int) $request->getParameter('id');
 		$apiKey = $this->repository->find($id);
 		if ($apiKey !== null) {
-			$this->validators->validateRequest('apiKeyModify', $request);
 			$json = $request->getJsonBodyCopy(false);
+			// Expiration check - required for new keys, can't be verified by schema validator to keep backward compatibility with legacy API keys.
+			if (!$json->expiration) {
+				throw new ClientErrorException("Key Expiration time is not set!", ApiResponse::S400_BAD_REQUEST);
+			}
 			try {
 				$apiKey->setDescription($json->description);
-				$apiKey->setExpiration($json->expiration);
+				$apiKey->setExpirationFromString($json->expiration);
 				$apiKey->setScopesFromStringArray($json->scopes);
 			} catch (DomainException | InvalidArgumentException $e) {
 				throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
@@ -257,7 +266,6 @@ class ApiKeyController extends BaseSecurityController {
 			if ($apiKey === null) {
 				throw new ClientErrorException('API key not found', ApiResponse::S404_NOT_FOUND);
 			}
-			$this->validators->validateRequest('apiKeyModify', $request);
 			$json = $request->getJsonBodyCopy(false);
 			$apiKey->setDescription($json->description);
 			try {

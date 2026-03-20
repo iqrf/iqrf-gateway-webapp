@@ -33,6 +33,7 @@ use DomainException;
 use InvalidArgumentException;
 use JsonSerializable;
 use Throwable;
+use TypeError;
 
 /**
  * API key entity
@@ -86,7 +87,7 @@ class ApiKey implements JsonSerializable {
 	/**
 	 * Constructor
 	 * @param string $description Description
-	 * @param DateTime $expiration Expiration
+	 * @param DateTime|string $expiration Expiration, or DateTime string
 	 * @param User|null $createdBy API key creator
 	 * @param ApiKeyState $state API key state
 	 * @param array<AccessScope> $scopes API key scopes
@@ -94,7 +95,7 @@ class ApiKey implements JsonSerializable {
 	public function __construct(
 		#[ORM\Column(type: Types::STRING, length: 255)]
 		private string $description,
-		DateTime $expiration,
+		DateTime|string $expiration,
 		#[ORM\ManyToOne(targetEntity: User::class)]
 		#[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
 		private readonly ?User $createdBy,
@@ -108,7 +109,11 @@ class ApiKey implements JsonSerializable {
 		$this->key = base64_encode($key);
 		$this->salt = base64_encode($salt);
 		$this->hash = base64_encode(hash('sha256', $salt . $key, true));
-		$this->setExpiration($expiration);
+		try {
+			$this->setExpiration($expiration);
+		} catch (TypeError) {
+			$this->setExpirationFromString($expiration);
+		}
 	}
 
 	/**
