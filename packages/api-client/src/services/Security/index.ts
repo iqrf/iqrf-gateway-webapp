@@ -18,11 +18,13 @@ import { BaseService } from '../BaseService';
 
 import { ApiKeyService } from './ApiKeyService';
 import { CertificateService } from './CertificateService';
+import { MosquittoUserService } from './MosquittoUserService';
 import { SshKeyService } from './SshKeyService';
 import { UserService } from './UserService';
 
 export * from './ApiKeyService';
 export * from './CertificateService';
+export * from './MosquittoUserService';
 export * from './SshKeyService';
 export * from './UserService';
 
@@ -45,6 +47,14 @@ export class SecurityServices extends BaseService {
 	 */
 	public getCertificateService(): CertificateService {
 		return new CertificateService(this.apiClient);
+	}
+
+	/**
+	 * Returns Mosquitto user service
+	 * @return {MosquittoUserService} Mosquitto user service
+	 */
+	public getMosquittoUserService(): MosquittoUserService {
+		return new MosquittoUserService(this.apiClient);
 	}
 
 	/**
