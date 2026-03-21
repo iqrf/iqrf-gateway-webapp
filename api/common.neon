@@ -210,7 +210,7 @@ components:
 			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/mappingList.json
 		MenderConfig:
 			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/menderConfig.json
-		messagingInstances:
+		MessagingInstances:
 			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/messagingInstances.json
 		ModemList:
 			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/modemList.json
@@ -221,6 +221,15 @@ components:
 		MonitCheckConfig:
 			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/monitCheckConfig.json
 			title: Configuration - Monit - check
+		MosquittoUser:
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/mosquittoUser.json
+			title: Security - Mosquitto user details
+		MosquittoUserCreate:
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/mosquittoUserCreate.json
+			title: Security - Mosquitto user create
+		MosquittoUserList:
+			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/mosquittoUserList.json
+			title: Security - Mosquitto user list
 		NetworkConnection:
 			$ref: https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/networkConnection.json
 			title: Network - Connection

@@ -20,8 +20,11 @@
 		},
 		"columns": {
 			"actions": "Actions",
+			"createdAt": "Date created",
 			"description": "Description",
-			"id": "ID"
+			"id": "ID",
+			"state": "State",
+			"status": "Status"
 		},
 		"labels": {
 			"apiDocs": "API documentation",
@@ -148,6 +151,38 @@
 					}
 				}
 			},
+			"mosquittoUsers": {
+				"actions": {
+					"add": "Add MQTT broker user",
+					"block": "Block MQTT broker user",
+					"reload": "Reload MQTT broker users"
+				},
+				"block": {
+					"prompt": "Are you sure you want to block MQTT broker user ID {id}?",
+					"title": "MQTT broker user block confirmation"
+				},
+				"messages": {
+					"block": {
+						"failed": "Failed to block MQTT broker user ID {id}.",
+						"success": "MQTT broker user ID {id} has been successfully block."
+					},
+					"create": {
+						"failed": "Failed to create a new MQTT broker user.",
+						"success": "A new MQTT broker user has been sucessfully created."
+					},
+					"list": {
+						"failed": "Failed to retrieve MQTT broker user list."
+					}
+				},
+				"noData": {
+					"empty": "No MQTT broker user records found.",
+					"fetchError": "MQTT broker users could not be retrieved."
+				},
+				"states": {
+					"active": "ACTIVE",
+					"blocked": "BLOCKED"
+				}
+			},
 			"sshKeys": {
 				"actions": {
 					"add": "Add SSH key",
@@ -189,7 +224,6 @@
 				"noneSupported": "No SSH key type supported.",
 				"supported": "The following SSH key types are supported.",
 				"table": {
-					"createdAt": "Date created",
 					"hash": "Hash",
 					"key": "Public key",
 					"noData": "No SSH key records found.",
@@ -3979,6 +4013,10 @@
 				"title": "API keys"
 			},
 			"description": "Manage access via users, API or SSH keys.",
+			"mosquittoUsers": {
+				"description": "Manage MQTT broker users.",
+				"title": "MQTT broker users"
+			},
 			"sshKeys": {
 				"description": "Manage SSH keys.",
 				"title": "SSH keys"

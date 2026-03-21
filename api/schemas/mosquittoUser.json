@@ -1,0 +1,58 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/mosquittoUser.json",
+	"type": "object",
+	"title": "Mosquitto user",
+	"additionalProperties": false,
+	"required": [
+		"id",
+		"username",
+		"createdAt",
+		"state",
+		"blockedAt"
+	],
+	"properties": {
+		"id": {
+			"$id": "#/properties/id",
+			"title": "User ID",
+			"type": "integer",
+			"minimum": 1,
+			"example": 1
+		},
+		"username": {
+			"$id": "#/properties/username",
+			"title": "Username",
+			"type": "string",
+			"minLength": 1,
+			"example": "test"
+		},
+		"createdAt": {
+			"$id": "#/properties/createdAt",
+			"title": "Created at timestamp",
+			"type": "string",
+			"format": "date-time",
+			"example": "2026-02-20T10:55:20.356Z"
+		},
+		"state": {
+			"$id": "#/properties/state",
+			"title": "Useer state (0 - active, 1 - blocked)",
+			"type": "integer",
+			"enum": [0, 1],
+			"example": 0
+		},
+		"blockedAt": {
+			"$id": "#/properties/blockedAt",
+			"title": "Blocked at timestamp",
+			"oneOf": [
+				{
+					"type": "string",
+					"format": "date-time"
+				},
+				{
+					"type": "null"
+				}
+			],
+			"example": "2026-02-20T10:55:20.356Z"
+		}
+	}
+}
