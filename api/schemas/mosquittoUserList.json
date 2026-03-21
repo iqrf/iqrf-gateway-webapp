@@ -1,0 +1,10 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/mosquittoUserList.json",
+	"type": "array",
+	"title": "Mosquitto user list",
+	"additionalItems": false,
+	"items": {
+		"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/mosquittoUser.json"
+	}
+}

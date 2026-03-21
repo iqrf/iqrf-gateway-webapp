@@ -62,5 +62,11 @@ const links: Ref<DisambiguationLink[]> = ref([
 		to: '/access-control/ssh-keys',
 		roles: [UserRole.Admin],
 	},
+	{
+		title: i18n.t('pages.accessControl.mosquittoUsers.title'),
+		description: i18n.t('pages.accessControl.mosquittoUsers.description'),
+		to: '/access-control/mosquitto-users',
+		roles: [UserRole.Admin],
+	},
 ]);
 </script>

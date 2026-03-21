@@ -1,2494 +1,2719 @@
 {
-	"info": {
-		"_postman_id": "184ef85f-f12e-4c51-b140-a2f2cb8162a0",
-		"name": "iqrf-gateway-webapp",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "9163757"
-	},
-	"item": [
-		{
-			"name": "Installation",
-			"item": [
-				{
-					"name": "Installation checker",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test('Status code is 200', function () {",
-									"    pm.response.to.have.status(200);",
-									"});",
-									"pm.test('Content-Type is \\'application/json\\'', function () {",
-									"    pm.response.to.have.header('Content-Type');",
-									"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
-									"});",
-									"pm.test('Are all database migration executed?', function () {",
-									"    let jsonData = pm.response.json();",
-									"    pm.expect(jsonData.allMigrationsExecuted).to.eql(true);",
-									"});",
-									"pm.test('Are all required PHP modules loaded?', function () {",
-									"    let jsonData = pm.response.json();",
-									"    pm.expect(jsonData.phpModules.allExtensionsLoaded).to.eql(true);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/api/v0/installation",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"api",
-								"v0",
-								"installation"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "User",
-			"item": [
-				{
-					"name": "Sign in",
-					"item": [
-						{
-							"name": "Sign in",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test('Status code is 200', function () {",
-											"    pm.response.to.have.status(200);",
-											"});",
-											"pm.test('Content-Type is \\'application/json\\'', function () {",
-											"    pm.response.to.have.header('Content-Type');",
-											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
-											"});",
-											"pm.test('Username is admin', function () {",
-											"    var jsonData = pm.response.json();",
-											"    pm.expect(jsonData.username).to.eql('admin');",
-											"});",
-											"pm.test('User language is English', function () {",
-											"    var jsonData = pm.response.json();",
-											"    pm.expect(jsonData.language).to.eql('en');",
-											"});",
-											"pm.collectionVariables.set('adminUserToken', pm.response.json().token);",
-											"pm.collectionVariables.set('adminUserId', pm.response.json().id);"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								},
-								{
-									"listen": "prerequest",
-									"script": {
-										"exec": [
-											""
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"auth": {
-									"type": "noauth"
-								},
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"username\": \"{{adminUserName}}\",\n    \"password\": \"{{adminUserPassword}}\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{baseUrl}}/api/v0/user/signIn",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"v0",
-										"user",
-										"signIn"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Sign in (invalid password)",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test('Status code is 400', function () {",
-											"    pm.response.to.have.status(400);",
-											"});",
-											"pm.test('Content-Type is \\'application/json\\'', function () {",
-											"    pm.response.to.have.header('Content-Type');",
-											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
-											"});",
-											"pm.test('Error message is \\'Invalid credentials\\'', function () {",
-											"    var jsonData = pm.response.json();",
-											"    pm.expect(jsonData.message).to.eql('Invalid credentials');",
-											"});"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"auth": {
-									"type": "noauth"
-								},
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"username\": \"{{adminUserName}}\",\n    \"password\": \"password\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{baseUrl}}/api/v0/user/signIn",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"v0",
-										"user",
-										"signIn"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Sign in (invalid password type)",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test('Status code is 400', function () {",
-											"    pm.response.to.have.status(400);",
-											"});",
-											"pm.test('Content-Type is \\'application/json\\'', function () {",
-											"    pm.response.to.have.header('Content-Type');",
-											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
-											"});",
-											"pm.test('Error message is \\'JSON does not validate\\'', function () {",
-											"    var jsonData = pm.response.json();",
-											"    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: userSignIn Violations:\\n[password] Integer value found, but a string is required');",
-											"});"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"auth": {
-									"type": "noauth"
-								},
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"username\": \"{{adminUserName}}\",\n    \"password\": 1234\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{baseUrl}}/api/v0/user/signIn",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"v0",
-										"user",
-										"signIn"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Sign in (invalid username)",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test('Status code is 400', function () {",
-											"    pm.response.to.have.status(400);",
-											"});",
-											"pm.test('Content-Type is \\'application/json\\'', function () {",
-											"    pm.response.to.have.header('Content-Type');",
-											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
-											"});",
-											"pm.test('Error message is \\'Invalid credentials\\'', function () {",
-											"    var jsonData = pm.response.json();",
-											"    pm.expect(jsonData.message).to.eql('Invalid credentials');",
-											"});"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"auth": {
-									"type": "noauth"
-								},
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"username\": \"username\",\n    \"password\": \"password\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{baseUrl}}/api/v0/user/signIn",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"v0",
-										"user",
-										"signIn"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Sign in (invalid JSON syntax)",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test('Status code is 400', function () {",
-											"    pm.response.to.have.status(400);",
-											"});",
-											"pm.test('Content-Type is \\'application/json\\'', function () {",
-											"    pm.response.to.have.header('Content-Type');",
-											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
-											"});",
-											"pm.test('Error message is \\'Invalid JSON syntax\\'', function () {",
-											"    var jsonData = pm.response.json();",
-											"    pm.expect(jsonData.message).to.eql('Invalid JSON syntax');",
-											"});"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"auth": {
-									"type": "noauth"
-								},
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"username\": \"username\",\n    \"password\": \"password\",\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{baseUrl}}/api/v0/user/signIn",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"v0",
-										"user",
-										"signIn"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Sign in (extra JSON property)",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test('Status code is 400', function () {",
-											"    pm.response.to.have.status(400);",
-											"});",
-											"pm.test('Content-Type is \\'application/json\\'', function () {",
-											"    pm.response.to.have.header('Content-Type');",
-											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
-											"});",
-											"pm.test('Error message is \\'JSON does not validate\\'', function () {",
-											"    var jsonData = pm.response.json();",
-											"    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: userSignIn Violations:\\n[] The property extra is not defined and the definition does not allow additional properties');",
-											"});"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"auth": {
-									"type": "noauth"
-								},
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"username\": \"{{adminUserName}}\",\n    \"password\": \"{{adminUserPassword}}\",\n    \"extra\": true\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{baseUrl}}/api/v0/user/signIn",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"v0",
-										"user",
-										"signIn"
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				},
-				{
-					"name": "Create",
-					"item": [
-						{
-							"name": "Create a new user",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test('Status code is 201', function () {",
-											"    pm.response.to.have.status(201);",
-											"});",
-											"pm.test('Header \\'Location\\' is present', function () {",
-											"    pm.response.to.have.header('Location');",
-											"});",
-											"let userData = JSON.parse(pm.request.body.raw);",
-											"pm.collectionVariables.set('normalUserName', userData.username);",
-											"pm.collectionVariables.set('normalUserPassword', userData.password);",
-											"pm.collectionVariables.set('normalUserId', pm.response.headers.get('Location').substr(14));"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								},
-								{
-									"listen": "prerequest",
-									"script": {
-										"exec": [
-											"eval(pm.globals.get('webappPasswordGenerateFunc'));",
-											"pm.collectionVariables.set('newCandidatePassword', webappPasswordGenerate());"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"username\": \"{{$randomUserName}}\",\n    \"password\": \"{{newCandidatePassword}}\",\n    \"language\": \"en\",\n    \"role\": \"normal\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{baseUrl}}/api/v0/users",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"v0",
-										"users"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Create a new user with username collision",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"console.log(pm.response.json());",
-											"pm.test('Status code is 409', function () {",
-											"    pm.response.to.have.status(409);",
-											"});",
-											"pm.test('Content-Type is \\'application/json\\'', function () {",
-											"    pm.response.to.have.header('Content-Type');",
-											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
-											"});",
-											"pm.test('Error message is \\'Username is already used\\'', function () {",
-											"    var jsonData = pm.response.json();",
-											"    pm.expect(jsonData.message).to.eql('Username is already used');",
-											"});"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								},
-								{
-									"listen": "prerequest",
-									"script": {
-										"exec": [
-											"eval(pm.globals.get('webappPasswordGenerateFunc'));",
-											"pm.collectionVariables.set('newCandidatePassword', webappPasswordGenerate());"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"{{newCandidatePassword}}\",\n    \"language\": \"en\",\n    \"role\": \"normal\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{baseUrl}}/api/v0/users",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"v0",
-										"users"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Create a new user without username",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test('Status code is 400', function () {",
-											"    pm.response.to.have.status(400);",
-											"});",
-											"pm.test('Content-Type is \\'application/json\\'', function () {",
-											"    pm.response.to.have.header('Content-Type');",
-											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
-											"});",
-											"pm.test('Error message is \\'JSON does not validate\\'', function () {",
-											"    var jsonData = pm.response.json();",
-											"    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: userCreate Violations:\\n[username] The property username is required');",
-											"});"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								},
-								{
-									"listen": "prerequest",
-									"script": {
-										"exec": [
-											"eval(pm.globals.get('webappPasswordGenerateFunc'));",
-											"pm.collectionVariables.set('newCandidatePassword', webappPasswordGenerate());"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"password\": \"{{newCandidatePassword}}\",\n    \"language\": \"en\",\n    \"role\": \"normal\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{baseUrl}}/api/v0/users",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"v0",
-										"users"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Create a new user without password",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test('Status code is 400', function () {",
-											"    pm.response.to.have.status(400);",
-											"});",
-											"pm.test('Content-Type is \\'application/json\\'', function () {",
-											"    pm.response.to.have.header('Content-Type');",
-											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
-											"});",
-											"pm.test('Error message is \\'JSON does not validate. ', function () {",
-											"    var jsonData = pm.response.json();",
-											"    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: userCreate Violations:\\n[password] The property password is required');",
-											"});"
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"username\": \"admin\",\n    \"language\": \"en\",\n    \"role\": \"normal\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{baseUrl}}/api/v0/users",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"v0",
-										"users"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Create a new user without role",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test('Status code is 400', function () {",
-											"    pm.response.to.have.status(400);",
-											"});",
-											"pm.test('Content-Type is \\'application/json\\'', function () {",
-											"    pm.response.to.have.header('Content-Type');",
-											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
-											"});",
-											"pm.test('Error message is \\'JSON does not validate. ', function () {",
-											"    var jsonData = pm.response.json();",
-											"    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: userCreate Violations:\\n[role] The property role is required');",
-											"});"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								},
-								{
-									"listen": "prerequest",
-									"script": {
-										"exec": [
-											"eval(pm.globals.get('webappPasswordGenerateFunc'));",
-											"pm.collectionVariables.set('newCandidatePassword', webappPasswordGenerate());"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"username\": \"{{$randomUserName}}\",\n    \"language\": \"en\",\n    \"password\": \"{{newCandidatePassword}}\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{baseUrl}}/api/v0/users",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"v0",
-										"users"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Create a new user with short password",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test('Status code is 400', function () {",
-											"    pm.response.to.have.status(400);",
-											"});",
-											"pm.test('Content-Type is \\'application/json\\'', function () {",
-											"    pm.response.to.have.header('Content-Type');",
-											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
-											"});",
-											"pm.test('Error message is \\'JSON does not validate. ', function () {",
-											"    var jsonData = pm.response.json();",
-											"    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: userCreate Violations:\\n[password] Must be at least 15 characters long');",
-											"});",
-											""
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								},
-								{
-									"listen": "prerequest",
-									"script": {
-										"exec": [
-											""
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"username\": \"{{$randomUserName}}\",\n    \"language\": \"en\",\n    \"password\": \"incorrect\",\n    \"role\": \"normal\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{baseUrl}}/api/v0/users",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"v0",
-										"users"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Create a new user with long password",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test('Status code is 400', function () {",
-											"    pm.response.to.have.status(400);",
-											"});",
-											"pm.test('Content-Type is \\'application/json\\'', function () {",
-											"    pm.response.to.have.header('Content-Type');",
-											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
-											"});",
-											"pm.test('Error message is \\'JSON does not validate. ', function () {",
-											"    var jsonData = pm.response.json();",
-											"    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: userCreate Violations:\\n[password] Must be at most 64 characters long');",
-											"});",
-											""
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								},
-								{
-									"listen": "prerequest",
-									"script": {
-										"exec": [
-											""
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"username\": \"{{$randomUserName}}\",\n    \"language\": \"en\",\n    \"password\": \"extralongpasswordthatshouldnotpassjsonschemavalidationandendwithajsonschemaviolation\",\n    \"role\": \"normal\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{baseUrl}}/api/v0/users",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"v0",
-										"users"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Create a new user with invalid password",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test('Status code is 400', function () {",
-											"    pm.response.to.have.status(400);",
-											"});",
-											"pm.test('Content-Type is \\'application/json\\'', function () {",
-											"    pm.response.to.have.header('Content-Type');",
-											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
-											"});",
-											"pm.test('Error message is \\'JSON does not validate. ', function () {",
-											"    var jsonData = pm.response.json();",
-											"    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: userCreate Violations:\\n[password] Does not match the regex pattern ^[ -~]+$');",
-											"});",
-											""
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								},
-								{
-									"listen": "prerequest",
-									"script": {
-										"exec": [
-											""
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"username\": \"{{$randomUserName}}\",\n    \"language\": \"en\",\n    \"password\": \"invalidpassword🔒\",\n    \"role\": \"normal\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{baseUrl}}/api/v0/users",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"v0",
-										"users"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Create a new user with invalid role",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test('Status code is 400', function () {",
-											"    pm.response.to.have.status(400);",
-											"});",
-											"pm.test('Content-Type is \\'application/json\\'', function () {",
-											"    pm.response.to.have.header('Content-Type');",
-											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
-											"});",
-											"pm.test('Error message is \\'JSON does not validate. ', function () {",
-											"    var jsonData = pm.response.json();",
-											"    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: userCreate Violations:\\n[role] Does not have a value in the enumeration [\\\"admin\\\",\\\"normal\\\",\\\"basic\\\"]');",
-											"});"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								},
-								{
-									"listen": "prerequest",
-									"script": {
-										"exec": [
-											"eval(pm.globals.get('webappPasswordGenerateFunc'));",
-											"pm.collectionVariables.set('newCandidatePassword', webappPasswordGenerate());"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"username\": \"{{$randomUserName}}\",\n    \"language\": \"en\",\n    \"password\": \"{{newCandidatePassword}}\",\n    \"role\": \"invalid\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{baseUrl}}/api/v0/users",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"v0",
-										"users"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Create a new user without language",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test('Status code is 400', function () {",
-											"    pm.response.to.have.status(400);",
-											"});",
-											"pm.test('Content-Type is \\'application/json\\'', function () {",
-											"    pm.response.to.have.header('Content-Type');",
-											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
-											"});",
-											"pm.test('Error message is \\'JSON does not validate. ', function () {",
-											"    var jsonData = pm.response.json();",
-											"    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: userCreate Violations:\\n[language] The property language is required');",
-											"});"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								},
-								{
-									"listen": "prerequest",
-									"script": {
-										"exec": [
-											"eval(pm.globals.get('webappPasswordGenerateFunc'));",
-											"pm.collectionVariables.set('newCandidatePassword', webappPasswordGenerate());"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"username\": \"{{$randomUserName}}\",\n    \"role\": \"admin\",\n    \"password\": \"{{newCandidatePassword}}\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{baseUrl}}/api/v0/users",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"v0",
-										"users"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Create a new user with invalid language",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test('Status code is 400', function () {",
-											"    pm.response.to.have.status(400);",
-											"});",
-											"pm.test('Content-Type is \\'application/json\\'', function () {",
-											"    pm.response.to.have.header('Content-Type');",
-											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
-											"});",
-											"pm.test('Error message is \\'JSON does not validate. ', function () {",
-											"    var jsonData = pm.response.json();",
-											"    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: userCreate Violations:\\n[language] Does not have a value in the enumeration [\\\"cs\\\",\\\"en\\\"]');",
-											"});"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								},
-								{
-									"listen": "prerequest",
-									"script": {
-										"exec": [
-											"eval(pm.globals.get('webappPasswordGenerateFunc'));",
-											"pm.collectionVariables.set('newCandidatePassword', webappPasswordGenerate());"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"username\": \"{{$randomUserName}}\",\n    \"language\": \"invalid\",\n    \"password\": \"{{newCandidatePassword}}\",\n    \"role\": \"normal\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{baseUrl}}/api/v0/users",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"v0",
-										"users"
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				},
-				{
-					"name": "Get information",
-					"item": [
-						{
-							"name": "Get information about the current user",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test('Status code is 200', function () {",
-											"    pm.response.to.have.status(200);",
-											"});",
-											"pm.test('Content-Type is \\'application/json\\'', function () {",
-											"    pm.response.to.have.header('Content-Type');",
-											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
-											"});",
-											"pm.test('Username is admin', function () {",
-											"    var jsonData = pm.response.json();",
-											"    pm.expect(jsonData.username).to.eql('admin');",
-											"});",
-											"pm.test('User language is english', function () {",
-											"    var jsonData = pm.response.json();",
-											"    pm.expect(jsonData.language).to.eql('en');",
-											"});"
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/api/v0/user",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"v0",
-										"user"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Get information about the new user",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test('Status code is 200', function () {",
-											"    pm.response.to.have.status(200);",
-											"});",
-											"pm.test('Content-Type is \\'application/json\\'', function () {",
-											"    pm.response.to.have.header('Content-Type');",
-											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
-											"});",
-											"let userId = Number.parseInt(pm.collectionVariables.get('normalUserId'));",
-											"pm.test('User ID is ' + userId, function () {",
-											"    pm.expect(pm.response.json().id).to.eql(userId);",
-											"});",
-											"let username = pm.collectionVariables.get('normalUserName');",
-											"pm.test('Username is ' + username, function () {",
-											"    pm.expect(pm.response.json().username).to.eql(username);",
-											"});",
-											"pm.test('User language is english', function () {",
-											"    pm.expect(pm.response.json().language).to.eql('en');",
-											"});",
-											"pm.test('User role is normal', function () {",
-											"    pm.expect(pm.response.json().role).to.eql('normal');",
-											"});"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/api/v0/users/{{normalUserId}}",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"v0",
-										"users",
-										"{{normalUserId}}"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Get information about user 'admin'",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test('Status code is 200', function () {",
-											"    pm.response.to.have.status(200);",
-											"});",
-											"pm.test('Content-Type is \\'application/json\\'', function () {",
-											"    pm.response.to.have.header('Content-Type');",
-											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
-											"});",
-											"pm.test('Username is admin', function () {",
-											"    var jsonData = pm.response.json();",
-											"    pm.expect(jsonData.username).to.eql('admin');",
-											"});",
-											"pm.test('User language is english', function () {",
-											"    var jsonData = pm.response.json();",
-											"    pm.expect(jsonData.language).to.eql('en');",
-											"});"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/api/v0/users/{{adminUserId}}",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"v0",
-										"users",
-										"{{adminUserId}}"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Get information about the current user (unauthorized)",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test('Status code is 401', function () {",
-											"    pm.response.to.have.status(401);",
-											"});",
-											"pm.test('Content-Type is \\'application/json\\'', function () {",
-											"    pm.response.to.have.header('Content-Type');",
-											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
-											"});",
-											"pm.test('Error is \\'Client authentication failed\\'', function () {",
-											"    var jsonData = pm.response.json();",
-											"    pm.expect(jsonData.message).to.eql('Client authentication failed');",
-											"});"
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"auth": {
-									"type": "noauth"
-								},
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/api/v0/user",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"v0",
-										"user"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Get information about nonexistent user",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test('Status code is 404', function () {",
-											"    pm.response.to.have.status(404);",
-											"});",
-											"pm.test('Content-Type is \\'application/json\\'', function () {",
-											"    pm.response.to.have.header('Content-Type');",
-											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
-											"});",
-											"pm.test('Error message is \\'User not found\\'', function () {",
-											"    var jsonData = pm.response.json();",
-											"    pm.expect(jsonData.message).to.eql('User not found');",
-											"});"
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/api/v0/users/9999",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"v0",
-										"users",
-										"9999"
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				},
-				{
-					"name": "Delete the new user",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test('Status code is 200', function () {",
-									"    pm.response.to.have.status(200);",
-									"});",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/api/v0/users/{{normalUserId}}",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"api",
-								"v0",
-								"users",
-								"{{normalUserId}}"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete a nonexistent user",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test('Status code is 404', function () {",
-									"    pm.response.to.have.status(404);",
-									"});",
-									"pm.test('Content-Type is \\'application/json\\'', function () {",
-									"    pm.response.to.have.header('Content-Type');",
-									"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
-									"});",
-									"pm.test('Error message is \\'User not found\\'', function () {",
-									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.message).to.eql('User not found');",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/api/v0/users/9999",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"api",
-								"v0",
-								"users",
-								"9999"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Features",
-			"item": [
-				{
-					"name": "Get optional features configuration",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test('Status code is 200', function () {",
-									"    pm.response.to.have.status(200);",
-									"});",
-									"pm.test('Content-Type is \\'application/json\\'', function () {",
-									"    pm.response.to.have.header('Content-Type');",
-									"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
-									"});",
-									"pm.test('Optional features', function () {",
-									"    var jsonData = pm.response.json();",
-									"    const features = {",
-									"        'apcupsd': {",
-									"            'enabled': false,",
-									"        },",
-									"        'docs': {",
-									"            'enabled': true,",
-									"            'url': 'https://docs.iqrf.org/iqrf-gateway/',",
-									"        },",
-									"        'gatewayPass': {",
-									"            'enabled': false,",
-									"            'user': 'root',",
-									"        },",
-									"        'grafana': {",
-									"            'enabled': false,",
-									"            'url': '/grafana/',",
-									"        },",
-									"        'iqaros': {",
-									"            'enabled': false,",
-									"        },",
-									"        'iqrfCloudProvisioning': {",
-									"            'enabled': false,",
-									"        },",
-									"        'iqrfGatewayController': {",
-									"            'enabled': false,",
-									"        },",
-									"        'iqrfGatewayInfluxdbBridge': {",
-									"            'enabled': false,",
-									"        },",
-									"        'iqrfGatewayTranslator': {",
-									"            'enabled': false,",
-									"        },",
-									"        'iqrfRepository': {",
-									"            'enabled': false,",
-									"        },",
-									"        'journal': {",
-									"            'enabled': false,",
-									"            'path': '/etc/systemd/journald.conf',",
-									"        },",
-									"        'mender': {",
-									"            'enabled': false,",
-									"        },",
-									"        'monit': {",
-									"            'enabled': false,",
-									"        },",
-									"        'networkManager': {",
-									"            'enabled': false,",
-									"        },",
-									"        'nodeRed': {",
-									"            'enabled': false,",
-									"            'url': '/node-red/',",
-									"        },",
-									"        'remount': {",
-									"            'enabled': false,",
-									"        },",
-									"        'ssh': {",
-									"            'enabled': false,",
-									"        },",
-									"        'supervisord': {",
-									"            'enabled': false,",
-									"            'url': '/supervisord/',",
-									"        },",
-									"        'trUpload': {",
-									"            'enabled': false,",
-									"        },",
-									"        'updater': {",
-									"            'enabled': false,",
-									"        },",
-									"        'unattendedUpgrades': {",
-									"            'enabled': false,",
-									"        },",
-									"        'versionChecker': {",
-									"            'enabled': false,",
-									"        },",
-									"    };",
-									"    pm.expect(jsonData).to.eql(features);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/api/v0/features",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"api",
-								"v0",
-								"features"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get optional feature configuration",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test('Status code is 200', function () {",
-									"    pm.response.to.have.status(200);",
-									"});",
-									"pm.test('Content-Type is \\'application/json\\'', function () {",
-									"    pm.response.to.have.header('Content-Type');",
-									"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
-									"});",
-									"pm.test('Optional feature for Grafana', function () {",
-									"    var jsonData = pm.response.json();",
-									"    const feature = {",
-									"\t\t'enabled': false,",
-									"\t\t'url': '/grafana/',",
-									"\t};",
-									"    pm.expect(jsonData).to.eql(feature);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/api/v0/features/grafana",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"api",
-								"v0",
-								"features",
-								"grafana"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get optional nonexistent feature configuration",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test('Status code is 404', function () {",
-									"    pm.response.to.have.status(404);",
-									"});",
-									"pm.test('Content-Type is \\'application/json\\'', function () {",
-									"    pm.response.to.have.header('Content-Type');",
-									"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
-									"});",
-									"pm.test('Error message is \\'Feature not found\\'', function () {",
-									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.message).to.eql('Feature not found');",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/api/v0/features/nonsense",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"api",
-								"v0",
-								"features",
-								"nonsense"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Edit optional feature configuration",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test('Status code is 200', function () {",
-									"    pm.response.to.have.status(200);",
-									"});",
-									"const checkRequest = {",
-									"    url: pm.environment.get('baseUrl') + '/api/v0/features/grafana',",
-									"    header: {",
-									"        'Authorization': 'Bearer ' + pm.collectionVariables.get('adminUserToken')",
-									"    },",
-									"};",
-									"pm.sendRequest(checkRequest, (error, response) => {",
-									"    pm.test('Chack optional feature for Grafana', function () {",
-									"        var jsonData = response.json();",
-									"        const feature = {",
-									"\t\t    'enabled': true,",
-									"\t\t    'url': '/grafana/',",
-									"\t    };",
-									"        pm.expect(jsonData).to.eql(feature);",
-									"    });",
-									"});",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"enabled\": true,\n    \"url\": \"/grafana/\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/api/v0/features/grafana",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"api",
-								"v0",
-								"features",
-								"grafana"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Edit optional feature configuration with missing parameter",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test('Status code is 400', function () {",
-									"    pm.response.to.have.status(400);",
-									"});",
-									"pm.test('Content-Type is \\'application/json\\'', function () {",
-									"    pm.response.to.have.header('Content-Type');",
-									"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
-									"});",
-									"pm.test('Error message is \\'JSON does not validate.\\'', function () {",
-									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: features/grafana Violations:\\n[url] The property url is required');",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"enabled\": true\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/api/v0/features/grafana",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"api",
-								"v0",
-								"features",
-								"grafana"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Edit optional feature configuration with extra parameter",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test('Status code is 400', function () {",
-									"    pm.response.to.have.status(400);",
-									"});",
-									"pm.test('Content-Type is \\'application/json\\'', function () {",
-									"    pm.response.to.have.header('Content-Type');",
-									"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
-									"});",
-									"pm.test('Error message is \\'JSON does not validate.\\'', function () {",
-									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: features/grafana Violations:\\n[] The property extra is not defined and the definition does not allow additional properties');",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"enabled\": true,\n    \"url\": \"/grafana/\",\n    \"extra\": {}\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/api/v0/features/grafana",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"api",
-								"v0",
-								"features",
-								"grafana"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Edit optional nonexistent feature configuration",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test('Status code is 404', function () {",
-									"    pm.response.to.have.status(404);",
-									"});",
-									"pm.test('Content-Type is \\'application/json\\'', function () {",
-									"    pm.response.to.have.header('Content-Type');",
-									"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
-									"});",
-									"pm.test('Error message is \\'Feature not found\\'', function () {",
-									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.message).to.eql('Feature not found');",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"enabled\": true\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/api/v0/features/nonsense",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"api",
-								"v0",
-								"features",
-								"nonsense"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Config",
-			"item": [
-				{
-					"name": "APT",
-					"item": [
-						{
-							"name": "Get APT configuration",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"if (pm.environment.get('hasApt') === 'true') {",
-											"    pm.test('Status code is 200', function () {",
-											"        pm.response.to.have.status(200);",
-											"    });",
-											"    pm.test('Content-Type is \\'application/json\\'', function () {",
-											"        pm.response.to.have.header('Content-Type');",
-											"        pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
-											"    });",
-											"    pm.test('Has APT::Periodic::Enable property', function () {",
-											"        var jsonData = pm.response.json();",
-											"        pm.expect(jsonData['APT::Periodic::Enable']).to.match(/[0-1]/);",
-											"    });",
-											"} else {",
-											"    pm.test('Status code is 500', function () {",
-											"        pm.response.to.have.status(500);",
-											"    });",
-											"    pm.test('Content-Type is \\'application/json\\'', function () {",
-											"        pm.response.to.have.header('Content-Type');",
-											"        pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
-											"    });",
-											"}"
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/api/v0/config/apt",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"v0",
-										"config",
-										"apt"
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				}
-			]
-		},
-		{
-			"name": "Account",
-			"item": [
-				{
-					"name": "Sign in",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test('Status code is 200', function () {",
-									"    pm.response.to.have.status(200);",
-									"});",
-									"pm.test('Content-Type is \\'application/json\\'', function () {",
-									"    pm.response.to.have.header('Content-Type');",
-									"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
-									"});",
-									"pm.test('Username is admin', function () {",
-									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.username).to.eql('admin');",
-									"});",
-									"pm.test('User language is english', function () {",
-									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.language).to.eql('en');",
-									"});",
-									"pm.collectionVariables.set('adminUserToken', pm.response.json().token);",
-									"pm.collectionVariables.set('adminUserId', pm.response.json().id);"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"username\": \"{{adminUserName}}\",\n    \"password\": \"{{adminUserPassword}}\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/api/v0/user/signIn",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"api",
-								"v0",
-								"user",
-								"signIn"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update account password (incorrect old password)",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"eval(pm.globals.get('webappPasswordGenerateFunc'));",
-									"pm.collectionVariables.set('newCandidatePassword', webappPasswordGenerate());"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test('Status code is 400', function () {",
-									"    pm.response.to.have.status(400);",
-									"});",
-									"pm.test('Content-Type is \\'application/json\\'', function () {",
-									"    pm.response.to.have.header('Content-Type');",
-									"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
-									"});",
-									"pm.test('Error message is \\'Old password is incorrect\\'', function () {",
-									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.message).to.eql('Old password is incorrect');",
-									"});",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"old\": \"incorrect\",\n  \"new\": \"{{newCandidatePassword}}\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/api/v0/account/password",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"api",
-								"v0",
-								"account",
-								"password"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update account password (too short)",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test('Status code is 400', function () {",
-									"    pm.response.to.have.status(400);",
-									"});",
-									"pm.test('Content-Type is \\'application/json\\'', function () {",
-									"    pm.response.to.have.header('Content-Type');",
-									"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
-									"});",
-									"pm.test('Error message is \\'JSON does not validate. ', function () {",
-									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: passwordChange Violations:\\n[new] Must be at least 15 characters long');",
-									"});",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"old\": \"{{adminUserPassword}}\",\n  \"new\": \"short\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/api/v0/account/password",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"api",
-								"v0",
-								"account",
-								"password"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update account password (too long)",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test('Status code is 400', function () {",
-									"    pm.response.to.have.status(400);",
-									"});",
-									"pm.test('Content-Type is \\'application/json\\'', function () {",
-									"    pm.response.to.have.header('Content-Type');",
-									"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
-									"});",
-									"pm.test('Error message is \\'JSON does not validate. ', function () {",
-									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: passwordChange Violations:\\n[new] Must be at most 64 characters long');",
-									"});",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"old\": \"{{adminUserPassword}}\",\n  \"new\": \"extralongpasswordthatshouldnotpassjsonschemavalidationandendwithajsonschemaviolation\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/api/v0/account/password",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"api",
-								"v0",
-								"account",
-								"password"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update account password (invalid password)",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test('Status code is 400', function () {",
-									"    pm.response.to.have.status(400);",
-									"});",
-									"pm.test('Content-Type is \\'application/json\\'', function () {",
-									"    pm.response.to.have.header('Content-Type');",
-									"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
-									"});",
-									"pm.test('Error message is \\'JSON does not validate. ', function () {",
-									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: passwordChange Violations:\\n[new] Does not match the regex pattern ^[ -~]+$');",
-									"});",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"old\": \"{{adminUserPassword}}\",\n  \"new\": \"invalidpassword🔒\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/api/v0/account/password",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"api",
-								"v0",
-								"account",
-								"password"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Security",
-			"item": [
-				{
-					"name": "Users",
-					"item": [
-						{
-							"name": "Edit user (short password)",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test('Status code is 400', function () {",
-											"    pm.response.to.have.status(400);",
-											"});",
-											"pm.test('Content-Type is \\'application/json\\'', function () {",
-											"    pm.response.to.have.header('Content-Type');",
-											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
-											"});",
-											"pm.test('Error message is \\'JSON does not validate. ', function () {",
-											"    var jsonData = pm.response.json();",
-											"    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: userEdit Violations:\\n[password] Must be at least 15 characters long');",
-											"});",
-											""
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"method": "PUT",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"password\": \"iqrf\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{baseUrl}}/api/v0/security/users/{{adminUserId}}",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"v0",
-										"security",
-										"users",
-										"{{adminUserId}}"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Edit user (long password)",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test('Status code is 400', function () {",
-											"    pm.response.to.have.status(400);",
-											"});",
-											"pm.test('Content-Type is \\'application/json\\'', function () {",
-											"    pm.response.to.have.header('Content-Type');",
-											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
-											"});",
-											"pm.test('Error message is \\'JSON does not validate. ', function () {",
-											"    var jsonData = pm.response.json();",
-											"    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: userEdit Violations:\\n[password] Must be at most 64 characters long');",
-											"});",
-											""
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"method": "PUT",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"password\": \"extralongpasswordthatshouldnotpassjsonschemavalidationandendwithajsonschemaviolation\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{baseUrl}}/api/v0/security/users/{{adminUserId}}",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"v0",
-										"security",
-										"users",
-										"{{adminUserId}}"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Edit user (invalid password)",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test('Status code is 400', function () {",
-											"    pm.response.to.have.status(400);",
-											"});",
-											"pm.test('Content-Type is \\'application/json\\'', function () {",
-											"    pm.response.to.have.header('Content-Type');",
-											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
-											"});",
-											"pm.test('Error message is \\'JSON does not validate. ', function () {",
-											"    var jsonData = pm.response.json();",
-											"    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: userEdit Violations:\\n[password] Does not match the regex pattern ^[ -~]+$');",
-											"});",
-											""
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"method": "PUT",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"password\": \"invalidpassword🔒\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{baseUrl}}/api/v0/security/users/{{adminUserId}}",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"v0",
-										"security",
-										"users",
-										"{{adminUserId}}"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Edit user (valid password)",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test('Status code is 200', function () {",
-											"    pm.response.to.have.status(200);",
-											"});",
-											"",
-											"pm.collectionVariables.set('adminUserPassword', JSON.parse(pm.request.body.raw).password);"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								},
-								{
-									"listen": "prerequest",
-									"script": {
-										"exec": [
-											"eval(pm.globals.get('webappPasswordGenerateFunc'));",
-											"pm.collectionVariables.set('newCandidatePassword', webappPasswordGenerate());"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"method": "PUT",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"password\": \"{{newCandidatePassword}}\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{baseUrl}}/api/v0/security/users/{{adminUserId}}",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"v0",
-										"security",
-										"users",
-										"{{adminUserId}}"
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				}
-			]
-		}
-	],
-	"auth": {
-		"type": "bearer",
-		"bearer": [
-			{
-				"key": "token",
-				"value": "{{adminUserToken}}",
-				"type": "string"
-			}
-		]
-	},
-	"event": [
-		{
-			"listen": "prerequest",
-			"script": {
-				"type": "text/javascript",
-				"exec": [
-					"pm.globals.set('webappPasswordGenerateFunc', `",
-					"function webappPasswordGenerate() {",
-					"    const character_pool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'",
-					"        + 'abcdefghijklmnopqrstuvwxyz'",
-					"        + '0123456789'",
-					"        + ' !@#$%^&*()_+[]{}|;:,.<>?';",
-					"",
-					"    const password_len = Math.floor(Math.random() * (64 - 15 + 1)) + 15;",
-					"",
-					"    let password = [];",
-					"",
-					"    for (let i = 0; i < password_len; i++) {",
-					"        password.push(character_pool[Math.floor(Math.random() * character_pool.length)]);",
-					"    }",
-					"    return password.join('');",
-					"}",
-					"`);"
-				]
-			}
-		},
-		{
-			"listen": "test",
-			"script": {
-				"type": "text/javascript",
-				"exec": [
-					""
-				]
-			}
-		}
-	],
-	"variable": [
-		{
-			"key": "baseUrl",
-			"value": "localhost:8080"
-		},
-		{
-			"key": "adminUserName",
-			"value": "admin"
-		},
-		{
-			"key": "adminUserPassword",
-			"value": "9vG$kdP&!zX@rL#Y"
-		},
-		{
-			"key": "adminUserId",
-			"value": ""
-		},
-		{
-			"key": "adminUserToken",
-			"value": ""
-		},
-		{
-			"key": "newCandidatePassword",
-			"value": ""
-		},
-		{
-			"key": "normalUserName",
-			"value": ""
-		},
-		{
-			"key": "normalUserPassword",
-			"value": ""
-		},
-		{
-			"key": "normalUserId",
-			"value": ""
-		},
-		{
-			"key": "normalUserToken",
-			"value": ""
-		}
-	]
+  "info": {
+    "_postman_id": "f3251592-3d9e-47e6-ae2f-399d5ee84f70",
+    "name": "iqrf-gateway-webapp",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "9163757"
+  },
+  "item": [
+    {
+      "name": "Installation",
+      "item": [
+        {
+          "name": "Installation checker",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Content-Type is \\'application/json\\'', function () {",
+                  "    pm.response.to.have.header('Content-Type');",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                  "});",
+                  "pm.test('Are all database migration executed?', function () {",
+                  "    let jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.allMigrationsExecuted).to.eql(true);",
+                  "});",
+                  "pm.test('Are all required PHP modules loaded?', function () {",
+                  "    let jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.phpModules.allExtensionsLoaded).to.eql(true);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v0/installation",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v0",
+                "installation"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User",
+      "item": [
+        {
+          "name": "Sign in",
+          "item": [
+            {
+              "name": "Sign in",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 200', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "pm.test('Content-Type is \\'application/json\\'', function () {",
+                      "    pm.response.to.have.header('Content-Type');",
+                      "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                      "});",
+                      "pm.test('Username is admin', function () {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.username).to.eql('admin');",
+                      "});",
+                      "pm.test('User language is English', function () {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.language).to.eql('en');",
+                      "});",
+                      "pm.collectionVariables.set('adminUserToken', pm.response.json().token);",
+                      "pm.collectionVariables.set('adminUserId', pm.response.json().id);"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {}
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {}
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"username\": \"{{adminUserName}}\",\n    \"password\": \"{{adminUserPassword}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v0/user/signIn",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v0",
+                    "user",
+                    "signIn"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Sign in (invalid password)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 400', function () {",
+                      "    pm.response.to.have.status(400);",
+                      "});",
+                      "pm.test('Content-Type is \\'application/json\\'', function () {",
+                      "    pm.response.to.have.header('Content-Type');",
+                      "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                      "});",
+                      "pm.test('Error message is \\'Invalid credentials\\'', function () {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.message).to.eql('Invalid credentials');",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {}
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"username\": \"{{adminUserName}}\",\n    \"password\": \"password\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v0/user/signIn",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v0",
+                    "user",
+                    "signIn"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Sign in (invalid password type)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 400', function () {",
+                      "    pm.response.to.have.status(400);",
+                      "});",
+                      "pm.test('Content-Type is \\'application/json\\'', function () {",
+                      "    pm.response.to.have.header('Content-Type');",
+                      "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                      "});",
+                      "pm.test('Error message is \\'JSON does not validate\\'', function () {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: userSignIn Violations:\\n[password] Integer value found, but a string is required');",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {}
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"username\": \"{{adminUserName}}\",\n    \"password\": 1234\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v0/user/signIn",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v0",
+                    "user",
+                    "signIn"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Sign in (invalid username)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 400', function () {",
+                      "    pm.response.to.have.status(400);",
+                      "});",
+                      "pm.test('Content-Type is \\'application/json\\'', function () {",
+                      "    pm.response.to.have.header('Content-Type');",
+                      "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                      "});",
+                      "pm.test('Error message is \\'Invalid credentials\\'', function () {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.message).to.eql('Invalid credentials');",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {}
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"username\": \"username\",\n    \"password\": \"password\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v0/user/signIn",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v0",
+                    "user",
+                    "signIn"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Sign in (invalid JSON syntax)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 400', function () {",
+                      "    pm.response.to.have.status(400);",
+                      "});",
+                      "pm.test('Content-Type is \\'application/json\\'', function () {",
+                      "    pm.response.to.have.header('Content-Type');",
+                      "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                      "});",
+                      "pm.test('Error message is \\'Invalid JSON syntax\\'', function () {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.message).to.eql('Invalid JSON syntax');",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {}
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"username\": \"username\",\n    \"password\": \"password\",\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v0/user/signIn",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v0",
+                    "user",
+                    "signIn"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Sign in (extra JSON property)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 400', function () {",
+                      "    pm.response.to.have.status(400);",
+                      "});",
+                      "pm.test('Content-Type is \\'application/json\\'', function () {",
+                      "    pm.response.to.have.header('Content-Type');",
+                      "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                      "});",
+                      "pm.test('Error message is \\'JSON does not validate\\'', function () {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: userSignIn Violations:\\n[] The property extra is not defined and the definition does not allow additional properties');",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {}
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"username\": \"{{adminUserName}}\",\n    \"password\": \"{{adminUserPassword}}\",\n    \"extra\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v0/user/signIn",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v0",
+                    "user",
+                    "signIn"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Create",
+          "item": [
+            {
+              "name": "Create a new user",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 201', function () {",
+                      "    pm.response.to.have.status(201);",
+                      "});",
+                      "pm.test('Header \\'Location\\' is present', function () {",
+                      "    pm.response.to.have.header('Location');",
+                      "});",
+                      "let userData = JSON.parse(pm.request.body.raw);",
+                      "pm.collectionVariables.set('normalUserName', userData.username);",
+                      "pm.collectionVariables.set('normalUserPassword', userData.password);",
+                      "pm.collectionVariables.set('normalUserId', pm.response.headers.get('Location').substr(14));"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {}
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "eval(pm.globals.get('webappPasswordGenerateFunc'));",
+                      "pm.collectionVariables.set('newCandidatePassword', webappPasswordGenerate());"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"username\": \"{{$randomUserName}}\",\n    \"password\": \"{{newCandidatePassword}}\",\n    \"language\": \"en\",\n    \"role\": \"normal\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v0/users",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v0",
+                    "users"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Create a new user with username collision",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "console.log(pm.response.json());",
+                      "pm.test('Status code is 409', function () {",
+                      "    pm.response.to.have.status(409);",
+                      "});",
+                      "pm.test('Content-Type is \\'application/json\\'', function () {",
+                      "    pm.response.to.have.header('Content-Type');",
+                      "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                      "});",
+                      "pm.test('Error message is \\'Username is already used\\'', function () {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.message).to.eql('Username is already used');",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {}
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "eval(pm.globals.get('webappPasswordGenerateFunc'));",
+                      "pm.collectionVariables.set('newCandidatePassword', webappPasswordGenerate());"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"username\": \"admin\",\n    \"password\": \"{{newCandidatePassword}}\",\n    \"language\": \"en\",\n    \"role\": \"normal\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v0/users",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v0",
+                    "users"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Create a new user without username",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 400', function () {",
+                      "    pm.response.to.have.status(400);",
+                      "});",
+                      "pm.test('Content-Type is \\'application/json\\'', function () {",
+                      "    pm.response.to.have.header('Content-Type');",
+                      "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                      "});",
+                      "pm.test('Error message is \\'JSON does not validate\\'', function () {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: userCreate Violations:\\n[username] The property username is required');",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {}
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "eval(pm.globals.get('webappPasswordGenerateFunc'));",
+                      "pm.collectionVariables.set('newCandidatePassword', webappPasswordGenerate());"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"password\": \"{{newCandidatePassword}}\",\n    \"language\": \"en\",\n    \"role\": \"normal\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v0/users",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v0",
+                    "users"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Create a new user without password",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 400', function () {",
+                      "    pm.response.to.have.status(400);",
+                      "});",
+                      "pm.test('Content-Type is \\'application/json\\'', function () {",
+                      "    pm.response.to.have.header('Content-Type');",
+                      "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                      "});",
+                      "pm.test('Error message is \\'JSON does not validate. ', function () {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: userCreate Violations:\\n[password] The property password is required');",
+                      "});"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"username\": \"admin\",\n    \"language\": \"en\",\n    \"role\": \"normal\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v0/users",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v0",
+                    "users"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Create a new user without role",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 400', function () {",
+                      "    pm.response.to.have.status(400);",
+                      "});",
+                      "pm.test('Content-Type is \\'application/json\\'', function () {",
+                      "    pm.response.to.have.header('Content-Type');",
+                      "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                      "});",
+                      "pm.test('Error message is \\'JSON does not validate. ', function () {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: userCreate Violations:\\n[role] The property role is required');",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {}
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "eval(pm.globals.get('webappPasswordGenerateFunc'));",
+                      "pm.collectionVariables.set('newCandidatePassword', webappPasswordGenerate());"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"username\": \"{{$randomUserName}}\",\n    \"language\": \"en\",\n    \"password\": \"{{newCandidatePassword}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v0/users",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v0",
+                    "users"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Create a new user with short password",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 400', function () {",
+                      "    pm.response.to.have.status(400);",
+                      "});",
+                      "pm.test('Content-Type is \\'application/json\\'', function () {",
+                      "    pm.response.to.have.header('Content-Type');",
+                      "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                      "});",
+                      "pm.test('Error message is \\'JSON does not validate. ', function () {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: userCreate Violations:\\n[password] Must be at least 15 characters long');",
+                      "});",
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {}
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"username\": \"{{$randomUserName}}\",\n    \"language\": \"en\",\n    \"password\": \"incorrect\",\n    \"role\": \"normal\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v0/users",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v0",
+                    "users"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Create a new user with long password",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 400', function () {",
+                      "    pm.response.to.have.status(400);",
+                      "});",
+                      "pm.test('Content-Type is \\'application/json\\'', function () {",
+                      "    pm.response.to.have.header('Content-Type');",
+                      "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                      "});",
+                      "pm.test('Error message is \\'JSON does not validate. ', function () {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: userCreate Violations:\\n[password] Must be at most 64 characters long');",
+                      "});",
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {}
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"username\": \"{{$randomUserName}}\",\n    \"language\": \"en\",\n    \"password\": \"extralongpasswordthatshouldnotpassjsonschemavalidationandendwithajsonschemaviolation\",\n    \"role\": \"normal\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v0/users",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v0",
+                    "users"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Create a new user with invalid password",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 400', function () {",
+                      "    pm.response.to.have.status(400);",
+                      "});",
+                      "pm.test('Content-Type is \\'application/json\\'', function () {",
+                      "    pm.response.to.have.header('Content-Type');",
+                      "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                      "});",
+                      "pm.test('Error message is \\'JSON does not validate. ', function () {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: userCreate Violations:\\n[password] Does not match the regex pattern ^[ -~]+$');",
+                      "});",
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {}
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"username\": \"{{$randomUserName}}\",\n    \"language\": \"en\",\n    \"password\": \"invalidpassword🔒\",\n    \"role\": \"normal\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v0/users",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v0",
+                    "users"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Create a new user with invalid role",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 400', function () {",
+                      "    pm.response.to.have.status(400);",
+                      "});",
+                      "pm.test('Content-Type is \\'application/json\\'', function () {",
+                      "    pm.response.to.have.header('Content-Type');",
+                      "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                      "});",
+                      "pm.test('Error message is \\'JSON does not validate. ', function () {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: userCreate Violations:\\n[role] Does not have a value in the enumeration [\\\"admin\\\",\\\"normal\\\",\\\"basic\\\"]');",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {}
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "eval(pm.globals.get('webappPasswordGenerateFunc'));",
+                      "pm.collectionVariables.set('newCandidatePassword', webappPasswordGenerate());"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"username\": \"{{$randomUserName}}\",\n    \"language\": \"en\",\n    \"password\": \"{{newCandidatePassword}}\",\n    \"role\": \"invalid\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v0/users",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v0",
+                    "users"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Create a new user without language",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 400', function () {",
+                      "    pm.response.to.have.status(400);",
+                      "});",
+                      "pm.test('Content-Type is \\'application/json\\'', function () {",
+                      "    pm.response.to.have.header('Content-Type');",
+                      "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                      "});",
+                      "pm.test('Error message is \\'JSON does not validate. ', function () {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: userCreate Violations:\\n[language] The property language is required');",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {}
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "eval(pm.globals.get('webappPasswordGenerateFunc'));",
+                      "pm.collectionVariables.set('newCandidatePassword', webappPasswordGenerate());"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"username\": \"{{$randomUserName}}\",\n    \"role\": \"admin\",\n    \"password\": \"{{newCandidatePassword}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v0/users",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v0",
+                    "users"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Create a new user with invalid language",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 400', function () {",
+                      "    pm.response.to.have.status(400);",
+                      "});",
+                      "pm.test('Content-Type is \\'application/json\\'', function () {",
+                      "    pm.response.to.have.header('Content-Type');",
+                      "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                      "});",
+                      "pm.test('Error message is \\'JSON does not validate. ', function () {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: userCreate Violations:\\n[language] Does not have a value in the enumeration [\\\"cs\\\",\\\"en\\\"]');",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {}
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "eval(pm.globals.get('webappPasswordGenerateFunc'));",
+                      "pm.collectionVariables.set('newCandidatePassword', webappPasswordGenerate());"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"username\": \"{{$randomUserName}}\",\n    \"language\": \"invalid\",\n    \"password\": \"{{newCandidatePassword}}\",\n    \"role\": \"normal\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v0/users",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v0",
+                    "users"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Get information",
+          "item": [
+            {
+              "name": "Get information about the current user",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 200', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "pm.test('Content-Type is \\'application/json\\'', function () {",
+                      "    pm.response.to.have.header('Content-Type');",
+                      "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                      "});",
+                      "pm.test('Username is admin', function () {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.username).to.eql('admin');",
+                      "});",
+                      "pm.test('User language is english', function () {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.language).to.eql('en');",
+                      "});"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v0/user",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v0",
+                    "user"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get information about the new user",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 200', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "pm.test('Content-Type is \\'application/json\\'', function () {",
+                      "    pm.response.to.have.header('Content-Type');",
+                      "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                      "});",
+                      "let userId = Number.parseInt(pm.collectionVariables.get('normalUserId'));",
+                      "pm.test('User ID is ' + userId, function () {",
+                      "    pm.expect(pm.response.json().id).to.eql(userId);",
+                      "});",
+                      "let username = pm.collectionVariables.get('normalUserName');",
+                      "pm.test('Username is ' + username, function () {",
+                      "    pm.expect(pm.response.json().username).to.eql(username);",
+                      "});",
+                      "pm.test('User language is english', function () {",
+                      "    pm.expect(pm.response.json().language).to.eql('en');",
+                      "});",
+                      "pm.test('User role is normal', function () {",
+                      "    pm.expect(pm.response.json().role).to.eql('normal');",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v0/users/{{normalUserId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v0",
+                    "users",
+                    "{{normalUserId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get information about user 'admin'",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 200', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "pm.test('Content-Type is \\'application/json\\'', function () {",
+                      "    pm.response.to.have.header('Content-Type');",
+                      "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                      "});",
+                      "pm.test('Username is admin', function () {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.username).to.eql('admin');",
+                      "});",
+                      "pm.test('User language is english', function () {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.language).to.eql('en');",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v0/users/{{adminUserId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v0",
+                    "users",
+                    "{{adminUserId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get information about the current user (unauthorized)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 401', function () {",
+                      "    pm.response.to.have.status(401);",
+                      "});",
+                      "pm.test('Content-Type is \\'application/json\\'', function () {",
+                      "    pm.response.to.have.header('Content-Type');",
+                      "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                      "});",
+                      "pm.test('Error is \\'Client authentication failed\\'', function () {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.message).to.eql('Client authentication failed');",
+                      "});"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v0/user",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v0",
+                    "user"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get information about nonexistent user",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 404', function () {",
+                      "    pm.response.to.have.status(404);",
+                      "});",
+                      "pm.test('Content-Type is \\'application/json\\'', function () {",
+                      "    pm.response.to.have.header('Content-Type');",
+                      "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                      "});",
+                      "pm.test('Error message is \\'User not found\\'', function () {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.message).to.eql('User not found');",
+                      "});"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v0/users/9999",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v0",
+                    "users",
+                    "9999"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Delete the new user",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v0/users/{{normalUserId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v0",
+                "users",
+                "{{normalUserId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete a nonexistent user",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 404', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "pm.test('Content-Type is \\'application/json\\'', function () {",
+                  "    pm.response.to.have.header('Content-Type');",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                  "});",
+                  "pm.test('Error message is \\'User not found\\'', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.message).to.eql('User not found');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v0/users/9999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v0",
+                "users",
+                "9999"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Features",
+      "item": [
+        {
+          "name": "Get optional features configuration",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Content-Type is \\'application/json\\'', function () {",
+                  "    pm.response.to.have.header('Content-Type');",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                  "});",
+                  "pm.test('Optional features', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    const features = {",
+                  "        'apcupsd': {",
+                  "            'enabled': false,",
+                  "        },",
+                  "        'docs': {",
+                  "            'enabled': true,",
+                  "            'url': 'https://docs.iqrf.org/iqrf-gateway/',",
+                  "        },",
+                  "        'gatewayPass': {",
+                  "            'enabled': false,",
+                  "            'user': 'root',",
+                  "        },",
+                  "        'grafana': {",
+                  "            'enabled': false,",
+                  "            'url': '/grafana/',",
+                  "        },",
+                  "        'iqaros': {",
+                  "            'enabled': false,",
+                  "        },",
+                  "        'iqrfCloudProvisioning': {",
+                  "            'enabled': false,",
+                  "        },",
+                  "        'iqrfGatewayController': {",
+                  "            'enabled': false,",
+                  "        },",
+                  "        'iqrfGatewayInfluxdbBridge': {",
+                  "            'enabled': false,",
+                  "        },",
+                  "        'iqrfGatewayTranslator': {",
+                  "            'enabled': false,",
+                  "        },",
+                  "        'iqrfRepository': {",
+                  "            'enabled': false,",
+                  "        },",
+                  "        'journal': {",
+                  "            'enabled': false,",
+                  "            'path': '/etc/systemd/journald.conf',",
+                  "        },",
+                  "        'mender': {",
+                  "            'enabled': false,",
+                  "        },",
+                  "        'monit': {",
+                  "            'enabled': false,",
+                  "        },",
+                  "        'networkManager': {",
+                  "            'enabled': false,",
+                  "        },",
+                  "        'nodeRed': {",
+                  "            'enabled': false,",
+                  "            'url': '/node-red/',",
+                  "        },",
+                  "        'remount': {",
+                  "            'enabled': false,",
+                  "        },",
+                  "        'ssh': {",
+                  "            'enabled': false,",
+                  "        },",
+                  "        'supervisord': {",
+                  "            'enabled': false,",
+                  "            'url': '/supervisord/',",
+                  "        },",
+                  "        'trUpload': {",
+                  "            'enabled': false,",
+                  "        },",
+                  "        'updater': {",
+                  "            'enabled': false,",
+                  "        },",
+                  "        'unattendedUpgrades': {",
+                  "            'enabled': false,",
+                  "        },",
+                  "        'versionChecker': {",
+                  "            'enabled': false,",
+                  "        },",
+                  "    };",
+                  "    pm.expect(jsonData).to.eql(features);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v0/features",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v0",
+                "features"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get optional feature configuration",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Content-Type is \\'application/json\\'', function () {",
+                  "    pm.response.to.have.header('Content-Type');",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                  "});",
+                  "pm.test('Optional feature for Grafana', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    const feature = {",
+                  "\t\t'enabled': false,",
+                  "\t\t'url': '/grafana/',",
+                  "\t};",
+                  "    pm.expect(jsonData).to.eql(feature);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v0/features/grafana",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v0",
+                "features",
+                "grafana"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get optional nonexistent feature configuration",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 404', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "pm.test('Content-Type is \\'application/json\\'', function () {",
+                  "    pm.response.to.have.header('Content-Type');",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                  "});",
+                  "pm.test('Error message is \\'Feature not found\\'', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.message).to.eql('Feature not found');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v0/features/nonsense",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v0",
+                "features",
+                "nonsense"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Edit optional feature configuration",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "const checkRequest = {",
+                  "    url: pm.environment.get('baseUrl') + '/api/v0/features/grafana',",
+                  "    header: {",
+                  "        'Authorization': 'Bearer ' + pm.collectionVariables.get('adminUserToken')",
+                  "    },",
+                  "};",
+                  "pm.sendRequest(checkRequest, (error, response) => {",
+                  "    pm.test('Chack optional feature for Grafana', function () {",
+                  "        var jsonData = response.json();",
+                  "        const feature = {",
+                  "\t\t    'enabled': true,",
+                  "\t\t    'url': '/grafana/',",
+                  "\t    };",
+                  "        pm.expect(jsonData).to.eql(feature);",
+                  "    });",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"enabled\": true,\n    \"url\": \"/grafana/\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v0/features/grafana",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v0",
+                "features",
+                "grafana"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Edit optional feature configuration with missing parameter",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "pm.test('Content-Type is \\'application/json\\'', function () {",
+                  "    pm.response.to.have.header('Content-Type');",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                  "});",
+                  "pm.test('Error message is \\'JSON does not validate.\\'', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: features/grafana Violations:\\n[url] The property url is required');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"enabled\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v0/features/grafana",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v0",
+                "features",
+                "grafana"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Edit optional feature configuration with extra parameter",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "pm.test('Content-Type is \\'application/json\\'', function () {",
+                  "    pm.response.to.have.header('Content-Type');",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                  "});",
+                  "pm.test('Error message is \\'JSON does not validate.\\'', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: features/grafana Violations:\\n[] The property extra is not defined and the definition does not allow additional properties');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"enabled\": true,\n    \"url\": \"/grafana/\",\n    \"extra\": {}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v0/features/grafana",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v0",
+                "features",
+                "grafana"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Edit optional nonexistent feature configuration",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 404', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "pm.test('Content-Type is \\'application/json\\'', function () {",
+                  "    pm.response.to.have.header('Content-Type');",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                  "});",
+                  "pm.test('Error message is \\'Feature not found\\'', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.message).to.eql('Feature not found');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"enabled\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v0/features/nonsense",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v0",
+                "features",
+                "nonsense"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Config",
+      "item": [
+        {
+          "name": "APT",
+          "item": [
+            {
+              "name": "Get APT configuration",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "if (pm.environment.get('hasApt') === 'true') {",
+                      "    pm.test('Status code is 200', function () {",
+                      "        pm.response.to.have.status(200);",
+                      "    });",
+                      "    pm.test('Content-Type is \\'application/json\\'', function () {",
+                      "        pm.response.to.have.header('Content-Type');",
+                      "        pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                      "    });",
+                      "    pm.test('Has APT::Periodic::Enable property', function () {",
+                      "        var jsonData = pm.response.json();",
+                      "        pm.expect(jsonData['APT::Periodic::Enable']).to.match(/[0-1]/);",
+                      "    });",
+                      "} else {",
+                      "    pm.test('Status code is 500', function () {",
+                      "        pm.response.to.have.status(500);",
+                      "    });",
+                      "    pm.test('Content-Type is \\'application/json\\'', function () {",
+                      "        pm.response.to.have.header('Content-Type');",
+                      "        pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                      "    });",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v0/config/apt",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v0",
+                    "config",
+                    "apt"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Account",
+      "item": [
+        {
+          "name": "Sign in",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Content-Type is \\'application/json\\'', function () {",
+                  "    pm.response.to.have.header('Content-Type');",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                  "});",
+                  "pm.test('Username is admin', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.username).to.eql('admin');",
+                  "});",
+                  "pm.test('User language is english', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.language).to.eql('en');",
+                  "});",
+                  "pm.collectionVariables.set('adminUserToken', pm.response.json().token);",
+                  "pm.collectionVariables.set('adminUserId', pm.response.json().id);"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"{{adminUserName}}\",\n    \"password\": \"{{adminUserPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v0/user/signIn",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v0",
+                "user",
+                "signIn"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update account password (incorrect old password)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "eval(pm.globals.get('webappPasswordGenerateFunc'));",
+                  "pm.collectionVariables.set('newCandidatePassword', webappPasswordGenerate());"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "pm.test('Content-Type is \\'application/json\\'', function () {",
+                  "    pm.response.to.have.header('Content-Type');",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                  "});",
+                  "pm.test('Error message is \\'Old password is incorrect\\'', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.message).to.eql('Old password is incorrect');",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"old\": \"incorrect\",\n  \"new\": \"{{newCandidatePassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v0/account/password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v0",
+                "account",
+                "password"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update account password (too short)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "pm.test('Content-Type is \\'application/json\\'', function () {",
+                  "    pm.response.to.have.header('Content-Type');",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                  "});",
+                  "pm.test('Error message is \\'JSON does not validate. ', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: passwordChange Violations:\\n[new] Must be at least 15 characters long');",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"old\": \"{{adminUserPassword}}\",\n  \"new\": \"short\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v0/account/password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v0",
+                "account",
+                "password"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update account password (too long)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "pm.test('Content-Type is \\'application/json\\'', function () {",
+                  "    pm.response.to.have.header('Content-Type');",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                  "});",
+                  "pm.test('Error message is \\'JSON does not validate. ', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: passwordChange Violations:\\n[new] Must be at most 64 characters long');",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"old\": \"{{adminUserPassword}}\",\n  \"new\": \"extralongpasswordthatshouldnotpassjsonschemavalidationandendwithajsonschemaviolation\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v0/account/password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v0",
+                "account",
+                "password"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update account password (invalid password)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "pm.test('Content-Type is \\'application/json\\'', function () {",
+                  "    pm.response.to.have.header('Content-Type');",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                  "});",
+                  "pm.test('Error message is \\'JSON does not validate. ', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: passwordChange Violations:\\n[new] Does not match the regex pattern ^[ -~]+$');",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"old\": \"{{adminUserPassword}}\",\n  \"new\": \"invalidpassword🔒\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v0/account/password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v0",
+                "account",
+                "password"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Security",
+      "item": [
+        {
+          "name": "Users",
+          "item": [
+            {
+              "name": "Edit user (short password)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 400', function () {",
+                      "    pm.response.to.have.status(400);",
+                      "});",
+                      "pm.test('Content-Type is \\'application/json\\'', function () {",
+                      "    pm.response.to.have.header('Content-Type');",
+                      "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                      "});",
+                      "pm.test('Error message is \\'JSON does not validate. ', function () {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: userEdit Violations:\\n[password] Must be at least 15 characters long');",
+                      "});",
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"password\": \"iqrf\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v0/security/users/{{adminUserId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v0",
+                    "security",
+                    "users",
+                    "{{adminUserId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Edit user (long password)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 400', function () {",
+                      "    pm.response.to.have.status(400);",
+                      "});",
+                      "pm.test('Content-Type is \\'application/json\\'', function () {",
+                      "    pm.response.to.have.header('Content-Type');",
+                      "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                      "});",
+                      "pm.test('Error message is \\'JSON does not validate. ', function () {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: userEdit Violations:\\n[password] Must be at most 64 characters long');",
+                      "});",
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"password\": \"extralongpasswordthatshouldnotpassjsonschemavalidationandendwithajsonschemaviolation\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v0/security/users/{{adminUserId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v0",
+                    "security",
+                    "users",
+                    "{{adminUserId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Edit user (invalid password)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 400', function () {",
+                      "    pm.response.to.have.status(400);",
+                      "});",
+                      "pm.test('Content-Type is \\'application/json\\'', function () {",
+                      "    pm.response.to.have.header('Content-Type');",
+                      "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                      "});",
+                      "pm.test('Error message is \\'JSON does not validate. ', function () {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: userEdit Violations:\\n[password] Does not match the regex pattern ^[ -~]+$');",
+                      "});",
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"password\": \"invalidpassword🔒\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v0/security/users/{{adminUserId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v0",
+                    "security",
+                    "users",
+                    "{{adminUserId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Edit user (valid password)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 200', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.collectionVariables.set('adminUserPassword', JSON.parse(pm.request.body.raw).password);"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {}
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "eval(pm.globals.get('webappPasswordGenerateFunc'));",
+                      "pm.collectionVariables.set('newCandidatePassword', webappPasswordGenerate());"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"password\": \"{{newCandidatePassword}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v0/security/users/{{adminUserId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v0",
+                    "security",
+                    "users",
+                    "{{adminUserId}}"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Mosquitto users",
+          "item": [
+            {
+              "name": "List Mosquitto users (insufficient permissions)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 401', function () {",
+                      "    pm.response.to.have.status(401);",
+                      "});",
+                      "pm.test('Content-Type is \\'application/json\\'', function () {",
+                      "    pm.response.to.have.header('Content-Type');",
+                      "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                      "});",
+                      "pm.test('Error is \\'Client authentication failed\\'', function () {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.message).to.eql('Client authentication failed');",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{normalUserToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v0/mosquitto-users",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v0",
+                    "mosquitto-users"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get Mosquitto user (insufficient permissions)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 401', function () {",
+                      "    pm.response.to.have.status(401);",
+                      "});",
+                      "pm.test('Content-Type is \\'application/json\\'', function () {",
+                      "    pm.response.to.have.header('Content-Type');",
+                      "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                      "});",
+                      "pm.test('Error is \\'Client authentication failed\\'', function () {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.message).to.eql('Client authentication failed');",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{normalUserToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v0/mosquitto-users/1",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v0",
+                    "mosquitto-users",
+                    "1"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Create Mosquitto user (insufficient permissions)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 401', function () {",
+                      "    pm.response.to.have.status(401);",
+                      "});",
+                      "pm.test('Content-Type is \\'application/json\\'', function () {",
+                      "    pm.response.to.have.header('Content-Type');",
+                      "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                      "});",
+                      "pm.test('Error is \\'Client authentication failed\\'', function () {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.message).to.eql('Client authentication failed');",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{normalUserToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"username\": \"testuser\",\n    \"password\": \"testpass123456789\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v0/mosquitto-users",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v0",
+                    "mosquitto-users"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Block Mosquitto user (insufficient permissions)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 401', function () {",
+                      "    pm.response.to.have.status(401);",
+                      "});",
+                      "pm.test('Content-Type is \\'application/json\\'', function () {",
+                      "    pm.response.to.have.header('Content-Type');",
+                      "    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+                      "});",
+                      "pm.test('Error is \\'Client authentication failed\\'', function () {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.message).to.eql('Client authentication failed');",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{normalUserToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v0/mosquitto-users/1/block",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v0",
+                    "mosquitto-users",
+                    "1",
+                    "block"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{adminUserToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.globals.set('webappPasswordGenerateFunc', `",
+          "function webappPasswordGenerate() {",
+          "    const character_pool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'",
+          "        + 'abcdefghijklmnopqrstuvwxyz'",
+          "        + '0123456789'",
+          "        + ' !@#$%^&*()_+[]{}|;:,.<>?';",
+          "",
+          "    const password_len = Math.floor(Math.random() * (64 - 15 + 1)) + 15;",
+          "",
+          "    let password = [];",
+          "",
+          "    for (let i = 0; i < password_len; i++) {",
+          "        password.push(character_pool[Math.floor(Math.random() * character_pool.length)]);",
+          "    }",
+          "    return password.join('');",
+          "}",
+          "`);"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "localhost:8080"
+    },
+    {
+      "key": "adminUserName",
+      "value": "admin"
+    },
+    {
+      "key": "adminUserPassword",
+      "value": "9vG$kdP&!zX@rL#Y"
+    },
+    {
+      "key": "adminUserId",
+      "value": ""
+    },
+    {
+      "key": "adminUserToken",
+      "value": ""
+    },
+    {
+      "key": "newCandidatePassword",
+      "value": ""
+    },
+    {
+      "key": "normalUserName",
+      "value": ""
+    },
+    {
+      "key": "normalUserPassword",
+      "value": ""
+    },
+    {
+      "key": "normalUserId",
+      "value": ""
+    },
+    {
+      "key": "normalUserToken",
+      "value": ""
+    }
+  ]
 }

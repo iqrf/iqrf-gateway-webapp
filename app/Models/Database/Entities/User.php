@@ -217,8 +217,9 @@ class User implements JsonSerializable {
 				'maintenance:mender',
 				'maintenance:monit',
 				'network',
-				'users:admin',
+				'security:mosquitto-users',
 				'sshKeys',
+				'users:admin',
 			]);
 		}
 		return $scopes;

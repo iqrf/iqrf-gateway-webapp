@@ -342,6 +342,11 @@ function items(): SidebarLink[] {
 						to: '/access-control/ssh-keys',
 						roles: [UserRole.Admin],
 					},
+					{
+						title: i18n.t('pages.accessControl.mosquittoUsers.title'),
+						to: '/access-control/mosquitto-users',
+						roles: [UserRole.Admin],
+					},
 				],
 			},
 			{
