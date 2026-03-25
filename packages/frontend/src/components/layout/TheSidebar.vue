@@ -346,6 +346,7 @@ function items(): SidebarLink[] {
 						title: i18n.t('pages.accessControl.mosquittoUsers.title'),
 						to: '/access-control/mosquitto-users',
 						roles: [UserRole.Admin],
+						feature: Feature.mosquittoUserManagement,
 					},
 				],
 			},

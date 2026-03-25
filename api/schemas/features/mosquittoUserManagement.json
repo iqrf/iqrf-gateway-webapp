@@ -1,0 +1,21 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/mosquittoUserManagement.json",
+	"type": "object",
+	"title": "Mosquitto user management",
+	"example": {
+		"enabled": false
+	},
+	"required": [
+		"enabled"
+	],
+	"additionalProperties": false,
+	"properties": {
+		"enabled": {
+			"$id": "#/properties/enabled",
+			"type": "boolean",
+			"title": "Mosquitto user management enablement",
+			"example": false
+		}
+	}
+}

@@ -79,6 +79,9 @@ class FeatureManager {
 		'monit' => [
 			'enabled' => false,
 		],
+		'mosquittoUserManagement' => [
+			'enabled' => false,
+		],
 		'networkManager' => [
 			'enabled' => false,
 		],

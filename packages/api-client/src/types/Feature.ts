@@ -106,6 +106,11 @@ export enum Feature {
 	monit = 'monit',
 
 	/**
+	 * Mosquitto user management feature
+	 */
+	mosquittoUserManagement = 'mosquittoUserManagement',
+
+	/**
 	 * Network manager feature
 	 */
 	networkManager = 'networkManager',
