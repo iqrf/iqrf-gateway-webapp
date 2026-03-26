@@ -1,0 +1,23 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/roleList.json",
+	"type": "array",
+	"title": "Role list",
+	"additionalItems": false,
+	"examples": [
+		[
+			{
+				"id": 1,
+				"name": "Device supervisor",
+				"description": "Account with limited access intended only for supervising device state.",
+				"scopes": [
+					"config:iqrfGatewayDaemon:read",
+					"config:iqrfGatewayController:read"
+				]
+			}
+		]
+	],
+	"items": {
+		"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/roleDetail.json"
+	}
+}
