@@ -1,0 +1,36 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/roleDetail.json",
+	"type": "object",
+	"title": "Role Detail",
+	"additionalProperties": false,
+	"required": [
+		"id",
+		"name",
+		"description",
+		"scopes"
+	],
+	"properties": {
+		"id": {
+			"$id": "#/properties/id",
+			"type": "integer",
+			"title": "Role ID",
+			"example": 1
+		},
+		"name": {
+			"$id": "#/properties/name",
+			"type": "string",
+			"title": "Role name",
+			"example": "Device supervisor"
+		},
+		"description": {
+			"$id": "#/properties/description",
+			"type": "string",
+			"title": "Role description",
+			"example": "Account with limited access intended only for supervising device state."
+		},
+		"scopes": {
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/accessScopes.json"
+		}
+	}
+}

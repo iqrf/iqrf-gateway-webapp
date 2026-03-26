@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Copyright 2017-2025 IQRF Tech s.r.o.
- * Copyright 2019-2025 MICRORISC s.r.o.
+ * Copyright 2017-2026 IQRF Tech s.r.o.
+ * Copyright 2019-2026 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,14 +34,14 @@ use App\ApiModule\Version0\RequestAttributes;
 use App\CoreModule\Models\UserManager;
 use App\Exceptions\InvalidEmailAddressException;
 use App\Exceptions\InvalidPasswordException;
-use App\Exceptions\InvalidUserRoleException;
 use App\Exceptions\InvalidUserStateException;
 use App\Exceptions\ResourceNotFoundException;
 use App\Models\Database\Entities\User;
 use App\Models\Database\EntityManager;
 use App\Models\Database\Enums\UserLanguage;
-use App\Models\Database\Enums\UserRole;
 use App\Models\Database\Enums\UserState;
+use App\Exceptions\InvalidRoleException;
+use App\Models\Database\Repositories\RoleRepository;
 use App\Models\Database\Repositories\UserRepository;
 use Nette\Mail\SendException;
 use ValueError;
@@ -59,6 +59,11 @@ class UsersController extends BaseSecurityController {
 	private readonly UserRepository $repository;
 
 	/**
+	 * @var RoleRepository Role database repository
+	 */
+	private readonly RoleRepository $roleRepository;
+
+	/**
 	 * Constructor
 	 * @param EntityManager $entityManager Entity manager
 	 * @param UserManager $manager User manager
@@ -71,6 +76,7 @@ class UsersController extends BaseSecurityController {
 	) {
 		parent::__construct($validators);
 		$this->repository = $entityManager->getUserRepository();
+		$this->roleRepository = $entityManager->getRoleRepository();
 	}
 
 	#[Path('/')]
@@ -140,12 +146,16 @@ class UsersController extends BaseSecurityController {
 			if ($email === null && $password === null) {
 				throw new ClientErrorException('Password is required if e-mail address is not provided', ApiResponse::S400_BAD_REQUEST);
 			}
+			$role = $this->roleRepository->find($json['roleId']);
+			if ($role === null) {
+				throw new InvalidRoleException('Role with ID ' . $json['roleId'] . ' does not exist!');
+			}
 			$user = new User(
 				username: $json['username'],
 				email: $email,
 				password: $password,
-				role: UserRole::fromString($json['role']),
-				language: UserLanguage::from($json['language']),
+				role: $role,
+				language: UserLanguage::from($json['language'])
 			);
 			if ($password === null) {
 				$user->setState(UserState::Invited);
@@ -154,8 +164,8 @@ class UsersController extends BaseSecurityController {
 			$this->entityManager->flush();
 		} catch (InvalidEmailAddressException $e) {
 			throw new ClientErrorException('Invalid email address: ' . $e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
-		} catch (InvalidUserRoleException $e) {
-			throw new ClientErrorException('Invalid role', ApiResponse::S400_BAD_REQUEST, $e);
+		} catch (InvalidRoleException $e) {
+			throw new ClientErrorException('Invalid role', ApiResponse::S404_NOT_FOUND, $e);
 		}
 		$responseBody = ['emailSent' => false];
 		if ($user->getEmail() !== null) {
@@ -258,17 +268,19 @@ class UsersController extends BaseSecurityController {
 			}
 			$user->setUserName($json['username']);
 		}
-		if (array_key_exists('role', $json)) {
-			if ($user->getRole() === UserRole::Admin &&
-				$this->repository->userCountByRole(UserRole::Admin) === 1 &&
-				$json['role'] !== UserRole::Admin->value) {
+		if (array_key_exists('roleId', $json)) {
+			if (
+				$user->getRole()->getSystemKey() === 'admin' &&
+				$this->repository->userCountByRole($user->getRole()) === 1 &&
+				$json['roleId'] !== $user->getRole()->getId()
+			){
 				throw new ClientErrorException('Admin user role change forbidden for the only admin user', ApiResponse::S409_CONFLICT);
 			}
-			try {
-				$user->setRole(UserRole::fromString($json['role']));
-			} catch (InvalidUserRoleException $e) {
-				throw new ClientErrorException('Invalid role', ApiResponse::S400_BAD_REQUEST, $e);
+			$role = $this->roleRepository->find($json['roleId']);
+			if ($role === null) {
+				throw new ClientErrorException('Invalid role', ApiResponse::S404_NOT_FOUND);
 			}
+			$user->setRole($role);
 		}
 		if (array_key_exists('language', $json)) {
 			try {

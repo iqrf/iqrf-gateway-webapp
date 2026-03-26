@@ -20,11 +20,12 @@ declare(strict_types = 1);
 
 namespace App\ConsoleModule\Commands;
 
-use App\Exceptions\InvalidUserRoleException;
+use App\Exceptions\InvalidRoleException;
+use App\Models\Database\Entities\Role;
 use App\Models\Database\Entities\User;
 use App\Models\Database\EntityManager;
 use App\Models\Database\Enums\UserLanguage;
-use App\Models\Database\Enums\UserRole;
+use App\Models\Database\Repositories\RoleRepository;
 use App\Models\Database\Repositories\UserRepository;
 use RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
@@ -40,6 +41,11 @@ abstract class UserCommand extends EntityManagerCommand {
 	 * @var UserRepository User database repository
 	 */
 	protected readonly UserRepository $repository;
+
+	/**
+	 * @var RoleRepository Role database repository
+	 */
+	protected readonly RoleRepository $roleRepository;
 
 	/**
 	 * Constructor
@@ -99,21 +105,29 @@ abstract class UserCommand extends EntityManagerCommand {
 	 * Asks for the user's role
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
-	 * @param UserRole|null $default Default user's role
-	 * @return UserRole User's role
-	 * @throws InvalidUserRoleException Role does not exist
+	 * @param Role|null $default Default user's role (when not set, system predefined normal user is used)
+	 * @return Role User's role
+	 * @throws InvalidRoleException Role does not exist
 	 * @throws RuntimeException Question helper not found
 	 */
-	protected function askRole(InputInterface $input, OutputInterface $output, ?UserRole $default): UserRole {
-		$role = $input->getOption('role');
-		if ($role !== null) {
-			return UserRole::fromString($role);
+	protected function askRole(InputInterface $input, OutputInterface $output, ?Role $default): Role {
+		if (!$default) {
+			// Use predefined normal user as default
+			$default = $this->roleRepository->findOneBySystemKey('normal');
 		}
-		$roles = array_column(UserRole::cases(), 'value');
+		$roleName = $input->getOption('role');
+		if ($roleName !== null) {
+			$role = $this->roleRepository->findOneByName($roleName);
+			if ($role === null) {
+				throw new InvalidRoleException('Invalid role');
+			}
+			return $role;
+		}
+		$roles = array_column($this->roleRepository->findAll(), 'name');
 		while ($role === null) {
 			$helper = $this->getQuestionHelper();
-			$question = new ChoiceQuestion('Please enter the user\'s role: ', $roles, $default?->value);
-			$role = UserRole::tryFrom($helper->ask($input, $output, $question));
+			$question = new ChoiceQuestion('Please enter the user\'s role: ', $roles, $default?->getName());
+			$role = $this->roleRepository->findOneByName($helper->ask($input, $output, $question));
 		}
 		return $role;
 	}

@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\Enums;
 
 use JsonSerializable;
+use DomainException;
 
 /**
  * Access scope enum
@@ -73,6 +74,8 @@ enum AccessScope: string implements JsonSerializable {
 	case security_apiKeys_write = 'security:apiKeys:write';
 	case security_certificates_read = 'security:certificates:read';
 	case security_certificates_write = 'security:certificates:write';
+	case security_role_read = 'security:role:read';
+	case security_role_write = 'security:role:write';
 	case security_shellUser_write = 'security:shellUser:write';
 	case security_sshkeys_read = 'security:sshkeys:read';
 	case security_sshkeys_write = 'security:sshkeys:write';
@@ -85,6 +88,33 @@ enum AccessScope: string implements JsonSerializable {
 	 */
 	public function jsonSerialize(): string {
 		return $this->value;
+	}
+
+	/**
+	 * Parses access scope from strings corresponding to the access scope
+	 * @param array<string> $scope Access scope string reprezentation
+	 * @return AccessScope Access scope coresponding to given string
+	 * @throws DomainException when given string does not corespond to any access scope
+	 */
+	public static function parseScopeFromString(string $scope): AccessScope {
+		$as = AccessScope::tryFrom($scope);
+		if ($as === null) {
+			throw new DomainException('Invalid access scope ' . $scope . '!');
+		}
+		return $as;
+	}
+
+	/**
+	 * Parses scopes from array of strings corresponding to the access scopes
+	 * @param array<string> $scopes Array of access scopes given by string reprezentations
+	 * @return array<AccessScope> Array of parsed access scopes
+	 * @throws DomainException when given string does not corespond to any access scope
+	 */
+	public static function parseScopesFromStringArray(array $scopes): array {
+		return array_map(
+			self::parseScopeFromString(...),
+			$scopes
+		);
 	}
 
 }

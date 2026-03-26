@@ -54,17 +54,11 @@
 			"minLength": 1,
 			"example": "8Yz#t>pL^sD|Uq&bW@"
 		},
-		"role": {
-			"$id": "#/definitions/role",
-			"type": "string",
-			"title": "User role",
-			"enum": [
-				"admin",
-				"normal",
-				"basic"
-			],
-			"default": "normal",
-			"example": "normal"
+		"roleId": {
+			"$id": "#/properties/roleId",
+			"type": "number",
+			"title": "Role ID",
+			"example": "1"
 		},
 		"state": {
 			"$id": "#/definitions/state",

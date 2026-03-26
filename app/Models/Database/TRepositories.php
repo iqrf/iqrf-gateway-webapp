@@ -27,6 +27,7 @@ use App\Models\Database\Entities\IqrfOsPatch;
 use App\Models\Database\Entities\Mapping;
 use App\Models\Database\Entities\NetworkOperator;
 use App\Models\Database\Entities\PasswordRecovery;
+use App\Models\Database\Entities\Role;
 use App\Models\Database\Entities\SshKey;
 use App\Models\Database\Entities\User;
 use App\Models\Database\Entities\UserInvitation;
@@ -43,6 +44,7 @@ use App\Models\Database\Repositories\IqrfOsPatchRepository;
 use App\Models\Database\Repositories\MappingRepository;
 use App\Models\Database\Repositories\NetworkOperatorRepository;
 use App\Models\Database\Repositories\PasswordRecoveryRepository;
+use App\Models\Database\Repositories\RoleRepository;
 use App\Models\Database\Repositories\SshKeyRepository;
 use App\Models\Database\Repositories\UserInvitationRepository;
 use App\Models\Database\Repositories\UserRepository;
@@ -57,6 +59,14 @@ use App\Models\Database\Repositories\WireguardPeerRepository;
  * @mixin EntityManager
  */
 trait TRepositories {
+
+	/**
+	 * Returns the Role repository
+	 * @return RoleRepository Role repository
+	 */
+	public function getRoleRepository(): RoleRepository {
+		return $this->getRepository(Role::class);
+	}
 
 	/**
 	 * Returns the API key repository

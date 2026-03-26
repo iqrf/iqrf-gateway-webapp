@@ -24,7 +24,6 @@ use App\CoreModule\Models\UserManager;
 use App\Models\Database\Entities\User;
 use App\Models\Database\EntityManager;
 use App\Models\Database\Enums\UserLanguage;
-use App\Models\Database\Enums\UserRole;
 use RuntimeException;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputDefinition;
@@ -75,7 +74,7 @@ class UserAddCommand extends UserCommand {
 		$style = new SymfonyStyle($input, $output);
 		$name = $this->askUserName($input, $output);
 		$pass = $this->askPassword($input, $output);
-		$role = $this->askRole($input, $output, UserRole::Default);
+		$role = $this->askRole($input, $output, null);
 		$lang = $this->askLanguage($input, $output, UserLanguage::Default);
 		if ($this->userManager->checkUsernameUniqueness($name)) {
 			$style->error('The specified username is already taken.');

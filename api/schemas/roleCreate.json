@@ -1,0 +1,30 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/roleDetail.json",
+	"type": "object",
+	"title": "Role Create",
+	"description": "Data for Role creation or modification",
+	"additionalProperties": false,
+	"required": [
+		"name",
+		"description",
+		"scopes"
+	],
+	"properties": {
+		"name": {
+			"$id": "#/properties/name",
+			"type": "string",
+			"title": "Role name",
+			"example": "IQRF network administrator."
+		},
+		"description": {
+			"$id": "#/properties/description",
+			"type": "string",
+			"title": "Role description",
+			"example": "Administrator for managing IQRF network settings."
+		},
+		"scopes": {
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/accessScopes.json"
+		}
+	}
+}

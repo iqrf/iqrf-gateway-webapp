@@ -20,12 +20,10 @@ declare(strict_types = 1);
 
 namespace App\Models\Database\Entities;
 
-use App\Enums\AccessScope;
 use App\Models\Database\Attributes\TCreatedAt;
 use App\Models\Database\Attributes\TId;
 use App\Models\Database\Enums\ApiKeyState;
 use App\Models\Database\Repositories\ApiKeyRepository;
-use App\Models\Database\Types\AccessScopeArrayType;
 use DateTime;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -90,7 +88,7 @@ class ApiKey implements JsonSerializable {
 	 * @param DateTime|string $expiration Expiration, or DateTime string
 	 * @param User|null $createdBy API key creator
 	 * @param ApiKeyState $state API key state
-	 * @param array<AccessScope> $scopes API key scopes
+	 * @param Role $role API key role
 	 */
 	public function __construct(
 		#[ORM\Column(type: Types::STRING, length: 255)]
@@ -99,10 +97,11 @@ class ApiKey implements JsonSerializable {
 		#[ORM\ManyToOne(targetEntity: User::class)]
 		#[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
 		private readonly ?User $createdBy,
+		#[ORM\ManyToOne(targetEntity: Role::class)]
+		#[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+		private Role $role,
 		#[ORM\Column(type: Types::INTEGER, enumType: ApiKeyState::class, options: ['default' => ApiKeyState::Active])]
 		private ApiKeyState $state = ApiKeyState::Active,
-		#[ORM\Column(type: AccessScopeArrayType::ACCESS_SCOPE_ARRAY)]
-		private array $scopes = [],
 	) {
 		$key = random_bytes(32);
 		$salt = random_bytes(16);
@@ -200,36 +199,27 @@ class ApiKey implements JsonSerializable {
 	}
 
 	/**
-	 * Returns API key scopes
-	 * @return array<AccessScope> API key scopes
+	 * Returns API key role
+	 * @return Role API key role
+	 */
+	public function getRole(): Role {
+		return $this->role;
+	}
+
+	/**
+	 * Sets API key role
+	 * @param Role $role API key role
+	 */
+	public function setRole(Role $role): void {
+		$this->role = $role;
+	}
+
+	/**
+	 * Returns API key scopes derived from role
+	 * @return array<string> API key scopes
 	 */
 	public function getScopes(): array {
-		return $this->scopes;
-	}
-
-	/**
-	 * Sets API key scopes
-	 * @param array<AccessScope> $scopes API key scopes
-	 */
-	public function setScopes(array $scopes): void {
-		$this->scopes = $scopes;
-	}
-
-	/**
-	 * Sets scopes from array of strings corresponding to the API scope names.
-	 * @param array<string> $scopes API key scopes
-	 */
-	public function setScopesFromStringArray(array $scopes): void {
-		$this->scopes = array_map(
-			function (string $val): AccessScope {
-				$as = AccessScope::tryFrom($val);
-				if ($as === null) {
-					throw new DomainException('Invalid access scope ' . $val . '!');
-				}
-				return $as;
-			},
-			$scopes
-		);
+		return array_map(static fn ($scope): string => $scope->value, $this->role->getScopes());
 	}
 
 	/**
@@ -295,7 +285,8 @@ class ApiKey implements JsonSerializable {
 			'createdBy' => $this->createdBy?->getId(),
 			'createdAt' => $this->getCreatedAt()->format('c'),
 			'state' => $this->state->jsonSerialize(),
-			'scopes' => array_map(static fn (AccessScope $item): string => $item->value, $this->scopes),
+			'roleId' => $this->role->getId(),
+			'scopes' => $this->getScopes(),
 			'revokedBy' => $this->revokedBy?->getId(),
 			'revokedAt' => $this->revokedAt?->format('c'),
 		];

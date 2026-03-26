@@ -29,7 +29,6 @@ use App\Models\Database\Entities\User;
 use App\Models\Database\Entities\UserInvitation;
 use App\Models\Database\Entities\UserVerification;
 use App\Models\Database\EntityManager;
-use App\Models\Database\Enums\UserRole;
 use App\Models\Database\Repositories\UserRepository;
 use App\Models\Mail\Senders\UserMailSender;
 use BadMethodCallException;
@@ -173,11 +172,11 @@ class UserManager {
 
 	/**
 	 * Lists all users
-	 * @param array<UserRole> $roles User roles to filter
+	 * @param array<Role> $roles User roles to filter
 	 * @return array<User> Users
 	 */
 	public function list(array $roles = []): array {
-		$criteria = $roles === [] ? [] : ['role' => array_map(static fn (UserRole $role): string => $role->value, $roles)];
+		$criteria = $roles === [] ? [] : ['role' => $roles];
 		return $this->repository->findBy($criteria);
 	}
 

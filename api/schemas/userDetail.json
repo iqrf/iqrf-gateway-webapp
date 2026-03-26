@@ -29,9 +29,9 @@
 			"$id": "#/properties/language",
 			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/user.json#/definitions/language"
 		},
-		"role": {
-			"$id": "#/properties/role",
-			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/user.json#/definitions/role"
+		"roleId": {
+			"$id": "#/properties/roleId",
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/definitions/user.json#/definitions/roleId"
 		},
 		"state": {
 			"$id": "#/properties/state",

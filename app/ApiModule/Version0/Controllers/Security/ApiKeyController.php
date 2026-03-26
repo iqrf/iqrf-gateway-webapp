@@ -32,12 +32,13 @@ use App\ApiModule\Version0\Models\ControllerValidators;
 use App\ApiModule\Version0\RequestAttributes;
 use App\Exceptions\ApiKeyExpirationPassedException;
 use App\Exceptions\ApiKeyInvalidExpirationException;
+use App\Exceptions\InvalidRoleException;
 use App\Models\Database\Entities\ApiKey;
 use App\Models\Database\Entities\ApiKeyLegacy;
 use App\Models\Database\EntityManager;
 use App\Models\Database\Repositories\ApiKeyLegacyRepository;
 use App\Models\Database\Repositories\ApiKeyRepository;
-use DateTime;
+use App\Models\Database\Repositories\RoleRepository;
 use DomainException;
 use InvalidArgumentException;
 
@@ -59,6 +60,11 @@ class ApiKeyController extends BaseSecurityController {
 	private readonly ApiKeyRepository $repository;
 
 	/**
+	 * @var RoleRepository Role database repository
+	 */
+	private readonly RoleRepository $roleRepository;
+
+	/**
 	 * Constructor
 	 * @param EntityManager $entityManager Entity manager
 	 * @param ControllerValidators $validators Controller validators
@@ -70,6 +76,7 @@ class ApiKeyController extends BaseSecurityController {
 		parent::__construct($validators);
 		$this->repositoryLegacy = $entityManager->getApiKeyLegacyRepository();
 		$this->repository = $entityManager->getApiKeyRepository();
+		$this->roleRepository = $entityManager->getRoleRepository();
 	}
 
 	#[Path('/')]
@@ -141,18 +148,24 @@ class ApiKeyController extends BaseSecurityController {
 		$json = $request->getJsonBodyCopy(false);
 		// Expiration check - required for new keys, can't be verified by schema validator to keep backward compatibility with legacy API keys.
 		if (!$json->expiration) {
-			throw new ClientErrorException("Key Expiration time is not set!", ApiResponse::S400_BAD_REQUEST);
+			throw new ClientErrorException('Key Expiration time is not set!', ApiResponse::S400_BAD_REQUEST);
 		}
 		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
 		try {
+			$role = $this->roleRepository->find($json->roleId);
+			if ($role === null) {
+				throw new InvalidRoleException('Role with ID ' . $json->roleId . ' does not exist!');
+			}
 			$apiKey = new ApiKey(
 				$json->description,
 				$json->expiration,
-				$user
+				$user,
+				role: $role,
 			);
-			$apiKey->setScopesFromStringArray($json->scopes);
 		} catch (ApiKeyExpirationPassedException | ApiKeyInvalidExpirationException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
+		} catch (InvalidRoleException $e) {
+			throw new ClientErrorException('Invalid role', ApiResponse::S404_NOT_FOUND, $e);
 		}
 		$this->entityManager->persist($apiKey);
 		$this->entityManager->flush();
@@ -251,13 +264,17 @@ class ApiKeyController extends BaseSecurityController {
 			$json = $request->getJsonBodyCopy(false);
 			// Expiration check - required for new keys, can't be verified by schema validator to keep backward compatibility with legacy API keys.
 			if (!$json->expiration) {
-				throw new ClientErrorException("Key Expiration time is not set!", ApiResponse::S400_BAD_REQUEST);
+				throw new ClientErrorException('Key Expiration time is not set!', ApiResponse::S400_BAD_REQUEST);
 			}
 			try {
 				$apiKey->setDescription($json->description);
 				$apiKey->setExpirationFromString($json->expiration);
-				$apiKey->setScopesFromStringArray($json->scopes);
-			} catch (DomainException | InvalidArgumentException $e) {
+				$role = $this->roleRepository->find($json->roleId);
+				if ($role === null) {
+					throw new InvalidRoleException('Role with ID ' . $json->roleId . ' does not exist!');
+				}
+				$apiKey->setRole($role);
+			} catch (DomainException | InvalidArgumentException | InvalidRoleException $e) {
 				throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
 			}
 		} else {

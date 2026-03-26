@@ -20,12 +20,12 @@ declare(strict_types = 1);
 
 namespace App\Models\Database\Entities;
 
+use App\Enums\AccessScope;
 use App\Exceptions\IncorrectPasswordException;
 use App\Exceptions\InvalidEmailAddressException;
 use App\Exceptions\InvalidPasswordException;
 use App\Models\Database\Attributes\TId;
 use App\Models\Database\Enums\UserLanguage;
-use App\Models\Database\Enums\UserRole;
 use App\Models\Database\Enums\UserState;
 use App\Models\Database\Repositories\UserRepository;
 use Doctrine\DBAL\Types\Types;
@@ -121,7 +121,7 @@ class User implements JsonSerializable {
 	 * @param string $username User name
 	 * @param string|null $email User's email
 	 * @param string $password User password
-	 * @param UserRole $role User role
+	 * @param Role $role User role
 	 * @param UserLanguage $language User language
 	 * @param UserState $state Account state
 	 */
@@ -130,14 +130,14 @@ class User implements JsonSerializable {
 		private string $username,
 		?string $email,
 		?string $password,
-		#[ORM\Column(type: Types::STRING, length: 15, enumType: UserRole::class, options: ['default' => UserRole::Default])]
-		private UserRole $role = UserRole::Default,
+		// TODO - find out what should be done, when the role is deleted
+		#[ORM\ManyToOne(targetEntity: Role::class, inversedBy: 'users')]
+		#[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+		private Role $role,
 		#[ORM\Column(type: Types::STRING, length: 7, enumType: UserLanguage::class, options: ['default' => UserLanguage::Default])]
 		private UserLanguage $language = UserLanguage::Default,
 		#[ORM\Column(type: Types::INTEGER, length: 10, enumType: UserState::class, options: ['default' => UserState::Default])]
-		private UserState $state = UserState::Default,
-		//#[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
-		//private bool $forcePasswordChange = false,
+		private UserState $state = UserState::Default
 	) {
 		$this->setEmail($email);
 		if ($password !== null) {
@@ -201,9 +201,9 @@ class User implements JsonSerializable {
 
 	/**
 	 * Returns the user's role
-	 * @return UserRole User's role
+	 * @return Role User's role
 	 */
-	public function getRole(): UserRole {
+	public function getRole(): Role {
 		return $this->role;
 	}
 
@@ -228,36 +228,7 @@ class User implements JsonSerializable {
 	 * @return array<string> User scopes
 	 */
 	public function getScopes(): array {
-		$scopes = [];
-		if ($this->role === UserRole::Normal || $this->role === UserRole::Admin) {
-			$scopes = array_merge($scopes, [
-				'clouds',
-				'config:bridge',
-				'config:controller',
-				'config:daemon',
-				'config:iqrfRepository',
-				'gateway:log',
-				'gateway:power',
-				'iqrf:macros',
-			]);
-		}
-		if ($this->role === UserRole::Admin) {
-			$scopes = array_merge($scopes, [
-				'apiKeys',
-				'config:ws-proxy',
-				'iqrf:upload',
-				'mailer',
-				'maintenance:backup',
-				'maintenance:mender',
-				'maintenance:monit',
-				'network',
-				'security:daemon-access-tokens',
-				'security:mosquitto-users',
-				'sshKeys',
-				'users:admin',
-			]);
-		}
-		return $scopes;
+		return array_map(static fn (AccessScope $scope): string => $scope->value, $this->role->getScopes());
 	}
 
 	/**
@@ -319,9 +290,9 @@ class User implements JsonSerializable {
 
 	/**
 	 * Sets the user role
-	 * @param UserRole $role User role
+	 * @param Role $role User role
 	 */
-	public function setRole(UserRole $role): void {
+	public function setRole(Role $role): void {
 		$this->role = $role;
 	}
 
@@ -370,7 +341,8 @@ class User implements JsonSerializable {
 			'id' => $this->id,
 			'username' => $this->username,
 			'email' => $this->email,
-			'role' => $this->role->value,
+			'role' => $this->role->getName(),
+			'roleSystemKey' => $this->role->getSystemKey(),
 			'language' => $this->language->value,
 			'state' => $this->state->toString(),
 		];

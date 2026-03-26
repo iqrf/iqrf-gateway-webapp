@@ -65,7 +65,7 @@ class SentryUserIntegration extends BaseIntegration {
 			$userDataBag->setUsername($user->getUserName());
 			$userDataBag->setEmail($user->getEmail());
 			$userDataBag->setIpAddress($httpRequest->getRemoteAddress());
-			$userDataBag->setMetadata('role', $user->getRole());
+			$userDataBag->setMetadata('role', $user->getRole()->getName());
 
 			$event->setUser($userDataBag);
 		}
