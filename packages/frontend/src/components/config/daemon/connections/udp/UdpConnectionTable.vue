@@ -107,7 +107,9 @@ async function getConfig(): Promise<void> {
 	try {
 		instances.value = (await service.getComponent(IqrfGatewayDaemonComponentName.IqrfUdpMessaging)).instances;
 	} catch {
-		toast.error('TODO FETCH ERROR');
+		toast.error(
+			i18n.t('components.config.daemon.connections.udp.messages.list.failed'),
+		);
 	}
 	componentState.value = ComponentState.Ready;
 }

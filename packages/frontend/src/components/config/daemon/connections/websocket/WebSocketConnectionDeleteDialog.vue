@@ -1,6 +1,6 @@
 <!--
-Copyright 2017-2025 IQRF Tech s.r.o.
-Copyright 2019-2025 MICRORISC s.r.o.
+Copyright 2017-2026 IQRF Tech s.r.o.
+Copyright 2019-2026 MICRORISC s.r.o.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -25,9 +25,9 @@ limitations under the License.
 		@submit='onSubmit()'
 	>
 		<template #title>
-			{{ $t('components.config.daemon.connections.websocket.profile.delete.title') }}
+			{{ $t('components.config.daemon.connections.ws.delete.title') }}
 		</template>
-		{{ $t('components.config.daemon.connections.websocket.profile.delete.prompt', { name: connectionProfile.messaging.instance }) }}
+		{{ $t('components.config.daemon.connections.ws.delete.prompt', { name: connectionProfile.instance }) }}
 	</IDeleteModalWindow>
 </template>
 
@@ -35,7 +35,7 @@ limitations under the License.
 import { type IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/services/Config';
 import {
 	IqrfGatewayDaemonComponentName,
-	type IqrfGatewayDaemonWebsocketInterface,
+	type IqrfGatewayDaemonWsMessaging,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import {
 	ComponentState,
@@ -54,7 +54,7 @@ import { useApiClient } from '@/services/ApiClient';
 
 const componentProps = withDefaults(
 	defineProps<{
-		connectionProfile: IqrfGatewayDaemonWebsocketInterface;
+		connectionProfile: IqrfGatewayDaemonWsMessaging;
 		disabled?: boolean;
 	}>(),
 	{
@@ -73,19 +73,20 @@ const service: IqrfGatewayDaemonService = useApiClient()
 
 async function onSubmit(): Promise<void> {
 	componentState.value = ComponentState.Action;
-	const translationParams = { name: componentProps.connectionProfile.messaging.instance };
+	const translationParams = { name: componentProps.connectionProfile.instance };
 	try {
-		await service.deleteInstance(IqrfGatewayDaemonComponentName.IqrfWsMessaging, componentProps.connectionProfile.messaging.instance);
-		await service.deleteInstance(IqrfGatewayDaemonComponentName.ShapeWebsocketService, componentProps.connectionProfile.service.instance);
-		toast.success(
-			i18n.t('components.config.daemon.connections.websocket.profile.messages.delete.success', translationParams),
-		);
+		await service.deleteInstance(IqrfGatewayDaemonComponentName.IqrfWsMessaging, componentProps.connectionProfile.instance);
+		toast.success(i18n.t(
+			'components.config.daemon.connections.ws.messages.delete.success',
+			translationParams,
+		));
 		close();
 		emit('deleted');
 	} catch {
-		toast.error(
-			i18n.t('components.config.daemon.connections.websocket.profile.messages.delete.failed', translationParams),
-		);
+		toast.error(i18n.t(
+			'components.config.daemon.connections.ws.messages.delete.failed',
+			translationParams,
+		));
 	}
 	componentState.value = ComponentState.Idle;
 }

@@ -612,8 +612,10 @@
 						"delete": "Delete connection profile",
 						"edit": "Edit connection profile",
 						"export": "Export connection profile",
+						"hideInfo": "Hide connection details",
 						"import": "Import connection profile",
-						"reload": "Reload connection profiles"
+						"reload": "Reload connection profiles",
+						"showInfo": "Show connection details"
 					},
 					"cipherSuites": "Cipher suites",
 					"enableTls": "Enable TLS",
@@ -622,10 +624,6 @@
 						"profileFileInvalid": "Selected file is does not contain valid connection profile configuration."
 					},
 					"mqtt": {
-						"actions": {
-							"hideInfo": "Hide MQTT connection details",
-							"showInfo": "Show MQTT connection details"
-						},
 						"broker": "Broker URL",
 						"clientId": "Client ID",
 						"clouds": {
@@ -791,9 +789,14 @@
 						"localPort": "Local port",
 						"messages": {
 							"delete": {
+								"failed": "Failed to delete UDP connection profile {name}.",
 								"success": "UDP connection profile {name} successfully deleted."
 							},
+							"list": {
+								"failed": "Failed to retrieve UDP connection profiles."
+							},
 							"save": {
+								"failed": "Failed to save UDP connection profile {name}.",
 								"success": "UDP connection profile {name} successfully saved."
 							}
 						},
@@ -817,133 +820,71 @@
 							"required": "Please select connection profile file."
 						}
 					},
-					"websocket": {
-						"acceptOnlyLocalhost": "Accept only localhost connections",
-						"asyncMessages": "Accept asynchronous messages",
+					"ws": {
+						"asyncMessages": "Send asynchronous messages",
+						"authTimeout": "Client authentication timeout",
 						"certificate": "Path to certificate",
-						"messaging": {
-							"actions": {
-								"add": "Add WebSocket messaging",
-								"delete": "Delete WebSocket messaging",
-								"edit": "Edit WebSocket messaging",
-								"export": "Export WebSocket messaging",
-								"import": "Import WebSocket messaging",
-								"reload": "Reload WebSocket messagings"
-							},
+						"delete": {
+							"prompt": "Are you sure you want to delete WebSocket connection profile {name}?",
+							"title": "WebSocket connection profile delete confirmation"
+						},
+						"import": {
+							"title": "WebSocket connection profile import"
+						},
+						"localhostOnly": "Accept only localhost connections",
+						"maxClients": "Maximum number of connected clients",
+						"messages": {
 							"delete": {
-								"prompt": "Are you sure you want to delete WebSocket messaging {name}?",
-								"title": "WebSocket messaging delete confirmation"
+								"failed": "Failed to delete WebSocket connection profile {name}.",
+								"success": "WebSocket connection profile {name} successfully deleted."
 							},
-							"import": {
-								"file": "WebSocket messaging file"
+							"list": {
+								"failed": "Failed to retrieve WebSocket connection profiles."
 							},
-							"messages": {
-								"delete": {
-									"failed": "Failed to delete WebSocket messaging {name}.",
-									"success": "WebSocket messaging {name} successfully deleted."
-								},
-								"fetch": {
-									"failed": "Failed to retrieve WebSocket messagings."
-								},
-								"save": {
-									"failed": "Failed to save WebSocket messaging {name}.",
-									"success": "WebSocket messaging {name} successfully saved."
-								}
-							},
-							"name": "Messaging name",
-							"notes": {
-								"serviceMissing": "WebSocket service missing."
-							},
-							"service": "Websocket service",
-							"title": "WebSocket messagings",
-							"validation": {
-								"file": {
-									"invalid": "Selected file does not contain a valid WebSocket messaging configuration.",
-									"required": "Please select WebSocket messaging file."
-								},
-								"name": {
-									"required": "Please enter WebSocket messaging name."
-								}
+							"save": {
+								"failed": "Failed to save WebSocket connection profile {name}.",
+								"success": "WebSocket connection profile {name} successfully saved."
 							}
+						},
+						"noData": {
+							"empty": "No WebSocket connection profile records found.",
+							"fetchError": "WebSocket connection profile records could not be retrieved."
 						},
 						"notes": {
 							"tlsModes": {
-								"intermediate": "General-purpose servers with a variety of clients, recommended for almost all systems. Supports Firefox 27, Android 4.4.2, Chrome 31, Edge, IE 11 on Windows 7, Java 8u31, OpenSSL 1.0.1, Opera 20, and Safari 9.",
-								"modern": "Services with clients that support TLS 1.3 and don't need backward compatibility. Supports Firefox 63, Android 10.0, Chrome 70, Edge 75, Java 11, OpenSSL 1.1.1, Opera 57, and Safari 12.1.",
-								"old": "Compatible with a number of very old clients, and should be used only as a last resort. Supports Firefox 1, Android 2.3, Chrome 1, Edge 12, IE8 on Windows XP, Java 6, OpenSSL 0.9.8, Opera 5, and Safari 1."
+								"intermediate": "General-purpose servers with a variety of clients, recommended for almost all systems. Supports TLS 1.2 or newer.",
+								"modern": "Services with clients that support TLS 1.3 and don't need backward compatibility.",
+								"old": "Compatible with a number of very old clients, and should be used only as a last resort. Supports all TLS versions."
 							}
 						},
+						"plainPort": "Listening port for insecure connections",
 						"privateKey": "Path to private key",
-						"profile": {
-							"delete": {
-								"prompt": "Are you sure you want to delete WebSocket connection profile {name}?",
-								"title": "WebSocket connection profile delete confirmation"
-							},
-							"messages": {
-								"delete": {
-									"failed": "Failed to delete WebSocket connection profile {name}.",
-									"success": "WebSocket connection profile {name} successfully deleted."
-								},
-								"fetch": {
-									"failed": "Failed to retrieve WebSocket connection profiles."
-								},
-								"save": {
-									"failed": "Failed to save WebSocket connection profile {name}.",
-									"success": "WebSocket connection profile {name} successfully saved."
-								}
-							}
-						},
-						"service": {
-							"actions": {
-								"add": "Add WebSocket service",
-								"delete": "Delete WebSocket service",
-								"edit": "Edit WebSocket service",
-								"export": "Export WebSocket service",
-								"import": "Import WebSocket service",
-								"reload": "Reload WebSocket services"
-							},
-							"delete": {
-								"prompt": "Are you sure you want to delete WebSocket service {name}?",
-								"title": "WebSocket service delete confirmation"
-							},
-							"import": {
-								"file": "WebSocket service file"
-							},
-							"messages": {
-								"delete": {
-									"failed": "Failed to delete WebSocket service {name}.",
-									"success": "WebSocket service {name} successfully deleted."
-								},
-								"fetch": {
-									"failed": "Failed to retrieve WebSocket services."
-								},
-								"save": {
-									"failed": "Failed to save WebSocket service {name}.",
-									"success": "WebSocket service {name} successfully saved."
-								}
-							},
-							"name": "Service name",
-							"title": "WebSocket services",
-							"validation": {
-								"file": {
-									"invalid": "Selected file does not contain a valid WebSocket service configuration.",
-									"required": "Please select WebSocket service file."
-								},
-								"name": {
-									"required": "Please enter WebSocket service name."
-								}
-							}
-						},
-						"tlsEnabled": "Enable TLS",
 						"tlsMode": "TLS mode",
 						"tlsModes": {
 							"intermediate": "Intermediate",
 							"modern": "Modern",
 							"old": "Old"
 						},
+						"tlsPort": "Listening port for TLS connections",
+						"transportMode": "Transport mode",
+						"transportModes": {
+							"both": "PLAIN+TLS",
+							"plain": "PLAIN",
+							"tls": "TLS"
+						},
 						"validation": {
+							"authTimeout": {
+								"between": "Client authentication timeout should be between 10 and 60 seconds.",
+								"integer": "Client authentication timeout should be an integer.",
+								"required": "Please enter client authentication timeout."
+							},
 							"certificate": {
 								"required": "Please enter path to certificate file."
+							},
+							"maxClients": {
+								"integer": "Maximum number of connected clients should be an integer.",
+								"min": "Maximum number of connected clients should be greater or equal to 0.",
+								"required": "Please enter maximum number of connected clients."
 							},
 							"privateKey": {
 								"required": "Please enter path to private key file."

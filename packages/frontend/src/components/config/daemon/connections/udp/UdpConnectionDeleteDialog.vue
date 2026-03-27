@@ -75,7 +75,9 @@ async function onSubmit(): Promise<void> {
 		emit('deleted');
 
 	} catch {
-		toast.error('TODO ERROR HANDLING');
+		toast.error(
+			i18n.t('components.config.daemon.connections.udp.messages.delete.failed', { name: componentProps.connectionProfile.instance }),
+		);
 	}
 	componentState.value = ComponentState.Ready;
 }
