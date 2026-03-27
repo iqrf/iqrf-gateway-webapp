@@ -195,10 +195,38 @@ export interface IqrfGatewayDaemonJsonSplitterV3 extends IqrfGatewayDaemonCompon
  * IQRF Gateway Daemon Monitor component configuration
  */
 export interface IqrfGatewayDaemonMonitor extends IqrfGatewayDaemonComponentInstanceBase<IqrfGatewayDaemonComponentName.IqrfMonitor> {
-	/// Monitor report period
+	/**
+	 * Reporting period
+	 */
 	reportPeriod: number;
-	/// Required interfaces
-	RequiredInterfaces: RequiredInterface[];
+	/**
+	 * Listening port for insecure connections
+	 */
+	port: number;
+	/**
+	 * Accept only localhost connections
+	 */
+	acceptOnlyLocalhost: boolean;
+	/**
+	 * Transport mode (plain, tls, both)
+	 */
+	transportMode: IqrfGatewayDaemonWsTransportModes;
+	/**
+	 * Mozilla TLS configuration (modern, intermediate, old)
+	 */
+	tlsMode: IqrfGatewayDaemonWsTlsModes;
+	/**
+	 * Listening port for TLS connetions
+	 */
+	tlsPort: number;
+	/**
+	 * Path to server certificate file
+	 */
+	cert: string;
+	/**
+	 * Path to private key file
+	 */
+	privKey: string;
 }
 
 /**
@@ -346,15 +374,15 @@ export enum IqrfGatewayDaemonWsTransportModes {
 	/**
 	 * Accepts only insecure plain connections
 	 */
-	Plain,
+	Plain = 'plain',
 	/**
 	 * Accepts only secure TLS connections
 	 */
-	Tls,
+	Tls = 'tls',
 	/**
 	 * Accepts both insecure and secure connections
 	 */
-	Both,
+	Both = 'both',
 }
 
 /**
@@ -364,15 +392,15 @@ export enum IqrfGatewayDaemonWsTlsModes {
 	/**
 	 * TLS v1.3 without backwards compatibility
 	 */
-	Modern,
+	Modern = 'modern',
 	/**
 	 * General purpose, allows TLS v1.2 or higher
 	 */
-	Intermediate,
+	Intermediate = 'intermediate',
 	/**
 	 * Legacy configuration, allows all TLS versions, not recommended to use
 	 */
-	Old,
+	Old = 'old',
 }
 
 /**

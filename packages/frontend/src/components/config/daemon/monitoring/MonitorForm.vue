@@ -1,6 +1,6 @@
 <!--
-Copyright 2017-2025 IQRF Tech s.r.o.
-Copyright 2019-2025 MICRORISC s.r.o.
+Copyright 2017-2026 IQRF Tech s.r.o.
+Copyright 2019-2026 MICRORISC s.r.o.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -47,9 +47,9 @@ limitations under the License.
 				type='heading@2, list-item@2'
 			>
 				<v-responsive>
-					<section v-if='monitorConfig && websocketConfig'>
+					<section v-if='config'>
 						<INumberInput
-							v-model='monitorConfig.reportPeriod'
+							v-model='config.reportPeriod'
 							:label='$t("components.config.daemon.monitoring.reportPeriod")'
 							:rules='[
 								(v: number|null) => ValidationRules.required(v, $t("components.config.daemon.monitoring.validation.reportPeriod.required")),
@@ -59,52 +59,81 @@ limitations under the License.
 							:min='1'
 							required
 						/>
+						<ISelectInput
+							v-model='config.transportMode'
+							:label='$t("components.config.daemon.connections.ws.transportMode")'
+							:items='transportModeOptions'
+						/>
+						<v-checkbox
+							v-model='config.acceptOnlyLocalhost'
+							:label='$t("components.config.daemon.connections.ws.localhostOnly")'
+							hide-details
+							density='compact'
+						/>
 						<INumberInput
-							v-model='websocketConfig.WebsocketPort'
-							:label='$t("components.config.daemon.monitoring.port")'
+							v-model='config.port'
+							:label='$t("components.config.daemon.connections.ws.plainPort")'
+							:min='1'
+							:max='65535'
 							:rules='[
 								(v: number|null) => ValidationRules.required(v, $t("common.validation.port.required")),
 								(v: number) => ValidationRules.integer(v, $t("common.validation.port.integer")),
 								(v: number) => ValidationRules.between(v, 1, 65535, $t("common.validation.port.between")),
 							]'
-							:min='1'
-							:max='65535'
+							:disabled='config.transportMode === IqrfGatewayDaemonWsTransportModes.Tls'
 							required
 						/>
-						<v-checkbox
-							v-model='websocketConfig.acceptOnlyLocalhost'
-							:label='$t("components.config.daemon.monitoring.onlyLocalhost")'
-							density='compact'
-							hide-details
+						<INumberInput
+							v-model='config.tlsPort'
+							:label='$t("components.config.daemon.connections.ws.tlsPort")'
+							:min='1'
+							:max='65535'
+							:rules='[
+								(v: number|null) => ValidationRules.required(v, $t("common.validation.port.required")),
+								(v: number) => ValidationRules.integer(v, $t("common.validation.port.integer")),
+								(v: number) => ValidationRules.between(v, 1, 65535, $t("common.validation.port.between")),
+							]'
+							:disabled='config.transportMode === IqrfGatewayDaemonWsTransportModes.Plain'
+							required
 						/>
-						<v-checkbox
-							v-model='websocketConfig.tlsEnabled'
-							:label='$t("components.config.daemon.connections.websocket.tlsEnabled")'
-							density='compact'
-							:hide-details='!websocketConfig.tlsEnabled'
+						<ISelectInput
+							v-model='config.tlsMode'
+							:label='$t("components.config.daemon.connections.ws.tlsMode")'
+							:items='tlsModeOptions'
+							:hint='getWebSocketTlsModeDescription(config.tlsMode)'
+							persistent-hint
+							:disabled='config.transportMode === IqrfGatewayDaemonWsTransportModes.Plain'
 						/>
-						<div v-if='websocketConfig.tlsEnabled'>
-							<WsTlsModeInput
-								v-model='websocketConfig.tlsMode'
-								:label='$t("components.config.daemon.connections.websocket.tlsMode")'
-							/>
-							<ITextInput
-								v-model='websocketConfig.certificate'
-								:label='$t("components.config.daemon.connections.websocket.certificate")'
-								:rules='[
-									(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.connections.websocket.validation.certificate.required")),
-								]'
-								required
-							/>
-							<ITextInput
-								v-model='websocketConfig.privateKey'
-								:label='$t("components.config.daemon.connections.websocket.privateKey")'
-								:rules='[
-									(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.connections.websocket.validation.privateKey.required")),
-								]'
-								required
-							/>
-						</div>
+						<ITextInput
+							v-model='config.cert'
+							:label='$t("components.config.daemon.connections.ws.certificate")'
+							:rules='
+								config.transportMode !== IqrfGatewayDaemonWsTransportModes.Plain ?
+									[
+										(v: string|null) => ValidationRules.required(
+											v,
+											$t("components.config.daemon.connections.ws.validation.certificate.required"),
+										),
+									] : []
+							'
+							:disabled='config.transportMode === IqrfGatewayDaemonWsTransportModes.Plain'
+							:required='config.transportMode !== IqrfGatewayDaemonWsTransportModes.Plain'
+						/>
+						<ITextInput
+							v-model='config.privKey'
+							:label='$t("components.config.daemon.connections.ws.privateKey")'
+							:rules='
+								config.transportMode !== IqrfGatewayDaemonWsTransportModes.Plain ?
+									[
+										(v: string|null) => ValidationRules.required(
+											v,
+											$t("components.config.daemon.connections.ws.validation.privateKey.required"),
+										),
+									] : []
+							'
+							:disabled='config.transportMode === IqrfGatewayDaemonWsTransportModes.Plain'
+							:required='config.transportMode !== IqrfGatewayDaemonWsTransportModes.Plain'
+						/>
 					</section>
 				</v-responsive>
 			</v-skeleton-loader>
@@ -125,8 +154,7 @@ import { type IqrfGatewayDaemonService } from '@iqrf/iqrf-gateway-webapp-client/
 import {
 	IqrfGatewayDaemonComponentName,
 	type IqrfGatewayDaemonMonitor,
-	type ShapeWebsocketService,
-	ShapeWebsocketTlsMode,
+	IqrfGatewayDaemonWsTransportModes,
 } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import {
 	Action,
@@ -134,34 +162,32 @@ import {
 	IActionBtn,
 	ICard,
 	INumberInput,
+	ISelectInput,
 	ITextInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import {
 	onMounted,
 	ref,
-	type Ref,
-	type TemplateRef,
-	toRaw,
 	useTemplateRef,
 } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
-import WsTlsModeInput
-	from '@/components/config/daemon/connections/websocket/WsTlsModeInput.vue';
+import { getWebSocketTlsModeDescription, getWebSocketTlsModeOptions, getWebSocketTransportModeOptions } from '@/common/daemon';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
 const i18n = useI18n();
-const componentState: Ref<ComponentState> = ref(ComponentState.Created);
+const componentState = ref<ComponentState>(ComponentState.Created);
 const service: IqrfGatewayDaemonService = useApiClient()
 	.getConfigServices()
 	.getIqrfGatewayDaemonService();
-const form: TemplateRef<VForm> = useTemplateRef('form');
-const monitorConfig: Ref<IqrfGatewayDaemonMonitor | null> = ref(null);
-const websocketConfig: Ref<ShapeWebsocketService | null> = ref(null);
+const form = useTemplateRef<VForm>('form');
+const config = ref<IqrfGatewayDaemonMonitor | null>(null);
+const tlsModeOptions = getWebSocketTlsModeOptions();
+const transportModeOptions = getWebSocketTransportModeOptions();
 
 async function getConfig(): Promise<void> {
 	componentState.value = [
@@ -169,24 +195,11 @@ async function getConfig(): Promise<void> {
 		ComponentState.FetchFailed,
 	].includes(componentState.value) ? ComponentState.Loading : ComponentState.Reloading;
 	try {
-		monitorConfig.value = (await service.getComponent(IqrfGatewayDaemonComponentName.IqrfMonitor)).instances[0] ?? null;
-		if (monitorConfig.value === null || monitorConfig.value.RequiredInterfaces.length === 0) {
+		const data = await service.getComponent(IqrfGatewayDaemonComponentName.IqrfMonitor);
+		if (data.instances.length === 0) {
 			throw new Error('Configuration instance missing.');
 		}
-		const data = await service.getInstance(
-			IqrfGatewayDaemonComponentName.ShapeWebsocketService,
-			monitorConfig.value.RequiredInterfaces[0].target.instance,
-		);
-		websocketConfig.value = {
-			certificate: '',
-			privateKey: '',
-			tlsEnabled: false,
-			tlsMode: ShapeWebsocketTlsMode.Intermediate,
-			...data,
-		};
-		if (websocketConfig.value === null) {
-			throw new Error('Configuration instance missing.');
-		}
+		config.value = data.instances[0];
 		componentState.value = ComponentState.Ready;
 	} catch {
 		toast.error(
@@ -197,15 +210,13 @@ async function getConfig(): Promise<void> {
 }
 
 async function onSubmit(): Promise<void> {
-	if (!await validateForm(form.value) || monitorConfig.value === null || websocketConfig.value === null) {
+	if (!await validateForm(form.value) || config.value === null) {
 		return;
 	}
 	componentState.value = ComponentState.Action;
-	const monitorParams = structuredClone(toRaw(monitorConfig.value));
-	const websocketParams = structuredClone(toRaw(websocketConfig.value));
+	const params = { ...config.value };
 	try {
-		await service.updateInstance(IqrfGatewayDaemonComponentName.IqrfMonitor, monitorParams.instance, monitorParams);
-		await service.updateInstance(IqrfGatewayDaemonComponentName.ShapeWebsocketService, websocketParams.instance, websocketParams);
+		await service.updateInstance(IqrfGatewayDaemonComponentName.IqrfMonitor, params.instance, params);
 		toast.success(
 			i18n.t('components.config.daemon.monitoring.messages.save.success'),
 		);

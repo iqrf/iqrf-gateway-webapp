@@ -40,7 +40,7 @@ limitations under the License.
 					required
 				/>
 				<ISelectInput
-					v-model.number='profile.transportMode'
+					v-model='profile.transportMode'
 					:label='$t("components.config.daemon.connections.ws.transportMode")'
 					:items='transportModeOptions'
 				/>
@@ -111,10 +111,10 @@ limitations under the License.
 					required
 				/>
 				<ISelectInput
-					v-model.number='profile.tlsMode'
+					v-model='profile.tlsMode'
 					:label='$t("components.config.daemon.connections.ws.tlsMode")'
 					:items='tlsModeOptions'
-					:hint='tlsModeDescription'
+					:hint='getWebSocketTlsModeDescription(profile.tlsMode)'
 					persistent-hint
 					:disabled='profile.transportMode === IqrfGatewayDaemonWsTransportModes.Plain'
 				/>
@@ -203,6 +203,7 @@ import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
 
+import { getWebSocketTlsModeDescription, getWebSocketTlsModeOptions, getWebSocketTransportModeOptions } from '@/common/daemon';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
@@ -233,46 +234,8 @@ const defaultProfile: IqrfGatewayDaemonWsMessaging = {
 const profile = ref<IqrfGatewayDaemonWsMessaging>({ ...defaultProfile });
 const action = ref<Action>(Action.Add);
 let instance = '';
-
-const transportModeOptions = computed(() => [
-	{
-		title: i18n.t('components.config.daemon.connections.ws.transportModes.plain'),
-		value: IqrfGatewayDaemonWsTransportModes.Plain,
-	},
-	{
-		title: i18n.t('components.config.daemon.connections.ws.transportModes.tls'),
-		value: IqrfGatewayDaemonWsTransportModes.Tls,
-	},
-	{
-		title: i18n.t('components.config.daemon.connections.ws.transportModes.both'),
-		value: IqrfGatewayDaemonWsTransportModes.Both,
-	},
-]);
-
-const tlsModeOptions = computed(() => [
-	{
-		title: i18n.t('components.config.daemon.connections.ws.tlsModes.modern'),
-		value: IqrfGatewayDaemonWsTlsModes.Modern,
-	},
-	{
-		title: i18n.t('components.config.daemon.connections.ws.tlsModes.intermediate'),
-		value: IqrfGatewayDaemonWsTlsModes.Intermediate,
-	},
-	{
-		title: i18n.t('components.config.daemon.connections.ws.tlsModes.old'),
-		value: IqrfGatewayDaemonWsTlsModes.Old,
-	},
-]);
-
-const tlsModeDescription = computed(() => {
-	if (profile.value.tlsMode === IqrfGatewayDaemonWsTlsModes.Modern) {
-		return i18n.t('components.config.daemon.connections.ws.notes.tlsModes.modern');
-	}
-	if (profile.value.tlsMode === IqrfGatewayDaemonWsTlsModes.Intermediate) {
-		return i18n.t('components.config.daemon.connections.ws.notes.tlsModes.intermediate');
-	}
-	return i18n.t('components.config.daemon.connections.ws.notes.tlsModes.old');
-});
+const tlsModeOptions = getWebSocketTlsModeOptions();
+const transportModeOptions = getWebSocketTransportModeOptions();
 
 const dialogTitle = computed(() => {
 	if (action.value === Action.Add) {
