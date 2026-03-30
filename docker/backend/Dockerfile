@@ -13,7 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM iqrftech/iqrf-gateway-webapp:tests-bullseye AS builder
+ARG ARCH="amd64"
+ARG PLATFORM="linux/amd64"
+
+FROM iqrftech/iqrf-gateway-webapp:tests-trixie AS builder
 
 LABEL maintainer="roman.ondracek@iqrf.com"
 
@@ -22,7 +25,7 @@ WORKDIR /var/www
 
 RUN composer install --ignore-platform-req=ext-intl
 
-FROM php:7.4-fpm
+FROM --platform=${PLATFORM} ${ARCH}/php:8.4-fpm
 
 LABEL maintainer="roman.ondracek@iqrf.com"
 
