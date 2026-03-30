@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-image: iqrftech/iqrf-gateway-webapp:tests-bookworm
+image: iqrftech/iqrf-gateway-webapp:tests-trixie
 
 stages:
   - build-docker-testing
@@ -44,12 +44,14 @@ stages:
 .npm_template: &npm_template
   before_script:
     - pnpm config set store-dir .pnpm-store
-    - pnpm config set registry http://nexus.iqrf.internal/repository/npmjs.org-proxy/
+    - pnpm config set registry https://verdaccio.microrisc.site/
     - pnpm install
   cache:
     key: ${CI_COMMIT_REF_SLUG}
     paths:
       - .pnpm-store
+  variables:
+    NODE_EXTRA_CA_CERTS: '/etc/ssl/certs/ca-certificates.crt'
 
 .test_template: &test_template
   stage: test
@@ -65,6 +67,10 @@ stages:
 .dependency-check_template: &dependency-check_template
   stage: dependency-check
   needs: []
+  only:
+    refs:
+      - master
+      - tags
   <<: *base_template
 
 .sentry-version_template: &sentry-version_template
@@ -161,7 +167,7 @@ dependency-check:parent:
   <<: *dependency-check_template
   script:
     - |
-      curl -X "POST" "http://dependency-track.microrisc.site/api/v1/bom" \
+      curl -X "POST" "https://dependency-track.microrisc.site/api/v1/bom" \
            -H 'Content-Type: multipart/form-data' \
            -H "X-Api-Key: ${DEPENDENCY_TRACK_API_KEY}" \
            -F "autoCreate=true" \
@@ -184,7 +190,7 @@ dependency-check:composer:
         --output-reproducible \
         --validate
     - |
-      curl -X "POST" "http://dependency-track.microrisc.site/api/v1/bom" \
+      curl -X "POST" "https://dependency-track.microrisc.site/api/v1/bom" \
            -H 'Content-Type: multipart/form-data' \
            -H "X-Api-Key: ${DEPENDENCY_TRACK_API_KEY}" \
            -F "autoCreate=true" \
@@ -217,7 +223,7 @@ dependency-check:npm:
         --spec-version=1.6 \
         --validate
     - |
-      curl -X "POST" "http://dependency-track.microrisc.site/api/v1/bom" \
+      curl -X "POST" "https://dependency-track.microrisc.site/api/v1/bom" \
            -H 'Content-Type: multipart/form-data' \
            -H "X-Api-Key: ${DEPENDENCY_TRACK_API_KEY}" \
            -F "autoCreate=true" \
