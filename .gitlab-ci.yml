@@ -44,12 +44,14 @@ stages:
 .npm_template: &npm_template
   before_script:
     - pnpm config set store-dir .pnpm-store
-    - pnpm config set registry http://nexus.iqrf.internal/repository/npmjs.org-proxy/
+    - pnpm config set registry https://verdaccio.microrisc.site/
     - pnpm install
   cache:
     key: ${CI_COMMIT_REF_SLUG}-js
     paths:
       - .pnpm-store
+  variables:
+    NODE_EXTRA_CA_CERTS: '/etc/ssl/certs/ca-certificates.crt'
 
 .dependency-check_template: &dependency-check_template
   stage: dependency-check
