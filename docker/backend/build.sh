@@ -20,17 +20,22 @@ set -ex
 TAG="latest"
 TAGS=""
 ARCHS=("amd64" "armel" "armhf" "arm64" "i386" "ppc64le")
+DOCKER_ARCHS=("amd64" "arm32v5" "arm32v7" "arm64v8" "386" "ppc64le")
+DOCKER_PLATFORMS=("linux/amd64" "linux/arm/v5" "linux/arm/v7" "linux/arm64" "linux/386" "linux/ppc64le")
 REPO="iqrftech/iqrf-gateway-webapp-backend"
 
 DIR=${PWD}
 
 cd ../../
 
-for ARCH in "${ARCHS[@]}"
-do
-   docker build --no-cache -f "${DIR}/${ARCH}.Dockerfile" -t "${REPO}:${TAG}-${ARCH}" .
-   docker push "${REPO}:${TAG}-${ARCH}"
-   TAGS="${TAGS} ${REPO}:${TAG}-${ARCH}"
+for i in "${!ARCHS[@]}"; do
+	ARCH="${ARCHS[$i]}"
+	docker build --no-cache -f "${DIR}/Dockerfile" -t "${REPO}:${TAG}-${ARCH}" \
+		--build-arg ARCH="${DOCKER_ARCHS[$i]}" \
+		--build-arg PLATFORM="${DOCKER_PLATFORMS[$i]}" \
+		.
+	docker push "${REPO}:${TAG}-${ARCH}"
+	TAGS="${TAGS} ${REPO}:${TAG}-${ARCH}"
 done
 
 export DOCKER_CLI_EXPERIMENTAL="enabled"

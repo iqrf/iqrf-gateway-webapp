@@ -13,6 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+ARG ARCH="amd64"
+ARG PLATFORM="linux/amd64"
+
 FROM node:lts AS builder
 
 LABEL maintainer="roman.ondracek@iqrf.com"
@@ -26,7 +29,7 @@ RUN sed -i "s/\t\"commit\"\: .*/\t\"commit\"\: \"`git rev-parse --verify HEAD`\"
 RUN pnpm install
 RUN pnpm run build
 
-FROM nginx:stable
+FROM --platform=${PLATFORM} ${ARCH}/nginx:stable
 
 LABEL maintainer="roman.ondracek@iqrf.com"
 
