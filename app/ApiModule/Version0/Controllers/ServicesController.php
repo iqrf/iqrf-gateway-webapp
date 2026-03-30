@@ -24,7 +24,6 @@ use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\RequestParameter;
-use Apitte\Core\Annotation\Controller\RequestParameters;
 use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
@@ -39,23 +38,14 @@ use App\ServiceModule\Models\ServiceManager;
 
 /**
  * Service manager controller
- * @Path("/services")
- * @Tag("Service manager")
  */
+#[Path('/services')]
+#[Tag('Service manager')]
+
 class ServicesController extends BaseController {
 
 	/**
-	 * @var FeatureManager Optional features manager
-	 */
-	private FeatureManager $featureManager;
-
-	/**
-	 * @var ServiceManager Service manager
-	 */
-	private ServiceManager $manager;
-
-	/**
-	 * @var array<string, string|null> Whitelisted services
+	 * Whitelisted services
 	 */
 	private const WHITELISTED_SERVICES = [
 		'apcupsd' => 'apcupsd',
@@ -79,60 +69,50 @@ class ServicesController extends BaseController {
 	 * @param FeatureManager $featureManager Optional features manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(ServiceManager $manager, FeatureManager $featureManager, RestApiSchemaValidator $validator) {
-		$this->manager = $manager;
-		$this->featureManager = $featureManager;
+	public function __construct(
+		private readonly ServiceManager $manager,
+		private readonly FeatureManager $featureManager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Returns the supported services
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/ServiceList'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('GET')]
+	#[OpenApi(<<<'EOT'
+		summary: Returns the supported services
+		responses:
+			'200':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: '#/components/schemas/ServiceList'
+	EOT)]
 	public function listServices(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$services = ['services' => $this->getWhitelistedServices()];
 		return $response->writeJsonBody($services);
 	}
 
-	/**
-	 * @Path("/{name}")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Returns the service status
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/ServiceStatus'
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '404':
-	 *          description: Not found
-	 *      '500':
-	 *          description: Unsupported init system
-	 * ")
-	 * @RequestParameters({
-	 *      @RequestParameter(name="name", type="string", description="Service name")
-	 * })
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/{name}')]
+	#[Method('GET')]
+	#[OpenApi(<<<'EOT'
+		summary: Returns the service status
+		responses:
+			'200':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: '#/components/schemas/ServiceStatus'
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'500':
+				$ref: '#/components/responses/UnsupportedInitSystem'
+	EOT)]
+	#[RequestParameter(name: 'name', type: 'string', description: 'Service name')]
 	public function getService(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$name = $request->getParameter('name');
 		$this->isServiceWhitelisted($name);
@@ -168,34 +148,27 @@ class ServicesController extends BaseController {
 		}));
 	}
 
-	/**
-	 * @Path("/{name}/enable")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Enables the service
-	 *  requestBody:
-	 *      required: false
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/ServiceEnable'
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '404':
-	 *          description: Not found
-	 *      '500':
-	 *          description: Unsupported init system
-	 * ")
-	 * @RequestParameters({
-	 *      @RequestParameter(name="name", type="string", description="Service name")
-	 * })
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/{name}/enable')]
+	#[Method('POST')]
+	#[OpenApi(<<<'EOT'
+		summary: Enables the service
+		requestBody:
+			required: false
+			content:
+				application/json:
+					schema:
+						$ref: '#/components/schemas/ServiceEnable'
+		responses:
+			'200':
+				description: Success
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'500':
+				$ref: '#/components/responses/UnsupportedInitSystem'
+	EOT)]
+	#[RequestParameter(name: 'name', type: 'string', description: 'Service name')]
 	public function enableService(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$name = $request->getParameter('name');
 		$this->isServiceWhitelisted($name);
@@ -217,34 +190,29 @@ class ServicesController extends BaseController {
 		}
 	}
 
-	/**
-	 * @Path("/{name}/disable")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Disables the service
-	 *  requestBody:
-	 *      required: false
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/ServiceDisable'
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '404':
-	 *          description: Not found
-	 *      '500':
-	 *          description: Unsupported init system
-	 * ")
-	 * @RequestParameters({
-	 *      @RequestParameter(name="name", type="string", description="Service name")
-	 * })
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/{name}/disable')]
+	#[Method('POST')]
+	#[OpenApi(<<<'EOT'
+		summary: Disables the service
+		requestBody:
+			required: false
+			content:
+				application/json:
+					schema:
+						$ref: '#/components/schemas/ServiceDisable'
+		responses:
+			'200':
+				description: Success
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'500':
+				$ref: '#/components/responses/UnsupportedInitSystem'
+	EOT)]
+	#[RequestParameter(name: 'name', type: 'string', description: 'Service name')]
 	public function disableService(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$name = $request->getParameter('name');
 		$this->isServiceWhitelisted($name);
@@ -266,28 +234,23 @@ class ServicesController extends BaseController {
 		}
 	}
 
-	/**
-	 * @Path("/{name}/start")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Starts the service
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '404':
-	 *          description: Not found
-	 *      '500':
-	 *          description: Unsupported init system
-	 * ")
-	 * @RequestParameters({
-	 *      @RequestParameter(name="name", type="string", description="Service name")
-	 * })
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/{name}/start')]
+	#[Method('POST')]
+	#[OpenApi(<<<'EOT'
+		summary: Starts the service
+		responses:
+			'200':
+				description: Success
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'500':
+				$ref: '#/components/responses/UnsupportedInitSystem'
+	EOT)]
+	#[RequestParameter(name: 'name', type: 'string', description: 'Service name')]
 	public function startService(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$name = $request->getParameter('name');
 		$this->isServiceWhitelisted($name);
@@ -301,28 +264,23 @@ class ServicesController extends BaseController {
 		}
 	}
 
-	/**
-	 * @Path("/{name}/stop")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Stops the service
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '404':
-	 *          description: Not found
-	 *      '500':
-	 *          description: Unsupported init system
-	 * ")
-	 * @RequestParameters({
-	 *      @RequestParameter(name="name", type="string", description="Service name")
-	 * })
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/{name}/stop')]
+	#[Method('POST')]
+	#[OpenApi(<<<'EOT'
+		summary: Stops the service
+		responses:
+			'200':
+				description: Success
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'500':
+				$ref: '#/components/responses/UnsupportedInitSystem'
+	EOT)]
+	#[RequestParameter(name: 'name', type: 'string', description: 'Service name')]
 	public function stopService(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$name = $request->getParameter('name');
 		$this->isServiceWhitelisted($name);
@@ -336,28 +294,23 @@ class ServicesController extends BaseController {
 		}
 	}
 
-	/**
-	 * @Path("/{name}/restart")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Restarts the service
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '404':
-	 *          description: Service not found
-	 *      '500':
-	 *          description: Unsupported init system
-	 * ")
-	 * @RequestParameters({
-	 *      @RequestParameter(name="name", type="string", description="Service name")
-	 * })
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/{name}/restart')]
+	#[Method('POST')]
+	#[OpenApi(<<<'EOT'
+		summary: Restarts the service
+		responses:
+			'200':
+				description: Success
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'500':
+				$ref: '#/components/responses/UnsupportedInitSystem'
+	EOT)]
+	#[RequestParameter(name: 'name', type: 'string', description: 'Service name')]
 	public function restartService(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$name = $request->getParameter('name');
 		$this->isServiceWhitelisted($name);

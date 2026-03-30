@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Database\Fixtures;
 
@@ -30,7 +30,8 @@ use Doctrine\Persistence\ObjectManager;
 /**
  * Controller pin fixture
  */
-class ControllerPinConfigurationFixture implements FixtureInterface, OrderedFixtureInterface {
+class ControllerPinsFixture implements FixtureInterface, OrderedFixtureInterface {
+
 	/**
 	 * Loads controller pins data into database
 	 * @param ObjectManager $manager Object manager
@@ -76,4 +77,5 @@ class ControllerPinConfigurationFixture implements FixtureInterface, OrderedFixt
 	public function getOrder(): int {
 		return 2;
 	}
+
 }

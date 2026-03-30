@@ -29,37 +29,12 @@ use stdClass;
 /**
  * IPv6 connection entity
  */
-final class IPv6Connection implements INetworkManagerEntity {
+final readonly class IPv6Connection implements INetworkManagerEntity {
 
 	/**
-	 * @var string nmcli configuration prefix
+	 * nmcli configuration prefix
 	 */
 	private const NMCLI_PREFIX = 'ipv6';
-
-	/**
-	 * @var IPv6Methods Connection method
-	 */
-	private IPv6Methods $method;
-
-	/**
-	 * @var array<IPv6Address> IPv6 addresses
-	 */
-	private array $addresses = [];
-
-	/**
-	 * @var IPv6|null IPv6 gateway address
-	 */
-	private ?IPv6 $gateway;
-
-	/**
-	 * @var array<IPv6> IPv6 addresses of DNS servers
-	 */
-	private array $dns = [];
-
-	/**
-	 * @var IPv6Current|null Current IPv6 configuration
-	 */
-	private ?IPv6Current $current;
 
 	/**
 	 * IPv6 connection entity constructor
@@ -69,12 +44,13 @@ final class IPv6Connection implements INetworkManagerEntity {
 	 * @param array<IPv6> $dns IPv6 addresses of DNS servers
 	 * @param IPv6Current|null $current Current IPv6 configuration
 	 */
-	public function __construct(IPv6Methods $method, array $addresses, ?IPv6 $gateway, array $dns, ?IPv6Current $current) {
-		$this->method = $method;
-		$this->addresses = $addresses;
-		$this->gateway = $gateway;
-		$this->dns = $dns;
-		$this->current = $current;
+	public function __construct(
+		private IPv6Methods $method,
+		private array $addresses,
+		private ?IPv6 $gateway,
+		private array $dns,
+		private ?IPv6Current $current,
+	) {
 	}
 
 	/**
@@ -102,23 +78,6 @@ final class IPv6Connection implements INetworkManagerEntity {
 	}
 
 	/**
-	 * Serializes IPv6 connection entity into JSON
-	 * @return array{method: string, addresses: array<array{address: string, prefix: int}>, gateway: string|null, dns: array<array{address: string}>, current?: array{method: string, addresses: array<array{address: string, prefix: int}>, gateway: string|null, dns: array<array{address: string}>}} JSON serialized entity
-	 */
-	public function jsonSerialize(): array {
-		$array = [
-			'method' => $this->method->toScalar(),
-			'addresses' => array_map(static fn (IPv6Address $a): array => $a->toArray(), $this->addresses),
-			'gateway' => $this->gateway !== null ? $this->gateway->getCompactedAddress() : null,
-			'dns' => array_map(static fn (IPv6 $a): array => ['address' => $a->getCompactedAddress()], $this->dns),
-		];
-		if ($this->current !== null) {
-			$array['current'] = $this->current->jsonSerialize();
-		}
-		return $array;
-	}
-
-	/**
 	 * Deserializes IPv6 connection entity from nmcli connection configuration
 	 * @param array<string, array<string, array<string>|string>> $nmCli nmcli connection configuration
 	 * @return IPv6Connection IPv6 connection entity
@@ -129,17 +88,34 @@ final class IPv6Connection implements INetworkManagerEntity {
 		$addresses = [];
 		$gateway = array_key_exists('gateway', $array) && ($array['gateway'] !== '') ? IPv6::factory($array['gateway']) : null;
 		if ($array['addresses'] !== '') {
-			$addresses = array_map(static fn(string $address): IPv6Address => IPv6Address::fromPrefix($address), explode(',', $array['addresses']));
+			$addresses = array_map(IPv6Address::fromPrefix(...), explode(',', $array['addresses']));
 		}
 		$dns = [];
 		if ($array['dns'] !== '') {
-			$dns = array_map(static fn (string $address): IPv6 => IPv6::factory($address), explode(',', $array['dns']));
+			$dns = array_map(IPv6::factory(...), explode(',', $array['dns']));
 		}
 		if (array_key_exists(IPv6Current::NMCLI_PREFIX, $nmCli) &&
 			($method === IPv6Methods::AUTO() || $method === IPv6Methods::DHCP())) {
 			$current = IPv6Current::nmCliDeserialize($nmCli, $method);
 		}
 		return new self($method, $addresses, $gateway, $dns, $current ?? null);
+	}
+
+	/**
+	 * Serializes IPv6 connection entity into JSON
+	 * @return array{method: string, addresses: array<array{address: string, prefix: int}>, gateway: string|null, dns: array<array{address: string}>, current?: array{method: string, addresses: array<array{address: string, prefix: int}>, gateway: string|null, dns: array<array{address: string}>}} JSON serialized entity
+	 */
+	public function jsonSerialize(): array {
+		$array = [
+			'method' => $this->method->toScalar(),
+			'addresses' => array_map(static fn (IPv6Address $a): array => $a->toArray(), $this->addresses),
+			'gateway' => $this->gateway?->getCompactedAddress(),
+			'dns' => array_map(static fn (IPv6 $a): array => ['address' => $a->getCompactedAddress()], $this->dns),
+		];
+		if ($this->current !== null) {
+			$array['current'] = $this->current->jsonSerialize();
+		}
+		return $array;
 	}
 
 	/**

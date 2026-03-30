@@ -20,9 +20,9 @@ declare(strict_types = 1);
 
 namespace App\NetworkModule\Models;
 
-use App\CoreModule\Models\CommandManager;
 use App\NetworkModule\Enums\ConnectivityState;
 use App\NetworkModule\Exceptions\NetworkManagerException;
+use Iqrf\CommandExecutor\CommandExecutor;
 
 /**
  * Network connectivity manager
@@ -30,16 +30,12 @@ use App\NetworkModule\Exceptions\NetworkManagerException;
 class ConnectivityManager {
 
 	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
-
-	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandExecutor Command manager
 	 */
-	public function __construct(CommandManager $commandManager) {
-		$this->commandManager = $commandManager;
+	public function __construct(
+		private readonly CommandExecutor $commandExecutor,
+	) {
 	}
 
 	/**
@@ -47,7 +43,7 @@ class ConnectivityManager {
 	 * @return ConnectivityState Network connectivity state
 	 */
 	public function check(): ConnectivityState {
-		$output = $this->commandManager->run('nmcli -t networking connectivity check', true);
+		$output = $this->commandExecutor->run('nmcli -t networking connectivity check', true);
 		if ($output->getExitCode() !== 0) {
 			throw new NetworkManagerException($output->getStderr());
 		}

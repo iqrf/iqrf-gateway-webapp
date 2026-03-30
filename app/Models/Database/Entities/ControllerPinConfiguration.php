@@ -22,74 +22,39 @@ namespace App\Models\Database\Entities;
 
 use App\ConfigModule\Enums\DeviceTypes;
 use App\Models\Database\Attributes\TId;
+use App\Models\Database\Repositories\ControllerPinConfigurationRepository;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 
 /**
  * Controller pins entity
- * @ORM\Entity(repositoryClass="App\Models\Database\Repositories\ControllerPinConfigurationRepository")
- * @ORM\Table(name="`controller_pin_configs`")
  */
+#[ORM\Entity(repositoryClass: ControllerPinConfigurationRepository::class)]
+#[ORM\Table(name: '`controller_pin_configs`')]
 class ControllerPinConfiguration implements JsonSerializable {
 
 	use TId;
 
 	/**
-	 * @var string Device type: Adapter
+	 * Device type: Adapter
 	 */
 	public const DEVICE_ADAPTER = 'adapter';
 
 	/**
-	 * @var string Device type: Board
+	 * Device type: Board
 	 */
 	public const DEVICE_BOARD = 'board';
 
 	/**
-	 * @var array<string> Supported device types
+	 * Supported device types
 	 */
 	public const DEVICE_TYPES = [self::DEVICE_ADAPTER, self::DEVICE_BOARD];
 
 	/**
-	 * @var string Controller pins name
-	 * @ORM\Column(type="string", length=255)
-	 */
-	private string $name;
-
-	/**
 	 * @var string Device type
-	 * @ORM\Column(type="string", length=255)
 	 */
+	#[ORM\Column(type: 'string', length: 255)]
 	private string $deviceType;
-
-	/**
-	 * @var int Green LED pin
-	 * @ORM\Column(type="integer")
-	 */
-	private int $greenLed;
-
-	/**
-	 * @var int Red LED pin
-	 * @ORM\Column(type="integer")
-	 */
-	private int $redLed;
-
-	/**
-	 * @var int Button pin
-	 * @ORM\Column(type="integer")
-	 */
-	private int $button;
-
-	/**
-	 * @var int|null SCK pin
-	 * @ORM\Column(type="integer", nullable=true)
-	 */
-	private ?int $sck;
-
-	/**
-	 * @var int|null SDA pin
-	 * @ORM\Column(type="integer", nullable=true)
-	 */
-	private ?int $sda;
 
 	/**
 	 * Constructor
@@ -101,14 +66,22 @@ class ControllerPinConfiguration implements JsonSerializable {
 	 * @param int|null $sck SCK pin
 	 * @param int|null $sda SDA pin
 	 */
-	public function __construct(string $name, DeviceTypes $deviceType, int $greenLed, int $redLed, int $button, ?int $sck = null, ?int $sda = null) {
-		$this->name = $name;
+	public function __construct(
+		#[ORM\Column(type: 'string', length: 255)]
+		private string $name,
+		DeviceTypes $deviceType,
+		#[ORM\Column(type: 'integer')]
+		private int $greenLed,
+		#[ORM\Column(type: 'integer')]
+		private int $redLed,
+		#[ORM\Column(type: 'integer')]
+		private int $button,
+		#[ORM\Column(type: 'integer', nullable: true)]
+		private ?int $sck = null,
+		#[ORM\Column(type: 'integer', nullable: true)]
+		private ?int $sda = null,
+	) {
 		$this->deviceType = $deviceType->toScalar();
-		$this->greenLed = $greenLed;
-		$this->redLed = $redLed;
-		$this->button = $button;
-		$this->sck = $sck;
-		$this->sda = $sda;
 	}
 
 	/**

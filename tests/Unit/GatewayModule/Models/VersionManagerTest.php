@@ -26,16 +26,15 @@ declare(strict_types = 1);
 
 namespace Tests\Unit\GatewayModule\Models;
 
-use App\CoreModule\Models\CommandManager;
 use App\GatewayModule\Models\VersionManager;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Requests\ApiRequest;
+use Iqrf\CommandExecutor\Tester\Traits\CommandExecutorTestCase;
 use Mockery;
 use Mockery\MockInterface;
 use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
 use Tester\Assert;
-use Tests\Stubs\CoreModule\Models\Command;
 use Tests\Toolkit\TestCases\WebSocketTestCase;
 
 require __DIR__ . '/../../../bootstrap.php';
@@ -45,18 +44,10 @@ require __DIR__ . '/../../../bootstrap.php';
  */
 final class VersionManagerTest extends WebSocketTestCase {
 
-	/**
-	 * @var CommandManager|MockInterface Mocked command manager
-	 */
-	private $commandManager;
+	use CommandExecutorTestCase;
 
 	/**
-	 * @var VersionManager|MockInterface Version manager
-	 */
-	private VersionManager $manager;
-
-	/**
-	 * @var array<string, array<string, bool>|string> IQRF Gateway Daemon's API request
+	 * IQRF Gateway Daemon's API request
 	 */
 	private const DAEMON_API_REQUEST = [
 		'mType' => 'mngDaemon_Version',
@@ -64,7 +55,7 @@ final class VersionManagerTest extends WebSocketTestCase {
 	];
 
 	/**
-	 * @var array<string, string> Commands for retrieving version
+	 * Commands for retrieving version
 	 */
 	private const COMMANDS = [
 		'controller' => 'iqrf-gateway-controller --version',
@@ -75,74 +66,40 @@ final class VersionManagerTest extends WebSocketTestCase {
 	];
 
 	/**
-	 * @var array<string, string> Standard outputs
+	 * Standard outputs
 	 */
 	private const STDOUTS = [
 		'controller' => 'iqrf-gateway-controller 0.3.4',
 		'daemon_old' => 'v2.1.0 2019-06-12T20:44:25',
 		'daemon_new' => 'IQRF Gateway Daemon v2.5.0-alpha',
+		'influxdb-bridge' => 'IQRF Gateway InfluxDB Bridge v1.2.0-alpha',
 		'setter' => 'IQRF Gateway Setter v1.0.0',
 	];
+
 	/**
-	 * @var array<string, string> Expected versions
+	 * Expected versions
 	 */
 	private const VERSIONS = [
 		'controller' => '0.3.4',
 		'daemon_new' => 'v2.5.0-alpha',
 		'daemon_old' => 'v2.1.0',
+		'influxdb-bridge' => 'v1.2.0-alpha',
 		'setter' => 'v1.0.0',
 		'uploader' => 'v1.0.0',
-		'webapp' => 'v2.6.7-alpha',
+		'webapp' => 'v2.7.0-alpha',
 	];
 
 	/**
-	 * Sets up the test environment
+	 * @var VersionManager|MockInterface Version manager
 	 */
-	protected function setUp(): void {
-		parent::setUp();
-		$this->commandManager = Mockery::mock(CommandManager::class);
-		$this->manager = Mockery::mock(VersionManager::class, [$this->commandManager, $this->request, $this->wsClient])->makePartial();
-	}
-
-	/**
-	 * Mock command existence check
-	 * @param string $command Command to check
-	 * @param bool $result Result of the command
-	 */
-	private function mockCommendExists(string $command, bool $result): void {
-		$this->commandManager->shouldReceive('commandExist')
-			->with($command)
-			->andReturn($result);
-	}
-
-	/**
-	 * Mock command execution
-	 * @param string $command Command to execute
-	 * @param string $stdout Standard output
-	 * @param string $stderr Standard error output
-	 * @param int $exitCode Exit code
-	 */
-	private function mockCommand(string $command, string $stdout = '', string $stderr = '', int $exitCode = 0): void {
-		$this->commandManager->shouldReceive('run')
-			->with($command)
-			->andReturn(new Command($command, $stdout, $stderr, $exitCode));
-	}
-
-	private function mockWebappJson(string $commit = '', string $pipeline = ''): void {
-		$this->manager->shouldReceive('getWebappJson')
-			->andReturn([
-				'version' => self::VERSIONS['webapp'],
-				'commit' => $commit,
-				'pipeline' => $pipeline,
-			]);
-	}
+	private MockInterface|VersionManager $manager;
 
 	/**
 	 * Tests the function to get IQRF Gateway Controller's version (empty stdout)
 	 */
 	public function testGetControllerEmpty(): void {
-		$this->mockCommendExists('iqrf-gateway-controller', true);
-		$this->mockCommand(self::COMMANDS['controller']);
+		$this->receiveCommandExist('iqrf-gateway-controller', true);
+		$this->receiveCommand(command: self::COMMANDS['controller']);
 		Assert::null($this->manager->getController());
 	}
 
@@ -150,7 +107,7 @@ final class VersionManagerTest extends WebSocketTestCase {
 	 * Tests the function to get IQRF Gateway Controller's version (not installed)
 	 */
 	public function testGetControllerNotInstalled(): void {
-		$this->mockCommendExists('iqrf-gateway-controller', false);
+		$this->receiveCommandExist('iqrf-gateway-controller', false);
 		Assert::null($this->manager->getController());
 	}
 
@@ -158,8 +115,11 @@ final class VersionManagerTest extends WebSocketTestCase {
 	 * Tests the function to get IQRF Gateway Controller's version
 	 */
 	public function testGetController(): void {
-		$this->mockCommendExists('iqrf-gateway-controller', true);
-		$this->mockCommand(self::COMMANDS['controller'], self::STDOUTS['controller']);
+		$this->receiveCommandExist('iqrf-gateway-controller', true);
+		$this->receiveCommand(
+			command: self::COMMANDS['controller'],
+			stdout: self::STDOUTS['controller'],
+		);
 		Assert::same(self::VERSIONS['controller'], $this->manager->getController());
 	}
 
@@ -167,8 +127,11 @@ final class VersionManagerTest extends WebSocketTestCase {
 	 * Tests the function to get IQRF Gateway Daemon's version
 	 */
 	public function testGetDaemonCliOld(): void {
-		$this->mockCommendExists('iqrfgd2', true);
-		$this->mockCommand(self::COMMANDS['daemon_old'], self::STDOUTS['daemon_old']);
+		$this->receiveCommandExist('iqrfgd2', true);
+		$this->receiveCommand(
+			command: self::COMMANDS['daemon_old'],
+			stdout: self::STDOUTS['daemon_old'],
+		);
 		Assert::same(self::VERSIONS['daemon_old'], $this->manager->getDaemon());
 	}
 
@@ -176,9 +139,15 @@ final class VersionManagerTest extends WebSocketTestCase {
 	 * Tests the function to get IQRF Gateway Daemon's version
 	 */
 	public function testGetDaemonCliNew(): void {
-		$this->mockCommendExists('iqrfgd2', true);
-		$this->mockCommand(self::COMMANDS['daemon_old'], '', '', 1);
-		$this->mockCommand(self::COMMANDS['daemon_new'], self::STDOUTS['daemon_new']);
+		$this->receiveCommandExist('iqrfgd2', true);
+		$this->receiveCommand(
+			command: self::COMMANDS['daemon_old'],
+			exitCode: 1,
+		);
+		$this->receiveCommand(
+			command: self::COMMANDS['daemon_new'],
+			stdout: self::STDOUTS['daemon_new'],
+		);
 		Assert::same(self::VERSIONS['daemon_new'], $this->manager->getDaemon());
 	}
 
@@ -186,8 +155,11 @@ final class VersionManagerTest extends WebSocketTestCase {
 	 * Tests the function to get IQRF Gateway Daemon's version
 	 */
 	public function testGetDaemonCliVerbose(): void {
-		$this->mockCommendExists('iqrfgd2', true);
-		$this->mockCommand(self::COMMANDS['daemon_old'], self::STDOUTS['daemon_old']);
+		$this->receiveCommandExist('iqrfgd2', true);
+		$this->receiveCommand(
+			command: self::COMMANDS['daemon_old'],
+			stdout: self::STDOUTS['daemon_old'],
+		);
 		Assert::same(self::STDOUTS['daemon_old'], $this->manager->getDaemon(true));
 	}
 
@@ -208,9 +180,9 @@ final class VersionManagerTest extends WebSocketTestCase {
 				],
 			],
 		];
-		$this->mockCommendExists('iqrfgd2', true);
-		$this->mockCommand(self::COMMANDS['daemon_old']);
-		$this->mockCommand(self::COMMANDS['daemon_new']);
+		$this->receiveCommandExist('iqrfgd2', true);
+		$this->receiveCommand(command: self::COMMANDS['daemon_old']);
+		$this->receiveCommand(command: self::COMMANDS['daemon_new']);
 		$this->request->shouldReceive('set')
 			->with(self::DAEMON_API_REQUEST);
 		$this->wsClient->shouldReceive('sendSync')
@@ -219,12 +191,11 @@ final class VersionManagerTest extends WebSocketTestCase {
 		Assert::same(self::VERSIONS['daemon_old'], $this->manager->getDaemon());
 	}
 
-
 	/**
 	 * Tests the function to get IQRF Gateway Daemon's version (IQRF Gateway Daemon is not installed)
 	 */
 	public function testGetDaemonNotInstalled(): void {
-		$this->mockCommendExists('iqrfgd2', false);
+		$this->receiveCommandExist('iqrfgd2', false);
 		$this->request->shouldReceive('set')
 			->with(self::DAEMON_API_REQUEST);
 		$this->wsClient->shouldReceive('sendSync')
@@ -237,9 +208,9 @@ final class VersionManagerTest extends WebSocketTestCase {
 	 * Tests the function to get IQRF Gateway Daemon's version (unknown version)
 	 */
 	public function testGetDaemonUnknown(): void {
-		$this->mockCommendExists('iqrfgd2', true);
-		$this->mockCommand(self::COMMANDS['daemon_old']);
-		$this->mockCommand(self::COMMANDS['daemon_new']);
+		$this->receiveCommandExist('iqrfgd2', true);
+		$this->receiveCommand(command: self::COMMANDS['daemon_old']);
+		$this->receiveCommand(command: self::COMMANDS['daemon_new']);
 		$this->request->shouldReceive('set')
 			->with(self::DAEMON_API_REQUEST);
 		$this->wsClient->shouldReceive('sendSync')
@@ -252,7 +223,7 @@ final class VersionManagerTest extends WebSocketTestCase {
 	 * Tests the function to get IQRF Gateway Setter's version (not installed)
 	 */
 	public function testGetSetterNotInstalled(): void {
-		$this->mockCommendExists('iqrf-gateway-setter', false);
+		$this->receiveCommandExist('iqrf-gateway-setter', false);
 		Assert::null($this->manager->getSetter());
 	}
 
@@ -260,8 +231,11 @@ final class VersionManagerTest extends WebSocketTestCase {
 	 * Tests the function to get IQRF Gateway Setter's version
 	 */
 	public function testGetSetter(): void {
-		$this->mockCommendExists('iqrf-gateway-setter', true);
-		$this->mockCommand(self::COMMANDS['setter'], self::STDOUTS['setter']);
+		$this->receiveCommandExist('iqrf-gateway-setter', true);
+		$this->receiveCommand(
+			command: self::COMMANDS['setter'],
+			stdout: self::STDOUTS['setter'],
+		);
 		Assert::same(self::VERSIONS['setter'], $this->manager->getSetter());
 	}
 
@@ -269,8 +243,8 @@ final class VersionManagerTest extends WebSocketTestCase {
 	 * Tests the function to get IQRF Gateway Setter's version (empty string)
 	 */
 	public function testGetSetterEmptyString(): void {
-		$this->mockCommendExists('iqrf-gateway-setter', true);
-		$this->mockCommand(self::COMMANDS['setter'], '');
+		$this->receiveCommandExist('iqrf-gateway-setter', true);
+		$this->receiveCommand(command: self::COMMANDS['setter']);
 		Assert::null($this->manager->getSetter());
 	}
 
@@ -278,7 +252,7 @@ final class VersionManagerTest extends WebSocketTestCase {
 	 * Tests the function to get IQRF Gateway Uploader's version (not installed)
 	 */
 	public function testGetUploaderNotInstalled(): void {
-		$this->mockCommendExists('iqrf-gateway-uploader', false);
+		$this->receiveCommandExist('iqrf-gateway-uploader', false);
 		Assert::null($this->manager->getUploader());
 	}
 
@@ -286,8 +260,11 @@ final class VersionManagerTest extends WebSocketTestCase {
 	 * Tests the function to get IQRF Gateway Uploader's version
 	 */
 	public function testGetUploader(): void {
-		$this->mockCommendExists('iqrf-gateway-uploader', true);
-		$this->mockCommand(self::COMMANDS['uploader'], self::VERSIONS['uploader']);
+		$this->receiveCommandExist('iqrf-gateway-uploader', true);
+		$this->receiveCommand(
+			command: self::COMMANDS['uploader'],
+			stdout: self::VERSIONS['uploader'],
+		);
 		Assert::same(self::VERSIONS['uploader'], $this->manager->getUploader());
 	}
 
@@ -295,8 +272,11 @@ final class VersionManagerTest extends WebSocketTestCase {
 	 * Tests the function to get IQRF Gateway Uploader's version (empty string)
 	 */
 	public function testGetUploaderEmptyString(): void {
-		$this->mockCommendExists('iqrf-gateway-uploader', true);
-		$this->mockCommand(self::COMMANDS['uploader'], '', '', 1);
+		$this->receiveCommandExist('iqrf-gateway-uploader', true);
+		$this->receiveCommand(
+			command: self::COMMANDS['uploader'],
+			exitCode: 1,
+		);
 		Assert::null($this->manager->getUploader());
 	}
 
@@ -343,8 +323,14 @@ final class VersionManagerTest extends WebSocketTestCase {
 	 */
 	public function testGetWebappVerboseGit(): void {
 		$this->mockWebappJson();
-		$this->mockCommand('git rev-parse --is-inside-work-tree', 'true');
-		$this->mockCommand('git rev-parse --verify HEAD', 'commit');
+		$this->receiveCommand(
+			command: 'git rev-parse --is-inside-work-tree',
+			stdout: 'true',
+		);
+		$this->receiveCommand(
+			command: 'git rev-parse --verify HEAD',
+			stdout: 'commit',
+		);
 		Assert::same(self::VERSIONS['webapp'] . ' (commit)', $this->manager->getWebapp(true));
 	}
 
@@ -353,8 +339,34 @@ final class VersionManagerTest extends WebSocketTestCase {
 	 */
 	public function testGetWebappVerboseOutsideGit(): void {
 		$this->mockWebappJson();
-		$this->mockCommand('git rev-parse --is-inside-work-tree', 'false');
+		$this->receiveCommand(
+			command: 'git rev-parse --is-inside-work-tree',
+			stdout: 'false',
+		);
 		Assert::same(self::VERSIONS['webapp'], $this->manager->getWebapp(true));
+	}
+
+	/**
+	 * Sets up the test environment
+	 */
+	protected function setUp(): void {
+		parent::setUp();
+		$this->setUpCommandExecutor();
+		$this->manager = Mockery::mock(VersionManager::class, [$this->commandExecutor, $this->request, $this->wsClient])->makePartial();
+	}
+
+	/**
+	 * Mock IQRF Gateway Webapps version JSON file
+	 * @param string $commit Git commit hash
+	 * @param string $pipeline GitLab CI pipeline ID
+	 */
+	private function mockWebappJson(string $commit = '', string $pipeline = ''): void {
+		$this->manager->shouldReceive('getWebappJson')
+			->andReturn([
+				'version' => self::VERSIONS['webapp'],
+				'commit' => $commit,
+				'pipeline' => $pipeline,
+			]);
 	}
 
 }

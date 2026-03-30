@@ -14,7 +14,6 @@
 # limitations under the License.
 
 includes:
-	- controllers.neon
 	- middlewares.neon
 	- models.neon
 

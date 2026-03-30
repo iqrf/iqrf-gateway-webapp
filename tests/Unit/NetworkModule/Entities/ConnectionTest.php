@@ -41,29 +41,29 @@ require __DIR__ . '/../../../bootstrap.php';
 final class ConnectionTest extends TestCase {
 
 	/**
-	 * @var string Network connection name
+	 * Network connection name
 	 */
 	private const NAME = 'eth0';
 
 	/**
-	 * @var UuidInterface Network connection UUID
-	 */
-	private UuidInterface $uuid;
-
-	/**
-	 * @var ConnectionTypes Network connection type
-	 */
-	private ConnectionTypes $type;
-
-	/**
-	 * @var string Network interface name
+	 * Network interface name
 	 */
 	private const INTERFACE = 'eth0';
 
 	/**
+	 * @var UuidInterface Network connection UUID
+	 */
+	private readonly UuidInterface $uuid;
+
+	/**
+	 * @var ConnectionTypes Network connection type
+	 */
+	private readonly ConnectionTypes $type;
+
+	/**
 	 * @var Connection Network connection entity
 	 */
-	private Connection $entity;
+	private readonly Connection $entity;
 
 	/**
 	 * Sets up the test environment
@@ -78,7 +78,7 @@ final class ConnectionTest extends TestCase {
 	 * Tests the function to deserialize network connection entity from nmcli row
 	 */
 	public function testNmCliDeserialize(): void {
-		$string = 'eth0:25ab1b06-2a86-40a9-950f-1c576ddcd35a:802-3-ethernet:eth0';
+		$string = 'eth0:25ab1b06-2a86-40a9-950f-1c576ddcd35a:802-3-ethernet:eth0:yes:activated';
 		Assert::equal($this->entity, Connection::nmCliDeserialize($string));
 	}
 

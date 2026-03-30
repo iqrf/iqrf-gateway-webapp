@@ -26,32 +26,12 @@ use stdClass;
 /**
  * GSM connection entity
  */
-final class GSMConnection implements INetworkManagerEntity {
+final readonly class GSMConnection implements INetworkManagerEntity {
 
 	/**
-	 * @var string nmcli configuration prefix
+	 * nmcli configuration prefix
 	 */
 	private const NMCLI_PREFIX = 'gsm';
-
-	/**
-	 * @var string GSM APN
-	 */
-	private string $apn;
-
-	/**
-	 * @var string|null Username
-	 */
-	private ?string $username;
-
-	/**
-	 * @var string|null Password
-	 */
-	private ?string $password;
-
-	/**
-	 * @var string|null SIM PIN
-	 */
-	private ?string $pin;
 
 	/**
 	 * Constructor
@@ -60,11 +40,12 @@ final class GSMConnection implements INetworkManagerEntity {
 	 * @param string|null $password Password
 	 * @param string|null $pin SIM PIN
 	 */
-	public function __construct(string $apn, ?string $username = null, ?string $password = null, ?string $pin = null) {
-		$this->apn = $apn;
-		$this->username = $username;
-		$this->password = $password;
-		$this->pin = $pin;
+	public function __construct(
+		private string $apn,
+		private ?string $username = null,
+		private ?string $password = null,
+		private ?string $pin = null,
+	) {
 	}
 
 	/**
@@ -74,19 +55,6 @@ final class GSMConnection implements INetworkManagerEntity {
 	 */
 	public static function jsonDeserialize(stdClass $json): INetworkManagerEntity {
 		return new self($json->apn, $json->username, $json->password, $json->pin);
-	}
-
-	/**
-	 * Serializes GSM connection entity into JSON
-	 * @return array{apn: string, username: string|null, password: string|null, pin: string|null} JSON serialized entity
-	 */
-	public function jsonSerialize(): array {
-		return [
-			'apn' => $this->apn,
-			'username' => $this->username,
-			'password' => $this->password,
-			'pin' => $this->pin,
-		];
 	}
 
 	/**
@@ -100,6 +68,19 @@ final class GSMConnection implements INetworkManagerEntity {
 		$password = $array['password'] ?? null;
 		$pin = $array['pin'] ?? null;
 		return new self($array['apn'], $username, $password, $pin);
+	}
+
+	/**
+	 * Serializes GSM connection entity into JSON
+	 * @return array{apn: string, username: string|null, password: string|null, pin: string|null} JSON serialized entity
+	 */
+	public function jsonSerialize(): array {
+		return [
+			'apn' => $this->apn,
+			'username' => $this->username,
+			'password' => $this->password,
+			'pin' => $this->pin,
+		];
 	}
 
 	/**

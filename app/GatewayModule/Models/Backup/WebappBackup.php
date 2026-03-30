@@ -20,11 +20,10 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models\Backup;
 
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use App\GatewayModule\Models\SshManager;
+use Iqrf\CommandExecutor\CommandExecutor;
 use Nette\Utils\FileSystem;
-use Nette\Utils\Strings;
 
 /**
  * Webapp backup manager
@@ -32,7 +31,7 @@ use Nette\Utils\Strings;
 class WebappBackup implements IBackupManager {
 
 	/**
-	 * @var array<string> List of whitelisted webapp files
+	 * List of whitelisted webapp files
 	 */
 	public const WHITELIST = [
 		'database.db',
@@ -42,7 +41,7 @@ class WebappBackup implements IBackupManager {
 	];
 
 	/**
-	 * @var array<string> List of whitelisted nginx files
+	 * List of whitelisted nginx files
 	 */
 	public const NGINX_WHITELIST = [
 		'iqrf-gateway-webapp.localhost',
@@ -56,42 +55,23 @@ class WebappBackup implements IBackupManager {
 	];
 
 	/**
-	 * @var array{configDir: string, database: string, logDir: string} Paths
-	 */
-	private array $paths;
-
-	/**
-	 * @var string Path to Webapp nginx configuration directory
+	 * Path to Webapp nginx configuration directory
 	 */
 	private const NGINX_PATH = '/etc/iqrf-gateway-webapp/nginx/';
 
 	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
-
-	/**
-	 * @var SshManager SSH manager
-	 */
-	private SshManager $sshManager;
-
-	/**
-	 * @var RestoreLogger Restore logger
-	 */
-	private RestoreLogger $restoreLogger;
-
-	/**
 	 * Constructor
 	 * @param array{configDir: string, database: string, logDir: string} $paths Paths
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandExecutor Command manager
 	 * @param SshManager $sshManager SSH manager
 	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
-	public function __construct(array $paths, CommandManager $commandManager, SshManager $sshManager, RestoreLogger $restoreLogger) {
-		$this->paths = $paths;
-		$this->commandManager = $commandManager;
-		$this->sshManager = $sshManager;
-		$this->restoreLogger = $restoreLogger;
+	public function __construct(
+		private array $paths,
+		private readonly CommandExecutor $commandExecutor,
+		private readonly SshManager $sshManager,
+		private readonly RestoreLogger $restoreLogger,
+	) {
 	}
 
 	/**
@@ -119,16 +99,16 @@ class WebappBackup implements IBackupManager {
 			return;
 		}
 		foreach ($zipManager->listFiles() as $file) {
-			if (Strings::startsWith($file, 'nginx/') || Strings::startsWith($file, 'webapp/')) {
+			if (str_starts_with($file, 'nginx/') || str_starts_with($file, 'webapp/')) {
 				$zipManager->extract(self::TMP_PATH, $file);
 			}
 		}
 		$this->restoreLogger->log('Restoring IQRF Gateway Webapp configuration, database and nginx configuration.');
-		$this->commandManager->run('cp -p ' . self::TMP_PATH . 'webapp/database.db ' . $this->paths['database'], true);
+		$this->commandExecutor->run('cp -p ' . self::TMP_PATH . 'webapp/database.db ' . $this->paths['database'], true);
 		FileSystem::delete(self::TMP_PATH . 'webapp/database.db');
-		$this->commandManager->run('cp -p ' . self::TMP_PATH . 'webapp/* ' . $this->paths['configDir'], true);
+		$this->commandExecutor->run('cp -p ' . self::TMP_PATH . 'webapp/* ' . $this->paths['configDir'], true);
 		FileSystem::delete(self::TMP_PATH . 'webapp');
-		$this->commandManager->run('cp -p ' . self::TMP_PATH . 'nginx/* ' . self::NGINX_PATH, true);
+		$this->commandExecutor->run('cp -p ' . self::TMP_PATH . 'nginx/* ' . self::NGINX_PATH, true);
 		FileSystem::delete(self::TMP_PATH . 'nginx');
 		$this->sshManager->updateKeysFile();
 	}

@@ -26,9 +26,9 @@ use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\JsonSchemaManager;
 use App\GatewayModule\Models\DaemonDirectories;
+use Iqrf\CommandExecutor\CommandExecutor;
 use JsonSchema\SchemaStorage;
 use Nette\IOException;
 use Nette\Utils\FileSystem;
@@ -46,30 +46,19 @@ use Throwable;
 class RestApiSchemaValidator extends JsonSchemaManager {
 
 	/**
-	 * @var DaemonDirectories IQRF Gateway Daemon directories
-	 */
-	private DaemonDirectories $daemonDirectories;
-
-	/**
-	 * @var LoggerInterface Logger
-	 */
-	private LoggerInterface $logger;
-
-	/**
 	 * Constructor
 	 * @param string $directory Directory with files
-	 * @param CommandManager $commandManager Command managers
+	 * @param CommandExecutor $commandExecutor Command managers
+	 * @param DaemonDirectories $daemonDirectories IQRF Gateway Daemon directories
 	 * @param LoggerInterface $logger Logger
 	 */
 	public function __construct(
 		string $directory,
-		CommandManager $commandManager,
-		DaemonDirectories $daemonDirectories,
-		LoggerInterface $logger
+		CommandExecutor $commandExecutor,
+		private readonly DaemonDirectories $daemonDirectories,
+		private readonly LoggerInterface $logger
 	) {
-		parent::__construct($directory, $commandManager);
-		$this->daemonDirectories = $daemonDirectories;
-		$this->logger = $logger;
+		parent::__construct($directory, $commandExecutor);
 		$this->populateStorage();
 	}
 
@@ -136,7 +125,7 @@ class RestApiSchemaValidator extends JsonSchemaManager {
 	private function addSchemaToStorage(SchemaStorage &$storage, string $baseUrl, string $dir, SplFileInfo $fileInfo): void {
 		try {
 			$relativePath = $this->getRelativePathname($fileInfo, $dir);
-			$schema = Json::decode(FileSystem::read($fileInfo->getPathname()), Json::FORCE_ARRAY);
+			$schema = Json::decode(FileSystem::read($fileInfo->getPathname()), forceArrays: true);
 			$storage->addSchema($baseUrl . $relativePath, $schema);
 		} catch (IOException | JsonException $e) {
 			$this->logger->error('Failed to load JSON schema file', ['exception' => $e, 'extra' => ['baseUrl' => $baseUrl, 'relativePath' => $relativePath, 'path' => $fileInfo->getPath()]]);
@@ -151,7 +140,7 @@ class RestApiSchemaValidator extends JsonSchemaManager {
 	 */
 	private function getRelativePathname(SplFileInfo $fileInfo, string $dirPath): string {
 		$relativePath = $fileInfo->getPathname();
-		if (Strings::startsWith($relativePath, $dirPath)) {
+		if (str_starts_with($relativePath, $dirPath)) {
 			$relativePath = Strings::substring($relativePath, Strings::length($dirPath));
 		}
 		return ltrim($relativePath, '/');

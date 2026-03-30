@@ -39,22 +39,22 @@ require __DIR__ . '/../../../../bootstrap.php';
 class SshKeyTest extends TestCase {
 
 	/**
-	 * @var string SSH key description
+	 * SSH key description
 	 */
 	private const DESCRIPTION = 'test-key';
 
 	/**
-	 * @var string SSH key type
+	 * SSH key type
 	 */
 	private const KEY_TYPE = 'ssh-rsa';
 
 	/**
-	 * @var string SSH key hash
+	 * SSH key hash
 	 */
 	private const KEY_HASH = 'SHA256:JNjbaNWv2Nau8+R75Eq4f9j2JDdxS8fpFPp9cZVAcV0';
 
 	/**
-	 * @var string SSH public key
+	 * SSH public key
 	 */
 	private const PUBLIC_KEY = 'AAAAB3NzaC1yc2EAAAADAQABAAACAQCqql6MzstZYh1TmWWv11q5O3pISj2ZFl9HgH1JLknLLx44+tXfJ7mIrKNxOOwxIxvcBF8PXSYvobFYEZjGIVCEAjrUzLiIxbyCoxVyle7Q+bqgZ8SeeM8wzytsY+dVGcBxF6N4JS+zVk5eMcV385gG3Y6ON3EG112n6d+SMXY0OEBIcO6x+PnUSGHrSgpBgX7Ks1r7xqFa7heJLLt2wWwkARptX7udSq05paBhcpB0pHtA1Rfz3K2B+ZVIpSDfki9UVKzT8JUmwW6NNzSgxUfQHGwnW7kj4jp4AT0VZk3ADw497M2G/12N0PPB5CnhHf7ovgy6nL1ikrygTKRFmNZISvAcywB9GVqNAVE+ZHDSCuURNsAInVzgYo9xgJDW8wUw2o8U77+xiFxgI5QSZX3Iq7YLMgeksaO4rBJEa54k8m5wEiEE1nUhLuJ0X/vh2xPff6SQ1BL/zkOhvJCACK6Vb15mDOeCSq54Cr7kvS46itMosi/uS66+PujOO+xt/2FWYepz6ZlN70bRly57Q06J+ZJoc9FfBCbCyYH7U/ASsmY095ywPsBo1XQ9PqhnN1/YOorJ068foQDNVpm146mUpILVxmq41Cj55YKHEazXGsdBIbXWhcrRf4G2fJLRcGUr9q8/lERo9oxRm5JFX6TCmj6kmiFqv+Ow9gI0x8GvaQ==';
 
@@ -62,15 +62,6 @@ class SshKeyTest extends TestCase {
 	 * @var SshKey SSH key entity
 	 */
 	private SshKey $entity;
-
-	/**
-	 * Sets up the test environment
-	 */
-	protected function setUp(): void {
-		parent::setUp();
-		$this->entity = new SshKey(self::KEY_TYPE, self::PUBLIC_KEY, self::KEY_HASH, self::DESCRIPTION);
-		$this->entity->setCreatedAt();
-	}
 
 	/**
 	 * Tests the function to return SSH key type
@@ -178,6 +169,15 @@ class SshKeyTest extends TestCase {
 		$this->entity->setDescription();
 		$expected = self::KEY_TYPE . ' ' . self::PUBLIC_KEY;
 		Assert::same($expected, $this->entity->toString());
+	}
+
+	/**
+	 * Sets up the test environment
+	 */
+	protected function setUp(): void {
+		parent::setUp();
+		$this->entity = new SshKey(self::KEY_TYPE, self::PUBLIC_KEY, self::KEY_HASH, self::DESCRIPTION);
+		$this->entity->setCreatedAt();
 	}
 
 }

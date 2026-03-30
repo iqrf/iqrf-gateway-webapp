@@ -39,12 +39,12 @@ require __DIR__ . '/../../../bootstrap.php';
 final class GenericManagerTest extends JsonConfigTestCase {
 
 	/**
-	 * @var string Component name
+	 * Component name
 	 */
 	private const COMPONENT = 'iqrf::MqttMessaging';
 
 	/**
-	 * @var string File name
+	 * File name
 	 */
 	private const FILE_NAME = 'iqrf__MqttMessaging';
 
@@ -76,7 +76,7 @@ final class GenericManagerTest extends JsonConfigTestCase {
 	public function testDeleteFileInvalid(): void {
 		$this->manager->setComponent(self::COMPONENT);
 		Assert::noError(function (): void {
-			$this->manager->deleteFile(null);
+			$this->manager->deleteFile();
 		});
 	}
 
@@ -154,7 +154,6 @@ final class GenericManagerTest extends JsonConfigTestCase {
 		Assert::same([], $this->manager->loadInstance('nonsense'));
 	}
 
-
 	/**
 	 * Tests the function to list configurations
 	 */
@@ -195,7 +194,7 @@ final class GenericManagerTest extends JsonConfigTestCase {
 		$expected = $this->readFile(self::FILE_NAME . '.json');
 		$this->copyFile(self::FILE_NAME . '.json');
 		$expected['acceptAsyncMsg'] = true;
-		$this->managerTemp->save($array);
+		$this->managerTemp->save($array, self::FILE_NAME);
 		Assert::equal($expected, $this->fileManagerTemp->readJson(self::FILE_NAME . '.json'));
 	}
 

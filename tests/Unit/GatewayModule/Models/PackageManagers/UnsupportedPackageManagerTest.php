@@ -28,18 +28,21 @@ namespace Tests\Unit\GatewayModule\Models\PackageManagers;
 
 use App\GatewayModule\Exceptions\UnsupportedPackageManagerException;
 use App\GatewayModule\Models\PackageManagers\UnsupportedPackageManager;
+use Iqrf\CommandExecutor\Tester\Traits\CommandExecutorTestCase;
 use Tester\Assert;
-use Tests\Toolkit\TestCases\CommandTestCase;
+use Tester\TestCase;
 
 require __DIR__ . '/../../../../bootstrap.php';
 
 /**
  * Tests for tool for unsupported package manager
  */
-final class UnsupportedPackageManagerTest extends CommandTestCase {
+final class UnsupportedPackageManagerTest extends TestCase {
+
+	use CommandExecutorTestCase;
 
 	/**
-	 * @var array<string> Packages
+	 * Packages
 	 */
 	private const PACKAGES = ['iqrf-gateway-daemon', 'iqrf-gateway-webapp'];
 
@@ -49,19 +52,11 @@ final class UnsupportedPackageManagerTest extends CommandTestCase {
 	private UnsupportedPackageManager $manager;
 
 	/**
-	 * Sets up the test environment
-	 */
-	protected function setUp(): void {
-		parent::setUp();
-		$this->manager = new UnsupportedPackageManager();
-	}
-
-	/**
 	 * Tests the function to install packages
 	 */
 	public function testInstall(): void {
 		Assert::throws(function (): void {
-			$this->manager->install([$this, 'callback'], self::PACKAGES);
+			$this->manager->install($this->callback(...), self::PACKAGES);
 		}, UnsupportedPackageManagerException::class);
 	}
 
@@ -70,7 +65,7 @@ final class UnsupportedPackageManagerTest extends CommandTestCase {
 	 */
 	public function testListUpgradable(): void {
 		Assert::throws(function (): void {
-			$this->manager->listUpgradable([$this, 'callback']);
+			$this->manager->listUpgradable($this->callback(...));
 		}, UnsupportedPackageManagerException::class);
 	}
 
@@ -78,7 +73,7 @@ final class UnsupportedPackageManagerTest extends CommandTestCase {
 	 * Tests the function to get list of upgradable packages
 	 */
 	public function testGetUpgradable(): void {
-		Assert::throws([$this->manager, 'getUpgradable'], UnsupportedPackageManagerException::class);
+		Assert::throws($this->manager->getUpgradable(...), UnsupportedPackageManagerException::class);
 	}
 
 	/**
@@ -86,7 +81,7 @@ final class UnsupportedPackageManagerTest extends CommandTestCase {
 	 */
 	public function testRemove(): void {
 		Assert::throws(function (): void {
-			$this->manager->remove([$this, 'callback'], self::PACKAGES);
+			$this->manager->remove($this->callback(...), self::PACKAGES);
 		}, UnsupportedPackageManagerException::class);
 	}
 
@@ -95,7 +90,7 @@ final class UnsupportedPackageManagerTest extends CommandTestCase {
 	 */
 	public function testPurge(): void {
 		Assert::throws(function (): void {
-			$this->manager->purge([$this, 'callback'], self::PACKAGES);
+			$this->manager->purge($this->callback(...), self::PACKAGES);
 		}, UnsupportedPackageManagerException::class);
 	}
 
@@ -104,7 +99,7 @@ final class UnsupportedPackageManagerTest extends CommandTestCase {
 	 */
 	public function testUpdate(): void {
 		Assert::throws(function (): void {
-			$this->manager->update([$this, 'callback']);
+			$this->manager->update($this->callback(...));
 		}, UnsupportedPackageManagerException::class);
 	}
 
@@ -113,7 +108,7 @@ final class UnsupportedPackageManagerTest extends CommandTestCase {
 	 */
 	public function testUpgrade(): void {
 		Assert::throws(function (): void {
-			$this->manager->upgrade([$this, 'callback']);
+			$this->manager->upgrade($this->callback(...));
 		}, UnsupportedPackageManagerException::class);
 	}
 
@@ -121,6 +116,17 @@ final class UnsupportedPackageManagerTest extends CommandTestCase {
 	 * Just an empty callback
 	 */
 	public function callback(): void {
+		// Empty callback
+	}
+
+	/**
+	 * Sets up the test environment
+	 */
+	protected function setUp(): void {
+		parent::setUp();
+		$this->setUpCommandExecutor();
+		$this->commandExecutor->shouldNotHaveBeenCalled();
+		$this->manager = new UnsupportedPackageManager($this->commandExecutor);
 	}
 
 }

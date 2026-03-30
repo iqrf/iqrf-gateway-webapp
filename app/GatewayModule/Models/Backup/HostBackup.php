@@ -20,9 +20,8 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models\Backup;
 
-use App\CoreModule\Models\CommandManager;
-use App\CoreModule\Models\PrivilegedFileManager;
 use App\CoreModule\Models\ZipArchiveManager;
+use Iqrf\FileManager\PrivilegedFileManager;
 use Nette\Utils\FileSystem;
 
 /**
@@ -31,7 +30,7 @@ use Nette\Utils\FileSystem;
 class HostBackup implements IBackupManager {
 
 	/**
-	 * @var array<string> List of whitelisted files
+	 * List of whitelisted files
 	 */
 	public const WHITELIST = [
 		'hostname',
@@ -39,28 +38,19 @@ class HostBackup implements IBackupManager {
 	];
 
 	/**
-	 * @var string Path to configuration directory
+	 * Path to configuration directory
 	 */
 	private const CONF_PATH = '/etc/';
 
 	/**
-	 * @var PrivilegedFileManager Privileged file manager
-	 */
-	private PrivilegedFileManager $fileManager;
-
-	/**
-	 * @var RestoreLogger Restore logger
-	 */
-	private RestoreLogger $restoreLogger;
-
-	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param PrivilegedFileManager $fileManager Privileged file manager
 	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
-	public function __construct(CommandManager $commandManager, RestoreLogger $restoreLogger) {
-		$this->fileManager = new PrivilegedFileManager(self::CONF_PATH, $commandManager);
-		$this->restoreLogger = $restoreLogger;
+	public function __construct(
+		private readonly PrivilegedFileManager $fileManager,
+		private readonly RestoreLogger $restoreLogger,
+	) {
 	}
 
 	/**
@@ -94,6 +84,14 @@ class HostBackup implements IBackupManager {
 	}
 
 	/**
+	 * Returns service names
+	 * @return array<string> Service names
+	 */
+	public function getServices(): array {
+		return [];
+	}
+
+	/**
 	 * Fixes privileges for restored files
 	 */
 	private function fixPrivileges(): void {
@@ -101,14 +99,6 @@ class HostBackup implements IBackupManager {
 			$this->fileManager->chown($file, 'root', 'root');
 			$this->fileManager->chmod($file, 0644);
 		}
-	}
-
-	/**
-	 * Returns service names
-	 * @return array<string> Service names
-	 */
-	public function getServices(): array {
-		return [];
 	}
 
 }

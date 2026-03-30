@@ -22,12 +22,11 @@ namespace App\ConfigModule\Models;
 
 use App\ConfigModule\Exceptions\InvalidTaskMessageException;
 use App\CoreModule\Exceptions\ZipEmptyException;
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use DateTime;
+use Iqrf\CommandExecutor\CommandExecutor;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
-use Nette\Utils\Strings;
 use Throwable;
 use ZipArchive;
 
@@ -39,30 +38,24 @@ class SchedulerMigrationManager {
 	/**
 	 * @var string Path to a directory with scheduler's configuration
 	 */
-	private string $configDirectory;
-
-	/**
-	 * @var SchedulerSchemaManager Scheduler JSON schema manager
-	 */
-	private SchedulerSchemaManager $schemaManager;
+	private readonly string $configDirectory;
 
 	/**
 	 * Constructor
 	 * @param MainManager $mainManager Main configuration manager
 	 * @param SchedulerSchemaManager $schemaManager Scheduler JSON schema manager
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandExecutor Command manager
 	 */
-	public function __construct(MainManager $mainManager, SchedulerSchemaManager $schemaManager, CommandManager $commandManager) {
+	public function __construct(MainManager $mainManager, private readonly SchedulerSchemaManager $schemaManager, CommandExecutor $commandExecutor) {
 		$cacheDir = $mainManager->getCacheDir();
 		$dirs = [$cacheDir, $cacheDir . 'scheduler/'];
 		foreach ($dirs as $dir) {
 			if (is_readable($dir) && is_writable($dir)) {
 				continue;
 			}
-			$commandManager->run('chmod 777 ' . escapeshellarg($dir), true);
+			$commandExecutor->run('chmod 777 ' . escapeshellarg($dir), true);
 		}
 		$this->configDirectory = $cacheDir . 'scheduler/';
-		$this->schemaManager = $schemaManager;
 	}
 
 	/**
@@ -73,7 +66,7 @@ class SchedulerMigrationManager {
 		try {
 			$now = new DateTime();
 			$path = '/tmp/iqrf-gateway-scheduler_' . $now->format('c') . '.zip';
-		} catch (Throwable $e) {
+		} catch (Throwable) {
 			$path = '/tmp/iqrf-gateway-scheduler.zip';
 		}
 		$zipManager = new ZipArchiveManager($path);
@@ -97,7 +90,7 @@ class SchedulerMigrationManager {
 	public function extractArchive(string $path): void {
 		$zipManager = new ZipArchiveManager($path, ZipArchive::CREATE);
 		foreach ($zipManager->listFiles() as $fileName) {
-			if (Strings::startsWith($fileName, 'schema/')) {
+			if (str_starts_with($fileName, 'schema/')) {
 				continue;
 			}
 			$json = Json::decode($zipManager->openFile($fileName));

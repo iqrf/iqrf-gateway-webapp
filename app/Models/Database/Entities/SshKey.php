@@ -22,44 +22,21 @@ namespace App\Models\Database\Entities;
 
 use App\Models\Database\Attributes\TCreatedAt;
 use App\Models\Database\Attributes\TId;
+use App\Models\Database\Repositories\SshKeyRepository;
 use DateTimeZone;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 
 /**
  * Ssh key entity
- * @ORM\Entity(repositoryClass="App\Models\Database\Repositories\SshKeyRepository")
- * @ORM\Table(name="`ssh_keys`")
- * @ORM\HasLifecycleCallbacks()
  */
+#[ORM\Entity(repositoryClass: SshKeyRepository::class)]
+#[ORM\HasLifecycleCallbacks]
+#[ORM\Table(name: '`ssh_keys`')]
 class SshKey implements JsonSerializable {
 
 	use TId;
 	use TCreatedAt;
-
-	/**
-	 * @var string SSH key type
-	 * @ORM\Column(type="string", length=255)
-	 */
-	private string $type;
-
-	/**
-	 * @var string SSH key
-	 * @ORM\Column(type="string", length=2048, unique=true)
-	 */
-	private string $key;
-
-	/**
-	 * @var string SSH key hash
-	 * @ORM\Column(type="string", length=64, unique=true)
-	 */
-	private string $hash;
-
-	/**
-	 * @var string|null SSH key description
-	 * @ORM\Column(type="string", length=255, nullable=true)
-	 */
-	private ?string $description;
 
 	/**
 	 * Constructor
@@ -68,11 +45,16 @@ class SshKey implements JsonSerializable {
 	 * @param string $hash SSH key hash
 	 * @param string|null $description SSH key description
 	 */
-	public function __construct(string $type, string $key, string $hash, ?string $description = null) {
-		$this->type = $type;
-		$this->key = $key;
-		$this->hash = $hash;
-		$this->description = $description;
+	public function __construct(
+		#[ORM\Column(type: 'string', length: 255)]
+		private string $type,
+		#[ORM\Column(type: 'string', length: 2048, unique: true)]
+		private string $key,
+		#[ORM\Column(type: 'string', length: 64, unique: true)]
+		private string $hash,
+		#[ORM\Column(type: 'string', length: 255, nullable: true)]
+		private ?string $description = null
+	) {
 	}
 
 	/**

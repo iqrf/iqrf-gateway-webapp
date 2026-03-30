@@ -40,8 +40,8 @@ use RuntimeException;
 
 /**
  * Amazon AWS IoT connection controller
- * @Path("/aws")
  */
+#[Path('/aws')]
 class AwsController extends CloudsController {
 
 	/**
@@ -49,51 +49,48 @@ class AwsController extends CloudsController {
 	 * @param AwsManager $manager Amazon AWS IoT connection manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(AwsManager $manager, RestApiSchemaValidator $validator) {
-		$this->manager = $manager;
+	public function __construct(
+		AwsManager $manager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
+		$this->manager = $manager;
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Creates a new MQTT connection into Amazon AWS IoT
-	 *  requestBody:
-	 *      description: Amazon AWS IoT connection configuration
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/CloudAws'
-	 *          multipart/form-data:
-	 *              schema:
-	 *                  type: object
-	 *                  properties:
-	 *                      endpoint:
-	 *                          type: string
-	 *                      certificate:
-	 *                          type: string
-	 *                          format: binary
-	 *                      privateKey:
-	 *                          type: string
-	 *                          format: binary
-	 *
-	 *  responses:
-	 *      '201':
-	 *          description: Created
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
-	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
+	#[Path('/')]
+	#[Method('POST')]
+	#[OpenApi(<<<'EOT'
+		summary: Creates a new MQTT connection into Amazon AWS IoT
+		requestBody:
+			description: Amazon AWS IoT connection configuration
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: '#/components/schemas/CloudAws'
+				multipart/form-data:
+					schema:
+						type: object
+						properties:
+							endpoint:
+								type: string
+							certificate:
+								type: string
+								format: binary
+							privateKey:
+								type: string
+								format: binary
+		responses:
+			'201':
+				description: Created
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
+	protected function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['clouds']);
 		try {
 			$configuration = $this->getConfiguration($request);

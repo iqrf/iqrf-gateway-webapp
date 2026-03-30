@@ -40,44 +40,44 @@ require __DIR__ . '/../../../bootstrap.php';
 final class WifiNetworkTest extends TestCase {
 
 	/**
-	 * @var bool Is in use?
+	 * Is in use?
 	 */
 	private const IN_USE = true;
 
 	/**
-	 * @var string BSSID (MAC address)
+	 * BSSID (MAC address)
 	 */
 	private const BSSID = '1A:E8:29:E5:CB:9A';
 
 	/**
-	 * @var string SSID
+	 * SSID
 	 */
 	private const SSID = 'WIFI MAGDA';
 
 	/**
-	 * @var WifiMode Mode
-	 */
-	private WifiMode $mode;
-
-	/**
-	 * @var int Channel
+	 * Channel
 	 */
 	private const CHANNEL = 56;
 
 	/**
-	 * @var string Speed rate
+	 * Speed rate
 	 */
 	private const RATE = '405 Mbit/s';
 
 	/**
-	 * @var int Signal strength
+	 * Signal strength
 	 */
 	private const SIGNAL = 70;
 
 	/**
+	 * @var WifiMode Mode
+	 */
+	private readonly WifiMode $mode;
+
+	/**
 	 * @var WifiSecurity Security
 	 */
-	private WifiSecurity $security;
+	private readonly WifiSecurity $security;
 
 	/**
 	 * @var WifiNetwork Wi-Fi network entity
@@ -90,13 +90,6 @@ final class WifiNetworkTest extends TestCase {
 	public function __construct() {
 		$this->mode = WifiMode::INFRA();
 		$this->security = WifiSecurity::WPA2_PERSONAL();
-	}
-
-	/**
-	 * Sets up the test environment
-	 */
-	protected function setUp(): void {
-		$this->entity = new WifiNetwork(self::IN_USE, self::BSSID, self::SSID, $this->mode, self::CHANNEL, self::RATE, self::SIGNAL, $this->security);
 	}
 
 	/**
@@ -123,6 +116,13 @@ final class WifiNetworkTest extends TestCase {
 
 		];
 		Assert::same($expected, $this->entity->jsonSerialize());
+	}
+
+	/**
+	 * Sets up the test environment
+	 */
+	protected function setUp(): void {
+		$this->entity = new WifiNetwork(self::IN_USE, self::BSSID, self::SSID, $this->mode, self::CHANNEL, self::RATE, self::SIGNAL, $this->security);
 	}
 
 }

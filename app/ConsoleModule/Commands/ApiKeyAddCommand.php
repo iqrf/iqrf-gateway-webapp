@@ -22,6 +22,7 @@ namespace App\ConsoleModule\Commands;
 
 use App\Exceptions\ApiKeyInvalidExpirationException;
 use App\Models\Database\Entities\ApiKey;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
@@ -32,19 +33,16 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * CLI command for adding a new API key
  */
+#[AsCommand(
+	name: 'api-key:add',
+	description: 'Adds a new API key',
+)]
 class ApiKeyAddCommand extends ApiKeyCommand {
-
-	/**
-	 * @var string|null Command name
-	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-	 */
-	protected static $defaultName = 'api-key:add';
 
 	/**
 	 * Configures the user add command
 	 */
 	protected function configure(): void {
-		$this->setDescription('Adds a new API key');
 		$definitions = [
 			new InputOption('description', ['d'], InputOption::VALUE_OPTIONAL, 'API key description'),
 			new InputOption('expiration', ['e'], InputOption::VALUE_OPTIONAL, 'API key expiration date'),
@@ -68,7 +66,7 @@ class ApiKeyAddCommand extends ApiKeyCommand {
 		$description = $this->askDescription($input, $output);
 		try {
 			$expiration = $this->askExpiration($input, $output);
-		} catch (ApiKeyInvalidExpirationException $e) {
+		} catch (ApiKeyInvalidExpirationException) {
 			$style->error('Invalid time and date format.');
 			return Command::FAILURE;
 		}

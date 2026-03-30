@@ -27,15 +27,18 @@ declare(strict_types = 1);
 namespace Tests\Unit\GatewayModule\Models;
 
 use App\GatewayModule\Models\PowerManager;
+use Iqrf\CommandExecutor\Tester\Traits\CommandExecutorTestCase;
 use Tester\Assert;
-use Tests\Toolkit\TestCases\CommandTestCase;
+use Tester\TestCase;
 
 require __DIR__ . '/../../../bootstrap.php';
 
 /**
  * Tests for tool for powering off and rebooting IQRF Gateway
  */
-final class PowerManagerTest extends CommandTestCase {
+final class PowerManagerTest extends TestCase {
+
+	use CommandExecutorTestCase;
 
 	/**
 	 * @var PowerManager Tool for powering off and rebooting IQRF Gateway
@@ -43,18 +46,13 @@ final class PowerManagerTest extends CommandTestCase {
 	private PowerManager $manager;
 
 	/**
-	 * Sets up the test environment
-	 */
-	protected function setUp(): void {
-		parent::setUp();
-		$this->manager = new PowerManager($this->commandManager);
-	}
-
-	/**
 	 * Tests the function to power off IQRF Gateway
 	 */
 	public function testPowerOff(): void {
-		$this->receiveCommand('shutdown -P `date --date "now + 60 seconds" "+%H:%M"`', true);
+		$this->receiveCommand(
+			command: 'shutdown -P `date --date "now + 60 seconds" "+%H:%M"`',
+			needSudo: true,
+		);
 		Assert::noError(function (): void {
 			$this->manager->powerOff();
 		});
@@ -64,10 +62,22 @@ final class PowerManagerTest extends CommandTestCase {
 	 * Tests the function to reboot IQRF Gateway
 	 */
 	public function testReboot(): void {
-		$this->receiveCommand('shutdown -r `date --date "now + 60 seconds" "+%H:%M"`', true);
+		$this->receiveCommand(
+			command: 'shutdown -r `date --date "now + 60 seconds" "+%H:%M"`',
+			needSudo: true,
+		);
 		Assert::noError(function (): void {
 			$this->manager->reboot();
 		});
+	}
+
+	/**
+	 * Sets up the test environment
+	 */
+	protected function setUp(): void {
+		parent::setUp();
+		$this->setUpCommandExecutor();
+		$this->manager = new PowerManager($this->commandExecutor);
 	}
 
 }

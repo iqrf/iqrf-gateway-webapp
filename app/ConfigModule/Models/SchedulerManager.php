@@ -24,8 +24,8 @@ use App\ConfigModule\Exceptions\InvalidTaskMessageException;
 use App\ConfigModule\Exceptions\TaskNotFoundException;
 use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
-use App\CoreModule\Models\CommandManager;
-use App\CoreModule\Models\FileManager;
+use Iqrf\CommandExecutor\CommandExecutor;
+use Iqrf\FileManager\FileManager;
 use Nette\IOException;
 use Nette\Utils\Finder;
 use Nette\Utils\JsonException;
@@ -39,34 +39,27 @@ class SchedulerManager {
 	/**
 	 * @var FileManager JSON file manager
 	 */
-	private FileManager $fileManager;
-
-	/**
-	 * @var SchedulerSchemaManager Scheduler JSON schema manager
-	 */
-	private SchedulerSchemaManager $schemaManager;
-
-	/**
-	 * @var TaskTimeManager Scheduler's task time specification manager
-	 */
-	private TaskTimeManager $timeManager;
+	private readonly FileManager $fileManager;
 
 	/**
 	 * Constructor
 	 * @param MainManager $mainManager Main configuration manager
 	 * @param TaskTimeManager $timeManager Scheduler's task time specification manager
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandManager Command manager
 	 * @param SchedulerSchemaManager $schemaManager Scheduler JSON schema manager
 	 */
-	public function __construct(MainManager $mainManager, TaskTimeManager $timeManager, CommandManager $commandManager, SchedulerSchemaManager $schemaManager) {
-		$this->timeManager = $timeManager;
+	public function __construct(
+		MainManager $mainManager,
+		private readonly TaskTimeManager $timeManager,
+		CommandExecutor $commandManager,
+		private readonly SchedulerSchemaManager $schemaManager,
+	) {
 		$cacheDir = $mainManager->getCacheDir();
 		if (!is_readable($cacheDir) || !is_writable($cacheDir)) {
 			$commandManager->run('chmod 777 ' . escapeshellarg($cacheDir), true);
 		}
 		$path = $cacheDir . 'scheduler/';
 		$this->fileManager = new FileManager($path, $commandManager);
-		$this->schemaManager = $schemaManager;
 	}
 
 	/**
@@ -103,7 +96,7 @@ class SchedulerManager {
 				if ($task['taskId'] === $taskId) {
 					return $fileName;
 				}
-			} catch (JsonException $e) {
+			} catch (JsonException) {
 				continue;
 			}
 		}
@@ -119,7 +112,7 @@ class SchedulerManager {
 		try {
 			$this->getFileName($taskId);
 			return true;
-		} catch (TaskNotFoundException $e) {
+		} catch (TaskNotFoundException) {
 			return false;
 		}
 	}
@@ -139,7 +132,7 @@ class SchedulerManager {
 					$record->task = [$record->task];
 				}
 				$tasks[] = $record;
-			} catch (InvalidJsonException | InvalidTaskMessageException | IOException | JsonException | TaskNotFoundException $e) {
+			} catch (InvalidJsonException | InvalidTaskMessageException | IOException | JsonException | TaskNotFoundException) {
 				// Do nothing
 			}
 		}
@@ -163,22 +156,6 @@ class SchedulerManager {
 	}
 
 	/**
-	 * Reads a task
-	 * @param string $fileName Task file name
-	 * @return stdClass Task configuration
-	 * @throws InvalidJsonException
-	 * @throws InvalidTaskMessageException
-	 * @throws JsonException
-	 * @throws NonexistentJsonSchemaException
-	 * @throws TaskNotFoundException
-	 */
-	private function readFile(string $fileName): stdClass {
-		$config = $this->fileManager->readJson($fileName, false);
-		$this->schemaManager->validate($config);
-		return $config;
-	}
-
-	/**
 	 * Saves the task's configuration
 	 * @param stdClass $config Task's configuration
 	 * @param string|null $fileName Task file name
@@ -187,7 +164,7 @@ class SchedulerManager {
 	 */
 	public function save(stdClass $config, ?string $fileName): void {
 		if ($fileName === null) {
-			$fileName = strval($config->taskId . '.json');
+			$fileName = $config->taskId . '.json';
 		}
 		foreach ($config->task as &$task) {
 			if (!isset($task->message->data->timeout)) {
@@ -203,6 +180,21 @@ class SchedulerManager {
 		}
 		$this->schemaManager->validate($config);
 		$this->fileManager->writeJson($fileName, $config);
+	}
+
+	/**
+	 * Reads a task
+	 * @param string $fileName Task file name
+	 * @return stdClass Task configuration
+	 * @throws InvalidJsonException
+	 * @throws InvalidTaskMessageException
+	 * @throws JsonException
+	 * @throws NonexistentJsonSchemaException
+	 */
+	private function readFile(string $fileName): stdClass {
+		$config = $this->fileManager->readJson($fileName, false);
+		$this->schemaManager->validate($config);
+		return $config;
 	}
 
 }

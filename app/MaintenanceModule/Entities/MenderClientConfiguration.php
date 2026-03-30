@@ -28,41 +28,6 @@ use InvalidArgumentException;
 class MenderClientConfiguration implements IMenderConfiguration {
 
 	/**
-	 * @var int Mender client major version
-	 */
-	private int $version;
-
-	/**
-	 * @var array<string> Mender server URLs
-	 */
-	private array $servers;
-
-	/**
-	 * @var string Mender server certificate
-	 */
-	private string $serverCertificate;
-
-	/**
-	 * @var string Mender tenant token
-	 */
-	private string $tenantToken;
-
-	/**
-	 * @var int Mender update poll interval in seconds
-	 */
-	private int $updatePollIntervalSeconds;
-
-	/**
-	 * @var int Mender inventory poll interval in seconds
-	 */
-	private int $inventoryPollIntervalSeconds;
-
-	/**
-	 * @var int Mender retry poll interval in seconds
-	 */
-	private int $retryPollIntervalSeconds;
-
-	/**
 	 * Constructor
 	 * @param int $version Mender client major version
 	 * @param array<string> $servers Mender server URLs
@@ -73,21 +38,14 @@ class MenderClientConfiguration implements IMenderConfiguration {
 	 * @param int $retryPollIntervalSeconds Mender retry poll interval in seconds
 	 */
 	public function __construct(
-		int $version,
-		array $servers,
-		string $serverCertificate,
-		string $tenantToken,
-		int $updatePollIntervalSeconds,
-		int $inventoryPollIntervalSeconds,
-		int $retryPollIntervalSeconds
+		private readonly int $version,
+		private array $servers,
+		private readonly string $serverCertificate,
+		private readonly string $tenantToken,
+		private readonly int $updatePollIntervalSeconds,
+		private readonly int $inventoryPollIntervalSeconds,
+		private readonly int $retryPollIntervalSeconds,
 	) {
-		$this->version = $version;
-		$this->servers = $servers;
-		$this->serverCertificate = $serverCertificate;
-		$this->tenantToken = $tenantToken;
-		$this->updatePollIntervalSeconds = $updatePollIntervalSeconds;
-		$this->inventoryPollIntervalSeconds = $inventoryPollIntervalSeconds;
-		$this->retryPollIntervalSeconds = $retryPollIntervalSeconds;
 	}
 
 	/**
@@ -103,7 +61,7 @@ class MenderClientConfiguration implements IMenderConfiguration {
 			} elseif (
 				array_key_exists('Servers', $config) &&
 				is_array($config['Servers']) &&
-				count($config['Servers']) !== 0
+				$config['Servers'] !== []
 			) {
 				$servers = [$config['Servers'][0]['ServerURL']];
 			} else {

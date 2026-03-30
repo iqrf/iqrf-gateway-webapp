@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\ConsoleModule\Commands;
 
 use App\Models\Database\Entities\User;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -31,19 +32,16 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * CLI command for removal of all users
  */
+#[AsCommand(
+	name: 'user:remove-all',
+	description: 'Removes all webapp users',
+)]
 class UserRemoveAllCommand extends UserCommand {
-
-	/**
-	 * @var string|null Command name
-	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-	 */
-	protected static $defaultName = 'user:remove-all';
 
 	/**
 	 * Configures the user remove all command
 	 */
 	protected function configure(): void {
-		$this->setDescription('Removes all webapp users');
 		$definitions = [
 			new InputOption('role', ['r'], InputOption::VALUE_OPTIONAL, 'Only remove all users with a specific role.'),
 		];

@@ -32,28 +32,24 @@ use stdClass;
 class ApiRequest {
 
 	/**
-	 * @var MessageIdManager Message ID manager
-	 */
-	protected MessageIdManager $msgIdManager;
-
-	/**
 	 * @var array<mixed>|stdClass IQRF JSON API request
 	 */
-	protected $request;
+	protected stdClass|array $request;
 
 	/**
 	 * Constructor
 	 * @param MessageIdManager $msgIdManager Message ID manager
 	 */
-	public function __construct(MessageIdManager $msgIdManager) {
-		$this->msgIdManager = $msgIdManager;
+	public function __construct(
+		protected MessageIdManager $msgIdManager,
+	) {
 	}
 
 	/**
 	 * Returns the IQRF JSON API request
 	 * @return array<mixed>|stdClass IQRF JSON API request
 	 */
-	public function get() {
+	public function get(): array|stdClass {
 		return $this->request;
 	}
 
@@ -61,12 +57,22 @@ class ApiRequest {
 	 * Sets the IQRF JSON API request
 	 * @param mixed $request IQRF JSON API request
 	 */
-	public function set($request): void {
+	public function set(mixed $request): void {
 		if (!is_array($request) && !($request instanceof stdClass)) {
 			throw new InvalidJsonException();
 		}
 		$this->request = $request;
 		$this->addMsgId();
+	}
+
+	/**
+	 * Converts the IQRF JSON DPA request to JSON string
+	 * @param bool $pretty Pretty formatted JSON
+	 * @return string JSON string
+	 * @throws JsonException
+	 */
+	public function toJson(bool $pretty = false): string {
+		return Json::encode($this->request, pretty: $pretty);
 	}
 
 	/**
@@ -78,17 +84,6 @@ class ApiRequest {
 		} elseif ($this->request instanceof stdClass && !isset($this->request->data->msgId)) {
 			$this->request->data->msgId = $this->msgIdManager->generate();
 		}
-	}
-
-	/**
-	 * Converts the IQRF JSON DPA request to JSON string
-	 * @param bool $pretty Pretty formatted JSON
-	 * @return string JSON string
-	 * @throws JsonException
-	 */
-	public function toJson(bool $pretty = false): string {
-		$options = $pretty ? Json::PRETTY : 0;
-		return Json::encode($this->request, $options);
 	}
 
 }

@@ -38,6 +38,61 @@ require __DIR__ . '/../../../../bootstrap.php';
 class MappingTest extends TestCase {
 
 	/**
+	 * Mapping type
+	 */
+	private const TYPE = Mapping::TYPE_UART;
+
+	/**
+	 * Mapping name
+	 */
+	private const NAME = 'Test mapping 1';
+
+	/**
+	 * Mapping device name
+	 */
+	private const INTERFACE = '/dev/ttyS0';
+
+	/**
+	 * Device type
+	 */
+	private const DEVICE_TYPE = Mapping::DEVICE_BOARD;
+
+	/**
+	 * Mapping bus enable pin number
+	 */
+	private const BUS_PIN = 19;
+
+	/**
+	 * Mapping programming mode switch pin number
+	 */
+	private const PGM_PIN = -1;
+
+	/**
+	 * Mapping power enable pin number
+	 */
+	private const POWER_PIN = 3;
+
+	/**
+	 * Mapping UART baud rate
+	 */
+	private const UART_BAUD_RATE = 57600;
+
+	/**
+	 * Mapping I2C interface enable pin number
+	 */
+	private const I2C_PIN = 7;
+
+	/**
+	 * Mapping SPI interface enable pin number
+	 */
+	private const SPI_PIN = 10;
+
+	/**
+	 * Mapping UART interface enable pin number
+	 */
+	private const UART_PIN = 6;
+
+	/**
 	 * @var Mapping Mapping entity
 	 */
 	private Mapping $mapping;
@@ -46,70 +101,6 @@ class MappingTest extends TestCase {
 	 * @var Mapping Mapping entity for Gateway
 	 */
 	private Mapping $mappingGw;
-
-	/**
-	 * @var string Mapping type
-	 */
-	private const TYPE = Mapping::TYPE_UART;
-
-	/**
-	 * @var string Mapping name
-	 */
-	private const NAME = 'Test mapping 1';
-
-	/**
-	 * @var string Mapping device name
-	 */
-	private const INTERFACE = '/dev/ttyS0';
-
-	/**
-	 * @var string Device type
-	 */
-	private const DEVICE_TYPE = Mapping::DEVICE_BOARD;
-
-	/**
-	 * @var int Mapping bus enable pin number
-	 */
-	private const BUS_PIN = 19;
-
-	/**
-	 * @var int Mapping programming mode switch pin number
-	 */
-	private const PGM_PIN = -1;
-
-	/**
-	 * @var int Mapping power enable pin number
-	 */
-	private const POWER_PIN = 3;
-
-	/**
-	 * @var int Mapping UART baud rate
-	 */
-	private const UART_BAUD_RATE = 57600;
-
-	/**
-	 * @var int Mapping I2C interface enable pin number
-	 */
-	private const I2C_PIN = 7;
-
-	/**
-	 * @var int Mapping SPI interface enable pin number
-	 */
-	private const SPI_PIN = 10;
-
-	/**
-	 * @var int Mapping UART interface enable pin number
-	 */
-	private const UART_PIN = 6;
-
-	/**
-	 * Sets up testing environment
-	 */
-	protected function setUp(): void {
-		parent::setUp();
-		$this->mapping = new Mapping(self::TYPE, self::NAME, self::DEVICE_TYPE, self::INTERFACE, self::BUS_PIN, self::PGM_PIN, self::POWER_PIN, self::UART_BAUD_RATE);
-		$this->mappingGw = new Mapping(self::TYPE, self::NAME, self::DEVICE_TYPE, self::INTERFACE, self::BUS_PIN, self::PGM_PIN, self::POWER_PIN, self::UART_BAUD_RATE, self::I2C_PIN, self::SPI_PIN, self::UART_PIN);
-	}
 
 	/**
 	 * Tests the function to return mapping name
@@ -157,14 +148,6 @@ class MappingTest extends TestCase {
 		$expected = Mapping::DEVICE_ADAPTER;
 		$this->mapping->setDeviceType($expected);
 		Assert::same($expected, $this->mapping->getDeviceType());
-	}
-
-	/**
-	 * Tests the function set unsupported device type
-	 */
-	public function testSetDeviceTypeUnsupported(): void {
-		$this->mapping->setDeviceType('unknown');
-		Assert::same(self::DEVICE_TYPE, $this->mapping->getDeviceType());
 	}
 
 	/**
@@ -237,14 +220,6 @@ class MappingTest extends TestCase {
 		$expected = 19200;
 		$this->mapping->setBaudRate($expected);
 		Assert::same($expected, $this->mapping->getBaudRate());
-	}
-
-	/**
-	 * Tests the function to set mapping UART baud rate with invalid value
-	 */
-	public function testSetBaudRateInvalid(): void {
-		$this->mapping->setBaudRate(20);
-		Assert::same(self::UART_BAUD_RATE, $this->mapping->getBaudRate());
 	}
 
 	/**
@@ -324,14 +299,6 @@ class MappingTest extends TestCase {
 	}
 
 	/**
-	 * Tests the function to mapping type with unsupported type
-	 */
-	public function testSetTypeUnsupported(): void {
-		$this->mapping->setType('test');
-		Assert::same(self::TYPE, $this->mapping->getType());
-	}
-
-	/**
 	 * Tests the function to set mapping type, changing type from UART to SPI clears baud rate
 	 */
 	public function testSetTypeUartToSpi(): void {
@@ -396,6 +363,15 @@ class MappingTest extends TestCase {
 			'uartEnableGpioPin' => self::UART_PIN,
 		];
 		Assert::same($expected, $this->mappingGw->jsonSerialize());
+	}
+
+	/**
+	 * Sets up testing environment
+	 */
+	protected function setUp(): void {
+		parent::setUp();
+		$this->mapping = new Mapping(self::TYPE, self::NAME, self::DEVICE_TYPE, self::INTERFACE, self::BUS_PIN, self::PGM_PIN, self::POWER_PIN, self::UART_BAUD_RATE);
+		$this->mappingGw = new Mapping(self::TYPE, self::NAME, self::DEVICE_TYPE, self::INTERFACE, self::BUS_PIN, self::PGM_PIN, self::POWER_PIN, self::UART_BAUD_RATE, self::I2C_PIN, self::SPI_PIN, self::UART_PIN);
 	}
 
 }

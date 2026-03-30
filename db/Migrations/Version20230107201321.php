@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Database\Migrations;
 
@@ -27,6 +27,7 @@ use Doctrine\Migrations\AbstractMigration;
  * Mapping device type migration
  */
 final class Version20230107201321 extends AbstractMigration {
+
 	/**
 	 * Returns a migration description
 	 * @return string Migration description
@@ -35,12 +36,20 @@ final class Version20230107201321 extends AbstractMigration {
 		return 'Mapping device type migration';
 	}
 
+	/**
+	 * Applies the migration
+	 * @param Schema $schema Database schema
+	 */
 	public function up(Schema $schema): void {
 		$this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
 
 		$this->addSql('ALTER TABLE mappings ADD COLUMN device_type VARCHAR(255) NOT NULL DEFAULT board');
 	}
 
+	/**
+	 * Reverts the migration
+	 * @param Schema $schema Database schema
+	 */
 	public function down(Schema $schema): void {
 		$this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
 
@@ -50,4 +59,5 @@ final class Version20230107201321 extends AbstractMigration {
 		$this->addSql('INSERT INTO mappings (id, type, name, iqrf_interface, bus_enable_gpio_pin, pgm_switch_gpio_pin, power_enable_gpio_pin, baud_rate, i2c_enable_gpio_pin, spi_enable_gpio_pin, uart_enable_gpio_pin) SELECT id, type, name, iqrf_interface, bus_enable_gpio_pin, pgm_switch_gpio_pin, power_enable_gpio_pin, baud_rate, i2c_enable_gpio_pin, spi_enable_gpio_pin, uart_enable_gpio_pin FROM __temp__mappings');
 		$this->addSql('DROP TABLE __temp__mappings');
 	}
+
 }

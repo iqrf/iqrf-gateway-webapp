@@ -20,13 +20,13 @@ declare(strict_types = 1);
 
 namespace App\NetworkModule\Models;
 
-use App\CoreModule\Models\CommandManager;
 use App\NetworkModule\Entities\Connection;
 use App\NetworkModule\Entities\ConnectionDetail;
 use App\NetworkModule\Enums\ConnectionTypes;
 use App\NetworkModule\Exceptions\NetworkManagerException;
 use App\NetworkModule\Exceptions\NonexistentConnectionException;
 use App\NetworkModule\Utils\NmCliConnection;
+use Iqrf\CommandExecutor\CommandExecutor;
 use Nette\Utils\Strings;
 use Ramsey\Uuid\UuidInterface;
 use stdClass;
@@ -37,16 +37,12 @@ use stdClass;
 class ConnectionManager {
 
 	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
-
-	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandExecutor Command manager
 	 */
-	public function __construct(CommandManager $commandManager) {
-		$this->commandManager = $commandManager;
+	public function __construct(
+		private readonly CommandExecutor $commandExecutor,
+	) {
 	}
 
 	/**
@@ -54,7 +50,7 @@ class ConnectionManager {
 	 * @param UuidInterface $uuid Network connection UUID
 	 */
 	public function delete(UuidInterface $uuid): void {
-		$output = $this->commandManager->run('nmcli -t connection delete ' . $uuid->toString(), true);
+		$output = $this->commandExecutor->run('nmcli -t connection delete ' . $uuid->toString(), true);
 		$exitCode = $output->getExitCode();
 		if ($exitCode !== 0) {
 			$this->handleError($exitCode, $output->getStderr());
@@ -67,7 +63,7 @@ class ConnectionManager {
 	 */
 	public function down(UuidInterface $uuid): void {
 		$command = sprintf('nmcli -t connection down %s', $uuid->toString());
-		$output = $this->commandManager->run($command, true);
+		$output = $this->commandExecutor->run($command, true);
 		$exitCode = $output->getExitCode();
 		if ($exitCode !== 0) {
 			$this->handleError($exitCode, $output->getStderr());
@@ -80,7 +76,7 @@ class ConnectionManager {
 	 * @return ConnectionDetail Detailed network connection entity
 	 */
 	public function get(UuidInterface $uuid): ConnectionDetail {
-		$output = $this->commandManager->run('nmcli -t -s connection show ' . $uuid->toString(), true);
+		$output = $this->commandExecutor->run('nmcli -t -s connection show ' . $uuid->toString(), true);
 		$exitCode = $output->getExitCode();
 		if ($exitCode !== 0) {
 			$this->handleError($exitCode, $output->getStderr());
@@ -97,7 +93,7 @@ class ConnectionManager {
 	public function list(?ConnectionTypes $type = null): array {
 		$fields = ['NAME', 'UUID', 'TYPE', 'DEVICE'];
 		$command = sprintf('nmcli -t -f %s connection show', implode(',', $fields));
-		$output = $this->commandManager->run($command, true)->getStdout();
+		$output = $this->commandExecutor->run($command, true)->getStdout();
 		if ($output === '') {
 			return [];
 		}
@@ -127,7 +123,7 @@ class ConnectionManager {
 		$newConnection = ConnectionDetail::jsonDeserialize($values);
 		$configuration = $newConnection->nmCliSerialize();
 		$command = sprintf('nmcli -t connection add %s', $configuration);
-		$output = $this->commandManager->run($command, true);
+		$output = $this->commandExecutor->run($command, true);
 		$exitCode = $output->getExitCode();
 		if ($exitCode !== 0) {
 			$this->handleError($exitCode, $output->getStderr());
@@ -151,7 +147,7 @@ class ConnectionManager {
 		$newConnection = ConnectionDetail::jsonDeserialize($values);
 		$configuration = Strings::replace($newConnection->nmCliSerialize(), '#connection\.type \"[\\-\w]+\" #', '');
 		$command = sprintf('nmcli -t connection modify %s %s', $uuid->toString(), $configuration);
-		$output = $this->commandManager->run($command, true);
+		$output = $this->commandExecutor->run($command, true);
 		$exitCode = $output->getExitCode();
 		if ($exitCode !== 0) {
 			$this->handleError($exitCode, $output->getStderr());
@@ -169,7 +165,7 @@ class ConnectionManager {
 		if ($interface !== null) {
 			$command .= ' ifname ' . $interface;
 		}
-		$output = $this->commandManager->run($command, true);
+		$output = $this->commandExecutor->run($command, true);
 		$exitCode = $output->getExitCode();
 		if ($exitCode !== 0) {
 			$this->handleError($exitCode, $output->getStderr());

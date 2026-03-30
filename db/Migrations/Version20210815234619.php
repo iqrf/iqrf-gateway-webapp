@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Database\Migrations;
 
@@ -27,6 +27,7 @@ use Doctrine\Migrations\AbstractMigration;
  * E-mail verification database migration
  */
 final class Version20210815234619 extends AbstractMigration {
+
 	/**
 	 * Returns the migration description
 	 * @return string Migration description
@@ -35,8 +36,11 @@ final class Version20210815234619 extends AbstractMigration {
 		return 'E-mail verification database migration';
 	}
 
+	/**
+	 * Applies the migration
+	 * @param Schema $schema Database schema
+	 */
 	public function up(Schema $schema): void {
-		// this up() migration is auto-generated, please modify it to your needs
 		$this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
 
 		$this->addSql('CREATE TABLE "email_verification" (uuid CHAR(36) NOT NULL --(DC2Type:uuid)
@@ -52,8 +56,11 @@ final class Version20210815234619 extends AbstractMigration {
 		$this->addSql('CREATE UNIQUE INDEX UNIQ_1483A5E9E7927C74 ON users (email)');
 	}
 
+	/**
+	 * Reverts the migration
+	 * @param Schema $schema Database schema
+	 */
 	public function down(Schema $schema): void {
-		// this down() migration is auto-generated, please modify it to your needs
 		$this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
 
 		$this->addSql('DROP TABLE "email_verification"');
@@ -66,4 +73,5 @@ final class Version20210815234619 extends AbstractMigration {
 		$this->addSql('DROP TABLE __temp__users');
 		$this->addSql('CREATE UNIQUE INDEX UNIQ_1483A5E9F85E0677 ON "users" (username)');
 	}
+
 }

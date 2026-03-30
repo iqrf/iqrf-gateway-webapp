@@ -20,11 +20,11 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models\Backup;
 
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FeatureManager;
-use App\CoreModule\Models\FileManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use InvalidArgumentException;
+use Iqrf\CommandExecutor\CommandExecutor;
+use Iqrf\FileManager\FileManager;
 
 /**
  * IQRF Software backup manager
@@ -32,22 +32,22 @@ use InvalidArgumentException;
 abstract class IqrfSoftwareBackup implements IBackupManager {
 
 	/**
-	 * @var string IQRF Gateway Controller
+	 * IQRF Gateway Controller
 	 */
 	protected const IQRF_GATEWAY_CONTROLLER = 'IQRF Gateway Controller';
 
 	/**
-	 * @var string IQRF Gateway Translator
+	 * IQRF Gateway Translator
 	 */
 	protected const IQRF_GATEWAY_TRANSLATOR = 'IQRF Gateway Translator';
 
 	/**
-	 * @var string IQRF Gateway Uploader
+	 * IQRF Gateway Uploader
 	 */
 	protected const IQRF_GATEWAY_UPLOADER = 'IQRF Gateway Uploader';
 
 	/**
-	 * @var array<string> List of whitelisted pieces of software
+	 * List of whitelisted pieces of software
 	 */
 	private const SOFTWARES = [
 		self::IQRF_GATEWAY_CONTROLLER,
@@ -56,48 +56,42 @@ abstract class IqrfSoftwareBackup implements IBackupManager {
 	];
 
 	/**
-	 * @var FileManager File manager
-	 */
-	private FileManager $fileManager;
-
-	/**
-	 * @var string Software name
-	 */
-	private string $software;
-
-	/**
 	 * @var bool Indicates whether feature is enabled
 	 */
 	protected bool $featureEnabled;
 
 	/**
-	 * @var CommandManager Command manager
+	 * @var string Software name
 	 */
-	private CommandManager $commandManager;
-
-	/**
-	 * @var RestoreLogger Restore logger
-	 */
-	private RestoreLogger $restoreLogger;
+	private readonly string $software;
 
 	/**
 	 * Constructor
 	 * @param string $software Software name
 	 * @param FileManager $fileManager File manager
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandExecutor Command manager
 	 * @param FeatureManager $featureManager Feature manager
 	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
-	public function __construct(string $software, FileManager $fileManager, CommandManager $commandManager, FeatureManager $featureManager, RestoreLogger $restoreLogger) {
+	public function __construct(
+		string $software,
+		private readonly FileManager $fileManager,
+		private readonly CommandExecutor $commandExecutor,
+		FeatureManager $featureManager,
+		private readonly RestoreLogger $restoreLogger,
+	) {
 		if (!in_array($software, self::SOFTWARES, true)) {
 			throw new InvalidArgumentException('Invalid software name.');
 		}
 		$this->software = $software;
-		$this->fileManager = $fileManager;
-		$this->featureEnabled = $featureManager->get($this->getFeatureName())['enabled'];
-		$this->commandManager = $commandManager;
-		$this->restoreLogger = $restoreLogger;
+		$this->featureEnabled = $featureManager->isEnabled($this->getFeatureName());
 	}
+
+	/**
+	 * Returns service names
+	 * @return array<string> Service names
+	 */
+	abstract public function getServices(): array;
 
 	/**
 	 * Performs IQRF software backup
@@ -130,12 +124,11 @@ abstract class IqrfSoftwareBackup implements IBackupManager {
 	 * Recreates directory
 	 */
 	private function recreateDirectory(): void {
-		$user = posix_getpwuid(posix_geteuid());
-		$owner = $user['name'] . ':' . posix_getgrgid($user['gid'])['name'];
+		$owner = PosixHelper::getChownOwner();
 		$path = escapeshellarg($this->fileManager->getBasePath());
-		$this->commandManager->run('rm -rf ' . $path, true);
-		$this->commandManager->run('mkdir ' . $path, true);
-		$this->commandManager->run('chown -R ' . $owner . ' ' . $path, true);
+		$this->commandExecutor->run('rm -rf ' . $path, true);
+		$this->commandExecutor->run('mkdir ' . $path, true);
+		$this->commandExecutor->run('chown -R ' . $owner . ' ' . $path, true);
 	}
 
 	/**
@@ -143,16 +136,11 @@ abstract class IqrfSoftwareBackup implements IBackupManager {
 	 * @return string Optional feature name
 	 */
 	private function getFeatureName(): string {
-		switch ($this->software) {
-			case self::IQRF_GATEWAY_CONTROLLER:
-				return 'iqrfGatewayController';
-			case self::IQRF_GATEWAY_TRANSLATOR:
-				return 'iqrfGatewayTranslator';
-			case self::IQRF_GATEWAY_UPLOADER:
-				return 'trUpload';
-			default:
-				throw new InvalidArgumentException('Invalid software name.');
-		}
+		return match ($this->software) {
+			self::IQRF_GATEWAY_CONTROLLER => 'iqrfGatewayController',
+			self::IQRF_GATEWAY_TRANSLATOR => 'iqrfGatewayTranslator',
+			self::IQRF_GATEWAY_UPLOADER => 'trUpload',
+		};
 	}
 
 	/**
@@ -160,22 +148,11 @@ abstract class IqrfSoftwareBackup implements IBackupManager {
 	 * @return string Directory path in the ZIP archive
 	 */
 	private function zipDir(): string {
-		switch ($this->software) {
-			case self::IQRF_GATEWAY_CONTROLLER:
-				return 'controller';
-			case self::IQRF_GATEWAY_TRANSLATOR:
-				return 'translator';
-			case self::IQRF_GATEWAY_UPLOADER:
-				return 'uploader';
-			default:
-				throw new InvalidArgumentException('Invalid software name.');
-		}
+		return match ($this->software) {
+			self::IQRF_GATEWAY_CONTROLLER => 'controller',
+			self::IQRF_GATEWAY_TRANSLATOR => 'translator',
+			self::IQRF_GATEWAY_UPLOADER => 'uploader',
+		};
 	}
-
-	/**
-	 * Returns service names
-	 * @return array<string> Service names
-	 */
-	abstract public function getServices(): array;
 
 }

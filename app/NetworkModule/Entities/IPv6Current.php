@@ -24,32 +24,12 @@ use App\NetworkModule\Enums\IPv6Methods;
 use Darsyn\IP\Version\IPv6;
 use JsonSerializable;
 
-final class IPv6Current implements JsonSerializable {
+final readonly class IPv6Current implements JsonSerializable {
 
 	/**
-	 * @var string nmcli configuration prefix
+	 * nmcli configuration prefix
 	 */
 	public const NMCLI_PREFIX = 'IP6';
-
-	/**
-	 * @var IPv6Methods Connection method
-	 */
-	private IPv6Methods $method;
-
-	/**
-	 * @var array<IPv6Address> IPv6 addresses
-	 */
-	private array $addresses = [];
-
-	/**
-	 * @var IPv6|null IPv6 gateway address
-	 */
-	private ?IPv6 $gateway;
-
-	/**
-	 * @var array<IPv6> IPv6 addresses of DNS servers
-	 */
-	private array $dns = [];
 
 	/**
 	 * IPv6 current configuration constructor
@@ -58,11 +38,12 @@ final class IPv6Current implements JsonSerializable {
 	 * @param IPv6|null $gateway IPv6 gateway address
 	 * @param array<IPv6> $dns IPv6 addresses of DNS servers
 	 */
-	public function __construct(IPv6Methods $method, array $addresses, ?IPv6 $gateway, array $dns) {
-		$this->method = $method;
-		$this->addresses = $addresses;
-		$this->gateway = $gateway;
-		$this->dns = $dns;
+	public function __construct(
+		private IPv6Methods $method,
+		private array $addresses,
+		private ?IPv6 $gateway,
+		private array $dns,
+	) {
 	}
 
 	/**
@@ -79,13 +60,13 @@ final class IPv6Current implements JsonSerializable {
 			$gateway = null;
 		}
 		if (array_key_exists('ADDRESS', $array)) {
-			$addresses = array_map(static fn(string $address): IPv6Address => IPv6Address::fromPrefix($address), $array['ADDRESS']);
+			$addresses = array_map(IPv6Address::fromPrefix(...), $array['ADDRESS']);
 		} else {
 			$addresses = [];
 		}
 		$dns = [];
 		if (array_key_exists('DNS', $array)) {
-			$dns = array_map(static fn(string $address): IPv6 => IPv6::factory($address), $array['DNS']);
+			$dns = array_map(IPv6::factory(...), $array['DNS']);
 		}
 		return new self($method, $addresses, $gateway, $dns);
 	}
@@ -98,7 +79,7 @@ final class IPv6Current implements JsonSerializable {
 		return [
 			'method' => $this->method->toScalar(),
 			'addresses' => array_map(static fn (IPv6Address $a): array => $a->toArray(), $this->addresses),
-			'gateway' => $this->gateway !== null ? $this->gateway->getCompactedAddress() : null,
+			'gateway' => $this->gateway?->getCompactedAddress(),
 			'dns' => array_map(static fn (IPv6 $a): array => ['address' => $a->getCompactedAddress()], $this->dns),
 		];
 	}

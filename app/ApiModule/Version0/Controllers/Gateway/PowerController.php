@@ -23,6 +23,7 @@ namespace App\ApiModule\Version0\Controllers\Gateway;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
+use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Controllers\GatewayController;
@@ -31,68 +32,56 @@ use App\GatewayModule\Models\PowerManager;
 
 /**
  * Gateway power controller
- * @Path("/")
  */
+#[Path('/')]
+#[Tag('Gateway - Power management')]
 class PowerController extends GatewayController {
-
-	/**
-	 * @var PowerManager Gateway power manager
-	 */
-	private PowerManager $manager;
 
 	/**
 	 * Constructor
 	 * @param PowerManager $manager Gateway power manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(PowerManager $manager, RestApiSchemaValidator $validator) {
-		$this->manager = $manager;
+	public function __construct(
+		private readonly PowerManager $manager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 
-	/**
-	 * @Path("/poweroff")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Powers off the gateway
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/PowerControl'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/poweroff')]
+	#[Method('POST')]
+	#[OpenApi(<<<'EOT'
+		summary: Powers off the gateway
+		responses:
+			'200':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: '#/components/schemas/PowerControl'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+	EOT)]
 	public function powerOff(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['gateway:power']);
 		return $response->writeJsonBody($this->manager->powerOff());
 	}
 
-	/**
-	 * @Path("/reboot")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Reboots the gateway
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/PowerControl'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/reboot')]
+	#[Method('POST')]
+	#[OpenApi(<<<'EOT'
+		summary: Reboots the gateway
+		responses:
+			'200':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: '#/components/schemas/PowerControl'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+	EOT)]
 	public function reboot(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['gateway:power']);
 		return $response->writeJsonBody($this->manager->reboot());

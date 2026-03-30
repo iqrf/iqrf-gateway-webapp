@@ -36,27 +36,27 @@ final class ConnectivityState extends Enum {
 	use AutoInstances;
 
 	/**
-	 * @var string The host is not connected to any network
+	 * The host is not connected to any network
 	 */
 	private const NONE = 'none';
 
 	/**
-	 * @var string The host is behind a captive portal and cannot reach the full Internet
+	 * The host is behind a captive portal and cannot reach the full Internet
 	 */
 	private const PORTAL = 'portal';
 
 	/**
-	 * @var string The host is connected to a network, but it has no access to the Internet
+	 * The host is connected to a network, but it has no access to the Internet
 	 */
 	private const LIMITED = 'limited';
 
 	/**
-	 * @var string The host is connected to a network and has full access to the Internet
+	 * The host is connected to a network and has full access to the Internet
 	 */
 	private const FULL = 'full';
 
 	/**
-	 * @var string The connectivity status cannot be found out
+	 * The connectivity status cannot be found out
 	 */
 	private const UNKNOWN = 'unknown';
 

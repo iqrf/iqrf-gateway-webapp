@@ -62,7 +62,7 @@ class ApiResponse {
 	public function set(string $response): void {
 		try {
 			$this->response = Json::decode($response);
-		} catch (JsonException $e) {
+		} catch (JsonException) {
 			$this->response = (object) [];
 		}
 	}
@@ -74,8 +74,7 @@ class ApiResponse {
 	 * @throws JsonException
 	 */
 	public function toJson(bool $pretty = false): string {
-		$options = $pretty ? Json::PRETTY : 0;
-		return Json::encode($this->response, $options);
+		return Json::encode($this->response, pretty: $pretty);
 	}
 
 }

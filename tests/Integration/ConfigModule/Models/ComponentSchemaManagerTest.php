@@ -27,11 +27,11 @@ declare(strict_types = 1);
 namespace Tests\Integration\ConfigModule\Models;
 
 use App\ConfigModule\Models\ComponentSchemaManager;
-use App\CoreModule\Entities\CommandStack;
 use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
-use App\CoreModule\Models\CommandManager;
-use App\CoreModule\Models\FileManager;
+use Iqrf\CommandExecutor\CommandExecutor;
+use Iqrf\CommandExecutor\CommandStack;
+use Iqrf\FileManager\FileManager;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -43,17 +43,17 @@ require __DIR__ . '/../../../bootstrap.php';
 final class ComponentSchemaManagerTest extends TestCase {
 
 	/**
-	 * @var string MQTT component name
+	 * MQTT component name
 	 */
 	private const COMPONENT_NAME = 'iqrf::MqttMessaging';
 
 	/**
-	 * @var string Directory with configuration files
+	 * Directory with configuration files
 	 */
 	private const FILE_PATH = TESTER_DIR . '/data/configuration/';
 
 	/**
-	 * @var string JSON schema directory path
+	 * JSON schema directory path
 	 */
 	private const SCHEMA_PATH = TESTER_DIR . '/data/cfgSchemas/';
 
@@ -91,7 +91,7 @@ final class ComponentSchemaManagerTest extends TestCase {
 	public function testValidateInvalid(): void {
 		$this->manager->setSchema(self::COMPONENT_NAME);
 		Assert::exception(function (): void {
-			$json = (object) $this->fileManager->readJson('iqrf__MqMessaging.json');
+			$json = (object) $this->fileManager->readJson('iqrf__WebsocketMessaging.json');
 			$this->manager->validate($json);
 		}, InvalidJsonException::class);
 	}
@@ -112,7 +112,7 @@ final class ComponentSchemaManagerTest extends TestCase {
 	 */
 	protected function setUp(): void {
 		$commandStack = new CommandStack();
-		$commandManager = new CommandManager(false, $commandStack);
+		$commandManager = new CommandExecutor(false, $commandStack);
 		$this->fileManager = new FileManager(self::FILE_PATH, $commandManager);
 		$this->manager = new ComponentSchemaManager(self::SCHEMA_PATH, $commandManager);
 	}

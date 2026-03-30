@@ -20,10 +20,10 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models;
 
-use App\CoreModule\Models\CommandManager;
 use App\GatewayModule\Models\BoardManagers\DeviceTreeBoardManager;
 use App\GatewayModule\Models\BoardManagers\DmiBoardManager;
 use App\GatewayModule\Models\BoardManagers\IqrfBoardManager;
+use Iqrf\CommandExecutor\CommandExecutor;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
@@ -43,30 +43,16 @@ class InfoManager {
 	];
 
 	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
-
-	/**
-	 * @var NetworkManager Network manager
-	 */
-	private NetworkManager $networkManager;
-
-	/**
-	 * @var VersionManager Version manager
-	 */
-	private VersionManager $versionManager;
-
-	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandExecutor Command manager
 	 * @param NetworkManager $networkManager Network manager
 	 * @param VersionManager $versionManager Version manager
 	 */
-	public function __construct(CommandManager $commandManager, NetworkManager $networkManager, VersionManager $versionManager) {
-		$this->commandManager = $commandManager;
-		$this->networkManager = $networkManager;
-		$this->versionManager = $versionManager;
+	public function __construct(
+		private readonly CommandExecutor $commandExecutor,
+		private readonly NetworkManager $networkManager,
+		private readonly VersionManager $versionManager,
+	) {
 	}
 
 	/**
@@ -115,7 +101,7 @@ class InfoManager {
 	 */
 	public function getBoard(): string {
 		foreach ($this->boardManagers as $boardManager) {
-			$boardName = (new $boardManager($this->commandManager))->getName();
+			$boardName = (new $boardManager($this->commandExecutor))->getName();
 			if (isset($boardName)) {
 				return $boardName;
 			}
@@ -129,11 +115,11 @@ class InfoManager {
 	 */
 	public function readGatewayFile(): ?array {
 		$command = 'cat /etc/iqrf-gateway.json';
-		$output = $this->commandManager->run($command, true)->getStdout();
+		$output = $this->commandExecutor->run($command, true)->getStdout();
 		if ($output !== '') {
 			try {
-				return Json::decode($output, Json::FORCE_ARRAY);
-			} catch (JsonException $e) {
+				return Json::decode($output, forceArrays: true);
+			} catch (JsonException) {
 				// Skip IQRF GW info file parsing
 			}
 		}
@@ -161,10 +147,10 @@ class InfoManager {
 	 */
 	public function getOs(): array {
 		$command = 'cat /etc/os-release';
-		$output = $this->commandManager->run($command)->getStdout();
+		$output = $this->commandExecutor->run($command)->getStdout();
 		$osInfo = [];
 		foreach (explode(PHP_EOL, $output) as $line) {
-			if (strpos($line, '=') !== false) {
+			if (str_contains($line, '=')) {
 				$line = explode('=', $line);
 				$osInfo[$line[0]] = Strings::trim($line[1], '"');
 			}
@@ -180,7 +166,7 @@ class InfoManager {
 	 * @return string Gateway uptime
 	 */
 	public function getUptime(): string {
-		return $this->commandManager->run('uptime -p')->getStdout();
+		return $this->commandExecutor->run('uptime -p')->getStdout();
 	}
 
 	/**
@@ -189,7 +175,7 @@ class InfoManager {
 	 */
 	public function getDiskUsages(): array {
 		$command = 'df -l -B1 -x tmpfs -x devtmpfs -x overlay -x squashfs -T -P | awk \'{if (NR!=1) {$6="";print}}\'';
-		$output = $this->commandManager->run($command)->getStdout();
+		$output = $this->commandExecutor->run($command)->getStdout();
 		$usages = [];
 		foreach (explode(PHP_EOL, $output) as $disk) {
 			$segments = explode(' ', $disk);
@@ -231,7 +217,7 @@ class InfoManager {
 	 */
 	public function getMemoryUsage(): array {
 		$command = 'free -bw | awk \'{{if (NR==2) print $2,$3,$4,$5,$6,$7,$8}}\'';
-		$output = $this->commandManager->run($command)->getStdout();
+		$output = $this->commandExecutor->run($command)->getStdout();
 		$segments = explode(' ', $output);
 		$size = (float) $segments[0];
 		$used = (float) $segments[1];
@@ -253,7 +239,7 @@ class InfoManager {
 	 */
 	public function getSwapUsage(): ?array {
 		$command = 'free -b | awk \'{{if (NR==3) print $2,$3,$4}}\'';
-		$output = $this->commandManager->run($command)->getStdout();
+		$output = $this->commandExecutor->run($command)->getStdout();
 		$segments = explode(' ', $output);
 		if ($segments[0] === '0') {
 			return null;

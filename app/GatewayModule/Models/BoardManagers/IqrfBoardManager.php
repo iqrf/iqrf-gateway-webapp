@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models\BoardManagers;
 
-use App\CoreModule\Models\CommandManager;
+use Iqrf\CommandExecutor\CommandExecutor;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 
@@ -30,16 +30,12 @@ use Nette\Utils\JsonException;
 class IqrfBoardManager implements IBoardManager {
 
 	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
-
-	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandExecutor Command manager
 	 */
-	public function __construct(CommandManager $commandManager) {
-		$this->commandManager = $commandManager;
+	public function __construct(
+		private readonly CommandExecutor $commandExecutor,
+	) {
 	}
 
 	/**
@@ -47,14 +43,14 @@ class IqrfBoardManager implements IBoardManager {
 	 * @return string|null IQRF Gateway's board's name
 	 */
 	public function getName(): ?string {
-		$gwJson = $this->commandManager->run('cat /etc/iqrf-gateway.json', true)->getStdout();
+		$gwJson = $this->commandExecutor->run('cat /etc/iqrf-gateway.json', true)->getStdout();
 		if ($gwJson === '') {
 			return null;
 		}
 		try {
-			$gw = Json::decode($gwJson, Json::FORCE_ARRAY);
+			$gw = Json::decode($gwJson, forceArrays: true);
 			return $gw['gwManufacturer'] . ' ' . $gw['gwProduct'];
-		} catch (JsonException $e) {
+		} catch (JsonException) {
 			return null;
 		}
 	}

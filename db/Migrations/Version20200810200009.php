@@ -27,6 +27,7 @@ use Doctrine\Migrations\AbstractMigration;
  * API key repository migration
  */
 final class Version20200810200009 extends AbstractMigration {
+
 	/**
 	 * Returns the migration description
 	 * @return string Migration description
@@ -35,6 +36,10 @@ final class Version20200810200009 extends AbstractMigration {
 		return 'Added API key repository';
 	}
 
+	/**
+	 * Applies the migration
+	 * @param Schema $schema Database schema
+	 */
 	public function up(Schema $schema): void {
 		$this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
 
@@ -43,9 +48,14 @@ final class Version20200810200009 extends AbstractMigration {
 		$this->addSql('CREATE UNIQUE INDEX UNIQ_9579321F8FFBE0F7 ON "api_keys" (salt)');
 	}
 
+	/**
+	 * Reverts the migration
+	 * @param Schema $schema Database schema
+	 */
 	public function down(Schema $schema): void {
 		$this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
 
 		$this->addSql('DROP TABLE "api_keys"');
 	}
+
 }

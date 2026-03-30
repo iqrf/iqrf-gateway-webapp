@@ -20,9 +20,9 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models\Backup;
 
-use App\CoreModule\Models\CommandManager;
-use App\CoreModule\Models\PrivilegedFileManager;
 use App\CoreModule\Models\ZipArchiveManager;
+use Iqrf\CommandExecutor\CommandExecutor;
+use Iqrf\FileManager\PrivilegedFileManager;
 use Nette\Utils\FileSystem;
 
 /**
@@ -31,14 +31,14 @@ use Nette\Utils\FileSystem;
 class TimesyncdBackup implements IBackupManager {
 
 	/**
-	 * @var array<string> List of whitelisted files
+	 * List of whitelisted files
 	 */
 	public const WHITELIST = [
 		'timesyncd.conf',
 	];
 
 	/**
-	 * @var array<string> Service name
+	 * Service name
 	 */
 	public const SERVICES = [
 		'systemd-timesyncd',
@@ -47,40 +47,32 @@ class TimesyncdBackup implements IBackupManager {
 	/**
 	 * @var string Path to NTP configuration directory
 	 */
-	private string $path;
+	private readonly string $path;
 
 	/**
 	 * @var string File name
 	 */
-	private string $file;
-
-	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
+	private readonly string $file;
 
 	/**
 	 * @var PrivilegedFileManager Privileged file manager
 	 */
-	private PrivilegedFileManager $fileManager;
-
-	/**
-	 * @var RestoreLogger Restore logger
-	 */
-	private RestoreLogger $restoreLogger;
+	private readonly PrivilegedFileManager $fileManager;
 
 	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandExecutor Command manager
 	 * @param string $path Path to conf
 	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
-	public function __construct(CommandManager $commandManager, string $path, RestoreLogger $restoreLogger) {
-		$this->commandManager = $commandManager;
-		$this->restoreLogger = $restoreLogger;
+	public function __construct(
+		private readonly CommandExecutor $commandExecutor,
+		string $path,
+		private readonly RestoreLogger $restoreLogger,
+	) {
 		$this->path = dirname($path);
 		$this->file = basename($path);
-		$this->fileManager = new PrivilegedFileManager($this->path, $this->commandManager);
+		$this->fileManager = new PrivilegedFileManager($this->path, $this->commandExecutor);
 	}
 
 	/**
@@ -111,19 +103,19 @@ class TimesyncdBackup implements IBackupManager {
 	}
 
 	/**
-	 * Fixes privileges for restored files
-	 */
-	private function fixPrivileges(): void {
-		$this->fileManager->chown($this->file, 'root', 'root');
-		$this->fileManager->chmod($this->file, 0644);
-	}
-
-	/**
 	 * Returns service names
 	 * @return array<string> Service names
 	 */
 	public function getServices(): array {
 		return self::SERVICES;
+	}
+
+	/**
+	 * Fixes privileges for restored files
+	 */
+	private function fixPrivileges(): void {
+		$this->fileManager->chown($this->file, 'root', 'root');
+		$this->fileManager->chmod($this->file, 0644);
 	}
 
 }

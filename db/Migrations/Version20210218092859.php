@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Database\Migrations;
 
@@ -24,17 +24,22 @@ use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
 /**
- * Wireguard tunnel repositories migration
+ * WireGuard tunnel repositories migration
  */
 final class Version20210218092859 extends AbstractMigration {
+
 	/**
 	 * Returns the migration description
 	 * @return string Migration description
 	 */
 	public function getDescription(): string {
-		return 'Added Wireguard tunnel repositories';
+		return 'Added WireGuard tunnel repositories';
 	}
 
+	/**
+	 * Applies the migration
+	 * @param Schema $schema Database schema
+	 */
 	public function up(Schema $schema): void {
 		$this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
 
@@ -53,6 +58,10 @@ final class Version20210218092859 extends AbstractMigration {
 		$this->addSql('CREATE INDEX IDX_23ACBD91AB0BE982 ON "wireguard_peers" (interface_id)');
 	}
 
+	/**
+	 * Reverts the migration
+	 * @param Schema $schema Database schema
+	 */
 	public function down(Schema $schema): void {
 		$this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
 
@@ -62,4 +71,5 @@ final class Version20210218092859 extends AbstractMigration {
 		$this->addSql('DROP TABLE "wireguard_peer_addresses"');
 		$this->addSql('DROP TABLE "wireguard_peers"');
 	}
+
 }

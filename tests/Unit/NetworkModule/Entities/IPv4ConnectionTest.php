@@ -44,29 +44,29 @@ require __DIR__ . '/../../../bootstrap.php';
 final class IPv4ConnectionTest extends TestCase {
 
 	/**
-	 * @var string NetworkManager data directory
+	 * NetworkManager data directory
 	 */
 	private const NM_DATA = TESTER_DIR . '/data/networkManager/';
 
 	/**
 	 * @var IPv4Methods IPv4 connection method
 	 */
-	private IPv4Methods $method;
+	private readonly IPv4Methods $method;
 
 	/**
 	 * @var array<IPv4Address> IPv4 addresses
 	 */
-	private array $addresses = [];
+	private readonly array $addresses;
 
 	/**
 	 * @var IPv4 IPv4 gateway address
 	 */
-	private IPv4 $gateway;
+	private readonly IPv4 $gateway;
 
 	/**
 	 * @var array<IPv4> IPv4 addresses of DNS servers
 	 */
-	private array $dns = [];
+	private readonly array $dns;
 
 	/**
 	 * @var IPv4Connection IPv4 connection entity
@@ -83,13 +83,6 @@ final class IPv4ConnectionTest extends TestCase {
 		];
 		$this->gateway = IPv4::factory('192.168.1.1');
 		$this->dns = [IPv4::factory('192.168.1.1')];
-	}
-
-	/**
-	 * Sets up the test environment
-	 */
-	protected function setUp(): void {
-		$this->entity = new IPv4Connection($this->method, $this->addresses, $this->gateway, $this->dns, null);
 	}
 
 	/**
@@ -155,6 +148,13 @@ final class IPv4ConnectionTest extends TestCase {
 	public function testNmCliSerialize(): void {
 		$expected = 'ipv4.method "manual" ipv4.addresses "192.168.1.2/24" ipv4.gateway "192.168.1.1" ipv4.dns "192.168.1.1" ';
 		Assert::same($expected, $this->entity->nmCliSerialize());
+	}
+
+	/**
+	 * Sets up the test environment
+	 */
+	protected function setUp(): void {
+		$this->entity = new IPv4Connection($this->method, $this->addresses, $this->gateway, $this->dns, null);
 	}
 
 }

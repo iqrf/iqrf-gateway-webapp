@@ -18,40 +18,33 @@
  */
 declare(strict_types = 1);
 
-namespace App\ApiModule\Version0\Models;
+namespace App\Models\Sentry\Integrations;
 
+use App\ApiModule\Version0\Models\BearerAuthenticator;
 use App\Models\Database\Entities\User;
 use Contributte\Sentry\Integration\BaseIntegration;
 use Nette\DI\Container;
 use Nette\Http\IRequest;
 use Sentry\Event;
+use Sentry\EventHint;
 use Sentry\State\HubInterface;
 use Sentry\UserDataBag;
 
 class SentryUserIntegration extends BaseIntegration {
 
 	/**
-	 * @var BearerAuthenticator Bearer authenticator
-	 */
-	protected BearerAuthenticator $authenticator;
-
-	/**
-	 * @var Container Nette DI container
-	 */
-	protected Container $context;
-
-	/**
 	 * Constructor
 	 * @param Container $container Nette DI container
 	 * @param BearerAuthenticator $authenticator Bearer authenticator
 	 */
-	public function __construct(Container $container, BearerAuthenticator $authenticator) {
-		$this->context = $container;
-		$this->authenticator = $authenticator;
+	public function __construct(
+		private readonly Container $container,
+		private readonly BearerAuthenticator $authenticator,
+	) {
 	}
 
-	public function setup(HubInterface $hub, Event $event): ?Event {
-		$httpRequest = $this->context->getByType(IRequest::class, false);
+	public function setup(HubInterface $hub, Event $event, EventHint $hint): ?Event {
+		$httpRequest = $this->container->getByType(IRequest::class, false);
 
 		// There is no http request
 		if (!$httpRequest instanceof IRequest) {

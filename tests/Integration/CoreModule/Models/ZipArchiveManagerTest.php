@@ -42,12 +42,12 @@ require __DIR__ . '/../../../bootstrap.php';
 final class ZipArchiveManagerTest extends TestCase {
 
 	/**
-	 * @var string Path to the directory with IQRF Gateway Daemon's configuration
+	 * Path to the directory with IQRF Gateway Daemon's configuration
 	 */
 	private const CONFIG_DIR = TESTER_DIR . '/data/configuration/';
 
 	/**
-	 * @var string File name
+	 * File name
 	 */
 	private const FILE_NAME = 'config.json';
 
@@ -90,21 +90,6 @@ final class ZipArchiveManagerTest extends TestCase {
 	}
 
 	/**
-	 * Creates the list of files
-	 * @param string $path Path to the directory
-	 * @return array<string> List of files in the directory
-	 */
-	private function createList(string $path): array {
-		$path = realpath($path) . '/';
-		$list = [];
-		foreach (Finder::findFiles('*.json')->from($path) as $file) {
-			$list[] = str_replace($path, '', $file->getRealPath());
-		}
-		sort($list);
-		return $list;
-	}
-
-	/**
 	 * Tests the function to add a JSON file to the ZIP archive
 	 */
 	public function testAddJsonFromArray(): void {
@@ -122,7 +107,6 @@ final class ZipArchiveManagerTest extends TestCase {
 	public function testExistNonExistingDir(): void {
 		Assert::false($this->manager->exist('nonsense/'));
 	}
-
 
 	/**
 	 * Tests the function to check if the directory exists in the archive (a single file)
@@ -219,6 +203,21 @@ final class ZipArchiveManagerTest extends TestCase {
 	protected function tearDown(): void {
 		@$this->managerNew->close();
 		@$this->manager->close();
+	}
+
+	/**
+	 * Creates the list of files
+	 * @param string $path Path to the directory
+	 * @return array<string> List of files in the directory
+	 */
+	private function createList(string $path): array {
+		$path = realpath($path) . '/';
+		$list = [];
+		foreach (Finder::findFiles('*.json')->from($path) as $file) {
+			$list[] = str_replace($path, '', $file->getRealPath());
+		}
+		sort($list);
+		return $list;
 	}
 
 }

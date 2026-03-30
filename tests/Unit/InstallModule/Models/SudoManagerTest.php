@@ -27,20 +27,22 @@ declare(strict_types = 1);
 namespace Tests\Unit\InstallModule\Models;
 
 use App\InstallModule\Models\SudoManager;
+use Iqrf\CommandExecutor\Tester\Traits\CommandExecutorTestCase;
 use Tester\Assert;
 use Tester\Environment;
-use Tests\Stubs\CoreModule\Models\Command;
-use Tests\Toolkit\TestCases\CommandTestCase;
+use Tester\TestCase;
 
 require __DIR__ . '/../../../bootstrap.php';
 
 /**
  * Tests for Sudo manager
  */
-final class SudoManagerTest extends CommandTestCase {
+final class SudoManagerTest extends TestCase {
+
+	use CommandExecutorTestCase;
 
 	/**
-	 * @var string Command
+	 * Command
 	 */
 	private const COMMAND = 'sudo -v';
 
@@ -50,25 +52,12 @@ final class SudoManagerTest extends CommandTestCase {
 	private SudoManager $manager;
 
 	/**
-	 * Sets up the test environment
-	 */
-	protected function setUp(): void {
-		parent::setUp();
-		$this->manager = new SudoManager($this->commandManager);
-	}
-
-	/**
 	 * Tests the function to check sudo and if webapp can use sudo
 	 */
 	public function testCheckSudo(): void {
 		Environment::lock('sudo_check', TMP_DIR);
-		$command = new Command(self::COMMAND, '', '', 0);
-		$this->commandManager->shouldReceive('commandExist')
-			->withArgs(['sudo'])
-			->andReturn(true);
-		$this->commandManager->shouldReceive('run')
-			->withArgs([self::COMMAND])
-			->andReturn($command);
+		$this->receiveCommandExist('sudo', true);
+		$this->receiveCommand(command: self::COMMAND);
 		$userId = posix_geteuid();
 		$groupId = posix_getegid();
 		$username = posix_getpwuid($userId)['name'];
@@ -97,6 +86,15 @@ final class SudoManagerTest extends CommandTestCase {
 			Environment::skip('This test has to be run under root.');
 		}
 		Assert::same([], $this->manager->checkSudo());
+	}
+
+	/**
+	 * Sets up the test environment
+	 */
+	protected function setUp(): void {
+		parent::setUp();
+		$this->setUpCommandExecutor();
+		$this->manager = new SudoManager($this->commandExecutor);
 	}
 
 }

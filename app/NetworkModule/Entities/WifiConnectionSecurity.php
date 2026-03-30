@@ -30,37 +30,12 @@ use stdClass;
 /**
  * WiFi connection security entity
  */
-final class WifiConnectionSecurity implements INetworkManagerEntity {
+final readonly class WifiConnectionSecurity implements INetworkManagerEntity {
 
 	/**
-	 * @var string nmcli 802-11-wireless security configuration prefix
+	 * nmcli 802-11-wireless security configuration prefix
 	 */
 	public const NMCLI_PREFIX = '802-11-wireless-security';
-
-	/**
-	 * @var WifiSecurityType WiFi security type
-	 */
-	private WifiSecurityType $type;
-
-	/**
-	 * @var string|null Pre-shared key
-	 */
-	private ?string $psk;
-
-	/**
-	 * @var Leap|null Cisco LEAP entity
-	 */
-	private ?Leap $leap;
-
-	/**
-	 * @var Wep|null WEP entity
-	 */
-	private ?Wep $wep;
-
-	/**
-	 * @var Eap|null EAP entity
-	 */
-	private ?Eap $eap;
 
 	/**
 	 * Constructor
@@ -68,13 +43,15 @@ final class WifiConnectionSecurity implements INetworkManagerEntity {
 	 * @param string|null $psk Pre-shared key
 	 * @param Leap|null $leap Cisco LEAP entity
 	 * @param Wep|null $wep WEP entity
+	 * @param Eap|null $eap EAP entity
 	 */
-	public function __construct(WifiSecurityType $type, ?string $psk, ?Leap $leap, ?Wep $wep, ?Eap $eap) {
-		$this->type = $type;
-		$this->psk = $psk;
-		$this->leap = $leap;
-		$this->wep = $wep;
-		$this->eap = $eap;
+	public function __construct(
+		private WifiSecurityType $type,
+		private ?string $psk,
+		private ?Leap $leap,
+		private ?Wep $wep,
+		private ?Eap $eap,
+	) {
 	}
 
 	/**
@@ -93,28 +70,6 @@ final class WifiConnectionSecurity implements INetworkManagerEntity {
 			assert($eap instanceof Eap);
 		}
 		return new self($type, $json->psk, $leap, $wep, $eap ?? null);
-	}
-
-
-	/**
-	 * Serializes WiFi connection security entity into JSON
-	 * @return array{type: string, psk: string|null, leap?: array{username: string, password: string}, wep?: array{type: string, index: int, keys: array<string>}, eap?: array{phaseOneMethod: string|null, phaseTwoMethod: string|null, anonymousIdentity: string, cert: string, identity: string, password: string}} JSON serialized entity
-	 */
-	public function jsonSerialize(): array {
-		$array = [
-			'type' => $this->type->toScalar(),
-			'psk' => $this->psk,
-		];
-		if ($this->leap !== null) {
-			$array['leap'] = $this->leap->jsonSerialize();
-		}
-		if ($this->wep !== null) {
-			$array['wep'] = $this->wep->jsonSerialize();
-		}
-		if ($this->eap !== null) {
-			$array['eap'] = $this->eap->jsonSerialize();
-		}
-		return $array;
 	}
 
 	/**
@@ -137,6 +92,27 @@ final class WifiConnectionSecurity implements INetworkManagerEntity {
 			assert($eap instanceof Eap);
 		}
 		return new self($type, $array['psk'], $leap, $wep, $eap ?? null);
+	}
+
+	/**
+	 * Serializes WiFi connection security entity into JSON
+	 * @return array{type: string, psk: string|null, leap?: array{username: string, password: string}, wep?: array{type: string, index: int, keys: array<string>}, eap?: array{phaseOneMethod: string|null, phaseTwoMethod: string|null, anonymousIdentity: string, cert: string, identity: string, password: string}} JSON serialized entity
+	 */
+	public function jsonSerialize(): array {
+		$array = [
+			'type' => $this->type->toScalar(),
+			'psk' => $this->psk,
+		];
+		if ($this->leap !== null) {
+			$array['leap'] = $this->leap->jsonSerialize();
+		}
+		if ($this->wep !== null) {
+			$array['wep'] = $this->wep->jsonSerialize();
+		}
+		if ($this->eap !== null) {
+			$array['eap'] = $this->eap->jsonSerialize();
+		}
+		return $array;
 	}
 
 	/**

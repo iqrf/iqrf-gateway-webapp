@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\ConsoleModule\Commands;
 
 use Nette\Neon\Exception;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -28,20 +29,11 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * CLI command for listing features
  */
+#[AsCommand(
+	name: 'feature:list',
+	description: 'Lists webapp\'s features',
+)]
 class FeatureListCommand extends FeatureCommand {
-
-	/**
-	 * @var string|null Command name
-	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-	 */
-	protected static $defaultName = 'feature:list';
-
-	/**
-	 * Configures the user list command
-	 */
-	protected function configure(): void {
-		$this->setDescription('Lists webapp\'s features');
-	}
 
 	/**
 	 * Executes the features list command
@@ -56,7 +48,7 @@ class FeatureListCommand extends FeatureCommand {
 		try {
 			$features = $this->manager->list();
 			$style->table($header, $features);
-		} catch (Exception $e) {
+		} catch (Exception) {
 			$style->error('An error occurred while reading configuration file.');
 			return 1;
 		}

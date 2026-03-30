@@ -32,21 +32,19 @@ use Nette\Utils\JsonException;
 class AzureManager implements IManager {
 
 	/**
-	 * @var GenericManager Generic configuration manager
-	 */
-	private GenericManager $configManager;
-
-	/**
 	 * Constructor
 	 * @param GenericManager $configManager Generic config manager
 	 */
-	public function __construct(GenericManager $configManager) {
-		$this->configManager = $configManager;
+	public function __construct(
+		private readonly GenericManager $configManager,
+	) {
 	}
 
 	/**
 	 * Creates a new MQTT interface
-	 * @param array<string, int|string> $values Values from form
+	 * @param array{
+	 *     connectionString: string,
+	 * } $values Values from form
 	 * @throws InvalidConnectionStringException
 	 * @throws JsonException
 	 */
@@ -107,7 +105,7 @@ class AzureManager implements IManager {
 		$data = [];
 		foreach (explode(';', $connection) as $i) {
 			$j = explode('=', $i);
-			if (isset($j[0]) && isset($j[1])) {
+			if (count($j) === 2) {
 				$data[$j[0]] = $j[1];
 			} else {
 				throw new InvalidConnectionStringException();

@@ -31,11 +31,11 @@ trait TUuid {
 
 	/**
 	 * @var UuidInterface|null UUID
-	 * @ORM\Id
-	 * @ORM\Column(type="uuid", unique=true)
-	 * @ORM\GeneratedValue(strategy="CUSTOM")
-	 * @ORM\CustomIdGenerator(class=UuidGenerator::class)
 	 */
+	#[ORM\Id]
+	#[ORM\Column(type: 'uuid', unique: true)]
+	#[ORM\GeneratedValue(strategy: 'CUSTOM')]
+	#[ORM\CustomIdGenerator(class: UuidGenerator::class)]
 	protected ?UuidInterface $uuid = null;
 
 	/**

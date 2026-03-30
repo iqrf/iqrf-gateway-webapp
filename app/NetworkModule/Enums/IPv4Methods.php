@@ -36,27 +36,27 @@ final class IPv4Methods extends Enum {
 	use AutoInstances;
 
 	/**
-	 * @var string IPv4 configuration should be automatically determined via a method appropriate for the hardware interface, ie DHCP or PPP or some other device-specific manner
+	 * IPv4 configuration should be automatically determined via a method appropriate for the hardware interface, ie DHCP or PPP or some other device-specific manner
 	 */
 	private const AUTO = 'auto';
 
 	/**
-	 * @var string This connection does not use or require IPv4 address and it should be disabled
+	 * This connection does not use or require IPv4 address and it should be disabled
 	 */
 	private const DISABLED = 'disabled';
 
 	/**
-	 * @var string IPv4 configuration should be automatically configured for link-local-only operation
+	 * IPv4 configuration should be automatically configured for link-local-only operation
 	 */
 	private const LINK_LOCAL = 'link-local';
 
 	/**
-	 * @var string All necessary IPv4 configuration is specified in the setting
+	 * All necessary IPv4 configuration is specified in the setting
 	 */
 	private const MANUAL = 'manual';
 
 	/**
-	 * @var string This connection specifies configuration that allows other computers to connect through it to the default network
+	 * This connection specifies configuration that allows other computers to connect through it to the default network
 	 */
 	private const SHARED = 'shared';
 

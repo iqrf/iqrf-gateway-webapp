@@ -29,30 +29,16 @@ use Nette\Utils\Strings;
 class IqrfOs {
 
 	/**
-	 * @var string IQRF OS build
-	 */
-	private string $build;
-
-	/**
-	 * @var TrSeries|null IQRF TR series
-	 */
-	private ?TrSeries $trSeries;
-
-	/**
-	 * @var string IQRF OS version
-	 */
-	private string $version;
-
-	/**
 	 * Constructor
 	 * @param string $build IQRF OS build
 	 * @param string $version IQRF OS version
 	 * @param TrSeries|null $trSeries IQRF TR series
 	 */
-	public function __construct(string $build, string $version, ?TrSeries $trSeries = null) {
-		$this->build = $build;
-		$this->version = $version;
-		$this->trSeries = $trSeries;
+	public function __construct(
+		private readonly string $build,
+		private readonly string $version,
+		private readonly ?TrSeries $trSeries = null,
+	) {
 	}
 
 	/**

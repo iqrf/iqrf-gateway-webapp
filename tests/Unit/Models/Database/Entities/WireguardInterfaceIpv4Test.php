@@ -41,12 +41,12 @@ require __DIR__ . '/../../../../bootstrap.php';
 class WireguardInterfaceIpv4Test extends TestCase {
 
 	/**
-	 * @var string IPv4 address
+	 * IPv4 address
 	 */
 	private const ADDRESS = '192.168.1.2';
 
 	/**
-	 * @var int IPv4 address prefix
+	 * IPv4 address prefix
 	 */
 	private const PREFIX = 24;
 
@@ -59,14 +59,6 @@ class WireguardInterfaceIpv4Test extends TestCase {
 	 * @var WireguardInterfaceIpv4 WireGuard interface IPv4 entity
 	 */
 	private WireguardInterfaceIpv4 $entity;
-
-	/**
-	 * Sets up the test environment
-	 */
-	protected function setUp(): void {
-		$this->interfaceEntity = new WireguardInterface('wg0', 'CHmgTLdcdr33Nr/GblDjKufGqWWxmnGv7a50hN6hZ0c=', 51775);
-		$this->entity = new WireguardInterfaceIpv4(new MultiAddress(Multi::factory(self::ADDRESS), self::PREFIX), $this->interfaceEntity);
-	}
 
 	/**
 	 * Tests the function to get address entity
@@ -118,6 +110,14 @@ class WireguardInterfaceIpv4Test extends TestCase {
 	 */
 	public function testToString(): void {
 		Assert::same('192.168.1.2/24', $this->entity->toString());
+	}
+
+	/**
+	 * Sets up the test environment
+	 */
+	protected function setUp(): void {
+		$this->interfaceEntity = new WireguardInterface('wg0', 'CHmgTLdcdr33Nr/GblDjKufGqWWxmnGv7a50hN6hZ0c=', 51775);
+		$this->entity = new WireguardInterfaceIpv4(new MultiAddress(Multi::factory(self::ADDRESS), self::PREFIX), $this->interfaceEntity);
 	}
 
 }

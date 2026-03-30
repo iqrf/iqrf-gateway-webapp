@@ -20,11 +20,11 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models;
 
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FeatureManager;
-use App\CoreModule\Models\PrivilegedFileManager;
 use App\GatewayModule\Exceptions\ConfNotFoundException;
 use App\GatewayModule\Exceptions\InvalidConfFormatException;
+use Iqrf\CommandExecutor\CommandExecutor;
+use Iqrf\FileManager\PrivilegedFileManager;
 use Nette\Utils\Strings;
 use stdClass;
 
@@ -34,7 +34,7 @@ use stdClass;
 class JournalConfigManager {
 
 	/**
-	 * @var array<string, string> Journal configuration
+	 * Journal configuration
 	 */
 	private const DEFAULT_CONFIG = [
 		'ForwardToSyslog' => 'no',
@@ -48,23 +48,23 @@ class JournalConfigManager {
 	/**
 	 * @var string $confFile Journald conf file name
 	 */
-	private string $confFile;
+	private readonly string $confFile;
 
 	/**
 	 * @var PrivilegedFileManager $fileManager File manager
 	 */
-	private PrivilegedFileManager $fileManager;
+	private readonly PrivilegedFileManager $fileManager;
 
 	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandExecutor Command manager
 	 * @param FeatureManager $featureManager Feature manager
 	 */
-	public function __construct(CommandManager $commandManager, FeatureManager $featureManager) {
+	public function __construct(CommandExecutor $commandExecutor, FeatureManager $featureManager) {
 		$feature = $featureManager->get('journal');
 		$path = $feature['path'];
 		$this->confFile = basename($path);
-		$this->fileManager = new PrivilegedFileManager(dirname($path), $commandManager);
+		$this->fileManager = new PrivilegedFileManager(dirname($path), $commandExecutor);
 	}
 
 	/**
@@ -146,22 +146,9 @@ class JournalConfigManager {
 		$duration = $this->getPropertyDefault('MaxFileSec', $conf);
 		$matches = Strings::match($duration, '#^(\d+)(\w*$)#');
 		return [
-			'unit' => strlen($matches[2]) === 0 ? 's' : $matches[2],
+			'unit' => $matches[2] === '' ? 's' : $matches[2],
 			'count' => (int) $matches[1],
 		];
-	}
-
-	/**
-	 * Returns key value if it exists, or default value otherwise
-	 * @param string $key Configuration option
-	 * @param array<string, string> $conf Journal configuration
-	 * @return string Property value
-	 */
-	private function getPropertyDefault(string $key, array $conf): string {
-		if (array_key_exists($key, $conf)) {
-			return $conf[$key];
-		}
-		return self::DEFAULT_CONFIG[$key];
 	}
 
 	/**
@@ -209,6 +196,19 @@ class JournalConfigManager {
 			throw new InvalidConfFormatException('Invalid configuration file format.');
 		}
 		return $conf;
+	}
+
+	/**
+	 * Returns key value if it exists, or default value otherwise
+	 * @param string $key Configuration option
+	 * @param array<string, string> $conf Journal configuration
+	 * @return string Property value
+	 */
+	private function getPropertyDefault(string $key, array $conf): string {
+		if (array_key_exists($key, $conf)) {
+			return $conf[$key];
+		}
+		return self::DEFAULT_CONFIG[$key];
 	}
 
 	/**

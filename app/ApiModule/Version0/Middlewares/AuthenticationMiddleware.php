@@ -39,7 +39,7 @@ use Psr\Http\Message\ServerRequestInterface;
 class AuthenticationMiddleware implements IMiddleware {
 
 	/**
-	 * @var array<string> Whitelisted installer paths
+	 * Whitelisted installer paths
 	 */
 	private const INSTALLER_PATHS = [
 		'/api/v0/gateway/info',
@@ -48,7 +48,7 @@ class AuthenticationMiddleware implements IMiddleware {
 	];
 
 	/**
-	 * @var array<string> Whitelisted paths
+	 * Whitelisted paths
 	 */
 	private const WHITELISTED_PATHS = [
 		'/api/v0/installation',
@@ -59,62 +59,14 @@ class AuthenticationMiddleware implements IMiddleware {
 	];
 
 	/**
-	 * @var IAuthenticator Authenticator
-	 */
-	private IAuthenticator $authenticator;
-
-	/**
-	 * @var EntityManager Database entity manager
-	 */
-	private EntityManager $entityManager;
-
-	/**
 	 * Constructor
 	 * @param IAuthenticator $authenticator Authenticator
 	 * @param EntityManager $entityManager Database entity manager
 	 */
-	public function __construct(IAuthenticator $authenticator, EntityManager $entityManager) {
-		$this->authenticator = $authenticator;
-		$this->entityManager = $entityManager;
-	}
-
-	public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next): ResponseInterface {
-		if ($this->isWhitelisted($request)) {
-			// Pass to next middleware
-			return $next($request, $response);
-		}
-		try {
-			$identity = $this->authenticator->authenticate($request);
-		} catch (InvalidArgumentException $e) {
-			return $this->createUnauthorizedResponse($response, 'Invalid JWT');
-		}
-		// If we have an identity, then go to next middleware, otherwise stop and return current response
-		if ($identity === null) {
-			return $this->createUnauthorizedResponse($response, 'Client authentication failed');
-		}
-		if ($identity instanceof User) {
-			// Add info about current logged user to request attributes
-			$request = $request->withAttribute(RequestAttributes::APP_LOGGED_USER, $identity);
-		} elseif ($identity instanceof ApiKey) {
-			// Add info about current logged application to request attributes
-			$request = $request->withAttribute(RequestAttributes::APP_LOGGED_APP, $identity);
-		}
-		// Pass to next middleware
-		return $next($request, $response);
-	}
-
-	/**
-	 * Creates unauthorized response
-	 * @param ResponseInterface $response Response to modify
-	 * @param string $message Message
-	 * @return ResponseInterface Response
-	 */
-	private function createUnauthorizedResponse(ResponseInterface $response, string $message): ResponseInterface {
-		$json = Json::encode(['error' => $message]);
-		$response->getBody()->write($json);
-		return $response->withStatus(ApiResponse::S401_UNAUTHORIZED)
-			->withHeader('WWW-Authenticate', 'Bearer')
-			->withHeader('Content-Type', 'application/json');
+	public function __construct(
+		private readonly IAuthenticator $authenticator,
+		private readonly EntityManager $entityManager,
+	) {
 	}
 
 	/**
@@ -135,6 +87,56 @@ class AuthenticationMiddleware implements IMiddleware {
 		}
 		return ($this->entityManager->getUserRepository()->count([]) === 0) &&
 			(in_array($requestUrl, self::INSTALLER_PATHS, true));
+	}
+
+	/**
+	 * Creates unauthorized response
+	 * @param ResponseInterface $response Response to modify
+	 * @param string $message Message
+	 * @return ResponseInterface Response
+	 */
+	private function createUnauthorizedResponse(ResponseInterface $response, string $message): ResponseInterface {
+		$json = Json::encode(['error' => $message]);
+		$response->getBody()->write($json);
+		return $response->withStatus(ApiResponse::S401_UNAUTHORIZED)
+			->withHeader('WWW-Authenticate', 'Bearer')
+			->withHeader('Content-Type', 'application/json');
+	}
+
+	/**
+	 * Middleware invocation
+	 * @param ServerRequestInterface $request Request
+	 * @param ResponseInterface $response Response
+	 * @param callable(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface $next
+	 * @return ResponseInterface Response
+	 */
+	public function __invoke(
+		ServerRequestInterface $request,
+		ResponseInterface $response,
+		callable $next,
+	): ResponseInterface {
+		if ($this->isWhitelisted($request)) {
+			// Pass to next middleware
+			return $next($request, $response);
+		}
+		try {
+			$identity = $this->authenticator->authenticate($request);
+		} catch (InvalidArgumentException) {
+			return $this->createUnauthorizedResponse($response, 'Invalid JWT');
+		}
+		// If we have an identity, then go to next middleware, otherwise stop and return current response
+		if ($identity === null) {
+			return $this->createUnauthorizedResponse($response, 'Client authentication failed');
+		}
+		if ($identity instanceof User) {
+			// Add info about current logged user to request attributes
+			$request = $request->withAttribute(RequestAttributes::APP_LOGGED_USER, $identity);
+		} elseif ($identity instanceof ApiKey) {
+			// Add info about current logged application to request attributes
+			$request = $request->withAttribute(RequestAttributes::APP_LOGGED_APP, $identity);
+		}
+		// Pass to next middleware
+		return $next($request, $response);
 	}
 
 }

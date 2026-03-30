@@ -41,7 +41,7 @@ require __DIR__ . '/../../../../bootstrap.php';
 final class UserVerificationTest extends TestCase {
 
 	/**
-	 * @var string Date time format
+	 * Date time format
 	 */
 	private const DATETIME_FORMAT = 'Y-m-d H:i:00';
 
@@ -54,17 +54,6 @@ final class UserVerificationTest extends TestCase {
 	 * @var User User entity
 	 */
 	private User $user;
-
-	/**
-	 * Sets up the test environment
-	 */
-	protected function setUp(): void {
-		parent::setUp();
-		$this->user = new User('admin', 'admin@iqrf.org', 'admin');
-		$this->entity = new UserVerification($this->user);
-		$this->entity->setCreatedAt();
-	}
-
 
 	/**
 	 * Tests the function to get the user
@@ -106,6 +95,16 @@ final class UserVerificationTest extends TestCase {
 		$now->sub(new DateInterval('P1W'));
 		$this->entity->setCreatedAt($now);
 		Assert::true($this->entity->isExpired());
+	}
+
+	/**
+	 * Sets up the test environment
+	 */
+	protected function setUp(): void {
+		parent::setUp();
+		$this->user = new User('admin', 'admin@iqrf.org', 'admin');
+		$this->entity = new UserVerification($this->user);
+		$this->entity->setCreatedAt();
 	}
 
 }

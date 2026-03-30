@@ -44,13 +44,6 @@ final class TaskTimeManagerTest extends TestCase {
 	private TaskTimeManager $manager;
 
 	/**
-	 * Sets up the test environment
-	 */
-	protected function setUp(): void {
-		$this->manager = new TaskTimeManager();
-	}
-
-	/**
 	 * Returns list of test data for getCronToArray() method
 	 * @return array<array<stdClass>> List of test data for getCronToArray() method
 	 */
@@ -170,6 +163,13 @@ final class TaskTimeManagerTest extends TestCase {
 		];
 		$this->manager->cronToString($config);
 		Assert::equal($expected, $config);
+	}
+
+	/**
+	 * Sets up the test environment
+	 */
+	protected function setUp(): void {
+		$this->manager = new TaskTimeManager();
 	}
 
 }

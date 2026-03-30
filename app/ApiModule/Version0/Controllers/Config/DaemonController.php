@@ -24,7 +24,6 @@ use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\RequestParameter;
-use Apitte\Core\Annotation\Controller\RequestParameters;
 use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
@@ -42,25 +41,10 @@ use Nette\Utils\JsonException;
 
 /**
  * Configuration controller
- * @Path("/daemon")
- * @Tag("IQRF Gateway Daemon configuration")
  */
+#[Path('/daemon')]
+#[Tag('Configuration - IQRF Gateway Daemon')]
 class DaemonController extends BaseConfigController {
-
-	/**
-	 * @var ComponentManager Component configuration manager
-	 */
-	private ComponentManager $componentManager;
-
-	/**
-	 * @var MainManager Main configuration manager
-	 */
-	private MainManager $mainManager;
-
-	/**
-	 * @var GenericManager Configuration manager
-	 */
-	private GenericManager $manager;
 
 	/**
 	 * Constructor
@@ -69,34 +53,31 @@ class DaemonController extends BaseConfigController {
 	 * @param GenericManager $manager Configuration manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(ComponentManager $componentManager, MainManager $mainManager, GenericManager $manager, RestApiSchemaValidator $validator) {
-		$this->componentManager = $componentManager;
-		$this->mainManager = $mainManager;
-		$this->manager = $manager;
+	public function __construct(
+		private readonly ComponentManager $componentManager,
+		private readonly MainManager $mainManager,
+		private readonly GenericManager $manager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Returns main configuration
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/MainConfiguration'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('GET')]
+	#[OpenApi(<<<'EOT'
+		summary: Returns main configuration
+		responses:
+			'200':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: '#/components/schemas/MainConfiguration'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['config:daemon']);
 		try {
@@ -109,31 +90,28 @@ class DaemonController extends BaseConfigController {
 		}
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("PUT")
-	 * @OpenApi("
-	 *  summary: Edits main configuration
-	 *  requestBody:
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/MainConfiguration'
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '404':
-	 *          description: Not found
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('PUT')]
+	#[OpenApi(<<<'EOT'
+		summary: Updates main configuration
+		requestBody:
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: '#/components/schemas/MainConfiguration'
+		responses:
+			'200':
+				description: Success
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['config:daemon']);
 		$this->validator->validateRequest('mainConfiguration', $request);
@@ -145,29 +123,24 @@ class DaemonController extends BaseConfigController {
 		}
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Creates component configuration
-	 *  requestBody:
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/DaemonComponent'
-	 *  responses:
-	 *      '201':
-	 *          description: Created
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('POST')]
+	#[OpenApi(<<<'EOT'
+		summary: Creates component configuration
+		requestBody:
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: '#/components/schemas/DaemonComponent'
+		responses:
+			'201':
+				description: Created
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+	EOT)]
 	public function createComponent(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['config:daemon']);
 		$this->validator->validateRequest('daemonComponent', $request);
@@ -180,28 +153,20 @@ class DaemonController extends BaseConfigController {
 		}
 	}
 
-	/**
-	 * @Path("/{component}")
-	 * @Method("DELETE")
-	 * @OpenApi("
-	 *  summary: Deletes the component
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '404':
-	 *          description: Not found
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @RequestParameters({
-	 *      @RequestParameter(name="component", type="string", description="Component name")
-	 * })
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/{component}')]
+	#[Method('DELETE')]
+	#[OpenApi(<<<'EOT'
+		summary: Deletes the component
+		responses:
+			'200':
+				description: Success
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function deleteComponent(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['config:daemon']);
 		$component = urldecode($request->getParameter('component'));
@@ -219,32 +184,29 @@ class DaemonController extends BaseConfigController {
 		}
 	}
 
-	/**
-	 * @Path("/{component}")
-	 * @Method("PUT")
-	 * @OpenApi("
-	 *  summary: Edits the component
-	 *  requestBody:
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/DaemonComponent'
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 * ")
-	 * @RequestParameters({
-	 *      @RequestParameter(name="component", type="string", description="Component name")
-	 * })
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/{component}')]
+	#[Method('PUT')]
+	#[OpenApi(<<<'EOT'
+		summary: Updates the component
+		requestBody:
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: '#/components/schemas/DaemonComponent'
+		responses:
+			'200':
+				description: Success
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
+	#[RequestParameter(name: 'component', type: 'string', description: 'Component name')]
 	public function editComponent(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['config:daemon']);
 		$component = urldecode($request->getParameter('component'));
@@ -261,32 +223,25 @@ class DaemonController extends BaseConfigController {
 		return $response->writeBody('Workaround');
 	}
 
-	/**
-	 * @Path("/{component}")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Returns the component configuration and instances of the component
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/DaemonComponentDetail'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '404':
-	 *          description: Not found
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @RequestParameters({
-	 *      @RequestParameter(name="component", type="string", description="Component name")
-	 * })
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/{component}')]
+	#[Method('GET')]
+	#[OpenApi(<<<'EOT'
+		summary: Returns the component configuration and instances of the component
+		responses:
+			'200':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: '#/components/schemas/DaemonComponentDetail'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
+	#[RequestParameter(name: 'component', type: 'string', description: 'Component name')]
 	public function getComponent(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['config:daemon']);
 		$component = urldecode($request->getParameter('component'));
@@ -312,36 +267,32 @@ class DaemonController extends BaseConfigController {
 		}
 	}
 
-	/**
-	 * @Path("/{component}")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Creates instance configuration
-	 *  requestBody:
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/DaemonConfiguration'
-	 *  responses:
-	 *      '201':
-	 *          description: Created
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '404':
-	 *          description: Not found
-	 *      '409':
-	 *          description: Instance already exists
-	 * ")
-	 * @RequestParameters({
-	 *      @RequestParameter(name="component", type="string", description="Component name")
-	 * })
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/{component}')]
+	#[Method('POST')]
+	#[OpenApi(<<<'EOT'
+		summary: Creates instance configuration
+		requestBody:
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: '#/components/schemas/DaemonConfiguration'
+		responses:
+			'201':
+				description: Created
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'409':
+				description: Instance already exists
+				content:
+					application/json:
+						schema:
+							$ref: '#/components/schemas/Error'
+	EOT)]
 	public function createInstance(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['config:daemon']);
 		try {
@@ -354,9 +305,8 @@ class DaemonController extends BaseConfigController {
 			$fileName = $this->manager->getInstanceFileName($json['instance']);
 			if ($fileName !== null) {
 				throw new ClientErrorException('Instance already exists', ApiResponse::S409_CONFLICT);
-			} else {
-				$fileName = $this->manager->generateFileName($json);
 			}
+			$fileName = $this->manager->generateFileName($json);
 			$this->manager->save($json, $fileName);
 			return $response->withStatus(ApiResponse::S201_CREATED)
 				->writeBody('Workaround');
@@ -371,27 +321,20 @@ class DaemonController extends BaseConfigController {
 		}
 	}
 
-	/**
-	 * @Path("/{component}/{instance}")
-	 * @Method("DELETE")
-	 * @OpenApi("
-	 *  summary: Deletes instance configuration by name
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '404':
-	 *          description: Not found
-	 * ")
-	 * @RequestParameters({
-	 *      @RequestParameter(name="component", type="string", description="Component name"),
-	 *      @RequestParameter(name="instance", type="string", description="Instance name")
-	 * })
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/{component}/{instance}')]
+	#[Method('DELETE')]
+	#[OpenApi(<<<'EOT'
+		summary: Deletes instance configuration by name
+		responses:
+			'200':
+				description: Success
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+	EOT)]
+	#[RequestParameter(name: 'component', type: 'string', description: 'Component name')]
+	#[RequestParameter(name: 'instance', type: 'string', description: 'Instance name')]
 	public function deleteInstance(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['config:daemon']);
 		$component = urldecode($request->getParameter('component'));
@@ -405,35 +348,28 @@ class DaemonController extends BaseConfigController {
 		return $response->writeBody('Workaround');
 	}
 
-	/**
-	 * @Path("/{component}/{instance}")
-	 * @Method("PUT")
-	 * @OpenApi("
-	 *  summary: Edits instance configuration by name
-	 *  requestBody:
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/DaemonConfiguration'
-	 *  responses:
-	 *      '200':
-	 *          description: Succcess
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '404':
-	 *          description: Not found
-	 * ")
-	 * @RequestParameters({
-	 *      @RequestParameter(name="component", type="string", description="Component name"),
-	 *      @RequestParameter(name="instance", type="string", description="Instance name")
-	 * })
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/{component}/{instance}')]
+	#[Method('PUT')]
+	#[OpenApi(<<<'EOT'
+		summary: Updates instance configuration by name
+		requestBody:
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: '#/components/schemas/DaemonConfiguration'
+		responses:
+			'200':
+				description: Success
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+	EOT)]
+	#[RequestParameter(name: 'component', type: 'string', description: 'Component name')]
+	#[RequestParameter(name: 'instance', type: 'string', description: 'Instance name')]
 	public function editInstance(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['config:daemon']);
 		try {
@@ -458,33 +394,26 @@ class DaemonController extends BaseConfigController {
 		return $response->writeBody('Workaround');
 	}
 
-	/**
-	 * @Path("/{component}/{instance}")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Finds instance configuration by name
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/DaemonConfiguration'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '404':
-	 *          description: Not found
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @RequestParameters({
-	 *      @RequestParameter(name="component", type="string", description="Component name"),
-	 *      @RequestParameter(name="instance", type="string", description="Instance name")
-	 * })
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/{component}/{instance}')]
+	#[Method('GET')]
+	#[OpenApi(<<<'EOT'
+		summary: Returns instance configuration by name
+		responses:
+			'200':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: '#/components/schemas/DaemonConfiguration'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
+	#[RequestParameter(name: 'component', type: 'string', description: 'Component name')]
+	#[RequestParameter(name: 'instance', type: 'string', description: 'Instance name')]
 	public function getInstance(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['config:daemon']);
 		try {
@@ -505,31 +434,26 @@ class DaemonController extends BaseConfigController {
 		return $response->writeJsonBody($configuration);
 	}
 
-	/**
-	 * @Path("/components")
-	 * @Method("PATCH")
-	 * @OpenApi("
-	 *  summary: 'Changes enabled state of component(s)'
-	 *  requestBody:
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/DaemonComponentEnabled'
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '404':
-	 *          description: Not found
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/components')]
+	#[Method('PATCH')]
+	#[OpenApi(<<<'EOT'
+		summary: 'Updates enabled state of component(s)'
+		requestBody:
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: '#/components/schemas/DaemonComponentEnabled'
+		responses:
+			'200':
+				description: Success
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function changeComponent(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['config:daemon']);
 		$this->validator->validateRequest('daemonComponentEnabled', $request);

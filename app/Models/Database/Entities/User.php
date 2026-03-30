@@ -26,10 +26,12 @@ use App\Exceptions\InvalidUserLanguageException;
 use App\Exceptions\InvalidUserRoleException;
 use App\Exceptions\InvalidUserStateException;
 use App\Models\Database\Attributes\TId;
+use App\Models\Database\Repositories\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Egulias\EmailValidator\EmailValidator;
+use Egulias\EmailValidator\Result\Reason\UnableToGetDNSRecord;
 use Egulias\EmailValidator\Validation\DNSCheckValidation;
 use Egulias\EmailValidator\Validation\MultipleValidationWithAnd;
 use Egulias\EmailValidator\Validation\RFCValidation;
@@ -41,10 +43,10 @@ use const PASSWORD_DEFAULT;
 
 /**
  * User entity
- * @ORM\Entity(repositoryClass="App\Models\Database\Repositories\UserRepository")
- * @ORM\Table(name="`users`")
- * @ORM\HasLifecycleCallbacks()
  */
+#[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ORM\HasLifecycleCallbacks]
+#[ORM\Table(name: '`users`')]
 class User implements JsonSerializable {
 
 	use TId;
@@ -129,45 +131,39 @@ class User implements JsonSerializable {
 	];
 
 	/**
-	 * @var string User name
-	 * @ORM\Column(type="string", length=255, unique=true)
-	 */
-	private string $username;
-
-	/**
 	 * @var string|null User's email
-	 * @ORM\Column(type="string", length=255, nullable=true, unique=true)
 	 */
+	#[ORM\Column(type: 'string', length: 255, unique: true, nullable: true)]
 	private ?string $email = null;
 
 	/**
 	 * @var string Password hash
-	 * @ORM\Column(type="string", length=255)
 	 */
+	#[ORM\Column(type: 'string', length: 255)]
 	private string $password;
 
 	/**
 	 * @var string User role
-	 * @ORM\Column(type="string", length=15)
 	 */
+	#[ORM\Column(type: 'string', length: 15)]
 	private string $role;
 
 	/**
 	 * @var int Account state
-	 * @ORM\Column(type="integer", length=10, nullable=FALSE, unique=FALSE, options={"default" : 0})
 	 */
+	#[ORM\Column(type: 'integer', length: 10, unique: false, nullable: false, options: ['default' => 0])]
 	private int $state = self::STATE_DEFAULT;
 
 	/**
 	 * @var string User language
-	 * @ORM\Column(type="string", length=7)
 	 */
+	#[ORM\Column(type: 'string', length: 7)]
 	private string $language = self::LANGUAGE_DEFAULT;
 
 	/**
 	 * @var Collection<int, UserVerification> User verifications
-	 * @ORM\OneToMany(targetEntity="UserVerification", mappedBy="user", orphanRemoval=true, cascade={"persist"})
 	 */
+	#[ORM\OneToMany(targetEntity: UserVerification::class, mappedBy: 'user', cascade: ['persist'], orphanRemoval: true)]
 	private Collection $verifications;
 
 	/**
@@ -179,8 +175,15 @@ class User implements JsonSerializable {
 	 * @param string|null $language User language
 	 * @param int|null $state Account state
 	 */
-	public function __construct(string $username, ?string $email, string $password, ?string $role = null, ?string $language = null, ?int $state = null) {
-		$this->username = $username;
+	public function __construct(
+		#[ORM\Column(type: 'string', length: 255, unique: true)]
+		private string $username,
+		?string $email,
+		string $password,
+		?string $role = null,
+		?string $language = null,
+		?int $state = null,
+	) {
 		$this->setEmail($email);
 		$this->setPassword($password);
 		$this->setRole($role ?? self::ROLE_DEFAULT);
@@ -320,13 +323,12 @@ class User implements JsonSerializable {
 		if ($email !== null) {
 			$this->validateEmail($email);
 		}
-		if ($this->email !== $email) {
-			if ($this->getState() === self::STATE_VERIFIED) {
-				$this->setState(self::STATE_UNVERIFIED);
-			}
+		if ($this->email !== $email && $this->getState() === self::STATE_VERIFIED) {
+			$this->setState(self::STATE_UNVERIFIED);
 		}
 		$this->email = $email;
 	}
+
 	/**
 	 * Sets the user's password
 	 * @param string $password User's password
@@ -373,27 +375,6 @@ class User implements JsonSerializable {
 	}
 
 	/**
-	 * Validates e-mail address
-	 * @param string $email E-mail address to validate
-	 */
-	private function validateEmail(string $email): void {
-		$validator = new EmailValidator();
-		$validationRules = [
-			new RFCValidation(),
-		];
-		if (function_exists('dns_get_record')) {
-			$validationRules[] = new DNSCheckValidation();
-		}
-		if (!$validator->isValid($email, new MultipleValidationWithAnd($validationRules))) {
-			$error = $validator->getError();
-			if ($error === null) {
-				throw new InvalidEmailAddressException();
-			}
-			throw new InvalidEmailAddressException($error->description(), $error->code());
-		}
-	}
-
-	/**
 	 * Verifies the password
 	 * @param string $password Password to verify
 	 * @return bool Is the password correct?
@@ -415,6 +396,32 @@ class User implements JsonSerializable {
 			'language' => $this->language,
 			'state' => self::STATES[$this->state],
 		];
+	}
+
+	/**
+	 * Validates e-mail address
+	 * @param string $email E-mail address to validate
+	 * @param bool $withDns Check DNS records
+	 */
+	private function validateEmail(string $email, bool $withDns = true): void {
+		$validator = new EmailValidator();
+		$validationRules = [
+			new RFCValidation(),
+		];
+		if (EMAIL_VALIDATE_DNS && function_exists('dns_get_record') && $withDns) {
+			$validationRules[] = new DNSCheckValidation();
+		}
+		if (!$validator->isValid($email, new MultipleValidationWithAnd($validationRules))) {
+			$error = $validator->getError();
+			if ($error === null) {
+				throw new InvalidEmailAddressException();
+			}
+			if ($error->reason() instanceof UnableToGetDNSRecord) {
+				$this->validateEmail(email: $email, withDns: false);
+				return;
+			}
+			throw new InvalidEmailAddressException($error->description(), $error->code());
+		}
 	}
 
 }

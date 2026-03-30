@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Database\Migrations;
 
@@ -27,6 +27,7 @@ use Doctrine\Migrations\AbstractMigration;
  * Password recovery database migration
  */
 final class Version20210816021706 extends AbstractMigration {
+
 	/**
 	 * Returns the migration description
 	 * @return string Migration description
@@ -35,8 +36,11 @@ final class Version20210816021706 extends AbstractMigration {
 		return 'Password recovery database migration';
 	}
 
+	/**
+	 * Applies the migration
+	 * @param Schema $schema Database schema
+	 */
 	public function up(Schema $schema): void {
-		// this up() migration is auto-generated, please modify it to your needs
 		$this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
 
 		$this->addSql('CREATE TABLE "password_recovery" (uuid CHAR(36) NOT NULL --(DC2Type:uuid)
@@ -52,8 +56,11 @@ final class Version20210816021706 extends AbstractMigration {
 		$this->addSql('CREATE INDEX IDX_FE223588D93D649 ON email_verification (user)');
 	}
 
+	/**
+	 * Reverts the migration
+	 * @param Schema $schema Database schema
+	 */
 	public function down(Schema $schema): void {
-		// this down() migration is auto-generated, please modify it to your needs
 		$this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
 
 		$this->addSql('DROP TABLE "password_recovery"');
@@ -66,4 +73,5 @@ final class Version20210816021706 extends AbstractMigration {
 		$this->addSql('DROP TABLE __temp__email_verification');
 		$this->addSql('CREATE INDEX IDX_FE223588D93D649 ON "email_verification" (user)');
 	}
+
 }

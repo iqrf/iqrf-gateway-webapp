@@ -24,7 +24,7 @@ use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\RequestParameter;
-use Apitte\Core\Annotation\Controller\RequestParameters;
+use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
@@ -42,99 +42,90 @@ use Ramsey\Uuid\UuidInterface;
 
 /**
  * Network connections controller
- * @Path("/connections")
  */
+#[Path('/connections')]
+#[Tag('IP network - Network connections')]
 class ConnectionsController extends NetworkController {
-
-	/**
-	 * @var ConnectionManager Network connection manager
-	 */
-	private ConnectionManager $manager;
 
 	/**
 	 * Constructor
 	 * @param ConnectionManager $manager Network connection manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(ConnectionManager $manager, RestApiSchemaValidator $validator) {
-		$this->manager = $manager;
+	public function __construct(
+		private readonly ConnectionManager $manager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Returns network connections
-	 *  parameters:
-	 *      - in: query
-	 *        name: type
-	 *        schema:
-	 *          type: string
-	 *          enum:
-	 *              - 'bluetooth'
-	 *              - 'bridge'
-	 *              - 'dummy'
-	 *              - '802-3-ethernet'
-	 *              - 'gsm'
-	 *              - 'infiniband'
-	 *              - 'tun'
-	 *              - 'vlan'
-	 *              - 'vpn'
-	 *              - '802-11-wireless'
-	 *              - 'wimax'
-	 *              - 'wireguard'
-	 *              - 'wpan'
-	 *        required: false
-	 *        description: Connection type
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/NetworkConnections'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('GET')]
+	#[OpenApi(<<<'EOT'
+		summary: Returns network connections
+		parameters:
+			-
+				in: query
+				name: type
+				schema:
+					type: string
+					enum:
+						- 'bluetooth'
+						- 'bridge'
+						- 'dummy'
+						- '802-3-ethernet'
+						- 'gsm'
+						- 'infiniband'
+						- 'ip-tunnel'
+						- 'loopback'
+						- 'tun'
+						- 'vlan'
+						- 'vpn'
+						- '802-11-wireless'
+						- 'wimax'
+						- 'wireguard'
+						- 'wpan'
+				required: false
+				description: Connection type
+		responses:
+			'200':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: '#/components/schemas/NetworkConnections'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+	EOT)]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['network']);
-		$typeParam = $request->getQueryParam('type', null);
+		$typeParam = $request->getQueryParam('type');
 		try {
 			$type = $typeParam === null ? null : ConnectionTypes::fromScalar($typeParam);
-		} catch (MissingValueDeclarationException $e) {
+		} catch (MissingValueDeclarationException) {
 			$type = null;
 		}
 		$list = $this->manager->list($type);
 		return $response->writeJsonBody($list);
 	}
 
-	/**
-	 * @Path("/{uuid}")
-	 * @Method("DELETE")
-	 * @OpenApi("
-	 *  summary: Deletes network connection by its UUID
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @RequestParameters({
-	 *      @RequestParameter(name="uuid", type="string", description="Connection UUID")
-	 * })
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/{uuid}')]
+	#[Method('DELETE')]
+	#[OpenApi(<<<'EOT'
+		summary: Deletes network connection by its UUID
+		responses:
+			'200':
+				description: Success
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
+	#[RequestParameter(name: 'uuid', type: 'string', description: 'Connection UUID')]
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['network']);
 		try {
@@ -148,32 +139,31 @@ class ConnectionsController extends NetworkController {
 		return $response->writeBody('Workaround');
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Creates new network connection
-	 *  requestBody:
-	 *      description: Network connection configuration
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/NetworkConnection'
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('POST')]
+	#[OpenApi(<<<'EOT'
+		summary: Creates new network connection
+		requestBody:
+			description: Network connection configuration
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: '#/components/schemas/NetworkConnection'
+		responses:
+			'200':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: '#/components/schemas/NetworkConnectionCreated'
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function add(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['network']);
 		$this->validator->validateRequest('networkConnection', $request);
@@ -186,35 +176,30 @@ class ConnectionsController extends NetworkController {
 		}
 	}
 
-	/**
-	 * @Path("/{uuid}")
-	 * @Method("PUT")
-	 * @OpenApi("
-	 *  summary: Edits network connection by its UUID
-	 *  requestBody:
-	 *      description: Network connection configuration
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/NetworkConnection'
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @RequestParameters({
-	 *      @RequestParameter(name="uuid", type="string", description="Connection UUID")
-	 * })
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/{uuid}')]
+	#[Method('PUT')]
+	#[OpenApi(<<<'EOT'
+		summary: Edits network connection by its UUID
+		requestBody:
+			description: Network connection configuration
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: '#/components/schemas/NetworkConnection'
+		responses:
+			'200':
+				description: Success
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
+	#[RequestParameter(name: 'uuid', type: 'string', description: 'Connection UUID')]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['network']);
 		try {
@@ -230,32 +215,27 @@ class ConnectionsController extends NetworkController {
 		return $response->writeBody('Workaround');
 	}
 
-	/**
-	 * @Path("/{uuid}")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Returns network connection by its UUID
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/NetworkConnection'
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @RequestParameters({
-	 *      @RequestParameter(name="uuid", type="string", description="Connection UUID")
-	 * })
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/{uuid}')]
+	#[Method('GET')]
+	#[OpenApi(<<<'EOT'
+		summary: Returns network connection by its UUID
+		responses:
+			'200':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: '#/components/schemas/NetworkConnection'
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
+	#[RequestParameter(name: 'uuid', type: 'string', description: 'Connection UUID')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['network']);
 		try {
@@ -268,38 +248,34 @@ class ConnectionsController extends NetworkController {
 		}
 	}
 
-	/**
-	 * @Path("/{uuid}/connect")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Connects network connection
-	 *  parameters:
-	 *      - in: query
-	 *        name: interface
-	 *        schema:
-	 *          type: string
-	 *        required: false
-	 *        description: Network interface name
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @RequestParameters(
-	 *     @RequestParameter(name="uuid", type="string", description="Connection UUID")
-	 * )
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/{uuid}/connect')]
+	#[Method('POST')]
+	#[OpenApi(<<<'EOT'
+		summary: Connects network connection
+		parameters:
+			-
+				in: query
+				name: interface
+				schema:
+					type: string
+				required: false
+				description: Network interface name
+		responses:
+			'200':
+				description: Success
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
+	#[RequestParameter(name: 'uuid', type: 'string', description: 'Connection UUID')]
 	public function connect(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['network']);
-		$interface = $request->getQueryParam('interface', null);
+		$interface = $request->getQueryParam('interface');
 		try {
 			$uuid = $this->getUuid($request);
 			$this->manager->up($uuid, $interface);
@@ -311,28 +287,23 @@ class ConnectionsController extends NetworkController {
 		}
 	}
 
-	/**
-	 * @Path("/{uuid}/disconnect")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Disconnects network connection
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @RequestParameters(
-	 *     @RequestParameter(name="uuid", type="string", description="Connection UUID")
-	 * )
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/{uuid}/disconnect')]
+	#[Method('POST')]
+	#[OpenApi(<<<'EOT'
+		summary: Disconnects network connection
+		responses:
+			'200':
+				description: Success
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
+	#[RequestParameter(name: 'uuid', type: 'string', description: 'Connection UUID')]
 	public function disconnect(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['network']);
 		try {

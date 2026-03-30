@@ -28,15 +28,11 @@ use Contributte\Monolog\LoggerManager;
 class RestoreLogger {
 
 	/**
-	 * @var LoggerManager $loggerManager Logger manager
-	 */
-	private LoggerManager $loggerManager;
-
-	/**
 	 * @param LoggerManager $loggerManager Logger manager
 	 */
-	public function __construct(LoggerManager $loggerManager) {
-		$this->loggerManager = $loggerManager;
+	public function __construct(
+		private readonly LoggerManager $loggerManager,
+	) {
 	}
 
 	/**

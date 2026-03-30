@@ -1,5 +1,3 @@
-<?php
-
 /**
  * Copyright 2017-2025 IQRF Tech s.r.o.
  * Copyright 2019-2025 MICRORISC s.r.o.
@@ -16,41 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types = 1);
 
-namespace App\CoreModule\Entities;
-
-/**
- * Command stack entity
- */
-class CommandStack {
-
-	/**
-	 * @var array<Command> Commands
-	 */
-	private array $commands = [];
-
-	/**
-	 * Adds a command in to the stack
-	 * @param Command $command Command to add
-	 */
-	public function addCommand(Command $command): void {
-		$this->commands[] = $command;
-	}
-
-	/**
-	 * Clears the stack
-	 */
-	public function clearCommands(): void {
-		$this->commands = [];
-	}
-
-	/**
-	 * Returns commands in the stack
-	 * @return array<Command> Commands in the stack
-	 */
-	public function getCommands(): array {
-		return $this->commands;
-	}
-
-}
+[
+	{ name: 'all', patches: [], },
+	{ name: 'iqd-gw-01', patches: ['iqd-gw-01'], },
+	{ name: 'iqd-gw04', patches: ['iqd-gw04'], },
+	{ name: 'iqaros', patches: ['iqaros'], },
+]

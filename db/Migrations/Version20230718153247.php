@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Database\Migrations;
 
@@ -154,4 +154,5 @@ final class Version20230718153247 extends AbstractMigration {
 		$this->addSql('DROP TABLE __temp__wireguard_peers');
 		$this->addSql('CREATE INDEX IDX_23ACBD91AB0BE982 ON "wireguard_peers" (interface_id)');
 	}
+
 }

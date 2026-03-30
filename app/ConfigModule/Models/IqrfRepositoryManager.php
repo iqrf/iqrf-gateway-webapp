@@ -34,6 +34,47 @@ use Nette\Utils\FileSystem;
 class IqrfRepositoryManager {
 
 	/**
+	 * Extension name
+	 */
+	private const EXTENSION_NAME = 'iqrfRepository';
+
+	/**
+	 * Constructor
+	 * @param string $confPath Path to configuration file
+	 */
+	public function __construct(
+		private readonly string $confPath,
+	) {
+	}
+
+	/**
+	 * Saves IQRF repository configuration
+	 * @param array<string, array<string, string|null>|string> $config IQRF repository configuration to save
+	 * @throws IOException
+	 * @throws NeonException
+	 */
+	public function saveConfig(array $config): void {
+		FileSystem::write(
+			$this->confPath,
+			Neon::encode([self::EXTENSION_NAME => $config], blockMode: true),
+		);
+	}
+
+	/**
+	 * Reads and returns IQRF repository configuration
+	 * @return array<string, array<string, string|null>|string> IQRF Repository integration configuration
+	 */
+	public function readConfig(): array {
+		try {
+			$content = Neon::decode(FileSystem::read($this->confPath))[self::EXTENSION_NAME] ?? [];
+		} catch (IOException | NeonException) {
+			$content = [];
+		}
+		$processor = new Processor();
+		return $processor->process($this->getSchema(), $content);
+	}
+
+	/**
 	 * Returns configuration file schema
 	 * @return Structure Configuration file schema
 	 */
@@ -45,47 +86,6 @@ class IqrfRepositoryManager {
 				'password' => Expect::type('string|null')->default(null),
 			])->castTo('array'),
 		])->castTo('array');
-	}
-
-	/**
-	 * @var string Extension name
-	 */
-	private const EXTENSION_NAME = 'iqrfRepository';
-
-	/**
-	 * @var string Path to configuration file
-	 */
-	private string $confPath;
-
-	/**
-	 * Constructor
-	 */
-	public function __construct(string $path) {
-		$this->confPath = $path;
-	}
-
-	/**
-	 * Saves IQRF repository configuration
-	 * @param array<string, array<string, string|null>|string> $config IQRF repository configuration to save
-	 * @throws IOException
-	 * @throws NeonException
-	 */
-	public function saveConfig(array $config): void {
-		FileSystem::write($this->confPath, Neon::encode([self::EXTENSION_NAME => $config], Neon::BLOCK));
-	}
-
-	/**
-	 * Reads and returns IQRF repository configuration
-	 * @return array<string, array<string, string|null>|string> IQRF Repository integration configuration
-	 */
-	public function readConfig(): array {
-		try {
-			$content = Neon::decode(FileSystem::read($this->confPath))[self::EXTENSION_NAME] ?? [];
-		} catch (IOException | NeonException $e) {
-			$content = [];
-		}
-		$processor = new Processor();
-		return $processor->process($this->getSchema(), $content);
 	}
 
 }

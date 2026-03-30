@@ -21,14 +21,14 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Models;
 
 use App\ConfigModule\Utils\ConfParser;
-use App\CoreModule\Models\CommandManager;
-use App\CoreModule\Models\PrivilegedFileManager;
 use App\GatewayModule\Exceptions\ConfNotFoundException;
 use App\GatewayModule\Exceptions\InvalidConfFormatException;
 use App\GatewayModule\Exceptions\NonexistentTimezoneException;
 use App\GatewayModule\Exceptions\TimeDateException;
 use DateTime;
 use DateTimeZone;
+use Iqrf\CommandExecutor\CommandExecutor;
+use Iqrf\FileManager\PrivilegedFileManager;
 use Nette\Utils\Strings;
 use Throwable;
 
@@ -38,7 +38,7 @@ use Throwable;
 class TimeManager {
 
 	/**
-	 * @var array<string, array<string, string|int>> Default timesyncd configuration
+	 * Default timesyncd configuration
 	 */
 	private const TIMESYNCD_DEFAULT = [
 		'Time' => [
@@ -53,26 +53,23 @@ class TimeManager {
 	/**
 	 * @var string Timesyncd configuration file name
 	 */
-	private string $confFile;
-
-	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
+	private readonly string $confFile;
 
 	/**
 	 * @var PrivilegedFileManager $fileManager Privileged file manager
 	 */
-	private PrivilegedFileManager $fileManager;
+	private readonly PrivilegedFileManager $fileManager;
 
 	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandExecutor Command manager
 	 */
-	public function __construct(CommandManager $commandManager, string $timesyndPath) {
-		$this->commandManager = $commandManager;
+	public function __construct(
+		private readonly CommandExecutor $commandExecutor,
+		string $timesyndPath,
+	) {
 		$this->confFile = basename($timesyndPath);
-		$this->fileManager = new PrivilegedFileManager(dirname($timesyndPath), $commandManager);
+		$this->fileManager = new PrivilegedFileManager(dirname($timesyndPath), $this->commandExecutor);
 	}
 
 	/**
@@ -80,7 +77,7 @@ class TimeManager {
 	 * @return array<string, int|string|bool|array<string>> Time configuration
 	 */
 	public function getTime(): array {
-		$command = $this->commandManager->run('timedatectl show -p Timezone | rev | cut -d= -f1 | rev');
+		$command = $this->commandExecutor->run('timedatectl show -p Timezone | rev | cut -d= -f1 | rev');
 		$timezone = Strings::trim($command->getStdout());
 		$date = new DateTime('now', new DateTimeZone($timezone));
 		$status = $this->getStatus();
@@ -97,7 +94,7 @@ class TimeManager {
 			'formattedTime' => $tokens[5],
 		];
 		$array['ntpSync'] = $status['NTP'];
-		$array['ntpServers'] = strlen($timesyncConf['Time']['NTP']) === 0 ? [] : explode(' ', $timesyncConf['Time']['NTP']);
+		$array['ntpServers'] = (string) $timesyncConf['Time']['NTP'] === '' ? [] : explode(' ', $timesyncConf['Time']['NTP']);
 		return $array;
 	}
 
@@ -119,23 +116,12 @@ class TimeManager {
 	}
 
 	/**
-	 * Sets date and time
-	 * @param string $datetime ISO8601 datetime string
-	 */
-	private function setDateTime(string $datetime): void {
-		$command = $this->commandManager->run(sprintf('date --set=%s', escapeshellarg($datetime)), true, 0);
-		if ($command->getExitCode() !== 0) {
-			throw new TimeDateException($command->getStderr());
-		}
-	}
-
-	/**
 	 * Returns timedatectl status
 	 * @return array<string, mixed|array<string, mixed>> Timedatectl status
 	 * @throws TimeDateException
 	 */
 	public function getStatus(): array {
-		$command = $this->commandManager->run('timedatectl show');
+		$command = $this->commandExecutor->run('timedatectl show');
 		if ($command->getExitCode() !== 0) {
 			throw new TimeDateException($command->getStderr());
 		}
@@ -147,13 +133,13 @@ class TimeManager {
 	 * @return array<int, array<string, string>> Array of available timezones
 	 */
 	public function availableTimezones(): array {
-		$command = $this->commandManager->run('timedatectl list-timezones');
+		$command = $this->commandExecutor->run('timedatectl list-timezones');
 		$timezones = explode(PHP_EOL, $command->getStdout());
 		$array = [];
 		foreach ($timezones as $timezone) {
 			try {
 				$array[] = $this->timezoneInfo($timezone);
-			} catch (Throwable $e) {
+			} catch (Throwable) {
 				continue;
 			}
 		}
@@ -181,7 +167,7 @@ class TimeManager {
 	 * @throws NonexistentTimezoneException
 	 */
 	public function setTimezone(string $timezone): void {
-		$command = $this->commandManager->run('timedatectl set-timezone ' . escapeshellarg($timezone), true);
+		$command = $this->commandExecutor->run('timedatectl set-timezone ' . escapeshellarg($timezone), true);
 		if ($command->getExitCode() !== 0) {
 			throw new NonexistentTimezoneException($command->getStderr());
 		}
@@ -192,7 +178,7 @@ class TimeManager {
 	 * @param bool $enabled NTP sync status
 	 */
 	public function setNtp(bool $enabled): void {
-		$command = $this->commandManager->run('timedatectl set-ntp ' . ($enabled ? 'true' : 'false'), true);
+		$command = $this->commandExecutor->run('timedatectl set-ntp ' . ($enabled ? 'true' : 'false'), true);
 		if ($command->getExitCode() !== 0) {
 			throw new TimeDateException($command->getStderr());
 		}
@@ -213,6 +199,17 @@ class TimeManager {
 			throw new InvalidConfFormatException('Invalid configuration file format.');
 		}
 		return array_replace_recursive(self::TIMESYNCD_DEFAULT, $config);
+	}
+
+	/**
+	 * Sets date and time
+	 * @param string $datetime ISO8601 datetime string
+	 */
+	private function setDateTime(string $datetime): void {
+		$command = $this->commandExecutor->run(sprintf('date --set=%s', escapeshellarg($datetime)), true, 0);
+		if ($command->getExitCode() !== 0) {
+			throw new TimeDateException($command->getStderr());
+		}
 	}
 
 	/**

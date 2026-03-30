@@ -20,10 +20,10 @@ declare(strict_types = 1);
 
 namespace App\NetworkModule\Models;
 
-use App\CoreModule\Entities\ICommand;
-use App\CoreModule\Models\CommandManager;
 use App\NetworkModule\Entities\Modem;
 use App\NetworkModule\Exceptions\ModemManagerException;
+use Iqrf\CommandExecutor\CommandExecutor;
+use Iqrf\CommandExecutor\ICommand;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 use stdClass;
@@ -34,23 +34,19 @@ use stdClass;
 class GsmManager {
 
 	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
-
-	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandExecutor Command manager
 	 */
-	public function __construct(CommandManager $commandManager) {
-		$this->commandManager = $commandManager;
+	public function __construct(
+		private readonly CommandExecutor $commandExecutor,
+	) {
 	}
 
 	/**
 	 * Scans for GSM modems
 	 */
 	public function scanModems(): void {
-		$output = $this->commandManager->run('mmcli --scan-modems', true);
+		$output = $this->commandExecutor->run('mmcli --scan-modems', true);
 		$this->checkCommand($output);
 	}
 
@@ -59,13 +55,13 @@ class GsmManager {
 	 * @return array<array{interface: string, signal: int, rssi: float}> Available modems
 	 */
 	public function listModems(): array {
-		$output = $this->commandManager->run('mmcli --list-modems --output-json', true);
+		$output = $this->commandExecutor->run('mmcli --list-modems --output-json', true);
 		$this->checkCommand($output);
 		try {
-			$json = Json::decode($output->getStdout(), Json::FORCE_ARRAY);
-			$entities = array_map(fn(string $path): array => $this->getModemInformation($path)->jsonSerialize(), $json['modem-list']);
+			$json = Json::decode($output->getStdout(), forceArrays: true);
+			$entities = array_map(fn (string $path): array => $this->getModemInformation($path)->jsonSerialize(), $json['modem-list']);
 		} catch (JsonException $e) {
-			throw new ModemManagerException($e->getMessage());
+			throw new ModemManagerException($e->getMessage(), $e->getCode(), $e);
 		}
 		return $entities;
 	}
@@ -77,12 +73,12 @@ class GsmManager {
 	 */
 	private function getModemInformation(string $path): Modem {
 		$command = sprintf('mmcli -m %s --output-json', $path);
-		$output = $this->commandManager->run($command, true);
+		$output = $this->commandExecutor->run($command, true);
 		$this->checkCommand($output);
 		$modem = Json::decode($output->getStdout());
 		$rssi = null;
 		$command = sprintf('mmcli -m %s --signal-get --output-json', $path);
-		$output = $this->commandManager->run($command, true);
+		$output = $this->commandExecutor->run($command, true);
 		if ($output->getExitCode() === 0) {
 			$rssi = $this->getModemRssi($path);
 		}
@@ -96,12 +92,12 @@ class GsmManager {
 	 */
 	private function getModemRssi(string $path): ?stdClass {
 		$command = sprintf('mmcli -m %s --signal-setup=300', $path);
-		$output = $this->commandManager->run($command, true);
+		$output = $this->commandExecutor->run($command, true);
 		if ($output->getExitCode() !== 0) {
 			return null;
 		}
 		$command = sprintf('mmcli -m %s --signal-get --output-json', $path);
-		$output = $this->commandManager->run($command, true);
+		$output = $this->commandExecutor->run($command, true);
 		return $output->getExitCode() === 0 ? Json::decode($output->getStdout()) : null;
 	}
 

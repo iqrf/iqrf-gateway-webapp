@@ -28,22 +28,7 @@ use Ramsey\Uuid\UuidInterface;
 /**
  * Network connection entity
  */
-final class Connection implements JsonSerializable {
-
-	/**
-	 * @var string Network connection name
-	 */
-	private string $name;
-
-	/**
-	 * @var UuidInterface Network connection UUID
-	 */
-	private UuidInterface $uuid;
-
-	/**
-	 * @var ConnectionTypes Network connection type
-	 */
-	private ConnectionTypes $type;
+final readonly class Connection implements JsonSerializable {
 
 	/**
 	 * @var string|null Network interface name
@@ -57,11 +42,25 @@ final class Connection implements JsonSerializable {
 	 * @param ConnectionTypes $type Network connection type
 	 * @param string|null $interfaceName Network interface name
 	 */
-	public function __construct(string $name, UuidInterface $uuid, ConnectionTypes $type, ?string $interfaceName) {
-		$this->name = $name;
-		$this->uuid = $uuid;
-		$this->type = $type;
+	public function __construct(
+		private string $name,
+		private UuidInterface $uuid,
+		private ConnectionTypes $type,
+		?string $interfaceName,
+	) {
 		$this->interfaceName = $interfaceName === '' ? null : $interfaceName;
+	}
+
+	/**
+	 * Deserializes network connection entity from the nmcli row
+	 * @param string $string nmcli row
+	 * @return Connection Network connection entity
+	 */
+	public static function nmCliDeserialize(string $string): self {
+		$array = explode(':', $string);
+		$uuid = Uuid::fromString($array[1]);
+		$type = ConnectionTypes::fromScalar($array[2]);
+		return new self($array[0], $uuid, $type, $array[3]);
 	}
 
 	/**
@@ -91,18 +90,6 @@ final class Connection implements JsonSerializable {
 			'type' => $this->type->jsonSerialize(),
 			'interfaceName' => $this->interfaceName,
 		];
-	}
-
-	/**
-	 * Deserializes network connection entity from the nmcli row
-	 * @param string $string nmcli row
-	 * @return Connection Network connection entity
-	 */
-	public static function nmCliDeserialize(string $string): self {
-		$array = explode(':', $string);
-		$uuid = Uuid::fromString($array[1]);
-		$type = ConnectionTypes::fromScalar($array[2]);
-		return new self($array[0], $uuid, $type, $array[3]);
 	}
 
 }

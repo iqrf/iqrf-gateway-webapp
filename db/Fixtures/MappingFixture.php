@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Database\Fixtures;
 
@@ -30,6 +30,7 @@ use Doctrine\Persistence\ObjectManager;
  * Mapping fixture
  */
 class MappingFixture implements FixtureInterface, OrderedFixtureInterface {
+
 	/**
 	 * Loads mapping data into database
 	 * @param ObjectManager $manager Object manager
@@ -87,4 +88,5 @@ class MappingFixture implements FixtureInterface, OrderedFixtureInterface {
 	public function getOrder(): int {
 		return 1;
 	}
+
 }

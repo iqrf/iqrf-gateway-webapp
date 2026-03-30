@@ -39,12 +39,25 @@ abstract class WebSocketTestCase extends TestCase {
 	/**
 	 * @var ApiRequest|MockInterface Mocked IQRF JSON API request
 	 */
-	protected $request;
+	protected MockInterface|ApiRequest $request;
 
 	/**
 	 * @var WebSocketClient|MockInterface Mocked WebSocket client
 	 */
-	protected $wsClient;
+	protected MockInterface|WebSocketClient $wsClient;
+
+	/**
+	 * Reads the IQRF JSON API response
+	 * @param string $mType Message type
+	 * @return array{response: mixed} IQRF JSON API response
+	 * @throws IOException
+	 * @throws JsonException
+	 */
+	public function readJsonResponse(string $mType): array {
+		$path = __DIR__ . '/../../data/apiResponses/';
+		$file = FileSystem::read($path . $mType . '.json');
+		return ['response' => Json::decode($file)];
+	}
 
 	/**
 	 * Asserts the IQRF JSON API request
@@ -70,19 +83,6 @@ abstract class WebSocketTestCase extends TestCase {
 	 */
 	protected function tearDown(): void {
 		Mockery::close();
-	}
-
-	/**
-	 * Reads the IQRF JSON API response
-	 * @param string $mType Message type
-	 * @return array{response: mixed} IQRF JSON API response
-	 * @throws IOException
-	 * @throws JsonException
-	 */
-	public function readJsonResponse(string $mType): array {
-		$path = __DIR__ . '/../../data/apiResponses/';
-		$file = FileSystem::read($path . $mType . '.json');
-		return ['response' => Json::decode($file)];
 	}
 
 }

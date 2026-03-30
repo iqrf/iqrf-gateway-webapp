@@ -35,17 +35,17 @@ final class WepKeyType extends Enum implements JsonSerializable {
 	use AutoInstances;
 
 	/**
-	 * @var string WEP key
+	 * WEP key
 	 */
 	private const KEY = 'key';
 
 	/**
-	 * @var string WEP passphrase
+	 * WEP passphrase
 	 */
 	private const PASSPHRASE = 'passphrase';
 
 	/**
-	 * @var string Unknown type
+	 * Unknown type
 	 */
 	private const UNKNOWN = 'unknown';
 

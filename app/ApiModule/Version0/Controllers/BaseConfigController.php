@@ -25,8 +25,8 @@ use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 
 /**
  * Base config controller
- * @Path("/config")
  */
+#[Path('/config')]
 abstract class BaseConfigController extends BaseController {
 
 	/**

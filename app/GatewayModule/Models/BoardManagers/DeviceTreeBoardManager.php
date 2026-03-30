@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models\BoardManagers;
 
-use App\CoreModule\Models\CommandManager;
+use Iqrf\CommandExecutor\CommandExecutor;
 
 /**
  * Device tree board manager
@@ -28,16 +28,12 @@ use App\CoreModule\Models\CommandManager;
 class DeviceTreeBoardManager implements IBoardManager {
 
 	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
-
-	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandExecutor Command manager
 	 */
-	public function __construct(CommandManager $commandManager) {
-		$this->commandManager = $commandManager;
+	public function __construct(
+		private readonly CommandExecutor $commandExecutor,
+	) {
 	}
 
 	/**
@@ -45,7 +41,7 @@ class DeviceTreeBoardManager implements IBoardManager {
 	 * @return string|null Board's name
 	 */
 	public function getName(): ?string {
-		$deviceTree = $this->commandManager->run('cat /proc/device-tree/model', true)->getStdout();
+		$deviceTree = $this->commandExecutor->run('cat /proc/device-tree/model', true)->getStdout();
 		if ($deviceTree !== '') {
 			return $deviceTree;
 		}

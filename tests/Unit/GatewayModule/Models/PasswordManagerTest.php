@@ -29,25 +29,27 @@ namespace Tests\Unit\GatewayModule\Models;
 use App\CoreModule\Models\FeatureManager;
 use App\GatewayModule\Exceptions\ChpasswdErrorException;
 use App\GatewayModule\Models\PasswordManager;
-use Nette\Utils\FileSystem;
+use Iqrf\CommandExecutor\Tester\Traits\CommandExecutorTestCase;
+use Mockery;
 use Tester\Assert;
-use Tests\Stubs\CoreModule\Models\Command;
-use Tests\Toolkit\TestCases\CommandTestCase;
+use Tester\TestCase;
 
 require __DIR__ . '/../../../bootstrap.php';
 
 /**
  * tests for Gateway user password manager
  */
-final class PasswordManagerTest extends CommandTestCase {
+final class PasswordManagerTest extends TestCase {
+
+	use CommandExecutorTestCase;
 
 	/**
-	 * @var string Password change command
+	 * Password change command
 	 */
 	private const COMMAND = 'chpasswd';
 
 	/**
-	 * @var string Root user and password to change
+	 * Root user and password to change
 	 */
 	private const ARGUMENT = 'root:testpass';
 
@@ -57,40 +59,50 @@ final class PasswordManagerTest extends CommandTestCase {
 	private PasswordManager $manager;
 
 	/**
-	 * Sets up the test environment
-	 */
-	protected function setUp(): void {
-		parent::setUp();
-		$original = __DIR__ . '/../../../data/features.neon';
-		$path = TMP_DIR . '/features.neon';
-		FileSystem::copy($original, $path);
-		$this->manager = new PasswordManager($this->commandManager, new FeatureManager($path));
-	}
-
-	/**
 	 * Tests the function to change gateway user password
 	 */
 	public function testSetPassword(): void {
-		$command = new Command(self::COMMAND, '', '', 0);
-		$this->commandManager->shouldReceive('run')
-			->withArgs([self::COMMAND, true, 60, self::ARGUMENT])
-			->andReturn($command);
+		$this->receiveCommand(
+			command: self::COMMAND,
+			needSudo: true,
+			timeout: 60,
+			input: self::ARGUMENT,
+		);
 		Assert::noError(function (): void {
 			$this->manager->setPassword('testpass');
 		});
 	}
 
 	/**
-	 * Tests the fuction to change gateway user password with change error
+	 * Tests the function to change gateway user password with change error
 	 */
 	public function testSetPasswordChangeError(): void {
-		$command = new Command(self::COMMAND, '', '', 1);
-		$this->commandManager->shouldReceive('run')
-			->withArgs([self::COMMAND, true, 60, self::ARGUMENT])
-			->andReturn($command);
+		$this->receiveCommand(
+			command: self::COMMAND,
+			needSudo: true,
+			timeout: 60,
+			input: self::ARGUMENT,
+			exitCode: 1,
+		);
 		Assert::throws(function (): void {
 			$this->manager->setPassword('testpass');
 		}, ChpasswdErrorException::class);
+	}
+
+	/**
+	 * Sets up the test environment
+	 */
+	protected function setUp(): void {
+		parent::setUp();
+		$this->setUpCommandExecutor();
+		$featureManager = Mockery::mock(FeatureManager::class);
+		$featureManager->shouldReceive('get')
+			->withArgs(['gatewayPass'])
+			->andReturn([
+				'user' => 'root',
+				'enabled' => true,
+			]);
+		$this->manager = new PasswordManager($this->commandExecutor, $featureManager);
 	}
 
 }

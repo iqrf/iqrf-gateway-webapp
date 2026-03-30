@@ -21,10 +21,9 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Models\Backup;
 
 use App\CoreModule\Models\FeatureManager;
-use App\CoreModule\Models\PrivilegedFileManager;
 use App\CoreModule\Models\ZipArchiveManager;
+use Iqrf\FileManager\PrivilegedFileManager;
 use Nette\Utils\FileSystem;
-use Nette\Utils\Strings;
 
 /**
  * Monit backup manager
@@ -32,7 +31,7 @@ use Nette\Utils\Strings;
 class MonitBackup implements IBackupManager {
 
 	/**
-	 * @var array<string> List of whitelisted files
+	 * List of whitelisted files
 	 */
 	public const WHITELIST = [
 		'monitrc',
@@ -40,7 +39,7 @@ class MonitBackup implements IBackupManager {
 	];
 
 	/**
-	 * @var array<string> Service name
+	 * Service name
 	 */
 	public const SERVICES = [
 		'monit',
@@ -49,17 +48,7 @@ class MonitBackup implements IBackupManager {
 	/**
 	 * @var bool Indicates whether feature is enabled
 	 */
-	private bool $featureEnabled;
-
-	/**
-	 * @var PrivilegedFileManager Privileged file manager
-	 */
-	private PrivilegedFileManager $fileManager;
-
-	/**
-	 * @var RestoreLogger Restore logger
-	 */
-	private RestoreLogger $restoreLogger;
+	private readonly bool $featureEnabled;
 
 	/**
 	 * Constructor
@@ -67,10 +56,12 @@ class MonitBackup implements IBackupManager {
 	 * @param FeatureManager $featureManager Feature manager
 	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
-	public function __construct(PrivilegedFileManager $fileManager, FeatureManager $featureManager, RestoreLogger $restoreLogger) {
-		$this->fileManager = $fileManager;
-		$this->restoreLogger = $restoreLogger;
-		$this->featureEnabled = $featureManager->get('monit')['enabled'];
+	public function __construct(
+		private readonly PrivilegedFileManager $fileManager,
+		FeatureManager $featureManager,
+		private readonly RestoreLogger $restoreLogger,
+	) {
+		$this->featureEnabled = $featureManager->isEnabled('monit');
 	}
 
 	/**
@@ -106,7 +97,7 @@ class MonitBackup implements IBackupManager {
 		$zipManager->extract(self::TMP_PATH, 'monit/monitrc');
 		$this->fileManager->copy('monitrc', self::TMP_PATH . 'monit/monitrc');
 		foreach ($zipManager->listFiles() as $file) {
-			if (Strings::startsWith($file, 'monit/conf-available/')) {
+			if (str_starts_with($file, 'monit/conf-available/')) {
 				$zipManager->extract(self::TMP_PATH, $file);
 				$this->fileManager->copy('conf-available/' . basename($file), self::TMP_PATH . $file);
 			}
@@ -123,6 +114,14 @@ class MonitBackup implements IBackupManager {
 	}
 
 	/**
+	 * Returns service names
+	 * @return array<string> Service names
+	 */
+	public function getServices(): array {
+		return $this->featureEnabled ? self::SERVICES : [];
+	}
+
+	/**
 	 * Fixes privileges for restored files
 	 */
 	private function fixPrivileges(): void {
@@ -131,14 +130,6 @@ class MonitBackup implements IBackupManager {
 		$this->fileManager->chown('conf-available', 'root', 'root', true);
 		$this->fileManager->chmod('conf-available', 0600, true);
 		$this->fileManager->chmod('conf-available', 0755);
-	}
-
-	/**
-	 * Returns service names
-	 * @return array<string> Service names
-	 */
-	public function getServices(): array {
-		return $this->featureEnabled ? self::SERVICES : [];
 	}
 
 }

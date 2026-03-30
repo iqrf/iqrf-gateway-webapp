@@ -36,22 +36,24 @@ use App\NetworkModule\Exceptions\WireguardKeyErrorException;
 use App\NetworkModule\Models\WireguardManager;
 use App\ServiceModule\Models\ServiceManager;
 use Darsyn\IP\Version\Multi;
+use Iqrf\CommandExecutor\Tester\Traits\CommandExecutorTestCase;
 use Mockery;
 use Mockery\MockInterface;
 use Nette\Utils\ArrayHash;
 use Tester\Assert;
-use Tests\Stubs\CoreModule\Models\Command;
-use Tests\Toolkit\TestCases\CommandTestCase;
+use Tester\TestCase;
 
 require __DIR__ . '/../../../bootstrap.php';
 
 /**
- * Tests for Wireguard manager
+ * Tests for WireGuard manager
  */
-final class WireguardManagerTest extends CommandTestCase {
+final class WireguardManagerTest extends TestCase {
+
+	use CommandExecutorTestCase;
 
 	/**
-	 * @var array<string, string> Commands to be executed during testing
+	 * Commands to be executed during testing
 	 */
 	private const COMMANDS = [
 		'privateKey' => 'umask 077 && wg genkey',
@@ -61,7 +63,7 @@ final class WireguardManagerTest extends CommandTestCase {
 	];
 
 	/**
-	 * @var array{privateKey: string, publicKey: string} Wireguard keypair
+	 * WireGuard keypair
 	 */
 	private const WG_KEYPAIR = [
 		'privateKey' => 'uImD+hh1Dp6uWvWJ+eaYdc2oRloC3TYUpPUUCwfBi0I=',
@@ -69,12 +71,12 @@ final class WireguardManagerTest extends CommandTestCase {
 	];
 
 	/**
-	 * @var WireguardInterface Wireguard interface entity
+	 * @var WireguardInterface WireGuard interface entity
 	 */
 	private WireguardInterface $interfaceEntity;
 
 	/**
-	 * @var WireguardPeer Wireguard peer entity
+	 * @var WireguardPeer WireGuard peer entity
 	 */
 	private WireguardPeer $peerEntity;
 
@@ -84,31 +86,14 @@ final class WireguardManagerTest extends CommandTestCase {
 	private EntityManager $entityManager;
 
 	/**
-	 * @var WireguardManager Wireguard manager
+	 * @var WireguardManager WireGuard manager
 	 */
 	private WireguardManager $manager;
 
 	/**
 	 * @var MockInterface|ServiceManager Mocked service manager
 	 */
-	private $serviceManager;
-
-	/**
-	 * Sets up the test environment
-	 */
-	protected function setUp(): void {
-		parent::setUp();
-		$this->interfaceEntity = new WireguardInterface('wg0', 'CHmgTLdcdr33Nr/GblDjKufGqWWxmnGv7a50hN6hZ0c=', 51775);
-		$this->peerEntity = new WireguardPeer('Z4Csw6v+89bcamtek9elXmuIEA+6PeB6CLnjNh4dJzI=', null, 25, 'example.org', 51280, $this->interfaceEntity);
-		$this->entityManager = Mockery::mock(EntityManager::class);
-		$this->entityManager->shouldReceive('getWireguardInterfaceIpv4Repository');
-		$this->entityManager->shouldReceive('getWireguardInterfaceIpv6Repository');
-		$this->entityManager->shouldReceive('getWireguardInterfaceRepository');
-		$this->entityManager->shouldReceive('getWireguardPeerAddressRepository');
-		$this->entityManager->shouldReceive('getWireguardPeerRepository');
-		$this->serviceManager = Mockery::mock(ServiceManager::class);
-		$this->manager = new WireguardManager($this->commandManager, $this->entityManager, $this->serviceManager);
-	}
+	private MockInterface|ServiceManager $serviceManager;
 
 	/**
 	 * Tests the function to create peer
@@ -161,10 +146,10 @@ final class WireguardManagerTest extends CommandTestCase {
 	}
 
 	/**
-	 * Tests the function to generate wireguard keypair
+	 * Tests the function to generate WireGuard keypair
 	 */
 	public function testGenerateKeys(): void {
-		$manager = Mockery::mock(WireguardManager::class, [$this->commandManager, $this->entityManager, $this->serviceManager])->makePartial();
+		$manager = Mockery::mock(WireguardManager::class, [$this->commandExecutor, $this->entityManager, $this->serviceManager])->makePartial();
 		$manager->shouldReceive('generatePrivateKey')
 			->andReturn(self::WG_KEYPAIR['privateKey']);
 		$manager->shouldReceive('generatePublicKey')
@@ -174,42 +159,56 @@ final class WireguardManagerTest extends CommandTestCase {
 	}
 
 	/**
-	 * Tests the function to generate wireguard private key
+	 * Tests the function to generate WireGuard private key
 	 */
 	public function testGeneratePrivateKey(): void {
-		$this->receiveCommand(self::COMMANDS['privateKey'], false, self::WG_KEYPAIR['privateKey'], '', 0);
+		$this->receiveCommand(
+			command: self::COMMANDS['privateKey'],
+			stdout: self::WG_KEYPAIR['privateKey'],
+		);
 		Assert::same(self::WG_KEYPAIR['privateKey'], $this->manager->generatePrivateKey());
 	}
 
 	/**
-	 * Tests the function to generate wireguard private key and throw exception
+	 * Tests the function to generate WireGuard private key and throw exception
 	 */
 	public function testGeneratePrivateKeyException(): void {
-		$command = new Command(self::COMMANDS['privateKey'], '', 'Usage: wg genkey', 1);
-		$this->commandManager->shouldReceive('run')
-			->withArgs([self::COMMANDS['privateKey'], false])->andReturn($command);
+		$this->receiveCommand(
+			command: self::COMMANDS['privateKey'],
+			stderr: 'Usage: wg genkey',
+			exitCode: 1,
+		);
 		Assert::throws(function (): void {
 			$this->manager->generatePrivateKey();
 		}, WireguardKeyErrorException::class);
 	}
 
 	/**
-	 * Tests the function to generate wireguard public key
+	 * Tests the function to generate WireGuard public key
 	 */
 	public function testGeneratePublicKey(): void {
-		$command = new Command(self::COMMANDS['publicKey'], self::WG_KEYPAIR['publicKey'], '', 0);
-		$this->commandManager->shouldReceive('run')
-			->withArgs([self::COMMANDS['publicKey'], false, 60, self::WG_KEYPAIR['privateKey']])->andReturn($command);
+		$this->receiveCommand(
+			command: self::COMMANDS['publicKey'],
+			needSudo: false,
+			timeout: 60,
+			input: self::WG_KEYPAIR['privateKey'],
+			stdout: self::WG_KEYPAIR['publicKey'],
+		);
 		Assert::same(self::WG_KEYPAIR['publicKey'], $this->manager->generatePublicKey(self::WG_KEYPAIR['privateKey']));
 	}
 
 	/**
-	 * Tests the function to generate wireguard public key and throw exception
+	 * Tests the function to generate WireGuard public key and throw exception
 	 */
 	public function testGeneratePublicKeyException(): void {
-		$command = new Command(self::COMMANDS['publicKey'], '', 'Usage: wg pubkey', 1);
-		$this->commandManager->shouldReceive('run')
-			->withArgs([self::COMMANDS['publicKey'], false, 60, ''])->andReturn($command);
+		$this->receiveCommand(
+			command: self::COMMANDS['publicKey'],
+			needSudo: false,
+			timeout: 60,
+			input: '',
+			stderr: 'Usage: wg pubkey',
+			exitCode: 1,
+		);
 		Assert::throws(function (): void {
 			$this->manager->generatePublicKey('');
 		}, WireguardKeyErrorException::class);
@@ -219,7 +218,10 @@ final class WireguardManagerTest extends CommandTestCase {
 	 * Tests the function to get active tunnel state
 	 */
 	public function testGetTunnelState(): void {
-		$this->receiveCommand(self::COMMANDS['tunnelState'], true, '', '', 0);
+		$this->receiveCommand(
+			command: self::COMMANDS['tunnelState'],
+			needSudo: true,
+		);
 		Assert::same('active', $this->manager->getTunnelState($this->interfaceEntity));
 	}
 
@@ -227,7 +229,12 @@ final class WireguardManagerTest extends CommandTestCase {
 	 * Tests the function to get inactive tunnel state
 	 */
 	public function testGetTunnelStateInactive(): void {
-		$this->receiveCommand(self::COMMANDS['tunnelState'], true, '', 'Unable to access interface: No such device', 1);
+		$this->receiveCommand(
+			command: self::COMMANDS['tunnelState'],
+			needSudo: true,
+			stderr: 'Unable to access interface: No such device',
+			exitCode: 1,
+		);
 		Assert::same('inactive', $this->manager->getTunnelState($this->interfaceEntity));
 	}
 
@@ -235,7 +242,10 @@ final class WireguardManagerTest extends CommandTestCase {
 	 * Tests the function to check if tunnel state is active
 	 */
 	public function testIsTunnelActiveTrue(): void {
-		$this->receiveCommand(self::COMMANDS['tunnelState'], true, '', '', 0);
+		$this->receiveCommand(
+			command: self::COMMANDS['tunnelState'],
+			needSudo: true,
+		);
 		Assert::true($this->manager->isTunnelActive($this->interfaceEntity));
 	}
 
@@ -243,7 +253,12 @@ final class WireguardManagerTest extends CommandTestCase {
 	 * Tests the function to check if tunnel state is active
 	 */
 	public function testIsTunnelActiveFalse(): void {
-		$this->receiveCommand(self::COMMANDS['tunnelState'], true, '', 'Unable to access interface: No such device', 1);
+		$this->receiveCommand(
+			command: self::COMMANDS['tunnelState'],
+			needSudo: true,
+			stderr: 'Unable to access interface: No such device',
+			exitCode: 1,
+		);
 		Assert::false($this->manager->isTunnelActive($this->interfaceEntity));
 	}
 
@@ -251,7 +266,10 @@ final class WireguardManagerTest extends CommandTestCase {
 	 * Tests the function to delete tunnel successfully
 	 */
 	public function testDeleteTunnel(): void {
-		$this->receiveCommand(self::COMMANDS['deleteTunnel'], true, '', '', 0);
+		$this->receiveCommand(
+			command: self::COMMANDS['deleteTunnel'],
+			needSudo: true,
+		);
 		Assert::true($this->manager->deleteTunnel($this->interfaceEntity));
 	}
 
@@ -259,8 +277,31 @@ final class WireguardManagerTest extends CommandTestCase {
 	 * Tests the function to delete tunnel unsuccessfully
 	 */
 	public function testDeleteTunnelFailed(): void {
-		$this->receiveCommand(self::COMMANDS['deleteTunnel'], true, '', 'Cannot find device "wg0"', 1);
+		$this->receiveCommand(
+			command: self::COMMANDS['deleteTunnel'],
+			needSudo: true,
+			stderr: 'Cannot find device "wg0"',
+			exitCode: 1,
+		);
 		Assert::false($this->manager->deleteTunnel($this->interfaceEntity));
+	}
+
+	/**
+	 * Sets up the test environment
+	 */
+	protected function setUp(): void {
+		parent::setUp();
+		$this->setUpCommandExecutor();
+		$this->interfaceEntity = new WireguardInterface('wg0', 'CHmgTLdcdr33Nr/GblDjKufGqWWxmnGv7a50hN6hZ0c=', 51775);
+		$this->peerEntity = new WireguardPeer('Z4Csw6v+89bcamtek9elXmuIEA+6PeB6CLnjNh4dJzI=', null, 25, 'example.org', 51280, $this->interfaceEntity);
+		$this->entityManager = Mockery::mock(EntityManager::class);
+		$this->entityManager->shouldReceive('getWireguardInterfaceIpv4Repository');
+		$this->entityManager->shouldReceive('getWireguardInterfaceIpv6Repository');
+		$this->entityManager->shouldReceive('getWireguardInterfaceRepository');
+		$this->entityManager->shouldReceive('getWireguardPeerAddressRepository');
+		$this->entityManager->shouldReceive('getWireguardPeerRepository');
+		$this->serviceManager = Mockery::mock(ServiceManager::class);
+		$this->manager = new WireguardManager($this->commandExecutor, $this->entityManager, $this->serviceManager);
 	}
 
 }

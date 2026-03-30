@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\Models\Database\Entities;
 
 use App\Models\Database\Attributes\TId;
+use App\Models\Database\Repositories\WireguardPeerRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -28,55 +29,18 @@ use JsonSerializable;
 
 /**
  * WireGuard peer entity
- * @ORM\Entity(repositoryClass="App\Models\Database\Repositories\WireguardPeerRepository")
- * @ORM\Table(name="`wireguard_peers`")
- * @ORM\HasLifecycleCallbacks()
  */
+#[ORM\Entity(repositoryClass: WireguardPeerRepository::class)]
+#[ORM\HasLifecycleCallbacks]
+#[ORM\Table(name: '`wireguard_peers`')]
 class WireguardPeer implements JsonSerializable {
 
 	use TId;
 
 	/**
-	 * @var string Peer public key
-	 * @ORM\Column(type="string", length=255)
-	 */
-	private string $publicKey;
-
-	/**
-	 * @var string|null Peer pre-shared key
-	 * @ORM\Column(type="string", length=255, nullable=true)
-	 */
-	private ?string $psk;
-
-	/**
-	 * @var int Peer keepalive interval
-	 * @ORM\Column(type="integer")
-	 */
-	private int $keepalive;
-
-	/**
-	 * @var string Peer endpoint
-	 * @ORM\Column(type="string", length=255)
-	 */
-	private string $endpoint;
-
-	/**
-	 * @var int Peer listen port
-	 * @ORM\Column(type="integer")
-	 */
-	private int $port;
-
-	/**
-	 * @var WireguardInterface Interface
-	 * @ORM\ManyToOne(targetEntity="WireguardInterface", inversedBy="peers")
-	 * @ORM\JoinColumn(name="interface_id")
-	 */
-	private WireguardInterface $interface;
-
-	/**
 	 * @var Collection<int, WireguardPeerAddress> Peer allowed IPs
-	 * @ORM\OneToMany(targetEntity="WireguardPeerAddress", mappedBy="peer", cascade={"persist"}, orphanRemoval=true)
 	 */
+	#[ORM\OneToMany(targetEntity: WireguardPeerAddress::class, mappedBy: 'peer', cascade: ['persist'], orphanRemoval: true)]
 	private Collection $addresses;
 
 	/**
@@ -88,13 +52,21 @@ class WireguardPeer implements JsonSerializable {
 	 * @param int $port Peer listen port
 	 * @param WireguardInterface $interface WireGuard interface
 	 */
-	public function __construct(string $publicKey, ?string $psk, int $keepalive, string $endpoint, int $port, WireguardInterface $interface) {
-		$this->publicKey = $publicKey;
-		$this->psk = $psk;
-		$this->keepalive = $keepalive;
-		$this->endpoint = $endpoint;
-		$this->port = $port;
-		$this->interface = $interface;
+	public function __construct(
+		#[ORM\Column(type: 'string', length: 255)]
+		private string $publicKey,
+		#[ORM\Column(type: 'string', length: 255, nullable: true)]
+		private ?string $psk,
+		#[ORM\Column(type: 'integer')]
+		private int $keepalive,
+		#[ORM\Column(type: 'string', length: 255)]
+		private string $endpoint,
+		#[ORM\Column(type: 'integer')]
+		private int $port,
+		#[ORM\ManyToOne(targetEntity: WireguardInterface::class, inversedBy: 'peers')]
+		#[ORM\JoinColumn(name: 'interface_id', nullable: false)]
+		private WireguardInterface $interface,
+	) {
 		$this->addresses = new ArrayCollection();
 	}
 

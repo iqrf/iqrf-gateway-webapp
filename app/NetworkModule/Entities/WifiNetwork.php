@@ -28,47 +28,7 @@ use Nette\Utils\Strings;
 /**
  * WiFi network entity
  */
-final class WifiNetwork implements JsonSerializable {
-
-	/**
-	 * @var bool Is in use?
-	 */
-	private bool $inUse;
-
-	/**
-	 * @var string BSSID (MAC address)
-	 */
-	private string $bssid;
-
-	/**
-	 * @var string SSID
-	 */
-	private string $ssid;
-
-	/**
-	 * @var WifiMode Mode
-	 */
-	private WifiMode $mode;
-
-	/**
-	 * @var int Channel
-	 */
-	private int $channel;
-
-	/**
-	 * @var string Speed rate
-	 */
-	private string $rate;
-
-	/**
-	 * @var int Signal strength
-	 */
-	private int $signal;
-
-	/**
-	 * @var WifiSecurity Security
-	 */
-	private WifiSecurity $security;
+final readonly class WifiNetwork implements JsonSerializable {
 
 	/**
 	 * Constructor
@@ -81,23 +41,16 @@ final class WifiNetwork implements JsonSerializable {
 	 * @param int $signal Signal strength
 	 * @param WifiSecurity $security Security
 	 */
-	public function __construct(bool $inUse, string $bssid, string $ssid, WifiMode $mode, int $channel, string $rate, int $signal, WifiSecurity $security) {
-		$this->inUse = $inUse;
-		$this->bssid = $bssid;
-		$this->ssid = $ssid;
-		$this->mode = $mode;
-		$this->channel = $channel;
-		$this->rate = $rate;
-		$this->signal = $signal;
-		$this->security = $security;
-	}
-
-	/**
-	 * Returns the network's security
-	 * @return WifiSecurity Network security
-	 */
-	public function getSecurity(): WifiSecurity {
-		return $this->security;
+	public function __construct(
+		private bool $inUse,
+		private string $bssid,
+		private string $ssid,
+		private WifiMode $mode,
+		private int $channel,
+		private string $rate,
+		private int $signal,
+		private WifiSecurity $security,
+	) {
 	}
 
 	/**
@@ -116,6 +69,14 @@ final class WifiNetwork implements JsonSerializable {
 		$signal = (int) $matches['signal'];
 		$security = WifiSecurity::fromNmCli($matches['security']);
 		return new self($inUse, $bssid, $ssid, $mode, $channel, $matches['rate'], $signal, $security);
+	}
+
+	/**
+	 * Returns the network's security
+	 * @return WifiSecurity Network security
+	 */
+	public function getSecurity(): WifiSecurity {
+		return $this->security;
 	}
 
 	/**

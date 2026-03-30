@@ -23,8 +23,8 @@ namespace App\ApiModule\Version0\Models;
 use Apitte\Core\Http\ApiRequest;
 use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
-use App\CoreModule\Models\CommandManager;
-use App\CoreModule\Models\FileManager;
+use Iqrf\CommandExecutor\CommandExecutor;
+use Iqrf\FileManager\FileManager;
 use JsonSchema\Validator;
 use Nette\Utils\JsonException;
 use stdClass;
@@ -36,11 +36,11 @@ class JsonSchemaValidator extends FileManager {
 
 	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandExecutor Command manager
 	 */
-	public function __construct(CommandManager $commandManager) {
+	public function __construct(CommandExecutor $commandExecutor) {
 		$configDir = __DIR__ . '/../../../../api/schemas';
-		parent::__construct($configDir, $commandManager);
+		parent::__construct($configDir, $commandExecutor);
 	}
 
 	/**

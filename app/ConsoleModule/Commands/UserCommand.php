@@ -39,18 +39,14 @@ abstract class UserCommand extends Command {
 	protected UserRepository $repository;
 
 	/**
-	 * @var EntityManager Entity manager
-	 */
-	protected EntityManager $entityManager;
-
-	/**
 	 * Constructor
 	 * @param EntityManager $entityManager Entity manager
 	 */
-	public function __construct(EntityManager $entityManager) {
+	public function __construct(
+		protected EntityManager $entityManager,
+	) {
 		parent::__construct();
-		$this->entityManager = $entityManager;
-		$this->repository = $entityManager->getUserRepository();
+		$this->repository = $this->entityManager->getUserRepository();
 	}
 
 	/**

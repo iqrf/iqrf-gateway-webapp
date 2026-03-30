@@ -29,21 +29,21 @@ use App\CoreModule\Models\ZipArchiveManager;
 class ApcupsdBackup implements IBackupManager {
 
 	/**
-	 * @var string Service unit file
+	 * Service unit file
 	 */
 	public const SERVICE = 'apcupsd';
 
 	/**
 	 * @var bool Feature enabled
 	 */
-	private bool $featureEnabled;
+	private readonly bool $featureEnabled;
 
 	/**
 	 * Constructor
 	 * @param FeatureManager $featureManager Feature manager
 	 */
 	public function __construct(FeatureManager $featureManager) {
-		$this->featureEnabled = $featureManager->get('apcupsd')['enabled'];
+		$this->featureEnabled = $featureManager->isEnabled('apcupsd');
 	}
 
 	/**
@@ -52,6 +52,7 @@ class ApcupsdBackup implements IBackupManager {
 	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
 	public function backup(array $params, ZipArchiveManager $zipManager): void {
+		// nothing to backup
 	}
 
 	/**
@@ -59,6 +60,7 @@ class ApcupsdBackup implements IBackupManager {
 	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
 	public function restore(ZipArchiveManager $zipManager): void {
+		// nothing to restore
 	}
 
 	/**

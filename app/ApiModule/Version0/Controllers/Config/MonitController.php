@@ -24,7 +24,6 @@ use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\RequestParameter;
-use Apitte\Core\Annotation\Controller\RequestParameters;
 use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
@@ -38,45 +37,39 @@ use Nette\IOException;
 
 /**
  * Monit controller
- * @Path("/monit")
- * @Tag("Monit configuration")
  */
+#[Path('/monit')]
+#[Tag('Configuration - Monit')]
 class MonitController extends BaseConfigController {
-
-	/**
-	 * @var MonitManager $manager Monit manager
-	 */
-	private MonitManager $manager;
 
 	/**
 	 * Constructor
 	 * @param MonitManager $manager Monit manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(MonitManager $manager, RestApiSchemaValidator $validator) {
-		$this->manager = $manager;
+	public function __construct(
+		private readonly MonitManager $manager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Returns current Monit configuration
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/MonitConfig'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('GET')]
+	#[OpenApi(<<<'EOT'
+		summary: Returns the current Monit configuration
+		responses:
+			'200':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: '#/components/schemas/MonitConfig'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['maintenance:monit']);
 		try {
@@ -87,31 +80,26 @@ class MonitController extends BaseConfigController {
 		}
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("PUT")
-	 * @OpenApi("
-	 *  summary: Saves updated Monit configuration
-	 *  requestBody:
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/MonitConfig'
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('PUT')]
+	#[OpenApi(<<<'EOT'
+		summary: Updates the Monit configuration
+		requestBody:
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: '#/components/schemas/MonitConfig'
+		responses:
+			'200':
+				description: Success
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function save(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['maintenance:monit']);
 		$this->validator->validateRequest('monitConfig', $request);
@@ -123,30 +111,23 @@ class MonitController extends BaseConfigController {
 		}
 	}
 
-	/**
-	 * @Path("/checks/{name}")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Returns Monit check configuration
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/MonitCheckConfig'
-	 *      '403':
-	 *         $ref: '#/components/responses/Forbidden'
-	 *      '404':
-	 *          $ref: '#/components/responses/NotFound'
-	 * ")
-	 * @RequestParameters({
-	 *  @RequestParameter(name="name", type="string", in="path", description="Check name")
-	 * })
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/checks/{name}')]
+	#[Method('GET')]
+	#[OpenApi(<<<'EOT'
+		summary: Returns the Monit check configuration
+		responses:
+			'200':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: '#/components/schemas/MonitCheckConfig'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+	EOT)]
+	#[RequestParameter(name: 'name', type: 'string', in: 'path', description: 'Check name')]
 	public function getCheck(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['maintenance:monit']);
 		try {
@@ -157,26 +138,19 @@ class MonitController extends BaseConfigController {
 		}
 	}
 
-	/**
-	 * @Path("/checks/{name}/enable")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Enables Monit check
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '404':
-	 *          $ref: '#/components/responses/NotFound'
-	 * ")
-	 * @RequestParameters({
-	 *      @RequestParameter(name="name", type="string", in="path", description="Check name")
-	 * })
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/checks/{name}/enable')]
+	#[Method('POST')]
+	#[OpenApi(<<<'EOT'
+		summary: Enables Monit check
+		responses:
+			'200':
+				description: Success
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+	EOT)]
+	#[RequestParameter(name: 'name', type: 'string', in: 'path', description: 'Check name')]
 	public function enableCheck(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['maintenance:monit']);
 		try {
@@ -187,26 +161,19 @@ class MonitController extends BaseConfigController {
 		}
 	}
 
-	/**
-	 * @Path("/checks/{name}/disable")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Disables Monit check
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '404':
-	 *         $ref: '#/components/responses/NotFound'
-	 * ")
-	 * @RequestParameters({
-	 *      @RequestParameter(name="name", type="string", in="path", description="Check name")
-	 * })
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/checks/{name}/disable')]
+	#[Method('POST')]
+	#[OpenApi(<<<'EOT'
+		summary: Disables Monit check
+		responses:
+			'200':
+				description: Success
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+	EOT)]
+	#[RequestParameter(name: 'name', type: 'string', in: 'path', description: 'Check name')]
 	public function disableCheck(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['maintenance:monit']);
 		try {

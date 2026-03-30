@@ -26,24 +26,26 @@ declare(strict_types = 1);
 
 namespace Tests\Unit\GatewayModule\Models\PackageManagers;
 
-use App\CoreModule\Models\CommandManager;
 use App\GatewayModule\Exceptions\UnsupportedPackageManagerException;
 use App\GatewayModule\Models\PackageManagers\AptGetPackageManager;
+use Iqrf\CommandExecutor\Tester\Traits\CommandExecutorTestCase;
 use Mockery;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
 use Tester\Assert;
-use Tests\Toolkit\TestCases\CommandTestCase;
+use Tester\TestCase;
 
 require __DIR__ . '/../../../../bootstrap.php';
 
 /**
  * Tests for tool for apt-get package manager
  */
-final class AptGetPackageManagerTest extends CommandTestCase {
+final class AptGetPackageManagerTest extends TestCase {
+
+	use CommandExecutorTestCase;
 
 	/**
-	 * @var array<string> Packages
+	 * Packages
 	 */
 	private const PACKAGES = ['iqrf-gateway-daemon', 'iqrf-gateway-webapp'];
 
@@ -53,23 +55,14 @@ final class AptGetPackageManagerTest extends CommandTestCase {
 	private AptGetPackageManager $manager;
 
 	/**
-	 * Sets up the test environment
-	 */
-	protected function setUp(): void {
-		parent::setUp();
-		$this->checkCommandExistence();
-		$this->manager = new AptGetPackageManager($this->commandManager);
-	}
-
-	/**
 	 * Tests the constructor (failure)
 	 */
 	public function testConstructorFailure(): void {
-		$commandManager = Mockery::mock(CommandManager::class);
-		$commandManager->shouldReceive('commandExist')
-			->withArgs(['apt-get'])->andReturn(false);
-		Assert::throws(function () use ($commandManager): void {
-			new AptGetPackageManager($commandManager);
+		Mockery::close();
+		$this->setUpCommandExecutor();
+		$this->receiveCommandExist('apt-get', false);
+		Assert::throws(function (): void {
+			new AptGetPackageManager($this->commandExecutor);
 		}, UnsupportedPackageManagerException::class);
 	}
 
@@ -78,7 +71,11 @@ final class AptGetPackageManagerTest extends CommandTestCase {
 	 */
 	public function testInstall(): void {
 		$command = 'apt-get install -y \'iqrf-gateway-daemon\' \'iqrf-gateway-webapp\'';
-		$this->receiveAsyncCommand([$this, 'callback'], $command, true);
+		$this->receiveAsyncCommand(
+			callback: [$this, 'callback'],
+			command: $command,
+			needSudo: true,
+		);
 		Assert::noError(function (): void {
 			$this->manager->install([$this, 'callback'], self::PACKAGES);
 		});
@@ -89,7 +86,11 @@ final class AptGetPackageManagerTest extends CommandTestCase {
 	 */
 	public function testListUpgradable(): void {
 		$command = 'apt-get -s upgrade -V';
-		$this->receiveAsyncCommand([$this, 'callback'], $command, true);
+		$this->receiveAsyncCommand(
+			callback: [$this, 'callback'],
+			command: $command,
+			needSudo: true,
+		);
 		Assert::noError(function (): void {
 			$this->manager->listUpgradable([$this, 'callback']);
 		});
@@ -100,10 +101,12 @@ final class AptGetPackageManagerTest extends CommandTestCase {
 	 */
 	public function testGetUpgradable(): void {
 		$path = TESTER_DIR . '/data/packageManagers/apt-get/';
-		$output = FileSystem::read($path . 'upgradablePackages.stdout');
-		$expected = Json::decode(FileSystem::read($path . 'upgradablePackages.json'), Json::FORCE_ARRAY);
-		$command = 'apt-get -s upgrade -V';
-		$this->receiveCommand($command, true, $output);
+		$expected = Json::decode(FileSystem::read($path . 'upgradablePackages.json'), forceArrays: true);
+		$this->receiveCommand(
+			command: 'apt-get -s upgrade -V',
+			needSudo: true,
+			stdout: FileSystem::read($path . 'upgradablePackages.stdout'),
+		);
 		Assert::same($expected, $this->manager->getUpgradable());
 	}
 
@@ -112,7 +115,11 @@ final class AptGetPackageManagerTest extends CommandTestCase {
 	 */
 	public function testRemove(): void {
 		$command = 'apt-get remove -y \'iqrf-gateway-daemon\' \'iqrf-gateway-webapp\'';
-		$this->receiveAsyncCommand([$this, 'callback'], $command, true);
+		$this->receiveAsyncCommand(
+			callback: [$this, 'callback'],
+			command: $command,
+			needSudo: true,
+		);
 		Assert::noError(function (): void {
 			$this->manager->remove([$this, 'callback'], self::PACKAGES);
 		});
@@ -123,7 +130,11 @@ final class AptGetPackageManagerTest extends CommandTestCase {
 	 */
 	public function testPurge(): void {
 		$command = 'apt-get purge -y \'iqrf-gateway-daemon\' \'iqrf-gateway-webapp\'';
-		$this->receiveAsyncCommand([$this, 'callback'], $command, true);
+		$this->receiveAsyncCommand(
+			callback: [$this, 'callback'],
+			command: $command,
+			needSudo: true,
+		);
 		Assert::noError(function (): void {
 			$this->manager->purge([$this, 'callback'], self::PACKAGES);
 		});
@@ -133,7 +144,11 @@ final class AptGetPackageManagerTest extends CommandTestCase {
 	 * Tests the function to update list of packages
 	 */
 	public function testUpdate(): void {
-		$this->receiveAsyncCommand([$this, 'callback'], 'apt-get update', true);
+		$this->receiveAsyncCommand(
+			callback: [$this, 'callback'],
+			command: 'apt-get update',
+			needSudo: true,
+		);
 		Assert::noError(function (): void {
 			$this->manager->update([$this, 'callback']);
 		});
@@ -143,11 +158,31 @@ final class AptGetPackageManagerTest extends CommandTestCase {
 	 * Tests the function to upgrade packages
 	 */
 	public function testUpgrade(): void {
-		$this->checkCommandExistence();
-		$this->receiveAsyncCommand([$this, 'callback'], 'apt-get upgrade -y', true);
+		$this->receiveAsyncCommand(
+			callback: [$this, 'callback'],
+			command: 'apt-get upgrade -y',
+			needSudo: true,
+		);
 		Assert::noError(function (): void {
 			$this->manager->upgrade([$this, 'callback']);
 		});
+	}
+
+	/**
+	 * Just an empty callback
+	 */
+	public function callback(): void {
+		// Empty callback
+	}
+
+	/**
+	 * Sets up the test environment
+	 */
+	protected function setUp(): void {
+		parent::setUp();
+		$this->setUpCommandExecutor();
+		$this->checkCommandExistence();
+		$this->manager = new AptGetPackageManager($this->commandExecutor);
 	}
 
 	/**
@@ -155,12 +190,6 @@ final class AptGetPackageManagerTest extends CommandTestCase {
 	 */
 	private function checkCommandExistence(): void {
 		$this->receiveCommandExist('apt-get', true);
-	}
-
-	/**
-	 * Just an empty callback
-	 */
-	public function callback(): void {
 	}
 
 }

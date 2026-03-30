@@ -20,53 +20,67 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models\PackageManagers;
 
+use App\GatewayModule\Exceptions\UnsupportedPackageManagerException;
+use Iqrf\CommandExecutor\CommandExecutor;
+
 /**
  * Interface for package managers
  */
 interface IPackageManager {
 
 	/**
+	 * Constructor
+	 * @param CommandExecutor $commandManager Command manager
+	 * @throws UnsupportedPackageManagerException When package manager is not supported
+	 */
+	public function __construct(CommandExecutor $commandManager);
+
+	/**
 	 * Installs the packages
-	 * @param callable $callback Callback
+	 * @param callable('out'|'err' $type, string $data): void $callback Callback
 	 * @param array<string> $packages Packages to install
 	 */
 	public function install(callable $callback, array $packages): void;
 
 	/**
 	 * Lists upgradable packages
-	 * @param callable $callback Callback
+	 * @param callable('out'|'err' $type, string $data): void $callback Callback
 	 */
 	public function listUpgradable(callable $callback): void;
 
 	/**
 	 * Returns list of upgradable packages
-	 * @return array<array{name: string, oldVersion: string, newVersion: string}> Upgradable packages
+	 * @return array<array{
+	 *     name: string,
+	 *     oldVersion: string,
+	 *     newVersion: string,
+	 * }> Upgradable packages
 	 */
 	public function getUpgradable(): array;
 
 	/**
 	 * Purges the packages
-	 * @param callable $callback Callback
+	 * @param callable('out'|'err' $type, string $data): void $callback Callback
 	 * @param array<string> $packages Packages to purge
 	 */
 	public function purge(callable $callback, array $packages): void;
 
 	/**
 	 * Removes the packages
-	 * @param callable $callback Callback
+	 * @param callable('out'|'err' $type, string $data): void $callback Callback
 	 * @param array<string> $packages Packages to remove
 	 */
 	public function remove(callable $callback, array $packages): void;
 
 	/**
 	 * Updates a list of packages
-	 * @param callable $callback Callback
+	 * @param callable('out'|'err' $type, string $data): void $callback Callback
 	 */
 	public function update(callable $callback): void;
 
 	/**
 	 * Upgrades packages
-	 * @param callable $callback Callback
+	 * @param callable('out'|'err' $type, string $data): void $callback Callback
 	 */
 	public function upgrade(callable $callback): void;
 

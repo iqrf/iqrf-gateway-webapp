@@ -22,14 +22,14 @@ namespace App\IqrfNetModule\Models;
 
 use App\ConfigModule\Models\GenericManager;
 use App\ConfigModule\Models\MainManager;
-use App\CoreModule\Entities\ICommand;
 use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
-use App\CoreModule\Models\CommandManager;
 use App\GatewayModule\Exceptions\UnknownFileFormatExceptions;
 use App\IqrfNetModule\Enums\UploadFormats;
 use App\IqrfNetModule\Exceptions\UploaderFileException;
 use App\IqrfNetModule\Exceptions\UploaderMissingException;
 use App\IqrfNetModule\Exceptions\UploaderSpiException;
+use Iqrf\CommandExecutor\CommandExecutor;
+use Iqrf\CommandExecutor\ICommand;
 use Nette\Utils\FileSystem;
 use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
@@ -40,14 +40,14 @@ use Nette\Utils\Strings;
 class UploadManager {
 
 	/**
-	 * IQRF Gateway Uploader command
-	 */
-	private const UPLOADER = 'iqrf-gateway-uploader';
-
-	/**
 	 * Path to OS patch files
 	 */
 	public const OS_PATH = __DIR__ . '/../../../iqrf/os/';
+
+	/**
+	 * IQRF Gateway Uploader command
+	 */
+	private const UPLOADER = 'iqrf-gateway-uploader';
 
 	/**
 	 * @var string Path to the directory for uploaded files
@@ -55,21 +55,19 @@ class UploadManager {
 	private string $path = '/var/cache/iqrf-gateway-daemon/upload/';
 
 	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
-
-	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandExecutor Command manager
 	 * @param GenericManager $genericManager Generic daemon component manager
 	 * @param MainManager $mainManager Main daemon configuration manager
 	 */
-	public function __construct(CommandManager $commandManager, GenericManager $genericManager, MainManager $mainManager) {
-		$this->commandManager = $commandManager;
+	public function __construct(
+		private readonly CommandExecutor $commandExecutor,
+		GenericManager $genericManager,
+		MainManager $mainManager,
+	) {
 		try {
 			$cacheDir = $mainManager->getCacheDir();
-			if (!Strings::endsWith($cacheDir, '/')) {
+			if (!str_ends_with($cacheDir, '/')) {
 				$cacheDir .= '/';
 			}
 			$genericManager->setComponent('iqrf::OtaUploadService');
@@ -80,11 +78,11 @@ class UploadManager {
 			if (!isset($uploadDir) || $uploadDir === '') {
 				$uploadDir = 'upload';
 			}
-			if (!Strings::endsWith($uploadDir, '/')) {
+			if (!str_ends_with($uploadDir, '/')) {
 				$uploadDir .= '/';
 			}
 			$this->path = Strings::replace($cacheDir . $uploadDir, '~/+~', '/');
-		} catch (JsonException | NonexistentJsonSchemaException $e) {
+		} catch (JsonException | NonexistentJsonSchemaException) {
 			$this->path = '/var/cache/iqrf-gateway-daemon/upload/';
 		}
 	}
@@ -115,7 +113,7 @@ class UploadManager {
 	 * @throws UploaderSpiException
 	 */
 	public function uploadToTr(string $fileName, bool $os = false, ?UploadFormats $format = null): void {
-		if (!$this->commandManager->commandExist(self::UPLOADER)) {
+		if (!$this->commandExecutor->commandExist(self::UPLOADER)) {
 			throw new UploaderMissingException('IQRF Gateway Uploader is not installed.');
 		}
 		if ($format === null) {
@@ -123,7 +121,7 @@ class UploadManager {
 		}
 		$path = escapeshellarg(($os ? self::OS_PATH : $this->path) . $fileName);
 		$command = sprintf('%s %s %s', self::UPLOADER, $format->getUploaderParameter(), $path);
-		$result = $this->commandManager->run($command, true);
+		$result = $this->commandExecutor->run($command, true);
 		if ($result->getExitCode() !== 0) {
 			$this->handleError($result);
 		}
@@ -152,13 +150,13 @@ class UploadManager {
 	 */
 	private function recognizeFormat(string $file): UploadFormats {
 		$fileName = Strings::lower($file);
-		if (Strings::endsWith($fileName, '.hex')) {
+		if (str_ends_with($fileName, '.hex')) {
 			return UploadFormats::HEX();
 		}
-		if (Strings::endsWith($fileName, '.iqrf')) {
+		if (str_ends_with($fileName, '.iqrf')) {
 			return UploadFormats::IQRF();
 		}
-		if (Strings::endsWith($fileName, '.trcnfg')) {
+		if (str_ends_with($fileName, '.trcnfg')) {
 			return UploadFormats::TRCNFG();
 		}
 		throw new UnknownFileFormatExceptions();

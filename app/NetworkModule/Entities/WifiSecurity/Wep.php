@@ -33,11 +33,6 @@ use stdClass;
 class Wep implements INetworkManagerEntity {
 
 	/**
-	 * @var WepKeyType WEP key type
-	 */
-	private WepKeyType $type;
-
-	/**
 	 * @var array<string> WEP keys
 	 */
 	private array $keys = [];
@@ -45,7 +40,7 @@ class Wep implements INetworkManagerEntity {
 	/**
 	 * @var int WEP key index
 	 */
-	private int $index;
+	private readonly int $index;
 
 	/**
 	 * Constructor
@@ -53,8 +48,11 @@ class Wep implements INetworkManagerEntity {
 	 * @param int $index WEP key index
 	 * @param array<string> $keys WEP keys
 	 */
-	public function __construct(WepKeyType $type, int $index, array $keys) {
-		$this->type = $type;
+	public function __construct(
+		private readonly WepKeyType $type,
+		int $index,
+		array $keys,
+	) {
 		if ($index < 0 || $index > 3) {
 			throw new InvalidWepKeyIndexException();
 		}
@@ -73,18 +71,6 @@ class Wep implements INetworkManagerEntity {
 	}
 
 	/**
-	 * Serializes WEP entity into JSON
-	 * @return array{type: string, index: int, keys: array<string>} JSON serialized data
-	 */
-	public function jsonSerialize(): array {
-		return [
-			'type' => $this->type->jsonSerialize(),
-			'index' => $this->index,
-			'keys' => $this->keys,
-		];
-	}
-
-	/**
 	 * Deserializes WEP entity from nmcli configuration
 	 * @param array<string, array<string, array<string>|string>> $nmCli nmcli configuration
 	 * @return INetworkManagerEntity WEP entity
@@ -100,6 +86,18 @@ class Wep implements INetworkManagerEntity {
 			$array['wep-key3'],
 		];
 		return new self($type, $index, $keys);
+	}
+
+	/**
+	 * Serializes WEP entity into JSON
+	 * @return array{type: string, index: int, keys: array<string>} JSON serialized data
+	 */
+	public function jsonSerialize(): array {
+		return [
+			'type' => $this->type->jsonSerialize(),
+			'index' => $this->index,
+			'keys' => $this->keys,
+		];
 	}
 
 	/**

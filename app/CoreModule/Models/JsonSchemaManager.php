@@ -22,6 +22,7 @@ namespace App\CoreModule\Models;
 
 use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
+use Iqrf\FileManager\FileManager;
 use JsonSchema\Constraints\Constraint;
 use JsonSchema\Constraints\Factory;
 use JsonSchema\SchemaStorage;
@@ -76,11 +77,11 @@ class JsonSchemaManager extends FileManager {
 	/**
 	 * Validates JSON
 	 * @param mixed $json JSON to validate
-	 * @param bool $tryFix Try fix JSON?
+	 * @param bool $tryFix Try to fix JSON?
 	 * @throws InvalidJsonException
 	 * @throws JsonException
 	 */
-	public function validate($json, bool $tryFix = false): void {
+	public function validate(mixed $json, bool $tryFix = false): void {
 		if (!is_array($json) && !($json instanceof stdClass)) {
 			$message = 'Invalid JSON format';
 			throw new InvalidJsonException($message);

@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\Models\Database\Entities;
 
 use App\Models\Database\Attributes\TId;
+use App\Models\Database\Repositories\WireguardInterfaceIpv4Repository;
 use App\NetworkModule\Entities\MultiAddress;
 use Darsyn\IP\Version\Multi as IP;
 use Doctrine\ORM\Mapping as ORM;
@@ -28,42 +29,39 @@ use JsonSerializable;
 
 /**
  * Wireguard interface address entity
- * @ORM\Entity(repositoryClass="App\Models\Database\Repositories\WireguardInterfaceIpv4Repository")
- * @ORM\Table(name="`wireguard_interface_ipv4s`")
- * @ORM\HasLifecycleCallbacks()
  */
+#[ORM\Entity(repositoryClass: WireguardInterfaceIpv4Repository::class)]
+#[ORM\HasLifecycleCallbacks]
+#[ORM\Table(name: '`wireguard_interface_ipv4s`')]
 class WireguardInterfaceIpv4 implements JsonSerializable {
 
 	use TId;
 
 	/**
 	 * @var IP Interface address
-	 * @ORM\Column(type="ip")
 	 */
+	#[ORM\Column(type: 'ip')]
 	private IP $address;
 
 	/**
 	 * @var int Interface address prefix
-	 * @ORM\Column(type="integer")
 	 */
+	#[ORM\Column(type: 'integer')]
 	private int $prefix;
-
-	/**
-	 * @var WireguardInterface WireGuard interface
-	 * @ORM\OneToOne(targetEntity="WireguardInterface", inversedBy="ipv4")
-	 * @ORM\JoinColumn(name="interface_id")
-	 */
-	private WireguardInterface $interface;
 
 	/**
 	 * Constructor
 	 * @param MultiAddress $address Interface address
 	 * @param WireguardInterface $interface WireGuard interface
 	 */
-	public function __construct(MultiAddress $address, WireguardInterface $interface) {
+	public function __construct(
+		MultiAddress $address,
+		#[ORM\OneToOne(targetEntity: WireguardInterface::class, inversedBy: 'ipv4')]
+		#[ORM\JoinColumn(name: 'interface_id', nullable: false)]
+		private WireguardInterface $interface,
+	) {
 		$this->address = $address->getAddress();
 		$this->prefix = $address->getPrefix();
-		$this->interface = $interface;
 	}
 
 	/**

@@ -26,34 +26,16 @@ namespace App\MaintenanceModule\Entities;
 class MenderConnectConfiguration implements IMenderConfiguration {
 
 	/**
-	 * @var int Mender connect major version
-	 */
-	private int $version;
-
-	/**
-	 * @var bool File transfer enablement
-	 */
-	private bool $fileTransfer;
-
-	/**
-	 * @var bool Port forwarding enablement
-	 */
-	private bool $portForward;
-
-	/**
 	 * Constructor
 	 * @param int $version Mender connect major version
 	 * @param bool $fileTransfer File transfer enablement
 	 * @param bool $portForward Port forwarding enablement
 	 */
 	public function __construct(
-		int $version,
-		bool $fileTransfer,
-		bool $portForward
+		private readonly int $version,
+		private readonly bool $fileTransfer,
+		private readonly bool $portForward,
 	) {
-		$this->version = $version;
-		$this->fileTransfer = $fileTransfer;
-		$this->portForward = $portForward;
 	}
 
 	/**

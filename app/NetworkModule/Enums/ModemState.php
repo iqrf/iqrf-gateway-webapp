@@ -44,67 +44,67 @@ final class ModemState extends Enum {
 	use AutoInstances;
 
 	/**
-	 * @var string The modem is unusable
+	 * The modem is unusable
 	 */
 	private const FAILED = 'failed';
 
 	/**
-	 * @var string State unknown or not reportable
+	 * State unknown or not reportable
 	 */
 	private const UNKNOWN = 'unknown';
 
 	/**
-	 * @var string The modem is currently being initialized
+	 * The modem is currently being initialized
 	 */
 	private const INITIALIZING = 'initializing';
 
 	/**
-	 * @var string The modem needs to be unlocked
+	 * The modem needs to be unlocked
 	 */
 	private const LOCKED = 'locked';
 
 	/**
-	 * @var string The modem is not enabled and is powered down
+	 * The modem is not enabled and is powered down
 	 */
 	private const DISABLED = 'disabled';
 
 	/**
-	 * @var string The modem is currently transitioning to the DISABLED state
+	 * The modem is currently transitioning to the DISABLED state
 	 */
 	private const DISABLING = 'disabling';
 
 	/**
-	 * @var string The modem is currently transitioning to the ENABLED state
+	 * The modem is currently transitioning to the ENABLED state
 	 */
 	private const ENABLING = 'enabling';
 
 	/**
-	 * @var string The modem is enabled and powered on but not registered with a network provider and not available for data connections
+	 * The modem is enabled and powered on but not registered with a network provider and not available for data connections
 	 */
 	private const ENABLED = 'enabled';
 
 	/**
-	 * @var string The modem is searching for a network provider to register with
+	 * The modem is searching for a network provider to register with
 	 */
 	private const SEARCHING = 'searching';
 
 	/**
-	 * @var string The modem is registered with a network provider, and data connections and messaging may be available for use
+	 * The modem is registered with a network provider, and data connections and messaging may be available for use
 	 */
 	private const REGISTERED = 'registered';
 
 	/**
-	 * @var string The modem is disconnecting and deactivating the last active packet data bearer. This state will not be entered if more than one packet data bearer is active and one of the active bearers is deactivated.
+	 * The modem is disconnecting and deactivating the last active packet data bearer. This state will not be entered if more than one packet data bearer is active and one of the active bearers is deactivated.
 	 */
 	private const DISCONNECTING = 'disconnecting';
 
 	/**
-	 * @var string The modem is activating and connecting the first packet data bearer. Subsequent bearer activations when another bearer is already active do not cause this state to be entered
+	 * The modem is activating and connecting the first packet data bearer. Subsequent bearer activations when another bearer is already active do not cause this state to be entered
 	 */
 	private const CONNECTING = 'connecting';
 
 	/**
-	 * @var string One or more packet data bearers is active and connected
+	 * One or more packet data bearers is active and connected
 	 */
 	private const CONNECTED = 'connected';
 

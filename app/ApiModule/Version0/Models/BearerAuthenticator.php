@@ -20,58 +20,34 @@ declare(strict_types = 1);
 
 namespace App\ApiModule\Version0\Models;
 
-use App\GatewayModule\Models\Utils\GatewayInfoUtil;
 use App\Models\Database\Entities\ApiKey;
 use App\Models\Database\Entities\User;
 use App\Models\Database\EntityManager;
 use Contributte\Middlewares\Security\IAuthenticator;
-use DateTimeImmutable;
 use InvalidArgumentException;
-use Lcobucci\JWT\Configuration;
-use Lcobucci\JWT\Token\Plain;
-use Lcobucci\JWT\Validation\Constraint\SignedWith;
 use Nette\Utils\Strings;
 use Psr\Http\Message\ServerRequestInterface;
-use Throwable;
 
 class BearerAuthenticator implements IAuthenticator {
 
 	/**
-	 * @var EntityManager Entity manager
-	 */
-	private EntityManager $entityManager;
-
-	/**
-	 * @var Configuration JWT configuration
-	 */
-	private Configuration $configuration;
-
-	/**
-	 * @var GatewayInfoUtil Gateway info
-	 */
-	private GatewayInfoUtil $gatewayInfo;
-
-	/**
 	 * Constructor
-	 * @param JwtConfigurator $configurator JWT configurator
+	 * @param JwtAuthenticator $jwtAuthenticator JWT authenticator
 	 * @param EntityManager $entityManager Entity manager
-	 * @param GatewayInfoUtil $gatewayInfo Gateway info
 	 */
 	public function __construct(
-		JwtConfigurator $configurator,
-		EntityManager $entityManager,
-		GatewayInfoUtil $gatewayInfo
+		private readonly JwtAuthenticator $jwtAuthenticator,
+		private readonly EntityManager $entityManager,
 	) {
-		$this->configuration = $configurator->create();
-		$this->entityManager = $entityManager;
-		$this->gatewayInfo = $gatewayInfo;
 	}
 
 	/**
-	 * @inheritDoc
+	 * Authenticates the application or user
+	 * @param ServerRequestInterface $request HTTP request
+	 * @return ApiKey|User|null API key or user entity
 	 * @throws InvalidArgumentException
 	 */
-	public function authenticate(ServerRequestInterface $request) {
+	public function authenticate(ServerRequestInterface $request): ApiKey|User|null {
 		$header = $request->getHeader('Authorization')[0] ?? '';
 		$token = $this->parseAuthorizationHeader($header);
 		if ($token === null) {
@@ -84,6 +60,7 @@ class BearerAuthenticator implements IAuthenticator {
 	}
 
 	/**
+	 * Authenticates the application
 	 * @param string $key API key
 	 * @return ApiKey|null API key entity
 	 */
@@ -91,7 +68,10 @@ class BearerAuthenticator implements IAuthenticator {
 		$repository = $this->entityManager->getApiKeyRepository();
 		$salt = Strings::substring($key, 0, 22);
 		$apiKey = $repository->findOneBySalt($salt);
-		return $apiKey->verify($key) ? $apiKey : null;
+		if ($apiKey instanceof ApiKey && $apiKey->verify($key)) {
+			return $apiKey;
+		}
+		return null;
 	}
 
 	/**
@@ -101,38 +81,7 @@ class BearerAuthenticator implements IAuthenticator {
 	 * @throws InvalidArgumentException
 	 */
 	public function authenticateUser(string $jwt): ?User {
-		$token = $this->configuration->parser()->parse($jwt);
-		assert($token instanceof Plain);
-		if (!$this->isJwtValid($token)) {
-			return null;
-		}
-		try {
-			$repository = $this->entityManager->getUserRepository();
-			$id = $token->claims()->get('uid');
-			return $repository->find($id);
-		} catch (Throwable $e) {
-			return null;
-		}
-	}
-
-	/**
-	 * Validates JWT
-	 * @param Plain $token JWT to validate
-	 * @return bool Is JWT valid?
-	 */
-	private function isJwtValid(Plain $token): bool {
-		$gwId = $this->gatewayInfo->getIdNullable();
-		$now = new DateTimeImmutable();
-		$validator = $this->configuration->validator();
-		$signer = $this->configuration->signer();
-		$verificationKey = $this->configuration->verificationKey();
-		$signedWith = new SignedWith($signer, $verificationKey);
-		return $validator->validate($token, $signedWith) &&
-			!$token->isExpired($now) &&
-			$token->claims()->has('uid') &&
-			$token->hasBeenIssuedBefore($now) &&
-			($gwId === null || ($token->hasBeenIssuedBy($gwId) &&
-				$token->isIdentifiedBy($gwId)));
+		return $this->jwtAuthenticator->authenticate($jwt);
 	}
 
 	/**
@@ -141,7 +90,7 @@ class BearerAuthenticator implements IAuthenticator {
 	 * @return string|null JWT
 	 */
 	public function parseAuthorizationHeader(string $header): ?string {
-		if (!Strings::startsWith($header, 'Bearer')) {
+		if (!str_starts_with($header, 'Bearer')) {
 			return null;
 		}
 		$str = Strings::substring($header, 7);

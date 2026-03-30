@@ -21,65 +21,18 @@ declare(strict_types = 1);
 namespace App\Models\Database\Entities;
 
 use App\Models\Database\Attributes\TId;
+use App\Models\Database\Repositories\IqrfOsPatchRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * IQRF OS patch entity
- * @ORM\Entity(repositoryClass="App\Models\Database\Repositories\IqrfOsPatchRepository")
- * @ORM\Table(name="`iqrf_os_patches`")
- * @ORM\HasLifecycleCallbacks()
  */
+#[ORM\Entity(repositoryClass: IqrfOsPatchRepository::class)]
+#[ORM\HasLifecycleCallbacks]
+#[ORM\Table(name: '`iqrf_os_patches`')]
 class IqrfOsPatch {
 
 	use TId;
-
-	/**
-	 * @var string IQRF TR module type
-	 * @ORM\Column(type="string", length=15)
-	 */
-	private string $moduleType;
-
-	/**
-	 * @var int Current IQRF OS version
-	 * @ORM\Column(type="integer")
-	 */
-	private int $fromVersion;
-
-	/**
-	 * @var int Current IQRF OS build
-	 * @ORM\Column(type="integer")
-	 */
-	private int $fromBuild;
-
-	/**
-	 * @var int Next IQRF OS version
-	 * @ORM\Column(type="integer")
-	 */
-	private int $toVersion;
-
-	/**
-	 * @var int Next IQRF OS build
-	 * @ORM\Column(type="integer")
-	 */
-	private int $toBuild;
-
-	/**
-	 * @var int Part number
-	 * @ORM\Column(type="integer")
-	 */
-	private int $part;
-
-	/**
-	 * @var int Total parts
-	 * @ORM\Column(type="integer")
-	 */
-	private int $parts;
-
-	/**
-	 * @var string File name
-	 * @ORM\Column(type="string", length=255, unique=true)
-	 */
-	private string $fileName;
 
 	/**
 	 * Constructor
@@ -92,15 +45,24 @@ class IqrfOsPatch {
 	 * @param int $parts Total parts
 	 * @param string $fileName File name
 	 */
-	public function __construct(string $moduleType, int $fromVersion, int $fromBuild, int $toVersion, int $toBuild, int $part, int $parts, string $fileName) {
-		$this->moduleType = $moduleType;
-		$this->fromVersion = $fromVersion;
-		$this->fromBuild = $fromBuild;
-		$this->toVersion = $toVersion;
-		$this->toBuild = $toBuild;
-		$this->part = $part;
-		$this->parts = $parts;
-		$this->fileName = $fileName;
+	public function __construct(
+		#[ORM\Column(type: 'string', length: 15)]
+		private readonly string $moduleType,
+		#[ORM\Column(type: 'integer')]
+		private readonly int $fromVersion,
+		#[ORM\Column(type: 'integer')]
+		private readonly int $fromBuild,
+		#[ORM\Column(type: 'integer')]
+		private readonly int $toVersion,
+		#[ORM\Column(type: 'integer')]
+		private readonly int $toBuild,
+		#[ORM\Column(type: 'integer')]
+		private readonly int $part,
+		#[ORM\Column(type: 'integer')]
+		private readonly int $parts,
+		#[ORM\Column(type: 'string', length: 255, unique: true)]
+		private readonly string $fileName
+	) {
 	}
 
 	/**

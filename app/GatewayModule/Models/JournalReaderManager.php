@@ -20,9 +20,9 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models;
 
-use App\CoreModule\Models\CommandManager;
 use App\GatewayModule\Exceptions\JournalReaderArgumentException;
 use App\GatewayModule\Exceptions\JournalReaderInternalException;
+use Iqrf\CommandExecutor\CommandExecutor;
 use Nette\Utils\Json;
 
 class JournalReaderManager {
@@ -33,16 +33,12 @@ class JournalReaderManager {
 	private const READER = 'iqrf-journal-reader';
 
 	/**
-	 * @var CommandManager $commandManager Command manager
-	 */
-	private CommandManager $commandManager;
-
-	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandExecutor Command manager
 	 */
-	public function __construct(CommandManager $commandManager) {
-		$this->commandManager = $commandManager;
+	public function __construct(
+		private readonly CommandExecutor $commandExecutor,
+	) {
 	}
 
 	/**
@@ -52,21 +48,21 @@ class JournalReaderManager {
 	 * @return array<string, string|array<int, string>> Journal records and cursors
 	 */
 	public function getRecords(int $count, ?string $cursor = null): array {
-		if (!$this->commandManager->commandExist(self::READER)) {
+		if (!$this->commandExecutor->commandExist(self::READER)) {
 			throw new JournalReaderInternalException('IQRF Journal Reader is not installed.');
 		}
 		$command = sprintf('%s -j -n %d', self::READER, $count);
 		if ($cursor !== null) {
 			$command = sprintf('%s -e %s', $command, escapeshellarg($cursor));
 		}
-		$result = $this->commandManager->run($command, true);
+		$result = $this->commandExecutor->run($command, true);
 		if ($result->getExitCode() === 1) {
 			throw new JournalReaderArgumentException($result->getStderr());
 		}
 		if ($result->getExitCode() === 2) {
 			throw new JournalReaderInternalException($result->getStderr());
 		}
-		$output = Json::decode($result->getStdout(), Json::FORCE_ARRAY);
+		$output = Json::decode($result->getStdout(), forceArrays: true);
 		$records = [];
 		foreach ($output['records'] as $record) {
 			$records[] = sprintf('%s %s %s[%d]: %s', $record['timestamp'], $record['hostname'], $record['identifier'], $record['pid'], $record['message']);

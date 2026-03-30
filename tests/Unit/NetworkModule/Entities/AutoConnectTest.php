@@ -39,22 +39,22 @@ require __DIR__ . '/../../../bootstrap.php';
 final class AutoConnectTest extends TestCase {
 
 	/**
-	 * @var bool Is automatic connecting enabled?
+	 * Is automatic connecting enabled?
 	 */
 	private const ENABLED = true;
 
 	/**
-	 * @var int Connection priority
+	 * Connection priority
 	 */
 	private const PRIORITY = 0;
 
 	/**
-	 * @var int Connection retries
+	 * Connection retries
 	 */
 	private const RETRIES = -1;
 
 	/**
-	 * @var array<string, bool|int> JSON serialized entity
+	 * JSON serialized entity
 	 */
 	private const JSON = [
 		'enabled' => self::ENABLED,
@@ -66,13 +66,6 @@ final class AutoConnectTest extends TestCase {
 	 * @var AutoConnect Automatic connecting entity
 	 */
 	private AutoConnect $entity;
-
-	/**
-	 * Sets up the test environment
-	 */
-	protected function setUp(): void {
-		$this->entity = new AutoConnect(self::ENABLED, self::PRIORITY, self::RETRIES);
-	}
 
 	/**
 	 * Tests the function to deserialize the automatic connecting entity from JSON
@@ -105,6 +98,13 @@ final class AutoConnectTest extends TestCase {
 	public function testNmCliSerialize(): void {
 		$expected = 'connection.autoconnect "yes" connection.autoconnect-priority "0" connection.autoconnect-retries "-1" ';
 		Assert::same($expected, $this->entity->nmCliSerialize());
+	}
+
+	/**
+	 * Sets up the test environment
+	 */
+	protected function setUp(): void {
+		$this->entity = new AutoConnect(self::ENABLED, self::PRIORITY, self::RETRIES);
 	}
 
 }

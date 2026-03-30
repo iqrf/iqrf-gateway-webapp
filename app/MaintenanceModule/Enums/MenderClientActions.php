@@ -35,8 +35,10 @@ final class MenderClientActions extends Enum {
 
 	/// Commit installed Mender artifact
 	private const COMMIT = 'commit';
+
 	/// Install Mender artifact
 	private const INSTALL = 'install';
+
 	/// Roll installed Mender artifact back
 	private const ROLLBACK = 'rollback';
 

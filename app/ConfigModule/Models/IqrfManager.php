@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Models;
 
-use App\CoreModule\Models\CommandManager;
+use Iqrf\CommandExecutor\CommandExecutor;
 
 /**
  * IQRF CDC/SPI/UART interface manager
@@ -28,16 +28,12 @@ use App\CoreModule\Models\CommandManager;
 class IqrfManager {
 
 	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
-
-	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandExecutor Command manager
 	 */
-	public function __construct(CommandManager $commandManager) {
-		$this->commandManager = $commandManager;
+	public function __construct(
+		private readonly CommandExecutor $commandExecutor,
+	) {
 	}
 
 	/**
@@ -47,22 +43,6 @@ class IqrfManager {
 	public function getCdcInterfaces(): array {
 		$command = 'ls -1 /dev/ttyACM*';
 		return $this->getInterfaces($command);
-	}
-
-	/**
-	 * Creates a list of interfaces available in the system
-	 * @param string $command Command to list interfaces
-	 * @return array<string> List of interfaces available in the system
-	 */
-	private function getInterfaces(string $command): array {
-		$interfaces = [];
-		$ls = $this->commandManager->run($command, true)->getStdout();
-		foreach (explode(PHP_EOL, $ls) as $interface) {
-			if ($interface !== '') {
-				$interfaces[] = $interface;
-			}
-		}
-		return $interfaces;
 	}
 
 	/**
@@ -81,6 +61,22 @@ class IqrfManager {
 	public function getUartInterfaces(): array {
 		$command = 'ls -1 /dev/ttyAMA* /dev/ttyS*';
 		return $this->getInterfaces($command);
+	}
+
+	/**
+	 * Creates a list of interfaces available in the system
+	 * @param string $command Command to list interfaces
+	 * @return array<string> List of interfaces available in the system
+	 */
+	private function getInterfaces(string $command): array {
+		$interfaces = [];
+		$ls = $this->commandExecutor->run($command, true)->getStdout();
+		foreach (explode(PHP_EOL, $ls) as $interface) {
+			if ($interface !== '') {
+				$interfaces[] = $interface;
+			}
+		}
+		return $interfaces;
 	}
 
 }

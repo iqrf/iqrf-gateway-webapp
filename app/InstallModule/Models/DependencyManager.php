@@ -20,24 +20,14 @@ declare(strict_types = 1);
 
 namespace App\InstallModule\Models;
 
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FeatureManager;
 use App\InstallModule\Entities\Dependency;
+use Iqrf\CommandExecutor\CommandExecutor;
 
 /**
  * Dependency manager
  */
 class DependencyManager {
-
-	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
-
-	/**
-	 * @var FeatureManager Feature manager
-	 */
-	private FeatureManager $featureManager;
 
 	/**
 	 * @var array<string> Enabled features
@@ -52,12 +42,14 @@ class DependencyManager {
 	/**
 	 * Constructor
 	 * @param bool $sudo Is sudo required?
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandExecutor Command manager
 	 * @param FeatureManager $featureManager Feature manager
 	 */
-	public function __construct(bool $sudo, CommandManager $commandManager, FeatureManager $featureManager) {
-		$this->commandManager = $commandManager;
-		$this->featureManager = $featureManager;
+	public function __construct(
+		bool $sudo,
+		private readonly CommandExecutor $commandExecutor,
+		private readonly FeatureManager $featureManager,
+	) {
 		$this->dependencies = [
 			new Dependency('apt', true, 'apt'),
 			new Dependency('apt-config', true, 'apt'),
@@ -105,15 +97,15 @@ class DependencyManager {
 		if ($feature !== null && !in_array($feature, $this->features, true)) {
 			return false;
 		}
-		return !$this->commandManager->commandExist($dependency->getCommand());
+		return !$this->commandExecutor->commandExist($dependency->getCommand());
 	}
 
 	/**
 	 * Filters missing dependencies
-	 * @param array<Dependency>|Dependency $dependencies Dependencies to check
+	 * @param Dependency|array<Dependency> $dependencies Dependencies to check
 	 * @return bool Dependencies are missing
 	 */
-	public function filterDependencies($dependencies): bool {
+	public function filterDependencies(Dependency|array $dependencies): bool {
 		if ($dependencies instanceof Dependency) {
 			return $this->filterMissing($dependencies);
 		}
@@ -134,7 +126,7 @@ class DependencyManager {
 	public function listMissing(): array {
 		$this->features = $this->featureManager->listEnabled();
 		$array = [];
-		foreach (array_filter($this->dependencies, [$this, 'filterDependencies']) as $dependency) {
+		foreach (array_filter($this->dependencies, $this->filterDependencies(...)) as $dependency) {
 			if ($dependency instanceof Dependency) {
 				$array[] = $dependency;
 				continue;

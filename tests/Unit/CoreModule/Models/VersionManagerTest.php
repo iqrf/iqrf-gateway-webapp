@@ -36,22 +36,22 @@ use Mockery;
 use Mockery\MockInterface;
 use Nette\Caching\Storages\DevNullStorage;
 use Tester\Assert;
-use Tests\Toolkit\TestCases\CommandTestCase;
+use Tester\TestCase;
 
 require __DIR__ . '/../../../bootstrap.php';
 
 /**
  * Tests for version manager
  */
-final class VersionManagerTest extends CommandTestCase {
+final class VersionManagerTest extends TestCase {
 
 	/**
-	 * @var string Current version of the webapp
+	 * Current version of the webapp
 	 */
-	private const CURRENT_VERSION = '2.6.7-alpha';
+	private const CURRENT_VERSION = '2.7.0-alpha';
 
 	/**
-	 * @var string Current stable version of the webapp
+	 * Current stable version of the webapp
 	 */
 	private const STABLE_VERSION = '2.4.0';
 
@@ -63,19 +63,19 @@ final class VersionManagerTest extends CommandTestCase {
 	/**
 	 * @var GatewayVersionManager|MockInterface Gateway version manager
 	 */
-	private GatewayVersionManager $gwVersionManager;
+	private MockInterface|GatewayVersionManager $gwVersionManager;
 
 	/**
 	 * @var VersionManager|MockInterface Version manager
 	 */
-	private $manager;
+	private MockInterface|VersionManager $manager;
 
 	/**
 	 * Tests the function to check if an update is available for the webapp
 	 */
 	public function testAvailableWebappUpdateNo(): void {
 		$this->gwVersionManager->shouldReceive('getWebapp')
-			->withArgs([false])
+			->withNoArgs()
 			->andReturn(self::CURRENT_VERSION);
 		$this->manager->shouldReceive('getCurrentWebapp')
 			->withArgs([])->andReturn(self::CURRENT_VERSION);
@@ -87,10 +87,10 @@ final class VersionManagerTest extends CommandTestCase {
 	 */
 	public function testAvailableWebappUpdateYes(): void {
 		$this->gwVersionManager->shouldReceive('getWebapp')
-			->withArgs([false])
+			->withNoArgs()
 			->andReturn(self::STABLE_VERSION);
 		$this->manager->shouldReceive('getCurrentWebapp')
-			->withArgs([])->andReturn(self::CURRENT_VERSION);
+			->withNoArgs()->andReturn(self::CURRENT_VERSION);
 		Assert::true($this->manager->availableWebappUpdate());
 	}
 

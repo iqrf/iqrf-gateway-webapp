@@ -20,9 +20,9 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models\Backup;
 
-use App\CoreModule\Models\PrivilegedFileManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use App\GatewayModule\Models\Utils\GatewayInfoUtil;
+use Iqrf\FileManager\PrivilegedFileManager;
 use Nette\Utils\Strings;
 
 /**
@@ -31,56 +31,46 @@ use Nette\Utils\Strings;
 class GatewayFileBackup implements IBackupManager {
 
 	/**
-	 * @var array<string> Gateway files whitelist
+	 * Gateway files whitelist
 	 */
 	public const WHITELIST = [
 		'iqrf-gateway.json',
 	];
 
 	/**
-	 * @var string Path to configuration directory
+	 * Path to configuration directory
 	 */
 	private const CONF_PATH = '/etc/';
 
 	/**
-	 * @var string Path to MqttMessaging component configuration
+	 * Path to MqttMessaging component configuration
 	 */
 	private const MQTT_FILE = 'iqrf__MqttMessaging.json';
 
 	/**
-	 * @var string Client ID pattern
+	 * Client ID pattern
 	 */
 	private const GWID_PATTERN = '/^[a-f0-9]{16}$/';
 
 	/**
-	 * @var string MQTT request topic pattern
+	 * MQTT request topic pattern
 	 */
 	private const REQUEST_TOPIC_PATTERN = '/^gateway\\/[a-z0-9]{16}\\/iqrf\\/requests$/';
 
 	/**
-	 * @var string MQTT response topic pattern
+	 * MQTT response topic pattern
 	 */
 	private const RESPONSE_TOPIC_PATTERN = '/^gateway\\/[a-z0-9]{16}\\/iqrf\\/responses$/';
 
 	/**
-	 * @var string Path to JsonSplitter component configuration
+	 * Path to JsonSplitter component configuration
 	 */
 	private const SPLITTER_FILE = 'iqrf__JsonSplitter.json';
 
 	/**
 	 * @var string Gateway ID
 	 */
-	private string $gwId;
-
-	/**
-	 * @var PrivilegedFileManager Daemon file manager
-	 */
-	private PrivilegedFileManager $daemonFileManager;
-
-	/**
-	 * @var RestoreLogger Restore logger
-	 */
-	private RestoreLogger $restoreLogger;
+	private readonly string $gwId;
 
 	/**
 	 * Constructor
@@ -88,10 +78,12 @@ class GatewayFileBackup implements IBackupManager {
 	 * @param GatewayInfoUtil $gwInfo Gateway information utility
 	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
-	public function __construct(PrivilegedFileManager $daemonFileManager, GatewayInfoUtil $gwInfo, RestoreLogger $restoreLogger) {
-		$this->daemonFileManager = $daemonFileManager;
+	public function __construct(
+		private readonly PrivilegedFileManager $daemonFileManager,
+		GatewayInfoUtil $gwInfo,
+		private readonly RestoreLogger $restoreLogger,
+	) {
 		$this->gwId = Strings::lower($gwInfo->getId());
-		$this->restoreLogger = $restoreLogger;
 	}
 
 	/**

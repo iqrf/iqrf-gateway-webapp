@@ -23,6 +23,7 @@ namespace App\ApiModule\Version0\Controllers\Network;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
+use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
@@ -33,46 +34,39 @@ use App\NetworkModule\Models\WifiManager;
 
 /**
  * WiFi controller
- * @Path("/wifi")
  */
+#[Path('/wifi')]
+#[Tag('IP network - WiFi')]
 class WifiController extends NetworkController {
-
-	/**
-	 * @var WifiManager WiFi network manager
-	 */
-	private WifiManager $wifiManager;
 
 	/**
 	 * Constructor
 	 * @param WifiManager $wifiManager WiFi network manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(WifiManager $wifiManager, RestApiSchemaValidator $validator) {
-		$this->wifiManager = $wifiManager;
+	public function __construct(
+		private readonly WifiManager $wifiManager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 
-	/**
-	 * @Path("/list")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Lists available WiFi access points
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/NetworkWifiList'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/list')]
+	#[Method('GET')]
+	#[OpenApi(<<<'EOT'
+		summary: Lists available WiFi access points
+		responses:
+			'200':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: '#/components/schemas/NetworkWifiList'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['network']);
 		try {

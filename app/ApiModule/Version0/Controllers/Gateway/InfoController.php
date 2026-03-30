@@ -23,6 +23,7 @@ namespace App\ApiModule\Version0\Controllers\Gateway;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
+use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Controllers\GatewayController;
@@ -31,64 +32,56 @@ use App\GatewayModule\Models\InfoManager;
 
 /**
  * Gateway information controller
- * @Path("/info")
  */
+#[Path('/info')]
+#[Tag('Gateway - Information')]
 class InfoController extends GatewayController {
-
-	/**
-	 * @var InfoManager Gateway info manager
-	 */
-	private InfoManager $infoManager;
 
 	/**
 	 * Constructor
 	 * @param InfoManager $infoManager Gateway info manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(InfoManager $infoManager, RestApiSchemaValidator $validator) {
-		$this->infoManager = $infoManager;
+	public function __construct(
+		private readonly InfoManager $infoManager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Returns information about the gateway
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/GatewayInfo'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('GET')]
+	#[OpenApi(<<<'EOT'
+		summary: Returns information about the gateway
+		responses:
+			'200':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: '#/components/schemas/GatewayInfo'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+	EOT)]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$info = $this->infoManager->get();
 		return $response->writeJsonBody($info);
 	}
 
-	/**
-	 * @Path("/brief")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Returns brief information about the gateway
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/GatewayBriefInfo'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/brief')]
+	#[Method('GET')]
+	#[OpenApi(<<<'EOT'
+		summary: Returns brief information about the gateway
+		responses:
+			'200':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: '#/components/schemas/GatewayBriefInfo'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+	EOT)]
 	public function getBrief(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$info = $this->infoManager->getBrief();
 		return $response->writeJsonBody($info);

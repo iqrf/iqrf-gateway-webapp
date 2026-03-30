@@ -1,5 +1,3 @@
-<?php
-
 /**
  * Copyright 2017-2025 IQRF Tech s.r.o.
  * Copyright 2019-2025 MICRORISC s.r.o.
@@ -16,37 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types = 1);
 
-namespace App\CoreModule\Entities;
-
-/**
- * Interface for command entities
- */
-interface ICommand {
-
-	/**
-	 * Returns the command
-	 * @return string Command
-	 */
-	public function getCommand(): string;
-
-	/**
-	 * Returns the standard output
-	 * @return string Standard output
-	 */
-	public function getStdout(): string;
-
-	/**
-	 * Returns the standard error output
-	 * @return string Standard error output
-	 */
-	public function getStderr(): string;
-
-	/**
-	 * Returns the exit code
-	 * @return int|null Exit code
-	 */
-	public function getExitCode(): ?int;
-
+{
+	// Base Docker image
+	baseImage: 'iqrftech/iqrf-gateway-webapp:tests-trixie',
+	// Directory for package deployment
+	deployDir: '/data/nginx/dl/iqrf-gateway-webapp/${VARIANT}/${STABILITY}/',
+	// Deploy server
+	deployServer: 'www-deploy@icinga.iqrf.org',
+	// Deployment base URL
+	deployBaseUrl: 'https://dl.iqrf.org/iqrf-gateway-webapp/',
+	// Main branch
+	mainBranch: 'master',
 }

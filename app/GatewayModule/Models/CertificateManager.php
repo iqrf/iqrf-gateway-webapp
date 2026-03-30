@@ -20,16 +20,17 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models;
 
-use AcmePhp\Ssl\Certificate;
-use AcmePhp\Ssl\ParsedKey;
-use AcmePhp\Ssl\Parser\CertificateParser;
-use AcmePhp\Ssl\Parser\KeyParser;
-use AcmePhp\Ssl\PrivateKey;
-use AcmePhp\Ssl\PublicKey;
-use App\CoreModule\Models\PrivilegedFileManager;
 use App\GatewayModule\Exceptions\CertificateNotFoundException;
 use App\GatewayModule\Exceptions\PrivateKeyNotFoundException;
+use DateTimeImmutable;
+use Iqrf\FileManager\PrivilegedFileManager;
 use Nette\IOException;
+use SpomkyLabs\Pki\CryptoEncoding\PEM;
+use SpomkyLabs\Pki\CryptoTypes\Asymmetric\PrivateKey;
+use SpomkyLabs\Pki\CryptoTypes\Asymmetric\PrivateKeyInfo;
+use SpomkyLabs\Pki\CryptoTypes\Asymmetric\PublicKeyInfo;
+use SpomkyLabs\Pki\X509\Certificate\Certificate;
+use SpomkyLabs\Pki\X509\GeneralName\GeneralName;
 
 /**
  * TLS certificate manager
@@ -37,33 +38,48 @@ use Nette\IOException;
 class CertificateManager {
 
 	/**
-	 * @var PrivilegedFileManager Privileged file manager
-	 */
-	private PrivilegedFileManager $fileManager;
-
-	/**
 	 * Constructor
 	 * @param PrivilegedFileManager $fileManager Privileged file manager
 	 */
-	public function __construct(PrivilegedFileManager $fileManager) {
-		$this->fileManager = $fileManager;
+	public function __construct(
+		private readonly PrivilegedFileManager $fileManager,
+	) {
 	}
 
 	/**
 	 * Returns information about the certificate
-	 * @return array{subject: string, issuer: string|null, subjectAlternativeNames: array<string>, validTo: string, expired: bool, selfSigned: bool} Information about the certificate
+	 * @return array{
+	 *     subject: string,
+	 *     issuer: string|null,
+	 *     subjectAlternativeNames: array<string>,
+	 *     validTo: string,
+	 *     expired: bool,
+	 *     selfSigned: bool,
+	 *  } Information about the certificate
 	 * @throws CertificateNotFoundException
 	 */
 	public function getInfo(): array {
-		$certificateParser = new CertificateParser();
-		$certificate = $certificateParser->parse($this->getCertificate());
+		$certificate = $this->getCertificate();
+		$certificateInfo = $certificate->tbsCertificate();
+		$san = [];
+		if ($certificateInfo->extensions()->hasSubjectAlternativeName()) {
+			$sanIterator = $certificateInfo->extensions()
+				->subjectAlternativeName()->names()->getIterator();
+			/** @var GeneralName $name */
+			foreach ($sanIterator as $name) {
+				$san[] = $name->string();
+			}
+		}
+		$now = new DateTimeImmutable();
+		$valid = $certificateInfo->validity()->notBefore()->dateTime() <= $now
+			&& $certificateInfo->validity()->notAfter()->dateTime() >= $now;
 		return [
-			'subject' => $certificate->getSubject(),
-			'issuer' => $certificate->getIssuer(),
-			'subjectAlternativeNames' => $certificate->getSubjectAlternativeNames(),
-			'validTo' => $certificate->getValidTo()->format('c'),
-			'expired' => $certificate->isExpired(),
-			'selfSigned' => $certificate->isSelfSigned(),
+			'subject' => $certificateInfo->subject()->firstValueOf('cn')->stringValue(),
+			'issuer' => $certificateInfo->issuer()->firstValueOf('cn')->stringValue(),
+			'subjectAlternativeNames' => $san,
+			'validTo' => $certificateInfo->validity()->notAfter()->dateTime()->format('c'),
+			'expired' => !$valid,
+			'selfSigned' => $certificate->isSelfIssued(),
 		];
 	}
 
@@ -78,8 +94,8 @@ class CertificateManager {
 			if ($certificate === '') {
 				throw new CertificateNotFoundException();
 			}
-			return new Certificate($certificate);
-		} catch (IOException $e) {
+			return Certificate::fromPEM(PEM::fromString($certificate));
+		} catch (IOException) {
 			throw new CertificateNotFoundException();
 		}
 	}
@@ -95,29 +111,28 @@ class CertificateManager {
 			if ($privateKey === '') {
 				throw new PrivateKeyNotFoundException();
 			}
-			return new PrivateKey($privateKey);
-		} catch (IOException $e) {
+			return PrivateKey::fromPEM(PEM::fromString($privateKey));
+		} catch (IOException) {
 			throw new PrivateKeyNotFoundException();
 		}
 	}
 
 	/**
 	 * Returns public key
-	 * @return PublicKey Public key
+	 * @return PublicKeyInfo Public key
 	 * @throws CertificateNotFoundException
 	 */
-	public function getPublicKey(): PublicKey {
-		return $this->getCertificate()->getPublicKey();
+	public function getPublicKey(): PublicKeyInfo {
+		return $this->getCertificate()->tbsCertificate()->subjectPublicKeyInfo();
 	}
 
 	/**
 	 * Returns parsed private key
-	 * @return ParsedKey Parsed private key
+	 * @return PrivateKeyInfo Parsed private key
 	 * @throws PrivateKeyNotFoundException
 	 */
-	public function getParsedPrivateKey(): ParsedKey {
-		$keyParser = new KeyParser();
-		return $keyParser->parse($this->getPrivateKey());
+	public function getParsedPrivateKey(): PrivateKeyInfo {
+		return $this->getPrivateKey()->privateKeyInfo();
 	}
 
 }

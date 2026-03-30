@@ -28,6 +28,9 @@ namespace Tests\Integration\CoreModule\Models;
 
 use App\CoreModule\Exceptions\FeatureNotFoundException;
 use App\CoreModule\Models\FeatureManager;
+use App\GatewayModule\Models\Utils\GatewayInfoUtil;
+use Mockery;
+use Mockery\Mock;
 use Nette\Utils\FileSystem;
 use Tester\Assert;
 use Tester\Environment;
@@ -41,14 +44,19 @@ require __DIR__ . '/../../../bootstrap.php';
 final class FeatureManagerTest extends TestCase {
 
 	/**
-	 * @var string Path to the temporary file
+	 * Path to the temporary file
 	 */
 	private const PATH_TEMP = TMP_DIR . '/features.neon';
 
 	/**
-	 * @var string Path to the original file
+	 * Path to the original file
 	 */
 	private const PATH = TESTER_DIR . '/data/features.neon';
+
+	/**
+	 * @var GatewayInfoUtil&Mock Optional gateway info util
+	 */
+	private GatewayInfoUtil $gatewayInfoUtil;
 
 	/**
 	 * @var FeatureManager Optional feature manager
@@ -61,25 +69,10 @@ final class FeatureManagerTest extends TestCase {
 	private FeatureManager $managerTemp;
 
 	/**
-	 * Copies the original file
-	 */
-	private function copy(): void {
-		FileSystem::copy(self::PATH, self::PATH_TEMP);
-	}
-
-	/**
-	 * Sets up the test environment
-	 */
-	protected function setUp(): void {
-		$this->manager = new FeatureManager(self::PATH);
-		$this->managerTemp = new FeatureManager(self::PATH_TEMP);
-	}
-
-	/**
 	 * Tests the constructor with nonexistent path
 	 */
 	public function testConstructorNonexistent(): void {
-		$manager = new FeatureManager(TMP_DIR . '/nonsense');
+		$manager = new FeatureManager(TMP_DIR . '/nonsense', $this->gatewayInfoUtil);
 		Assert::same(['docs'], $manager->listEnabled());
 	}
 
@@ -157,6 +150,30 @@ final class FeatureManagerTest extends TestCase {
 		Assert::exception(function (): void {
 			$this->manager->setEnabled(['nonsense'], true);
 		}, FeatureNotFoundException::class);
+	}
+
+	/**
+	 * Sets up the test environment
+	 */
+	protected function setUp(): void {
+		$this->gatewayInfoUtil = Mockery::mock(GatewayInfoUtil::class);
+		$this->gatewayInfoUtil
+			->shouldReceive('getImage')
+			->withNoArgs()
+			->andReturn('iqube-armbian-v1.7.0');
+		$this->gatewayInfoUtil
+			->shouldReceive('getProduct')
+			->withNoArgs()
+			->andReturn('IQD-GW-02');
+		$this->manager = new FeatureManager(self::PATH, $this->gatewayInfoUtil);
+		$this->managerTemp = new FeatureManager(self::PATH_TEMP, $this->gatewayInfoUtil);
+	}
+
+	/**
+	 * Copies the original file
+	 */
+	private function copy(): void {
+		FileSystem::copy(self::PATH, self::PATH_TEMP);
 	}
 
 }

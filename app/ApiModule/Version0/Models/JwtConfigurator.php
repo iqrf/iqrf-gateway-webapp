@@ -21,15 +21,19 @@ declare(strict_types = 1);
 namespace App\ApiModule\Version0\Models;
 
 use App\GatewayModule\Models\CertificateManager;
+use App\GatewayModule\Models\InfoManager;
 use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Signer\Ecdsa\Sha256 as EcdsaSha256;
 use Lcobucci\JWT\Signer\Ecdsa\Sha384 as EcdsaSha384;
 use Lcobucci\JWT\Signer\Ecdsa\Sha512 as EcdsaSha512;
+use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\Signer\Rsa\Sha256 as RsaSha256;
+use Nette\Utils\Strings;
+use SpomkyLabs\Pki\CryptoTypes\AlgorithmIdentifier\AlgorithmIdentifier;
+use SpomkyLabs\Pki\CryptoTypes\AlgorithmIdentifier\Asymmetric\ECPublicKeyAlgorithmIdentifier;
+use SpomkyLabs\Pki\CryptoTypes\Asymmetric\EC\ECPrivateKey;
 use Throwable;
-use const OPENSSL_KEYTYPE_EC;
-use const OPENSSL_KEYTYPE_RSA;
 
 /**
  * JWT configurator
@@ -37,16 +41,14 @@ use const OPENSSL_KEYTYPE_RSA;
 class JwtConfigurator {
 
 	/**
-	 * @var CertificateManager TLS certificate manager
-	 */
-	private CertificateManager $certificateManager;
-
-	/**
 	 * Constructor
 	 * @param CertificateManager $certificateManager TLS certificate manager
+	 * @param InfoManager $infoManager Gateway information manager
 	 */
-	public function __construct(CertificateManager $certificateManager) {
-		$this->certificateManager = $certificateManager;
+	public function __construct(
+		private readonly CertificateManager $certificateManager,
+		private readonly InfoManager $infoManager,
+	) {
 	}
 
 	/**
@@ -55,38 +57,54 @@ class JwtConfigurator {
 	 */
 	public function create(): Configuration {
 		try {
-			$privateKey = $this->certificateManager->getPrivateKey()->getPEM();
-			$publicKey = $this->certificateManager->getPublicKey()->getPEM();
-			if ($privateKey === '' || $publicKey === '') {
-				return Configuration::forUnsecuredSigner();
-			}
+			$privateKey = $this->certificateManager->getPrivateKey()->toPEM();
+			$publicKey = $this->certificateManager->getPublicKey()->toPEM();
 			$parsedKey = $this->certificateManager->getParsedPrivateKey();
-			switch ($parsedKey->getType()) {
-				case OPENSSL_KEYTYPE_RSA:
+			switch ($parsedKey->algorithmIdentifier()->oid()) {
+				case AlgorithmIdentifier::OID_RSA_ENCRYPTION:
 					$signer = new RsaSha256();
 					break;
-				case OPENSSL_KEYTYPE_EC:
-					switch ($parsedKey->getDetail('curve_name')) {
-						case 'prime256v1':
+				case AlgorithmIdentifier::OID_EC_PUBLIC_KEY:
+					$ecKey = ECPrivateKey::fromPEM($privateKey);
+					switch ($ecKey->namedCurve()) {
+						case ECPublicKeyAlgorithmIdentifier::CURVE_PRIME256V1:
 							$signer = new EcdsaSha256();
 							break;
-						case 'secp384r1':
+						case ECPublicKeyAlgorithmIdentifier::CURVE_SECP384R1:
 							$signer = new EcdsaSha384();
 							break;
-						case 'secp521r1':
+						case ECPublicKeyAlgorithmIdentifier::CURVE_SECP521R1:
 							$signer = new EcdsaSha512();
 							break;
 						default:
-							return Configuration::forUnsecuredSigner();
+							return $this->createFallback();
 					}
 					break;
 				default:
-					return Configuration::forUnsecuredSigner();
+					return $this->createFallback();
 			}
-			return Configuration::forAsymmetricSigner($signer, InMemory::plainText($privateKey), InMemory::plainText($publicKey));
-		} catch (Throwable $e) {
-			return Configuration::forUnsecuredSigner();
+			return Configuration::forAsymmetricSigner(
+				signer: $signer,
+				signingKey: InMemory::plainText($privateKey->string()),
+				verificationKey: InMemory::plainText($publicKey->string()),
+			);
+		} catch (Throwable) {
+			return $this->createFallback();
 		}
+	}
+
+	/**
+	 * Creates a fallback JWT configuration with a symmetric key
+	 * @return Configuration Fallback JWT configuration
+	 */
+	private function createFallback(): Configuration {
+		$key = $this->infoManager->getId() ?? $this->infoManager->getHostname();
+		$keyLength = strlen($key);
+		if ($keyLength < 32) {
+			$key = str_repeat($key, (int) ceil(32 / $keyLength));
+		}
+		$key = Strings::substring($key, 0, 32);
+		return Configuration::forSymmetricSigner(new Sha256(), InMemory::plainText($key));
 	}
 
 }

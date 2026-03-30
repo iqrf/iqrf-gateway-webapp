@@ -21,42 +21,19 @@ declare(strict_types = 1);
 namespace App\Models\Database\Entities;
 
 use App\Models\Database\Attributes\TId;
+use App\Models\Database\Repositories\NetworkOperatorRepository;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 
 /**
  * Operator entity
- * @ORM\Entity(repositoryClass="App\Models\Database\Repositories\NetworkOperatorRepository")
- * @ORM\Table(name="network_operators")
- * @ORM\HasLifecycleCallbacks()
  */
+#[ORM\Entity(repositoryClass: NetworkOperatorRepository::class)]
+#[ORM\HasLifecycleCallbacks]
+#[ORM\Table(name: 'network_operators')]
 class NetworkOperator implements JsonSerializable {
 
 	use TId;
-
-	/**
-	 * @var string Operator name
-	 * @ORM\Column(type="string", length=255)
-	 */
-	private string $name;
-
-	/**
-	 * @var string APN
-	 * @ORM\Column(type="string", length=255)
-	 */
-	private string $apn;
-
-	/**
-	 * @var string|null Username
-	 * @ORM\Column(type="string", length=255, nullable=true)
-	 */
-	private ?string $username;
-
-	/**
-	 * @var string|null Password
-	 * @ORM\Column(type="string", length=255, nullable=true)
-	 */
-	private ?string $password;
 
 	/**
 	 * Constructor
@@ -65,11 +42,16 @@ class NetworkOperator implements JsonSerializable {
 	 * @param string|null $username Username
 	 * @param string|null $password Password
 	 */
-	public function __construct(string $name, string $apn, ?string $username = null, ?string $password = null) {
-		$this->name = $name;
-		$this->apn = $apn;
-		$this->username = $username;
-		$this->password = $password;
+	public function __construct(
+		#[ORM\Column(type: 'string', length: 255)]
+		private string $name,
+		#[ORM\Column(type: 'string', length: 255)]
+		private string $apn,
+		#[ORM\Column(type: 'string', length: 255, nullable: true)]
+		private ?string $username = null,
+		#[ORM\Column(type: 'string', length: 255, nullable: true)]
+		private ?string $password = null
+	) {
 	}
 
 	/**

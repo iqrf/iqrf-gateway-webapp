@@ -20,8 +20,8 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models\PackageManagers;
 
-use App\CoreModule\Models\CommandManager;
 use App\GatewayModule\Exceptions\UnsupportedPackageManagerException;
+use Iqrf\CommandExecutor\CommandExecutor;
 use Nette\Utils\Strings;
 
 /**
@@ -30,46 +30,47 @@ use Nette\Utils\Strings;
 class AptGetPackageManager implements IPackageManager {
 
 	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
-
-	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandExecutor Command executor
+	 * @throws UnsupportedPackageManagerException When apt-get is not available
 	 */
-	public function __construct(CommandManager $commandManager) {
-		$this->commandManager = $commandManager;
-		if (!$this->commandManager->commandExist('apt-get')) {
+	public function __construct(
+		private readonly CommandExecutor $commandExecutor,
+	) {
+		if (!$this->commandExecutor->commandExist('apt-get')) {
 			throw new UnsupportedPackageManagerException();
 		}
 	}
 
 	/**
 	 * Installs the packages
-	 * @param callable $callback Callback
+	 * @param callable('out'|'err' $type, string $data): void $callback Callback
 	 * @param array<string> $packages Packages to install
 	 */
 	public function install(callable $callback, array $packages): void {
 		$command = 'apt-get install -y ' . $this->formatPackages($packages);
-		$this->commandManager->runAsync($callback, $command, true);
+		$this->commandExecutor->runAsync($callback, $command, true);
 	}
 
 	/**
 	 * Lists upgradable packages
-	 * @param callable $callback Callback
+	 * @param callable('out'|'err' $type, string $data): void $callback Callback
 	 */
 	public function listUpgradable(callable $callback): void {
-		$this->commandManager->runAsync($callback, 'apt-get -s upgrade -V', true);
+		$this->commandExecutor->runAsync($callback, 'apt-get -s upgrade -V', true);
 	}
 
 	/**
 	 * Returns list of upgradable packages
-	 * @return array<array{name: string, oldVersion: string, newVersion: string}> Upgradable packages
+	 * @return array<array{
+	 *     name: string,
+	 *     oldVersion: string,
+	 *     newVersion: string,
+	 * }> Upgradable packages
 	 */
 	public function getUpgradable(): array {
-		$stdout = $this->commandManager->run('apt-get -s upgrade -V', true)->getStdout();
-		return array_map(fn (array $result): array  => [
+		$stdout = $this->commandExecutor->run('apt-get -s upgrade -V', true)->getStdout();
+		return array_map(static fn (array $result): array => [
 			'name' => $result['name'],
 			'oldVersion' => $result['oldVersion'],
 			'newVersion' => $result['newVersion'],
@@ -78,7 +79,7 @@ class AptGetPackageManager implements IPackageManager {
 
 	/**
 	 * Purges the packages
-	 * @param callable $callback Callback
+	 * @param callable('out'|'err' $type, string $data): void $callback Callback
 	 * @param array<string> $packages Packages to purge
 	 */
 	public function purge(callable $callback, array $packages): void {
@@ -86,12 +87,12 @@ class AptGetPackageManager implements IPackageManager {
 			return;
 		}
 		$command = 'apt-get purge -y ' . $this->formatPackages($packages);
-		$this->commandManager->runAsync($callback, $command, true);
+		$this->commandExecutor->runAsync($callback, $command, true);
 	}
 
 	/**
 	 * Removes the packages
-	 * @param callable $callback Callback
+	 * @param callable('out'|'err' $type, string $data): void $callback Callback
 	 * @param array<string> $packages Packages to remove
 	 */
 	public function remove(callable $callback, array $packages): void {
@@ -99,23 +100,23 @@ class AptGetPackageManager implements IPackageManager {
 			return;
 		}
 		$command = 'apt-get remove -y ' . $this->formatPackages($packages);
-		$this->commandManager->runAsync($callback, $command, true);
+		$this->commandExecutor->runAsync($callback, $command, true);
 	}
 
 	/**
 	 * Updates a list of packages
-	 * @param callable $callback Callback
+	 * @param callable('out'|'err' $type, string $data): void $callback Callback
 	 */
 	public function update(callable $callback): void {
-		$this->commandManager->runAsync($callback, 'apt-get update', true);
+		$this->commandExecutor->runAsync($callback, 'apt-get update', true);
 	}
 
 	/**
 	 * Upgrades packages
-	 * @param callable $callback Callback
+	 * @param callable('out'|'err' $type, string $data): void $callback Callback
 	 */
 	public function upgrade(callable $callback): void {
-		$this->commandManager->runAsync($callback, 'apt-get upgrade -y', true);
+		$this->commandExecutor->runAsync($callback, 'apt-get upgrade -y', true);
 	}
 
 	/**
@@ -124,7 +125,7 @@ class AptGetPackageManager implements IPackageManager {
 	 * @return string List of packages
 	 */
 	private function formatPackages(array $packages): string {
-		return implode(' ', array_map(fn(string $package): string => escapeshellarg($package), $packages));
+		return implode(' ', array_map(escapeshellarg(...), $packages));
 	}
 
 }

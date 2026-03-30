@@ -20,8 +20,8 @@ declare(strict_types = 1);
 
 namespace App\ServiceModule\Models;
 
-use App\CoreModule\Models\CommandManager;
 use App\ServiceModule\Exceptions\NotImplementedException;
+use Iqrf\CommandExecutor\CommandExecutor;
 
 /**
  * Tool for managing services (supervisord init daemon in a Docker container)
@@ -29,16 +29,12 @@ use App\ServiceModule\Exceptions\NotImplementedException;
 class SupervisordManager implements IServiceManager {
 
 	/**
-	 * @var CommandManager Command Manager
-	 */
-	private CommandManager $commandManager;
-
-	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandExecutor Command manager
 	 */
-	public function __construct(CommandManager $commandManager) {
-		$this->commandManager = $commandManager;
+	public function __construct(
+		private readonly CommandExecutor $commandExecutor,
+	) {
 	}
 
 	/**
@@ -99,7 +95,7 @@ class SupervisordManager implements IServiceManager {
 	 */
 	public function start(string $service): void {
 		$cmd = 'supervisorctl start ' . escapeshellarg($service);
-		$this->commandManager->run($cmd, true);
+		$this->commandExecutor->run($cmd, true);
 	}
 
 	/**
@@ -118,7 +114,7 @@ class SupervisordManager implements IServiceManager {
 	 */
 	public function stop(string $service): void {
 		$cmd = 'supervisorctl stop ' . escapeshellarg($service);
-		$this->commandManager->run($cmd, true);
+		$this->commandExecutor->run($cmd, true);
 	}
 
 	/**
@@ -137,7 +133,7 @@ class SupervisordManager implements IServiceManager {
 	 */
 	public function restart(string $serviceName): void {
 		$cmd = 'supervisorctl restart ' . escapeshellarg($serviceName);
-		$this->commandManager->run($cmd, true);
+		$this->commandExecutor->run($cmd, true);
 	}
 
 	/**
@@ -147,7 +143,7 @@ class SupervisordManager implements IServiceManager {
 	 */
 	public function getStatus(string $serviceName): string {
 		$cmd = 'supervisorctl status ' . escapeshellarg($serviceName);
-		return $this->commandManager->run($cmd, true)->getStdout();
+		return $this->commandExecutor->run($cmd, true)->getStdout();
 	}
 
 }

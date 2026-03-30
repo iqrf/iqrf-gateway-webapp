@@ -30,15 +30,15 @@ trait TCreatedAt {
 
 	/**
 	 * @var DateTime Created at time
-	 * @ORM\Column(type="datetime")
 	 */
+	#[ORM\Column(type: 'datetime')]
 	private DateTime $createdAt;
 
 	/**
 	 * Generate created at time
-	 * @ORM\PrePersist()
 	 * @internal
 	 */
+	#[ORM\PrePersist]
 	public function generateCreatedAt(): void {
 		$this->createdAt = new DateTime();
 	}

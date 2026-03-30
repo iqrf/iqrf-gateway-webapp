@@ -36,6 +36,10 @@ final class Version20200704222445 extends AbstractMigration {
 		return 'Added IQRF OS patch repository';
 	}
 
+	/**
+	 * Applies the migration
+	 * @param Schema $schema Database schema
+	 */
 	public function up(Schema $schema): void {
 		$this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
 
@@ -43,9 +47,14 @@ final class Version20200704222445 extends AbstractMigration {
 		$this->addSql('CREATE UNIQUE INDEX UNIQ_9AF95CD0D7DF1668 ON "iqrf_os_patches" (file_name)');
 	}
 
+	/**
+	 * Reverts the migration
+	 * @param Schema $schema Database schema
+	 */
 	public function down(Schema $schema): void {
 		$this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
 
 		$this->addSql('DROP TABLE "iqrf_os_patches"');
 	}
+
 }

@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Models\PackageManagers;
 
 use App\GatewayModule\Exceptions\UnsupportedPackageManagerException;
+use Iqrf\CommandExecutor\CommandExecutor;
 
 /**
  * Adapter for unsupported package manager
@@ -28,8 +29,18 @@ use App\GatewayModule\Exceptions\UnsupportedPackageManagerException;
 class UnsupportedPackageManager implements IPackageManager {
 
 	/**
+	 * Constructor
+	 * @param CommandExecutor $commandExecutor Command executor
+	 */
+	public function __construct(
+		CommandExecutor $commandExecutor,
+	) {
+		// No implementation needed
+	}
+
+	/**
 	 * Installs the packages
-	 * @param callable $callback Callback
+	 * @param callable('out'|'err' $type, string $data): void $callback Callback
 	 * @param array<string> $packages Packages to install
 	 * @throws UnsupportedPackageManagerException
 	 */
@@ -39,7 +50,7 @@ class UnsupportedPackageManager implements IPackageManager {
 
 	/**
 	 * Lists upgradable packages
-	 * @param callable $callback Callback
+	 * @param callable('out'|'err' $type, string $data): void $callback Callback
 	 * @throws UnsupportedPackageManagerException
 	 */
 	public function listUpgradable(callable $callback): void {
@@ -58,7 +69,7 @@ class UnsupportedPackageManager implements IPackageManager {
 
 	/**
 	 * Purges the packages
-	 * @param callable $callback Callback
+	 * @param callable('out'|'err' $type, string $data): void $callback Callback
 	 * @param array<string> $packages Packages to purge
 	 * @throws UnsupportedPackageManagerException
 	 */
@@ -68,7 +79,7 @@ class UnsupportedPackageManager implements IPackageManager {
 
 	/**
 	 * Removes the packages
-	 * @param callable $callback Callback
+	 * @param callable('out'|'err' $type, string $data): void $callback Callback
 	 * @param array<string> $packages Packages to remove
 	 * @throws UnsupportedPackageManagerException
 	 */
@@ -78,7 +89,7 @@ class UnsupportedPackageManager implements IPackageManager {
 
 	/**
 	 * Updates a list of packages
-	 * @param callable $callback Callback
+	 * @param callable('out'|'err' $type, string $data): void $callback Callback
 	 * @throws UnsupportedPackageManagerException
 	 */
 	public function update(callable $callback): void {
@@ -87,7 +98,7 @@ class UnsupportedPackageManager implements IPackageManager {
 
 	/**
 	 * Upgrades packages
-	 * @param callable $callback Callback
+	 * @param callable('out'|'err' $type, string $data): void $callback Callback
 	 * @throws UnsupportedPackageManagerException
 	 */
 	public function upgrade(callable $callback): void {

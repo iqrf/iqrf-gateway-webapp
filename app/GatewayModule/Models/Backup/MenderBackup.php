@@ -21,8 +21,8 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Models\Backup;
 
 use App\CoreModule\Models\FeatureManager;
-use App\CoreModule\Models\PrivilegedFileManager;
 use App\CoreModule\Models\ZipArchiveManager;
+use Iqrf\FileManager\PrivilegedFileManager;
 use Nette\Utils\FileSystem;
 
 /**
@@ -31,7 +31,7 @@ use Nette\Utils\FileSystem;
 class MenderBackup implements IBackupManager {
 
 	/**
-	 * @var array<string> List of whitelisted files
+	 * List of whitelisted files
 	 */
 	public const WHITELIST = [
 		'mender.conf',
@@ -39,7 +39,7 @@ class MenderBackup implements IBackupManager {
 	];
 
 	/**
-	 * @var array<string> Service names
+	 * Service names
 	 */
 	public const SERVICES = [
 		'mender-client',
@@ -49,17 +49,7 @@ class MenderBackup implements IBackupManager {
 	/**
 	 * @var bool Indicates whether feature is enabled
 	 */
-	private bool $featureEnabled;
-
-	/**
-	 * @var PrivilegedFileManager Privileged file manager
-	 */
-	private PrivilegedFileManager $fileManager;
-
-	/**
-	 * @var RestoreLogger Restore logger
-	 */
-	private RestoreLogger $restoreLogger;
+	private readonly bool $featureEnabled;
 
 	/**
 	 * Constructor
@@ -67,10 +57,12 @@ class MenderBackup implements IBackupManager {
 	 * @param FeatureManager $featureManager FeatureManager
 	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
-	public function __construct(PrivilegedFileManager $fileManager, FeatureManager $featureManager, RestoreLogger $restoreLogger) {
-		$this->fileManager = $fileManager;
-		$this->restoreLogger = $restoreLogger;
-		$this->featureEnabled = $featureManager->get('mender')['enabled'];
+	public function __construct(
+		private readonly PrivilegedFileManager $fileManager,
+		FeatureManager $featureManager,
+		private readonly RestoreLogger $restoreLogger,
+	) {
+		$this->featureEnabled = $featureManager->isEnabled('mender');
 	}
 
 	/**
@@ -106,6 +98,14 @@ class MenderBackup implements IBackupManager {
 	}
 
 	/**
+	 * Returns service names
+	 * @return array<string> Service names
+	 */
+	public function getServices(): array {
+		return $this->featureEnabled ? self::SERVICES : [];
+	}
+
+	/**
 	 * Fixes privileges for restored files
 	 */
 	private function fixPrivileges(): void {
@@ -113,14 +113,6 @@ class MenderBackup implements IBackupManager {
 			$this->fileManager->chown($file, 'root', 'root');
 			$this->fileManager->chmod($file, 0600);
 		}
-	}
-
-	/**
-	 * Returns service names
-	 * @return array<string> Service names
-	 */
-	public function getServices(): array {
-		return $this->featureEnabled ? self::SERVICES : [];
 	}
 
 }

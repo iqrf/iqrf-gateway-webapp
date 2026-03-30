@@ -17,6 +17,8 @@ parameters:
 	# init deamon used in out system (e.g. systemd)
 	initDaemon: 'systemd'
 	sudo: true
+	# E-mail address DNS validation
+	emailValidateDns: true
 	# Paths
 	paths:
 		# APT paths
@@ -85,9 +87,17 @@ parameters:
 		dsn: 'https://7cd0252aae6d491b98514b9486cd2771@sentry.iqrf.org/2'
 
 extensions:
+	commandExecutor: Iqrf\CommandExecutor\DI\CommandExecutorExtension
 	iqrfRepository: Iqrf\Repository\DI\IqrfRepositoryExtension
 	iqrfMacros: Iqrf\IdeMacros\DI\IqrfMacrosExtension
 	middleware: Contributte\Middlewares\DI\NetteMiddlewaresExtension
+
+commandExecutor:
+	# Enable/disable Tracy panel
+	debug: %debugMode%
+	# Is sudo required for the command execution?
+	sudo: %sudo%
+
 
 iqrfMacros:
 	# path to IQRF IDE macros
@@ -103,8 +113,6 @@ middleware:
 	debug: %debugMode%
 
 tracy:
-	bar:
-		- App\CoreModule\Tracy\CommandPanel(@commandStack)
 	strictMode: true
 	maxDepth: 10
 
@@ -112,6 +120,7 @@ includes:
 	- api.neon
 	- console.neon
 	- doctrine.neon
+	- file-managers.neon
 	- guzzle.neon
 	- mailer.neon
 	- monolog.neon

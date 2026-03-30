@@ -20,9 +20,7 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models;
 
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FeatureManager;
-use App\CoreModule\Models\PrivilegedFileManager;
 use App\GatewayModule\Exceptions\SshDirectoryException;
 use App\GatewayModule\Exceptions\SshInvalidKeyException;
 use App\GatewayModule\Exceptions\SshKeyExistsException;
@@ -31,6 +29,8 @@ use App\GatewayModule\Exceptions\SshUtilityException;
 use App\Models\Database\Entities\SshKey;
 use App\Models\Database\EntityManager;
 use App\Models\Database\Repositories\SshKeyRepository;
+use Iqrf\CommandExecutor\CommandExecutor;
+use Iqrf\FileManager\PrivilegedFileManager;
 
 /**
  * SSH manager
@@ -38,24 +38,14 @@ use App\Models\Database\Repositories\SshKeyRepository;
 class SshManager {
 
 	/**
-	 * @var string SSH authorized keys file
+	 * SSH authorized keys file
 	 */
 	private const KEYS_FILE = 'authorized_keys';
-
-	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
 
 	/**
 	 * @var string|null Path to SSH directory
 	 */
 	private ?string $directory = null;
-
-	/**
-	 * @var EntityManager Entity manager
-	 */
-	private EntityManager $entityManager;
 
 	/**
 	 * @var PrivilegedFileManager|null Privileged file manager
@@ -65,23 +55,25 @@ class SshManager {
 	/**
 	 * @var SshKeyRepository SSH key repository
 	 */
-	private SshKeyRepository $sshKeyRepository;
+	private readonly SshKeyRepository $sshKeyRepository;
 
 	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandExecutor Command manager
 	 * @param EntityManager $entityManager Entity manager
 	 * @param FeatureManager $featureManager Feature manager
 	 */
-	public function __construct(CommandManager $commandManager, EntityManager $entityManager, FeatureManager $featureManager) {
-		$this->commandManager = $commandManager;
+	public function __construct(
+		private readonly CommandExecutor $commandExecutor,
+		private readonly EntityManager $entityManager,
+		FeatureManager $featureManager,
+	) {
 		$feature = $featureManager->get('gatewayPass');
 		$userInfo = posix_getpwnam($feature['user']);
 		if ($userInfo !== false) {
 			$this->directory = $userInfo['dir'] . '/.ssh';
-			$this->fileManager = new PrivilegedFileManager($this->directory, $commandManager);
+			$this->fileManager = new PrivilegedFileManager($this->directory, $commandExecutor);
 		}
-		$this->entityManager = $entityManager;
 		$this->sshKeyRepository = $entityManager->getSshKeyRepository();
 	}
 
@@ -91,7 +83,7 @@ class SshManager {
 	 * @throws SshUtilityException
 	 */
 	public function listKeyTypes(): array {
-		$command = $this->commandManager->run('ssh -Q key', true);
+		$command = $this->commandExecutor->run('ssh -Q key', true);
 		if ($command->getExitCode() !== 0) {
 			throw new SshUtilityException($command->getStderr());
 		}
@@ -152,29 +144,6 @@ class SshManager {
 	}
 
 	/**
-	 * Validates SSH key and returns key entity
-	 * @param array<string, string> $item SSH key string
-	 * @return SshKey SSH key entity
-	 * @throws SshInvalidKeyException
-	 */
-	private function createKeyEntity(array $item): SshKey {
-		$tokens = explode(' ', $item['key'], 3);
-		if ($this->sshKeyRepository->findByKey($tokens[1]) !== null) {
-			throw new SshKeyExistsException('SSH key already exists.');
-		}
-		$command = $this->commandManager->run('ssh-keygen -l -E sha256 -f /dev/stdin', true, 60, $item['key']);
-		if ($command->getExitCode() !== 0) {
-			throw new SshInvalidKeyException('Submitted key is not a valid SSH public key.');
-		}
-		$hash = explode(' ', $command->getStdout())[1];
-		if ($this->sshKeyRepository->findByHash($hash) !== null) {
-			throw new SshKeyExistsException('SSH key already exists.');
-		}
-		$description = $item['description'];
-		return new SshKey($tokens[0], $tokens[1], $hash, $description);
-	}
-
-	/**
 	 * Removes SSH public key from database
 	 * @param int $id SSH public key ID
 	 * @throws SshDirectoryException
@@ -208,21 +177,44 @@ class SshManager {
 	private function checkSshDirectory(): void {
 		$path = $this->directory . '/' . self::KEYS_FILE;
 		if (!file_exists($this->directory)) {
-			$command = $this->commandManager->run('install -m 755 -d ' . escapeshellarg($this->directory), true);
+			$command = $this->commandExecutor->run('install -m 755 -d ' . escapeshellarg($this->directory), true);
 			if ($command->getExitCode() !== 0) {
 				throw new SshDirectoryException($command->getStderr());
 			}
 		}
 		if (!file_exists($path)) {
-			$command = $this->commandManager->run('touch ' . escapeshellarg($path), true);
+			$command = $this->commandExecutor->run('touch ' . escapeshellarg($path), true);
 			if ($command->getExitCode() !== 0) {
 				throw new SshDirectoryException($command->getStderr());
 			}
-			$command = $this->commandManager->run('chmod 644 ' . escapeshellarg($path), true);
+			$command = $this->commandExecutor->run('chmod 644 ' . escapeshellarg($path), true);
 			if ($command->getExitCode() !== 0) {
 				throw new SshDirectoryException($command->getStderr());
 			}
 		}
+	}
+
+	/**
+	 * Validates SSH key and returns key entity
+	 * @param array<string, string> $item SSH key string
+	 * @return SshKey SSH key entity
+	 * @throws SshInvalidKeyException
+	 */
+	private function createKeyEntity(array $item): SshKey {
+		$tokens = explode(' ', $item['key'], 3);
+		if ($this->sshKeyRepository->findByKey($tokens[1]) !== null) {
+			throw new SshKeyExistsException('SSH key already exists.');
+		}
+		$command = $this->commandExecutor->run('ssh-keygen -l -E sha256 -f /dev/stdin', true, 60, $item['key']);
+		if ($command->getExitCode() !== 0) {
+			throw new SshInvalidKeyException('Submitted key is not a valid SSH public key.');
+		}
+		$hash = explode(' ', $command->getStdout())[1];
+		if ($this->sshKeyRepository->findByHash($hash) !== null) {
+			throw new SshKeyExistsException('SSH key already exists.');
+		}
+		$description = $item['description'];
+		return new SshKey($tokens[0], $tokens[1], $hash, $description);
 	}
 
 }

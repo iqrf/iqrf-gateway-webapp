@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\NetworkModule\Utils;
 
+use BackedEnum;
 use Nette\Utils\Strings;
 use function explode;
 use function sprintf;
@@ -46,14 +47,14 @@ class NmCliConnection {
 				continue;
 			}
 			[$section, $key] = explode('.', $temp[0], 2);
-			if (Strings::contains($section, '[')) {
+			if (str_contains($section, '[')) {
 				[$section, $sectionID] = Strings::split($section, '#\[(\d+)\]#');
 				$config[$section] ??= [];
 				$output = &$config[$section][((int) $sectionID) - 1];
 			} else {
 				$output = &$config[$section];
 			}
-			if (Strings::contains($key, '[')) {
+			if (str_contains($key, '[')) {
 				[$key, $keyId] = Strings::split($key, '#\[(\d+)\]#');
 				$output[$key][((int) $keyId) - 1] = $temp[1];
 			} else {
@@ -73,7 +74,10 @@ class NmCliConnection {
 		$string = '';
 		foreach ($array as $key => $value) {
 			if (gettype($value) === 'boolean') {
-				$value = $value === true ? 'yes' : 'no';
+				$value = $value ? 'yes' : 'no';
+			}
+			if ($value instanceof BackedEnum) {
+				$value = $value->value;
 			}
 			$string .= sprintf('%s.%s "%s" ', $prefix, $key, $value);
 		}

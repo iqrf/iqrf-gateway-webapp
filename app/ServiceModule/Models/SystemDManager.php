@@ -20,9 +20,8 @@ declare(strict_types = 1);
 
 namespace App\ServiceModule\Models;
 
-use App\CoreModule\Models\CommandManager;
 use App\ServiceModule\Exceptions\NonexistentServiceException;
-use Nette\Utils\Strings;
+use Iqrf\CommandExecutor\CommandExecutor;
 
 /**
  * Tool for managing services (systemD init daemon)
@@ -30,16 +29,12 @@ use Nette\Utils\Strings;
 class SystemDManager implements IServiceManager {
 
 	/**
-	 * @var CommandManager Command Manager
-	 */
-	private CommandManager $commandManager;
-
-	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandExecutor Command manager
 	 */
-	public function __construct(CommandManager $commandManager) {
-		$this->commandManager = $commandManager;
+	public function __construct(
+		private readonly CommandExecutor $commandExecutor,
+	) {
 	}
 
 	/**
@@ -50,7 +45,7 @@ class SystemDManager implements IServiceManager {
 	 */
 	public function disable(string $service, bool $stop = true): void {
 		$cmd = sprintf('systemctl disable%s %s', $stop ? ' --now' : '', $this->formatServiceName($service));
-		$command = $this->commandManager->run($cmd, true);
+		$command = $this->commandExecutor->run($cmd, true);
 		if ($command->getExitCode() !== 0) {
 			throw new NonexistentServiceException($command->getStderr());
 		}
@@ -64,7 +59,7 @@ class SystemDManager implements IServiceManager {
 	 */
 	public function disableMultiple(array $services, bool $stop = true): void {
 		$cmd = sprintf('systemctl disable%s %s', $stop ? ' --now' : '', $this->formatServiceNames($services));
-		$command = $this->commandManager->run($cmd, true);
+		$command = $this->commandExecutor->run($cmd, true);
 		if ($command->getExitCode() !== 0) {
 			throw new NonexistentServiceException($command->getStderr());
 		}
@@ -78,7 +73,7 @@ class SystemDManager implements IServiceManager {
 	 */
 	public function enable(string $service, bool $start = true): void {
 		$cmd = sprintf('systemctl enable%s %s', $start ? ' --now' : '', $this->formatServiceName($service));
-		$command = $this->commandManager->run($cmd, true);
+		$command = $this->commandExecutor->run($cmd, true);
 		if ($command->getExitCode() !== 0) {
 			throw new NonexistentServiceException($command->getStderr());
 		}
@@ -92,7 +87,7 @@ class SystemDManager implements IServiceManager {
 	 */
 	public function enableMultiple(array $services, bool $start = true): void {
 		$cmd = sprintf('systemctl enable%s %s', $start ? ' --now' : '', $this->formatServiceNames($services));
-		$command = $this->commandManager->run($cmd, true);
+		$command = $this->commandExecutor->run($cmd, true);
 		if ($command->getExitCode() !== 0) {
 			throw new NonexistentServiceException($command->getStderr());
 		}
@@ -106,7 +101,7 @@ class SystemDManager implements IServiceManager {
 	 */
 	public function isActive(string $serviceName): bool {
 		$cmd = 'systemctl is-active ' . $this->formatServiceName($serviceName);
-		$command = $this->commandManager->run($cmd, true);
+		$command = $this->commandExecutor->run($cmd, true);
 		if ($command->getExitCode() === 4) {
 			throw new NonexistentServiceException($command->getStderr());
 		}
@@ -121,9 +116,8 @@ class SystemDManager implements IServiceManager {
 	 */
 	public function isEnabled(string $serviceName): bool {
 		$cmd = 'systemctl is-enabled ' . $this->formatServiceName($serviceName);
-		$command = $this->commandManager->run($cmd, true);
-		if ($command->getExitCode() === 1 &&
-			Strings::contains($command->getStderr(), 'No such file or directory')) {
+		$command = $this->commandExecutor->run($cmd, true);
+		if ($command->getExitCode() === 1 && str_contains($command->getStderr(), 'No such file or directory')) {
 			throw new NonexistentServiceException($command->getStderr());
 		}
 		return $command->getStdout() === 'enabled';
@@ -136,7 +130,7 @@ class SystemDManager implements IServiceManager {
 	 */
 	public function start(string $service): void {
 		$cmd = 'systemctl start ' . $this->formatServiceName($service);
-		$command = $this->commandManager->run($cmd, true);
+		$command = $this->commandExecutor->run($cmd, true);
 		if ($command->getExitCode() !== 0) {
 			throw new NonexistentServiceException($command->getStderr());
 		}
@@ -149,7 +143,7 @@ class SystemDManager implements IServiceManager {
 	 */
 	public function startMultiple(array $services): void {
 		$cmd = 'systemctl start ' . $this->formatServiceNames($services);
-		$command = $this->commandManager->run($cmd, true);
+		$command = $this->commandExecutor->run($cmd, true);
 		if ($command->getExitCode() !== 0) {
 			throw new NonexistentServiceException($command->getStderr());
 		}
@@ -162,7 +156,7 @@ class SystemDManager implements IServiceManager {
 	 */
 	public function stop(string $service): void {
 		$cmd = 'systemctl stop ' . $this->formatServiceName($service);
-		$command = $this->commandManager->run($cmd, true);
+		$command = $this->commandExecutor->run($cmd, true);
 		if ($command->getExitCode() !== 0) {
 			throw new NonexistentServiceException($command->getStderr());
 		}
@@ -175,7 +169,7 @@ class SystemDManager implements IServiceManager {
 	 */
 	public function stopMultiple(array $services): void {
 		$cmd = 'systemctl stop ' . $this->formatServiceNames($services);
-		$command = $this->commandManager->run($cmd, true);
+		$command = $this->commandExecutor->run($cmd, true);
 		if ($command->getExitCode() !== 0) {
 			throw new NonexistentServiceException($command->getStderr());
 		}
@@ -188,7 +182,7 @@ class SystemDManager implements IServiceManager {
 	 */
 	public function restart(string $serviceName): void {
 		$cmd = 'systemctl restart ' . $this->formatServiceName($serviceName);
-		$command = $this->commandManager->run($cmd, true);
+		$command = $this->commandExecutor->run($cmd, true);
 		if ($command->getExitCode() !== 0) {
 			throw new NonexistentServiceException($command->getStderr());
 		}
@@ -202,7 +196,7 @@ class SystemDManager implements IServiceManager {
 	 */
 	public function getStatus(string $serviceName): string {
 		$cmd = 'systemctl status ' . $this->formatServiceName($serviceName);
-		$command = $this->commandManager->run($cmd, true);
+		$command = $this->commandExecutor->run($cmd, true);
 		if ($command->getExitCode() === 4) {
 			throw new NonexistentServiceException($command->getStderr());
 		}
@@ -215,7 +209,7 @@ class SystemDManager implements IServiceManager {
 	 * @return string Formatted service names
 	 */
 	private function formatServiceNames(array $services): string {
-		return implode(' ', array_map(fn (string $service): string => $this->formatServiceName($service), $services));
+		return implode(' ', array_map($this->formatServiceName(...), $services));
 	}
 
 	/**

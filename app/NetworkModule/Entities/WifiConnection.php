@@ -28,32 +28,12 @@ use Throwable;
 /**
  * WiFi connection entity
  */
-final class WifiConnection implements INetworkManagerEntity {
+final readonly class WifiConnection implements INetworkManagerEntity {
 
 	/**
-	 * @var string nmcli configuration prefix
+	 * nmcli configuration prefix
 	 */
 	private const NMCLI_PREFIX = '802-11-wireless';
-
-	/**
-	 * @var string SSID
-	 */
-	private string $ssid;
-
-	/**
-	 * @var WifiMode WiFi network mode
-	 */
-	private WifiMode $mode;
-
-	/**
-	 * @var array<int, string> Seen BSSIDs
-	 */
-	private array $bssids = [];
-
-	/**
-	 * @var WifiConnectionSecurity|null Wifi connection security entity
-	 */
-	private ?WifiConnectionSecurity $security;
 
 	/**
 	 * Constructor
@@ -62,11 +42,12 @@ final class WifiConnection implements INetworkManagerEntity {
 	 * @param array<int, string> $bssids Seen BSSIDs
 	 * @param WifiConnectionSecurity|null $security WiFi connection security entity
 	 */
-	public function __construct(string $ssid, WifiMode $mode, array $bssids, ?WifiConnectionSecurity $security) {
-		$this->ssid = $ssid;
-		$this->mode = $mode;
-		$this->bssids = $bssids;
-		$this->security = $security;
+	public function __construct(
+		private string $ssid,
+		private WifiMode $mode,
+		private array $bssids,
+		private ?WifiConnectionSecurity $security,
+	) {
 	}
 
 	/**
@@ -81,19 +62,6 @@ final class WifiConnection implements INetworkManagerEntity {
 	}
 
 	/**
-	 * Serializes WiFi connection entity into JSON
-	 * @return array<string, string|array<int|string, string|array<string, array<string>|int|string>>|null> JSON serialized entity
-	 */
-	public function jsonSerialize(): array {
-		return [
-			'ssid' => $this->ssid,
-			'mode' => $this->mode->toScalar(),
-			'bssids' => $this->bssids,
-			'security' => $this->security instanceof WifiConnectionSecurity ? $this->security->jsonSerialize() : null,
-		];
-	}
-
-	/**
 	 * Deserializes WiFI connection entity from nmcli connection configuration
 	 * @param array<string, array<string, array<string>|string>> $nmCli nmcli connection configuration
 	 * @return WifiConnection WiFi connection entity
@@ -104,10 +72,23 @@ final class WifiConnection implements INetworkManagerEntity {
 		$bssids = explode(',', $array['seen-bssids']);
 		try {
 			$security = WifiConnectionSecurity::nmCliDeserialize($nmCli);
-		} catch (Throwable $e) {
+		} catch (Throwable) {
 			$security = null;
 		}
 		return new self($array['ssid'], $mode, $bssids, $security);
+	}
+
+	/**
+	 * Serializes WiFi connection entity into JSON
+	 * @return array<string, string|array<int|string, string|array<string, array<string>|int|string>>|null> JSON serialized entity
+	 */
+	public function jsonSerialize(): array {
+		return [
+			'ssid' => $this->ssid,
+			'mode' => $this->mode->toScalar(),
+			'bssids' => $this->bssids,
+			'security' => $this->security instanceof WifiConnectionSecurity ? $this->security->jsonSerialize() : null,
+		];
 	}
 
 	/**

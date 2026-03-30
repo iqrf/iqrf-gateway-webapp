@@ -29,10 +29,10 @@ trait TId {
 
 	/**
 	 * @var int|null ID
-	 * @ORM\Column(type="integer")
-	 * @ORM\Id
-	 * @ORM\GeneratedValue
 	 */
+	#[ORM\Column(type: 'integer')]
+	#[ORM\Id]
+	#[ORM\GeneratedValue]
 	private ?int $id = null;
 
 	/**

@@ -21,125 +21,60 @@ declare(strict_types = 1);
 namespace App\Models\Database\Entities;
 
 use App\Models\Database\Attributes\TId;
+use App\Models\Database\Repositories\MappingRepository;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 use function in_array;
 
 /**
  * Mapping entity
- * @ORM\Entity(repositoryClass="App\Models\Database\Repositories\MappingRepository")
- * @ORM\Table(name="mappings")
- * @ORM\HasLifecycleCallbacks()
  */
+#[ORM\Entity(repositoryClass: MappingRepository::class)]
+#[ORM\HasLifecycleCallbacks]
+#[ORM\Table(name: 'mappings')]
 class Mapping implements JsonSerializable {
 
 	use TId;
 
 	/**
-	 * @var string Mapping type: SPI
+	 * Mapping type: SPI
 	 */
 	public const TYPE_SPI = 'spi';
 
 	/**
-	 * @var string Mapping type: UART
+	 * Mapping type: UART
 	 */
 	public const TYPE_UART = 'uart';
 
 	/**
-	 * @var array<string> Supported mapping types
+	 * Supported mapping types
 	 */
 	public const TYPES = [self::TYPE_SPI, self::TYPE_UART];
 
 	/**
-	 * @var int Default mapping UART baud rate
+	 * Default mapping UART baud rate
 	 */
 	public const BAUD_RATE_DEFAULT = 57600;
 
 	/**
-	 * @var array<int> Supported mapping UART baud rates
+	 * Supported mapping UART baud rates
 	 */
 	public const BAUD_RATES = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400];
 
 	/**
-	 * @var string Device type: Adapter
+	 * Device type: Adapter
 	 */
 	public const DEVICE_ADAPTER = 'adapter';
 
 	/**
-	 * @var string Device type: Board
+	 * Device type: Board
 	 */
 	public const DEVICE_BOARD = 'board';
 
 	/**
-	 * @var array<string> Supported device types
+	 * Supported device types
 	 */
 	public const DEVICE_TYPES = [self::DEVICE_ADAPTER, self::DEVICE_BOARD];
-
-	/**
-	 * @var string Mapping type
-	 * @ORM\Column(type="string", length=255)
-	 */
-	private string $type;
-
-	/**
-	 * @var string Mapping name
-	 * @ORM\Column(type="string", length=255)
-	 */
-	private string $name;
-
-	/**
-	 * @var string Device type
-	 * @ORM\Column(type="string", length=255)
-	 */
-	private string $deviceType;
-
-	/**
-	 * @var string Device name
-	 * @ORM\Column(type="string", length=255)
-	 */
-	private string $iqrfInterface;
-
-	/**
-	 * @var int Bus enable pin
-	 * @ORM\Column(type="integer")
-	 */
-	private int $busEnableGpioPin;
-
-	/**
-	 * @var int Programming mode switch pin
-	 * @ORM\Column(type="integer")
-	 */
-	private int $pgmSwitchGpioPin;
-
-	/**
-	 * @var int Power enable pin
-	 * @ORM\Column(type="integer")
-	 */
-	private int $powerEnableGpioPin;
-
-	/**
-	 * @var int|null UART baud rate
-	 * @ORM\Column(type="integer", nullable=true)
-	 */
-	private ?int $baudRate;
-
-	/**
-	 * @var int|null I2C interface enable pin
-	 * @ORM\Column(type="integer", nullable=true)
-	 */
-	private ?int $i2cEnableGpioPin;
-
-	/**
-	 * @var int|null SPI interface enable pin
-	 * @ORM\Column(type="integer", nullable=true)
-	 */
-	private ?int $spiEnableGpioPin;
-
-	/**
-	 * @var int|null UART interface enable pin
-	 * @ORM\Column(type="integer", nullable=true)
-	 */
-	private ?int $uartEnableGpioPin;
 
 	/**
 	 * Constructor
@@ -155,18 +90,30 @@ class Mapping implements JsonSerializable {
 	 * @param int|null $spiEnableGpioPin Mapping SPI interface enable pin
 	 * @param int|null $uartEnableGpioPin Mapping UART interface enable pin
 	 */
-	public function __construct(string $type, string $name, string $deviceType, string $iqrfInterface, int $busEnableGpioPin, int $pgmSwitchGpioPin, int $powerEnableGpioPin, ?int $baudRate = null, ?int $i2cEnableGpioPin = null, ?int $spiEnableGpioPin = null, ?int $uartEnableGpioPin = null) {
-		$this->type = $type;
-		$this->name = $name;
-		$this->deviceType = $deviceType;
-		$this->iqrfInterface = $iqrfInterface;
-		$this->busEnableGpioPin = $busEnableGpioPin;
-		$this->pgmSwitchGpioPin = $pgmSwitchGpioPin;
-		$this->powerEnableGpioPin = $powerEnableGpioPin;
-		$this->baudRate = $baudRate;
-		$this->i2cEnableGpioPin = $i2cEnableGpioPin;
-		$this->spiEnableGpioPin = $spiEnableGpioPin;
-		$this->uartEnableGpioPin = $uartEnableGpioPin;
+	public function __construct(
+		#[ORM\Column(type: 'string', length: 255)]
+		private string $type,
+		#[ORM\Column(type: 'string', length: 255)]
+		private string $name,
+		#[ORM\Column(type: 'string', length: 255)]
+		private string $deviceType,
+		#[ORM\Column(type: 'string', length: 255)]
+		private string $iqrfInterface,
+		#[ORM\Column(type: 'integer')]
+		private int $busEnableGpioPin,
+		#[ORM\Column(type: 'integer')]
+		private int $pgmSwitchGpioPin,
+		#[ORM\Column(type: 'integer')]
+		private int $powerEnableGpioPin,
+		#[ORM\Column(type: 'integer', nullable: true)]
+		private ?int $baudRate = null,
+		#[ORM\Column(type: 'integer', nullable: true)]
+		private ?int $i2cEnableGpioPin = null,
+		#[ORM\Column(type: 'integer', nullable: true)]
+		private ?int $spiEnableGpioPin = null,
+		#[ORM\Column(type: 'integer', nullable: true)]
+		private ?int $uartEnableGpioPin = null,
+	) {
 	}
 
 	/**

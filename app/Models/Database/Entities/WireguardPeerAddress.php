@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\Models\Database\Entities;
 
 use App\Models\Database\Attributes\TId;
+use App\Models\Database\Repositories\WireguardPeerAddressRepository;
 use App\NetworkModule\Entities\MultiAddress;
 use Darsyn\IP\Version\Multi as IP;
 use Doctrine\ORM\Mapping as ORM;
@@ -28,42 +29,39 @@ use JsonSerializable;
 
 /**
  * Wireguard peer entity
- * @ORM\Entity(repositoryClass="App\Models\Database\Repositories\WireguardPeerAddressRepository")
- * @ORM\Table(name="`wireguard_peer_addresses`")
- * @ORM\HasLifecycleCallbacks()
  */
+#[ORM\Entity(repositoryClass: WireguardPeerAddressRepository::class)]
+#[ORM\HasLifecycleCallbacks]
+#[ORM\Table(name: '`wireguard_peer_addresses`')]
 class WireguardPeerAddress implements JsonSerializable {
 
 	use TId;
 
 	/**
 	 * @var IP Peer address
-	 * @ORM\Column(type="ip")
 	 */
+	#[ORM\Column(type: 'ip')]
 	private IP $address;
 
 	/**
 	 * @var int Peer address prefix
-	 * @ORM\Column(type="integer")
 	 */
+	#[ORM\Column(type: 'integer')]
 	private int $prefix;
-
-	/**
-	 * @var WireguardPeer Wireguard peer
-	 * @ORM\ManyToOne(targetEntity="WireguardPeer", inversedBy="addresses")
-	 * @ORM\JoinColumn(name="peer_id")
-	 */
-	private WireguardPeer $peer;
 
 	/**
 	 * Constructor
 	 * @param MultiAddress $address Peer address
 	 * @param WireguardPeer $peer Wireguard peer
 	 */
-	public function __construct(MultiAddress $address, WireguardPeer $peer) {
+	public function __construct(
+		MultiAddress $address,
+		#[ORM\ManyToOne(targetEntity: WireguardPeer::class, inversedBy: 'addresses')]
+		#[ORM\JoinColumn(name: 'peer_id', nullable: false)]
+		private WireguardPeer $peer,
+	) {
 		$this->address = $address->getAddress();
 		$this->prefix = $address->getPrefix();
-		$this->peer = $peer;
 	}
 
 	/**

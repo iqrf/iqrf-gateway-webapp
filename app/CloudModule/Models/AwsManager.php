@@ -37,24 +37,9 @@ use Nette\Utils\JsonException;
 class AwsManager implements IManager {
 
 	/**
-	 * @var string CA certificate filename
+	 * CA certificate filename
 	 */
 	private const CA_FILENAME = 'aws-ca.crt';
-
-	/**
-	 * @var GenericManager Generic configuration manager
-	 */
-	private GenericManager $configManager;
-
-	/**
-	 * @var string Path to the certificates
-	 */
-	private string $certPath;
-
-	/**
-	 * @var ClientInterface HTTP(S) client
-	 */
-	private ClientInterface $client;
 
 	/**
 	 * Constructor
@@ -62,10 +47,11 @@ class AwsManager implements IManager {
 	 * @param GenericManager $configManager Generic config manager
 	 * @param ClientInterface $client HTTP(S) client
 	 */
-	public function __construct(string $certPath, GenericManager $configManager, ClientInterface $client) {
-		$this->certPath = $certPath;
-		$this->client = $client;
-		$this->configManager = $configManager;
+	public function __construct(
+		private string $certPath,
+		private readonly GenericManager $configManager,
+		private readonly ClientInterface $client,
+	) {
 	}
 
 	/**
@@ -107,20 +93,6 @@ class AwsManager implements IManager {
 			'acceptAsyncMsg' => false,
 		];
 		$this->configManager->save($interface, 'iqrf__MqttMessaging_Aws');
-	}
-
-	/**
-	 * Create a directory for certificates
-	 * @throws CannotCreateCertificateDirectoryException
-	 */
-	private function createDirectory(): void {
-		try {
-			FileSystem::createDir($this->certPath);
-		} catch (IOException $e) {
-			throw new CannotCreateCertificateDirectoryException();
-		}
-		$realPath = realpath($this->certPath);
-		$this->certPath = (($realPath === false) ? $this->certPath : $realPath) . '/';
 	}
 
 	/**
@@ -169,6 +141,20 @@ class AwsManager implements IManager {
 	public function uploadCertsAndKey(array $paths, string $certificate, string $privateKey): void {
 		FileSystem::write($paths['cert'], $certificate);
 		FileSystem::write($paths['key'], $privateKey);
+	}
+
+	/**
+	 * Create a directory for certificates
+	 * @throws CannotCreateCertificateDirectoryException
+	 */
+	private function createDirectory(): void {
+		try {
+			FileSystem::createDir($this->certPath);
+		} catch (IOException) {
+			throw new CannotCreateCertificateDirectoryException();
+		}
+		$realPath = realpath($this->certPath);
+		$this->certPath = (($realPath === false) ? $this->certPath : $realPath) . '/';
 	}
 
 }

@@ -29,19 +29,21 @@ namespace Tests\Unit\GatewayModule\Models;
 use App\GatewayModule\Exceptions\NonexistentTimezoneException;
 use App\GatewayModule\Exceptions\TimeDateException;
 use App\GatewayModule\Models\TimeManager;
+use Iqrf\CommandExecutor\Tester\Traits\CommandExecutorTestCase;
 use Tester\Assert;
-use Tests\Stubs\CoreModule\Models\Command;
-use Tests\Toolkit\TestCases\CommandTestCase;
+use Tester\TestCase;
 
 require __DIR__ . '/../../../bootstrap.php';
 
 /**
  * Tests for time manager
  */
-final class TimeManagerTest extends CommandTestCase {
+final class TimeManagerTest extends TestCase {
+
+	use CommandExecutorTestCase;
 
 	/**
-	 * @var array<string, string> Commands to be executed
+	 * Commands to be executed
 	 */
 	private const COMMANDS = [
 		'timestamp' => 'date +%s',
@@ -58,15 +60,6 @@ final class TimeManagerTest extends CommandTestCase {
 	private TimeManager $manager;
 
 	/**
-	 * Sets up test environment
-	 */
-	protected function setUp(): void {
-		parent::setUp();
-		$path = __DIR__ . '../../data/systemd/conf/timesyncd.conf';
-		$this->manager = new TimeManager($this->commandManager, $path);
-	}
-
-	/**
 	 * Tests the function to get timedatectl status
 	 */
 	public function testGetStatus(): void {
@@ -74,10 +67,10 @@ final class TimeManagerTest extends CommandTestCase {
 			'Timezone' => 'UTC',
 			'NTPSynchronized' => true,
 		];
-		$command = new Command(self::COMMANDS['status'], 'Timezone=UTC' . PHP_EOL . 'NTPSynchronized=yes', '', 0);
-		$this->commandManager->shouldReceive('run')
-			->withArgs([self::COMMANDS['status']])
-			->andReturn($command);
+		$this->receiveCommand(
+			command: self::COMMANDS['status'],
+			stdout: 'Timezone=UTC' . PHP_EOL . 'NTPSynchronized=yes',
+		);
 		Assert::same($expected, $this->manager->getStatus());
 	}
 
@@ -85,10 +78,10 @@ final class TimeManagerTest extends CommandTestCase {
 	 * Tests the function to get timedatectl status with exception thrown
 	 */
 	public function testGetStatusException(): void {
-		$command = new Command(self::COMMANDS['status'], '', '', 1);
-		$this->commandManager->shouldReceive('run')
-			->withArgs([self::COMMANDS['status']])
-			->andReturn($command);
+		$this->receiveCommand(
+			command: self::COMMANDS['status'],
+			exitCode: 1,
+		);
 		Assert::throws(function (): void {
 			$this->manager->getStatus();
 		}, TimeDateException::class);
@@ -99,9 +92,10 @@ final class TimeManagerTest extends CommandTestCase {
 	 */
 	public function testAvailableTimezones(): void {
 		$timezones = 'UTC';
-		$command = new Command(self::COMMANDS['listTimezones'], $timezones, '', 0);
-		$this->commandManager->shouldReceive('run')
-			->andReturn($command);
+		$this->receiveCommand(
+			command: self::COMMANDS['listTimezones'],
+			stdout: $timezones,
+		);
 		$expected = [
 			[
 				'name' => 'UTC',
@@ -128,10 +122,10 @@ final class TimeManagerTest extends CommandTestCase {
 	 * Tests the function to set timezone
 	 */
 	public function testSetTimezone(): void {
-		$command = new Command(self::COMMANDS['setTimezone'], '', '', 0);
-		$this->commandManager->shouldReceive('run')
-			->withArgs([self::COMMANDS['setTimezone'], true])
-			->andReturn($command);
+		$this->receiveCommand(
+			command: self::COMMANDS['setTimezone'],
+			needSudo: true,
+		);
 		Assert::noError(function (): void {
 			$this->manager->setTimezone('UTC');
 		});
@@ -141,10 +135,11 @@ final class TimeManagerTest extends CommandTestCase {
 	 * Tests the function to set timezone with nonexistent timezone
 	 */
 	public function testSetTimezoneNonexistent(): void {
-		$command = new Command(self::COMMANDS['setTimezoneNonexistent'], '', '', 1);
-		$this->commandManager->shouldReceive('run')
-			->withArgs([self::COMMANDS['setTimezoneNonexistent'], true])
-			->andReturn($command);
+		$this->receiveCommand(
+			command: self::COMMANDS['setTimezoneNonexistent'],
+			needSudo: true,
+			exitCode: 1,
+		);
 		Assert::throws(function (): void {
 			$this->manager->setTimezone('Nonexistent/Nonexistent');
 		}, NonexistentTimezoneException::class);
@@ -154,13 +149,23 @@ final class TimeManagerTest extends CommandTestCase {
 	 * Tests the function to set ntp synchronization
 	 */
 	public function testSetNtp(): void {
-		$command = new Command(self::COMMANDS['setNtp'], '', '', 0);
-		$this->commandManager->shouldReceive('run')
-			->withArgs([self::COMMANDS['setNtp'], true])
-			->andReturn($command);
+		$this->receiveCommand(
+			command: self::COMMANDS['setNtp'],
+			needSudo: true,
+		);
 		Assert::noError(function (): void {
 			$this->manager->setNtp(true);
 		});
+	}
+
+	/**
+	 * Sets up test environment
+	 */
+	protected function setUp(): void {
+		parent::setUp();
+		$this->setUpCommandExecutor();
+		$path = __DIR__ . '../../data/systemd/conf/timesyncd.conf';
+		$this->manager = new TimeManager($this->commandExecutor, $path);
 	}
 
 }

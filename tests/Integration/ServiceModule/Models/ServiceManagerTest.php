@@ -28,15 +28,23 @@ namespace Tests\Integration\ServiceModule\Models;
 
 use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
 use App\ServiceModule\Models\ServiceManager;
+use Iqrf\CommandExecutor\Tester\Traits\CommandExecutorTestCase;
 use Tester\Assert;
-use Tests\Toolkit\TestCases\CommandTestCase;
+use Tester\TestCase;
 
 require __DIR__ . '/../../../bootstrap.php';
 
 /**
  * Tests for service manager
  */
-final class ServiceManagerTest extends CommandTestCase {
+final class ServiceManagerTest extends TestCase {
+
+	use CommandExecutorTestCase;
+
+	/**
+	 * IQRF Gateway Daemon service
+	 */
+	private const SERVICE_NAME = 'iqrf-gateway-daemon';
 
 	/**
 	 * @var ServiceManager Service manager for systemD init daemon
@@ -49,11 +57,6 @@ final class ServiceManagerTest extends CommandTestCase {
 	private ServiceManager $managerUnknown;
 
 	/**
-	 * @var string Name of service
-	 */
-	private const SERVICE_NAME = 'iqrf-gateway-daemon';
-
-	/**
 	 * Tests the function to disable the service via systemD
 	 */
 	public function testDisableSystemD(): void {
@@ -62,7 +65,7 @@ final class ServiceManagerTest extends CommandTestCase {
 			'systemctl disable \'' . self::SERVICE_NAME . '.service\'',
 		];
 		foreach ($commands as $command) {
-			$this->receiveCommand($command, true);
+			$this->receiveCommand(command: $command, needSudo: true);
 		}
 		Assert::noError(function (): void {
 			$this->managerSystemD->disable(self::SERVICE_NAME);
@@ -75,7 +78,7 @@ final class ServiceManagerTest extends CommandTestCase {
 	 */
 	public function testDisableUnknown(): void {
 		Assert::exception(function (): void {
-			$this->managerUnknown->disable(self::SERVICE_NAME, false);
+			$this->managerUnknown->disable(self::SERVICE_NAME);
 		}, UnsupportedInitSystemException::class);
 	}
 
@@ -88,7 +91,7 @@ final class ServiceManagerTest extends CommandTestCase {
 			'systemctl enable \'' . self::SERVICE_NAME . '.service\'',
 		];
 		foreach ($commands as $command) {
-			$this->receiveCommand($command, true);
+			$this->receiveCommand(command: $command, needSudo: true);
 		}
 		Assert::noError(function (): void {
 			$this->managerSystemD->enable(self::SERVICE_NAME);
@@ -101,7 +104,7 @@ final class ServiceManagerTest extends CommandTestCase {
 	 */
 	public function testEnableUnknown(): void {
 		Assert::exception(function (): void {
-			$this->managerUnknown->enable(self::SERVICE_NAME, false);
+			$this->managerUnknown->enable(self::SERVICE_NAME);
 		}, UnsupportedInitSystemException::class);
 	}
 
@@ -110,7 +113,11 @@ final class ServiceManagerTest extends CommandTestCase {
 	 */
 	public function testIsActiveSystemD(): void {
 		$command = 'systemctl is-active \'' . self::SERVICE_NAME . '.service\'';
-		$this->receiveCommand($command, true, 'active');
+		$this->receiveCommand(
+			command: $command,
+			needSudo: true,
+			stdout: 'active',
+		);
 		Assert::true($this->managerSystemD->isActive(self::SERVICE_NAME));
 	}
 
@@ -128,7 +135,11 @@ final class ServiceManagerTest extends CommandTestCase {
 	 */
 	public function testIsEnabledSystemD(): void {
 		$command = 'systemctl is-enabled \'' . self::SERVICE_NAME . '.service\'';
-		$this->receiveCommand($command, true, 'enabled');
+		$this->receiveCommand(
+			command: $command,
+			needSudo: true,
+			stdout: 'enabled',
+		);
 		Assert::true($this->managerSystemD->isEnabled(self::SERVICE_NAME));
 	}
 
@@ -186,7 +197,7 @@ final class ServiceManagerTest extends CommandTestCase {
 	 */
 	public function testRestartSystemD(): void {
 		$command = 'systemctl restart \'' . self::SERVICE_NAME . '.service\'';
-		$this->receiveCommand($command, true);
+		$this->receiveCommand(command: $command, needSudo: true);
 		Assert::noError(function (): void {
 			$this->managerSystemD->restart(self::SERVICE_NAME);
 		});
@@ -207,7 +218,11 @@ final class ServiceManagerTest extends CommandTestCase {
 	public function testGetStatusSystemD(): void {
 		$expected = 'status';
 		$command = 'systemctl status \'' . self::SERVICE_NAME . '.service\'';
-		$this->receiveCommand($command, true, $expected);
+		$this->receiveCommand(
+			command: $command,
+			needSudo: true,
+			stdout: $expected,
+		);
 		Assert::same($expected, $this->managerSystemD->getStatus(self::SERVICE_NAME));
 	}
 
@@ -225,8 +240,9 @@ final class ServiceManagerTest extends CommandTestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
-		$this->managerSystemD = new ServiceManager('systemd', $this->commandManager);
-		$this->managerUnknown = new ServiceManager('unknown', $this->commandManager);
+		$this->setUpCommandExecutor();
+		$this->managerSystemD = new ServiceManager('systemd', $this->commandExecutor);
+		$this->managerUnknown = new ServiceManager('unknown', $this->commandExecutor);
 	}
 
 }

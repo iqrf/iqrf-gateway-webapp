@@ -25,7 +25,6 @@ use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\RequestParameter;
-use Apitte\Core\Annotation\Controller\RequestParameters;
 use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
@@ -44,20 +43,10 @@ use Nette\Utils\JsonException;
 
 /**
  * Scheduler configuration controller
- * @Path("/scheduler")
- * @Tag("Scheduler configuration manager")
  */
+#[Path('/scheduler')]
+#[Tag('Configuration - IQRF Gateway Daemon')]
 class SchedulerController extends BaseController {
-
-	/**
-	 * @var SchedulerManager IQRF Gateway Daemon's scheduler manager
-	 */
-	private SchedulerManager $manager;
-
-	/**
-	 * @var SchedulerMigrationManager IQRF Gateway Daemon's scheduler migration manager
-	 */
-	private SchedulerMigrationManager $migrationManager;
 
 	/**
 	 * Constructor
@@ -65,61 +54,57 @@ class SchedulerController extends BaseController {
 	 * @param SchedulerMigrationManager $migrationManager IQRF Gateway Daemon's scheduler migration manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(SchedulerManager $manager, SchedulerMigrationManager $migrationManager, RestApiSchemaValidator $validator) {
-		$this->manager = $manager;
-		$this->migrationManager = $migrationManager;
+	public function __construct(
+		private readonly SchedulerManager $manager,
+		private readonly SchedulerMigrationManager $migrationManager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Lists tasks
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/TaskList'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('GET')]
+	#[OpenApi(<<<'EOT'
+		summary: Lists tasks
+		responses:
+			'200':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: '#/components/schemas/TaskList'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+	EOT)]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['config:daemon']);
 		return $response->writeJsonBody($this->manager->list());
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Creates a new task
-	 *  requestBody:
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/Task'
-	 *  responses:
-	 *      '201':
-	 *          description: Created
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '409':
-	 *          description: 'Task already exists'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('POST')]
+	#[OpenApi(<<<'EOT'
+		summary: Creates a new task
+		requestBody:
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: '#/components/schemas/Task'
+		responses:
+			'201':
+				description: Created
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'409':
+				description: Task already exists
+				content:
+					application/json:
+						schema:
+							$ref: '#/components/schemas/Error'
+	EOT)]
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['config:daemon']);
 		$this->validator->validateRequest('task', $request);
@@ -140,51 +125,39 @@ class SchedulerController extends BaseController {
 			->writeBody('Workaround');
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("DELETE")
-	 * @OpenApi("
-	 *  summary: Deletes all tasks
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('DELETE')]
+	#[OpenApi(<<<'EOT'
+		summary: Deletes all tasks
+		responses:
+			'200':
+				description: Success
+			'403':
+				$ref: '#/components/responses/Forbidden'
+	EOT)]
 	public function deleteAll(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['config:daemon']);
 		$this->manager->deleteAll();
 		return $response->writeBody('Workaround');
 	}
 
-	/**
-	 * @Path("/{taskId}")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Returns task configuration
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/Task'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '404':
-	 *          description: Not found
-	 * ")
-	 * @RequestParameters({
-	 *      @RequestParameter(name="taskId", type="integer", description="Task ID")
-	 * })
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/{taskId}')]
+	#[Method('GET')]
+	#[OpenApi(<<<'EOT'
+		summary: Returns task configuration
+		responses:
+			'200':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: '#/components/schemas/Task'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+	EOT)]
+	#[RequestParameter(name: 'taskId', type: 'integer', description: 'Task ID')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['config:daemon']);
 		$taskId = $request->getParameter('taskId');
@@ -196,26 +169,19 @@ class SchedulerController extends BaseController {
 		}
 	}
 
-	/**
-	 * @Path("/{taskId}")
-	 * @Method("DELETE")
-	 * @OpenApi("
-	 *  summary: Deletes a task
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '404':
-	 *          description: 'Task not found'
-	 * ")
-	 * @RequestParameters({
-	 *      @RequestParameter(name="taskId", type="integer", description="Task ID")
-	 * })
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/{taskId}')]
+	#[Method('DELETE')]
+	#[OpenApi(<<<'EOT'
+		summary: Deletes a task
+		responses:
+			'200':
+				description: Success
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+	EOT)]
+	#[RequestParameter(name: 'taskId', type: 'integer', description: 'Task ID')]
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['config:daemon']);
 		$taskId = $request->getParameter('taskId');
@@ -227,34 +193,27 @@ class SchedulerController extends BaseController {
 		}
 	}
 
-	/**
-	 * @Path("/{taskId}")
-	 * @Method("PUT")
-	 * @OpenApi("
-	 *  summary: Edits a task
-	 *  requestBody:
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/Task'
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '404':
-	 *          description: 'Task not found'
-	 * ")
-	 * @RequestParameters({
-	 *      @RequestParameter(name="taskId", type="integer", description="Task ID")
-	 * })
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/{taskId}')]
+	#[Method('PUT')]
+	#[OpenApi(<<<'EOT'
+		summary: Edits a task
+		requestBody:
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: '#/components/schemas/Task'
+		responses:
+			'200':
+				description: Success
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+	EOT)]
+	#[RequestParameter(name: 'taskId', type: 'integer', description: 'Task ID')]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['config:daemon']);
 		$taskId = $request->getParameter('taskId');
@@ -275,28 +234,27 @@ class SchedulerController extends BaseController {
 		return $response->writeBody('Workaround');
 	}
 
-	/**
-	 * @Path("/export")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *   summary: Exports scheduler configuration
-	 *   responses:
-	 *       '200':
-	 *           description: 'Success'
-	 *           content:
-	 *               application/zip:
-	 *                   schema:
-	 *                       type: string
-	 *                       format: binary
-	 *       '403':
-	 *           $ref: '#/components/responses/Forbidden'
-	 *       '404':
-	 *           description: 'No tasks to export'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/export')]
+	#[Method('GET')]
+	#[OpenApi(<<<'EOT'
+		summary: Exports scheduler configuration
+		responses:
+			'200':
+				description: Success
+				content:
+					application/zip:
+						schema:
+							type: string
+							format: binary
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				description: No tasks to export
+				content:
+					application/json:
+						schema:
+							$ref: '#/components/schemas/Error'
+	EOT)]
 	public function export(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['config:daemon']);
 		try {
@@ -309,49 +267,38 @@ class SchedulerController extends BaseController {
 		}
 	}
 
-	/**
-	 * @Path("/import")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Imports scheduler configuration
-	 *  requestBody:
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/Task'
-	 *          application/zip:
-	 *              schema:
-	 *                  type: string
-	 *                  format: binary
-	 *  responses:
-	 *      '200':
-	 *          description: 'Success'
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '415':
-	 *          description: 'Unsupported media type'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/import')]
+	#[Method('POST')]
+	#[OpenApi(<<<'EOT'
+		summary: Imports scheduler configuration
+		requestBody:
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: '#/components/schemas/Task'
+				application/zip:
+					schema:
+						type: string
+						format: binary
+		responses:
+			'200':
+				description: Success
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'415':
+				$ref: '#/components/responses/InvalidContentType'
+	EOT)]
 	public function import(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['config:daemon']);
 		try {
-			switch (ContentTypeUtil::getContentType($request)) {
-				case 'application/zip':
-				case 'application/x-zip-compressed':
-					$this->importZip($request);
-					break;
-				case 'application/json':
-					$this->importJson($request);
-					break;
-				default:
-					throw new ClientErrorException('Unsupported media type', ApiResponse::S415_UNSUPPORTED_MEDIA_TYPE);
-			}
+			match (ContentTypeUtil::getContentType($request)) {
+				'application/zip', 'application/x-zip-compressed' => $this->importZip($request),
+				'application/json' => $this->importJson($request),
+				default => throw new ClientErrorException('Unsupported media type', ApiResponse::S415_UNSUPPORTED_MEDIA_TYPE),
+			};
 		} catch (InvalidTaskMessageException $e) {
 			throw new ClientErrorException('Invalid mType', ApiResponse::S400_BAD_REQUEST, $e);
 		} catch (JsonException $e) {

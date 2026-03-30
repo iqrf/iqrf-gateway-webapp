@@ -33,12 +33,12 @@ final class DeviceTypes extends Enum {
 	use AutoInstances;
 
 	/**
-	 * @var string Adapter device
+	 * Adapter device
 	 */
 	private const ADAPTER = 'adapter';
 
 	/**
-	 * @var string Board device
+	 * Board device
 	 */
 	private const BOARD = 'board';
 

@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Copyright 2017-2025 IQRF Tech s.r.o.
- * Copyright 2019-2025 MICRORISC s.r.o.
+ * Copyright 2017-2026 IQRF Tech s.r.o.
+ * Copyright 2019-2026 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,13 +20,11 @@ declare(strict_types = 1);
 
 namespace App\Models\Mail;
 
+use App\Entities\MailerConfiguration;
 use App\Exceptions\InvalidSmtpConfigException;
 use Nette\IOException;
 use Nette\Neon\Exception as NeonException;
 use Nette\Neon\Neon;
-use Nette\Schema\Elements\Structure;
-use Nette\Schema\Expect;
-use Nette\Schema\Processor;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
 use PHPMailer\PHPMailer\SMTP;
@@ -40,44 +38,14 @@ use Spatie\SslCertificate\SslCertificate;
 class ConfigurationManager {
 
 	/**
-	 * @var string Path to the configuration file
-	 */
-	private string $path;
-
-	/**
-	 * @var array<string, mixed>|null Configuration
-	 */
-	private ?array $config;
-
-	/**
-	 * Returns the configuration schema
-	 * @return Structure Configuration schema
-	 */
-	public function getConfigSchema(): Structure {
-		return Expect::structure([
-			'enabled' => Expect::bool(false),
-			'host' => Expect::string('localhost')->dynamic(),
-			'port' => Expect::int(25)->dynamic(),
-			'username' => Expect::string('root')->dynamic(),
-			'from' => Expect::string('iqrf-gw@localhost.localdomain')->dynamic(),
-			'password' => Expect::string('')->dynamic(),
-			'secure' => Expect::anyOf(null, 'ssl', 'tls')->default(null)->dynamic(),
-			'timeout' => Expect::int(20)->dynamic(),
-			'context' => Expect::arrayOf('array')->dynamic(),
-			'clientHost' => Expect::anyOf(null, Expect::string())->dynamic(),
-			'persistent' => Expect::bool(false)->dynamic(),
-			'theme' => Expect::string('generic')->dynamic(),
-		])->castTo('array');
-	}
-
-	/**
 	 * Constructor
 	 * @param string $path Path to the configuration file
 	 * @param array<string, mixed>|null $config Configuration
 	 */
-	public function __construct(string $path, ?array $config = null) {
-		$this->path = $path;
-		$this->config = $config;
+	public function __construct(
+		private readonly string $path,
+		private readonly ?array $config = null,
+	) {
 	}
 
 	/**
@@ -85,7 +53,7 @@ class ConfigurationManager {
 	 * @return string Sender e-mail address
 	 */
 	public function getFrom(): string {
-		return $this->read()['from'];
+		return $this->read()->from;
 	}
 
 	/**
@@ -93,52 +61,51 @@ class ConfigurationManager {
 	 * @return string Theme name
 	 */
 	public function getTheme(): string {
-		return $this->read()['theme'];
+		return $this->read()->theme;
 	}
 
 	/**
 	 * Reads mailer configuration
-	 * @return array<string, bool|int|string|null> Mailer configuration
+	 * @return MailerConfiguration Mailer configuration
 	 */
-	public function read(): array {
+	public function read(): MailerConfiguration {
 		if ($this->config !== null) {
 			$configuration = $this->config;
 		} else {
 			try {
-				$content = FileSystem::read($this->path);
-				$configuration = Neon::decode($content) ?? [];
-			} catch (IOException | NeonException $e) {
+				$configuration = Neon::decodeFile($this->path) ?? [];
+			} catch (IOException | NeonException) {
 				$configuration = [];
 			}
 		}
-		return $this->mergeConfigurations($configuration);
+		return MailerConfiguration::mergeDefaults($configuration);
 	}
 
 	/**
 	 * Writes the mailer configuration
-	 * @param array<string, bool|int|string|null> $configuration Mailer configuration to write
+	 * @param MailerConfiguration $configuration Mailer configuration to write
 	 * @throws IOException
 	 */
-	public function write(array $configuration): void {
-		$configuration = $this->mergeConfigurations($configuration);
-		$content = Neon::encode($configuration, Neon::BLOCK);
+	public function write(MailerConfiguration $configuration): void {
+		$content = Neon::encode($configuration->jsonSerialize(), blockMode: true);
 		FileSystem::write($this->path, $content);
 	}
 
 	/**
 	 * Tests the mailer configuration
-	 * @param array<string, bool|int|string|null> $configuration Mailer configuration
+	 * @param MailerConfiguration $configuration Mailer configuration
 	 * @thrown InvalidSmtpConfigException
 	 */
-	public function test(array $configuration): void {
-		$configuration = $this->mergeConfigurations($configuration);
-		if (!$configuration['enabled']) {
+	public function test(MailerConfiguration $configuration): void {
+		$configuration = MailerConfiguration::mergeDefaults($configuration);
+		if (!$configuration->enabled) {
 			return;
 		}
 		$smtp = new SMTP();
+		$smtp->Timelimit = 5;
 		$options = [
 			'ssl' => [
-				'peer_name' => $configuration['host'],
+				'peer_name' => $configuration->host,
 				'verify_peer' => true,
 				'verify_peer_name' => true,
 				'allow_self_signed' => false,
@@ -146,17 +113,18 @@ class ConfigurationManager {
 				'security_level' => 2,
 			],
 		];
-		$host = ($configuration['secure'] === 'ssl' ? 'ssl://' : '') . $configuration['host'];
-		if ($configuration['secure'] === 'ssl') {
+		$host = ($configuration->secure === 'ssl' ? 'ssl://' : '') . $configuration->host;
+		if ($configuration->secure === 'ssl') {
 			$this->validateCertificate($configuration);
 		}
-		if (!$smtp->connect($host, $configuration['port'], $configuration['timeout'], $options)) {
+		if (!$smtp->connect($host, $configuration->port, $this->calculateStepTimeout($configuration), $options)) {
 			$errors = Json::encode($smtp->getError());
 			throw new InvalidSmtpConfigException('Could not connect to the SMTP server. Errors: ' . $errors, InvalidSmtpConfigException::CONNECTION_FAILED, null);
 		}
-		$clientHost = $configuration['clientHost'];
-		if ($clientHost === '' || $clientHost === null) {
-			$clientHost = gethostname();
+		$clientHost = $configuration->clientHost;
+		if ($clientHost === null || $host === '') {
+			$hostname = gethostname();
+			$clientHost = $hostname === false ? 'localhost' : $hostname;
 		}
 		if (!$smtp->hello($clientHost)) {
 			$errors = Json::encode($smtp->getError());
@@ -164,12 +132,12 @@ class ConfigurationManager {
 			throw new InvalidSmtpConfigException('Could not send EHLO/HELO to the SMTP server. Errors: ' . $errors, InvalidSmtpConfigException::HELLO_FAILED);
 		}
 		$extensions = $smtp->getServerExtList();
-		if (!array_key_exists('STARTTLS', $extensions) && $configuration['secure'] === 'tls') {
+		if ($extensions !== null && !array_key_exists('STARTTLS', $extensions) && $configuration->secure === 'tls') {
 			$errors = Json::encode($smtp->getError());
 			$smtp->close();
 			throw new InvalidSmtpConfigException('The SMTP server does not support TLS. Errors: ' . $errors, InvalidSmtpConfigException::STARTTLS_NOT_SUPPORTED);
 		}
-		if ($configuration['secure'] === 'tls') {
+		if ($configuration->secure === 'tls') {
 			if (!$smtp->startTLS()) {
 				$errors = Json::encode($smtp->getError());
 				$smtp->close();
@@ -182,14 +150,11 @@ class ConfigurationManager {
 			}
 			$extensions = $smtp->getServerExtList();
 		}
-		if (
-			!array_key_exists('AUTH', $extensions) &&
-			($configuration['username'] !== '' || $configuration['password'] !== '')
-		) {
+		if ($extensions !== null && !array_key_exists('AUTH', $extensions) && $configuration->hasCredentials()) {
 			$smtp->close();
 			throw new InvalidSmtpConfigException('The SMTP server does not support authentication.', InvalidSmtpConfigException::AUTH_NOT_SUPPORTED);
 		}
-		if (!$smtp->authenticate($configuration['username'], $configuration['password'])) {
+		if (!$smtp->authenticate($configuration->username, $configuration->password)) {
 			$errors = Json::encode($smtp->getError());
 			$smtp->close();
 			throw new InvalidSmtpConfigException('Could not authenticate to the SMTP server. Errors: ' . $errors, InvalidSmtpConfigException::AUTH_FAILED);
@@ -198,23 +163,37 @@ class ConfigurationManager {
 	}
 
 	/**
-	 * Validates the SSL certificate
-	 * @param array<string, bool|int|string|null> $configuration Mailer configuration
+	 * Calculates timeout for SMTP verification step
+	 * @param MailerConfiguration $configuration Mailer configuration
+	 * @return int Step timeout
 	 */
-	private function validateCertificate(array $configuration): void {
+	private function calculateStepTimeout(MailerConfiguration $configuration): int {
+		$timeout = $configuration->timeout;
+		if ($timeout > 30) {
+			$timeout = 30;
+		}
+		return (int) ceil($timeout / 4);
+	}
+
+	/**
+	 * Validates the SSL certificate
+	 * @param MailerConfiguration $configuration Mailer configuration
+	 */
+	private function validateCertificate(MailerConfiguration $configuration): void {
 		try {
 			$downloader = new Downloader();
+			$downloader->setTimeout($this->calculateStepTimeout($configuration));
 			$downloader->usingSni(true);
 			$downloader->withVerifyPeer(false);
 			$downloader->withVerifyPeerName(false);
-			$downloader->usingPort($configuration['port']);
-			$certificates = $downloader->getCertificates($configuration['host']);
+			$downloader->usingPort($configuration->port);
+			$certificates = $downloader->getCertificates($configuration->host);
 			if ($certificates === []) {
 				throw new InvalidSmtpConfigException('Could not download the SSL certificate.', InvalidSmtpConfigException::SSL_CERTIFICATE_NOT_FOUND);
 			}
 			$certificate = $certificates[0];
 			assert($certificate instanceof SslCertificate);
-			if (!$certificate->appliesToUrl($configuration['host'])) {
+			if (!$certificate->appliesToUrl($configuration->host)) {
 				throw new InvalidSmtpConfigException('The SSL certificate is not valid for the host. Valid hosts: ' . implode(', ', $certificate->getDomains()), InvalidSmtpConfigException::SSL_CERTIFICATE_INVALID);
 			}
 			if ($certificate->isExpired()) {
@@ -223,18 +202,9 @@ class ConfigurationManager {
 			if ($certificate->validFromDate()->isFuture()) {
 				throw new InvalidSmtpConfigException('The SSL certificate is not valid yet. Valid from: ' . $certificate->validFromDate()->toIso8601String(), InvalidSmtpConfigException::SSL_CERTIFICATE_EXPIRED);
 			}
-		} catch (CouldNotDownloadCertificate $e) {
+		} catch (CouldNotDownloadCertificate) {
 			throw new InvalidSmtpConfigException('Could not connect to the SMTP server.', InvalidSmtpConfigException::CONNECTION_FAILED, null);
 		}
-	}
-
-	/**
-	 * Merges the mailer configuration with the default configuration
-	 * @param array<string, bool|int|string|null> $configuration Mailer configuration
-	 * @return array<string, bool|int|string|null> Merged mailer configuration
-	 */
-	private function mergeConfigurations(array $configuration): array {
-		return (new Processor())->process($this->getConfigSchema(), $configuration);
 	}
 
 }

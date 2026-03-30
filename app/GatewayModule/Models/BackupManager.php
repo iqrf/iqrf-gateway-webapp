@@ -24,7 +24,6 @@ use App\ConfigModule\Models\ComponentSchemaManager;
 use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use App\CoreModule\Exceptions\ZipEmptyException;
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use App\GatewayModule\Exceptions\InvalidBackupContentException;
 use App\GatewayModule\Exceptions\InvalidGatewayFileContentException;
@@ -46,6 +45,7 @@ use App\ServiceModule\Exceptions\NonexistentServiceException;
 use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
 use App\ServiceModule\Models\ServiceManager;
 use DateTime;
+use Iqrf\CommandExecutor\CommandExecutor;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
@@ -59,39 +59,9 @@ use ZipArchive;
 class BackupManager {
 
 	/**
-	 * @var string Path to temporary backup directory
+	 * Path to temporary backup directory
 	 */
 	private const TMP_PATH = '/tmp/backup/';
-
-	/**
-	 * @var array<IBackupManager> Backup managers
-	 */
-	private array $backupManagers = [];
-
-	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
-
-	/**
-	 * @var GatewayInfoUtil Gateway info manager
-	 */
-	private GatewayInfoUtil $gwInfo;
-
-	/**
-	 * @var PowerManager Power manager
-	 */
-	private PowerManager $powerManager;
-
-	/**
-	 * @var ComponentSchemaManager JSON schema manager
-	 */
-	private ComponentSchemaManager $schemaManager;
-
-	/**
-	 * @var ServiceManager Service manager
-	 */
-	private ServiceManager $serviceManager;
 
 	/**
 	 * @var ZipArchiveManager ZIP archive manager
@@ -101,19 +71,20 @@ class BackupManager {
 	/**
 	 * Constructor
 	 * @param Array<IBackupManager> $backupManagers Backup managers
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandExecutor Command manager
 	 * @param PowerManager $powerManager Power manager
 	 * @param ComponentSchemaManager $schemaManager JSON schema manager
 	 * @param ServiceManager $serviceManager Service manager
 	 * @param GatewayInfoUtil $gwInfo Gateway information
 	 */
-	public function __construct(array $backupManagers, CommandManager $commandManager, PowerManager $powerManager, ComponentSchemaManager $schemaManager, ServiceManager $serviceManager, GatewayInfoUtil $gwInfo) {
-		$this->backupManagers = $backupManagers;
-		$this->commandManager = $commandManager;
-		$this->powerManager = $powerManager;
-		$this->schemaManager = $schemaManager;
-		$this->serviceManager = $serviceManager;
-		$this->gwInfo = $gwInfo;
+	public function __construct(
+		private readonly array $backupManagers,
+		private readonly CommandExecutor $commandExecutor,
+		private readonly PowerManager $powerManager,
+		private readonly ComponentSchemaManager $schemaManager,
+		private readonly ServiceManager $serviceManager,
+		private readonly GatewayInfoUtil $gwInfo,
+	) {
 	}
 
 	/**
@@ -170,7 +141,7 @@ class BackupManager {
 			$date = new DateTime();
 			$gwId = $this->gwInfo->getId();
 			$path = sprintf('/tmp/iqrf-gateway-backup_%s_%s.zip', strtolower($gwId), $date->format('c'));
-		} catch (Throwable $e) {
+		} catch (Throwable) {
 			$path = '/tmp/iqrf-gateway-backup.zip';
 		}
 		return $path;
@@ -187,7 +158,7 @@ class BackupManager {
 		foreach ($services as $service) {
 			try {
 				$enabledServices[$service] = $this->serviceManager->isEnabled($service);
-			} catch (NonexistentServiceException $e) {
+			} catch (NonexistentServiceException) {
 				continue;
 			}
 		}
@@ -214,12 +185,10 @@ class BackupManager {
 					if (!$this->serviceManager->isEnabled($service)) {
 						$toEnable[] = $service;
 					}
-				} else {
-					if ($this->serviceManager->isEnabled($service)) {
-						$toDisable[] = $service;
-					}
+				} elseif ($this->serviceManager->isEnabled($service)) {
+					$toDisable[] = $service;
 				}
-			} catch (NonexistentServiceException $e) {
+			} catch (NonexistentServiceException) {
 				continue;
 			}
 		}
@@ -227,14 +196,14 @@ class BackupManager {
 			if ($toEnable !== []) {
 				$this->serviceManager->enableMultiple($toEnable, false);
 			}
-		} catch (NonexistentServiceException $e) {
+		} catch (NonexistentServiceException) {
 			// noop
 		}
 		try {
 			if ($toDisable !== []) {
 				$this->serviceManager->disableMultiple($toDisable, false);
 			}
-		} catch (NonexistentServiceException $e) {
+		} catch (NonexistentServiceException) {
 			// noop
 		}
 	}
@@ -270,7 +239,7 @@ class BackupManager {
 		foreach ($this->zipManager->listFiles() as $file) {
 			$valid = false;
 			foreach ($whitelistDirs as $dir) {
-				if (Strings::startsWith($file, $dir)) {
+				if (str_starts_with($file, $dir)) {
 					$valid = true;
 					break;
 				}
@@ -285,7 +254,7 @@ class BackupManager {
 				}
 				try {
 					Json::decode($this->zipManager->openFile($file));
-				} catch (Throwable $e) {
+				} catch (Throwable) {
 					$this->zipManager->close();
 					$this->cleanup();
 					throw new InvalidBackupContentException('Invalid JSON file content: ' . $file);
@@ -300,45 +269,45 @@ class BackupManager {
 				$json = Json::decode($this->zipManager->openFile($file));
 				try {
 					$this->schemaManager->setSchema($json->component);
-				} catch (NonexistentJsonSchemaException $e) {
+				} catch (NonexistentJsonSchemaException) {
 					continue;
 				}
 				try {
 					$this->schemaManager->validate($json);
-				} catch (InvalidJsonException $e) {
+				} catch (InvalidJsonException) {
 					$this->zipManager->close();
 					$this->cleanup();
 					throw new InvalidBackupContentException('Failed to validate file ' . $file . ' against JSON schema.');
 				}
-			} elseif (Strings::startsWith($file, 'gateway/')) {
+			} elseif (str_starts_with($file, 'gateway/')) {
 				$this->isWhitelisted(GatewayFileBackup::WHITELIST, $file);
-			} elseif (Strings::startsWith($file, 'host/')) {
+			} elseif (str_starts_with($file, 'host/')) {
 				$this->isWhitelisted(HostBackup::WHITELIST, $file);
-			} elseif (Strings::startsWith($file, 'journal/')) {
+			} elseif (str_starts_with($file, 'journal/')) {
 				$this->isWhitelisted(JournalBackup::WHITELIST, $file);
-			} elseif (Strings::startsWith($file, 'mender/')) {
+			} elseif (str_starts_with($file, 'mender/')) {
 				$this->isWhitelisted(MenderBackup::WHITELIST, $file);
-			} elseif (Strings::startsWith($file, 'monit/conf-available/')) {
+			} elseif (str_starts_with($file, 'monit/conf-available/')) {
 				continue;
-			} elseif (Strings::startsWith($file, 'monit/')) {
+			} elseif (str_starts_with($file, 'monit/')) {
 				$this->isWhitelisted(MonitBackup::WHITELIST, $file);
-			} elseif (Strings::startsWith($file, 'nm/system-connections/')) {
+			} elseif (str_starts_with($file, 'nm/system-connections/')) {
 				continue;
-			} elseif (Strings::startsWith($file, 'nm/')) {
+			} elseif (str_starts_with($file, 'nm/')) {
 				$this->isWhitelisted(NetworkManagerBackup::WHITELIST, $file);
-			} elseif (Strings::startsWith($file, 'services/')) {
+			} elseif (str_starts_with($file, 'services/')) {
 				$this->isWhitelisted(['enabled_services.json'], $file);
-			} elseif (Strings::startsWith($file, 'time/')) {
+			} elseif (str_starts_with($file, 'time/')) {
 				$this->isWhitelisted(TimeBackup::WHITELIST, $file);
-			} elseif (Strings::startsWith($file, 'timesyncd/')) {
+			} elseif (str_starts_with($file, 'timesyncd/')) {
 				$this->isWhitelisted(TimesyncdBackup::WHITELIST, $file);
-			} elseif (Strings::startsWith($file, 'translator/')) {
+			} elseif (str_starts_with($file, 'translator/')) {
 				$this->isWhitelisted(TranslatorBackup::WHITELIST, $file);
-			} elseif (Strings::startsWith($file, 'uploader/')) {
+			} elseif (str_starts_with($file, 'uploader/')) {
 				$this->isWhitelisted(UploaderBackup::WHITELIST, $file);
-			} elseif (Strings::startsWith($file, 'webapp/')) {
+			} elseif (str_starts_with($file, 'webapp/')) {
 				$this->isWhitelisted(WebappBackup::WHITELIST, $file);
-			} elseif (Strings::startsWith($file, 'nginx/')) {
+			} elseif (str_starts_with($file, 'nginx/')) {
 				$this->isWhitelisted(WebappBackup::NGINX_WHITELIST, $file);
 			} else {
 				$this->zipManager->close();
@@ -370,7 +339,7 @@ class BackupManager {
 		if ($archiveGwFile !== $fsGwFile) {
 			throw new InvalidBackupContentException('Incompatible backup archive and target gateway.');
 		}
-		$restoreGwInfo = Json::decode($this->zipManager->openFile('gateway/iqrf-gateway.json'), Json::FORCE_ARRAY);
+		$restoreGwInfo = Json::decode($this->zipManager->openFile('gateway/iqrf-gateway.json'), forceArrays: true);
 		$pattern = '/^(?\'product\'[^-]*)-(?\'os\'[^-]*)-v(?\'major\'\d+)\.(?\'minor\'\d+)\.\d+(-(alpha|beta|rc)(\d+)?)?$/';
 		$restoreMatches = Strings::match($restoreGwInfo['gwImage'], $pattern);
 		if ($restoreMatches === null) {
@@ -395,7 +364,7 @@ class BackupManager {
 	 * Cleans up temporary backup directory
 	 */
 	private function cleanup(): void {
-		$this->commandManager->run('rm -rf ' . escapeshellarg(self::TMP_PATH), true);
+		$this->commandExecutor->run('rm -rf ' . escapeshellarg(self::TMP_PATH), true);
 	}
 
 }

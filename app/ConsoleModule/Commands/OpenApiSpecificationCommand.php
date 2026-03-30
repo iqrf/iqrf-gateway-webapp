@@ -22,6 +22,7 @@ namespace App\ConsoleModule\Commands;
 
 use App\ApiModule\Version0\Models\OpenApiSchemaBuilder;
 use Nette\Utils\Json;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -29,33 +30,22 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * OpenAPI specification command
  */
+#[AsCommand(
+	name: 'open-api:specification',
+	description: 'Outputs OpenAPI specification',
+)]
 class OpenApiSpecificationCommand extends Command {
 
 	/**
-	 * @var OpenApiSchemaBuilder OpenAPI schema builder
-	 */
-	private OpenApiSchemaBuilder $schemaBuilder;
-
-	/**
-	 * @var string|null Command name
-	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-	 */
-	protected static $defaultName = 'open-api:specification';
-
-	/**
-	 * Constructior
+	 * Constructor
+	 * @param OpenApiSchemaBuilder $schemaBuilder OpenAPI schema builder
 	 * @param string|null $name Command name
 	 */
-	public function __construct(OpenApiSchemaBuilder $schemaBuilder, ?string $name = null) {
-		$this->schemaBuilder = $schemaBuilder;
+	public function __construct(
+		private readonly OpenApiSchemaBuilder $schemaBuilder,
+		?string $name = null,
+	) {
 		parent::__construct($name);
-	}
-
-	/**
-	 * Configures the OpenAPI specification command
-	 */
-	protected function configure(): void {
-		$this->setDescription('Outputs OpenAPI specification');
 	}
 
 	/**

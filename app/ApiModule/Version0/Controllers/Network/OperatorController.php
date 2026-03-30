@@ -24,7 +24,6 @@ use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\RequestParameter;
-use Apitte\Core\Annotation\Controller\RequestParameters;
 use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Http\ApiRequest;
@@ -37,78 +36,66 @@ use App\Models\Database\Repositories\NetworkOperatorRepository;
 
 /**
  * Network operator controller
- * @Path("/operators")
- * @Tag("Network operators")
  */
-class OperatorController extends NetworkController {
+#[Path('/operators')]
+#[Tag('IP network - Cellular operators')]
 
-	/**
-	 * @var EntityManager Entity manager
-	 */
-	private EntityManager $entityManager;
+class OperatorController extends NetworkController {
 
 	/**
 	 * @var NetworkOperatorRepository Network operator repository
 	 */
-	private NetworkOperatorRepository $repository;
+	private readonly NetworkOperatorRepository $repository;
 
 	/**
 	 * Constructor
 	 * @param EntityManager $entityManager Entity manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(EntityManager $entityManager, RestApiSchemaValidator $validator) {
-		$this->entityManager = $entityManager;
+	public function __construct(
+		private readonly EntityManager $entityManager,
+		RestApiSchemaValidator $validator,
+	) {
 		$this->repository = $this->entityManager->getNetworkOperatorRepository();
 		parent::__construct($validator);
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Lists all network operators
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      type: array
-	 *                      items:
-	 *                          $ref: '#/components/schemas/NetworkOperator'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('GET')]
+	#[OpenApi(<<<'EOT'
+		summary: Lists all network operators
+		responses:
+			'200':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: '#/components/schemas/NetworkOperatorList'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+	EOT)]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$operators = $this->repository->findAll();
 		return $response->writeJsonBody($operators);
 	}
 
-	/**
-	 * @Path("/{id}")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Retrieves a network operator configuration
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/NetworkOperator'
-	 *      '404':
-	 *          description: 'Network operator not found'
-	 * ")
-	 * @RequestParameters({
-	 *      @RequestParameter(name="id", type="integer", description="Operator id")
-	 * })
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/{id}')]
+	#[Method('GET')]
+	#[OpenApi(<<<'EOT'
+		summary: Returns a network operator configuration
+		responses:
+			'200':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: '#/components/schemas/NetworkOperator'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+	EOT)]
+	#[RequestParameter(name: 'id', type: 'integer', description: 'Operator ID')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$id = (int) $request->getParameter('id');
 		$operator = $this->repository->find($id);
@@ -118,36 +105,33 @@ class OperatorController extends NetworkController {
 		return $response->writeJsonObject($operator);
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Creates a new network operator
-	 *  requestBody:
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/NetworkOperator'
-	 *  responses:
-	 *      '201':
-	 *          description: Created
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/NetworkOperator'
-	 *          headers:
-	 *              Location:
-	 *                  description: Location of information about network operator
-	 *                  schema:
-	 *                      type: string
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('POST')]
+	#[OpenApi(<<<'EOT'
+		summary: Creates a new network operator
+		requestBody:
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: '#/components/schemas/NetworkOperator'
+		responses:
+			'201':
+				description: Created
+				content:
+					application/json:
+						schema:
+							$ref: '#/components/schemas/NetworkOperator'
+				headers:
+					Location:
+						description: Location of information about network operator
+						schema:
+							type: string
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+	EOT)]
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validator->validateRequest('networkOperator', $request);
 		$json = $request->getJsonBody(false);
@@ -165,32 +149,27 @@ class OperatorController extends NetworkController {
 			->withStatus(ApiResponse::S201_CREATED);
 	}
 
-	/**
-	 * @Path("/{id}")
-	 * @Method("PUT")
-	 * @OpenApi("
-	 *  summary: Edits a network operator
-	 *  requestBody:
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/NetworkOperator'
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '404':
-	 *          description: 'Network operator not found'
-	 * ")
-	 * @RequestParameters({
-	 *      @RequestParameter(name="id", type="integer", description="Operator id")
-	 * })
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/{id}')]
+	#[Method('PUT')]
+	#[OpenApi(<<<'EOT'
+		summary: Edits a network operator
+		requestBody:
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: '#/components/schemas/NetworkOperator'
+		responses:
+			'200':
+				description: Success
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+	EOT)]
+	#[RequestParameter(name: 'id', type: 'integer', description: 'Operator ID')]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$id = (int) $request->getParameter('id');
 		$operator = $this->repository->find($id);
@@ -208,24 +187,19 @@ class OperatorController extends NetworkController {
 		return $response->writeBody('Workaround');
 	}
 
-	/**
-	 * @Path("/{id}")
-	 * @Method("DELETE")
-	 * @OpenApi("
-	 *  summary: Removes a network operator
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '404':
-	 *          description: 'Network operator not found'
-	 * ")
-	 * @RequestParameters({
-	 *      @RequestParameter(name="id", type="integer", description="Operator id")
-	 * })
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/{id}')]
+	#[Method('DELETE')]
+	#[OpenApi(<<<'EOT'
+		summary: Removes a network operator
+		responses:
+			'200':
+				description: Success
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+	EOT)]
+	#[RequestParameter(name: 'id', type: 'integer', description: 'Operator ID')]
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$id = (int) $request->getParameter('id');
 		$operator = $this->repository->find($id);

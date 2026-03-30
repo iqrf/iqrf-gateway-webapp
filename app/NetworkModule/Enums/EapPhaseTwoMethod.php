@@ -35,17 +35,17 @@ final class EapPhaseTwoMethod extends Enum implements JsonSerializable {
 	use AutoInstances;
 
 	/**
-	 * @var string GTC method
+	 * GTC method
 	 */
 	private const GTC = 'gtc';
 
 	/**
-	 * @var string MD5 method
+	 * MD5 method
 	 */
 	private const MD5 = 'md5';
 
 	/**
-	 * @var string MSCHAPv2 method
+	 * MSCHAPv2 method
 	 */
 	private const MSCHAPV2 = 'mschapv2';
 

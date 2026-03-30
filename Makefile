@@ -54,7 +54,7 @@ fix-cc: temp/code-checker
 	php temp/code-checker/code-checker -f -l --no-progress --strict-types $(CC_IGNORE)
 
 cs: deps
-	vendor/bin/codesniffer --runtime-set php_version 70400 app bin tests
+	vendor/bin/codesniffer --runtime-set php_version 80200 app bin db tests
 
 deb-package:
 	debuild -b -uc -us
@@ -62,7 +62,7 @@ deb-package:
 deps:
 	composer install
 
-qa: lint cs
+qa: cs
 
 install:
 	install -d -o $(WEBAPP_USER) $(CACHE_DIR)
@@ -150,9 +150,6 @@ install:
 	patch $(CONFIG_DIR)/config.neon install/patches/config-fix-log-path.patch
 	patch $(DATA_DIR)/app/GatewayModule/Models/DiagnosticsManager.php install/patches/diagnostics-fix-dir-path.patch
 
-lint: deps
-	vendor/bin/linter app bin tests
-
 phpstan: deps
 	NETTE_TESTER_RUNNER=1 php vendor/bin/phpstan analyse -c phpstan.neon
 
@@ -173,4 +170,4 @@ temp/code-checker:
 	composer create-project nette/code-checker temp/code-checker --no-interaction
 
 test: deps
-	vendor/bin/tester -p phpdbg -c ./tests/php.ini ./tests
+	vendor/bin/tester -p phpdbg -c ./tests/php.ini ./tests -j $$(nproc)

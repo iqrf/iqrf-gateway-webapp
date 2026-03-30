@@ -29,10 +29,10 @@ namespace Tests\ConfigModule\Models;
 use App\ConfigModule\Models\MainManager;
 use App\ConfigModule\Models\SchedulerMigrationManager;
 use App\ConfigModule\Models\SchedulerSchemaManager;
-use App\CoreModule\Entities\CommandStack;
-use App\CoreModule\Models\CommandManager;
-use App\CoreModule\Models\FileManager;
 use App\CoreModule\Models\ZipArchiveManager;
+use Iqrf\CommandExecutor\CommandExecutor;
+use Iqrf\CommandExecutor\CommandStack;
+use Iqrf\FileManager\FileManager;
 use Mockery;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
@@ -49,22 +49,22 @@ require __DIR__ . '/../../bootstrap.php';
 final class SchedulerMigrationManagerTest extends TestCase {
 
 	/**
-	 * @var string Path to a directory with scheduler's configuration
+	 * Path to a directory with scheduler's configuration
 	 */
 	private const CONFIG_PATH = TESTER_DIR . '/data/scheduler/';
 
 	/**
-	 * @var string Path to a temporary directory with scheduler's configuration
+	 * Path to a temporary directory with scheduler's configuration
 	 */
 	private const CONFIG_TEMP_PATH = TMP_DIR . '/migrations/scheduler/';
 
 	/**
-	 * @var string Path to the ZIP archive with IQRF Gateway Daemon's configuration
+	 * Path to the ZIP archive with IQRF Gateway Daemon's configuration
 	 */
 	private const ZIP_PATH = TESTER_DIR . '/data/iqrf-gateway-scheduler.zip';
 
 	/**
-	 * @var string Path to the temporary ZIP archive with IQRF Gateway Daemon's configuration
+	 * Path to the temporary ZIP archive with IQRF Gateway Daemon's configuration
 	 */
 	private const ZIP_TEMP_PATH = TMP_DIR . '/iqrf-gateway-scheduler.zip';
 
@@ -93,21 +93,6 @@ final class SchedulerMigrationManagerTest extends TestCase {
 	}
 
 	/**
-	 * Create list of files
-	 * @param string $path Path to the directory
-	 * @return array<string> List of files in the directory
-	 */
-	private function createList(string $path): array {
-		$path = realpath($path) . '/';
-		$list = [];
-		foreach (Finder::findFiles('*.json')->from($path) as $file) {
-			$list[] = str_replace($path, '', $file->getRealPath());
-		}
-		sort($list);
-		return $list;
-	}
-
-	/**
 	 * Test function to extracts an archive with scheduler configuration (success)
 	 */
 	public function testExtractArchiveSuccess(): void {
@@ -124,7 +109,7 @@ final class SchedulerMigrationManagerTest extends TestCase {
 		Environment::lock('migration', TMP_DIR);
 		$this->copyFiles();
 		$commandStack = new CommandStack();
-		$commandManager = new CommandManager(false, $commandStack);
+		$commandManager = new CommandExecutor(false, $commandStack);
 		$this->fileManager = new FileManager(self::CONFIG_PATH, $commandManager);
 		$mainConfigManager = Mockery::mock(MainManager::class);
 		$mainConfigManager->shouldReceive('getCacheDir')
@@ -132,8 +117,15 @@ final class SchedulerMigrationManagerTest extends TestCase {
 		$schemaManager = Mockery::mock(SchedulerSchemaManager::class);
 		$schemaManager->shouldReceive('validate')
 			->andReturn(true);
-		$commandManager = Mockery::mock(CommandManager::class);
+		$commandManager = Mockery::mock(CommandExecutor::class);
 		$this->manager = new SchedulerMigrationManager($mainConfigManager, $schemaManager, $commandManager);
+	}
+
+	/**
+	 * Cleanup the test environment
+	 */
+	protected function tearDown(): void {
+		Mockery::close();
 	}
 
 	/**
@@ -145,10 +137,18 @@ final class SchedulerMigrationManagerTest extends TestCase {
 	}
 
 	/**
-	 * Cleanup the test environment
+	 * Create list of files
+	 * @param string $path Path to the directory
+	 * @return array<string> List of files in the directory
 	 */
-	protected function tearDown(): void {
-		Mockery::close();
+	private function createList(string $path): array {
+		$path = realpath($path) . '/';
+		$list = [];
+		foreach (Finder::findFiles('*.json')->from($path) as $file) {
+			$list[] = str_replace($path, '', $file->getRealPath());
+		}
+		sort($list);
+		return $list;
 	}
 
 }

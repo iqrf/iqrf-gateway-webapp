@@ -20,20 +20,14 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Models;
 
-use App\CoreModule\Models\FileManager;
+use Iqrf\FileManager\FileManager;
 use Nette\IOException;
 use Nette\Utils\JsonException;
-use Nette\Utils\Strings;
 
 /**
  * Main configuration form factory
  */
 class MainManager {
-
-	/**
-	 * @var FileManager JSON file manager
-	 */
-	private FileManager $fileManager;
 
 	/**
 	 * @var string File name
@@ -44,8 +38,9 @@ class MainManager {
 	 * Constructor
 	 * @param FileManager $fileManager JSON file manager
 	 */
-	public function __construct(FileManager $fileManager) {
-		$this->fileManager = $fileManager;
+	public function __construct(
+		private readonly FileManager $fileManager,
+	) {
 	}
 
 	/**
@@ -55,8 +50,8 @@ class MainManager {
 	public function getCacheDir(): string {
 		try {
 			$dir = $this->load()['cacheDir'];
-			return Strings::endsWith($dir, '/') ? $dir : $dir . '/';
-		} catch (IOException | JsonException $e) {
+			return str_ends_with($dir, '/') ? $dir : $dir . '/';
+		} catch (IOException | JsonException) {
 			return '/var/cache/iqrf-gateway-daemon/';
 		}
 	}
@@ -68,8 +63,8 @@ class MainManager {
 	public function getDataDir(): string {
 		try {
 			$dir = $this->load()['dataDir'];
-			return Strings::endsWith($dir, '/') ? $dir : $dir . '/';
-		} catch (IOException | JsonException $e) {
+			return str_ends_with($dir, '/') ? $dir : $dir . '/';
+		} catch (IOException | JsonException) {
 			return '/usr/share/iqrf-gateway-daemon/';
 		}
 	}

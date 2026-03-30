@@ -31,8 +31,8 @@ use App\CloudModule\Models\IbmCloudManager;
 
 /**
  * IBM Cloud IoT connection controller
- * @Path("/ibmCloud")
  */
+#[Path('/ibmCloud')]
 class IbmCloudController extends CloudsController {
 
 	/**
@@ -40,38 +40,36 @@ class IbmCloudController extends CloudsController {
 	 * @param IbmCloudManager $manager IBM Cloud IoT connection manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(IbmCloudManager $manager, RestApiSchemaValidator $validator) {
-		$this->manager = $manager;
+	public function __construct(
+		IbmCloudManager $manager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
+		$this->manager = $manager;
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Creates a new MQTT connection into IBM Cloud
-	 *  requestBody:
-	 *      description: IBM Cloud connection configuration
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/CloudIbm'
-	 *  responses:
-	 *      '201':
-	 *          description: Created
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
-	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
+	#[Path('/')]
+	#[Method('POST')]
+	#[OpenApi(<<<'EOT'
+		summary: Creates a new MQTT connection into IBM Cloud
+		requestBody:
+			description: IBM Cloud connection configuration
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: '#/components/schemas/CloudIbm'
+		responses:
+			'201':
+				description: Created
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
+	protected function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->checkRequest('cloudIbm', $request);
 		return parent::create($request, $response);
 	}

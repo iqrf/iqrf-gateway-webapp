@@ -20,9 +20,11 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Models;
 
-use App\CoreModule\Models\FileManager;
+use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
+use Iqrf\FileManager\FileManager;
 use Nette\IOException;
 use Nette\Utils\Arrays;
+use Nette\Utils\FileInfo;
 use Nette\Utils\Finder;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
@@ -39,28 +41,14 @@ class GenericManager {
 	private string $component;
 
 	/**
-	 * @var FileManager JSON file manager
-	 */
-	private FileManager $fileManager;
-
-	/**
-	 * @var string|null File name (without .json)
-	 */
-	private ?string $fileName = null;
-
-	/**
-	 * @var ComponentSchemaManager JSON schema manager
-	 */
-	private ComponentSchemaManager $schemaManager;
-
-	/**
 	 * Constructor
 	 * @param FileManager $fileManager JSON file manager
 	 * @param ComponentSchemaManager $schemaManager JSON schema manager
 	 */
-	public function __construct(FileManager $fileManager, ComponentSchemaManager $schemaManager) {
-		$this->fileManager = $fileManager;
-		$this->schemaManager = $schemaManager;
+	public function __construct(
+		private readonly FileManager $fileManager,
+		private readonly ComponentSchemaManager $schemaManager,
+	) {
 	}
 
 	/**
@@ -99,10 +87,10 @@ class GenericManager {
 		$dir = $this->fileManager->getBasePath();
 		$instances = [];
 		foreach (Finder::findFiles('*.json')->exclude('config.json')->in($dir) as $file) {
-			$fileName = Strings::replace($file->getRealPath(), ['~^' . realpath($dir) . '/~', '/.json$/'], '');
+			$fileName = $this->normalizeFileName($file, $dir);
 			try {
 				$json = $this->fileManager->readJson($fileName . '.json');
-			} catch (IOException | JsonException $e) {
+			} catch (IOException | JsonException) {
 				continue;
 			}
 			if (array_key_exists('component', $json) && $json['component'] === $this->component) {
@@ -122,7 +110,7 @@ class GenericManager {
 		foreach ($this->getInstanceFiles() as $fileName) {
 			try {
 				$instances[] = $this->read($fileName);
-			} catch (IOException | JsonException $e) {
+			} catch (IOException | JsonException) {
 				continue;
 			}
 		}
@@ -176,13 +164,13 @@ class GenericManager {
 	 * @param mixed $value Property value
 	 * @return string|null Instance file name
 	 */
-	public function getInstanceByProperty(string $type, $value): ?string {
+	public function getInstanceByProperty(string $type, mixed $value): ?string {
 		$dir = $this->fileManager->getBasePath();
 		foreach (Finder::findFiles('*.json')->exclude('config.json')->in($dir) as $file) {
-			$fileName = Strings::replace($file->getRealPath(), ['~^' . realpath($dir) . '/~', '/.json$/'], '');
+			$fileName = $this->normalizeFileName($file, $dir);
 			try {
 				$json = $this->fileManager->readJson($fileName . '.json');
-			} catch (IOException | JsonException $e) {
+			} catch (IOException | JsonException) {
 				continue;
 			}
 			if (array_key_exists($type, $json) && $json[$type] === $value) {
@@ -200,11 +188,8 @@ class GenericManager {
 	 * @throws JsonException
 	 */
 	public function read(?string $fileName = null): array {
-		if ($fileName === null && $this->fileName === null) {
-			return [];
-		}
 		if ($fileName === null) {
-			$fileName = $this->fileName;
+			return [];
 		}
 		$configuration = $this->fileManager->readJson($fileName . '.json');
 		$this->fixRequiredInterfaces($configuration);
@@ -219,11 +204,8 @@ class GenericManager {
 	 * @throws JsonException
 	 */
 	public function save(array $array, ?string $fileName = null): void {
-		if ($fileName === null && $this->fileName === null) {
-			$fileName = $this->generateFileName($array);
-		}
 		if ($fileName === null) {
-			$fileName = $this->fileName;
+			$fileName = $this->generateFileName($array);
 		}
 		$component = ['component' => $this->component];
 		$configuration = Arrays::mergeTree($component, $array);
@@ -249,6 +231,42 @@ class GenericManager {
 	public function setComponent(string $component): void {
 		$this->component = $component;
 		$this->schemaManager->setSchema($component);
+	}
+
+	/**
+	 * Returns messaging instances
+	 * @return array{
+	 *  mqtt: array<string>,
+	 *  ws: array<string>,
+	 * } Messaging instances
+	 */
+	public function getMessagingInstances(): array {
+		$found = [
+			'mqtt' => [],
+			'ws' => [],
+		];
+		foreach (['mqtt' => 'iqrf::MqttMessaging', 'ws' => 'iqrf::WebsocketMessaging'] as $k => $v) {
+			try {
+				$this->setComponent($v);
+			} catch (NonexistentJsonSchemaException) {
+				continue;
+			}
+			$found[$k] = array_map(static fn (array $component): string => $component['instance'], $this->list());
+		}
+		return $found;
+	}
+
+	/**
+	 * Normalizes the file name by removing the base path and the .json extension
+	 * @param FileInfo $file File info
+	 * @param string $basePath Base path
+	 * @return string Normalized file name
+	 */
+	private function normalizeFileName(FileInfo $file, string $basePath): string {
+		return Strings::replace($file->getRealPath(), [
+			'~^' . realpath($basePath) . '/~' => '',
+			'/.json$/' => '',
+		]);
 	}
 
 }

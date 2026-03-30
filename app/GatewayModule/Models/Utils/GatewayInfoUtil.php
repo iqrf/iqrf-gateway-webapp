@@ -31,9 +31,13 @@ use Nette\Utils\JsonException;
 class GatewayInfoUtil {
 
 	/**
-	 * @var string Gateway file path
+	 * Constructor
+	 * @param string $path Gateway file path
 	 */
-	private string $path;
+	public function __construct(
+		private readonly string $path,
+	) {
+	}
 
 	/**
 	 * Returns gateway file schema
@@ -49,14 +53,6 @@ class GatewayInfoUtil {
 			'gwInterface' => Expect::string('unknown'),
 			'gwHwpid' => Expect::string('FFFF'),
 		])->castTo('array');
-	}
-
-	/**
-	 * Constructor
-	 * @param string $path Gateway file path
-	 */
-	public function __construct(string $path) {
-		$this->path = $path;
 	}
 
 	/**
@@ -134,7 +130,7 @@ class GatewayInfoUtil {
 	public function read(): array {
 		try {
 			$content = Json::decode(FileSystem::read($this->path));
-		} catch (IOException | JsonException $e) {
+		} catch (IOException | JsonException) {
 			$content = [];
 		}
 		$processor = new Processor();

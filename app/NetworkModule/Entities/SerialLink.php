@@ -26,37 +26,12 @@ use stdClass;
 /**
  * Serial link entity
  */
-final class SerialLink implements INetworkManagerEntity {
+final readonly class SerialLink implements INetworkManagerEntity {
 
 	/**
-	 * @var string nmcli configuration prefix
+	 * nmcli configuration prefix
 	 */
 	public const NMCLI_PREFIX = 'serial';
-
-	/**
-	 * @var positive-int $baud Baud rate
-	 */
-	private int $baudRate;
-
-	/**
-	 * @var positive-int $bits Byte-width
-	 */
-	private int $bits;
-
-	/**
-	 * @var 'E'|'o'|'n'|'' $parity Connection parity 'E' for even, 'o' for odd, 'n' for none
-	 */
-	private string $parity;
-
-	/**
-	 * @var int $sendDelay Delay between bytes in microseconds
-	 */
-	private int $sendDelay;
-
-	/**
-	 * @var int<1,2> $stopBits Stop bits 1 or 2
-	 */
-	private int $stopBits;
 
 	/**
 	 * Constructor
@@ -66,12 +41,13 @@ final class SerialLink implements INetworkManagerEntity {
 	 * @param positive-int $sendDelay Delay between bytes in microseconds
 	 * @param int<1,2> $stopBits Stop bits 1 or 2
 	 */
-	public function __construct(int $baudRate, int $bits, string $parity, int $sendDelay, int $stopBits) {
-		$this->baudRate = $baudRate;
-		$this->bits = $bits;
-		$this->parity = $parity;
-		$this->sendDelay = $sendDelay;
-		$this->stopBits = $stopBits;
+	public function __construct(
+		private int $baudRate,
+		private int $bits,
+		private string $parity,
+		private int $sendDelay,
+		private int $stopBits,
+	) {
 	}
 
 	/**
@@ -86,20 +62,6 @@ final class SerialLink implements INetworkManagerEntity {
 		$sendDelay = (int) ($json->sendDelay ?? 0);
 		$stopBits = (int) ($json->stopBits ?? 1);
 		return new self($baudRate, $bits, $parity, $sendDelay, $stopBits);
-	}
-
-	/**
-	 * Serializes Serial link entity into JSON
-	 * @return array{baudRate: int, bits: int<1, max>, parity: 'E'|'n'|'o'|'', sendDelay: int, stopBits: int<1, 2>} JSON serialized entity
-	 */
-	public function jsonSerialize(): array {
-		return [
-			'baudRate' => $this->baudRate,
-			'bits' => $this->bits,
-			'parity' => $this->parity,
-			'sendDelay' => $this->sendDelay,
-			'stopBits' => $this->stopBits,
-		];
 	}
 
 	/**
@@ -118,6 +80,20 @@ final class SerialLink implements INetworkManagerEntity {
 		$sendDelay = (int) ($array['send-delay'] ?? 0);
 		$stopBits = (int) ($array['stopbits'] ?? 1);
 		return new self($baudRate, $bits, $parity, $sendDelay, $stopBits);
+	}
+
+	/**
+	 * Serializes Serial link entity into JSON
+	 * @return array{baudRate: int, bits: int<1, max>, parity: 'E'|'n'|'o'|'', sendDelay: int, stopBits: int<1, 2>} JSON serialized entity
+	 */
+	public function jsonSerialize(): array {
+		return [
+			'baudRate' => $this->baudRate,
+			'bits' => $this->bits,
+			'parity' => $this->parity,
+			'sendDelay' => $this->sendDelay,
+			'stopBits' => $this->stopBits,
+		];
 	}
 
 	/**

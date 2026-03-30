@@ -20,7 +20,6 @@ declare(strict_types = 1);
 
 namespace App\ApiModule\Version0\Controllers;
 
-use AcmePhp\Ssl\Exception\AcmeSslException;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
@@ -31,52 +30,48 @@ use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\GatewayModule\Exceptions\CertificateNotFoundException;
 use App\GatewayModule\Models\CertificateManager;
+use LogicException;
 
 /**
  * TLS certificate controller
- * @Path("/certificate")
- * @Tag("Certificate manager")
  */
+#[Path('/certificate')]
+#[Tag('Security - Certificate management')]
 class CertificateController extends BaseController {
-
-	/**
-	 * @var CertificateManager TLS certificate manager
-	 */
-	private CertificateManager $manager;
 
 	/**
 	 * Constructor
 	 * @param CertificateManager $manager TLS certificate manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(CertificateManager $manager, RestApiSchemaValidator $validator) {
-		$this->manager = $manager;
+	public function __construct(
+		private readonly CertificateManager $manager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Returns information about TLS certificate
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/CertificateDetail'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('GET')]
+	#[OpenApi(<<<'EOT'
+		summary: Returns information about TLS certificate
+		deprecated: true
+		responses:
+			'200':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: '#/components/schemas/CertificateDetail'
+			'400':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
 			return $response->writeJsonBody($this->manager->getInfo());
-		} catch (AcmeSslException $e) {
+		} catch (LogicException $e) {
 			throw new ServerErrorException('Certificate parsing error', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		} catch (CertificateNotFoundException $e) {
 			throw new ServerErrorException('Certificate not found', ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);

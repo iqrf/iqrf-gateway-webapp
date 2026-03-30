@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models\BoardManagers;
 
-use App\CoreModule\Models\CommandManager;
+use Iqrf\CommandExecutor\CommandExecutor;
 
 /**
  * DMI board manager
@@ -28,16 +28,12 @@ use App\CoreModule\Models\CommandManager;
 class DmiBoardManager implements IBoardManager {
 
 	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
-
-	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandExecutor Command manager
 	 */
-	public function __construct(CommandManager $commandManager) {
-		$this->commandManager = $commandManager;
+	public function __construct(
+		private readonly CommandExecutor $commandExecutor,
+	) {
 	}
 
 	/**
@@ -45,9 +41,9 @@ class DmiBoardManager implements IBoardManager {
 	 * @return string|null Board's name
 	 */
 	public function getName(): ?string {
-		$vendor = $this->commandManager->run('cat /sys/class/dmi/id/board_vendor', true)->getStdout();
-		$name = $this->commandManager->run('cat /sys/class/dmi/id/board_name', true)->getStdout();
-		$version = $this->commandManager->run('cat /sys/class/dmi/id/board_version', true)->getStdout();
+		$vendor = $this->commandExecutor->run('cat /sys/class/dmi/id/board_vendor', true)->getStdout();
+		$name = $this->commandExecutor->run('cat /sys/class/dmi/id/board_name', true)->getStdout();
+		$version = $this->commandExecutor->run('cat /sys/class/dmi/id/board_version', true)->getStdout();
 		if ($name !== '' && $vendor !== '') {
 			$versionStr = $version === '' ? '' : ' (' . $version . ')';
 			return $vendor . ' ' . $name . $versionStr;

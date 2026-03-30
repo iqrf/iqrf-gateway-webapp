@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Database\Migrations;
 
@@ -27,6 +27,7 @@ use Doctrine\Migrations\AbstractMigration;
  * Controller pin configuration device type migration
  */
 final class Version20230112101613 extends AbstractMigration {
+
 	/**
 	 * Returns a migration description
 	 * @return string Migration description
@@ -35,12 +36,20 @@ final class Version20230112101613 extends AbstractMigration {
 		return 'Controller pin configuration device type migration';
 	}
 
+	/**
+	 * Applies the migration
+	 * @param Schema $schema Database schema
+	 */
 	public function up(Schema $schema): void {
 		$this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
 
 		$this->addSql('ALTER TABLE controller_pin_configs ADD COLUMN device_type VARCHAR(255) NOT NULL DEFAULT board');
 	}
 
+	/**
+	 * Reverts the migration
+	 * @param Schema $schema Database schema
+	 */
 	public function down(Schema $schema): void {
 		$this->addSql('CREATE TEMPORARY TABLE __temp__controller_pin_configs AS SELECT id, name, green_led, red_led, button, sck, sda FROM "controller_pin_configs"');
 
@@ -49,4 +58,5 @@ final class Version20230112101613 extends AbstractMigration {
 		$this->addSql('INSERT INTO "controller_pin_configs" (id, name, green_led, red_led, button, sck, sda) SELECT id, name, green_led, red_led, button, sck, sda FROM __temp__controller_pin_configs');
 		$this->addSql('DROP TABLE __temp__controller_pin_configs');
 	}
+
 }

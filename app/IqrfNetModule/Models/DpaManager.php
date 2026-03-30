@@ -24,7 +24,6 @@ use App\IqrfNetModule\Entities\Dpa;
 use Iqrf\Repository\Entities\OsDpa;
 use Iqrf\Repository\Models\FilesManager;
 use Iqrf\Repository\Models\OsAndDpaManager;
-use Nette\Utils\Strings;
 
 /**
  * DPA manager
@@ -32,30 +31,16 @@ use Nette\Utils\Strings;
 class DpaManager {
 
 	/**
-	 * @var FilesManager Files manager
-	 */
-	private FilesManager $filesManager;
-
-	/**
-	 * @var OsAndDpaManager IQRF Repository OS&DPA manager
-	 */
-	private OsAndDpaManager $osDpaManager;
-
-	/**
-	 * @var UploadManager Upload manager
-	 */
-	private UploadManager $uploadManager;
-
-	/**
 	 * Constructor
 	 * @param OsAndDpaManager $osDpaManager IQRF Repository OS&DPA manager
 	 * @param FilesManager $filesManager Files manager
 	 * @param UploadManager $uploadManager Upload manager
 	 */
-	public function __construct(OsAndDpaManager $osDpaManager, FilesManager $filesManager, UploadManager $uploadManager) {
-		$this->osDpaManager = $osDpaManager;
-		$this->filesManager = $filesManager;
-		$this->uploadManager = $uploadManager;
+	public function __construct(
+		private readonly OsAndDpaManager $osDpaManager,
+		private readonly FilesManager $filesManager,
+		private readonly UploadManager $uploadManager,
+	) {
 	}
 
 	/**
@@ -78,14 +63,17 @@ class DpaManager {
 		if ($files === []) {
 			return null;
 		}
-		$dpaVersion = $files[0]->getDpa();
-		$this->filesManager->setUseCredentials($dpaVersion->getAttributes()->isBeta());
-		$this->filesManager->setPath($dpaVersion->getDownloadPath());
-		foreach ($this->filesManager->list()->getFiles() as $file) {
+		$dpaVersion = $files[0]->dpa;
+		$this->filesManager->useCredentials = $dpaVersion->attributes->beta === true;
+		$this->filesManager->setPath($dpaVersion->downloadPath);
+		foreach ($this->filesManager->list()->files as $file) {
 			foreach ($dpa->getFilePrefixes() as $filePrefix) {
-				if (Strings::startsWith($file->getName(), $filePrefix)) {
-					$fileContent = $this->filesManager->download($file->getName());
-					$filePath = $file->getName();
+				if (str_starts_with($file->name, $filePrefix)) {
+					$fileContent = $this->filesManager->download($file->name);
+					if ($fileContent === null) {
+						continue;
+					}
+					$filePath = $file->name;
 					$this->uploadManager->uploadToFs($filePath, $fileContent);
 					return $filePath;
 				}

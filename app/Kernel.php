@@ -24,11 +24,11 @@ use App\ConfigModule\Models\IqrfRepositoryManager;
 use Nette\Bootstrap\Configurator;
 use Nette\IOException;
 use Nette\Neon\Exception;
+use Nette\Utils\FileInfo;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
-use SplFileInfo;
 
 /**
  * Application's kernel
@@ -41,6 +41,7 @@ class Kernel {
 	 */
 	public static function boot(): Configurator {
 		$configurator = new Configurator();
+		$configurator->setDebugMode(true);
 		$configurator->enableTracy(__DIR__ . '/../log');
 		$configurator->setTimeZone('Europe/Prague');
 		$tempDir = __DIR__ . '/../temp';
@@ -49,30 +50,47 @@ class Kernel {
 		$configurator->createRobotLoader()->addDirectory(__DIR__)->register();
 		$confDir = __DIR__ . '/config';
 		$configurator->addConfig($confDir . '/config.neon');
-		try {
-			$version = Json::decode(FileSystem::read(__DIR__ . '/../version.json'));
-			$configurator->addParameters([
-				'sentry' => [
-					'release' => $version->version . ($version->pipeline !== '' ? '~' . $version->pipeline : ''),
-				],
-			]);
-		} catch (IOException | JsonException $e) {
-			// Skip Sentry version settings
-		}
-		$configurator->addParameters(['confDir' => $confDir]);
+		self::setVersionParameters($configurator);
+		$configurator->addStaticParameters(['confDir' => $confDir]);
 		try {
 			$iqrfRepositoryManager = new IqrfRepositoryManager($confDir . '/iqrf-repository.neon');
 			$configurator->addDynamicParameters(['iqrfRepository' => $iqrfRepositoryManager->readConfig()]);
-		} catch (IOException | Exception $e) {
+		} catch (IOException | Exception) {
 			// File not found/is corrupted - do nothing
 		}
 		/**
-		 * @var SplFileInfo $file File info object
+		 * @var FileInfo $file File info object
 		 */
 		foreach (Finder::findFiles('*Module/config/config.neon')->from(__DIR__) as $file) {
 			$configurator->addConfig($file->getRealPath());
 		}
+		if (!defined('EMAIL_VALIDATE_DNS')) {
+			$container = $configurator->createContainer();
+			define('EMAIL_VALIDATE_DNS', $container->getParameters()['emailValidateDns']);
+		}
 		return $configurator;
+	}
+
+	/**
+	 * Sets version parameters
+	 * @param Configurator $configurator Nette DI initial configurator
+	 */
+	private static function setVersionParameters(Configurator $configurator): void {
+		try {
+			$versionInfo = Json::decode(FileSystem::read(__DIR__ . '/../version.json'));
+			$version = $versionInfo->version . ($versionInfo->pipeline !== '' ? '~' . $versionInfo->pipeline : '');
+		} catch (IOException | JsonException) {
+			$version = 'unknown';
+		} finally {
+			$configurator->addStaticParameters([
+				'console' => [
+					'version' => $version,
+				],
+				'sentry' => [
+					'release' => $version,
+				],
+			]);
+		}
 	}
 
 }

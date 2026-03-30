@@ -3,7 +3,7 @@
 /**
  * TEST: App\MaintenanceModule\Entities\MenderClientConfiguration
  * @covers App\MaintenanceModule\Entities\MenderClientConfiguration
- * @phpVersion >= 8.1
+ * @phpVersion >= 8.2
  * @testCase
  */
 /**
@@ -59,19 +59,19 @@ final class MenderClientConfigurationTest extends TestCase {
 	 */
 	public function __construct() {
 		foreach (['3', '3-4', '4'] as $version) {
-			$this->configs[$version] = Json::decode(FileSystem::read(TESTER_DIR . '/data/maintenance/mender/client' . $version . '/mender.conf'), Json::FORCE_ARRAY);
+			$this->configs[$version] = Json::decode(FileSystem::read(TESTER_DIR . '/data/maintenance/mender/client' . $version . '/mender.conf'), forceArrays: true);
 		}
 		foreach (['3', '4'] as $version) {
 			$this->entities[$version] = new MenderClientConfiguration(
-				(int) $version,
-				['https://generic.mender.iqrf.org'],
-				'',
-				'dummy',
-				1800,
-				28800,
-				300,
+				version: (int) $version,
+				servers: ['https://generic.mender.iqrf.org'],
+				serverCertificate: '',
+				tenantToken: 'dummy',
+				updatePollIntervalSeconds: 1800,
+				inventoryPollIntervalSeconds: 28800,
+				retryPollIntervalSeconds: 300,
 			);
-			$this->jsons[$version] = Json::decode(FileSystem::read(TESTER_DIR . '/data/maintenance/mender/client' . $version . '/mender.json'), Json::FORCE_ARRAY);
+			$this->jsons[$version] = Json::decode(FileSystem::read(TESTER_DIR . '/data/maintenance/mender/client' . $version . '/mender.json'), forceArrays: true);
 		}
 	}
 

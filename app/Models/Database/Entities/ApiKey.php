@@ -23,7 +23,9 @@ namespace App\Models\Database\Entities;
 use App\Exceptions\ApiKeyExpirationPassedException;
 use App\Exceptions\ApiKeyInvalidExpirationException;
 use App\Models\Database\Attributes\TId;
+use App\Models\Database\Repositories\ApiKeyRepository;
 use DateTime;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 use Nette\Utils\Strings;
@@ -35,55 +37,46 @@ use const PASSWORD_BCRYPT;
 
 /**
  * API key entity
- * @ORM\Entity(repositoryClass="App\Models\Database\Repositories\ApiKeyRepository")
- * @ORM\Table(name="`api_keys`")
- * @ORM\HasLifecycleCallbacks()
  */
+#[ORM\Entity(repositoryClass: ApiKeyRepository::class)]
+#[ORM\Table(name: 'api_keys')]
+#[ORM\HasLifecycleCallbacks]
 class ApiKey implements JsonSerializable {
 
 	use TId;
 
 	/**
-	 * @var string API key
+	 * @var string|null API key
 	 */
-	private string $key;
+	private ?string $key = null;
 
 	/**
 	 * @var string API key hash
-	 * @ORM\Column(type="string", length=255, unique=true)
 	 */
+	#[ORM\Column(type: Types::STRING, length: 255, unique: true)]
 	private string $hash;
 
 	/**
 	 * @var string API key hash salt
-	 * @ORM\Column(type="string", length=22, unique=true)
 	 */
+	#[ORM\Column(type: Types::STRING, length: 22, unique: true)]
 	private string $salt;
-
-	/**
-	 * @var string API key description
-	 * @ORM\Column(type="string", length=255)
-	 */
-	private string $description;
-
-	/**
-	 * @var DateTime|null API key expiration
-	 * @ORM\Column(type="datetime", nullable=true)
-	 */
-	private ?DateTime $expiration;
 
 	/**
 	 * Constructor
 	 * @param string $description API key description
 	 * @param DateTime|null $expiration API key expiration
 	 */
-	public function __construct(string $description, ?DateTime $expiration) {
+	public function __construct(
+		#[ORM\Column(type: Types::STRING, length: 255)]
+		private string $description,
+		#[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+		private ?DateTime $expiration,
+	) {
 		$this->key = base64_encode(random_bytes(32));
 		$this->hash = password_hash($this->key, PASSWORD_BCRYPT);
 		$saltHash = explode('$', $this->hash);
 		$this->salt = Strings::substring(end($saltHash), 0, 22);
-		$this->description = $description;
-		$this->expiration = $expiration;
 	}
 
 	/**
@@ -148,7 +141,7 @@ class ApiKey implements JsonSerializable {
 		}
 		try {
 			$this->expiration = new DateTime($expiration);
-		} catch (Throwable $e) {
+		} catch (Throwable) {
 			throw new ApiKeyInvalidExpirationException('Invalid expiration date');
 		}
 		if ($this->isExpired()) {
@@ -161,7 +154,7 @@ class ApiKey implements JsonSerializable {
 	 * @return bool Is API key expired
 	 */
 	public function isExpired(): bool {
-		if ($this->expiration === null) {
+		if (!$this->expiration instanceof DateTime) {
 			return false;
 		}
 		$now = new DateTime();
@@ -179,13 +172,18 @@ class ApiKey implements JsonSerializable {
 
 	/**
 	 * Returns JSON serialized data
-	 * @return array<string, int|string|null> JSON serialized data
+	 * @return array{
+	 *     id: int|null,
+	 *     description: string,
+	 *     expiration: string|null,
+	 *     key?: string
+	 * } JSON serialized data
 	 */
 	public function jsonSerialize(): array {
 		$array = [
 			'id' => $this->getId(),
 			'description' => $this->getDescription(),
-			'expiration' => $this->getExpiration() === null ? null : $this->getExpiration()->format('c'),
+			'expiration' => $this->getExpiration()?->format('c'),
 		];
 		if (isset($this->key)) {
 			$array['key'] = $this->getKey();

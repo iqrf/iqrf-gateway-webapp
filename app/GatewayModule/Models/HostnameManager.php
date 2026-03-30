@@ -20,9 +20,9 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models;
 
-use App\CoreModule\Models\CommandManager;
-use App\CoreModule\Models\IFileManager;
 use App\GatewayModule\Exceptions\HostnameException;
+use Iqrf\CommandExecutor\CommandExecutor;
+use Iqrf\FileManager\IFileManager;
 use Nette\IOException;
 use Nette\Utils\Strings;
 
@@ -32,40 +32,26 @@ use Nette\Utils\Strings;
 class HostnameManager {
 
 	/**
-	 * @var string Hosts file name
+	 * Hosts file name
 	 */
 	private const HOSTS_FILE = 'hosts';
 
 	/**
-	 * @var string Hostname file name
+	 * Hostname file name
 	 */
 	private const HOSTNAME_FILE = 'hostname';
 
 	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
-
-	/**
-	 * @var IFileManager File manager
-	 */
-	private IFileManager $fileManager;
-
-	/**
-	 * @var NetworkManager Network manager
-	 */
-	private NetworkManager $networkManager;
-
-	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandExecutor Command manager
 	 * @param IFileManager $fileManager Privileged file manager
 	 * @param NetworkManager $networkManager Network manager
 	 */
-	public function __construct(CommandManager $commandManager, IFileManager $fileManager, NetworkManager $networkManager) {
-		$this->commandManager = $commandManager;
-		$this->fileManager = $fileManager;
-		$this->networkManager = $networkManager;
+	public function __construct(
+		private readonly IFileManager $fileManager,
+		private readonly CommandExecutor $commandExecutor,
+		private readonly NetworkManager $networkManager,
+	) {
 	}
 
 	/**
@@ -81,20 +67,19 @@ class HostnameManager {
 		try {
 			$this->replaceHostname($old, $hostname);
 		} catch (IOException $e) {
-			throw new HostnameException($e->getMessage());
+			throw new HostnameException($e->getMessage(), $e->getCode(), $e);
 		}
-		$output = $this->commandManager->run('hostname ' . $hostname, true);
+		$output = $this->commandExecutor->run('hostname ' . $hostname, true);
 		if ($output->getExitCode() !== 0) {
 			$this->replaceHostname($hostname, $old);
 			throw new HostnameException($output->getStderr());
 		}
-		$output = $this->commandManager->run('hostnamectl set-hostname ' . $hostname, true);
+		$output = $this->commandExecutor->run('hostnamectl set-hostname ' . $hostname, true);
 		if ($output->getExitCode() !== 0) {
 			$this->replaceHostname($hostname, $old);
 			throw new HostnameException($output->getStderr());
 		}
 	}
-
 
 	/**
 	 * Replaces hostname in hosts file

@@ -23,6 +23,7 @@ namespace App\ApiModule\Version0\Controllers\Gateway;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
+use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
@@ -35,70 +36,68 @@ use App\GatewayModule\Models\TimeManager;
 
 /**
  * Time controller
- * @Path("/time")
  */
+#[Path('/time')]
+#[Tag('Gateway - Date & time')]
 class TimeController extends GatewayController {
-
-	/**
-	 * @var TimeManager Time manager
-	 */
-	private TimeManager $manager;
 
 	/**
 	 * Constructor
 	 * @param TimeManager $manager Time manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(TimeManager $manager, RestApiSchemaValidator $validator) {
-		$this->manager = $manager;
+	public function __construct(
+		private readonly TimeManager $manager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: 'Returns current gateway date, time, timezone and ntp configuration'
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/TimeGet'
-	 *      '500':
-	 *         $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('GET')]
+	#[OpenApi(<<<'EOT'
+		summary: 'Returns current gateway date, time, timezone and NTP configuration'
+		responses:
+			'200':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: '#/components/schemas/TimeGet'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function getTime(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
 			$time = $this->manager->getTime();
 			return $response->writeJsonBody($time);
 		} catch (TimeDateException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR, $e);
 		}
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: 'Sets date, time, timezone and ntp configuration'
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('POST')]
+	#[OpenApi(<<<'EOT'
+		summary: 'Sets timezone and NTP configuration'
+		requestBody:
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: '#/components/schemas/TimeSet'
+		responses:
+			'200':
+				description: Success
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function setTime(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validator->validateRequest('timeSet', $request);
 		try {
@@ -106,27 +105,24 @@ class TimeController extends GatewayController {
 			$this->manager->setTime($time);
 			return $response->writeBody('Workaround');
 		} catch (NonexistentTimezoneException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST, $e);
 		}
 	}
 
-	/**
-	 * @Path("/timezones")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Returns available timezones
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/TimezoneList'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/timezones')]
+	#[Method('GET')]
+	#[OpenApi(<<<'EOT'
+		summary: Returns available timezones
+		responses:
+			'200':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: '#/components/schemas/TimezoneList'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+	EOT)]
 	public function getTimezones(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$timezones = $this->manager->availableTimezones();
 		return $response->writeJsonBody($timezones);

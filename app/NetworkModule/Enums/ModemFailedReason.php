@@ -37,32 +37,32 @@ final class ModemFailedReason extends Enum {
 	use AutoInstances;
 
 	/**
-	 * @var string eSIM is not initialized
+	 * eSIM is not initialized
 	 */
 	private const ESIM_WITHOUT_PROFILES = 'esim-without-profiles';
 
 	/**
-	 * @var string No error
+	 * No error
 	 */
 	private const NONE = 'none';
 
 	/**
-	 * @var string SIM is available, but unusable (e.g. permanently locked)
+	 * SIM is available, but unusable (e.g. permanently locked)
 	 */
 	private const SIM_ERROR = 'sim-error';
 
 	/**
-	 * @var string SIM is required but missing
+	 * SIM is required but missing
 	 */
 	private const SIM_MISSING = 'sim-missing';
 
 	/**
-	 * @var string Unknown error
+	 * Unknown error
 	 */
 	private const UNKNOWN = 'unknown';
 
 	/**
-	 * @var string Unknown modem capabilities
+	 * Unknown modem capabilities
 	 */
 	private const UNKNOWN_CAPABILITIES = 'unknown-capabilities';
 

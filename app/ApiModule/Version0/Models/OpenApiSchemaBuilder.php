@@ -30,16 +30,12 @@ use stdClass;
 class OpenApiSchemaBuilder {
 
 	/**
-	 * @var ISchemaBuilder OpenAPI schema builder
-	 */
-	private ISchemaBuilder $schemaBuilder;
-
-	/**
 	 * Constructor
 	 * @param ISchemaBuilder $schemaBuilder OpenAPI schema builder
 	 */
-	public function __construct(ISchemaBuilder $schemaBuilder) {
-		$this->schemaBuilder = $schemaBuilder;
+	public function __construct(
+		private readonly ISchemaBuilder $schemaBuilder,
+	) {
 	}
 
 	/**

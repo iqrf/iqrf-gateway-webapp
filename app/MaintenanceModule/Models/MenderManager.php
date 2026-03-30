@@ -20,8 +20,6 @@ declare(strict_types = 1);
 
 namespace App\MaintenanceModule\Models;
 
-use App\CoreModule\Models\CommandManager;
-use App\CoreModule\Models\PrivilegedFileManager;
 use App\GatewayModule\Models\VersionManager;
 use App\MaintenanceModule\Entities\MenderClientConfiguration;
 use App\MaintenanceModule\Entities\MenderConnectConfiguration;
@@ -33,6 +31,8 @@ use App\MaintenanceModule\Exceptions\MountErrorException;
 use App\ServiceModule\Exceptions\NonexistentServiceException;
 use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
 use App\ServiceModule\Models\ServiceManager;
+use Iqrf\CommandExecutor\CommandExecutor;
+use Iqrf\FileManager\PrivilegedFileManager;
 use Nette\Utils\FileSystem;
 use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
@@ -45,66 +45,48 @@ use z4kn4fein\SemVer\Version;
 class MenderManager {
 
 	/**
-	 * @var string Path to certificate storage
+	 * Path to certificate storage
 	 */
 	private const CERT_PATH = '/etc/mender/';
 
 	/**
-	 * @var string JSON file containing mender-client configuration
+	 * JSON file containing mender-client configuration
 	 */
 	private const CLIENT_CONF = 'mender.conf';
 
 	/**
-	 * @var string JSON file containing mender-connect configuration
+	 * JSON file containing mender-connect configuration
 	 */
 	private const CONNECT_CONF = 'mender-connect.conf';
 
 	/**
-	 * @var string Path to upload artifact file to
+	 * Path to upload artifact file to
 	 */
 	private const UPLOAD_PATH = '/tmp/';
 
 	/**
 	 * @var Version|null $clientVersion Mender client version
 	 */
-	private ?Version $clientVersion;
+	private readonly ?Version $clientVersion;
 
 	/**
 	 * @var Version|null $connectVersion Mender connect version
 	 */
-	private ?Version $connectVersion;
-
-	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
-
-	/**
-	 * @var PrivilegedFileManager $fileManager Privileged file manager
-	 */
-	private PrivilegedFileManager $fileManager;
-
-	/**
-	 * @var ServiceManager $serviceManager Service manager
-	 */
-	private ServiceManager $serviceManager;
+	private readonly ?Version $connectVersion;
 
 	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandExecutor Command manager
 	 * @param PrivilegedFileManager $fileManager Privileged file manager
 	 * @param ServiceManager $serviceManager Service manager
 	 * @param VersionManager $versionManager Version manager
 	 */
 	public function __construct(
-		CommandManager $commandManager,
-		PrivilegedFileManager $fileManager,
-		ServiceManager $serviceManager,
+		private readonly PrivilegedFileManager $fileManager,
+		private readonly CommandExecutor $commandExecutor,
+		private readonly ServiceManager $serviceManager,
 		VersionManager $versionManager
 	) {
-		$this->commandManager = $commandManager;
-		$this->fileManager = $fileManager;
-		$this->serviceManager = $serviceManager;
 		$clientVersion = $versionManager->getMenderClient();
 		$connectVersion = $versionManager->getMenderConnect();
 		$this->clientVersion = ($clientVersion !== null) ? Version::parseOrNull($clientVersion) : null;
@@ -188,7 +170,7 @@ class MenderManager {
 	 * @throws MountErrorException
 	 */
 	public function remount(string $mode): void {
-		$output = $this->commandManager->run('mount -o remount,' . $mode . ' /', true);
+		$output = $this->commandExecutor->run('mount -o remount,' . $mode . ' /', true);
 		if ($output->getExitCode() !== 0) {
 			throw new MountErrorException($output->getStderr());
 		}
@@ -226,7 +208,7 @@ class MenderManager {
 	public function installArtifact(string $filePath): string {
 		$this->checkMender();
 		$this->stopService();
-		$result = $this->commandManager->run(
+		$result = $this->commandExecutor->run(
 			$this->getCommand(MenderClientActions::INSTALL(), $filePath),
 			true,
 			1800
@@ -246,7 +228,7 @@ class MenderManager {
 	public function commitUpdate(): string {
 		$this->checkMender();
 		$this->stopService();
-		$result = $this->commandManager->run(
+		$result = $this->commandExecutor->run(
 			$this->getCommand(MenderClientActions::COMMIT()),
 			true
 		);
@@ -265,7 +247,7 @@ class MenderManager {
 	public function rollbackUpdate(): string {
 		$this->checkMender();
 		$this->stopService();
-		$result = $this->commandManager->run($this->getCommand(MenderClientActions::ROLLBACK()), true);
+		$result = $this->commandExecutor->run($this->getCommand(MenderClientActions::ROLLBACK()), true);
 		return $this->handleCommandResult($result->getExitCode(), $result->getStdout());
 	}
 

@@ -24,6 +24,7 @@ use App\CoreModule\Models\UserManager;
 use App\Models\Database\Entities\User;
 use App\Models\Database\EntityManager;
 use App\Models\Database\Repositories\UserRepository;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
@@ -36,13 +37,11 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * CLI command for user management
  */
+#[AsCommand(
+	name: 'user:add',
+	description: 'Adds webapp\'s user',
+)]
 class UserAddCommand extends Command {
-
-	/**
-	 * @var string|null Command name
-	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-	 */
-	protected static $defaultName = 'user:add';
 
 	/**
 	 * @var UserRepository User database repository
@@ -50,32 +49,22 @@ class UserAddCommand extends Command {
 	protected UserRepository $repository;
 
 	/**
-	 * @var EntityManager Entity manager
-	 */
-	protected EntityManager $entityManager;
-
-	/**
-	 * @var UserManager User manager
-	 */
-	protected UserManager $userManager;
-
-	/**
 	 * Constructor
 	 * @param EntityManager $entityManager Entity manager
 	 * @param UserManager $userManager User manager
 	 */
-	public function __construct(EntityManager $entityManager, UserManager $userManager) {
+	public function __construct(
+		protected EntityManager $entityManager,
+		protected UserManager $userManager,
+	) {
 		parent::__construct();
-		$this->entityManager = $entityManager;
-		$this->repository = $entityManager->getUserRepository();
-		$this->userManager = $userManager;
+		$this->repository = $this->entityManager->getUserRepository();
 	}
 
 	/**
 	 * Configures the user add command
 	 */
 	protected function configure(): void {
-		$this->setDescription('Adds webapp\'s user');
 		$definitions = [
 			new InputOption('username', ['u', 'user'], InputOption::VALUE_OPTIONAL, 'Username of the new user'),
 			new InputOption('password', ['p', 'pass'], InputOption::VALUE_OPTIONAL, 'New user\'s password'),

@@ -20,11 +20,11 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models;
 
-use App\CoreModule\Models\CommandManager;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Models\WebSocketClient;
 use App\IqrfNetModule\Requests\ApiRequest;
+use Iqrf\CommandExecutor\CommandExecutor;
 use Nette\IOException;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
@@ -37,30 +37,16 @@ use Nette\Utils\Strings;
 class VersionManager {
 
 	/**
-	 * @var ApiRequest IQRF Gateway Daemon's JSON API request
-	 */
-	private ApiRequest $apiRequest;
-
-	/**
-	 * @var CommandManager CommandManager
-	 */
-	private CommandManager $commandManager;
-
-	/**
-	 * @var WebSocketClient WebSocket client
-	 */
-	private WebSocketClient $wsClient;
-
-	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
-	 * @param ApiRequest $request IQRF Gateway Daemon's JSON API request
+	 * @param CommandExecutor $commandManager Command manager
+	 * @param ApiRequest $apiRequest IQRF Gateway Daemon's JSON API request
 	 * @param WebSocketClient $wsClient WebSocket client
 	 */
-	public function __construct(CommandManager $commandManager, ApiRequest $request, WebSocketClient $wsClient) {
-		$this->commandManager = $commandManager;
-		$this->apiRequest = $request;
-		$this->wsClient = $wsClient;
+	public function __construct(
+		private readonly CommandExecutor $commandManager,
+		private readonly ApiRequest $apiRequest,
+		private readonly WebSocketClient $wsClient,
+	) {
 	}
 
 	/**
@@ -103,53 +89,14 @@ class VersionManager {
 		if ($version === 'none' || $version === 'unknown') {
 			try {
 				$version = $this->getDaemonWs();
-			} catch (DpaErrorException | EmptyResponseException | JsonException $e) {
+			} catch (DpaErrorException | EmptyResponseException) {
 				// Use version from CLI
 			}
 		}
 		if ($verbose) {
 			return $version;
 		}
-		return explode(' ', $version)[0] ?? 'unknown';
-	}
-
-	/**
-	 * Returns IQRF Gateway Daemon's version from CLI
-	 * @return string IQRF Gateway Daemon's version
-	 */
-	private function getDaemonCli(): string {
-		if (!$this->commandManager->commandExist('iqrfgd2')) {
-			return 'none';
-		}
-		$command = $this->commandManager->run('iqrfgd2 version');
-		$stdout = $command->getStdout();
-		if ($command->getExitCode() === 0 && $stdout !== '') {
-			return $stdout;
-		}
-		$command = $this->commandManager->run('iqrfgd2 --version');
-		$stdout = $command->getStdout();
-		if ($command->getExitCode() === 0 && $stdout !== '') {
-			return Strings::replace($stdout, '#^IQRF\ Gateway\ Daemon\ #', '');
-		}
-		return 'unknown';
-	}
-
-	/**
-	 * Returns IQRF Gateway Daemon's version from WS client
-	 * @return string IQRF Gateway Daemon's version
-	 * @throws DpaErrorException
-	 * @throws EmptyResponseException
-	 */
-	private function getDaemonWs(): string {
-		$request = [
-			'mType' => 'mngDaemon_Version',
-			'data' => [
-				'returnVerbose' => true,
-			],
-		];
-		$this->apiRequest->set($request);
-		$api = $this->wsClient->sendSync($this->apiRequest);
-		return $api['response']->data->rsp->version;
+		return explode(' ', $version)[0];
 	}
 
 	/**
@@ -169,7 +116,7 @@ class VersionManager {
 				$versionString = Strings::trim($command->getStdout());
 				$pattern = '/^(?\'version\'\d+\.\d+\.\d+).*$/';
 				$matches = Strings::match($versionString, $pattern);
-				return $matches['version'];
+				return $matches['version'] ?? null;
 			}
 		}
 		return null;
@@ -190,7 +137,7 @@ class VersionManager {
 				$versionString = Strings::trim($command->getStdout());
 				$pattern = '/^(?:mender-connect\sversion\s)?(?\'version\'\d+\.\d+\.\d+).*$/';
 				$matches = Strings::match($versionString, $pattern);
-				return $matches['version'];
+				return $matches['version'] ?? null;
 			}
 		}
 		return null;
@@ -206,7 +153,7 @@ class VersionManager {
 		}
 		$result = $this->commandManager->run('iqrf-gateway-setter --version')->getStdout();
 		if ($result !== '') {
-			return Strings::replace($result, '#^IQRF\ Gateway\ Setter\ #', '');
+			return Strings::replace($result, '#^IQRF Gateway Setter #');
 		}
 		return null;
 	}
@@ -234,7 +181,7 @@ class VersionManager {
 	 */
 	public function getWebappJson(): array {
 		$json = FileSystem::read(__DIR__ . '/../../../version.json');
-		return Json::decode($json, Json::FORCE_ARRAY);
+		return Json::decode($json, forceArrays: true);
 	}
 
 	/**
@@ -245,7 +192,7 @@ class VersionManager {
 	public function getWebapp(bool $verbose = false): string {
 		try {
 			$array = $this->getWebappJson();
-		} catch (IOException | JsonException $e) {
+		} catch (IOException | JsonException) {
 			return 'unknown';
 		}
 		$version = $array['version'] ?? 'unknown';
@@ -264,6 +211,45 @@ class VersionManager {
 			$version .= '~' . $pipeline;
 		}
 		return $version . ($verbose && $commit !== '' ? ' (' . $commit . ')' : '');
+	}
+
+	/**
+	 * Returns IQRF Gateway Daemon's version from CLI
+	 * @return string IQRF Gateway Daemon's version
+	 */
+	private function getDaemonCli(): string {
+		if (!$this->commandManager->commandExist('iqrfgd2')) {
+			return 'none';
+		}
+		$command = $this->commandManager->run('iqrfgd2 version');
+		$stdout = $command->getStdout();
+		if ($command->getExitCode() === 0 && $stdout !== '') {
+			return $stdout;
+		}
+		$command = $this->commandManager->run('iqrfgd2 --version');
+		$stdout = $command->getStdout();
+		if ($command->getExitCode() === 0 && $stdout !== '') {
+			return Strings::replace($stdout, '#^IQRF Gateway Daemon #');
+		}
+		return 'unknown';
+	}
+
+	/**
+	 * Returns IQRF Gateway Daemon's version from WS client
+	 * @return string IQRF Gateway Daemon's version
+	 * @throws DpaErrorException
+	 * @throws EmptyResponseException
+	 */
+	private function getDaemonWs(): string {
+		$request = [
+			'mType' => 'mngDaemon_Version',
+			'data' => [
+				'returnVerbose' => true,
+			],
+		];
+		$this->apiRequest->set($request);
+		$api = $this->wsClient->sendSync($this->apiRequest);
+		return $api['response']->data->rsp->version;
 	}
 
 }

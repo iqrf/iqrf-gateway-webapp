@@ -20,13 +20,13 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models;
 
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use App\GatewayModule\Exceptions\LogNotFoundException;
 use App\GatewayModule\Exceptions\ServiceLogNotAvailableException;
+use Iqrf\CommandExecutor\CommandExecutor;
+use Nette\Utils\FileInfo;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
-use SplFileInfo;
 
 /**
  * Tool for downloading and reading IQRF Gateway Daemon's log files
@@ -34,67 +34,52 @@ use SplFileInfo;
 class LogManager {
 
 	/**
-	 * @var CommandManager Command manager
+	 * IQRF Gateway Controller name
 	 */
-	private CommandManager $commandManager;
+	final public const CONTROLLER = 'iqrf-gateway-controller';
 
 	/**
-	 * @var string IQRF Gateway Controller name
+	 * IQRF Gateway Daemon name
 	 */
-	public const CONTROLLER = 'iqrf-gateway-controller';
+	final public const DAEMON = 'iqrf-gateway-daemon';
 
 	/**
-	 * @var string IQRF Gateway Daemon name
+	 * IQRF Gateway Setter name
 	 */
-	public const DAEMON = 'iqrf-gateway-daemon';
+	final public const SETTER = 'iqrf-gateway-setter';
 
 	/**
-	 * @var string IQRF Gateway Setter name
+	 * IQRF Gateway Translator name
 	 */
-	public const SETTER = 'iqrf-gateway-setter';
+	final public const TRANSLATOR = 'iqrf-gateway-translator';
 
 	/**
-	 * @var string IQRF Gateway Translator name
+	 * IQRF Gateway Uploader name
 	 */
-	public const TRANSLATOR = 'iqrf-gateway-translator';
+	final public const UPLOADER = 'iqrf-gateway-uploader';
 
 	/**
-	 * @var string IQRF Gateway Uploader name
-	 */
-	public const UPLOADER = 'iqrf-gateway-uploader';
-
-	/**
-	 * @ string IQRF Gateway Controller log file
+	 * IQRF Gateway Controller log file
 	 */
 	private const CONTROLLER_LOG = 'iqrf-gateway-controller.log';
 
 	/**
-	 * @var string IQRF Gateway Setter log file
+	 * IQRF Gateway Setter log file
 	 */
 	private const SETTER_LOG = 'iqrf-gateway-setter.log';
 
 	/**
-	 * @var string IQRF Gateway Translator log file
+	 * IQRF Gateway Translator log file
 	 */
 	private const TRANSLATOR_LOG = 'iqrf-gateway-translator.log';
 
 	/**
-	 * @var string IQRF Gateway Uploader log file
+	 * IQRF Gateway Uploader log file
 	 */
 	private const UPLOADER_LOG = 'iqrf-gateway-uploader.log';
 
 	/**
-	 * @var string Path to a directory with log files of IQRF Gateway Daemon
-	 */
-	private string $daemonLogDir;
-
-	/**
-	 * @var string Path to a general directory with log files
-	 */
-	private string $logDir;
-
-	/**
-	 * @var string Path to ZIP archive
+	 * Path to ZIP archive
 	 */
 	private string $path = '/tmp/iqrf-gateway-logs.zip';
 
@@ -102,12 +87,13 @@ class LogManager {
 	 * Constructor
 	 * @param string $logDir Path to a general directory with log files
 	 * @param string $daemonLogDir Path to a directory with log files of IQRF Gateway Daemon
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandManager Command manager
 	 */
-	public function __construct(string $logDir, string $daemonLogDir, CommandManager $commandManager) {
-		$this->logDir = $logDir;
-		$this->daemonLogDir = $daemonLogDir;
-		$this->commandManager = $commandManager;
+	public function __construct(
+		private readonly string $logDir,
+		private readonly string $daemonLogDir,
+		private readonly CommandExecutor $commandManager,
+	) {
 	}
 
 	/**
@@ -119,7 +105,7 @@ class LogManager {
 		$logFiles = [];
 		$emptyLogFound = false;
 		/**
-		 * @var SplFileInfo $file File info object
+		 * @var FileInfo $file File info object
 		 */
 		foreach (Finder::findFiles('*iqrf-gateway-daemon.log')->from($this->daemonLogDir) as $file) {
 			if ($file->getSize() === 0) {
@@ -169,28 +155,28 @@ class LogManager {
 		if ($this->commandManager->commandExist(self::CONTROLLER)) {
 			try {
 				$zipManager->addFileFromText(self::CONTROLLER_LOG, $this->getLogFromPath(self::CONTROLLER_LOG));
-			} catch (LogNotFoundException $e) {
+			} catch (LogNotFoundException) {
 				// not found, do not add
 			}
 		}
 		if ($this->commandManager->commandExist(self::SETTER)) {
 			try {
 				$zipManager->addFileFromText(self::SETTER_LOG, $this->getLogFromPath(self::SETTER_LOG));
-			} catch (LogNotFoundException $e) {
+			} catch (LogNotFoundException) {
 				// not found, do not add
 			}
 		}
 		if ($this->commandManager->commandExist(self::TRANSLATOR)) {
 			try {
 				$zipManager->addFileFromText(self::TRANSLATOR_LOG, $this->getLogFromPath(self::TRANSLATOR_LOG));
-			} catch (LogNotFoundException $e) {
+			} catch (LogNotFoundException) {
 				// not found, do not add
 			}
 		}
 		if ($this->commandManager->commandExist(self::UPLOADER)) {
 			try {
 				$zipManager->addFileFromText(self::UPLOADER_LOG, $this->getLogFromPath(self::UPLOADER_LOG));
-			} catch (LogNotFoundException $e) {
+			} catch (LogNotFoundException) {
 				// not found, do not add
 			}
 		}
@@ -230,23 +216,14 @@ class LogManager {
 	 * @return string Service log
 	 */
 	public function getServiceLog(string $service): string {
-		$services = $this->getAvailableServices();
-		if (!in_array($service, $services, true)) {
-			throw new ServiceLogNotAvailableException('Service not found');
-		}
-		if ($service === self::CONTROLLER) {
-			return $this->getLogFromPath(self::CONTROLLER_LOG);
-		}
-		if ($service === self::DAEMON) {
-			return $this->getLatestDaemonLog();
-		}
-		if ($service === self::SETTER) {
-			return $this->getLogFromPath(self::SETTER_LOG);
-		}
-		if ($service === self::TRANSLATOR) {
-			return $this->getLogFromPath(self::TRANSLATOR_LOG);
-		}
-		return $this->getLogFromPath(self::UPLOADER_LOG);
+		return match ($service) {
+			self::CONTROLLER => $this->getLogFromPath(self::CONTROLLER_LOG),
+			self::DAEMON => $this->getLatestDaemonLog(),
+			self::SETTER => $this->getLogFromPath(self::SETTER_LOG),
+			self::TRANSLATOR => $this->getLogFromPath(self::TRANSLATOR_LOG),
+			self::UPLOADER => $this->getLogFromPath(self::UPLOADER_LOG),
+			default => throw new ServiceLogNotAvailableException('Service not found'),
+		};
 	}
 
 }

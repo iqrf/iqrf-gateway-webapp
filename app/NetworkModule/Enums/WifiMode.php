@@ -36,22 +36,22 @@ final class WifiMode extends Enum {
 	use AutoInstances;
 
 	/**
-	 * @var string Ad-Hoc 802.11 network
+	 * Ad-Hoc 802.11 network
 	 */
 	private const ADHOC = 'adhoc';
 
 	/**
-	 * @var string Device in access point mode
+	 * Device in access point mode
 	 */
 	private const AP = 'ap';
 
 	/**
-	 * @var string Device in infrastructure mode
+	 * Device in infrastructure mode
 	 */
 	private const INFRA = 'infrastructure';
 
 	/**
-	 * @var string 802.11s mesh point
+	 * 802.11s mesh point
 	 */
 	private const MESH = 'mesh';
 
@@ -61,16 +61,12 @@ final class WifiMode extends Enum {
 	 * @return WifiMode WiFI network mode
 	 */
 	public static function fromNetworkList(string $mode): WifiMode {
-		switch ($mode) {
-			case 'Ad-Hoc':
-				return self::ADHOC();
-			case 'Infra':
-				return self::INFRA();
-			case 'Mesh':
-				return self::MESH();
-			default:
-				throw new MissingValueDeclarationException('There is no value for enum \'' . self::class . '\' and scalar value \'' . $mode . '\'.');
-		}
+		return match ($mode) {
+			'Ad-Hoc' => self::ADHOC(),
+			'Infra' => self::INFRA(),
+			'Mesh' => self::MESH(),
+			default => throw new MissingValueDeclarationException('There is no value for enum \'' . self::class . '\' and scalar value \'' . $mode . '\'.'),
+		};
 	}
 
 }

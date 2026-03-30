@@ -23,9 +23,9 @@ namespace App\ConfigModule\Models;
 use App\ConfigModule\Exceptions\InvalidTaskMessageException;
 use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\JsonSchemaManager;
 use App\IqrfNetModule\Models\ApiSchemaManager;
+use Iqrf\CommandExecutor\CommandExecutor;
 use Nette\Utils\JsonException;
 
 /**
@@ -34,24 +34,18 @@ use Nette\Utils\JsonException;
 class SchedulerSchemaManager extends JsonSchemaManager {
 
 	/**
-	 * @var ApiSchemaManager JSON API JSON schema manager
-	 */
-	private ApiSchemaManager $apiSchemaManager;
-
-	/**
 	 * Constructor
 	 * @param MainManager $mainManager Main configuration manager
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandExecutor Command manager
 	 * @param ApiSchemaManager $apiSchemaManager JSON API JSON schema manager
 	 */
-	public function __construct(MainManager $mainManager, CommandManager $commandManager, ApiSchemaManager $apiSchemaManager) {
+	public function __construct(MainManager $mainManager, CommandExecutor $commandExecutor, private readonly ApiSchemaManager $apiSchemaManager) {
 		$dataDir = $mainManager->getDataDir();
 		if (!is_readable($dataDir) || !is_writable($dataDir)) {
-			$commandManager->run('chmod 777 ' . escapeshellarg($dataDir), true);
+			$commandExecutor->run('chmod 777 ' . escapeshellarg($dataDir), true);
 		}
 		$configDir = $dataDir . 'schedulerSchemas/';
-		parent::__construct($configDir, $commandManager);
-		$this->apiSchemaManager = $apiSchemaManager;
+		parent::__construct($configDir, $commandExecutor);
 	}
 
 	/**
@@ -63,7 +57,7 @@ class SchedulerSchemaManager extends JsonSchemaManager {
 	 * @throws JsonException
 	 * @throws NonexistentJsonSchemaException
 	 */
-	public function validate($json, bool $tryFix = false): void {
+	public function validate(mixed $json, bool $tryFix = false): void {
 		parent::setSchema('schema_cache_record');
 		parent::validate($json, $tryFix);
 		$tasks = is_array($json->task) ? $json->task : [$json->task];

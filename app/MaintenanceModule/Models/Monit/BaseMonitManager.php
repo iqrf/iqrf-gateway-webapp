@@ -20,9 +20,9 @@ declare(strict_types = 1);
 
 namespace App\MaintenanceModule\Models\Monit;
 
-use App\CoreModule\Models\CommandManager;
-use App\CoreModule\Models\IFileManager;
 use App\MaintenanceModule\Exceptions\MonitConfigErrorException;
+use Iqrf\CommandExecutor\CommandExecutor;
+use Iqrf\FileManager\IFileManager;
 use Nette\Utils\Strings;
 
 /**
@@ -41,23 +41,14 @@ abstract class BaseMonitManager {
 	protected const CONFIG_ENABLED = 'conf-enabled';
 
 	/**
-	 * @var CommandManager Command manager
-	 */
-	protected CommandManager $commandManager;
-
-	/**
-	 * @var IFileManager File manager
-	 */
-	protected IFileManager $fileManager;
-
-	/**
 	 * Constructor
 	 * @param IFileManager $fileManager Privileged file manager
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandExecutor Command manager
 	 */
-	public function __construct(IFileManager $fileManager, CommandManager $commandManager) {
-		$this->fileManager = $fileManager;
-		$this->commandManager = $commandManager;
+	public function __construct(
+		protected readonly IFileManager $fileManager,
+		protected readonly CommandExecutor $commandExecutor,
+	) {
 	}
 
 	/**
@@ -121,7 +112,7 @@ abstract class BaseMonitManager {
 		foreach ($this->readConfigFile($fileName, false) as $item) {
 			$matches = Strings::match($item, $pattern);
 			if ($matches !== null) {
-				return array_filter($matches, static fn ($key): bool => is_string($key), ARRAY_FILTER_USE_KEY);
+				return array_filter($matches, is_string(...), ARRAY_FILTER_USE_KEY);
 			}
 		}
 		throw new MonitConfigErrorException('Monit configuration file contains invalid content.');
@@ -167,7 +158,7 @@ abstract class BaseMonitManager {
 	 * @return bool Is configuration file valid?
 	 */
 	protected function validateConfig(?string $configFile = null): bool {
-		$command = $this->commandManager->run('monit -t' . ($configFile !== null ? (' -c ' . escapeshellarg(realpath($this->fileManager->getBasePath() . '/' . $configFile))) : ''), true);
+		$command = $this->commandExecutor->run('monit -t' . ($configFile !== null ? (' -c ' . escapeshellarg(realpath($this->fileManager->getBasePath() . '/' . $configFile))) : ''), true);
 		return $command->getExitCode() === 0;
 	}
 

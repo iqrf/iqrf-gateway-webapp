@@ -46,12 +46,12 @@ class WebSocketClient {
 	/**
 	 * @var LoopInterface Event loop
 	 */
-	private LoopInterface $loop;
+	private readonly LoopInterface $loop;
 
 	/**
 	 * @var string URL to IQRF Gateway Daemon's WebSocket server
 	 */
-	private string $serverUrl;
+	private readonly string $serverUrl;
 
 	/**
 	 * Constructor
@@ -110,7 +110,7 @@ class WebSocketClient {
 				$options['dns'] = $nameserver;
 				$reactConnector = new ReactSocket\Connector($this->loop, $options);
 				break;
-			} catch (InvalidArgumentException $e) {
+			} catch (InvalidArgumentException) {
 				continue;
 			}
 		}

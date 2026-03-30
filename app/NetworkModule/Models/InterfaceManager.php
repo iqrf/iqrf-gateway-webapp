@@ -20,11 +20,11 @@ declare(strict_types = 1);
 
 namespace App\NetworkModule\Models;
 
-use App\CoreModule\Models\CommandManager;
 use App\NetworkModule\Entities\InterfaceStatus;
 use App\NetworkModule\Enums\InterfaceTypes;
 use App\NetworkModule\Exceptions\NetworkManagerException;
 use App\NetworkModule\Exceptions\NonexistentDeviceException;
+use Iqrf\CommandExecutor\CommandExecutor;
 
 /**
  * Network interface manager
@@ -32,16 +32,12 @@ use App\NetworkModule\Exceptions\NonexistentDeviceException;
 class InterfaceManager {
 
 	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
-
-	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandExecutor Command manager
 	 */
-	public function __construct(CommandManager $commandManager) {
-		$this->commandManager = $commandManager;
+	public function __construct(
+		private readonly CommandExecutor $commandExecutor,
+	) {
 	}
 
 	/**
@@ -49,7 +45,7 @@ class InterfaceManager {
 	 * @param string $name Network interface name
 	 */
 	public function connect(string $name): void {
-		$output = $this->commandManager->run('nmcli -t device connect ' . escapeshellarg($name), true);
+		$output = $this->commandExecutor->run('nmcli -t device connect ' . escapeshellarg($name), true);
 		$exitCode = $output->getExitCode();
 		if ($exitCode !== 0) {
 			$this->handleError($exitCode, $output->getStderr());
@@ -61,7 +57,7 @@ class InterfaceManager {
 	 * @param string $name Network interface name
 	 */
 	public function disconnect(string $name): void {
-		$output = $this->commandManager->run('nmcli -t device disconnect ' . escapeshellarg($name), true);
+		$output = $this->commandExecutor->run('nmcli -t device disconnect ' . escapeshellarg($name), true);
 		$exitCode = $output->getExitCode();
 		if ($exitCode !== 0) {
 			$this->handleError($exitCode, $output->getStderr());
@@ -74,7 +70,7 @@ class InterfaceManager {
 	 * @return array<InterfaceStatus> Network interfaces
 	 */
 	public function list(?InterfaceTypes $type = null): array {
-		$output = $this->commandManager->run('nmcli -t -f GENERAL device show', true)->getStdout();
+		$output = $this->commandExecutor->run('nmcli -t -f GENERAL device show', true)->getStdout();
 		$array = explode(PHP_EOL . PHP_EOL, trim($output));
 		$interfaces = [];
 		foreach ($array as $row) {

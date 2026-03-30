@@ -20,11 +20,11 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models;
 
-use App\CoreModule\Models\CommandManager;
 use App\GatewayModule\Exceptions\UnsupportedPackageManagerException;
 use App\GatewayModule\Models\PackageManagers\AptGetPackageManager;
 use App\GatewayModule\Models\PackageManagers\IPackageManager;
 use App\GatewayModule\Models\PackageManagers\UnsupportedPackageManager;
+use Iqrf\CommandExecutor\CommandExecutor;
 
 /**
  * Tool for updating packages of IQRF Gateways
@@ -37,7 +37,7 @@ class UpdaterManager {
 	private IPackageManager $packageManager;
 
 	/**
-	 * @var array<string> Adapters for package managers
+	 * @var array<class-string<IPackageManager>> Adapters for package managers
 	 */
 	private array $packageManagers = [
 		AptGetPackageManager::class,
@@ -45,22 +45,22 @@ class UpdaterManager {
 
 	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandManager Command manager
 	 */
-	public function __construct(CommandManager $commandManager) {
+	public function __construct(CommandExecutor $commandManager) {
 		foreach ($this->packageManagers as $packageManager) {
 			try {
 				$this->packageManager = new $packageManager($commandManager);
 				break;
-			} catch (UnsupportedPackageManagerException $e) {
-				$this->packageManager = new UnsupportedPackageManager();
+			} catch (UnsupportedPackageManagerException) {
+				$this->packageManager = new UnsupportedPackageManager($commandManager);
 			}
 		}
 	}
 
 	/**
 	 * Lists upgradable packages
-	 * @param callable $callback Callback
+	 * @param callable('out'|'err' $type, string $data): void $callback Callback
 	 */
 	public function listUpgradable(callable $callback): void {
 		$this->packageManager->listUpgradable($callback);
@@ -68,7 +68,11 @@ class UpdaterManager {
 
 	/**
 	 * Returns list of upgradable packages
-	 * @return array<array{name: string, oldVersion: string, newVersion: string}> Upgradable packages
+	 * @return array<array{
+	 *     name: string,
+	 *     oldVersion: string,
+	 *     newVersion: string,
+	 * }> Upgradable packages
 	 */
 	public function getUpgradable(): array {
 		return $this->packageManager->getUpgradable();
@@ -76,7 +80,7 @@ class UpdaterManager {
 
 	/**
 	 * Updates a list of packages
-	 * @param callable $callback Callback
+	 * @param callable('out'|'err' $type, string $data): void $callback Callback
 	 */
 	public function update(callable $callback): void {
 		$this->packageManager->update($callback);
@@ -84,7 +88,7 @@ class UpdaterManager {
 
 	/**
 	 * Upgrades packages
-	 * @param callable $callback Callback
+	 * @param callable('out'|'err' $type, string $data): void $callback Callback
 	 */
 	public function upgrade(callable $callback): void {
 		$this->packageManager->upgrade($callback);

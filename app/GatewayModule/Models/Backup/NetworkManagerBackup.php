@@ -21,10 +21,9 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Models\Backup;
 
 use App\CoreModule\Models\FeatureManager;
-use App\CoreModule\Models\PrivilegedFileManager;
 use App\CoreModule\Models\ZipArchiveManager;
+use Iqrf\FileManager\PrivilegedFileManager;
 use Nette\Utils\FileSystem;
-use Nette\Utils\Strings;
 
 /**
  * NetworkManager backup manager
@@ -32,14 +31,14 @@ use Nette\Utils\Strings;
 class NetworkManagerBackup implements IBackupManager {
 
 	/**
-	 * @var array<string> List of whitelisted files
+	 * List of whitelisted files
 	 */
 	public const WHITELIST = [
 		'NetworkManager.conf',
 	];
 
 	/**
-	 * @var array<string> Service name
+	 * Service name
 	 */
 	public const SERVICES = [
 		'NetworkManager',
@@ -48,17 +47,7 @@ class NetworkManagerBackup implements IBackupManager {
 	/**
 	 * @var bool Indicates whether feature is enabled
 	 */
-	private bool $featureEnabled;
-
-	/**
-	 * @var PrivilegedFileManager Privileged file manager
-	 */
-	private PrivilegedFileManager $fileManager;
-
-	/**
-	 * @var RestoreLogger Restore logger
-	 */
-	private RestoreLogger $restoreLogger;
+	private readonly bool $featureEnabled;
 
 	/**
 	 * Constructor
@@ -66,10 +55,12 @@ class NetworkManagerBackup implements IBackupManager {
 	 * @param FeatureManager $featureManager Feature manager
 	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
-	public function __construct(PrivilegedFileManager $fileManager, FeatureManager $featureManager, RestoreLogger $restoreLogger) {
-		$this->fileManager = $fileManager;
-		$this->restoreLogger = $restoreLogger;
-		$this->featureEnabled = $featureManager->get('networkManager')['enabled'];
+	public function __construct(
+		private readonly PrivilegedFileManager $fileManager,
+		FeatureManager $featureManager,
+		private readonly RestoreLogger $restoreLogger,
+	) {
+		$this->featureEnabled = $featureManager->isEnabled('networkManager');
 	}
 
 	/**
@@ -99,9 +90,9 @@ class NetworkManagerBackup implements IBackupManager {
 		}
 		$this->restoreLogger->log('Restoring NetworkManager configuration and connection profiles.');
 		foreach ($zipManager->listFiles() as $file) {
-			if (Strings::startsWith($file, 'nm/')) {
+			if (str_starts_with($file, 'nm/')) {
 				$zipManager->extract(self::TMP_PATH, $file);
-				if (Strings::contains($file, 'system-connections/')) {
+				if (str_contains($file, 'system-connections/')) {
 					$this->fileManager->copy('system-connections/' . basename($file), self::TMP_PATH . $file);
 				} else {
 					$this->fileManager->copy(basename($file), self::TMP_PATH . $file);
@@ -110,6 +101,14 @@ class NetworkManagerBackup implements IBackupManager {
 		}
 		FileSystem::delete(self::TMP_PATH . 'nm');
 		$this->fixPrivileges();
+	}
+
+	/**
+	 * Returns service names
+	 * @return array<string> Service names
+	 */
+	public function getServices(): array {
+		return $this->featureEnabled ? self::SERVICES : [];
 	}
 
 	/**
@@ -122,14 +121,6 @@ class NetworkManagerBackup implements IBackupManager {
 			$this->fileManager->chown('system-connections/' . $connectionFile, 'root', 'root');
 			$this->fileManager->chmod('system-connections/' . $connectionFile, 0600);
 		}
-	}
-
-	/**
-	 * Returns service names
-	 * @return array<string> Service names
-	 */
-	public function getServices(): array {
-		return $this->featureEnabled ? self::SERVICES : [];
 	}
 
 }

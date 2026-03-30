@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models;
 
-use App\CoreModule\Models\CommandManager;
+use Iqrf\CommandExecutor\CommandExecutor;
 
 /**
  * Network manager
@@ -28,16 +28,12 @@ use App\CoreModule\Models\CommandManager;
 class NetworkManager {
 
 	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
-
-	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandExecutor Command manager
 	 */
-	public function __construct(CommandManager $commandManager) {
-		$this->commandManager = $commandManager;
+	public function __construct(
+		private readonly CommandExecutor $commandExecutor,
+	) {
 	}
 
 	/**
@@ -45,7 +41,7 @@ class NetworkManager {
 	 * @return string Hostname
 	 */
 	public function getHostname(): string {
-		$command = $this->commandManager->run('hostname -f');
+		$command = $this->commandExecutor->run('hostname -f');
 		if ($command->getExitCode() === 0) {
 			return $command->getStdout();
 		}
@@ -84,21 +80,12 @@ class NetworkManager {
 		$addresses = [];
 		foreach ($interfaces as $interface) {
 			$cmd = 'ip a s ' . escapeshellarg($interface) . ' | grep inet | grep global | grep -v temporary | awk \'{print $2}\' | grep \'/\'';
-			$output = $this->commandManager->run($cmd, true)->getStdout();
+			$output = $this->commandExecutor->run($cmd, true)->getStdout();
 			if ($output !== '') {
 				$addresses[$interface] = explode(PHP_EOL, $output);
 			}
 		}
 		return $addresses;
-	}
-
-	/**
-	 * Lists network interfaces
-	 * @return array<string> Network interfaces
-	 */
-	private function listsInterfaces(): array {
-		$interfaces = $this->commandManager->run('ls /sys/class/net | awk \'{ print $0 }\'', true)->getStdout();
-		return array_diff(explode(PHP_EOL, $interfaces), ['lo']);
 	}
 
 	/**
@@ -110,10 +97,19 @@ class NetworkManager {
 		$addresses = [];
 		foreach ($interfaces as $interface) {
 			$cmd = 'cat /sys/class/net/' . $interface . '/address';
-			$output = $this->commandManager->run($cmd, true)->getStdout();
+			$output = $this->commandExecutor->run($cmd, true)->getStdout();
 			$addresses[$interface] = $output === '' ? null : $output;
 		}
 		return $addresses;
+	}
+
+	/**
+	 * Lists network interfaces
+	 * @return array<string> Network interfaces
+	 */
+	private function listsInterfaces(): array {
+		$interfaces = $this->commandExecutor->run('ls /sys/class/net | awk \'{ print $0 }\'', true)->getStdout();
+		return array_diff(explode(PHP_EOL, $interfaces), ['lo']);
 	}
 
 }

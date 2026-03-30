@@ -26,12 +26,12 @@ declare(strict_types = 1);
 
 namespace Tests\Integration\CoreModule\Models;
 
-use App\CoreModule\Entities\CommandStack;
 use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
-use App\CoreModule\Models\CommandManager;
-use App\CoreModule\Models\FileManager;
 use App\CoreModule\Models\JsonSchemaManager;
+use Iqrf\CommandExecutor\CommandExecutor;
+use Iqrf\CommandExecutor\CommandStack;
+use Iqrf\FileManager\FileManager;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -43,22 +43,22 @@ require __DIR__ . '/../../../bootstrap.php';
 final class JsonSchemaManagerTest extends TestCase {
 
 	/**
-	 * @var string JSON file name
+	 * JSON file name
 	 */
 	private const FILE_NAME = 'iqrf__MqttMessaging.json';
 
 	/**
-	 * @var string Directory with configuration files
+	 * Directory with configuration files
 	 */
 	private const FILE_PATH = TESTER_DIR . '/data/configuration/';
 
 	/**
-	 * @var string JSON schema file name
+	 * JSON schema file name
 	 */
 	private const SCHEMA_NAME = 'schema__iqrf__MqttMessaging';
 
 	/**
-	 * @var string JSON schema directory path
+	 * JSON schema directory path
 	 */
 	private const SCHEMA_PATH = TESTER_DIR . '/data/cfgSchemas/';
 
@@ -96,7 +96,7 @@ final class JsonSchemaManagerTest extends TestCase {
 	public function testValidateInvalid(): void {
 		$this->manager->setSchema(self::SCHEMA_NAME);
 		Assert::exception(function (): void {
-			$json = (object) $this->fileManager->readJson('iqrf__MqMessaging.json');
+			$json = (object) $this->fileManager->readJson('iqrf__WebsocketMessaging.json');
 			$this->manager->validate($json);
 		}, InvalidJsonException::class);
 	}
@@ -127,7 +127,7 @@ final class JsonSchemaManagerTest extends TestCase {
 	 */
 	protected function setUp(): void {
 		$commandStack = new CommandStack();
-		$commandManager = new CommandManager(false, $commandStack);
+		$commandManager = new CommandExecutor(false, $commandStack);
 		$this->fileManager = new FileManager(self::FILE_PATH, $commandManager);
 		$this->manager = new JsonSchemaManager(self::SCHEMA_PATH, $commandManager);
 	}

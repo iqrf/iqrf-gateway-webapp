@@ -18,19 +18,14 @@
  */
 declare(strict_types = 1);
 
-use Rector\CodeQuality\Rector\Array_\CallableThisArrayToAnonymousFunctionRector;
-use Rector\CodeQuality\Rector\Class_\InlineConstructorDefaultToPropertyRector;
 use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
 use Rector\CodingStyle\Rector\Assign\SplitDoubleAssignRector;
 use Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector;
 use Rector\CodingStyle\Rector\ClassMethod\NewlineBeforeNewAssignSetRector;
-use Rector\CodingStyle\Rector\PostInc\PostIncDecToPreIncDecRector;
 use Rector\CodingStyle\Rector\Stmt\NewlineAfterStatementRector;
-use Rector\CodingStyle\Rector\String_\SymplifyQuoteEscapeRector;
+use Rector\CodingStyle\Rector\String_\SimplifyQuoteEscapeRector;
 use Rector\Config\RectorConfig;
-use Rector\Doctrine\Set\DoctrineSetList;
-use Rector\Symfony\Set\SymfonySetList;
-use Rector\Transform\Rector\Attribute\AttributeKeyToClassConstFetchRector;
+use Rector\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector;
 
 return RectorConfig::configure()
 	->withPaths([
@@ -39,40 +34,31 @@ return RectorConfig::configure()
 		__DIR__ . '/tests',
 	])
 	->withSkip([
-		AttributeKeyToClassConstFetchRector::class,
-		CallableThisArrayToAnonymousFunctionRector::class,
 		CatchExceptionNameMatchingTypeRector::class,
-		FlipTypeControlToUseExclusiveTypeRector::class,
 		NewlineAfterStatementRector::class,
 		NewlineBeforeNewAssignSetRector::class,
-		PostIncDecToPreIncDecRector::class,
+		NullToStrictStringFuncCallArgRector::class,
 		SplitDoubleAssignRector::class,
-		SymplifyQuoteEscapeRector::class,
+		SimplifyQuoteEscapeRector::class,
+		FlipTypeControlToUseExclusiveTypeRector::class,
 		__DIR__ . '/tests/tmp',
 	])
 	->withPHPStanConfigs([
 		__DIR__ . '/phpstan.neon',
 	])
-	->withPhpVersion(80100)
-	->withPhpSets(false, false, false, false, true)
+	->withPhpVersion(80200)
+	->withPhpSets(php82: true)
 	->withPreparedSets(
-		true,
-		true,
-		true,
-		true,
-		false,
-		false,
-		true
+		deadCode: true,
+		codeQuality: true,
+		codingStyle: true,
+		typeDeclarations: true,
+		instanceOf: true,
 	)
-	->withSets([
-		DoctrineSetList::DOCTRINE_CODE_QUALITY,
-		DoctrineSetList::DOCTRINE_COMMON_20,
-		DoctrineSetList::DOCTRINE_DBAL_30,
-		DoctrineSetList::DOCTRINE_ORM_214,
-		SymfonySetList::SYMFONY_54,
-		SymfonySetList::SYMFONY_CODE_QUALITY,
-	])
-	->withRules([
-		InlineConstructorDefaultToPropertyRector::class,
-	])
+	->withAttributesSets(all: true)
+	->withComposerBased(
+		doctrine: true,
+		symfony: true,
+		netteUtils: true,
+	)
 	->withIndent("\t");

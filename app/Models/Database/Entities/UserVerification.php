@@ -22,34 +22,31 @@ namespace App\Models\Database\Entities;
 
 use App\Models\Database\Attributes\TCreatedAt;
 use App\Models\Database\Attributes\TUuid;
+use App\Models\Database\Repositories\UserVerificationRepository;
 use DateInterval;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * User verification
- * @ORM\Entity(repositoryClass="App\Models\Database\Repositories\UserVerificationRepository")
- * @ORM\Table(name="`email_verification`")
- * @ORM\HasLifecycleCallbacks()
  */
+#[ORM\Entity(repositoryClass: UserVerificationRepository::class)]
+#[ORM\HasLifecycleCallbacks]
+#[ORM\Table(name: '`email_verification`')]
 class UserVerification {
 
 	use TUuid;
 	use TCreatedAt;
 
 	/**
-	 * @var User User ID
-	 * @ORM\ManyToOne(targetEntity="User", inversedBy="verifications", cascade={"persist"})
-	 * @ORM\JoinColumn(name="user", onDelete="CASCADE")
-	 */
-	private User $user;
-
-	/**
 	 * Constructor
 	 * @param User $user User
 	 */
-	public function __construct(User $user) {
-		$this->user = $user;
+	public function __construct(
+		#[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist'], inversedBy: 'verifications')]
+		#[ORM\JoinColumn(name: 'user', nullable: false, onDelete: 'CASCADE')]
+		private readonly User $user
+	) {
 	}
 
 	/**

@@ -20,9 +20,9 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models;
 
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FeatureManager;
 use App\GatewayModule\Exceptions\ChpasswdErrorException;
+use Iqrf\CommandExecutor\CommandExecutor;
 
 /**
  * Gateway password manager
@@ -30,23 +30,14 @@ use App\GatewayModule\Exceptions\ChpasswdErrorException;
 class PasswordManager {
 
 	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
-
-	/**
-	 * @var FeatureManager Feature manager
-	 */
-	private FeatureManager $featureManager;
-
-	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandExecutor Command manager
 	 * @param FeatureManager $featureManager Feature manager
 	 */
-	public function __construct(CommandManager $commandManager, FeatureManager $featureManager) {
-		$this->commandManager = $commandManager;
-		$this->featureManager = $featureManager;
+	public function __construct(
+		private readonly CommandExecutor $commandExecutor,
+		private readonly FeatureManager $featureManager,
+	) {
 	}
 
 	/**
@@ -56,7 +47,7 @@ class PasswordManager {
 	public function setPassword(string $password): void {
 		$feature = $this->featureManager->get('gatewayPass');
 		$input = $feature['user'] . ':' . $password;
-		$command = $this->commandManager->run('chpasswd', true, 60, $input);
+		$command = $this->commandExecutor->run('chpasswd', true, 60, $input);
 		if ($command->getExitCode() !== 0) {
 			throw new ChpasswdErrorException($command->getStderr());
 		}

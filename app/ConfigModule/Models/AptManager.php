@@ -22,13 +22,13 @@ namespace App\ConfigModule\Models;
 
 use App\ConfigModule\Exceptions\AptErrorException;
 use App\ConfigModule\Exceptions\AptNotFoundException;
-use App\CoreModule\Models\CommandManager;
-use App\CoreModule\Models\IFileManager;
+use Iqrf\CommandExecutor\CommandExecutor;
+use Iqrf\FileManager\IFileManager;
 
 class AptManager {
 
 	/**
-	 * @var array<string, string> Default values
+	 * Default values
 	 */
 	private const DEFAULTS = [
 		'APT::Periodic::Enable' => '0',
@@ -39,28 +39,19 @@ class AptManager {
 	];
 
 	/**
-	 * @var string Apt configuration file name
+	 * Apt configuration file name
 	 */
 	private const FILE_NAME = '99iqrf-gateway-webapp';
 
 	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
-
-	/**
-	 * @var IFileManager File manager
-	 */
-	private IFileManager $fileManager;
-
-	/**
 	 * Constructor
 	 * @param IFileManager $fileManager Privileged file manager
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandExecutor Command manager
 	 */
-	public function __construct(IFileManager $fileManager, CommandManager $commandManager) {
-		$this->fileManager = $fileManager;
-		$this->commandManager = $commandManager;
+	public function __construct(
+		private readonly IFileManager $fileManager,
+		private readonly CommandExecutor $commandExecutor,
+	) {
 	}
 
 	/**
@@ -70,10 +61,10 @@ class AptManager {
 	 * @throws AptNotFoundException
 	 */
 	public function read(): array {
-		if (!$this->commandManager->commandExist('apt-config')) {
+		if (!$this->commandExecutor->commandExist('apt-config')) {
 			throw new AptNotFoundException('Apt package not installed.');
 		}
-		$command = $this->commandManager->run('apt-config dump', false);
+		$command = $this->commandExecutor->run('apt-config dump', false);
 		if ($command->getExitCode() !== 0) {
 			throw new AptErrorException('An error has occurred while retrieving apt configuration');
 		}

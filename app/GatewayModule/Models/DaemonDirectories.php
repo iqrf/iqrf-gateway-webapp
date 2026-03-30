@@ -30,34 +30,26 @@ class DaemonDirectories {
 	/**
 	 * @var string Path to a directory with IQRF Gateway Daemon's cache
 	 */
-	private string $cacheDir;
-
-	/**
-	 * @var string Path to a directory with IQRF Gateway Daemon's configuration
-	 */
-	private string $configurationDir;
+	private readonly string $cacheDir;
 
 	/**
 	 * @var string Path to a directory with IQRF Gateway Daemon's data
 	 */
-	private string $dataDir;
-
-	/**
-	 * @var string Path to a directory with log files of IQRF Gateway Daemon
-	 */
-	private string $logDir;
+	private readonly string $dataDir;
 
 	/**
 	 * Constructor
-	 * @param string $confDir Path to a directory with IQRF Gateway Daemon's configuration
+	 * @param string $configurationDir Path to a directory with IQRF Gateway Daemon's configuration
 	 * @param string $logDir Path to a directory with log files of IQRF Gateway Daemon
 	 * @param MainManager $mainManager Main configuration manager
 	 */
-	public function __construct(string $confDir, string $logDir, MainManager $mainManager) {
+	public function __construct(
+		private readonly string $configurationDir,
+		private readonly string $logDir,
+		MainManager $mainManager,
+	) {
 		$this->cacheDir = $mainManager->getCacheDir();
-		$this->configurationDir = $confDir;
 		$this->dataDir = $mainManager->getDataDir();
-		$this->logDir = $logDir;
 	}
 
 	/**

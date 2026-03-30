@@ -18,6 +18,7 @@ services:
 		factory: App\ApiModule\Version0\Models\JsonSchemaValidator
 		autowired: self
 	- App\ApiModule\Version0\Models\BearerAuthenticator
+	- App\ApiModule\Version0\Models\JwtAuthenticator
 	- App\ApiModule\Version0\Models\JwtConfigurator
 	- App\ApiModule\Version0\Models\OpenApiSchemaBuilder
 	restApiSchemaManager:

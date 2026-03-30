@@ -24,7 +24,7 @@ use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\RequestParameter;
-use Apitte\Core\Annotation\Controller\RequestParameters;
+use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
@@ -39,95 +39,89 @@ use Grifart\Enum\MissingValueDeclarationException;
 
 /**
  * Network interfaces controller
- * @Path("/interfaces")
  */
+#[Path('/interfaces')]
+#[Tag('IP network - Network interfaces')]
 class InterfacesController extends NetworkController {
 
 	/**
-	 * @var InterfaceManager Network interface manager
-	 */
-	private InterfaceManager $interfaceManager;
-
-	/**
 	 * Constructor
-	 * @param InterfaceManager $manager Network interface manager
+	 * @param InterfaceManager $interfaceManager Network interface manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(InterfaceManager $manager, RestApiSchemaValidator $validator) {
-		$this->interfaceManager = $manager;
+	public function __construct(
+		private readonly InterfaceManager $interfaceManager,
+		RestApiSchemaValidator $validator,
+	) {
 		parent::__construct($validator);
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Returns network interfaces
-	 *  parameters:
-	 *      - in: query
-	 *        name: type
-	 *        schema:
-	 *          type: string
-	 *          enum:
-	 *              - 'bond'
-	 *              - 'bridge'
-	 *              - 'dummy'
-	 *              - 'ethernet'
-	 *              - 'loopback'
-	 *              - 'tun'
-	 *              - 'vlan'
-	 *              - 'wifi'
-	 *              - 'wifi-p2p'
-	 *        required: false
-	 *        description: Connection type
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/NetworkInterfaces'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('GET')]
+	#[OpenApi(<<<'EOT'
+		summary: Returns network interfaces
+		parameters:
+			-
+				in: query
+				name: type
+				schema:
+					type: string
+					enum:
+						- 'bond'
+						- 'bt'
+						- 'bridge'
+						- 'dummy'
+						- 'ethernet'
+						- 'gsm'
+						- 'iptunnel'
+						- 'loopback'
+						- 'ppp'
+						- 'tun'
+						- 'vlan'
+						- 'wifi'
+						- 'wifi-p2p'
+						- 'wireguard'
+				required: false
+				description: Connection type
+		responses:
+			'200':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: '#/components/schemas/NetworkInterfaces'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['network']);
-		$typeParam = $request->getQueryParam('type', null);
+		$typeParam = $request->getQueryParam('type');
 		try {
 			$type = $typeParam === null ? null : InterfaceTypes::fromScalar($typeParam);
-		} catch (MissingValueDeclarationException $e) {
+		} catch (MissingValueDeclarationException) {
 			$type = null;
 		}
 		$list = $this->interfaceManager->list($type);
 		return $response->writeJsonBody($list);
 	}
 
-	/**
-	 * @Path("/{name}/connect")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Connects network interface
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @RequestParameters(
-	 *     @RequestParameter(name="name", type="string", description="Network interface name")
-	 * )
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/{name}/connect')]
+	#[Method('POST')]
+	#[OpenApi(<<<'EOT'
+		summary: Connects network interface
+		responses:
+			'200':
+				description: Success
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
+	#[RequestParameter(name: 'name', type: 'string', description: 'Network interface name')]
 	public function connect(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['network']);
 		try {
@@ -140,28 +134,23 @@ class InterfacesController extends NetworkController {
 		}
 	}
 
-	/**
-	 * @Path("/{name}/disconnect")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Disconnects network interface
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @RequestParameters(
-	 *     @RequestParameter(name="name", type="string", description="Network interface name")
-	 * )
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/{name}/disconnect')]
+	#[Method('POST')]
+	#[OpenApi(<<<'EOT'
+		summary: Disconnects network interface
+		responses:
+			'200':
+				description: Success
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'500':
+				$ref: '#/components/responses/ServerError'
+	EOT)]
+	#[RequestParameter(name: 'name', type: 'string', description: 'Network interface name')]
 	public function disconnect(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['network']);
 		try {

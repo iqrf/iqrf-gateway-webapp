@@ -32,11 +32,6 @@ use Nette\Utils\FileSystem;
 class FeatureManager {
 
 	/**
-	 * @var string Path to the configuration file
-	 */
-	private string $path;
-
-	/**
 	 * Default configuration
 	 */
 	private const DEFAULTS = [
@@ -112,8 +107,9 @@ class FeatureManager {
 	 * Constructor
 	 * @param string $path Path to the configuration file
 	 */
-	public function __construct(string $path) {
-		$this->path = $path;
+	public function __construct(
+		private readonly string $path,
+	) {
 	}
 
 	/**
@@ -134,7 +130,7 @@ class FeatureManager {
 			$content = FileSystem::read($this->path);
 			$configuration = Neon::decode($content) ?? [];
 			return array_merge(self::DEFAULTS, $configuration);
-		} catch (IOException | NeonException $e) {
+		} catch (IOException | NeonException) {
 			return self::DEFAULTS;
 		}
 	}
@@ -167,16 +163,6 @@ class FeatureManager {
 			throw new FeatureNotFoundException();
 		}
 		return $configuration[$name];
-	}
-
-	/**
-	 * Writes the features configuration
-	 * @param array<string, array<string, bool|int|string>> $features Feature configuration to write
-	 * @throws IOException
-	 */
-	protected function write(array $features): void {
-		$content = Neon::encode($features, Neon::BLOCK);
-		FileSystem::write($this->path, $content);
 	}
 
 	/**
@@ -214,6 +200,16 @@ class FeatureManager {
 			$config[$name]['enabled'] = $enabled;
 		}
 		$this->write($config);
+	}
+
+	/**
+	 * Writes the features configuration
+	 * @param array<string, array<string, bool|int|string>> $features Feature configuration to write
+	 * @throws IOException
+	 */
+	protected function write(array $features): void {
+		$content = Neon::encode($features, blockMode: true);
+		FileSystem::write($this->path, $content);
 	}
 
 }

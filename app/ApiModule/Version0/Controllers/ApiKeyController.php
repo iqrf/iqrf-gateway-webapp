@@ -24,7 +24,6 @@ use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\RequestParameter;
-use Apitte\Core\Annotation\Controller\RequestParameters;
 use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Http\ApiRequest;
@@ -38,91 +37,76 @@ use App\Models\Database\Repositories\ApiKeyRepository;
 
 /**
  * API keys controller
- * @Path("/apiKeys")
- * @Tag("API key manager")
  */
+#[Path('/apiKeys')]
+#[Tag('Security - API key management')]
 class ApiKeyController extends BaseController {
-
-	/**
-	 * @var EntityManager Entity manager
-	 */
-	private EntityManager $entityManager;
 
 	/**
 	 * @var ApiKeyRepository API key database repository
 	 */
-	private ApiKeyRepository $repository;
+	private readonly ApiKeyRepository $repository;
 
 	/**
 	 * Constructor
 	 * @param EntityManager $entityManager Entity manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(EntityManager $entityManager, RestApiSchemaValidator $validator) {
-		$this->entityManager = $entityManager;
-		$this->repository = $entityManager->getApiKeyRepository();
+	public function __construct(
+		private readonly EntityManager $entityManager,
+		RestApiSchemaValidator $validator,
+	) {
+		$this->repository = $this->entityManager->getApiKeyRepository();
 		parent::__construct($validator);
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Lists all API keys
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      type: array
-	 *                      items:
-	 *                          $ref: '#/components/schemas/ApiKeyDetail'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('GET')]
+	#[OpenApi(<<<'EOT'
+		summary: Lists all API keys
+		responses:
+			200:
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: '#/components/schemas/ApiKeyList'
+			403:
+				$ref: '#/components/responses/Forbidden'
+	EOT)]
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['apiKeys']);
 		$apiKeys = $this->repository->findAll();
 		return $response->writeJsonBody($apiKeys);
 	}
 
-	/**
-	 * @Path("/")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Creates a new API key
-	 *  requestBody:
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/ApiKeyModify'
-	 *  responses:
-	 *      '201':
-	 *          description: Created
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/ApiKeyCreated'
-	 *          headers:
-	 *              Location:
-	 *                  description: Location of information about the created API key
-	 *                  schema:
-	 *                      type: string
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/')]
+	#[Method('POST')]
+	#[OpenApi(<<<'EOT'
+		summary: Creates a new API key
+		requestBody:
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: '#/components/schemas/ApiKeyModify'
+		responses:
+			'201':
+				description: Created
+				content:
+					application/json:
+						schema:
+							$ref: '#/components/schemas/ApiKeyCreated'
+				headers:
+					Location:
+						description: Location of information about the created API key
+						schema:
+							type: string
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+	EOT)]
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['apiKeys']);
 		$this->validator->validateRequest('apiKeyModify', $request);
@@ -140,30 +124,23 @@ class ApiKeyController extends BaseController {
 			->withStatus(ApiResponse::S201_CREATED);
 	}
 
-	/**
-	 * @Path("/{id}")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Finds API key by ID
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/ApiKeyDetail'
-	 *      '404':
-	 *          description: Not found
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 * ")
-	 * @RequestParameters({
-	 *      @RequestParameter(name="id", type="integer", description="API key ID")
-	 * })
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/{id}')]
+	#[Method('GET')]
+	#[OpenApi(<<<'EOT'
+		summary: Returns API key by ID
+		responses:
+			'200':
+				description: Success
+				content:
+					application/json:
+						schema:
+							$ref: '#/components/schemas/ApiKeyDetail'
+			'404':
+				$ref: '#/components/responses/NotFound'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+	EOT)]
+	#[RequestParameter('id', type: 'integer', description: 'API key ID')]
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['apiKeys']);
 		$id = (int) $request->getParameter('id');
@@ -174,26 +151,19 @@ class ApiKeyController extends BaseController {
 		return $response->writeJsonObject($apiKey);
 	}
 
-	/**
-	 * @Path("/{id}")
-	 * @Method("DELETE")
-	 * @OpenApi("
-	 *  summary: Deletes a API key
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '404':
-	 *          description: Not found
-	 * ")
-	 * @RequestParameters({
-	 *      @RequestParameter(name="id", type="integer", description="API key ID")
-	 * })
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/{id}')]
+	#[Method('DELETE')]
+	#[OpenApi(<<<'EOT'
+		summary: Deletes a API key
+		responses:
+			'200':
+				description: Success
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+	EOT)]
+	#[RequestParameter('id', type: 'integer', description: 'API key ID')]
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['apiKeys']);
 		$id = (int) $request->getParameter('id');
@@ -206,34 +176,27 @@ class ApiKeyController extends BaseController {
 		return $response->writeBody('Workaround');
 	}
 
-	/**
-	 * @Path("/{id}")
-	 * @Method("PUT")
-	 * @OpenApi("
-	 *  summary: Edits the API key
-	 *  requestBody:
-	 *      required: true
-	 *      content:
-	 *          application/json:
-	 *              schema:
-	 *                  $ref: '#/components/schemas/ApiKeyModify'
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *      '400':
-	 *          $ref: '#/components/responses/BadRequest'
-	 *      '403':
-	 *          $ref: '#/components/responses/Forbidden'
-	 *      '404':
-	 *          description: 'API key not found'
-	 * ")
-	 * @RequestParameters({
-	 *      @RequestParameter(name="id", type="integer", description="API key ID")
-	 * })
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
+	#[Path('/{id}')]
+	#[Method('PUT')]
+	#[OpenApi(<<<'EOT'
+		summary: Updates the API key
+		requestBody:
+			required: true
+			content:
+				application/json:
+					schema:
+						$ref: '#/components/schemas/ApiKeyModify'
+		responses:
+			'200':
+				description: Success
+			'400':
+				$ref: '#/components/responses/BadRequest'
+			'403':
+				$ref: '#/components/responses/Forbidden'
+			'404':
+				$ref: '#/components/responses/NotFound'
+	EOT)]
+	#[RequestParameter(name: 'id', type: 'integer', description: 'API key ID')]
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
 		self::checkScopes($request, ['apiKeys']);
 		$id = (int) $request->getParameter('id');

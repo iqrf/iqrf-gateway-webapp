@@ -20,11 +20,10 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models\Backup;
 
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FeatureManager;
-use App\CoreModule\Models\PrivilegedFileManager;
 use App\CoreModule\Models\ZipArchiveManager;
-use Nette\Utils\Strings;
+use Iqrf\CommandExecutor\CommandExecutor;
+use Iqrf\FileManager\PrivilegedFileManager;
 
 /**
  * Cloud provisioning backup manager
@@ -39,36 +38,24 @@ class CloudProvisioningBackup implements IBackupManager {
 	];
 
 	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
-
-	/**
-	 * @var PrivilegedFileManager Privileged file manager
-	 */
-	private PrivilegedFileManager $fileManager;
-
-	/**
-	 * @var RestoreLogger Restore logger
-	 */
-	private RestoreLogger $restoreLogger;
-
-	/**
 	 * @var bool Indicates whether feature is enabled
 	 */
-	private bool $featureEnabled;
+	private readonly bool $featureEnabled;
 
 	/**
 	 * Constructor
+	 * @param CommandExecutor $commandExecutor Command executor
 	 * @param PrivilegedFileManager $fileManager Privileged file manager
 	 * @param FeatureManager $featureManager FeatureManager
 	 * @param RestoreLogger $restoreLogger Restore logger
 	 */
-	public function __construct(CommandManager $commandManager, PrivilegedFileManager $fileManager, FeatureManager $featureManager, RestoreLogger $restoreLogger) {
-		$this->commandManager = $commandManager;
-		$this->fileManager = $fileManager;
-		$this->restoreLogger = $restoreLogger;
-		$this->featureEnabled = $featureManager->get('iqrfCloudProvisioning')['enabled'];
+	public function __construct(
+		private readonly PrivilegedFileManager $fileManager,
+		private readonly CommandExecutor $commandExecutor,
+		FeatureManager $featureManager,
+		private readonly RestoreLogger $restoreLogger,
+	) {
+		$this->featureEnabled = $featureManager->isEnabled('iqrfCloudProvisioning');
 	}
 
 	/**
@@ -96,7 +83,7 @@ class CloudProvisioningBackup implements IBackupManager {
 		$this->restoreLogger->log('Restoring IQRF Cloud Provisioning configuration.');
 		$this->recreateDirectory();
 		foreach ($zipManager->listFiles() as $file) {
-			if (Strings::startsWith($file, 'cloudProv/')) {
+			if (str_starts_with($file, 'cloudProv/')) {
 				$this->fileManager->write(basename($file), $zipManager->openFile($file));
 			}
 		}
@@ -108,19 +95,18 @@ class CloudProvisioningBackup implements IBackupManager {
 	 * @return array<string> Service names
 	 */
 	public function getServices(): array {
-		return self::SERVICES;
+		return $this->featureEnabled ? self::SERVICES : [];
 	}
 
 	/**
 	 * Recreates directory
 	 */
 	private function recreateDirectory(): void {
-		$user = posix_getpwuid(posix_geteuid());
-		$owner = $user['name'] . ':' . posix_getgrgid($user['gid'])['name'];
+		$owner = PosixHelper::getChownOwner();
 		$path = escapeshellarg($this->fileManager->getBasePath());
-		$this->commandManager->run('rm -rf ' . $path, true);
-		$this->commandManager->run('mkdir ' . $path, true);
-		$this->commandManager->run('chown -R ' . $owner . ' ' . $path, true);
+		$this->commandExecutor->run('rm -rf ' . $path, true);
+		$this->commandExecutor->run('mkdir ' . $path, true);
+		$this->commandExecutor->run('chown -R ' . $owner . ' ' . $path, true);
 	}
 
 	/**

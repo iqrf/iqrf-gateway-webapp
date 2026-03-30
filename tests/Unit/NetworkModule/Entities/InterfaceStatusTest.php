@@ -42,49 +42,49 @@ require __DIR__ . '/../../../bootstrap.php';
 final class InterfaceStatusTest extends TestCase {
 
 	/**
-	 * @var string Network connection UUID
+	 * Network connection UUID
 	 */
 	private const CONNECTION = 'f61b25c9-66d7-400e-add0-d2a30c57b65c';
 
 	/**
-	 * @var string Network interface name
+	 * Network interface name
 	 */
 	private const NAME = 'eth0';
 
 	/**
-	 * @var string Network interface MAC address
+	 * Network interface MAC address
 	 */
 	private const MAC_ADDRESS = '00:00:00:00:00:00';
 
 	/**
-	 * @var string Network interface manufacturer
+	 * Network interface manufacturer
 	 */
 	private const MANUFACTURER = 'Manufacturer';
 
 	/**
-	 * @var string Network interface model
+	 * Network interface model
 	 */
 	private const MODEL = 'Model';
 
 	/**
 	 * @var InterfaceTypes Network interface type
 	 */
-	private InterfaceTypes $type;
+	private readonly InterfaceTypes $type;
 
 	/**
 	 * @var InterfaceStates Network interface state
 	 */
-	private InterfaceStates $state;
+	private readonly InterfaceStates $state;
 
 	/**
 	 * @var InterfaceStatus Network interface entity
 	 */
-	private InterfaceStatus $entity;
+	private readonly InterfaceStatus $entity;
 
 	/**
 	 * @var UuidInterface Network connection UUID
 	 */
-	private UuidInterface $connection;
+	private readonly UuidInterface $connection;
 
 	/**
 	 * Sets up the test environment
@@ -93,7 +93,15 @@ final class InterfaceStatusTest extends TestCase {
 		$this->type = InterfaceTypes::ETHERNET();
 		$this->state = InterfaceStates::CONNECTED();
 		$this->connection = Uuid::fromString(self::CONNECTION);
-		$this->entity = new InterfaceStatus(self::NAME, self::MAC_ADDRESS, self::MANUFACTURER, self::MODEL, $this->type, $this->state, $this->connection);
+		$this->entity = new InterfaceStatus(
+			name: self::NAME,
+			macAddress: self::MAC_ADDRESS,
+			manufacturer: self::MANUFACTURER,
+			model: self::MODEL,
+			type: $this->type,
+			state: $this->state,
+			connection: $this->connection,
+		);
 	}
 
 	/**

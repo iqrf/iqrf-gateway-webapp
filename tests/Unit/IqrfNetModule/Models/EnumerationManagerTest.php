@@ -37,7 +37,7 @@ require __DIR__ . '/../../../bootstrap.php';
 final class EnumerationManagerTest extends WebSocketTestCase {
 
 	/**
-	 * @var int Network device address
+	 * Network device address
 	 */
 	private const ADDRESS = 1;
 
@@ -45,14 +45,6 @@ final class EnumerationManagerTest extends WebSocketTestCase {
 	 * @var EnumerationManager IQMESH Enumeration manager
 	 */
 	private EnumerationManager $manager;
-
-	/**
-	 * Sets up the test environment
-	 */
-	protected function setUp(): void {
-		parent::setUp();
-		$this->manager = new EnumerationManager($this->request, $this->wsClient);
-	}
 
 	/**
 	 * Tests the function to run IQMESH Enumeration process
@@ -72,6 +64,14 @@ final class EnumerationManagerTest extends WebSocketTestCase {
 		$this->assertRequest($request, function (): void {
 			$this->manager->device(self::ADDRESS);
 		});
+	}
+
+	/**
+	 * Sets up the test environment
+	 */
+	protected function setUp(): void {
+		parent::setUp();
+		$this->manager = new EnumerationManager($this->request, $this->wsClient);
 	}
 
 }

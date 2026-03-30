@@ -29,21 +29,21 @@ use App\CoreModule\Models\ZipArchiveManager;
 class SshBackup implements IBackupManager {
 
 	/**
-	 * @var string Service unit file
+	 * Service unit file
 	 */
 	public const SERVICE = 'ssh';
 
 	/**
 	 * @var bool Feature enabled
 	 */
-	private bool $featureEnabled;
+	private readonly bool $featureEnabled;
 
 	/**
 	 * Constructor
 	 * @param FeatureManager $featureManager Feature manager
 	 */
 	public function __construct(FeatureManager $featureManager) {
-		$this->featureEnabled = $featureManager->get('ssh')['enabled'];
+		$this->featureEnabled = $featureManager->isEnabled('ssh');
 	}
 
 	/**
@@ -52,6 +52,7 @@ class SshBackup implements IBackupManager {
 	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
 	public function backup(array $params, ZipArchiveManager $zipManager): void {
+		// nothing to backup
 	}
 
 	/**
@@ -59,6 +60,7 @@ class SshBackup implements IBackupManager {
 	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 */
 	public function restore(ZipArchiveManager $zipManager): void {
+		// nothing to restore
 	}
 
 	/**

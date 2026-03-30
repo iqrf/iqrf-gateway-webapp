@@ -30,16 +30,12 @@ use Nette\Mail\SmtpMailer;
 class MailerFactory {
 
 	/**
-	 * @var ConfigurationManager Mailer configuration manager
-	 */
-	private ConfigurationManager $configuration;
-
-	/**
 	 * Constructor
 	 * @param ConfigurationManager $configuration Mailer configuration manager
 	 */
-	public function __construct(ConfigurationManager $configuration) {
-		$this->configuration = $configuration;
+	public function __construct(
+		private readonly ConfigurationManager $configuration,
+	) {
 	}
 
 	/**
@@ -48,7 +44,7 @@ class MailerFactory {
 	 */
 	public function build(): Mailer {
 		$smtpMailer = $this->buildSmtpMailer();
-		if ($smtpMailer !== null) {
+		if ($smtpMailer instanceof SmtpMailer) {
 			return $smtpMailer;
 		}
 		return new SendmailMailer();
@@ -60,10 +56,20 @@ class MailerFactory {
 	 */
 	private function buildSmtpMailer(): ?SmtpMailer {
 		$configuration = $this->configuration->read();
-		if ($configuration['enabled'] !== true) {
+		if (!$configuration->enabled) {
 			return null;
 		}
-		return new SmtpMailer($configuration);
+		return new SmtpMailer(
+			$configuration->host,
+			$configuration->username,
+			$configuration->password,
+			$configuration->port,
+			$configuration->secure,
+			$configuration->persistent,
+			$configuration->timeout,
+			$configuration->clientHost,
+			is_array($configuration->context) ? $configuration->context : null,
+		);
 	}
 
 }

@@ -38,62 +38,62 @@ require __DIR__ . '/../../../../bootstrap.php';
 final class GatewayInfoUtilTest extends TestCase {
 
 	/**
-	 * @var string Configuration directory path
+	 * Configuration directory path
 	 */
 	private const CONF_DIR = TESTER_DIR . '/data/gatewayInfo/';
 
 	/**
-	 * @var string Gateway product
+	 * Gateway product
 	 */
 	private const GW_PRODUCT = 'IQD-GW-02A';
 
 	/**
-	 * @var string Default gateway product
+	 * Default gateway product
 	 */
 	private const DEFAULT_GW_PRODUCT = 'IQD-GW-0X';
 
 	/**
-	 * @var string Default gateway manufacturer
+	 * Default gateway manufacturer
 	 */
 	private const DEFAULT_GW_MANUFACTURER = 'MICRORISC s.r.o.';
 
 	/**
-	 * @var string Gateway ID
+	 * Gateway ID
 	 */
 	private const GW_ID = '0123456789ABCDEF';
 
 	/**
-	 * @var string Default Gateway ID
+	 * Default Gateway ID
 	 */
 	private const DEFAULT_GW_ID = 'FFFFFFFFFFFFFFFF';
 
 	/**
-	 * @var string Gateway host
+	 * Gateway host
 	 */
 	private const GW_HOST = 'iqube-0123456789abcdef.local';
 
 	/**
-	 * @var string Default gateway host
+	 * Default gateway host
 	 */
 	private const DEFAULT_GW_HOST = 'iqube-ffffffffffffffff.local';
 
 	/**
-	 * @var string Gateway image
+	 * Gateway image
 	 */
 	private const GW_IMAGE = 'iqube-armbian-v1.4.0';
 
 	/**
-	 * @var string Default gateway image
+	 * Default gateway image
 	 */
 	private const DEFAULT_GW_IMAGE = 'iqube-os-vX.Y.Z';
 
 	/**
-	 * @var string Gateway interface
+	 * Gateway interface
 	 */
 	private const GW_INTERFACE = 'spi';
 
 	/**
-	 * @var string Default gateway interface
+	 * Default gateway interface
 	 */
 	private const DEFAULT_GW_INTERFACE = 'unknown';
 
@@ -108,7 +108,7 @@ final class GatewayInfoUtilTest extends TestCase {
 	private const DEFAULT_GW_HWPID = 'FFFF';
 
 	/**
-	 * @var array<string, string> Gateway information
+	 * Gateway information
 	 */
 	private const GW_INFO = [
 		'gwProduct' => self::GW_PRODUCT,
@@ -121,7 +121,7 @@ final class GatewayInfoUtilTest extends TestCase {
 	];
 
 	/**
-	 * @var array<string, string> Incomplete and default gateway information
+	 * Incomplete and default gateway information
 	 */
 	private const INCOMPLETE_GW_INFO = [
 		'gwProduct' => self::GW_PRODUCT,
@@ -134,7 +134,7 @@ final class GatewayInfoUtilTest extends TestCase {
 	];
 
 	/**
-	 * @var array<string, string> Default gateway information
+	 * Default gateway information
 	 */
 	private const DEFAULT_GW_INFO = [
 		'gwProduct' => self::DEFAULT_GW_PRODUCT,
@@ -195,6 +195,15 @@ final class GatewayInfoUtilTest extends TestCase {
 		Assert::same(self::GW_ID, $this->gwInfo->getId());
 		Assert::same(self::GW_ID, $this->incompleteGwInfo->getId());
 		Assert::same(self::DEFAULT_GW_ID, $this->defaultGwInfo->getId());
+	}
+
+	/**
+	 * Tests the function to get gateway ID with null
+	 */
+	public function testGetIdNullable(): void {
+		Assert::same(self::GW_ID, $this->gwInfo->getIdNullable());
+		Assert::same(self::GW_ID, $this->incompleteGwInfo->getIdNullable());
+		Assert::null($this->defaultGwInfo->getIdNullable());
 	}
 
 	/**

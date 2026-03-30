@@ -20,9 +20,9 @@ declare(strict_types = 1);
 
 namespace App\NetworkModule\Models;
 
-use App\CoreModule\Models\CommandManager;
 use App\NetworkModule\Entities\WifiNetwork;
 use App\NetworkModule\Exceptions\NetworkManagerException;
+use Iqrf\CommandExecutor\CommandExecutor;
 
 /**
  * WiFi network manager
@@ -30,16 +30,12 @@ use App\NetworkModule\Exceptions\NetworkManagerException;
 class WifiManager {
 
 	/**
-	 * @var CommandManager Command manager
-	 */
-	private CommandManager $commandManager;
-
-	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param CommandExecutor $commandExecutor Command manager
 	 */
-	public function __construct(CommandManager $commandManager) {
-		$this->commandManager = $commandManager;
+	public function __construct(
+		private readonly CommandExecutor $commandExecutor,
+	) {
 	}
 
 	/**
@@ -49,7 +45,7 @@ class WifiManager {
 	public function list(): array {
 		$fields = ['IN-USE', 'BSSID', 'SSID', 'MODE', 'CHAN', 'RATE', 'SIGNAL', 'SECURITY'];
 		$command = sprintf('nmcli -t -f %s device wifi list --rescan auto', implode(',', $fields));
-		$output = $this->commandManager->run($command, true);
+		$output = $this->commandExecutor->run($command, true);
 		if ($output->getExitCode() !== 0) {
 			throw new NetworkManagerException($output->getStderr());
 		}
