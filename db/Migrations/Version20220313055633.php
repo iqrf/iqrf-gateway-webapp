@@ -41,8 +41,6 @@ final class Version20220313055633 extends AbstractMigration {
 	 * @param Schema $schema Database schema
 	 */
 	public function up(Schema $schema): void {
-		$this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
-
 		$this->addSql('UPDATE "users" SET role="admin" WHERE role="normal" OR role="power"');
 		$this->addSql('UPDATE "users" SET role="basic" WHERE role="iqaros"');
 	}
@@ -52,8 +50,6 @@ final class Version20220313055633 extends AbstractMigration {
 	 * @param Schema $schema Database schema
 	 */
 	public function down(Schema $schema): void {
-		$this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
-
 		$this->addSql('UPDATE "users" SET role="normal" WHERE role="admin"');
 		$this->addSql('UPDATE "users" SET role="iqaros" WHERE role="basic"');
 	}

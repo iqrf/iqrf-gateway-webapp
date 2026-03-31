@@ -41,8 +41,6 @@ final class Version20230112101613 extends AbstractMigration {
 	 * @param Schema $schema Database schema
 	 */
 	public function up(Schema $schema): void {
-		$this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
-
 		$this->addSql('ALTER TABLE controller_pin_configs ADD COLUMN device_type VARCHAR(255) NOT NULL DEFAULT board');
 	}
 
@@ -52,7 +50,6 @@ final class Version20230112101613 extends AbstractMigration {
 	 */
 	public function down(Schema $schema): void {
 		$this->addSql('CREATE TEMPORARY TABLE __temp__controller_pin_configs AS SELECT id, name, green_led, red_led, button, sck, sda FROM "controller_pin_configs"');
-
 		$this->addSql('DROP TABLE "controller_pin_configs"');
 		$this->addSql('CREATE TABLE "controller_pin_configs" (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name VARCHAR(255) NOT NULL, green_led INTEGER NOT NULL, red_led INTEGER NOT NULL, button INTEGER NOT NULL, sck INTEGER DEFAULT NULL, sda INTEGER DEFAULT NULL)');
 		$this->addSql('INSERT INTO "controller_pin_configs" (id, name, green_led, red_led, button, sck, sda) SELECT id, name, green_led, red_led, button, sck, sda FROM __temp__controller_pin_configs');

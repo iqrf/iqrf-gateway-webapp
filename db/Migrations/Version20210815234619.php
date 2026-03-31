@@ -41,8 +41,6 @@ final class Version20210815234619 extends AbstractMigration {
 	 * @param Schema $schema Database schema
 	 */
 	public function up(Schema $schema): void {
-		$this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
-
 		$this->addSql('CREATE TABLE "email_verification" (uuid CHAR(36) NOT NULL --(DC2Type:uuid)
         , user INTEGER DEFAULT NULL, created_at DATETIME NOT NULL, PRIMARY KEY(uuid))');
 		$this->addSql('CREATE INDEX IDX_FE223588D93D649 ON "email_verification" (user)');
@@ -61,8 +59,6 @@ final class Version20210815234619 extends AbstractMigration {
 	 * @param Schema $schema Database schema
 	 */
 	public function down(Schema $schema): void {
-		$this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
-
 		$this->addSql('DROP TABLE "email_verification"');
 		$this->addSql('DROP INDEX UNIQ_1483A5E9F85E0677');
 		$this->addSql('DROP INDEX UNIQ_1483A5E9E7927C74');

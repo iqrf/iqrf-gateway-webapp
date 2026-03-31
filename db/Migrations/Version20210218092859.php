@@ -41,8 +41,6 @@ final class Version20210218092859 extends AbstractMigration {
 	 * @param Schema $schema Database schema
 	 */
 	public function up(Schema $schema): void {
-		$this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
-
 		$this->addSql('CREATE TABLE "wireguard_interface_ipv4s" (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, interface_id INTEGER DEFAULT NULL, address BLOB NOT NULL --(DC2Type:ip)
 		, prefix INTEGER NOT NULL)');
 		$this->addSql('CREATE UNIQUE INDEX UNIQ_EA5C8753AB0BE982 ON "wireguard_interface_ipv4s" (interface_id)');
@@ -63,8 +61,6 @@ final class Version20210218092859 extends AbstractMigration {
 	 * @param Schema $schema Database schema
 	 */
 	public function down(Schema $schema): void {
-		$this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
-
 		$this->addSql('DROP TABLE "wireguard_interface_ipv4s"');
 		$this->addSql('DROP TABLE "wireguard_interface_ipv6s"');
 		$this->addSql('DROP TABLE "wireguard_interfaces"');

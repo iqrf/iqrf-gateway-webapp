@@ -41,8 +41,6 @@ final class Version20210816021706 extends AbstractMigration {
 	 * @param Schema $schema Database schema
 	 */
 	public function up(Schema $schema): void {
-		$this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
-
 		$this->addSql('CREATE TABLE "password_recovery" (uuid CHAR(36) NOT NULL --(DC2Type:uuid)
         , user INTEGER DEFAULT NULL, created_at DATETIME NOT NULL, PRIMARY KEY(uuid))');
 		$this->addSql('CREATE INDEX IDX_63D401098D93D649 ON "password_recovery" (user)');
@@ -61,8 +59,6 @@ final class Version20210816021706 extends AbstractMigration {
 	 * @param Schema $schema Database schema
 	 */
 	public function down(Schema $schema): void {
-		$this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
-
 		$this->addSql('DROP TABLE "password_recovery"');
 		$this->addSql('DROP INDEX IDX_FE223588D93D649');
 		$this->addSql('CREATE TEMPORARY TABLE __temp__email_verification AS SELECT uuid, user, created_at FROM "email_verification"');

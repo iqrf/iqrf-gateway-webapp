@@ -42,7 +42,6 @@ final class Version20230718153247 extends AbstractMigration {
 	 * @param Schema $schema Database schema
 	 */
 	public function up(Schema $schema): void {
-		// this up() migration is auto-generated, please modify it to your needs
 		$this->addSql('CREATE TEMPORARY TABLE __temp__api_keys AS SELECT id, hash, salt, description, expiration FROM api_keys');
 		$this->addSql('DROP TABLE api_keys');
 		$this->addSql('CREATE TABLE api_keys (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, hash VARCHAR(255) NOT NULL, salt VARCHAR(22) NOT NULL, description VARCHAR(255) NOT NULL, expiration DATETIME DEFAULT NULL)');
@@ -101,7 +100,6 @@ final class Version20230718153247 extends AbstractMigration {
 	 * @param Schema $schema Database schema
 	 */
 	public function down(Schema $schema): void {
-		// this down() migration is auto-generated, please modify it to your needs
 		$this->addSql('CREATE TEMPORARY TABLE __temp__api_keys AS SELECT id, hash, salt, description, expiration FROM "api_keys"');
 		$this->addSql('DROP TABLE "api_keys"');
 		$this->addSql('CREATE TABLE "api_keys" (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, hash VARCHAR(255) NOT NULL, salt VARCHAR(22) NOT NULL, description VARCHAR(255) NOT NULL, expiration DATE DEFAULT NULL)');
