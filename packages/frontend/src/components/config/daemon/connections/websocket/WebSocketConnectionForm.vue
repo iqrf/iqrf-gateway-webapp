@@ -43,6 +43,8 @@ limitations under the License.
 					v-model='profile.transportMode'
 					:label='$t("components.config.daemon.connections.ws.transportMode")'
 					:items='transportModeOptions'
+					:hint='getWebSocketTransportModeDescription(profile.transportMode)'
+					persistent-hint
 				/>
 				<INumberInput
 					v-model='profile.authTimeout'
@@ -203,7 +205,12 @@ import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
 
-import { getWebSocketTlsModeDescription, getWebSocketTlsModeOptions, getWebSocketTransportModeOptions } from '@/common/daemon';
+import {
+	getWebSocketTlsModeDescription,
+	getWebSocketTlsModeOptions,
+	getWebSocketTransportModeDescription,
+	getWebSocketTransportModeOptions,
+} from '@/common/daemon';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 

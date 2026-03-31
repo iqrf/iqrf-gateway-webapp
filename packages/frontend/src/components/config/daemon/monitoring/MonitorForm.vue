@@ -63,6 +63,8 @@ limitations under the License.
 							v-model='config.transportMode'
 							:label='$t("components.config.daemon.connections.ws.transportMode")'
 							:items='transportModeOptions'
+							:hint='getWebSocketTransportModeDescription(config.transportMode)'
+							persistent-hint
 						/>
 						<v-checkbox
 							v-model='config.acceptOnlyLocalhost'
@@ -175,7 +177,12 @@ import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
-import { getWebSocketTlsModeDescription, getWebSocketTlsModeOptions, getWebSocketTransportModeOptions } from '@/common/daemon';
+import {
+	getWebSocketTlsModeDescription,
+	getWebSocketTlsModeOptions,
+	getWebSocketTransportModeDescription,
+	getWebSocketTransportModeOptions,
+} from '@/common/daemon';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
@@ -197,7 +204,9 @@ async function getConfig(): Promise<void> {
 	try {
 		const data = await service.getComponent(IqrfGatewayDaemonComponentName.IqrfMonitor);
 		if (data.instances.length === 0) {
-			throw new Error('Configuration instance missing.');
+			throw new Error(
+				i18n.t('components.config.daemon.messages.instance.missing'),
+			);
 		}
 		config.value = data.instances[0];
 		componentState.value = ComponentState.Ready;

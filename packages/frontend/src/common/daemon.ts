@@ -21,6 +21,10 @@ import { computed, type ComputedRef } from 'vue';
 import i18n from '@/plugins/i18n';
 import { type SelectOption } from '@/types/vuetify';
 
+/**
+ * Get TLS mode options for vuetify select
+ * @return {ComputedRef<SelectOption<IqrfGatewayDaemonWsTlsModes>[]>} TLS mode options
+ */
 export function getWebSocketTlsModeOptions(): ComputedRef<SelectOption<IqrfGatewayDaemonWsTlsModes>[]> {
 	return computed(() => [
 		{
@@ -38,6 +42,11 @@ export function getWebSocketTlsModeOptions(): ComputedRef<SelectOption<IqrfGatew
 	]);
 }
 
+/**
+ * Get a description for TLS mode
+ * @param {IqrfGatewayDaemonWsTlsModes} mode TLS mode
+ * @return {string} Description string
+ */
 export function getWebSocketTlsModeDescription(mode: IqrfGatewayDaemonWsTlsModes): string {
 	if (mode === IqrfGatewayDaemonWsTlsModes.Modern) {
 		return i18n.global.t('components.config.daemon.connections.ws.notes.tlsModes.modern');
@@ -48,6 +57,10 @@ export function getWebSocketTlsModeDescription(mode: IqrfGatewayDaemonWsTlsModes
 	return i18n.global.t('components.config.daemon.connections.ws.notes.tlsModes.old');
 }
 
+/**
+ * Get transport mode options for vuetify select
+ * @return {ComputedRef<SelectOption<IqrfGatewayDaemonWsTransportModes>[]>} Transport mode options
+ */
 export function getWebSocketTransportModeOptions(): ComputedRef<SelectOption<IqrfGatewayDaemonWsTransportModes>[]> {
 	return computed(() => [
 		{
@@ -63,4 +76,19 @@ export function getWebSocketTransportModeOptions(): ComputedRef<SelectOption<Iqr
 			value: IqrfGatewayDaemonWsTransportModes.Both,
 		},
 	]);
+}
+
+/**
+ * Get a description for transport mode
+ * @param {IqrfGatewayDaemonWsTransportModes} mode Transport mode
+ * @return {string} Description string
+ */
+export function getWebSocketTransportModeDescription(mode: IqrfGatewayDaemonWsTransportModes): string {
+	if (mode === IqrfGatewayDaemonWsTransportModes.Plain) {
+		return i18n.global.t('components.config.daemon.connections.ws.notes.transportModes.plain');
+	}
+	if (mode === IqrfGatewayDaemonWsTransportModes.Tls) {
+		return i18n.global.t('components.config.daemon.connections.ws.notes.transportModes.tls');
+	}
+	return i18n.global.t('components.config.daemon.connections.ws.notes.transportModes.both');
 }

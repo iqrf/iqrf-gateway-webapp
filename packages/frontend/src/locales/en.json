@@ -855,6 +855,11 @@
 								"intermediate": "General-purpose servers with a variety of clients, recommended for almost all systems. Supports TLS 1.2 or newer.",
 								"modern": "Services with clients that support TLS 1.3 and don't need backward compatibility.",
 								"old": "Compatible with a number of very old clients, and should be used only as a last resort. Supports all TLS versions."
+							},
+							"transportModes": {
+								"both": "Accepts both insecure and TLS connections.",
+								"plain": "Accepts only insecure connections.",
+								"tls": "Accepts only TLS connections."
 							}
 						},
 						"plainPort": "Listening port for insecure connections",
@@ -868,8 +873,8 @@
 						"tlsPort": "Listening port for TLS connections",
 						"transportMode": "Transport mode",
 						"transportModes": {
-							"both": "PLAIN+TLS",
-							"plain": "PLAIN",
+							"both": "Plain+TLS",
+							"plain": "Plain",
 							"tls": "TLS"
 						},
 						"validation": {
@@ -1187,6 +1192,11 @@
 						"profile": {
 							"required": "Please enter logging profile name."
 						}
+					}
+				},
+				"messages": {
+					"instance": {
+						"missing": "Configuration instance is missing."
 					}
 				},
 				"monitoring": {
