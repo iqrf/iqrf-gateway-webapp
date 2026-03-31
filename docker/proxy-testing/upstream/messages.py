@@ -6,7 +6,7 @@ def auth_success() -> str:
 	dt = datetime.now(timezone.utc) + timedelta(hours=1)
 	msg = {
 		'type': 'auth_success',
-		'expiration': dt.isoformat(timespec='seconds'),
+		'expiration': dt.isoformat(timespec='milliseconds'),
 		'service': False,
 	}
 	return json.dumps(msg)
