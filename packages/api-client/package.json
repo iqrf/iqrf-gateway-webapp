@@ -84,7 +84,7 @@
 	"dependencies": {
 		"@iqrf/iqrf-gateway-daemon-utils": "^0.1.17",
 		"@iqrf/iqrf-ui-common-types": "^0.1.0",
-		"axios": "^1.13.6",
+		"axios": "^1.14.0",
 		"luxon": "^3.7.2",
 		"openapi-typescript": "^7.13.0",
 		"punycode": "^2.3.1",
@@ -95,17 +95,17 @@
 		"@types/luxon": "^3.7.1",
 		"@types/node": "^25.5.0",
 		"@types/punycode": "^2.1.4",
-		"@vitest/coverage-istanbul": "^4.1.0",
-		"@vitest/spy": "^4.1.0",
+		"@vitest/coverage-istanbul": "^4.1.2",
+		"@vitest/spy": "^4.1.2",
 		"axios-mock-adapter": "^2.1.0",
-		"eslint": "^10.0.3",
+		"eslint": "^10.1.0",
 		"ts-node": "^10.9.2",
-		"tsdown": "^0.21.4",
-		"typedoc": "^0.28.17",
+		"tsdown": "^0.21.7",
+		"typedoc": "^0.28.18",
 		"typedoc-material-theme": "^1.4.1",
 		"typedoc-plugin-mdn-links": "^5.1.1",
 		"typescript": "^5.9.3",
 		"vite-tsconfig-paths": "^6.1.1",
-		"vitest": "^4.1.0"
+		"vitest": "^4.1.2"
 	}
 }

@@ -43,10 +43,18 @@ limitations under the License.
 					accept='.json'
 					:label='$t("components.config.daemon.connections.profileFile")'
 					:rules='[
-						(v: File|Blob|null) => ValidationRules.required(v, $t("components.config.daemon.connections.validation.profileFileMissing")),
+						(v: File|null) => ValidationRules.required(
+							v,
+							$t("components.config.daemon.connections.validation.profileFile.required"),
+						),
+						(v: File) => ValidationRules.fileExtension(
+							v,
+							["json"],
+							$t("components.config.daemon.connections.validation.profileFile.extension"),
+						),
 					]'
 					:prepend-inner-icon='mdiFileOutline'
-					:prepend-icon='undefined'
+					prepend-icon=''
 					show-size
 					required
 				/>
@@ -70,7 +78,10 @@ limitations under the License.
 </template>
 
 <script lang='ts' setup>
-import { IqrfGatewayDaemonComponentName, type IqrfGatewayDaemonUdpMessaging } from '@iqrf/iqrf-gateway-webapp-client/types/Config';
+import {
+	IqrfGatewayDaemonComponentName,
+	type IqrfGatewayDaemonUdpMessaging,
+} from '@iqrf/iqrf-gateway-webapp-client/types/Config';
 import {
 	Action,
 	ComponentState,
@@ -80,7 +91,10 @@ import {
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
 import { mdiFileOutline } from '@mdi/js';
-import { ref, type Ref, type TemplateRef, useTemplateRef } from 'vue';
+import {
+	ref,
+	useTemplateRef,
+} from 'vue';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
@@ -90,11 +104,11 @@ import { validateForm } from '@/helpers/validateForm';
 const emit = defineEmits<{
 	import: [profile: IqrfGatewayDaemonUdpMessaging];
 }>();
-const componentState: Ref<ComponentState> = ref(ComponentState.Ready);
+const componentState = ref<ComponentState>(ComponentState.Ready);
 const i18n = useI18n();
-const show: Ref<boolean> = ref(false);
-const form: TemplateRef<VForm> = useTemplateRef('form');
-const files: Ref<File[]> = ref([]);
+const show = ref<boolean>(false);
+const form = useTemplateRef<VForm>('form');
+const files = ref<File[]>([]);
 
 async function onSubmit(): Promise<void> {
 	if (!await validateForm(form.value) || files.value.length === 0) {

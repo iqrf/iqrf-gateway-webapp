@@ -20,7 +20,7 @@ limitations under the License.
 		<Head>
 			<title>{{ $t('pages.config.daemon.monitoring.title') }}</title>
 		</Head>
-		<MonitorConfig />
+		<MonitorForm />
 	</div>
 </template>
 
@@ -33,5 +33,5 @@ limitations under the License.
 <script lang='ts' setup>
 import { Head } from '@unhead/vue/components';
 
-import MonitorConfig from '@/components/config/daemon/monitoring/MonitorConfig.vue';
+import MonitorForm from '@/components/config/daemon/monitoring/MonitorForm.vue';
 </script>

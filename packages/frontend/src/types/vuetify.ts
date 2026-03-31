@@ -19,3 +19,11 @@ export interface SelectItem {
 	title: string;
 	value: string|number|boolean|object|null;
 }
+
+/**
+ * Parameterized select option interface
+ */
+export interface SelectOption<T = unknown> {
+	title: string;
+	value: T;
+}

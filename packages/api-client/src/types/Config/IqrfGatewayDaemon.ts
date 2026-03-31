@@ -1,5 +1,5 @@
 /**
- * Copyright 2023-2025 MICRORISC s.r.o.
+ * Copyright 2023-2026 MICRORISC s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,8 +52,6 @@ export enum IqrfGatewayDaemonComponentName {
 	IqrfWsMessaging = 'iqrf::WebsocketMessaging',
 	/// Shape Trace file service component
 	ShapeTraceFile = 'shape::TraceFileService',
-	/// Shape Websocket service component
-	ShapeWebsocketService = 'shape::WebsocketCppService',
 }
 
 /**
@@ -197,10 +195,38 @@ export interface IqrfGatewayDaemonJsonSplitterV3 extends IqrfGatewayDaemonCompon
  * IQRF Gateway Daemon Monitor component configuration
  */
 export interface IqrfGatewayDaemonMonitor extends IqrfGatewayDaemonComponentInstanceBase<IqrfGatewayDaemonComponentName.IqrfMonitor> {
-	/// Monitor report period
+	/**
+	 * Reporting period
+	 */
 	reportPeriod: number;
-	/// Required interfaces
-	RequiredInterfaces: RequiredInterface[];
+	/**
+	 * Listening port for insecure connections
+	 */
+	port: number;
+	/**
+	 * Accept only localhost connections
+	 */
+	acceptOnlyLocalhost: boolean;
+	/**
+	 * Transport mode (plain, tls, both)
+	 */
+	transportMode: IqrfGatewayDaemonWsTransportModes;
+	/**
+	 * Mozilla TLS configuration (modern, intermediate, old)
+	 */
+	tlsMode: IqrfGatewayDaemonWsTlsModes;
+	/**
+	 * Listening port for TLS connetions
+	 */
+	tlsPort: number;
+	/**
+	 * Path to server certificate file
+	 */
+	cert: string;
+	/**
+	 * Path to private key file
+	 */
+	privKey: string;
 }
 
 /**
@@ -342,13 +368,85 @@ export interface IqrfGatewayDaemonUdpMessaging extends IqrfGatewayDaemonComponen
 }
 
 /**
+ * IQRF Gateway Daemon WebSocket transport modes
+ */
+export enum IqrfGatewayDaemonWsTransportModes {
+	/**
+	 * Accepts only insecure plain connections
+	 */
+	Plain = 'plain',
+	/**
+	 * Accepts only secure TLS connections
+	 */
+	Tls = 'tls',
+	/**
+	 * Accepts both insecure and secure connections
+	 */
+	Both = 'both',
+}
+
+/**
+ * IQRF Gateway Daemon WebSocket TLS modes
+ */
+export enum IqrfGatewayDaemonWsTlsModes {
+	/**
+	 * TLS v1.3 without backwards compatibility
+	 */
+	Modern = 'modern',
+	/**
+	 * General purpose, allows TLS v1.2 or higher
+	 */
+	Intermediate = 'intermediate',
+	/**
+	 * Legacy configuration, allows all TLS versions, not recommended to use
+	 */
+	Old = 'old',
+}
+
+/**
  * IQRF Gateway Daemon WebSocketMessaging component configuration
  */
 export interface IqrfGatewayDaemonWsMessaging extends IqrfGatewayDaemonComponentInstanceBase<IqrfGatewayDaemonComponentName.IqrfWsMessaging> {
-	/// Required interfaces
-	RequiredInterfaces: RequiredInterface[];
-	/// Accept asynchronous messages
+	/**
+	 * Listening port for insecure connections
+	 */
+	port: number;
+	/**
+	 * Allow sending of asynchronous messages
+	 */
 	acceptAsyncMsg: boolean;
+	/**
+	 * Accept only localhost connections
+	 */
+	acceptOnlyLocalhost: boolean;
+	/**
+	 * Transport mode (plain, tls, both)
+	 */
+	transportMode: IqrfGatewayDaemonWsTransportModes;
+	/**
+	 * Mozilla TLS configuration (modern, intermediate, old)
+	 */
+	tlsMode: IqrfGatewayDaemonWsTlsModes;
+	/**
+	 * Listening port for TLS connetions
+	 */
+	tlsPort: number;
+	/**
+	 * Path to server certificate file
+	 */
+	cert: string;
+	/**
+	 * Path to private key file
+	 */
+	privKey: string;
+	/**
+	 * Authentication timeout
+	 */
+	authTimeout: number;
+	/**
+	 * Maximum number of connected clients
+	 */
+	maxClients: number;
 }
 
 /**
@@ -396,46 +494,6 @@ export interface ShapeTraceFileService extends IqrfGatewayDaemonComponentInstanc
 }
 
 /**
- * Shape WebSocket TLS presets
- */
-export enum ShapeWebsocketTlsMode {
-	/// Modern preset
-	Modern = 'modern',
-	/// Intermediate preset
-	Intermediate = 'intermediate',
-	/// Old preset
-	Old = 'old',
-}
-
-/**
- * Shape websocket service interface
- */
-export interface ShapeWebsocketService extends IqrfGatewayDaemonComponentInstanceBase<IqrfGatewayDaemonComponentName.ShapeWebsocketService> {
-	/// Port
-	WebsocketPort: number;
-	/// Accept only localhost connections
-	acceptOnlyLocalhost: boolean;
-	/// Path to certificate
-	certificate?: string;
-	/// Path to private key
-	privateKey?: string;
-	/// TLS enabled
-	tlsEnabled?: boolean;
-	/// TLS mode
-	tlsMode?: ShapeWebsocketTlsMode;
-}
-
-/**
- * IQRF Gateway Daemon Websocket interface instance configuration
- */
-export interface IqrfGatewayDaemonWebsocketInterface {
-	/// Daemon messaging instance
-	messaging: IqrfGatewayDaemonWsMessaging;
-	/// Shape websocket service
-	service: ShapeWebsocketService;
-}
-
-/**
  * IQRF Gateway Daemon component instance configurations
  */
 export interface IqrfGatewayDaemonComponentInstanceConfigurations {
@@ -454,13 +512,13 @@ export interface IqrfGatewayDaemonComponentInstanceConfigurations {
 	[IqrfGatewayDaemonComponentName.IqrfUdpMessaging]: IqrfGatewayDaemonUdpMessaging;
 	[IqrfGatewayDaemonComponentName.IqrfWsMessaging]: IqrfGatewayDaemonWsMessaging;
 	[IqrfGatewayDaemonComponentName.ShapeTraceFile]: ShapeTraceFileService;
-	[IqrfGatewayDaemonComponentName.ShapeWebsocketService]: ShapeWebsocketService;
 }
 
 /**
  * IQRF Gateway Daemon component instance generic
  */
-export type IqrfGatewayDaemonComponentInstanceConfiguration<C extends IqrfGatewayDaemonComponentName> = IqrfGatewayDaemonComponentInstanceConfigurations[C];
+export type IqrfGatewayDaemonComponentInstanceConfiguration<C extends IqrfGatewayDaemonComponentName>
+	= IqrfGatewayDaemonComponentInstanceConfigurations[C];
 
 /**
  * IQRF Gateway Daemon component generic

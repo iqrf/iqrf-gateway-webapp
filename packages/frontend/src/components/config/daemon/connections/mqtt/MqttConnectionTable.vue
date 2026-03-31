@@ -1,6 +1,6 @@
 <!--
-Copyright 2017-2025 IQRF Tech s.r.o.
-Copyright 2019-2025 MICRORISC s.r.o.
+Copyright 2017-2026 IQRF Tech s.r.o.
+Copyright 2019-2026 MICRORISC s.r.o.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -58,7 +58,10 @@ limitations under the License.
 					color='primary'
 					:icon='mdiInformation'
 					:disabled='componentState === ComponentState.Reloading'
-					:tooltip='isExpanded(internalItem) ? $t("components.config.daemon.connections.mqtt.actions.hideInfo") : $t("components.config.daemon.connections.mqtt.actions.showInfo")'
+					:tooltip='isExpanded(internalItem) ?
+						$t("components.config.daemon.connections.actions.hideInfo") :
+						$t("components.config.daemon.connections.actions.showInfo")
+					'
 					@click='toggleExpand(internalItem)'
 				/>
 				<IDataTableAction

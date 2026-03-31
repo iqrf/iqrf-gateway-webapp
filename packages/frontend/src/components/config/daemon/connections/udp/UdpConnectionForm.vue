@@ -50,7 +50,7 @@ limitations under the License.
 					v-model='profile.instance'
 					:label='$t("components.config.daemon.connections.profile")'
 					:rules='[
-						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.connections.validation.profileMissing")),
+						(v: string|null) => ValidationRules.required(v, $t("components.config.daemon.connections.validation.profile.required")),
 					]'
 					required
 				/>
@@ -186,6 +186,7 @@ async function onSubmit(): Promise<void> {
 	}
 	componentState.value = ComponentState.Action;
 	const params = { ...profile.value };
+	const translationParams = { name: componentProps.action === Action.Add ? params.instance : instance };
 	try {
 		if (componentProps.action === Action.Add) {
 			await service.createInstance(IqrfGatewayDaemonComponentName.IqrfUdpMessaging, params);
@@ -193,12 +194,14 @@ async function onSubmit(): Promise<void> {
 			await service.updateInstance(IqrfGatewayDaemonComponentName.IqrfUdpMessaging, instance, params);
 		}
 		toast.success(
-			i18n.t('components.config.daemon.connections.udp.messages.save.success', { name: name }),
+			i18n.t('components.config.daemon.connections.udp.messages.save.success', translationParams),
 		);
 		close();
 		emit('saved');
 	} catch {
-		toast.error('TODO ERROR HANDLING');
+		toast.error(
+			i18n.t('components.config.daemon.connections.udp.messages.save.failed', translationParams),
+		);
 	}
 	componentState.value = ComponentState.Ready;
 }
