@@ -24,6 +24,7 @@ use App\Models\WebSocket\Enums\ProxyMessageType;
 use DateTimeImmutable;
 use DateTimeZone;
 use stdClass;
+use Throwable;
 
 /**
  * Utility class for validating proxy server / session messages
@@ -82,8 +83,12 @@ final class ProxyMessageValidator {
 		if (!$properties_valid) {
 			return false;
 		}
-		$dt = DateTimeImmutable::createFromFormat(DateTimeImmutable::ATOM, $json->expiration, new DateTimeZone('UTC'));
-		return $dt !== false;
+		try {
+			new DateTimeImmutable($json->expiration, new DateTimeZone('UTC'));
+			return true;
+		} catch (Throwable) {
+			return false;
+		}
 	}
 
 	/**

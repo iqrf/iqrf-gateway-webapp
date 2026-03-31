@@ -404,7 +404,7 @@ class ProxySession {
 					],
 				);
 				$this->authenticated = true;
-				$this->upstreamSessionExpiration = DateTimeImmutable::createFromFormat(DateTimeImmutable::ATOM, $json->expiration, new DateTimeZone('UTC'));
+				$this->upstreamSessionExpiration = new DateTimeImmutable($json->expiration, new DateTimeZone('UTC'));
 				$this->client->send((new UpstreamReady($this->upstreamSessionExpiration->format(DateTimeImmutable::ATOM)))->toJsonString());
 				return;
 			}
