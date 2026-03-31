@@ -39,12 +39,8 @@ limitations under the License.
 					]'
 					required
 				/>
-				<ISelectInput
+				<WebSocketTransportModeSelect
 					v-model='profile.transportMode'
-					:label='$t("components.config.daemon.connections.ws.transportMode")'
-					:items='transportModeOptions'
-					:hint='getWebSocketTransportModeDescription(profile.transportMode)'
-					persistent-hint
 				/>
 				<INumberInput
 					v-model='profile.authTimeout'
@@ -112,12 +108,8 @@ limitations under the License.
 					:disabled='profile.transportMode === IqrfGatewayDaemonWsTransportModes.Plain'
 					required
 				/>
-				<ISelectInput
+				<WebSocketTlsModeSelect
 					v-model='profile.tlsMode'
-					:label='$t("components.config.daemon.connections.ws.tlsMode")'
-					:items='tlsModeOptions'
-					:hint='getWebSocketTlsModeDescription(profile.tlsMode)'
-					persistent-hint
 					:disabled='profile.transportMode === IqrfGatewayDaemonWsTransportModes.Plain'
 				/>
 				<ITextInput
@@ -192,7 +184,6 @@ import {
 	ICard,
 	IModalWindow,
 	INumberInput,
-	ISelectInput,
 	ITextInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
@@ -205,12 +196,10 @@ import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { type VForm } from 'vuetify/components';
 
-import {
-	getWebSocketTlsModeDescription,
-	getWebSocketTlsModeOptions,
-	getWebSocketTransportModeDescription,
-	getWebSocketTransportModeOptions,
-} from '@/common/daemon';
+import WebSocketTlsModeSelect
+	from '@/components/config/daemon/connections/websocket/WebSocketTlsModeSelect.vue';
+import WebSocketTransportModeSelect
+	from '@/components/config/daemon/connections/websocket/WebSocketTransportModeSelect.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
@@ -241,8 +230,6 @@ const defaultProfile: IqrfGatewayDaemonWsMessaging = {
 const profile = ref<IqrfGatewayDaemonWsMessaging>({ ...defaultProfile });
 const action = ref<Action>(Action.Add);
 let instance = '';
-const tlsModeOptions = getWebSocketTlsModeOptions();
-const transportModeOptions = getWebSocketTransportModeOptions();
 
 const dialogTitle = computed(() => {
 	if (action.value === Action.Add) {

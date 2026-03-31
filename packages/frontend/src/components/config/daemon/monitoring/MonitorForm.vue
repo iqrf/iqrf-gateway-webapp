@@ -59,12 +59,8 @@ limitations under the License.
 							:min='1'
 							required
 						/>
-						<ISelectInput
+						<WebSocketTransportModeSelect
 							v-model='config.transportMode'
-							:label='$t("components.config.daemon.connections.ws.transportMode")'
-							:items='transportModeOptions'
-							:hint='getWebSocketTransportModeDescription(config.transportMode)'
-							persistent-hint
 						/>
 						<v-checkbox
 							v-model='config.acceptOnlyLocalhost'
@@ -98,12 +94,8 @@ limitations under the License.
 							:disabled='config.transportMode === IqrfGatewayDaemonWsTransportModes.Plain'
 							required
 						/>
-						<ISelectInput
+						<WebSocketTlsModeSelect
 							v-model='config.tlsMode'
-							:label='$t("components.config.daemon.connections.ws.tlsMode")'
-							:items='tlsModeOptions'
-							:hint='getWebSocketTlsModeDescription(config.tlsMode)'
-							persistent-hint
 							:disabled='config.transportMode === IqrfGatewayDaemonWsTransportModes.Plain'
 						/>
 						<ITextInput
@@ -164,7 +156,6 @@ import {
 	IActionBtn,
 	ICard,
 	INumberInput,
-	ISelectInput,
 	ITextInput,
 	ValidationRules,
 } from '@iqrf/iqrf-vue-ui';
@@ -177,12 +168,10 @@ import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { VForm } from 'vuetify/components';
 
-import {
-	getWebSocketTlsModeDescription,
-	getWebSocketTlsModeOptions,
-	getWebSocketTransportModeDescription,
-	getWebSocketTransportModeOptions,
-} from '@/common/daemon';
+import WebSocketTlsModeSelect
+	from '@/components/config/daemon/connections/websocket/WebSocketTlsModeSelect.vue';
+import WebSocketTransportModeSelect
+	from '@/components/config/daemon/connections/websocket/WebSocketTransportModeSelect.vue';
 import { validateForm } from '@/helpers/validateForm';
 import { useApiClient } from '@/services/ApiClient';
 
@@ -193,8 +182,6 @@ const service: IqrfGatewayDaemonService = useApiClient()
 	.getIqrfGatewayDaemonService();
 const form = useTemplateRef<VForm>('form');
 const config = ref<IqrfGatewayDaemonMonitor | null>(null);
-const tlsModeOptions = getWebSocketTlsModeOptions();
-const transportModeOptions = getWebSocketTransportModeOptions();
 
 async function getConfig(): Promise<void> {
 	componentState.value = [

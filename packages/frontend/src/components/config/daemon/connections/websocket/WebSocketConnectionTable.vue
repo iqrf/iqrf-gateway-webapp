@@ -51,7 +51,7 @@ limitations under the License.
 			item-value='instance'
 		>
 			<template #item.transportMode='{ item }'>
-				<WebSocketConnectionTableTransportMode
+				<WebSocketTransportModeBadge
 					:mode='item.transportMode'
 				/>
 			</template>
@@ -170,7 +170,7 @@ import { toast } from 'vue3-toastify';
 import WebSocketConnectionDeleteDialog from '@/components/config/daemon/connections/websocket/WebSocketConnectionDeleteDialog.vue';
 import WebSocketConnectionForm from '@/components/config/daemon/connections/websocket/WebSocketConnectionForm.vue';
 import WebSocketConnectionImportDialog from '@/components/config/daemon/connections/websocket/WebSocketConnectionImportDialog.vue';
-import WebSocketConnectionTableTransportMode from '@/components/config/daemon/connections/websocket/WebSocketConnectionTableTransportMode.vue';
+import WebSocketTransportModeBadge from '@/components/config/daemon/connections/websocket/WebSocketTransportModeBadge.vue';
 import { useApiClient } from '@/services/ApiClient';
 
 const componentState = ref<ComponentState>(ComponentState.Created);

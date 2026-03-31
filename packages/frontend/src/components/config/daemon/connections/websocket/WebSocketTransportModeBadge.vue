@@ -16,9 +16,9 @@ limitations under the License.
 -->
 
 <template>
-	<span :class='statusTextColor'>
-		{{ statusText }}
-	</span>
+	<v-chip :color='color'>
+		{{ text }}
+	</v-chip>
 </template>
 
 <script lang='ts' setup>
@@ -31,24 +31,21 @@ const componentProps = defineProps<{
 }>();
 const i18n = useI18n();
 
-
-const statusText = computed<string>(() => {
-	if (componentProps.mode === IqrfGatewayDaemonWsTransportModes.Tls) {
-		return i18n.t('components.config.daemon.connections.ws.transportModes.tls');
-	}
-	if (componentProps.mode === IqrfGatewayDaemonWsTransportModes.Both) {
-		return i18n.t('components.config.daemon.connections.ws.transportModes.both');
-	}
-	return i18n.t('components.config.daemon.connections.ws.transportModes.plain');
+const text = computed<string>(() => {
+	const data: Record<IqrfGatewayDaemonWsTransportModes, string> = {
+		[IqrfGatewayDaemonWsTransportModes.Plain]: i18n.t('components.config.daemon.connections.ws.transportModes.plain'),
+		[IqrfGatewayDaemonWsTransportModes.Both]: i18n.t('components.config.daemon.connections.ws.transportModes.both'),
+		[IqrfGatewayDaemonWsTransportModes.Tls]: i18n.t('components.config.daemon.connections.ws.transportModes.tls'),
+	};
+	return data[componentProps.mode] ?? '';
 });
 
-const statusTextColor = computed<string>(() => {
-	if (componentProps.mode === IqrfGatewayDaemonWsTransportModes.Tls) {
-		return 'text-success';
-	}
-	if (componentProps.mode === IqrfGatewayDaemonWsTransportModes.Both) {
-		return 'text-warning';
-	}
-	return 'text-red';
+const color = computed<string>(() => {
+	const data: Record<IqrfGatewayDaemonWsTransportModes, string> = {
+		[IqrfGatewayDaemonWsTransportModes.Plain]: 'red',
+		[IqrfGatewayDaemonWsTransportModes.Both]: 'warning',
+		[IqrfGatewayDaemonWsTransportModes.Tls]: 'success',
+	};
+	return data[componentProps.mode] ?? 'grey';
 });
 </script>
