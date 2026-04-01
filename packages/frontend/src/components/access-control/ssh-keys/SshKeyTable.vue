@@ -127,7 +127,7 @@ const headers = computed(() => [
 	{ key: 'id', title: i18n.t('common.columns.id') },
 	{ key: 'description', title: i18n.t('common.columns.description') },
 	{ key: 'type', title: i18n.t('components.accessControl.sshKeys.table.type') },
-	{ key: 'createdAt', title: i18n.t('components.accessControl.sshKeys.table.createdAt') },
+	{ key: 'createdAt', title: i18n.t('common.labels.createdAt') },
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false },
 ]);
 const types: Ref<string[]> = ref([]);

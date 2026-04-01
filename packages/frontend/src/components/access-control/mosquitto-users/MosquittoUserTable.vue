@@ -92,7 +92,7 @@ const service: MosquittoUserService = useApiClient()
 const headers = computed(() => [
 	{ key: 'id', title: i18n.t('common.columns.id') },
 	{ key: 'username', title: i18n.t('common.labels.username') },
-	{ key: 'createdAt', title: i18n.t('common.columns.createdAt') },
+	{ key: 'createdAt', title: i18n.t('common.labels.createdAt') },
 	{ key: 'state', title: i18n.t('common.columns.state') },
 	{ key: 'actions', title: i18n.t('common.columns.actions'), align: 'end', sortable: false },
 ]);
