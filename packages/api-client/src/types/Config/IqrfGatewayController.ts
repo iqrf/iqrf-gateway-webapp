@@ -190,6 +190,8 @@ export interface IqrfGatewayControllerStatusLedConfig {
 export interface IqrfGatewayControllerWsConfig {
 	/// Daemon API websocket URL
 	api: string;
+	/// Daemon API websocket access token
+	token: string;
 	/// Daemon monitor websocket URL
 	monitor: string;
 }
