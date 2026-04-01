@@ -41,31 +41,31 @@ class Role implements JsonSerializable {
 	use TId;
 
 	/**
-	 * Role name
+	 * @var string Role name
 	 */
 	#[ORM\Column(type: Types::STRING, length:255, unique: true, nullable: false)]
 	private string $name;
 
 	/**
-	 * Role description
+	 * @var string Role description
 	 */
 	#[ORM\Column(type: Types::STRING, length: 255)]
 	private string $description;
 
 	/**
-	 * Access scopes
+	 * @var Array<AccessScope> Access scopes
 	 */
 	#[ORM\Column(type: AccessScopeArrayType::ACCESS_SCOPE_ARRAY)]
 	private array $scopes = [];
 
 	/**
-	 * System role flag
+	 * @var bool System role flag
 	 */
 	#[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
 	private bool $system = false;
 
 	/**
-	 * Stable identifier of the system role
+	 * @var string Stable identifier of the system role
 	 */
 	#[ORM\Column(type: Types::STRING, length: 64, unique: true, nullable: true)]
 	private ?string $systemKey = null;
@@ -87,7 +87,7 @@ class Role implements JsonSerializable {
 	) {
 		$this->name = $name;
 		$this->description = $description;
-		if (!empty($scopes) && gettype($scopes[0]) === 'string') {
+		if ($scopes !== [] && gettype($scopes[0]) === 'string') {
 			$this->setScopesFromStringArray($scopes);
 		} else {
 			$this->scopes = $scopes;

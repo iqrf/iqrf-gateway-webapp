@@ -22,7 +22,6 @@ namespace App\ConsoleModule\Commands;
 
 use App\Models\Database\Entities\Role;
 use App\Models\Database\Entities\User;
-use App\Models\Database\Repositories\RoleRepository;
 use RuntimeException;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -37,11 +36,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  */
 #[AsCommand(name: 'user:remove-all', description: 'Removes all webapp users')]
 class UserRemoveAllCommand extends UserCommand {
-
-	/**
-	 * @var RoleRepository Role database repository
-	 */
-	protected readonly RoleRepository $roleRepository;
 
 	/**
 	 * Configures the user remove all command
@@ -67,7 +61,7 @@ class UserRemoveAllCommand extends UserCommand {
 			$style->error('Role ' . $input->getOption('role') . ' does not exist.');
 			return 1;
 		}
-		$criteria = $role instanceof Role ? ['role' => $role] : [];
+		$criteria = ['role' => $role];
 		$users = $this->repository->findBy($criteria);
 		if ($input->isInteractive() && $users !== []) {
 			$helper = $this->getQuestionHelper();

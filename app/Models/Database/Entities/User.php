@@ -110,8 +110,8 @@ class User implements JsonSerializable {
 	/**
 	 * @var UserRole|null Legacy user role
 	 */
-	#[ORM\Column(name: 'role', type: Types::STRING, length: 15, enumType: UserRole::class, options: ['default' => UserRole::Default])]
-	private ?string $roleLegacy = null;
+	#[ORM\Column(name: 'role', type: Types::STRING, length: 15, enumType: UserRole::class, nullable: true, options: ['default' => UserRole::Default])]
+	private ?UserRole $roleLegacy = null;
 
 	/**
 	 * @var bool Email changed

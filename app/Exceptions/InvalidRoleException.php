@@ -25,4 +25,6 @@ use UnexpectedValueException;
 /**
  * The exception that indicates an invalid (user) role
  */
-class InvalidRoleException extends UnexpectedValueException {}
+class InvalidRoleException extends UnexpectedValueException {
+
+}

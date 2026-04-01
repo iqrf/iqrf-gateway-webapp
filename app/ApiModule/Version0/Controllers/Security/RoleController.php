@@ -26,21 +26,15 @@ use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\RequestParameter;
 use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ClientErrorException;
-use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\ControllerValidators;
 use App\CoreModule\Models\RoleManager;
 use App\Enums\AccessScope;
-use App\Exceptions\InvalidEmailAddressException;
-use App\Exceptions\InvalidPasswordException;
-use App\Exceptions\InvalidRoleException;
 use App\Models\Database\Entities\Role;
 use App\Models\Database\EntityManager;
 use App\Models\Database\Repositories\RoleRepository;
 use DomainException;
-use Nette\Mail\SendException;
-use ValueError;
 
 /**
  * Role manager API controller
@@ -145,7 +139,7 @@ class RoleController extends BaseSecurityController {
 		}
 		$response = $response->withStatus(ApiResponse::S201_CREATED)
 			->withHeader('Location', '/api/v0/roles/' . $role->getId())
-			->writeJsonBody($$role->jsonSerialize());
+			->writeJsonBody($role->jsonSerialize());
 		return $this->validators->validateResponse('roleDetail', $response);
 	}
 
@@ -265,7 +259,7 @@ class RoleController extends BaseSecurityController {
 		// save role
 		$this->entityManager->persist($role);
 		$this->entityManager->flush();
-		$response = $response->withStatus(ApiResponse::S200_OK)->writeBody($role->jsonSerialize());
+		$response = $response->withStatus(ApiResponse::S200_OK)->writeJsonBody($role->jsonSerialize());
 		return $this->validators->validateResponse('roleDetail', $response);
 	}
 

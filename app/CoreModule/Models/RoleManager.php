@@ -20,12 +20,9 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Models;
 
-use App\Exceptions\InvalidRoleException;
 use App\Models\Database\Entities\Role;
 use App\Models\Database\EntityManager;
 use App\Models\Database\Repositories\RoleRepository;
-use App\Models\Mail\Senders\EmailVerificationMailSender;
-use App\Models\Mail\Senders\PasswordChangeConfirmationMailSender;
 
 /**
  * User manager
@@ -40,11 +37,9 @@ class RoleManager {
 	/**
 	 * Constructor
 	 * @param EntityManager $entityManager Entity manager
-	 * @param EmailVerificationMailSender $emailVerificationSender Email verification sender
-	 * @param PasswordChangeConfirmationMailSender $passwordChangeConfirmationSender Password change confirmation sender
 	 */
 	public function __construct(
-		private readonly EntityManager $entityManager
+		EntityManager $entityManager,
 	) {
 		$this->repository = $entityManager->getRoleRepository();
 	}

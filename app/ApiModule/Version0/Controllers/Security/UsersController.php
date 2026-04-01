@@ -274,7 +274,7 @@ class UsersController extends BaseSecurityController {
 				$user->getRole()->getSystemKey() === 'admin' &&
 				$this->repository->userCountByRole($user->getRole()) === 1 &&
 				$json['roleId'] !== $user->getRole()->getId()
-			){
+			) {
 				throw new ClientErrorException('Admin user role change forbidden for the only admin user', ApiResponse::S409_CONFLICT);
 			}
 			$role = $this->roleRepository->find($json['roleId']);

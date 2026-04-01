@@ -20,8 +20,8 @@ declare(strict_types = 1);
 
 namespace App\Enums;
 
-use JsonSerializable;
 use DomainException;
+use JsonSerializable;
 
 /**
  * Access scope enum
@@ -50,7 +50,7 @@ enum AccessScope: string implements JsonSerializable {
 	 */
 	case config_features_read = 'config:features:read';
 	case config_features_write = 'config:features:write';
-	
+
 	/**
 	 * Used for IQRF Gateway controller endpoints
 	 */
@@ -166,56 +166,56 @@ enum AccessScope: string implements JsonSerializable {
 	case ipNetwork_physicalConnections_execute = 'ipNetwork:physicalConnections:execute';
 	case ipNetwork_physicalConnections_read = 'ipNetwork:physicalConnections:read';
 	case ipNetwork_physicalConnections_write = 'ipNetwork:physicalConnections:write';
-	
+
 	/**
 	 * Used for managing VPN connections
 	 */
 	case ipNetwork_vpns_execute = 'ipNetwork:vpns:execute';
 	case ipNetwork_vpns_read = 'ipNetwork:vpns:read';
 	case ipNetwork_vpns_write = 'ipNetwork:vpns:write';
-	
+
 	/**
 	 * Used for access to IQRF IDE macros endpoint
 	 */
 	case iqrfNetwork_macros_read = 'iqrfNetwork:macros:read';
-	
+
 	/**
 	 * Used for
 	 * - IQRF OS Patches and updates endpoints
 	 * - Upload endpoints
 	 */
 	case iqrfNetwork_trUpload_execute = 'iqrfNetwork:trUpload:execute';
-	
+
 	/**
 	 * Used for API key management
 	 */
 	case security_apiKeys_read = 'security:apiKeys:read';
 	case security_apiKeys_write = 'security:apiKeys:write';
-	
+
 	/**
 	 * Used for TLS Certificate endpoints
 	 */
 	case security_certificates_read = 'security:certificates:read';
 	case security_certificates_write = 'security:certificates:write';
-	
+
 	/**
 	 * Used to control access to roles (user and access token roles)
 	 */
 	case security_role_read = 'security:role:read';
 	case security_role_write = 'security:role:write';
-	
+
 	/**
 	 * Used to control access to endpoint for setting password to shell user
 	 * (user accessible from terminal when SSH access is enabled)
 	 */
 	case security_shellUser_write = 'security:shellUser:write';
-	
+
 	/**
 	 * Used for SSH keys management endpoints
 	 */
 	case security_sshkeys_read = 'security:sshkeys:read';
 	case security_sshkeys_write = 'security:sshkeys:write';
-	
+
 	/**
 	 * Used for User management endpoints (App users)
 	 */
@@ -223,16 +223,8 @@ enum AccessScope: string implements JsonSerializable {
 	case security_users_write = 'security:users:write';
 
 	/**
-	 * Serializes access scope enum member into JSON
-	 * @return string JSON-serialized access scope
-	 */
-	public function jsonSerialize(): string {
-		return $this->value;
-	}
-
-	/**
 	 * Parses access scope from strings corresponding to the access scope
-	 * @param array<string> $scope Access scope string reprezentation
+	 * @param string $scope Access scope string reprezentation
 	 * @return AccessScope Access scope coresponding to given string
 	 * @throws DomainException when given string does not corespond to any access scope
 	 */
@@ -255,6 +247,14 @@ enum AccessScope: string implements JsonSerializable {
 			self::parseScopeFromString(...),
 			$scopes
 		);
+	}
+
+	/**
+	 * Serializes access scope enum member into JSON
+	 * @return string JSON-serialized access scope
+	 */
+	public function jsonSerialize(): string {
+		return $this->value;
 	}
 
 }

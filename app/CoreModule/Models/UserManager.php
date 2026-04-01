@@ -25,6 +25,7 @@ use Apitte\Core\Http\ApiResponse;
 use App\Exceptions\InvalidUserStateException;
 use App\Exceptions\ResourceNotFoundException;
 use App\Models\Database\Entities\PasswordRecovery;
+use App\Models\Database\Entities\Role;
 use App\Models\Database\Entities\User;
 use App\Models\Database\Entities\UserInvitation;
 use App\Models\Database\Entities\UserVerification;

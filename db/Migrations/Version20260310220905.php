@@ -1,6 +1,23 @@
 <?php
 
-declare(strict_types=1);
+/**
+ * Copyright 2017-2026 IQRF Tech s.r.o.
+ * Copyright 2019-2026 MICRORISC s.r.o.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+declare(strict_types = 1);
 
 namespace Database\Migrations;
 
@@ -12,24 +29,26 @@ use Doctrine\Migrations\AbstractMigration;
  */
 final class Version20260310220905 extends AbstractMigration
 {
-    public function getDescription(): string
-    {
-        return 'Add API key table for new key format.';
-    }
 
-    public function up(Schema $schema): void
-    {
-        // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('CREATE TABLE api_keys_v2 (expiration DATETIME NOT NULL, hash VARCHAR(64) NOT NULL, salt VARCHAR(32) NOT NULL, revoked_at DATETIME DEFAULT NULL, description VARCHAR(255) NOT NULL, state INTEGER DEFAULT 0 NOT NULL, scopes CLOB NOT NULL, id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, created_at DATETIME NOT NULL, revoked_by_id INTEGER DEFAULT NULL, created_by_id INTEGER DEFAULT NULL, CONSTRAINT FK_FAC0465EFB8FE773 FOREIGN KEY (revoked_by_id) REFERENCES users (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE, CONSTRAINT FK_FAC0465EB03A8386 FOREIGN KEY (created_by_id) REFERENCES users (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE)');
-        $this->addSql('CREATE UNIQUE INDEX UNIQ_FAC0465ED1B862B8 ON api_keys_v2 (hash)');
-        $this->addSql('CREATE UNIQUE INDEX UNIQ_FAC0465E8FFBE0F7 ON api_keys_v2 (salt)');
-        $this->addSql('CREATE INDEX IDX_FAC0465EFB8FE773 ON api_keys_v2 (revoked_by_id)');
-        $this->addSql('CREATE INDEX IDX_FAC0465EB03A8386 ON api_keys_v2 (created_by_id)');
-    }
+	public function getDescription(): string
+	{
+		return 'Add API key table for new key format.';
+	}
 
-    public function down(Schema $schema): void
-    {
-        // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('DROP TABLE api_keys_v2');
-    }
+	public function up(Schema $schema): void
+	{
+		// this up() migration is auto-generated, please modify it to your needs
+		$this->addSql('CREATE TABLE api_keys_v2 (expiration DATETIME NOT NULL, hash VARCHAR(64) NOT NULL, salt VARCHAR(32) NOT NULL, revoked_at DATETIME DEFAULT NULL, description VARCHAR(255) NOT NULL, state INTEGER DEFAULT 0 NOT NULL, scopes CLOB NOT NULL, id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, created_at DATETIME NOT NULL, revoked_by_id INTEGER DEFAULT NULL, created_by_id INTEGER DEFAULT NULL, CONSTRAINT FK_FAC0465EFB8FE773 FOREIGN KEY (revoked_by_id) REFERENCES users (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE, CONSTRAINT FK_FAC0465EB03A8386 FOREIGN KEY (created_by_id) REFERENCES users (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE)');
+		$this->addSql('CREATE UNIQUE INDEX UNIQ_FAC0465ED1B862B8 ON api_keys_v2 (hash)');
+		$this->addSql('CREATE UNIQUE INDEX UNIQ_FAC0465E8FFBE0F7 ON api_keys_v2 (salt)');
+		$this->addSql('CREATE INDEX IDX_FAC0465EFB8FE773 ON api_keys_v2 (revoked_by_id)');
+		$this->addSql('CREATE INDEX IDX_FAC0465EB03A8386 ON api_keys_v2 (created_by_id)');
+	}
+
+	public function down(Schema $schema): void
+	{
+		// this down() migration is auto-generated, please modify it to your needs
+		$this->addSql('DROP TABLE api_keys_v2');
+	}
+
 }

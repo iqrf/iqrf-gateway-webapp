@@ -27,6 +27,7 @@ declare(strict_types = 1);
 namespace Tests\Unit\Models\Database\Entities;
 
 use App\Models\Database\Entities\PasswordRecovery;
+use App\Models\Database\Entities\Role;
 use App\Models\Database\Entities\User;
 use DateInterval;
 use DateTime;
@@ -49,6 +50,11 @@ final class PasswordRecoveryTest extends TestCase {
 	 * @var PasswordRecovery Password recovery entity
 	 */
 	private PasswordRecovery $entity;
+
+	/**
+	 * @var Role User role
+	 */
+	private Role $role;
 
 	/**
 	 * @var User User entity
@@ -102,7 +108,8 @@ final class PasswordRecoveryTest extends TestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
-		$this->user = new User('admin', 'admin@iqrf.org', 'admin');
+		$this->role = new Role('admin', 'Admin role', []);
+		$this->user = new User('admin', 'admin@iqrf.org', 'admin', $this->role);
 		$this->entity = new PasswordRecovery($this->user);
 		$this->entity->setCreatedAt();
 	}

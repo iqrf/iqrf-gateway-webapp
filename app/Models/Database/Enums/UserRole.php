@@ -45,7 +45,7 @@ enum UserRole: string {
 	 * Returns user role from string value
 	 * @param string $value User role string value
 	 * @return self User role
-	 * @throws InvalidUserRoleException
+	 * @throws InvalidRoleException
 	 */
 	public static function fromString(string $value): self {
 		try {

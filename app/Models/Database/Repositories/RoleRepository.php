@@ -46,4 +46,5 @@ class RoleRepository extends EntityRepository {
 	public function findOneBySystemKey(string $systemKey): ?Role {
 		return $this->findOneBy(['systemKey' => $systemKey]);
 	}
+
 }

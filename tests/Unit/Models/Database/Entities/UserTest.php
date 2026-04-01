@@ -28,9 +28,9 @@ namespace Tests\Unit\Models\Database\Entities;
 
 use App\Exceptions\InvalidEmailAddressException;
 use App\Exceptions\InvalidPasswordException;
+use App\Models\Database\Entities\Role;
 use App\Models\Database\Entities\User;
 use App\Models\Database\Enums\UserLanguage;
-use App\Models\Database\Enums\UserRole;
 use App\Models\Database\Enums\UserState;
 use Tester\Assert;
 use Tester\TestCase;
@@ -58,11 +58,6 @@ final class UserTest extends TestCase {
 	private const PASSWORD = 'iqrf';
 
 	/**
-	 * User role
-	 */
-	private const ROLE = UserRole::Admin;
-
-	/**
 	 * User language
 	 */
 	private const LANGUAGE = UserLanguage::English;
@@ -71,6 +66,11 @@ final class UserTest extends TestCase {
 	 * User account state
 	 */
 	private const STATE = UserState::Unverified;
+
+	/**
+	 * @var Role User role entity
+	 */
+	private Role $role;
 
 	/**
 	 * @var User User entity
@@ -110,7 +110,7 @@ final class UserTest extends TestCase {
 	 * Tests the function to get the user's role
 	 */
 	public function testGetRole(): void {
-		Assert::same(self::ROLE, $this->entity->getRole());
+		Assert::same($this->role, $this->entity->getRole());
 	}
 
 	/**
@@ -194,7 +194,7 @@ final class UserTest extends TestCase {
 	 * Tests the function to set the user's role
 	 */
 	public function testSetRole(): void {
-		$role = UserRole::Normal;
+		$role = new Role('normal', 'Normal user role', []);
 		$this->entity->setRole($role);
 		Assert::same($role, $this->entity->getRole());
 	}
@@ -224,7 +224,8 @@ final class UserTest extends TestCase {
 			'id' => null,
 			'username' => self::USERNAME,
 			'email' => self::EMAIL,
-			'role' => self::ROLE->value,
+			'role' => $this->role->getName(),
+			'roleSystemKey' => $this->role->getSystemKey(),
 			'language' => self::LANGUAGE->value,
 			'state' => self::STATE->toString(),
 		];
@@ -236,7 +237,8 @@ final class UserTest extends TestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
-		$this->entity = new User(self::USERNAME, self::EMAIL, self::PASSWORD, self::ROLE, self::LANGUAGE);
+		$this->role = new Role('admin', 'Admin role', []);
+		$this->entity = new User(self::USERNAME, self::EMAIL, self::PASSWORD, $this->role, self::LANGUAGE);
 	}
 
 }

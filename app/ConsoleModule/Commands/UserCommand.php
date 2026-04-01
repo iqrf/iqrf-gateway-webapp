@@ -56,6 +56,7 @@ abstract class UserCommand extends EntityManagerCommand {
 	) {
 		parent::__construct($entityManager);
 		$this->repository = $entityManager->getUserRepository();
+		$this->roleRepository = $entityManager->getRoleRepository();
 	}
 
 	/**
@@ -111,7 +112,7 @@ abstract class UserCommand extends EntityManagerCommand {
 	 * @throws RuntimeException Question helper not found
 	 */
 	protected function askRole(InputInterface $input, OutputInterface $output, ?Role $default): Role {
-		if (!$default) {
+		if ($default === null) {
 			// Use predefined normal user as default
 			$default = $this->roleRepository->findOneBySystemKey('normal');
 		}
@@ -124,6 +125,7 @@ abstract class UserCommand extends EntityManagerCommand {
 			return $role;
 		}
 		$roles = array_column($this->roleRepository->findAll(), 'name');
+		$role = null;
 		while ($role === null) {
 			$helper = $this->getQuestionHelper();
 			$question = new ChoiceQuestion('Please enter the user\'s role: ', $roles, $default?->getName());

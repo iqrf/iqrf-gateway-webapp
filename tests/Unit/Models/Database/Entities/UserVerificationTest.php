@@ -26,6 +26,7 @@ declare(strict_types = 1);
 
 namespace Tests\Unit\Models\Database\Entities;
 
+use App\Models\Database\Entities\Role;
 use App\Models\Database\Entities\User;
 use App\Models\Database\Entities\UserVerification;
 use DateInterval;
@@ -49,6 +50,11 @@ final class UserVerificationTest extends TestCase {
 	 * @var UserVerification User verification entity
 	 */
 	private UserVerification $entity;
+
+	/**
+	 * @var Role user role
+	 */
+	private Role $role;
 
 	/**
 	 * @var User User entity
@@ -102,7 +108,8 @@ final class UserVerificationTest extends TestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
-		$this->user = new User('admin', 'admin@iqrf.org', 'admin');
+		$this->role = new Role('admin', 'Admin role', []);
+		$this->user = new User('admin', 'admin@iqrf.org', 'admin', $this->role);
 		$this->entity = new UserVerification($this->user);
 		$this->entity->setCreatedAt();
 	}
