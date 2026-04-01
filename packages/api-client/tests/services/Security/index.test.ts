@@ -19,6 +19,8 @@ import { describe, expect, test } from 'vitest';
 import {
 	ApiKeyService,
 	CertificateService,
+	DaemonApiTokenService,
+	MosquittoUserService,
 	SecurityServices,
 	SshKeyService,
 	UserService,
@@ -42,6 +44,18 @@ describe('SecurityServices', (): void => {
 		expect.assertions(1);
 		expect(services.getCertificateService())
 			.toBeInstanceOf(CertificateService);
+	});
+
+	test('returns daemon api token service instance', (): void => {
+		expect.assertions(1);
+		expect(services.getDaemonApiTokenService())
+			.toBeInstanceOf(DaemonApiTokenService);
+	});
+
+	test('returns mosquitto user service instance', (): void => {
+		expect.assertions(1);
+		expect(services.getMosquittoUserService())
+			.toBeInstanceOf(MosquittoUserService);
 	});
 
 	test('returns SSH key service instance', (): void => {
