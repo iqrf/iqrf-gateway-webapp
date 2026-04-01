@@ -15,7 +15,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-sudo -u www-data bin/manager database:create
 sudo -u www-data bin/manager migrations:migrate --no-interaction
 sudo -u www-data bin/manager iqrf-os:import-patches
 

@@ -158,9 +158,8 @@ rector: deps
 
 reset-db:
 	rm -f app/config/database.db
-	bin/manager database:create
 	bin/manager migrations:migrate --no-interaction
-	bin/manager doctrine:fixtures:load --append --no-interaction
+	bin/manager doctrine:fixtures:load --no-interaction
 	bin/manager iqrf-os:import-patches
 
 run:
