@@ -19,13 +19,13 @@ import {defineConfig} from 'cypress';
 export default defineConfig({
 	e2e: {
 		baseUrl: 'http://localhost:8081/',
-		setupNodeEvents(on, config) {
+		setupNodeEvents(on: Cypress.PluginEvents, config: Cypress.PluginConfigOptions): Cypress.PluginConfigOptions {
 			/*
 			 * Let's increase the browser window size when running headlessly
 			 * this will produce higher resolution images and videos
 			 * https://on.cypress.io/browser-launch-api
 			 */
-			on('before:browser:launch', (browser: Cypress.Browser, launchOptions: Cypress.BrowserLaunchOptions) => {
+			on('before:browser:launch', (browser: Cypress.Browser, launchOptions: Cypress.BeforeBrowserLaunchOptions): Cypress.BeforeBrowserLaunchOptions => {
 				console.log('launching browser %s is headless? %s', browser.name, browser.isHeadless,);
 
 				// the browser width and height we want to get

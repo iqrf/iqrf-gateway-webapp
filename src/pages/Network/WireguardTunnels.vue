@@ -151,7 +151,7 @@ export default class WireguardTunnels extends Vue {
 	private tunnels: Array<IWG> = [];
 
 	/**
-	 * @constant {Array<IField>} tableField Array of CoreUI data table fields
+	 * @constant {Array<IField>} tableFields Array of CoreUI data table fields
 	 */
 	private tableFields: Array<IField> = [
 		{

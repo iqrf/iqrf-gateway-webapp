@@ -334,7 +334,7 @@ export default class GatewayTime extends Vue {
 			params.ntpServers = this.defaultServers ? [] : this.time?.ntpServers;
 		} else {
 			const luxonDate = DateTime.fromJSDate(this.datetime, {zone: (this.timezone.value as string)});
-			params.datetime = luxonDate.toISO();
+			params.datetime = luxonDate.toISO() ?? undefined;
 		}
 		this.$store.commit('spinner/SHOW');
 		TimeService.setTime(params)

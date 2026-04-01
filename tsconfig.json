@@ -12,7 +12,6 @@
 		"experimentalDecorators": true,
 		"resolveJsonModule": true,
 		"types": [
-			"jest",
 			"node",
 			"vuex/types/vue.d.ts"
 		],
@@ -21,5 +20,18 @@
 			"@/*": ["src/*"]
 		}
 	},
-	"exclude": ["cypress", "cypress.config.ts", "temp"]
+	"include": [
+		"src/**/*.ts",
+		"src/**/*.d.ts",
+		"src/**/*.vue",
+		"cypress.config.ts",
+		"eslint.config.ts",
+		"vitest.config.ts"
+	],
+
+	"exclude": [
+		"cypress",
+		"node_modules",
+		"temp"
+	]
 }

@@ -59,11 +59,6 @@ stages:
   retry: 2
   <<: *base_template
 
-.coding-style_template: &coding-style_template
-  stage: coding-style
-  needs: []
-  <<: *base_template
-
 .dependency-check_template: &dependency-check_template
   stage: dependency-check
   needs: []
@@ -124,24 +119,6 @@ build-docker:tests:
     DOCKER_FILE: docker/tests/bullseye.Dockerfile
     DOCKER_TAG: tests-bullseye
 
-coverage:js:
-  <<: *test_template
-  <<: *npm_template
-  script:
-    - pnpm run coverage:unit-ci
-  allow_failure: true
-  coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
-  artifacts:
-    paths:
-      - 'coverage/'
-    expire_in: 2 weeks
-    when: always
-    reports:
-      junit:
-        - junit.xml
-  <<: *test_template
-  <<: *npm_template
-
 newman:
   <<: *test_template
   image: docker:latest
@@ -154,13 +131,6 @@ newman:
     - docker-compose -f api-testing.docker-compose.yml up --build --abort-on-container-exit
   tags:
     - linux, docker, amd64
-
-# Coding style
-eslint:
-  <<: *coding-style_template
-  <<: *npm_template
-  script:
-    - pnpm run lint
 
 # Dependency check
 dependency-check:parent:
@@ -295,6 +265,12 @@ include:
       php_versions: ['8.3']
       project_dir: '.'
       retry: 2
+  # Tests - Frontend
+  - component: gitlab.iqrf.org/open-source/gitlab-ci-components/test-js-vitest-coverage@master
+    inputs:
+      job_name: frontend:coverage
+      project_dir: '.'
+
   # Coding style - backend
   - component: gitlab.iqrf.org/open-source/gitlab-ci-components/coding-style-php-codesniffer@master
     inputs:
@@ -324,7 +300,15 @@ include:
       php_version: '8.3'
       project_dir: '.'
   # Coding style - frontend
+  - component: gitlab.iqrf.org/open-source/gitlab-ci-components/coding-style-js-eslint@master
+    inputs:
+      job_name: frontend:eslint
+      project_dir: '.'
   - component: gitlab.iqrf.org/open-source/gitlab-ci-components/coding-style-js-stylelint@master
     inputs:
       job_name: frontend:stylelint
+      project_dir: '.'
+  - component: gitlab.iqrf.org/open-source/gitlab-ci-components/coding-style-js-vue-i18n@master
+    inputs:
+      job_name: frontend:vue-i18n
       project_dir: '.'

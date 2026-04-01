@@ -7,7 +7,7 @@
 </template>
 
 <script lang='ts'>
-import Color from 'color';
+import Color, {ColorInstance} from 'color';
 import {Component, Vue} from 'vue-property-decorator';
 import VueStepProgressIndicator from 'vue-step-progress-indicator';
 
@@ -122,8 +122,8 @@ export default class InstallWizardStepProgress extends Vue {
 	 * @private
 	 * @return {Color} Color for the completed step
 	 */
-	private static getCompletedColor(): Color {
-		const color: Color = Color(ThemeManager.getPrimaryColor());
+	private static getCompletedColor(): ColorInstance {
+		const color: ColorInstance = Color(ThemeManager.getPrimaryColor());
 		return color.lighten(0.4).desaturate(0.2);
 	}
 
@@ -132,7 +132,7 @@ export default class InstallWizardStepProgress extends Vue {
 	 * @private
 	 * @return {Color} Color for the inactive step
 	 */
-	private static getInactiveColor(): Color {
+	private static getInactiveColor(): ColorInstance {
 		return InstallWizardStepProgress.getCompletedColor().grayscale();
 	}
 
