@@ -55,6 +55,9 @@ mender:
 # Monitoring service
 monit:
 	enabled: false
+# Mosquitto user management
+mosquittoUserManagement:
+	enabled: false
 # Network manager
 networkManager:
 	enabled: false

@@ -17,6 +17,7 @@
 		"journal",
 		"mender",
 		"monit",
+		"mosquittoUserManagement",
 		"networkManager",
 		"nodeRed",
 		"remount",
@@ -67,6 +68,9 @@
 		},
 		"monit": {
 			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/monit.json"
+		},
+		"mosquittoUserManagement": {
+			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/mosquittoUserManagement.json"
 		},
 		"networkManager": {
 			"$ref": "https://apidocs.iqrf.org/openapi/iqrf-gateway-webapp/schemas/features/networkManager.json"

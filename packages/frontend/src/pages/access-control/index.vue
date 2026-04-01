@@ -34,7 +34,7 @@ limitations under the License.
 </route>
 
 <script lang='ts' setup>
-import { UserRole } from '@iqrf/iqrf-gateway-webapp-client/types';
+import { Feature, UserRole } from '@iqrf/iqrf-gateway-webapp-client/types';
 import { Head } from '@unhead/vue/components';
 import { ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -67,6 +67,7 @@ const links: Ref<DisambiguationLink[]> = ref([
 		description: i18n.t('pages.accessControl.mosquittoUsers.description'),
 		to: '/access-control/mosquitto-users',
 		roles: [UserRole.Admin],
+		feature: Feature.mosquittoUserManagement,
 	},
 ]);
 </script>
