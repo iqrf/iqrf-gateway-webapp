@@ -26,6 +26,7 @@ use App\Exceptions\InvalidEmailAddressException;
 use App\Exceptions\InvalidPasswordException;
 use App\Models\Database\Attributes\TId;
 use App\Models\Database\Enums\UserLanguage;
+use App\Models\Database\Enums\UserRole;
 use App\Models\Database\Enums\UserState;
 use App\Models\Database\Repositories\UserRepository;
 use Doctrine\DBAL\Types\Types;
@@ -107,6 +108,12 @@ class User implements JsonSerializable {
 	private ?string $password = null;
 
 	/**
+	 * @var UserRole|null Legacy user role
+	 */
+	#[ORM\Column(name: 'role', type: Types::STRING, length: 15, enumType: UserRole::class, options: ['default' => UserRole::Default])]
+	private ?string $roleLegacy = null;
+
+	/**
 	 * @var bool Email changed
 	 */
 	private bool $emailChanged = false;
@@ -132,7 +139,7 @@ class User implements JsonSerializable {
 		?string $password,
 		// TODO - find out what should be done, when the role is deleted
 		#[ORM\ManyToOne(targetEntity: Role::class, inversedBy: 'users')]
-		#[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+		#[ORM\JoinColumn(name: 'role_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
 		private Role $role,
 		#[ORM\Column(type: Types::STRING, length: 7, enumType: UserLanguage::class, options: ['default' => UserLanguage::Default])]
 		private UserLanguage $language = UserLanguage::Default,
